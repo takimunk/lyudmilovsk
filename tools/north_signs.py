@@ -42,13 +42,13 @@ STRINGS = {
     "north.sign.reserve.map.camp": ("Кемпинг", "Campsite", "キャンプ場"),
     "north.sign.reserve.map.spring": ("Источник", "Hot spring", "温泉"),
     "north.sign.reserve.map.fumaroles": ("Долина фумарол", "Fumarole Valley", "噴気谷"),
-    "north.sign.reserve.map.cone": ("Сопка", "The Cone", "火山丘"),
+    "north.sign.reserve.map.cone": ("Сопка", "The Cone", "ソプカ"),
     "north.sign.reserve.map.here": ("Вы здесь", "You are here", "現在地"),
     "north.sign.hot_ground": ("ГОРЯЧАЯ ЗЕМЛЯ", "HOT GROUND", "高温注意"),
     "north.sign.hot_ground.sub": ("Пар. Не сходить с тропы", "Steam. Stay on the trail", "蒸気あり・道から出ない"),
     "north.sign.spring": ("Горячий источник", "Hot spring", "温泉"),
     "north.sign.spring.back": ("Кемпинг", "Campsite", "キャンプ場"),
-    "north.sign.cone": ("Сопка", "The Cone", "火山丘"),
+    "north.sign.cone": ("Сопка", "The Cone", "ソプカ"),
     "north.sign.cone.back": ("Долина фумарол", "Fumarole Valley", "噴気谷"),
     "north.sign.camp": ("Кемпинг", "Campsite", "キャンプ場"),
     "north.sign.camp.back": ("Ворота заказника", "Reserve gate", "保護区ゲート"),
@@ -61,7 +61,7 @@ STRINGS = {
     "north.board.camp.spring.title": ("Источник", "Hot spring", "温泉"),
     "north.board.camp.spring": ("Тёплый источник севернее лагеря. Купаться можно, мыло в воду не нести.",
                                 "The warm spring is north of the camp. Bathing is fine; keep soap out of the water.",
-                                "温かい温泉はキャンプ場の北にあります。入浴できますが、石けんは使わないでください。"),
+                                "温泉はキャンプ場の北にあります。入浴できますが、石けんは湯に持ち込まないでください。"),
 }
 LANGS = ("ru", "en", "ja")
 
