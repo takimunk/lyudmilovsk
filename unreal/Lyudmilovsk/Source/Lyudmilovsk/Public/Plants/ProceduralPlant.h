@@ -122,6 +122,10 @@ private:
 	void EnsureMeshes();
 	void Apply(float Age, float Day, bool bSummary, bool bWood = true);
 	bool WantsSummary() const;
+	/** The first of the four LODs its far bake is made with (UTreeBakeCache::Request): 1 when the bake only ever shows from far away. */
+	int32 FarBakeFirstLod() const;
+	/** ShowAt is showing the bake, perhaps from close by: all four LODs. */
+	bool bFullBake = false;
 	void SyncFallenFruit(const FPlantSkeleton::FInstances& Out);
 	void UpdateLitter(const FPlantSkeleton::FInstances& Out, const FPlantSeason& Season);
 	void SpawnFallingLeaves(const FPlantSkeleton::FInstances& Out);

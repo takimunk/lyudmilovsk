@@ -20,9 +20,9 @@ struct UTreeBakeCache::FJob
 	bool bUrgent = false;
 };
 
-const FTreeBaked* UTreeBakeCache::Request(FName Species, uint32 Seed, float Age, float Day, float RebakeDays, const FVector& LodDistances)
+const FTreeBaked* UTreeBakeCache::Request(FName Species, uint32 Seed, float Age, float Day, float RebakeDays, const FVector& LodDistances, int32 FirstLod)
 {
-	const FTreeBakeKey Key{ Species, Seed, FMath::RoundToInt(Age * 10.f) };
+	const FTreeBakeKey Key{ Species, Seed, FMath::RoundToInt(Age * 10.f), FMath::Clamp(FirstLod, 0, 3) };
 	FTreeBaked* Have = Baked.Find(Key);
 	const bool bStale = Have && FMath::Abs(Day - Have->Day) > RebakeDays;
 	if ((!Have || bStale) && !Queued.Contains(Key))
@@ -57,7 +57,7 @@ void UTreeBakeCache::Launch(const TSharedPtr<FJob>& Job)
 	RunningAtomic++;
 	UE::Tasks::Launch(UE_SOURCE_LOCATION, [this, Job]()
 	{
-		Job->Prep = PlantMeshes::PrepareTreeBake(Job->Species, Job->Key.Seed, Job->Age, Job->Day);
+		Job->Prep = PlantMeshes::PrepareTreeBake(Job->Species, Job->Key.Seed, Job->Age, Job->Day, Job->Key.FirstLod);
 		{
 			FScopeLock Lock(&FinishedLock);
 			Finished.Add(Job);
@@ -253,7 +253,7 @@ void UTreeBakeCache::BakeAllNow()
 	{
 		TSharedPtr<FJob> Job = Wanted[0];
 		Wanted.RemoveAt(0);
-		Job->Prep = PlantMeshes::PrepareTreeBake(Job->Species, Job->Key.Seed, Job->Age, Job->Day);
+		Job->Prep = PlantMeshes::PrepareTreeBake(Job->Species, Job->Key.Seed, Job->Age, Job->Day, Job->Key.FirstLod);
 		Finish(*Job);
 	}
 	for (;;)

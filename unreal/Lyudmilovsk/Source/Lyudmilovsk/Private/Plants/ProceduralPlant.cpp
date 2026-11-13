@@ -68,6 +68,15 @@ namespace
 		}
 	}
 
+	/** Camera distances where a lone plant's far bake drops to its LOD 1, 2 and 3, m. */
+	const FVector FarBakeLods(15.0, 55.0, 150.0);
+	/**
+	 * A plant whose bake only shows from at least this far (cm) is baked without LOD 0. LOD 0 shows nearer than 15 m, or
+	 * while the tree fills 0.9 of the view; through the hero's strongest zoom (x0.3 of a 90 degree view: 4.2 times nearer)
+	 * and for the widest crown (a 21 m sphere) that is under 100 m.
+	 */
+	constexpr float FarOnlyBakeDistance = 10000.f;
+
 	int32 NumTriangles(const UStaticMesh* Mesh)
 	{
 		const FStaticMeshRenderData* RD = Mesh ? Mesh->GetRenderData() : nullptr;
@@ -293,6 +302,16 @@ bool AProceduralPlant::WantsSummary() const
 		return false;
 	}
 	return FVector::Dist(PC->PlayerCameraManager->GetCameraLocation(), GetActorLocation()) > SummaryDistance;
+}
+
+int32 AProceduralPlant::FarBakeFirstLod() const
+{
+	// its bake is drawn only beyond SummaryDistance: the nearest LOD (every branch and leaf cluster: most of the mesh, tens
+	// of MB for a grown tree, held once per lone tree for the whole game) never shows and is not made. A tree drawn baked
+	// at any distance (forced, a species that prefers its bake, a preview's ShowAt) has all four, as in the editor.
+	const UWorld* World = GetWorld();
+	const bool bFarOnly = World && World->IsGameWorld() && !bForceSummary && !bFullBake && !GetSpecies().bPreferBake && SummaryDistance >= FarOnlyBakeDistance;
+	return bFarOnly ? 1 : 0;
 }
 
 void AProceduralPlant::EnsureMeshes()
@@ -596,11 +615,12 @@ void AProceduralPlant::Apply(float Age, float Day, bool bSummary, bool bWood)
 		if (UTreeBakeCache* Cache = GetWorld() ? GetWorld()->GetSubsystem<UTreeBakeCache>() : nullptr)
 		{
 			const float BakeAge = FMath::Max(1.f, FMath::RoundToFloat(Age));
-			Far = Cache->Request(Species, (uint32)Seed, BakeAge, Day, 5.f, FVector(15.0, 55.0, 150.0));
+			const int32 FirstLod = FarBakeFirstLod();
+			Far = Cache->Request(Species, (uint32)Seed, BakeAge, Day, 5.f, FarBakeLods, FirstLod);
 			if (!Far && !GetWorld()->IsGameWorld())
 			{
 				Cache->BakeAllNow();
-				Far = Cache->Request(Species, (uint32)Seed, BakeAge, Day, 5.f, FVector(15.0, 55.0, 150.0));
+				Far = Cache->Request(Species, (uint32)Seed, BakeAge, Day, 5.f, FarBakeLods, FirstLod);
 			}
 		}
 		if (!Far || !Far->Mesh)
@@ -1147,7 +1167,10 @@ void AProceduralPlant::OnGameLoaded_Implementation()
 
 void AProceduralPlant::ShowAt(float Age, float DayOfYear, bool bSummary)
 {
+	// a preview may show the bake from close by: with every LOD
+	bFullBake = true;
 	Apply(Age, DayOfYear, bSummary);
+	bFullBake = false;
 	UpdateTickRate();
 }
 
@@ -1289,7 +1312,7 @@ void AProceduralPlant::Tick(float DeltaSeconds)
 		// far, but its bake is not ready yet: stay as it is rather than re-shape in full every time; and when a newer bake
 		// (the season has moved on: blossom, leaves) is ready, take it over at once instead of at the next re-shape
 		UTreeBakeCache* Cache = GetWorld()->GetSubsystem<UTreeBakeCache>();
-		const FTreeBaked* Far = Cache ? Cache->Request(Species, (uint32)Seed, FMath::Max(1.f, FMath::RoundToFloat(Age)), Day, 5.f, FVector(15.0, 55.0, 150.0)) : nullptr;
+		const FTreeBaked* Far = Cache ? Cache->Request(Species, (uint32)Seed, FMath::Max(1.f, FMath::RoundToFloat(Age)), Day, 5.f, FarBakeLods, FarBakeFirstLod()) : nullptr;
 		const bool bBakeReady = Far && Far->Mesh;
 		if (bShownSummary && !bBakeReady)
 		{
