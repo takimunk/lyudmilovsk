@@ -352,8 +352,13 @@ def resolve(thing, rules, defaults, by_plot_kind, plot, acts):
 # ------------------------------------------------------------------ acts
 
 def expand_lines(spec, strings):
+    """A prefix (all <prefix>.<n> strings, in order) or a list of keys, where an entry '<prefix>.*' stands for that prefix's
+    strings (a board's generic notices followed by a building's own: ["city.look.club.*", "city.reg.cog.*"])."""
     if isinstance(spec, list):
-        return spec
+        out = []
+        for s in spec:
+            out += expand_lines(s[:-2], strings) if s.endswith(".*") else [s]
+        return out
     if not spec:
         return []
     pat = re.compile(re.escape(spec) + r"\.(\d+)$")

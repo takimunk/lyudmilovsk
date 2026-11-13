@@ -1260,6 +1260,19 @@
    }
   },
   {
+   "id": "ring_toss",
+   "kind": "play",
+   "pos": [
+    -13.752,
+    29.36,
+    1.21
+   ],
+   "yaw": -141.2,
+   "props": {
+    "what": "ring_toss"
+   }
+  },
+  {
    "id": "kiosk2_menu",
    "kind": "board",
    "pos": [
@@ -1285,6 +1298,19 @@
     "role": "vendor",
     "service": "shop",
     "trade": "icecream"
+   }
+  },
+  {
+   "id": "lottery_tickets",
+   "kind": "play",
+   "pos": [
+    2.403,
+    44.373,
+    1.16
+   ],
+   "yaw": 31.2,
+   "props": {
+    "what": "lottery"
    }
   },
   {
@@ -1342,6 +1368,19 @@
    }
   },
   {
+   "id": "fortune_globe",
+   "kind": "machine",
+   "pos": [
+    27.103,
+    38.544,
+    1.26
+   ],
+   "yaw": 141.0,
+   "props": {
+    "what": "fortune"
+   }
+  },
+  {
    "id": "kiosk4_menu",
    "kind": "board",
    "pos": [
@@ -1352,6 +1391,19 @@
    "yaw": 51.0,
    "props": {
     "topic": "prices"
+   }
+  },
+  {
+   "id": "shooting_gallery",
+   "kind": "play",
+   "pos": [
+    23.431,
+    40.207,
+    0.9
+   ],
+   "yaw": -129.0,
+   "props": {
+    "what": "shooting_gallery"
    }
   },
   {
@@ -1380,6 +1432,19 @@
    "yaw": 53.3,
    "props": {
     "topic": "prices"
+   }
+  },
+  {
+   "id": "strongman",
+   "kind": "sport",
+   "pos": [
+    42.371,
+    30.033,
+    0.6
+   ],
+   "yaw": 53.3,
+   "props": {
+    "what": "strongman"
    }
   },
   {

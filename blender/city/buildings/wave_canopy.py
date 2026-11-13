@@ -236,14 +236,17 @@ def kiosk_outside(B, fr, k, mat):
         kit.cup(B, *at_(0.5), top, mat="CT_PlasterPink")
         kit.cup(B, *at_(0.9), top, mat="CT_PlasterYellow")
         kit.bottles(B, *at_(1.35), top, n=2, seed=k)
+        B.thing("ring_toss", "play", (*at_(1.35), top + 0.15), front, what="ring_toss")       # rings over the bottles
     elif trade == "press":
         kit.newspaper(B, *at_(-1.1), top, yaw=front + 8, seed=1)
         kit.newspaper(B, *at_(-0.4), top, yaw=front - 6, seed=2)
         kit.books_stack(B, *at_(0.5), top, yaw=front, n=4, seed=3)
+        B.thing("lottery_tickets", "play", (*at_(0.5), top + 0.1), front, what="lottery")      # the lottery tickets
         kit.newspaper(B, *at_(1.1), top, yaw=front + 12, seed=4)
         B.thing("press_paper", "take", (*at_(-0.75), top + 0.03), front, item="daily_paper")
     elif trade == "toys":
         kit.globe(B, *at_(-1.2), top, yaw=front)
+        B.thing("fortune_globe", "machine", (*at_(-1.2), top + 0.2), front, what="fortune")    # the fortune-telling globe
         kit.books_stack(B, *at_(-0.2), top, yaw=front + 90, n=3, seed=5)
         kit.vase(B, *at_(0.7), top, seed=6)
         kit.cup(B, *at_(1.25), top, mat="CT_PlasterBlue")
@@ -276,10 +279,13 @@ def kiosk_outside(B, fr, k, mat):
         B.thing("press_rack", "shelf", (mxr, myr, 1.2), fr.yaw_dir(-side_, 0), topic="travel")
     elif trade == "toys":
         dc = kit.display_case(B, *fr.p(-side_ * 2.7, -0.6), 0.0, fr.yaw_dir(-side_, 0), w=1.0, d=0.5, goods="toys", seed=k)
+        B.thing("shooting_gallery", "play", (*fr.p(-side_ * 2.7, -0.6), 0.9), fr.yaw_dir(-side_, 0),
+                what="shooting_gallery")                                                        # the prizes' case
     elif trade == "snacks":
         kit.crate(B, *fr.p(2.55, -0.6), 0.0, fr.yaw_dir(1, 0), fill="CT_PlasterGreen", seed=7)
         kit.crate(B, *fr.p(2.55, -1.2), 0.0, fr.yaw_dir(1, 0), fill="CT_PlasterYellow", seed=8)
         kit.cardboard_box(B, *fr.p(2.55, -0.6), 0.38, fr.yaw_dir(1, 0), seed=9)
+        B.thing("strongman", "sport", (*fr.p(2.55, -0.9), 0.6), fr.yaw_dir(1, 0), what="strongman")  # by the crates
     # the hatch counter thing: where the vendor serves
     hx, hy = fr.p(0, -1.55)
     B.thing("kiosk%d_counter" % k, "counter", (hx, hy, 1.1), front, role="vendor", service="shop", trade=trade)

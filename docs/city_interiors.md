@@ -88,6 +88,12 @@ really works there.
   per_side=(n_front, n_back, n_left, n_right))`, and `kit.Room(B, (x0, y0, x1, y1))` with `keep_door`, `keep`,
   `place`, `along("n", [...])`, `scatter` (seeded, nothing overlaps). Call `kit.check(B)` after furnishing: it lists
   overlapping floor pieces, pieces outside the rooms and blocked doors.
+* Round-2 pieces (transport, services, shop goods, studio, sport, canteen: `bicycle`, `pram`, `mailboxes`,
+  `barber_chair`, `teller_grille`, `serving_line`, `palm`, `parquet`, `court_lines`... full list in the catalogue
+  docstring) follow the same rules. Hanging pieces (`model_plane`, `bird_feeder(kind="hang")`) take `top_z` like
+  `punching_bag`; `[flat]` pieces (`parquet`, `court_lines`) lie on the floor z you pass. `done(footprint=(x0, x1, y0, y1))`
+  reports a footprint other than the mesh bounds (a plant's pot, not its leaves). `office_desk` returns `chair` with the
+  yaw of the desk (the worker looks across it, toward -y at yaw 0).
 * Showroom of everything: `python3 blender/city/kit_showroom.py -- [--no-render] [--close]` (lint numbers, then
   `renders/city/interior/kit_*.jpg`).
 * Adding a piece: write `def name(B, x, y, z=0.0, yaw=0.0, ..., solid=...)` with `p = _P(B, x, y, z, yaw, "name")`,
@@ -189,7 +195,8 @@ Content tables (`tools/city/content/*.json`, each with any of `acts`, `shops`, `
 `defaults_by_plot_kind`; a key defined in two files is an error): `acts.json` (defaults per kind, generic acts,
 shelves, boards), `activities.json` (machines, games, sport, crafts, screens), `counters.json` (shops, counter talk),
 `plots.json` (what the buildings' spots do while there are no declared things). An act may say `"like": "<act>"` to
-inherit, and `"lines": "<prefix>"` for all `<prefix>.<n>` strings. A thing's act is found by its rules, first match
+inherit, and `"lines": "<prefix>"` for all `<prefix>.<n>` strings, or a list of keys where `"<prefix>.*"` stands for that
+prefix's strings (a board's generic notices followed by a building's own: `["city.look.club.*", "city.reg.cog.*"]`). A thing's act is found by its rules, first match
 wins: `<plot>/<thing id>`, then `<type>/<thing id>` (globs allowed: `workers_club/seat*`; an exact id beats a glob; these
 may also set `kind`, `props`, `act`, `hours`, `days`), then `shop=<id>` in its props (act `buy_<id>`), then
 `<kind>:<prop>=<value>[,<prop>=<value>]` (most conditions win; `*:what=piano` matches any kind; a value may be a glob
@@ -203,7 +210,8 @@ counters are closed), then the kind's default (`sit`, `bed_private`, `read_misc`
 1. Declare things with `B.thing(id, kind, pos, yaw, **props)`; ids stable and unique in the building; then run
    `python3 tools/city/interiors.py --check` and `python3 tools/city/interiors.py`; read the table for your plot.
 2. `shelf`: `topic=` `birds` `sea` `science` `poetry` `kids` `local` (=`history`) `music` `art` `cooking` `travel`
-   `chess` `sun` (=`astronomy`) `garden` (=`gardening`) `engineering` `medicine`. Anything else reads the generic pages.
+   `chess` `sun` (=`astronomy`) `garden` (=`gardening`) `engineering` `medicine` `poetry_sale` (a bookstall's sale table).
+   Anything else reads the generic pages.
 3. `board`: `topic=` `timetable` `lost` `club` `wallpaper` (=`school`) `health` `cinema` `prices` (=`market`) `rules`
    `exhibit` `painting` `view` `store` `catalogue` `logbook` `fair` `birds` (the feed-the-birds poster: points to the
    library's guide and the garden department) `garden` `kids` (=`toys`) `local` (=`history`, a case of local things)
@@ -220,7 +228,8 @@ counters are closed), then the kind's default (`sit`, `bed_private`, `read_misc`
    `choir` choir_leader.
 5. `counter`: `shop=<id>` (see `counters.json`: `store_*`, `market_*`, `kiosk_news`, `cafe_tarelka`, `pharmacy`,
    `club_buffet`, `hall_bar`, `sport_cafe`, `library_desk`, `sanatorium_kiosk`, `seagull_cafe`, `fish_shop`, `dumplings`,
-   `souvenirs`, `bakery`, `book_stall`, `beer_bar`, `pasty_bar`; `furnished.json`: `fair_*`, `market_tea`, `store_cafe`,
+   `souvenirs`, `bakery`, `book_stall`, `beer_bar`, `pasty_bar`; `stories.json`: `kiosk_icecream`, `kiosk_tobacco`;
+   `furnished.json`: `fair_*`, `market_tea`, `store_cafe`,
    `sanatorium_buffet`, `cafe_ice_cream`, `canteen`, `bookshop`, `hardware` (bird feed and feeders), `fabrics`,
    `toy_shop`, `corner_grocery`) and/or `service=` `cashier` `cloakroom` `tickets` `reception` `lending` `bar`
    `butcher` `fishmonger` `rentals` `repair` `pharmacy` `newspapers` `bank` (the savings bank: a talk) `records`
@@ -237,6 +246,12 @@ counters are closed), then the kind's default (`sit`, `bed_private`, `read_misc`
    `school_desk`, `blackboard`.
 8. New words: add a theme file `tools/city/content/strings/<theme>.json` (ru first, real en and ja), new acts in a new
    content file; never edit generated files. Only existing item ids (new items need paid icons: game-items skill).
+9. Stories (`tools/city/content/stories.json`, words in `strings/stories.json` and `strings/homes.json`): per-plot rules
+   give one home's or one kiosk's things their own acts (`<plot>/<thing id>`, e.g. `P-T1H2/flat_books_sea` → `holm_log`);
+   story acts have their own ids so the home quests (`quests.json` `home_*`) can wait for `do <act>`. Lines
+   `city.home.<who>.<object>.<n>`; a building's running story on a board: `city.reg.<building>.<n>` appended to the
+   board's generic act (`look_club_cog` keeps `target: look_club`). A refurnished home that renames a thing id breaks its
+   rule (the check says which): rename the rule with it.
 
 ## 3. Game
 

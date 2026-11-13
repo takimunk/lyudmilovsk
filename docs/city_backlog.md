@@ -43,10 +43,10 @@ Unreal on the Mac. Whoever takes an item writes their mark and the date here.
 | P-CLINIC | clinic | reception, waiting row, doctor's room (scales, eye chart, couch), pharmacy kiosk, health posters | [x] content 2026-11-13: registry (talk), pharmacy shop, scales, eye chart, check-up, couches nap; thin: the pharmacy has no medicine items |
 | P-HALL | shell_chapel_hall | hall «Своды»: foyer with exhibition, stage hall, dance room with bar, kitchen | [x] content 2026-11-13: stage, choir, pianos, dance, bar, cloakroom, kitchen (stove, sink, cooking) |
 | P-MARKET | shell_market | 16 stalls with real goods, scales, the market office board, a tea stand | [x] content 2026-11-13: 16 stalls, tea counter, office (talk), scales; thin: butcher and fishmonger are talk only |
-| P-FAIR | wave_canopy | five kiosks with stocks, benches, the fair notice board | [x] content 2026-11-13: five kiosk shops by trade, notice board; thin: the fair games (gallery, ring toss, lottery, strongman, fortune) are no longer declared |
-| P-SANATORIUM | round_sanatorium | reception, dining hall, mineral-water pump room, a treatment room, the winter garden; one guest room to rest in | [x] content 2026-11-13: reception shop, dining buffet, pump room, treatment couches nap, piano, cloakroom; thin: no guest bed to sleep the night |
+| P-FAIR | wave_canopy | five kiosks with stocks, benches, the fair notice board | [x] content 2026-11-13: five kiosk shops by trade, notice board; the fair games declared again on the kiosks (2026-11-13, stories pass): ring toss on the ice-cream kiosk's bottles, lottery on the press kiosk's shelf, fortune globe and shooting gallery at the toy kiosk, strongman by the snack kiosk's crates; thin: no strongman/shooting-gallery models of their own |
+| P-SANATORIUM | round_sanatorium | reception, dining hall, mineral-water pump room, a treatment room, the winter garden; one guest room to rest in | [x] content 2026-11-13: reception shop, dining buffet, pump room, treatment couches nap, piano, cloakroom; stories pass: `couch_b` is a paid night (80 rub., the receptionist, till 7) |
 | P-PIER | hyperboloid_tower | keeper's room, the lamp gallery with a telescope, the log book | [x] content 2026-11-13: log book, radio, telescope, keeper's bed (nap), gallery views |
-| P-KIOSK1..6 | bus_stop_kiosk | six kiosks, each its own trade (papers, ice cream, tobacco, flowers, tickets, repairs) | [x] content 2026-11-13: papers, postcards, timetable, lost-and-found; thin: all six are the same newspaper kiosk |
+| P-KIOSK1..6 | bus_stop_kiosk | six kiosks, each its own trade (papers, ice cream, tobacco, flowers, tickets, repairs) | [x] content 2026-11-13: papers, postcards, timetable, lost-and-found; stories pass: 1 papers, 2 ice cream (shop, freezer chest), 3 tobacco (shop), 4 flowers (talk, buckets), 5 cable-car information (talk, own timetable), 6 repairs (talk, tray of unclaimed things), each its own price board; thin: the six models still all look like the newspaper kiosk, flowers/cable car/repairs sell nothing (no items) |
 | P-LIFEGUARD1,2 | lifeguard_tower | cabin with binoculars, flags board, first-aid box, the log of water temperature | [x] content 2026-11-13: binoculars, flags board, first aid; thin: the temperature log reads as a view |
 | P-WAVE | wave_tower (mixed) | shopping arcade under the tower: six shops, a hairdresser, a savings bank counter | [x] content 2026-11-13: bakery, records (talk), bookshop, hardware (bird feed, feeders), savings bank (talk), salon, fabrics, toys; the plot has no staff, so they run unstaffed 9-20 Mon-Sat (`@open`) |
 | P-T4H2 | ribbon_corner_block (mixed) | ground-floor shop and laundry, roof solarium | [x] content 2026-11-13: corner grocery (unstaffed 9-20), laundry, roof solarium |
@@ -60,16 +60,23 @@ furniture tells their story, and they have something small for the hero to do.
 
 - [ ] P-SERPENTINE serpentine_slab: lobby by lobby (6 entrances), the long gallery, a pensioner's flat with an aquarium
 - [ ] P-UNITE unite_block: the shopping street at mid-height, the roof terrace (paddling pool, running track), a duplex flat
-- [ ] P-CAPSULE, P-T5H1 capsule_tower: lobby, one capsule (bed, round window, tape recorder)
-- [ ] P-T1H4 capsule_cluster: bridges, a paired capsule studio of a radio amateur
+- [~] P-CAPSULE, P-T5H1 capsule_tower: lobby, one capsule (bed, round window, tape recorder). Stories 2026-11-13: Ilmar Singh, radio
+  amateur caretaker (quest `home_singh`, answered from the cluster); Nora Kravets, a student (quest `home_kravets`, tides from the lighthouse log)
+- [~] P-T1H4 capsule_cluster: bridges, a paired capsule studio of a radio amateur. Stories 2026-11-13: Gunnar Okafor (quest
+  `home_okafor`: a tune off the air found on the Saucer's jukebox)
 - [ ] P-T1H1, P-T2H1 cube_houses: one tilted cube house inside (three levels, sloping walls)
-- [ ] P-T1H2 cobogo_house: garden under the pilotis, the free curved stair, a flat with a breeze-block shadow pattern
-- [ ] P-T1H3, P-T3H1 twin_cylinder_house: the studio drum with the hexagon windows (a painter's workshop)
-- [ ] P-T1H5 origami_row: one folded house (a family with three children)
+- [~] P-T1H2 cobogo_house: garden under the pilotis, the free curved stair, a flat with a breeze-block shadow pattern. Stories
+  2026-11-13: Viktor Sergeyevich Holm, retired navigator (quest `home_holm`: the forecast for his watch log)
+- [~] P-T1H3, P-T3H1 twin_cylinder_house: the studio drum with the hexagon windows (a painter's workshop). Stories 2026-11-13:
+  Valentina Tadesse's fish (quest `home_tadesse`), Mads Okonkwo's pottery and Emiliano's clay whale (quest `home_okonkwo`)
+- [~] P-T1H5 origami_row: one folded house (a family with three children). Stories 2026-11-13: the Santos family (quest
+  `home_santos`: Venus through the loft telescope)
 - [ ] P-T3H2 stacked_boxes: canyon stair-streets, a roof-garden flat
-- [ ] P-T4H1 pilotis_curve_slab: lobby with the azulejo panel, the caretaker's room
+- [~] P-T4H1 pilotis_curve_slab: lobby with the azulejo panel, the caretaker's room. Stories 2026-11-13: Lev Markovich Okada,
+  retired painter (quest `home_okada`), the caretaker Toivo Asanov
 - [ ] P-BRIDGEHOUSE stacked_beam_tower: lobby, the gallery view room at 32 m
-- [ ] P-RISER1, P-RISER2 terrace_riser_housing: terrace gardens, one maisonette
+- [~] P-RISER1, P-RISER2 terrace_riser_housing: terrace gardens, one maisonette. Stories 2026-11-13: the Girmas' sunspots
+  (quest `home_girma`), the seamstress Rimma Aoki (quest `home_aoki`)
 - [ ] Wall dwellings W2..W5 (520 doors): ten "open door" interiors spread along the walls
 
 ## P3: the promenade and its 32 units
@@ -81,8 +88,9 @@ rental, souvenirs, a dumpling house, a cheburek house, a beer bar). Each is now 
 - [x] One room behind each kind of unit (12 dressings of `promenade_unit`, placed at all 32 units; 2026-11-13). Unreal
   (`[U]`) waits for the Mac: terrain + world mesh rebuild, import, place
 - [~] Stocks and acts for each kind: shops and services on the counters (the life sim's roles), the barber's haircut,
-  the photo studio's portrait (`photo_portrait`), the photo booth, darts, the workbench (2026-11-13). Still to do: the
-  portrait as a diary item, the haircut changing the hero's look
+  the photo studio's portrait (`photo_portrait`), the photo booth, darts, the workbench (2026-11-13); the photo desk's own
+  talk (`photo_desk`), the bookstalls' sale tables (`read_poetry_sale`). Still to do: the portrait as a diary item, the
+  haircut changing the hero's look
 - [ ] Rental: deck chairs, a rowing boat ticket (fishing thread), bicycles (bikes thread): the room has them on show,
   the counter only talks (`rentals`)
 - [ ] Unit windows: see into the lit room from the promenade (today the wall's opaque shop-glass card and the lit pane)
@@ -92,8 +100,13 @@ rental, souvenirs, a dumpling house, a cheburek house, a beer bar). Each is now 
 ## P4: small quests and stories (after the rooms exist)
 
 - [~] First batch of side quests from the content layer (town tour, a day at the library, a film at «Рассвет», chess at
-  the club, a check-up at the clinic, the photo booth, the department store errand, mineral water, a school lesson)
-- [ ] One story per public building told by its boards and shelves over several game days (notices change by date)
+  the club, a check-up at the clinic, the photo booth, the department store errand, mineral water, a school lesson); ten
+  home quests `home_*` (2026-11-13, one per open home, 2-3 stages, `do <story act>`/`visit`)
+- [~] One story per public building told by its boards and shelves over several game days (notices change by date).
+  2026-11-13: the regulars' notices (`city.reg.*`, after the generic ones) at the library (a book back from 1968), «Шестерня»
+  (the chess clock), «Тарелка» (Kesha the parrot), the market (the jam contest), the department store (the yellow
+  umbrella). Still open: the notices cycle, they don't change by date (needs the game to pick lines by day); the other
+  public buildings; the lighthouse keepers' room has its own lines but no quest
 - [ ] Staff talk: each counter's staff has greetings and three topics (voice pinned per the voice rule)
 - [ ] Festival variants of interiors (New Year tree in the store, lanterns in the café) tied to `ULyudFestivalSubsystem`
 - [ ] Collections: library stamps, cinema ticket stubs, chess opponents beaten, records heard on the jukebox
