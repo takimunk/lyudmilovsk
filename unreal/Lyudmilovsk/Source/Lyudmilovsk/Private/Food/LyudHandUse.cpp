@@ -12,7 +12,9 @@
 #include "LyudGameMenu.h"
 #include "LyudInventory.h"
 #include "LyudText.h"
+#include "Sea/LyudSwim.h"
 #include "UI/LyudGameScreen.h"
+#include "World/LyudLadder.h"
 
 namespace
 {
@@ -313,7 +315,12 @@ void ULyudHandUse::Tick(float DeltaTime)
 	// another move of the hand (buying at a machine, a pick-up) or a screen up: hidden and waiting
 	const ULyudInventoryUI* UI = ULyudInventoryUI::Get(World);
 	const ULyudGameMenuSubsystem* Menu = World->GetSubsystem<ULyudGameMenuSubsystem>();
-	const bool bBusy = Reach->IsBusy() || (UI && UI->IsOpen()) || (Menu && Menu->IsOpen()) || Hero->IsHidden();
+	// ... and the hand taken by something else: the bars of a bicycle, a ladder's rungs, the strokes in the water (the arm's own
+	// poses win there, the thing would ride on the bar or the rung and be "eaten" from it)
+	const ULyudLadderClimber* Climber = Hero->FindComponentByClass<ULyudLadderClimber>();
+	const ULyudSwimComponent* Swim = Hero->FindComponentByClass<ULyudSwimComponent>();
+	const bool bHandTaken = Hero->IsOnBike() || (Climber && Climber->IsOnLadder()) || (Swim && Swim->IsSwimming());
+	const bool bBusy = Reach->IsBusy() || (UI && UI->IsOpen()) || (Menu && Menu->IsOpen()) || Hero->IsHidden() || bHandTaken;
 	if (bBusy)
 	{
 		if (bAttached)
