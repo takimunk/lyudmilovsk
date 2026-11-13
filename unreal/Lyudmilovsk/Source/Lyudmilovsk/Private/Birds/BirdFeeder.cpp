@@ -302,6 +302,13 @@ void ABirdFeeder::BeginPlay()
 
 void ABirdFeeder::ShowFeed(FName Feed, float Handfuls)
 {
+	// asked every frame for every feeder: the same feed and handfuls as the last time is the same heap (and no feed
+	// name made into a string to size its grains)
+	if (Feed == Shown && Handfuls == ShownHandfuls)
+	{
+		return;
+	}
+	ShownHandfuls = Handfuls;
 	// a heap that grows with the handfuls: 40 grains a handful (bigger lumps fewer), the newest on top
 	const FVector Size = GrainSize(Feed);
 	const float PerHandful = FMath::Clamp(40.f / FMath::Max(Size.X * Size.Y, 0.3f), 2.f, 60.f);
