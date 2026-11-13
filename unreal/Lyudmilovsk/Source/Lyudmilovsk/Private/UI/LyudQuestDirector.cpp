@@ -525,6 +525,11 @@ void ULyudQuestDirector::HandleBirdCall(FName Species, const FVector& At, bool b
 	{
 		return;
 	}
+	const FListener* Best = nullptr;
+	const FReaction* BestPick = nullptr;
+	int32 BestId = -1;
+	float BestD = 0.f;
+	bool bBestWaited = false;
 	for (const FListener& L : Listeners)
 	{
 		const int32 Id = People->FindPerson(L.Person);
@@ -553,25 +558,35 @@ void ULyudQuestDirector::HandleBirdCall(FName Species, const FVector& At, bool b
 		{
 			ULyudQuests::Notify(this, TEXT("bird_call"), Species.ToString() + TEXT(".") + Info.Body.ToString());
 		}
-		if (Pick)
+		// one person answers a call: whoever a quest in progress waits to hear from, else the nearest
+		const bool bWaited = Pick && !Pick->Quest.IsNone() && Pick->Stage != FName(TEXT("done"));
+		if (Pick && (!Best || (bWaited && !bBestWaited) || (bWaited == bBestWaited && D < BestD)))
 		{
-			// a quest's reaction is never lost to a passing remark still on their lips
-			if (!Pick->Quest.IsNone())
+			Best = &L;
+			BestPick = Pick;
+			BestId = Id;
+			BestD = D;
+			bBestWaited = bWaited;
+		}
+	}
+	if (Best)
+	{
+		// a quest's reaction is never lost to a passing remark still on their lips
+		if (!BestPick->Quest.IsNone())
+		{
+			for (int32 SI = Speeches.Num() - 1; SI >= 0; --SI)
 			{
-				for (int32 SI = Speeches.Num() - 1; SI >= 0; --SI)
+				if (Speeches[SI].Person == BestId)
 				{
-					if (Speeches[SI].Person == Id)
+					if (Speeches[SI].Voice.IsValid())
 					{
-						if (Speeches[SI].Voice.IsValid())
-						{
-							Speeches[SI].Voice->Stop();
-						}
-						Speeches.RemoveAt(SI);
+						Speeches[SI].Voice->Stop();
 					}
+					Speeches.RemoveAt(SI);
 				}
 			}
-			Say(L.Person, Pick->Lines, &At);
 		}
+		Say(Best->Person, BestPick->Lines, &At);
 	}
 }
 
