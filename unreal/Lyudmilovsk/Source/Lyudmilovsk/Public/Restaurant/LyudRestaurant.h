@@ -295,6 +295,10 @@ private:
 	float AwayFor = 0.f;
 	bool bSitPrompt = false;
 	FString Prompted;
+	/** What the prompt up now was built for (the dish looked at, the bill's sum), so TickHero builds it again only on a change;
+	 *  SetPrompt clears both whenever the line changes. */
+	TWeakObjectPtr<ALyudRestDish> PromptDish;
+	int32 PromptTab = -1;
 	TArray<FOrder> Orders;
 	int32 NextOrderId = 0;
 	FOrder& AddOrder(FName Item, int32 Seat, float Due, bool bGuest);

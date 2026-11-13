@@ -1387,6 +1387,9 @@ void ALyudRestaurant::SetPrompt(const FString& Key, const TArray<FStringFormatAr
 		return;
 	}
 	Prompted = Full;
+	// another line is up now: what TickHero remembered of the last one no longer holds
+	PromptDish = nullptr;
+	PromptTab = -1;
 	if (ULyudInventoryUI* UI = ULyudInventoryUI::Get(this))
 	{
 		UI->SetPrompt(this, Key.IsEmpty() ? FText::GetEmpty() : LyudText::Get(Key, Args));
@@ -1948,8 +1951,13 @@ void ALyudRestaurant::TickHero(float DeltaTime)
 	const bool bBill = !Dish && !bCard && BillFolder && Looked(BillFolder->GetActorLocation(), 0.94f);
 	if (Dish)
 	{
-		const FLyudRestDishDef& D = Dish->GetDef();
-		SetPrompt(D.IsCup() ? TEXT("ui.rest.drink_prompt") : TEXT("ui.rest.eat_prompt"), { FStringFormatArg(ULyudInventory::ItemName(D.Id).ToString()) });
+		// the line is built only when another dish comes under the look (not its name and arguments every frame)
+		if (PromptDish.Get() != Dish)
+		{
+			const FLyudRestDishDef& D = Dish->GetDef();
+			SetPrompt(D.IsCup() ? TEXT("ui.rest.drink_prompt") : TEXT("ui.rest.eat_prompt"), { FStringFormatArg(ULyudInventory::ItemName(D.Id).ToString()) });
+			PromptDish = Dish;
+		}
 		if (PC->WasInputKeyJustPressed(EKeys::LeftMouseButton))
 		{
 			SetPrompt(FString());
@@ -1966,7 +1974,11 @@ void ALyudRestaurant::TickHero(float DeltaTime)
 	}
 	else if (bBill)
 	{
-		SetPrompt(TEXT("ui.rest.bill_prompt"), { FStringFormatArg(Tab) });
+		if (PromptTab != Tab)
+		{
+			SetPrompt(TEXT("ui.rest.bill_prompt"), { FStringFormatArg(Tab) });
+			PromptTab = Tab;
+		}
 	}
 	else
 	{
