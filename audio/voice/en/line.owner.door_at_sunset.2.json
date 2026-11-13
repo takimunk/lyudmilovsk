@@ -1,0 +1,20 @@
+{
+ "key": "line.owner.door_at_sunset.2",
+ "lang": "en",
+ "text": "Look at it for me too.",
+ "speaker": "owner",
+ "voice": "Daniel",
+ "voice_id": "onwK4e9ZLuTAKqWW03F9",
+ "voice_design": null,
+ "direction": "[calm, tired, slow, a little ironic]",
+ "model": "fal-ai/elevenlabs/tts/eleven-v3",
+ "request": {
+  "stability": 0.5,
+  "apply_text_normalization": "auto",
+  "text": "[calm, tired, slow, a little ironic] Look at it for me too.",
+  "voice": "Daniel",
+  "language_code": "en"
+ },
+ "fal_request_id": "01a1d73c-f6d9-78f3-8561-65222b995559",
+ "hash": "f23d1172cb03"
+}

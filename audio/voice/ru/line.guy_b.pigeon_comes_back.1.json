@@ -1,0 +1,20 @@
+{
+ "key": "line.guy_b.pigeon_comes_back.1",
+ "lang": "ru",
+ "text": "Голубь в клубе. Тебя тот новенький с ладони кормил, да? Теперь вы все сюда ходите.",
+ "speaker": "guy_b",
+ "voice": "Chris",
+ "voice_id": "iP95p4xoKVk53GoZ742B",
+ "voice_design": null,
+ "direction": "[relaxed, lazy, friendly]",
+ "model": "fal-ai/elevenlabs/tts/eleven-v3",
+ "request": {
+  "stability": 0.5,
+  "apply_text_normalization": "auto",
+  "text": "[relaxed, lazy, friendly] Голубь в клубе. Тебя тот новенький с ладони кормил, да? Теперь вы все сюда ходите.",
+  "voice": "Chris",
+  "language_code": "ru"
+ },
+ "fal_request_id": "01a1d739-79a6-7a83-ae34-5669563f199f",
+ "hash": "e5de37975078"
+}

@@ -1,0 +1,20 @@
+{
+ "key": "line.guy_b.never_got_swift.1",
+ "lang": "ja",
+ "text": "ここのキャビンには鳥の名前がついてる。「ムクドリ」「ズアオアトリ」「コウライウグイス」。ずっと乗ってるのに、「アマツバメ」には一度も当たったことがない。",
+ "speaker": "guy_b",
+ "voice": "Chris",
+ "voice_id": "iP95p4xoKVk53GoZ742B",
+ "voice_design": null,
+ "direction": "[relaxed, lazy, friendly]",
+ "model": "fal-ai/elevenlabs/tts/eleven-v3",
+ "request": {
+  "stability": 0.5,
+  "apply_text_normalization": "auto",
+  "text": "[relaxed, lazy, friendly] ここのキャビンには鳥の名前がついてる。「ムクドリ」「ズアオアトリ」「コウライウグイス」。ずっと乗ってるのに、「アマツバメ」には一度も当たったことがない。",
+  "voice": "Chris",
+  "language_code": "ja"
+ },
+ "fal_request_id": "01a1d739-3b3b-7d21-b3b2-f5d9fd741a0c",
+ "hash": "26462f624e76"
+}

@@ -1,0 +1,20 @@
+{
+ "key": "line.girl_a.close_but_beach.1",
+ "lang": "ja",
+ "text": "ロープウェイは並木道から山麓駅まで。そこからは全部近いよ、浜以外は。浜はうちの崖の下だから。",
+ "speaker": "girl_a",
+ "voice": "Matilda",
+ "voice_id": "XrExE9yKIg1WjnnlVkGX",
+ "voice_design": null,
+ "direction": "[whispering, concentrated]",
+ "model": "fal-ai/elevenlabs/tts/eleven-v3",
+ "request": {
+  "stability": 0.5,
+  "apply_text_normalization": "auto",
+  "text": "[whispering, concentrated] ロープウェイは並木道から山麓駅まで。そこからは全部近いよ、浜以外は。浜はうちの崖の下だから。",
+  "voice": "Matilda",
+  "language_code": "ja"
+ },
+ "fal_request_id": "01a1d737-f1b3-75f3-a3c7-4b14fafb2a76",
+ "hash": "69bf5074d310"
+}

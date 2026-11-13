@@ -1,0 +1,20 @@
+{
+ "key": "line.owner.news_like_draught.1",
+ "lang": "ja",
+ "text": "鳥を追って北へ行ったそうだな。聞いたぞ。ここじゃ噂はブースの前を隙間風みたいに通っていく。",
+ "speaker": "owner",
+ "voice": "Daniel",
+ "voice_id": "onwK4e9ZLuTAKqWW03F9",
+ "voice_design": null,
+ "direction": "[calm, tired, slow, a little ironic]",
+ "model": "fal-ai/elevenlabs/tts/eleven-v3",
+ "request": {
+  "stability": 0.5,
+  "apply_text_normalization": "auto",
+  "text": "[calm, tired, slow, a little ironic] 鳥を追って北へ行ったそうだな。聞いたぞ。ここじゃ噂はブースの前を隙間風みたいに通っていく。",
+  "voice": "Daniel",
+  "language_code": "ja"
+ },
+ "fal_request_id": "01a1d73d-80fe-7cb3-9ca0-c3f56cb5b618",
+ "hash": "2f9e5164ee4b"
+}

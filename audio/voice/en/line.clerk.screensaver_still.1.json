@@ -1,0 +1,20 @@
+{
+ "key": "line.clerk.screensaver_still.1",
+ "lang": "en",
+ "text": "You're up. You sat so still I took you for a screensaver.",
+ "speaker": "clerk",
+ "voice": "Callum",
+ "voice_id": "N2lVS1w4EtoT3dr4eOWO",
+ "voice_design": null,
+ "direction": "[polite, quiet, precise, absorbed in his work]",
+ "model": "fal-ai/elevenlabs/tts/eleven-v3",
+ "request": {
+  "stability": 0.5,
+  "apply_text_normalization": "auto",
+  "text": "[polite, quiet, precise, absorbed in his work] You're up. You sat so still I took you for a screensaver.",
+  "voice": "Callum",
+  "language_code": "en"
+ },
+ "fal_request_id": "01a1d737-8d3c-79c2-8964-15be1c73c668",
+ "hash": "d9c18f9a003d"
+}

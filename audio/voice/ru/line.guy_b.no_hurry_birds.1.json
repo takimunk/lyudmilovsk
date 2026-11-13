@@ -1,0 +1,20 @@
+{
+ "key": "line.guy_b.no_hurry_birds.1",
+ "lang": "ru",
+ "text": "Сиди, сиди. Тут никто никуда не торопится, даже птицы.",
+ "speaker": "guy_b",
+ "voice": "Chris",
+ "voice_id": "iP95p4xoKVk53GoZ742B",
+ "voice_design": null,
+ "direction": "[relaxed, lazy, friendly]",
+ "model": "fal-ai/elevenlabs/tts/eleven-v3",
+ "request": {
+  "stability": 0.5,
+  "apply_text_normalization": "auto",
+  "text": "[relaxed, lazy, friendly] Сиди, сиди. Тут никто никуда не торопится, даже птицы.",
+  "voice": "Chris",
+  "language_code": "ru"
+ },
+ "fal_request_id": "01a1d739-3dd4-71d0-8a29-a53b09fcb2a7",
+ "hash": "e329cda4caac"
+}

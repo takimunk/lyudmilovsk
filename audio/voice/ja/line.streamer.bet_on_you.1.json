@@ -1,0 +1,20 @@
+{
+ "key": "line.streamer.bet_on_you.1",
+ "lang": "ja",
+ "text": "戻ってきた。チャットは、下に行ったきり消えるほうに賭けてた。わたしはあなたに賭けたけどね。",
+ "speaker": "streamer",
+ "voice": "Jessica",
+ "voice_id": "cgSgspJ2msm6clMCkdW9",
+ "voice_design": null,
+ "direction": "[bright, fast, half talking to her chat]",
+ "model": "fal-ai/elevenlabs/tts/eleven-v3",
+ "request": {
+  "stability": 0.5,
+  "apply_text_normalization": "auto",
+  "text": "[bright, fast, half talking to her chat] 戻ってきた。チャットは、下に行ったきり消えるほうに賭けてた。わたしはあなたに賭けたけどね。",
+  "voice": "Jessica",
+  "language_code": "ja"
+ },
+ "fal_request_id": "01a1d73e-1946-7c12-9a67-9e0d190c9779",
+ "hash": "0eac6c7de4dc"
+}

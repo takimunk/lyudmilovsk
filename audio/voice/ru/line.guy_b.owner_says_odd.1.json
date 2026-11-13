@@ -1,0 +1,20 @@
+{
+ "key": "line.guy_b.owner_says_odd.1",
+ "lang": "ru",
+ "text": "Проснулся? Сходи к хозяину в будку. Он новеньким всегда что-то говорит, и всегда непонятное.",
+ "speaker": "guy_b",
+ "voice": "Chris",
+ "voice_id": "iP95p4xoKVk53GoZ742B",
+ "voice_design": null,
+ "direction": "[relaxed, lazy, friendly]",
+ "model": "fal-ai/elevenlabs/tts/eleven-v3",
+ "request": {
+  "stability": 0.5,
+  "apply_text_normalization": "auto",
+  "text": "[relaxed, lazy, friendly] Проснулся? Сходи к хозяину в будку. Он новеньким всегда что-то говорит, и всегда непонятное.",
+  "voice": "Chris",
+  "language_code": "ru"
+ },
+ "fal_request_id": "01a1d739-4eaf-7080-b599-6f573af88c80",
+ "hash": "11241a64e02a"
+}

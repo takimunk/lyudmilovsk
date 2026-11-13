@@ -1,0 +1,20 @@
+{
+ "key": "line.owner.whole_town_below.1",
+ "lang": "en",
+ "text": "There's a whole town down there. Walk round it, no hurry. You still have time.",
+ "speaker": "owner",
+ "voice": "Daniel",
+ "voice_id": "onwK4e9ZLuTAKqWW03F9",
+ "voice_design": null,
+ "direction": "[calm, tired, slow, a little ironic]",
+ "model": "fal-ai/elevenlabs/tts/eleven-v3",
+ "request": {
+  "stability": 0.5,
+  "apply_text_normalization": "auto",
+  "text": "[calm, tired, slow, a little ironic] There's a whole town down there. Walk round it, no hurry. You still have time.",
+  "voice": "Daniel",
+  "language_code": "en"
+ },
+ "fal_request_id": "01a1d73d-91e1-7151-9c6a-b24e1fee7b20",
+ "hash": "6ea429baea4b"
+}

@@ -1,0 +1,20 @@
+{
+ "key": "line.guy_b.valley_way.3",
+ "lang": "ru",
+ "text": "Канатка до нижней станции, за ней сразу Академгородок. От станции иди к морю, выйдешь на набережную.",
+ "speaker": "guy_b",
+ "voice": "Chris",
+ "voice_id": "iP95p4xoKVk53GoZ742B",
+ "voice_design": null,
+ "direction": "[relaxed, lazy, friendly]",
+ "model": "fal-ai/elevenlabs/tts/eleven-v3",
+ "request": {
+  "stability": 0.5,
+  "apply_text_normalization": "auto",
+  "text": "[relaxed, lazy, friendly] Канатка до нижней станции, за ней сразу Академгородок. От станции иди к морю, выйдешь на набережную.",
+  "voice": "Chris",
+  "language_code": "ru"
+ },
+ "fal_request_id": "01a1d73a-093f-7b73-a74c-71c7e90d3512",
+ "hash": "cbc89bc40bb4"
+}

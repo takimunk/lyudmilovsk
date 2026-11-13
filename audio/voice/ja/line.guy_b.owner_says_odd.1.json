@@ -1,0 +1,20 @@
+{
+ "key": "line.guy_b.owner_says_odd.1",
+ "lang": "ja",
+ "text": "起きたか？ブースのオーナーのとこに行ってみな。新入りにはいつも何か言うんだ。いつも意味わかんないけど。",
+ "speaker": "guy_b",
+ "voice": "Chris",
+ "voice_id": "iP95p4xoKVk53GoZ742B",
+ "voice_design": null,
+ "direction": "[relaxed, lazy, friendly]",
+ "model": "fal-ai/elevenlabs/tts/eleven-v3",
+ "request": {
+  "stability": 0.5,
+  "apply_text_normalization": "auto",
+  "text": "[relaxed, lazy, friendly] 起きたか？ブースのオーナーのとこに行ってみな。新入りにはいつも何か言うんだ。いつも意味わかんないけど。",
+  "voice": "Chris",
+  "language_code": "ja"
+ },
+ "fal_request_id": "01a1d739-6e23-7212-b4a7-52f32fb4026a",
+ "hash": "7d2d751a0f5b"
+}

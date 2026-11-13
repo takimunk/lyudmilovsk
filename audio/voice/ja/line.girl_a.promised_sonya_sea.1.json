@@ -1,0 +1,20 @@
+{
+ "key": "line.girl_a.promised_sonya_sea.1",
+ "lang": "ja",
+ "text": "ソーニャが遊歩道に連れてってってせがむの。約束したんだ。プログラムが動いたら行こうって。",
+ "speaker": "girl_a",
+ "voice": "Matilda",
+ "voice_id": "XrExE9yKIg1WjnnlVkGX",
+ "voice_design": null,
+ "direction": "[whispering, concentrated]",
+ "model": "fal-ai/elevenlabs/tts/eleven-v3",
+ "request": {
+  "stability": 0.5,
+  "apply_text_normalization": "auto",
+  "text": "[whispering, concentrated] ソーニャが遊歩道に連れてってってせがむの。約束したんだ。プログラムが動いたら行こうって。",
+  "voice": "Matilda",
+  "language_code": "ja"
+ },
+ "fal_request_id": "01a1d738-9f05-76f0-9ac1-de3d935ef8fa",
+ "hash": "593029112da6"
+}

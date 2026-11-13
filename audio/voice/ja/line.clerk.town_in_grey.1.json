@@ -1,0 +1,20 @@
+{
+ "key": "line.clerk.town_in_grey.1",
+ "lang": "ja",
+ "text": "ロープウェイのところから、町を上から見ましたか？色はだいたい何色ありました？",
+ "speaker": "clerk",
+ "voice": "Callum",
+ "voice_id": "N2lVS1w4EtoT3dr4eOWO",
+ "voice_design": null,
+ "direction": "[polite, quiet, precise, absorbed in his work]",
+ "model": "fal-ai/elevenlabs/tts/eleven-v3",
+ "request": {
+  "stability": 0.5,
+  "apply_text_normalization": "auto",
+  "text": "[polite, quiet, precise, absorbed in his work] ロープウェイのところから、町を上から見ましたか？色はだいたい何色ありました？",
+  "voice": "Callum",
+  "language_code": "ja"
+ },
+ "fal_request_id": "01a1d737-ad8d-7ca3-bb38-576c539badc1",
+ "hash": "f0331c9de206"
+}

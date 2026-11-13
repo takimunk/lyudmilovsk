@@ -1,0 +1,20 @@
+{
+ "key": "line.girl_a.grey_sea_still.2",
+ "lang": "ja",
+ "text": "灰色の海だって海だよ。崖下の浜は、お日さまが出るまで待たせておけばいい。",
+ "speaker": "girl_a",
+ "voice": "Matilda",
+ "voice_id": "XrExE9yKIg1WjnnlVkGX",
+ "voice_design": null,
+ "direction": "[whispering, concentrated]",
+ "model": "fal-ai/elevenlabs/tts/eleven-v3",
+ "request": {
+  "stability": 0.5,
+  "apply_text_normalization": "auto",
+  "text": "[whispering, concentrated] 灰色の海だって海だよ。崖下の浜は、お日さまが出るまで待たせておけばいい。",
+  "voice": "Matilda",
+  "language_code": "ja"
+ },
+ "fal_request_id": "01a1d738-2c13-77f3-8998-f43a23848d7b",
+ "hash": "65ad7ea5909d"
+}

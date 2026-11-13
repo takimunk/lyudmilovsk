@@ -1,0 +1,20 @@
+{
+ "key": "line.guy_b.valley_way.1",
+ "lang": "ja",
+ "text": "散歩か？いいね。俺は毎日下まで行くんだ、仕事で。",
+ "speaker": "guy_b",
+ "voice": "Chris",
+ "voice_id": "iP95p4xoKVk53GoZ742B",
+ "voice_design": null,
+ "direction": "[relaxed, lazy, friendly]",
+ "model": "fal-ai/elevenlabs/tts/eleven-v3",
+ "request": {
+  "stability": 0.5,
+  "apply_text_normalization": "auto",
+  "text": "[relaxed, lazy, friendly] 散歩か？いいね。俺は毎日下まで行くんだ、仕事で。",
+  "voice": "Chris",
+  "language_code": "ja"
+ },
+ "fal_request_id": "01a1d73a-2a47-75d1-914a-a80ae3070865",
+ "hash": "6414bfb441a9"
+}

@@ -1,0 +1,20 @@
+{
+ "key": "line.owner.door_sea_at_night.1",
+ "lang": "ru",
+ "text": "Ночью снаружи слышно море. Дверь сразу за будкой, не заперта. Иди на звук.",
+ "speaker": "owner",
+ "voice": "Daniel",
+ "voice_id": "onwK4e9ZLuTAKqWW03F9",
+ "voice_design": null,
+ "direction": "[calm, tired, slow, a little ironic]",
+ "model": "fal-ai/elevenlabs/tts/eleven-v3",
+ "request": {
+  "stability": 0.5,
+  "apply_text_normalization": "auto",
+  "text": "[calm, tired, slow, a little ironic] Ночью снаружи слышно море. Дверь сразу за будкой, не заперта. Иди на звук.",
+  "voice": "Daniel",
+  "language_code": "ru"
+ },
+ "fal_request_id": "01a1d73d-4f52-7a33-9234-30c20b006518",
+ "hash": "1f130eeeaa34"
+}

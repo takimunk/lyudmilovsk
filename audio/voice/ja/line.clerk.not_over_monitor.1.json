@@ -1,0 +1,20 @@
+{
+ "key": "line.clerk.not_over_monitor.1",
+ "lang": "ja",
+ "text": "ホールに鳥ですか？お願いですから、モニターの上だけはやめてください。",
+ "speaker": "clerk",
+ "voice": "Callum",
+ "voice_id": "N2lVS1w4EtoT3dr4eOWO",
+ "voice_design": null,
+ "direction": "[polite, quiet, precise, absorbed in his work]",
+ "model": "fal-ai/elevenlabs/tts/eleven-v3",
+ "request": {
+  "stability": 0.5,
+  "apply_text_normalization": "auto",
+  "text": "[polite, quiet, precise, absorbed in his work] ホールに鳥ですか？お願いですから、モニターの上だけはやめてください。",
+  "voice": "Callum",
+  "language_code": "ja"
+ },
+ "fal_request_id": "01a1d737-7c46-7aa2-befb-ead041160aca",
+ "hash": "edda039cfde2"
+}

@@ -1,0 +1,20 @@
+{
+ "key": "line.guy_b.never_been_beach.2",
+ "lang": "ja",
+ "text": "まあいいさ。どのキャビンがきしむかは知ってるからな。",
+ "speaker": "guy_b",
+ "voice": "Chris",
+ "voice_id": "iP95p4xoKVk53GoZ742B",
+ "voice_design": null,
+ "direction": "[relaxed, lazy, friendly]",
+ "model": "fal-ai/elevenlabs/tts/eleven-v3",
+ "request": {
+  "stability": 0.5,
+  "apply_text_normalization": "auto",
+  "text": "[relaxed, lazy, friendly] まあいいさ。どのキャビンがきしむかは知ってるからな。",
+  "voice": "Chris",
+  "language_code": "ja"
+ },
+ "fal_request_id": "01a1d739-25fb-7110-b5c8-5147c677bfef",
+ "hash": "4dfc4195c51c"
+}

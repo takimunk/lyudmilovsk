@@ -1,0 +1,20 @@
+{
+ "key": "line.streamer.waxwing_on_air.1",
+ "lang": "ja",
+ "text": "みんな、キレンジャクだよ！みんなが話してたあの鳥。飛んでかないで、カメラ向けるから。",
+ "speaker": "streamer",
+ "voice": "Jessica",
+ "voice_id": "cgSgspJ2msm6clMCkdW9",
+ "voice_design": null,
+ "direction": "[bright, fast, half talking to her chat]",
+ "model": "fal-ai/elevenlabs/tts/eleven-v3",
+ "request": {
+  "stability": 0.5,
+  "apply_text_normalization": "auto",
+  "text": "[bright, fast, half talking to her chat] みんな、キレンジャクだよ！みんなが話してたあの鳥。飛んでかないで、カメラ向けるから。",
+  "voice": "Jessica",
+  "language_code": "ja"
+ },
+ "fal_request_id": "01a1d73e-f348-7f81-a0c5-706fe071e6cb",
+ "hash": "ad5bea83e264"
+}

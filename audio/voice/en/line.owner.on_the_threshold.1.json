@@ -1,0 +1,20 @@
+{
+ "key": "line.owner.on_the_threshold.1",
+ "lang": "en",
+ "text": "Sitting on the threshold? A good place. Neither out there nor in here.",
+ "speaker": "owner",
+ "voice": "Daniel",
+ "voice_id": "onwK4e9ZLuTAKqWW03F9",
+ "voice_design": null,
+ "direction": "[calm, tired, slow, a little ironic]",
+ "model": "fal-ai/elevenlabs/tts/eleven-v3",
+ "request": {
+  "stability": 0.5,
+  "apply_text_normalization": "auto",
+  "text": "[calm, tired, slow, a little ironic] Sitting on the threshold? A good place. Neither out there nor in here.",
+  "voice": "Daniel",
+  "language_code": "en"
+ },
+ "fal_request_id": "01a1d73d-6690-7ba0-90ea-57887f4d6ecd",
+ "hash": "708d5a9179d2"
+}

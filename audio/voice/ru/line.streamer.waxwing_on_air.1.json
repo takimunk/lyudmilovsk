@@ -1,0 +1,20 @@
+{
+ "key": "line.streamer.waxwing_on_air.1",
+ "lang": "ru",
+ "text": "Чат, это свиристель! Тот самый, про которого все говорят. Не улетай, я камеру поверну.",
+ "speaker": "streamer",
+ "voice": "Jessica",
+ "voice_id": "cgSgspJ2msm6clMCkdW9",
+ "voice_design": null,
+ "direction": "[bright, fast, half talking to her chat]",
+ "model": "fal-ai/elevenlabs/tts/eleven-v3",
+ "request": {
+  "stability": 0.5,
+  "apply_text_normalization": "auto",
+  "text": "[bright, fast, half talking to her chat] Чат, это свиристель! Тот самый, про которого все говорят. Не улетай, я камеру поверну.",
+  "voice": "Jessica",
+  "language_code": "ru"
+ },
+ "fal_request_id": "01a1d73e-b154-77b3-a666-0ad5e9a02220",
+ "hash": "0a7d61be0a86"
+}

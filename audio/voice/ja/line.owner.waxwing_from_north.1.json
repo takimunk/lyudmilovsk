@@ -1,0 +1,20 @@
+{
+ "key": "line.owner.waxwing_from_north.1",
+ "lang": "ja",
+ "text": "冠羽に黄色い尾。北から来たな。ここにはおまえのような鳥はおらん。いれば、わかったはずだ。",
+ "speaker": "owner",
+ "voice": "Daniel",
+ "voice_id": "onwK4e9ZLuTAKqWW03F9",
+ "voice_design": null,
+ "direction": "[calm, tired, slow, a little ironic]",
+ "model": "fal-ai/elevenlabs/tts/eleven-v3",
+ "request": {
+  "stability": 0.5,
+  "apply_text_normalization": "auto",
+  "text": "[calm, tired, slow, a little ironic] 冠羽に黄色い尾。北から来たな。ここにはおまえのような鳥はおらん。いれば、わかったはずだ。",
+  "voice": "Daniel",
+  "language_code": "ja"
+ },
+ "fal_request_id": "01a1d73d-e472-75e3-97dc-f46877c3809d",
+ "hash": "339e457429dd"
+}

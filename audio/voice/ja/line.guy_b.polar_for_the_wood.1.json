@@ -1,0 +1,20 @@
+{
+ "key": "line.guy_b.polar_for_the_wood.1",
+ "lang": "ja",
+ "text": "鳥を探しに北へ行くのか？ロープウェイは終点の「北極星」まで行く。そこから古い森はすぐだ。",
+ "speaker": "guy_b",
+ "voice": "Chris",
+ "voice_id": "iP95p4xoKVk53GoZ742B",
+ "voice_design": null,
+ "direction": "[relaxed, lazy, friendly]",
+ "model": "fal-ai/elevenlabs/tts/eleven-v3",
+ "request": {
+  "stability": 0.5,
+  "apply_text_normalization": "auto",
+  "text": "[relaxed, lazy, friendly] 鳥を探しに北へ行くのか？ロープウェイは終点の「北極星」まで行く。そこから古い森はすぐだ。",
+  "voice": "Chris",
+  "language_code": "ja"
+ },
+ "fal_request_id": "01a1d739-b2e4-74b0-a403-1ec242ba3ec6",
+ "hash": "3437fcd47f08"
+}

@@ -1,0 +1,20 @@
+{
+ "key": "line.clerk.screensaver_still.1",
+ "lang": "ru",
+ "text": "Встал. Ты сидел так тихо, что я принял тебя за заставку.",
+ "speaker": "clerk",
+ "voice": "Callum",
+ "voice_id": "N2lVS1w4EtoT3dr4eOWO",
+ "voice_design": null,
+ "direction": "[polite, quiet, precise, absorbed in his work]",
+ "model": "fal-ai/elevenlabs/tts/eleven-v3",
+ "request": {
+  "stability": 0.5,
+  "apply_text_normalization": "auto",
+  "text": "[polite, quiet, precise, absorbed in his work] Встал. Ты сидел так тихо, что я принял тебя за заставку.",
+  "voice": "Callum",
+  "language_code": "ru"
+ },
+ "fal_request_id": "01a1d737-8c68-7c11-af22-65978b833234",
+ "hash": "2784600a93d8"
+}

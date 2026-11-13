@@ -1,0 +1,20 @@
+{
+ "key": "line.guy_b.sunset_promenade_now.2",
+ "lang": "ja",
+ "text": "浜とかはあとでいい。夕焼けは待ってくれない。俺も行きたいけど、やっとあったまったとこなんだ。",
+ "speaker": "guy_b",
+ "voice": "Chris",
+ "voice_id": "iP95p4xoKVk53GoZ742B",
+ "voice_design": null,
+ "direction": "[relaxed, lazy, friendly]",
+ "model": "fal-ai/elevenlabs/tts/eleven-v3",
+ "request": {
+  "stability": 0.5,
+  "apply_text_normalization": "auto",
+  "text": "[relaxed, lazy, friendly] 浜とかはあとでいい。夕焼けは待ってくれない。俺も行きたいけど、やっとあったまったとこなんだ。",
+  "voice": "Chris",
+  "language_code": "ja"
+ },
+ "fal_request_id": "01a1d73a-1292-7e21-9b91-c11bab4c10ff",
+ "hash": "5930638efb63"
+}

@@ -1,0 +1,20 @@
+{
+ "key": "line.guy_b.never_been_beach.2",
+ "lang": "en",
+ "text": "Never mind. At least I know which cabin squeaks.",
+ "speaker": "guy_b",
+ "voice": "Chris",
+ "voice_id": "iP95p4xoKVk53GoZ742B",
+ "voice_design": null,
+ "direction": "[relaxed, lazy, friendly]",
+ "model": "fal-ai/elevenlabs/tts/eleven-v3",
+ "request": {
+  "stability": 0.5,
+  "apply_text_normalization": "auto",
+  "text": "[relaxed, lazy, friendly] Never mind. At least I know which cabin squeaks.",
+  "voice": "Chris",
+  "language_code": "en"
+ },
+ "fal_request_id": "01a1d739-04d9-7bd0-8e64-65e13e6fc86f",
+ "hash": "e6fbafe30841"
+}

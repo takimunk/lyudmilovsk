@@ -1,0 +1,20 @@
+{
+ "key": "line.owner.door_at_sunset.2",
+ "lang": "ja",
+ "text": "わしのぶんも見てきてくれ。",
+ "speaker": "owner",
+ "voice": "Daniel",
+ "voice_id": "onwK4e9ZLuTAKqWW03F9",
+ "voice_design": null,
+ "direction": "[calm, tired, slow, a little ironic]",
+ "model": "fal-ai/elevenlabs/tts/eleven-v3",
+ "request": {
+  "stability": 0.5,
+  "apply_text_normalization": "auto",
+  "text": "[calm, tired, slow, a little ironic] わしのぶんも見てきてくれ。",
+  "voice": "Daniel",
+  "language_code": "ja"
+ },
+ "fal_request_id": "01a1d73d-4030-7d80-8c9a-5a616191b87b",
+ "hash": "a31e9e0c5493"
+}

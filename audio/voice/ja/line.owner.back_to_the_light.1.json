@@ -1,0 +1,20 @@
+{
+ "key": "line.owner.back_to_the_light.1",
+ "lang": "ja",
+ "text": "廊下に鳥か。光のほうへ戻れ。ここにはランプしかない。",
+ "speaker": "owner",
+ "voice": "Daniel",
+ "voice_id": "onwK4e9ZLuTAKqWW03F9",
+ "voice_design": null,
+ "direction": "[calm, tired, slow, a little ironic]",
+ "model": "fal-ai/elevenlabs/tts/eleven-v3",
+ "request": {
+  "stability": 0.5,
+  "apply_text_normalization": "auto",
+  "text": "[calm, tired, slow, a little ironic] 廊下に鳥か。光のほうへ戻れ。ここにはランプしかない。",
+  "voice": "Daniel",
+  "language_code": "ja"
+ },
+ "fal_request_id": "01a1d73c-e05a-7a02-9c8d-bc0c3113e0a4",
+ "hash": "593d7b71efb6"
+}

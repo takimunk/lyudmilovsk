@@ -1,0 +1,20 @@
+{
+ "key": "line.guy_b.sunset_promenade_now.2",
+ "lang": "ru",
+ "text": "Пляж и остальное подождут, а закат нет. Я бы сам пошёл, но я только согрелся.",
+ "speaker": "guy_b",
+ "voice": "Chris",
+ "voice_id": "iP95p4xoKVk53GoZ742B",
+ "voice_design": null,
+ "direction": "[relaxed, lazy, friendly]",
+ "model": "fal-ai/elevenlabs/tts/eleven-v3",
+ "request": {
+  "stability": 0.5,
+  "apply_text_normalization": "auto",
+  "text": "[relaxed, lazy, friendly] Пляж и остальное подождут, а закат нет. Я бы сам пошёл, но я только согрелся.",
+  "voice": "Chris",
+  "language_code": "ru"
+ },
+ "fal_request_id": "01a1d739-dec6-7060-ae41-71bbd6f5e049",
+ "hash": "13b102c76e6c"
+}

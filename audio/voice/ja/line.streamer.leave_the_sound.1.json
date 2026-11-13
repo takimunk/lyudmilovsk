@@ -1,0 +1,20 @@
+{
+ "key": "line.streamer.leave_the_sound.1",
+ "lang": "ja",
+ "text": "みんな、聞こえた？わたしじゃないよ、鳥。音はそのままにしとく。",
+ "speaker": "streamer",
+ "voice": "Jessica",
+ "voice_id": "cgSgspJ2msm6clMCkdW9",
+ "voice_design": null,
+ "direction": "[bright, fast, half talking to her chat]",
+ "model": "fal-ai/elevenlabs/tts/eleven-v3",
+ "request": {
+  "stability": 0.5,
+  "apply_text_normalization": "auto",
+  "text": "[bright, fast, half talking to her chat] みんな、聞こえた？わたしじゃないよ、鳥。音はそのままにしとく。",
+  "voice": "Jessica",
+  "language_code": "ja"
+ },
+ "fal_request_id": "01a1d73e-4c79-7992-8548-356a83cca4da",
+ "hash": "36ba6c7de0cd"
+}

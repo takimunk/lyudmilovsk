@@ -1,0 +1,20 @@
+{
+ "key": "line.streamer.wish_three_viewers.1",
+ "lang": "ja",
+ "text": "チャットが流れ星見たいって。流れ星見たら、わたしの視聴者が三人は増えるように願って。",
+ "speaker": "streamer",
+ "voice": "Jessica",
+ "voice_id": "cgSgspJ2msm6clMCkdW9",
+ "voice_design": null,
+ "direction": "[bright, fast, half talking to her chat]",
+ "model": "fal-ai/elevenlabs/tts/eleven-v3",
+ "request": {
+  "stability": 0.5,
+  "apply_text_normalization": "auto",
+  "text": "[bright, fast, half talking to her chat] チャットが流れ星見たいって。流れ星見たら、わたしの視聴者が三人は増えるように願って。",
+  "voice": "Jessica",
+  "language_code": "ja"
+ },
+ "fal_request_id": "01a1d73f-1011-7581-b5b5-dc44e1c80318",
+ "hash": "e13c114c31e2"
+}

@@ -1,0 +1,20 @@
+{
+ "key": "line.owner.on_the_threshold.1",
+ "lang": "ru",
+ "text": "Сидишь на пороге? Хорошее место. Ни там, ни тут.",
+ "speaker": "owner",
+ "voice": "Daniel",
+ "voice_id": "onwK4e9ZLuTAKqWW03F9",
+ "voice_design": null,
+ "direction": "[calm, tired, slow, a little ironic]",
+ "model": "fal-ai/elevenlabs/tts/eleven-v3",
+ "request": {
+  "stability": 0.5,
+  "apply_text_normalization": "auto",
+  "text": "[calm, tired, slow, a little ironic] Сидишь на пороге? Хорошее место. Ни там, ни тут.",
+  "voice": "Daniel",
+  "language_code": "ru"
+ },
+ "fal_request_id": "01a1d73d-9090-7251-beff-6c5c73ec884f",
+ "hash": "3c8fded2c0b0"
+}

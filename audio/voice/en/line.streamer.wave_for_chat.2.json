@@ -1,0 +1,20 @@
+{
+ "key": "line.streamer.wave_for_chat.2",
+ "lang": "en",
+ "text": "Chat wants you to wave goodbye. Go on, it's no trouble.",
+ "speaker": "streamer",
+ "voice": "Jessica",
+ "voice_id": "cgSgspJ2msm6clMCkdW9",
+ "voice_design": null,
+ "direction": "[bright, fast, half talking to her chat]",
+ "model": "fal-ai/elevenlabs/tts/eleven-v3",
+ "request": {
+  "stability": 0.5,
+  "apply_text_normalization": "auto",
+  "text": "[bright, fast, half talking to her chat] Chat wants you to wave goodbye. Go on, it's no trouble.",
+  "voice": "Jessica",
+  "language_code": "en"
+ },
+ "fal_request_id": "01a1d73e-65f3-7c13-8465-436fbff8d5b3",
+ "hash": "f5ffef7f88c2"
+}

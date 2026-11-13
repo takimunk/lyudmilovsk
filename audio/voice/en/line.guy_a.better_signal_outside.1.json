@@ -1,0 +1,20 @@
+{
+ "key": "line.guy_a.better_signal_outside.1",
+ "lang": "en",
+ "text": "Going outside? If you find a spot where the signal's better, let me know.",
+ "speaker": "guy_a",
+ "voice": "Will",
+ "voice_id": "bIHbv24MWmeRgasZH58o",
+ "voice_design": null,
+ "direction": "[a young gamer in a hurry, mid-match]",
+ "model": "fal-ai/elevenlabs/tts/eleven-v3",
+ "request": {
+  "stability": 0.5,
+  "apply_text_normalization": "auto",
+  "text": "[a young gamer in a hurry, mid-match] Going outside? If you find a spot where the signal's better, let me know.",
+  "voice": "Will",
+  "language_code": "en"
+ },
+ "fal_request_id": "01a1d738-c030-72e3-b4bb-c8a7ffed092c",
+ "hash": "aad160412d99"
+}

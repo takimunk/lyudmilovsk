@@ -1,0 +1,20 @@
+{
+ "key": "line.streamer.wave_for_chat.1",
+ "lang": "ja",
+ "text": "出口？自販機とオーナーのブースの先。鉄のドアがあるよ。",
+ "speaker": "streamer",
+ "voice": "Jessica",
+ "voice_id": "cgSgspJ2msm6clMCkdW9",
+ "voice_design": null,
+ "direction": "[bright, fast, half talking to her chat]",
+ "model": "fal-ai/elevenlabs/tts/eleven-v3",
+ "request": {
+  "stability": 0.5,
+  "apply_text_normalization": "auto",
+  "text": "[bright, fast, half talking to her chat] 出口？自販機とオーナーのブースの先。鉄のドアがあるよ。",
+  "voice": "Jessica",
+  "language_code": "ja"
+ },
+ "fal_request_id": "01a1d73e-c63a-7f10-8b59-952dbd43d8cb",
+ "hash": "1ed414fe7adc"
+}

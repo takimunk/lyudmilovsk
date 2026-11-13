@@ -1,0 +1,20 @@
+{
+ "key": "line.streamer.magpie_one_mic.1",
+ "lang": "en",
+ "text": "A magpie. Chat says you'll make off with my microphone. Please don't, it's the only one I've got.",
+ "speaker": "streamer",
+ "voice": "Jessica",
+ "voice_id": "cgSgspJ2msm6clMCkdW9",
+ "voice_design": null,
+ "direction": "[bright, fast, half talking to her chat]",
+ "model": "fal-ai/elevenlabs/tts/eleven-v3",
+ "request": {
+  "stability": 0.5,
+  "apply_text_normalization": "auto",
+  "text": "[bright, fast, half talking to her chat] A magpie. Chat says you'll make off with my microphone. Please don't, it's the only one I've got.",
+  "voice": "Jessica",
+  "language_code": "en"
+ },
+ "fal_request_id": "01a1d73d-fedf-74f2-b6b7-9b758228b51e",
+ "hash": "c94b2f196166"
+}
