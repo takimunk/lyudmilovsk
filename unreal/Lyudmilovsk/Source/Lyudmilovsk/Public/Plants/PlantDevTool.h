@@ -43,6 +43,13 @@ public:
 
 	/** The weather the panel forced: a preset's name, "regime:<type>", "values", or empty for the live weather. */
 	FString WeatherChoice;
+	/** The panel's tab (0 World: date, weather, trees; then Teleport, Quests, Pocket, Birds, Actions: Private/Dev/LyudDevPanel.cpp). */
+	int32 Tab = 0;
+	/** The Pocket tab lists only what is held. */
+	bool bPocketHeldOnly = false;
+	/** Builds the panel again on the next tick (new teleport points, a bookmark); the tab stays. */
+	void Rebuild() { bRebuild = true; }
+
 	/** Which sections are unfolded (kept while the panel is closed and opened again). */
 	bool bWorldOpen = true;
 	bool bWeatherOpen = true;
@@ -58,6 +65,7 @@ private:
 	TSharedPtr<SWidget> Panel;
 	TSharedPtr<SWidget> Help;
 	bool bBound = false;
+	bool bRebuild = false;
 };
 
 /** Spawns the plants developer tool into every game world. */

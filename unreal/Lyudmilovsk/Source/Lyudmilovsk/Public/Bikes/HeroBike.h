@@ -46,6 +46,8 @@ public:
 	/** Tests and the console: get on, off, lead, let go of a bike (the nearest when null). */
 	bool Mount(ALyudBike* Which);
 	void Dismount();
+	/** Developer mode: off the bike at once, standing beside it (no dismount animation). */
+	void DropNow() { if (Act != ELyudBikeAct::None) Release(true); }
 	bool Lead(ALyudBike* Which);
 	void LetGo();
 	/** Tests: ride with this input for a while (throttle -1..1, steer -1..1) as if the keys were held. */

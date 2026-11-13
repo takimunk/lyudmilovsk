@@ -88,6 +88,8 @@ public:
 
 	FName GetSpecies() const { return Species; }
 	EBirdMode GetMode() const { return Mode; }
+	/** Developer mode: the bird is at At now, in the air (a standing bird follows its Feet, so a plain SetActorLocation is undone). */
+	void DevTeleport(const FVector& At);
 	/** The bird's own view, whatever the camera flights are doing. */
 	FMinimalViewInfo BirdView() const;
 	FVector GetVelocityCm() const;

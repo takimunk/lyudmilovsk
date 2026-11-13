@@ -683,6 +683,39 @@ FName ULyudQuests::TalkStage(FName Quest, const FString& Npc) const
 	return NAME_None;
 }
 
+void ULyudQuests::DevJump(FName Quest, int32 Stage)
+{
+	const FLyudQuestDef* Def = FindDef(Quest);
+	if (!Def || !Def->Stages.IsValidIndex(Stage))
+	{
+		return;
+	}
+	FLyudQuestProgress& P = ProgressOf(Quest);
+	const bool bWasActive = P.State == ELyudQuestState::Active;
+	P.State = ELyudQuestState::Active;
+	P.Stage = Stage;
+	P.Finished = FDateTime();
+	if (!bWasActive)
+	{
+		P.Started = Today();
+	}
+	Tracked = Quest;
+	OnNews.Broadcast(bWasActive ? ELyudQuestNews::Stage : ELyudQuestNews::Started, Quest);
+	BeginStage(P, *Def);
+	OnChanged.Broadcast();
+}
+
+void ULyudQuests::DevForget(FName Quest)
+{
+	Progress.RemoveAll([Quest](const FLyudQuestProgress& X) { return X.Quest == Quest; });
+	if (Tracked == Quest)
+	{
+		Tracked = NAME_None;
+		Tracked = ShownQuest();
+	}
+	OnChanged.Broadcast();
+}
+
 void ULyudQuests::UpdatePosition(const UObject* WorldContext, const FVector& P)
 {
 	const FVector2D M = Frame().FromWorld(P);

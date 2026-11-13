@@ -1,5 +1,7 @@
 #include "UI/LyudGameScreen.h"
 
+#include "Dev/LyudDev.h"
+
 #include "Camera/PlayerCameraManager.h"
 #include "Components/SpotLightComponent.h"
 #include "Engine/GameViewportClient.h"
@@ -80,7 +82,7 @@ ULyudGameScreen* ULyudGameScreen::Get(const UObject* WorldContext)
 void ULyudGameScreen::OnWorldBeginPlay(UWorld& InWorld)
 {
 	Super::OnWorldBeginPlay(InWorld);
-	ULyudQuests::ReloadData();
+	LyudDev::Reload();
 	if (ULyudQuests* Q = ULyudQuests::Get(&InWorld))
 	{
 		// every level start is a new game unless a load restores the quests right after (like the pocket)

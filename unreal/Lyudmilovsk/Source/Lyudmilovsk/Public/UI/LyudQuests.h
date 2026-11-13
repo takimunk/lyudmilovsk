@@ -190,6 +190,10 @@ public:
 	UPROPERTY(SaveGame) TArray<FName> Flags;
 	bool HasFlag(FName Flag) const { return Flags.Contains(Flag); }
 	void SetFlag(FName Flag) { Flags.AddUnique(Flag); }
+	/** Developer mode (LyudDev::JumpToStage): Quest active at stage index Stage, the stages before it counted as done (no rewards). */
+	void DevJump(FName Quest, int32 Stage);
+	/** Developer mode: the quest as if never begun (its journal lines stay). */
+	void DevForget(FName Quest);
 
 	/** The hero is at P (world cm): finds places and reports reach events. Called by the game screen every few frames. */
 	void UpdatePosition(const UObject* WorldContext, const FVector& P);
