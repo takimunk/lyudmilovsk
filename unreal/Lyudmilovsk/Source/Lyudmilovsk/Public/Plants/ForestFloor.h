@@ -186,6 +186,8 @@ private:
 	float MaxReach = 0.f;
 	bool bStarted = false;
 	bool bHidden = false;
+	/** Every cell the layout needs round Centre is traced and laid: Tick's layout pass has nothing to do until Centre moves, a band is cleared or the layout is reset. */
+	bool bLayoutDone = false;
 	/** The litter field's window: centre and the day it was computed for. */
 	FVector2D LitterCentre = FVector2D(1e12, 1e12);
 	float LitterDay = -1000.f;
