@@ -235,6 +235,20 @@ private:
 	 * uploaded with the ground (RT_NearGround G); M_Ground sinks those vertices, M_SnowNear shows where they are. */
 	TArray<float> Lowered;
 	bool bGroundDirty = false;
+	/** What each cell's trace found (the landscape, the top over it, whether it hit): kept while the window slides, so
+	 * only the cells coming in are traced on a recentre; Ground is composed from them. */
+	TArray<float> RawGround;
+	TArray<float> RawTop;
+	TArray<uint8> RawOk;
+	bool bHaveRaw = false;
+	/** The kept cells still to be read again after a recentre (a few a frame), and where that reading is. */
+	int32 RefreshLeft = 0;
+	int32 RefreshCursor = 0;
+	void TraceCell(int32 Index, double Z);
+	void ComposeGround(double Z);
+	void RefreshGround();
+	void ClearTrailStrip(bool bColumns, int64 First, int64 Num);
+	uint8 LoweredByteAt(int32 VX, int32 VY) const;
 	void UpdateLowered(int32 X0, int32 Y0, int32 X1, int32 Y1);
 	void UploadGround();
 	FVector2D Centre = FVector2D(1e12, 1e12);

@@ -8,6 +8,7 @@
 #include "EngineUtils.h"
 #include "GameFramework/Character.h"
 #include "GameFramework/PlayerController.h"
+#include "HAL/PlatformTime.h"
 #include "Kismet/KismetMaterialLibrary.h"
 #include "LandscapeProxy.h"
 #include "Materials/MaterialInterface.h"
@@ -103,6 +104,9 @@ ALyudSnowNear::ALyudSnowNear()
 	Trail.SetNumZeroed(TrailN * TrailN);
 	Ground.SetNumZeroed(GroundN * GroundN);
 	Lowered.SetNumZeroed(GroundN * GroundN);
+	RawGround.SetNumZeroed(GroundN * GroundN);
+	RawTop.SetNumZeroed(GroundN * GroundN);
+	RawOk.SetNumZeroed(GroundN * GroundN);
 }
 
 int32 ALyudSnowNear::Wrap(double V) const
@@ -176,77 +180,77 @@ void ALyudSnowNear::BuildMesh()
 	bFullUpload = true;
 }
 
-void ALyudSnowNear::Recentre(const FVector2D& C)
+void ALyudSnowNear::ClearTrailStrip(bool bColumns, int64 First, int64 Num)
 {
-	const UWorld* World = GetWorld();
-	// the trail: the window's columns and rows coming in are cleared (it is world-locked, wrapping round)
-	const int64 OX = int64(FMath::FloorToDouble((Centre.X - HalfCm) / TrailCm)), OY = int64(FMath::FloorToDouble((Centre.Y - HalfCm) / TrailCm));
-	const int64 NX = int64(FMath::FloorToDouble((C.X - HalfCm) / TrailCm)), NY = int64(FMath::FloorToDouble((C.Y - HalfCm) / TrailCm));
-	if (FMath::Abs(NX - OX) >= TrailN || FMath::Abs(NY - OY) >= TrailN)
+	// world columns (or rows) First .. First + Num - 1 of the wrapping trail: one or two runs in the store
+	int64 Left = Num;
+	int32 At = int32(((First % TrailN) + TrailN) % TrailN);
+	while (Left > 0)
 	{
-		FMemory::Memzero(Trail.GetData(), Trail.Num());
-	}
-	else
-	{
-		for (int64 G = NX; G < NX + TrailN; G++)
+		const int32 Run = int32(FMath::Min<int64>(Left, TrailN - At));
+		bool bHad = false;
+		if (bColumns)
 		{
-			if (G < OX || G >= OX + TrailN)
+			for (int32 Row = 0; Row < TrailN; Row++)
 			{
-				const int32 Col = int32(((G % TrailN) + TrailN) % TrailN);
-				for (int32 R = 0; R < TrailN; R++)
+				uint8* Cells = Trail.GetData() + Row * TrailN + At;
+				for (int32 K = 0; K < Run; K++)
 				{
-					Trail[R * TrailN + Col] = 0;
+					bHad |= Cells[K] != 0;
+					Cells[K] = 0;
 				}
 			}
 		}
-		for (int64 G = NY; G < NY + TrailN; G++)
+		else
 		{
-			if (G < OY || G >= OY + TrailN)
+			uint8* Cells = Trail.GetData() + At * TrailN;
+			for (int32 K = 0; K < Run * TrailN; K++)
 			{
-				const int32 Row = int32(((G % TrailN) + TrailN) % TrailN);
-				FMemory::Memzero(Trail.GetData() + Row * TrailN, TrailN);
+				bHad |= Cells[K] != 0;
+			}
+			FMemory::Memzero(Cells, Run * TrailN);
+		}
+		// the texture holds what the store held: only a strip that had prints in it needs sending
+		if (bHad && !bFullUpload)
+		{
+			TArray<uint8> Zeros;
+			Zeros.SetNumZeroed(Run * TrailN);
+			if (bColumns)
+			{
+				SnowNearUpload(TrailRT, At, 0, Run, TrailN, 1, MoveTemp(Zeros));
+			}
+			else
+			{
+				SnowNearUpload(TrailRT, 0, At, TrailN, Run, 1, MoveTemp(Zeros));
 			}
 		}
+		Left -= Run;
+		At = 0;
 	}
-	bFullUpload = true;
-	Centre = C;
-	// forget the walkers that are gone or far off (they start a fresh track when they come back, as after a jump)
-	for (auto It = Walkers.CreateIterator(); It; ++It)
-	{
-		const AActor* A = It.Key().Get();
-		if (!A || FVector2D::DistSquared(FVector2D(A->GetActorLocation()), C) > FMath::Square(2.0 * HalfCm))
-		{
-			It.RemoveCurrent();
-		}
-	}
-	// the ground's exact heights, 1 m, round the new centre
-	// on the landscape's own vertices (its 1 m grid from its origin), so the fine surface can follow its triangles
-	// the landscape does not move: found once, not an actor walk every recentre
-	if (!bHaveLandOrigin)
-	{
-		if (TActorIterator<ALandscapeProxy> It(World); It)
-		{
-			LandOrigin = FVector2D(It->GetActorLocation());
-			bHaveLandOrigin = true;
-		}
-	}
-	GroundOrigin = FVector2D(C.X - (GroundN - 1) * 0.5 * GroundCm, C.Y - (GroundN - 1) * 0.5 * GroundCm);
-	GroundOrigin = LandOrigin + FVector2D(FMath::RoundToDouble((GroundOrigin.X - LandOrigin.X) / GroundCm), FMath::RoundToDouble((GroundOrigin.Y - LandOrigin.Y) / GroundCm)) * GroundCm;
-	const double Z = GetActorLocation().Z;
+}
+
+void ALyudSnowNear::TraceCell(int32 Index, double Z)
+{
+	bool bOk;
+	float T;
+	const float G = SnowNearGroundAt(GetWorld(), GroundOrigin.X + (Index % GroundN) * GroundCm, GroundOrigin.Y + (Index / GroundN) * GroundCm, Z, bOk, T);
+	RawGround[Index] = G;
+	RawTop[Index] = T;
+	RawOk[Index] = bOk ? 1 : 0;
+}
+
+void ALyudSnowNear::ComposeGround(double Z)
+{
+	// off the landscape: a little under the last ground found, in the window's reading order
 	float Last = float(Z);
 	TArray<float> Tops;
-	Tops.SetNumZeroed(GroundN * GroundN);
-	for (int32 Y = 0; Y < GroundN; Y++)
+	Tops.SetNumUninitialized(GroundN * GroundN);
+	for (int32 I = 0; I < GroundN * GroundN; I++)
 	{
-		for (int32 X = 0; X < GroundN; X++)
-		{
-			bool bOk;
-			float T;
-			const float G = SnowNearGroundAt(World, GroundOrigin.X + X * GroundCm, GroundOrigin.Y + Y * GroundCm, Z, bOk, T);
-			Ground[Y * GroundN + X] = bOk ? G : Last - 50.f;
-			Tops[Y * GroundN + X] = bOk ? T : Ground[Y * GroundN + X];
-			Last = bOk ? G : Last;
-		}
+		const bool bOk = RawOk[I] != 0;
+		Ground[I] = bOk ? RawGround[I] : Last - 50.f;
+		Tops[I] = bOk ? RawTop[I] : Ground[I];
+		Last = bOk ? RawGround[I] : Last;
 	}
 	// what the snow lies on: a low, wide, even surface over the landscape (a yard's paving, a platform) counts, a lone
 	// thing standing on the ground (a bench, a stump, a fence's top) does not (it made shelves of snow in the air)
@@ -276,35 +280,188 @@ void ALyudSnowNear::Recentre(const FVector2D& C)
 			}
 		}
 	}
-	Ground = Base;
-	UpdateLowered(0, 0, GroundN - 1, GroundN - 1);
+	Ground = MoveTemp(Base);
+}
+
+void ALyudSnowNear::RefreshGround()
+{
+	if (RefreshLeft <= 0)
+	{
+		return;
+	}
+	// the cells kept over a recentre are read again a few a frame (a door, a thing built since): never the whole
+	// window in one frame
+	const double Z = GetActorLocation().Z;
+	const double Until = FPlatformTime::Seconds() + 0.0003;
+	bool bChanged = false;
+	for (int32 K = 0; K < 24 && RefreshLeft > 0; K++)
+	{
+		const int32 I = RefreshCursor;
+		RefreshCursor = (RefreshCursor + 1) % (GroundN * GroundN);
+		RefreshLeft--;
+		const float G0 = RawGround[I], T0 = RawTop[I];
+		const uint8 Ok0 = RawOk[I];
+		TraceCell(I, Z);
+		bChanged |= RawGround[I] != G0 || RawTop[I] != T0 || RawOk[I] != Ok0;
+		if (FPlatformTime::Seconds() > Until)
+		{
+			break;
+		}
+	}
+	if (bChanged)
+	{
+		ComposeGround(Z);
+		bGroundDirty = true;
+	}
+}
+
+void ALyudSnowNear::Recentre(const FVector2D& C)
+{
+	const UWorld* World = GetWorld();
+	// the trail: the window's columns and rows coming in are cleared (it is world-locked, wrapping round)
+	const int64 OX = int64(FMath::FloorToDouble((Centre.X - HalfCm) / TrailCm)), OY = int64(FMath::FloorToDouble((Centre.Y - HalfCm) / TrailCm));
+	const int64 NX = int64(FMath::FloorToDouble((C.X - HalfCm) / TrailCm)), NY = int64(FMath::FloorToDouble((C.Y - HalfCm) / TrailCm));
+	const bool bFar = FMath::Abs(NX - OX) >= TrailN || FMath::Abs(NY - OY) >= TrailN;
+	if (bFar)
+	{
+		FMemory::Memzero(Trail.GetData(), Trail.Num());
+		bFullUpload = true;
+	}
+	else
+	{
+		// only the strips that come in, and only if they held prints: not the whole 1200 x 1200 trail every 2 m
+		if (NX > OX)
+		{
+			ClearTrailStrip(true, OX + TrailN, NX - OX);
+		}
+		else if (NX < OX)
+		{
+			ClearTrailStrip(true, NX, OX - NX);
+		}
+		if (NY > OY)
+		{
+			ClearTrailStrip(false, OY + TrailN, NY - OY);
+		}
+		else if (NY < OY)
+		{
+			ClearTrailStrip(false, NY, OY - NY);
+		}
+	}
+	Centre = C;
+	// forget the walkers that are gone or far off (they start a fresh track when they come back, as after a jump)
+	for (auto It = Walkers.CreateIterator(); It; ++It)
+	{
+		const AActor* A = It.Key().Get();
+		if (!A || FVector2D::DistSquared(FVector2D(A->GetActorLocation()), C) > FMath::Square(2.0 * HalfCm))
+		{
+			It.RemoveCurrent();
+		}
+	}
+	// the ground's exact heights, 1 m, round the new centre
+	// on the landscape's own vertices (its 1 m grid from its origin), so the fine surface can follow its triangles
+	// the landscape does not move: found once, not an actor walk every recentre
+	if (!bHaveLandOrigin)
+	{
+		if (TActorIterator<ALandscapeProxy> It(World); It)
+		{
+			LandOrigin = FVector2D(It->GetActorLocation());
+			bHaveLandOrigin = true;
+		}
+	}
+	const FVector2D OldOrigin = GroundOrigin;
+	GroundOrigin = FVector2D(C.X - (GroundN - 1) * 0.5 * GroundCm, C.Y - (GroundN - 1) * 0.5 * GroundCm);
+	GroundOrigin = LandOrigin + FVector2D(FMath::RoundToDouble((GroundOrigin.X - LandOrigin.X) / GroundCm), FMath::RoundToDouble((GroundOrigin.Y - LandOrigin.Y) / GroundCm)) * GroundCm;
+	const double Z = GetActorLocation().Z;
+	// the window slides over the ground: the cells it keeps are not traced again here (2 m walked = 2 strips of 48, not
+	// all 2304 multi-traces in one frame); RefreshGround reads them again over the next frames
+	const double ShiftX = FMath::RoundToDouble((GroundOrigin.X - OldOrigin.X) / GroundCm), ShiftY = FMath::RoundToDouble((GroundOrigin.Y - OldOrigin.Y) / GroundCm);
+	const bool bSlide = bHaveRaw && !bFar && FMath::Abs(ShiftX) < GroundN && FMath::Abs(ShiftY) < GroundN;
+	if (bSlide)
+	{
+		const int32 SX = int32(ShiftX), SY = int32(ShiftY);
+		const TArray<float> OldGround = RawGround, OldTop = RawTop, OldLowered = Lowered;
+		const TArray<uint8> OldOk = RawOk;
+		// a vertex keeps its sink if every trail cell it reads (60 cm round it) lies in the old window and the new one:
+		// those cells were not cleared and it read the same ones before
+		const int32 Reach = FMath::CeilToInt(60.f / TrailCm);
+		const int64 LoX = FMath::Max(OX, NX) + Reach, HiX = FMath::Min(OX, NX) + TrailN - Reach;
+		const int64 LoY = FMath::Max(OY, NY) + Reach, HiY = FMath::Min(OY, NY) + TrailN - Reach;
+		for (int32 Y = 0; Y < GroundN; Y++)
+		{
+			for (int32 X = 0; X < GroundN; X++)
+			{
+				const int32 I = Y * GroundN + X;
+				const int32 FromX = X + SX, FromY = Y + SY;
+				const bool bKept = FromX >= 0 && FromX < GroundN && FromY >= 0 && FromY < GroundN;
+				if (bKept)
+				{
+					const int32 J = FromY * GroundN + FromX;
+					RawGround[I] = OldGround[J];
+					RawTop[I] = OldTop[J];
+					RawOk[I] = OldOk[J];
+				}
+				else
+				{
+					TraceCell(I, Z);
+				}
+				const int64 GX = int64(FMath::FloorToDouble((GroundOrigin.X + X * GroundCm) / TrailCm)), GY = int64(FMath::FloorToDouble((GroundOrigin.Y + Y * GroundCm) / TrailCm));
+				if (bKept && GX >= LoX && GX < HiX && GY >= LoY && GY < HiY)
+				{
+					Lowered[I] = OldLowered[FromY * GroundN + FromX];
+				}
+				else
+				{
+					Lowered[I] = LoweredByteAt(X, Y) / 255.f;
+				}
+			}
+		}
+	}
+	else
+	{
+		for (int32 I = 0; I < GroundN * GroundN; I++)
+		{
+			TraceCell(I, Z);
+		}
+		bHaveRaw = true;
+	}
+	RefreshLeft = bSlide ? GroundN * GroundN : 0;
+	ComposeGround(Z);
+	if (!bSlide)
+	{
+		UpdateLowered(0, 0, GroundN - 1, GroundN - 1);
+	}
 	UploadGround();
 	SetActorLocation(FVector(C.X, C.Y, Z));
 }
 
-void ALyudSnowNear::UpdateLowered(int32 X0, int32 Y0, int32 X1, int32 Y1)
+uint8 ALyudSnowNear::LoweredByteAt(int32 VX, int32 VY) const
 {
 	// a vertex sinks as far as the deepest print within 60 cm of it (its triangles reach 1 m: the fine surface covers them)
 	const int32 R = FMath::CeilToInt(60.f / TrailCm);
+	const double WX = GroundOrigin.X + VX * GroundCm, WY = GroundOrigin.Y + VY * GroundCm;
+	uint8 M = 0;
+	if (FMath::Abs(WX - Centre.X) < HalfCm && FMath::Abs(WY - Centre.Y) < HalfCm)
+	{
+		const int64 GX = int64(FMath::FloorToDouble(WX / TrailCm)), GY = int64(FMath::FloorToDouble(WY / TrailCm));
+		for (int64 TY = GY - R; TY <= GY + R && M < 255; TY++)
+		{
+			const uint8* Row = Trail.GetData() + int32(((TY % TrailN) + TrailN) % TrailN) * TrailN;
+			for (int64 TX = GX - R; TX <= GX + R; TX++)
+			{
+				M = FMath::Max(M, Row[int32(((TX % TrailN) + TrailN) % TrailN)]);
+			}
+		}
+	}
+	return M;
+}
+
+void ALyudSnowNear::UpdateLowered(int32 X0, int32 Y0, int32 X1, int32 Y1)
+{
 	for (int32 VY = FMath::Max(Y0, 0); VY <= FMath::Min(Y1, GroundN - 1); VY++)
 	{
 		for (int32 VX = FMath::Max(X0, 0); VX <= FMath::Min(X1, GroundN - 1); VX++)
 		{
-			const double WX = GroundOrigin.X + VX * GroundCm, WY = GroundOrigin.Y + VY * GroundCm;
-			uint8 M = 0;
-			if (FMath::Abs(WX - Centre.X) < HalfCm && FMath::Abs(WY - Centre.Y) < HalfCm)
-			{
-				const int64 GX = int64(FMath::FloorToDouble(WX / TrailCm)), GY = int64(FMath::FloorToDouble(WY / TrailCm));
-				for (int64 TY = GY - R; TY <= GY + R && M < 255; TY++)
-				{
-					const uint8* Row = Trail.GetData() + int32(((TY % TrailN) + TrailN) % TrailN) * TrailN;
-					for (int64 TX = GX - R; TX <= GX + R; TX++)
-					{
-						M = FMath::Max(M, Row[int32(((TX % TrailN) + TrailN) % TrailN)]);
-					}
-				}
-			}
-			const float L = M / 255.f;
+			const float L = LoweredByteAt(VX, VY) / 255.f;
 			if (Lowered[VY * GroundN + VX] != L)
 			{
 				Lowered[VY * GroundN + VX] = L;
@@ -427,6 +584,10 @@ void ALyudSnowNear::Drive(ULyudWinterSubsystem& Winter, const FVector& Camera, f
 	if (FVector2D::Distance(C, Centre) > 1.0)
 	{
 		Recentre(C);
+	}
+	else
+	{
+		RefreshGround();
 	}
 	// the walkers near the camera: the player, the people's bodies, the cats and dogs
 	if (const APlayerController* PC = World->GetFirstPlayerController())
