@@ -300,8 +300,9 @@ void UHeroReachComponent::Begin(const FReachItem& It, bool bFromPocket)
 		{
 			PC->SetIgnoreLookInput(true);
 			PC->SetIgnoreMoveInput(true);
+			LockedPC = PC;
+			bLocked = true;
 		}
-		bLocked = true;
 	}
 }
 
@@ -513,11 +514,13 @@ void UHeroReachComponent::Finish()
 	Hero->SetReachCrouch(0.f);
 	if (bLocked)
 	{
-		if (APlayerController* PC = Cast<APlayerController>(Hero->GetController()))
+		// the controller that was locked, whoever it drives now (the locks are counted: one left behind is never given back)
+		if (APlayerController* PC = LockedPC.Get())
 		{
 			PC->SetIgnoreLookInput(false);
 			PC->SetIgnoreMoveInput(false);
 		}
+		LockedPC.Reset();
 		bLocked = false;
 	}
 }
