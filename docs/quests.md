@@ -102,7 +102,9 @@ the voice of a line is found by its key.
   hero looks at it and presses E. Taken once (kept in the save), and not put out while he already has one.
 - `listeners`: people who notice a bird calling beside them. The first reaction that fits (species, a quest's stage,
   `air` = called on the wing) is said over their head with its voice, their eyes on the bird. Sitting within `within_m`
-  also sends `bird_call`. Sleeping or unseen people hear nothing.
+  also sends `bird_call`. Sleeping or unseen people hear nothing. One person answers a call: whoever a quest in progress
+  waits to hear from, else the nearest (every listener in reach still gets its `bird_call`). Fourteen people listen: the
+  quest givers who sit outdoors (the square's benches, the corn cart, the net bench, the cheese tent).
 - `remarks`: `{"id", "person", "quest", "stages", "within_m", "lines"}`: that person says the lines of their own accord,
   once, when the hero walks within `within_m` (6 by default) while the quest is on one of the stages (`done` too): the
   grocer about the rowan he came for, a neighbour who has heard of his errand. Never during a talk; unseen or sleeping

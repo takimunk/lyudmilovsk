@@ -1,5 +1,5 @@
 {
- "comment": "What the quests stage in the world (ULyudQuestDirector, docs/quests.md). pickups: an item lying out while its quest is on one of the stages; ux, uy, floor_uz are Unreal metres as in PeopleData/people_places.json (the floor under it; it drops from drop_m above onto whatever stands there), yaw the way its top points. listeners: people who notice a bird calling beside them; the first reaction that fits is said (species, quest + stage, air = called on the wing near by); the quests get bird_call <Species>.<Body> when the bird sat within within_m. remarks: a person says the lines of their own accord, once, when the hero walks within within_m while the quest is on one of the stages.",
+ "comment": "What the quests stage in the world (ULyudQuestDirector, docs/quests.md). pickups: an item lying out while its quest is on one of the stages; ux, uy, floor_uz are Unreal metres as in PeopleData/people_places.json (the floor under it; it drops from drop_m above onto whatever stands there), yaw the way its top points. listeners: people who notice a bird calling beside them; the first reaction that fits is said (species, quest + stage, air = called on the wing near by); the quests get bird_call <Species>.<Body> when the bird sat within within_m. remarks: a person says the lines of their own accord, once, when the hero walks within within_m while the quest is on one of the stages. One person answers a call: whoever a quest in progress waits to hear from, else the nearest.",
  "pickups": [
   {
    "id": "library_guide",
@@ -39,6 +39,24 @@
      ]
     },
     {
+     "species": "Magpie",
+     "lines": [
+      "sorokin_oleg.namesake_magpie.1"
+     ]
+    },
+    {
+     "species": "BlackBrowedAlbatross",
+     "lines": [
+      "sorokin_oleg.albatross_pencil.1"
+     ]
+    },
+    {
+     "species": "Nutcracker",
+     "lines": [
+      "sorokin_oleg.nutcracker_respect.1"
+     ]
+    },
+    {
      "air": true,
      "lines": [
       "sorokin_oleg.bird_over.1"
@@ -75,8 +93,459 @@
      ]
     },
     {
+     "species": "HouseSparrow",
+     "quest": "sparrow_hello",
+     "stage": "done",
+     "lines": [
+      "kid_girl.kuzya_no_tea.1"
+     ]
+    },
+    {
+     "species": "FeralPigeon",
+     "lines": [
+      "kid_girl.pigeon_hello_test.1"
+     ]
+    },
+    {
+     "air": true,
+     "lines": [
+      "kid_girl.boss_or_bird.1"
+     ]
+    },
+    {
      "lines": [
       "kid_girl.sparrow_again.1"
+     ]
+    }
+   ]
+  },
+  {
+   "person": "kimura_dasha",
+   "within_m": 8,
+   "air_within_m": 20,
+   "note": "Bench academ_bench_2 on the Academgorodok's square, yard_evening 17:00-18:30 every day (her lectures are work_away 9-14 on weekdays). Aya sketches on the same bench 16:30-19:00, so a call there can make both answer. 5 m / 12 m, not 14 / 45: the square's six benches are 6.7-17.6 m apart and Sorokin's 14 m already covers most of it.",
+   "reactions": [
+    {
+     "species": "GreatTit",
+     "quest": "window_feeder",
+     "stage": "done",
+     "lines": [
+      "kimura_dasha.tit_row_monday.1"
+     ]
+    },
+    {
+     "species": "FeralPigeon",
+     "lines": [
+      "kimura_dasha.pigeon_from_vika.1"
+     ]
+    },
+    {
+     "air": true,
+     "lines": [
+      "kimura_dasha.flypast_void.1"
+     ]
+    },
+    {
+     "lines": [
+      "kimura_dasha.bird_by_the_book.1"
+     ]
+    }
+   ]
+  },
+  {
+   "person": "sato_yuki",
+   "within_m": 8,
+   "air_within_m": 20,
+   "note": "Bench academ_bench_1 on the square, yard_evening 16:00-17:15 every day (school 8:15-13 on weekdays). The bench where the crow took her button. HoodedCrow is the crow of the quest (grey, 'not grey' in the CarrionCrow line); carrion crows roost with the hooded crows (bird_life.md).",
+   "reactions": [
+    {
+     "species": "HoodedCrow",
+     "quest": "crow_gift",
+     "stage": "feed",
+     "lines": [
+      "sato_yuki.crow_soon_fed.1"
+     ]
+    },
+    {
+     "species": "HoodedCrow",
+     "quest": "crow_gift",
+     "stage": "done",
+     "lines": [
+      "sato_yuki.button_suits_you.1"
+     ]
+    },
+    {
+     "species": "CarrionCrow",
+     "lines": [
+      "sato_yuki.black_cousin.1"
+     ]
+    },
+    {
+     "air": true,
+     "lines": [
+      "sato_yuki.shout_from_above.1"
+     ]
+    },
+    {
+     "lines": [
+      "sato_yuki.not_too_close.1"
+     ]
+    }
+   ]
+  },
+  {
+   "person": "lange_pyotr",
+   "within_m": 10,
+   "air_within_m": 30,
+   "note": "Mending nets on the promenade bench S-BENCH-P12 (map 100.8, 867.9), mend_nets 12:30-17:00 every day, nobody else's duty near; at sea 4:30-11 he is hidden (work_sea, away) and hears nothing. Gulls rest on the beach and roofs and feed in the streets, cormorants dive off the beach (bird_life.md). The catch-stage line sends the gull to the pier, where first_catch's hero is meant to be.",
+   "reactions": [
+    {
+     "species": "HerringGull",
+     "quest": "first_catch",
+     "stage": "catch",
+     "lines": [
+      "lange_pyotr.gull_try_pier.1"
+     ]
+    },
+    {
+     "species": "Cormorant",
+     "lines": [
+      "lange_pyotr.cormorant_ate_more.1"
+     ]
+    },
+    {
+     "species": "HerringGull",
+     "lines": [
+      "lange_pyotr.net_is_work.1"
+     ]
+    },
+    {
+     "air": true,
+     "lines": [
+      "lange_pyotr.weather_without_you.1"
+     ]
+    },
+    {
+     "lines": [
+      "lange_pyotr.counting_meshes.1"
+     ]
+    }
+   ]
+  },
+  {
+   "person": "belov_misha",
+   "within_m": 8,
+   "air_within_m": 20,
+   "note": "Bench academ_bench_5 on the square, yard_evening 17:00-18:30 every day (the Laboratory 8-16:30 on weekdays, away). Rustam shares the bench from 18:00. The done line rests on round 2's 'key on a string round my neck'.",
+   "reactions": [
+    {
+     "species": "Magpie",
+     "quest": "magpie_key",
+     "stage": "done",
+     "lines": [
+      "belov_misha.key_under_shirt.1"
+     ]
+    },
+    {
+     "species": "Magpie",
+     "quest": "magpie_key",
+     "stage": "search",
+     "lines": [
+      "belov_misha.confess_magpie.1"
+     ]
+    },
+    {
+     "species": "Jackdaw",
+     "lines": [
+      "belov_misha.not_earthed.1"
+     ]
+    },
+    {
+     "air": true,
+     "lines": [
+      "belov_misha.approach_no_landing.1"
+     ]
+    },
+    {
+     "lines": [
+      "belov_misha.nothing_shiny.1"
+     ]
+    }
+   ]
+  },
+  {
+   "person": "nishimura_aya",
+   "within_m": 8,
+   "air_within_m": 20,
+   "note": "Bench academ_bench_2 on the square, sketch_yard 16:30-19:00 every day, with a pencil (shares the bench with Dasha 17-18:30); mornings she paints on the island (paint_island, off by train). Starlings: the murmuration over the sea at dusk is one of her three views; they are away in December and January, so that reaction simply does not fire then. The gull line answers her round 1 aside (the island gull that never landed).",
+   "reactions": [
+    {
+     "species": "Starling",
+     "quest": "painter_views",
+     "stage": "look",
+     "lines": [
+      "nishimura_aya.starling_messenger.1"
+     ]
+    },
+    {
+     "species": "HerringGull",
+     "lines": [
+      "nishimura_aya.gull_sits_now.1"
+     ]
+    },
+    {
+     "species": "Bullfinch",
+     "lines": [
+      "nishimura_aya.vermilion_drop.1"
+     ]
+    },
+    {
+     "air": true,
+     "lines": [
+      "nishimura_aya.wings_already.1"
+     ]
+    },
+    {
+     "lines": [
+      "nishimura_aya.head_to_the_left.1"
+     ]
+    }
+   ]
+  },
+  {
+   "person": "zotova_galina",
+   "within_m": 8,
+   "air_within_m": 20,
+   "note": "Bench academ_bench_0 on the square, yard_evening 17:30-19:00 every day (the Laboratory 9-16 on weekdays). She says 'вы' even to a bird, as to the hero. The quest reaction has no species and stands after the blue tit: during soda_science's taste stage it answers every other sitting bird, so the generic line waits until the quest moves on.",
+   "reactions": [
+    {
+     "species": "BlueTit",
+     "lines": [
+      "zotova_galina.copper_sulphate.1"
+     ]
+    },
+    {
+     "quest": "soda_science",
+     "stage": "taste",
+     "lines": [
+      "zotova_galina.four_bottles_boy.1"
+     ]
+    },
+    {
+     "air": true,
+     "lines": [
+      "zotova_galina.moving_source.1"
+     ]
+    },
+    {
+     "lines": [
+      "zotova_galina.no_bread_crossword.1"
+     ]
+    }
+   ]
+  },
+  {
+   "person": "zotov_lev",
+   "within_m": 8,
+   "air_within_m": 20,
+   "note": "Bench academ_bench_1 on the square, yard_evening 17:30-19:00 every day (the Laboratory 9-17 on weekdays), after Yuki leaves it at 17:15. The rook line rests on round 2's letter to the editors (overdue_journal done). Rooks feed in streets and rest on roofs and wires.",
+   "reactions": [
+    {
+     "species": "Rook",
+     "quest": "overdue_journal",
+     "stage": "done",
+     "lines": [
+      "zotov_lev.rook_referee.1"
+     ]
+    },
+    {
+     "species": "FeralPigeon",
+     "lines": [
+      "zotov_lev.pendulum_pigeon.1"
+     ]
+    },
+    {
+     "air": true,
+     "lines": [
+      "zotov_lev.students_shout.1"
+     ]
+    },
+    {
+     "lines": [
+      "zotov_lev.came_first.1"
+     ]
+    }
+   ]
+  },
+  {
+   "person": "korneeva_nina",
+   "within_m": 8,
+   "air_within_m": 20,
+   "note": "Bench academ_bench_0 on the square, yard_evening 14:00-16:30 every day; Ivan is on academ_bench_3 (12.4 m away) from 15:00. evening_paper's 'buy' stage is the one while the hero is off to the fair square for the paper.",
+   "reactions": [
+    {
+     "species": "FeralPigeon",
+     "quest": "evening_paper",
+     "stage": "buy",
+     "lines": [
+      "korneeva_nina.pigeon_from_fair.1"
+     ]
+    },
+    {
+     "species": "HouseSparrow",
+     "lines": [
+      "korneeva_nina.sparrow_news.1"
+     ]
+    },
+    {
+     "air": true,
+     "lines": [
+      "korneeva_nina.tell_me_properly.1"
+     ]
+    },
+    {
+     "lines": [
+      "korneeva_nina.vanya_in_paper.1"
+     ]
+    }
+   ]
+  },
+  {
+   "person": "korneev_ivan",
+   "within_m": 8,
+   "air_within_m": 20,
+   "note": "Bench academ_bench_3 on the square, yard_evening 15:00-17:30 every day; in free time often fish_shore (the beach, the pier, the island: likes 0.6), where a heron stalking the waterline is a likely neighbour. He did not know the cob was coming (hot_corn), so his corn line is only after done.",
+   "reactions": [
+    {
+     "species": "FeralPigeon",
+     "quest": "hot_corn",
+     "stage": "done",
+     "lines": [
+      "korneev_ivan.cob_finished.1"
+     ]
+    },
+    {
+     "species": "GreyHeron",
+     "lines": [
+      "korneev_ivan.heron_colleague.1"
+     ]
+    },
+    {
+     "air": true,
+     "lines": [
+      "korneev_ivan.see_the_fish.1"
+     ]
+    },
+    {
+     "lines": [
+      "korneev_ivan.good_company.1"
+     ]
+    }
+   ]
+  },
+  {
+   "person": "valiev_rustam",
+   "within_m": 8,
+   "air_within_m": 20,
+   "note": "Bench academ_bench_5 on the square, yard_evening 18:00-19:30 every day (the Laboratory 8:30-17:30 on weekdays): dusk in autumn, the hour night_signal's 'signal' stage waits for. The air reaction for the signal stage stands before his plain air one.",
+   "reactions": [
+    {
+     "species": "Peregrine",
+     "lines": [
+      "valiev_rustam.fastest_design.1"
+     ]
+    },
+    {
+     "air": true,
+     "quest": "night_signal",
+     "stage": "signal",
+     "lines": [
+      "valiev_rustam.not_the_signal.1"
+     ]
+    },
+    {
+     "air": true,
+     "lines": [
+      "valiev_rustam.good_stabilisation.1"
+     ]
+    },
+    {
+     "lines": [
+      "valiev_rustam.sits_level.1"
+     ]
+    }
+   ]
+  },
+  {
+   "person": "guseva_valentina",
+   "within_m": 8,
+   "air_within_m": 20,
+   "note": "At her corn cart (corn_stall, the square), work_corn 11:00-18:00 every day, standing outdoors by the pot. The cart is 4.6 m from Sorokin's bench (academ_bench_4), inside his 14 m: during his hours both may answer the same call. The done line follows round 2's 'Vanya oiled my wheel, it's gone quiet'.",
+   "reactions": [
+    {
+     "species": "HouseSparrow",
+     "quest": "hot_corn",
+     "stage": "done",
+     "lines": [
+      "guseva_valentina.hear_you_now.1"
+     ]
+    },
+    {
+     "species": "HouseSparrow",
+     "lines": [
+      "guseva_valentina.one_kernel.1"
+     ]
+    },
+    {
+     "air": true,
+     "lines": [
+      "guseva_valentina.pot_is_loud.1"
+     ]
+    },
+    {
+     "lines": [
+      "guseva_valentina.warm_by_the_pot.1"
+     ]
+    }
+   ]
+  },
+  {
+   "person": "khuazhev_aslan",
+   "within_m": 8,
+   "air_within_m": 20,
+   "note": "At his cheese tent on the club's forecourt (cheese_tent, 3.5 m from the club door), work_cheese 10:00-20:00, Tuesday to Sunday. The club door's sparrows are Sonya's (Kuzya, sparrow_hello done, round 2); Sonya's own 22 m may catch the same call when she is outside. The taste-stage air line: the hero is meant to be down at the diner by the lower cable car station for the pancakes.",
+   "reactions": [
+    {
+     "species": "HouseSparrow",
+     "quest": "sparrow_hello",
+     "stage": "done",
+     "lines": [
+      "khuazhev_aslan.sonya_kuzya.1"
+     ]
+    },
+    {
+     "species": "HoodedCrow",
+     "lines": [
+      "khuazhev_aslan.braids_counted.1"
+     ]
+    },
+    {
+     "air": true,
+     "quest": "tent_neighbours",
+     "stage": "taste",
+     "lines": [
+      "khuazhev_aslan.see_my_guest.1"
+     ]
+    },
+    {
+     "air": true,
+     "lines": [
+      "khuazhev_aslan.cannot_haggle.1"
+     ]
+    },
+    {
+     "lines": [
+      "khuazhev_aslan.feathered_guest.1"
      ]
     }
    ]
