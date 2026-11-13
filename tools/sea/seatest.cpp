@@ -1,4 +1,5 @@
 // Checks and dumps for the wind and wave models (Private/Weather), outside the engine. See run.sh.
+#include <algorithm>
 #include <cmath>
 #include <cstdio>
 #include <cstdlib>
@@ -35,10 +36,10 @@ static int Test()
 	// a year of weather: median near MedianSpeed, prevailing from the south-west, nights calmer than afternoons
 	std::vector<double> Speeds;
 	double Night = 0, NightN = 0, Aft = 0, AftN = 0, SinS = 0, CosS = 0, Calm = 0, Gale = 0;
-	const double Y0 = HoursSince2000(2026, 1, 1, 0.0);
+	const double Year0 = HoursSince2000(2026, 1, 1, 0.0);
 	for (double H = 0; H < 365 * 24; H += 1.0)
 	{
-		const FWindState S = Regime(Y0 + H, P);
+		const FWindState S = Regime(Year0 + H, P);
 		Speeds.push_back(S.Speed);
 		const double Hod = std::fmod(H, 24.0);
 		if (Hod >= 1 && Hod <= 4) { Night += S.Speed; NightN++; }
@@ -64,7 +65,7 @@ static int Test()
 	double MaxDs = 0, MaxDd = 0;
 	for (double H = 0; H < 30 * 24; H += 0.05)
 	{
-		const FWindState A = Regime(Y0 + H, P), B = Regime(Y0 + H + 0.05, P);
+		const FWindState A = Regime(Year0 + H, P), B = Regime(Year0 + H + 0.05, P);
 		MaxDs = std::max(MaxDs, (double)std::fabs(A.Speed - B.Speed));
 		double Dd = std::fabs(A.FromDeg - B.FromDeg); if (Dd > 180) Dd = 360 - Dd;
 		if (A.Speed > 1.5) MaxDd = std::max(MaxDd, Dd);
