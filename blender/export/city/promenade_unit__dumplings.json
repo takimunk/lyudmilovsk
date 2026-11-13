@@ -113,6 +113,16 @@
     0.0
    ],
    "yaw": 180.0
+  },
+  {
+   "id": "pot",
+   "kind": "stand",
+   "pos": [
+    -3.2,
+    4.95,
+    0.0
+   ],
+   "yaw": 180.0
   }
  ],
  "lamps": [
@@ -156,6 +166,59 @@
    "props": {
     "topic": "prices"
    }
+  },
+  {
+   "id": "dumpling_pot",
+   "kind": "machine",
+   "pos": [
+    -3.2,
+    5.8,
+    1.0
+   ],
+   "yaw": 0.0,
+   "props": {
+    "what": "dumpling_pot"
+   }
+  },
+  {
+   "id": "dumpling_rules",
+   "kind": "board",
+   "pos": [
+    4.81,
+    4.6,
+    1.6
+   ],
+   "yaw": 270.0,
+   "props": {
+    "topic": "rules"
+   }
+  },
+  {
+   "id": "dumpling_today",
+   "kind": "board",
+   "pos": [
+    2.2,
+    1.15,
+    0.6
+   ],
+   "yaw": 195.0,
+   "props": {
+    "topic": "prices"
+   }
+  },
+  {
+   "id": "dumpling_chat",
+   "kind": "counter",
+   "pos": [
+    0.1,
+    4.3,
+    1.1
+   ],
+   "yaw": 0.0,
+   "props": {
+    "service": "chat",
+    "role": "cook"
+   }
   }
  ],
  "flats": [],
@@ -165,8 +228,8 @@
   "promenade unit room, variant dumplings: placed at each W1 unit whose plan variant is dumplings"
  ],
  "tris": {
-  "shell": 226,
-  "detail": 4048,
+  "shell": 238,
+  "detail": 4785,
   "windows": 0
  }
 }

@@ -163,6 +163,36 @@
     0.0
    ],
    "yaw": 0.0
+  },
+  {
+   "id": "jukebox",
+   "kind": "stand",
+   "pos": [
+    3.6,
+    2.4,
+    0.0
+   ],
+   "yaw": 90.0
+  },
+  {
+   "id": "papers",
+   "kind": "stand",
+   "pos": [
+    -1.65,
+    5.55,
+    0.0
+   ],
+   "yaw": 180.0
+  },
+  {
+   "id": "window_stand",
+   "kind": "stand",
+   "pos": [
+    -2.5,
+    1.0,
+    0.0
+   ],
+   "yaw": 0.0
   }
  ],
  "lamps": [
@@ -284,6 +314,72 @@
    "props": {
     "topic": "painting"
    }
+  },
+  {
+   "id": "cafe_jukebox",
+   "kind": "machine",
+   "pos": [
+    4.45,
+    2.35,
+    1.0
+   ],
+   "yaw": 270.0,
+   "props": {
+    "what": "jukebox"
+   }
+  },
+  {
+   "id": "cafe_papers",
+   "kind": "shelf",
+   "pos": [
+    -1.65,
+    6.2,
+    1.0
+   ],
+   "yaw": 0.0,
+   "props": {
+    "topic": "local"
+   }
+  },
+  {
+   "id": "cafe_specials",
+   "kind": "board",
+   "pos": [
+    2.2,
+    1.15,
+    0.6
+   ],
+   "yaw": 200.0,
+   "props": {
+    "topic": "prices"
+   }
+  },
+  {
+   "id": "cafe_window",
+   "kind": "board",
+   "pos": [
+    -2.5,
+    0.46,
+    1.5
+   ],
+   "yaw": 0.0,
+   "props": {
+    "topic": "view"
+   }
+  },
+  {
+   "id": "cafe_chat",
+   "kind": "counter",
+   "pos": [
+    0.95,
+    4.55,
+    1.05
+   ],
+   "yaw": 0.0,
+   "props": {
+    "service": "chat",
+    "role": "barista"
+   }
   }
  ],
  "flats": [],
@@ -293,8 +389,8 @@
   "promenade unit room, variant cafe: placed at each W1 unit whose plan variant is cafe"
  ],
  "tris": {
-  "shell": 214,
-  "detail": 5898,
+  "shell": 238,
+  "detail": 6222,
   "windows": 0
  }
 }
