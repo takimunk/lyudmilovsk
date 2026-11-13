@@ -1,5 +1,5 @@
 {
- "comment": "What the quests stage in the world (ULyudQuestDirector, docs/quests.md). pickups: an item lying out while its quest is on one of the stages; ux, uy, floor_uz are Unreal metres as in PeopleData/people_places.json (the floor under it; it drops from drop_m above onto whatever stands there), yaw the way its top points. listeners: people who notice a bird calling beside them; the first reaction that fits is said (species, quest + stage, air = called on the wing near by); the quests get bird_call <Species>.<Body> when the bird sat within within_m.",
+ "comment": "What the quests stage in the world (ULyudQuestDirector, docs/quests.md). pickups: an item lying out while its quest is on one of the stages; ux, uy, floor_uz are Unreal metres as in PeopleData/people_places.json (the floor under it; it drops from drop_m above onto whatever stands there), yaw the way its top points. listeners: people who notice a bird calling beside them; the first reaction that fits is said (species, quest + stage, air = called on the wing near by); the quests get bird_call <Species>.<Body> when the bird sat within within_m. remarks: a person says the lines of their own accord, once, when the hero walks within within_m while the quest is on one of the stages.",
  "pickups": [
   {
    "id": "library_guide",
@@ -80,6 +80,196 @@
      ]
     }
    ]
+  }
+ ],
+ "remarks": [
+  {
+   "id": "tanya_rowan_doorway",
+   "person": "orlova_tanya",
+   "quest": "waxwing",
+   "stages": [
+    "prepare"
+   ],
+   "within_m": 5,
+   "lines": [
+    "orlova_tanya.rowan_doorway.1"
+   ],
+   "note": "the hero walks into the Gastronom (Tanya behind the counter, Mon-Sat 9-19) while he still gathers the guide, rowan and feeder; said before he talks to her, so it leads into her own 'Сушёная рябина? Её один Сорокин и брал.'"
+  },
+  {
+   "id": "olya_north_send_off",
+   "person": "girl_b",
+   "quest": "waxwing",
+   "stages": [
+    "journey"
+   ],
+   "within_m": 6,
+   "lines": [
+    "girl_b.north_send_off.1"
+   ],
+   "note": "the guide taken, the hero passes Olya (library desk 10-15 Wed-Sat, or anywhere in the Academgorodok) on his way north"
+  },
+  {
+   "id": "dasha_tally_stump",
+   "person": "kimura_dasha",
+   "quest": "autumn_count",
+   "stages": [
+    "tally"
+   ],
+   "within_m": 8,
+   "lines": [
+    "kimura_dasha.tally_stump.1"
+   ],
+   "note": "the hero crouches by his peanut feeder in the Academgorodok's yard; Dasha's yard_evening is on academ_bench_2, 17-18:30, and she walks the yard after lectures"
+  },
+  {
+   "id": "sorokin_views_small_town",
+   "person": "sorokin_oleg",
+   "quest": "painter_views",
+   "stages": [
+    "done"
+   ],
+   "within_m": 10,
+   "lines": [
+    "sorokin_oleg.views_small_town.1",
+    "sorokin_oleg.views_small_town.2"
+   ],
+   "note": "after Aya (his friend in people.json) heard the hero's report; Sorokin on his bench (academ_bench_4, 8-12:30, 14:30-18:30) calls it out when the hero passes. Echoes Aya's 'Маленький и тихий'"
+  },
+  {
+   "id": "nina_cob_for_vanya",
+   "person": "korneeva_nina",
+   "quest": "hot_corn",
+   "stages": [
+    "carry"
+   ],
+   "within_m": 7,
+   "lines": [
+    "korneeva_nina.cob_for_vanya.1",
+    "korneeva_nina.cob_for_vanya.2"
+   ],
+   "note": "the hero crosses the yard with the cob; Nina sits on academ_bench_0 14-16:30, Ivan on academ_bench_3 15-17:30 (both yard_evening), otherwise he fishes off the beach"
+  },
+  {
+   "id": "lange_crows_crate",
+   "person": "lange_pyotr",
+   "quest": "crow_gift",
+   "stages": [
+    "feed",
+    "gift"
+   ],
+   "within_m": 8,
+   "lines": [
+    "lange_pyotr.crows_herring_crate.1"
+   ],
+   "note": "hooded crows live in pairs on the beach (docs/corvids.md); Lange is about the beach and the promenade (mend_nets 12:30-17, fish_shore), so the hero feeding crows there passes him"
+  },
+  {
+   "id": "yuki_crows_from_bench",
+   "person": "sato_yuki",
+   "quest": "crow_gift",
+   "stages": [
+    "feed",
+    "gift"
+   ],
+   "within_m": 8,
+   "lines": [
+    "sato_yuki.crows_from_bench.1"
+   ],
+   "note": "Yuki sits on academ_bench_1 16-17:15 (yard_evening), the bench the crow took her button from; she watches the hero feed crows from a safe distance"
+  },
+  {
+   "id": "misha_rustam_window",
+   "person": "belov_misha",
+   "quest": "night_signal",
+   "stages": [
+    "signal"
+   ],
+   "within_m": 8,
+   "lines": [
+    "belov_misha.rustam_window.1"
+   ],
+   "note": "Misha is Rustam's friend and shares academ_bench_5 with him in the evening (Misha 17-18:30); the hero passes through the yard on the way to the lamp or the station"
+  },
+  {
+   "id": "vika_pigeon_twice",
+   "person": "li_vika",
+   "quest": "window_feeder",
+   "stages": [
+    "fill",
+    "watch"
+   ],
+   "within_m": 8,
+   "lines": [
+    "li_vika.pigeon_counts_twice.1"
+   ],
+   "note": "Vika is the other side of Dasha's bet (her flatmate); she is in the yard on academ_bench_3 18-19:30 and after work"
+  },
+  {
+   "id": "lev_soda_eyes_shut",
+   "person": "zotov_lev",
+   "quest": "soda_science",
+   "stages": [
+    "taste"
+   ],
+   "within_m": 7,
+   "lines": [
+    "zotov_lev.soda_eyes_shut.1"
+   ],
+   "note": "Lev on academ_bench_1 17:30-19 or in the yard after the Laboratory; sets up Galina's tell line 'Лев уверяет, что различит их с закрытыми глазами'"
+  },
+  {
+   "id": "galina_interferometer",
+   "person": "zotova_galina",
+   "quest": "overdue_journal",
+   "stages": [
+    "buy",
+    "return"
+   ],
+   "within_m": 7,
+   "lines": [
+    "zotova_galina.interferometer_file.1"
+   ],
+   "note": "after Lev paid for the new issue; Galina on academ_bench_0 17:30-19 in the yard"
+  },
+  {
+   "id": "valentina_aslan_sent",
+   "person": "guseva_valentina",
+   "quest": "tent_neighbours",
+   "stages": [
+    "taste"
+   ],
+   "within_m": 6,
+   "lines": [
+    "guseva_valentina.aslan_never_tried.1"
+   ],
+   "note": "the hero comes to her corn cart (work_corn 11-18 every day) on Aslan's errand; they are friends in people.json"
+  },
+  {
+   "id": "nao_supper_smoke",
+   "person": "nao",
+   "quest": "owner_supper",
+   "stages": [
+    "buy"
+   ],
+   "within_m": 6,
+   "lines": [
+    "nao.supper_smoke.1"
+   ],
+   "note": "Nao keeps the club's door 10-21 every day, a few metres from Aslan's tent where the owner sent the hero for the braid"
+  },
+  {
+   "id": "aslan_braid_fisher",
+   "person": "khuazhev_aslan",
+   "quest": "fisherman_cheese",
+   "stages": [
+    "buy"
+   ],
+   "within_m": 5,
+   "lines": [
+    "khuazhev_aslan.braid_for_fisher.1"
+   ],
+   "note": "the hero comes up to Aslan's cheese tent by the club door (work_cheese 10-20, not Monday) for Lange's braid; Lange's own line: 'Утром рыба, вечером рыба'"
   }
  ]
 }
