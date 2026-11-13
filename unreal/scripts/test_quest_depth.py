@@ -1,5 +1,8 @@
 """Offscreen check of the quests' depth (docs/quests.md): talk variants (.if.<cond>), several .again lines said in turn, and
 remarks (quest_scenes.json): QUESTDEPTH lines, the dialogue's "NpcDialogue: line" keys and Quest.Dump's QUESTTEST state.
+  l) awakening on owner: Guy_b's first exchange, then his aside owner_says_odd.1, then everyday lines
+  m) explore on walk: Guy_b's asides valley_way, four_places_two_by_cable, never_got_swift in turn, then everyday lines
+  n) the Owner: his first exchange on awakening's owner stage (the stage finishes); on outside door_never_locked.1 (or by the sun)
   b) waxwing on prepare: Sorokin says waxwing_tips.1 with the pocket as at the start, tips_feeder_in_hand.1 with a feeder
   c) waxwing on wait after sunset while he is still on his bench: rowan_till_dawn.1 (the talk logs its sun state)
   d) waxwing on wait by day: waxwing_wait.1, waxwing_wait_hint.1, waxwing_wait_snow.1, waxwing_wait_hint.1
@@ -75,6 +78,34 @@ def conversation(n=2):
         at("Npc.Talk", None, 1.2)
 
 
+# l) asides wait for the first conversation: awakening on owner, Guy_b (the club): first.1.., then owner_says_odd.1, then everyday
+at("Quest.Reset", None, 1.0)
+at("Quest.SetStage awakening owner", None, 1.0)
+go("guy_b", 1.3)
+at("Npc.Where")
+at("QUESTDEPTH mark l_guy_b")
+for _ in range(10):
+    at("Npc.Talk", None, 1.2)
+# m) explore on walk: valley_way, four_places_two_by_cable, never_got_swift, then everyday
+at("Quest.Reset", None, 1.0)
+at("Quest.Start explore", None, 1.0)
+at("QUESTDEPTH mark m_guy_b")
+for _ in range(12):
+    at("Npc.Talk", None, 1.2)
+# n) the Owner: on awakening's owner stage his first exchange (the stage finishes); on outside door_never_locked (or the sun's variant)
+at("Quest.Reset", None, 1.0)
+at("Quest.SetStage awakening owner", None, 1.0)
+go("owner", 1.3)
+at("Npc.Where")
+at("QUESTDEPTH mark n_owner")
+for _ in range(6):
+    at("Npc.Talk", None, 1.2)
+at("Quest.Dump", "n_after_first")
+at("Quest.SetStage awakening outside", None, 1.0)
+at("QUESTDEPTH mark n_outside")
+for _ in range(3):
+    at("Npc.Talk", None, 1.2)
+at("Quest.Dump", "n_done")
 # b) variant by the pocket
 at("Quest.Reset", None, 1.0)
 at("Dev.Do pocket.reset", None, 1.0)
