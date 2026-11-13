@@ -31,6 +31,7 @@ INFO = {
 }
 
 SEED = 1972
+EXTRA_LIT = {(1, 2), (1, 4)}              # level-1 pods that would otherwise be pitch dark (QA: the music and cooking pods)
 VARIANTS = {}
 HX0, HX1, HY0, HY1 = -13.0, 13.0, 3.0, 27.0
 HALL_H = 3.6
@@ -270,7 +271,7 @@ class _PodRoom:
             self.rw(kit.poster, 2.7, name="sleeve_4", w=0.5, zc=1.5)
             self.rw(kit.poster, 3.4, name="sleeve_6", w=0.5, zc=1.5)
             r = self.put(kit.coffee_table, -0.9, 1.3, 90.0, w=0.8, d=0.5)
-            self.put(kit.record_player, -0.9, 1.3, 90.0, top=self.zf + r["top"])
+            self.put(kit.record_player, -0.9, 1.3, 90.0, top=r["top"])
         elif t == "garden":
             s = self.seat_of(self.put(kit.armchair, 0.0, 3.1, 0.0, solid=False, mat="CT_PlasterGreen"))
             for (u, v, kd, hh) in ((1.0, 3.62, "monstera", 0.7), (-1.0, 3.6, "palm", 0.9), (-1.05, 0.7, "ficus", 1.0), (1.05, 2.3, "ficus", 0.8)):
@@ -740,6 +741,7 @@ def build(B):
             lamp_on = lamp_budget > 0 and k % 2 == 0
             if lamp_on:
                 lamp_budget -= 1
+            lamp_on = lamp_on or (lv, k + 1) in EXTRA_LIT
             _pod(B, rnd, edges[ei], lv, k + 1, rnd.choice(skins), rnd.choice(accents), "round" if (k + lv) % 2 == 0 else "rect",
                  lamp_on)
             n_pods += 1

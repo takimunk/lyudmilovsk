@@ -92,6 +92,12 @@ def _furnish(B, cx):
             B.lamp((x, y, 3.1), lumens=900, colour=C, kind="public", radius=7.5)
     for x in (6.0, 11.0):
         B.lamp((x, 13.5, 3.1), lumens=700, colour=C, kind="public", radius=6)
+    # ---- QA dressing: the middle of the hall and its back wall were bare
+    kit.rug(B, -5.3, 8.1, 0.0, 0.0, w=4.2, d=2.2, name="rug_2")
+    kit.picture(B, -5.0, 15.7, 0.0, 0.0, name="painting_sea_calm", w=1.2, zc=1.8)
+    kit.wall_clock(B, -0.8, 15.7, 0.0, 0.0, zc=2.4)
+    kit.plant(B, 0.9, 15.0, 0.0, 0.0, h=1.5, kind="palm")
+    kit.hat_stand(B, -3.0, 5.0, 0.0, 0.0)
 
 
 def _seat(B, tid, r, h=0.45, **props):

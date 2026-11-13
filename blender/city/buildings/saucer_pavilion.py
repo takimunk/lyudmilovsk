@@ -255,7 +255,7 @@ def build(B):
     for a_ in (75, 105):
         lp_ = P(9.2, a_)
         B.lamp((lp_[0], lp_[1], 7.25 - 0.0), lumens=600, colour="#FFF0DC", radius=5.0)
-    for yy in (4.0, 8.0):
+    for yy in (4.0, 10.0):                        # QA: the second lobby lamp moved 2 m on, so that the stair core is lit
         B.lamp((0.0, yy, 2.85), lumens=450, colour="#FFD2A0", kind="lobby", radius=5.0)
 
     B.footprint = ring(CX, CY, 11.3, N)

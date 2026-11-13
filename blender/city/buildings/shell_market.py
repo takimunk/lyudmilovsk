@@ -421,3 +421,10 @@ def _extras(B, hx):
     for (bx, by) in ((-5.2, 12.0), (5.2, 12.0), (-15.6, 22.6), (15.6, 22.6), (0.0, 33.0)):
         cyl(d, "CT_SteelRed", bx + 0.9, by, 0.0, 0.7, 0.2, 8, top=False, bottom=True)
         cyl(d, "CT_Steel", bx + 0.9, by, 0.7, 0.74, 0.215, 8, top=True)
+    # QA dressing: the wide aisles were bare paving - crate and sack piles, pot plants
+    for k, (px, py) in enumerate(((-10.4, 20.0), (10.4, 20.0), (-20.0, 11.5), (20.0, 11.5), (0.0, 13.6), (0.0, 30.4))):
+        kit.crate(B, px, py, 0.0, 12.0 * k, w=0.55, d=0.38, h=0.3, fill=("CT_PlasterRed", "CT_PlasterYellow", "CT_Leaf")[k % 3], seed=k)
+        kit.crate(B, px + 0.62, py + 0.1, 0.0, -8.0 * k, w=0.55, d=0.38, h=0.3, fill="CT_PlasterGreen", seed=k + 9)
+        kit.sack(B, px - 0.55, py + 0.1, 0.0, 40.0 * k, mat="CT_Paper" if k % 2 else "CT_PlasterYellow")
+    for k, (px, py) in enumerate(((-10.4, 31.0), (10.4, 31.0), (-20.4, 28.0), (20.4, 28.0))):
+        kit.plant(B, px, py, 0.0, 0.0, kind=("ficus", "palm")[k % 2], pot="CT_Concrete", h=1.3)

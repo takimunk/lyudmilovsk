@@ -572,6 +572,13 @@ def _ground(B, rnd):
     _thing(B, "g_prices", "board", (-22.0, 14.8, zf + 1.6), 90.0, topic="prices")
     # hanging department signs
     kit.sign_plate(B, -12.0, 17.0, zf, 0.0, name="sign_greens", w=1.7, zc=3.7, hang=True)
+    # QA dressing: the middle of both side halls was bare floor
+    for k, (rx, ry) in enumerate(((-17.4, 17.0), (-17.4, 19.2))):
+        kit.clothes_rail(B, rx, ry, zf, 0.0, w=1.6, seed=30 + k)
+    kit.display_case(B, 16.4, 18.4, zf, 0.0, w=1.2, goods="toys", seed=33)
+    kit.display_case(B, 18.0, 18.4, zf, 0.0, w=1.2, goods="boxes", seed=34)
+    kit.plant(B, 20.6, 19.4, zf, 0.0, kind="ficus", pot="CT_PlasterYellow", h=1.3)
+    kit.plant(B, -20.6, 19.4, zf, 0.0, kind="fern", pot="CT_PlasterRed", h=1.0)
 
 
 # ------------------------------------------------------------------------------------------------ first floor
@@ -686,8 +693,9 @@ def _first_east(B, zf, rnd):
     # ---- garden and bird feed (east middle): wall bays, feeders, plants, sacks
     for i, g in enumerate(("boxes", "jars", "boxes")):
         kit.shop_shelf(B, 22.1, 11.4 + i * 1.65, zf, 270.0, w=1.6, h=1.15, levels=3, goods=g, seed=60 + i)
+    ft = kit.table(B, 18.0, 15.2, zf, 0.0, w=2.6, d=0.6, h=0.75)           # the feeders stand on a display table
     for i in range(5):
-        _feeder(B, 17.0 + i * 0.5, 15.2, zf + 0.0, seed=i)
+        _feeder(B, 17.0 + i * 0.5, 15.2, ft["top"], seed=i)
     kit.plant(B, 20.6, 15.6, zf, 0.0, kind="fern", pot="CT_PlasterGreen", h=1.0)
     kit.plant(B, 21.0, 17.2, zf, 0.0, kind="cactus", pot="CT_PlasterRed", h=0.7)
     kit.sack(B, 18.3, 16.4, zf, 15.0)
