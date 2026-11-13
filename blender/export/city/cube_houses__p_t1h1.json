@@ -1262,7 +1262,7 @@
   "5 cube houses on hexagonal pillars, deck at z 3.0, max height 13.8 m"
  ],
  "tris": {
-  "shell": 1321,
+  "shell": 1313,
   "detail": 5868,
   "windows": 140
  }

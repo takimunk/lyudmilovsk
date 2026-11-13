@@ -423,7 +423,7 @@ def _flight(B, fr):
     nst = 19
     r = DECK_Z / nst
     g = 0.30
-    pts = [(0.0, DECK_Z)]
+    pts = []      # (0, DECK_Z) would lie on the back edge's line (the deck's own edge is the top riser): a collinear point, a degenerate face
     for k in range(1, nst):
         pts.append((-g * (k - 1), DECK_Z - k * r))
         pts.append((-g * k, DECK_Z - k * r))

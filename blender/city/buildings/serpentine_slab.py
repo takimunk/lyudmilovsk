@@ -405,6 +405,8 @@ def _pergola(B, a, b, zr, rnd):
         for p in poly:
             if not clean or math.hypot(p[0] - clean[-1][0], p[1] - clean[-1][1]) > 1e-4:
                 clean.append(p)
+        while len(clean) > 3 and math.hypot(clean[0][0] - clean[-1][0], clean[0][1] - clean[-1][1]) <= 1e-4:
+            clean.pop()          # the closing point repeats the first: a zero-length side, a degenerate face
         mm = Mesh()
         extrude_profile(mm, "CT_ConcreteWhite", "CT_ConcreteWhite", clean, -0.1, 0.1, lambda aa, bb, t: (t, aa, bb))
         fr = Frame(a[0] + math.cos(yaw) * u, a[1] + math.sin(yaw) * u, yaw)
