@@ -275,6 +275,27 @@
   },
   "line.hero.sun_ow.3": {
    "note": "the hero blinded by the sun (ULyudSunGlare, docs/sun.md): a short involuntary 'ow' as he squints and blinks; never subtitled; (gasps) is acted out by MiniMax speech-2.6-hd"
+  },
+  "line.hero.topi.turn.1": {
+   "direction": "strained, short of breath, refusing, low; the dunes are too much for his mind (ULyudTopiMind turns him back)"
+  },
+  "line.hero.topi.turn.2": {
+   "direction": "dazed, wincing, a hand to his head, then deciding quietly to go back"
+  },
+  "line.hero.topi.turn.3": {
+   "direction": "unnerved whisper, uncanny dread, as if something vast is watching him",
+   "voice_setting": {
+    "speed": 0.88
+   }
+  },
+  "line.hero.topi.turn.4": {
+   "direction": "tense, clipped, backing away, trying to stay calm"
+  },
+  "line.hero.topi.wake.1": {
+   "direction": "just woken, drowsy and puzzled, quiet; then a slow wondering note as he notices sand on his hands",
+   "voice_setting": {
+    "speed": 0.9
+   }
   }
  },
  "notes": "A line key is line.<speaker>.<scene>.<n>; its text is in strings_<lang>.json. Everything sent to the TTS is pinned here: endpoint (model), voice preset name (voice_id is ElevenLabs' id of that premade voice, for the record), settings (stability, text normalization, overridable per speaker or per line), the direction tag put in front of the text, and language_code = the table's language. The request body of every take is kept in its sidecar audio/voice/<lang>/<key>.json. The endpoint has no seed, so a re-run gives the same voice and delivery but not a byte-identical take: the committed wav is the canonical one; regenerate only when its hash goes stale. Speakers with engine 'minimax' (the teenage hero and the children: ElevenLabs' premade voices are all adults) use MiniMax speech-2.6-hd through fal with a voice designed once by fal-ai/minimax/voice-design from the 'design' prompt; the designed voice_id lives in that fal/MiniMax account. If it is ever lost, design it again from the same prompt (a new id, a similar voice) and regenerate that speaker. MiniMax has no seed either; voice_setting (speed, pitch, vol) and language_boost are in the request."

@@ -101,6 +101,10 @@ public:
 	 *  eating from the palm is looked at closely. */
 	void SetViewZoom(float Zoom) { ViewZoomTarget = FMath::Clamp(Zoom, 0.3f, 1.f); }
 
+	/** Scales the walk, run and crouch speeds ReadInput sets every frame (1 normal; ULyudTopiMind slows him in the dunes). */
+	void SetSpeedScale(float Scale) { SpeedScale = FMath::Clamp(Scale, 0.05f, 1.f); }
+	float GetSpeedScale() const { return SpeedScale; }
+
 	UPROPERTY(EditAnywhere, Category = "Hero|Input")
 	TSoftObjectPtr<UInputAction> MoveAction;
 	UPROPERTY(EditAnywhere, Category = "Hero|Input")
@@ -173,6 +177,7 @@ private:
 	float ReachCrouch = 0.f;
 	float ViewZoomTarget = 1.f;
 	float ViewZoom = 1.f;
+	float SpeedScale = 1.f;
 	double SwimClock = 0.0;
 	bool bHeadShown = false;
 	void OnJumpPressed();

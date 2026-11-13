@@ -299,6 +299,8 @@ void ULyudSoundscapeSubsystem::LoadSounds()
 		{ TEXT("Restaurant"), TEXT("rest_kitchen") }, { TEXT("Restaurant"), TEXT("rest_room") }, { TEXT("Restaurant"), TEXT("rest_music") },
 		{ TEXT("Restaurant"), TEXT("rest_door") }, { TEXT("Restaurant"), TEXT("rest_menu") }, { TEXT("Restaurant"), TEXT("rest_tray") },
 		{ TEXT("Restaurant"), TEXT("rest_coins") },
+		// Topi (ULyudTopiMind: the heartbeat as the place presses on him, the river Ural's hum at night)
+		{ TEXT("Topi"), TEXT("topi_heart") }, { TEXT("Topi"), TEXT("ural_hum") },
 	};
 	for (const auto& G : Groups)
 	{
@@ -1095,13 +1097,30 @@ void ULyudSoundscapeSubsystem::PlayNextCue()
 	UpdateMusic();
 }
 
+void ULyudSoundscapeSubsystem::SetMusicHold(const UObject* Owner, bool bHold)
+{
+	if (!Owner)
+	{
+		return;
+	}
+	if (bHold)
+	{
+		MusicHolds.AddUnique(TWeakObjectPtr<const UObject>(Owner));
+	}
+	else
+	{
+		MusicHolds.Remove(TWeakObjectPtr<const UObject>(Owner));
+	}
+}
+
 void ULyudSoundscapeSubsystem::UpdateMusic()
 {
 	if (!MusicA || !MusicB)
 	{
 		return;
 	}
-	const bool bOn = CVarSound.GetValueOnGameThread() > 0 && CVarMusic.GetValueOnGameThread() > 0 && Cues.Num() > 0 && !bVacuum;
+	MusicHolds.RemoveAllSwap([](const TWeakObjectPtr<const UObject>& H) { return !H.IsValid(); });
+	const bool bOn = CVarSound.GetValueOnGameThread() > 0 && CVarMusic.GetValueOnGameThread() > 0 && Cues.Num() > 0 && !bVacuum && MusicHolds.Num() == 0;
 	UAudioComponent* Cur = bMusicOnA ? MusicA : MusicB;
 	const FName NewMood = ComputeMood();
 	const bool bMoodChanged = NewMood != Mood;

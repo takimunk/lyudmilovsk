@@ -75,6 +75,9 @@ public:
 	 *  go quiet; what is heard there its own system plays. */
 	UFUNCTION(BlueprintCallable, Category = "Sound") void SetVacuum(bool bOn) { bVacuum = bOn; }
 	UFUNCTION(BlueprintPure, Category = "Sound") bool IsVacuum() const { return bVacuum; }
+	/** Holds the ambient music off (fading the playing cue) while any Owner holds it, the bed and sounds untouched: a
+	 *  place playing its own music (ULyudTopiMind in the dunes) calls this. A destroyed Owner lets go by itself. */
+	void SetMusicHold(const UObject* Owner, bool bHold);
 	/** Text for logs and tests: every input of the bed and the music's state. */
 	UFUNCTION(BlueprintCallable, Category = "Sound") FString DebugReport() const;
 
@@ -125,6 +128,8 @@ private:
 	bool bLeftFoot = false;
 	bool bBirdFlying = false;
 	bool bVacuum = false;
+	/** SetMusicHold's holders. */
+	TArray<TWeakObjectPtr<const UObject>> MusicHolds;
 	TMap<FIntPoint, FTreeCell> TreeGrid;
 	bool bTreeGridBuilt = false;
 	float LastWind = 0.f, LastGust = 0.f;

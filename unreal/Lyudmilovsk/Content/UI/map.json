@@ -128,6 +128,14 @@
    "r": 12.0,
    "kind": "building",
    "known": true
+  },
+  {
+   "id": "topi",
+   "x": 300.0,
+   "y": -850.0,
+   "r": 70.0,
+   "kind": "nature",
+   "known": true
   }
  ]
 }
