@@ -183,8 +183,11 @@ namespace
 	}
 }
 
+int RenderMain(int Argc, char** Argv);
+
 int main(int Argc, char** Argv)
 {
+	if (Argc > 1 && std::strcmp(Argv[1], "render") == 0) return RenderMain(Argc - 1, Argv + 1);
 	// Name or Name:age:day (one age and day of the year only)
 	std::vector<std::string> Names;
 	std::vector<float> OnlyAges, OnlyDays;
@@ -207,6 +210,7 @@ int main(int Argc, char** Argv)
 	if (!bAll && Names.empty())
 	{
 		Names = { "SiberianDwarfPine", "DwarfAlder", "GoldenRhododendron", "Fireweed", "MountainAvens", "CottonGrass",
+		          "SakhalinWillow", "BarWillow", "KamchatkaMeadowsweet", "CowParsnip", "RiverSedge",
 		          "DwarfBirch", "Juniper", "StoneBirch", "Bilberry", "Lingonberry" };
 	}
 	bool bOk = true;

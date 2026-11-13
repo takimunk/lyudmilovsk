@@ -4,6 +4,7 @@
 // shrubs take over from the trees and the meadows flower late. Three shrubs drawn by the forests (AProceduralForest bakes,
 // scattered by the thousand over open ground, so they are built cheap: few, long shoots and an early summary) and
 // four herbs drawn by AProceduralGrass herb patches near the camera. Their flowering is set here, not in ApplyBlossom.
+// Below them the river valley: two willows (forest bakes) and three herbs of the terraces and the wet gravel.
 //
 // The game calendar is the coast's (snow on the ground from late November to the March thaw); the North keeps it but
 // everything here wakes three to five weeks later than on the coast, as it does under the late snow up there.
@@ -433,9 +434,321 @@ namespace
 		S.LifeMax = 40.f;
 		return S;
 	}
+
+	// ---- The river valley (docs/north.md "Plants", "River valley"): the braided gravel river, its bars, islands and
+	// terraces, as on Kamchatka's Avacha. Willows on the gravel (forest bakes), the tall-herb meadow (шеломайник) on the
+	// terraces and sedge at the wet edges (herb patches).
+
+	/**
+	 * Chosenia arbutifolia (Salix arbutifolia), Sakhalin willow (чозения толокнянколистная): the tree of Kamchatka's
+	 * gravel bars, first on new gravel after a flood, in tall narrow groves along the channels. One straight grey trunk,
+	 * 8-15 m, ascending limbs and a narrow, open crown; narrow pale blue-green leaves; the young shoots red under a bluish
+	 * bloom, bright against the snow. Small hanging catkins in early June with the leaves; the leaves fall yellow early in
+	 * the autumn. Fast-growing, short-lived for a tree (a century).
+	 */
+	FPlantSpecies SakhalinWillow()
+	{
+		FPlantSpecies S;
+		S.Name = TEXT("SakhalinWillow");
+		S.MaxHeight = 14.f;
+		S.GrowthRate = 0.07f;
+		S.GrowthShape = 1.3f;
+		S.LeaderFraction = 0.72f;
+		S.TrunkRadiusPerHeight = 0.014f;
+		S.RingWidth = 0.002f;
+		S.MinRadius = 0.006f;
+		// the lower limbs shed early: a tall clean trunk, a narrow crown of steep limbs
+		S.CrownBase = 0.3f;
+		S.CrownWidth = 0.38f;
+		S.TrunkNodeSpacing = 0.3f;
+		S.Branch1Angle = 38.f;
+		S.Branch1AngleTop = 22.f;
+		S.Branch1MaxLength = 3.6f;
+		S.Branch1Profile = FVector(0.45, 1.0, 0.5);
+		S.LengthTau = 6.f;
+		S.Tropism = 0.1f;
+		S.Wobble = 0.22f;
+		S.Kink = 0.2f;
+		S.KinkSpacing = 0.6f;
+		S.TwigHang = 0.15f;
+		S.Branch2Spacing = 0.2f;
+		S.Branch2Angle = 40.f;
+		S.Branch2MaxLength = 1.1f;
+		S.Branch2LengthRatio = 0.4f;
+		S.Branch2ShadeDepth = 2.2f;
+		S.TwigRadiusScale = 0.6f;
+		S.BranchRadiusBase = 0.003f;
+		S.BranchRadiusPerLength = 0.007f;
+		S.LeafyTipLength = 2.4f;
+		S.LeafSpacing = 0.09f;
+		S.LeafClusterSize = 0.32f;
+		// narrow lanceolate leaves, pale and glaucous
+		S.Leaf.Length = 0.095f;
+		S.Leaf.Width = 0.22f;
+		S.Leaf.WidestAt = 0.4f;
+		S.Leaf.Teeth = 0;
+		S.Leaf.Petiole = 0.08f;
+		S.Leaf.Fold = 0.15f;
+		S.Leaf.PerCluster = 7;
+		S.Bark.Pattern = EPlantBarkPattern::Furrows;
+		S.Bark.TileWidth = 0.12f;
+		S.Bark.TileHeight = 0.5f;
+		S.Bark.Depth = 0.6f;
+		S.Bark.RidgeColour = C(0.22f, 0.2f, 0.17f);
+		S.Bark.FurrowColour = C(0.08f, 0.07f, 0.06f);
+		S.Bark.TwigRadius = 0.007f;
+		S.Bark.TwigColour = C(0.24f, 0.07f, 0.05f);
+		S.BudBreakDay = 148.f;
+		S.FullLeafDay = 170.f;
+		S.ColourStartDay = 248.f;
+		S.ColourFullDay = 270.f;
+		S.LeafDropStartDay = 260.f;
+		S.BareDay = 290.f;
+		S.SpringLeafColour = C(0.17f, 0.27f, 0.09f);
+		S.SummerLeafColour = C(0.09f, 0.15f, 0.075f);
+		S.AutumnLeafColour = C(0.4f, 0.36f, 0.06f);
+		S.AutumnLeafColourLate = C(0.5f, 0.36f, 0.07f);
+		FPlantBlossom& B = S.Blossom;
+		B.Form = EPlantBlossomForm::Catkin;
+		B.StartDay = 145.f; B.PeakDay = 156.f; B.EndDay = 170.f;
+		B.Size = 0.035f; B.Thickness = 0.22f; B.PerCluster = 2;
+		B.Chance = 0.35f; B.PerTwig = 2; B.MinAge = 8.f;
+		B.FreshColour = C(0.5f, 0.45f, 0.14f); B.AgedColour = C(0.15f, 0.12f, 0.05f);
+		B.FarTint = 0.25f;
+		S.LifeMedian = 90.f;
+		S.LifeSpread = 0.2f;
+		S.LifeMax = 150.f;
+		S.DeclineYears = 12.f;
+		S.SnagYears = 8.f;
+		S.Sway = 9.f;
+		S.WindBend = 0.12f;
+		return S;
+	}
+
+	/**
+	 * Shrub willows of the gravel bars (тальник: Salix udensis, S. schwerinii and their kin): thickets 1.5-3 m of many
+	 * straight wands from the root, red-brown and olive, narrow leaves dark above and silvery beneath. Silver pussy
+	 * catkins on the bare wands in late May, the first colour of the valley's spring; the leaves go yellow-green late.
+	 * The flood bends them down and they come up again.
+	 */
+	FPlantSpecies BarWillow()
+	{
+		FPlantSpecies S;
+		S.Name = TEXT("BarWillow");
+		S.MaxHeight = 2.8f;
+		S.GrowthRate = 0.18f;
+		S.GrowthShape = 1.1f;
+		S.LeaderFraction = 0.12f;
+		S.TrunkRadiusPerHeight = 0.014f;
+		S.RingWidth = 0.001f;
+		S.MinRadius = 0.006f;
+		S.CrownBase = 0.f;
+		S.CrownWidth = 1.f;
+		// a stool of wands, two at a node, nearly upright
+		S.TrunkNodeSpacing = 0.07f;
+		S.WhorlSize = 2;
+		S.Branch1Angle = 30.f;
+		S.Branch1AngleTop = 18.f;
+		S.Branch1MaxLength = 2.7f;
+		S.Branch1Profile = FVector(1.0, 0.95, 0.7);
+		S.LengthTau = 4.f;
+		S.Tropism = 0.18f;
+		S.Wobble = 0.18f;
+		S.Kink = 0.1f;
+		S.KinkSpacing = 0.6f;
+		S.Branch2Spacing = 0.18f;
+		S.Branch2Angle = 35.f;
+		S.Branch2MaxLength = 0.6f;
+		S.Branch2LengthRatio = 0.35f;
+		S.Branch2ShadeDepth = 1.3f;
+		S.BranchRadiusBase = 0.002f;
+		S.BranchRadiusPerLength = 0.005f;
+		S.LeafyTipLength = 2.2f;
+		S.LeafSpacing = 0.09f;
+		S.LeafClusterSize = 0.26f;
+		S.Leaf.Length = 0.12f;
+		S.Leaf.Width = 0.2f;
+		S.Leaf.WidestAt = 0.45f;
+		S.Leaf.Teeth = 0;
+		S.Leaf.Petiole = 0.08f;
+		S.Leaf.Fold = 0.2f;
+		S.Leaf.PerCluster = 5;
+		S.Bark.Pattern = EPlantBarkPattern::Smooth;
+		S.Bark.TileWidth = 0.05f;
+		S.Bark.TileHeight = 0.2f;
+		S.Bark.Depth = 0.3f;
+		S.Bark.RidgeColour = C(0.17f, 0.12f, 0.08f);
+		S.Bark.FurrowColour = C(0.06f, 0.04f, 0.03f);
+		S.Bark.TwigRadius = 0.01f;
+		S.Bark.TwigColour = C(0.28f, 0.09f, 0.04f);
+		S.BudBreakDay = 142.f;
+		S.FullLeafDay = 165.f;
+		S.ColourStartDay = 255.f;
+		S.ColourFullDay = 282.f;
+		S.LeafDropStartDay = 268.f;
+		S.BareDay = 298.f;
+		S.SpringLeafColour = C(0.15f, 0.26f, 0.07f);
+		S.SummerLeafColour = C(0.065f, 0.12f, 0.05f);
+		S.AutumnLeafColour = C(0.22f, 0.22f, 0.05f);
+		S.AutumnLeafColourLate = C(0.38f, 0.3f, 0.06f);
+		// upright silver catkins on the bare wands, before the leaves
+		FPlantBlossom& B = S.Blossom;
+		B.Form = EPlantBlossomForm::Cone;
+		B.StartDay = 128.f; B.PeakDay = 140.f; B.EndDay = 158.f;
+		B.Size = 0.034f; B.Thickness = 0.5f; B.PerCluster = 2; B.Lift = 0.01f;
+		B.Chance = 0.6f; B.PerTwig = 2; B.MinAge = 3.f;
+		B.FreshColour = C(0.72f, 0.7f, 0.42f); B.AgedColour = C(0.3f, 0.3f, 0.15f);
+		B.FarTint = 0.4f;
+		// a clump outlives its wands: new ones come up from the root
+		S.LifeMedian = 110.f;
+		S.LifeSpread = 0.2f;
+		S.LifeMax = 160.f;
+		S.DeclineYears = 6.f;
+		S.SnagYears = 3.f;
+		S.Sway = 7.f;
+		S.WindBend = 0.1f;
+		return S;
+	}
+
+	/**
+	 * Filipendula camtschatica, Kamchatka meadowsweet (шеломайник, лабазник камчатский): the giant of the tall-herb
+	 * meadows on the river terraces, 2-3 m by late July. A few stout stems with huge palmate, lobed leaves on long stalks,
+	 * largest low down, and at the top loose plumes of tiny cream flowers in July and early August. It shoots up within a
+	 * month of the snow going and is flattened brown by the first snow.
+	 */
+	FPlantSpecies KamchatkaMeadowsweet()
+	{
+		FPlantSpecies S;
+		S.Name = TEXT("KamchatkaMeadowsweet");
+		FPlantHerb& H = S.Herb;
+		H.Form = EPlantHerbForm::Bush;
+		H.Height = 2.3f;
+		H.Spread = 0.9f;
+		H.MatureYears = 3.f;
+		H.Stems = 3;
+		H.Branches = 0;
+		H.Lean = 7.f;
+		H.StemRadius = 0.009f;
+		H.BareStem = 0.12f;
+		H.Leaves = 5;
+		H.Rise = FVector2D(55.0, 78.0);
+		H.Arch = 25.f;
+		H.StemColour = C(0.08f, 0.1f, 0.03f);
+		// the plume: heads of tiny cream florets at the tip and on short stalks round the top
+		H.Flower = EPlantFlowerForm::Umbel;
+		H.FlowerSize = 0.13f;
+		H.Flowers = 4;
+		H.SprayFrom = 0.86f;
+		H.FlowerColours = { C(0.82f, 0.75f, 0.48f), C(0.78f, 0.72f, 0.46f) };
+		H.CentreColour = C(0.7f, 0.6f, 0.3f);
+		H.BloomStart = 192.f;
+		H.BloomEnd = 228.f;
+		S.Leaf.Form = EPlantLeafForm::Palmate;
+		S.Leaf.Length = 0.55f;
+		S.Leaf.Width = 1.f;
+		S.Leaf.Lobes = 5;
+		S.Leaf.LobeDepth = 0.35f;
+		S.Leaf.Petiole = 0.7f;
+		S.Leaf.Fold = 0.2f;
+		NorthPerennial(S, 145.f, 262.f);
+		S.SpringLeafColour = C(0.11f, 0.2f, 0.05f);
+		S.SummerLeafColour = C(0.05f, 0.11f, 0.03f);
+		S.AutumnLeafColour = C(0.3f, 0.2f, 0.05f);
+		S.AutumnLeafColourLate = C(0.22f, 0.13f, 0.06f);
+		S.LifeMedian = 30.f;
+		S.LifeMax = 60.f;
+		return S;
+	}
+
+	/**
+	 * Heracleum lanatum (H. dulce), cow parsnip (борщевик сладкий, шеломайник's companion): 1.5-2 m hollow stems,
+	 * huge three-lobed leaves, and broad flat white umbels on the stem's top and its side branches in July. The stems
+	 * stand dry and pale into the autumn.
+	 */
+	FPlantSpecies CowParsnip()
+	{
+		FPlantSpecies S;
+		S.Name = TEXT("CowParsnip");
+		FPlantHerb& H = S.Herb;
+		H.Form = EPlantHerbForm::Bush;
+		H.Height = 1.75f;
+		H.Spread = 0.8f;
+		H.MatureYears = 3.f;
+		H.Stems = 2;
+		H.Branches = 1;
+		H.Lean = 6.f;
+		H.StemRadius = 0.012f;
+		H.BareStem = 0.1f;
+		H.Leaves = 3;
+		H.Rise = FVector2D(68.0, 80.0);
+		H.Arch = 30.f;
+		H.StemColour = C(0.12f, 0.13f, 0.05f);
+		H.Flower = EPlantFlowerForm::Umbel;
+		H.FlowerSize = 0.135f;
+		H.Flowers = 2;
+		H.FlowerColours = { C(0.85f, 0.85f, 0.8f), C(0.8f, 0.8f, 0.74f) };
+		H.CentreColour = C(0.6f, 0.6f, 0.4f);
+		H.BloomStart = 180.f;
+		H.BloomEnd = 218.f;
+		// three broad lobes, toothed
+		S.Leaf.Length = 0.45f;
+		S.Leaf.Width = 1.f;
+		S.Leaf.WidestAt = 0.45f;
+		S.Leaf.Lobes = 2;
+		S.Leaf.LobeDepth = 0.5f;
+		S.Leaf.Teeth = 6;
+		S.Leaf.TeethDepth = 0.12f;
+		S.Leaf.Petiole = 0.6f;
+		S.Leaf.Fold = 0.15f;
+		NorthPerennial(S, 140.f, 255.f);
+		S.SpringLeafColour = C(0.12f, 0.21f, 0.05f);
+		S.SummerLeafColour = C(0.055f, 0.12f, 0.03f);
+		S.AutumnLeafColour = C(0.35f, 0.3f, 0.07f);
+		S.AutumnLeafColourLate = C(0.3f, 0.18f, 0.06f);
+		S.LifeMedian = 8.f;
+		S.LifeMax = 15.f;
+		return S;
+	}
+
+	/**
+	 * Carex (C. rhynchophysa, C. aquatilis and kin), river sedge (осока): tussocks of long arching keeled leaves,
+	 * blue-green, along the wet gravel, the side channels and the spring's runnels; straw-coloured in the autumn.
+	 */
+	FPlantSpecies RiverSedge()
+	{
+		FPlantSpecies S;
+		S.Name = TEXT("RiverSedge");
+		FPlantHerb& H = S.Herb;
+		H.Form = EPlantHerbForm::Rosette;
+		H.Height = 0.5f;
+		H.Spread = 0.4f;
+		H.MatureYears = 3.f;
+		H.Leaves = 16;
+		H.Rise = FVector2D(5.0, 30.0);
+		H.Arch = 40.f;
+		H.Twist = 25.f;
+		H.ProfilePower = 0.5f;
+		H.StemColour = C(0.07f, 0.1f, 0.04f);
+		H.Flower = EPlantFlowerForm::None;
+		S.Leaf.Length = 0.7f;
+		S.Leaf.Width = 0.025f;
+		S.Leaf.WidestAt = 0.2f;
+		S.Leaf.Teeth = 0;
+		S.Leaf.Petiole = 0.f;
+		S.Leaf.Fold = 0.3f;
+		NorthPerennial(S, 135.f, 270.f);
+		S.SpringLeafColour = C(0.1f, 0.19f, 0.06f);
+		S.SummerLeafColour = C(0.06f, 0.12f, 0.06f);
+		S.AutumnLeafColour = C(0.3f, 0.24f, 0.09f);
+		S.AutumnLeafColourLate = C(0.38f, 0.3f, 0.14f);
+		S.LifeMedian = 20.f;
+		S.LifeMax = 40.f;
+		return S;
+	}
 }
 
 TArray<FPlantSpecies> PlantHerbs::NorthSpecies()
 {
-	return { SiberianDwarfPine(), DwarfAlder(), GoldenRhododendron(), Fireweed(), MountainAvens(), CottonGrass() };
+	return { SiberianDwarfPine(), DwarfAlder(), GoldenRhododendron(), Fireweed(), MountainAvens(), CottonGrass(),
+	         SakhalinWillow(), BarWillow(), KamchatkaMeadowsweet(), CowParsnip(), RiverSedge() };
 }

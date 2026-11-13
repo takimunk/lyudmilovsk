@@ -9,7 +9,8 @@ import unreal
 
 SHOTS = os.environ.get("NORTH_SHOTS", "/tmp/northshots")
 ONLY = [s for s in os.environ.get("NORTH_ONLY", "").split(",") if s]
-SPECIES = ["SiberianDwarfPine", "DwarfAlder", "GoldenRhododendron", "Fireweed", "MountainAvens", "CottonGrass"]
+SPECIES = ["SiberianDwarfPine", "DwarfAlder", "GoldenRhododendron", "Fireweed", "MountainAvens", "CottonGrass",
+           "SakhalinWillow", "BarWillow", "KamchatkaMeadowsweet", "CowParsnip", "RiverSedge"]
 # (camera, day): the forest and the patches follow the calendar's dev day as well
 PLAN = [("Ages", 175), ("Ages", 210), ("Ages", 262), ("Seasons", 0)]
 PLAN += [(s, d) for s in SPECIES for d in (175, 210)]

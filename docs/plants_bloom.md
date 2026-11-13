@@ -45,7 +45,10 @@ the dates are Kamchatka's, a month or more after the coast's:
 | SiberianDwarfPine | Cone | 172..200, 186 | purple-red male cones in clusters at the shoot bases |
 | DwarfAlder | Catkin | 150..180, 165 | yellow-green hanging catkins as the leaves open, two to a twig |
 | GoldenRhododendron | Blossom | 158..192, 175 | pale yellow five-petalled flowers, six to a cluster, as the snow goes |
+| SakhalinWillow | Catkin | 145..170, 156 | small yellow hanging catkins as the leaves come, two to a twig |
+| BarWillow | Cone | 128..158, 140 | upright silver-yellow pussy catkins on the bare wands, before the leaves |
 
 The North's herbs flower through `FPlantHerb` like the rest: fireweed 192..242 (magenta), mountain avens 168..205
-(white), cotton grass 175..228 (white heads). Check: the bloom level lists the three shrubs (`make_plant_bloom_level.py`,
-`shoot_plant_bloom.py`); `make_plant_north_level.py` / `shoot_plant_north.py` show all six by age and season.
+(white), cotton grass 175..228 (white heads); the river valley's Kamchatka meadowsweet 192..228 (cream heads),
+cow parsnip 180..218 (white umbels); river sedge draws none. Check: the bloom level lists the North's shrubs (`make_plant_bloom_level.py`,
+`shoot_plant_bloom.py`); `make_plant_north_level.py` / `shoot_plant_north.py` show all eleven by age and season.

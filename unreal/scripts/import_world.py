@@ -25,7 +25,8 @@ DEST = "/Game/Scene01/World"
 # Shrubs and the low dune pines turn into their level-0 summary sooner than trees (cm): a sea buckthorn
 # is ~650k leaf triangles up close, and every leaf casts a (non-Nanite) shadow.
 SUMMARY_DISTANCE = {"SeaBuckthorn": 5000.0, "Juniper": 5000.0, "DunePine": 8000.0,
-                    "SiberianDwarfPine": 5000.0, "DwarfAlder": 5000.0, "GoldenRhododendron": 3000.0}
+                    "SiberianDwarfPine": 5000.0, "DwarfAlder": 5000.0, "GoldenRhododendron": 3000.0,
+                    "BarWillow": 5000.0}
 # The forests (world_map.forests); LYUD_FORESTS=0 leaves them out (a quick build).
 FORESTS = os.environ.get("LYUD_FORESTS", "1") != "0"
 eal = unreal.EditorAssetLibrary

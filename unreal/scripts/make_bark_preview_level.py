@@ -5,7 +5,7 @@ import unreal
 
 SPECIES = ["PyramidalPoplar", "BlackPoplar", "Apple", "Maple", "SwampWhiteOak", "SilverBirch", "DownyBirch", "WeepingBirch",
            "DwarfBirch", "StoneBirch", "ScotsPine", "DunePine", "NorwaySpruce", "BlackAlder", "Rowan", "SeaBuckthorn", "Juniper", "Aspen",
-           "SiberianDwarfPine", "DwarfAlder", "GoldenRhododendron"]
+           "SiberianDwarfPine", "DwarfAlder", "GoldenRhododendron", "SakhalinWillow", "BarWillow"]
 AGES = (10, 35)
 eal = unreal.EditorAssetLibrary
 LEVEL = "/Game/Dev/L_BarkPreview"
