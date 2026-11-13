@@ -199,6 +199,13 @@ enum class EPlantFlowerForm : uint8
 	Five,
 	/** A head of small five-petalled florets (geranium). */
 	Umbel,
+	/**
+	 * A fluffy panicle of tiny florets as a few crossed cards with ragged edges, FlowerSize across and 1.4 x that tall
+	 * (meadowsweet): a plume for little geometry.
+	 */
+	Plume,
+	/** A flat umbel as one scalloped disc of florets, FlowerSize across, turned to the sky (cow parsnip, angelica). */
+	Disc,
 };
 
 UENUM(BlueprintType)
@@ -313,6 +320,8 @@ struct FPlantHerb
 	/** Rosette: flower scapes (stalks) and their height above the leaves, m; Bush: flowers per stem. */
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Herb|Flowers") int32 Flowers = 3;
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Herb|Flowers") float ScapeHeight = 0.2f;
+	/** Rosette: a scape's radius at its base, m (a cow parsnip's hollow stalk is thick). */
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Herb|Flowers") float ScapeRadius = 0.004f;
 	/** Bush: the flowers past the tip and the branches' sit on short stalks round the stem from this fraction of it up
 	 * (an aster's spray: 0.6; a meadowsweet's plume at the very top: 0.85). */
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Herb|Flowers") float SprayFrom = 0.6f;

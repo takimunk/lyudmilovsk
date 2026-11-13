@@ -388,6 +388,73 @@ namespace
 			}
 			break;
 		}
+		case EPlantFlowerForm::Plume:
+		{
+			// three crossed cards round the axis, from a little below the tip: ragged edges (rows alternately wide and
+			// narrow) and a keel standing out of each card make them read as one fluffy panicle
+			const float Tall = 1.4f * Size;
+			const FVector3f Base = P - Axis * (0.2f * Tall);
+			constexpr int32 Rows = 4;
+			for (int32 K = 0; K < 3; K++)
+			{
+				const FVector3f Side = Radial(PI * K / 3.f), Out = FVector3f::CrossProduct(Axis, Side).GetSafeNormal();
+				const int32 First = G.Pos.Num();
+				for (int32 R = 0; R <= Rows; R++)
+				{
+					const float T = (float)R / Rows;
+					const float Rag = R == 0 || R == Rows ? 1.f : (R % 2 ? 1.2f : 0.75f) * (0.9f + 0.2f * Hash01(Seed, Key, K * 8 + R, 65));
+					const float W = 0.5f * Size * FMath::Pow(FMath::Max(FMath::Sin(PI * FMath::Clamp(0.06f + 0.94f * T, 0.f, 1.f)), 0.f), 0.7f) * Rag;
+					const FVector3f C = Base + Axis * (Tall * T);
+					const float V = 0.62f - 0.57f * T;
+					G.Add((C - Side * W) * 100.f, Out, Axis, FVector2f(UV.U0, V));
+					G.Add((C + Out * (0.25f * W)) * 100.f, Out, Axis, FVector2f(0.5f * (UV.U0 + UV.U1), V));
+					G.Add((C + Side * W) * 100.f, Out, Axis, FVector2f(UV.U1, V));
+					if (R > 0)
+					{
+						const int32 A0 = First + 3 * (R - 1), A1 = First + 3 * R;
+						G.Tris[Flowers].Add(FIntVector3(A0, A1, A1 + 1)); G.Tris[Flowers].Add(FIntVector3(A0, A1 + 1, A0 + 1));
+						G.Tris[Flowers].Add(FIntVector3(A0 + 1, A1 + 1, A1 + 2)); G.Tris[Flowers].Add(FIntVector3(A0 + 1, A1 + 2, A0 + 2));
+					}
+				}
+			}
+			break;
+		}
+		case EPlantFlowerForm::Disc:
+		{
+			// a flat umbel, nearly level: a low dome of an inner ring and a rim scalloped into its umbellets
+			const FVector3f Ax = (Axis + Up * 2.f).GetSafeNormal();
+			const FVector3f Dx = SideOf(Ax, Spin), Dy = FVector3f::CrossProduct(Ax, Dx);
+			const float R = 0.5f * Size;
+			const float Uc = 0.5f * (UV.U0 + UV.U1);
+			const int32 C = G.Add((P + Ax * (0.1f * R)) * 100.f, Ax, Dx, FVector2f(Uc, 0.84f));
+			constexpr int32 Inner = 8, Rim = 16;
+			const int32 In0 = G.Pos.Num();
+			for (int32 I = 0; I < Inner; I++)
+			{
+				const float A = 2.f * PI * I / Inner;
+				G.Add((P + (Dx * FMath::Cos(A) + Dy * FMath::Sin(A)) * (0.5f * R) + Ax * (0.07f * R)) * 100.f, Ax, Dx,
+				      FVector2f(Uc + 0.3f * (UV.U1 - Uc) * FMath::Cos(A), 0.35f));
+			}
+			const int32 Rim0 = G.Pos.Num();
+			for (int32 I = 0; I < Rim; I++)
+			{
+				const float A = 2.f * PI * (I + 0.5f) / Rim;
+				const FVector3f Rd = Dx * FMath::Cos(A) + Dy * FMath::Sin(A);
+				const float Rr = R * (I % 2 ? 0.86f : 1.f) * (0.92f + 0.16f * Hash01(Seed, Key, I, 66));
+				G.Add((P + Rd * Rr) * 100.f, (Ax + Rd * 0.3f).GetSafeNormal(), Dx, FVector2f(Uc + 0.9f * (UV.U1 - Uc) * FMath::Cos(A), 0.12f));
+			}
+			for (int32 I = 0; I < Inner; I++)
+			{
+				// the centre's fan, then two rim points to each inner edge
+				const int32 A = In0 + I, B = In0 + (I + 1) % Inner;
+				const int32 R0 = Rim0 + 2 * I, R1 = Rim0 + 2 * I + 1, R2 = Rim0 + (2 * I + 2) % Rim;
+				G.Tris[Flowers].Add(FIntVector3(C, A, B));
+				G.Tris[Flowers].Add(FIntVector3(A, R0, R1));
+				G.Tris[Flowers].Add(FIntVector3(A, R1, B));
+				G.Tris[Flowers].Add(FIntVector3(B, R1, R2));
+			}
+			break;
+		}
 		default:
 			break;
 		}
@@ -460,7 +527,7 @@ namespace
 				const float Len = (H.Height * M + H.ScapeHeight) * (0.85f + 0.3f * Hash01(Seed, K, 0, 7));
 				const TArray<FVector3f> P = StemCurve(FVector3f(0.f, 0.f, 0.f), Len, 8.f + 12.f * Hash01(Seed, K, 0, 8), Az, 0.1f, 5);
 				TArray<float> R;
-				for (int32 I = 0; I < P.Num(); I++) R.Add(FMath::Max(0.0015f, 0.004f * (1.f - 0.5f * I / P.Num())));
+				for (int32 I = 0; I < P.Num(); I++) R.Add(FMath::Max(0.0015f, H.ScapeRadius * (1.f - 0.5f * I / P.Num())));
 				Tube(G, Stems, P, R, 4);
 				const FVector3f Top = P.Last(), Axis = (Up * 0.6f + FromAngles(70.f, Az)).GetSafeNormal();
 				Flower(G, H, Seed, 5000 + K, Top, Axis, H.FlowerSize);

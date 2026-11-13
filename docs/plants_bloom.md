@@ -49,6 +49,6 @@ the dates are Kamchatka's, a month or more after the coast's:
 | BarWillow | Cone | 128..158, 140 | upright silver-yellow pussy catkins on the bare wands, before the leaves |
 
 The North's herbs flower through `FPlantHerb` like the rest: fireweed 192..242 (magenta), mountain avens 168..205
-(white), cotton grass 175..228 (white heads); the river valley's Kamchatka meadowsweet 192..228 (cream heads),
+(white), cotton grass 175..228 (white heads); the river valley's Kamchatka meadowsweet 192..228 (cream plumes),
 cow parsnip 180..218 (white umbels); river sedge draws none. Check: the bloom level lists the North's shrubs (`make_plant_bloom_level.py`,
 `shoot_plant_bloom.py`); `make_plant_north_level.py` / `shoot_plant_north.py` show all eleven by age and season.
