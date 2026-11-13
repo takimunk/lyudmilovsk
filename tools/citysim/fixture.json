@@ -1,0 +1,32 @@
+{"things": [
+  {"id": "P-LIBRARY/shelf_birds", "plot": "P-LIBRARY", "kind": "shelf", "ue": [1000, 2000, 150], "yaw": 0,
+   "props": {"topic": "birds"}, "act": "read_birds", "hours": [10, 20], "days": "tue-sun"},
+  {"id": "P-LIBRARY/chair_1", "plot": "P-LIBRARY", "kind": "seat", "ue": [1200, 2000, 60], "yaw": 90, "props": {"height": 0.45}},
+  {"id": "P-LIBRARY/desk", "plot": "P-LIBRARY", "kind": "counter", "ue": [1000, 2300, 110], "yaw": 180,
+   "props": {"role": "librarian", "service": "lending"}, "act": "library_desk", "hours": [10, 20], "days": "tue-sun"},
+  {"id": "P-LIBRARY/leaflets", "plot": "P-LIBRARY", "kind": "take", "ue": [900, 2100, 100], "yaw": 0, "props": {"item": "leaflet"}},
+  {"id": "P-HOTEL/bed_1", "plot": "P-HOTEL", "kind": "bed", "ue": [6000, 6000, 50], "yaw": 0, "props": {"height": 0.5}},
+  {"id": "P-CINEMA/ticket", "plot": "P-CINEMA", "kind": "counter", "ue": [9000, 100, 110], "yaw": 0, "props": {"role": "cashier"},
+   "act": "cinema_ticket", "hours": [18, 2], "days": "daily"},
+  {"id": "P-CINEMA/screen", "plot": "P-CINEMA", "kind": "screen", "ue": [9000, 900, 300], "yaw": 180, "props": {"what": "film"},
+   "act": "watch_film"},
+  {"id": "P-GYM/bag", "plot": "P-GYM", "kind": "sport", "ue": [3000, -3000, 120], "yaw": 0, "props": {"what": "punching_bag"}},
+  {"id": "P-GYM/bag", "plot": "P-GYM", "kind": "sport", "ue": [3100, -3000, 120], "yaw": 0},
+  {"id": "P-ODD/thing", "kind": "unheard_of", "ue": [-500, -500, 0], "act": "no_such_act"}
+ ],
+ "acts": {
+  "read_birds": {"prompt": "city.act.read.prompt", "minutes": 20, "price": 0,
+                 "lines": ["city.read.birds.1", "city.read.birds.2", "city.read.birds.3"],
+                 "pose": "stand", "sound": "page_turn", "event": "read", "target": "birds",
+                 "give": [], "daily": 0, "needs_staff": "", "needs_item": "", "fade": false},
+  "library_desk": {"prompt": "city.act.library.prompt", "shop": "library", "title": "city.shop.library",
+                   "needs_staff": "librarian"},
+  "cinema_ticket": {"prompt": "city.act.ticket.prompt", "price": 30, "give": [["cinema_ticket", 1]], "needs_staff": "cashier",
+                    "daily": 2},
+  "watch_film": {"prompt": "city.act.film.prompt", "needs_item": "cinema_ticket", "minutes": 90, "fade": true,
+                 "lines": ["city.film.1"], "event": "watch", "target": "film", "screen": "film_stills"}
+ },
+ "shops": {
+  "library": [{"item": "bird_guide", "price": 25, "count": 1}, {"item": "notebook", "price": 5}],
+  "kiosk": {"goods": [{"item": "newspaper", "price": 3, "count": 1}]}
+ }}

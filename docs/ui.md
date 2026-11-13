@@ -64,6 +64,8 @@ rewards also give items and roubles. Any system reports events with `ULyudQuests
 | `wear` | item id | `ULyudInventory::Wear` / `Equip` |
 | `bird` | | the game screen, when the player's pawn stops being the hero |
 | `walk` | | the game screen, once per level start, 2.5 m from where the hero stood (the game starts standing) |
+| `visit` | plot id (`P-LIBRARY`) | `ULyudCityThings`, the first use of anything in a plot each game day |
+| `do` (or an act's own: `read`, `look`, `sit`, `play`...) | the act's target (default the act id) | `ULyudCityThings`, a thing used in a building (docs/city_interiors.md) |
 
 An objective's event may list alternatives (`leave_computer|walk`). An event that a later stage of an active quest waits for
 finishes the stages before it, so a teleport, a loaded save or steps done out of order never leave a quest on an old step
