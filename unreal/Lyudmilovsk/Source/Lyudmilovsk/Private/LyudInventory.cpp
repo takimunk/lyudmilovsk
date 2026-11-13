@@ -1225,6 +1225,8 @@ void ULyudInventoryUI::Use(FName Id)
 				if (ULyudInventory* I = Self.IsValid() ? ULyudInventory::Get(Self.Get()) : nullptr)
 				{
 					I->Remove(Id);
+					// drunk or eaten to the end ("use" is sent for anything that leaves the pocket, a thing handed over too)
+					ULyudQuests::Notify(I, TEXT("eat"), Id.ToString());
 					if (!Leaves.IsNone())
 					{
 						I->Add(Leaves);

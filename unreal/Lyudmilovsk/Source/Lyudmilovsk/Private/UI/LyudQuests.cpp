@@ -492,6 +492,12 @@ void ULyudQuests::HandleEvent(FName Event, const FString& Target, int32 N)
 			// (never a talk: a quest may send the hero back to the one who gave it, and that talk is not a step done early)
 			for (int32 Later = Progress[QI].Stage + 1; Later < Def->Stages.Num() && !(E.Get<0>() == TEXT("talk")); ++Later)
 			{
+				// a side quest's conversation is never jumped over: what is said there is the quest (the main quest keeps the
+				// old rule, its talks are steps of a walk that a teleport or a load may pass)
+				if (!Def->bMain && Def->Stages[Later - 1].Objectives.ContainsByPredicate([](const FLyudQuestObjective& O) { return O.Event == TEXT("talk") || O.Event == TEXT("bring"); }))
+				{
+					break;
+				}
 				const bool bWanted = Def->Stages[Later].Objectives.ContainsByPredicate([&E](const FLyudQuestObjective& O)
 				{
 					return O.Event != TEXT("have") && EventMatches(O.Event, E.Get<0>()) && TargetMatches(O.Target, E.Get<1>());

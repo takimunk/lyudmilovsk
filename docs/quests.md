@@ -35,8 +35,9 @@ rest (the speakers are in `localization/voice.json`); `tools/check_localization.
   (a `map.json` place) puts the marker on the map.
 - A quest begins by `auto_start`, by `start_on` (an event), by another stage's `reward.start`, or `Quest.Start`.
 - An event that a **later** stage waits for finishes the stages before it: steps done out of order never leave a quest
-  stuck. Write stages so that this is harmless. A `talk` never skips ahead: "ask, do, come back and tell" quests talk to
-  the same person on the first stage and on the last.
+  stuck. Two limits: a `talk` never skips ahead ("ask, do, come back and tell" quests talk to the same person twice),
+  and in a side quest nothing skips over a stage that has a `talk` or `bring` objective (what is said there is the
+  quest). The main quest keeps the plain rule.
 - `dev` is the developer mode's (where a jump to the stage lands); the game ignores it. Teleport points are in
   `Content/Dev/teleports/<quest>.json`.
 - Words: `quest.<id>.title|desc`, `quest.<id>.<stage>.log` (the journal entry when the stage begins, the hero's own
@@ -51,7 +52,8 @@ rest (the speakers are in `localization/voice.json`); `tools/check_localization.
 | `reach <place>` | came within a place's radius (as the hero or as a bird) | `ULyudQuests::UpdatePosition` |
 | `get`, `use`, `wear <item>`; `have <item>` | pocket changes; `have` counts what is in the pocket | `ULyudInventory` |
 | `bring <item>@<Npc>` | a talk with that person while the pocket holds `need` of the item: they are taken | `ULyudQuests` (on `talk`) |
-| `eat <item>` | food eaten to the end: a diner's dish to the last bite, food from the hand (`use` is sent for anything that leaves the pocket, a dish that is ordered too) | `ULyudBiteSubsystem`, `ULyudFoodSubsystem` |
+| `eat <item>` | food or drink finished: a diner's dish to the last bite, food from the hand, a bottle (`use` is sent for anything that leaves the pocket, a dish that is ordered too) | `ULyudBiteSubsystem`, `ULyudFoodSubsystem` |
+| `fish_caught <fish item>` | a fish landed on the rod | `ULyudFishing` |
 | `bird` | became a bird | the game screen |
 | `bird_seen`, `bird_tamed <Species>` | first sight; a bird ate from the palm | `ULyudBirdBook` |
 | `feeder_fill <feed>`, `feeder_fill_at <feed>@<place>` | a handful went into a feeder (and in which places the hero stood) | `UBirdFeederSubsystem::Fill` |

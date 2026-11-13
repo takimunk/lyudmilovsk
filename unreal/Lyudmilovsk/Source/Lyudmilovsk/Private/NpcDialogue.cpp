@@ -197,7 +197,8 @@ TArray<FNpcLine> UNpcDialogueSubsystem::StartTalk(FName Id, FName SunState)
 			}
 		}
 	}
-	const int32 Held = TalkCounts.FindOrAdd(Id)++;
+	// the everyday talks are counted only when one is said: a quest's talk does not use up the person's first words
+	const int32 Held = TalkCounts.FindRef(Id);
 	ULyudQuests::Notify(this, TEXT("talk"), Id.ToString());
 	if (QuestTalk && QuestTalk->Lines.Num() > 0)
 	{
@@ -214,6 +215,7 @@ TArray<FNpcLine> UNpcDialogueSubsystem::StartTalk(FName Id, FName SunState)
 			return QuestTalk->Lines;
 		}
 	}
+	TalkCounts.FindOrAdd(Id) = Held + 1;
 	if (Held == 0 && Npc->First.Num() > 0)
 	{
 		return Npc->First;
