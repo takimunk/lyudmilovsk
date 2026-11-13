@@ -21,6 +21,9 @@
 #include "HAL/IConsoleManager.h"
 #include "HAL/PlatformApplicationMisc.h"
 #include "HeroCharacter.h"
+#include "Bikes/HeroBike.h"
+#include "Birds/BirdPawn.h"
+#include "World/LyudLadder.h"
 #include "Kismet/GameplayStatics.h"
 #include "LyudInventory.h"
 #include "LyudText.h"
@@ -488,6 +491,10 @@ namespace LyudDev
 
 	bool Do(UWorld* World, FName Id)
 	{
+		if (!Enabled())
+		{
+			return false;
+		}
 		const FAction* A = FindAction(Id);
 		if (!A || !A->Run || !World)
 		{
@@ -501,15 +508,31 @@ namespace LyudDev
 
 	bool TeleportWorld(UWorld* World, const FVector& At, float Yaw, bool bGround, float Pitch)
 	{
+		if (!Enabled())
+		{
+			return false;
+		}
 		APlayerController* PC = PlayerOf(World);
 		APawn* Pawn = PC ? PC->GetPawn() : nullptr;
 		if (!Pawn)
 		{
 			return false;
 		}
-		if (AHeroCharacter* Hero = Cast<AHeroCharacter>(Pawn); Hero && Hero->IsSeated())
+		// whatever holds the body in place every frame lets go first, or the jump is undone on the next frame
+		if (AHeroCharacter* Hero = Cast<AHeroCharacter>(Pawn))
 		{
-			Hero->StandUp();
+			if (Hero->IsSeated())
+			{
+				Hero->StandUp();
+			}
+			if (UHeroBikeComponent* Bike = Hero->FindBike())
+			{
+				Bike->DropNow();
+			}
+			if (ULyudLadderClimber* Climber = Hero->FindComponentByClass<ULyudLadderClimber>(); Climber && Climber->IsOnLadder())
+			{
+				Climber->LetGo();
+			}
 		}
 		// At.Z is where the feet go (the capsule's middle is half its height above)
 		FVector P = At;
@@ -528,7 +551,14 @@ namespace LyudDev
 		{
 			P.Z = At.Z + Half + 2.0;
 		}
-		Pawn->SetActorLocation(P, false, nullptr, ETeleportType::TeleportPhysics);
+		if (ABirdPawn* BirdPawn = Cast<ABirdPawn>(Pawn))
+		{
+			BirdPawn->DevTeleport(P);
+		}
+		else
+		{
+			Pawn->SetActorLocation(P, false, nullptr, ETeleportType::TeleportPhysics);
+		}
 		Pawn->SetActorRotation(FRotator(0.f, Yaw, 0.f));
 		PC->SetControlRotation(FRotator(Pitch, Yaw, 0.f));
 		if (Char && Char->GetCharacterMovement())
@@ -591,6 +621,10 @@ namespace LyudDev
 
 	bool JumpToStage(UWorld* World, FName Quest, int32 Stage)
 	{
+		if (!Enabled())
+		{
+			return false;
+		}
 		ULyudQuests* Q = ULyudQuests::Get(World);
 		const FLyudQuestDef* Def = ULyudQuests::FindDef(Quest);
 		if (!Q || !Def || !Def->Stages.IsValidIndex(Stage))
@@ -641,6 +675,10 @@ namespace LyudDev
 
 	bool CompleteObjective(UWorld* World, FName Quest, int32 Objective)
 	{
+		if (!Enabled())
+		{
+			return false;
+		}
 		ULyudQuests* Q = ULyudQuests::Get(World);
 		if (!Q)
 		{
@@ -674,6 +712,10 @@ namespace LyudDev
 
 	bool PlayThrough(UWorld* World, FName Quest)
 	{
+		if (!Enabled())
+		{
+			return false;
+		}
 		ULyudQuests* Q = ULyudQuests::Get(World);
 		const FLyudQuestDef* Def = ULyudQuests::FindDef(Quest);
 		if (!Q || !Def)
@@ -862,7 +904,8 @@ namespace LyudDevBuiltins
 			return;
 		}
 		AHeroCharacter* Hero = HeroOf(World);
-		if (!Hero)
+		// a seat or a bike holds the body itself
+		if (!Hero || Hero->IsSeated() || Hero->IsOnBike())
 		{
 			return;
 		}
@@ -877,6 +920,12 @@ namespace LyudDevBuiltins
 			APlayerController* PC = H ? Cast<APlayerController>(H->GetController()) : nullptr;
 			if (!H || !PC)
 			{
+				// the hero lost his controller (became a bird): give him his body back as it was
+				if (H)
+				{
+					H->SetActorEnableCollision(true);
+					H->GetCharacterMovement()->SetMovementMode(MOVE_Falling);
+				}
 				GFly.Hero.Reset();
 				GFly.Tick.Reset();
 				return false;
@@ -1046,8 +1095,24 @@ namespace LyudDevBuiltins
 	FAutoAction GNight(TEXT("time.night"), TEXT("time"), TEXT("dev.action.time.night"), [](UWorld* W) { At(W, 23, 30); });
 	FAutoAction GPlusDay(TEXT("time.plus_day"), TEXT("time"), TEXT("dev.action.time.plus_day"),
 		[](UWorld* W) { if (UGameCalendar* Cal = CalOf(W)) Cal->SetNow(Cal->Now() + FTimespan::FromDays(1.0)); });
+	/** The speed time ran at before Freeze, to give back (a save while frozen keeps 0: unfreeze before saving). */
+	float GFrozenScale = 1.f;
 	FAutoAction GFreeze(TEXT("time.freeze"), TEXT("time"), TEXT("dev.action.time.freeze"),
-		[](UWorld* W) { if (UGameCalendar* Cal = CalOf(W)) Cal->SetTimeScale(Cal->TimeScale > 0.f ? 0.f : 1.f); },
+		[](UWorld* W)
+		{
+			if (UGameCalendar* Cal = CalOf(W))
+			{
+				if (Cal->TimeScale > 0.f)
+				{
+					GFrozenScale = Cal->TimeScale;
+					Cal->SetTimeScale(0.f);
+				}
+				else
+				{
+					Cal->SetTimeScale(GFrozenScale);
+				}
+			}
+		},
 		[](UWorld* W) { const UGameCalendar* Cal = CalOf(W); return Cal && Cal->TimeScale <= 0.f; });
 	FAutoAction GSlow(TEXT("time.slowmo"), TEXT("time"), TEXT("dev.action.time.slowmo"),
 		[](UWorld* W) { UGameplayStatics::SetGlobalTimeDilation(W, UGameplayStatics::GetGlobalTimeDilation(W) < 0.9f ? 1.f : 0.25f); },

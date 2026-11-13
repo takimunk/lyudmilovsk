@@ -380,6 +380,7 @@ void APlantDevTool::Open()
 	];
 	// over the HUD, the diary and the transit screen (85, 86), under the game menu (100)
 	Viewport->AddViewportWidgetContent(Panel.ToSharedRef(), 95);
+	SetActorTickEnabled(true);
 	PC->SetShowMouseCursor(true);
 	FInputModeGameAndUI Mode;
 	Mode.SetHideCursorDuringCapture(true);
@@ -417,9 +418,21 @@ void APlantDevTool::Tick(float DeltaSeconds)
 		bRebuild = false;
 		if (Panel.IsValid())
 		{
+			// the rebuilt panel picks the tree in view: keep the one being worked on (its time-lapse goes on)
+			const TWeakObjectPtr<AProceduralPlant> Keep = Plant;
 			Close();
 			Open();
+			if (Keep.IsValid())
+			{
+				Plant = Keep;
+			}
 		}
+	}
+	// nothing to do with the panel shut and no time-lapse running: no tick until the panel opens again
+	if (bBound && !bRebuild && !Panel.IsValid() && AgeSpeed <= 0.f && DaySpeed <= 0.f)
+	{
+		SetActorTickEnabled(false);
+		return;
 	}
 	AProceduralPlant* P = Plant.Get();
 	if (!P)

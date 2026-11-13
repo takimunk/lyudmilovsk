@@ -55,6 +55,10 @@ namespace LyudDevTabs
 	/** Whether a row passes the tab's search: every word of it in the shown name or the id. */
 	bool Matches(const FString& Filter, const FString& Name, FName Id)
 	{
+		if (Filter.IsEmpty())
+		{
+			return true;
+		}
 		TArray<FString> Words;
 		Filter.ParseIntoArrayWS(Words);
 		for (const FString& Word : Words)
