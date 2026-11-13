@@ -848,6 +848,12 @@ void ALyudDiner::Tick(float DeltaTime)
 				UE_LOG(LogTemp, Display, TEXT("DINERTEST served %s at spot %d"), *P.Item.ToString(), Spot);
 			}
 		}
+		else if (ULyudInventory* Inv = ULyudInventory::Get(this))
+		{
+			// every place on the counter is taken: back into the pocket it was bought into (OnBought took it out), not lost
+			Inv->Add(P.Item);
+			UE_LOG(LogTemp, Display, TEXT("DINERTEST no free place for %s: into the pocket"), *P.Item.ToString());
+		}
 	}
 	TickCoffee(DeltaTime);
 }
