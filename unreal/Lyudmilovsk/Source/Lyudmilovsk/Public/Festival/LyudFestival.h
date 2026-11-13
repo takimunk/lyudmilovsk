@@ -158,6 +158,8 @@ private:
 	/** Shows running, by festival.phase.show. */
 	UPROPERTY(Transient) TMap<FName, TObjectPtr<AActor>> Shows;
 	UPROPERTY(Transient) TMap<FName, TObjectPtr<UAudioComponent>> Music;
+	/** The calendar's seconds at the last update (0 before the first): a jump of the clock takes the old shows away. */
+	double LastCal = 0.0;
 
 	void Update();
 	void LoadFired();
@@ -242,6 +244,8 @@ public:
 	ALyudFireworks();
 	/** From Launch (cm, on the water out to sea) till EndsAt (game seconds of the calendar). */
 	void Setup(const FVector& Launch, const FVector& SeaDir, double InEndsAt);
+	/** No more shells: the ones in the air burst and fade, then the actor goes. */
+	void StopShow() { EndsAt = 0.0; }
 	virtual void Tick(float DeltaTime) override;
 
 private:
@@ -286,6 +290,8 @@ public:
 	bool Release(const FVector& At, bool bHero);
 	/** Whether a lantern is left to let go. */
 	bool HasFree() const;
+	/** No more lanterns let go by the town: the ones in the air fly on. */
+	void StopShow() { EndsAt = 0.0; }
 	FVector GetBeach() const { return Beach; }
 	virtual void Tick(float DeltaTime) override;
 

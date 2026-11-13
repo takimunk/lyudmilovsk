@@ -763,18 +763,54 @@ void ULyudFestivalSubsystem::Update()
 	RunningPhases = WantPhases;
 
 	// shows: the self-running ones (fireworks, lanterns, the bonfire) end by their own clock; the music stops with its phase
+	// the calendar was moved (a sleep, a developer's jump): back, or on by more than three hours since the last update
+	const bool bJumped = LastCal > 0.0 && (NowCal < LastCal - 1.0 || NowCal - LastCal > 3.0 * 3600.0);
+	LastCal = NowCal;
 	for (auto It = Shows.CreateIterator(); It; ++It)
 	{
-		if (!IsValid(It.Value()))
+		AActor* ShowActor = It.Value();
+		if (!IsValid(ShowActor))
 		{
 			It.RemoveCurrent();
 		}
 		else if (!WantShows.Contains(It.Key()))
 		{
-			// its phase is over (or the calendar moved): a little while for the last shells, then gone; the sky lanterns
-			// already up fly on (they stop being let go by their own clock and go when the last one is out of sight)
-			It.Value()->SetLifeSpan(It.Value()->IsA<ALyudSkyLanterns>() ? 1200.f : 20.f);
+			if (bJumped)
+			{
+				// the calendar moved: it belongs to another hour or day, gone at once
+				ShowActor->Destroy();
+			}
+			else
+			{
+				// its phase is over: a little while for the last shells, then gone; the sky lanterns already up fly on and go
+				// when the last one is out of sight. Told to stop, so a clock set back before its end starts nothing new
+				if (ALyudSkyLanterns* StoppedLanterns = Cast<ALyudSkyLanterns>(ShowActor))
+				{
+					StoppedLanterns->StopShow();
+				}
+				else if (ALyudFireworks* StoppedFireworks = Cast<ALyudFireworks>(ShowActor))
+				{
+					StoppedFireworks->StopShow();
+				}
+				ShowActor->SetLifeSpan(ShowActor->IsA<ALyudSkyLanterns>() ? 1200.f : 20.f);
+			}
 			It.RemoveCurrent();
+		}
+	}
+	if (bJumped)
+	{
+		// lanterns of a phase that ended before the jump are no longer in Shows and would fly on into another day
+		TSet<const AActor*> KeptShows;
+		for (const auto& Kept : Shows)
+		{
+			KeptShows.Add(Kept.Value.Get());
+		}
+		for (TActorIterator<ALyudSkyLanterns> LanternIt(World); LanternIt; ++LanternIt)
+		{
+			if (!KeptShows.Contains(*LanternIt))
+			{
+				LanternIt->Destroy();
+			}
 		}
 	}
 	for (auto It = Music.CreateIterator(); It; ++It)
