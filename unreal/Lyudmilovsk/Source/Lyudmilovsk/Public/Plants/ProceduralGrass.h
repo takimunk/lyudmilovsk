@@ -30,7 +30,8 @@ class UStaticMesh;
  * Lingonberry ...). The patch then scatters that herb instead of tufts, HerbDensity plants per square metre where its
  * HerbHabitat allows, as hierarchical instances of the herb's own two-LOD mesh in two seeds (no shadows, no collision),
  * only out to HerbDistance; the plants follow the calendar (leaves, flowers, autumn colour, gone in winter) like
- * AForestFloor's herbs, drawn with its M_FloorPlant.
+ * AForestFloor's herbs, drawn with its M_FloorPlant. A herb patch builds nothing until the player's camera first comes within
+ * its draw distance + 150 m (then near patches build and re-season one a frame); far away it does nothing.
  */
 UCLASS()
 class LYUDMILOVSK_API AProceduralGrass : public AActor
@@ -104,6 +105,8 @@ private:
 	void EnsureHerbAssets(const FPlantSpecies& S);
 	void ApplyHerbSeason(const FPlantSpecies& S, float Day);
 	float HerbDrawDistance(const FPlantSpecies& S) const;
+	/** Herb patches: the player's camera is within the draw distance + 150 m of the patch's rectangle (a far patch builds nothing). */
+	bool HerbNearPlayer(const FPlantSpecies& S) const;
 
 	UPROPERTY(VisibleAnywhere, Category = "Grass") TObjectPtr<UInstancedStaticMeshComponent> NearTufts;
 	UPROPERTY(VisibleAnywhere, Category = "Grass") TObjectPtr<UInstancedStaticMeshComponent> FarTufts;
@@ -118,6 +121,8 @@ private:
 	UPROPERTY(Transient) TObjectPtr<UMaterialInterface> HerbMaterialAsset;
 	uint32 HerbKeys[2] = {};
 	bool bHerbAlive = true;
+	/** Herb patches: laid out (Rebuild ran in play); until the player first comes near, nothing is built. */
+	bool bHerbBuilt = false;
 
 	FName BuiltSpecies;
 	/** lyud.GrassDensity the tufts were laid out with (-1: not yet); the graphics level's Foliage changes it. */
