@@ -98,6 +98,7 @@ namespace
 					const TSharedPtr<FJsonObject> S = SV->AsObject();
 					FLyudQuestStage Stage;
 					Stage.Id = *S->GetStringField(TEXT("id"));
+					S->TryGetBoolField(TEXT("no_skip"), Stage.bNoSkip);
 					for (const TSharedPtr<FJsonValue>& OV : S->GetArrayField(TEXT("objectives")))
 					{
 						Stage.Objectives.Add(ParseObjective(OV->AsObject()));
@@ -507,10 +508,20 @@ void ULyudQuests::HandleEvent(FName Event, const FString& Target, int32 N)
 				bChanged |= Start(D.Id);
 			}
 		}
+		// a quest that a reward begins while this event is handled does not hear the event that paid the reward
+		// (the talk that ends one quest is not also the first talk of the next)
+		TSet<FName> Live;
+		for (const FLyudQuestProgress& QP : Progress)
+		{
+			if (QP.State == ELyudQuestState::Active)
+			{
+				Live.Add(QP.Quest);
+			}
+		}
 		// the active ones' objectives (by index: a finished stage may add quests to Progress)
 		for (int32 QI = 0; QI < Progress.Num(); ++QI)
 		{
-			if (Progress[QI].State != ELyudQuestState::Active)
+			if (Progress[QI].State != ELyudQuestState::Active || !Live.Contains(Progress[QI].Quest))
 			{
 				continue;
 			}
@@ -526,6 +537,11 @@ void ULyudQuests::HandleEvent(FName Event, const FString& Target, int32 N)
 				// a side quest's conversation is never jumped over: what is said there is the quest (the main quest keeps the
 				// old rule, its talks are steps of a walk that a teleport or a load may pass)
 				if (!Def->bMain && Def->Stages[Later - 1].Objectives.ContainsByPredicate([](const FLyudQuestObjective& O) { return O.Event == TEXT("talk") || O.Event == TEXT("bring"); }))
+				{
+					break;
+				}
+				// "no_skip": a stage that must be done itself (the feeder hung in THIS yard before its visitors are counted)
+				if (Def->Stages[Later - 1].bNoSkip)
 				{
 					break;
 				}

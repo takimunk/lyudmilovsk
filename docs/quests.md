@@ -38,6 +38,10 @@ rest (the speakers are in `localization/voice.json`); `tools/check_localization.
   stuck. Two limits: a `talk` never skips ahead ("ask, do, come back and tell" quests talk to the same person twice),
   and in a side quest nothing skips over a stage that has a `talk` or `bring` objective (what is said there is the
   quest). The main quest keeps the plain rule.
+- `"no_skip": true` on a stage: later stages' events never jump over it (the count's feeder must be hung in the yard
+  before visitors to any feeder are counted). A quest begun by a reward does not hear the event that paid the reward
+  (the talk that ends one quest is not the first talk of the next), and a quest that begins with its first stage already
+  met (the thing is in the pocket) moves on at once.
 - `dev` is the developer mode's (where a jump to the stage lands); the game ignores it. Teleport points are in
   `Content/Dev/teleports/<quest>.json`.
 - Words: `quest.<id>.title|desc`, `quest.<id>.<stage>.log` (the journal entry when the stage begins, the hero's own
