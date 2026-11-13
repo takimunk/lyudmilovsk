@@ -665,7 +665,10 @@ static FAutoConsoleCommandWithWorldAndArgs GQuestGoToPerson(TEXT("Quest.GoToPers
 		Pawn->TeleportTo(To + FVector(0.0, 0.0, 95.0), FRotator(0.f, Info.Yaw + 180.f, 0.f), false, true);
 		if (AController* C = Pawn->GetController())
 		{
-			C->SetControlRotation(FRotator(0.f, Info.Yaw + 180.f, 0.f));
+			// eyes on their face (about 1.55 m over their feet), so the talk (E, Npc.Talk) finds them close by too
+			const FVector Eyes = Pawn->GetActorLocation() + FVector(0.0, 0.0, Pawn->BaseEyeHeight);
+			const FVector Face = Info.Location + FVector(0.0, 0.0, 155.0);
+			C->SetControlRotation(FRotator((float)(Face - Eyes).Rotation().Pitch, Info.Yaw + 180.f, 0.f));
 		}
 		UE_LOG(LogTemp, Warning, TEXT("QUESTTEST goto %s: %s (%s, %s) at %s"), *Args[0], *Info.Activity, *Info.State, IsValid(Info.Actor) && !Info.Actor->IsHidden() ? TEXT("seen") : TEXT("unseen"), *Info.Location.ToCompactString());
 	}));
