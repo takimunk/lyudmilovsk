@@ -61,7 +61,7 @@
    "household": "t_p-wave_7-06",
    "home": "P-WAVE/7-06",
    "chronotype": "lark",
-   "wake": 5.4,
+   "wake": 9.01,
    "bed": 1.51,
    "spread": 0.35,
    "duties": [
@@ -164,7 +164,7 @@
    "home": "P-T5H1/10-05",
    "chronotype": "usual",
    "wake": 6.57,
-   "bed": 23.74,
+   "bed": 23.07,
    "spread": 0.92,
    "duties": [],
    "friends": [
@@ -203,7 +203,7 @@
    "home": "P-SERPENTINE/4-14",
    "chronotype": "usual",
    "wake": 6.63,
-   "bed": 23.85,
+   "bed": 23.13,
    "spread": 0.48,
    "duties": [
     {
@@ -422,7 +422,7 @@
    "home": "P-CAPSULE/9-06",
    "chronotype": "lark",
    "wake": 5.04,
-   "bed": 22.08,
+   "bed": 21.54,
    "spread": 0.56,
    "duties": [],
    "friends": [
@@ -686,7 +686,7 @@
    "home": "P-SERPENTINE/7-03",
    "chronotype": "owl",
    "wake": 7.82,
-   "bed": 1.94,
+   "bed": 0.32,
    "spread": 0.56,
    "duties": [
     {
@@ -824,7 +824,7 @@
    "home": "P-SERPENTINE/6-07",
    "chronotype": "usual",
    "wake": 6.01,
-   "bed": 23.93,
+   "bed": 22.51,
    "spread": 0.58,
    "duties": [
     {
@@ -910,7 +910,7 @@
    "home": "W5-D103",
    "chronotype": "owl",
    "wake": 6.77,
-   "bed": 2.39,
+   "bed": 23.27,
    "spread": 0.88,
    "duties": [
     {
@@ -1510,7 +1510,7 @@
    "home": "W5-D004",
    "chronotype": "owl",
    "wake": 6.11,
-   "bed": 1.81,
+   "bed": 22.61,
    "spread": 0.65,
    "duties": [
     {
@@ -1558,7 +1558,7 @@
    "home": "P-SERPENTINE/1-04",
    "chronotype": "usual",
    "wake": 6.93,
-   "bed": 0.19,
+   "bed": 23.43,
    "spread": 0.75,
    "duties": [
     {
@@ -2056,7 +2056,7 @@
    "home": "P-UNITE/1-19",
    "chronotype": "owl",
    "wake": 7.68,
-   "bed": 2.07,
+   "bed": 0.18,
    "spread": 0.82,
    "duties": [
     {
@@ -2159,7 +2159,7 @@
    "home": "P-UNITE/1-03",
    "chronotype": "night",
    "wake": 8.94,
-   "bed": 4.04,
+   "bed": 1.44,
    "spread": 0.51,
    "duties": [
     {
@@ -2209,8 +2209,8 @@
    "household": "t_p-unite_1-03",
    "home": "P-UNITE/1-03",
    "chronotype": "usual",
-   "wake": 6.78,
-   "bed": 22.5,
+   "wake": 8.5,
+   "bed": 1.0,
    "spread": 0.91,
    "duties": [
     {
@@ -2423,7 +2423,7 @@
    "home": "P-WAVE/7-04",
    "chronotype": "usual",
    "wake": 6.68,
-   "bed": 23.97,
+   "bed": 23.18,
    "spread": 0.96,
    "duties": [
     {
@@ -2572,8 +2572,8 @@
    "household": "t_p-wave_7-04",
    "home": "P-WAVE/7-04",
    "chronotype": "owl",
-   "wake": 9.85,
-   "bed": 2.26,
+   "wake": 7.5,
+   "bed": 0.0,
    "spread": 0.62,
    "duties": [
     {
@@ -2628,7 +2628,7 @@
    "home": "P-T3H2/3-06",
    "chronotype": "owl",
    "wake": 7.31,
-   "bed": 2.19,
+   "bed": 23.81,
    "spread": 0.72,
    "duties": [
     {
@@ -2733,7 +2733,7 @@
    "home": "P-RISER2/2-04",
    "chronotype": "owl",
    "wake": 6.27,
-   "bed": 1.35,
+   "bed": 22.77,
    "spread": 0.91,
    "duties": [
     {
@@ -3127,7 +3127,7 @@
    "home": "P-T3H2/1-06",
    "chronotype": "usual",
    "wake": 5.68,
-   "bed": 23.1,
+   "bed": 22.18,
    "spread": 0.86,
    "duties": [
     {
@@ -3227,7 +3227,7 @@
    "home": "P-WAVE/15-01",
    "chronotype": "usual",
    "wake": 5.63,
-   "bed": 23.01,
+   "bed": 22.13,
    "spread": 0.46,
    "duties": [
     {
@@ -3479,7 +3479,7 @@
    "home": "P-UNITE/9-07",
    "chronotype": "lark",
    "wake": 4.43,
-   "bed": 21.47,
+   "bed": 20.93,
    "spread": 0.37,
    "duties": [
     {
@@ -3614,7 +3614,7 @@
    "home": "W2-D004",
    "chronotype": "usual",
    "wake": 5.9,
-   "bed": 23.17,
+   "bed": 22.4,
    "spread": 0.6,
    "duties": [
     {
@@ -3698,7 +3698,7 @@
    "home": "P-SANATORIUM/4-07",
    "chronotype": "lark",
    "wake": 23.03,
-   "bed": 11.58,
+   "bed": 14.53,
    "spread": 0.49,
    "duties": [
     {
@@ -3803,7 +3803,7 @@
    "home": "P-UNITE/9-14",
    "chronotype": "lark",
    "wake": 4.29,
-   "bed": 21.81,
+   "bed": 20.79,
    "spread": 0.49,
    "duties": [
     {
@@ -4125,7 +4125,7 @@
    "home": "P-T5H1/4-05",
    "chronotype": "usual",
    "wake": 6.27,
-   "bed": 23.82,
+   "bed": 22.77,
    "spread": 0.96,
    "duties": [
     {
@@ -4414,7 +4414,7 @@
    "home": "P-UNITE/9-17",
    "chronotype": "usual",
    "wake": 6.86,
-   "bed": 0.23,
+   "bed": 23.36,
    "spread": 0.41,
    "duties": [
     {
@@ -4463,7 +4463,7 @@
    "home": "P-T1H2/2-01",
    "chronotype": "owl",
    "wake": 7.58,
-   "bed": 1.24,
+   "bed": 0.08,
    "spread": 0.62,
    "duties": [
     {
@@ -4615,7 +4615,7 @@
    "home": "P-RISER2/1-02",
    "chronotype": "owl",
    "wake": 7.55,
-   "bed": 1.07,
+   "bed": 0.05,
    "spread": 0.87,
    "duties": [
     {
@@ -4664,7 +4664,7 @@
    "home": "P-RISER2/1-02",
    "chronotype": "usual",
    "wake": 6.74,
-   "bed": 23.82,
+   "bed": 23.24,
    "spread": 0.68,
    "duties": [
     {
@@ -4803,7 +4803,7 @@
    "home": "W4-D041",
    "chronotype": "usual",
    "wake": 6.99,
-   "bed": 0.04,
+   "bed": 23.49,
    "spread": 0.94,
    "duties": [],
    "friends": [
@@ -5043,7 +5043,7 @@
    "home": "P-T1H3/0-01",
    "chronotype": "usual",
    "wake": 6.59,
-   "bed": 23.87,
+   "bed": 23.09,
    "spread": 0.51,
    "duties": [
     {
@@ -5359,7 +5359,7 @@
    "home": "P-SERPENTINE/5-02",
    "chronotype": "owl",
    "wake": 6.96,
-   "bed": 1.07,
+   "bed": 23.46,
    "spread": 0.98,
    "duties": [
     {
@@ -5407,7 +5407,7 @@
    "home": "P-SERPENTINE/5-02",
    "chronotype": "owl",
    "wake": 6.79,
-   "bed": 2.45,
+   "bed": 23.29,
    "spread": 0.69,
    "duties": [
     {
@@ -5936,7 +5936,7 @@
    "home": "P-UNITE/13-26",
    "chronotype": "lark",
    "wake": 4.51,
-   "bed": 21.95,
+   "bed": 21.01,
    "spread": 0.5,
    "duties": [],
    "friends": [
@@ -6011,7 +6011,7 @@
    "home": "P-T3H2/2-09",
    "chronotype": "owl",
    "wake": 9.58,
-   "bed": 2.78,
+   "bed": 2.08,
    "spread": 0.92,
    "duties": [
     {
@@ -6063,7 +6063,7 @@
    "home": "P-SANATORIUM/2-20",
    "chronotype": "usual",
    "wake": 6.49,
-   "bed": 23.96,
+   "bed": 22.99,
    "spread": 0.78,
    "duties": [],
    "friends": [
@@ -6101,7 +6101,7 @@
    "home": "P-SERPENTINE/2-13",
    "chronotype": "owl",
    "wake": 9.49,
-   "bed": 2.71,
+   "bed": 1.99,
    "spread": 0.81,
    "duties": [
     {
@@ -6154,7 +6154,7 @@
    "home": "P-SERPENTINE/2-13",
    "chronotype": "lark",
    "wake": 3.7,
-   "bed": 20.85,
+   "bed": 20.2,
    "spread": 0.61,
    "duties": [
     {
@@ -6339,7 +6339,7 @@
    "home": "P-T3H2/2-01",
    "chronotype": "owl",
    "wake": 6.4,
-   "bed": 2.71,
+   "bed": 22.9,
    "spread": 0.61,
    "duties": [
     {
@@ -6524,7 +6524,7 @@
    "home": "P-SERPENTINE/2-27",
    "chronotype": "lark",
    "wake": 4.69,
-   "bed": 21.85,
+   "bed": 21.19,
    "spread": 0.4,
    "duties": [
     {
@@ -6625,7 +6625,7 @@
    "home": "P-CAPSULE/5-03",
    "chronotype": "night",
    "wake": 4.0,
-   "bed": 15.91,
+   "bed": 19.5,
    "spread": 0.75,
    "duties": [
     {
@@ -6676,7 +6676,7 @@
    "home": "P-UNITE/13-07",
    "chronotype": "owl",
    "wake": 6.5,
-   "bed": 1.11,
+   "bed": 23.0,
    "spread": 0.81,
    "duties": [
     {
@@ -6727,7 +6727,7 @@
    "home": "P-UNITE/13-07",
    "chronotype": "owl",
    "wake": 6.71,
-   "bed": 1.53,
+   "bed": 23.21,
    "spread": 0.88,
    "duties": [
     {
@@ -6779,7 +6779,7 @@
    "home": "P-T5H1/15-08",
    "chronotype": "lark",
    "wake": 3.73,
-   "bed": 20.9,
+   "bed": 20.23,
    "spread": 0.65,
    "duties": [
     {
@@ -6828,7 +6828,7 @@
    "home": "P-T4H2/2-11",
    "chronotype": "usual",
    "wake": 6.53,
-   "bed": 23.94,
+   "bed": 23.03,
    "spread": 0.85,
    "duties": [
     {
@@ -7008,7 +7008,7 @@
    "home": "P-BRIDGEHOUSE/6-01",
    "chronotype": "usual",
    "wake": 6.67,
-   "bed": 0.33,
+   "bed": 23.17,
    "spread": 0.93,
    "duties": [
     {
@@ -7156,7 +7156,7 @@
    "home": "P-T3H2/2-06",
    "chronotype": "lark",
    "wake": 4.8,
-   "bed": 22.21,
+   "bed": 21.3,
    "spread": 0.65,
    "duties": [],
    "friends": [
@@ -7239,7 +7239,7 @@
    "home": "W5-D025",
    "chronotype": "lark",
    "wake": 4.75,
-   "bed": 21.92,
+   "bed": 21.25,
    "spread": 0.63,
    "duties": [],
    "friends": [
@@ -7329,7 +7329,7 @@
    "home": "P-SANATORIUM/3-19",
    "chronotype": "owl",
    "wake": 6.56,
-   "bed": 2.56,
+   "bed": 23.06,
    "spread": 0.55,
    "duties": [
     {
@@ -7546,7 +7546,7 @@
    "home": "P-UNITE/3-28",
    "chronotype": "lark",
    "wake": 4.54,
-   "bed": 21.96,
+   "bed": 21.04,
    "spread": 0.48,
    "duties": [
     {
@@ -7768,7 +7768,7 @@
    "home": "P-WAVE/16-01",
    "chronotype": "lark",
    "wake": 4.41,
-   "bed": 21.64,
+   "bed": 20.91,
    "spread": 0.63,
    "duties": [
     {
@@ -7958,7 +7958,7 @@
    "home": "P-T5H1/9-09",
    "chronotype": "usual",
    "wake": 6.81,
-   "bed": 0.37,
+   "bed": 23.31,
    "spread": 0.75,
    "duties": [
     {
@@ -8117,7 +8117,7 @@
    "home": "P-BRIDGEHOUSE/3-06",
    "chronotype": "lark",
    "wake": 4.87,
-   "bed": 22.13,
+   "bed": 21.37,
    "spread": 0.42,
    "duties": [],
    "friends": [
@@ -8153,7 +8153,7 @@
    "home": "P-RISER2/0-06",
    "chronotype": "owl",
    "wake": 6.3,
-   "bed": 1.52,
+   "bed": 22.8,
    "spread": 0.62,
    "duties": [
     {
@@ -8597,7 +8597,7 @@
    "home": "W4-D059",
    "chronotype": "lark",
    "wake": 4.4,
-   "bed": 22.0,
+   "bed": 20.9,
    "spread": 0.59,
    "duties": [
     {
@@ -8754,7 +8754,7 @@
    "home": "W2-D072",
    "chronotype": "night",
    "wake": 7.56,
-   "bed": 4.39,
+   "bed": 0.06,
    "spread": 0.45,
    "duties": [
     {
@@ -9999,7 +9999,7 @@
    "home": "P-UNITE/1-23",
    "chronotype": "owl",
    "wake": 9.35,
-   "bed": 2.39,
+   "bed": 1.85,
    "spread": 0.82,
    "duties": [],
    "friends": [
@@ -10184,7 +10184,7 @@
    "home": "P-CAPSULE/5-11",
    "chronotype": "usual",
    "wake": 6.47,
-   "bed": 23.73,
+   "bed": 22.97,
    "spread": 0.82,
    "duties": [
     {
@@ -10345,7 +10345,7 @@
    "home": "P-T3H2/1-13",
    "chronotype": "night",
    "wake": 7.35,
-   "bed": 17.3,
+   "bed": 22.85,
    "spread": 0.86,
    "duties": [
     {
@@ -11051,7 +11051,7 @@
    "home": "P-BRIDGEHOUSE/1-04",
    "chronotype": "usual",
    "wake": 6.34,
-   "bed": 0.07,
+   "bed": 22.84,
    "spread": 0.51,
    "duties": [
     {
@@ -11151,7 +11151,7 @@
    "home": "P-T1H5/0-06",
    "chronotype": "usual",
    "wake": 6.89,
-   "bed": 0.18,
+   "bed": 23.39,
    "spread": 0.93,
    "duties": [
     {
@@ -11645,7 +11645,7 @@
    "household": "t_p-t5h1_3-10",
    "home": "P-T5H1/3-10",
    "chronotype": "owl",
-   "wake": 10.0,
+   "wake": 8.75,
    "bed": 1.09,
    "spread": 0.96,
    "duties": [
@@ -11733,7 +11733,7 @@
    "home": "W2-D090",
    "chronotype": "lark",
    "wake": 4.68,
-   "bed": 22.15,
+   "bed": 21.18,
    "spread": 0.33,
    "duties": [],
    "friends": [
@@ -11804,7 +11804,7 @@
    "home": "W2-D052",
    "chronotype": "lark",
    "wake": 3.68,
-   "bed": 21.98,
+   "bed": 20.18,
    "spread": 1.0,
    "duties": [
     {
@@ -12117,7 +12117,7 @@
    "home": "W4-D061",
    "chronotype": "night",
    "wake": 6.51,
-   "bed": 4.52,
+   "bed": 23.01,
    "spread": 0.49,
    "duties": [
     {
@@ -12165,7 +12165,7 @@
    "home": "P-CAPSULE/3-08",
    "chronotype": "lark",
    "wake": 4.58,
-   "bed": 22.24,
+   "bed": 21.08,
    "spread": 0.54,
    "duties": [],
    "friends": [
@@ -12242,7 +12242,7 @@
    "home": "W3-D060",
    "chronotype": "lark",
    "wake": 4.65,
-   "bed": 21.92,
+   "bed": 21.15,
    "spread": 0.38,
    "duties": [],
    "friends": [
@@ -12279,7 +12279,7 @@
    "household": "t_p-wave_16-08",
    "home": "P-WAVE/16-08",
    "chronotype": "owl",
-   "wake": 11.41,
+   "wake": 9.25,
    "bed": 1.76,
    "spread": 0.72,
    "duties": [
@@ -12385,7 +12385,7 @@
    "home": "P-UNITE/11-03",
    "chronotype": "usual",
    "wake": 6.38,
-   "bed": 0.35,
+   "bed": 22.88,
    "spread": 0.45,
    "duties": [
     {
@@ -12928,8 +12928,8 @@
    "household": "t_p-unite_3-08",
    "home": "P-UNITE/3-08",
    "chronotype": "owl",
-   "wake": 9.69,
-   "bed": 0.88,
+   "wake": 7.5,
+   "bed": 0.0,
    "spread": 0.97,
    "duties": [
     {
@@ -12982,7 +12982,7 @@
    "home": "P-UNITE/11-11",
    "chronotype": "night",
    "wake": 7.8,
-   "bed": 4.45,
+   "bed": 0.3,
    "spread": 0.64,
    "duties": [
     {
@@ -13274,7 +13274,7 @@
    "home": "P-T3H2/5-02",
    "chronotype": "lark",
    "wake": 4.12,
-   "bed": 21.99,
+   "bed": 20.62,
    "spread": 0.6,
    "duties": [
     {
@@ -13374,7 +13374,7 @@
    "home": "W5-D081",
    "chronotype": "owl",
    "wake": 6.25,
-   "bed": 0.85,
+   "bed": 22.75,
    "spread": 1.08,
    "duties": [
     {
@@ -13626,7 +13626,7 @@
    "home": "W2-D045",
    "chronotype": "owl",
    "wake": 7.19,
-   "bed": 1.72,
+   "bed": 23.69,
    "spread": 0.98,
    "duties": [
     {
@@ -13730,7 +13730,7 @@
    "home": "P-CAPSULE/3-01",
    "chronotype": "usual",
    "wake": 6.69,
-   "bed": 0.19,
+   "bed": 23.19,
    "spread": 0.77,
    "duties": [],
    "friends": [
@@ -13878,7 +13878,7 @@
    "home": "W3-D066",
    "chronotype": "usual",
    "wake": 6.67,
-   "bed": 0.25,
+   "bed": 23.17,
    "spread": 0.75,
    "duties": [
     {
@@ -14027,7 +14027,7 @@
    "home": "W5-D087",
    "chronotype": "usual",
    "wake": 5.84,
-   "bed": 0.08,
+   "bed": 22.34,
    "spread": 0.61,
    "duties": [
     {
@@ -14297,7 +14297,7 @@
    "home": "P-CAPSULE/1-01",
    "chronotype": "usual",
    "wake": 6.52,
-   "bed": 0.07,
+   "bed": 23.02,
    "spread": 0.97,
    "duties": [
     {
@@ -14493,7 +14493,7 @@
    "home": "P-SERPENTINE/4-07",
    "chronotype": "owl",
    "wake": 6.39,
-   "bed": 2.41,
+   "bed": 22.89,
    "spread": 0.71,
    "duties": [
     {
@@ -14702,7 +14702,7 @@
    "home": "W5-D035",
    "chronotype": "owl",
    "wake": 7.87,
-   "bed": 1.36,
+   "bed": 0.37,
    "spread": 0.58,
    "duties": [
     {
@@ -14837,7 +14837,7 @@
    "home": "P-WAVE/15-03",
    "chronotype": "usual",
    "wake": 6.14,
-   "bed": 23.86,
+   "bed": 22.64,
    "spread": 0.79,
    "duties": [
     {
@@ -14922,7 +14922,7 @@
    "home": "P-SERPENTINE/5-15",
    "chronotype": "night",
    "wake": 11.85,
-   "bed": 5.0,
+   "bed": 4.35,
    "spread": 0.62,
    "duties": [
     {
@@ -14974,7 +14974,7 @@
    "home": "P-CAPSULE/2-07",
    "chronotype": "lark",
    "wake": 5.01,
-   "bed": 22.23,
+   "bed": 21.51,
    "spread": 0.4,
    "duties": [],
    "friends": [
@@ -15014,7 +15014,7 @@
    "home": "P-T2H2/1-01",
    "chronotype": "night",
    "wake": 11.62,
-   "bed": 4.65,
+   "bed": 4.12,
    "spread": 0.65,
    "duties": [
     {
@@ -15064,7 +15064,7 @@
    "home": "P-T5H1/4-07",
    "chronotype": "usual",
    "wake": 6.77,
-   "bed": 0.09,
+   "bed": 23.27,
    "spread": 0.94,
    "duties": [
     {
@@ -15166,7 +15166,7 @@
    "home": "W5-D097",
    "chronotype": "lark",
    "wake": 3.67,
-   "bed": 21.64,
+   "bed": 20.17,
    "spread": 0.84,
    "duties": [
     {
@@ -15217,7 +15217,7 @@
    "home": "W4-D090",
    "chronotype": "usual",
    "wake": 6.73,
-   "bed": 0.18,
+   "bed": 23.23,
    "spread": 0.58,
    "duties": [],
    "friends": [
@@ -15486,7 +15486,7 @@
    "home": "W5-D057",
    "chronotype": "usual",
    "wake": 6.67,
-   "bed": 0.25,
+   "bed": 23.17,
    "spread": 0.83,
    "duties": [
     {
@@ -15573,7 +15573,7 @@
    "home": "P-WAVE/2-07",
    "chronotype": "usual",
    "wake": 7.15,
-   "bed": 0.32,
+   "bed": 23.65,
    "spread": 0.55,
    "duties": [
     {
@@ -15622,7 +15622,7 @@
    "home": "P-WAVE/2-07",
    "chronotype": "owl",
    "wake": 11.73,
-   "bed": 1.16,
+   "bed": 3.23,
    "spread": 0.59,
    "duties": [],
    "friends": [
@@ -15999,7 +15999,7 @@
    "home": "P-T4H1/3-02",
    "chronotype": "owl",
    "wake": 7.2,
-   "bed": 2.13,
+   "bed": 23.7,
    "spread": 1.09,
    "duties": [
     {
@@ -16165,7 +16165,7 @@
    "home": "W2-D065",
    "chronotype": "lark",
    "wake": 3.4,
-   "bed": 20.86,
+   "bed": 19.9,
    "spread": 0.45,
    "duties": [
     {
@@ -16216,7 +16216,7 @@
    "home": "W2-D065",
    "chronotype": "usual",
    "wake": 6.53,
-   "bed": 0.37,
+   "bed": 23.03,
    "spread": 0.93,
    "duties": [
     {
@@ -16303,8 +16303,8 @@
    "household": "t_w3-d083",
    "home": "W3-D083",
    "chronotype": "night",
-   "wake": 13.05,
-   "bed": 4.3,
+   "wake": 8.75,
+   "bed": 1.25,
    "spread": 0.58,
    "duties": [
     {
@@ -16527,7 +16527,7 @@
    "home": "P-RISER1/1-03",
    "chronotype": "usual",
    "wake": 6.21,
-   "bed": 23.26,
+   "bed": 22.71,
    "spread": 0.98,
    "duties": [
     {
@@ -17002,7 +17002,7 @@
    "home": "W3-D090",
    "chronotype": "usual",
    "wake": 6.18,
-   "bed": 23.87,
+   "bed": 22.68,
    "spread": 0.92,
    "duties": [
     {
@@ -17152,7 +17152,7 @@
    "home": "W4-D108",
    "chronotype": "usual",
    "wake": 6.58,
-   "bed": 0.29,
+   "bed": 23.08,
    "spread": 0.4,
    "duties": [
     {
@@ -17253,7 +17253,7 @@
    "home": "W5-D059",
    "chronotype": "owl",
    "wake": 9.24,
-   "bed": 2.7,
+   "bed": 1.74,
    "spread": 1.08,
    "duties": [
     {
@@ -17337,7 +17337,7 @@
    "home": "W3-D114",
    "chronotype": "owl",
    "wake": 7.34,
-   "bed": 1.91,
+   "bed": 23.84,
    "spread": 0.62,
    "duties": [
     {
@@ -17923,7 +17923,7 @@
    "home": "P-T3H1/0-01",
    "chronotype": "owl",
    "wake": 6.09,
-   "bed": 2.4,
+   "bed": 22.59,
    "spread": 0.73,
    "duties": [
     {
@@ -18065,7 +18065,7 @@
    "home": "P-SERPENTINE/4-06",
    "chronotype": "owl",
    "wake": 3.61,
-   "bed": 14.74,
+   "bed": 19.11,
    "spread": 1.08,
    "duties": [
     {
@@ -18114,7 +18114,7 @@
    "home": "P-WAVE/17-02",
    "chronotype": "lark",
    "wake": 4.16,
-   "bed": 21.86,
+   "bed": 20.66,
    "spread": 0.31,
    "duties": [
     {
@@ -18202,7 +18202,7 @@
    "home": "P-CAPSULE/11-06",
    "chronotype": "owl",
    "wake": 7.29,
-   "bed": 1.96,
+   "bed": 23.79,
    "spread": 0.87,
    "duties": [
     {
@@ -18338,7 +18338,7 @@
    "home": "P-SERPENTINE/2-03",
    "chronotype": "lark",
    "wake": 3.46,
-   "bed": 20.61,
+   "bed": 19.96,
    "spread": 0.96,
    "duties": [
     {
@@ -18441,7 +18441,7 @@
    "home": "W2-D035",
    "chronotype": "owl",
    "wake": 6.23,
-   "bed": 1.29,
+   "bed": 22.73,
    "spread": 1.06,
    "duties": [
     {
@@ -18748,7 +18748,7 @@
    "home": "P-CAPSULE/11-05",
    "chronotype": "lark",
    "wake": 4.25,
-   "bed": 21.53,
+   "bed": 20.75,
    "spread": 0.65,
    "duties": [
     {
@@ -18799,7 +18799,7 @@
    "home": "W5-D068",
    "chronotype": "lark",
    "wake": 23.38,
-   "bed": 10.31,
+   "bed": 14.88,
    "spread": 0.45,
    "duties": [
     {
@@ -19042,7 +19042,7 @@
    "home": "P-WAVE/12-07",
    "chronotype": "lark",
    "wake": 4.4,
-   "bed": 21.74,
+   "bed": 20.9,
    "spread": 0.66,
    "duties": [
     {
@@ -19126,7 +19126,7 @@
    "home": "W2-D100",
    "chronotype": "night",
    "wake": 8.25,
-   "bed": 4.17,
+   "bed": 0.75,
    "spread": 0.62,
    "duties": [
     {
@@ -19539,7 +19539,7 @@
    "home": "P-T1H5/0-04",
    "chronotype": "night",
    "wake": 8.33,
-   "bed": 18.23,
+   "bed": 23.83,
    "spread": 0.42,
    "duties": [
     {
@@ -19590,7 +19590,7 @@
    "home": "P-T1H5/0-04",
    "chronotype": "usual",
    "wake": 7.14,
-   "bed": 0.29,
+   "bed": 23.64,
    "spread": 0.98,
    "duties": [],
    "friends": [
@@ -20225,7 +20225,7 @@
    "home": "P-UNITE/13-09",
    "chronotype": "night",
    "wake": 6.2,
-   "bed": 17.24,
+   "bed": 21.7,
    "spread": 0.42,
    "duties": [
     {
@@ -20327,7 +20327,7 @@
    "home": "P-T4H2/3-08",
    "chronotype": "lark",
    "wake": 3.67,
-   "bed": 21.62,
+   "bed": 20.17,
    "spread": 0.49,
    "duties": [
     {
@@ -20830,7 +20830,7 @@
    "home": "P-UNITE/11-26",
    "chronotype": "usual",
    "wake": 7.24,
-   "bed": 0.34,
+   "bed": 23.74,
    "spread": 0.56,
    "duties": [],
    "friends": [
@@ -21042,7 +21042,7 @@
    "home": "W4-D088",
    "chronotype": "lark",
    "wake": 3.6,
-   "bed": 21.48,
+   "bed": 20.1,
    "spread": 0.54,
    "duties": [
     {
@@ -21178,7 +21178,7 @@
    "home": "P-UNITE/5-05",
    "chronotype": "owl",
    "wake": 7.56,
-   "bed": 1.68,
+   "bed": 0.06,
    "spread": 0.75,
    "duties": [
     {
@@ -21331,7 +21331,7 @@
    "home": "P-WAVE/12-09",
    "chronotype": "lark",
    "wake": 4.77,
-   "bed": 21.94,
+   "bed": 21.27,
    "spread": 0.57,
    "duties": [],
    "friends": [
@@ -21419,7 +21419,7 @@
    "home": "W3-D121",
    "chronotype": "usual",
    "wake": 6.73,
-   "bed": 0.07,
+   "bed": 23.23,
    "spread": 0.54,
    "duties": [
     {
@@ -21524,7 +21524,7 @@
    "home": "P-UNITE/9-03",
    "chronotype": "owl",
    "wake": 8.3,
-   "bed": 2.01,
+   "bed": 0.8,
    "spread": 0.67,
    "duties": [
     {
@@ -21572,7 +21572,7 @@
    "home": "P-UNITE/9-03",
    "chronotype": "usual",
    "wake": 6.68,
-   "bed": 0.35,
+   "bed": 23.18,
    "spread": 0.46,
    "duties": [
     {
@@ -21811,7 +21811,7 @@
    "home": "P-UNITE/11-18",
    "chronotype": "lark",
    "wake": 3.43,
-   "bed": 21.59,
+   "bed": 19.93,
    "spread": 0.61,
    "duties": [
     {
@@ -22071,7 +22071,7 @@
    "home": "W2-D091",
    "chronotype": "lark",
    "wake": 4.82,
-   "bed": 22.16,
+   "bed": 21.32,
    "spread": 0.59,
    "duties": [
     {
@@ -22199,7 +22199,7 @@
    "home": "P-SANATORIUM/4-09",
    "chronotype": "lark",
    "wake": 4.67,
-   "bed": 21.96,
+   "bed": 21.17,
    "spread": 0.46,
    "duties": [
     {
@@ -22282,7 +22282,7 @@
    "home": "P-SERPENTINE/3-17",
    "chronotype": "owl",
    "wake": 7.59,
-   "bed": 2.76,
+   "bed": 0.09,
    "spread": 1.06,
    "duties": [
     {
@@ -22333,7 +22333,7 @@
    "home": "P-SERPENTINE/3-17",
    "chronotype": "owl",
    "wake": 11.72,
-   "bed": 0.86,
+   "bed": 3.22,
    "spread": 1.01,
    "duties": [],
    "friends": [
@@ -22485,7 +22485,7 @@
    "home": "W3-D076",
    "chronotype": "usual",
    "wake": 6.44,
-   "bed": 23.78,
+   "bed": 22.94,
    "spread": 0.59,
    "duties": [
     {
@@ -22601,7 +22601,7 @@
    "home": "P-CAPSULE/6-04",
    "chronotype": "usual",
    "wake": 6.81,
-   "bed": 23.97,
+   "bed": 23.31,
    "spread": 0.5,
    "duties": [
     {
@@ -22651,7 +22651,7 @@
    "home": "P-CAPSULE/11-02",
    "chronotype": "lark",
    "wake": 4.12,
-   "bed": 21.93,
+   "bed": 20.62,
    "spread": 0.95,
    "duties": [
     {
@@ -22830,7 +22830,7 @@
    "home": "W4-D085",
    "chronotype": "owl",
    "wake": 6.09,
-   "bed": 2.72,
+   "bed": 22.59,
    "spread": 0.62,
    "duties": [
     {
@@ -23579,7 +23579,7 @@
    "home": "W4-D068",
    "chronotype": "owl",
    "wake": 6.35,
-   "bed": 1.1,
+   "bed": 22.85,
    "spread": 0.65,
    "duties": [
     {
@@ -23628,7 +23628,7 @@
    "home": "P-SERPENTINE/6-23",
    "chronotype": "usual",
    "wake": 6.44,
-   "bed": 23.66,
+   "bed": 22.94,
    "spread": 0.89,
    "duties": [
     {
@@ -23814,7 +23814,7 @@
    "home": "P-UNITE/3-04",
    "chronotype": "lark",
    "wake": 4.62,
-   "bed": 22.27,
+   "bed": 21.12,
    "spread": 0.64,
    "duties": [
     {
@@ -23998,7 +23998,7 @@
    "home": "W2-D078",
    "chronotype": "lark",
    "wake": 5.41,
-   "bed": 11.57,
+   "bed": 20.91,
    "spread": 0.62,
    "duties": [
     {
@@ -24048,7 +24048,7 @@
    "home": "W2-D078",
    "chronotype": "owl",
    "wake": 7.53,
-   "bed": 2.58,
+   "bed": 0.03,
    "spread": 0.96,
    "duties": [
     {
@@ -24148,7 +24148,7 @@
    "home": "W5-D063",
    "chronotype": "owl",
    "wake": 6.75,
-   "bed": 2.54,
+   "bed": 23.25,
    "spread": 1.05,
    "duties": [
     {
@@ -24297,7 +24297,7 @@
    "home": "W5-D039",
    "chronotype": "usual",
    "wake": 6.64,
-   "bed": 23.77,
+   "bed": 23.14,
    "spread": 0.98,
    "duties": [
     {
@@ -24447,7 +24447,7 @@
    "home": "P-SERPENTINE/7-11",
    "chronotype": "lark",
    "wake": 4.0,
-   "bed": 21.27,
+   "bed": 20.5,
    "spread": 0.7,
    "duties": [
     {
@@ -24495,7 +24495,7 @@
    "home": "P-SERPENTINE/7-11",
    "chronotype": "usual",
    "wake": 6.11,
-   "bed": 23.5,
+   "bed": 22.61,
    "spread": 0.78,
    "duties": [
     {
@@ -24594,7 +24594,7 @@
    "home": "W4-D099",
    "chronotype": "usual",
    "wake": 5.72,
-   "bed": 23.34,
+   "bed": 22.22,
    "spread": 0.67,
    "duties": [
     {
@@ -24732,7 +24732,7 @@
    "home": "P-UNITE/13-08",
    "chronotype": "owl",
    "wake": 6.86,
-   "bed": 1.8,
+   "bed": 23.36,
    "spread": 1.04,
    "duties": [
     {
@@ -25107,7 +25107,7 @@
    "home": "P-UNITE/5-13",
    "chronotype": "usual",
    "wake": 6.72,
-   "bed": 23.97,
+   "bed": 23.22,
    "spread": 0.77,
    "duties": [
     {
@@ -25155,7 +25155,7 @@
    "home": "P-UNITE/5-13",
    "chronotype": "usual",
    "wake": 5.85,
-   "bed": 23.65,
+   "bed": 22.35,
    "spread": 0.69,
    "duties": [
     {
@@ -25527,7 +25527,7 @@
    "home": "W5-D117",
    "chronotype": "owl",
    "wake": 6.94,
-   "bed": 17.73,
+   "bed": 22.44,
    "spread": 1.05,
    "duties": [
     {
@@ -25710,7 +25710,7 @@
    "home": "W2-D120",
    "chronotype": "owl",
    "wake": 6.55,
-   "bed": 0.96,
+   "bed": 23.05,
    "spread": 0.55,
    "duties": [
     {
@@ -25892,7 +25892,7 @@
    "home": "W2-D092",
    "chronotype": "usual",
    "wake": 6.94,
-   "bed": 0.09,
+   "bed": 23.44,
    "spread": 0.9,
    "duties": [
     {
@@ -25993,7 +25993,7 @@
    "home": "P-RISER1/4-01",
    "chronotype": "usual",
    "wake": 6.18,
-   "bed": 0.11,
+   "bed": 22.68,
    "spread": 0.81,
    "duties": [
     {
@@ -26610,7 +26610,7 @@
    "home": "W2-D001",
    "chronotype": "usual",
    "wake": 6.72,
-   "bed": 23.83,
+   "bed": 23.22,
    "spread": 0.76,
    "duties": [
     {
@@ -26697,7 +26697,7 @@
    "home": "P-WAVE/5-04",
    "chronotype": "lark",
    "wake": 4.87,
-   "bed": 21.9,
+   "bed": 21.37,
    "spread": 0.34,
    "duties": [],
    "friends": [
@@ -26735,7 +26735,7 @@
    "home": "P-WAVE/12-04",
    "chronotype": "usual",
    "wake": 6.6,
-   "bed": 0.13,
+   "bed": 23.1,
    "spread": 0.94,
    "duties": [],
    "friends": [
@@ -26823,7 +26823,7 @@
    "home": "W4-D051",
    "chronotype": "lark",
    "wake": 3.52,
-   "bed": 21.75,
+   "bed": 20.02,
    "spread": 0.44,
    "duties": [
     {
@@ -26911,7 +26911,7 @@
    "home": "P-T5H1/13-06",
    "chronotype": "usual",
    "wake": 6.65,
-   "bed": 23.68,
+   "bed": 23.15,
    "spread": 0.98,
    "duties": [
     {
@@ -26967,7 +26967,7 @@
    "home": "W3-D074",
    "chronotype": "lark",
    "wake": 4.56,
-   "bed": 22.1,
+   "bed": 21.06,
    "spread": 0.53,
    "duties": [
     {
@@ -27290,7 +27290,7 @@
    "home": "P-WAVE/15-04",
    "chronotype": "lark",
    "wake": 4.82,
-   "bed": 21.98,
+   "bed": 21.32,
    "spread": 0.47,
    "duties": [
     {
@@ -27343,7 +27343,7 @@
    "home": "P-T5H1/5-01",
    "chronotype": "usual",
    "wake": 6.47,
-   "bed": 23.92,
+   "bed": 22.97,
    "spread": 0.77,
    "duties": [],
    "friends": [
@@ -27541,7 +27541,7 @@
    "home": "P-CAPSULE/9-01",
    "chronotype": "lark",
    "wake": 3.92,
-   "bed": 21.09,
+   "bed": 20.42,
    "spread": 0.44,
    "duties": [
     {
@@ -27688,7 +27688,7 @@
    "home": "P-SERPENTINE/6-09",
    "chronotype": "lark",
    "wake": 4.39,
-   "bed": 21.57,
+   "bed": 20.89,
    "spread": 0.47,
    "duties": [
     {
@@ -27737,7 +27737,7 @@
    "home": "P-SERPENTINE/6-09",
    "chronotype": "owl",
    "wake": 6.49,
-   "bed": 2.73,
+   "bed": 22.99,
    "spread": 1.07,
    "duties": [
     {
@@ -28066,7 +28066,7 @@
    "household": "t_p-unite_9-01",
    "home": "P-UNITE/9-01",
    "chronotype": "lark",
-   "wake": 4.49,
+   "wake": 5.71,
    "bed": 22.21,
    "spread": 0.32,
    "duties": [
@@ -28117,7 +28117,7 @@
    "home": "P-UNITE/9-01",
    "chronotype": "owl",
    "wake": 6.87,
-   "bed": 2.29,
+   "bed": 23.37,
    "spread": 0.58,
    "duties": [
     {
@@ -28525,7 +28525,7 @@
    "household": "t_p-capsule_3-10",
    "home": "P-CAPSULE/3-10",
    "chronotype": "lark",
-   "wake": 5.35,
+   "wake": 8.94,
    "bed": 1.44,
    "spread": 0.53,
    "duties": [
@@ -28764,7 +28764,7 @@
    "home": "W2-D089",
    "chronotype": "usual",
    "wake": 5.14,
-   "bed": 23.06,
+   "bed": 21.64,
    "spread": 0.99,
    "duties": [
     {
@@ -28861,8 +28861,8 @@
    "household": "t_p-unite_13-04",
    "home": "P-UNITE/13-04",
    "chronotype": "owl",
-   "wake": 9.66,
-   "bed": 2.11,
+   "wake": 8.25,
+   "bed": 0.75,
    "spread": 0.92,
    "duties": [
     {
@@ -28912,7 +28912,7 @@
    "home": "P-UNITE/13-04",
    "chronotype": "usual",
    "wake": 6.81,
-   "bed": 0.05,
+   "bed": 23.31,
    "spread": 0.42,
    "duties": [
     {
@@ -29295,7 +29295,7 @@
    "home": "P-WAVE/10-02",
    "chronotype": "owl",
    "wake": 5.8,
-   "bed": 1.25,
+   "bed": 22.3,
    "spread": 1.06,
    "duties": [
     {
@@ -29500,7 +29500,7 @@
    "home": "W3-D130",
    "chronotype": "lark",
    "wake": 4.77,
-   "bed": 22.13,
+   "bed": 21.27,
    "spread": 0.64,
    "duties": [
     {
@@ -29966,7 +29966,7 @@
    "home": "P-SANATORIUM/1-16",
    "chronotype": "owl",
    "wake": 8.03,
-   "bed": 2.04,
+   "bed": 0.53,
    "spread": 0.78,
    "duties": [
     {
@@ -30253,7 +30253,7 @@
    "home": "P-RISER1/1-01",
    "chronotype": "lark",
    "wake": 3.41,
-   "bed": 21.41,
+   "bed": 19.91,
    "spread": 0.46,
    "duties": [
     {
@@ -30303,7 +30303,7 @@
    "home": "P-T5H1/2-07",
    "chronotype": "usual",
    "wake": 6.58,
-   "bed": 0.24,
+   "bed": 23.08,
    "spread": 0.6,
    "duties": [
     {
@@ -30582,7 +30582,7 @@
    "home": "P-SERPENTINE/3-07",
    "chronotype": "usual",
    "wake": 6.7,
-   "bed": 0.22,
+   "bed": 23.2,
    "spread": 0.53,
    "duties": [
     {
@@ -30632,7 +30632,7 @@
    "home": "W3-D028",
    "chronotype": "lark",
    "wake": 5.11,
-   "bed": 23.76,
+   "bed": 21.61,
    "spread": 0.42,
    "duties": [
     {
@@ -30691,7 +30691,7 @@
    "home": "W3-D028",
    "chronotype": "lark",
    "wake": 0.76,
-   "bed": 20.76,
+   "bed": 17.26,
    "spread": 0.34,
    "duties": [
     {
@@ -30744,7 +30744,7 @@
    "home": "P-WAVE/4-02",
    "chronotype": "night",
    "wake": 6.34,
-   "bed": 3.92,
+   "bed": 22.84,
    "spread": 0.82,
    "duties": [
     {
@@ -30795,7 +30795,7 @@
    "home": "P-WAVE/4-02",
    "chronotype": "usual",
    "wake": 6.05,
-   "bed": 23.08,
+   "bed": 22.55,
    "spread": 0.71,
    "duties": [
     {
@@ -30881,7 +30881,7 @@
    "household": "t_p-t1h2_1-01",
    "home": "P-T1H2/1-01",
    "chronotype": "owl",
-   "wake": 11.27,
+   "wake": 9.25,
    "bed": 1.12,
    "spread": 0.52,
    "duties": [
@@ -31019,7 +31019,7 @@
    "home": "W2-D129",
    "chronotype": "owl",
    "wake": 6.97,
-   "bed": 1.27,
+   "bed": 23.47,
    "spread": 0.65,
    "duties": [
     {
@@ -31231,7 +31231,7 @@
    "home": "P-WAVE/12-10",
    "chronotype": "usual",
    "wake": 6.62,
-   "bed": 23.63,
+   "bed": 23.12,
    "spread": 0.58,
    "duties": [
     {
@@ -31698,7 +31698,7 @@
    "home": "P-WAVE/2-06",
    "chronotype": "night",
    "wake": 6.87,
-   "bed": 4.09,
+   "bed": 23.37,
    "spread": 0.51,
    "duties": [
     {
@@ -31749,7 +31749,7 @@
    "home": "P-WAVE/16-04",
    "chronotype": "lark",
    "wake": 4.69,
-   "bed": 21.87,
+   "bed": 21.19,
    "spread": 0.31,
    "duties": [],
    "friends": [
@@ -31783,7 +31783,7 @@
    "home": "P-WAVE/8-07",
    "chronotype": "lark",
    "wake": 4.63,
-   "bed": 21.91,
+   "bed": 21.13,
    "spread": 0.65,
    "duties": [],
    "friends": [
@@ -31820,7 +31820,7 @@
    "home": "P-T5H1/12-10",
    "chronotype": "usual",
    "wake": 6.95,
-   "bed": 0.0,
+   "bed": 23.45,
    "spread": 0.82,
    "duties": [],
    "friends": [
@@ -31852,7 +31852,7 @@
    "home": "P-CAPSULE/3-06",
    "chronotype": "lark",
    "wake": 4.43,
-   "bed": 22.3,
+   "bed": 20.93,
    "spread": 0.5,
    "duties": [],
    "friends": [
@@ -32077,7 +32077,7 @@
    "home": "P-T1H1/0-04",
    "chronotype": "usual",
    "wake": 7.0,
-   "bed": 0.01,
+   "bed": 23.5,
    "spread": 0.57,
    "duties": [],
    "friends": [],
@@ -32107,7 +32107,7 @@
    "home": "P-T1H1/0-04",
    "chronotype": "owl",
    "wake": 6.83,
-   "bed": 1.47,
+   "bed": 23.33,
    "spread": 1.06,
    "duties": [
     {
@@ -32310,7 +32310,7 @@
    "home": "P-SERPENTINE/4-30",
    "chronotype": "night",
    "wake": 13.02,
-   "bed": 1.76,
+   "bed": 4.52,
    "spread": 0.42,
    "duties": [
     {
@@ -32476,7 +32476,7 @@
    "home": "W2-D011",
    "chronotype": "usual",
    "wake": 6.68,
-   "bed": 0.18,
+   "bed": 23.18,
    "spread": 0.91,
    "duties": [
     {
@@ -32582,7 +32582,7 @@
    "home": "P-T4H2/3-02",
    "chronotype": "lark",
    "wake": 3.93,
-   "bed": 21.27,
+   "bed": 20.43,
    "spread": 0.77,
    "duties": [
     {
@@ -32667,7 +32667,7 @@
    "home": "P-T2H1/0-02",
    "chronotype": "usual",
    "wake": 5.9,
-   "bed": 23.47,
+   "bed": 22.4,
    "spread": 0.63,
    "duties": [
     {
@@ -32712,7 +32712,7 @@
    "home": "P-T2H1/0-02",
    "chronotype": "owl",
    "wake": 7.15,
-   "bed": 0.87,
+   "bed": 23.65,
    "spread": 0.99,
    "duties": [
     {
@@ -33378,7 +33378,7 @@
    "home": "W5-D005",
    "chronotype": "night",
    "wake": 6.84,
-   "bed": 4.26,
+   "bed": 23.34,
    "spread": 0.75,
    "duties": [
     {
@@ -33516,7 +33516,7 @@
    "home": "P-SERPENTINE/1-29",
    "chronotype": "owl",
    "wake": 6.97,
-   "bed": 1.08,
+   "bed": 23.47,
    "spread": 0.86,
    "duties": [
     {
@@ -33752,7 +33752,7 @@
    "home": "P-SERPENTINE/7-02",
    "chronotype": "lark",
    "wake": 4.62,
-   "bed": 22.04,
+   "bed": 21.12,
    "spread": 0.63,
    "duties": [],
    "friends": [
@@ -33790,7 +33790,7 @@
    "home": "W5-D096",
    "chronotype": "usual",
    "wake": 6.61,
-   "bed": 0.25,
+   "bed": 23.11,
    "spread": 0.47,
    "duties": [
     {
@@ -33985,7 +33985,7 @@
    "home": "W3-D103",
    "chronotype": "lark",
    "wake": 3.54,
-   "bed": 21.66,
+   "bed": 20.04,
    "spread": 0.43,
    "duties": [
     {
@@ -34176,7 +34176,7 @@
    "home": "P-T3H2/5-03",
    "chronotype": "usual",
    "wake": 7.02,
-   "bed": 0.29,
+   "bed": 23.52,
    "spread": 0.56,
    "duties": [
     {
@@ -34443,7 +34443,7 @@
    "home": "P-SERPENTINE/5-21",
    "chronotype": "lark",
    "wake": 4.45,
-   "bed": 21.53,
+   "bed": 20.95,
    "spread": 0.93,
    "duties": [
     {
@@ -34595,7 +34595,7 @@
    "home": "P-SERPENTINE/6-03",
    "chronotype": "lark",
    "wake": 3.81,
-   "bed": 21.1,
+   "bed": 20.31,
    "spread": 0.75,
    "duties": [
     {
@@ -34831,7 +34831,7 @@
    "home": "W2-D044",
    "chronotype": "usual",
    "wake": 6.39,
-   "bed": 0.01,
+   "bed": 22.89,
    "spread": 0.54,
    "duties": [
     {
@@ -34938,7 +34938,7 @@
    "home": "P-SERPENTINE/5-14",
    "chronotype": "usual",
    "wake": 5.98,
-   "bed": 23.36,
+   "bed": 22.48,
    "spread": 0.74,
    "duties": [
     {
@@ -35142,7 +35142,7 @@
    "home": "P-SERPENTINE/1-06",
    "chronotype": "usual",
    "wake": 7.21,
-   "bed": 0.33,
+   "bed": 23.71,
    "spread": 0.94,
    "duties": [],
    "friends": [
@@ -35309,7 +35309,7 @@
    "home": "P-WAVE/7-03",
    "chronotype": "lark",
    "wake": 3.96,
-   "bed": 21.43,
+   "bed": 20.46,
    "spread": 1.0,
    "duties": [
     {
@@ -35494,7 +35494,7 @@
    "home": "P-T4H2/1-04",
    "chronotype": "owl",
    "wake": 8.28,
-   "bed": 1.36,
+   "bed": 0.78,
    "spread": 0.88,
    "duties": [
     {
@@ -35595,7 +35595,7 @@
    "home": "P-T5H1/1-09",
    "chronotype": "lark",
    "wake": 5.08,
-   "bed": 22.22,
+   "bed": 21.58,
    "spread": 0.64,
    "duties": [],
    "friends": [
@@ -35800,8 +35800,8 @@
    "household": "t_p-wave_13-04",
    "home": "P-WAVE/13-04",
    "chronotype": "night",
-   "wake": 11.66,
-   "bed": 4.81,
+   "wake": 9.25,
+   "bed": 1.75,
    "spread": 0.8,
    "duties": [
     {
@@ -35927,7 +35927,7 @@
    "home": "P-CAPSULE/11-08",
    "chronotype": "usual",
    "wake": 6.59,
-   "bed": 0.07,
+   "bed": 23.09,
    "spread": 0.88,
    "duties": [
     {
@@ -36111,7 +36111,7 @@
    "home": "P-WAVE/7-09",
    "chronotype": "owl",
    "wake": 7.75,
-   "bed": 1.82,
+   "bed": 0.25,
    "spread": 1.09,
    "duties": [
     {
@@ -36160,7 +36160,7 @@
    "home": "W2-D074",
    "chronotype": "lark",
    "wake": 4.69,
-   "bed": 22.08,
+   "bed": 21.19,
    "spread": 0.45,
    "duties": [],
    "friends": [
@@ -36248,7 +36248,7 @@
    "home": "P-UNITE/3-27",
    "chronotype": "usual",
    "wake": 6.42,
-   "bed": 23.59,
+   "bed": 22.92,
    "spread": 0.99,
    "duties": [],
    "friends": [
@@ -36285,8 +36285,8 @@
    "household": "t_p-t4h2_4-03",
    "home": "P-T4H2/4-03",
    "chronotype": "night",
-   "wake": 12.96,
-   "bed": 4.92,
+   "wake": 8.25,
+   "bed": 0.75,
    "spread": 0.76,
    "duties": [
     {
@@ -36692,7 +36692,7 @@
    "home": "P-T3H2/7-01",
    "chronotype": "usual",
    "wake": 6.52,
-   "bed": 23.67,
+   "bed": 23.02,
    "spread": 0.73,
    "duties": [],
    "friends": [
@@ -36731,7 +36731,7 @@
    "home": "P-BRIDGEHOUSE/5-01",
    "chronotype": "usual",
    "wake": 6.95,
-   "bed": 0.39,
+   "bed": 23.45,
    "spread": 0.7,
    "duties": [],
    "friends": [
@@ -37173,7 +37173,7 @@
    "home": "W5-D110",
    "chronotype": "owl",
    "wake": 7.04,
-   "bed": 2.56,
+   "bed": 23.54,
    "spread": 0.55,
    "duties": [
     {
@@ -37359,7 +37359,7 @@
    "home": "P-WAVE/8-04",
    "chronotype": "lark",
    "wake": 4.48,
-   "bed": 21.6,
+   "bed": 20.98,
    "spread": 0.51,
    "duties": [
     {
@@ -37461,7 +37461,7 @@
    "home": "W3-D078",
    "chronotype": "lark",
    "wake": 4.41,
-   "bed": 21.74,
+   "bed": 20.91,
    "spread": 0.63,
    "duties": [],
    "friends": [
@@ -37635,8 +37635,8 @@
    "household": "t_p-wave_6-04",
    "home": "P-WAVE/6-04",
    "chronotype": "night",
-   "wake": 12.77,
-   "bed": 4.94,
+   "wake": 9.25,
+   "bed": 1.75,
    "spread": 0.79,
    "duties": [
     {
@@ -37688,7 +37688,7 @@
    "home": "P-SERPENTINE/3-23",
    "chronotype": "owl",
    "wake": 6.5,
-   "bed": 1.22,
+   "bed": 23.0,
    "spread": 0.96,
    "duties": [
     {
@@ -37841,7 +37841,7 @@
    "home": "P-CAPSULE/13-04",
    "chronotype": "usual",
    "wake": 6.49,
-   "bed": 0.12,
+   "bed": 22.99,
    "spread": 0.57,
    "duties": [
     {
@@ -38011,7 +38011,7 @@
    "home": "P-RISER1/0-06",
    "chronotype": "owl",
    "wake": 6.94,
-   "bed": 2.07,
+   "bed": 23.44,
    "spread": 0.69,
    "duties": [
     {
@@ -38364,7 +38364,7 @@
    "home": "P-SERPENTINE/1-08",
    "chronotype": "lark",
    "wake": 3.91,
-   "bed": 21.54,
+   "bed": 20.41,
    "spread": 0.5,
    "duties": [
     {
@@ -38414,7 +38414,7 @@
    "home": "P-SERPENTINE/1-08",
    "chronotype": "owl",
    "wake": 7.03,
-   "bed": 1.58,
+   "bed": 23.53,
    "spread": 0.65,
    "duties": [
     {
@@ -38670,7 +38670,7 @@
    "home": "P-T3H2/5-04",
    "chronotype": "usual",
    "wake": 6.69,
-   "bed": 23.99,
+   "bed": 23.19,
    "spread": 0.93,
    "duties": [],
    "friends": [
@@ -38801,7 +38801,7 @@
    "home": "P-BRIDGEHOUSE/6-05",
    "chronotype": "owl",
    "wake": 9.49,
-   "bed": 2.77,
+   "bed": 1.99,
    "spread": 1.05,
    "duties": [
     {
@@ -39479,7 +39479,7 @@
    "home": "P-T3H2/5-05",
    "chronotype": "usual",
    "wake": 6.8,
-   "bed": 0.22,
+   "bed": 23.3,
    "spread": 0.42,
    "duties": [],
    "friends": [
@@ -39606,8 +39606,8 @@
    "household": "t_p-t3h2_6-04",
    "home": "P-T3H2/6-04",
    "chronotype": "night",
-   "wake": 13.19,
-   "bed": 3.88,
+   "wake": 8.25,
+   "bed": 0.75,
    "spread": 0.76,
    "duties": [
     {
@@ -40033,7 +40033,7 @@
    "home": "P-RISER1/2-04",
    "chronotype": "owl",
    "wake": 6.19,
-   "bed": 2.1,
+   "bed": 22.69,
    "spread": 0.88,
    "duties": [
     {
@@ -40341,7 +40341,7 @@
    "home": "W5-D060",
    "chronotype": "usual",
    "wake": 6.44,
-   "bed": 23.75,
+   "bed": 22.94,
    "spread": 0.47,
    "duties": [],
    "friends": [
@@ -40431,7 +40431,7 @@
    "home": "P-T3H2/3-10",
    "chronotype": "owl",
    "wake": 6.32,
-   "bed": 2.6,
+   "bed": 22.82,
    "spread": 0.83,
    "duties": [
     {

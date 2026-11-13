@@ -1,5 +1,6 @@
 // The people's life outside the engine: behaviour checks and a day on the real map (CSV for render_people.py).
 //   tools/peoplesim/run.sh test
+//   tools/peoplesim/run.sh town | week          the town: a day and a night | a week of invariants (town_week.h)
 //   tools/peoplesim/run.sh day [start_hour hours]
 //   tools/peoplesim/run.sh trace <key> [start_hour hours]
 //   tools/peoplesim/run.sh summary [start_hour hours [weekday]]
@@ -13,6 +14,7 @@
 #include <cstring>
 #include <fstream>
 #include <map>
+#include <memory>
 #include <set>
 #include <sstream>
 #include <string>
@@ -20,7 +22,8 @@
 using namespace LyudPeople;
 
 static const char* DataDir = "unreal/Lyudmilovsk/Content/PeopleData";
-static const char* AnimalsDir = "unreal/Lyudmilovsk/Content/AnimalsData";
+// the walk grid: run.sh points LYUD_ANIMALS_DIR at one it built when the checkout has only the grid's LFS pointer
+static const char* AnimalsDir = std::getenv("LYUD_ANIMALS_DIR") && *std::getenv("LYUD_ANIMALS_DIR") ? std::getenv("LYUD_ANIMALS_DIR") : "unreal/Lyudmilovsk/Content/AnimalsData";
 static const char* RailBuilt = "unreal/Lyudmilovsk/Content/Railway/railway_built.json";
 static int Failures = 0;
 
@@ -46,8 +49,14 @@ static void AttachRail(FWorld& W)
 	{
 		LyudRail::FRunParams P;
 		std::string Err;
+		static bool bSaid = false;      // (said once: the week loads the life a few times)
 		if (!LyudRail::LoadParams(ReadFile(RailBuilt), P, Err))
 		{
+			if (bSaid)
+			{
+				return;
+			}
+			bSaid = true;
 			std::printf("  (no railway timetable: %s; the train rides hidden for %.0f s)\n", Err.c_str(), W.Opt.TrainSeconds);
 			return;
 		}
@@ -1209,6 +1218,8 @@ static int Day(int Argc, char** Argv, const char* TraceKey, bool bSummary = fals
 	return 0;
 }
 
+#include "town_week.h"
+
 int main(int Argc, char** Argv)
 {
 	const std::string Mode = Argc > 1 ? Argv[1] : "test";
@@ -1219,6 +1230,10 @@ int main(int Argc, char** Argv)
 	if (Mode == "town")
 	{
 		return Town();
+	}
+	if (Mode == "week")
+	{
+		return Week();
 	}
 	if (Mode == "day")
 	{

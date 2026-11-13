@@ -595,6 +595,66 @@ def shifts(role, count, hours, days):
     return out
 
 
+MIN_SLEEP = 7.0     # hours a night at the least (the life sleeps once a day: wake - bed)
+MAX_SLEEP = 10.5    # and at the most, a grown-up's
+
+
+def _within(h, a, b):
+    """h is in the span of hours from a to b (over midnight when b < a)."""
+    return (h - a) % 24 < (b - a) % 24
+
+
+def fit_day(p):
+    """Their day fits their duties and leaves a night's sleep, with no random numbers (it's also run on a town already
+    made: --refit-days): a duty that starts while they'd sleep gets them up three quarters of an hour before it (an owl
+    at school at 8:15, a student at a 9:00 lecture), one that ends while they'd sleep sends them to bed an hour after it
+    (the bar till midnight), and a night shorter than MIN_SLEEP is made longer at whichever end no duty is in the way
+    (an owl up at 6 for the train to work goes to bed before midnight; a waiter home at 23:00 sleeps in). Only wake and
+    bed change."""
+    works = [(d["hours"][0] % 24, d["hours"][1] % 24) for d in p["duties"]]
+    wake, bed = p["wake"] % 24, p["bed"] % 24
+
+    def busy(a, b):
+        # any duty (with half an hour's way each side) in the span a..b
+        n = int(((b - a) % 24) / 0.25) + 1
+        return any(_within((a + i * 0.25) % 24, (h0 - 0.5) % 24, (h1 + 0.5) % 24) for i in range(n) for h0, h1 in works)
+
+    for h0, h1 in works:
+        if _within(h0, bed, wake):
+            wake = (h0 - 0.75) % 24
+        if _within(h1, bed, wake) and not _within(h0, bed, wake):
+            bed = (h1 + 1.0) % 24
+    if (wake - bed) % 24 < MIN_SLEEP:
+        earlier = (wake - MIN_SLEEP - 0.5) % 24
+        later = (bed + MIN_SLEEP + 0.5) % 24
+        if not busy(earlier, wake):
+            bed = earlier
+        elif not busy(bed, later):
+            wake = later
+    # nor a grown-up's night over MAX_SLEEP (a shift's "to bed after it" read a night owl's 4:00 bedtime as before the
+    # shift's end and put them to bed at 17:00): to bed eight and a half hours before they get up
+    if p["age"] >= 16 and (wake - bed) % 24 > MAX_SLEEP:
+        if not busy((wake - 8.5) % 24, wake):
+            bed = (wake - 8.5) % 24
+        elif not busy(bed, (bed + 8.5) % 24):
+            wake = (bed + 8.5) % 24
+    p["wake"], p["bed"] = round(wake, 2), round(bed, 2)
+
+
+def refit_days():
+    """--refit-days: fit_day over the townsfolk already made (townsfolk.json), keeping everything else of theirs: their
+    keys are their models' (town_looks.json) and their names the strings', so the town isn't made again for this."""
+    with open(OUT_FOLK, encoding="utf-8") as f:
+        folk = json.load(f)
+    changed = 0
+    for p in folk["people"]:
+        was = (p["wake"], p["bed"])
+        fit_day(p)
+        changed += (p["wake"], p["bed"]) != was
+    write(OUT_FOLK, folk)
+    print("town_life: refitted the days of %d of %d townsfolk" % (changed, len(folk["people"])))
+
+
 def temper(rnd, age, ctype):
     t = {k: round(min(1.0, max(0.0, rnd.gauss(0.5, 0.22))), 2) for k in ("social", "active", "studious", "gamer", "nature", "sun")}
     if age >= 60:
@@ -824,6 +884,7 @@ def build_people(plan, places, flats, workplaces, args, rnd):
                 p["chronotype"] = "lark"
             else:
                 p["occupation"] = rnd.choice(["artist", "writer", "musician", "programmer", "homemaker", "unemployed"])
+        fit_day(p)      # (no random numbers: the town made from a seed is the same as before but for these hours)
         p["likes"] = likes_for(rnd, p["age"], female, p["chronotype"], p["occupation"])
         p["mesh"] = pick_model(rnd, pool, p["age"], female, used)
         # their own model from the residents generator (blender/residents/looks.py), the pool's look as the fallback
@@ -894,7 +955,11 @@ def main():
     ap.add_argument("--summary", action="store_true")
     ap.add_argument("--ref", action="append", default=[], help="a branch to read inputs from that aren't in the working tree yet")
     ap.add_argument("--refs-first", action="store_true", help="the --ref branches win over the working tree (their inputs are newer)")
+    ap.add_argument("--refit-days", action="store_true", help="only fit the wake and bed hours of the townsfolk already made (fit_day)")
     args = ap.parse_args()
+    if args.refit_days:
+        refit_days()
+        return
     GIT_REFS.extend(args.ref)
     REFS_FIRST = args.refs_first
     rnd = random.Random(args.seed)
