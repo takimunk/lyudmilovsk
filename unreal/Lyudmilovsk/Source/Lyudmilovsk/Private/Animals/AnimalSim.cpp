@@ -248,6 +248,38 @@ namespace LyudAnimals
 				Grid.CoarseKind[(size_t)CJ * Grid.CNX + CI] = (uint8_t)Best;
 			}
 		}
+		// the patches of open cells joined side to side. FindPath steps to a side neighbour, or to a corner one only past
+		// two open sides, so it joins exactly these: between two patches there is no path, and it need not search for one
+		// (a search for a place that cannot be reached went over the whole island, milliseconds each time).
+		const int Wide = Grid.CNX, High = Grid.CNY;
+		Grid.CoarsePatch.assign((size_t)Wide * High, -1);
+		std::vector<int> Todo;
+		int PatchCount = 0;
+		for (int First = 0; First < Wide * High; First++)
+		{
+			if (Grid.CoarseWalk[First] < 6 || Grid.CoarsePatch[First] >= 0)
+			{
+				continue;
+			}
+			Grid.CoarsePatch[First] = PatchCount;
+			Todo.push_back(First);
+			while (!Todo.empty())
+			{
+				const int C = Todo.back();
+				Todo.pop_back();
+				const int CI = C % Wide, CJ = C / Wide;
+				const int Sides[4] = { CI > 0 ? C - 1 : -1, CI < Wide - 1 ? C + 1 : -1, CJ > 0 ? C - Wide : -1, CJ < High - 1 ? C + Wide : -1 };
+				for (int S : Sides)
+				{
+					if (S >= 0 && Grid.CoarseWalk[S] >= 6 && Grid.CoarsePatch[S] < 0)
+					{
+						Grid.CoarsePatch[S] = PatchCount;
+						Todo.push_back(S);
+					}
+				}
+			}
+			PatchCount++;
+		}
 	}
 
 	EGround FWorld::GroundAt(float X, float Y) const
@@ -374,6 +406,10 @@ namespace LyudAnimals
 		if (!Snap(SI, SJ) || !Snap(GI, GJ))
 		{
 			return false;
+		}
+		if (Grid.CoarsePatch[(size_t)SJ * W + SI] != Grid.CoarsePatch[(size_t)GJ * W + GI])
+		{
+			return false;      // not joined (BuildCoarse): the search below would end the same way, after going everywhere
 		}
 		// cost of a step on each ground kind: cats keep to the yards and the bases of walls, dogs to streets and paths
 		static const float CatCost[8] = { 9.f, 1.0f, 1.35f, 0.85f, 1.6f, 1.25f, 1.f, 1.f };
