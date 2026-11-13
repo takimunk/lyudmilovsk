@@ -98,6 +98,8 @@ private:
 	 *  so only the tiles new to the disc trace. Only hits are kept; pruned to round the eye after a rebuild. */
 	mutable TMap<FVector2D, float> BedCache;
 	TArray<FSwimmer> Jellies;
+	/** The jellies' transforms this frame (kept: not allocated every frame). */
+	TArray<FTransform> JellyXf;
 	bool bJelliesPlaced = false;
 	double Clock = 0.0;
 	/** Away from the water: hidden at once, freed only after a while (a wave or a pier's edge no longer rebuilds it). */

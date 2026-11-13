@@ -497,7 +497,8 @@ void ULyudSeabedComponent::UpdateJellies(const FVector& Eye, float Dt)
 		}
 	}
 	// pulse up a little, sink back, carried by the waves' orbits; recycled ahead of the camera
-	TArray<FTransform> JX;
+	TArray<FTransform>& JX = JellyXf;
+	JX.Reset();
 	JX.Reserve(Jellies.Num());
 	for (FSwimmer& S : Jellies)
 	{
