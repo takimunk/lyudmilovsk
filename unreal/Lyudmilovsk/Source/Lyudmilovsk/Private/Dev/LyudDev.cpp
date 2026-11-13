@@ -119,6 +119,7 @@ namespace LyudDev
 
 		FString BookmarksPath() { return FPaths::ProjectSavedDir() / TEXT("Dev") / TEXT("bookmarks.json"); }
 
+		void ReadCityPlan(TMap<FName, FTeleport>& Out);   // below: the city plan's plots, squares and shops
 		void ReadFiles()
 		{
 			FRegistry& R = Reg();
