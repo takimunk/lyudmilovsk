@@ -65,6 +65,7 @@ PLAN = [
     # the crows' gift by events
     (18.0, "Quest.Start crow_gift", None),
     (18.5, "Quest.Dump", "crow_started"),
+    (18.7, "Quest.Event talk Sato_yuki", None),
     (19.0, "Quest.Event corvid_feed_thrown", None),
     (19.2, "Quest.Event corvid_feed_thrown", None),
     (19.4, "Quest.Event corvid_feed_thrown", None),

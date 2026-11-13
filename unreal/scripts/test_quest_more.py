@@ -5,9 +5,9 @@
      waxwing's `prepare` done begins overdue_journal; awakening's end begins owner_supper
   3. first_catch begins when fisherman_cheese ends; neither the reward's fish_herring nor a fish given by hand finishes
      `catch`, a fish_caught does
-  4. eating from the hand (corn cob, pie: lyud.Food.Hold + the mouse held) and at the diner (pancakes, soup: lyud.Diner.Serve,
+  4. Aslan at his tent begins tent_neighbours by a real talk; eating from the hand (corn cob, pie: lyud.Food.Hold + the mouse held) and at the diner (pancakes, soup: lyud.Diner.Serve,
      lyud.Diner.Eat, bites) sends `eat <item>`: tent_neighbours, lab_lunch
-  5. night_signal (have, wear the head lamp, reach the upper station), soda_science (four sodas), magpie_key, painter_views,
+  5. night_signal (have, wear the head lamp, reach the upper station), soda_science (four sodas drunk by Inventory.Use), magpie_key, painter_views,
      hot_corn (bring to Korneev_ivan, then a real talk with Guseva at her cart), sparrow_hello (the girl hears a sparrow:
      Quest.BirdCall HouseSparrow kid_girl, her three lines, bird_call HouseSparrow.Kid_girl)
   6. who is drawn where: Aya at 17:00, Lange at 14:00, the yard_evening people at 18:15, Kid_girl and the club's doorstep
@@ -49,8 +49,11 @@ at("Quest.Reset", None, 1.0)
 at("Quest.Start waxwing")
 at("Bird.Hero -420 1780", None, 4.0)
 dump("grove_before_talk")
+# waxwing finished, then waxwing_after's talk: its reward begins autumn_count, which settles past kit (a feeder in the pocket)
 at("Quest.Reset", None, 1.0)
-at("Dev.Quest waxwing_after play", None, 4.0)
+at("Inventory.Give feeder 1")
+at("Quest.SetStage waxwing done", None, 1.0)
+at("Quest.Event talk Sorokin_oleg", None, 1.5)
 dump("chain_after_waxwing_after")
 at("Quest.Event feeder_visit GreatTit", None, 1.0)
 dump("chain_feeder_visit_before_talk")
@@ -59,6 +62,8 @@ go("sorokin_oleg", 1.3)
 at("Npc.Where")
 talk(8)
 dump("chain_sorokin_talked")
+at("Quest.Event feeder_fill_at feed_peanuts@academ", None, 1.0)
+dump("chain_autumn_post")
 at("Quest.Reset", None, 1.0)
 at("Quest.Start waxwing")
 at("Quest.Event talk Sorokin_oleg")
@@ -82,8 +87,11 @@ at("Quest.Event fish_caught fish_flounder", None, 1.0)
 dump("catch_fish_caught")
 # 4. eating: from the hand, then at the diner
 at("Quest.Reset", None, 1.0)
-at("Quest.Start tent_neighbours")
-at("Quest.Event talk Khuazhev_aslan", None, 1.0)
+at("lyud.Birds.Time 12", None, 2.5)
+go("khuazhev_aslan", 1.5)
+at("Npc.Where")
+at("shot showui", "aslan_tent_12h")
+talk(9)
 dump("tent_taste")
 for item in ("corn_cob", "pie"):
     at("lyud.Food.Hold %s" % item, None, 1.5)
@@ -91,13 +99,18 @@ for item in ("corn_cob", "pie"):
         at("lyud.Hand.Press 1", None, 5.0)
         at("lyud.Hand.Press 0", None, 0.8)
     dump("tent_ate_" + item)
-at("Dev.Quest tent_neighbours taste", None, 6.0)
+at("Dev.Tp cable_lower", None, 4.0)
+at("lyud.Diner.Serve diner_pancakes", None, 1.0)
 at("lyud.Diner.State", None, 0.5)
 at("lyud.Diner.Eat", None, 2.0)
 for _ in range(14):
     at("lyud.Bite.Take big", None, 2.0)
 at("lyud.Diner.State", None, 0.5)
 dump("tent_ate_pancakes")
+at("lyud.Birds.Time 12", None, 2.5)
+go("khuazhev_aslan", 1.5)
+talk(6)
+dump("tent_told")
 at("Quest.Start lab_lunch")
 at("Quest.Event talk Li_vika", None, 1.0)
 at("Dev.Quest lab_lunch eat", None, 6.0)
@@ -115,16 +128,10 @@ at("Dev.Tp cable_upper", None, 4.0)
 dump("night_signal")
 at("Quest.Start soda_science")
 at("Quest.Event talk Zotova_galina")
-at("lyud.Food.Hold drink_baikal", None, 1.5)
-for _ in range(6):
-    at("lyud.Hand.Press 1", None, 5.0)
-    at("lyud.Hand.Press 0", None, 0.8)
-dump("soda_1_drunk")
-for d in ("drink_dyushes", "drink_buratino"):
-    at("Quest.Event eat %s" % d)
-dump("soda_3")
-at("Quest.Event eat drink_tarkhun", None, 1.0)
-dump("soda_4")
+for d in ("drink_baikal", "drink_dyushes", "drink_buratino", "drink_tarkhun"):
+    at("Inventory.Give %s 1" % d)
+    at("Inventory.Use %s" % d, None, 1.0)
+    dump("soda_" + d)
 at("Quest.Event talk Zotova_galina", None, 1.0)
 dump("soda_told")
 at("Quest.Start magpie_key")
@@ -161,12 +168,8 @@ at("Quest.Scenes")
 at("Quest.BirdCall HouseSparrow kid_girl", None, 1.0)
 at("shot showui", "kid_girl_hears", 9.0)
 dump("sparrow_called")
-# Aslan at his cheese tent by the club door: drawn? talk?
+# the club's doorstep at 12 (Aslan's tent beside it)
 at("lyud.Birds.Time 12", None, 2.5)
-go("khuazhev_aslan", 1.5)
-at("Npc.Where")
-at("shot showui", "aslan_tent_12h")
-talk(3)
 at("Dev.Tp club_door", None, 3.0)
 at("shot showui", "club_door_12h")
 # 6. who is drawn where
