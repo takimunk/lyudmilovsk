@@ -203,6 +203,8 @@ private:
 	UPROPERTY(Transient) TArray<TObjectPtr<UHierarchicalInstancedStaticMeshComponent>> Comps;
 	UPROPERTY(Transient) TArray<TObjectPtr<UObject>> KeepAlive;
 	UPROPERTY(Transient) TArray<TObjectPtr<UMaterialInstanceDynamic>> WeatherMIDs;
+	/** The bark of the wood lying about: colour and normal for pine, spruce, birch (6), painted once and shared by every debris kind of that wood. */
+	UPROPERTY(Transient) TArray<TObjectPtr<UTexture2D>> DebrisBark;
 	UPROPERTY(Transient) TObjectPtr<UMaterialInterface> PlantMaterial;
 	UPROPERTY(Transient) TObjectPtr<UMaterialInterface> GrassMaterial;
 	UPROPERTY(Transient) TObjectPtr<UMaterialInterface> DebrisMaterial;

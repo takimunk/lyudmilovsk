@@ -875,10 +875,23 @@ void AForestFloor::BuildKind(FKind& K)
 			const TCHAR* Sp = K.Wood == EWood::Birch ? TEXT("SilverBirch") : K.Wood == EWood::Spruce ? TEXT("NorwaySpruce") : TEXT("ScotsPine");
 			if (const FPlantSpecies* S = PlantSpeciesLibrary::Find(Sp))
 			{
-				UTexture2D *Albedo = nullptr, *Normal = nullptr;
-				PlantMeshes::BuildBarkTextures(this, *S, 7, Albedo, Normal);
-				KeepAlive.Add(Albedo);
-				KeepAlive.Add(Normal);
+				// one bark per wood (pine, spruce, birch), shared by the sticks, branches, logs, stumps, roots and curls of it:
+				// each of those 14 kinds painted its own copy of the same two textures before (tens of ms and 1.5 to 6 MB each)
+				const int32 WoodIndex = FMath::Clamp((int32)K.Wood, 0, 2);
+				if (DebrisBark.Num() != 6)
+				{
+					DebrisBark.Reset();
+					DebrisBark.SetNum(6);
+				}
+				if (!DebrisBark[WoodIndex * 2] || !DebrisBark[WoodIndex * 2 + 1])
+				{
+					UTexture2D *NewAlbedo = nullptr, *NewNormal = nullptr;
+					PlantMeshes::BuildBarkTextures(this, *S, 7, NewAlbedo, NewNormal);
+					DebrisBark[WoodIndex * 2] = NewAlbedo;
+					DebrisBark[WoodIndex * 2 + 1] = NewNormal;
+				}
+				UTexture2D* Albedo = DebrisBark[WoodIndex * 2];
+				UTexture2D* Normal = DebrisBark[WoodIndex * 2 + 1];
 				M->SetTextureParameterValue(TEXT("BarkAlbedo"), Albedo);
 				M->SetTextureParameterValue(TEXT("BarkNormal"), Normal);
 				// a tile of the bark texture spans TileWidth x TileHeight m (the UVs are in metres)
