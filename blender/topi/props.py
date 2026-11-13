@@ -140,8 +140,10 @@ def recalc(obj):
 
 
 def select_only(*objs):
-    for o in bpy.context.view_layer.objects:
-        o.select_set(False)
+    bpy.context.view_layer.update()
+    for o in list(bpy.context.view_layer.objects):
+        if o is not None:
+            o.select_set(False)
     for o in objs:
         o.select_set(True)
     bpy.context.view_layer.objects.active = objs[-1]
@@ -463,7 +465,7 @@ def mat_towel(letter):
     uvs = N.sep(N.uv())
     u, v = uvs[0], uvs[1]
     ends = N.math("MINIMUM", v, N.math("SUBTRACT", 1.0, v))           # 0 at the short ends
-    band = lambda a, b: N.math("MULTIPLY", N.smooth(ends, a - 0.004, a), N.smooth(ends, b, b + 0.004))  # noqa: E731
+    band = lambda a, b: N.math("MULTIPLY", N.smooth(ends, a - 0.004, a), N.smooth(ends, b + 0.004, b))   # 1 for a < ends < b  # noqa: E731
     s1 = N.math("ADD", band(0.06, 0.10), band(0.135, 0.15))
     s2 = band(0.115, 0.125)
     col = N.mix(s1, ground, stripe)
