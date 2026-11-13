@@ -271,6 +271,7 @@ void UPeopleLifeSubsystem::Stop()
 	}
 	TownBodies.Reset();
 	TownPool.Reset();
+	OwnParked.Reset();
 	TownNear.Reset();
 	SetLightsDriven(false);     // the buildings light themselves again (a seeded evening)
 	LightSinks.Reset();
@@ -1292,15 +1293,38 @@ void UPeopleLifeSubsystem::ReleaseBody(int32 Id)
 		return;
 	}
 	Bodies[Id] = nullptr;
-	// a look of their own nobody else wears: no pool, the body goes (it's loaded again, async, when they come near)
-	if (ShownModels.IsValidIndex(Id) && Sim && Id < (int32)Sim->People.size() && ShownModels[Id] != UTF8_TO_TCHAR(Sim->People[Id].Mesh.c_str()))
-	{
-		TownBodies.RemoveSwap(Body, EAllowShrinking::No);
-		Body->Destroy();
-		return;
-	}
+	const bool bOwnLook = ShownModels.IsValidIndex(Id) && Sim && Id < (int32)Sim->People.size() && ShownModels[Id] != UTF8_TO_TCHAR(Sim->People[Id].Mesh.c_str());
 	Body->SetActorHiddenInGame(true);
 	TownPool.FindOrAdd(Body->MeshName).Add(Body);
+	if (!bOwnLook)
+	{
+		return;
+	}
+	// a look of their own nobody else wears: only they can take the body back, so just the last few of these are kept
+	// (in a crowd the nearest ones change all the time: no spawning and destroying a body on each change), the oldest goes
+	const int32 MaxOwnParked = 32;
+	OwnParked.Remove(TWeakObjectPtr<ANpcBody>(Body));
+	OwnParked.Add(TWeakObjectPtr<ANpcBody>(Body));
+	while (OwnParked.Num() > MaxOwnParked)
+	{
+		ANpcBody* Old = OwnParked[0].Get();
+		OwnParked.RemoveAt(0);
+		if (!Old)
+		{
+			continue;
+		}
+		const FString OldModel = Old->MeshName;
+		TArray<TObjectPtr<ANpcBody>>* Free = TownPool.Find(OldModel);
+		if (Free && Free->Remove(Old) > 0)      // still parked: not taken back since
+		{
+			if (Free->Num() == 0)
+			{
+				TownPool.Remove(OldModel);
+			}
+			TownBodies.RemoveSwap(Old, EAllowShrinking::No);
+			Old->Destroy();
+		}
+	}
 }
 
 void UPeopleLifeSubsystem::BindLights()

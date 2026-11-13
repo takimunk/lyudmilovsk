@@ -227,6 +227,8 @@ private:
 	// the town: pooled bodies for the townsfolk (nearest first, lyud.People.TownBodies), the window lights
 	/** Free townsfolk bodies by model, to be given to whoever of that look comes near. */
 	TMap<FString, TArray<TObjectPtr<ANpcBody>>> TownPool;
+	/** The parked bodies of townsfolk with a look of their own, oldest first: only so many are kept (ReleaseBody). */
+	TArray<TWeakObjectPtr<ANpcBody>> OwnParked;
 	/** Townsfolk allowed a body now (the nearest drawn ones), refreshed a few times a second. */
 	TBitArray<> TownAllowed;
 	TArray<TPair<float, int32>> TownNear;
