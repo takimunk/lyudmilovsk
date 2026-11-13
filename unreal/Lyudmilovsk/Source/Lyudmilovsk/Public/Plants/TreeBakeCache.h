@@ -5,8 +5,10 @@
 #include "TreeBakeCache.generated.h"
 
 class UMaterialInstanceDynamic;
+class UMaterialInterface;
 class UStaticMesh;
 class UTexture2D;
+struct FPlantSpecies;
 
 /** One baked tree kind: species, seed, age (to a tenth of a year). */
 struct FTreeBakeKey
@@ -53,6 +55,11 @@ public:
 	const FTreeBaked* Request(FName Species, uint32 Seed, float Age, float Day, float RebakeDays, const FVector& LodDistances);
 	/** The textures made for a species (null until one of its kinds has been finished). */
 	bool GetSpeciesTextures(FName Species, UTexture2D*& Albedo, UTexture2D*& Normal, UTexture2D*& LeafDetail) const;
+	/**
+	 * The same textures, painted now when no kind of the species has been baked yet: a lone plant draws its bark and leaves
+	 * with them instead of painting its own (a bark tile is two 256 x 512 textures, a birch's two 512 x 1024).
+	 */
+	bool EnsureSpeciesTextures(const FPlantSpecies& Species, UTexture2D*& Albedo, UTexture2D*& Normal, UTexture2D*& LeafDetail);
 	/** Everything queued is made at once, on this thread (editor, tests). */
 	void BakeAllNow();
 	int32 NumBaked() const { return Baked.Num(); }
@@ -75,6 +82,7 @@ private:
 	{
 		TObjectPtr<UTexture2D> Albedo, Normal, Detail, Card, Bloom;
 	};
+	FSpeciesAssets& AssetsFor(const FPlantSpecies& S);
 	void Finish(FJob& Job);
 	void Launch(const TSharedPtr<FJob>& Job);
 

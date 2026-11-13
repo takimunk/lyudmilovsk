@@ -5,6 +5,7 @@
 #include "Materials/MaterialInstanceDynamic.h"
 #include "Plants/PlantMeshes.h"
 #include "Plants/PlantModel.h"
+#include "Plants/PlantSpecies.h"
 #include "Tasks/Task.h"
 
 struct UTreeBakeCache::FJob
@@ -65,22 +66,9 @@ void UTreeBakeCache::Launch(const TSharedPtr<FJob>& Job)
 	});
 }
 
-void UTreeBakeCache::Finish(FJob& Job)
+UTreeBakeCache::FSpeciesAssets& UTreeBakeCache::AssetsFor(const FPlantSpecies& S)
 {
-	const double T0 = FPlatformTime::Seconds();
-	const FPlantSpecies& S = Job.Species;
-	if (!BarkMaterial)
-	{
-		BarkMaterial = LoadObject<UMaterialInterface>(nullptr, TEXT("/Game/Plants/M_PlantBark.M_PlantBark"));
-		LeafMaterial = LoadObject<UMaterialInterface>(nullptr, TEXT("/Game/Plants/M_PlantLeaf.M_PlantLeaf"));
-		NeedleMaterial = LoadObject<UMaterialInterface>(nullptr, TEXT("/Game/Plants/M_PlantNeedle.M_PlantNeedle"));
-		UMaterialInterface* Basic = LoadObject<UMaterialInterface>(nullptr, TEXT("/Engine/BasicShapes/BasicShapeMaterial.BasicShapeMaterial"));
-		if (!BarkMaterial) BarkMaterial = Basic;
-		if (!LeafMaterial) LeafMaterial = Basic;
-		if (!NeedleMaterial) NeedleMaterial = LeafMaterial;
-	}
 	FSpeciesAssets& A = Assets.FindOrAdd(S.Name);
-	const double TexStart = FPlatformTime::Seconds();
 	if (!A.Albedo)
 	{
 		// one bark and one leaf texture per species, whatever the seed
@@ -101,6 +89,35 @@ void UTreeBakeCache::Finish(FJob& Job)
 			KeepAlive.Add(A.Bloom);
 		}
 	}
+	return A;
+}
+
+bool UTreeBakeCache::EnsureSpeciesTextures(const FPlantSpecies& Species, UTexture2D*& Albedo, UTexture2D*& Normal, UTexture2D*& LeafDetail)
+{
+	const FSpeciesAssets& A = AssetsFor(Species);
+	if (!A.Albedo || !A.Normal || !A.Detail) return false;
+	Albedo = A.Albedo;
+	Normal = A.Normal;
+	LeafDetail = A.Detail;
+	return true;
+}
+
+void UTreeBakeCache::Finish(FJob& Job)
+{
+	const double T0 = FPlatformTime::Seconds();
+	const FPlantSpecies& S = Job.Species;
+	if (!BarkMaterial)
+	{
+		BarkMaterial = LoadObject<UMaterialInterface>(nullptr, TEXT("/Game/Plants/M_PlantBark.M_PlantBark"));
+		LeafMaterial = LoadObject<UMaterialInterface>(nullptr, TEXT("/Game/Plants/M_PlantLeaf.M_PlantLeaf"));
+		NeedleMaterial = LoadObject<UMaterialInterface>(nullptr, TEXT("/Game/Plants/M_PlantNeedle.M_PlantNeedle"));
+		UMaterialInterface* Basic = LoadObject<UMaterialInterface>(nullptr, TEXT("/Engine/BasicShapes/BasicShapeMaterial.BasicShapeMaterial"));
+		if (!BarkMaterial) BarkMaterial = Basic;
+		if (!LeafMaterial) LeafMaterial = Basic;
+		if (!NeedleMaterial) NeedleMaterial = LeafMaterial;
+	}
+	const double TexStart = FPlatformTime::Seconds();
+	FSpeciesAssets& A = AssetsFor(S);
 	const double MeshStart = FPlatformTime::Seconds();
 	const FVector* L = LodsOf.Find(Job.Key);
 	const FVector Lods = L ? *L : FVector(45.0, 120.0, 300.0);

@@ -34,6 +34,11 @@ namespace
 	 *  species (each plant's own UPROPERTY keeps it alive; the entry goes stale with the last of them and is painted again). */
 	TMap<FName, TWeakObjectPtr<UTexture2D>> GHerbLeafTextures;
 	TMap<FName, TWeakObjectPtr<UTexture2D>> GHerbFlowerAtlases;
+	/** The veins of a plain-leaved herb's blade (a species with no leaf texture of its own): shared the same way; the plant's
+	 *  leaf material keeps it alive. */
+	TMap<FName, TWeakObjectPtr<UTexture2D>> GHerbLeafDetails;
+	/** The fruit skin's noise and dots are the same for every tree: painted once, kept alive by each plant's own UPROPERTY. */
+	TWeakObjectPtr<UTexture2D> GFruitDetail;
 
 	/** Scene 01's outside sun lights channel 1 only; channel 0 keeps the default lights too. */
 	void OutdoorLighting(UPrimitiveComponent* C)
@@ -323,6 +328,7 @@ void AProceduralPlant::EnsureMeshes()
 		Skeleton.Build(S, (uint32)Seed);
 		UTexture2D* Albedo = nullptr;
 		UTexture2D* Normal = nullptr;
+		UTexture2D* Detail = SharedLeafDetail;
 		if (SharedBarkAlbedo && SharedBarkNormal)
 		{
 			Albedo = SharedBarkAlbedo;
@@ -330,17 +336,39 @@ void AProceduralPlant::EnsureMeshes()
 		}
 		else
 		{
-			PlantMeshes::BuildBarkTextures(this, S, (uint32)Seed, Albedo, Normal);
+			// a lone plant takes its species' textures from the world's bake cache, as a forest's live tree is handed them
+			// and as its own far bake is drawn: every plant painted its own bark tile and leaf detail before (two 256 x 512
+			// textures a tree, a birch's 512 x 1024, tens of ms each to paint)
+			UTexture2D *CacheAlbedo = nullptr, *CacheNormal = nullptr, *CacheDetail = nullptr;
+			UTreeBakeCache* Cache = GetWorld() ? GetWorld()->GetSubsystem<UTreeBakeCache>() : nullptr;
+			if (Cache && Cache->EnsureSpeciesTextures(S, CacheAlbedo, CacheNormal, CacheDetail))
+			{
+				Albedo = CacheAlbedo;
+				Normal = CacheNormal;
+				if (!Detail)
+				{
+					Detail = CacheDetail;
+				}
+			}
+			else
+			{
+				PlantMeshes::BuildBarkTextures(this, S, (uint32)Seed, Albedo, Normal);
+			}
 		}
 		BarkAlbedo = Albedo;
 		BarkNormal = Normal;
-		LeafDetail = SharedLeafDetail ? SharedLeafDetail.Get() : PlantMeshes::BuildLeafDetail(this, S.Leaf);
+		LeafDetail = Detail ? Detail : PlantMeshes::BuildLeafDetail(this, S.Leaf);
 		LeafMesh = PlantMeshes::BuildLeafCluster(this, S);
 		SummaryCrown->SetStaticMesh(S.bConicalCrown && CrownCone ? CrownCone.Get() : CrownEllipsoid.Get());
 		SingleLeafMesh = PlantMeshes::BuildSingleLeaf(this, S);
 		if (!FruitDetail)
 		{
-			FruitDetail = PlantMeshes::BuildFruitDetail(this);
+			FruitDetail = GFruitDetail.Get();
+			if (!FruitDetail)
+			{
+				FruitDetail = PlantMeshes::BuildFruitDetail(this);
+				GFruitDetail = FruitDetail.Get();
+			}
 		}
 		if (S.FruitSize > 0.f)
 		{
@@ -463,7 +491,18 @@ void AProceduralPlant::ApplyHerb(float Age, float Day)
 			M->SetScalarParameterValue(TEXT("Flutter"), S.bIndoor || S.Herb.Form == EPlantHerbForm::Column ? 0.f : 0.25f);
 			HerbMaterials.Add(M);
 		}
-		HerbMaterials[PlantHerbs::Leaves]->SetTextureParameterValue(TEXT("LeafDetail"), HerbLeafTexture ? HerbLeafTexture.Get() : PlantMeshes::BuildLeafDetail(this, S.Leaf));
+		UTexture2D* LeafVeins = HerbLeafTexture.Get();
+		if (!LeafVeins)
+		{
+			// plain leaves: the blade's veins, one texture per species (every bed plant painted its own before)
+			LeafVeins = GHerbLeafDetails.FindRef(S.Name).Get();
+			if (!LeafVeins)
+			{
+				LeafVeins = PlantMeshes::BuildLeafDetail(this, S.Leaf);
+				GHerbLeafDetails.Add(S.Name, LeafVeins);
+			}
+		}
+		HerbMaterials[PlantHerbs::Leaves]->SetTextureParameterValue(TEXT("LeafDetail"), LeafVeins);
 		HerbMaterials[PlantHerbs::Stems]->SetVectorParameterValue(TEXT("Color"), S.Herb.StemColour);
 		if (HerbFlowerAtlas)
 		{
