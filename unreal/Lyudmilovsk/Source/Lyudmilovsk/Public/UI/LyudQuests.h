@@ -227,6 +227,8 @@ public:
 private:
 	void BeginStage(FLyudQuestProgress& P, const FLyudQuestDef& Def);
 	void FinishStage(FLyudQuestProgress& P, const FLyudQuestDef& Def);
+	/** Finishes the stages a quest stands on that are met already by what the hero has or where he is (as counted by BeginStage). */
+	void Settle(FName Quest);
 	void AddEntry(const FString& Key, FName Quest, const TArray<FString>& Args = TArray<FString>());
 	FDateTime Today() const;
 	FLyudQuestProgress& ProgressOf(FName Quest);

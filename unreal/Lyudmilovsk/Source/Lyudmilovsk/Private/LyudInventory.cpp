@@ -1302,6 +1302,15 @@ static FAutoConsoleCommandWithWorldAndArgs GInvEquip(TEXT("Inventory.Equip"), TE
 		}
 	}));
 
+static FAutoConsoleCommandWithWorldAndArgs GInvUse(TEXT("Inventory.Use"), TEXT("Inventory.Use <item id>: uses one from the pocket as the inventory screen's Use does (drinks a bottle, eats, reads; headless checks)"),
+	FConsoleCommandWithWorldAndArgsDelegate::CreateLambda([](const TArray<FString>& Args, UWorld* World)
+	{
+		if (ULyudInventoryUI* UI = Args.Num() > 0 ? ULyudInventoryUI::Get(World) : nullptr)
+		{
+			UI->Use(FName(*Args[0]));
+		}
+	}));
+
 static FAutoConsoleCommandWithWorldAndArgs GShopScroll(TEXT("Shop.Scroll"),
 	TEXT("Shop.Scroll wheel <notches> | select <rows> | end: scrolls or moves the selection of the open trade list and logs SHOPSCROLL (checks)"),
 	FConsoleCommandWithWorldAndArgsDelegate::CreateLambda([](const TArray<FString>& Args, UWorld* World)
