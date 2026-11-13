@@ -219,7 +219,7 @@ namespace LyudWinter
 		return IX >= 0 && IY >= 0 && IX < W && IY < H ? Kind[Index(IX, IY)] : CellNone;
 	}
 
-	void FCover::MarkForest(double MinX, double MinY, double MaxX, double MaxY)
+	void FCover::MarkForest(double MinX, double MinY, double MaxX, double MaxY, const std::function<bool(double, double)>& Keep)
 	{
 		const int AX = std::max(0, int(std::ceil((MinX - X0) / Cell))), BX = std::min(W - 1, int(std::floor((MaxX - X0) / Cell)));
 		const int AY = std::max(0, int(std::ceil((MinY - Y0) / Cell))), BY = std::min(H - 1, int(std::floor((MaxY - Y0) / Cell)));
@@ -228,7 +228,7 @@ namespace LyudWinter
 			for (int X = AX; X <= BX; X++)
 			{
 				uint8_t& K = Kind[Index(X, Y)];
-				if (K == CellOpen || K == CellNone)
+				if ((K == CellOpen || K == CellNone) && (!Keep || Keep(X0 + X * double(Cell), Y0 + Y * double(Cell))))
 				{
 					K = CellForest;
 				}

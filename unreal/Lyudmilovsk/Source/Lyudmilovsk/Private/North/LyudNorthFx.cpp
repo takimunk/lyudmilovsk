@@ -101,18 +101,24 @@ ALyudNorthSteam::ALyudNorthSteam()
 	Xf.SetNum(Pool);
 }
 
+void ALyudNorthSteam::Prepare()
+{
+	if (Puffs->GetInstanceCount() > 0)
+	{
+		return;
+	}
+	// built once (at world start, or at the first puff): the card and its pool of instances, parked tiny at the actor
+	Card = LyudNorthFx::PuffCard(this, NorthLoadMat(NorthSteamPath, NorthSmokeFallback), TEXT("SM_NorthSteamPuff"));
+	Puffs->SetStaticMesh(Card);
+	TArray<FTransform> Zero;
+	Zero.Init(FTransform(FQuat::Identity, GetActorLocation(), FVector(0.001f)), Pool);
+	Puffs->AddInstances(Zero, false, true);
+}
+
 void ALyudNorthSteam::Emit(const FVector& Where, const FVector& Velocity, float Size0, float Size1, float Alpha, float Life, float Rise,
 	float Drag, float Grey, float Drift)
 {
-	if (Puffs->GetInstanceCount() == 0)
-	{
-		// built once, at the first puff: the card and its pool of instances
-		Card = LyudNorthFx::PuffCard(this, NorthLoadMat(NorthSteamPath, NorthSmokeFallback), TEXT("SM_NorthSteamPuff"));
-		Puffs->SetStaticMesh(Card);
-		TArray<FTransform> Zero;
-		Zero.Init(FTransform(FQuat::Identity, Where, FVector(0.001f)), Pool);
-		Puffs->AddInstances(Zero, false, true);
-	}
+	Prepare();
 	FPuff& P = All[Next];
 	Next = (Next + 1) % Pool;
 	// damp cold air keeps steam longer and thicker

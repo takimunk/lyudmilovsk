@@ -63,8 +63,9 @@ namespace LyudWinter
 		/** Bilinear ground height (cm); NoGround outside. */
 		float GroundAt(double X, double Y) const;
 		uint8_t KindAt(double X, double Y) const;
-		/** Marks the cells inside a rectangle (world cm) as forest (open ground with a canopy). */
-		void MarkForest(double MinX, double MinY, double MaxX, double MaxY);
+		/** Marks the cells inside a rectangle (world cm) as forest (open ground with a canopy); with Keep, only the cells whose
+		 *  centre (world cm) it keeps (the map's forest cover: glades and cut-back edges stay open ground). */
+		void MarkForest(double MinX, double MinY, double MaxX, double MaxY, const std::function<bool(double, double)>& Keep = nullptr);
 		/** Stable hash of the heights (for caches). */
 		uint32_t Hash() const;
 		bool Save(const std::string& Path) const;

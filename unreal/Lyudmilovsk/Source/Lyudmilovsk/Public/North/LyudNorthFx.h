@@ -32,6 +32,9 @@ public:
 	 *  rising Rise cm/s^2, Grey 0 white steam .. 1 grey smoke; Drift 0..1 how much the wind takes it once it is old. */
 	void Emit(const FVector& Where, const FVector& Velocity, float Size0, float Size1, float Alpha, float Life, float Rise,
 		float Drag = 1.f, float Grey = 0.f, float Drift = 1.f);
+	/** Loads the material, builds the card and the pool's instances (once; a second call does nothing). ULyudNorthSubsystem
+	 *  calls it at world start so the first puff in play costs nothing; Emit calls it too if nobody did. */
+	void Prepare();
 	/** The wind (world cm/s) and the air's density (1 normal: alpha and life scale with it). */
 	void SetAir(const FVector& InWindCm, float InDensity) { WindCm = InWindCm; Density = InDensity; }
 	float GetDensity() const { return Density; }

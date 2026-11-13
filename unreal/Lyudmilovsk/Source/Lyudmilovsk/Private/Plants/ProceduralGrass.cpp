@@ -1,6 +1,7 @@
 #include "Plants/ProceduralGrass.h"
 #include "Winter/LyudWinter.h"
 
+#include "Camera/PlayerCameraManager.h"
 #include "Components/HierarchicalInstancedStaticMeshComponent.h"
 #include "Components/InstancedStaticMeshComponent.h"
 #include "CoreGlobals.h"
@@ -8,6 +9,7 @@
 #include "Engine/Texture2D.h"
 #include "Engine/World.h"
 #include "EngineUtils.h"
+#include "GameFramework/PlayerController.h"
 #include "HAL/IConsoleManager.h"
 #include "Materials/MaterialInstanceDynamic.h"
 #include "Plants/FallenFruit.h"
@@ -138,6 +140,19 @@ float AProceduralGrass::HerbDrawDistance(const FPlantSpecies& S) const
 	return HerbDistance > 0.f ? HerbDistance : FMath::Clamp(S.Herb.Height * 4500.f, 2500.f, 7000.f);
 }
 
+bool AProceduralGrass::HerbNearPlayer(const FPlantSpecies& S) const
+{
+	const UWorld* W = GetWorld();
+	const APlayerController* PC = W ? W->GetFirstPlayerController() : nullptr;
+	if (!PC || !PC->PlayerCameraManager)
+	{
+		return false;
+	}
+	const FVector L = GetActorTransform().InverseTransformPosition(PC->PlayerCameraManager->GetCameraLocation());
+	const double Margin = HerbDrawDistance(S) + 15000.0;
+	return FMath::Abs(L.X) < HalfExtent.X + Margin && FMath::Abs(L.Y) < HalfExtent.Y + Margin;
+}
+
 void AProceduralGrass::EnsureHerbAssets(const FPlantSpecies& S)
 {
 	if (HerbComps.Num() != HerbSeedCount)
@@ -248,6 +263,11 @@ FString AProceduralGrass::DescribeState() const
 {
 	if (GetHerb())
 	{
+		if (!bHerbBuilt)
+		{
+			// a herb patch is laid out only when the player first comes near (Tick)
+			return FString::Printf(TEXT("%s (herb): not built yet (the player has not been near)"), *Species.ToString());
+		}
 		int32 Drawn = 0;
 		for (const UHierarchicalInstancedStaticMeshComponent* C : HerbComps) Drawn += C ? C->GetInstanceCount() : 0;
 		return FString::Printf(TEXT("%s (herb): %d plants, %d triangles each near, %d instances in %d seeds%s"), *Species.ToString(), Tufts, TuftTriangles,
@@ -519,6 +539,7 @@ void AProceduralGrass::Rebuild()
 		// the meshes first, then the plants on them
 		ApplyHerbSeason(*Herb, CurrentDay());
 		Scatter();
+		bHerbBuilt = true;
 		return;
 	}
 	EnsureAssets();
@@ -544,26 +565,57 @@ void AProceduralGrass::OnConstruction(const FTransform& Transform)
 void AProceduralGrass::BeginPlay()
 {
 	Super::BeginPlay();
-	Rebuild();
+	// a herb patch is built by Tick when the player comes near: the North's ~60 patches cost nothing at load or far away
+	if (!GetHerb())
+	{
+		Rebuild();
+	}
 }
 
 void AProceduralGrass::Tick(float DeltaSeconds)
 {
 	Super::Tick(DeltaSeconds);
 	const float Day = CurrentDay();
-	if (FMath::Abs(Day - ShownDay) > 0.1f)
-	{
-		ApplySeason(Day);
-	}
 	// the graphics level changed the density: the tufts are laid out again, one patch a frame across the world (the patches
 	// tick on the same beat, and all of them in one frame would stall it); a patch waiting for its frame ticks every frame
 	static uint64 GrassRebuildFrame = 0;
-	bool bWaiting = BuiltDensity >= 0.f && CVarGrassDensity.GetValueOnGameThread() != BuiltDensity;
-	if (bWaiting && GrassRebuildFrame != GFrameCounter)
+	bool bWaiting = false;
+	if (const FPlantSpecies* Herb = GetHerb())
 	{
-		GrassRebuildFrame = GFrameCounter;
-		Rebuild();
-		bWaiting = false;
+		// far from the player a herb patch does nothing (ShownDay goes stale; it catches up when he comes near); near ones
+		// are built and re-seasoned one a frame, the same turn as the density rebuild
+		if (HerbNearPlayer(*Herb))
+		{
+			const bool bLayout = !bHerbBuilt || CVarGrassDensity.GetValueOnGameThread() != BuiltDensity;
+			bWaiting = bLayout || FMath::Abs(Day - ShownDay) > 0.1f;
+			if (bWaiting && GrassRebuildFrame != GFrameCounter)
+			{
+				GrassRebuildFrame = GFrameCounter;
+				if (bLayout)
+				{
+					Rebuild();
+				}
+				else
+				{
+					ApplySeason(Day);
+				}
+				bWaiting = false;
+			}
+		}
+	}
+	else
+	{
+		if (FMath::Abs(Day - ShownDay) > 0.1f)
+		{
+			ApplySeason(Day);
+		}
+		bWaiting = BuiltDensity >= 0.f && CVarGrassDensity.GetValueOnGameThread() != BuiltDensity;
+		if (bWaiting && GrassRebuildFrame != GFrameCounter)
+		{
+			GrassRebuildFrame = GFrameCounter;
+			Rebuild();
+			bWaiting = false;
+		}
 	}
 	const float Interval = bWaiting ? 0.f : GrassPatchTickSeconds;
 	if (GetActorTickInterval() != Interval)

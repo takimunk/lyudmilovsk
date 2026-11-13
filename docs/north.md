@@ -284,7 +284,9 @@ times `DensityScale`, by `HerbHabitat` on the terrain masks: none on snow, lava,
 instances of the herb's own two-LOD mesh (`PlantHerbs::BuildMeshLods`: LOD1 is the lite build), two seeds of ages
 `HerbAge` and twice that, no shadows, no collision, drawn only to `HerbDistance` (0: 45 x the herb's height, 25..70 m).
 They follow the calendar like the forest floor's herbs (`M_FloorPlant`, rebuilt only when the plant's state changes,
-hidden while a perennial is dormant or a low herb is under snow). Only built in a game world. `herb_patches()` returns
+hidden while a perennial is dormant or a low herb is under snow). Only built in a game world, and only when the
+player's camera first comes within the draw distance + 150 m of the patch's rectangle (nothing at BeginPlay or far
+away; near patches build and re-season one a frame; `DescribeState` says "not built yet" until then). `herb_patches()` returns
 them as `grass_patches` rows; `HERB_PATCH_SETTINGS` (read through `world_map.grass_patch_settings(species)`) gives each
 species' density, habitat and age, which import_world sets: 33 fireweed, 19 mountain avens, 6 lingonberry, 6 cotton
 grass patches, 4 of reindeer lichen.

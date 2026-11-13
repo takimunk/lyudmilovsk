@@ -6,6 +6,7 @@
 
 class UAudioComponent;
 class UMaterialInterface;
+class USoundBase;
 class UStaticMesh;
 class UStaticMeshComponent;
 
@@ -75,6 +76,8 @@ private:
 	UPROPERTY(Transient) TArray<TObjectPtr<UStaticMeshComponent>> Parts;
 	UPROPERTY(Transient) TArray<TObjectPtr<UStaticMesh>> Meshes;
 	UPROPERTY(Transient) TObjectPtr<UAudioComponent> Loop;
+	/** The flow loop, loaded once in Setup (null when the asset is missing: the river is silent). */
+	UPROPERTY(Transient) TObjectPtr<USoundBase> LoopSound;
 	/** The given samples (world cm, W half width cm). */
 	TArray<FVector4> Samples;
 	/** The smoothed line the sheet is built along. */

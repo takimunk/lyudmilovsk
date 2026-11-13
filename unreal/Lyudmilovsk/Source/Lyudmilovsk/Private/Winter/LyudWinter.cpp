@@ -24,6 +24,7 @@
 #include "Materials/MaterialParameterCollection.h"
 #include "Misc/FileHelper.h"
 #include "Misc/Paths.h"
+#include "Plants/ForestCover.h"
 #include "Plants/GameCalendar.h"
 #include "Plants/ProceduralForest.h"
 #include "Plants/ProceduralGrass.h"
@@ -593,7 +594,10 @@ void ULyudWinterSubsystem::StepCover()
 			for (TActorIterator<AProceduralForest> It(World); It; ++It)
 			{
 				const FVector C = It->GetActorLocation();
-				S.Cover.MarkForest(C.X - It->HalfExtent.X, C.Y - It->HalfExtent.Y, C.X + It->HalfExtent.X, C.Y + It->HalfExtent.Y);
+				// only where the map's forest cover keeps trees (as the tiles and the forest floor): glades are open ground
+				const bool bCover = It->bUseForestCover;
+				S.Cover.MarkForest(C.X - It->HalfExtent.X, C.Y - It->HalfExtent.Y, C.X + It->HalfExtent.X, C.Y + It->HalfExtent.Y,
+					[bCover](double PX, double PY) { return !bCover || ForestCover::At(FVector(PX, PY, 0.0)) >= 0.35f; });
 			}
 			S.Cover.CleanRoofs();
 			S.Cover.ComputeUrban(WinterParallelRows);
