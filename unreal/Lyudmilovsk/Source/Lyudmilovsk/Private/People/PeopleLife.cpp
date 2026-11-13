@@ -215,6 +215,7 @@ bool UPeopleLifeSubsystem::Start()
 	bLightSinksBound = false;
 	LightSinks.Reset();
 	LightTimer = 0.f;
+	bLightsAll = false;
 	UpdateClock(true);
 	ResolveModels();
 	BindClub();
@@ -1175,15 +1176,19 @@ void UPeopleLifeSubsystem::Tick(float DeltaTime)
 	}
 	if (bJumped)
 	{
-		UpdateLights(true);
+		// every flat is told again, but only once the townsfolk are placed: till then every flat of theirs reads dark
+		bLightsAll = true;
+		LightTimer = 0.f;
 		Present(DeltaTime);
 		return;
 	}
 	LightTimer -= DeltaTime;
-	if (LightTimer <= 0.f)
+	// (no waiting for the placing past a few seconds: with the game's clock stopped it doesn't go on)
+	if (LightTimer <= 0.f && (!S.Settling() || LightTimer < -5.f))
 	{
 		LightTimer = 2.f;
-		UpdateLights(false);
+		UpdateLights(bLightsAll);
+		bLightsAll = false;
 	}
 	// the life runs on the game's calendar (its time scale), in steps of at most a second; at a high time scale (the
 	// developer's slider) in at most eight longer steps a frame, and no more than a few milliseconds of them: what isn't

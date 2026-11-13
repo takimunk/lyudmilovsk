@@ -235,6 +235,8 @@ private:
 	void ReleaseBody(int32 Id);
 	/** Lights: every couple of seconds the flats that changed are told to the window lights (the buildings' and the walls'). */
 	float LightTimer = 0.f;
+	/** A clock jump asks for every flat to be told again; done once the townsfolk are placed. */
+	bool bLightsAll = false;
 	std::vector<int> LightChanged;
 	TMap<FName, int32> FlatIndex;
 	TMap<FName, int32> WindowIndex;
