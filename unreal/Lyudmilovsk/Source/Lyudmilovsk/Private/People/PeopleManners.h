@@ -62,6 +62,8 @@ namespace LyudPeople
 		IceCream,
 		Drink,
 		CarryBag,
+		// empty hands again (new ones go at the end: the numbers stay)
+		PointSky,       // an arm up at something in the sky, the head back
 		Num
 	};
 	const char* MannerName(EManner M);
@@ -115,6 +117,7 @@ namespace LyudPeople
 		float TempC = 12.f;
 		float SunAlt = 30.f;        // degrees over the horizon
 		float Cloud = 0.3f;         // 0 clear .. 1 overcast
+		float SkyShow = 0.f;        // something to see up there: northern lights, a rainbow, fireworks (0 nothing .. 1)
 	};
 
 	/** The player, for what people notice. Metres, the people's frame. */
@@ -152,6 +155,7 @@ namespace LyudPeople
 		int8_t SunUp = -1;              // 1 by day, 0 by night
 		bool bSunLow = false;           // the sun low and not behind clouds
 		bool bClear = false;            // not overcast
+		bool bSkyShow = false;          // only while there is something to see in the sky (FMannerNow::SkyShow); likelier the more of it
 		float TempBelow = 1e9f, TempAbove = -1e9f;
 		int Need = -1;                  // ENeed over NeedOver
 		float NeedOver = 0.f;

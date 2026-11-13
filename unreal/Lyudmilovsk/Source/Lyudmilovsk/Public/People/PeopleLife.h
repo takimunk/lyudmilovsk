@@ -234,6 +234,14 @@ public:
 	/** They greeted him today (counts once a game day). */
 	UFUNCTION(BlueprintCallable, Category = "People|Manners")
 	void NoteMet(int32 Id);
+	/** Something to see in the sky for Seconds (the fireworks say so with every shell): people out of doors look up, point,
+	 *  photograph, and have a word about it (town talk's weather = fireworks). The northern lights and a rainbow
+	 *  (ALyudRareSky) are noticed by themselves. Strength 0..1. */
+	UFUNCTION(BlueprintCallable, Category = "People|Manners")
+	void SetSkyShow(FName What, float Strength = 1.f, float Seconds = 8.f);
+	/** aurora, rainbow, fireworks or None: what people look at in the sky now. */
+	UFUNCTION(BlueprintPure, Category = "People|Manners")
+	FName GetSkyShow() const { return SkyShowWhat; }
 	/** Everybody drawn does this one (the console and developer mode; None: as they like). */
 	UFUNCTION(BlueprintCallable, Category = "People|Manners")
 	void ForceManner(FName Manner);
@@ -256,6 +264,14 @@ private:
 	TArray<int32> ShownIds;
 	float NoticeTimer = 0.f, PassingTimer = 0.f;
 	float MannerClock = 0.f;
+	/** The sky's show now (RefreshSkyShow, once a second): what, how much of it draws the eye (people get used to a long
+	 *  one), since when; the one somebody set for a while (SetSkyShow). */
+	FName SkyShowWhat, TimedShowWhat;
+	float SkyShow = 0.f, SkyShowSince = 0.f, SkyShowTimer = 0.f;
+	float TimedShow = 0.f, TimedShowUntil = -1.f;
+	TWeakObjectPtr<class ALyudRareSky> RareSky;
+	int32 RareSkySeek = 0;
+	void RefreshSkyShow(float Cloud, bool bSunUp);
 	/** Person -> the game day they last met the player on (NoteMet counts a day once). */
 	TMap<int32, int32> MetDay;
 	void LoadManners();

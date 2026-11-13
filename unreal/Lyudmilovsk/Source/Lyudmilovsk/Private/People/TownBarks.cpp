@@ -772,6 +772,24 @@ namespace LyudBarks
 		return !W.InsideShell(P);
 	}
 
+	bool AtCounter(const LyudPeople::FWorld& W, const LyudPeople::FPerson& A, const LyudPeople::FPerson& B)
+	{
+		using namespace LyudPeople;
+		if (A.Place < 0 || A.Place != B.Place || A.State != EState::Doing || B.State != EState::Doing || A.Activity < 0 || B.Activity < 0
+			|| A.Activity >= (int)W.Activities.size() || B.Activity >= (int)W.Activities.size())
+		{
+			return false;
+		}
+		const bool bFreeA = W.Activities[(size_t)A.Activity].bFree;
+		if (bFreeA == W.Activities[(size_t)B.Activity].bFree)
+		{
+			return false;
+		}
+		// (seated guests have the restaurant's own lines)
+		const FPerson& Customer = bFreeA ? A : B;
+		return !IsSeated(Customer.Pose) && (A.Pos - B.Pos).Len2D() < 4.f;
+	}
+
 	void FillWhoRole(FWho& Who, const char* Role)
 	{
 		if (Role != nullptr && *Role != '\0' && std::find(Who.Jobs.begin(), Who.Jobs.end(), Role) == Who.Jobs.end())

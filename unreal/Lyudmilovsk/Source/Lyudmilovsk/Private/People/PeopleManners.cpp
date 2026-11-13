@@ -11,7 +11,7 @@ namespace LyudPeople
 		const char* MannerNames[NumManners] = { "none", "fold_arms", "hands_hips", "hands_back", "stretch", "yawn", "scratch_head",
 			"check_watch", "look_sky", "shade_eyes", "rub_hands", "hug_self", "wave", "nod", "point", "clap", "sway", "doze",
 			"cover_head", "phone_call", "phone_scroll", "smoke", "photo", "feed_birds", "umbrella", "fish", "paint", "binoculars",
-			"newspaper", "book", "knit", "ice_cream", "drink", "carry_bag" };
+			"newspaper", "book", "knit", "ice_cream", "drink", "carry_bag", "point_sky" };
 		const char* PropNames[(int)EProp::Num] = { "none", "phone", "cigarette", "camera", "umbrella", "rod", "brush", "binoculars",
 			"newspaper", "book", "knitting", "ice_cream", "cup", "bag" };
 		const char* HabitNames[] = { "smoker", "phone", "reader", "feeder", "photographer", "knitter", "umbrella", "sweet", "dozer",
@@ -301,6 +301,7 @@ namespace LyudPeople
 			D.SunUp = (int8_t)J["sun_up"].I(-1);
 			D.bSunLow = J["sun_low"].I() != 0;
 			D.bClear = J["clear"].I() != 0;
+			D.bSkyShow = J["sky_show"].I() != 0;
 			D.TempBelow = J["temp_below"].F(1e9f);
 			D.TempAbove = J["temp_above"].F(-1e9f);
 			if (!J["need"].IsNull())
@@ -533,6 +534,10 @@ namespace LyudPeople
 		{
 			return 0.f;
 		}
+		if (D.bSkyShow && !(bOut && Now.SkyShow > 0.25f))
+		{
+			return 0.f;
+		}
 		if (D.bClear && Now.Cloud > 0.75f)
 		{
 			return 0.f;
@@ -588,6 +593,10 @@ namespace LyudPeople
 		if (!D.Trait.empty())
 		{
 			Wt *= 0.4f + 1.2f * PersonaTrait(Who, D.Trait);
+		}
+		if (D.bSkyShow)
+		{
+			Wt *= Now.SkyShow;
 		}
 		return Wt;
 	}
@@ -714,6 +723,14 @@ namespace LyudPeople
 			{
 				End(S, Now.Clock);
 				S.Until = Now.Clock + 1.f + 4.f * Rand(S.Rng);
+			}
+			else if (Now.SkyShow > 0.25f && !P.bIndoors && !S.bReact && !(Cur && Cur->bSkyShow) && S.Until - Now.Clock > 2.f
+				&& (S.Cur == EManner::None || Now.Clock - S.Start > 8.f)
+				&& Rand(S.Rng) < 0.2f * Now.SkyShow)
+			{
+				// something in the sky: whatever their hands were at can wait (the pick below sees the sky's rows)
+				End(S, Now.Clock);
+				S.Until = Now.Clock;
 			}
 		}
 		if (Now.Clock >= S.Until)

@@ -51,6 +51,7 @@ namespace LyudDevFeatures
 	FAutoAction GMannerUmbrella(TEXT("people.manner_umbrella"), TEXT("people"), TEXT("dev.action.people.manner_umbrella"), [](UWorld* W) { Run(W, TEXT("lyud.People.Manner umbrella")); });
 	FAutoAction GMannerPhone(TEXT("people.manner_phone"), TEXT("people"), TEXT("dev.action.people.manner_phone"), [](UWorld* W) { Run(W, TEXT("lyud.People.Manner phone_call")); });
 	FAutoAction GMannerWave(TEXT("people.manner_wave"), TEXT("people"), TEXT("dev.action.people.manner_wave"), [](UWorld* W) { Run(W, TEXT("lyud.People.Manner wave")); });
+	FAutoAction GSkyShow(TEXT("people.sky_show"), TEXT("people"), TEXT("dev.action.people.sky_show"), [](UWorld* W) { Run(W, TEXT("lyud.People.SkyShow 60")); });
 
 	// the sky and the season
 	FAutoAction GLightning(TEXT("weather.lightning"), TEXT("weather"), TEXT("dev.action.weather.lightning"), [](UWorld* W) { Run(W, TEXT("lyud.Weather.Strike 800")); });

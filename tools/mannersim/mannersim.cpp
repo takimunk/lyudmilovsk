@@ -96,6 +96,9 @@ struct FDay
 	long Updates = 0;
 	int BenchNoon = 0;
 	int Ritualists = 0, RitualKept = 0;
+	// ten minutes of something in the sky at 21:00: people out of doors, and those of them looking up, pointing or photographing,
+	// during it and in the ten minutes before; and an arm pointed at the sky at any other time
+	int SkyOut = 0, SkyUp = 0, BeforeOut = 0, BeforeUp = 0, PointNoShow = 0;
 };
 
 static void RunDay(FDay& D)
@@ -144,6 +147,9 @@ static void RunDay(FDay& D)
 		Now.Rain = W.Rain;
 		Now.SunAlt = C.SunAlt(W);
 		Now.Cloud = bRain ? 0.95f : 0.3f;
+		const bool bShow = !bRain && W.Hour >= 21.f && W.Hour < 21.f + 10.f / 60.f;
+		const bool bBeforeShow = !bRain && W.Hour >= 21.f - 10.f / 60.f && W.Hour < 21.f;
+		Now.SkyShow = bShow ? 0.9f : 0.f;
 		Shown.clear();
 		for (const FPerson& P : W.People)
 		{
@@ -179,6 +185,14 @@ static void RunDay(FDay& D)
 			D.Seconds[Name] += Dt;
 			D.DrawnSeconds += Dt;
 			Out += !P.bIndoors ? 1 : 0;
+			if (Sec % 10 == 0 && !P.bIndoors && (bShow || bBeforeShow))
+			{
+				const bool bUp = S.Cur == EManner::LookSky || S.Cur == EManner::PointSky || (S.Cur == EManner::Photo && bShow);
+				(bShow ? D.SkyOut : D.BeforeOut)++;
+				(bShow ? D.SkyUp : D.BeforeUp) += bUp ? 1 : 0;
+			}
+			// (a pointing begun in the show's last seconds may run a few seconds over)
+			D.PointNoShow += S.Cur == EManner::PointSky && !bShow && !(W.Hour >= 21.f && W.Hour < 21.f + 11.f / 60.f) ? 1 : 0;
 			if (S.Cur != EManner::None)
 			{
 				D.MannerSeconds += Dt;
@@ -596,6 +610,10 @@ int main(int Argc, char** Argv)
 	}
 	// claps and sways need a holiday (tools/festivalsim sets the gatherings); everything else is seen in these four days
 	CHECK(Never.empty() || Never == " clap sway" || Never == " clap" || Never == " sway", "every manner is seen in some weather%s%s", Never.empty() ? "" : ": never", Never.c_str());
+	CHECK(Mild.SkyOut > 0 && Mild.SkyUp * 4 > Mild.SkyOut && Mild.SkyUp * (long)Mild.BeforeOut > 4L * Mild.BeforeUp * Mild.SkyOut,
+		"something in the sky turns the heads up (%d of %d person-samples out of doors during it, %d of %d before)",
+		Mild.SkyUp, Mild.SkyOut, Mild.BeforeUp, Mild.BeforeOut);
+	CHECK(Mild.PointNoShow == 0, "nobody points at an empty sky (%d)", Mild.PointNoShow);
 	CHECK(Mild.Ritualists > 300 && Mild.RitualKept > Mild.Ritualists / 4, "people keep their rituals (%d of the %d who have one were at it at their hour; the rest at work)",
 		Mild.RitualKept, Mild.Ritualists);
 	CHECK(Mild.UmbrellasDry == 0 && Frost.UmbrellasDry == 0, "no umbrellas on a dry day");

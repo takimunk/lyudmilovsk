@@ -39,6 +39,7 @@
 #include "AssetRegistry/IAssetRegistry.h"
 #include "Plants/GameCalendar.h"
 #include "Sky/Ephemeris.h"
+#include "Sky/LyudRareSky.h"
 #include "Weather/LyudWeather.h"
 #include "Winter/LyudWinter.h"
 #include "Camera/PlayerCameraManager.h"
@@ -989,6 +990,13 @@ void UPeopleLifeSubsystem::Present(float DeltaTime)
 		MNow.Cloud = Weather ? Weather->GetSky().Cloud : 0.3f;
 		// the sun's height near enough for a hand over the eyes: an arc from sunrise to sunset
 		MNow.SunAlt = S.bSunUp && S.Sunset > S.Sunrise ? 38.f * FMath::Sin(UE_PI * (S.Hour - S.Sunrise) / (S.Sunset - S.Sunrise)) : -10.f;
+		SkyShowTimer -= DeltaTime;
+		if (SkyShowTimer <= 0.f)
+		{
+			SkyShowTimer = 1.f;
+			RefreshSkyShow(MNow.Cloud, S.bSunUp);
+		}
+		MNow.SkyShow = SkyShow;
 	}
 	bool bOwnerHere = false;
 	for (const LP::FPerson& P : S.People)
@@ -1833,6 +1841,62 @@ float UPeopleLifeSubsystem::GetTrait(int32 Id, FName Trait) const
 	return Who ? LP::PersonaTrait(*Who, TCHAR_TO_UTF8(*Trait.ToString())) : 0.5f;
 }
 
+void UPeopleLifeSubsystem::SetSkyShow(FName What, float Strength, float Seconds)
+{
+	TimedShowWhat = What;
+	TimedShow = FMath::Clamp(Strength, 0.f, 1.f);
+	TimedShowUntil = MannerClock + Seconds;
+	SkyShowTimer = 0.f;
+}
+
+void UPeopleLifeSubsystem::RefreshSkyShow(float Cloud, bool bSunUp)
+{
+	static const FName Aurora(TEXT("aurora")), Rainbow(TEXT("rainbow"));
+	FName What;
+	float Much = 0.f;
+	if (!RareSky.IsValid() && --RareSkySeek < 0)
+	{
+		RareSkySeek = 5;
+		TActorIterator<ALyudRareSky> It(GetWorld());
+		RareSky = It ? *It : nullptr;
+	}
+	if (const ALyudRareSky* Rare = RareSky.Get())
+	{
+		const FLyudRareSkyNow Now = Rare->GetNow();
+		// the northern lights through the gaps in the clouds, by night
+		const float Lights = bSunUp ? 0.f : Now.Aurora * FMath::Clamp(1.5f - 2.f * Cloud, 0.f, 1.f);
+		if (Lights > 0.2f)
+		{
+			What = Aurora;
+			Much = FMath::Min(1.f, 0.4f + Lights);
+		}
+		else if (bSunUp && Now.Rainbow > 0.3f)
+		{
+			What = Rainbow;
+			Much = FMath::Min(1.f, 0.3f + Now.Rainbow);
+		}
+	}
+	if (What != SkyShowWhat || What.IsNone())
+	{
+		SkyShowSince = MannerClock;
+	}
+	if (!What.IsNone())
+	{
+		// a wonder for the first minutes; then people go back to what they were doing and only look up now and then
+		Much *= FMath::GetMappedRangeValueClamped(FVector2f(150.f, 420.f), FVector2f(1.f, 0.3f), MannerClock - SkyShowSince);
+	}
+	// what somebody set (the fireworks) is the louder of the two while it lasts
+	if (MannerClock < TimedShowUntil && TimedShow >= Much)
+	{
+		// (SkyShowSince is left alone: the lights are no newer for a rocket going up)
+		SkyShowWhat = TimedShowWhat;
+		SkyShow = TimedShow;
+		return;
+	}
+	SkyShowWhat = What;
+	SkyShow = Much;
+}
+
 bool UPeopleLifeSubsystem::ReactManner(int32 Id, FName Manner, float Seconds)
 {
 	if (!Manners || !Bodies.IsValidIndex(Id) || !Bodies[Id] || Bodies[Id]->IsHidden())
@@ -2596,6 +2660,16 @@ static FAutoConsoleCommandWithWorldAndArgs GPeopleManner(TEXT("lyud.People.Manne
 				return;
 			}
 			People->ForceManner(Args.Num() > 0 && Args[0] != TEXT("auto") ? FName(*Args[0]) : NAME_None);
+		}
+	}));
+
+static FAutoConsoleCommandWithWorldAndArgs GPeopleSkyShow(TEXT("lyud.People.SkyShow"),
+	TEXT("lyud.People.SkyShow [seconds] [aurora|rainbow|fireworks]: people out of doors take it that there is something to see in the sky (60 s of fireworks)."),
+	FConsoleCommandWithWorldAndArgsDelegate::CreateLambda([](const TArray<FString>& Args, UWorld* World)
+	{
+		if (UPeopleLifeSubsystem* People = UPeopleLifeSubsystem::Get(World))
+		{
+			People->SetSkyShow(Args.Num() > 1 ? FName(*Args[1]) : FName(TEXT("fireworks")), 1.f, Args.Num() > 0 ? FCString::Atof(*Args[0]) : 60.f);
 		}
 	}));
 

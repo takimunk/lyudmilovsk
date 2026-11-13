@@ -21,6 +21,7 @@
 # hours =     5-9 (from-to; over midnight 22-4; several ranges: 6-9 17-20)    months = 10-4    weekday = mon ... sun
 # sun =       day, low (sunrise or sunset), night, cloudy (overcast by day)
 # weather =   rain, snow, fog, cold (under 2 C), warm (over 22 C), clear (few clouds), wet (ULyudWeatherSubsystem)
+#             aurora, rainbow, fireworks: while people look up at one (UPeopleLifeSubsystem::GetSkyShow)
 # festival =  festivals.json ids, or any: the festival on now (ULyudFestivalSubsystem::ActiveFestival); phase = its phase ids
 # near = hero the player is within 10 m of the speaker (remarks about him)
 # to = hero   a greeting: said to the player when he walks past close, once a day per person
@@ -1292,6 +1293,8 @@ talk = town.chat_kids3.1 | town.chat_kids3.2 | town.chat_kids3.3
 # shines the head lamp in their eyes (on = hero_lamp)
 # --- the player noticed ---
 # --- people who have come to know the player (met = seen: greeted him on a few days; known: on five and more) ---
+# The sky's shows (UPeopleLifeSubsystem::GetSkyShow adds aurora / rainbow / fireworks to the weather's words while
+# people are looking up at one)
 
 [manner_smoke]
 manner = smoke
@@ -1430,3 +1433,121 @@ met = seen known
 age = kid teen
 weight = 2
 say = town.greet_known_kid.1..3
+
+[sky_aurora]
+at = outdoors
+weather = aurora
+weight = 4
+say = town.sky_aurora.1..6
+
+[sky_aurora_kid]
+at = outdoors
+weather = aurora
+age = kid teen
+weight = 5
+say = town.sky_aurora_kid.1..3
+
+[sky_rainbow]
+at = outdoors
+weather = rainbow
+weight = 4
+say = town.sky_rainbow.1..4
+
+[sky_rainbow_kid]
+at = outdoors
+weather = rainbow
+age = kid
+weight = 5
+say = town.sky_rainbow_kid.1..2
+
+[sky_fireworks]
+at = outdoors
+weather = fireworks
+weight = 4
+say = town.sky_fireworks.1..5
+
+[sky_fireworks_kid]
+at = outdoors
+weather = fireworks
+age = kid teen
+weight = 5
+say = town.sky_fireworks_kid.1..2
+
+# At the counter: a customer on their feet and whoever serves them (LyudBarks::AtCounter: the same shop, market
+# stall or kiosk, within 4 m). A is the customer unless the set says doing = work first.
+
+[counter]
+doing = shop shop_town
+doing2 = work
+age = teen adult elder
+weight = 3
+talk = town.counter1.1 | town.counter1.2 | town.counter1.3
+talk = town.counter2.1 | town.counter2.2 | town.counter2.3
+talk = town.counter3.1 | town.counter3.2 | town.counter3.3 | town.counter3.4
+talk = town.counter4.1 | town.counter4.2
+talk = town.counter5.1 | town.counter5.2
+talk = town.counter6.1 | town.counter6.2 | town.counter6.3
+
+[counter_seller]
+doing = work
+doing2 = shop shop_town
+age2 = teen adult elder
+weight = 3
+talk = town.counter_seller1.1 | town.counter_seller1.2
+talk = town.counter_seller2.1 | town.counter_seller2.2 | town.counter_seller2.3
+talk = town.counter_seller3.1 | town.counter_seller3.2 | town.counter_seller3.3
+talk = town.counter_seller4.1 | town.counter_seller4.2 | town.counter_seller4.3
+
+[counter_market]
+doing = shop_town
+doing2 = work
+at = market
+age = adult elder
+weight = 4
+talk = town.counter_market1.1 | town.counter_market1.2 | town.counter_market1.3 | town.counter_market1.4
+talk = town.counter_market2.1 | town.counter_market2.2 | town.counter_market2.3
+talk = town.counter_market3.1 | town.counter_market3.2 | town.counter_market3.3 | town.counter_market3.4
+talk = town.counter_market4.1 | town.counter_market4.2
+
+[counter_kiosk]
+doing = shop_town
+doing2 = work
+at = kiosk
+age = teen adult elder
+weight = 4
+talk = town.counter_kiosk1.1 | town.counter_kiosk1.2
+talk = town.counter_kiosk2.1 | town.counter_kiosk2.2 | town.counter_kiosk2.3 | town.counter_kiosk2.4
+talk = town.counter_kiosk3.1 | town.counter_kiosk3.2
+
+[counter_kid]
+doing = shop shop_town
+doing2 = work
+age = kid
+weight = 5
+talk = town.counter_kid1.1 | town.counter_kid1.2 | town.counter_kid1.3
+talk = town.counter_kid2.1 | town.counter_kid2.2
+
+[counter_elder]
+doing = shop shop_town
+doing2 = work
+age = elder
+weight = 4
+talk = town.counter_elder1.1 | town.counter_elder1.2
+talk = town.counter_elder2.1 | town.counter_elder2.2
+
+[counter_rain]
+doing = shop shop_town
+doing2 = work
+weather = rain
+age = teen adult elder
+weight = 5
+talk = town.counter_rain1.1 | town.counter_rain1.2
+
+[counter_evening]
+doing = shop shop_town
+doing2 = work
+hours = 18-23
+age = teen adult elder
+weight = 4
+talk = town.counter_evening1.1 | town.counter_evening1.2
+talk = town.counter_evening2.1 | town.counter_evening2.2

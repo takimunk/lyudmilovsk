@@ -282,6 +282,16 @@ namespace LyudGesture
 			Hand(G, M, W, Chest, { 13.f, 46.f, 3.f }, { 0.15f, 1.f, 0.05f }, { 0.f, 0.f, -1.f }, 0.1f);
 			break;
 		}
+		case EManner::PointSky:
+		{
+			// the arm up and out at it, the head back after the hand; held a while, the hand not quite still
+			const float W = Envelope(T, Left, 0.5f, 0.6f);
+			const float Bob = 1.5f * FMath::Sin(T * 2.3f + Ph);
+			Hand(G, M, W, Head, { 22.f, 34.f, 26.f + Bob }, { 0.1f, 0.6f, 0.75f }, { 0.f, 0.f, -1.f }, 0.1f);
+			G.HeadPitch = 20.f * W;
+			G.SpinePitch = -3.f * W;
+			break;
+		}
 		case EManner::Clap:
 		{
 			const float C = 3.5f + 3.5f * FMath::Sin(T * 21.f + Ph);

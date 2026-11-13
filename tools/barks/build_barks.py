@@ -133,7 +133,7 @@ VALID = {
     "need": {"hunger", "tired", "social", "fun", "nature", "mind", "sun"},
     "weekday": {"mon", "tue", "wed", "thu", "fri", "sat", "sun"},
     "sun": {"day", "low", "night", "cloudy"},
-    "weather": {"rain", "snow", "fog", "cold", "warm", "clear", "wet"},
+    "weather": {"rain", "snow", "fog", "cold", "warm", "clear", "wet", "aurora", "rainbow", "fireworks"},
     "job": jobs, "job2": jobs,
 }
 if FEST:
@@ -194,6 +194,7 @@ HEADER = """# What the townsfolk say on their own (docs/town_talk.md): a greetin
 # hours =     5-9 (from-to; over midnight 22-4; several ranges: 6-9 17-20)    months = 10-4    weekday = mon ... sun
 # sun =       day, low (sunrise or sunset), night, cloudy (overcast by day)
 # weather =   rain, snow, fog, cold (under 2 C), warm (over 22 C), clear (few clouds), wet (ULyudWeatherSubsystem)
+#             aurora, rainbow, fireworks: while people look up at one (UPeopleLifeSubsystem::GetSkyShow)
 # festival =  festivals.json ids, or any: the festival on now (ULyudFestivalSubsystem::ActiveFestival); phase = its phase ids
 # near = hero the player is within 10 m of the speaker (remarks about him)
 # to = hero   a greeting: said to the player when he walks past close, once a day per person

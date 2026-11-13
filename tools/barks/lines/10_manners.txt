@@ -213,3 +213,63 @@ weight = 2
 say town.greet_known_kid.1 | О, привет! Ты сегодня куда? | Oh, hi! Where are you off to today? | あ、やっほー！今日はどこ行くの？
 say town.greet_known_kid.2 | Привет! Пойдём на площадку? | Hi! Coming to the playground? | やあ！公園に行かない？
 say town.greet_known_kid.3 | Это опять ты! А я тебя вчера видел у моря. | It's you again! I saw you by the sea yesterday. | また会ったね！昨日、海のそばで見かけたよ。
+
+## ---------------------------------------------------------------------------------------------------------------
+## The sky's shows (UPeopleLifeSubsystem::GetSkyShow adds aurora / rainbow / fireworks to the weather's words while
+## people are looking up at one)
+## ---------------------------------------------------------------------------------------------------------------
+
+[sky_aurora]
+at = outdoors
+weather = aurora
+weight = 4
+say town.sky_aurora.1 | Смотри, смотри — пошло! Зелёное, над самым морем. | Look, look, it's started! Green, right over the sea. | 見て、見て、始まった！緑色だ、海のすぐ上に。
+say town.sky_aurora.2 | Сияние. Сколько лет вижу, а всё равно стою с открытым ртом. | The lights. All these years, and I still stand here with my mouth open. | オーロラだ。何年も見てるのに、やっぱり口を開けて立ち尽くしちゃう。
+say town.sky_aurora.3 | Тише. Говорят, если молчать, его слышно. | Hush. They say if you keep quiet, you can hear it. | しーっ。黙っていると、音が聞こえるっていうよ。
+say town.sky_aurora.4 | Вон как складки ходят. Будто кто-то штору поправляет. | See how the folds move. As if someone were straightening a curtain. | ほら、ひだが揺れてる。誰かがカーテンを直してるみたい。
+say town.sky_aurora.5 | Не уходи пока. Самое яркое всегда под конец. | Don't go yet. The brightest part always comes at the end. | まだ帰らないで。いちばん明るいのは、いつも最後だから。
+say town.sky_aurora.6 | Надо своих разбудить. Нет, постою ещё минуту. | I should wake my lot. No, I'll stand here one more minute. | 家の者を起こさなきゃ。いや、もう一分だけここにいよう。
+
+[sky_aurora_kid]
+at = outdoors
+weather = aurora
+age = kid teen
+weight = 5
+say town.sky_aurora_kid.1 | Ого! Оно шевелится! Ты видишь? Шевелится! | Whoa! It's moving! Do you see? It's moving! | うわあ！動いてる！見える？動いてるよ！
+say town.sky_aurora_kid.2 | А его можно потрогать, если залезть на крышу? | Could you touch it if you climbed onto the roof? | 屋根に登ったら、さわれるかな？
+say town.sky_aurora_kid.3 | Я загадал. Нет, не скажу что. | I made a wish. No, I'm not telling. | お願いごとしたよ。ううん、何かは言わない。
+
+[sky_rainbow]
+at = outdoors
+weather = rainbow
+weight = 4
+say town.sky_rainbow.1 | Радуга! Вон, от пирса и до самого острова. | A rainbow! There, from the pier right over to the island. | 虹だ！ほら、桟橋から島までかかってる。
+say town.sky_rainbow.2 | Ну вот. Стоило промокнуть ради такого. | There now. It was worth getting soaked for this. | ほらね。これのためなら、濡れたかいがあった。
+say town.sky_rainbow.3 | Двойная, смотри. Вторая бледная, повыше. | A double one, look. The second is paler, a bit higher. | 二重だよ、見て。二本目は薄くて、少し上。
+say town.sky_rainbow.4 | Постой, не загораживай. Дай насмотреться, она недолго. | Hold on, don't stand in the way. Let me look my fill, it won't last. | ちょっと、前に立たないで。よく見せて、すぐ消えちゃうから。
+
+[sky_rainbow_kid]
+at = outdoors
+weather = rainbow
+age = kid
+weight = 5
+say town.sky_rainbow_kid.1 | Радуга! Побежали, там, где она кончается, клад! | A rainbow! Come on, there's treasure where it ends! | 虹だ！行こう、虹のはしっこには宝物があるんだよ！
+say town.sky_rainbow_kid.2 | Раз, два, три... семь! Все семь, я посчитала! | One, two, three... seven! All seven, I counted! | いち、に、さん…なな！七色ぜんぶ、数えたよ！
+
+[sky_fireworks]
+at = outdoors
+weather = fireworks
+weight = 4
+say town.sky_fireworks.1 | О-о-о! Вот этот, золотой, — мой любимый. | Ooooh! That one, the gold one, that's my favourite. | おおー！いまの金色のやつ、いちばん好き。
+say town.sky_fireworks.2 | Каждый год одно и то же. И каждый год прихожу. | The same every year. And every year I come. | 毎年同じなんだ。それでも毎年来ちゃう。
+say town.sky_fireworks.3 | Смотри на воду. В воде он ещё красивее. | Watch the water. It's even lovelier in the water. | 水面を見てごらん。水に映るともっときれいだよ。
+say town.sky_fireworks.4 | Сейчас будет большой. Уши береги! | A big one's coming. Mind your ears! | 次は大きいのが来るよ。耳をふさいで！
+say town.sky_fireworks.5 | Собаку жалко, сидит дома под кроватью. | Poor dog, he's at home under the bed. | 犬がかわいそう。家でベッドの下にもぐってるよ。
+
+[sky_fireworks_kid]
+at = outdoors
+weather = fireworks
+age = kid teen
+weight = 5
+say town.sky_fireworks_kid.1 | Ещё! Ещё! А можно ещё один? | More! More! Can we have one more? | もっと！もっと！もう一発、だめ？
+say town.sky_fireworks_kid.2 | Красный! Нет, зелёный! Нет, оба! | The red one! No, the green! No, both! | 赤！いや、緑！やっぱり両方！

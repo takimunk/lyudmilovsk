@@ -564,6 +564,13 @@ void ULyudTownTalkSubsystem::UpdateNow()
 	const float Altitude = TheSky ? TheSky->SunAltitude() : (N.Hour > 8.f && N.Hour < 17.f ? 20.f : -10.f);
 	N.Sun = LyudBarks::SunState(Altitude, Cloud);
 	LyudBarks::WeatherWords(Cloud, Rain, Snow, Fog, TempC, Wet, N.Weather);
+	// and what there is to see up there (weather = aurora rainbow fireworks)
+	const UPeopleLifeSubsystem* SkyLife = UPeopleLifeSubsystem::Get(this);
+	const FName Show = SkyLife ? SkyLife->GetSkyShow() : NAME_None;
+	if (!Show.IsNone())
+	{
+		N.Weather.push_back(TCHAR_TO_UTF8(*Show.ToString()));
+	}
 }
 
 bool ULyudTownTalkSubsystem::Busy(int32 Person) const
@@ -878,7 +885,8 @@ bool ULyudTownTalkSubsystem::StartExchange(const FVector& Cam, const FVector& Lo
 			const bool bPair = A.Partner == B.Id && B.Partner == A.Id;
 			const bool bSide = A.Place >= 0 && A.Place == B.Place && LyudPeople::IsSeated(A.Pose) && LyudPeople::IsSeated(B.Pose)
 				&& A.State == LyudPeople::EState::Doing && B.State == LyudPeople::EState::Doing && (A.Pos - B.Pos).Len2D() < 2.f;
-			if (!(bPair || bSide) || Busy(B.Id) || Clock - LastSpoke[B.Id] < 60.f)
+			// or a customer and whoever serves them (a shop's counter, a market stall, a kiosk)
+			if (!(bPair || bSide || LyudBarks::AtCounter(*S, A, B)) || Busy(B.Id) || Clock - LastSpoke[B.Id] < 60.f)
 			{
 				continue;
 			}

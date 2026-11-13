@@ -167,6 +167,9 @@ namespace LyudBarks
 	/** Whether someone can say anything now: up and about where they can be seen (not asleep, away, riding, in a building's
 	 *  shell, between activities). Somebody else's actor drawing them (the restaurant's waiter) is the caller's to allow. */
 	bool CanSpeak(const LyudPeople::FWorld& W, const LyudPeople::FPerson& P);
+	/** A customer on their feet and somebody at work at the same place within 4 m (a shop, a market stall, a kiosk): the
+	 *  two may have an exchange (talk sets with doing = shop ..., doing2 = work). Either order. */
+	bool AtCounter(const LyudPeople::FWorld& W, const LyudPeople::FPerson& A, const LyudPeople::FPerson& B);
 	/** Fills Who from someone of the people's life; bHeroNear is left to the caller. */
 	void FillWho(const LyudPeople::FWorld& W, const LyudPeople::FPerson& P, FWho& Who);
 	/** Someone's who doesn't depend on the moment (job, age, sex, temper): FillWho's part for a speaker the life doesn't

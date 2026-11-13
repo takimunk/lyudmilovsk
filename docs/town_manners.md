@@ -66,6 +66,24 @@ the rain and the frost, the water gains on a warm day, and a free outdoor activi
 (activities with `"rain": "ok"` are not). New activities: `jog`, `play_run` (children), `feed_birds`, `read_bench`;
 `"pace"` makes an activity's walk a run.
 
+## The sky's shows
+
+Northern lights, a rainbow, fireworks: `FMannerNow::SkyShow` (0..1) says there is something to see up there, and the
+rows with `"sky_show": 1` fit only then (the likelier the more of it): heads go back (`look_sky`, walking too), the
+curious and the children point (`point_sky`), photographers lift the camera. A show also takes people away from what
+their hands were at (not from a forced manner: the angler keeps the rod). `UPeopleLifeSubsystem::RefreshSkyShow`
+reads `ALyudRareSky::GetNow()` once a second (the lights by night through the gaps in the clouds, a rainbow by day);
+people get used to a long one (full for 2.5 minutes, down to 0.3 by the seventh). `ALyudFireworks::Fire` calls
+`SetSkyShow("fireworks", ...)` with every shell. Town talk gets `weather = aurora | rainbow | fireworks` while it lasts
+(sets `sky_*` in `10_manners.txt`). `lyud.People.SkyShow [seconds] [aurora|rainbow|fireworks]` stages one.
+
+## At the counter
+
+A customer on their feet and whoever serves them at the same place within 4 m (`LyudBarks::AtCounter`) are a pair for
+town talk's exchanges, like two people chatting or sitting side by side: `tools/barks/lines/11_counters.txt` (sets with
+`doing = shop shop_town` + `doing2 = work`, or the seller first). Works at shops and kiosks; the market's visitors
+stand by the door, too far from the stalls, until its slots are laid out at them.
+
 ## Routines
 
 - **Spots of their own** (`FWorld::PickSlot`, `FOptions::OwnSpots`, 110 m): out of the many benches, cafes and
@@ -108,12 +126,12 @@ the hands is `LyudGesture::HoldOf`:
 ## API
 
 `UPeopleLifeSubsystem`: `GetManner(Id)`, `GetTrait(Id, "warmth")`, `ReactManner(Id, "wave", Seconds)`,
-`ForceManner(Name)`; events `hero_runs`, `hero_close`, `hero_lamp` on `OnPersonEvent`.
+`ForceManner(Name)`, `SetSkyShow(What, Strength, Seconds)`, `GetSkyShow()`; events `hero_runs`, `hero_close`, `hero_lamp` on `OnPersonEvent`.
 Town talk sets: `manner = smoke phone_call ...` (what their hands are doing now).
 
 ## Testing
 
 - `tools/mannersim/run.sh` (personas, the four weathers, noticing, passing, cost), `run.sh day`, `run.sh who`.
 - `tools/peoplesim/run.sh test|town`, `tools/barksim/run.sh`.
-- In the game: `lyud.People.Manner <manner|next|auto>` (everybody drawn does it), `lyud.People.Who <key>`;
-  developer mode (F7), group "Townsfolk".
+- In the game: `lyud.People.Manner <manner|next|auto>` (everybody drawn does it), `lyud.People.Who <key>`,
+  `lyud.People.SkyShow`; developer mode (F7), group "Townsfolk".
