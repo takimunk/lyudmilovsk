@@ -2003,7 +2003,9 @@ namespace LyudBirds
 		{
 			Plan = 1;
 		}
-		if (Plan == 2)
+		// (bedtime in the middle of an attack: the attack runs out below first, in its few seconds. Returning here left the
+		// hawk in Chase for the whole night, putting its prey up again every time it landed, through the sleeping roost)
+		if (Plan == 2 && H.Act != EAct::Chase)
 		{
 			if (H.Site != G.Roost && !IsAirborne(H.Act) && G.Roost >= 0)
 			{
