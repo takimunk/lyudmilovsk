@@ -40,6 +40,7 @@ def build_one(kind, variant):
              "collision": meta["collision"], "seats": extra.get("seats", []), "notes": extra.get("notes", meta.get("notes", ""))}
     if meta.get("body"):
         entry["body_size"] = meta["body"]       # the object without its guy lines and pegs
+    entry.update(extra.get("manifest", {}))      # kind-specific fields (log_bridge: axis, collision_boxes, supports)
     entry["bounds_min"] = [round(v, 3) for v in mn]
     entry["bounds_max"] = [round(v, 3) for v in mx]
     entry["materials"] = b.mat_slots

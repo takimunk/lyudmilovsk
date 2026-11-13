@@ -3,6 +3,7 @@ import props
 import props_tents as tents
 import props_camp as camp
 import props_signs as signs
+import props_bridge as bridge
 
 KINDS = {
     "tent_dome": (tents.tent_dome, {"variants": [0, 1, 2], "collision": "box", "body": [2.1, 2.1, 1.3]}),
@@ -21,5 +22,6 @@ KINDS = {
     "barrier": (signs.barrier, {"variants": [0], "collision": "exact"}),
     "sign_hot_ground": (signs.sign_hot_ground, {"variants": [0], "collision": "exact"}),
     "sign_post": (signs.sign_post, {"variants": [0], "collision": "exact"}),
+    "log_bridge": (bridge.log_bridge, {"variants": [0, 1, 2], "collision": "box"}),
     "spring_deck": (signs.spring_deck, {"variants": [0], "collision": "exact"}),
 }

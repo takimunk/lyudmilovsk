@@ -657,6 +657,382 @@
    ]
   },
   {
+   "kind": "log_bridge",
+   "variant": 0,
+   "file": "log_bridge_v0.glb",
+   "tris": 1314,
+   "size": [
+    16.099,
+    1.34,
+    3.619
+   ],
+   "collision": "box",
+   "seats": [],
+   "notes": "rustic log footbridge, deck 16 m long (spans up to 11 m) running along local X (\"axis\": \"x\"); origin = middle of the deck at its top walking surface (z 0 = feet); walking width 1.1 m; ramps at both ends slope down 1.0 m over the last 2.5 m (toes at z -1.0, stringers and sill reach z -1.5); pole handrail on the +Y side; log X-trestles at x -5.5, 5.5 reach z -2.6; no collision on trestles; collision_boxes are in mesh space, rot_y_deg is a right-handed rotation about Blender +Y (positive tips the +X end down)",
+   "axis": "x",
+   "length": 16.0,
+   "span_max": 11.0,
+   "width": 1.1,
+   "ramp_length": 2.5,
+   "ramp_drop": 1.0,
+   "support_x": [
+    -5.5,
+    5.5
+   ],
+   "support_depth": 2.6,
+   "collision_boxes": [
+    {
+     "name": "deck",
+     "center": [
+      0.0,
+      0.0,
+      -0.15
+     ],
+     "size": [
+      11.0,
+      1.1,
+      0.3
+     ],
+     "rot_y_deg": 0.0
+    },
+    {
+     "name": "ramp_west",
+     "center": [
+      -6.694,
+      0.0,
+      -0.639
+     ],
+     "size": [
+      2.693,
+      1.1,
+      0.3
+     ],
+     "rot_y_deg": -21.801
+    },
+    {
+     "name": "ramp_east",
+     "center": [
+      6.694,
+      0.0,
+      -0.639
+     ],
+     "size": [
+      2.693,
+      1.1,
+      0.3
+     ],
+     "rot_y_deg": 21.801
+    },
+    {
+     "name": "rail",
+     "center": [
+      0.0,
+      0.6200000000000001,
+      0.9
+     ],
+     "size": [
+      11.0,
+      0.1,
+      0.12
+     ],
+     "rot_y_deg": 0.0
+    },
+    {
+     "name": "rail_ramp_west",
+     "center": [
+      -6.75,
+      0.6200000000000001,
+      0.4
+     ],
+     "size": [
+      2.693,
+      0.1,
+      0.12
+     ],
+     "rot_y_deg": -21.801
+    },
+    {
+     "name": "rail_ramp_east",
+     "center": [
+      6.75,
+      0.6200000000000001,
+      0.4
+     ],
+     "size": [
+      2.693,
+      0.1,
+      0.12
+     ],
+     "rot_y_deg": 21.801
+    }
+   ],
+   "bounds_min": [
+    -8.049,
+    -0.67,
+    -2.639
+   ],
+   "bounds_max": [
+    8.05,
+    0.67,
+    0.98
+   ],
+   "materials": [
+    "M_North_Atlas"
+   ]
+  },
+  {
+   "kind": "log_bridge",
+   "variant": 1,
+   "file": "log_bridge_v1.glb",
+   "tris": 1738,
+   "size": [
+    21.101,
+    1.34,
+    3.619
+   ],
+   "collision": "box",
+   "seats": [],
+   "notes": "rustic log footbridge, deck 21 m long (spans up to 16 m) running along local X (\"axis\": \"x\"); origin = middle of the deck at its top walking surface (z 0 = feet); walking width 1.1 m; ramps at both ends slope down 1.0 m over the last 2.5 m (toes at z -1.0, stringers and sill reach z -1.5); pole handrail on the +Y side; log X-trestles at x -8, 0, 8 reach z -2.6; no collision on trestles; collision_boxes are in mesh space, rot_y_deg is a right-handed rotation about Blender +Y (positive tips the +X end down)",
+   "axis": "x",
+   "length": 21.0,
+   "span_max": 16.0,
+   "width": 1.1,
+   "ramp_length": 2.5,
+   "ramp_drop": 1.0,
+   "support_x": [
+    -8.0,
+    0.0,
+    8.0
+   ],
+   "support_depth": 2.6,
+   "collision_boxes": [
+    {
+     "name": "deck",
+     "center": [
+      0.0,
+      0.0,
+      -0.15
+     ],
+     "size": [
+      16.0,
+      1.1,
+      0.3
+     ],
+     "rot_y_deg": 0.0
+    },
+    {
+     "name": "ramp_west",
+     "center": [
+      -9.194,
+      0.0,
+      -0.639
+     ],
+     "size": [
+      2.693,
+      1.1,
+      0.3
+     ],
+     "rot_y_deg": -21.801
+    },
+    {
+     "name": "ramp_east",
+     "center": [
+      9.194,
+      0.0,
+      -0.639
+     ],
+     "size": [
+      2.693,
+      1.1,
+      0.3
+     ],
+     "rot_y_deg": 21.801
+    },
+    {
+     "name": "rail",
+     "center": [
+      0.0,
+      0.6200000000000001,
+      0.9
+     ],
+     "size": [
+      16.0,
+      0.1,
+      0.12
+     ],
+     "rot_y_deg": 0.0
+    },
+    {
+     "name": "rail_ramp_west",
+     "center": [
+      -9.25,
+      0.6200000000000001,
+      0.4
+     ],
+     "size": [
+      2.693,
+      0.1,
+      0.12
+     ],
+     "rot_y_deg": -21.801
+    },
+    {
+     "name": "rail_ramp_east",
+     "center": [
+      9.25,
+      0.6200000000000001,
+      0.4
+     ],
+     "size": [
+      2.693,
+      0.1,
+      0.12
+     ],
+     "rot_y_deg": 21.801
+    }
+   ],
+   "bounds_min": [
+    -10.551,
+    -0.67,
+    -2.639
+   ],
+   "bounds_max": [
+    10.55,
+    0.67,
+    0.98
+   ],
+   "materials": [
+    "M_North_Atlas"
+   ]
+  },
+  {
+   "kind": "log_bridge",
+   "variant": 2,
+   "file": "log_bridge_v2.glb",
+   "tris": 2662,
+   "size": [
+    31.097,
+    1.34,
+    3.619
+   ],
+   "collision": "box",
+   "seats": [],
+   "notes": "rustic log footbridge, deck 31 m long (spans up to 26 m) running along local X (\"axis\": \"x\"); origin = middle of the deck at its top walking surface (z 0 = feet); walking width 1.1 m; ramps at both ends slope down 1.0 m over the last 2.5 m (toes at z -1.0, stringers and sill reach z -1.5); pole handrail on the +Y side; log X-trestles at x -13, -6.5, 0, 6.5, 13 reach z -2.6; no collision on trestles; collision_boxes are in mesh space, rot_y_deg is a right-handed rotation about Blender +Y (positive tips the +X end down)",
+   "axis": "x",
+   "length": 31.0,
+   "span_max": 26.0,
+   "width": 1.1,
+   "ramp_length": 2.5,
+   "ramp_drop": 1.0,
+   "support_x": [
+    -13.0,
+    -6.5,
+    0.0,
+    6.5,
+    13.0
+   ],
+   "support_depth": 2.6,
+   "collision_boxes": [
+    {
+     "name": "deck",
+     "center": [
+      0.0,
+      0.0,
+      -0.15
+     ],
+     "size": [
+      26.0,
+      1.1,
+      0.3
+     ],
+     "rot_y_deg": 0.0
+    },
+    {
+     "name": "ramp_west",
+     "center": [
+      -14.194,
+      0.0,
+      -0.639
+     ],
+     "size": [
+      2.693,
+      1.1,
+      0.3
+     ],
+     "rot_y_deg": -21.801
+    },
+    {
+     "name": "ramp_east",
+     "center": [
+      14.194,
+      0.0,
+      -0.639
+     ],
+     "size": [
+      2.693,
+      1.1,
+      0.3
+     ],
+     "rot_y_deg": 21.801
+    },
+    {
+     "name": "rail",
+     "center": [
+      0.0,
+      0.6200000000000001,
+      0.9
+     ],
+     "size": [
+      26.0,
+      0.1,
+      0.12
+     ],
+     "rot_y_deg": 0.0
+    },
+    {
+     "name": "rail_ramp_west",
+     "center": [
+      -14.25,
+      0.6200000000000001,
+      0.4
+     ],
+     "size": [
+      2.693,
+      0.1,
+      0.12
+     ],
+     "rot_y_deg": -21.801
+    },
+    {
+     "name": "rail_ramp_east",
+     "center": [
+      14.25,
+      0.6200000000000001,
+      0.4
+     ],
+     "size": [
+      2.693,
+      0.1,
+      0.12
+     ],
+     "rot_y_deg": 21.801
+    }
+   ],
+   "bounds_min": [
+    -15.549,
+    -0.67,
+    -2.639
+   ],
+   "bounds_max": [
+    15.548,
+    0.67,
+    0.98
+   ],
+   "materials": [
+    "M_North_Atlas"
+   ]
+  },
+  {
    "kind": "spring_deck",
    "variant": 0,
    "file": "spring_deck.glb",

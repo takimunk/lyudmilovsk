@@ -128,6 +128,16 @@ the mesh's bounding box including guy lines and pegs, `body_size` the object alo
 (radius 2.6), the deck on the east rim at x 2.3..4.5, top z 0.45; two steps lead down west into the pool, the game's water
 surface should be near z -0.05.
 
+**Footbridges.** `log_bridge` (`SM_North_Log_Bridge_V0..2`, `blender/north/props_bridge.py`) is a rustic log footbridge over the river's
+channels: three peeled stringers, a deck of rough half-log planks 1.1 m wide, one pole handrail on the +Y side, log X-trestles
+standing on the river bed (feet 2.6 m below the deck). Variants by the water they span: v0 deck 16 m (spans up to 11 m, trestles under the
+two ramp tops), v1 21 m (up to 16 m, plus one in the middle), v2 31 m (up to 26 m, five trestles 6.5 m apart). The last 2.5 m at each end is a
+ramp that drops 1.0 m (toes at z -1.0, stringers and a sill reach z -1.5 so they sink into gravel bars 0.3..0.9 m under the deck).
+**Origin and axis:** the origin is the middle of the deck at its top walking surface (z 0 = where feet stand); the deck runs along
+the mesh's local **X** axis (`"axis": "x"` in the manifest), the handrail is on local +Y. With the kit's yaw rule (front = -Y) the deck therefore
+runs along map **Y at yaw 0 / 180** and along map **X at yaw 90 / 270** (check against the table above before placing). Collision is `box`: the manifest's
+`collision_boxes` (deck, two ramps, handrail pieces; mesh space, Blender axes, `rot_y_deg` right-handed about +Y, positive tips +X down); trestles have no collision.
+
 **Words.** Boards carry words: follow `.claude/skills/localization/SKILL.md` (ru/en/ja, text keys `north.sign.*`,
 `place.north.*`, `dev.tp.north_*`).
 
