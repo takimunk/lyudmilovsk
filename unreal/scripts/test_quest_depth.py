@@ -3,6 +3,9 @@ remarks (quest_scenes.json): QUESTDEPTH lines, the dialogue's "NpcDialogue: line
   b) waxwing on prepare: Sorokin says waxwing_tips.1 with the pocket as at the start, tips_feeder_in_hand.1 with a feeder
   c) waxwing on wait after sunset while he is still on his bench: rowan_till_dawn.1 (the talk logs its sun state)
   d) waxwing on wait by day: waxwing_wait.1, waxwing_wait_hint.1, waxwing_wait_snow.1, waxwing_wait_hint.1
+  g) evening_paper done: Nina's after-talk (quest.evening_paper.done) once, then an everyday line
+  h) fisherman_cheese done, first_catch on learn: Lange says catch_learn (an active quest first); first_catch done: the two
+     after-talks one after another, then everyday lines
   e) waxwing on prepare, the hero 3 m from Tanya in the Gastronom: "QuestDirector: remark tanya_rowan_doorway" once, not again
      after walking off and back, nor after a save and a load
 test_quest_depth.sh also checks the director's count line and runs tools/check_quest_talk.py and tools/check_devdata.py.
@@ -56,6 +59,28 @@ at("Quest.SetStage waxwing wait", None, 1.0)
 at("QUESTDEPTH mark c_dusk")
 conversation()
 at("shot showui", "sorokin_dusk")
+# g) a finished quest's after-talk once, then everyday talk (Nina strolls in the Academgorodok at 9)
+at("Quest.Reset", None, 1.0)
+at("Quest.SetStage evening_paper done", None, 1.0)
+at("lyud.Birds.Time 9", None, 2.5)
+go("korneeva_nina")
+at("QUESTDEPTH mark g_nina")
+for _ in range(7):
+    at("Npc.Talk", None, 1.2)
+# h) an active quest before an after-talk; then the two after-talks one after another, then everyday (Lange mends nets 12:30-17)
+at("Quest.Reset", None, 1.0)
+at("Quest.SetStage fisherman_cheese done", None, 1.0)
+at("Quest.SetStage first_catch learn", None, 1.0)
+at("lyud.Birds.Time 14", None, 2.5)
+go("lange_pyotr")
+at("QUESTDEPTH mark h_learn")
+for _ in range(7):
+    at("Npc.Talk", None, 1.2)
+at("Quest.SetStage first_catch done", None, 1.0)
+at("QUESTDEPTH mark h_after")
+for _ in range(14):
+    at("Npc.Talk", None, 1.2)
+at("Quest.Dump", "h_done")
 # e) the remark in the Gastronom
 at("Quest.Reset", None, 1.0)
 at("Quest.SetStage waxwing prepare", None, 1.0)
