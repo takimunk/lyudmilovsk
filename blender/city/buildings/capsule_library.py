@@ -631,7 +631,7 @@ def _furnish(B, rnd):
     # ---- reading tables in the north (ids and places as before)
     for (tx, ty) in ((-9.5, 20.5), (-9.5, 24.0), (-2.4, 23.5), (3.2, 23.5), (7.4, 23.0)):
         tid = (int(tx), int(ty)) if (tx, ty) != (7.4, 23.0) else (9, 24)
-        K.reading_table(B, tx, ty, 0.0, 0.0, w=2.4, d=1.0, lamps=2)
+        K.reading_table(B, tx, ty, 0.0, 0.0, w=2.4, d=1.0, lamps=1)
         chs = K.around_table(B, tx, ty, 2.4, 1.0, 0.0, per_side=(2, 2, 0, 0), kind="wood",
                              mat=R.choice(("CT_PlasterBlue", "CT_PlasterGreen", "CT_PlasterYellow", "CT_SteelRed")))
         K.books_stack(B, tx - 0.7, ty, 0.75, R.uniform(-30, 30), n=R.randint(2, 4), seed=tid[0])
