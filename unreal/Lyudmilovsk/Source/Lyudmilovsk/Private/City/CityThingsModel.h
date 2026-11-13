@@ -1191,7 +1191,14 @@ namespace LyudCity
 				Last = When.Day + 1;
 			}
 			O.Title = A->Title;
-			const int Holding = CountUsable(PageIdOf(Thing, Index), *A, When);
+			// a mini-game instead of the lines, while today's games last (then the act runs plainly: its lines tell of a game)
+			const FGameDef* Def = !O.bClosed && A->Game >= 0 && A->Game < (int)Games.size() ? &Games[(size_t)A->Game] : nullptr;
+			if (Def && (Def->Daily <= 0 || TodayCount(GameCountKey(A->Id), When.Day) < Def->Daily))
+			{
+				Today[GameCountKey(A->Id)] += 1;
+				O.Game = A->Game;
+			}
+			const int Holding = O.Game >= 0 ? 0 : CountUsable(PageIdOf(Thing, Index), *A, When);
 			// a daily board shows today's one; a shelf the pages that may be read now, one after another
 			O.NumLines = A->bDaily ? (Holding > 0 ? 1 : 0) : Holding;
 			if (Holding > 0)

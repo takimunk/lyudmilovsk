@@ -224,7 +224,7 @@
   {"id": "P-CLUB3/club_notices", "plot": "P-CLUB3", "kind": "board", "ue": [-16981.7, 124467.8, -2730.0], "yaw": 155.9, "props": {"topic": "club"}, "act": "cog_reading_notice", "hours": [12, 23], "days": "mon-sun"},
   {"id": "P-CLUB3/cue_rack", "plot": "P-CLUB3", "kind": "machine", "ue": [-18923.0, 122618.4, -2790.0], "yaw": -60.1, "props": {"what": "cue_rack"}, "act": "cog_cues", "hours": [12, 23], "days": "mon-sun"},
   {"id": "P-CLUB3/darkroom_bench", "plot": "P-CLUB3", "kind": "craft", "ue": [-18586.7, 122765.6, -1930.0], "yaw": -60.1, "props": {"what": "darkroom"}, "act": "cog_darkroom", "hours": [12, 23], "days": "mon-sun"},
-  {"id": "P-CLUB3/developing_tray", "plot": "P-CLUB3", "kind": "craft", "ue": [-18877.1, 122598.6, -1925.0], "yaw": -60.1, "props": {"what": "developing"}, "act": "cog_tray", "hours": [12, 23], "days": "mon-sun"},
+  {"id": "P-CLUB3/developing_tray", "plot": "P-CLUB3", "kind": "craft", "ue": [-18881.5, 122596.1, -1925.0], "yaw": -60.1, "props": {"what": "developing"}, "act": "cog_tray", "hours": [12, 23], "days": "mon-sun"},
   {"id": "P-CLUB3/drafting_board", "plot": "P-CLUB3", "kind": "craft", "ue": [-18969.9, 122308.7, -2370.0], "yaw": 29.9, "props": {"what": "workbench"}, "act": "cog_draft", "hours": [12, 23], "days": "mon-sun"},
   {"id": "P-CLUB3/drying_line", "plot": "P-CLUB3", "kind": "board", "ue": [-19035.8, 122363.0, -1830.0], "yaw": 29.9, "props": {"topic": "exhibit"}, "act": "cog_prints", "hours": [12, 23], "days": "mon-sun"},
   {"id": "P-CLUB3/drying_shelf", "plot": "P-CLUB3", "kind": "board", "ue": [-19116.5, 122403.1, -2310.0], "yaw": 29.9, "props": {"topic": "exhibit"}, "act": "cog_dry", "hours": [12, 23], "days": "mon-sun"},
