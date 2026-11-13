@@ -96,8 +96,12 @@ def _furnish(B, cx):
     kit.rug(B, -5.3, 8.1, 0.0, 0.0, w=4.2, d=2.2, name="rug_2")
     kit.picture(B, -5.0, 15.7, 0.0, 0.0, name="painting_sea_calm", w=1.2, zc=1.8)
     kit.wall_clock(B, -0.8, 15.7, 0.0, 0.0, zc=2.4)
-    kit.plant(B, 0.9, 15.0, 0.0, 0.0, h=1.5, kind="palm")
+    kit.plant(B, 1.4, 15.4, 0.0, 0.0, h=1.5, kind="palm")
     kit.hat_stand(B, -3.0, 5.0, 0.0, 0.0)
+    _depth(B, cx)
+    # two more lamps: the pharmacy end and the aquarium nook
+    B.lamp((12.0, 13.2, 2.3), lumens=500, colour="#E8F4F0", kind="public", radius=4)
+    B.lamp((-0.7, 14.6, 2.5), lumens=450, colour="#CFE6FF", kind="public", radius=4)
 
 
 def _seat(B, tid, r, h=0.45, **props):
@@ -141,7 +145,7 @@ def _hall(B):
     B.thing("hall_magazines", "shelf", (rk["pos"][0], rk["pos"][1], 1.1), 90.0, topic="medicine")
     # ---- plants
     kit.plant(B, -12.3, 15.35, 0.0, 0.0, h=1.7)
-    kit.plant(B, 2.7, 14.9, 0.0, 0.0, h=1.6, pot="CT_TileWhite")
+    kit.plant(B, 2.75, 10.7, 0.0, 0.0, h=1.6, pot="CT_TileWhite")
     kit.plant(B, -2.4, 5.0, 0.0, 0.0, h=1.3, kind="monstera")
     kit.plant(B, -10.6, 5.0, 0.0, 0.0, h=1.3, pot="CT_TileWhite", kind="palm")
     # ---- water cooler by the corridor door
@@ -252,6 +256,130 @@ def _rooms(B, cx):
         else:
             kit.screen_divider(B, wx + 0.75, 9.9, 0.0, 90.0)
             kit.wardrobe(B, ex, 10.35, 0.0, 270.0, w=0.8, h=1.9)
+
+
+def _seg7(d, y, z, digit, sc=0.05, x_face=3.18, mat="CT_SteelRed"):
+    """A red seven-segment digit on a board facing -x (u = y along the wall, v = z), `sc` the bar thickness."""
+    S = {"0": "abcdef", "1": "bc", "2": "abdeg", "3": "abcdg", "4": "bcfg", "5": "acdfg", "6": "acdefg", "7": "abc",
+         "8": "abcdefg", "9": "abcdfg"}[digit]
+    w, h = 0.16, 0.12
+    bars = {"a": (-w, w, h * 2, h * 2 + sc), "g": (-w, w, h, h + sc), "d": (-w, w, 0.0, sc),
+            "f": (-w, -w + sc, h, h * 2), "b": (w - sc, w, h, h * 2), "e": (-w, -w + sc, 0.0, h), "c": (w - sc, w, 0.0, h)}
+    for k in S:
+        u0, u1, v0, v1 = bars[k]
+        box(d, mat, x_face - 0.005, x_face, y + u0, y + u1, z + v0, z + v1)
+
+
+def _depth(B, cx):
+    """Second pass: queue ticket and board, aquarium nook, inhalation corner, the dentist's door, card file, height rod,
+    radio point, pharmacy shelves, the doctors' small instruments."""
+    d = B.detail
+    # ---- the waiting hall: ticket stand by the desk, queue board over the corridor gap
+    box(d, "CT_Steel", -7.64, -7.56, 10.56, 10.64, 0.0, 1.15)
+    box(d, "CT_FrameWhite", -7.74, -7.46, 10.46, 10.74, 1.15, 1.3)
+    box(d, "CT_SteelRed", -7.72, -7.48, 10.44, 10.46, 1.18, 1.27, faces="yxXzZ")
+    box(d, "CT_TileWhite", -7.7, -7.5, 10.5, 10.7, 1.3, 1.34)
+    B.thing("ticket_machine", "machine", (-7.6, 10.6, 1.2), 0.0, what="tickets")
+    box(d, "CT_Steel", 3.2, 3.3, 12.46, 13.54, 2.43, 3.12)
+    box(d, "CT_Rubber", 3.19, 3.3, 12.5, 13.5, 2.47, 3.08)
+    _seg7(d, 12.8, 2.62, "1")
+    _seg7(d, 13.2, 2.62, "7")
+    B.thing("queue_board", "board", (3.15, 13.0, 2.5), 270.0, topic="queue")
+    # ---- aquarium nook on the back wall (a watering can beside it)
+    aq = kit.aquarium(B, -0.7, 15.45, 0.0, 0.0, w=1.0, seed=3)
+    B.thing("hall_aquarium", "screen", (-0.7, 15.25, 1.0), 0.0, what="aquarium")
+    box(d, "CT_PlasterGreen", -1.3, -1.12, 15.35, 15.55, 0.0, 0.2)
+    box(d, "CT_PlasterGreen", -1.12, -1.08, 15.4, 15.5, 0.12, 0.16)
+    B.thing("aquarium_can", "machine", (-1.2, 15.4, 0.2), 0.0, what="watering")
+    B.spot("aquarium_watch", "stand", (-0.7, 14.6, 0.0), 180.0)
+    # ---- donation jar on the desk: "for a fish"
+    box(d, "CT_Glass", -2.9, -2.78, 11.85, 11.97, 0.75, 0.93)
+    box(d, "CT_SteelRed", -2.91, -2.77, 11.84, 11.98, 0.93, 0.96)
+    box(d, "CT_TileWhite", -2.88, -2.8, 11.835, 11.845, 0.78, 0.9, faces="y")
+    B.thing("fish_jar", "machine", (-2.84, 11.9, 0.9), 0.0, what="jar")
+    # ---- inhalation corner east of the middle: table with the inhaler, two stools, a screen behind
+    tb = kit.table(B, 0.7, 13.7, 0.0, 0.0, w=1.0, d=0.6, h=0.75, mat="CT_TileWhite")
+    t = tb["top"]
+    box(d, "CT_SteelWhite", 0.45, 0.85, 13.6, 13.82, t, t + 0.2)
+    box(d, "CT_Steel", 0.5, 0.8, 13.56, 13.6, t + 0.08, t + 0.16, faces="yxXzZ")
+    for tx in (0.38, 1.0):
+        box(d, "CT_Steel", tx - 0.015, tx + 0.015, 13.5, 13.54, t + 0.1, t + 0.12)
+        box(d, "CT_Glass", tx - 0.04, tx + 0.04, 13.42, 13.5, t, t + 0.08)
+    box(d, "CT_PlasterBlue", 0.6, 0.8, 13.66, 13.78, t + 0.2, t + 0.3)
+    kit.stool(B, 0.45, 13.05, 0.0, 0.0, h=0.45, mat="CT_PlasterRed")
+    kit.stool(B, 0.95, 13.05, 0.0, 0.0, h=0.45, mat="CT_PlasterBlue")
+    kit.screen_divider(B, 0.7, 14.45, 0.0, 0.0)
+    B.thing("inhaler", "machine", (0.65, 13.7, t + 0.15), 0.0, what="inhaler")
+    B.spot("inhaler_stool", "seat", (0.45, 13.05, 0.0), 180.0)
+    # ---- the dentist's door on the partition, hall side
+    box(d, "CT_PlasterGrey", 3.24, 3.3, 14.15, 15.1, 0.0, 2.15)
+    box(d, "CT_ConcreteDark", 3.2, 3.24, 14.1, 15.15, 2.15, 2.22)
+    box(d, "CT_ConcreteDark", 3.2, 3.24, 14.1, 14.15, 0.0, 2.15)
+    box(d, "CT_ConcreteDark", 3.2, 3.24, 15.1, 15.15, 0.0, 2.15)
+    box(d, "CT_TileWhite", 3.2, 3.24, 14.45, 14.8, 1.55, 1.8)
+    box(d, "CT_SteelRed", 3.19, 3.2, 14.55, 14.7, 1.62, 1.73)
+    box(d, "CT_Brass", 3.19, 3.24, 14.28, 14.34, 1.0, 1.1)
+    B.thing("dentist_door", "board", (3.18, 14.63, 1.4), 270.0, topic="dentist")
+    B.spot("dentist_wait", "stand", (2.3, 14.2, 0.0), 90.0)
+    B.spot("dentist_wait_2", "bench", (2.6, 13.9, 0.0), 90.0)
+    # ---- card file at the desk's west end
+    cf = kit.card_catalogue(B, -8.7, 12.6, 0.0, 0.0)
+    B.thing("card_file", "shelf", (-8.7, 12.4, 1.0), 0.0, topic="cards")
+    B.spot("card_file", "stand", (-8.7, 11.7, 0.0), 180.0)
+    # ---- the height rod on the front wall, between the window and the door
+    box(d, "CT_PlasterYellow", -6.27, -6.13, 4.3, 4.33, 0.25, 2.05)
+    for k in range(18):
+        zt = 0.3 + k * 0.1
+        wd = 0.14 if k % 5 == 0 else 0.08
+        box(d, "CT_Rubber", -6.2 - wd / 2, -6.2 + wd / 2, 4.33, 4.34, zt, zt + 0.012)
+    box(d, "CT_SteelRed", -6.31, -6.09, 4.3, 4.37, 1.3, 1.34)
+    B.thing("height_rod", "machine", (-6.2, 4.4, 1.2), 180.0, what="height")
+    # ---- radio point (wall speaker) above the south wall bench
+    box(d, "CT_Wood", 1.3, 1.7, 4.3, 4.4, 2.1, 2.4)
+    box(d, "CT_Rubber", 1.35, 1.65, 4.4, 4.405, 2.15, 2.35, faces="y")
+    box(d, "CT_Steel", 1.46, 1.54, 4.4, 4.41, 2.22, 2.28)
+    B.thing("radio_point", "machine", (1.5, 4.4, 2.2), 180.0, what="radio_point")
+    # ---- the magazine table
+    B.thing("hall_table_mags", "shelf", (-8.4, 9.9, 0.45), 0.0, topic="waiting")
+    # ---- pharmacy: apothecary scale on the counter, the recipe notice, jars thing
+    box(d, "CT_Brass", 11.97, 12.07, 13.0, 13.2, 1.05, 1.08)
+    box(d, "CT_Brass", 12.0, 12.04, 13.08, 13.12, 1.08, 1.3)
+    box(d, "CT_Brass", 11.98, 12.06, 12.9, 13.3, 1.28, 1.3)
+    for sy in (12.92, 13.28):
+        box(d, "CT_Brass", 11.99, 12.05, sy - 0.04, sy + 0.04, 1.16, 1.17)
+    B.thing("pharmacy_scale", "machine", (12.02, 13.1, 1.2), 270.0, what="apothecary")
+    kit.poster(B, 13.7, 12.4, 0.0, 270.0, name="notice_1", w=0.45, zc=1.75)
+    B.thing("pharmacy_recipes", "board", (13.65, 12.4, 1.75), 270.0, topic="recipes")
+    B.thing("pharmacy_jars", "board", (13.3, 15.25, 1.5), 270.0, topic="jars")
+    # ---- door plates by the three doors of the doctors' rooms
+    for i, c in enumerate(cx):
+        kit.poster(B, c + 0.85, 11.3, 0.0, 180.0, name="notice_2" if i != 1 else "notice_0", w=0.26, zc=1.6)
+        B.thing("door_plate_%d" % i, "board", (c + 0.85, 11.35, 1.6), 180.0, topic="plate")
+    # ---- mood: radiators under the hall's street windows, a different curtain in each doctor's room
+    for rx in (-8.25, -0.35):
+        kit.radiator(B, rx, 4.3, 0.0, 180.0, w=1.6, h=0.55)
+    for c, cm in zip(cx, ("CT_PlasterYellow", "CT_PlasterBlue", "CT_PlasterGreen")):
+        kit.curtains(B, c, 4.3, 0.0, 180.0, w=1.5, h=2.55, mat=cm, open_=0.45)
+    # ---- the doctors' desks: blood-pressure cuff, trial lenses and colour plates, reflex hammer
+    for i, c in enumerate(cx):
+        x = c - 0.45
+        if i == 0:
+            box(d, "CT_SteelWhite", x - 0.08, x + 0.08, 5.28, 5.4, 0.75, 0.85)
+            box(d, "CT_Rubber", x + 0.1, x + 0.2, 5.3, 5.36, 0.75, 0.8)
+            box(d, "CT_Glass", x - 0.03, x + 0.03, 5.25, 5.28, 0.8, 0.84)
+            B.thing("bp_cuff", "machine", (x, 5.34, 0.85), 180.0, what="tonometer")
+        elif i == 1:
+            box(d, "CT_Leather", x - 0.14, x + 0.14, 5.25, 5.45, 0.75, 0.81)
+            for k in range(5):
+                box(d, "CT_Glass", x - 0.11 + k * 0.055, x - 0.07 + k * 0.055, 5.3, 5.34, 0.81, 0.815)
+            kit.books_stack(B, x + 0.3, 5.3, 0.75, 20, n=2, seed=11)
+            B.thing("eye_plates", "board", (x, 5.34, 0.85), 180.0, topic="plates")
+        else:
+            box(d, "CT_Rubber", x - 0.09, x + 0.09, 5.3, 5.33, 0.75, 0.77)
+            box(d, "CT_Steel", x - 0.07, x + 0.07, 5.31, 5.32, 0.77, 0.79)
+            box(d, "CT_Steel", x + 0.12, x + 0.3, 5.3, 5.33, 0.75, 0.765)
+            box(d, "CT_Rubber", x + 0.3, x + 0.36, 5.29, 5.34, 0.75, 0.78)
+            B.thing("reflex_hammer", "machine", (x + 0.1, 5.32, 0.85), 180.0, what="hammer")
 
 
 def build(B):
