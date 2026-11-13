@@ -150,11 +150,15 @@ for i in range(len(C.WALLS)):
     for y in range(int(C.CITY_Y0), int(C.CITY_Y1) + 1, 7):
         ws = C.wall_s(i, y)
         x_front, _ = C.to_map(ws - 0.5, y)
-        x_top, _ = C.to_map(ws + C.RAMP_START + C.WALL_RAMP + 0.5, y)
+        # W1 may carry its own ramp and block depth (city-interiors: shop rooms behind the promenade units)
+        w1 = i == 0 and hasattr(C, "W1_RAMP_START")
+        ramp_end = (C.W1_RAMP_START + C.W1_RAMP) if w1 else (C.RAMP_START + C.WALL_RAMP)
+        depth = C.wall_depth(i) if hasattr(C, "wall_depth") else C.WALL_DEPTH
+        x_top, _ = C.to_map(ws + ramp_end + 0.5, y)
         zf, zt = C.terrace_z(x_front, y), C.terrace_z(x_top, y)
         if abs(zf - zs[i]) > EPS or abs(zt - zs[i + 1]) > EPS:
             probs.append("%s y %d: %.2f / %.2f" % (C.WALLS[i][0], y, zf, zt))
-        x_in, _ = C.to_map(ws + C.WALL_DEPTH - 0.3, y)
+        x_in, _ = C.to_map(ws + depth - 0.3, y)
         if abs(C.terrace_z(x_in, y) - zs[i + 1]) > EPS:
             probs.append("%s y %d: ramp not done inside the block" % (C.WALLS[i][0], y))
 check("terrain: lower terrace right in front of each wall, upper terrace on top of its block (ramp hidden)", probs)
