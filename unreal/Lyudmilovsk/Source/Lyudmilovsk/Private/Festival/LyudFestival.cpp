@@ -667,7 +667,7 @@ void ULyudFestivalSubsystem::Update()
 			NewActive.Add(Entry);
 			// its quest is on from its day's morning (07:00, like the "today" note), not from its first phase: the wish bamboo
 			// is up hours before Tanabata's first phase, and a wish tied then must count
-			if (A.Rel >= 7.f && !QuestStarted.Contains(Entry.Id))
+			if (Hour >= 7.f && A.Rel >= 0.f && A.Rel < F.Days * 24.f && !QuestStarted.Contains(Entry.Id))
 			{
 				QuestStarted.Add(Entry.Id);
 				ULyudQuests::Notify(this, TEXT("festival"), FId);
