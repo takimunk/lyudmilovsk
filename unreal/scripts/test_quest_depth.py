@@ -3,6 +3,7 @@ remarks (quest_scenes.json): QUESTDEPTH lines, the dialogue's "NpcDialogue: line
   l) awakening on owner: Guy_b's first exchange, then his aside owner_says_odd.1, then everyday lines
   m) explore on walk: Guy_b's asides valley_way, four_places_two_by_cable, never_got_swift in turn, then everyday lines
   n) the Owner: his first exchange on awakening's owner stage (the stage finishes); on outside door_never_locked.1 (or by the sun)
+  o) Sato_yuki's everyday talks in the engine's order (her first, crow_gift's after-talk, again1..4, sun lines)
   b) waxwing on prepare: Sorokin says waxwing_tips.1 with the pocket as at the start, tips_feeder_in_hand.1 with a feeder
   c) waxwing on wait after sunset while he is still on his bench: rowan_till_dawn.1 (the talk logs its sun state)
   d) waxwing on wait by day: waxwing_wait.1, waxwing_wait_hint.1, waxwing_wait_snow.1, waxwing_wait_hint.1
@@ -106,6 +107,13 @@ at("QUESTDEPTH mark n_outside")
 for _ in range(3):
     at("Npc.Talk", None, 1.2)
 at("Quest.Dump", "n_done")
+# o) everyday talks in turn: Sato_yuki (crow_gift finished so that no quest talk comes first: talking to her begins it)
+at("Quest.Reset", None, 1.0)
+at("Quest.SetStage crow_gift done", None, 1.0)
+go("sato_yuki", 1.3, [16.5, 17, 9, 10, 11, 12, 15, 18])
+at("QUESTDEPTH mark o_yuki")
+for _ in range(16):
+    at("Npc.Talk", None, 1.2)
 # b) variant by the pocket
 at("Quest.Reset", None, 1.0)
 at("Dev.Do pocket.reset", None, 1.0)
