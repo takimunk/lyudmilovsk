@@ -6,6 +6,8 @@ remarks (quest_scenes.json): QUESTDEPTH lines, the dialogue's "NpcDialogue: line
   g) evening_paper done: Nina's after-talk (quest.evening_paper.done) once, then an everyday line
   h) fisherman_cheese done, first_catch on learn: Lange says catch_learn (an active quest first); first_catch done: the two
      after-talks one after another, then everyday lines
+  j) a great tit beside Dasha at 17:30 (Aya on the same bench): exactly one person answers
+  k) waxwing on return: a call by Valentina's cart and one by Sorokin both get his waxwing_seen lines and finish the quest
   e) waxwing on prepare, the hero 3 m from Tanya in the Gastronom: "QuestDirector: remark tanya_rowan_doorway" once, not again
      after walking off and back, nor after a save and a load
 test_quest_depth.sh also checks the director's count line and runs tools/check_quest_talk.py and tools/check_devdata.py.
@@ -81,6 +83,26 @@ at("QUESTDEPTH mark h_after")
 for _ in range(14):
     at("Npc.Talk", None, 1.2)
 at("Quest.Dump", "h_done")
+# j) one listener answers: Dasha and Aya on the square's bench at 17:30, a great tit calls beside Dasha
+at("Quest.Reset", None, 1.0)
+at("lyud.Birds.Time 17.5", None, 2.5)
+go("kimura_dasha", 4)
+at("Quest.Scenes", "j_listeners", 0.5)
+at("QUESTDEPTH mark j_call")
+at("Quest.BirdCall GreatTit kimura_dasha", None, 6.0)
+# k) waxwing on return: the call beside Valentina's corn cart (Sorokin's bench within his 14 m) is answered by him, not her
+at("Quest.SetStage waxwing return", None, 1.0)
+at("lyud.Birds.Time 16", None, 2.5)
+go("guseva_valentina", 4)
+at("Quest.Scenes", "k_listeners", 0.5)
+at("QUESTDEPTH mark k_call_near_cart")
+at("Quest.BirdCall Waxwing guseva_valentina", None, 10.0)
+at("Quest.Dump", "k_after_cart_call")
+at("Quest.SetStage waxwing return", None, 1.0)
+go("sorokin_oleg", 6)
+at("QUESTDEPTH mark k_call_sorokin")
+at("Quest.BirdCall Waxwing sorokin_oleg", None, 10.0)
+at("Quest.Dump", "k_done")
 # e) the remark in the Gastronom
 at("Quest.Reset", None, 1.0)
 at("Quest.SetStage waxwing prepare", None, 1.0)
