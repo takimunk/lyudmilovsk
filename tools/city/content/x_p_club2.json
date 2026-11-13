@@ -580,6 +580,16 @@
   }
  },
  "rules": {
+  "P-CLUB2/buffet": {
+   "topics": [
+    "@x_r_buffet"
+   ]
+  },
+  "P-CLUB2/coat_check": {
+   "topics": [
+    "@x_r_cloak"
+   ]
+  },
   "P-CLUB2/seat_r*": {
    "act": "cinema_week"
   },
@@ -833,5 +843,159 @@
     ]
    ]
   }
+ },
+ "topic_sets": {
+  "x_r_tickets": [
+   {
+    "id": "rassvet.tk.times",
+    "k": "city.ask.rassvet.tk.times",
+    "lines": [
+     "city.ask.rassvet.tk.times.1",
+     {
+      "k": "city.ask.rassvet.tk.times.2",
+      "d": "wed"
+     },
+     {
+      "k": "city.ask.rassvet.tk.times.3",
+      "d": "fri,sat"
+     }
+    ]
+   },
+   {
+    "id": "rassvet.tk.stubs",
+    "k": "city.ask.rassvet.tk.stubs",
+    "lines": [
+     "city.ask.rassvet.tk.stubs.1",
+     {
+      "k": "city.ask.rassvet.tk.stubs.2",
+      "d": "sat,sun"
+     }
+    ]
+   },
+   {
+    "id": "rassvet.tk.costume",
+    "k": "city.ask.rassvet.tk.costume",
+    "lines": [
+     "city.ask.rassvet.tk.costume.1",
+     {
+      "k": "city.ask.rassvet.tk.costume.2",
+      "d": "thu"
+     },
+     {
+      "k": "city.ask.rassvet.tk.costume.3",
+      "did": "aoki_machine"
+     }
+    ]
+   },
+   {
+    "id": "rassvet.tk.reel",
+    "k": "city.ask.rassvet.tk.reel",
+    "lines": [
+     "city.ask.rassvet.tk.reel.1",
+     {
+      "k": "city.ask.rassvet.tk.reel.2",
+      "did": "cinema_reel"
+     }
+    ]
+   },
+   {
+    "id": "rassvet.tk.after",
+    "k": "city.ask.rassvet.tk.after",
+    "lines": [
+     "city.ask.rassvet.tk.after.1",
+     {
+      "k": "city.ask.rassvet.tk.after.2",
+      "d": "fri"
+     },
+     {
+      "k": "city.ask.rassvet.tk.after.3",
+      "d": "sat"
+     }
+    ]
+   }
+  ],
+  "x_r_buffet": [
+   {
+    "id": "rassvet.bf.projectionist",
+    "k": "city.ask.rassvet.bf.projectionist",
+    "lines": [
+     "city.ask.rassvet.bf.projectionist.1",
+     {
+      "k": "city.ask.rassvet.bf.projectionist.2",
+      "d": "sat"
+     }
+    ],
+    "gives": {
+     "collect": "staff/buffet"
+    }
+   },
+   {
+    "id": "rassvet.bf.friday",
+    "k": "city.ask.rassvet.bf.friday",
+    "lines": [
+     "city.ask.rassvet.bf.friday.1",
+     {
+      "k": "city.ask.rassvet.bf.friday.2",
+      "d": "fri",
+      "h": [
+       19,
+       23
+      ]
+     }
+    ],
+    "gives": {
+     "collect": "staff/buffet"
+    }
+   },
+   {
+    "id": "rassvet.bf.break",
+    "k": "city.ask.rassvet.bf.break",
+    "lines": [
+     "city.ask.rassvet.bf.break.1"
+    ],
+    "gives": {
+     "collect": "staff/buffet"
+    }
+   }
+  ],
+  "x_r_cloak": [
+   {
+    "id": "rassvet.cl.dance",
+    "k": "city.ask.rassvet.cl.dance",
+    "lines": [
+     "city.ask.rassvet.cl.dance.1",
+     {
+      "k": "city.ask.rassvet.cl.dance.2",
+      "d": "tue"
+     },
+     {
+      "k": "city.ask.rassvet.cl.dance.3",
+      "d": "wed"
+     }
+    ],
+    "gives": {
+     "collect": "staff/cloak"
+    }
+   },
+   {
+    "id": "rassvet.cl.umbrella",
+    "k": "city.ask.rassvet.cl.umbrella",
+    "lines": [
+     "city.ask.rassvet.cl.umbrella.1",
+     {
+      "k": "city.ask.rassvet.cl.umbrella.2",
+      "weather": "rain"
+     }
+    ],
+    "gives": {
+     "collect": "staff/cloak"
+    }
+   }
+  ]
+ },
+ "topics": {
+  "aoki_fitting": [
+   "@x_r_tickets"
+  ]
  }
 }

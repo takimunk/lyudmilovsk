@@ -734,5 +734,530 @@
   "ru": "«ЭФИР-60». Для тех, кто готов слушать ночью. Короткие волны, точная настройка, наушники в комплекте: всё серьёзно. Из примечаний: «Радиолюбители из «Рассвета» рекомендуют. Наушники левое пищит, но это характер». Если вдруг услышите голос, которого не должно быть в эфире, не торопитесь выключать. Продавец говорит: «Сначала дослушайте. Потом выключайте. В таком порядке всё и случается».",
   "en": "\"EFIR-60\" (Ether-60). For those ready to listen at night. Short wave, fine tuning, earphones included: all in earnest. From the notes: \"Recommended by the radio amateurs of Rassvet. The left earphone squeaks, but that's character.\" If you suddenly hear a voice that has no business on the air, don't hurry to switch off. The salesman says: \"Listen to the end first. Then switch off. That is the order in which everything happens.\"",
   "ja": "「エフィール60」。夜に聞く覚悟のある人のために。短波、精密な同調、ヘッドホン付き。本格派。注記より。「『ラスヴェート』の無線家のおすすめ。左のヘッドホンはキーキー鳴るが、それは個性」。もし電波の中に、そこにいるはずのない声が聞こえても、あわてて切らないこと。販売員は言う。「まず最後まで聞いてください。切るのはそのあと。ものごとは、その順に起こるのです」"
+ },
+ "city.ask.ps.g.delivery": {
+  "ru": "Когда у вас завоз?",
+  "en": "When do deliveries come?",
+  "ja": "入荷はいつ？"
+ },
+ "city.ask.ps.g.delivery.1": {
+  "ru": "— Молочное во вторник к десяти, рыба и сыр в пятницу. Очередь от красной дорожки, в руки не больше двух.",
+  "en": "\"Dairy on Tuesday by ten, fish and cheese on Friday. The queue starts at the red carpet, no more than two per customer.\"",
+  "ja": "「乳製品は火曜の十時まで、魚とチーズは金曜。行列は赤い絨毯から、おひとり二つまで。」"
+ },
+ "city.ask.ps.g.delivery.2": {
+  "ru": "— Сегодня вторник! Кефир привезли в десять, хватит всем, кто стоит. Не нервничайте: он нервных не любит.",
+  "en": "\"It's Tuesday! The kefir came at ten and there's enough for everyone in line. Don't fret: it doesn't like the fretful.\"",
+  "ja": "「今日は火曜日！ ケフィアは十時に届いたから、並んでる人みんなに行きわたるよ。あわてない、あわてんぼうはケフィアに嫌われるからね。」"
+ },
+ "city.ask.ps.g.delivery.3": {
+  "ru": "— Пятница: рыба и сыр. Сыр первым делом, рыба по настроению. Мне это уже трое посоветовали.",
+  "en": "\"Friday: fish and cheese. Cheese first, fish as you feel. Three people have already given me that advice.\"",
+  "ja": "「金曜は魚とチーズ。チーズが先、魚は気分しだい。もう三人から同じ助言をもらったよ。」"
+ },
+ "city.ask.ps.g.delivery.4": {
+  "ru": "— Среда и четверг у нас тихие: выбирай не спеша.",
+  "en": "\"Wednesday and Thursday are our quiet days: choose without hurry.\"",
+  "ja": "「水曜と木曜は静かな日。ゆっくり選んでいって。」"
+ },
+ "city.ask.ps.g.seeds": {
+  "ru": "Откуда у вас семечки?",
+  "en": "Where do your sunflower seeds come from?",
+  "ja": "ひまわりの種はどこから？"
+ },
+ "city.ask.ps.g.seeds.1": {
+  "ru": "— Жареные, в кулёчке из газеты. Берут для голубей, для попугаев и для себя, именно в таком порядке.",
+  "en": "\"Roasted, in a paper cone made from newspaper. People buy them for pigeons, for parrots and for themselves, in that order.\"",
+  "ja": "「炒ったのを新聞紙の袋に入れてね。買うのは鳩のため、オウムのため、自分のため、この順番。」"
+ },
+ "city.ask.ps.g.seeds.2": {
+  "ru": "— Попугай из «Тарелки» берёт только после слова «Конечная». Бариста сама рассказывала, и смеялась, и семечки покупала.",
+  "en": "\"The parrot at the Saucer takes them only after the word \"Terminus\". The barista told me herself, laughing, and bought seeds.\"",
+  "ja": "「『ソーサー』のオウムは、『終点です』と言ってからでないと受けとらないんだって。バリスタさん本人が笑いながら話して、種を買っていったよ。」"
+ },
+ "city.ask.ps.g.seeds.3": {
+  "ru": "— Так это ты угощал Кешу? Бариста заходила, сказала: «Передайте ему, что у Кеши теперь появилось любимое слово». Какое, не говорит.",
+  "en": "\"So you're the one who treated Kesha? The barista came by and said: \"Tell him Kesha has a new favourite word.\" She won't say which.\"",
+  "ja": "「じゃあ、ケーシャにあげたのはあなた？ バリスタさんが来て、『ケーシャに好きな言葉が増えたって伝えて』って。どの言葉かは教えてくれなかったけど。」"
+ },
+ "city.ask.ps.s.chocolate": {
+  "ru": "Какой у вас шоколад?",
+  "en": "What chocolate do you have?",
+  "ja": "どんなチョコレートがある？"
+ },
+ "city.ask.ps.s.chocolate.1": {
+  "ru": "— Один сорт и одна обёртка. Двадцать пять рублей, поэтому берут плитку на праздник и по квадратику в карман.",
+  "en": "\"One kind and one wrapper. Twenty-five roubles, so people buy a bar for a holiday and a square for the pocket.\"",
+  "ja": "「種類はひとつ、包みもひとつ。二十五ルーブルだから、お祝いに一枚、ポケット用に一かけ、って買っていくよ。」"
+ },
+ "city.ask.ps.s.chocolate.2": {
+  "ru": "— Сегодня праздник, берут вдвое. Квадратик на всех: старая традиция, новой не завели.",
+  "en": "\"It's a holiday, people buy double. A square for everyone: an old tradition, we haven't started a new one.\"",
+  "ja": "「今日はお祝いだから倍売れるよ。みんなで一かけずつ。昔からのならわしで、新しいのはまだ作ってない。」"
+ },
+ "city.ask.ps.s.chocolate.3": {
+  "ru": "— В холод плитка ломается пополам сама. Берут две половинки: одну съесть, вторую поделить.",
+  "en": "\"In the cold the bar snaps in half by itself. People buy two halves: one to eat, one to share.\"",
+  "ja": "「寒いと板チョコはひとりでに半分に割れるの。二つ買って、ひとつは食べて、ひとつは分けるのよ。」"
+ },
+ "city.ask.ps.s.candy": {
+  "ru": "Конфеты на вес или поштучно?",
+  "en": "Are sweets by weight or one at a time?",
+  "ja": "飴は量り売り？ ばら売り？"
+ },
+ "city.ask.ps.s.candy.1": {
+  "ru": "— Поштучно, по восемь рублей. Фантики мальчишки меняют на булавки и значки: у них своя биржа у лестницы.",
+  "en": "\"One at a time, eight roubles each. The boys swap the wrappers for pins and badges: they run their own exchange by the stairs.\"",
+  "ja": "「ばら売りで一つ八ルーブル。包み紙は男の子たちがピンやバッジと交換してる。階段のところに自分たちの取引所があるのよ。」"
+ },
+ "city.ask.ps.s.candy.2": {
+  "ru": "— С утра самые честные покупатели: берут одну конфету и несут показать маме.",
+  "en": "\"Mornings bring the most honest customers: they buy one sweet and carry it off to show their mother.\"",
+  "ja": "「朝はいちばん正直なお客さんが来るよ。飴をひとつ買って、お母さんに見せに走っていくの。」"
+ },
+ "city.ask.ps.s.candy.3": {
+  "ru": "— По субботам до закрытия сидит старичок и выбирает полчаса, а берёт всегда одну и ту же. Мы его не торопим.",
+  "en": "\"On Saturdays an old man spends half an hour choosing until closing and always takes the same one. We don't rush him.\"",
+  "ja": "「土曜日は閉店まぢかに、おじいさんが三十分も選んで、いつも同じのを買っていくの。急かしたりしないよ。」"
+ },
+ "city.ask.ps.h.badge": {
+  "ru": "Что за значки у вас?",
+  "en": "What badges do you have?",
+  "ja": "どんなバッジがあるの？"
+ },
+ "city.ask.ps.h.badge.1": {
+  "ru": "— Значок один, зато на нём каждый видит своё: кто маяк, кто канатку. Двенадцать рублей, булавка в подарок.",
+  "en": "\"There's one badge, but everyone sees their own thing in it: some the lighthouse, some the cable car. Twelve roubles, the pin is a gift.\"",
+  "ja": "「バッジはひとつだけど、見る人によって違うものが見えるの。灯台の人もいれば、ロープウェイの人もいる。十二ルーブルで、ピンはおまけ。」"
+ },
+ "city.ask.ps.h.badge.2": {
+  "ru": "— К празднику лацкан у людей пустеет: все разбирают. Если хочешь успеть, приходи до обеда.",
+  "en": "\"Before a holiday the lapels go bare: everybody buys one. If you want one, come before lunch.\"",
+  "ja": "「お祭りの前になると、みんなの襟がさびしくなる。みんな買っていくから。ほしいなら、お昼前に来てね。」"
+ },
+ "city.ask.ps.h.mitten": {
+  "ru": "Не нашлась ли левая варежка?",
+  "en": "Has the left mitten turned up?",
+  "ja": "左の手袋は見つかった？"
+ },
+ "city.ask.ps.h.mitten.1": {
+  "ru": "— Левых у меня нет. Правая красная в полоску лежит наверху в бюро находок. Спросите там, может, левая тоже осиротела.",
+  "en": "\"I haven't got any left ones. The right one, red with stripes, is upstairs at lost and found. Ask there: maybe the left one is an orphan too.\"",
+  "ja": "「左の手袋はこっちにはないの。赤い縞の右手のは、二階の遺失物係にあるよ。そっちで聞いてみて、左もひとりぼっちかもしれないから。」"
+ },
+ "city.ask.ps.h.mitten.2": {
+  "ru": "— Слышали по радио? Это была моя варежка. То есть не моя, а та, что объявили. Я по полоскам узнала.",
+  "en": "\"Did you hear it on the radio? That was my mitten. Well, not mine, the one that was announced. I knew it by the stripes.\"",
+  "ja": "「放送で聞いた？ あれ、うちの手袋だったの。じゃなくて、放送されたほうのね。縞でわかったのよ。」"
+ },
+ "city.ask.ps.d.which": {
+  "ru": "Что лучше: «Байкал» или «Тархун»?",
+  "en": "Which is better: Baikal or Tarkhun?",
+  "ja": "『バイカル』と『タルフン』、どっちがおいしい？"
+ },
+ "city.ask.ps.d.which.1": {
+  "ru": "— «Байкал» для разговоров, «Тархун» для тех, кто молчит. «Буратино» берут дети, которые уже всё решили, «Дюшес» берут те, кто хочет вспомнить лето.",
+  "en": "\"Baikal is for talking, Tarkhun for those who keep quiet. Buratino is for kids who've already decided, Dyushes for anyone who wants to remember summer.\"",
+  "ja": "「『バイカル』はおしゃべりしたい人に、『タルフン』は黙っていたい人に。『ブラチーノ』はもう決めてる子たち、『ジュシェス』は夏を思い出したい人向け。」"
+ },
+ "city.ask.ps.d.which.2": {
+  "ru": "— В жару берут «Тархун»: зелёный, остаётся на языке до вечера.",
+  "en": "\"In hot weather people take Tarkhun: green, it stays on the tongue till evening.\"",
+  "ja": "「暑い日は『タルフン』が売れるの。緑色で、夕方まで舌に残るのよ。」"
+ },
+ "city.ask.ps.d.which.3": {
+  "ru": "— В дождь лимонад не берут, берут воду. Мудро: лимонад любит солнце.",
+  "en": "\"In the rain nobody buys lemonade, they buy water. Wisely: lemonade likes the sun.\"",
+  "ja": "「雨の日はレモネードじゃなくて水が売れる。賢いわ、レモネードは日ざしが好きだもの。」"
+ },
+ "city.ask.ps.d.bottles": {
+  "ru": "Бутылки принимаете?",
+  "en": "Do you take empty bottles?",
+  "ja": "空き瓶は引き取ってる？"
+ },
+ "city.ask.ps.d.bottles.1": {
+  "ru": "— Принимаем у задней двери. Грузчик считает вслух, а звенит громче, чем считает.",
+  "en": "\"At the back door. The porter counts out loud, but clinks louder than he counts.\"",
+  "ja": "「裏口で受けとってるよ。運搬の人が声に出して数えるけど、数える声より瓶の鳴る音のほうが大きいね。」"
+ },
+ "city.ask.ps.d.bottles.2": {
+  "ru": "— В завоз тара уходит обратно в тех же ящиках: бутылки уезжают так же, как приехали, со звоном.",
+  "en": "\"On delivery days the empties go back in the same crates: the bottles leave the way they came, ringing.\"",
+  "ja": "「入荷の日は、空き瓶も同じ箱で帰っていくの。来たときと同じように、チリンチリン鳴りながらね。」"
+ },
+ "city.ask.ps.b.library": {
+  "ru": "Что взять, если читал в библиотеке?",
+  "en": "What should I buy after reading at the library?",
+  "ja": "図書館で読んだあとは何を買えばいい？"
+ },
+ "city.ask.ps.b.library.1": {
+  "ru": "— Научный журнал для тех, кто не дочитал «Физику с одной ложкой». Туристический для тех, кто уже всё обошёл и хочет ещё раз.",
+  "en": "\"The science magazine for those who didn't finish Physics with One Spoon. The travel one for those who've walked it all and want to again.\"",
+  "ja": "「科学雑誌は『スプーン一本の物理学』を読みきれなかった人に。旅行雑誌は、もう全部歩いたのにもう一度行きたい人に。」"
+ },
+ "city.ask.ps.b.library.2": {
+  "ru": "— Ложку из «Физики с одной ложкой» принято потом вернуть на кухню. Многие забывают.",
+  "en": "\"You're supposed to return the spoon from Physics with One Spoon to the kitchen afterwards. Many forget.\"",
+  "ja": "「『スプーン一本の物理学』のスプーンは、あとで台所に戻すのがならわし。忘れる人が多いけどね。」"
+ },
+ "city.ask.ps.b.library.3": {
+  "ru": "— Восемь штампов в дневнике? Тогда ты не покупатель, а коллега. Скидки не будет, но я улыбнусь.",
+  "en": "\"Eight stamps in your diary? Then you're not a customer but a colleague. No discount, but I'll smile.\"",
+  "ja": "「日記にスタンプが八つ？ なら、お客さんじゃなくて同業者ね。割引はないけど、にっこりはするわ。」"
+ },
+ "city.ask.ps.b.complaints": {
+  "ru": "Что в книге жалоб?",
+  "en": "What's in the complaints book?",
+  "ja": "苦情帳には何が書いてあるの？"
+ },
+ "city.ask.ps.b.complaints.1": {
+  "ru": "— Сорок страниц, тридцать пять благодарностей. Заведующая говорит, что это ненормально, и просит писать жалобы. Не пишут.",
+  "en": "\"Forty pages, thirty-five of them thanks. The manager says that's not normal and asks people to write complaints. They don't.\"",
+  "ja": "「四十ページのうち三十五ページはお礼。店長は『こんなのおかしい』って言って、苦情を書くようお願いしてるけど、誰も書かないの。」"
+ },
+ "city.ask.ps.b.complaints.2": {
+  "ru": "— Есть запись шестилетнего Бориса: паровозик не довозит до станции. Ему ответили: «В понедельник довезёт». Пока возит по кругу.",
+  "en": "\"There's an entry from six-year-old Boris: the toy train never takes him to the station. They answered: \"On Monday it will.\" So far it just goes round.\"",
+  "ja": "「六歳のボリスの書き込みがあるの。汽車のおもちゃが駅まで連れていってくれない、って。『月曜には連れていきます』と返事したけど、今のところぐるぐる回るだけ。」"
+ },
+ "city.ask.ps.sp.bite": {
+  "ru": "Что сейчас клюёт?",
+  "en": "What's biting now?",
+  "ja": "今、何が釣れてる？"
+ },
+ "city.ask.ps.sp.bite.1": {
+  "ru": "— На ложку берёт окунь, на воблер щука, на хлеб чайка. Чаек не ловим, но кто-нибудь всегда пробует.",
+  "en": "\"Perch take the spoon, pike the wobbler, gulls the bread. We don't fish for gulls, but someone always tries.\"",
+  "ja": "「スプーンにはスズキ、ウォブラーにはカワカマス、パンにはカモメ。カモメは釣らないけど、必ず誰かが試すんだよね。」"
+ },
+ "city.ask.ps.sp.bite.2": {
+  "ru": "— В туман блесна светится, а рыба думает, что рассвет. Идёт и не разбирается.",
+  "en": "\"In fog the spoon glimmers and the fish think it's dawn. They come without asking questions.\"",
+  "ja": "「霧の日はスプーンが光って、魚は夜明けだと思うの。確かめもせずに寄ってくるよ。」"
+ },
+ "city.ask.ps.sp.bite.3": {
+  "ru": "— Про рыбу почитай сперва: «Рыбы нашего берега» продаются и у нас, и в библиотеке у стойки, там и тут по сорок.",
+  "en": "\"Read about the fish first: Fishes of Our Shore is sold here and at the library desk, forty either way.\"",
+  "ja": "「まず魚のことを読んでみて。『この浜の魚たち』はうちにも図書館のカウンターにもあって、どっちも四十ルーブルよ。」"
+ },
+ "city.ask.ps.sp.wobbler": {
+  "ru": "Чем воблер отличается от блесны?",
+  "en": "What's the difference between a wobbler and a spoon?",
+  "ja": "ウォブラーとスプーンはどう違うの？"
+ },
+ "city.ask.ps.sp.wobbler.1": {
+  "ru": "— Блесна блестит и крутится, воблер плывёт, как живой. Блесна для тех, кто торопится, воблер для тех, кто верит.",
+  "en": "\"A spoon flashes and spins, a wobbler swims as if alive. The spoon is for the hurried, the wobbler for the believers.\"",
+  "ja": "「スプーンはきらきら回って、ウォブラーは生きているみたいに泳ぐ。急ぐ人にはスプーン、信じる人にはウォブラー。」"
+ },
+ "city.ask.ps.sp.wobbler.2": {
+  "ru": "— Воблер дороже, потому что в нём больше терпения. Это я так считаю, бухгалтерия считает иначе.",
+  "en": "\"The wobbler costs more because there's more patience in it. That's how I count; the accountants count otherwise.\"",
+  "ja": "「ウォブラーが高いのは、辛抱がたくさん入ってるから。わたしはそう数えるけど、経理は違う数え方をするの。」"
+ },
+ "city.ask.ps.ga.feed": {
+  "ru": "Чем кормить птиц?",
+  "en": "What should I feed the birds?",
+  "ja": "鳥には何をあげればいい？"
+ },
+ "city.ask.ps.ga.feed.1": {
+  "ru": "— Зерно воробьям, арахис синицам, сало всем, кто не гордый, нигер щеглам: семена тёмные, как ночь, а щеглу нравится.",
+  "en": "\"Grain for sparrows, peanuts for tits, suet for anyone not proud, niger for goldfinches: the seeds are dark as night and the goldfinch loves it.\"",
+  "ja": "「穀物はスズメに、ピーナッツはシジュウカラに、脂は気取らない子みんなに、ニジェールシードはヒワに。夜みたいに黒い種だけど、ヒワは大好きなの。」"
+ },
+ "city.ask.ps.ga.feed.2": {
+  "ru": "— После «Определителя» кормушку вешают иначе: ниже, чтобы видно с кухни и чтобы кошка не мечтала.",
+  "en": "\"After the Pocket Guide people hang the feeder differently: lower, so you can see it from the kitchen and the cat doesn't dream.\"",
+  "ja": "「『ポケット図鑑』を読んだあとは、餌台のかけ方が変わるよ。台所から見えて、猫が夢を見ない低さにね。」"
+ },
+ "city.ask.ps.ga.feed.3": {
+  "ru": "— В мороз только несолёное сало. Птицам тоже вредно.",
+  "en": "\"In frost, only unsalted suet. It's bad for birds too.\"",
+  "ja": "「寒い日は塩の入ってない脂だけ。鳥にも塩は毒なの。」"
+ },
+ "city.ask.ps.ga.box": {
+  "ru": "Куда вешать кормушку на террасе?",
+  "en": "Where should I hang a feeder on a terrace?",
+  "ja": "テラスの餌台はどこにかければいい？"
+ },
+ "city.ask.ps.ga.box.1": {
+  "ru": "— Не на ветру: за ящиком с геранью, подальше от стены. Птицы любят видеть, откуда придёт беда.",
+  "en": "\"Not in the wind: behind the box of geraniums, away from the wall. Birds like to see where trouble will come from.\"",
+  "ja": "「風のあたる場所はだめ。ゼラニウムの箱のうしろ、壁から離して。鳥は、災難がどこから来るか見えるのが好きなの。」"
+ },
+ "city.ask.ps.ga.box.2": {
+  "ru": "— «Сад на бетоне» читал? Тогда ящики из-под рыбы у тебя уже есть: они просолены и ничего не боятся.",
+  "en": "\"Read A Garden on Concrete? Then you already have fish crates: they're salted through and afraid of nothing.\"",
+  "ja": "「『コンクリートの庭』は読んだ？ なら魚の箱はもう手元にあるわね。塩がしみていて、何も怖がらないの。」"
+ },
+ "city.ask.ps.so.amber": {
+  "ru": "Настоящий ли это янтарь?",
+  "en": "Is this amber real?",
+  "ja": "この琥珀は本物？"
+ },
+ "city.ask.ps.so.amber.1": {
+  "ru": "— Настоящий. Проверка простая: потри о шерстяной рукав и поднеси к бумажке, бумажка подпрыгнет. Пробуй, я не обижаюсь.",
+  "en": "\"Real. Easy test: rub it on a woollen sleeve and hold it near a scrap of paper; the paper jumps. Try it, I won't take offence.\"",
+  "ja": "「本物よ。確かめ方は簡単。ウールの袖でこすって、紙きれに近づけるの。紙が跳ねるから。試して、気を悪くしたりしないわ。」"
+ },
+ "city.ask.ps.so.amber.2": {
+  "ru": "— К празднику берут подарки: янтарь для бабушек, значки для друзей, открытки для тех, кому некогда.",
+  "en": "\"Before a holiday people buy gifts: amber for grandmothers, badges for friends, postcards for those with no time.\"",
+  "ja": "「お祭りの前は贈り物がよく売れるの。おばあちゃんには琥珀、友だちにはバッジ、時間のない人には絵はがき。」"
+ },
+ "city.ask.ps.so.amber.3": {
+  "ru": "— Перед закрытием янтарь на свету горит, как чай. Лучшее время выбирать.",
+  "en": "\"Before closing the amber glows in the light like tea. The best time to choose.\"",
+  "ja": "「閉店まぎわの光だと、琥珀は紅茶みたいに燃えるの。選ぶならいちばんいい時間よ。」"
+ },
+ "city.ask.ps.so.cards": {
+  "ru": "Куда пишут открытки?",
+  "en": "Where do people send postcards?",
+  "ja": "絵はがきは誰に書くものなの？"
+ },
+ "city.ask.ps.so.cards.1": {
+  "ru": "— Маяк, канатка, набережная. Четыре рубля, марки не нужны: открытки у нас больше для себя.",
+  "en": "\"The lighthouse, the cable car, the promenade. Four roubles, no stamps needed: our postcards are mostly for oneself.\"",
+  "ja": "「灯台、ロープウェイ、遊歩道。四ルーブルで、切手はいらないよ。うちの絵はがきは、どちらかというと自分のためのもの。」"
+ },
+ "city.ask.ps.so.cards.2": {
+  "ru": "— Одну из наших открыток теперь носят в «Путеводителе по солнечным часам», я слышала. Хорошая работа.",
+  "en": "\"One of our postcards now rides in the Guide to Sundials, I hear. Good work.\"",
+  "ja": "「うちの絵はがきが一枚、『日時計案内』にはさまれて運ばれてるって聞いたわ。いい仕事ね。」"
+ },
+ "city.ask.ps.c.menu": {
+  "ru": "Что тут сегодня вкусное?",
+  "en": "What's good here today?",
+  "ja": "今日のおすすめは？"
+ },
+ "city.ask.ps.c.menu.1": {
+  "ru": "— Пирожки горячие до полудня, потом тёплые, потом «как у всех».",
+  "en": "\"The pies are hot until noon, then warm, then \"like everybody's\".\"",
+  "ja": "「ピロシキは正午まではあつあつ、そのあとはぬるめ、そのあとは『ふつう』。」"
+ },
+ "city.ask.ps.c.menu.2": {
+  "ru": "— В субботу у нас мороженое: в меню оно записано последним, а съедается первым.",
+  "en": "\"On Saturday we have ice cream: it's last on the menu and first to go.\"",
+  "ja": "「土曜日はアイスクリーム。メニューでは最後に書いてあるけど、食べられるのは真っ先ね。」"
+ },
+ "city.ask.ps.c.menu.3": {
+  "ru": "— К закрытию остаётся чай. Чай остаётся всегда.",
+  "en": "\"By closing, tea is what's left. Tea is always left.\"",
+  "ja": "「閉店のころに残るのはお茶。お茶はいつでも残るの。」"
+ },
+ "city.ask.ps.c.saucer": {
+  "ru": "Чем вы лучше «Тарелки»?",
+  "en": "How are you better than the Saucer?",
+  "ja": "『ソーサー』より優れてるところは？"
+ },
+ "city.ask.ps.c.saucer.1": {
+  "ru": "— Ничем. Мы ближе, они выше. Туда идут смотреть, сюда перекусить между отделами. Кеше мы не конкуренты.",
+  "en": "\"In no way. We're closer, they're higher. People go there to look and here to snack between departments. We're no rival to Kesha.\"",
+  "ja": "「どこも優れてないわ。うちは近くて、あっちは高いところ。あっちは眺めに、こっちは売り場のあいまの軽食に来るの。ケーシャには敵わないしね。」"
+ },
+ "city.ask.ps.c.saucer.2": {
+  "ru": "— Говорят, Кеша прощается словами «Спасибо за поездку». Нашему буфету это бы очень пошло.",
+  "en": "\"They say Kesha says goodbye with \"Thank you for the ride\". Our buffet could do with that.\"",
+  "ja": "「ケーシャは『ご乗車ありがとうございました』でお別れを言うんだって。うちの売店にもぴったりなのにね。」"
+ },
+ "city.ask.ps.c.saucer.3": {
+  "ru": "— В дождь у нас тесно: зонтики стоят у каждого столика и считаются гостями.",
+  "en": "\"On rainy days we're crowded: umbrellas stand at every table and count as guests.\"",
+  "ja": "「雨の日はぎゅうぎゅう。どのテーブルにも傘が立ってて、お客さんとして数えるのよ。」"
+ },
+ "city.ask.ps.sh.size": {
+  "ru": "Как узнать свой размер?",
+  "en": "How do I find my size?",
+  "ja": "靴のサイズはどうやって測るの？"
+ },
+ "city.ask.ps.sh.size.1": {
+  "ru": "— Встань на бумагу, обведу карандашом и прибавлю палец на вырост. Про палец все спорят, потом благодарят.",
+  "en": "\"Stand on a sheet of paper, I'll trace round with a pencil and add a finger for growing room. Everybody argues about the finger, then thanks me.\"",
+  "ja": "「紙の上に立って。鉛筆でなぞって、成長ぶんに指一本足すの。指のことでは誰でも言い合いになるけど、あとでお礼を言われるのよ。」"
+ },
+ "city.ask.ps.sh.size.2": {
+  "ru": "— В мороз бери на размер больше: шерстяной носок и воздух между ним и подошвой греют лучше второй пары.",
+  "en": "\"In frost, go a size up: a woollen sock and the air between it and the sole warm better than a second pair.\"",
+  "ja": "「寒い日は一つ大きいのを。ウールの靴下と、靴底とのあいだの空気が、二足めよりよくあたためてくれるの。」"
+ },
+ "city.ask.ps.sh.size.3": {
+  "ru": "— Первые ботинки я продала в шестьдесят восьмом мальчику, который шёл на канатку на день рождения. Через год он принёс их показать, как стоптал. Ботинки были гордые.",
+  "en": "\"The first boots I ever sold went in sixty-eight to a boy on his way to the cable car for his birthday. A year later he brought them in to show how worn they were. The boots were proud.\"",
+  "ja": "「最初に売った靴は六十八年、誕生日にロープウェイへ行く男の子にだった。一年後、どれだけすり減ったか見せに持ってきたの。靴は誇らしそうだったわ。」"
+ },
+ "city.ask.ps.sh.galoshes": {
+  "ru": "Почему галоши никто не берёт?",
+  "en": "Why does nobody buy the galoshes?",
+  "ja": "どうしてゴムの長靴は誰も買わないの？"
+ },
+ "city.ask.ps.sh.galoshes.1": {
+  "ru": "— Подкладка красная. Все думают, что к дождю, а дождя нет, и ждут. Ждать можно годами.",
+  "en": "\"The lining is red. Everyone thinks it means rain, there's no rain, and they wait. You can wait for years.\"",
+  "ja": "「裏地が赤いでしょう。みんな雨が降ってから買おうと思ってるのに雨が降らなくて、待ってるの。何年でも待てるものよ。」"
+ },
+ "city.ask.ps.sh.galoshes.2": {
+  "ru": "— Сегодня дождь, видишь? Двое уже взяли, один вернул: говорит, красная подкладка, неловко по лужам. Я сказала: лужи не смотрят.",
+  "en": "\"It's raining, see? Two have taken a pair and one brought them back: he says the lining is red, awkward for puddles. I said: puddles don't look.\"",
+  "ja": "「今日は雨でしょう？ もう二人が買ったけど、一人は返しに来たの。裏地が赤くて水たまりを歩くのは気まずい、って。水たまりは見てないわよ、って言ったわ。」"
+ },
+ "city.ask.ps.sh.galoshes.3": {
+  "ru": "— Лидия Сергеевна покупала такие, дома стоят. Один раз надела и сказала: «Жалко, дождь кончился».",
+  "en": "\"Lidiya Sergeyevna bought a pair, they stand at home. She wore them once and said: \"What a pity, the rain stopped.\"\"",
+  "ja": "「リディヤ・セルゲーエヴナも買ったのよ、家に置いてあるわ。一度だけはいて『残念、雨があがっちゃった』って。」"
+ },
+ "city.ask.ps.sh.sport": {
+  "ru": "Какие тапочки нужны в спортзал?",
+  "en": "What shoes do I need for the gym?",
+  "ja": "体育館にはどんな靴がいる？"
+ },
+ "city.ask.ps.sh.sport.1": {
+  "ru": "— С резиновой подошвой, но не чёрной: тренер ругается на чёрные, они красят пол. Он обходит зал и проверяет подошвы, как таможенник.",
+  "en": "\"Rubber soles, but not black ones: the coach scolds black soles, they mark the floor. He walks round the hall checking soles like a customs officer.\"",
+  "ja": "「ゴム底で、黒じゃないもの。コーチは黒い靴底を怒るのよ、床が汚れるから。体育館を歩いて、税関の人みたいに靴底を調べるの。」"
+ },
+ "city.ask.ps.sh.sport.2": {
+  "ru": "— Ты у тренера уже был? Про подошвы говорил? Он всем говорит, поэтому и я говорю: чтобы не по два раза.",
+  "en": "\"Have you been to the coach? Did he talk about soles? He tells everyone, so I tell you too: to save him saying it twice.\"",
+  "ja": "「もうコーチのところに行った？ 靴底の話、された？ 誰にでも言うから、わたしも言うの。二度手間にならないようにね。」"
+ },
+ "city.ask.ps.t.coins": {
+  "ru": "Сдача мелочью найдётся?",
+  "en": "Have you got change in coins?",
+  "ja": "お釣りは小銭でもらえる？"
+ },
+ "city.ask.ps.t.coins.1": {
+  "ru": "— Мелочи нет с утра. Дам леденец, он шуршит в кармане, как монета.",
+  "en": "\"No coins since morning. I'll give you a boiled sweet: it rattles in the pocket like a coin.\"",
+  "ja": "「小銭は朝からなくて。かわりに飴をあげるわ。ポケットの中で硬貨みたいにカラカラ鳴るのよ。」"
+ },
+ "city.ask.ps.t.coins.2": {
+  "ru": "— К вечеру в кассе одни рубли и очень много терпения. Терпение, к сожалению, не разменять.",
+  "en": "\"By evening the till holds only roubles and a great deal of patience. The patience, sadly, can't be broken into change.\"",
+  "ja": "「夕方になるとレジにはルーブル札と、がまん強さがたっぷり。がまん強さは、残念ながら両替できないの。」"
+ },
+ "city.ask.ps.t.coins.3": {
+  "ru": "— По четвергам в обед зарплата: выдаю мелкими, чтобы продавцам приятно было считать.",
+  "en": "\"On Thursdays at noon it's payday: I pay out in small notes so the sales staff enjoy counting.\"",
+  "ja": "「木曜のお昼は給料日。売り子さんたちが数えて楽しいように、細かいお札で渡すのよ。」"
+ },
+ "city.ask.ps.t.sunday": {
+  "ru": "Почему по воскресеньям так тихо?",
+  "en": "Why is it so quiet on Sundays?",
+  "ja": "日曜はどうしてこんなに静かなの？"
+ },
+ "city.ask.ps.t.sunday.1": {
+  "ru": "— Воскресенье: продавцов нет, касса работает. Смотреть можно, хлеб завтра. Так на доске написано, а доска не врёт.",
+  "en": "\"Sunday: no sales staff, the till is open. Looking is allowed, bread is tomorrow. That's what the board says, and the board doesn't lie.\"",
+  "ja": "「日曜は売り子がいなくて、レジだけ開いてるの。見るのはいいけど、パンは明日。黒板にそう書いてあるし、黒板は嘘をつかないわ。」"
+ },
+ "city.ask.ps.t.sunday.2": {
+  "ru": "— Сегодня я за всех. Нужна именно я, это я. Нужен отдел, подождите до понедельника. Цветы на подоконнике поливаю между покупателями.",
+  "en": "\"Today I'm everybody. If you need me, that's me. If you need a department, wait till Monday. I water the windowsill flowers between customers.\"",
+  "ja": "「今日はわたしがみんなの代わり。わたしに用ならわたしよ。売り場に用なら、月曜まで待って。窓辺の花には、お客さんのあいまに水をやってるの。」"
+ },
+ "city.ask.ps.cl.umbrellas": {
+  "ru": "Чьи это зонты в подставке?",
+  "en": "Whose umbrellas are in the stand?",
+  "ja": "傘立ての傘は誰の？"
+ },
+ "city.ask.ps.cl.umbrellas.1": {
+  "ru": "— Три чёрных, один клетчатый, палка с резиновым наконечником. У каждого номерок, и каждый ждёт хозяина, как собака.",
+  "en": "\"Three black ones, one checked, a walking stick with a rubber tip. Each has a tag and each waits for its owner like a dog.\"",
+  "ja": "「黒が三本、チェックが一本、ゴムの先がついた杖が一本。みんな番号札つきで、犬みたいに持ち主を待ってるの。」"
+ },
+ "city.ask.ps.cl.umbrellas.2": {
+  "ru": "— Жёлтый зонт не здесь, а у бюро находок. Мне его не носите: он занят, ждёт Лидию Сергеевну.",
+  "en": "\"The yellow umbrella isn't here, it's at lost and found. Don't bring it to me: it's busy, waiting for Lidiya Sergeyevna.\"",
+  "ja": "「黄色い傘はここじゃなくて遺失物係のところよ。こっちに持ってこないで。リディヤ・セルゲーエヴナを待つのに忙しいんだから。」"
+ },
+ "city.ask.ps.cl.umbrellas.3": {
+  "ru": "— Дождь: все зонты стоят мокрые и счастливые. К вечеру пригодится одолжить: одалживаю по номерку, возвращают через раз.",
+  "en": "\"Rain: all the umbrellas stand wet and happy. By evening you may want to borrow one: I lend by tag, and they come back every other time.\"",
+  "ja": "「雨ね。傘はみんな濡れて、うれしそう。夕方には借りたくなるわよ。番号札で貸すんだけど、返ってくるのは二回に一回かしら。」"
+ },
+ "city.ask.ps.cl.hooks": {
+  "ru": "Все крючки заняты?",
+  "en": "Are all the hooks taken?",
+  "ja": "フックは全部ふさがってる？"
+ },
+ "city.ask.ps.cl.hooks.1": {
+  "ru": "— Утром пусто, к обеду заняты, вечером остаётся одно пальто, за которым никто не приходит. Всегда одно.",
+  "en": "\"Empty in the morning, full by lunch, and in the evening one coat that nobody collects. Always one.\"",
+  "ja": "「朝は空っぽ、お昼にはいっぱい、夕方には取りに来ないコートがひとつ残るの。いつも、ひとつだけ。」"
+ },
+ "city.ask.ps.cl.hooks.2": {
+  "ru": "— Утром у меня тихо: слышно, как пальто вздыхают на вешалке, отходя ко сну.",
+  "en": "\"In the morning it's quiet at my place: you can hear the coats sigh on the rack as they settle.\"",
+  "ja": "「朝はここも静か。ハンガーにかかったコートが、ほっとため息をつくのが聞こえるわ。」"
+ },
+ "city.ask.ps.l.accept": {
+  "ru": "Что у вас принимают?",
+  "en": "What do you take in?",
+  "ja": "何を預かってるの？"
+ },
+ "city.ask.ps.l.accept.1": {
+  "ru": "— Всё. Зонты, ключи, варежки. Один раз приняли аккордеон: он оказался свадебным. Принимаю по акту, по акту и выдаю.",
+  "en": "\"Everything. Umbrellas, keys, mittens. Once we took in an accordion: it turned out to be a wedding one. I take by report and return by report.\"",
+  "ja": "「なんでも。傘、鍵、手袋。一度アコーディオンを預かったことがあって、結婚式のだったわ。預かるのも渡すのも、書類を作ってね。」"
+ },
+ "city.ask.ps.l.accept.2": {
+  "ru": "— Акт пишут в трёх экземплярах: один мне, один владельцу, один самой вещи. Вещь расписывается молча.",
+  "en": "\"The report is written in triplicate: one for me, one for the owner, one for the item. The item signs in silence.\"",
+  "ja": "「書類は三通書くの。わたしに一通、持ち主に一通、物そのものに一通。物は黙ってサインするわ。」"
+ },
+ "city.ask.ps.l.accept.3": {
+  "ru": "— Первым, что я приняла, был детский башмак. Хозяин вырос, пришёл за ним в шестьдесят лет и принёс мне пирог. Башмак всё ещё у меня: слишком хорошо стоит.",
+  "en": "\"The first thing I ever took in was a child's shoe. The owner grew up and came for it at sixty with a pie for me. The shoe is still here: it stands too well.\"",
+  "ja": "「最初に預かったのは子どもの靴だった。持ち主が大きくなって、六十歳で取りに来て、お礼にパイを持ってきたの。靴はまだここにあるわ。あまりによく立っているから。」"
+ },
+ "city.ask.ps.l.month": {
+  "ru": "Что бывает с невостребованным?",
+  "en": "What happens to unclaimed things?",
+  "ja": "引き取り手のない物はどうなるの？"
+ },
+ "city.ask.ps.l.month.1": {
+  "ru": "— Месяц храним. Потом на ярмарку, в лотерею: пусть лучше кого-нибудь обрадуют. Одна шапка выигрывала дважды.",
+  "en": "\"We keep things for a month. Then they go to the fair as lottery prizes: better to make somebody happy. One hat has won twice.\"",
+  "ja": "「一か月は保管するの。そのあとは市のくじの景品にね。誰かを喜ばせたほうがいいでしょう。ある帽子は二度も当たったのよ。」"
+ },
+ "city.ask.ps.l.month.2": {
+  "ru": "— Сейчас праздник, ярмарка шумит. Если что-то ищете, возможно, оно там выигрывает приз.",
+  "en": "\"It's festival time and the fair is buzzing. If you're missing something, it may be winning a prize there.\"",
+  "ja": "「今はお祭りで、市もにぎわってるわ。探し物があるなら、そこで景品になってるかもしれないわよ。」"
+ },
+ "city.ask.ps.l.umbrella": {
+  "ru": "Жёлтый зонт сегодня здесь?",
+  "en": "Is the yellow umbrella here today?",
+  "ja": "黄色い傘は今日はここにある？"
+ },
+ "city.ask.ps.l.umbrella.1": {
+  "ru": "— Жёлтый, с утиной головой? Он всегда немного здесь и немного в других отделах. Считаю его за троих.",
+  "en": "\"The yellow one with the duck's head? He's always a bit here and a bit in other departments. I count him as three.\"",
+  "ja": "「アヒルの頭がついた黄色いの？ あれはいつも少しここにいて、少し他の売り場にいるの。三本ぶんに数えてるわ。」"
+ },
+ "city.ask.ps.l.umbrella.2": {
+  "ru": "— Лидия Сергеевна призналась, что теряет его нарочно. Я говорю: только не в день ревизии. Она кивает.",
+  "en": "\"Lidiya Sergeyevna confessed she loses it on purpose. I tell her: just not on inventory day. She nods.\"",
+  "ja": "「リディヤ・セルゲーエヴナは、わざとなくしてるって白状したの。棚卸しの日だけはやめてね、って言ったら、うなずいたわ。」"
+ },
+ "city.ask.ps.l.umbrella.3": {
+  "ru": "— Говорят, объявлял ты. Зал замер, потом хлопали. Сорок лет в бюро находок, и первый раз хлопали при выдаче.",
+  "en": "\"They say it was you at the microphone. The hall froze, then applauded. Forty years in lost and found, and the first time anyone clapped at a handover.\"",
+  "ja": "「放送したのはあなただって聞いたわ。売り場が静まって、そのあと拍手。遺失物係に四十年いて、引き渡しで拍手されたのは初めて。」"
+ },
+ "city.ask.ps.l.gloves": {
+  "ru": "Левая варежка нашлась?",
+  "en": "Has the left mitten turned up?",
+  "ja": "左の手袋は見つかった？"
+ },
+ "city.ask.ps.l.gloves.1": {
+  "ru": "— Правая, красная в полоску, лежит под стеклом. Левую жду. Варежки находят друг друга, это не вещи, а люди.",
+  "en": "\"The right one, red with stripes, lies under the glass. I'm waiting for the left. Mittens find each other: they're not things, they're people.\"",
+  "ja": "「赤い縞の右手のは、ガラスの下にあるわ。左手のを待ってるの。手袋は互いを見つけるものよ、物じゃなくて人みたいなものね。」"
+ },
+ "city.ask.ps.l.gloves.2": {
+  "ru": "— В мороз приносят по паре в день: одну, потом вторую. Хозяева потом приходят, как правило, в одной.",
+  "en": "\"In frost they bring one pair a day: one, then the other. The owners then turn up, as a rule, in just one.\"",
+  "ja": "「寒い日は一日に一組届くの。片方、それからもう片方。持ち主はたいてい、片手だけはめて取りに来るわ。」"
  }
 }

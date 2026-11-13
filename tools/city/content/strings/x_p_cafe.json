@@ -644,5 +644,220 @@
   "ru": "Правила кормления. Только семечки, и только после слова «Конечная». Хлеб нельзя, сахар нельзя, чужую булку нельзя, даже если смотрит как проситель. Спрятанные под жёрдочкой семечки не трогать, это «до следующей остановки». Кто накормил по правилам, получает от нас пирожное, за счёт кафе. Кеша об этом знает и делает вид, что нет, но как ни придёшь, он уже смотрит на дверь. Ждёт.",
   "en": "Feeding rules. Only sunflower seeds, and only after the word \"Terminus\". No bread, no sugar, no one else's bun, even if he looks like a beggar. Don't touch the seeds hidden under the perch: those are \"till the next stop\". Whoever feeds him by the rules gets a pastry from us, on the house. Kesha knows it and pretends not to, but whenever you come in, he is already looking at the door. Waiting.",
   "ja": "えさやりの決まり。ひまわりの種だけ、そして「終点です」と言ったあとだけ。パンもだめ、砂糖もだめ、人のパンもだめ。物乞いのような顔をしていても。止まり木の下に隠した種には触らないこと。それは「次の停車駅まで」の分だ。決まりどおりにあげた人には、店からお菓子を出す。ケーシャはそれを知っていて、知らないふりをするが、いつ来ても、もう戸口を見ている。待っている。"
+ },
+ "city.ask.cafe.espresso": {
+  "ru": "Как вы варите эспрессо?",
+  "en": "How do you make your espresso?",
+  "ja": "エスプレッソはどうやって淹れてるの？"
+ },
+ "city.ask.cafe.espresso.1": {
+  "ru": "— Двадцать пять секунд, ни секундой больше: дальше это уже не эспрессо, а разговор. Смотри на машину, она сама подсказывает.",
+  "en": "\"Twenty-five seconds, not one more: after that it isn't espresso, it's a conversation. Watch the machine, it tells you itself.\"",
+  "ja": "「二十五秒、一秒も多くしない。それ以上は、もうエスプレッソじゃなくておしゃべりになるの。マシンを見てて、ちゃんと教えてくれるから。」"
+ },
+ "city.ask.cafe.espresso.2": {
+  "ru": "— С утра первый для Кеши. Не пить, а поставить рядом: пока он слушает, как кашляет машина, он добрый.",
+  "en": "\"The first of the morning is for Kesha. Not to drink, just to set beside him: while he listens to the machine cough, he's kind.\"",
+  "ja": "「朝いちばんのは、ケーシャのぶん。飲ませるんじゃなくて、そばに置くの。マシンが咳きこむのを聞いてるあいだは、機嫌がいいから。」"
+ },
+ "city.ask.cafe.espresso.3": {
+  "ru": "— К вечеру просят «послабее». Послабее значит подольше держать чашку.",
+  "en": "\"Towards evening people ask for it weaker. Weaker means holding the cup longer.\"",
+  "ja": "「夕方には『うすめで』って頼まれるの。うすめっていうのは、カップを長く持っていたいってことね。」"
+ },
+ "city.ask.cafe.guestbook": {
+  "ru": "Что пишут в книге гостей?",
+  "en": "What do people write in the guest book?",
+  "ja": "ゲストブックには何が書かれてるの？"
+ },
+ "city.ask.cafe.guestbook.1": {
+  "ru": "— Всё. Про мороженое, про маяк, про попугая. Я читаю её каждое утро: так знаю, кто был вчера. Страницы кончаются, но ручка рядом, а если нет мыслей, нарисуй тарелку.",
+  "en": "\"Everything. About ice cream, the lighthouse, the parrot. I read it every morning: that's how I know who came yesterday. The pages are running out, but the pen is right there, and if you've no thoughts, draw a saucer.\"",
+  "ja": "「なんでも。アイスのこと、灯台のこと、オウムのこと。毎朝読んでるの。昨日誰が来たかわかるから。ページはもう残り少ないけど、ペンはそこにあるわ。思いつかなければ、お皿を描いて。」"
+ },
+ "city.ask.cafe.guestbook.2": {
+  "ru": "— Вчера заходил дежурный по маяку, подтвердил: из нашего окна виден его луч. Отсюда он красивее, чем с его стороны.",
+  "en": "\"The lighthouse keeper on duty looked in yesterday and confirmed: his beam can be seen from our window. It looks better from here than from his side.\"",
+  "ja": "「昨日、灯台の当直の人が寄って、うちの窓から光が見えると確かめていったわ。あっちから見るより、ここから見るほうがきれいなんですって。」"
+ },
+ "city.ask.cafe.guestbook.3": {
+  "ru": "— Это твоя запись? Я оставила как есть: так со всеми. Теперь ты наш.",
+  "en": "\"Is that your entry? I left it as it was: I do that with everyone. Now you're one of us.\"",
+  "ja": "「これ、あなたの書き込み？ そのまま残してあるわ。みんなそうしてるの。これであなたもうちの仲間ね。」"
+ },
+ "city.ask.cafe.chess": {
+  "ru": "Кто играет в шахматы у окна?",
+  "en": "Who plays chess by the window?",
+  "ja": "窓ぎわでチェスをしてるのは誰？"
+ },
+ "city.ask.cafe.chess.1": {
+  "ru": "— Профессор и Капитан. Профессор молчит и выигрывает, Капитан играет только чёрными, «защитой маяка». После школы подсаживаются школьники.",
+  "en": "\"The Professor and the Captain. The Professor says nothing and wins; the Captain plays only black, the \"lighthouse defence\". After school the schoolchildren join in.\"",
+  "ja": "「教授と船長よ。教授は黙って勝つし、船長は黒しか持たなくて、『灯台の守り』って呼ぶ手だけ指すの。放課後は生徒たちも加わるわ。」"
+ },
+ "city.ask.cafe.chess.2": {
+  "ru": "— В выходные играют на кофе: проигравший заказывает. Капитан платит чаще всех, и ему это нравится.",
+  "en": "\"At weekends they play for coffee: the loser orders. The Captain pays most often, and he likes it.\"",
+  "ja": "「週末はコーヒーを賭けるの。負けたほうが注文するのよ。船長がいちばん多く払ってるけど、本人は気に入ってるみたい。」"
+ },
+ "city.ask.cafe.chess.3": {
+  "ru": "— До меня дошло, что ты у кого-то выиграл. Профессор сказал, что запомнил. Он запоминает только тех, кого собирается обыграть.",
+  "en": "\"Word reached me that you beat somebody. The Professor says he's noted it. He only notes those he means to beat.\"",
+  "ja": "「あなた、誰かに勝ったそうね。教授は覚えておくって。教授が覚えるのは、これから負かすつもりの相手だけなの。」"
+ },
+ "city.ask.cafe.chess.4": {
+  "ru": "— В «Шестерне» тоже есть лесенка и даже тетрадь партий, но там чай ставят проигравшие, а у нас кофе. Выбирай, чем рисковать.",
+  "en": "\"The Cog has a ladder and even a notebook of games, but there the losers stand tea and here it's coffee. Choose what to risk.\"",
+  "ja": "「『歯車』にも階段表や棋譜帳があるけど、あっちは負けた人がお茶を、うちはコーヒーをおごるの。何を賭けるか、選んで。」"
+ },
+ "city.ask.cafe.ice.flavours": {
+  "ru": "Какое тут мороженое?",
+  "en": "What ice cream do you have?",
+  "ja": "どんなアイスがあるの？"
+ },
+ "city.ask.cafe.ice.flavours.1": {
+  "ru": "— Пломбир, крем-брюле и один шарик «на усмотрение». Шарик на усмотрение выбирает тот, кто стоит с ложкой, сегодня я.",
+  "en": "\"Plombir, crème brûlée and one scoop \"at discretion\". Whoever holds the scoop decides, and today that's me.\"",
+  "ja": "「プロンビール、クレームブリュレ、それから『おまかせ』の一さじ。おまかせは、スプーンを持ってる人が決めるの。今日はわたしよ。」"
+ },
+ "city.ask.cafe.ice.flavours.2": {
+  "ru": "— В жару шарики тают быстрее, чем люди выбирают. Привыкла: беру два заранее.",
+  "en": "\"In the heat the scoops melt faster than people choose. I've learnt: I take two in advance.\"",
+  "ja": "「暑いと、お客さんが選ぶより先にアイスが溶けるの。慣れたわ。最初から二つ取っておくのよ。」"
+ },
+ "city.ask.cafe.ice.flavours.3": {
+  "ru": "— В субботу на витрине торт «Тарелка»: мороженое ему не конкурент, но стоять рядом умеет.",
+  "en": "\"On Saturday the Saucer cake sits in the case: ice cream is no rival, but it knows how to stand beside it.\"",
+  "ja": "「土曜日はショーケースに『ソーサー』ケーキが並ぶの。アイスはライバルじゃないけど、そばに立つのは上手よ。」"
+ },
+ "city.ask.cafe.ice.gallery": {
+  "ru": "Куда с мороженым, на галерею?",
+  "en": "Shall I take my ice cream up to the gallery?",
+  "ja": "アイスを持ってギャラリーに行こうかな？"
+ },
+ "city.ask.cafe.ice.gallery.1": {
+  "ru": "— К телескопу: монету бросишь, и пять минут неба. Держи мороженое подальше от объектива: чайки смотрят зорче.",
+  "en": "\"To the telescope: drop a coin and you get five minutes of sky. Keep the ice cream away from the lens: gulls have sharper eyes.\"",
+  "ja": "「望遠鏡のところへどうぞ。コインを入れると五分間の空よ。アイスはレンズから離してね。カモメのほうが目がいいんだから。」"
+ },
+ "city.ask.cafe.ice.gallery.2": {
+  "ru": "— Вечером с галереи видно, как по террасам зажигаются огни: сначала нижняя, потом вверх, как стежки.",
+  "en": "\"In the evening from the gallery you can see the lights come on up the terraces: the lowest first, then upwards, like stitches.\"",
+  "ja": "「夕方のギャラリーからは、段々に灯りがつくのが見えるわ。いちばん下から上へ、縫い目みたいにね。」"
+ },
+ "city.ask.cafe.ice.gallery.3": {
+  "ru": "— Венеру видел? Смотритель маяка клянётся, что она подмигивает только своим. Проверь: подмигнула, значит, ты свой.",
+  "en": "\"Seen Venus? The lighthouse keeper swears she winks only at her own. Check: if she winked, you're one of us.\"",
+  "ja": "「金星は見た？ 灯台守は、金星は仲間にしかウィンクしないって言い張るの。確かめてみて、ウィンクされたら、あなたも仲間よ。」"
+ },
+ "city.ask.cafe.ck.pilaf": {
+  "ru": "Что за корочка в плове?",
+  "en": "What's the crust in the pilaf?",
+  "ja": "プロフの焦げは何？"
+ },
+ "city.ask.cafe.ck.pilaf.1": {
+  "ru": "— Это дно. Корочка не делается, она получается, если не мешать и не смотреть. Я не смотрю: стою спиной.",
+  "en": "\"That's the bottom. The crust isn't made, it happens if you don't stir and don't look. I don't look: I stand with my back to it.\"",
+  "ja": "「底だ。焦げは作るものじゃなく、かき混ぜず、見なければできる。俺は見ない。背中を向けて立ってる。」"
+ },
+ "city.ask.cafe.ck.pilaf.2": {
+  "ru": "— Сегодня плов на всех. Пришёл до двух, получишь со дна. С поварами не спорят: у них в ложке закон.",
+  "en": "\"Today it's pilaf for all. Come before two and you get the bottom. You don't argue with cooks: they carry the law in the ladle.\"",
+  "ja": "「今日はみんなにプロフだ。二時前に来れば、底のところをやる。料理人とは言い合うな。おたまの中に決まりがあるんだ。」"
+ },
+ "city.ask.cafe.ck.sour": {
+  "ru": "Почему ко всему сметана?",
+  "en": "Why is everything served with sour cream?",
+  "ja": "なんでもサワークリームがつくのはどうして？"
+ },
+ "city.ask.cafe.ck.sour.1": {
+  "ru": "— Сметана как совесть: все знают, что она есть, а спрашивают, когда блюдо уже остыло. Я ставлю баночку на край окошка. Берите без вопросов.",
+  "en": "\"Sour cream is like conscience: everyone knows it exists and asks for it once the dish has gone cold. I put a pot on the edge of the hatch. Help yourself.\"",
+  "ja": "「サワークリームは良心みたいなものだ。あるのはみんな知ってるが、料理が冷めてから探す。窓口の端に小瓶を置いておく。遠慮なく取れ。」"
+ },
+ "city.ask.cafe.ck.sour.2": {
+  "ru": "— Только сегодня сметаны нет, а без неё сырники не сырники. Будешь у универмага, возьми мне кефир: из него я сделаю то, что нужно. Кефир мой запасной план.",
+  "en": "\"Only today there's none, and without it cheesecakes aren't cheesecakes. If you pass the department store, get me a kefir: I can make what's needed from it. Kefir is my plan B.\"",
+  "ja": "「ただ今日はサワークリームがない。なしじゃチーズケーキはチーズケーキじゃない。百貨店のそばを通ったら、ケフィアを買ってきてくれ。それで間に合わせる。ケフィアが俺の予備の策だ。」"
+ },
+ "city.ask.cafe.ck.sour.3": {
+  "ru": "— Пятница, сырники. Сметану я поставил на край. Кто возьмёт, тот остаётся доедать.",
+  "en": "\"Friday, cheesecakes. I've put the sour cream on the edge. Whoever takes it stays to finish.\"",
+  "ja": "「金曜、チーズケーキだ。サワークリームは端に置いた。取ったやつは、最後まで食べていけ。」"
+ },
+ "city.ask.cafe.ck.kefir": {
+  "ru": "Я принёс кефир",
+  "en": "I've brought the kefir",
+  "ja": "ケフィアを持ってきたよ"
+ },
+ "city.ask.cafe.ck.kefir.1": {
+  "ru": "— Поставь на подоконник, я не оборачиваюсь. Тёплый кефир даёт пышные оладьи, холодный упрямые. Этот в самый раз. Держи пирожок: горячий, значит честный.",
+  "en": "\"Put it on the sill, I'm not turning round. Warm kefir makes fluffy pancakes, cold makes stubborn ones. This one's just right. Here's a pie: hot, so honest.\"",
+  "ja": "「窓台に置いてくれ、俺は振り向かない。ぬるいケフィアはふっくらしたパンケーキに、冷たいのは頑固なのになる。これはちょうどいい。ほら、ピロシキだ。熱いから、正直なやつだ。」"
+ },
+ "city.ask.cafe.ck.kesha": {
+  "ru": "Кеша ест вашу еду?",
+  "en": "Does Kesha eat your food?",
+  "ja": "ケーシャはあなたの料理を食べるの？"
+ },
+ "city.ask.cafe.ck.kesha.1": {
+  "ru": "— Кеша ест только семечки. Но тащит со стола, пока я не смотрю. Я смотрю, пока он тащит: так мы поддерживаем отношения.",
+  "en": "\"Kesha eats only sunflower seeds. But he pinches from the table when I'm not looking. I look while he pinches: that's how we keep up relations.\"",
+  "ja": "「ケーシャが食べるのはひまわりの種だけだ。でも俺が見てないとテーブルから盗む。盗んでるあいだは俺が見る。そうやって付き合いを保ってる。」"
+ },
+ "city.ask.cafe.ck.kesha.2": {
+  "ru": "— После тебя он полдня говорил «Спасибо за поездку». Пока варил, трижды обернулся: думал, это про суп.",
+  "en": "\"After you he spent half the day saying \"Thank you for the ride\". While I cooked I turned round three times, thinking it was about the soup.\"",
+  "ja": "「あんたのあと、半日『ご乗車ありがとうございました』って言ってた。煮てるあいだに三回振り向いたよ、スープのことかと思って。」"
+ },
+ "city.ask.cafe.ck.after": {
+  "ru": "Куда сходить после обеда?",
+  "en": "Where should I go after lunch?",
+  "ja": "お昼のあとはどこへ行けばいい？"
+ },
+ "city.ask.cafe.ck.after.1": {
+  "ru": "— После обеда в «Рассвет» на дневной, в три: пока идёт кино, суп успевает забыться. Или в библиотеку: там тихо и ставят штампы.",
+  "en": "\"After lunch to the Rassvet for the matinee at three: while the film runs, the soup has time to be forgotten. Or to the library: it's quiet and they stamp things.\"",
+  "ja": "「昼のあとは『ラスヴェート』の三時の上映へ。映画を観てるうちに、スープのことは忘れる。でなきゃ図書館だ。静かだし、スタンプも押してくれる。」"
+ },
+ "city.ask.cafe.ck.after.2": {
+  "ru": "— Ты уже был в «Рассвете»? Тогда в «Шестерню»: по субботам вечером финал лиги по бильярду. Чем больше народу, тем тише играют.",
+  "en": "\"Been to the Rassvet already? Then the Cog: on Saturday evening it's the billiards league final. The more people, the quieter they play.\"",
+  "ja": "「『ラスヴェート』はもう行った？ なら『歯車』だ。土曜の夜はビリヤードリーグの決勝がある。人が多いほど、静かに打つんだ。」"
+ },
+ "quest.cafe_kefir.title": {
+  "ru": "Кефир для повара",
+  "en": "Kefir for the Cook",
+  "ja": "料理人のためのケフィア"
+ },
+ "quest.cafe_kefir.desc": {
+  "ru": "У повара «Тарелки» сегодня нет сметаны, и он делает вид, что это не беда. Запасной план у него кефир, а ходить за ним некому.",
+  "en": "The cook at the Saucer has no sour cream today and pretends it doesn't matter. His plan B is kefir, and there's nobody to fetch it.",
+  "ja": "『ソーサー』の料理人は今日サワークリームを切らしているのに、平気なふりをしている。予備の策はケフィアで、取りに行ける人がいない。"
+ },
+ "quest.cafe_kefir.buy.log": {
+  "ru": "Кефир продаётся в универмаге, в продуктовом отделе. Куплю бутылку и вернусь к окошку кухни.",
+  "en": "Kefir is sold at the department store, in the grocery section. I'll buy a bottle and come back to the kitchen hatch.",
+  "ja": "ケフィアは百貨店の食料品売り場にある。一本買って、厨房の窓口に戻ってこよう。"
+ },
+ "quest.cafe_kefir.kefir.obj": {
+  "ru": "Купить кефир",
+  "en": "Buy kefir",
+  "ja": "ケフィアを買う"
+ },
+ "quest.cafe_kefir.bring.log": {
+  "ru": "Бутылка в кармане. Подойду к кухонному окошку и скажу повару, что принёс.",
+  "en": "The bottle is in my pocket. I'll go to the kitchen hatch and tell the cook I've brought it.",
+  "ja": "ボトルはポケットの中。厨房の窓口に行って、持ってきたと料理人に伝えよう。"
+ },
+ "quest.cafe_kefir.bring.obj": {
+  "ru": "Отдать кефир повару",
+  "en": "Hand the kefir to the cook",
+  "ja": "ケフィアを料理人に渡す"
+ },
+ "quest.cafe_kefir.done": {
+  "ru": "Повар не обернулся, но пирожок оказался горячим. Значит, всё сделано правильно.",
+  "en": "The cook didn't turn round, but the pie was hot. So everything was done right.",
+  "ja": "料理人は振り向かなかったけれど、ピロシキは熱々だった。つまり、やり方は正しかったってことだ。"
  }
 }

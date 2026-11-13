@@ -918,6 +918,11 @@
   }
  },
  "rules": {
+  "P-T3SPORT/cafe_counter": {
+   "topics": [
+    "@x_t3_cafe"
+   ]
+  },
   "P-T3SPORT/coach_table": {
    "act": "t3_coach"
   },
@@ -1034,6 +1039,39 @@
   }
  },
  "quests": [
+  {
+   "id": "t3_left_eye",
+   "kind": "side",
+   "start_on": {
+    "event": "ask",
+    "target": "t3.co.elsewhere"
+   },
+   "stages": [
+    {
+     "id": "play",
+     "objectives": [
+      {
+       "id": "rally",
+       "event": "do",
+       "target": "table_tennis"
+      }
+     ]
+    },
+    {
+     "id": "report",
+     "objectives": [
+      {
+       "id": "buffet",
+       "event": "ask",
+       "target": "cog.bf.pingpong"
+      }
+     ],
+     "reward": {
+      "rubles": 15
+     }
+    }
+   ]
+  },
   {
    "id": "t3_fifth",
    "kind": "side",
@@ -1260,5 +1298,209 @@
     ]
    ]
   }
+ },
+ "topic_sets": {
+  "x_t3_reception": [
+   {
+    "id": "t3.rc.sections",
+    "k": "city.ask.t3.rc.sections",
+    "lines": [
+     "city.ask.t3.rc.sections.1",
+     {
+      "k": "city.ask.t3.rc.sections.2",
+      "d": "mon,wed,fri"
+     },
+     {
+      "k": "city.ask.t3.rc.sections.3",
+      "d": "tue,thu"
+     }
+    ],
+    "gives": {
+     "collect": "staff/sport"
+    }
+   },
+   {
+    "id": "t3.rc.pool",
+    "k": "city.ask.t3.rc.pool",
+    "lines": [
+     "city.ask.t3.rc.pool.1",
+     {
+      "k": "city.ask.t3.rc.pool.2",
+      "count": [
+       "clinic_card",
+       1
+      ]
+     }
+    ],
+    "gives": {
+     "collect": "staff/sport"
+    }
+   },
+   {
+    "id": "t3.rc.locker",
+    "k": "city.ask.t3.rc.locker",
+    "lines": [
+     "city.ask.t3.rc.locker.1",
+     {
+      "k": "city.ask.t3.rc.locker.2",
+      "did": "t3_hoop_main"
+     }
+    ],
+    "gives": {
+     "collect": "staff/sport"
+    }
+   },
+   {
+    "id": "t3.rc.after",
+    "k": "city.ask.t3.rc.after",
+    "lines": [
+     "city.ask.t3.rc.after.1",
+     {
+      "k": "city.ask.t3.rc.after.2",
+      "d": "fri"
+     }
+    ],
+    "gives": {
+     "collect": "staff/sport"
+    }
+   }
+  ],
+  "x_t3_cafe": [
+   {
+    "id": "t3.cf.kefir",
+    "k": "city.ask.t3.cf.kefir",
+    "lines": [
+     "city.ask.t3.cf.kefir.1",
+     {
+      "k": "city.ask.t3.cf.kefir.2",
+      "d": "mon,wed,fri",
+      "h": [
+       19,
+       21
+      ]
+     },
+     {
+      "k": "city.ask.t3.cf.kefir.3",
+      "weather": [
+       "cold",
+       "snow"
+      ]
+     }
+    ],
+    "gives": {
+     "collect": "staff/sport"
+    }
+   },
+   {
+    "id": "t3.cf.cups",
+    "k": "city.ask.t3.cf.cups",
+    "lines": [
+     "city.ask.t3.cf.cups.1",
+     "city.ask.t3.cf.cups.2"
+    ],
+    "gives": {
+     "collect": "staff/sport"
+    }
+   }
+  ],
+  "x_t3_coach": [
+   {
+    "id": "t3.co.windows",
+    "k": "city.ask.t3.co.windows",
+    "lines": [
+     "city.ask.t3.co.windows.1",
+     {
+      "k": "city.ask.t3.co.windows.2",
+      "did": "t3_court"
+     }
+    ],
+    "gives": {
+     "collect": "staff/sport"
+    }
+   },
+   {
+    "id": "t3.co.drill",
+    "k": "city.ask.t3.co.drill",
+    "lines": [
+     "city.ask.t3.co.drill.1",
+     {
+      "k": "city.ask.t3.co.drill.2",
+      "d": "tue,thu"
+     },
+     {
+      "k": "city.ask.t3.co.drill.3",
+      "did": "t3_hoop_main"
+     }
+    ],
+    "gives": {
+     "collect": "staff/sport"
+    }
+   },
+   {
+    "id": "t3.co.yellow",
+    "k": "city.ask.t3.co.yellow",
+    "lines": [
+     "city.ask.t3.co.yellow.1",
+     {
+      "k": "city.ask.t3.co.yellow.2",
+      "d": "sat",
+      "h": [
+       7,
+       13
+      ]
+     },
+     {
+      "k": "city.ask.t3.co.yellow.3",
+      "weather": "rain"
+     }
+    ],
+    "gives": {
+     "collect": "staff/sport"
+    }
+   },
+   {
+    "id": "t3.co.league",
+    "k": "city.ask.t3.co.league",
+    "lines": [
+     "city.ask.t3.co.league.1",
+     {
+      "k": "city.ask.t3.co.league.2",
+      "did": "t3_court"
+     }
+    ],
+    "gives": {
+     "collect": "staff/sport"
+    }
+   },
+   {
+    "id": "t3.co.elsewhere",
+    "k": "city.ask.t3.co.elsewhere",
+    "lines": [
+     "city.ask.t3.co.elsewhere.1",
+     {
+      "k": "city.ask.t3.co.elsewhere.2",
+      "did": "table_tennis"
+     },
+     {
+      "k": "city.ask.t3.co.elsewhere.3",
+      "h": [
+       7,
+       10
+      ]
+     }
+    ],
+    "gives": {
+     "collect": "staff/sport"
+    }
+   }
+  ]
+ },
+ "topics": {
+  "t3_reception": [
+   "@x_t3_reception"
+  ],
+  "t3_coach": [
+   "@x_t3_coach"
+  ]
  }
 }
