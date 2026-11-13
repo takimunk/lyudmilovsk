@@ -54,7 +54,7 @@
      "friends": ["girl_b"], "start": {"activity": "watch_door"}},
     {"key": "zotov_lev", "body": "Zotov_lev", "mesh": "Owner", "age": 58, "occupation": "lab_researcher", "household": "zotov",
      "temper": {"social": 0.4, "active": 0.4, "studious": 0.95, "gamer": 0.1, "nature": 0.6, "sun": 0.6},
-     "wake": 7.0, "bed": 23.5, "duties": [{"activity": "work_lab", "hours": [9, 17], "days": [0, 1, 2, 3, 4]}],
+     "wake": 7.0, "bed": 23.5, "duties": [{"activity": "work_lab", "hours": [9, 17], "days": [0, 1, 2, 3, 4]}, {"activity": "yard_evening", "place": "academ_bench_1", "hours": [17.5, 19]}],
      "friends": ["zotova_galina", "valiev_rustam", "korneev_ivan"], "likes": {"play_club": -0.6, "read_home": 0.15}},
     {"key": "zotova_galina", "body": "Zotova_galina", "mesh": "Girl_a", "age": 55, "occupation": "lab_chemist", "household": "zotov", "female": 1,
      "temper": {"social": 0.6, "active": 0.5, "studious": 0.7, "gamer": 0.05, "nature": 0.7, "sun": 0.7},
