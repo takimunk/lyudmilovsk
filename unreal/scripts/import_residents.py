@@ -442,6 +442,15 @@ def instance(section, masters, tex, force):
             log("  %s: %s" % (name, e))
             ok.append(False)
     mel.update_material_instance(mi)
+    # UE 5.8's setters return False even when the value took: judge by reading the values back
+    ok = [mel.get_material_instance_texture_parameter_value(mi, "Atlas") == tex,
+          abs(mel.get_material_instance_scalar_parameter_value(mi, "Roughness") - rough) < 1e-3,
+          abs(mel.get_material_instance_scalar_parameter_value(mi, "Specular") - specular) < 1e-3]
+    if sss is not None:
+        v = mel.get_material_instance_vector_parameter_value(mi, "SubsurfaceTint")
+        ok.append(max(abs(v.r - sss[0]), abs(v.g - sss[1]), abs(v.b - sss[2])) < 1e-3)
+    if alpha_mask:
+        ok.append(bool(mel.get_material_instance_static_switch_parameter_value(mi, "AlphaIsTintMask")))
     if not all(ok):
         BROKEN.append("%s: parameters Atlas, Roughness, Specular, SubsurfaceTint, AlphaIsTintMask took %s" % (name, ok))
     eal.set_metadata_tag(mi, SPEC, want)
