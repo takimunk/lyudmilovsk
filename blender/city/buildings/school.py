@@ -259,8 +259,8 @@ def _classroom(B, IY1):
         for cc, cx in enumerate((-16.0, -13.1, -10.2)):
             K.school_desk(B, cx, y, 0.0, 180.0, seed=r * 3 + cc)
             for j, s in enumerate((-0.28, 0.28)):
-                K.chair(B, cx + s, y - 0.55, 0.0, 0.0, kind="school")
-                B.spot("seat_%d_%d" % (r, 2 * cc + j), "seat", (cx + s, y - 0.55, 0.0), 0.0)
+                K.chair(B, cx + s, y - 0.55, 0.0, 180.0, kind="school")
+                B.spot("seat_%d_%d" % (r, 2 * cc + j), "seat", (cx + s, y - 0.55, 0.0), 180.0)
             if cc != 1:
                 B.thing("seat_%d_%d" % (r, 2 * cc), "craft", (cx, y, 0.76), 180.0, what="school_desk")
     K.blackboard(B, -13.3, IY1, 0.0, 0.0, w=3.6, h=1.15, zb=0.9)
@@ -834,7 +834,7 @@ def _depth2(B):
     sw("staff_switch", 14.8, 9.3, 270.0, 6)
     K.chess_set(B, 12.55, 10.4, 0.75, 0.0, seed=2)
     B.thing("staff_chess", "play", (12.55, 10.4, 0.8), 0.0, what="chess")
-    B.spot("staff_chess_a", "seat", (12.5, 9.5, 0.0), 0.0)
+    B.spot("staff_chess_a", "seat", (12.5, 9.5, 0.0), 180.0)
 
     # ---------------------------------------------------------------- biology: nature corner, glassware, periodic table
     sw("bio_switch", -20.35, 20.4, 270.0, 8.5)
