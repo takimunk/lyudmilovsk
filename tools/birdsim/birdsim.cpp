@@ -127,7 +127,8 @@ namespace
 	// the club's door in Unreal metres (map origin, portal face y 790 cm)
 	const V3 Door(-1.93f, 7.9f + 4.f, 0.f);
 
-	bool Setup(FWorld& W, float StartHour)
+	/** bAsGame: a fifth of the groups live round the club's door, as UBirdLifeSubsystem sets the world up (FOptions::Focus). */
+	bool Setup(FWorld& W, float StartHour, bool bAsGame = false)
 	{
 		if (!W.LoadHabitats(Dir()))
 		{
@@ -138,6 +139,11 @@ namespace
 		SunTimes(W.DayOfYear, W.Sunrise, W.Sunset);
 		W.Hour = StartHour;
 		W.Camera = Door + V3(0.f, 0.f, 1.7f);
+		if (bAsGame)
+		{
+			W.Opt.Focus = V3(0.f, 12.f, 0.f);
+			W.Opt.FocusShare = 0.2f;
+		}
 		W.Populate();
 		std::printf("birdsim: %zu sites, %zu birds in %zu groups; sunrise %.2f sunset %.2f\n", W.Sites.size(), W.Birds.size(), W.Groups.size(), W.Sunrise, W.Sunset);
 		return true;
@@ -770,12 +776,13 @@ namespace
 	{
 		struct FCase { const char* Name; std::vector<std::pair<const char*, float>> Like; V3 Where; bool bExpect; };
 		FWorld W;
-		if (!Setup(W, 9.f))
+		if (!Setup(W, 9.f, true))
 		{
 			Check(R, false, "feeders: world loads");
 			return;
 		}
-		// a garden near the club's door, where the small birds live, and far out on the sea
+		// by the club's door, where the game settles a fifth of the small birds' groups (Setup's bAsGame: without it no tit
+		// lives within reach of the door on the terraced map, and the tray rightly stays empty); in a garden if one is near
 		V3 Garden = Door + V3(12.f, 18.f, 0.f);
 		for (const FSite& S : W.Sites)
 		{
@@ -794,7 +801,7 @@ namespace
 		for (const FCase& C : Cases)
 		{
 			FWorld X;
-			Setup(X, 9.f);
+			Setup(X, 9.f, true);
 			V3 Tray = C.Where;
 			Tray.Z = X.GroundZ(Tray.X, Tray.Y) + 1.2f;
 			const int F = X.AddFeeder(Tray, 0.2f, X.KindsAround(Tray));

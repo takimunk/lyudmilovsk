@@ -58,7 +58,8 @@ namespace LyudBirds
 		for (int I = 0; I < (int)Sites.size(); I++)
 		{
 			const FSite& Site = Sites[I];
-			if (Taste(S, 0, Site.Kind) <= 0.f || (Site.Occupants >= Site.Capacity && I != B.Site))
+			// (a feeder's tray is no lee: birds come to it only for its feed, by FeederScore)
+			if (Taste(S, 0, Site.Kind) <= 0.f || (Site.Flags & SiteFeeder) || (Site.Occupants >= Site.Capacity && I != B.Site))
 			{
 				continue;
 			}
@@ -1468,7 +1469,9 @@ namespace LyudBirds
 			for (int I = 0; I < (int)Sites.size(); I++)
 			{
 				const FSite& C = Sites[I];
-				if (C.Kind != EHabitat::Garden && C.Kind != EHabitat::Broadleaf && C.Kind != EHabitat::Conifer && C.Kind != EHabitat::Reed)
+				// (a feeder's tray is a Garden site, but an open board on a post is no cover to dive into)
+				if ((C.Kind != EHabitat::Garden && C.Kind != EHabitat::Broadleaf && C.Kind != EHabitat::Conifer && C.Kind != EHabitat::Reed)
+					|| (C.Flags & SiteFeeder))
 				{
 					continue;
 				}
