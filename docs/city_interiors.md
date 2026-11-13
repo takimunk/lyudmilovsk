@@ -591,7 +591,10 @@ the list (their ids play nothing from an act).
   * `pose` `sit`: `AHeroCharacter::SitOn` on one pooled anchor (an actor at the origin, made again if it went away; the
     seat frame from the thing's point, yaw, `height` and a checked floor trace), a free spot to stand up to, the look cone
     (see "Sitting and lying"). A `height` outside 0.05..1.2 m is not believed (the usual 0.45, a warning): some exports gave
-    the height over the building's base;
+    the height over the building's base. A sitting act on a thing that is not a seat (a chess table, a piano: its point is
+    the middle of the furniture) sits him on the nearest free seat of its plot within 1.6 m (1.5 m up or down: its chair,
+    its stool; `FModel::SeatFor`); with none, a `play` thing (a table, a board, a piano) is played standing, anything else
+    is sat at as before;
   * `pose` `lie`: he sits on the bed's edge (the body holds there) and the view settles onto a pooled camera at the pillow
     looking toward the room's window or the ceiling (the hero hidden meanwhile); with `fade` the switch is made in the dark;
     once the time has passed he gets up by himself after 2.5 s; any step, Space or E gets him up at once; a `sleep` act
@@ -614,7 +617,7 @@ the list (their ids play nothing from an act).
 * Rules in `Private/City/CityThingsModel.h` (`LyudCity::FModel`: `Load`, `Pick`, `Check`, `Run`, `NextLine`, `Nearest`,
   `NearestThing`, `ScreenFrom`, `NeedsSeatFirst`, `SeatHeight`, `Subtitles`, `SaveState`/`LoadState`,
   `ResetToday`/`ResetState`; also `IsShut`/`ActIndexNow` (the closed act), `GiveStamp`/`CountStamps`/`GrantSet`/`ClearSet`,
-  `FindFree`/`Claim`/`Release`/`ThingsOfPlot`, `WeatherBits`), engine-free; `tools/citysim/run.sh` checks it (267 checks, the mini-games, sitting, sleeping, reading, the staff talk, the room tones and the lifts included) on `tools/citysim/fixture.json`, made-up
+  `FindFree`/`Claim`/`Release`/`ThingsOfPlot`, `WeatherBits`), engine-free; `tools/citysim/run.sh` checks it (272 checks, the mini-games, sitting, sleeping, reading, the staff talk, the room tones and the lifts included) on `tools/citysim/fixture.json`, made-up
   acts in the test itself and the real file when it is built. Save record "CityThings" (pages, daily boards' days, today's
   counts, uses, plots visited); a New Game starts it over.
 * Console: `lyud.City.Things` (count, the nearest five), `lyud.City.Do <thing id>` (run it from anywhere; sitting only
@@ -631,6 +634,27 @@ the list (their ids play nothing from an act).
   that makes its first objective (`city.q.<quest>.<n>`), the clock an hour after it opens, `lyud.City.Weekday` to a day it is
   open, `Inventory.Earn` for its price, the items a later stage only checks; a stage's own `dev` in
   `tools/city/content/quests.json` wins key by key.
+* Modes and exits. One mode at a time; the tick serves the first that is up in this order and returns (nothing else is
+  offered, E is that mode's): lift trip, lift chooser, sleep chooser, staff talk, reading view, mini-game, show, page.
+  Lying is ticked before them (a page may be up while he lies; the frame he gets up nothing else runs). Seated is a state
+  under the others (a page, a show, a game or a text may be up while he sits). E at a thing starts a mode only when none is
+  up and nothing else has the keys.
+
+  | mode | starts from | ends on | what it gives back |
+  |---|---|---|---|
+  | page | E at a thing (idle, seated on our seat: its screen) | E past the last line, 2.5 m off, any screen, a mode that takes the page | the page widget removed |
+  | show | E at a screen (idle or from the seat facing it) | E, the last subtitle, getting up (seated), 2.5 m off (standing), any screen | the page widget |
+  | mini-game | E at a game thing (idle; sits on its chair first when the act sits) | the result, walking off (standing), getting up (seated), any screen, `quit` | the panel collapsed, the result page |
+  | reading view | E at a `read` thing (idle; sits first when the act sits) | E on the last page, Esc/W/S/Space, a step or Space on the seat, getting up, 2.5 m off, any screen or the menu | his steps (standing), the view collapsed |
+  | staff talk | E at a counter with topics and staff | Esc/W/S/Space, 2.5 m off, any screen, Buy (the shop), no topics left | his steps, the page |
+  | lift chooser / trip | E at a door with a link (idle, standing) | Esc/W/S/Space, any screen; the trip ends by itself | his steps, the fade back |
+  | lying | E at a bed (idle) | E, a step, Space, woken after the time, the seat gone, not the hero | the view, his visibility, the seat |
+  | sleep chooser | lying on a `sleep` bed | E (sleep), W/S/Esc/Space (up), getting up | the page; after the sleep the fade back, up, the bed's line |
+  | seated | E at a seat, or a sitting act | a step, Space (the seat's hooks while a text or the chooser is up), the anchor gone, another pawn | the cone, collision and walking, the hooks |
+
+  Every mode is also let go by a load (`ResetHeroState`: the fades, the held steps, the pillow's view, the seat) and by the
+  level ending (`Deinitialize`). The F10 menu pauses the game: every mode waits under it. A fade to black (a jump of the
+  clock, a sleep, a lift) is always followed by its fade back, or stopped by a load.
 * Perf ([perf checklist](../README.md)): no per-frame allocation, no actors or components per thing, nothing past the town box,
   the file parsed off the game thread.
 

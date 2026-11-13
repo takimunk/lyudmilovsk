@@ -567,6 +567,26 @@ static void SeatChecks()
 	CHECK(FModel::SleepStep(7, 1, 22.5f) == 8 && FModel::SleepStep(23, 1, 22.5f) == 0 && FModel::SleepStep(23, -1, 22.5f) == 21
 		&& FModel::SleepStep(0, -1, 0.5f) == 23, "the chooser goes round the clock and skips the hour it is now");
 	CHECK(FModel::MinutesUntil(22.5f, 7) == 510 && FModel::MinutesUntil(22.5f, 23) == 30, "sleeping till 7 from 22:30 is 510 minutes, till 23 half an hour");
+
+	// where he sits for a sitting act on a thing that is not a seat: the chess table's chair, never the middle of the table
+	const std::string Tables = R"({"things": [
+  {"id": "P-G/chess", "plot": "P-G", "kind": "play", "ue": [0, 0, 78], "yaw": 0, "props": {"what": "chess"}, "act": "chess"},
+  {"id": "P-G/chair_a", "plot": "P-G", "kind": "seat", "ue": [75, 0, 45], "yaw": 180, "props": {"height": 0.45}},
+  {"id": "P-G/chair_b", "plot": "P-G", "kind": "seat", "ue": [-120, 0, 45], "yaw": 0, "props": {"height": 0.45}},
+  {"id": "P-G/chair_up", "plot": "P-G", "kind": "seat", "ue": [20, 0, 345], "yaw": 0, "props": {"height": 0.45}},
+  {"id": "P-G/lone_chess", "plot": "P-G", "kind": "play", "ue": [3000, 0, 78], "yaw": 0, "act": "chess"},
+  {"id": "P-G/next_door_chair", "plot": "P-N", "kind": "seat", "ue": [3060, 0, 45], "yaw": 0, "props": {"height": 0.45}},
+  {"id": "P-G/barber", "plot": "P-G", "kind": "machine", "ue": [6000, 0, 60], "yaw": 0, "act": "haircut"}],
+ "acts": {"chess": {"prompt": "p", "pose": "sit"}, "haircut": {"prompt": "p", "pose": "sit"}}})";
+	FModel T;
+	CHECK(T.Load(Tables, Error), "it loads (%s)", Error.c_str());
+	const int Chess = T.FindThing("P-G/chess"), ChairA = T.FindThing("P-G/chair_a"), ChairB = T.FindThing("P-G/chair_b");
+	const int Lone = T.FindThing("P-G/lone_chess"), Barber = T.FindThing("P-G/barber");
+	CHECK(T.SeatFor(ChairA) == ChairA && T.SeatFor(Chess) == ChairA, "a seat is sat on itself; a chess table on its nearest chair (not upstairs)");
+	CHECK(T.SeatFor(Chess, ChairA) == ChairB && T.Claim(ChairA, 5) && T.SeatFor(Chess) == ChairB, "the hero's own or a held chair is skipped: the other one");
+	CHECK(T.Claim(ChairB, 6) && T.SeatFor(Chess) == -1, "both chairs held: the game is played standing");
+	CHECK(T.SeatFor(Lone) == -1 && T.SeatFor(Barber) == Barber && T.SeatFor(-1) == -1,
+		"a table with no chair of its plot by it: standing; a chair-like machine with none: sat at as before");
 }
 
 /** The reading view (docs/city_interiors.md "The reading page"): texts, the page each is left on, read to the end, the "read" line

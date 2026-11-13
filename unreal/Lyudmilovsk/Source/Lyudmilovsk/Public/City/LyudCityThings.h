@@ -419,6 +419,8 @@ private:
 	double LieUntil = 0.0;
 	bool bLieAutoStand = false;
 	bool bHeroHiddenForLie = false;
+	/** The hero hidden for the pillow's view (shown again even when the controller has another pawn by then: a bird). */
+	TWeakObjectPtr<AHeroCharacter> LieHiddenHero;
 	FVector LieEye = FVector::ZeroVector;
 	float LieYaw = 0.f;
 

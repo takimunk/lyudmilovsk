@@ -795,6 +795,7 @@ void ULyudCityThings::ShowLieView(bool bCut)
 	{
 		Hero->SetActorHiddenInGame(true);
 		bHeroHiddenForLie = true;
+		LieHiddenHero = Hero;
 	}
 }
 
@@ -809,11 +810,17 @@ void ULyudCityThings::EndLie(bool bStandUp)
 	AHeroCharacter* Hero = PC ? Cast<AHeroCharacter>(PC->GetPawn()) : nullptr;
 	if (bHeroHiddenForLie)
 	{
-		if (Hero)
+		// the one hidden, even when the controller's pawn is another by now (a bird flown from the pillow)
+		if (AHeroCharacter* Hidden = LieHiddenHero.Get())
+		{
+			Hidden->SetActorHiddenInGame(false);
+		}
+		else if (Hero)
 		{
 			Hero->SetActorHiddenInGame(false);
 		}
 		bHeroHiddenForLie = false;
+		LieHiddenHero.Reset();
 	}
 	if (PC && IsValid(LieCamera) && PC->GetViewTarget() == LieCamera.Get())
 	{
@@ -1147,12 +1154,17 @@ void ULyudCityThings::Run(int32 Thing, bool bFromConsole, bool bFromSeat)
 	}
 	if (O.Game >= 0)
 	{
-		// a mini-game instead of the page: seated first when the act sits (a chess table) and the hero is at it
+		// a mini-game instead of the page: seated first when the act sits (a chess table: on its chair) and the hero is at it
+		int GameSeat = -1;
 		if (Hero && O.Pose == "sit" && !Hero->IsSeated() && FVector::Dist(Hero->GetActorLocation(), At) < 400.f)
 		{
-			Sit(Thing, Hero, false);
+			GameSeat = Model->SeatFor(Thing, SeatedOn);
+			if (GameSeat >= 0 && !Sit(GameSeat, Hero, false))
+			{
+				GameSeat = -1;
+			}
 		}
-		BeginGame(Thing, O.Minutes, Hero && Hero->IsSeated() && SeatedOn == Thing);
+		BeginGame(Thing, O.Minutes, Hero && Hero->IsSeated() && SeatedOn >= 0 && (SeatedOn == Thing || SeatedOn == GameSeat));
 		return;
 	}
 	if (!O.Shop.empty())
@@ -1178,17 +1190,27 @@ void ULyudCityThings::Run(int32 Thing, bool bFromConsole, bool bFromSeat)
 	if (O.Text >= 0)
 	{
 		// the reading view instead of the page: seated for it when the act sits (a library's reading pod) and he is at it
+		int BookSeat = -1;
 		if (bNear && O.Pose == "sit" && !Hero->IsSeated())
 		{
-			Sit(Thing, Hero, false);
+			BookSeat = Model->SeatFor(Thing, SeatedOn);
+			if (BookSeat >= 0 && !Sit(BookSeat, Hero, false))
+			{
+				BookSeat = -1;
+			}
 		}
-		OpenBook(O.Text, Thing, Hero && Hero->IsSeated() && SeatedOn == Thing);
+		OpenBook(O.Text, Thing, Hero && Hero->IsSeated() && SeatedOn >= 0 && (SeatedOn == Thing || SeatedOn == BookSeat));
 		return;
 	}
 	const bool bLie = bNear && O.Pose == "lie" && Sit(Thing, Hero, true);
 	if (bNear && O.Pose == "sit")
 	{
-		Sit(Thing, Hero, false);
+		// on the thing itself when it is a seat, else on a free seat by it (never in the middle of a table)
+		const int SitSeat = Model->SeatFor(Thing, SeatedOn);
+		if (SitSeat >= 0)
+		{
+			Sit(SitSeat, Hero, false);
+		}
 	}
 	if (bLie && O.bSleep)
 	{
@@ -1382,12 +1404,14 @@ void ULyudCityThings::Tick(float DeltaTime)
 	}
 	if (SeatedOn >= 0 && (!Hero || !Hero->IsSeated()))
 	{
-		// up (a step, Space, StandUp) or the seat went from under him: the cone and the seat's keys go, and he walks again
+		// up (a step, Space, StandUp) or the seat went from under him: the cone and the seat's keys go, and he walks again; the
+		// keys first, while SeatedOn still says the seat is ours (the controller on another pawn, a bird: he is still seated, and
+		// hooks left on him would swallow every step)
+		UnhookSeatKeys();
 		SeatedOn = -1;
 		SeatScreen = -1;
 		RecoverFromSeat(Hero);
 		ClearLookCone();
-		UnhookSeatKeys();
 	}
 	// the thing in view, the plot round the hero and the talk, a few times a second; nothing at all outside the town's box
 	PickClock -= DeltaTime;
@@ -1413,6 +1437,12 @@ void ULyudCityThings::Tick(float DeltaTime)
 	if (LyingOn >= 0)
 	{
 		TickLie(Hero, PC, bTalk);
+		if (LyingOn < 0)
+		{
+			// he just got up (E, a step, woken): the press that got him up must not also run the thing in view this frame
+			SetPrompted(-1);
+			return;
+		}
 	}
 	if (LiftDest >= 0)
 	{
@@ -2316,8 +2346,9 @@ void ULyudCityThings::UnhookSeatKeys()
 {
 	AHeroCharacter* Hero = HookedHero.Get();
 	HookedHero.Reset();
-	// only while he is still on a seat or bed of ours (the hooks of another's seat, a restaurant's, are not ours to clear)
-	if (Hero && Hero->IsSeated() && (SeatedOn >= 0 || LyingOn >= 0))
+	// while he is still on a seat or bed of ours (the hooks of another's seat, a boat's, are not ours to clear), or no longer
+	// seated at all (our seat's anchor went from under him: hooks left would catch the next seat's steps)
+	if (Hero && (!Hero->IsSeated() || SeatedOn >= 0 || LyingOn >= 0))
 	{
 		Hero->SeatMove = nullptr;
 		Hero->SeatLeave = nullptr;

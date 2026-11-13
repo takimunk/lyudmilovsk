@@ -119,6 +119,15 @@ def plan():
         add(3.0, lambda w, x=th: look_at(w, x))
         add(2.0, lambda w, i=th["id"]: cmd(w, "lyud.City.Do " + i))
         add(1.0, lambda w: shot(w, "bridge_bench"))
+    # a chess table with chairs: its game seats him on a chair, never in the middle of the table (FModel::SeatFor)
+    chess = [t for t in things if t["id"] == "P-BRIDGEHOUSE/gallery_chess"]
+    for th in chess:
+        add(1.0, lambda w: cmd(w, "Dev.Do interiors.open_all_hours"))
+        add(3.0, lambda w, x=th: look_at(w, x))
+        add(2.0, lambda w, i=th["id"]: cmd(w, "lyud.City.Do " + i))
+        add(1.0, lambda w: shot(w, "chess_chair"))
+        add(1.0, lambda w: cmd(w, "lyud.City.Game quit"))
+        add(1.0, lambda w: cmd(w, "Dev.Do interiors.open_all_hours"))
     # third pass: a stamp (a library topic read), the collections' page, a shut café's chair (its closed act at 23:00)
     stamped = [t for t in things if acts.get(t.get("act"), {}).get("collect", "").startswith("shelves/")][:1]
     for th in stamped:

@@ -2030,6 +2030,34 @@ namespace LyudCity
 			return false;
 		}
 
+		/** How far (cm) from a thing that is not a seat, and how far over or under it, a free seat is taken for its sitting act. */
+		static constexpr double SeatByRadius = 160.0;
+		static constexpr double SeatByFloor = 150.0;
+		/**
+		 * Where the hero sits for Thing's act with "pose": "sit": the thing itself when it is one to sit on (IsSeatThing), else
+		 * the nearest free seat of its plot by it (a chess table's chair, a piano's stool; never Except, the hero's own); with none,
+		 * a table, a board or a piano ("play") is played standing (-1: its point is the middle of the table, he would sit in it),
+		 * anything else is sat at as before. Reads the grid round the thing only; no allocation.
+		 */
+		int SeatFor(int Thing, int Except = -1) const
+		{
+			if (Thing < 0 || Thing >= (int)Things.size())
+			{
+				return -1;
+			}
+			const FThing& T = Things[(size_t)Thing];
+			if (IsSeatThing(T))
+			{
+				return Thing;
+			}
+			const int Seat = FindFree("seat", T.At, SeatByRadius, SeatByFloor, Except);
+			if (Seat >= 0 && Things[(size_t)Seat].Plot == T.Plot)
+			{
+				return Seat;
+			}
+			return T.Kind == "play" ? -1 : Thing;
+		}
+
 		// --- sitting and lying (docs/city_interiors.md "Sitting and lying"): what the game decides from the data and its traces
 
 		/**
