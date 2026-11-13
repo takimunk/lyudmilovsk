@@ -854,6 +854,7 @@ def _lobby_extras(B, cid, F, Lb, D, sa, sb, Z, pre, mid, at):
         for cu, cv, dy in ((0.0, -0.75, F.yaw(0, 1)), (0.0, 0.75, F.yaw(0, -1)), (-0.85, 0.0, F.yaw(1, 0))):
             cx, cy = tx + F.eu[0] * cu + F.ev[0] * cv, ty + F.eu[1] * cu + F.ev[1] * cv
             kit.chair(B, cx, cy, Z, dy, kind="wood")
+            B.thing(pre + "dominoes_chair_%d" % int(cu * 10 + cv * 10 + 20), "seat", (cx, cy, 0.45 + Z), dy, height=0.45)
         for k in range(7):
             ux, vx = -0.22 + k * 0.07, 0.04 * ((-1) ** k)
             _fbox(d, "CT_ConcreteDark", F, sbu(1.5) + ux - 0.03, sbu(1.5) + ux + 0.03, 3.9 + vx - 0.055, 3.9 + vx + 0.055,
@@ -866,6 +867,7 @@ def _lobby_extras(B, cid, F, Lb, D, sa, sb, Z, pre, mid, at):
         tb = kit.chess_table(B, tx, ty, Z, F.yaw(0, 1), seed=cid)
         for cv, dy in ((-0.7, F.yaw(0, 1)), (0.7, F.yaw(0, -1))):
             kit.chair(B, tx + F.ev[0] * cv, ty + F.ev[1] * cv, Z, dy, kind="wood")
+            B.thing(pre + "chess_chair_%d" % int(cv * 10 + 7), "seat", (tx + F.ev[0] * cv, ty + F.ev[1] * cv, 0.45 + Z), dy, height=0.45)
         B.thing(pre + "chess", "play", (tx, ty, tb["top"]), F.yaw(0, 1), what="chess")
         B.spot("lobby_table_2", "table", (tx + F.ev[0] * -0.7, ty + F.ev[1] * -0.7, 0.0), F.yaw(0, 1))
         px, py = F.p(1.9, D - WALL - 0.3)

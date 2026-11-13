@@ -924,6 +924,19 @@
    }
   },
   {
+   "id": "hall_sewing_stool",
+   "kind": "seat",
+   "pos": [
+    -33.55,
+    10.95,
+    0.45
+   ],
+   "yaw": 270.0,
+   "props": {
+    "height": 0.45
+   }
+  },
+  {
    "id": "hall_gym_timetable",
    "kind": "board",
    "pos": [

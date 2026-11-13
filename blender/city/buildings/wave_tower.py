@@ -707,6 +707,9 @@ def _toyfab(S):
     S.sign(1.6, 5.0, "sign_fabric", w=1.4, zc=2.72)
     sw = S.left_f(kit.sewing_table, 2.6, 0.45)
     B.thing("fabric_sewing", "craft", (sw["pos"][0], sw["pos"][1], 0.8), 90, what="sewing_machine")
+    sx_, sy_, _sz, syaw = sw["seat"][0], sw["seat"][1], 0.0, (sw["yaw"] + 180.0) % 360
+    kit.stool(B, sx_, sy_, 0.0, syaw)
+    B.thing("fabric_sewing_stool", "seat", (sx_, sy_, 0.45), syaw, height=0.45)
     cr = S.f(kit.clothes_rail, 1.6, 1.5, 0, w=1.4)
     S.left(kit.poster, 1.0, name="fabric_1", w=0.5, h=0.5, zc=1.8)
     S.left(kit.poster, 1.6, name="fabric_4", w=0.5, h=0.5, zc=1.8)

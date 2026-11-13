@@ -3499,6 +3499,19 @@
    }
   },
   {
+   "id": "fabric_sewing_stool",
+   "kind": "seat",
+   "pos": [
+    28.7,
+    12.008,
+    0.45
+   ],
+   "yaw": 270.0,
+   "props": {
+    "height": 0.45
+   }
+  },
+  {
    "id": "toys_wall_1",
    "kind": "shelf",
    "pos": [
@@ -26362,7 +26375,7 @@
  ],
  "tris": {
   "shell": 49696,
-  "detail": 76910,
+  "detail": 76976,
   "windows": 3804
  }
 }

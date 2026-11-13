@@ -364,6 +364,7 @@ def _depth(B, H):
     H.p(kit.stool, -33.55, 10.95, 270.0)
     H.p(kit.poster, -34.6, 10.95, 90.0, name="fabric", w=0.7, zc=1.6, seed=3)
     H.thing("hall_sewing", "craft", -34.2, 10.95, 0.8, 90.0, what="sewing_machine")
+    H.thing("hall_sewing_stool", "seat", -33.55, 10.95, 0.45, 270.0, height=0.45)
     H.spot("sewing1", "work", -33.6, 10.95, 270.0)
     H.lamp(-33.6, 10.95, 2.6, lumens=400, colour="#FFD8A8")
     # ---- gym: the section's timetable above the mats

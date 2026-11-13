@@ -646,6 +646,32 @@
    }
   },
   {
+   "id": "home_school_chair_0",
+   "kind": "seat",
+   "pos": [
+    -5.17,
+    11.13,
+    3.45
+   ],
+   "yaw": 180.0,
+   "props": {
+    "height": 0.45
+   }
+  },
+  {
+   "id": "home_school_chair_1",
+   "kind": "seat",
+   "pos": [
+    -4.63,
+    11.13,
+    3.45
+   ],
+   "yaw": 180.0,
+   "props": {
+    "height": 0.45
+   }
+  },
+  {
    "id": "home_children_shelf",
    "kind": "shelf",
    "pos": [

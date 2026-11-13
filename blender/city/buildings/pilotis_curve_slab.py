@@ -608,6 +608,7 @@ def _furnish(B, th, Fc, W, LC, VB, f0):
     for sgn in (-1, 1):
         sx, sy = G.p(-1.4 + sgn * 0.55, 4.2)
         kit.stool(B, sx, sy, Z, G.yaw(-sgn, 0))
+        B.thing("garden_chess_west_stool%d" % (sgn + 1), "seat", (sx, sy, 0.45 + Z), G.yaw(-sgn, 0), height=0.45)
     B.thing("garden_chess_west", "play", (x, y, 0.72 + Z), G.yaw(0, -1), what="chess")
     x, y = G.p(1.8, 7.3)
     kit.bench(B, x, y, Z, G.yaw(0, -1), w=1.8, kind="park")
@@ -632,6 +633,7 @@ def _furnish(B, th, Fc, W, LC, VB, f0):
     for sgn in (-1, 1):
         sx, sy = G.p(0.8 + sgn * 0.55, 4.0)
         kit.stool(B, sx, sy, Z, G.yaw(-sgn, 0))
+        B.thing("garden_chess_east_stool%d" % (sgn + 1), "seat", (sx, sy, 0.45 + Z), G.yaw(-sgn, 0), height=0.45)
     B.thing("garden_chess_east", "play", (x, y, 0.72 + Z), G.yaw(0, -1), what="chess")
     for k in range(3):
         bx_, by_ = G.p(-3.1 + 0.0, 2.0 + 1.0 * k)

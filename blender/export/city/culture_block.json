@@ -756,6 +756,32 @@
    }
   },
   {
+   "id": "wheel_stool_0",
+   "kind": "seat",
+   "pos": [
+    15.3,
+    3.85,
+    0.42
+   ],
+   "yaw": 0,
+   "props": {
+    "height": 0.42
+   }
+  },
+  {
+   "id": "wheel_stool_1",
+   "kind": "seat",
+   "pos": [
+    16.7,
+    3.85,
+    0.42
+   ],
+   "yaw": 0,
+   "props": {
+    "height": 0.42
+   }
+  },
+  {
    "id": "table_-6",
    "kind": "craft",
    "pos": [

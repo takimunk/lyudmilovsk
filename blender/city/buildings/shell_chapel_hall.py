@@ -371,9 +371,13 @@ def hall_b(B, F):
     kit.stool(B, xc + 1.55, 21.5, zs, 90.0, h=0.5)
     T("stage_piano", "play", (xc + 3.0, 21.5, zs + 0.9), 270.0, what="piano")
     B.spot("stage_piano", "work", (xc + 1.55, 21.5, zs), 90.0)
+    T("stage_piano_stool", "seat", (xc + 1.55, 21.5, zs + 0.5), 90.0, height=0.5)
     # a choir: two rows of wooden chairs on the stage's west half, a conductor's music stand, a microphone
     for rr, yy in enumerate((22.9, 23.6)):
         kit.row(kit.chair, B, xc - 3.6, yy, xc - 0.2, yy, 6, yaw=0.0, z=zs, kind="wood")
+        if rr == 0:      # two of the choir's chairs by the riser are seats
+            for ci in (2, 3):
+                T("choir_chair_%d" % ci, "seat", (xc - 3.6 + ci * 3.4 / 5, yy, zs + 0.45), 0.0, height=0.45)
     T("choir_riser", "screen", (xc - 1.9, 22.9, zs + 0.5), 0.0, what="choir")
     _mic(B, xc - 1.9, 20.1, zs)
     T("stage_mic", "machine", (xc - 1.9, 19.9, zs + 1.3), 0.0, what="microphone")
@@ -526,6 +530,7 @@ def hall_c(B, F):
     T("dance_jukebox", "machine", (4.0, yn - 0.4, 1.0), 0.0, what="jukebox")
     kit.piano(B, 8.3, yn - 0.02, yaw=0.0)
     kit.stool(B, 8.3, yn - 0.95, yaw=0.0, h=0.5)
+    T("dance_piano_stool", "seat", (8.3, yn - 0.95, 0.5), 180.0, height=0.5)
     T("dance_piano", "play", (8.3, yn - 0.4, 1.0), 0.0, what="piano")
     kit.plant(B, 10.0, 18.6, kind="palm", pot="CT_PlasterRed", h=1.8)
     kit.plant(B, 2.85, 18.7, kind="ficus", pot="CT_TileWhite", h=1.8)

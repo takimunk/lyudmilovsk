@@ -385,6 +385,7 @@ def _furnish_hall(B, hx0, hx1, hy0, hy1):
     for k, wx in enumerate((15.3, 16.7)):
         kit.potters_wheel(B, wx, 3.2, yaw=0)
         kit.stool(B, wx, 3.85, yaw=180, h=0.42)
+        T("wheel_stool_%d" % k, "seat", (wx, 3.85, 0.42), 0, height=0.42)
     T("table_-6", "craft", (15.3, 3.2, 0.55), 0, what="potters_wheel")
     T("wheel_2", "craft", (16.7, 3.2, 0.55), 0, what="potters_wheel")
     sp("table_-6", "work", (15.3, 3.9, 0.0), 0)

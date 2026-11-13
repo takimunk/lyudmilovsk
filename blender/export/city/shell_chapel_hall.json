@@ -1869,6 +1869,45 @@
    }
   },
   {
+   "id": "stage_piano_stool",
+   "kind": "seat",
+   "pos": [
+    -2.2,
+    21.5,
+    1.5
+   ],
+   "yaw": 90.0,
+   "props": {
+    "height": 0.5
+   }
+  },
+  {
+   "id": "choir_chair_2",
+   "kind": "seat",
+   "pos": [
+    -5.99,
+    22.9,
+    1.45
+   ],
+   "yaw": 0.0,
+   "props": {
+    "height": 0.45
+   }
+  },
+  {
+   "id": "choir_chair_3",
+   "kind": "seat",
+   "pos": [
+    -5.31,
+    22.9,
+    1.45
+   ],
+   "yaw": 0.0,
+   "props": {
+    "height": 0.45
+   }
+  },
+  {
    "id": "choir_riser",
    "kind": "screen",
    "pos": [
@@ -2259,6 +2298,19 @@
    "yaw": 0.0,
    "props": {
     "what": "jukebox"
+   }
+  },
+  {
+   "id": "dance_piano_stool",
+   "kind": "seat",
+   "pos": [
+    8.3,
+    18.15,
+    0.5
+   ],
+   "yaw": 180.0,
+   "props": {
+    "height": 0.5
    }
   },
   {

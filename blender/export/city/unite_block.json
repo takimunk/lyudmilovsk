@@ -1109,6 +1109,32 @@
    }
   },
   {
+   "id": "roof_chess_stool0",
+   "kind": "seat",
+   "pos": [
+    49.95,
+    12.2,
+    51.95
+   ],
+   "yaw": 270.0,
+   "props": {
+    "height": 0.45
+   }
+  },
+  {
+   "id": "roof_chess_stool2",
+   "kind": "seat",
+   "pos": [
+    51.05,
+    12.2,
+    51.95
+   ],
+   "yaw": 90.0,
+   "props": {
+    "height": 0.45
+   }
+  },
+  {
    "id": "lift_roof",
    "kind": "door",
    "pos": [
@@ -1161,6 +1187,32 @@
    }
   },
   {
+   "id": "yard_chess_w_stool0",
+   "kind": "seat",
+   "pos": [
+    -46.55,
+    8.0,
+    0.45
+   ],
+   "yaw": 270.0,
+   "props": {
+    "height": 0.45
+   }
+  },
+  {
+   "id": "yard_chess_w_stool2",
+   "kind": "seat",
+   "pos": [
+    -45.45,
+    8.0,
+    0.45
+   ],
+   "yaw": 90.0,
+   "props": {
+    "height": 0.45
+   }
+  },
+  {
    "id": "yard_chess_w",
    "kind": "play",
    "pos": [
@@ -1210,6 +1262,32 @@
    "yaw": 0.0,
    "props": {
     "what": "table_tennis"
+   }
+  },
+  {
+   "id": "yard_chess_e_stool0",
+   "kind": "seat",
+   "pos": [
+    45.45,
+    8.0,
+    0.45
+   ],
+   "yaw": 270.0,
+   "props": {
+    "height": 0.45
+   }
+  },
+  {
+   "id": "yard_chess_e_stool2",
+   "kind": "seat",
+   "pos": [
+    46.55,
+    8.0,
+    0.45
+   ],
+   "yaw": 90.0,
+   "props": {
+    "height": 0.45
    }
   },
   {
@@ -1452,6 +1530,19 @@
    }
   },
   {
+   "id": "fab_sewing_stool",
+   "kind": "seat",
+   "pos": [
+    -12.6,
+    13.75,
+    24.45
+   ],
+   "yaw": 0.0,
+   "props": {
+    "height": 0.45
+   }
+  },
+  {
    "id": "tul_door",
    "kind": "door",
    "pos": [
@@ -1491,6 +1582,32 @@
    }
   },
   {
+   "id": "game_chess_stool0",
+   "kind": "seat",
+   "pos": [
+    -6.55,
+    10.9,
+    24.45
+   ],
+   "yaw": 270.0,
+   "props": {
+    "height": 0.45
+   }
+  },
+  {
+   "id": "game_chess_stool2",
+   "kind": "seat",
+   "pos": [
+    -5.45,
+    10.9,
+    24.45
+   ],
+   "yaw": 90.0,
+   "props": {
+    "height": 0.45
+   }
+  },
+  {
    "id": "game_chess",
    "kind": "play",
    "pos": [
@@ -1504,6 +1621,32 @@
    }
   },
   {
+   "id": "game_checkers_stool0",
+   "kind": "seat",
+   "pos": [
+    -4.95,
+    10.9,
+    24.45
+   ],
+   "yaw": 270.0,
+   "props": {
+    "height": 0.45
+   }
+  },
+  {
+   "id": "game_checkers_stool2",
+   "kind": "seat",
+   "pos": [
+    -3.85,
+    10.9,
+    24.45
+   ],
+   "yaw": 90.0,
+   "props": {
+    "height": 0.45
+   }
+  },
+  {
    "id": "game_checkers",
    "kind": "play",
    "pos": [
@@ -1514,6 +1657,45 @@
    "yaw": 0.0,
    "props": {
     "what": "checkers"
+   }
+  },
+  {
+   "id": "game_dominoes_chair0",
+   "kind": "seat",
+   "pos": [
+    -2.8,
+    10.2,
+    24.45
+   ],
+   "yaw": 0.0,
+   "props": {
+    "height": 0.45
+   }
+  },
+  {
+   "id": "game_dominoes_chair1",
+   "kind": "seat",
+   "pos": [
+    -2.8,
+    11.6,
+    24.45
+   ],
+   "yaw": 180.0,
+   "props": {
+    "height": 0.45
+   }
+  },
+  {
+   "id": "game_dominoes_chair2",
+   "kind": "seat",
+   "pos": [
+    -3.5,
+    10.9,
+    24.45
+   ],
+   "yaw": 90.0,
+   "props": {
+    "height": 0.45
    }
   },
   {
@@ -1990,6 +2172,19 @@
    "yaw": 0.0,
    "props": {
     "what": "sewing_machine"
+   }
+  },
+  {
+   "id": "tul_sewing_stool",
+   "kind": "seat",
+   "pos": [
+    -8.7,
+    6.25,
+    18.45
+   ],
+   "yaw": 0.0,
+   "props": {
+    "height": 0.45
    }
   },
   {

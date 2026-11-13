@@ -481,6 +481,8 @@ def _furnish_garden(B):
     kit.stool(B, 12.9 - 0.55, 9.2, 0.0, 270.0)
     kit.stool(B, 12.9 + 0.55, 9.2, 0.0, 90.0)
     B.thing("garden_chess", "play", (12.9, 9.2, 0.72), 0.0, what="chess")
+    B.thing("garden_chess_stool_w", "seat", (12.9 - 0.55, 9.2, 0.45), 270.0, height=0.45)
+    B.thing("garden_chess_stool_e", "seat", (12.9 + 0.55, 9.2, 0.45), 90.0, height=0.45)
     pp = kit.pingpong_table(B, 15.4, 11.7, 0.0, 0.0)
     B.thing("garden_pingpong", "play", (15.4, 11.7, 0.76), 0.0, what="table_tennis")
     for i, (x, y) in enumerate(((12.1, 5.9), (17.5, 4.3), (17.5, 9.6))):

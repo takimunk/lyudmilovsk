@@ -602,7 +602,7 @@ the list (their ids play nothing from an act).
     `bench` within 1.6 m across, the thing 0.5 m under to 1.5 m over the spot's floor, not within 0.5 m of a seat thing
     (that one is found at run time and its holds respected), height 0.45 (the kit seats are not exported). `Sit` takes the
     frame from `FModel::SeatFrame`. Now: 29 things have a spot (barber and salon chairs, school desks, club chess and pianos),
-    29 sit on a seat thing, 30 are used standing (garden chess 14, sewing machines 5, potter's wheels 2, others 9);
+    57 sit on a seat thing (the garden chess, sewing and potter's stools are declared seats now), 2 are used standing (two sanatorium treatment machines);
   * `pose` `lie`: he sits on the bed's edge (the body holds there) and the view settles onto a pooled camera at the pillow
     looking toward the room's window or the ceiling (the hero hidden meanwhile); with `fade` the switch is made in the dark;
     once the time has passed he gets up by himself after 2.5 s; any step, Space or E gets him up at once; a `sleep` act

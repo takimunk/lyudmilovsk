@@ -452,6 +452,8 @@ def _gardens(B):
                 c1 = f(kit.stool, x, y - 0.75, 0.0, z=zt, h=0.45)
                 c2 = f(kit.stool, x, y + 0.75, 0.0, z=zt, h=0.45)
                 B.thing("garden_chess_t%d%s" % (k, "e" if side == 1 else "w"), "play", (x, y, zt + 0.78), 0.0, what="chess")
+                for j, yw in enumerate((180.0, 0.0)):     # the stools are seats the player takes
+                    B.thing("garden_chess_t%d%s_stool%d" % (k, "e" if side == 1 else "w", j), "seat", (x, y + (-0.75 if j == 0 else 0.75), zt + 0.45), yw, height=0.45)
             elif kind == "bike":
                 _bike_at(B, x, y0 + 2.2, zt, 90.0)
             elif kind == "pram":

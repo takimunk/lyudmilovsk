@@ -698,6 +698,32 @@
    }
   },
   {
+   "id": "garden_chess_t0w_stool0",
+   "kind": "seat",
+   "pos": [
+    -10.0,
+    1.45,
+    2.85
+   ],
+   "yaw": 180.0,
+   "props": {
+    "height": 0.45
+   }
+  },
+  {
+   "id": "garden_chess_t0w_stool1",
+   "kind": "seat",
+   "pos": [
+    -10.0,
+    2.95,
+    2.85
+   ],
+   "yaw": 0.0,
+   "props": {
+    "height": 0.45
+   }
+  },
+  {
    "id": "garden_chess_t1e",
    "kind": "play",
    "pos": [
@@ -708,6 +734,32 @@
    "yaw": 0.0,
    "props": {
     "what": "chess"
+   }
+  },
+  {
+   "id": "garden_chess_t1e_stool0",
+   "kind": "seat",
+   "pos": [
+    6.5,
+    6.65,
+    5.15
+   ],
+   "yaw": 180.0,
+   "props": {
+    "height": 0.45
+   }
+  },
+  {
+   "id": "garden_chess_t1e_stool1",
+   "kind": "seat",
+   "pos": [
+    6.5,
+    8.15,
+    5.15
+   ],
+   "yaw": 0.0,
+   "props": {
+    "height": 0.45
    }
   },
   {
@@ -786,6 +838,32 @@
    "yaw": 0.0,
    "props": {
     "what": "chess"
+   }
+  },
+  {
+   "id": "garden_chess_t2e_stool0",
+   "kind": "seat",
+   "pos": [
+    17.0,
+    11.57,
+    7.45
+   ],
+   "yaw": 180.0,
+   "props": {
+    "height": 0.45
+   }
+  },
+  {
+   "id": "garden_chess_t2e_stool1",
+   "kind": "seat",
+   "pos": [
+    17.0,
+    13.07,
+    7.45
+   ],
+   "yaw": 0.0,
+   "props": {
+    "height": 0.45
    }
   },
   {

@@ -466,6 +466,7 @@ def _dress_pilotis(B):
     kit.chess_table(B, -46.0, 8.0, Z, 0.0, seed=1)
     for sgn in (-1, 1):
         kit.stool(B, -46.0 + sgn * 0.55, 8.0, Z, 90.0 + sgn * 90.0)
+        B.thing("yard_chess_w_stool%d" % (sgn + 1), "seat", (-46.0 + sgn * 0.55, 8.0, 0.45), 180.0 - sgn * 90.0, height=0.45)
     B.thing("yard_chess_w", "play", (-46.0, 8.0, 0.73), 0.0, what="chess")
     for bx in (-46.0, -40.0):
         kit.bench(B, bx, 15.4, Z, 0.0, w=1.8, kind="park")
@@ -481,6 +482,7 @@ def _dress_pilotis(B):
     kit.chess_table(B, 46.0, 8.0, Z, 0.0, seed=2)
     for sgn in (-1, 1):
         kit.stool(B, 46.0 + sgn * 0.55, 8.0, Z, 90.0 + sgn * 90.0)
+        B.thing("yard_chess_e_stool%d" % (sgn + 1), "seat", (46.0 + sgn * 0.55, 8.0, 0.45), 180.0 - sgn * 90.0, height=0.45)
     B.thing("yard_chess_e", "play", (46.0, 8.0, 0.73), 0.0, what="chess")
     kit.bench(B, 41.0, 15.4, Z, 0.0, w=1.8, kind="park")
     B.thing("yard_bench_e", "seat", (41.0, 15.4, 0.47), 0.0, height=0.45)
@@ -498,6 +500,7 @@ def _dress_roof(B, zr):
     kit.chess_table(B, 50.5, 12.2, zr, 0.0, seed=7)
     for sgn in (-1, 1):
         kit.stool(B, 50.5 + sgn * 0.55, 12.2, zr, 90.0 + sgn * 90.0)
+        B.thing("roof_chess_stool%d" % (sgn + 1), "seat", (50.5 + sgn * 0.55, 12.2, zr + 0.45), 180.0 - sgn * 90.0, height=0.45)
     _lift_door(B, "lift_roof", (xb(22) + xb(24)) / 2, 11.0, zr, 0.0)
     B.thing("roof_chess", "play", (50.5, 12.2, zr + 0.73), 0.0, what="chess")
     for j, (x, y) in enumerate(((46.0, 6.5), (55.0, 14.0))):
@@ -719,6 +722,7 @@ def _u_fab(B, u):
     kit.sewing_table(B, -12.6, 13.0, Z, 0.0)
     B.thing("fab_sewing", "craft", (-12.6, 13.0, Z + 0.95), 0.0, what="sewing_machine")
     kit.stool(B, -12.6, 13.75, Z, 180.0)
+    B.thing("fab_sewing_stool", "seat", (-12.6, 13.75, Z + 0.45), 0.0, height=0.45)
     kit.mirror(B, -12.6, 14.0, Z, 0.0, zc=1.5, w=0.55, h=1.0)
     kit.poster(B, -14.3, 13.2, Z, 90.0, name="fabric_1", w=0.6, zc=1.7)
     kit.rug(B, -12.6, 10.8, Z + 0.01, 0.0, w=1.6, d=0.9, name="rug_6", seed=6)
@@ -755,12 +759,14 @@ def _u_game(B, u):
         kit.chess_table(B, tx, 10.9, Z, 0.0, seed=k + 5)
         for sgn in (-1, 1):
             kit.stool(B, tx + sgn * 0.55, 10.9, Z, 90.0 + sgn * 90.0)
+            B.thing("game_%s_stool%d" % (what, sgn + 1), "seat", (tx + sgn * 0.55, 10.9, Z + 0.45), 180.0 - sgn * 90.0, height=0.45)
         B.thing("game_" + what, "play", (tx, 10.9, Z + 0.73), 0.0, what=what)
         _stand(B, "game_%s_seat" % what, "table", tx - 0.55, 10.9, Z, 90.0)
     d = B.detail
     tb = kit.table(B, -2.8, 10.9, Z, 0.0, w=0.8, d=0.8)
-    for cu, cv, dy in ((0.0, -0.7, 0.0), (0.0, 0.7, 180.0), (-0.7, 0.0, 90.0)):
+    for ci, (cu, cv, dy) in enumerate(((0.0, -0.7, 0.0), (0.0, 0.7, 180.0), (-0.7, 0.0, 90.0))):
         kit.chair(B, -2.8 + cu, 10.9 + cv, Z, dy, kind="wood")
+        B.thing("game_dominoes_chair%d" % ci, "seat", (-2.8 + cu, 10.9 + cv, Z + 0.45), dy, height=0.45)
     for k in range(7):
         ux, vx = -0.22 + k * 0.07, 0.04 * ((-1) ** k)
         box(d, "CT_ConcreteDark", -2.8 + ux - 0.03, -2.8 + ux + 0.03, 10.9 + vx - 0.055, 10.9 + vx + 0.055, tb["top"], tb["top"] + 0.014, faces="xXyYZ")
@@ -909,6 +915,7 @@ def _flat(B):
     kit.sewing_table(B, -8.7, 5.5, Zb, 0.0)
     B.thing("tul_sewing", "craft", (-8.7, 5.5, Zb + 0.95), 0.0, what="sewing_machine")
     kit.stool(B, -8.7, 6.25, Zb, 180.0)
+    B.thing("tul_sewing_stool", "seat", (-8.7, 6.25, Zb + 0.45), 0.0, height=0.45)
     kit.rug(B, -9.0, 7.0, Zb + 0.01, 0.0, w=1.5, d=2.4, name="rug_5", seed=5)
     kit.bookshelf(B, FX1, 11.6, Zb, 270.0, w=1.2, topic="travel", seed=6)
     B.thing("tul_album", "shelf", (FX1 - 0.3, 11.6, Zb + 1.0), 270.0, topic="travel")
