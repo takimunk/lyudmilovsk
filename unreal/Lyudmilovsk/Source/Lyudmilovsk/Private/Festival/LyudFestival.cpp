@@ -2751,8 +2751,7 @@ void ALyudFireworks::Tick(float DeltaTime)
 			// the shell climbs, slowing near the top
 			const float U = S.T / S.Rise;
 			const FVector P = FMath::Lerp(S.From, S.Burst, 1.f - (1.f - U) * (1.f - U));
-			Trail->SetWorldLocation(P);
-			Trail->SetWorldRotation(FRotationMatrix::MakeFromZ(S.Burst - S.From).Rotator());
+			Trail->SetWorldLocationAndRotation(P, FRotationMatrix::MakeFromZ(S.Burst - S.From).Rotator());
 			Trail->SetVisibility(true);
 			continue;
 		}
@@ -2966,6 +2965,7 @@ void ALyudSkyLanterns::Tick(float DeltaTime)
 					L.V = FVector(0.f, 0.f, 55.f + Rand() * 45.f) + Sea * (40.f + Rand() * 60.f) + Side * (Rand() - 0.5f) * 30.f;
 				}
 				L.Phase = Rand() * 10.f;
+				Comps[I]->SetVisibility(true);
 				break;
 			}
 		}
@@ -3004,9 +3004,8 @@ void ALyudSkyLanterns::Tick(float DeltaTime)
 				continue;
 			}
 			Alive++;
-			Comps[I]->SetWorldLocation(L.P);
-			Comps[I]->SetWorldRotation(FRotator(FMath::Sin(L.T * 1.1f + L.Phase) * 3.f, L.Phase * 30.f + L.T * 2.f, FMath::Cos(L.T * 0.9f + L.Phase) * 3.f));
-			Comps[I]->SetVisibility(true);
+			// one move a frame (shown when it was let go)
+			Comps[I]->SetWorldLocationAndRotation(L.P, FRotator(FMath::Sin(L.T * 1.1f + L.Phase) * 3.f, L.Phase * 30.f + L.T * 2.f, FMath::Cos(L.T * 0.9f + L.Phase) * 3.f));
 			continue;
 		}
 		// a slow climb that eases off as the air in them cools, a little sway
@@ -3019,9 +3018,7 @@ void ALyudSkyLanterns::Tick(float DeltaTime)
 			continue;
 		}
 		Alive++;
-		Comps[I]->SetWorldLocation(L.P);
-		Comps[I]->SetWorldRotation(FRotator(FMath::Sin(L.T * 0.7f + L.Phase) * 4.f, L.Phase * 30.f, FMath::Cos(L.T * 0.6f + L.Phase) * 4.f));
-		Comps[I]->SetVisibility(true);
+		Comps[I]->SetWorldLocationAndRotation(L.P, FRotator(FMath::Sin(L.T * 0.7f + L.Phase) * 4.f, L.Phase * 30.f, FMath::Cos(L.T * 0.6f + L.Phase) * 4.f));
 	}
 	if (!bOn && Alive == 0)
 	{
