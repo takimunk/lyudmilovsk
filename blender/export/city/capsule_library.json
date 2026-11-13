@@ -1074,6 +1074,17 @@
   },
   {
    "pos": [
+    -6.3,
+    15.0,
+    14.95
+   ],
+   "lumens": 170,
+   "colour": "#FFE2B0",
+   "kind": "public",
+   "radius": 4.0
+  },
+  {
+   "pos": [
     4.455,
     10.545,
     14.95
@@ -1090,6 +1101,17 @@
     14.95
    ],
    "lumens": 300,
+   "colour": "#FFE2B0",
+   "kind": "public",
+   "radius": 4.0
+  },
+  {
+   "pos": [
+    6.3,
+    15.0,
+    14.95
+   ],
+   "lumens": 170,
    "colour": "#FFE2B0",
    "kind": "public",
    "radius": 4.0
@@ -3446,8 +3468,8 @@
   "18 reading pods on 3 levels round an octagonal core; glazed hall; open stair to level 1"
  ],
  "tris": {
-  "shell": 7088,
-  "detail": 41344,
+  "shell": 7124,
+  "detail": 42685,
   "windows": 228
  }
 }

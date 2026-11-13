@@ -499,7 +499,7 @@ def _parrot(d, x, y, z, yw):
     blob(d, "CT_SteelRed", q[0], q[1], q[2], 0.02, segs=5, sq=1.2)                 # beak
     for sv in (-0.058, 0.058):                                                     # wings folded on the sides
         q = at(-0.01, sv, 0.145)
-        rbox(d, "CT_PlasterBlue", q[0], q[1], z + 0.07, z + 0.22, 0.012, 0.05, a + math.pi / 2)
+        rbox(d, "CT_PlasterBlue", q[0], q[1], z + 0.07, z + 0.22, 0.05, 0.012, a + math.pi / 2)
     q = at(-0.08, 0.0, -0.02)
     rbox(d, "CT_PlasterGreen", q[0], q[1], z - 0.12, z + 0.1, 0.02, 0.01, a + math.pi / 2)   # tail hangs below the perch
     q = at(-0.08, 0.0, -0.12)
@@ -604,10 +604,8 @@ def _third_layer(B, zf):
     for k in range(4):
         q = P(6.0, 62 + 2.2 * k, top)
         cyl(d, "CT_TileWhite", q[0], q[1], top, top + 0.1, 0.035, 6, r1=0.04, top=False)
-    mp = P(7.7, 90, zf + 2.55)
-    kit.menu_board(B, mp[0], mp[1], 0.0, yaw_to(mp, (CX, CY)) + 180.0, name="menu_1", w=0.7, zc=zf + 2.45) if False else None
     cm = P(7.82, 62, zf)
-    kit.menu_board(B, cm[0], cm[1], zf, yaw_to(cm, (CX, CY)) + 180.0, name="menu_1", w=0.55, zc=2.65)
+    kit.menu_board(B, cm[0], cm[1], zf, yaw_to(cm, (CX, CY)), name="menu_1", w=0.55, zc=2.65)
     # ---- table settings that differ
     layout = [(8.4, a) for a in (-32, 4, 38, 160, 178, 214, 250)] + [(4.8, a) for a in (150, 195, 345, 20)]
     for ti, (r_, a_) in enumerate(layout):
@@ -633,7 +631,6 @@ def _third_layer(B, zf):
     # ---- coat stand at the stair exit
     hp = P(3.1, 246, zf)
     kit.hat_stand(B, hp[0], hp[1], zf, 0.0)
-    kit.sandwich_board(B, *P(3.6, 270.0, zf)[:2], zf, 0.0, name="menu_1") if False else None
     # ---- ice-cream counter: cones in stands behind the tubs, a stack of cups
     a_i = 300
     ic = P(8.6, a_i, zf)

@@ -180,6 +180,31 @@
   "en": "The box is empty. That is news too: for the first time in many days nothing was returned and nothing was taken. The librarian says that happens when everything is in its place.",
   "ja": "ボックスは空です。それもひとつの知らせ。何日ぶりかで、返す人も借りる人もいませんでした。司書さんは「すべてが元の場所にあるときは、そうなります」と言います。"
  },
+ "city.xpl.returns.6": {
+  "ru": "В понедельник библиотека закрыта, а ящик работает всегда. В щели белеет уголок листка: «Читателю из 1968 года. Чайник во вторник, как обычно. Библиотекарь».",
+  "en": "On Monday the library is shut, but the box works round the clock. A corner of paper shows white in the slot: \"To the reader from 1968. The kettle is on Tuesday, as usual. The librarian.\"",
+  "ja": "月曜日は図書館がお休みですが、返却ボックスはいつでも使えます。投入口に紙の角が白くのぞいています。「1968年の読者の方へ。やかんは火曜日、いつもどおりに。司書より」。"
+ },
+ "city.xpl.closed.board": {
+  "ru": "Понедельник, библиотека закрыта. На двери карточка: «Откроемся во вторник в десять. Ящик возврата работает всегда».",
+  "en": "Monday, the library is closed. A card on the door: \"We open on Tuesday at ten. The returns box works at any hour.\"",
+  "ja": "月曜日、図書館はお休みです。扉にカード：「火曜日の10時に開きます。返却ボックスはいつでも使えます」。"
+ },
+ "city.xpl.closed.shelf": {
+  "ru": "По понедельникам полки отдыхают. Корешки смотрят строго перед собой, и я их не тревожу.",
+  "en": "On Mondays the shelves rest. The spines look straight ahead, and I do not disturb them.",
+  "ja": "月曜日は本棚もお休みです。背表紙はまっすぐ前を向いていて、邪魔をしないことにしました。"
+ },
+ "city.xpl.closed.counter": {
+  "ru": "За стойкой никого. На ней записка с кружком чая: «Во вторник с десяти. Читательские дневники не теряйте».",
+  "en": "Nobody at the desk. A note with a tea-ring on it: \"Tuesday from ten. Do not lose your reading diaries.\"",
+  "ja": "カウンターには誰もいません。お茶の輪染みのついたメモ：「火曜日の10時から。読書日記をなくさないでね」。"
+ },
+ "city.xpl.closed.any": {
+  "ru": "В закрытой библиотеке тихо. Всё стоит на своих местах и никуда не торопится.",
+  "en": "A closed library is quiet. Everything stands in its place and is in no hurry.",
+  "ja": "閉まっている図書館は静かです。すべてが自分の場所にあって、急ぐ様子はありません。"
+ },
  "city.xpl.returned.1": {
   "ru": "Полка «Вернувшиеся»: книги без формуляров и без читателей, но с аккуратными закладками. Все корешки смотрят на окно, будто ждут погоды.",
   "en": "The Returned shelf: books with no loan slips and no readers, but with neat bookmarks. All the spines face the window as if waiting for weather.",

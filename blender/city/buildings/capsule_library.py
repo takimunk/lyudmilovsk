@@ -31,7 +31,8 @@ INFO = {
 }
 
 SEED = 1972
-EXTRA_LIT = {(1, 2), (1, 4), (1, 6), (2, 2), (2, 4), (2, 6)}   # pods that would otherwise be pitch dark at night (QA, pass 2: the carrels too)
+DIM_LIT = {(3, 2), (3, 6)}                  # level-3 sea rooms: a low reading lamp only
+EXTRA_LIT = {(1, 2), (1, 4), (1, 6), (2, 2), (2, 4), (2, 6), (3, 2), (3, 6)}   # pods that would otherwise be pitch dark at night (QA, pass 2: the carrels too)
 VARIANTS = {}
 HX0, HX1, HY0, HY1 = -13.0, 13.0, 3.0, 27.0
 HALL_H = 3.6
@@ -198,7 +199,7 @@ def _pod(B, rnd, e, lv, k, skin, accent, shape, lamp_on):
     B.spot("pod_%d_%02d" % (lv, k), "seat", (seat[0], seat[1], zf), seat[3])
     B.thing("pod_%d_%02d" % (lv, k), "seat", (seat[0], seat[1], seat[2]), seat[3], height=round(seat[2] - zf, 2))
     if lamp_on:
-        B.lamp(fr.p(0.0, D / 2 + 0.2)[:2] + (zf + POD_IN - 0.25,), lumens=300, colour="#FFE2B0", kind="public", radius=4.0)
+        B.lamp(fr.p(0.0, D / 2 + 0.2)[:2] + (zf + POD_IN - 0.25,), lumens=(170 if (lv, k) in DIM_LIT else 300), colour="#FFE2B0", kind="public", radius=4.0)
     return P
 
 
@@ -247,7 +248,10 @@ class _PodRoom:
         return self.seat_of(c)
 
     def furnish(self):
-        return {1: self.l1, 2: self.l2, 3: self.l3}[self.lv]()
+        s = {1: self.l1, 2: self.l2, 3: self.l3}[self.lv]()
+        if self.k == 1:                                  # a clock per level, on the window wall beside the round window
+            self.bw(kit.wall_clock, -1.02, zc=2.05)
+        return s
 
     # ------------------------------------------------------------ level 1
     def l1(self):
@@ -346,6 +350,7 @@ class _PodRoom:
         elif k % 3 == 1:
             s = self.seat_of(self.put(kit.zabuton, 0.0, 2.6, 0.0, mat="CT_PlasterGreen"))
             self.put(kit.chabudai, 0.0, 3.4, 0.0)
+            self.put(kit.table_lamp, 0.0, 3.4, 0.0, top=self.zf + 0.33, shade="CT_SteelWhite")
             self.put(kit.plant, -1.0, 3.6, 0.0, kind="monstera", pot="CT_SteelWhite", h=0.7)
         else:
             s = self.seat_of(self.put(kit.armchair, 0.0, 3.1, 0.0, solid=False, mat="CT_SteelWhite"))
@@ -624,7 +629,7 @@ def _furnish(B, rnd):
         chs = K.around_table(B, tx, ty, 2.4, 1.0, 0.0, per_side=(2, 2, 0, 0), kind="wood",
                              mat=R.choice(("CT_PlasterBlue", "CT_PlasterGreen", "CT_PlasterYellow", "CT_SteelRed")))
         K.books_stack(B, tx - 0.7, ty, 0.75, R.uniform(-30, 30), n=R.randint(2, 4), seed=tid[0])
-        K.newspaper(B, tx + 0.5, ty + 0.1, 0.75, R.uniform(-30, 30), seed=tid[1])
+        _table_clutter(B, [(-9.5, 20.5), (-9.5, 24.0), (-2.4, 23.5), (3.2, 23.5), (7.4, 23.0)].index((tx, ty)), tx, ty)
         for j, c in enumerate(chs):
             s_ = c["seats"][0]
             B.spot("hall_seat_%d_%d_%d" % (tid[0], tid[1], j), "seat", (s_[0], s_[1], 0.0), s_[3])
@@ -682,9 +687,75 @@ def _furnish(B, rnd):
     K.globe(B, 0.3, 21.4, 0.0, 0.0, floor=True)
 
 
+def _trolley(B, x, y, yaw, seed=0):
+    """A book trolley: two shelves of books on four casters and a push bar (0.8 x 0.4 x 0.95), detail only plus a core."""
+    fr = fu.Fr(x, y, yaw)
+    for z in (0.18, 0.58):
+        fu.lbox(B.detail, "CT_WoodLight", fr, -0.4, 0.4, -0.2, 0.2, z, z + 0.04)
+    for sx in (-0.38, 0.38):
+        for sy in (-0.18, 0.18):
+            fu.lbox(B.detail, "CT_Steel", fr, sx - 0.015, sx + 0.015, sy - 0.015, sy + 0.015, 0.0, 0.18)
+            fu.lbox(B.detail, "CT_Steel", fr, sx - 0.012, sx + 0.012, sy - 0.012, sy + 0.012, 0.22, 0.6)
+    fu.lbox(B.detail, "CT_Steel", fr, 0.36, 0.4, -0.2, 0.2, 0.9, 0.94)
+    fu.lbox(B.m, "CT_WoodLight", fr, -0.38, 0.38, -0.18, 0.18, 0.3, 0.6)
+    p = fr.p(-0.1, 0.0)
+    kit.books_stack(B, p[0], p[1], 0.22, yaw + 100, n=4, seed=seed)
+    p = fr.p(0.15, 0.0)
+    kit.books_stack(B, p[0], p[1], 0.62, yaw + 80, n=3, seed=seed + 1)
+
+
+def _table_clutter(B, i, tx, ty):
+    """One thing of its own on each long reading table (the shared books/newspaper stay)."""
+    K = kit
+    z = 0.75
+    if i == 0:                                           # an atlas lies open
+        K.newspaper(B, tx + 0.45, ty + 0.12, z, 12.0, cellname="map_world")
+    elif i == 1:                                         # a magnifier on a page
+        K.newspaper(B, tx + 0.4, ty - 0.1, z, -15.0, cellname="news_0")
+        fr = fu.Fr(tx + 0.4, ty - 0.1, -15.0)
+        fu.cyl(B.detail, "CT_Steel", tx + 0.4, ty - 0.1, z + 0.004, z + 0.012, 0.06, segs=14, top=True)
+        fu.cyl(B.detail, "CT_SteelWhite", tx + 0.4, ty - 0.1, z + 0.012, z + 0.016, 0.048, segs=14, top=True)
+        fu.lbox(B.detail, "CT_WoodLight", fr, 0.05, 0.19, -0.012, 0.012, z + 0.004, z + 0.02)
+    elif i == 2:                                         # a stack with a ribbon bookmark hanging out
+        K.books_stack(B, tx + 0.5, ty - 0.05, z, 25.0, n=4, seed=77)
+        fu.lbox(B.detail, "CT_PlasterRed", fu.Fr(tx + 0.5, ty - 0.05, 25.0), 0.12, 0.15, -0.14, -0.05, z + 0.06, z + 0.064)
+    elif i == 3:                                         # a forgotten pair of glasses
+        fr = fu.Fr(tx + 0.55, ty + 0.15, 20.0)
+        for sx in (-0.045, 0.045):
+            fu.cyl(B.detail, "CT_Steel", fr.p(sx, 0)[0], fr.p(sx, 0)[1], z, z + 0.006, 0.03, segs=10, top=True)
+        fu.lbox(B.detail, "CT_Steel", fr, -0.015, 0.015, -0.004, 0.004, z, z + 0.006)
+        for sx in (-0.07, 0.07):
+            fu.lbox(B.detail, "CT_Steel", fr, sx - 0.003, sx + 0.003, 0.0, 0.1, z, z + 0.006)
+    else:                                                # a teapot and a cup between the books
+        K.teapot(B, tx + 0.45, ty + 0.12, z, 0.0)
+        K.cup(B, tx + 0.7, ty - 0.1, z, 0.0)
+
+
 def _extras(B, R):
     K = kit
     th = B.thing
+    # third layer: topic pictures on the stack ends, trolleys, an open catalogue drawer, a step stool, a globe, a clock
+    for (sx, ey, yw, nm) in ((7.2, 7.0, 0.0, "poster_birds_2"), (7.2, 11.0, 180.0, "poster_health"), (7.2, 14.0, 0.0, "poster_safety"),
+                             (7.2, 17.0, 180.0, "chart_periodic"), (10.4, 7.0, 0.0, "painting_sea_calm"), (10.4, 11.0, 180.0, "sleeve_2"),
+                             (10.4, 14.0, 0.0, "travel_1"), (10.4, 17.0, 180.0, "painting_abstract")):
+        K.poster(B, sx, ey, 0.0, yw, name=nm, w=0.42, zc=1.7)
+    _trolley(B, 8.8, 12.5, 90.0, seed=61)
+    _trolley(B, -11.6, 9.7, 0.0, seed=63)
+    fr = fu.Fr(5.3, 6.275, 0.0)                       # the fourth catalogue's second drawer pulled out
+    fu.lbox(B.detail, "CT_WoodLight", fr, -0.17, 0.17, -0.3, 0.0, 0.88, 0.98)
+    fu.lbox(B.detail, "CT_Paper", fr, -0.15, 0.15, -0.28, -0.02, 0.98, 1.0)
+    fu.lbox(B.detail, "CT_Steel", fr, -0.04, 0.04, -0.31, -0.3, 0.92, 0.94)
+    fr = fu.Fr(6.55, 13.0, 0.0)                       # a two-step stool at the end of a stack
+    fu.lbox(B.detail, "CT_WoodLight", fr, -0.2, 0.2, -0.15, 0.15, 0.0, 0.2)
+    fu.lbox(B.detail, "CT_WoodLight", fr, -0.2, 0.2, 0.0, 0.15, 0.2, 0.4)
+    fu.lbox(B.m, "CT_WoodLight", fr, -0.18, 0.18, -0.13, 0.13, 0.05, 0.19)
+    K.globe(B, 10.95, 5.3, 0.75, 0.0)
+    e0 = [e for e in CORE["edges"] if int(round(e["yaw"])) == 0][0]
+    cf = fu.Fr(e0["mid"][0], e0["mid"][1], e0["yaw"], 0.0).p(1.3, 0.0)
+    K.wall_clock(B, cf[0], cf[1], 0.0, e0["yaw"], zc=2.7)
+    # the door leaf of the librarian's office, open against the jamb
+    fu.lbox(B.detail, "CT_Door", fu.Fr(10.12, 21.5, 0.0), -0.02, 0.02, -0.5, 0.5, 0.0, 2.1)
+    fu.lbox(B.detail, "CT_Steel", fu.Fr(10.12, 21.5, 0.0), 0.02, 0.05, 0.38, 0.42, 0.95, 1.0)
     # ---- the "returned" shelf under the east glass: two low shelves, a reading lamp, an armchair, a typed card on the glass
     for yy in (10.65, 11.55):
         K.bookshelf(B, 12.62, yy, 0.0, 270.0, w=0.9, h=1.2, levels=3, topic="old", seed=int(yy * 10))
@@ -751,16 +822,7 @@ def _office(B, R):
     K.wall_clock(B, 10.6, y0, 0.0, 180.0, zc=2.75)
     K.picture(B, 12.1, y0, 0.0, 180.0, name="painting_pines", w=0.6, zc=1.6)
     K.poster(B, 11.55, y0, 0.0, 180.0, name="paper_drawing", w=0.34, zc=1.5)
-    fr = fu.Fr(10.05, 24.15, 90.0)
-    fu.lbox(B.detail, "CT_WoodLight", fr, -0.4, 0.4, -0.2, 0.2, 0.18, 0.22)
-    fu.lbox(B.detail, "CT_WoodLight", fr, -0.4, 0.4, -0.2, 0.2, 0.58, 0.62)
-    for sx in (-0.38, 0.38):
-        for sy in (-0.18, 0.18):
-            fu.lbox(B.detail, "CT_Steel", fr, sx - 0.015, sx + 0.015, sy - 0.015, sy + 0.015, 0.0, 0.18)
-    fu.lbox(B.detail, "CT_Steel", fr, 0.34, 0.37, -0.2, 0.2, 0.62, 0.95)
-    fu.lbox(B.m, "CT_WoodLight", fr, -0.38, 0.38, -0.18, 0.18, 0.3, 0.6)
-    K.books_stack(B, 10.05, 23.95, 0.22, 100.0, n=4, seed=51)
-    K.books_stack(B, 10.05, 24.35, 0.62, 80.0, n=3, seed=52)
+    _trolley(B, 10.05, 24.15, 90.0, seed=51)
     K.radio(B, 9.85, 25.5, 1.32, 90.0)
     B.thing("office_radio", "machine", (9.9, 25.5, 1.45), 90.0, what="radio")
     B.thing("office_ledger", "board", (11.0, 24.35, 0.82), 0.0, topic="ledger")

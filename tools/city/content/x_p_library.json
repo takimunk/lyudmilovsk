@@ -97,7 +97,7 @@
      "k": "city.xpl.diary.full",
      "count": [
       "library_diary",
-      16
+      17
      ]
     }
    ]
@@ -124,6 +124,10 @@
     {
      "k": "city.xpl.returns.5",
      "after": 14
+    },
+    {
+     "k": "city.xpl.returns.6",
+     "d": "mon"
     }
    ]
   },
@@ -185,6 +189,8 @@
   "library_stamp": {
    "prompt": "city.xpl.stamp.prompt",
    "minutes": 2,
+   "collect": "library_diary/desk",
+   "daily": 1,
    "needs_staff": "librarian",
    "sound": "paper_rustle",
    "lines": [
@@ -221,7 +227,7 @@
      "k": "city.xpl.stamp.6",
      "count": [
       "library_diary",
-      16
+      17
      ]
     }
    ]
@@ -379,7 +385,12 @@
    "act": "library_diary_board"
   },
   "P-LIBRARY/returns_box": {
-   "act": "library_returns"
+   "act": "library_returns",
+   "hours": [
+    0,
+    24
+   ],
+   "days": "mon-sun"
   },
   "P-LIBRARY/returned_shelf": {
    "act": "library_returned_shelf",
@@ -495,6 +506,14 @@
   },
   "P-LIBRARY/pod_3_02": {
    "collect": "library_diary/travel"
+  }
+ },
+ "closed_by": {
+  "P-LIBRARY": {
+   "board": "city.xpl.closed.board",
+   "shelf": "city.xpl.closed.shelf",
+   "counter": "city.xpl.closed.counter",
+   "*": "city.xpl.closed.any"
   }
  },
  "quests": [

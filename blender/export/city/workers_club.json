@@ -3946,28 +3946,6 @@
  "lamps": [
   {
    "pos": [
-    -15.55,
-    7.25,
-    4.5
-   ],
-   "lumens": 260,
-   "colour": "#FFD8A8",
-   "kind": "public",
-   "radius": 3.2
-  },
-  {
-   "pos": [
-    -8.6,
-    5.7,
-    2.35
-   ],
-   "lumens": 240,
-   "colour": "#FFB070",
-   "kind": "public",
-   "radius": 3.4
-  },
-  {
-   "pos": [
     16.52,
     7.45,
     2.35
@@ -3976,17 +3954,6 @@
    "colour": "#FF5A40",
    "kind": "public",
    "radius": 2.4
-  },
-  {
-   "pos": [
-    13.9,
-    6.5,
-    4.6
-   ],
-   "lumens": 320,
-   "colour": "#FFE0B0",
-   "kind": "public",
-   "radius": 4.2
   },
   {
    "pos": [
@@ -5697,7 +5664,7 @@
  ],
  "tris": {
   "shell": 2228,
-  "detail": 35662,
+  "detail": 37574,
   "windows": 136
  }
 }

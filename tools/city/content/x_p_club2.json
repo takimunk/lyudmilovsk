@@ -5,7 +5,7 @@
    "like": "cinema",
    "lines": [
     {
-     "k": "city.rassvet.film.mon.d",
+     "k": "city.rassvet.film.mon_d",
      "d": "mon",
      "h": [
       15,
@@ -13,7 +13,7 @@
      ]
     },
     {
-     "k": "city.rassvet.film.mon.e",
+     "k": "city.rassvet.film.mon_e",
      "d": "mon",
      "h": [
       19,
@@ -21,7 +21,7 @@
      ]
     },
     {
-     "k": "city.rassvet.film.tue.d",
+     "k": "city.rassvet.film.tue_d",
      "d": "tue",
      "h": [
       15,
@@ -29,7 +29,7 @@
      ]
     },
     {
-     "k": "city.rassvet.film.tue.e",
+     "k": "city.rassvet.film.tue_e",
      "d": "tue",
      "h": [
       19,
@@ -37,7 +37,7 @@
      ]
     },
     {
-     "k": "city.rassvet.film.wed.d",
+     "k": "city.rassvet.film.wed_d",
      "d": "wed",
      "h": [
       15,
@@ -45,7 +45,7 @@
      ]
     },
     {
-     "k": "city.rassvet.film.wed.e",
+     "k": "city.rassvet.film.wed_e",
      "d": "wed",
      "h": [
       19,
@@ -53,7 +53,7 @@
      ]
     },
     {
-     "k": "city.rassvet.film.thu.d",
+     "k": "city.rassvet.film.thu_d",
      "d": "thu",
      "h": [
       15,
@@ -61,7 +61,7 @@
      ]
     },
     {
-     "k": "city.rassvet.film.thu.e",
+     "k": "city.rassvet.film.thu_e",
      "d": "thu",
      "h": [
       19,
@@ -69,7 +69,7 @@
      ]
     },
     {
-     "k": "city.rassvet.film.fri.d",
+     "k": "city.rassvet.film.fri_d",
      "d": "fri",
      "h": [
       15,
@@ -77,7 +77,7 @@
      ]
     },
     {
-     "k": "city.rassvet.film.fri.e",
+     "k": "city.rassvet.film.fri_e",
      "d": "fri",
      "h": [
       19,
@@ -85,7 +85,7 @@
      ]
     },
     {
-     "k": "city.rassvet.film.sat.d",
+     "k": "city.rassvet.film.sat_d",
      "d": "sat",
      "h": [
       15,
@@ -93,7 +93,7 @@
      ]
     },
     {
-     "k": "city.rassvet.film.sat.e",
+     "k": "city.rassvet.film.sat_e",
      "d": "sat",
      "h": [
       19,
@@ -101,7 +101,7 @@
      ]
     },
     {
-     "k": "city.rassvet.film.sun.d",
+     "k": "city.rassvet.film.sun_d",
      "d": "sun",
      "h": [
       15,
@@ -109,7 +109,7 @@
      ]
     },
     {
-     "k": "city.rassvet.film.sun.e",
+     "k": "city.rassvet.film.sun_e",
      "d": "sun",
      "h": [
       19,
@@ -125,11 +125,11 @@
    "prompt": "city.rassvet.reel.prompt",
    "lines": [
     {
-     "k": "city.rassvet.reel.1"
+     "k": "city.rassvet.reelfilm_1"
     },
     {
-     "k": "city.rassvet.reel.2",
-     "after": 10
+     "k": "city.rassvet.reelfilm_2",
+     "after": 18
     }
    ],
    "rotate": "use"
@@ -164,6 +164,10 @@
     {
      "k": "city.rassvet.poster.sun",
      "d": "sun"
+    },
+    {
+     "k": "city.rassvet.poster.fest",
+     "festival": "any"
     }
    ],
    "rotate": "daily",
@@ -207,43 +211,52 @@
    "lines": [
     {
      "k": "city.reg.rassvet.1",
-     "after": 0
+     "after": 0,
+     "before": 2
     },
     {
      "k": "city.reg.rassvet.2",
-     "after": 1
+     "after": 2,
+     "before": 4
     },
     {
      "k": "city.reg.rassvet.3",
-     "after": 2
+     "after": 4,
+     "before": 6
     },
     {
      "k": "city.reg.rassvet.4",
-     "after": 3
+     "after": 6,
+     "before": 8
     },
     {
      "k": "city.reg.rassvet.5",
-     "after": 4
+     "after": 8,
+     "before": 10
     },
     {
      "k": "city.reg.rassvet.6",
-     "after": 5
+     "after": 10,
+     "before": 12
     },
     {
      "k": "city.reg.rassvet.7",
-     "after": 6
+     "after": 12,
+     "before": 14
     },
     {
      "k": "city.reg.rassvet.8",
-     "after": 7
+     "after": 14,
+     "before": 16
     },
     {
      "k": "city.reg.rassvet.9",
-     "after": 8
+     "after": 16,
+     "before": 18
     },
     {
      "k": "city.reg.rassvet.10",
-     "after": 10
+     "after": 18
     }
    ],
    "rotate": "daily"
@@ -445,7 +458,7 @@
     },
     {
      "k": "city.rassvet.piano.4",
-     "after": 5,
+     "after": 10,
      "h": [
       12,
       23
@@ -502,11 +515,11 @@
     },
     {
      "k": "city.rassvet.stubs.3",
-     "after": 3
+     "after": 4
     },
     {
      "k": "city.rassvet.stubs.4",
-     "after": 8
+     "after": 16
     }
    ],
    "rotate": "daily"
@@ -546,16 +559,19 @@
    "act": "cinema_reel"
   },
   "P-CLUB2/poster_wall": {
-   "act": "look_poster_week"
+   "act": "look_poster_week",
+   "closed": "city.rassvet.closed.poster"
   },
   "P-CLUB2/hall_board_w": {
-   "act": "look_hall_notice"
+   "act": "look_hall_notice",
+   "closed": "city.rassvet.closed.hall"
   },
   "P-CLUB2/foyer_board": {
    "act": "look_rassvet"
   },
   "P-CLUB2/chess_ladder": {
-   "act": "look_chess_ladder"
+   "act": "look_chess_ladder",
+   "closed": "city.rassvet.closed.board"
   },
   "P-CLUB2/radio_set_a": {
    "act": "radio_town"
@@ -564,25 +580,121 @@
    "act": "radio_short"
   },
   "P-CLUB2/dance_floor": {
-   "act": "dance_class"
+   "act": "dance_class",
+   "closed": "city.rassvet.closed.floor"
   },
   "P-CLUB2/dance_mirror": {
    "act": "look_dance_mirror"
   },
   "P-CLUB2/hall_piano": {
-   "act": "piano_club"
+   "act": "piano_club",
+   "closed": "city.rassvet.closed.floor"
   },
   "P-CLUB2/rehearsal_door": {
    "act": "listen_rehearsal"
   },
   "P-CLUB2/ticket_stubs": {
-   "act": "look_stubs"
+   "act": "look_stubs",
+   "closed": "city.rassvet.closed.board"
   },
   "P-CLUB2/buffet_menu": {
-   "act": "look_buffet_menu"
+   "act": "look_buffet_menu",
+   "closed": "city.rassvet.closed.menu"
   },
   "P-CLUB2/lost_property": {
    "act": "look_lost_club"
   }
- }
+ },
+ "quests": [
+  {
+   "id": "rassvet_reel",
+   "kind": "side",
+   "start_on": {
+    "event": "visit",
+    "target": "P-CLUB2"
+   },
+   "stages": [
+    {
+     "id": "board",
+     "objectives": [
+      {
+       "id": "board",
+       "event": "do",
+       "target": "look_rassvet"
+      }
+     ]
+    },
+    {
+     "id": "radio",
+     "objectives": [
+      {
+       "id": "radio",
+       "event": "do",
+       "target": "radio_short"
+      }
+     ]
+    },
+    {
+     "id": "piano",
+     "objectives": [
+      {
+       "id": "piano",
+       "event": "do",
+       "target": "piano"
+      }
+     ]
+    },
+    {
+     "id": "screening",
+     "objectives": [
+      {
+       "id": "screening",
+       "event": "do",
+       "target": "cinema_reel"
+      }
+     ],
+     "reward": {
+      "items": {
+       "postcard": 1
+      }
+     }
+    }
+   ]
+  },
+  {
+   "id": "chess_ladder",
+   "kind": "side",
+   "start_on": {
+    "event": "do",
+    "target": "look_chess_ladder"
+   },
+   "stages": [
+    {
+     "id": "read",
+     "objectives": [
+      {
+       "id": "read",
+       "event": "do",
+       "target": "read_chess"
+      }
+     ]
+    },
+    {
+     "id": "play",
+     "objectives": [
+      {
+       "id": "play",
+       "event": "do",
+       "target": "chess"
+      }
+     ],
+     "reward": {
+      "items": {
+       "tea": 1
+      }
+     }
+    }
+   ]
+  }
+ ]
 }

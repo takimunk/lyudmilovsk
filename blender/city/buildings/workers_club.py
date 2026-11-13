@@ -456,7 +456,6 @@ def _deepen(B):
         box(det, "CT_Wood", xb - 0.1, xb + 0.0, yl, yl + 0.05, 0.0, 1.75)
     box(det, "CT_Wood", xb - 0.1, xb + 0.0, 6.74, 7.76, 1.7, 1.75)
     B.thing("chess_ladder", "board", (xb + 0.06, 7.25, 1.28), 90.0, topic="chess")
-    B.lamp((xb + 0.9, 7.25, ZF - 0.5), lumens=260, colour="#FFD8A8", radius=3.2)
     B.spot("chess_ladder_stand", "stand", (xb + 1.0, 7.25, 0.0), 270.0)
     for k, cx in enumerate((-15.2, -12.8)):                 # the second seat of each board
         B.spot("chess_seat_%db" % (k + 1), "seat", (cx, 6.85, 0.0), 0.0)
@@ -467,7 +466,6 @@ def _deepen(B):
     box(det, "CT_Rubber", -8.34, -8.16, 5.60, 5.76, 0.75, 0.765)
     box(det, "CT_Rubber", -8.95, -8.8, 5.62, 5.72, 0.75, 0.78)                  # headphones, one cup each
     box(det, "CT_Rubber", -8.77, -8.62, 5.62, 5.72, 0.75, 0.78)
-    B.lamp((-8.6, 5.7, 2.35), lumens=240, colour="#FFB070", radius=3.4)
     for k, rx in enumerate((-9.0, -8.0)):
         B.spot("radio_seat_%d" % (k + 1), "seat", (rx, 6.1, 0.0), 0.0)
     # ---------------------------------------------------------------- a door in the east wall with a rehearsal behind
@@ -482,7 +480,6 @@ def _deepen(B):
     B.thing("rehearsal_door", "board", (xd - 0.06, 7.45, 1.4), 270.0, topic="rehearsal")
     B.spot("rehearsal_listen", "stand", (xd - 0.8, 7.45, 0.0), 90.0)
     # ---------------------------------------------------------------- dance floor and piano: people's places
-    B.lamp((13.9, 6.5, ZF - 0.4), lumens=320, colour="#FFE0B0", radius=4.2)
     for k, (dx, dy, dyaw) in enumerate(((12.3, 5.4, 90.0), (13.2, 5.4, 270.0), (14.8, 7.6, 90.0), (15.7, 7.6, 270.0))):
         B.spot("dance_stand_%d" % (k + 1), "stand", (dx, dy, 0.0), dyaw)
     B.spot("piano_stool", "seat", (16.0, 4.2, 0.0), 90.0)
@@ -509,3 +506,71 @@ def _deepen(B):
         box(det, "CT_Brass", tx - 0.04, tx + 0.04, 13.0 + tw / 2 - 0.04, 13.0 + tw / 2 + 0.04, 0.44, 0.455)
     box(det, "CT_Paper", -2.2, -1.95, 13.5, 13.65, 0.4, 0.42)                    # the label, still unread
     B.thing("reel_seat", "screen", (0.0, 15.2, 0.16 + 0.45), 0.0, what="cinema", height=0.45)
+    _third(B)
+
+
+def _third(B):
+    """Third layer: the cloakroom as a place, the ticket window, the projection booth seen from the hall, the buffet's
+    little things, the hobby corners' walls."""
+    det = B.detail
+    yp = YD - 0.4
+    # ---- cloakroom: a bell, number tags on the counter, a key board on the wall
+    _rod(det, -14.95, 10.1, 1.05, 1.08, 0.06, "CT_Brass", 10)
+    _rod(det, -14.95, 10.1, 1.08, 1.12, 0.045, "CT_Brass", 10)
+    box(det, "CT_Brass", -14.97, -14.93, 10.08, 10.12, 1.12, 1.15)
+    for k in range(6):
+        box(det, "CT_Brass", -16.1 + 0.11 * k, -16.1 + 0.11 * k + 0.07, 10.0, 10.07, 1.05, 1.062)
+    box(det, "CT_WoodLight", -14.05, -13.35, yp - 0.03, yp, 1.2, 1.95)
+    for r in range(3):
+        for c in range(5):
+            x = -13.95 + 0.14 * c
+            z = 1.32 + 0.22 * r
+            box(det, "CT_Brass", x, x + 0.05, yp - 0.05, yp - 0.03, z, z + 0.05)
+            box(det, "CT_Steel", x + 0.015, x + 0.035, yp - 0.07, yp - 0.05, z - 0.07, z - 0.04)
+    # ---- ticket window: price card, seating plan of the hall (geometry), a roll of tickets
+    kit.menu_board(B, -7.7, yp, 0.0, 0.0, name="price_1", w=0.55, zc=1.85)
+    box(det, "CT_PlasterBlue", -10.75, -10.05, yp - 0.03, yp, 1.4, 1.95)
+    box(det, "CT_WoodLight", -10.78, -10.02, yp - 0.04, yp - 0.03, 1.37, 1.98)
+    box(det, "CT_Paper", -10.70, -10.10, yp - 0.045, yp - 0.03, 1.77, 1.80)           # the screen on the plan
+    for bl in range(5):
+        for row in range(6):
+            x = -10.70 + 0.12 * bl
+            z = 1.44 + 0.05 * row
+            box(det, "CT_PlasterRed", x, x + 0.1, yp - 0.045, yp - 0.03, z, z + 0.035)
+    _rod(det, -8.6, 10.85, 1.05, 1.1, 0.06, "CT_PlasterRed", 12)
+    box(det, "CT_Paper", -8.56, -8.46, 10.8, 10.95, 1.05, 1.052)
+    # ---- the projection booth: two portholes in the back wall, tins on a shelf, a red "film running" lamp
+    yb = YB - 0.4
+    for px in (-1.1, 1.1):
+        box(det, "CT_Steel", px - 0.3, px + 0.3, yb - 0.1, yb, 5.1, 5.7, faces="xXyZzy")
+        box(det, "CT_Rubber", px - 0.22, px + 0.22, yb - 0.115, yb - 0.1, 5.18, 5.62, faces="y")
+        box(det, "CT_Neon", px - 0.04, px + 0.04, yb - 0.12, yb - 0.115, 5.36, 5.44, faces="y")
+    box(det, "CT_PlasterRed", -0.15, 0.15, yb - 0.08, yb, 5.95, 6.1, faces="xXyZz")
+    kit.wall_shelf(B, 3.6, yb, 0.0, 180.0, w=1.2, zt=5.0, props=False)
+    for k in range(4):
+        box(det, "CT_Steel", 3.1 + 0.28 * k, 3.1 + 0.28 * k + 0.24, yb - 0.3, yb - 0.06, 5.0, 5.05 + 0.05 * (k % 2))
+        box(det, "CT_Brass", 3.2 + 0.28 * k, 3.2 + 0.28 * k + 0.04, yb - 0.2, yb - 0.16, 5.05, 5.07 + 0.05 * (k % 2))
+    # ---- buffet: tumblers in holders, buns under a glass dome
+    for k, hx in enumerate((-3.2, -3.0)):
+        _rod(det, hx, 10.55, 1.05, 1.12, 0.035, "CT_Steel", 8)
+        _rod(det, hx, 10.55, 1.07, 1.13, 0.028, "CT_Glass", 8)
+    for k in range(4):
+        _rod(det, 2.82 + 0.1 * (k % 2) + 0.0, 10.35 + 0.1 * (k // 2), 1.05, 1.09, 0.05, "CT_PlasterYellow", 8)
+    box(det, "CT_Steel", 2.7, 3.1, 10.2, 10.6, 1.05, 1.055)
+    _rod(det, 2.92, 10.4, 1.055, 1.23, 0.18, "CT_Glass", 12)
+    _rod(det, 2.92, 10.4, 1.23, 1.27, 0.07, "CT_Glass", 10)
+    # ---- radio room: QSL-card stand with diplomas on its back
+    xs_, ys_ = -8.6, 4.62
+    box(det, "CT_WoodLight", xs_ - 0.8, xs_ + 0.8, ys_ - 0.03, ys_ + 0.03, 0.85, 2.0)
+    for lx in (-0.75, 0.75):
+        box(det, "CT_Wood", xs_ + lx - 0.04, xs_ + lx + 0.04, ys_ - 0.12, ys_ + 0.12, 0.0, 0.85)
+    kit.notice_board(B, xs_, ys_ + 0.03, 0.0, 180.0, w=1.5, zc=1.45, seed=21)
+    cols = ("CT_PlasterRed", "CT_PlasterYellow", "CT_PlasterBlue", "CT_PlasterGreen", "CT_PlasterPink")
+    for k in range(10):
+        x = xs_ - 0.68 + 0.15 * k
+        z = 1.2 + 0.28 * (k % 2)
+        box(det, cols[k % 5], x, x + 0.11, ys_ + 0.07, ys_ + 0.075, z, z + 0.075)
+    for k, nm in enumerate(("paper_letter", "paper_typed", "paper_drawing")):
+        kit.picture(B, xs_ - 0.5 + 0.5 * k, ys_ - 0.03, 0.0, 0.0, name=nm, w=0.34, zc=1.5)
+    # ---- dance shoes on a rack by the floor
+    kit.shoe_rack(B, 11.35, YF + 0.4, 0.0, 180.0, w=0.9, rows=3)
