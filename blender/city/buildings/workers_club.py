@@ -28,9 +28,9 @@ Ideas for later: a stage and curtain, a stair inside the foyer to the club rooms
 """
 import math
 
+import interior_kit as kit
 from citykit import box, prism
 from _cons_util import wall, win, hface, rect
-from _furn1 import rbox, cyl, plant, clothes_rack, goods_row
 
 INFO = {
     "name_ru": "Рабочий клуб (кинотеатр)", "name_en": "Workers' Club",
@@ -137,6 +137,7 @@ def build(B):
     _volume_c(B)
     # ------------------------------------------------------------ interior: foyer
     _foyer(B)
+    _hall_decor(B)
     # ------------------------------------------------------------ interior: hall
     y0 = 14.55
     rows, going, rise = 10, 1.3, 0.16
@@ -150,27 +151,10 @@ def build(B):
         else:
             box(m, "CT_Floor", -17.1, 17.1, y0 + going * i, ye, 0.0, rise * (i + 1))
     centres = [-11.6, -5.8, 0.0, 5.8, 11.6]
-    n = 0
-    for i in range(rows):
-        top = rise * (i + 1)
-        yc = y0 + going * i + going / 2
-        for bi, cx in enumerate(centres):
-            for sidx in range(7):
-                n += 1
-                sx = cx - 1.8 + 0.6 * sidx
-                B.spot("seat%d" % n, "seat", (sx, yc, top), 0.0)
-                rbox(det, "CT_Steel", sx, yc, top, top + 0.40, 0.25, 0.24)                    # seat base
-                rbox(det, "CT_SteelRed", sx, yc - 0.02, top + 0.40, top + 0.47, 0.26, 0.27)   # cushion
-                rbox(det, "CT_SteelRed", sx, yc + 0.28, top + 0.40, top + 0.98, 0.25, 0.04)   # back
-            for k in range(8):
-                ax = cx - 2.1 + 0.6 * k
-                rbox(det, "CT_WoodLight", ax, yc, top + 0.47, top + 0.52, 0.025, 0.24)
-        for ax in (-8.7, -2.9, 2.9, 8.7):                 # aisle lights on the risers
-            box(det, "CT_Neon", ax - 0.14, ax + 0.14, y0 + going * i - 0.03, y0 + going * i, rise * i, rise * i + 0.07)
+    _hall_seats(B, centres, y0, rows, going, rise)
     # stage step, screen on the divider wall, folded curtains, valance
     box(m, "CT_WoodLight", -9.6, 9.6, YD, 13.7, 0.0, 0.4, faces="xXyYZ")
-    box(det, "CT_Steel", -7.8, 7.8, YD, YD + 0.08, 2.35, 8.45)
-    box(det, "CT_TileWhite", -7.5, 7.5, YD + 0.08, YD + 0.13, 2.65, 8.15)
+    kit.cinema_screen(B, 0.0, YD + 0.0, 0.0, 180.0, w=12.2, h=5.6, zb=2.7, picture="screen_film_0")
     for sgn in (-1, 1):
         a_, b_ = (7.8, 9.6) if sgn > 0 else (-9.6, -7.8)
         for k in range(6):
@@ -277,96 +261,177 @@ def _wedge_b(B):
         box(m, "CT_PlasterRed", a, b, yf - 0.15, yf, zb0, zb1)
 
 
-def _poster(det, x, y, z0, z1, w, face, mat, mat2):
-    """A flat poster on a wall: face = 'y' (wall faces -y), 'x' (faces +x), 'X' (faces -x). Centre x,y."""
-    h = w / 2
-    if face == "y":
-        box(det, mat, x - h, x + h, y - 0.03, y, z0, z1, faces="y")
-        box(det, mat2, x - h + 0.08, x + h - 0.08, y - 0.04, y - 0.03, z0 + 0.1, z1 - 0.1, faces="y")
-        box(det, "CT_PlasterRed" if mat2 != "CT_PlasterRed" else "CT_Plaster", x - h + 0.2, x + h - 0.2, y - 0.05, y - 0.04,
-            (z0 + z1) / 2 - 0.1, (z0 + z1) / 2 + 0.25, faces="y")
-    else:
-        sgn = 1 if face == "x" else -1
-        xa, xb = (x, x + 0.03) if sgn > 0 else (x - 0.03, x)
-        box(det, mat, xa, xb, y - h, y + h, z0, z1, faces="X" if sgn > 0 else "x")
-        xa2, xb2 = (x + 0.03, x + 0.04) if sgn > 0 else (x - 0.04, x - 0.03)
-        box(det, mat2, xa2, xb2, y - h + 0.08, y + h - 0.08, z0 + 0.1, z1 - 0.1, faces="X" if sgn > 0 else "x")
+def _hall_seats(B, centres, y0, rows, going, rise):
+    """Rows of folding cinema seats (kit.cinema_row, 7 seats a block); the 350 'seatN' spots sit on the seats. A few
+    seat things (the hero sits and watches the film)."""
+    n = 0
+    for i in range(rows):
+        top = rise * (i + 1)
+        yc = y0 + going * i + going / 2
+        for bi, cx in enumerate(centres):
+            r = kit.cinema_row(B, cx, yc, top, 0.0, n=7, mat="CT_PlasterRed" if (i + bi) % 2 == 0 else "CT_SteelRed",
+                               solid=False)
+            for k in range(7):
+                n += 1
+                sx, sy, sz, syaw = r["seats"][k]
+                B.spot("seat%d" % n, "seat", (sx, yc, top), 0.0)
+            if i in (1, 4, 7) or (i == 9 and bi in (0, 2, 4)):
+                B.thing("seat_r%d_b%d" % (i + 1, bi + 1), "screen", (cx, yc, top + 0.45), 0.0, what="cinema", height=0.45)
+        for ax in (-8.7, -2.9, 2.9, 8.7):                 # aisle lights on the risers
+            box(B.detail, "CT_Neon", ax - 0.14, ax + 0.14, y0 + going * i - 0.03, y0 + going * i, rise * i, rise * i + 0.07)
+
+
+def _hall_decor(B):
+    """The auditorium walls: framed film posters between the ribs, an extinguisher, plants at the stage."""
+    xw, xe = X0 + 0.4, X1 - 0.4
+    west = (("poster_cons_3", 15.8), ("poster_sun_1", 19.6), ("poster_health", 23.4), ("poster_cons_4", 27.2))
+    for nm, y in west:
+        kit.poster(B, xw, y, 0.0, 90.0, name=nm, w=1.15, zc=3.7)
+    east = (("poster_birds_0", 16.2), ("poster_safety", 18.6), ("travel_2", 25.6), ("kids_0", 28.0))
+    for nm, y in east:
+        kit.poster(B, xe, y, 0.0, 270.0, name=nm, w=1.15, zc=3.7)
+    kit.fire_extinguisher(B, xe, 24.4, 1.28, 270.0)
+    kit.plant(B, -15.6, 13.6, 0.0, 0.0, kind="palm", pot="CT_PlasterRed", h=2.2)
+    kit.plant(B, 15.6, 13.6, 0.0, 0.0, kind="palm", pot="CT_PlasterRed", h=2.2)
+    B.thing("hall_board_w", "board", (xw, 21.6, 1.6), 90.0, topic="cinema")
+    kit.notice_board(B, xw, 21.6, 0.0, 90.0, w=1.2, zc=1.6, seed=3)
+    B.thing("hall_stage_step", "screen", (0.0, 13.2, 0.9), 180.0, what="cinema")
 
 
 def _foyer(B):
-    m, det = B.m, B.detail
-    rnd = __import__("random").Random(1928)
-    # ticket booth: counter, side partitions, lintel with a red sign, roof, seller's stool
-    box(m, "CT_WoodLight", -12.0, -6.0, 10.7, 11.3, 0.0, 1.1)
-    box(det, "CT_Plaster", -12.05, -5.95, 10.65, 11.35, 1.1, 1.14)
-    for xx in (-12.15, -5.85):
-        box(m, "CT_Interior", xx - 0.06, xx + 0.06, 10.65, 12.2, 0.0, 2.75, faces="xXyY")
-    box(m, "CT_PlasterRed", -12.2, -5.8, 10.6, 11.3, 1.95, 2.75)
-    box(det, "CT_Neon", -11.4, -6.6, 10.57, 10.6, 2.2, 2.5, faces="y")
-    box(m, "CT_Interior", -12.2, -5.8, 11.3, 12.2, 2.0, 2.75, faces="xXYz")
-    box(det, "CT_Frame", -11.0, -7.0, 10.57, 10.62, 1.3, 1.34, faces="y")
-    for k in range(3):                                           # ticket pads and a till on the counter
-        box(det, "CT_PlasterYellow", -11.2 + 0.3 * k, -11.0 + 0.3 * k, 10.85, 11.1, 1.14, 1.2)
-    box(det, "CT_Steel", -8.4, -7.8, 10.85, 11.15, 1.14, 1.3)
-    box(det, "CT_Frame", -8.3, -7.9, 11.1, 11.14, 1.3, 1.5)
-    cyl(det, "CT_PlasterRed", -10.0, 11.8, 0.0, 0.62, 0.17, 6)                            # seller's stool
+    """Ground foyer 35 x 8.8 m (inner faces x +-17.1, y 3.4..12.2): ticket office, buffet, cloakroom along the divider
+    wall, poster wall, hobby corners (chess + radio amateurs in the west, dance in the east), a lounge, benches."""
+    det = B.detail
+    yp = YD - 0.4                      # the foyer face of the divider wall
+    yw = YF + 0.4                      # the inner face of the front wall
+    # ---------------------------------------------------------------- ticket office (the booth shell stays)
+    kit.shop_counter(B, -9.0, 11.0, 0.0, 0.0, w=5.7, d=0.6, h=1.05, top="CT_WoodLight", front="CT_PlasterBlue", till=False)
+    kit.cash_register(B, -7.4, 11.0, 1.05, 0.0)
+    kit.telephone(B, -10.6, 11.15, 1.05, 180.0)
+    kit.books_stack(B, -9.0, 11.1, 1.05, 0.0, n=3, seed=2)
+    kit.cup(B, -8.2, 11.2, 1.05, 0.0)
+    kit.sign_plate(B, -9.0, 10.6, 0.0, 0.0, name="sign_till", w=3.0, zc=2.35)
+    kit.chair(B, -10.2, 11.75, 0.0, 0.0, kind="school", mat="CT_PlasterRed")
+    kit.filing_cabinet(B, -6.5, yp, 0.0, 0.0)
+    kit.wall_clock(B, -11.2, yp, 0.0, 0.0, zc=2.4, face="clock_1")
+    kit.table_lamp(B, -11.2, 11.2, 1.05, 0.0)
     B.spot("ticket_counter", "counter", (-9.0, 10.2, 0.0), 180.0)
     B.spot("ticket_work", "work", (-9.0, 11.75, 0.0), 0.0)
-    # coat check: counter, rack with coats behind, shelf above
-    box(m, "CT_WoodLight", -17.0, -14.8, 9.9, 10.5, 0.0, 1.05)
-    box(det, "CT_Plaster", -17.05, -14.75, 9.85, 10.55, 1.05, 1.08)
-    clothes_rack(det, rnd, -15.9, 11.4, 0.0, 2.0, 0.0, ["CT_Steel", "CT_PlasterGrey", "CT_Door", "CT_PlasterBlue", "CT_WoodLight"], h=1.7)
-    box(det, "CT_WoodLight", -16.9, -14.9, 11.8, 12.15, 2.0, 2.04)
-    for k in range(6):
-        box(det, ("CT_PlasterRed", "CT_Steel", "CT_WoodLight")[k % 3], -16.7 + 0.32 * k, -16.5 + 0.32 * k, 11.85, 12.1, 2.04, 2.3)
-    box(det, "CT_Steel", -17.0, -14.8, 9.88, 9.9, 1.4, 1.9, faces="y") if False else None
-    B.spot("coat_check", "counter", (-15.9, 9.3, 0.0), 180.0)
-    B.spot("coat_work", "work", (-15.9, 10.95, 0.0), 0.0)
-    # benches under the front glazing (seat + backrest to the glass)
+    B.thing("ticket_counter", "counter", (-9.0, 11.0, 1.05), 0.0, role="clerk", service="tickets")
+    # ---------------------------------------------------------------- cloakroom
+    kit.shop_counter(B, -15.8, 10.2, 0.0, 0.0, w=2.4, d=0.6, h=1.05, top="CT_WoodLight", front="CT_SteelRed", till=False)
+    kit.coat_rack(B, -15.8, 11.75, 0.0, 0.0, w=2.4, coats=0.8, seed=5)
+    kit.coat_rack(B, -15.8, 11.2, 0.0, 180.0, w=2.4, coats=0.5, seed=6, solid=False)
+    kit.sign_plate(B, -15.8, yp, 0.0, 0.0, name="sign_cloakroom", w=1.9, zc=2.7)
+    kit.plates(B, -16.6, 10.2, 1.05, 0.0, n=2)
+    kit.hat_stand(B, -14.55, 9.0, 0.0, 0.0)
+    B.spot("coat_check", "counter", (-15.8, 9.3, 0.0), 180.0)
+    B.spot("coat_work", "work", (-15.8, 10.95, 0.0), 0.0)
+    B.thing("coat_check", "counter", (-15.8, 10.2, 1.05), 0.0, role="clerk", service="cloakroom")
+    # ---------------------------------------------------------------- buffet
+    bar = kit.bar_counter(B, 0.0, 10.4, 0.0, 0.0, w=8.6, d=0.65, h=1.05, taps=0, back=True, seed=4,
+                          front="CT_PlasterRed", top="CT_WoodLight")
+    kit.samovar(B, -3.6, 10.35, 1.05, 0.0)
+    for k in range(4):
+        kit.cup(B, -2.6 + 0.3 * k, 10.2, 1.05, 0.0)
+    kit.plates(B, -0.8, 10.3, 1.05, 0.0, n=3)
+    kit.teapot(B, 0.5, 10.4, 1.05, 0.0)
+    kit.glass(B, 1.0, 10.2, 1.05, 0.0)
+    kit.glass(B, 1.2, 10.3, 1.05, 0.0)
+    kit.bottles(B, 2.2, 10.45, 1.05, 0.0, n=3, seed=1)
+    kit.cash_register(B, 3.5, 10.45, 1.05, 0.0)
+    kit.sign_plate(B, 0.0, yp, 0.0, 0.0, name="sign_buffet", w=2.6, zc=2.6)
+    B.spot("buffet", "counter", (0.0, 9.5, 0.0), 180.0)
+    B.spot("buffet_work", "work", (0.0, 11.2, 0.0), 0.0)
+    B.thing("buffet", "counter", (0.0, 10.4, 1.05), 0.0, role="clerk", service="bar", shop="club_buffet")
+    for k, (tx, ty) in enumerate(((-3.9, 7.2), (3.9, 7.2), (8.4, 7.2))):
+        kit.table_round(B, tx, ty, 0.0, 0.0, r=0.38, h=1.0, mat="CT_WoodLight")
+        kit.cup(B, tx + 0.12, ty - 0.05, 1.0, 0.0)
+        kit.glass(B, tx - 0.12, ty + 0.1, 1.0, 0.0)
+        B.spot("buffet_table_%d" % (k + 1), "table", (tx, ty, 0.0), 0.0)
+        for j, (ox, oy, yw_) in enumerate(((0.0, -0.75, 180.0), (0.0, 0.75, 0.0))):
+            B.spot("buffet_stand_%d_%d" % (k + 1, j + 1), "stand", (tx + ox, ty + oy, 0.0), yw_)
+    # ---------------------------------------------------------------- poster wall (east of the buffet) and banners
+    for k, nm in enumerate(("cinema_0", "cinema_1", "cinema_2", "cinema_3")):
+        kit.poster(B, 6.55 + 1.35 * k, yp, 0.0, 0.0, name=nm, w=1.05, zc=1.95)
+    box(det, "CT_Steel", 5.75, 11.05, yp - 0.02, yp, 0.95, 1.03)                       # poster-wall rail
+    B.thing("poster_wall", "board", (8.4, yp - 0.02, 1.95), 0.0, topic="cinema")
+    kit.banner(B, -9.0, yp, 0.0, 0.0, name="poster_cons_0", w=1.4, zc=3.6)
+    kit.banner(B, 0.0, yp, 0.0, 0.0, name="poster_cons_1", w=1.4, zc=3.9)
+    kit.banner(B, 8.4, yp, 0.0, 0.0, name="poster_cons_2", w=1.4, zc=3.7)
+    kit.sign_plate(B, -13.0, yp, 0.0, 0.0, name="sign_cinema", w=1.6, zc=2.85)
+    kit.sign_plate(B, 13.0, yp, 0.0, 0.0, name="sign_quiet", w=1.6, zc=2.85)
+    kit.wall_clock(B, 4.9, yp, 0.0, 0.0, zc=3.0, face="clock_2")
+    kit.poster(B, -9.65, yw, 0.0, 180.0, name="travel_0", w=0.55, zc=1.7)
+    kit.poster(B, 9.65, yw, 0.0, 180.0, name="travel_1", w=0.55, zc=1.7)
+    kit.poster(B, -2.15, yw, 0.0, 180.0, name="poster_sun_2", w=0.5, zc=1.7)
+    kit.poster(B, 2.15, yw, 0.0, 180.0, name="cinema_4", w=0.5, zc=1.7)
+    # ---------------------------------------------------------------- front-wall benches (kept spots)
     for i, x in enumerate((-13.0, -5.0, 5.0, 13.0)):
-        box(det, "CT_WoodLight", x - 1.0, x + 1.0, 4.4, 4.9, 0.0, 0.45)
-        box(det, "CT_Steel", x - 1.0, x - 0.9, 4.4, 4.9, 0.0, 0.45)
-        box(det, "CT_Steel", x + 0.9, x + 1.0, 4.4, 4.9, 0.0, 0.45)
-        box(det, "CT_WoodLight", x - 1.0, x + 1.0, 4.4, 4.46, 0.45, 0.95)
-        B.spot("foyer_bench%d" % (i + 1), "bench", (x, 4.65, 0.0), 180.0)
+        r = kit.bench(B, x, yw + 0.28, 0.0, 180.0, w=2.0, kind="park")
+        B.spot("foyer_bench%d" % (i + 1), "bench", (x, yw + 0.4, 0.0), 180.0)
+        B.thing("foyer_seat_%d" % (i + 1), "seat", (x, yw + 0.4, 0.45), 180.0, height=0.45)
     for x in (-6.0, 6.0):
         B.column_round(x, 8.0, 0.0, ZF, 0.35, mat="CT_Concrete", segs=14)
-    # buffet: counter, till, urn, cakes and bottles on the back shelf, standing tables
-    box(m, "CT_WoodLight", -4.5, 4.5, 10.1, 10.9, 0.0, 1.05)
-    box(det, "CT_ConcreteDark", -4.45, 4.45, 10.05, 10.1, 0.05, 0.15)
-    box(det, "CT_Plaster", -4.55, 4.55, 10.05, 10.95, 1.05, 1.08)
-    box(det, "CT_WoodLight", -4.0, 4.0, 11.9, 12.2, 0.0, 0.9)
-    box(det, "CT_Plaster", -4.05, 4.05, 11.85, 12.2, 0.9, 0.93)
-    for lv, zz in enumerate((1.4, 1.8, 2.2)):
-        box(det, "CT_WoodLight", -3.9, 3.9, 12.0, 12.2, zz, zz + 0.03)
-        goods_row(det, rnd, (-3.8, 12.1), (3.8, 12.1), zz + 0.03, 0.12, 0.3,
-                  ["CT_PlasterGreen", "CT_Door", "CT_PlasterBlue", "CT_PlasterYellow", "CT_SteelRed"], hmin=0.18, wmin=0.07, wmax=0.1)
-    cyl(det, "CT_Aluminium", -2.0, 10.5, 1.08, 1.5, 0.13, 8)
-    box(det, "CT_Steel", 1.5, 2.1, 10.3, 10.7, 1.08, 1.25)
-    box(det, "CT_Frame", 1.7, 1.9, 10.7, 10.74, 1.25, 1.45)
-    for k in range(5):
-        cyl(det, ("CT_PlasterPink", "CT_WoodLight", "CT_Plaster", "CT_PlasterRed", "CT_PlasterYellow")[k], -1.0 + 0.5 * k, 10.3, 1.08, 1.16, 0.09, 7)
-    B.spot("buffet", "counter", (0.0, 9.5, 0.0), 180.0)
-    B.spot("buffet_work", "work", (0.0, 11.4, 0.0), 0.0)
-    for k, (tx, ty) in enumerate(((7.8, 8.0), (10.6, 6.2), (-1.5, 6.0))):
-        cyl(m, "CT_WoodLight", tx, ty, 1.0, 1.04, 0.38, 10, bottom=True)
-        cyl(m, "CT_Steel", tx, ty, 0.0, 1.0, 0.04, 6, top=False)
-        cyl(m, "CT_Steel", tx, ty, 0.0, 0.03, 0.2, 8)
-        cyl(det, "CT_TileWhite", tx + 0.1, ty, 1.04, 1.08, 0.07, 6)
-        cyl(det, "CT_PlasterRed", tx - 0.12, ty + 0.1, 1.04, 1.13, 0.04, 6)
-        B.spot("buffet_table_%d" % (k + 1), "table", (tx, ty, 0.0), 0.0)
-        for j, (ox, oy, yw) in enumerate(((0.0, -0.75, 180.0), (0.0, 0.75, 0.0))):
-            B.spot("buffet_stand_%d_%d" % (k + 1, j + 1), "stand", (tx + ox, ty + oy, 0.0), yw)
-    # posters (flat panels, no text) on the divider and the side walls, a banner over the booth, plants
-    pc = (("CT_PlasterRed", "CT_Plaster"), ("CT_PlasterBlue", "CT_PlasterYellow"), ("CT_PlasterYellow", "CT_PlasterRed"),
-          ("CT_PlasterGreen", "CT_Plaster"), ("CT_Steel", "CT_PlasterRed"), ("CT_Tile", "CT_PlasterYellow"))
-    yp = YD - 0.4
-    for k, x in enumerate((-3.0, -1.0, 1.0, 3.0, 6.9, 9.6)):
-        _poster(det, x, yp, 1.55, 3.25, 1.3, "y", *pc[k])
-    box(det, "CT_PlasterRed", -11.6, -6.4, yp - 0.04, yp, 3.0, 4.5, faces="y")
-    box(det, "CT_Plaster", -11.3, -6.7, yp - 0.05, yp - 0.04, 3.3, 4.2, faces="y")
-    for k, y in enumerate((4.7, 5.9)):
-        _poster(det, X0 + 0.4, y, 1.4, 3.0, 1.0, "x", *pc[(k + 1) % 6])
-        _poster(det, X1 - 0.4, y, 1.4, 3.0, 1.0, "X", *pc[(k + 3) % 6])
-    plant(det, 16.2, 11.2, 0.0, h=1.5, pot="CT_PlasterBlue")
-    plant(det, -16.4, 4.9, 0.0, h=1.4, pot="CT_PlasterRed")
+    # ---------------------------------------------------------------- west: chess corner and radio amateurs
+    kit.rug(B, -14.0, 6.0, 0.0, 0.0, w=4.4, d=3.0, name="rug_3")
+    kit.bookshelf(B, X0 + 0.4, 4.0, 0.0, 90.0, w=0.9, topic="old", seed=11)
+    kit.bookshelf(B, X0 + 0.4, 5.0, 0.0, 90.0, w=0.9, topic="modern", seed=12)
+    B.thing("shelf_chess", "shelf", (X0 + 0.6, 4.0, 1.3), 90.0, topic="chess")
+    B.thing("shelf_radio", "shelf", (X0 + 0.6, 5.0, 1.3), 90.0, topic="engineering")
+    kit.picture(B, X0 + 0.4, 6.05, 0.0, 90.0, name="chess_board", w=0.55, zc=1.6)
+    for k, cx in enumerate((-15.2, -12.8)):
+        kit.chess_table(B, cx, 6.2, 0.0, 0.0, seed=k)
+        kit.chair(B, cx, 5.55, 0.0, 180.0, kind="wood")
+        kit.chair(B, cx, 6.85, 0.0, 0.0, kind="wood")
+        B.thing("chess_%d" % (k + 1), "play", (cx, 6.2, 0.72), 0.0, what="chess")
+        B.spot("chess_seat_%d" % (k + 1), "seat", (cx, 5.55, 0.0), 0.0)
+    kit.table(B, -8.6, 5.4, 0.0, 0.0, w=2.2, d=0.8, mat="CT_WoodLight")
+    for k, rx in enumerate((-9.3, -8.6, -7.9)):
+        kit.radio(B, rx, 5.45, 0.75, 0.0)
+    kit.table_lamp(B, -9.6, 5.4, 0.75, 0.0)
+    kit.typewriter(B, -7.5, 5.25, 0.75, 0.0)
+    kit.chair(B, -9.0, 6.1, 0.0, 0.0, kind="school")
+    kit.chair(B, -8.0, 6.1, 0.0, 0.0, kind="school")
+    B.thing("radio_club_table", "craft", (-8.6, 5.4, 0.78), 180.0, what="workbench")
+    B.thing("radio_seat", "seat", (-9.0, 6.1, 0.45), 0.0, height=0.45)
+    kit.plant(B, -16.5, 8.7, 0.0, 0.0, kind="ficus", pot="CT_PlasterBlue", h=1.6)
+    kit.plant(B, -10.5, 4.1, 0.0, 0.0, kind="fern", pot="CT_PlasterGreen", h=0.7)
+    # ---------------------------------------------------------------- east: dance floor, piano, lounge
+    box(det, "CT_WoodLight", 10.9, 16.9, 4.4, 8.6, 0.0, 0.02, faces="xXyYZ")
+    box(det, "CT_ConcreteDark", 10.9, 16.9, 4.4, 4.46, 0.02, 0.025, faces="Z")           # inlaid border lines
+    box(det, "CT_ConcreteDark", 10.9, 16.9, 8.54, 8.6, 0.02, 0.025, faces="Z")
+    box(det, "CT_ConcreteDark", 10.9, 10.96, 4.4, 8.6, 0.02, 0.025, faces="Z")
+    box(det, "CT_ConcreteDark", 16.84, 16.9, 4.4, 8.6, 0.02, 0.025, faces="Z")
+    kit.table(B, 15.0, 3.75, 0.0, 0.0, w=0.8, d=0.5, h=0.65, mat="CT_WoodLight")
+    kit.record_player(B, 15.0, 3.75, 0.65, 0.0)
+    kit.piano(B, X1 - 0.43, 4.2, 0.0, 270.0)
+    kit.stool(B, 16.0, 4.2, 0.0, 90.0)
+    kit.mirror(B, X1 - 0.4, 5.55, 0.0, 270.0, zc=1.5, w=0.8, h=1.7)
+    B.thing("hall_piano", "play", (X1 - 0.8, 4.2, 1.0), 270.0, what="piano")
+    B.thing("dance_floor", "sport", (13.8, 6.5, 0.0), 0.0, what="dance")
+    B.thing("dance_mirror", "board", (X1 - 0.42, 5.55, 1.5), 270.0, topic="view")
+    kit.sofa(B, X1 - 0.6, 9.6, 0.0, 270.0, seats=2, mat="CT_PlasterBlue")
+    kit.coffee_table(B, 15.5, 9.6, 0.0, 90.0, w=0.9, d=0.5)
+    kit.armchair(B, 15.1, 11.2, 0.0, 0.0, mat="CT_PlasterRed")
+    kit.rug(B, 15.6, 10.2, 0.0, 0.0, w=2.6, d=2.8, name="rug_1")
+    kit.magazine_rack(B, 16.3, yp, 0.0, 0.0, w=0.9)
+    kit.newspaper(B, 15.5, 9.55, 0.42, 0.0)
+    kit.cup(B, 15.4, 9.75, 0.42, 0.0)
+    kit.notice_board(B, X1 - 0.4, 11.6, 0.0, 270.0, w=0.9, zc=1.6, seed=7)
+    kit.plant(B, 13.9, 11.3, 0.0, 0.0, kind="monstera", pot="CT_PlasterYellow", h=1.5)
+    B.thing("lounge_sofa", "seat", (X1 - 0.9, 9.6, 0.45), 270.0, height=0.45)
+    B.thing("lounge_armchair", "seat", (15.1, 11.2, 0.45), 0.0, height=0.45)
+    B.thing("magazines", "shelf", (16.3, yp - 0.15, 1.0), 0.0, topic="local")
+    B.thing("foyer_board", "board", (X1 - 0.45, 11.6, 1.6), 270.0, topic="club")
+    # seated café tables (west of the lane and east of the columns)
+    for k, (tx, ty) in enumerate(((-8.8, 8.7), (7.2, 5.0))):
+        kit.table_round(B, tx, ty, 0.0, 0.0, r=0.45, h=0.75)
+        kit.cup(B, tx + 0.1, ty, 0.75, 0.0)
+        kit.vase(B, tx - 0.1, ty + 0.1, 0.75, 0.0, seed=k)
+        cs = kit.around_table(B, tx, ty, 0.8, 0.8, 0.0, per_side=(1, 1, 1, 1), chair_fn=kit.chair, kind="wood")
+        B.thing("cafe_seat_%d" % (k + 1), "seat", (cs[0]["seats"][0][0], cs[0]["seats"][0][1], 0.45), cs[0]["seats"][0][3],
+                height=0.45)
+    # pendants over the buffet and the corners (no light: the building's own lamps stay)
+    for px, py in ((-2.5, 9.1), (2.5, 9.1), (-14.0, 7.0), (14.0, 7.0)):
+        kit.pendant(B, px, py, ZF, drop=0.9, kind="cone", light=False)
