@@ -395,6 +395,40 @@ children's wall, the store's, clinic's, hall's and club's shelves and every dail
 `lyud.City.Read <text id>|next|prev|close|list|all|clear`; developer mode `interiors.read_nearest`,
 `interiors.read_all` (toggle: every text read / none), `interiors.read_list`.
 
+### Lifts and storey links
+
+Upper rooms behind solid cores (the shopping street of the unite block at z ~24 m, its flat at ~19 m and roof at ~52 m,
+the stacked beam tower's gallery at 32 m, the capsule towers) are reached through door things that link storeys. A door
+thing (kind `door`) with a link takes the hero to another thing (normally the door thing on the other floor): one stop
+goes at once, several open a chooser on the page (`city.lift.title`, the stops' captions, `▸` on the chosen one,
+`city.lift.keys`: 1-9 or A/D and arrows choose, E or Enter go, Esc/W/S/Space stay; his steps are held while it is up).
+The trip: a camera fade to black (0.35 s), the hero placed 0.6 m in front of the arrival thing facing away from it (along
+its yaw), standing still, 20 game seconds pass, a moment of black, the fade back (0.5 s). The spot: the model gives seven
+candidates (0.6 m straight in front, 1 m, 0.6 m and 0.5 m to either side, 0.3 m and 0.75 m to either side, 1.4 m); for each
+the game traces down from 0.6 m over the arrival thing's point to 2.6 m under it, believes a floor only 2.5 m under to
+0.5 m over that point (`FModel::LiftFloorOk`) and tests the hero's capsule standing on it (`OverlapBlockingTestByChannel`,
+`ECC_Pawn`); the first that fits wins, none: he stays where he is and the prompt line says `city.lift.blocked`. The act
+still runs first (its `sound`, quest events, stamps); the plot round the hero is asked again on the next tick (a `visit`
+when it changed). Not while seated. Townsfolk are not affected.
+
+```
+on a door thing (B.thing(..., to=..., floors=..., oneway=...)), on an id rule's props, or on its act:
+  "to": "<thing id in the same plot>" | "<plot>/<thing id>"                      one stop: at once
+  "floors": [{"k": "<caption key>", "to": "<thing id>" | "<plot>/<thing id>"}, ...]   2..9 stops: the chooser
+  "oneway": true                                                                no way back asked (a slide, a hatch)
+```
+
+A `to` that names no thing and has no slash keeps its old meaning (the caption word of a plain door: `roof`, `staff`,
+`flat`): no link. interiors.py writes `"floors": [{"k"?, "to": "<full thing id>"}]` (+ `"oneway": 1`) on the thing and
+`--check` fails on a stop that is no thing, a stop to itself, a chooser stop without a caption or with a caption that is no
+string, more than 9 stops, and a stop that cannot bring the hero back through the links (directly or stop by stop) unless
+`oneway`. So declare lifts in pairs: the ground floor's door `floors` to the upper doors, each upper door `to` (or `floors`
+back to) the ground floor's. Captions are the building's own string keys (`city.lift.<building>.<floor>`). The model
+(`FFloor`, `FThing::Floors`/`bOneWay`, `IsLift`, `FindLiftTarget`, `LiftSpots`, `LiftFloorOk`, `LiftReturns`) is checked in
+citysim, with a real-data check that every stop has a way back. Console `lyud.City.Go <thing id>` (to any thing, as a lift
+would put him there); developer mode `interiors.lift_nearest` (the nearest lift door within reach of the list: its chooser,
+or at once). Now: no building declares a link yet (the building modules' doors).
+
 ### Staff talk
 
 At a counter whose act (or thing) has `topics` and whose staff is on shift, E opens a chooser on the page instead of the
@@ -568,6 +602,7 @@ the list (their ids play nothing from an act).
     over at E (`E — stop watching`), at getting up, walking off or any screen;
   * `sound`: `ULyudSoundscapeSubsystem::PlayEffect(id)` (an id without a pool plays nothing; see "Sound ids");
   * `topics` with the staff on shift: the talk's chooser (see "Staff talk");
+  * a door with a storey link: the lift (see "Lifts and storey links");
   * quests: `Notify(event or "do", target or act id)` and `Notify("visit", plot)` at every use; also `visit` when the plot
     round the hero changes (the nearest thing within 4 m on his floor, five times a second; walking out between buildings
     keeps the last plot). A quest's last stage should wait for a `do` (or `have`), never a bare `visit`: the quest engine
@@ -579,20 +614,20 @@ the list (their ids play nothing from an act).
 * Rules in `Private/City/CityThingsModel.h` (`LyudCity::FModel`: `Load`, `Pick`, `Check`, `Run`, `NextLine`, `Nearest`,
   `NearestThing`, `ScreenFrom`, `NeedsSeatFirst`, `SeatHeight`, `Subtitles`, `SaveState`/`LoadState`,
   `ResetToday`/`ResetState`; also `IsShut`/`ActIndexNow` (the closed act), `GiveStamp`/`CountStamps`/`GrantSet`/`ClearSet`,
-  `FindFree`/`Claim`/`Release`/`ThingsOfPlot`, `WeatherBits`), engine-free; `tools/citysim/run.sh` checks it (257 checks, the mini-games, sitting, sleeping, reading, the staff talk and the room tones included) on `tools/citysim/fixture.json`, made-up
+  `FindFree`/`Claim`/`Release`/`ThingsOfPlot`, `WeatherBits`), engine-free; `tools/citysim/run.sh` checks it (267 checks, the mini-games, sitting, sleeping, reading, the staff talk, the room tones and the lifts included) on `tools/citysim/fixture.json`, made-up
   acts in the test itself and the real file when it is built. Save record "CityThings" (pages, daily boards' days, today's
   counts, uses, plots visited); a New Game starts it over.
 * Console: `lyud.City.Things` (count, the nearest five), `lyud.City.Do <thing id>` (run it from anywhere; sitting only
   when the hero is within 4 m), `lyud.City.Things.Show 0|1` (labels within 15 m), `lyud.City.Weekday <mon..sun>` (the clock
   on to the next such day, same time), `lyud.City.Collections [grant|clear <set|*>]`, `lyud.City.Sit|Lie [thing id]`, `lyud.City.Sleep <hour>`,
-  `lyud.City.Read <text id>|next|prev|close|list|all|clear`, `lyud.City.Ask <thing id> [topic id]|list|reset`, `lyud.City.Tone`. Developer mode, group `interiors`:
+  `lyud.City.Read <text id>|next|prev|close|list|all|clear`, `lyud.City.Ask <thing id> [topic id]|list|reset`, `lyud.City.Tone`, `lyud.City.Go <thing id>`. Developer mode, group `interiors`:
   things nearby, use the nearest, reset today's limits, 500 rub., `interiors.open_all_hours` (toggle: no hours, days or staff
   asked; no closed acts), `interiors.show_things` (toggle: the labels), `interiors.collections` (the collections' page),
   `interiors.collections_all` (toggle: every set complete / cleared), `interiors.game_aim|game_rally|game_duel` (the
   nearest game of that type, from anywhere), `interiors.game_win` (win the game being played), `interiors.regulars` (the
   regulars' page; the log lists each one's style, skill, games, plots), `interiors.sit_nearest`, `interiors.lie_nearest`,
   `interiors.read_nearest`, `interiors.read_all` (toggle), `interiors.read_list`, `interiors.topics`, `interiors.topics_reset`,
-  `interiors.ask_nearest`, `interiors.tone`. Console `lyud.City.Game <thing id>|press [1-3]|win|quit|regulars`. Every city quest stage has a `dev` block written by interiors.py (`quest_dev`): a teleport in front of a thing
+  `interiors.ask_nearest`, `interiors.tone`, `interiors.lift_nearest`. Console `lyud.City.Game <thing id>|press [1-3]|win|quit|regulars`. Every city quest stage has a `dev` block written by interiors.py (`quest_dev`): a teleport in front of a thing
   that makes its first objective (`city.q.<quest>.<n>`), the clock an hour after it opens, `lyud.City.Weekday` to a day it is
   open, `Inventory.Earn` for its price, the items a later stage only checks; a stage's own `dev` in
   `tools/city/content/quests.json` wins key by key.

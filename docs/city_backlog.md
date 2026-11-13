@@ -146,6 +146,13 @@ rental, souvenirs, a dumpling house, a cheburek house, a beer bar). Each is now 
 
 ## P5: quality passes that never end
 
+- [~] Lifts and storey links (2026-11-13): `to` / `floors` / `oneway` on a door thing, a rule or its act; a chooser for
+  several stops, a fade, the hero put on a traced floor in front of the arrival door with a capsule test (none fits: he
+  stays), 20 game seconds; `--check` asks every stop to exist and to have a way back; model and citysim checked, docs
+  "Lifts and storey links", `lyud.City.Go`, `interiors.lift_nearest`. Not built on the Mac yet. Still open: no building
+  declares a link yet (the unite block, the stacked beam tower and the capsule towers' modules), no lift sound or doors
+  that open
+
 - [ ] Unique wall art per building from the atlas (no picture repeated inside one room)
 - [~] Room sounds (reverb by room size, clock ticks, a radio behind a wall, the store's tannoy). 2026-11-13: room tones
   by data (`tones`, `tone_by`: a quiet loop and sparse one-shots per plot, its own when shut; one pooled 2D component,

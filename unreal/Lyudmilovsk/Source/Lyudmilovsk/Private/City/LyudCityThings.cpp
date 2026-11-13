@@ -99,6 +99,12 @@ namespace LyudCityThingsImpl
 	constexpr float ToneOutdoorKeep = 0.2f;
 	constexpr double ToneShotNear = 200.0;
 	constexpr double ToneShotFar = 500.0;
+	/** A lift trip: the fade to black and back (s), how long the screen stays black after the move (s), the game seconds it
+	 *  takes. */
+	constexpr float LiftFadeOut = 0.35f;
+	constexpr float LiftFadeIn = 0.5f;
+	constexpr double LiftHold = 0.35;
+	constexpr double LiftSeconds = 20.0;
 
 	FString Str(const std::string& S)
 	{
@@ -267,6 +273,8 @@ void ULyudCityThings::Deinitialize()
 	SleepHour = -1;
 	bSleeping = false;
 	EndTalk();
+	EndLiftChoice();
+	EndLift();
 	if (ToneAudio)
 	{
 		ToneAudio->Stop();
@@ -1092,6 +1100,20 @@ void ULyudCityThings::Run(int32 Thing, bool bFromConsole, bool bFromSeat)
 	AHeroCharacter* Hero = Cast<AHeroCharacter>(UGameplayStatics::GetPlayerPawn(World, 0));
 	APlayerController* PC = Hero ? Cast<APlayerController>(Hero->GetController()) : nullptr;
 	ULyudInventoryUI* UI = ULyudInventoryUI::Get(this);
+	// a lift or a stair's door: the chooser of its stops, or straight to its one stop (the act's sound, events and stamps came)
+	if (Model->IsLift(Thing) && !O.bClosed)
+	{
+		ClosePage();
+		if (T.Floors.size() == 1)
+		{
+			BeginLift(T.Floors[0].To);
+		}
+		else
+		{
+			BeginLiftChoice(Thing);
+		}
+		return;
+	}
 	// a counter with topics and its staff on shift: the chooser instead of the shop or the page (the act's line on top, "Buy..."
 	// first when it sells); not for games, shows, reading, sitting or lying, or a stretch of time behind a fade
 	if (!TalkOffer.empty() && O.Game < 0 && O.Screen.empty() && O.Text < 0 && O.Pose != "sit" && O.Pose != "lie" && !(O.Minutes > 0 && O.bFade))
@@ -1378,6 +1400,18 @@ void ULyudCityThings::Tick(float DeltaTime)
 	if (LyingOn >= 0)
 	{
 		TickLie(Hero, PC, bTalk);
+	}
+	if (LiftDest >= 0)
+	{
+		SetPrompted(-1);
+		TickLift(Hero, PC);
+		return;
+	}
+	if (LiftThing >= 0)
+	{
+		SetPrompted(-1);
+		TickLiftChoice(Hero, PC, bTalk);
+		return;
 	}
 	if (SleepHour >= 0)
 	{
@@ -2360,6 +2394,8 @@ void ULyudCityThings::ResetHeroState()
 	AHeroCharacter* Hero = PC ? Cast<AHeroCharacter>(PC->GetPawn()) : nullptr;
 	CloseBook();
 	EndTalk();
+	EndLiftChoice();
+	EndLift();
 	SleepHour = -1;
 	SleepThing = -1;
 	bSleeping = false;
@@ -2876,6 +2912,305 @@ bool ULyudCityThings::AreAllRead() const
 }
 
 // --- console
+
+// --- lifts and storey links (docs/city_interiors.md "Lifts and storey links")
+
+bool ULyudCityThings::FindLiftSpot(int32 Dest, const AHeroCharacter* Hero, FVector& OutMiddle, float& OutYaw) const
+{
+	UWorld* World = GetWorld();
+	const UCapsuleComponent* Capsule = Hero ? Hero->GetCapsuleComponent() : nullptr;
+	if (!World || !Model || !Capsule)
+	{
+		return false;
+	}
+	const float Radius = Capsule->GetScaledCapsuleRadius();
+	const float HalfHeight = Capsule->GetScaledCapsuleHalfHeight();
+	const FCollisionShape Shape = FCollisionShape::MakeCapsule(Radius, HalfHeight);
+	FCollisionQueryParams Q(SCENE_QUERY_STAT(CityLift), false, Hero);
+	LyudCity::FVec Spots[8];
+	float Yaw = 0.f;
+	const int32 Num = Model->LiftSpots(Dest, Spots, 8, Yaw);
+	for (int32 I = 0; I < Num; ++I)
+	{
+		const LyudCity::FVec& S = Spots[I];
+		// the floor under the spot, about the door's (not the shaft below, not the roof over a gallery)...
+		FHitResult Hit;
+		const FVector Top(S.X, S.Y, S.Z + LyudCity::FModel::LiftFloorAbove + 10.0);
+		const FVector Bottom(S.X, S.Y, S.Z - LyudCity::FModel::LiftFloorBelow - 10.0);
+		if (!World->LineTraceSingleByChannel(Hit, Top, Bottom, ECC_Visibility, Q) || !LyudCity::FModel::LiftFloorOk(S.Z, Hit.ImpactPoint.Z))
+		{
+			continue;
+		}
+		// ...and his capsule fits standing on it (never inside a wall, a counter or the lift's core)
+		const FVector Middle(S.X, S.Y, Hit.ImpactPoint.Z + HalfHeight + 2.0);
+		if (World->OverlapBlockingTestByChannel(Middle, FQuat::Identity, ECC_Pawn, Shape, Q))
+		{
+			continue;
+		}
+		OutMiddle = Middle;
+		OutYaw = Yaw;
+		return true;
+	}
+	return false;
+}
+
+bool ULyudCityThings::BeginLift(int32 Dest)
+{
+	UWorld* World = GetWorld();
+	AHeroCharacter* Hero = World ? Cast<AHeroCharacter>(UGameplayStatics::GetPlayerPawn(World, 0)) : nullptr;
+	APlayerController* PC = Hero ? Cast<APlayerController>(Hero->GetController()) : nullptr;
+	if (!World || !Model || !Hero || !PC || Dest < 0 || Dest >= NumThings() || LiftDest >= 0 || Hero->IsSeated())
+	{
+		return false;
+	}
+	FVector Middle;
+	float Yaw = 0.f;
+	if (!FindLiftSpot(Dest, Hero, Middle, Yaw))
+	{
+		UE_LOG(LogLyudCity, Warning, TEXT("CityThings: lift to %s: no spot fits in front of it"), *LyudCityThingsImpl::Str(Model->Things[(size_t)Dest].Id));
+		Refuse(LyudText::Get(TEXT("city.lift.blocked")));
+		return false;
+	}
+	EndLiftChoice();
+	EndTalk();
+	ClosePage();
+	LiftDest = Dest;
+	LiftMiddle = Middle;
+	LiftYaw = Yaw;
+	bLiftMoved = false;
+	if (!LiftBlockedBy.IsValid())
+	{
+		PC->SetIgnoreMoveInput(true);
+		LiftBlockedBy = PC;
+	}
+	const double Now = World->GetTimeSeconds();
+	if (PC->PlayerCameraManager)
+	{
+		PC->PlayerCameraManager->StartCameraFade(0.f, 1.f, LyudCityThingsImpl::LiftFadeOut, FLinearColor::Black, false, true);
+		LiftMoveAt = Now + LyudCityThingsImpl::LiftFadeOut + 0.05;
+	}
+	else
+	{
+		LiftMoveAt = Now;
+	}
+	UE_LOG(LogLyudCity, Display, TEXT("CityThings: lift to %s"), *LyudCityThingsImpl::Str(Model->Things[(size_t)Dest].Id));
+	return true;
+}
+
+void ULyudCityThings::TickLift(AHeroCharacter* Hero, APlayerController* PC)
+{
+	UWorld* World = GetWorld();
+	if (!World || !Hero || !PC)
+	{
+		EndLift();
+		return;
+	}
+	const double Now = World->GetTimeSeconds();
+	if (Now < LiftMoveAt)
+	{
+		return;
+	}
+	if (!bLiftMoved)
+	{
+		// the screen is black: there, facing away from the door, standing still; a few game seconds; the plot asked again now
+		Hero->SetActorLocationAndRotation(LiftMiddle, FRotator(0.0, (double)LiftYaw, 0.0), false, nullptr, ETeleportType::TeleportPhysics);
+		PC->SetControlRotation(FRotator(0.0, (double)LiftYaw, 0.0));
+		if (UCharacterMovementComponent* Move = Hero->GetCharacterMovement())
+		{
+			Move->StopMovementImmediately();
+		}
+		JumpLeft += LyudCityThingsImpl::LiftSeconds;
+		JumpRate = FMath::Max(JumpRate, JumpLeft / LyudCityThingsImpl::JumpSeconds);
+		bLiftMoved = true;
+		PickClock = 0.f;
+		LiftMoveAt = Now + LyudCityThingsImpl::LiftHold;
+		UE_LOG(LogLyudCity, Display, TEXT("CityThings: lift arrived at %s (%.0f %.0f %.0f)"), Model && LiftDest >= 0 && LiftDest < NumThings()
+			? *LyudCityThingsImpl::Str(Model->Things[(size_t)LiftDest].Id) : TEXT("?"), LiftMiddle.X, LiftMiddle.Y, LiftMiddle.Z);
+		return;
+	}
+	EndLift();
+}
+
+void ULyudCityThings::EndLift()
+{
+	APlayerController* PC = LiftBlockedBy.Get();
+	if (PC)
+	{
+		PC->SetIgnoreMoveInput(false);
+	}
+	LiftBlockedBy.Reset();
+	if (LiftDest < 0)
+	{
+		return;
+	}
+	if (!PC)
+	{
+		PC = UGameplayStatics::GetPlayerController(GetWorld(), 0);
+	}
+	if (PC && PC->PlayerCameraManager)
+	{
+		PC->PlayerCameraManager->StartCameraFade(1.f, 0.f, LyudCityThingsImpl::LiftFadeIn, FLinearColor::Black, false, false);
+	}
+	LiftDest = -1;
+	bLiftMoved = false;
+}
+
+void ULyudCityThings::BeginLiftChoice(int32 Thing)
+{
+	UWorld* World = GetWorld();
+	if (!World || !Model || !Model->IsLift(Thing))
+	{
+		return;
+	}
+	LiftThing = Thing;
+	LiftSel = 0;
+	LiftFrame = GFrameCounter;
+	APlayerController* PC = UGameplayStatics::GetPlayerController(World, 0);
+	if (PC && !LiftBlockedBy.IsValid())
+	{
+		PC->SetIgnoreMoveInput(true);
+		LiftBlockedBy = PC;
+	}
+	SetPrompted(-1);
+	ShowLiftChoice();
+}
+
+void ULyudCityThings::ShowLiftChoice()
+{
+	UWorld* World = GetWorld();
+	UGameViewportClient* Viewport = World ? World->GetGameViewport() : nullptr;
+	if (!Viewport || !Model || !Model->IsLift(LiftThing))
+	{
+		return;
+	}
+	if (!Page)
+	{
+		Page = SNew(SLyudCityPage);
+		Viewport->AddViewportWidgetContent(Page.ToSharedRef(), 61);
+	}
+	PageThing = -1;
+	PageLeft = 0;
+	const std::vector<LyudCity::FFloor>& Floors = Model->Things[(size_t)LiftThing].Floors;
+	FString Body;
+	for (int32 I = 0; I < (int32)Floors.size(); ++I)
+	{
+		const LyudCity::FFloor& F = Floors[(size_t)I];
+		const FString Caption = F.Key.empty() ? LyudCityThingsImpl::Str(Model->Things[(size_t)F.To].Id) : LyudText::Get(LyudCityThingsImpl::Str(F.Key)).ToString();
+		Body += I == LiftSel ? TEXT("▸ ") : TEXT("   ");
+		Body += LyudText::Get(TEXT("city.lift.entry"), { FStringFormatArg(I + 1), FStringFormatArg(Caption) }).ToString();
+		Body += TEXT("\n");
+	}
+	Page->SetScreen(false);
+	Page->SetPage(LyudText::Get(TEXT("city.lift.title")), FText::FromString(Body), LyudText::Get(TEXT("city.lift.keys")));
+}
+
+void ULyudCityThings::TickLiftChoice(AHeroCharacter* Hero, APlayerController* PC, bool bTalk)
+{
+	UWorld* World = GetWorld();
+	const ULyudInventoryUI* UI = World ? ULyudInventoryUI::Get(World) : nullptr;
+	if (!World || !Model || !Hero || !PC || !Page || !Model->IsLift(LiftThing) || (UI && UI->IsOpen()))
+	{
+		EndLiftChoice();
+		return;
+	}
+	const ULyudGameMenuSubsystem* Menu = World->GetSubsystem<ULyudGameMenuSubsystem>();
+	if ((Menu && Menu->IsOpen()) || bTalk || GFrameCounter == LiftFrame)
+	{
+		return;
+	}
+	if (PC->WasInputKeyJustPressed(EKeys::Escape) || PC->WasInputKeyJustPressed(EKeys::W) || PC->WasInputKeyJustPressed(EKeys::S)
+		|| PC->WasInputKeyJustPressed(EKeys::SpaceBar))
+	{
+		EndLiftChoice();
+		return;
+	}
+	const std::vector<LyudCity::FFloor>& Floors = Model->Things[(size_t)LiftThing].Floors;
+	const int32 Num = (int32)Floors.size();
+	static const FKey Digits[] = { EKeys::One, EKeys::Two, EKeys::Three, EKeys::Four, EKeys::Five, EKeys::Six, EKeys::Seven, EKeys::Eight, EKeys::Nine };
+	int32 Chosen = -1;
+	for (int32 I = 0; I < Num && I < (int32)UE_ARRAY_COUNT(Digits); ++I)
+	{
+		if (PC->WasInputKeyJustPressed(Digits[I]))
+		{
+			Chosen = I;
+		}
+	}
+	if (Chosen < 0 && (PC->WasInputKeyJustPressed(EKeys::E) || PC->WasInputKeyJustPressed(EKeys::Enter)))
+	{
+		Chosen = LiftSel;
+	}
+	if (Chosen >= 0 && Chosen < Num)
+	{
+		const int32 Dest = Floors[(size_t)Chosen].To;
+		EndLiftChoice();
+		BeginLift(Dest);
+		return;
+	}
+	const int32 Delta = (PC->WasInputKeyJustPressed(EKeys::D) || PC->WasInputKeyJustPressed(EKeys::Right) || PC->WasInputKeyJustPressed(EKeys::Down)) ? 1
+		: ((PC->WasInputKeyJustPressed(EKeys::A) || PC->WasInputKeyJustPressed(EKeys::Left) || PC->WasInputKeyJustPressed(EKeys::Up)) ? -1 : 0);
+	if (Delta != 0 && Num > 0)
+	{
+		LiftSel = (LiftSel + Delta + Num) % Num;
+		ShowLiftChoice();
+	}
+}
+
+void ULyudCityThings::EndLiftChoice()
+{
+	if (LiftThing < 0)
+	{
+		return;
+	}
+	LiftThing = -1;
+	LiftSel = 0;
+	if (LiftDest < 0)
+	{
+		if (APlayerController* PC = LiftBlockedBy.Get())
+		{
+			PC->SetIgnoreMoveInput(false);
+		}
+		LiftBlockedBy.Reset();
+	}
+	if (Page && PageThing < 0)
+	{
+		ClosePage();
+	}
+}
+
+bool ULyudCityThings::GoToThing(const FString& ThingId)
+{
+	const int32 Thing = Model ? Model->FindThing(std::string(TCHAR_TO_UTF8(*ThingId))) : -1;
+	if (Thing < 0)
+	{
+		UE_LOG(LogLyudCity, Warning, TEXT("CityThings: go: no thing %s"), *ThingId);
+		return false;
+	}
+	return BeginLift(Thing);
+}
+
+bool ULyudCityThings::UseNearestLift()
+{
+	const APawn* Pawn = UGameplayStatics::GetPlayerPawn(GetWorld(), 0);
+	if (!Model || !Pawn)
+	{
+		return false;
+	}
+	for (const std::pair<int, double>& P : Model->Nearest(LyudCityThingsImpl::Vec(Pawn->GetActorLocation()), 256))
+	{
+		if (Model->IsLift(P.first))
+		{
+			const LyudCity::FThing& Door = Model->Things[(size_t)P.first];
+			if (Door.Floors.size() == 1)
+			{
+				return BeginLift(Door.Floors[0].To);
+			}
+			BeginLiftChoice(P.first);
+			return true;
+		}
+	}
+	UE_LOG(LogLyudCity, Warning, TEXT("CityThings: no lift door near"));
+	return false;
+}
 
 // --- the staff talk (docs/city_interiors.md "Staff talk"): a chooser on the page, the answers one per E
 
@@ -3634,6 +3969,17 @@ static FAutoConsoleCommandWithWorldAndArgs GCityAsk(TEXT("lyud.City.Ask"),
 		}
 	}));
 
+static FAutoConsoleCommandWithWorldAndArgs GCityGo(TEXT("lyud.City.Go"),
+	TEXT("lyud.City.Go <thing id>: takes the hero to a thing as a lift would (in front of it, facing away; a fade)"),
+	FConsoleCommandWithWorldAndArgsDelegate::CreateLambda([](const TArray<FString>& Args, UWorld* World)
+	{
+		ULyudCityThings* Things = ULyudCityThings::Get(World);
+		if (Things && Args.Num() > 0)
+		{
+			Things->GoToThing(Args[0]);
+		}
+	}));
+
 static FAutoConsoleCommandWithWorldAndArgs GCityTone(TEXT("lyud.City.Tone"),
 	TEXT("lyud.City.Tone: logs the room tone heard now (its loop, level, one-shots)"),
 	FConsoleCommandWithWorldAndArgsDelegate::CreateLambda([](const TArray<FString>&, UWorld* World)
@@ -3808,6 +4154,13 @@ static LyudDev::FAutoAction GCityDevAskNear(TEXT("interiors.ask_nearest"), TEXT(
 	if (ULyudCityThings* Things = ULyudCityThings::Get(W))
 	{
 		Things->AskNearest();
+	}
+});
+static LyudDev::FAutoAction GCityDevLift(TEXT("interiors.lift_nearest"), TEXT("interiors"), TEXT("dev.action.interiors.lift_nearest"), [](UWorld* W)
+{
+	if (ULyudCityThings* Things = ULyudCityThings::Get(W))
+	{
+		Things->UseNearestLift();
 	}
 });
 static LyudDev::FAutoAction GCityDevTone(TEXT("interiors.tone"), TEXT("interiors"), TEXT("dev.action.interiors.tone"), [](UWorld* W)
