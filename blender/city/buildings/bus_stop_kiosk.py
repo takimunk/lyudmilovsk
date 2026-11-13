@@ -15,6 +15,10 @@ cable-car information, repairs. Things, spots, windows, entrance and footprint a
 Second pass (2026-11): each trade has its own inside (seen through the hatch and the side door) and its own
 bus-stop furniture (`_deeper`: drum litter bin everywhere, payphone at kiosk 1, drinking fountain at 5, weighing
 machine at 3), extra things per trade (ids k<n>_*, words in strings/x_p_kiosk.json), a stop lamp under the roof.
+Third pass (2026-11, depth): every kiosk gets a clock, a lamp switch for the stop's two lamps, a stamp pad of the
+"bus-stop passport", a goods stand under the hatch (tins with atlas goods labels chosen by trade), a seat of its own
+and per trade a wall paper stand (1), thermometer (2), lotto sheet (3), florist's calendar (4), departures stand (5),
+key board and umbrella stand (6); staff spot for the seller. Words in strings/x_p_kiosk.json.
 Requests: none.
 """
 import math
@@ -40,7 +44,7 @@ VARIANTS = {
     "P-KIOSK1": {"TRADE": "news", "ACCENT": "CT_PlasterRed", "SIGN": "sign_books"},
     "P-KIOSK2": {"TRADE": "ice", "ACCENT": "CT_PlasterBlue", "SIGN": "sign_milk"},
     "P-KIOSK3": {"TRADE": "tobacco", "ACCENT": "CT_PlasterGreen", "SIGN": None},
-    "P-KIOSK4": {"TRADE": "flowers", "ACCENT": "CT_PlasterPink", "SIGN": "sign_greens"},
+    "P-KIOSK4": {"TRADE": "flowers", "ACCENT": "CT_PlasterPink", "SIGN": None},
     "P-KIOSK5": {"TRADE": "cable", "ACCENT": "CT_PlasterYellow", "SIGN": "sign_till"},
     "P-KIOSK6": {"TRADE": "repair", "ACCENT": "CT_Leather", "SIGN": None},
 }
@@ -230,6 +234,7 @@ def build(B):
     _furnish(B, rnd)
     _dress(B, rnd)
     _deeper(B, rnd)
+    _third(B)
     B.footprint = [(-3.0, 0.0), (3.0, 0.0), (3.0, 5.0), (-3.0, 5.0)]
     B.height = 4.95
     if os.environ.get("KIT_CHECK"):
@@ -722,3 +727,130 @@ def _deeper(B, rnd):
         cyl(d, "CT_Brass", 0.11, 4.08, 1.032, 1.05, 0.04, 8)
         box(d, "CT_TileWhite", 0.095, 0.125, 4.06, 4.1, 1.051, 1.053, faces="Z")
         B.thing("k6_watch", "machine", (0.1, 4.08, 1.1), 0.0, what="pocketwatch")
+
+
+# ====================================================================================== third pass
+GOODS_BY_TRADE = {            # atlas goods labels label_NN = GOODS[NN % 30]: chosen by what the trade really keeps
+    "news": (21, 22, 14, 13, 5), "ice": (23, 9, 29, 4, 14), "tobacco": (15, 14, 5, 15, 13),
+    "flowers": (11, 10, 5, 11, 10), "cable": (5, 6, 13, 14, 29), "repair": (20, 19, 18, 20, 19),
+}
+
+
+def _label_tin(B, x, y, z, num, mat, h=0.12):
+    """A tin with an atlas goods label on its front face (toward -y)."""
+    box(B.detail, mat, x - 0.043, x + 0.043, y - 0.035, y + 0.035, z, z + h, faces="xXyYZ")
+    kit.poster(B, x, y - 0.035, 0.0, 0.0, name="label_%02d" % num, w=0.075, zc=z + h / 2)
+
+
+def _goods_stand(B, nums, mats, x0=1.15, x1=2.0, ky0=2.2):
+    """A three-tier wooden display under the serving shelf, tins with labels of the trade's goods."""
+    d = B.detail
+    y0, y1 = ky0 - 0.30, ky0 - 0.02
+    for xs in (x0, x1 - 0.03):
+        box(d, "CT_Wood", xs, xs + 0.03, y0, y1, 0.0, 0.69, faces="xXyYZ")
+    for zz in (0.04, 0.34, 0.64):
+        box(d, "CT_WoodLight", x0, x1, y0, y1, zz, zz + 0.025, faces="xXyYZz")
+    n = 7
+    for tier, zz in enumerate((0.065, 0.365, 0.665)):
+        for k in range(n):
+            num = nums[(k + tier) % len(nums)] + (30 if (k + tier) % 2 else 0)
+            _label_tin(B, x0 + 0.075 + k * 0.1117, y0 + 0.1, zz, num, mats[(k + tier) % len(mats)], h=0.12 if tier < 2 else 0.1)
+
+
+def _switch_plate(B, x, ky0, z):
+    d = B.detail
+    box(d, "CT_TileWhite", x - 0.04, x + 0.04, ky0 - 0.014, ky0, z - 0.06, z + 0.06, faces="xXyYZz")
+    box(d, "CT_Steel", x - 0.012, x + 0.012, ky0 - 0.026, ky0 - 0.014, z - 0.02, z + 0.035, faces="xXyYZz")
+
+
+def _stamp_station(B, x, ky0, z):
+    """A little steel shelf at the hatch's side with a red ink pad and a wooden stamp on a chain."""
+    d = B.detail
+    box(d, "CT_Steel", x - 0.08, x + 0.08, ky0 - 0.11, ky0, z, z + 0.012, faces="xXyYZz")
+    box(d, "CT_Steel", x - 0.07, x - 0.065, ky0 - 0.1, ky0 - 0.01, z - 0.05, z, faces="xXyY")
+    box(d, "CT_Steel", x + 0.065, x + 0.07, ky0 - 0.1, ky0 - 0.01, z - 0.05, z, faces="xXyY")
+    box(d, "CT_PlasterRed", x - 0.065, x + 0.0, ky0 - 0.09, ky0 - 0.03, z + 0.012, z + 0.03, faces="xXyYZ")
+    cyl(d, "CT_Wood", x + 0.04, ky0 - 0.055, z + 0.012, z + 0.085, 0.017, 6)
+    box(d, "CT_Wood", x + 0.015, x + 0.065, ky0 - 0.08, ky0 - 0.03, z + 0.012, z + 0.03, faces="xXyYZ")
+    fu.rod(d, "CT_Steel", (x + 0.04, ky0 - 0.055, z + 0.085), (x + 0.07, ky0 - 0.01, z + 0.16), 0.004, caps=False)
+
+
+def _thermometer(B, x, y, yaw, z0=1.25):
+    """[wall] A big street thermometer: white plate, red column, ticks, a bulb at the foot."""
+    p = kit._P(B, x, y, 0.0, yaw, "thermometer")
+    p.kind = "wall"
+    p.box("CT_SteelWhite", -0.07, 0.07, -0.02, 0.0, z0, z0 + 0.62)
+    p.box("CT_Glass", -0.012, 0.012, -0.03, -0.02, z0 + 0.1, z0 + 0.55)
+    p.box("CT_SteelRed", -0.008, 0.008, -0.03, -0.021, z0 + 0.1, z0 + 0.38)
+    p.cyl("CT_SteelRed", 0.0, -0.026, z0 + 0.05, z0 + 0.1, 0.026, 6)
+    for k in range(8):
+        p.box("CT_Steel", 0.02, 0.05 if k % 2 == 0 else 0.04, -0.024, -0.02, z0 + 0.12 + 0.055 * k, z0 + 0.128 + 0.055 * k, f="y")
+    return p.done()
+
+
+def _umbrella_stand(B, x, y):
+    """A steel pot with three umbrellas awaiting repair (closed, tags tied to the handles)."""
+    p = kit._P(B, x, y, 0.0, 0.0, "umbrella_stand")
+    p.kind = "prop"
+    p.cyl("CT_Steel", 0, 0, 0.0, 0.5, 0.14, 8, bottom=True)
+    p.cyl("CT_ConcreteDark", 0, 0, 0.5, 0.505, 0.12, 8)
+    for k, (dx, dy, mt, lean) in enumerate(((-0.05, 0.02, "CT_Lacquer", 0.04), (0.04, -0.03, "CT_PlasterBlue", -0.05),
+                                           (0.0, 0.06, "CT_PlasterYellow", 0.02))):
+        p.cyl(mt, dx, dy, 0.42, 1.0, 0.012, 6, r1=0.052)
+        p.rod("CT_Steel", (dx, dy, 0.42), (dx + lean, dy, 1.22), 0.01, 4)
+        p.box("CT_Wood", dx + lean - 0.045, dx + lean + 0.045, dy - 0.012, dy + 0.012, 1.22, 1.245)
+        p.box("CT_Paper", dx - 0.02, dx + 0.02, dy - 0.014, dy - 0.01, 1.02 + 0.05 * k, 1.09 + 0.05 * k)
+    return p.done()
+
+
+def _third(B):
+    """Third pass: the stop's clock, switch and stamp, the trade's goods stand, a seat of its own, the trade's boards."""
+    d = B.detail
+    kx0, kx1, ky0, ky1, kh = 0.6, 2.8, 2.2, 4.2, 2.45
+    t = TRADE
+    # ---- common to all six
+    if t != "repair":
+        kit.wall_clock(B, kx0, 3.2, 0.0, 270.0, zc=2.22, r=0.1, face="clock_%d" % (len(t) % 4))
+        B.thing("stop_clock", "board", (kx0 - 0.08, 3.2, 2.22), 270.0, topic="clock")
+    _switch_plate(B, 2.68, ky0, 1.33)
+    B.thing("stop_switch", "machine", (2.68, ky0 - 0.04, 1.33), 0.0, what="switch", switch="room")
+    _stamp_station(B, 2.68, ky0, 0.9)
+    B.thing("stop_stamp", "machine", (2.68, ky0 - 0.06, 0.98), 0.0, what="stamp")
+    mats = {"news": ["CT_PlasterRed", "CT_PlasterBlue", "CT_PlasterYellow"], "ice": ["CT_TileWhite", "CT_PlasterBlue", "CT_PlasterPink"],
+            "tobacco": ["CT_PlasterGreen", "CT_TileWhite", "CT_PlasterRed"], "flowers": ["CT_PlasterPink", "CT_TileWhite", "CT_PlasterYellow"],
+            "cable": ["CT_PlasterYellow", "CT_TileWhite", "CT_PlasterBlue"], "repair": ["CT_Steel", "CT_PlasterRed", "CT_Leather"]}[t]
+    _goods_stand(B, GOODS_BY_TRADE[t], mats)
+    B.spot("staff_seller", "work", (1.9, 3.25, 0.0), 0.0)
+    # ---- the seat of its own, by trade
+    if t == "news":
+        _stand(B, -1.1, 1.3, "news_0", w=0.62, zc=1.45)
+        B.thing("k1_wallpaper", "board", (-1.1, 1.26, 1.45), 0.0, topic="paper")
+    elif t == "ice":
+        B.thing("k2_crate_seat", "seat", (3.0, 2.6, 0.5), 0.0, height=0.5)
+        B.spot("seat_k2", "seat", (3.0, 2.6, 0.0), 0.0)
+        _thermometer(B, kx1, 2.55, 90.0)
+        B.thing("k2_thermo", "board", (kx1 + 0.04, 2.55, 1.55), 90.0, topic="thermo")
+    elif t == "tobacco":
+        kit.chair(B, -2.6, 3.2, 0.0, 90.0, kind="wood")
+        B.thing("k3_chair", "seat", (-2.6, 3.2, 0.45), 90.0, height=0.45, cone=90)
+        B.spot("seat_k3", "seat", (-2.6, 3.2, 0.0), 90.0)
+        B.thing("k3_lotto", "board", (0.78, ky0 - 0.03, 1.5), 0.0, topic="lotto")
+    elif t == "flowers":
+        kit.bench(B, -2.65, 3.05, 0.0, 90.0, w=0.8, kind="park")
+        B.thing("k4_bench", "seat", (-2.65, 3.05, 0.45), 90.0, height=0.45)
+        B.spot("seat_k4", "seat", (-2.65, 3.05, 0.0), 90.0)
+        kit.poster(B, 0.23, 4.18, 0.0, 0.0, name="chart_calendar", w=0.3, zc=2.1)
+        B.thing("k4_calendar", "board", (0.23, 4.14, 2.1), 0.0, topic="calendar")
+        B.thing("k4_bucket_sniff", "machine", (0.28, 1.95, 0.5), 0.0, what="sniff")
+    elif t == "cable":
+        kit.chair(B, -2.6, 3.2, 0.0, 90.0, kind="tube")
+        B.thing("k5_chair", "seat", (-2.6, 3.2, 0.45), 90.0, height=0.45, cone=90)
+        B.spot("seat_k5", "seat", (-2.6, 3.2, 0.0), 90.0)
+        B.thing("k5_stand", "board", (-0.1, 1.5, 0.85), 0.0, topic="departures")
+    elif t == "repair":
+        kit.stool(B, -2.55, 3.2, 0.0, 90.0, mat="CT_Leather")
+        B.thing("k6_stool", "seat", (-2.55, 3.2, 0.45), 90.0, height=0.45)
+        B.spot("seat_k6", "seat", (-2.55, 3.2, 0.0), 90.0)
+        _umbrella_stand(B, 2.95, 2.6)
+        B.thing("k6_umbrellas", "machine", (2.95, 2.6, 0.7), 0.0, what="umbrellas")
+        B.thing("k6_keyboard", "board", (kx0 - 0.06, 3.87, 1.4), 270.0, topic="keys")

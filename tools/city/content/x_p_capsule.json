@@ -1,0 +1,747 @@
+{
+ "_doc": "Capsule towers, plot P-CAPSULE (and the parts the second tower P-T5H1 shares by building type: capsule_tower/<id> rules): the lobby (post boxes, key board, umbrellas, bike, pram, plants, coat stands, duty book with a growing text, desk bell, street view by hour and weather, light switch, the house notice board running a story over days), three lifts wired in pairs with floors (lobby, seventh-floor bridge, top bridge, each with a bench, planter, views), and the caretaker Ilmar Singh's capsule (tape recorder with tapes as a text that grows by day, fold-down table with tea, coat hooks, sill, telephone, alarm clock, switch). Quest capsule_reel, collection capsule_towers. The second tower's own lines are in x_p_t5h1.json. Strings: strings/x_p_capsule.json.",
+ "acts": {
+  "cap_lift": {
+   "like": "door_any",
+   "prompt": "city.cap.p.lift",
+   "sound": "wheel_hum",
+   "lines": [
+    "city.cap.lift.1",
+    "city.cap.lift.2",
+    {
+     "k": "city.cap.lift.night",
+     "h": [
+      22,
+      6
+     ]
+    }
+   ]
+  },
+  "cap_street": {
+   "like": "look_view",
+   "prompt": "city.cap.p.street",
+   "minutes": 3,
+   "lines": [
+    {
+     "k": "city.cap.street.d1",
+     "h": [
+      6,
+      21
+     ]
+    },
+    {
+     "k": "city.cap.street.d2",
+     "h": [
+      6,
+      21
+     ]
+    },
+    {
+     "k": "city.cap.street.n",
+     "h": [
+      21,
+      6
+     ]
+    },
+    {
+     "k": "city.cap.street.rain",
+     "weather": "rain"
+    },
+    {
+     "k": "city.cap.street.snow",
+     "weather": "snow"
+    },
+    {
+     "k": "city.cap.street.fog",
+     "weather": "fog"
+    },
+    {
+     "k": "city.cap.street.fest",
+     "festival": "any"
+    }
+   ]
+  },
+  "cap_mail": {
+   "prompt": "city.cap.p.mail",
+   "minutes": 1,
+   "any_hour": true,
+   "lines": [
+    "city.cap.mail.1",
+    {
+     "k": "city.cap.mail.m",
+     "h": [
+      6,
+      10
+     ]
+    },
+    {
+     "k": "city.cap.mail.d",
+     "h": [
+      10,
+      16
+     ],
+     "d": "mon-sat"
+    },
+    {
+     "k": "city.cap.mail.e",
+     "h": [
+      16,
+      23
+     ],
+     "d": "mon-sat"
+    },
+    {
+     "k": "city.cap.mail.n",
+     "h": [
+      23,
+      6
+     ]
+    },
+    {
+     "k": "city.cap.mail.sun",
+     "d": "sun"
+    }
+   ],
+   "sound": "drawer_slide"
+  },
+  "cap_keys": {
+   "prompt": "city.cap.p.keys",
+   "minutes": 1,
+   "any_hour": true,
+   "lines": [
+    "city.cap.keys.1",
+    {
+     "k": "city.cap.keys.m",
+     "h": [
+      5,
+      12
+     ]
+    },
+    {
+     "k": "city.cap.keys.d",
+     "h": [
+      12,
+      18
+     ]
+    },
+    {
+     "k": "city.cap.keys.e",
+     "h": [
+      18,
+      24
+     ]
+    }
+   ],
+   "sound": "hanger_clink"
+  },
+  "cap_umbrellas": {
+   "prompt": "city.cap.p.umb",
+   "minutes": 1,
+   "any_hour": true,
+   "lines": [
+    "city.cap.umb.1",
+    "city.cap.umb.2",
+    {
+     "k": "city.cap.umb.rain",
+     "weather": "rain"
+    },
+    {
+     "k": "city.cap.umb.snow",
+     "weather": "snow"
+    }
+   ],
+   "sound": "hanger_clink"
+  },
+  "cap_bike": {
+   "prompt": "city.cap.p.bike",
+   "minutes": 1,
+   "any_hour": true,
+   "lines": [
+    "city.cap.bike.1",
+    "city.cap.bike.2",
+    {
+     "k": "city.cap.bike.rain",
+     "weather": "rain"
+    },
+    {
+     "k": "city.cap.bike.snow",
+     "weather": "snow"
+    }
+   ],
+   "sound": "bike_whirr"
+  },
+  "cap_pram": {
+   "prompt": "city.cap.p.pram",
+   "minutes": 1,
+   "any_hour": true,
+   "lines": [
+    "city.cap.pram.1",
+    "city.cap.pram.2",
+    {
+     "k": "city.cap.pram.n",
+     "h": [
+      21,
+      7
+     ]
+    }
+   ],
+   "sound": "wheel_hum"
+  },
+  "cap_plant": {
+   "prompt": "city.cap.p.plant",
+   "minutes": 1,
+   "any_hour": true,
+   "lines": [
+    "city.cap.plant.1",
+    "city.cap.plant.2",
+    "city.cap.plant.3",
+    {
+     "k": "city.cap.plant.rain",
+     "weather": "rain"
+    },
+    {
+     "k": "city.cap.plant.snow",
+     "weather": "snow"
+    },
+    {
+     "k": "city.cap.plant.warm",
+     "weather": "warm"
+    }
+   ],
+   "sound": "paper_rustle"
+  },
+  "cap_hats": {
+   "prompt": "city.cap.p.hats",
+   "minutes": 1,
+   "any_hour": true,
+   "lines": [
+    "city.cap.hats.1",
+    {
+     "k": "city.cap.hats.rain",
+     "weather": "rain"
+    },
+    {
+     "k": "city.cap.hats.cold",
+     "weather": [
+      "cold",
+      "snow"
+     ]
+    },
+    {
+     "k": "city.cap.hats.warm",
+     "weather": "warm"
+    }
+   ],
+   "sound": "hanger_clink"
+  },
+  "cap_safety": {
+   "prompt": "city.cap.p.ext",
+   "minutes": 1,
+   "any_hour": true,
+   "lines": [
+    "city.cap.ext.1",
+    "city.cap.ext.2"
+   ]
+  },
+  "cap_bell": {
+   "prompt": "city.cap.p.bell",
+   "minutes": 1,
+   "any_hour": true,
+   "lines": [
+    {
+     "k": "city.cap.bell.d",
+     "h": [
+      7,
+      22
+     ]
+    },
+    {
+     "k": "city.cap.bell.n",
+     "h": [
+      22,
+      7
+     ]
+    }
+   ],
+   "sound": "rest_bell"
+  },
+  "cap_logbook": {
+   "prompt": "city.cap.p.log",
+   "minutes": 2,
+   "any_hour": true,
+   "lines": [
+    "city.cap.log.1"
+   ],
+   "sound": "page_turn",
+   "read": {
+    "texts": [
+     "cap_house_log"
+    ],
+    "rotate": "use"
+   }
+  },
+  "cap_news": {
+   "prompt": "city.cap.p.news",
+   "minutes": 1,
+   "any_hour": true,
+   "lines": [
+    "city.cap.news.base",
+    {
+     "k": "city.cap.news.1",
+     "after": 0,
+     "before": 3
+    },
+    {
+     "k": "city.cap.news.2",
+     "after": 2,
+     "before": 5
+    },
+    {
+     "k": "city.cap.news.3",
+     "after": 4,
+     "before": 8
+    },
+    {
+     "k": "city.cap.news.4",
+     "after": 7
+    },
+    {
+     "k": "city.cap.news.thu",
+     "d": "thu"
+    }
+   ],
+   "rotate": "daily",
+   "sound": "paper_rustle"
+  },
+  "cap_s7_street": {
+   "like": "look_view",
+   "prompt": "city.cap.p.view",
+   "collect": "capsule_towers/bridge_7",
+   "minutes": 4,
+   "lines": [
+    {
+     "k": "city.cap.s7.d",
+     "h": [
+      6,
+      21
+     ]
+    },
+    {
+     "k": "city.cap.s7.n",
+     "h": [
+      21,
+      6
+     ]
+    },
+    {
+     "k": "city.cap.s7.rain",
+     "weather": "rain"
+    }
+   ]
+  },
+  "cap_top_street": {
+   "like": "look_view",
+   "prompt": "city.cap.p.view",
+   "collect": "capsule_towers/bridge_top",
+   "minutes": 4,
+   "lines": [
+    {
+     "k": "city.cap.top.d",
+     "h": [
+      6,
+      21
+     ]
+    },
+    {
+     "k": "city.cap.top.n",
+     "h": [
+      21,
+      6
+     ]
+    },
+    {
+     "k": "city.cap.top.rain",
+     "weather": "rain"
+    },
+    {
+     "k": "city.cap.top.fog",
+     "weather": "fog"
+    },
+    {
+     "k": "city.cap.top.snow",
+     "weather": "snow"
+    }
+   ]
+  },
+  "cap_sky_back": {
+   "like": "look_view",
+   "prompt": "city.cap.p.view",
+   "minutes": 3,
+   "lines": [
+    {
+     "k": "city.cap.back.d",
+     "h": [
+      6,
+      21
+     ]
+    },
+    {
+     "k": "city.cap.back.n",
+     "h": [
+      21,
+      6
+     ]
+    },
+    {
+     "k": "city.cap.back.rain",
+     "weather": "rain"
+    }
+   ]
+  },
+  "cap_reel": {
+   "prompt": "city.cap.p.box",
+   "minutes": 1,
+   "any_hour": true,
+   "lines": [
+    "city.cap.reel.1",
+    "city.cap.reel.2"
+   ],
+   "sound": "paper_rustle"
+  },
+  "cap_tapes": {
+   "prompt": "city.cap.p.tapes",
+   "minutes": 3,
+   "any_hour": true,
+   "lines": [
+    "city.cap.tapes.1"
+   ],
+   "sound": "page_turn",
+   "read": {
+    "texts": [
+     "cap_tapes_singh"
+    ],
+    "rotate": "use"
+   }
+  },
+  "cap_table": {
+   "prompt": "city.cap.p.table",
+   "minutes": 8,
+   "any_hour": true,
+   "lines": [
+    "city.cap.table.1",
+    "city.cap.table.2",
+    {
+     "k": "city.cap.table.thu",
+     "d": "thu"
+    }
+   ],
+   "sound": "rest_pour",
+   "give": [
+    [
+     "tea",
+     1
+    ]
+   ],
+   "daily": 1,
+   "collect": "capsule_towers/singh_tea"
+  },
+  "cap_hooks": {
+   "prompt": "city.cap.p.hooks",
+   "minutes": 1,
+   "any_hour": true,
+   "lines": [
+    "city.cap.hooks.1",
+    "city.cap.hooks.2",
+    {
+     "k": "city.cap.hooks.rain",
+     "weather": "rain"
+    }
+   ],
+   "sound": "hanger_clink"
+  },
+  "cap_sill": {
+   "prompt": "city.cap.p.sill",
+   "minutes": 1,
+   "any_hour": true,
+   "lines": [
+    "city.cap.sill.1",
+    {
+     "k": "city.cap.sill.n",
+     "h": [
+      21,
+      6
+     ]
+    },
+    {
+     "k": "city.cap.sill.rain",
+     "weather": "rain"
+    }
+   ]
+  },
+  "cap_phone": {
+   "prompt": "city.cap.p.phone",
+   "minutes": 1,
+   "any_hour": true,
+   "lines": [
+    "city.cap.phone.1",
+    {
+     "k": "city.cap.phone.m",
+     "h": [
+      6,
+      9
+     ]
+    },
+    {
+     "k": "city.cap.phone.n",
+     "h": [
+      22,
+      6
+     ]
+    }
+   ]
+  }
+ },
+ "rules": {
+  "capsule_tower/lobby_mail_w": {
+   "act": "cap_mail"
+  },
+  "capsule_tower/lobby_mail_e": {
+   "act": "cap_mail"
+  },
+  "capsule_tower/lobby_keys": {
+   "act": "cap_keys"
+  },
+  "capsule_tower/lobby_umbrellas": {
+   "act": "cap_umbrellas"
+  },
+  "capsule_tower/lobby_bike": {
+   "act": "cap_bike"
+  },
+  "capsule_tower/lobby_pram": {
+   "act": "cap_pram"
+  },
+  "capsule_tower/lobby_ficus": {
+   "act": "cap_plant"
+  },
+  "capsule_tower/lobby_fern": {
+   "act": "cap_plant"
+  },
+  "capsule_tower/lobby_monstera": {
+   "act": "cap_plant"
+  },
+  "capsule_tower/lobby_palm": {
+   "act": "cap_plant"
+  },
+  "capsule_tower/s7_planter": {
+   "act": "cap_plant"
+  },
+  "capsule_tower/top_planter": {
+   "act": "cap_plant"
+  },
+  "capsule_tower/lobby_hats_w": {
+   "act": "cap_hats"
+  },
+  "capsule_tower/lobby_hats_e": {
+   "act": "cap_hats"
+  },
+  "capsule_tower/lobby_extinguisher": {
+   "act": "cap_safety"
+  },
+  "capsule_tower/lobby_street": {
+   "act": "cap_street"
+  },
+  "capsule_tower/lobby_logbook": {
+   "act": "cap_logbook"
+  },
+  "capsule_tower/lobby_bell": {
+   "act": "cap_bell"
+  },
+  "capsule_tower/s7_view_street": {
+   "act": "cap_s7_street"
+  },
+  "capsule_tower/top_view_street": {
+   "act": "cap_top_street"
+  },
+  "capsule_tower/s7_view_back": {
+   "act": "cap_sky_back"
+  },
+  "capsule_tower/top_view_back": {
+   "act": "cap_sky_back"
+  },
+  "capsule_tower/lift_g": {
+   "act": "cap_lift",
+   "props": {
+    "floors": [
+     {
+      "k": "city.lift.capsule.s7",
+      "to": "lift_s7"
+     },
+     {
+      "k": "city.lift.capsule.top",
+      "to": "lift_top"
+     }
+    ]
+   }
+  },
+  "capsule_tower/lift_s7": {
+   "act": "cap_lift",
+   "props": {
+    "floors": [
+     {
+      "k": "city.lift.capsule.ground",
+      "to": "lift_g"
+     },
+     {
+      "k": "city.lift.capsule.top",
+      "to": "lift_top"
+     }
+    ]
+   }
+  },
+  "capsule_tower/lift_top": {
+   "act": "cap_lift",
+   "props": {
+    "floors": [
+     {
+      "k": "city.lift.capsule.ground",
+      "to": "lift_g"
+     },
+     {
+      "k": "city.lift.capsule.s7",
+      "to": "lift_s7"
+     }
+    ]
+   }
+  },
+  "P-CAPSULE/lobby_news": {
+   "act": "cap_news"
+  },
+  "P-CAPSULE/s7_box": {
+   "act": "cap_reel"
+  },
+  "P-CAPSULE/capsule_tapes": {
+   "act": "cap_tapes"
+  },
+  "P-CAPSULE/capsule_table": {
+   "act": "cap_table"
+  },
+  "P-CAPSULE/capsule_hooks": {
+   "act": "cap_hooks"
+  },
+  "P-CAPSULE/capsule_sill": {
+   "act": "cap_sill"
+  },
+  "P-CAPSULE/capsule_phone": {
+   "act": "cap_phone"
+  }
+ },
+ "texts": {
+  "cap_house_log": {
+   "title": "city.cap.logp.title",
+   "kind": "ledger",
+   "minutes": 3,
+   "collect": "capsule_towers/house_log",
+   "pages": [
+    "city.cap.logp.1",
+    {
+     "k": "city.cap.logp.2",
+     "after": 1
+    },
+    {
+     "k": "city.cap.logp.3",
+     "after": 3
+    },
+    {
+     "k": "city.cap.logp.4",
+     "after": 6
+    },
+    {
+     "k": "city.cap.logp.5",
+     "after": 9
+    }
+   ]
+  },
+  "cap_tapes_singh": {
+   "title": "city.cap.tapesp.title",
+   "kind": "book",
+   "minutes": 4,
+   "collect": "capsule_towers/singh_tapes",
+   "pages": [
+    "city.cap.tapesp.1",
+    {
+     "k": "city.cap.tapesp.2",
+     "after": 2
+    },
+    {
+     "k": "city.cap.tapesp.3",
+     "after": 5
+    },
+    {
+     "k": "city.cap.tapesp.4",
+     "after": 8
+    }
+   ]
+  }
+ },
+ "collections": {
+  "capsule_towers": {
+   "title": "city.coll.capsule_towers.title",
+   "pieces": [
+    "house_log",
+    "bridge_7",
+    "bridge_top",
+    "singh_tapes",
+    "singh_tea",
+    "kravets_tapes",
+    "kravets_tea"
+   ]
+  }
+ },
+ "quests": [
+  {
+   "id": "capsule_reel",
+   "kind": "side",
+   "start_on": {
+    "event": "visit",
+    "target": "P-CAPSULE"
+   },
+   "stages": [
+    {
+     "id": "notice",
+     "objectives": [
+      {
+       "id": "notice",
+       "event": "do",
+       "target": "cap_news"
+      }
+     ]
+    },
+    {
+     "id": "reel",
+     "objectives": [
+      {
+       "id": "reel",
+       "event": "do",
+       "target": "cap_reel"
+      }
+     ]
+    },
+    {
+     "id": "back",
+     "objectives": [
+      {
+       "id": "back",
+       "event": "do",
+       "target": "cap_tapes"
+      }
+     ],
+     "reward": {
+      "items": {
+       "tea": 2
+      }
+     }
+    }
+   ]
+  }
+ ]
+}

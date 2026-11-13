@@ -1,0 +1,861 @@
+{
+ "_doc": "Cube houses, plot P-T1H1 (second cube, flat 0-02: Hokon Cohen and Gennady Lefebvre) and the parts the second plot P-T2H1 shares (acts t1h1_cube_*, the deck acts): the street room, the living level and the tip, three lifts, the greenhouse, quest home_cube_a, the collection cube_homes. Household B lives in x_p_t2h1.json.",
+ "acts": {
+  "t1h1_cube_lift": {
+   "like": "door_any",
+   "prompt": "city.cu.p.lift",
+   "lines": [
+    "city.cu.lift.1",
+    "city.cu.lift.2"
+   ]
+  },
+  "t1h1_cube_mirror": {
+   "prompt": "city.cu.p.mirror",
+   "minutes": 1,
+   "any_hour": true,
+   "lines": [
+    {
+     "k": "city.cu.mirror.m",
+     "h": [
+      6,
+      10
+     ]
+    },
+    {
+     "k": "city.cu.mirror.d",
+     "h": [
+      10,
+      18
+     ]
+    },
+    {
+     "k": "city.cu.mirror.e",
+     "h": [
+      18,
+      23
+     ]
+    },
+    {
+     "k": "city.cu.mirror.n",
+     "h": [
+      23,
+      6
+     ]
+    }
+   ]
+  },
+  "t1h1_cube_fern": {
+   "prompt": "city.cu.p.fern",
+   "minutes": 1,
+   "any_hour": true,
+   "lines": [
+    "city.cu.fern.1",
+    "city.cu.fern.2",
+    {
+     "k": "city.cu.fern.rain",
+     "weather": "rain"
+    }
+   ]
+  },
+  "t1h1_cube_vback": {
+   "like": "look_view",
+   "prompt": "city.cu.p.back",
+   "lines": [
+    {
+     "k": "city.cu.vback.d",
+     "h": [
+      6,
+      21
+     ]
+    },
+    {
+     "k": "city.cu.vback.n",
+     "h": [
+      21,
+      6
+     ]
+    },
+    {
+     "k": "city.cu.vback.rain",
+     "weather": "rain"
+    }
+   ]
+  },
+  "t1h1_cube_vfront": {
+   "like": "look_view",
+   "lines": [
+    {
+     "k": "city.cu.vfront.d",
+     "h": [
+      9,
+      21
+     ]
+    },
+    {
+     "k": "city.cu.vfront.m",
+     "h": [
+      6,
+      9
+     ],
+     "d": "mon-fri"
+    },
+    {
+     "k": "city.cu.vfront.d",
+     "h": [
+      6,
+      9
+     ],
+     "d": "sat,sun"
+    },
+    {
+     "k": "city.cu.vfront.w",
+     "h": [
+      9,
+      18
+     ],
+     "d": "sat,sun"
+    },
+    {
+     "k": "city.cu.vfront.e",
+     "h": [
+      18,
+      21
+     ]
+    },
+    {
+     "k": "city.cu.vfront.n",
+     "h": [
+      21,
+      6
+     ]
+    },
+    {
+     "k": "city.cu.vfront.rain",
+     "weather": "rain"
+    },
+    {
+     "k": "city.cu.vfront.fog",
+     "weather": "fog"
+    },
+    {
+     "k": "city.cu.vfront.fest",
+     "festival": "any"
+    }
+   ]
+  },
+  "t1h1_cube_vfloor": {
+   "like": "look_view",
+   "lines": [
+    {
+     "k": "city.cu.vfloor.d",
+     "h": [
+      6,
+      21
+     ]
+    },
+    {
+     "k": "city.cu.vfloor.n",
+     "h": [
+      21,
+      6
+     ]
+    },
+    {
+     "k": "city.cu.vfloor.rain",
+     "weather": "rain"
+    }
+   ]
+  },
+  "t1h1_cube_tea": {
+   "prompt": "city.cu.p.tea",
+   "minutes": 8,
+   "sound": "rest_pour",
+   "give": [
+    [
+     "tea",
+     1
+    ]
+   ],
+   "daily": 1,
+   "any_hour": true,
+   "lines": [
+    "city.cu.tea.1",
+    "city.cu.tea.2"
+   ]
+  },
+  "t1h1_cube_seeds": {
+   "prompt": "city.cu.p.seeds",
+   "minutes": 1,
+   "give": [
+    [
+     "seeds",
+     1
+    ]
+   ],
+   "daily": 1,
+   "any_hour": true,
+   "sound": "paper_rustle",
+   "lines": [
+    "city.cu.seeds.1",
+    "city.cu.seeds.2"
+   ]
+  },
+  "t1h1_deck_post": {
+   "prompt": "city.cu.p.post",
+   "minutes": 1,
+   "any_hour": true,
+   "lines": [
+    {
+     "k": "city.cu.post.m",
+     "h": [
+      0,
+      9
+     ]
+    },
+    {
+     "k": "city.cu.post.d",
+     "h": [
+      9,
+      17
+     ]
+    },
+    {
+     "k": "city.cu.post.e",
+     "h": [
+      17,
+      24
+     ]
+    }
+   ]
+  },
+  "t1h1_deck_planter": {
+   "prompt": "city.cu.p.planter",
+   "minutes": 1,
+   "any_hour": true,
+   "lines": [
+    "city.cu.planter.1",
+    {
+     "k": "city.cu.planter.rain",
+     "weather": "rain"
+    },
+    {
+     "k": "city.cu.planter.snow",
+     "weather": "snow"
+    }
+   ]
+  },
+  "t1h1_deck_view": {
+   "like": "look_view",
+   "prompt": "city.cu.p.deckview",
+   "lines": [
+    {
+     "k": "city.cu.deckview.d",
+     "h": [
+      6,
+      21
+     ]
+    },
+    {
+     "k": "city.cu.deckview.n",
+     "h": [
+      21,
+      6
+     ]
+    },
+    {
+     "k": "city.cu.deckview.rain",
+     "weather": "rain"
+    }
+   ]
+  },
+  "t1h1_slate": {
+   "prompt": "city.t1.p.slate",
+   "minutes": 1,
+   "any_hour": true,
+   "lines": [
+    {
+     "k": "city.t1.slate.work",
+     "h": [
+      7,
+      16
+     ],
+     "d": "mon-fri"
+    },
+    {
+     "k": "city.t1.slate.eve",
+     "h": [
+      16,
+      22
+     ]
+    },
+    {
+     "k": "city.t1.slate.night",
+     "h": [
+      22,
+      7
+     ]
+    },
+    {
+     "k": "city.t1.slate.week",
+     "d": "sat,sun",
+     "h": [
+      8,
+      21
+     ]
+    },
+    "city.t1.slate.cube",
+    {
+     "k": "city.t1.slate.note",
+     "after": 4
+    }
+   ]
+  },
+  "t1h1_shoes": {
+   "prompt": "city.t1.p.shoes",
+   "minutes": 1,
+   "any_hour": true,
+   "lines": [
+    "city.t1.shoes.1",
+    {
+     "k": "city.t1.shoes.wet",
+     "weather": [
+      "rain",
+      "wet"
+     ]
+    },
+    {
+     "k": "city.t1.shoes.snow",
+     "weather": "snow"
+    }
+   ]
+  },
+  "t1h1_hooks": {
+   "prompt": "city.t1.p.hooks",
+   "minutes": 1,
+   "any_hour": true,
+   "lines": [
+    {
+     "k": "city.t1.hooks.day",
+     "h": [
+      7,
+      16
+     ],
+     "d": "mon-fri"
+    },
+    {
+     "k": "city.t1.hooks.eve",
+     "h": [
+      16,
+      24
+     ]
+    },
+    {
+     "k": "city.t1.hooks.eve",
+     "h": [
+      7,
+      16
+     ],
+     "d": "sat,sun"
+    },
+    {
+     "k": "city.t1.hooks.night",
+     "h": [
+      0,
+      7
+     ]
+    }
+   ]
+  },
+  "t1h1_fridge": {
+   "prompt": "city.cu.p.fridge",
+   "rotate": "daily",
+   "minutes": 2,
+   "sound": "paper_rustle",
+   "any_hour": true,
+   "collect": "cube_homes/a_fridge",
+   "lines": [
+    {
+     "k": "city.t1.fridge.0",
+     "before": 1
+    },
+    {
+     "k": "city.t1.fridge.1",
+     "after": 1,
+     "before": 3
+    },
+    {
+     "k": "city.t1.fridge.2",
+     "after": 2,
+     "before": 5
+    },
+    {
+     "k": "city.t1.fridge.3",
+     "after": 3,
+     "before": 7
+    },
+    {
+     "k": "city.t1.fridge.4",
+     "after": 4,
+     "before": 9
+    },
+    {
+     "k": "city.t1.fridge.5",
+     "after": 2
+    },
+    {
+     "k": "city.t1.fridge.6",
+     "after": 8,
+     "before": 14
+    },
+    {
+     "k": "city.t1.fridge.7",
+     "after": 10
+    },
+    "city.t1.fridge.f"
+   ]
+  },
+  "t1h1_arcade": {
+   "like": "arcade",
+   "prompt": "city.t1.p.arcade",
+   "price": 0,
+   "lines": [
+    {
+     "k": "city.t1.arcade.d",
+     "h": [
+      6,
+      21
+     ]
+    },
+    {
+     "k": "city.t1.arcade.n",
+     "h": [
+      21,
+      6
+     ]
+    }
+   ]
+  },
+  "t1h1_games": {
+   "like": "read_misc",
+   "prompt": "city.t1.p.games",
+   "minutes": 3,
+   "lines": [
+    "city.t1.games.1",
+    "city.t1.games.2"
+   ],
+   "any_hour": true
+  },
+  "t1h1_photos": {
+   "prompt": "city.t1.p.photos",
+   "minutes": 1,
+   "any_hour": true,
+   "lines": [
+    "city.t1.photos.1",
+    "city.t1.photos.2"
+   ]
+  },
+  "t1h1_postcards": {
+   "like": "read_misc",
+   "prompt": "city.t1.p.postcards",
+   "minutes": 3,
+   "any_hour": true,
+   "lines": [
+    "city.t1.post.1"
+   ],
+   "read": {
+    "texts": [
+     "t1h1_postcards"
+    ]
+   }
+  },
+  "t1h1_garden": {
+   "like": "read_misc",
+   "prompt": "city.t1.p.garden",
+   "minutes": 4,
+   "any_hour": true,
+   "lines": [
+    "city.t1.diary.1"
+   ],
+   "read": {
+    "texts": [
+     "t1h1_diary"
+    ]
+   }
+  },
+  "t1h1_trays": {
+   "prompt": "city.t1.p.trays",
+   "minutes": 1,
+   "any_hour": true,
+   "lines": [
+    {
+     "k": "city.t1.trays.0",
+     "before": 3
+    },
+    {
+     "k": "city.t1.trays.1",
+     "after": 3,
+     "before": 7
+    },
+    {
+     "k": "city.t1.trays.2",
+     "after": 7
+    }
+   ]
+  },
+  "t1h1_water": {
+   "prompt": "city.t1.p.water",
+   "minutes": 6,
+   "sound": "rest_pour",
+   "any_hour": true,
+   "lines": [
+    "city.t1.water.1",
+    {
+     "k": "city.cu.water.rain",
+     "weather": "rain"
+    },
+    {
+     "k": "city.cu.water.clear",
+     "weather": "clear"
+    }
+   ]
+  },
+  "t1h1_sky": {
+   "like": "look_view",
+   "prompt": "city.t1.p.sky",
+   "collect": "cube_homes/a_sky",
+   "minutes": 5,
+   "lines": [
+    {
+     "k": "city.cu.sky.d1",
+     "h": [
+      6,
+      21
+     ]
+    },
+    {
+     "k": "city.cu.sky.d2",
+     "h": [
+      6,
+      21
+     ]
+    },
+    {
+     "k": "city.cu.sky.n1",
+     "h": [
+      21,
+      6
+     ]
+    },
+    {
+     "k": "city.cu.sky.n2",
+     "h": [
+      21,
+      6
+     ]
+    },
+    {
+     "k": "city.cu.sky.rain",
+     "weather": "rain"
+    },
+    {
+     "k": "city.cu.sky.snow",
+     "weather": "snow"
+    },
+    {
+     "k": "city.cu.sky.fog",
+     "weather": "fog"
+    },
+    {
+     "k": "city.cu.sky.stars",
+     "weather": "clear",
+     "h": [
+      21,
+      6
+     ]
+    },
+    "city.t1.sky.1"
+   ]
+  },
+  "t1h1_tipshelf": {
+   "like": "read_misc",
+   "prompt": "city.t1.p.tipshelf",
+   "minutes": 2,
+   "any_hour": true,
+   "lines": [
+    "city.t1.tipshelf.1",
+    "city.t1.tipshelf.2"
+   ]
+  },
+  "t1h1_sleep": {
+   "like": "sleep_night",
+   "prompt": "city.t1.p.sleep",
+   "lines": [
+    "city.t1.sleep.1",
+    "city.t1.sleep.2",
+    "city.t1.sleep.3"
+   ]
+  },
+  "t1h1_deck_board": {
+   "prompt": "city.t1.p.deckboard",
+   "rotate": "daily",
+   "minutes": 1,
+   "sound": "paper_rustle",
+   "any_hour": true,
+   "lines": [
+    "city.t1.deckboard.0",
+    {
+     "k": "city.t1.deckboard.1",
+     "after": 1
+    },
+    "city.t1.deckboard.2",
+    {
+     "k": "city.t1.deckboard.3",
+     "after": 2
+    },
+    {
+     "k": "city.t1.deckboard.4",
+     "after": 5
+    }
+   ]
+  }
+ },
+ "rules": {
+  "P-T1H1/lift_g": {
+   "act": "t1h1_cube_lift",
+   "props": {
+    "floors": [
+     {
+      "k": "city.lift.cube.living",
+      "to": "lift_living"
+     },
+     {
+      "k": "city.lift.cube.tip",
+      "to": "lift_tip"
+     }
+    ]
+   }
+  },
+  "P-T1H1/lift_living": {
+   "act": "t1h1_cube_lift",
+   "props": {
+    "floors": [
+     {
+      "k": "city.lift.cube.street",
+      "to": "lift_g"
+     },
+     {
+      "k": "city.lift.cube.tip",
+      "to": "lift_tip"
+     }
+    ]
+   }
+  },
+  "P-T1H1/lift_tip": {
+   "act": "t1h1_cube_lift",
+   "props": {
+    "floors": [
+     {
+      "k": "city.lift.cube.street",
+      "to": "lift_g"
+     },
+     {
+      "k": "city.lift.cube.living",
+      "to": "lift_living"
+     }
+    ]
+   }
+  },
+  "P-T1H1/cu_hall_mirror": {
+   "act": "t1h1_cube_mirror"
+  },
+  "P-T1H1/cu_hall_plant": {
+   "act": "t1h1_cube_fern"
+  },
+  "P-T1H1/cu_hall_note": {
+   "act": "t1h1_slate"
+  },
+  "P-T1H1/cu_hall_shoes": {
+   "act": "t1h1_shoes"
+  },
+  "P-T1H1/cu_hall_hooks": {
+   "act": "t1h1_hooks"
+  },
+  "P-T1H1/cu_liv_view_front": {
+   "act": "t1h1_cube_vfront"
+  },
+  "P-T1H1/cu_liv_view_back": {
+   "act": "t1h1_cube_vback"
+  },
+  "P-T1H1/cu_liv_stove": {
+   "act": "t1h1_cube_tea"
+  },
+  "P-T1H1/cu_liv_fridge": {
+   "act": "t1h1_fridge"
+  },
+  "P-T1H1/cu_liv_play": {
+   "act": "t1h1_arcade"
+  },
+  "P-T1H1/cu_liv_games": {
+   "act": "t1h1_games"
+  },
+  "P-T1H1/cu_liv_photos": {
+   "act": "t1h1_photos"
+  },
+  "P-T1H1/cu_liv_shelf": {
+   "act": "t1h1_postcards"
+  },
+  "P-T1H1/cu_tip_view_floor": {
+   "act": "t1h1_cube_vfloor"
+  },
+  "P-T1H1/cu_tip_sky": {
+   "act": "t1h1_sky"
+  },
+  "P-T1H1/cu_tip_sky_l": {
+   "act": "t1h1_sky"
+  },
+  "P-T1H1/cu_tip_trays": {
+   "act": "t1h1_trays"
+  },
+  "P-T1H1/cu_tip_garden": {
+   "act": "t1h1_garden"
+  },
+  "P-T1H1/cu_tip_can": {
+   "act": "t1h1_water"
+  },
+  "P-T1H1/cu_tip_seeds": {
+   "act": "t1h1_cube_seeds"
+  },
+  "P-T1H1/cu_tip_shelf": {
+   "act": "t1h1_tipshelf"
+  },
+  "P-T1H1/cu_tip_bed": {
+   "act": "t1h1_sleep"
+  },
+  "P-T1H1/deck_postbox": {
+   "act": "t1h1_deck_post"
+  },
+  "P-T1H1/deck_board": {
+   "act": "t1h1_deck_board"
+  },
+  "P-T1H1/deck_view": {
+   "act": "t1h1_deck_view"
+  },
+  "P-T1H1/deck_planter": {
+   "act": "t1h1_deck_planter"
+  }
+ },
+ "texts": {
+  "t1h1_postcards": {
+   "title": "city.t1.post.title",
+   "kind": "book",
+   "minutes": 3,
+   "collect": "cube_homes/a_postcards",
+   "pages": [
+    "city.t1.post.1",
+    "city.t1.post.2",
+    {
+     "k": "city.t1.post.3",
+     "after": 1
+    },
+    {
+     "k": "city.t1.post.4",
+     "after": 4
+    }
+   ]
+  },
+  "t1h1_diary": {
+   "title": "city.t1.diary.title",
+   "kind": "book",
+   "minutes": 4,
+   "collect": "cube_homes/a_diary",
+   "pages": [
+    "city.t1.diary.1",
+    {
+     "k": "city.t1.diary.2",
+     "after": 1
+    },
+    {
+     "k": "city.t1.diary.3",
+     "after": 2
+    },
+    {
+     "k": "city.t1.diary.4",
+     "after": 4
+    },
+    {
+     "k": "city.t1.diary.5",
+     "after": 6
+    },
+    {
+     "k": "city.t1.diary.6",
+     "after": 9
+    }
+   ]
+  }
+ },
+ "collections": {
+  "cube_homes": {
+   "title": "city.coll.cube_homes.title",
+   "pieces": [
+    "a_fridge",
+    "a_sky",
+    "a_postcards",
+    "a_diary",
+    "b_fridge",
+    "b_sky",
+    "b_chest",
+    "b_ledger",
+    "b_nights",
+    "b_mette"
+   ]
+  }
+ },
+ "quests": [
+  {
+   "id": "home_cube_a",
+   "kind": "side",
+   "start_on": {
+    "event": "visit",
+    "target": "P-T1H1"
+   },
+   "stages": [
+    {
+     "id": "note",
+     "objectives": [
+      {
+       "id": "note",
+       "event": "do",
+       "target": "t1h1_fridge"
+      }
+     ]
+    },
+    {
+     "id": "water",
+     "objectives": [
+      {
+       "id": "water",
+       "event": "do",
+       "target": "t1h1_water"
+      }
+     ]
+    },
+    {
+     "id": "diary",
+     "objectives": [
+      {
+       "id": "diary",
+       "event": "do",
+       "target": "t1h1_garden"
+      }
+     ],
+     "reward": {
+      "items": {
+       "seeds": 2,
+       "tea": 1
+      }
+     }
+    }
+   ]
+  }
+ ]
+}

@@ -75,7 +75,57 @@
    "yaw": 0.0
   },
   {
-   "id": "sbench_main_3",
+   "id": "lobby_lift",
+   "kind": "stand",
+   "pos": [
+    0.6,
+    10.0,
+    0.0
+   ],
+   "yaw": 270.0
+  },
+  {
+   "id": "lobby_wait_w",
+   "kind": "seat",
+   "pos": [
+    -4.95,
+    3.9,
+    0.0
+   ],
+   "yaw": 90.0
+  },
+  {
+   "id": "lobby_wait_e",
+   "kind": "seat",
+   "pos": [
+    -2.45,
+    3.9,
+    0.0
+   ],
+   "yaw": 270.0
+  },
+  {
+   "id": "lobby_post",
+   "kind": "stand",
+   "pos": [
+    3.8,
+    5.0,
+    0.0
+   ],
+   "yaw": 360.0
+  },
+  {
+   "id": "capsule_table_stand",
+   "kind": "stand",
+   "pos": [
+    6.45,
+    3.3,
+    0.0
+   ],
+   "yaw": 0.0
+  },
+  {
+   "id": "sbench_main_8",
    "kind": "bench",
    "pos": [
     -3.6,
@@ -118,6 +168,39 @@
    "colour": "#FFE0B0",
    "kind": "public",
    "radius": 3.5
+  },
+  {
+   "pos": [
+    0.0,
+    8.4,
+    3.3
+   ],
+   "lumens": 420,
+   "colour": "#FFE0B0",
+   "kind": "lobby",
+   "radius": 5.0
+  },
+  {
+   "pos": [
+    0.0,
+    8.1,
+    21.9
+   ],
+   "lumens": 360,
+   "colour": "#FFE0B0",
+   "kind": "stair",
+   "radius": 4.0
+  },
+  {
+   "pos": [
+    0.0,
+    8.1,
+    38.7
+   ],
+   "lumens": 360,
+   "colour": "#FFE0B0",
+   "kind": "stair",
+   "radius": 4.0
   },
   {
    "pos": [
@@ -417,6 +500,502 @@
    "yaw": 270.0,
    "props": {
     "topic": "travel"
+   }
+  },
+  {
+   "id": "lift_g",
+   "kind": "door",
+   "pos": [
+    1.16,
+    10.0,
+    1.1
+   ],
+   "yaw": 270.0,
+   "props": {
+    "to": "lift"
+   }
+  },
+  {
+   "id": "lobby_switch",
+   "kind": "machine",
+   "pos": [
+    -7.25,
+    2.33,
+    1.3
+   ],
+   "yaw": 180.0,
+   "props": {
+    "what": "switch",
+    "switch": 11
+   }
+  },
+  {
+   "id": "lobby_keys",
+   "kind": "board",
+   "pos": [
+    2.6,
+    5.55,
+    1.35
+   ],
+   "yaw": 0.0,
+   "props": {
+    "topic": "keys"
+   }
+  },
+  {
+   "id": "lobby_umbrellas",
+   "kind": "board",
+   "pos": [
+    1.0,
+    2.5,
+    0.7
+   ],
+   "yaw": 0.0,
+   "props": {
+    "topic": "umbrellas"
+   }
+  },
+  {
+   "id": "lobby_logbook",
+   "kind": "board",
+   "pos": [
+    2.3,
+    3.88,
+    0.8
+   ],
+   "yaw": 180.0,
+   "props": {
+    "topic": "log"
+   }
+  },
+  {
+   "id": "lobby_bell",
+   "kind": "board",
+   "pos": [
+    2.95,
+    4.2,
+    0.82
+   ],
+   "yaw": 180.0,
+   "props": {
+    "topic": "bell"
+   }
+  },
+  {
+   "id": "lobby_magazine",
+   "kind": "take",
+   "pos": [
+    -3.5,
+    4.1,
+    0.45
+   ],
+   "yaw": 0.0,
+   "props": {
+    "item": "magazine_travel"
+   }
+  },
+  {
+   "id": "lobby_mail_w",
+   "kind": "board",
+   "pos": [
+    -3.8,
+    5.55,
+    1.45
+   ],
+   "yaw": 0.0,
+   "props": {
+    "topic": "mail"
+   }
+  },
+  {
+   "id": "lobby_mail_e",
+   "kind": "board",
+   "pos": [
+    3.8,
+    5.55,
+    1.45
+   ],
+   "yaw": 0.0,
+   "props": {
+    "topic": "mail"
+   }
+  },
+  {
+   "id": "lobby_bike",
+   "kind": "board",
+   "pos": [
+    -6.9,
+    4.1,
+    0.7
+   ],
+   "yaw": 270.0,
+   "props": {
+    "topic": "bike"
+   }
+  },
+  {
+   "id": "lobby_pram",
+   "kind": "board",
+   "pos": [
+    -6.6,
+    4.9,
+    0.7
+   ],
+   "yaw": 90.0,
+   "props": {
+    "topic": "pram"
+   }
+  },
+  {
+   "id": "lobby_ficus",
+   "kind": "board",
+   "pos": [
+    -6.2,
+    3.3,
+    0.9
+   ],
+   "yaw": 0.0,
+   "props": {
+    "topic": "plant"
+   }
+  },
+  {
+   "id": "lobby_fern",
+   "kind": "board",
+   "pos": [
+    -2.5,
+    2.7,
+    0.6
+   ],
+   "yaw": 0.0,
+   "props": {
+    "topic": "plant"
+   }
+  },
+  {
+   "id": "lobby_monstera",
+   "kind": "board",
+   "pos": [
+    3.4,
+    3.0,
+    0.8
+   ],
+   "yaw": 0.0,
+   "props": {
+    "topic": "plant"
+   }
+  },
+  {
+   "id": "lobby_palm",
+   "kind": "board",
+   "pos": [
+    -0.8,
+    10.2,
+    0.9
+   ],
+   "yaw": 0.0,
+   "props": {
+    "topic": "plant"
+   }
+  },
+  {
+   "id": "lobby_hats_w",
+   "kind": "board",
+   "pos": [
+    -1.2,
+    2.75,
+    1.4
+   ],
+   "yaw": 0.0,
+   "props": {
+    "topic": "hats"
+   }
+  },
+  {
+   "id": "lobby_hats_e",
+   "kind": "board",
+   "pos": [
+    0.95,
+    5.2,
+    1.4
+   ],
+   "yaw": 0.0,
+   "props": {
+    "topic": "hats"
+   }
+  },
+  {
+   "id": "lobby_extinguisher",
+   "kind": "board",
+   "pos": [
+    -1.2,
+    9.3,
+    1.2
+   ],
+   "yaw": 90.0,
+   "props": {
+    "topic": "safety"
+   }
+  },
+  {
+   "id": "lobby_street",
+   "kind": "board",
+   "pos": [
+    -3.7,
+    2.15,
+    1.5
+   ],
+   "yaw": 180.0,
+   "props": {
+    "topic": "view"
+   }
+  },
+  {
+   "id": "lobby_news",
+   "kind": "board",
+   "pos": [
+    1.75,
+    5.55,
+    2.05
+   ],
+   "yaw": 0.0,
+   "props": {
+    "topic": "news"
+   }
+  },
+  {
+   "id": "capsule_tapes",
+   "kind": "shelf",
+   "pos": [
+    6.62,
+    5.3,
+    1.3
+   ],
+   "yaw": 0.0,
+   "props": {
+    "topic": "tapes"
+   }
+  },
+  {
+   "id": "capsule_alarm",
+   "kind": "board",
+   "pos": [
+    6.1,
+    5.3,
+    1.27
+   ],
+   "yaw": 0.0,
+   "props": {
+    "topic": "clock"
+   }
+  },
+  {
+   "id": "capsule_switch",
+   "kind": "machine",
+   "pos": [
+    5.86,
+    5.38,
+    1.45
+   ],
+   "yaw": 0.0,
+   "props": {
+    "what": "switch",
+    "switch": 3
+   }
+  },
+  {
+   "id": "capsule_table",
+   "kind": "board",
+   "pos": [
+    6.45,
+    2.75,
+    0.85
+   ],
+   "yaw": 180.0,
+   "props": {
+    "topic": "table"
+   }
+  },
+  {
+   "id": "capsule_hooks",
+   "kind": "board",
+   "pos": [
+    4.83,
+    5.2,
+    1.5
+   ],
+   "yaw": 90.0,
+   "props": {
+    "topic": "hooks"
+   }
+  },
+  {
+   "id": "capsule_sill",
+   "kind": "board",
+   "pos": [
+    5.15,
+    2.5,
+    1.02
+   ],
+   "yaw": 180.0,
+   "props": {
+    "topic": "sill"
+   }
+  },
+  {
+   "id": "capsule_phone",
+   "kind": "board",
+   "pos": [
+    5.0,
+    2.95,
+    0.86
+   ],
+   "yaw": 200.0,
+   "props": {
+    "topic": "phone"
+   }
+  },
+  {
+   "id": "lift_s7",
+   "kind": "door",
+   "pos": [
+    -1.16,
+    8.1,
+    20.7
+   ],
+   "yaw": 90.0,
+   "props": {
+    "to": "lift"
+   }
+  },
+  {
+   "id": "s7_bench",
+   "kind": "seat",
+   "pos": [
+    0.0,
+    7.42,
+    20.05
+   ],
+   "yaw": 0.0,
+   "props": {
+    "height": 0.45
+   }
+  },
+  {
+   "id": "s7_planter",
+   "kind": "board",
+   "pos": [
+    0.9,
+    8.6,
+    20.4
+   ],
+   "yaw": 270.0,
+   "props": {
+    "topic": "plant"
+   }
+  },
+  {
+   "id": "s7_view_street",
+   "kind": "board",
+   "pos": [
+    0.0,
+    7.13,
+    20.8
+   ],
+   "yaw": 180.0,
+   "props": {
+    "topic": "view"
+   }
+  },
+  {
+   "id": "s7_view_back",
+   "kind": "board",
+   "pos": [
+    0.0,
+    9.27,
+    20.8
+   ],
+   "yaw": 0.0,
+   "props": {
+    "topic": "view"
+   }
+  },
+  {
+   "id": "s7_box",
+   "kind": "board",
+   "pos": [
+    0.3,
+    7.6,
+    20.22
+   ],
+   "yaw": 180.0,
+   "props": {
+    "topic": "box"
+   }
+  },
+  {
+   "id": "lift_top",
+   "kind": "door",
+   "pos": [
+    -1.16,
+    8.1,
+    37.5
+   ],
+   "yaw": 90.0,
+   "props": {
+    "to": "lift"
+   }
+  },
+  {
+   "id": "top_bench",
+   "kind": "seat",
+   "pos": [
+    0.0,
+    7.42,
+    36.85
+   ],
+   "yaw": 0.0,
+   "props": {
+    "height": 0.45
+   }
+  },
+  {
+   "id": "top_planter",
+   "kind": "board",
+   "pos": [
+    0.9,
+    8.6,
+    37.2
+   ],
+   "yaw": 270.0,
+   "props": {
+    "topic": "plant"
+   }
+  },
+  {
+   "id": "top_view_street",
+   "kind": "board",
+   "pos": [
+    0.0,
+    7.13,
+    37.6
+   ],
+   "yaw": 180.0,
+   "props": {
+    "topic": "view"
+   }
+  },
+  {
+   "id": "top_view_back",
+   "kind": "board",
+   "pos": [
+    0.0,
+    9.27,
+    37.6
+   ],
+   "yaw": 0.0,
+   "props": {
+    "topic": "view"
    }
   }
  ],
@@ -5526,8 +6105,8 @@
   "127 capsule flats on 13 storeys; capsules jut 0.0 m over the street line at the front"
  ],
  "tris": {
-  "shell": 2050,
-  "detail": 17296,
+  "shell": 2110,
+  "detail": 20040,
   "windows": 632
  }
 }

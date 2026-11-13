@@ -133,6 +133,56 @@
     5.6
    ],
    "yaw": 270.0
+  },
+  {
+   "id": "gear",
+   "kind": "stand",
+   "pos": [
+    0.0,
+    3.85,
+    0.0
+   ],
+   "yaw": 0.0
+  },
+  {
+   "id": "ring_throw",
+   "kind": "stand",
+   "pos": [
+    -1.5,
+    1.2,
+    0.0
+   ],
+   "yaw": 180.0
+  },
+  {
+   "id": "staff_lifeguard",
+   "kind": "work",
+   "pos": [
+    -0.3,
+    2.5,
+    5.6
+   ],
+   "yaw": 0.0
+  },
+  {
+   "id": "staff_lifeguard_2",
+   "kind": "work",
+   "pos": [
+    0.2,
+    0.55,
+    5.6
+   ],
+   "yaw": 0.0
+  },
+  {
+   "id": "binoc_w",
+   "kind": "stand",
+   "pos": [
+    -1.0,
+    2.3,
+    5.6
+   ],
+   "yaw": 90.0
   }
  ],
  "lamps": [
@@ -223,19 +273,6 @@
    "yaw": 90.0,
    "props": {
     "what": "tea_flask"
-   }
-  },
-  {
-   "id": "kit_clock_1",
-   "kind": "board",
-   "pos": [
-    -0.15,
-    3.1,
-    7.75
-   ],
-   "yaw": 0.0,
-   "props": {
-    "what": "clock"
    }
   },
   {
@@ -458,6 +495,137 @@
    "props": {
     "topic": "tides"
    }
+  },
+  {
+   "id": "gear_locker",
+   "kind": "machine",
+   "pos": [
+    0.0,
+    3.4,
+    0.75
+   ],
+   "yaw": 180.0,
+   "props": {
+    "what": "gear"
+   }
+  },
+  {
+   "id": "spine_board",
+   "kind": "machine",
+   "pos": [
+    -0.68,
+    2.45,
+    1.3
+   ],
+   "yaw": 270.0,
+   "props": {
+    "what": "spine_board"
+   }
+  },
+  {
+   "id": "ring_post",
+   "kind": "machine",
+   "pos": [
+    -1.55,
+    3.0,
+    1.2
+   ],
+   "yaw": 0.0,
+   "props": {
+    "what": "ring_toss"
+   }
+  },
+  {
+   "id": "flag_mast",
+   "kind": "board",
+   "pos": [
+    -1.65,
+    0.5,
+    1.3
+   ],
+   "yaw": 0.0,
+   "props": {
+    "topic": "flagstate"
+   }
+  },
+  {
+   "id": "tide_staff",
+   "kind": "board",
+   "pos": [
+    1.9,
+    0.75,
+    1.25
+   ],
+   "yaw": 270.0,
+   "props": {
+    "topic": "tidestaff"
+   }
+  },
+  {
+   "id": "lg_switch",
+   "kind": "machine",
+   "pos": [
+    0.55,
+    3.1,
+    6.32
+   ],
+   "yaw": 0.0,
+   "props": {
+    "what": "switch",
+    "switch": "room"
+   }
+  },
+  {
+   "id": "lg_clock",
+   "kind": "board",
+   "pos": [
+    -0.15,
+    3.1,
+    7.75
+   ],
+   "yaw": 0.0,
+   "props": {
+    "topic": "clock"
+   }
+  },
+  {
+   "id": "duty_ledger",
+   "kind": "board",
+   "pos": [
+    1.0,
+    0.9,
+    6.22
+   ],
+   "yaw": 180.0,
+   "props": {
+    "topic": "ledger"
+   }
+  },
+  {
+   "id": "deck_bell",
+   "kind": "machine",
+   "pos": [
+    1.45,
+    1.5,
+    7.15
+   ],
+   "yaw": 90.0,
+   "props": {
+    "what": "bell"
+   }
+  },
+  {
+   "id": "deck_binoc_w",
+   "kind": "machine",
+   "pos": [
+    -1.5,
+    2.3,
+    6.8
+   ],
+   "yaw": 270.0,
+   "props": {
+    "what": "binoculars"
+   }
   }
  ],
  "flats": [],
@@ -593,7 +761,7 @@
  "notes": [],
  "tris": {
   "shell": 430,
-  "detail": 3282,
+  "detail": 4220,
   "windows": 24
  }
 }

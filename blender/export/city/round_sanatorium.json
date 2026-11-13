@@ -1359,6 +1359,19 @@
    }
   },
   {
+   "id": "treat_stool",
+   "kind": "seat",
+   "pos": [
+    8.746,
+    15.348,
+    0.42
+   ],
+   "yaw": 205.0,
+   "props": {
+    "height": 0.42
+   }
+  },
+  {
    "id": "night_radio",
    "kind": "machine",
    "pos": [
@@ -13789,7 +13802,7 @@
  ],
  "tris": {
   "shell": 15986,
-  "detail": 37541,
+  "detail": 37607,
   "windows": 1972
  }
 }

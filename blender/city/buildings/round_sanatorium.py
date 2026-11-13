@@ -627,6 +627,10 @@ def _depth(B, q, desk, th_r, dc):
     B.thing("treat_quartz", "machine", (qx, qy, 1.15), _yout(tc), what="quartz")
     vx, vy = _at(12.55, tc, -0.05)
     B.thing("treat_window", "board", (vx, vy, 1.5), _yout(tc), topic="view")
+    # the patient's stool in front of the check-up table and the quartz lamp (the hero sits for both)
+    sx_, sy_ = bx_ + 0.3, by_ - 0.63
+    kit.stool(B, sx_, sy_, 0.0, 205.0, h=0.42)
+    B.thing("treat_stool", "seat", (sx_, sy_, 0.42), 205.0, height=0.42)
     # the paid couch is a guest bed: blanket, pillow, the bedside radio and a night lamp on the cabinet
     cbx, cby = _at(15.2, tc, -0.85)
     p = kit._P(B, cbx, cby, 0.7, tc, "couch_bedding")

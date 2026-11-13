@@ -93,6 +93,26 @@
     0.0
    ],
    "yaw": 0.0
+  },
+  {
+   "id": "staff_seller",
+   "kind": "work",
+   "pos": [
+    1.9,
+    3.25,
+    0.0
+   ],
+   "yaw": 0.0
+  },
+  {
+   "id": "seat_k3",
+   "kind": "seat",
+   "pos": [
+    -2.6,
+    3.2,
+    0.0
+   ],
+   "yaw": 90.0
   }
  ],
  "lamps": [
@@ -264,6 +284,73 @@
    "props": {
     "what": "scales"
    }
+  },
+  {
+   "id": "stop_clock",
+   "kind": "board",
+   "pos": [
+    0.52,
+    3.2,
+    2.22
+   ],
+   "yaw": 270.0,
+   "props": {
+    "topic": "clock"
+   }
+  },
+  {
+   "id": "stop_switch",
+   "kind": "machine",
+   "pos": [
+    2.68,
+    2.16,
+    1.33
+   ],
+   "yaw": 0.0,
+   "props": {
+    "what": "switch",
+    "switch": "room"
+   }
+  },
+  {
+   "id": "stop_stamp",
+   "kind": "machine",
+   "pos": [
+    2.68,
+    2.14,
+    0.98
+   ],
+   "yaw": 0.0,
+   "props": {
+    "what": "stamp"
+   }
+  },
+  {
+   "id": "k3_chair",
+   "kind": "seat",
+   "pos": [
+    -2.6,
+    3.2,
+    0.45
+   ],
+   "yaw": 90.0,
+   "props": {
+    "height": 0.45,
+    "cone": 90
+   }
+  },
+  {
+   "id": "k3_lotto",
+   "kind": "board",
+   "pos": [
+    0.78,
+    2.17,
+    1.5
+   ],
+   "yaw": 0.0,
+   "props": {
+    "topic": "lotto"
+   }
   }
  ],
  "flats": [],
@@ -315,7 +402,7 @@
  "notes": [],
  "tris": {
   "shell": 636,
-  "detail": 2409,
+  "detail": 2969,
   "windows": 8
  }
 }
