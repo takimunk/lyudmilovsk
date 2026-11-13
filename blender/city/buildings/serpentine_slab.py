@@ -24,6 +24,7 @@ import math
 import random
 
 import furn_int3 as fu
+import interior_kit as kit
 from citykit import (box, offset_polyline, band, extrude_profile, Frame, Mesh, DOOR_W, DOOR_H)
 import geom
 
@@ -379,7 +380,7 @@ def _lobby(B, i, cid, p0, p1, q0, q1, rnd):
     fu.doormat(B, fu.Fr(p0[0] + tx * mid + nl[0] * (WALL + 0.5), p0[1] + ty * mid + nl[1] * (WALL + 0.5), yw_u, 0.01), 0.0, 0.0)
     fu.plant(B, p1[0] - tx * (WALL + 0.45) + nl[0] * (D - WALL - 0.6), p1[1] - ty * (WALL + 0.45) + nl[1] * (D - WALL - 0.6), 0.01, 0.9, "CT_PlasterBlue")
     B.lamp((cx[0], cx[1], PIL - 0.35), lumens=480, colour="#FFE0B0", kind="lobby", radius=5.5)
-    B.spot("lobby_bench_%d" % cid, "bench", (cx[0], cx[1], 0.0), yaw_of((-nl[0], -nl[1])))
+    _dress_lobby(B, i, cid, p0, p1, nl, Lb, D)
     B.spot("lobby_view_%d" % cid, "view", (cx[0] + nl[0] * 2, cx[1] + nl[1] * 2, 0.0), yaw_of(nl))
 
 
@@ -414,3 +415,157 @@ def _pergola(B, a, b, zr, rnd):
         box(mm, "CT_Wood", 0.1, L - 0.1, v - 0.06, v + 0.06, z - 0.02, z + 0.1)
         fr = Frame(a[0], a[1], yaw)
         B.detail.extend(fr.apply(mm))
+
+
+# ------------------------------------------------------------------------------------------------ lobby furnishing
+class _Fr:
+    """Lobby frame: origin = front wall's left end p0, u along the front wall, v into the building."""
+
+    def __init__(self, o, eu, ev):
+        self.o, self.eu, self.ev = o, eu, ev
+
+    def p(self, u, v):
+        return (self.o[0] + u * self.eu[0] + v * self.ev[0], self.o[1] + u * self.eu[1] + v * self.ev[1])
+
+    def yaw(self, fu_, fv_):
+        dx = fu_ * self.eu[0] + fv_ * self.ev[0]
+        dy = fu_ * self.eu[1] + fv_ * self.ev[1]
+        return math.degrees(math.atan2(dx, -dy)) % 360.0
+
+
+def _wheel(m, mat, c, u, r, n=8, w=0.03):
+    pts = [(c[0] + u[0] * r * math.cos(2 * math.pi * k / n), c[1] + u[1] * r * math.cos(2 * math.pi * k / n),
+            c[2] + r * math.sin(2 * math.pi * k / n)) for k in range(n)]
+    for k in range(n):
+        fu.rod(m, mat, pts[k], pts[(k + 1) % n], w)
+
+
+def _bike(B, x, y, dirv, mat="CT_PlasterRed"):
+    """A leaning city bicycle (detail) lying along the unit vector dirv."""
+    u = dirv
+    P3 = lambda s, z: (x + u[0] * s, y + u[1] * s, z)
+    m = B.detail
+    for s in (-0.55, 0.55):
+        _wheel(m, "CT_Steel", P3(s, 0.33), u, 0.33)
+    fu.rod(m, mat, P3(-0.55, 0.33), P3(-0.1, 0.55), 0.035)
+    fu.rod(m, mat, P3(-0.1, 0.55), P3(0.4, 0.62), 0.035)
+    fu.rod(m, mat, P3(0.4, 0.62), P3(0.55, 0.33), 0.035)
+    fu.rod(m, mat, P3(-0.1, 0.55), P3(0.05, 0.3), 0.035)
+    fu.rod(m, mat, P3(0.4, 0.62), P3(0.4, 0.95), 0.03)
+    hb = P3(0.4, 0.95)
+    fu.rod(m, "CT_Steel", (hb[0] - u[1] * 0.28, hb[1] + u[0] * 0.28, 0.95), (hb[0] + u[1] * 0.28, hb[1] - u[0] * 0.28, 0.95), 0.03)
+    sd = P3(-0.17, 0.77)
+    fu.rod(m, "CT_Leather", (sd[0] - u[0] * 0.12, sd[1] - u[1] * 0.12, 0.77), (sd[0] + u[0] * 0.12, sd[1] + u[1] * 0.12, 0.77), 0.07)
+    fu.rod(m, mat, P3(-0.1, 0.55), P3(-0.17, 0.74), 0.03)
+
+
+def _pram(B, x, y, front, mat="CT_PlasterBlue"):
+    """A pram (detail) whose front looks along the unit vector `front`."""
+    f = front
+    s_ = (-f[1], f[0])
+    P3 = lambda s, t, z: (x + s_[0] * s + f[0] * t, y + s_[1] * s + f[1] * t, z)
+    m = B.detail
+    geom.prism(m, mat, [P3(du, dv, 0)[:2] for du, dv in ((-0.27, -0.45), (0.27, -0.45), (0.27, 0.45), (-0.27, 0.45))], 0.38, 0.62, top=True, bottom=True)
+    geom.prism(m, "CT_Paper", [P3(du, dv, 0)[:2] for du, dv in ((-0.27, -0.45), (0.27, -0.45), (0.27, -0.05), (-0.27, -0.05))], 0.62, 0.86, top=True, bottom=False)
+    for du, dv in ((-0.3, -0.35), (0.3, -0.35), (-0.3, 0.35), (0.3, 0.35)):
+        _wheel(m, "CT_Steel", P3(du, dv, 0.17), f, 0.17, n=8, w=0.03)
+    fu.rod(m, "CT_Steel", P3(-0.25, -0.45, 0.6), P3(-0.25, -0.75, 1.0), 0.03)
+    fu.rod(m, "CT_Steel", P3(0.25, -0.45, 0.6), P3(0.25, -0.75, 1.0), 0.03)
+    fu.rod(m, "CT_Steel", P3(-0.25, -0.75, 1.0), P3(0.25, -0.75, 1.0), 0.03)
+
+
+def _dress_lobby(B, i, cid, p0, p1, nl, Lb, D):
+    """One lobby design (7.6 x 12.2 m, doors mid front and mid back, mailboxes on the left wall near the front) with
+    seeded differences per core: which wall carries the concierge desk and which the waiting corner, pictures,
+    colours, plants and one extra (bike / pram / aquarium)."""
+    r = random.Random(7000 + cid * 31)
+    tx, ty = (p1[0] - p0[0]) / Lb, (p1[1] - p0[1]) / Lb
+    F = _Fr(p0, (tx, ty), nl)
+    pre = "core%d_" % cid
+    Z = 0.01
+    mid = Lb / 2
+    yb = D - 0.3
+    sa = 1 if cid % 2 == 0 else -1               # side A (desk, radio): +1 left wall, -1 right wall
+    sb = -sa
+
+    def wall(s, v):
+        """(x, y, yaw) of a point on the inner face of the left (s=+1) / right (s=-1) wall at depth v, facing in."""
+        u = WALL if s > 0 else Lb - WALL
+        return F.p(u, v), F.yaw(s, 0)
+
+    def at(s, off, v):                           # a point `off` m in from the wall
+        u = (WALL + off) if s > 0 else (Lb - WALL - off)
+        return F.p(u, v)
+
+    pal = ["CT_PlasterBlue", "CT_PlasterGreen", "CT_PlasterYellow", "CT_PlasterRed", "CT_PlasterPink"]
+    r.shuffle(pal)
+    # runner between the doors
+    x, y = F.p(mid, 6.2)
+    kit.rug(B, x, y, Z, F.yaw(0, 1), w=1.4, d=8.0, name="rug_%d" % (cid + 1), seed=cid)
+    # --- side A: house notice board over a bench, pictures, radio shelf, concierge desk, plant
+    (px, py), fy = wall(sa, 4.0)
+    kit.notice_board(B, px, py, Z, fy, w=1.0, zc=1.75, seed=7 + cid)
+    B.thing(pre + "notices", "board", (*at(sa, 0.05, 4.0), 1.75), fy, topic=("lost", "club", "lost")[cid % 3])
+    bx_, by_ = at(sa, 0.25, 4.0)
+    kit.bench(B, bx_, by_, Z, fy, w=1.6, kind="park")
+    B.thing(pre + "bench_a", "seat", (bx_, by_, 0.46), fy, height=0.45)
+    B.spot("lobby_bench_%d" % cid, "bench", (bx_, by_, 0.0), fy)
+    names = ["painting_sea_calm", "painting_dunes", "painting_pines", "painting_lighthouse", "painting_abstract", "painting_portrait"]
+    r.shuffle(names)
+    (px, py), fy = wall(sa, 5.8)
+    kit.picture(B, px, py, Z, fy, name=names[0], w=0.8, zc=1.75)
+    (px, py), fy = wall(sa, 7.0)
+    ws_x, ws_y = px, py
+    kit.wall_shelf(B, ws_x, ws_y, Z, fy, w=0.7, zt=1.2, props=False)
+    rx, ry = at(sa, 0.14, 7.0)
+    kit.radio(B, rx, ry, 1.2, fy)
+    B.thing(pre + "radio", "machine", (rx, ry, 1.35), fy, what="jukebox")
+    dx, dy = at(sa, 0.95, 9.0)
+    d = kit.office_desk(B, dx, dy, Z, F.yaw(-sa, 0), w=1.4, d=0.7)
+    cx_, cy_ = at(sa, 0.3, 9.0)
+    kit.chair(B, cx_, cy_, Z, F.yaw(-sa, 0), kind="wood")
+    lx_, ly_ = at(sa, 0.95, 9.45)
+    kit.table_lamp(B, lx_, ly_, d["top"] + Z, 0.0)
+    B.thing(pre + "concierge_desk", "counter", (dx, dy, 1.0), F.yaw(-sa, 0), role="concierge", service="reception")
+    px_, py_ = at(sa, 0.6, 10.9)
+    kit.plant(B, px_, py_, Z, 0.0, kind=("ficus", "fern", "ficus")[cid % 3], pot=pal[0], h=1.4, seed=cid)
+    # --- side B: board over a bench near the front, sofa corner with coffee table, armchair, lamp
+    (px, py), fy = wall(sb, 2.6)
+    kit.picture(B, px, py, Z, fy, name=names[1], w=0.9, zc=1.75)
+    (px, py), fy = wall(sb, 6.0)
+    sfx, sfy = at(sb, 0.45, 6.0)
+    kit.sofa(B, sfx, sfy, Z, fy, seats=2, mat=pal[1])
+    B.thing(pre + "sofa", "seat", (sfx, sfy, 0.46), fy, height=0.45)
+    kit.picture(B, px, py, Z, fy, name=names[2], w=1.0, zc=1.8)
+    x, y = at(sb, 1.7, 6.0)
+    ct = kit.coffee_table(B, x, y, Z, fy)
+    kit.newspaper(B, x, y, ct["top"] + Z, 0.0, seed=cid)
+    kit.cup(B, x + 0.1, y + 0.1, ct["top"] + Z, 0.0)
+    x, y = at(sb, 0.75, 8.3)
+    kit.armchair(B, x, y, Z, F.yaw(-sb, 0.5), mat=pal[2])
+    B.thing(pre + "armchair", "seat", (x, y, 0.46), F.yaw(-sb, 0.5), height=0.45)
+    x, y = at(sb, 0.4, 9.4)
+    kit.floor_lamp(B, x, y, Z, 0.0)
+    (px, py), fy = wall(sb, 4.0)
+    kit.poster(B, px, py, Z, fy, name=("poster_birds_0", "poster_cons_1", "poster_sun_1")[cid % 3], w=0.6, zc=1.7)
+    B.thing(pre + "club_board", "board", (*at(sb, 0.05, 4.0), 1.7), fy, topic="club")
+    # --- back wall: pictures, clock (the rear door is in the middle)
+    for k, uu in enumerate((mid + 1.4, mid + 2.5)):
+        x, y = F.p(uu, yb)
+        kit.picture(B, x, y, Z, F.yaw(0, -1), name=names[3 + k], w=0.7, zc=1.7)
+    x, y = F.p(mid, yb)
+    kit.wall_clock(B, x, y, Z, F.yaw(0, -1), zc=2.8, face="clock_%d" % (cid % 4))
+    # --- front wall: hat stand and a mirror
+    x, y = F.p(mid + 1.7, 0.75)
+    kit.hat_stand(B, x, y, Z, 0.0)
+    # --- one extra per core
+    if cid == 0:
+        x, y = at(sb, 0.55, 10.6)
+        _bike(B, x, y, F.ev, mat=pal[4])
+    elif cid == 1:
+        x, y = at(sb, 0.6, 10.4)
+        _pram(B, x, y, F.eu if sb > 0 else (-F.eu[0], -F.eu[1]), mat=pal[4])
+    else:
+        x, y = at(sb, 0.3, 10.5)
+        kit.aquarium(B, x, y, Z, F.yaw(-sb, 0), w=1.0, seed=3)
+        B.thing(pre + "aquarium", "screen", (x, y, 1.0), F.yaw(-sb, 0), what="aquarium")

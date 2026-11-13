@@ -25,6 +25,8 @@ import math
 import random
 
 import furn_int3 as fu
+import geom
+import interior_kit as kit
 from citykit import box, prism, band, ribbon_wall, DOOR_W, DOOR_H
 
 INFO = {
@@ -203,13 +205,11 @@ def build(B):
         box(B.m, "CT_Interior", xz - 0.3, xz, LY, 9.0, 0.0, 3.9)
         box(B.m, "CT_Floor", xa + 0.3, xz - 0.3, LY + 0.3, 9.0, 0.0, 0.02, faces="Z")
         box(B.m, "CT_ConcreteDark", xa, xz, LY - 0.3, Y_F, 3.9, 4.2)                           # canopy
-        box(B.detail, "CT_Wood", xm - 1.2, xm + 1.2, 6.5, 7.0, 0.4, 0.5)
-        B.spot(lid + "_bench", "bench", (xm, 6.2, 0.0), 0.0)
+        B.spot(lid + "_bench", "bench", (xm, 8.45, 0.0), 0.0)
         # furnishing: letter boxes on the left wall (inner face x = xa + 0.3), a doormat inside the door, plants, lamps
         fu.mailboxes(B, fu.Fr(xa + 0.3, LY + 0.3, 90.0, 0.02), 4.0, 0.95, cols=6, rows=3)
         fu.doormat(B, fu.Fr(xm, LY + 0.3, 0.0, 0.02), 0.0, -0.5)
-        fu.plant(B, xz - 0.8, 2.0, 0.02, 0.9, "CT_PlasterRed")
-        fu.plant(B, xa + 0.8, 8.4, 0.02, 0.9, "CT_PlasterBlue")
+        _dress_lobby(B, k, lid, xa, xz)
         for ly_ in (3.2, 6.8):
             B.lamp((xm, ly_, 3.5), lumens=520, colour="#FFE0B0", kind="lobby", radius=6.0)
             box(B.detail, "CT_Steel", xm - 0.01, xm + 0.01, ly_ - 0.01, ly_ + 0.01, 3.58, 3.9, faces="xXyY")
@@ -322,10 +322,173 @@ def build(B):
         for q in range(4):
             box(B.detail, "CT_Wood", px, px + 0.1, 5.5 + q * 3.0, 7.0 + q * 3.0, zr + 3.3, zr + 3.4) if False else None
     for bx in (48.5, 52.0):
-        box(B.detail, "CT_Wood", bx - 1.0, bx + 1.0, 9.0, 9.5, zr + 0.4, zr + 0.5)
+        kit.bench(B, bx, 9.25, zr, 0.0, w=2.0, kind="park")
+        B.thing("roof_bench_%d" % int(bx), "seat", (bx, 9.25, zr + 0.45), 0.0, height=0.45)
         B.spot("roof_bench_%d" % int(bx), "bench", (bx, 8.6, zr), 0.0)
+    _dress_roof(B, zr)
+    _dress_pilotis(B)
     B.spot("roof_view", "view", (30.0, Y_F + 1.0, zr + 0.55), 0.0)
 
     B.footprint = [(X0, 1.0), (XE, 1.0), (XE, Y_B + 0.3), (X0, Y_B + 0.3)]
     B.height = zr + 4.0
     B.note("%d flats (duplex), 15 storeys on 6 m pilotis" % len({f for f in B.flats}))
+
+
+# ------------------------------------------------------------------------------------------------ furnishing
+def _wheel(m, mat, c, u, r, n=8, w=0.03):
+    pts = [(c[0] + u[0] * r * math.cos(2 * math.pi * k / n), c[1] + u[1] * r * math.cos(2 * math.pi * k / n),
+            c[2] + r * math.sin(2 * math.pi * k / n)) for k in range(n)]
+    for k in range(n):
+        fu.rod(m, mat, pts[k], pts[(k + 1) % n], w)
+
+
+def _bike(B, x, y, dirv, mat="CT_PlasterRed", z=0.0):
+    """A leaning city bicycle (detail) lying along the unit vector dirv."""
+    u = dirv
+    P3 = lambda s, h: (x + u[0] * s, y + u[1] * s, z + h)
+    m = B.detail
+    for s in (-0.55, 0.55):
+        _wheel(m, "CT_Steel", P3(s, 0.33), u, 0.33)
+    fu.rod(m, mat, P3(-0.55, 0.33), P3(-0.1, 0.55), 0.035)
+    fu.rod(m, mat, P3(-0.1, 0.55), P3(0.4, 0.62), 0.035)
+    fu.rod(m, mat, P3(0.4, 0.62), P3(0.55, 0.33), 0.035)
+    fu.rod(m, mat, P3(-0.1, 0.55), P3(0.05, 0.3), 0.035)
+    fu.rod(m, mat, P3(0.4, 0.62), P3(0.4, 0.95), 0.03)
+    hb = P3(0.4, 0.95)
+    fu.rod(m, "CT_Steel", (hb[0] - u[1] * 0.28, hb[1] + u[0] * 0.28, hb[2]), (hb[0] + u[1] * 0.28, hb[1] - u[0] * 0.28, hb[2]), 0.03)
+    sd = P3(-0.17, 0.77)
+    fu.rod(m, "CT_Leather", (sd[0] - u[0] * 0.12, sd[1] - u[1] * 0.12, sd[2]), (sd[0] + u[0] * 0.12, sd[1] + u[1] * 0.12, sd[2]), 0.07)
+    fu.rod(m, mat, P3(-0.1, 0.55), P3(-0.17, 0.74), 0.03)
+
+
+def _pram(B, x, y, front, mat="CT_PlasterBlue", z=0.0):
+    f = front
+    s_ = (-f[1], f[0])
+    P3 = lambda s, t: (x + s_[0] * s + f[0] * t, y + s_[1] * s + f[1] * t)
+    m = B.detail
+    geom.prism(m, mat, [P3(du, dv) for du, dv in ((-0.27, -0.45), (0.27, -0.45), (0.27, 0.45), (-0.27, 0.45))], z + 0.38, z + 0.62, top=True, bottom=True)
+    geom.prism(m, "CT_Paper", [P3(du, dv) for du, dv in ((-0.27, -0.45), (0.27, -0.45), (0.27, -0.05), (-0.27, -0.05))], z + 0.62, z + 0.86, top=True, bottom=False)
+    for du, dv in ((-0.3, -0.35), (0.3, -0.35), (-0.3, 0.35), (0.3, 0.35)):
+        c = P3(du, dv)
+        _wheel(m, "CT_Steel", (c[0], c[1], z + 0.17), f, 0.17, n=8, w=0.03)
+    for du in (-0.25, 0.25):
+        a, b = P3(du, -0.45), P3(du, -0.75)
+        fu.rod(m, "CT_Steel", (a[0], a[1], z + 0.6), (b[0], b[1], z + 1.0), 0.03)
+    a, b = P3(-0.25, -0.75), P3(0.25, -0.75)
+    fu.rod(m, "CT_Steel", (a[0], a[1], z + 1.0), (b[0], b[1], z + 1.0), 0.03)
+
+
+def _planter(B, x, y, w=1.0, d=0.5, kind="fern", seed=0, z=0.0, pot="CT_PlasterGreen"):
+    box(B.detail, "CT_Concrete", x - w / 2, x + w / 2, y - d / 2, y + d / 2, z, z + 0.5)
+    kit.plant(B, x, y, z + 0.5, 0.0, kind=kind, pot=pot, h=0.9, seed=seed)
+
+
+def _dress_lobby(B, k, lid, xa, xz):
+    """One lobby design (6.6 x 7.7 m, 3.9 m high; door mid front, mailboxes on the left wall y 4.5..6.1) with
+    differences per lobby: desk and board side, colours, extras (bike + pram / aquarium + chess table)."""
+    r = random.Random(8100 + k * 17)
+    xm = (xa + xz) / 2
+    Z = 0.02
+    xl, xr = xa + 0.3, xz - 0.3
+    yb = 9.0
+    sa = 1 if k == 1 else -1                     # side A (desk, notice board): +1 left wall, -1 right wall
+    sb = -sa
+    pal = ["CT_PlasterBlue", "CT_PlasterGreen", "CT_PlasterYellow", "CT_PlasterRed", "CT_PlasterPink"]
+    r.shuffle(pal)
+    pre = lid + "_"
+
+    def ax(s, off):
+        return xl + off if s > 0 else xr - off
+
+    def fyw(s):
+        return 90.0 if s > 0 else 270.0
+
+    dirv = (0.0, 1.0)
+    kit.rug(B, xm, 5.4, Z, 0.0, w=2.8, d=2.8, name="rug_round_%d" % k, round=True)
+    # side A: notice board over a bench, desk with radio, plant
+    kit.notice_board(B, ax(sa, 0.0), 3.0, Z, fyw(sa), w=1.0, zc=1.8, seed=11 + k)
+    B.thing(pre + "notices", "board", (ax(sa, 0.05), 3.0, 1.8), fyw(sa), topic="lost" if k == 0 else "club")
+    kit.bench(B, ax(sa, 0.25), 3.0, Z, fyw(sa), w=1.6, kind="park")
+    B.thing(pre + "bench_a", "seat", (ax(sa, 0.25), 3.0, 0.47), fyw(sa), height=0.45)
+    d = kit.office_desk(B, ax(sa, 0.95), 6.9, Z, fyw(sa), w=1.4, d=0.7)
+    kit.chair(B, ax(sa, 0.3), 6.9, Z, fyw(sa), kind="wood")
+    kit.radio(B, ax(sa, 0.95), 6.6, d["top"], fyw(sa))
+    kit.table_lamp(B, ax(sa, 0.95), 7.35, d["top"], 0.0)
+    B.thing(pre + "concierge_desk", "counter", (ax(sa, 0.95), 6.9, 1.0), fyw(sa), role="concierge", service="reception")
+    B.thing(pre + "radio", "machine", (ax(sa, 0.95), 6.6, d["top"] + 0.15), fyw(sa), what="jukebox")
+    kit.plant(B, ax(sa, 0.4), 8.4, Z, 0.0, kind=("ficus", "ficus")[k % 2], pot=pal[0], h=1.5, seed=k)
+    kit.picture(B, ax(sa, 0.0), 5.4, Z, fyw(sa), name=("painting_sea_calm", "painting_dunes")[k % 2], w=0.9, zc=2.0)
+    # side B: sofa corner with a coffee table, armchair, lamp, pictures
+    kit.sofa(B, ax(sb, 0.45), 3.4, Z, fyw(sb), seats=2, mat=pal[1])
+    B.thing(pre + "sofa", "seat", (ax(sb, 0.45), 3.4, 0.47), fyw(sb), height=0.45)
+    ct = kit.coffee_table(B, ax(sb, 1.7), 3.4, Z, fyw(sb))
+    kit.newspaper(B, ax(sb, 1.7), 3.4, ct["top"], 0.0, seed=k)
+    kit.cup(B, ax(sb, 1.65), 3.6, ct["top"], 0.0)
+    kit.picture(B, ax(sb, 0.0), 3.4, Z, fyw(sb), name=("painting_lighthouse", "painting_pines")[k % 2], w=1.0, zc=2.0)
+    kit.armchair(B, ax(sb, 0.8), 5.6, Z, fyw(sb) + (30 if sb > 0 else -30), mat=pal[2])
+    B.thing(pre + "armchair", "seat", (ax(sb, 0.8), 5.6, 0.47), fyw(sb), height=0.45)
+    kit.floor_lamp(B, ax(sb, 0.4), 6.9, Z, 0.0)
+    kit.poster(B, ax(sb, 0.0), 7.6, Z, fyw(sb), name=("poster_birds_0", "poster_cons_3")[k % 2], w=0.6, zc=1.8)
+    # back wall: bench under a big mosaic and the clock
+    kit.bench(B, xm, yb - 0.3, Z, 0.0, w=2.0, kind="park")
+    B.thing(pre + "bench_back", "seat", (xm, yb - 0.3, 0.47), 0.0, height=0.45)
+    kit.mosaic_panel(B, xm, yb, Z, 0.0, w=2.4, h=1.3, zc=2.5, seed=k)
+    kit.wall_clock(B, xm, yb, Z, 0.0, zc=3.45, face="clock_%d" % (k + 1))
+    kit.notice_board(B, xm - 2.2, yb, Z, 0.0, w=0.9, zc=1.7, seed=21 + k)
+    B.thing(pre + "club_board", "board", (xm - 2.2, yb - 0.05, 1.7), 0.0, topic="club" if k == 0 else "lost")
+    kit.picture(B, xm + 2.2, yb, Z, 0.0, name=("painting_portrait", "painting_abstract")[k % 2], w=0.7, zc=1.8)
+    # front: hat stand beside the door
+    kit.hat_stand(B, xm + 1.7, 1.9, Z, 0.0)
+    # extras
+    if k == 0:
+        _bike(B, ax(sb, 0.55), 8.1, dirv, mat=pal[4], z=Z)
+        _pram(B, ax(sa, 0.55), 1.9, (0.0, 1.0), mat=pal[3], z=Z)
+    else:
+        kit.aquarium(B, ax(sb, 0.3), 8.1, Z, fyw(sb), w=1.0, seed=3)
+        B.thing(pre + "aquarium", "screen", (ax(sb, 0.3), 8.1, 1.0), fyw(sb), what="aquarium")
+
+
+def _dress_pilotis(B):
+    """The open ground under the slab (x -50..50, y 0..20, ceiling 5.1 m, piers at x = -50.4, -36, -14.4, 0, 14.4,
+    36, 50.4, y 6.5 and 16.5): a games yard west and east, benches, planters, a bike rack."""
+    Z = 0.0
+    # west yard between piers 2 and 6: table tennis, chess, benches, planters
+    kit.pingpong_table(B, -43.0, 12.0, Z, 0.0)
+    B.thing("yard_pingpong_w", "play", (-43.0, 12.0, 0.77), 0.0, what="table_tennis")
+    kit.chess_table(B, -46.0, 8.0, Z, 0.0, seed=1)
+    for sgn in (-1, 1):
+        kit.stool(B, -46.0 + sgn * 0.55, 8.0, Z, 90.0 + sgn * 90.0)
+    B.thing("yard_chess_w", "play", (-46.0, 8.0, 0.73), 0.0, what="chess")
+    for bx in (-46.0, -40.0):
+        kit.bench(B, bx, 15.4, Z, 0.0, w=1.8, kind="park")
+        B.thing("yard_bench_w_%d" % int(-bx), "seat", (bx, 15.4, 0.47), 0.0, height=0.45)
+    _planter(B, -38.0, 8.2, seed=1)
+    _planter(B, -49.0, 12.0, d=1.0, w=0.5, kind="ficus", seed=2)
+    # east yard, mirrored with a second chess table instead of the second bench
+    kit.pingpong_table(B, 43.0, 12.0, Z, 0.0)
+    B.thing("yard_pingpong_e", "play", (43.0, 12.0, 0.77), 0.0, what="table_tennis")
+    kit.chess_table(B, 46.0, 8.0, Z, 0.0, seed=2)
+    for sgn in (-1, 1):
+        kit.stool(B, 46.0 + sgn * 0.55, 8.0, Z, 90.0 + sgn * 90.0)
+    B.thing("yard_chess_e", "play", (46.0, 8.0, 0.73), 0.0, what="chess")
+    kit.bench(B, 41.0, 15.4, Z, 0.0, w=1.8, kind="park")
+    B.thing("yard_bench_e", "seat", (41.0, 15.4, 0.47), 0.0, height=0.45)
+    _planter(B, 38.0, 8.2, seed=3)
+    _planter(B, 49.0, 12.0, d=1.0, w=0.5, kind="ficus", seed=4)
+    # a bike rack by each lobby (bikes lined up along y, leaning on a rail) and a bench in front of the pilotis row
+    for cx, sgn in ((-18.0, 1), (18.0, -1)):
+        box(B.detail, "CT_Steel", cx - 0.03, cx + 0.03, 10.5, 14.5, 0.5, 0.56)
+        for j in range(2):
+            _bike(B, cx + 0.45 * sgn, 11.4 + j * 1.2, (0.0, 1.0), mat=("CT_PlasterRed", "CT_PlasterBlue")[j], z=Z)
+
+
+def _dress_roof(B, zr):
+    """Roof terrace: chess under the pergola, planters, a telescope at the viewpoint, a notice board by the track."""
+    kit.chess_table(B, 50.5, 12.2, zr, 0.0, seed=7)
+    for sgn in (-1, 1):
+        kit.stool(B, 50.5 + sgn * 0.55, 12.2, zr, 90.0 + sgn * 90.0)
+    B.thing("roof_chess", "play", (50.5, 12.2, zr + 0.73), 0.0, what="chess")
+    for j, (x, y) in enumerate(((46.0, 6.5), (55.0, 14.0))):
+        _planter(B, x, y, seed=20 + j, z=zr, kind=("fern", "ficus")[j % 2])
+    kit.telescope(B, 30.5, 3.6, zr, 0.0)
+    B.thing("roof_telescope", "machine", (30.5, 3.6, zr + 1.3), 0.0, what="telescope")
