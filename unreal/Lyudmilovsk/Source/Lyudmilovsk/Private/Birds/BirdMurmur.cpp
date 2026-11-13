@@ -391,6 +391,20 @@ namespace LyudBirds
 		const float Sp = B.Vel.Len() + 1e-3f;
 		const V3 Fw = B.Vel * (1.f / Sp);
 		const int NCount = Knn(W, I, KWide, CosBlind, NIdx, ND2, NVis);
+		// the descent comes in waves: a bird follows descending neighbours (DownShare of those it flies with); late on,
+		// everybody goes
+		const auto Descent = [&](float DownShare)
+		{
+			if (Hm > DescendMinutes)
+			{
+				const float Late = Smooth(DescendMinutes, SpeciesTable()[SpeciesIdx].RoostMinutes - 6.f, Hm);
+				const bool bNear = (B.Pos - RoostC).Len2D() < RoamR + 60.f;
+				if (bNear && HashRnd((uint32_t)F.Id + 7919u, Tick) < Rdt * (0.004f + 0.05f * Late + 2.f * DownShare))
+				{
+					Out[7] = 1.f;
+				}
+			}
+		};
 		if (NCount == 0)
 		{
 			// lost: back to the flock
@@ -398,6 +412,9 @@ namespace LyudBirds
 			Out[0] = To.X;
 			Out[1] = To.Y;
 			Out[2] = To.Z;
+			// (and down to the reed like the rest when the time comes: the last bird in the air has nobody in reach, and
+			// without this it flew round the roost alone all night)
+			Descent(0.f);
 			return;
 		}
 		V3 Sep, Hd, U, Co, All;
@@ -466,16 +483,7 @@ namespace LyudBirds
 			Out[5] = M[EscJ].Esc.Y;
 			Out[6] = M[EscJ].Esc.Z;
 		}
-		// the descent comes in waves: a bird follows descending neighbours; late on, everybody goes
-		if (Hm > DescendMinutes)
-		{
-			const float Late = Smooth(DescendMinutes, SpeciesTable()[SpeciesIdx].RoostMinutes - 6.f, Hm);
-			const bool bNear = (B.Pos - RoostC).Len2D() < RoamR + 60.f;
-			if (bNear && HashRnd((uint32_t)F.Id + 7919u, Tick) < Rdt * (0.004f + 0.05f * Late + 2.f * Down * Inv))
-			{
-				Out[7] = 1.f;
-			}
-		}
+		Descent(Down * Inv);
 	}
 
 	void FMurmuration::GoDown(FWorld& W, FM& F)
