@@ -94,6 +94,9 @@ private:
 	int32 BuiltQuality = -2;
 	float AppliedRadius = 0.f;
 	bool bBuilt = false;
+	/** The ground's height at the points already traced (world cm, the exact point): a rebuild places the same points again,
+	 *  so only the tiles new to the disc trace. Only hits are kept; pruned to round the eye after a rebuild. */
+	mutable TMap<FVector2D, float> BedCache;
 	TArray<FSwimmer> Jellies;
 	bool bJelliesPlaced = false;
 	double Clock = 0.0;
