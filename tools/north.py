@@ -540,9 +540,9 @@ HERB_PATCH_SETTINGS = {
     "CottonGrass": {"herb_density": 3.0, "herb_habitat": "Wet", "herb_age": 4.0},
     "MountainAvens": {"herb_density": 2.0, "herb_habitat": "Meadow", "herb_age": 8.0},
     "Lingonberry": {"herb_density": 1.5, "herb_habitat": "Meadow", "herb_age": 6.0},
-    "KamchatkaMeadowsweet": {"herb_density": 0.5, "herb_habitat": "Meadow", "herb_age": 4.0},
-    "CowParsnip": {"herb_density": 0.2, "herb_habitat": "Meadow", "herb_age": 3.0},
-    "RiverSedge": {"herb_density": 2.5, "herb_habitat": "Wet", "herb_age": 4.0},
+    "KamchatkaMeadowsweet": {"herb_density": 0.45, "herb_habitat": "Meadow", "herb_age": 4.0},
+    "CowParsnip": {"herb_density": 0.5, "herb_habitat": "Meadow", "herb_age": 3.0},
+    "RiverSedge": {"herb_density": 1.3, "herb_habitat": "Wet", "herb_age": 4.0},
 }
 
 
