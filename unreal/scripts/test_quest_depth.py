@@ -8,11 +8,13 @@ remarks (quest_scenes.json): QUESTDEPTH lines, the dialogue's "NpcDialogue: line
   c) waxwing on wait after sunset while he is still on his bench: rowan_till_dawn.1 (the talk logs its sun state)
   d) waxwing on wait by day: waxwing_wait.1, waxwing_wait_hint.1, waxwing_wait_snow.1, waxwing_wait_hint.1
   g) evening_paper done: Nina's after-talk (quest.evening_paper.done) once, then an everyday line
-  h) fisherman_cheese done, first_catch on learn: Lange says catch_learn (an active quest first); first_catch done: the two
-     after-talks one after another, then everyday lines
+  h) Lange on first_catch's catch: catch_wait, catch_wait_hint, catch_wait_nets, braid_three_days, round again; done:
+     angler_spoon_dawn, then everyday lines
+  p) waxwing on return, soda_science on taste: the waxwing's call beside Sorokin (Galina on a bench near by) is his
+  q) two remarks in range at once (the Clerk, Sonya): the second begins after the first has finished
   j) a great tit beside Dasha at 17:30 (Aya on the same bench): exactly one person answers
   k) waxwing on return: a call by Valentina's cart and one by Sorokin both get his waxwing_seen lines and finish the quest
-  e) waxwing on prepare, the hero 3 m from Tanya in the Gastronom: "QuestDirector: remark tanya_rowan_doorway" once, not again
+  e) waxwing on prepare, the hero from afar to 3 m from Tanya in the Gastronom: "QuestDirector: remark tanya_rowan_doorway" once, not again
      after walking off and back, nor after a save and a load
 test_quest_depth.sh also checks the director's count line and runs tools/check_quest_talk.py and tools/check_devdata.py.
 
@@ -147,20 +149,38 @@ go("korneeva_nina", 1.3, [9, 18.25, 10, 17, 11, 16, 12])
 at("QUESTDEPTH mark g_nina")
 for _ in range(7):
     at("Npc.Talk", None, 1.2)
-# h) an active quest before an after-talk; then the two after-talks one after another, then everyday (Lange mends nets 12:30-17)
+# h) Lange, first_catch on catch (worms in the pocket, by day): catch_wait.1, catch_wait_hint.1, catch_wait_nets.1,
+#    braid_three_days.1-2, then round again; first_catch done: angler_spoon_dawn (the after-talk), then everyday lines
 at("Quest.Reset", None, 1.0)
 at("Quest.SetStage fisherman_cheese done", None, 1.0)
-at("Quest.SetStage first_catch learn", None, 1.0)
-at("lyud.Birds.Time 14", None, 2.5)
-go("lange_pyotr")
-at("QUESTDEPTH mark h_learn")
-for _ in range(7):
+at("Inventory.Give bait_worm 10")
+at("Quest.SetStage first_catch catch", None, 1.0)
+go("lange_pyotr", 1.3, [14, 15, 13, 16])
+at("QUESTDEPTH mark h_catch")
+for _ in range(11):
     at("Npc.Talk", None, 1.2)
 at("Quest.SetStage first_catch done", None, 1.0)
 at("QUESTDEPTH mark h_after")
-for _ in range(14):
+for _ in range(9):
     at("Npc.Talk", None, 1.2)
 at("Quest.Dump", "h_done")
+# p) waxwing on return and soda_science on taste: the waxwing called beside Sorokin with Galina on a bench near by: he answers
+at("Quest.Reset", None, 1.0)
+at("Quest.SetStage soda_science taste", None, 1.0)
+at("Quest.SetStage waxwing return", None, 1.0)
+go("sorokin_oleg", 6, [18.2, 18.1, 18.25])
+at("Quest.Scenes", "p_listeners", 0.5)
+at("QUESTDEPTH mark p_call")
+at("Quest.BirdCall Waxwing sorokin_oleg", None, 10.0)
+at("Quest.Dump", "p_done")
+# q) two remarks in range at once (awakening on owner: the Clerk's at once, Sonya's once the hero came from afar): one voice
+#    at a time, the second after the first has finished
+at("Quest.Reset", None, 1.0)
+at("BugItGo -193 1500 150 0 90 0", None, 2.0)
+at("Quest.SetStage awakening owner", None, 2.0)
+at("QUESTDEPTH mark q_two_remarks")
+at("BugItGo -60 -1390 100 0 0 0", None, 14.0)
+at("Quest.Scenes", "q_after", 0.5)
 # j) one listener answers: Dasha and Aya on the square's bench at 17:30, a great tit calls beside Dasha
 at("Quest.Reset", None, 1.0)
 at("lyud.Birds.Time 17.5", None, 2.5)
@@ -185,6 +205,7 @@ at("Quest.Dump", "k_done")
 at("Quest.Reset", None, 1.0)
 at("Quest.SetStage waxwing prepare", None, 1.0)
 at("lyud.Birds.Time 12", None, 2.5)
+at("Dev.Tp academ", None, 2.5)                  # farther than 1.5 x within_m while on prepare: the remark is armed
 at("QUESTDEPTH mark e_remark")
 at("Quest.GoToPerson orlova_tanya 3", None, 3.0)
 at("Quest.Scenes", "e_after_first", 0.5)
