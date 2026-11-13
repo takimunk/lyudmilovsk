@@ -75,3 +75,4 @@ blender/residents/cache/
 renders/residents/
 # their Unreal import (unreal/scripts/import_residents.sh): ~900 meshes, made again by the script, never in git/LFS
 unreal/Lyudmilovsk/Content/Characters/Humans/Town/
+renders/city/interior/

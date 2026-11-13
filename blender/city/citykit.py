@@ -57,6 +57,7 @@ class Building:
         self.entrances = []                # {id, pos, yaw, width, height, kind, leaves, to}
         self.spots = []                    # {id, kind, pos, yaw}: benches, counters, stalls... for the life sim
         self.lamps = []                    # {pos, lumens, colour, kind, radius}: real lights inside enterable rooms
+        self.things = []                   # {id, kind, pos, yaw, props}: what the hero can use inside (docs/city_interiors.md)
         self.footprint = []                # outline [(x, y)] on the ground, CCW
         self.height = 0.0
         self.notes = []
@@ -167,6 +168,19 @@ class Building:
         (0 = -y, toward the street; 90 = +x), the same convention as entrances."""
         self.spots.append({"id": sid, "kind": kind, "pos": [round(v, 3) for v in pos], "yaw": yaw})
 
+    THING_KINDS = ("seat", "bed", "shelf", "board", "counter", "machine", "play", "sport", "craft", "screen", "take", "door")
+
+    def thing(self, tid, kind, pos, yaw=0.0, **props):
+        """Something the hero can use with E (docs/city_interiors.md): pos = the middle of the object (the point the
+        hero looks at), yaw = degrees of the way the object FACES (0 = -y, toward the street; 90 = +x). props: free
+        fields of the kind (height, topic, role, service, what, item, to). Ids are unique in the building and stable."""
+        if kind not in self.THING_KINDS:
+            raise ValueError("thing kind %r (one of %s)" % (kind, ", ".join(self.THING_KINDS)))
+        if any(t["id"] == tid for t in self.things):
+            raise ValueError("thing id %r used twice in %s" % (tid, self.type))
+        self.things.append({"id": tid, "kind": kind, "pos": [round(v, 3) for v in pos], "yaw": round(yaw, 1),
+                            "props": props})
+
     def lamp(self, pos, lumens=900.0, colour="#FFD9A8", kind="public", radius=7.0, fixture=True):
         """A real light inside an enterable room (Unreal: a point light, no shadow, drawn within ~40 m). pos = the
         light's centre (put it ~0.3 m under the ceiling). kind "public": on in the building's open hours (all day
@@ -225,7 +239,7 @@ class Building:
             "type": self.type, "info": info, "frame": "x along the street front, y into the plot, z up; origin "
             "on the front line, mid-frontage, z 0 = ground at the main entrance",
             "footprint": [[round(x, 3), round(y, 3)] for x, y in self.footprint], "height": round(self.height, 2),
-            "entrances": self.entrances, "spots": self.spots, "lamps": self.lamps,
+            "entrances": self.entrances, "spots": self.spots, "lamps": self.lamps, "things": self.things,
             "flats": sorted(self.flats.values(), key=lambda f: f["flat"]),
             "windows": self.windows, "light_tex": LIGHT_TEX, "notes": self.notes,
             "tris": {"shell": self.m.tri_count(), "detail": self.detail.tri_count(), "windows": self.win.tri_count()},
