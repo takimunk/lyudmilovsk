@@ -196,6 +196,8 @@ namespace LyudFish
 		{
 			int Species = 0;
 			FV Centre, Vel, Goal;
+			/** The water's drift at the centre this step (its members swim in it). */
+			FV Cur;
 			float Heading = 0.f;
 			float Timer = 0.f;
 			/** 0 calm .. 1 bolting; from where. */

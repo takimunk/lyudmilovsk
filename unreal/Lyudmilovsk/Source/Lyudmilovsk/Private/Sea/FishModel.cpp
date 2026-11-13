@@ -746,7 +746,8 @@ void FSim::StepGroup(int Gi, float Dt, const FEnv& Env, const FV& Eye)
 		else if (Sp.bBird && G.Breath > (Sp.Dive > 0.f ? Sp.Dive : 60.f) * 0.55f && G.Prey < 0 && !G.BedPrey)
 			Want.Z -= 1.2f;   // the dive: down at once
 	}
-	const FV Target = Want.Norm() * Speed + Env.Current(G.Centre) * (Sp.Way == EWay::Swarm ? 0.9f : 0.5f);
+	G.Cur = Env.Current(G.Centre);
+	const FV Target = Want.Norm() * Speed + G.Cur * (Sp.Way == EWay::Swarm ? 0.9f : 0.5f);
 	G.Vel += (Target - G.Vel).Clamped(Dt * (0.6f + 2.5f * G.Alarm));
 	G.Centre += G.Vel * Dt;
 	G.Centre.Z = std::min(G.Centre.Z, Water - (Sp.bBird ? 0.05f : std::max(0.25f, Sp.Length * 0.15f)));
@@ -757,10 +758,11 @@ void FSim::StepFish(FFish& F, float Dt, const FEnv& Env, const FV& Eye)
 {
 	const FSpecies& Sp = Table[F.Species];
 	const float Water = Env.SurfaceZ();
-	const FV Cur = Env.Current(F.Pos);
 	if (F.Group >= 0)
 	{
 		const FGroup& G = Groups[F.Group];
+		// the water's drift where the group is (its members are within a few metres: one look-up a group, not one a fish)
+		const FV Cur = G.Cur;
 		// sand eels dive into the sand when the school bolts over sand, and come out a while later
 		if (Sp.bBurrows)
 		{
@@ -950,6 +952,8 @@ void FSim::StepFish(FFish& F, float Dt, const FEnv& Env, const FV& Eye)
 	// at rest: face into the current a little at a time, fan the fins; the pipefish stands up in the eelgrass
 	F.Pos.Z = Bz + Lift;
 	F.Vel = FV();
+	// (asked only here: a buried or moving bottom fish has no use for it)
+	const FV Cur = Env.Current(F.Pos);
 	if (Sp.Way == EWay::Hover)
 	{
 		F.Pitch = 1.15f + 0.15f * std::sin(float(Time) * 0.4f + F.Seed % 31);
