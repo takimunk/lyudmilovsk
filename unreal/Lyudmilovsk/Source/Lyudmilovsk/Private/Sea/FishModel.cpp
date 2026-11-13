@@ -941,7 +941,8 @@ void FSim::StepFish(FFish& F, float Dt, const FEnv& Env, const FV& Eye)
 	if (Sp.Way == EWay::Hover)
 	{
 		F.Pitch = 1.15f + 0.15f * std::sin(float(Time) * 0.4f + F.Seed % 31);
-		F.Pos += Cur * (0.6f * std::sin(float(Time) * 0.9f + F.Seed % 17));
+		// swaying with the eelgrass in the current: a drift to and fro over the step (not the current's full reach every frame)
+		F.Pos += Cur * (0.6f * std::sin(float(Time) * 0.9f + F.Seed % 17) * Dt);
 	}
 	else
 	{
