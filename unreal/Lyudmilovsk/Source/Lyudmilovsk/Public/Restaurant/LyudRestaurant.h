@@ -379,6 +379,9 @@ private:
 		TWeakObjectPtr<ANpcBody> Body;
 	};
 	TArray<FProp> Props;
+	/** TickProps: the indices of the eating-out activities, looked up once per run of the people's life (EatActsRun: its sim). */
+	TArray<int32> EatActs;
+	const void* EatActsRun = nullptr;
 	/** The table the waiter's job is for. */
 	int32 JobTable = -1;
 	void TickGuests(float DeltaTime);

@@ -86,17 +86,41 @@ void ALyudRestaurant::TickProps()
 	const float Now = GetWorld()->GetTimeSeconds();
 	if (People && People->IsRunning())
 	{
+		// the eating-out activities' indices, once per run of the people's life (the town life's eat_out, the old eat_restaurant)
+		const void* Run = People->GetSim();
+		if (Run != EatActsRun)
+		{
+			EatActsRun = Run;
+			EatActs.Reset();
+			for (const TCHAR* ActName : { TEXT("eat_out"), TEXT("eat_restaurant") })
+			{
+				const int32 ActIx = People->FindActivity(ActName);
+				if (ActIx >= 0)
+				{
+					EatActs.Add(ActIx);
+				}
+			}
+		}
 		const int32 N = People->NumPeople();
 		for (int32 Id = 0; Id < N; ++Id)
 		{
-			FPersonInfo P;
-			// eating out (the town life's eat_out, the old eat_restaurant) and in the hall, seated by now
-			if (!People->GetPerson(Id, P) || !P.Activity.StartsWith(TEXT("eat")) || (P.State != TEXT("doing") && P.State != TEXT("settling")))
+			// a cheap read first (no strings): only those eating out and in the hall get the full record
+			int32 Act = -1;
+			bool bDoing = false;
+			EPersonPose ActPose = EPersonPose::Hidden;
+			FVector Loc = FVector::ZeroVector;
+			if (!People->GetActivityState(Id, Act, bDoing, ActPose, Loc) || !EatActs.Contains(Act))
 			{
 				continue;
 			}
-			const FVector LP = ToLocal(P.Location);
+			const FVector LP = ToLocal(Loc);
 			if (FVector2D(LP.X, LP.Y).Size() > HallR || FMath::Abs(LP.Z) > 1.5f)
+			{
+				continue;
+			}
+			FPersonInfo P;
+			// seated by now
+			if (!People->GetPerson(Id, P) || (P.State != TEXT("doing") && P.State != TEXT("settling")))
 			{
 				continue;
 			}
