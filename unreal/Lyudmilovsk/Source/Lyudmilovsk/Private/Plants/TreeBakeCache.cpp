@@ -193,7 +193,15 @@ void UTreeBakeCache::Tick(float DeltaTime)
 	Super::Tick(DeltaTime);
 	Running = RunningAtomic.Load();
 	const int32 Workers = UrgentJobs > 0 ? MaxWorkers * 2 : MaxWorkers;
-	while (Running < Workers && !Wanted.IsEmpty())
+	// a prepared kind holds its four mesh descriptions (hundreds of MB for a grown tree) until the game thread takes it,
+	// one a frame at most and with pauses between: the workers outran it at the start of a game and after a jump of the
+	// calendar, and every kind of the world waited prepared at once. No more are prepared than a few can wait.
+	int32 Waiting = 0;
+	{
+		FScopeLock Lock(&FinishedLock);
+		Waiting = Finished.Num();
+	}
+	while (Running < Workers && Running + Waiting < Workers * 2 && !Wanted.IsEmpty())
 	{
 		TSharedPtr<FJob> Job = Wanted[0];
 		Wanted.RemoveAt(0);
