@@ -23,7 +23,7 @@
  "city.xpl.leave.prompt": {
   "ru": "E — вложить открытку в «Путеводитель»",
   "en": "E — slip a postcard into the guide",
-  "ja": "E：絵はがきを案内書にはさむ"
+  "ja": "E：絵はがきを『案内書』にはさむ"
  },
  "city.xpl.stamp.prompt": {
   "ru": "E — попросить штамп в дневник",
@@ -62,7 +62,7 @@
  },
  "city.xpl.notice.1": {
   "ru": "Читальный зал открыт с 10 до 20, кроме понедельника. По понедельникам библиотека отдыхает: полкам тоже нужно иногда вздохнуть.",
-  "en": "The reading room is open from 10 to 8, except on Mondays. On Mondays the library rests: shelves need to breathe out now and then.",
+  "en": "The reading room is open from 10 a.m. to 8 p.m., except on Mondays. On Mondays the library rests: shelves need to breathe out now and then.",
   "ja": "閲覧室は10時から20時まで、月曜はお休みです。月曜は図書館も休みます。本棚にも、ときどきひと息つく時間が必要です。"
  },
  "city.xpl.notice.2": {
@@ -87,7 +87,7 @@
  },
  "city.xpl.notice.6": {
   "ru": "В «Путеводителе по солнечным часам» нашли вторую закладку: нарисованные часы без цифр, только тень. Подпись: «Если будет пасмурно, я всё равно приду». Запасная лампа для пасмурных дней куплена.",
-  "en": "A second bookmark was found in the Sundial Guide: a drawn clock without numbers, only a shadow. Signed: \"If it is cloudy I will come all the same.\" A spare lamp for cloudy days has been bought.",
+  "en": "A second bookmark was found in the Guide to Sundials: a drawn clock without numbers, only a shadow. Signed: \"If it is cloudy I will come all the same.\" A spare lamp for cloudy days has been bought.",
   "ja": "『日時計案内』に二枚目のしおりが見つかりました。数字のない時計の絵、あるのは影だけ。署名は「曇りでも、きっと行きます」。曇りの日用の予備のランプを買いました。"
  },
  "city.xpl.notice.7": {
@@ -102,7 +102,7 @@
  },
  "city.xpl.notice.9": {
   "ru": "Сегодня в городе праздник. Абонемент работает до шести: библиотекарь тоже хочет на площадь, и мы его отпускаем.",
-  "en": "There is a festival in town today. The lending desk closes at six: the librarian wants to go to the square too, and we are letting him.",
+  "en": "There is a festival in town today. The lending desk closes at six: the librarian wants to go to the square too, and we are letting her.",
   "ja": "今日は町のお祭りです。貸出は6時まで。司書さんも広場に行きたいので、行かせてあげます。"
  },
  "city.xpl.notice.10": {
@@ -212,7 +212,7 @@
  },
  "city.xpl.returned.2": {
   "ru": "Сверху лежит «Путеводитель по солнечным часам», выдан 14 мая 1968 года. Обложка вытерта до мягкости. На первой странице карандашом: «Читал медленно. Простите».",
-  "en": "On top lies the Sundial Guide, lent on 14 May 1968. The cover is worn soft. On the first page in pencil: \"I read slowly. Forgive me.\"",
+  "en": "On top lies the Guide to Sundials, lent on 14 May 1968. The cover is worn soft. On the first page in pencil: \"I read slowly. Forgive me.\"",
   "ja": "一番上に『日時計案内』があります。貸出は1968年5月14日。表紙は擦り切れて柔らかくなっています。最初のページに鉛筆で：「読むのが遅くてすみません」。"
  },
  "city.xpl.returned.3": {
@@ -242,7 +242,7 @@
  },
  "city.xpl.leave.1": {
   "ru": "Написал на открытке одну строку: «Здесь ждут. Чайник по вторникам». Вложил между билетом и часами без цифр. Из стопки у полки взял другую, на память: их тут всегда оставляют.",
-  "en": "I wrote one line on the postcard: \"We are waiting here. The kettle is on on Tuesdays.\" I slipped it between the ticket and the clock without numbers. From the pile by the shelf I took another one to keep: they always leave a few here.",
+  "en": "I wrote one line on the postcard: \"We are waiting here. The kettle is on every Tuesday.\" I slipped it between the ticket and the clock without numbers. From the pile by the shelf I took another one to keep: they always leave a few here.",
   "ja": "絵はがきに一行書きました。「ここで待っています。火曜日はやかんをかけます」。切符と数字のない時計のあいだにはさみ、棚のそばの束から記念にもう一枚もらいました。ここにはいつも置いてあるのです。"
  },
  "city.xpl.leave.2": {
@@ -273,7 +273,7 @@
  "city.xpl.stamp.5": {
   "ru": "Двенадцать. Библиотекарша достаёт красный карандаш и подчёркивает моё имя на обложке: «Это не отметка, это закладка».",
   "en": "Twelve. The librarian takes out a red pencil and underlines my name on the cover: \"This is not a mark, it is a bookmark.\"",
-  "ja": "12個。司書さんは赤鉛筆を取り出して、表紙の私の名前に線を引きます。「これは評価ではなく、しおりです」。"
+  "ja": "12個。司書さんは赤鉛筆を取り出して、表紙の僕の名前に線を引きます。「これは評価ではなく、しおりです」。"
  },
  "city.xpl.stamp.6": {
   "ru": "Дневник заполнен: на каждой полке отметка, даже на «Вернувшихся». Библиотекарша долго молчит, потом ставит последний, большой штамп: часы без цифр. «Такой я ставила одному читателю. Давно». Теперь можно и во вторник к чаю.",
@@ -333,17 +333,17 @@
  "city.xpl.tea.2": {
   "ru": "Вторая чашка уже тёплая: кто-то был здесь до меня. Библиотекарша не поднимает головы: «Он просил передать, что открытку получил. И что чай у нас слишком крепкий». Я пью и молчу, чтобы никого не спугнуть.",
   "en": "The second cup is already warm: somebody was here before me. The librarian does not raise her head: \"He asked me to say he got the postcard. And that our tea is too strong.\" I drink and stay quiet so as not to scare anyone off.",
-  "ja": "二つ目のカップはもう温かい。私より先に誰かが来ていたのです。司書さんは顔を上げません。「絵はがきは受け取った、と伝えてほしいそうです。それと、ここのお茶は濃すぎる、と」。私は誰も驚かせないよう、黙ってお茶を飲みます。"
+  "ja": "二つ目のカップはもう温かい。僕より先に誰かが来ていたのです。司書さんは顔を上げません。「絵はがきは受け取った、と伝えてほしいそうです。それと、ここのお茶は濃すぎる、と」。僕は誰も驚かせないよう、黙ってお茶を飲みます。"
  },
  "city.xpl.piano.1": {
   "ru": "Приподнял крышку на два пальца и играю так, будто клавиши из ваты. Из соседней капсулы тихо стукнули в стенку: один раз, одобрительно.",
-  "en": "I lifted the lid two fingers' width and play as if the keys were cotton wool. From the next capsule somebody tapped the wall softly: once, approvingly.",
-  "ja": "ふたを指二本ぶんだけ開け、鍵盤が綿でできているつもりで弾きます。隣のカプセルから、壁を一回、やさしくたたく音。ほめてくれたようです。"
+  "en": "I lifted the lid two fingers' width and play as if the keys were cotton wool. From the next pod somebody tapped the wall softly: once, approvingly.",
+  "ja": "ふたを指二本ぶんだけ開け、鍵盤が綿でできているつもりで弾きます。隣のポッドから、壁を一回、やさしくたたく音。ほめてくれたようです。"
  },
  "city.xpl.piano.2": {
   "ru": "Играю совсем тихо, это урок шёпота. Капсула отзывается всем бетоном, и, как ни странно, получается красиво.",
-  "en": "I play very softly, a lesson in whispering. The capsule answers with all its concrete and, oddly enough, it sounds beautiful.",
-  "ja": "ほんの小さな音で弾きます。ささやきの練習です。カプセルがコンクリートぜんぶで響き返し、不思議なほどきれいに聞こえます。"
+  "en": "I play very softly, a lesson in whispering. The pod answers with all its concrete and, oddly enough, it sounds beautiful.",
+  "ja": "ほんの小さな音で弾きます。ささやきの練習です。ポッドがコンクリートぜんぶで響き返し、不思議なほどきれいに聞こえます。"
  },
  "city.xpl.piano.3": {
   "ru": "Вечер, читателей мало. Сыграл всё, что помню. Снизу, из зала, кто-то аплодирует: шуршат страницы, по одной, как ладошки.",
@@ -458,7 +458,7 @@
  "quest.library_1968.done": {
   "ru": "Во вторник вторая чашка опустела раньше, чем я допил свою. На блюдце лежала ромашка, а в «Путеводителе» моя открытка стояла надписью вверх: «Спасибо. Приду».",
   "en": "On Tuesday the second cup was empty before I finished mine. A daisy lay on the saucer, and in the Guide my postcard stood with its writing up: \"Thank you. I will come.\"",
-  "ja": "火曜日、私が飲み終える前に二つ目のカップは空になっていた。受け皿にはヒナギク。『案内書』の中では、私の絵はがきが文字を上にして立っていた。「ありがとう。行きます」。"
+  "ja": "火曜日、僕が飲み終える前に二つ目のカップは空になっていた。受け皿にはヒナギク。『案内書』の中では、僕の絵はがきが文字を上にして立っていた。「ありがとう。行きます」。"
  },
  "quest.library_diary.title": {
   "ru": "Читательский дневник",
@@ -523,22 +523,22 @@
  "city.xtx.birds_coast.1": {
   "ru": "Чайки. Серебристая чайка крупнее всех, шестьдесят сантиметров. Клюв жёлтый, на нём красное пятно, и она смеётся так, будто услышала хороший анекдот про вас. Озёрная меньше, тридцать восемь. Летом у неё не чёрная голова, а шоколадная; на зиму она её «снимает» и остаётся с тёмным пятнышком за ухом. Сизая чайка мягче всех: клюв без пятна, глаз тёмный, взгляд добрый. Хлеб берут все три, но сизая просит вежливо.",
   "en": "Gulls. The herring gull is the biggest, sixty centimetres. Its bill is yellow with a red spot, and it laughs as if it had just heard a good joke about you. The black-headed gull is smaller, thirty-eight. In summer its head is not black but chocolate; for winter it takes the hood off and keeps a dark smudge behind the ear. The common gull is the gentlest: no spot on the bill, a dark eye, a kind look. All three take bread, but the common gull asks politely.",
-  "ja": "カモメ。ニシセグロカモメがいちばん大きく、六十センチ。くちばしは黄色で赤い斑点があり、あなたについての傑作な冗談を聞いたばかりのように笑う。ユリカモメはもっと小さく三十八センチ。夏の頭は黒ではなくチョコレート色で、冬には頭巾を脱いで耳のうしろに暗い点だけを残す。カモメ（コカモメ）はいちばん穏やか。くちばしに斑点がなく、目は黒くて、まなざしがやさしい。三種ともパンをもらうが、ふつうのカモメだけは丁寧にねだる。"
+  "ja": "カモメ。セグロカモメがいちばん大きく、六十センチ。くちばしは黄色で赤い斑点があり、あなたについての傑作な冗談を聞いたばかりのように笑う。ユリカモメはもっと小さく三十八センチ。夏の頭は黒ではなくチョコレート色で、冬には頭巾を脱いで耳のうしろに暗い点だけを残す。その名もカモメという種はいちばん穏やか。くちばしに斑点がなく、目は黒くて、まなざしがやさしい。三種ともパンをもらうが、丁寧にねだるのはこのカモメだけだ。"
  },
  "city.xtx.birds_coast.2": {
   "ru": "Вороньи. Грач ходит стаей по газонам и в чёрном фраке выглядит бедным родственником оркестра. Серая ворона одна и всегда при деле. Галка поменьше, с серебристым затылком; её «чак» слышно с любой крыши. Сорока строит по гнезду на каждый шторм и ни в одном не ночует. Ворон редок и огромен, говорит «кронк», будто роняет что-то тяжёлое и ценное. Если вам показалось, что ворона на вас смотрит и считает, вам не показалось.",
   "en": "The crow family. Rooks walk the lawns in flocks, and in their black tailcoats they look like the poor relations of an orchestra. The hooded crow is always alone and always busy. The jackdaw is smaller, with a silvery nape; its \"chack\" carries from every rooftop. The magpie builds a nest for every storm and sleeps in none of them. The raven is rare and enormous and says \"kronk\", as if dropping something heavy and valuable. If you think a crow is looking at you and counting, you are right.",
-  "ja": "カラス科。ミヤマガラスは群れで芝生を歩き、黒い燕尾服を着て、楽団の貧しい親戚のように見える。ハシボソガラスはいつも一羽で、いつも何かの用事を抱えている。コクマルガラスは少し小さく、うなじが銀色で、その「チャク」は屋根という屋根から聞こえる。カササギは嵐のたびに巣を作り、どの巣でも眠らない。ワタリガラスは珍しく、とても大きく、「クロンク」と、重くて大事なものを落としたように鳴く。カラスがこちらを見て数えている気がしたら、それは気のせいではない。"
+  "ja": "カラス科。ミヤマガラスは群れで芝生を歩き、黒い燕尾服を着て、楽団の貧しい親戚のように見える。ズキンガラスはいつも一羽で、いつも何かの用事を抱えている。ニシコクマルガラスは少し小さく、うなじが銀色で、その「チャク」は屋根という屋根から聞こえる。カササギは嵐のたびに巣を作り、どの巣でも眠らない。ワタリガラスは珍しく、とても大きく、「クロンク」と、重くて大事なものを落としたように鳴く。カラスがこちらを見て数えている気がしたら、それは気のせいではない。"
  },
  "city.xtx.birds_coast.3": {
   "ru": "Малые. Большая синица говорит «учитель-учитель», голубая тоньше и ярче, как будто нарисована акварелью, которую не успели высушить. Щегол в красной маске пересчитывает семена чертополоха. Снегирь розовогрудый и важный, сидит на рябине, как на приёме. Воробьи полевой и домовый похожи, но у полевого на щеках чёрные пятнышки, будто он испачкался и не хочет признаваться. У кормушки на нижней террасе завсегдатаи — синицы; воробьи приходят толпой и в долгу не остаются.",
   "en": "The small ones. The great tit says \"teacher, teacher\"; the blue tit is slighter and brighter, as if painted in watercolour that hasn't dried yet. The goldfinch in its red mask counts thistle seeds. The bullfinch is pink-breasted and solemn, and sits on a rowan as if at a reception. The tree sparrow and the house sparrow look alike, but the tree sparrow has black spots on its cheeks, as if it had got dirty and won't admit it. At the feeder on the lower terrace the regulars are tits; sparrows arrive in a crowd and never leave in debt.",
-  "ja": "小鳥たち。シジュウカラは「ツツピー、先生、先生」と言い、ヒガラに似たアオガラはもっと細くて鮮やかで、乾ききらない水彩で描いたよう。赤い仮面のゴシキヒワはアザミの種を数えている。ウソは胸が桃色で厳かに、ナナカマドの枝で式典の客のように座る。スズメとニュウナイスズメは似ているが、ニュウナイスズメの頬には黒い点があり、汚れたのに認めたくない顔をしている。下の段のえさ台の常連はシジュウカラで、スズメは大勢で来て、借りは返す。"
+  "ja": "小鳥たち。シジュウカラは「ツツピー、先生、先生」と言い、アオガラはもっと細くて鮮やかで、乾ききらない水彩で描いたよう。赤い仮面のゴシキヒワはアザミの種を数えている。ウソは胸が桃色で厳かに、ナナカマドの枝で式典の客のように座る。イエスズメとスズメは似ているが、スズメの頬には黒い点があり、汚れたのに認めたくない顔をしている。下の段のえさ台の常連はシジュウカラで、スズメは大勢で来て、借りは返す。"
  },
  "city.xtx.birds_coast.4": {
   "ru": "По месяцам. Март: появляются скворцы, и дворники расстаются с мётлами. Апрель: ласточки у причала, первая иногда одна и бесконечно одинока. Май: стрижи; они не садятся, они только мелькают и кричат, и от этого на всех крышах светлее. Август: стрижи исчезают за одну ночь. Ноябрь: на рябине свиристели, красивые, как открытка, и жадные, как дети. Ставьте галочку карандашом, а в графе «где» пишите честно. Лебедь шипит в любое время года.",
   "en": "By the month. March: the starlings appear and the street sweepers say goodbye to their brooms. April: swallows at the jetty, the first sometimes alone and endlessly lonely. May: swifts; they never land, they only flash past and scream, and every rooftop gets a little brighter. August: the swifts vanish overnight. November: waxwings on the rowan, lovely as a postcard and greedy as children. Tick with a pencil, and in the \"where\" column be honest. The swan hisses in every season.",
-  "ja": "月ごとの目安。三月、ムクドリが現れ、掃除夫たちはほうきと別れる。四月、桟橋にツバメ。最初の一羽はときどき一羽きりで、果てしなく寂しそう。五月、アマツバメ。降りることはなく、ひらめいては叫び、それだけで屋根という屋根が少し明るくなる。八月、アマツバメは一晩で消える。十一月、ナナカマドにキレンジャク。絵はがきのように美しく、子どものように欲張り。印は鉛筆でつけ、「どこで」の欄には正直に書くこと。ハクチョウは一年じゅう、シューッと言う。"
+  "ja": "月ごとの目安。三月、ホシムクドリが現れ、掃除夫たちはほうきと別れる。四月、桟橋にツバメ。最初の一羽はときどき一羽きりで、果てしなく寂しそう。五月、ヨーロッパアマツバメ。降りることはなく、ひらめいては叫び、それだけで屋根という屋根が少し明るくなる。八月、アマツバメは一晩で消える。十一月、ナナカマドにキレンジャク。絵はがきのように美しく、子どものように欲張り。印は鉛筆でつけ、「どこで」の欄には正直に書くこと。ハクチョウは一年じゅう、シューッと言う。"
  },
  "city.xtx.science_spoon.title": {
   "ru": "Физика с одной ложкой (опыты для кухонного стола)",
@@ -583,7 +583,7 @@
  "city.xtx.medicine_home.title": {
   "ru": "Домашний врач для всей семьи (издание шестое, исправленное)",
   "en": "The Family Home Doctor (sixth edition, corrected)",
-  "ja": "家庭の医者　（第六版・訂正済み）"
+  "ja": "家庭の医者（第六版・訂正済み）"
  },
  "city.xtx.medicine_home.1": {
   "ru": "Об осторожности. Эта книга не заменяет врача. Она заменяет только панику, и то на первые двадцать минут. При жаре, боли, которая не проходит, и всём, что вас по-настоящему тревожит, идите в поликлинику: она на второй террасе, и там вас ждут, даже если выглядят занятыми. Прочее в книге — о том, как переждать простой вечер с насморком и не потерять достоинства.",
@@ -598,7 +598,7 @@
  "city.xtx.medicine_home.3": {
   "ru": "Отдельная глава: «Когда вам просто грустно». Здесь нет таблеток. Выйдите на ближайший мост и посмотрите на воду, а если воды не видно, на небо. Поговорите с кем-нибудь, кому не надо ничего объяснять: с соседом, с собакой, с тем, кто сидит рядом на скамейке. Съешьте что-нибудь тёплое. К вечеру станет не то чтобы весело, зато тише. Тише — тоже здоровье. На полях рукой врача: «Правильно. Проверено на себе».",
   "en": "A separate chapter: \"When You Are Simply Sad\". There are no pills here. Go out to the nearest bridge and look at the water, or, if no water can be seen, at the sky. Talk to someone you don't have to explain anything to: a neighbour, a dog, whoever is sitting beside you on a bench. Eat something warm. By evening it won't be exactly cheerful, but it will be quieter. Quieter is also health. In the margin, in a doctor's hand: \"Correct. Tested on myself.\"",
-  "ja": "別章「ただ悲しいとき」。ここに錠剤は出てきません。いちばん近い橋まで出て、水を見る。水が見えなければ空を見る。何も説明しなくていい相手と話す。隣の人、犬、ベンチで隣に座っている人。何か温かいものを食べる。夕方には、陽気とまではいかなくても、静かになります。静かになることも健康です。余白に医者の筆跡で。「そのとおり。自分で確かめた」"
+  "ja": "別章「ただ悲しいとき」。ここに錠剤は出てきません。いちばん近い橋まで出て、水を見る。水が見えなければ空を見る。何も説明しなくていい相手と話す。近所の人、犬、ベンチで隣に座っている人。何か温かいものを食べる。夕方には、陽気とまではいかなくても、静かになります。静かになることも健康です。余白に医者の筆跡で。「そのとおり。自分で確かめた」"
  },
  "city.xtx.sea_tides.title": {
   "ru": "Почему в Балтике нет приливов (и что там есть вместо них)",
@@ -653,7 +653,7 @@
  "city.xtx.music_orchestra.2": {
   "ru": "Камертон у них потерялся при переезде, а ноту брали по-разному: от рояля, расстроенного ещё до войны, или от чайника. Однажды в штиль, когда в окнах стоял сплошной шум моря, Эдуард Карлович поднял руку и сказал: «Слушайте. Вот оно». И действительно: если к морю в безветрие прислушаться, в нём живёт тихое, очень низкое «ля», будто кто-то далеко держит смычок и не решается начать.",
   "en": "They had lost their tuning fork in a move, and took the note in different ways: from a piano that had been out of tune since before the war, or from the kettle. Once, in a calm, when the windows were full of the steady noise of the sea, Eduard Karlovich raised his hand and said, \"Listen. That's it.\" And indeed: if you listen to the sea on a windless day, there lives in it a quiet, very low A, as if someone far away were holding a bow and not daring to begin.",
-  "ja": "調律笛は引っ越しのときになくなり、音はいろいろな方法で取った。戦前から調子の狂ったピアノから、あるいはやかんから。ある日、凪いで、窓いっぱいに海の音が満ちていたとき、エドゥアルド・カルロヴィチは手を上げて言った。「聞いてごらん。これだ」。たしかに、風のない日の海に耳を澄ますと、その中に静かな、とても低い「ラ」が住んでいる。遠くで誰かが弓を構えて、弾き出せずにいるように。"
+  "ja": "音叉は引っ越しのときになくなり、音はいろいろな方法で取った。戦前から調子の狂ったピアノから、あるいはやかんから。ある日、凪いで、窓いっぱいに海の音が満ちていたとき、エドゥアルド・カルロヴィチは手を上げて言った。「聞いてごらん。これだ」。たしかに、風のない日の海に耳を澄ますと、その中に静かな、とても低い「ラ」が住んでいる。遠くで誰かが弓を構えて、弾き出せずにいるように。"
  },
  "city.xtx.music_orchestra.3": {
   "ru": "С тех пор перед каждым концертом оркестр выходит на веранду и пять минут молча слушает море: тогда все настроены одинаково, потому что слушают одно и то же. Эдуард Карлович давно не дирижирует, но по средам приходит и садится в последнем ряду. На последней странице нотная строчка от руки: всего одна нота, долгая, с фермата. Под ней подпись: «Для тех, кто не решается начать. Начинайте».",
@@ -673,7 +673,7 @@
  "city.xtx.eng_cable.2": {
   "ru": "Самое трудное оказалось не опоры, а канат. Его везли по частям и сращивали на месте: двенадцать человек, одна ночь и ни слова громче шёпота, чтобы не сбить счёт прядей. Утром канат лёг на опоры, провис, натянулся и вдруг зазвенел на ветру тонко, как гитара. Бригадир сказал: «Вот и голос у дороги появился». С тех пор в сильный западный ветер слышно, как она поёт, и вожатые говорят, что это к хорошей погоде.",
   "en": "The hardest part turned out to be not the pylons but the rope. It was hauled in sections and spliced on site: twelve people, one night, and no word louder than a whisper, so as not to lose count of the strands. In the morning the rope lay on the pylons, sagged, tightened and suddenly rang in the wind, thin as a guitar. The brigade leader said, \"So the road has got a voice.\" Ever since, in a strong westerly you can hear it sing, and the operators say it means good weather.",
-  "ja": "いちばん難しかったのは支柱ではなく、ロープだった。ロープは何分割かで運ばれ、現場でつなぎ合わされた。十二人、一晩、より声の大きい言葉は一つもなし。より糸の数を数え違えないためだ。朝、ロープは支柱の上に横たわり、たるみ、張り、そして不意に風の中でギターのように細く鳴った。班長が言った。「これで道に声ができたな」。それ以来、強い西風の日にはロープウェイが歌うのが聞こえ、運転士たちはそれを晴れの前ぶれだと言う。"
+  "ja": "いちばん難しかったのは支柱ではなく、ロープだった。ロープは何分割かで運ばれ、現場でつなぎ合わされた。十二人で一晩、ささやきより大きな声は一言も出さなかった。より糸の数を数え違えないためだ。朝、ロープは支柱の上に横たわり、たるみ、張り、そして不意に風の中でギターのように細く鳴った。班長が言った。「これで道に声ができたな」。それ以来、強い西風の日にはロープウェイが歌うのが聞こえ、運転士たちはそれを晴れの前ぶれだと言う。"
  },
  "city.xtx.eng_cable.3": {
   "ru": "Первый пробный рейс сделали без людей: в кабину поставили мешок с песком и шапку, чтобы казалось, что кто-то едет. Мешок доехал. Шапка слетела на третьей опоре, и её искали до вечера. Нашёл мальчишка с нижней террасы и получил за это первый билет, который потом носил в кармане годами. Второй рейс был уже с людьми, и в кабине играл аккордеон, потому что молчать было страшнее.",
@@ -731,7 +731,7 @@
   "ja": "黒点について。ときどき太陽に暗い点が現れる。一つが地球の何個分もの大きさで、太陽の基準では冷たく、わずか四千度。十一年の周期で現れては消え、この町の天文愛好家たちは昔からそれを記録している。天文台はないが、すすをつけたガラスと、根気のある人たちが屋根の上にいる。日誌の最後の記入。「黒点あり。小さい。心配しないで、これも誰かに必要なものだ」"
  },
  "city.xtx.sun_eight_minutes.4": {
-  "ru": "Последняя страница без цифр. «Если вы дочитали до сюда, выйдите на улицу и найдите, где сейчас солнце. Не на небе, потому что небо оно прячет за облаками, а там, где оно сделало что-то: нагрело камень, высушило бельё, согрело щёку. Это его работа, и делает он её каждый день для всех, не требуя спасибо. Скажите «спасибо» хотя бы вслух. Мы проверяли: неловко, зато работает».",
+  "ru": "Последняя страница без цифр. «Если вы дочитали до сюда, выйдите на улицу и найдите, где сейчас солнце. Не на небе, потому что небо оно прячет за облаками, а там, где оно сделало что-то: нагрело камень, высушило бельё, согрело щёку. Это его работа, и делает оно её каждый день для всех, не требуя спасибо. Скажите «спасибо» хотя бы вслух. Мы проверяли: неловко, зато работает».",
   "en": "The last page has no numbers. \"If you have read this far, go outside and find where the sun is now. Not in the sky, because it hides in the clouds, but wherever it has done something: warmed a stone, dried the washing, warmed a cheek. That is its work, and it does it every day for everyone without asking for thanks. Say thank you, at least aloud. We have tested it: awkward, but it works.\"",
   "ja": "最後のページに数字はない。「ここまで読んだなら、外へ出て、いま太陽がどこにいるか探してみよう。空ではない。空は雲にかくれるから。太陽が何かをしたところだ。石を温めた、洗濯物を乾かした、頬を温めた。それが太陽の仕事で、毎日みんなのためにしていて、お礼は求めない。せめて声に出して『ありがとう』と言ってみよう。試してみたが、気恥ずかしい。でも効く」"
  },
@@ -843,7 +843,7 @@
  "city.xtx.chess_openings.3": {
   "ru": "Испанская партия, или Рюи Лопес, — это долгий чай. Белый слон нацеливается на коня, который защищает пешку, и ничего не происходит двадцать ходов. А потом происходит всё сразу. Дядя Гриша обожает её за то, что можно думать вслух, и никто не мешает. Последний совет книги: «Дебют нужен, чтобы дойти до середины игры живым. Остальное знают те, кто играл. А те, кто не играл, пусть сядут и сыграют. Партию лучше начинать, а не откладывать».",
   "en": "The Spanish Game, or Ruy López, is a long tea. White's bishop aims at the knight that guards a pawn, and nothing happens for twenty moves. And then everything happens at once. Uncle Grisha loves it because you can think aloud and nobody interrupts. The book's last advice: \"The opening exists to get you to the middle of the game alive. The rest is known to those who have played. And those who haven't should sit down and play. A game is better begun than postponed.\"",
-  "ja": "スペイン風、またの名ルイ・ロペスは、長いお茶会だ。白のビショップが、ポーンを守るナイトをねらい、二十手のあいだ何も起こらない。それから、すべてが一度に起こる。グリーシャおじさんがこれを愛するのは、声に出して考えても、誰も邪魔しないから。本の最後の助言。「序盤は、中盤まで生きてたどり着くためにある。あとは指した人が知っている。指していない人は、座って指してみるといい。対局は、延ばすより始めるほうがいい」"
+  "ja": "スペインゲーム、またの名をルイ・ロペスは、長いお茶会だ。白のビショップが、ポーンを守るナイトをねらい、二十手のあいだ何も起こらない。それから、すべてが一度に起こる。グリーシャおじさんがこれを愛するのは、声に出して考えても、誰も邪魔しないから。本の最後の助言。「序盤は、中盤まで生きてたどり着くためにある。あとは指した人が知っている。指していない人は、座って指してみるといい。対局は、延ばすより始めるほうがいい」"
  },
  "city.ask.lib.postcard": {
   "ru": "Зачем у вас открытки?",
@@ -853,7 +853,7 @@
  "city.ask.lib.postcard.1": {
   "ru": "— Четыре рубля. Пишут на них мало, а хранят потом десятилетиями: в наших книгах закладок больше, чем пометок на полях.",
   "en": "\"Four roubles. People write little on them and keep them for decades. Our books hold more bookmarks than margin notes.\"",
-  "ja": "「四ルーブル。書く人は少ないけど、何十年も持っていてくれるの。うちの本には、書き込みより栞のほうが多いくらい。」"
+  "ja": "「四ルーブル。書く人は少ないけど、何十年も持っていてくれるの。うちの本には、書き込みよりしおりのほうが多いくらい。」"
  },
  "city.ask.lib.postcard.2": {
   "ru": "— Если захочется написать и не знаешь кому, оставь у полки «Вернувшиеся», у окна. Чья открытка, я не спрашиваю. Передам.",
@@ -863,7 +863,7 @@
  "city.ask.lib.postcard.3": {
   "ru": "— Ты вложил открытку в «Путеводитель», я видела. Во вторник к чаю не удивляйся: вторая чашка у нас уже тёплая.",
   "en": "\"You slipped a card into the Guide, I saw. Don't be surprised on Tuesday at tea: the second cup is already warm.\"",
-  "ja": "「『案内』に絵はがきをはさんだでしょう、見てたわ。火曜のお茶の時間に驚かないでね。二つめのカップは、もうあたたかいから。」"
+  "ja": "「『案内書』に絵はがきをはさんだでしょう、見てたわ。火曜のお茶の時間に驚かないでね。二つめのカップは、もうあたたかいから。」"
  },
  "city.ask.lib.piano": {
   "ru": "Можно поиграть на пианино?",
@@ -988,7 +988,7 @@
  "city.ask.lib.chessbook.3": {
   "ru": "— Говорят, ты кого-то обыграл. Принеси потом книгу с закладкой на странице, где ошибся: у неё это любимая закладка.",
   "en": "\"I hear you beat somebody. Bring the book back with a bookmark at the page where you slipped: that's its favourite bookmark.\"",
-  "ja": "「誰かに勝ったそうね。あとで本を返すとき、間違えたページに栞をはさんで。本はそれがいちばん好きな栞なの。」"
+  "ja": "「誰かに勝ったそうね。あとで本を返すとき、間違えたページにしおりをはさんで。本はそれがいちばん好きなしおりなの。」"
  },
  "city.ask.lib.g_n": {
   "ru": "Кто этот Г. Н. в журнале?",
@@ -997,7 +997,7 @@
  },
  "city.ask.lib.g_n.1": {
   "ru": "— Читатель с карточкой три-двести-семнадцать. Взял «Путеводитель по солнечным часам» в мае шестьдесят восьмого и всё никак не донесёт. Срок я переписываю: рука привыкла.",
-  "en": "\"The reader with card 3-217. He took A Guide to Sundials in May sixty-eight and still hasn't brought it back. I keep rewriting the due date: my hand is used to it.\"",
+  "en": "\"The reader with card 3-217. He took the Guide to Sundials in May sixty-eight and still hasn't brought it back. I keep rewriting the due date: my hand is used to it.\"",
   "ja": "「貸出カード三の二一七の読者よ。六十八年の五月に『日時計案内』を借りたきり、まだ返しに来ないの。返却日は書き直してるわ。手が慣れてしまって。」"
  },
  "city.ask.lib.g_n.2": {
@@ -1078,6 +1078,6 @@
  "quest.library_chess_note.done": {
   "ru": "Тамара Ильинична открыла тетрадь на чистой странице и подвинула ко мне карандаш: «Пока без имени. Имя появится само». Я повертел карандаш и положил обратно.",
   "en": "Tamara Ilyinichna opened the notebook at a blank page and pushed a pencil toward me: \"No name yet. The name will come by itself.\" I turned the pencil over and put it back.",
-  "ja": "タマーラ・イリイニチナは棋譜帳の白いページを開いて、鉛筆をこちらに押しやった。「まだ名前はなし。名前はそのうち自分で現れるわ」。ぼくは鉛筆をくるくる回して、元に戻した。"
+  "ja": "タマーラ・イリイニチナは棋譜帳の白いページを開いて、鉛筆をこちらに押しやった。「まだ名前はなし。名前はそのうち自分で現れるわ」。僕は鉛筆をくるくる回して、元に戻した。"
  }
 }

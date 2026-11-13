@@ -72,7 +72,7 @@
  "city.xh.prog.mon": {
   "ru": "Афиша «Сводов». Понедельник: вечеров нет. Зал отдыхает, смотритель протирает перила и ругает сквозняк. Буфет открыт, пироги есть.",
   "en": "The Vaults' programme. Monday: no evenings. The hall rests, the caretaker wipes the banisters and scolds the draught. The buffet is open and there are pies.",
-  "ja": "「ヴォールト」の催し予定。月曜は夜の催しなし。ホールはお休みで、管理人は手すりを拭きながら隙間風に文句を言っている。ビュッフェは開いていて、ピローグもある。"
+  "ja": "「ヴォールト」の催し予定。月曜は夜の催しなし。ホールはお休みで、管理人は手すりを拭きながら隙間風に文句を言っている。売店は開いていて、ピローグもある。"
  },
  "city.xh.prog.tue": {
   "ru": "Вторник, 19:00: лекция «Почему в Сводах эхо запаздывает». Читает инженер-акустик, вход свободный. Просим не хлопать до конца: эхо хлопает за вас.",
@@ -92,7 +92,7 @@
  "city.xh.prog.fri": {
   "ru": "Пятница, 19:00: вечер танцев в боковом зале, с буфетом. Играет пластинка, а если повезёт — пианист. Танцы до 23:00, сменная обувь приветствуется.",
   "en": "Friday, 19:00: a dance night in the side hall, with the buffet. A record plays, and with luck a pianist. Dancing until 23:00; a change of shoes is welcome.",
-  "ja": "金曜19時、横のホールでダンスの夕べ。ビュッフェつき。レコードが鳴り、運がよければピアニストも。23時まで。履き替えの靴を歓迎します。"
+  "ja": "金曜19時、横のホールでダンスの夕べ。売店あり。レコードが鳴り、運がよければピアニストも。23時まで。履き替えの靴を歓迎します。"
  },
  "city.xh.prog.sat": {
   "ru": "Суббота, 19:00: ПРЕМЬЕРА «Время, вперёд!», театр «Волна». Вход свободный, места по любви. После спектакля танцы.",
@@ -161,13 +161,13 @@
  },
  "city.xh.guest.5": {
   "ru": "«Читка пьесы про часы удалась. Режиссёр плакала, потому что смеялась, или наоборот». Подпись: «Завхоз, он же Часовщик».",
-  "en": "\"The reading of the play about clocks went well. The director cried because she was laughing, or the other way round.\" Signed: \"The caretaker, a.k.a. the Clockmaker.\"",
+  "en": "\"The reading of the play about clocks went well. The director cried because she was laughing, or the other way round.\" Signed: \"The handyman, a.k.a. the Clockmaker.\"",
   "ja": "「時計の劇の読み合わせは大成功。演出家は笑いすぎて泣いていました。逆かもしれません」。署名は「用務員、またの名を時計職人」。"
  },
  "city.xh.guest.6": {
   "ru": "«Замечание: в буфете закончились пироги в 19:10. Предложение: печь больше пирогов. Или начинать вечера позже». Подпись неразборчива, но от души.",
   "en": "\"Remark: the buffet ran out of pies at 19:10. Suggestion: bake more pies. Or start the evenings later.\" The signature is illegible, but heartfelt.",
-  "ja": "「ご指摘。ビュッフェは19時10分にピローグが売り切れました。提案。もっと焼く。または夜の催しを遅く始める」。署名は読めないけれど、心はこもっている。"
+  "ja": "「ご指摘。売店は19時10分にピローグが売り切れました。提案。もっと焼く。または夜の催しを遅く始める」。署名は読めないけれど、心はこもっている。"
  },
  "city.xh.guest.7": {
   "ru": "Между страниц записка: «Кто нашёл шахматные часы с трещиной? Они не бутафория, их ищет клуб». Ответ карандашом: «Нашли. На сцене, в реквизите. Скоро вернём».",
@@ -271,7 +271,7 @@
  },
  "city.xh.costumes.mon": {
   "ru": "Вешалка за кулисами. На плечиках бирки: «Часовщик», «Мэр», «Почтальон», «Эхо», «Второе эхо». Бирка «Часовщик» приколота к жилетке завхоза. Он возражал, но жилетка сидит как влитая.",
-  "en": "The rail backstage. Tags on the hangers: \"Clockmaker\", \"Mayor\", \"Postwoman\", \"Echo\", \"Second Echo\". The Clockmaker tag is pinned to the caretaker's waistcoat. He objected, but it fits like a glove.",
+  "en": "The rail backstage. Tags on the hangers: \"Clockmaker\", \"Mayor\", \"Postwoman\", \"Echo\", \"Second Echo\". The Clockmaker tag is pinned to the handyman's waistcoat. He objected, but it fits like a glove.",
   "ja": "舞台裏の衣装ラック。ハンガーに札。「時計職人」「市長」「郵便配達」「こだま」「二つめのこだま」。「時計職人」の札は用務員のベストに留めてある。本人は反対したが、ベストはぴったりだ。"
  },
  "city.xh.costumes.tue": {
@@ -361,7 +361,7 @@
  },
  "city.xh.rehearsal.mon": {
   "ru": "Объявление театра «Волна»: «Роли распределены. Часовщик — завхоз (согласился, но только до девяти вечера). Мэр — продавец пирогов. Почтальон — девушка из кассы. Эхо и Второе эхо — братья-близнецы, они всё равно переговариваются».",
-  "en": "A notice from the Wave theatre: \"Parts are cast. Clockmaker: the caretaker (he agreed, but only until nine in the evening). Mayor: the pie seller. Postwoman: the girl from the box office. Echo and Second Echo: twin brothers, they talk to each other anyway.\"",
+  "en": "A notice from the Wave theatre: \"Parts are cast. Clockmaker: the handyman (he agreed, but only until nine in the evening). Mayor: the pie seller. Postwoman: the girl from the box office. Echo and Second Echo: twin brothers, they talk to each other anyway.\"",
   "ja": "劇団「波」のお知らせ。「配役が決まりました。時計職人は用務員（ただし夜九時まで、という条件で承諾）。市長はピローグ売り。郵便配達は窓口の女の子。こだまと二つめのこだまは双子の兄弟、どうせ話し合っているので」。"
  },
  "city.xh.rehearsal.tue": {
@@ -372,7 +372,7 @@
  "city.xh.rehearsal.wed": {
   "ru": "Просьба актёрам: хор репетирует до 19:00, потом сцена ваша. Умирать на сцене Часовщику в это время нельзя: в зале поют колыбельную.",
   "en": "A request to the cast: the choir rehearses until 19:00, then the stage is yours. The Clockmaker must not die on stage before then: the hall is singing a lullaby.",
-  "ja": "出演者へのお願い。合唱団は19時まで、そのあとが舞台はみなさんの番です。それまで時計職人は舞台で死なないこと。ホールでは子守歌を歌っています。"
+  "ja": "出演者へのお願い。合唱団は19時まで、そのあと舞台はみなさんの番です。それまで時計職人は舞台で死なないこと。ホールでは子守歌を歌っています。"
  },
  "city.xh.rehearsal.thu": {
   "ru": "Срочно! Нужны большие часы для первого акта, желательно ходячие. Приносить за кулисы. Звонить не надо: эхо услышит.",
@@ -391,12 +391,12 @@
  },
  "city.xh.rehearsal.sun": {
   "ru": "Спасибо всем, кто пришёл! Зал аплодировал дольше, чем шла пьеса. Фотографии в фойе, отзывы в книге. Следующая постановка — по заявкам, подавать завхозу: он знает, где лежат часы.",
-  "en": "Thank you to everyone who came! The hall applauded longer than the play ran. Photos in the foyer, comments in the book. The next production is by request; apply to the caretaker, he knows where the clock is.",
+  "en": "Thank you to everyone who came! The hall applauded longer than the play ran. Photos in the foyer, comments in the book. The next production is by request; apply to the handyman, he knows where the clock is.",
   "ja": "ご来場のみなさま、ありがとうございました！ 拍手は劇より長く続きました。写真はロビーに、感想はノートに。次の上演はご希望しだい。用務員へどうぞ、時計のありかを知っています。"
  },
  "city.xh.show.sat_show.1": {
   "ru": "Гаснет свет. Из-за кулис выходит завхоз в жилетке с цепочкой, оглядывает зал строго, как часы, которые показывают точное время, и говорит: «Время, оно... идёт». Зал смеётся, эхо смеётся чуть позже.",
-  "en": "The lights go down. From the wings comes the caretaker in a waistcoat with a chain, surveys the hall as sternly as a clock showing the exact time, and says: \"Time... goes on.\" The hall laughs, the echo laughs a little later.",
+  "en": "The lights go down. From the wings comes the handyman in a waistcoat with a chain, surveys the hall as sternly as a clock showing the exact time, and says: \"Time... goes on.\" The hall laughs, the echo laughs a little later.",
   "ja": "照明が落ちる。袖から鎖つきのベストの用務員が出てきて、正確な時刻を示す時計のように厳しく客席を見わたし、言う。「時間とは…進むものだ」。客席が笑い、反響が少し遅れて笑う。"
  },
  "city.xh.show.sat_show.2": {
@@ -451,23 +451,23 @@
  },
  "city.xh.chalk.morning": {
   "ru": "Мелом на доске: «Чай 15. Кофе 30. Пирог 18. Дюшес 18». Ниже: «Вчерашний пирог — со скидкой и честным признанием». Последняя строчка подчёркнута.",
-  "en": "In chalk on the board: \"Tea 15. Coffee 30. Pie 18. Pear lemonade 18.\" Below: \"Yesterday's pie: discounted, with an honest confession.\" The last line is underlined.",
-  "ja": "黒板にチョークで。「紅茶15。コーヒー30。ピローグ18。洋ナシのソーダ18」。その下。「きのうのピローグ、値引き、正直な告白つき」。最後の行には下線。"
+  "en": "In chalk on the board: \"Tea 15. Coffee 30. Pie 18. Duchesse 18.\" Below: \"Yesterday's pie: discounted, with an honest confession.\" The last line is underlined.",
+  "ja": "黒板にチョークで。「紅茶15。コーヒー30。ピローグ18。ドゥシェス18」。その下。「きのうのピローグ、値引き、正直な告白つき」。最後の行には下線。"
  },
  "city.xh.chalk.day": {
   "ru": "Мелом: «Днём — суп из кухни, если кухня не передумала. Чай 15, кофе 30, пирог 18». Внизу: «Дюшес 18, холодный и очень сладкий».",
-  "en": "In chalk: \"By day: soup from the kitchen, if the kitchen has not changed its mind. Tea 15, coffee 30, pie 18.\" At the bottom: \"Pear lemonade 18, cold and very sweet.\"",
-  "ja": "チョークで。「昼はキッチンのスープ、キッチンの気が変わらなければ。紅茶15、コーヒー30、ピローグ18」。いちばん下。「洋ナシのソーダ18、冷たくてとても甘い」。"
+  "en": "In chalk: \"By day: soup from the kitchen, if the kitchen has not changed its mind. Tea 15, coffee 30, pie 18.\" At the bottom: \"Duchesse 18, cold and very sweet.\"",
+  "ja": "チョークで。「昼はキッチンのスープ、キッチンの気が変わらなければ。紅茶15、コーヒー30、ピローグ18」。いちばん下。「ドゥシェス18、冷たくてとても甘い」。"
  },
  "city.xh.chalk.eve": {
   "ru": "Мелом: «Вечером всё то же, только тише. Чай 15, кофе 30, пирог 18, дюшес 18». Рядом нарисован чайник, который будто бы подмигивает.",
-  "en": "In chalk: \"In the evening, the same, only quieter. Tea 15, coffee 30, pie 18, pear lemonade 18.\" Beside it, a drawn teapot that seems to wink.",
-  "ja": "チョークで。「夜も同じ、ただし静かに。紅茶15、コーヒー30、ピローグ18、洋ナシのソーダ18」。そばに、ウインクしているように見えるティーポットの絵。"
+  "en": "In chalk: \"In the evening, the same, only quieter. Tea 15, coffee 30, pie 18, Duchesse 18.\" Beside it, a drawn teapot that seems to wink.",
+  "ja": "チョークで。「夜も同じ、ただし静かに。紅茶15、コーヒー30、ピローグ18、ドゥシェス18」。そばに、ウインクしているように見えるティーポットの絵。"
  },
  "city.xh.chalk.dance": {
   "ru": "Мелом, крупно: «ТАНЦЫ! Дюшес 18, пирог 18, чай 15, кофе 30. Танцующим салфетка бесплатно». Салфетка тоже нарисована.",
-  "en": "In chalk, big: \"DANCE! Pear lemonade 18, pie 18, tea 15, coffee 30. Napkin free for dancers.\" The napkin is drawn too.",
-  "ja": "チョークで大きく。「ダンス！ 洋ナシのソーダ18、ピローグ18、紅茶15、コーヒー30。踊る人にはナプキン無料」。ナプキンも描いてある。"
+  "en": "In chalk, big: \"DANCE! Duchesse 18, pie 18, tea 15, coffee 30. Napkin free for dancers.\" The napkin is drawn too.",
+  "ja": "チョークで大きく。「ダンス！ ドゥシェス18、ピローグ18、紅茶15、コーヒー30。踊る人にはナプキン無料」。ナプキンも描いてある。"
  },
  "city.xh.dance.band.1": {
   "ru": "Играет живая музыка: пианист из соседнего дома и барабанщик на табуретке. Вы вальсируете с тем, кто всё время смотрит на ноги. Потом он смотрит на вас, и так лучше.",
@@ -571,8 +571,8 @@
  },
  "quest.hall_premiere.done": {
   "ru": "Эхо хлопало вместе с залом, а завхоз-Часовщик поклонился так, словно и правда остановил время. На выходе смотритель сунул мне сорок рублей: «За внимательность. Купи пирог в буфете и расскажи шахматистам про часы».",
-  "en": "The echo clapped along with the hall, and the caretaker-Clockmaker bowed as if he really had stopped time. At the door the caretaker pressed forty roubles into my hand: \"For paying attention. Buy a pie at the buffet and tell the chess players about the clock.\"",
-  "ja": "反響は客席といっしょに拍手し、用務員の時計職人は、ほんとうに時間を止めたかのようにお辞儀をした。出口で管理人が四十ルーブルを握らせてくれた。「ちゃんと見てくれたお礼です。ビュッフェでピローグを買って、チェスの人たちに時計のことを教えてあげて」。"
+  "en": "The echo clapped along with the hall, and the handyman-Clockmaker bowed as if he really had stopped time. At the door the caretaker pressed forty roubles into my hand: \"For paying attention. Buy a pie at the buffet and tell the chess players about the clock.\"",
+  "ja": "反響は客席といっしょに拍手し、用務員の時計職人は、ほんとうに時間を止めたかのようにお辞儀をした。出口で管理人が四十ルーブルを握らせてくれた。「ちゃんと見てくれたお礼です。売店でピローグを買って、チェスの人たちに時計のことを教えてあげて」。"
  },
  "quest.hall_dance_night.title": {
   "ru": "Танцы в «Сводах»",
