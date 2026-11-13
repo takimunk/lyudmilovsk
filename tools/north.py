@@ -54,6 +54,9 @@ CONE_H = 58.0                   # rim over the land around
 CRATER_DEPTH = 27.0
 BREACH_YAW = math.radians(8.0)  # the rim is broken toward map +X (west), a little north of it
 BREACH_HALF = math.radians(34.0)
+OLD_CONE = (-880.0, 2990.0)     # the Old Cone (Старая сопка): an extinct, grassed-over cone on the meadows, a landmark
+OLD_CONE_H = 36.0
+OLD_CONE_R = (26.0, 165.0)      # its rim and base radii
 RIDGE_X = (-960.0, 260.0)       # the Ridge runs between these, fading over 160 m at each end
 RIDGE_H = 18.0
 RIDGE_HALF = 62.0
@@ -161,6 +164,17 @@ def _cone(x, y):
     return floor + (rim_h - floor) * (0.35 * wall + 0.65 * wall * wall)
 
 
+def _old_cone(x, y):
+    """The Old Cone's height over the meadow: worn round, a shallow grassy dish on top."""
+    r = math.hypot(x - OLD_CONE[0], y - OLD_CONE[1])
+    if r > OLD_CONE_R[1] * 1.2:
+        return 0.0
+    if r >= OLD_CONE_R[0]:
+        t = (r - OLD_CONE_R[0]) / (OLD_CONE_R[1] - OLD_CONE_R[0])
+        return OLD_CONE_H * (0.5 + 0.5 * math.cos(math.pi * min(t, 1.0))) ** 1.25
+    return OLD_CONE_H - 5.0 * (0.5 + 0.5 * math.cos(math.pi * r / OLD_CONE_R[0]))
+
+
 def lava(x, y):
     """0..1 on the lava flow (a rough blocky tongue from the breach to the cliff's brow)."""
     if not (LAVA[0][0] - 80.0 < x < LAVA[-1][0] + 80.0 and 3600.0 < y < 3920.0):
@@ -200,7 +214,7 @@ def _pad_z(px, py):
 
 def _raw(x, y):
     z = _land(x, y)
-    z += _cone(x, y)
+    z += _cone(x, y) + _old_cone(x, y)
     lv = lava(x, y)
     if lv > 0.0:
         z += LAVA_THICK * lv
@@ -442,6 +456,7 @@ def places():
         {"id": "north_breach", "name": "place.north.breach", "x": cb[0], "y": cb[1], "yaw": 190.0},
         {"id": "north_crater", "name": "place.north.crater", "x": CONE[0] + 22.0, "y": CONE[1] + 4.0, "yaw": 180.0},
         {"id": "north_rim", "name": "place.north.rim", "x": CONE[0] - 2.0, "y": CONE[1] - CONE_RIM_R + 1.0, "yaw": 270.0},
+        {"id": "north_old_cone", "name": "place.north.old_cone", "x": OLD_CONE[0] + 4.0, "y": OLD_CONE[1], "yaw": 0.0},
     ]
 
 

@@ -18,6 +18,7 @@ Map metres (docs/world_map.md's frame: X west toward the sea, Y north). All of i
 | Tree line | Y 2330..2700 | stone birch, rowan and dwarf birch wide apart (`FOREST_MIX["stonebirch"]`) |
 | Meadows (луга) | Y 2550..3400 | a rolling plateau of grass 35..45 m over the club's floor; dwarf birch and juniper clumps; ends at the sea in an ~80 m cliff |
 | Campsite (кемпинг) | 140, 3160 | six tents round a fire ring, a table under a tarp, log benches, a food pole, an outhouse |
+| Old Cone (Старая сопка) | -880, 2990 | an extinct cone 36 m high, grassed over, a shallow dish on top: the meadows' landmark and lookout |
 | Hot spring | -372, 3398 | a warm pool with a wooden deck at the mouth of the Fumarole Valley |
 | Fumarole Valley | -430, 3490 | a trough through the Ridge: bleached clay, 9 steam vents, 12 patches of steaming ground, 5 mud pots |
 | The Ridge (Гряда) | Y ~3520, X -960..260 | a low rise whose north slope keeps snowfields all summer |

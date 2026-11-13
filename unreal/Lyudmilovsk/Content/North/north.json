@@ -77,6 +77,13 @@
    "x": -642.0,
    "y": 3789.0,
    "yaw": 270.0
+  },
+  {
+   "id": "north_old_cone",
+   "name": "place.north.old_cone",
+   "x": -876.0,
+   "y": 2990.0,
+   "yaw": 0.0
   }
  ],
  "hut": {
