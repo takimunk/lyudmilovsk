@@ -111,12 +111,17 @@ namespace LyudPeople
 		V3 Portal;                  // outdoor point by its door (or the spot itself outdoors)
 		float Yaw = 0.f;
 		bool bIndoor = false;
-		int Island = 0;             // 0 the valley (town, Academgorodok, beach), 1 the club's spur, 2 the sea island (by train); -1 cut off
+		int Island = 0;             // 0 the valley (town, Academgorodok, beach), 1 the club's spur, 2 the sea island (by train),
+		                            // 3 the North (on foot by the trail, docs/north.md); -1 cut off
 		// a railway halt (kind rail_stop): the timetable's stop id (beach, island) and the way from Portal (on the ground,
 		// where walkers arrive) to the platform's deck (the stair's foot and top); its slots (kind board) are the
-		// boarding points on the deck
+		// boarding points on the deck. A trail (kind trail): RailWay is its way on foot from Portal (on the valley's walk
+		// grid) to the other island's end (TrailTo: the North), WayLen its length, m
 		std::string Stop;
 		std::vector<V3> RailWay;
+		int TrailTo = -1;
+		float WayLen = 0.f;
+		bool bPrivate = false;      // a home only for whoever people.json gives it (home): never handed out (the ranger's hut, a tent)
 		std::vector<int> Slots;
 		// flats
 		std::string House;
@@ -150,6 +155,7 @@ namespace LyudPeople
 		bool bSunset = false;               // only around sunset (see the sun go down)
 		bool bTalk = false;                 // looks for somebody to talk to there
 		bool bWander = false;               // a walk: goes on round the place's spots
+		bool bRound = false;                // a round (with bWander): on to the next spot of the place in its order, whatever the distance
 		float WanderNear = 15.f, WanderFar = 220.f;     // how far the next spot is (m)
 		float PauseMin = 40.f, PauseMax = 130.f;       // how long they stay at a spot (s)
 		bool bPauseSet = false;                         // wander_pause given (else the first stop is 30-90 s)
@@ -505,6 +511,8 @@ namespace LyudPeople
 		float WaySeconds(const FPerson& P, const V3& From, int FromIsland, int ToSlot, double At) const;
 		/** A halt of the sea railway (place index) on an island, -1 none. */
 		int RailStopOf(int Island) const;
+		/** The trail (place index) from the valley to an island reached on foot (the North), -1 none. */
+		int TrailOf(int Island) const;
 
 		/** Height fields of ground off the walk grid (the sea island), Unreal metres. */
 		struct FPatch { float X0 = 0.f, Y0 = 0.f, Cell = 4.f; int NX = 0, NY = 0; std::vector<float> Z; bool Has(float X, float Y) const; float At(float X, float Y) const; };
@@ -556,7 +564,8 @@ namespace LyudPeople
 		int KindId(const std::string& Kind);        // the places Index saw (a place added after it: the slow look over all)
 		V3 Where(const FPerson& P) const;
 		void Reserve(FPerson& P, int Slot);
-		/** The hops between two islands: (kind 2 cable car | 3 train, the place to set off from, the place to come out at, the island). */
+		/** The hops between two islands: (kind 2 cable car | 3 train | 5 a trail on foot, the place to set off from, the place to come
+		 *  out at, the island). */
 		struct FHop { int Kind; int A; int B; int To; };
 		bool Hops(int From, int To, std::vector<FHop>& Out) const;
 		/** On the sea island: ends the activity in time for a train back (the walk to the halt and a minute to spare). */

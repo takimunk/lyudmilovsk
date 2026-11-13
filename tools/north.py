@@ -621,3 +621,139 @@ if __name__ == "__main__":
     d = write()
     print("north: %d places, %d fumaroles, %d camp things, %d signs -> %s" %
           (len(d["places"]), len(d["fumaroles"]), len(d["camp"]), len(d["signs"]), os.path.normpath(OUT)))
+
+
+# --- people (the ranger and the campers: tools/people_map.py build_north -> people_places.json, docs/north.md "People")
+
+HUT_FLOOR = 0.35                # the hut's floor over the ground at its pad (a log hut on a sill, a step up)
+
+
+def people_spots():
+    """Named spots for the North's people, map metres (x, y) with an Unreal yaw (the way a seated person faces, a
+    standing one looks; a bed: head to foot). A proposal of where things stand until blender/export/north/manifest.json
+    has the hut's furniture and the benches' seats (people_map.py prefers those when it finds them). Pure data.
+
+    hut       door (the porch point outside it), inside (the way in), floor (m over the ground), slots: the bunk, the
+              chair at the table (the radio), the stool by the stove, the stove spot
+    porch     the bench against the hut's front wall (two seats)
+    gate      four standing spots at the barrier, looking down the track and into the reserve
+    weather   the weather post (a screen and a rain gauge) south of the hut
+    fire      the log benches round the fire ring: two seats a log, facing the fire
+    table     the camp table's benches: two seats a side, facing the table
+    spring    the bench on the hot spring's deck, facing the pool
+    patrol    the ranger's round in order: gate -> camp -> spring -> camp -> gate, every ~90 m along the trail's anchors
+    walk      a walk about the meadows (the camp's hollow, the meadow's brow, the spring, the valley's mouth, the snow)
+    field     where the geology students work: the fresh lava, the snowfields' feet, the valley's mouth
+    All of it is offsets from the named places (HUT, GATE, CAMP, SPRING, FUMAROLES_C, CONE, ANCHORS), so it follows
+    the land when they move.
+    view      where the photographer waits for the light on the Cone
+    tents     camp tent id -> {door (outside it), bed (inside), mat (a seat inside), yaw, kind}
+    """
+    def turn(c, yaw, u, v):
+        a = math.radians(yaw)
+        return (c[0] + u * math.cos(a) - v * math.sin(a), c[1] + u * math.sin(a) + v * math.cos(a))
+
+    def hut(u, v):
+        return turn(HUT, HUT_YAW, u, v)
+
+    def r(p):
+        return [round(p[0], 2), round(p[1], 2)]
+
+    def look_at(p, q):
+        return round(math.degrees(math.atan2(q[1] - p[1], q[0] - p[0])), 1)
+
+    # the hut, local u along its front (west), v to its left: the door in the front wall, the bunk along the back-left
+    # wall, the table under the left window with the radio on it, the stove in the back-right corner
+    hy = HUT_YAW
+    hut_slots = [
+        ("bed", "bunk", hut(-1.75, 0.65), hy - 90.0, 0.45, hut(-0.95, 0.65)),
+        ("kitchen_seat", "table", hut(0.25, 0.75), hy + 90.0, 0.45, hut(0.25, 0.3)),
+        ("armchair", "stool", hut(-0.55, -0.85), hy + 200.0, 0.42, hut(-0.1, -0.6)),
+        ("stove", "stove", hut(-1.0, -0.55), hy - 150.0, 0.0, hut(-1.0, -0.55)),
+    ]
+    out = {
+        "hut": {"door": r(hut(3.3, -0.6)), "inside": [r(hut(2.3, -0.6)), r(hut(1.4, -0.6)), r(hut(0.5, -0.2))],
+                "floor": HUT_FLOOR,
+                "slots": [{"kind": k, "tag": t, "x": r(p)[0], "y": r(p)[1], "yaw": round(y, 1), "height": h, "approach": r(a)}
+                          for k, t, p, y, h, a in hut_slots]},
+        "porch": [{"x": r(hut(2.95, v))[0], "y": r(hut(2.95, v))[1], "yaw": hy} for v in (0.55, 1.15)],
+        "gate": [
+            {"x": GATE[0] + 2.5, "y": GATE[1] - 2.0, "yaw": -90.0},      # on the track, looking down it to the town
+            {"x": GATE[0] - 3.0, "y": GATE[1] - 1.0, "yaw": -60.0},
+            {"x": GATE[0] + 5.5, "y": GATE[1] + 0.5, "yaw": -120.0},     # by the reserve's board
+            {"x": GATE[0] + 1.0, "y": GATE[1] + 6.0, "yaw": 90.0},       # inside, looking up the track into the reserve
+        ],
+        "weather": [{"x": r(hut(-4.0, -10.0))[0], "y": r(hut(-4.0, -10.0))[1], "yaw": hy - 90.0}],
+    }
+    things = camp()
+    fire = []
+    for o in things:
+        if o["kind"] == "log_bench":
+            a = math.radians(o["yaw"] - 180.0)          # from the fire out to the log
+            for s in (-0.45, 0.45):
+                fire.append({"x": round(o["x"] - s * math.sin(a), 2), "y": round(o["y"] + s * math.cos(a), 2),
+                             "yaw": round(o["yaw"], 1), "log": o["id"]})
+    out["fire"] = fire
+    t = next(o for o in things if o["kind"] == "camp_table")
+    table = []
+    for side in (-1.0, 1.0):
+        for along in (-0.5, 0.5):
+            p = turn((t["x"], t["y"]), t["yaw"], side * 0.75, along)
+            table.append({"x": round(p[0], 2), "y": round(p[1], 2), "yaw": round(t["yaw"] + (180.0 if side > 0 else 0.0), 1)})
+    out["table"] = table
+    out["spring"] = [{"x": round(SPRING[0] + k, 2), "y": round(SPRING[1] - 4.3, 2), "yaw": 90.0} for k in (-0.55, 0.0, 0.55)]
+    names = [n for n in ("north_gate", "north_meadow", "north_camp", "north_spring") if n in ANCHORS]
+    pts = []
+    for p, q in zip([ANCHORS[n] for n in names], [ANCHORS[n] for n in names[1:]]):
+        n = max(1, int(round(math.hypot(q[0] - p[0], q[1] - p[1]) / 90.0)))
+        pts += [(p[0] + (q[0] - p[0]) * k / n, p[1] + (q[1] - p[1]) * k / n) for k in range(n)]
+    pts.append(ANCHORS["north_spring"])
+    loop = pts + pts[-2::-1]
+    out["patrol"] = [{"x": round(p[0], 2), "y": round(p[1], 2),
+                      "yaw": look_at(p, loop[i + 1] if i + 1 < len(loop) else loop[i - 1])} for i, p in enumerate(loop)]
+    def lerp(p, q, t):
+        return (p[0] + (q[0] - p[0]) * t, p[1] + (q[1] - p[1]) * t)
+
+    def spot(p, yaw=None, at=None):
+        return {"x": round(p[0], 2), "y": round(p[1], 2), "yaw": look_at(p, at) if at else round(yaw, 1)}
+
+    # the snowfields' south feet, largest first: the DEM land's snowfields() or the older hand-placed SNOWFIELDS
+    feet = []
+    try:
+        if callable(globals().get("snowfields")):
+            feet = [(f["x"], f["y"] - f["r"] - 8.0) for f in snowfields()[:3]]
+        else:
+            feet = [(f[0], f[1] - f[3] - 10.0) for f in sorted(globals().get("SNOWFIELDS", []), key=lambda f: -f[2] * f[3])[:3]]
+    except Exception:       # the land's data (LFS) is missing: the students keep to the lava and the valley
+        feet = []
+    feet = [f for f in feet if math.hypot(f[0] - CAMP[0], f[1] - CAMP[1]) < 900.0]
+    mouth = (FUMAROLES_C[0] + FUMAROLES_R[0] + 25.0, FUMAROLES_C[1] - FUMAROLES_R[1] - 20.0)    # beside the hot ground
+    camp_a, spring_a = ANCHORS["north_camp"], ANCHORS["north_spring"]
+    meadow = ANCHORS.get("north_meadow", lerp(GATE, CAMP, 0.5))
+    out["walk"] = [
+        spot((CAMP[0] - 40.0, CAMP[1] + 35.0), 120.0),
+        spot((CAMP[0] + 55.0, CAMP[1] - 30.0), 0.0),                   # the meadow's brow over the sea
+        spot((meadow[0] - 15.0, meadow[1]), 90.0),
+        spot(lerp(camp_a, spring_a, 0.5), at=CONE),
+        spot((SPRING[0] + 30.0, SPRING[1] - 25.0), 135.0),
+        spot(mouth, at=FUMAROLES_C),
+    ] + [spot(f, 90.0) for f in feet[:2]] + [spot(ANCHORS[n], at=CONE) for n in ("north_saddle",) if n in ANCHORS]
+    # the geology students: the fresh lava (its anchor on the DEM land, else the hand-drawn flow's south edge), the
+    # snowfields' feet, the valley's mouth
+    if "north_lava" in ANCHORS:
+        c = ANCHORS["north_lava"]
+        lava_spots = [(c[0], c[1] - 12.0), (c[0] + 45.0, c[1] - 20.0), (c[0] - 40.0, c[1] - 8.0)]
+    else:
+        lava_spots = [(q[0], q[1] - 55.0) for q in globals().get("LAVA", [])[3:8:2]]
+    out["field"] = ([spot(q, 90.0) for q in lava_spots] + [spot(f, 90.0) for f in feet]
+                    + [spot((mouth[0] + 20.0, mouth[1] - 6.0), at=FUMAROLES_C)])
+    views = [(CAMP[0] - 15.0, CAMP[1] + 30.0), (SPRING[0] + 25.0, SPRING[1] + 35.0), lerp(camp_a, spring_a, 0.3)]
+    out["view"] = [spot(q, at=CONE) for q in views]
+    tents = {}
+    for o in things:
+        if o["kind"].startswith("tent_"):
+            c = (o["x"], o["y"])
+            tents[o["id"]] = {"door": r(turn(c, o["yaw"], 1.6, 0.0)), "bed": r(turn(c, o["yaw"], -0.3, 0.0)),
+                              "mat": r(turn(c, o["yaw"], 0.5, 0.0)), "yaw": o["yaw"], "kind": o["kind"]}
+    out["tents"] = tents
+    return out

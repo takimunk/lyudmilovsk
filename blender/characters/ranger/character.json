@@ -1,0 +1,30 @@
+{
+ "_doc": "The ranger Matvei Krechet (Матвей Ильич Кречет; a proposal, docs/north.md People): how blender/characters/rig_character.py turns gen/model.glb (hi3d, not generated yet) into a game character (docs/characters.md). The face fields (face.eye_open, face.marks) are fitted on eye_shots.py close-ups once the model exists; the jacket's hem is a short skirt for the rig (it ends at the hips).",
+ "id": "ranger",
+ "model": "model",
+ "height": 1.78,
+ "donor": "blender/humans/export/human_guy_a.glb",
+ "faces": 15000,
+ "texture": 2048,
+ "bake_normal": true,
+ "face": {
+  "rig": true,
+  "normal_strength": 0.3,
+  "iris": [
+   0.34,
+   0.4,
+   0.46
+  ]
+ },
+ "skirt": {
+  "hem_z": 0.86,
+  "gap": 0.025,
+  "blend": 0.05,
+  "pelvis": 0.5
+ },
+ "hands": {
+  "cut": 0.0,
+  "overlap": 0.03
+ },
+ "_faces": "15k body + the donor's two hands (~5.7k) + the face rig's eyes/mouth (~4k) = ~25k, the adult budget"
+}

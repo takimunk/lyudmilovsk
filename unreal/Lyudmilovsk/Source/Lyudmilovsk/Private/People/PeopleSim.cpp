@@ -202,6 +202,7 @@ namespace LyudPeople
 			A.bSunset = V["sunset"].F() > 0.f;
 			A.bTalk = V["talk"].F() > 0.f;
 			A.bWander = V["wander"].F() > 0.f;
+			A.bRound = V["round"].F() > 0.f;
 			A.bSnow = V["snow"].F() > 0.f;
 			A.bSunrise = V["sunrise"].F() > 0.f;
 			A.bHolidayOff = V["holiday"].S() == "off";
@@ -550,6 +551,21 @@ namespace LyudPeople
 			{
 				Pl.Island = 2;
 			}
+			// in the North (off the walk grid: reached on foot by the trail, docs/north.md)
+			if (V["north"].F() > 0.f)
+			{
+				Pl.Island = 3;
+			}
+			Pl.bPrivate = V["private"].F() > 0.f;
+			// a trail: its way from the valley's walk grid to the island it leads to
+			if (Pl.Kind == "trail" && Pl.RailWay.size() >= 2)
+			{
+				Pl.TrailTo = V["to_island"].I(3);
+				for (size_t I = 1; I < Pl.RailWay.size(); I++)
+				{
+					Pl.WayLen += (Pl.RailWay[I] - Pl.RailWay[I - 1]).Len();
+				}
+			}
 			if (Pl.Slots.empty())
 			{
 				// a spot outdoors: people stand round it
@@ -618,7 +634,7 @@ namespace LyudPeople
 		}
 		for (FPlace& Pl : Places)
 		{
-			Pl.Island = Pl.Island == 2 ? 2 : IslandOf(Pl.Portal);
+			Pl.Island = Pl.Island >= 2 ? Pl.Island : IslandOf(Pl.Portal);
 		}
 		// ground off the walk grid (the sea island's own height field)
 		Patches.clear();
@@ -819,6 +835,18 @@ namespace LyudPeople
 		return -1;
 	}
 
+	int FWorld::TrailOf(int Island) const
+	{
+		for (int I = 0; I < (int)Places.size(); I++)
+		{
+			if (Places[I].TrailTo == Island && Places[I].Island == 0)
+			{
+				return I;
+			}
+		}
+		return -1;
+	}
+
 	bool FWorld::SetRailStop(const std::string& Stop, const V3& Foot, const std::vector<V3>& Boarding)
 	{
 		for (FPlace& Pl : Places)
@@ -848,6 +876,33 @@ namespace LyudPeople
 		Out.clear();
 		if (From == To)
 		{
+			return true;
+		}
+		// the North: on foot up the trail from the valley (after whatever hops it takes to get to the valley)
+		if (From == 3 || To == 3)
+		{
+			const int T = TrailOf(3);
+			if (T < 0)
+			{
+				return false;
+			}
+			std::vector<FHop> Rest;
+			if (From == 3)
+			{
+				if (!Hops(0, To, Rest))
+				{
+					return false;
+				}
+				Out.push_back({ 5, T, T, 0 });
+				Out.insert(Out.end(), Rest.begin(), Rest.end());
+				return true;
+			}
+			if (!Hops(From, 0, Rest))
+			{
+				return false;
+			}
+			Out = Rest;
+			Out.push_back({ 5, T, T, 3 });
 			return true;
 		}
 		auto Cable = [&](int A, int B)
@@ -903,6 +958,15 @@ namespace LyudPeople
 			{
 				const FPlace& A = Places[Hop.A];
 				const FPlace& B = Places[Hop.B];
+				if (Hop.Kind == 5)
+				{
+					// the trail on foot, up or down
+					const bool bUp = Hop.To == A.TrailTo;
+					const V3& Near = bUp ? A.RailWay.front() : A.RailWay.back();
+					T += (Near - Cur).Len2D() * Walk + A.WayLen / P.WalkSpeed;
+					Cur = bUp ? A.RailWay.back() : A.RailWay.front();
+					continue;
+				}
 				T += (A.Portal - Cur).Len2D() * Walk;
 				if (Hop.Kind == 2)
 				{
@@ -1424,7 +1488,8 @@ namespace LyudPeople
 		std::vector<int> Flats;
 		for (int I = 0; I < (int)Places.size(); I++)
 		{
-			if (Places[I].Kind == "flat")
+			// a private home (the ranger's hut, a tent) is only for whoever people.json gives it
+			if (Places[I].Kind == "flat" && !Places[I].bPrivate)
 			{
 				Flats.push_back(I);
 			}
@@ -2111,6 +2176,19 @@ namespace LyudPeople
 		{
 			const FPlace& A = Places[Hop.A];
 			const FPlace& B = Places[Hop.B];
+			if (Hop.Kind == 5)
+			{
+				// the trail: to its near end, then along its way in 3D to the far end
+				const std::vector<V3>& Way = A.RailWay;
+				const bool bUp = Hop.To == A.TrailTo;
+				OutdoorWay(Cur, bUp ? Way.front() : Way.back(), Out);
+				for (size_t I = 1; I < Way.size(); I++)
+				{
+					Push(Way[bUp ? I : Way.size() - 1 - I], 4);
+				}
+				Cur = bUp ? Way.back() : Way.front();
+				continue;
+			}
 			OutdoorWay(Cur, A.Portal, Out);
 			if (Hop.Kind == 2)
 			{
@@ -2768,6 +2846,30 @@ namespace LyudPeople
 		}
 		const FActivity& A = Activities[P.Activity];
 		const int Island = P.Island;
+		// a round: on to the next free spot of this place in its order (the ranger's round goes out and back that way)
+		if (A.bRound && P.Slot >= 0)
+		{
+			const std::vector<int>& Round = Places[Slots[P.Slot].Place].Slots;
+			const auto It = std::find(Round.begin(), Round.end(), P.Slot);
+			const int N = (int)Round.size();
+			for (int K = 1; It != Round.end() && K < N; K++)
+			{
+				const int Next = Round[(size_t)(((It - Round.begin()) + K) % N)];
+				if (!Slots[Next].Free(P.Id))
+				{
+					continue;
+				}
+				P.WanderAt = Time + 1e9;
+				Reserve(P, Next);
+				P.Slot = Next;
+				P.Place = Slots[Next].Place;
+				P.Path.clear();
+				OutdoorWay(P.Pos, Slots[Next].Approach, P.Path);
+				P.PathI = 0;
+				P.Pose = EPose::Walk;
+				return;
+			}
+		}
 		// only the places of the activity's kinds (or the gatherings' places); one picked at random as they come, no list
 		int S = -1, Seen = 0;
 		auto Look = [&](int PlI)

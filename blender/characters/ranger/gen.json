@@ -1,0 +1,106 @@
+{
+ "_doc": "The ranger Matvei Krechet (Матвей Ильич Кречет; a proposal, docs/north.md People): every paid generation that makes him, in order. NOT RUN (paid; Dima approves the spend). No photo: source/ranger_brief.txt is the reference. The house way (game-assets skill): the hi3d MCP, 'views' (quote_image_generation then create_image_generation: text_to_image, multi_view, Nano-Banana 2; returns front, back, left, right in one task), look at them, then 'model' (quote_generation with the views' task id and indices 0..3 in that order, then create_generation with the quote, confirmed). Write gen/views.json and gen/model.json sidecars by hand (task ids, arguments, quote, output URLs, sha256). The fal_* steps are the scriptable fallback (tools/gen_character.py ranger fal_front ... fal_model; billed by fal, only when Dima says so). Then: tools/characters/fix_hi3d.sh ranger, import_character.py ranger, people.json body stays 'Ranger' and the mesh 'Town/R_ranger' drops out.",
+ "reference": "source/ranger_brief.txt",
+ "steps": {
+  "views": {
+   "service": "hi3d",
+   "tool": "create_image_generation",
+   "args": {
+    "operation": "text_to_image",
+    "multi_view": true,
+    "model_name": "Nano-Banana 2"
+   },
+   "prompt": "Full-body character reference of a Russian forest ranger, 58 years old, for 3D modelling: lean and wiry, 1.78 m, slightly stooped shoulders, big work-worn hands; a weathered sun- and wind-burnt face with deep lines at the eyes, short grey stubble beard, grey-blue eyes, bushy grey eyebrows, short grey hair under a dark green knitted watch cap. He wears a faded, sun-bleached green canvas ranger's jacket with four flap pockets and a round embroidered patch on the left sleeve showing a stylised volcano cone and a fir tree (no letters), the collar of a checked flannel shirt at the neck, grey-green canvas trousers tucked into black knee-high rubber boots, binoculars in a worn brown leather case on a strap across his chest hanging at his right hip, and a dented steel thermos clipped to his belt at his left hip. Strict T-pose: standing straight, facing the camera, arms stretched out horizontally to the sides at shoulder height, elbows straight, palms facing down, fingers together, feet shoulder width apart, flat on the floor. Calm neutral expression, mouth closed, eyes open looking at the camera. Whole body visible from the top of the cap to the soles of the boots, centred, nothing cropped. Orthographic-looking views, camera at chest height. Plain light grey seamless studio background, soft even shadowless lighting, no other props, no text, photorealistic."
+  },
+  "model": {
+   "service": "hi3d",
+   "tool": "create_generation",
+   "images": [
+    "@views:0",
+    "@views:1",
+    "@views:2",
+    "@views:3"
+   ],
+   "args": {
+    "version": "v3.0",
+    "model_type": "high_quality",
+    "generation_type": "model_with_texture",
+    "pbr": true
+   }
+  },
+  "fal_front": {
+   "model": "fal-ai/nano-banana-2",
+   "args": {
+    "resolution": "2K",
+    "aspect_ratio": "1:1",
+    "output_format": "png",
+    "num_images": 1,
+    "seed": 3580,
+    "thinking_level": "high"
+   },
+   "prompt": "Full-body character reference of a Russian forest ranger, 58 years old, for 3D modelling: lean and wiry, 1.78 m, slightly stooped shoulders, big work-worn hands; a weathered sun- and wind-burnt face with deep lines at the eyes, short grey stubble beard, grey-blue eyes, bushy grey eyebrows, short grey hair under a dark green knitted watch cap. He wears a faded, sun-bleached green canvas ranger's jacket with four flap pockets and a round embroidered patch on the left sleeve showing a stylised volcano cone and a fir tree (no letters), the collar of a checked flannel shirt at the neck, grey-green canvas trousers tucked into black knee-high rubber boots, binoculars in a worn brown leather case on a strap across his chest hanging at his right hip, and a dented steel thermos clipped to his belt at his left hip. Strict T-pose: standing straight, facing the camera, arms stretched out horizontally to the sides at shoulder height, elbows straight, palms facing down, fingers together, feet shoulder width apart, flat on the floor. Calm neutral expression, mouth closed, eyes open looking at the camera. Whole body visible from the top of the cap to the soles of the boots, centred, nothing cropped. Orthographic-looking front view, camera at chest height. Plain light grey seamless studio background, soft even shadowless lighting, no other props, no text, photorealistic."
+  },
+  "fal_back": {
+   "model": "google/nano-banana-2.1/edit",
+   "images": [
+    "@fal_front"
+   ],
+   "args": {
+    "resolution": "2K",
+    "aspect_ratio": "1:1",
+    "output_format": "png",
+    "num_images": 1,
+    "seed": 3581,
+    "thinking_level": "high"
+   },
+   "prompt": "The same man in the same T-pose seen exactly from behind (back view, camera rotated 180 degrees around him). Same green knitted cap and short grey hair seen from the back, same faded green canvas jacket (its back), the binoculars' strap across his back, grey-green trousers, black knee-high rubber boots. Arms stretched horizontally at shoulder height, same scale and position in the frame, whole body visible, plain light grey background, soft even shadowless lighting, photorealistic, no text."
+  },
+  "fal_left": {
+   "model": "google/nano-banana-2.1/edit",
+   "images": [
+    "@fal_front"
+   ],
+   "args": {
+    "resolution": "2K",
+    "aspect_ratio": "1:1",
+    "output_format": "png",
+    "num_images": 1,
+    "seed": 3582,
+    "thinking_level": "high"
+   },
+   "prompt": "The same man in the same T-pose seen exactly from his left side (profile view, camera rotated 90 degrees around him so he faces the right edge of the picture). His left arm points straight at the camera and is foreshortened, the right arm is hidden behind his body. Same green knitted cap, same faded green canvas jacket with the round patch on the visible left sleeve, the steel thermos clipped at his left hip, grey-green trousers, black knee-high rubber boots. Same scale and height in the frame, whole body visible, plain light grey background, soft even shadowless lighting, photorealistic, no text."
+  },
+  "fal_right": {
+   "model": "google/nano-banana-2.1/edit",
+   "images": [
+    "@fal_front"
+   ],
+   "args": {
+    "resolution": "2K",
+    "aspect_ratio": "1:1",
+    "output_format": "png",
+    "num_images": 1,
+    "seed": 3583,
+    "thinking_level": "high"
+   },
+   "prompt": "The same man in the same T-pose seen exactly from his right side (profile view, camera rotated 90 degrees around him so he faces the left edge of the picture). His right arm points straight at the camera and is foreshortened, the left arm is hidden behind his body. Same green knitted cap, same faded green canvas jacket, the binoculars in their leather case at his right hip, grey-green trousers, black knee-high rubber boots. Same scale and height in the frame, whole body visible, plain light grey background, soft even shadowless lighting, photorealistic, no text."
+  },
+  "fal_model": {
+   "model": "hitem3d/hi3d/v3.0/multi-view-to-3d",
+   "images": {
+    "front_image_url": "@fal_front",
+    "back_image_url": "@fal_back",
+    "left_image_url": "@fal_left",
+    "right_image_url": "@fal_right"
+   },
+   "args": {
+    "resolution": "2048quality",
+    "export_format": "glb",
+    "enable_texture": true,
+    "enable_pbr": true,
+    "shading": 0.5,
+    "face_count": 2000000
+   }
+  }
+ }
+}

@@ -165,3 +165,35 @@ again = khuazhev_aslan.again1.1
 [Guseva_valentina]
 first = guseva_valentina.first.1
 again = guseva_valentina.again1.1
+
+# The North (docs/north.md "People"): the ranger at the reserve's gate and the campers. [Id] is their body id (people.json
+# body); proposals, not canon. The ranger's topical lines (the fumaroles, bears and the food pole, the spring, the
+# snowfields, the Cone, the campers, the weather) come round as his later talks, between his three plain ones.
+[Ranger]
+first = ranger.first.1 | hero.ranger_first.2 | ranger.first.3
+again = ranger.again1.1
+again = ranger.fumaroles.1
+again = ranger.bears.1
+again = ranger.again2.1
+again = ranger.spring.1
+again = ranger.snowfields.1
+again = ranger.again3.1
+again = ranger.cone.1
+again = ranger.campers.1
+again = ranger.weather.1
+sun.day = ranger.sun_day.1
+sun.low = ranger.sun_low.1
+sun.night = ranger.sun_night.1
+sun.cloudy = ranger.sun_cloudy.1
+[Melnikova_anya]
+first = melnikova_anya.first.1
+again = melnikova_anya.again1.1
+[Ito_ren]
+first = ito_ren.first.1
+again = ito_ren.again1.1
+[Savin_gleb]
+first = savin_gleb.first.1
+again = savin_gleb.again1.1
+[Okada_kiyo]
+first = okada_kiyo.first.1
+again = okada_kiyo.again1.1

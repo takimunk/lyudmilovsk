@@ -1,0 +1,20 @@
+The ranger (егерь) of the Severny reserve, the North (docs/north.md "People"). A PROPOSAL, not canon: Dima approves.
+No photo reference: he is drawn from this description (gen.json "views" uses it word for word).
+
+Name     Матвей Ильич Кречет / Matvei Ilyich Krechet, 58. Thirty years the keeper at the reserve's barrier; lives alone in
+         the log hut by the gate; talks to the weather; counts the snowfields every August.
+Body     1.78 m, lean and wiry, slightly stooped shoulders, big work-worn hands. Weathered, sun- and wind-burnt face with deep
+         lines at the eyes, short grey stubble beard, grey-blue eyes, bushy grey eyebrows, grey hair cut short under the cap.
+Clothes  - faded green canvas ranger's jacket (worn, sun-bleached at the shoulders), four flap pockets, a round embroidered
+           reserve patch on the left sleeve (a stylised cone and a fir; no readable letters);
+         - dark green knitted watch cap;
+         - checked flannel shirt collar showing at the neck; grey-green canvas trousers tucked into
+         - black knee-high rubber boots;
+         - binoculars in a worn leather case on a strap across his chest (hangs at the right hip);
+         - a dented steel thermos clipped to his belt at the left hip.
+Manner   unhurried, plain, few words, dry quiet humour, warm underneath (voice: localization/voice.json "ranger").
+
+Rules for the pictures (docs/characters.md): strict T-pose, whole body, plain light grey background, soft even light,
+no text anywhere (the patch is a picture, not letters), photorealistic, same scale in every view.
+Fallback until the paid model exists: people.json mesh "Town/R_ranger" (the free MakeHuman resident generator,
+blender/residents) or, if that is not built, he lives unseen (ResolveModels) while his life and lines still run.
