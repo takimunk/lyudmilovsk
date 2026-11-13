@@ -10,7 +10,10 @@ Plot 4 x 4 m, height 9.0 m. Deck at 5.6 m. Enterable: only the cabin (reached by
 hole in the back wall opens onto the deck).
 Spots: "view" in the cabin looking to the street / the sea (yaw 0).
 No flats, no entrances (the cabin door is a plain hole, 0.9 x 2.0 m).
-Ideas for later: a rescue-boat rack at the foot, a siren horn, a risk-flag halyard animation.
+Second pass (depth): at the foot an upturned rowboat, an oars rack, a rope coil and the water-temperature board;
+on the deck a deck chair, the flag halyard, the lost-and-found board with its box and a lantern over the door; in the
+cabin a shelf with a megaphone and a transistor, a whistle on its hook, the tide table. Things in `_extras`.
+Ideas for later: a siren horn, a risk-flag halyard animation.
 Requests: none.
 """
 import math
@@ -134,6 +137,7 @@ def build(B):
     B.spot("view", "view", (0.0, 2.6, DECK_Z1), 0.0)
     B.spot("chair", "seat", (-0.85, 2.1, z0), 270.0)
     B.thing("view_cabin", "board", (0.0, 1.0, z0 + 1.5), 0.0, topic="view")
+    _extras(B, z0)
     B.footprint = [(-2.0, 0.0), (2.0, 0.0), (2.0, 4.0), (-2.0, 4.0)]
     B.height = 9.0
     if os.environ.get("KIT_CHECK"):
@@ -170,6 +174,7 @@ def _cabin(B, z0):
     kit.radio(B, 0.95, 2.98, top, 270.0)
     kit.cup(B, 0.75, 2.62, top, 0.0)
     B.thing("log_book", "board", (0.85, 2.38, top + 0.05), 270.0, topic="view")
+    B.thing("cabin_radio", "machine", (0.95, 2.98, top + 0.14), 270.0, what="radio")
     # ---- the lookout's chair at the left window and a small table with the first-aid kit and a flask
     kit.rug(B, -0.7, 2.45, z0, 0.0, w=0.8, d=1.0, name="rug_5", seed=1)      # QA: was 1.5 m long and poked through the west wall
     ch = kit.chair(B, -0.82, 2.1, z0, 270.0, kind="wood", mat="CT_WoodLight")
@@ -181,6 +186,7 @@ def _cabin(B, z0):
     box(d, "CT_SteelRed", -0.72, -0.716, 2.94, 2.96, tt + 0.05, tt + 0.17, faces="X")
     cyl(d, "CT_Steel", -1.0, 2.7, tt, tt + 0.2, 0.04, 6)                                               # flask
     B.thing("first_aid", "board", (-0.75, 2.95, tt + 0.12), 90.0, topic="health")
+    B.thing("flask_tea", "machine", (-1.0, 2.7, tt + 0.12), 90.0, what="tea_flask")
     # ---- a stool by the hatch, a stack of cork life belts, the clock over the door, pennants along the ceiling
     kit.stool(B, 0.72, 1.5, z0, 0.0)
     kit.wall_clock(B, -0.15, 3.15, z0, 0.0, zc=2.15, face="clock_3")
@@ -198,3 +204,116 @@ def _cabin(B, z0):
     fu.rod(d, "CT_SteelWhite", (1.43, 0.18, z0 + 0.75), (1.52, 0.18, z0 + 0.75), 0.115)
     kit.bench(B, 1.25, 3.62, z0, 180.0, w=1.1, kind="gym")
     B.thing("deck_bench", "seat", (1.25, 3.62, z0 + 0.45), 180.0, height=0.45)
+
+
+def _boat(B, x, y, yaw):
+    """An upturned rowing boat on the sand (0.84 x 2.3 x 0.44): hull loft, white gunwale band, keel strip."""
+    p = kit._P(B, x, y, 0.0, yaw, "rowboat")
+    ring = kit._ring_circle
+    rings = [ring(0, 0, 1.15, 0.0, 14, rx=0.42, a0=0.0), ring(0, 0, 1.12, 0.12, 14, rx=0.40, a0=0.0),
+             ring(0, 0, 0.95, 0.27, 14, rx=0.30, a0=0.0), ring(0, 0, 0.68, 0.40, 14, rx=0.12, a0=0.0)]
+    p.loft("CT_PlasterBlue", rings, top=True)
+    p.loft("CT_TileWhite", [ring(0, 0, 1.17, 0.0, 14, rx=0.44, a0=0.0), ring(0, 0, 1.17, 0.07, 14, rx=0.44, a0=0.0)],
+           top=False)
+    p.box("CT_WoodLight", -0.025, 0.025, -0.62, 0.62, 0.395, 0.44)
+    p.box("CT_WoodLight", -0.2, 0.2, -0.04, 0.04, 0.0, 0.03)
+    return p.done(solid=False)
+
+
+def _oars(B, x, y, z):
+    """Two oars leaning on the stem's left face, blades down (the stem face is at local x +0.18)."""
+    p = kit._P(B, x, y, z, 0.0, "oars")
+    for dy, lean in ((-0.13, 0.15), (0.13, 0.19)):
+        a, b = (-0.05, dy, 0.0), (lean, dy, 1.9)
+        p.rod("CT_WoodLight", a, b, 0.035, sides=6)
+        k = 0.5 / 1.9
+        c = (a[0] + (b[0] - a[0]) * k, dy, 0.5)
+        for sgn in (1, -1):
+            q = [(a[0], dy - sgn * 0.075, 0.0), (a[0], dy + sgn * 0.075, 0.0), (c[0], dy + sgn * 0.075, 0.5),
+                 (c[0], dy - sgn * 0.075, 0.5)]
+            p.face("CT_WoodLight", [(qx + sgn * 0.012, qy, qz) for qx, qy, qz in q][::sgn])
+        p.rod("CT_SteelWhite", (a[0] + (b[0] - a[0]) * 0.8, dy, 1.52), (a[0] + (b[0] - a[0]) * 0.86, dy, 1.63), 0.05)
+    return p.done(solid=False, footprint=(-0.12, 0.0, -0.3, 0.3))     # the feet only: the leaning tops are in the stem's zone
+
+
+def _megaphone(B, x, y, z):
+    p = kit._P(B, x, y, z, 0.0, "megaphone")
+    p.lathe("CT_SteelWhite", 0, 0, [(0.03, 0.0), (0.04, 0.12), (0.115, 0.30)], segs=10)
+    p.lathe("CT_SteelRed", 0, 0, [(0.116, 0.26), (0.118, 0.30)], segs=10)
+    p.box("CT_Steel", -0.04, 0.04, -0.05, 0.05, 0.0, 0.04)
+    return p.done(solid=False)
+
+
+def _transistor(B, x, y, z, yaw):
+    p = kit._P(B, x, y, z, yaw, "transistor")
+    p.bev("CT_PlasterYellow", -0.09, 0.09, -0.035, 0.035, 0.0, 0.12, 0.01)
+    p.box("CT_Steel", -0.07, 0.07, -0.037, -0.034, 0.05, 0.10, f="Y")
+    p.box("CT_TileWhite", -0.03, 0.03, -0.037, -0.035, 0.07, 0.085, f="Y")
+    p.rod("CT_Steel", (0.07, 0.0, 0.12), (0.12, 0.0, 0.42), 0.008)
+    return p.done(solid=False)
+
+
+def _whistle(B, x, y, z, yaw):
+    """A whistle on a cord from a nail (wall piece, back on the wall face at (x, y), z = hook height)."""
+    p = kit._P(B, x, y, z, yaw, "whistle")
+    p.box("CT_Steel", -0.012, 0.012, -0.03, 0.0, -0.01, 0.012)
+    p.rod("CT_SteelRed", (0.0, -0.03, 0.0), (-0.035, -0.035, -0.16), 0.006)
+    p.rod("CT_SteelRed", (0.0, -0.03, 0.0), (0.035, -0.035, -0.16), 0.006)
+    p.box("CT_Steel", -0.03, 0.03, -0.045, -0.025, -0.19, -0.165)
+    p.cyl("CT_Steel", 0.0, -0.035, -0.215, -0.165, 0.016, 6)
+    return p.done(solid=False)
+
+
+def _cleat(B, px, py, z):
+    p = kit._P(B, px, py, z, 0.0, "halyard")
+    p.box("CT_Steel", -0.05, 0.05, -0.06, -0.03, 0.0, 0.025)
+    p.box("CT_Steel", -0.045, -0.02, -0.075, -0.03, 0.0, 0.05)
+    p.box("CT_Steel", 0.02, 0.045, -0.075, -0.03, 0.0, 0.05)
+    p.rod("CT_PlasterRed", (-0.04, -0.02, 0.2), (-0.04, -0.07, 0.0), 0.012)
+    return p.done(solid=False)
+
+
+def _extras(B, z0):
+    """The second pass: the foot of the tower, the deck's back and right side, and the cabin's walls."""
+    d = B.detail
+    # ---- at the foot: the upturned boat on the right, the oars on the stem's left face, a rope coil, the board
+    _boat(B, 1.45, 2.0, 0.0)
+    B.thing("rowboat", "machine", (1.45, 2.0, 0.34), 90.0, what="rowboat")
+    _oars(B, -0.78, 2.0, 0.5)
+    B.thing("oars", "machine", (-0.72, 2.0, 1.3), 270.0, what="oars")
+    kit.rope_coil(B, 1.45, 3.5, 0.0, 20.0)
+    B.thing("rope_coil", "machine", (1.45, 3.5, 0.12), 0.0, what="rope")
+    kit.sandwich_board(B, -0.95, 0.55, 0.0, 0.0, name="board")
+    B.thing("temp_board", "board", (-0.95, 0.55, 0.55), 0.0, topic="view")
+    B.spot("boat", "stand", (1.45, 1.0, 0.0), 180.0)
+    # ---- the deck: a deck chair on the right side, the flag halyard on the pole, the lost-and-found at the back
+    dc = kit.deck_chair(B, 1.6, 2.1, z0, 0.0)
+    B.thing("deck_chair", "seat", (1.6, 2.1, z0 + 0.35), 0.0, height=0.35)
+    B.spot("deck_chair", "seat", (1.6, 2.1, z0), 0.0)
+    _cleat(B, 1.8, 0.3, z0 + 1.0)
+    fu.rod(d, "CT_PlasterRed", (1.77, 0.29, z0 + 1.2), (1.77, 0.17, 8.92), 0.01)
+    B.thing("flag_halyard", "machine", (1.77, 0.3, z0 + 1.05), 90.0, what="halyard")
+    B.spot("halyard", "stand", (1.55, 0.45, z0), 90.0)
+    B.thing("deck_ring", "board", (0.0, 0.62, 6.05), 0.0, topic="rescue")
+    kit.notice_board(B, -0.97, 3.3, z0, 180.0, w=0.42, h=0.3, zc=0.72)
+    B.thing("lost_board", "board", (-0.97, 3.34, z0 + 0.72), 180.0, topic="lost")
+    kit.crate(B, -1.55, 3.6, z0, 0.0, w=0.42, d=0.3, h=0.26, fill="CT_SteelRed")
+    B.thing("lost_box", "machine", (-1.55, 3.6, z0 + 0.22), 180.0, what="lost_box")
+    B.spot("lost_box", "stand", (-1.2, 3.55, z0), 270.0)
+    cyl(d, "CT_SteelRed", -1.0, 3.62, z0, z0 + 0.1, 0.06, 7)                 # a child's bucket, still waiting
+    # the lantern over the back door
+    fu.rod(d, "CT_Steel", (0.0, 3.6, WALL_Z1), (0.0, 3.6, z0 + 2.0), 0.01)
+    cyl(d, "CT_SteelWhite", 0.0, 3.6, z0 + 1.82, z0 + 1.98, 0.07, 6)
+    cyl(d, "CT_Steel", 0.0, 3.6, z0 + 1.78, z0 + 1.82, 0.075, 6)
+    B.lamp((0.0, 3.6, z0 + 1.9), lumens=260, colour="#FFD9A0", kind="public", radius=3.5)
+    # ---- the cabin: a shelf on the left wall with the megaphone and a transistor, the whistle, the tide table
+    kit.wall_shelf(B, -1.15, 1.6, z0, 90.0, w=0.5, zt=0.58, props=False)
+    _megaphone(B, -1.0, 1.47, z0 + 0.58)
+    _transistor(B, -1.0, 1.76, z0 + 0.58, 90.0)
+    B.thing("megaphone", "machine", (-1.0, 1.47, z0 + 0.8), 90.0, what="megaphone")
+    B.spot("megaphone", "stand", (-0.55, 1.65, z0), 270.0)
+    _whistle(B, 0.4, 3.15, z0 + 1.55, 0.0)
+    B.thing("whistle", "machine", (0.4, 3.1, z0 + 1.4), 0.0, what="whistle")
+    kit.poster(B, 0.45, 0.85, z0, 180.0, name="chart_calendar", w=0.42, h=0.5, zc=0.55)
+    B.thing("tide_table", "board", (0.45, 0.9, z0 + 0.55), 180.0, topic="tides")
+    B.spot("tea", "stand", (-0.55, 2.7, z0), 270.0)
