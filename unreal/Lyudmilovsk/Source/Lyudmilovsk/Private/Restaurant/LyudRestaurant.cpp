@@ -1650,7 +1650,7 @@ ALyudRestaurant::EOrderResult ALyudRestaurant::PlaceOrder(const TMap<FName, int3
 		for (int32 K = 0; K < I.Value; ++K)
 		{
 			// a second of the same dish comes a little after the first
-			AddOrder(I.Key, HeroSeatIx, Now + D->Cook * WaitScale + K * 4.f * WaitScale, false);
+			AddOrder(I.Key, HeroSeatIx, Now + D->Cook * WaitScale + K * 4.f * WaitScale, false).Paid = PriceToday(*D);
 		}
 		Log += FString::Printf(TEXT(" %s x%d (%.0f s)"), *I.Key.ToString(), I.Value, D->Cook * WaitScale);
 	}
@@ -1670,10 +1670,10 @@ void ALyudRestaurant::OnGameSaving_Implementation()
 	SavedRefund = 0;
 	for (const FOrder& O : Orders)
 	{
-		const FLyudRestDishDef* D = FindDish(O.Item);
-		if (!O.bGuest && D && O.State != FOrder::EState::Served)
+		// what was paid for it (the catch of the day is cheaper than its list price), nothing for the free bread and water
+		if (!O.bGuest && O.State != FOrder::EState::Served)
 		{
-			SavedRefund += D->Price;
+			SavedRefund += O.Paid;
 		}
 	}
 }

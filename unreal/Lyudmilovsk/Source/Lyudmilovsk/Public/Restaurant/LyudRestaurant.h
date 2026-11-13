@@ -237,6 +237,8 @@ private:
 		int32 Shelf = -1;
 		/** For a townsperson at their table (not the hero's tab). */
 		bool bGuest = false;
+		/** What the hero paid for it (the day's price when ordered): given back on a load before it is served. */
+		int32 Paid = 0;
 	};
 	enum class EWaiter : uint8 { Off, Idle, ToPass, Pick, ToTable, SetDown, Collect, ToPassBack, Drop, ToHome };
 	enum class EJob : uint8 { None, Serve, Clear, Bill };
