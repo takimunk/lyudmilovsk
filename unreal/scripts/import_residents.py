@@ -132,6 +132,12 @@ def set_state(name, **kw):
     return s
 
 
+def home(model):
+    """A model's folder: a townsperson's R_<key> in Town/, a named person's (looks.py CAST, named after their
+    people.json body) where the game looks for it, /Game/Characters/Humans/<Body>."""
+    return "%s/%s" % (TOWN if model.startswith("R_") else BASE, model)
+
+
 def disk(path):
     """/Game/a/b -> <Content>/a/b (a folder; + .uasset for a package)."""
     return os.path.join(CONTENT, *path[len("/Game/"):].split("/"))
@@ -196,7 +202,7 @@ def plan(args, since):
     out = []
     for key, model in people:
         c = dict(key=key, model=model, glb=os.path.join(EXPORT, model + ".glb"),
-                 side_path=os.path.join(EXPORT, model + ".json"), asset="%s/%s/SK_%s" % (TOWN, model, model),
+                 side_path=os.path.join(EXPORT, model + ".json"), asset="%s/SK_%s" % (home(model), model),
                  state=read_json(state_path(model)) or {})
         c["side"] = read_json(c["side_path"]) if os.path.isfile(c["glb"]) else None
         # the atlas layout's id too: a model built against another layout points into the wrong tiles
@@ -531,7 +537,7 @@ def prepare(force):
     pipeline()
     lod_settings()
     face_curves()
-    if changed and any(os.path.isfile(disk("%s/%s/SK_%s" % (TOWN, m, m)) + ".uasset") for _, m in town()[0]):
+    if changed and any(os.path.isfile(disk("%s/SK_%s" % (home(m), m)) + ".uasset") for _, m in town()[0]):
         log("note: atlases %s changed: if their layout did, build_residents.py rebuilds every model (the sidecars carry "
             "the layout's id) and the following runs re-import them" % ",".join(changed))
     for b in BROKEN:
@@ -612,7 +618,7 @@ def import_model(c, nth, mis, lods, tmp_root):
     """One person; nth: the Interchange imports this process made before. -> (result, info, imports made), result
     "ok" (info: stats), "failed" or "miss" (a later import came back empty: this process is done importing)."""
     model = c["model"]
-    dest = "%s/%s" % (TOWN, model)
+    dest = home(model)
     final = "%s/SK_%s" % (dest, model)
     tmp = "%s/%s" % (tmp_root, model)
     t0 = time.time()

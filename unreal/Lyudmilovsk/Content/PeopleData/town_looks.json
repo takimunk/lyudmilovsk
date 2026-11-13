@@ -1,6 +1,10 @@
 {
- "_doc": "Each townsperson's own model, made by blender/residents (docs/residents.md). tools/town/town_life.py copies it into townsfolk.json 'body'; the pool model stays as 'mesh' until the model is imported.",
+ "_doc": "Each townsperson's own model, made by blender/residents (docs/residents.md). tools/town/town_life.py copies it into townsfolk.json 'body'; the pool model stays as 'mesh' until the model is imported. Keys without t_ are named people of people.json (looks.py CAST): their model is their 'body'.",
  "people": {
+  "khuazhev_aslan": {
+   "hash": "b77d14306d29",
+   "model": "Khuazhev_aslan"
+  },
   "t_abenov_caio": {
    "hash": "9e5492e8ad0c",
    "model": "Town/R_abenov_caio"

@@ -127,6 +127,10 @@ namespace
 	 * settles within KeepClear of it. */
 	const FVector2D Hatch(57300.0, 10790.0);
 	constexpr double KeepClear = 400.0;
+	/** The traced ground kept (ULyudSeabedComponent::BedCache): pruned to round the eye over the first, never over the second
+	 *  (~28 bytes an entry: about 1 MB and 3 MB). */
+	constexpr int32 BedCacheMax = 40000;
+	constexpr int32 BedCacheHardMax = 120000;
 }
 
 void ULyudSeabedComponent::HabitatAt(double X, double Y, float Depth, float& Sand, float& Stone, float& Weed)
@@ -248,9 +252,23 @@ void ULyudSeabedComponent::UpdatePlants(bool bForce)
 
 float ULyudSeabedComponent::GroundZ(double X, double Y, bool& bOk) const
 {
+	// the same point gives the same ground: traced once (a complex multi-trace), then remembered
+	const FVector2D Key(X, Y);
+	if (const float* Known = BedCache.Find(Key))
+	{
+		bOk = true;
+		return *Known;
+	}
 	const ALyudSea* Sea = Cast<ALyudSea>(GetOwner());
 	bOk = false;
-	return Sea ? Sea->GroundZ(X, Y, bOk) : 0.f;
+	const float Z = Sea ? Sea->GroundZ(X, Y, bOk) : 0.f;
+	if (bOk)
+	{
+		// (never more than this even if no rebuild prunes it)
+		if (BedCache.Num() >= BedCacheHardMax) BedCache.Reset();
+		BedCache.Add(Key, Z);
+	}
+	return Z;
 }
 
 void ULyudSeabedComponent::Clear()
@@ -434,6 +452,17 @@ void ULyudSeabedComponent::Rebuild(const FVector& Eye)
 		}
 	}
 	bBuilt = true;
+	// the remembered ground: only what is round the eye is kept once it has grown (the points further off are traced
+	// again if the eye comes back)
+	if (BedCache.Num() > BedCacheMax)
+	{
+		const double Keep = FMath::Square(double(AppliedRadius) + 2.0 * TileSize);
+		const FVector2D Eye2(Eye.X, Eye.Y);
+		for (auto It = BedCache.CreateIterator(); It; ++It)
+		{
+			if (FVector2D::DistSquared(It.Key(), Eye2) > Keep) It.RemoveCurrent();
+		}
+	}
 }
 
 void ULyudSeabedComponent::UpdateJellies(const FVector& Eye, float Dt)
@@ -468,7 +497,8 @@ void ULyudSeabedComponent::UpdateJellies(const FVector& Eye, float Dt)
 		}
 	}
 	// pulse up a little, sink back, carried by the waves' orbits; recycled ahead of the camera
-	TArray<FTransform> JX;
+	TArray<FTransform>& JX = JellyXf;
+	JX.Reset();
 	JX.Reserve(Jellies.Num());
 	for (FSwimmer& S : Jellies)
 	{

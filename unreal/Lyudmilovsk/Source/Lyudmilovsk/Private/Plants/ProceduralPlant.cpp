@@ -30,6 +30,11 @@ static TAutoConsoleVariable<float> CVarPlantShapeBudget(TEXT("lyud.Plants.ShapeB
 
 namespace
 {
+	/** A herb's leaf texture and flower atlas depend on its species only: painted once and shared by every plant of the
+	 *  species (each plant's own UPROPERTY keeps it alive; the entry goes stale with the last of them and is painted again). */
+	TMap<FName, TWeakObjectPtr<UTexture2D>> GHerbLeafTextures;
+	TMap<FName, TWeakObjectPtr<UTexture2D>> GHerbFlowerAtlases;
+
 	/** Scene 01's outside sun lights channel 1 only; channel 0 keeps the default lights too. */
 	void OutdoorLighting(UPrimitiveComponent* C)
 	{
@@ -425,8 +430,30 @@ void AProceduralPlant::ApplyHerb(float Age, float Day)
 		PendingDrops.Reset();
 		Skeleton = FPlantSkeleton();
 		LeafMesh = nullptr;
-		HerbLeafTexture = PlantHerbs::BuildLeafTexture(this, S);
-		HerbFlowerAtlas = S.Herb.Flower != EPlantFlowerForm::None ? PlantHerbs::BuildFlowerAtlas(this, S) : nullptr;
+		UTexture2D* SharedLeaf = GHerbLeafTextures.FindRef(S.Name).Get();
+		if (!SharedLeaf)
+		{
+			SharedLeaf = PlantHerbs::BuildLeafTexture(this, S);          // null for a species with plain leaves
+			if (SharedLeaf)
+			{
+				GHerbLeafTextures.Add(S.Name, SharedLeaf);
+			}
+		}
+		HerbLeafTexture = SharedLeaf;
+		UTexture2D* SharedFlower = nullptr;
+		if (S.Herb.Flower != EPlantFlowerForm::None)
+		{
+			SharedFlower = GHerbFlowerAtlases.FindRef(S.Name).Get();
+			if (!SharedFlower)
+			{
+				SharedFlower = PlantHerbs::BuildFlowerAtlas(this, S);
+				if (SharedFlower)
+				{
+					GHerbFlowerAtlases.Add(S.Name, SharedFlower);
+				}
+			}
+		}
+		HerbFlowerAtlas = SharedFlower;
 		HerbMaterials.Reset();
 		for (int32 K = 0; K < PlantHerbs::NumSlots; K++)
 		{

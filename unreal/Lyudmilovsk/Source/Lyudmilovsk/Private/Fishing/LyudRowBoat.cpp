@@ -349,6 +349,8 @@ void ALyudRowBoat::Restore(const ULyudFishingState& State)
 	AHeroCharacter* Hero = Cast<AHeroCharacter>(UGameplayStatics::GetPlayerPawn(this, 0));
 	if (State.bBoatAboard && Hero && !bAboard)
 	{
+		// the hire stands (saved in it by the mooring after midnight, boarding would ask the rent again, or refuse without money)
+		PaidDay = BoatDay(GetWorld());
 		Board(Hero, false);
 	}
 	else if (!State.bBoatAboard && bAboard && Hero && Hero->IsSeated())
@@ -592,7 +594,13 @@ void ALyudRowBoat::Tick(float DeltaTime)
 	{
 		if (PromptKey != 0) Prompt(Hero);
 		// left somewhere else: the boatman brings it back to the pier by the next day
-		if (PaidDay != BoatDay(World) && !NearMooring()) Home();
+		if (PaidDay != BoatDay(World) && !NearMooring())
+		{
+			Home();
+			// moved there now: this far branch never reaches the placing below, and whether the hero is near is asked of
+			// where the actor is (it stayed drawn where it was left, the pier without a boat)
+			SetActorLocationAndRotation(FVector(Pos, Sea->SurfaceZ(FVector(Pos, 0.0)) - BoatDraft), FRotator(0.f, Yaw, 0.f));
+		}
 		return;
 	}
 	if (bAboard)

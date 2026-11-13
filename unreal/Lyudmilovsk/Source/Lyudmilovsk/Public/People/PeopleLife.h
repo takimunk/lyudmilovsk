@@ -227,6 +227,8 @@ private:
 	// the town: pooled bodies for the townsfolk (nearest first, lyud.People.TownBodies), the window lights
 	/** Free townsfolk bodies by model, to be given to whoever of that look comes near. */
 	TMap<FString, TArray<TObjectPtr<ANpcBody>>> TownPool;
+	/** The parked bodies of townsfolk with a look of their own, oldest first: only so many are kept (ReleaseBody). */
+	TArray<TWeakObjectPtr<ANpcBody>> OwnParked;
 	/** Townsfolk allowed a body now (the nearest drawn ones), refreshed a few times a second. */
 	TBitArray<> TownAllowed;
 	TArray<TPair<float, int32>> TownNear;
@@ -235,6 +237,8 @@ private:
 	void ReleaseBody(int32 Id);
 	/** Lights: every couple of seconds the flats that changed are told to the window lights (the buildings' and the walls'). */
 	float LightTimer = 0.f;
+	/** A clock jump asks for every flat to be told again; done once the townsfolk are placed. */
+	bool bLightsAll = false;
 	std::vector<int> LightChanged;
 	TMap<FName, int32> FlatIndex;
 	TMap<FName, int32> WindowIndex;

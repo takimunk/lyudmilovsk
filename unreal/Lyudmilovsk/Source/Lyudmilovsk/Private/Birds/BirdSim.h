@@ -336,6 +336,9 @@ namespace LyudBirds
 		float Gustiness = 0.25f;
 		/** How hard the wind is for a species now: 1 = its WindLimit. */
 		float WindStress(const FSpecies& S) const;
+		/** 1 when a bird that flies on the wind alone (the albatross: dynamic soaring) has none, 0 from a fresh breeze up and for
+		 *  every other species: becalmed, it sits on the sea and goes nowhere far. */
+		float Becalmed(const FSpecies& S) const;
 		/** How much more often a soarer goes up to circle in this wind (0 = never: the albatross in a calm). */
 		float SoarWind(const FSpecies& S) const;
 		/** The nearest place this bird can sit out a wind it can't fly against (rather downwind, in the lee). */

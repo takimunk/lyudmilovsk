@@ -24,6 +24,7 @@
 #include "Landscape.h"
 #include "LyudInventory.h"
 #include "LyudText.h"
+#include "Misc/PackageName.h"
 #include "Materials/MaterialInstanceDynamic.h"
 #include "Misc/FileHelper.h"
 #include "Misc/Paths.h"
@@ -440,7 +441,7 @@ void ALyudAirlock::OnGameLoaded_Implementation()
 	InnerLid.Snap(false);
 	if (CycleLoop)
 	{
-		CycleLoop->Stop();
+		ULyudSoundscapeSubsystem::ReleaseLoop(CycleLoop);
 		CycleLoop = nullptr;
 	}
 	ShownLevel = -1.f;
@@ -577,7 +578,7 @@ void ALyudAirlock::Tick(float DeltaSeconds)
 			State = bDrain ? ELyudAirlockState::Dry : ELyudAirlockState::Flooded;
 			if (CycleLoop)
 			{
-				CycleLoop->FadeOut(0.8f, 0.f);
+				ULyudSoundscapeSubsystem::ReleaseLoop(CycleLoop, 0.8f);
 				CycleLoop = nullptr;
 			}
 			Sound(TEXT("airlock_beep"), ScreenLocation(), 1.f);
@@ -1285,6 +1286,19 @@ void ULyudEuropaSubsystem::Tick(float DeltaTime)
 	}
 	// on Europa: anywhere near the far site (a climb jumps there and back; a load may land there too)
 	const bool bThere = FVector::Dist(Hero->GetActorLocation(), SiteOrigin) < SpaceRadius;
+	// the music and the line said at the first look at the planet load in the background from the airlock on (asked
+	// once: ULyudPrefetch holds them), not on the spot at that moment
+	if (!bPlanetSoundsAsked && !Airlock->bPlanetSeen && (bThere || Airlock->IsInside(Hero->GetActorLocation())))
+	{
+		bPlanetSoundsAsked = true;
+		ULyudPrefetch::Ready(this, MusicPath);
+		const FString VoiceName = FString(PlanetLine).Replace(TEXT("."), TEXT("_"));
+		const FString VoicePackage = FString::Printf(TEXT("/Game/Voice/%s/V_%s"), *LyudText::Language(), *VoiceName);
+		if (FPackageName::DoesPackageExist(VoicePackage))
+		{
+			ULyudPrefetch::Ready(this, VoicePackage + TEXT(".V_") + VoiceName);
+		}
+	}
 	if (bThere != bOnEuropa)
 	{
 		SetOnEuropa(bThere);
@@ -1812,7 +1826,7 @@ void ULyudEuropaSubsystem::SetOnEuropa(bool bOn)
 			}
 			else if (!bOn && Breath)
 			{
-				Breath->FadeOut(1.f, 0.f);
+				ULyudSoundscapeSubsystem::ReleaseLoop(Breath, 1.f);
 				Breath = nullptr;
 			}
 		}

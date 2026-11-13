@@ -563,6 +563,9 @@ void ALyudRailTrack::BuildIsland(const TSharedPtr<FJsonObject>& Built)
 		FActorSpawnParameters P;
 		P.SpawnCollisionHandlingOverride = ESpawnActorCollisionHandlingMethod::AlwaysSpawn;
 		P.bDeferConstruction = true;
+		// a stable name: the save keys actors by it
+		P.Name = FName(*FString::Printf(TEXT("LyudIslandPlant_%d"), N));
+		P.NameMode = FActorSpawnParameters::ESpawnActorNameMode::Requested;
 		AProceduralPlant* Plant = World->SpawnActor<AProceduralPlant>(AProceduralPlant::StaticClass(), FTransform(FRotator(0.0, Rnd.FRandRange(0.0, 360.0), 0.0), Hit.ImpactPoint), P);
 		if (Plant)
 		{

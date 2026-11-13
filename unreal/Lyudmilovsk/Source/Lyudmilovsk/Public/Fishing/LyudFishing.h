@@ -10,6 +10,7 @@
 #include "LyudFishing.generated.h"
 
 namespace LyudFishing { class FSession; }
+class AHeroCharacter;
 class APawn;
 class APlayerController;
 class UAudioComponent;
@@ -320,6 +321,9 @@ private:
 	TWeakObjectPtr<ALyudFishingRod> Rod;
 	/** The rod put away: hidden, kept for the next take-out (building one is ~20 meshes). */
 	TWeakObjectPtr<ALyudFishingRod> Parked;
+	/** Whose hand the rod is in (the hero stops being the player's pawn while a bird is flown: the rod is put away then,
+	 *  and his hand let go). */
+	TWeakObjectPtr<AHeroCharacter> HeldBy;
 	UPROPERTY(Transient) TObjectPtr<UAudioComponent> ReelLoop;
 
 	bool bAttached = false;
