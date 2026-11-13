@@ -97,6 +97,14 @@ namespace
 	const float NearLampCm = 650.f;
 	bool bNight = false;
 
+	// The room lamps cast shadows as placed (no light through the partitions): at night up to ~25 of them burn within
+	// their 40 m draw distance. A/B for that cost, off by default so the look is the level's.
+	TAutoConsoleVariable<float> CVarAcademLampShadowCm(TEXT("lyud.Academ.LampShadowCm"), 0.f,
+		TEXT("Academgorodok room lamps: 0 = every lamp casts shadows as placed; N > 0 = only the lamps within N cm of the player (e.g. 1500), the farther ones light without shadows."),
+		ECVF_Default);
+	// the lamps the level made shadow-casting (so the switch above never gives a shadow to a lamp that had none)
+	TSet<TWeakObjectPtr<ULightComponent>> ShadowLamps;
+
 	// Signs: a material slot named AC_Sign_<name> on an Academ mesh shows the picture
 	// /Game/Academgorodok/Localized/<lang>/T_Sign_<name> of the player's language (tools/make_academ_signs.py).
 	FString SignLanguage;
@@ -198,6 +206,10 @@ namespace
 				for (ULightComponent* L : Lights)
 				{
 					Lamp.Lights.Add(L);
+					if (L->CastShadows)
+					{
+						ShadowLamps.Add(L);
+					}
 				}
 			}
 		}
@@ -244,6 +256,7 @@ namespace
 			const APlayerController* PC = World->GetFirstPlayerController();
 			const APawn* Pawn = PC ? PC->GetPawn() : nullptr;
 			const FVector Eye = Pawn ? Pawn->GetActorLocation() : FVector(1e12);
+			const double ShadowCm = CVarAcademLampShadowCm.GetValueOnGameThread();
 			for (const FLamp& Lamp : Cache.Lamps)
 			{
 				const AActor* A = Lamp.Actor.Get();
@@ -251,12 +264,22 @@ namespace
 				{
 					continue;
 				}
-				const bool bWant = IsOn() && ((bNight && Lamp.bLit) ||
-					FVector::DistSquared(A->GetActorLocation(), Eye) < NearLampCm * NearLampCm);
+				const double EyeDistSq = FVector::DistSquared(A->GetActorLocation(), Eye);
+				const bool bWant = IsOn() && ((bNight && Lamp.bLit) || EyeDistSq < NearLampCm * NearLampCm);
+				const bool bShadow = ShadowCm <= 0.0 || EyeDistSq < ShadowCm * ShadowCm;
 				for (const TWeakObjectPtr<ULightComponent>& Weak : Lamp.Lights)
 				{
 					ULightComponent* L = Weak.Get();
-					if (L && L->IsVisible() != bWant)
+					if (!L)
+					{
+						continue;
+					}
+					// set only on a change (it re-creates the light's proxy)
+					if (bool(L->CastShadows) != bShadow && ShadowLamps.Contains(Weak))
+					{
+						L->SetCastShadows(bShadow);
+					}
+					if (L->IsVisible() != bWant)
 					{
 						L->SetVisibility(bWant);
 					}
@@ -276,6 +299,7 @@ namespace
 			{
 				SignLanguage.Reset();                    // the new map's signs get their language on the next tick
 				LampCaches.Reset();                      // and its lamps are found again
+				ShadowLamps.Reset();
 				if (!IsOn())
 				{
 					ApplyToWorld(World, false);
