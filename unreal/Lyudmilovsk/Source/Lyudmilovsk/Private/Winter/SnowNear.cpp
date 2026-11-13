@@ -362,6 +362,7 @@ void ALyudSnowNear::Recentre(const FVector2D& C)
 	// the ground's exact heights, 1 m, round the new centre
 	// on the landscape's own vertices (its 1 m grid from its origin), so the fine surface can follow its triangles
 	// the landscape does not move: found once, not an actor walk every recentre
+	const bool bHadLandOrigin = bHaveLandOrigin;   // the grid snaps to the landscape: no slide across the recentre that finds it
 	if (!bHaveLandOrigin)
 	{
 		if (TActorIterator<ALandscapeProxy> It(World); It)
@@ -377,7 +378,7 @@ void ALyudSnowNear::Recentre(const FVector2D& C)
 	// the window slides over the ground: the cells it keeps are not traced again here (2 m walked = 2 strips of 48, not
 	// all 2304 multi-traces in one frame); RefreshGround reads them again over the next frames
 	const double ShiftX = FMath::RoundToDouble((GroundOrigin.X - OldOrigin.X) / GroundCm), ShiftY = FMath::RoundToDouble((GroundOrigin.Y - OldOrigin.Y) / GroundCm);
-	const bool bSlide = bHaveRaw && !bFar && FMath::Abs(ShiftX) < GroundN && FMath::Abs(ShiftY) < GroundN;
+	const bool bSlide = bHaveRaw && bHadLandOrigin && !bFar && FMath::Abs(ShiftX) < GroundN && FMath::Abs(ShiftY) < GroundN;
 	if (bSlide)
 	{
 		const int32 SX = int32(ShiftX), SY = int32(ShiftY);
