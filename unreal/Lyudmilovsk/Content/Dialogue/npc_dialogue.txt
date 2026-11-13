@@ -114,6 +114,9 @@ again = zotov_lev.again1.1
 [Zotova_galina]
 first = zotova_galina.first.1
 again = zotova_galina.again1.1
+quest.soda_science.ask = zotova_galina.sodalab_ask.1 | zotova_galina.sodalab_ask.2 | hero.sodalab_ask.3 | zotova_galina.sodalab_ask.4 | zotova_galina.sodalab_ask.5
+quest.soda_science.taste = zotova_galina.sodalab_wait.1
+quest.soda_science.tell = zotova_galina.sodalab_tell.1 | hero.sodalab_tell.2 | zotova_galina.sodalab_tell.3 | zotova_galina.sodalab_tell.4 | zotova_galina.sodalab_tell.5
 
 [Sato_kei]
 first = sato_kei.first.1
@@ -133,6 +136,9 @@ quest.crow_gift.tell = sato_yuki.crow_tell.1 | hero.crow_tell.2 | sato_yuki.crow
 [Korneev_ivan]
 first = korneev_ivan.first.1
 again = korneev_ivan.again1.1
+quest.hot_corn.carry = korneev_ivan.corn_handover.1 | korneev_ivan.corn_handover.2 | korneev_ivan.corn_handover.3
+quest.hot_corn.carry_empty = korneev_ivan.corn_nocob.1
+quest.hot_corn.tell = korneev_ivan.corn_eaten.1
 
 [Korneeva_nina]
 first = korneeva_nina.first.1
@@ -174,10 +180,16 @@ quest.window_feeder.tell = kimura_dasha.feeder_tell.1 | hero.feeder_tell.2 | kim
 [Li_vika]
 first = li_vika.first.1
 again = li_vika.again1.1
+quest.lab_lunch.ask = li_vika.lunch_ask.1 | li_vika.lunch_ask.2 | li_vika.lunch_ask.3 | hero.lunch_ask.4 | li_vika.lunch_ask.5
+quest.lab_lunch.eat = li_vika.lunch_wait.1
+quest.lab_lunch.tell = li_vika.lunch_tell.1 | hero.lunch_tell.2 | li_vika.lunch_tell.3 | li_vika.lunch_tell.4
 
 [Valiev_rustam]
 first = valiev_rustam.first.1
 again = valiev_rustam.again1.1
+quest.night_signal.ask = valiev_rustam.signal_ask.1 | hero.signal_ask.2 | valiev_rustam.signal_ask.3 | valiev_rustam.signal_ask.4 | valiev_rustam.signal_ask.5
+quest.night_signal.signal = valiev_rustam.signal_wait.1
+quest.night_signal.tell = valiev_rustam.signal_tell.1 | hero.signal_tell.2 | valiev_rustam.signal_tell.3 | hero.signal_tell.4 | valiev_rustam.signal_tell.5 | valiev_rustam.signal_tell.6
 
 [Nishimura_aya]
 first = nishimura_aya.first.1
@@ -203,3 +215,7 @@ again = khuazhev_aslan.again1.1
 [Guseva_valentina]
 first = guseva_valentina.first.1
 again = guseva_valentina.again1.1
+quest.hot_corn.ask = guseva_valentina.corn_errand.1 | guseva_valentina.corn_errand.2 | hero.corn_errand.3 | guseva_valentina.corn_errand.4
+quest.hot_corn.buy = guseva_valentina.corn_till.1
+quest.hot_corn.carry = guseva_valentina.corn_hurry.1
+quest.hot_corn.tell = guseva_valentina.corn_report.1 | hero.corn_report.2 | guseva_valentina.corn_report.3 | guseva_valentina.corn_report.4
