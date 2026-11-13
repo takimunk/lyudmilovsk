@@ -13,6 +13,10 @@ No flats, no entrances (the cabin door is a plain hole, 0.9 x 2.0 m).
 Second pass (depth): at the foot an upturned rowboat, an oars rack, a rope coil and the water-temperature board;
 on the deck a deck chair, the flag halyard, the lost-and-found board with its box and a lantern over the door; in the
 cabin a shelf with a megaphone and a transistor, a whistle on its hook, the tide table. Things in `_extras`.
+Third pass (2026-11, depth): at the foot a gear locker (rescue torpedo, throw line, aid kit) with a stand spot, a yellow
+spine board on the stem, a practice ring post for the ring-throw game, a three-colour flag mast with a pointer, the tide
+staff; in the cabin a lamp switch, a clock and the duty ledger (a text that grows by game day, one per tower); on the
+deck a ship's bell and a west-facing coin binocular; staff spots. Things lg*/gear_locker etc., words in strings/x_p_lifeguard.json.
 Ideas for later: a siren horn, a risk-flag halyard animation.
 Requests: none.
 """
@@ -138,6 +142,7 @@ def build(B):
     B.spot("chair", "seat", (-0.85, 2.1, z0), 270.0)
     B.thing("view_cabin", "board", (0.0, 1.0, z0 + 1.5), 0.0, topic="view")
     _extras(B, z0)
+    _third(B, z0)
     B.footprint = [(-2.0, 0.0), (2.0, 0.0), (2.0, 4.0), (-2.0, 4.0)]
     B.height = 9.0
     if os.environ.get("KIT_CHECK"):
@@ -317,3 +322,113 @@ def _extras(B, z0):
     kit.poster(B, 0.45, 0.85, z0, 180.0, name="chart_calendar", w=0.42, h=0.5, zc=0.55)
     B.thing("tide_table", "board", (0.45, 0.9, z0 + 0.55), 180.0, topic="tides")
     B.spot("tea", "stand", (-0.55, 2.7, z0), 270.0)
+
+
+# ====================================================================================== third pass
+def _gear_locker(B, x, y, yaw):
+    """A rescue-gear locker 0.9 x 0.36 x 1.25: blue doors with a red cross, hasp, a torpedo buoy and a throw-line bag on top,
+    fins hung on hooks at its side."""
+    p = kit._P(B, x, y, 0.0, yaw, "gear_locker")
+    p.kind = "prop"
+    p.box("CT_ConcreteDark", -0.45, 0.45, -0.18, 0.18, 0.0, 0.08)
+    p.box("CT_PlasterBlue", -0.44, 0.44, -0.17, 0.17, 0.08, 1.2)
+    p.box("CT_Steel", -0.46, 0.46, -0.19, 0.19, 1.2, 1.24)
+    p.box("CT_Steel", -0.006, 0.006, -0.176, -0.17, 0.1, 1.18, f="y")
+    p.box("CT_TileWhite", -0.14, -0.04, -0.178, -0.17, 0.62, 0.9, f="y")
+    p.box("CT_SteelRed", -0.115, -0.065, -0.1785, -0.1775, 0.67, 0.85, f="y")
+    p.box("CT_SteelRed", -0.14, -0.04, -0.1785, -0.1775, 0.735, 0.785, f="y")
+    p.box("CT_Brass", 0.02, 0.07, -0.19, -0.176, 0.6, 0.66, f="xXyYZz")
+    p.box("CT_Brass", 0.02, 0.07, -0.19, -0.176, 0.35, 0.4, f="xXyYZz")
+    for k in range(4):
+        p.box("CT_Steel", -0.4 + 0.1 * k, -0.37 + 0.1 * k, -0.178, -0.172, 0.95, 1.15, f="y")
+    # torpedo buoy lying on top, a bag of throw line beside it
+    p.rod("CT_SteelRed", (-0.36, 0.0, 1.3), (0.12, 0.0, 1.3), 0.075, 8)
+    p.rod("CT_TileWhite", (-0.12, 0.0, 1.3), (-0.03, 0.0, 1.3), 0.078, 8)
+    p.box("CT_Steel", -0.34, -0.3, -0.02, 0.02, 1.24, 1.26)
+    p.box("CT_Steel", 0.04, 0.08, -0.02, 0.02, 1.24, 1.26)
+    p.cyl("CT_PlasterYellow", 0.31, 0.0, 1.24, 1.38, 0.09, 8, bottom=True)
+    p.rod("CT_PlasterRed", (0.31, 0.0, 1.38), (0.2, 0.0, 1.31), 0.01, 3)
+    # fins on hooks on the left side
+    for k, zz in enumerate((0.8, 1.0)):
+        p.box("CT_Steel", -0.47, -0.45, -0.02, 0.02, zz + 0.1, zz + 0.15, f="xXyYZ")
+        p.box("CT_PlasterYellow" if k else "CT_PlasterBlue", -0.475, -0.455, -0.07 + 0.0, 0.07, zz - 0.2, zz + 0.1, f="xXyYZz")
+    return p.done()
+
+
+def _flag_mast(B, x, y):
+    """A short mast with three colour discs (green, yellow, red) one over the other and a pointer plate showing the day's flag."""
+    p = kit._P(B, x, y, 0.0, 0.0, "flag_mast")
+    p.kind = "prop"
+    p.cyl("CT_ConcreteDark", 0, 0, 0.0, 0.08, 0.17, 8, bottom=True)
+    p.cyl("CT_SteelWhite", 0, 0, 0.08, 2.1, 0.035, 6)
+    p.box("CT_SteelWhite", -0.2, 0.2, -0.045, 0.0, 0.95, 1.65)
+    for k, mt in enumerate(("CT_PlasterGreen", "CT_PlasterYellow", "CT_SteelRed")):
+        p.box(mt, -0.15, 0.1, -0.058, -0.045, 0.99 + 0.22 * k, 1.15 + 0.22 * k, f="xXyYZz")
+    p.box("CT_Steel", 0.12, 0.19, -0.065, -0.045, 1.02, 1.1, f="xXyYZz")
+    p.box("CT_SteelRed", -0.36, -0.03, -0.012, 0.012, 2.04, 2.3)       # the pennant at the head of the mast
+    p.box("CT_SteelWhite", -0.36, -0.03, -0.012, 0.012, 1.76, 2.04)
+    return p.done()
+
+
+def _tide_staff(B, x, y, yaw):
+    """A painted tide staff (water gauge): a 1.9 m board with alternating black and white decimetres and red metre marks."""
+    p = kit._P(B, x, y, 0.0, yaw, "tide_staff")
+    p.kind = "prop"
+    p.box("CT_Steel", -0.03, 0.03, -0.03, 0.03, 0.0, 0.1, f="xXyY")
+    p.box("CT_TileWhite", -0.06, 0.06, -0.025, 0.025, 0.1, 2.0)
+    for k in range(9):
+        p.box("CT_ConcreteDark", -0.06, 0.06, -0.0255, -0.025, 0.2 + 0.2 * k, 0.3 + 0.2 * k, f="y")
+    p.box("CT_SteelRed", -0.06, 0.06, -0.0258, -0.025, 1.0, 1.04, f="y")
+    p.box("CT_SteelRed", -0.06, 0.06, -0.0258, -0.025, 0.4, 0.43, f="y")
+    return p.done()
+
+
+def _bell(B, x, y, z, yaw):
+    """[wall] A ship's bell hung from a bracket (back on the wall at (x, y), z = the bracket's height)."""
+    p = kit._P(B, x, y, z, yaw, "ship_bell")
+    p.kind = "wall"
+    p.box("CT_Steel", -0.03, 0.03, -0.015, 0.0, 0.0, 0.32)
+    p.box("CT_Steel", -0.015, 0.015, -0.2, 0.0, 0.3, 0.33)
+    p.lathe("CT_Brass", 0.0, -0.17, [(0.0, 0.28), (0.04, 0.3), (0.06, 0.2), (0.1, 0.07), (0.115, 0.0)], segs=10)
+    p.rod("CT_Steel", (0.0, -0.17, 0.3), (0.0, -0.17, 0.33), 0.01, 3)
+    p.rod("CT_PlasterRed", (0.0, -0.17, 0.03), (0.0, -0.17, -0.2), 0.01, 3)
+    p.cyl("CT_PlasterRed", 0.0, -0.17, -0.27, -0.2, 0.025, 6)
+    return p.done()
+
+
+def _third(B, z0):
+    """Third pass: the foot's gear, the flag mast and the throwing post, the cabin's switch and clock, ledger, bell, binoculars."""
+    d = B.detail
+    # ---- the foot: the gear locker behind the plinth (opening toward +y), the spine board on the stem, the ring post
+    _gear_locker(B, 0.0, 3.25, 180.0)
+    B.thing("gear_locker", "machine", (0.0, 3.4, 0.75), 180.0, what="gear")
+    B.spot("gear", "stand", (0.0, 3.85, 0.0), 0.0)
+    box(d, "CT_PlasterYellow", -0.668, -0.64, 2.3, 2.6, 0.5, 2.1, faces="xXyYZ")
+    for zz in (0.9, 1.4, 1.85):
+        box(d, "CT_Leather", -0.672, -0.664, 2.295, 2.605, zz, zz + 0.05, faces="xXyYZ")
+    for k, zz in enumerate((0.7, 1.15, 1.6)):
+        box(d, "CT_ConcreteDark", -0.672, -0.664, 2.34, 2.4, zz, zz + 0.1, faces="X")
+        box(d, "CT_ConcreteDark", -0.672, -0.664, 2.5, 2.56, zz, zz + 0.1, faces="X")
+    B.thing("spine_board", "machine", (-0.68, 2.45, 1.3), 270.0, what="spine_board")
+    kit.ring_buoy(B, -1.55, 3.2, 0.0, 0.0)
+    B.thing("ring_post", "machine", (-1.55, 3.0, 1.2), 0.0, what="ring_toss")
+    B.spot("ring_throw", "stand", (-1.5, 1.2, 0.0), 180.0)
+    _flag_mast(B, -1.65, 0.55)
+    B.thing("flag_mast", "board", (-1.65, 0.5, 1.3), 0.0, topic="flagstate")
+    _tide_staff(B, 1.93, 0.75, 270.0)
+    B.thing("tide_staff", "board", (1.9, 0.75, 1.25), 270.0, topic="tidestaff")
+    # ---- the cabin: the lamp switch by the door, the clock, the duty ledger on the front wall
+    box(d, "CT_TileWhite", 0.51, 0.59, 3.136, 3.15, z0 + 0.66, z0 + 0.78, faces="xXyYZz")
+    box(d, "CT_Steel", 0.538, 0.562, 3.124, 3.136, z0 + 0.70, z0 + 0.745, faces="xXyYZz")
+    B.thing("lg_switch", "machine", (0.55, 3.1, z0 + 0.72), 0.0, what="switch", switch="room")
+    B.thing("lg_clock", "board", (-0.15, 3.1, z0 + 2.15), 0.0, topic="clock")
+    kit.notice_board(B, 1.0, 0.85, z0, 180.0, w=0.3, h=0.4, zc=0.62, seed=4)
+    B.thing("duty_ledger", "board", (1.0, 0.9, z0 + 0.62), 180.0, topic="ledger")
+    B.spot("staff_lifeguard", "work", (-0.3, 2.5, z0), 0.0)
+    # ---- the deck: the ship's bell on the cabin's right wall, a coin binocular on the left rail looking west
+    _bell(B, 1.3, 1.5, z0 + 1.35, 90.0)
+    B.thing("deck_bell", "machine", (1.45, 1.5, z0 + 1.55), 90.0, what="bell")
+    B.spot("staff_lifeguard_2", "work", (0.2, 0.55, z0), 0.0)
+    kit.telescope(B, -1.45, 2.3, z0, 270.0)
+    B.thing("deck_binoc_w", "machine", (-1.5, 2.3, z0 + 1.2), 270.0, what="binoculars")
+    B.spot("binoc_w", "stand", (-1.0, 2.3, z0), 90.0)

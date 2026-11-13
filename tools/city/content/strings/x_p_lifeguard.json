@@ -1004,5 +1004,380 @@
   "ru": "Мысль пришла, правда, не про диплом, а про то, что море не торопится, и это нормально. Студент записал её в сноску. Сноска получилась лучше главы.",
   "en": "A thought did come, not about the thesis but about how the sea is in no hurry and that is fine. The student put it in a footnote. The footnote turned out better than the chapter.",
   "ja": "考えは浮かんだ。論文のことではなく、海は急がないし、それでいいのだということ。学生はそれを脚注に書いた。脚注は章よりもよくできていた。"
+ },
+ "city.lgx.gear.prompt": {
+  "ru": "E — заглянуть в шкаф со снаряжением",
+  "en": "E — look into the gear locker",
+  "ja": "E：装備ロッカーをのぞく"
+ },
+ "city.lgx.gear.1": {
+  "ru": "Шкаф со снаряжением: круг, «торпеда», верёвка-«бросалка», аптечка второй очереди, запасной свисток. На дверце список, и против каждой строки галочка.",
+  "en": "The gear locker: a ring, a torpedo buoy, a throw line, a second-line first-aid kit, a spare whistle. A list on the door with a tick against every line.",
+  "ja": "装備ロッカー。浮き輪、トーピード・ブイ、投げ縄、予備の救急箱、替えの笛。扉にリストがあり、全部の行にチェックが付いている。"
+ },
+ "city.lgx.gear.2": {
+  "ru": "С утра спасатель проверяет шкаф по списку: «Торпеда — есть. Круг — есть. Терпение — тоже есть».",
+  "en": "In the morning the lifeguard checks the locker against the list: \"Torpedo: present. Ring: present. Patience: present too.\"",
+  "ja": "朝、救助員はリストに沿ってロッカーを点検する。「トーピード、あり。浮き輪、あり。忍耐、これもあり」。"
+ },
+ "city.lgx.gear.3": {
+  "ru": "В выходные запасной круг лежит ближе к дверце: людей больше, значит, и круг должен быть ближе.",
+  "en": "At weekends the spare ring lies nearer the door: more people, so the ring should be closer.",
+  "ja": "週末は予備の浮き輪が扉の近くに置いてある。人が多いのだから、浮き輪も近くなくては。"
+ },
+ "city.lgx.gear.4": {
+  "ru": "Дверцы мокрые, внутри всё в чехлах. Список на двери размок, но спасатель знает его наизусть.",
+  "en": "The doors are wet, everything inside is in covers. The list on the door has run, but the lifeguard knows it by heart.",
+  "ja": "扉は濡れていて、中の道具はすべてカバーの中。扉のリストはにじんだが、救助員は暗記している。"
+ },
+ "city.lgx.gear.5": {
+  "ru": "Шкаф заперт на висячий замок. В щель виден красный край «торпеды», как огонёк.",
+  "en": "The locker is padlocked. Through the crack you see the red edge of the torpedo, like a small light.",
+  "ja": "ロッカーには南京錠がかかっている。隙間からトーピードの赤い端が、小さな灯りのように見える。"
+ },
+ "city.lgx.board.prompt": {
+  "ru": "E — рассмотреть спасательную доску",
+  "en": "E — look over the rescue board",
+  "ja": "E：救助用ボードを見る"
+ },
+ "city.lgx.board.1": {
+  "ru": "Жёлтая доска для транспортировки: лёгкая, с прорезями для рук. Нарисованы контуры головы и ног, чтобы никто не перепутал, где что.",
+  "en": "A yellow transport board: light, with slots for the hands. The outlines of a head and feet are painted on, so nobody mixes up which is which.",
+  "ja": "黄色い搬送用ボード。軽くて、手を入れる穴がある。頭と足の輪郭が描いてあり、どちらが何かで迷わないようになっている。"
+ },
+ "city.lgx.board.2": {
+  "ru": "На обороте мелом: «Не использовать как скамейку. Спасатель Н.». Поверх другим почерком: «А как лодку?»",
+  "en": "On the back in chalk: \"Not to be used as a bench. Lifeguard N.\" Over it in another hand: \"What about a boat?\"",
+  "ja": "裏にチョークで「ベンチに使わないこと。救助員N」。その上に別の字で「ボートには？」。"
+ },
+ "city.lgx.board.3": {
+  "ru": "Кто-то прислонил к доске старую удочку. Спасатель переложил её на видное место: хозяин вернётся.",
+  "en": "Someone has leaned an old rod against the board. The lifeguard moved it to a visible spot: the owner will be back.",
+  "ja": "誰かが古い釣り竿をボードに立てかけていった。救助員は目立つところに置き直した。持ち主はきっと戻ってくる。"
+ },
+ "city.lgx.throw.prompt": {
+  "ru": "E — потренироваться в броске круга",
+  "en": "E — practise throwing the ring",
+  "ja": "E：浮き輪投げの練習をする"
+ },
+ "city.lgx.throw.1": {
+  "ru": "Столб с кругом: тренировочная мишень. Круг на верёвке-«бросалке» нужно закинуть так, чтобы он лёг на метку.",
+  "en": "A post with a ring: the practice target. The ring on its throw line has to land on the mark.",
+  "ja": "浮き輪の付いた柱は練習用の的。投げ縄のついた浮き輪を、目印にぴったり落とさなければならない。"
+ },
+ "city.lgx.throw.2": {
+  "ru": "Спасатель учит: «Бросай дальше, чем кажется нужным, и ближе, чем хочется. Остальное решит верёвка».",
+  "en": "The lifeguard teaches: \"Throw farther than seems needed and nearer than you'd like. The line decides the rest.\"",
+  "ja": "救助員の教え。「必要だと思うより遠く、投げたいより手前に。あとは綱が決めてくれる」。"
+ },
+ "city.lgx.throw.title": {
+  "ru": "Бросок круга",
+  "en": "Ring throw",
+  "ja": "浮き輪投げ"
+ },
+ "city.lgx.throw.win.1": {
+  "ru": "Круг лёг ровно на метку, и верёвка натянулась как струна. Спасатель кивнул: «Спасённый сказал бы спасибо».",
+  "en": "The ring landed squarely on the mark and the line pulled taut as a string. The lifeguard nodded: \"A rescued swimmer would say thanks.\"",
+  "ja": "浮き輪は目印のど真ん中に落ち、綱が弦のようにぴんと張った。救助員がうなずく。「溺れた人ならお礼を言うところだ」。"
+ },
+ "city.lgx.throw.win.2": {
+  "ru": "Четыре броска из пяти в цель. На столбе появилась ещё одна царапина, на этот раз от круга.",
+  "en": "Four throws out of five on target. The post has one more scratch, this time from the ring.",
+  "ja": "五投中四投が的中。柱にまた傷が一つ増えた。今度は浮き輪の傷だ。"
+ },
+ "city.lgx.throw.lose.1": {
+  "ru": "Круг ушёл в сторону и закачался на верёвке, как маятник. Спасатель вздохнул: «Ничего, у ветра тоже бывают дни».",
+  "en": "The ring veered off and swung on its line like a pendulum. The lifeguard sighed: \"Never mind, the wind has its days too.\"",
+  "ja": "浮き輪は横にそれ、綱の先で振り子のように揺れた。救助員はため息をつく。「気にするな、風にも調子の悪い日はある」。"
+ },
+ "city.lgx.throw.draw.1": {
+  "ru": "Половина бросков легла, остальные нет. Спасатель сказал, что в воде такой счёт уже считается «подплыл».",
+  "en": "Half the throws landed, the rest didn't. The lifeguard said that in the water such a score counts as \"almost there.\"",
+  "ja": "半分は決まり、あとは外れ。救助員いわく、水の中ならこの成績は「あと少し」だそうだ。"
+ },
+ "city.lgx.flag.prompt": {
+  "ru": "E — посмотреть, какой флаг сегодня",
+  "en": "E — see which flag is up today",
+  "ja": "E：今日の旗を見る"
+ },
+ "city.lgx.flag.1": {
+  "ru": "У мачты три картонных кружка: зелёный, жёлтый, красный. Стрелка стоит на зелёном: купаться можно, но за буёк не заплывать.",
+  "en": "Three card discs on the mast: green, yellow, red. The pointer rests on green: swimming is fine, but not past the buoy.",
+  "ja": "マストに三つの厚紙の円盤。緑、黄、赤。矢印は緑。泳いでよいが、ブイより先へは行かないこと。"
+ },
+ "city.lgx.flag.2": {
+  "ru": "Стрелка на жёлтом: дождь, видимость плохая. Заходить в воду можно по колено и не глубже.",
+  "en": "The pointer is on yellow: rain, poor visibility. Wade in to the knee and no deeper.",
+  "ja": "矢印は黄色。雨で視界が悪い。水に入るのは膝までにして、それ以上は深入りしない。"
+ },
+ "city.lgx.flag.3": {
+  "ru": "Красный: туман. Вышка не видит буй, буй не видит вышку. В воду нельзя.",
+  "en": "Red: fog. The tower can't see the buoy and the buoy can't see the tower. No swimming.",
+  "ja": "赤。霧が出ている。塔からブイは見えず、ブイからも塔は見えない。遊泳禁止。"
+ },
+ "city.lgx.flag.4": {
+  "ru": "Красный: вода холодная, купаться не рекомендуется. Исключение у моржей, но у них свой список.",
+  "en": "Red: the water is cold, swimming is not advised. The exception is the winter swimmers, but they have their own list.",
+  "ja": "赤。水が冷たいので遊泳は勧められない。例外は冬の水泳愛好家だが、彼らには専用のリストがある。"
+ },
+ "city.lgx.flag.5": {
+  "ru": "Зелёный, и стрелка прижата к краю: жарко, народу много. Спасатель смотрит на воду вдвое пристальнее.",
+  "en": "Green, with the pointer pressed to the edge: it is hot and crowded. The lifeguard watches the water twice as hard.",
+  "ja": "緑。矢印は端いっぱいに寄っている。暑くて人出が多い。救助員は水面をいつもの倍じっと見つめている。"
+ },
+ "city.lgx.flag.6": {
+  "ru": "Красный: снег и ветер. Пляж принадлежит чайкам, и они этим пользуются.",
+  "en": "Red: snow and wind. The beach belongs to the gulls, and they make use of it.",
+  "ja": "赤。雪と風。浜はカモメのもので、カモメたちはそれを存分に使っている。"
+ },
+ "city.lgx.flag.7": {
+  "ru": "Ночью стрелка опущена вниз, кружки в темноте почти не видны. Вода принадлежит ночи.",
+  "en": "At night the pointer hangs down and the discs can hardly be seen. The water belongs to the night.",
+  "ja": "夜、矢印は下を向き、円盤は暗がりでほとんど見えない。水は夜のものだ。"
+ },
+ "city.lgx.flag.8": {
+  "ru": "К трём кружкам в праздник добавлен голубой: «праздничный». Он ничего не значит, но очень красив.",
+  "en": "For the holiday a blue disc has been added to the three: the \"festive\" one. It means nothing but looks lovely.",
+  "ja": "祝日には三つの円盤に青いものが一枚加わる。「お祝い」の印だ。意味はないが、とても綺麗だ。"
+ },
+ "city.lgx.staff.prompt": {
+  "ru": "E — прочитать водомерную рейку",
+  "en": "E — read the tide staff",
+  "ja": "E：潮位標を読む"
+ },
+ "city.lgx.staff.1": {
+  "ru": "Водомерная рейка: чёрные и белые дециметры, красные отметки на метре и на сорока сантиметрах. Вода сегодня около второй чёрной полоски.",
+  "en": "The tide staff: black and white decimetres, red marks at the metre and at forty centimetres. Today the water stands about the second black band.",
+  "ja": "水位標。白と黒のデシメートルの縞、一メートルと四十センチのところに赤い印。今日の水面は二本目の黒い縞のあたり。"
+ },
+ "city.lgx.staff.2": {
+  "ru": "Волны выше обычного: вода бьёт у рейки по третьей полоске и тут же отступает. Спасатель отмечает в журнале «живое».",
+  "en": "Higher waves than usual: the water strikes the staff at the third band and retreats at once. The lifeguard notes \"lively\" in the log.",
+  "ja": "波がいつもより高い。水は水位標の三本目の縞まで届いてすぐ引く。救助員は日誌に「活発」と書く。"
+ },
+ "city.lgx.staff.3": {
+  "ru": "Туман: рейку видно до метки, дальше она растворяется. Рейка у нас как буква «Т» в нужном слове.",
+  "en": "Fog: the staff can be seen up to the mark and then dissolves. It is like the \"T\" in the right word.",
+  "ja": "霧のため、水位標は目盛りの途中までしか見えず、その先はかすんでいる。"
+ },
+ "city.lgx.staff.4": {
+  "ru": "Тихо, вода почти не движется. На рейке сидит мокрая чайка и делает вид, что измеряет глубину.",
+  "en": "Quiet, the water barely moves. A damp gull sits on the staff pretending to measure the depth.",
+  "ja": "静かで、水はほとんど動かない。水位標の上で濡れたカモメが、水深を測るふりをしている。"
+ },
+ "city.lgx.bell.prompt": {
+  "ru": "E — позвонить в колокол",
+  "en": "E — ring the bell",
+  "ja": "E：鐘を鳴らす"
+ },
+ "city.lgx.bell.1": {
+  "ru": "Один удар. Звук идёт над водой и возвращается слабее: колокол говорит с морем и получает короткий ответ.",
+  "en": "One stroke. The sound goes out over the water and returns fainter: the bell talks to the sea and gets a short answer.",
+  "ja": "一打ち。音は水面を渡り、少し弱くなって返ってくる。鐘は海に話しかけ、短い返事をもらう。"
+ },
+ "city.lgx.bell.2": {
+  "ru": "Утром колокол звонит один раз: «вышка на посту». Дальние лодки отвечают гудком, если не спят.",
+  "en": "In the morning the bell rings once: \"the tower is on watch.\" The far boats answer with a horn, if awake.",
+  "ja": "朝、鐘は一度だけ鳴る。「塔は持ち場についた」の合図。遠くの舟は、起きていれば汽笛で応える。"
+ },
+ "city.lgx.bell.3": {
+  "ru": "В тумане звонят три раза с паузами: «мы здесь». Спасатель считает паузы, чтобы не сбиться.",
+  "en": "In fog it rings three times with pauses: \"we are here.\" The lifeguard counts the pauses so as not to lose track.",
+  "ja": "霧の日は間をおいて三回。「ここにいるよ」の合図。救助員は間を数えて、わからなくならないようにする。"
+ },
+ "city.lgx.bell.4": {
+  "ru": "Ночью колокол не звонит. Но если взяться за верёвочку, он отзывается тихо, как большая рюмка.",
+  "en": "At night the bell is not rung. But touch the cord and it answers softly, like a large glass.",
+  "ja": "夜は鐘を鳴らさない。それでも綱にそっと触れれば、大きなグラスのように小さく鳴る。"
+ },
+ "city.lgx.binw.prompt": {
+  "ru": "E — посмотреть налево вдоль берега",
+  "en": "E — look west along the shore",
+  "ja": "E：浜の西側を見る"
+ },
+ "city.lgx.binw.1": {
+  "ru": "Налево вдоль пляжа тянутся кабинки для переодевания и ряд полосатых зонтов. Один зонт стоит чуть ближе к воде, как самый смелый.",
+  "en": "To the west along the beach stretch the changing cabins and a row of striped parasols. One parasol stands a little nearer the water, the boldest.",
+  "ja": "浜の西側には更衣小屋と縞模様のパラソルの列が続く。一本だけ水際に少し近く、いちばん勇敢だ。"
+ },
+ "city.lgx.binw.2": {
+  "ru": "Утром налево только песок и следы: кто-то прошёл босиком до самой воды и вернулся с ботинком в руке.",
+  "en": "In the morning there is only sand and footprints to the west: somebody walked barefoot to the water and back with a shoe in hand.",
+  "ja": "朝の西側には砂と足跡だけ。誰かが裸足で水際まで行き、靴を片手に戻ってきた。"
+ },
+ "city.lgx.binw.3": {
+  "ru": "Вечером налево тянется золотая полоса: песок светлее моря, и каждая песчинка отбрасывает длинную тень.",
+  "en": "In the evening a gold strip runs to the west: the sand paler than the sea, every grain casting a long shadow.",
+  "ja": "夕方、西側には金色の帯が伸びる。砂は海より明るく、一粒一粒が長い影を落としている。"
+ },
+ "city.lgx.binw.4": {
+  "ru": "Ночью налево цепочка набережных фонарей, дальше темнота и дыхание воды. Где кончается берег, не разобрать.",
+  "en": "At night to the west a chain of promenade lamps, then darkness and the breathing of the water. You can't tell where the shore ends.",
+  "ja": "夜の西側には遊歩道の街灯が連なり、その先は闇と水の息づかい。どこで浜が終わるのかわからない。"
+ },
+ "city.lgx.binw.5": {
+  "ru": "Налево ничего. Совсем ничего: белое молоко и далёкий гудок, который, кажется, ищет, куда пристать.",
+  "en": "Nothing to the west. Nothing at all: white milk and a faraway horn that seems to be looking for somewhere to moor.",
+  "ja": "西側には何も見えない。まったく何も。白い乳のような霧と、どこかに着きたそうな遠い汽笛だけ。"
+ },
+ "city.lgx.binw.6": {
+  "ru": "Дождь размывает пляж слева в серую акварель. Три зонта цвета фруктового мороженого видны чётче всего.",
+  "en": "Rain washes the beach on the left into a grey watercolour. Three parasols the colour of fruit ice cream stand out most.",
+  "ja": "雨が左手の浜を灰色の水彩画のようににじませる。フルーツアイス色のパラソル三本がいちばんくっきり見える。"
+ },
+ "city.lgx.binw.7": {
+  "ru": "Налево на пляже один морж и два зрителя. Зрители в куртках, морж в плавках и с ясным лицом.",
+  "en": "To the west on the beach one winter swimmer and two spectators. The spectators in jackets, the swimmer in trunks with a clear face.",
+  "ja": "西側の浜には、冬の水泳愛好家が一人と見物人が二人。見物人はジャケット姿、本人は海水パンツで晴れやかな顔だ。"
+ },
+ "city.lgx.binw.8": {
+  "ru": "Слева на песке ленточки и воздушные шарики: что-то готовят к празднику, и все делают вид, что не заметили.",
+  "en": "On the left, ribbons and balloons on the sand: something is being prepared for the holiday and everyone pretends not to notice.",
+  "ja": "左手の砂浜にリボンと風船。祝日の準備をしているらしく、みんな気づかないふりをしている。"
+ },
+ "city.lgx.duty.prompt": {
+  "ru": "E — полистать дежурный журнал",
+  "en": "E — leaf through the duty ledger",
+  "ja": "E：当直日誌をめくる"
+ },
+ "city.lgx.duty.l1": {
+  "ru": "Дежурный журнал в картонной обложке, листы пронумерованы шнуром. Записи на нём, как зарубки на мачте.",
+  "en": "A duty ledger in a card cover, its leaves numbered on a cord. The entries are like notches on a mast.",
+  "ja": "厚紙の表紙の当直日誌。ページは紐で通し番号が振られている。記録はマストの刻みのようだ。"
+ },
+ "city.lgx.duty.title1": {
+  "ru": "Дежурный журнал вышки № 1",
+  "en": "Duty ledger, tower no. 1",
+  "ja": "当直日誌・一号塔"
+ },
+ "city.lgx.duty.title2": {
+  "ru": "Тетрадь наблюдений, вышка № 2",
+  "en": "Observation notebook, tower no. 2",
+  "ja": "観察ノート・二号塔"
+ },
+ "city.lgx.d1.1": {
+  "ru": "Дежурный журнал вышки № 1. Записи ведёт старший смены. Правило первой страницы: писать то, что видел; не писать то, что хотелось бы видеть.",
+  "en": "Duty ledger, tower no. 1. Entries kept by the shift lead. The rule on the first page: write what you saw; don't write what you'd like to have seen.",
+  "ja": "一号塔の当直日誌。記録は当番長がつける。最初のページの決まり。見たことを書き、見たかったことは書かない。"
+ },
+ "city.lgx.d1.2": {
+  "ru": "Утро. Вода как стекло. Купающихся нет. Чайка наблюдала за мной дольше, чем я за ней. Ничья.",
+  "en": "Morning. The water like glass. No bathers. A gull watched me longer than I watched it. A draw.",
+  "ja": "朝。水はガラスのよう。泳ぐ人なし。カモメは私が見るより長く私を見ていた。引き分け。"
+ },
+ "city.lgx.d1.3": {
+  "ru": "Вынесен на берег надувной крокодил без хозяина. Хозяин нашёлся: отец сидел на песке и сочинял оправдание.",
+  "en": "An inflatable crocodile with no owner was carried ashore. The owner turned up: a father sitting on the sand composing an excuse.",
+  "ja": "持ち主のいない空気入りのワニが岸に打ち上げられた。持ち主は見つかった。砂の上で言い訳を考えている父親だった。"
+ },
+ "city.lgx.d1.4": {
+  "ru": "Ветер с севера. Жёлтый флаг. Трое мальчишек ныряли за камнем, достали два. Третий не нашёлся, зато нашёлся ботинок.",
+  "en": "North wind. Yellow flag. Three boys dived for a stone and brought up two. The third wasn't found, but a boot was.",
+  "ja": "北風。黄旗。少年三人が石を探して潜り、二つ見つけた。三つ目は見つからなかったが、かわりに長靴が見つかった。"
+ },
+ "city.lgx.d1.5": {
+  "ru": "Звонили с соседней вышки: у них кончился чай. Отправил термос по верёвке вдоль берега. Вернули с запиской: «Спасены».",
+  "en": "Rang from the other tower: they ran out of tea. Sent a flask along the shore on a line. It came back with a note: \"Rescued.\"",
+  "ja": "隣の塔から電話。お茶が切れたという。水筒を綱に結んで浜沿いに送った。「救われました」のメモ付きで戻ってきた。"
+ },
+ "city.lgx.d1.6": {
+  "ru": "За неделю спасённых нет, потому что никто не тонул. Считаю это лучшей записью. Подпись: старший смены. Приписано: «И термос, спасённый дважды».",
+  "en": "No rescues this week, because nobody was drowning. I count it the best entry. Signed: shift lead. Added: \"And a flask rescued twice.\"",
+  "ja": "今週の救助はゼロ。誰も溺れなかったからだ。これが最良の記録だと思う。署名、当番長。追記「そして二度救われた水筒」。"
+ },
+ "city.lgx.d2.1": {
+  "ru": "Тетрадь наблюдений. Вышка № 2. Для диплома по морской биологии, заочно. Пока веду учёт чаек, потому что остальное убегает.",
+  "en": "Observation notebook. Tower no. 2. For a marine biology diploma, by correspondence. For now I count gulls, because everything else runs away.",
+  "ja": "観察ノート。二号塔。通信制の海洋生物学の卒業論文のために。いまはカモメを数えている。ほかのものは逃げてしまうから。"
+ },
+ "city.lgx.d2.2": {
+  "ru": "Чаек сорок две. Одна с красным кольцом на ноге: «Кольцевая». Она точно знает, кто здесь главный, и это не я.",
+  "en": "Forty-two gulls. One with a red ring on its leg: \"Ringed.\" She knows exactly who is in charge here, and it isn't me.",
+  "ja": "カモメは四十二羽。一羽は脚に赤い輪が付いている。「足環の子」。ここで誰が一番偉いか、彼女はよく知っている。私ではない。"
+ },
+ "city.lgx.d2.3": {
+  "ru": "Заметил, что чайки садятся на красный флаг только когда ветер слабый. Гипотеза: они выбирают флаг по настроению.",
+  "en": "I noticed gulls land on the red flag only when the wind is light. Hypothesis: they pick the flag by mood.",
+  "ja": "風が弱いときだけ、カモメは赤い旗にとまる。仮説。彼らは気分で旗を選ぶ。"
+ },
+ "city.lgx.d2.4": {
+  "ru": "Научный руководитель в письме: «Ваши чайки подозрительно вежливы. Проверьте, не подсказывает ли вам вышка №1». Проверил: вышка №1 не подсказывает.",
+  "en": "My supervisor in a letter: \"Your gulls are suspiciously polite. Check whether tower no. 1 is prompting you.\" Checked: tower no. 1 isn't.",
+  "ja": "指導教官の手紙。「君のカモメは疑わしいほど礼儀正しい。一号塔が入れ知恵していないか確認せよ」。確認した。一号塔は入れ知恵していない。"
+ },
+ "city.lgx.d2.5": {
+  "ru": "Один из дежурных с вышки № 1 прислал термос с чаем и записку: «Для науки». Чай вошёл в главу «Методы».",
+  "en": "A lifeguard from tower no. 1 sent a flask of tea with a note: \"For science.\" The tea has gone into the chapter on Methods.",
+  "ja": "一号塔の当番が、「科学のために」というメモ付きでお茶の水筒を送ってくれた。お茶は「方法」の章に入った。"
+ },
+ "city.lgx.d2.6": {
+  "ru": "Глава четвёртая готова: «Чайка как прибор». Вывод: прибор точен, пока его не кормят. Приложение: список всех, кто кормил.",
+  "en": "Chapter four is ready: \"The gull as an instrument.\" Conclusion: the instrument is accurate until it is fed. Appendix: a list of everybody who fed it.",
+  "ja": "第四章が完成。「計器としてのカモメ」。結論。餌をやらなければ計器は正確である。付録。餌をやった人全員のリスト。"
+ },
+ "city.lgx.closed.1": {
+  "ru": "Лестница перегорожена цепочкой, на ней табличка: «Дежурства нет. Пожалуйста, не купайтесь в одиночку».",
+  "en": "The ladder is closed off with a chain and a sign: \"Nobody on duty. Please don't swim alone.\"",
+  "ja": "はしごには鎖が渡され、札が下がっている。「当直なし。ひとりでは泳がないでください」。"
+ },
+ "city.lgx.closed.2": {
+  "ru": "Вышка пуста, и от этого кажется выше. Флаг на мачте обвис, как сложенное крыло.",
+  "en": "The tower is empty and so looks taller. The flag on the mast hangs like a folded wing.",
+  "ja": "塔は無人で、そのぶん高く見える。マストの旗は畳んだ翼のように垂れている。"
+ },
+ "city.lgx.closed.deck.1": {
+  "ru": "Снизу виден люк в полу будки: он закрыт, и на нём лежит ключ. Значит, сегодня здесь никого нет.",
+  "en": "From below you see the hatch in the cabin floor: it is shut with a key lying on it. So nobody is here today.",
+  "ja": "下から小屋の床の跳ね上げ戸が見える。閉まっていて、上に鍵が置いてある。つまり今日は誰もいない。"
+ },
+ "quest.lifeguard_rounds.title": {
+  "ru": "Обход двух вышек",
+  "en": "A round of two towers",
+  "ja": "二つの塔の見回り"
+ },
+ "quest.lifeguard_rounds.desc": {
+  "ru": "Спасатели просят заглянуть в журнал первой вышки, потренироваться в броске круга и сходить ко второй с запиской и термосом, как в журнале.",
+  "en": "The lifeguards ask me to look into the first tower's ledger, practise ring throwing and walk to the second tower with a note and a flask, as in the ledger.",
+  "ja": "救助員たちに頼まれた。一号塔の日誌を見て、浮き輪投げを練習し、日誌にあったようにメモと水筒を持って二号塔へ行く。"
+ },
+ "quest.lifeguard_rounds.ledger.log": {
+  "ru": "На первой вышке в журнале написано про термос, который спасали дважды. Надо прочитать.",
+  "en": "The first tower's ledger mentions a flask rescued twice. I should read it.",
+  "ja": "一号塔の日誌には二度救われた水筒の話がある。読んでみよう。"
+ },
+ "quest.lifeguard_rounds.read1.obj": {
+  "ru": "Прочитать дежурный журнал первой вышки",
+  "en": "Read the first tower's duty ledger",
+  "ja": "一号塔の当直日誌を読む"
+ },
+ "quest.lifeguard_rounds.throw.log": {
+  "ru": "Спасатель говорит: «Теперь потренируйся. Бросай дальше, чем кажется нужным». Столб с кругом у задней стенки.",
+  "en": "The lifeguard says: \"Now practise. Throw farther than seems needed.\" The post with the ring is by the back.",
+  "ja": "救助員が言う。「次は練習だ。必要だと思うより遠くへ投げろ」。浮き輪の柱は塔の裏手にある。"
+ },
+ "quest.lifeguard_rounds.win.obj": {
+  "ru": "Выиграть бросок круга",
+  "en": "Win the ring throw",
+  "ja": "浮き輪投げに勝つ"
+ },
+ "quest.lifeguard_rounds.second.log": {
+  "ru": "Круг лёг в цель. Теперь на вторую вышку: там студент считает чаек, и ему как раз нужен чай.",
+  "en": "The ring landed on target. Now to the second tower: a student counts gulls there and could use some tea.",
+  "ja": "浮き輪は的に決まった。次は二号塔へ。そこでは学生がカモメを数えていて、お茶がほしいところだ。"
+ },
+ "quest.lifeguard_rounds.read2.obj": {
+  "ru": "Прочитать тетрадь наблюдений второй вышки",
+  "en": "Read the second tower's observation notebook",
+  "ja": "二号塔の観察ノートを読む"
+ },
+ "quest.lifeguard_rounds.done": {
+  "ru": "Тетрадь студента и журнал спасателя оказались про одно и то же: про чай, ветер и чаек, только разным почерком. Оба были довольны, что я прочитал.",
+  "en": "The student's notebook and the lifeguard's ledger turned out to be about the same things: tea, wind and gulls, only in different hands. Both were pleased that I had read them.",
+  "ja": "学生のノートと救助員の日誌は、同じことが書いてあった。お茶と風とカモメ。ただ筆跡が違うだけ。読んだことを二人とも喜んでくれた。"
+ },
+ "city.lgx.coll.title": {
+  "ru": "Значки спасателей",
+  "en": "Lifeguard badges",
+  "ja": "救助員のバッジ"
  }
 }
