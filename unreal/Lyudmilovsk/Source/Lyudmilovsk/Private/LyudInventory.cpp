@@ -588,8 +588,15 @@ public:
 								SNew(STextBlock).Font(Body).ColorAndOpacity(FLinearColor(1.f, 0.85f, 0.45f))
 								.Text_Lambda([this]
 								{
+									// asked every frame: formatted only when the sum changes
 									const ULyudInventory* Inv = Inventory.Get();
-									return LyudText::Get(TEXT("ui.inventory.money"), { FStringFormatArg(Inv ? Inv->Rubles : 0) });
+									const int32 Sum = Inv ? Inv->Rubles : 0;
+									if (Sum != MoneyShown)
+									{
+										MoneyShown = Sum;
+										MoneyText = LyudText::Get(TEXT("ui.inventory.money"), { FStringFormatArg(Sum) });
+									}
+									return MoneyText;
 								})
 							]
 						]
@@ -791,6 +798,8 @@ private:
 	float ViewHeight = 1080.f;
 	float StickToEnd = 0.f;
 	bool bRowsDirty = false;
+	FText MoneyText;
+	int32 MoneyShown = MIN_int32;
 };
 
 ULyudInventoryUI* ULyudInventoryUI::Get(const UObject* WorldContext)
