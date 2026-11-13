@@ -1,5 +1,5 @@
 {
- "comment": "The quests (docs/quests.md: how to write one; docs/ui.md). Words: quest.<id>.title|desc, quest.<id>.<stage>.log, quest.<id>.<objective>.obj, quest.<id>.done in strings_<lang>.json. Events: talk <npc>, leave_computer, reach <place in map.json>, get|have|use|wear <item>, bird, feeder_fill <feed>, feeder_fill_at <feed>@<place>, feeder_visit <Species>, bird_tamed <Species>, bird_call <Species>.<Npc>. A target ending in * matches by prefix. A stage's \"dev\" block is the developer mode's (where a jump to the stage lands: tp, give, time, exec) and is ignored by the game.",
+ "comment": "The quests (docs/quests.md: how to write one; docs/ui.md). Words: quest.<id>.title|desc, quest.<id>.<stage>.log, quest.<id>.<objective>.obj, quest.<id>.done in strings_<lang>.json. Events: talk <npc>, leave_computer, reach <place in map.json>, get|have|use|wear <item>, bird, feeder_fill <feed>, feeder_fill_at <feed>@<place>, feeder_visit <Species>, bird_tamed <Species>, bird_call <Species>.<Npc>, corvid_*; bring <item>@<Npc> is met by a talk with that person with the item in the pocket (they take it). A target ending in * matches by prefix. A stage's \"dev\" block is the developer mode's (where a jump to the stage lands: tp, give, time, exec) and is ignored by the game.",
  "quests": [
   {
    "id": "awakening",
@@ -75,6 +75,36 @@
     {"id": "visit", "objectives": [{"id": "hear_sorokin", "event": "talk", "target": "Sorokin_oleg", "place": "academ"}],
      "dev": {"time": "17:30", "exec": ["Quest.GoToPerson sorokin_oleg"]},
      "reward": {"items": {"feed_mealworm": 5, "feed_peanuts": 5}}}
+   ]
+  },
+  {
+   "id": "evening_paper",
+   "kind": "side",
+   "start_on": {"event": "talk", "target": "Korneeva_nina"},
+   "stages": [
+    {"id": "ask", "objectives": [{"id": "hear_nina", "event": "talk", "target": "Korneeva_nina", "place": "academ"}],
+     "dev": {"time": "15:00", "exec": ["Quest.GoToPerson korneeva_nina"]}},
+    {"id": "buy", "objectives": [{"id": "get_paper", "event": "have", "target": "daily_paper"}],
+     "dev": {"time": "15:00", "exec": ["Quest.GoToPerson t_nakamura_emre"]}},
+    {"id": "bring", "objectives": [{"id": "give_paper", "event": "bring", "target": "daily_paper@Korneeva_nina", "place": "academ"}],
+     "dev": {"time": "15:00", "give": {"daily_paper": 1}, "exec": ["Quest.GoToPerson korneeva_nina"]},
+     "reward": {"rubles": 10, "items": {"pie": 2}}}
+   ]
+  },
+  {
+   "id": "crow_gift",
+   "kind": "side",
+   "start_on": {"event": "talk", "target": "Sato_yuki"},
+   "stages": [
+    {"id": "ask", "objectives": [{"id": "hear_yuki", "event": "talk", "target": "Sato_yuki", "place": "academ"}],
+     "dev": {"time": "15:00", "exec": ["Quest.GoToPerson sato_yuki"]}},
+    {"id": "feed", "objectives": [{"id": "throw_feed", "event": "corvid_feed_thrown", "need": 3}],
+     "dev": {"tp": "orni_gastronom", "time": "11:00", "give": {"feed_peanuts": 5}}},
+    {"id": "gift", "objectives": [{"id": "take_gift", "event": "corvid_gift_taken"}],
+     "dev": {"tp": "orni_gastronom", "time": "11:00", "give": {"feed_peanuts": 5}}},
+    {"id": "tell", "objectives": [{"id": "tell_yuki", "event": "talk", "target": "Sato_yuki", "place": "academ"}],
+     "dev": {"time": "15:00", "exec": ["Quest.GoToPerson sato_yuki"]},
+     "reward": {"items": {"candy": 3}}}
    ]
   },
   {"id": "fest_sea_festival", "kind": "side", "start_on": {"event": "festival", "target": "sea_festival"}, "stages": [{"id": "go", "objectives": [{"id": "fair", "event": "festival_visit", "target": "sea_festival.fair"}, {"id": "fireworks", "event": "festival_watch", "target": "sea_festival.fireworks"}]}]},

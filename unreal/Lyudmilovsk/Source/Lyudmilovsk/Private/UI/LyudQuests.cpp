@@ -487,7 +487,8 @@ void ULyudQuests::HandleEvent(FName Event, const FString& Target, int32 N)
 				continue;
 			}
 			// an event a later stage waits for (a teleport, a load, a step done out of order): the stages before it count as done
-			for (int32 Later = Progress[QI].Stage + 1; Later < Def->Stages.Num(); ++Later)
+			// (never a talk: a quest may send the hero back to the one who gave it, and that talk is not a step done early)
+			for (int32 Later = Progress[QI].Stage + 1; Later < Def->Stages.Num() && !(E.Get<0>() == TEXT("talk")); ++Later)
 			{
 				const bool bWanted = Def->Stages[Later].Objectives.ContainsByPredicate([&E](const FLyudQuestObjective& O)
 				{
@@ -531,6 +532,18 @@ void ULyudQuests::HandleEvent(FName Event, const FString& Target, int32 N)
 				{
 					C = FMath::Max(0, C - E.Get<2>());
 					bChanged = true;
+				}
+				// "bring <item>@<Npc>": a talk with that person while the pocket holds Need of the item hands them over
+				if (O.Event == TEXT("bring") && E.Get<0>() == TEXT("talk") && C < O.Need)
+				{
+					FString BringItem, BringTo;
+					ULyudInventory* Pocket = ULyudInventory::Get(GetGameInstance()->GetWorld());
+					if (O.Target.Split(TEXT("@"), &BringItem, &BringTo) && BringTo == E.Get<1>() && Pocket && Pocket->Count(*BringItem) >= O.Need)
+					{
+						Pocket->Remove(*BringItem, O.Need);      // (its "use" event waits in the queue)
+						C = O.Need;
+						bChanged = true;
+					}
 				}
 				if (!bWas && C >= O.Need && S.Objectives.Num() > 1)
 				{
@@ -629,6 +642,19 @@ FName ULyudQuests::TalkStage(FName Quest, const FString& Npc) const
 	const FName Now = StageId(Quest);
 	if (!Now.IsNone())
 	{
+		// a stage that waits for something to be brought to this person, and the pocket hasn't got it: "<stage>_empty"
+		for (const TPair<const FLyudQuestObjective*, int32>& O : CurrentObjectives(Quest))
+		{
+			FString BringItem, BringTo;
+			if (O.Key->Event == TEXT("bring") && O.Value < O.Key->Need && O.Key->Target.Split(TEXT("@"), &BringItem, &BringTo) && BringTo == Npc)
+			{
+				const ULyudInventory* Pocket = ULyudInventory::Get(GetGameInstance()->GetWorld());
+				if (!Pocket || Pocket->Count(*BringItem) < O.Key->Need)
+				{
+					return FName(*(Now.ToString() + TEXT("_empty")));
+				}
+			}
+		}
 		return Now;
 	}
 	const FLyudQuestDef* Def = FindDef(Quest);

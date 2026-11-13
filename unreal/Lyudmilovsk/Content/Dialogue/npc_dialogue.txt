@@ -123,6 +123,9 @@ again = sato_mila.again1.1
 [Sato_yuki]
 first = sato_yuki.first.1
 again = sato_yuki.again1.1
+quest.crow_gift.ask = sato_yuki.crow_ask.1 | hero.crow_ask.2 | sato_yuki.crow_ask.3 | sato_yuki.crow_ask.4
+quest.crow_gift.feed,gift = sato_yuki.crow_wait.1
+quest.crow_gift.tell = sato_yuki.crow_tell.1 | hero.crow_tell.2 | sato_yuki.crow_tell.3
 
 [Korneev_ivan]
 first = korneev_ivan.first.1
@@ -131,6 +134,9 @@ again = korneev_ivan.again1.1
 [Korneeva_nina]
 first = korneeva_nina.first.1
 again = korneeva_nina.again1.1
+quest.evening_paper.ask = korneeva_nina.paper_ask.1 | korneeva_nina.paper_ask.2 | korneeva_nina.paper_ask.3 | hero.paper_ask.4
+quest.evening_paper.buy,bring_empty = korneeva_nina.paper_wait.1
+quest.evening_paper.bring = korneeva_nina.paper_thanks.1 | korneeva_nina.paper_thanks.2 | korneeva_nina.paper_thanks.3
 
 [Belov_misha]
 first = belov_misha.first.1

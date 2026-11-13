@@ -35,7 +35,8 @@ rest (the speakers are in `localization/voice.json`); `tools/check_localization.
   (a `map.json` place) puts the marker on the map.
 - A quest begins by `auto_start`, by `start_on` (an event), by another stage's `reward.start`, or `Quest.Start`.
 - An event that a **later** stage waits for finishes the stages before it: steps done out of order never leave a quest
-  stuck. Write stages so that this is harmless.
+  stuck. Write stages so that this is harmless. A `talk` never skips ahead: "ask, do, come back and tell" quests talk to
+  the same person on the first stage and on the last.
 - `dev` is the developer mode's (where a jump to the stage lands); the game ignores it. Teleport points are in
   `Content/Dev/teleports/<quest>.json`.
 - Words: `quest.<id>.title|desc`, `quest.<id>.<stage>.log` (the journal entry when the stage begins, the hero's own
@@ -49,6 +50,7 @@ rest (the speakers are in `localization/voice.json`); `tools/check_localization.
 | `leave_computer`, `walk` | the hero got up; took his first steps | the club computer, the game screen |
 | `reach <place>` | came within a place's radius (as the hero or as a bird) | `ULyudQuests::UpdatePosition` |
 | `get`, `use`, `wear <item>`; `have <item>` | pocket changes; `have` counts what is in the pocket | `ULyudInventory` |
+| `bring <item>@<Npc>` | a talk with that person while the pocket holds `need` of the item: they are taken | `ULyudQuests` (on `talk`) |
 | `bird` | became a bird | the game screen |
 | `bird_seen`, `bird_tamed <Species>` | first sight; a bird ate from the palm | `ULyudBirdBook` |
 | `feeder_fill <feed>`, `feeder_fill_at <feed>@<place>` | a handful went into a feeder (and in which places the hero stood) | `UBirdFeederSubsystem::Fill` |
@@ -71,7 +73,8 @@ quest.waxwing_after.done = sorokin_oleg.waxwing_journal.1
 While the quest is on one of the listed stages the person says these lines instead of their everyday ones
 (`.again` = every later talk on those stages). `done` is a finished quest: said once, then the everyday talks go on. The
 stage is read before the talk is reported, so the talk that finishes a stage still gets that stage's lines, and a
-quest that the talk itself begins counts as on its first stage. Keys are `line.<speaker>.<scene>.<n>` as everywhere;
+quest that the talk itself begins counts as on its first stage. On a stage that waits for `bring ...@<this person>`
+while the hero has not got the thing, the stage is `<stage>_empty` (their "well, where is it?" line). Keys are `line.<speaker>.<scene>.<n>` as everywhere;
 the voice of a line is found by its key.
 
 ## Staging (quest_scenes.json)
@@ -117,3 +120,10 @@ The waxwings are the rare bird: seven of them in two or three small groups, all 
 first main quest ends (the upper cable car station) or by talking to Sorokin.
 
 Not checked in the engine yet when this page was written: see the pull request for what was run.
+
+## Two short ones, for the shape
+
+- `evening_paper`: Nina Korneeva asks for today's paper (`talk`), the hero has one (`have daily_paper`), brings it
+  (`bring daily_paper@Korneeva_nina`): ten rubles and two pies.
+- `crow_gift`: Yuki Sato says the crows bring presents (`talk`); three handfuls thrown to them (`corvid_feed_thrown`),
+  a gift picked up (`corvid_gift_taken`), back to tell her (`talk`).

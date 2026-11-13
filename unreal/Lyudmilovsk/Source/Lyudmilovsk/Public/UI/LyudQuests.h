@@ -25,7 +25,11 @@
  *   bird_call <Species>.<Npc>  the hero, as a bird of that species, sat down near somebody who listens for birds and called
  *                              (F; quest_scenes.json "listeners", ULyudQuestDirector)
  * An objective's event may list alternatives ("leave_computer|walk"). An event a later stage waits for finishes the stages before
- * it (a teleport, a load, steps done out of order never leave a quest stuck on an old step).
+ * it (a teleport, a load, steps done out of order never leave a quest stuck on an old step); a talk never does (a quest may
+ * send the hero back to the one who gave it).
+ * Two objectives are not events of their own: "have <item>" counts the pocket, and "bring <item>@<Npc>" is met by a talk with
+ * that person while the pocket holds Need of the item, which they then take (ULyudQuests::TalkStage tells the dialogue
+ * "<stage>_empty" while the pocket hasn't got it).
  * A Target ending in '*' matches by prefix (drink_* is any soda). The words are keys (localization skill):
  *   quest.<id>.title, quest.<id>.desc, quest.<id>.<stage>.log (the journal entry when the stage begins),
  *   quest.<id>.<objective>.obj (the line in the journal and on the HUD), quest.<id>.done (the entry when the quest ends).
