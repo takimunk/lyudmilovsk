@@ -1,12 +1,13 @@
-"""Builds test residents with accessories, prints geometry checks and renders contact sheets.
+"""Builds test residents with accessories, checks their geometry and renders contact sheets.
 
-    python3 bpyrun.py blender/residents/test_accessories.py -- [--engine eevee|wb] [--only people,lineup,heads,posed]
-    (or: Blender -b -P blender/residents/test_accessories.py -- ...)
+    Blender -b -P blender/residents/test_accessories.py -- [--engine eevee|wb] [--only people,lineup,heads,posed]
+    Blender -b -P blender/residents/test_accessories.py -- --only checks       (the checks alone, no renders)
+    (in the cloud: python3 tools/residents/bpyrun.py blender/residents/test_accessories.py -- ...)
 
 Output: renders/residents/accessories_{people_front,people_back,people_34,heads,lineup,posed_front,posed_34}.png
         and accessories_tiles.png (the tile textures).
-Checks printed per accessory: triangles, UV range, material/tile props, how many vertices sit inside the body
-(rest pose) and, for the posed run, the largest edge stretch (a tear detector for blended items).
+Checks per accessory: triangles, UV range, material/tile props, how many vertices sit inside the body (rest pose)
+and, posed (posed, checks), the largest edge stretch (a tear detector for blended items). Any failed check: exit 1.
 """
 import math
 import os
@@ -36,6 +37,11 @@ def arg(name, default=None):
 ENGINE = arg("--engine", "eevee")
 ONLY = (arg("--only", "people,lineup,heads,posed")).split(",")
 SCALE = float(arg("--scale", "1.0"))
+INSIDE_MAX = 0.03          # share of an accessory's vertices more than 1.5 mm inside the body (rest pose)
+WORST_MM = -8.0            # the deepest of them
+STRETCH_MAX = 1.6          # edge length walking / at rest: beyond it the item tears in a walk (below 1 it only
+                           # folds: a beard under the chin, an apron at the hips; 0.4 is usual there)
+FAILS = []
 
 # MakeHuman age: 0 = 1 yr, 0.1875 = 11, 0.5 = 25, 1.0 = 90
 PEOPLE = [
@@ -133,7 +139,10 @@ def check(spec):
         spread = np.percentile(ratios, 95) / max(np.percentile(ratios, 5), 1e-9)
         mats = [m.material.name for m in o.material_slots]
         ok = (len(mats) == 1 and mats[0].split(".")[0] in ("Cloth", "Hair") and uv.min() >= 0 and uv.max() <= 1
-              and o["tris"] <= (800 if o["kind"] == "glasses" else 1500))
+              and o["tris"] <= (800 if o["kind"] == "glasses" else 1500)
+              and inside <= INSIDE_MAX * n and worst * 1000 >= WORST_MM)
+        if not ok:
+            FAILS.append("%s %s" % (spec["name"], o["kind"]))
         print("%-9s %-13s tris=%4d uv=[%.2f..%.2f] mat=%s tile=%s tint_slot=%s tintable=%s inside_body=%d/%d worst=%.1fmm uv_density_p95/p5=%.1f %s" % (
             spec["name"], o["kind"], o["tris"], uv.min(), uv.max(), mats, o["tile"], o["tint_slot"], o["tintable"], inside, n,
             worst * 1000, spread, "OK" if ok else "CHECK"))
@@ -260,8 +269,12 @@ def stretch_report(specs):
             l1 = np.linalg.norm(pos[e[:, 0]] - pos[e[:, 1]], axis=1)
             ok = l0 > 1e-4
             r = (l1[ok] / l0[ok])
-            print("stretch %-9s %-13s max=%.2f min=%.2f  moved=%.1fcm" % (sp["name"], o["kind"], r.max(), r.min(),
-                                                                         np.abs(pos - rest).max() * 100))
+            torn = r.max() > STRETCH_MAX
+            if torn:
+                FAILS.append("%s %s stretch" % (sp["name"], o["kind"]))
+            print("stretch %-9s %-13s max=%.2f min=%.2f  moved=%.1fcm %s" % (sp["name"], o["kind"], r.max(), r.min(),
+                                                                            np.abs(pos - rest).max() * 100,
+                                                                            "CHECK" if torn else "OK"))
 
 
 # ------------------------------------------------------------------------------ main
@@ -275,7 +288,7 @@ def main():
         print("person", sp["name"])
         specs.append(build_person(sp))
     line = []
-    if "lineup" in ONLY or "posed" in ONLY:
+    if "lineup" in ONLY or "posed" in ONLY or "checks" in ONLY:
         for sp in LINEUP:
             print("person", sp["name"])
             line.append(build_person(sp))
@@ -283,6 +296,12 @@ def main():
     for sp in specs + line:
         check(sp)
         A_FIT[sp["name"]] = A.Fit(sp["ctx"])
+    if "checks" in ONLY:
+        for sp in specs + line:
+            pose_walk(sp["arm"])
+        stretch_report(specs + line)
+        finish(t0)
+        return
     # tiles contact sheet
     tiles = A.make_tiles(os.path.join(OUT, "tiles"))
     from PIL import Image
@@ -334,7 +353,14 @@ def main():
         shot(os.path.join(OUT, "accessories_posed_front.png"), (0.0, -9.0, 1.0), (0, 0, 0.88), 60, sizes, hide=line)
         shot(os.path.join(OUT, "accessories_posed_34.png"), (6.4, -6.9, 1.15), (0, 0, 0.88), 60, sizes, hide=line)
         shot(os.path.join(OUT, "accessories_posed_lineup.png"), (7.4, -7.4, 1.15), (0, 0, 0.88), 60, (1700, 800), hide=specs)
-    print("done in %.1fs" % (time.time() - t0))
+    finish(t0)
+
+
+def finish(t0):
+    print("done in %.1fs: %s" % (time.time() - t0, ("%d checks failed: %s" % (len(FAILS), ", ".join(FAILS))) if FAILS
+                                 else "every check passed"))
+    if FAILS:
+        sys.exit(1)
 
 
 if __name__ == "__main__":

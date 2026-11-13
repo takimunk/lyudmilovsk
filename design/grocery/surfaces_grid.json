@@ -1,0 +1,30 @@
+{
+ "service": "higgsfield MCP",
+ "tool": "generate_image",
+ "model": "gpt_image_2_5",
+ "aspect_ratio": "1:1",
+ "resolution": "4k",
+ "quality": "high",
+ "job_id": "0a609fed-8b09-41e0-9fea-44d847ca40c4",
+ "date": "2026-11-01",
+ "output": "https://d8j0ntlcm91z4.cloudfront.net/user_36I3ndR5QeKPyjKAdSKVfbd04n2/hf_20261101_101150_0a609fed-8b09-41e0-9fea-44d847ca40c4.png",
+ "sha256": "a6e4951ee0090b0f2ec09841333c6e0e38e130fc7b1508f9090306b95a895761",
+ "size": [
+  2880,
+  2880
+ ],
+ "prompt": "Nine flat material swatches for game textures, arranged as a 3 by 3 grid of equal square cells on one picture. Every cell is completely filled edge to edge with one surface, photographed perfectly straight on (orthographic, no perspective), flat even soft overcast light, no cast shadows, no vignette, no objects, no text, no borders, frames, gaps or lines between the cells; detail spread evenly across each cell with nothing in its middle; photorealistic, the look of a Soviet food shop (gastronom) of the 1970s-80s on the Baltic coast, clean but used. Row 1, left: glazed ceramic wall tiles 15 x 15 cm, pale sky-blue glaze with slight colour variation tile to tile, thin dark grey grout, exactly 6 by 6 tiles in the cell. Row 1, middle: the same 15 cm glazed tiles in ivory cream, 6 by 6 tiles. Row 1, right: Soviet metlakh floor tiles, small unglazed square ceramic tiles 10 x 10 cm in a chequer of terracotta brown and beige, worn matte, 8 by 8 tiles. Row 2, left: polished terrazzo floor, grey-beige cement with small white, grey and dark red marble chips, a few faint scuffs. Row 2, middle: dark varnished oak panel, straight grain running top to bottom, satin sheen. Row 2, right: light varnished beech worktop, straight grain running left to right, worn edges of use, a few faint knife marks. Row 3, left: white-grey Ural marble slab with soft grey veins, polished. Row 3, middle: lime-whitewashed ceiling plaster, off-white, faint trowel marks and hairline cracks. Row 3, right: white enamel painted sheet metal of a refrigerated display counter, slightly orange-peel texture, a few tiny chips.",
+ "ids": [
+  "g_tile_blue",
+  "g_tile_ivory",
+  "g_metlakh",
+  "g_terrazzo",
+  "g_oak",
+  "g_beech",
+  "g_marble",
+  "g_ceiling",
+  "g_enamel"
+ ],
+ "note": "3x3 surface sheet for the Gastronom No. 7 hall (test sheet before the plan's OK); cut by tools/grocery_assets.py surfaces, then tools/fal_academ_textures.py post (seamless, _D/_N/_R; tiles relaid in code).",
+ "credits": 4.25
+}

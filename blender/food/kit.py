@@ -22,7 +22,7 @@ class Builder:
     """Faces with per-corner uvs (0..1 inside a cell); lint_part per face (a separate piece for the lint)."""
 
     def __init__(self):
-        self.verts, self.faces, self.uvs, self.parts = [], [], [], []
+        self.verts, self.faces, self.uvs, self.parts, self.mats = [], [], [], [], []
         self.part = 0
 
     def new_part(self):
@@ -30,12 +30,23 @@ class Builder:
         return self
 
     def face(self, cell, pts, uv):
+        """cell: an atlas cell, or "sign:<name>": its own material slot FoodSign_<name> with uvs 0..1 (a sign whose picture
+        follows the game's language, ULyudStallSubsystem)."""
+        if cell.startswith("sign:"):
+            base = len(self.verts)
+            self.verts.extend(Vector(p) for p in pts)
+            self.faces.append(tuple(range(base, base + len(pts))))
+            self.uvs.append([tuple(q) for q in uv])
+            self.parts.append(self.part)
+            self.mats.append("FoodSign_" + cell[5:])
+            return
         r = AT.uv_rect(cell)
         base = len(self.verts)
         self.verts.extend(Vector(p) for p in pts)
         self.faces.append(tuple(range(base, base + len(pts))))
         self.uvs.append([(r[0] + (r[2] - r[0]) * min(max(u, 0.0), 1.0), r[1] + (r[3] - r[1]) * min(max(v, 0.0), 1.0)) for u, v in uv])
         self.parts.append(self.part)
+        self.mats.append(None)
 
     def box(self, cell, lo, hi, scale=1.0, skip=()):
         """An axis-aligned box lo..hi (metres); each side's uvs planar, scale texels per metre-ish (repeats clamp to the cell)."""
@@ -136,6 +147,12 @@ class Builder:
         ob = bpy.data.objects.new(name, me)
         bpy.context.scene.collection.objects.link(ob)
         ob.data.materials.append(material())
+        extra = sorted({m for m in self.mats if m})
+        for name in extra:
+            ob.data.materials.append(bpy.data.materials.get(name) or bpy.data.materials.new(name))
+        if extra:
+            idx = [0 if m is None else 1 + extra.index(m) for m in self.mats]
+            me.polygons.foreach_set("material_index", idx)
         if merge > 0:
             bm = bmesh.new()
             bm.from_mesh(me)

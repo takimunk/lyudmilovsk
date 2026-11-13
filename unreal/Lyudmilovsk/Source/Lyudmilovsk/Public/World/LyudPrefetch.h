@@ -27,6 +27,10 @@ public:
 	/** Ready() for every asset in a content folder and its subfolders whose name doesn't contain Skip. */
 	static bool FolderReady(const UObject* WorldContext, const FString& Folder, const TCHAR* Skip = nullptr);
 
+	/** Lets go of a loaded object once its user holds it itself (a body with its mesh): the garbage collector frees it
+	 *  after that user goes. For the one-off assets (a townsperson's own look), not the shared ones. */
+	static void Release(const UObject* WorldContext, const FString& ObjectPath);
+
 	int32 NumLoading() const { return Loading.Num(); }
 
 private:

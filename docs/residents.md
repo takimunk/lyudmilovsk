@@ -19,10 +19,14 @@ Blender -b -P blender/residents/preview_residents.py -- --limit 12 --faces    # 
 unreal/scripts/import_residents.sh                     # into /Game/Characters/Humans/Town/ (see "Unreal")
 ```
 
-In the cloud `Blender -b -P x.py -- args` is `python3 run.py x.py -- args` with pip bpy 5.2 (a three-line runner that
-sets sys.argv and runs the script). Build output (`blender/residents/export/`, `atlases/`, `cache/`) is local only,
-like every generated model (LFS quota): the scripts rebuild it. A person takes 3-7 s, all 898 about 20 minutes on four
-cores. Builds are incremental: a model is rebuilt only when its look's hash or `BUILD_VERSION` changed.
+In the cloud `Blender -b -P x.py -- args` is `python3 tools/residents/bpyrun.py x.py -- args` with pip bpy 5.2 (it
+sets sys.argv as Blender would and runs the script). Build output (`blender/residents/export/`, `atlases/`, `cache/`)
+is local only, like every generated model (LFS quota): the scripts rebuild it. A person takes 3-7 s, all 898 about 20
+minutes on four cores. Builds are incremental: a model is rebuilt when its look's hash, `BUILD_VERSION` or the atlas
+layout changed (the sidecar's `atlas`: an id of layout.json's tiles, which the UVs point into). `atlases.py` stops
+rather than write atlases without the accessories' tiles (accessories.py needs bpy: run it with Blender).
+`Blender -b -P blender/residents/test_accessories.py -- --only checks` builds eight test people and fails (exit 1) on
+an accessory sunk into the body, over its triangle budget, off its material or torn in a walk.
 
 ## Looks (`looks.py`, plain Python)
 
@@ -121,21 +125,26 @@ run makes the shared assets: the atlases `Textures/T_Resident_{Skin,Cloth,Hair,E
 with alpha-coverage mips), the masters `Materials/M_Resident_Opaque` (subsurface, two-sided; black scatter on Cloth and
 Eyes) and `M_Resident_Masked` (Hair, clip 0.5), and one instance per section, `MI_Resident_*` (roughness Skin 0.55,
 Cloth 0.85, Hair 0.5, Eyes 0.2). Each following run imports up to 60 people as `Town/R_<key>/SK_R_<key>` on
-`SK_Human_Skeleton` (never a new skeleton): Nanite off, the six face morphs, UV0-2, the four LODs of `lod_people.py`
-and a physics asset. The runs go on until nothing is left; a person who fails twice, or takes the editor down twice, is
+`SK_Human_Skeleton` (never a new skeleton): Nanite off, the six face morphs, UV0-2, four LODs of their own
+(`Town/LOD_Resident`: 100/45/18/6 % of the triangles, 24k/11k/4.3k/1.4k, from screen sizes 1/0.45/0.2/0.08; the cast's
+`LOD_HumanPeople` caps LOD3 at 5000, more than a resident's LOD2) and a physics asset. The runs go on until nothing is left; a person who fails twice, or takes the editor down twice, is
 left out and listed. The masters compute `lerp(T, T * 2 * tint, amount)` with tint = (UV1.x, 1 - UV1.y, UV2.x) and
 amount = 1 - UV2.y, times T.a on Cloth (static switch `AlphaIsTintMask`). The `1 - y` undoes the V flip of Blender's
 glTF exporter and sits behind the static switch `TintFlipV`: if people come out grey or green, flip it in the two
 masters; no mesh needs re-importing.
 
-The import is incremental: each mesh carries its sidecar's `hash/build` as the metadata tag `ResidentLook`, and
+The import is incremental: each mesh carries its sidecar's `hash/build/atlas` as the metadata tag `ResidentLook`, and
 `Saved/ImportResidents/models/<Model>.json` records every import, so a rerun only imports new or rebuilt people.
 `--force` re-imports, `--retry-failed` retries failures, `--only key,key` and `--limit N` select people, `--prune`
 deletes folders no longer in `town_looks.json`. `python3 unreal/scripts/import_residents.py --report` gives the tally
 without the engine; the log is `Saved/ImportResidents/import.log`. Before any editor starts, the wrapper runs
 `blender/residents/check_export.py` (no Blender, no engine; `CHECK=0` skips it) and stops if a model is off: one skin on
-the 56 bones of `SK_Human_Skeleton`, the four sections, the six morphs on every section, UV0-2, normals, weights that
-sum to 1, every UV inside 0..1, no degenerate triangles.
+the 56 bones of `SK_Human_Skeleton` with no weight on a joint past it, the four sections, the six morphs on every
+section and none on by default, UV0-2, normals, skin weights that sum to 1, UV0 inside its section's atlas tiles
+(their padding allowed), the tint UVs inside 0..1, no triangle of zero area. One wrapper runs at a time (a lock in
+`Saved/ImportResidents`); it won't start while an import editor of a killed wrapper still runs, looks for an open
+editor again before every run, and if a killed wrapper left its skeleton copy and the skeleton differs from it, it
+stops and asks which one is right instead of taking the skeleton as the good copy.
 
 ```sh
 python3 blender/residents/check_export.py                # no engine: 898 models checked, 0 with problems
