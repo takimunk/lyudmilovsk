@@ -519,6 +519,8 @@ static void MoreChecks()
 	CHECK(Of && Of->size() == 10 && M.ThingsOfPlot("P-K1")->size() == 1 && !M.ThingsOfPlot("P-NONE"), "the things of a plot, built at load");
 }
 
+static void RealGameChecks(const FModel& M);
+
 static void RealChecks(const std::string& Path)
 {
 	std::string Text, Error;
@@ -623,6 +625,366 @@ static void RealChecks(const std::string& Path)
 	}
 	std::printf("  daily acts %d, lines with conditions %d, screen acts %d\n", Daily, Conditional, Screens);
 	CHECK(EmptyNow == 0, "every act with lines has a line for every hour (%d have a gap)", EmptyNow);
+	RealGameChecks(M);
+}
+
+// --- mini-games (docs/city_interiors.md "Mini-games")
+
+/** Ticks a game in 1/60 s steps until Done holds or Seconds pass; true when Done held. */
+template <typename FDone>
+static bool RunUntil(const FModel& M, FGameState& G, double Seconds, FDone Done)
+{
+	for (int I = 0; I < (int)(Seconds * 60.0); ++I)
+	{
+		if (Done())
+		{
+			return true;
+		}
+		M.TickGame(G, 1.0 / 60.0);
+	}
+	return Done();
+}
+
+/** Plays a game to its end: aim presses at the zone's middle (bAim) or never; rally presses at the ball's arrival (or never);
+ *  duel picks the move that beats the opponent's (bRead) or always move 0. Returns false if it did not end in Seconds. */
+static bool Play(const FModel& M, FGameState& G, bool bGood, double Seconds = 240.0)
+{
+	const FGameDef* D = M.GameDef(G.Def);
+	for (int I = 0; I < (int)(Seconds * 60.0) && !G.bOver; ++I)
+	{
+		M.TickGame(G, 1.0 / 60.0);
+		if (G.bOver || G.Clock < G.Wait)
+		{
+			continue;
+		}
+		if (D->Type == EGameType::Aim && bGood && std::fabs(G.Marker - G.ZoneAt) < D->Zone / 12.0)
+		{
+			M.PressGame(G, -1);
+		}
+		else if (D->Type == EGameType::Rally && bGood && !G.bAway && std::fabs(G.Clock - G.Arrive) < 1.0 / 60.0)
+		{
+			M.PressGame(G, -1);
+		}
+		else if (D->Type == EGameType::Duel)
+		{
+			M.PressGame(G, bGood ? (G.OppMove + 1) % 3 : 0);
+		}
+	}
+	return G.bOver;
+}
+
+static void GameChecks()
+{
+	std::printf("mini-games\n");
+	const std::string Text = R"({"things": [
+  {"id": "P-CLUB/darts", "plot": "P-CLUB", "kind": "play", "ue": [0, 0, 150], "yaw": 0, "props": {"what": "darts"}, "act": "darts", "hours": [10, 22], "days": "mon-sun"},
+  {"id": "P-CLUB/hoop", "plot": "P-CLUB", "kind": "sport", "ue": [600, 0, 150], "yaw": 0, "props": {"what": "basketball"}, "act": "hoop", "hours": [0, 24], "days": "mon-sun"},
+  {"id": "P-CLUB/tt", "plot": "P-CLUB", "kind": "play", "ue": [1200, 0, 100], "yaw": 0, "props": {"what": "table_tennis"}, "act": "tt", "hours": [0, 24], "days": "mon-sun"},
+  {"id": "P-CLUB/wall", "plot": "P-CLUB", "kind": "play", "ue": [1800, 0, 100], "yaw": 0, "props": {"what": "table_tennis"}, "act": "wall", "hours": [0, 24], "days": "mon-sun"},
+  {"id": "P-CLUB/chess", "plot": "P-CLUB", "kind": "play", "ue": [2400, 0, 80], "yaw": 0, "props": {"what": "chess"}, "act": "chess", "hours": [0, 24], "days": "mon-sun"},
+  {"id": "P-PARK/chess", "plot": "P-PARK", "kind": "play", "ue": [9000, 0, 80], "yaw": 0, "props": {"what": "chess"}, "act": "chess", "hours": [0, 24], "days": "mon-sun"},
+  {"id": "P-CLUB/switch", "plot": "P-CLUB", "kind": "machine", "ue": [3000, 0, 140], "yaw": 0, "props": {"what": "switch", "switch": "hall"}, "act": "sw", "hours": [0, 24], "days": "mon-sun"},
+  {"id": "P-CLUB/switch2", "plot": "P-CLUB", "kind": "machine", "ue": [3300, 0, 140], "yaw": 0, "props": {"what": "switch"}, "act": "sw", "hours": [0, 24], "days": "mon-sun"}],
+ "acts": {
+  "darts": {"prompt": "p", "lines": ["city.do.darts.1"], "minutes": 10, "event": "do", "target": "darts", "pose": "stand",
+   "game": {"type": "aim", "rounds": 5, "need": 6, "speed": 0.7, "zone": 0.2, "vs": "darts", "win": ["d.win.1", "d.win.2"], "lose": ["d.lose"], "draw": ["d.draw"],
+    "collect": "darts_wins/{opponent}", "prize": [["postcard", 1]], "daily": 2, "sounds": {"hit": "rest_clink", "miss": "", "end": "rest_bell"}}},
+  "hoop": {"prompt": "p", "lines": ["city.do.basketball.1"], "minutes": 15,
+   "game": {"type": "aim", "rounds": 5, "need": 6, "speed": 0.55, "zone": 0.22, "win": ["h.win"], "lose": ["h.lose"], "draw": ["h.draw"]}},
+  "tt": {"prompt": "p", "lines": ["x"], "minutes": 20,
+   "game": {"type": "rally", "need": 3, "speed": 0.9, "zone": 0.5, "shrink": 0.88, "pace": 1.05, "vs": "table_tennis", "win": ["t.win"], "lose": ["t.lose"], "draw": ["t.draw"]}},
+  "wall": {"prompt": "p", "lines": ["x"], "minutes": 20,
+   "game": {"type": "rally", "need": 6, "speed": 0.9, "zone": 0.5, "win": ["w.win"], "lose": ["w.lose"], "draw": ["w.draw"]}},
+  "chess": {"prompt": "p", "lines": ["x"], "minutes": 40, "pose": "sit",
+   "game": {"type": "duel", "rounds": 3, "vs": "chess", "moves": [{"k": "m1", "power": 2, "tell": "t1"}, {"k": "m2", "power": 1, "tell": "t2"}, {"k": "m3", "power": 2, "tell": "t3"}],
+    "win": ["c.win"], "lose": ["c.lose"], "draw": ["c.draw"], "collect": "chess_wins/{opponent}"}},
+  "sw": {"prompt": "p", "any_hour": true}
+ },
+ "collections": {"chess_wins": {"title": "t", "pieces": ["ann", "bob", "cid"]}, "darts_wins": {"title": "t", "pieces": ["dan"]}},
+ "regulars": {
+  "ann": {"name": "npc.ann.name", "style": "bold", "skill": 0.6, "plays": ["chess"], "plots": ["P-CLUB"], "hello": "a.hi", "win": "a.w", "lose": "a.l"},
+  "bob": {"name": "npc.bob.name", "style": "careful", "skill": 0.3, "plays": ["chess", "table_tennis"], "plots": ["P-CLUB"]},
+  "cid": {"name": "npc.cid.name", "style": "tricky", "skill": 0.9, "plays": ["chess"], "plots": ["P-ELSEWHERE"]},
+  "dan": {"name": "npc.dan.name", "style": "steady", "skill": 0.5, "plays": ["darts"]}
+ }})";
+	FModel M;
+	std::string Error;
+	CHECK(M.Load(Text, Error), "a games file loads (%s)", Error.c_str());
+	CHECK(M.Games.size() == 5 && M.Regulars.size() == 4, "five games, four regulars (%d, %d)", (int)M.Games.size(), (int)M.Regulars.size());
+	const int Darts = M.FindThing("P-CLUB/darts"), Hoop = M.FindThing("P-CLUB/hoop"), Tt = M.FindThing("P-CLUB/tt"), Wall = M.FindThing("P-CLUB/wall");
+	const int Chess = M.FindThing("P-CLUB/chess"), ParkChess = M.FindThing("P-PARK/chess");
+	const FGameDef* DD = M.GameOfThing(Darts);
+	CHECK(DD && DD->Type == EGameType::Aim && DD->Rounds == 5 && DD->Need == 6 && DD->Vs == "darts" && DD->Daily == 2 && DD->Prize.size() == 1
+		&& DD->Results[0].Lines.size() == 2 && DD->SoundHit == "rest_clink", "the darts' game reads: aim, 5 throws, vs darts, 2 a day, a prize, 2 win lines");
+	const FGameDef* CD = M.GameOfThing(Chess);
+	CHECK(CD && CD->Type == EGameType::Duel && CD->Moves.size() == 3 && CD->Moves[0].Power == 2 && CD->Moves[2].Tell == "t3", "the chess duel: three moves with powers and tells");
+	const FRegular& Ann = M.Regulars[(size_t)M.FindRegular("ann")];
+	CHECK(Ann.Lean[0] > Ann.Lean[1] && Ann.Lean[0] > Ann.Lean[2] && M.Regulars[(size_t)M.FindRegular("cid")].Honesty < Ann.Honesty,
+		"a bold regular leans to the first move; a skilled tricky one is harder to read");
+	CHECK(MoveBeats(0, 2) && MoveBeats(1, 0) && MoveBeats(2, 1) && !MoveBeats(0, 1) && !MoveBeats(1, 1), "the moves go round like rock, paper, scissors");
+
+	// Run: the game starts instead of the lines, while today's games last
+	FAsk Ask;
+	Ask.Money = 100;
+	FOutcome R1 = M.Run(Darts, At(2, 12.f, 50), Ask);
+	FOutcome R2 = M.Run(Darts, At(2, 12.5f, 50), Ask);
+	FOutcome R3 = M.Run(Darts, At(2, 13.f, 50), Ask);
+	CHECK(R1.Verdict == EVerdict::Ok && R1.Game == M.Acts[(size_t)M.Things[Darts].Act].Game && R1.Game >= 0 && R1.Line.empty() && R2.Game >= 0,
+		"the darts start their game (no line shown)");
+	CHECK(R3.Game < 0 && R3.Line == "city.do.darts.1", "two games a day, then the act runs plainly (its line)");
+	FOutcome R4 = M.Run(Darts, At(3, 12.f, 51), Ask);
+	CHECK(R4.Game >= 0, "the next day: a game again");
+	M.ResetToday();
+	CHECK(M.Run(Darts, At(3, 12.f, 51), Ask).Game >= 0, "reset today: games again");
+	CHECK(M.Run(Darts, At(3, 23.f, 51), Ask).Verdict == EVerdict::Closed, "the club is shut at 23: no game");
+
+	// opponents: the plot's regulars first, else anybody who plays it
+	int Pool[8];
+	const int NClub = M.Opponents(*CD, "P-CLUB", Pool, 8);
+	CHECK(NClub == 2 && M.Regulars[(size_t)Pool[0]].Id == "ann" && M.Regulars[(size_t)Pool[1]].Id == "bob", "at the club: ann and bob play chess (%d)", NClub);
+	CHECK(M.Opponents(*CD, "P-PARK", Pool, 8) == 3, "in the park nobody is at home: all three chess players may come");
+	CHECK(M.Opponents(*M.GameOfThing(Hoop), "P-CLUB", Pool, 8) == 0, "free throws are alone");
+
+	// determinism: the same seed and the same presses, the same game
+	FGameState A1, A2, A3;
+	M.StartGameSeeded(Darts, 12345, A1);
+	M.StartGameSeeded(Darts, 12345, A2);
+	M.StartGameSeeded(Darts, 99999, A3);
+	CHECK(A1.Opponent == A2.Opponent && A1.ZoneAt == A2.ZoneAt && A1.Phase == A2.Phase && (A1.ZoneAt != A3.ZoneAt || A1.Phase != A3.Phase),
+		"a seed fixes the opponent and the zone; another seed moves them");
+	Play(M, A1, true);
+	Play(M, A2, true);
+	CHECK(A1.bOver && A2.bOver && A1.Score == A2.Score && A1.OppScore == A2.OppScore && A1.Result == A2.Result, "played the same way, the same result (%d:%d %s)",
+		A1.Score, A1.OppScore, GameResultName(A1.Result));
+	CHECK(A1.Score == 10 && A1.Round == 5, "five throws at the zone's middle: five bulls, 10 points");
+
+	// aim: a press far from the zone misses, a throw not made in time is a miss
+	FGameState Aim;
+	M.StartGameSeeded(Hoop, 7, Aim);
+	CHECK(Aim.Opponent < 0 && Aim.Clock < Aim.Wait, "free throws: alone, a pause before the first");
+	M.PressGame(Aim, -1);
+	CHECK(Aim.Round == 0 && Aim.BeatSerial == 0, "a press in the pause is not taken");
+	const double Zone = M.GameOfThing(Hoop)->Zone;
+	RunUntil(M, Aim, 10.0, [&]() { return Aim.Clock >= Aim.Wait && std::fabs(Aim.Marker - Aim.ZoneAt) > Zone; });
+	M.PressGame(Aim, -1);
+	CHECK(Aim.Round == 1 && Aim.Score == 0 && Aim.Beat == EGameBeat::Miss, "a press outside the zone: a miss");
+	RunUntil(M, Aim, 10.0, [&]() { return Aim.Clock >= Aim.Wait && std::fabs(Aim.Marker - Aim.ZoneAt) > Zone / 6.0 + 0.01 && std::fabs(Aim.Marker - Aim.ZoneAt) < Zone * 0.5 - 0.01; });
+	M.PressGame(Aim, -1);
+	CHECK(Aim.Round == 2 && Aim.Score == 1 && Aim.Beat == EGameBeat::Hit, "in the zone but off its middle: 1 point");
+	const int Before = Aim.Round;
+	RunUntil(M, Aim, 30.0, [&]() { return Aim.Round > Before; });
+	CHECK(Aim.Round == Before + 1 && Aim.Beat == EGameBeat::Miss && Aim.Clock < Aim.Wait + FModel::AimRoundLimit + FModel::AimPause + 1.0,
+		"no throw for %.0f s: a miss", FModel::AimRoundLimit);
+	float Mk, Z0, Z1, I0, I1;
+	CHECK(M.GameBar(Aim, Mk, Z0, Z1, I0, I1) && Z0 < I0 && I1 < Z1 && Z1 - Z0 > 0.2f && Mk >= 0.f && Mk <= 1.f, "the bar: the zone round its bull, the marker on the bar");
+	Play(M, Aim, false);
+	CHECK(Aim.bOver && Aim.Result == EGameResult::Lose && Aim.Score == 1, "alone, 1 point of 6: lost");
+	FGameState Close;
+	M.StartGameSeeded(Hoop, 8, Close);
+	for (int K = 0; K < 2; ++K)
+	{
+		RunUntil(M, Close, 10.0, [&]() { return Close.Clock >= Close.Wait && std::fabs(Close.Marker - Close.ZoneAt) < Zone / 12.0; });
+		M.PressGame(Close, -1);
+	}
+	Play(M, Close, false);
+	CHECK(Close.Result == EGameResult::Draw && Close.Score == 4, "alone, 4 of 6 (half or more): a draw, \"close\" (%d points, %s)", Close.Score, GameResultName(Close.Result));
+	FGameState Good;
+	M.StartGameSeeded(Hoop, 9, Good);
+	Play(M, Good, true);
+	CHECK(Good.Result == EGameResult::Win && Good.Score == 10, "alone, five bulls: won");
+
+	// rally: the window round the arrival, early and late lose the point, the wall returns everything
+	FGameState W;
+	M.StartGameSeeded(Wall, 3, W);
+	CHECK(W.Opponent < 0 && !W.bAway && std::fabs(W.Arrive - W.Wait - 1.0 / 0.9) < 1e-6, "against the wall: the first ball comes 1/speed s after the pause");
+	RunUntil(M, W, 10.0, [&]() { return W.Clock >= W.HitAt + 0.1 * W.Flight; });
+	M.PressGame(W, -1);
+	CHECK(W.BeatSerial == 0 && !W.bOver, "a press just after the ball left is not taken");
+	RunUntil(M, W, 10.0, [&]() { return W.Clock >= W.Arrive - 1.0 / 120.0; });
+	const double Win0 = W.Window, Fl0 = W.Flight;
+	M.PressGame(W, -1);
+	CHECK(W.Hits == 1 && W.bAway && W.Beat == EGameBeat::Hit && W.Window < Win0 && W.Flight < Fl0, "at the arrival: returned; the window shrinks, the ball speeds up");
+	RunUntil(M, W, 10.0, [&]() { return !W.bAway; });
+	CHECK(!W.bAway && W.Arrive > W.Clock, "the wall sends it back");
+	RunUntil(M, W, 10.0, [&]() { return W.Clock >= W.HitAt + 0.5 * W.Flight; });
+	if (W.Clock < W.Arrive - W.Window * 0.5)
+	{
+		M.PressGame(W, -1);
+	}
+	CHECK(W.bOver && W.Beat == EGameBeat::Early && W.Hits == 1 && W.Result == EGameResult::Lose, "too early: the rally (the game alone) is over, 1 of 6: lost");
+	FGameState Late;
+	M.StartGameSeeded(Wall, 4, Late);
+	RunUntil(M, Late, 10.0, [&]() { return Late.bOver; });
+	CHECK(Late.bOver && Late.Beat == EGameBeat::Late, "no press at all: too late");
+	FGameState WGood;
+	M.StartGameSeeded(Wall, 5, WGood);
+	Play(M, WGood, true);
+	CHECK(WGood.Result == EGameResult::Win && WGood.Hits == 6, "six returns against the wall: won (%d)", WGood.Hits);
+	float RB, RZ0, RZ1, RI0, RI1;
+	FGameState WBar;
+	M.StartGameSeeded(Wall, 6, WBar);
+	RunUntil(M, WBar, 10.0, [&]() { return WBar.Clock >= WBar.HitAt + 0.5 * WBar.Flight; });
+	CHECK(M.GameBar(WBar, RB, RZ0, RZ1, RI0, RI1) && std::fabs(RB - 0.5f) < 0.05f && RZ0 > 0.6f && RZ1 == 1.f, "the rally bar: the ball halfway, the window before the hero");
+	FGameState TtGame;
+	M.StartGameSeeded(Tt, 11, TtGame);
+	const bool bTtOver = Play(M, TtGame, true);
+	CHECK(bTtOver && TtGame.Opponent >= 0 && M.Regulars[(size_t)TtGame.Opponent].Id == "bob" && (TtGame.Score == 3 || TtGame.OppScore == 3),
+		"table tennis against bob ends at 3 (%d:%d)", TtGame.Score, TtGame.OppScore);
+	FGameState TtBad;
+	M.StartGameSeeded(Tt, 11, TtBad);
+	Play(M, TtBad, false);
+	CHECK(TtBad.Result == EGameResult::Lose && TtBad.OppScore == 3 && TtBad.Score == 0, "never returning: 0:3");
+
+	// duel: the move that beats the opponent's wins the turn; reading the tell pays
+	FGameState Du;
+	M.StartGameSeeded(Chess, 21, Du);
+	CHECK(Du.Opponent >= 0 && Du.OppMove >= 0 && Du.Tell >= 0, "a chess duel: an opponent of the club, a move and a tell");
+	const int Opp0 = Du.OppMove;
+	RunUntil(M, Du, 5.0, [&]() { return Du.Clock >= Du.Wait; });
+	M.PressGame(Du, (Opp0 + 1) % 3);
+	CHECK(Du.Score == CD->Moves[(size_t)((Opp0 + 1) % 3)].Power && Du.Beat == EGameBeat::TurnWon && Du.Round == 1 && Du.LastOpp == Opp0, "the move that beats theirs wins its power");
+	RunUntil(M, Du, 5.0, [&]() { return Du.Clock >= Du.Wait; });
+	const int Opp1 = Du.OppMove;
+	M.PressGame(Du, (Opp1 + 2) % 3);
+	CHECK(Du.OppScore == CD->Moves[(size_t)Opp1].Power && Du.Beat == EGameBeat::TurnLost, "the move theirs beats loses theirs");
+	RunUntil(M, Du, 5.0, [&]() { return Du.Clock >= Du.Wait; });
+	M.PressGame(Du, Du.OppMove);
+	CHECK(Du.Beat == EGameBeat::TurnEven && Du.bOver && Du.Round == 3, "the same move: nobody; three turns and it is over");
+	int Wins = 0, Reads = 0, Blind = 0;
+	for (uint64_t Seed = 1; Seed <= 300; ++Seed)
+	{
+		FGameState S1, S2;
+		M.StartGameSeeded(Chess, Seed, S1);
+		M.StartGameSeeded(Chess, Seed, S2);
+		Play(M, S1, true);
+		Wins += S1.Result == EGameResult::Win ? 1 : 0;
+		// reading the tell (the move that beats the one the look betrays) against always the first move
+		for (int T = 0; T < 3 && !S2.bOver; ++T)
+		{
+			RunUntil(M, S2, 5.0, [&]() { return S2.Clock >= S2.Wait; });
+			M.PressGame(S2, (S2.Tell + 1) % 3);
+		}
+		Reads += S2.Result == EGameResult::Win ? 1 : 0;
+		FGameState S3;
+		M.StartGameSeeded(Chess, Seed, S3);
+		Play(M, S3, false);
+		Blind += S3.Result == EGameResult::Win ? 1 : 0;
+	}
+	CHECK(Wins == 300 && Reads > Blind + 40, "knowing the move always wins; reading the tell wins more than playing blind (%d vs %d of 300)", Reads, Blind);
+
+	// the end: result lines per thing, the stamp of the regular beaten, the prize, once
+	FGameState Fin;
+	M.StartGameSeeded(Chess, 21, Fin);
+	M.WinGame(Fin);
+	const std::string Beaten = M.Regulars[(size_t)Fin.Opponent].Id;
+	FGameEnd E1 = M.FinishGame(Fin, At(2, 12.f, 60));
+	CHECK(E1.Result == EGameResult::Win && E1.Line == "c.win" && E1.NewStamps.size() == 1 && E1.NewStamps[0] == "chess_wins/" + Beaten
+		&& M.HasStamp("chess_wins/" + Beaten) && E1.Target == "chess" && !E1.Opponent.empty(), "a won duel: the win line, the stamp chess_wins/%s", Beaten.c_str());
+	FGameEnd E2 = M.FinishGame(Fin, At(2, 12.f, 60));
+	CHECK(E2.Result == EGameResult::None && E2.Line.empty(), "a finished game gives nothing twice");
+	FGameState Fin2;
+	M.StartGameSeeded(Chess, 21, Fin2);
+	M.WinGame(Fin2);
+	CHECK(M.FinishGame(Fin2, At(2, 12.f, 60)).NewStamps.empty() && M.CountStamps("chess_wins") == 1, "the same regular beaten again: no new stamp");
+	FGameState DGame;
+	M.StartGameSeeded(Darts, 5, DGame);
+	M.WinGame(DGame);
+	FGameEnd DE = M.FinishGame(DGame, At(2, 12.f, 60));
+	CHECK(DE.Prize.size() == 1 && DE.Prize[0].first == "postcard" && DE.Line == "d.win.1" && M.HasStamp("darts_wins/dan"), "a won darts game: the prize and the stamp");
+	FGameState DGame2;
+	M.StartGameSeeded(Darts, 6, DGame2);
+	M.WinGame(DGame2);
+	CHECK(M.FinishGame(DGame2, At(2, 12.f, 60)).Line == "d.win.2", "the next win: the next win line");
+	FGameState Lost;
+	M.StartGameSeeded(Darts, 6, Lost);
+	Play(M, Lost, false);
+	FGameEnd LE = M.FinishGame(Lost, At(2, 12.f, 60));
+	CHECK(LE.Result == EGameResult::Lose && LE.Line == "d.lose" && LE.Prize.empty(), "a lost game: the lose line, no prize");
+	FGameState Park;
+	M.StartGameSeeded(ParkChess, 1, Park);
+	CHECK(Park.Opponent >= 0, "the park's table finds a player from elsewhere");
+	FGameState None;
+	CHECK(!M.StartGameSeeded(M.FindThing("P-CLUB/switch"), 1, None) && None.Def < 0, "a thing without a game starts none");
+
+	// the started game of Run's seed differs per run
+	FGameState G1, G2;
+	M.StartGame(Darts, At(2, 12.f, 70), G1);
+	M.Run(Darts, At(2, 12.f, 70), Ask);
+	M.StartGame(Darts, At(2, 12.f, 70), G2);
+	CHECK(G1.Seed != G2.Seed, "every game of a thing its own seed (the day and the runs)");
+
+	// save: today's games are counted with the rest
+	std::map<std::string, std::string> Saved;
+	M.SaveState(Saved);
+	CHECK(Saved.count("t:#g:darts") == 1 && Saved.count("c:chess_wins/" + Beaten) == 1, "the save keeps today's games and the regulars beaten");
+
+	// light switches and clocks
+	CHECK(FModel::SwitchRadiusCm(M.Things[(size_t)M.FindThing("P-CLUB/switch")]) == 1500.0 && FModel::SwitchRadiusCm(M.Things[(size_t)M.FindThing("P-CLUB/switch2")]) == 700.0
+		&& FModel::SwitchRadiusCm(M.Things[(size_t)Darts]) == 0.0, "a switch's reach: hall 15 m, a bare switch its room (7 m), darts none");
+	CHECK(FillTime("На часах {time}.", 16.6667f) == "На часах 16:40." && FillTime("{time} / {time}", 0.f) == "00:00 / 00:00" && FillTime("no clock", 3.f) == "no clock"
+		&& FillTime("{time}", 23.999f) == "23:59", "{time}: the game's clock, every one of them");
+}
+
+/** Every game of the real data plays to its end, well and badly, and has words for every result at every hour. */
+static void RealGameChecks(const FModel& M)
+{
+	int Bad = 0, NoEnd = 0, NoOpp = 0, NoLines = 0, Played = 0;
+	std::string First;
+	for (int I = 0; I < (int)M.Things.size(); ++I)
+	{
+		const FGameDef* D = M.GameOfThing(I);
+		if (!D)
+		{
+			continue;
+		}
+		++Played;
+		for (int R = 0; R < 3; ++R)
+		{
+			for (int H = 0; H < 24; ++H)
+			{
+				if (FModel::CountHolding(D->Results[R], At(H % 7, (float)H + 0.5f)) == 0)
+				{
+					++NoLines;
+					First = First.empty() ? M.Things[(size_t)I].Id : First;
+					break;
+				}
+			}
+		}
+		int Pool[32];
+		if (!D->Vs.empty() && M.Opponents(*D, M.Things[(size_t)I].Plot, Pool, 32) == 0)
+		{
+			++NoOpp;
+		}
+		for (int Good = 0; Good < 2; ++Good)
+		{
+			FGameState G;
+			if (!M.StartGameSeeded(I, 1000 + (uint64_t)I, G))
+			{
+				++Bad;
+				continue;
+			}
+			if (D->Type == EGameType::Duel || Good)
+			{
+				NoEnd += Play(M, G, Good != 0) ? 0 : 1;
+			}
+			else
+			{
+				// no press at all: an aim or a rally ends by itself
+				RunUntil(M, G, 200.0, [&]() { return G.bOver; });
+				NoEnd += G.bOver ? 0 : 1;
+			}
+			if (Good && D->Type != EGameType::Rally && G.Result == EGameResult::Lose)
+			{
+				++Bad;
+				First = First.empty() ? M.Things[(size_t)I].Id : First;
+			}
+		}
+	}
+	std::printf("  games on %d things, %d regulars\n", Played, (int)M.Regulars.size());
+	CHECK(NoEnd == 0, "every game ends, played well or not at all (%d do not)", NoEnd);
+	CHECK(Bad == 0, "playing perfectly never loses an aim or a duel (%d do, first %s)", Bad, First.c_str());
+	CHECK(NoOpp == 0, "every game against somebody finds a regular where it stands (%d do not)", NoOpp);
+	CHECK(NoLines == 0, "every game has a win, a lose and a draw line at every hour (%d gaps, first %s)", NoLines, First.c_str());
 }
 
 int main(int Argc, char** Argv)
@@ -631,6 +993,7 @@ int main(int Argc, char** Argv)
 	UntilChecks();
 	WhenChecks();
 	MoreChecks();
+	GameChecks();
 	RealChecks(Argc > 1 ? Argv[1] : "unreal/Lyudmilovsk/Content/City/interiors.json");
 	std::printf("%d passed, %d failed\n", Passed, Failures);
 	return Failures ? 1 : 0;

@@ -1859,13 +1859,14 @@ namespace LyudCity
 			return E;
 		}
 
-		/** A light switch's reach (cm): the thing's "switch" prop, "room" 7 m, "hall" 15 m or metres (1..30); 0: not a switch. */
+		/** A light switch's reach (cm): the thing's "switch" prop, "room" 7 m, "hall" 15 m or metres (1..30); a "what": "switch"
+		 *  without it: its room; 0: not a switch. */
 		static double SwitchRadiusCm(const FThing& T)
 		{
 			const std::string S = T.Prop("switch");
 			if (S.empty())
 			{
-				return 0.0;
+				return T.Prop("what") == "switch" ? 700.0 : 0.0;
 			}
 			if (S == "room")
 			{
@@ -2363,7 +2364,7 @@ namespace LyudCity
 			{
 				R.Lean[I] = Fav < 0 ? 1.0 / 3.0 : (I == Fav ? 0.6 : 0.2);
 			}
-			R.Honesty = std::min(0.9, std::max(0.4, 0.95 - 0.45 * (double)R.Skill - (R.Style == "tricky" ? 0.15 : 0.0)));
+			R.Honesty = std::min(0.85, std::max(0.35, 0.9 - 0.5 * (double)R.Skill - (R.Style == "tricky" ? 0.15 : 0.0)));
 			return R;
 		}
 
