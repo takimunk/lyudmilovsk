@@ -123,7 +123,7 @@
     }
    ]
   },
-  "sanatorium_chess": {
+  "sanatorium_chess": {"like": "chess", 
    "prompt": "city.do.chess.prompt",
    "minutes": 40,
    "pose": "sit",
