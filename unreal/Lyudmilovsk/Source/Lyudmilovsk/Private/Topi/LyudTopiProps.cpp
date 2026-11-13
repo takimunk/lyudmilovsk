@@ -202,7 +202,7 @@ void ULyudTopiProps::PlaceAll(ALyudTopi* Topi)
 	{
 		TowelMeshes.Add(LoadMesh(FString(TEXT("SM_Topi_Towel_")) + Letter));
 	}
-	if (!WarnMesh || !UralMesh || !StakeMesh || TowelMeshes.Contains(nullptr))
+	if (!WarnMesh || !UralMesh || !StakeMesh || TowelMeshes.ContainsByPredicate([](const TObjectPtr<UStaticMesh>& Towel) { return !Towel; }))
 	{
 		if (!bMissingLogged)
 		{
@@ -213,7 +213,6 @@ void ULyudTopiProps::PlaceAll(ALyudTopi* Topi)
 
 	// the warning plates: those on the beach face north, toward someone arriving along it; the rest face north too (the dunes lie south)
 	FRandomStream Rand(7419);
-	int32 Index = 0;
 	for (const FSignSpot& Spot : SignSpots)
 	{
 		FPendingSign Sign;
@@ -223,7 +222,6 @@ void ULyudTopiProps::PlaceAll(ALyudTopi* Topi)
 		Sign.LeanDeg = Rand.FRandRange(3.f, 9.f);
 		Sign.LeanDirDeg = Rand.FRandRange(0.f, 360.f);
 		Pending.Add(Sign);
-		Index++;
 	}
 	if (!WarnMesh)
 	{
@@ -260,23 +258,7 @@ void ULyudTopiProps::PlaceSign(ALyudTopi* Topi, const FPendingSign& Sign, float 
 		return;
 	}
 	NumSigns++;
-	const TArray<FName> Slots = C->GetMaterialSlotNames();
-	for (const FName& Slot : Slots)
-	{
-		const FString SlotName = Slot.ToString();
-		if (!SlotName.StartsWith(TEXT("TP_Sign")))
-		{
-			continue;
-		}
-		UMaterialInterface* Base = C->GetMaterial(C->GetMaterialIndex(Slot));
-		if (Base)
-		{
-			UMaterialInstanceDynamic* MID = UMaterialInstanceDynamic::Create(Base, C);
-			C->SetMaterial(C->GetMaterialIndex(Slot), MID);
-			SignMIDs.Add(MID);
-			SignNames.Add(SlotName.Mid(7).ToLower());
-		}
-	}
+	MakeSignMaterials(C);
 	ApplySignLanguage();
 }
 
@@ -326,21 +308,7 @@ void ULyudTopiProps::PlaceRiverBank(ALyudTopi* Topi)
 		if (Spawn(UralMesh, At, Stand(Rand.FRandRange(-6.f, 6.f), Rand.FRandRange(1.f, 3.f), Rand.FRandRange(0.f, 360.f)), true))
 		{
 			bUral = true;
-			// the board's picture
-			UStaticMeshComponent* C = PlacedParts.Last();
-			const TArray<FName> Slots = C->GetMaterialSlotNames();
-			for (const FName& Slot : Slots)
-			{
-				const FString SlotName = Slot.ToString();
-				UMaterialInterface* Base = SlotName.StartsWith(TEXT("TP_Sign")) ? C->GetMaterial(C->GetMaterialIndex(Slot)) : nullptr;
-				if (Base)
-				{
-					UMaterialInstanceDynamic* MID = UMaterialInstanceDynamic::Create(Base, C);
-					C->SetMaterial(C->GetMaterialIndex(Slot), MID);
-					SignMIDs.Add(MID);
-					SignNames.Add(SlotName.Mid(7).ToLower());
-				}
-			}
+			MakeSignMaterials(PlacedParts.Last());
 		}
 	}
 	double TowelX = End.X - 3.0;
@@ -360,6 +328,28 @@ void ULyudTopiProps::PlaceRiverBank(ALyudTopi* Topi)
 	}
 }
 
+void ULyudTopiProps::MakeSignMaterials(UStaticMeshComponent* Part)
+{
+	const TArray<FName> Slots = Part->GetMaterialSlotNames();
+	for (const FName& Slot : Slots)
+	{
+		const FString SlotName = Slot.ToString();
+		if (!SlotName.StartsWith(TEXT("TP_Sign")))
+		{
+			continue;
+		}
+		const int32 SlotIndex = Part->GetMaterialIndex(Slot);
+		UMaterialInterface* Base = Part->GetMaterial(SlotIndex);
+		if (Base)
+		{
+			UMaterialInstanceDynamic* MID = UMaterialInstanceDynamic::Create(Base, Part);
+			Part->SetMaterial(SlotIndex, MID);
+			SignMIDs.Add(MID);
+			SignNames.Add(SlotName.Mid(7).ToLower());
+		}
+	}
+}
+
 void ULyudTopiProps::ApplySignLanguage()
 {
 	for (int32 I = 0; I < SignMIDs.Num(); I++)
@@ -372,7 +362,7 @@ void ULyudTopiProps::ApplySignLanguage()
 	}
 }
 
-void ULyudTopiProps::OnLanguageChanged(IConsoleVariable* Variable)
+void ULyudTopiProps::OnLanguageChanged(IConsoleVariable*)
 {
 	ApplySignLanguage();
 }

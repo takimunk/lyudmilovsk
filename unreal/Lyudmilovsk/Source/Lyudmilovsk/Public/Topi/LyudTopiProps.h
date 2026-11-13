@@ -2,6 +2,7 @@
 
 #include "CoreMinimal.h"
 #include "Components/ActorComponent.h"
+#include "HAL/IConsoleManager.h"
 #include "LyudTopiProps.generated.h"
 
 class ALyudTopi;
@@ -55,7 +56,9 @@ private:
 	UStaticMeshComponent* Spawn(UStaticMesh* Mesh, const FVector& At, const FQuat& Rotation, bool bCollide);
 	static FQuat Stand(float YawDeg, float LeanDeg, float LeanDirDeg);
 	void ApplySignLanguage();
-	void OnLanguageChanged(class IConsoleVariable* Variable);
+	void OnLanguageChanged(IConsoleVariable* Variable);
+	/** Gives every TP_Sign* slot of a part its own material instance (the picture is set by ApplySignLanguage). */
+	void MakeSignMaterials(UStaticMeshComponent* Part);
 
 	UPROPERTY(Transient) TObjectPtr<UStaticMesh> WarnMesh;
 	UPROPERTY(Transient) TObjectPtr<UStaticMesh> UralMesh;
