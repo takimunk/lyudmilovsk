@@ -78,7 +78,8 @@ class Home:
 
     def seat(self, tid, r, i=0, **props):
         s = r["seats"][i]
-        self.B.thing(tid, "seat", (s[0], s[1], s[2]), s[3], height=round(s[2], 2), **props)
+        # the seat's height over its own floor (the kit's local "height"), not over the building's base: s[2] is a world z
+        self.B.thing(tid, "seat", (s[0], s[1], s[2]), s[3], height=round(r.get("height", s[2]), 2), **props)
 
     def check(self, label="", overlaps=True):
         """Print kit.check warnings and every piece that has a foot corner outside inside()."""
