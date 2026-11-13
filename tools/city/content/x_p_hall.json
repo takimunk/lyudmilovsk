@@ -1,5 +1,5 @@
 {
- "_doc": "Second pass of the Vaults hall (P-HALL, shell_chapel_hall): the weekly programme, the exhibition case and plaques by weekday, the guest book, the sound desk and the light panel by the hour, the backstage (costumes, props, make-up) and the week of the amateur play Time, Forward! from casting on Monday to the Saturday premiere the hero can watch; the dance night, the barre mirror, the chalk menu. Strings: strings/x_p_hall.json (city.xh.*). Quests for it are in /home/user/wt/quests_shell_chapel_hall.json.",
+ "_doc": "Second pass of the Vaults hall (P-HALL, shell_chapel_hall): the weekly programme, the exhibition case and plaques by weekday, the guest book, the sound desk and the light panel by the hour, the backstage (costumes, props, make-up) and the week of the amateur play Time, Forward! from casting on Monday to the Saturday premiere the hero can watch; the dance night, the barre mirror, the chalk menu. Strings: strings/x_p_hall.json (city.xh.*). Quests for it are in /home/user/wt/quests_shell_chapel_hall.json. Round 2: texts (the play's script on the prompter's stand, a guest-book ledger growing by game day, a programme booklet, sheet music), the set hall_evenings (five ticket stubs shown on the foyer board by count), a dance-step rally and an audition duel with the choir leader, a draughts table, the exhibition changing by the week, bread, soup, tea and pies by the hour, staff talk (cloakroom, bar, choir leader, cook), clocks, light switches, closed lines of the night watchman, festival and weather lines; quest hall_audition.",
  "acts": {
   "hall_programme": {
    "like": "look_misc",
@@ -32,6 +32,22 @@
     {
      "k": "city.xh.prog.sun",
      "d": "sun"
+    },
+    {
+     "k": "city.xh.prog.fest",
+     "festival": "any"
+    },
+    {
+     "k": "city.xh.prog.lantern",
+     "festival": "lantern_night"
+    },
+    {
+     "k": "city.xh.prog.sea",
+     "festival": "sea_festival"
+    },
+    {
+     "k": "city.xh.prog.newyear",
+     "festival": "new_year"
     }
    ],
    "minutes": 3
@@ -75,9 +91,15 @@
    "like": "look_misc",
    "prompt": "city.xh.guest.prompt",
    "lines": "city.xh.guest",
-   "minutes": 5,
+   "minutes": 0,
    "rotate": "daily",
-   "sound": "page_turn"
+   "sound": "page_turn",
+   "read": {
+    "texts": [
+     "hall_guestbook"
+    ],
+    "rotate": "use"
+   }
   },
   "hall_mixer": {
    "prompt": "city.xh.mixer.prompt",
@@ -113,6 +135,10 @@
       23,
       6
      ]
+    },
+    {
+     "k": "city.xh.mixer.rain",
+     "weather": "rain"
     }
    ]
   },
@@ -170,6 +196,14 @@
       21,
       6
      ]
+    },
+    {
+     "k": "city.xh.ghost.rain",
+     "weather": "rain"
+    },
+    {
+     "k": "city.xh.ghost.snow",
+     "weather": "snow"
     }
    ],
    "minutes": 3,
@@ -309,7 +343,8 @@
      "h": [
       19,
       23
-     ]
+     ],
+     "collect": "hall_evenings/premiere"
     },
     {
      "k": "city.xh.show.sat_late.*",
@@ -333,7 +368,8 @@
      "h": [
       17,
       23
-     ]
+     ],
+     "collect": "hall_evenings/theatre"
     },
     {
      "k": "city.xh.show.wk_late.*",
@@ -378,6 +414,14 @@
       6
      ],
      "d": "fri-sat"
+    },
+    {
+     "k": "city.xh.chalk.cold",
+     "weather": "cold"
+    },
+    {
+     "k": "city.xh.chalk.warm",
+     "weather": "warm"
     }
    ],
    "minutes": 2
@@ -393,7 +437,8 @@
      "h": [
       19,
       23
-     ]
+     ],
+     "collect": "hall_evenings/dance"
     },
     {
      "k": "city.xh.dance.fri_idle.*",
@@ -409,7 +454,8 @@
      "h": [
       14,
       19
-     ]
+     ],
+     "collect": "hall_evenings/dance"
     },
     {
      "k": "city.xh.dance.sun_idle.*",
@@ -434,6 +480,10 @@
       21,
       18
      ]
+    },
+    {
+     "k": "city.xh.dance.fest",
+     "festival": "any"
     }
    ]
   },
@@ -442,6 +492,644 @@
    "prompt": "city.xh.dancemirror.prompt",
    "lines": "city.xh.mirror",
    "minutes": 4
+  },
+  "hall_prompter": {
+   "like": "look_misc",
+   "prompt": "city.xh.prompter.prompt",
+   "lines": "city.xh.prompter.line",
+   "minutes": 0,
+   "sound": "page_turn",
+   "read": {
+    "texts": [
+     "hall_script"
+    ],
+    "rotate": "use"
+   }
+  },
+  "hall_booklet": {
+   "like": "look_misc",
+   "prompt": "city.xh.booklet.prompt",
+   "lines": [
+    "city.xh.booklet.1"
+   ],
+   "minutes": 0,
+   "sound": "paper_rustle",
+   "read": {
+    "texts": [
+     "hall_booklet"
+    ],
+    "rotate": "use"
+   }
+  },
+  "hall_sheet_stage": {
+   "like": "look_misc",
+   "prompt": "city.xh.sheet.prompt",
+   "lines": [
+    "city.xh.sheet.stage.1"
+   ],
+   "minutes": 0,
+   "sound": "piano_chord",
+   "read": {
+    "texts": [
+     "hall_sheet_stage"
+    ],
+    "rotate": "use"
+   }
+  },
+  "hall_sheet_dance": {
+   "like": "look_misc",
+   "prompt": "city.xh.sheet.prompt",
+   "lines": [
+    "city.xh.sheet.dance.1"
+   ],
+   "minutes": 0,
+   "sound": "paper_rustle",
+   "read": {
+    "texts": [
+     "hall_sheet_dance"
+    ],
+    "rotate": "use"
+   }
+  },
+  "hall_evenings_board": {
+   "like": "look_misc",
+   "prompt": "city.xh.evenings.prompt",
+   "minutes": 2,
+   "lines": [
+    "city.xh.evenings.0",
+    {
+     "k": "city.xh.evenings.choir",
+     "have": "hall_evenings/choir"
+    },
+    {
+     "k": "city.xh.evenings.dance",
+     "have": "hall_evenings/dance"
+    },
+    {
+     "k": "city.xh.evenings.lecture",
+     "have": "hall_evenings/lecture"
+    },
+    {
+     "k": "city.xh.evenings.theatre",
+     "have": "hall_evenings/theatre"
+    },
+    {
+     "k": "city.xh.evenings.premiere",
+     "have": "hall_evenings/premiere"
+    },
+    {
+     "k": "city.xh.evenings.t1",
+     "count": [
+      "hall_evenings",
+      1
+     ]
+    },
+    {
+     "k": "city.xh.evenings.t3",
+     "count": [
+      "hall_evenings",
+      3
+     ]
+    },
+    {
+     "k": "city.xh.evenings.t5",
+     "count": [
+      "hall_evenings",
+      5
+     ]
+    }
+   ]
+  },
+  "hall_exh_east": {
+   "like": "look_misc",
+   "prompt": "city.xh.exh.prompt",
+   "minutes": 3,
+   "lines": [
+    {
+     "k": "city.xh.exh.east.1",
+     "before": 7
+    },
+    {
+     "k": "city.xh.exh.east.2",
+     "after": 7,
+     "before": 14
+    },
+    {
+     "k": "city.xh.exh.east.3",
+     "after": 14,
+     "before": 21
+    },
+    {
+     "k": "city.xh.exh.east.4",
+     "after": 21,
+     "before": 28
+    },
+    {
+     "k": "city.xh.exh.east.5",
+     "after": 28
+    }
+   ]
+  },
+  "hall_exh_north": {
+   "like": "look_misc",
+   "prompt": "city.xh.exh.prompt",
+   "minutes": 3,
+   "lines": [
+    {
+     "k": "city.xh.exh.north.1",
+     "before": 7
+    },
+    {
+     "k": "city.xh.exh.north.2",
+     "after": 7,
+     "before": 14
+    },
+    {
+     "k": "city.xh.exh.north.3",
+     "after": 14,
+     "before": 21
+    },
+    {
+     "k": "city.xh.exh.north.4",
+     "after": 21,
+     "before": 28
+    },
+    {
+     "k": "city.xh.exh.north.5",
+     "after": 28
+    }
+   ]
+  },
+  "hall_exh_west": {
+   "like": "look_misc",
+   "prompt": "city.xh.exh.prompt",
+   "minutes": 3,
+   "lines": [
+    {
+     "k": "city.xh.exh.west.1",
+     "before": 7
+    },
+    {
+     "k": "city.xh.exh.west.2",
+     "after": 7,
+     "before": 14
+    },
+    {
+     "k": "city.xh.exh.west.3",
+     "after": 14,
+     "before": 21
+    },
+    {
+     "k": "city.xh.exh.west.4",
+     "after": 21,
+     "before": 28
+    },
+    {
+     "k": "city.xh.exh.west.5",
+     "after": 28
+    }
+   ]
+  },
+  "hall_lecture": {
+   "prompt": "city.xh.lecture.prompt",
+   "minutes": 45,
+   "pose": "sit",
+   "fade": true,
+   "screen": "stage",
+   "title": "city.xh.lecture.title",
+   "lines": [
+    {
+     "k": "city.xh.lecture.tue.*",
+     "d": "tue",
+     "h": [
+      19,
+      23
+     ],
+     "collect": "hall_evenings/lecture"
+    },
+    {
+     "k": "city.xh.lecture.idle.*",
+     "d": "wed-mon"
+    },
+    {
+     "k": "city.xh.lecture.idle.*",
+     "d": "tue",
+     "h": [
+      6,
+      19
+     ]
+    },
+    {
+     "k": "city.xh.lecture.idle.*",
+     "d": "tue",
+     "h": [
+      23,
+      6
+     ]
+    }
+   ]
+  },
+  "hall_choir": {
+   "like": "choir",
+   "prompt": "city.xh.choir.prompt",
+   "collect": "hall_evenings/choir",
+   "lines": [
+    "city.do.choir.1",
+    "city.do.choir.2",
+    "city.do.choir.3",
+    "city.do.choir.4",
+    {
+     "k": "city.xh.choir.wed",
+     "d": "wed"
+    },
+    {
+     "k": "city.xh.choir.fest",
+     "festival": "any"
+    },
+    {
+     "k": "city.xh.choir.rain",
+     "weather": "rain"
+    }
+   ]
+  },
+  "hall_dance_steps": {
+   "prompt": "city.xh.steps.prompt",
+   "minutes": 10,
+   "pose": "stand",
+   "sound": "waltz",
+   "closed": "city.xh.steps.closed.1",
+   "lines": "city.xh.steps.after",
+   "game": {
+    "type": "rally",
+    "title": "city.xh.steps.title",
+    "keys": "city.xh.steps.keys",
+    "need": 6,
+    "speed": 0.7,
+    "zone": 0.55,
+    "shrink": 0.9,
+    "pace": 1.04,
+    "win": "city.xh.steps.win",
+    "lose": "city.xh.steps.lose",
+    "draw": "city.xh.steps.draw",
+    "collect": "hall_evenings/dance",
+    "prize": [
+     [
+      "candy",
+      1
+     ]
+    ],
+    "daily": 2
+   }
+  },
+  "hall_audition": {
+   "prompt": "city.xh.aud.prompt",
+   "needs_staff": "choir_leader",
+   "minutes": 10,
+   "pose": "stand",
+   "sound": "choir_hum",
+   "lines": "city.xh.aud.after",
+   "game": {
+    "type": "duel",
+    "vs": "hall_audition",
+    "title": "city.xh.aud.title",
+    "moves": [
+     {
+      "k": "city.xh.aud.move.1",
+      "power": 2,
+      "tell": "city.xh.aud.tell.1"
+     },
+     {
+      "k": "city.xh.aud.move.2",
+      "power": 1,
+      "tell": "city.xh.aud.tell.2"
+     },
+     {
+      "k": "city.xh.aud.move.3",
+      "power": 2,
+      "tell": "city.xh.aud.tell.3"
+     }
+    ],
+    "win": "city.xh.aud.win",
+    "lose": "city.xh.aud.lose",
+    "draw": "city.xh.aud.draw",
+    "collect": "hall_evenings/choir",
+    "prize": [
+     [
+      "coffee",
+      1
+     ]
+    ],
+    "daily": 2
+   }
+  },
+  "hall_foyer_clock": {
+   "like": "look_clock",
+   "lines": [
+    {
+     "k": "city.xh.clock.foyer.morning",
+     "h": [
+      6,
+      12
+     ]
+    },
+    {
+     "k": "city.xh.clock.foyer.day",
+     "h": [
+      12,
+      18
+     ]
+    },
+    {
+     "k": "city.xh.clock.foyer.eve",
+     "h": [
+      18,
+      6
+     ]
+    },
+    {
+     "k": "city.xh.clock.foyer.sat",
+     "d": "sat",
+     "h": [
+      17,
+      19
+     ]
+    },
+    {
+     "k": "city.xh.clock.foyer.rain",
+     "weather": "rain"
+    }
+   ]
+  },
+  "hall_clock_hall": {
+   "like": "look_clock",
+   "lines": [
+    "city.xh.clock.hall.1",
+    {
+     "k": "city.xh.clock.hall.sat",
+     "d": "sat",
+     "h": [
+      17,
+      20
+     ]
+    }
+   ]
+  },
+  "hall_clock_dance": {
+   "like": "look_clock",
+   "lines": [
+    "city.xh.clock.dance.1",
+    {
+     "k": "city.xh.clock.dance.fri",
+     "d": "fri-sat",
+     "h": [
+      18,
+      23
+     ]
+    }
+   ]
+  },
+  "hall_clock_kitchen": {
+   "like": "look_clock",
+   "lines": [
+    "city.xh.clock.kitchen.1",
+    {
+     "k": "city.xh.clock.kitchen.eve",
+     "h": [
+      16,
+      23
+     ]
+    }
+   ]
+  },
+  "hall_bake_bread": {
+   "prompt": "city.xh.bread.prompt",
+   "needs_staff": "caretaker",
+   "minutes": 10,
+   "pose": "stand",
+   "sound": "steam_hiss",
+   "lines": [
+    "city.xh.bread.1",
+    "city.xh.bread.2"
+   ],
+   "give": [
+    [
+     "bread_loaf",
+     1
+    ]
+   ],
+   "daily": 1,
+   "closed": "city.xh.bread.closed"
+  },
+  "hall_boil_soup": {
+   "prompt": "city.xh.soup.prompt",
+   "needs_staff": "caretaker",
+   "minutes": 10,
+   "pose": "stand",
+   "sound": "pan_sizzle",
+   "lines": [
+    "city.xh.soup.1",
+    "city.xh.soup.2"
+   ],
+   "give": [
+    [
+     "diner_soup",
+     1
+    ]
+   ],
+   "daily": 1,
+   "closed": "city.xh.soup.closed"
+  },
+  "hall_boil_tea": {
+   "prompt": "city.xh.tea.prompt",
+   "needs_staff": "caretaker",
+   "minutes": 10,
+   "pose": "stand",
+   "sound": "kettle_whistle",
+   "lines": [
+    "city.xh.tea.1",
+    "city.xh.tea.2"
+   ],
+   "give": [
+    [
+     "tea",
+     1
+    ]
+   ],
+   "daily": 1,
+   "closed": "city.xh.tea.closed"
+  },
+  "hall_bake_pies": {
+   "prompt": "city.xh.pies.prompt",
+   "needs_staff": "caretaker",
+   "minutes": 10,
+   "pose": "stand",
+   "sound": "drawer_slide",
+   "lines": [
+    "city.xh.pies.1",
+    "city.xh.pies.2"
+   ],
+   "give": [
+    [
+     "pie",
+     1
+    ]
+   ],
+   "daily": 1,
+   "closed": "city.xh.pies.closed"
+  },
+  "hall_cloak_talk": {
+   "prompt": "city.xh.cloaktalk.prompt",
+   "needs_staff": "caretaker",
+   "sound": "hanger_clink",
+   "lines": [
+    {
+     "k": "city.xh.cloak.hello.1",
+     "h": [
+      6,
+      12
+     ]
+    },
+    {
+     "k": "city.xh.cloak.hello.2",
+     "h": [
+      12,
+      18
+     ]
+    },
+    {
+     "k": "city.xh.cloak.hello.3",
+     "h": [
+      18,
+      6
+     ]
+    },
+    {
+     "k": "city.xh.cloak.hello.rain",
+     "weather": "rain"
+    },
+    {
+     "k": "city.fest.cloakroom.1",
+     "festival": "any"
+    }
+   ],
+   "topics": [
+    {
+     "id": "hall.cloak.tags",
+     "k": "city.xh.cloak.t1",
+     "lines": [
+      "city.xh.cloak.t1.1",
+      "city.xh.cloak.t1.2"
+     ]
+    },
+    {
+     "id": "hall.cloak.lost",
+     "k": "city.xh.cloak.t2",
+     "lines": [
+      "city.xh.cloak.t2.1",
+      "city.xh.cloak.t2.2"
+     ]
+    },
+    {
+     "id": "hall.cloak.who",
+     "k": "city.xh.cloak.t3",
+     "lines": [
+      "city.xh.cloak.t3.1",
+      {
+       "k": "city.xh.cloak.t3.2",
+       "have": "hall_evenings/choir"
+      }
+     ]
+    }
+   ]
+  },
+  "hall_choir_talk": {
+   "prompt": "city.xh.choirtalk.prompt",
+   "needs_staff": "choir_leader",
+   "sound": "choir_hum",
+   "lines": [
+    "city.xh.choirtalk.hello.1",
+    "city.xh.choirtalk.hello.2"
+   ],
+   "topics": [
+    {
+     "id": "hall.choir.club",
+     "k": "city.xh.choirtalk.t1",
+     "lines": [
+      "city.xh.choirtalk.t1.1",
+      "city.xh.choirtalk.t1.2"
+     ]
+    },
+    {
+     "id": "hall.choir.audition",
+     "k": "city.xh.choirtalk.t2",
+     "lines": [
+      "city.xh.choirtalk.t2.1",
+      "city.xh.choirtalk.t2.2"
+     ]
+    },
+    {
+     "id": "hall.choir.play",
+     "k": "city.xh.choirtalk.t3",
+     "lines": [
+      "city.xh.choirtalk.t3.1",
+      "city.xh.choirtalk.t3.2"
+     ]
+    }
+   ]
+  },
+  "hall_cook_talk": {
+   "prompt": "city.xh.cooktalk.prompt",
+   "needs_staff": "caretaker",
+   "sound": "pan_sizzle",
+   "lines": [
+    {
+     "k": "city.xh.cooktalk.hello.1",
+     "h": [
+      6,
+      12
+     ]
+    },
+    {
+     "k": "city.xh.cooktalk.hello.2",
+     "h": [
+      12,
+      18
+     ]
+    },
+    {
+     "k": "city.xh.cooktalk.hello.3",
+     "h": [
+      18,
+      6
+     ]
+    }
+   ],
+   "topics": [
+    {
+     "id": "hall.cook.menu",
+     "k": "city.xh.cook.t1",
+     "lines": [
+      "city.xh.cook.t1.1",
+      "city.xh.cook.t1.2"
+     ]
+    },
+    {
+     "id": "hall.cook.stage",
+     "k": "city.xh.cook.t2",
+     "lines": [
+      "city.xh.cook.t2.1",
+      "city.xh.cook.t2.2"
+     ]
+    },
+    {
+     "id": "hall.cook.fed",
+     "k": "city.xh.cook.t3",
+     "lines": [
+      "city.xh.cook.t3.1",
+      "city.xh.cook.t3.2"
+     ]
+    }
+   ]
   }
  },
  "rules": {
@@ -486,6 +1174,102 @@
   },
   "shell_chapel_hall/dance_mirror": {
    "act": "hall_dance_mirror"
+  },
+  "shell_chapel_hall/prompter_stand": {
+   "act": "hall_prompter"
+  },
+  "shell_chapel_hall/programme_booklets": {
+   "act": "hall_booklet"
+  },
+  "shell_chapel_hall/stage_sheet_music": {
+   "act": "hall_sheet_stage"
+  },
+  "shell_chapel_hall/dance_sheet_music": {
+   "act": "hall_sheet_dance"
+  },
+  "shell_chapel_hall/evenings_board": {
+   "act": "hall_evenings_board"
+  },
+  "shell_chapel_hall/exhibit_east": {
+   "act": "hall_exh_east"
+  },
+  "shell_chapel_hall/exhibit_east_2": {
+   "act": "hall_exh_east"
+  },
+  "shell_chapel_hall/exhibit_north": {
+   "act": "hall_exh_north"
+  },
+  "shell_chapel_hall/exhibit_west": {
+   "act": "hall_exh_west"
+  },
+  "shell_chapel_hall/exhibit_west_2": {
+   "act": "hall_exh_west"
+  },
+  "shell_chapel_hall/lecture_seat": {
+   "act": "hall_lecture"
+  },
+  "shell_chapel_hall/choir_riser": {
+   "act": "hall_choir"
+  },
+  "shell_chapel_hall/dance_steps": {
+   "act": "hall_dance_steps",
+   "hours": [
+    19,
+    23
+   ],
+   "days": "fri-sat"
+  },
+  "shell_chapel_hall/audition_mark": {
+   "act": "hall_audition"
+  },
+  "shell_chapel_hall/foyer_clock": {
+   "act": "hall_foyer_clock"
+  },
+  "shell_chapel_hall/kit_clock_1": {
+   "act": "hall_clock_hall"
+  },
+  "shell_chapel_hall/kit_clock_2": {
+   "act": "hall_clock_dance"
+  },
+  "shell_chapel_hall/kit_clock_3": {
+   "act": "hall_clock_kitchen"
+  },
+  "shell_chapel_hall/kitchen_oven": {
+   "act": "hall_bake_bread",
+   "hours": [
+    9,
+    13
+   ]
+  },
+  "shell_chapel_hall/kitchen_stove": {
+   "act": "hall_boil_soup",
+   "hours": [
+    12,
+    16
+   ]
+  },
+  "shell_chapel_hall/kitchen_samovar": {
+   "act": "hall_boil_tea",
+   "hours": [
+    15,
+    22
+   ]
+  },
+  "shell_chapel_hall/pie_crate": {
+   "act": "hall_bake_pies",
+   "hours": [
+    16,
+    21
+   ]
+  },
+  "shell_chapel_hall/cloak_hatch": {
+   "act": "hall_cloak_talk"
+  },
+  "shell_chapel_hall/choir_leader_stand": {
+   "act": "hall_choir_talk"
+  },
+  "shell_chapel_hall/cook_pass": {
+   "act": "hall_cook_talk"
   }
  },
  "quests": [
@@ -576,6 +1360,232 @@
      }
     }
    ]
+  },
+  {
+   "id": "hall_audition",
+   "kind": "side",
+   "start_on": {
+    "event": "do",
+    "target": "hall_booklet"
+   },
+   "stages": [
+    {
+     "id": "script",
+     "objectives": [
+      {
+       "id": "script",
+       "event": "do",
+       "target": "hall_prompter"
+      }
+     ]
+    },
+    {
+     "id": "ask",
+     "objectives": [
+      {
+       "id": "ask",
+       "event": "ask",
+       "target": "hall.choir.audition"
+      }
+     ]
+    },
+    {
+     "id": "trial",
+     "objectives": [
+      {
+       "id": "trial",
+       "event": "win",
+       "target": "hall_audition"
+      }
+     ]
+    },
+    {
+     "id": "board",
+     "objectives": [
+      {
+       "id": "board",
+       "event": "do",
+       "target": "hall_evenings_board"
+      }
+     ],
+     "reward": {
+      "rubles": 50
+     }
+    }
+   ]
   }
- ]
+ ],
+ "topics": {
+  "buy_hall_bar": [
+   {
+    "id": "hall.bar.menu",
+    "k": "city.xh.bar.t1",
+    "lines": [
+     "city.xh.bar.t1.1",
+     "city.xh.bar.t1.2"
+    ]
+   },
+   {
+    "id": "hall.bar.dance",
+    "k": "city.xh.bar.t2",
+    "lines": [
+     "city.xh.bar.t2.1",
+     "city.xh.bar.t2.2"
+    ]
+   },
+   {
+    "id": "hall.bar.isla",
+    "k": "city.xh.bar.t3",
+    "lines": [
+     "city.xh.bar.t3.1",
+     "city.xh.bar.t3.2"
+    ]
+   }
+  ]
+ },
+ "texts": {
+  "hall_script": {
+   "title": "city.xh.text.script.title",
+   "kind": "book",
+   "minutes": 3,
+   "collect": "reading/hall_script",
+   "pages": [
+    "city.xh.script.1",
+    "city.xh.script.2",
+    "city.xh.script.3",
+    "city.xh.script.4",
+    "city.xh.script.5",
+    "city.xh.script.6",
+    "city.xh.script.7",
+    "city.xh.script.8",
+    {
+     "k": "city.xh.script.9",
+     "after": 3
+    },
+    {
+     "k": "city.xh.script.10",
+     "after": 5
+    }
+   ]
+  },
+  "hall_guestbook": {
+   "title": "city.xh.text.guestbook.title",
+   "kind": "ledger",
+   "minutes": 2,
+   "collect": "reading/hall_guestbook",
+   "pages": [
+    "city.xh.guest.1",
+    {
+     "k": "city.xh.guest.2",
+     "after": 1
+    },
+    {
+     "k": "city.xh.guest.3",
+     "after": 2
+    },
+    {
+     "k": "city.xh.guest.4",
+     "after": 3
+    },
+    {
+     "k": "city.xh.guest.5",
+     "after": 4
+    },
+    {
+     "k": "city.xh.guest.6",
+     "after": 5
+    },
+    {
+     "k": "city.xh.guest.11",
+     "after": 6
+    },
+    {
+     "k": "city.xh.guest.7",
+     "after": 7
+    },
+    {
+     "k": "city.xh.guest.8",
+     "after": 8
+    },
+    {
+     "k": "city.xh.guest.10",
+     "after": 10
+    },
+    {
+     "k": "city.xh.guest.9",
+     "after": 12
+    }
+   ]
+  },
+  "hall_booklet": {
+   "title": "city.xh.text.booklet.title",
+   "kind": "book",
+   "minutes": 2,
+   "collect": "reading/hall_booklet",
+   "pages": [
+    "city.xh.booklet.1",
+    "city.xh.booklet.2",
+    "city.xh.booklet.3",
+    "city.xh.booklet.4"
+   ]
+  },
+  "hall_sheet_stage": {
+   "title": "city.xh.text.sheet_stage.title",
+   "kind": "book",
+   "minutes": 1,
+   "collect": "reading/hall_sheet_stage",
+   "pages": [
+    "city.xh.sheet.stage.1",
+    "city.xh.sheet.stage.2"
+   ]
+  },
+  "hall_sheet_dance": {
+   "title": "city.xh.text.sheet_dance.title",
+   "kind": "book",
+   "minutes": 1,
+   "collect": "reading/hall_sheet_dance",
+   "pages": [
+    "city.xh.sheet.dance.1",
+    "city.xh.sheet.dance.2"
+   ]
+  }
+ },
+ "collections": {
+  "hall_evenings": {
+   "title": "city.xh.coll.hall_evenings.title",
+   "pieces": [
+    "choir",
+    "dance",
+    "lecture",
+    "theatre",
+    "premiere"
+   ]
+  }
+ },
+ "closed_by": {
+  "P-HALL": {
+   "*": "city.xh.closed.any.*",
+   "seat": "city.xh.closed.seat.*",
+   "counter": "city.xh.closed.counter.*",
+   "screen": "city.xh.closed.screen.*",
+   "play": "city.xh.closed.play.*",
+   "sport": "city.xh.closed.sport.*"
+  }
+ },
+ "regulars": {
+  "isla": {
+   "name": "npc.t_berzins_isla.name",
+   "style": "careful",
+   "skill": 0.6,
+   "plays": [
+    "hall_audition"
+   ],
+   "plots": [
+    "P-HALL"
+   ],
+   "hello": "city.player.isla.hello",
+   "win": "city.player.isla.win",
+   "lose": "city.player.isla.lose"
+  }
+ }
 }

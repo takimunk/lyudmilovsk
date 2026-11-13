@@ -468,7 +468,7 @@ def hall_a(B, F):
     T("foyer_armchair_1", "seat", (-15.2, 14.9, 0.45), 90.0, height=0.45)
     T("foyer_armchair_2", "seat", (-14.0, 16.0, 0.45), 0.0, height=0.45)
     kit.rug(B, -12.7, 11.8, w=2.6, d=3.4, name="rug", seed=3)
-    kit.floor_lamp(B, -11.0, 7.0, shade="CT_Paper")
+    kit.floor_lamp(B, -11.0, 7.0, shade="CT_Paper", light=True)
     kit.plant(B, -16.0, 6.4, kind="ficus", pot="CT_PlasterRed", h=1.7)
     kit.plant(B, -16.0, 17.6, kind="fern", pot="CT_PlasterYellow", h=1.3)
     B.spot("foyer_stand_1", "stand", (-13.2, 12.6, 0.0), 90.0)
@@ -508,7 +508,7 @@ def hall_c(B, F):
         tb = kit.table_round(B, 4.2, y, r=0.45, mat=kit.WOODL)
         kit.cup(B, 4.1, y, tb["top"], 0.0, mat="CT_PlasterBlue")
         B.spot("c_table_%d" % t, "table", (3.3, y, 0.0), 90.0)
-        for i, (cx, cy, yw) in enumerate(((3.25, y, 90.0), (5.15, y, 270.0), (4.2, y + (0.85 if y < 10 else -0.85), 180.0 if y < 10 else 0.0))):
+        for i, (cx, cy, yw) in enumerate(((3.25, y, 90.0), (5.15, y, 270.0), (4.2, y + (0.85 if y < 10 else -0.85), 0.0 if y < 10 else 180.0))):
             kit.chair(B, cx, cy, yaw=yw, mat="CT_PlasterYellow")
             B.spot("c_seat_%d_%d" % (t, i + 1), "seat", (cx, cy, 0.0), yw)
         T("c_table_%d" % t, "seat", (3.25, y, 0.45), 90.0, height=0.45)
@@ -609,9 +609,9 @@ def _mixing_desk(B, x, y, z=0.0):
     return r
 
 
-def _lectern_book(B, x, y, yaw):
+def _lectern_book(B, x, y, yaw, z=0.0):
     """A guest book open on a slanted lectern: front (the reader) = -y of the piece."""
-    p = kit._P(B, x, y, 0.0, yaw, "lectern")
+    p = kit._P(B, x, y, z, yaw, "lectern")
     p.box("CT_Wood", -0.12, 0.12, -0.12, 0.12, 0.0, 0.92, f="xXyY")
     p.box("CT_Wood", -0.2, 0.2, -0.2, 0.2, 0.0, 0.05, f="xXyYZ")
     p.hexa("CT_Wood", [(-0.27, -0.2, 0.92), (0.27, -0.2, 0.92), (0.27, 0.2, 0.92), (-0.27, 0.2, 0.92)],
@@ -735,7 +735,8 @@ def deepen(B, F):
         q.cyl("CT_Aluminium", 0, -0.205, 0.17, 0.175, 0.07, 8, top=True)
         q.done()
     # ---- the premiere seat: the stage seen from the front of the house
-    T("premiere_seat", "screen", (xc - 2.7, 18.5, zs + 0.9), 0.0, what="premiere")
+    kit.chair(B, xc - 2.7, 18.0, yaw=180.0, kind="wood", mat="CT_PlasterRed")
+    T("premiere_seat", "screen", (xc - 2.7, 18.0, 0.45), 180.0, what="premiere", height=0.45)
     # ---- the cloak room's postcards of the hall
     pc = kit._P(B, -14.9, 11.0, 1.05, 90.0, "postcard_rack")
     pc.kind = "prop"
@@ -751,7 +752,7 @@ def deepen(B, F):
         a = math.radians(-60 + k * 30)
         cx, cy = xc - 2.2 + 2.2 * math.sin(a) * 1.3, 17.2 - 0.5 * math.cos(a)
         kit.chair(B, cx, cy, yaw=180.0, kind="wood")
-        _music_stand(B, cx, cy + 0.65, 0.0, 180.0)
+        _music_stand(B, cx, cy + 0.65, 0.0, 0.0)
         B.spot("quartet_%d" % (k + 1), "seat", (cx, cy, 0.0), 180.0)
     # ---- backstage: costume rail, a folding screen, a props table in the west wing; a dressing table in the east wing
     kit.clothes_rail(B, cl + 0.38, 19.15, zs, 90.0, w=1.0, seed=9)
@@ -825,6 +826,201 @@ def deepen(B, F):
     kit.wall_clock(B, 12.4, 8.35, yaw=180.0, zc=2.55, r=0.2)
 
 
+# ---------------------------------------------------------------------------------------------- third pass: depth
+def _wall_switch(B, x, y, yaw, z, tid, scope):
+    """A light-switch plate with a rocker on the wall at (x, y) facing yaw, and its thing (the point a hand's breadth out)."""
+    p = kit._P(B, x, y, 0.0, yaw, "switch")
+    p.kind = "wall"
+    p.box("CT_SteelWhite", -0.04, 0.04, -0.012, 0.0, z - 0.06, z + 0.06, f="xXyZz")
+    p.box("CT_Steel", -0.012, 0.012, -0.02, -0.012, z - 0.025, z + 0.03, f="xXyZz")
+    p.done()
+    a = math.radians(yaw)
+    B.thing(tid, "machine", (x + 0.03 * math.sin(a), y - 0.03 * math.cos(a), z), yaw, what="switch", switch=scope)
+
+
+def _stub_board(B, x, y, yaw, zc):
+    """[wall] A green baize board with five brass nails: a ticket stub of each kind of evening hangs on its own."""
+    p = kit._P(B, x, y, 0.0, yaw, "stub_board")
+    p.kind = "wall"
+    p.box("CT_Wood", -0.62, 0.62, -0.045, 0.0, zc - 0.4, zc + 0.4, f="xXyZz")
+    p.box("CT_Baize", -0.57, 0.57, -0.05, -0.044, zc - 0.35, zc + 0.35, f="y")
+    p.box("CT_Brass", -0.32, 0.32, -0.056, -0.05, zc + 0.26, zc + 0.32, f="y")
+    mats = ("CT_PlasterRed", "CT_PlasterYellow", "CT_PlasterBlue", "CT_PlasterGreen", "CT_PlasterPink")
+    for k in range(5):
+        u = -0.44 + k * 0.22
+        p.box("CT_Steel", u - 0.075, u + 0.075, -0.054, -0.051, zc - 0.07, zc + 0.15, f="y")      # an empty outline
+        p.box("CT_Brass", u - 0.008, u + 0.008, -0.062, -0.052, zc + 0.12, zc + 0.14, f="xXyZz")
+        p.box(mats[k], u - 0.065, u + 0.065, -0.058, -0.054, zc - 0.06 + (k % 2) * 0.02, zc + 0.11, f="y")
+    return p.done()
+
+
+def _checkers_board(B, x, y, z, yaw):
+    """[prop] A draughts board with a few men mid-game on a table top at z."""
+    p = kit._P(B, x, y, z, yaw, "checkers")
+    p.kind = "prop"
+    s = 0.04
+    p.box("CT_PlasterGreen", -4 * s - 0.01, 4 * s + 0.01, -4 * s - 0.01, 4 * s + 0.01, 0.0, 0.012, f="xXyYZ")
+    for i in range(8):
+        for j in range(8):
+            if (i + j) % 2 == 0:
+                p.box("CT_SteelWhite", -4 * s + i * s, -3 * s + i * s, -4 * s + j * s, -3 * s + j * s, 0.012, 0.014, f="Z")
+    for i, j, red in ((1, 1, 1), (3, 1, 1), (2, 2, 1), (5, 3, 1), (4, 4, 0), (6, 6, 0), (1, 5, 0), (3, 5, 0)):
+        p.cyl("CT_PlasterRed" if red else "CT_Steel", -4 * s + (i + 0.5) * s, -4 * s + (j + 0.5) * s, 0.014, 0.03, 0.016, 8)
+    return p.done()
+
+
+def _steps(B, x, y, z, yaw):
+    """[flat] Painted footprints on the dance floor: four pairs of a waltz box step, left red, right yellow."""
+    p = kit._P(B, x, y, z, yaw, "dance_steps")
+    p.kind = "flat"
+    for k in range(8):
+        left = k % 2 == 0
+        u = (-0.13 if left else 0.13) + (0.04 if k % 4 > 1 else -0.04)
+        v = k * 0.3
+        p.box("CT_PlasterRed" if left else "CT_PlasterYellow", u - 0.055, u + 0.055, v - 0.12, v + 0.12, 0.0, 0.004, f="Z")
+        p.box("CT_PlasterRed" if left else "CT_PlasterYellow", u - 0.04, u + 0.04, v + 0.14, v + 0.2, 0.0, 0.004, f="Z")
+    return p.done(solid=False)
+
+
+def _loaves(B, x, y, z):
+    """[prop] A baking tray with three loaves."""
+    p = kit._P(B, x, y, z, 0.0, "loaves")
+    p.kind = "prop"
+    p.box("CT_Aluminium", -0.27, 0.27, -0.18, 0.18, 0.0, 0.02, f="xXyYZ")
+    for k, u in enumerate((-0.17, 0.0, 0.17)):
+        p.box("CT_Leather", u - 0.075, u + 0.075, -0.12, 0.12, 0.02, 0.08, f="xXyYZ")
+        p.box("CT_WoodLight", u - 0.065, u + 0.065, -0.1, 0.1, 0.08, 0.1, f="xXyYZ")
+    return p.done()
+
+
+def _pies(B, x, y, z):
+    """[prop] A cooling rack of round pies."""
+    p = kit._P(B, x, y, z, 0.0, "pies")
+    p.kind = "prop"
+    p.box("CT_Steel", -0.22, 0.22, -0.16, 0.16, 0.0, 0.012, f="xXyYZ")
+    for u, v in ((-0.11, -0.07), (0.11, -0.07), (-0.11, 0.08), (0.11, 0.08)):
+        p.cyl("CT_WoodLight", u, v, 0.012, 0.05, 0.075, 8)
+        p.cyl("CT_PlasterYellow", u, v, 0.05, 0.056, 0.05, 8)
+    return p.done()
+
+
+def _sheets(B, x, y, z, yaw):
+    """[prop] Sheet music propped on a music desk."""
+    p = kit._P(B, x, y, z, yaw, "sheets")
+    p.kind = "prop"
+    p.box("CT_Wood", -0.2, 0.2, -0.01, 0.01, 0.0, 0.03, f="xXyYZz")
+    p.card_tilt("paper_typed", -0.19, 0.19, -0.06, 0.02, 0.0, 0.3)
+    return p.done()
+
+
+def _chalk_mark(B, x, y, z):
+    """[flat] A chalk cross on the stage floor: the mark where whoever is auditioning stands."""
+    p = kit._P(B, x, y, z, 0.0, "chalk_mark")
+    p.kind = "flat"
+    p.box("CT_PlasterYellow", -0.2, 0.2, -0.018, 0.018, 0.0, 0.004, f="Z")
+    p.box("CT_PlasterYellow", -0.018, 0.018, -0.2, 0.2, 0.0, 0.004, f="Z")
+    p.box("CT_PlasterYellow", -0.14, -0.1, -0.14, -0.1, 0.0, 0.004, f="Z")
+    return p.done(solid=False)
+
+
+def _podium(B, x, y, z):
+    """A conductor's podium: a low wooden box 1.0 x 0.8 x 0.18."""
+    p = kit._P(B, x, y, z, 0.0, "podium")
+    p.kind = "prop"
+    p.box("CT_WoodLight", -0.5, 0.5, -0.4, 0.4, 0.0, 0.18, f="xXyYZ")
+    p.box("CT_Wood", -0.5, 0.5, -0.402, -0.4, 0.0, 0.03, f="y")
+    return p.done()
+
+
+def deepen2(B, F):
+    """The third pass: the prompter's stand with the script, the choir leader's podium, front-row chairs for the premiere and
+    the lecture, a lecture lectern, sheet music, a draughts table in the foyer, the board of ticket stubs, dance steps,
+    the kitchen's bread, pies and kettle, a cook's pass, a cloakroom hatch, light switches, a foyer clock, and the places
+    for the audience and performers to stand."""
+    v = VAULTS[1]
+    xc = v["xc"]
+    cl, cr = v["cl"], v["cr"]
+    T = B.thing
+    zs = 1.0
+    A, C, D = VAULTS[0], VAULTS[2], VAULTS[3]
+    # ---- the prompter: a slanted stand with the play's script at the west wing, a clip lamp on it
+    _lectern_book(B, cl + 1.9, 20.2, 270.0, z=zs)
+    kit.table_lamp(B, cl + 2.02, 20.37, zs + 1.12, 0.0, shade="CT_PlasterGreen", light=True)
+    T("prompter_stand", "board", (cl + 1.85, 20.2, zs + 1.15), 270.0, topic="script")
+    B.spot("prompter", "work", (cl + 1.4, 20.2, zs), 90.0)
+    # ---- the choir leader's podium with her music stand; her place beside it
+    _podium(B, xc - 1.9, 21.5, zs)
+    _music_stand(B, xc - 2.15, 21.5, zs + 0.18, 90.0)
+    T("choir_leader_stand", "counter", (xc - 2.15, 21.5, zs + 1.2), 90.0, role="choir_leader", service="choir_talk")
+    B.spot("choir_leader", "work", (xc - 1.4, 21.5, zs), 270.0)
+    B.spot("choir_leader_wait", "stand", (xc + 0.6, 21.4, zs), 270.0)
+    # ---- the audition mark: a chalk cross at the front of the stage, where the choir leader listens
+    _chalk_mark(B, xc - 1.2, 19.3, zs + 0.004)
+    T("audition_mark", "play", (xc - 1.2, 19.3, zs + 0.1), 0.0, what="audition")
+    # ---- a lecture lectern on the stage's east half and the two front-row chairs in front of the stage
+    _lectern_book(B, xc + 1.5, 19.7, 180.0, z=zs)
+    B.spot("lecturer", "work", (xc + 1.5, 20.35, zs), 0.0)
+    kit.chair(B, xc - 1.3, 18.0, yaw=180.0, kind="wood", mat="CT_PlasterRed")
+    T("lecture_seat", "screen", (xc - 1.3, 18.0, 0.45), 180.0, what="lecture", height=0.45)
+    B.spot("front_row_1", "seat", (xc - 2.7, 18.0, 0.0), 180.0)
+    B.spot("front_row_2", "seat", (xc - 1.3, 18.0, 0.0), 180.0)
+    B.spot("stage_wing_w", "stand", (cl + 1.4, 18.9, zs), 90.0)
+    B.spot("stage_wing_e", "stand", (cr - 1.4, 21.0, zs), 270.0)
+    B.spot("stage_edge", "stand", (xc - 0.4, 18.9, zs), 0.0)
+    # ---- the stage lights from the light panel (the stage's own lamps within 6 m)
+    _wall_switch(B, cr, 20.15, 270.0, zs + 1.4, "stage_switch", 6)
+    # ---- sheet music on the grand piano and on the dance room's piano
+    _sheets(B, xc + 2.2, 21.5, zs + 0.99, 270.0)
+    T("stage_sheet_music", "board", (xc + 2.2, 21.5, zs + 1.15), 270.0, topic="sheet_music")
+    kit.books_stack(B, 8.85, C["yb"] - 0.3 - 0.25, 1.25, 0.0, n=2, seed=6)
+    T("dance_sheet_music", "board", (8.85, C["yb"] - 0.3 - 0.45, 1.3), 0.0, topic="sheet_music")
+    # ---- the programme booklets: a small table by the east wall of the lobby
+    kit.table(B, 1.55, 5.5, 0.0, 270.0, w=0.7, d=0.4, h=0.75, mat=kit.WOODL)
+    kit.newspaper(B, 1.5, 5.35, 0.75, 90.0, seed=3)
+    kit.newspaper(B, 1.5, 5.65, 0.75, 85.0, seed=5)
+    kit.books_stack(B, 1.5, 5.5, 0.75, 20.0, n=2, seed=8)
+    T("programme_booklets", "take", (1.55, 5.5, 0.85), 270.0, item="postcard")
+    B.spot("watch_lobby", "stand", (xc, 4.9, 0.0), 0.0)
+    B.spot("watch_stage", "stand", (xc - 0.4, 17.4, 0.0), 180.0)
+    # ---- the foyer: a draughts table in the corner, a stub board, the clock, a lit floor lamp, a light switch, a cloak hatch
+    kit.table(B, -15.3, 12.4, 0.0, 0.0, w=0.8, d=0.8, h=0.72, mat=kit.WOODL)
+    kit.chair(B, -15.3, 11.65, yaw=180.0, kind="wood", mat="CT_PlasterGreen")
+    kit.chair(B, -15.3, 13.15, yaw=0.0, kind="wood", mat="CT_PlasterGreen")
+    _checkers_board(B, -15.3, 12.4, 0.72, 0.0)
+    T("foyer_checkers", "play", (-15.3, 11.65, 0.45), 180.0, what="checkers", height=0.45)
+    B.spot("checkers_1", "seat", (-15.3, 11.65, 0.0), 180.0)
+    B.spot("checkers_2", "seat", (-15.3, 13.15, 0.0), 0.0)
+    _stub_board(B, A["cl"], 14.65, 90.0, 1.75)
+    T("evenings_board", "board", (A["cl"] + 0.12, 14.65, 1.75), 90.0, topic="evenings")
+    kit.wall_clock(B, -12.2, A["yb"] - 0.3, yaw=0.0, zc=2.75, r=0.2)
+    T("foyer_clock", "board", (-12.2, A["yb"] - 0.35, 2.75), 0.0, what="clock")
+    _wall_switch(B, A["cl"], 7.8, 90.0, 1.5, "light_switch_foyer", 7)
+    T("cloak_hatch", "counter", (-14.9, 8.65, 1.05), 90.0, role="caretaker", service="cloakroom_talk")
+    B.spot("foyer_hatch", "counter", (-14.15, 8.65, 0.0), 270.0)
+    B.spot("foyer_visitor_1", "stand", (-11.6, 9.9, 0.0), 90.0)
+    B.spot("foyer_visitor_2", "stand", (-14.4, 17.3, 0.0), 180.0)
+    # ---- the dance room: footprints of the step, two lamps on the bar, a switch, spots for pairs
+    _steps(B, 5.3, 12.1, 0.016, 0.0)
+    T("dance_steps", "sport", (5.3, 12.5, 0.1), 0.0, what="dance_steps")
+    for yy in (7.0, 9.6):
+        kit.table_lamp(B, 8.7, yy, 1.05, 0.0, shade="CT_PlasterRed", light=True)
+    _wall_switch(B, C["cr"], 5.2, 270.0, 1.3, "light_switch_dance", 6)
+    for k, (x, y, yw) in enumerate(((5.4, 14.6, 90.0), (6.6, 16.6, 270.0), (9.0, 15.4, 180.0))):
+        B.spot("dance_pair_%d" % (k + 1), "stand", (x, y, 0.0), yw)
+    B.spot("band_stand", "work", (8.3, C["yb"] - 1.5, 0.0), 0.0)
+    # ---- the kitchen: bread, pies, the stove's pot, a pass for the cook, a switch
+    yn = D["yb"] - 0.3
+    _loaves(B, 13.6, yn - 0.3, 0.9)
+    T("kitchen_oven", "machine", (13.6, yn - 0.3, 0.95), 0.0, what="oven")
+    _pies(B, 11.6, 9.2, 0.3)
+    T("pie_crate", "machine", (11.6, 9.2, 0.42), 0.0, what="pies")
+    T("kitchen_samovar", "machine", (15.55, 10.3, 1.05), 90.0, what="samovar")
+    T("cook_pass", "counter", (13.9, 13.4, 0.95), 0.0, role="caretaker", service="kitchen_talk")
+    B.spot("cook_pass", "work", (13.9, 14.85, 0.0), 0.0)
+    B.spot("cook_oven", "work", (13.6, yn - 0.9, 0.0), 0.0)
+    _wall_switch(B, D["cl"], 13.3, 90.0, 1.6, "light_switch_kitchen", 4)
+
+
 def build(B):
     walls(B)
     for v in VAULTS:
@@ -841,6 +1037,7 @@ def build(B):
     hall_c(B, F)
     hall_d(B, F)
     deepen(B, F)
+    deepen2(B, F)
     if os.environ.get("KITCHECK"):
         print("KITCHECK", kit.check(B))
     B.footprint = [(-16.9, 0.4), (16.9, 0.4), (16.9, 24.5), (-16.9, 24.5)]
