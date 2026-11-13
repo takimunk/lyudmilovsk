@@ -582,6 +582,39 @@ bool ALyudPublicSpaces::Build(const TSharedPtr<FJsonObject>& Doc)
 	UE_LOG(LogTemp, Display, TEXT("LyudPublicSpaces: %d blocks, %d props in %d sets (%d kit triangles), %d lamps, %d trees, %d plants, built in %.0f ms"),
 		NumBlocks, NumProps, Groups.Num(), Tris, LampHeads.Num(), Forest.IsValid() ? Forest->NumTrees() : 0, PendingPlants.Num(),
 		(FPlatformTime::Seconds() - T0) * 1000.0);
+	if (ULyudSaveSubsystem* Saves = ULyudSaveSubsystem::Get(this))
+	{
+		Saves->OnAfterLoad.AddWeakLambda(this, [this](ULyudSaveGame* Save)
+		{
+			PlantRecords.Reset();
+			TSet<FName> Grown;
+			for (const TWeakObjectPtr<AProceduralPlant>& Pw : Plants)
+			{
+				if (const AProceduralPlant* Pl = Pw.Get())
+				{
+					Grown.Add(Pl->GetFName());   // spawned already: the load restored it
+				}
+			}
+			for (const TPair<FName, FLyudSaveRecord>& R : Save->Actors)
+			{
+				if (!Grown.Contains(R.Key) && R.Key.ToString().StartsWith(TEXT("LyudCityPlant_")))
+				{
+					PlantRecords.Add(R.Key, R.Value);
+				}
+			}
+		});
+		Saves->OnBeforeSave.AddWeakLambda(this, [this](ULyudSaveGame* Save)
+		{
+			// after the actors were written: only the plants that are still waiting to spawn
+			for (const TPair<FName, FLyudSaveRecord>& R : PlantRecords)
+			{
+				if (!Save->Actors.Contains(R.Key))
+				{
+					Save->Actors.Add(R.Key, R.Value);
+				}
+			}
+		});
+	}
 	return true;
 }
 
@@ -786,6 +819,13 @@ void ALyudPublicSpaces::SpawnPendingPlants()
 			Pl->FinishSpawning(Q.Xf);
 			Pl->SetActorHiddenInGame(!bShown);
 			Plants.Add(Pl);
+			// a loaded game's record for this plant (it spawned after the load was applied)
+			FLyudSaveRecord Rec;
+			if (PlantRecords.RemoveAndCopyValue(Pl->GetFName(), Rec))
+			{
+				ULyudSaveGame::Restore(Pl, Rec);
+				ILyudSaveable::Execute_OnGameLoaded(Pl);
+			}
 		}
 	} while (PendingPlants.Num() > 0 && FPlatformTime::Seconds() < Until);
 }

@@ -3,6 +3,7 @@
 #include "CoreMinimal.h"
 #include "GameFramework/Actor.h"
 #include "Subsystems/WorldSubsystem.h"
+#include "LyudSave.h"
 #include "LyudPublicSpaces.generated.h"
 
 class UInstancedStaticMeshComponent;
@@ -77,6 +78,9 @@ private:
 	TArray<TWeakObjectPtr<AProceduralPlant>> Plants;
 	struct FPendingPlant { FName Species; int32 Seed = 0; float Age = 1.f; FTransform Xf; int32 Index = 0; };
 	TArray<FPendingPlant> PendingPlants;
+	/** Save records of town plants not spawned yet (they spawn near the camera, after a load is applied): applied when
+	 *  each one spawns, and written into later saves meanwhile so they are not lost. */
+	TMap<FName, FLyudSaveRecord> PlantRecords;
 	void SpawnPendingPlants();
 
 	TArray<FVector> LampHeads;
