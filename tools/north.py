@@ -800,6 +800,13 @@ def people_spots():
     the land when they move.
     view      where the photographer waits for the light on the Cone
     tents     camp tent id -> {door (outside it), bed (inside), mat (a seat inside), yaw, kind}
+    The river and the brow (river_spots() below):
+    bridges   the ranger's morning round to the footbridges in order: down the track from the gate to the crossing's north
+              end, the north footbridge's end, the bar by the main channel, and back up (out and back like patrol)
+    bank      where the ranger sits at the river in the evening: a drift log on the bar by the north channel (log_bench)
+    brow      the brow south of the hut: standing, looking over the valley to the crossing
+    pool      the hot spring's seats in the water (spring_seats(): on the ledge, facing the middle)
+    overlook  the campers' viewpoint over the river from the brow west of the gate, down the valley to the mouth
     """
     def turn(c, yaw, u, v):
         a = math.radians(yaw)
@@ -908,4 +915,62 @@ def people_spots():
             tents[o["id"]] = {"door": r(turn(c, o["yaw"], 1.6, 0.0)), "bed": r(turn(c, o["yaw"], -0.3, 0.0)),
                               "mat": r(turn(c, o["yaw"], 0.5, 0.0)), "yaw": o["yaw"], "kind": o["kind"]}
     out["tents"] = tents
+    out.update(river_spots())
+    return out
+
+
+BRIDGE_DECK = {0: 16.0, 1: 21.0, 2: 31.0}      # log_bridge variants' deck lengths, m (docs/north.md "Footbridges")
+RIVER_LOG = (9.0, 0.5)                          # the bank's drift log: m west of the trail, m north of the north bridge's end
+
+
+def river_spots():
+    """The people's spots by the river and on the brow (people_spots' bridges, bank, brow, pool, overlook): offsets from
+    GATE, HUT, the crossing (_crossing()), the footbridges (things()), the mouth and spring_seats(), so they follow the land.
+    Kept near the crossing: the furthest is the bar by the main channel, ~410 m south of the gate."""
+    def look_at(p, q):
+        return round(math.degrees(math.atan2(q[1] - p[1], q[0] - p[0])), 1)
+
+    def spot(p, yaw=None, at=None):
+        return {"x": round(p[0], 2), "y": round(p[1], 2), "yaw": look_at(p, at) if at else round(yaw, 1)}
+
+    north_end = _crossing()[1]
+    bridges = sorted(things(), key=lambda b: -b["y"])                 # north first
+    out = {}
+    # the round: the gate, down the track's line every ~90 m, the crossing's north end, each bridge's north end (the
+    # northernmost and the main channel's, the longest span), a pause at each; back the same way
+    top = (GATE[0] - 3.0, GATE[1] - 9.0)
+    n = max(1, int(round(math.hypot(north_end[0] - top[0], north_end[1] - top[1]) / 90.0)))
+    pts = [(top[0] + (north_end[0] - top[0]) * k / n, top[1] + (north_end[1] - top[1]) * k / n) for k in range(n)]
+    track = set(pts[1:])                                              # people_map snaps these onto the routed track
+    pts.append((north_end[0], north_end[1] - 3.0))
+    ends = []
+    for b in [bridges[0], max(bridges, key=lambda b: b["span"])] if bridges else []:
+        e = (b["x"] + 2.0, b["y"] + BRIDGE_DECK.get(b["variant"], 16.0) / 2.0 + 2.5)     # beside the ramp's toe, off the deck
+        if e not in ends:
+            ends.append(e)
+            pts.append(e)
+    loop = pts + pts[-2::-1]
+    rnd = []
+    for i, p in enumerate(loop):
+        if p in ends:                                                 # at a bridge: looking along its deck
+            rnd.append(spot(p, -90.0))
+        else:
+            rnd.append(spot(p, at=loop[i + 1] if i + 1 < len(loop) else loop[i - 1]))
+        if p in track:
+            rnd[-1]["track"] = 1
+    out["bridges"] = rnd
+    # the evening seat: a drift log on the bar north of the north channel's bridge, facing the water
+    if bridges:
+        e = (bridges[0]["x"] + RIVER_LOG[0], bridges[0]["y"] + BRIDGE_DECK.get(bridges[0]["variant"], 16.0) / 2.0 + RIVER_LOG[1])
+        out["bank"] = [spot(e, -100.0)]
+    else:
+        out["bank"] = [spot((north_end[0] + RIVER_LOG[0], north_end[1] - 10.0), -90.0)]
+    # the brow: where the shelf ends south of the hut, ~120 m from it, over the drop to the river
+    cross = ((north_end[0] + _crossing()[0][0]) / 2.0, (north_end[1] + _crossing()[0][1]) / 2.0)
+    out["brow"] = [spot((HUT[0] - 12.0, HUT[1] - 128.0), at=cross), spot((HUT[0] - 32.0, HUT[1] - 122.0), at=cross)]
+    # in the hot spring: its seats, on the underwater ledge (spring_seats), facing the middle
+    out["pool"] = [dict(s) for s in spring_seats()]
+    # the overlook: the brow's edge west of the gate, down the river's valley to its mouth and the sea
+    m = R.mouth()
+    out["overlook"] = [spot((GATE[0] - 150.0, GATE[1] - 67.0), at=m), spot((GATE[0] - 162.0, GATE[1] - 69.0), at=m)]
     return out

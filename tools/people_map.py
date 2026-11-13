@@ -1285,7 +1285,8 @@ def _north_seats(kind):
 def build_north(grid):
     """The North's places (docs/north.md "People"): the ranger's hut (a home: kind flat, private), its porch bench, the
     gate, the weather post, the camp's fire benches and table, the hot spring's bench, the ranger's round (north_patrol,
-    its spots in order), walk, field and view spots, the campers' tents (homes: kind flat, private), all "north": 1
+    its spots in order), walk, field and view spots, the river's (the footbridges' round, the bank's seat), the brow, the
+    hot spring's seats in the water, the overlook, the campers' tents (homes: kind flat, private), all "north": 1
     (island 3: off the walk grid, people walk straight over the North's own ground patch); and the trail (kind trail,
     on the valley's walk grid) whose way runs from the grid's north edge up the dirt track to the gate.
 
@@ -1360,6 +1361,26 @@ def build_north(grid):
     places.append(outdoor("north_walk", "north_walk", S["walk"], stand(S["walk"], 2), "meadows"))
     places.append(outdoor("north_field", "north_field", S["field"], stand(S["field"], 2), "field"))
     places.append(outdoor("north_view", "north_view", S["view"], stand(S["view"]), "view"))
+    # the river and the brow (north.river_spots): the ranger's morning round to the footbridges (its spots in order, the
+    # ones on the way down snapped onto the routed track so the round keeps to it), his evening seat on the bank (a drift
+    # log), the brow by the hut, the hot spring's seats in the water, the campers' overlook over the river
+    an = T._anchors()
+    track = T._route(an["river_north"], an["north_gate"])
+    rnd = []
+    for s in S["bridges"]:
+        s = dict(s)
+        if s.pop("track", 0) and track:
+            q = min(track, key=lambda q: (q[0] - s["x"]) ** 2 + (q[1] - s["y"]) ** 2)
+            s["x"], s["y"] = round(q[0], 2), round(q[1], 2)
+        rnd.append(s)
+    places.append(outdoor("north_bridges", "north_bridges", rnd, stand(rnd), "river"))
+    places.append(outdoor("north_river_bank", "north_river_bank", S["bank"], seats(S["bank"], 0.42), "river"))
+    places.append(outdoor("north_brow", "north_brow", S["brow"], stand(S["brow"]), "hut"))
+    # in the pool: the cushion just over the underwater ledge (the basin's floor: north.plateau), so the water stands at
+    # the sitter's chest (the hero's WaterOverSeat is 55 cm; the ledge is ~0.6 m under the rim, the water 0.15 m under it);
+    # the legs go into the ledge under the water as the hero's do. Approach: half a metre in toward the middle
+    places.append(outdoor("north_spring_pool", "north_spring_pool", S["pool"], seats(S["pool"], 0.05, 0.5), "spring"))
+    places.append(outdoor("north_river_view", "north_river_view", S["overlook"], stand(S["overlook"]), "view"))
     # the campers' tents: in at the door flap, a sleeping mat to sit on, the sleeping bag behind it (head to the back)
     tents = [("north_tent_1", "camp_tent_1"), ("north_tent_2", "camp_tent_2"), ("north_tent_3", "camp_tent_3"),
              ("north_tent_4", "camp_tent_4")]

@@ -18,7 +18,7 @@ player, in the game's language, picked by who they are and what they do.
   welcomes him), an order is taken from the pass (the cook calls it, the waiter answers), a dish is served, the bill is
   brought, he leaves after eating.
 
-207 sets, 594 lines in ru/en/ja (405 said alone, 54 exchanges). They are proposals until Dima approves them. They
+216 sets, 618 lines in ru/en/ja (426 said alone, 55 exchanges; 9 sets and 24 lines are the North's people, tools/barks/lines/09_north.txt, said only with `lyud.Barks.Residents 1` for now). They are proposals until Dima approves them. They
 aren't voiced yet.
 
 ## Files
