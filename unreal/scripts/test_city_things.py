@@ -117,6 +117,19 @@ def plan():
         add(3.0, lambda w, x=th: look_at(w, x))
         add(2.0, lambda w, i=th["id"]: cmd(w, "lyud.City.Do " + i))
         add(1.0, lambda w: shot(w, "bridge_bench"))
+    # third pass: a stamp (a library topic read), the collections' page, a shut café's chair (its closed act at 23:00)
+    stamped = [t for t in things if acts.get(t.get("act"), {}).get("collect", "").startswith("shelves/")][:1]
+    for th in stamped:
+        add(1.5, lambda w, i=th["id"]: cmd(w, "lyud.City.Do " + i))
+    add(1.5, lambda w: cmd(w, "lyud.City.Collections"))
+    add(1.0, lambda w: shot(w, "collections"))
+    add(1.0, lambda w: cmd(w, "lyud.City.Collections grant kiosks"))
+    add(1.0, lambda w: cmd(w, "lyud.City.Collections clear kiosks"))
+    shut = [t for t in things if t.get("closed") and t["kind"] == "seat"][:1]
+    for th in shut:
+        add(1.0, lambda w: cmd(w, "lyud.Birds.Time 23"))
+        add(1.5, lambda w, i=th["id"]: cmd(w, "lyud.City.Do " + i))
+        add(1.0, lambda w: cmd(w, "lyud.Birds.Time 16"))
     add(2.0, lambda w: cmd(w, "lyud.Save citytest"))
     if shelves:
         add(1.5, lambda w: cmd(w, "lyud.City.Do " + shelves[0]["id"]))

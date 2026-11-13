@@ -1,0 +1,620 @@
+{
+ "_doc": "Second pass on the department store (P-STORE): things to look at, try on, listen to and ask about (no new goods). Words: strings/x_p_store.json.",
+ "acts": {
+  "ps_window": {
+   "like": "look_misc",
+   "prompt": "city.ps.window.prompt",
+   "minutes": 3,
+   "any_hour": true,
+   "lines": [
+    {
+     "k": "city.ps.window.am.*",
+     "h": [
+      9,
+      12
+     ]
+    },
+    {
+     "k": "city.ps.window.day.*",
+     "h": [
+      12,
+      20
+     ]
+    },
+    {
+     "k": "city.ps.window.umb",
+     "h": [
+      12,
+      20
+     ],
+     "after": 9
+    },
+    {
+     "k": "city.ps.window.night.*",
+     "h": [
+      20,
+      9
+     ]
+    }
+   ]
+  },
+  "ps_chalk": {
+   "like": "look_misc",
+   "any_hour": true,
+   "lines": [
+    "city.ps.chalk.mon",
+    {
+     "k": "city.ps.chalk.tue.1",
+     "d": "tue"
+    },
+    {
+     "k": "city.ps.chalk.tue.2",
+     "d": "tue"
+    },
+    {
+     "k": "city.ps.chalk.mid",
+     "d": "wed-thu"
+    },
+    {
+     "k": "city.ps.chalk.fri.1",
+     "d": "fri"
+    },
+    {
+     "k": "city.ps.chalk.fri.2",
+     "d": "fri"
+    },
+    {
+     "k": "city.ps.chalk.sat",
+     "d": "sat"
+    },
+    {
+     "k": "city.ps.chalk.sun",
+     "d": "sun"
+    }
+   ]
+  },
+  "ps_delivery": {
+   "like": "look_misc",
+   "minutes": 3,
+   "any_hour": true,
+   "lines": [
+    {
+     "k": "city.ps.delivery.am.*",
+     "d": "tue,fri",
+     "h": [
+      9,
+      12
+     ]
+    },
+    {
+     "k": "city.ps.delivery.pm.*",
+     "d": "tue,fri",
+     "h": [
+      12,
+      20
+     ]
+    },
+    {
+     "k": "city.ps.delivery.quiet.*",
+     "d": "mon,wed-thu,sat-sun"
+    },
+    "city.ps.delivery.pallet"
+   ]
+  },
+  "ps_tannoy": {
+   "like": "look_misc",
+   "prompt": "city.ps.tannoy.prompt",
+   "minutes": 2,
+   "any_hour": true,
+   "lines": [
+    {
+     "k": "city.ps.tannoy.open.*",
+     "h": [
+      9,
+      10
+     ]
+    },
+    {
+     "k": "city.ps.tannoy.morning.*",
+     "h": [
+      10,
+      13
+     ]
+    },
+    {
+     "k": "city.ps.tannoy.lunch.*",
+     "h": [
+      13,
+      15
+     ]
+    },
+    {
+     "k": "city.ps.tannoy.lost.*",
+     "h": [
+      15,
+      18
+     ]
+    },
+    {
+     "k": "city.ps.tannoy.closing.*",
+     "h": [
+      18,
+      20
+     ]
+    },
+    {
+     "k": "city.ps.tannoy.night.*",
+     "h": [
+      20,
+      9
+     ]
+    },
+    {
+     "k": "city.ps.tannoy.tue",
+     "d": "tue",
+     "h": [
+      9,
+      13
+     ]
+    },
+    {
+     "k": "city.ps.tannoy.sat",
+     "d": "sat",
+     "h": [
+      9,
+      20
+     ]
+    },
+    {
+     "k": "city.ps.tannoy.umb1",
+     "h": [
+      9,
+      20
+     ],
+     "after": 3
+    },
+    {
+     "k": "city.ps.tannoy.umb2",
+     "h": [
+      9,
+      20
+     ],
+     "after": 7
+    },
+    {
+     "k": "city.ps.tannoy.umb3",
+     "h": [
+      9,
+      20
+     ],
+     "after": 11
+    }
+   ]
+  },
+  "ps_umbrella_cloak": {
+   "like": "look_misc",
+   "prompt": "city.ps.umbrellas.prompt",
+   "minutes": 2,
+   "any_hour": true,
+   "lines": [
+    "city.ps.umbstand.base.1",
+    "city.ps.umbstand.base.2",
+    {
+     "k": "city.ps.umbstand.y1",
+     "after": 2
+    },
+    {
+     "k": "city.ps.umbstand.y2",
+     "after": 6
+    },
+    {
+     "k": "city.ps.umbstand.y3",
+     "after": 10
+    },
+    {
+     "k": "city.ps.umbstand.y4",
+     "after": 12
+    }
+   ]
+  },
+  "ps_umbrella_lost": {
+   "like": "look_misc",
+   "prompt": "city.ps.umbrellas.prompt",
+   "minutes": 2,
+   "lines": [
+    "city.ps.lostumb.base",
+    {
+     "k": "city.ps.lostumb.d1",
+     "after": 1
+    },
+    {
+     "k": "city.ps.lostumb.d5",
+     "after": 5
+    },
+    {
+     "k": "city.ps.lostumb.d9",
+     "after": 9
+    }
+   ]
+  },
+  "ps_hooks": {
+   "like": "look_misc",
+   "any_hour": true,
+   "lines": [
+    {
+     "k": "city.ps.hooks.am",
+     "h": [
+      9,
+      12
+     ]
+    },
+    {
+     "k": "city.ps.hooks.day",
+     "h": [
+      12,
+      17
+     ]
+    },
+    {
+     "k": "city.ps.hooks.eve",
+     "h": [
+      17,
+      20
+     ]
+    },
+    {
+     "k": "city.ps.hooks.night",
+     "h": [
+      20,
+      9
+     ]
+    },
+    "city.ps.hooks.any"
+   ]
+  },
+  "ps_shoe_mirror": {
+   "like": "look_misc",
+   "minutes": 3,
+   "lines": "city.ps.shoemirror"
+  },
+  "ps_toy_train": {
+   "like": "look_misc",
+   "prompt": "city.ps.toy_train.prompt",
+   "minutes": 5,
+   "lines": "city.ps.train"
+  },
+  "ps_fitting_room": {
+   "like": "look_misc",
+   "prompt": "city.ps.fitting.prompt",
+   "minutes": 10,
+   "fade": true,
+   "sound": "hanger_clink",
+   "lines": [
+    "city.ps.fitting.1",
+    "city.ps.fitting.2",
+    "city.ps.fitting.3",
+    {
+     "k": "city.ps.fitting.am",
+     "h": [
+      9,
+      12
+     ]
+    },
+    {
+     "k": "city.ps.fitting.eve",
+     "h": [
+      17,
+      20
+     ]
+    }
+   ]
+  },
+  "ps_fitting_mirror": {
+   "like": "look_misc",
+   "minutes": 2,
+   "lines": "city.ps.fmirror"
+  },
+  "ps_clothes": {
+   "like": "look_misc",
+   "minutes": 4,
+   "lines": "city.ps.clothes"
+  },
+  "ps_booth": {
+   "like": "look_misc",
+   "prompt": "city.ps.booth.prompt",
+   "minutes": 10,
+   "sound": "vinyl_crackle",
+   "lines": [
+    {
+     "k": "city.ps.booth.am",
+     "h": [
+      9,
+      13
+     ]
+    },
+    {
+     "k": "city.ps.booth.noon",
+     "h": [
+      13,
+      17
+     ]
+    },
+    {
+     "k": "city.ps.booth.eve",
+     "h": [
+      17,
+      20
+     ]
+    },
+    "city.ps.booth.any.1",
+    "city.ps.booth.any.2"
+   ]
+  },
+  "ps_lost_desk": {
+   "prompt": "city.act.ask.prompt",
+   "needs_staff": "cashier",
+   "sound": "stamp_thump",
+   "lines": [
+    "city.ps.lost.b1",
+    "city.ps.lost.b2",
+    "city.ps.lost.b3",
+    {
+     "k": "city.ps.lost.d1",
+     "after": 1
+    },
+    {
+     "k": "city.ps.lost.d4",
+     "after": 4
+    },
+    {
+     "k": "city.ps.lost.d7",
+     "after": 7
+    },
+    {
+     "k": "city.ps.lost.d10",
+     "after": 10
+    }
+   ]
+  },
+  "ps_lost_mic": {
+   "like": "look_misc",
+   "prompt": "city.ps.mic.prompt",
+   "needs_staff": "cashier",
+   "minutes": 3,
+   "sound": "radio_tune",
+   "lines": [
+    "city.ps.mic.1",
+    "city.ps.mic.2",
+    {
+     "k": "city.ps.mic.d10",
+     "after": 10
+    }
+   ]
+  },
+  "ps_lost_shelf": {
+   "like": "look_misc",
+   "rotate": "daily",
+   "lines": "city.ps.lostshelf"
+  },
+  "ps_cafe_menu": {
+   "like": "look_misc",
+   "any_hour": true,
+   "lines": [
+    {
+     "k": "city.ps.menu.am",
+     "h": [
+      9,
+      11
+     ]
+    },
+    {
+     "k": "city.ps.menu.noon",
+     "h": [
+      11,
+      15
+     ]
+    },
+    {
+     "k": "city.ps.menu.eve",
+     "h": [
+      15,
+      20
+     ]
+    },
+    {
+     "k": "city.ps.menu.night",
+     "h": [
+      20,
+      9
+     ]
+    }
+   ]
+  },
+  "ps_staff_board": {
+   "like": "look_misc",
+   "any_hour": true,
+   "lines": [
+    {
+     "k": "city.ps.staff.mon",
+     "d": "mon"
+    },
+    {
+     "k": "city.ps.staff.tue",
+     "d": "tue"
+    },
+    {
+     "k": "city.ps.staff.wed",
+     "d": "wed"
+    },
+    {
+     "k": "city.ps.staff.thu",
+     "d": "thu"
+    },
+    {
+     "k": "city.ps.staff.fri",
+     "d": "fri"
+    },
+    {
+     "k": "city.ps.staff.sat",
+     "d": "sat"
+    },
+    {
+     "k": "city.ps.staff.sun",
+     "d": "sun"
+    },
+    {
+     "k": "city.ps.staff.umb",
+     "after": 5
+    }
+   ]
+  },
+  "ps_typewriter": {
+   "like": "look_misc",
+   "prompt": "city.ps.typewriter.prompt",
+   "minutes": 3,
+   "lines": "city.ps.type"
+  }
+ },
+ "rules": {
+  "department_store/g_window_display": {
+   "act": "ps_window"
+  },
+  "department_store/g_chalk_board": {
+   "act": "ps_chalk"
+  },
+  "department_store/g_delivery_pile": {
+   "act": "ps_delivery"
+  },
+  "department_store/g_tannoy": {
+   "act": "ps_tannoy"
+  },
+  "department_store/f1_tannoy": {
+   "act": "ps_tannoy"
+  },
+  "department_store/g_umbrella_stand": {
+   "act": "ps_umbrella_cloak"
+  },
+  "department_store/f1_lost_umbrellas": {
+   "act": "ps_umbrella_lost"
+  },
+  "department_store/g_cloak_hooks": {
+   "act": "ps_hooks"
+  },
+  "department_store/g_shoe_mirror": {
+   "act": "ps_shoe_mirror"
+  },
+  "department_store/g_toy_train": {
+   "act": "ps_toy_train"
+  },
+  "department_store/f1_fitting_room": {
+   "act": "ps_fitting_room"
+  },
+  "department_store/f1_fitting_mirror": {
+   "act": "ps_fitting_mirror"
+  },
+  "department_store/f1_clothes_rail": {
+   "act": "ps_clothes"
+  },
+  "department_store/f1_booth_player": {
+   "act": "ps_booth"
+  },
+  "department_store/f1_lost_desk": {
+   "act": "ps_lost_desk"
+  },
+  "department_store/f1_lost_mic": {
+   "act": "ps_lost_mic"
+  },
+  "department_store/f1_lost_shelf": {
+   "act": "ps_lost_shelf"
+  },
+  "department_store/f1_cafe_menu": {
+   "act": "ps_cafe_menu"
+  },
+  "department_store/f1_typewriter": {
+   "act": "ps_typewriter"
+  },
+  "department_store/g_staff_board": {
+   "act": "ps_staff_board"
+  }
+ },
+ "quests": [
+  {
+   "id": "store_umbrella",
+   "kind": "side",
+   "start_on": {
+    "event": "do",
+    "target": "ps_lost_desk"
+   },
+   "stages": [
+    {
+     "id": "cloak",
+     "objectives": [
+      {
+       "id": "stand",
+       "event": "do",
+       "target": "ps_umbrella_cloak"
+      }
+     ]
+    },
+    {
+     "id": "lost",
+     "objectives": [
+      {
+       "id": "shelf",
+       "event": "do",
+       "target": "ps_umbrella_lost"
+      }
+     ]
+    },
+    {
+     "id": "mic",
+     "objectives": [
+      {
+       "id": "announce",
+       "event": "do",
+       "target": "ps_lost_mic"
+      }
+     ],
+     "reward": {
+      "items": {
+       "postcard": 1
+      }
+     }
+    }
+   ]
+  },
+  {
+   "id": "store_fitting",
+   "kind": "side",
+   "start_on": {
+    "event": "do",
+    "target": "ps_window"
+   },
+   "stages": [
+    {
+     "id": "fit",
+     "objectives": [
+      {
+       "id": "cubicle",
+       "event": "do",
+       "target": "ps_fitting_room"
+      }
+     ]
+    },
+    {
+     "id": "listen",
+     "objectives": [
+      {
+       "id": "booth",
+       "event": "do",
+       "target": "ps_booth"
+      }
+     ],
+     "reward": {
+      "rubles": 30
+     }
+    }
+   ]
+  }
+ ]
+}

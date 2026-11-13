@@ -17,6 +17,27 @@ class USceneComponent;
 struct FLyudCityLoad;
 namespace LyudCity { class FModel; }
 
+/** A thing of the town's buildings as the townsfolk see it (ULyudCityThings::FindFreeThing, GetThingsOfPlot). */
+USTRUCT(BlueprintType)
+struct LYUDMILOVSK_API FCityThingRef
+{
+	GENERATED_BODY()
+
+	/** "<plot>/<thing id>" (P-CAFE/chair_3): what ClaimThing and ReleaseThing take. */
+	UPROPERTY(BlueprintReadOnly, Category = "City") FString Id;
+	/** seat, bed, shelf, board, counter, machine, play, sport, craft, screen, take, door. */
+	UPROPERTY(BlueprintReadOnly, Category = "City") FName Kind;
+	UPROPERTY(BlueprintReadOnly, Category = "City") FString Plot;
+	/** The point the thing is looked at by (its middle; a seat's cushion), world cm. */
+	UPROPERTY(BlueprintReadOnly, Category = "City") FVector Location = FVector::ZeroVector;
+	/** The way it faces (a seat: the way its sitter looks), Unreal degrees. */
+	UPROPERTY(BlueprintReadOnly, Category = "City") float Yaw = 0.f;
+	/** A seat's or bed's surface over its own floor, cm (0 for other kinds). */
+	UPROPERTY(BlueprintReadOnly, Category = "City") float SeatHeightCm = 0.f;
+	/** Somebody holds it now (a townsperson's claim, or the hero sits or lies on it). */
+	UPROPERTY(BlueprintReadOnly, Category = "City") bool bHeld = false;
+};
+
 /**
  * Things to do inside the town's buildings (docs/city_interiors.md): sit on a chair, read at a shelf, look at a notice board,
  * buy at a counter, rest on a bed, play the piano, watch a film... Data: Content/City/interiors.json (tools/city/interiors.py),
@@ -33,7 +54,15 @@ namespace LyudCity { class FModel; }
  * another), a one-shot sound, quest events ("do"/act or the act's own; "visit"/plot at every use and on walking up to a
  * plot's things). Pages read, daily boards, per-day counts and uses are kept in the save ("CityThings").
  *
- * Console: lyud.City.Things, lyud.City.Do <thing id>, lyud.City.Things.Show 0|1, lyud.City.Weekday <mon..sun>.
+ * Lines may hold only on a holiday (ULyudFestivalSubsystem) or in some weather (ULyudWeatherSubsystem::GetSky); a thing of a
+ * shut plot may say something of its own (the chairs on the tables); acts, lines and things may give stamps of collections
+ * (films seen, records heard, kiosks visited: a note on the HUD, "3 of 12"), saved with the rest.
+ *
+ * The townsfolk (docs/city_interiors.md "API for townsfolk"): FindFreeThing, ClaimThing / ReleaseThing (a weak holder, let go
+ * when it dies; the hero can't sit on a held seat), GetThingsOfPlot.
+ *
+ * Console: lyud.City.Things, lyud.City.Do <thing id>, lyud.City.Things.Show 0|1, lyud.City.Weekday <mon..sun>,
+ * lyud.City.Collections [grant|clear <set|*>].
  */
 UCLASS()
 class LYUDMILOVSK_API ULyudCityThings : public UTickableWorldSubsystem, public ILyudSaveable
@@ -70,6 +99,28 @@ public:
 
 	/** Developer mode (interiors.open_all_hours): every act runs whatever the hour, the day and the staff. */
 	static bool bOpenAllHours;
+
+	// --- collections
+
+	/** Logs every collection ("films: 3 of 12"); with bPage also shows them on the page (closed by E or walking off). */
+	void ShowCollections(bool bPage);
+	/** Developer mode: "grant" or "clear" a set ("*": all); false for an unknown verb or set. */
+	bool EditCollections(const FString& Verb, const FString& Set);
+	/** Is every collection complete (the developer toggle's light)? */
+	bool AreCollectionsComplete() const;
+
+	// --- API for townsfolk (docs/city_interiors.md): the people's life asks for seats and things to use
+
+	/** The nearest thing of Kind (None: any) within RadiusCm of Near, on about Near's floor (2.5 m), that nobody holds and the
+	 *  hero is not on; false none. Reads the model's 4 m grid round Near only. */
+	bool FindFreeThing(FName Kind, const FVector& Near, float RadiusCm, FCityThingRef& Out) const;
+	/** Who takes the thing (a townsperson sits down): true when it was free or already theirs. Never one the hero sits or lies
+	 *  on. The hold goes when Who is destroyed (checked a few times a second) or calls ReleaseThing. */
+	bool ClaimThing(const FString& Id, const UObject* Who);
+	/** Who lets the thing go (nothing when somebody else holds it). */
+	void ReleaseThing(const FString& Id, const UObject* Who);
+	/** The things of a plot of Kind (None: all), appended to Out. A table built at load: no pass over the town. */
+	void GetThingsOfPlot(const FString& PlotId, FName Kind, TArray<FCityThingRef>& Out) const;
 
 protected:
 	virtual bool DoesSupportWorldType(const EWorldType::Type WorldType) const override
@@ -112,13 +163,20 @@ private:
 	void Greet(int32 Thing);
 	void DrawLabels() const;
 	FVector ThingLocation(int32 Thing) const;
+	/** A note on the HUD for every stamp got for the first time ("Films at «Рассвет»: 3 of 12"). */
+	void AnnounceStamps(const TArray<FString>& Stamps);
+	void FillRef(int32 Thing, FCityThingRef& Out) const;
+	/** The holds of townsfolk whose holder is gone are let go (a few times a second). */
+	void DropDeadHolds();
 
 	TPimplPtr<LyudCity::FModel> Model;
 	/** The worker's parse while it is under way. */
 	TSharedPtr<FLyudCityLoad, ESPMode::ThreadSafe> Loading;
 
-	/** The thing whose prompt shows (-1 none), and the one picked last (re-picked every PickEvery seconds). */
+	/** The thing whose prompt shows (-1 none) and the act it offers (its closed act while its plot is shut), and the one picked
+	 *  last (re-picked every PickEvery seconds). */
 	int32 Prompted = -1;
+	int32 PromptedAct = -1;
 	int32 Picked = -1;
 	float PickClock = 0.f;
 	/** Past the town box: nothing is picked until the hero comes back. */
@@ -179,4 +237,12 @@ private:
 
 	bool bShowLabels = false;
 	float LabelClock = 0.f;
+
+	/** The townsfolk's holds: thing -> the holder (weak) and its key in the model. */
+	struct FHold
+	{
+		TWeakObjectPtr<const UObject> Who;
+		uint64 Key = 0;
+	};
+	TMap<int32, FHold> Holds;
 };

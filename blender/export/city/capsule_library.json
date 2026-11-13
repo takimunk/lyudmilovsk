@@ -788,13 +788,93 @@
    "kind": "work",
    "pos": [
     11.0,
-    24.9,
+    25.1,
+    0.0
+   ],
+   "yaw": 0.0
+  },
+  {
+   "id": "office_tea",
+   "kind": "stand",
+   "pos": [
+    11.7,
+    24.4,
+    0.0
+   ],
+   "yaw": 90.0
+  },
+  {
+   "id": "returned_shelf",
+   "kind": "stand",
+   "pos": [
+    11.7,
+    10.4,
+    0.0
+   ],
+   "yaw": 90.0
+  },
+  {
+   "id": "returned_armchair",
+   "kind": "seat",
+   "pos": [
+    11.8,
+    11.1,
+    0.0
+   ],
+   "yaw": 90.0
+  },
+  {
+   "id": "returns_box",
+   "kind": "stand",
+   "pos": [
+    -3.2,
+    4.6,
+    0.0
+   ],
+   "yaw": 0.0
+  },
+  {
+   "id": "notice_board_day",
+   "kind": "stand",
+   "pos": [
+    -1.9,
+    5.75,
     0.0
    ],
    "yaw": 180.0
   },
   {
-   "id": "sbench_main_73",
+   "id": "diary_board",
+   "kind": "stand",
+   "pos": [
+    -3.9,
+    5.75,
+    0.0
+   ],
+   "yaw": 180.0
+  },
+  {
+   "id": "lending_counter_3",
+   "kind": "counter",
+   "pos": [
+    -11.5,
+    7.9,
+    0.0
+   ],
+   "yaw": 180.0
+  },
+  {
+   "id": "story_armchair",
+   "kind": "seat",
+   "pos": [
+    -7.55,
+    15.9,
+    0.0
+   ],
+   "yaw": 270.0
+  },
+  {
+   "id": "sbench_main_81",
    "kind": "bench",
    "pos": [
     -3.6,
@@ -906,8 +986,30 @@
   },
   {
    "pos": [
+    -4.455,
+    19.455,
+    6.95
+   ],
+   "lumens": 300,
+   "colour": "#FFE2B0",
+   "kind": "public",
+   "radius": 4.0
+  },
+  {
+   "pos": [
     0.0,
     8.7,
+    10.95
+   ],
+   "lumens": 300,
+   "colour": "#FFE2B0",
+   "kind": "public",
+   "radius": 4.0
+  },
+  {
+   "pos": [
+    6.3,
+    15.0,
     10.95
    ],
    "lumens": 300,
@@ -929,7 +1031,29 @@
   {
    "pos": [
     4.455,
+    10.545,
+    10.95
+   ],
+   "lumens": 300,
+   "colour": "#FFE2B0",
+   "kind": "public",
+   "radius": 4.0
+  },
+  {
+   "pos": [
+    4.455,
     19.455,
+    10.95
+   ],
+   "lumens": 300,
+   "colour": "#FFE2B0",
+   "kind": "public",
+   "radius": 4.0
+  },
+  {
+   "pos": [
+    -4.455,
+    10.545,
     10.95
    ],
    "lumens": 300,
@@ -1085,6 +1209,32 @@
    }
   },
   {
+   "id": "pod_1_02_piano",
+   "kind": "play",
+   "pos": [
+    1.04,
+    8.6,
+    5.125
+   ],
+   "yaw": 270.0,
+   "props": {
+    "what": "piano"
+   }
+  },
+  {
+   "id": "pod_1_02_player",
+   "kind": "machine",
+   "pos": [
+    -0.9,
+    9.7,
+    5.02
+   ],
+   "yaw": 90.0,
+   "props": {
+    "what": "record_player"
+   }
+  },
+  {
    "id": "pod_1_02",
    "kind": "seat",
    "pos": [
@@ -1160,6 +1310,19 @@
    "yaw": 0.0,
    "props": {
     "height": 0.45
+   }
+  },
+  {
+   "id": "pod_2_02_telescope",
+   "kind": "machine",
+   "pos": [
+    5.826,
+    14.146,
+    9.387
+   ],
+   "yaw": 90.0,
+   "props": {
+    "what": "telescope"
    }
   },
   {
@@ -1241,6 +1404,19 @@
    }
   },
   {
+   "id": "pod_3_02_telescope",
+   "kind": "machine",
+   "pos": [
+    -7.626,
+    15.954,
+    13.387
+   ],
+   "yaw": 270.0,
+   "props": {
+    "what": "telescope"
+   }
+  },
+  {
    "id": "pod_3_02",
    "kind": "seat",
    "pos": [
@@ -1277,6 +1453,19 @@
    "yaw": 135.0,
    "props": {
     "height": 0.07
+   }
+  },
+  {
+   "id": "pod_3_05_telescope",
+   "kind": "machine",
+   "pos": [
+    0.954,
+    22.626,
+    13.387
+   ],
+   "yaw": 180.0,
+   "props": {
+    "what": "telescope"
    }
   },
   {
@@ -1886,10 +2075,10 @@
    "kind": "seat",
    "pos": [
     11.0,
-    24.95,
+    25.1,
     0.45
    ],
-   "yaw": 180.0,
+   "yaw": 0.0,
    "props": {
     "height": 0.45
    }
@@ -1905,6 +2094,150 @@
    "yaw": 90.0,
    "props": {
     "topic": "local"
+   }
+  },
+  {
+   "id": "office_radio",
+   "kind": "machine",
+   "pos": [
+    9.9,
+    25.5,
+    1.45
+   ],
+   "yaw": 90.0,
+   "props": {
+    "what": "radio"
+   }
+  },
+  {
+   "id": "office_ledger",
+   "kind": "board",
+   "pos": [
+    11.0,
+    24.35,
+    0.82
+   ],
+   "yaw": 0.0,
+   "props": {
+    "topic": "ledger"
+   }
+  },
+  {
+   "id": "office_kettle",
+   "kind": "take",
+   "pos": [
+    12.3,
+    24.4,
+    0.9
+   ],
+   "yaw": 270.0,
+   "props": {
+    "item": "tea"
+   }
+  },
+  {
+   "id": "returned_shelf",
+   "kind": "shelf",
+   "pos": [
+    12.45,
+    11.1,
+    0.8
+   ],
+   "yaw": 270.0,
+   "props": {
+    "topic": "returned"
+   }
+  },
+  {
+   "id": "returned_card",
+   "kind": "board",
+   "pos": [
+    12.5,
+    12.35,
+    0.9
+   ],
+   "yaw": 270.0,
+   "props": {
+    "topic": "returned"
+   }
+  },
+  {
+   "id": "returns_box",
+   "kind": "board",
+   "pos": [
+    -3.2,
+    3.95,
+    0.9
+   ],
+   "yaw": 180.0,
+   "props": {
+    "topic": "returns"
+   }
+  },
+  {
+   "id": "notice_board_day",
+   "kind": "board",
+   "pos": [
+    -1.9,
+    6.4,
+    1.5
+   ],
+   "yaw": 0.0,
+   "props": {
+    "topic": "notices"
+   }
+  },
+  {
+   "id": "diary_board",
+   "kind": "board",
+   "pos": [
+    -3.9,
+    6.4,
+    1.5
+   ],
+   "yaw": 0.0,
+   "props": {
+    "topic": "diary"
+   }
+  },
+  {
+   "id": "library_stamp",
+   "kind": "counter",
+   "pos": [
+    -11.5,
+    8.4,
+    1.0
+   ],
+   "yaw": 0.0,
+   "props": {
+    "role": "librarian",
+    "service": "stamp"
+   }
+  },
+  {
+   "id": "kids_story_chair",
+   "kind": "seat",
+   "pos": [
+    -7.55,
+    15.9,
+    0.44
+   ],
+   "yaw": 270.0,
+   "props": {
+    "height": 0.45
+   }
+  },
+  {
+   "id": "kids_story_hour",
+   "kind": "screen",
+   "pos": [
+    -9.4,
+    15.9,
+    0.5
+   ],
+   "yaw": 90.0,
+   "props": {
+    "what": "story_hour"
    }
   }
  ],
@@ -3113,8 +3446,8 @@
   "18 reading pods on 3 levels round an octagonal core; glazed hall; open stair to level 1"
  ],
  "tris": {
-  "shell": 7016,
-  "detail": 39935,
+  "shell": 7088,
+  "detail": 41344,
   "windows": 228
  }
 }

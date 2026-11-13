@@ -107,6 +107,21 @@
   {"id": "city.q.home_girma.3", "group": "interiors", "name": "dev.tp.city.q.home_girma.3", "x": -156.14, "y": 1094.57, "z": -2677.0, "yaw": -5.5},
   {"id": "city.q.home_aoki.1", "group": "interiors", "name": "dev.tp.city.q.home_aoki.1", "x": -513.67, "y": 999.01, "z": -1272.0, "yaw": 174.3},
   {"id": "city.q.home_aoki.2", "group": "interiors", "name": "dev.tp.city.q.home_aoki.2", "x": -515.22, "y": 1001.08, "z": -1257.0, "yaw": -5.7},
-  {"id": "city.q.home_aoki.3", "group": "interiors", "name": "dev.tp.city.q.home_aoki.3", "x": -70.11, "y": 1068.17, "z": -3615.0, "yaw": 174.5}
+  {"id": "city.q.home_aoki.3", "group": "interiors", "name": "dev.tp.city.q.home_aoki.3", "x": -70.11, "y": 1068.17, "z": -3615.0, "yaw": 174.5},
+  {"id": "city.q.cafe_kesha.1", "group": "interiors", "name": "dev.tp.city.q.cafe_kesha.1", "x": -70.38, "y": 1059.15, "z": -3615.0, "yaw": 174.5},
+  {"id": "city.q.cafe_kesha.2", "group": "interiors", "name": "dev.tp.city.q.cafe_kesha.2", "x": 63.51, "y": 1044.96, "z": -3185.0, "yaw": -42.5},
+  {"id": "city.q.cafe_kesha.3", "group": "interiors", "name": "dev.tp.city.q.cafe_kesha.3", "x": 65.14, "y": 1043.57, "z": -3185.0, "yaw": 174.5},
+  {"id": "city.q.cafe_guest.1", "group": "interiors", "name": "dev.tp.city.q.cafe_guest.1", "x": 72.56, "y": 1037.33, "z": -3224.0, "yaw": 174.5},
+  {"id": "city.q.library_1968.1", "group": "interiors", "name": "dev.tp.city.q.library_1968.1", "x": -423.2, "y": 978.43, "z": -2250.0, "yaw": -95.6},
+  {"id": "city.q.library_1968.2", "group": "interiors", "name": "dev.tp.city.q.library_1968.2", "x": -424.45, "y": 978.5, "z": -2260.0, "yaw": -95.6},
+  {"id": "city.q.library_1968.3", "group": "interiors", "name": "dev.tp.city.q.library_1968.3", "x": -436.43, "y": 979.87, "z": -2190.0, "yaw": -95.6},
+  {"id": "city.q.library_diary.1", "group": "interiors", "name": "dev.tp.city.q.library_diary.1", "x": -430.13, "y": 986.6, "z": -2200.0, "yaw": 39.4},
+  {"id": "city.q.library_diary.2", "group": "interiors", "name": "dev.tp.city.q.library_diary.2", "x": -417.1, "y": 1000.69, "z": -2200.0, "yaw": 174.4},
+  {"id": "city.q.library_diary.3", "group": "interiors", "name": "dev.tp.city.q.library_diary.3", "x": -426.08, "y": 998.25, "z": -2310.0, "yaw": 84.4},
+  {"id": "city.q.store_umbrella.1", "group": "interiors", "name": "dev.tp.city.q.store_umbrella.1", "x": -89.66, "y": 951.66, "z": -3677.0, "yaw": 174.7},
+  {"id": "city.q.store_umbrella.2", "group": "interiors", "name": "dev.tp.city.q.store_umbrella.2", "x": -73.32, "y": 949.24, "z": -3200.0, "yaw": 174.7},
+  {"id": "city.q.store_umbrella.3", "group": "interiors", "name": "dev.tp.city.q.store_umbrella.3", "x": -73.2, "y": 951.04, "z": -3110.0, "yaw": 174.7},
+  {"id": "city.q.store_fitting.1", "group": "interiors", "name": "dev.tp.city.q.store_fitting.1", "x": -79.96, "y": 975.0, "z": -3110.0, "yaw": 84.7},
+  {"id": "city.q.store_fitting.2", "group": "interiors", "name": "dev.tp.city.q.store_fitting.2", "x": -69.26, "y": 975.63, "z": -3158.0, "yaw": 84.7}
  ]
 }

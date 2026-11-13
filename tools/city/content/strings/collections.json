@@ -1,0 +1,15 @@
+{
+ "_doc": "Collections (stamps the hero gathers), the taken seat, the developer actions of collections: docs/city_interiors.md \"Collections\".",
+ "city.act.taken": {"ru": "Здесь уже сидят", "en": "Someone is sitting here", "ja": "誰かが座っている"},
+ "city.coll.got": {"ru": "«{0}»: {1} из {2}", "en": "{0}: {1} of {2}", "ja": "「{0}」：{1}／{2}"},
+ "city.coll.complete": {"ru": "«{0}» собрана целиком: {1} из {2}!", "en": "{0} complete: {1} of {2}!", "ja": "「{0}」コンプリート：{1}／{2}！"},
+ "city.coll.line": {"ru": "{0} — {1} из {2}", "en": "{0} — {1} of {2}", "ja": "{0}：{1}／{2}"},
+ "city.coll.page.title": {"ru": "Коллекции", "en": "Collections", "ja": "コレクション"},
+ "city.coll.none": {"ru": "Пока ничего не собрано.", "en": "Nothing collected yet.", "ja": "まだ何も集めていない。"},
+ "city.coll.shelves.title": {"ru": "Читательский формуляр: темы полок", "en": "Reading card: shelf topics", "ja": "読書カード：棚のテーマ"},
+ "city.coll.films.title": {"ru": "Фильмы «Рассвета»", "en": "Films at the Rassvet", "ja": "「ラスヴェート」の映画"},
+ "city.coll.records.title": {"ru": "Пластинки музыкальных автоматов", "en": "Jukebox records", "ja": "ジュークボックスのレコード"},
+ "city.coll.kiosks.title": {"ru": "Киоски у остановок", "en": "Bus-stop kiosks", "ja": "バス停のキオスク"},
+ "dev.action.interiors.collections": {"ru": "Интерьеры: коллекции (страница и лог)", "en": "Interiors: collections (page and log)", "ja": "内装：コレクション（ページとログ）"},
+ "dev.action.interiors.collections_all": {"ru": "Интерьеры: все коллекции собраны / сброшены", "en": "Interiors: all collections complete / cleared", "ja": "内装：全コレクション達成／リセット"}
+}

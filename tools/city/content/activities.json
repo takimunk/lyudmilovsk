@@ -14,7 +14,7 @@
   "fortune": {"prompt": "city.do.fortune.prompt", "lines": "city.do.fortune", "minutes": 2, "price": 3, "needs_staff": "vendor", "sound": "music_box"},
 
   "arcade": {"prompt": "city.do.arcade.prompt", "lines": "city.do.arcade", "minutes": 10, "price": 5, "sound": "arcade_blip"},
-  "jukebox": {"prompt": "city.do.jukebox.prompt", "lines": "city.do.jukebox", "minutes": 3, "price": 5, "sound": "jukebox_click"},
+  "jukebox": {"prompt": "city.do.jukebox.prompt", "lines": "city.do.jukebox", "collect": "records/{line}", "minutes": 3, "price": 5, "sound": "jukebox_click"},
   "record_player": {"prompt": "city.do.record_player.prompt", "lines": "city.do.record_player", "minutes": 10, "sound": "vinyl_crackle"},
   "scales": {"prompt": "city.do.scales.prompt", "lines": "city.do.scales", "minutes": 1, "sound": "scale_clunk"},
   "eye_chart": {"prompt": "city.do.eye_chart.prompt", "lines": "city.do.eye_chart", "minutes": 5},
@@ -44,7 +44,7 @@
   "school_desk": {"prompt": "city.do.school_desk.prompt", "lines": "city.do.school_desk", "minutes": 45, "pose": "sit", "fade": true, "needs_staff": "teacher", "sound": "school_bell"},
   "blackboard": {"prompt": "city.do.blackboard.prompt", "lines": "city.do.blackboard", "minutes": 5, "sound": "chalk"},
 
-  "cinema": {"prompt": "city.do.cinema.prompt", "lines": "city.do.cinema", "minutes": 90, "price": 30, "pose": "sit", "fade": true, "needs_staff": "projectionist", "sound": "projector_whirr", "screen": "film", "title": "city.screen.film.title"},
+  "cinema": {"prompt": "city.do.cinema.prompt", "lines": "city.do.cinema", "collect": "films/{line}", "minutes": 90, "price": 30, "pose": "sit", "fade": true, "needs_staff": "projectionist", "sound": "projector_whirr", "screen": "film", "title": "city.screen.film.title"},
   "stage": {"prompt": "city.do.stage.prompt", "lines": "city.do.stage", "minutes": 30, "pose": "sit", "screen": "stage", "title": "city.screen.stage.title"},
   "choir": {"prompt": "city.do.choir.prompt", "lines": "city.do.choir", "minutes": 40, "pose": "sit", "fade": true, "needs_staff": "choir_leader", "sound": "choir_hum"},
   "microphone": {"prompt": "city.do.microphone.prompt", "lines": "city.do.microphone", "minutes": 2, "sound": "mic_feedback"},

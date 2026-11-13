@@ -447,6 +447,36 @@
    "yaw": 288.0
   },
   {
+   "id": "lend_stand",
+   "kind": "stand",
+   "pos": [
+    -14.04,
+    15.464,
+    0.0
+   ],
+   "yaw": 288.0
+  },
+  {
+   "id": "cart_stand",
+   "kind": "stand",
+   "pos": [
+    -14.002,
+    16.317,
+    0.0
+   ],
+   "yaw": 197.99999999999997
+  },
+  {
+   "id": "swap_stand",
+   "kind": "stand",
+   "pos": [
+    -15.49,
+    16.044,
+    0.0
+   ],
+   "yaw": 288.0
+  },
+  {
    "id": "buffet_t0",
    "kind": "table",
    "pos": [
@@ -625,6 +655,226 @@
     0.0
    ],
    "yaw": 252.0
+  },
+  {
+   "id": "games_stand_1",
+   "kind": "stand",
+   "pos": [
+    6.309,
+    25.546,
+    0.0
+   ],
+   "yaw": 234.0
+  },
+  {
+   "id": "games_stand_2",
+   "kind": "stand",
+   "pos": [
+    3.801,
+    27.369,
+    0.0
+   ],
+   "yaw": 54.0
+  },
+  {
+   "id": "games_stand_3",
+   "kind": "stand",
+   "pos": [
+    8.381,
+    28.738,
+    0.0
+   ],
+   "yaw": 234.0
+  },
+  {
+   "id": "games_stand_4",
+   "kind": "stand",
+   "pos": [
+    6.196,
+    30.325,
+    0.0
+   ],
+   "yaw": 54.0
+  },
+  {
+   "id": "bench_seat_1_0",
+   "kind": "seat",
+   "pos": [
+    5.89,
+    26.16,
+    4.4
+   ],
+   "yaw": 234.0
+  },
+  {
+   "id": "bench_seat_1_2",
+   "kind": "seat",
+   "pos": [
+    4.514,
+    27.159,
+    4.4
+   ],
+   "yaw": 54.0
+  },
+  {
+   "id": "bench_seat_2_0",
+   "kind": "seat",
+   "pos": [
+    7.77,
+    28.749,
+    4.4
+   ],
+   "yaw": 234.0
+  },
+  {
+   "id": "bench_seat_2_2",
+   "kind": "seat",
+   "pos": [
+    6.395,
+    29.748,
+    4.4
+   ],
+   "yaw": 54.0
+  },
+  {
+   "id": "bench_stand",
+   "kind": "stand",
+   "pos": [
+    7.156,
+    30.37,
+    4.4
+   ],
+   "yaw": 144.0
+  },
+  {
+   "id": "photo_seat_1",
+   "kind": "seat",
+   "pos": [
+    5.441,
+    26.053,
+    8.8
+   ],
+   "yaw": 54.0
+  },
+  {
+   "id": "photo_seat_2",
+   "kind": "seat",
+   "pos": [
+    6.029,
+    26.862,
+    8.8
+   ],
+   "yaw": 54.0
+  },
+  {
+   "id": "photo_stand",
+   "kind": "stand",
+   "pos": [
+    6.707,
+    30.943,
+    8.8
+   ],
+   "yaw": 144.0
+  },
+  {
+   "id": "hall_seat_1",
+   "kind": "seat",
+   "pos": [
+    -3.257,
+    26.28,
+    0.0
+   ],
+   "yaw": 216.0
+  },
+  {
+   "id": "hall_seat_2",
+   "kind": "seat",
+   "pos": [
+    -4.433,
+    27.898,
+    0.0
+   ],
+   "yaw": 216.0
+  },
+  {
+   "id": "hall_seat_3",
+   "kind": "seat",
+   "pos": [
+    -5.442,
+    24.693,
+    0.0
+   ],
+   "yaw": 216.0
+  },
+  {
+   "id": "hall_seat_4",
+   "kind": "seat",
+   "pos": [
+    -6.617,
+    26.311,
+    0.0
+   ],
+   "yaw": 216.0
+  },
+  {
+   "id": "stage_wing",
+   "kind": "stand",
+   "pos": [
+    -5.179,
+    28.84,
+    0.0
+   ],
+   "yaw": 216.0
+  },
+  {
+   "id": "lounge_sofa_1",
+   "kind": "seat",
+   "pos": [
+    -6.797,
+    26.304,
+    4.4
+   ],
+   "yaw": 126.0
+  },
+  {
+   "id": "lounge_sofa_2",
+   "kind": "seat",
+   "pos": [
+    -6.327,
+    25.657,
+    4.4
+   ],
+   "yaw": 126.0
+  },
+  {
+   "id": "football_stand_1",
+   "kind": "stand",
+   "pos": [
+    -6.788,
+    30.884,
+    4.4
+   ],
+   "yaw": 306.0
+  },
+  {
+   "id": "football_stand_2",
+   "kind": "stand",
+   "pos": [
+    -8.73,
+    29.474,
+    4.4
+   ],
+   "yaw": 126.0
+  },
+  {
+   "id": "arcade_stand",
+   "kind": "stand",
+   "pos": [
+    -9.634,
+    29.187,
+    4.4
+   ],
+   "yaw": 81.0
   }
  ],
  "lamps": [
@@ -850,6 +1100,28 @@
   },
   {
    "pos": [
+    5.055,
+    26.458,
+    3.3
+   ],
+   "lumens": 650,
+   "colour": "#FFD9A8",
+   "kind": "public",
+   "radius": 6.0
+  },
+  {
+   "pos": [
+    7.289,
+    29.532,
+    3.3
+   ],
+   "lumens": 520,
+   "colour": "#FFD9A8",
+   "kind": "public",
+   "radius": 6.0
+  },
+  {
+   "pos": [
     6.172,
     27.995,
     7.9
@@ -861,6 +1133,17 @@
   },
   {
    "pos": [
+    5.159,
+    30.09,
+    11.0
+   ],
+   "lumens": 260,
+   "colour": "#FF3320",
+   "kind": "public",
+   "radius": 4.0
+  },
+  {
+   "pos": [
     6.466,
     28.399,
     11.5
@@ -869,6 +1152,17 @@
    "colour": "#FFB090",
    "kind": "public",
    "radius": 6.0
+  },
+  {
+   "pos": [
+    -6.701,
+    28.723,
+    3.4
+   ],
+   "lumens": 700,
+   "colour": "#FFE2B5",
+   "kind": "public",
+   "radius": 6.5
   },
   {
    "pos": [
@@ -1091,6 +1385,19 @@
    }
   },
   {
+   "id": "clock_place",
+   "kind": "machine",
+   "pos": [
+    -14.463,
+    13.434,
+    0.76
+   ],
+   "yaw": 108.0,
+   "props": {
+    "what": "clock_place"
+   }
+  },
+  {
    "id": "stack_r_1",
    "kind": "shelf",
    "pos": [
@@ -1206,6 +1513,47 @@
    "props": {
     "role": "clerk",
     "service": "lending"
+   }
+  },
+  {
+   "id": "lend_hatch",
+   "kind": "counter",
+   "pos": [
+    -14.848,
+    15.201,
+    1.0
+   ],
+   "yaw": 108.0,
+   "props": {
+    "role": "clerk",
+    "service": "lending",
+    "shop": "cog_lending"
+   }
+  },
+  {
+   "id": "book_cart",
+   "kind": "shelf",
+   "pos": [
+    -14.203,
+    16.936,
+    0.9
+   ],
+   "yaw": 18.0,
+   "props": {
+    "topic": "local"
+   }
+  },
+  {
+   "id": "swap_shelf",
+   "kind": "take",
+   "pos": [
+    -16.3,
+    15.623,
+    0.9
+   ],
+   "yaw": 108.0,
+   "props": {
+    "item": "magazine_science"
    }
   },
   {
@@ -1393,6 +1741,32 @@
    }
   },
   {
+   "id": "league_board",
+   "kind": "board",
+   "pos": [
+    2.969,
+    28.097,
+    1.6
+   ],
+   "yaw": 54.0,
+   "props": {
+    "topic": "club"
+   }
+  },
+  {
+   "id": "cue_rack",
+   "kind": "machine",
+   "pos": [
+    4.879,
+    30.726,
+    1.1
+   ],
+   "yaw": 54.0,
+   "props": {
+    "what": "cue_rack"
+   }
+  },
+  {
    "id": "workbench_1",
    "kind": "craft",
    "pos": [
@@ -1458,6 +1832,19 @@
    }
   },
   {
+   "id": "drying_shelf",
+   "kind": "board",
+   "pos": [
+    7.225,
+    32.421,
+    5.9
+   ],
+   "yaw": 324.0,
+   "props": {
+    "topic": "exhibit"
+   }
+  },
+  {
    "id": "darkroom_bench",
    "kind": "craft",
    "pos": [
@@ -1484,12 +1871,51 @@
    }
   },
   {
+   "id": "exposure_clock",
+   "kind": "machine",
+   "pos": [
+    4.233,
+    29.156,
+    9.76
+   ],
+   "yaw": 54.0,
+   "props": {
+    "what": "exposure_clock"
+   }
+  },
+  {
+   "id": "developing_tray",
+   "kind": "craft",
+   "pos": [
+    5.027,
+    30.248,
+    9.75
+   ],
+   "yaw": 54.0,
+   "props": {
+    "what": "developing"
+   }
+  },
+  {
    "id": "photo_board",
    "kind": "board",
    "pos": [
     8.64,
     31.393,
     10.4
+   ],
+   "yaw": 324.0,
+   "props": {
+    "topic": "exhibit"
+   }
+  },
+  {
+   "id": "drying_line",
+   "kind": "board",
+   "pos": [
+    7.538,
+    31.576,
+    10.7
    ],
    "yaw": 324.0,
    "props": {
@@ -1593,6 +2019,19 @@
    "pos": [
     -3.145,
     28.339,
+    1.7
+   ],
+   "yaw": 306.0,
+   "props": {
+    "topic": "club"
+   }
+  },
+  {
+   "id": "rehearsal_board",
+   "kind": "board",
+   "pos": [
+    -4.674,
+    30.443,
     1.7
    ],
    "yaw": 306.0,
@@ -3823,8 +4262,8 @@
   "drum with spiral stair, 5 wings at different heights, front wing cantilevered over the entrance"
  ],
  "tris": {
-  "shell": 6680,
-  "detail": 29968,
-  "windows": 196
+  "shell": 6704,
+  "detail": 31054,
+  "windows": 392
  }
 }

@@ -159,8 +159,11 @@ python3 tools/city/interiors.py --check    # write nothing; fail on broken conte
 * `Content/Localization/city/strings_{ru,en,ja}.json` (merged at load like `Localization/town/`): every key of
   `tools/city/content/strings/*.json` (`{"key": {"ru", "en", "ja"}}`, one file per theme) plus the teleport names. A key
   of the hand-written table may be used but never redefined (it would win).
-* `Content/UI/quests.json`: the side quests of `tools/city/content/quests.json`, one line each, marked
-  `"from": "tools/city/interiors.py"`, replaced on every run; the other quests stay byte for byte. Quest events used:
+* `Content/UI/quests.json`: the side quests of every content file's `"quests"` section (`quests.json` first, then the
+  others by file name: `quests_*.json`, a building's own `x_<building>.json`; the same format as `quests.json`), one line
+  each, marked `"from": "tools/city/interiors.py"`, replaced on every run (a quest dropped from the content goes away); the
+  other quests stay byte for byte. A quest id in two files, or one without stages, is an error; every merged quest gets the
+  same checks and the same `dev` blocks. Quest events used:
   `do <act id>`, `visit <plot id>` (sent by the game at the first use of a thing in a plot each day), `get|have|use
   <item>`, `reach <map place>`. The town's plots are not map places (`Content/UI/map.json`): the town quests name none.
 
@@ -195,6 +198,37 @@ An act is what happens when the hero presses E at a thing:
 | `daily` | how many times a day it gives its reward (0: no limit) |
 | `shop` | opens the trade screen with this stock of `shops` when `needs_staff` is on shift |
 | `screen` | a screen show (`film`, `stage`, `tv`, `slides`): the page in the dark wide style, the line cut into subtitles shown one after another, the minutes passing with them; a sitting show on a thing that is not a seat wants the hero seated first (a seat of the plot within 25 m) and is then offered from the seat |
+| `collect` | a stamp every run gives (`"shelves/birds"`), or `"set/{line}"`: every line it shows is a piece of its own (the line's key: the films of «Рассвет»'s programme, a jukebox's records); an act `like` it inherits it (`"collect": ""` drops it) |
+| `closed` | what things doing this act say while their plot is shut: an act id or a line key (see "Closed") |
+| `like` | content only: inherit every field of that act, then override |
+
+A thing record of `interiors.json` has `id`, `plot`, `kind`, `ue`, `yaw`, `props`, `act`, `hours`, `days`, and when they
+apply `auto`, `collect` (the stamp using it gives: a rule's `"collect": "kiosks/{plot}"` with the plot filled in) and `closed`
+(the act it does while its plot is shut). A `<plot|type>/<id>` rule may give `kind`, `props`, `act`, `hours`, `days`,
+`collect`, `closed`. The file's `collections` section: `{"<set>": {"title": key, "pieces": [...]}}`.
+
+### Collections
+
+Stamps the hero gathers, kept in the save with the rest ("CityThings": `c:<set>/<piece>`): the shelf topics he has read
+(`shelves`: the `read_<topic>` acts, `"collect": "shelves/<topic>"`), the films seen at «Рассвет» (`films`: `cinema` and the
+acts `like` it, `"films/{line}"`), the jukebox records heard (`records`: `jukebox` and its likes), the bus-stop kiosks
+visited (`kiosks`: the rule `bus_stop_kiosk/counter`, `"kiosks/{plot}"`). Declared in a content file's `collections` section
+(`tools/city/content/collections.json`): `{"<set>": {"title": "<key>", "pieces": [...]}}`; without `pieces` the set is every
+piece something in town gives (a building's new lines grow it by themselves). `--check` fails on a stamp of an undeclared set
+or piece, a declared piece nothing gives, a missing title. The first time a stamp comes the HUD says `city.coll.got`
+(«Фильмы «Рассвета»»: 3 из 16), at the last one `city.coll.complete`. Lines may ask for stamps (`have`, `count`). Console
+`lyud.City.Collections` (each set "n of m" to the log and on the page; `grant|clear <set|*>`); developer mode
+`interiors.collections` (the page) and `interiors.collections_all` (toggle: every set complete / cleared).
+
+### Closed
+
+While a thing's plot is shut (the thing's `hours`/`days`; never with `interiors.open_all_hours`) a thing with a `closed` act
+does that instead of being refused: the café's chairs say they are up on the tables, the cinema screen that the curtain is
+drawn. It only shows words (no time, money, visit, stamp or sitting: a seat with a closed act can't be sat on at night) and
+keeps a page of its own. Given by, first found: the thing's rule (`"closed"`), its act's `closed`, then the `closed_by`
+section `{"<plot id | building type | plot kind>": {"<thing kind> | *": "<act or line key>"}}` (plot over type over plot
+kind; `tools/city/content/collections.json`). A line key (or `"<prefix>.*"`) becomes an act `_closed:<key>`
+(`city.act.look.prompt`, event `look`, target `closed`). Things open round the clock never get one. No geometry changes.
 
 **Lines by the day and the hour.** In the content an entry of `lines` may be `{"k": "<key or prefix.*>", <conditions>}`;
 interiors.py writes each line it gives as `{"k": key, <conditions>}` (plain keys stay strings, so old data reads the same):
@@ -202,11 +236,29 @@ interiors.py writes each line it gives as `{"k": key, <conditions>}` (plain keys
 (wrapping the year), `"after": N` (N game days after the game began, `UGameCalendar::StartDate`), `"every": [n, r]` (on the
 days since the game began with `% n == r`: a notice of its own each game day, in order). A line shows only while all its
 conditions hold; among those the act turns (`rotate`). Every act must have a line for every hour (citysim checks it): give
-day lines `[6, 21]` and night lines `[21, 6]` together (`look_view`, `telescope`, `binoculars_post`). `--check` fails on an
-unknown condition or a bad value. Weather conditions are not there yet.
+day lines `[6, 21]` and night lines `[21, 6]` together (`look_view`, `telescope`, `binoculars_post`); festival, weather and
+collection lines only ever add to lines that always hold. `--check` fails on an unknown condition or a bad value (a festival
+id not in `Content/PeopleData/festivals.json`, a weather word not in the list, a stamp of an undeclared collection).
+
+| line field | meaning |
+|---|---|
+| `k` | the string key, or `"<prefix>.*"` for all that prefix's strings (each gets the same conditions) |
+| `h` | `[from, to)` hours; `[21, 6]` runs past midnight |
+| `d` | weekdays: `"mon-fri"`, `"sat,sun"`, `"fri-mon"` |
+| `date` | `"MM-DD"` or `["MM-DD", "MM-DD"]` (a range may wrap the year) |
+| `after` | from N whole game days after the game began (`Since >= N`) |
+| `before` | until N game days after the game began (`Since < N`); with `after` a dated notice's days on the board, so notices replace each other instead of piling up (`--check` fails on `before <= after`) |
+| `once` | `true`: shown once at a thing, then skipped there (remembered in the save, `o:<thing>|<key>`; per thing: another board with the same act shows it once too) |
+| `every` | `[n, r]`: the days since the game began `% n == r` |
+| `festival` | `"any"` (a holiday today: `ULyudFestivalSubsystem::IsFestivalToday`; the weekly market does not count), `"none"` (no holiday today), a festival id (`new_year`, `lantern_night`, `sea_festival`, `weekend_market`...: one on now, `ActiveFestivals`) or a list of ids. On a `daily` act a holding festival line takes the day (the board shows the holiday notice all day; the run of notices goes on the next day where it was, nothing skipped); on a `use` act it joins the turn |
+| `weather` | `rain`, `snow`, `fog`, `cold` (< 2 C), `warm` (> 22 C), `clear`, `wet` (wet ground), `dry` (nothing falling), or a list: any of them. From `ULyudWeatherSubsystem::GetSky()` with the townsfolk's talk thresholds (`LyudCity::WeatherBits`) |
+| `have` | `"set/piece"`: the hero has that stamp |
+| `count` | `["set", n]`: the hero has at least n stamps of the set |
+| `collect` | no condition: the stamp the hero gets when the line is shown; `"set/*"` on a `"<prefix>.*"` entry gives each line the key's last part as its piece |
 
 Content tables (`tools/city/content/*.json`, each with any of `acts`, `shops`, `rules`, `defaults`,
-`defaults_by_plot_kind`; a key defined in two files is an error): `acts.json` (defaults per kind, generic acts,
+`defaults_by_plot_kind`, `quests`, `collections`, `closed_by`; any other section is an error, and so is a key defined in two
+files; a building's own content goes in `x_<building>.json`, its words in `strings/x_<building>.json`): `acts.json` (defaults per kind, generic acts,
 shelves, boards), `activities.json` (machines, games, sport, crafts, screens), `counters.json` (shops, counter talk),
 `plots.json` (what the buildings' spots do while there are no declared things). An act may say `"like": "<act>"` to
 inherit, and `"lines": "<prefix>"` for all `<prefix>.<n>` strings, or a list of keys where `"<prefix>.*"` stands for that
@@ -312,19 +364,42 @@ counters are closed), then the kind's default (`sit`, `bed_private`, `read_misc`
   beds and doors ignore the plot's hours; everything else keeps them.
 * Rules in `Private/City/CityThingsModel.h` (`LyudCity::FModel`: `Load`, `Pick`, `Check`, `Run`, `NextLine`, `Nearest`,
   `NearestThing`, `ScreenFrom`, `NeedsSeatFirst`, `SeatHeight`, `Subtitles`, `SaveState`/`LoadState`,
-  `ResetToday`/`ResetState`), engine-free; `tools/citysim/run.sh` checks it (83 checks) on `tools/citysim/fixture.json`, made-up
+  `ResetToday`/`ResetState`; also `IsShut`/`ActIndexNow` (the closed act), `GiveStamp`/`CountStamps`/`GrantSet`/`ClearSet`,
+  `FindFree`/`Claim`/`Release`/`ThingsOfPlot`, `WeatherBits`), engine-free; `tools/citysim/run.sh` checks it (121 checks) on `tools/citysim/fixture.json`, made-up
   acts in the test itself and the real file when it is built. Save record "CityThings" (pages, daily boards' days, today's
   counts, uses, plots visited); a New Game starts it over.
 * Console: `lyud.City.Things` (count, the nearest five), `lyud.City.Do <thing id>` (run it from anywhere; sitting only
   when the hero is within 4 m), `lyud.City.Things.Show 0|1` (labels within 15 m), `lyud.City.Weekday <mon..sun>` (the clock
-  on to the next such day, same time). Developer mode, group `interiors`: things nearby, use the nearest, reset today's
-  limits, 500 rub., `interiors.open_all_hours` (toggle: no hours, days or staff asked), `interiors.show_things` (toggle:
-  the labels). Every city quest stage has a `dev` block written by interiors.py (`quest_dev`): a teleport in front of a thing
+  on to the next such day, same time), `lyud.City.Collections [grant|clear <set|*>]`. Developer mode, group `interiors`:
+  things nearby, use the nearest, reset today's limits, 500 rub., `interiors.open_all_hours` (toggle: no hours, days or staff
+  asked; no closed acts), `interiors.show_things` (toggle: the labels), `interiors.collections` (the collections' page),
+  `interiors.collections_all` (toggle: every set complete / cleared). Every city quest stage has a `dev` block written by interiors.py (`quest_dev`): a teleport in front of a thing
   that makes its first objective (`city.q.<quest>.<n>`), the clock an hour after it opens, `lyud.City.Weekday` to a day it is
   open, `Inventory.Earn` for its price, the items a later stage only checks; a stage's own `dev` in
   `tools/city/content/quests.json` wins key by key.
 * Perf ([perf checklist](../README.md)): no per-frame allocation, no actors or components per thing, nothing past the town box,
   the file parsed off the game thread.
+
+### API for townsfolk
+
+For the people's life (a townsperson who sits down in the café, reads at a library shelf, waits at a counter), on
+`ULyudCityThings` (`Public/City/LyudCityThings.h`), the logic in the model and checked in citysim:
+
+* `bool FindFreeThing(FName Kind, const FVector& Near, float RadiusCm, FCityThingRef& Out) const`: the nearest thing of
+  `Kind` (`seat`, `bed`, `shelf`, ...; None: any kind) within `RadiusCm` of `Near` on about its floor (2.5 m up or down) that
+  nobody holds and the hero is not sitting or lying on. Reads only the model's 4 m grid cells round `Near` (no pass over the
+  ~1400 things), allocates nothing but the ref's strings.
+* `FCityThingRef`: `Id` (`P-CAFE/chair_3`), `Kind`, `Plot`, `Location` (the thing's point, world cm: a seat's cushion), `Yaw`
+  (the way it faces: a sitter looks that way), `SeatHeightCm` (a seat's or bed's surface over its floor, 0 otherwise), `bHeld`.
+* `bool ClaimThing(const FString& Id, const UObject* Who)`: `Who` (the person's actor or any object that lives as long as the
+  hold) takes it; true when it was free or already theirs, false when somebody else holds it or the hero is on it. The hold is
+  weak: when `Who` is destroyed it goes by itself (checked five times a second). While held, the hero's E on that seat or bed
+  is refused with `city.act.taken` ("Здесь уже сидят"); other acts (a shelf, a counter) are not blocked.
+* `void ReleaseThing(const FString& Id, const UObject* Who)`: lets it go (only the holder can).
+* `void GetThingsOfPlot(const FString& PlotId, FName Kind, TArray<FCityThingRef>& Out) const`: the plot's things of `Kind`
+  (None: all), appended; a table by plot built once at load.
+* Holds are not saved (the people's life places everyone again after a load) and survive a New Game of the city's state.
+  The things appear a moment after the level starts (parsed on a worker): before that every call finds nothing.
 
 ### How to test in the editor (Mac)
 
@@ -348,3 +423,9 @@ counters are closed), then the kind's default (`sit`, `bed_private`, `read_misc`
 16. `P-BRIDGEHOUSE/gallery_bench_e1`: sit, stand up: on the gallery floor, not under it.
 17. Developer panel, Quests: each city quest's stages jump to the right room, open, with the money.
 18. Offscreen: `unreal/scripts/test_city_things.sh` (CITYTEST lines, PASS/FAIL).
+19. A holiday (`lyud.Festival.Go new_year`): the club's board shows the holiday notice all day; `Dev.Do time.plus_day`: the
+    next ordinary notice. `lyud.Weather.Preset rain`: the cloakroom asks for the wet raincoat.
+20. Read two library shelves of different topics: the HUD says «Читательский формуляр: темы полок»: 1 из 15, then 2 из 15;
+    `lyud.City.Collections`: the page with every set; save, load, the counts stay.
+21. The café at 23:00 (`lyud.Birds.Time 23`): a chair says the chairs are up on the tables (no sitting), the bar is covered;
+    with `interiors.open_all_hours` it sits again.

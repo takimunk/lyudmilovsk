@@ -31,7 +31,7 @@ INFO = {
 }
 
 SEED = 1972
-EXTRA_LIT = {(1, 2), (1, 4)}              # level-1 pods that would otherwise be pitch dark (QA: the music and cooking pods)
+EXTRA_LIT = {(1, 2), (1, 4), (1, 6), (2, 2), (2, 4), (2, 6)}   # pods that would otherwise be pitch dark at night (QA, pass 2: the carrels too)
 VARIANTS = {}
 HX0, HX1, HY0, HY1 = -13.0, 13.0, 3.0, 27.0
 HALL_H = 3.6
@@ -265,13 +265,15 @@ class _PodRoom:
             self.put(kit.books_stack, 0.0, 1.5, 0.0, top=self.zf + 0.5, n=3)
         elif t == "music":
             s = self.seat_of(self.put(kit.armchair, -0.3, 3.2, 0.0, solid=False, mat="CT_PlasterYellow"))
-            self.lw(kit.piano, 2.4)
+            pn = self.lw(kit.piano, 2.4)
+            self.B.thing("pod_1_02_piano", "play", pn["pos"], pn["yaw"], what="piano")
             self.put(kit.stool, 0.35, 2.4, 90.0)
             self.rw(kit.poster, 2.0, name="sleeve_1", w=0.5, zc=1.5)
             self.rw(kit.poster, 2.7, name="sleeve_4", w=0.5, zc=1.5)
             self.rw(kit.poster, 3.4, name="sleeve_6", w=0.5, zc=1.5)
             r = self.put(kit.coffee_table, -0.9, 1.3, 90.0, w=0.8, d=0.5)
-            self.put(kit.record_player, -0.9, 1.3, 90.0, top=r["top"])
+            rp = self.put(kit.record_player, -0.9, 1.3, 90.0, top=r["top"])
+            self.B.thing("pod_1_02_player", "machine", (rp["pos"][0], rp["pos"][1], r["top"] + 0.1), 90.0, what="record_player")
         elif t == "garden":
             s = self.seat_of(self.put(kit.armchair, 0.0, 3.1, 0.0, solid=False, mat="CT_PlasterGreen"))
             for (u, v, kd, hh) in ((1.0, 3.62, "monstera", 0.7), (-1.0, 3.6, "palm", 0.9), (-1.05, 0.7, "ficus", 1.0), (1.05, 2.3, "ficus", 0.8)):
@@ -318,7 +320,8 @@ class _PodRoom:
             self.put(kit.skeleton, -1.0, 2.9, 90.0)
         else:                       # sun
             self.rw(kit.poster, 2.9, name="poster_sun_1", w=0.6, zc=1.6)
-            self.put(kit.telescope, -0.85, 1.7, 0.0)
+            ts = self.put(kit.telescope, -0.85, 1.7, 0.0)
+            self.B.thing("pod_2_02_telescope", "machine", ts["pos"], ts["yaw"], what="telescope")
         return s
 
     # ------------------------------------------------------------ level 3
@@ -346,7 +349,8 @@ class _PodRoom:
             self.put(kit.plant, -1.0, 3.6, 0.0, kind="monstera", pot="CT_SteelWhite", h=0.7)
         else:
             s = self.seat_of(self.put(kit.armchair, 0.0, 3.1, 0.0, solid=False, mat="CT_SteelWhite"))
-            self.put(kit.telescope, -0.95, 3.5, 0.0)
+            ts = self.put(kit.telescope, -0.95, 3.5, 0.0)
+            self.B.thing("pod_3_%02d_telescope" % k, "machine", ts["pos"], ts["yaw"], what="telescope")
             self.put(kit.plant, 1.05, 3.6, 0.0, kind="ficus", pot="CT_PlasterBlue", h=1.0)
         self.lw(kit.bookshelf, 1.0, w=0.9, h=1.2, levels=3, topic="modern", seed=k)
         return s
@@ -646,7 +650,7 @@ def _furnish(B, rnd):
     st2 = K.stool(B, -10.1, 15.0, 0.0, 20.0, mat="CT_PlasterRed")
     K.mats(B, -11.4, 12.9, 0.0, 0.0, w=1.4, d=0.9, n=2, mat="CT_PlasterBlue")
     K.plant(B, -12.1, 18.6, 0.0, 0.0, kind="palm", pot="CT_PlasterYellow", h=1.2)
-    _board(B, -9.8, 18.7, 0.0, 1.5, 1.35, ("kids_1", "kids_3"), h=1.6)
+    _board(B, -9.8, 18.7, 0.0, 1.0, 1.1, ("kids_0", "kids_3"), h=1.3)
     thing("kids_shelf_1", "shelf", (-12.45, 13.7, 0.7), 90.0, topic="kids")
     thing("kids_shelf_2", "shelf", (-12.45, 15.7, 0.7), 90.0, topic="kids")
     thing("kids_beanbag_1", "seat", (b1["seats"][0][0], b1["seats"][0][1], b1["seats"][0][2]), 300.0, height=0.3)
@@ -668,6 +672,9 @@ def _furnish(B, rnd):
     # ---- the librarian's office: a room in the north-east corner behind the service door
     _office(B, R)
 
+    # ---- pass 2: the returns box, the shelf of returned books, notices, the story-hour chair, the librarian's tea
+    _extras(B, R)
+
     # ---- plants on the north side
     for (px, py, kd, pot) in ((-12.2, 26.0, "ficus", "CT_PlasterRed"), (-5.6, 25.8, "palm", "CT_PlasterBlue"),
                               (0.0, 25.9, "monstera", "CT_Concrete"), (5.4, 25.9, "ficus", "CT_PlasterYellow")):
@@ -675,19 +682,62 @@ def _furnish(B, rnd):
     K.globe(B, 0.3, 21.4, 0.0, 0.0, floor=True)
 
 
+def _extras(B, R):
+    K = kit
+    th = B.thing
+    # ---- the "returned" shelf under the east glass: two low shelves, a reading lamp, an armchair, a typed card on the glass
+    for yy in (10.65, 11.55):
+        K.bookshelf(B, 12.62, yy, 0.0, 270.0, w=0.9, h=1.2, levels=3, topic="old", seed=int(yy * 10))
+    K.books_stack(B, 12.5, 10.65, 1.2, 80.0, n=3, seed=41)
+    K.table_lamp(B, 12.5, 11.55, 1.2, 270.0, shade="CT_PlasterGreen")
+    K.poster(B, 12.69, 11.1, 0.0, 270.0, name="paper_typed", w=0.34, zc=1.75)
+    ra = K.armchair(B, 11.75, 11.1, 0.0, 90.0, mat="CT_PlasterGreen", solid=False)
+    th("returned_shelf", "shelf", (12.45, 11.1, 0.8), 270.0, topic="returned")
+    th("returned_card", "board", (12.5, 12.35, 0.9), 270.0, topic="returned")
+    K.stool(B, 12.2, 12.35, 0.0, 270.0, mat="CT_PlasterYellow")
+    B.spot("returned_shelf", "stand", (11.7, 10.4, 0.0), 90.0)
+    B.spot("returned_armchair", "seat", (ra["seats"][0][0], ra["seats"][0][1], 0.0), 90.0)
+    # ---- the returns box by the street wall (steel, green, a slot and a typed card)
+    fr = fu.Fr(-3.2, 3.72, 180.0)
+    fu.lbox(B.detail, "CT_PlasterGreen", fr, -0.26, 0.26, -0.2, 0.2, 0.0, 1.05)
+    fu.lbox(B.detail, "CT_Steel", fr, -0.3, 0.3, -0.24, 0.24, 1.05, 1.1)
+    fu.lbox(B.detail, "CT_ConcreteDark", fr, -0.18, 0.18, 0.2, 0.215, 0.78, 0.84)
+    fu.lbox(B.m, "CT_PlasterGreen", fr, -0.24, 0.24, -0.18, 0.18, 0.1, 1.0)
+    K.poster(B, -3.2, 3.72 + 0.215, 0.0, 180.0, name="paper_letter", w=0.3, zc=0.93)
+    th("returns_box", "board", (-3.2, 3.95, 0.9), 180.0, topic="returns")
+    B.spot("returns_box", "stand", (-3.2, 4.6, 0.0), 0.0)
+    # ---- by the entrance: the day's notices and the reading-diary stand (double-sided boards, kept apart)
+    _board(B, -1.9, 6.4, 0.0, 1.2, 1.5, ("notice_2", "map_coast"))
+    th("notice_board_day", "board", (-1.9, 6.4, 1.5), 0.0, topic="notices")
+    B.spot("notice_board_day", "stand", (-1.9, 5.75, 0.0), 180.0)
+    _board(B, -3.9, 6.4, 0.0, 0.95, 1.3, ("chart_calendar", "poster_cons_3"))
+    th("diary_board", "board", (-3.9, 6.4, 1.5), 0.0, topic="diary")
+    B.spot("diary_board", "stand", (-3.9, 5.75, 0.0), 180.0)
+    # ---- a stamp and a lamp at the left end of the lending desk
+    K.cup(B, -11.2, 8.45, 1.0, 0.0)
+    th("library_stamp", "counter", (-11.5, 8.4, 1.0), 0.0, role="librarian", service="stamp")
+    B.spot("lending_counter_3", "counter", (-11.5, 7.9, 0.0), 180.0)
+    # ---- the children's story hour: the reading armchair at the edge of the round rug, a screen-less "slides" hour
+    sa = K.armchair(B, -7.5, 15.9, 0.0, 270.0, mat="CT_PlasterRed", solid=False)
+    K.floor_lamp(B, -7.0, 17.2, 0.0, 0.0)
+    th("kids_story_chair", "seat", (sa["seats"][0][0], sa["seats"][0][1], sa["seats"][0][2]), 270.0, height=0.45)
+    th("kids_story_hour", "screen", (-9.4, 15.9, 0.5), 90.0, what="story_hour")
+    B.spot("story_armchair", "seat", (sa["seats"][0][0], sa["seats"][0][1], 0.0), 270.0)
+
+
 def _office(B, R):
     K = kit
     x0, x1, y0, y1 = 9.6, 12.7, 21.0, 26.7
     _hall_partition(B, x0 - 0.12, x0, y0, y1, HALL_H)                                # west wall
     _hall_partition(B, x0, x1, y0 - 0.12, y0, HALL_H, gap=(10.1, 11.1))             # south wall with the door
-    B.spot("office_desk", "work", (11.0, 24.9, 0.0), 180.0)
+    B.spot("office_desk", "work", (11.0, 25.1, 0.0), 0.0)   # the librarian sits at the far wall and looks into the room
     # door caption
     B.thing("office_door", "door", (10.6, y0, 1.2), 180.0, to="staff")
     K.rug(B, 11.2, 23.4, 0.0, 0.0, w=1.7, d=2.2, name="rug_5")
-    d = K.office_desk(B, 11.0, 25.7, 0.0, 180.0, w=1.4, d=0.7, typewriter_on=True, papers=True, phone=True)
-    K.chair(B, 11.0, 24.95, 0.0, 180.0, kind="tube", mat="CT_PlasterGreen")
-    B.thing("office_chair", "seat", (11.0, 24.95, 0.45), 180.0, height=0.45)
-    K.lamp_green(B, 10.5, 25.8, 0.75, 180.0)
+    d = K.office_desk(B, 11.0, 24.35, 0.0, 0.0, w=1.4, d=0.7, typewriter_on=True, papers=True, phone=True)
+    K.chair(B, 11.0, 25.1, 0.0, 0.0, kind="tube", mat="CT_PlasterGreen")
+    B.thing("office_chair", "seat", (11.0, 25.1, 0.45), 0.0, height=0.45)
+    K.lamp_green(B, 10.55, 24.45, 0.75, 0.0)
     for i in range(2):
         K.bookshelf(B, x0 + 0.02, 22.0 + i * 1.0, 0.0, 90.0, w=1.0, h=2.2, levels=4, topic="old", seed=60 + i)
     B.thing("office_shelf", "shelf", (9.8, 22.5, 1.3), 90.0, topic="local")
@@ -697,6 +747,25 @@ def _office(B, R):
     K.samovar(B, 12.3, 24.4, 0.75, 0.0)
     K.cup(B, 12.15, 24.55, 0.75, 0.0)
     K.plant(B, 12.35, 26.3, 0.0, 0.0, kind="ficus", pot="CT_PlasterRed", h=1.4)
+    # pass 2: a clock over the door, a picture and a card board on the wall, a book trolley, a radio on the cabinets
+    K.wall_clock(B, 10.6, y0, 0.0, 180.0, zc=2.75)
+    K.picture(B, 12.1, y0, 0.0, 180.0, name="painting_pines", w=0.6, zc=1.6)
+    K.poster(B, 11.55, y0, 0.0, 180.0, name="paper_drawing", w=0.34, zc=1.5)
+    fr = fu.Fr(10.05, 24.15, 90.0)
+    fu.lbox(B.detail, "CT_WoodLight", fr, -0.4, 0.4, -0.2, 0.2, 0.18, 0.22)
+    fu.lbox(B.detail, "CT_WoodLight", fr, -0.4, 0.4, -0.2, 0.2, 0.58, 0.62)
+    for sx in (-0.38, 0.38):
+        for sy in (-0.18, 0.18):
+            fu.lbox(B.detail, "CT_Steel", fr, sx - 0.015, sx + 0.015, sy - 0.015, sy + 0.015, 0.0, 0.18)
+    fu.lbox(B.detail, "CT_Steel", fr, 0.34, 0.37, -0.2, 0.2, 0.62, 0.95)
+    fu.lbox(B.m, "CT_WoodLight", fr, -0.38, 0.38, -0.18, 0.18, 0.3, 0.6)
+    K.books_stack(B, 10.05, 23.95, 0.22, 100.0, n=4, seed=51)
+    K.books_stack(B, 10.05, 24.35, 0.62, 80.0, n=3, seed=52)
+    K.radio(B, 9.85, 25.5, 1.32, 90.0)
+    B.thing("office_radio", "machine", (9.9, 25.5, 1.45), 90.0, what="radio")
+    B.thing("office_ledger", "board", (11.0, 24.35, 0.82), 0.0, topic="ledger")
+    B.thing("office_kettle", "take", (12.3, 24.4, 0.9), 270.0, item="tea")
+    B.spot("office_tea", "stand", (11.7, 24.4, 0.0), 90.0)
     K.pendant(B, 11.2, 23.5, HALL_H, drop=0.7, kind="cone")
     B.lamp((11.2, 23.5, HALL_H - 0.9), lumens=520, colour="#FFE2B0", kind="public", radius=5.0, fixture=False)
 
@@ -749,4 +818,5 @@ def build(B):
     B.footprint = [(HX0, HY0), (HX1, HY0), (HX1, HY1), (HX0, HY1)]
     B.height = 19.0
     B.note("%d reading pods on 3 levels round an octagonal core; glazed hall; open stair to level 1" % n_pods)
+    print("KITCHECK", kit.check(B))
     add_surrounds(B, seed=5, bounds=(HX0, HX1, 0.3, 5.5), max_lamps=2)

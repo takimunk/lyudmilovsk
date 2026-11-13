@@ -334,9 +334,10 @@ class _P:
         self.loft(mat, [_ring_circle(x, y, r, z0, segs, a0=a0), _ring_circle(x, y, r1, z1, segs, a0=a0)],
                   top=top and r1 > 1e-6, bottom=bottom)
 
-    def lathe(self, mat, x, y, prof, segs=8, top=True, bottom=False):
-        """A body of revolution: prof = [(r, z), ...] from the bottom up."""
-        self.loft(mat, [_ring_circle(x, y, r, z, segs) for r, z in prof], top=top, bottom=bottom)
+    def lathe(self, mat, x, y, prof, segs=8, top=True, bottom=False, a0=0.0):
+        """A body of revolution: prof = [(r, z), ...] from the bottom up (a0 = start angle: 0 with an even segs puts a
+        flat face centred on -y, the front, for a label)."""
+        self.loft(mat, [_ring_circle(x, y, r, z, segs, a0=a0) for r, z in prof], top=top, bottom=bottom)
 
     def rod(self, mat, a, b, w=0.03, sides=4, caps=False):
         """A bar of `sides` faces between local points a and b (4: square of side w; 3: triangle; 5+: round, diameter w)."""
@@ -407,6 +408,28 @@ class _P:
     def card_front(self, name, x0, x1, z0, z1, y, rect=None):
         """A card in the plane y facing -y (the piece's front)."""
         self.card(name, (x0, y, z0), (x1, y, z0), (x1, y, z1), (x0, y, z1), rect)
+
+    def label(self, name, cx, zc, y, mw, mh):
+        """ONE label on a front face: the whole cell, never stretched (the cell's own aspect), fitted inside mw x mh
+        and centred at (cx, zc). Words are never cut, never repeated; the rest of the face stays plain."""
+        u0, v0, u1, v1 = _uvrect(name)
+        asp = (u1 - u0) / max(1e-6, v1 - v0)
+        w = min(mw, mh * asp)
+        h = w / asp
+        self.card_front(name, cx - w / 2, cx + w / 2, zc - h / 2, zc + h / 2, y)
+
+    def cover_front(self, name, x0, x1, z0, z1, y):
+        """A pattern cell (fabric, tile: no words) filling the face: a centred crop of the cell with the face's aspect."""
+        u0, v0, u1, v1 = _uvrect(name)
+        asp = (u1 - u0) / max(1e-6, v1 - v0)
+        fa = (x1 - x0) / max(1e-6, z1 - z0)
+        if fa < asp:
+            k = fa / asp
+            rect = ((1 - k) / 2, 0.0, (1 + k) / 2, 1.0)
+        else:
+            k = asp / fa
+            rect = (0.0, (1 - k) / 2, 1.0, (1 + k) / 2)
+        self.card_front(name, x0, x1, z0, z1, y, rect=rect)
 
     def card_back(self, name, x0, x1, z0, z1, y, rect=None):
         self.card(name, (x1, y, z0), (x0, y, z0), (x0, y, z1), (x1, y, z1), rect)
@@ -971,6 +994,8 @@ def _books_row(p, x0, x1, y0, y1, zb, zmax, rnd, spines=None, gap=0.35):
         sp = spines or "spine_%02d" % rnd.randrange(40)
         if spines and not spines.startswith("spine_"):
             sp = cell(spines, rnd)
+        if not sp.startswith("spine_"):            # a picture cell is never books: it would be sliced over the shelf
+            sp = "spine_%02d" % rnd.randrange(40)
         frac = w / strip_m
         a0 = rnd.uniform(0.0, max(0.0, 1.0 - frac))
         yf = y0 + rnd.uniform(0.0, 0.025)
@@ -1126,7 +1151,8 @@ def _goods(p, kind, x0, x1, y0, y1, zb, zmax, rnd):
                         (xa + tl * 3 + 0.01, y1 - 0.02, zb + 0.31), (xa + tl * 3, y1 - 0.02, zb + 0.31)], f="xXZ")
             xs = x + n * 0.012 + 0.06
             sc = cell("sleeve", rnd)
-            p.card_front(sc, x, x + min(0.31, x1 - x), zb, zb + min(0.31, room - 0.01), y0 + 0.005)
+            ss = max(0.05, min(0.31, x1 - x, room - 0.01))
+            p.card_front(sc, x, x + ss, zb, zb + ss, y0 + 0.005)
             x = xs + 0.25
         return
     while x < x1 - 0.05:
@@ -1135,8 +1161,8 @@ def _goods(p, kind, x0, x1, y0, y1, zb, zmax, rnd):
             h = min(room - 0.02, rnd.uniform(0.05, 0.12))
             if x + w > x1:
                 break
-            p.box("CT_TileWhite", x, x + w, y0 + 0.02, y0 + 0.12, zb, zb + h, f="xXZ")
-            p.card_front(cell("label", rnd), x, x + w, zb, zb + h, y0 + 0.02)
+            p.box("CT_TileWhite", x, x + w, y0 + 0.02, y0 + 0.12, zb, zb + h, f="xXyZ")
+            p.label(cell("label", rnd), x + w / 2, zb + h / 2, y0 + 0.018, w * 0.86, h * 0.8)
             x += w + 0.01
         elif kind == "groceries" or kind == "jars" or kind == "pharmacy":
             r = rnd.uniform(0.035, 0.05) if kind != "pharmacy" else 0.035
@@ -1152,14 +1178,14 @@ def _goods(p, kind, x0, x1, y0, y1, zb, zmax, rnd):
                     if kind == "groceries":
                         _tin(p, cx, cy + j * (2 * r + 0.01), zb, h, r, lab)
                     else:
-                        p.cyl("CT_TileWhite" if kind == "pharmacy" else "CT_Glass", cx, cy + j * (2 * r + 0.01), zb, zb + h, r, 5, top=False)
-                        p.card_front(lab, cx - r * 0.75, cx + r * 0.75, zb + h * 0.25, zb + h * 0.7, cy + j * (2 * r + 0.01) - r - 0.002)
-                        p.cyl(rnd.choice(["CT_PlasterRed", "CT_TileWhite", ALU]), cx, cy + j * (2 * r + 0.01), zb + h, zb + h + 0.02, r * 0.8, 5)
+                        p.cyl("CT_TileWhite" if kind == "pharmacy" else "CT_Glass", cx, cy + j * (2 * r + 0.01), zb, zb + h, r, 6, top=False, a0=0.0)
+                        p.label(lab, cx, zb + h * 0.45, cy + j * (2 * r + 0.01) - r * _HEX - 0.002, r * 0.95, h * 0.55)
+                        p.cyl(rnd.choice(["CT_PlasterRed", "CT_TileWhite", ALU]), cx, cy + j * (2 * r + 0.01), zb + h, zb + h + 0.02, r * 0.8, 6, a0=0.0)
             x += n * (2 * r + 0.006) + 0.03
         elif kind in ("boxes", "hardware", "toys"):
-            w = rnd.uniform(0.1, 0.24)
-            h = min(room - 0.02, rnd.uniform(0.08, 0.22))
-            dd = min(y1 - y0 - 0.03, rnd.uniform(0.12, 0.3))
+            w = rnd.uniform(0.08, 0.19)
+            h = min(room - 0.02, rnd.uniform(0.07, 0.17))
+            dd = min(y1 - y0 - 0.03, rnd.uniform(0.09, 0.2))
             if x + w > x1:
                 break
             if kind == "toys" and rnd.random() < 0.35:
@@ -1167,14 +1193,14 @@ def _goods(p, kind, x0, x1, y0, y1, zb, zmax, rnd):
                 p.lathe(rnd.choice(PAINTS), x + w / 2, y0 + 0.1, [(0, zb), (rr, zb + rr), (0, zb + 2 * rr)], 6)
             else:
                 mat = rnd.choice(PAINTS)
-                p.box(mat, x, x + w, y0 + 0.02, y0 + 0.02 + dd, zb, zb + h, f="xXYZ")
-                p.card_front(cell("label", rnd), x, x + w, zb, zb + h, y0 + 0.02)
+                p.box(mat, x, x + w, y0 + 0.02, y0 + 0.02 + dd, zb, zb + h, f="xXyYZ")
+                p.label(cell("label", rnd), x + w / 2, zb + h / 2, y0 + 0.018, w * 0.88, h * 0.8)
             x += w + 0.015
         elif kind == "fabric":
             w = rnd.uniform(0.07, 0.1)
             h = min(room - 0.02, 0.55)
             p.box("CT_Paper", x + 0.004, x + w - 0.004, y0 + 0.05, y1 - 0.02, zb, zb + h - 0.004, f="xXYZ")
-            p.card_front(cell("fabric", rnd), x, x + w, zb, zb + h, y0 + 0.03)
+            p.cover_front(cell("fabric", rnd), x, x + w, zb, zb + h, y0 + 0.03)
             x += w + 0.008
         elif kind == "shoes":
             mat = rnd.choice(["CT_Leather", LAQ, "CT_PlasterRed", "CT_Wood", "CT_TileWhite"])
@@ -1199,22 +1225,27 @@ def _goods(p, kind, x0, x1, y0, y1, zb, zmax, rnd):
             x = x1
 
 
+TIN_PAINT = ["CT_PlasterRed", "CT_PlasterBlue", "CT_TileWhite", "CT_PlasterGreen", ALU, "CT_PlasterYellow", "CT_Paper"]
+_HEX = math.cos(math.pi / 6)           # apothem / radius of a hexagon
+
+
 def _tin(p, cx, cy, zb, h, r, lab):
-    """A tin: 6-sided can, the label wrapped round (one sixth of the cell per side)."""
+    """A tin: plain 6-sided can (a flat face looks at -y), ONE label on that face (the whole cell, not stretched)."""
     segs = 6
-    pts = [(cx + r * math.cos(math.pi / segs + 2 * math.pi * k / segs), cy + r * math.sin(math.pi / segs + 2 * math.pi * k / segs))
-           for k in range(segs)]
+    pts = [(cx + r * math.cos(2 * math.pi * k / segs), cy + r * math.sin(2 * math.pi * k / segs)) for k in range(segs)]
+    body = TIN_PAINT[sum(map(ord, lab)) % len(TIN_PAINT)]
     for k in range(segs):
         (ax, ay), (bx, by) = pts[k], pts[(k + 1) % segs]
-        a0 = ((k + 2) % segs) / segs
-        p.card(lab, (ax, ay, zb), (bx, by, zb), (bx, by, zb + h), (ax, ay, zb + h), rect=(a0, 0.0, a0 + 1.0 / segs, 1.0))
+        p.face(body, [(ax, ay, zb), (bx, by, zb), (bx, by, zb + h), (ax, ay, zb + h)])
     p.face(ALU, [(x, y, zb + h) for x, y in pts])
+    p.label(lab, cx, zb + h * 0.5, cy - r * _HEX - 0.002, r * 0.95, h * 0.8)
 
 
 def _bottle(p, cx, cy, zb, h, mat, lab=None):
-    p.lathe(mat, cx, cy, [(0.033, zb), (0.033, zb + h * 0.55), (0.011, zb + h * 0.78), (0.011, zb + h)], 5, top=True)
+    r = 0.033
+    p.lathe(mat, cx, cy, [(r, zb), (r, zb + h * 0.55), (0.011, zb + h * 0.78), (0.011, zb + h)], 6, top=True)
     if lab:
-        p.card_front(lab, cx - 0.026, cx + 0.026, zb + h * 0.18, zb + h * 0.45, cy - 0.035)
+        p.label(lab, cx, zb + h * 0.32, cy - r * _HEX - 0.002, r * 0.95, h * 0.26)
 
 
 def shop_shelf(B, x, y, z=0.0, yaw=0.0, w=1.2, h=2.0, d=0.45, levels=5, goods="groceries", mat=WOODL, seed=0, sign=None,
@@ -1529,15 +1560,19 @@ def _crate(p, cx, cy, zb, w, dd, h, mat, fill, rnd):
         p.box(mat, cx - w / 2 + t, cx + w / 2 - t, sy, sy + t, zb + 0.02, zb + h * 0.45, f="yYZ")
         p.box(mat, cx - w / 2 + t, cx + w / 2 - t, sy, sy + t, zb + h * 0.55, zb + h, f="yYZ")
     if fill:
+        # a heap of fruit / vegetables: 3 x 2 low-poly rounded shapes (squashed spheres, 5 sides), a bed of the same colour below
+        top = zb + h - 0.025
         n = 3
         for i in range(n):
             for j in range(2):
-                fx = cx - w / 2 + t + (i + 0.5) * (w - 2 * t) / n + rnd.uniform(-0.01, 0.01)
-                fy = cy - dd / 4 + j * dd / 2
-                r = min((w - 2 * t) / n, dd / 2) * 0.5
-                p.lathe(fill, fx, fy, [(r * 0.9, zb + h - r * 0.5), (r, zb + h), (0.0, zb + h + r * 0.8)], 5)
+                fx = cx - w / 2 + t + (i + 0.5) * (w - 2 * t) / n + rnd.uniform(-0.012, 0.012)
+                fy = cy - dd / 4 + j * dd / 2 + rnd.uniform(-0.01, 0.01)
+                r = min(min((w - 2 * t) / n, dd / 2) * 0.5, 0.075) * rnd.uniform(0.9, 1.05)
+                zc = top + r * (0.5 + 0.25 * ((i + j) % 2))
+                p.lathe(fill, fx, fy, [(r * 0.62, zc - r * 0.6), (r, zc), (r * 0.62, zc + r * 0.55)], 5, top=True,
+                        a0=rnd.uniform(0.0, 1.2))
         p.box(fill, cx - w / 2 + t + 0.004, cx + w / 2 - t - 0.004, cy - dd / 2 + t + 0.004, cy + dd / 2 - t - 0.004, zb + 0.015,
-              zb + h - 0.01, f="Z")
+              top, f="Z")
 
 
 # ================================================================================================ HOME
@@ -2549,9 +2584,7 @@ def picture(B, x, y, z=0.0, yaw=0.0, name="painting", w=0.7, h=None, zc=1.6, fra
     p = _P(B, x, y, z, yaw, "picture")
     p.kind = "wall"
     cn = cell(name, _rng(seed, x, y, "pic"))
-    if h is None:
-        u0, v0, u1, v1 = _uvrect(cn)
-        h = w * (v1 - v0) / max(1e-6, (u1 - u0))
+    w, h = _fit_pic(cn, w, h)
     f = 0.045
     # frame as 4 bevelled bars
     for (a0, a1, b0, b1) in ((-w / 2 - f, w / 2 + f, zc - h / 2 - f, zc - h / 2), (-w / 2 - f, w / 2 + f, zc + h / 2, zc + h / 2 + f),
@@ -2566,9 +2599,7 @@ def poster(B, x, y, z=0.0, yaw=0.0, name="poster", w=0.6, h=None, zc=1.55, seed=
     p = _P(B, x, y, z, yaw, "poster")
     p.kind = "wall"
     cn = cell(name, _rng(seed, x, y, "poster"))
-    if h is None:
-        u0, v0, u1, v1 = _uvrect(cn)
-        h = w * (v1 - v0) / max(1e-6, (u1 - u0))
+    w, h = _fit_pic(cn, w, h)
     p.card_front(cn, -w / 2, w / 2, zc - h / 2, zc + h / 2, -0.004)
     return p.done(cell=cn)
 
@@ -2577,9 +2608,7 @@ def notice_board(B, x, y, z=0.0, yaw=0.0, w=1.2, h=None, zc=1.5, seed=0, solid=F
     p = _P(B, x, y, z, yaw, "notice_board")
     p.kind = "wall"
     cn = cell("notice", _rng(seed, x, y, "notice"))
-    if h is None:
-        u0, v0, u1, v1 = _uvrect(cn)
-        h = w * (v1 - v0) / max(1e-6, (u1 - u0))
+    w, h = _fit_pic(cn, w, h)
     p.box(WOODL, -w / 2 - 0.04, w / 2 + 0.04, -0.03, 0.0, zc - h / 2 - 0.04, zc + h / 2 + 0.04, f="xXyZz")
     p.card_front(cn, -w / 2, w / 2, zc - h / 2, zc + h / 2, -0.032)
     return p.done(cell=cn)
@@ -2589,9 +2618,7 @@ def banner(B, x, y, z=0.0, yaw=0.0, name="poster_sun_2", w=2.0, h=None, zc=2.6, 
     p = _P(B, x, y, z, yaw, "banner")
     p.kind = "wall"
     cn = cell(name)
-    if h is None:
-        u0, v0, u1, v1 = _uvrect(cn)
-        h = w * (v1 - v0) / max(1e-6, (u1 - u0))
+    w, h = _fit_pic(cn, w, h, 3.2, 3.2, keep_h=True)
     p.rod(WOOD, (-w / 2 - 0.08, -0.06, zc + h / 2 + 0.02), (w / 2 + 0.08, -0.06, zc + h / 2 + 0.02), 0.03, 4, caps=True)
     for s in (-1, 1):
         p.rod("CT_Paper", (s * w / 2, -0.06, zc + h / 2 + 0.02), (s * w * 0.2, -0.01, zc + h / 2 + 0.3), 0.006, 3)
@@ -2633,9 +2660,7 @@ def sign_plate(B, x, y, z=0.0, yaw=0.0, name="sign_library", w=1.2, h=None, zc=2
     p = _P(B, x, y, z, yaw, "sign_plate")
     p.kind = "wall"
     cn = cell(name)
-    if h is None:
-        u0, v0, u1, v1 = _uvrect(cn)
-        h = w * (v1 - v0) / max(1e-6, (u1 - u0))
+    w, h = _fit_pic(cn, w, h, 3.2, 3.2, keep_h=True)
     if hang:
         p.box("CT_Steel", -w / 2, w / 2, -0.012, 0.012, zc - h / 2, zc + h / 2, f="xXZz")
         p.card_front(cn, -w / 2, w / 2, zc - h / 2, zc + h / 2, -0.013)
@@ -2652,8 +2677,7 @@ def menu_board(B, x, y, z=0.0, yaw=0.0, name="menu", w=0.7, zc=1.8, seed=0, soli
     p = _P(B, x, y, z, yaw, "menu_board")
     p.kind = "wall"
     cn = cell(name, _rng(seed, x, y, "menu"))
-    u0, v0, u1, v1 = _uvrect(cn)
-    h = w * (v1 - v0) / max(1e-6, (u1 - u0))
+    w, h = _fit_pic(cn, w, 0.0, 1.2, 1.4)
     p.box(WOOD, -w / 2 - 0.04, w / 2 + 0.04, -0.03, 0.0, zc - h / 2 - 0.04, zc + h / 2 + 0.04, f="xXyZz")
     p.card_front(cn, -w / 2, w / 2, zc - h / 2, zc + h / 2, -0.032)
     return p.done(cell=cn)
@@ -2866,20 +2890,26 @@ def crate(B, x, y, z=0.0, yaw=0.0, w=0.55, d=0.38, h=0.3, fill="CT_PlasterRed", 
 
 
 def sack(B, x, y, z=0.0, yaw=0.0, mat="CT_Paper", solid=False):
+    """[prop] A soft sack 0.38x0.25x0.5: slumped belly, tied neck with a flared top."""
     p = _P(B, x, y, z, yaw, "sack")
     p.kind = "prop"
-    rings = [_ring_rect(-0.2, 0.2, -0.13, 0.13, 0.0, 0.05), _ring_rect(-0.22, 0.22, -0.16, 0.16, 0.2, 0.06),
-             _ring_rect(-0.17, 0.17, -0.12, 0.12, 0.5, 0.05), _ring_rect(-0.06, 0.06, -0.04, 0.04, 0.62, 0.02)]
+    rings = [_ring_rect(-0.16, 0.16, -0.10, 0.10, 0.0, 0.045), _ring_rect(-0.19, 0.19, -0.125, 0.125, 0.14, 0.06),
+             _ring_rect(-0.165, 0.165, -0.105, 0.105, 0.30, 0.055), _ring_rect(-0.045, 0.05, -0.04, 0.04, 0.40, 0.015),
+             _ring_rect(-0.075, 0.09, -0.06, 0.055, 0.49, 0.02)]
     p.loft(mat, rings, top=True)
-    return p.done(top=0.62)
+    p.rod("CT_Wood", (-0.05, -0.0, 0.41), (0.055, 0.0, 0.41), 0.016, 3)          # the twine round the neck
+    return p.done(top=0.49)
 
 
-def cardboard_box(B, x, y, z=0.0, yaw=0.0, w=0.5, d=0.4, h=0.35, seed=0, solid=False):
+def cardboard_box(B, x, y, z=0.0, yaw=0.0, w=0.38, d=0.3, h=0.26, seed=0, solid=False):
+    """[prop] A cardboard carton (no side longer than 0.4 m): tape along the lid, ONE label on the front."""
+    w, d, h = min(w, 0.4), min(d, 0.4), min(h, 0.4)
     p = _P(B, x, y, z, yaw, "cardboard_box")
     p.kind = "prop"
     p.box("CT_PlasterYellow", -w / 2, w / 2, -d / 2, d / 2, 0.0, h)
-    p.card_front(cell("label", _rng(seed, x, y, "box")), -w * 0.3, w * 0.3, h * 0.35, h * 0.8, -d / 2 - 0.002)
+    p.label(cell("label", _rng(seed, x, y, "box")), 0.0, h * 0.5, -d / 2 - 0.002, w * 0.6, h * 0.5)
     p.box("CT_Paper", -w / 2 - 0.002, w / 2 + 0.002, -0.025, 0.025, h, h + 0.002, f="Z")
+    p.box("CT_Paper", -0.025, 0.025, -d / 2 - 0.0015, -d / 2, h * 0.72, h, f="y")
     return p.done(top=h)
 
 
@@ -3207,6 +3237,18 @@ def _tilt(p, n0, deg, pivot=(0.0, 0.0)):
                       for (x, y, z) in p.m.verts[n0:]]
 
 
+def _fit_pic(cn, w, h=None, maxw=1.6, maxh=1.7, keep_h=False):
+    """(w, h) of a picture / poster of atlas cell cn: the cell's own aspect (h given = it must match, else it is
+    re-derived), never larger than maxw x maxh, so a drawing can not be stretched over a whole wall or shelf back."""
+    u0, v0, u1, v1 = _uvrect(cn)
+    asp = (u1 - u0) / max(1e-6, v1 - v0)
+    if keep_h and h:                      # signs and banners: the caller's own shape, only capped
+        f = min(1.0, maxw / w, maxh / h)
+        return w * f, h * f
+    w = min(w, maxw, maxh * asp)
+    return w, w / asp
+
+
 def _cell_h(name, w):
     u0, v0, u1, v1 = _uvrect(name)
     return w * (v1 - v0) / max(1e-6, (u1 - u0))
@@ -3323,7 +3365,7 @@ def mailboxes(B, x, y, z=0.0, yaw=0.0, cols=4, rows=3, mat="CT_PlasterBlue", zc=
             z0 = zb + 0.02 + j * ch
             p.box(mat, x0 + 0.006, x0 + cw - 0.006, -0.108, -0.1, z0 + 0.006, z0 + ch - 0.006, f="yZ")
             p.box("CT_Rubber", x0 + cw / 2 - 0.07, x0 + cw / 2 + 0.07, -0.11, -0.108, z0 + ch - 0.04, z0 + ch - 0.032, f="y")
-            p.card_front(cell("label", rnd), x0 + cw / 2 - 0.06, x0 + cw / 2 + 0.06, z0 + 0.02, z0 + 0.075, -0.1095)
+            p.label(cell("label", rnd), x0 + cw / 2, z0 + 0.0475, -0.1095, 0.12, 0.055)
             p.box(ALU, x0 + cw - 0.05, x0 + cw - 0.03, -0.114, -0.108, z0 + 0.045, z0 + 0.07, f="yZ")
     return p.done()
 
@@ -3492,7 +3534,7 @@ def ice_cream_chest(B, x, y, z=0.0, yaw=0.0, mat="CT_TileWhite", solid=True):
         p.rod(ALU, (xa + 0.06, -d / 2 + 0.05, h + 0.06), (xa + w / 2 - 0.12, -d / 2 + 0.05, h + 0.06), 0.02, 4)
     for k in range(3):
         xa = -w / 2 + 0.08 + k * 0.37
-        p.card_front(cell("label", rnd), xa, xa + 0.32, 0.18, 0.38, -d / 2 - 0.0065)
+        p.label(cell("label", rnd), xa + 0.16, 0.28, -d / 2 - 0.0065, 0.32, 0.2)
     p.box(WOODL, -0.3, 0.3, d / 2 - 0.12, d / 2 - 0.09, h + 0.05, h + 0.4, f="xXyYZ")
     p.card_front("sign_milk", -0.28, 0.28, h + 0.07, h + 0.07 + min(0.3, _cell_h("sign_milk", 0.56)), d / 2 - 0.12 - 0.003)
     p.core(-w / 2 + 0.02, w / 2 - 0.02, -d / 2 + 0.02, d / 2 - 0.02, h - 0.05, h - 0.02)
@@ -3751,7 +3793,7 @@ def bin_rack(B, x, y, z=0.0, yaw=0.0, cols=5, rows=8, seed=0, solid=False):
             z0 = zb + 0.03 + j * ch
             m = cols_[(i + j) % 4] if rnd.random() < 0.7 else "CT_PlasterGrey"
             p.box(m, x0 + 0.005, x0 + cw - 0.005, -0.32, -0.3, z0 + 0.005, z0 + ch - 0.005, f="yZ")
-            p.card_front(cell("label", rnd), x0 + 0.04, x0 + cw - 0.04, z0 + ch * 0.5, z0 + ch * 0.5 + 0.06, -0.3215)
+            p.label(cell("label", rnd), x0 + cw / 2, z0 + ch * 0.5 + 0.03, -0.3215, cw - 0.08, 0.06)
             p.box(ALU, x0 + cw / 2 - 0.035, x0 + cw / 2 + 0.035, -0.336, -0.32, z0 + 0.02, z0 + 0.04, f="yZ")
     for sx in (-W / 2 + 0.03, W / 2 - 0.03):
         p.box(STEEL, sx - 0.02, sx + 0.02, -0.3, -0.26, 0.0, 0.1, f="xXyY")

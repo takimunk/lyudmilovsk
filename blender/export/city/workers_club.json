@@ -300,7 +300,7 @@
     5.55,
     0.0
    ],
-   "yaw": 0.0
+   "yaw": 180.0
   },
   {
    "id": "chess_seat_2",
@@ -310,7 +310,137 @@
     5.55,
     0.0
    ],
+   "yaw": 180.0
+  },
+  {
+   "id": "chess_ladder_stand",
+   "kind": "stand",
+   "pos": [
+    -15.45,
+    7.25,
+    0.0
+   ],
+   "yaw": 270.0
+  },
+  {
+   "id": "chess_seat_1b",
+   "kind": "seat",
+   "pos": [
+    -15.2,
+    6.85,
+    0.0
+   ],
    "yaw": 0.0
+  },
+  {
+   "id": "chess_seat_2b",
+   "kind": "seat",
+   "pos": [
+    -12.8,
+    6.85,
+    0.0
+   ],
+   "yaw": 0.0
+  },
+  {
+   "id": "radio_seat_1",
+   "kind": "seat",
+   "pos": [
+    -9.0,
+    6.1,
+    0.0
+   ],
+   "yaw": 0.0
+  },
+  {
+   "id": "radio_seat_2",
+   "kind": "seat",
+   "pos": [
+    -8.0,
+    6.1,
+    0.0
+   ],
+   "yaw": 0.0
+  },
+  {
+   "id": "rehearsal_listen",
+   "kind": "stand",
+   "pos": [
+    16.12,
+    7.45,
+    0.0
+   ],
+   "yaw": 90.0
+  },
+  {
+   "id": "dance_stand_1",
+   "kind": "stand",
+   "pos": [
+    12.3,
+    5.4,
+    0.0
+   ],
+   "yaw": 90.0
+  },
+  {
+   "id": "dance_stand_2",
+   "kind": "stand",
+   "pos": [
+    13.2,
+    5.4,
+    0.0
+   ],
+   "yaw": 270.0
+  },
+  {
+   "id": "dance_stand_3",
+   "kind": "stand",
+   "pos": [
+    14.8,
+    7.6,
+    0.0
+   ],
+   "yaw": 90.0
+  },
+  {
+   "id": "dance_stand_4",
+   "kind": "stand",
+   "pos": [
+    15.7,
+    7.6,
+    0.0
+   ],
+   "yaw": 270.0
+  },
+  {
+   "id": "piano_stool",
+   "kind": "seat",
+   "pos": [
+    16.0,
+    4.2,
+    0.0
+   ],
+   "yaw": 90.0
+  },
+  {
+   "id": "lounge_seat_1",
+   "kind": "seat",
+   "pos": [
+    16.6,
+    9.3,
+    0.0
+   ],
+   "yaw": 270.0
+  },
+  {
+   "id": "lounge_seat_2",
+   "kind": "seat",
+   "pos": [
+    16.6,
+    9.9,
+    0.0
+   ],
+   "yaw": 270.0
   },
   {
    "id": "seat1",
@@ -3816,6 +3946,50 @@
  "lamps": [
   {
    "pos": [
+    -15.55,
+    7.25,
+    4.5
+   ],
+   "lumens": 260,
+   "colour": "#FFD8A8",
+   "kind": "public",
+   "radius": 3.2
+  },
+  {
+   "pos": [
+    -8.6,
+    5.7,
+    2.35
+   ],
+   "lumens": 240,
+   "colour": "#FFB070",
+   "kind": "public",
+   "radius": 3.4
+  },
+  {
+   "pos": [
+    16.52,
+    7.45,
+    2.35
+   ],
+   "lumens": 110,
+   "colour": "#FF5A40",
+   "kind": "public",
+   "radius": 2.4
+  },
+  {
+   "pos": [
+    13.9,
+    6.5,
+    4.6
+   ],
+   "lumens": 320,
+   "colour": "#FFE0B0",
+   "kind": "public",
+   "radius": 4.2
+  },
+  {
+   "pos": [
     -15.0,
     5.5,
     4.7
@@ -4440,6 +4614,111 @@
    "yaw": 180.0,
    "props": {
     "what": "cinema"
+   }
+  },
+  {
+   "id": "chess_ladder",
+   "kind": "board",
+   "pos": [
+    -16.39,
+    7.25,
+    1.28
+   ],
+   "yaw": 90.0,
+   "props": {
+    "topic": "chess"
+   }
+  },
+  {
+   "id": "radio_set_a",
+   "kind": "craft",
+   "pos": [
+    -9.3,
+    5.45,
+    0.92
+   ],
+   "yaw": 180.0,
+   "props": {
+    "what": "radio"
+   }
+  },
+  {
+   "id": "radio_set_b",
+   "kind": "craft",
+   "pos": [
+    -7.9,
+    5.45,
+    0.92
+   ],
+   "yaw": 180.0,
+   "props": {
+    "what": "radio_set"
+   }
+  },
+  {
+   "id": "rehearsal_door",
+   "kind": "board",
+   "pos": [
+    16.86,
+    7.45,
+    1.4
+   ],
+   "yaw": 270.0,
+   "props": {
+    "topic": "rehearsal"
+   }
+  },
+  {
+   "id": "ticket_stubs",
+   "kind": "board",
+   "pos": [
+    -6.8,
+    10.8,
+    1.14
+   ],
+   "yaw": 0.0,
+   "props": {
+    "topic": "stubs"
+   }
+  },
+  {
+   "id": "buffet_menu",
+   "kind": "board",
+   "pos": [
+    -5.1,
+    12.16,
+    1.9
+   ],
+   "yaw": 0.0,
+   "props": {
+    "topic": "prices"
+   }
+  },
+  {
+   "id": "lost_property",
+   "kind": "board",
+   "pos": [
+    -14.55,
+    9.0,
+    1.45
+   ],
+   "yaw": 0.0,
+   "props": {
+    "topic": "lost"
+   }
+  },
+  {
+   "id": "reel_seat",
+   "kind": "screen",
+   "pos": [
+    0.0,
+    15.2,
+    0.61
+   ],
+   "yaw": 0.0,
+   "props": {
+    "what": "cinema",
+    "height": 0.45
    }
   },
   {
@@ -5418,7 +5697,7 @@
  ],
  "tris": {
   "shell": 2228,
-  "detail": 34255,
+  "detail": 35662,
   "windows": 136
  }
 }

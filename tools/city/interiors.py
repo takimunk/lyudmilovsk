@@ -8,8 +8,9 @@ tools/city/content/*.json and the strings tools/city/content/strings/*.json, and
     unreal/Lyudmilovsk/Content/City/interiors.json            things (world terms), acts, shops
     unreal/Lyudmilovsk/Content/Dev/teleports/interiors.json   developer-mode teleports into every enterable building
     unreal/Lyudmilovsk/Content/Localization/city/strings_<lang>.json
-    unreal/Lyudmilovsk/Content/UI/quests.json                 the side quests of tools/city/content/quests.json merged in
-                                                              (the other quests are kept byte for byte)
+    unreal/Lyudmilovsk/Content/UI/quests.json                 the side quests of every content file's "quests" section
+                                                              (quests.json first, then the others by name: quests_*.json,
+                                                              x_*.json...) merged in (the other quests are kept byte for byte)
 
     python3 tools/city/interiors.py            write everything
     python3 tools/city/interiors.py --check    write nothing; fail on broken content; print a per-plot summary
@@ -36,6 +37,7 @@ OUT_TELEPORTS = os.path.join(CONTENT, "Dev", "teleports", "interiors.json")
 OUT_STRINGS = os.path.join(CONTENT, "Localization", "city")
 QUESTS = os.path.join(CONTENT, "UI", "quests.json")
 MAP = os.path.join(CONTENT, "UI", "map.json")
+FESTIVALS = os.path.join(CONTENT, "PeopleData", "festivals.json")
 LANGS = ("ru", "en", "ja")
 
 KINDS = ("seat", "bed", "shelf", "board", "counter", "machine", "play", "sport", "craft", "screen", "take", "door")
@@ -55,10 +57,15 @@ DAYS = ("mon", "tue", "wed", "thu", "fri", "sat", "sun")
 PUBLIC_KINDS_SKIP = ("residential", "square", "park", "pool")
 QUEST_EVENTS = ("do", "visit", "get", "use", "have", "wear", "reach", "talk", "bird", "walk", "leave_computer")
 ACT_FIELDS = ("prompt", "minutes", "price", "lines", "pose", "sound", "event", "target", "give", "daily", "needs_staff",
-              "needs_item", "fade", "shop", "screen", "until", "title", "any_hour", "rotate")
+              "needs_item", "fade", "shop", "screen", "until", "title", "any_hour", "rotate", "collect", "closed")
 # a line's conditions (docs/city_interiors.md "Lines by the day and the hour"): hours [from, to), weekdays, a calendar date or
 # range ("MM-DD" or ["MM-DD", "MM-DD"], wrapping the year), days since the game began (after N), every [n, r] game days
-LINE_CONDS = ("h", "d", "date", "after", "every")
+# festival ("any", "none", an id of PeopleData/festivals.json or a list of ids), weather (a word of WEATHER or a list: any of
+# them), have ("set/piece"), count (["set", n]); "collect" ("set/piece") is no condition: the stamp the line gives when shown
+LINE_CONDS = ("h", "d", "date", "after", "before", "once", "every", "festival", "weather", "have", "count", "collect")
+WEATHER = ("rain", "snow", "fog", "cold", "warm", "clear", "wet", "dry")
+# the content sections a content file may have
+SECTIONS = ("acts", "shops", "rules", "defaults", "defaults_by_plot_kind", "quests", "collections", "closed_by")
 ROTATE = ("use", "daily")
 # a seat's or bed's surface over its own floor (m): a bigger "height" was measured from the building's base
 SEAT_HEIGHT = (0.05, 1.2)
@@ -72,6 +79,8 @@ FOOTPRINT_SLACK = 3.0
 errors = []
 warnings = []
 RULES_USED = set()  # the id rules (<plot|type>/<id glob>) that matched a thing: --check fails on the others
+FESTIVAL_IDS = set()  # PeopleData/festivals.json
+STAMPS_USED = []  # (where, "set/piece") every collect of the content (acts, lines, things): checked against the collections
 # a shop or a talk that needs a role the plot has no staff at all for (the ground-floor shops of a residential block): it
 # runs without staff in these hours (a rule may give its own)
 NO_STAFF_HOURS = ([9, 20], "mon-sat")
@@ -232,16 +241,44 @@ def load_strings():
     return table
 
 
+CONTENT_EXTRA = {"collections": {}, "closed_by": {}, "quests": []}
+
+
+def content_files():
+    """Every content table: quests.json first (its quests keep their place), then the others by name (x_*.json last)."""
+    paths = sorted(glob.glob(os.path.join(SRC, "*.json")))
+    return sorted(paths, key=lambda p: (os.path.basename(p) != "quests.json", os.path.basename(p)))
+
+
 def load_content():
-    """Merge the content tables: acts, shops, rules, defaults (a key defined twice is an error: one owner per thing)."""
+    """Merge the content tables: acts, shops, rules, defaults, collections, closed_by, quests (a key defined twice is an error:
+    one owner per thing). Any file may have any section, so a building's own file (x_<building>.json) brings its acts, rules,
+    collections and side quests together."""
     acts, shops, rules, defaults, by_plot_kind = {}, {}, {}, {}, {}
     origin = {}
-    for path in sorted(glob.glob(os.path.join(SRC, "*.json"))):
+    quest_from = {}
+    for path in content_files():
         name = os.path.basename(path)
-        if name == "quests.json":
+        try:
+            data = load(path)
+        except ValueError as e:
+            err("%s: not JSON (%s)" % (name, e))
             continue
-        data = load(path)
-        for section, into in (("acts", acts), ("shops", shops), ("rules", rules), ("defaults", defaults)):
+        for k in data:
+            if not k.startswith("_") and k not in SECTIONS:
+                err("%s: unknown section %s (%s)" % (name, k, ", ".join(SECTIONS)))
+        for q in data.get("quests") or []:
+            if not isinstance(q, dict) or not q.get("id") or not isinstance(q.get("stages"), list) or not q["stages"] \
+                    or not all(isinstance(st, dict) and st.get("id") and isinstance(st.get("objectives"), list) for st in q["stages"]):
+                err("%s: a quest needs an id and stages, each with an id and objectives: %s" % (name, str(q)[:80]))
+                continue
+            if q.get("id") in quest_from:
+                err("quest %s is in both %s and %s" % (q.get("id"), quest_from[q.get("id")], name))
+                continue
+            quest_from[q.get("id")] = name
+            CONTENT_EXTRA["quests"].append(q)
+        for section, into in (("acts", acts), ("shops", shops), ("rules", rules), ("defaults", defaults),
+                              ("collections", CONTENT_EXTRA["collections"]), ("closed_by", CONTENT_EXTRA["closed_by"])):
             for k, v in (data.get(section) or {}).items():
                 if k.startswith("_doc"):
                     continue
@@ -333,11 +370,16 @@ def resolve(thing, rules, defaults, by_plot_kind, plot, acts):
     """kind, props, act and its own hours for a thing: id rules (plot over type), then kind+prop, then the kind's default."""
     kind, props = thing["kind"], dict(thing.get("props") or {})
     act, hours, days = None, None, None
+    extra = {}
     for r in id_rules(rules, plot["id"], plot["building"], thing["id"]):
         kind = r.get("kind", kind)
         props.update(r.get("props") or {})
         act = r.get("act", act)
         hours, days = r.get("hours", hours), r.get("days", days)
+        for k in ("collect", "closed"):
+            if r.get(k):
+                extra[k] = r[k]
+    thing["extra"] = extra
     if not act and props.get("shop"):
         act = "buy_" + props["shop"]
     if not act:
@@ -375,10 +417,33 @@ def check_line_conds(where, cond):
             ds = v if isinstance(v, list) else [v]
             if len(ds) not in (1, 2) or not all(isinstance(x, str) and re.match(r"^(0?[1-9]|1[0-2])-(0?[1-9]|[12]\d|3[01])$", x) for x in ds):
                 err("%s: date must be \"MM-DD\" or [\"MM-DD\", \"MM-DD\"]" % where)
-        elif k == "after" and not (isinstance(v, int) and v >= 0):
-            err("%s: after must be whole days" % where)
+        elif k in ("after", "before") and not (isinstance(v, int) and not isinstance(v, bool) and v >= 0):
+            err("%s: %s must be whole days since the game began" % (where, k))
+        elif k == "before" and isinstance(cond.get("after"), int) and v <= cond["after"]:
+            err("%s: before %s is not after %s: the line would never show" % (where, v, cond["after"]))
+        elif k == "once" and not isinstance(v, bool):
+            err("%s: once must be true or false" % where)
         elif k == "every" and not (isinstance(v, list) and len(v) == 2 and all(isinstance(x, int) for x in v) and v[0] > 1 and 0 <= v[1] < v[0]):
             err("%s: every must be [n > 1, 0 <= r < n]" % where)
+        elif k == "festival":
+            fs = v if isinstance(v, list) else [v]
+            if not fs or not all(isinstance(x, str) for x in fs) or (isinstance(v, list) and any(x in ("any", "none") for x in fs)):
+                err("%s: festival must be \"any\", \"none\", a festival id or a list of ids" % where)
+            for x in fs:
+                if isinstance(x, str) and x not in ("any", "none") and FESTIVAL_IDS and x not in FESTIVAL_IDS:
+                    err("%s: festival %s is not in PeopleData/festivals.json" % (where, x))
+        elif k == "weather":
+            ws = v if isinstance(v, list) else [v]
+            if not ws or not all(w in WEATHER for w in ws):
+                err("%s: weather must be one of %s or a list of them" % (where, ", ".join(WEATHER)))
+        elif k in ("have", "collect") and not (isinstance(v, str) and re.match(r"^[\w.-]+/[\w.*{}-]+$", v)):
+            err("%s: %s must be \"set/piece\"" % (where, k))
+        elif k == "count" and not (isinstance(v, list) and len(v) == 2 and isinstance(v[0], str) and isinstance(v[1], int) and v[1] > 0):
+            err("%s: count must be [\"set\", n > 0]" % where)
+        elif k == "have":
+            STAMPS_USED.append((where + " (have)", v))
+        elif k == "count":
+            STAMPS_USED.append((where + " (count)", v[0] + "/*"))
 
 
 def expand_lines(spec, strings, where="lines"):
@@ -393,7 +458,12 @@ def expand_lines(spec, strings, where="lines"):
                 cond = {k: v for k, v in s.items() if k != "k"}
                 check_line_conds(where, cond)
                 keys = expand_lines(s["k"][:-2], strings) if s.get("k", "").endswith(".*") else [s.get("k", "")]
-                out += [dict({"k": k}, **cond) if cond else k for k in keys]
+                for k in keys:
+                    c = dict(cond)
+                    if c.get("collect", "").endswith("/*"):
+                        # one stamp per line: "films/*" on city.do.cinema.* gives films/1, films/2... (the key's last part)
+                        c["collect"] = c["collect"][:-1] + k.rsplit(".", 1)[-1]
+                    out.append(dict({"k": k}, **c) if c else k)
             else:
                 out += expand_lines(s[:-2], strings) if s.endswith(".*") else [s]
         return out
@@ -445,6 +515,15 @@ def build_acts(acts_src, shops, strings, items):
         if act["rotate"] not in ROTATE:
             err("act %s: rotate must be one of %s" % (aid, ", ".join(ROTATE)))
         act["any_hour"] = bool(a.get("any_hour", False))  # explicit: the game's default is true for sit/lie poses
+        if a.get("collect"):
+            act["collect"] = a["collect"]
+            check_line_conds("act " + aid, {"collect": a["collect"]})
+            STAMPS_USED.append(("act " + aid, a["collect"]))
+        if a.get("closed"):
+            act["closed"] = a["closed"]  # resolved per thing (closed_act)
+        for l in act["lines"]:
+            if isinstance(l, dict) and l.get("collect"):
+                STAMPS_USED.append(("act %s line %s" % (aid, l["k"]), l["collect"]))
         for k in a:
             if k not in ACT_FIELDS and k not in ("like",):
                 err("act %s: unknown field %s" % (aid, k))
@@ -555,8 +634,27 @@ def normalise_height(tid, kind, props):
         err("%s: height %.2f m is outside %.2f..%.1f (the seat's surface over its own floor)" % (tid, h, SEAT_HEIGHT[0], SEAT_HEIGHT[1]))
 
 
-def build_things(plan, rules, defaults, by_plot_kind, acts):
+def closed_act(value, acts, strings, where):
+    """A thing's "closed": an act id, or a line key (or "<prefix>.*"): an act of its own that only shows the words."""
+    if value in acts:
+        return value
+    keys = expand_lines([value], strings, where + " closed")
+    missing = [k for k in keys if k not in strings and k not in MAIN]
+    if missing or not keys:
+        err("%s: closed %s is neither an act nor a string" % (where, value))
+        return None
+    aid = "_closed:" + value
+    if aid not in acts:
+        acts[aid] = {"prompt": "city.act.look.prompt", "minutes": 0, "price": 0, "lines": keys, "pose": "stand", "sound": "",
+                     "event": "look", "target": "closed", "give": [], "daily": 0, "needs_staff": "", "needs_item": "", "fade": False,
+                     "shop": "", "screen": "", "until": -1, "rotate": "use", "any_hour": True}
+    return aid
+
+
+def build_things(plan, rules, defaults, by_plot_kind, acts, strings=None, closed_by=None):
     things, summary, skipped = [], collections.OrderedDict(), collections.Counter()
+    strings = strings or {}
+    closed_by = closed_by or {}
     for pl in places(plan):
         ex = pl["export"]
         if not ex:
@@ -591,6 +689,7 @@ def build_things(plan, rules, defaults, by_plot_kind, acts):
                     continue
                 err("%s: %.2f m from %s (min %.1f)" % (tid, math.dist(near["pos"], t["pos"]), near["id"], MIN_GAP))
             kind, props, act, hours, days = resolve(t, rules, defaults, by_plot_kind, pl, acts)
+            extra = t.pop("extra", {})
             if kind not in KINDS:
                 err("%s: a rule gives unknown kind %s" % (tid, kind))
                 continue
@@ -628,6 +727,18 @@ def build_things(plan, rules, defaults, by_plot_kind, acts):
                    "hours": list(hours), "days": days}
             if auto:
                 rec["auto"] = 1
+            if extra.get("collect"):
+                rec["collect"] = extra["collect"].replace("{plot}", pl["id"])
+                STAMPS_USED.append((tid, rec["collect"]))
+            # what it says while its plot is shut: the thing's rule, its act's "closed", the closed_by of its plot, type or plot kind
+            closed = extra.get("closed") or a.get("closed")
+            for scope in (pl["id"], pl["building"], pl["kind"]):
+                cb = closed_by.get(scope) or {}
+                closed = closed or cb.get(kind) or cb.get("*")
+            if closed and list(hours) != [0, 24]:
+                rec["closed"] = closed_act(closed, acts, strings, tid)
+                if not rec["closed"]:
+                    del rec["closed"]
             things.append(rec)
             kept_local.append({"id": t["id"], "pos": t["pos"], "z": t["pos"][2]})
             s = summary.setdefault(pl["id"], {"auto": 0, "declared": 0, "kinds": collections.Counter(), "acts": set(), "lines": 0})
@@ -637,6 +748,58 @@ def build_things(plan, rules, defaults, by_plot_kind, acts):
                 s["acts"].add(act)
                 s["lines"] += len(a["lines"])
     return things, summary, skipped
+
+
+# ------------------------------------------------------------------ collections
+
+def build_collections(src, things, acts, strings):
+    """The collections (docs/city_interiors.md "Collections"): {"<set>": {"title": key, "pieces": [...]}}. Pieces omitted: every
+    piece something in town gives. Every stamp named anywhere must be of a declared set (and a declared piece), and every
+    declared piece must be given by some thing in town (or the set could never be complete)."""
+    given = collections.defaultdict(set)
+    seen_acts = set()
+    for t in things:
+        if t.get("collect"):
+            given[t["collect"].partition("/")[0]].add(t["collect"].partition("/")[2])
+        if t["act"] in seen_acts:
+            continue
+        seen_acts.add(t["act"])
+        a = acts[t["act"]]
+        for c in [a.get("collect", "")] + [l.get("collect", "") for l in a["lines"] if isinstance(l, dict)]:
+            if c.endswith("/{line}"):
+                # every line it shows is a piece of its own (the films of a programme, the records of a jukebox)
+                given[c.partition("/")[0]].update(line_key(l) for l in a["lines"])
+            elif c:
+                given[c.partition("/")[0]].add(c.partition("/")[2])
+    out = collections.OrderedDict()
+    for sid in sorted(src):
+        if sid.startswith("_"):
+            continue
+        c = src[sid]
+        if not re.match(r"^[\w.-]+$", sid):
+            err("collection %s: the id is letters, digits, _ . - only" % sid)
+        title = c.get("title", "city.coll.%s.title" % sid)
+        if title not in strings and title not in MAIN:
+            err("collection %s: title string %s is missing" % (sid, title))
+        for k in c:
+            if k not in ("title", "pieces"):
+                err("collection %s: unknown field %s" % (sid, k))
+        pieces = [str(p) for p in c["pieces"]] if c.get("pieces") else sorted(given.get(sid, ()), key=lambda p: (len(p), p))
+        if len(set(pieces)) != len(pieces):
+            err("collection %s: a piece twice" % sid)
+        for p in pieces:
+            if p not in given.get(sid, ()):
+                err("collection %s: nothing in town gives piece %s" % (sid, p))
+        if not pieces:
+            err("collection %s: no pieces (nothing in town gives one)" % sid)
+        out[sid] = {"title": title, "pieces": pieces}
+    for where, st in STAMPS_USED:
+        sid, _, piece = st.partition("/")
+        if sid not in out:
+            err("%s: stamp %s of an undeclared collection (add it to a \"collections\" section)" % (where, st))
+        elif piece not in ("*", "{line}") and "{plot}" not in piece and piece not in out[sid]["pieces"]:
+            err("%s: stamp %s is not a piece of %s" % (where, st, sid))
+    return out
 
 
 # ------------------------------------------------------------------ teleports
@@ -924,6 +1087,7 @@ def write(path, text):
 def main():
     check = "--check" in sys.argv
     plan = load(PLAN)
+    FESTIVAL_IDS.update(f["id"] for f in load(FESTIVALS).get("festivals", []) if f.get("id"))
     items = item_ids()
     strings = load_strings()
     acts_src, shops_src, rules, defaults, by_plot_kind = load_content()
@@ -943,13 +1107,14 @@ def main():
             err("rule %s: unknown act %s" % (k, r["act"]))
         if r.get("kind") and r["kind"] not in KINDS:
             err("rule %s: unknown kind %s" % (k, r["kind"]))
-    things, summary, skipped = build_things(plan, rules, defaults, by_plot_kind, acts)
+    things, summary, skipped = build_things(plan, rules, defaults, by_plot_kind, acts, strings, CONTENT_EXTRA["closed_by"])
+    colls = build_collections(CONTENT_EXTRA["collections"], things, acts, strings)
     things.sort(key=lambda t: t["id"])
     used = {t["act"] for t in things}
     gen_strings = {}
     teleports = build_teleports(plan, things, strings, gen_strings)
 
-    quests = load(os.path.join(SRC, "quests.json"))["quests"] if os.path.exists(os.path.join(SRC, "quests.json")) else []
+    quests = CONTENT_EXTRA["quests"]
     qtext = open(QUESTS, encoding="utf-8").read()
     existing = [q["id"] for q in json.loads(qtext)["quests"]]
     ours = {q["id"] for q in quests}
@@ -992,8 +1157,10 @@ def main():
     n_auto = sum(1 for t in things if t.get("auto"))
     line_keys = {line_key(k) for a in acts.values() for k in a["lines"]}
     print("things %d (auto %d, declared %d; derived spots skipped: %s), acts %d (%d used), shops %d, teleports %d, strings %d "
-          "(%d act lines), quests %d" % (len(things), n_auto, len(things) - n_auto, dict(skipped) or "none", len(acts), len(used),
-                                         len(shops), len(teleports), len(all_strings), len(line_keys), len(quests)))
+          "(%d act lines), quests %d, collections %s, closed %d" % (len(things), n_auto, len(things) - n_auto, dict(skipped) or "none", len(acts), len(used),
+                                         len(shops), len(teleports), len(all_strings), len(line_keys), len(quests),
+                                         " ".join("%s:%d" % (k, len(v["pieces"])) for k, v in colls.items()) or "none",
+                                         sum(1 for t in things if t.get("closed"))))
     for w in warnings:
         print("warning:", w)
     for e in errors:
@@ -1010,6 +1177,7 @@ def main():
     data["things"] = things
     data["acts"] = collections.OrderedDict(sorted(acts.items()))
     data["shops"] = collections.OrderedDict(sorted(shops.items()))
+    data["collections"] = colls
     write(OUT_THINGS, dump_things(data))
     tp = collections.OrderedDict([("about", "Written by tools/city/interiors.py: x/y map metres (docs/world_map.md), z world cm (the floor, feet), yaw Unreal degrees."),
                                   ("teleports", teleports)])

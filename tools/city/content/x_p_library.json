@@ -1,0 +1,611 @@
+{
+ "_doc": "P-LIBRARY, second pass: acts and rules of the library's new things (module capsule_library), the reading-diary collection (a stamp for every shelf and pod topic), two quests. Words: strings/x_p_library.json.",
+ "collections": {
+  "library_diary": {
+   "title": "city.coll.library_diary.title"
+  }
+ },
+ "acts": {
+  "library_notices_day": {
+   "prompt": "city.xpl.notice.prompt",
+   "minutes": 3,
+   "rotate": "daily",
+   "lines": [
+    {
+     "k": "city.xpl.notice.1"
+    },
+    {
+     "k": "city.xpl.notice.2"
+    },
+    {
+     "k": "city.xpl.notice.3"
+    },
+    {
+     "k": "city.xpl.notice.4",
+     "after": 3
+    },
+    {
+     "k": "city.xpl.notice.5",
+     "after": 6
+    },
+    {
+     "k": "city.xpl.notice.6",
+     "after": 9
+    },
+    {
+     "k": "city.xpl.notice.7",
+     "after": 12
+    },
+    {
+     "k": "city.xpl.notice.8",
+     "after": 15
+    },
+    {
+     "k": "city.xpl.notice.9",
+     "festival": "any"
+    },
+    {
+     "k": "city.xpl.notice.10",
+     "date": [
+      "12-26",
+      "01-10"
+     ]
+    }
+   ]
+  },
+  "library_diary_board": {
+   "prompt": "city.xpl.diary.prompt",
+   "minutes": 3,
+   "rotate": "daily",
+   "lines": [
+    {
+     "k": "city.xpl.diary.mon",
+     "d": "mon"
+    },
+    {
+     "k": "city.xpl.diary.tue",
+     "d": "tue"
+    },
+    {
+     "k": "city.xpl.diary.wed",
+     "d": "wed"
+    },
+    {
+     "k": "city.xpl.diary.thu",
+     "d": "thu"
+    },
+    {
+     "k": "city.xpl.diary.fri",
+     "d": "fri"
+    },
+    {
+     "k": "city.xpl.diary.sat",
+     "d": "sat"
+    },
+    {
+     "k": "city.xpl.diary.sun",
+     "d": "sun"
+    },
+    {
+     "k": "city.xpl.diary.half",
+     "count": [
+      "library_diary",
+      8
+     ]
+    },
+    {
+     "k": "city.xpl.diary.full",
+     "count": [
+      "library_diary",
+      16
+     ]
+    }
+   ]
+  },
+  "library_returns": {
+   "prompt": "city.xpl.returns.prompt",
+   "minutes": 2,
+   "sound": "drawer_slide",
+   "lines": [
+    {
+     "k": "city.xpl.returns.1"
+    },
+    {
+     "k": "city.xpl.returns.2"
+    },
+    {
+     "k": "city.xpl.returns.3",
+     "after": 3
+    },
+    {
+     "k": "city.xpl.returns.4",
+     "after": 8
+    },
+    {
+     "k": "city.xpl.returns.5",
+     "after": 14
+    }
+   ]
+  },
+  "library_returned_shelf": {
+   "prompt": "city.xpl.returned.prompt",
+   "minutes": 8,
+   "sound": "page_turn",
+   "rotate": "daily",
+   "lines": [
+    {
+     "k": "city.xpl.returned.1"
+    },
+    {
+     "k": "city.xpl.returned.2",
+     "after": 2
+    },
+    {
+     "k": "city.xpl.returned.3",
+     "after": 5
+    },
+    {
+     "k": "city.xpl.returned.4",
+     "after": 9
+    },
+    {
+     "k": "city.xpl.returned.5",
+     "after": 12
+    },
+    {
+     "k": "city.xpl.returned.6",
+     "after": 15
+    },
+    {
+     "k": "city.xpl.returned.rain",
+     "weather": [
+      "rain",
+      "fog"
+     ]
+    }
+   ]
+  },
+  "library_leave_card": {
+   "prompt": "city.xpl.leave.prompt",
+   "minutes": 5,
+   "needs_item": "postcard",
+   "give": [
+    [
+     "postcard",
+     1
+    ]
+   ],
+   "daily": 1,
+   "sound": "paper_rustle",
+   "lines": [
+    "city.xpl.leave.1",
+    "city.xpl.leave.2"
+   ]
+  },
+  "library_stamp": {
+   "prompt": "city.xpl.stamp.prompt",
+   "minutes": 2,
+   "needs_staff": "librarian",
+   "sound": "paper_rustle",
+   "lines": [
+    {
+     "k": "city.xpl.stamp.1",
+     "d": "mon-fri"
+    },
+    {
+     "k": "city.xpl.stamp.2",
+     "d": "sat-sun"
+    },
+    {
+     "k": "city.xpl.stamp.3",
+     "count": [
+      "library_diary",
+      4
+     ]
+    },
+    {
+     "k": "city.xpl.stamp.4",
+     "count": [
+      "library_diary",
+      8
+     ]
+    },
+    {
+     "k": "city.xpl.stamp.5",
+     "count": [
+      "library_diary",
+      12
+     ]
+    },
+    {
+     "k": "city.xpl.stamp.6",
+     "count": [
+      "library_diary",
+      16
+     ]
+    }
+   ]
+  },
+  "library_story_hour": {
+   "prompt": "city.xpl.story.prompt",
+   "minutes": 25,
+   "pose": "sit",
+   "screen": "slides",
+   "title": "city.xpl.story.title",
+   "needs_staff": "librarian",
+   "sound": "page_turn",
+   "lines": [
+    "city.xpl.story.1",
+    "city.xpl.story.2",
+    "city.xpl.story.3",
+    {
+     "k": "city.xpl.story.4",
+     "d": "sun"
+    }
+   ]
+  },
+  "library_office_ledger": {
+   "prompt": "city.xpl.ledger.prompt",
+   "minutes": 4,
+   "sound": "page_turn",
+   "rotate": "daily",
+   "lines": [
+    {
+     "k": "city.xpl.ledger.1"
+    },
+    {
+     "k": "city.xpl.ledger.2",
+     "after": 4
+    },
+    {
+     "k": "city.xpl.ledger.3",
+     "after": 8
+    },
+    {
+     "k": "city.xpl.ledger.4",
+     "after": 12
+    },
+    {
+     "k": "city.xpl.ledger.5",
+     "after": 15
+    }
+   ]
+  },
+  "library_tea_tuesday": {
+   "prompt": "city.xpl.tea.prompt",
+   "minutes": 10,
+   "needs_staff": "librarian",
+   "give": [
+    [
+     "tea",
+     1
+    ]
+   ],
+   "daily": 1,
+   "sound": "cup_clink",
+   "lines": [
+    {
+     "k": "city.xpl.tea.1"
+    },
+    {
+     "k": "city.xpl.tea.2",
+     "after": 10
+    }
+   ]
+  },
+  "library_pod_piano": {
+   "prompt": "city.do.piano.prompt",
+   "minutes": 15,
+   "pose": "sit",
+   "sound": "piano_chord",
+   "lines": [
+    "city.xpl.piano.1",
+    "city.xpl.piano.2",
+    {
+     "k": "city.xpl.piano.3",
+     "h": [
+      18,
+      21
+     ]
+    }
+   ]
+  },
+  "library_press_local": {
+   "prompt": "city.xpl.press.prompt",
+   "minutes": 8,
+   "sound": "paper_rustle",
+   "rotate": "daily",
+   "lines": [
+    {
+     "k": "city.xpl.pressA.mon",
+     "d": "mon"
+    },
+    {
+     "k": "city.xpl.pressA.tue",
+     "d": "tue"
+    },
+    {
+     "k": "city.xpl.pressA.wed",
+     "d": "wed"
+    },
+    {
+     "k": "city.xpl.pressA.thu",
+     "d": "thu"
+    },
+    {
+     "k": "city.xpl.pressA.fri",
+     "d": "fri"
+    },
+    {
+     "k": "city.xpl.pressA.sat",
+     "d": "sat"
+    },
+    {
+     "k": "city.xpl.pressA.sun",
+     "d": "sun"
+    }
+   ]
+  },
+  "library_press_sun": {
+   "prompt": "city.xpl.press.prompt",
+   "minutes": 8,
+   "sound": "paper_rustle",
+   "rotate": "daily",
+   "lines": [
+    {
+     "k": "city.xpl.pressB.mt",
+     "d": "mon-tue"
+    },
+    {
+     "k": "city.xpl.pressB.wt",
+     "d": "wed-thu"
+    },
+    {
+     "k": "city.xpl.pressB.fs",
+     "d": "fri-sat"
+    },
+    {
+     "k": "city.xpl.pressB.su",
+     "d": "sun"
+    }
+   ]
+  }
+ },
+ "rules": {
+  "P-LIBRARY/notice_board_day": {
+   "act": "library_notices_day"
+  },
+  "P-LIBRARY/diary_board": {
+   "act": "library_diary_board"
+  },
+  "P-LIBRARY/returns_box": {
+   "act": "library_returns"
+  },
+  "P-LIBRARY/returned_shelf": {
+   "act": "library_returned_shelf",
+   "collect": "library_diary/returned"
+  },
+  "P-LIBRARY/returned_card": {
+   "act": "library_leave_card"
+  },
+  "P-LIBRARY/library_stamp": {
+   "act": "library_stamp"
+  },
+  "P-LIBRARY/kids_story_hour": {
+   "act": "library_story_hour",
+   "hours": [
+    11,
+    13
+   ],
+   "days": "sat,sun"
+  },
+  "P-LIBRARY/office_ledger": {
+   "act": "library_office_ledger"
+  },
+  "P-LIBRARY/office_kettle": {
+   "act": "library_tea_tuesday",
+   "days": "tue"
+  },
+  "P-LIBRARY/pod_1_02_piano": {
+   "act": "library_pod_piano"
+  },
+  "P-LIBRARY/periodicals_rack_a": {
+   "act": "library_press_local"
+  },
+  "P-LIBRARY/periodicals_rack_b": {
+   "act": "library_press_sun"
+  },
+  "P-LIBRARY/stack_7_a": {
+   "collect": "library_diary/birds"
+  },
+  "P-LIBRARY/stack_7_c": {
+   "collect": "library_diary/cooking"
+  },
+  "P-LIBRARY/stack_7_d": {
+   "collect": "library_diary/medicine"
+  },
+  "P-LIBRARY/stack_7_b": {
+   "collect": "library_diary/science"
+  },
+  "P-LIBRARY/stack_10_a": {
+   "collect": "library_diary/sea"
+  },
+  "P-LIBRARY/stack_10_c": {
+   "collect": "library_diary/music"
+  },
+  "P-LIBRARY/stack_10_d": {
+   "collect": "library_diary/engineering"
+  },
+  "P-LIBRARY/stack_10_b": {
+   "collect": "library_diary/travel"
+  },
+  "P-LIBRARY/core_wall_45": {
+   "collect": "library_diary/local"
+  },
+  "P-LIBRARY/core_wall_90": {
+   "collect": "library_diary/sun"
+  },
+  "P-LIBRARY/core_wall_135": {
+   "collect": "library_diary/poetry"
+  },
+  "P-LIBRARY/core_wall_225": {
+   "collect": "library_diary/kids"
+  },
+  "P-LIBRARY/core_wall_315": {
+   "collect": "library_diary/art"
+  },
+  "P-LIBRARY/kids_shelf_1": {
+   "collect": "library_diary/kids"
+  },
+  "P-LIBRARY/kids_shelf_2": {
+   "collect": "library_diary/kids"
+  },
+  "P-LIBRARY/pod_1_01": {
+   "collect": "library_diary/birds"
+  },
+  "P-LIBRARY/pod_1_02": {
+   "collect": "library_diary/music"
+  },
+  "P-LIBRARY/pod_1_03": {
+   "collect": "library_diary/garden"
+  },
+  "P-LIBRARY/pod_1_04": {
+   "collect": "library_diary/cooking"
+  },
+  "P-LIBRARY/pod_1_05": {
+   "collect": "library_diary/chess"
+  },
+  "P-LIBRARY/pod_1_06": {
+   "collect": "library_diary/engineering"
+  },
+  "P-LIBRARY/pod_2_*": {
+   "collect": "library_diary/poetry"
+  },
+  "P-LIBRARY/pod_2_01": {
+   "collect": "library_diary/medicine"
+  },
+  "P-LIBRARY/pod_2_02": {
+   "collect": "library_diary/sun"
+  },
+  "P-LIBRARY/pod_3_*": {
+   "collect": "library_diary/sea"
+  },
+  "P-LIBRARY/pod_3_01": {
+   "collect": "library_diary/local"
+  },
+  "P-LIBRARY/pod_3_02": {
+   "collect": "library_diary/travel"
+  }
+ },
+ "quests": [
+  {
+   "id": "library_1968",
+   "kind": "side",
+   "start_on": {
+    "event": "visit",
+    "target": "P-LIBRARY"
+   },
+   "stages": [
+    {
+     "id": "find",
+     "objectives": [
+      {
+       "id": "shelf",
+       "event": "do",
+       "target": "library_returned_shelf"
+      },
+      {
+       "id": "ledger",
+       "event": "do",
+       "target": "library_office_ledger"
+      }
+     ]
+    },
+    {
+     "id": "leave",
+     "objectives": [
+      {
+       "id": "postcard",
+       "event": "have",
+       "target": "postcard"
+      },
+      {
+       "id": "leave",
+       "event": "do",
+       "target": "library_leave_card"
+      }
+     ]
+    },
+    {
+     "id": "tea",
+     "objectives": [
+      {
+       "id": "cup",
+       "event": "do",
+       "target": "library_tea_tuesday"
+      }
+     ],
+     "reward": {
+      "rubles": 40
+     }
+    }
+   ]
+  },
+  {
+   "id": "library_diary",
+   "kind": "side",
+   "start_on": {
+    "event": "visit",
+    "target": "P-LIBRARY"
+   },
+   "stages": [
+    {
+     "id": "shelves",
+     "objectives": [
+      {
+       "id": "poetry",
+       "event": "do",
+       "target": "read_poetry"
+      },
+      {
+       "id": "sea",
+       "event": "do",
+       "target": "read_sea"
+      },
+      {
+       "id": "art",
+       "event": "do",
+       "target": "read_art"
+      }
+     ]
+    },
+    {
+     "id": "stamp",
+     "objectives": [
+      {
+       "id": "ask",
+       "event": "do",
+       "target": "library_stamp"
+      }
+     ],
+     "reward": {
+      "rubles": 20
+     }
+    },
+    {
+     "id": "story",
+     "objectives": [
+      {
+       "id": "hour",
+       "event": "do",
+       "target": "library_story_hour"
+      }
+     ],
+     "reward": {
+      "rubles": 30
+     }
+    }
+   ]
+  }
+ ]
+}
