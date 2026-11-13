@@ -375,6 +375,14 @@ void ULyudSmoking::HoldPack()
 		if (S && !S->bInternal)
 		{
 			// Q or the diary before the lips had one: nothing taken
+			if (S->Step == EStep::PackDown && S->MouthCig.IsValid())
+			{
+				// ... or just after (the pack was still going down): the one in the lips goes back into the pack, not left
+				// hanging in front of the face for the rest of the game
+				S->MouthCig->Destroy();
+				S->MouthCig = nullptr;
+				S->ReturnOneToPack();
+			}
 			S->Go(EStep::None);
 		}
 	};
@@ -912,6 +920,13 @@ void ULyudSmoking::Tick(float DeltaTime)
 	ULyudHandUse* Hand = ULyudHandUse::Get(World);
 	TickButts(DeltaTime);
 	TickTerrace();
+	if (Step == EStep::None && MouthCig.IsValid())
+	{
+		// nothing is being smoked: no cigarette stays in the lips (a step that was cut short left it there, and the next
+		// one taken out lost track of it)
+		MouthCig->Destroy();
+		MouthCig = nullptr;
+	}
 	if (SayLeft > 0.f)
 	{
 		SayLeft -= DeltaTime;
@@ -1019,8 +1034,18 @@ void ULyudSmoking::Tick(float DeltaTime)
 			}
 			Go(EStep::Held);
 		}
-		else if (StepTime > 3.f || !Hand->IsHolding())
+		else if (!Hand->IsHolding())
 		{
+			Go(EStep::None);
+		}
+		else if (StepTime > 3.f)
+		{
+			// the hand never got to the lips (a screen was up): the cigarette goes away as RMB would send it, instead of
+			// staying in the hand with the button held for it and no step to let it go
+			bInternal = true;
+			Hand->PutAway();
+			bInternal = false;
+			bLit ? ThrowButt(LastCigXf, true) : ReturnOneToPack();
 			Go(EStep::None);
 		}
 		break;
@@ -1081,8 +1106,17 @@ void ULyudSmoking::Tick(float DeltaTime)
 			if (Lighter.IsValid()) { Lighter->SetFlame(true); }
 			Go(EStep::Lighting);
 		}
-		else if (StepTime > 3.f || !Hand->IsHolding())
+		else if (!Hand->IsHolding())
 		{
+			Go(EStep::None);
+		}
+		else if (StepTime > 3.f)
+		{
+			// the lighter never got to the tip (a screen was up): away with it, the unlit cigarette back into the pack
+			bInternal = true;
+			Hand->PutAway();
+			bInternal = false;
+			bLit ? ThrowButt(LastCigXf, true) : ReturnOneToPack();
 			Go(EStep::None);
 		}
 		break;
