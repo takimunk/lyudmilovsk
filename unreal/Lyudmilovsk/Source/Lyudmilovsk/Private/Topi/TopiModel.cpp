@@ -445,6 +445,15 @@ namespace LyudTopi
 			// its face toward the town stands at the slope sand holds: it comes up over ~100 m
 			Great = std::max(0.0, Top - Base) * std::exp(-(Past / 130.0) * (Past / 130.0)) * Smooth((-790.0 - L.Y) / 100.0);
 		}
+		// where the path climbs it the great dune has a saddle, so the way in is a climb and not a wall: there it
+		// stands only a little over the map's own ground at this very place, not over the highest ground around
+		const double Saddle = 1.0 - Smooth((LocalPathDistance(L.X, L.Y, nullptr) - 25.0) / 90.0);
+		if (Saddle > 0.0 && Great > 0.0)
+		{
+			const double Here = std::max(Edge.At(WestX, Y), std::max(Edge.At(WestX + 30.0, Y), Edge.At(WestX + 60.0, Y))) + 4.5;
+			const double Low = Great * std::max(0.0, Here - Base) / std::max(1.0, RidgeTop(Y) - Base);
+			Great = Lerp(Great, std::min(Great, Low), Saddle);
+		}
 
 		// the river's plain
 		const double Off = std::fabs(LocalRiverY(L.X) - L.Y) / std::sqrt(1.0 + LocalRiverSlope(L.X) * LocalRiverSlope(L.X));
