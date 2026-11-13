@@ -104,7 +104,7 @@ def _fish(d, mat, fr, u, w, z, ang, length=0.3, r=0.04):
     """A fish lying on ice: a round-ish tapered body, a tail fin, a red gill spot."""
     f2 = fr.sub(u, w, ang)
     a, b = f2.p(-length / 2, 0.0, z + r), f2.p(length / 2 - 0.04, 0.0, z + r)
-    _tube(d, mat, a, b, r, 6)
+    _tube(d, mat, a, b, r, 10)
     lbox(d, mat, f2, -length / 2 - 0.07, -length / 2, -0.03, 0.03, z + r - 0.012, z + r + 0.012, faces="xXyYZ")
     lbox(d, "CT_SteelRed", f2, length / 2 - 0.045, length / 2 - 0.03, -r * 0.8, r * 0.8, z + r - 0.02, z + r + 0.02, faces="xXyY")
 
@@ -119,7 +119,7 @@ def _fruit_pile(B, x, y, z, rnd, mats, r=0.045):
 
 def _loaf(d, mat, fr, u, w, z, length=0.26, r=0.06):
     """A loaf: a rounded body lying along u."""
-    _tube(d, mat, fr.p(u - length / 2, w, z + r), fr.p(u + length / 2, w, z + r), r, 6)
+    _tube(d, mat, fr.p(u - length / 2, w, z + r), fr.p(u + length / 2, w, z + r), r, 10)
 
 
 def _seed_sack(B, x, y, z, mat):
@@ -214,8 +214,8 @@ def stall_goods(B, fr, kind, rnd, n):
         for k in range(9):
             u = -1.2 + 0.3 * k
             f2 = fr.sub(u, -0.6)
-            lbox(d, ("CT_SteelRed", "CT_WoodLight", "CT_SteelRed")[k % 3], f2, -0.035, 0.035, -0.035, 0.035, 1.32 - 0.1 * (k % 2),
-                 1.93, faces="xXyYz")
+            _tube(d, ("CT_SteelRed", "CT_WoodLight", "CT_SteelRed")[k % 3], f2.p(0.0, 0.0, 1.32 - 0.1 * (k % 2)), f2.p(0.0, 0.0, 1.93),
+                  0.035, 10)
         hexa_u = fr.sub(0.0, -0.6)
         lbox(d, "CT_PlasterPink", hexa_u, -0.17, 0.17, -0.1, 0.1, 1.05, 1.9, faces="xXyYz")
         lbox(d, "CT_SteelRed", hexa_u, -0.1, 0.1, -0.105, 0.105, 1.3, 1.6, faces="y")
@@ -395,13 +395,21 @@ def _braid(B, fr, u, w, z_top, n, mat, length=0.5):
         blob(d, mat, x, y, z_top - 0.06 - k * length / n, 0.055, 6)
 
 
-def _price_cards(B, fr, rnd, z=1.72):
+# atlas goods labels (label_NN = GOODS[NN % 30] of tools/city/atlas.py) that fit each trade, so a dairy stall never hangs "glue"
+CARD_GOODS = {"fruit": (3, 10, 25, 26, 27), "veg": (2, 3, 25, 26, 27), "dairy": (4, 23, 24), "butcher": (8, 27),
+              "bread": (7, 9, 12, 13), "birds": (7, 12), "fish": (0, 1, 8, 28), "sweets": (9, 10, 11, 13, 14, 29),
+              "bait": (12, 15)}
+
+
+def _price_cards(B, fr, rnd, z=1.72, kind=None):
     """Little price cards on a string along the awning's front edge."""
     d = B.detail
     lbox(d, "CT_Paper", fr, -1.62, 1.62, 0.9, 0.915, z + 0.13, z + 0.145, faces="xXyYZz")
     for k, u in enumerate((-1.2, -0.45, 0.35, 1.1)):
         x, y, _ = fr.p(u + rnd.uniform(-0.1, 0.1), 0.905)
-        kit.poster(B, x, y, 0.0, fr.yaw, name="label_%02d" % rnd.randint(0, 59), w=0.2, h=0.14, zc=z + 0.05)
+        goods = CARD_GOODS.get(kind)
+        cell = rnd.randint(0, 59) if not goods else goods[(k + rnd.randint(0, 9)) % len(goods)] + 30 * rnd.randint(0, 1)
+        kit.poster(B, x, y, 0.0, fr.yaw, name="label_%02d" % cell, w=0.2, h=0.14, zc=z + 0.05)
 
 
 def _knives(B, fr, u, w, z):
@@ -480,7 +488,7 @@ def stall_extra(B, fr, n, kind, rg):
     """The second pass of a stall's dressing: what makes this very stall different from the other of its trade."""
     rx = random.Random(n * 31 + 7)
     d = B.detail
-    _price_cards(B, fr, rx)
+    _price_cards(B, fr, rx, kind=kind)
     if n == 1:      # onions and garlic in braids, a basket of beets
         for k in range(3):
             _braid(B, fr, -1.35 + 0.28 * k, -0.6, 1.95, 3, ("CT_PlasterYellow", "CT_TileWhite", "CT_PlasterRed")[k])
