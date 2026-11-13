@@ -1,0 +1,20 @@
+{
+ "key": "line.sorokin_oleg.waxwing_meet.7",
+ "lang": "ja",
+ "text": "なのに、ここでは一羽も見ていない。北の丘の向こうの古い森、ナナカマドのあるところにいるんだ。私はもうそこまで歩けない。膝がね。",
+ "speaker": "sorokin_oleg",
+ "voice": "River",
+ "voice_id": "SAz9YHcvj6GT2YYXdXww",
+ "voice_design": null,
+ "direction": "[a retired scholar, calm, dry humour, slower, gentle]",
+ "model": "fal-ai/elevenlabs/tts/eleven-v3",
+ "request": {
+  "stability": 0.5,
+  "apply_text_normalization": "auto",
+  "text": "[a retired scholar, calm, dry humour, slower, gentle] なのに、ここでは一羽も見ていない。北の丘の向こうの古い森、ナナカマドのあるところにいるんだ。私はもうそこまで歩けない。膝がね。",
+  "voice": "River",
+  "language_code": "ja"
+ },
+ "fal_request_id": "01a1d58e-5bdc-77c3-b377-857554332e6e",
+ "hash": "b523f0074064"
+}

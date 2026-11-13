@@ -1,0 +1,20 @@
+{
+ "key": "line.sorokin_oleg.waxwing_back.1",
+ "lang": "ja",
+ "text": "何かたくらんでいる顔だね。言わなくていい。驚かされるのは鳥からだけと決めている。",
+ "speaker": "sorokin_oleg",
+ "voice": "River",
+ "voice_id": "SAz9YHcvj6GT2YYXdXww",
+ "voice_design": null,
+ "direction": "[a retired scholar, calm, dry humour, slower, gentle]",
+ "model": "fal-ai/elevenlabs/tts/eleven-v3",
+ "request": {
+  "stability": 0.5,
+  "apply_text_normalization": "auto",
+  "text": "[a retired scholar, calm, dry humour, slower, gentle] 何かたくらんでいる顔だね。言わなくていい。驚かされるのは鳥からだけと決めている。",
+  "voice": "River",
+  "language_code": "ja"
+ },
+ "fal_request_id": "01a1d58d-c69d-7890-84a7-4c2ad9491ba6",
+ "hash": "e49ed77b2b18"
+}

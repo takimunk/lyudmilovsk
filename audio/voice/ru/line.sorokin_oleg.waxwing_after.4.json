@@ -1,0 +1,20 @@
+{
+ "key": "line.sorokin_oleg.waxwing_after.4",
+ "lang": "ru",
+ "text": "Возьмите. Мучной червь и арахис, из моих запасов. Вам они нужнее.",
+ "speaker": "sorokin_oleg",
+ "voice": "River",
+ "voice_id": "SAz9YHcvj6GT2YYXdXww",
+ "voice_design": null,
+ "direction": "[a retired scholar, calm, dry humour, slower, gentle]",
+ "model": "fal-ai/elevenlabs/tts/eleven-v3",
+ "request": {
+  "stability": 0.5,
+  "apply_text_normalization": "auto",
+  "text": "[a retired scholar, calm, dry humour, slower, gentle] Возьмите. Мучной червь и арахис, из моих запасов. Вам они нужнее.",
+  "voice": "River",
+  "language_code": "ru"
+ },
+ "fal_request_id": "01a1d587-6dec-7393-9aa6-de81d945a35e",
+ "hash": "a35ab1d4fffc"
+}

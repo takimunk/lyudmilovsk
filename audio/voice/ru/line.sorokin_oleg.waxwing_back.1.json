@@ -1,0 +1,20 @@
+{
+ "key": "line.sorokin_oleg.waxwing_back.1",
+ "lang": "ru",
+ "text": "У вас вид человека, который что-то задумал. Не говорите. Сюрпризы я люблю только от птиц.",
+ "speaker": "sorokin_oleg",
+ "voice": "River",
+ "voice_id": "SAz9YHcvj6GT2YYXdXww",
+ "voice_design": null,
+ "direction": "[a retired scholar, calm, dry humour, slower, gentle]",
+ "model": "fal-ai/elevenlabs/tts/eleven-v3",
+ "request": {
+  "stability": 0.5,
+  "apply_text_normalization": "auto",
+  "text": "[a retired scholar, calm, dry humour, slower, gentle] У вас вид человека, который что-то задумал. Не говорите. Сюрпризы я люблю только от птиц.",
+  "voice": "River",
+  "language_code": "ru"
+ },
+ "fal_request_id": "01a1d587-a42e-7f72-a01f-37950bb9158c",
+ "hash": "2ee2dc6c6fa7"
+}

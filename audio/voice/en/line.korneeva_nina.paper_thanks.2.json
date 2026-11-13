@@ -1,0 +1,29 @@
+{
+ "key": "line.korneeva_nina.paper_thanks.2",
+ "lang": "en",
+ "text": "And take some pies, I baked them myself. Cabbage. So thin, it hurts to look at you.",
+ "speaker": "korneeva_nina",
+ "voice": "Wise_Woman",
+ "voice_id": "Wise_Woman",
+ "voice_design": null,
+ "direction": "",
+ "model": "fal-ai/minimax/speech-2.6-hd",
+ "request": {
+  "prompt": "And take some pies, I baked them myself. Cabbage. So thin, it hurts to look at you.",
+  "voice_setting": {
+   "speed": 0.95,
+   "pitch": 0,
+   "vol": 1,
+   "voice_id": "Wise_Woman"
+  },
+  "language_boost": "English",
+  "audio_setting": {
+   "sample_rate": 24000,
+   "format": "mp3",
+   "channel": 1
+  },
+  "output_format": "url"
+ },
+ "fal_request_id": "01a1d591-7a39-7321-a3e2-0fb83ed08e18",
+ "hash": "95e681138915"
+}

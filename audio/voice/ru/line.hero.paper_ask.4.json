@@ -1,0 +1,33 @@
+{
+ "key": "line.hero.paper_ask.4",
+ "lang": "ru",
+ "text": "Хорошо. Принесу.",
+ "speaker": "hero",
+ "voice": "ttv-voice-2026102201374626-TYrgTufW",
+ "voice_id": "ttv-voice-2026102201374626-TYrgTufW",
+ "voice_design": {
+  "endpoint": "fal-ai/minimax/voice-design",
+  "prompt": "Teenage boy, high school student: a light, youthful, boyish tenor voice, not deep, a bit breathy, quiet and uncertain, natural everyday speech",
+  "preview_text": "Как всегда? Я здесь впервые. Где здесь выход?"
+ },
+ "direction": "",
+ "model": "fal-ai/minimax/speech-2.6-hd",
+ "request": {
+  "prompt": "Хорошо. Принесу.",
+  "voice_setting": {
+   "speed": 1,
+   "pitch": 0,
+   "vol": 1,
+   "voice_id": "ttv-voice-2026102201374626-TYrgTufW"
+  },
+  "language_boost": "Russian",
+  "audio_setting": {
+   "sample_rate": 24000,
+   "format": "mp3",
+   "channel": 1
+  },
+  "output_format": "url"
+ },
+ "fal_request_id": "01a1d58f-8dce-7642-aa18-6e68aed9c741",
+ "hash": "edada0a4ee04"
+}

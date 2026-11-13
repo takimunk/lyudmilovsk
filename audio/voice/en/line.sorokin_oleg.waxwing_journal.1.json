@@ -1,0 +1,20 @@
+{
+ "key": "line.sorokin_oleg.waxwing_journal.1",
+ "lang": "en",
+ "text": "I entered it in the journal. Waxwing, one, adult. Under “behaviour” I wrote: said hello.",
+ "speaker": "sorokin_oleg",
+ "voice": "River",
+ "voice_id": "SAz9YHcvj6GT2YYXdXww",
+ "voice_design": null,
+ "direction": "[a retired scholar, calm, dry humour, slower, gentle]",
+ "model": "fal-ai/elevenlabs/tts/eleven-v3",
+ "request": {
+  "stability": 0.5,
+  "apply_text_normalization": "auto",
+  "text": "[a retired scholar, calm, dry humour, slower, gentle] I entered it in the journal. Waxwing, one, adult. Under “behaviour” I wrote: said hello.",
+  "voice": "River",
+  "language_code": "en"
+ },
+ "fal_request_id": "01a1d58b-5b5c-7d20-8bf8-7b1d4089185e",
+ "hash": "f01e71382afd"
+}

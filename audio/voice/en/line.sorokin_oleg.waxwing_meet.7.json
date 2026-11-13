@@ -1,0 +1,20 @@
+{
+ "key": "line.sorokin_oleg.waxwing_meet.7",
+ "lang": "en",
+ "text": "And here I haven't seen a single one. They keep to the old forest beyond the northern hills, where the rowans are. I can't walk that far any more: my knees.",
+ "speaker": "sorokin_oleg",
+ "voice": "River",
+ "voice_id": "SAz9YHcvj6GT2YYXdXww",
+ "voice_design": null,
+ "direction": "[a retired scholar, calm, dry humour, slower, gentle]",
+ "model": "fal-ai/elevenlabs/tts/eleven-v3",
+ "request": {
+  "stability": 0.5,
+  "apply_text_normalization": "auto",
+  "text": "[a retired scholar, calm, dry humour, slower, gentle] And here I haven't seen a single one. They keep to the old forest beyond the northern hills, where the rowans are. I can't walk that far any more: my knees.",
+  "voice": "River",
+  "language_code": "en"
+ },
+ "fal_request_id": "01a1d58b-d799-7683-b00f-bf54bd863d77",
+ "hash": "f71de8b17f74"
+}

@@ -733,6 +733,7 @@ void ANpcTalkDirector::ShowLine()
 	View->bTalking = true;
 	UpdateLineText();
 	StopVoice();
+	UE_LOG(LogTemp, Log, TEXT("NpcDialogue: line %d/%d %s"), LineIndex + 1, Lines.Num(), *Lines[LineIndex].Key);
 	if (USoundBase* Sound = LyudText::LoadVoice(Lines[LineIndex].Key))
 	{
 		Voice = UGameplayStatics::SpawnSound2D(this, Sound);

@@ -1,0 +1,20 @@
+{
+ "key": "line.sorokin_oleg.waxwing_meet.6",
+ "lang": "ja",
+ "text": "キレンジャクだ。四十年。冠羽に、翼の赤いしずく、銀の小さな鈴のような声。",
+ "speaker": "sorokin_oleg",
+ "voice": "River",
+ "voice_id": "SAz9YHcvj6GT2YYXdXww",
+ "voice_design": null,
+ "direction": "[a retired scholar, calm, dry humour, slower, gentle]",
+ "model": "fal-ai/elevenlabs/tts/eleven-v3",
+ "request": {
+  "stability": 0.5,
+  "apply_text_normalization": "auto",
+  "text": "[a retired scholar, calm, dry humour, slower, gentle] キレンジャクだ。四十年。冠羽に、翼の赤いしずく、銀の小さな鈴のような声。",
+  "voice": "River",
+  "language_code": "ja"
+ },
+ "fal_request_id": "01a1d58e-41d8-7b52-8901-acca39284d95",
+ "hash": "621ddd664e51"
+}

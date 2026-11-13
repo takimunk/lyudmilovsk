@@ -1,0 +1,33 @@
+{
+ "key": "line.hero.crow_tell.2",
+ "lang": "ja",
+ "text": "でも自分で持ってきたんだ。そばに置いていったよ。",
+ "speaker": "hero",
+ "voice": "ttv-voice-2026102201374626-TYrgTufW",
+ "voice_id": "ttv-voice-2026102201374626-TYrgTufW",
+ "voice_design": {
+  "endpoint": "fal-ai/minimax/voice-design",
+  "prompt": "Teenage boy, high school student: a light, youthful, boyish tenor voice, not deep, a bit breathy, quiet and uncertain, natural everyday speech",
+  "preview_text": "Как всегда? Я здесь впервые. Где здесь выход?"
+ },
+ "direction": "",
+ "model": "fal-ai/minimax/speech-2.6-hd",
+ "request": {
+  "prompt": "でも自分で持ってきたんだ。そばに置いていったよ。",
+  "voice_setting": {
+   "speed": 1,
+   "pitch": 0,
+   "vol": 1,
+   "voice_id": "ttv-voice-2026102201374626-TYrgTufW"
+  },
+  "language_boost": "Japanese",
+  "audio_setting": {
+   "sample_rate": 24000,
+   "format": "mp3",
+   "channel": 1
+  },
+  "output_format": "url"
+ },
+ "fal_request_id": "01a1d592-53b7-77d1-8db1-8329b79ade42",
+ "hash": "ed750b96072a"
+}
