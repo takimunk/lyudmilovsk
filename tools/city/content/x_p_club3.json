@@ -854,5 +854,108 @@
   "cog_club/clock_place": {
    "act": "cog_clock_set"
   }
- }
+ },
+ "quests": [
+  {
+   "id": "cog_clock",
+   "kind": "side",
+   "start_on": {
+    "event": "visit",
+    "target": "P-CLUB3"
+   },
+   "stages": [
+    {
+     "id": "look",
+     "objectives": [
+      {
+       "id": "notices",
+       "event": "do",
+       "target": "look_club"
+      }
+     ]
+    },
+    {
+     "id": "find",
+     "objectives": [
+      {
+       "id": "clock",
+       "event": "do",
+       "target": "cog_clock"
+      }
+     ]
+    },
+    {
+     "id": "set",
+     "objectives": [
+      {
+       "id": "place",
+       "event": "do",
+       "target": "cog_clock_set"
+      }
+     ],
+     "reward": {
+      "items": {
+       "tea": 1,
+       "cookies": 1
+      }
+     }
+    }
+   ]
+  },
+  {
+   "id": "cog_reader",
+   "kind": "side",
+   "start_on": {
+    "event": "do",
+    "target": "read_chess"
+   },
+   "stages": [
+    {
+     "id": "read",
+     "objectives": [
+      {
+       "id": "read_chess",
+       "event": "do",
+       "target": "read_chess"
+      },
+      {
+       "id": "read_engineering",
+       "event": "do",
+       "target": "read_engineering"
+      },
+      {
+       "id": "read_sea",
+       "event": "do",
+       "target": "read_sea"
+      }
+     ]
+    },
+    {
+     "id": "swap",
+     "objectives": [
+      {
+       "id": "take",
+       "event": "do",
+       "target": "cog_swap"
+      }
+     ]
+    },
+    {
+     "id": "cart",
+     "objectives": [
+      {
+       "id": "look",
+       "event": "do",
+       "target": "cog_cart"
+      }
+     ],
+     "reward": {
+      "items": {
+       "postcard": 2
+      }
+     }
+    }
+   ]
+  }
+ ]
 }

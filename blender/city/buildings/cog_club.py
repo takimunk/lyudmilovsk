@@ -889,11 +889,11 @@ def _stack(B):
     # the second bench: the exposure timer (the club's lost chess clock), three trays of the print's baths
     _chess_clock(B, *c.W(10.3, INNER - 0.4), z + 0.9, c.fy(0, -1))
     B.thing("exposure_clock", "machine", (*c.W(10.3, INNER - 0.4), z + 0.96), c.fy(0, -1), what="exposure_clock")
-    for k, a in enumerate((11.2, 11.65, 12.1)):
+    for k, a in enumerate((11.3, 11.7, 12.1)):
         tx, ty = c.W(a, INNER - 0.4)
         _obox(B, "CT_TileWhite", tx, ty, c.fy(0, -1), -0.17, 0.17, -0.13, 0.13, z + 0.9, z + 0.94)
         _obox(B, "CT_Paper" if k == 1 else "CT_Rubber", tx, ty, c.fy(0, -1), -0.15, 0.15, -0.11, 0.11, z + 0.94, z + 0.945)
-    B.thing("developing_tray", "craft", (*c.W(11.65, INNER - 0.4), z + 0.95), c.fy(0, -1), what="developing")
+    B.thing("developing_tray", "craft", (*c.W(11.7, INNER - 0.4), z + 0.95), c.fy(0, -1), what="developing")
     B.lamp((*c.W(11.6, INNER - 0.6), z + 2.2), lumens=260, colour="#FF3320", kind=PUB, radius=4.0)
     for k, a in enumerate((8.5, 9.5)):
         B.spot("photo_seat_%d" % (k + 1), "seat", (*c.W(a, -0.55), z), c.fy(0, -1))
@@ -1051,5 +1051,4 @@ def _front_room(B):
 
 
 def _lamps_misc(B):
-    for w_ in kit.check(B):
-        print('KITCHK', w_)
+    pass

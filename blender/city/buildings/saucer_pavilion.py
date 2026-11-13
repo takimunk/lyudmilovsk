@@ -497,7 +497,7 @@ def _parrot(d, x, y, z, yw):
         blob(d, "CT_Frame", q[0], q[1], q[2], 0.009, segs=4)                       # eyes
     q = at(0.085, 0.0, 0.245)
     blob(d, "CT_SteelRed", q[0], q[1], q[2], 0.02, segs=5, sq=1.2)                 # beak
-    for sv in (-0.058, 0.058):                                                     # wings folded on the sides
+    for sv in (-0.05, 0.05):                                                     # wings folded on the sides
         q = at(-0.01, sv, 0.145)
         rbox(d, "CT_PlasterBlue", q[0], q[1], z + 0.07, z + 0.22, 0.05, 0.012, a + math.pi / 2)
     q = at(-0.08, 0.0, -0.02)
@@ -590,7 +590,7 @@ def _third_layer(B, zf):
     d = B.detail
     top = zf + 1.05
     rnd = random.Random(31)
-    # ---- the bar: a grinder, a row of syrup bottles with a tall glass stand, a chalk menu in the kitchen doorway
+    # ---- the bar: a grinder, a row of syrup bottles with a tall glass stand
     g = P(6.3, 80.0, top)
     rbox(d, "CT_Steel", g[0], g[1], top, top + 0.05, 0.1, 0.1, 0.0)
     rbox(d, "CT_SteelRed", g[0], g[1], top + 0.05, top + 0.42, 0.075, 0.08, 0.0)
@@ -604,8 +604,6 @@ def _third_layer(B, zf):
     for k in range(4):
         q = P(6.0, 62 + 2.2 * k, top)
         cyl(d, "CT_TileWhite", q[0], q[1], top, top + 0.1, 0.035, 6, r1=0.04, top=False)
-    cm = P(7.82, 62, zf)
-    kit.menu_board(B, cm[0], cm[1], zf, yaw_to(cm, (CX, CY)), name="menu_1", w=0.55, zc=2.65)
     # ---- table settings that differ
     layout = [(8.4, a) for a in (-32, 4, 38, 160, 178, 214, 250)] + [(4.8, a) for a in (150, 195, 345, 20)]
     for ti, (r_, a_) in enumerate(layout):

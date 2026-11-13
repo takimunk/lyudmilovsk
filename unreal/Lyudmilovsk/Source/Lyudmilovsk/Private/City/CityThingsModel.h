@@ -296,7 +296,238 @@ namespace LyudCity
 		bool bAnyHour = false;
 		/** The stamp every run gives ("set/piece", empty: none). */
 		std::string Collect;
+		/** Index into FModel::Games: the act plays a mini-game instead of showing its lines (-1: none). */
+		int Game = -1;
 	};
+
+	// --- mini-games (docs/city_interiors.md "Mini-games"): every rule and every die here, the game only draws and polls keys
+
+	/** A small generator (splitmix64): the games' dice, the same numbers in the game and in citysim for one seed. */
+	struct FRng
+	{
+		uint64_t State = 0;
+		uint64_t Next()
+		{
+			State += 0x9E3779B97F4A7C15ull;
+			uint64_t Z = State;
+			Z = (Z ^ (Z >> 30)) * 0xBF58476D1CE4E5B9ull;
+			Z = (Z ^ (Z >> 27)) * 0x94D049BB133111EBull;
+			return Z ^ (Z >> 31);
+		}
+		/** [0, 1). */
+		double Unit() { return (double)(Next() >> 11) * (1.0 / 9007199254740992.0); }
+		/** 0 .. N - 1 (0 when N <= 0). */
+		int Below(int N) { return N > 0 ? (int)(Next() % (uint64_t)N) : 0; }
+	};
+
+	/** FNV-1a of a text (a thing id into a game's seed). */
+	inline uint64_t HashText(const std::string& Text)
+	{
+		uint64_t H = 1469598103934665603ull;
+		for (const char C : Text)
+		{
+			H ^= (uint64_t)(unsigned char)C;
+			H *= 1099511628211ull;
+		}
+		return H;
+	}
+
+	/** aim: a marker runs to and fro, E in the zone (darts, a cue shot, a free throw); rally: E when the ball arrives, the
+	 *  window shrinking (table tennis, badminton); duel: three turns of three moves against a regular (chess, dominoes). */
+	enum class EGameType : uint8_t
+	{
+		None,
+		Aim,
+		Rally,
+		Duel,
+	};
+
+	inline EGameType GameTypeOf(const std::string& Word)
+	{
+		return Word == "aim" ? EGameType::Aim : Word == "rally" ? EGameType::Rally : Word == "duel" ? EGameType::Duel : EGameType::None;
+	}
+
+	enum class EGameResult : uint8_t
+	{
+		None,
+		Win,
+		Lose,
+		Draw,
+	};
+
+	inline const char* GameResultName(EGameResult R)
+	{
+		return R == EGameResult::Win ? "win" : R == EGameResult::Lose ? "lose" : R == EGameResult::Draw ? "draw" : "none";
+	}
+
+	/** What just happened in a game: the panel's line (city.game.beat.<name>) and the sound. */
+	enum class EGameBeat : uint8_t
+	{
+		None,
+		Bull,
+		Hit,
+		Miss,
+		Early,
+		Late,
+		OppMiss,
+		TurnWon,
+		TurnLost,
+		TurnEven,
+	};
+
+	inline const char* GameBeatName(EGameBeat B)
+	{
+		switch (B)
+		{
+		case EGameBeat::Bull: return "bull";
+		case EGameBeat::Hit: return "hit";
+		case EGameBeat::Miss: return "miss";
+		case EGameBeat::Early: return "early";
+		case EGameBeat::Late: return "late";
+		case EGameBeat::OppMiss: return "opp_miss";
+		case EGameBeat::TurnWon: return "turn_won";
+		case EGameBeat::TurnLost: return "turn_lost";
+		case EGameBeat::TurnEven: return "turn_even";
+		default: return "none";
+		}
+	}
+
+	/** Duel moves go round like rock, paper, scissors: move I beats move (I + 2) % 3 (a push catches a slow plan, a plan
+	 *  outflanks a wall, a wall stops a push). */
+	inline bool MoveBeats(int Mine, int Theirs)
+	{
+		return Mine >= 0 && Mine < 3 && Theirs >= 0 && Theirs < 3 && Theirs == (Mine + 2) % 3;
+	}
+
+	/** One of a duel's three moves: its name, how many points it wins a turn, the opponent's look that betrays it. */
+	struct FGameMove
+	{
+		std::string Key;
+		std::string Tell;
+		int Power = 1;
+	};
+
+	/** The "game" of an act (interiors.json writes every field). */
+	struct FGameDef
+	{
+		EGameType Type = EGameType::None;
+		std::string Title;
+		/** The key line of the panel (E — throw); empty: the type's own. */
+		std::string Keys;
+		/** aim: throws; duel: turns (rally plays to Need). */
+		int Rounds = 5;
+		/** aim alone: points to win (a bull 2, the zone 1); rally: points of the match (with an opponent) or hits in a row (alone). */
+		int Need = 5;
+		/** aim: to-and-fro runs of the marker a second; rally: ball flights a second at the serve. */
+		double Speed = 0.6;
+		/** aim: the zone's width (part of the bar); rally: the first window round the ball's arrival (s). */
+		double Zone = 0.2;
+		/** rally: the window after every hit (x), and the ball's speed-up (x). */
+		double Shrink = 0.88;
+		double Pace = 1.05;
+		/** The regulars who play it ("chess"): one of them is the opponent; empty: alone. */
+		std::string Vs;
+		std::vector<FGameMove> Moves;
+		/** The lines on a win, a loss, a draw ([0] [1] [2]); they turn per thing like a shelf's pages. */
+		FAct Results[3];
+		/** The stamp a win gives ("chess_wins/{opponent}": the regular beaten). */
+		std::string Collect;
+		std::vector<std::pair<std::string, int>> Prize;
+		/** Games a day (0: no limit); after them the act runs as a plain act (its own lines). */
+		int Daily = 0;
+		std::string SoundHit, SoundMiss, SoundEnd;
+	};
+
+	/** A regular of the town's clubs who plays against the hero: a real resident (npc.<key>.name), a style and words. */
+	struct FRegular
+	{
+		std::string Id;
+		std::string Name;
+		std::string Style;
+		float Skill = 0.5f;
+		std::vector<std::string> Plays;
+		/** Where they are found (empty: anywhere their game is). */
+		std::vector<std::string> Plots;
+		/** What they say at the start, when the hero wins, when he loses (keys; may be empty). */
+		std::string Hello, SaysWin, SaysLose;
+		/** How often they pick each duel move (from the style), and how often their look tells the truth. */
+		double Lean[3] = { 1.0 / 3.0, 1.0 / 3.0, 1.0 / 3.0 };
+		double Honesty = 0.7;
+	};
+
+	/** A game being played (the game keeps one; citysim many). Plain data: FModel::TickGame / PressGame move it on. */
+	struct FGameState
+	{
+		int Thing = -1;
+		int Act = -1;
+		int Def = -1;
+		/** Index into FModel::Regulars (-1: alone). */
+		int Opponent = -1;
+		uint64_t Seed = 0;
+		FRng Rng;
+		/** Seconds since the start, and the pause during which no press is taken (after a throw, a point, a turn). */
+		double Clock = 0.0;
+		double Wait = 0.0;
+		/** aim: throws made; duel: turns played; rally: points played. */
+		int Round = 0;
+		int Score = 0;
+		int OppScore = 0;
+		EGameBeat Beat = EGameBeat::None;
+		/** Counts every beat: the game plays a sound and rewrites the panel when it changes. */
+		int BeatSerial = 0;
+		bool bOver = false;
+		EGameResult Result = EGameResult::None;
+		// aim: the marker (0..1), the zone's middle, the marker's phase, when the throw began
+		double Marker = 0.0;
+		double ZoneAt = 0.5;
+		double Phase = 0.0;
+		double RoundFrom = 0.0;
+		// rally: the window (s), a flight's time (s), when the ball was last hit, when it arrives at the hero; going away
+		double Window = 0.4;
+		double Flight = 1.0;
+		double HitAt = 0.0;
+		double Arrive = 0.0;
+		int Hits = 0;
+		bool bAway = false;
+		bool bOppMisses = false;
+		// duel: the opponent's move this turn, the move his look betrays, the hero's last move and the opponent's last
+		int OppMove = -1;
+		int Tell = -1;
+		int HeroMove = -1;
+		int LastOpp = -1;
+	};
+
+	/** What a finished game gives (FModel::FinishGame). */
+	struct FGameEnd
+	{
+		EGameResult Result = EGameResult::None;
+		/** The result line key (its {0} is the opponent's name), the opponent's name key and their words (may be empty). */
+		std::string Line;
+		std::string Opponent;
+		std::string Says;
+		std::vector<std::string> NewStamps;
+		std::vector<std::pair<std::string, int>> Prize;
+		std::string Target;
+	};
+
+	/** "{time}" in a line: the game's clock ("16:40"), for the wall clocks. */
+	inline std::string FillTime(const std::string& Text, float Hour)
+	{
+		const size_t At = Text.find("{time}");
+		if (At == std::string::npos)
+		{
+			return Text;
+		}
+		const int Minutes = ((int)std::floor(Hour * 60.f + 0.001f) % (24 * 60) + 24 * 60) % (24 * 60);
+		char Buf[8];
+		std::snprintf(Buf, sizeof(Buf), "%02d:%02d", Minutes / 60, Minutes % 60);
+		std::string Out = Text;
+		for (size_t P = At; P != std::string::npos; P = Out.find("{time}", P + 5))
+		{
+			Out.replace(P, 6, Buf);
+		}
+		return Out;
+	}
 
 	struct FThing
 	{
@@ -413,6 +644,8 @@ namespace LyudCity
 		bool bClosed = false;
 		/** Stamps got for the first time by this run ("set/piece"). */
 		std::vector<std::string> NewStamps;
+		/** The act's mini-game starts (index into FModel::Games; -1: none, the line shows as usual). */
+		int Game = -1;
 		std::string Plot;
 		/** For the refusal line: the price or the item needed. */
 		int NeedMoney = 0;
@@ -608,6 +841,9 @@ namespace LyudCity
 		std::map<std::string, std::vector<FGood>> Shops;
 		/** The collections of the data ("collections" of interiors.json), in their order. */
 		std::vector<FCollection> Collections;
+		/** The acts' mini-games (FAct::Game) and the regulars who play them ("regulars" of interiors.json, in id order). */
+		std::vector<FGameDef> Games;
+		std::vector<FRegular> Regulars;
 
 		/** Grid cell size (cm): reach is a few metres, so a pick reads 3x3 cells. */
 		static constexpr double CellCm = 400.0;
@@ -619,6 +855,8 @@ namespace LyudCity
 			Acts.clear();
 			Shops.clear();
 			Collections.clear();
+			Games.clear();
+			Regulars.clear();
 			ActIndex.clear();
 			ThingIndex.clear();
 			Grid.clear();
@@ -637,8 +875,22 @@ namespace LyudCity
 			for (const auto& Field : Root["acts"].Fields)
 			{
 				FAct A = ReadAct(Field.first, Field.second);
+				const LyudJson::FValue& GameField = Field.second["game"];
+				if (GameField.Type == LyudJson::FValue::Object)
+				{
+					FGameDef Def = ReadGame(GameField);
+					if (Def.Type != EGameType::None)
+					{
+						A.Game = (int)Games.size();
+						Games.push_back(std::move(Def));
+					}
+				}
 				ActIndex[A.Id] = (int)Acts.size();
 				Acts.push_back(std::move(A));
+			}
+			for (const auto& Field : Root["regulars"].Fields)
+			{
+				Regulars.push_back(ReadRegular(Field.first, Field.second));
 			}
 			for (const auto& Field : Root["shops"].Fields)
 			{

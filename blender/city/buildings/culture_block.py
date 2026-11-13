@@ -540,7 +540,7 @@ def _furnish_hall(B, hx0, hx1, hy0, hy1):
     for k, (bx_, by_) in enumerate(((-0.25, -0.1), (0.0, 0.12), (0.25, -0.08), (-0.1, 0.1), (0.15, 0.0))):
         ball(-12.6 + bx_, 11.9 + by_, 0.33)
     ball(-12.5, 11.9, 0.57)
-    box(mm, "CT_Steel", -13.0, -12.2, 11.6, 12.2, 0.0, 0.5)
+    box(mm, "CT_Steel", -13.0, -12.2, 11.65, 12.15, 0.305, 0.325)
     T("ball_cart", "sport", (-12.6, 11.9, 0.7), 0, what="basketball")
     q = P(B, -7.6, 3.4, 0, 180, "ref_chair")
     for sx in (-0.28, 0.28):
