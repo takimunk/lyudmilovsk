@@ -566,7 +566,7 @@ job = director
 say = town.director.1..2
 
 [master]
-job = master
+job = repairman
 say = town.master.1..2
 
 [cook_off]

@@ -15,7 +15,7 @@ say town.stroll.6 | Пахнет водорослями. Значит, ночь�
 [night_walk]
 doing = night_walk
 say town.night_walk.1 | Ночью город другой. Тише и честнее. | The town's different at night. Quieter, and more honest. | 夜の町は別物だ。静かで、正直で。
-say town.night_walk.2 | Вон окно горит. Тоже кто-то не спит. | There's a window lit over there. Someone else is awake. | あそこの窓、まだ明るい。誰かも起きてるんだ。
+say town.night_walk.2 | Вон окно горит. Тоже кто-то не спит. | There's a window lit over there. Someone else is awake. | あそこの窓、まだ明るい。ほかにも起きてる人がいるんだ。
 say town.night_walk.3 | Маяк мигает. Раз, два... Раз, два. | The lighthouse blinks. One, two... One, two. | 灯台が光ってる。いち、に…いち、に。
 say town.night_walk.4 | Иногда кажется, что ночью кто-то перекрашивает море. | Sometimes I think someone repaints the sea at night. | 夜のあいだに、誰かが海を塗り直してる気がする。
 
@@ -105,7 +105,7 @@ at = outdoors
 age = kid
 sun = day low
 say town.kid_sun.1 | А куда солнце уходит на ночь? | Where does the sun go at night? | お日さまは夜どこに行くの？
-say town.kid_sun.2 | Я нарисую солнцу глаза. Чтобы оно на нас смотрело. | I'll draw the sun some eyes. So it can look at us. | お日さまに目をかいてあげるの。わたしたちを見てくれるように。
+say town.kid_sun.2 | Я нарисую солнцу глаза. Чтобы оно на нас смотрело. | I'll draw the sun some eyes. So it can look at us. | お日さまに目をかいてあげるの。みんなを見てくれるように。
 
 [pupil_after_school]
 job = pupil
@@ -119,7 +119,7 @@ say town.pupil.4 | Физрук сказал бегать до маяка. До 
 [student]
 job = student
 doing = free
-say town.student.2 | Читаю про звёзды. Оказывается, солнце — тоже звезда. Обычная. Даже обидно. | I'm reading about stars. Turns out the sun's a star too. An ordinary one. Kind of hurtful. | 星の本を読んでる。太陽も星なんだって。ふつうの星。ちょっとくやしい。
+say town.student.2 | Читаю про звёзды. Оказывается, солнце — тоже звезда. Обычная. Даже обидно. | I'm reading about stars. Turns out the sun's a star too. An ordinary one. Almost insulting. | 星の本を読んでる。太陽も星なんだって。ふつうの星。ちょっとくやしい。
 say town.student.3 | Вечером в ДК кино. Говорят, что-то старое. | There's a film at the culture house tonight. Something old, they say. | 夜は文化会館で映画だって。古い映画らしい。
 
 [student_beach]
@@ -304,7 +304,7 @@ say town.snow.2 | Террасы под снегом — как торт. | The 
 [weather_fog]
 at = outdoors
 weather = fog
-say town.fog.1 | Туман такой, что маяк режет его, как нож. | Fog so thick the lighthouse cuts it like a knife. | 霧が濃くて、灯台の光がナイフみたいに切ってる。
+say town.fog.1 | Туман такой, что маяк режет его, как нож. | Fog so thick the lighthouse cuts it like a knife. | 濃い霧を、灯台の光がナイフみたいに切ってる。
 say town.fog.2 | В тумане все звуки рядом. | In the fog every sound is close by. | 霧の中だと、音がみんな近くに聞こえる。
 
 [weather_cold]
