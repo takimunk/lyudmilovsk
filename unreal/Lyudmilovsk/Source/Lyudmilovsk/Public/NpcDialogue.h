@@ -29,6 +29,11 @@ struct FNpcQuestTalk
 	 * night, low, day, cloudy (the sun), have:<item>, no:<item>, done:<quest>, on:<quest>, flag:<flag>. Empty: the plain talk.
 	 */
 	TArray<FString> When;
+	/**
+	 * "aside.<quest>.<stages>..." instead of "quest.": a bystander's word about a quest that is not theirs. It waits until
+	 * their first conversation has been held, and is said through once (the lines, then each .again), then steps aside.
+	 */
+	bool bAside = false;
 	/** The first talk on these stages, and the later ones in turn, round and round (none: the first again). */
 	TArray<FNpcLine> Lines;
 	TArray<TArray<FNpcLine>> Again;
