@@ -44,7 +44,7 @@ VARIANTS = {
     "P-KIOSK1": {"TRADE": "news", "ACCENT": "CT_PlasterRed", "SIGN": "sign_books"},
     "P-KIOSK2": {"TRADE": "ice", "ACCENT": "CT_PlasterBlue", "SIGN": "sign_milk"},
     "P-KIOSK3": {"TRADE": "tobacco", "ACCENT": "CT_PlasterGreen", "SIGN": None},
-    "P-KIOSK4": {"TRADE": "flowers", "ACCENT": "CT_PlasterPink", "SIGN": "sign_greens"},
+    "P-KIOSK4": {"TRADE": "flowers", "ACCENT": "CT_PlasterPink", "SIGN": None},
     "P-KIOSK5": {"TRADE": "cable", "ACCENT": "CT_PlasterYellow", "SIGN": "sign_till"},
     "P-KIOSK6": {"TRADE": "repair", "ACCENT": "CT_Leather", "SIGN": None},
 }
