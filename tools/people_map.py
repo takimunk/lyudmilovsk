@@ -1260,6 +1260,186 @@ def build_rail(grid):
     return places, [patch]
 
 
+# --- the North (tools/north.py, docs/north.md): the ranger's hut, the gate, the camp, the spring ----------------------
+
+ISLANDS_DOC = ("0 the valley (town, Academgorodok, beach), 1 the club's spur, 2 the sea island (sea_island: by the train), "
+               "3 the North (north: on foot by the trail), -1 not on the walk grid")
+NORTH_MANIFEST = os.path.join(ROOT, "blender", "export", "north", "manifest.json")
+NORTH_PATCH = (60.0, 10.0)      # the North's ground patch: margin round its places (m), cell (m)
+
+
+def _north_seats(kind):
+    """Seats [[x, y, z, yaw]...] (object-local metres, yaw from the object's front) of a built North mesh, from
+    blender/export/north/manifest.json when it is there; None otherwise (people_spots' guesses are used)."""
+    if not os.path.exists(NORTH_MANIFEST):
+        return None
+    with open(NORTH_MANIFEST) as f:
+        man = json.load(f)
+    rows = man.get("meshes", man) if isinstance(man, dict) else man
+    for m in rows if isinstance(rows, list) else []:
+        if isinstance(m, dict) and m.get("kind") == kind and m.get("seats"):
+            return m["seats"]
+    return None
+
+
+def build_north(grid):
+    """The North's places (docs/north.md "People"): the ranger's hut (a home: kind flat, private), its porch bench, the
+    gate, the weather post, the camp's fire benches and table, the hot spring's bench, the ranger's round (north_patrol,
+    its spots in order), walk, field and view spots, the campers' tents (homes: kind flat, private), all "north": 1
+    (island 3: off the walk grid, people walk straight over the North's own ground patch); and the trail (kind trail,
+    on the valley's walk grid) whose way runs from the grid's north edge up the dirt track to the gate.
+
+    Needs no Academgorodok or railway inputs: tools/north.py's data, tools/terrain.py's ground (the built landscape
+    when this checkout has it, else the macro shape: rerun on the Mac after a terrain build) and the walk grid.
+    Returns (places, patches)."""
+    import north as N
+    import terrain as T
+
+    S = N.people_spots()
+    fy = FACE_Y / 100.0
+
+    def g(x, y):
+        return T.ground_z(x, y)
+
+    def ue(x, y, z=None):
+        return rp(map_to_ue(x, y, g(x, y) if z is None else z))
+
+    def ahead(x, y, yaw, d):
+        a = math.radians(yaw)
+        return x + d * math.cos(a), y + d * math.sin(a)
+
+    def stand(spots, cap=1):
+        return [{"kind": "stand", "pos": ue(s["x"], s["y"]), "yaw": ang(s["yaw"]), "capacity": cap, "height": 0.0,
+                 "approach": ue(s["x"], s["y"])} for s in spots]
+
+    def seats(spots, height=0.45, step=0.45):
+        out = []
+        for s in spots:
+            ax, ay = ahead(s["x"], s["y"], s["yaw"], step)
+            out.append({"kind": "bench", "pos": ue(s["x"], s["y"]), "yaw": ang(s["yaw"]), "capacity": 1, "height": height,
+                        "approach": ue(ax, ay)})
+        return out
+
+    def outdoor(pid, kind, spots, slots, tag):
+        x = sum(s["x"] for s in spots) / len(spots)
+        y = sum(s["y"] for s in spots) / len(spots)
+        return {"id": pid, "kind": kind, "pos": ue(x, y), "yaw": ang(spots[0]["yaw"]), "slots": slots, "tag": tag,
+                "north": 1, "island": 3}
+
+    places = []
+    # the hut: in at the door off the porch, one step up onto the floor
+    H = S["hut"]
+    hz = g(N.HUT[0], N.HUT[1]) + H["floor"]
+    door = ue(*H["door"])
+    inside = [rp(map_to_ue(p[0], p[1], hz)) for p in H["inside"]]
+    hslots = []
+    for s in H["slots"]:
+        ap = rp(map_to_ue(s["approach"][0], s["approach"][1], hz))
+        hslots.append({"kind": s["kind"], "tag": s["tag"], "pos": rp(map_to_ue(s["x"], s["y"], hz)), "yaw": ang(s["yaw"]),
+                       "height": s["height"], "capacity": 1, "approach": ap, "path": [door] + inside + [ap]})
+    places.append({"id": "north_hut", "kind": "flat", "private": 1, "door": door, "pos": door, "yaw": ang(N.HUT_YAW + 180.0),
+                   "path": inside, "slots": hslots, "tag": "north", "north": 1, "island": 3})
+    places.append(outdoor("north_porch", "north_porch", S["porch"], seats(S["porch"]), "hut"))
+    places.append(outdoor("north_gate", "north_gate", S["gate"], stand(S["gate"]), "gate"))
+    places.append(outdoor("north_weather", "north_weather", S["weather"], stand(S["weather"]), "hut"))
+    fire = S["fire"]
+    logs = _north_seats("log_bench")
+    if logs:
+        fire = []
+        for o in N.camp():
+            if o["kind"] == "log_bench":
+                a = math.radians(o["yaw"])
+                for sx, sy, _sz, syaw in logs:
+                    fire.append({"x": o["x"] + sx * math.cos(a) - sy * math.sin(a), "y": o["y"] + sx * math.sin(a) + sy * math.cos(a),
+                                 "yaw": o["yaw"] + syaw})
+    places.append(outdoor("north_campfire", "north_campfire", fire, seats(fire, 0.42), "camp"))
+    places.append(outdoor("north_camp_table", "north_camp_table", S["table"], seats(S["table"], 0.45, 0.5), "camp"))
+    places.append(outdoor("north_spring", "north_spring", S["spring"], seats(S["spring"]), "spring"))
+    # the round: its spots in order (Wander's "round": on to the next one), one walker
+    places.append(outdoor("north_patrol", "north_patrol", S["patrol"], stand(S["patrol"]), "trail"))
+    places.append(outdoor("north_walk", "north_walk", S["walk"], stand(S["walk"], 2), "meadows"))
+    places.append(outdoor("north_field", "north_field", S["field"], stand(S["field"], 2), "field"))
+    places.append(outdoor("north_view", "north_view", S["view"], stand(S["view"]), "view"))
+    # the campers' tents: in at the door flap, a sleeping mat to sit on, the sleeping bag behind it (head to the back)
+    tents = [("north_tent_1", "camp_tent_1"), ("north_tent_2", "camp_tent_2"), ("north_tent_3", "camp_tent_3"),
+             ("north_tent_4", "camp_tent_4")]
+    for pid, tid in tents:
+        t = S["tents"][tid]
+        d = ue(*t["door"])
+        mat = ue(*t["mat"])
+        bed = ue(*t["bed"])
+        places.append({"id": pid, "kind": "flat", "private": 1, "door": d, "pos": d, "yaw": ang(t["yaw"] + 180.0),
+                       "path": [mat], "tag": "tent", "north": 1, "island": 3, "slots": [
+                           {"kind": "bed", "tag": "tent", "pos": bed, "yaw": ang(t["yaw"]), "height": 0.08, "capacity": 1,
+                            "approach": mat, "path": [d, mat]},
+                           {"kind": "sofa", "tag": "tent", "pos": mat, "yaw": ang(t["yaw"]), "height": 0.1, "capacity": 1,
+                            "approach": mat, "path": [d, mat]}]})
+
+    # the trail: from the valley's walk grid up the dirt track (tools/terrain.py routes it: the town -> the woods' north
+    # edge -> the gate) to the gate, as a way in 3D every ~6 m; its pos is the last point of it on the grid
+    an = T._anchors()
+    lower = T._route(an["town"], an["woods_north"])
+    upper = T._route(an["woods_north"], an["north_gate"])
+    head = None
+    top = grid.y0 + (grid.ny - 1) * grid.cell - 10.0          # 10 m short of the grid's north edge
+    for i in range(len(lower) - 1, -1, -1):
+        x, y = lower[i]
+        if y + fy < top and grid.walkable(x, y + fy) and all(grid.walkable(lower[k][0], lower[k][1] + fy) for k in range(max(0, i - 20), i)):
+            head = i
+            break
+    if head is None:
+        sys.exit("people_map: the North's trail never meets the walk grid")
+    line = lower[head:] + upper[1:]
+    pts = [line[0]]
+    for p in line[1:]:
+        if math.hypot(p[0] - pts[-1][0], p[1] - pts[-1][1]) >= 6.0:
+            pts.append(p)
+    if pts[-1] != line[-1]:
+        pts.append(line[-1])
+    hx, hy = lower[head]
+    places.append({"id": "north_trail", "kind": "trail", "to_island": 3, "pos": rp((hx, hy + fy, grid.ground(hx, hy + fy))),
+                   "yaw": 90.0, "way": [ue(x, y) for x, y in pts], "tag": "north", "island": 0,
+                   "length_m": r2(sum(math.hypot(q[0] - p[0], q[1] - p[1]) for p, q in zip(pts, pts[1:])))})
+
+    # the North's ground (people walk straight over it, the game traces the real ground near the camera)
+    # the patch: the box round every North place (people_spots, the anchors from the gate on, the hut) plus a margin,
+    # so it follows tools/north.py when the land is rebuilt and places move
+    margin, cell = NORTH_PATCH
+    pts = [tuple(v) for k, v in N.ANCHORS.items() if k.startswith("north_")] + [N.HUT, N.GATE, N.CAMP, N.SPRING]
+    for v in S.values():
+        for q in (v.values() if isinstance(v, dict) else v):
+            if isinstance(q, dict) and "x" in q:
+                pts.append((q["x"], q["y"]))
+            elif isinstance(q, dict) and "door" in q:
+                pts.append(tuple(q["door"]))
+    x0 = math.floor((min(q[0] for q in pts) - margin) / cell) * cell
+    x1 = math.ceil((max(q[0] for q in pts) + margin) / cell) * cell
+    y0 = math.floor((min(q[1] for q in pts) - margin) / cell) * cell
+    y1 = math.ceil((max(q[1] for q in pts) + margin) / cell) * cell
+    nx, ny = int(round((x1 - x0) / cell)) + 1, int(round((y1 - y0) / cell)) + 1
+    z = [round(g(x0 + i * cell, y0 + j * cell), 1) for j in range(ny) for i in range(nx)]
+    patch = {"id": "north", "x0": r2(x0), "y0": r2(y0 + fy), "cell": cell, "nx": nx, "ny": ny, "z": z}
+    return places, [patch]
+
+
+def north_only(grid):
+    """Puts the North's places, the trail and the North's ground into the existing people_places.json without
+    rebuilding the rest (which needs the Academgorodok's blender files and railway_built.json)."""
+    with open(OUT) as f:
+        doc = json.load(f)
+    places, patches = build_north(grid)
+    ids = {p["id"] for p in places}
+    doc["places"] = [p for p in doc["places"] if p["id"] not in ids and not p.get("north")] + places
+    doc["ground_patches"] = [p for p in doc.get("ground_patches", []) if p.get("id") != "north"] + patches
+    doc["islands"] = ISLANDS_DOC
+    with open(OUT, "w") as f:
+        json.dump(doc, f, separators=(",", ":"))
+    trail = places_by(places, "north_trail")
+    print("people_map --north: %d places (%s), the trail %.0f m from (%.1f, %.1f), ground %dx%d -> %s"
+          % (len(places), ", ".join(p["id"] for p in places), trail["length_m"], trail["pos"][0], trail["pos"][1],
+             patches[0]["nx"], patches[0]["ny"], OUT))
+
+
 # --- checks --------------------------------------------------------------------------------------------------------
 
 def check_outdoor(grid, places, stairs, club, library):
@@ -1539,8 +1719,12 @@ def main():
     ap.add_argument("--plot", action="store_true")
     ap.add_argument("--cache", default="", help="pickle of the Academgorodok's extraction (rebuilt when missing)")
     ap.add_argument("--scene", default=MAIN_SCENE, help="scene01_layout.json with 'outside' (the main checkout's)")
+    ap.add_argument("--north", action="store_true", help="only (re)place the North's places in the existing people_places.json")
     a = ap.parse_args()
     FACE_Y = a.face_y
+    if a.north:
+        north_only(WalkGrid(GRID))
+        return
     if a.cache and os.path.exists(a.cache):
         with open(a.cache, "rb") as f:
             data = pickle.load(f)
@@ -1575,10 +1759,13 @@ def main():
                 bad.append("%s pos (%.1f, %.1f)" % (p["id"], q[0], q[1]))
             p["island"] = 0
     places += rail
+    north, north_patches = build_north(grid)
+    places += north
+    patches += north_patches
     misses = [m for fl in flats for m in fl["_misses"]] + library["_misses"] + gastronom["_misses"] + (diner["_misses"] if diner else [])
     doc = {"version": 1, "frame": "unreal_metres", "face_y_cm": FACE_Y,
            "yaw": "Unreal degrees, 0 = +X, 90 = +Y; seats: the way the seated person faces; beds: head to foot; stand: the way the person looks",
-           "islands": "0 the valley (town, Academgorodok, beach), 1 the club's spur, 2 the sea island (sea_island: by the train), -1 not on the walk grid",
+           "islands": ISLANDS_DOC,
            "ground_patches": patches,
            "stairs": strip(stairs), "flats": strip(flats),
            "places": strip([dict(library, kind="library", id="library")] + places), "club": strip(club)}
