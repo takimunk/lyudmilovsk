@@ -418,6 +418,14 @@ void ULyudFishBookScreen::Close()
 	{
 		Lock(false);
 	}
+	else if (APlayerController* PC = World ? World->GetFirstPlayerController() : nullptr)
+	{
+		// ...but the book's own hold on looking and moving is counted by the controller and is the book's to give back:
+		// left in place, the hero could not move or look once the other screen shut (the cursor and the input mode stay
+		// the other screen's)
+		PC->SetIgnoreLookInput(false);
+		PC->SetIgnoreMoveInput(false);
+	}
 }
 
 void ULyudFishBookScreen::Tick(float DeltaTime)
