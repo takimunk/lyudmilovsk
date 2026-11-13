@@ -647,6 +647,8 @@ void ALyudTopi::FinishBuilt(double BudgetMs)
 		// only the ground near the eye throws shadows; the far dunes' shading is in their normals
 		Mesh->SetCastShadow(Data->Level <= 2);
 		Mesh->bAffectDistanceFieldLighting = false;
+		// the rain's wet patches and puddles are decals: the sand drains, it takes none
+		Mesh->bReceivesDecals = false;
 		Mesh->SetVisibility(false);
 		// the far dunes heave in the material: leave room for it in the bounds
 		Mesh->SetBoundsScale(Data->Level >= 2 ? 1.25f : 1.f);
@@ -896,6 +898,8 @@ void ALyudTopi::BuildRiver()
 		Light->SetAttenuationRadius(16000.f);
 		Light->SetSourceRadius(1500.f);
 		Light->SetCastShadows(false);
+		// a glow on the sand and on the hero, not a mirror image of a 15 m lamp in the wet bed
+		Light->SetSpecularScale(0.f);
 		Light->LightingChannels.bChannel0 = true;
 		Light->LightingChannels.bChannel1 = true;
 		Light->SetVisibility(false);
@@ -949,7 +953,7 @@ void ALyudTopi::UpdateLook(float DeltaSeconds, const FVector& Eye)
 				MID->SetVectorParameterValue(TEXT("TopiLook"), Water);
 			}
 		}
-		const float Candelas = 2600.f * NightNow * (1.f + 5.f * Dissolve);
+		const float Candelas = 1200.f * NightNow * (1.f + 5.f * Dissolve);
 		for (UPointLightComponent* Light : RiverLights)
 		{
 			if (Light)

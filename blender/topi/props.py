@@ -36,7 +36,14 @@ OUT = os.path.join(HERE, "out")
 TEX_OUT = os.path.join(ROOT, "textures", "topi", "baked")
 TEX_IN = os.path.join(ROOT, "textures", "topi")
 LOC = os.path.join(ROOT, "textures", "localized", "ru")
-QUICK = "quick" in sys.argv[sys.argv.index("--") + 1:] if "--" in sys.argv else False
+ARGS = sys.argv[sys.argv.index("--") + 1:] if "--" in sys.argv else []
+QUICK = "quick" in ARGS
+# names after -- (WarnSign, UralSign, Stake_A.., Towel_A..) build only those
+ONLY = {a for a in ARGS if a != "quick"}
+
+
+def wanted(name):
+    return not ONLY or name.replace("SM_Topi_", "") in ONLY
 SIGN_PX = 512 if QUICK else 2048
 SMALL_PX = 256 if QUICK else 1024
 
@@ -420,7 +427,8 @@ def mat_wood():
     g = gvec.outputs[1]
     grain = N.noise(g, 6.0, 10.0, 0.7)
     rings = N.math("SINE", N.math("MULTIPLY", N.noise(g, 2.0, 3.0, 0.5), 60.0))
-    cracks = N.smooth(N.voronoi(N.vmath("MULTIPLY", g, (1.0, 1.0, 0.25)), 9.0, "DISTANCE_TO_EDGE"), 0.025, 0.0)
+    # g already squeezes the grain direction ~20x: cracks run along it
+    cracks = N.smooth(N.voronoi(g, 4.0, "DISTANCE_TO_EDGE"), 0.018, 0.0)
     # weathered grey driftwood (posts, board backs), fresher brown split wood for the stakes
     grey = N.mix(grain, (0.30, 0.29, 0.26), (0.52, 0.50, 0.45))
     grey = N.mix(N.math("MULTIPLY", N.math("ADD", rings, 1.0), 0.15), grey, (0.40, 0.38, 0.34))
@@ -442,7 +450,7 @@ def mat_wood():
 
 TOWEL_LOOK = {   # ground colour, stripe colour, second stripe colour, print
     "A": ((0.80, 0.82, 0.84), (0.10, 0.25, 0.55), (0.85, 0.75, 0.35), False),
-    "B": ((0.78, 0.70, 0.58), (0.62, 0.12, 0.10), (0.92, 0.90, 0.86), False),
+    "B": ((0.66, 0.24, 0.16), (0.93, 0.88, 0.76), (0.20, 0.22, 0.38), False),
     "C": ((0.40, 0.56, 0.38), (0.88, 0.72, 0.18), (0.20, 0.34, 0.22), True),
 }
 
@@ -1326,6 +1334,8 @@ def main():
     made = []
     # the signs
     for fn, wear in ((warn_sign, "warn"), (ural_sign, "ural")):
+        if not wanted("WarnSign" if wear == "warn" else "UralSign"):
+            continue
         obj = fn()
         recalc(obj)
         for slot in (["TP_Metal", "TP_SignWarn"] if wear == "warn" else ["TP_Wood", "TP_SignUral"]):
@@ -1339,6 +1349,8 @@ def main():
         made.append((obj, {body: None, front: os.path.join(LOC, "topi_sign_%s.png" % wear)}))
     # stakes with rags
     for L in "ABCD":
+        if not wanted("Stake_" + L):
+            continue
         st = stake(L)
         st.data.materials.append(MATS["TP_Wood"])
         st.data.materials.append(MATS["TP_Rag"])
@@ -1355,6 +1367,8 @@ def main():
         made.append((st, {"TP_Wood": None, "TP_Rag": None}))
     # towels
     for L in "ABC":
+        if not wanted("Towel_" + L):
+            continue
         low, high, sand = towel(L)
         uv_overlap(low)
         bake(low, SMALL_PX, high=high, extras=(sand,))
@@ -1368,7 +1382,9 @@ def main():
         print("TOPI %s: %d triangles, slots %s -> %s" % (obj.name, tris(obj), [m.name for m in obj.data.materials], os.path.join(OUT, obj.name + ".glb")))
     # the old single stake name stays (LyudTopiProps falls back to it): a copy of stake A
     import shutil
-    shutil.copyfile(os.path.join(OUT, "SM_Topi_Stake_A.glb"), os.path.join(OUT, "SM_Topi_Stake.glb"))
+    if wanted("Stake_A"):
+        shutil.copyfile(os.path.join(OUT, "SM_Topi_Stake_A.glb"), os.path.join(OUT, "SM_Topi_Stake.glb"))
+    preview = "preview.jpg" if not ONLY else "preview_%s.jpg" % "_".join(sorted(ONLY))
 
     # preview with the baked textures
     for obj, slots in made:
@@ -1376,7 +1392,7 @@ def main():
             base = os.path.join(TEX_OUT, "%s_%s" % (obj.name, m.name))
             obj.data.materials[i] = preview_material(obj, m.name, base, slots.get(m.name))
     # spread them out for the renders (each is shown alone)
-    render_preview([o for o, _ in made], os.path.join(OUT, "preview.jpg"))
+    render_preview([o for o, _ in made], os.path.join(OUT, preview))
 
 
 if __name__ == "__main__":
