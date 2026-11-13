@@ -23,6 +23,7 @@ import random
 
 from citykit import box, prism, ring, DOOR_W, DOOR_H, Facade, Mesh, wall_with_holes, triangulate
 import geom
+import furn_int3 as fu
 import interior_kit as kit
 
 INFO = {
@@ -249,6 +250,37 @@ def _arc(cx, cy, r, a0, a1, n=16):
             for k in range(n + 1)]
 
 
+def _switch(B, x, y, yaw, z, tid, scope="room"):
+    """A wall light switch: a small white plate with a rocker at height z on the wall at (x, y), facing yaw."""
+    fr = fu.Fr(x, y, yaw)
+    fu.lbox(B.detail, "CT_SteelWhite", fr, -0.04, 0.04, 0.0, 0.012, z - 0.06, z + 0.06)
+    fu.lbox(B.detail, "CT_Steel", fr, -0.012, 0.012, 0.012, 0.02, z - 0.025, z + 0.03)
+    B.thing(tid, "machine", fr.p(0.0, 0.03, z), yaw, what="switch", switch=scope)
+
+
+def _checkers(B, x, y, z, yaw=0.0):
+    """[prop] A draughts board (0.34 m, green with white squares) with a few men mid-game, lying on a table top at z."""
+    fr = fu.Fr(x, y, yaw)
+    s = 0.04
+    fu.lbox(B.detail, "CT_PlasterGreen", fr, -4 * s - 0.01, 4 * s + 0.01, -4 * s - 0.01, 4 * s + 0.01, z, z + 0.012)
+    for i in range(8):
+        for j in range(8):
+            if (i + j) % 2 == 0:
+                fu.lbox(B.detail, "CT_SteelWhite", fr, -4 * s + i * s, -3 * s + i * s, -4 * s + j * s, -3 * s + j * s, z + 0.012, z + 0.014)
+    for k, (i, j, red) in enumerate(((1, 1, 1), (3, 1, 1), (2, 2, 1), (5, 3, 1), (4, 4, 0), (6, 6, 0), (1, 5, 0), (3, 5, 0))):
+        px, py = fr.p(-4 * s + (i + 0.5) * s, -4 * s + (j + 0.5) * s)[:2]
+        fu.cyl(B.detail, "CT_PlasterRed" if red else "CT_Steel", px, py, z + 0.014, z + 0.03, 0.016, segs=8, top=True)
+
+
+def _dominoes(B, x, y, z, yaw=0.0):
+    """[prop] A short snake of dominoes laid out on a table top at z (white tiles with a dark centre line, 0.04 x 0.08)."""
+    fr = fu.Fr(x, y, yaw)
+    for u, w, rot in ((-0.16, 0.0, 0), (-0.08, 0.0, 0), (0.0, 0.0, 0), (0.06, 0.05, 90), (0.1, 0.12, 0), (0.1, 0.2, 0), (0.05, 0.27, 90)):
+        f = fu.Fr(*fr.p(u, w)[:2], yaw + rot)
+        fu.lbox(B.detail, "CT_SteelWhite", f, -0.02, 0.02, -0.04, 0.04, z, z + 0.01)
+        fu.lbox(B.detail, "CT_Steel", f, -0.019, 0.019, -0.002, 0.002, z + 0.0095, z + 0.0105)
+
+
 def _furnish_hall(B, hx0, hx1, hy0, hy1):
     """Round 3: the brick hall (inner x -18.6..18.6, y 1.4..12.6) as the sports hall: basketball at the west end, gym
     in the middle, art corner and weights at the east, buffet in the east back corner, reception by the door."""
@@ -398,7 +430,14 @@ def _furnish_hall(B, hx0, hx1, hy0, hy1):
     sp("cafe_counter", "counter", (15.3, 11.0, 0.0), 90)
     for i, (tx, ty) in enumerate(((13.2, 8.2), (15.2, 8.3), (17.0, 8.6))):
         kit.table_round(B, tx, ty, r=0.42, mat=kit.WOODL)
-        kit.cup(B, tx, ty, 0.75, 0)
+        if i == 1:                                       # a game of draughts, and dominoes at the next table
+            _checkers(B, tx, ty, 0.75, 0.0)
+            T("cafe_checkers", "play", (tx, ty, 0.78), 0, what="checkers")
+        elif i == 2:
+            _dominoes(B, tx - 0.15, ty - 0.12, 0.75, 0.0)
+            T("cafe_dominoes", "play", (tx, ty, 0.78), 0, what="dominoes")
+        else:
+            kit.cup(B, tx, ty, 0.75, 0)
         kit.chair(B, tx - 0.6, ty, yaw=90)
         kit.chair(B, tx + 0.6, ty, yaw=270)
         T("cafe_table_%d" % (i + 1), "seat", (tx - 0.6, ty, 0.45), 90, height=0.45)
@@ -442,6 +481,8 @@ def _furnish_hall(B, hx0, hx1, hy0, hy1):
     kit.lifebuoy(B, cx0, 4.15, yaw=270, zc=1.55)
     kit.mosaic_panel(B, -14.5, cy1, yaw=180, name="tile_4", w=1.1, h=0.9, zc=1.5, seed=3)
     kit.sign_plate(B, -15.05, cy0, yaw=0, name="sign_quiet", w=0.7, zc=2.15)
+    _switch(B, -14.33, cy0, 0.0, 1.3, "light_switch_cabin", 3)          # between the two cabin doors
+    _switch(B, 1.75, fy0, 180.0, 1.3, "light_switch_hall", "hall")       # inside the front door
     # changing screen by the lockers
     kit.screen_divider(B, -17.2, 5.0, yaw=90)
     # kiln in the art corner (east wall), its drying shelf is the clay shelf
@@ -565,9 +606,10 @@ def _furnish_hall(B, hx0, hx1, hy0, hy1):
             q.rod("CT_Wood", (0.015 * math.cos(a_), 0.015 * math.sin(a_), 0.04), (0.04 * math.cos(a_), 0.04 * math.sin(a_), 0.24), 0.01, 3)
             q.rod("CT_PlasterRed" if j % 2 else "CT_PlasterBlue", (0.04 * math.cos(a_), 0.04 * math.sin(a_), 0.24), (0.045 * math.cos(a_), 0.045 * math.sin(a_), 0.29), 0.014, 3)
         q.done()
-    kit.wall_shelf(B, 17.45, fy0, yaw=180, w=0.8, zt=1.35, props=False)
-    for k, mt in enumerate(("CT_ConcreteWhite", "CT_ConcreteWhite", "CT_PlasterPink", "CT_PlasterGreen")):
-        bowl(17.15 + 0.2 * k, fy0 + 0.12, 1.35, mt)
+    kit.wall_shelf(B, 17.4, fy0, yaw=180, w=1.3, zt=1.35, props=False)
+    kit.wall_shelf(B, 17.4, fy0, yaw=180, w=1.3, zt=0.95, props=False)
+    for k, mt in enumerate(("CT_ConcreteWhite", "CT_PlasterPink", "CT_ConcreteWhite", "CT_PlasterGreen", "CT_PlasterYellow", "CT_ConcreteWhite")):
+        bowl(16.9 + 0.2 * k, fy0 + 0.12, 1.35 if k < 4 else 0.95, mt)
     T("drying_shelf", "board", (17.45, fy0 + 0.2, 1.4), 180, topic="store")
     kit.hat_stand(B, 13.4, 2.3)
     box(d, "CT_PlasterBlue", 13.3, 13.5, 2.3 - 0.16, 2.3 - 0.1, 0.95, 1.55)
@@ -575,8 +617,11 @@ def _furnish_hall(B, hx0, hx1, hy0, hy1):
     box(d, "CT_TileWhite", 13.28, 13.52, 2.3 - 0.215, 2.3 - 0.21, 1.2, 1.5, faces="y")
 
     # buffet: compote glasses and a tray of buns on the counter
-    for gy in (9.85, 10.0, 12.1):
-        kit.glass(B, 16.45, gy, 1.05, 0)
+    for gy in (9.85, 10.0, 12.1):                        # compote in tumblers: red, so that they read (clear glass renders dark)
+        q = P(B, 16.45, gy, 1.05, 0, "compote")
+        q.kind = "prop"
+        q.lathe("CT_PlasterRed", 0, 0, [(0.03, 0.0), (0.037, 0.06), (0.04, 0.1)], 8, top=True)
+        q.done()
         box(d, "CT_PlasterRed", 16.42, 16.48, gy - 0.003, gy + 0.003, 1.05, 1.1, faces="xXyY") if False else None
     q = P(B, 16.7, 10.9, 1.05, 270, "bun_tray")
     q.kind = "prop"
