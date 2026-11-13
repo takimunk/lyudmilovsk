@@ -283,6 +283,216 @@
     0.0
    ],
    "yaw": 180.0
+  },
+  {
+   "id": "therapist_listen",
+   "kind": "stand",
+   "pos": [
+    4.9,
+    8.4,
+    0.0
+   ],
+   "yaw": 0.0
+  },
+  {
+   "id": "eye_pointer",
+   "kind": "stand",
+   "pos": [
+    9.3,
+    10.1,
+    0.0
+   ],
+   "yaw": 180.0
+  },
+  {
+   "id": "kids_room_play",
+   "kind": "stand",
+   "pos": [
+    12.55,
+    7.0,
+    0.0
+   ],
+   "yaw": 0.0
+  },
+  {
+   "id": "growth_chart",
+   "kind": "stand",
+   "pos": [
+    11.35,
+    5.7,
+    0.0
+   ],
+   "yaw": 270.0
+  },
+  {
+   "id": "umbrella_stand",
+   "kind": "stand",
+   "pos": [
+    -3.65,
+    5.45,
+    0.0
+   ],
+   "yaw": 0.0
+  },
+  {
+   "id": "porter_chair",
+   "kind": "seat",
+   "pos": [
+    1.0,
+    5.5,
+    0.0
+   ],
+   "yaw": 0.0
+  },
+  {
+   "id": "physio_bars",
+   "kind": "stand",
+   "pos": [
+    -13.0,
+    11.45,
+    0.0
+   ],
+   "yaw": 270.0
+  },
+  {
+   "id": "physio_ball",
+   "kind": "stand",
+   "pos": [
+    -11.3,
+    11.45,
+    0.0
+   ],
+   "yaw": 270.0
+  },
+  {
+   "id": "vaccine_stool",
+   "kind": "seat",
+   "pos": [
+    1.4,
+    10.65,
+    0.0
+   ],
+   "yaw": 180.0
+  },
+  {
+   "id": "vaccine_nurse",
+   "kind": "work",
+   "pos": [
+    1.4,
+    12.3,
+    0.0
+   ],
+   "yaw": 0.0
+  },
+  {
+   "id": "vaccine_wait",
+   "kind": "stand",
+   "pos": [
+    0.35,
+    10.7,
+    0.0
+   ],
+   "yaw": 0.0
+  },
+  {
+   "id": "ticket_stand",
+   "kind": "stand",
+   "pos": [
+    -7.4,
+    10.0,
+    0.0
+   ],
+   "yaw": 180.0
+  },
+  {
+   "id": "queue_line_0",
+   "kind": "stand",
+   "pos": [
+    -5.0,
+    9.7,
+    0.0
+   ],
+   "yaw": 180.0
+  },
+  {
+   "id": "queue_line_1",
+   "kind": "stand",
+   "pos": [
+    -4.3,
+    9.2,
+    0.0
+   ],
+   "yaw": 180.0
+  },
+  {
+   "id": "queue_line_2",
+   "kind": "stand",
+   "pos": [
+    -5.7,
+    9.2,
+    0.0
+   ],
+   "yaw": 180.0
+  },
+  {
+   "id": "door_wait_0",
+   "kind": "stand",
+   "pos": [
+    5.2,
+    11.9,
+    0.0
+   ],
+   "yaw": 0.0
+  },
+  {
+   "id": "door_wait_1",
+   "kind": "stand",
+   "pos": [
+    8.7,
+    11.9,
+    0.0
+   ],
+   "yaw": 0.0
+  },
+  {
+   "id": "door_wait_2",
+   "kind": "stand",
+   "pos": [
+    12.15,
+    11.9,
+    0.0
+   ],
+   "yaw": 0.0
+  },
+  {
+   "id": "kids_play_0",
+   "kind": "stand",
+   "pos": [
+    -12.5,
+    12.55,
+    0.0
+   ],
+   "yaw": 0.0
+  },
+  {
+   "id": "kids_play_1",
+   "kind": "stand",
+   "pos": [
+    -10.7,
+    14.3,
+    0.0
+   ],
+   "yaw": 270.0
+  },
+  {
+   "id": "inhaler_wait",
+   "kind": "stand",
+   "pos": [
+    1.6,
+    13.1,
+    0.0
+   ],
+   "yaw": 180.0
   }
  ],
  "lamps": [
@@ -406,6 +616,28 @@
    "colour": "#FFF0DC",
    "kind": "public",
    "radius": 6
+  },
+  {
+   "pos": [
+    9.8,
+    10.3,
+    2.75
+   ],
+   "lumens": 380,
+   "colour": "#DDEBFF",
+   "kind": "public",
+   "radius": 3.2
+  },
+  {
+   "pos": [
+    1.4,
+    11.3,
+    2.7
+   ],
+   "lumens": 420,
+   "colour": "#EAF4F2",
+   "kind": "public",
+   "radius": 3.4
   },
   {
    "pos": [
@@ -1179,6 +1411,392 @@
    "props": {
     "what": "hammer"
    }
+  },
+  {
+   "id": "room_switch_0",
+   "kind": "machine",
+   "pos": [
+    4.32,
+    4.34,
+    1.3
+   ],
+   "yaw": 180.0,
+   "props": {
+    "what": "switch",
+    "switch": 4.2
+   }
+  },
+  {
+   "id": "room_switch_1",
+   "kind": "machine",
+   "pos": [
+    7.82,
+    4.34,
+    1.3
+   ],
+   "yaw": 180.0,
+   "props": {
+    "what": "switch",
+    "switch": 4.2
+   }
+  },
+  {
+   "id": "room_switch_2",
+   "kind": "machine",
+   "pos": [
+    11.27,
+    4.34,
+    1.3
+   ],
+   "yaw": 180.0,
+   "props": {
+    "what": "switch",
+    "switch": 4.2
+   }
+  },
+  {
+   "id": "therapist_books",
+   "kind": "shelf",
+   "pos": [
+    3.8,
+    6.2,
+    1.0
+   ],
+   "yaw": 90.0,
+   "props": {
+    "topic": "medicine"
+   }
+  },
+  {
+   "id": "therapist_remedies",
+   "kind": "board",
+   "pos": [
+    6.7,
+    5.65,
+    1.3
+   ],
+   "yaw": 270.0,
+   "props": {
+    "topic": "remedies"
+   }
+  },
+  {
+   "id": "therapist_stethoscope",
+   "kind": "machine",
+   "pos": [
+    5.0,
+    5.58,
+    0.8
+   ],
+   "yaw": 180.0,
+   "props": {
+    "what": "stethoscope"
+   }
+  },
+  {
+   "id": "therapist_pad",
+   "kind": "board",
+   "pos": [
+    5.51,
+    5.6,
+    0.85
+   ],
+   "yaw": 180.0,
+   "props": {
+    "topic": "prescription"
+   }
+  },
+  {
+   "id": "doctor_talk_0",
+   "kind": "counter",
+   "pos": [
+    5.7,
+    5.85,
+    0.95
+   ],
+   "yaw": 180.0,
+   "props": {
+    "role": "doctor",
+    "service": "doctor"
+   }
+  },
+  {
+   "id": "eye_slit_lamp",
+   "kind": "machine",
+   "pos": [
+    9.0,
+    5.3,
+    0.95
+   ],
+   "yaw": 180.0,
+   "props": {
+    "what": "slit_lamp"
+   }
+  },
+  {
+   "id": "eye_frames",
+   "kind": "board",
+   "pos": [
+    10.15,
+    8.1,
+    1.7
+   ],
+   "yaw": 270.0,
+   "props": {
+    "topic": "frames"
+   }
+  },
+  {
+   "id": "eye_pointer",
+   "kind": "machine",
+   "pos": [
+    9.5,
+    10.82,
+    1.2
+   ],
+   "yaw": 0.0,
+   "props": {
+    "what": "eye_test"
+   }
+  },
+  {
+   "id": "doctor_talk_1",
+   "kind": "counter",
+   "pos": [
+    9.2,
+    5.85,
+    0.95
+   ],
+   "yaw": 180.0,
+   "props": {
+    "role": "doctor",
+    "service": "doctor"
+   }
+  },
+  {
+   "id": "toy_chest",
+   "kind": "machine",
+   "pos": [
+    13.15,
+    5.85,
+    0.45
+   ],
+   "yaw": 0.0,
+   "props": {
+    "what": "toy_chest"
+   }
+  },
+  {
+   "id": "baby_scales",
+   "kind": "machine",
+   "pos": [
+    13.4,
+    9.95,
+    0.85
+   ],
+   "yaw": 270.0,
+   "props": {
+    "what": "baby_scales"
+   }
+  },
+  {
+   "id": "growth_chart",
+   "kind": "machine",
+   "pos": [
+    10.65,
+    5.7,
+    1.0
+   ],
+   "yaw": 90.0,
+   "props": {
+    "what": "growth"
+   }
+  },
+  {
+   "id": "reflex_ruler",
+   "kind": "machine",
+   "pos": [
+    12.25,
+    5.42,
+    1.0
+   ],
+   "yaw": 180.0,
+   "props": {
+    "what": "ruler"
+   }
+  },
+  {
+   "id": "doctor_talk_2",
+   "kind": "counter",
+   "pos": [
+    12.65,
+    5.85,
+    0.95
+   ],
+   "yaw": 180.0,
+   "props": {
+    "role": "doctor",
+    "service": "doctor"
+   }
+  },
+  {
+   "id": "kids_mobile",
+   "kind": "board",
+   "pos": [
+    11.8,
+    8.2,
+    2.5
+   ],
+   "yaw": 0.0,
+   "props": {
+    "topic": "mobile"
+   }
+  },
+  {
+   "id": "umbrella_stand",
+   "kind": "machine",
+   "pos": [
+    -3.65,
+    4.78,
+    0.7
+   ],
+   "yaw": 0.0,
+   "props": {
+    "what": "umbrellas"
+   }
+  },
+  {
+   "id": "hall_switch",
+   "kind": "machine",
+   "pos": [
+    -3.3,
+    4.34,
+    1.35
+   ],
+   "yaw": 180.0,
+   "props": {
+    "what": "switch",
+    "switch": "hall"
+   }
+  },
+  {
+   "id": "porter_table",
+   "kind": "machine",
+   "pos": [
+    1.0,
+    4.9,
+    0.85
+   ],
+   "yaw": 0.0,
+   "props": {
+    "what": "porter"
+   }
+  },
+  {
+   "id": "physio_bars",
+   "kind": "sport",
+   "pos": [
+    -13.55,
+    11.45,
+    1.2
+   ],
+   "yaw": 90.0,
+   "props": {
+    "what": "physio_bars"
+   }
+  },
+  {
+   "id": "physio_ball",
+   "kind": "machine",
+   "pos": [
+    -12.0,
+    11.45,
+    0.25
+   ],
+   "yaw": 90.0,
+   "props": {
+    "what": "physio_ball"
+   }
+  },
+  {
+   "id": "vaccine_tray",
+   "kind": "machine",
+   "pos": [
+    1.15,
+    11.55,
+    0.9
+   ],
+   "yaw": 0.0,
+   "props": {
+    "what": "vaccination"
+   }
+  },
+  {
+   "id": "nurse_station",
+   "kind": "counter",
+   "pos": [
+    1.62,
+    11.62,
+    0.9
+   ],
+   "yaw": 0.0,
+   "props": {
+    "role": "nurse",
+    "service": "nurse"
+   }
+  },
+  {
+   "id": "vaccine_fridge",
+   "kind": "machine",
+   "pos": [
+    2.0,
+    12.1,
+    0.9
+   ],
+   "yaw": 270.0,
+   "props": {
+    "what": "vaccine_fridge"
+   }
+  },
+  {
+   "id": "vaccine_schedule",
+   "kind": "board",
+   "pos": [
+    3.25,
+    12.0,
+    1.75
+   ],
+   "yaw": 270.0,
+   "props": {
+    "topic": "vaccines"
+   }
+  },
+  {
+   "id": "pharmacist_talk",
+   "kind": "counter",
+   "pos": [
+    11.95,
+    14.78,
+    1.05
+   ],
+   "yaw": 270.0,
+   "props": {
+    "role": "nurse",
+    "service": "pharmacy"
+   }
+  },
+  {
+   "id": "medical_card",
+   "kind": "board",
+   "pos": [
+    -3.88,
+    11.72,
+    0.85
+   ],
+   "yaw": 0.0,
+   "props": {
+    "topic": "card"
+   }
   }
  ],
  "flats": [],
@@ -1901,8 +2519,8 @@
  "light_tex": 64,
  "notes": [],
  "tris": {
-  "shell": 2012,
-  "detail": 13370,
+  "shell": 2036,
+  "detail": 17019,
   "windows": 136
  }
 }

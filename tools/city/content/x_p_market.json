@@ -1,5 +1,5 @@
 {
- "_doc": "Shell market (P-MARKET) second pass: stall slates by hour/weekday, butcher and fishmonger talk, the jam contest story and tasting, control scales, grinder, herbs, cat, pigeons, complaints book, day board.",
+ "_doc": "Shell market (P-MARKET) second pass: stall slates by hour/weekday, butcher and fishmonger talk, the jam contest story and tasting, control scales, grinder, herbs, cat, pigeons, complaints book, day board. Round 2: texts (rules, complaints ledger, seed catalogue, jury protocol), haggling duels with named sellers, the market_tastes stamps counted at the office board, talk per trade, weather, festival and closed lines, a clock and a lamp switch.",
  "acts": {
   "mk_slate_bait": {
    "like": "look_misc",
@@ -29,8 +29,13 @@
     {
      "k": "city.mk.slate.bait.4",
      "d": "sat"
+    },
+    {
+     "k": "city.mk.rain.slate",
+     "weather": "rain"
     }
-   ]
+   ],
+   "closed": "city.mk.closed.watch.*"
   },
   "mk_slate_birds": {
    "like": "look_misc",
@@ -60,8 +65,13 @@
     {
      "k": "city.mk.slate.birds.4",
      "d": "sat"
+    },
+    {
+     "k": "city.mk.rain.slate",
+     "weather": "rain"
     }
-   ]
+   ],
+   "closed": "city.mk.closed.watch.*"
   },
   "mk_slate_bread": {
    "like": "look_misc",
@@ -91,8 +101,13 @@
     {
      "k": "city.mk.slate.bread.4",
      "d": "sat"
+    },
+    {
+     "k": "city.mk.rain.slate",
+     "weather": "rain"
     }
-   ]
+   ],
+   "closed": "city.mk.closed.watch.*"
   },
   "mk_slate_butcher": {
    "like": "look_misc",
@@ -122,8 +137,13 @@
     {
      "k": "city.mk.slate.butcher.4",
      "d": "sat"
+    },
+    {
+     "k": "city.mk.rain.slate",
+     "weather": "rain"
     }
-   ]
+   ],
+   "closed": "city.mk.closed.watch.*"
   },
   "mk_slate_dairy": {
    "like": "look_misc",
@@ -153,8 +173,13 @@
     {
      "k": "city.mk.slate.dairy.4",
      "d": "sat"
+    },
+    {
+     "k": "city.mk.rain.slate",
+     "weather": "rain"
     }
-   ]
+   ],
+   "closed": "city.mk.closed.watch.*"
   },
   "mk_slate_fish": {
    "like": "look_misc",
@@ -184,8 +209,13 @@
     {
      "k": "city.mk.slate.fish.4",
      "d": "sat"
+    },
+    {
+     "k": "city.mk.rain.slate",
+     "weather": "rain"
     }
-   ]
+   ],
+   "closed": "city.mk.closed.watch.*"
   },
   "mk_slate_fruit": {
    "like": "look_misc",
@@ -215,8 +245,13 @@
     {
      "k": "city.mk.slate.fruit.4",
      "d": "sat"
+    },
+    {
+     "k": "city.mk.rain.slate",
+     "weather": "rain"
     }
-   ]
+   ],
+   "closed": "city.mk.closed.watch.*"
   },
   "mk_slate_sweets": {
    "like": "look_misc",
@@ -246,8 +281,13 @@
     {
      "k": "city.mk.slate.sweets.4",
      "d": "sat"
+    },
+    {
+     "k": "city.mk.rain.slate",
+     "weather": "rain"
     }
-   ]
+   ],
+   "closed": "city.mk.closed.watch.*"
   },
   "mk_slate_veg": {
    "like": "look_misc",
@@ -277,8 +317,13 @@
     {
      "k": "city.mk.slate.veg.4",
      "d": "sat"
+    },
+    {
+     "k": "city.mk.rain.slate",
+     "weather": "rain"
     }
-   ]
+   ],
+   "closed": "city.mk.closed.watch.*"
   },
   "mk_catch": {
    "like": "look_misc",
@@ -332,6 +377,10 @@
     {
      "k": "city.mk.butcher_old.4",
      "d": "sat"
+    },
+    {
+     "k": "city.mk.rain.butcher",
+     "weather": "rain"
     }
    ]
   },
@@ -358,6 +407,10 @@
     {
      "k": "city.mk.butcher_deli.4",
      "d": "sat"
+    },
+    {
+     "k": "city.mk.rain.butcher",
+     "weather": "rain"
     }
    ]
   },
@@ -385,7 +438,18 @@
      "k": "city.mk.fish_a.4",
      "d": "sat"
     },
-    "city.mk.fish_a.5"
+    "city.mk.fish_a.5",
+    {
+     "k": "city.mk.rain.fish",
+     "weather": "rain"
+    },
+    {
+     "k": "city.mk.fest.fish",
+     "festival": [
+      "fisherman_day",
+      "sea_festival"
+     ]
+    }
    ]
   },
   "mk_talk_fish_b": {
@@ -412,7 +476,18 @@
      "k": "city.mk.fish_b.4",
      "d": "sat"
     },
-    "city.mk.fish_b.5"
+    "city.mk.fish_b.5",
+    {
+     "k": "city.mk.rain.fish",
+     "weather": "rain"
+    },
+    {
+     "k": "city.mk.fest.fish",
+     "festival": [
+      "fisherman_day",
+      "sea_festival"
+     ]
+    }
    ]
   },
   "mk_jam_jars": {
@@ -445,7 +520,8 @@
      "k": "city.mk.jam_jars.6",
      "after": 10
     }
-   ]
+   ],
+   "closed": "city.mk.closed.cat.*"
   },
   "mk_jam_tasting": {
    "prompt": "city.mk.jam_tasting.prompt",
@@ -468,7 +544,9 @@
      "k": "city.mk.tasting.5",
      "after": 10
     }
-   ]
+   ],
+   "closed": "city.mk.closed.tasting.1",
+   "collect": "market_tastes/jam"
   },
   "mk_unlabeled_jar": {
    "like": "look_misc",
@@ -496,7 +574,8 @@
      "k": "city.mk.jar.6",
      "after": 11
     }
-   ]
+   ],
+   "closed": "city.mk.closed.cat.*"
   },
   "mk_control_scales": {
    "prompt": "city.mk.control_scales.prompt",
@@ -521,7 +600,8 @@
     },
     "city.mk.cscales.4",
     "city.mk.cscales.5"
-   ]
+   ],
+   "closed": "city.mk.closed.cat.*"
   },
   "mk_grinder": {
    "prompt": "city.mk.grinder.prompt",
@@ -538,8 +618,13 @@
      "k": "city.mk.grinder.3",
      "d": "mon,wed,thu,sat,sun"
     },
-    "city.mk.grinder.4"
-   ]
+    "city.mk.grinder.4",
+    {
+     "k": "city.mk.rain.grinder",
+     "weather": "rain"
+    }
+   ],
+   "closed": "city.mk.closed.watch.*"
   },
   "mk_herbs": {
    "prompt": "city.mk.herbs.prompt",
@@ -572,8 +657,17 @@
     {
      "k": "city.mk.herbs.5",
      "d": "sat"
+    },
+    {
+     "k": "city.mk.rain.herbs",
+     "weather": "rain"
+    },
+    {
+     "k": "city.mk.cold.herbs",
+     "weather": "cold"
     }
-   ]
+   ],
+   "closed": "city.mk.closed.cat.*"
   },
   "mk_cat": {
    "prompt": "city.mk.cat.prompt",
@@ -609,7 +703,11 @@
       6
      ]
     },
-    "city.mk.cat.5"
+    "city.mk.cat.5",
+    {
+     "k": "city.mk.rain.cat",
+     "weather": "rain"
+    }
    ]
   },
   "mk_pigeons": {
@@ -644,15 +742,25 @@
     {
      "k": "city.mk.pigeons.5",
      "d": "sat"
+    },
+    {
+     "k": "city.mk.rain.pigeons",
+     "weather": "rain"
     }
    ]
   },
   "mk_complaints": {
    "like": "look_misc",
-   "prompt": "city.mk.complaints.prompt",
+   "prompt": "city.mk.ledger.prompt",
    "rotate": "daily",
-   "minutes": 3,
-   "lines": "city.mk.complaints"
+   "minutes": 1,
+   "lines": "city.mk.complaints",
+   "read": {
+    "texts": [
+     "market_complaints"
+    ]
+   },
+   "closed": "city.mk.closed.watch.*"
   },
   "mk_day_board": {
    "like": "look_misc",
@@ -684,6 +792,478 @@
      "k": "city.mk.day.jam.1",
      "d": "fri-sun",
      "after": 8
+    },
+    {
+     "k": "city.mk.day.rain",
+     "weather": "rain"
+    },
+    {
+     "k": "city.mk.day.cold",
+     "weather": "cold"
+    },
+    {
+     "k": "city.mk.day.fog",
+     "weather": "fog"
+    },
+    {
+     "k": "city.mk.day.fest",
+     "festival": [
+      "harvest_fair",
+      "winter_fair",
+      "maslenitsa",
+      "sea_festival",
+      "fisherman_day"
+     ]
+    }
+   ]
+  },
+  "mk_haggle_meat": {
+   "prompt": "city.mk.haggle.prompt",
+   "needs_staff": "butcher",
+   "minutes": 8,
+   "pose": "stand",
+   "sound": "scale_clunk",
+   "closed": "city.mk.closed.watch.*",
+   "lines": [
+    "city.mk.haggle.after.1",
+    "city.mk.haggle.after.2"
+   ],
+   "game": {
+    "type": "duel",
+    "vs": "haggle_meat",
+    "title": "city.mk.haggle.title",
+    "moves": [
+     {
+      "k": "city.mk.haggle.move.1",
+      "power": 2,
+      "tell": "city.mk.haggle.tell.1"
+     },
+     {
+      "k": "city.mk.haggle.move.2",
+      "power": 1,
+      "tell": "city.mk.haggle.tell.2"
+     },
+     {
+      "k": "city.mk.haggle.move.3",
+      "power": 2,
+      "tell": "city.mk.haggle.tell.3"
+     }
+    ],
+    "win": "city.mk.haggle.meat.win",
+    "lose": "city.mk.haggle.meat.lose",
+    "draw": "city.mk.haggle.meat.draw",
+    "collect": "market_haggles/{opponent}",
+    "prize": [
+     [
+      "pie",
+      1
+     ]
+    ],
+    "daily": 2
+   }
+  },
+  "mk_haggle_fish": {
+   "prompt": "city.mk.haggle.prompt",
+   "needs_staff": "fishmonger",
+   "minutes": 8,
+   "pose": "stand",
+   "sound": "scale_clunk",
+   "closed": "city.mk.closed.watch.*",
+   "lines": [
+    "city.mk.haggle.after.1",
+    "city.mk.haggle.after.2"
+   ],
+   "game": {
+    "type": "duel",
+    "vs": "haggle_fish",
+    "title": "city.mk.haggle.title",
+    "moves": [
+     {
+      "k": "city.mk.haggle.move.1",
+      "power": 2,
+      "tell": "city.mk.haggle.tell.1"
+     },
+     {
+      "k": "city.mk.haggle.move.2",
+      "power": 1,
+      "tell": "city.mk.haggle.tell.2"
+     },
+     {
+      "k": "city.mk.haggle.move.3",
+      "power": 2,
+      "tell": "city.mk.haggle.tell.3"
+     }
+    ],
+    "win": "city.mk.haggle.fish.win",
+    "lose": "city.mk.haggle.fish.lose",
+    "draw": "city.mk.haggle.fish.draw",
+    "collect": "market_haggles/{opponent}",
+    "prize": [
+     [
+      "bait_shrimp",
+      1
+     ]
+    ],
+    "daily": 2
+   }
+  },
+  "mk_haggle_fruit": {
+   "prompt": "city.mk.haggle.prompt",
+   "needs_staff": "seller",
+   "minutes": 8,
+   "pose": "stand",
+   "sound": "scale_clunk",
+   "closed": "city.mk.closed.watch.*",
+   "lines": [
+    "city.mk.haggle.after.1",
+    "city.mk.haggle.after.2"
+   ],
+   "game": {
+    "type": "duel",
+    "vs": "haggle_fruit",
+    "title": "city.mk.haggle.title",
+    "moves": [
+     {
+      "k": "city.mk.haggle.move.1",
+      "power": 2,
+      "tell": "city.mk.haggle.tell.1"
+     },
+     {
+      "k": "city.mk.haggle.move.2",
+      "power": 1,
+      "tell": "city.mk.haggle.tell.2"
+     },
+     {
+      "k": "city.mk.haggle.move.3",
+      "power": 2,
+      "tell": "city.mk.haggle.tell.3"
+     }
+    ],
+    "win": "city.mk.haggle.fruit.win",
+    "lose": "city.mk.haggle.fruit.lose",
+    "draw": "city.mk.haggle.fruit.draw",
+    "collect": "market_haggles/{opponent}",
+    "prize": [
+     [
+      "apple",
+      2
+     ]
+    ],
+    "daily": 2
+   }
+  },
+  "mk_chat_fruit": {
+   "prompt": "city.act.ask.prompt",
+   "needs_staff": "seller",
+   "minutes": 2,
+   "sound": "shop_bell",
+   "lines": [
+    "city.mk.chat.fruit.1",
+    "city.mk.chat.fruit.2",
+    "city.mk.chat.fruit.3",
+    "city.mk.chat.fruit.4",
+    {
+     "k": "city.mk.rain.chat",
+     "weather": "rain"
+    },
+    {
+     "k": "city.mk.fest.chat",
+     "festival": "any"
+    }
+   ]
+  },
+  "mk_chat_veg": {
+   "prompt": "city.act.ask.prompt",
+   "needs_staff": "seller",
+   "minutes": 2,
+   "sound": "shop_bell",
+   "lines": [
+    "city.mk.chat.veg.1",
+    "city.mk.chat.veg.2",
+    "city.mk.chat.veg.3",
+    "city.mk.chat.veg.4",
+    {
+     "k": "city.mk.rain.chat",
+     "weather": "rain"
+    },
+    {
+     "k": "city.mk.fest.chat",
+     "festival": "any"
+    }
+   ]
+  },
+  "mk_chat_dairy": {
+   "prompt": "city.act.ask.prompt",
+   "needs_staff": "seller",
+   "minutes": 2,
+   "sound": "shop_bell",
+   "lines": [
+    "city.mk.chat.dairy.1",
+    "city.mk.chat.dairy.2",
+    "city.mk.chat.dairy.3",
+    "city.mk.chat.dairy.4",
+    {
+     "k": "city.mk.rain.chat",
+     "weather": "rain"
+    },
+    {
+     "k": "city.mk.fest.chat",
+     "festival": "any"
+    }
+   ]
+  },
+  "mk_chat_bread": {
+   "prompt": "city.act.ask.prompt",
+   "needs_staff": "seller",
+   "minutes": 2,
+   "sound": "shop_bell",
+   "lines": [
+    "city.mk.chat.bread.1",
+    "city.mk.chat.bread.2",
+    "city.mk.chat.bread.3",
+    "city.mk.chat.bread.4",
+    {
+     "k": "city.mk.rain.chat",
+     "weather": "rain"
+    },
+    {
+     "k": "city.mk.fest.chat",
+     "festival": "any"
+    }
+   ]
+  },
+  "mk_chat_birds": {
+   "prompt": "city.act.ask.prompt",
+   "needs_staff": "seller",
+   "minutes": 2,
+   "sound": "shop_bell",
+   "lines": [
+    "city.mk.chat.birds.1",
+    "city.mk.chat.birds.2",
+    "city.mk.chat.birds.3",
+    "city.mk.chat.birds.4",
+    {
+     "k": "city.mk.rain.chat",
+     "weather": "rain"
+    },
+    {
+     "k": "city.mk.fest.chat",
+     "festival": "any"
+    }
+   ]
+  },
+  "mk_chat_sweets": {
+   "prompt": "city.act.ask.prompt",
+   "needs_staff": "seller",
+   "minutes": 2,
+   "sound": "shop_bell",
+   "lines": [
+    "city.mk.chat.sweets.1",
+    "city.mk.chat.sweets.2",
+    "city.mk.chat.sweets.3",
+    "city.mk.chat.sweets.4",
+    {
+     "k": "city.mk.rain.chat",
+     "weather": "rain"
+    },
+    {
+     "k": "city.mk.fest.chat",
+     "festival": "any"
+    }
+   ]
+  },
+  "mk_chat_bait": {
+   "prompt": "city.act.ask.prompt",
+   "needs_staff": "seller",
+   "minutes": 2,
+   "sound": "shop_bell",
+   "lines": [
+    "city.mk.chat.bait.1",
+    "city.mk.chat.bait.2",
+    "city.mk.chat.bait.3",
+    "city.mk.chat.bait.4",
+    {
+     "k": "city.mk.rain.chat",
+     "weather": "rain"
+    },
+    {
+     "k": "city.mk.fest.chat",
+     "festival": "any"
+    }
+   ]
+  },
+  "mk_chat_tea": {
+   "prompt": "city.act.ask.prompt",
+   "needs_staff": "seller",
+   "minutes": 2,
+   "sound": "cup_clink",
+   "lines": [
+    "city.mk.chat.tea.1",
+    "city.mk.chat.tea.2",
+    "city.mk.chat.tea.3",
+    "city.mk.chat.tea.4",
+    {
+     "k": "city.mk.rain.chat",
+     "weather": "rain"
+    },
+    {
+     "k": "city.mk.fest.chat",
+     "festival": "any"
+    }
+   ]
+  },
+  "mk_seeds": {
+   "prompt": "city.mk.seeds.prompt",
+   "minutes": 2,
+   "sound": "page_turn",
+   "closed": "city.mk.closed.watch.*",
+   "read": {
+    "texts": [
+     "market_seeds"
+    ]
+   },
+   "lines": [
+    "city.mk.chat.birds.4"
+   ]
+  },
+  "mk_rules_plaque": {
+   "prompt": "city.mk.rules.prompt",
+   "minutes": 1,
+   "sound": "paper_rustle",
+   "any_hour": true,
+   "read": {
+    "texts": [
+     "market_rules"
+    ]
+   },
+   "lines": [
+    "city.mk.day.week.1"
+   ]
+  },
+  "mk_jury": {
+   "prompt": "city.mk.jury.prompt",
+   "minutes": 1,
+   "sound": "pencil_scratch",
+   "closed": "city.mk.closed.cat.*",
+   "read": {
+    "texts": [
+     "jam_protocol"
+    ]
+   },
+   "lines": [
+    "city.mk.jam_jars.3"
+   ]
+  },
+  "mk_tea_notice": {
+   "prompt": "city.mk.teanote.prompt",
+   "minutes": 1,
+   "sound": "paper_rustle",
+   "closed": "city.mk.closed.cat.*",
+   "lines": [
+    {
+     "k": "city.mk.tea.1",
+     "h": [
+      6,
+      12
+     ]
+    },
+    {
+     "k": "city.mk.tea.2",
+     "h": [
+      12,
+      18
+     ]
+    },
+    {
+     "k": "city.mk.tea.3",
+     "h": [
+      18,
+      6
+     ]
+    },
+    {
+     "k": "city.mk.tea.cold",
+     "weather": "cold"
+    },
+    {
+     "k": "city.mk.tea.rain",
+     "weather": "rain"
+    }
+   ]
+  },
+  "mk_tastes_board": {
+   "prompt": "city.mk.tastes.prompt",
+   "minutes": 1,
+   "sound": "paper_rustle",
+   "any_hour": true,
+   "lines": [
+    {
+     "k": "city.mk.tastes.0"
+    },
+    {
+     "k": "city.mk.tastes.have.fruit",
+     "have": "market_tastes/fruit"
+    },
+    {
+     "k": "city.mk.tastes.have.veg",
+     "have": "market_tastes/veg"
+    },
+    {
+     "k": "city.mk.tastes.have.dairy",
+     "have": "market_tastes/dairy"
+    },
+    {
+     "k": "city.mk.tastes.have.bread",
+     "have": "market_tastes/bread"
+    },
+    {
+     "k": "city.mk.tastes.have.birds",
+     "have": "market_tastes/birds"
+    },
+    {
+     "k": "city.mk.tastes.have.fish",
+     "have": "market_tastes/fish"
+    },
+    {
+     "k": "city.mk.tastes.have.meat",
+     "have": "market_tastes/meat"
+    },
+    {
+     "k": "city.mk.tastes.have.sweets",
+     "have": "market_tastes/sweets"
+    },
+    {
+     "k": "city.mk.tastes.have.bait",
+     "have": "market_tastes/bait"
+    },
+    {
+     "k": "city.mk.tastes.have.jam",
+     "have": "market_tastes/jam"
+    },
+    {
+     "k": "city.mk.tastes.have.tea",
+     "have": "market_tastes/tea"
+    },
+    {
+     "k": "city.mk.tastes.4",
+     "count": [
+      "market_tastes",
+      4
+     ]
+    },
+    {
+     "k": "city.mk.tastes.8",
+     "count": [
+      "market_tastes",
+      8
+     ]
+    },
+    {
+     "k": "city.mk.tastes.11",
+     "count": [
+      "market_tastes",
+      11
+     ]
     }
    ]
   }
@@ -744,16 +1324,20 @@
    "act": "mk_catch"
   },
   "P-MARKET/counter3": {
-   "act": "mk_talk_butcher_old"
+   "act": "mk_talk_butcher_old",
+   "collect": "market_tastes/meat"
   },
   "P-MARKET/counter15": {
-   "act": "mk_talk_butcher_deli"
+   "act": "mk_talk_butcher_deli",
+   "collect": "market_tastes/meat"
   },
   "P-MARKET/counter6": {
-   "act": "mk_talk_fish_a"
+   "act": "mk_talk_fish_a",
+   "collect": "market_tastes/fish"
   },
   "P-MARKET/counter11": {
-   "act": "mk_talk_fish_b"
+   "act": "mk_talk_fish_b",
+   "collect": "market_tastes/fish"
   },
   "shell_market/jam_jars": {
    "act": "mk_jam_jars"
@@ -789,6 +1373,108 @@
     16
    ],
    "days": "fri-sun"
+  },
+  "P-MARKET/counter1": {
+   "collect": "market_tastes/fruit"
+  },
+  "shell_market/chat_1": {
+   "act": "mk_chat_fruit"
+  },
+  "P-MARKET/counter2": {
+   "collect": "market_tastes/dairy"
+  },
+  "shell_market/chat_2": {
+   "act": "mk_chat_dairy"
+  },
+  "P-MARKET/counter4": {
+   "collect": "market_tastes/bread"
+  },
+  "shell_market/chat_4": {
+   "act": "mk_chat_bread"
+  },
+  "P-MARKET/counter5": {
+   "collect": "market_tastes/birds"
+  },
+  "shell_market/chat_5": {
+   "act": "mk_chat_birds"
+  },
+  "P-MARKET/counter7": {
+   "collect": "market_tastes/sweets"
+  },
+  "shell_market/chat_7": {
+   "act": "mk_chat_sweets"
+  },
+  "P-MARKET/counter8": {
+   "collect": "market_tastes/bait"
+  },
+  "shell_market/chat_8": {
+   "act": "mk_chat_bait"
+  },
+  "P-MARKET/counter9": {
+   "collect": "market_tastes/veg"
+  },
+  "shell_market/chat_9": {
+   "act": "mk_chat_veg"
+  },
+  "P-MARKET/counter10": {
+   "collect": "market_tastes/dairy"
+  },
+  "shell_market/chat_10": {
+   "act": "mk_chat_dairy"
+  },
+  "P-MARKET/counter12": {
+   "collect": "market_tastes/bread"
+  },
+  "shell_market/chat_12": {
+   "act": "mk_chat_bread"
+  },
+  "P-MARKET/counter13": {
+   "collect": "market_tastes/birds"
+  },
+  "shell_market/chat_13": {
+   "act": "mk_chat_birds"
+  },
+  "P-MARKET/counter14": {
+   "collect": "market_tastes/fruit"
+  },
+  "shell_market/chat_14": {
+   "act": "mk_chat_fruit"
+  },
+  "P-MARKET/counter16": {
+   "collect": "market_tastes/bait"
+  },
+  "shell_market/chat_16": {
+   "act": "mk_chat_bait"
+  },
+  "shell_market/tea_chat": {
+   "act": "mk_chat_tea"
+  },
+  "P-MARKET/tea_counter": {
+   "collect": "market_tastes/tea"
+  },
+  "shell_market/haggle_1": {
+   "act": "mk_haggle_fruit"
+  },
+  "shell_market/haggle_3": {
+   "act": "mk_haggle_meat"
+  },
+  "shell_market/haggle_6": {
+   "act": "mk_haggle_fish"
+  },
+  "shell_market/seed_catalogue": {
+   "act": "mk_seeds"
+  },
+  "shell_market/rules_plaque": {
+   "act": "mk_rules_plaque"
+  },
+  "shell_market/jury_protocol": {
+   "act": "mk_jury"
+  },
+  "shell_market/tastes_board": {
+   "act": "mk_tastes_board"
+  },
+  "shell_market/tea_notice": {
+   "act": "mk_tea_notice"
   }
  },
  "quests": [
@@ -879,6 +1565,210 @@
      }
     }
    ]
+  },
+  {
+   "id": "market_haggler",
+   "kind": "side",
+   "start_on": {
+    "event": "visit",
+    "target": "P-MARKET"
+   },
+   "stages": [
+    {
+     "id": "read",
+     "objectives": [
+      {
+       "id": "rules",
+       "event": "do",
+       "target": "mk_rules_plaque"
+      }
+     ]
+    },
+    {
+     "id": "win",
+     "objectives": [
+      {
+       "id": "haggle",
+       "event": "win",
+       "target": "mk_haggle_fish"
+      }
+     ]
+    },
+    {
+     "id": "card",
+     "objectives": [
+      {
+       "id": "card",
+       "event": "do",
+       "target": "mk_tastes_board"
+      }
+     ],
+     "reward": {
+      "rubles": 30
+     }
+    }
+   ]
   }
- ]
+ ],
+ "regulars": {
+  "choi": {
+   "name": "npc.t_choi_alesya.name",
+   "style": "steady",
+   "skill": 0.55,
+   "plays": [
+    "haggle_meat"
+   ],
+   "plots": [
+    "P-MARKET"
+   ],
+   "hello": "city.player.choi.hello",
+   "win": "city.player.choi.win",
+   "lose": "city.player.choi.lose"
+  },
+  "berzins": {
+   "name": "npc.t_berzins_zeynep.name",
+   "style": "tricky",
+   "skill": 0.6,
+   "plays": [
+    "haggle_fish"
+   ],
+   "plots": [
+    "P-MARKET"
+   ],
+   "hello": "city.player.berzins.hello",
+   "win": "city.player.berzins.win",
+   "lose": "city.player.berzins.lose"
+  },
+  "petrosyan": {
+   "name": "npc.t_petrosyan_parisa.name",
+   "style": "careful",
+   "skill": 0.5,
+   "plays": [
+    "haggle_fruit"
+   ],
+   "plots": [
+    "P-MARKET"
+   ],
+   "hello": "city.player.petrosyan.hello",
+   "win": "city.player.petrosyan.win",
+   "lose": "city.player.petrosyan.lose"
+  }
+ },
+ "collections": {
+  "market_tastes": {
+   "title": "city.coll.market_tastes.title",
+   "pieces": [
+    "fruit",
+    "veg",
+    "dairy",
+    "bread",
+    "birds",
+    "fish",
+    "meat",
+    "sweets",
+    "bait",
+    "jam",
+    "tea"
+   ]
+  },
+  "market_haggles": {
+   "title": "city.coll.market_haggles.title",
+   "pieces": [
+    "choi",
+    "berzins",
+    "petrosyan"
+   ]
+  }
+ },
+ "texts": {
+  "market_rules": {
+   "title": "city.mk.text.market_rules.title",
+   "kind": "notice",
+   "minutes": 1,
+   "collect": "reading/market_rules",
+   "pages": [
+    "city.mk.text.market_rules.1",
+    "city.mk.text.market_rules.2",
+    "city.mk.text.market_rules.3",
+    "city.mk.text.market_rules.4"
+   ]
+  },
+  "market_complaints": {
+   "title": "city.mk.text.market_complaints.title",
+   "kind": "ledger",
+   "minutes": 2,
+   "collect": "reading/market_complaints",
+   "pages": [
+    {
+     "k": "city.mk.complaints.1"
+    },
+    {
+     "k": "city.mk.complaints.2",
+     "after": 1
+    },
+    {
+     "k": "city.mk.complaints.3",
+     "after": 2
+    },
+    {
+     "k": "city.mk.complaints.4",
+     "after": 3
+    },
+    {
+     "k": "city.mk.complaints.8",
+     "after": 4
+    },
+    {
+     "k": "city.mk.complaints.5",
+     "after": 5
+    },
+    {
+     "k": "city.mk.complaints.6",
+     "after": 6
+    },
+    {
+     "k": "city.mk.complaints.9",
+     "after": 8
+    },
+    {
+     "k": "city.mk.complaints.10",
+     "after": 11
+    },
+    {
+     "k": "city.mk.complaints.7"
+    }
+   ]
+  },
+  "market_seeds": {
+   "title": "city.mk.text.market_seeds.title",
+   "kind": "book",
+   "minutes": 3,
+   "collect": "reading/market_seeds",
+   "pages": [
+    "city.mk.text.market_seeds.1",
+    "city.mk.text.market_seeds.2",
+    "city.mk.text.market_seeds.3",
+    "city.mk.text.market_seeds.4",
+    "city.mk.text.market_seeds.5"
+   ]
+  },
+  "jam_protocol": {
+   "title": "city.mk.text.jam_protocol.title",
+   "kind": "ledger",
+   "minutes": 2,
+   "collect": "reading/jam_protocol",
+   "pages": [
+    "city.mk.text.jam_protocol.1",
+    "city.mk.text.jam_protocol.2",
+    {
+     "k": "city.mk.text.jam_protocol.3",
+     "after": 6
+    },
+    {
+     "k": "city.mk.text.jam_protocol.4",
+     "after": 10
+    }
+   ]
+  }
+ }
 }

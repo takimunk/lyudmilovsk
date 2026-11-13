@@ -1,0 +1,1374 @@
+{
+ "_doc": "Unite block (P-UNITE), second pass: the lobbies lived in (mail, boards, concierge talk, hats, bicycle, pram, plants), the shopping street at mid-height (bakery, haberdashery, news, grocery, toys, barber, a games room with five games), the roof terrace (paddling pool, deck chairs by day and night sky, running track and lap board, badminton, kindergarten sandbox), and Priya Tulegenova's duplex flat 5-12 (entered by a stair down from the street): the postcard album story on the lobby and street boards over game days 0-8+; regulars Gennady Sorokin and Rafael Benitez; quests home_tulegenova and un_pingpong.",
+ "acts": {
+  "un_mail": {
+   "prompt": "city.un.p.mail",
+   "lines": [
+    {
+     "k": "city.un.mail.1",
+     "h": [
+      6,
+      11
+     ]
+    },
+    {
+     "k": "city.un.mail.2",
+     "h": [
+      11,
+      21
+     ]
+    },
+    {
+     "k": "city.un.mail.3",
+     "h": [
+      21,
+      6
+     ]
+    },
+    {
+     "k": "city.un.mail.4",
+     "d": "mon",
+     "h": [
+      11,
+      21
+     ]
+    },
+    {
+     "k": "city.un.mail.5",
+     "weather": "rain"
+    }
+   ],
+   "minutes": 1,
+   "sound": "drawer_slide"
+  },
+  "un_l1_notices": {
+   "prompt": "city.act.look.prompt",
+   "lines": [
+    "city.look.lost.*",
+    "city.un.l1n.1",
+    {
+     "k": "city.un.l1n.2",
+     "before": 6
+    },
+    {
+     "k": "city.un.l1n.3",
+     "after": 6
+    }
+   ],
+   "rotate": "daily",
+   "minutes": 2
+  },
+  "un_l1_club": {
+   "prompt": "city.act.look.prompt",
+   "lines": [
+    "city.look.club.*",
+    "city.un.l1c.1",
+    {
+     "k": "city.un.l1c.2",
+     "after": 3,
+     "before": 8
+    },
+    {
+     "k": "city.un.l1c.3",
+     "after": 8
+    }
+   ],
+   "rotate": "daily",
+   "minutes": 2
+  },
+  "un_l2_notices": {
+   "prompt": "city.act.look.prompt",
+   "lines": [
+    "city.look.club.*",
+    "city.un.l2n.1",
+    {
+     "k": "city.un.l2n.2",
+     "after": 2
+    },
+    {
+     "k": "city.un.l2n.3",
+     "after": 5
+    }
+   ],
+   "rotate": "daily",
+   "minutes": 2
+  },
+  "un_l2_club": {
+   "prompt": "city.act.look.prompt",
+   "lines": [
+    "city.look.lost.*",
+    "city.un.l2c.1",
+    {
+     "k": "city.un.l2c.2",
+     "after": 4
+    }
+   ],
+   "rotate": "daily",
+   "minutes": 2
+  },
+  "un_desk_1": {
+   "prompt": "city.act.ask.prompt",
+   "lines": [
+    {
+     "k": "city.un.desk1.1",
+     "h": [
+      6,
+      12
+     ]
+    },
+    {
+     "k": "city.un.desk1.2",
+     "h": [
+      12,
+      20
+     ]
+    },
+    {
+     "k": "city.un.desk1.3",
+     "h": [
+      20,
+      6
+     ]
+    },
+    "city.un.desk1.4",
+    "city.un.desk1.5",
+    "city.un.desk1.6"
+   ],
+   "minutes": 1
+  },
+  "un_desk_2": {
+   "prompt": "city.act.ask.prompt",
+   "lines": [
+    {
+     "k": "city.un.desk2.1",
+     "h": [
+      6,
+      12
+     ]
+    },
+    {
+     "k": "city.un.desk2.2",
+     "h": [
+      12,
+      20
+     ]
+    },
+    {
+     "k": "city.un.desk2.3",
+     "h": [
+      20,
+      6
+     ]
+    },
+    "city.un.desk2.4",
+    "city.un.desk2.5",
+    "city.un.desk2.6"
+   ],
+   "minutes": 1
+  },
+  "un_hats": {
+   "prompt": "city.un.p.hats",
+   "lines": [
+    "city.un.hats.1",
+    {
+     "k": "city.un.hats.2",
+     "weather": [
+      "rain",
+      "wet"
+     ]
+    },
+    {
+     "k": "city.un.hats.3",
+     "weather": [
+      "cold",
+      "snow"
+     ]
+    }
+   ],
+   "minutes": 1,
+   "sound": "hanger_clink"
+  },
+  "un_bike": {
+   "prompt": "city.un.p.bike",
+   "lines": [
+    {
+     "k": "city.un.bike.1",
+     "h": [
+      6,
+      10
+     ]
+    },
+    {
+     "k": "city.un.bike.2",
+     "h": [
+      10,
+      21
+     ]
+    },
+    {
+     "k": "city.un.bike.3",
+     "h": [
+      21,
+      6
+     ]
+    }
+   ],
+   "minutes": 1,
+   "sound": "bike_whirr"
+  },
+  "un_pram": {
+   "prompt": "city.un.p.pram",
+   "lines": [
+    {
+     "k": "city.un.pram.1",
+     "h": [
+      6,
+      17
+     ]
+    },
+    {
+     "k": "city.un.pram.2",
+     "h": [
+      17,
+      6
+     ]
+    }
+   ],
+   "minutes": 1,
+   "sound": "wheel_hum"
+  },
+  "un_plants": {
+   "prompt": "city.un.p.plants",
+   "lines": [
+    {
+     "k": "city.un.plants.1",
+     "h": [
+      6,
+      14
+     ]
+    },
+    {
+     "k": "city.un.plants.2",
+     "h": [
+      14,
+      21
+     ]
+    },
+    {
+     "k": "city.un.plants.3",
+     "h": [
+      21,
+      6
+     ]
+    }
+   ],
+   "minutes": 3,
+   "sound": "water_pour"
+  },
+  "un_street_board": {
+   "prompt": "city.act.look.prompt",
+   "lines": [
+    {
+     "k": "city.un.sb.1",
+     "before": 2
+    },
+    {
+     "k": "city.un.sb.2",
+     "after": 2,
+     "before": 5
+    },
+    {
+     "k": "city.un.sb.3",
+     "after": 5,
+     "before": 8
+    },
+    {
+     "k": "city.un.sb.4",
+     "after": 8
+    }
+   ],
+   "rotate": "daily",
+   "minutes": 2
+  },
+  "un_street_hours": {
+   "prompt": "city.act.look.prompt",
+   "lines": [
+    "city.un.hours.1",
+    "city.un.hours.2",
+    "city.un.hours.3",
+    "city.un.hours.4"
+   ],
+   "minutes": 2
+  },
+  "un_street_sit": {
+   "prompt": "city.act.sit.prompt",
+   "lines": [
+    {
+     "k": "city.un.sit.1",
+     "h": [
+      6,
+      12
+     ]
+    },
+    {
+     "k": "city.un.sit.2",
+     "h": [
+      12,
+      18
+     ]
+    },
+    {
+     "k": "city.un.sit.3",
+     "h": [
+      18,
+      22
+     ]
+    },
+    {
+     "k": "city.un.sit.4",
+     "h": [
+      22,
+      6
+     ]
+    }
+   ],
+   "pose": "sit",
+   "minutes": 10,
+   "any_hour": true
+  },
+  "un_bread": {
+   "prompt": "city.un.p.bread",
+   "lines": [
+    {
+     "k": "city.un.bread.1",
+     "h": [
+      6,
+      10
+     ]
+    },
+    {
+     "k": "city.un.bread.2",
+     "h": [
+      10,
+      17
+     ]
+    },
+    {
+     "k": "city.un.bread.3",
+     "h": [
+      17,
+      21
+     ]
+    },
+    {
+     "k": "city.un.bread.4",
+     "h": [
+      21,
+      6
+     ]
+    }
+   ],
+   "minutes": 2,
+   "sound": "paper_rustle"
+  },
+  "un_buttons": {
+   "prompt": "city.un.p.buttons",
+   "lines": [
+    "city.un.buttons.1",
+    "city.un.buttons.2",
+    "city.un.buttons.3"
+   ],
+   "minutes": 3,
+   "sound": "drawer_slide"
+  },
+  "un_fab_sew": {
+   "like": "sewing_machine",
+   "target": "un_fab_sew",
+   "lines": [
+    "city.un.fabsew.1",
+    "city.un.fabsew.2"
+   ]
+  },
+  "un_apples": {
+   "prompt": "city.un.p.apples",
+   "lines": [
+    {
+     "k": "city.un.apples.1",
+     "h": [
+      9,
+      14
+     ]
+    },
+    {
+     "k": "city.un.apples.2",
+     "h": [
+      14,
+      21
+     ]
+    },
+    {
+     "k": "city.un.apples.3",
+     "h": [
+      21,
+      9
+     ]
+    }
+   ],
+   "minutes": 2,
+   "sound": "sack_rustle"
+  },
+  "un_toy_house": {
+   "prompt": "city.un.p.toyhouse",
+   "minutes": 2,
+   "sound": "wood_creak",
+   "lines": [
+    "city.un.toyhouse.1",
+    "city.un.toyhouse.2"
+   ]
+  },
+  "un_toy_bins": {
+   "prompt": "city.un.p.toybins",
+   "minutes": 3,
+   "sound": "wood_creak",
+   "lines": [
+    "city.un.toybins.1",
+    "city.un.toybins.2",
+    "city.un.toybins.3"
+   ]
+  },
+  "un_tul_door": {
+   "prompt": "city.un.p.door",
+   "lines": [
+    {
+     "k": "city.un.tdoor.1",
+     "h": [
+      9,
+      22
+     ]
+    },
+    {
+     "k": "city.un.tdoor.2",
+     "h": [
+      22,
+      9
+     ]
+    }
+   ],
+   "any_hour": true,
+   "sound": "wood_creak"
+  },
+  "un_pingpong": {
+   "like": "table_tennis",
+   "target": "un_pingpong",
+   "lines": [
+    "city.un.g_pingpong.1",
+    "city.un.g_pingpong.2"
+   ]
+  },
+  "un_chess": {
+   "like": "chess",
+   "target": "un_chess",
+   "lines": [
+    "city.un.g_chess.1",
+    "city.un.g_chess.2"
+   ]
+  },
+  "un_checkers": {
+   "like": "checkers",
+   "target": "un_checkers",
+   "lines": [
+    "city.un.g_checkers.1",
+    "city.un.g_checkers.2"
+   ]
+  },
+  "un_dominoes": {
+   "like": "dominoes",
+   "target": "un_dominoes",
+   "lines": [
+    "city.un.g_dominoes.1",
+    "city.un.g_dominoes.2"
+   ]
+  },
+  "un_football": {
+   "like": "table_football",
+   "target": "un_football",
+   "lines": [
+    "city.un.g_football.1",
+    "city.un.g_football.2"
+   ]
+  },
+  "un_scores": {
+   "prompt": "city.act.look.prompt",
+   "lines": [
+    {
+     "k": "city.un.scores.1",
+     "before": 3
+    },
+    {
+     "k": "city.un.scores.2",
+     "after": 3,
+     "before": 8
+    },
+    {
+     "k": "city.un.scores.3",
+     "after": 8
+    }
+   ],
+   "rotate": "daily",
+   "minutes": 2
+  },
+  "un_rules": {
+   "prompt": "city.act.look.prompt",
+   "minutes": 2,
+   "lines": [
+    "city.un.rules.1",
+    "city.un.rules.2",
+    "city.un.rules.3"
+   ]
+  },
+  "un_trophies": {
+   "prompt": "city.act.look.prompt",
+   "minutes": 2,
+   "lines": [
+    "city.un.trophies.1",
+    "city.un.trophies.2",
+    "city.un.trophies.3"
+   ]
+  },
+  "un_game_bench": {
+   "prompt": "city.act.sit.prompt",
+   "pose": "sit",
+   "any_hour": true,
+   "minutes": 10,
+   "lines": [
+    "city.un.gbench.1",
+    "city.un.gbench.2"
+   ]
+  },
+  "un_t_tv": {
+   "like": "tv",
+   "target": "un_t_tv",
+   "prompt": "city.do.tv.prompt",
+   "lines": [
+    {
+     "k": "city.un.ttv.1",
+     "h": [
+      6,
+      12
+     ]
+    },
+    {
+     "k": "city.un.ttv.2",
+     "h": [
+      12,
+      18
+     ]
+    },
+    {
+     "k": "city.un.ttv.3",
+     "h": [
+      18,
+      23
+     ]
+    },
+    {
+     "k": "city.un.ttv.4",
+     "h": [
+      23,
+      6
+     ]
+    }
+   ]
+  },
+  "un_t_radio": {
+   "prompt": "city.do.radio.prompt",
+   "minutes": 8,
+   "sound": "radio_tune",
+   "lines": [
+    {
+     "k": "city.un.tradio.1",
+     "h": [
+      5,
+      10
+     ]
+    },
+    {
+     "k": "city.un.tradio.2",
+     "h": [
+      10,
+      18
+     ]
+    },
+    {
+     "k": "city.un.tradio.3",
+     "h": [
+      18,
+      24
+     ]
+    },
+    {
+     "k": "city.un.tradio.4",
+     "h": [
+      0,
+      5
+     ]
+    }
+   ]
+  },
+  "un_t_tea": {
+   "prompt": "city.un.p.tea",
+   "minutes": 15,
+   "sound": "cup_clink",
+   "give": [
+    [
+     "tea",
+     1
+    ]
+   ],
+   "daily": 1,
+   "lines": [
+    {
+     "k": "city.un.ttea.1",
+     "h": [
+      9,
+      14
+     ]
+    },
+    {
+     "k": "city.un.ttea.2",
+     "h": [
+      14,
+      20
+     ]
+    },
+    {
+     "k": "city.un.ttea.3",
+     "h": [
+      20,
+      22
+     ]
+    }
+   ]
+  },
+  "un_t_sink": {
+   "prompt": "city.un.p.sink",
+   "minutes": 2,
+   "sound": "tap_water",
+   "lines": [
+    "city.un.tsink.1",
+    "city.un.tsink.2"
+   ]
+  },
+  "un_t_stove": {
+   "prompt": "city.un.p.stove",
+   "minutes": 2,
+   "sound": "kettle_whistle",
+   "lines": [
+    "city.un.tstove.1",
+    "city.un.tstove.2"
+   ]
+  },
+  "un_t_sewing": {
+   "like": "sewing_machine",
+   "target": "un_t_sewing",
+   "lines": [
+    "city.un.tsew.1",
+    "city.un.tsew.2"
+   ]
+  },
+  "un_t_cards": {
+   "prompt": "city.un.p.cards",
+   "minutes": 3,
+   "sound": "paper_rustle",
+   "lines": [
+    "city.un.tcards.1",
+    "city.un.tcards.2",
+    "city.un.tcards.3"
+   ]
+  },
+  "un_t_photos": {
+   "prompt": "city.un.p.photos",
+   "minutes": 3,
+   "sound": "paper_rustle",
+   "lines": [
+    "city.un.tphotos.1",
+    "city.un.tphotos.2",
+    "city.un.tphotos.3"
+   ]
+  },
+  "un_t_wardrobe": {
+   "prompt": "city.un.p.wardrobe",
+   "minutes": 2,
+   "sound": "hanger_clink",
+   "lines": [
+    "city.un.twardrobe.1",
+    "city.un.twardrobe.2"
+   ]
+  },
+  "un_t_window": {
+   "prompt": "city.act.look_out.prompt",
+   "lines": [
+    {
+     "k": "city.un.twin.1",
+     "h": [
+      4,
+      8
+     ]
+    },
+    {
+     "k": "city.un.twin.2",
+     "h": [
+      8,
+      18
+     ]
+    },
+    {
+     "k": "city.un.twin.3",
+     "h": [
+      18,
+      24
+     ]
+    },
+    {
+     "k": "city.un.twin.4",
+     "h": [
+      0,
+      4
+     ]
+    }
+   ],
+   "minutes": 3,
+   "sound": "wind_soft",
+   "any_hour": true
+  },
+  "un_album": {
+   "prompt": "city.un.p.album",
+   "needs_item": "postcard",
+   "minutes": 10,
+   "sound": "paper_rustle",
+   "lines": [
+    {
+     "k": "city.un.album.1",
+     "once": true
+    },
+    "city.un.album.2",
+    "city.un.album.3"
+   ]
+  },
+  "un_pool": {
+   "prompt": "city.un.p.pool",
+   "lines": [
+    {
+     "k": "city.un.pool.1",
+     "h": [
+      8,
+      18
+     ],
+     "weather": [
+      "clear",
+      "warm"
+     ]
+    },
+    {
+     "k": "city.un.pool.2",
+     "h": [
+      8,
+      21
+     ]
+    },
+    {
+     "k": "city.un.pool.3",
+     "h": [
+      12,
+      15
+     ]
+    }
+   ],
+   "minutes": 10,
+   "sound": "water_pour"
+  },
+  "un_deck": {
+   "prompt": "city.act.sit.prompt",
+   "lines": [
+    {
+     "k": "city.un.deck.1",
+     "h": [
+      8,
+      18
+     ],
+     "weather": [
+      "clear",
+      "dry"
+     ]
+    },
+    {
+     "k": "city.un.deck.2",
+     "h": [
+      8,
+      18
+     ]
+    },
+    {
+     "k": "city.un.deck.3",
+     "h": [
+      18,
+      21
+     ]
+    },
+    {
+     "k": "city.un.deck.4",
+     "h": [
+      21,
+      6
+     ],
+     "weather": [
+      "clear",
+      "dry"
+     ]
+    },
+    {
+     "k": "city.un.deck.5",
+     "h": [
+      21,
+      6
+     ]
+    },
+    {
+     "k": "city.un.deck.6",
+     "h": [
+      4,
+      8
+     ]
+    }
+   ],
+   "pose": "sit",
+   "minutes": 20,
+   "any_hour": true
+  },
+  "un_track": {
+   "like": "track",
+   "target": "un_track",
+   "lines": [
+    {
+     "k": "city.un.track.1",
+     "h": [
+      6,
+      17
+     ]
+    },
+    {
+     "k": "city.un.track.2",
+     "h": [
+      17,
+      19
+     ],
+     "d": "wed,sat"
+    },
+    {
+     "k": "city.un.track.3",
+     "h": [
+      17,
+      22
+     ]
+    },
+    {
+     "k": "city.un.track.4",
+     "h": [
+      22,
+      6
+     ]
+    }
+   ]
+  },
+  "un_laps": {
+   "prompt": "city.act.look.prompt",
+   "lines": [
+    {
+     "k": "city.un.laps.1",
+     "before": 4
+    },
+    {
+     "k": "city.un.laps.2",
+     "after": 4,
+     "before": 8
+    },
+    {
+     "k": "city.un.laps.3",
+     "after": 8
+    }
+   ],
+   "rotate": "daily",
+   "minutes": 2
+  },
+  "un_badminton": {
+   "like": "badminton",
+   "target": "un_badminton",
+   "lines": [
+    "city.un.badminton.1",
+    "city.un.badminton.2"
+   ]
+  },
+  "un_sandbox": {
+   "prompt": "city.un.p.sand",
+   "lines": [
+    {
+     "k": "city.un.sand.1",
+     "h": [
+      8,
+      20
+     ]
+    },
+    {
+     "k": "city.un.sand.2",
+     "h": [
+      8,
+      20
+     ]
+    }
+   ],
+   "minutes": 10,
+   "sound": "sack_rustle"
+  },
+  "un_playhouse": {
+   "prompt": "city.un.p.toyhouse",
+   "minutes": 3,
+   "sound": "wood_creak",
+   "lines": [
+    "city.un.playhouse.1",
+    "city.un.playhouse.2"
+   ]
+  },
+  "un_feeder": {
+   "prompt": "city.un.p.feeder",
+   "minutes": 3,
+   "sound": "wind_soft",
+   "lines": [
+    {
+     "k": "city.un.feeder.1",
+     "h": [
+      6,
+      12
+     ]
+    },
+    {
+     "k": "city.un.feeder.2",
+     "h": [
+      12,
+      17
+     ]
+    },
+    {
+     "k": "city.un.feeder.3",
+     "h": [
+      17,
+      22
+     ]
+    },
+    {
+     "k": "city.un.feeder.4",
+     "weather": "snow"
+    }
+   ]
+  },
+  "un_roof_chess": {
+   "like": "chess",
+   "target": "un_roof_chess",
+   "lines": [
+    "city.un.roofchess.1",
+    "city.un.roofchess.2"
+   ]
+  }
+ },
+ "rules": {
+  "P-UNITE/lobby1_mail": {
+   "act": "un_mail"
+  },
+  "P-UNITE/lobby2_mail": {
+   "act": "un_mail"
+  },
+  "P-UNITE/lobby1_notices": {
+   "act": "un_l1_notices"
+  },
+  "P-UNITE/lobby1_club_board": {
+   "act": "un_l1_club"
+  },
+  "P-UNITE/lobby2_notices": {
+   "act": "un_l2_notices"
+  },
+  "P-UNITE/lobby2_club_board": {
+   "act": "un_l2_club"
+  },
+  "P-UNITE/lobby1_concierge_desk": {
+   "act": "un_desk_1"
+  },
+  "P-UNITE/lobby2_concierge_desk": {
+   "act": "un_desk_2"
+  },
+  "P-UNITE/lobby1_hats": {
+   "act": "un_hats"
+  },
+  "P-UNITE/lobby2_hats": {
+   "act": "un_hats"
+  },
+  "P-UNITE/tul_hats": {
+   "act": "un_hats"
+  },
+  "P-UNITE/lobby1_bike": {
+   "act": "un_bike"
+  },
+  "P-UNITE/lobby1_pram": {
+   "act": "un_pram"
+  },
+  "P-UNITE/lobby2_plants": {
+   "act": "un_plants"
+  },
+  "P-UNITE/street_board": {
+   "act": "un_street_board"
+  },
+  "P-UNITE/street_hours": {
+   "act": "un_street_hours"
+  },
+  "P-UNITE/street_bench_1": {
+   "act": "un_street_sit"
+  },
+  "P-UNITE/street_bench_2": {
+   "act": "un_street_sit"
+  },
+  "P-UNITE/street_bench_3": {
+   "act": "un_street_sit"
+  },
+  "P-UNITE/bake_rack": {
+   "act": "un_bread"
+  },
+  "P-UNITE/fab_buttons": {
+   "act": "un_buttons"
+  },
+  "P-UNITE/fab_sewing": {
+   "act": "un_fab_sew"
+  },
+  "P-UNITE/groc_apples": {
+   "act": "un_apples"
+  },
+  "P-UNITE/toys_house": {
+   "act": "un_toy_house"
+  },
+  "P-UNITE/toys_bins": {
+   "act": "un_toy_bins"
+  },
+  "P-UNITE/barber_desk": {
+   "act": "salon_desk"
+  },
+  "P-UNITE/tul_door": {
+   "act": "un_tul_door"
+  },
+  "P-UNITE/game_pingpong": {
+   "act": "un_pingpong"
+  },
+  "P-UNITE/game_chess": {
+   "act": "un_chess"
+  },
+  "P-UNITE/game_checkers": {
+   "act": "un_checkers"
+  },
+  "P-UNITE/game_dominoes": {
+   "act": "un_dominoes"
+  },
+  "P-UNITE/game_football": {
+   "act": "un_football"
+  },
+  "P-UNITE/game_scores": {
+   "act": "un_scores"
+  },
+  "P-UNITE/game_rules": {
+   "act": "un_rules"
+  },
+  "P-UNITE/game_trophies": {
+   "act": "un_trophies"
+  },
+  "P-UNITE/game_bench": {
+   "act": "un_game_bench"
+  },
+  "P-UNITE/tul_sofa": {
+   "hours": [
+    9,
+    22
+   ],
+   "closed": "city.un.closed.flat"
+  },
+  "P-UNITE/tul_armchair": {
+   "hours": [
+    9,
+    22
+   ],
+   "closed": "city.un.closed.flat"
+  },
+  "P-UNITE/tul_kitchen_seat": {
+   "hours": [
+    9,
+    22
+   ],
+   "closed": "city.un.closed.flat"
+  },
+  "P-UNITE/tul_bed": {
+   "hours": [
+    9,
+    22
+   ],
+   "closed": "city.un.closed.flat"
+  },
+  "P-UNITE/tul_nook": {
+   "hours": [
+    9,
+    22
+   ],
+   "closed": "city.un.closed.flat"
+  },
+  "P-UNITE/tul_tv": {
+   "act": "un_t_tv",
+   "hours": [
+    9,
+    22
+   ],
+   "closed": "city.un.closed.flat"
+  },
+  "P-UNITE/tul_radio": {
+   "act": "un_t_radio",
+   "hours": [
+    9,
+    22
+   ],
+   "closed": "city.un.closed.flat"
+  },
+  "P-UNITE/tul_samovar": {
+   "act": "un_t_tea",
+   "hours": [
+    9,
+    22
+   ],
+   "closed": "city.un.closed.flat"
+  },
+  "P-UNITE/tul_sink": {
+   "act": "un_t_sink",
+   "hours": [
+    9,
+    22
+   ],
+   "closed": "city.un.closed.flat"
+  },
+  "P-UNITE/tul_stove": {
+   "act": "un_t_stove",
+   "hours": [
+    9,
+    22
+   ],
+   "closed": "city.un.closed.flat"
+  },
+  "P-UNITE/tul_sewing": {
+   "act": "un_t_sewing",
+   "hours": [
+    9,
+    22
+   ],
+   "closed": "city.un.closed.flat"
+  },
+  "P-UNITE/tul_postcards": {
+   "act": "un_t_cards",
+   "hours": [
+    9,
+    22
+   ],
+   "closed": "city.un.closed.flat"
+  },
+  "P-UNITE/tul_photos": {
+   "act": "un_t_photos",
+   "hours": [
+    9,
+    22
+   ],
+   "closed": "city.un.closed.flat"
+  },
+  "P-UNITE/tul_wardrobe": {
+   "act": "un_t_wardrobe",
+   "hours": [
+    9,
+    22
+   ],
+   "closed": "city.un.closed.flat"
+  },
+  "P-UNITE/tul_window": {
+   "act": "un_t_window",
+   "hours": [
+    9,
+    22
+   ],
+   "closed": "city.un.closed.flat"
+  },
+  "P-UNITE/tul_window_low": {
+   "act": "un_t_window",
+   "hours": [
+    9,
+    22
+   ],
+   "closed": "city.un.closed.flat"
+  },
+  "P-UNITE/tul_album": {
+   "act": "un_album",
+   "hours": [
+    9,
+    22
+   ],
+   "closed": "city.un.closed.flat"
+  },
+  "P-UNITE/roof_pool": {
+   "act": "un_pool",
+   "hours": [
+    8,
+    21
+   ],
+   "closed": "city.un.closed.pool"
+  },
+  "P-UNITE/roof_deck_1": {
+   "act": "un_deck"
+  },
+  "P-UNITE/roof_deck_2": {
+   "act": "un_deck"
+  },
+  "P-UNITE/roof_deck_3": {
+   "act": "un_deck"
+  },
+  "P-UNITE/roof_track": {
+   "act": "un_track"
+  },
+  "P-UNITE/roof_laps": {
+   "act": "un_laps"
+  },
+  "P-UNITE/roof_badminton": {
+   "act": "un_badminton"
+  },
+  "P-UNITE/roof_sandbox": {
+   "act": "un_sandbox",
+   "hours": [
+    8,
+    20
+   ],
+   "closed": "city.un.closed.sand"
+  },
+  "P-UNITE/roof_playhouse": {
+   "act": "un_playhouse"
+  },
+  "P-UNITE/roof_feeder": {
+   "act": "un_feeder"
+  },
+  "P-UNITE/roof_chess": {
+   "act": "un_roof_chess"
+  }
+ },
+ "regulars": {
+  "sorokin": {
+   "name": "npc.t_sorokin_gennady.name",
+   "style": "careful",
+   "skill": 0.62,
+   "plays": [
+    "chess",
+    "checkers",
+    "dominoes"
+   ],
+   "plots": [
+    "P-UNITE"
+   ],
+   "hello": "city.player.sorokin.hello",
+   "win": "city.player.sorokin.win",
+   "lose": "city.player.sorokin.lose"
+  },
+  "benitez": {
+   "name": "npc.t_benitez_rafael.name",
+   "style": "bold",
+   "skill": 0.55,
+   "plays": [
+    "dominoes",
+    "checkers",
+    "table_football"
+   ],
+   "plots": [
+    "P-UNITE"
+   ],
+   "hello": "city.player.benitez.hello",
+   "win": "city.player.benitez.win",
+   "lose": "city.player.benitez.lose"
+  }
+ },
+ "quests": [
+  {
+   "id": "home_tulegenova",
+   "kind": "side",
+   "start_on": {
+    "event": "visit",
+    "target": "P-UNITE"
+   },
+   "stages": [
+    {
+     "id": "notice",
+     "objectives": [
+      {
+       "id": "notice",
+       "event": "do",
+       "target": "un_l1_notices"
+      }
+     ]
+    },
+    {
+     "id": "card",
+     "objectives": [
+      {
+       "id": "card",
+       "event": "have",
+       "target": "postcard"
+      }
+     ]
+    },
+    {
+     "id": "album",
+     "objectives": [
+      {
+       "id": "album",
+       "event": "do",
+       "target": "un_album"
+      }
+     ],
+     "reward": {
+      "items": {
+       "candy": 1,
+       "tea": 1
+      },
+      "rubles": 40
+     }
+    }
+   ]
+  },
+  {
+   "id": "un_pingpong",
+   "kind": "side",
+   "start_on": {
+    "event": "visit",
+    "target": "P-UNITE"
+   },
+   "stages": [
+    {
+     "id": "win",
+     "objectives": [
+      {
+       "id": "win",
+       "event": "win",
+       "target": "un_pingpong"
+      }
+     ],
+     "reward": {
+      "items": {
+       "candy": 1
+      }
+     }
+    }
+   ]
+  }
+ ]
+}
