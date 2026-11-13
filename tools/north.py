@@ -692,7 +692,7 @@ def things():
         variant = next((v for reach, v in BRIDGES if span <= reach), BRIDGES[-1][1])
         out.append({"id": "river_bridge_%d" % (n + 1), "kind": "log_bridge", "x": round(x, 2), "y": round(y, 2),
                     "yaw": round(yaw, 1), "variant": variant, "z": round(z, 2), "span": round(span, 1)})
-    return out + _dressing()
+    return out + _dressing() + _sea_stacks()
 
 
 def _trail_marks(step=170.0):
@@ -781,6 +781,60 @@ def _dressing():
     # the trail's marks: a peeled post with a red ring in a cairn, every couple of hundred metres
     for x, y in _trail_marks():
         put("trail_marker", x, y, rnd.uniform(0.0, 360.0))
+    return out
+
+
+SEA_STACK_SEED = 1885
+BAY_Y = (1780.0, 2000.0)        # the river mouth's bay: no stacks
+
+
+@functools.lru_cache(maxsize=1)
+def _capes():
+    """The points of the coast north of Y 1500 (local maxima of the water line's X): [(y, shore_x, prominence m)], most prominent first;
+    the river mouth's bay is skipped."""
+    ys = [1500.0 + 2.0 * i for i in range(1326)]
+    xs = [W.shore_x(y) for y in ys]
+    out = []
+    for i in range(30, len(ys) - 30):
+        if xs[i] < max(xs[i - 30:i + 31]) or BAY_Y[0] <= ys[i] <= BAY_Y[1]:
+            continue
+        prom = xs[i] - min(xs[max(0, i - 60):i + 61])
+        if prom >= 20.0:
+            out.append((ys[i], xs[i], prom))
+    return sorted(out, key=lambda c: -c[2])
+
+
+def _sea_stacks():
+    """Sea stacks (кекуры, blender/north/props_sea.py `sea_stack` v0 tall pillar, v1 pair, v2 arch, v3 skerries) standing in the sea off
+    the points of the coast north of Y 1500: the tall ones off the biggest capes and the lava cape, skerries nearer the shore. Mesh origin =
+    the water line (z the sea surface); v1..v3 are long along local X, so yaw lays them along the coast. Deterministic."""
+    rnd = random.Random(SEA_STACK_SEED)
+    beach = (W.shore_x(ravine_line(1, 0.0)[1]), ravine_line(1, 0.0)[1])      # where the camp's ravine opens on the beach
+    capes = [c for c in _capes() if c[0] < 4150.0]
+    lava = [c for c in capes if LAVA_Y[0] <= c[0] <= LAVA_Y[1]]
+    tall = capes[:3] + [c for c in lava if c not in capes[:3]]
+    tall += [c for c in capes if c not in tall][:max(0, 4 - len(tall))]
+    rest = [c for c in capes if c not in tall]
+    plan = [(c, 0, (40.0, 65.0)) for c in tall]
+    for k, c in enumerate(rest):
+        plan.append((c, (1, 2)[k % 2] if k < 4 else 3, (28.0, 48.0) if k < 4 else (22.0, 40.0)))
+    for c in sorted(capes, key=lambda c: -c[1])[:4]:                          # a second, nearer skerry beside the biggest points
+        plan.append(((c[0] + rnd.choice((-1, 1)) * rnd.uniform(38.0, 60.0), c[1], c[2]), 3, (16.0, 28.0)))
+    out = []
+    for cape, variant, (d0, d1) in plan:
+        y = cape[0] + rnd.uniform(-10.0, 10.0)
+        d = rnd.uniform(d0, d1)
+        while True:                                                         # at least 12 m of water between the coast and the stack's edge
+            x = W.shore_x(y) + d
+            if x - 12.0 > max(W.shore_x(y + dy) for dy in (-8.0, 0.0, 8.0)) and \
+                    all(math.hypot(x - o["x"], y - o["y"]) > 28.0 for o in out):
+                break
+            d += 4.0
+        if math.hypot(x - beach[0], y - beach[1]) < 70.0:                    # keep the camp's beach clear
+            continue
+        yaw = rnd.uniform(0.0, 360.0) if variant == 0 else rnd.choice((0.0, 180.0)) + rnd.gauss(0.0, 18.0)
+        out.append({"id": "sea_stack_%d" % (len(out) + 1), "kind": "sea_stack", "x": round(x, 1), "y": round(y, 1),
+                    "yaw": round(yaw % 360.0, 1), "variant": variant, "z": W.SEA_Z})
     return out
 
 

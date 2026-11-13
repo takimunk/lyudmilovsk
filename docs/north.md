@@ -150,6 +150,13 @@ the bank; the manifest's `collision_boxes` has one sloped box (`rot_x_deg` right
 steel post 2.2 m above ground (0.3 m buried) with a white-and-black striped board on its -Y face: turn the front to the channel. `rowboat` (`box`, 4.0 x 1.6 x 0.78 m): upturned
 flat-bottomed boat along local X, bow at +X, keel up; no front. Driftwood uses the atlas's pale `bark` tile (no pale grey wood tile exists), boulders the existing `stone` tile; no atlas change.
 
+**Sea stacks.** `blender/north/props_sea.py` (`SM_North_Sea_Stack_V<n>`, kind `sea_stack`, collision `box` with `collision_boxes` in the manifest, axis-aligned, mesh space; no seats; round, no front). Columnar dark basalt on the existing atlas
+(`stone_soot` for the rock, the pale `ash` tile for the salt/barnacle band at the waterline and for guano on some tops; no atlas change). **Origin = the water line (z 0 = the sea surface) under the middle**, the rock goes down to z -3, so tides of +-1 m show no bottom;
+place it with `"z": -43.0` (W.SEA_Z). v0 a lone pillar 14 m over the water, ~ 5.5 m across, leaning ~ 4 degrees toward local +X, broken top; v1 a pair (9 m and 5 m teeth on a shared base, ~ 8.6 m); v2 a low stack 9 m long, ~ 6 m high, with a natural arch
+(piers joined by a lintel, the opening ~ 3 m wide stays free of collision); v3 four skerries 1.5..3 m high with awash boulders, ~ 12 m along X. v1..v3 are long along local X: `yaw` 0/180 lays them along the coast. `tools/north.py _sea_stacks()` (in `things()`)
+stands 13 of them in the sea 15..65 m off the points of the coast north of Y 1500 (local maxima of `shore_x`, the river mouth's bay 1780..2000 skipped, 70 m clear of the camp ravine's beach): the tall v0 off the biggest capes and the lava cape, v1/v2 off the middle ones,
+v3 skerries off the small points and nearer the shore. Every face has its own planar UVs inside its tile (uniform, no stretching); previews with the real atlas: `prop_sea_stack_v<N>.png`.
+
 **Words.** Boards carry words: follow `.claude/skills/localization/SKILL.md` (ru/en/ja, text keys `north.sign.*`,
 `place.north.*`, `dev.tp.north_*`).
 
