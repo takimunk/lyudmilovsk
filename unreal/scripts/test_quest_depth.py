@@ -88,6 +88,8 @@ at("Npc.Where")
 at("QUESTDEPTH mark l_guy_b")
 for _ in range(10):
     at("Npc.Talk", None, 1.2)
+# the club's regulars hear birds too: a pigeon beside Guy_b
+at("Quest.BirdCall FeralPigeon guy_b", None, 5.0)
 # m) explore on walk: valley_way, four_places_two_by_cable, never_got_swift, then everyday
 at("Quest.Reset", None, 1.0)
 at("Quest.Start explore", None, 1.0)

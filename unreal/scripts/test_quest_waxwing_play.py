@@ -55,6 +55,8 @@ PLAN += [
     (t + 7.5, "Quest.Dump", "filled"),
     (t + 8.0, "WAIT", "waxwing"),
     (t + 8.5, "shot showui", "grove_after_wait"),
+    # where the birds are over the next day from here (hour, id, species, act, x, y, z, site): Saved/QuestWaxwingPlay/day.csv
+    (t + 8.7, "lyud.Birds.DumpDay 9 8 " + os.path.join(unreal.Paths.project_saved_dir(), "QuestWaxwingPlay", "day.csv"), None),
     (t + 9.0, "Quest.Dump", "visited"),
     # 4. tamed; to Sorokin on his bench; a call on the wing, then sitting beside him
     (t + 9.5, "Quest.Event bird_tamed Waxwing", None),
