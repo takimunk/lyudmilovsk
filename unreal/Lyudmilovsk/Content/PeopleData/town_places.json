@@ -26021,114 +26021,125 @@
    "island": 0,
    "slots": [
     {
-     "kind": "bench",
+     "kind": "stand",
      "yaw": 0.0,
      "height": 0.0,
      "pos": [
       329.738,
       902.9,
       -39.5
-     ]
+     ],
+     "capacity": 3
     },
     {
-     "kind": "bench",
+     "kind": "stand",
      "yaw": 0.0,
      "height": 0.0,
      "pos": [
       329.738,
       904.9,
       -39.5
-     ]
+     ],
+     "capacity": 3
     },
     {
-     "kind": "bench",
+     "kind": "stand",
      "yaw": 0.0,
      "height": 0.0,
      "pos": [
       329.738,
       906.9,
       -39.5
-     ]
+     ],
+     "capacity": 3
     },
     {
-     "kind": "bench",
+     "kind": "stand",
      "yaw": 0.0,
      "height": 0.0,
      "pos": [
       329.738,
       908.9,
       -39.5
-     ]
+     ],
+     "capacity": 3
     },
     {
-     "kind": "bench",
+     "kind": "stand",
      "yaw": 0.0,
      "height": 0.0,
      "pos": [
       329.738,
       910.9,
       -39.5
-     ]
+     ],
+     "capacity": 3
     },
     {
-     "kind": "bench",
+     "kind": "stand",
      "yaw": 0.0,
      "height": 0.0,
      "pos": [
       329.738,
       912.9,
       -39.5
-     ]
+     ],
+     "capacity": 3
     },
     {
-     "kind": "bench",
+     "kind": "stand",
      "yaw": 0.0,
      "height": 0.0,
      "pos": [
       329.738,
       914.9,
       -39.5
-     ]
+     ],
+     "capacity": 3
     },
     {
-     "kind": "bench",
+     "kind": "stand",
      "yaw": 0.0,
      "height": 0.0,
      "pos": [
       329.738,
       916.9,
       -39.5
-     ]
+     ],
+     "capacity": 3
     },
     {
-     "kind": "bench",
+     "kind": "stand",
      "yaw": 0.0,
      "height": 0.0,
      "pos": [
       329.738,
       918.9,
       -39.5
-     ]
+     ],
+     "capacity": 3
     },
     {
-     "kind": "bench",
+     "kind": "stand",
      "yaw": 0.0,
      "height": 0.0,
      "pos": [
       329.738,
       920.9,
       -39.5
-     ]
+     ],
+     "capacity": 3
     },
     {
-     "kind": "bench",
+     "kind": "stand",
      "yaw": 0.0,
      "height": 0.0,
      "pos": [
       329.738,
       922.9,
       -39.5
-     ]
+     ],
+     "capacity": 3
     }
    ]
   },

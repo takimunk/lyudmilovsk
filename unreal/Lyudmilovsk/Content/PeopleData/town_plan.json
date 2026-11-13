@@ -27340,7 +27340,8 @@
       -39.5
      ],
      "yaw": 0.0,
-     "height": 0.0
+     "height": 0.0,
+     "kind": "stand"
     },
     {
      "pos": [
@@ -27349,7 +27350,8 @@
       -39.5
      ],
      "yaw": 0.0,
-     "height": 0.0
+     "height": 0.0,
+     "kind": "stand"
     },
     {
      "pos": [
@@ -27358,7 +27360,8 @@
       -39.5
      ],
      "yaw": 0.0,
-     "height": 0.0
+     "height": 0.0,
+     "kind": "stand"
     },
     {
      "pos": [
@@ -27367,7 +27370,8 @@
       -39.5
      ],
      "yaw": 0.0,
-     "height": 0.0
+     "height": 0.0,
+     "kind": "stand"
     },
     {
      "pos": [
@@ -27376,7 +27380,8 @@
       -39.5
      ],
      "yaw": 0.0,
-     "height": 0.0
+     "height": 0.0,
+     "kind": "stand"
     },
     {
      "pos": [
@@ -27385,7 +27390,8 @@
       -39.5
      ],
      "yaw": 0.0,
-     "height": 0.0
+     "height": 0.0,
+     "kind": "stand"
     },
     {
      "pos": [
@@ -27394,7 +27400,8 @@
       -39.5
      ],
      "yaw": 0.0,
-     "height": 0.0
+     "height": 0.0,
+     "kind": "stand"
     },
     {
      "pos": [
@@ -27403,7 +27410,8 @@
       -39.5
      ],
      "yaw": 0.0,
-     "height": 0.0
+     "height": 0.0,
+     "kind": "stand"
     },
     {
      "pos": [
@@ -27412,7 +27420,8 @@
       -39.5
      ],
      "yaw": 0.0,
-     "height": 0.0
+     "height": 0.0,
+     "kind": "stand"
     },
     {
      "pos": [
@@ -27421,7 +27430,8 @@
       -39.5
      ],
      "yaw": 0.0,
-     "height": 0.0
+     "height": 0.0,
+     "kind": "stand"
     },
     {
      "pos": [
@@ -27430,7 +27440,8 @@
       -39.5
      ],
      "yaw": 0.0,
-     "height": 0.0
+     "height": 0.0,
+     "kind": "stand"
     }
    ],
    "path": [

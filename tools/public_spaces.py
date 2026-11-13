@@ -1047,7 +1047,7 @@ def pier(L):
             L.bench(L.uid("S-BENCH-PR"), bx, by, z, math.degrees(math.atan2(uy * side, ux * side)), style="promenade",
                     area="pier_head", terrace="T0", sub="sea")
     sp = L.P.spots.get("S-PIER-HEAD", {})
-    slots = [{"pos": L.ue(*P(o, hc + h - 0.6), z), "yaw": round(yaw_out, 2), "height": 0.0} for o in range(-10, 11, 2)]
+    slots = [stand(L, *P(o, hc + h - 0.6), z, yaw_out) for o in range(-10, 11, 2)]     # people stand at the rail
     L.spot("S-PIER-HEAD", "pier", *P(0.0, hc + h - 1.5), z, yaw_out, seats=len(slots), slots=slots, sub="rail",
            name_ru=sp.get("name_ru"), name_en=sp.get("name_en"), notes=sp.get("notes", ""),
            path=[(*P(0.0, d), z) for d in range(2, int(head0), 10)] + [(*P(0.0, hc + h - 1.5), z)])
