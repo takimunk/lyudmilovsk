@@ -15,7 +15,7 @@ class ULyudTopiProps;
 namespace LyudTopi { class FModel; }
 
 /**
- * Topi: the dune land south-west of the town (docs/topi.md). The map's landscape ends at Y -900; from there on the
+ * Topi: the dune land east of the town (docs/topi.md). The map's landscape ends at X -1300; from there on the
  * ground is this actor's: endless sand dunes from the plain C++ model (Private/Topi/TopiModel), drawn as a quadtree of
  * chunks round the camera (2 m cells underfoot, coarser and coarser out to the horizon ~40 km off; only the finest
  * chunks near the player collide). Chunks are built on worker threads and each is built once: nothing is rebuilt per
@@ -47,7 +47,7 @@ public:
 	FVector2D ToMap(const FVector& World) const { return FVector2D(World.X / 100.0, (World.Y - PortalFaceY) / 100.0); }
 	FVector ToWorld(double MapX, double MapY, double MapZ) const { return FVector(MapX * 100.0, PortalFaceY + MapY * 100.0, MapZ * 100.0); }
 
-	/** World Z of Topi's sand under a point, cm (north of the sand's edge this is under the map's own ground). */
+	/** World Z of Topi's sand under a point, cm (west of the sand's edge this is under the map's own ground). */
 	UFUNCTION(BlueprintCallable, Category = "Topi") float SandZ(const FVector& World) const;
 	/** Metres into Topi at a point (0 before it starts). */
 	UFUNCTION(BlueprintCallable, Category = "Topi") float DepthInto(const FVector& World) const;

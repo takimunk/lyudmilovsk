@@ -44,20 +44,28 @@ static double SlopeDeg(const FModel& M, double X, double Y, double E = 1.0)
 	return std::atan(std::hypot(HX, HY)) * 180.0 / 3.14159265358979;
 }
 
+// A point given in Topi's own frame (TopiModel.cpp: LX along the edge, LY across it, the sand from LY -775 on).
+static FVec2 L2M(double LX, double LY) { return FModel::FromLocal(LX, LY); }
+
 static int Test(const FModel& M)
 {
-	// the sand hides under the map's ground at its north edge and stands over it where Topi is whole
-	double WorstNorth = -1e9, WorstSouth = 1e9;
-	for (double X = -1290.0; X <= 250.0; X += 7.0)
+	// the two frames agree
+	const FVec2 Back = FModel::ToLocal(L2M(123.0, -1456.0).X, L2M(123.0, -1456.0).Y);
+	Check(std::fabs(Back.X - 123.0) + std::fabs(Back.Y + 1456.0) < 1e-9, "local <-> map round trip", Back.X);
+	Check(std::fabs(L2M(0.0, -900.0).X - WestX) < 1e-9, "Topi is whole at the map's east edge", L2M(0.0, -900.0).X);
+
+	// the sand hides under the map's ground before its edge and stands over it where the map ends
+	double WorstBefore = -1e9, WorstEdge = 1e9;
+	for (double Y = M.Edge.Y0 + 70.0; Y <= M.Edge.Y0 + (M.Edge.NY - 1) * M.Edge.Cell - 70.0; Y += 7.0)
 	{
-		WorstNorth = std::fmax(WorstNorth, M.Height(X, -735.0) - M.Edge.At(X, -735.0));
-		for (double Y = -899.0; Y <= -893.0; Y += 3.0)
+		WorstBefore = std::fmax(WorstBefore, M.Height(WestX + 165.0, Y) - M.Edge.At(WestX + 165.0, Y));
+		for (double X = WestX + 1.0; X <= WestX + 7.0; X += 3.0)
 		{
-			WorstSouth = std::fmin(WorstSouth, M.Height(X, Y) - M.Edge.At(X, Y));
+			WorstEdge = std::fmin(WorstEdge, M.Height(X, Y) - M.Edge.At(X, Y));
 		}
 	}
-	Check(WorstNorth < -4.0, "the sand's skirt is under the map's ground at its north edge, m", WorstNorth);
-	Check(WorstSouth > 3.0, "the sand covers the map's ground at the map's south edge, m", WorstSouth);
+	Check(WorstBefore < -4.0, "the sand's skirt is under the map's ground before Topi, m", WorstBefore);
+	Check(WorstEdge > 3.0, "the sand covers the map's ground at the map's east edge, m", WorstEdge);
 
 	// continuity: no steps anywhere (a 0.5 m move never changes the height by more than a slip face allows)
 	double WorstStep = 0.0, WorstSlope = 0.0, MaxZ = -1e9, MinLand = 1e9;
@@ -65,11 +73,11 @@ static int Test(const FModel& M)
 	const auto Rand = [&Seed] { Seed = Seed * 1664525u + 1013904223u; return double(Seed >> 8) / double(1 << 24); };
 	for (int I = 0; I < 200000; ++I)
 	{
-		const double Y = -740.0 - Rand() * 2600.0;
-		const double X = FModel::ShoreX(Y) - 70.0 - Rand() * 2200.0;
+		const FVec2 P = L2M(-1200.0 + Rand() * 3400.0, -740.0 - Rand() * 2600.0);
+		const double X = P.X, Y = P.Y;
 		const double A = Rand() * 6.2831853;
 		const double Z0 = M.Height(X, Y), Z1 = M.Height(X + 0.5 * std::cos(A), Y + 0.5 * std::sin(A));
-		const bool bShows = Y < FullY || Z0 > M.Edge.At(X, Y);      // not the part hidden under the map's own ground
+		const bool bShows = X < WestX || Z0 > M.Edge.At(X, Y);      // not the part hidden under the map's own ground
 		if (FModel::Region(X, Y) > 0.45 && bShows)
 		{
 			WorstStep = std::fmax(WorstStep, std::fabs(Z1 - Z0));
@@ -82,24 +90,27 @@ static int Test(const FModel& M)
 		MaxZ = std::fmax(MaxZ, Z0);
 	}
 	Check(WorstStep < 0.75, "no steps in the ground (worst change over 0.5 m), m", WorstStep);
-	Check(WorstSlope < 50.0, "no sand cliffs (the steepest face, where the sand leans on the map's cliff), degrees", WorstSlope);
-	Check(MinLand > SeaZ + 0.5, "the land stays over the sea", MinLand);
+	Check(WorstSlope < 50.0, "no sand cliffs (the steepest face), degrees", WorstSlope);
+	Check(MinLand > BaseZ - 12.0, "the lowest sand (the river's bed), m", MinLand);
 	Check(MaxZ > 10.0 && MaxZ < 400.0, "the highest sand, m", MaxZ);
 
 	// the far ground (coarse cells) stays close to the fine one on average
 	double Diff = 0.0;
 	int N = 0;
-	for (double X = -3000.0; X < 0.0; X += 97.0)
+	for (double LX = -1500.0; LX < 1500.0; LX += 97.0)
 	{
-		for (double Y = -4000.0; Y < -1000.0; Y += 89.0)
+		for (double LY = -4000.0; LY < -1000.0; LY += 89.0)
 		{
-			Diff += M.Height(X, Y, 128.0) - M.Height(X, Y);
+			const FVec2 P = L2M(LX, LY);
+			Diff += M.Height(P.X, P.Y, 128.0) - M.Height(P.X, P.Y);
 			++N;
 		}
 	}
 	Check(std::fabs(Diff / N) < 1.5, "coarse ground sits at the fine ground's mean, m", Diff / N);
 
-	// the path: walkable, and it ends at the water
+	// the path: it starts on the town's main axis, is walkable, and ends at the water
+	const FVec2 Start = FModel::Path().front();
+	Check(std::fabs(Start.Y - 905.0) < 1.0 && Start.X < -1100.0 && Start.X > WestX, "the path starts east of the town on its main axis, X", Start.X);
 	double PathSteep = 0.0;
 	for (double S = 0.0; S <= FModel::PathLength(); S += 2.0)
 	{
@@ -109,30 +120,44 @@ static int Test(const FModel& M)
 	Check(std::atan(PathSteep) * 57.2958 < 36.0, "the path's steepest step, degrees", std::atan(PathSteep) * 57.2958);
 	Check(FModel::PathLength() > 900.0 && FModel::PathLength() < 1500.0, "the path's length, m", FModel::PathLength());
 	const FVec2 End = FModel::Path().back();
-	Check(std::fabs(FModel::RiverOffset(End.X, End.Y)) < RiverHalfWidth + 12.0, "the path ends on the river's bank, m from the middle", FModel::RiverOffset(End.X, End.Y));
-	const double MidY = FModel::RiverY(End.X);
-	Check(M.RiverDepth(End.X, MidY) > 1.8, "the river is deep enough to go under in the middle, m", M.RiverDepth(End.X, MidY));
-	Check(M.RiverDepth(End.X, MidY + RiverHalfWidth + 8.0) == 0.0, "the bank is dry", M.Height(End.X, MidY + RiverHalfWidth + 8.0) - RiverZ);
-	const FVec2 Flow = FModel::RiverFlow(End.X, MidY);
-	Check(Flow.X > 1.5, "the river runs west, fast, m/s", Flow.X);
-	Check(FModel::RiverStrength(FModel::ShoreX(MidY) - 100.0) == 0.0, "the river has sunk into the sand before the coast", 0.0);
+	Check(End.X < WestX - 700.0, "the path leads east, deep into Topi, X", End.X);
+	const double EndOff = FModel::RiverOffset(End.X, End.Y);
+	Check(EndOff < 0.0 && EndOff > -(RiverHalfWidth + 12.0), "the path ends on the river's near bank, m from the middle", EndOff);
+	const FVec2 Mid = FModel::RiverPoint(0.0);
+	const FVec2 Dir = FModel::RiverDirection(0.0);
+	Check(std::fabs(FModel::RiverOffset(Mid.X, Mid.Y)) < 0.01, "RiverPoint lies on the middle line", FModel::RiverOffset(Mid.X, Mid.Y));
+	Check(M.RiverDepth(Mid.X, Mid.Y) > 1.8, "the river is deep enough to go under in the middle, m", M.RiverDepth(Mid.X, Mid.Y));
+	// across the stream, toward the town: (-Dir.Y, Dir.X) turned so that it points west
+	const double AX = Dir.Y < 0.0 ? -Dir.Y : Dir.Y, AY = Dir.Y < 0.0 ? Dir.X : -Dir.X;
+	const double BankX = Mid.X + AX * (RiverHalfWidth + 8.0), BankY = Mid.Y + AY * (RiverHalfWidth + 8.0);
+	Check(M.RiverDepth(BankX, BankY) == 0.0 && FModel::RiverOffset(BankX, BankY) < 0.0, "the near bank is dry, m over the water", M.Height(BankX, BankY) - RiverZ);
+	const FVec2 Flow = FModel::RiverFlow(Mid.X, Mid.Y);
+	Check(Flow.Y < -1.5 && Flow.X * Dir.X + Flow.Y * Dir.Y > 2.0, "the river runs south, fast, m/s", -Flow.Y);
+	const FVec2 Next = FModel::RiverPoint(200.0);
+	Check(std::fabs(FModel::RiverOffset(Next.X, Next.Y)) < 0.01 && Next.Y < Mid.Y - 150.0, "RiverPoint follows the stream", Mid.Y - Next.Y);
 
 	// the mind
-	Check(FModel::Pressure(250.0, -800.0, false) == 0.0, "no pressure before Topi", 0.0);
-	Check(FModel::Pressure(200.0, -1300.0, false) >= 1.0, "by day the hero cannot stand 400 m in", FModel::Pressure(200.0, -1300.0, false));
+	const FVec2 Before = L2M(250.0, -800.0), DayIn = L2M(200.0, -1300.0), NightOff = L2M(600.0, -1300.0);
+	Check(FModel::Pressure(Before.X, Before.Y, false) == 0.0, "no pressure before Topi", 0.0);
+	Check(FModel::Pressure(-800.0, 905.0, false) == 0.0 && !FModel::Near(-800.0, 905.0, 150.0), "nothing of Topi in the town", 0.0);
+	Check(FModel::Near(Start.X, Start.Y, 0.0) && FModel::Near(End.X, End.Y, 0.0), "Near() knows Topi", 1.0);
+	Check(FModel::Pressure(DayIn.X, DayIn.Y, false) >= 1.0, "by day the hero cannot stand 400 m in", FModel::Pressure(DayIn.X, DayIn.Y, false));
 	double PathWorst = 0.0;
 	for (double S = 0.0; S <= FModel::PathLength(); S += 5.0)
 	{
 		const FVec2 P = FModel::PathPoint(S);
 		PathWorst = std::fmax(PathWorst, FModel::Pressure(P.X, P.Y, true));
-		PathWorst = std::fmax(PathWorst, FModel::Pressure(P.X + 15.0, P.Y, true));
+		PathWorst = std::fmax(PathWorst, FModel::Pressure(P.X, P.Y + 15.0, true));
 	}
 	Check(PathWorst == 0.0, "at night the path is free of pressure", PathWorst);
-	Check(FModel::Pressure(-200.0, -1300.0, true) >= 1.0, "at night away from the path he cannot stand it", FModel::Pressure(-200.0, -1300.0, true));
-	Check(FModel::Pressure(End.X + 60.0, MidY, true) == 0.0, "calm in the river", 0.0);
-	Check(FModel::Pressure(End.X, MidY - 400.0, true) >= 1.0, "no way past the river", FModel::Pressure(End.X, MidY - 400.0, true));
-	const FVec2 Out = FModel::WayOut(120.0, -1350.0);
-	Check(Out.Y > 0.3, "the way out leads north", Out.Y);
+	Check(FModel::Pressure(NightOff.X, NightOff.Y, true) >= 1.0, "at night away from the path he cannot stand it", FModel::Pressure(NightOff.X, NightOff.Y, true));
+	const FVec2 InRiver = FModel::RiverPoint(60.0);
+	Check(FModel::Pressure(InRiver.X, InRiver.Y, true) == 0.0, "calm in the river", 0.0);
+	Check(FModel::Pressure(Mid.X - 400.0, Mid.Y, true) >= 1.0, "no way past the river", FModel::Pressure(Mid.X - 400.0, Mid.Y, true));
+	const FVec2 OutWay = FModel::WayOut(L2M(120.0, -1350.0).X, L2M(120.0, -1350.0).Y);
+	Check(OutWay.X > 0.3, "the way out leads west, back to the town", OutWay.X);
+	const FVec2 OutFar = FModel::WayOut(L2M(900.0, -1350.0).X, L2M(900.0, -1350.0).Y);
+	Check(OutFar.X > 0.99, "away from the path the way out is straight west", OutFar.X);
 
 	std::printf("%d passed, %d failed\n", GPassed, GFailed);
 	return GFailed ? 1 : 0;
@@ -162,7 +187,6 @@ static void Shade(const FModel& M, const char* File, double XW, double XE, doubl
 			R = R * (1 - 0.45 * S.Grass) + 120 * 0.45 * S.Grass;
 			G = G * (1 - 0.45 * S.Grass) + 150 * 0.45 * S.Grass;
 			B = B * (1 - 0.45 * S.Grass) + 90 * 0.45 * S.Grass;
-			if (S.Z < SeaZ) { R = 60; G = 110; B = 150; L = 1.0; }
 			if (M.RiverDepth(X, Y) > 0.0) { R = 90; G = 235; B = 215; L = 1.0; }
 			if (bMarks && FModel::PathDistance(X, Y) < Step * 0.8) { R = 230; G = 60; B = 40; L = 1.0; }
 			uint8_t* P = &Px[(size_t(J) * W + I) * 3];
@@ -193,8 +217,8 @@ int main(int Argc, char** Argv)
 	}
 	if (Cmd == "map")
 	{
-		Shade(M, "Saved/Topi/topi_near.ppm", 900.0, -700.0, -700.0, -2100.0, 1.0, true);
-		Shade(M, "Saved/Topi/topi_far.ppm", 6000.0, -10000.0, -700.0, -12700.0, 10.0, false);
+		Shade(M, "Saved/Topi/topi_near.ppm", -1050.0, -2450.0, 1700.0, 100.0, 1.0, true);
+		Shade(M, "Saved/Topi/topi_far.ppm", -1000.0, -13000.0, 7000.0, -5000.0, 10.0, false);
 		return 0;
 	}
 	if (Cmd == "profile")
@@ -215,7 +239,7 @@ int main(int Argc, char** Argv)
 		for (int I = 0; I <= N; ++I)
 		{
 			const double X = AX + (BX - AX) * I / N, Y = AY + (BY - AY) * I / N;
-			std::printf("%8.1f %8.1f  z %7.2f  map %7.2f  region %.2f  shore-x %6.1f\n", X, Y, M.Height(X, Y), M.Edge.At(X, Y), FModel::Region(X, Y), FModel::ShoreX(Y) - X);
+			std::printf("%8.1f %8.1f  z %7.2f  map %7.2f  region %.2f  in %6.1f\n", X, Y, M.Height(X, Y), M.Edge.At(X, Y), FModel::Region(X, Y), FModel::Depth(X, Y));
 		}
 		return 0;
 	}

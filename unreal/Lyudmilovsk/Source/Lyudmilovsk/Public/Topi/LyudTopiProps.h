@@ -16,7 +16,7 @@ class UStaticMeshComponent;
  * unreal/scripts/import_topi.py to /Game/Topi/Props (a missing mesh is skipped, logged once). Created by ALyudTopi as its "Props".
  *
  * Placed once, on the first tick after the owner has begun play, in map metres through ALyudTopi::ToWorld; the ground under everything
- * south of map Y -900 is Topi's own (ALyudTopi::SandZ); the warning plates stand on the map's landscape, whose chunks load later, so they
+ * east of map X -1300 is Topi's own (ALyudTopi::SandZ); the warning plates stand on the map's landscape, whose chunks load later, so they
  * are traced down once a second for up to 30 s (SandZ if it never answers). Nothing ticks after that. The signs' pictures follow the player's
  * language (lyud.Language, T_Sign_<name> by LyudText::LoadTexture("Topi", ...)). lyud.Topi.Props logs what stands where.
  */

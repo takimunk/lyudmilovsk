@@ -292,8 +292,8 @@ def places(out_json):
         ("sea", 900.0, 1200.0, 0.0, "water", True),
         # the hatch on the sea bed (docs/europa.md, tools/europa/europa_site.py)
         ("europa_hatch", 573.0, 100.0, 12.0, "building", True),
-        # where Topi's sand begins, on the beach south of the club (docs/topi.md); the river Ural lies off the map
-        ("topi", 300.0, -850.0, 70.0, "nature", True),
+        # where Topi's sand begins, on the map's east edge behind the town (docs/topi.md); the river Ural lies off the map
+        ("topi", -1225.0, 905.0, 70.0, "nature", True),
     ]
     data = {
         "comment": "Written by tools/ui_map.py from tools/world_map.py: do not edit by hand. Metres in the map frame (docs/world_map.md).",

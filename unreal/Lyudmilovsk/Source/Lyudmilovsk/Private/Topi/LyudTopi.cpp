@@ -396,8 +396,8 @@ bool ALyudTopi::ResolveChunk(int32 Level, int32 IX, int32 IY, const FVector2D& E
 {
 	const double Size = double(FinestChunkM) * double(1 << Level);
 	const double X0 = IX * Size, Y0 = IY * Size;
-	// nothing to draw: all north of the sand, or all out at sea (the coast only goes west as it goes south)
-	if (Y0 >= LyudTopi::NorthY || LyudTopi::FModel::ShoreX(Y0) - X0 < -260.0)
+	// nothing to draw: all west of the sand (Topi lies along the map's east edge and goes on east: toward -X)
+	if (!LyudTopi::FModel::Near(X0, Y0, 0.0))
 	{
 		return true;
 	}
@@ -449,7 +449,7 @@ bool ALyudTopi::ResolveChunk(int32 Level, int32 IX, int32 IY, const FVector2D& E
 		{
 			const int32 CX = IX * 2 + (Q & 1), CY = IY * 2 + (Q >> 1);
 			const double Half = Size * 0.5;
-			if (CY * Half >= LyudTopi::NorthY || LyudTopi::FModel::ShoreX(CY * Half) - CX * Half < -260.0)
+			if (!LyudTopi::FModel::Near(CX * Half, CY * Half, 0.0))
 			{
 				continue;
 			}
@@ -702,7 +702,7 @@ void ALyudTopi::GrowGrass(uint64 Key)
 		Patch->DensityScale = FMath::Clamp(Chunk.Grass[Q] * 0.9f, 0.03f, 1.f);
 		Patch->bUseTerrainMask = false;      // the mask covers only the map's own landscape
 		Patch->MinSlopeNormalZ = 0.8f;       // none on the slip faces
-		Patch->MinWorldZ = float((LyudTopi::SeaZ + 2.5) * 100.0);
+		Patch->MinWorldZ = float((LyudTopi::RiverZ + 0.6) * 100.0);
 		Patch->TraceUp = 6000.f;
 		Patch->TraceDown = 6000.f;
 		Patch->SetFlags(RF_Transient);
@@ -716,8 +716,17 @@ void ALyudTopi::BuildRiver()
 	State->bRiverBuilt = true;
 	const LyudTopi::FModel& M = Model();
 	const TArray<FProcMeshTangent> NoTangents;
-	const FVector2D PathEnd(LyudTopi::FModel::Path().back().X, LyudTopi::FModel::Path().back().Y);
-	const FVector Origin = ToWorld(PathEnd.X, LyudTopi::FModel::RiverY(PathEnd.X), LyudTopi::RiverZ);
+	const LyudTopi::FVec2 Mid0 = LyudTopi::FModel::RiverPoint(0.0);
+	const FVector Origin = ToWorld(Mid0.X, Mid0.Y, LyudTopi::RiverZ);
+	// S metres downstream of where the path comes out: the middle of the stream, and the unit vector across it
+	// that points back toward the town
+	const auto Stream = [](double S, FVector2D& OutSide) -> FVector2D
+	{
+		const LyudTopi::FVec2 P = LyudTopi::FModel::RiverPoint(S);
+		const LyudTopi::FVec2 D = LyudTopi::FModel::RiverDirection(S);
+		OutSide = FVector2D(-D.Y, D.X);
+		return FVector2D(P.X, P.Y);
+	};
 	const auto MakeMesh = [this, &Origin](const TCHAR* Name, UMaterialInstanceDynamic* MID, bool bFar) -> UProceduralMeshComponent*
 	{
 		UProceduralMeshComponent* Mesh = NewObject<UProceduralMeshComponent>(this, Name, RF_Transient);
@@ -739,14 +748,11 @@ void ALyudTopi::BuildRiver()
 		return Mesh;
 	};
 
-	// where the river is: from where it sinks into the sand by the coast, east for 14 km
-	double XWest = PathEnd.X;
-	while (LyudTopi::FModel::RiverStrength(XWest) > 0.0 && XWest < PathEnd.X + 3000.0)
-	{
-		XWest += 16.0;
-	}
+	// what is drawn of the river (it has no end): 7 km either way of where the path comes out, fading at both ends.
+	// The strips are laid from downstream up.
+	const double Reach = 7000.0;
 	const double Step = 16.0;
-	const int32 Steps = int32(14000.0 / Step);
+	const int32 Steps = int32(2.0 * Reach / Step);
 	const auto Local = [&](double X, double Y, double Z) { return ToWorld(X, Y, Z) - Origin; };
 
 	// the water: a smooth ribbon of light. UV0 = (metres along, -1..1 across), colour a = how much river
@@ -760,17 +766,16 @@ void ALyudTopi::BuildRiver()
 		const double Half = LyudTopi::RiverHalfWidth + 1.5;
 		for (int32 S = 0; S <= Steps; ++S)
 		{
-			const double X = XWest - S * Step;
-			const double YMid = LyudTopi::FModel::RiverY(X);
-			const double Slope = (LyudTopi::FModel::RiverY(X + 1.0) - LyudTopi::FModel::RiverY(X - 1.0)) * 0.5;
-			const FVector2D Side = FVector2D(-Slope, 1.0).GetSafeNormal();
-			const float K = float(LyudTopi::FModel::RiverStrength(X)) * (1.f - TopiSmooth(float(S - Steps + 60) / 60.f));
+			const double Down = Reach - S * Step;
+			FVector2D Side;
+			const FVector2D Mid = Stream(Down, Side);
+			const float K = TopiSmooth(float(S) / 60.f) * (1.f - TopiSmooth(float(S - Steps + 60) / 60.f));
 			for (int32 A = 0; A < Across; ++A)
 			{
 				const double W = -1.0 + 2.0 * A / (Across - 1);
-				V.Add(Local(X + Side.X * W * Half, YMid + Side.Y * W * Half, LyudTopi::RiverZ));
+				V.Add(Local(Mid.X + Side.X * W * Half, Mid.Y + Side.Y * W * Half, LyudTopi::RiverZ));
 				N.Add(FVector::UpVector);
-				UV.Add(FVector2D(-X, W));
+				UV.Add(FVector2D(-Down, W));
 				C.Add(FLinearColor(0.f, 0.f, 0.f, K));
 			}
 		}
@@ -795,18 +800,19 @@ void ALyudTopi::BuildRiver()
 		TArray<FVector2D> UV;
 		TArray<FLinearColor> C;
 		const double GStep = 64.0;
-		const int32 GSteps = int32(14000.0 / GStep);
+		const int32 GSteps = int32(2.0 * Reach / GStep);
 		const double Heights[3] = { 0.0, 90.0, 520.0 };
 		for (int32 S = 0; S <= GSteps; ++S)
 		{
-			const double X = XWest - S * GStep;
-			const double YMid = LyudTopi::FModel::RiverY(X);
-			const float K = float(LyudTopi::FModel::RiverStrength(X)) * (1.f - TopiSmooth(float(S - GSteps + 30) / 30.f));
+			const double Down = Reach - S * GStep;
+			FVector2D Side;
+			const FVector2D Mid = Stream(Down, Side);
+			const float K = TopiSmooth(float(S) / 30.f) * (1.f - TopiSmooth(float(S - GSteps + 30) / 30.f));
 			for (int32 H = 0; H < 3; ++H)
 			{
-				V.Add(Local(X, YMid, LyudTopi::RiverZ + Heights[H]));
-				N.Add(FVector(0.0, 1.0, 0.0));
-				UV.Add(FVector2D(-X, Heights[H] / Heights[2]));
+				V.Add(Local(Mid.X, Mid.Y, LyudTopi::RiverZ + Heights[H]));
+				N.Add(FVector(Side.X, Side.Y, 0.0));
+				UV.Add(FVector2D(-Down, Heights[H] / Heights[2]));
 				C.Add(FLinearColor(0.f, 0.f, 0.f, K));
 			}
 		}
@@ -851,9 +857,10 @@ void ALyudTopi::BuildRiver()
 		// over the river, 260 m either way of the path's end
 		for (int32 K = 0; K < 2600; ++K)
 		{
-			const double X = PathEnd.X + (Rand.FRand() * 2.0 - 1.0) * 260.0;
+			FVector2D Side;
+			const FVector2D Mid = Stream((Rand.FRand() * 2.0 - 1.0) * 260.0, Side);
 			const double W = (Rand.FRand() * 2.0 - 1.0) * (LyudTopi::RiverHalfWidth + 6.0);
-			Mote(X, LyudTopi::FModel::RiverY(X) + W, LyudTopi::RiverZ + 0.05 + Rand.FRand() * Rand.FRand() * 3.5, 1.f);
+			Mote(Mid.X + Side.X * W, Mid.Y + Side.Y * W, LyudTopi::RiverZ + 0.05 + Rand.FRand() * Rand.FRand() * 3.5, 1.f);
 		}
 		// along the path: thin at its start, thick by the river
 		const double Length = LyudTopi::FModel::PathLength();
@@ -872,11 +879,11 @@ void ALyudTopi::BuildRiver()
 	// the river's light on the sand where the path comes out
 	for (int32 L = 0; L < 3; ++L)
 	{
-		const double X = PathEnd.X + (L - 1) * 110.0;
+		const LyudTopi::FVec2 At = LyudTopi::FModel::RiverPoint((L - 1) * 110.0);
 		UPointLightComponent* Light = NewObject<UPointLightComponent>(this, NAME_None, RF_Transient);
 		Light->SetMobility(EComponentMobility::Movable);
 		Light->SetupAttachment(Root);
-		Light->SetRelativeLocation(ToWorld(X, LyudTopi::FModel::RiverY(X), LyudTopi::RiverZ + 6.0));
+		Light->SetRelativeLocation(ToWorld(At.X, At.Y, LyudTopi::RiverZ + 6.0));
 		Light->SetIntensityUnits(ELightUnits::Candelas);
 		Light->SetIntensity(0.f);
 		Light->SetLightColor(FLinearColor(0.35f, 1.f, 0.85f));

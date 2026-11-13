@@ -20,22 +20,25 @@ namespace
 	const TCHAR* const MeshFolder = TEXT("/Game/Topi/Props/");
 	const TCHAR* const LanguageVariable = TEXT("lyud.Language");
 
-	/** Map metres: where the dunes begin (the plates stand on the landscape up to Y -900, on the sand below). */
+	/** Where the dunes begin, in Topi's own frame (FModel::FromLocal: metres along the sand's edge, across it). */
 	struct FSignSpot
 	{
 		double X;
 		double Y;
-		bool bBeach;
+		bool bByPath;
 	};
 	const FSignSpot SignSpots[] = {
 		{ 284.0, -778.0, true }, { 300.0, -800.0, true },
 		{ 120.0, -770.0, false }, { -150.0, -765.0, false }, { -450.0, -760.0, false },
+		{ 560.0, -768.0, false }, { 900.0, -762.0, false },
 	};
 
 	const double FirstStakeAlong = 150.0;
 	const double StakeSpacing = 55.0;
 	const double StakeSideM = 2.0;
 	const double SignBackM = 9.0;
+	/** Added to the plates' yaw: the meshes were stood for a Topi lying south of the map, and it lies east. */
+	const float FaceTownYaw = -90.f;
 	const float RetrySeconds = 1.f;
 	const double GiveUpSeconds = 30.0;
 	const double TraceReachCm = 30000.0;
@@ -211,14 +214,16 @@ void ULyudTopiProps::PlaceAll(ALyudTopi* Topi)
 		}
 	}
 
-	// the warning plates: those on the beach face north, toward someone arriving along it; the rest face north too (the dunes lie south)
+	// the warning plates stand along the sand's edge and face the town (west): the dunes lie behind them
 	FRandomStream Rand(7419);
 	for (const FSignSpot& Spot : SignSpots)
 	{
 		FPendingSign Sign;
-		Sign.MapX = Spot.X;
-		Sign.MapY = Spot.Y;
-		Sign.YawDeg = Rand.FRandRange(-12.f, 12.f);
+		// the spots are in Topi's own frame (TopiModel.cpp): along the sand's edge, across it
+		const LyudTopi::FVec2 OnMap = LyudTopi::FModel::FromLocal(Spot.X, Spot.Y);
+		Sign.MapX = OnMap.X;
+		Sign.MapY = OnMap.Y;
+		Sign.YawDeg = FaceTownYaw + Rand.FRandRange(-12.f, 12.f);
 		Sign.LeanDeg = Rand.FRandRange(3.f, 9.f);
 		Sign.LeanDirDeg = Rand.FRandRange(0.f, 360.f);
 		Pending.Add(Sign);
@@ -296,35 +301,40 @@ void ULyudTopiProps::PlaceStakes(ALyudTopi* Topi)
 
 void ULyudTopiProps::PlaceRiverBank(ALyudTopi* Topi)
 {
-	const double Length = LyudTopi::FModel::PathLength();
-	const LyudTopi::FVec2 End = LyudTopi::FModel::PathPoint(Length);
-	// the water's edge on the path's side (north): the river's middle plus its half width
-	const double EdgeY = LyudTopi::FModel::RiverY(End.X) + LyudTopi::RiverHalfWidth;
+	// the water's edge on the path's side: from the river's middle its half width back toward the town.
+	// Bank(Down, Back): the point Down metres downstream of the path's end and Back metres from the water.
+	const LyudTopi::FVec2 Mid = LyudTopi::FModel::RiverPoint(0.0);
+	const LyudTopi::FVec2 Flow = LyudTopi::FModel::RiverDirection(0.0);
+	const auto Bank = [&](double Down, double Back)
+	{
+		const double Off = LyudTopi::RiverHalfWidth + Back;
+		return Topi->ToWorld(Mid.X + Flow.X * Down - Flow.Y * Off, Mid.Y + Flow.Y * Down + Flow.X * Off, 0.0);
+	};
 	FRandomStream Rand(5521);
 	if (UralMesh)
 	{
-		FVector At = Topi->ToWorld(End.X + 2.0, EdgeY + SignBackM, 0.0);          // beside the way, so that it is not in it
+		FVector At = Bank(2.0, SignBackM);          // beside the way, so that it is not in it
 		At.Z = Topi->SandZ(At);
-		if (Spawn(UralMesh, At, Stand(Rand.FRandRange(-6.f, 6.f), Rand.FRandRange(1.f, 3.f), Rand.FRandRange(0.f, 360.f)), true))
+		if (Spawn(UralMesh, At, Stand(FaceTownYaw + Rand.FRandRange(-6.f, 6.f), Rand.FRandRange(1.f, 3.f), Rand.FRandRange(0.f, 360.f)), true))
 		{
 			bUral = true;
 			MakeSignMaterials(PlacedParts.Last());
 		}
 	}
-	double TowelX = End.X - 3.0;
+	double TowelDown = -3.0;
 	for (int32 K = 0; K < TowelMeshes.Num(); K++)
 	{
 		if (!TowelMeshes[K])
 		{
 			continue;
 		}
-		FVector At = Topi->ToWorld(TowelX, EdgeY + Rand.FRandRange(3.0f, 6.0f), 0.0);
+		FVector At = Bank(TowelDown, Rand.FRandRange(3.0f, 6.0f));
 		At.Z = Topi->SandZ(At);
 		if (Spawn(TowelMeshes[K], At, FQuat(FRotator(0.f, Rand.FRandRange(0.f, 360.f), 0.f)), false))
 		{
 			NumTowels++;
 		}
-		TowelX += Rand.FRandRange(2.0f, 4.0f);
+		TowelDown += Rand.FRandRange(2.0f, 4.0f);
 	}
 }
 

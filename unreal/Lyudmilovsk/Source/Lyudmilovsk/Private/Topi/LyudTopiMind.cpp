@@ -41,7 +41,7 @@ namespace
 	const FName TopiHeartPool(TEXT("topi_heart"));
 	const FName TopiHumPool(TEXT("ural_hum"));
 
-	/** The near zone: this many metres north of the sand's edge the mind already wakes. */
+	/** The near zone: this many metres before the sand's edge the mind already wakes. */
 	constexpr double TopiNearM = 150.0;
 
 	// the turn: seconds to turn round, then to walk out; the grace after it
@@ -240,8 +240,8 @@ void ULyudTopiMind::TickComponent(float DeltaTime, ELevelTick TickType, FActorCo
 		return;
 	}
 	const FVector2D Map = T->ToMap(Hero->GetActorLocation());
-	// the sand starts at NorthY: no model call at all north of the near zone
-	const bool bNear = Map.Y < LyudTopi::NorthY + TopiNearM;
+	// no model call at all outside the near zone
+	const bool bNear = LyudTopi::FModel::Near(Map.X, Map.Y, TopiNearM);
 	if (!bNear && !bTurning && !bDissolving)
 	{
 		if (bActive)

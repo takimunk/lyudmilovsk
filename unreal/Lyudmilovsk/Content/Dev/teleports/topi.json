@@ -1,8 +1,8 @@
 {
  "teleports": [
-  {"id": "topi_edge", "group": "topi", "name": "dev.tp.topi_edge", "x": 286.0, "y": -765.0, "yaw": -90, "time": "14:00"},
-  {"id": "topi_dunes", "group": "topi", "name": "dev.tp.topi_dunes", "x": 440.0, "y": -1040.0, "yaw": -90, "time": "14:00"},
-  {"id": "topi_path", "group": "topi", "name": "dev.tp.topi_path", "x": 448.0, "y": -905.0, "yaw": -90, "time": "23:30"},
-  {"id": "ural_bank", "group": "topi", "name": "dev.tp.ural_bank", "x": 150.0, "y": -1750.0, "yaw": -90, "time": "23:30"}
+  {"id": "topi_edge", "group": "topi", "name": "dev.tp.topi_edge", "x": -1160.0, "y": 905.0, "yaw": 180, "time": "14:00"},
+  {"id": "topi_dunes", "group": "topi", "name": "dev.tp.topi_dunes", "x": -1440.0, "y": 748.0, "yaw": 180, "time": "14:00"},
+  {"id": "topi_path", "group": "topi", "name": "dev.tp.topi_path", "x": -1312.0, "y": 888.0, "yaw": 180, "time": "23:30"},
+  {"id": "ural_bank", "group": "topi", "name": "dev.tp.ural_bank", "x": -2150.0, "y": 1038.0, "yaw": 180, "time": "23:30"}
  ]
 }
