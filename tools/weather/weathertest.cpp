@@ -236,13 +236,13 @@ static int Test(const FClimate& C)
 		for (double H = Dt; H < 200 * 24; H += Dt)
 		{
 			const FWeatherState B = Full(H0 + H, Chain, Season);
-			auto M = [](double& X, double V) { X = std::max(X, std::fabs(V)); };
-			M(MCov, B.CloudCover - A.CloudCover); M(MCov, B.Low.Cover - A.Low.Cover); M(MCov, B.Mid.Cover - A.Mid.Cover); M(MCov, B.High.Cover - A.High.Cover);
-			M(MBase, B.Low.BaseM - A.Low.BaseM); M(MBase, B.Mid.BaseM - A.Mid.BaseM); M(MTop, B.Low.TopM - A.Low.TopM);
-			M(MSheet, B.Low.Sheet - A.Low.Sheet); M(MSheet, B.High.Sheet - A.High.Sheet);
-			M(MFog, B.Fog - A.Fog); M(MFogTop, B.FogTopM - A.FogTopM); M(MSnowFrac, B.SnowFraction - A.SnowFraction);
-			M(MSnow, B.SnowDepthCm - A.SnowDepthCm); M(MWet, B.Wet - A.Wet); M(MIce, B.SeaIceCover - A.SeaIceCover);
-			M(MHalo, B.Halo - A.Halo); M(MLens, B.Lenticular - A.Lenticular);
+			auto Grow = [](double& X, double V) { X = std::max(X, std::fabs(V)); };
+			Grow(MCov, B.CloudCover - A.CloudCover); Grow(MCov, B.Low.Cover - A.Low.Cover); Grow(MCov, B.Mid.Cover - A.Mid.Cover); Grow(MCov, B.High.Cover - A.High.Cover);
+			Grow(MBase, B.Low.BaseM - A.Low.BaseM); Grow(MBase, B.Mid.BaseM - A.Mid.BaseM); Grow(MTop, B.Low.TopM - A.Low.TopM);
+			Grow(MSheet, B.Low.Sheet - A.Low.Sheet); Grow(MSheet, B.High.Sheet - A.High.Sheet);
+			Grow(MFog, B.Fog - A.Fog); Grow(MFogTop, B.FogTopM - A.FogTopM); Grow(MSnowFrac, B.SnowFraction - A.SnowFraction);
+			Grow(MSnow, B.SnowDepthCm - A.SnowDepthCm); Grow(MWet, B.Wet - A.Wet); Grow(MIce, B.SeaIceCover - A.SeaIceCover);
+			Grow(MHalo, B.Halo - A.Halo); Grow(MLens, B.Lenticular - A.Lenticular);
 			A = B;
 		}
 		Check(MCov < 0.03, "seamless: cloud cover per minute < 0.03", MCov);
