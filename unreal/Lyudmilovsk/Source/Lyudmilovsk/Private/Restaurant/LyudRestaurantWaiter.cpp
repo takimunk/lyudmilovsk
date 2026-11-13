@@ -190,7 +190,16 @@ bool ALyudRestaurant::EnsureWaiter()
 		WaiterBody->Destroy();
 		WaiterBody = nullptr;
 	}
-	if (!WaiterBody)
+	if (Waiter == EWaiter::Off)
+	{
+		// coming on shift: by the bar
+		WaiterPos = ToWorld(WaiterHome);
+		WaiterYaw = YawToWorld(HomeYaw).Yaw;
+	}
+	// the body only when the camera is near enough to see it (bNear, as the cook's): it used to be spawned, and its model
+	// loaded on the game thread, the moment the restaurant opened, wherever the hero was. Far away the waiter is a point that
+	// walks and serves (PoseWaiter and TrayWorld take a missing body); the body appears where that point is.
+	if (!WaiterBody && bNear)
 	{
 		if (GetWorld()->GetTimeSeconds() < WaiterRetryAt)
 		{
@@ -200,8 +209,6 @@ bool ALyudRestaurant::EnsureWaiter()
 		FActorSpawnParameters SP;
 		SP.ObjectFlags |= RF_Transient;
 		SP.SpawnCollisionHandlingOverride = ESpawnActorCollisionHandlingMethod::AlwaysSpawn;
-		WaiterPos = ToWorld(WaiterHome);
-		WaiterYaw = YawToWorld(HomeYaw).Yaw;
 		WaiterBody = GetWorld()->SpawnActor<ANpcBody>(WaiterPos, FRotator(0.f, WaiterYaw, 0.f), SP);
 		if (!WaiterBody || !WaiterBody->Setup(Mesh, FString()))
 		{
