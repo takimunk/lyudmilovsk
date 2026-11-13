@@ -43,7 +43,7 @@ def opt(name, default):
 DO_RENDER = "--no-render" not in ARGS
 SAMPLES = int(opt("--samples", 48))
 RES = tuple(int(v) for v in opt("--res", "1280x800").split("x"))
-TEXTURED = {k for k, v in citymats.MATERIALS.items() if v[2]}
+TEXTURED = {k for k, v in citymats.MATERIALS.items() if v[2] and k not in getattr(citymats, "ATLAS_SLOTS", ())}
 
 
 def all_types():
@@ -113,10 +113,21 @@ def material(slot, night=False):
     lin = tuple(c / 12.92 if c <= 0.04045 else ((c + 0.055) / 1.055) ** 2.4 for c in col) + (1.0,)
     bsdf.inputs["Base Color"].default_value = lin
     bsdf.inputs["Roughness"].default_value = rough
-    if "Steel" in slot or slot == "CT_Aluminium":
-        bsdf.inputs["Metallic"].default_value = 0.6 if slot == "CT_Aluminium" else 0.2
+    if "Steel" in slot or slot in getattr(citymats, "METALLIC", {}) or slot == "CT_Aluminium":
+        bsdf.inputs["Metallic"].default_value = getattr(citymats, "METALLIC", {}).get(slot, 0.6 if slot == "CT_Aluminium" else 0.2)
     d = _tex(tex, "D") if tex else None
-    if d:
+    if d and slot in getattr(citymats, "ATLAS_SLOTS", ()):
+        # the picture atlas: UV0 straight into the image (0..1), untinted, untiled. Blender samples v up from the
+        # bottom row, the glTF export writes 1 - v and Unreal samples v down from the top row: the same texel.
+        uv = nt.nodes.new("ShaderNodeUVMap")
+        uv.uv_map = "UV0"
+        img = nt.nodes.new("ShaderNodeTexImage")
+        img.image = bpy.data.images.load(d, check_existing=True)
+        img.interpolation = "Linear"
+        img.extension = "EXTEND"
+        nt.links.new(uv.outputs["UV"], img.inputs["Vector"])
+        nt.links.new(img.outputs["Color"], bsdf.inputs["Base Color"])
+    elif d:
         uv = nt.nodes.new("ShaderNodeUVMap")
         uv.uv_map = "UV0"
         mp = nt.nodes.new("ShaderNodeMapping")

@@ -212,6 +212,12 @@ def make_materials():
         tex_d = ACADEM_MATS + "/Textures/T_Academ_%s_D" % texname if texname else None
         if slot == "CT_Window":
             continue
+        if slot in getattr(CM, "ATLAS_SLOTS", ()):
+            # the interiors' picture atlas: its own untinted, untiled material; the kit's UVs land upright in Unreal
+            # with no flip (Blender v up -> glTF 1 - v -> Unreal top row), see make_city_materials.atlas
+            import make_city_materials as MCM
+            out[slot] = MCM.atlas(MATS)
+            continue
         if texname and eal.does_asset_exist(tex_d):
             mi = AM.instance(path, m_tex)
             made = mp.hex_lin(info.get(texname, {}).get("target_hex", hx))
@@ -227,7 +233,7 @@ def make_materials():
             mi = AM.instance(path, m_flat)
             AM._set(mi, "v", "Color", unreal.LinearColor(c[0], c[1], c[2], 1))
             AM._set(mi, "s", "Roughness", rough)
-            AM._set(mi, "s", "Metallic", 0.6 if slot == "CT_Aluminium" else (0.3 if "Steel" in slot else 0.0))
+            AM._set(mi, "s", "Metallic", getattr(CM, "METALLIC", {}).get(slot, 0.3 if "Steel" in slot else 0.0))
             AM._set(mi, "s", "Emissive", {"CT_Neon": 6.0, "CT_Opal": 3.0}.get(slot, 0.0))
         mel.update_material_instance(mi)
         eal.save_loaded_asset(mi, False)

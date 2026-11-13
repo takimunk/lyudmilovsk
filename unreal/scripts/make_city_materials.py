@@ -5,6 +5,9 @@
                3 boards, 4 masonry courses, 5 gravel, 6 rubber; y = slab size m) drawn over UV0 (metres on the surface);
                lamp glass glows from UV2.x x the Glow parameter (the lamps' MID, 0 by day, 1 at night)
 
+  M_City_Atlas the interiors' picture atlas (blender/city/interior_kit.py, slot CT_Atlas): textures/city/atlas_D.jpg
+               as T_City_Atlas_D (sRGB), untinted and untiled, under /Game/City/Materials; import_city.py makes it too
+
 ALyudPublicSpaces sets Glow. Run headless:
   UnrealEditor-Cmd <uproject> -run=pythonscript -script=unreal/scripts/make_city_materials.py -unattended
 """
@@ -139,11 +142,31 @@ def prop():
     return g.finish()
 
 
+REPO = os.path.normpath(os.path.join(HERE, "..", ".."))
+ATLAS = os.path.join(REPO, "textures", "city", "atlas_D.jpg")
+
+
+def atlas(dest=DEST + "/Materials"):
+    """M_City_Atlas: the picture atlas on UV0 as it is, no tint, no tiling, no flip. Orientation: the kit writes
+    Blender UVs with v up from the image's bottom row (v = 1 - y / 4096); the glTF export stores 1 - v, and Unreal
+    samples from the top row, so the cells land upright with no flip here. Cells have 6 px of edge padding: the
+    default mips are fine at room distances (a little bleed from the neighbouring cell past ~20 m)."""
+    import academ_materials as AM
+    tex = AM.import_image(ATLAS, dest, "T_City_Atlas_D")
+    tex.set_editor_property("srgb", True)
+    tex.set_editor_property("compression_settings", unreal.TextureCompressionSettings.TC_DEFAULT)
+    tex.set_editor_property("lod_group", unreal.TextureGroup.TEXTUREGROUP_WORLD)
+    S.eal.save_loaded_asset(tex, False)
+    return AM.build_picture(dest + "/M_City_Atlas", tex)
+
+
 def build():
     if not S.eal.does_directory_exist(DEST):
         S.eal.make_directory(DEST)
     prop()
+    atlas()
     unreal.log_warning("CITY MATERIALS done")
 
 
-build()
+if __name__ == "__main__":
+    build()

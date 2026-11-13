@@ -46,6 +46,35 @@ is and does) and the game code (`ULyudCityThings`). The work list is [city_backl
 
 `pos`/`yaw` say where the object is; where the hero ends up (sitting, standing in front) is worked out by the game.
 
+### Using the kit
+
+* `import interior_kit as kit`; the catalogue (every piece, its size, options, budget) is the docstring at the top of
+  the file, `kit.PIECES` maps names to functions. Every piece is `kit.<name>(B, x, y, z=0.0, yaw=0.0, **options)`:
+  `(x, y)` the centre of its footprint on the floor `z`, `yaw` the way its front faces (0 = -y, 90 = +x).
+* Each returns a dict: `top` (height of its working surface, world z), `seats` (`[(x, y, z, yaw)]` where someone
+  sits; `seat`, one world point, on pieces used standing or from a stool), `foot` (footprint polygon), `size`, `height`, `tris`, `solid`, plus piece extras
+  (`screen`, `lamps`...). Use them for `B.thing(...)`, `B.spot(...)` and for stacking (`kit.cup(B, x, y, t["top"])`).
+* `solid=True` (the default on counters, shelves, tables, beds, pianos) adds the hidden collision core to `B.m`.
+  Lamps: only `pendant`, `lamp_green`, `floor_lamp`, `table_lamp` with `light=True` call `B.lamp`.
+* Layout: `kit.row(fn, B, x0, y0, x1, y1, n, yaw)`, `kit.grid(...)`, `kit.around_table(B, x, y, w, d, yaw,
+  per_side=(n_front, n_back, n_left, n_right))`, and `kit.Room(B, (x0, y0, x1, y1))` with `keep_door`, `keep`,
+  `place`, `along("n", [...])`, `scatter` (seeded, nothing overlaps). Call `kit.check(B)` after furnishing: it lists
+  overlapping floor pieces, pieces outside the rooms and blocked doors.
+* Showroom of everything: `python3 blender/city/kit_showroom.py -- [--no-render] [--close]` (lint numbers, then
+  `renders/city/interior/kit_*.jpg`).
+* Adding a piece: write `def name(B, x, y, z=0.0, yaw=0.0, ..., solid=...)` with `p = _P(B, x, y, z, yaw, "name")`,
+  draw in local metres (front toward -y) with `p.box/bev/cyl/lathe/rod/slab/card_front...`, add `p.core(...)` for a
+  collision box, end with `return p.done(solid=solid, top=..., seats=[(u, v, h, dyaw)])`; add it to `PIECES` and the catalogue, then
+  run the showroom. `done()` lifts coplanar overlapping faces 4 mm apart (`geom.separate_coplanar`) and gives
+  every non-atlas face metre UVs. New flat slots for the kit: `CT_Brass`, `CT_Lacquer`, `CT_Leather`, `CT_Baize`,
+  `CT_Paper`, `CT_Rubber`, `CT_Leaf`.
+* Atlas cells (`blender/city/atlas_cells.json`, `kit.cell("poster", rnd)` picks one of a group) are named
+  `<group>_<variant>`: `spine_00..39`, `painting_<subject>`, `poster_*`, `cinema_*`, `travel_*`, `kids_*`, `map_*`,
+  `chart_*`, `board_*`, `menu_*`, `price_*`, `notice_*`, `rug_*`, `tile_*`, `clock_*`, `screen_*`, `sleeve_*`, `mag_*`,
+  `news_*`, `paper_*`, `label_00..59`, `sign_<shop>`, `fabric_*` and single cells (`keys_piano`, `chess_board`...).
+  A new cell: a `@cell(name, w, h)` function in `tools/city/atlas.py`, run `python3 tools/city/atlas.py --sheet`
+  (rewrites the jpg and the json; all UVs come from the json, so nothing else changes). Text on cells is Russian.
+
 ## 2. Data
 
 `tools/city/interiors.py` (python3, stdlib) reads the plan (`Content/City/city_plan.json`), every building export

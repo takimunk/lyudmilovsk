@@ -86,6 +86,21 @@ def main():
     B = citykit.Building(type_id)
     mod.build(B)
     bc.lint(B)
+    cams = []
+    for c in opts("--cam"):
+        v = [float(t) for t in c.split(",")]
+        cams.append((v[0], v[1], v[2], v[3], v[4] if len(v) > 4 else -5.0, "cam%d" % len(cams)))
+    if not cams:
+        cams = auto_cams(B, int(opt("--auto", 4)))
+    top = opt("--top", "")
+    shoot(B, out_id, cams, samples=int(opt("--samples", 32)), res=opt("--res", "1120x700"), lens=float(opt("--lens", 20)),
+          out=opt("--out", os.path.join(bc.ROOT, "renders", "city", "interior")), exposure=float(opt("--exposure", 0.6)),
+          top=[float(t) for t in top.split(",")] if top else None)
+
+
+def shoot(B, out_id, cams, samples=32, res="1120x700", lens=20.0, out=None, exposure=0.6, top=None, sun=3.0):
+    """Render the Building B (already built and linted) from cams [(x, y, z, yaw, pitch, name)] to
+    out/<out_id>_<n>_<name>.jpg; top = (z0, z1) adds the plan view. Returns the written paths."""
     bc.clear_scene()
     bc._MATS.clear()
     bc.to_object("SM_" + out_id, B.m)
@@ -97,24 +112,24 @@ def main():
     scn = bpy.context.scene
     scn.render.engine = "CYCLES"
     scn.cycles.device = "CPU"
-    scn.cycles.samples = int(opt("--samples", 32))
+    scn.cycles.samples = int(samples)
     scn.cycles.use_denoising = True
     scn.cycles.max_bounces = 6
-    res = opt("--res", "1120x700").split("x")
+    res = res.split("x")
     scn.render.resolution_x, scn.render.resolution_y = int(res[0]), int(res[1])
     scn.render.image_settings.file_format = "JPEG"
     scn.render.image_settings.quality = 86
     scn.view_settings.view_transform = "AgX"
-    scn.view_settings.exposure = float(opt("--exposure", 0.6))
+    scn.view_settings.exposure = exposure
     world = bpy.data.worlds.new("w")
     scn.world = world
     world.use_nodes = True
     world.node_tree.nodes["Background"].inputs["Color"].default_value = (0.55, 0.68, 0.9, 1)
     world.node_tree.nodes["Background"].inputs["Strength"].default_value = 1.0
-    sun = bpy.data.objects.new("sun", bpy.data.lights.new("sun", "SUN"))
-    sun.data.energy = 3.0
-    sun.rotation_euler = (math.radians(55), 0, math.radians(35))
-    scn.collection.objects.link(sun)
+    sunob = bpy.data.objects.new("sun", bpy.data.lights.new("sun", "SUN"))
+    sunob.data.energy = sun
+    sunob.rotation_euler = (math.radians(55), 0, math.radians(35))
+    scn.collection.objects.link(sunob)
     for i, l in enumerate(B.lamps):
         ld = bpy.data.lights.new("lamp%d" % i, "POINT")
         ld.energy = l["lumens"] / 15.0 * 4.0
@@ -131,28 +146,23 @@ def main():
     me.materials.append(bc.material("CT_Paving"))
     scn.collection.objects.link(g)
 
-    cams = []
-    for c in opts("--cam"):
-        v = [float(t) for t in c.split(",")]
-        cams.append((v[0], v[1], v[2], v[3], v[4] if len(v) > 4 else -5.0, "cam%d" % len(cams)))
-    if not cams:
-        cams = auto_cams(B, int(opt("--auto", 4)))
-    out = opt("--out", os.path.join(bc.ROOT, "renders", "city", "interior"))
+    out = out or os.path.join(bc.ROOT, "renders", "city", "interior")
     os.makedirs(out, exist_ok=True)
     cam = bpy.data.objects.new("cam", bpy.data.cameras.new("cam"))
-    cam.data.lens = float(opt("--lens", 20))
+    cam.data.lens = float(lens)
     cam.data.clip_start = 0.05
     scn.collection.objects.link(cam)
     scn.camera = cam
+    written = []
     for i, (x, y, z, yaw, pitch, name) in enumerate(cams):
         cam.location = (x, y, z)
         cam.rotation_euler = look_dir(yaw, pitch).to_track_quat("-Z", "Y").to_euler()
         scn.render.filepath = os.path.join(out, "%s_%d_%s.jpg" % (out_id, i, name.replace("/", "_")))
         bpy.ops.render.render(write_still=True)
+        written.append(scn.render.filepath)
         print("SHOT %s  eye (%.1f, %.1f, %.1f) yaw %.0f" % (os.path.relpath(scn.render.filepath, bc.ROOT), x, y, z, yaw))
-    top = opt("--top", "")
     if top:
-        z0, z1 = [float(t) for t in top.split(",")]
+        z0, z1 = top
         xs = [v[0] for v in B.m.verts]
         ys = [v[1] for v in B.m.verts]
         cam.data.type = "ORTHO"
@@ -170,7 +180,9 @@ def main():
         scn.view_settings.exposure = -1.2
         scn.render.filepath = os.path.join(out, "%s_top_%g.jpg" % (out_id, z0))
         bpy.ops.render.render(write_still=True)
+        written.append(scn.render.filepath)
         print("SHOT %s  plan of z %.1f..%.1f (x right, y up)" % (os.path.relpath(scn.render.filepath, bc.ROOT), z0, z1))
+    return written
 
 
 if __name__ == "__main__":

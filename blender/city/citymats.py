@@ -40,6 +40,17 @@ MATERIALS = {
     "CT_Opal":          ("#FFF4E0", 0.3, None, 1.0, "opal glass of lamp fixtures (glows)"),
     "CT_WoodLight":     ("#B48A5E", 0.6, "timber_stained", 1.0, "light varnished wood: school desks, café tables, counters"),
     "CT_Neon":          ("#FF6A3D", 0.4, None, 1.0, "neon letters / lamp glow (emissive at night)"),
+    # interiors (blender/city/interior_kit.py): flat furniture finishes and the picture atlas
+    "CT_Brass":         ("#B08D57", 0.35, None, 1.0, "brass: lamp stems, taps, handles, rails"),
+    "CT_Lacquer":       ("#17161A", 0.18, None, 1.0, "black lacquer: pianos, TV cabinets, telephones"),
+    "CT_Leather":       ("#6B3A24", 0.55, None, 1.0, "brown leather: armchairs, vaulting horse, medical couch"),
+    "CT_Baize":         ("#2F6B45", 0.95, None, 1.0, "green baize: billiards, card tables, lamp shades"),
+    "CT_Paper":         ("#EDE8DA", 0.9, None, 1.0, "paper and page edges, linen, plaster casts"),
+    "CT_Rubber":        ("#2B2B2B", 0.9, None, 1.0, "black rubber: gym mats, tyres, punching bags"),
+    "CT_Leaf":          ("#3F7A3A", 0.6, None, 1.0, "waxy house-plant leaves"),
+    # the picture atlas: UV0 runs 0..1 straight into textures/city/atlas_D.jpg (tools/city/atlas.py), NOT metres;
+    # never tinted or tiled (ATLAS_SLOTS below). Cells: blender/city/atlas_cells.json
+    "CT_Atlas":         ("#FFFFFF", 0.6, "atlas", 1.0, "picture atlas: book spines, posters, signs, labels, rugs, screens"),
     # windows: one opaque card per window (dark glass by day, a lit room at night); not in the shell
     "CT_Window":        ("#1F2A30", 0.05, None, 1.0, "window card: UV0 0..1 over the pane, UV1 = its light texel"),
     "CT_Glass":         ("#2A3A40", 0.05, None, 1.0, "big shop glazing seen from far (opaque, reflective)"),
@@ -47,3 +58,10 @@ MATERIALS = {
 
 # Materials that emit at night (Unreal: driven by the light texture or the building's hours).
 EMISSIVE = {"CT_Window", "CT_Neon", "CT_Opal"}
+
+# Slots whose UV0 is a direct 0..1 lookup into one texture (no metre UVs, no tint, no tiling; the UV-stretch lint
+# skips them). Blender preview: build_city.material; Unreal: import_city.make_materials -> M_City_Atlas.
+ATLAS_SLOTS = {"CT_Atlas"}
+
+# Metallic per flat slot (both engines)
+METALLIC = {"CT_Aluminium": 0.6, "CT_Brass": 0.8}
