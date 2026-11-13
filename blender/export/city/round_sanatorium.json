@@ -903,6 +903,19 @@
    }
   },
   {
+   "id": "kit_clock_2",
+   "kind": "board",
+   "pos": [
+    -1.47,
+    8.563,
+    2.55
+   ],
+   "yaw": 180.0,
+   "props": {
+    "what": "clock"
+   }
+  },
+  {
    "id": "guest_book",
    "kind": "board",
    "pos": [

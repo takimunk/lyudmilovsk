@@ -1380,6 +1380,19 @@
  ],
  "things": [
   {
+   "id": "kit_clock_1",
+   "kind": "board",
+   "pos": [
+    -33.754,
+    29.32,
+    2.4
+   ],
+   "yaw": -31.7,
+   "props": {
+    "what": "clock"
+   }
+  },
+  {
    "id": "kiosk1_menu",
    "kind": "board",
    "pos": [
@@ -1434,6 +1447,19 @@
    }
   },
   {
+   "id": "kit_clock_2",
+   "kind": "board",
+   "pos": [
+    -11.901,
+    27.294,
+    2.4
+   ],
+   "yaw": -141.2,
+   "props": {
+    "what": "clock"
+   }
+  },
+  {
    "id": "ring_toss",
    "kind": "play",
    "pos": [
@@ -1472,6 +1498,19 @@
     "role": "vendor",
     "service": "shop",
     "trade": "icecream"
+   }
+  },
+  {
+   "id": "kit_clock_3",
+   "kind": "board",
+   "pos": [
+    1.569,
+    47.106,
+    2.4
+   ],
+   "yaw": 31.2,
+   "props": {
+    "what": "clock"
    }
   },
   {
@@ -1542,6 +1581,19 @@
    }
   },
   {
+   "id": "kit_clock_4",
+   "kind": "board",
+   "pos": [
+    23.494,
+    37.903,
+    2.4
+   ],
+   "yaw": 141.0,
+   "props": {
+    "what": "clock"
+   }
+  },
+  {
    "id": "fortune_globe",
    "kind": "machine",
    "pos": [
@@ -1593,6 +1645,19 @@
     "role": "vendor",
     "service": "shop",
     "trade": "toys"
+   }
+  },
+  {
+   "id": "kit_clock_5",
+   "kind": "board",
+   "pos": [
+    42.516,
+    32.483,
+    2.4
+   ],
+   "yaw": -36.7,
+   "props": {
+    "what": "clock"
    }
   },
   {

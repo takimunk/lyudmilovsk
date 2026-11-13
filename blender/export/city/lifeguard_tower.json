@@ -226,6 +226,19 @@
    }
   },
   {
+   "id": "kit_clock_1",
+   "kind": "board",
+   "pos": [
+    -0.15,
+    3.1,
+    7.75
+   ],
+   "yaw": 0.0,
+   "props": {
+    "what": "clock"
+   }
+  },
+  {
    "id": "deck_telescope",
    "kind": "machine",
    "pos": [

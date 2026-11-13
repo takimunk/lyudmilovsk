@@ -345,6 +345,19 @@
  ],
  "things": [
   {
+   "id": "kit_clock_1",
+   "kind": "board",
+   "pos": [
+    -11.8,
+    8.07,
+    8.87
+   ],
+   "yaw": 180.0,
+   "props": {
+    "what": "clock"
+   }
+  },
+  {
    "id": "studio_desk_chair",
    "kind": "seat",
    "pos": [

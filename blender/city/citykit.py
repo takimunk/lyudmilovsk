@@ -208,6 +208,13 @@ class Building:
         self.things.append({"id": tid, "kind": kind, "pos": [round(v, 3) for v in pos], "yaw": round(yaw, 1),
                             "props": props})
 
+    def _things_out(self):
+        """The things as exported: a kit clock's own thing (kit_clock_<n>) gives way to a thing the module declared at
+        the same clock (closer than 0.35 m)."""
+        own = [t for t in self.things if not t["id"].startswith("kit_clock_")]
+        return [t for t in self.things if not t["id"].startswith("kit_clock_")
+                or all(math.dist(t["pos"], o["pos"]) >= 0.35 for o in own)]
+
     def lamp(self, pos, lumens=900.0, colour="#FFD9A8", kind="public", radius=7.0, fixture=True):
         """A real light inside an enterable room (Unreal: a point light, no shadow, drawn within ~40 m). pos = the
         light's centre (put it ~0.3 m under the ceiling). kind "public": on in the building's open hours (all day
@@ -266,7 +273,7 @@ class Building:
             "type": self.type, "info": info, "frame": "x along the street front, y into the plot, z up; origin "
             "on the front line, mid-frontage, z 0 = ground at the main entrance",
             "footprint": [[round(x, 3), round(y, 3)] for x, y in self.footprint], "height": round(self.height, 2),
-            "entrances": self.entrances, "spots": self.spots, "lamps": self.lamps, "things": self.things,
+            "entrances": self.entrances, "spots": self.spots, "lamps": self.lamps, "things": self._things_out(),
             "flats": sorted(self.flats.values(), key=lambda f: f["flat"]),
             "windows": self.windows, "light_tex": LIGHT_TEX, "notes": self.notes,
             "tris": {"shell": self.m.tri_count(), "detail": self.detail.tri_count(), "windows": self.win.tri_count()},

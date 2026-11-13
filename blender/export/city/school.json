@@ -1082,6 +1082,19 @@
    }
   },
   {
+   "id": "kit_clock_1",
+   "kind": "board",
+   "pos": [
+    -7.7,
+    10.0,
+    2.6
+   ],
+   "yaw": 270.0,
+   "props": {
+    "what": "clock"
+   }
+  },
+  {
    "id": "staff_seat_1",
    "kind": "seat",
    "pos": [
@@ -1131,6 +1144,19 @@
    "yaw": 90.0,
    "props": {
     "topic": "timetable"
+   }
+  },
+  {
+   "id": "kit_clock_2",
+   "kind": "board",
+   "pos": [
+    14.8,
+    10.4,
+    2.5
+   ],
+   "yaw": 270.0,
+   "props": {
+    "what": "clock"
    }
   },
   {
@@ -1342,6 +1368,19 @@
    }
   },
   {
+   "id": "kit_clock_3",
+   "kind": "board",
+   "pos": [
+    -22.0,
+    15.81,
+    2.7
+   ],
+   "yaw": 180.0,
+   "props": {
+    "what": "clock"
+   }
+  },
+  {
    "id": "music_piano",
    "kind": "play",
    "pos": [
@@ -1417,6 +1456,19 @@
    "yaw": 180.0,
    "props": {
     "what": "record_player"
+   }
+  },
+  {
+   "id": "kit_clock_4",
+   "kind": "board",
+   "pos": [
+    -26.0,
+    39.89,
+    2.7
+   ],
+   "yaw": 0.0,
+   "props": {
+    "what": "clock"
    }
   },
   {
@@ -1499,6 +1551,19 @@
    }
   },
   {
+   "id": "kit_clock_5",
+   "kind": "board",
+   "pos": [
+    29.65,
+    28.0,
+    2.6
+   ],
+   "yaw": 270.0,
+   "props": {
+    "what": "clock"
+   }
+  },
+  {
    "id": "gym_hoop_w",
    "kind": "sport",
    "pos": [
@@ -1574,6 +1639,19 @@
    "yaw": 0.0,
    "props": {
     "what": "wall_bars"
+   }
+  },
+  {
+   "id": "kit_clock_6",
+   "kind": "board",
+   "pos": [
+    0.0,
+    55.65,
+    5.2
+   ],
+   "yaw": 0.0,
+   "props": {
+    "what": "clock"
    }
   },
   {

@@ -447,6 +447,19 @@
    }
   },
   {
+   "id": "kit_clock_1",
+   "kind": "board",
+   "pos": [
+    -5.0,
+    15.65,
+    2.35
+   ],
+   "yaw": 0.0,
+   "props": {
+    "what": "clock"
+   }
+  },
+  {
    "id": "hall_wait_0",
    "kind": "seat",
    "pos": [
@@ -574,6 +587,19 @@
    "yaw": 90.0,
    "props": {
     "topic": "health"
+   }
+  },
+  {
+   "id": "kit_clock_2",
+   "kind": "board",
+   "pos": [
+    -12.8,
+    15.65,
+    2.4
+   ],
+   "yaw": 0.0,
+   "props": {
+    "what": "clock"
    }
   },
   {
@@ -879,6 +905,19 @@
    "yaw": 90.0,
    "props": {
     "topic": "health"
+   }
+  },
+  {
+   "id": "kit_clock_3",
+   "kind": "board",
+   "pos": [
+    -0.8,
+    15.65,
+    2.4
+   ],
+   "yaw": 0.0,
+   "props": {
+    "what": "clock"
    }
   },
   {

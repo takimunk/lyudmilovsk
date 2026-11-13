@@ -462,6 +462,19 @@
    }
   },
   {
+   "id": "kit_clock_1",
+   "kind": "board",
+   "pos": [
+    4.624,
+    13.466,
+    2.71
+   ],
+   "yaw": 357.7,
+   "props": {
+    "what": "clock"
+   }
+  },
+  {
    "id": "garden_chess_west",
    "kind": "play",
    "pos": [
@@ -670,6 +683,19 @@
    }
   },
   {
+   "id": "kit_clock_2",
+   "kind": "board",
+   "pos": [
+    -14.545,
+    12.718,
+    2.61
+   ],
+   "yaw": 6.8,
+   "props": {
+    "what": "clock"
+   }
+  },
+  {
    "id": "caretaker_desk_counter",
    "kind": "counter",
    "pos": [
@@ -734,6 +760,19 @@
    "yaw": 256.3,
    "props": {
     "topic": "rules"
+   }
+  },
+  {
+   "id": "kit_clock_3",
+   "kind": "board",
+   "pos": [
+    22.891,
+    11.369,
+    2.51
+   ],
+   "yaw": 348.6,
+   "props": {
+    "what": "clock"
    }
   },
   {
@@ -852,6 +891,19 @@
    "yaw": 191.4,
    "props": {
     "height": 0.45
+   }
+  },
+  {
+   "id": "kit_clock_4",
+   "kind": "board",
+   "pos": [
+    -19.347,
+    12.007,
+    5.505
+   ],
+   "yaw": 11.4,
+   "props": {
+    "what": "clock"
    }
   }
  ],

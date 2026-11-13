@@ -32,11 +32,11 @@
   "chess_wins": {"title": "city.coll.chess_wins.title"}
  },
  "regulars": {
-  "giuseppe": {"name": "npc.t_gonzalez_giuseppe.name", "style": "careful", "skill": 0.6, "plays": ["chess", "checkers"], "plots": ["P-CLUB3", "P-CLUB2"],
+  "giuseppe": {"name": "npc.t_gonzalez_giuseppe.name", "style": "careful", "skill": 0.6, "plays": ["chess", "checkers"], "plots": ["P-CLUB3", "P-CLUB2", "P-CAFE"],
    "hello": "city.player.giuseppe.hello", "win": "city.player.giuseppe.win", "lose": "city.player.giuseppe.lose"},
-  "noam": {"name": "npc.t_saar_noam.name", "style": "tricky", "skill": 0.7, "plays": ["chess", "dominoes"], "plots": ["P-CLUB2", "P-BRIDGEHOUSE"],
+  "noam": {"name": "npc.t_saar_noam.name", "style": "tricky", "skill": 0.7, "plays": ["chess", "dominoes"], "plots": ["P-CLUB2", "P-BRIDGEHOUSE", "P-SANATORIUM"],
    "hello": "city.player.noam.hello", "win": "city.player.noam.win", "lose": "city.player.noam.lose"},
-  "anahit": {"name": "npc.t_tran_anahit.name", "style": "steady", "skill": 0.5, "plays": ["chess", "checkers"], "plots": ["P-T2H2", "P-T3H3", "P-UNITE"],
+  "anahit": {"name": "npc.t_tran_anahit.name", "style": "steady", "skill": 0.5, "plays": ["chess", "checkers"], "plots": ["P-T2H2", "P-T3H3", "P-UNITE", "P-SANATORIUM"],
    "hello": "city.player.anahit.hello", "win": "city.player.anahit.win", "lose": "city.player.anahit.lose"},
   "nils": {"name": "npc.t_mendoza_nils.name", "style": "bold", "skill": 0.45, "plays": ["dominoes", "checkers", "chess"], "plots": ["P-T3H2", "P-T4H1", "P-RISER1", "P-RISER2"],
    "hello": "city.player.nils.hello", "win": "city.player.nils.win", "lose": "city.player.nils.lose"},
@@ -44,7 +44,7 @@
    "hello": "city.player.lars.hello", "win": "city.player.lars.win", "lose": "city.player.lars.lose"},
   "ursula": {"name": "npc.t_okonkwo_ursula.name", "style": "bold", "skill": 0.8, "plays": ["table_tennis", "badminton"], "plots": ["P-T3SPORT"],
    "hello": "city.player.ursula.hello", "win": "city.player.ursula.win", "lose": "city.player.ursula.lose"},
-  "kenji": {"name": "npc.t_kask_kenji.name", "style": "tricky", "skill": 0.6, "plays": ["table_tennis", "badminton", "table_football"], "plots": ["P-CLUB3", "P-T1H2", "P-T4H1"],
+  "kenji": {"name": "npc.t_kask_kenji.name", "style": "tricky", "skill": 0.6, "plays": ["table_tennis", "badminton", "table_football"], "plots": ["P-CLUB3", "P-T1H2", "P-T4H1", "P-FAIR"],
    "hello": "city.player.kenji.hello", "win": "city.player.kenji.win", "lose": "city.player.kenji.lose"},
   "joost": {"name": "npc.t_zhaksybekov_joost.name", "style": "careful", "skill": 0.7, "plays": ["billiards", "darts"], "plots": ["P-CLUB3"],
    "hello": "city.player.joost.hello", "win": "city.player.joost.win", "lose": "city.player.joost.lose"},

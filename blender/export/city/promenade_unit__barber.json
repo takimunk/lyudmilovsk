@@ -197,6 +197,19 @@
    }
   },
   {
+   "id": "kit_clock_1",
+   "kind": "board",
+   "pos": [
+    4.8,
+    5.6,
+    2.3
+   ],
+   "yaw": 270.0,
+   "props": {
+    "what": "clock"
+   }
+  },
+  {
    "id": "barber_radio",
    "kind": "machine",
    "pos": [

@@ -359,6 +359,19 @@
    }
   },
   {
+   "id": "kit_clock_1",
+   "kind": "board",
+   "pos": [
+    3.1,
+    12.99,
+    2.55
+   ],
+   "yaw": 0.0,
+   "props": {
+    "what": "clock"
+   }
+  },
+  {
    "id": "garden_bench_seat",
    "kind": "seat",
    "pos": [

@@ -1255,6 +1255,19 @@
    }
   },
   {
+   "id": "kit_clock_1",
+   "kind": "board",
+   "pos": [
+    5.754,
+    21.37,
+    2.6
+   ],
+   "yaw": 288.0,
+   "props": {
+    "what": "clock"
+   }
+  },
+  {
    "id": "ring1_seat_234",
    "kind": "seat",
    "pos": [
@@ -1570,6 +1583,19 @@
    }
   },
   {
+   "id": "kit_clock_2",
+   "kind": "board",
+   "pos": [
+    -6.044,
+    14.801,
+    3.2
+   ],
+   "yaw": 198.0,
+   "props": {
+    "what": "clock"
+   }
+  },
+  {
    "id": "club_notices",
    "kind": "board",
    "pos": [
@@ -1728,6 +1754,19 @@
    }
   },
   {
+   "id": "kit_clock_3",
+   "kind": "board",
+   "pos": [
+    6.219,
+    23.634,
+    3.0
+   ],
+   "yaw": 234.0,
+   "props": {
+    "what": "clock"
+   }
+  },
+  {
    "id": "games_board",
    "kind": "board",
    "pos": [
@@ -1816,6 +1855,19 @@
    "yaw": 54.0,
    "props": {
     "topic": "engineering"
+   }
+  },
+  {
+   "id": "kit_clock_4",
+   "kind": "board",
+   "pos": [
+    2.01,
+    26.692,
+    11.8
+   ],
+   "yaw": 54.0,
+   "props": {
+    "what": "clock"
    }
   },
   {
@@ -2118,6 +2170,19 @@
    }
   },
   {
+   "id": "kit_clock_5",
+   "kind": "board",
+   "pos": [
+    -5.243,
+    31.142,
+    7.4
+   ],
+   "yaw": 306.0,
+   "props": {
+    "what": "clock"
+   }
+  },
+  {
    "id": "lounge_board",
    "kind": "board",
    "pos": [
@@ -2180,6 +2245,19 @@
    "yaw": 270.0,
    "props": {
     "topic": "local"
+   }
+  },
+  {
+   "id": "kit_clock_6",
+   "kind": "board",
+   "pos": [
+    -2.601,
+    10.5,
+    11.8
+   ],
+   "yaw": 90.0,
+   "props": {
+    "what": "clock"
    }
   },
   {

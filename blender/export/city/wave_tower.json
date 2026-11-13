@@ -1821,6 +1821,19 @@
    }
   },
   {
+   "id": "kit_clock_1",
+   "kind": "board",
+   "pos": [
+    -33.462,
+    15.07,
+    2.6
+   ],
+   "yaw": -13.3,
+   "props": {
+    "what": "clock"
+   }
+  },
+  {
    "id": "shop_a_counter",
    "kind": "counter",
    "pos": [
@@ -2084,6 +2097,19 @@
    }
   },
   {
+   "id": "kit_clock_2",
+   "kind": "board",
+   "pos": [
+    -22.695,
+    9.202,
+    2.6
+   ],
+   "yaw": 270,
+   "props": {
+    "what": "clock"
+   }
+  },
+  {
    "id": "records_wall_1",
    "kind": "shelf",
    "pos": [
@@ -2146,6 +2172,19 @@
    "yaw": 2.3,
    "props": {
     "topic": "catalogue"
+   }
+  },
+  {
+   "id": "kit_clock_3",
+   "kind": "board",
+   "pos": [
+    -17.949,
+    13.082,
+    2.7
+   ],
+   "yaw": 1.0,
+   "props": {
+    "what": "clock"
    }
   },
   {
@@ -2764,6 +2803,19 @@
    }
   },
   {
+   "id": "kit_clock_4",
+   "kind": "board",
+   "pos": [
+    2.305,
+    11.8,
+    2.6
+   ],
+   "yaw": 270,
+   "props": {
+    "what": "clock"
+   }
+  },
+  {
    "id": "hardware_wall_1",
    "kind": "shelf",
    "pos": [
@@ -2852,6 +2904,19 @@
    "yaw": 9.8,
    "props": {
     "topic": "catalogue"
+   }
+  },
+  {
+   "id": "kit_clock_5",
+   "kind": "board",
+   "pos": [
+    8.16,
+    17.963,
+    2.7
+   ],
+   "yaw": 11.0,
+   "props": {
+    "what": "clock"
    }
   },
   {
@@ -3286,6 +3351,19 @@
    "yaw": 270,
    "props": {
     "topic": "rules"
+   }
+  },
+  {
+   "id": "kit_clock_6",
+   "kind": "board",
+   "pos": [
+    27.305,
+    14.398,
+    2.6
+   ],
+   "yaw": 270,
+   "props": {
+    "what": "clock"
    }
   },
   {

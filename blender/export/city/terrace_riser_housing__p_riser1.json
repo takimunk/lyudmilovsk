@@ -815,6 +815,19 @@
    }
   },
   {
+   "id": "kit_clock_1",
+   "kind": "board",
+   "pos": [
+    17.25,
+    16.4,
+    11.28
+   ],
+   "yaw": 270.0,
+   "props": {
+    "what": "clock"
+   }
+  },
+  {
    "id": "home_telescope",
    "kind": "machine",
    "pos": [

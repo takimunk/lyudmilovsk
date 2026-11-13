@@ -421,6 +421,7 @@
    ]
   },
   "tarelka_chess": {
+   "like": "chess",
    "prompt": "city.cafe.chess.prompt",
    "minutes": 30,
    "pose": "sit",

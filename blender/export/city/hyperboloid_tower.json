@@ -321,6 +321,19 @@
    }
   },
   {
+   "id": "kit_clock_1",
+   "kind": "board",
+   "pos": [
+    -0.85,
+    11.846,
+    2.08
+   ],
+   "yaw": 0.0,
+   "props": {
+    "what": "clock"
+   }
+  },
+  {
    "id": "tower_radio",
    "kind": "machine",
    "pos": [

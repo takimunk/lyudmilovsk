@@ -281,6 +281,19 @@
    }
   },
   {
+   "id": "kit_clock_1",
+   "kind": "board",
+   "pos": [
+    -25.2,
+    8.95,
+    3.47
+   ],
+   "yaw": 0.0,
+   "props": {
+    "what": "clock"
+   }
+  },
+  {
    "id": "lobby1_club_board",
    "kind": "board",
    "pos": [
@@ -383,6 +396,19 @@
    "yaw": 0.0,
    "props": {
     "height": 0.45
+   }
+  },
+  {
+   "id": "kit_clock_2",
+   "kind": "board",
+   "pos": [
+    25.2,
+    8.95,
+    3.47
+   ],
+   "yaw": 0.0,
+   "props": {
+    "what": "clock"
    }
   },
   {

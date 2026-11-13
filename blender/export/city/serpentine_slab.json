@@ -666,6 +666,19 @@
    }
   },
   {
+   "id": "kit_clock_1",
+   "kind": "board",
+   "pos": [
+    -83.744,
+    12.751,
+    2.81
+   ],
+   "yaw": 0.8,
+   "props": {
+    "what": "clock"
+   }
+  },
+  {
    "id": "core1_notices",
    "kind": "board",
    "pos": [
@@ -758,6 +771,19 @@
    }
   },
   {
+   "id": "kit_clock_2",
+   "kind": "board",
+   "pos": [
+    0.31,
+    11.846,
+    2.81
+   ],
+   "yaw": 358.5,
+   "props": {
+    "what": "clock"
+   }
+  },
+  {
    "id": "core2_notices",
    "kind": "board",
    "pos": [
@@ -847,6 +873,19 @@
    "yaw": 270.8,
    "props": {
     "topic": "club"
+   }
+  },
+  {
+   "id": "kit_clock_3",
+   "kind": "board",
+   "pos": [
+    83.433,
+    10.947,
+    2.81
+   ],
+   "yaw": 0.7,
+   "props": {
+    "what": "clock"
    }
   },
   {

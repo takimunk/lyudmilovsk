@@ -133,6 +133,32 @@
  ],
  "things": [
   {
+   "id": "kit_clock_1",
+   "kind": "board",
+   "pos": [
+    -5.6,
+    5.55,
+    2.5
+   ],
+   "yaw": 0.0,
+   "props": {
+    "what": "clock"
+   }
+  },
+  {
+   "id": "kit_clock_2",
+   "kind": "board",
+   "pos": [
+    -1.15,
+    8.7,
+    2.1
+   ],
+   "yaw": 90.0,
+   "props": {
+    "what": "clock"
+   }
+  },
+  {
    "id": "lobby_bench_seat",
    "kind": "seat",
    "pos": [

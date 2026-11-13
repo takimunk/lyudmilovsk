@@ -1304,6 +1304,19 @@
    }
   },
   {
+   "id": "kit_clock_1",
+   "kind": "board",
+   "pos": [
+    0.0,
+    29.55,
+    3.33
+   ],
+   "yaw": 0.0,
+   "props": {
+    "what": "clock"
+   }
+  },
+  {
    "id": "g_prices",
    "kind": "board",
    "pos": [
@@ -1750,6 +1763,19 @@
    }
   },
   {
+   "id": "kit_clock_2",
+   "kind": "board",
+   "pos": [
+    22.05,
+    23.8,
+    7.5
+   ],
+   "yaw": 270.0,
+   "props": {
+    "what": "clock"
+   }
+  },
+  {
    "id": "f1_cashier",
    "kind": "counter",
    "pos": [
@@ -1826,6 +1852,19 @@
    "yaw": 0.0,
    "props": {
     "what": "photo_booth"
+   }
+  },
+  {
+   "id": "kit_clock_3",
+   "kind": "board",
+   "pos": [
+    0.0,
+    29.55,
+    8.1
+   ],
+   "yaw": 0.0,
+   "props": {
+    "what": "clock"
    }
   },
   {

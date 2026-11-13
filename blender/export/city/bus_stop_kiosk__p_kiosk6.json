@@ -204,6 +204,19 @@
    }
   },
   {
+   "id": "kit_clock_1",
+   "kind": "board",
+   "pos": [
+    2.67,
+    2.15,
+    1.75
+   ],
+   "yaw": 0.0,
+   "props": {
+    "what": "clock"
+   }
+  },
+  {
    "id": "stop_bin",
    "kind": "board",
    "pos": [

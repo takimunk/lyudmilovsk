@@ -483,6 +483,19 @@
    }
   },
   {
+   "id": "kit_clock_1",
+   "kind": "board",
+   "pos": [
+    2.4,
+    1.45,
+    3.6
+   ],
+   "yaw": 180,
+   "props": {
+    "what": "clock"
+   }
+  },
+  {
    "id": "exhibit_0",
    "kind": "board",
    "pos": [
@@ -688,6 +701,19 @@
    "yaw": 270,
    "props": {
     "what": "table_tennis"
+   }
+  },
+  {
+   "id": "kit_clock_2",
+   "kind": "board",
+   "pos": [
+    0.0,
+    12.55,
+    3.6
+   ],
+   "yaw": 0,
+   "props": {
+    "what": "clock"
    }
   },
   {

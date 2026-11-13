@@ -4255,6 +4255,19 @@
  ],
  "things": [
   {
+   "id": "kit_clock_1",
+   "kind": "board",
+   "pos": [
+    -11.2,
+    12.15,
+    2.4
+   ],
+   "yaw": 0.0,
+   "props": {
+    "what": "clock"
+   }
+  },
+  {
    "id": "ticket_counter",
    "kind": "counter",
    "pos": [
@@ -4308,6 +4321,19 @@
    "yaw": 0.0,
    "props": {
     "topic": "cinema"
+   }
+  },
+  {
+   "id": "kit_clock_2",
+   "kind": "board",
+   "pos": [
+    4.9,
+    12.15,
+    3.0
+   ],
+   "yaw": 0.0,
+   "props": {
+    "what": "clock"
    }
   },
   {

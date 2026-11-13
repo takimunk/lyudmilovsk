@@ -1760,6 +1760,9 @@ def wall_clock(B, x, y, z=0.0, yaw=0.0, zc=2.2, r=0.17, face=None, solid=False):
         p.face(LAQ, [a, b, c_, d_])
     s = r * 0.9
     p.card_front(face or "clock_0", -s, s, zc - s, zc + s, -0.05)
+    # every wall clock can be read with E (docs/city_interiors.md, "Clocks"): ids kit_clock_<n> in build order
+    n = sum(1 for t in B.things if t["id"].startswith("kit_clock_")) + 1
+    B.thing("kit_clock_%d" % n, "board", p.w(0.0, -0.05, zc), yaw, what="clock")
     return p.done()
 
 

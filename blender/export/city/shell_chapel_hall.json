@@ -1696,6 +1696,19 @@
    }
   },
   {
+   "id": "kit_clock_1",
+   "kind": "board",
+   "pos": [
+    2.05,
+    7.0,
+    2.6
+   ],
+   "yaw": 270.0,
+   "props": {
+    "what": "clock"
+   }
+  },
+  {
    "id": "cloak_counter",
    "kind": "counter",
    "pos": [
@@ -1998,6 +2011,19 @@
    }
   },
   {
+   "id": "kit_clock_2",
+   "kind": "board",
+   "pos": [
+    10.55,
+    13.0,
+    2.6
+   ],
+   "yaw": 270.0,
+   "props": {
+    "what": "clock"
+   }
+  },
+  {
    "id": "kitchen_stove",
    "kind": "machine",
    "pos": [
@@ -2268,6 +2294,19 @@
    "yaw": 270.0,
    "props": {
     "topic": "bar_chalk"
+   }
+  },
+  {
+   "id": "kit_clock_3",
+   "kind": "board",
+   "pos": [
+    12.4,
+    8.4,
+    2.55
+   ],
+   "yaw": 180.0,
+   "props": {
+    "what": "clock"
    }
   }
  ],

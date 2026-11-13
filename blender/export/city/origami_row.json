@@ -435,6 +435,19 @@
  ],
  "things": [
   {
+   "id": "kit_clock_1",
+   "kind": "board",
+   "pos": [
+    -2.92,
+    9.4,
+    2.3
+   ],
+   "yaw": 270.0,
+   "props": {
+    "what": "clock"
+   }
+  },
+  {
    "id": "home_sofa",
    "kind": "seat",
    "pos": [

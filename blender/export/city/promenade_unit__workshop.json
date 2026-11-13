@@ -110,6 +110,19 @@
  ],
  "things": [
   {
+   "id": "kit_clock_1",
+   "kind": "board",
+   "pos": [
+    3.6,
+    6.35,
+    2.2
+   ],
+   "yaw": 0.0,
+   "props": {
+    "what": "clock"
+   }
+  },
+  {
    "id": "repair_counter",
    "kind": "counter",
    "pos": [
