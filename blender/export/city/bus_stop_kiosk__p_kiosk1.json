@@ -93,6 +93,16 @@
     0.0
    ],
    "yaw": 270.0
+  },
+  {
+   "id": "staff_seller",
+   "kind": "work",
+   "pos": [
+    1.9,
+    3.25,
+    0.0
+   ],
+   "yaw": 0.0
   }
  ],
  "lamps": [
@@ -264,6 +274,59 @@
    "props": {
     "what": "pencil"
    }
+  },
+  {
+   "id": "stop_clock",
+   "kind": "board",
+   "pos": [
+    0.52,
+    3.2,
+    2.22
+   ],
+   "yaw": 270.0,
+   "props": {
+    "topic": "clock"
+   }
+  },
+  {
+   "id": "stop_switch",
+   "kind": "machine",
+   "pos": [
+    2.68,
+    2.16,
+    1.33
+   ],
+   "yaw": 0.0,
+   "props": {
+    "what": "switch",
+    "switch": "room"
+   }
+  },
+  {
+   "id": "stop_stamp",
+   "kind": "machine",
+   "pos": [
+    2.68,
+    2.14,
+    0.98
+   ],
+   "yaw": 0.0,
+   "props": {
+    "what": "stamp"
+   }
+  },
+  {
+   "id": "k1_wallpaper",
+   "kind": "board",
+   "pos": [
+    -1.1,
+    1.26,
+    1.45
+   ],
+   "yaw": 0.0,
+   "props": {
+    "topic": "paper"
+   }
   }
  ],
  "flats": [],
@@ -315,7 +378,7 @@
  "notes": [],
  "tris": {
   "shell": 612,
-  "detail": 2463,
+  "detail": 2931,
   "windows": 8
  }
 }

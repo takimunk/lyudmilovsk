@@ -103,6 +103,26 @@
     0.0
    ],
    "yaw": 270.0
+  },
+  {
+   "id": "staff_seller",
+   "kind": "work",
+   "pos": [
+    1.9,
+    3.25,
+    0.0
+   ],
+   "yaw": 0.0
+  },
+  {
+   "id": "seat_k2",
+   "kind": "seat",
+   "pos": [
+    3.0,
+    2.6,
+    0.0
+   ],
+   "yaw": 0.0
   }
  ],
  "lamps": [
@@ -287,6 +307,72 @@
    "props": {
     "what": "fountain"
    }
+  },
+  {
+   "id": "stop_clock",
+   "kind": "board",
+   "pos": [
+    0.52,
+    3.2,
+    2.22
+   ],
+   "yaw": 270.0,
+   "props": {
+    "topic": "clock"
+   }
+  },
+  {
+   "id": "stop_switch",
+   "kind": "machine",
+   "pos": [
+    2.68,
+    2.16,
+    1.33
+   ],
+   "yaw": 0.0,
+   "props": {
+    "what": "switch",
+    "switch": "room"
+   }
+  },
+  {
+   "id": "stop_stamp",
+   "kind": "machine",
+   "pos": [
+    2.68,
+    2.14,
+    0.98
+   ],
+   "yaw": 0.0,
+   "props": {
+    "what": "stamp"
+   }
+  },
+  {
+   "id": "k2_crate_seat",
+   "kind": "seat",
+   "pos": [
+    3.0,
+    2.6,
+    0.5
+   ],
+   "yaw": 0.0,
+   "props": {
+    "height": 0.5
+   }
+  },
+  {
+   "id": "k2_thermo",
+   "kind": "board",
+   "pos": [
+    2.84,
+    2.55,
+    1.55
+   ],
+   "yaw": 90.0,
+   "props": {
+    "topic": "thermo"
+   }
   }
  ],
  "flats": [],
@@ -338,7 +424,7 @@
  "notes": [],
  "tris": {
   "shell": 600,
-  "detail": 3006,
+  "detail": 3498,
   "windows": 8
  }
 }
