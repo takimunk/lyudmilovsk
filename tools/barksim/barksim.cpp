@@ -241,7 +241,7 @@ static int Run(bool bDay, const std::string& Lang)
 	FWho Who, Other;
 	FNow Now;
 	std::vector<int> Staff;
-	int Samples = 0, WithLine = 0, Greeted = 0, GreetSamples = 0, Pairs = 0, PairsTalk = 0, Counters = 0, CountersTalk = 0, EventLines = 0, EventAsks = 0;
+	int Samples = 0, WithLine = 0, Greeted = 0, GreetSamples = 0, Pairs = 0, PairsTalk = 0, Counters = 0, CountersTalk = 0, Owns = 0, OwnsTalk = 0, EventLines = 0, EventAsks = 0;
 	int SampleI = 0;
 	std::map<int, int> PrintedHour;
 	const float Dt = 1.f;
@@ -341,13 +341,15 @@ static int Run(bool bDay, const std::string& Lang)
 			}
 			for (const FPerson& Q : W.People)
 			{
-				if (Q.Id <= P.Id || !Q.bTown || !LyudBarks::CanSpeak(W, Q) || !((P.Partner == Q.Id && Q.Partner == P.Id) || Together(P, Q) || LyudBarks::AtCounter(W, P, Q)))
+				if (Q.Id <= P.Id || !Q.bTown || !LyudBarks::CanSpeak(W, Q) || !((P.Partner == Q.Id && Q.Partner == P.Id) || Together(P, Q) || LyudBarks::AtCounter(W, P, Q) || LyudBarks::WithTheirOwn(W, P, Q)))
 				{
 					continue;
 				}
 				Pairs++;
 				const bool bCounter = LyudBarks::AtCounter(W, P, Q);
 				Counters += bCounter ? 1 : 0;
+				const bool bOwn = LyudBarks::WithTheirOwn(W, P, Q);
+				Owns += bOwn ? 1 : 0;
 				LyudBarks::FillWho(W, P, Who);
 				LyudBarks::FillWho(W, Q, Other);
 				Who.bHeroNear = Other.bHeroNear = true;
@@ -367,6 +369,7 @@ static int Run(bool bDay, const std::string& Lang)
 				{
 					PairsTalk++;
 					CountersTalk += bCounter ? 1 : 0;
+					OwnsTalk += bOwn ? 1 : 0;
 					Wins[(size_t)SetIx]++;
 					Picked[(size_t)SetIx] = 1;
 					const int Hr = (int)H;
@@ -429,6 +432,8 @@ static int Run(bool bDay, const std::string& Lang)
 	CHECK(Samples > 0 && WithLine > Samples * 0.75, "most people up and about have something to say (%.0f%%)", Samples ? 100.0 * WithLine / Samples : 0.0);
 	CHECK(GreetSamples > 0 && Greeted > GreetSamples * 0.9, "nearly everyone greets the player walking past (%.0f%%)", GreetSamples ? 100.0 * Greeted / GreetSamples : 0.0);
 	CHECK(Counters > 50 && CountersTalk > Counters * 0.8, "a customer and whoever serves them have a word at the counter (%d of %d)", CountersTalk, Counters);
+	// (outings and dates are set by the manners' ApplyLikes, which this test doesn't run: here only grown-ups minding children)
+	CHECK(OwnsTalk * 2 >= Owns, "a grown-up and the child they mind have a word (%d of %d)", OwnsTalk, Owns);
 	CHECK(Pairs > 0 && PairsTalk > Pairs * 0.3, "pairs side by side or talking find an exchange (%.0f%% of %d)", Pairs ? 100.0 * PairsTalk / Pairs : 0.0, Pairs);
 	CHECK(EventAsks > 0 && EventLines == EventAsks, "the restaurant's waiter and cook have a line at every moment (%d of %d)", EventLines, EventAsks);
 	int Never = 0;

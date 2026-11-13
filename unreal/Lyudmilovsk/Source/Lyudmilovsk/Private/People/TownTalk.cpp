@@ -886,7 +886,8 @@ bool ULyudTownTalkSubsystem::StartExchange(const FVector& Cam, const FVector& Lo
 			const bool bSide = A.Place >= 0 && A.Place == B.Place && LyudPeople::IsSeated(A.Pose) && LyudPeople::IsSeated(B.Pose)
 				&& A.State == LyudPeople::EState::Doing && B.State == LyudPeople::EState::Doing && (A.Pos - B.Pos).Len2D() < 2.f;
 			// or a customer and whoever serves them (a shop's counter, a market stall, a kiosk)
-			if (!(bPair || bSide || LyudBarks::AtCounter(*S, A, B)) || Busy(B.Id) || Clock - LastSpoke[B.Id] < 60.f)
+			// or two of a household out together, friends at their date, a grown-up and the child they mind
+			if (!(bPair || bSide || LyudBarks::AtCounter(*S, A, B) || LyudBarks::WithTheirOwn(*S, A, B)) || Busy(B.Id) || Clock - LastSpoke[B.Id] < 60.f)
 			{
 				continue;
 			}

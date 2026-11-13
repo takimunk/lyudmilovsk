@@ -125,6 +125,9 @@ more) and one of them has a word (`on = thunder`).
   does (`FWorld::MeetNow`: 1 the household's outing, 2 a date), and on a stroll the two keep together. In mannersim's
   Wednesday 41 of the 77 pairs whose day it is meet (the rest: work, the culture club, supper). Town talk:
   `doing = date` (sets `date`, `date_kid`, the exchanges `date_talk`). `tools/mannersim/run.sh dates`.
+- **A word with their own** (`LyudBarks::WithTheirOwn`): two of a household at their outing, two friends at their date, a
+  grown-up and the child they mind, within 4 m, are a pair for town talk's exchanges (sets `own_talk`, `own_talk_child`,
+  `date_talk`, `mind_talk`, `mind_talk_child`).
 - **Keeping an eye on the children** (activity `mind_child`, `FWorld::ChildToMind`): while a child under 12 of theirs is
   out at play (`playground`, `play_run`) within 450 m and nobody of the household is by, one grown-up leaves what they
   chose, comes to a spot by the child and stands turned to wherever the child runs; they go when the child does. Those

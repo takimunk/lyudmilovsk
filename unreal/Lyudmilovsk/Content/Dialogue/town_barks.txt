@@ -1302,6 +1302,7 @@ talk = town.chat_kids3.1 | town.chat_kids3.2 | town.chat_kids3.3
 # down beside them on a bench (hero_sits)
 # The weekly date with a friend (doing = date: at it now)
 # Thunder (on = thunder: a strike's thunder reached them out of doors and they started)
+# With their own (LyudBarks::WithTheirOwn): two of a household out together, a grown-up and the child they mind
 
 [manner_smoke]
 manner = smoke
@@ -1573,6 +1574,41 @@ on = thunder
 age = kid
 weight = 3
 say = town.thunder_kid.1..2
+
+[own_talk]
+doing = outing
+doing2 = outing
+age = adult elder
+age2 = adult elder
+weight = 6
+talk = town.own_talk1.1 | town.own_talk1.2 | town.own_talk1.3
+talk = town.own_talk2.1 | town.own_talk2.2 | town.own_talk2.3
+talk = town.own_talk3.1 | town.own_talk3.2 | town.own_talk3.3
+talk = town.own_talk4.1 | town.own_talk4.2
+talk = town.own_talk5.1 | town.own_talk5.2 | town.own_talk5.3
+
+[own_talk_child]
+doing = outing
+doing2 = outing
+age = adult elder
+age2 = kid
+weight = 7
+talk = town.own_child1.1 | town.own_child1.2
+talk = town.own_child2.1 | town.own_child2.2
+talk = town.own_child3.1 | town.own_child3.2 | town.own_child3.3 | town.own_child3.4
+
+[mind_talk_child]
+doing = playground play_run
+doing2 = mind_child
+weight = 6
+talk = town.mind_talk1.1 | town.mind_talk1.2
+
+[mind_talk]
+doing = mind_child
+doing2 = playground play_run
+weight = 6
+talk = town.mind_talk2.1 | town.mind_talk2.2 | town.mind_talk2.3
+talk = town.mind_talk3.1 | town.mind_talk3.2
 
 # At the counter: a customer on their feet and whoever serves them (LyudBarks::AtCounter: the same shop, market
 # stall or kiosk, within 4 m). A is the customer unless the set says doing = work first.

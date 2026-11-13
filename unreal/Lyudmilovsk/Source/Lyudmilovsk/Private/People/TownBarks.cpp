@@ -790,6 +790,27 @@ namespace LyudBarks
 		return !IsSeated(Customer.Pose) && (A.Pos - B.Pos).Len2D() < 4.f;
 	}
 
+	bool WithTheirOwn(const LyudPeople::FWorld& W, const LyudPeople::FPerson& A, const LyudPeople::FPerson& B)
+	{
+		using namespace LyudPeople;
+		if (A.Id == B.Id || A.State != EState::Doing || B.State != EState::Doing || A.Activity < 0 || B.Activity < 0 || A.bIndoors || B.bIndoors
+			|| (A.Pos - B.Pos).Len2D() > 4.f)
+		{
+			return false;
+		}
+		const bool bHouse = !A.Household.empty() && A.Household == B.Household;
+		if (A.Activity == B.Activity)
+		{
+			const int Meet = W.MeetNow(A, W.Activities[(size_t)A.Activity]);
+			return (bHouse && Meet == 1) || (A.DateWith == B.Id && Meet == 2);
+		}
+		// a grown-up standing by and the child at play
+		const FPerson& Minder = A.Activity == W.MindAct ? A : B;
+		const FPerson& Child = A.Activity == W.MindAct ? B : A;
+		return bHouse && W.MindAct >= 0 && Minder.Activity == W.MindAct && Child.Age < 12
+			&& (Child.Activity == W.PlayActs[0] || Child.Activity == W.PlayActs[1]);
+	}
+
 	void FillWhoRole(FWho& Who, const char* Role)
 	{
 		if (Role != nullptr && *Role != '\0' && std::find(Who.Jobs.begin(), Who.Jobs.end(), Role) == Who.Jobs.end())
