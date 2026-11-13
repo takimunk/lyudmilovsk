@@ -183,6 +183,10 @@ private:
 	float SitAlpha = 0.f;
 	FVector StandOffset = FVector(38.f, 0.f, 0.f);
 	TEnumAsByte<ECollisionEnabled::Type> SeatedCollision = ECollisionEnabled::QueryAndPhysics;
+	/** Between SitOn and StandUp: the capsule's collision and the walking are off. SeatBase alone cannot tell (it is weak:
+	 *  a seat that is destroyed under the hero would leave him seated on nothing, with no collision and no movement). */
+	bool bSeatHeld = false;
+	void LeaveLostSeat();
 	/** FindBike / FindReach: what was found, and how many components the hero had when it last looked (a new one: look again). */
 	mutable TWeakObjectPtr<UHeroBikeComponent> BikeCache;
 	mutable TWeakObjectPtr<UHeroReachComponent> ReachCache;
