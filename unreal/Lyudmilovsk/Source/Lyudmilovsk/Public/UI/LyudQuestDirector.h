@@ -114,6 +114,10 @@ private:
 	TSet<int32> OnTrays;
 	bool bStarted = false;
 	bool bPrompt = false;
+	/** The pickup the prompt is written for (not rewritten every frame). */
+	FName PromptFor;
+	/** E is the talk's while the hero faces somebody or is talking. */
+	TWeakObjectPtr<class ANpcTalkDirector> TalkDirector;
 	float SlowTimer = 0.f;
 	FDelegateHandle CallHandle;
 };

@@ -63,7 +63,7 @@
      "dev": {"tp": "orni_grove", "time": "08:00", "give": {"bird_guide": 1, "feed_rowan": 5, "feeder": 1}, "exec": ["lyud.Feeder.Place", "lyud.Feeder.Fill feed_rowan 4"]}},
     {"id": "tame", "objectives": [{"id": "tame_waxwing", "event": "bird_tamed", "target": "Waxwing", "place": "rowan_grove"}],
      "dev": {"tp": "orni_grove", "time": "10:00", "give": {"bird_guide": 1, "feed_rowan": 5, "feeder": 1}, "exec": ["lyud.Feeder.Place", "lyud.Feeder.Fill feed_rowan 4", "lyud.Feeder.Age 3"]}},
-    {"id": "return", "objectives": [{"id": "call_sorokin", "event": "bird_call", "target": "Waxwing.Sorokin_oleg"}],
+    {"id": "return", "objectives": [{"id": "call_sorokin", "event": "bird_call", "target": "Waxwing.Sorokin_oleg", "place": "academ"}],
      "dev": {"time": "10:00", "exec": ["Quest.GoToPerson sorokin_oleg 25", "Bird.Become Waxwing"]},
      "reward": {"start": ["waxwing_after"]}}
    ]

@@ -21,7 +21,7 @@
  "quest.waxwing.see_waxwing.obj": "Wait by the feeder until a waxwing comes",
  "quest.waxwing.tame.log": "They have come. A crest, a yellow band on the tail, red drops on the wings. Now creep up quite slowly, crouching, and hold out a palm with rowan. No hurry.",
  "quest.waxwing.tame_waxwing.obj": "Feed a waxwing from the palm",
- "quest.waxwing.return.log": "I am a waxwing. Sorokin wanted to see just one. By day he is on the island or at home in the Academgorodok; at night he sleeps. Find him, come down beside him and call.",
+ "quest.waxwing.return.log": "I am a waxwing. Sorokin wanted to see just one. By day he is on the island or at home in the Academgorodok; at night he sleeps. Find him, come down beside him and call. If I lose the waxwing's shape: back to the rowan forest and feed one from the palm again.",
  "quest.waxwing.call_sorokin.obj": "As the waxwing, find Sorokin, land beside him and call (F)",
  "quest.waxwing.done": "He knew me. Not me, of course. The waxwing. Forty years he went after them, and this one came by itself.",
  "quest.waxwing_after.title": "What Sorokin Saw",

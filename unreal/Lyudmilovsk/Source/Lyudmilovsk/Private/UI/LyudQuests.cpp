@@ -555,6 +555,22 @@ void ULyudQuests::HandleEvent(FName Event, const FString& Target, int32 N)
 			{
 				FinishStage(Progress[QI], *Def);
 				bChanged = true;
+				// the stage that begins may be met already by what the hero has (BeginStage counted it): finish it now.
+				// Progress[QI] is indexed each time: FinishStage may add records to Progress.
+				while (Progress[QI].State == ELyudQuestState::Active && Def->Stages.IsValidIndex(Progress[QI].Stage))
+				{
+					const FLyudQuestStage& Begun = Def->Stages[Progress[QI].Stage];
+					bool bMet = Begun.Objectives.Num() > 0 && Progress[QI].Counts.Num() == Begun.Objectives.Num();
+					for (int32 NI = 0; bMet && NI < Begun.Objectives.Num(); ++NI)
+					{
+						bMet = Progress[QI].Counts[NI] >= Begun.Objectives[NI].Need;
+					}
+					if (!bMet)
+					{
+						break;
+					}
+					FinishStage(Progress[QI], *Def);
+				}
 			}
 		}
 	}

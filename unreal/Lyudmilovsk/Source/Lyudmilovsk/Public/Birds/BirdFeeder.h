@@ -123,6 +123,8 @@ public:
 	TArray<int32> BirdsOn(int32 Index) const;
 	/** Dev/test: as if the feed went into feeder Index Hours ago. */
 	void Age(int32 Index, float Hours);
+	/** The feed has lain Seconds longer than the calendar says (a quest's wait by the feeder: ULyudQuestDirector). */
+	void Hurry(int32 Index, float Seconds) { if (States.IsValidIndex(Index)) { States[Index].FilledAt -= FTimespan::FromSeconds(Seconds); } }
 	/** Dev/test: a feeder at Location (ground under it), facing Yaw. */
 	int32 PlaceAt(const FVector& Location, float Yaw);
 
