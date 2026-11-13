@@ -7,7 +7,7 @@
 #include <vector>
 #include "PeopleLife.generated.h"
 
-namespace LyudPeople { class FWorld; }
+namespace LyudPeople { class FWorld; class FManners; }
 class ABoothOwner;
 class ANpcBody;
 class ALyudBike;
@@ -213,6 +213,22 @@ public:
 	UPROPERTY(SaveGame) TMap<FString, FPersonMemory> Memory;
 
 	LyudPeople::FWorld* GetSim() const { return Sim.Get(); }
+	LyudPeople::FManners* GetManners() const { return Manners.Get(); }
+
+	// --- manners (docs/town_manners.md): who people are and the small things they do with their hands ---
+	/** What somebody drawn does now: fold_arms, phone_call, smoke, umbrella, ... (manners.json), none otherwise. */
+	UFUNCTION(BlueprintPure, Category = "People|Manners")
+	FName GetManner(int32 Id) const;
+	/** warmth, nerve, curiosity, tidy: 0..1, the same every game (0.5 if unknown). */
+	UFUNCTION(BlueprintPure, Category = "People|Manners")
+	float GetTrait(int32 Id, FName Trait) const;
+	/** Somebody drawn does this for Seconds over whatever they did (wave, nod, clap, point): false if they aren't drawn or
+	 *  their hands are busy. */
+	UFUNCTION(BlueprintCallable, Category = "People|Manners")
+	bool ReactManner(int32 Id, FName Manner, float Seconds = 2.5f);
+	/** Everybody drawn does this one (the console and developer mode; None: as they like). */
+	UFUNCTION(BlueprintCallable, Category = "People|Manners")
+	void ForceManner(FName Manner);
 
 	virtual bool ShouldCreateSubsystem(UObject* Outer) const override;
 	virtual void OnWorldBeginPlay(UWorld& InWorld) override;
@@ -223,6 +239,17 @@ public:
 
 private:
 	TPimplPtr<LyudPeople::FWorld> Sim;
+	TPimplPtr<LyudPeople::FManners> Manners;
+	/** The props' meshes by LyudPeople::EProp (null: not made or not loaded yet; such manners aren't picked), the easel. */
+	UPROPERTY(Transient) TArray<TObjectPtr<class UStaticMesh>> PropMeshes;
+	UPROPERTY(Transient) TObjectPtr<class UStaticMesh> EaselMesh;
+	TSharedPtr<struct FStreamableHandle> PropLoad;
+	/** Present's scratch: the people drawn this frame. */
+	TArray<int32> ShownIds;
+	float NoticeTimer = 0.f, PassingTimer = 0.f;
+	float MannerClock = 0.f;
+	void LoadManners();
+	void UpdateManners(float DeltaTime);
 
 	// the town: pooled bodies for the townsfolk (nearest first, lyud.People.TownBodies), the window lights
 	/** Free townsfolk bodies by model, to be given to whoever of that look comes near. */
@@ -345,6 +372,17 @@ public:
 	float GetBodyScale() const { return BodyScale; }
 	/** Moves the mouth for Seconds whatever the pose: a line said over the head (ULyudTownTalkSubsystem, docs/town_talk.md). */
 	void Chatter(float Seconds) { ChatterUntil = Clock + Seconds; }
+	/** Their manner now (docs/town_manners.md; LyudPeople::EManner and EProp as numbers), told before Drive: Since seconds
+	 *  ago it began, Left to go (negative: no end in sight). PropMesh: what it puts in the hands (null: nothing, or not
+	 *  made yet), StandMesh: what stands before them (a painter's easel). Drive does the gesture and holds the prop. */
+	void SetManner(uint8 Manner, uint8 Prop, float Since, float Left, bool bLeftHanded, class UStaticMesh* PropMesh, class UStaticMesh* StandMesh);
+	/** What they look at for the next Seconds (somebody passing, the player running by), then nothing in particular again. */
+	void LookAtPoint(const FVector& Where, float Seconds);
+	void LookAtNothing();
+
+	/** What a manner puts in the hands (SM_Prop_*), and what stands before them. */
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "People") TObjectPtr<class UStaticMeshComponent> MannerProp;
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "People") TObjectPtr<class UStaticMeshComponent> MannerStand;
 
 	FString MeshName;
 	/** Who they are in npc_dialogue.txt (their own body's id, whatever model shows them now). */
@@ -376,6 +414,15 @@ private:
 	float BedYaw = 0.f;
 	float BedTop = 50.f;
 
+	uint8 Manner = 0, MannerPropKind = 0;
+	float MannerSince = 0.f, MannerLeft = -1.f;
+	bool bMannerLeft = false;
+	bool bLookGiven = false;
+	bool bStandPlaced = false;
+	/** The gesture of the manner for this pose (none in a transition, asleep, at a computer, on a bike); true if a clip of
+	 *  its own was played for it. Then the prop into the hands. */
+	bool DriveManner(EPersonPose Pose, int32 Transit, float Speed);
+	void PlaceMannerProp(bool bShow);
 	class UAnimSequence* Clip(FName Name);
 	/** Lays the pusher between the hands and the ground ahead (or hides it). */
 	void PlacePusher(bool bShow);

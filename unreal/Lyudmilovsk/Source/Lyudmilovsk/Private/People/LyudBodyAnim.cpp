@@ -1,4 +1,5 @@
 #include "People/LyudBodyAnim.h"
+#include "BodyGestures.h"
 
 #include "Animation/AnimSequence.h"
 #include "Animation/AnimationPoseData.h"
@@ -194,6 +195,11 @@ bool FLyudBodyAnimProxy::Evaluate(FPoseContext& Output)
 		}
 	}
 	Procedural(Output);
+	// a manner's gesture: the arms to where it wants the hands, the head and the back (BodyGestures.cpp)
+	if (Gesture.IsActive())
+	{
+		LyudGesture::Apply(Output.Pose, Gesture, GestureBones);
+	}
 	// on a bicycle: the hips on the saddle, the feet on the pedals, the hands on the bars (Bikes/LyudBikeRider)
 	if (Bike.IsActive())
 	{
@@ -505,6 +511,7 @@ void ULyudBodyAnimInstance::NativeUpdateAnimation(float DeltaSeconds)
 	UpdateGamepad(Mesh);
 	UpdateLook(Mesh, DeltaSeconds);
 	UpdateBody(Mesh, DeltaSeconds);
+	UpdateGesture(DeltaSeconds);
 	if (bFace)
 	{
 		UpdateBlink(Mesh);
@@ -819,10 +826,53 @@ void ULyudBodyAnimInstance::UpdateBody(USkeletalMeshComponent* Mesh, float Dt)
 	}
 }
 
+void ULyudBodyAnimInstance::UpdateGesture(float Dt)
+{
+	// eased toward what is wanted: weights and angles always; a hand's goal itself only while the hand is on its way
+	// there or back (a goal that jumps under a hand already at it would throw the arm across)
+	const float K = FMath::Min(1.f, Dt * 5.f);
+	for (int32 S = 0; S < 2; S++)
+	{
+		FLyudArmGoal& N = GestureNow.Arm[S];
+		const FLyudArmGoal& W = GestureWant.Arm[S];
+		if (N.Weight < 0.02f)
+		{
+			const float Was = N.Weight;
+			N = W;
+			N.Weight = Was;
+		}
+		else if (W.Weight > 0.f)
+		{
+			const float G = FMath::Min(1.f, Dt * 7.f);
+			// between anchors the goal can't be eased: the hand goes back to the clip first
+			if (N.Anchor != W.Anchor)
+			{
+				N.Weight += (0.f - N.Weight) * FMath::Min(1.f, Dt * 8.f);
+				continue;
+			}
+			N.Offset += (W.Offset - N.Offset) * G;
+			N.Fingers = (N.Fingers + (W.Fingers - N.Fingers) * G).GetSafeNormal(UE_SMALL_NUMBER, W.Fingers);
+			N.Palm = (N.Palm + (W.Palm - N.Palm) * G).GetSafeNormal(UE_SMALL_NUMBER, W.Palm);
+			N.Curl += (W.Curl - N.Curl) * G;
+		}
+		N.Weight += (W.Weight - N.Weight) * K;
+	}
+	GestureNow.HeadPitch += (GestureWant.HeadPitch - GestureNow.HeadPitch) * K;
+	GestureNow.HeadYaw += (GestureWant.HeadYaw - GestureNow.HeadYaw) * K;
+	GestureNow.HeadRoll += (GestureWant.HeadRoll - GestureNow.HeadRoll) * K;
+	GestureNow.SpinePitch += (GestureWant.SpinePitch - GestureNow.SpinePitch) * K;
+	GestureNow.SpineRoll += (GestureWant.SpineRoll - GestureNow.SpineRoll) * K;
+	GestureNow.Jaw += (GestureWant.Jaw - GestureNow.Jaw) * FMath::Min(1.f, Dt * 8.f);
+	GestureNow.bEyesShut = GestureWant.bEyesShut;
+	GestureNow.Scale = GestureWant.Scale;
+	FLyudBodyAnimProxy& P = GetProxyOnGameThread<FLyudBodyAnimProxy>();
+	P.Gesture = GestureNow;
+}
+
 void ULyudBodyAnimInstance::UpdateBlink(USkeletalMeshComponent* Mesh)
 {
 	float V = 0.f;
-	if (bEyesShut || CVarEyesShut.GetValueOnGameThread())
+	if (bEyesShut || GestureNow.bEyesShut || CVarEyesShut.GetValueOnGameThread())
 	{
 		V = 1.f;
 	}
@@ -1031,7 +1081,8 @@ void ULyudBodyAnimInstance::UpdateMouth(USkeletalMeshComponent* Mesh, float Dt)
 		UE_LOG(LogTemp, Warning, TEXT("LyudFace %s: jaw %.2f funnel %.2f smile %.2f, eyes (%.1f, %.1f), head (%.1f, %.1f), eyeballs %d"),
 			*GetNameSafe(Mesh->GetSkeletalMeshAsset()), Mouth.X, Mouth.Y, Mouth.Z, Eye.X, Eye.Y, Head.X, Head.Y, Eyeballs.Num());
 	}
-	Morph[2] = Mouth.X;
+	// a yawn opens the mouth whatever is being said
+	Morph[2] = FMath::Max((float)Mouth.X, GestureNow.Jaw);
 	Morph[3] = Mouth.Y;
 	Morph[4] = Mouth.Z;
 	// the brows lift a little on loud syllables
