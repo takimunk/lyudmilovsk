@@ -57,7 +57,7 @@ DAYS = ("mon", "tue", "wed", "thu", "fri", "sat", "sun")
 PUBLIC_KINDS_SKIP = ("residential", "square", "park", "pool")
 QUEST_EVENTS = ("do", "visit", "get", "use", "have", "wear", "reach", "talk", "bird", "walk", "leave_computer")
 ACT_FIELDS = ("prompt", "minutes", "price", "lines", "pose", "sound", "event", "target", "give", "daily", "needs_staff",
-              "needs_item", "fade", "shop", "screen", "until", "title", "any_hour", "rotate", "collect", "closed")
+              "needs_item", "fade", "shop", "screen", "until", "title", "any_hour", "rotate", "collect", "closed", "game")
 # a line's conditions (docs/city_interiors.md "Lines by the day and the hour"): hours [from, to), weekdays, a calendar date or
 # range ("MM-DD" or ["MM-DD", "MM-DD"], wrapping the year), days since the game began (after N), every [n, r] game days
 # festival ("any", "none", an id of PeopleData/festivals.json or a list of ids), weather (a word of WEATHER or a list: any of
@@ -65,12 +65,14 @@ ACT_FIELDS = ("prompt", "minutes", "price", "lines", "pose", "sound", "event", "
 LINE_CONDS = ("h", "d", "date", "after", "before", "once", "every", "festival", "weather", "have", "count", "collect")
 WEATHER = ("rain", "snow", "fog", "cold", "warm", "clear", "wet", "dry")
 # the content sections a content file may have
-SECTIONS = ("acts", "shops", "rules", "defaults", "defaults_by_plot_kind", "quests", "collections", "closed_by")
+SECTIONS = ("acts", "shops", "rules", "defaults", "defaults_by_plot_kind", "quests", "collections", "closed_by", "regulars")
 ROTATE = ("use", "daily")
 # a seat's or bed's surface over its own floor (m): a bigger "height" was measured from the building's base
 SEAT_HEIGHT = (0.05, 1.2)
 SEAT_USUAL = {"seat": 0.45, "bed": 0.5}
 MAIN_STRINGS = os.path.join(CONTENT, "Localization", "strings_ru.json")
+# the townsfolk's names (npc.<key>.name, written by the town tools; merged by the game at load): a regular may be a resident
+TOWN_STRINGS = os.path.join(CONTENT, "Localization", "town", "strings_ru.json")
 PROP_ORDER = ("topic", "what", "service", "item", "to", "role", "shop")
 MIN_GAP = 0.3
 UNIT_TYPE = "promenade_unit"   # the promenade units' rooms (exports promenade_unit__<variant>.json)
@@ -241,7 +243,7 @@ def load_strings():
     return table
 
 
-CONTENT_EXTRA = {"collections": {}, "closed_by": {}, "quests": []}
+CONTENT_EXTRA = {"collections": {}, "closed_by": {}, "quests": [], "regulars": {}}
 
 
 def content_files():
@@ -278,7 +280,8 @@ def load_content():
             quest_from[q.get("id")] = name
             CONTENT_EXTRA["quests"].append(q)
         for section, into in (("acts", acts), ("shops", shops), ("rules", rules), ("defaults", defaults),
-                              ("collections", CONTENT_EXTRA["collections"]), ("closed_by", CONTENT_EXTRA["closed_by"])):
+                              ("collections", CONTENT_EXTRA["collections"]), ("closed_by", CONTENT_EXTRA["closed_by"]),
+                              ("regulars", CONTENT_EXTRA["regulars"])):
             for k, v in (data.get(section) or {}).items():
                 if k.startswith("_doc"):
                     continue
@@ -476,6 +479,155 @@ def expand_lines(spec, strings, where="lines"):
     return [k for _n, k in found]
 
 
+# mini-games (docs/city_interiors.md "Mini-games"): an act's "game" plays instead of showing its lines
+GAME_TYPES = ("aim", "rally", "duel")
+GAME_FIELDS = ("type", "title", "keys", "rounds", "need", "speed", "zone", "shrink", "pace", "vs", "moves", "win", "lose", "draw",
+               "collect", "prize", "daily", "sounds")
+GAME_DEFAULTS = {"aim": {"rounds": 5, "need": 5, "speed": 0.6, "zone": 0.2},
+                 "rally": {"rounds": 1, "need": 3, "speed": 0.9, "zone": 0.45},
+                 "duel": {"rounds": 3, "need": 1, "speed": 0.6, "zone": 0.2}}
+GAME_RANGES = {"rounds": (1, 9), "need": (1, 20), "speed": (0.1, 3.0), "shrink": (0.5, 1.0), "pace": (1.0, 1.5), "daily": (0, 20)}
+GAME_ZONE = {"aim": (0.03, 0.9), "rally": (0.1, 1.5), "duel": (0.0, 1.5)}
+# sounds that exist (ULyudSoundscapeSubsystem pools): a hit, a miss (none), the end of a won game
+GAME_SOUNDS = {"aim": {"hit": "rest_clink", "miss": "", "end": "rest_bell"}, "rally": {"hit": "mouse_clicks", "miss": "", "end": "rest_bell"},
+               "duel": {"hit": "mouse_clicks", "miss": "", "end": "rest_bell"}}
+REG_STYLES = ("bold", "careful", "tricky", "steady")
+REG_FIELDS = ("name", "style", "skill", "plays", "plots", "hello", "win", "lose")
+TOWN = {}  # the townsfolk's names (Localization/town): keys a regular may use
+
+
+def has_string(key, strings):
+    return key in strings or key in MAIN or key in TOWN
+
+
+def build_game(where, g, strings, items):
+    """An act's "game" with every field (defaults by type), or None (an error is recorded)."""
+    if not isinstance(g, dict):
+        err("%s: game must be an object" % where)
+        return None
+    for k in g:
+        if k not in GAME_FIELDS:
+            err("%s: game: unknown field %s" % (where, k))
+    t = g.get("type")
+    if t not in GAME_TYPES:
+        err("%s: game type must be one of %s" % (where, ", ".join(GAME_TYPES)))
+        return None
+    d = GAME_DEFAULTS[t]
+    out = {"type": t, "title": g.get("title") or "city.game.title", "keys": g.get("keys") or "city.game.keys.%s" % t}
+    for k in ("rounds", "need", "daily"):
+        v = g.get(k, d.get(k, 0))
+        if not isinstance(v, int) or isinstance(v, bool) or not GAME_RANGES[k][0] <= v <= GAME_RANGES[k][1]:
+            err("%s: game %s must be a whole number %s..%s" % (where, k, GAME_RANGES[k][0], GAME_RANGES[k][1]))
+            v = d.get(k, 0)
+        out[k] = v
+    for k, dv in (("speed", d["speed"]), ("zone", d["zone"]), ("shrink", 0.88), ("pace", 1.05)):
+        v = g.get(k, dv)
+        lo, hi = GAME_ZONE[t] if k == "zone" else GAME_RANGES[k]
+        if not isinstance(v, (int, float)) or isinstance(v, bool) or not lo <= v <= hi:
+            err("%s: game %s must be %s..%s" % (where, k, lo, hi))
+            v = dv
+        out[k] = float(v)
+    out["vs"] = g.get("vs", "")
+    if t == "duel" and not out["vs"]:
+        err("%s: a duel needs \"vs\" (the regulars' game it is)" % where)
+    moves = g.get("moves", [])
+    if t == "duel":
+        if not (isinstance(moves, list) and len(moves) == 3 and all(isinstance(m, dict) and m.get("k") and m.get("tell") for m in moves)):
+            err("%s: a duel needs three moves {\"k\", \"power\", \"tell\"}" % where)
+            moves = []
+        for m in moves:
+            for key in (m["k"], m["tell"]):
+                if not has_string(key, strings):
+                    err("%s: game move string %s is missing" % (where, key))
+            if not isinstance(m.get("power", 1), int) or not 1 <= m.get("power", 1) <= 5:
+                err("%s: a move's power is 1..5" % where)
+        out["moves"] = [{"k": m["k"], "power": int(m.get("power", 1)), "tell": m["tell"]} for m in moves]
+    elif moves:
+        err("%s: only a duel has moves" % where)
+    for res in ("win", "lose", "draw"):
+        lines = expand_lines(g.get(res) or [], strings, "%s game %s" % (where, res))
+        if not lines:
+            err("%s: game needs %s lines" % (where, res))
+        for l in lines:
+            if not has_string(line_key(l), strings):
+                err("%s: game %s line %s is missing" % (where, res, line_key(l)))
+            if isinstance(l, dict) and l.get("collect"):
+                STAMPS_USED.append(("%s game %s line %s" % (where, res, l["k"]), l["collect"]))
+        out[res] = lines
+    for key in (out["title"], out["keys"]):
+        if not has_string(key, strings):
+            err("%s: game string %s is missing" % (where, key))
+    out["collect"] = g.get("collect", "")
+    if out["collect"]:
+        check_line_conds(where + " game", {"collect": out["collect"]})
+        STAMPS_USED.append((where + " game", out["collect"]))
+        if "{opponent}" in out["collect"] and not out["vs"]:
+            err("%s: game collect names {opponent} but nobody plays against the hero (no vs)" % where)
+    prize = []
+    for p_ in g.get("prize", []):
+        if not (isinstance(p_, list) and len(p_) == 2 and isinstance(p_[1], int) and p_[1] > 0):
+            err("%s: game prize is [[\"item\", n]]" % where)
+            continue
+        if p_[0] not in items:
+            err("%s: game prize %s is not an item" % (where, p_[0]))
+        prize.append([p_[0], p_[1]])
+    out["prize"] = prize
+    snd = dict(GAME_SOUNDS[t])
+    for k, v in (g.get("sounds") or {}).items():
+        if k not in snd or not isinstance(v, str):
+            err("%s: game sounds are {\"hit\", \"miss\", \"end\"}: ids" % where)
+            continue
+        snd[k] = v
+    out["sounds"] = snd
+    return out
+
+
+def build_regulars(src, strings, plot_ids):
+    """The regulars of the clubs who play against the hero (a real resident's npc.<key>.name, or a name of our own)."""
+    out = collections.OrderedDict()
+    for rid in sorted(src):
+        if rid.startswith("_"):
+            continue
+        r = src[rid]
+        if not re.match(r"^[\w.-]+$", rid):
+            err("regular %s: the id is letters, digits, _ . - only" % rid)
+        for k in r:
+            if k not in REG_FIELDS:
+                err("regular %s: unknown field %s" % (rid, k))
+        if not r.get("name") or not has_string(r["name"], strings):
+            err("regular %s: name string %s is missing (a resident's npc.<key>.name, or one of ours)" % (rid, r.get("name")))
+        if r.get("style", "steady") not in REG_STYLES:
+            err("regular %s: style must be one of %s" % (rid, ", ".join(REG_STYLES)))
+        skill = r.get("skill", 0.5)
+        if not isinstance(skill, (int, float)) or not 0 <= skill <= 1:
+            err("regular %s: skill is 0..1" % rid)
+            skill = 0.5
+        plays = r.get("plays") or []
+        if not plays:
+            err("regular %s plays nothing" % rid)
+        for w in plays:
+            if not has_string("city.game.vs.%s" % w, strings):
+                err("regular %s: no word city.game.vs.%s for the game %s" % (rid, w, w))
+        for pl in r.get("plots") or []:
+            if pl not in plot_ids:
+                err("regular %s: plot %s is not in the plan" % (rid, pl))
+        for k in ("hello", "win", "lose"):
+            if r.get(k) and not has_string(r[k], strings):
+                err("regular %s: %s string %s is missing" % (rid, k, r[k]))
+        out[rid] = {"name": r.get("name", ""), "style": r.get("style", "steady"), "skill": float(skill), "plays": list(plays),
+                    "plots": list(r.get("plots") or []), "hello": r.get("hello", ""), "win": r.get("win", ""), "lose": r.get("lose", "")}
+    return out
+
+
+def opponents_at(regs, vs, plot):
+    """The regulars who may play vs at plot (the game's rule, CityThingsModel.h Opponents): those found there or anywhere,
+    else everybody who plays it."""
+    if not vs:
+        return []
+    here = [rid for rid, r in regs.items() if vs in r["plays"] and (not r["plots"] or plot in r["plots"])]
+    return here or [rid for rid, r in regs.items() if vs in r["plays"]]
+
+
 def build_acts(acts_src, shops, strings, items):
     """Every act with all its fields (inheriting from `like`), plus buy_<shop> for every shop and take_any."""
     src = dict(acts_src)
@@ -521,6 +673,10 @@ def build_acts(acts_src, shops, strings, items):
             STAMPS_USED.append(("act " + aid, a["collect"]))
         if a.get("closed"):
             act["closed"] = a["closed"]  # resolved per thing (closed_act)
+        if a.get("game"):
+            g = build_game("act " + aid, a["game"], strings, items)
+            if g:
+                act["game"] = g
         for l in act["lines"]:
             if isinstance(l, dict) and l.get("collect"):
                 STAMPS_USED.append(("act %s line %s" % (aid, l["k"]), l["collect"]))
@@ -719,6 +875,9 @@ def build_things(plan, rules, defaults, by_plot_kind, acts, strings=None, closed
                 days = plot_hours(pl["staff"])[1]
             if kind in SEAT_USUAL or "height" in props:
                 normalise_height(tid, kind, props)
+            if "switch" in props and not (props["switch"] in ("room", "hall") or re.match(r"^\d+(\.\d+)?$", str(props["switch"]))
+                                          and 1 <= float(props["switch"]) <= 30):
+                err("%s: switch must be room, hall or metres 1..30 (the lamps it turns on and off)" % tid)
             if kind == "counter" and a["shop"] and a["needs_staff"] and props.get("role") != a["needs_staff"]:
                 props["role"] = a["needs_staff"]
             w = local_to_world(pl["front"], pl["yaw"], t["pos"])
@@ -752,7 +911,7 @@ def build_things(plan, rules, defaults, by_plot_kind, acts, strings=None, closed
 
 # ------------------------------------------------------------------ collections
 
-def build_collections(src, things, acts, strings):
+def build_collections(src, things, acts, strings, regs=None):
     """The collections (docs/city_interiors.md "Collections"): {"<set>": {"title": key, "pieces": [...]}}. Pieces omitted: every
     piece something in town gives. Every stamp named anywhere must be of a declared set (and a declared piece), and every
     declared piece must be given by some thing in town (or the set could never be complete)."""
@@ -761,6 +920,18 @@ def build_collections(src, things, acts, strings):
     for t in things:
         if t.get("collect"):
             given[t["collect"].partition("/")[0]].add(t["collect"].partition("/")[2])
+        g = acts[t["act"]].get("game") or {}
+        if g.get("collect"):
+            # a game's win: "chess_wins/{opponent}" is every regular who may sit down at this thing
+            gset, _, gpiece = g["collect"].partition("/")
+            if "{opponent}" in gpiece:
+                given[gset].update(gpiece.replace("{opponent}", o) for o in opponents_at(regs or {}, g["vs"], t["plot"]))
+            else:
+                given[gset].add(gpiece)
+        for res in ("win", "lose", "draw"):
+            for l in g.get(res, []):
+                if isinstance(l, dict) and l.get("collect"):
+                    given[l["collect"].partition("/")[0]].add(l["collect"].partition("/")[2])
         if t["act"] in seen_acts:
             continue
         seen_acts.add(t["act"])
@@ -797,7 +968,7 @@ def build_collections(src, things, acts, strings):
         sid, _, piece = st.partition("/")
         if sid not in out:
             err("%s: stamp %s of an undeclared collection (add it to a \"collections\" section)" % (where, st))
-        elif piece not in ("*", "{line}") and "{plot}" not in piece and piece not in out[sid]["pieces"]:
+        elif piece not in ("*", "{line}") and "{plot}" not in piece and "{opponent}" not in piece and piece not in out[sid]["pieces"]:
             err("%s: stamp %s is not a piece of %s" % (where, st, sid))
     return out
 
@@ -1090,6 +1261,8 @@ def main():
     FESTIVAL_IDS.update(f["id"] for f in load(FESTIVALS).get("festivals", []) if f.get("id"))
     items = item_ids()
     strings = load_strings()
+    if os.path.exists(TOWN_STRINGS):
+        TOWN.update(load(TOWN_STRINGS))
     acts_src, shops_src, rules, defaults, by_plot_kind = load_content()
     for k in defaults:
         if k not in KINDS:
@@ -1108,7 +1281,13 @@ def main():
         if r.get("kind") and r["kind"] not in KINDS:
             err("rule %s: unknown kind %s" % (k, r["kind"]))
     things, summary, skipped = build_things(plan, rules, defaults, by_plot_kind, acts, strings, CONTENT_EXTRA["closed_by"])
-    colls = build_collections(CONTENT_EXTRA["collections"], things, acts, strings)
+    all_plots = {p["id"] for p in plan["plots"]} | {u["id"] for u in plan.get("promenade_units", [])}
+    regs = build_regulars(CONTENT_EXTRA["regulars"], strings, all_plots)
+    for aid, a in sorted(acts.items()):
+        g = a.get("game")
+        if g and g["vs"] and not opponents_at(regs, g["vs"], ""):
+            err("act %s: game vs %s: no regular plays it" % (aid, g["vs"]))
+    colls = build_collections(CONTENT_EXTRA["collections"], things, acts, strings, regs)
     things.sort(key=lambda t: t["id"])
     used = {t["act"] for t in things}
     gen_strings = {}
@@ -1157,10 +1336,11 @@ def main():
     n_auto = sum(1 for t in things if t.get("auto"))
     line_keys = {line_key(k) for a in acts.values() for k in a["lines"]}
     print("things %d (auto %d, declared %d; derived spots skipped: %s), acts %d (%d used), shops %d, teleports %d, strings %d "
-          "(%d act lines), quests %d, collections %s, closed %d" % (len(things), n_auto, len(things) - n_auto, dict(skipped) or "none", len(acts), len(used),
+          "(%d act lines), quests %d, collections %s, closed %d, games %d (things %d), regulars %d" % (len(things), n_auto, len(things) - n_auto, dict(skipped) or "none", len(acts), len(used),
                                          len(shops), len(teleports), len(all_strings), len(line_keys), len(quests),
                                          " ".join("%s:%d" % (k, len(v["pieces"])) for k, v in colls.items()) or "none",
-                                         sum(1 for t in things if t.get("closed"))))
+                                         sum(1 for t in things if t.get("closed")), sum(1 for a in acts.values() if a.get("game")),
+                                         sum(1 for t in things if acts[t["act"]].get("game")), len(regs)))
     for w in warnings:
         print("warning:", w)
     for e in errors:
@@ -1178,6 +1358,7 @@ def main():
     data["acts"] = collections.OrderedDict(sorted(acts.items()))
     data["shops"] = collections.OrderedDict(sorted(shops.items()))
     data["collections"] = colls
+    data["regulars"] = regs
     write(OUT_THINGS, dump_things(data))
     tp = collections.OrderedDict([("about", "Written by tools/city/interiors.py: x/y map metres (docs/world_map.md), z world cm (the floor, feet), yaw Unreal degrees."),
                                   ("teleports", teleports)])

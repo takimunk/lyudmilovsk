@@ -1550,6 +1550,336 @@ namespace LyudCity
 			return false;
 		}
 
+		// --- mini-games (docs/city_interiors.md "Mini-games"): the game calls StartGame, then TickGame every frame and PressGame
+		// on a key, draws GameBar, and calls FinishGame once bOver and the clock is past Wait. Nothing here allocates per frame.
+
+		/** Pauses (s): before the first throw, serve or turn; after a throw; after a point; after a turn; before the result. */
+		static constexpr double GameStartPause = 1.2;
+		static constexpr double AimPause = 0.9;
+		static constexpr double RallyPause = 1.0;
+		static constexpr double DuelPause = 1.4;
+		static constexpr double EndPause = 1.3;
+		/** An aim throw not made in this long (s) is a miss. */
+		static constexpr double AimRoundLimit = 8.0;
+		/** The narrowest rally window and the shortest flight (s); a press in the first part of a flight is not taken. */
+		static constexpr double MinWindow = 0.08;
+		static constexpr double MinFlight = 0.35;
+		static constexpr double RallyDeaf = 0.4;
+		/** A tick moves a game's clock on at most this much (s): a hitch must not skip a whole window. */
+		static constexpr double MaxGameStep = 0.25;
+
+		const FGameDef* GameDef(int Def) const { return Def >= 0 && Def < (int)Games.size() ? &Games[(size_t)Def] : nullptr; }
+		/** The game of Thing's own act (null: none). */
+		const FGameDef* GameOfThing(int Thing) const
+		{
+			const FAct* A = ActOf(Thing);
+			return A ? GameDef(A->Game) : nullptr;
+		}
+		const FRegular* RegularOf(const FGameState& G) const
+		{
+			return G.Opponent >= 0 && G.Opponent < (int)Regulars.size() ? &Regulars[(size_t)G.Opponent] : nullptr;
+		}
+		int FindRegular(const std::string& Id) const
+		{
+			for (int I = 0; I < (int)Regulars.size(); ++I)
+			{
+				if (Regulars[(size_t)I].Id == Id)
+				{
+					return I;
+				}
+			}
+			return -1;
+		}
+		/** Today's games of an act are counted under this key (saved with the other counts). */
+		static std::string GameCountKey(const std::string& ActId) { return "#g:" + ActId; }
+
+		/**
+		 * The regulars who may sit down against the hero at Plot for Def, into Out (at most Cap): those who play its game and
+		 * are found at Plot (or anywhere), else everybody who plays it. Returns how many (0: Def is played alone).
+		 */
+		int Opponents(const FGameDef& Def, const std::string& Plot, int* Out, int Cap) const
+		{
+			int N = 0;
+			if (Def.Vs.empty())
+			{
+				return 0;
+			}
+			for (int Pass = 0; Pass < 2 && N == 0; ++Pass)
+			{
+				for (int I = 0; I < (int)Regulars.size() && N < Cap; ++I)
+				{
+					const FRegular& R = Regulars[(size_t)I];
+					const bool bPlays = std::find(R.Plays.begin(), R.Plays.end(), Def.Vs) != R.Plays.end();
+					const bool bHere = R.Plots.empty() || std::find(R.Plots.begin(), R.Plots.end(), Plot) != R.Plots.end();
+					if (bPlays && (Pass == 1 || bHere))
+					{
+						Out[N++] = I;
+					}
+				}
+			}
+			return N;
+		}
+
+		/** A game of Thing's act from this seed (the opponent and every die come from it); false when its act has no game. */
+		bool StartGameSeeded(int Thing, uint64_t Seed, FGameState& G) const
+		{
+			const FAct* A = ActOf(Thing);
+			const FGameDef* D = A ? GameDef(A->Game) : nullptr;
+			G = FGameState();
+			if (!D)
+			{
+				return false;
+			}
+			G.Thing = Thing;
+			G.Act = Things[(size_t)Thing].Act;
+			G.Def = A->Game;
+			G.Seed = Seed;
+			G.Rng.State = Seed;
+			int Pool[32];
+			const int N = Opponents(*D, Things[(size_t)Thing].Plot, Pool, 32);
+			G.Opponent = N > 0 ? Pool[G.Rng.Below(N)] : -1;
+			BeginRound(*D, G, GameStartPause);
+			return true;
+		}
+
+		/** A game of Thing's act now: the seed from the thing, the day and how often its act has run (every game its own). */
+		bool StartGame(int Thing, const FWhen& When, FGameState& G) const
+		{
+			const FAct* A = ActOf(Thing);
+			if (!A)
+			{
+				G = FGameState();
+				return false;
+			}
+			const uint64_t Seed = HashText(Things[(size_t)Thing].Id) ^ ((uint64_t)When.Day * 0x9E3779B97F4A7C15ull)
+				^ ((uint64_t)TotalUses(A->Id) * 0xC2B2AE3D27D4EB4Full);
+			return StartGameSeeded(Thing, Seed, G);
+		}
+
+		/** The game's clock moves on Dt seconds: the aim marker runs (a throw not made in time is a miss), a rally's ball flies
+		 *  (not returned in its window: the point is lost; the opponent's miss: won). */
+		void TickGame(FGameState& G, double Dt) const
+		{
+			const FGameDef* D = GameDef(G.Def);
+			if (!D)
+			{
+				return;
+			}
+			G.Clock += Dt > 0.0 ? std::min(Dt, MaxGameStep) : 0.0;
+			if (G.bOver || G.Clock < G.Wait)
+			{
+				return;
+			}
+			if (D->Type == EGameType::Aim)
+			{
+				G.Marker = MarkerAt(*D, G, G.Clock);
+				if (G.Clock - G.RoundFrom > AimRoundLimit)
+				{
+					Throw(*D, G, false);
+				}
+			}
+			else if (D->Type == EGameType::Rally)
+			{
+				if (!G.bAway && G.Clock > G.Arrive + G.Window * 0.5)
+				{
+					RallyPoint(*D, G, false, EGameBeat::Late);
+				}
+				else if (G.bAway && G.Clock >= G.HitAt + G.Flight)
+				{
+					if (G.bOppMisses)
+					{
+						RallyPoint(*D, G, true, EGameBeat::OppMiss);
+					}
+					else
+					{
+						// returned: the ball comes back as fast as it went
+						G.bAway = false;
+						G.HitAt += G.Flight;
+						G.Arrive = G.HitAt + G.Flight;
+					}
+				}
+			}
+		}
+
+		/** A key: E (Choice -1) throws (aim) or returns the ball (rally); a duel takes the move 0..2. Ignored in a pause. */
+		void PressGame(FGameState& G, int Choice) const
+		{
+			const FGameDef* D = GameDef(G.Def);
+			if (!D || G.bOver || G.Clock < G.Wait)
+			{
+				return;
+			}
+			if (D->Type == EGameType::Aim && Choice < 0)
+			{
+				G.Marker = MarkerAt(*D, G, G.Clock);
+				Throw(*D, G, true);
+			}
+			else if (D->Type == EGameType::Rally && Choice < 0 && !G.bAway)
+			{
+				if (G.Clock < G.HitAt + RallyDeaf * G.Flight)
+				{
+					return;     // the ball has only just left the other bat: a press this early is not taken
+				}
+				if (std::fabs(G.Clock - G.Arrive) > G.Window * 0.5)
+				{
+					RallyPoint(*D, G, false, EGameBeat::Early);
+					return;
+				}
+				++G.Hits;
+				SetBeat(G, EGameBeat::Hit);
+				G.HitAt = G.Clock;
+				G.bAway = true;
+				G.Window = std::max(MinWindow, G.Window * D->Shrink);
+				G.Flight = std::max(MinFlight, G.Flight / std::max(1.0, D->Pace));
+				if (const FRegular* R = RegularOf(G))
+				{
+					const double Back = std::min(0.96, std::max(0.25, 0.55 + 0.4 * (double)R->Skill - 0.05 * G.Hits));
+					G.bOppMisses = G.Rng.Unit() >= Back;
+				}
+				else
+				{
+					G.bOppMisses = false;     // the wall returns everything
+					G.Score = G.Hits;
+					if (G.Hits >= D->Need)
+					{
+						EndGame(*D, G);
+					}
+				}
+			}
+			else if (D->Type == EGameType::Duel && Choice >= 0 && Choice < 3)
+			{
+				G.HeroMove = Choice;
+				G.LastOpp = G.OppMove;
+				if (MoveBeats(Choice, G.OppMove))
+				{
+					G.Score += MovePower(*D, Choice);
+					SetBeat(G, EGameBeat::TurnWon);
+				}
+				else if (MoveBeats(G.OppMove, Choice))
+				{
+					G.OppScore += MovePower(*D, G.OppMove);
+					SetBeat(G, EGameBeat::TurnLost);
+				}
+				else
+				{
+					SetBeat(G, EGameBeat::TurnEven);
+				}
+				++G.Round;
+				if (G.Round >= std::max(1, D->Rounds))
+				{
+					EndGame(*D, G);
+				}
+				else
+				{
+					BeginRound(*D, G, DuelPause);
+				}
+			}
+		}
+
+		/** Developer mode: the game is won at once. */
+		void WinGame(FGameState& G) const
+		{
+			const FGameDef* D = GameDef(G.Def);
+			if (!D || G.bOver)
+			{
+				return;
+			}
+			G.Score = std::max(G.Score, std::max(D->Need, G.OppScore + 1));
+			G.Hits = std::max(G.Hits, D->Need);
+			G.bOver = true;
+			G.Result = EGameResult::Win;
+			G.Wait = G.Clock;
+		}
+
+		/** What the panel's bar shows: aim: the marker, the zone and its middle (the bull); rally: the ball (0 at the other
+		 *  bat, 1 at the hero's) and the window as a stretch of its path before the hero. Duel: false (no bar). */
+		bool GameBar(const FGameState& G, float& Marker, float& ZoneFrom, float& ZoneTo, float& InnerFrom, float& InnerTo) const
+		{
+			const FGameDef* D = GameDef(G.Def);
+			Marker = ZoneFrom = ZoneTo = InnerFrom = InnerTo = 0.f;
+			if (!D || D->Type == EGameType::Duel)
+			{
+				return false;
+			}
+			if (D->Type == EGameType::Aim)
+			{
+				Marker = (float)G.Marker;
+				ZoneFrom = (float)std::max(0.0, G.ZoneAt - D->Zone * 0.5);
+				ZoneTo = (float)std::min(1.0, G.ZoneAt + D->Zone * 0.5);
+				InnerFrom = (float)std::max(0.0, G.ZoneAt - D->Zone / 6.0);
+				InnerTo = (float)std::min(1.0, G.ZoneAt + D->Zone / 6.0);
+				return true;
+			}
+			const double Along = G.Flight > 0.0 ? (G.Clock - G.HitAt) / G.Flight : 0.0;
+			const double Pos = G.Clock < G.Wait ? 0.0 : (G.bAway ? 1.0 - Along : Along);
+			Marker = (float)std::min(1.0, std::max(0.0, Pos));
+			ZoneFrom = (float)std::max(0.0, 1.0 - (G.Window * 0.5) / std::max(0.01, G.Flight));
+			ZoneTo = 1.f;
+			InnerFrom = InnerTo = 1.f;
+			return true;
+		}
+
+		/** The game is over (bOver): its result line turns (per thing and result), a win gives the stamp and the prize. Once. */
+		FGameEnd FinishGame(FGameState& G, const FWhen& When)
+		{
+			FGameEnd E;
+			const FGameDef* D = GameDef(G.Def);
+			if (!D || !G.bOver || G.Thing < 0 || G.Thing >= (int)Things.size())
+			{
+				return E;
+			}
+			E.Result = G.Result;
+			const int Slot = G.Result == EGameResult::Win ? 0 : G.Result == EGameResult::Lose ? 1 : 2;
+			const FAct& Lines = D->Results[Slot].Lines.empty() ? D->Results[1] : D->Results[Slot];
+			const std::string Page = Things[(size_t)G.Thing].Id + "#" + GameResultName(G.Result);
+			if (CountUsable(Page, Lines, When) > 0)
+			{
+				E.Line = TakeLineAt(Page, Lines, When, &E.NewStamps);
+			}
+			const FRegular* R = RegularOf(G);
+			if (R)
+			{
+				E.Opponent = R->Name;
+				E.Says = G.Result == EGameResult::Win ? R->SaysWin : G.Result == EGameResult::Lose ? R->SaysLose : std::string();
+			}
+			if (G.Result == EGameResult::Win)
+			{
+				std::string Stamp = D->Collect;
+				const size_t At = Stamp.find("{opponent}");
+				if (At != std::string::npos)
+				{
+					Stamp = R ? Stamp.replace(At, 10, R->Id) : std::string();
+				}
+				GiveStamp(Stamp, &E.NewStamps);
+				E.Prize = D->Prize;
+			}
+			const FAct* A = G.Act >= 0 && G.Act < (int)Acts.size() ? &Acts[(size_t)G.Act] : nullptr;
+			E.Target = A ? (A->Target.empty() ? A->Id : A->Target) : std::string();
+			G.Def = -1;     // given once
+			return E;
+		}
+
+		/** A light switch's reach (cm): the thing's "switch" prop, "room" 7 m, "hall" 15 m or metres (1..30); 0: not a switch. */
+		static double SwitchRadiusCm(const FThing& T)
+		{
+			const std::string S = T.Prop("switch");
+			if (S.empty())
+			{
+				return 0.0;
+			}
+			if (S == "room")
+			{
+				return 700.0;
+			}
+			if (S == "hall")
+			{
+				return 1500.0;
+			}
+			char* End = nullptr;
+			const double M = std::strtod(S.c_str(), &End);
+			return End != S.c_str() && M >= 1.0 && M <= 30.0 ? M * 100.0 : 700.0;
+		}
+
 		int TodayCount(const std::string& ActId, long long Day) const
 		{
 			if (Day != CountDay)
@@ -1755,7 +2085,12 @@ namespace LyudCity
 		 *  CountHolding > 0. */
 		std::string TakeLine(int Thing, const FAct& A, const FWhen& When, std::vector<std::string>* NewStamps)
 		{
-			const std::string Id = PageIdOf(Thing, (int)(&A - Acts.data()));
+			return TakeLineAt(PageIdOf(Thing, (int)(&A - Acts.data())), A, When, NewStamps);
+		}
+
+		/** TakeLine on the page Id (a game's result lines keep "<thing>#win" and so on). */
+		std::string TakeLineAt(const std::string& Id, const FAct& A, const FWhen& When, std::vector<std::string>* NewStamps)
+		{
 			const int N = (int)A.Lines.size();
 			const int Cur = LineIndex(Id);
 			int Pos = -1;
@@ -1798,6 +2133,238 @@ namespace LyudCity
 				GiveStamp(A.Collect.substr(0, A.Collect.size() - 6) + A.Lines[(size_t)Pos].Key, NewStamps);
 			}
 			return A.Lines[(size_t)Pos].Key;
+		}
+
+		// --- the games' rules
+
+		static void SetBeat(FGameState& G, EGameBeat B)
+		{
+			G.Beat = B;
+			++G.BeatSerial;
+		}
+
+		static int MovePower(const FGameDef& D, int Move)
+		{
+			return Move >= 0 && Move < (int)D.Moves.size() ? std::max(1, D.Moves[(size_t)Move].Power) : 1;
+		}
+
+		/** The aim marker at time T: to and fro over the bar, Speed runs a second, from the throw's own phase. */
+		static double MarkerAt(const FGameDef& D, const FGameState& G, double T)
+		{
+			const double X = std::max(0.0, T - G.RoundFrom) * D.Speed + G.Phase;
+			const double F = X - std::floor(X);
+			return 1.0 - std::fabs(2.0 * F - 1.0);
+		}
+
+		/** The next throw, serve or turn, after a pause. */
+		void BeginRound(const FGameDef& D, FGameState& G, double Pause) const
+		{
+			G.Wait = G.Clock + Pause;
+			if (D.Type == EGameType::Aim)
+			{
+				const double Z = std::min(0.95, std::max(0.02, D.Zone));
+				G.ZoneAt = Z * 0.5 + G.Rng.Unit() * (1.0 - Z);
+				G.Phase = G.Rng.Unit();
+				G.RoundFrom = G.Wait;
+				G.Marker = MarkerAt(D, G, G.Wait);
+			}
+			else if (D.Type == EGameType::Rally)
+			{
+				// a serve: the ball leaves the other bat (or the wall) when the pause ends
+				G.bAway = false;
+				G.bOppMisses = false;
+				G.Hits = 0;
+				G.Flight = 1.0 / std::min(5.0, std::max(0.1, D.Speed));
+				G.Window = std::max(MinWindow, D.Zone);
+				G.HitAt = G.Wait;
+				G.Arrive = G.HitAt + G.Flight;
+			}
+			else if (D.Type == EGameType::Duel)
+			{
+				// the opponent's move by their style, and the look that may betray it (the honest ones show it more often)
+				static const double Even[3] = { 1.0 / 3.0, 1.0 / 3.0, 1.0 / 3.0 };
+				const FRegular* R = RegularOf(G);
+				const double* Lean = R ? R->Lean : Even;
+				double Roll = G.Rng.Unit() * (Lean[0] + Lean[1] + Lean[2]);
+				int Move = 0;
+				while (Move < 2 && Roll >= Lean[Move])
+				{
+					Roll -= Lean[Move];
+					++Move;
+				}
+				G.OppMove = Move;
+				const bool bHonest = G.Rng.Unit() < (R ? R->Honesty : 0.6);
+				G.Tell = bHonest ? Move : (Move + 1 + G.Rng.Below(2)) % 3;
+			}
+		}
+
+		/** An aim throw (bPressed false: not made in time): a bull 2, the zone 1; the opponent throws too. */
+		void Throw(const FGameDef& D, FGameState& G, bool bPressed) const
+		{
+			int Points = 0;
+			if (bPressed)
+			{
+				const double Off = std::fabs(G.Marker - G.ZoneAt);
+				Points = Off <= D.Zone / 6.0 ? 2 : Off <= D.Zone * 0.5 ? 1 : 0;
+			}
+			G.Score += Points;
+			SetBeat(G, Points == 2 ? EGameBeat::Bull : Points == 1 ? EGameBeat::Hit : EGameBeat::Miss);
+			if (const FRegular* R = RegularOf(G))
+			{
+				const double Roll = G.Rng.Unit();
+				G.OppScore += Roll < 0.3 * (double)R->Skill ? 2 : Roll < 0.25 + 0.6 * (double)R->Skill ? 1 : 0;
+			}
+			++G.Round;
+			if (G.Round >= std::max(1, D.Rounds))
+			{
+				EndGame(D, G);
+			}
+			else
+			{
+				BeginRound(D, G, AimPause);
+			}
+		}
+
+		/** A rally's point is over: with an opponent it is counted (first to Need); alone the rally was the game. */
+		void RallyPoint(const FGameDef& D, FGameState& G, bool bWon, EGameBeat B) const
+		{
+			SetBeat(G, B);
+			++G.Round;
+			if (!RegularOf(G))
+			{
+				G.Score = G.Hits;
+				EndGame(D, G);
+				return;
+			}
+			if (bWon)
+			{
+				++G.Score;
+			}
+			else
+			{
+				++G.OppScore;
+			}
+			if (G.Score >= D.Need || G.OppScore >= D.Need)
+			{
+				EndGame(D, G);
+			}
+			else
+			{
+				BeginRound(D, G, RallyPause);
+			}
+		}
+
+		/** Over: against somebody the higher score wins (equal: a draw); alone Need wins and half of it is a draw (close). */
+		void EndGame(const FGameDef& D, FGameState& G) const
+		{
+			G.bOver = true;
+			G.Wait = G.Clock + EndPause;
+			if (RegularOf(G) || D.Type == EGameType::Duel)
+			{
+				G.Result = G.Score > G.OppScore ? EGameResult::Win : G.Score < G.OppScore ? EGameResult::Lose : EGameResult::Draw;
+				return;
+			}
+			const int Got = D.Type == EGameType::Rally ? G.Hits : G.Score;
+			G.Result = Got >= D.Need ? EGameResult::Win : Got * 2 >= D.Need ? EGameResult::Draw : EGameResult::Lose;
+		}
+
+		static void ReadLines(const LyudJson::FValue& List, FAct& Into)
+		{
+			for (const LyudJson::FValue& L : List.Items)
+			{
+				FLine Line;
+				if (L.Type == LyudJson::FValue::String)
+				{
+					Line.Key = L.Str;
+				}
+				else if (L.Type == LyudJson::FValue::Object)
+				{
+					ReadLine(L, Line);
+				}
+				if (!Line.Key.empty())
+				{
+					Into.Lines.push_back(Line);
+				}
+			}
+		}
+
+		/** An act's "game" (see FGameDef; interiors.py writes every field). */
+		static FGameDef ReadGame(const LyudJson::FValue& V)
+		{
+			FGameDef D;
+			D.Type = GameTypeOf(V["type"].S());
+			D.Title = V["title"].S();
+			D.Keys = V["keys"].S();
+			D.Rounds = std::max(1, V["rounds"].I(D.Type == EGameType::Duel ? 3 : 5));
+			D.Need = std::max(1, V["need"].I(D.Type == EGameType::Rally ? 3 : 5));
+			D.Speed = std::min(5.0, std::max(0.1, (double)V["speed"].F(D.Type == EGameType::Rally ? 0.9f : 0.6f)));
+			D.Zone = std::min(1.5, std::max(0.02, (double)V["zone"].F(D.Type == EGameType::Rally ? 0.45f : 0.2f)));
+			D.Shrink = std::min(1.0, std::max(0.5, (double)V["shrink"].F(0.88f)));
+			D.Pace = std::min(1.5, std::max(1.0, (double)V["pace"].F(1.05f)));
+			D.Vs = V["vs"].S();
+			for (const LyudJson::FValue& M : V["moves"].Items)
+			{
+				FGameMove Move;
+				Move.Key = M["k"].S();
+				Move.Tell = M["tell"].S();
+				Move.Power = std::max(1, M["power"].I(1));
+				D.Moves.push_back(Move);
+			}
+			if (D.Type == EGameType::Duel)
+			{
+				D.Moves.resize(3);     // a duel always has three moves (an empty key shows nothing)
+			}
+			static const char* const Names[3] = { "win", "lose", "draw" };
+			for (int I = 0; I < 3; ++I)
+			{
+				D.Results[I].Id = Names[I];
+				D.Results[I].Target = Names[I];
+				ReadLines(V[Names[I]], D.Results[I]);
+			}
+			D.Collect = V["collect"].S();
+			for (const LyudJson::FValue& P : V["prize"].Items)
+			{
+				const std::string Item = P.Type == LyudJson::FValue::Array ? P[0].S() : P.S();
+				const int Count = P.Type == LyudJson::FValue::Array ? P[1].I(1) : 1;
+				if (!Item.empty() && Count > 0)
+				{
+					D.Prize.emplace_back(Item, Count);
+				}
+			}
+			D.Daily = std::max(0, V["daily"].I(0));
+			const LyudJson::FValue& Sounds = V["sounds"];
+			D.SoundHit = Sounds["hit"].S();
+			D.SoundMiss = Sounds["miss"].S();
+			D.SoundEnd = Sounds["end"].S();
+			return D;
+		}
+
+		/** A regular: their style gives how they pick duel moves and how readable their look is (the better, the less). */
+		static FRegular ReadRegular(const std::string& Id, const LyudJson::FValue& V)
+		{
+			FRegular R;
+			R.Id = Id;
+			R.Name = V["name"].S();
+			R.Style = V["style"].S("steady");
+			R.Skill = std::min(1.f, std::max(0.f, V["skill"].F(0.5f)));
+			for (const LyudJson::FValue& P : V["plays"].Items)
+			{
+				R.Plays.push_back(P.S());
+			}
+			for (const LyudJson::FValue& P : V["plots"].Items)
+			{
+				R.Plots.push_back(P.S());
+			}
+			R.Hello = V["hello"].S();
+			R.SaysWin = V["win"].S();
+			R.SaysLose = V["lose"].S();
+			const int Fav = R.Style == "bold" ? 0 : R.Style == "careful" ? 1 : R.Style == "tricky" ? 2 : -1;
+			for (int I = 0; I < 3; ++I)
+			{
+				R.Lean[I] = Fav < 0 ? 1.0 / 3.0 : (I == Fav ? 0.6 : 0.2);
+			}
+			R.Honesty = std::min(0.9, std::max(0.4, 0.95 - 0.45 * (double)R.Skill - (R.Style == "tricky" ? 0.15 : 0.0)));
+			return R;
 		}
 
 		/** How far off the line of sight a thing of this kind may be and still be looked at (cm, at the eye). */
