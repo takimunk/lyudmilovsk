@@ -17,11 +17,15 @@ H shows the game's keys. F10 is the game menu. F8 is the editor's eject and stay
 | Tab | What it does |
 |---|---|
 | World | date, time of day, time speed; the weather (presets, weather types, phenomena, values, Auto); one tree's age and season |
-| Teleport | every teleport point by group, with a search box; "Bookmark this spot", "Copy position", "Fly through walls", "Reload". The line under the buttons is where you stand (world cm, map metres) |
+| Teleport | every teleport point by group (map places, the city plan's plots, squares and promenade shops, every feature's file, code points, your bookmarks), with a search box; "Bookmark this spot", "Copy position", "Fly through walls", "Reload". The line under the buttons is where you stand (world cm, map metres) |
 | Quests | every quest in quests.json: its state, a button per stage (jumps there, the current one is lit), a ✓ button per objective of the current stage (fires the real game event), "Forget" |
+| Town | the festival on now; every festival in festivals.json with "Day" (the calendar to its day) and a button per part (to its start); first snow; the townspeople, searched by name, job or key (30 rows), "Go to" (two metres off, facing them) and "What now" (their state, also logged as `DEV person`) |
 | Pocket | money (+100, +1000, to zero), "One of everything", "Pocket as at the start", "Held only"; every item with +1, +10, −, Wear/Hold |
 | Birds | every species: Become (on the hero's hand), Fly (in the air), Nearby (one calm bird beside you), Befriend; back to the hero, feed ×20, all species into the bird book |
 | Actions | a console line (any command, Enter; the last six to click again), then every registered action by group. Lit buttons are toggles that are on |
+
+Actions → Game → "Debug line on top" keeps one line over the game for screenshots and bug reports: where you stand (as a
+`Dev.TpAt` line and map metres), the game date and time, frame time and fps, the tracked quest and its stage.
 
 Developer mode is always there outside Shipping builds. A Shipping build has it only with `-dev` on the command line.
 
@@ -30,7 +34,7 @@ Developer mode is always there outside Shipping builds. A Shipping build has it 
 | Command | |
 |---|---|
 | `Dev.Tp <id>` | to a teleport point |
-| `Dev.TpAt <x> <y> [z] [yaw]` | to a world point in cm; without z onto the ground |
+| `Dev.TpAt <x> <y> [z] [yaw]` | to a world point in cm, z where the feet go; without z onto the ground |
 | `Dev.TpMap <x> <y> [yaw]` | to a map point in metres (docs/world_map.md frame), onto the ground |
 | `Dev.TpList [group]` | logs the points (`DEVTP` lines) |
 | `Dev.Where` | logs where you stand as a `Dev.TpAt` line plus map metres, and copies it to the clipboard (paste it into a bug report) |
@@ -61,7 +65,7 @@ A feature is not done until it can be reached and tested from developer mode. Fo
    ```
 
    `x`, `y`: map metres in the docs/world_map.md frame (X west, Y north, from the club's portal face), the same numbers as
-   `Content/UI/map.json`; or `place`: a map.json id. `z`: world cm; leave it out outdoors (the point is dropped onto whatever is solid
+   `Content/UI/map.json`; or `place`: a map.json id. `z`: world cm of the feet (the floor); leave it out outdoors (the point is dropped onto whatever is solid
    below, or onto the sea's surface), give it indoors (else you land on the roof). `yaw`: degrees, 0 looks west (+X), 90 north. `time`:
    sets the clock on arrival (night-only things). `name`: a string key in all three tables; `group` names a `dev.group.<group>` key.
    Places in map.json are listed on their own. `Dev.Where` gives you the numbers of where you stand.
