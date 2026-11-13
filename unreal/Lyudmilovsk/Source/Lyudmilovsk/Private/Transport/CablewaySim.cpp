@@ -380,6 +380,7 @@ namespace LyudTransport
 			C.Acc = 0.f;
 			C.Door = 0.f;
 			C.bToDepot = C.bHold = C.bPlayerAboard = false;
+			C.PlayerWait = 0.f;
 			C.Odometer = C.EmptyMetres = 0.f;
 			if (!Kept[C.Line])
 			{
@@ -893,6 +894,7 @@ namespace LyudTransport
 		C.State = ECabinState::Dwelling;
 		if (bNew)
 		{
+			C.PlayerWait = 0.f;
 			C.DwellUntil = Time + P.Dwell;
 			Emit(EEvent::Arrive, CI, Stop, -1);
 		}
@@ -1145,12 +1147,28 @@ namespace LyudTransport
 								bPlayerDue = true;
 							}
 						}
-						if (bPlayerDue && Time < C.DwellUntil + 25.0)
+						if (bPlayerDue && C.PlayerWait < 25.f)
 						{
-							// the player asked for it here: give them a little longer, doors open
+							// the player asked for it here: give them a little longer, doors open (each turn moves
+							// DwellUntil on, so the limit is counted apart: measured from DwellUntil it never ran out,
+							// and a cabin called and not boarded stood there for good with the line shut behind it)
 							C.Door = 1.f;
 							C.DwellUntil = Time + 5.0;
+							C.PlayerWait += 5.f + P.DoorTime;
 							break;
+						}
+						if (bPlayerDue)
+						{
+							// they never came: the call lapses (a waiting trip would call this cabin straight back);
+							// walking into a cabin later still starts a ride (PlayerBoard)
+							for (int RI = 0; RI < (int)Riders.size(); RI++)
+							{
+								const FRider& R = Riders[RI];
+								if (R.Who == PlayerId && R.State == ERiderState::Waiting && R.Cabin == CI && R.Legs[R.LegI].BoardStop == C.AtStop)
+								{
+									Cancel(RI);
+								}
+							}
 						}
 						if (C.Targets.empty() && C.Riders.empty() && C.Reserved == 0)
 						{

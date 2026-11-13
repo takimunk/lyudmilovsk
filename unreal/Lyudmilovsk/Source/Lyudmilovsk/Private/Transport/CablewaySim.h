@@ -125,6 +125,7 @@ namespace LyudTransport
 		std::vector<int> Riders;    // on board (rider indices)
 		int Reserved = 0;           // riders it is on its way to pick up
 		double DwellUntil = 0.0;
+		float PlayerWait = 0.f;     // seconds this stop's doors were held past the dwell for a player who called it here
 		double IdleSince = 0.0;
 		bool bToDepot = false;
 		bool bHold = false;         // somebody in the doorway (the game sets it): the doors stay open
