@@ -513,6 +513,19 @@ namespace LyudPeople
 			}
 			return N;
 		};
+		// at work (school, any duty) on that weekday round that hour: they'd miss a meeting then
+		auto Busy = [](const FPerson& P, int Day, float Hour)
+		{
+			for (const FDuty& Duty : P.Duties)
+			{
+				const bool bOver = Duty.From <= Duty.To ? (Hour + 1.f > Duty.From && Hour - 0.75f < Duty.To) : (Hour + 1.f > Duty.From || Hour - 0.75f < Duty.To);
+				if (((Duty.Days >> Day) & 1) && bOver)
+				{
+					return true;
+				}
+			}
+			return false;
+		};
 		struct FOuting { const char* Activity; float From, To; bool bKids; };
 		static const FOuting Outings[] = {
 			{ "sea_air", 11.f, 16.f, true }, { "stroll", 11.f, 17.f, true }, { "fair_visit", 12.f, 17.f, true }, { "feed_birds", 10.5f, 15.f, true },
@@ -597,8 +610,25 @@ namespace LyudPeople
 				continue;
 			}
 			const int Place = Near[(int)(Rand(H) * Count) % Count];
-			const int Day = Rand(H) < 0.45f ? 5 : 6;
-			const float Hour = O->From + (O->To - O->From) * Rand(H);
+			// the day and the hour that keep the fewest of them at work (of a few tries)
+			int Day = 6, FewestBusy = 99;
+			float Hour = O->From;
+			for (int Try = 0; Try < 6 && FewestBusy > 0; Try++)
+			{
+				const int TryDay = Rand(H) < 0.45f ? 5 : 6;
+				const float TryHour = O->From + (O->To - O->From) * Rand(H);
+				int NumBusy = 0;
+				for (const int Id : House.second)
+				{
+					NumBusy += Busy(W.People[(size_t)Id], TryDay, TryHour) ? 1 : 0;
+				}
+				if (NumBusy < FewestBusy)
+				{
+					FewestBusy = NumBusy;
+					Day = TryDay;
+					Hour = TryHour;
+				}
+			}
 			for (const int Id : House.second)
 			{
 				FPerson& P = W.People[(size_t)Id];
@@ -707,8 +737,16 @@ namespace LyudPeople
 				}
 				P.DateAct = F.DateAct = Act;
 				P.DatePlace = F.DatePlace = Near[(int)(Rand(H) * Count) % Count];
-				P.DateDay = F.DateDay = (int)(Rand(H) * 5.f) % 5;
-				P.DateHour = F.DateHour = D->From + (D->To - D->From) * Rand(H);
+				// a weekday and an hour both are free at (of a few tries; else the last tried)
+				for (int Try = 0; Try < 8; Try++)
+				{
+					P.DateDay = F.DateDay = (int)(Rand(H) * 5.f) % 5;
+					P.DateHour = F.DateHour = D->From + (D->To - D->From) * Rand(H);
+					if (!Busy(P, P.DateDay, P.DateHour) && !Busy(F, F.DateDay, F.DateHour))
+					{
+						break;
+					}
+				}
 				P.DateWith = F.Id;
 				F.DateWith = P.Id;
 				break;

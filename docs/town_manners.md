@@ -118,7 +118,8 @@ more) and one of them has a word (`on = thunder`).
   the birds; a table at the cafe or the restaurant for those without small children. From half an hour before the hour
   to an hour and a quarter after (`FWorld::OutingNow`) it scores 0.7 more, people leave what they chose for it
   (`Interrupt`), take a slot at that place and stay till the others have been there a while. Those at work miss it.
-  In mannersim 169 of the 262 households have two and more of theirs there together (153 whole). Those who walk (a
+  The day and the hour are the ones that keep the fewest of them at work. In mannersim 173 of the 262 households have two
+  and more of theirs there together (161 whole). Those who walk (a
   stroll, the fair) keep together: `FWorld::Wander` sends everybody after the first of the household at it (the lowest
   id), to the free spot nearest theirs, a few seconds behind (83% of the time within 40 m). Town talk:
   `doing = outing` (sets `outing`, `outing_kid`). `tools/mannersim/run.sh outing` prints a weekend.
@@ -128,7 +129,7 @@ more) and one of them has a word (`on = thunder`).
   the same thing at a place between their homes that has room: a talk, a bench, the cafe or a stroll after work; the
   old in the daytime (a bench, crumbs for the birds); children at the playground after school. It works as the outing
   does (`FWorld::MeetNow`: 1 the household's outing, 2 a date), and on a stroll the two keep together. In mannersim's
-  Wednesday 41 of the 77 pairs whose day it is meet (the rest: work, the culture club, supper). Town talk:
+  Wednesday 41 of the 73 pairs whose day it is meet (the day and hour are picked so that both are off work) (the rest: work, the culture club, supper). Town talk:
   `doing = date` (sets `date`, `date_kid`, the exchanges `date_talk`). `tools/mannersim/run.sh dates`.
 - **A word with their own** (`LyudBarks::WithTheirOwn`): two of a household at their outing, two friends at their date, a
   grown-up and the child they mind, within 4 m, are a pair for town talk's exchanges (sets `own_talk`, `own_talk_child`,
