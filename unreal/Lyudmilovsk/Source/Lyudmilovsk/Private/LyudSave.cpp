@@ -7,12 +7,22 @@
 #include "GameFramework/PlayerController.h"
 #include "HAL/IConsoleManager.h"
 #include "Kismet/GameplayStatics.h"
+#include "Plants/ProceduralForest.h"
 #include "Serialization/MemoryReader.h"
 #include "Serialization/MemoryWriter.h"
 #include "Serialization/ObjectAndNameAsStringProxyArchive.h"
 #include "TimerManager.h"
 
 static const TCHAR* IndexSlot = TEXT("lyud_index");
+
+/**
+ * A forest's live plants come and go with the camera under auto-generated names: a record of one would land on another
+ * tree after a load (or on none), so they are neither saved nor restored.
+ */
+static bool LyudIsTransientSaveable(const AActor* Actor)
+{
+	return Actor->GetOwner() && Actor->GetOwner()->IsA<AProceduralForest>();
+}
 
 void ULyudSaveGame::Store(UObject* Object, FLyudSaveRecord& Out)
 {
@@ -125,7 +135,7 @@ FString ULyudSaveSubsystem::SaveToSlot(const FString& Title, const FString& InSl
 	}
 	for (TActorIterator<AActor> It(World); It; ++It)
 	{
-		if (It->Implements<ULyudSaveable>())
+		if (It->Implements<ULyudSaveable>() && !LyudIsTransientSaveable(*It))
 		{
 			ILyudSaveable::Execute_OnGameSaving(*It);
 			ULyudSaveGame::Store(*It, Save->Actors.FindOrAdd(It->GetFName()));
@@ -260,7 +270,7 @@ void ULyudSaveSubsystem::ApplyPending(TWeakObjectPtr<UWorld> WeakWorld)
 	int32 Restored = 0;
 	for (TActorIterator<AActor> It(World); It; ++It)
 	{
-		if (!It->Implements<ULyudSaveable>())
+		if (!It->Implements<ULyudSaveable>() || LyudIsTransientSaveable(*It))
 		{
 			continue;
 		}
