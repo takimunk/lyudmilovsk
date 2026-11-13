@@ -1048,7 +1048,10 @@ void ULyudPublicSpotsSubsystem::Initialize(FSubsystemCollectionBase& Collection)
 void ULyudPublicSpotsSubsystem::OnWorldBeginPlay(UWorld& InWorld)
 {
 	Super::OnWorldBeginPlay(InWorld);
-	if (!Doc || CVarPublicSpaces.GetValueOnGameThread() == 0 || !InWorld.GetMapName().Contains(TEXT("Lvl_Scene01")))
+	// the parsed layout (several MB of json values) is only needed here: not kept for the session
+	const TSharedPtr<FJsonObject> Layout = Doc;
+	Doc.Reset();
+	if (!Layout || CVarPublicSpaces.GetValueOnGameThread() == 0 || !InWorld.GetMapName().Contains(TEXT("Lvl_Scene01")))
 	{
 		return;
 	}
@@ -1056,7 +1059,7 @@ void ULyudPublicSpotsSubsystem::OnWorldBeginPlay(UWorld& InWorld)
 	SP.ObjectFlags |= RF_Transient;
 	if (ALyudPublicSpaces* A = InWorld.SpawnActor<ALyudPublicSpaces>(SP))
 	{
-		if (A->Build(Doc)) Spaces = A;
+		if (A->Build(Layout)) Spaces = A;
 		else A->Destroy();
 	}
 }
