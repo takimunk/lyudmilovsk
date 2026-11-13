@@ -32,7 +32,7 @@
  },
  "city.reg.wave.7": {
   "ru": "ХОЗЯЙСТВЕННЫЙ. Недосчитались пяти гвоздей-«сотки» и маленького латунного колёсика от весов. На мешке с пшеном — следы, очень мелкие и очень мягкие.",
-  "en": "HARDWARE. Five hundred-millimetre nails and a little brass wheel from the scales are missing. On the sack of millet: footprints, very small and very soft.",
+  "en": "HARDWARE. Five 100 mm nails and a little brass wheel from the scales are missing. On the sack of millet: footprints, very small and very soft.",
   "ja": "金物店より。百ミリの釘が五本と、はかりの小さな真鍮の歯車が見当たりません。きび袋の上に、とても小さくて柔らかい足跡が残っていました。"
  },
  "city.reg.wave.8": {
@@ -63,32 +63,32 @@
  "city.wave.weigh.1": {
   "ru": "Стрелка дрогнула и встала: сорок девять килограммов. Из щели выпал билетик: «Сегодня вас ждёт мелкая удача. Не прозевайте».",
   "en": "The needle shivered and settled: forty-nine kilos. A ticket dropped out of the slot: \"A small piece of luck awaits you today. Don't miss it.\"",
-  "ja": "針が震えて止まった。四十九キロ。口から切符が落ちてきた。「今日は小さな幸運が待っています。見逃さないように」"
+  "ja": "針が震えて止まった。四十九キロ。口からチケットが落ちてきた。「今日は小さな幸運が待っています。見逃さないように」"
  },
  "city.wave.weigh.2": {
   "ru": "Пятьдесят два с половиной. Билетик: «Кто рано встаёт, тому булочная ближе».",
   "en": "Fifty-two and a half. The ticket says: \"The early riser lives closer to the bakery.\"",
-  "ja": "五十二キロ半。切符には「早起きの人はパン屋が近い」とあった。"
+  "ja": "五十二キロ半。チケットには「早起きの人はパン屋が近い」とあった。"
  },
  "city.wave.weigh.3": {
   "ru": "Весы вздохнули и показали число, которое я решил считать неправильным. Билетик: «Не всякому числу надо верить».",
   "en": "The machine sighed and showed a number I decided to count as wrong. The ticket: \"Not every number deserves belief.\"",
-  "ja": "体重計はため息をついて、間違いだと思うことにした数字を出した。切符には「どんな数字でも信じる必要はない」。"
+  "ja": "体重計はため息をついて、間違いだと思うことにした数字を出した。チケットには「どんな数字でも信じる必要はない」。"
  },
  "city.wave.weigh.4": {
   "ru": "Сорок восемь. Но я стоял на носках, и билетик так и написал: «Стоять надо на пятках».",
   "en": "Forty-eight. But I stood on my toes, and the ticket said so: \"One should stand on one's heels.\"",
-  "ja": "四十八キロ。でもつま先立ちだったので、切符にもそう書いてあった。「立つときはかかとで」"
+  "ja": "四十八キロ。でもつま先立ちだったので、チケットにもそう書いてあった。「立つときはかかとで」"
  },
  "city.wave.weigh.5": {
   "ru": "Пятьдесят один. Билетик: «Ждите письма». Какого письма? Ладно, подождём.",
   "en": "Fifty-one. The ticket: \"Expect a letter.\" What letter? Well, we'll wait.",
-  "ja": "五十一キロ。切符には「手紙をお待ちください」。何の手紙だろう。まあ、待ってみよう。"
+  "ja": "五十一キロ。チケットには「手紙をお待ちください」。何の手紙だろう。まあ、待ってみよう。"
  },
  "city.wave.weigh.6": {
   "ru": "Стрелка качалась долго, будто думала. Билетик: «Поменьше сомнений, побольше хлеба».",
   "en": "The needle swung for a long time, as if thinking. The ticket: \"Fewer doubts, more bread.\"",
-  "ja": "針は考えごとでもするように、長いあいだ揺れていた。切符には「迷いは少なめ、パンは多めに」。"
+  "ja": "針は考えごとでもするように、長いあいだ揺れていた。チケットには「迷いは少なめ、パンは多めに」。"
  },
  "city.wave.booth.prompt": {
   "ru": "E — послушать пластинку в наушниках",
@@ -167,8 +167,8 @@
  },
  "city.wave.bmenu.tue": {
   "ru": "Вторник: нарезные батоны и плюшки. Приписано: «С изюмом — по просьбе трудящихся».",
-  "en": "Tuesday: sliced loaves and buns. Added: \"With raisins, by popular request.\"",
-  "ja": "火曜日。スライスの食パンと甘いパン。書き添え。「干しぶどう入りは皆さまのご要望により」"
+  "en": "Tuesday: long white loaves and sweet buns. Added: \"With raisins, by popular request.\"",
+  "ja": "火曜日。白い細長いパンと甘い丸パン。書き添え。「干しぶどう入りは皆さまのご要望により」"
  },
  "city.wave.bmenu.wed": {
   "ru": "Среда: калач к чаю и ватрушки с творогом. Цена написана мелом и слегка размазана рукавом.",
@@ -223,12 +223,12 @@
  "city.wave.new.mon": {
   "ru": "Новинки понедельника: «Атлас птиц Балтики», два тома сказок и сборник морских рассказов. На обложке атласа чайка, явно нарисованная с натуры: крикливая.",
   "en": "Monday's new arrivals: the \"Atlas of Baltic Birds\", two volumes of fairy tales and a collection of sea stories. The gull on the atlas cover was clearly drawn from life: noisy.",
-  "ja": "月曜日の新刊。『バルト海の鳥の図鑑』、童話が二冊、海の短編集。図鑑の表紙のカモメは、明らかに実物を見て描いたようにやかましそうだ。"
+  "ja": "月曜日の新刊。『バルト海の鳥の図鑑』、童話が二冊、海の短編集。図鑑の表紙のカモメは、明らかに実物を見て描いたものだ。いかにもやかましそうだから。"
  },
  "city.wave.new.tue": {
   "ru": "Во вторник привезли «Занимательную физику» и «Школу рыболова». Продавец пересчитывал пачки и шёпотом ругал грузчиков.",
   "en": "On Tuesday they brought \"Physics for Fun\" and \"The Angler's School\". The seller counted the bundles and quietly scolded the porters.",
-  "ja": "火曜日には『おもしろ物理』と『釣り人の学校』が入った。店員は包みを数えながら、小声で運び屋に文句を言っていた。"
+  "ja": "火曜日には『おもしろ物理』と『釣り人の学校』が入った。店員は包みを数えながら、小声で荷運びの人たちに文句を言っていた。"
  },
  "city.wave.new.wed": {
   "ru": "Среда: стихи. Тонкая книжка в синей обложке и толстая в красной. Тонкую уже разбирают.",
@@ -327,7 +327,7 @@
  },
  "city.wave.feed.a2": {
   "ru": "На столе пакеты с кормом: пшено, подсолнух, арахис в скорлупе, сало. Записка: «Берите понемногу, а то вся стая потом на вас».",
-  "en": "On the table, packs of feed: millet, sunflower seed, peanuts, lard. A note: \"Take a little at a time, or the whole flock will be after you.\"",
+  "en": "On the table, packs of feed: millet, sunflower seed, peanuts in the shell, lard. A note: \"Take a little at a time, or the whole flock will be after you.\"",
   "ja": "テーブルには餌の袋。きび、ヒマワリの種、殻つきのピーナッツ、脂身。メモ。「少しずつ買ってください。でないと群れ全部があなたについてきます」"
  },
  "city.wave.feeders.prompt": {
@@ -448,7 +448,7 @@
  "city.wave.dryer.1": {
   "ru": "Сел под колпак. Гудит ровно, как далёкий самолёт. Тёплый воздух пахнет шампунем и слегка подгоревшей ромашкой. Двадцать минут никто не ждёт от меня ничего умного.",
   "en": "I sat under the hood. It hums evenly, like a distant plane. The warm air smells of shampoo and slightly scorched camomile. For twenty minutes nobody expects anything clever of me.",
-  "ja": "フードの下に座った。遠くの飛行機のように一定の音でうなっている。温かい風はシャンプーと、少し焦げたカミツレのにおいがする。二十分間、誰も私に気の利いたことを期待しない。"
+  "ja": "フードの下に座った。遠くの飛行機のように一定の音でうなっている。温かい風はシャンプーと、少し焦げたカミツレのにおいがする。二十分間、誰も僕に気の利いたことを期待しない。"
  },
  "city.wave.dryer.2": {
   "ru": "Под колпаком жарко, и все звуки уходят далеко: голоса, ножницы, радио. Закрыл глаза, и показалось, что я в бане, только тихой.",
@@ -568,7 +568,7 @@
  "city.wave.depot.3": {
   "ru": "Рядом с депо кто-то оставил записку: «Спасибо тому, кто принёс». Не знаю, кто писал, но подписался бы под каждым словом.",
   "en": "Beside the depot someone has left a note: \"Thank you to whoever brought it.\" I don't know who wrote it, but I'd sign under every word.",
-  "ja": "機関庫のそばにメモが置かれている。「持ってきてくれた方、ありがとう」。誰が書いたのか知らないけれど、一言一句にサインしたいくらいだ。"
+  "ja": "機関庫のそばにメモが置かれている。「持ってきてくれた方、ありがとう」。誰が書いたのか知らないけれど、一言一句、僕もそのとおりだと思う。"
  },
  "quest.wave_loco.title": {
   "ru": "Паровоз «Север»",
@@ -623,7 +623,7 @@
  "quest.wave_loco.done": {
   "ru": "Кот Бублик спит, паровоз ходит по кругу, на кармане осталась рыжая шерстинка. Расчёска и гвозди, наверное, тоже вернутся: люди знают, где искать.",
   "en": "Bublik sleeps, the engine runs in circles, and a ginger hair is left on my pocket. The comb and nails will probably come back too: people know where to look.",
-  "ja": "ブブリクは寝て、機関車は輪を描いて走り、ポケットには茶色い毛が一本残った。くしや釘もきっと戻ってくる。人々は探す場所を知っている。"
+  "ja": "ブブリクは寝て、機関車は輪を描いて走り、ポケットには茶色い毛が一本残った。くしや釘もきっと戻ってくる。みんな、どこを探せばいいかわかっているから。"
  },
  "quest.wave_bond.title": {
   "ru": "Серия семь",
