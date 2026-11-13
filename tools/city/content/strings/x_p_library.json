@@ -1079,5 +1079,85 @@
   "ru": "Тамара Ильинична открыла тетрадь на чистой странице и подвинула ко мне карандаш: «Пока без имени. Имя появится само». Я повертел карандаш и положил обратно.",
   "en": "Tamara Ilyinichna opened the notebook at a blank page and pushed a pencil toward me: \"No name yet. The name will come by itself.\" I turned the pencil over and put it back.",
   "ja": "タマーラ・イリイニチナは棋譜帳の白いページを開いて、鉛筆をこちらに押しやった。「まだ名前はなし。名前はそのうち自分で現れるわ」。僕は鉛筆をくるくる回して、元に戻した。"
+ },
+ "city.xpl.leave.3": {
+  "ru": "Открытка отсырела по краям, пока я нёс её под курткой. Написал всё равно: «Шёл дождь. Пришёл». Положил к закладкам сушиться, а из стопки взял сухую.",
+  "en": "The postcard got damp at the edges while I carried it under my jacket. I wrote anyway: \"It rained. I came.\" I put it with the bookmarks to dry and took a dry one from the pile.",
+  "ja": "上着の下で運ぶあいだに、はがきの縁が湿ってしまった。それでも書いた。「雨だった。来た」。しおりの間に入れて乾かし、山から乾いたのを一枚取った。"
+ },
+ "city.xpl.leave.4": {
+  "ru": "Вечером у полки никого. Я долго выбирал слова и написал только: «До завтра». Из стопки взял чью-то открытку с маяком.",
+  "en": "In the evening there's nobody at the shelf. I chose my words for a long time and wrote only: \"Till tomorrow.\" From the pile I took someone's card with a lighthouse.",
+  "ja": "夕方、棚のそばには誰もいない。長いこと言葉を選んで、書いたのは「また明日」だけ。山から、誰かの灯台のはがきを取った。"
+ },
+ "city.xpl.leave.5": {
+  "ru": "Сегодня праздник, и в стопке открытки с флажками и цветами. На своей я написал «С праздником, кто бы ты ни был» и взял одну с салютом.",
+  "en": "It's a holiday, and the pile is full of cards with flags and flowers. On mine I wrote \"Happy holiday, whoever you are\" and took one with fireworks.",
+  "ja": "今日は祝日で、山には旗や花のはがきがたくさん。僕のには「おめでとう、あなたが誰でも」と書いて、花火のはがきを一枚取った。"
+ },
+ "city.xpl.player.1": {
+  "ru": "С утра на проигрывателе детская пластинка, оставленная с субботы: «Как медвежонок трубу нашёл». Библиотекарь говорит, её слушают чаще любой симфонии.",
+  "en": "In the morning the children's record from Saturday is still on the player: \"How the Little Bear Found a Trumpet\". The librarian says it gets more plays than any symphony.",
+  "ja": "朝、プレーヤーには土曜日から子ども向けのレコードがのったまま。「こぐまがラッパを見つけた話」。どんな交響曲よりよく聴かれる、と司書は言う。"
+ },
+ "city.xpl.player.2": {
+  "ru": "К вечеру пластинки в ящике перепутаны, а на проигрывателе оркестр играет что-то медленное. Я не стал менять: кто-то оставил это следующему.",
+  "en": "By evening the records in the box are muddled, and on the player an orchestra is playing something slow. I didn't change it: someone left it for whoever came next.",
+  "ja": "夕方には箱のレコードがごちゃまぜで、プレーヤーではオーケストラがゆっくりした曲を弾いている。変えなかった。誰かが次の人のために残していったのだから。"
+ },
+ "city.xpl.player.3": {
+  "ru": "В дождь здесь ставят пластинку с песнями о море. Игла шипит, и не поймёшь, где кончается запись и начинается окно.",
+  "en": "When it rains they put on the record of sea songs here. The needle hisses, and you can't tell where the recording ends and the window begins.",
+  "ja": "雨の日、ここでは海の歌のレコードがかかる。針がしゃーっと鳴り、どこまでが録音でどこからが窓の音かわからない。"
+ },
+ "city.xpl.player.4": {
+  "ru": "На внутреннем конверте карандашом: «Слушать с закрытыми глазами. Проверено. Отдел периодики».",
+  "en": "On the inner sleeve, in pencil: \"Listen with your eyes closed. Tested. The periodicals desk.\"",
+  "ja": "内袋に鉛筆で「目を閉じて聴くこと。確認済み。定期刊行物係」。"
+ },
+ "city.xpl.radio.1": {
+  "ru": "Утром радио в кабинете бормочет зарядку и новости. Библиотекарь заваривает чай под прогноз погоды и всегда говорит: «Опять наврут».",
+  "en": "In the morning the office radio mutters the exercises and the news. The librarian brews tea to the forecast and always says, \"Wrong again, I bet.\"",
+  "ja": "朝、事務室のラジオは体操とニュースをつぶやいている。司書は天気予報に合わせてお茶をいれ、いつも「また外れるわね」と言う。"
+ },
+ "city.xpl.radio.2": {
+  "ru": "После обеда радиоспектакль. Библиотекарь делает тише, но не выключает, и в тишине зала слышно, как в спектакле кто-то открывает дверь.",
+  "en": "After lunch, a radio play. The librarian turns it down but not off, and in the quiet of the hall you can hear somebody in the play opening a door.",
+  "ja": "昼過ぎはラジオドラマ。司書は音を小さくするけれど消さない。静かな閲覧室に、劇の中で誰かがドアを開ける音が聞こえる。"
+ },
+ "city.xpl.radio.3": {
+  "ru": "В сырую погоду радио ловит сразу две станции: одна поёт, другая читает сводку погоды. Вместе выходит что-то правдивое.",
+  "en": "In damp weather the radio picks up two stations at once: one is singing, the other reading the weather report. Together they make something truthful.",
+  "ja": "湿った日は、ラジオが二つの局を同時に拾う。ひとつは歌、もうひとつは天気の概況。合わせると、なんだか本当らしくなる。"
+ },
+ "city.xpl.radio.4": {
+  "ru": "По радио праздничный концерт, и библиотекарь впервые сделала погромче. «Сегодня можно», — сказала она полкам.",
+  "en": "There's a holiday concert on the radio, and for once the librarian turned it up. \"Today it's allowed,\" she told the shelves.",
+  "ja": "ラジオでは祝日のコンサート。司書は初めて音を大きくした。「今日はいいの」と棚に向かって言った。"
+ },
+ "city.xpl.scope.1": {
+  "ru": "Труба стоит у круглого окна капсулы. Внизу крыши террас, бельё на верёвках и полоска моря между двумя домами.",
+  "en": "The telescope stands at the pod's round window. Below: the terrace roofs, washing on lines and a strip of sea between two houses.",
+  "ja": "望遠鏡はカプセルの丸窓のそばにある。下にはテラスの屋根、ロープの洗濯物、二軒の家の間に細い海。"
+ },
+ "city.xpl.scope.2": {
+  "ru": "Навёл трубу на канатную дорогу. Кабинка ползёт вверх, а в ней кто-то читает газету, не глядя в окно.",
+  "en": "I turned the telescope on the cable car. A cabin is creeping up, and somebody inside is reading a newspaper without looking out.",
+  "ja": "望遠鏡をロープウェーに向けた。ゴンドラがのぼっていき、中の誰かは窓の外も見ずに新聞を読んでいる。"
+ },
+ "city.xpl.scope.3": {
+  "ru": "Ночью в трубе одни огни: маяк, редкие окна, фонарь на пирсе. Маяк мигает, будто проверяет, все ли на месте.",
+  "en": "At night there are only lights in the eyepiece: the lighthouse, a few windows, a lamp on the pier. The lighthouse blinks, as if checking everyone's still there.",
+  "ja": "夜、望遠鏡に見えるのは灯りだけ。灯台、まばらな窓、桟橋の街灯。灯台は、みんないるか確かめるように点滅している。"
+ },
+ "city.xpl.scope.4": {
+  "ru": "Поймал в трубу Луну. Она заняла всё стекло, и стало видно, какая она неровная. Издалека она в этом не признаётся.",
+  "en": "I caught the Moon in the telescope. It filled the whole lens, and you could see how bumpy it is. From far away it doesn't admit it.",
+  "ja": "望遠鏡で月をつかまえた。レンズいっぱいに広がって、でこぼこなのがよく見えた。遠くからだと、月はそれを認めない。"
+ },
+ "city.xpl.scope.5": {
+  "ru": "Туман. В трубе белое молоко, и только иногда из него выплывает чья-то крыша и тонет обратно.",
+  "en": "Fog. The eyepiece is full of white milk, and only now and then a roof floats up out of it and sinks again.",
+  "ja": "霧。望遠鏡の中は白い牛乳のようで、ときどき誰かの屋根が浮かんでは、また沈んでいく。"
  }
 }

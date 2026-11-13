@@ -425,12 +425,6 @@
     }
    ]
   },
-  "look_dance_mirror": {
-   "like": "look_misc",
-   "lines": [
-    "city.rassvet.mirror.*"
-   ]
-  },
   "piano_club": {
    "like": "piano",
    "target": "piano",
@@ -544,7 +538,28 @@
   "look_lost_club": {
    "like": "look_lost",
    "lines": [
-    "city.rassvet.lost.*"
+    "city.rassvet.lost.1",
+    "city.rassvet.lost.2",
+    "city.rassvet.lost.3",
+    {
+     "k": "city.rassvet.lost.4",
+     "weather": "rain"
+    },
+    {
+     "k": "city.rassvet.lost.5",
+     "d": "mon"
+    },
+    {
+     "k": "city.rassvet.lost.6",
+     "weather": [
+      "cold",
+      "snow"
+     ]
+    },
+    {
+     "k": "city.rassvet.lost.7",
+     "after": 10
+    }
    ]
   },
   "rd_rassvet_programme": {
@@ -577,6 +592,58 @@
     ]
    },
    "sound": "page_turn"
+  },
+  "rassvet_sh_chess": {
+   "like": "read_chess",
+   "target": "read_chess",
+   "lines": [
+    "city.read.chess.*",
+    {
+     "k": "city.rassvet.shchess.1",
+     "d": "sat"
+    },
+    {
+     "k": "city.rassvet.shchess.2",
+     "h": [
+      18,
+      24
+     ]
+    },
+    {
+     "k": "city.rassvet.shchess.3",
+     "once": true
+    }
+   ]
+  },
+  "rassvet_radio_bench": {
+   "like": "workbench",
+   "target": "workbench",
+   "prompt": "city.rassvet.radiobench.prompt",
+   "minutes": 20,
+   "sound": "",
+   "lines": [
+    "city.rassvet.radiobench.1",
+    "city.rassvet.radiobench.2",
+    {
+     "k": "city.rassvet.radiobench.3",
+     "d": "tue,thu",
+     "h": [
+      17,
+      21
+     ]
+    },
+    {
+     "k": "city.rassvet.radiobench.4",
+     "weather": [
+      "rain",
+      "fog"
+     ]
+    },
+    {
+     "k": "city.rassvet.radiobench.5",
+     "once": true
+    }
+   ]
   }
  },
  "rules": {
@@ -650,6 +717,12 @@
   },
   "P-CLUB2/shelf_radio": {
    "act": "rd_rassvet_radio_log"
+  },
+  "P-CLUB2/shelf_chess": {
+   "act": "rassvet_sh_chess"
+  },
+  "P-CLUB2/radio_club_table": {
+   "act": "rassvet_radio_bench"
   }
  },
  "quests": [

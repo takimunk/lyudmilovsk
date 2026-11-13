@@ -1259,5 +1259,280 @@
   "ru": "— В мороз приносят по паре в день: одну, потом вторую. Хозяева потом приходят, как правило, в одной.",
   "en": "\"In frost they bring one pair a day: one, then the other. The owners then turn up, as a rule, in just one.\"",
   "ja": "「寒い日は一日に一組届くの。片方、それからもう片方。持ち主はたいてい、片手だけはめて取りに来るわ。」"
+ },
+ "city.ps.fmirror.4": {
+  "ru": "С утра зеркало ещё чистое, без отпечатков ладоней. Я впервые разглядел, что у меня торчит воротник. Поправил. Зеркало промолчало.",
+  "en": "In the morning the mirror is still clean, no palm prints. For the first time I noticed my collar was sticking up. I fixed it. The mirror said nothing.",
+  "ja": "朝の鏡はまだきれいで、手のあとがない。初めて、襟が立っているのに気づいた。直した。鏡は何も言わなかった。"
+ },
+ "city.ps.fmirror.5": {
+  "ru": "В дождь перед зеркалом крутятся в плащах, примеряя новые поверх мокрых. Пол перед ним весь в лужицах, как после отлива.",
+  "en": "When it rains people twirl in front of it in raincoats, trying new ones on over their wet ones. The floor in front is dotted with puddles, like after the tide.",
+  "ja": "雨の日は、鏡の前で濡れたコートの上から新しいレインコートを試着して、くるくる回る人がいる。前の床は、潮が引いたあとのような水たまりだらけ。"
+ },
+ "city.ps.fmirror.6": {
+  "ru": "К празднику на раму прицепили бумажный цветок. Все, кто смотрится в зеркало, выходят с цветком за ухом.",
+  "en": "For the holiday someone has clipped a paper flower to the frame. Everyone who looks in the mirror comes out with a flower behind one ear.",
+  "ja": "祝日に合わせて、額縁に紙の花がつけてある。鏡をのぞく人はみんな、耳に花をさしたように映る。"
+ },
+ "city.ps.type.4": {
+  "ru": "К вечеру на пробном листе уже нет места. Продавец вставил новый, и я напечатал на нём первым: «Здравствуйте».",
+  "en": "By evening there's no room left on the test sheet. The salesman put in a new one, and I was first to type on it: \"Hello.\"",
+  "ja": "夕方には試し打ちの紙に余白がない。店員が新しい紙を入れてくれて、僕がいちばん最初に打った。「こんにちは」"
+ },
+ "city.ps.type.5": {
+  "ru": "По понедельникам машинку смазывают: она стучит мягче, а «ж» больше не заедает. Продавец, кажется, расстроен: «Характер пропал».",
+  "en": "On Mondays the typewriter gets oiled: it taps more softly, and the Zh no longer sticks. The salesman seems upset: \"It's lost its character.\"",
+  "ja": "月曜日はタイプライターに油がさされる。音がやわらかくなって、「ж」の字ももう引っかからない。店員は少し残念そうだ。「個性がなくなっちまった」"
+ },
+ "city.ps.type.6": {
+  "ru": "На пробном листе среди имён напечатано: «Если ты это читаешь, значит, ты тоже здесь». Я напечатал ниже: «Здесь».",
+  "en": "On the test sheet, among the names, someone has typed: \"If you're reading this, you're here too.\" Below it I typed: \"Here.\"",
+  "ja": "試し打ちの紙の名前のあいだに、こう打ってある。「これを読んでいるなら、君もここにいる」。その下に僕は打った。「いる」"
+ },
+ "city.ps.tv.1": {
+  "ru": "В отделе радиотоваров все телевизоры включены на один канал. Диктор говорит из шести ящиков сразу, и в каждом он немного другого цвета.",
+  "en": "In the radio department every television is on the same channel. The announcer speaks out of six sets at once, and in each one he's a slightly different colour.",
+  "ja": "電気製品売り場では、どのテレビも同じチャンネルがついている。アナウンサーが六台から同時にしゃべり、どの画面でも少しずつ色がちがう。"
+ },
+ "city.ps.tv.2": {
+  "ru": "Днём идёт учебная программа, урок физики для восьмых классов. Перед экранами стоят два пенсионера и спорят с учителем.",
+  "en": "In the daytime it's the schools programme, a physics lesson for the eighth grade. Two pensioners stand in front of the screens arguing with the teacher.",
+  "ja": "昼間は教育番組で、中学二年の物理の授業。画面の前でお年寄りが二人、先生に反論している。"
+ },
+ "city.ps.tv.3": {
+  "ru": "В выходные у телевизоров толпа: показывают футбол. Продавец давно не пытается ничего продать и смотрит сам, облокотившись на кассу.",
+  "en": "At weekends there's a crowd at the televisions: football's on. The salesman gave up trying to sell anything long ago and watches too, leaning on the till.",
+  "ja": "週末はテレビの前に人だかり。サッカーをやっているのだ。店員はとっくに売るのをあきらめ、レジにもたれて一緒に見ている。"
+ },
+ "city.ps.tv.4": {
+  "ru": "Под Новый год на всех экранах один и тот же старый фильм, и люди смотрят его стоя, в пальто, с сетками мандаринов в руках.",
+  "en": "Before New Year the same old film is on every screen, and people watch it standing, in their coats, with string bags of tangerines in their hands.",
+  "ja": "年の瀬には、どの画面でも同じ古い映画をやっていて、みんなコートのまま、みかんの網袋を手に立って見ている。"
+ },
+ "city.ps.player.1": {
+  "ru": "Продавщица ставит пластинку на пробу и опускает иглу двумя пальцами, как пинцетом. «Только не царапать. Это для всех».",
+  "en": "The saleswoman puts a record on to try and lowers the needle with two fingers, like tweezers. \"No scratching. This one's for everybody.\"",
+  "ja": "店員は試聴用にレコードをのせ、二本の指でピンセットのように針を下ろした。「傷はつけないで。みんなのですから」"
+ },
+ "city.ps.player.2": {
+  "ru": "В пятницу завезли новые пластинки, и у проигрывателя очередь. Каждому дают послушать полминуты. Мне досталась середина песни, лучшая часть.",
+  "en": "New records came in on Friday, and there's a queue at the player. Everyone gets half a minute. I got the middle of a song, the best part.",
+  "ja": "金曜日に新しいレコードが入って、プレーヤーの前に行列ができている。ひとり三十秒ずつ。僕の番は歌のまんなか、いちばんいいところだった。"
+ },
+ "city.ps.player.3": {
+  "ru": "В дождь в отдел заходят переждать, и продавщица ставит что-нибудь весёлое: «Чтобы не стояли с такими лицами».",
+  "en": "When it rains people come into the department to wait it out, and the saleswoman puts on something cheerful: \"So you don't stand there with faces like that.\"",
+  "ja": "雨の日は雨宿りの客が売り場に入ってくるので、店員は明るい曲をかける。「そんな顔で立っていられないようにね」"
+ },
+ "city.ps.radio.1": {
+  "ru": "Новый приёмник на острове включён тихо: передают производственную гимнастику. В отделе тканей две продавщицы делают наклоны за прилавком.",
+  "en": "The new set on the island is on low: they're broadcasting the workplace exercises. In the fabrics department two saleswomen are doing bends behind the counter.",
+  "ja": "島の新しいラジオは小さな音で、職場体操を流している。生地売り場では店員が二人、カウンターの陰で前屈をしている。"
+ },
+ "city.ps.radio.2": {
+  "ru": "На корпусе ценник и бумажка: «Ручки крутить можно. Антенну не ломать». Судя по изоленте, антенну уже ломали.",
+  "en": "On the case, a price tag and a note: \"You may turn the knobs. Do not break the aerial.\" Judging by the electrical tape, someone already has.",
+  "ja": "本体には値札と貼り紙。「つまみは回してよし。アンテナは折らないこと」。絶縁テープを見るかぎり、もう折った人がいる。"
+ },
+ "city.ps.radio.3": {
+  "ru": "Перед закрытием продавец ловит музыку и делает погромче, пока считает кассу. Говорит, так цифры сходятся.",
+  "en": "Before closing, the salesman finds some music and turns it up while he counts the till. He says it makes the figures add up.",
+  "ja": "閉店前、店員はラジオで音楽を探し、レジを数えるあいだ音を大きくする。こうすると数字が合うのだそうだ。"
+ },
+ "city.ps.radio.4": {
+  "ru": "В холода по радио рассказывают, как утеплять окна. Покупатели слушают, кивают, а потом идут в хозяйственный за ватой.",
+  "en": "In cold weather the radio explains how to draught-proof windows. Customers listen and nod, then go to the household department for cotton wool.",
+  "ja": "寒い日、ラジオでは窓のすきま風の防ぎ方を話している。客たちはうなずいて聞き、それから日用品売り場へ綿を買いに行く。"
+ },
+ "city.ps.barbell.1": {
+  "ru": "Штанга лежит на помосте в спортивном отделе, с ценником на каждом блине. Я поднял её до колен. Продавец сказал: «Для начала хватит».",
+  "en": "The barbell lies on a platform in the sports department, a price tag on every plate. I got it as far as my knees. The salesman said, \"That'll do for a start.\"",
+  "ja": "スポーツ用品売り場の台にバーベルがあり、プレート一枚一枚に値札がついている。膝まで持ち上げた。店員は「最初はそれで十分」と言った。"
+ },
+ "city.ps.barbell.2": {
+  "ru": "Рядом табличка: «Пробовать под наблюдением продавца». Продавец наблюдает из-за прилавка, не отрываясь от газеты.",
+  "en": "Next to it a sign: \"Try under the salesman's supervision.\" The salesman supervises from behind the counter without looking up from his paper.",
+  "ja": "横に札。「店員の立ち会いのもとでお試しください」。店員はカウンターの向こうから、新聞から目を離さずに立ち会っている。"
+ },
+ "city.ps.barbell.3": {
+  "ru": "В субботу у помоста собираются ребята из секции и по очереди жмут пустой гриф, показывая технику. Техника у всех разная.",
+  "en": "On Saturday the boys from the sports club gather at the platform and take turns pressing the bare bar to show their technique. Everyone's technique is different.",
+  "ja": "土曜日は運動部の少年たちが台のまわりに集まり、プレートなしのバーを順番に挙げてフォームを見せ合う。フォームはみんなちがう。"
+ },
+ "city.ps.barbell.4": {
+  "ru": "Продавец показал, как ставить ноги, и вдруг сам поднял штангу над головой. Потом поправил галстук и вернулся к прилавку как ни в чём не бывало.",
+  "en": "The salesman showed me where to put my feet and then suddenly lifted the barbell over his head himself. Then he straightened his tie and went back to the counter as if nothing had happened.",
+  "ja": "店員は足の置き方を教えてくれて、いきなり自分でバーベルを頭上に挙げた。それからネクタイを直し、何事もなかったようにカウンターへ戻った。"
+ },
+ "city.ps.bike.1": {
+  "ru": "Велотренажёр стоит в проходе, и все, кто идёт мимо, крутят педаль рукой. Я сел и проехал, если верить счётчику, двести метров — как раз до отдела игрушек.",
+  "en": "The exercise bike stands in the aisle, and everyone who passes turns a pedal by hand. I sat on it and rode, if the counter is to be believed, two hundred metres — just as far as the toy department.",
+  "ja": "エアロバイクは通路に置いてあって、通る人はみんな手でペダルを回していく。僕は乗って、メーターを信じるなら二百メートル、ちょうどおもちゃ売り場まで走った。"
+ },
+ "city.ps.bike.2": {
+  "ru": "Седло ещё в плёнке, и она скрипит на каждом обороте. Продавщица просит не снимать: «Снимет покупатель, когда купит».",
+  "en": "The saddle is still wrapped in film, which squeaks with every turn. The saleswoman asks me not to take it off: \"The customer does that once he's bought it.\"",
+  "ja": "サドルはまだビニールに包まれていて、ひと漕ぎごとにきしむ。店員はそれを外さないでと言う。「外すのは、買ったお客さんです」"
+ },
+ "city.ps.bike.3": {
+  "ru": "За окном непогода, а я кручу педали и смотрю на плакат с летней дорогой вдоль моря. Ноги верят плакату.",
+  "en": "Bad weather outside, and I pedal looking at a poster of a summer road along the sea. My legs believe the poster.",
+  "ja": "外は悪天候。僕は海沿いの夏の道のポスターを見ながらペダルを漕ぐ。足はポスターを信じている。"
+ },
+ "city.ps.bike.4": {
+  "ru": "Вечером, пока нет покупателей, на тренажёр садится продавец из соседнего отдела. Увидел меня, слез и сделал вид, что проверял исправность.",
+  "en": "In the evening, while there are no customers, the salesman from the next department gets on the bike. He saw me, got off and pretended he'd been checking that it worked.",
+  "ja": "夕方、客がいないあいだに隣の売り場の店員がバイクに乗っている。僕を見ると降りて、故障がないか点検していたふりをした。"
+ },
+ "city.ps.bars.1": {
+  "ru": "Шведская стенка привинчена к колонне посреди отдела, чтобы было видно, как она встанет в квартире. Я повисел на нижней перекладине: ноги почти доставали до пола.",
+  "en": "The wall bars are bolted to a pillar in the middle of the department, to show how they'd look in a flat. I hung from the bottom rung: my feet nearly reached the floor.",
+  "ja": "肋木は売り場の真ん中の柱にねじで留めてあって、家に置いたときの様子がわかるようになっている。いちばん下の段にぶら下がると、足がほとんど床に届いた。"
+ },
+ "city.ps.bars.2": {
+  "ru": "На стенке ценник и картинка: семья в тренировочных костюмах, папа на самом верху. Мама на картинке смотрит так, будто знает, кому это всё собирать.",
+  "en": "A price tag and a picture hang on the bars: a family in tracksuits, father at the very top. Mother in the picture looks as if she knows who'll be putting it all together.",
+  "ja": "肋木には値札と絵がかかっている。ジャージ姿の家族で、お父さんがいちばん上。絵のお母さんは、これを組み立てるのが誰かわかっているような顔だ。"
+ },
+ "city.ps.bars.3": {
+  "ru": "После уроков на стенку лезут школьники, а продавщица стоит внизу, раскинув руки, как вратарь.",
+  "en": "After school the kids climb the bars, and the saleswoman stands at the bottom with her arms spread like a goalkeeper.",
+  "ja": "放課後は小学生たちが肋木によじ登り、店員はキーパーのように両腕を広げて下に立っている。"
+ },
+ "city.ps.bars.4": {
+  "ru": "С верхней перекладины виден весь этаж: шляпы, очереди, макушки продавщиц. Отсюда универмаг похож на муравейник в выходной.",
+  "en": "From the top rung you can see the whole floor: hats, queues, the tops of the saleswomen's heads. From up here the store looks like an anthill on its day off.",
+  "ja": "いちばん上の段からはフロアじゅうが見える。帽子、行列、店員たちのつむじ。ここから見ると百貨店は、休日のアリの巣みたいだ。"
+ },
+ "city.ps.birds.1": {
+  "ru": "К плакату кто-то приколол записку: «В холода синиц кормить каждый день, ждать они не умеют». Почерк учительский.",
+  "en": "Someone has pinned a note to the poster: \"In the cold feed the tits every day, they can't wait.\" A teacher's handwriting.",
+  "ja": "ポスターに誰かがメモを留めている。「寒い日はシジュウカラに毎日えさを。待つことができないので」。先生のような字だ。"
+ },
+ "city.ps.birds.2": {
+  "ru": "Сегодня День птиц, и под плакатом стол со скворечниками от школьного кружка. Один выкрашен в голубой, с табличкой «Для образованных».",
+  "en": "Today is Bird Day, and under the poster there's a table of nesting boxes from the school club. One is painted blue, with a little sign: \"For the educated.\"",
+  "ja": "今日は鳥の日で、ポスターの下に学校のクラブが作った巣箱の机が出ている。ひとつは水色に塗られて「教養のある方へ」と札がついている。"
+ },
+ "city.ps.birds.3": {
+  "ru": "Утром за окном отдела на карнизе сидят воробьи и разглядывают плакат через стекло, как меню.",
+  "en": "In the morning sparrows sit on the ledge outside the department window and study the poster through the glass, like a menu.",
+  "ja": "朝、売り場の窓の外の軒にスズメがとまって、ガラス越しにポスターをメニューみたいに見ている。"
+ },
+ "city.ps.souv.1": {
+  "ru": "В выходные у витрины с сувенирами толпятся отдыхающие и решают, кому что. Ракушки «Привет с моря!» кончаются первыми.",
+  "en": "At weekends holidaymakers crowd round the souvenir case deciding who gets what. The \"Greetings from the Sea!\" shells sell out first.",
+  "ja": "週末は土産物のケースの前に保養客が群がり、誰に何を買うか選んでいる。「海からこんにちは！」の貝殻がいちばん先に売り切れる。"
+ },
+ "city.ps.souv.2": {
+  "ru": "К празднику моря в витрину поставили новые значки: кораблик и цифры. Продавщица говорит, что к обеду их раскупят, и откладывает один себе.",
+  "en": "For the Sea Festival new badges have gone into the case: a little ship and the date. The saleswoman says they'll be gone by lunch and puts one aside for herself.",
+  "ja": "海の祭りに合わせて、ケースに新しいバッジが並んだ。小さな船と数字。昼までに売り切れるわ、と店員は言って、ひとつ自分用に取っておいた。"
+ },
+ "city.ps.souv.3": {
+  "ru": "В дождь к витрине никто не подходит, и продавщица протирает стекло изнутри. Янтарная капля блестит сильнее обычного.",
+  "en": "In the rain nobody comes to the case, and the saleswoman polishes the glass from inside. The drop of amber shines brighter than usual.",
+  "ja": "雨の日はケースに誰も来ないので、店員は内側からガラスを磨いている。琥珀のしずくがいつもより光っている。"
+ },
+ "city.ps.scales.1": {
+  "ru": "Над весами табличка: «Контрольные весы. Проверь покупку». Стрелка покачивается, как будто тоже сомневается.",
+  "en": "Over the scales a sign: \"Check scales. Weigh your purchase.\" The needle wobbles as if it has its doubts too.",
+  "ja": "はかりの上に札。「検量はかり。お買い物をお確かめください」。針がゆれる。まるで針も疑っているみたいに。"
+ },
+ "city.ps.scales.2": {
+  "ru": "Женщина взвешивает пакет сахара и долго смотрит на стрелку. Всё сходится до грамма. Она уходит почти разочарованная.",
+  "en": "A woman weighs a bag of sugar and stares at the needle for a long time. It's right to the gram. She leaves almost disappointed.",
+  "ja": "女の人が砂糖の袋を量って、長いこと針をにらんでいる。一グラムもちがわない。少しがっかりしたように帰っていった。"
+ },
+ "city.ps.scales.3": {
+  "ru": "Вечером у весов очередь: все с работы, все с сетками. Мальчишка взвешивает портфель и объявляет: «Четыре кило знаний!»",
+  "en": "In the evening there's a queue at the scales: everyone back from work, everyone with string bags. A boy weighs his satchel and announces, \"Four kilos of knowledge!\"",
+  "ja": "夕方、はかりの前には行列。みんな仕事帰りで、みんな網袋を提げている。男の子がかばんを量って「知識四キロ！」と宣言した。"
+ },
+ "city.ps.scales.4": {
+  "ru": "По субботам у весов дежурит женщина из народного контроля, с блокнотом. Продавщицы сегодня особенно вежливые.",
+  "en": "On Saturdays a woman from the people's inspection keeps watch by the scales with a notebook. The saleswomen are especially polite today.",
+  "ja": "土曜日は、はかりのそばに市民監査の女の人がノートを持って立っている。今日の店員はとりわけていねいだ。"
+ },
+ "city.ps.scales.5": {
+  "ru": "Раз уж я ничего не купил, встал на весы сам. Продавщица из бакалеи покачала головой: «Молодой человек, мы людей не продаём».",
+  "en": "Since I hadn't bought anything, I got on the scales myself. The saleswoman from the grocery shook her head: \"Young man, we don't sell people.\"",
+  "ja": "何も買っていないので、自分ではかりに乗ってみた。食料品の店員は首を振った。「お兄さん、うちは人間は売っていませんよ」"
+ },
+ "city.ps.sewing.1": {
+  "ru": "Машинка на прилавке галантереи стоит для показа, с лоскутом под лапкой. Я прострочил по нему ровную дорожку рядом с сотней чужих.",
+  "en": "The machine on the haberdashery counter is for demonstration, with a scrap of cloth under the foot. I ran a straight seam along it beside a hundred other people's.",
+  "ja": "小間物売り場のミシンは展示用で、押さえの下に布切れがはさんである。誰かの百本の縫い目の横に、まっすぐな一本を縫った。"
+ },
+ "city.ps.sewing.2": {
+  "ru": "Продавщица показывает, как заправлять нитку: вверх, вниз, в петельку, в ушко. «Запомнили? Нет? С первого раза никто не запоминает».",
+  "en": "The saleswoman shows how to thread it: up, down, through the loop, through the eye. \"Got it? No? Nobody gets it the first time.\"",
+  "ja": "店員が糸のかけ方を見せてくれる。上へ、下へ、輪に通して、針穴へ。「覚えました？　まだ？　一回で覚える人はいませんよ」"
+ },
+ "city.ps.sewing.3": {
+  "ru": "В субботу у машинки показ: продавщица за полчаса шьёт фартук. Женщины стоят полукругом и спорят, где она срезала угол.",
+  "en": "On Saturday there's a demonstration at the machine: the saleswoman sews an apron in half an hour. The women stand in a semicircle arguing about where she cut a corner.",
+  "ja": "土曜日はミシンの実演。店員が三十分でエプロンを縫いあげる。女の人たちが半円になって、どこで手を抜いたか言い合っている。"
+ },
+ "city.ps.sewing.4": {
+  "ru": "Перед закрытием машинку накрывают чехлом, как клетку с канарейкой. Я успел сделать один стежок, и она умолкла.",
+  "en": "Before closing they put a cover over the machine, like over a canary's cage. I got in one stitch before it fell silent.",
+  "ja": "閉店前、ミシンには鳥かごみたいにカバーがかけられる。一針だけ縫ったところで、ミシンは静かになった。"
+ },
+ "city.ps.sewing.5": {
+  "ru": "Под лапкой забыт лоскут с вышитым словом «Мама», недошитым на последней букве. Я не стал дошивать: это не моё слово.",
+  "en": "A scrap has been left under the foot with the word \"Mum\" embroidered on it, unfinished on the last letter. I didn't finish it: it isn't my word.",
+  "ja": "押さえの下に、「ママ」と刺しゅうした布が忘れてあった。最後の一文字が縫いかけだ。続きは縫わなかった。僕の言葉じゃないから。"
+ },
+ "city.ps.toyhouse.1": {
+  "ru": "К Новому году в игрушечном доме поставили ёлочку ростом с пуговицу. Кукла сидит под ней и ждёт, как все.",
+  "en": "For New Year a fir tree the size of a button has been put in the doll's house. The doll sits under it and waits, like everyone.",
+  "ja": "新年に向けて、おもちゃの家にボタンくらいのモミの木が飾られた。人形はその下に座って、みんなと同じように待っている。"
+ },
+ "city.ps.toyhouse.2": {
+  "ru": "Сегодня День защиты детей, и стену игрушечного дома разрешают открывать всем. Девочка пересадила кукол так, что все сидят за одним столом.",
+  "en": "Today is Children's Day, and everyone is allowed to open the doll's house wall. A girl has moved the dolls so that they all sit at one table.",
+  "ja": "今日は国際子どもの日で、おもちゃの家の壁はだれが開けてもいい。女の子が人形を並べかえて、みんなひとつのテーブルにつかせた。"
+ },
+ "city.ps.toyhouse.3": {
+  "ru": "После уроков к витрине прижимаются носы. Стекло внизу всё в отпечатках, а продавщица протирает его только к закрытию: раньше бесполезно.",
+  "en": "After school noses press against the case. The bottom of the glass is covered in prints, and the saleswoman only wipes it at closing: there's no point before.",
+  "ja": "放課後、ショーケースに鼻が押しつけられる。ガラスの下のほうは跡だらけで、店員が拭くのは閉店のときだけ。それまでは無駄だから。"
+ },
+ "city.ps.toyhouse.4": {
+  "ru": "В спальне игрушечного дома на кровати лежит настоящая записка, свёрнутая трубочкой: «Хочу такой». Подписи нет, почерк неуверенный.",
+  "en": "In the doll's house bedroom a real note lies on the bed, rolled into a tube: \"I want one like this.\" No signature, a shaky hand.",
+  "ja": "おもちゃの家の寝室のベッドに、筒に丸めた本物のメモがある。「これがほしい」。名前はなく、たどたどしい字。"
+ },
+ "city.ps.island.1": {
+  "ru": "Остров посреди зала: стеллаж с товарами в три яруса. Внизу кастрюли, посередине чайники, наверху одна хрустальная ваза, к которой страшно подойти.",
+  "en": "An island in the middle of the floor: a three-tier stand of goods. Pans at the bottom, kettles in the middle, and at the top a single crystal vase you're afraid to go near.",
+  "ja": "フロアの真ん中に島のような三段の陳列台。下は鍋、真ん中はやかん、いちばん上にはクリスタルの花瓶がひとつ。近づくのもこわい。"
+ },
+ "city.ps.island.2": {
+  "ru": "На каждой вещи ценник от руки, с завитком у слова «руб.». Почерк везде один: кто-то в универмаге отвечает за все рубли.",
+  "en": "Every item has a handwritten price tag with a curl on the \"rub.\". It's the same handwriting everywhere: someone in the store is in charge of all the roubles.",
+  "ja": "どの品にも手書きの値札があり、「ルーブル」の字に巻き毛のような飾りがついている。筆跡はどこも同じ。百貨店のルーブルを一手に引き受けている人がいるのだ。"
+ },
+ "city.ps.island.3": {
+  "ru": "Четверг — завоз. На острове пустые места, а вокруг коробки, перевязанные бечёвкой. Покупатели ходят кругом и гадают, что внутри.",
+  "en": "Thursday is delivery day. There are gaps on the island and boxes tied with string all around. Customers walk round them guessing what's inside.",
+  "ja": "木曜日は入荷日。島はところどころ空いていて、まわりにはひもで縛った箱。客たちはぐるりと歩いて、中身を当てようとしている。"
+ },
+ "city.ps.island.4": {
+  "ru": "С утра продавщица расставляет чашки на острове ручками в одну сторону, все вправо. К обеду покупатели развернут их как попало.",
+  "en": "In the morning the saleswoman lines the cups up on the island with their handles all one way, all to the right. By lunchtime the customers will have turned them every which way.",
+  "ja": "朝、店員は島のカップの取っ手をぜんぶ右向きにそろえる。昼までには客たちがばらばらに回してしまう。"
+ },
+ "city.ps.island.5": {
+  "ru": "Под Новый год на острове ёлочные игрушки: стеклянные шары, сосульки, космонавт на прищепке. Космонавт смотрит вверх, на люстру.",
+  "en": "Before New Year the island holds decorations for the tree: glass balls, icicles, a cosmonaut on a clip. The cosmonaut gazes up at the chandelier.",
+  "ja": "年の瀬には、島にツリーの飾りが並ぶ。ガラス玉、つらら、クリップつきの宇宙飛行士。宇宙飛行士はシャンデリアを見上げている。"
+ },
+ "city.ps.scales.prompt": {
+  "ru": "E — подойти к контрольным весам",
+  "en": "E — go to the check scales",
+  "ja": "E：検量はかりのところへ行く"
  }
 }

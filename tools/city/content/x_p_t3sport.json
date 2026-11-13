@@ -58,54 +58,6 @@
    ],
    "rotate": "use"
   },
-  "t3_sections": {
-   "like": "look_misc",
-   "minutes": 2,
-   "lines": [
-    "city.t3.t3_sections.1",
-    {
-     "k": "city.t3.t3_sections.2",
-     "d": "mon,wed,fri",
-     "h": [
-      15,
-      19
-     ]
-    },
-    {
-     "k": "city.t3.t3_sections.3",
-     "d": "tue,thu",
-     "h": [
-      15,
-      19
-     ]
-    },
-    {
-     "k": "city.t3.t3_sections.4",
-     "d": "mon-fri",
-     "h": [
-      7,
-      15
-     ]
-    },
-    {
-     "k": "city.t3.t3_sections.5",
-     "d": "sat"
-    },
-    {
-     "k": "city.t3.t3_sections.6",
-     "d": "sun"
-    },
-    {
-     "k": "city.t3.t3_sections.7",
-     "d": "mon-sat",
-     "h": [
-      19,
-      7
-     ]
-    }
-   ],
-   "rotate": "use"
-  },
   "t3_tactics": {
    "like": "look_misc",
    "minutes": 3,
@@ -269,7 +221,26 @@
    "lines": [
     "city.t3.t3_sauna_water.1",
     "city.t3.t3_sauna_water.2",
-    "city.t3.t3_sauna_water.3"
+    "city.t3.t3_sauna_water.3",
+    {
+     "k": "city.t3.t3_sauna_water.4",
+     "weather": [
+      "cold",
+      "snow"
+     ]
+    },
+    {
+     "k": "city.t3.t3_sauna_water.5",
+     "d": "sat",
+     "h": [
+      16,
+      24
+     ]
+    },
+    {
+     "k": "city.t3.t3_sauna_water.6",
+     "once": true
+    }
    ]
   },
   "t3_shower": {
@@ -281,7 +252,28 @@
     "city.t3.t3_shower.1",
     "city.t3.t3_shower.2",
     "city.t3.t3_shower.3",
-    "city.t3.t3_shower.4"
+    "city.t3.t3_shower.4",
+    {
+     "k": "city.t3.t3_shower.5",
+     "h": [
+      6,
+      10
+     ]
+    },
+    {
+     "k": "city.t3.t3_shower.6",
+     "h": [
+      18,
+      24
+     ]
+    },
+    {
+     "k": "city.t3.t3_shower.7",
+     "weather": [
+      "cold",
+      "snow"
+     ]
+    }
    ]
   },
   "t3_changing": {
@@ -293,7 +285,23 @@
    "lines": [
     "city.t3.t3_changing.1",
     "city.t3.t3_changing.2",
-    "city.t3.t3_changing.3"
+    "city.t3.t3_changing.3",
+    {
+     "k": "city.t3.t3_changing.4",
+     "weather": [
+      "cold",
+      "snow"
+     ],
+     "before": 7
+    },
+    {
+     "k": "city.t3.t3_changing.5",
+     "d": "sat"
+    },
+    {
+     "k": "city.t3.t3_changing.6",
+     "after": 7
+    }
    ]
   },
   "t3_lockers": {
@@ -841,36 +849,6 @@
     },
     {
      "k": "city.t3.t3_ware.7",
-     "d": "sun"
-    }
-   ]
-  },
-  "t3_scoreboard": {
-   "like": "look_misc",
-   "minutes": 2,
-   "lines": [
-    {
-     "k": "city.t3.t3_scoreboard.1",
-     "d": "sat",
-     "h": [
-      13,
-      19
-     ]
-    },
-    {
-     "k": "city.t3.t3_scoreboard.2",
-     "d": "sat",
-     "h": [
-      19,
-      13
-     ]
-    },
-    {
-     "k": "city.t3.t3_scoreboard.3",
-     "d": "mon-fri"
-    },
-    {
-     "k": "city.t3.t3_scoreboard.4",
      "d": "sun"
     }
    ]

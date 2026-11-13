@@ -164,40 +164,6 @@
     }
    ]
   },
-  "tarelka_cakes": {
-   "like": "look_misc",
-   "minutes": 2,
-   "lines": [
-    {
-     "k": "city.cafe.cake.mon",
-     "d": "mon"
-    },
-    {
-     "k": "city.cafe.cake.tue",
-     "d": "tue"
-    },
-    {
-     "k": "city.cafe.cake.wed",
-     "d": "wed"
-    },
-    {
-     "k": "city.cafe.cake.thu",
-     "d": "thu"
-    },
-    {
-     "k": "city.cafe.cake.fri",
-     "d": "fri"
-    },
-    {
-     "k": "city.cafe.cake.sat",
-     "d": "sat"
-    },
-    {
-     "k": "city.cafe.cake.sun",
-     "d": "sun"
-    }
-   ]
-  },
   "tarelka_ledge": {
    "prompt": "city.act.look_out.prompt",
    "minutes": 5,
@@ -318,7 +284,26 @@
     "city.cafe.pen.1",
     "city.cafe.pen.2",
     "city.cafe.pen.3",
-    "city.cafe.pen.4"
+    "city.cafe.pen.4",
+    {
+     "k": "city.cafe.pen.5",
+     "h": [
+      6,
+      11
+     ]
+    },
+    {
+     "k": "city.cafe.pen.6",
+     "weather": "rain"
+    },
+    {
+     "k": "city.cafe.pen.7",
+     "festival": "new_year"
+    },
+    {
+     "k": "city.cafe.pen.8",
+     "after": 7
+    }
    ]
   },
   "kesha_perch": {
@@ -371,7 +356,26 @@
    "lines": [
     "city.cafe.feed.1",
     "city.cafe.feed.2",
-    "city.cafe.feed.3"
+    "city.cafe.feed.3",
+    {
+     "k": "city.cafe.feed.4",
+     "h": [
+      7,
+      11
+     ]
+    },
+    {
+     "k": "city.cafe.feed.5",
+     "weather": "rain"
+    },
+    {
+     "k": "city.cafe.feed.6",
+     "festival": "any"
+    },
+    {
+     "k": "city.cafe.feed.7",
+     "once": true
+    }
    ]
   },
   "ask_cook": {
@@ -417,7 +421,22 @@
     "city.cafe.crate.2",
     "city.cafe.crate.3",
     "city.cafe.crate.4",
-    "city.cafe.crate.5"
+    "city.cafe.crate.5",
+    {
+     "k": "city.cafe.crate.6",
+     "h": [
+      18,
+      24
+     ]
+    },
+    {
+     "k": "city.cafe.crate.7",
+     "d": "sat,sun"
+    },
+    {
+     "k": "city.cafe.crate.8",
+     "weather": "rain"
+    }
    ]
   },
   "tarelka_chess": {
@@ -483,6 +502,69 @@
     ]
    },
    "sound": "page_turn"
+  },
+  "tarelka_mags": {
+   "like": "read_travel",
+   "target": "read_travel",
+   "lines": [
+    "city.read.travel.*",
+    {
+     "k": "city.cafe.mags.1",
+     "h": [
+      7,
+      12
+     ]
+    },
+    {
+     "k": "city.cafe.mags.2",
+     "h": [
+      12,
+      24
+     ]
+    },
+    {
+     "k": "city.cafe.mags.3",
+     "weather": [
+      "cold",
+      "snow"
+     ]
+    },
+    {
+     "k": "city.cafe.mags.4",
+     "d": "mon"
+    }
+   ]
+  },
+  "tarelka_painting": {
+   "like": "look_misc",
+   "prompt": "city.act.watch.prompt",
+   "minutes": 3,
+   "target": "look_painting",
+   "lines": [
+    "city.cafe.painting.1",
+    {
+     "k": "city.cafe.painting.2",
+     "h": [
+      6,
+      12
+     ]
+    },
+    {
+     "k": "city.cafe.painting.3",
+     "h": [
+      17,
+      24
+     ]
+    },
+    {
+     "k": "city.cafe.painting.4",
+     "weather": "fog"
+    },
+    {
+     "k": "city.cafe.painting.5",
+     "once": true
+    }
+   ]
   }
  },
  "rules": {
@@ -534,6 +616,12 @@
   },
   "P-CAFE/kesha_notebook": {
    "act": "rd_kesha_phrasebook"
+  },
+  "P-CAFE/magazine_rack": {
+   "act": "tarelka_mags"
+  },
+  "P-CAFE/sea_painting": {
+   "act": "tarelka_painting"
   }
  },
  "quests": [
