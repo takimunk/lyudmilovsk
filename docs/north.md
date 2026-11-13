@@ -118,7 +118,7 @@ the stove's flue, lamp positions (hut-local metres).
 (`--textures` first regenerates the atlas). `northtex.py` makes one 2048 trim-sheet atlas (base colour + normal, procedural,
 material `M_North_Atlas`) shared by every prop; `northkit.py` has the geometry helpers (boxes, cylinders, tubes, cloth shells with
 thickness, rounded stones, plates with holes) and the UV lint (every face stays inside its tile window); `props*.py` are the
-kinds, `kinds.py` the list. Previews and contact sheets: `python3 blender/north/preview_north.py [--sheet] [--camp]`.
+kinds, `kinds.py` the list. The GLBs carry material *names* only (`M_North_Atlas`, `M_North_Text_<id>`), no images, so each is 30-175 KB: `import_north.py materials` imports the atlas once (`T_North_Atlas`, `T_North_Atlas_N`) and builds the materials, `import` assigns them by slot name. Previews and contact sheets: `python3 blender/north/preview_north.py [--sheet] [--camp]`.
 Words on boards are typeset by `tools/north_signs.py` (strings `north.sign.*`, `north.board.*`; textures
 `textures/localized/<lang>/north_<id>.png`; the GLBs carry the Russian ones in `M_North_Text_<id>` materials, the game swaps the
 language through `LyudText::LoadTexture("North", "north_<id>")`). `sign_post` is one mesh whose planks show `sign_post_spring`;

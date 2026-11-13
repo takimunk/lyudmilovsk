@@ -590,12 +590,27 @@ def _img(name, path, nonc=False):
     return im
 
 
-def atlas_material():
-    if "M_North_Atlas" in bpy.data.materials:
-        return bpy.data.materials["M_North_Atlas"]
+PLAIN = True      # build: the GLBs carry material names only (no images): the engine imports the atlas and text textures once
+
+
+def _plain(name, color):
+    m = bpy.data.materials.new(name)
+    m.use_nodes = True
+    bsdf = m.node_tree.nodes["Principled BSDF"]
+    bsdf.inputs["Base Color"].default_value = color
+    bsdf.inputs["Roughness"].default_value = 0.85
+    return m
+
+
+def atlas_material(name="M_North_Atlas", plain=None):
+    plain = PLAIN if plain is None else plain
+    if name in bpy.data.materials:
+        return bpy.data.materials[name]
+    if plain:
+        return _plain(name, (0.45, 0.4, 0.33, 1))
     if not os.path.exists(os.path.join(GEN, "north_atlas.png")):
         T.write(GEN)
-    m = bpy.data.materials.new("M_North_Atlas")
+    m = bpy.data.materials.new(name)
     m.use_nodes = True
     nt = m.node_tree
     for n in list(nt.nodes):
@@ -606,7 +621,6 @@ def atlas_material():
     bsdf.inputs["Specular IOR Level"].default_value = 0.25
     tex = nt.nodes.new("ShaderNodeTexImage")
     tex.image = _img("north_atlas.png", os.path.join(GEN, "north_atlas.png"))
-    tex.interpolation = "Linear"
     nm = nt.nodes.new("ShaderNodeTexImage")
     nm.image = _img("north_atlas_n.png", os.path.join(GEN, "north_atlas_n.png"), nonc=True)
     nmap = nt.nodes.new("ShaderNodeNormalMap")
@@ -618,9 +632,12 @@ def atlas_material():
     return m
 
 
-def text_material(name, path):
+def text_material(name, path, plain=None):
+    plain = PLAIN if plain is None else plain
     if name in bpy.data.materials:
         return bpy.data.materials[name]
+    if plain:
+        return _plain(name, (0.8, 0.8, 0.7, 1))
     m = bpy.data.materials.new(name)
     m.use_nodes = True
     nt = m.node_tree
