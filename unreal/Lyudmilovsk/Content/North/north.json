@@ -3385,6 +3385,123 @@
    "y": 3061.44,
    "yaw": 155.4,
    "variant": 0
+  },
+  {
+   "id": "sea_stack_1",
+   "kind": "sea_stack",
+   "x": 795.4,
+   "y": 2664.7,
+   "yaw": 294.0,
+   "variant": 0,
+   "z": -43.0
+  },
+  {
+   "id": "sea_stack_2",
+   "kind": "sea_stack",
+   "x": 408.5,
+   "y": 1678.8,
+   "yaw": 328.6,
+   "variant": 0,
+   "z": -43.0
+  },
+  {
+   "id": "sea_stack_3",
+   "kind": "sea_stack",
+   "x": 1008.7,
+   "y": 3719.3,
+   "yaw": 307.4,
+   "variant": 0,
+   "z": -43.0
+  },
+  {
+   "id": "sea_stack_4",
+   "kind": "sea_stack",
+   "x": 992.7,
+   "y": 3485.4,
+   "yaw": 201.8,
+   "variant": 0,
+   "z": -43.0
+  },
+  {
+   "id": "sea_stack_5",
+   "kind": "sea_stack",
+   "x": 923.1,
+   "y": 4045.0,
+   "yaw": 343.4,
+   "variant": 1,
+   "z": -43.0
+  },
+  {
+   "id": "sea_stack_6",
+   "kind": "sea_stack",
+   "x": 920.3,
+   "y": 2958.5,
+   "yaw": 181.1,
+   "variant": 2,
+   "z": -43.0
+  },
+  {
+   "id": "sea_stack_7",
+   "kind": "sea_stack",
+   "x": 989.3,
+   "y": 3394.1,
+   "yaw": 184.1,
+   "variant": 1,
+   "z": -43.0
+  },
+  {
+   "id": "sea_stack_8",
+   "kind": "sea_stack",
+   "x": 940.7,
+   "y": 3114.7,
+   "yaw": 194.3,
+   "variant": 2,
+   "z": -43.0
+  },
+  {
+   "id": "sea_stack_9",
+   "kind": "sea_stack",
+   "x": 954.3,
+   "y": 3231.4,
+   "yaw": 182.2,
+   "variant": 3,
+   "z": -43.0
+  },
+  {
+   "id": "sea_stack_10",
+   "kind": "sea_stack",
+   "x": 955.9,
+   "y": 3758.9,
+   "yaw": 202.2,
+   "variant": 3,
+   "z": -43.0
+  },
+  {
+   "id": "sea_stack_11",
+   "kind": "sea_stack",
+   "x": 974.7,
+   "y": 3540.4,
+   "yaw": 354.9,
+   "variant": 3,
+   "z": -43.0
+  },
+  {
+   "id": "sea_stack_12",
+   "kind": "sea_stack",
+   "x": 951.7,
+   "y": 3457.0,
+   "yaw": 22.4,
+   "variant": 3,
+   "z": -43.0
+  },
+  {
+   "id": "sea_stack_13",
+   "kind": "sea_stack",
+   "x": 931.5,
+   "y": 3279.3,
+   "yaw": 19.0,
+   "variant": 3,
+   "z": -43.0
   }
  ],
  "cones": [
