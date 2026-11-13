@@ -567,6 +567,8 @@ namespace LyudPeople
 		void Unreserve(FPerson& P);
 		void TalkPairs();
 		float PairTimer = 0.f;
+		/** Per winter patch (FSnowJob::Job): which side its start is on (IslandOf, a path search), -2 not asked yet. A patch never moves. */
+		std::vector<int8_t> SnowJobIsland;
 		std::vector<int> SettleQueue;   // townsfolk Resettle hasn't placed yet (Opt.SettleBatch)
 		size_t SettleI = 0;
 	public:

@@ -2960,7 +2960,25 @@ namespace LyudPeople
 			for (; J < Jobs.size(); J++)
 			{
 				const FSnowJob& Jb = Jobs[J];
-				bool bTaken = IslandOf(Jb.From) != 0;
+				// on the valley's side only; asked once per patch (a path search each), not for every job every few seconds
+				int JobIsland = -2;
+				if (Jb.Job >= 0)
+				{
+					if ((size_t)Jb.Job >= SnowJobIsland.size())
+					{
+						SnowJobIsland.resize((size_t)Jb.Job + 1, -2);
+					}
+					JobIsland = SnowJobIsland[(size_t)Jb.Job];
+				}
+				if (JobIsland == -2)
+				{
+					JobIsland = IslandOf(Jb.From);
+					if (Jb.Job >= 0)
+					{
+						SnowJobIsland[(size_t)Jb.Job] = (int8_t)JobIsland;
+					}
+				}
+				bool bTaken = JobIsland != 0;
 				for (const int H : Held)
 				{
 					bTaken |= Slots[H].SnowJob == Jb.Job;
