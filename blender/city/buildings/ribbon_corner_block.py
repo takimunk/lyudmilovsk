@@ -29,8 +29,10 @@ from citykit import box, prism, ring, band, band_down, ribbon_wall, quad_bar
 from _cons_util import wall, win, hface, rect
 from _surrounds import add_surrounds
 from furn_int2 import Furn
-from furn_int3 import rod
+from furn_int3 import rod, Fr
+import furn_int3 as fu
 import geom
+import interior_kit as kit
 
 INFO = {
     "name_ru": "Дом с лентой (угловой конструктивистский дом)", "name_en": "Ribbon Corner Block",
@@ -234,6 +236,7 @@ def build(B):
     B.footprint = fp
     B.height = ZDT
     add_surrounds(B, bounds=(-24.5, 24.5, 0.3, 12.0), max_lamps=0, seed=5)
+    _drop_stray_rack(B, (-11.5, -9.1, 3.5, 4.5))
     for x in (-4.0, 8.0):                                             # street lamps between the balcony bays
         _street_lamp(B, x, 1.0)
     B.note("48 flats (corridor type) in 6 bays x 4 floors, two stairs (drum and tower), shop and laundry below")
@@ -269,43 +272,121 @@ def _front_ground(B):
     B.entrance("laundry", (X0 + u(-2.35), YF, 0.0), 0.0, width=1.3, height=2.4, kind="street", leaves=1)
 
 
+def _washer(B, x, y, z=0.0, yaw=0.0, solid=True):
+    """[wall] A front-loading laundry machine (white body, round porthole, red control strip); user stands at -y."""
+    p = kit._P(B, x, y, z, yaw, "washer")
+    p.kind = "wall"
+    w, d, h = 0.62, 0.62, 0.95
+    p.bev("CT_SteelWhite", -w / 2, w / 2, -d, 0.0, 0.0, h, 0.012)
+    p.box("CT_SteelRed", -w / 2 + 0.04, w / 2 - 0.04, -d - 0.012, -d, 0.8, 0.9, f="y")
+    p.box("CT_Steel", -0.06, 0.06, -d - 0.016, -d - 0.012, 0.84, 0.86, f="y")
+    n = 10
+    for rr, mat, dz in ((0.24, "CT_Aluminium", 0.012), (0.19, "CT_Steel", 0.02)):
+        pts = [(rr * math.cos(2 * math.pi * k / n), -d - dz, 0.42 + rr * math.sin(2 * math.pi * k / n)) for k in range(n)]
+        p.face(mat, pts)
+    p.core(-w / 2 + 0.02, w / 2 - 0.02, -d + 0.02, -0.02, 0.1, h - 0.05)
+    return p.done(solid=solid, top=h, front=0.8)
+
+
+def _deck_chair(B, x, y, z=0.0, yaw=0.0, mat="CT_PlasterBlue", solid=False):
+    """A folding timber deck chair with a canvas sling; the sitter faces yaw."""
+    p = kit._P(B, x, y, z, yaw, "deck_chair")
+    for s in (-0.3, 0.3):
+        p.rod(kit.WOOD, (s, -0.35, 0.0), (s, 0.1, 0.36), 0.035, 4)
+        p.rod(kit.WOOD, (s, 0.35, 0.0), (s, 0.0, 0.3), 0.035, 4)
+        p.rod(kit.WOOD, (s, 0.1, 0.22), (s, 0.5, 0.78), 0.035, 4)
+        p.rod(kit.WOOD, (s, -0.36, 0.3), (s, 0.1, 0.36), 0.03, 4)
+    p.hexa(mat, [(-0.29, -0.36, 0.3), (0.29, -0.36, 0.3), (0.29, 0.1, 0.2), (-0.29, 0.1, 0.2)],
+           [(-0.29, -0.36, 0.312), (0.29, -0.36, 0.312), (0.29, 0.1, 0.212), (-0.29, 0.1, 0.212)])
+    p.hexa(mat, [(-0.29, 0.1, 0.2), (0.29, 0.1, 0.2), (0.29, 0.48, 0.74), (-0.29, 0.48, 0.74)],
+           [(-0.29, 0.1, 0.212), (0.29, 0.1, 0.212), (0.29, 0.48, 0.752), (-0.29, 0.48, 0.752)])
+    p.rod(kit.WOOD, (-0.31, 0.5, 0.78), (0.31, 0.5, 0.78), 0.03, 4)
+    return p.done(solid=solid, seats=[(0.0, 0.0, 0.3, 0.0)])
+
+
+def _drop_stray_rack(B, rect):
+    """add_surrounds drops one bike rack inside the shop (it places by the shop door and misreads the free floor):
+    cut its steel loops and base out of the detail mesh."""
+    x0, x1, y0, y1 = rect
+    keep = []
+    for fc in B.detail.faces:
+        mt, idx, uv = fc
+        vs = [B.detail.verts[i] for i in idx]
+        if mt in ("CT_Steel", "CT_ConcreteDark") and all(x0 <= v[0] <= x1 and y0 <= v[1] <= y1 and v[2] <= 0.85 for v in vs):
+            continue
+        keep.append(fc)
+    B.detail.faces = keep
+
+
 def _ground_rooms(B):
     m, det = B.m, B.detail
     f = Furn(B)
-    # partitions between the ground rooms (front row y YF+.3..YC0)
+    T = B.thing
+    # partitions between the ground rooms (front row YF+WT .. the corridor wall YC0)
     for x in (-7.0, -1.0, 8.0):
-        box(m, "CT_Plaster", x - 0.1, x + 0.1, YF + WT, YC0 - 0.2, 0.0, 2.8)
-    # ---- shop (x -19..-7)
-    box(m, "CT_WoodLight", -17.4, -11.2, 4.3, 5.0, 0.0, 1.05)
-    box(m, "CT_Steel", -17.45, -11.15, 4.25, 5.05, 1.05, 1.09)
-    B.spot("shop_counter", "counter", (-14.3, 3.7, 0.0), 180.0)
-    B.spot("shop_staff", "work", (-14.3, 5.5, 0.0), 0.0)
-    for i, x in enumerate((-17.6, -16.0, -14.4, -12.8, -11.2)):
-        f.shelf(x, 5.88, w=1.5, d=0.4, h=2.0, yaw=0.0, rows=4, seed=i)
-    for i, y in enumerate((3.2, 4.6)):
-        f.shelf(-18.5, y, w=1.2, d=0.4, h=1.9, yaw=270.0, rows=4, seed=7 + i)
-    f.plant(-8.1, 2.8, h=1.5)
+        box(m, "CT_Plaster", x - 0.1, x + 0.1, YF + WT, YC0, 0.0, 2.8)
+    # ---- shop (x -18.7..-7.1, y 2.2..6.2): grocery with milk and bread
+    YBK = YC0 - 0.01
+    goods = ["groceries", "jars", "boxes", "bottles", "groceries", "jars", "boxes", "groceries"]
+    xs = [-18.2 + 1.05 * i for i in range(11)]
+    for i, x in enumerate(xs):
+        if x > -7.8:
+            break
+        kit.shop_shelf(B, x, YBK, 0.0, 0.0, w=1.0, goods=goods[i % len(goods)], h=2.0, levels=4, seed=i)
+    cr = kit.shop_counter(B, -14.0, 4.55, 0.0, 0.0, w=3.4, front="CT_PlasterBlue", top="CT_TileWhite")
+    B.spot("shop_counter", "counter", (-14.0, 3.7, 0.0), 180.0)
+    B.spot("shop_staff", "work", (-14.0, 5.3, 0.0), 0.0)
+    T("shop_counter", "counter", (-14.0, 4.55, 1.05), 0.0, role="seller", shop="store_grocery", service="shop")
+    kit.kitchen_scales(B, -15.0, 4.5, 1.05, 0)
+    kit.plates(B, -13.2, 4.5, 1.05, 0, n=2)
+    kit.bottles(B, -14.0, 4.6, 1.05, 0, n=3, seed=2)
+    kit.sign_plate(B, -14.0, 4.55, 0.0, 0.0, name="sign_milk", w=1.5, zc=2.62, hang=True)
+    for i, (x, g) in enumerate(((-17.0, "groceries"), (-16.0, "boxes"))):
+        pass
+    c1 = kit.display_case(B, -17.0, 3.0, 0.0, 0.0, w=1.3, d=0.55, goods="boxes", seed=1)
+    c2 = kit.display_case(B, -11.8, 3.0, 0.0, 0.0, w=1.3, d=0.55, goods="groceries", seed=2)
+    T("shop_case_west", "board", (-17.0, 3.0, 1.0), 0.0, topic="store")
+    T("shop_case_east", "board", (-11.8, 3.0, 1.0), 0.0, topic="prices")
+    for i, y in enumerate((2.75, 3.75, 4.75)):
+        r = kit.shop_shelf(B, -18.7 + 0.005, y, 0.0, 90.0, w=0.95, goods=("boxes", "jars", "groceries")[i], h=1.9, levels=4, seed=7 + i)
+        T("shop_west_%d" % (i + 1), "board", (-18.5, y, 1.3), 90.0, topic="store")
+    for i, y in enumerate((2.75, 3.75, 4.75)):
+        kit.shop_shelf(B, -7.1 - 0.005, y, 0.0, 270.0, w=0.95, goods=("bottles", "groceries", "boxes")[i], h=1.9, levels=4, seed=12 + i)
+    T("shop_east_1", "board", (-7.3, 3.8, 1.3), 270.0, topic="store")
+    kit.wall_clock(B, -16.0, YBK, 0.0, 0.0, zc=2.55, r=0.2)
+    kit.plant(B, -8.0, 2.7, kind="ficus", pot="CT_PlasterRed", h=1.5)
+    kit.crate(B, -9.0, 5.6, 0.0, 0.0, fill="CT_PlasterYellow", seed=1)
+    kit.crate(B, -9.6, 5.7, 0.0, 15.0, fill="CT_PlasterRed", seed=2)
+    kit.sack(B, -8.3, 5.5, 0.0, 30)
     B.spot("shop_stand1", "stand", (-15.0, 2.8, 0.0), 180.0)
-    B.spot("shop_stand2", "stand", (-12.0, 2.8, 0.0), 180.0)
+    B.spot("shop_stand2", "stand", (-12.9, 2.7, 0.0), 180.0)
     for x in (-15.0, -10.5):
         f.pendant(x, 3.8, 2.8, lumens=700, colour="#FFE2B5", radius=6.0, drop=0.5)
-    # ---- laundry (x -7..-1)
+    # ---- laundry (x -6.9..-1.1): machines at the back wall, a folding table, a bench, soap on a shelf
     for i in range(4):
-        x = -6.3 + i * 1.15
-        box(m, "CT_Aluminium", x - 0.45, x + 0.45, 5.2, 6.0, 0.0, 0.95)
-        box(det, "CT_Steel", x - 0.3, x + 0.3, 5.18, 5.2, 0.3, 0.75, faces="y")
-        box(det, "CT_SteelRed", x - 0.4, x + 0.4, 5.17, 5.2, 0.8, 0.9, faces="y")
-        B.spot("wash%d" % (i + 1), "work", (x, 4.6, 0.0), 180.0)
-    f.table(-4.0, 2.9, w=2.0, d=0.9, h=0.9, top="CT_Aluminium")
-    f.bench(-1.9, 3.8, yaw=90.0, w=1.4)
+        x = -6.2 + i * 1.15
+        _washer(B, x, YBK, 0.0, 0.0)
+        B.spot("wash%d" % (i + 1), "work", (x, 4.9, 0.0), 180.0)
+        T("washer_%d" % (i + 1), "machine", (x, 5.7, 0.9), 0.0, what="washing_machine")
+    tb = kit.table(B, -4.0, 3.2, 0.0, 0.0, w=2.0, d=0.9, kind="steel", mat="CT_Aluminium")
+    kit.crate(B, -4.5, 3.2, 0.75, 0.0, w=0.6, d=0.42, h=0.22, fill="CT_TileWhite", seed=3)
+    kit.crate(B, -3.5, 3.2, 0.75, 0.0, w=0.6, d=0.42, h=0.22, fill="CT_PlasterBlue", seed=4)
+    T("laundry_folding_table", "craft", (-4.0, 3.2, 0.8), 0.0, what="workbench")
+    bn = kit.bench(B, -1.45, 4.0, 0.0, 270.0, w=1.6, kind="park")
+    T("laundry_bench", "seat", (-1.45, 4.0, 0.45), 270.0, height=0.45)
+    ws = kit.wall_shelf(B, -6.9 + 0.005, 3.3, 0.0, 90.0, w=1.0, zt=1.6, props=False)
+    kit.cardboard_box(B, -6.7, 3.0, 1.6, 90.0, w=0.3, d=0.22, h=0.22, seed=1)
+    kit.cardboard_box(B, -6.7, 3.45, 1.6, 90.0, w=0.3, d=0.22, h=0.28, seed=2)
+    kit.notice_board(B, -1.1 - 0.005, 5.0, 0.0, 270.0, w=0.9, zc=1.7, seed=4)
+    T("laundry_rules", "board", (-1.3, 5.0, 1.7), 270.0, topic="rules")
+    kit.wall_clock(B, -6.9 + 0.005, 4.7, 0.0, 90.0, zc=2.4, r=0.2)
+    kit.plant(B, -1.5, 5.6, kind="cactus", pot="CT_PlasterYellow", h=0.9)
     f.pendant(-4.0, 3.8, 2.8, lumens=700, colour="#FFE2B5", radius=6.0, drop=0.5)
     # ---- bike room and red corner: bare rooms with a bench each
     f.bench(12.0, 4.0, yaw=0.0, w=1.8)
     B.spot("lobby_redcorner", "bench", (12.0, 4.0, 0.0), 180.0)
     f.panel(16.9, 4.0, 1.7, 2.4, 1.2, yaw=270.0, mat="CT_PlasterRed", frame="CT_Frame")
     for x in (3.0, 6.0):
-        for k in range(4):
-            box(det, "CT_Steel", x - 0.9 + k * 0.5 - 0.02, x - 0.9 + k * 0.5 + 0.02, 3.2, 5.2, 0.0, 0.8) if False else None
         B.spot("bike_%d" % int(x), "stand", (x, 3.8, 0.0), 0.0)
     # lamps in the ground corridor
     B.lamp((-9.0, YCC, 2.5), lumens=500, colour="#FFD9A8", kind="stair", radius=7.0)
@@ -388,14 +469,23 @@ def _drum(B):
     box(m, "CT_SteelRed", XD - 1.6, XD + 1.6, 1.5, YD - 3.92 + 0.0, 2.8, 3.0)
     B.entrance("main", (XD, YD - RD * math.cos(math.radians(11.25)), 0.0), 0.0, width=1.2, height=2.5, kind="street", leaves=2)
     # lobby: furniture and lamps
-    f = Furn(B)
-    for a in (292.5, 337.5):
-        x, y = DP(a, 3.3)
-        f.bench(x, y, yaw=math.degrees(math.atan2(XD - x, -(YD - y))) % 360, w=1.5, back=True)
-        B.spot("lobby_bench_%d" % int(a), "bench", (x, y, 0.0), math.degrees(math.atan2(XD - x, -(YD - y))) % 360)
-    for a in (22.5, 67.5, 112.5):
+    for a, a_pos in ((292.5, 308.0), (337.5, 340.0)):         # ids keep the old angles; 292 moved off the door's clear zone
+        x, y = DP(a_pos, 3.3)
+        yaw = math.degrees(math.atan2(XD - x, -(YD - y))) % 360
+        kit.bench(B, x, y, 0.0, yaw, w=1.5, kind="park")
+        B.thing("lobby_bench_%d" % int(a), "seat", (x, y, 0.45), yaw, height=0.45)
+        B.spot("lobby_bench_%d" % int(a), "bench", (x, y, 0.0), yaw)
+    for a, kd, pc in ((22.5, "ficus", "CT_PlasterRed"), (67.5, "palm", "CT_TileWhite"), (112.5, "fern", "CT_PlasterYellow")):
         x, y = DP(a, 3.2)
-        f.plant(x, y, h=1.5, pot="CT_PlasterRed" if a != 67.5 else "CT_TileWhite")
+        kit.plant(B, x, y, 0.0, 0.0, kind=kd, pot=pc, h=1.5)
+    # the ground corridor next to the lobby: letter boxes, a house notice board, a clock
+    fu.mailboxes(B, Fr(13.5, YC1 - 0.2, 0.0), 0.0, 0.9, cols=6, rows=4)
+    B.thing("lobby_mailboxes", "board", (13.5, YC1 - 0.3, 1.4), 0.0, topic="rules")
+    kit.notice_board(B, 11.0, YC0 + 0.2 + 0.005, 0.0, 180.0, w=1.2, zc=1.7, seed=3)
+    B.thing("lobby_notices", "board", (11.0, YC0 + 0.4, 1.7), 180.0, topic="rules")
+    kit.wall_clock(B, 8.8, YC0 + 0.2 + 0.005, 0.0, 180.0, zc=2.4, r=0.2)
+    kit.fire_extinguisher(B, 15.2, YC0 + 0.2 + 0.005, 0.0, 180.0)
+    kit.rug(B, 15.0, YCC, 0.0, 90.0, w=1.2, d=2.6, name="rug_5")
     band(det, "CT_PlasterRed", drum_ring(3.0), drum_ring(2.85), 0.012)
     for k_, a in enumerate((247.5, 22.5)):
         x, y = DP(a, 3.3)
@@ -447,7 +537,6 @@ def _tower(B):
         zn = zs[s + 1]
         box(m, "CT_Concrete", xl, ix1, iy0, iy1, zn - 0.3, zn)
         # a rail along the open edge of each lane
-        B.railing([(xl, iy0 + 1.15), (xw, iy0 + 1.15)], zh - 0.3 + 0.0, h=0.0001) if False else None
     B.entrance("stair_w", (-19.9, TY0, 0.0), 0.0, width=1.2, height=2.4, kind="street", leaves=1)
     for z in (0.0, 6.2, 12.4):
         B.lamp((-22.0, 7.2, z + 2.5), lumens=500, colour="#FFD9A8", kind="stair", radius=7.0)
@@ -488,14 +577,27 @@ def _roof(B):
     for i in range(33):
         x = px0 + 0.1 + i * 0.6
         box(det, "CT_Wood", x - 0.05, x + 0.05, 3.3, 11.1, ZR + 2.22, ZR + 2.3)
-    # loungers, a table, planters
-    f = Furn(B, z0=ZR)
-    for x in (-5.5, -3.5, 5.0, 7.0):
-        box(det, "CT_Wood", x - 0.35, x + 0.35, 4.6, 6.4, ZR + 0.04, ZR + 0.3)
-        box(det, "CT_PlasterBlue", x - 0.3, x + 0.3, 4.65, 6.0, ZR + 0.3, ZR + 0.36)
-    f.table(0.5, 7.2, w=1.6, d=0.9, h=0.75)
-    for x, y in ((-0.6, 6.3), (1.6, 6.3), (-0.6, 8.1), (1.6, 8.1)):
-        f.chair(x, y, yaw=0.0 if y > 7.2 else 180.0)
+    # deck chairs facing the sea, a table with a samovar and four chairs, benches under the north rail
+    zd = ZR + 0.04
+    for k, x in enumerate((-5.6, -4.4, 5.0, 6.2)):
+        r = _deck_chair(B, x, 5.6, zd, 0.0, mat=("CT_PlasterBlue", "CT_PlasterYellow", "CT_PlasterRed", "CT_PlasterGreen")[k])
+        B.thing("roof_deck_chair_%d" % (k + 1), "seat", (x, 5.6, zd + 0.3), 0.0, height=0.3)
+    kit.table(B, 0.5, 7.2, zd, 0.0, w=1.6, d=0.9)
+    kit.samovar(B, 0.2, 7.2, zd + 0.75, 0.0)
+    kit.cup(B, 0.8, 7.0, zd + 0.75, 0.0)
+    kit.plates(B, 0.9, 7.45, zd + 0.75, 0.0, n=2)
+    for k, (x, y, yw) in enumerate(((-0.1, 6.3, 0.0), (1.1, 6.3, 0.0), (-0.1, 8.1, 180.0), (1.1, 8.1, 180.0))):
+        kit.chair(B, x, y, zd, yw, mat="CT_PlasterRed" if k % 2 else "CT_PlasterYellow")
+    B.thing("roof_table_seats", "seat", (0.5, 6.3, zd + 0.45), 0.0, height=0.45)
+    for k, x in enumerate((-3.0, 4.0, 9.0)):
+        kit.bench(B, x, 10.55, zd, 0.0, w=1.8, kind="park")
+        B.thing("roof_bench_%d" % (k + 1), "seat", (x, 10.55, zd + 0.45), 0.0, height=0.45)
+        B.spot("roof_bench_%d" % (k + 1), "bench", (x, 10.3, zd), 0.0)
+    kit.plant(B, 10.6, 4.2, zd, 0.0, kind="ficus", pot="CT_PlasterRed", h=1.4)
+    kit.plant(B, -6.2, 9.0, zd, 0.0, kind="palm", pot="CT_PlasterYellow", h=1.6)
+    kit.radio(B, 1.5, 7.3, zd + 0.75, 20.0)
+    B.thing("roof_view", "board", (5.0, 3.0, ZR + 1.3), 0.0, topic="view")
+    B.thing("roof_solarium", "board", (-6.0, 7.0, zd + 1.3), 90.0, topic="sun")
     for x in (-8.5, 14.5):
         for y in (4.0, 10.5):
             box(m, "CT_Concrete", x - 0.5, x + 0.5, y - 0.5, y + 0.5, ZR, ZR + 0.5)

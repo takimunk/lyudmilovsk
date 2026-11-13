@@ -23,8 +23,10 @@ Ideas for later: shop signs with real text, cobogo screens in the passage, tiled
 Material requests: none (uses CT_ConcreteWhite, CT_Tile, CT_Wood, CT_Neon...).
 """
 import math
+import os
 import random
 
+import interior_kit as kit
 from citykit import box, prism, DOOR_W, DOOR_H
 import furn_int3 as fu
 from furn_int3 import Fr, lbox, cyl, blob
@@ -115,61 +117,174 @@ def _compose(rnd, n):
 
 
 # ==================================================================================================== shops
-SHOP_TRADES = {"shop_a": "bakery", "shop_b": "flowers", "shop_c": "books", "shop_d": "hardware",
-               "shop_e": "pharmacy", "shop_f": "souvenirs"}
+# Round 3 (interior kit): the six ground-floor units are eight trades. The 7.5 m shops hold one trade; the 10 m
+# units E and F are two small shops each, left and right of the aisle that leads from the street door:
+#   A bakery with a cafe corner | B records and radios | C books | D hardware and garden |
+#   E savings bank (left) + hairdresser (right) | F fabrics (left) + toys (right)
+SHOP_TRADES = {"shop_a": "bakery", "shop_b": "records", "shop_c": "books", "shop_d": "hardware",
+               "shop_e": "salon", "shop_f": "toyfab"}
 WARM, COOL = "#FFD2A0", "#FFF0DC"
 Z_CEIL = 3.2
+PAPER_TOPICS = ["birds", "sea", "science", "poetry", "kids", "travel", "local", "art", "garden"]
+
+
+def _th(x):
+    return math.atan(slope(x))
+
+
+def _poly_inside(pt, poly):
+    c = False
+    n = len(poly)
+    for i in range(n):
+        x0, y0 = poly[i]
+        x1, y1 = poly[(i + 1) % n]
+        if (y0 > pt[1]) != (y1 > pt[1]) and pt[0] < (x1 - x0) * (pt[1] - y0) / (y1 - y0) + x0:
+            c = not c
+    return c
 
 
 class Shop:
-    """The geometry of one hollow shop unit: x range, curved front / back walls, frames along them."""
+    """One hollow shop unit. Frame (u, v): u = metres from the left (west) wall, v = metres from the front wall (in y);
+    pieces placed with f() turn with the front wall. Wall runs: back(), left(), right()."""
+
     def __init__(self, B, a, b, name, rnd):
         self.B, self.a, self.b, self.name, self.rnd = B, a, b, name, rnd
-        self.xl, self.xr = XS[a] + 0.15, XS[b] - 0.15
+        self.xl = XS[a] + (0.3 if a == 0 else 0.15)
+        self.xr = XS[b] - (0.3 if b == N else 0.15)
         self.xm = (XS[a] + XS[b]) / 2
         self.W = self.xr - self.xl
         self.trade = SHOP_TRADES[name]
+        door_seg = a + (b - a - 1) // 2
+        self.xd = (XS[door_seg] + XS[door_seg + 1]) / 2
+        self.ud = self.xd - self.xl
+        xs = [self.xl + (self.xr - self.xl) * k / 24.0 for k in range(25)]
+        self.poly = [(x, self.y_front(x)) for x in xs] + [(x, self.y_back(x)) for x in reversed(xs)]
+        self.warn = []
+        self.tris = 0
 
+    # ------------------------------------------------------------------ geometry
     def y_front(self, x):          # inner face of the shop front wall
-        return yf(x) + 2.8
+        return yf(x) + 2.5 + 0.3 / math.cos(_th(x))
 
     def y_back(self, x):           # inner face of the back wall
-        return yb(x) - 0.3
+        return yb(x) - 0.3 / math.cos(_th(x))
 
-    def back_frames(self):
-        """[(Fr on the inner back wall face at the bay's middle, u0, u1)] for the bays of the shop."""
-        out = []
-        for i in range(self.a, self.b):
-            p0, p1 = (XS[i], yb(XS[i])), (XS[i + 1], yb(XS[i + 1]))
-            L = math.dist(p0, p1)
-            tx, ty = (p1[0] - p0[0]) / L, (p1[1] - p0[1]) / L
-            yaw = math.degrees(math.atan2(ty, tx))
-            cx, cy = (p0[0] + p1[0]) / 2 + ty * 0.3, (p0[1] + p1[1]) / 2 - tx * 0.3
-            u0 = -L / 2 + (0.2 if i == self.a else 0.0)
-            u1 = L / 2 - (0.2 if i == self.b - 1 else 0.0)
-            out.append((Fr(cx, cy, yaw), u0, u1))
-        return out
+    def P(self, u, v):
+        x = self.xl + u
+        return (x, self.y_front(x) + v)
 
-    def side_frames(self, lo=0.5, hi=1.0):
-        """Left and right wall frames: (Fr, length). The right one runs from the back to the front."""
-        yl = self.y_front(self.xl) + lo
-        yh = self.y_back(self.xl) - 0.75 - hi + 1.0
-        yl2 = self.y_front(self.xr) + lo
-        yh2 = self.y_back(self.xr) - 0.75 - hi + 1.0
-        return (Fr(self.xl, yl, 90), yh - yl), (Fr(self.xr, yh2, 270), yh2 - yl2)
+    def yw(self, u):
+        return math.degrees(_th(self.xl + u))
 
-    def counter_fr(self):
-        ycn = yb(self.xm) - 4.2
-        return Fr(self.xm, ycn, 0.0), ycn
+    def vback(self, u):
+        x = self.xl + u
+        return self.y_back(x) - self.y_front(x)
 
+    def _edge_dist(self, p):
+        best = 9.0
+        n = len(self.poly)
+        for i in range(n):
+            ax, ay = self.poly[i]
+            bx, by = self.poly[(i + 1) % n]
+            dx, dy = bx - ax, by - ay
+            t = max(0.0, min(1.0, ((p[0] - ax) * dx + (p[1] - ay) * dy) / (dx * dx + dy * dy)))
+            best = min(best, math.hypot(p[0] - ax - t * dx, p[1] - ay - t * dy))
+        return best
+
+    def check(self, r):
+        f = r.get("foot")
+        if f:
+            for p in f:
+                if not _poly_inside(p, self.poly) and self._edge_dist(p) > 0.06:
+                    self.warn.append("%s: %s outside at (%.2f, %.2f)" % (self.name, r["name"], p[0], p[1]))
+                    break
+        self.tris += r.get("tris", 0)
+        return r
+
+    # ------------------------------------------------------------------ placing
+    def f(self, fn, u, v, a=0.0, **kw):
+        """A floor piece at (u, v); a = angle from 'facing the street' (180 = facing the back wall)."""
+        x, y = self.P(u, v)
+        return self.check(fn(self.B, x, y, 0.0, self.yw(u) + a, **kw))
+
+    def back(self, fn, u, **kw):
+        """A wall piece on the back wall at u, facing into the room (along the wall's own slope)."""
+        x = self.xl + u
+        th = _th(x)
+        y = yb(x) - 0.3 / math.cos(th) + 0.025
+        return self.check(fn(self.B, x, y, 0.0, math.degrees(th), **kw))
+
+    def left(self, fn, s, **kw):
+        y = self.y_front(self.xl) + s
+        return self.check(fn(self.B, self.xl - 0.005, y, 0.0, 90.0, **kw))
+
+    def right(self, fn, s, **kw):
+        y = self.y_front(self.xr) + s
+        return self.check(fn(self.B, self.xr + 0.005, y, 0.0, 270.0, **kw))
+
+    def left_f(self, fn, s, off=0.35, **kw):
+        """A free-standing piece against the left wall (its centre `off` from the wall), facing +x."""
+        return self.check(fn(self.B, self.xl + off, self.y_front(self.xl) + s, 0.0, 90.0, **kw))
+
+    def right_f(self, fn, s, off=0.35, **kw):
+        return self.check(fn(self.B, self.xr - off, self.y_front(self.xr) + s, 0.0, 270.0, **kw))
+
+    def back_run(self, fn, u0, u1, w=0.95, **kw):
+        n = max(1, int(round((u1 - u0) / w)))
+        ww = (u1 - u0) / n
+        return [self.back(fn, u0 + (k + 0.5) * ww, w=ww - 0.1, seed=k + 3 + int(self.xm), **kw) for k in range(n)]
+
+    def side_run(self, fn, side, s0, s1, w=0.95, **kw):
+        n = max(1, int(round((s1 - s0) / w)))
+        ww = (s1 - s0) / n
+        put = self.left if side == "l" else self.right
+        return [put(fn, s0 + (k + 0.5) * ww, w=ww - 0.1, seed=k + 7 + int(self.xm), **kw) for k in range(n)]
+
+    # ------------------------------------------------------------------ things and spots
+    def counter(self, fn, u, v, tag, w, role="seller", front="CT_PlasterRed", top="CT_TileWhite", **props):
+        """A shop counter facing the street; spots counter/clerk/queue and a counter thing."""
+        B = self.B
+        r = self.f(fn, u, v, 0, w=w, front=front, top=top)
+        yaw = self.yw(u)
+        self.counter_spots("%s%s" % (self.name, tag), r, yaw)
+        B.thing("%s%s_counter" % (self.name, tag), "counter", (r["pos"][0], r["pos"][1], 1.05), yaw, role=role, **props)
+        return r
+
+    def counter_spots(self, sid, r, yaw):
+        B = self.B
+        a = math.radians(yaw)
+        B.spot(sid + "_counter", "counter", (r["customer"][0], r["customer"][1], 0.0), yaw + 180)
+        B.spot(sid + "_clerk", "work", (r["staff"][0], r["staff"][1], 0.0), yaw)
+        B.spot(sid + "_queue", "stand", (r["customer"][0] + 0.9 * math.sin(a), r["customer"][1] - 0.9 * math.cos(a), 0.0), yaw + 180)
+
+    def on_top(self, fn, u, v, du=0.0, dv=0.0, z=1.05, **kw):
+        x, y = self.P(u + du, v + dv)
+        return fn(self.B, x, y, z, self.yw(u), **kw)
+
+    def shelf_things(self, results, prefix, topics, z=1.3):
+        for i, r in enumerate(results):
+            self.B.thing("%s_%d" % (prefix, i + 1), "shelf", (r["pos"][0], r["pos"][1], z), r["yaw"],
+                         topic=topics[i % len(topics)])
+
+    def seat(self, tid, r, k=0):
+        s = r["seats"][k]
+        self.B.thing(tid, "seat", (s[0], s[1], 0.45), s[3], height=0.45)
+        return s
+
+    def sign(self, u, v, name, w=1.7, zc=2.72):
+        x, y = self.P(u, v)
+        kit.sign_plate(self.B, x, y, 0.0, self.yw(u), name=name, w=w, zc=zc, hang=True)
+
+    # ------------------------------------------------------------------ common
     def lamps(self, colour, lumens=700, cols=2):
         B = self.B
-        ys = [(self.y_front(self.xm) + 1.9), (self.y_back(self.xm) - 2.2)]
+        ys = [(self.y_front(self.xm) + 1.7), (self.y_back(self.xm) - 2.2)]
         xs = [self.xm + (c - (cols - 1) / 2) * self.W / (cols + 0.0) for c in range(cols)]
         for y in ys:
             for x in xs:
-                B.lamp((x, y, 2.9), lumens=lumens, colour=colour, kind="public", radius=7.0)
-                lbox(B.detail, "CT_Steel", Fr(x, y), -0.01, 0.01, -0.01, 0.01, 2.98, Z_CEIL, faces="xXyY")
+                B.lamp((x, y, 2.9), lumens=lumens, colour=colour, kind="public", radius=7.0, fixture=False)
+                box(B.detail, "CT_Steel", x - 0.01, x + 0.01, y - 0.01, y + 0.01, 2.98, Z_CEIL)
+                kit.pendant(B, x, y, Z_CEIL, drop=0.3, kind="opal")
 
     def awning(self):
         k = 0
@@ -180,320 +295,497 @@ class Shop:
             fr = Fr((p0[0] + p1[0]) / 2, (p0[1] + p1[1]) / 2, math.degrees(math.atan2(ty, tx)))
             k = fu.awning(self.B, fr, -L / 2, L / 2, 1.15, 3.12, 2.62, k0=k, stripe=L / 5.0)
 
-    def counter_top(self):
-        pass
+    def spot(self, sid, kind, u, v, a=0.0):
+        x, y = self.P(u, v)
+        self.B.spot(sid, kind, (x, y, 0.0), self.yw(u) + a)
+
+    def spot_w(self, sid, kind, side, s, a=None):
+        x = self.xl + 0.9 if side == "l" else self.xr - 0.9
+        y = self.y_front(x) + s
+        self.B.spot(sid, kind, (x, y, 0.0), 270 if side == "l" else 90)
 
 
-def _shelves_back(S, **kw):
-    for fr, u0, u1 in S.back_frames():
-        fu.shelving(S.B, fr, u0 + 0.02, u1 - 0.02, S.rnd, **kw)
+# ------------------------------------------------------------------------------------------ local pieces
+def _bread_rack(B, x, y, z=0.0, yaw=0.0, w=1.0, seed=0, solid=True):
+    """[wall] Bakery rack: four open tiers with loaves, baguettes and buns."""
+    p = kit._P(B, x, y, z, yaw, "bread_rack")
+    p.kind = "wall"
+    rnd = random.Random(seed * 7 + 3)
+    d, h = 0.42, 1.9
+    mat = kit.WOODL
+    p.box(mat, -w / 2, w / 2, -0.015, 0.0, 0.0, h, f="y")
+    for s in (-1, 1):
+        p.box(mat, s * (w / 2 - 0.02) - 0.02, s * (w / 2 - 0.02) + 0.02, -d, 0.0, 0.0, h, f="xXyZ")
+    loaf = ["CT_WoodLight", "CT_PlasterYellow", "CT_Leather", "CT_Brick", "CT_WoodLight"]
+    for k in range(4):
+        zb = 0.18 + k * 0.45
+        p.box(mat, -w / 2 + 0.04, w / 2 - 0.04, -d, -0.015, zb - 0.02, zb, f="yZz")
+        u = -w / 2 + 0.07
+        while u < w / 2 - 0.22:
+            m = rnd.choice(loaf)
+            if rnd.random() < 0.4:                           # baguettes lying side by side
+                for j in range(3):
+                    p.rod(m, (u + 0.07 * j + 0.03, -0.05, zb + 0.05), (u + 0.07 * j + 0.03, -0.36, zb + 0.05), 0.055, 5, caps=True)
+                u += 0.24
+            else:                                            # a round or oval loaf
+                p.bev(m, u, u + 0.26, -0.36, -0.06, zb, zb + 0.17, 0.06, 0.05)
+                u += 0.3
+    p.bev(mat, -w / 2 - 0.01, w / 2 + 0.01, -d - 0.01, 0.0, h, h + 0.025, 0.006)
+    p.core(-w / 2 + 0.03, w / 2 - 0.03, -d + 0.02, -0.02, 0.6, 0.62)
+    return p.done(solid=solid, top=h, front=0.7)
 
 
-def _shelves_sides(S, left=True, right=True, **kw):
-    (fl, Ll), (fr_, Lr) = S.side_frames()
-    spots = []
-    if left:
-        fu.shelving(S.B, fl, 0.0, Ll, S.rnd, **kw)
-        spots.append((fl.p(Ll * 0.35, 0.95)[:2], 270))
-    if right:
-        fu.shelving(S.B, fr_, 0.0, Lr, S.rnd, **kw)
-        spots.append((fr_.p(Lr * 0.65, 0.95)[:2], 90))
-    for k, ((x, y), yaw) in enumerate(spots):
-        S.B.spot("%s_browse%d" % (S.name, k + 1), "stand", (x, y, 0.0), yaw)
+def _barber_chair(B, x, y, z=0.0, yaw=0.0, mat="CT_Leather", solid=False):
+    """A hairdresser's chair on a chrome pedestal; the sitter faces yaw."""
+    p = kit._P(B, x, y, z, yaw, "barber_chair")
+    p.cyl(kit.ALU, 0, 0, 0.0, 0.03, 0.3, 10, top=True)
+    p.cyl("CT_Steel", 0, 0, 0.03, 0.42, 0.05, 8, top=False)
+    p.bev(mat, -0.26, 0.26, -0.26, 0.24, 0.42, 0.5, 0.025, 0.03)
+    p.bev(mat, -0.25, 0.25, 0.18, 0.28, 0.5, 1.05, 0.03, 0.03)
+    p.bev(mat, -0.12, 0.12, 0.17, 0.26, 1.05, 1.28, 0.03, 0.02)
+    for s in (-1, 1):
+        p.bev("CT_Steel", s * 0.31 - 0.03, s * 0.31 + 0.03, -0.18, 0.2, 0.62, 0.66, 0.01)
+        p.rod("CT_Steel", (s * 0.31, 0.2, 0.5), (s * 0.31, 0.2, 0.64), 0.03, 4)
+    p.rod("CT_Steel", (0, -0.2, 0.4), (0, -0.4, 0.2), 0.03, 4)
+    p.bev("CT_Steel", -0.16, 0.16, -0.5, -0.36, 0.14, 0.18, 0.01)
+    return p.done(solid=solid, seats=[(0.0, 0.0, 0.5, 0.0)], front=0.9)
 
 
-def _counter_register(S, cfr, mat="CT_Steel", u=1.0):
-    d = S.B.detail
-    lbox(d, mat, cfr, u - 0.18, u + 0.18, -0.55, -0.2, 1.0, 1.22, faces="xXyYZ")
-    lbox(d, "CT_ConcreteDark", cfr, u - 0.14, u + 0.14, -0.42, -0.36, 1.22, 1.46, faces="xXyYZ")
+def _teller_grille(B, x, y, z=0.0, yaw=0.0, w=2.0, solid=False):
+    """Teller's frame on a counter top: slender posts, a head rail and grille panels with gaps (savings bank)."""
+    p = kit._P(B, x, y, z, yaw, "teller_grille")
+    top, hh = 1.05, 0.62
+    for s in (-w / 2, w / 2):
+        p.box(kit.ALU, s - 0.02, s + 0.02, -0.03, 0.03, top, top + hh + 0.05, f="xXyYZ")
+    p.box(kit.ALU, -w / 2, w / 2, -0.03, 0.03, top + hh, top + hh + 0.05, f="xXyYZz")
+    n = max(1, int(w / 0.9))
+    for k in range(n):
+        u0 = -w / 2 + 0.06 + k * (w - 0.12) / n
+        u1 = u0 + (w - 0.12) / n - 0.05
+        p.card_front("grille", u0, u1, top + 0.3, top + hh - 0.02, -0.032)
+        p.card_back("grille", u0, u1, top + 0.3, top + hh - 0.02, 0.032)
+        p.box(kit.ALU, u0, u1, -0.03, 0.03, top + 0.27, top + 0.3, f="xXZz")
+    return p.done()
 
 
-def _island(S, x, y0, y1, rnd, **kw):
-    """A double-sided free-standing shelf along y at x (back to back)."""
-    B = S.B
-    fu.shelving(B, Fr(x - 0.0, y0, 90), 0.0, y1 - y0, rnd, **kw)
-    fu.shelving(B, Fr(x - 0.03, y1, 270), 0.0, y1 - y0, rnd, **kw)
+def _toy_bin(B, x, y, z=0.0, yaw=0.0, seed=0, solid=True):
+    """A low kids' toy bin: wooden tub with balls, blocks and a teddy."""
+    p = kit._P(B, x, y, z, yaw, "toy_bin")
+    rnd = random.Random(seed + 11)
+    p.bev(kit.WOOD, -0.45, 0.45, -0.3, 0.3, 0.0, 0.5, 0.015)
+    p.box("CT_Paper", -0.4, 0.4, -0.25, 0.25, 0.49, 0.5, f="Z")
+    for k in range(7):
+        m = rnd.choice(["CT_PlasterRed", "CT_PlasterBlue", "CT_PlasterYellow", "CT_PlasterGreen", "CT_PlasterPink"])
+        u, v = rnd.uniform(-0.33, 0.33), rnd.uniform(-0.18, 0.18)
+        if k % 2:
+            p.cyl(m, u, v, 0.5, 0.62, 0.07, 6)
+        else:
+            p.box(m, u - 0.06, u + 0.06, v - 0.06, v + 0.06, 0.5, 0.6)
+    p.cyl("CT_WoodLight", 0.0, 0.0, 0.5, 0.78, 0.1, 6, r1=0.07)
+    p.cyl("CT_WoodLight", 0.0, 0.0, 0.78, 0.9, 0.07, 6, r1=0.03, bottom=False)
+    p.core(-0.43, 0.43, -0.28, 0.28, 0.0, 0.48)
+    return p.done(solid=solid, top=0.5)
 
 
+def _hard_bins(B, x, y, z=0.0, yaw=0.0, w=1.6, seed=0, solid=True):
+    """Steel bin rack with drawers of nails, screws and washers sold by weight."""
+    p = kit._P(B, x, y, z, yaw, "hard_bins")
+    rnd = random.Random(seed + 5)
+    d, h = 0.5, 1.0
+    p.box("CT_Steel", -w / 2, w / 2, -d / 2, d / 2, 0.0, h, f="xXyYZz")
+    n = max(1, int(w / 0.3))
+    for k in range(n):
+        u0 = -w / 2 + 0.03 + k * (w - 0.06) / n
+        u1 = u0 + (w - 0.06) / n - 0.03
+        for j in range(4):
+            zb = 0.06 + j * 0.23
+            p.box(rnd.choice(["CT_SteelRed", "CT_PlasterBlue", "CT_Steel", "CT_PlasterYellow"]), u0, u1, -d / 2 - 0.02, -d / 2, zb, zb + 0.19, f="xXyYZ")
+            p.box(kit.ALU, u0 + 0.05, u1 - 0.05, -d / 2 - 0.035, -d / 2 - 0.02, zb + 0.12, zb + 0.15, f="y")
+    p.core(-w / 2 + 0.02, w / 2 - 0.02, -d / 2 + 0.02, d / 2 - 0.02, 0.05, 0.95)
+    return p.done(solid=solid, top=h, front=0.7)
+
+
+def _pyramid(B, S, u, v, rows=(4, 3, 2)):
+    for lvl, n in enumerate(rows):
+        for j in range(n):
+            px, py = S.P(u + (j - (n - 1) / 2) * 0.27, v)
+            kit.paint_jars(B, px, py, lvl * 0.2, S.yw(u), n=1, seed=lvl * 5 + j)
+
+
+# ==================================================================================================== A bakery
 def _bakery(S):
-    B, rnd = S.B, S.rnd
-    BREAD = ["CT_WoodLight", "CT_PlasterYellow", "CT_PlasterPink", "CT_WoodLight", "CT_PlasterYellow"]
-    _shelves_back(S, tiers=3, zmax=2.05, z0=0.3, mats=BREAD, hh=(0.14, 0.26), fill=0.9, depth=0.45, carcass="CT_TileWhite")
-    _shelves_sides(S, tiers=4, zmax=1.9, z0=0.3, mats=BREAD, hh=(0.12, 0.22), depth=0.4, left=True, right=False, carcass="CT_TileWhite")
-    cfr, ycn = S.counter_fr()
-    # glass pastry case to the right of the counter
-    cx0, cx1 = 1.7, 4.0
-    lbox(B.m, "CT_TileWhite", cfr, cx0, cx1, -0.75, 0.0, 0.0, 0.85)
-    lbox(B.detail, "CT_WoodLight", cfr, cx0 - 0.02, cx1 + 0.02, -0.77, 0.02, 0.85, 0.89, faces="xXyYZ")
-    for u in [cx0 + 0.25 + 0.3 * i for i in range(7)]:
-        lbox(B.detail, rnd.choice(BREAD), cfr, u, u + 0.2, -0.6, -0.15, 0.89, 1.0 + rnd.random() * 0.08, faces="xXyYZ")
-    # on the counter: cakes under domes, bread basket, scale, register
-    for u, mat in ((-1.1, "CT_PlasterPink"), (-0.4, "CT_PlasterYellow")):
-        px, py, _ = cfr.p(u, -0.35)
-        cyl(B.detail, "CT_TileWhite", px, py, 1.0, 1.04, 0.2, 8, bottom=True)
-        cyl(B.detail, mat, px, py, 1.04, 1.2, 0.15, 8)
-        blob(B.detail, "CT_SteelRed", px, py, 1.26, 0.05, 5)
-    fu.crate(B, *cfr.p(0.3, -0.35)[:2], 1.0, 0.5, 0.4, 0.14, "CT_WoodLight", fill="CT_WoodLight", yaw=cfr.yaw)
-    _counter_register(S, cfr, u=1.3)
-    # bread tables at the front, each with a basket of loaves
-    for k, dx in enumerate((-3.3, -1.4, 3.1)):
-        x, y = S.xm + dx, S.y_front(S.xm) + 1.7 + (0.5 if k == 1 else 0.0)
-        fu.table_round(B, x, y, 0.55, 0.85)
-        fu.crate(B, x, y, 0.85, 0.5, 0.36, 0.1, "CT_WoodLight", fill=rnd.choice(BREAD))
-        for j in range(3):
-            lbox(B.detail, rnd.choice(BREAD), Fr(x + 0.15 * (j - 1), y + 0.1 * j - 0.1), -0.03, 0.03, -0.2, 0.2, 0.95, 1.0, faces="xXyYZ")
-    B.spot("shop_a_browse3", "stand", (S.xm - 1.4, S.y_front(S.xm) + 2.9, 0.0), 0.0)
-    # baguette bin and flour sacks behind the counter
-    bx, by, _ = Fr(S.xm - 3.2, S.y_back(S.xm) - 2.0).p(0, 0)
-    cyl(B.detail, "CT_WoodLight", bx, by, 0.0, 0.7, 0.28, 8, top=False, bottom=True)
-    for j in range(7):
-        a = 2 * math.pi * j / 7
-        lbox(B.detail, rnd.choice(("CT_WoodLight", "CT_PlasterYellow")), Fr(bx + 0.14 * math.cos(a), by + 0.14 * math.sin(a)),
-             -0.025, 0.025, -0.025, 0.025, 0.4, 1.1 + 0.05 * j % 3, faces="xXyYZ")
-    for j, (dx, dz) in enumerate(((0, 0), (0.5, 0), (0.25, 0.28))):
-        lbox(B.detail, "CT_TileWhite", Fr(S.xm + 3.0 + dx, S.y_back(S.xm) - 1.0), -0.22, 0.22, -0.16, 0.16, dz, dz + 0.28, faces="xXyYZ")
+    B = S.B
+    T = B.thing
+    uc = 6.6
+    # ---- back wall: bread racks behind the counter, boxed goods and tea at the left
+    racks = S.back_run(_bread_rack, 4.6, 9.4, w=0.96)
+    S.shelf_things(racks, "bakery_rack", ["cooking"], z=1.0)
+    sh = S.back_run(kit.shop_shelf, 0.15, 3.0, w=0.95, goods="boxes", h=2.0, levels=4)
+    S.shelf_things(sh, "bakery_shelf", ["cooking"])
+    S.back(kit.wall_clock, 3.75, zc=2.6, r=0.22)
+    # ---- counter with cakes under way
+    r = S.counter(kit.shop_counter, uc, 6.0, "", 3.4, role="seller", front="CT_PlasterYellow", shop="market_bakery", service="shop")
+    S.on_top(kit.plates, uc, 6.0, -1.2, 0.0, n=3)
+    S.on_top(kit.cup, uc, 6.0, -0.6, 0.0)
+    S.on_top(kit.teapot, uc, 6.0, -0.2, 0.0)
+    S.on_top(kit.kitchen_scales, uc, 6.0, 0.2, 0.0)
+    S.on_top(kit.crate, uc, 6.0, 1.0, 0.0, w=0.5, d=0.34, h=0.14, fill="CT_WoodLight", seed=2)
+    S.sign(uc, 6.0, "sign_bread", w=1.7)
+    # ---- glass cases along the right wall, boxed shelves above the left front, groceries by the corner
+    c1 = S.right_f(kit.display_case, 2.4, 0.4, w=1.5, d=0.6, goods="boxes", seed=3)
+    c2 = S.right_f(kit.display_case, 4.1, 0.4, w=1.5, d=0.6, goods="boxes", seed=4)
+    T("bakery_pies_case", "board", (c1["pos"][0], c1["pos"][1], 1.0), 270, topic="prices")
+    rs = S.side_run(kit.shop_shelf, "r", 4.95, 8.1, w=0.95, goods="groceries", h=1.9, levels=4)
+    S.shelf_things(rs, "bakery_right", ["cooking"])
+    ls = S.side_run(kit.shop_shelf, "l", 4.8, 8.1, w=0.95, goods="boxes", h=1.9, levels=4)
+    S.shelf_things(ls, "bakery_left", ["cooking"])
+    # ---- bread tables in the middle of the shop, loaves in crates
+    for k, (u, v) in enumerate(((5.6, 3.4), (8.0, 3.7))):
+        S.f(kit.table, u, v, 0, w=1.3, d=0.8, mat=kit.WOOD)
+        for j in range(2):
+            S.on_top(kit.crate, u, v, -0.33 + 0.66 * j, 0.0, z=0.75, w=0.55, d=0.4, h=0.18, fill=("CT_WoodLight", "CT_PlasterYellow")[(j + k) % 2], seed=j + k)
+    # ---- cafe corner: two round tables by the window (left), one more at the right
+    for k, (u, v) in enumerate(((1.2, 1.4), (1.2, 3.1), (6.4, 1.4))):
+        S.f(kit.table_round, u, v, 0, r=0.38, mat=kit.WOODL)
+        S.on_top(kit.cup, u, v, -0.1, 0.0, z=0.75)
+        S.on_top(kit.plates, u, v, 0.12, 0.03, z=0.75, n=2)
+        for j, s in enumerate((-1, 1)):
+            ch = S.f(kit.chair, u + s * 0.58, v, -s * 90, mat=("CT_PlasterRed", "CT_PlasterYellow")[(k + j) % 2])
+            S.seat("bakery_seat_%d%s" % (k + 1, "ab"[j]), ch)
+        S.spot("bakery_table_%d" % (k + 1), "table", u + 0.58, v, 270)
+    S.f(kit.rug, 1.2, 2.3, 0, w=1.5, d=2.8, name="rug_2")
+    # ---- walls, plants
+    S.left(kit.poster, 1.8, name="poster_cons_1", w=0.6, zc=1.8)
+    S.left(kit.picture, 3.5, name="painting_still_life", w=0.6, zc=1.9)
+    kit.plant(B, *S.P(0.55, 0.55), 0.0, S.yw(0.5), kind="ficus", pot="CT_PlasterYellow", h=1.5)
+    kit.plant(B, *S.P(8.9, 0.55), 0.0, S.yw(8.9), kind="fern", pot="CT_PlasterRed", h=1.0)
+    kit.fire_extinguisher(B, S.xl + 0.005, S.y_front(S.xl) + 0.8, 0.0, 90)
+    # ---- spots (old ids)
+    S.spot_w("shop_a_browse1", "stand", "l", 6.4)
+    S.spot("shop_a_browse3", "stand", 4.0, 3.4, 180)
     S.lamps(WARM, 760, cols=3)
 
 
-def _flowers(S):
-    B, rnd = S.B, S.rnd
-    _shelves_back(S, tiers=3, zmax=2.0, z0=0.3, kind="jar", mats=["CT_PlasterBlue", "CT_PlasterRed", "CT_PlasterYellow", "CT_PlasterPink"], depth=0.4, carcass="CT_TileWhite")
-    _shelves_sides(S, tiers=3, zmax=1.7, z0=0.3, kind="jar", mats=["CT_PlasterRed", "CT_PlasterYellow", "CT_PlasterBlue"], left=True, right=False, carcass="CT_TileWhite")
-    cfr, ycn = S.counter_fr()
-    # flower fridge on the right wall (glass front)
-    fr_r = S.side_frames()[1][0]
-    lbox(B.m, "CT_TileWhite", fr_r, 0.4, 2.2, 0.0, 0.7, 0.0, 2.1)
-    for j in range(4):
-        fu.bucket(B, *fr_r.p(0.7 + 0.4 * j, 0.35)[:2], 0.7, 0.1, 0.25, "CT_Steel", fu.FLOWERS, rnd)
-    # buckets in rows at the front
-    yb0 = S.y_front(S.xm) + 1.0
-    for row in range(2):
-        for j in range(5):
-            x = S.xm - 2.6 + j * 1.3
-            fu.bucket(B, x, yb0 + row * 0.9, 0.0, 0.2, 0.38, "CT_Steel", fu.FLOWERS, rnd)
-    # tiered stand with potted plants
-    sx, sy = S.xm + 1.9, S.y_front(S.xm) + 4.3
-    for t in range(3):
-        lbox(B.m, "CT_WoodLight", Fr(sx, sy), -0.9, 0.9, -0.3 + 0.2 * t, 0.3, 0.0, 0.3 + 0.3 * t)
-    for t in range(3):
-        for j in range(3):
-            fu.plant(B, sx - 0.55 + 0.55 * j, sy - 0.1 + 0.2 * t, 0.3 + 0.3 * t, 0.3, rnd.choice(("CT_PlasterRed", "CT_PlasterBlue", "CT_TileWhite")), scale=0.5)
-    B.spot("shop_b_browse3", "stand", (sx, sy - 1.4, 0.0), 180)
-    # counter: paper roll, bouquets in a vase, scissors
-    for u, mat in ((-1.0, "CT_PlasterPink"), (1.2, "CT_PlasterYellow")):
-        px, py, _ = cfr.p(u, -0.3)
-        cyl(B.detail, mat, px, py, 1.0, 1.3, 0.09, 8, bottom=True)
-    px, py, _ = cfr.p(0.2, -0.3)
-    fu.bucket(B, px, py, 1.0, 0.13, 0.25, "CT_PlasterBlue", fu.FLOWERS, rnd)
-    _counter_register(S, cfr, u=-0.1)
-    # hanging plants over the front window
-    for j in range(5):
-        x = S.xm - 2.8 + 1.4 * j
-        y = S.y_front(x) + 0.45
-        lbox(B.detail, "CT_Steel", Fr(x, y), -0.006, 0.006, -0.006, 0.006, 2.2, Z_CEIL, faces="xXyY")
-        cyl(B.detail, "CT_PlasterRed", x, y, 2.05, 2.2, 0.1, 6, bottom=True)
-        blob(B.detail, "CT_PlasterGreen", x, y, 2.0, 0.17, 6)
+# ==================================================================================================== B records
+def _records(S):
+    B = S.B
+    T = B.thing
+    uc = 5.55
+    sh = S.back_run(kit.shop_shelf, 0.15, 4.2, w=1.0, goods="records", h=1.9, levels=5)
+    S.shelf_things(sh, "records_wall", ["music"])
+    # radios on wall shelves behind the counter
+    for k, u in enumerate((4.85, 6.25)):
+        for j, zt in enumerate((1.2, 1.75)):
+            x = S.xl + u
+            th = _th(x)
+            y = yb(x) - 0.3 / math.cos(th) + 0.02
+            yaw = math.degrees(th)
+            kit.wall_shelf(B, x, y, 0.0, yaw, w=1.1, zt=zt, props=False)
+            kit.radio(B, x - 0.25, y - 0.1, zt, yaw)
+            kit.radio(B, x + 0.2, y - 0.1, zt, yaw + 6)
+    x = S.xl + 5.55
+    B.thing("records_radios", "board", (x, S.y_back(x) - 0.2, 1.6), S.yw(5.55), topic="catalogue")
+    S.back(kit.wall_clock, 4.4, zc=2.7, r=0.2)
+    r = S.counter(kit.shop_counter, uc, 6.0, "", 2.2, role="seller", front="CT_PlasterBlue", top="CT_Wood", service="shop")
+    S.on_top(kit.telephone, uc, 6.0, -0.8, 0.0)
+    rp = S.on_top(kit.record_player, uc, 6.0, 0.55, 0.0)
+    B.thing("records_counter_player", "machine", (rp["pos"][0], rp["pos"][1], 1.1), S.yw(uc), what="record_player")
+    # record bins in the middle (two rows), a poster-covered pillar of sleeves
+    for k, (u, v) in enumerate(((5.5, 3.3), (5.5, 1.5))):
+        c = S.f(kit.display_case, u, v, 0, w=1.5, d=0.6, goods="records", seed=k + 2)
+        B.thing("records_bin_%d" % (k + 1), "shelf", (c["pos"][0], c["pos"][1], 0.9), S.yw(u), topic="music")
+    # listening corner: rug, low table with a player, two armchairs
+    S.f(kit.rug, 1.4, 1.8, 0, w=2.3, d=1.8, name="rug_4")
+    S.f(kit.coffee_table, 1.45, 1.4, 0, w=0.9, d=0.5)
+    lp = S.on_top(kit.record_player, 1.45, 1.4, 0.0, 0.0, z=0.42)
+    B.thing("records_listening", "machine", (lp["pos"][0], lp["pos"][1], 0.5), S.yw(1.45), what="record_player")
+    a1 = S.f(kit.armchair, 0.6, 2.6, 90, mat="CT_PlasterBlue")
+    S.seat("records_armchair_1", a1)
+    a2 = S.f(kit.armchair, 2.3, 2.9, -30, mat="CT_PlasterRed")
+    S.seat("records_armchair_2", a2)
+    jb = S.right_f(kit.jukebox, 2.3, 0.4)
+    B.thing("records_jukebox", "machine", (jb["pos"][0], jb["pos"][1], 1.0), 270, what="jukebox")
+    ls = S.side_run(kit.shop_shelf, "l", 4.4, 8.1, w=0.95, goods="records", h=1.9, levels=5)
+    S.shelf_things(ls, "records_left", ["music"])
+    rs = S.side_run(kit.shop_shelf, "r", 3.1, 8.1, w=0.95, goods="records", h=1.9, levels=5)
+    S.shelf_things(rs, "records_right", ["music"])
+    # sleeves as pictures
+    S.left(kit.poster, 1.0, name="sleeve_1", w=0.55, zc=1.7)
+    S.left(kit.poster, 2.0, name="sleeve_6", w=0.55, zc=1.7)
+    S.left(kit.poster, 3.0, name="sleeve_0", w=0.55, zc=1.7)
+    S.spot_w("shop_b_browse1", "stand", "l", 6.3)
+    S.spot("shop_b_browse3", "stand", 3.1, 5.0, 180)
     S.lamps(WARM, 720, cols=2)
 
 
+# ==================================================================================================== C books
 def _books(S):
-    B, rnd = S.B, S.rnd
-    BOOK = ["CT_PlasterRed", "CT_PlasterBlue", "CT_PlasterGreen", "CT_WoodLight", "CT_PlasterYellow", "CT_TileWhite",
-            "CT_PlasterPink", "CT_SteelRed"]
-    _shelves_back(S, tiers=6, zmax=2.6, z0=0.1, kind="book", mats=BOOK, fill=0.95, depth=0.35)
-    _shelves_sides(S, tiers=6, zmax=2.4, z0=0.1, kind="book", mats=BOOK, fill=0.95, depth=0.32)
-    cfr, ycn = S.counter_fr()
-    # two double-sided islands
-    y0 = S.y_front(S.xm) + 2.3
-    y1 = ycn - 0.9
-    for dx in (-1.55, 1.55):
-        _island(S, S.xm + dx, y0, y1, rnd, tiers=4, zmax=1.7, z0=0.1, kind="book", mats=BOOK, fill=0.95, depth=0.3)
-    B.spot("shop_c_browse3", "stand", (S.xm - 2.45, (y0 + y1) / 2, 0.0), 90)
-    B.spot("shop_c_browse4", "stand", (S.xm + 2.45, (y0 + y1) / 2, 0.0), 270)
-    # reading corner at the front: round table with a stack and a chair
-    tx, ty = S.xm, S.y_front(S.xm) + 1.2
-    fu.table_round(B, tx, ty, 0.45, 0.74)
-    lbox(B.detail, "CT_PlasterRed", Fr(tx, ty), -0.14, 0.14, -0.1, 0.1, 0.74, 0.8, faces="xXyYZ")
-    lbox(B.detail, "CT_PlasterBlue", Fr(tx, ty, 20), -0.12, 0.12, -0.09, 0.09, 0.8, 0.85, faces="xXyYZ")
-    fu.chair(B, tx - 0.75, ty, 90, "CT_PlasterGreen")
-    fu.chair(B, tx + 0.75, ty, 270, "CT_PlasterYellow")
-    B.spot("shop_c_seat1", "seat", (tx - 0.75, ty, 0.0), 90)
-    B.spot("shop_c_seat2", "seat", (tx + 0.75, ty, 0.0), 270)
-    # counter: book stacks, lamp, register
-    for u, h in ((-1.2, 0.3), (-0.7, 0.2)):
-        lbox(B.detail, rnd.choice(BOOK), cfr, u - 0.15, u + 0.15, -0.5, -0.2, 1.0, 1.0 + h, faces="xXyYZ")
-    _counter_register(S, cfr, u=1.1)
+    B = S.B
+    T = B.thing
+    uc = 5.55
+    wall = S.back_run(kit.bookshelf, 0.15, 7.05, w=0.95, h=2.3, levels=6)
+    S.shelf_things(wall, "books_wall", PAPER_TOPICS)
+    ls = S.side_run(kit.bookshelf, "l", 4.4, 8.1, w=0.95, h=2.2, levels=6)
+    S.shelf_things(ls, "books_left", PAPER_TOPICS[3:] + PAPER_TOPICS[:3])
+    rs = S.side_run(kit.bookshelf, "r", 2.6, 8.1, w=0.95, h=2.2, levels=6)
+    S.shelf_things(rs, "books_right", PAPER_TOPICS[5:] + PAPER_TOPICS[:5])
+    r = S.counter(kit.shop_counter, uc, 6.0, "", 2.2, role="seller", front="CT_PlasterGreen", top="CT_Wood", shop="store_books", service="shop")
+    S.on_top(kit.books_stack, uc, 6.0, -0.7, 0.0, n=4, seed=3)
+    S.on_top(kit.newspaper, uc, 6.0, 0.6, 0.0)
+    S.on_top(kit.table_lamp, uc, 6.0, 0.0, 0.15)
+    S.sign(uc, 6.0, "sign_books", w=1.7)
+    # new arrivals: cases and a magazine rack in the middle
+    ic = S.f(kit.display_case, 5.3, 3.5, 0, w=1.4, d=0.6, goods="boxes", seed=1)
+    T("books_new_arrivals", "shelf", (ic["pos"][0], ic["pos"][1], 0.9), S.yw(5.3), topic="local")
+    mr = S.f(kit.magazine_rack, 5.0, 1.6, 0, w=0.9)
+    T("books_magazines", "shelf", (mr["pos"][0], mr["pos"][1], 1.0), S.yw(5.0), topic="science")
+    # reading corner by the left window
+    S.f(kit.rug, 1.4, 2.0, 0, w=2.4, d=1.8, name="rug_1")
+    S.f(kit.coffee_table, 1.5, 1.7, 0, w=0.8, d=0.5)
+    S.on_top(kit.books_stack, 1.5, 1.7, -0.15, 0.0, z=0.42, n=3, seed=5)
+    S.on_top(kit.cup, 1.5, 1.7, 0.2, 0.0, z=0.42)
+    c1 = S.f(kit.armchair, 0.6, 2.7, 90, mat="CT_PlasterGreen")
+    T("books_armchair_1", "seat", (c1["seats"][0][0], c1["seats"][0][1], 0.45), c1["seats"][0][3], height=0.45)
+    B.spot("shop_c_seat1", "seat", (c1["seats"][0][0], c1["seats"][0][1], 0.0), c1["seats"][0][3])
+    c2 = S.f(kit.armchair, 2.3, 3.0, -30, mat="CT_PlasterBlue")
+    T("books_armchair_2", "seat", (c2["seats"][0][0], c2["seats"][0][1], 0.45), c2["seats"][0][3], height=0.45)
+    B.spot("shop_c_seat2", "seat", (c2["seats"][0][0], c2["seats"][0][1], 0.0), c2["seats"][0][3])
+    kit.floor_lamp(B, *S.P(0.5, 3.8), 0.0, S.yw(0.5))
+    kit.plant(B, *S.P(6.8, 0.5), 0.0, S.yw(6.8), kind="palm", pot="CT_PlasterYellow", h=1.8)
+    kit.globe(B, *S.P(3.0, 4.6), 0.0, S.yw(3.0), floor=True)
+    S.left(kit.poster, 1.0, name="poster_birds_0", w=0.5, zc=1.8)
+    S.left(kit.poster, 2.0, name="travel_1", w=0.5, zc=1.8)
+    S.right(kit.poster, 1.4, name="poster_sun_1", w=0.5, zc=1.8)
+    T("books_poster_birds", "board", (S.xl + 0.1, S.y_front(S.xl) + 1.0, 1.8), 90, topic="exhibit")
+    S.spot_w("shop_c_browse1", "stand", "l", 6.2)
+    S.spot_w("shop_c_browse2", "stand", "r", 5.0)
+    S.spot("shop_c_browse3", "stand", 3.0, 5.4, 180)
+    S.spot("shop_c_browse4", "stand", 1.0, 5.4, 180)
     S.lamps(WARM, 720, cols=2)
 
 
+# ==================================================================================================== D hardware
 def _hardware(S):
-    B, rnd = S.B, S.rnd
-    TOOLS = [("CT_SteelRed", 0.04, 0.28), ("CT_Steel", 0.05, 0.5), ("CT_WoodLight", 0.035, 0.4), ("CT_PlasterYellow", 0.04, 0.3),
-             ("CT_Steel", 0.15, 0.04)]
-    _shelves_back(S, tiers=3, zmax=1.4, z0=0.0, kind="can", mats=["CT_PlasterRed", "CT_PlasterBlue", "CT_PlasterYellow", "CT_PlasterGreen", "CT_TileWhite"],
-                  carcass="CT_Steel", depth=0.45)
-    # pegboard with tools over the shelves
-    for fr, u0, u1 in S.back_frames():
-        lbox(B.detail, "CT_ConcreteDark", fr, u0 + 0.02, u1 - 0.02, 0.0, 0.02, 1.5, 2.7)
-        u = u0 + 0.2
-        while u < u1 - 0.2:
-            mat, w, h = rnd.choice(TOOLS)
-            lbox(B.detail, mat, fr, u, u + w, 0.02, 0.06, 2.45 - h, 2.45, faces="xXyYZ")
-            u += w + rnd.uniform(0.1, 0.22)
-    _shelves_sides(S, tiers=4, zmax=2.0, z0=0.0, kind="box", mats=["CT_PlasterYellow", "CT_SteelRed", "CT_PlasterBlue", "CT_Steel"],
-                   carcass="CT_Steel", depth=0.4)
-    cfr, ycn = S.counter_fr()
-    # two steel bin racks (islands) with crates
-    y0 = S.y_front(S.xm) + 2.2
-    y1 = ycn - 1.0
-    for dx in (-2.0, 2.0):
-        x = S.xm + dx
-        fu.shelving(B, Fr(x, y0, 90), 0.0, y1 - y0, rnd, tiers=3, zmax=1.5, z0=0.0, kind="box",
-                    mats=["CT_Steel", "CT_SteelRed", "CT_PlasterBlue", "CT_PlasterYellow"], carcass="CT_Steel", depth=0.5, hh=(0.12, 0.26))
-        fu.shelving(B, Fr(x - 0.03, y1, 270), 0.0, y1 - y0, rnd, tiers=3, zmax=1.5, z0=0.0, kind="box",
-                    mats=["CT_Steel", "CT_SteelRed", "CT_PlasterBlue", "CT_PlasterYellow"], carcass="CT_Steel", depth=0.5, hh=(0.12, 0.26))
-    B.spot("shop_d_browse3", "stand", (S.xm - 3.0, (y0 + y1) / 2, 0.0), 90)
-    B.spot("shop_d_browse4", "stand", (S.xm + 3.0, (y0 + y1) / 2, 0.0), 270)
-    # paint cans pyramid, cement sacks and tool leaning in the front corner
-    px, py = S.xm + 3.6, S.y_front(S.xm + 3.6) + 1.2
-    for lvl, n in enumerate((4, 3, 2, 1)):
-        for j in range(n):
-            cyl(B.detail, ("CT_PlasterRed", "CT_PlasterBlue", "CT_PlasterYellow")[(lvl + j) % 3], px + (j - (n - 1) / 2) * 0.3, py, lvl * 0.22,
-                lvl * 0.22 + 0.2, 0.13, 8)
-    for j, (dx, dz) in enumerate(((0, 0), (0.62, 0), (0.31, 0.2), (0, 0.4))):
-        lbox(B.detail, "CT_Concrete", Fr(S.xm - 3.7 + dx, S.y_front(S.xm - 3.7) + 1.3 + 0.1 * j), -0.28, 0.28, -0.2, 0.2, dz, dz + 0.2, faces="xXyYZ")
-    for j, mat in enumerate(("CT_Steel", "CT_WoodLight", "CT_Steel", "CT_SteelRed")):      # brooms, shovels leaning on the front wall
-        x = S.xm - 1.0 + j * 0.28
-        lbox(B.detail, mat, Fr(x, S.y_front(x) + 0.12), -0.02, 0.02, -0.02, 0.02, 0.0, 1.7 - 0.1 * j, faces="xXyYZ")
-    # counter: a toolbox and tape reels
-    lbox(B.detail, "CT_SteelRed", cfr, -1.2, -0.7, -0.5, -0.25, 1.0, 1.18, faces="xXyYZ")
-    cyl(B.detail, "CT_PlasterYellow", *cfr.p(0.1, -0.35)[:2], 1.0, 1.1, 0.1, 8)
-    _counter_register(S, cfr, u=1.1)
+    B = S.B
+    T = B.thing
+    uc = 7.0
+    wa = S.back_run(kit.shop_shelf, 0.15, 5.3, w=0.95, goods="hardware", h=2.0, levels=5)
+    S.shelf_things(wa, "hardware_wall", ["engineering"])
+    wb = S.back_run(kit.shop_shelf, 8.7, 9.55, w=0.85, goods="boxes", h=2.0, levels=5)
+    S.shelf_things(wb, "hardware_corner", ["engineering"])
+    # pegboard shelves with tools behind the counter
+    for k, u in enumerate((5.9, 7.0, 8.1)):
+        x = S.xl + u
+        th = _th(x)
+        y = yb(x) - 0.3 / math.cos(th) + 0.02
+        yaw = math.degrees(th)
+        kit.wall_shelf(B, x, y, 0.0, yaw, w=1.0, zt=1.5, props=False)
+        kit.tools(B, x, y - 0.1, 1.5, yaw + 90 * (k % 2))
+        kit.paint_jars(B, x + 0.3, y - 0.1, 1.5, yaw, n=2, seed=k)
+    x = S.xl + 7.0
+    T("hardware_pegboard", "board", (x, S.y_back(x) - 0.2, 1.8), S.yw(7.0), topic="catalogue")
+    S.back(kit.wall_clock, 5.5, zc=2.7, r=0.2)
+    S.back(kit.poster, 8.4, name="poster_safety", w=0.5, zc=2.3)
+    r = S.counter(kit.shop_counter, uc, 6.0, "", 3.0, role="seller", front="CT_SteelRed", top="CT_Wood", shop="store_garden", service="shop")
+    S.on_top(kit.paint_jars, uc, 6.0, -1.0, 0.0, n=4, seed=3)
+    S.on_top(kit.kitchen_scales, uc, 6.0, 0.4, 0.0)
+    S.on_top(kit.tools, uc, 6.0, -0.2, 0.0)
+    # bins and an island of nails; shelves along the walls
+    hb = S.f(_hard_bins, 1.5, 4.2, 0, w=1.6, seed=3)
+    B.thing("hardware_bins", "shelf", (hb["pos"][0], hb["pos"][1], 1.0), S.yw(1.5), topic="engineering")
+    S.f(_hard_bins, 5.3, 3.3, 0, w=1.8, seed=4)
+    ls = S.side_run(kit.shop_shelf, "l", 3.6, 8.1, w=0.95, goods="hardware", h=2.0, levels=5)
+    S.shelf_things(ls, "hardware_left", ["engineering"])
+    rs = S.side_run(kit.shop_shelf, "r", 2.2, 8.1, w=0.95, goods="boxes", h=2.0, levels=5)
+    S.shelf_things(rs, "hardware_right", ["garden", "engineering"])
+    # garden corner at the right front: a table of feeders and bird food in boxes and sacks
+    S.f(kit.table, 7.2, 1.3, 0, w=1.8, d=0.8, mat=kit.WOOD)
+    for j in range(3):
+        S.on_top(kit.cardboard_box, 7.2, 1.3, -0.6 + 0.6 * j, 0.0, z=0.75, w=0.36, d=0.28, h=0.22, seed=j + 4)
+    x, y = S.P(7.2, 1.3)
+    T("hardware_garden_table", "board", (x, y, 0.8), S.yw(7.2), topic="garden")
+    kit.sack(B, *S.P(8.9, 1.0), 0.0, 20)
+    kit.sack(B, *S.P(8.9, 1.6), 0.0, 80)
+    kit.sack(B, *S.P(5.6, 1.0), 0.0, 140)
+    kit.crate(B, *S.P(5.8, 2.0), 0.0, S.yw(5.8), fill="CT_SteelRed", seed=2)
+    # front left: paint pyramid, cement sacks, brooms leaning on the front wall
+    _pyramid(B, S, 1.4, 1.0)
+    for j in range(3):
+        kit.sack(B, *S.P(0.8 + 0.5 * j, 2.4), 0.0, 10 + 25 * j)
+    for j, m in enumerate(("CT_WoodLight", "CT_Steel", "CT_SteelRed")):
+        x, y = S.P(2.4 + 0.25 * j, 0.14)
+        box(B.detail, m, x - 0.02, x + 0.02, y - 0.02, y + 0.02, 0.0, 1.7 - 0.12 * j)
+    kit.plant(B, *S.P(9.0, 3.2), 0.0, 0.0, kind="cactus", pot="CT_PlasterRed", h=0.9)
+    S.spot_w("shop_d_browse1", "stand", "l", 6.0)
+    S.spot_w("shop_d_browse2", "stand", "r", 5.0)
+    S.spot("shop_d_browse3", "stand", 2.6, 4.4, 90)
+    S.spot("shop_d_browse4", "stand", 5.3, 4.4, 180)
     S.lamps("#FFE2B8", 800, cols=3)
 
 
-def _pharmacy(S):
-    B, rnd = S.B, S.rnd
-    PK = ["CT_TileWhite", "CT_PlasterGreen", "CT_PlasterBlue", "CT_TileWhite", "CT_PlasterPink"]
-    # back wall: drawer cabinet (white, green handles) with shelves of boxes above, a green cross
-    for fr, u0, u1 in S.back_frames():
-        lbox(B.m, "CT_TileWhite", fr, u0 + 0.02, u1 - 0.02, 0.0, 0.5, 0.0, 1.1)
-        n = int((u1 - u0) / 0.45)
-        for i in range(n):
-            for r in range(3):
-                uu = u0 + 0.04 + i * (u1 - u0 - 0.08) / n
-                lbox(B.detail, "CT_PlasterGreen", fr, uu + 0.12, uu + (u1 - u0 - 0.08) / n - 0.12, 0.5, 0.52,
-                     0.18 + r * 0.33, 0.22 + r * 0.33, faces="xXyYZ")
-    _shelves_back_hi(S, PK)
-    mid = S.back_frames()[len(S.back_frames()) // 2][0]
-    lbox(B.detail, "CT_PlasterGreen", mid, -0.35, 0.35, 0.0, 0.05, 2.78, 3.0, faces="xXyYZ")
-    lbox(B.detail, "CT_PlasterGreen", mid, -0.11, 0.11, 0.0, 0.05, 2.58, 3.2, faces="xXyYZ")
-    cfr, ycn = S.counter_fr()
-    # glass display counter left of the counter, and a cosmetics island
-    lbox(B.m, "CT_TileWhite", cfr, -4.3, -1.8, -0.7, 0.0, 0.0, 0.9)
-    lbox(B.detail, "CT_ConcreteDark", cfr, -4.32, -1.78, -0.72, 0.02, 0.9, 0.94, faces="xXyYZ")
-    for u in [-4.1 + 0.3 * i for i in range(7)]:
-        lbox(B.detail, rnd.choice(PK), cfr, u, u + 0.2, -0.55, -0.2, 0.94, 1.08, faces="xXyYZ")
-    y0 = S.y_front(S.xm) + 2.5
-    y1 = ycn - 1.2
-    _island(S, S.xm + 0.0, y0, y1, rnd, tiers=4, zmax=1.6, z0=0.2, kind="box", mats=PK, carcass="CT_TileWhite", depth=0.35)
-    B.spot("shop_e_browse3", "stand", (S.xm - 0.9, (y0 + y1) / 2, 0.0), 90)
-    B.spot("shop_e_browse4", "stand", (S.xm + 0.9, (y0 + y1) / 2, 0.0), 270)
-    # waiting chairs along the right wall, magazine table, a pill-dispenser scale
-    (fl, Ll), (frr, Lr) = S.side_frames()
+# ==================================================================================================== E savings bank + hairdresser
+def _salon(S):
+    B = S.B
+    T = B.thing
+    # ---------------- savings bank, left of the aisle (u 0 .. 2.8)
+    bu = 1.65
+    r = S.f(kit.shop_counter, bu, 5.2, 0, w=2.0, front="CT_PlasterGreen", top="CT_Wood", till=False)
+    yaw = S.yw(bu)
+    S.counter_spots("shop_e_bank", r, yaw)
+    B.thing("shop_e_bank_counter", "counter", (r["pos"][0], r["pos"][1], 1.05), yaw, role="cashier", service="cashier")
+    x, y = S.P(bu, 5.2)
+    _teller_grille(B, x, y, 0.0, yaw, w=2.0)
+    S.on_top(kit.cash_register, bu, 5.2, 0.5, 0.0)
+    S.on_top(kit.telephone, bu, 5.2, -0.6, 0.15)
+    S.sign(bu, 5.2, "sign_till", w=1.4, zc=2.7)
+    # behind the counter: a safe, filing cabinets, a desk with a typewriter
+    S.back(kit.safe, 0.6, mat="CT_PlasterGreen")
+    S.back(kit.filing_cabinet, 1.35)
+    S.back(kit.filing_cabinet, 1.95)
+    dk = S.f(kit.office_desk, 1.35, 7.4, 180, w=1.3, d=0.65)
+    # waiting bench and posters for the customers
+    wr = S.left_f(kit.waiting_row, 1.7, 0.4, n=2)
+    B.thing("shop_e_bank_seat", "seat", (wr["seats"][0][0], wr["seats"][0][1], 0.45), 90, height=0.45)
+    B.thing("shop_e_bank_board", "board", (S.xl + 0.05, S.y_front(S.xl) + 3.3, 1.7), 90, topic="prices")
+    S.left(kit.notice_board, 3.3, w=0.9, zc=1.7, seed=3)
+    S.left(kit.poster, 4.4, name="poster_cons_2", w=0.5, zc=1.8)
+    kit.plant(B, *S.P(0.55, 0.55), 0.0, S.yw(0.5), kind="fern", pot="CT_PlasterGreen", h=1.1)
+    # ---------------- hairdresser, right of the aisle (u 4.4 .. 9.7)
+    # mirrors on the back wall over a long shelf with bottles and combs, two chairs facing them
+    for k, u in enumerate((5.3, 7.1, 8.9)):
+        x = S.xl + u
+        th = _th(x)
+        y = yb(x) - 0.3 / math.cos(th) + 0.02
+        yaw = math.degrees(th)
+        kit.mirror(B, x, y, 0.0, yaw, zc=1.6, w=1.1, h=1.2)
+        kit.wall_shelf(B, x, y, 0.0, yaw, w=1.3, zt=0.95, props=False)
+        kit.bottles(B, x - 0.3, y - 0.1, 0.95, yaw, n=3, seed=k)
+    S.back(kit.sign_plate, 7.1, name="sign_barber", w=1.5, zc=2.75)
+    chairs = []
+    for k, u in enumerate((6.2, 8.0)):
+        ch = S.f(_barber_chair, u, 7.0, 180)
+        chairs.append(ch)
+        s = ch["seats"][0]
+        B.thing("salon_chair_%d" % (k + 1), "machine", (s[0], s[1], 0.6), s[3], what="haircut")
+        B.spot("shop_e_chair_%d" % (k + 1), "seat", (s[0], s[1], 0.0), s[3])
+    S.f(kit.rug, 7.1, 7.0, 0, w=3.4, d=1.6, name="rug_3")
+    # reception desk at the front, waiting sofa on the right wall, magazines
+    rc = S.f(kit.shop_counter, 7.0, 4.3, 0, w=1.8, front="CT_PlasterPink", top="CT_TileWhite")
+    yw_ = S.yw(7.0)
+    S.counter_spots("shop_e", rc, yw_)
+    B.thing("shop_e_counter", "counter", (rc["pos"][0], rc["pos"][1], 1.05), yw_, role="seller", service="reception")
+    S.on_top(kit.telephone, 7.0, 4.3, -0.5, 0.1)
+    sf = S.right_f(kit.sofa, 2.4, 0.5, seats=3, mat="CT_PlasterBlue")
     for j in range(3):
-        px, py, _ = frr.p(Lr - 0.5 - j * 0.6, 0.35)
-        fu.chair(B, px, py, 270, "CT_PlasterGreen")
-        B.spot("shop_e_seat%d" % (j + 1), "seat", (px, py, 0.0), 270)
-    lbox(B.detail, "CT_TileWhite", fl, 1.2, 1.5, 0.15, 0.45, 0.0, 1.5, faces="xXyYZ")
-    lbox(B.detail, "CT_ConcreteDark", fl, 1.22, 1.48, 0.45, 0.47, 1.1, 1.4, faces="Y")
-    # counter: tablet blisters, hand sanitiser, register
-    for u in (-1.2, -0.9):
-        lbox(B.detail, "CT_PlasterBlue", cfr, u, u + 0.2, -0.5, -0.2, 1.0, 1.15, faces="xXyYZ")
-    cyl(B.detail, "CT_PlasterGreen", *cfr.p(0.2, -0.3)[:2], 1.0, 1.2, 0.05, 6)
-    _counter_register(S, cfr, u=1.1)
+        sx = sf["seats"][j] if j < len(sf["seats"]) else sf["seats"][-1]
+        B.spot("shop_e_seat%d" % (j + 1), "seat", (sx[0], sx[1], 0.0), 270)
+    B.thing("shop_e_waiting_sofa", "seat", (sf["seats"][0][0], sf["seats"][0][1], 0.45), 270, height=0.45)
+    mr = S.right_f(kit.magazine_rack, 4.0, 0.2)
+    B.thing("salon_magazines", "shelf", (mr["pos"][0], mr["pos"][1], 1.0), 270, topic="art")
+    S.right(kit.picture, 1.1, name="painting_portrait", w=0.5, zc=1.9)
+    S.right(kit.poster, 6.3, name="poster_health", w=0.5, zc=1.8)
+    kit.plant(B, *S.P(9.0, 0.6), 0.0, S.yw(9.0), kind="ficus", pot="CT_PlasterRed", h=1.5)
+    S.spot("shop_e_browse3", "stand", 5.2, 3.5, 90)
+    S.spot("shop_e_browse4", "stand", 3.6, 5.5, 180)
     S.lamps(COOL, 800, cols=3)
 
 
-def _shelves_back_hi(S, PK):
-    for fr, u0, u1 in S.back_frames():
-        fu.shelving(S.B, fr, u0 + 0.02, u1 - 0.02, S.rnd, tiers=3, zmax=2.5, z0=1.2, kind="box", mats=PK,
-                    carcass="CT_TileWhite", depth=0.3, hh=(0.1, 0.22), solid=False)
-
-
-def _souvenirs(S):
-    B, rnd = S.B, S.rnd
-    AMBER = ["CT_PlasterYellow", "CT_Copper", "CT_PlasterYellow", "CT_Brick"]
-    TOYS = ["CT_WoodLight", "CT_PlasterRed", "CT_PlasterBlue", "CT_PlasterYellow", "CT_Copper"]
-    _shelves_back(S, tiers=4, zmax=2.3, z0=0.3, kind="box", mats=TOYS, depth=0.38, hh=(0.1, 0.24))
-    _shelves_sides(S, tiers=4, zmax=2.0, z0=0.3, kind="jar", mats=AMBER, left=True, right=True, depth=0.35)
-    cfr, ycn = S.counter_fr()
-    # two glass cases with amber, one big amber chunk on a plinth in the middle
-    y = S.y_front(S.xm) + 2.8
-    for dx in (-2.6, 2.6):
-        fr = Fr(S.xm + dx, y, 0.0)
-        lbox(B.m, "CT_WoodLight", fr, -0.9, 0.9, -0.35, 0.35, 0.0, 0.85)
-        lbox(B.detail, "CT_ConcreteDark", fr, -0.92, 0.92, -0.37, 0.37, 0.85, 0.89, faces="xXyYZ")
-        for k in range(9):
-            blob(B.detail, rnd.choice(AMBER), fr.p(-0.75 + 0.19 * k, rnd.uniform(-0.15, 0.15))[0],
-                 y + rnd.uniform(-0.15, 0.15), 0.89 + 0.07, rnd.uniform(0.05, 0.09), 6)
-        B.spot("shop_f_browse%d" % (1 if dx < 0 else 2), "stand", (S.xm + dx, y - 0.9, 0.0), 0.0)
-    cx, cy = S.xm, S.y_front(S.xm) + 4.0
-    cyl(B.m, "CT_ConcreteDark", cx, cy, 0.0, 0.7, 0.4, 8)
-    blob(B.detail, "CT_PlasterYellow", cx, cy, 0.7 + 0.28, 0.32, 8)
-    blob(B.detail, "CT_Copper", cx + 0.15, cy - 0.1, 0.7 + 0.62, 0.17, 7)
-    # postcard spinner rack and a bowl of shells near the door
-    rx, ry = S.xm + 3.9, S.y_front(S.xm + 3.9) + 2.8
-    cyl(B.detail, "CT_Steel", rx, ry, 0.0, 1.6, 0.025, 4)
-    cyl(B.detail, "CT_Steel", rx, ry, 0.0, 0.03, 0.22, 8)
-    for k in range(4):
-        lbox(B.detail, rnd.choice(TOYS), Fr(rx, ry, 90 * k), -0.12, 0.12, 0.1, 0.12, 1.0 + 0.15 * (k % 2), 1.35 + 0.15 * (k % 2), faces="xXyYZ")
-    # amber strings hanging from the ceiling over the counter
-    for k in range(7):
-        x = S.xm - 1.5 + 0.5 * k
-        y2 = ycn - 0.4
-        lbox(B.detail, "CT_Steel", Fr(x, y2), -0.005, 0.005, -0.005, 0.005, 1.7, Z_CEIL, faces="xXyY")
-        for j in range(5):
-            blob(B.detail, rnd.choice(AMBER), x, y2, 1.78 + 0.07 * j, 0.04, 6)
-    # counter: mugs, small ships, register
-    for k in range(5):
-        cyl(B.detail, rnd.choice(("CT_PlasterBlue", "CT_TileWhite", "CT_PlasterRed")), *cfr.p(-1.4 + 0.25 * k, -0.25)[:2], 1.0, 1.1, 0.05, 6)
-    for u in (0.1, 0.55):
-        lbox(B.detail, "CT_WoodLight", cfr, u, u + 0.28, -0.5, -0.3, 1.0, 1.06, faces="xXyYZ")
-        lbox(B.detail, "CT_TileWhite", cfr, u + 0.12, u + 0.14, -0.41, -0.39, 1.06, 1.3, faces="xXyYZ")
-    _counter_register(S, cfr, u=1.2)
+# ==================================================================================================== F fabrics + toys
+def _toyfab(S):
+    B = S.B
+    T = B.thing
+    # ---------------- fabrics (left, u 0 .. 2.8): rolls on shelves, a cutting counter, a sewing table, a rail of dresses
+    fs = S.back_run(kit.shop_shelf, 0.15, 2.7, w=0.85, goods="fabric", h=2.0, levels=6)
+    S.shelf_things(fs, "fabric_wall", ["art"])
+    ls = S.side_run(kit.shop_shelf, "l", 3.6, 8.2, w=0.95, goods="fabric", h=2.0, levels=6)
+    S.shelf_things(ls, "fabric_left", ["art"])
+    r = S.f(kit.shop_counter, 1.6, 5.0, 0, w=1.9, front="CT_PlasterPink", top="CT_Wood", till=False)
+    yaw = S.yw(1.6)
+    S.counter_spots("shop_f_fab", r, yaw)
+    B.thing("shop_f_fab_counter", "counter", (r["pos"][0], r["pos"][1], 1.05), yaw, role="seller", shop="store_haberdashery", service="shop")
+    S.on_top(kit.cardboard_box, 1.6, 5.0, -0.4, 0.0, w=0.4, d=0.3, h=0.2, seed=2)
+    S.sign(1.6, 5.0, "sign_fabric", w=1.4, zc=2.72)
+    sw = S.left_f(kit.sewing_table, 2.6, 0.45)
+    B.thing("fabric_sewing", "craft", (sw["pos"][0], sw["pos"][1], 0.8), 90, what="sewing_machine")
+    cr = S.f(kit.clothes_rail, 1.6, 1.5, 0, w=1.4)
+    S.left(kit.poster, 1.0, name="fabric_1", w=0.5, h=0.5, zc=1.8)
+    S.left(kit.poster, 1.6, name="fabric_4", w=0.5, h=0.5, zc=1.8)
+    kit.plant(B, *S.P(0.55, 0.55), 0.0, S.yw(0.5), kind="cactus", pot="CT_PlasterPink", h=0.9)
+    # ---------------- toys (right, u 4.4 .. 9.55)
+    ts = S.back_run(kit.shop_shelf, 4.5, 9.4, w=0.98, goods="toys", h=2.0, levels=5)
+    S.shelf_things(ts, "toys_wall", ["kids"])
+    rs = S.side_run(kit.shop_shelf, "r", 3.6, 8.2, w=0.95, goods="toys", h=1.8, levels=5)
+    S.shelf_things(rs, "toys_right", ["kids"])
+    rc = S.f(kit.shop_counter, 7.0, 5.6, 0, w=2.2, front="CT_PlasterRed", top="CT_TileWhite")
+    yw_ = S.yw(7.0)
+    S.counter_spots("shop_f", rc, yw_)
+    B.thing("shop_f_counter", "counter", (rc["pos"][0], rc["pos"][1], 1.05), yw_, role="seller", shop="store_souvenirs", service="shop")
+    S.sign(7.0, 5.6, "sign_toys", w=1.5, zc=2.72)
+    for j in range(2):
+        tb = S.f(_toy_bin, 5.2 + 0.0, 1.7 + 1.5 * j, 0, seed=j)
+    S.f(_toy_bin, 8.6, 3.0, 0, seed=5)
+    dc = S.f(kit.display_case, 6.9, 3.4, 0, w=1.3, d=0.6, goods="toys", seed=7)
+    B.thing("toys_case", "board", (dc["pos"][0], dc["pos"][1], 1.0), S.yw(6.9), topic="catalogue")
+    tf = S.f(kit.table_football, 8.3, 1.4, 90)
+    B.thing("toys_table_football", "play", (tf["pos"][0], tf["pos"][1], 0.9), S.yw(8.3) + 90, what="table_football")
+    S.right(kit.poster, 1.2, name="kids_0", w=0.55, zc=1.7)
+    S.right(kit.poster, 2.4, name="kids_2", w=0.55, zc=1.7)
+    S.spot_w("shop_f_browse1", "stand", "l", 6.4)
+    S.spot_w("shop_f_browse2", "stand", "r", 5.2)
     S.lamps("#FFC888", 780, cols=3)
 
 
+# ==================================================================================================== lobbies
 def _lobby(B, rnd, a, b, name):
-    """A core lobby: mailboxes on the left wall, a plant, a doormat inside the door, a lobby lamp."""
+    """A core lobby: mailboxes on the west wall, a porter's desk with a phone, a bench, a notice board, plants, lamp."""
     xl, xr = XS[a] + 0.15, XS[b] - 0.15
     xm = (XS[a] + XS[b]) / 2
     yfm = yf(xm) + 2.8
-    yy = yfm + 1.6
-    fu_fr = Fr(xl, yy - 0.0, 90)
-    fu.mailboxes(B, fu_fr, 1.3, 0.9, cols=6, rows=4)
-    # doormat inside the door (door is in the first bay)
+    yy = yfm + 2.4
+    fu.mailboxes(B, Fr(xl, yy, 90), 1.3, 0.9, cols=6, rows=4)
+    B.thing("%s_mailboxes" % name, "board", (xl + 0.1, yy + 1.3, 1.5), 90, topic="rules")
     xd = (XS[a] + XS[a + 1]) / 2
     fu.doormat(B, Fr(xd, yf(xd) + 2.8, 0.0), 0.0, -0.45, z=0.0)
-    for (px, py) in ((xr - 0.45, yy + 1.5), (xl + 0.5, yy + 5.2)):
-        fu.plant(B, px, py, 0.0, 0.9, "CT_PlasterBlue" if px > xm else "CT_PlasterRed")
-    B.lamp((xm, yy + 0.8, 2.9), lumens=520, colour="#FFE0B0", kind="lobby", radius=6.0)
-    lbox(B.detail, "CT_Steel", Fr(xm, yy + 0.8), -0.01, 0.01, -0.01, 0.01, 2.98, Z_CEIL, faces="xXyY")
+    n = name[-1]
+    th = _th(xm)
+    yw = math.degrees(th)
+    # porter's desk against the east wall with a telephone and a bell, an armchair for the porter
+    r = kit.reception_desk(B, xr - 0.45, yy + 1.2, 0.0, 270, w=1.6)
+    kit.telephone(B, xr - 0.45, yy + 1.7, 1.1, 270)
+    B.thing("%s_porter" % name, "counter", (xr - 0.45, yy + 1.2, 1.1), 270, role="janitor", service="reception")
+    B.spot("%s_porter" % name, "counter", (xr - 0.9, yy + 1.2, 0.0), 270)
+    # bench and a plant by the west wall, notice board and clock on the east wall
+    bn = kit.bench(B, xl + 0.35, yy + 3.6, 0.0, 90, w=1.5, kind="park")
+    B.thing("%s_bench" % name, "seat", (bn["pos"][0], bn["pos"][1], 0.45), 90, height=0.45)
+    B.spot("%s_bench" % name, "bench", (xl + 0.9, yy + 3.6, 0.0), 90)
+    kit.notice_board(B, xr + 0.005, yy + 3.4, 0.0, 270, w=1.0, zc=1.7, seed=int(n))
+    B.thing("%s_notices" % name, "board", (xr - 0.1, yy + 3.4, 1.7), 270, topic="rules")
+    kit.wall_clock(B, xr + 0.005, yy + 2.2, 0.0, 270, zc=2.6, r=0.2)
+    kit.plant(B, xl + 0.5, yy + 5.2, 0.0, 0.0, kind="ficus", pot="CT_PlasterBlue", h=1.6)
+    kit.plant(B, xr - 0.5, yfm + 0.7, 0.0, 0.0, kind="fern", pot="CT_PlasterRed", h=1.1)
+    kit.rug(B, xm, yy + 2.0, 0.0, yw, w=1.8, d=3.0, name="rug_%d" % (int(n) % 6))
+    kit.floor_lamp(B, xr - 0.5, yy + 5.2, 0.0, 0.0)
+    B.lamp((xm, yy + 0.8, 2.9), lumens=520, colour="#FFE0B0", kind="lobby", radius=6.0, fixture=False)
+    kit.pendant(B, xm, yy + 0.8, Z_CEIL, drop=0.3, kind="cone")
 
 
 def furnish(B, rnd):
+    done = []
     for a, b, name in UNITS:
         if name in SHOP_TRADES:
             S = Shop(B, a, b, name, rnd)
             S.awning()
-            {"bakery": _bakery, "flowers": _flowers, "books": _books, "hardware": _hardware,
-             "pharmacy": _pharmacy, "souvenirs": _souvenirs}[S.trade](S)
-            ycn = yb(S.xm) - 4.2
-            B.spot(name + "_clerk", "work", (S.xm, ycn + 1.3, 0.0), 0.0)
-            B.spot(name + "_queue", "stand", (S.xm, ycn - 0.9, 0.0), 180)
+            {"bakery": _bakery, "records": _records, "books": _books, "hardware": _hardware,
+             "salon": _salon, "toyfab": _toyfab}[S.trade](S)
+            done.append(S)
         elif name.startswith("core"):
             _lobby(B, rnd, a, b, name)
+    if os.environ.get("KITCHECK"):
+        for S in done:
+            print("SHOP", S.name, S.trade, "tris", S.tris)
+            for w in S.warn:
+                print("  WARN", w)
+        print("KITCHECK", kit.check(B))
 
 
 def build(B):
@@ -657,11 +949,6 @@ def build(B):
                            kind="street", leaves=1)
             else:
                 fwin(B, F, 0.2, L - 0.2, 0.45 if not core else 0.7, 3.05 if not core else 2.8, kind=kind, cols=2 if L > 2 else 1, rows=1, frame=0.05, inset=0.15)
-        if not core:
-            xm = (XS[a] + XS[b]) / 2
-            ycn = yb(xm) - 4.2
-            box(B.m, "CT_Wood", xm - 1.6, xm + 1.6, ycn, ycn + 0.7, 0.0, 1.0)
-            B.spot(name + "_counter", "counter", (xm, ycn - 0.1, 0.0), 0.0)
     furnish(B, random.Random(1960))
     # partitions between units (the passage sides are blue tile)
     bounds = sorted({a for a, b, _ in UNITS} | {b for a, b, _ in UNITS})

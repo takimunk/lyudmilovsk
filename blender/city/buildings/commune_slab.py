@@ -26,6 +26,8 @@ Ideas for later: stairs inside the hall to the gym, interior corridors, sliding 
 """
 import math
 
+import interior_kit as kit
+
 from citykit import box, prism, ring, DOOR_W
 from _cons_util import wall, win, hface, rect
 from furn_int2 import Furn
@@ -66,6 +68,7 @@ def build(B):
     _build(B)
     if MIRROR:
         _mirror(B)
+    _furnish_hall(B, MIRROR)          # after the mirror: atlas pictures and text must not be mirrored
 
 
 def _mirror(B):
@@ -265,98 +268,145 @@ def _block(B):
     box(m, ACC_S, -30.4, -26.6, -0.9, YB0, 3.0, 3.15)
     box(B.detail, ACC_S, XB0, XB1, 0.2, 0.34, UZ0 + 2.6, UZ0 + 2.9)
     B.entrance("hall", (-28.5, YB0, 0.0), 0.0, width=2.4, height=2.7, kind="street", leaves=2)
-    # interior: serving counter, tables, laundry machines
-    box(m, "CT_Wood", -33.2, -25.2, 11.2, 12.0, 0.0, 1.1)
-    B.spot("counter1", "counter", (-29.2, 10.6, 0.0), 180.0)
-    n = 0
-    for x in (-32.0, -29.0, -26.0):
-        for y in (4.2, 7.0):
-            n += 1
-            box(m, "CT_Wood", x - 0.6, x + 0.6, y - 0.6, y + 0.6, 0.0, 0.75)
-            B.spot("table%d" % n, "table", (x, y, 0.0), 0.0)
-    for i in range(5):
-        y = 3.2 + i * 1.2
-        box(m, "CT_Aluminium", -34.6, -33.8, y, y + 0.9, 0.0, 0.95)
-        B.spot("work%d" % (i + 1), "work", (-33.2, y + 0.45, 0.0), 270.0)
-    _furnish_hall(B)
 
 
-def _furnish_hall(B):
-    """Round 2: the communal hall (x -34.6..-22.4, y 1.4..12.6, ceiling 6.4): canteen, serving line, laundry, gym corner."""
-    f = Furn(B)
+class _H:
+    """Placement in the unmirrored plan (x -34.6..-22.4 hall at the west end); mirrors x and yaw for the east variant."""
+
+    def __init__(self, B, mirror):
+        self.B, self.mir = B, mirror
+
+    def X(self, x):
+        return -x if self.mir else x
+
+    def Y(self, yaw):
+        return (-yaw) % 360 if self.mir else yaw % 360
+
+    def p(self, fn, x, y, yaw=0.0, z=0.0, **kw):
+        return fn(self.B, self.X(x), y, z, self.Y(yaw), **kw)
+
+    def thing(self, tid, kind, x, y, z, yaw, **props):
+        self.B.thing(tid, kind, (self.X(x), y, z), self.Y(yaw), **props)
+
+    def spot(self, sid, kind, x, y, yaw):
+        self.B.spot(sid, kind, (self.X(x), y, 0.0), self.Y(yaw))
+
+    def lamp(self, x, y, z, lumens=800, colour="#FFD2A0"):
+        self.B.lamp((self.X(x), y, z), lumens=lumens, colour=colour, kind="public", radius=7, fixture=False)
+
+
+def _washer(B, x, y, z=0.0, yaw=0.0, solid=True):
+    """[wall] A front-loading laundry machine; the user stands in front (-y local)."""
+    p = kit._P(B, x, y, z, yaw, "washer")
+    p.kind = "wall"
+    w, d, h = 0.62, 0.62, 0.95
+    p.bev("CT_SteelWhite", -w / 2, w / 2, -d, 0.0, 0.0, h, 0.012)
+    p.box("CT_SteelRed", -w / 2 + 0.04, w / 2 - 0.04, -d - 0.012, -d, 0.8, 0.9, f="y")
+    p.box("CT_Steel", -0.06, 0.06, -d - 0.016, -d - 0.012, 0.84, 0.86, f="y")
+    n = 10
+    for rr, mat, dz in ((0.24, "CT_Aluminium", 0.012), (0.19, "CT_Steel", 0.02)):
+        p.face(mat, [(rr * math.cos(2 * math.pi * k / n), -d - dz, 0.42 + rr * math.sin(2 * math.pi * k / n)) for k in range(n)])
+    p.core(-w / 2 + 0.02, w / 2 - 0.02, -d + 0.02, -0.02, 0.1, h - 0.05)
+    return p.done(solid=solid, top=h, front=0.8)
+
+
+def _furnish_hall(B, mirror=False):
+    """Round 3 (interior kit): the communal hall (x -34.6..-22.4, y 1.4..12.6, ceiling 6.4; coordinates below are the
+    west variant, H mirrors them): canteen with a serving line, laundry on the end wall, a reading nook, the house
+    committee notice board by the door, a gym corner at the far end."""
+    H = _H(B, mirror)
     d = B.detail
     WARM = "#FFD2A0"
-    # ---- canteen: chairs at the table spots (the aisle x -28.8..-26.2 from the door stays free)
-    t = 0
-    for x in (-32.0, -29.0, -26.0):
-        for y in (4.2, 7.0):
-            t += 1
-            f.chair(x, y - 0.85, yaw=180.0, seat="CT_Wood")             # sitter faces +y
-            f.chair(x, y + 0.85, yaw=0.0, seat="CT_Wood")               # sitter faces -y
+    # ---- canteen: six tables in two rows, the aisle from the door (x -29.8..-27.2) stays free
+    n = 0
+    rows = (5.0, 7.9)
+    for y in rows:
+        for x in (-32.0, -29.0, -26.0):
+            n += 1
+            H.p(kit.restaurant_table, x, y, 0.0, w=1.2, d=0.9, places=4, cloth=("CT_PlasterRed", "CT_PlasterBlue")[n % 2], seed=n)
+            seats = [(x, y - 0.75, 180.0), (x, y + 0.75, 0.0)]       # a chair at -y faces +y (yaw 180)
             if x < -30:
-                f.chair(x - 0.9, y, yaw=90.0, seat="CT_PlasterRed")
+                seats.append((x - 0.9, y, 90.0))
             if x > -27:
-                f.chair(x + 0.9, y, yaw=270.0, seat="CT_PlasterRed")
-            # a tray, plates and a jug on every table
-            f.tray(x - 0.25, y - 0.2, 0.75)
-            f.cup(x + 0.25, y + 0.2, 0.75, mat="CT_PlasterBlue", h=0.18)
-            f.cup(x + 0.1, y - 0.3, 0.75, mat="CT_PlasterYellow")
-            box(d, "CT_PlasterRed" if t % 2 else "CT_PlasterGreen", x - 0.55, x + 0.55, y - 0.55, y + 0.55, 0.745, 0.755, faces="Z")  # cloth
-            f.pendant(x, y, 6.4, lumens=900, colour=WARM, radius=6.5, drop=1.5)
-    # ---- the serving line: tray rail, steam pots, bowls, menu board, shelves behind
-    box(d, "CT_Aluminium", -33.2, -25.2, 10.55, 10.62, 0.82, 0.86)
-    for px, pat in zip((-32.6, -31.2, -29.8, -28.4, -27.0), (0, 1, 2, 0, 1)):
-        box(d, "CT_Steel", px - 0.3, px + 0.3, 11.35, 11.85, 1.1, 1.3)
-        box(d, "CT_Aluminium", px - 0.3, px + 0.3, 11.35, 11.85, 1.3, 1.32)
-        box(d, ("CT_PlasterRed", "CT_PlasterYellow", "CT_PlasterGreen")[pat], px - 0.22, px + 0.22, 11.42, 11.78, 1.32, 1.35, faces="Z")
-    for i in range(4):
-        f.tray(-33.0 + i * 0.3, 10.85, 1.1)
-    box(d, "CT_PlasterRed", -33.2, -25.2, 10.64, 10.67, 0.1, 0.95, faces="y")                  # red front band
-    f.panel(-29.2, 12.6, 3.1, 5.2, 0.8, 0.0, mat="CT_TileWhite", frame="CT_Frame")             # menu board
-    for i in range(4):
-        box(d, "CT_SteelRed" if i % 2 == 0 else "CT_Steel", -31.4 + i * 1.3, -30.5 + i * 1.3, 12.55, 12.57, 2.9, 3.3, faces="y")
-    # the kitchen door behind the counter is not modelled; a pass shelf instead
-    # ---- laundry: drums, panels, a folding table, baskets
+                seats.append((x + 0.9, y, 270.0))
+            for k, (cx, cy, face) in enumerate(seats):
+                H.p(kit.chair, cx, cy, face, mat=None if k < 2 else "CT_PlasterRed")
+            H.thing("canteen_table_%d" % n, "seat", x, y - 0.75, 0.45, 180.0, height=0.45)
+            H.spot("table%d" % n, "table", x, y - 0.75, 180.0)
+            kit.pendant(B, H.X(x), y, 6.4, drop=1.5, kind="cone", light=True, lumens=900, colour=WARM, radius=6.5)
+    # ---- the serving line along the back wall: counter, pots, trays, kitchen run behind
+    cx = -29.2
+    cr = H.p(kit.shop_counter, cx, 10.7, 0.0, w=7.4, d=0.8, front="CT_PlasterRed", top="CT_Aluminium", till=False)
+    H.spot("counter1", "counter", cx, 10.1, 180.0)
+    H.thing("canteen_counter", "counter", cx, 10.7, 1.05, 0.0, role="clerk", shop="club_buffet", service="bar")
+    for k, px in enumerate((-32.2, -30.6, -29.0, -27.4)):
+        H.p(kit.samovar if k == 1 else kit.teapot, px, 10.7, 0.0, z=1.05)
+    for k in range(4):
+        H.p(kit.plates, -26.0 + 0.4 * (k % 2), 10.55 + 0.2 * (k // 2), 0.0, z=1.05, n=4)
+    H.p(kit.cup, -33.0, 10.7, 0.0, z=1.05)
+    H.p(kit.cup, -32.7, 10.8, 0.0, z=1.05)
+    H.p(kit.kitchen_unit, -31.2, 12.58, 0.0, modules="fridge,cupboard,stove,sink,cupboard", wall_cupboards=False)
+    H.p(kit.kitchen_unit, -27.0, 12.58, 0.0, modules="cupboard,stove,sink,cupboard", wall_cupboards=False)
+    H.p(kit.sign_plate, -29.2, 12.6, 0.0, name="sign_canteen", w=3.2, zc=4.3)
+    H.p(kit.menu_board, -33.0, 12.6, 0.0, name="menu_0", w=0.9, zc=2.6)
+    H.p(kit.menu_board, -25.4, 12.6, 0.0, name="menu_1", w=0.9, zc=2.6)
+    H.p(kit.wall_clock, -29.2, 12.6, 0.0, zc=3.2, r=0.28)
+    H.thing("canteen_menu", "board", -33.0, 12.5, 2.6, 0.0, topic="prices")
+    # ---- laundry on the west wall: five machines, a folding table with baskets
     for i in range(5):
-        y = 3.2 + i * 1.2
-        box(d, "CT_Frame", -33.84, -33.8, y + 0.2, y + 0.7, 0.28, 0.78, faces="X")
-        box(d, "CT_Steel", -33.84, -33.8, y + 0.28, y + 0.62, 0.36, 0.7, faces="X")
-        box(d, "CT_SteelRed", -33.84, -33.8, y + 0.1, y + 0.8, 0.82, 0.93, faces="X")
-    box(d, "CT_TileWhite", -34.6, -34.57, 2.9, 9.6, 1.5, 2.3, faces="X")
-    f.panel(-34.6, 6.4, 2.0, 2.2, 0.55, 90.0, mat="CT_PlasterBlue", frame=None)
-    f.table(-32.4, 10.0, w=1.6, d=0.8, h=0.9, top="CT_Aluminium", leg="CT_Steel")
-    for i, (bx, by, mat) in enumerate(((-34.1, 10.4, "CT_PlasterYellow"), (-33.5, 9.9, "CT_PlasterGreen"))):
-        box(d, mat, bx - 0.25, bx + 0.25, by - 0.2, by + 0.2, 0.0, 0.3)
-    box(d, "CT_TileWhite", -32.9, -31.8, 9.8, 10.2, 0.9, 0.95)
-    # ---- gym corner (east end)
-    box(d, "CT_PlasterBlue", -24.7, -22.6, 8.0, 11.2, 0.0, 0.02, faces="Z")                     # mat
-    for (bx, by, mat) in ((-24.2, 8.5, "CT_PlasterRed"), (-23.8, 8.7, "CT_PlasterYellow"), (-24.3, 9.1, "CT_PlasterGreen")):
-        prism(d, mat, ring(bx, by, 0.15, 8), 0.02, 0.32, top=True, bottom=False)
-    for k in range(3):                                                                          # wall bars
-        y = 5.2 + k * 1.1
-        box(d, "CT_Wood", -22.46, -22.4, y, y + 0.06, 0.0, 2.6, faces="x")
-    for z in [0.25 + 0.22 * i for i in range(11)]:
-        box(d, "CT_Wood", -22.52, -22.42, 5.2, 8.2, z, z + 0.04)
-    for y in (5.2, 8.2):
-        box(d, "CT_Wood", -22.52, -22.42, y - 0.03, y + 0.03, 0.0, 2.6)
-    for px in (-23.9, -22.8):                                                                   # pull-up frame
-        box(d, "CT_Steel", px - 0.04, px + 0.04, 3.1, 3.18, 0.0, 2.4)
-    box(d, "CT_SteelRed", -23.9, -22.8, 3.1, 3.18, 2.32, 2.4)
-    f.bench(-23.6, 11.8, yaw=0.0, w=1.6)
-    B.spot("gym_mat", "stand", (-23.6, 9.6, 0.0), 270.0)
-    B.spot("gym_bar", "work", (-23.35, 2.6, 0.0), 180.0)
-    # ---- newspaper board, notice boards and plants, floor border, skirting
-    f.panel(-24.2, 12.6, 1.8, 1.5, 1.1, 0.0, mat="CT_PlasterYellow", frame="CT_Wood")
-    f.plant(-34.0, 12.0, h=1.9)
-    f.plant(-23.0, 12.0, h=1.9, pot="CT_TileWhite")
-    f.plant(-30.4, 2.1, h=1.5)
-    f.plant(-26.4, 2.1, h=1.5, pot="CT_TileWhite")
-    f.border(-34.6, -22.4, 1.4, 12.6, w=0.4, mat="CT_ConcreteDark")
-    box(d, "CT_PlasterGrey", -29.8, -27.2, 1.4, 2.5, 0.0, 0.014, faces="Z")                     # mat at the door
-    for seg in (((-34.6, 12.6), (-34.6, 1.4)), ((-34.6, 1.4), (-29.7, 1.4)), ((-27.3, 1.4), (-22.4, 1.4)),
-                ((-22.4, 1.4), (-22.4, 12.6)), ((-22.4, 12.6), (-34.6, 12.6))):
-        f.skirting(list(seg), h=0.14)
-    B.lamp((-23.4, 6.5, 5.0), lumens=800, colour=WARM, kind="public", radius=7)
-    B.lamp((-28.5, 3.0, 5.0), lumens=800, colour=WARM, kind="public", radius=7)
-    B.lamp((-31.0, 10.0, 5.0), lumens=800, colour=WARM, kind="public", radius=7)
-    B.lamp((-26.5, 10.0, 5.0), lumens=800, colour=WARM, kind="public", radius=7)
+        y = 4.2 + i * 1.1
+        H.p(_washer, -34.6, y, 90.0)
+        H.spot("work%d" % (i + 1), "work", -33.5, y, 270.0)
+        H.thing("washer_%d" % (i + 1), "machine", -34.3, y, 0.9, 90.0, what="washing_machine")
+    H.p(kit.table, -33.3, 9.5, 90.0, w=1.6, d=0.8, kind="steel", mat="CT_Aluminium")
+    H.p(kit.crate, -33.3, 9.9, 0.0, z=0.75, w=0.6, d=0.42, h=0.2, fill="CT_PlasterYellow", seed=1)
+    H.p(kit.crate, -33.3, 9.1, 0.0, z=0.75, w=0.6, d=0.42, h=0.2, fill="CT_TileWhite", seed=2)
+    H.thing("laundry_table", "craft", -33.3, 9.5, 0.8, 90.0, what="workbench")
+    H.p(kit.notice_board, -34.6, 3.6, 90.0, w=0.8, zc=1.8, seed=5)
+    # ---- reading nook in the front-left corner: bookcases on the front wall, two armchairs, a coffee table
+    for k, (bx, tp) in enumerate(((-33.9, "poetry"), (-32.8, "local"), (-31.7, "kids"))):
+        r = H.p(kit.bookshelf, bx, 1.4, 180.0, w=1.05, h=2.1, levels=5, seed=k + 3)
+        H.thing("hall_shelf_%d" % (k + 1), "shelf", bx, 1.7, 1.3, 180.0, topic=tp)
+    H.p(kit.rug, -32.6, 2.75, 0.0, w=2.6, d=1.5, name="rug_3")
+    H.p(kit.coffee_table, -32.6, 2.75, 0.0, w=0.8, d=0.5)
+    H.p(kit.books_stack, -32.8, 2.75, 0.0, z=0.42, n=3, seed=2)
+    H.p(kit.cup, -32.3, 2.8, 0.0, z=0.42)
+    H.p(kit.newspaper, -32.6, 2.55, 20.0, z=0.42)
+    H.thing("hall_newspaper", "take", -32.6, 2.55, 0.45, 0.0, item="daily_paper")
+    H.p(kit.armchair, -33.8, 2.8, 90.0, mat="CT_PlasterGreen")
+    H.p(kit.armchair, -31.4, 2.8, 270.0, mat="CT_PlasterRed")
+    H.thing("hall_armchair_1", "seat", -33.8, 2.8, 0.45, 90.0, height=0.45)
+    H.thing("hall_armchair_2", "seat", -31.4, 2.8, 0.45, 270.0, height=0.45)
+    H.spot("reading_1", "seat", -33.8, 2.8, 90.0)
+    H.spot("reading_2", "seat", -31.4, 2.8, 270.0)
+    H.p(kit.floor_lamp, -30.9, 1.85)
+    # ---- house committee: notice board and wall newspaper by the door, a bench to read them
+    H.p(kit.notice_board, -25.2, 1.4, 180.0, w=1.5, zc=1.8, seed=6)
+    H.p(kit.poster, -23.9, 1.4, 180.0, name="poster_cons_3", w=0.55, zc=1.8)
+    H.p(kit.bench, -25.2, 2.15, 0.0, w=1.6, kind="park")
+    H.thing("house_committee_board", "board", -25.2, 1.5, 1.8, 180.0, topic="rules")
+    H.thing("house_committee_bench", "seat", -25.2, 2.15, 0.45, 0.0, height=0.45)
+    H.p(kit.poster, -30.55, 1.4, 180.0, name="poster_health", w=0.5, zc=1.8)
+    H.thing("house_committee_wallpaper", "board", -30.55, 1.5, 1.8, 180.0, topic="health")
+    # ---- gym corner (east end): mats, wall bars, a pull-up frame, a bench
+    H.p(kit.mats, -23.6, 9.6, 0.0, w=2.0, d=3.0, n=2)
+    for k, by in enumerate((5.6, 6.6, 7.6)):
+        H.p(kit.wall_bars, -22.4, by, 270.0, w=0.9, h=2.6)
+    H.thing("gym_mat", "sport", -23.6, 9.6, 0.3, 270.0, what="wall_bars")
+    H.p(kit.bench, -25.0, 11.9, 0.0, w=1.6, kind="gym")
+    mx0, mx1 = sorted((H.X(-23.9), H.X(-22.8)))
+    box(d, "CT_Steel", mx0 - 0.04, mx0 + 0.04, 3.1, 3.18, 0.0, 2.4)
+    box(d, "CT_Steel", mx1 - 0.04, mx1 + 0.04, 3.1, 3.18, 0.0, 2.4)
+    box(d, "CT_SteelRed", min(mx0, mx1), max(mx0, mx1), 3.1, 3.18, 2.32, 2.4)
+    H.thing("gym_bar", "sport", -23.35, 3.1, 1.6, 180.0, what="barbell")
+    H.spot("gym_mat", "stand", -23.6, 9.6, 270.0)
+    H.spot("gym_bar", "work", -23.35, 2.6, 180.0)
+    H.p(kit.banner, -22.4, 10.5, 270.0, name="poster_sun_1", w=1.4, zc=3.4)
+    # ---- plants in the corners, a mat at the door, the lamps (4 besides the pendants)
+    H.p(kit.plant, -34.0, 12.0, kind="palm", pot="CT_PlasterYellow", h=1.9)
+    H.p(kit.plant, -23.0, 12.0, kind="ficus", pot="CT_TileWhite", h=1.9)
+    H.p(kit.plant, -30.2, 2.1, kind="fern", pot="CT_PlasterRed", h=1.1)
+    H.p(kit.fire_extinguisher, -22.4, 2.0, 270.0)
+    box(d, "CT_PlasterGrey", min(H.X(-29.8), H.X(-27.2)), max(H.X(-29.8), H.X(-27.2)), 1.4, 2.5, 0.0, 0.014, faces="Z")
+    for lx, ly in ((-23.4, 6.5), (-28.5, 3.0), (-31.0, 10.0), (-26.5, 10.0)):
+        H.lamp(lx, ly, 5.0)
