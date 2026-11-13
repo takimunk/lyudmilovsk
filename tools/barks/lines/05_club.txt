@@ -64,7 +64,7 @@ talk
 - town.gamer_talk3.3 | И у меня. Потом домой? | Me too. Home after that? | こっちも。そのあと帰る？
 - town.gamer_talk3.4 | Потом ещё час. | After that, another hour. | そのあと、もう一時間。
 talk
-- town.gamer_talk4.1 | Видишь? Как я его, а? | See that? How I got him? | 今の見た？
+- town.gamer_talk4.1 | Видишь? Как я его, а? | See that? How I got him? | 今の見た？どうよ！
 - town.gamer_talk4.2 | Вижу. Случайно вышло. | I saw. It was a fluke. | 見た。まぐれでしょ。
 - town.gamer_talk4.3 | Это был план! | It was a plan! | 作戦だよ！
 - town.gamer_talk4.4 | Конечно. | Of course it was. | はいはい。

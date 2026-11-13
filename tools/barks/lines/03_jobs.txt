@@ -183,7 +183,7 @@ say town.coach.2 | Спину ровно! Это я не тебе, это себ
 
 [dance_teacher]
 job = dance_teacher
-say town.dance.1 | Раз-два-три, раз-два-три... Вальс — это просто ходить красиво. | One-two-three, one-two-three... A waltz is just walking beautifully. | ワン、ツー、スリー…ワルツはきれいに歩くことよ。
+say town.dance.1 | Раз-два-три, раз-два-три... Вальс — это просто ходить красиво. | One-two-three, one-two-three... A waltz is just walking beautifully. | ワン、ツー、スリー…ワルツは、きれいに歩くことなんだ。
 
 [dance_teacher_hero]
 job = dance_teacher
@@ -193,7 +193,7 @@ say town.dance.2 | В субботу танцы в ДК. Приходи, нау�
 
 [choir_leader]
 job = choir_leader
-say town.choir.1 | Хор собираем по вечерам в зале. Голоса нужны, особенно мужские. | Choir in the hall in the evenings. We need voices, men's especially. | 夕方はホールで合唱。声が足りないの、特に男声。
+say town.choir.1 | Хор собираем по вечерам в зале. Голоса нужны, особенно мужские. | Choir in the hall in the evenings. We need voices, men's especially. | 夕方はホールで合唱。声が足りないんだ、特に男声。
 say town.choir.2 | Когда поёшь хором, даже море подпевает. | When you sing in a choir, even the sea joins in. | みんなで歌うと、海まで一緒に歌いだす。
 
 [projectionist]
@@ -225,7 +225,7 @@ say town.director.1 | Пришло письмо сверху: чтобы дет�
 say town.director.2 | Ремонт спортзала обещали к лету. К какому лету — не уточнили. | They promised to fix the gym by summer. Which summer, they didn't say. | 体育館の修理は夏までにって。どの夏かは言ってなかった。
 
 [master]
-job = master
+job = repairman
 say town.master.1 | Всё можно починить. Кроме времени. | Everything can be fixed. Except time. | 何でも直せる。時間以外はね。
 say town.master.2 | Принесли часы, а они идут назад. Говорю: так и задумано. | Someone brought me a clock that runs backwards. I said: that's how it's meant to be. | 逆に回る時計を持ってきた人がいてね。それで正しいんですよって言っといた。
 
