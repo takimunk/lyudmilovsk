@@ -921,7 +921,7 @@
     7.05,
     0.0
    ],
-   "yaw": 180.0
+   "yaw": 0.0
   },
   {
    "id": "c_table_2",
@@ -961,7 +961,7 @@
     8.85,
     0.0
    ],
-   "yaw": 180.0
+   "yaw": 0.0
   },
   {
    "id": "c_table_3",
@@ -1001,7 +1001,7 @@
     12.75,
     0.0
    ],
-   "yaw": 0.0
+   "yaw": 180.0
   },
   {
    "id": "c_table_4",
@@ -1041,7 +1041,7 @@
     14.55,
     0.0
    ],
-   "yaw": 0.0
+   "yaw": 180.0
   },
   {
    "id": "dance_1",
@@ -1224,7 +1224,227 @@
    "yaw": 90.0
   },
   {
-   "id": "sbench_main_116",
+   "id": "prompter",
+   "kind": "work",
+   "pos": [
+    -8.2,
+    20.2,
+    1.0
+   ],
+   "yaw": 90.0
+  },
+  {
+   "id": "choir_leader",
+   "kind": "work",
+   "pos": [
+    -5.15,
+    21.5,
+    1.0
+   ],
+   "yaw": 270.0
+  },
+  {
+   "id": "choir_leader_wait",
+   "kind": "stand",
+   "pos": [
+    -3.15,
+    21.4,
+    1.0
+   ],
+   "yaw": 270.0
+  },
+  {
+   "id": "lecturer",
+   "kind": "work",
+   "pos": [
+    -2.25,
+    20.35,
+    1.0
+   ],
+   "yaw": 0.0
+  },
+  {
+   "id": "front_row_1",
+   "kind": "seat",
+   "pos": [
+    -6.45,
+    18.0,
+    0.0
+   ],
+   "yaw": 180.0
+  },
+  {
+   "id": "front_row_2",
+   "kind": "seat",
+   "pos": [
+    -5.05,
+    18.0,
+    0.0
+   ],
+   "yaw": 180.0
+  },
+  {
+   "id": "stage_wing_w",
+   "kind": "stand",
+   "pos": [
+    -8.2,
+    18.9,
+    1.0
+   ],
+   "yaw": 90.0
+  },
+  {
+   "id": "stage_wing_e",
+   "kind": "stand",
+   "pos": [
+    0.7,
+    21.0,
+    1.0
+   ],
+   "yaw": 270.0
+  },
+  {
+   "id": "stage_edge",
+   "kind": "stand",
+   "pos": [
+    -4.15,
+    18.9,
+    1.0
+   ],
+   "yaw": 0.0
+  },
+  {
+   "id": "watch_lobby",
+   "kind": "stand",
+   "pos": [
+    -3.75,
+    4.9,
+    0.0
+   ],
+   "yaw": 0.0
+  },
+  {
+   "id": "watch_stage",
+   "kind": "stand",
+   "pos": [
+    -4.15,
+    17.4,
+    0.0
+   ],
+   "yaw": 180.0
+  },
+  {
+   "id": "checkers_1",
+   "kind": "seat",
+   "pos": [
+    -15.3,
+    11.65,
+    0.0
+   ],
+   "yaw": 180.0
+  },
+  {
+   "id": "checkers_2",
+   "kind": "seat",
+   "pos": [
+    -15.3,
+    13.15,
+    0.0
+   ],
+   "yaw": 0.0
+  },
+  {
+   "id": "foyer_hatch",
+   "kind": "counter",
+   "pos": [
+    -14.15,
+    8.65,
+    0.0
+   ],
+   "yaw": 270.0
+  },
+  {
+   "id": "foyer_visitor_1",
+   "kind": "stand",
+   "pos": [
+    -11.6,
+    9.9,
+    0.0
+   ],
+   "yaw": 90.0
+  },
+  {
+   "id": "foyer_visitor_2",
+   "kind": "stand",
+   "pos": [
+    -14.4,
+    17.3,
+    0.0
+   ],
+   "yaw": 180.0
+  },
+  {
+   "id": "dance_pair_1",
+   "kind": "stand",
+   "pos": [
+    5.4,
+    14.6,
+    0.0
+   ],
+   "yaw": 90.0
+  },
+  {
+   "id": "dance_pair_2",
+   "kind": "stand",
+   "pos": [
+    6.6,
+    16.6,
+    0.0
+   ],
+   "yaw": 270.0
+  },
+  {
+   "id": "dance_pair_3",
+   "kind": "stand",
+   "pos": [
+    9.0,
+    15.4,
+    0.0
+   ],
+   "yaw": 180.0
+  },
+  {
+   "id": "band_stand",
+   "kind": "work",
+   "pos": [
+    8.3,
+    17.9,
+    0.0
+   ],
+   "yaw": 0.0
+  },
+  {
+   "id": "cook_pass",
+   "kind": "work",
+   "pos": [
+    13.9,
+    14.85,
+    0.0
+   ],
+   "yaw": 0.0
+  },
+  {
+   "id": "cook_oven",
+   "kind": "work",
+   "pos": [
+    13.6,
+    15.1,
+    0.0
+   ],
+   "yaw": 0.0
+  },
+  {
+   "id": "sbench_main_138",
    "kind": "bench",
    "pos": [
     -0.15,
@@ -1325,6 +1545,17 @@
   },
   {
    "pos": [
+    -11.0,
+    7.0,
+    1.4
+   ],
+   "lumens": 350,
+   "colour": "#FFD9A8",
+   "kind": "public",
+   "radius": 4.0
+  },
+  {
+   "pos": [
     -14.2,
     12.0,
     5.255
@@ -1416,6 +1647,39 @@
     1.8,
     22.4,
     2.08
+   ],
+   "lumens": 180,
+   "colour": "#FFD9A8",
+   "kind": "public",
+   "radius": 3.0
+  },
+  {
+   "pos": [
+    -7.58,
+    20.37,
+    2.45
+   ],
+   "lumens": 180,
+   "colour": "#FFD9A8",
+   "kind": "public",
+   "radius": 3.0
+  },
+  {
+   "pos": [
+    8.7,
+    7.0,
+    1.38
+   ],
+   "lumens": 180,
+   "colour": "#FFD9A8",
+   "kind": "public",
+   "radius": 3.0
+  },
+  {
+   "pos": [
+    8.7,
+    9.6,
+    1.38
    ],
    "lumens": 180,
    "colour": "#FFD9A8",
@@ -2132,12 +2396,13 @@
    "kind": "screen",
    "pos": [
     -6.45,
-    18.5,
-    1.9
+    18.0,
+    0.45
    ],
-   "yaw": 0.0,
+   "yaw": 180.0,
    "props": {
-    "what": "premiere"
+    "what": "premiere",
+    "height": 0.45
    }
   },
   {
@@ -2307,6 +2572,275 @@
    "yaw": 180.0,
    "props": {
     "what": "clock"
+   }
+  },
+  {
+   "id": "prompter_stand",
+   "kind": "board",
+   "pos": [
+    -7.75,
+    20.2,
+    2.15
+   ],
+   "yaw": 270.0,
+   "props": {
+    "topic": "script"
+   }
+  },
+  {
+   "id": "choir_leader_stand",
+   "kind": "counter",
+   "pos": [
+    -5.9,
+    21.5,
+    2.2
+   ],
+   "yaw": 90.0,
+   "props": {
+    "role": "choir_leader",
+    "service": "choir_talk"
+   }
+  },
+  {
+   "id": "audition_mark",
+   "kind": "play",
+   "pos": [
+    -4.95,
+    19.3,
+    1.1
+   ],
+   "yaw": 0.0,
+   "props": {
+    "what": "audition"
+   }
+  },
+  {
+   "id": "lecture_seat",
+   "kind": "screen",
+   "pos": [
+    -5.05,
+    18.0,
+    0.45
+   ],
+   "yaw": 180.0,
+   "props": {
+    "what": "lecture",
+    "height": 0.45
+   }
+  },
+  {
+   "id": "stage_switch",
+   "kind": "machine",
+   "pos": [
+    2.07,
+    20.15,
+    2.4
+   ],
+   "yaw": 270.0,
+   "props": {
+    "what": "switch",
+    "switch": 6
+   }
+  },
+  {
+   "id": "stage_sheet_music",
+   "kind": "board",
+   "pos": [
+    -1.55,
+    21.5,
+    2.15
+   ],
+   "yaw": 270.0,
+   "props": {
+    "topic": "sheet_music"
+   }
+  },
+  {
+   "id": "dance_sheet_music",
+   "kind": "board",
+   "pos": [
+    8.85,
+    18.65,
+    1.3
+   ],
+   "yaw": 0.0,
+   "props": {
+    "topic": "sheet_music"
+   }
+  },
+  {
+   "id": "programme_booklets",
+   "kind": "take",
+   "pos": [
+    1.55,
+    5.5,
+    0.85
+   ],
+   "yaw": 270.0,
+   "props": {
+    "item": "postcard"
+   }
+  },
+  {
+   "id": "foyer_checkers",
+   "kind": "play",
+   "pos": [
+    -15.3,
+    11.65,
+    0.45
+   ],
+   "yaw": 180.0,
+   "props": {
+    "what": "checkers",
+    "height": 0.45
+   }
+  },
+  {
+   "id": "evenings_board",
+   "kind": "board",
+   "pos": [
+    -16.48,
+    14.65,
+    1.75
+   ],
+   "yaw": 90.0,
+   "props": {
+    "topic": "evenings"
+   }
+  },
+  {
+   "id": "foyer_clock",
+   "kind": "board",
+   "pos": [
+    -12.2,
+    18.05,
+    2.75
+   ],
+   "yaw": 0.0,
+   "props": {
+    "what": "clock"
+   }
+  },
+  {
+   "id": "light_switch_foyer",
+   "kind": "machine",
+   "pos": [
+    -16.57,
+    7.8,
+    1.5
+   ],
+   "yaw": 90.0,
+   "props": {
+    "what": "switch",
+    "switch": 7
+   }
+  },
+  {
+   "id": "cloak_hatch",
+   "kind": "counter",
+   "pos": [
+    -14.9,
+    8.65,
+    1.05
+   ],
+   "yaw": 90.0,
+   "props": {
+    "role": "caretaker",
+    "service": "cloakroom_talk"
+   }
+  },
+  {
+   "id": "dance_steps",
+   "kind": "sport",
+   "pos": [
+    5.3,
+    12.5,
+    0.1
+   ],
+   "yaw": 0.0,
+   "props": {
+    "what": "dance_steps"
+   }
+  },
+  {
+   "id": "light_switch_dance",
+   "kind": "machine",
+   "pos": [
+    10.57,
+    5.2,
+    1.3
+   ],
+   "yaw": 270.0,
+   "props": {
+    "what": "switch",
+    "switch": 6
+   }
+  },
+  {
+   "id": "kitchen_oven",
+   "kind": "machine",
+   "pos": [
+    13.6,
+    15.7,
+    0.95
+   ],
+   "yaw": 0.0,
+   "props": {
+    "what": "oven"
+   }
+  },
+  {
+   "id": "pie_crate",
+   "kind": "machine",
+   "pos": [
+    11.6,
+    9.2,
+    0.42
+   ],
+   "yaw": 0.0,
+   "props": {
+    "what": "pies"
+   }
+  },
+  {
+   "id": "kitchen_samovar",
+   "kind": "machine",
+   "pos": [
+    15.55,
+    10.3,
+    1.05
+   ],
+   "yaw": 90.0,
+   "props": {
+    "what": "samovar"
+   }
+  },
+  {
+   "id": "cook_pass",
+   "kind": "counter",
+   "pos": [
+    13.9,
+    13.4,
+    0.95
+   ],
+   "yaw": 0.0,
+   "props": {
+    "role": "caretaker",
+    "service": "kitchen_talk"
+   }
+  },
+  {
+   "id": "light_switch_kitchen",
+   "kind": "machine",
+   "pos": [
+    10.93,
+    13.3,
+    1.6
+   ],
+   "yaw": 90.0,
+   "props": {
+    "what": "switch",
+    "switch": 4
    }
   }
  ],
@@ -2843,8 +3377,8 @@
   "4 parabolic vaults; hall B with stage, C dance room + bar, A foyer, D kitchen"
  ],
  "tris": {
-  "shell": 3998,
-  "detail": 27235,
+  "shell": 4022,
+  "detail": 28779,
   "windows": 100
  }
 }
