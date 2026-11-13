@@ -304,7 +304,9 @@ void ULyudLadderClimber::TickComponent(float DeltaTime, ELevelTick TickType, FAc
 	{
 		return;
 	}
-	if (bReleasing && Weight <= 0.f)
+	// (a step off the top takes a little longer than the body's blend off the ladder: the climber stays until the step
+	// has put the hero down and given him his movement back, or he would be left hanging in MOVE_None)
+	if (bReleasing && Weight <= 0.f && !bStepping)
 	{
 		Ladder = nullptr;
 		bReleasing = false;
