@@ -703,5 +703,745 @@
   "ru": "Всё сошлось до грамма. Директор записал что-то в большую книгу и сказал: «Нас редко проверяют. Приятно, когда не зря».",
   "en": "It matched to the gram. The director wrote something in a big book and said: \"We're rarely checked. It's good when it's not for nothing.\"",
   "ja": "グラム単位でぴたりと合った。所長は大きな帳簿に何か書いて言った。「確かめに来る人は少ない。無駄にならないと嬉しいね」"
+ },
+ "city.mk.haggle.prompt": {
+  "ru": "E — поторговаться",
+  "en": "E — haggle",
+  "ja": "E：値段交渉をする"
+ },
+ "city.mk.seeds.prompt": {
+  "ru": "E — полистать каталог семян",
+  "en": "E — leaf through the seed catalogue",
+  "ja": "E：種のカタログをめくる"
+ },
+ "city.mk.rules.prompt": {
+  "ru": "E — прочесть правила рынка",
+  "en": "E — read the market rules",
+  "ja": "E：市場の規則を読む"
+ },
+ "city.mk.tastes.prompt": {
+  "ru": "E — взглянуть на карточку «Вкусы рынка»",
+  "en": "E — look at the \"Tastes of the Market\" card",
+  "ja": "E：「市場の味」カードを見る"
+ },
+ "city.mk.jury.prompt": {
+  "ru": "E — прочесть протокол жюри",
+  "en": "E — read the jury's protocol",
+  "ja": "E：審査員の議事録を読む"
+ },
+ "city.mk.teanote.prompt": {
+  "ru": "E — прочесть объявление у самовара",
+  "en": "E — read the notice by the samovar",
+  "ja": "E：サモワールの掲示を読む"
+ },
+ "city.mk.ledger.prompt": {
+  "ru": "E — открыть жалобную книгу",
+  "en": "E — open the complaints book",
+  "ja": "E：苦情帳を開く"
+ },
+ "city.game.vs.haggle_meat": {
+  "ru": "торг",
+  "en": "haggling",
+  "ja": "値段交渉"
+ },
+ "city.game.vs.haggle_fish": {
+  "ru": "торг",
+  "en": "haggling",
+  "ja": "値段交渉"
+ },
+ "city.game.vs.haggle_fruit": {
+  "ru": "торг",
+  "en": "haggling",
+  "ja": "値段交渉"
+ },
+ "city.mk.haggle.title": {
+  "ru": "Торг",
+  "en": "Haggling",
+  "ja": "値段交渉"
+ },
+ "city.mk.haggle.move.1": {
+  "ru": "Давить на цену",
+  "en": "Press on the price",
+  "ja": "値段を強気で押す"
+ },
+ "city.mk.haggle.move.2": {
+  "ru": "Хвалить товар",
+  "en": "Praise the goods",
+  "ja": "品物を褒める"
+ },
+ "city.mk.haggle.move.3": {
+  "ru": "Сделать вид, что уходишь",
+  "en": "Pretend to walk away",
+  "ja": "帰るふりをする"
+ },
+ "city.mk.haggle.tell.1": {
+  "ru": "{0} подаётся вперёд и стучит пальцем по ценнику.",
+  "en": "{0} leans forward and taps the price tag.",
+  "ja": "{0}は身を乗り出し、値札を指でとんとん叩いた。"
+ },
+ "city.mk.haggle.tell.2": {
+  "ru": "{0} скрещивает руки и спокойно смотрит поверх весов.",
+  "en": "{0} folds her arms and calmly looks over the scales.",
+  "ja": "{0}は腕を組み、秤の上から落ち着いてこちらを見ている。"
+ },
+ "city.mk.haggle.tell.3": {
+  "ru": "{0} делает вид, что поправляет товар, а сама косится на тебя.",
+  "en": "{0} pretends to straighten the goods while eyeing you.",
+  "ja": "{0}は品物を直すふりをしながら、横目でこちらをうかがっている。"
+ },
+ "city.mk.haggle.after.1": {
+  "ru": "Торговаться на сегодня хватит: продавщица машет рукой, мол, приходи завтра, цены не убегут.",
+  "en": "That is enough haggling for today: the seller waves a hand, come tomorrow, the prices won't run away.",
+  "ja": "今日の値段交渉はここまで。売り子さんは手を振った。また明日おいで、値段は逃げないよ。"
+ },
+ "city.mk.haggle.after.2": {
+  "ru": "На абаке лежат костяшки, расставленные так, будто там записан счёт нашего торга. Никто не помнит, кто выиграл.",
+  "en": "The beads on the abacus stand as if they kept the score of our haggling. Nobody remembers who won.",
+  "ja": "そろばんの玉は、まるで交渉の点数のように並んでいる。誰が勝ったかは誰も覚えていない。"
+ },
+ "city.mk.haggle.meat.win.1": {
+  "ru": "Алеся хлопает ладонью по колоде. «Грабёж среди бела дня! Ладно, держи пирожок. Скидка — вон там, на ценнике, перечёркнута».",
+  "en": "Alesya slaps the block. \"Daylight robbery! Fine, take a pasty. The discount is there on the tag, crossed out.\"",
+  "ja": "アレシャは肉切り台をぱしんと叩いた。「真っ昼間の強盗だよ！ まあいい、ピロシキを持っていきな。割引は値札の、線で消してあるところさ」"
+ },
+ "city.mk.haggle.meat.win.2": {
+  "ru": "Алеся вздыхает и отрезает кусок потолще. «Только чтобы не говорил в рядах. Мясники и так в долгах перед совестью».",
+  "en": "Alesya sighs and cuts a thicker slice. \"Just don't tell the other rows. Butchers owe their conscience enough as it is.\"",
+  "ja": "アレシャはため息をついて、厚めに切ってくれた。「他の列には内緒だよ。肉屋は良心にもう借りが山ほどあるんだ」"
+ },
+ "city.mk.haggle.meat.lose.1": {
+  "ru": "Алеся улыбается шире ножа. «Цена честная, мальчик. Честных цен не торгуют, их уважают».",
+  "en": "Alesya smiles wider than her knife. \"A fair price, boy. Fair prices aren't haggled, they're respected.\"",
+  "ja": "アレシャはナイフより大きく笑った。「正直な値段だよ、坊や。正直な値段は値切るものじゃない、敬うものさ」"
+ },
+ "city.mk.haggle.meat.lose.2": {
+  "ru": "Я уходил торговаться, а ушёл с чеком. Алеся махнула ножом: «Заходи, когда научишься молчать».",
+  "en": "I came to haggle and left with a receipt. Alesya waved the knife: \"Come back when you've learnt to keep quiet.\"",
+  "ja": "値切りに来たのに、レシートを持って帰ることになった。アレシャはナイフを振った。「黙ることを覚えたらまたおいで」"
+ },
+ "city.mk.haggle.meat.draw.1": {
+  "ru": "Ничья. Алеся пожимает плечами: «Рубль туда, рубль сюда. Мясо от этого не дрогнет».",
+  "en": "A draw. Alesya shrugs: \"A rouble here, a rouble there. The meat won't tremble.\"",
+  "ja": "引き分け。アレシャは肩をすくめた。「1ルーブルくらいどっちでもいいさ。肉は震えやしない」"
+ },
+ "city.mk.haggle.fish.win.1": {
+  "ru": "Зейнеп вскидывает руки: «Моргнула! Забирай креветок, они сами просились». На ценнике цифру зачёркивают при тебе.",
+  "en": "Zeynep throws up her hands: \"I blinked! Take the shrimp, they were begging to go.\" She crosses out the figure on the tag while you watch.",
+  "ja": "ゼイネプは両手を上げた。「まばたきしちゃった！ エビを持っていきな、自分から行きたがってたよ」値札の数字が目の前で線で消された。"
+ },
+ "city.mk.haggle.fish.win.2": {
+  "ru": "Зейнеп смеётся так, что лёд в лотке подпрыгивает. «Хорошая хватка. Приходи с удочкой, сварю уху на двоих».",
+  "en": "Zeynep laughs so hard the ice jumps in the tray. \"Good grip. Come with a rod, I'll cook fish soup for two.\"",
+  "ja": "ゼイネプが笑うと、トレーの氷が跳ねた。「いい度胸だ。釣り竿を持っておいで、二人分の魚のスープを作ってあげる」"
+ },
+ "city.mk.haggle.fish.lose.1": {
+  "ru": "Зейнеп взвешивает рыбу, называет вес и цену, и в цене ни копейки лишней. «Рыба не торгуется. Я тоже, когда она свежая».",
+  "en": "Zeynep weighs the fish, names weight and price, and not a kopeck is wasted. \"Fish doesn't haggle. Neither do I when it's fresh.\"",
+  "ja": "ゼイネプは魚を量って重さと値段を告げた。一銭の無駄もない。「魚は値切らない。新鮮なときは私もね」"
+ },
+ "city.mk.haggle.fish.lose.2": {
+  "ru": "Меня переговорили. Зейнеп кладёт мне на ладонь леденец: «За старание. Рыба тут ни при чём».",
+  "en": "I was talked down. Zeynep puts a sweet in my palm: \"For effort. The fish has nothing to do with it.\"",
+  "ja": "言い負かされてしまった。ゼイネプは手のひらに飴をのせてくれた。「がんばったご褒美だよ。魚は関係なし」"
+ },
+ "city.mk.haggle.fish.draw.1": {
+  "ru": "Ничья. Зейнеп, не отводя взгляда: «Моргнули оба. Рыба свидетель». Цена остаётся на месте, а мы расходимся довольные.",
+  "en": "A draw. Zeynep without looking away: \"We both blinked. The fish is a witness.\" The price stays, and we part pleased.",
+  "ja": "引き分け。ゼイネプは目をそらさずに言った。「二人ともまばたきした。魚が証人だ」値段はそのまま、二人とも満足して別れた。"
+ },
+ "city.mk.haggle.fruit.win.1": {
+  "ru": "Париса прикладывает ладонь к груди: «Режешь без ножа! Две штуки за копейки, и не рассказывай». Яблоки тёплые от солнца.",
+  "en": "Parisa presses a hand to her chest: \"You cut without a knife! Two of them for pennies, and don't tell.\" The apples are warm from the sun.",
+  "ja": "パリサは胸に手を当てた。「ナイフなしで切りつけてくるね！ 二つで小銭だよ、内緒にしてよ」りんごは日なたでほんのり温かい。"
+ },
+ "city.mk.haggle.fruit.win.2": {
+  "ru": "Париса вздыхает, но яблоки в пакет кладёт крупные. «Дочке подарок несла, а тебе отдам. Только не забудь прийти ещё».",
+  "en": "Parisa sighs but puts the big apples into the bag. \"I was saving these for my daughter, but you get them. Just remember to come again.\"",
+  "ja": "パリサはため息をつきつつ、大きなりんごを袋に入れた。「娘への土産にと思ってたけど、あんたにあげる。また来るのを忘れないでね」"
+ },
+ "city.mk.haggle.fruit.lose.1": {
+  "ru": "Париса даже не торгуется, а просто смотрит. Я сдаюсь на втором предложении, а яблоко стоит как стояло.",
+  "en": "Parisa doesn't even haggle, she just looks. I give in at the second offer, and the apple costs what it cost.",
+  "ja": "パリサは値切り合いすらせず、ただじっと見てくる。二度目の提案で降参し、りんごの値段は変わらなかった。"
+ },
+ "city.mk.haggle.fruit.lose.2": {
+  "ru": "«Хорошая попытка», — говорит Париса и протягивает кусочек яблока на пробу. Сладкий. Это обидно.",
+  "en": "\"Nice try,\" says Parisa, and offers a slice of apple to taste. It's sweet. That is annoying.",
+  "ja": "「いい挑戦だったよ」とパリサは言って、りんごのひと切れを味見にくれた。甘い。それが悔しい。"
+ },
+ "city.mk.haggle.fruit.draw.1": {
+  "ru": "Ничья. Париса отсчитывает мне сдачу и смеётся: «Давай так: ни тебе, ни мне. Яблоки поделим».",
+  "en": "A draw. Parisa counts my change and laughs: \"Let's say neither of us wins. We'll share the apples.\"",
+  "ja": "引き分け。パリサはおつりを数えて笑った。「どっちも勝ちってことにしよう。りんごは半分こね」"
+ },
+ "city.player.choi.hello": {
+  "ru": "Говядина сегодня честная, цена тоже. А вот торговаться будем по-настоящему, без поддавков.",
+  "en": "The beef is honest today, and so is the price. But we'll haggle properly, no going easy.",
+  "ja": "今日の牛肉は正直だし、値段もそう。値切るなら本気でやるよ、手加減なしでね。"
+ },
+ "city.player.choi.win": {
+  "ru": "Ладно-ладно, твоя взяла. Это за смелость, не за торг.",
+  "en": "All right, all right, you win. That's for nerve, not for the haggling.",
+  "ja": "わかったわかった、あんたの勝ちだよ。これは度胸へのご褒美で、値切りの分じゃないからね。"
+ },
+ "city.player.choi.lose": {
+  "ru": "Не расстраивайся. Мясо не продаётся дешевле, чем позволяет совесть.",
+  "en": "Don't be upset. Meat doesn't sell cheaper than conscience allows.",
+  "ja": "気にするんじゃないよ。肉は良心が許す値段より安くは売れないのさ。"
+ },
+ "city.player.berzins.hello": {
+  "ru": "Рыба холодная, я горячая. Начинай, посмотрим, кто первый моргнёт.",
+  "en": "The fish is cold, I'm hot. Go on, let's see who blinks first.",
+  "ja": "魚は冷たいけど私は熱いよ。さあ始めな、どっちが先にまばたきするか見てみよう。"
+ },
+ "city.player.berzins.win": {
+  "ru": "Моргнула! Забирай, рыба сама бы тебе уступила.",
+  "en": "I blinked! Take it, the fish would have given in to you itself.",
+  "ja": "まばたきしちゃった！ 持っていきな、魚だってあんたに譲ったろうよ。"
+ },
+ "city.player.berzins.lose": {
+  "ru": "Рыба не торгуется, а я торгуюсь. Приходи завтра, цена будет такая же.",
+  "en": "Fish doesn't haggle, but I do. Come tomorrow, the price will be the same.",
+  "ja": "魚は値切らないけど、私は値切る。明日おいで、値段は同じだよ。"
+ },
+ "city.player.petrosyan.hello": {
+  "ru": "Яблоки сладкие, а торг будет кислый. Начинай.",
+  "en": "The apples are sweet, but the haggling will be sour. Go on.",
+  "ja": "りんごは甘いけど、値切りは酸っぱいよ。さあ、始めて。"
+ },
+ "city.player.petrosyan.win": {
+  "ru": "Ох и умеешь. Держи, больше пары яблок не дам, мне ещё дочке нести.",
+  "en": "Oh, you're good. Here, no more than a couple of apples, I still have to take some home to my daughter.",
+  "ja": "いやあ、やるねえ。ほら、りんごは二つまでだよ、娘にも持って帰らなきゃ。"
+ },
+ "city.player.petrosyan.lose": {
+  "ru": "Видишь, яблоко мне в руку, а скидка в карман. Заходи ещё.",
+  "en": "See, the apple stays in my hand and the discount in my pocket. Come again.",
+  "ja": "ね、りんごは私の手に、割引は私のポケットに。また来てね。"
+ },
+ "city.coll.market_tastes.title": {
+  "ru": "Вкусы рынка",
+  "en": "Tastes of the Market",
+  "ja": "市場の味"
+ },
+ "city.coll.market_haggles.title": {
+  "ru": "Торг с продавцами",
+  "en": "Haggles won",
+  "ja": "値切りの勝ち星"
+ },
+ "city.mk.chat.fruit.1": {
+  "ru": "Продавщица протягивает яблоко: «Откуси. Не понравится — отдашь обратно, я не гордая».",
+  "en": "The seller holds out an apple: \"Take a bite. If you don't like it, give it back, I'm not proud.\"",
+  "ja": "売り子さんがりんごを差し出した。「かじってごらん。気に入らなかったら返してくれていいよ、気にしないから」"
+ },
+ "city.mk.chat.fruit.2": {
+  "ru": "— Сорта путаются, а вкус нет. Хочешь кислого — бери зелёное, хочешь сладкого — бери то, что покраснело первым.",
+  "en": "\"Varieties get mixed up, taste doesn't. Want sour, take the green; want sweet, take whichever blushed first.\"",
+  "ja": "「品種は混ざっても味は混ざらないよ。酸っぱいのが欲しければ青いの、甘いのが欲しければ先に赤くなったのをお取り」"
+ },
+ "city.mk.chat.fruit.3": {
+  "ru": "— Кукурузу варим с вечера, в солёной воде. Секрет простой: не забыть про кукурузу.",
+  "en": "\"We boil the corn from the evening, in salted water. The secret is simple: don't forget about the corn.\"",
+  "ja": "「トウモロコシは前の晩から塩水で茹でるんだ。コツは簡単、トウモロコシを忘れないこと」"
+ },
+ "city.mk.chat.fruit.4": {
+  "ru": "— Яблоко с бочком — не брак, а характер. Просто бочок надо есть первым.",
+  "en": "\"An apple with a bruised cheek isn't spoiled, it has character. You just eat the cheek first.\"",
+  "ja": "「ほっぺにあざのあるりんごは傷物じゃなくて個性さ。そのほっぺを先に食べればいいだけ」"
+ },
+ "city.mk.chat.veg.1": {
+  "ru": "Продавец поднимает морковь за ботву: «Вот это называется морковь. Остальное — предположения».",
+  "en": "The seller lifts a carrot by its tops: \"This is called a carrot. Everything else is a guess.\"",
+  "ja": "売り手が葉をつかんでにんじんを持ち上げた。「これがにんじんと呼ぶものだ。あとは全部、推測だよ」"
+ },
+ "city.mk.chat.veg.2": {
+  "ru": "— Лук снимайте по слою, и слёзы будут только у лука.",
+  "en": "\"Peel the onion layer by layer, and the only one in tears is the onion.\"",
+  "ja": "「玉ねぎは一枚ずつむきなさい。そうすれば泣くのは玉ねぎだけだ」"
+ },
+ "city.mk.chat.veg.3": {
+  "ru": "— Капусту квасим в бочке, полтора месяца, и можно в гости с банкой.",
+  "en": "\"We ferment the cabbage in the barrel for six weeks, and then you can visit someone with a jar.\"",
+  "ja": "「キャベツは樽で六週間漬ける。そうすれば瓶を持って人の家に遊びに行けるよ」"
+ },
+ "city.mk.chat.veg.4": {
+  "ru": "— Тыквы к субботе. Берите маленькую, пока большая не спросила, почему её не взяли.",
+  "en": "\"Pumpkins for Saturday. Take a small one before the big one asks why you didn't pick it.\"",
+  "ja": "「かぼちゃは土曜日向けだ。大きいのに『なぜ私を選ばなかったの』と聞かれる前に、小さいのを取りな」"
+ },
+ "city.mk.chat.dairy.1": {
+  "ru": "Молочница вытирает руки о полотенце: «Что сегодня: сыр, кефир или просто поговорить? Разговор бесплатно».",
+  "en": "The dairywoman wipes her hands on a towel: \"What today: cheese, kefir, or just a chat? The chat is free.\"",
+  "ja": "乳製品の売り子さんはタオルで手を拭いた。「今日はチーズ、ケフィア、それともおしゃべりだけ？ おしゃべりは無料だよ」"
+ },
+ "city.mk.chat.dairy.2": {
+  "ru": "— Кефир с утра, пока не раздумал. Он у нас живой, ему нужны рынок и тёмный шкаф.",
+  "en": "\"Kefir in the morning, before it changes its mind. Ours is alive, it needs a market and a dark cupboard.\"",
+  "ja": "「ケフィアは朝のうちにね、気が変わらないうちに。うちのは生きてるから、市場と暗い戸棚が必要なのさ」"
+ },
+ "city.mk.chat.dairy.3": {
+  "ru": "— Круглый сыр на праздник, косичка на каждый день. Большой круг режем только по случаю.",
+  "en": "\"The round cheese is for holidays, the braid for every day. We cut the big wheel only on an occasion.\"",
+  "ja": "「丸いチーズはお祝い用、三つ編みは普段用。大きな輪は特別な時にしか切らないよ」"
+ },
+ "city.mk.chat.dairy.4": {
+  "ru": "— Мёд у соседки через ряд. Попробуйте с сыром: сладкое и солёное друг друга уважают.",
+  "en": "\"The honey is at my neighbour's, one row over. Try it with cheese: sweet and salty respect each other.\"",
+  "ja": "「蜂蜜は一列向こうの隣の人のところだよ。チーズと一緒に食べてごらん、甘いのとしょっぱいのはお互いを尊重し合うんだ」"
+ },
+ "city.mk.chat.bread.1": {
+  "ru": "Пекарь стряхивает муку с локтей: «Хлеб тёплый, ещё дышит. Берите, пока дышит».",
+  "en": "The baker brushes flour off his elbows: \"The bread is warm, still breathing. Take it while it breathes.\"",
+  "ja": "パン屋さんは肘の小麦粉をはたいた。「パンはあったかくて、まだ息をしてるよ。息をしているうちにどうぞ」"
+ },
+ "city.mk.chat.bread.2": {
+  "ru": "— Буханку не режут, а ломают: так нежнее и честнее.",
+  "en": "\"You don't cut a loaf, you break it: gentler and more honest.\"",
+  "ja": "「パンは切るものじゃなく、ちぎるものだ。その方がやさしくて正直だよ」"
+ },
+ "city.mk.chat.bread.3": {
+  "ru": "— Пироги с капустой и с яблоком. С яблоком по пятницам, с капустой по настроению.",
+  "en": "\"Pies with cabbage and with apple. Apple on Fridays, cabbage according to mood.\"",
+  "ja": "「キャベツとりんごのパイがあるよ。りんごは金曜日、キャベツは気分次第」"
+ },
+ "city.mk.chat.bread.4": {
+  "ru": "— Печенье на выходных, пока тесто не передумало. Рецепт у нас по наследству, вместе с тазиком.",
+  "en": "\"Biscuits at the weekend, while the dough hasn't changed its mind. The recipe is inherited, along with the basin.\"",
+  "ja": "「クッキーは週末に、生地の気が変わらないうちに。レシピは洗い桶と一緒に代々受け継いでるのさ」"
+ },
+ "city.mk.chat.birds.1": {
+  "ru": "Продавец птичьих кормов пересыпает семена в ладони: «Это синицам, это воробьям, а это — вам, если проголодаетесь».",
+  "en": "The bird-feed seller pours seeds from palm to palm: \"This is for tits, this for sparrows, and this one's for you if you get hungry.\"",
+  "ja": "鳥の餌屋さんは種を手から手へ流した。「これはシジュウカラ、これはスズメ、これはお腹がすいたあなたの分」"
+ },
+ "city.mk.chat.birds.2": {
+  "ru": "— Кормушку вешайте повыше кошек и подальше от ветра. И чтобы окно было видно: птицам тоже интересно.",
+  "en": "\"Hang the feeder above the cats and out of the wind. And where the window shows: birds are curious too.\"",
+  "ja": "「餌台は猫より高く、風の当たらないところに。窓から見えるようにね、鳥だって気になるから」"
+ },
+ "city.mk.chat.birds.3": {
+  "ru": "— Мучных червей берут те, кто любит скворцов. Остальные берут просо и любят скворцов тихо.",
+  "en": "\"Mealworms are for those who love starlings. The rest take millet and love starlings quietly.\"",
+  "ja": "「ミールワームはムクドリ好きのためのもの。他の人はキビを買って、静かにムクドリを好きでいるのさ」"
+ },
+ "city.mk.chat.birds.4": {
+  "ru": "— У прилавка висит каталог семян. Там не только корм, там что высадить, чтобы птицы зимовали у вас.",
+  "en": "\"There's a seed catalogue hanging by the stall. Not just feed: what to plant so the birds winter at your place.\"",
+  "ja": "「屋台にはタネのカタログが下がってるよ。餌だけじゃなく、鳥が冬をあなたの家で過ごすように何を植えるかも載ってる」"
+ },
+ "city.mk.chat.sweets.1": {
+  "ru": "Продавщица сластей протягивает леденец на палочке: «Проба бесплатна, привычка потом».",
+  "en": "The sweet seller hands over a lollipop: \"The sample is free, the habit comes later.\"",
+  "ja": "お菓子屋さんが棒付き飴を差し出した。「試食はタダ、癖になるのはあとから」"
+ },
+ "city.mk.chat.sweets.2": {
+  "ru": "— Леденцы по цветам: красный — вишня, жёлтый — лимон, зелёный — почему-то тоже лимон.",
+  "en": "\"Sweets by colour: red is cherry, yellow is lemon, green is, for some reason, also lemon.\"",
+  "ja": "「飴は色で分けてるよ。赤はサクランボ、黄色はレモン、緑はなぜかこれもレモン」"
+ },
+ "city.mk.chat.sweets.3": {
+  "ru": "— Шоколад в коробках — на подарок. Вторая коробка — себе, на проверку первой.",
+  "en": "\"Chocolates in boxes are for gifts. The second box is for yourself, to check the first.\"",
+  "ja": "「箱入りチョコは贈り物用。二箱目は自分用、一箱目の確認のためにね」"
+ },
+ "city.mk.chat.sweets.4": {
+  "ru": "— Семечки в бумажных кульках: стакан — один кулёк. Шелуха в урну, не птицам.",
+  "en": "\"Sunflower seeds in paper cones: a glass makes one cone. Husks in the bin, not for the birds.\"",
+  "ja": "「ひまわりの種は紙のコーンで、コップ一杯でひとコーン。殻はゴミ箱へ、鳥にはあげないでね」"
+ },
+ "city.mk.chat.bait.1": {
+  "ru": "Продавец наживки приподнимает крышку банки: «Червь бодрый, жизнерадостный. Рыба оценит».",
+  "en": "The bait seller lifts a jar lid: \"The worm is lively and cheerful. The fish will appreciate it.\"",
+  "ja": "餌屋さんは瓶のふたを少し持ち上げた。「ミミズは元気で陽気だよ。魚も喜ぶさ」"
+ },
+ "city.mk.chat.bait.2": {
+  "ru": "— Червь на леща, опарыш на плотву, тесто на карася. А на удачу берут всего понемногу.",
+  "en": "\"Worm for bream, maggot for roach, dough for crucian. And for luck people take a bit of everything.\"",
+  "ja": "「ブリームにはミミズ、ローチにはウジ、フナには練り餌。運だめしには少しずつ全部だね」"
+ },
+ "city.mk.chat.bait.3": {
+  "ru": "— Креветку берите для моря, с пирса. Для пруда креветка — хвастовство.",
+  "en": "\"Take shrimp for the sea, from the pier. For a pond, shrimp is showing off.\"",
+  "ja": "「エビは海の桟橋用に。池でエビは見栄っ張りってもんだ」"
+ },
+ "city.mk.chat.bait.4": {
+  "ru": "— На блёсны не смотрите дольше минуты: потом покупаете, не заметив как.",
+  "en": "\"Don't look at the spoons for more than a minute: then you buy without noticing how.\"",
+  "ja": "「スプーンルアーは1分以上見つめちゃいけないよ。気づかないうちに買ってしまうからね」"
+ },
+ "city.mk.chat.tea.1": {
+  "ru": "Чайщица подливает кипятка в заварник: «Вам крепкий или как в жизни, не очень?»",
+  "en": "The tea woman tops up the pot with boiling water: \"Strong, or like life, not too?\"",
+  "ja": "お茶屋さんは急須にお湯を足した。「濃いのにする？ それとも人生みたいに、ほどほどに？」"
+ },
+ "city.mk.chat.tea.2": {
+  "ru": "— Самовар на углях, чай на травах: мята, чабрец, что принесёт соседка с травяного угла.",
+  "en": "\"The samovar runs on coals, the tea on herbs: mint, thyme, whatever the neighbour from the herb corner brings.\"",
+  "ja": "「サモワールは炭火で、お茶はハーブで。ミント、タイム、ハーブコーナーの隣人が持ってきたものをね」"
+ },
+ "city.mk.chat.tea.3": {
+  "ru": "— Сахар по желанию, варенье по пятницам: жюри оставляет нам ложку на пробу.",
+  "en": "\"Sugar if you like, jam on Fridays: the jury leaves us a spoonful to try.\"",
+  "ja": "「砂糖はお好みで、ジャムは金曜日に。審査員が味見の一さじを残してくれるのさ」"
+ },
+ "city.mk.chat.tea.4": {
+  "ru": "— Чашки на рынке ходят по рукам, но возвращаются. С покупателями у нас так же.",
+  "en": "\"Cups at the market go from hand to hand, but they come back. It's the same with customers.\"",
+  "ja": "「市場のカップは手から手へ渡るけど、ちゃんと戻ってくる。お客さんもおんなじだよ」"
+ },
+ "city.mk.rain.chat": {
+  "ru": "Из-под брезента: «В дождь покупатель редкий, зато разговорчивый. Стойте, не торопитесь: дождь тоже никуда не торопится».",
+  "en": "From under the tarpaulin: \"In the rain customers are few but chatty. Stay, don't hurry: the rain isn't in a hurry either.\"",
+  "ja": "防水シートの下から。「雨の日はお客さんは少ないけど話し好きだよ。ゆっくりしていきな、雨だって急いでないから」"
+ },
+ "city.mk.fest.chat": {
+  "ru": "— В ярмарочный день у нас вся улица в гостях. Берите что хотите, только проход не загораживайте.",
+  "en": "\"On a fair day the whole street comes to visit. Take what you like, just don't block the aisle.\"",
+  "ja": "「縁日の日は通り中がお客さんだよ。好きなものを取って、ただし通路はふさがないでね」"
+ },
+ "city.mk.rain.slate": {
+  "ru": "Внизу мелом приписано: «Под брезентом не в обиду. Сухо тому, кто в сапогах».",
+  "en": "Chalked underneath: \"Under the tarpaulin no offence meant. Dry for those in boots.\"",
+  "ja": "下にチョークで書き添えてある。「防水シートの下でも悪気はなし。長靴の人は濡れずにすむよ」"
+ },
+ "city.mk.rain.butcher": {
+  "ru": "Мясник из-под навеса: «В дождь народу меньше, ножи острее. Заходите, пока вода идёт мимо».",
+  "en": "The butcher from under the awning: \"In the rain fewer people, sharper knives. Come in while the water goes by.\"",
+  "ja": "肉屋さんが庇の下から。「雨の日は人が少なくて、ナイフはよく切れる。水が通り過ぎるうちにお入り」"
+ },
+ "city.mk.rain.fish": {
+  "ru": "— В дождь рыбе всё равно: она и так мокрая. А вот вам не всё равно, так что стойте под навесом.",
+  "en": "\"The rain's nothing to the fish: it's wet already. It matters to you, though, so stand under the awning.\"",
+  "ja": "「雨なんて魚にはどうでもいい、もう濡れてるからね。でもあなたは困るでしょう、庇の下にいなさい」"
+ },
+ "city.mk.fest.fish": {
+  "ru": "— На праздник рыбака у нас без очереди: каждый второй в тельняшке и каждый первый с историей.",
+  "en": "\"On the fishermen's holiday there's no queue: every second one in a striped vest and every first one with a story.\"",
+  "ja": "「漁師の祭りの日は行列なし。二人に一人は縞のシャツ、全員が武勇伝つきだ」"
+ },
+ "city.mk.rain.cat": {
+  "ru": "Кот сидит под прилавком, на сухом ящике, и смотрит на дождь так, будто лично его отменяет.",
+  "en": "The cat sits under the counter on a dry crate, watching the rain as if cancelling it in person.",
+  "ja": "猫はカウンターの下の乾いた箱に座り、雨を、まるで自分の手で取り消そうとするかのように見つめている。"
+ },
+ "city.mk.rain.pigeons": {
+  "ru": "В дождь голуби жмутся под оболочками и смотрят на крошки сквозь воду: голодные, но без суеты.",
+  "en": "In the rain the pigeons huddle under the shells and watch the crumbs through the water: hungry, but unhurried.",
+  "ja": "雨の日、ハトはシェルの下に身を寄せ、水の向こうのパンくずを見ている。お腹はすいているけれど慌てない。"
+ },
+ "city.mk.rain.grinder": {
+  "ru": "Точило накрыто куском брезента. Круг сырости не любит, воды ему и так хватает: своей.",
+  "en": "The grindstone is covered with a piece of tarpaulin. It dislikes damp, and has water enough of its own.",
+  "ja": "砥石には防水シートがかけてある。砥石は湿気が嫌いで、水なら自分の分で足りている。"
+ },
+ "city.mk.rain.herbs": {
+  "ru": "После дождя травы пахнут втрое. Мята у ведра бьёт в нос так, что чихаешь по-доброму.",
+  "en": "After rain the herbs smell three times as strong. The mint by the bucket hits so hard you sneeze kindly.",
+  "ja": "雨のあと、ハーブは三倍香る。バケツのそばのミントは鼻に来て、気持ちよくくしゃみが出る。"
+ },
+ "city.mk.cold.herbs": {
+  "ru": "Холодно: травы накрыты мешковиной, ромашка в ведре притворяется, что ей тепло.",
+  "en": "It's cold: the herbs are under sacking, and the camomile in its bucket pretends to be warm.",
+  "ja": "寒い。ハーブは麻袋で覆われ、バケツのカモミールは暖かいふりをしている。"
+ },
+ "city.mk.day.rain": {
+  "ru": "К афише приколота записка: «В дождь брезент, под брезентом чай. Ряды работают, только голоса тише».",
+  "en": "A note is pinned to the poster: \"In rain, tarpaulin; under the tarpaulin, tea. The rows work, only voices are quieter.\"",
+  "ja": "ポスターにメモが留めてある。「雨の日は防水シート、シートの下ではお茶。通りは営業中、声だけが小さめ」"
+ },
+ "city.mk.day.cold": {
+  "ru": "Внизу приписка: «В мороз у самовара горячий чай, по глотку бесплатно. Кружка — ваша, совесть — ваша. Пункт 12».",
+  "en": "Written below: \"In frost there's hot tea at the samovar, one sip free. The mug is yours, the conscience is yours. Rule 12.\"",
+  "ja": "下に書き足してある。「寒い日はサモワールの熱いお茶を一口無料で。カップはあなたの、良心もあなたの。第12条」"
+ },
+ "city.mk.day.fog": {
+  "ru": "Туман. Приписка: «Ряды различимы по запаху. Не теряйтесь, держитесь за скамейки».",
+  "en": "Fog. A scribble: \"The rows can be told by smell. Don't get lost, hold on to the benches.\"",
+  "ja": "霧。書き込みがある。「通りはにおいで見分けられます。迷わないよう、ベンチにつかまって」"
+ },
+ "city.mk.day.fest": {
+  "ru": "ЯРМАРОЧНЫЙ ДЕНЬ. «Рынок гуляет: открыто с утра, ряды в лентах, у чая очередь, у жюри дела. Приходите без сумок, уйдёте с сумками».",
+  "en": "FAIR DAY. \"The market is celebrating: open from morning, the rows in ribbons, a queue for tea, the jury busy. Come without bags, leave with bags.\"",
+  "ja": "縁日。「市場はお祭り気分：朝から営業、通りはリボンで飾られ、お茶は行列、審査員は大忙し。手ぶらで来て、袋を持って帰ろう」"
+ },
+ "city.mk.tea.1": {
+  "ru": "Объявление у самовара: «Чай утренний, покрепче. Сахар по желанию, пирожки у соседей справа».",
+  "en": "A notice by the samovar: \"Morning tea, stronger. Sugar if you like, pies at the neighbours on the right.\"",
+  "ja": "サモワールのそばの掲示。「朝のお茶、濃いめ。砂糖はお好みで、パイは右隣の屋台で」"
+ },
+ "city.mk.tea.2": {
+  "ru": "«Чай дневной, на травах: мята, чабрец. Горячий, пока горит самовар».",
+  "en": "\"Afternoon tea, with herbs: mint, thyme. Hot while the samovar burns.\"",
+  "ja": "「午後のお茶、ハーブ入り。ミント、タイム。サモワールが燃えているあいだは熱々」"
+ },
+ "city.mk.tea.3": {
+  "ru": "«Вечерний чай. Самовар скоро остынет, кружку не забудьте вернуть».",
+  "en": "\"Evening tea. The samovar will cool soon, don't forget to return the mug.\"",
+  "ja": "「夕方のお茶。サモワールはもうすぐ冷めます、カップを返すのをお忘れなく」"
+ },
+ "city.mk.tea.cold": {
+  "ru": "«ХОЛОДНО: горячий чай с мёдом, вторая кружка за полцены. Грейтесь, не стесняйтесь».",
+  "en": "\"COLD: hot tea with honey, the second mug half price. Warm yourselves, don't be shy.\"",
+  "ja": "「寒いです：蜂蜜入りの熱いお茶、二杯目は半額。遠慮せずに温まってください」"
+ },
+ "city.mk.tea.rain": {
+  "ru": "«В дождь самовар поёт громче: ему тоже хочется на улицу».",
+  "en": "\"In rain the samovar sings louder: it wants to be outside too.\"",
+  "ja": "「雨の日はサモワールがいつもより大きく歌います。外に出たいのでしょう」"
+ },
+ "city.mk.closed.watch.1": {
+  "ru": "Рынок закрыт. Сторож обходит ряды с фонарём и стучит палкой по столбам: «Всё на месте. Приходи утром, парень».",
+  "en": "The market is shut. The watchman walks the rows with a lantern, tapping the posts with his stick: \"All in place. Come in the morning, lad.\"",
+  "ja": "市場は閉まっている。夜警がランタンを手に通りを回り、杖で柱を叩く。「異常なし。朝にまた来な、坊や」"
+ },
+ "city.mk.closed.watch.2": {
+  "ru": "Сторож у входа качает головой: «Ночью торг не идёт. Идите спать, вам завтра торговаться».",
+  "en": "The watchman at the entrance shakes his head: \"No haggling at night. Go to sleep, you've got haggling tomorrow.\"",
+  "ja": "入口の夜警は首を振った。「夜は取引なしだ。寝なさい、明日は値切るんだろう」"
+ },
+ "city.mk.closed.watch.3": {
+  "ru": "Сторож светит фонарём на замок: «Хозяева ушли, ключ у меня, а я не продаю. После шести».",
+  "en": "The watchman shines the lantern on the padlock: \"The owners are gone, I have the key, and I don't sell. After six.\"",
+  "ja": "夜警はランタンで錠前を照らした。「店の人は帰った、鍵は私が持ってるが、私は売らないよ。六時を過ぎてからだ」"
+ },
+ "city.mk.closed.cat.1": {
+  "ru": "Кот сидит на закрытом прилавке и смотрит сквозь тебя: ночь — его смена.",
+  "en": "The cat sits on the closed counter and looks right through you: night is his shift.",
+  "ja": "猫は閉まったカウンターに座り、こちらを透かして見ている。夜は彼のシフトだ。"
+ },
+ "city.mk.closed.cat.2": {
+  "ru": "Кот обходит ряды и проверяет, закрыто ли. Закрыто. Кот подтверждает ухом.",
+  "en": "The cat goes round the rows checking everything is shut. It is. The cat confirms with an ear.",
+  "ja": "猫は通りを回って戸締まりを確かめる。閉まっている。猫は耳でうなずいた。"
+ },
+ "city.mk.closed.cat.3": {
+  "ru": "Кот свернулся на ящике. Всё, что тут запирается, он стережёт лучше замка.",
+  "en": "The cat is curled up on a crate. Whatever is locked here, he guards better than a lock.",
+  "ja": "猫は箱の上で丸くなっている。ここで鍵のかかるものは、錠前よりよく見張っている。"
+ },
+ "city.mk.closed.tasting.1": {
+  "ru": "Столик дегустации пуст и накрыт салфеткой. Табличка: «Дегустация — пятница, суббота, воскресенье, с 11 до 16».",
+  "en": "The tasting table is empty under a napkin. A sign: \"Tasting: Friday, Saturday, Sunday, 11 to 4.\"",
+  "ja": "試食テーブルは空で、ナプキンがかけてある。札には「試食：金・土・日、11時から16時」。"
+ },
+ "city.mk.tastes.0": {
+  "ru": "Карточка «Вкусы рынка»: штамп за пробу или покупку в каждом ряду. Фрукты, овощи, молочное, хлеб, птичьи корма, рыба, мясо, сласти, наживка, варенье, чай. Одиннадцать штампов — и директор записывает вас в «почётные едоки».",
+  "en": "The \"Tastes of the Market\" card: a stamp for a taste or a purchase in every row. Fruit, vegetables, dairy, bread, bird feed, fish, meat, sweets, bait, jam, tea. Eleven stamps and the director enters you among the \"honoured eaters\".",
+  "ja": "「市場の味」カード。各列で試食か買い物をするとスタンプがもらえる。果物、野菜、乳製品、パン、鳥の餌、魚、肉、お菓子、釣り餌、ジャム、お茶。11個そろうと、支配人が「名誉の食いしん坊」に記録してくれる。"
+ },
+ "city.mk.tastes.have.fruit": {
+  "ru": "Фрукты: штамп с яблоком.",
+  "en": "Fruit: a stamp with an apple.",
+  "ja": "果物：りんごのスタンプ。"
+ },
+ "city.mk.tastes.have.veg": {
+  "ru": "Овощи: штамп с морковкой.",
+  "en": "Vegetables: a stamp with a carrot.",
+  "ja": "野菜：にんじんのスタンプ。"
+ },
+ "city.mk.tastes.have.dairy": {
+  "ru": "Молочное: штамп с каплей молока.",
+  "en": "Dairy: a stamp with a drop of milk.",
+  "ja": "乳製品：ミルクのしずくのスタンプ。"
+ },
+ "city.mk.tastes.have.bread": {
+  "ru": "Хлеб: штамп с колоском.",
+  "en": "Bread: a stamp with an ear of wheat.",
+  "ja": "パン：麦の穂のスタンプ。"
+ },
+ "city.mk.tastes.have.birds": {
+  "ru": "Птичьи корма: штамп с пёрышком.",
+  "en": "Bird feed: a stamp with a feather.",
+  "ja": "鳥の餌：羽根のスタンプ。"
+ },
+ "city.mk.tastes.have.fish": {
+  "ru": "Рыба: штамп с рыбкой.",
+  "en": "Fish: a stamp with a little fish.",
+  "ja": "魚：小さな魚のスタンプ。"
+ },
+ "city.mk.tastes.have.meat": {
+  "ru": "Мясо: штамп с ножом. Смелый рисунок.",
+  "en": "Meat: a stamp with a knife. A bold design.",
+  "ja": "肉：ナイフのスタンプ。大胆な絵だ。"
+ },
+ "city.mk.tastes.have.sweets": {
+  "ru": "Сласти: штамп с леденцом.",
+  "en": "Sweets: a stamp with a lollipop.",
+  "ja": "お菓子：棒付き飴のスタンプ。"
+ },
+ "city.mk.tastes.have.bait": {
+  "ru": "Наживка: штамп с червячком.",
+  "en": "Bait: a stamp with a little worm.",
+  "ja": "釣り餌：小さなミミズのスタンプ。"
+ },
+ "city.mk.tastes.have.jam": {
+  "ru": "Варенье: штамп с банкой.",
+  "en": "Jam: a stamp with a jar.",
+  "ja": "ジャム：瓶のスタンプ。"
+ },
+ "city.mk.tastes.have.tea": {
+  "ru": "Чай: штамп с чашкой.",
+  "en": "Tea: a stamp with a cup.",
+  "ja": "お茶：カップのスタンプ。"
+ },
+ "city.mk.tastes.4": {
+  "ru": "Четыре штампа: вы уже почти постоянный покупатель. Продавцы начинают узнавать шаги.",
+  "en": "Four stamps: you're nearly a regular. The sellers are beginning to know your steps.",
+  "ja": "スタンプ4つ。もうほとんど常連だ。売り手たちが足音を覚え始めている。"
+ },
+ "city.mk.tastes.8": {
+  "ru": "Восемь штампов. Ряды узнают вас по походке и подкладывают лучшее яблоко сверху.",
+  "en": "Eight stamps. The rows know you by your walk and put the best apple on top.",
+  "ja": "スタンプ8つ。通りの人たちは歩き方であなたを覚え、いちばんいいりんごを上にのせてくれる。"
+ },
+ "city.mk.tastes.11": {
+  "ru": "Одиннадцать штампов! Директор рынка жмёт руку и вписывает вас в «почётные едоки». Это почётнее, чем кажется.",
+  "en": "Eleven stamps! The market director shakes your hand and enters you among the \"honoured eaters\". It is more honourable than it sounds.",
+  "ja": "スタンプ11個！ 市場の支配人は握手して、あなたを「名誉の食いしん坊」に記入した。聞こえよりずっと名誉なことだ。"
+ },
+ "city.mk.complaints.8": {
+  "ru": "«Жалуюсь на контрольные весы: они показали, сколько я на самом деле купил. Расстроился». Ответ директора: «Весы нечаянно честные. Извиняемся, исправлять не будем».",
+  "en": "\"I complain about the control scales: they showed how much I actually bought. I'm upset.\" The director's reply: \"The scales are accidentally honest. We apologise, we won't fix it.\"",
+  "ja": "「検査用の秤に苦情です。実際にどれだけ買ったか教えてくれました。落ち込みました」支配人の返事。「秤はうっかり正直でした。お詫びしますが、直しません」"
+ },
+ "city.mk.complaints.9": {
+  "ru": "«Прошу вернуть лето: банка №23 открыта, а лето, как выяснилось, не вернулось». Приписка смотрительницы весов: «Оно было в банке. Теперь у всех понемногу».",
+  "en": "\"Please return the summer: jar no. 23 is open, and the summer, it turns out, hasn't come back.\" The scale-keeper's note: \"It was in the jar. Now everyone has a little.\"",
+  "ja": "「夏を返してください。23番の瓶は開いたのに、夏は戻ってきませんでした」秤の係の書き込み。「夏は瓶の中にありました。今はみんなが少しずつ持っています」"
+ },
+ "city.mk.complaints.10": {
+  "ru": "Сегодняшняя запись, круглым аккуратным почерком: «Благодарю рынок. Жалоб нет. Банку забираю домой, в августе верну с вареньем». Директор поставил печать и подчеркнул слово «верну».",
+  "en": "Today's entry, in a round neat hand: \"Thanks to the market. No complaints. I'm taking the jar home, I'll bring it back in August with jam.\" The director stamped it and underlined the word \"back\".",
+  "ja": "今日の記入は丸いきれいな字。「市場に感謝します。苦情はありません。瓶は家に持ち帰り、8月にジャムを入れて返します」支配人は印を押し、「返します」の語に下線を引いた。"
+ },
+ "city.mk.text.market_rules.title": {
+  "ru": "Правила рынка под оболочками",
+  "en": "Rules of the Shell Market",
+  "ja": "シェル市場の規則"
+ },
+ "city.mk.text.market_rules.1": {
+  "ru": "ПРАВИЛА РЫНКА. Приняты общим собранием рядов, дополнены котом.\n§1. Рынок открыт, когда открыт.\n§2. Вес — это вес. Гиря — это гиря.\n§3. Товар нюхать можно, бросать нельзя.\n§4. Торг — дело добровольное и весёлое. Обиженным считается тот, кто не торговался.",
+  "en": "MARKET RULES. Adopted by the general meeting of the rows, supplemented by the cat.\n§1. The market is open when it is open.\n§2. A weight is a weight. A weight is a weight.\n§3. Goods may be sniffed, not thrown.\n§4. Haggling is voluntary and cheerful. The offended one is whoever did not haggle.",
+  "ja": "市場の規則。各列の総会で採択、猫が補足。\n第1条　市場は開いているときに開いている。\n第2条　重さは重さ。分銅は分銅。\n第3条　品物は嗅いでもよいが、投げてはならない。\n第4条　値切りは自由で楽しいもの。値切らなかった者が気を悪くしたとみなされる。"
+ },
+ "city.mk.text.market_rules.2": {
+  "ru": "§5. Рыбу и мясо бережёт лёд, а не прилавок: не облокачиваться.\n§6. Контрольные весы стоят у конторки; проверять можно всех, включая директора.\n§7. Банки конкурса варенья без этикетки не трогать до решения жюри.\n§8. Детям пробовать по одной ложке. Взрослым тоже.",
+  "en": "§5. Fish and meat are kept by ice, not by the counter: do not lean.\n§6. The control scales stand by the office; anyone may be checked, the director included.\n§7. Unlabelled jars of the jam contest are not to be touched before the jury decides.\n§8. Children taste one spoonful. Adults too.",
+  "ja": "第5条　魚と肉を守るのは氷であってカウンターではない。寄りかからないこと。\n第6条　検査用の秤は事務所のそばにあり、支配人を含め誰でも検査できる。\n第7条　ジャムコンテストのラベルのない瓶は、審査員の決定まで触れないこと。\n第8条　子どもは一さじまで。大人も同じ。"
+ },
+ "city.mk.text.market_rules.3": {
+  "ru": "§9. Скамейки для усталых, а не для голубей (голуби не согласны).\n§10. Миска кота наполняется до открытия.\n§11. Жалобная книга лежит у конторы. Ручка на верёвочке, чтобы её не уносили.\n§12. Чай отпускается, пока горит самовар.",
+  "en": "§9. Benches are for the weary, not for pigeons (the pigeons disagree).\n§10. The cat's bowl is filled before opening.\n§11. The complaints book lies by the office. The pen is on a string so that it is not carried off.\n§12. Tea is served while the samovar burns.",
+  "ja": "第9条　ベンチは疲れた人のためで、ハトのためではない（ハトは同意していない）。\n第10条　猫の皿は開店前に満たすこと。\n第11条　苦情帳は事務所のそばに置く。ペンは持ち去られないよう紐でつなぐ。\n第12条　お茶はサモワールが燃えているあいだ出す。"
+ },
+ "city.mk.text.market_rules.4": {
+  "ru": "§13. Брезент вывешивают в дождь, а не в обещание дождя.\n§14. В субботу торгуют все, даже те, кто в другие дни «в отпуске».\n§15. Что не вошло в правила, решает общее собрание. А что не решает собрание, решает кот.\nПодписи: директор рынка, смотрительница весов, представитель кота (лапа).",
+  "en": "§13. The tarpaulins go up in rain, not in the promise of rain.\n§14. On Saturday everyone trades, even those who are \"on holiday\" the other days.\n§15. What is not in the rules is decided by the general meeting. What the meeting does not decide, the cat decides.\nSigned: the market director, the scale-keeper, the cat's representative (a paw).",
+  "ja": "第13条　防水シートは雨が降ったら張る。雨が降りそうだという約束では張らない。\n第14条　土曜日は全員が商いをする。他の日に「休暇中」の者も。\n第15条　規則にないことは総会が決める。総会が決めないことは猫が決める。\n署名：市場支配人、秤の係、猫の代表（肉球）。"
+ },
+ "city.mk.text.market_complaints.title": {
+  "ru": "Жалобная книга рынка",
+  "en": "The Market's Complaints Book",
+  "ja": "市場の苦情帳"
+ },
+ "city.mk.text.market_seeds.title": {
+  "ru": "Каталог семян «Для птиц и для сада»",
+  "en": "Seed catalogue \"For Birds and Garden\"",
+  "ja": "種のカタログ「鳥と庭のために」"
+ },
+ "city.mk.text.market_seeds.1": {
+  "ru": "КАТАЛОГ СЕМЯН. Прилавок птичьих кормов. Весна — осень. Всё, что клюют, и всё, что потом растёт. Берите бумажный кулёк у прилавка: мера — стакан.",
+  "en": "SEED CATALOGUE. The bird-feed stall. Spring to autumn. Everything that is pecked, and everything that grows afterwards. Take a paper cone at the stall: the measure is a glass.",
+  "ja": "種のカタログ。鳥の餌の屋台。春から秋まで。ついばまれるもの全部と、その後に育つもの全部。屋台で紙のコーンをお取りください、量りはコップ一杯。"
+ },
+ "city.mk.text.market_seeds.2": {
+  "ru": "ПОДСОЛНЕЧНИК. Высокий, жёлтый, смотрит на солнце. Осенью голову не срезайте: синицы прилетят сами и скажут спасибо по-своему.",
+  "en": "SUNFLOWER. Tall, yellow, follows the sun. In autumn don't cut off the head: the tits will come themselves and say thanks in their own way.",
+  "ja": "ひまわり。背が高く、黄色く、太陽を追う。秋に花を切らないで。シジュウカラが自分で来て、彼らなりのお礼を言ってくれる。"
+ },
+ "city.mk.text.market_seeds.3": {
+  "ru": "ПРОСО И ЗЕРНО. Для воробьёв и горлиц. Сыпать на ровное, подальше от кошачьего угла. Рябина — для свиристелей: ягоды дозревают к первым холодам.",
+  "en": "MILLET AND GRAIN. For sparrows and doves. Scatter on level ground, far from the cat's corner. Rowan is for waxwings: the berries ripen with the first frosts.",
+  "ja": "キビと穀物。スズメとキジバトのために。平らな場所に、猫のコーナーから離してまく。ナナカマドはレンジャクのため。実は初霜のころに熟す。"
+ },
+ "city.mk.text.market_seeds.4": {
+  "ru": "КОРМУШКА. Вешать на высоте человека, повыше кошек, подальше от ветра. Крыша от дождя, дно с щелью: сырой корм — плохой корм. Книга о скворцах — в библиотеке, на полке «птицы».",
+  "en": "FEEDER. Hang at human height, above the cats, out of the wind. A roof against rain, a slit in the floor: wet feed is bad feed. A book about starlings is in the library on the \"birds\" shelf.",
+  "ja": "餌台。人の背の高さに、猫より高く、風の当たらない所に。雨よけの屋根と、底にすき間を。湿った餌は悪い餌。ムクドリの本は図書館の「鳥」の棚にあります。"
+ },
+ "city.mk.text.market_seeds.5": {
+  "ru": "ПОСЕВНОЙ КАЛЕНДАРЬ. Подсолнечник — в мае. Просо — в июне. Рябина — осенью, косточкой в землю. Птицы — круглый год, без расписания. Просьба продавца: голубей не докармливать, у них есть рынок.",
+  "en": "SOWING CALENDAR. Sunflower in May. Millet in June. Rowan in autumn, a stone into the earth. Birds all year round, without a timetable. The seller asks: don't overfeed the pigeons, they have the market.",
+  "ja": "種まきカレンダー。ひまわりは5月。キビは6月。ナナカマドは秋に、種を土へ。鳥は一年じゅう、時間割なし。売り手からのお願い：ハトには餌をやりすぎないで、彼らには市場があります。"
+ },
+ "city.mk.text.jam_protocol.title": {
+  "ru": "Протокол жюри конкурса варенья",
+  "en": "Protocol of the Jam Contest Jury",
+  "ja": "ジャムコンテスト審査員の議事録"
+ },
+ "city.mk.text.jam_protocol.1": {
+  "ru": "ПРОТОКОЛ №1. Жюри в составе: директор рынка, смотрительница весов, продавщица мёда, двое детей (с правом совещательного голоса). Номинации: «Лучшее», «Самое смелое», «Банка без этикетки» (вне зачёта).",
+  "en": "PROTOCOL NO. 1. The jury: the market director, the scale-keeper, the honey seller, two children (with a consultative vote). Categories: \"Best\", \"Boldest\", \"Jar without a label\" (out of competition).",
+  "ja": "議事録第1号。審査員：市場支配人、秤の係、蜂蜜売り、子ども二人（発言権あり）。部門：「最優秀」「いちばん大胆」「ラベルのない瓶」（審査対象外）。"
+ },
+ "city.mk.text.jam_protocol.2": {
+  "ru": "Баллы по пятибалльной системе. №7 облепиха: 5, 5, 4, 5. №12 крыжовник с мятой: 4, 5, 5, 3 (мухи просили оценить отдельно). №19 «шишки»: 3, 2, 5, 5. «Самое смелое» — единогласно.",
+  "en": "Points on a five-point scale. No. 7 sea buckthorn: 5, 5, 4, 5. No. 12 gooseberry with mint: 4, 5, 5, 3 (the flies asked to be scored separately). No. 19 \"pine cones\": 3, 2, 5, 5. \"Boldest\" unanimously.",
+  "ja": "5点満点の採点。7番　シーバックソーン：5、5、4、5。12番　ミント入りスグリ：4、5、5、3（ハエが別枠での採点を求めた）。19番「松ぼっくり」：3、2、5、5。「いちばん大胆」は全会一致。"
+ },
+ "city.mk.text.jam_protocol.3": {
+  "ru": "Особое мнение смотрительницы весов: банка №23 весит 412 граммов независимо от погоды и настроения жюри. Прошу отметить, что это тревожит.",
+  "en": "Dissenting opinion of the scale-keeper: jar no. 23 weighs 412 grams regardless of the weather and the jury's mood. I ask it be noted that this is disturbing.",
+  "ja": "秤の係の少数意見：23番の瓶は、天気にも審査員の気分にもかかわらず412グラムである。これは気がかりだと記録していただきたい。"
+ },
+ "city.mk.text.jam_protocol.4": {
+  "ru": "РЕШЕНИЕ. Банку №23 открыть на дегустации. Хозяина не искать, пока не найдётся сам. Победителю — ленточка, остальным — по печенью. Подписи: все присутствовавшие, дети — крупно.",
+  "en": "DECISION. Jar no. 23 to be opened at the tasting. The owner is not to be sought until he turns up. A ribbon for the winner, a biscuit for the rest. Signed: all present, the children in large letters.",
+  "ja": "決定。23番の瓶は試食会で開封する。持ち主は、自分から現れるまで探さない。優勝者にはリボン、他の人にはクッキー。署名：出席者全員、子どもたちは大きな字で。"
+ },
+ "quest.market_haggler.title": {
+  "ru": "Сколько стоит улыбка",
+  "en": "What a Smile Costs",
+  "ja": "笑顔の値段"
+ },
+ "quest.market_haggler.desc": {
+  "ru": "На рынке торг — вежливость. Но сначала надо знать правила, а потом уже выигрывать у продавцов.",
+  "en": "At the market haggling is good manners. But first you must know the rules, and only then win against the sellers.",
+  "ja": "市場では値切りは礼儀のうち。でもまず規則を知り、それから売り手に勝たなくては。"
+ },
+ "quest.market_haggler.read.log": {
+  "ru": "На рынке висят правила, принятые общим собранием и подписанные котом. Прочту, пока не поздно.",
+  "en": "The rules adopted by the general meeting and signed by the cat hang in the market. I'll read them while there's time.",
+  "ja": "市場には、総会で採択され猫が署名した規則が掲げてある。手遅れになる前に読んでおこう。"
+ },
+ "quest.market_haggler.rules.obj": {
+  "ru": "Прочесть правила рынка",
+  "en": "Read the market rules",
+  "ja": "市場の規則を読む"
+ },
+ "quest.market_haggler.win.log": {
+  "ru": "Правило четвёртое: торг дело весёлое. Попробую выторговать что-нибудь у рыбачки. Она смотрит прямо и моргает редко.",
+  "en": "Rule four: haggling is cheerful business. I'll try to bargain something out of the fishwife. She looks straight and rarely blinks.",
+  "ja": "第4条：値切りは楽しい商い。魚屋さんから何か値切ってみよう。彼女はまっすぐ見つめ、めったにまばたきしない。"
+ },
+ "quest.market_haggler.haggle.obj": {
+  "ru": "Выиграть торг у рыбачки",
+  "en": "Win a haggle with the fishwife",
+  "ja": "魚屋さんとの値切りに勝つ"
+ },
+ "quest.market_haggler.card.log": {
+  "ru": "Остался штамп в карточке «Вкусы рынка». Её вывешивают у конторки, у окна директора.",
+  "en": "Now for the stamp on the \"Tastes of the Market\" card. It hangs by the office, by the director's window.",
+  "ja": "あとは「市場の味」カードのスタンプ。事務所の、支配人の窓のそばに掛かっている。"
+ },
+ "quest.market_haggler.card.obj": {
+  "ru": "Посмотреть карточку «Вкусы рынка» у конторы",
+  "en": "Look at the \"Tastes of the Market\" card by the office",
+  "ja": "事務所のそばの「市場の味」カードを見る"
+ },
+ "quest.market_haggler.done": {
+  "ru": "Рыбачка моргнула первой, а директор записал это в протокол. Теперь на рынке меня, кажется, уважают чуть больше. И яблоки кладут крупнее.",
+  "en": "The fishwife blinked first, and the director put it in the protocol. Now the market seems to respect me a little more. And they put in bigger apples.",
+  "ja": "魚屋さんが先にまばたきして、支配人はそれを議事録に書いた。市場での私の評判は少し上がったようだ。りんごも大きいのを入れてくれる。"
  }
 }
