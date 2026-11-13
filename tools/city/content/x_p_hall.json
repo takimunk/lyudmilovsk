@@ -1415,34 +1415,6 @@
    ]
   }
  ],
- "topics": {
-  "buy_hall_bar": [
-   {
-    "id": "hall.bar.menu",
-    "k": "city.xh.bar.t1",
-    "lines": [
-     "city.xh.bar.t1.1",
-     "city.xh.bar.t1.2"
-    ]
-   },
-   {
-    "id": "hall.bar.dance",
-    "k": "city.xh.bar.t2",
-    "lines": [
-     "city.xh.bar.t2.1",
-     "city.xh.bar.t2.2"
-    ]
-   },
-   {
-    "id": "hall.bar.isla",
-    "k": "city.xh.bar.t3",
-    "lines": [
-     "city.xh.bar.t3.1",
-     "city.xh.bar.t3.2"
-    ]
-   }
-  ]
- },
  "texts": {
   "hall_script": {
    "title": "city.xh.text.script.title",

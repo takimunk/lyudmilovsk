@@ -1314,51 +1314,6 @@
   "en": "\"Have you been to the choir? Then you know Isla. She arrives five minutes early and every time apologises for being late.\"",
   "ja": "「合唱団には行かれましたか。ではアイラさんをご存じですね。いつも五分前に来て、そのたびに遅れてすみませんと謝るんです」"
  },
- "city.xh.bar.t1": {
-  "ru": "Что в буфете",
-  "en": "What the bar has",
-  "ja": "バーのメニュー"
- },
- "city.xh.bar.t1.1": {
-  "ru": "— Чай, кофе, пирог, «Дюшес», — перечисляет смотритель. — Пироги с кухни, кофе из банки с надписью «не трогать», «Дюшес» из холодильника в углу. Выбор невелик, зато без обмана.",
-  "en": "\"Tea, coffee, pie, Dyushes,\" the caretaker lists. \"Pies from the kitchen, coffee from the tin marked 'do not touch', Dyushes from the fridge in the corner. A small choice, but honest.\"",
-  "ja": "「紅茶、コーヒー、パイ、ジュシェス」と管理人は数える。「パイは厨房から、コーヒーは『触るな』と書いた缶から、ジュシェスは隅の冷蔵庫から。品数は少ないけれど、ごまかしはありません」"
- },
- "city.xh.bar.t1.2": {
-  "ru": "— Пироги пекут к вечеру. Если опоздали, берите чай и делайте вид, что так и хотели. Танцующим чай даже полезнее.",
-  "en": "\"Pies are baked towards evening. If you are late, take tea and act as if that was the plan. For dancers tea is better anyway.\"",
-  "ja": "「パイは夕方に焼きます。遅れたら紅茶を取って、最初からそのつもりだったという顔をしてください。踊る人には紅茶のほうがむしろ体にいいんです」"
- },
- "city.xh.bar.t2": {
-  "ru": "Кто как танцует",
-  "en": "Who dances how",
-  "ja": "踊りの上手な人"
- },
- "city.xh.bar.t2.1": {
-  "ru": "— По пятницам танцуют те, кто в будни стесняется, — говорит смотритель, протирая стакан. — Вон тот у колонны — лучший вальс в городе. Об этом знает только он и колонна.",
-  "en": "\"On Fridays those dance who are shy on weekdays,\" says the caretaker, wiping a glass. \"The one by the column dances the best waltz in town. Only he and the column know it.\"",
-  "ja": "「金曜に踊るのは、平日は恥ずかしがっている人たちです」と管理人はグラスを拭きながら言う。「柱のそばのあの人は町でいちばんのワルツを踊ります。それを知っているのは本人と柱だけです」"
- },
- "city.xh.bar.t2.2": {
-  "ru": "— Совет всем один: не смотрите на ноги. Ноги всё помнят сами. Смотрите на партнёра, а если смущаетесь, на зеркальный шар.",
-  "en": "\"One piece of advice for all: do not look at your feet. The feet remember by themselves. Look at your partner, and if you are shy, at the mirror ball.\"",
-  "ja": "「みなさんに助言は一つ。足を見ないこと。足はひとりでに覚えています。相手を見て、恥ずかしければミラーボールを見てください」"
- },
- "city.xh.bar.t3": {
-  "ru": "Про хормейстера",
-  "en": "About the choir leader",
-  "ja": "合唱指揮者のこと"
- },
- "city.xh.bar.t3.1": {
-  "ru": "— Айла? Кофе без сахара и без разговоров перед репетицией, — смотритель понижает голос. — После репетиции с сахаром и с разговорами. Запомните порядок, и вы в безопасности.",
-  "en": "\"Isla? Coffee with no sugar and no talk before rehearsal,\" the caretaker lowers his voice. \"After rehearsal with sugar and with talk. Remember the order and you are safe.\"",
-  "ja": "「アイラさんですか。稽古の前は砂糖なしで、おしゃべりもなしのコーヒーです」管理人は声を落とす。「稽古のあとは砂糖入りで、おしゃべりもあり。この順番を覚えておけば安全です」"
- },
- "city.xh.bar.t3.2": {
-  "ru": "— И никогда не говорите ей, что поёте «примерно». «Примерно» — единственное слово, от которого у неё дёргается глаз.",
-  "en": "\"And never tell her you sing 'roughly'. 'Roughly' is the only word that makes her eye twitch.\"",
-  "ja": "「それから、『だいたい歌えます』とは絶対に言わないでください。『だいたい』は、彼女のまぶたをひきつらせる唯一の言葉です」"
- },
  "city.xh.choirtalk.hello.1": {
   "ru": "Айла поднимает руку, и хор затихает. «Одну минуту, — говорит она залу. — Ко мне пришли». Двадцать два человека делают вид, что не слушают.",
   "en": "Isla raises a hand and the choir falls silent. \"One minute,\" she tells the hall. \"Someone has come to see me.\" Twenty-two people pretend not to listen.",
