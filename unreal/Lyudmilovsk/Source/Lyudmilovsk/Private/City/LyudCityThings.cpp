@@ -3644,7 +3644,7 @@ void ULyudCityThings::SetTone(int32 Tone)
 	UWorld* World = GetWorld();
 	const LyudCity::FTone* T = Model ? Model->ToneAt(Tone) : nullptr;
 	USoundBase* Loop = T && ToneSounds.IsValidIndex(Tone) ? ToneSounds[Tone].Get() : nullptr;
-	const USoundBase* Playing = ToneAudio ? ToneAudio->Sound.Get() : nullptr;
+	const USoundBase* PlayingLoop = ToneAudio ? ToneAudio->Sound.Get() : nullptr;
 	UE_LOG(LogLyudCity, Verbose, TEXT("CityThings: tone %s"), T ? *LyudCityThingsImpl::Str(T->Id) : TEXT("off"));
 	ToneHeard = T ? Tone : -1;
 	{
@@ -3672,7 +3672,7 @@ void ULyudCityThings::SetTone(int32 Tone)
 	{
 		return;
 	}
-	if (Playing == Loop && ToneAudio->IsPlaying())
+	if (PlayingLoop == Loop && ToneAudio->IsPlaying())
 	{
 		// the same loop in the next room (a cafe after a cafe): only the level moves
 		ToneAudio->AdjustVolume(LyudCityThingsImpl::ToneFadeIn, Level);
