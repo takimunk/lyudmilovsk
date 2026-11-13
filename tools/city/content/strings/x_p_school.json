@@ -598,5 +598,870 @@
   "ru": "Отыграл два раза: в первый вышло по нотам, во второй так, как хотелось. Учительница музыки сказала, что на концерте меня будут ждать, и выдала значок на память.",
   "en": "I played twice: the first time by the notes, the second as I wished. The music teacher said I'd be expected at the concert and gave me a badge to remember it by.",
   "ja": "二回弾いた。一回目は楽譜どおりに、二回目は思ったままに。音楽の先生は、音楽会で待っていると言って、記念のバッジをくれた。"
+ },
+ "city.sch.p.checkers": {
+  "ru": "E — сесть за шашки",
+  "en": "E — sit down to checkers",
+  "ja": "E：チェッカーをさす"
+ },
+ "city.sch.p.club_chess": {
+  "ru": "E — сесть за шахматную доску кружка",
+  "en": "E — take a seat at the chess club board",
+  "ja": "E：チェス部の盤に座る"
+ },
+ "city.sch.p.staff_chess": {
+  "ru": "E — предложить партию",
+  "en": "E — offer a game",
+  "ja": "E：一局どうかと誘う"
+ },
+ "city.sch.p.pingpong": {
+  "ru": "E — сыграть в настольный теннис",
+  "en": "E — play table tennis",
+  "ja": "E：卓球をする"
+ },
+ "city.sch.p.hoop": {
+  "ru": "E — бросить мяч в кольцо",
+  "en": "E — shoot at the hoop",
+  "ja": "E：リングにシュートする"
+ },
+ "city.sch.p.balls": {
+  "ru": "E — достать мяч из тележки",
+  "en": "E — take a ball from the cart",
+  "ja": "E：カートからボールを出す"
+ },
+ "city.sch.p.honours": {
+  "ru": "E — прочитать доску почёта",
+  "en": "E — read the honours board",
+  "ja": "E：表彰ボードを読む"
+ },
+ "city.sch.p.clubs": {
+  "ru": "E — прочитать, какие кружки сегодня",
+  "en": "E — read which clubs meet today",
+  "ja": "E：今日のクラブ活動を読む"
+ },
+ "city.sch.p.pendulum": {
+  "ru": "E — качнуть маятник",
+  "en": "E — set the pendulum swinging",
+  "ja": "E：振り子を揺らす"
+ },
+ "city.sch.p.drawers": {
+  "ru": "E — выдвинуть ящик учительского стола",
+  "en": "E — slide out the teacher's desk drawer",
+  "ja": "E：先生の机の引き出しを開ける"
+ },
+ "city.sch.p.museum": {
+  "ru": "E — посмотреть полку школьного музея",
+  "en": "E — look at the school museum shelf",
+  "ja": "E：学校資料棚を見る"
+ },
+ "city.sch.p.hamster": {
+  "ru": "E — заглянуть к хомяку",
+  "en": "E — peek in at the hamster",
+  "ja": "E：ハムスターをのぞく"
+ },
+ "city.sch.p.water": {
+  "ru": "E — полить цветы",
+  "en": "E — water the plants",
+  "ja": "E：花に水をやる"
+ },
+ "city.sch.p.glass": {
+  "ru": "E — рассмотреть пробирки",
+  "en": "E — look over the test tubes",
+  "ja": "E：試験管を眺める"
+ },
+ "city.sch.p.periodic": {
+  "ru": "E — разглядеть таблицу Менделеева",
+  "en": "E — study the periodic table",
+  "ja": "E：周期表をじっくり見る"
+ },
+ "city.sch.p.choir": {
+  "ru": "E — встать в хор",
+  "en": "E — join the choir",
+  "ja": "E：合唱に加わる"
+ },
+ "city.sch.p.glock": {
+  "ru": "E — поиграть на металлофоне",
+  "en": "E — play the glockenspiel",
+  "ja": "E：鉄琴をたたく"
+ },
+ "city.sch.p.apples": {
+  "ru": "E — взять яблоко из ящика",
+  "en": "E — take an apple from the crate",
+  "ja": "E：箱からりんごを取る"
+ },
+ "city.sch.p.naturalists": {
+  "ru": "E — присоединиться к юным натуралистам",
+  "en": "E — join the young naturalists",
+  "ja": "E：少年少女自然観察クラブに加わる"
+ },
+ "city.sch.clock.1": {
+  "ru": "Часы над задней дверью холла показывают {time}. Под ними табличка со звонками: 1-й урок 8:30, 2-й 9:25, перемена с чаем 10:10, 3-й 10:30, 4-й 11:25, 5-й 12:55, последний звонок 13:40.",
+  "en": "The clock over the back door of the hall says {time}. A plaque under it lists the bells: 1st lesson 8:30, 2nd 9:25, tea break 10:10, 3rd 10:30, 4th 11:25, 5th 12:55, last bell 13:40.",
+  "ja": "ホールの裏口の上の時計は{time}を指している。下の札にはベルの時刻。1限8:30、2限9:25、お茶の休み時間10:10、3限10:30、4限11:25、5限12:55、最後のベルは13:40。"
+ },
+ "city.sch.clock.2": {
+  "ru": "Часы показывают {time}. Уроки давно кончились, и стрелки идут по пустому холлу как-то на цыпочках. Табличка со звонками теперь просто украшение: следующий прозвенит завтра в 8:30.",
+  "en": "The clock says {time}. Lessons ended long ago and the hands tiptoe across the empty hall. The plaque of bells is just decoration now: the next one rings tomorrow at 8:30.",
+  "ja": "時計は{time}。授業はとうに終わり、針は誰もいないホールをつま先立ちで進んでいる。ベルの札は今は飾りのようなもの。次は明日の8:30。"
+ },
+ "city.sch.clock.3": {
+  "ru": "Выходной. Часы показывают {time}, но спешить в школе некуда. Звонки на табличке спят до понедельника, до 8:30.",
+  "en": "A day off. The clock says {time}, but nobody in the school is in a hurry. The bells on the plaque sleep until Monday, 8:30.",
+  "ja": "休日。時計は{time}だが、学校に急ぐ人はいない。札のベルは月曜の8:30まで眠っている。"
+ },
+ "city.sch.clock.4": {
+  "ru": "Вечер, часы показывают {time}. В холле горит только одна лампа у вахтёра. На табличке звонков чья-то рука карандашом приписала: «В 18:00 вахтёр пьёт чай. Не мешать».",
+  "en": "Evening, the clock says {time}. Only one lamp is lit in the hall, by the watchman. Someone has pencilled under the bell plaque: \"At 18:00 the watchman has his tea. Do not disturb.\"",
+  "ja": "夕方、時計は{time}。ホールで灯っているのは守衛さんのそばのランプだけ。ベルの札の下に誰かが鉛筆で書き足している。「18時、守衛さんはお茶の時間。邪魔しないこと」"
+ },
+ "city.sch.clubs.1": {
+  "ru": "Подставка с объявлениями. Понедельник: кружок юных натуралистов, биологический кабинет, 16:00–18:00. Приносить банки из-под огурцов и терпение.",
+  "en": "The notice stand. Monday: young naturalists' club, biology room, 16:00-18:00. Bring empty pickle jars and patience.",
+  "ja": "掲示スタンド。月曜、少年少女自然観察クラブ、生物室、16:00〜18:00。空きびんと辛抱強さを持参のこと。"
+ },
+ "city.sch.clubs.2": {
+  "ru": "Вторник: хор, музыкальный класс, 16:00–18:00. Учим «Песенку про море». Тем, кто боится петь, разрешается стоять в заднем ряду и беззвучно шевелить ртом.",
+  "en": "Tuesday: choir, music room, 16:00-18:00. We are learning \"Song of the Sea\". Those afraid to sing may stand in the back row and move their lips without a sound.",
+  "ja": "火曜、合唱、音楽室、16:00〜18:00。「海の歌」を練習中。歌うのが怖い人は後列で声を出さずに口だけ動かしてもよい。"
+ },
+ "city.sch.clubs.3": {
+  "ru": "Среда: шахматный кружок, первый класс у входа, 16:00–18:00. Внизу приписка: «Фигуры вернуть на место. Особенно ладью. Да, ту самую».",
+  "en": "Wednesday: chess club, the first classroom by the entrance, 16:00-18:00. Added below: \"Put the pieces back. Especially the rook. Yes, that one.\"",
+  "ja": "水曜、チェス部、入口脇の1教室、16:00〜18:00。下の書き込み。「駒は元に戻すこと。特にルーク。そう、あのルークだ」"
+ },
+ "city.sch.clubs.4": {
+  "ru": "Четверг: хор, музыкальный класс, 16:00–18:00. «Второй голос приходит вовремя, первый голос не комментирует второй». Подпись: Хормейстер.",
+  "en": "Thursday: choir, music room, 16:00-18:00. \"The second voice arrives on time, the first voice does not comment on the second.\" Signed: the choir leader.",
+  "ja": "木曜、合唱、音楽室、16:00〜18:00。「第二声部は時間どおりに来ること。第一声部は第二声部に口を出さないこと」署名、合唱の先生。"
+ },
+ "city.sch.clubs.5": {
+  "ru": "Пятница: юные натуралисты, 16:00–18:00. Тема: «Что растёт на дюнах и почему его нельзя рвать». Для самых любопытных после кружка прогулка к морю.",
+  "en": "Friday: young naturalists, 16:00-18:00. Topic: \"What grows on the dunes and why we do not pick it\". For the most curious, a walk to the sea after the club.",
+  "ja": "金曜、少年少女自然観察クラブ、16:00〜18:00。テーマ「砂丘に生える草と、摘んではいけない理由」。いちばん好奇心の強い人は、クラブのあと海まで散歩。"
+ },
+ "city.sch.clubs.6": {
+  "ru": "Суббота и воскресенье: кружков нет. Зато спортзал в субботу с утра открыт для всех, кто умеет не топать. Это тоже написано.",
+  "en": "Saturday and Sunday: no clubs. But the sports hall is open on Saturday mornings to anyone who can walk quietly. That is written down too.",
+  "ja": "土日はクラブなし。ただし土曜の午前は、静かに歩ける人なら誰でも体育館に入れる。これも書いてある。"
+ },
+ "city.sch.watch.1": {
+  "ru": "Вахтёр поднимает глаза от кроссворда. «Кружки до шести. Если ищете кого-то из учителей, они уже на автобусе. Если ищете кружок, идите по коридору на звук».",
+  "en": "The watchman looks up from his crossword. \"Clubs run till six. If you are looking for a teacher, they are on the bus already. If you want a club, follow the sound down the corridor.\"",
+  "ja": "守衛さんがクロスワードから顔を上げる。「クラブは6時までだよ。先生を探しているなら、もうバスの中。クラブなら、廊下を音のするほうへ行きなさい」"
+ },
+ "city.sch.watch.2": {
+  "ru": "Вахтёр кивает на часы. «Вечером в школе слышно всё: батареи, шаги, как море думает за окном. Я привык. Чайник у меня тоже привык, но громче».",
+  "en": "The watchman nods at the clock. \"In the evening you can hear everything in a school: the radiators, steps, the sea thinking beyond the window. I am used to it. The kettle is used to it too, only louder.\"",
+  "ja": "守衛さんが時計にうなずく。「夜の学校は何でも聞こえるんだ。暖房の音、足音、窓の外で海が考えごとをしている音。私は慣れたよ。やかんも慣れたが、そっちはもっとうるさい」"
+ },
+ "city.sch.watch.3": {
+  "ru": "В выходной вахтёр один на всю школу. «Хожу по этажам раз в два часа, проверяю окна. Хомяку говорю доброе утро. Хомяк, по-моему, не против».",
+  "en": "On a day off the watchman is alone in the whole school. \"I walk the floors every two hours checking the windows. I say good morning to the hamster. The hamster does not seem to mind.\"",
+  "ja": "休日、守衛さんは学校に一人きり。「2時間おきに各階を回って窓を確かめる。ハムスターにはおはようと言うんだ。ハムスターも嫌ではなさそうだよ」"
+ },
+ "city.sch.watch.4": {
+  "ru": "«Звонок у нас электрический, а старый медный лежит у дежурного на столе. На случай, если свет погаснет: школа без звонка всё равно идёт, только неуверенно».",
+  "en": "\"Our bell is electric, and the old brass one lies on the duty desk in case the lights go out. A school without a bell still goes on, only uncertainly.\"",
+  "ja": "「うちのベルは電気式だが、古い真鍮のベルは当番の机に置いてある。停電のときのためにね。ベルがなくても学校は進むが、ちょっと自信なさげになる」"
+ },
+ "city.sch.watch.5": {
+  "ru": "«Ключи у меня на кольце, как у капитана корабля. Самый большой от спортзала. Самый маленький от ящика с чьими-то письмами, но чьими, не скажу».",
+  "en": "\"I carry the keys on a ring like a ship's captain. The biggest is for the sports hall. The smallest is for a box with someone's letters, but whose I will not say.\"",
+  "ja": "「鍵は船長みたいに輪にしてある。いちばん大きいのは体育館。いちばん小さいのは誰かの手紙が入った箱のだが、誰のかは言わないよ」"
+ },
+ "city.sch.watch.6": {
+  "ru": "«Сквозняк у нас в холле свой, с характером. Бывает, захлопнет дверь так, будто его не пустили. Я его не обижаю, дверь придерживаю».",
+  "en": "\"The hall has a draught of its own, with character. Sometimes it slams the door as if it was not let in. I do not offend it, I hold the door.\"",
+  "ja": "「ホールにはうちだけの隙間風がいてね、性格がある。ときどき、入れてもらえなかったみたいにドアをバタンと閉める。怒らせないように、私がドアを押さえてる」"
+ },
+ "city.sch.watch.rain": {
+  "ru": "«Дождь у нас стучит по козырьку, как опоздавший ученик: тихо и без надежды, что откроют». Он ставит в угол мокрый зонт и тихо вздыхает.",
+  "en": "\"The rain knocks on the canopy like a late pupil: softly, with no hope of being let in.\" He stands a wet umbrella in the corner and sighs quietly.",
+  "ja": "「雨は庇をたたく、遅刻した生徒みたいにね。そっと、開けてもらえる望みもなく」そう言って濡れた傘を隅に立てかけ、小さくため息をつく。"
+ },
+ "city.sch.watch.fest": {
+  "ru": "Вахтёр повесил на свой стол бумажную гирлянду. «Праздник, а школа всё равно моя. Заходите, только без мячей в холле».",
+  "en": "The watchman has hung a paper garland on his desk. \"A holiday, and the school is still mine. Come in, but no balls in the hall.\"",
+  "ja": "守衛さんは机に紙の飾りを下げている。「祝日でも、学校は私の持ち場だ。入ってもいいが、ホールでボールは禁止だよ」"
+ },
+ "city.sch.dt.hello": {
+  "ru": "Дежурный учитель отрывается от журнала. «Здравствуй. Проходи, только не бегом: у нас здесь не стадион и не вокзал, хотя похоже».",
+  "en": "The duty teacher looks up from the register. \"Hello. Come in, but do not run: this is neither a stadium nor a station, though it looks like both.\"",
+  "ja": "当番の先生が名簿から顔を上げる。「こんにちは。入っていいけど走らないで。ここは競技場でも駅でもないよ。似てはいるけどね」"
+ },
+ "city.sch.dt.1": {
+  "ru": "«Звонок у меня в руке. Опоздавших записываю, но всегда по-доброму. Рекордсмен недели пришёл через четыре минуты после звонка с булкой и железным аргументом: булка была тёплая».",
+  "en": "\"The bell is in my hand. I write down the late ones, but always kindly. The record of the week came four minutes after the bell with a bun and an iron argument: the bun was warm.\"",
+  "ja": "「ベルは私の手の中。遅刻者は書きとめるけれど、いつも優しくね。今週の記録は、ベルのあと4分、パンを持って鉄壁の言い訳つき。パンが温かかったんだ」"
+ },
+ "city.sch.dt.2": {
+  "ru": "«Ящик находок заглядывай почаще: вещи там грустнеют, когда никто не приходит. А если ищешь что-то важное, спроси у гардеробщицы. Она помнит всё, даже чего не было».",
+  "en": "\"Look into the lost-property box more often: things get sad there when nobody comes. And if you are looking for something important, ask the cloakroom lady. She remembers everything, even what never happened.\"",
+  "ja": "「忘れ物箱はときどきのぞいてごらん。誰も来ないと、中の物が悲しくなるんだ。大事な物を探しているなら、クロークの係の人に聞くといい。何でも覚えているよ、なかったことまでね」"
+ },
+ "city.sch.dt.3": {
+  "ru": "«Афиша концерта висит у стены, а концерт, как водится, случается быстрее, чем к нему готовятся. Хочешь помочь, иди в музыкальный класс. Пианистов у нас всегда меньше, чем пианино».",
+  "en": "\"The concert poster hangs on the wall, and the concert, as usual, comes sooner than anyone is ready. If you want to help, go to the music room. We always have fewer pianists than pianos.\"",
+  "ja": "「コンサートのポスターは壁に貼ってあるが、コンサートはいつも準備より早くやってくる。手伝いたいなら音楽室へ。ピアノより、弾く人のほうがいつも少ないんだ」"
+ },
+ "city.sch.dt.rain": {
+  "ru": "«Дождь, так что сменку не забывай и ноги вытирай, ладно? Уборщице и так хватает».",
+  "en": "\"It is raining, so remember your indoor shoes and wipe your feet, all right? The cleaner has enough to do as it is.\"",
+  "ja": "「雨だから、上履きを忘れずに、足もよく拭いてね。掃除のおばさんは、ただでさえ大変なんだから」"
+ },
+ "city.sch.dt.studious": {
+  "ru": "Дежурный перелистывает страницу и улыбается: «Мне говорили, что ты ходишь на разные уроки. В нашей школе это называют любопытством и ставят пятёрку без отметки».",
+  "en": "The duty teacher turns a page and smiles. \"I hear you have been going to all sorts of lessons. In our school that is called curiosity, and it earns an unmarked top grade.\"",
+  "ja": "当番の先生はページをめくって微笑む。「いろんな授業に出ていると聞いたよ。うちの学校ではそれを好奇心と呼んで、点数のつかない満点をあげることにしている」"
+ },
+ "city.sch.tt2.hello": {
+  "ru": "Учительница отрывается от тетрадей и снимает очки. «А, гость. Садись, где свободно. Только не на последнюю парту слева: там живёт чья-то записка, ей уже три года».",
+  "en": "The teacher looks up from the exercise books and takes off her glasses. \"Ah, a visitor. Sit wherever there is room. Just not at the last desk on the left: someone's note lives there, it is three years old.\"",
+  "ja": "先生はノートの山から目を上げ、眼鏡をはずす。「おや、お客さんね。空いているところに座って。ただし左の最後の机はだめ。誰かのメモが住んでいるの、もう3年になるわ」"
+ },
+ "city.sch.tt2.1": {
+  "ru": "«Я веду географию и физику, потому что в городе у моря учителей тоже не слишком много. На географии мы возим указкой по берегу. На физике качаем маятник и считаем, сколько раз класс успевает вздохнуть».",
+  "en": "\"I teach geography and physics because a town by the sea does not have too many teachers either. In geography we trace the coast with a pointer. In physics we swing the pendulum and count how many times the class manages to sigh.\"",
+  "ja": "「私は地理と物理を教えているの。海辺の町では先生も多くないから。地理では指示棒で海岸線をなぞる。物理では振り子を揺らして、そのあいだにクラスが何回ため息をつけるか数えるの」"
+ },
+ "city.sch.tt2.2": {
+  "ru": "«В нижнем ящике стола у меня конфискат. Рогатка, семечки, записка «Я тебя люблю, но не списывай». Остальное не скажу. Отдаю только в конце года и только родителям».",
+  "en": "\"In the bottom drawer of my desk I keep the confiscated things. A slingshot, sunflower seeds, a note: 'I like you, but do not copy.' I will not name the rest. I give them back at the end of the year, and only to parents.\"",
+  "ja": "「机の一番下の引き出しは没収品入れ。パチンコ、ひまわりの種、「好きだけど写さないで」って書いたメモ。あとは内緒。返すのは年度の終わりに、親御さんにだけよ」"
+ },
+ "city.sch.tt2.3": {
+  "ru": "«В углу стоит наш школьный музей. Счёты, чернильница, бронзовый звонок. Дети приносят мне в него всё подряд. Недавно принесли ракушку, и теперь это «Первый экспонат из будущего».»",
+  "en": "\"Our school museum stands in the corner. An abacus, an inkwell, a bronze bell. The children bring me all sorts of things for it. Recently someone brought a shell, and now it is 'The first exhibit from the future'.\"",
+  "ja": "「隅に学校資料棚があるの。そろばんにインク壺、青銅のベル。子どもたちが何でも持ってくるのよ。最近は貝がらを持ってきて、今では「未来から来た最初の展示品」ってことになっている」"
+ },
+ "city.sch.tt2.rain": {
+  "ru": "Она смотрит в окно. «Дождь. Хорошая погода для маятника: он, как и мы, любит, когда за окном никто не отвлекает».",
+  "en": "She looks out of the window. \"Rain. Good weather for the pendulum: like us, it likes it when nothing outside distracts it.\"",
+  "ja": "彼女は窓の外を見る。「雨ね。振り子には良い天気。私たちと同じで、外に気を散らされないのが好きなのよ」"
+ },
+ "city.sch.tt2.studious": {
+  "ru": "Учительница прищуривается. «Мне сказали, ты уже побывал на нескольких уроках. Значит, ты знаешь, что вторник пахнет литературой, а среда физикой. Это самое главное в нашей школе».",
+  "en": "The teacher narrows her eyes. \"I am told you have already sat through several lessons. Then you know that Tuesday smells of literature and Wednesday of physics. That is the most important thing about our school.\"",
+  "ja": "先生は目を細める。「あなた、もういくつか授業に出たそうね。なら、火曜は文学の匂い、水曜は物理の匂いだって知っているはず。それがうちの学校でいちばん大事なことよ」"
+ },
+ "city.sch.cloak.hello": {
+  "ru": "Гардеробщица выглядывает из-за вешалок, как из-за кулис. «Заходи, милый. Куртку — на крючок, шапку — в рукав, а то опять потеряется».",
+  "en": "The cloakroom attendant peeps out from behind the racks as if from the wings. \"Come in, dear. Jacket on the hook, hat in the sleeve, or it will get lost again.\"",
+  "ja": "クロークの係の人が、舞台袖から覗くようにハンガーの陰から顔を出す。「いらっしゃい。上着はフックに、帽子は袖に入れておくのよ。でないとまたなくなるから」"
+ },
+ "city.sch.cloak.1": {
+  "ru": "«Номерков у меня больше, чем детей, и всё равно кто-то приходит без номерка, зато с описанием. «Синяя, с капюшоном, пахнет булочкой». Нахожу. Куртка пахла булочкой».",
+  "en": "\"I have more tags than children, and still someone comes without a tag but with a description. 'Blue, with a hood, smells of bun.' I find it. The jacket smelled of bun.\"",
+  "ja": "「札は子どもの数より多いのに、札なしで特徴だけ言ってくる子がいるの。「青くてフードつき、パンの匂い」ってね。見つけたわ。本当にパンの匂いがしたのよ」"
+ },
+ "city.sch.cloak.2": {
+  "ru": "«Красное пальто с зайцем на рукаве хозяйка забирает каждый день ровно в 13:41. Меня уже можно по ней сверять. Если пальто нет, значит либо суббота, либо катастрофа».",
+  "en": "\"The owner collects the red coat with the hare on the sleeve every day at exactly 13:41. You could set a clock by her. If the coat is not there, it is either Saturday or a catastrophe.\"",
+  "ja": "「袖にうさぎの刺繍がある赤いコートは、持ち主がきっかり13時41分に取りに来るの。時計を合わせられるくらい。コートがなければ、土曜日か大事件のどちらかよ」"
+ },
+ "city.sch.cloak.3": {
+  "ru": "«Шарф в полоску висит здесь с октября. Я его иногда поправляю, чтобы не казалось, что он совсем один. Вдруг хозяин вспомнит».",
+  "en": "\"The striped scarf has hung here since October. I straighten it sometimes so it does not look completely alone. Perhaps its owner will remember.\"",
+  "ja": "「縞模様のマフラーは10月からここに掛かっているの。たまに直してあげるのよ、ひとりぼっちに見えないように。持ち主が思い出すかもしれないでしょう」"
+ },
+ "city.sch.cloak.rain": {
+  "ru": "«Мокрое вешаю отдельно, на батарею. Иначе вся раздевалка пахнет овечьим стадом после грозы. А это, знаешь, не тот запах, с которым хочется идти на урок».",
+  "en": "\"Wet things I hang apart, by the radiator. Otherwise the whole cloakroom smells like a flock of sheep after a storm. And that is not the smell you want to take into a lesson.\"",
+  "ja": "「濡れたものは別に、暖房のそばに掛けるの。でないとクローク中が嵐のあとの羊の群れみたいな匂いになるわ。授業に持っていきたい匂いじゃないでしょう」"
+ },
+ "city.sch.cloak.snow": {
+  "ru": "«Снег с ботинок стряхивай на коврик, а не на пол. Коврик, он и так обижен, что его никто не благодарит».",
+  "en": "\"Shake the snow off your boots onto the mat, not the floor. The mat is hurt enough that nobody ever thanks it.\"",
+  "ja": "「靴の雪はマットの上で払ってね、床じゃなくて。マットは誰にもお礼を言われなくて、ただでさえしょんぼりしているんだから」"
+ },
+ "city.sch.museum.1": {
+  "ru": "Счёты с потемневшими костяшками. Табличка: «Считали ими до тех пор, пока в школу не привезли первый арифмометр, который сломался на третий день. Счёты ещё работают».",
+  "en": "An abacus with darkened beads. The label: \"Used until the school got its first calculating machine, which broke on the third day. The abacus still works.\"",
+  "ja": "珠が黒ずんだそろばん。札にはこうある。「学校に最初の計算機が来るまで使われた。計算機は3日目に壊れた。そろばんは今も使える」"
+ },
+ "city.sch.museum.2": {
+  "ru": "Медный колокольчик с деревянной ручкой. Подпись: «Звонил на уроки до электрического звонка. По слухам, дежурные его до сих пор украдкой любят».",
+  "en": "A small brass bell with a wooden handle. The caption: \"Rang the lessons in until the electric bell came. Rumour has it the duty pupils still secretly love it.\"",
+  "ja": "木の柄がついた小さな真鍮のベル。説明書き。「電気ベルが来るまで、授業の始まりを告げていた。当番の生徒たちは今もこっそりこれが好きだという噂」"
+ },
+ "city.sch.museum.3": {
+  "ru": "Чернильница-непроливайка, а рядом стальное перо. Карточка: «Первые буквы нашей школы писали такими. Кляксы сохранены в тетради рядом. Кляксы лучше букв».",
+  "en": "A non-spill inkwell with a steel nib beside it. The card: \"The first letters of our school were written with these. The blots are kept in the notebook next to them. The blots are better than the letters.\"",
+  "ja": "こぼれないインク壺と、その横に鉄のペン先。カードにはこう書いてある。「この学校の最初の文字はこれで書かれた。インクの染みは隣のノートに保存してある。染みのほうが文字より立派」"
+ },
+ "city.sch.museum.4": {
+  "ru": "Пожелтевшая фотография: первый выпуск перед школой, все смотрят в разные стороны, а один мальчик в первом ряду жуёт пирожок. Подпись: «Начало было таким же, как и сейчас».",
+  "en": "A yellowed photograph: the first graduating class in front of the school, everyone looking in different directions, one boy in the front row chewing a pasty. Caption: \"The beginning was the same as it is now.\"",
+  "ja": "色あせた写真。校舎の前に最初の卒業生たちが並び、みんなばらばらの方向を見ていて、前列の男の子だけがピロシキをかじっている。説明。「始まりは今と同じだった」"
+ },
+ "city.sch.museum.5": {
+  "ru": "На полке свежая карточка: «Экспонат №?? Ракушка, принесённая из будущего. Просьба не прикладывать к уху: там пока тихо». Рядом поставили ещё одну, поменьше.",
+  "en": "A fresh card on the shelf: \"Exhibit No. ?? A shell brought from the future. Please do not hold it to your ear: it is quiet in there for now.\" Someone has put a smaller one next to it.",
+  "ja": "棚に新しいカード。「展示番号？？ 未来から持ち込まれた貝がら。耳に当てないでください。今のところ中は静かです」その隣に、もっと小さな貝がらが並べてある。"
+ },
+ "city.sch.drawers.1": {
+  "ru": "Верхний ящик: линейка, красная ручка без колпачка, коробочка со скрепками, засохший апельсин. Апельсин, видимо, тут давно и всем доволен.",
+  "en": "Top drawer: a ruler, a red pen without a cap, a box of paper clips, a dried-up orange. The orange has apparently been here a long time and is content.",
+  "ja": "一番上の引き出し。定規、キャップのない赤ペン、クリップの箱、からからに乾いたオレンジ。オレンジはここに長くいて、満足しているらしい。"
+ },
+ "city.sch.drawers.2": {
+  "ru": "Средний ящик: стопка контрольных, перетянутая резинкой, и записка самой себе: «Проверить до пятницы. Не до той пятницы, до следующей».",
+  "en": "Middle drawer: a stack of tests held with a rubber band, and a note to herself: \"Mark by Friday. Not that Friday, the next one.\"",
+  "ja": "真ん中の引き出し。輪ゴムでまとめた小テストの束と、自分宛てのメモ。「金曜までに採点。この金曜じゃなくて、次の金曜」"
+ },
+ "city.sch.drawers.3": {
+  "ru": "Нижний ящик: конфискат. Рогатка, пакетик семечек, жвачка с самолётиком и записка: «Не списывай у Миши, он тоже не знает». Записка выглядит чем-то знакомой.",
+  "en": "Bottom drawer: confiscated things. A slingshot, a bag of sunflower seeds, bubble gum with a toy plane, and a note: \"Do not copy from Misha, he does not know either.\" The note looks oddly familiar.",
+  "ja": "一番下の引き出し。没収品。パチンコ、ひまわりの種の小袋、飛行機のおまけ付きガム、そしてメモ。「ミーシャのを写さないで、彼も知らないから」どこかで見たようなメモだ。"
+ },
+ "city.sch.drawers.4": {
+  "ru": "Ящик с мелом: белые, цветные и один совсем крошечный, который учительница бережёт для самых трудных слов.",
+  "en": "The chalk drawer: white, coloured, and one very tiny piece the teacher saves for the hardest words.",
+  "ja": "チョークの引き出し。白、色つき、そしてごく小さな一本。先生はいちばん難しい言葉のために取っておいている。"
+ },
+ "city.sch.drawers.5": {
+  "ru": "На самом дне, под чистыми журналами, конверт без марки: «Если вы нашли это, значит, вы любопытный. Хороший признак. Закройте ящик и никому не говорите».",
+  "en": "At the very bottom, under clean registers, an envelope without a stamp: \"If you found this, you are curious. A good sign. Shut the drawer and do not tell anyone.\"",
+  "ja": "いちばん底、真新しい名簿の下に、切手のない封筒。「これを見つけたなら、あなたは好奇心の強い人です。良い兆候です。引き出しを閉めて、誰にも言わないこと」"
+ },
+ "city.sch.pend.1": {
+  "ru": "Качнул латунный шарик. Он пошёл вправо, вернулся, пошёл влево и ни разу не опоздал. Если смотреть долго, начинаешь думать, что это ты качаешься, а он стоит.",
+  "en": "I nudged the brass ball. It went right, came back, went left and was never once late. If you watch long enough you start to think it is you swinging and the ball standing still.",
+  "ja": "真鍮の玉をそっと押した。玉は右へ行き、戻り、左へ行って、一度も遅れない。じっと見ていると、揺れているのは自分で玉のほうが止まっているような気がしてくる。"
+ },
+ "city.sch.pend.2": {
+  "ru": "На подставке бумажка: «Период колебания зависит от длины нити, а не от массы шарика. Проверено на ластике, гирьке и отчаянии». Отчаяние, видимо, тоже качается.",
+  "en": "A paper on the stand: \"The period of swing depends on the length of the thread, not on the mass of the ball. Tested with an eraser, a weight and despair.\" Despair apparently swings too.",
+  "ja": "台に紙が貼ってある。「振り子の周期は糸の長さで決まり、玉の重さでは決まらない。消しゴム、おもり、絶望で確認済み」絶望も、どうやら揺れるらしい。"
+ },
+ "city.sch.pend.3": {
+  "ru": "Считал качания: сорок два, потом сбился на сорока трёх. Учительница говорит, что это нормально: вообще, чтобы не сбиться, придумали часы.",
+  "en": "I counted the swings: forty-two, then lost track at forty-three. The teacher says that is normal: that is exactly why clocks were invented.",
+  "ja": "揺れを数えた。42まで数えて、43で分からなくなった。先生いわく、それは普通のこと。数え間違えないために時計が発明されたのだ。"
+ },
+ "city.sch.pend.4": {
+  "ru": "Среда, физика: шарик уже ходит туда-сюда, на доске записана формула, а в журнале у кого-то чудом сошлись все результаты опыта. Чудо отмечено красной ручкой.",
+  "en": "Wednesday, physics: the ball is already swinging, a formula stands on the board, and in someone's notebook all the results of the experiment have miraculously agreed. The miracle is marked in red pen.",
+  "ja": "水曜、物理。玉はもう行ったり来たりしていて、黒板には式があり、誰かのノートでは実験結果が奇跡的にぴったり合っている。奇跡は赤ペンで印がついている。"
+ },
+ "city.sch.hamster.1": {
+  "ru": "Хомяк Пончик спит в домике, наружу торчит только хвост-запятая. На клетке табличка: «Не будить. Он думает».",
+  "en": "Doughnut the hamster sleeps in his house, only a comma-shaped tail sticking out. A sign on the cage: \"Do not wake. He is thinking.\"",
+  "ja": "ハムスターのドーナツは小屋で眠っていて、コンマのような尻尾だけが外に出ている。ケージに札。「起こさないで。考え中です」"
+ },
+ "city.sch.hamster.2": {
+  "ru": "Пончик набил щёки зерном так, что похож на маленькую подушку с глазами. Смотрит на меня, жуёт и, кажется, решает, достоин ли я первого ряда.",
+  "en": "Doughnut has stuffed his cheeks with grain until he looks like a little cushion with eyes. He watches me, chews and seems to be deciding whether I deserve a front-row seat.",
+  "ja": "ドーナツは頬に穀物を詰めこんで、目のついた小さなクッションのようだ。こちらを見て、もぐもぐしながら、僕が最前列にふさわしいか考えているらしい。"
+ },
+ "city.sch.hamster.3": {
+  "ru": "Дверца клетки приоткрыта, внутри пусто: только колесо тихо поскрипывает по инерции. На клетке записка: «Пончик в отпуске. Не волноваться. Всё равно волноваться».",
+  "en": "The cage door is ajar and it is empty inside: only the wheel creaks quietly from inertia. A note on the cage: \"Doughnut is on holiday. Do not worry. Worry anyway.\"",
+  "ja": "ケージの扉が少し開いていて、中は空っぽ。車輪だけが惰性で小さくきしんでいる。札。「ドーナツは休暇中です。心配しないでください。でもやっぱり心配してください」"
+ },
+ "city.sch.hamster.4": {
+  "ru": "Пончик вернулся. На дверце новый замок на бельевой прищепке, над домиком бумажный значок «Беглец». Хомяк спит с видом того, кто выполнил все свои планы на год.",
+  "en": "Doughnut is back. A new lock on the door, a clothes peg, and a paper badge \"Escapee\" above the house. The hamster sleeps like someone who has fulfilled all his plans for the year.",
+  "ja": "ドーナツが戻ってきた。扉には洗濯ばさみの新しい鍵、小屋の上には紙のバッジ「脱走者」。ハムスターは、その年の計画をすべてやり終えたような顔で眠っている。"
+ },
+ "city.sch.water.1": {
+  "ru": "Взял лейку и полил фикус: сначала по краю горшка, потом ближе к стеблю. Земля с жадностью выпила всё. Лист вздохнул, или мне показалось.",
+  "en": "I took the watering can and watered the ficus: first round the edge of the pot, then closer to the stem. The soil drank it all greedily. A leaf sighed, or I imagined it.",
+  "ja": "じょうろを持って、ゴムの木に水をやった。最初は鉢のふち、それから幹のほうへ。土はごくごくと飲み干した。葉っぱがため息をついた気がしたが、気のせいかもしれない。"
+ },
+ "city.sch.water.2": {
+  "ru": "Кактусу воды почти не надо: плеснул ложку, он остался доволен и по-кактусьи промолчал. Папоротник напротив смотрел с укоризной, и ему досталось втрое больше.",
+  "en": "The cactus needs hardly any water: I gave it a spoonful and it stayed content, in the manner of cacti, silent. The fern opposite looked reproachful and got three times as much.",
+  "ja": "サボテンには水はほとんど要らない。スプーン一杯で満足して、サボテンらしく黙っていた。向かいのシダが恨めしそうに見るので、その三倍あげた。"
+ },
+ "city.sch.water.3": {
+  "ru": "На подоконнике подписанная банка с росточком: «Фасоль 6 «Б». Не трогать, она растёт». Полил ей из ладони три капли. Фасоль сделала вид, что ничего не заметила.",
+  "en": "On the windowsill a labelled jar with a sprout: \"Bean, 6B. Do not touch, it is growing.\" I gave it three drops from my palm. The bean pretended it had noticed nothing.",
+  "ja": "窓台にラベル付きの瓶と小さな芽。「6年B組のインゲン豆。さわらないで、成長中」手のひらから3滴あげた。豆は何も気づかないふりをした。"
+ },
+ "city.sch.water.4": {
+  "ru": "Дежурный по цветам, судя по записке на столе, сегодня «Л.К.». Пришлось полить за него. Вернул лейку на место и поставил ручкой к двери, как положено.",
+  "en": "The pupil on plant duty today, judging by the note on the table, is \"L.K.\". I had to water for him. I put the can back with the handle toward the door, the way it should be.",
+  "ja": "机のメモによれば、今日の花当番は「L.K.」。代わりに水やりをした。じょうろは、決まりどおり持ち手をドアのほうに向けて戻した。"
+ },
+ "city.sch.water.rain": {
+  "ru": "За окном дождь, и цветы на подоконнике, кажется, делают вид, что их поливать не нужно. Но я знаю, что нужно: дождь на улице, а у них свой, домашний.",
+  "en": "Rain outside, and the flowers on the sill seem to pretend they need no watering. But I know they do: the rain is out there, and they have a household one of their own.",
+  "ja": "外は雨。窓台の花たちは水はいらないというふりをしている。でも、必要だと知っている。雨は外のもの、彼らには家の中の雨がいるのだ。"
+ },
+ "city.sch.water.fest": {
+  "ru": "В праздник цветам положена порция чуть больше обычной, так записано на бумажке с сердечком. Полил, как положено. Герань, кажется, кивнула.",
+  "en": "On a holiday the flowers get a slightly bigger portion than usual, as written on a paper with a heart. I watered them as prescribed. The geranium seems to have nodded.",
+  "ja": "祝日には花たちにいつもより少し多めに水をやる。ハートのついた紙にそう書いてある。決まりどおりにやると、ゼラニウムがうなずいたように見えた。"
+ },
+ "city.sch.water.bio": {
+  "ru": "Раз ты уже ходил на биологию, ты понимаешь, почему корни любят пить медленно. Полил медленно, по чайной ложке. Фикус, кажется, оценил.",
+  "en": "Since you have been to a biology lesson, you understand why roots like to drink slowly. I watered a teaspoon at a time. The ficus seems to have appreciated it.",
+  "ja": "生物の授業に出たから、根がゆっくり水を飲みたがる理由がわかる。小さじ一杯ずつゆっくりあげると、ゴムの木は感謝したように見えた。"
+ },
+ "city.sch.glass.1": {
+  "ru": "Штатив с шестью пробирками: в трёх вода, в одной вода подкрашена чем-то красным, в двух пусто. Рядом колба с резиновой пробкой и карточка: «Опыт №4. Не пить».",
+  "en": "A rack of six test tubes: three with water, one with water tinted red, two empty. Next to it a flask with a rubber stopper and a card: \"Experiment No. 4. Do not drink.\"",
+  "ja": "試験管が6本立ったラック。3本は水、1本は赤く色づいた水、2本は空。そばにゴム栓のフラスコとカード。「実験4。飲まないこと」"
+ },
+ "city.sch.glass.2": {
+  "ru": "Пробирки звенят друг о друга, когда пройдёт трамвай, то есть когда пройдёт кто-то слишком быстро. Уж если в кабинете химии что и можно любить, то этот звон.",
+  "en": "The test tubes ring against each other when a tram passes, that is, when somebody passes too fast. If anything in a chemistry room can be loved, it is that ring.",
+  "ja": "路面電車が通ると、いや、誰かが速足で通ると、試験管がたがいにチリンと鳴る。化学室で何かを好きになれるとしたら、この音だと思う。"
+ },
+ "city.sch.glass.3": {
+  "ru": "К штативу прикреплён листок: «Капуста краснокочанная + уксус = розовый, + сода = зелёный. Показывать маме только в конце опыта». Звучит как правило жизни.",
+  "en": "A sheet attached to the rack: \"Red cabbage + vinegar = pink, + soda = green. Show Mum only after the experiment.\" Sounds like a rule for life.",
+  "ja": "ラックに紙が留めてある。「紫キャベツ+酢=ピンク、+重曹=緑。お母さんに見せるのは実験が終わってから」人生の決まりのように聞こえる。"
+ },
+ "city.sch.glass.4": {
+  "ru": "Четверг, химия. Пробирки уже наполнены капустным соком: одна розовая, одна синяя, одна зелёная, четвёртая пока нейтральна и ждёт, что её убедят.",
+  "en": "Thursday, chemistry. The tubes are filled with cabbage juice: one pink, one blue, one green, and the fourth is still neutral and waits to be persuaded.",
+  "ja": "木曜、化学。試験管にはもう紫キャベツの汁が入っている。ピンクが1本、青が1本、緑が1本、4本目はまだ中性で、説得されるのを待っている。"
+ },
+ "city.sch.periodic.1": {
+  "ru": "Таблица элементов в рамке. Водород с карандашной ухмылкой нарисован на первой клетке, а у золота кто-то приписал «Ну это понятно».",
+  "en": "The table of elements in a frame. Hydrogen has been given a pencilled grin in the first cell, and next to gold someone has added \"Well, obviously.\"",
+  "ja": "額に入った元素周期表。最初のマスの水素には鉛筆で笑った顔が描かれ、金の横には誰かが「まあ当然だね」と書き足している。"
+ },
+ "city.sch.periodic.2": {
+  "ru": "Нашёл кислород: восьмой, второй период. На полях кто-то подсчитал, что человеку нужно примерно три минуты без него, и пометил: «Это не рекорд, не пробуйте».",
+  "en": "I found oxygen: eighth, second period. In the margin someone worked out that a person needs about three minutes without it and added: \"This is not a record, do not try.\"",
+  "ja": "酸素を見つけた。8番、第2周期。余白に、人は酸素なしでおよそ3分もつと誰かが計算し、「記録ではないので試さないこと」と添えている。"
+ },
+ "city.sch.periodic.3": {
+  "ru": "У натрия приклеена крошка настоящей соли в прозрачном пакетике. Подпись: «Хлор в учебном кабинете не хранится. Соль в буфете. Соль всё равно лучше».",
+  "en": "A crumb of real salt in a clear bag is glued to sodium. The caption: \"Chlorine is not kept in the classroom. Salt is in the canteen. Salt is better anyway.\"",
+  "ja": "ナトリウムのマスには、本物の塩のかけらが透明な小袋に入れて貼ってある。説明。「塩素は教室には置いてありません。塩は食堂にあります。塩のほうがいいに決まっています」"
+ },
+ "city.sch.periodic.4": {
+  "ru": "Четверг: рядом с таблицей на гвоздике висит листочек с домашним заданием на тему «Назовите три элемента, которые вы сегодня видели на завтраке». Ответ «хлеб» не принимается.",
+  "en": "Thursday: a sheet of homework hangs on a nail beside the table: \"Name three elements you saw at breakfast today.\" \"Bread\" is not accepted as an answer.",
+  "ja": "木曜。周期表の横の釘にプリントが掛かっている。宿題「今朝の朝食で見かけた元素を3つ挙げなさい」。答え「パン」は認められない。"
+ },
+ "city.sch.choir.1": {
+  "ru": "Вторник, репетиция. Хормейстер поднимает руку, и класс вдыхает всё сразу: «Песенка про море». Я стою во втором ряду и ловлю себя на том, что пою чуть громче, чем собирался.",
+  "en": "Tuesday, rehearsal. The choir leader raises a hand and the class breathes in all at once: \"Song of the Sea.\" I stand in the second row and catch myself singing a little louder than I meant to.",
+  "ja": "火曜、リハーサル。合唱の先生が手を挙げると、クラス全員が一斉に息を吸う。「海の歌」。僕は2列目に立ち、思ったより少し大きな声で歌っているのに気づく。"
+ },
+ "city.sch.choir.2": {
+  "ru": "Четверг: второй голос наконец вступает вовремя, а первый, как договорились, молчит. Хормейстер зажмуривается от счастья и дважды повторяет «ещё раз».",
+  "en": "Thursday: the second voice finally comes in on time and the first stays quiet, as agreed. The choir leader shuts her eyes in happiness and says \"once more\" twice.",
+  "ja": "木曜。第二声部がやっと時間どおりに入り、第一声部は約束どおり黙っている。合唱の先生は幸せそうに目を閉じ、「もう一回」を二度言う。"
+ },
+ "city.sch.choir.3": {
+  "ru": "Камертон звенит, и все на секунду замолкают: слушают, как он отпускает звук. Потом из заднего ряда кто-то тихо спрашивает: «А мы правда должны так высоко?»",
+  "en": "The tuning fork rings and everyone goes quiet for a second, listening to it let the note go. Then someone in the back row asks softly: \"Do we really have to go that high?\"",
+  "ja": "音叉が鳴り、みんな一瞬黙って、音が消えていくのを聴く。それから後列の誰かが小声で聞く。「本当にそんなに高く歌うんですか？」"
+ },
+ "city.sch.glock.1": {
+  "ru": "Ударил по пластинкам палочкой. Выходит «до-ре-ми», дальше пластинки просят передышки. Ладонь потом долго помнит дрожь металла.",
+  "en": "I struck the bars with the beater. Out comes do-re-mi, then the bars ask for a breather. My palm remembers the metal's tremble for a long time.",
+  "ja": "ばちで鍵盤をたたく。「ドレミ」と鳴って、そのあとは鍵盤が休ませてと言っている。手のひらは、金属の震えをしばらく覚えている。"
+ },
+ "city.sch.glock.2": {
+  "ru": "Сыграл первые такты «Песенки про море»: медленно, одним пальцем и с тремя ошибками. Из соседней комнаты кто-то подхватил, и ошибок стало меньше.",
+  "en": "I played the first bars of \"Song of the Sea\": slowly, with one finger and three mistakes. Somebody from the next room picked it up, and there were fewer mistakes.",
+  "ja": "「海の歌」の最初の数小節を弾いてみた。ゆっくり、指一本で、間違いは3つ。隣の部屋から誰かが続きを引き取ってくれて、間違いは減った。"
+ },
+ "city.sch.glock.3": {
+  "ru": "Ударил по самой длинной пластинке: звук гудит и гудит, пока не растворится в батарее. Если закрыть глаза, кажется, что где-то звонит маленький колокол в маленьком порту.",
+  "en": "I hit the longest bar: the note hums and hums until it dissolves into the radiator. With my eyes closed it sounds like a small bell in a small harbour.",
+  "ja": "いちばん長い鍵盤をたたくと、音は暖房の中に溶けてしまうまで響き続ける。目を閉じると、小さな港で小さな鐘が鳴っているようだ。"
+ },
+ "city.sch.nat.1": {
+  "ru": "Понедельник, юные натуралисты. На столе три банки из-под огурцов с землёй и этикетками «горох», «редис», «не знаю что». В третьей, кажется, что-то уже лезет вверх.",
+  "en": "Monday, the young naturalists. On the table three pickle jars of soil labelled \"peas\", \"radish\", \"don't know what\". In the third something seems to be climbing already.",
+  "ja": "月曜、少年少女自然観察クラブ。机にはきゅうりのびんが3つ、土が入っていて、ラベルは「えんどう豆」「ラディッシュ」「何かわからない」。3つ目では、もう何かが伸びはじめているようだ。"
+ },
+ "city.sch.nat.2": {
+  "ru": "Пятница: обсуждаем дюны. Руководитель кружка рисует на доске мелом волнистую линию и говорит: «Эта трава держит весь берег, поэтому ходить по дюнам нужно по тропинке».",
+  "en": "Friday: we discuss the dunes. The club leader draws a wavy line on the board with chalk and says: \"This grass holds the whole shore together, which is why we walk on the dunes only along the path.\"",
+  "ja": "金曜。砂丘について話す。クラブの先生が黒板にチョークで波線を描いて言う。「この草が海岸全体を支えている。だから砂丘は小道だけを歩くんだよ」"
+ },
+ "city.sch.nat.3": {
+  "ru": "Кто-то принёс в кружок банку с морской водой и ракушкой. В банке тихо шевелится что-то крошечное и недовольное. Решили, что это краб, пока не доказано обратное.",
+  "en": "Someone brought a jar of seawater and a shell to the club. Something tiny and displeased stirs quietly in it. It is decided to be a crab until proven otherwise.",
+  "ja": "誰かが海水と貝がらの入った瓶をクラブに持ってきた。中で、小さくて不機嫌な何かが静かに動いている。違うと証明されるまで、カニということになった。"
+ },
+ "city.sch.balls.1": {
+  "ru": "Тележка с мячами: два красных, один жёлтый, белый волейбольный и синий, видимо, с другой планеты. Взял красный: он знает, как лечь в ладонь.",
+  "en": "The ball cart: two red balls, a yellow one, a white volleyball and a blue one, apparently from another planet. I took a red one: it knows how to lie in the palm.",
+  "ja": "ボール用のカート。赤が2つ、黄色が1つ、白いバレーボール、そして別の惑星から来たらしい青いの。赤を取った。手のひらにどう収まればいいか知っている。"
+ },
+ "city.sch.balls.2": {
+  "ru": "Мяч гулко ударился об пол, и эхо ответило из всех углов зала. В тележке остался один мяч, он лениво откатился в сторону, как будто и так всё понятно.",
+  "en": "The ball hit the floor with a boom and the echo answered from every corner of the hall. One ball was left in the cart, and it rolled lazily aside as if everything was already clear.",
+  "ja": "ボールがごんと床を打ち、こだまがホールの隅々から答えた。カートに残った1つは、すべて承知とでもいうようにのんびり脇へ転がった。"
+ },
+ "city.sch.balls.3": {
+  "ru": "Нашёл на дне тележки гладкий камешек и бумажку: «Это не мяч. Но кто-то его сюда принёс, значит, надо оставить». Оставил.",
+  "en": "At the bottom of the cart I found a smooth pebble and a note: \"This is not a ball. But someone brought it here, so it must stay.\" I left it.",
+  "ja": "カートの底に、すべすべの小石とメモを見つけた。「これはボールではない。でも誰かがここへ持ってきたのだから、残しておくこと」そのままにしておいた。"
+ },
+ "city.sch.honours.1": {
+  "ru": "Доска почёта: «Лучший прыжок — 6 «Б». Лучший голос — Анна П., 8 «А». Лучшее опоздание — вахтёр, он пришёл на минуту раньше». Рядом стрелка на сердечко.",
+  "en": "The honours board: \"Best jump: 6B. Best voice: Anna P., 8A. Best lateness: the watchman, who arrived a minute early.\" An arrow points to a heart.",
+  "ja": "表彰ボード。「最優秀ジャンプ：6年B組。最優秀の歌声：アンナ・P、8年A組。最優秀の遅刻：守衛さん、1分早く来たので」矢印がハートを指している。"
+ },
+ "city.sch.honours.2": {
+  "ru": "Сегодня на доске фотография школьной сборной по баскетболу. Все стоят очень серьёзно, кроме мальчика с краю: он, судя по всему, ест яблоко и ничего не стыдится.",
+  "en": "Today the board has a photo of the school basketball team. Everyone stands very seriously except a boy at the edge, who is evidently eating an apple and is not ashamed in the least.",
+  "ja": "今日のボードには学校バスケットボールチームの写真。みんなとても真面目に立っているが、端の男の子だけはりんごを食べていて、少しも恥ずかしそうではない。"
+ },
+ "city.sch.honours.3": {
+  "ru": "Список «Настольный теннис, школьная лига». Первое место: «Лёша К. (если найдёт сменку)». Второе: «Кто-то из 7 «А», уточним». Третье: «Мяч».",
+  "en": "The list \"Table tennis, school league\". First place: \"Lyosha K. (if he finds his bag)\". Second: \"Someone from 7A, we will clarify\". Third: \"The ball\".",
+  "ja": "「卓球、学校リーグ」の一覧。1位「リョーシャ・K（運動靴の袋が見つかれば）」2位「7年A組の誰か、確認中」3位「ボール」。"
+ },
+ "city.sch.honours.4": {
+  "ru": "Внизу листа приписано карандашом: «Новенький, который ходит на все уроки». Ластик рядом лежит, но им пока не пользовались. Может, и не воспользуются.",
+  "en": "At the bottom of the sheet someone has pencilled: \"The newcomer who goes to every lesson.\" An eraser lies nearby, but nobody has used it yet. Perhaps nobody will.",
+  "ja": "紙の下のほうに、鉛筆で書き足してある。「どの授業にも出ている新入り」。消しゴムがそばにあるが、まだ誰も使っていない。使われないかもしれない。"
+ },
+ "city.sch.honours.5": {
+  "ru": "Карандашная строка обведена ручкой: «Новенький, который был на всех уроках и в музее». Под ней нарисована маленькая звезда. Три раза зачёркнута и снова нарисована.",
+  "en": "The pencilled line has been traced over in pen: \"The newcomer who has been to all the lessons and to the museum.\" A little star is drawn beneath it. Struck out three times and drawn again.",
+  "ja": "鉛筆の一行がペンでなぞられている。「すべての授業と資料棚に来た新入り」。下には小さな星。3回消されて、また描かれている。"
+ },
+ "city.sch.honours.6": {
+  "ru": "Новая бумажка в уголке: «Победителям перемены (шашки, настольный теннис, мяч): пирожок бесплатно, по предъявлении синяков». Подпись: «Буфет».",
+  "en": "A new slip in the corner: \"Break winners (checkers, table tennis, basketball): a free pasty on showing your bruises.\" Signed: \"The canteen\".",
+  "ja": "隅に新しい紙。「休み時間の勝者（チェッカー、卓球、バスケ）にはピロシキを無料で。あざを見せること」署名、「食堂」。"
+ },
+ "city.sch.apples.1": {
+  "ru": "Ящик с яблоками стоит у раздачи, как маленький красный склад. «Берите по одному, остальное мы сами скушаем», — написано на крышке.",
+  "en": "The crate of apples stands by the line like a small red warehouse. \"Take one, we will eat the rest ourselves,\" is written on the lid.",
+  "ja": "りんごの箱が配膳台のそばに置かれて、小さな赤い倉庫のようだ。ふたには「1つずつ取ってね。残りは私たちが食べます」と書いてある。"
+ },
+ "city.sch.apples.2": {
+  "ru": "Выбрал яблоко с маленьким тёмным бочком: у таких, как говорят в буфете, самый сладкий характер. Вытер о рукав и откусил на ходу.",
+  "en": "I picked an apple with a small dark side: those, they say in the canteen, have the sweetest character. I wiped it on my sleeve and bit into it on the move.",
+  "ja": "小さな黒ずんだ側面のあるりんごを選んだ。食堂では、そういうのがいちばん甘い性格だと言う。袖で拭いて、歩きながらかじった。"
+ },
+ "city.sch.gwin.checkers.1": {
+  "ru": "Выиграл партию в шашки в холле: соперник долго смотрел на доску, потом пожал руку и сказал, что это была нечистая победа, но очень красивая.",
+  "en": "I won a game of checkers in the hall: my opponent stared at the board a long time, then shook my hand and said it was an unclean victory, but a very beautiful one.",
+  "ja": "ホールでのチェッカーに勝った。相手は盤をじっと見つめ、それから握手して、きれいな勝ち方ではなかったけれど、とても美しかったと言った。"
+ },
+ "city.sch.glose.checkers.1": {
+  "ru": "Проиграл на перемене: шашки сложили в коробку и унесли до следующего раза. Звонок зазвенел в самый подходящий момент, как будто нарочно.",
+  "en": "I lost at break: the checkers were put in the box and carried off until next time. The bell rang at the perfect moment, as if on purpose.",
+  "ja": "休み時間に負けた。チェッカーは箱にしまわれ、また今度までお預け。ベルは絶好のタイミングで鳴った、まるでわざとのように。"
+ },
+ "city.sch.gdraw.checkers.1": {
+  "ru": "Ничья в шашки: обе дамки остались на доске, и обе стороны решили, что победили морально. Партию отложили до следующей перемены.",
+  "en": "A draw at checkers: both kings are still on the board and each side decided it had won morally. The game was put off until the next break.",
+  "ja": "チェッカーは引き分け。キングが2つとも盤上に残り、どちらも精神的には自分の勝ちだと決めた。勝負は次の休み時間に持ち越された。"
+ },
+ "city.sch.gwin.chess.1": {
+  "ru": "Выиграл партию: шахматист напротив долго молчал, потом сказал «хм», что в школьных шахматах считается высшей оценкой. Фигуры вернули на место, даже ладью.",
+  "en": "I won the game: the player opposite said nothing for a long time, then said \"hm\", which in school chess counts as the highest praise. The pieces went back to their places, even the rook.",
+  "ja": "勝った。向かいの相手は長いこと黙ってから「うーん」と言った。学校のチェスではそれが最高の褒め言葉だ。駒は元の場所に戻された、ルークまでも。"
+ },
+ "city.sch.glose.chess.1": {
+  "ru": "Проиграл, но красиво: ферзь ушёл первым, а король ещё минуту пытался сохранять достоинство. Соперник протянул руку: «Хорошая партия. Пойдём ещё раз?»",
+  "en": "I lost, but beautifully: the queen went first and the king tried to keep his dignity for another minute. My opponent held out a hand: \"A good game. Shall we play again?\"",
+  "ja": "負けたけれど、美しく。クイーンが先に消え、キングはあと1分だけ威厳を保とうとした。相手が手を差し出す。「いい試合だった。もう一局どう？」"
+ },
+ "city.sch.gdraw.chess.1": {
+  "ru": "Ничья. Король на короле, пешка на пешке, и никто не готов уступить. Решили, что партия была слишком хороша, чтобы её заканчивать.",
+  "en": "A draw. King against king, pawn against pawn and nobody ready to give way. It was decided the game was too good to finish.",
+  "ja": "引き分け。キング対キング、ポーン対ポーン、誰も譲らない。この勝負は終わらせるにはもったいないということになった。"
+ },
+ "city.sch.gwin.tt.1": {
+  "ru": "Выиграл в настольный теннис: последний мяч ударился о край стола, на миг замер и всё-таки упал на мою сторону. Эхо в зале зааплодировало первым.",
+  "en": "I won at table tennis: the last ball clipped the edge of the table, hung for a moment and still fell on my side. The echo in the hall applauded first.",
+  "ja": "卓球に勝った。最後の球は台の端をかすめ、一瞬止まって、それでも自分のコートに落ちた。ホールのこだまが最初に拍手した。"
+ },
+ "city.sch.glose.tt.1": {
+  "ru": "Проиграл: мяч сделал изящную дугу и ушёл за стол, в зал, под маты. Искали вдвоём, нашли в ботинке. Ботинок был не мой.",
+  "en": "I lost: the ball made an elegant arc and went past the table, into the hall, under the mats. We searched together and found it in a shoe. The shoe was not mine.",
+  "ja": "負けた。ボールは優雅な弧を描いて台の向こう、ホールの奥、マットの下へ。二人で探して、靴の中から出てきた。僕の靴ではなかった。"
+ },
+ "city.sch.gdraw.tt.1": {
+  "ru": "Ничья: счёт, как на табло, «ноль на ноль» в последней игре. Партнёр сказал, что настоящий розыгрыш всё равно остался в наших ладонях.",
+  "en": "A draw: the score was, as on the scoreboard, nil-nil in the last game. My partner said the real rally stayed in our palms anyway.",
+  "ja": "引き分け。最後のゲームは、スコアボードのように0対0。相手は、本当のラリーはどのみち僕らの手のひらに残ったと言った。"
+ },
+ "city.sch.gwin.basket.1": {
+  "ru": "Забросил мяч: он прошёл через кольцо так тихо, что сетка только вздохнула. Из угла зала кто-то негромко сказал «ого», и это «ого» стоило больше очков.",
+  "en": "I sank the ball: it went through the ring so quietly that the net only sighed. Someone in a corner of the hall said a soft \"wow\", and that \"wow\" was worth more points.",
+  "ja": "ボールを決めた。ネットがため息をつくほど静かにリングを通った。ホールの隅から誰かが小さく「おお」と言い、その「おお」のほうが点数よりも価値があった。"
+ },
+ "city.sch.glose.basket.1": {
+  "ru": "Мимо. Мяч ударился о щит, подпрыгнул, как бы раздумывая, и укатился к лавке. Лавка приняла его без комментариев.",
+  "en": "A miss. The ball hit the backboard, bounced as if thinking it over and rolled to the bench. The bench took it without comment.",
+  "ja": "外した。ボールはバックボードに当たり、考えこむようにはずんで、ベンチのほうへ転がった。ベンチは何も言わずに受け取った。"
+ },
+ "city.sch.gdraw.basket.1": {
+  "ru": "Половина бросков попала. Тренер, которого здесь нет, всё равно кивнул бы: «Неплохо для того, кто пришёл без разминки».",
+  "en": "Half the throws went in. The coach, who is not here, would have nodded anyway: \"Not bad for someone who came without a warm-up.\"",
+  "ja": "シュートは半分入った。ここにはいないコーチも、きっとうなずいただろう。「ウォームアップなしで来た割には悪くない」"
+ },
+ "city.coll.school_subjects.title": {
+  "ru": "Школьные предметы",
+  "en": "School subjects",
+  "ja": "学校の教科"
+ },
+ "city.coll.school_games.title": {
+  "ru": "Победы на перемене",
+  "en": "Break-time wins",
+  "ja": "休み時間の勝利"
+ },
+ "city.coll.school_clubs.title": {
+  "ru": "Кружки после уроков",
+  "en": "After-school clubs",
+  "ja": "放課後のクラブ"
+ },
+ "city.sch.bl.1": {
+  "ru": "Вторник, биология. Учительница достаёт из банки живой лист элодеи, кладёт под микроскоп и просит найти хоть одну клетку, которая никуда не торопится. Ни одной не нашли.",
+  "en": "Tuesday, biology. The teacher takes a live leaf of waterweed from a jar, puts it under the microscope and asks us to find a single cell that is in no hurry. Nobody found one.",
+  "ja": "火曜、生物。先生は瓶から生きたオオカナダモの葉を取り出し、顕微鏡にのせて、急いでいない細胞を1つでも見つけなさいと言う。誰も見つけられなかった。"
+ },
+ "city.sch.bl.2": {
+  "ru": "Пятница, биология. Рисуем лист: черешок, жилки, края. Моя жилка получилась длиннее, чем сам лист, и учительница сказала, что это называется «авторский замысел».",
+  "en": "Friday, biology. We draw a leaf: stalk, veins, edges. My vein came out longer than the leaf itself, and the teacher said that is called an artist's vision.",
+  "ja": "金曜、生物。葉を描く。葉柄、葉脈、ふち。僕の葉脈は葉そのものより長くなってしまい、先生は「作者の意図」と呼ぶのだと言った。"
+ },
+ "city.sch.bl.3": {
+  "ru": "Четверг, химия. Красная капуста в стакане становится розовой от уксуса и зелёной от соды. Весь класс ахнул хором, учительница спокойно сказала: «Записывайте». И мы записывали с открытыми ртами.",
+  "en": "Thursday, chemistry. Red cabbage in a glass turns pink with vinegar and green with soda. The whole class gasped in chorus and the teacher calmly said: \"Write it down.\" We wrote with our mouths open.",
+  "ja": "木曜、化学。コップの紫キャベツは、酢でピンクに、重曹で緑になる。クラス全員が声をそろえて息をのみ、先生は落ち着いて「書きとめて」と言った。僕らは口を開けたまま書いた。"
+ },
+ "city.sch.bl.4": {
+  "ru": "В кабинете биологии сегодня нет урока. Стулья задвинуты, на столах чистые листы, и аквариум пускает пузыри так торжественно, словно ведёт собственную лекцию.",
+  "en": "There is no lesson in the biology room today. The stools are pushed in, the benches hold clean sheets and the aquarium blows bubbles so solemnly it might be giving its own lecture.",
+  "ja": "今日、生物室に授業はない。丸椅子は机に押しこまれ、机にはまっさらな紙が置かれ、水槽は自分の講義をしているかのように厳かに泡を出している。"
+ },
+ "city.sch.ml.1": {
+  "ru": "Понедельник, музыка. Учительница играет одну ноту и просит угадать, как она себя чувствует. Класс решил, что нота устала. Учительница сказала, что это правильно.",
+  "en": "Monday, music. The teacher plays a single note and asks us to guess how it feels. The class decided the note was tired. The teacher said that was right.",
+  "ja": "月曜、音楽。先生は音を1つ弾いて、この音がどんな気分か当ててと言う。クラスは「疲れている」と決めた。先生は正解だと言った。"
+ },
+ "city.sch.ml.2": {
+  "ru": "Четверг, музыка. Разучиваем ритм ладонями по коленям: раз, два, три-и, пауза. Паузу никто не выдерживает. Оказывается, самое трудное в музыке: ничего не играть.",
+  "en": "Thursday, music. We learn a rhythm with palms on knees: one, two, three-e, pause. Nobody can hold the pause. It turns out the hardest thing in music is playing nothing.",
+  "ja": "木曜、音楽。ひざを手のひらでたたいてリズムを覚える。1、2、3ー、休み。休みを守れる人はいない。音楽でいちばん難しいのは、何も弾かないことらしい。"
+ },
+ "city.sch.ml.3": {
+  "ru": "Сегодня в музыкальном классе нет урока, а стулья стоят полукругом, как будто ждут слушателей. Пианино под чехлом, но металлофон на столе, кажется, подмигнул.",
+  "en": "There is no lesson in the music room today, but the chairs stand in a half circle as if waiting for listeners. The piano is covered, but the glockenspiel on the table seems to have winked.",
+  "ja": "今日、音楽室に授業はないが、椅子は聴衆を待つように半円に並んでいる。ピアノにはカバーがかかっているが、机の上の鉄琴はウィンクしたように見えた。"
+ },
+ "city.sch.closed.board.1": {
+  "ru": "Объявление за стеклом, а на стекле бумажка вахтёра: «Читать можно в учебные часы, с 8 до 16, по будням. Вечером и в выходные в школе тихо, и даже объявления стараются не шуршать».",
+  "en": "The notice is behind glass, and on the glass a slip from the watchman: \"Reading is allowed in school hours, 8 to 16, on weekdays. In the evenings and at weekends the school is quiet, and even notices try not to rustle.\"",
+  "ja": "掲示はガラスの向こうで、ガラスには守衛さんの貼り紙。「読めるのは授業のある時間、平日の8時から16時まで。夜と休日の学校は静かで、掲示でさえ音を立てないようにしている」"
+ },
+ "city.sch.closed.board.2": {
+  "ru": "На стекле витрины ладонью отпечаталась чья-то любознательность. Вахтёр приписал: «Протереть утром». Читать темно, лампу гасят до утра.",
+  "en": "On the glass of the case someone's curiosity has left a palm print. The watchman has added: \"Wipe in the morning.\" It is too dark to read; the lamp is off until morning.",
+  "ja": "ケースのガラスに、誰かの好奇心が手形になって残っている。守衛さんの書き足し。「朝に拭くこと」暗くて読めない。ランプは朝まで消してある。"
+ },
+ "city.sch.closed.machine.1": {
+  "ru": "Вахтёр заглядывает из холла: «Это трогать в учебное время, с 8 до 16. Вечером всё в школе спит: и глобус, и звонок, и хомяк». Он говорит тихо, чтобы никого не разбудить.",
+  "en": "The watchman looks in from the hall: \"You touch this in school time, 8 to 16. In the evening everything in the school sleeps: the globe, the bell, the hamster.\" He speaks quietly so as not to wake anybody.",
+  "ja": "守衛さんがホールから顔を出す。「触れるのは授業時間、8時から16時のあいだ。夜は学校じゃ何もかも眠っている。地球儀もベルもハムスターもね」誰も起こさないように、小声で言う。"
+ },
+ "city.sch.closed.machine.2": {
+  "ru": "Под рукой выключено: свет погашен, всё накрыто. На ручке аккуратная бумажка «До утра не трогать». Почерк вахтёра, он делает буквы квадратными.",
+  "en": "Everything is switched off under your hand: the light is out and things are covered. A neat slip on the handle: \"Do not touch till morning.\" The watchman's hand, he makes the letters square.",
+  "ja": "手の下はすべて止まっている。明かりは消え、物には覆いがかかっている。取っ手にきちんとした紙。「朝まで触らないこと」守衛さんの字だ、文字を四角く書く人。"
+ },
+ "city.sch.closed.play.1": {
+  "ru": "Шашки и шахматы убраны в коробку. На доске записка: «Партии не доиграны, но никуда не денутся. Приходите в учебные часы». Вахтёр, судя по всему, считает фигуры по вечерам.",
+  "en": "The checkers and chessmen are in the box. A note on the board: \"The games are unfinished but are not going anywhere. Come in school hours.\" The watchman, it seems, counts the pieces in the evenings.",
+  "ja": "チェッカーとチェスの駒は箱にしまってある。盤にメモ。「勝負は途中だが、どこへも逃げない。授業のある時間に来ること」守衛さんは夜に駒を数えているらしい。"
+ },
+ "city.sch.closed.play.2": {
+  "ru": "Ни ракеток, ни шариков, ни соперника. Только стол с аккуратно натянутой сеткой и бумажка: «В выходные зал по утрам открыт для спорта. А стол ждёт».",
+  "en": "No rackets, no balls, no opponent. Only a table with the net neatly set and a slip: \"At weekends the hall is open for sport in the mornings. The table waits.\"",
+  "ja": "ラケットも球も相手もいない。きちんとネットの張られた台と紙があるだけ。「休日の午前は体育館をスポーツ用に開けている。台は待っている」"
+ },
+ "city.sch.closed.sport.1": {
+  "ru": "Зал заперт на свет и на звук. Мячи в тележке, под замком. На двери карандашом: «С 8 до 19, с понедельника по субботу». Вахтёр, он вообще-то всегда прав.",
+  "en": "The hall is locked against light and sound. The balls are in the cart, under lock. On the door in pencil: \"8 to 19, Monday to Saturday.\" The watchman is, in general, always right.",
+  "ja": "体育館は光も音も鍵をかけられている。ボールはカートの中、錠の向こう。ドアに鉛筆書き。「月曜から土曜、8時から19時」守衛さんはたいてい正しい。"
+ },
+ "city.sch.closed.sport.2": {
+  "ru": "В тёмном зале слышно только, как остывают батареи и как в тележке вздыхает мяч. Всё, что здесь можно было сделать, до утра уже сделано.",
+  "en": "In the dark hall you hear only the radiators cooling and a ball sighing in the cart. Everything that could be done here has been done until morning.",
+  "ja": "暗い体育館には、暖房が冷めていく音と、カートの中でボールがため息をつく音だけが聞こえる。ここでできることは、朝まですべてやり終えた。"
+ },
+ "city.sch.closed.craft.1": {
+  "ru": "Школьные парты стоят как после урока: стулья вдвинуты, на столах чисто. Вахтёр нарисовал мелом на доске улыбающееся солнце: «До понедельника». Или до утра.",
+  "en": "The school desks stand as after a lesson: stools pushed in, benches clean. The watchman has drawn a smiling sun on the board in chalk: \"Until Monday.\" Or until morning.",
+  "ja": "机は授業のあとのまま。椅子はしまわれ、机の上はきれい。守衛さんが黒板にチョークで笑う太陽を描いている。「月曜まで」あるいは「朝まで」。"
+ },
+ "city.sch.closed.shelf.1": {
+  "ru": "Полка закрыта, на дверце бумажка вахтёра: «Музей и книги — в учебные часы. Ночью они сами себе читают». Дверца, конечно, скрипнула, но промолчала.",
+  "en": "The shelf is shut, with the watchman's slip on the door: \"The museum and the books during school hours. At night they read to themselves.\" The door creaked, of course, but said nothing.",
+  "ja": "棚は閉まっていて、扉に守衛さんの貼り紙。「資料と本は授業時間に。夜は、それぞれが自分で自分を読んでいる」扉は、もちろんきしんだが、何も言わなかった。"
+ },
+ "city.sch.closed.counter.1": {
+  "ru": "Окошко закрыто, свет у раздачи погашен. Вахтёр кивает из холла: «Все ушли. Завтра с утра. Буфет открывается в десять. Пирожки к этому часу уже решают, кому достаться».",
+  "en": "The hatch is shut and the light at the counter is off. The watchman nods from the hall: \"Everyone has gone. Tomorrow morning. The canteen opens at ten. By that hour the pasties have already decided whom they will go to.\"",
+  "ja": "窓口は閉まり、配膳台の明かりも消えている。守衛さんがホールからうなずく。「みんな帰ったよ。明日の朝。食堂は10時開店。その頃にはピロシキが、誰のものになるかもう決めている」"
+ },
+ "city.sch.closed.seat.1": {
+  "ru": "Стулья стоят рядами, как будто послушно ждут завтрашнего урока. Сегодня сидеть не положено: школа закрыта, и вахтёр сам смотрит на них с уважением.",
+  "en": "The chairs stand in rows, as if obediently waiting for tomorrow's lesson. Sitting is not allowed today: the school is closed, and the watchman himself regards them with respect.",
+  "ja": "椅子は行儀よく並び、明日の授業を待っているかのようだ。今日は座ってはいけない。学校は閉まっていて、守衛さん自身も椅子を敬意を持って眺めている。"
+ },
+ "city.sch.closed.take.1": {
+  "ru": "Ящик с яблоками накрыт чистой тряпкой: «До завтра». Вахтёр, по слухам, пересчитывает яблоки по вечерам, но яблоки, по слухам, не против.",
+  "en": "The crate of apples is covered with a clean cloth: \"Until tomorrow.\" The watchman, they say, counts the apples in the evenings, but the apples, they say, do not mind.",
+  "ja": "りんごの箱にはきれいな布がかけてある。「明日まで」。守衛さんは夜にりんごを数えるという噂だが、りんごのほうも嫌がっていないという噂だ。"
+ },
+ "city.sch.closed.any": {
+  "ru": "Вахтёр качает головой из-за стойки: «Школа уже закрыта, а по выходным, сами понимаете, тем более. Приходите в учебные часы, с 8 до 16, с понедельника по пятницу».",
+  "en": "The watchman shakes his head from behind his desk: \"The school is closed already, and at weekends, as you understand, even more so. Come in school hours, 8 to 16, Monday to Friday.\"",
+  "ja": "守衛さんが机の向こうで首を振る。「学校はもう閉まっているよ。休日はなおさらね。授業の時間、月曜から金曜の8時から16時に来なさい」"
+ },
+ "city.sch.gz.rain": {
+  "ru": "Рубрика «Погода»: «Дождь. Зонты складывать у двери, а не в классе. В 6 «А» вчера уже плавали». Ниже рисунок: человечек под зонтом, а над ним тоже зонтик, поменьше.",
+  "en": "The \"Weather\" column: \"Rain. Umbrellas to be folded by the door, not in the classroom. 6A went swimming yesterday.\" Below it a drawing: a little man under an umbrella with a smaller umbrella over him.",
+  "ja": "「天気」欄。「雨。傘は教室でなく入口で畳むこと。昨日6年A組は泳いでいました」下には絵。傘の下の小さな人と、その上のもっと小さな傘。"
+ },
+ "city.sch.gz.snow": {
+  "ru": "Рубрика «Погода»: «Снег. Редколлегия просит не лепить снеговиков в холле: они тают на глазах и вызывают у уборщицы неоправданные эмоции». Снеговик нарисован рядом, для наглядности.",
+  "en": "The \"Weather\" column: \"Snow. The editors ask you not to build snowmen in the hall: they melt before your eyes and cause the cleaner unjustified emotion.\" A snowman is drawn alongside for clarity.",
+  "ja": "「天気」欄。「雪。編集部はホールで雪だるまを作らないようお願いします。目の前で溶けて、掃除の方に不当な感情を呼び起こします」わかりやすいように雪だるまの絵も添えてある。"
+ },
+ "city.sch.gz.cold": {
+  "ru": "Рубрика «Погода»: «Мороз. Шапки обязательны. Хомяк советует надеть две. Хомяк, как известно, знает толк в тёплом». Под заметкой нарисованы две шапки на одной голове.",
+  "en": "The \"Weather\" column: \"Frost. Hats are compulsory. The hamster advises wearing two. The hamster, as is well known, knows warmth.\" Under it are drawn two hats on one head.",
+  "ja": "「天気」欄。「寒波。帽子は必須。ハムスターは2つかぶることをすすめます。ハムスターは暖かさに詳しいことで知られています」下には、1つの頭に2つの帽子の絵。"
+ },
+ "city.sch.gz.fest": {
+  "ru": "Праздничный выпуск стенгазеты! Вся первая полоса в разноцветных клеточках, а в центре большими буквами: «Сегодня праздник. Уроки идут, но настроение — отдельно».",
+  "en": "A festive issue of the wall newspaper! The whole front page is in coloured squares and in the middle in big letters: \"Today is a holiday. Lessons go on, but the mood goes separately.\"",
+  "ja": "壁新聞の祝日特別号！一面は色とりどりのマス目で、真ん中に大きな文字。「今日は祝日。授業はあるけれど、気分は別腹」"
+ },
+ "city.sch.gz.child": {
+  "ru": "Выпуск ко Дню защиты детей: «Сегодня дети главные, учителя на подхвате. Завтра всё как обычно, но сегодня дежурные могут дёрнуть за звонок один раз и не краснеть».",
+  "en": "An issue for Children's Day: \"Today the children are in charge and the teachers are helpers. Tomorrow everything is as usual, but today the duty pupils may ring the bell once without blushing.\"",
+  "ja": "こどもの日の特別号。「今日は子どもたちが主役で、先生は手伝い。明日はいつもどおりですが、今日の当番は、ベルを1回鳴らしても赤くなりません」"
+ },
+ "city.sch.gz.newyear": {
+  "ru": "Новогодний выпуск: «Ёлка в актовом зале стоит, мишура висит, дежурные по ёлке назначены. Подарки пока находятся там, где им положено быть: в секрете». Вокруг ёлки нарисованы звёзды.",
+  "en": "The New Year issue: \"The tree in the assembly hall is up, the tinsel hangs, the tree duty has been assigned. The presents are still where they should be: in secret.\" Stars are drawn round the tree.",
+  "ja": "新年号。「講堂のもみの木は立ち、モールは下がり、木の当番も決まりました。プレゼントは、あるべき場所、つまり秘密の中にまだあります」木のまわりには星が描かれている。"
+ },
+ "city.sch.reg.12": {
+  "ru": "Новости уголка живой природы. Срочно: хомяк Пончик ночью открыл дверцу клетки и ушёл. Дверцу, видимо, «кто-то не закрыл». Редколлегия подозревает, что этим «кто-то» был сам Пончик.",
+  "en": "News from the nature corner. Urgent: Doughnut the hamster opened his cage door at night and left. The door was apparently \"not shut by someone.\" The editors suspect that someone was Doughnut himself.",
+  "ja": "自然コーナーからのお知らせ。至急。ハムスターのドーナツが夜中にケージの扉を開けて出ていきました。扉は「誰かが閉め忘れた」ようです。編集部は、その誰かとはドーナツ自身ではないかと疑っています。"
+ },
+ "city.sch.reg.13": {
+  "ru": "Расследование о Пончике: следы опилок ведут по коридору в сторону раздевалки. Гардеробщица клянётся, что не видела, но при этом улыбается так, что редколлегия начинает думать.",
+  "en": "The investigation about Doughnut: sawdust trails lead down the corridor towards the cloakroom. The cloakroom lady swears she has not seen him but smiles in a way that makes the editors think.",
+  "ja": "ドーナツの調査。おがくずの跡が廊下をクロークのほうへ続いています。クロークの係の方は見ていないと誓いますが、編集部が考えこむような笑い方をしています。"
+ },
+ "city.sch.reg.14": {
+  "ru": "Найден! Пончик спал в рукаве красного пальто с зайцем, в самой тёплой части раздевалки. Пальто проверено на крошки, хозяйка пальто согласна делиться рукавом.",
+  "en": "Found! Doughnut was asleep in the sleeve of the red coat with the hare, in the warmest corner of the cloakroom. The coat has been checked for crumbs and its owner agrees to share the sleeve.",
+  "ja": "発見！ドーナツは、クロークでいちばん暖かい場所の、うさぎの刺繍がついた赤いコートの袖で眠っていました。コートはパンくずを調べられ、持ち主は袖を分け合うことに同意しています。"
+ },
+ "city.sch.reg.15": {
+  "ru": "Правила уголка природы теперь такие: цветы поливают дежурные, хомяка кормят по расписанию, дверцу закрывают двумя руками. Редколлегия благодарит всех, кто искал, и одного, кто не терялся.",
+  "en": "The rules of the nature corner are now these: the duty pupils water the flowers, the hamster is fed by the timetable, the door is shut with two hands. The editors thank everyone who searched, and the one who was not lost, just away.",
+  "ja": "自然コーナーの新しい決まり。花は当番が水やり、ハムスターは時間割どおりに餌、扉は両手で閉めること。編集部は、探した全員と、迷子ではなかったただ一匹に感謝します。"
+ },
+ "city.sch.coats.4": {
+  "ru": "Из красного пальто с зайцем торчит рукав, а в рукаве кто-то дышит: маленько, ровно и очень довольно. Гардеробщица делает вид, что поправляет номерки, и очень старается не смотреть.",
+  "en": "A sleeve sticks out of the red coat with the hare, and something is breathing in the sleeve: small, even and very content. The cloakroom lady pretends to straighten the tags and tries very hard not to look.",
+  "ja": "うさぎの刺繍の赤いコートから袖がはみ出していて、その中で何かが息をしている。小さく、規則正しく、とても満足げに。クロークの係の人は札を直すふりをして、必死に見ないようにしている。"
+ },
+ "quest.school_break.title": {
+  "ru": "Партия на переменке",
+  "en": "A game at break",
+  "ja": "休み時間の一局"
+ },
+ "quest.school_break.desc": {
+  "ru": "В холле школы на перемене стоит столик с шашками, а рядом объявления о кружках. Кажется, тут играют не только в шашки, но и в «а ну-ка, обыграй».",
+  "en": "At break in the school hall a little table with checkers stands near the club notices. It seems people play here for more than checkers: for \"go on, beat me.\"",
+  "ja": "休み時間の学校のホールには、チェッカーの小さな机がクラブの掲示のそばにある。ここではチェッカーだけでなく、「さあ、勝ってみろ」という勝負もしているらしい。"
+ },
+ "quest.school_break.clubs.log": {
+  "ru": "Сначала посмотрю, какие кружки идут после уроков: подставка с объявлениями стоит в холле.",
+  "en": "First I will see which clubs run after lessons: the notice stand is in the hall.",
+  "ja": "まず、放課後にどんなクラブがあるか見よう。掲示スタンドはホールにある。"
+ },
+ "quest.school_break.read.obj": {
+  "ru": "Прочитать объявления о кружках",
+  "en": "Read the club notices",
+  "ja": "クラブの掲示を読む"
+ },
+ "quest.school_break.game.log": {
+  "ru": "У столика с шашками кто-то ждёт соперника. Сяду и сыграю, хотя бы ради честного вызова.",
+  "en": "Somebody at the checkers table is waiting for an opponent. I will sit down and play, if only for an honest challenge.",
+  "ja": "チェッカーの机では誰かが相手を待っている。座って一局指そう、せめて正々堂々の挑戦のために。"
+ },
+ "quest.school_break.win.obj": {
+  "ru": "Выиграть партию в шашки в холле",
+  "en": "Win a game of checkers in the hall",
+  "ja": "ホールでチェッカーに勝つ"
+ },
+ "quest.school_break.done": {
+  "ru": "Выиграл. Соперник сказал, что победа была нечистой, но красивой, а дежурный учитель молча сунул мне пирожок из кармана. Пирожок тёплый: значит, перемена выдалась хорошая.",
+  "en": "I won. My opponent said the win was unclean but beautiful, and the duty teacher silently slipped me a pasty from his pocket. The pasty is warm, so it has been a good break.",
+  "ja": "勝った。相手は、きれいな勝ち方ではないが美しかったと言い、当番の先生は黙ってポケットからピロシキを渡してくれた。温かい。いい休み時間だったということだ。"
+ },
+ "quest.school_hamster.title": {
+  "ru": "Беглец Пончик",
+  "en": "Doughnut the escapee",
+  "ja": "脱走したドーナツ"
+ },
+ "quest.school_hamster.desc": {
+  "ru": "В стенгазете появилась тревожная новость: из уголка живой природы пропал хомяк. А в классе биологии, судя по всему, никто не торопится его искать.",
+  "en": "An anxious piece of news has appeared in the wall newspaper: the hamster has vanished from the nature corner. And nobody in the biology room seems in a hurry to look for him.",
+  "ja": "壁新聞に不安なお知らせが出た。自然コーナーからハムスターがいなくなった。生物室では、誰も慌てて探している様子はない。"
+ },
+ "quest.school_hamster.news.log": {
+  "ru": "Прочитаю стенгазету в холле: там, кажется, всё про Пончика.",
+  "en": "I will read the wall newspaper in the hall: it seems to be all about Doughnut.",
+  "ja": "ホールの壁新聞を読もう。ドーナツのことが全部書いてあるらしい。"
+ },
+ "quest.school_hamster.gazette.obj": {
+  "ru": "Прочитать стенгазету в холле",
+  "en": "Read the wall newspaper in the hall",
+  "ja": "ホールの壁新聞を読む"
+ },
+ "quest.school_hamster.cage.log": {
+  "ru": "В кабинете биологии стоит его клетка. Загляну, пока там нет никого, кроме колеса.",
+  "en": "His cage stands in the biology room. I will look in while there is nobody there but the wheel.",
+  "ja": "ケージは生物室にある。車輪のほかに誰もいないうちに、のぞいてみよう。"
+ },
+ "quest.school_hamster.cage.obj": {
+  "ru": "Заглянуть в клетку хомяка",
+  "en": "Look into the hamster's cage",
+  "ja": "ハムスターのケージをのぞく"
+ },
+ "quest.school_hamster.coats.log": {
+  "ru": "Опилки ведут в сторону раздевалки. Осмотрю вешалки в холле.",
+  "en": "The sawdust leads towards the cloakroom. I will look over the coat racks in the hall.",
+  "ja": "おがくずはクロークのほうへ続いている。ホールのコート掛けを調べよう。"
+ },
+ "quest.school_hamster.coats.obj": {
+  "ru": "Осмотреть вешалки в холле",
+  "en": "Look over the coat racks in the hall",
+  "ja": "ホールのコート掛けを調べる"
+ },
+ "quest.school_hamster.water.log": {
+  "ru": "Пончик нашёлся, но цветы в уголке природы ждут воды. Пока он не сбежал снова, полью и их.",
+  "en": "Doughnut is found, but the plants in the nature corner are waiting for water. Before he runs off again I will water them too.",
+  "ja": "ドーナツは見つかったが、自然コーナーの花が水を待っている。また逃げ出さないうちに、花にも水をやろう。"
+ },
+ "quest.school_hamster.water.obj": {
+  "ru": "Полить цветы в уголке природы",
+  "en": "Water the plants in the nature corner",
+  "ja": "自然コーナーの花に水をやる"
+ },
+ "quest.school_hamster.done": {
+  "ru": "Пончик спит в своём домике с бумажным значком «Беглец», цветы политы, а гардеробщица, кажется, слегка улыбается. Школьный уголок природы снова в порядке, а дежурный по цветам отметил меня в журнале: «замена провели, замечаний нет».",
+  "en": "Doughnut sleeps in his house with the paper \"Escapee\" badge, the plants are watered and the cloakroom lady seems to be smiling a little. The school nature corner is in order again, and the plant-duty pupil has noted me in the register: \"substitute done, no remarks.\"",
+  "ja": "ドーナツは「脱走者」の紙バッジをつけて小屋で眠り、花には水がやられ、クロークの係の人はほんの少し微笑んでいるようだ。学校の自然コーナーはまた整った。花当番は僕を名簿に記してくれた。「代役、問題なし」"
  }
 }
