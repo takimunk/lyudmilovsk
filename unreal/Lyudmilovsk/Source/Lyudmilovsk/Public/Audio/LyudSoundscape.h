@@ -98,6 +98,8 @@ private:
 	UPROPERTY(Transient) TObjectPtr<UAudioComponent> RoomTone;
 	UPROPERTY(Transient) TObjectPtr<UAudioComponent> TownLoop;
 	UPROPERTY(Transient) TArray<TObjectPtr<UAudioComponent>> ClubLoops;
+	/** Whose sound each of ClubLoops is (the placed person at that station). */
+	TArray<TWeakObjectPtr<AActor>> ClubPeople;
 	UPROPERTY(Transient) TObjectPtr<USoundAttenuation> NearAttenuation;
 	UPROPERTY(Transient) TObjectPtr<USoundAttenuation> FarAttenuation;
 	UPROPERTY(Transient) TObjectPtr<USoundAttenuation> RoomAttenuation;
