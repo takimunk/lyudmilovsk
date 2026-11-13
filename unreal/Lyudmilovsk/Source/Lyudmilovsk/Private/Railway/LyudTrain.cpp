@@ -378,7 +378,27 @@ void ALyudTrain::Place(const FLyudTrainInfo& InInfo, float DeltaSeconds)
 {
 	const FLyudTrainInfo Prev = Info;
 	Info = InInfo;
-	const bool bAboard = Rider.IsValid();
+	bool bAboard = Rider.IsValid();
+	if (!bAboard && !Info.bVisible)
+	{
+		// hidden (the tunnel, the haze) with nobody known aboard: somebody put straight into a car (a game saved on the
+		// ride and loaded, a teleport) is aboard too. Unnoticed, the cars stayed hidden without their floors and the
+		// player fell through the line.
+		if (ACharacter* Body = Cast<ACharacter>(UGameplayStatics::GetPlayerPawn(this, 0)))
+		{
+			const FVector BodyAt = Body->GetActorLocation();
+			for (int32 K = 0; K < Cars.Num() && !bAboard; K++)
+			{
+				const double Along = Info.S + (double(Cars.Num() - 1) * 0.5 - K) * (CarLength + CarGap);
+				const FVector InCar = CarFrame(Along).InverseTransformPosition(BodyAt);
+				bAboard = FMath::Abs(InCar.X) < CarLength * 50.0 && FMath::Abs(InCar.Y) < 135.0 && InCar.Z > 100.0 && InCar.Z < 400.0;
+			}
+			if (bAboard)
+			{
+				Rider = Body;
+			}
+		}
+	}
 	const bool bShow = Info.bVisible || bAboard;
 	const bool bJustShown = bShow && !bWasVisible;
 	if (bShow != bWasVisible)
