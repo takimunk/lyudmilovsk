@@ -14,7 +14,8 @@
 #             (without it the same lines again; a 'done' talk without it is said once, then the everyday talks go on).
 #             .again may be written several times (said in turn). quest.<quest>.<stage>.if.<cond>[+<cond>] = a variant said
 #             instead while the conditions hold: night, low, day, cloudy, have:<item>, no:<item>, done:<quest>, on:<quest>,
-#             flag:<flag>. docs/quests.md "Branching talk"; tools/check_quest_talk.py checks these lines.
+#             flag:<flag>. aside.<quest>.<stage>... (same shape) = a bystander's word about a quest that is not theirs:
+#             after their first conversation, said through once (the lines, then each .again). docs/quests.md "Branching talk"; tools/check_quest_talk.py checks these lines.
 
 [Owner]
 first = owner.first.1 | hero.owner_first.2 | owner.first.3 | hero.owner_first.4 | owner.first.5
@@ -26,6 +27,9 @@ sun.day = owner.sun_day.1
 sun.low = owner.sun_low.1
 sun.night = owner.sun_night.1
 sun.cloudy = owner.sun_cloudy.1
+quest.awakening.outside = owner.door_never_locked.1
+quest.awakening.outside.if.low = owner.door_at_sunset.1 | owner.door_at_sunset.2
+quest.awakening.outside.if.night = owner.door_sea_at_night.1
 quest.owner_supper.ask = owner.supper_ask.1 | hero.supper_ask.2 | owner.supper_ask.3 | owner.supper_ask.4 | hero.supper_ask.5 | owner.supper_ask.6
 quest.owner_supper.buy,bring_empty = owner.supper_wait.1
 quest.owner_supper.bring = owner.supper_thanks.1 | owner.supper_thanks.2 | hero.supper_thanks.3 | owner.supper_thanks.4
@@ -41,6 +45,9 @@ again = clerk.again3.1
 again = clerk.again4.1
 sun.day = clerk.sun_day.1
 sun.cloudy = clerk.sun_cloudy.1
+aside.awakening.owner = clerk.booth_aisle.1
+aside.awakening.done = clerk.town_in_grey.1 | clerk.town_in_grey.2
+aside.awakening.done.if.night = clerk.night_sheet_lights.1
 
 [Streamer]
 first = streamer.first.1 | hero.streamer_first.2 | streamer.first.3 | streamer.first.4
@@ -49,6 +56,9 @@ again = hero.streamer_again2.1 | streamer.again2.2
 again = streamer.again3.1
 again = streamer.again4.1
 sun.low = streamer.sun_low.1
+aside.awakening.outside = streamer.wave_for_chat.1 | streamer.wave_for_chat.2
+aside.awakening.done = streamer.bet_on_you.1
+aside.awakening.done.if.low = streamer.sunset_just_for_me.1
 
 [Kid_boy]
 first = kid_boy.first.1 | hero.kid_boy_first.2 | kid_boy.first.3 | kid_boy.first.4
@@ -56,6 +66,8 @@ again = kid_boy.again1.1
 again = hero.kid_boy_again2.1 | kid_boy.again2.2
 again = kid_boy.again3.1
 again = kid_boy.again4.1
+aside.awakening.outside = kid_boy.went_out_once.1 | kid_boy.went_out_once.2
+aside.awakening.outside.if.night = kid_boy.pines_rustle_night.1
 
 [Kid_girl]
 first = kid_girl.first.1 | hero.kid_girl_first.2 | kid_girl.first.3 | kid_girl.first.4
@@ -80,6 +92,7 @@ again = guy_a.again1.1
 again = hero.guy_a_again2.1 | guy_a.again2.2
 again = guy_a.again3.1
 again = guy_a.again4.1
+aside.awakening.outside = guy_a.better_signal_outside.1
 
 [Guy_b]
 first = guy_b.first.1 | hero.guy_b_first.2 | guy_b.first.3 | guy_b.first.4
@@ -89,6 +102,12 @@ again = guy_b.again3.1
 again = guy_b.again4.1
 sun.day = guy_b.sun_day.1
 sun.cloudy = guy_b.sun_cloudy.1
+aside.awakening.owner = guy_b.owner_says_odd.1
+aside.explore.walk = guy_b.valley_way.1 | hero.valley_way.2 | guy_b.valley_way.3
+aside.explore.walk.again = guy_b.four_places_two_by_cable.1
+aside.explore.walk.again = guy_b.never_got_swift.1
+aside.explore.walk.if.low = guy_b.sunset_promenade_now.1 | guy_b.sunset_promenade_now.2
+aside.explore.done = guy_b.never_been_beach.1 | guy_b.never_been_beach.2
 
 [Girl_a]
 first = girl_a.first.1 | hero.girl_a_first.2 | girl_a.first.3 | girl_a.first.4
@@ -96,6 +115,12 @@ again = girl_a.again1.1
 again = hero.girl_a_again2.1 | girl_a.again2.2
 again = girl_a.again3.1
 again = girl_a.again4.1
+aside.explore.walk = girl_a.lab_route.1 | girl_a.lab_route.2
+aside.explore.walk.again = girl_a.close_but_beach.1
+aside.explore.walk.again = girl_a.promised_sonya_sea.1
+aside.explore.walk.if.night = girl_a.lights_of_academ.1
+aside.explore.walk.if.cloudy = girl_a.grey_sea_still.1 | girl_a.grey_sea_still.2
+aside.explore.done = girl_a.less_new_now.1
 
 [Girl_b]
 first = girl_b.first.1 | hero.girl_b_first.2 | girl_b.first.3 | girl_b.first.4

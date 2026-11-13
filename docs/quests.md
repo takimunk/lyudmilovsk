@@ -91,6 +91,9 @@ the voice of a line is found by its key.
 - `quest.<quest>.done` (what they say after the quest, once) steps aside once it is said: several quests' `done` lines can
   stand in one section, and a `done.if.<cond>` variant is one more after-talk for when its conditions hold. A `done` line
   with `.again` lines is said for ever, in front of the everyday talks: do not write one.
+- `aside.<quest>.<stages>...` (the same shape as `quest.`, variants and `.again` too) is a bystander's word about a quest
+  that is not theirs (the club's regulars while the hero is on his first walk): it waits until their first conversation
+  has been held and is said through once, the lines and then each `.again`, then the everyday talks go on.
 - `quest.<quest>.<stages>.again` may be written several times: later talks go through them in turn, round and round
   (a waiting stage: a hint, then an aside).
 - `python3 tools/check_quest_talk.py` checks all of it offline (quests, stages, conditions, line keys in three languages,

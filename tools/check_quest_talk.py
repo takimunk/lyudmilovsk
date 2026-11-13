@@ -87,7 +87,7 @@ def main():
             if "=" not in line:
                 continue
             key, value = [x.strip() for x in line.split("=", 1)]
-            if not key.startswith("quest."):
+            if not key.startswith("quest.") and not key.startswith("aside."):
                 continue
             where = "npc_dialogue.txt:%d [%s] %s" % (n, section, key)
             parts = key.split(".")
@@ -113,10 +113,10 @@ def main():
             if tail and tail != ["again"]:
                 problems.append("%s: '%s' after the stages is not .again or .if.<cond>" % (where, ".".join(tail)))
             if conds:
-                variants.append((where, section, quest, stage_list))
+                variants.append((where, section + key[:5], quest, stage_list))
             elif not tail:
                 for stage in stage_list:
-                    plain.add((section, quest, stage))
+                    plain.add((section + key[:5], quest, stage))
             keys = [k.strip() for k in value.split("|") if k.strip()]
             if not keys:
                 problems.append("%s: no lines" % where)

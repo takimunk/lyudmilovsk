@@ -122,8 +122,9 @@ void UNpcDialogueSubsystem::Reload()
 		{
 			Current->Sun.Add(FName(Key.Mid(4)), ParseExchange(Value));
 		}
-		else if (Key.StartsWith(TEXT("quest.")))
+		else if (Key.StartsWith(TEXT("quest.")) || Key.StartsWith(TEXT("aside.")))
 		{
+			const bool bAside = Key.StartsWith(TEXT("aside."));
 			// quest.<quest>.<stage>[,<stage>...] = the talk while the quest is on one of these stages; ....again = later talks there
 			TArray<FString> Parts;
 			Key.ParseIntoArray(Parts, TEXT("."));
@@ -149,13 +150,14 @@ void UNpcDialogueSubsystem::Reload()
 				Parts[4].ParseIntoArray(When, TEXT("+"));
 				Tail = 5;
 			}
-			FNpcQuestTalk* Talk = Current->QuestTalks.FindByPredicate([&Quest, &Stages, &When](const FNpcQuestTalk& T) { return T.Quest == Quest && T.Stages == Stages && T.When == When; });
+			FNpcQuestTalk* Talk = Current->QuestTalks.FindByPredicate([&Quest, &Stages, &When, bAside](const FNpcQuestTalk& T) { return T.Quest == Quest && T.Stages == Stages && T.When == When && T.bAside == bAside; });
 			if (!Talk)
 			{
 				Talk = &Current->QuestTalks.AddDefaulted_GetRef();
 				Talk->Quest = Quest;
 				Talk->Stages = Stages;
 				Talk->When = When;
+				Talk->bAside = bAside;
 			}
 			if (Parts.Num() > Tail && Parts[Tail] == TEXT("again"))
 			{
@@ -237,7 +239,7 @@ static bool QuestTalkHolds(const UObject* WorldContext, const ULyudQuests& Quest
 /** A quest talk's own count in TalkCounts, apart from the everyday talks: "<Id>/<quest>.<first stage>[?<conditions>]". */
 static FName QuestTalkCountKey(FName Id, const FNpcQuestTalk& T)
 {
-	FString CountName = FString::Printf(TEXT("%s/%s.%s"), *Id.ToString(), *T.Quest.ToString(), *T.Stages[0].ToString());
+	FString CountName = FString::Printf(TEXT("%s/%s%s.%s"), *Id.ToString(), T.bAside ? TEXT("aside.") : TEXT(""), *T.Quest.ToString(), *T.Stages[0].ToString());
 	if (T.When.Num() > 0)
 	{
 		CountName += TEXT("?") + FString::Join(T.When, TEXT("+"));
@@ -259,9 +261,20 @@ TArray<FNpcLine> UNpcDialogueSubsystem::StartTalk(FName Id, FName SunState)
 	{
 		// what is said after a quest is said once (unless it has .again lines): then it stands in nobody's way
 		const FName DoneStage(TEXT("done"));
-		const auto Spent = [this, Id, DoneStage](const FNpcQuestTalk& T)
+		// a bystander's aside is said through once, and never before their first conversation
+		const bool bMet = TalkCounts.FindRef(Id) > 0 || Npc->First.Num() == 0;
+		const auto Spent = [this, Id, DoneStage, bMet](const FNpcQuestTalk& T)
 		{
-			return T.Stages.Num() > 0 && T.Again.Num() == 0 && T.Stages.Contains(DoneStage) && TalkCounts.FindRef(QuestTalkCountKey(Id, T)) > 0;
+			if (T.Stages.Num() == 0)
+			{
+				return true;
+			}
+			const int32 Said = TalkCounts.FindRef(QuestTalkCountKey(Id, T));
+			if (T.bAside)
+			{
+				return !bMet || Said > T.Again.Num();
+			}
+			return T.Again.Num() == 0 && T.Stages.Contains(DoneStage) && Said > 0;
 		};
 		for (const FNpcQuestTalk& T : Npc->QuestTalks)
 		{
@@ -278,7 +291,7 @@ TArray<FNpcLine> UNpcDialogueSubsystem::StartTalk(FName Id, FName SunState)
 			const FName Stage = Quests->TalkStage(QuestTalk->Quest, Id.ToString());
 			for (const FNpcQuestTalk& T : Npc->QuestTalks)
 			{
-				if (T.Quest == QuestTalk->Quest && T.When.Num() > 0 && T.Stages.Contains(Stage) && T.Lines.Num() > 0 && !Spent(T) && QuestTalkHolds(this, *Quests, T.When, SunState))
+				if (T.Quest == QuestTalk->Quest && T.bAside == QuestTalk->bAside && T.When.Num() > 0 && T.Stages.Contains(Stage) && T.Lines.Num() > 0 && !Spent(T) && QuestTalkHolds(this, *Quests, T.When, SunState))
 				{
 					QuestTalk = &T;
 					break;
