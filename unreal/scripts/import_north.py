@@ -666,6 +666,10 @@ def place(face_y=None):
     nthings = 0
     for it in data.get("things", []):
         z = it.get("z")
+        if mesh_for(it["kind"], int(it.get("variant", 0))) is None:
+            # no placeholder for these (a cube at a bridge's deck height over the water would mislead): skipped until imported
+            log("thing %s: no mesh for %s v%d yet, skipped" % (it["id"], it["kind"], int(it.get("variant", 0))))
+            continue
         spawn_mesh(it["kind"], int(it.get("variant", 0)), it["x"], it["y"], float(it.get("yaw", 0.0)), it["id"], "Things",
                    z=None if z is None else float(z), near="bridge" not in it["kind"])
         nthings += 1
