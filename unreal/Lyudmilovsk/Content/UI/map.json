@@ -83,8 +83,8 @@
   },
   {
    "id": "starlings",
-   "x": 433.3,
-   "y": 250.0,
+   "x": 25.0,
+   "y": 280.0,
    "r": 150.0,
    "kind": "nature",
    "known": false
