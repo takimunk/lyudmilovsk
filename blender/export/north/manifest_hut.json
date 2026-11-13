@@ -1,0 +1,964 @@
+{
+ "frame": "hut-local metres, Blender axes (-Y front = door and porch, +Z up); origin on the ground under the middle of the footprint (cabin + porch). glTF Y-up files: glTF (x, y, z) = Blender (x, z, -y). Every object of every file has its origin at the hut origin.",
+ "builder": "blender/north/hut_build.py (hut_shell.py, hut_interior.py, hut_door.py, hut_common.py, hut_tex.py)",
+ "entries": [
+  {
+   "kind": "hut",
+   "variant": 0,
+   "file": "hut.glb",
+   "tris": 9616,
+   "size": [
+    7.24,
+    8.712,
+    7.633
+   ],
+   "collision": "exact",
+   "textures": {
+    "HUT_Stone_BC": "512x512",
+    "HUT_Stone_N": "512x512",
+    "HUT_PlankOut_BC": "1024x1024",
+    "HUT_PlankOut_N": "1024x1024",
+    "HUT_LogEnd_BC": "512x512",
+    "HUT_FloorIn_BC": "1024x1024",
+    "HUT_FloorIn_N": "1024x1024",
+    "HUT_LogIn_BC": "1024x1024",
+    "HUT_LogIn_N": "1024x1024",
+    "HUT_LogOut_BC": "1024x1024",
+    "HUT_LogOut_N": "1024x1024",
+    "HUT_Iron_BC": "256x256",
+    "HUT_Metal_BC": "1024x1024",
+    "HUT_PlankIn_BC": "1024x1024",
+    "HUT_PlankIn_N": "1024x1024"
+   },
+   "seats": [],
+   "notes": "shell: log walls both sides, floor, ceiling and beams, roof, porch, steps, footings, windows (HUT_Glass slot), shutters, rain barrel, bench, ski rack, firewood lean-to, weather post, antenna and wire, flue above the ceiling"
+  },
+  {
+   "kind": "hut_interior",
+   "variant": 0,
+   "file": "hut_interior.glb",
+   "tris": 6300,
+   "size": [
+    3.765,
+    4.907,
+    2.304
+   ],
+   "collision": "box",
+   "textures": {
+    "HUT_Brick_BC": "512x512",
+    "HUT_Brick_N": "512x512",
+    "HUT_Iron_BC": "256x256",
+    "HUT_PlankOut_BC": "1024x1024",
+    "HUT_PlankOut_N": "1024x1024",
+    "HUT_LogOut_BC": "1024x1024",
+    "HUT_LogOut_N": "1024x1024",
+    "HUT_LogEnd_BC": "512x512",
+    "HUT_PlankIn_BC": "1024x1024",
+    "HUT_PlankIn_N": "1024x1024",
+    "HUT_Paper_BC": "256x256",
+    "HUT_Tin_BC": "512x512",
+    "HUT_Map_BC": "512x512",
+    "HUT_Rug_BC": "512x512",
+    "HUT_Wool_BC": "512x512"
+   },
+   "seats": [
+    [
+     -0.95,
+     0.55,
+     0.875,
+     180.0
+    ]
+   ],
+   "notes": "one object per piece; box collision for the pieces with collision 'box' in `pieces`",
+   "pieces": {
+    "Stove": {
+     "tris": 298,
+     "min": [
+      -1.8,
+      2.3,
+      0.4
+     ],
+     "max": [
+      -0.7,
+      3.28,
+      2.7
+     ],
+     "collision": "box"
+    },
+    "Kettle": {
+     "tris": 300,
+     "min": [
+      -1.615,
+      2.725,
+      1.19
+     ],
+     "max": [
+      -1.303,
+      2.955,
+      1.446
+     ],
+     "collision": "none"
+    },
+    "WoodBox": {
+     "tris": 252,
+     "min": [
+      -0.82,
+      2.88,
+      0.4
+     ],
+     "max": [
+      -0.362,
+      3.22,
+      0.72
+     ],
+     "collision": "box"
+    },
+    "Stool": {
+     "tris": 120,
+     "min": [
+      -0.62,
+      2.228,
+      0.396
+     ],
+     "max": [
+      -0.28,
+      2.59,
+      0.835
+     ],
+     "collision": "box"
+    },
+    "Bunk": {
+     "tris": 368,
+     "min": [
+      0.98,
+      0.958,
+      0.397
+     ],
+     "max": [
+      1.88,
+      3.28,
+      2.18
+     ],
+     "collision": "box"
+    },
+    "Table": {
+     "tris": 82,
+     "min": [
+      -1.82,
+      0.0,
+      0.4
+     ],
+     "max": [
+      -1.2,
+      1.1,
+      1.18
+     ],
+     "collision": "box"
+    },
+    "Radio": {
+     "tris": 190,
+     "min": [
+      -1.74,
+      0.65,
+      1.18
+     ],
+     "max": [
+      -1.47,
+      1.03,
+      1.405
+     ],
+     "collision": "none"
+    },
+    "Handset": {
+     "tris": 116,
+     "min": [
+      -1.603,
+      0.496,
+      1.18
+     ],
+     "max": [
+      -1.349,
+      0.873,
+      1.24
+     ],
+     "collision": "none"
+    },
+    "Logbook": {
+     "tris": 36,
+     "min": [
+      -1.605,
+      0.166,
+      1.18
+     ],
+     "max": [
+      -1.395,
+      0.49,
+      1.217
+     ],
+     "collision": "none"
+    },
+    "Mug": {
+     "tris": 228,
+     "min": [
+      -1.345,
+      0.156,
+      1.18
+     ],
+     "max": [
+      -1.221,
+      0.244,
+      1.27
+     ],
+     "collision": "none"
+    },
+    "KeroseneLamp": {
+     "tris": 406,
+     "min": [
+      -1.705,
+      0.077,
+      1.18
+     ],
+     "max": [
+      -1.54,
+      0.203,
+      1.54
+     ],
+     "collision": "none"
+    },
+    "Chair": {
+     "tris": 144,
+     "min": [
+      -1.15,
+      0.35,
+      0.4
+     ],
+     "max": [
+      -0.75,
+      0.75,
+      1.32
+     ],
+     "collision": "box"
+    },
+    "ShelfBack": {
+     "tris": 72,
+     "min": [
+      -0.15,
+      3.04,
+      1.23
+     ],
+     "max": [
+      0.85,
+      3.28,
+      1.82
+     ],
+     "collision": "box"
+    },
+    "Tins": {
+     "tris": 352,
+     "min": [
+      -0.09,
+      3.1,
+      1.4
+     ],
+     "max": [
+      0.784,
+      3.18,
+      1.9
+     ],
+     "collision": "none"
+    },
+    "Jars": {
+     "tris": 336,
+     "min": [
+      0.413,
+      3.093,
+      1.4
+     ],
+     "max": [
+      0.747,
+      3.187,
+      1.535
+     ],
+     "collision": "none"
+    },
+    "FirstAidBox": {
+     "tris": 30,
+     "min": [
+      0.51,
+      3.066,
+      1.82
+     ],
+     "max": [
+      0.73,
+      3.19,
+      1.97
+     ],
+     "collision": "none"
+    },
+    "Binoculars": {
+     "tris": 188,
+     "min": [
+      -0.055,
+      3.005,
+      1.824
+     ],
+     "max": [
+      0.155,
+      3.16,
+      1.966
+     ],
+     "collision": "none"
+    },
+    "RolledMaps": {
+     "tris": 140,
+     "min": [
+      0.15,
+      3.088,
+      1.819
+     ],
+     "max": [
+      0.52,
+      3.222,
+      1.935
+     ],
+     "collision": "none"
+    },
+    "ShelfLeft": {
+     "tris": 76,
+     "min": [
+      -1.88,
+      1.38,
+      1.36
+     ],
+     "max": [
+      -1.64,
+      2.3,
+      1.55
+     ],
+     "collision": "box"
+    },
+    "Pot": {
+     "tris": 264,
+     "min": [
+      -1.885,
+      1.635,
+      1.55
+     ],
+     "max": [
+      -1.635,
+      1.925,
+      1.71
+     ],
+     "collision": "none"
+    },
+    "FryingPan": {
+     "tris": 180,
+     "min": [
+      -1.869,
+      1.96,
+      1.275
+     ],
+     "max": [
+      -1.826,
+      2.405,
+      1.525
+     ],
+     "collision": "none"
+    },
+    "CoatRack": {
+     "tris": 204,
+     "min": [
+      1.745,
+      -1.58,
+      1.7
+     ],
+     "max": [
+      1.88,
+      -0.78,
+      1.8
+     ],
+     "collision": "none"
+    },
+    "Oilskin": {
+     "tris": 432,
+     "min": [
+      1.607,
+      -1.558,
+      0.57
+     ],
+     "max": [
+      1.782,
+      -0.842,
+      1.68
+     ],
+     "collision": "none"
+    },
+    "Cap": {
+     "tris": 84,
+     "min": [
+      1.615,
+      -1.085,
+      1.619
+     ],
+     "max": [
+      1.829,
+      -0.875,
+      1.7
+     ],
+     "collision": "none"
+    },
+    "GunRack": {
+     "tris": 156,
+     "min": [
+      1.77,
+      -0.62,
+      1.3
+     ],
+     "max": [
+      1.88,
+      0.12,
+      2.12
+     ],
+     "collision": "none"
+    },
+    "WallMap": {
+     "tris": 94,
+     "min": [
+      1.847,
+      0.12,
+      1.28
+     ],
+     "max": [
+      1.88,
+      1.18,
+      2.1
+     ],
+     "collision": "none"
+    },
+    "RubberBoots": {
+     "tris": 296,
+     "min": [
+      1.381,
+      -1.627,
+      0.4
+     ],
+     "max": [
+      1.55,
+      -1.08,
+      0.802
+     ],
+     "collision": "none"
+    },
+    "Rug": {
+     "tris": 10,
+     "min": [
+      -0.65,
+      -0.2,
+      0.4
+     ],
+     "max": [
+      0.45,
+      1.3,
+      0.412
+     ],
+     "collision": "none"
+    },
+    "CeilingLamp": {
+     "tris": 254,
+     "min": [
+      0.03,
+      -0.22,
+      2.215
+     ],
+     "max": [
+      0.27,
+      0.02,
+      2.7
+     ],
+     "collision": "none"
+    },
+    "Mattress": {
+     "tris": 144,
+     "min": [
+      1.02,
+      1.28,
+      0.84
+     ],
+     "max": [
+      1.84,
+      3.2,
+      1.855
+     ],
+     "collision": "none"
+    },
+    "Blanket": {
+     "tris": 260,
+     "min": [
+      0.98,
+      1.36,
+      0.8
+     ],
+     "max": [
+      1.82,
+      2.45,
+      2.0
+     ],
+     "collision": "none"
+    },
+    "Pillow": {
+     "tris": 188,
+     "min": [
+      1.17,
+      2.84,
+      0.925
+     ],
+     "max": [
+      1.69,
+      3.16,
+      1.035
+     ],
+     "collision": "none"
+    }
+   }
+  },
+  {
+   "kind": "hut_door",
+   "variant": 0,
+   "file": "hut_door.glb",
+   "tris": 324,
+   "size": [
+    0.956,
+    0.123,
+    1.95
+   ],
+   "collision": "none",
+   "textures": {
+    "HUT_PlankOut_BC": "1024x1024",
+    "HUT_PlankOut_N": "1024x1024",
+    "HUT_PlankIn_BC": "1024x1024",
+    "HUT_PlankIn_N": "1024x1024"
+   },
+   "seats": [],
+   "notes": "leaf only, origin = hinge axis at the bottom; closed: leaf along +X from the origin, outside face toward -Y"
+  }
+ ],
+ "front_yaw": 90.0,
+ "front_yaw_note": "Unreal degrees of the mesh's front in its own frame (importer turns actors by yaw - front_yaw); Blender -Y front, default 90",
+ "door": {
+  "name": "hut_door",
+  "at": [
+   0.5,
+   -1.79,
+   0.4
+  ],
+  "out": [
+   0,
+   -1
+  ],
+  "hole": [
+   1.0,
+   2.02
+  ],
+  "wall": 0.22,
+  "leaves": 1,
+  "hinge": "left",
+  "frame": false,
+  "open": false,
+  "locked": false,
+  "note": "place_doors.py entry in hut-local Blender metres; the hut builds its own lining and casings (frame false)"
+ },
+ "door_detail": {
+  "hinge": [
+   0.015,
+   -1.79,
+   0.41
+  ],
+  "hinge_side": "left, seen from outside (standing on the porch facing the door)",
+  "hinge_side_alyuddoor": "ALyudDoor's +X faces the swing side (the porch): seen from there the hinge is on the LEFT too; set Hinge = Left with +X toward the porch (-Y here)",
+  "swing": "outward onto the porch (toward -Y), open angle 95 deg",
+  "leaf_size": [
+   0.94,
+   0.045,
+   1.95
+  ],
+  "leaf_origin_is": "hinge axis, bottom",
+  "opening_clear": {
+   "x": [
+    0.0,
+    1.0
+   ],
+   "width": 1.0,
+   "height_from_floor": 2.02,
+   "z_top": 2.42
+  },
+  "opening_centre": [
+   0.5,
+   -1.9,
+   0.4
+  ],
+  "wall_y": [
+   -1.9,
+   -1.68
+  ],
+  "wall_thickness": 0.22,
+  "threshold_height_over_floor": 0.0,
+  "outward_normal": [
+   0,
+   -1,
+   0
+  ],
+  "lining": "3 cm plank lining across the wall, 8 cm casings on both faces, all inside hut.glb (door actor: bBuildFrame off)"
+ },
+ "bed": {
+  "kind": "bunk (two tier), lower bed for lying",
+  "head": [
+   1.43,
+   2.98,
+   1.04
+  ],
+  "feet": [
+   1.43,
+   1.4,
+   1.0
+  ],
+  "head_yaw_deg": 90.0,
+  "note": "yaw = direction feet -> head seen from above, 0 = +X, 90 = +Y (head against the back wall); the person lies on the back on the mattress, pillow top at head z; access from the open side facing the room (x < 0.98)",
+  "stand_by_bed": [
+   0.62,
+   2.0,
+   0.4
+  ]
+ },
+ "chair": {
+  "seat": [
+   -0.95,
+   0.55,
+   0.875
+  ],
+  "yaw_deg": 180.0,
+  "note": "yaw = facing direction (toward the table, -X)"
+ },
+ "stool": {
+  "seat": [
+   -0.45,
+   2.42,
+   0.835
+  ],
+  "yaw_deg": 0.0
+ },
+ "stove": {
+  "flue_top": [
+   -1.25,
+   2.92,
+   4.88
+  ],
+  "smoke_origin": [
+   -1.25,
+   2.92,
+   4.93
+  ],
+  "glow_slit": [
+   -1.26,
+   2.58,
+   0.56
+  ],
+  "kettle": [
+   -1.5,
+   2.84,
+   1.19
+  ]
+ },
+ "lamps": [
+  {
+   "id": "kerosene",
+   "pos": [
+    -1.64,
+    0.14,
+    1.38
+   ],
+   "colour": "#ffb060",
+   "kind": "flame"
+  },
+  {
+   "id": "ceiling_bulb",
+   "pos": [
+    0.15,
+    -0.1,
+    2.26
+   ],
+   "colour": "#ffe2b0",
+   "kind": "bulb"
+  },
+  {
+   "id": "stove_glow",
+   "pos": [
+    -1.26,
+    2.5,
+    0.56
+   ],
+   "colour": "#ff7a30",
+   "kind": "glow"
+  }
+ ],
+ "emissive_slots": {
+  "HUT_LampGlass": "kerosene lamp chimney",
+  "HUT_BulbGlass": "the ceiling bulb",
+  "HUT_Fire": "wick flame and the stove glow slit",
+  "HUT_Glass": "window panes (all windows share the slot): swap an emissive/lit glass at night"
+ },
+ "radio": {
+  "pos": [
+   -1.62,
+   0.84,
+   1.28
+  ],
+  "face_yaw_deg": 0.0,
+  "note": "faces +X, toward the chair"
+ },
+ "wall_map": {
+  "corners_seen_from_room": {
+   "bottom_left": [
+    1.859,
+    1.12,
+    1.34
+   ],
+   "bottom_right": [
+    1.859,
+    0.18,
+    1.34
+   ],
+   "top_right": [
+    1.859,
+    0.18,
+    2.04
+   ],
+   "top_left": [
+    1.859,
+    1.12,
+    2.04
+   ]
+  },
+  "normal": [
+   -1,
+   0,
+   0
+  ],
+  "uv": "0..1 over the quad (bottom-left = 0,0), material HUT_Map (a placeholder the game replaces)",
+  "size_m": [
+   0.94,
+   0.7
+  ]
+ },
+ "footprint": {
+  "cabin": [
+   [
+    -2.1,
+    -1.9
+   ],
+   [
+    2.1,
+    -1.9
+   ],
+   [
+    2.1,
+    3.5
+   ],
+   [
+    -2.1,
+    3.5
+   ]
+  ],
+  "with_porch": [
+   [
+    -2.1,
+    -3.5
+   ],
+   [
+    2.1,
+    -3.5
+   ],
+   [
+    2.1,
+    3.5
+   ],
+   [
+    -2.1,
+    3.5
+   ]
+  ],
+  "with_steps": [
+   [
+    -2.1,
+    -4.1
+   ],
+   [
+    2.1,
+    -4.1
+   ],
+   [
+    2.1,
+    3.5
+   ],
+   [
+    -2.1,
+    3.5
+   ]
+  ],
+  "roof_outline": [
+   [
+    -2.5,
+    -3.8
+   ],
+   [
+    2.5,
+    -3.8
+   ],
+   [
+    2.5,
+    3.8
+   ],
+   [
+    -2.5,
+    3.8
+   ]
+  ],
+  "all_details_max_xy": [
+   3.45,
+   4.45
+  ],
+  "interior": {
+   "x": [
+    -1.88,
+    1.88
+   ],
+   "y": [
+    -1.68,
+    3.28
+   ]
+  }
+ },
+ "level_pad_radius": {
+  "flat_min": 5.0,
+  "recommended": 6.5,
+  "note": "the farthest fixed detail is the lean-to corner (1.9, 4.45) at 4.84 m; the weather post, antenna anchor, steps and roof corners lie within 4.6 m; fits tools/north.py's 9-10 m pad"
+ },
+ "floor_height_over_ground": 0.4,
+ "porch_deck_height": 0.4,
+ "steps": {
+  "count": 2,
+  "riser": 0.133,
+  "width": 1.5,
+  "x": [
+   -0.25,
+   1.25
+  ],
+  "to_y": -4.1
+ },
+ "ceiling_height_over_floor": 2.3,
+ "roof_ridge_z": 4.243,
+ "free_spots": {
+  "inside": [
+   [
+    0.35,
+    -0.7,
+    0.4
+   ],
+   [
+    -0.2,
+    1.9,
+    0.4
+   ],
+   [
+    0.45,
+    2.75,
+    0.4
+   ]
+  ],
+  "porch": [
+   [
+    -1.2,
+    -2.8,
+    0.4
+   ],
+   [
+    0.6,
+    -3.05,
+    0.4
+   ]
+  ],
+  "note": "x, y, z of a standing person's feet"
+ },
+ "windows": [
+  {
+   "id": "front",
+   "centre": [
+    -1.0,
+    -1.9,
+    1.645
+   ],
+   "size": [
+    0.8,
+    0.93
+   ],
+   "wall": "front"
+  },
+  {
+   "id": "side",
+   "centre": [
+    -2.1,
+    0.55,
+    1.735
+   ],
+   "size": [
+    0.8,
+    0.92
+   ],
+   "wall": "left"
+  }
+ ],
+ "checks": {
+  "flipped_or_degenerate": {},
+  "nonmanifold_edges_total": 1038,
+  "closed_islands_total": 421,
+  "passage_box": {
+   "samples": 442,
+   "hits": 0,
+   "first_hits": [],
+   "box": [
+    0.7,
+    0.7,
+    1.8
+   ],
+   "path": [
+    [
+     0.5,
+     -5.2
+    ],
+    [
+     0.5,
+     -1.0
+    ],
+    [
+     0.5,
+     -0.6
+    ],
+    [
+     -0.3,
+     0.2
+    ],
+    [
+     -0.3,
+     1.8
+    ],
+    [
+     0.6,
+     1.9
+    ],
+    [
+     0.6,
+     2.4
+    ]
+   ]
+  }
+ }
+}
