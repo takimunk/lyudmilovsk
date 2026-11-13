@@ -624,7 +624,7 @@ def likes_for(rnd, age, female, ctype, occupation):
         likes["night_walk"] = round(rnd.uniform(0.0, 0.6), 2)
     if 12 <= age < 35 and rnd.random() < 0.45:
         likes["play_club"] = round(rnd.uniform(0.2, 0.9), 2)       # the computer club
-        likes["play_town_club"] = round(rnd.uniform(0.2, 0.9), 2)
+        rnd.uniform(0.2, 0.9)     # was a like of "play_town_club", an activity the game never had; the draw keeps the town as it is
     hobbies = ["eat_out", "coffee", "stroll", "sea_air", "fish_shore", "read_library", "fair_visit", "swim_look", "shop_town"]
     for h in rnd.sample(hobbies, 2):
         likes[h] = round(max(likes.get(h, 0.0), rnd.uniform(0.2, 0.8)), 2)

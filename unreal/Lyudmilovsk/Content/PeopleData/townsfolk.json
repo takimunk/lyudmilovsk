@@ -749,7 +749,6 @@
    "occupation": "away",
    "likes": {
     "play_club": 0.67,
-    "play_town_club": 0.29,
     "swim_look": 0.21,
     "fish_shore": 0.29
    },
@@ -1429,7 +1428,6 @@
    "occupation": "pupil",
    "likes": {
     "play_club": 0.36,
-    "play_town_club": 0.43,
     "coffee": 0.41,
     "swim_look": 0.77
    },
@@ -1578,7 +1576,6 @@
    "occupation": "away",
    "likes": {
     "play_club": 0.33,
-    "play_town_club": 0.44,
     "read_library": 0.79,
     "fair_visit": 0.41
    },
@@ -1958,7 +1955,6 @@
    "likes": {
     "watch_sunrise": 0.53,
     "play_club": 0.28,
-    "play_town_club": 0.88,
     "shop_town": 0.25,
     "coffee": 0.68
    },
@@ -2621,7 +2617,6 @@
    "likes": {
     "night_walk": 0.52,
     "play_club": 0.71,
-    "play_town_club": 0.55,
     "swim_look": 0.77,
     "sea_air": 0.26
    },
@@ -2723,7 +2718,6 @@
    "occupation": "pupil",
    "likes": {
     "play_club": 0.71,
-    "play_town_club": 0.27,
     "stroll": 0.3,
     "read_library": 0.62
    },
@@ -2758,7 +2752,6 @@
    "likes": {
     "night_walk": 0.27,
     "play_club": 0.24,
-    "play_town_club": 0.47,
     "sea_air": 0.28,
     "swim_look": 0.34
    },
@@ -2944,7 +2937,6 @@
    "likes": {
     "night_walk": 0.91,
     "play_club": 0.72,
-    "play_town_club": 0.22,
     "swim_look": 0.51,
     "shop_town": 0.74
    },
@@ -3233,7 +3225,6 @@
    "occupation": "butcher",
    "likes": {
     "play_club": 0.79,
-    "play_town_club": 0.76,
     "eat_out": 0.69,
     "stroll": 0.41
    },
@@ -4155,7 +4146,6 @@
    "occupation": "programmer",
    "likes": {
     "play_club": 0.31,
-    "play_town_club": 0.42,
     "read_library": 0.31,
     "sea_air": 0.22
    },
@@ -4287,7 +4277,6 @@
    "likes": {
     "watch_sunrise": 0.95,
     "play_club": 0.63,
-    "play_town_club": 0.33,
     "fish_shore": 0.78,
     "read_library": 0.58
    },
@@ -4725,7 +4714,6 @@
    "occupation": "pupil",
    "likes": {
     "play_club": 0.32,
-    "play_town_club": 0.74,
     "swim_look": 0.58,
     "fish_shore": 0.32
    },
@@ -4964,7 +4952,6 @@
    "occupation": "waiter",
    "likes": {
     "play_club": 0.87,
-    "play_town_club": 0.53,
     "eat_out": 0.53,
     "fish_shore": 0.22
    },
@@ -5147,7 +5134,6 @@
    "likes": {
     "watch_sunrise": 0.65,
     "play_club": 0.53,
-    "play_town_club": 0.69,
     "coffee": 0.53,
     "shop_town": 0.78
    },
@@ -5732,7 +5718,6 @@
    "likes": {
     "watch_sunrise": 1.21,
     "play_club": 0.72,
-    "play_town_club": 0.73,
     "fair_visit": 0.67,
     "read_library": 0.44
    },
@@ -6048,7 +6033,6 @@
    "likes": {
     "night_walk": 0.47,
     "play_club": 0.79,
-    "play_town_club": 0.39,
     "coffee": 0.59,
     "read_library": 0.27
    },
@@ -6271,7 +6255,6 @@
    "likes": {
     "night_walk": 1.19,
     "play_club": 0.22,
-    "play_town_club": 0.7,
     "stroll": 0.34,
     "read_library": 0.42
    },
@@ -6572,7 +6555,6 @@
    "occupation": "student",
    "likes": {
     "play_club": 0.46,
-    "play_town_club": 0.3,
     "stroll": 0.78,
     "fair_visit": 0.41
    },
@@ -7134,7 +7116,6 @@
    "likes": {
     "watch_sunrise": 0.89,
     "play_club": 0.69,
-    "play_town_club": 0.48,
     "fish_shore": 0.62,
     "coffee": 0.6
    },
@@ -7345,7 +7326,6 @@
    "occupation": "artist",
    "likes": {
     "play_club": 0.46,
-    "play_town_club": 0.43,
     "fish_shore": 0.53,
     "stroll": 0.41
    },
@@ -7513,7 +7493,6 @@
    "likes": {
     "watch_sunrise": 0.49,
     "play_club": 0.33,
-    "play_town_club": 0.86,
     "coffee": 0.53,
     "fish_shore": 0.34,
     "stroll": 0.52
@@ -7564,7 +7543,6 @@
    "likes": {
     "watch_sunrise": 0.7,
     "play_club": 0.23,
-    "play_town_club": 0.52,
     "eat_out": 0.72,
     "fish_shore": 0.71
    },
@@ -7945,7 +7923,6 @@
    "likes": {
     "watch_sunrise": 0.69,
     "play_club": 0.6,
-    "play_town_club": 0.31,
     "fish_shore": 0.38,
     "swim_look": 0.31
    },
@@ -8172,7 +8149,6 @@
    "likes": {
     "watch_sunrise": 0.47,
     "play_club": 0.78,
-    "play_town_club": 0.82,
     "shop_town": 0.64,
     "swim_look": 0.55
    },
@@ -8735,7 +8711,6 @@
    "occupation": "fishmonger",
    "likes": {
     "play_club": 0.88,
-    "play_town_club": 0.89,
     "read_library": 0.26,
     "stroll": 0.57
    },
@@ -8787,7 +8762,6 @@
    "likes": {
     "night_walk": 1.2,
     "play_club": 0.49,
-    "play_town_club": 0.82,
     "shop_town": 0.3,
     "stroll": 0.5
    },
@@ -9242,7 +9216,6 @@
    "occupation": "pupil",
    "likes": {
     "play_club": 0.38,
-    "play_town_club": 0.69,
     "shop_town": 0.6,
     "fish_shore": 0.73
    },
@@ -9294,7 +9267,6 @@
    "occupation": "away",
    "likes": {
     "play_club": 0.88,
-    "play_town_club": 0.82,
     "coffee": 0.5,
     "sea_air": 0.47
    },
@@ -9394,7 +9366,6 @@
    "occupation": "away",
    "likes": {
     "play_club": 0.84,
-    "play_town_club": 0.6,
     "swim_look": 0.47,
     "fair_visit": 0.61
    },
@@ -9622,7 +9593,6 @@
    "occupation": "homemaker",
    "likes": {
     "play_club": 0.25,
-    "play_town_club": 0.44,
     "stroll": 0.62,
     "sea_air": 0.36
    },
@@ -9840,7 +9810,6 @@
    "occupation": "pupil",
    "likes": {
     "play_club": 0.62,
-    "play_town_club": 0.49,
     "read_library": 0.57,
     "stroll": 0.75
    },
@@ -10647,7 +10616,6 @@
    "likes": {
     "watch_sunrise": 0.63,
     "play_club": 0.59,
-    "play_town_club": 0.84,
     "stroll": 0.27,
     "fish_shore": 0.24
    },
@@ -11222,7 +11190,6 @@
    "occupation": "manager",
    "likes": {
     "play_club": 0.55,
-    "play_town_club": 0.81,
     "swim_look": 0.37,
     "shop_town": 0.7
    },
@@ -11324,7 +11291,6 @@
    "likes": {
     "watch_sunrise": 0.48,
     "play_club": 0.35,
-    "play_town_club": 0.38,
     "eat_out": 0.27,
     "sea_air": 0.3
    },
@@ -11949,7 +11915,6 @@
    "likes": {
     "watch_sunrise": 0.95,
     "play_club": 0.63,
-    "play_town_club": 0.23,
     "fish_shore": 0.57,
     "swim_look": 0.58
    },
@@ -12002,7 +11967,6 @@
    "likes": {
     "watch_sunrise": 0.57,
     "play_club": 0.25,
-    "play_town_club": 0.42,
     "sea_air": 0.61,
     "read_library": 0.6
    },
@@ -12090,7 +12054,6 @@
    "occupation": "pupil",
    "likes": {
     "play_club": 0.54,
-    "play_town_club": 0.73,
     "stroll": 0.76,
     "eat_out": 0.35
    },
@@ -12393,7 +12356,6 @@
    "likes": {
     "night_walk": 0.16,
     "play_club": 0.68,
-    "play_town_club": 0.4,
     "fish_shore": 0.66,
     "swim_look": 0.74
    },
@@ -12446,7 +12408,6 @@
    "occupation": "cook",
    "likes": {
     "play_club": 0.43,
-    "play_town_club": 0.54,
     "read_library": 0.78,
     "shop_town": 0.78
    },
@@ -12482,7 +12443,6 @@
    "occupation": "musician",
    "likes": {
     "play_club": 0.25,
-    "play_town_club": 0.7,
     "coffee": 0.24,
     "sea_air": 0.45
    },
@@ -12609,7 +12569,6 @@
    "occupation": "writer",
    "likes": {
     "play_club": 0.5,
-    "play_town_club": 0.33,
     "read_library": 0.5,
     "fish_shore": 0.22,
     "stroll": 0.89
@@ -12782,7 +12741,6 @@
    "occupation": "seller",
    "likes": {
     "play_club": 0.4,
-    "play_town_club": 0.61,
     "eat_out": 0.39,
     "read_library": 0.73
    },
@@ -13274,7 +13232,6 @@
    "occupation": "pupil",
    "likes": {
     "play_club": 0.64,
-    "play_town_club": 0.23,
     "stroll": 0.46,
     "eat_out": 0.44
    },
@@ -13330,7 +13287,6 @@
    "occupation": "seller",
    "likes": {
     "play_club": 0.56,
-    "play_town_club": 0.31,
     "swim_look": 0.31,
     "eat_out": 0.61
    },
@@ -13432,7 +13388,6 @@
    "occupation": "cleaner",
    "likes": {
     "play_club": 0.52,
-    "play_town_club": 0.89,
     "fair_visit": 0.74,
     "read_library": 0.27
    },
@@ -13535,7 +13490,6 @@
    "occupation": "pupil",
    "likes": {
     "play_club": 0.89,
-    "play_town_club": 0.88,
     "fair_visit": 0.44,
     "sea_air": 0.79
    },
@@ -13587,7 +13541,6 @@
    "occupation": "away",
    "likes": {
     "play_club": 0.6,
-    "play_town_club": 0.25,
     "sea_air": 0.58,
     "fish_shore": 0.67
    },
@@ -13671,7 +13624,6 @@
    "occupation": "away",
    "likes": {
     "play_club": 0.54,
-    "play_town_club": 0.66,
     "coffee": 0.65,
     "fair_visit": 0.48
    },
@@ -13997,7 +13949,6 @@
    "occupation": "away",
    "likes": {
     "play_club": 0.85,
-    "play_town_club": 0.54,
     "swim_look": 0.71,
     "stroll": 0.21
    },
@@ -14594,7 +14545,6 @@
    "occupation": "fishmonger",
    "likes": {
     "play_club": 0.53,
-    "play_town_club": 0.81,
     "fair_visit": 0.34,
     "fish_shore": 0.27
    },
@@ -14808,7 +14758,6 @@
    "occupation": "away",
    "likes": {
     "play_club": 0.63,
-    "play_town_club": 0.89,
     "fish_shore": 0.68,
     "fair_visit": 0.64
    },
@@ -15652,7 +15601,6 @@
    "occupation": "away",
    "likes": {
     "play_club": 0.26,
-    "play_town_club": 0.55,
     "fair_visit": 0.26,
     "coffee": 0.32
    },
@@ -15741,7 +15689,6 @@
    "occupation": "away",
    "likes": {
     "play_club": 0.81,
-    "play_town_club": 0.74,
     "fish_shore": 0.35,
     "read_library": 0.38
    },
@@ -16272,7 +16219,6 @@
    "occupation": "homemaker",
    "likes": {
     "play_club": 0.6,
-    "play_town_club": 0.84,
     "coffee": 0.45,
     "stroll": 0.46
    },
@@ -16499,7 +16445,6 @@
    "likes": {
     "night_walk": 1.17,
     "play_club": 0.66,
-    "play_town_club": 0.58,
     "fish_shore": 0.68,
     "shop_town": 0.7
    },
@@ -16872,7 +16817,6 @@
    "occupation": "pupil",
    "likes": {
     "play_club": 0.37,
-    "play_town_club": 0.38,
     "fish_shore": 0.46,
     "read_library": 0.35
    },
@@ -17213,7 +17157,6 @@
    "likes": {
     "watch_sunrise": 1.03,
     "play_club": 0.79,
-    "play_town_club": 0.53,
     "eat_out": 0.74,
     "stroll": 0.73
    },
@@ -17486,7 +17429,6 @@
    "likes": {
     "night_walk": 0.2,
     "play_club": 0.34,
-    "play_town_club": 0.44,
     "sea_air": 0.72,
     "stroll": 0.42
    },
@@ -17590,7 +17532,6 @@
    "occupation": "pupil",
    "likes": {
     "play_club": 0.51,
-    "play_town_club": 0.79,
     "swim_look": 0.52,
     "shop_town": 0.56
    },
@@ -17875,7 +17816,6 @@
    "likes": {
     "watch_sunrise": 1.24,
     "play_club": 0.45,
-    "play_town_club": 0.83,
     "stroll": 0.44,
     "sea_air": 0.75
    },
@@ -18343,7 +18283,6 @@
    "likes": {
     "night_walk": 0.31,
     "play_club": 0.52,
-    "play_town_club": 0.87,
     "shop_town": 0.56,
     "read_library": 0.37
    },
@@ -18461,7 +18400,6 @@
    "occupation": "away",
    "likes": {
     "play_club": 0.87,
-    "play_town_club": 0.4,
     "sea_air": 0.54,
     "fair_visit": 0.23
    },
@@ -19053,7 +18991,6 @@
    "occupation": "clerk",
    "likes": {
     "play_club": 0.88,
-    "play_town_club": 0.33,
     "read_library": 0.79,
     "sea_air": 0.47
    },
@@ -19229,7 +19166,6 @@
    "likes": {
     "night_walk": 1.37,
     "play_club": 0.31,
-    "play_town_club": 0.73,
     "swim_look": 0.29,
     "eat_out": 0.55
    },
@@ -20264,7 +20200,6 @@
    "occupation": "pupil",
    "likes": {
     "play_club": 0.67,
-    "play_town_club": 0.52,
     "stroll": 0.3,
     "eat_out": 0.48
    },
@@ -20726,7 +20661,6 @@
    "occupation": "lifeguard",
    "likes": {
     "play_club": 0.73,
-    "play_town_club": 0.64,
     "fair_visit": 0.68,
     "fish_shore": 0.79
    },
@@ -21056,7 +20990,6 @@
    "likes": {
     "watch_sunrise": 0.97,
     "play_club": 0.49,
-    "play_town_club": 0.6,
     "coffee": 0.46,
     "sea_air": 0.23
    },
@@ -21108,7 +21041,6 @@
    "likes": {
     "night_walk": 1.38,
     "play_club": 0.53,
-    "play_town_club": 0.32,
     "stroll": 0.56,
     "shop_town": 0.78
    },
@@ -21498,7 +21430,6 @@
    "occupation": "seller",
    "likes": {
     "play_club": 0.78,
-    "play_town_club": 0.8,
     "stroll": 0.46,
     "fish_shore": 0.62
    },
@@ -21548,7 +21479,6 @@
    "likes": {
     "watch_sunrise": 0.66,
     "play_club": 0.82,
-    "play_town_club": 0.9,
     "fair_visit": 0.65,
     "fish_shore": 0.62
    },
@@ -21666,7 +21596,6 @@
    "occupation": "student",
    "likes": {
     "play_club": 0.82,
-    "play_town_club": 0.58,
     "stroll": 0.54,
     "fish_shore": 0.24
    },
@@ -21720,7 +21649,6 @@
    "occupation": "renter",
    "likes": {
     "play_club": 0.24,
-    "play_town_club": 0.82,
     "read_library": 0.5,
     "stroll": 0.34
    },
@@ -21860,7 +21788,6 @@
    "occupation": "programmer",
    "likes": {
     "play_club": 0.49,
-    "play_town_club": 0.89,
     "swim_look": 0.55,
     "read_library": 0.25
    },
@@ -22638,7 +22565,6 @@
    "likes": {
     "night_walk": 0.07,
     "play_club": 0.66,
-    "play_town_club": 0.25,
     "eat_out": 0.65,
     "fish_shore": 0.75
    },
@@ -22920,7 +22846,6 @@
    "likes": {
     "night_walk": 0.34,
     "play_club": 0.34,
-    "play_town_club": 0.34,
     "fair_visit": 0.34,
     "stroll": 0.3
    },
@@ -23175,7 +23100,6 @@
    "occupation": "away",
    "likes": {
     "play_club": 0.35,
-    "play_town_club": 0.38,
     "fair_visit": 0.63,
     "fish_shore": 0.24
    },
@@ -23305,7 +23229,6 @@
    "likes": {
     "night_walk": 0.49,
     "play_club": 0.74,
-    "play_town_club": 0.47,
     "shop_town": 0.75,
     "swim_look": 0.51
    },
@@ -23356,7 +23279,6 @@
    "likes": {
     "night_walk": 0.29,
     "play_club": 0.28,
-    "play_town_club": 0.22,
     "stroll": 0.43,
     "fish_shore": 0.53
    },
@@ -23408,7 +23330,6 @@
    "occupation": "away",
    "likes": {
     "play_club": 0.83,
-    "play_town_club": 0.46,
     "coffee": 0.69,
     "shop_town": 0.77
    },
@@ -23753,7 +23674,6 @@
    "likes": {
     "night_walk": 0.58,
     "play_club": 0.44,
-    "play_town_club": 0.36,
     "read_library": 0.3,
     "coffee": 0.27
    },
@@ -24410,7 +24330,6 @@
    "occupation": "away",
    "likes": {
     "play_club": 0.51,
-    "play_town_club": 0.54,
     "fair_visit": 0.32,
     "sea_air": 0.46
    },
@@ -24779,7 +24698,6 @@
    "occupation": "barista",
    "likes": {
     "play_club": 0.68,
-    "play_town_club": 0.83,
     "coffee": 0.38,
     "eat_out": 0.58
    },
@@ -25690,7 +25608,6 @@
    "likes": {
     "night_walk": 0.28,
     "play_club": 0.47,
-    "play_town_club": 0.67,
     "read_library": 0.42,
     "eat_out": 0.52,
     "stroll": 0.89
@@ -25959,7 +25876,6 @@
    "occupation": "away",
    "likes": {
     "play_club": 0.57,
-    "play_town_club": 0.89,
     "fair_visit": 0.35,
     "shop_town": 0.46
    },
@@ -26279,7 +26195,6 @@
    "likes": {
     "night_walk": 1.03,
     "play_club": 0.7,
-    "play_town_club": 0.73,
     "read_library": 0.78,
     "sea_air": 0.71
    },
@@ -26314,7 +26229,6 @@
    "likes": {
     "watch_sunrise": 0.59,
     "play_club": 0.37,
-    "play_town_club": 0.33,
     "shop_town": 0.77,
     "fish_shore": 0.22,
     "stroll": 0.86
@@ -26369,7 +26283,6 @@
    "occupation": "pupil",
    "likes": {
     "play_club": 0.83,
-    "play_town_club": 0.22,
     "swim_look": 0.54,
     "read_library": 0.63
    },
@@ -26549,7 +26462,6 @@
    "occupation": "vendor",
    "likes": {
     "play_club": 0.44,
-    "play_town_club": 0.28,
     "read_library": 0.47,
     "fish_shore": 0.72
    },
@@ -26806,7 +26718,6 @@
    "occupation": "artist",
    "likes": {
     "play_club": 0.63,
-    "play_town_club": 0.62,
     "read_library": 0.55,
     "fair_visit": 0.45,
     "stroll": 0.63
@@ -26857,7 +26768,6 @@
    "occupation": "away",
    "likes": {
     "play_club": 0.61,
-    "play_town_club": 0.25,
     "fair_visit": 0.54,
     "read_library": 0.63
    },
@@ -26996,7 +26906,6 @@
    "occupation": "caretaker",
    "likes": {
     "play_club": 0.84,
-    "play_town_club": 0.31,
     "stroll": 0.63,
     "sea_air": 0.62
    },
@@ -27230,7 +27139,6 @@
    "occupation": "writer",
    "likes": {
     "play_club": 0.82,
-    "play_town_club": 0.75,
     "sea_air": 0.45,
     "stroll": 0.45
    },
@@ -27419,7 +27327,6 @@
    "occupation": "away",
    "likes": {
     "play_club": 0.84,
-    "play_town_club": 0.32,
     "sea_air": 0.53,
     "stroll": 0.58
    },
@@ -27454,7 +27361,6 @@
    "likes": {
     "watch_sunrise": 0.85,
     "play_club": 0.23,
-    "play_town_club": 0.83,
     "stroll": 0.51,
     "read_library": 0.23
    },
@@ -27629,7 +27535,6 @@
    "likes": {
     "night_walk": 1.17,
     "play_club": 0.44,
-    "play_town_club": 0.56,
     "shop_town": 0.65,
     "read_library": 0.26,
     "stroll": 0.44
@@ -27664,7 +27569,6 @@
    "occupation": "programmer",
    "likes": {
     "play_club": 0.85,
-    "play_town_club": 0.74,
     "fair_visit": 0.28,
     "fish_shore": 0.7
    },
@@ -27698,7 +27602,6 @@
    "occupation": "homemaker",
    "likes": {
     "play_club": 0.68,
-    "play_town_club": 0.66,
     "eat_out": 0.43,
     "read_library": 0.59
    },
@@ -27856,7 +27759,6 @@
    "likes": {
     "watch_sunrise": 0.72,
     "play_club": 0.43,
-    "play_town_club": 0.21,
     "sea_air": 0.8,
     "fair_visit": 0.29
    },
@@ -27999,7 +27901,6 @@
    "likes": {
     "watch_sunrise": 0.79,
     "play_club": 0.89,
-    "play_town_club": 0.84,
     "fair_visit": 0.65,
     "coffee": 0.51
    },
@@ -28662,7 +28563,6 @@
    "likes": {
     "night_walk": 0.34,
     "play_club": 0.37,
-    "play_town_club": 0.22,
     "sea_air": 0.44,
     "swim_look": 0.26
    },
@@ -28909,7 +28809,6 @@
    "occupation": "away",
    "likes": {
     "play_club": 0.3,
-    "play_town_club": 0.6,
     "fair_visit": 0.22,
     "shop_town": 0.76
    },
@@ -29009,7 +28908,6 @@
    "occupation": "student",
    "likes": {
     "play_club": 0.76,
-    "play_town_club": 0.47,
     "fair_visit": 0.38,
     "stroll": 0.71
    },
@@ -29175,7 +29073,6 @@
    "likes": {
     "watch_sunrise": 0.67,
     "play_club": 0.28,
-    "play_town_club": 0.29,
     "shop_town": 0.36,
     "sea_air": 0.36
    },
@@ -29474,7 +29371,6 @@
    "likes": {
     "night_walk": 0.44,
     "play_club": 0.85,
-    "play_town_club": 0.72,
     "stroll": 0.28,
     "read_library": 0.33
    },
@@ -29905,7 +29801,6 @@
    "likes": {
     "night_walk": 0.24,
     "play_club": 0.41,
-    "play_town_club": 0.8,
     "coffee": 0.68,
     "fish_shore": 0.35
    },
@@ -30695,7 +30590,6 @@
    "occupation": "away",
    "likes": {
     "play_club": 0.54,
-    "play_town_club": 0.89,
     "coffee": 0.39,
     "shop_town": 0.47
    },
@@ -30942,7 +30836,6 @@
    "likes": {
     "watch_sunrise": 1.04,
     "play_club": 0.88,
-    "play_town_club": 0.75,
     "sea_air": 0.63,
     "eat_out": 0.66
    },
@@ -31583,7 +31476,6 @@
    "likes": {
     "watch_sunrise": 1.0,
     "play_club": 0.23,
-    "play_town_club": 0.47,
     "eat_out": 0.73,
     "shop_town": 0.67
    },
@@ -31672,7 +31564,6 @@
    "occupation": "away",
    "likes": {
     "play_club": 0.33,
-    "play_town_club": 0.53,
     "stroll": 0.34,
     "coffee": 0.71
    },
@@ -32384,7 +32275,6 @@
    "likes": {
     "night_walk": 0.32,
     "play_club": 0.77,
-    "play_town_club": 0.74,
     "stroll": 0.51,
     "sea_air": 0.31
    },
@@ -32601,7 +32491,6 @@
    "occupation": "homemaker",
    "likes": {
     "play_club": 0.83,
-    "play_town_club": 0.35,
     "read_library": 0.49,
     "sea_air": 0.37
    },
@@ -33198,7 +33087,6 @@
    "likes": {
     "night_walk": 0.05,
     "play_club": 0.84,
-    "play_town_club": 0.77,
     "eat_out": 0.75,
     "swim_look": 0.31
    },
@@ -33250,7 +33138,6 @@
    "likes": {
     "watch_sunrise": 0.72,
     "play_club": 0.69,
-    "play_town_club": 0.85,
     "stroll": 0.59,
     "read_library": 0.67
    },
@@ -33430,7 +33317,6 @@
    "likes": {
     "night_walk": 0.46,
     "play_club": 0.79,
-    "play_town_club": 0.29,
     "shop_town": 0.46,
     "fair_visit": 0.38
    },
@@ -33592,7 +33478,6 @@
    "occupation": "seller",
    "likes": {
     "play_club": 0.61,
-    "play_town_club": 0.52,
     "eat_out": 0.6,
     "sea_air": 0.66
    },
@@ -33826,7 +33711,6 @@
    "occupation": "pupil",
    "likes": {
     "play_club": 0.41,
-    "play_town_club": 0.54,
     "stroll": 0.74,
     "fish_shore": 0.77
    },
@@ -33915,7 +33799,6 @@
    "likes": {
     "watch_sunrise": 1.02,
     "play_club": 0.53,
-    "play_town_club": 0.57,
     "eat_out": 0.56,
     "sea_air": 0.47
    },
@@ -34604,7 +34487,6 @@
    "occupation": "pupil",
    "likes": {
     "play_club": 0.6,
-    "play_town_club": 0.51,
     "coffee": 0.32,
     "fair_visit": 0.27
    },
@@ -34790,7 +34672,6 @@
    "likes": {
     "watch_sunrise": 1.17,
     "play_club": 0.89,
-    "play_town_club": 0.8,
     "stroll": 0.58,
     "fair_visit": 0.58
    },
@@ -34891,7 +34772,6 @@
    "occupation": "pupil",
    "likes": {
     "play_club": 0.68,
-    "play_town_club": 0.78,
     "shop_town": 0.32,
     "eat_out": 0.73
    },
@@ -34999,7 +34879,6 @@
    "likes": {
     "night_walk": 0.22,
     "play_club": 0.73,
-    "play_town_club": 0.65,
     "fair_visit": 0.31,
     "eat_out": 0.44
    },
@@ -35591,7 +35470,6 @@
    "occupation": "musician",
    "likes": {
     "play_club": 0.71,
-    "play_town_club": 0.45,
     "sea_air": 0.2,
     "shop_town": 0.34
    },
@@ -35865,7 +35743,6 @@
    "occupation": "away",
    "likes": {
     "play_club": 0.79,
-    "play_town_club": 0.79,
     "swim_look": 0.46,
     "shop_town": 0.39
    },
@@ -35969,7 +35846,6 @@
    "likes": {
     "night_walk": 1.01,
     "play_club": 0.39,
-    "play_town_club": 0.8,
     "eat_out": 0.75,
     "coffee": 0.51
    },
@@ -36262,7 +36138,6 @@
    "likes": {
     "night_walk": 0.22,
     "play_club": 0.5,
-    "play_town_club": 0.89,
     "shop_town": 0.35,
     "eat_out": 0.34
    },
@@ -36352,7 +36227,6 @@
    "likes": {
     "night_walk": 0.95,
     "play_club": 0.86,
-    "play_town_club": 0.38,
     "eat_out": 0.65,
     "swim_look": 0.42
    },
@@ -36569,7 +36443,6 @@
    "likes": {
     "night_walk": 0.49,
     "play_club": 0.58,
-    "play_town_club": 0.32,
     "fair_visit": 0.52,
     "swim_look": 0.27
    },
@@ -36987,7 +36860,6 @@
    "occupation": "away",
    "likes": {
     "play_club": 0.42,
-    "play_town_club": 0.88,
     "read_library": 0.4,
     "fair_visit": 0.62
    },
@@ -37926,7 +37798,6 @@
    "occupation": "teacher",
    "likes": {
     "play_club": 0.76,
-    "play_town_club": 0.72,
     "coffee": 0.41,
     "fish_shore": 0.49
    },
@@ -38338,7 +38209,6 @@
    "likes": {
     "watch_sunrise": 0.58,
     "play_club": 0.51,
-    "play_town_club": 0.62,
     "coffee": 0.61,
     "stroll": 0.71
    },
@@ -38505,7 +38375,6 @@
    "occupation": "away",
    "likes": {
     "play_club": 0.58,
-    "play_town_club": 0.29,
     "stroll": 0.39,
     "eat_out": 0.38
    },
@@ -38758,7 +38627,6 @@
    "occupation": "student",
    "likes": {
     "play_club": 0.41,
-    "play_town_club": 0.24,
     "fish_shore": 0.49,
     "eat_out": 0.57
    },
@@ -38813,7 +38681,6 @@
    "likes": {
     "night_walk": 0.03,
     "play_club": 0.6,
-    "play_town_club": 0.35,
     "coffee": 0.64,
     "swim_look": 0.41
    },
@@ -38993,7 +38860,6 @@
    "likes": {
     "night_walk": 0.57,
     "play_club": 0.81,
-    "play_town_club": 0.42,
     "sea_air": 0.76,
     "stroll": 0.57
    },
@@ -39028,7 +38894,6 @@
    "occupation": "programmer",
    "likes": {
     "play_club": 0.89,
-    "play_town_club": 0.31,
     "stroll": 0.47,
     "sea_air": 0.7
    },
@@ -39185,7 +39050,6 @@
    "likes": {
     "watch_sunrise": 1.12,
     "play_club": 0.5,
-    "play_town_club": 0.81,
     "shop_town": 0.7,
     "swim_look": 0.58
    },
@@ -39358,7 +39222,6 @@
    "likes": {
     "watch_sunrise": 0.64,
     "play_club": 0.5,
-    "play_town_club": 0.38,
     "shop_town": 0.6,
     "coffee": 0.62
    },
@@ -39988,7 +39851,6 @@
    "occupation": "pupil",
    "likes": {
     "play_club": 0.49,
-    "play_town_club": 0.65,
     "coffee": 0.25,
     "sea_air": 0.74
    },
