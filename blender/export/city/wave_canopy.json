@@ -673,6 +673,136 @@
    "yaw": 143.25266828415602
   },
   {
+   "id": "strongman_stand",
+   "kind": "stand",
+   "pos": [
+    -31.241,
+    24.106,
+    0.0
+   ],
+   "yaw": 343.8909153522628
+  },
+  {
+   "id": "strongman_stand_2",
+   "kind": "stand",
+   "pos": [
+    -32.546,
+    24.275,
+    0.0
+   ],
+   "yaw": 343.8909153522628
+  },
+  {
+   "id": "ring_stand",
+   "kind": "stand",
+   "pos": [
+    -23.637,
+    26.193,
+    0.0
+   ],
+   "yaw": 14.506022168037703
+  },
+  {
+   "id": "ring_stand_2",
+   "kind": "stand",
+   "pos": [
+    -24.714,
+    25.966,
+    0.0
+   ],
+   "yaw": 14.506022168037703
+  },
+  {
+   "id": "lottery_stand",
+   "kind": "stand",
+   "pos": [
+    -17.711,
+    26.882,
+    0.0
+   ],
+   "yaw": 210.74993688420196
+  },
+  {
+   "id": "gallery_stand",
+   "kind": "stand",
+   "pos": [
+    9.247,
+    47.258,
+    0.0
+   ],
+   "yaw": 12.28156860029992
+  },
+  {
+   "id": "gallery_stand_2",
+   "kind": "stand",
+   "pos": [
+    8.053,
+    47.1,
+    0.0
+   ],
+   "yaw": 12.28156860029992
+  },
+  {
+   "id": "chalk_stand",
+   "kind": "stand",
+   "pos": [
+    14.197,
+    46.841,
+    0.0
+   ],
+   "yaw": 171.44262904194824
+  },
+  {
+   "id": "photo_stand",
+   "kind": "stand",
+   "pos": [
+    21.362,
+    43.211,
+    0.0
+   ],
+   "yaw": 327.06500192839223
+  },
+  {
+   "id": "weighing_stand",
+   "kind": "stand",
+   "pos": [
+    33.437,
+    32.431,
+    0.0
+   ],
+   "yaw": 318.98127128901604
+  },
+  {
+   "id": "fortune_stand",
+   "kind": "stand",
+   "pos": [
+    38.642,
+    27.588,
+    0.0
+   ],
+   "yaw": 324.42642448400284
+  },
+  {
+   "id": "fair_view_1",
+   "kind": "view",
+   "pos": [
+    -2.505,
+    39.852,
+    0.0
+   ],
+   "yaw": 0.0
+  },
+  {
+   "id": "fair_view_2",
+   "kind": "view",
+   "pos": [
+    -27.155,
+    24.002,
+    0.0
+   ],
+   "yaw": 0.0
+  },
+  {
    "id": "bench1",
    "kind": "bench",
    "pos": [
@@ -1202,6 +1332,50 @@
    "colour": "#FFD9A0",
    "kind": "lobby",
    "radius": 6.0
+  },
+  {
+   "pos": [
+    -31.519,
+    23.145,
+    3.9
+   ],
+   "lumens": 200,
+   "colour": "#FFD2A0",
+   "kind": "lobby",
+   "radius": 6.0
+  },
+  {
+   "pos": [
+    -18.375,
+    27.999,
+    2.4
+   ],
+   "lumens": 200,
+   "colour": "#FFC890",
+   "kind": "public",
+   "radius": 5.0
+  },
+  {
+   "pos": [
+    9.035,
+    45.881,
+    2.45
+   ],
+   "lumens": 320,
+   "colour": "#FFD2A0",
+   "kind": "public",
+   "radius": 6.0
+  },
+  {
+   "pos": [
+    37.973,
+    26.653,
+    2.1
+   ],
+   "lumens": 240,
+   "colour": "#FFB090",
+   "kind": "public",
+   "radius": 5.0
   }
  ],
  "things": [
@@ -1463,6 +1637,188 @@
    }
   },
   {
+   "id": "strongman_tower",
+   "kind": "sport",
+   "pos": [
+    -31.602,
+    22.857,
+    1.2
+   ],
+   "yaw": 163.9,
+   "props": {
+    "what": "strongman"
+   }
+  },
+  {
+   "id": "strongman_record",
+   "kind": "board",
+   "pos": [
+    -31.422,
+    23.482,
+    0.55
+   ],
+   "yaw": 163.9,
+   "props": {
+    "topic": "logbook"
+   }
+  },
+  {
+   "id": "ring_table",
+   "kind": "play",
+   "pos": [
+    -23.274,
+    24.789,
+    0.95
+   ],
+   "yaw": -165.5,
+   "props": {
+    "what": "ring_toss"
+   }
+  },
+  {
+   "id": "prize_shelf",
+   "kind": "shelf",
+   "pos": [
+    -23.048,
+    23.918,
+    1.4
+   ],
+   "yaw": -165.5,
+   "props": {
+    "topic": "kids"
+   }
+  },
+  {
+   "id": "lottery_drum",
+   "kind": "play",
+   "pos": [
+    -18.273,
+    27.827,
+    1.17
+   ],
+   "yaw": 30.7,
+   "props": {
+    "what": "lottery"
+   }
+  },
+  {
+   "id": "shooting_booth",
+   "kind": "play",
+   "pos": [
+    8.907,
+    46.467,
+    1.15
+   ],
+   "yaw": -167.7,
+   "props": {
+    "what": "shooting_gallery"
+   }
+  },
+  {
+   "id": "prize_board",
+   "kind": "board",
+   "pos": [
+    14.353,
+    47.879,
+    1.2
+   ],
+   "yaw": -8.6,
+   "props": {
+    "topic": "fair"
+   }
+  },
+  {
+   "id": "photo_camera",
+   "kind": "machine",
+   "pos": [
+    22.859,
+    43.314,
+    1.35
+   ],
+   "yaw": 147.1,
+   "props": {
+    "what": "photographer"
+   }
+  },
+  {
+   "id": "photo_chair",
+   "kind": "seat",
+   "pos": [
+    21.5,
+    41.216,
+    0.45
+   ],
+   "yaw": 327.1,
+   "props": {
+    "height": 0.45
+   }
+  },
+  {
+   "id": "weighing_chair",
+   "kind": "machine",
+   "pos": [
+    32.354,
+    31.186,
+    1.62
+   ],
+   "yaw": 139.0,
+   "props": {
+    "what": "scales"
+   }
+  },
+  {
+   "id": "weighing_seat",
+   "kind": "seat",
+   "pos": [
+    32.453,
+    31.299,
+    0.59
+   ],
+   "yaw": 139.0,
+   "props": {
+    "height": 0.45
+   }
+  },
+  {
+   "id": "fair_lost_basket",
+   "kind": "board",
+   "pos": [
+    31.764,
+    32.031,
+    0.5
+   ],
+   "yaw": 139.0,
+   "props": {
+    "topic": "lost"
+   }
+  },
+  {
+   "id": "fortune_automaton",
+   "kind": "machine",
+   "pos": [
+    38.147,
+    26.897,
+    1.3
+   ],
+   "yaw": 144.4,
+   "props": {
+    "what": "fortune"
+   }
+  },
+  {
+   "id": "fair_sandal",
+   "kind": "board",
+   "pos": [
+    -43.409,
+    30.569,
+    0.1
+   ],
+   "yaw": 20.0,
+   "props": {
+    "topic": "lost"
+   }
+  },
+  {
    "id": "fair_board",
    "kind": "board",
    "pos": [
@@ -1626,8 +1982,8 @@
   "canopy 123 m long (arc), 28 columns, 5 kiosks, 10 benches"
  ],
  "tris": {
-  "shell": 9320,
-  "detail": 28790,
+  "shell": 9488,
+  "detail": 35228,
   "windows": 0
  }
 }
