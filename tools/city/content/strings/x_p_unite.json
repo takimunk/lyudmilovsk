@@ -979,5 +979,30 @@
   "ru": "Выиграть партию в настольный теннис в игровой",
   "en": "Win a game of table tennis in the games room",
   "ja": "ゲームルームで卓球に勝つ"
+ },
+ "city.un.feeder.night": {
+  "ru": "Кормушка пуста и тиха. Птицы спят где-то под карнизом, а внизу горят окна террас.",
+  "en": "The feeder is empty and still. The birds sleep somewhere under the eaves, and the terraces' windows glow below.",
+  "ja": "えさ台は空っぽで静かだ。鳥たちは軒下のどこかで眠り、下では段々の街の窓が灯っている。"
+ },
+ "city.lift.unite.street": {
+  "ru": "Торговая улица",
+  "en": "Shopping street",
+  "ja": "商店街の階"
+ },
+ "city.lift.unite.roof": {
+  "ru": "Терраса на крыше",
+  "en": "Roof terrace",
+  "ja": "屋上テラス"
+ },
+ "city.lift.unite.g1": {
+  "ru": "Первый этаж, первый подъезд",
+  "en": "Ground floor, entrance 1",
+  "ja": "1階・第1玄関"
+ },
+ "city.lift.unite.g2": {
+  "ru": "Первый этаж, второй подъезд",
+  "en": "Ground floor, entrance 2",
+  "ja": "1階・第2玄関"
  }
 }

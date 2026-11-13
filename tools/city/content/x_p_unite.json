@@ -647,6 +647,13 @@
       20,
       22
      ]
+    },
+    {
+     "k": "city.un.closed.flat",
+     "h": [
+      22,
+      9
+     ]
     }
    ]
   },
@@ -781,6 +788,13 @@
      "h": [
       12,
       15
+     ]
+    },
+    {
+     "k": "city.un.closed.pool",
+     "h": [
+      21,
+      8
      ]
     }
    ],
@@ -924,6 +938,13 @@
       8,
       20
      ]
+    },
+    {
+     "k": "city.un.closed.sand",
+     "h": [
+      20,
+      8
+     ]
     }
    ],
    "minutes": 10,
@@ -967,6 +988,13 @@
     {
      "k": "city.un.feeder.4",
      "weather": "snow"
+    },
+    {
+     "k": "city.un.feeder.night",
+     "h": [
+      22,
+      6
+     ]
     }
    ]
   },
@@ -1261,6 +1289,70 @@
   },
   "P-UNITE/roof_chess": {
    "act": "un_roof_chess"
+  },
+  "P-UNITE/lift_g_1": {
+   "props": {
+    "floors": [
+     {
+      "k": "city.lift.unite.street",
+      "to": "lift_street"
+     },
+     {
+      "k": "city.lift.unite.roof",
+      "to": "lift_roof"
+     }
+    ]
+   }
+  },
+  "P-UNITE/lift_g_2": {
+   "props": {
+    "floors": [
+     {
+      "k": "city.lift.unite.street",
+      "to": "lift_street"
+     },
+     {
+      "k": "city.lift.unite.roof",
+      "to": "lift_roof"
+     }
+    ]
+   }
+  },
+  "P-UNITE/lift_street": {
+   "props": {
+    "floors": [
+     {
+      "k": "city.lift.unite.g1",
+      "to": "lift_g_1"
+     },
+     {
+      "k": "city.lift.unite.g2",
+      "to": "lift_g_2"
+     },
+     {
+      "k": "city.lift.unite.roof",
+      "to": "lift_roof"
+     }
+    ]
+   }
+  },
+  "P-UNITE/lift_roof": {
+   "props": {
+    "floors": [
+     {
+      "k": "city.lift.unite.g1",
+      "to": "lift_g_1"
+     },
+     {
+      "k": "city.lift.unite.g2",
+      "to": "lift_g_2"
+     },
+     {
+      "k": "city.lift.unite.street",
+      "to": "lift_street"
+     }
+    ]
+   }
   }
  },
  "regulars": {
