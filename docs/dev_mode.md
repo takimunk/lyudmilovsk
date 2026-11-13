@@ -44,6 +44,8 @@ Developer mode is always there outside Shipping builds. A Shipping build has it 
 | `Dev.Quest <quest> play` | plays the quest to its end by the real events of every objective (`DEV play <quest> done`, or `STUCK at stage <id>` where an objective's event does not count) |
 | `Dev.Quest <quest> forget` | the quest as if never begun |
 | `Dev.Do <action id>`, `Dev.List` | run an action, list them (`DEVACTION` lines) |
+| `Dev.QA quests [id prefix]` | every quest forgotten and played through by its real events (`DEVQA quest <id> done` or `STUCK at <stage>`, then a summary) |
+| `Dev.QA teleports [group\|all] [shots] [wait s] [quit]` | visits every teleport point (not bookmarks), waits (2 s), checks the hero is still there and stands on something: `DEVQA tp <id> ... ok`, `MOVED`, `NO GROUND`, `IN THE AIR`; a summary at the end; `shots` takes a screenshot at each, `quit` closes the game after |
 | `Dev.Reload` | re-read the teleport files, quests.json and map.json |
 | `Dev.Panel open/close/clickkey <key>` | the panel without a mouse (headless tests, `unreal/scripts/test_devpanel.sh`) |
 
@@ -121,6 +123,15 @@ A feature is not done until it can be reached and tested from developer mode. Fo
 points, plays the first quest through, fills the pocket, flies, opens every tab with a shot, and fails on a jump that did not land,
 a stuck quest or a missing tab (`check_devmode_log.py`). A new quest gets its own line there: `Dev.Quest <quest> play` must end in
 `done`.
+
+`tools/check_devdata.py [--strict]` checks the data with no engine (seconds; run it before every push that touches quests.json,
+a teleport file, map.json or a string table): every quest objective's event is one the C++ sends, its target exists (map place
+with a radius, item, person or dialogue section, festival), every quest/teleport/action word key is in all three tables, rewards
+and `dev` blocks name real items, quests and points, ids are unique. Exit 1 on a problem.
+
+`unreal/scripts/test_devqa.sh` (offscreen, long: about `WAIT` seconds a point) runs `Dev.QA quests` and `Dev.QA teleports all`
+and fails on a stuck quest or a point that does not land (`check_devqa_log.py`; `GROUP=north` walks one group,
+`CHECK_ARGS=--allow-teleport-problems` only lists the bad points). Run it after adding a region or moving the ground.
 
 The older features' shortcuts (cable car stations, the train, fishing, the restaurant and the diner, lightning, snow on the paths)
 are in `Private/Dev/LyudDevFeatures.cpp`; they call those features' own console commands.
