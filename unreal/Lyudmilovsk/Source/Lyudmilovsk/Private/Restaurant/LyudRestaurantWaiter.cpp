@@ -487,6 +487,14 @@ void ALyudRestaurant::TickWaiter(float DeltaTime)
 		WaiterYaw = FMath::FixedTurn(WaiterYaw, YawToWorld(PassYaw).Yaw, 300.f * DeltaTime);
 		if (WaiterT >= LyudRestWaiter::PickSeconds)
 		{
+			if (Job == EJob::Bill && (!bBillAsked || HeroTableIx < 0))
+			{
+				// the bill was withdrawn on the way (a new order) or the table was laid again: nothing to bring
+				Job = EJob::None;
+				Waiter = EWaiter::ToHome;
+				PlanPath(WaiterHome);
+				break;
+			}
 			if (Job == EJob::Bill)
 			{
 				// the bill in its folder on the tray
@@ -569,7 +577,21 @@ void ALyudRestaurant::TickWaiter(float DeltaTime)
 		}
 		if (Job == EJob::Bill)
 		{
-			if (WaiterT >= LyudRestWaiter::SetSeconds && BillFolder && HeroTableIx >= 0)
+			if (!BillFolder || HeroTableIx < 0 || !bBillAsked)
+			{
+				// the folder went while it was carried (a new order withdrew the bill, or the table was laid again): no state
+				// lasts for ever, the waiter goes home and takes the next job
+				if (BillFolder)
+				{
+					BillFolder->Destroy();
+					BillFolder = nullptr;
+				}
+				Job = EJob::None;
+				Waiter = EWaiter::ToHome;
+				PlanPath(WaiterHome);
+				break;
+			}
+			if (WaiterT >= LyudRestWaiter::SetSeconds)
 			{
 				const FTable& Tb = Tables[HeroTableIx];
 				const int32 Seat = HeroSeatIx >= 0 ? HeroSeatIx : Tb.Seats[0];
