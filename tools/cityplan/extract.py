@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Cuts the engine-free parts out of the town's Unreal sources so tools/citysim compiles the game's own code:
+"""Cuts the engine-free parts out of the town's Unreal sources so tools/cityplan compiles the game's own code:
 
   extract.py <out dir>
 
@@ -39,7 +39,7 @@ def block(text, start):
 def find(text, pattern, what):
     m = re.search(pattern, text, re.M)
     if not m:
-        raise SystemExit("extract: %s not found (the source changed: update tools/citysim/extract.py)" % what)
+        raise SystemExit("extract: %s not found (the source changed: update tools/cityplan/extract.py)" % what)
     return m.start()
 
 
@@ -74,7 +74,7 @@ def windows():
     s = find(b, r"^float ULyudWindowLights::SeededFlat\(", "SeededFlat")
     out.append(block(b, s).replace("float ULyudWindowLights::SeededFlat(const ALyudCityBuilding::FWindowSeed& D,",
                                    "float SeededFlat(const FWindowSeed& D,"))
-    return "// cut from LyudCityWindows.cpp / LyudCityBuilding.cpp by tools/citysim/extract.py\n" + "\n\n".join(out) + "\n"
+    return "// cut from LyudCityWindows.cpp / LyudCityBuilding.cpp by tools/cityplan/extract.py\n" + "\n\n".join(out) + "\n"
 
 
 def inputs():

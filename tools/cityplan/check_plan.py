@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 """Offline checks of the town plan (docs/city_plan.md) and the data the game builds from it.
 
-  python3 tools/citysim/check_plan.py [-v]
+  python3 tools/cityplan/check_plan.py [-v]
 
 Reads tools/city_plan.py (rebuilt in memory), Content/City/city_plan.json, Content/City/public_spaces.json,
 Content/PeopleData/town_places.json + townsfolk.json + town_plan.json and the buildings' blender/export/city/*.json.

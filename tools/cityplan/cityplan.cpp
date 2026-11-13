@@ -1,10 +1,10 @@
-// tools/citysim: the town's engine-free C++ checked outside Unreal (docs/city/public_spaces.md, docs/city_plan.md).
+// tools/cityplan: the town's engine-free C++ checked outside Unreal (docs/city/public_spaces.md, docs/city_plan.md).
 //  - CityKit (Private/City/CityKit.cpp, compiled as the game has it minus FMesh::Build): every prop kind the public
 //    spaces use, the fountain stone, the fair's rotors and gondola, the paving blocks: valid, finite, consistent meshes.
 //  - The window schedules (ALyudCityWindows::ScheduleLit, ULyudWindowLights::SeededFlat / InHours, cut out by
 //    extract.py): dark by day, a flat's evening holds together across midnight, nobody up at 03:00.
-// Input: Saved/CitySim/kit_input.txt (prop kinds + their extra numbers, the fountain stone, the ride sizes) and
-// Saved/CitySim/flats.txt (wall flats and their windows), written by run.sh from the committed JSON.
+// Input: Saved/CityPlan/kit_input.txt (prop kinds + their extra numbers, the fountain stone, the ride sizes) and
+// Saved/CityPlan/flats.txt (wall flats and their windows), written by run.sh from the committed JSON.
 // Prints `ok   <check>` / `FAIL <check>: ...`, then `all ok` or the failure count; exit 1 on failure.
 #include "CoreMinimal.h"
 #include "CityKit.h"
@@ -166,7 +166,7 @@ static FBounds MeshCheck(const std::string& Name, const CityKit::FMesh& M, std::
 
 int main(int Argc, char** Argv)
 {
-	const std::string Dir = Argc > 1 ? Argv[1] : "Saved/CitySim";
+	const std::string Dir = Argc > 1 ? Argv[1] : "Saved/CityPlan";
 	// ---- the kit's input: "prop <kind> <variant> [r <n> | r2 <rx> <ry>]", "stone <key> <value>", "ride <wheel_r> <hub_z>"
 	struct FProp { std::string Kind; int32 Variant = 0; TSharedPtr<FJsonObject> X; };
 	std::vector<FProp> Props;

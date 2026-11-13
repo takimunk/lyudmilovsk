@@ -1,5 +1,5 @@
 // A tiny stand-in for the few Unreal core types the town's pure-math code uses (CityKit's mesh builders, the window
-// schedules), so they compile with plain clang++ for tools/citysim. Only what that code calls; same conventions as
+// schedules), so they compile with plain clang++ for tools/cityplan. Only what that code calls; same conventions as
 // Unreal (FRotator pitch/yaw/roll in degrees, row-vector rotation matrices, left-handed Z up).
 #pragma once
 
