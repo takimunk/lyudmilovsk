@@ -158,26 +158,29 @@ def map_panel(d, box, t):
     paper = (232, 224, 198)
     d.rectangle(box, fill=paper, outline=(60, 50, 38), width=6)
     pad = 26
-    wx0, wx1 = -760.0, 280.0           # map X (west positive) shown, screen runs the other way: east to the right
-    wy0, wy1 = 2330.0, 3980.0
+    wx0, wx1 = -760.0, 700.0           # map X (west positive) shown, screen runs the other way: east to the right
+    wy0, wy1 = 2380.0, 3980.0
     sx = (x1 - x0 - 2 * pad) / (wx1 - wx0)
     sy = (y1 - y0 - 2 * pad - 40) / (wy1 - wy0)
     k = min(sx, sy)
 
     def P(x, y):
         return (x1 - pad - (x - wx0) * k, y1 - pad - (y - wy0) * k)
-    # sea in the west (left), the meadows, the Cone (only the trail's landmarks: the land itself is still being reshaped)
-    d.rectangle([x0 + 6, y0 + 6, P(150, 0)[0] + 0, y1 - 6], fill=(150, 184, 200)) if P(150, 0)[0] > x0 + 6 else None
-    sea_x = P(135.0, 0)[0]
-    d.rectangle([x0 + 6, y0 + 6, sea_x, y1 - 6], fill=(150, 184, 200))
-    for i in range(0, 24):
-        xx = x0 + 6 + i * (sea_x - x0) / 24
-        d.line([xx, y0 + 6, xx + 5, y1 - 6], fill=(165, 196, 210), width=1)
+    # the sea in the west (left) along the real water line, the Cone, the trail's landmarks
+    import world_map
+    top, bottom = y0 + 6, y1 - 6
+    shore = []
+    for i in range(0, 81):
+        yy = bottom + (top - bottom) * i / 80.0
+        wy = wy0 + (y1 - pad - yy) / k
+        shore.append((max(x0 + 6, min(x1 - 6, P(world_map.shore_x(wy), 0)[0])), yy))
+    d.polygon([(x0 + 6, bottom)] + shore + [(x0 + 6, top)], fill=(150, 184, 200))
+    d.line(shore, fill=(110, 140, 156), width=3)
     cone = P(*north.CONE)
     d.ellipse([cone[0] - 205 * k, cone[1] - 205 * k, cone[0] + 205 * k, cone[1] + 205 * k], fill=(196, 170, 140), outline=(120, 96, 76), width=2)
     d.ellipse([cone[0] - 52 * k, cone[1] - 52 * k, cone[0] + 52 * k, cone[1] + 52 * k], fill=(120, 96, 82))
     # the trail
-    names = ["north_gate", "north_camp", "north_spring", "north_fumaroles", "north_breach"]
+    names = ["north_gate", "north_camp", "north_spring", "north_fumaroles", "north_crater"]
     pts = [P(*north.ANCHORS[n]) for n in names]
     for a, b in zip(pts, pts[1:]):
         dist = math.hypot(b[0] - a[0], b[1] - a[1])
