@@ -184,6 +184,27 @@ namespace
 		}
 		return Want == Got;
 	}
+
+	/**
+	 * Does the stage the quest is on, or one before it, wait for this same event? Then the event is no step done early, even
+	 * if a later stage waits for it too (go to a place, do something, come back to the place: the first arrival is the first
+	 * stage's, and walking through the place again half-way is not the return). Skipping ahead on it would finish the whole
+	 * quest and pay it out on its first step.
+	 */
+	bool WaitedForBefore(const FLyudQuestDef& Def, int32 Stage, FName Event, const FString& Target)
+	{
+		for (int32 Earlier = 0; Earlier <= Stage && Earlier < Def.Stages.Num(); ++Earlier)
+		{
+			for (const FLyudQuestObjective& O : Def.Stages[Earlier].Objectives)
+			{
+				if (O.Event != TEXT("have") && EventMatches(O.Event, Event) && TargetMatches(O.Target, Target))
+				{
+					return true;
+				}
+			}
+		}
+		return false;
+	}
 }
 
 const TArray<FLyudQuestDef>& ULyudQuests::Defs()
@@ -524,7 +545,7 @@ void ULyudQuests::HandleEvent(FName Event, const FString& Target, int32 N)
 				{
 					return O.Event != TEXT("have") && EventMatches(O.Event, E.Get<0>()) && TargetMatches(O.Target, E.Get<1>());
 				});
-				if (bWanted)
+				if (bWanted && !WaitedForBefore(*Def, Progress[QI].Stage, E.Get<0>(), E.Get<1>()))
 				{
 					UE_LOG(LogTemp, Log, TEXT("LyudQuests: %s skips ahead to stage %d on %s %s"), *Def->Id.ToString(), Later, *E.Get<0>().ToString(), *E.Get<1>());
 					while (Progress[QI].State == ELyudQuestState::Active && Progress[QI].Stage < Later)
