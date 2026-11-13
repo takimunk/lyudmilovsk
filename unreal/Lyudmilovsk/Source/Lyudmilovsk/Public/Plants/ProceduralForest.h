@@ -60,6 +60,11 @@ public:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Forest", meta = (ClampMin = "0", ClampMax = "1")) float MinSlopeNormalZ = 0.75f;
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Forest") float MinWorldZ = -100000.f;
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Forest") float MaxWorldZ = 100000.f;
+	/**
+	 * Keep only the share of trees the map's forest cover gives at each spot (Content/World/forest_cover.fcv, tools/forest_cover.py),
+	 * so woods get natural edges and glades whatever this actor's rectangle is; the file missing or the spot outside it keeps every tree.
+	 */
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Forest") bool bUseForestCover = true;
 	/** Ground that belongs to an actor with this tag (a path, the beach, a building's yard) stays treeless. */
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Forest") FName BareGroundTag = TEXT("NoTree");
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Forest") float TraceUp = 4000.f;

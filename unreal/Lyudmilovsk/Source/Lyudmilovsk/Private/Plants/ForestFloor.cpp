@@ -27,6 +27,7 @@
 #include "Plants/PlantMeshes.h"
 #include "Plants/PlantModel.h"
 #include "Plants/PlantSpecies.h"
+#include "Plants/ForestCover.h"
 #include "Plants/ProceduralForest.h"
 #include "Plants/ProceduralGrass.h"
 #include "Plants/ProceduralPlant.h"
@@ -539,7 +540,10 @@ void AForestFloor::BuildSites()
 		const int32 IY0 = FMath::Max(FMath::CeilToInt((L.Y - It->HalfExtent.Y - SiteOrigin.Y) / SiteCellCm), 0), IY1 = FMath::Min(FMath::FloorToInt((L.Y + It->HalfExtent.Y - SiteOrigin.Y) / SiteCellCm), SiteNY - 1);
 		for (int32 Y = IY0; Y <= IY1; Y++)
 			for (int32 X = IX0; X <= IX1; X++)
-				if (SiteKind[int64(Y) * SiteNX + X] == SiteBeyond) SiteForest[int64(Y) * SiteNX + X] = 1;
+				// litter only where the map's forest cover keeps woods (Plants/ForestCover.h): not the tile's whole rectangle
+				if (SiteKind[int64(Y) * SiteNX + X] == SiteBeyond && (!It->bUseForestCover
+					|| ForestCover::At(FVector(SiteOrigin.X + X * SiteCellCm, SiteOrigin.Y + Y * SiteCellCm, 0.0)) >= 0.35f))
+					SiteForest[int64(Y) * SiteNX + X] = 1;
 	}
 	const int32 Steep = 3;
 	for (int32 Y = 0; Y < SiteNY; Y++)

@@ -10,6 +10,7 @@
 #include "GameFramework/PlayerController.h"
 #include "Materials/MaterialInstanceDynamic.h"
 #include "Plants/FallenFruit.h"
+#include "Plants/ForestCover.h"
 #include "Plants/GameCalendar.h"
 #include "Plants/PlantMeshes.h"
 #include "Plants/PlantModel.h"
@@ -245,6 +246,10 @@ void AProceduralForest::Scatter()
 			if (Hash01(U, Cx, Cy, 11) > KeepShare) continue;
 			const FVector Local(-HalfExtent.X + (Cx + 0.5f + 0.7f * (Hash01(U, Cx, Cy, 12) - 0.5f)) * Spacing, -HalfExtent.Y + (Cy + 0.5f + 0.7f * (Hash01(U, Cx, Cy, 13) - 0.5f)) * Spacing, 0.0);
 			FVector P = Xf.TransformPosition(Local);
+			// the map's forest cover (Content/World/forest_cover.fcv): natural edges, glades and the thinning toward the tree line,
+			// whatever the tile's rectangle; checked before the ground trace, so a thinned tile costs less
+			const float Cover = bUseForestCover ? ForestCover::At(P) : 1.f;
+			if (Hash01(U, Cx, Cy, 19) >= Cover) continue;
 			if (bSnapToGround)
 			{
 				FHitResult Hit;
@@ -268,7 +273,9 @@ void AProceduralForest::Scatter()
 			int32 Kind = 0;
 			for (; Kind < Mix.Num() - 1 && Pick > Score[Kind]; Kind++) Pick -= Score[Kind];
 			const FForestMix& M = Mix[Kind];
-			const float Age = Hash01(U, Cx, Cy, 15) < M.YoungShare ? M.YoungAge : M.MatureAge;
+			// where the cover thins (a wood's edge, a glade, the tree line) more of the trees are young: woods spread outward
+			const float YoungNow = FMath::Min(1.f, M.YoungShare + 0.5f * (1.f - Cover));
+			const float Age = Hash01(U, Cx, Cy, 15) < YoungNow ? M.YoungAge : M.MatureAge;
 			AddTree(M.Species, P, Age, FMath::FloorToInt(Hash01(U, Cx, Cy, 16) * Variants), Hash01(U, Cx, Cy, 17) * 360.f, 0.92f + 0.16f * Hash01(U, Cx, Cy, 18));
 		}
 	}

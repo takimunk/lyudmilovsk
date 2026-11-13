@@ -546,6 +546,14 @@ def place(face_y=None):
         if it.get("text"):
             a.tags = list(a.tags) + [unreal.Name("Text:" + it["text"])]
         n += 1
+    # other things of the land (north.json "things": log bridges over the river's channels, cairns, ...): like the camp's,
+    # but a thing with "z" stands at that absolute map height (a bridge's deck over the water), not on the ground
+    nthings = 0
+    for it in data.get("things", []):
+        z = it.get("z")
+        spawn_mesh(it["kind"], int(it.get("variant", 0)), it["x"], it["y"], float(it.get("yaw", 0.0)), it["id"], "Things",
+                   z=None if z is None else float(z), near="bridge" not in it["kind"])
+        nthings += 1
     # the camp's fire on its ring
     fire = next((it for it in data.get("camp", []) if it["kind"] == "fire_ring"), None)
     if fire:
@@ -579,8 +587,8 @@ def place(face_y=None):
     missing = sorted(_CACHE.get("missing", ()))
     if missing:
         log("placeholders for kinds not imported yet: %s" % ", ".join(missing))
-    log("placed %d camp things and signs, %d fumaroles, campfire %d, hut %d (removed %d old actors)" %
-        (n, len(data.get("fumaroles", [])), 1 if fire else 0, 1 if hut else 0, removed))
+    log("placed %d camp things and signs, %d other things, %d fumaroles, campfire %d, hut %d (removed %d old actors)" %
+        (n, nthings, len(data.get("fumaroles", [])), 1 if fire else 0, 1 if hut else 0, removed))
 
 
 def place_safe(face_y):
