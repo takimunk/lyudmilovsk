@@ -181,7 +181,7 @@ bool AProceduralForest::ApplyQuality(bool bForce)
 	// each setter marks the render state dirty only when its value changes: once per change of level, never per frame
 	for (FGroup& G : Groups)
 	{
-		if (!G.Comp)
+		if (!G.Comp.IsValid())
 		{
 			continue;
 		}
