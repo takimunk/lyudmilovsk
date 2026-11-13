@@ -16,6 +16,13 @@
    "yaw": 180.0
   },
   {
+   "id": "north_beach",
+   "name": "place.north.beach",
+   "x": 833.4,
+   "y": 3050.2,
+   "yaw": 0.0
+  },
+  {
    "id": "north_gate",
    "name": "place.north.gate",
    "x": 103.0,

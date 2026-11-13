@@ -17,6 +17,14 @@
    "yaw": 180.0
   },
   {
+   "id": "north_beach",
+   "group": "north",
+   "name": "dev.tp.north_beach",
+   "x": 833.4,
+   "y": 3050.2,
+   "yaw": 0.0
+  },
+  {
    "id": "north_gate",
    "group": "north",
    "name": "dev.tp.north_gate",

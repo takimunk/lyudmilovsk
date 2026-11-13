@@ -185,7 +185,42 @@ def _shape(x, y, natural):
     z = natural
     if y > BLEND[0]:
         z = natural + (_raw(x, y) - natural) * _smooth((y - BLEND[0]) / (BLEND[1] - BLEND[0]))
-    return R.apply(x, y, z)
+    z = R.apply(x, y, z)
+    return _ravines(x, y, z) if y > 2400.0 else z
+
+
+# Ravines: stream gullies that notch the sea cliff and let one walk down to the beach: (Y at the beach, metres they
+# reach inland, half width of the floor, how far the head lies north (+) or south of the mouth)
+RAVINES = [(2655.0, 230.0, 5.0, 60.0), (3050.0, 300.0, 6.0, -40.0), (4010.0, 260.0, 5.0, 50.0)]
+RAVINE_SIDE = 0.55
+
+
+def ravine_line(k, t):
+    """(x, y) on ravine k's floor line, t = 0 at the beach .. 1 at its head."""
+    y0, ln, _, drift = RAVINES[k]
+    x0 = W.shore_x(y0) - W.BEACH_W - 4.0
+    return x0 - ln * t, y0 + drift * t * t + 14.0 * math.sin(4.2 * t + k) * t * (1.0 - t)
+
+
+def _ravines(x, y, z):
+    for k, (y0, ln, half, drift) in enumerate(RAVINES):
+        if abs(y - y0 - drift * 0.5) > abs(drift) * 0.5 + 170.0:
+            continue
+        x0 = W.shore_x(y0) - W.BEACH_W - 4.0
+        t = (x0 - x) / ln
+        if t < -0.25 or t > 1.25:
+            continue
+        tc = min(1.0, max(0.0, t))
+        _, cy = ravine_line(k, tc)
+        # the floor climbs from the beach to the land at its head, steeper toward the head (a stream's long profile)
+        floor = W.BEACH_TOP + 0.8 + (max(z, 8.0) - W.BEACH_TOP) * (0.35 * tc + 0.65 * tc * tc * tc)
+        if t > 1.0:
+            floor += (t - 1.0) * ln * 0.5
+        cut = floor + RAVINE_SIDE * max(0.0, abs(y - cy) - half) * (1.0 + 0.3 * L.fbm(x, y, 40.0, 2, 91))
+        if cut < z + 10.0:
+            r = 3.0
+            z = z - r * math.log1p(math.exp(-(cut - z) / r)) if cut - z > -40.0 else cut
+    return z
 
 
 @functools.lru_cache(maxsize=None)
@@ -224,6 +259,7 @@ def shore_shift(y):
     if f <= 0.0:
         return 0.0
     d = 42.0 * L.fbm(y, 0.0, 330.0, 2, 81) + 15.0 * L.fbm(y, 7.0, 110.0, 2, 82)
+    d += 40.0 * max(0.0, 1.0 - 2.6 * abs(L.fbm(y, 3.0, 210.0, 2, 83))) ** 2        # points: narrow, well out to sea
     d += -45.0 * math.exp(-((y - 1885.0) / 130.0) ** 2)
     d += 26.0 * math.exp(-((y - 1700.0) / 90.0) ** 2) + 32.0 * math.exp(-((y - 2240.0) / 110.0) ** 2)
     d += 60.0 * _smooth((y - LAVA_Y[0]) / 90.0) * _smooth((LAVA_Y[1] - y) / 90.0) * (0.75 + 0.25 * math.sin(y / 37.0))
@@ -459,7 +495,7 @@ def forests(tiles):
                     votes[mix] = votes.get(mix, 0.0) + c
         return max(votes, key=votes.get) if votes else None
 
-    for x, y, hx, hy, mix in _runs(W.X_MIN + 60.0, x1, WOODS_Y[0] + 20.0, WOODS_Y[1], (130.0, 125.0), woods):
+    for x, y, hx, hy, mix in _runs(W.X_MIN + 60.0, x1, WOODS_Y[0] + 20.0, WOODS_Y[1], (65.0, 62.5), woods):
         out.append((x, y, hx, hy, mix, WOOD_DENSITY[mix], -42.0, 200.0))
 
     def belt(x, y, w, h):
@@ -597,13 +633,16 @@ ANCHORS = {
     "north_saddle": (-455.0, 3345.0),
     "north_high_rim": HIGH_RIM,
     "north_lava": (-190.0, 3610.0),
+    "north_beach": None,            # the camp's ravine, where it opens on the beach (filled in below)
 }
 TRACKS = [("town", "polar"), ("polar", "river_south"), ("river_north", "north_gate"), ("north_gate", "north_meadow"), ("north_meadow", "north_camp"),
           ("north_camp", "north_spring"), ("north_spring", "north_fumaroles"), ("north_fumaroles", "north_crater"),
-          ("north_spring", "north_saddle"), ("north_saddle", "north_high_rim"), ("north_spring", "north_lava")]
+          ("north_spring", "north_saddle"), ("north_saddle", "north_high_rim"), ("north_spring", "north_lava"),
+          ("north_camp", "north_beach")]
 
 
 ANCHORS["river_south"], ANCHORS["river_north"] = _crossing()[0], _crossing()[1]
+ANCHORS["north_beach"] = ravine_line(1, 0.07)
 
 
 def fixed_tracks():
@@ -722,6 +761,7 @@ def places():
     return [
         {"id": "north_river", "name": "place.north.river", "x": round(_crossing()[0][0], 1), "y": round(_crossing()[0][1] - 4.0, 1), "yaw": 90.0},
         {"id": "north_mouth", "name": "place.north.mouth", "x": round(R.mouth()[0] - 70.0, 1), "y": round(R.mouth()[1] + 40.0, 1), "yaw": 180.0},
+        {"id": "north_beach", "name": "place.north.beach", "x": round(ravine_line(1, 0.02)[0], 1), "y": round(ravine_line(1, 0.02)[1], 1), "yaw": 0.0},
         {"id": "north_gate", "name": "place.north.gate", "x": GATE[0] + 3.0, "y": GATE[1] - 8.0, "yaw": 90.0},
         {"id": "north_hut", "name": "place.north.hut", "x": HUT[0] - 9.0, "y": HUT[1], "yaw": 0.0},
         {"id": "north_meadows", "name": "place.north.meadows", "x": 40.0, "y": 2760.0, "yaw": 100.0},
