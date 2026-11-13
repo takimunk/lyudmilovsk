@@ -7,7 +7,8 @@
   place:  place(face_y) puts an ALyudCityBuilding on every plot of unreal/Lyudmilovsk/Content/City/city_plan.json
           whose "building" type has been built (origin = the plot's "front", yaw = the plot's yaw: the way the front
           faces), fills its window table from blender/export/city/<type>.json, and fits a door in every street
-          entrance (place_doors.py). Everything is tagged "City" (lyud.City 0 hides it).
+          entrance (place_doors.py); and a promenade_unit__<variant> room behind every W1 shop unit (place_units, at the
+          unit's "front", no door: the doorway stays open). Everything is tagged "City" (lyud.City 0 hides it).
 
   UnrealEditor-Cmd Lyudmilovsk.uproject -run=pythonscript -script="unreal/scripts/import_city.py import [types]"
   UnrealEditor-Cmd Lyudmilovsk.uproject -run=pythonscript -script="unreal/scripts/import_city.py place"
@@ -376,11 +377,65 @@ def place(face_y):
                            "hole": [e.get("width", 1.1), e.get("height", 2.2)], "wall": 0.3,
                            "leaves": e.get("leaves", 1), "hinge": "left", "frame": True, "open": False,
                            "locked": False}, to_ue))
+    n_units = place_units(face_y, eas, cls, kinds)
     if doors:
         import place_doors
         for entry, fn in doors:
             place_doors.spawn_doors([entry], fn, tags=[TAG], folder=FOLDER + "/Doors", label_prefix="City_Door_", log=log)
-    log("placed %d buildings, %d doors" % (n, len(doors)))
+    log("placed %d buildings, %d promenade units, %d doors" % (n, n_units, len(doors)))
+
+
+UNIT_TYPE = "promenade_unit"
+
+
+def place_units(face_y, eas, cls, kinds):
+    """The promenade units' rooms (blender/city/buildings/promenade_unit.py): an ALyudCityBuilding per unit of the plan's
+    promenade_units, type promenade_unit__<variant>, at the unit's "front" (the bay's middle on W1's face, promenade
+    level) turned like a plot's building (yaw = the way the front faces). The doorway in the wall stays open (no door
+    actor); the shop window is the wall's own pane (ALyudCityWindows: W1-Uxx-w1). The room's lamps keep the unit's
+    staff hours. Returns how many were placed."""
+    with open(PLAN) as f:
+        units = json.load(f).get("promenade_units", [])
+    n = 0
+    for u in units:
+        if not u.get("variant") or not u.get("front"):
+            continue
+        t = "%s__%s" % (UNIT_TYPE, u["variant"])
+        jpath = os.path.join(EXPORT, t + ".json")
+        dest = "%s/Buildings/%s" % (DEST, t)
+        if not os.path.exists(jpath) or not eal.does_asset_exist("%s/SM_%s" % (dest, t)):
+            log("unit %s: %s not imported, skipped" % (u["id"], t))
+            continue
+        with open(jpath) as f:
+            data = json.load(f)
+        fx, fy, fz = u["front"]
+        b = eas.spawn_actor_from_class(cls, unreal.Vector(*W.to_unreal(fx, fy, fz, face_y)), unreal.Rotator(0.0, 0.0, u["yaw"] - 90.0))
+        b.set_actor_label("City_%s_%s" % (u["id"], t))
+        b.set_folder_path(FOLDER + "/Units")
+        b.tags = [TAG, "NoGrass", "NoTree", "Roof"]          # "Roof": under its ceiling the hero is indoors (LyudSky)
+        for comp, suffix in (("shell", ""), ("detail", "_Detail"), ("windows", "_Windows")):
+            path = "%s/SM_%s%s" % (dest, t, suffix)
+            c = b.get_editor_property(comp)
+            if eal.does_asset_exist(path):
+                c.set_static_mesh(eal.load_asset(path))
+            c.set_editor_property("lighting_channels", unreal.LightingChannels(True, True, False))
+        b.set_editor_property("plot_id", u["id"])
+        b.set_editor_property("type_id", t)
+        b.set_editor_property("window_ids", [])
+        b.set_editor_property("window_kinds", [])
+        b.set_editor_property("window_flats", [])
+        lamps = data.get("lamps", [])
+        b.set_editor_property("lamp_positions", [unreal.Vector(l["pos"][0] * 100, -l["pos"][1] * 100, l["pos"][2] * 100) for l in lamps])
+        b.set_editor_property("lamp_lumens", [float(l["lumens"]) for l in lamps])
+        b.set_editor_property("lamp_colors", [unreal.LinearColor(*[(int(l["colour"][k:k + 2], 16) / 255.0) ** 2.2 for k in (1, 3, 5)], 1.0) for l in lamps])
+        b.set_editor_property("lamp_radii", [float(l.get("radius", 7.0)) * 100 for l in lamps])
+        b.set_editor_property("lamp_kinds", [0 if l["kind"] == "public" else 1 for l in lamps])
+        staff = [s for s in (u.get("staff") or []) if s[2][1] > s[2][0]]
+        oh = (min(s[2][0] for s in staff), max(s[2][1] for s in staff)) if staff else (8, 21)
+        b.set_editor_property("open_hour", float(oh[0]))
+        b.set_editor_property("close_hour", float(oh[1]))
+        n += 1
+    return n
 
 
 if __name__ == "__main__":

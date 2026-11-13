@@ -1,0 +1,19 @@
+{
+ "_doc": "The promenade units (tools/city/content/promenade.json): the trades' names (developer-mode teleports: '<trade> W1-U07') and the photo studio's portrait.",
+ "city.unit.cafe.name": {"ru": "Кафе «Чайка»", "en": "Seagull café", "ja": "カフェ「かもめ」"},
+ "city.unit.fish.name": {"ru": "Рыбная лавка", "en": "Fish shop", "ja": "魚屋"},
+ "city.unit.rental.name": {"ru": "Прокат", "en": "Rentals", "ja": "レンタル"},
+ "city.unit.workshop.name": {"ru": "Мастерская", "en": "Repair shop", "ja": "修理屋"},
+ "city.unit.dumplings.name": {"ru": "Пельменная", "en": "Dumpling bar", "ja": "ペリメニ食堂"},
+ "city.unit.souvenirs.name": {"ru": "Сувениры", "en": "Souvenirs", "ja": "土産物屋"},
+ "city.unit.bakery.name": {"ru": "Булочная", "en": "Bakery", "ja": "パン屋"},
+ "city.unit.photo.name": {"ru": "Фотоателье", "en": "Photo studio", "ja": "写真館"},
+ "city.unit.barber.name": {"ru": "Парикмахерская", "en": "Barber", "ja": "床屋"},
+ "city.unit.books.name": {"ru": "Книжный развал", "en": "Book stall", "ja": "古本屋"},
+ "city.unit.beer.name": {"ru": "Пивной бар", "en": "Beer bar", "ja": "ビアバー"},
+ "city.unit.pasty.name": {"ru": "Чебуречная", "en": "Pasty bar", "ja": "チェブレキ屋"},
+ "city.do.photo_portrait.prompt": {"ru": "E — сфотографироваться на портрет", "en": "E — sit for a portrait", "ja": "E：肖像写真を撮ってもらう"},
+ "city.do.photo_portrait.1": {"ru": "— Подбородок чуть выше. Не моргаем. Думаем о хорошем. — Щёлк. — Готово будет в четверг.", "en": "\"Chin up a little. Don't blink. Think of something nice.\" Click. \"Ready on Thursday.\"", "ja": "「あごを少し上げて。まばたきしないで。いいことを考えて」カシャ。「木曜日に仕上がります」"},
+ "city.do.photo_portrait.2": {"ru": "Фотограф долго двигает лампу, потом меня, потом опять лампу. На снимке я буду выглядеть так, будто давно здесь живу.", "en": "The photographer moves the lamp, then me, then the lamp again. In the picture I'll look as if I'd lived here for years.", "ja": "写真屋はランプを動かし、僕を動かし、またランプを動かす。写真の僕は、ずっとここに住んでいる人みたいに見えるだろう。"},
+ "city.do.photo_portrait.3": {"ru": "За спиной голубой фон, как небо над морем в штиль. — Улыбнитесь, молодой человек, у нас курорт.", "en": "Behind me a pale blue backdrop, like the sky over a calm sea. \"Smile, young man, this is a resort.\"", "ja": "背中には凪いだ海の空のような水色の背景。「笑って、お兄さん。ここはリゾートですよ」"}
+}

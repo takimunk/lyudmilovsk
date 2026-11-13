@@ -425,7 +425,67 @@
    "yaw": 90.0
   },
   {
-   "id": "sbench_t1e0_3",
+   "id": "garden_bench_t0e",
+   "kind": "bench",
+   "pos": [
+    5.075,
+    1.47,
+    2.4
+   ],
+   "yaw": 0.0
+  },
+  {
+   "id": "garden_bench_t0w",
+   "kind": "bench",
+   "pos": [
+    -6.425,
+    1.47,
+    2.4
+   ],
+   "yaw": 0.0
+  },
+  {
+   "id": "garden_bench_t1e",
+   "kind": "bench",
+   "pos": [
+    10.075,
+    6.67,
+    4.7
+   ],
+   "yaw": 0.0
+  },
+  {
+   "id": "garden_bench_t1w",
+   "kind": "bench",
+   "pos": [
+    -11.425,
+    6.67,
+    4.7
+   ],
+   "yaw": 0.0
+  },
+  {
+   "id": "garden_bench_t2e",
+   "kind": "bench",
+   "pos": [
+    5.075,
+    11.59,
+    7.0
+   ],
+   "yaw": 0.0
+  },
+  {
+   "id": "garden_bench_t2w",
+   "kind": "bench",
+   "pos": [
+    -6.225,
+    11.59,
+    7.0
+   ],
+   "yaw": 0.0
+  },
+  {
+   "id": "sbench_t1e0_9",
    "kind": "bench",
    "pos": [
     3.233,
@@ -435,7 +495,7 @@
    "yaw": 0
   },
   {
-   "id": "sbench_t1w0_4",
+   "id": "sbench_t1w0_10",
    "kind": "bench",
    "pos": [
     -15.3,
@@ -445,7 +505,7 @@
    "yaw": 0
   },
   {
-   "id": "sbench_t1w1_5",
+   "id": "sbench_t1w1_11",
    "kind": "bench",
    "pos": [
     -3.833,
@@ -455,7 +515,7 @@
    "yaw": 0
   },
   {
-   "id": "sbench_t2e0_6",
+   "id": "sbench_t2e0_12",
    "kind": "bench",
    "pos": [
     6.6,
@@ -465,7 +525,7 @@
    "yaw": 0
   },
   {
-   "id": "sbench_t2w0_7",
+   "id": "sbench_t2w0_13",
    "kind": "bench",
    "pos": [
     -18.667,
@@ -475,7 +535,7 @@
    "yaw": 0
   },
   {
-   "id": "sbench_t3e0_8",
+   "id": "sbench_t3e0_14",
    "kind": "bench",
    "pos": [
     5.05,
@@ -485,7 +545,7 @@
    "yaw": 0
   },
   {
-   "id": "sbench_t3e1_9",
+   "id": "sbench_t3e1_15",
    "kind": "bench",
    "pos": [
     17.65,
@@ -495,7 +555,7 @@
    "yaw": 0
   },
   {
-   "id": "sbench_t3w0_10",
+   "id": "sbench_t3w0_16",
    "kind": "bench",
    "pos": [
     -12.9,
@@ -506,6 +566,50 @@
   }
  ],
  "lamps": [
+  {
+   "pos": [
+    4.2,
+    15.7,
+    11.23
+   ],
+   "lumens": 450,
+   "colour": "#FFE2B8",
+   "kind": "public",
+   "radius": 6.0
+  },
+  {
+   "pos": [
+    8.4,
+    15.5,
+    11.23
+   ],
+   "lumens": 450,
+   "colour": "#FFE2B8",
+   "kind": "public",
+   "radius": 6.0
+  },
+  {
+   "pos": [
+    11.3,
+    15.4,
+    11.23
+   ],
+   "lumens": 450,
+   "colour": "#FFE2B8",
+   "kind": "public",
+   "radius": 6.0
+  },
+  {
+   "pos": [
+    15.2,
+    15.6,
+    11.23
+   ],
+   "lumens": 450,
+   "colour": "#FFE2B8",
+   "kind": "public",
+   "radius": 6.0
+  },
   {
    "pos": [
     10.433,
@@ -538,6 +642,399 @@
    "colour": "#FFD9A8",
    "kind": "lobby",
    "radius": 10
+  }
+ ],
+ "things": [
+  {
+   "id": "garden_bench_t0e0",
+   "kind": "seat",
+   "pos": [
+    5.075,
+    1.47,
+    2.85
+   ],
+   "yaw": 0.0,
+   "props": {
+    "height": 0.45
+   }
+  },
+  {
+   "id": "garden_table_t0e1",
+   "kind": "seat",
+   "pos": [
+    9.05,
+    2.2,
+    2.85
+   ],
+   "yaw": 90.0,
+   "props": {
+    "height": 0.45
+   }
+  },
+  {
+   "id": "garden_bench_t0w4",
+   "kind": "seat",
+   "pos": [
+    -6.425,
+    1.47,
+    2.85
+   ],
+   "yaw": 0.0,
+   "props": {
+    "height": 0.45
+   }
+  },
+  {
+   "id": "garden_chess_t0w",
+   "kind": "play",
+   "pos": [
+    -10.0,
+    2.2,
+    3.18
+   ],
+   "yaw": 0.0,
+   "props": {
+    "what": "chess"
+   }
+  },
+  {
+   "id": "garden_chess_t1e",
+   "kind": "play",
+   "pos": [
+    6.5,
+    7.4,
+    5.48
+   ],
+   "yaw": 0.0,
+   "props": {
+    "what": "chess"
+   }
+  },
+  {
+   "id": "garden_bench_t1e9",
+   "kind": "seat",
+   "pos": [
+    10.075,
+    6.67,
+    5.15
+   ],
+   "yaw": 0.0,
+   "props": {
+    "height": 0.45
+   }
+  },
+  {
+   "id": "garden_table_t1w12",
+   "kind": "seat",
+   "pos": [
+    -7.25,
+    7.4,
+    5.15
+   ],
+   "yaw": 90.0,
+   "props": {
+    "height": 0.45
+   }
+  },
+  {
+   "id": "garden_bench_t1w13",
+   "kind": "seat",
+   "pos": [
+    -11.425,
+    6.67,
+    5.15
+   ],
+   "yaw": 0.0,
+   "props": {
+    "height": 0.45
+   }
+  },
+  {
+   "id": "garden_bench_t2e16",
+   "kind": "seat",
+   "pos": [
+    5.075,
+    11.59,
+    7.45
+   ],
+   "yaw": 0.0,
+   "props": {
+    "height": 0.45
+   }
+  },
+  {
+   "id": "garden_table_t2e17",
+   "kind": "seat",
+   "pos": [
+    8.75,
+    12.32,
+    7.45
+   ],
+   "yaw": 90.0,
+   "props": {
+    "height": 0.45
+   }
+  },
+  {
+   "id": "garden_chess_t2e",
+   "kind": "play",
+   "pos": [
+    17.0,
+    12.32,
+    7.78
+   ],
+   "yaw": 0.0,
+   "props": {
+    "what": "chess"
+   }
+  },
+  {
+   "id": "garden_bench_t2w20",
+   "kind": "seat",
+   "pos": [
+    -6.225,
+    11.59,
+    7.45
+   ],
+   "yaw": 0.0,
+   "props": {
+    "height": 0.45
+   }
+  },
+  {
+   "id": "garden_table_t2w22",
+   "kind": "seat",
+   "pos": [
+    -13.25,
+    12.32,
+    7.45
+   ],
+   "yaw": 90.0,
+   "props": {
+    "height": 0.45
+   }
+  },
+  {
+   "id": "home_sewing_machine",
+   "kind": "craft",
+   "pos": [
+    11.4,
+    13.75,
+    10.18
+   ],
+   "yaw": 0.0,
+   "props": {
+    "what": "sewing_machine"
+   }
+  },
+  {
+   "id": "home_bed",
+   "kind": "bed",
+   "pos": [
+    3.3,
+    15.7,
+    9.83
+   ],
+   "yaw": 90.0,
+   "props": {
+    "height": 0.5,
+    "rest": "private"
+   }
+  },
+  {
+   "id": "home_sofa",
+   "kind": "seat",
+   "pos": [
+    11.3,
+    17.07,
+    9.76
+   ],
+   "yaw": 0.0,
+   "props": {
+    "height": 9.76
+   }
+  },
+  {
+   "id": "home_armchair_red",
+   "kind": "seat",
+   "pos": [
+    9.65,
+    15.5,
+    9.77
+   ],
+   "yaw": 90.0,
+   "props": {
+    "height": 9.77
+   }
+  },
+  {
+   "id": "home_armchair_yellow",
+   "kind": "seat",
+   "pos": [
+    12.95,
+    15.5,
+    9.77
+   ],
+   "yaw": 270.0,
+   "props": {
+    "height": 9.77
+   }
+  },
+  {
+   "id": "home_dining_chair",
+   "kind": "seat",
+   "pos": [
+    14.6,
+    16.3,
+    9.78
+   ],
+   "yaw": 180.0,
+   "props": {
+    "height": 9.78
+   }
+  },
+  {
+   "id": "home_desk_chair",
+   "kind": "seat",
+   "pos": [
+    7.4,
+    16.55,
+    9.78
+   ],
+   "yaw": 180.0,
+   "props": {
+    "height": 9.78
+   }
+  },
+  {
+   "id": "home_record_player",
+   "kind": "machine",
+   "pos": [
+    13.0,
+    17.45,
+    10.03
+   ],
+   "yaw": 0.0,
+   "props": {
+    "what": "record_player"
+   }
+  },
+  {
+   "id": "home_shelf_main",
+   "kind": "shelf",
+   "pos": [
+    5.6,
+    17.535,
+    10.63
+   ],
+   "yaw": 180.0,
+   "props": {
+    "topic": "art"
+   }
+  },
+  {
+   "id": "home_shelf_science",
+   "kind": "shelf",
+   "pos": [
+    4.5,
+    17.535,
+    10.63
+   ],
+   "yaw": 180.0,
+   "props": {
+    "topic": "science"
+   }
+  },
+  {
+   "id": "home_board_chart",
+   "kind": "board",
+   "pos": [
+    8.2,
+    13.1,
+    10.93
+   ],
+   "yaw": 180.0,
+   "props": {
+    "topic": "view"
+   }
+  },
+  {
+   "id": "home_board_calendar",
+   "kind": "board",
+   "pos": [
+    3.7,
+    13.1,
+    10.93
+   ],
+   "yaw": 180.0,
+   "props": {
+    "topic": "club"
+   }
+  },
+  {
+   "id": "home_picture",
+   "kind": "board",
+   "pos": [
+    17.3,
+    15.2,
+    10.83
+   ],
+   "yaw": 270.0,
+   "props": {
+    "topic": "painting"
+   }
+  },
+  {
+   "id": "home_paper",
+   "kind": "take",
+   "pos": [
+    11.1,
+    15.6,
+    9.78
+   ],
+   "yaw": 10.0,
+   "props": {
+    "item": "daily_paper"
+   }
+  },
+  {
+   "id": "stair_board_lost",
+   "kind": "board",
+   "pos": [
+    1.9,
+    3.0,
+    3.114
+   ],
+   "yaw": 270.0,
+   "props": {
+    "topic": "lost"
+   }
+  },
+  {
+   "id": "stair_board_club",
+   "kind": "board",
+   "pos": [
+    -1.9,
+    3.2,
+    3.229
+   ],
+   "yaw": 90.0,
+   "props": {
+    "topic": "club"
+   }
+  },
+  {
+   "id": "stair_payphone",
+   "kind": "machine",
+   "pos": [
+    -1.9,
+    1.8,
+    2.129
+   ],
+   "yaw": 90.0,
+   "props": {
+    "what": "payphone"
+   }
   }
  ],
  "flats": [
@@ -2225,8 +2722,8 @@
   "stepped terrace housing: 24 flats in 4 tiers + upper maisonettes; stair walkable (rise <= 0.17)"
  ],
  "tris": {
-  "shell": 3448,
-  "detail": 18290,
+  "shell": 3790,
+  "detail": 32978,
   "windows": 124
  }
 }

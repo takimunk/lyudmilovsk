@@ -73,7 +73,47 @@
  ],
  "spots": [
   {
-   "id": "sbench_A_0",
+   "id": "studio_chair",
+   "kind": "seat",
+   "pos": [
+    -12.75,
+    8.8,
+    6.87
+   ],
+   "yaw": 0.0
+  },
+  {
+   "id": "hall_a_bench",
+   "kind": "bench",
+   "pos": [
+    -9.63,
+    13.975,
+    0.0
+   ],
+   "yaw": 270.0
+  },
+  {
+   "id": "hall_b_bench",
+   "kind": "bench",
+   "pos": [
+    2.77,
+    14.275,
+    0.0
+   ],
+   "yaw": 270.0
+  },
+  {
+   "id": "hall_c_bench",
+   "kind": "bench",
+   "pos": [
+    14.07,
+    12.925,
+    0.0
+   ],
+   "yaw": 270.0
+  },
+  {
+   "id": "sbench_A_4",
    "kind": "bench",
    "pos": [
     -8.2,
@@ -83,7 +123,7 @@
    "yaw": 0
   },
   {
-   "id": "sbench_B_1",
+   "id": "sbench_B_5",
    "kind": "bench",
    "pos": [
     3.6,
@@ -93,7 +133,7 @@
    "yaw": 0
   },
   {
-   "id": "sbench_C_2",
+   "id": "sbench_C_6",
    "kind": "bench",
    "pos": [
     15.4,
@@ -104,6 +144,17 @@
   }
  ],
  "lamps": [
+  {
+   "pos": [
+    -11.7,
+    9.8,
+    8.97
+   ],
+   "lumens": 300,
+   "colour": "#FFE0B0",
+   "kind": "public",
+   "radius": 4.0
+  },
   {
    "pos": [
     -12.3,
@@ -290,6 +341,399 @@
    "colour": "#FFD9A8",
    "kind": "lobby",
    "radius": 10
+  }
+ ],
+ "things": [
+  {
+   "id": "studio_desk_chair",
+   "kind": "seat",
+   "pos": [
+    -12.75,
+    8.8,
+    7.32
+   ],
+   "yaw": 0.0,
+   "props": {
+    "height": 0.45
+   }
+  },
+  {
+   "id": "studio_armchair",
+   "kind": "seat",
+   "pos": [
+    -10.6,
+    9.0,
+    7.31
+   ],
+   "yaw": 0.0,
+   "props": {
+    "height": 0.44
+   }
+  },
+  {
+   "id": "studio_bed",
+   "kind": "bed",
+   "pos": [
+    -13.5,
+    10.18,
+    7.37
+   ],
+   "yaw": 0.0,
+   "props": {
+    "height": 0.5,
+    "rest": "private"
+   }
+  },
+  {
+   "id": "studio_radio_set",
+   "kind": "machine",
+   "pos": [
+    -13.35,
+    8.16,
+    7.77
+   ],
+   "yaw": 180.0,
+   "props": {
+    "what": "radio_set"
+   }
+  },
+  {
+   "id": "studio_records",
+   "kind": "machine",
+   "pos": [
+    -10.8,
+    8.32,
+    7.37
+   ],
+   "yaw": 0.0,
+   "props": {
+    "what": "record_player"
+   }
+  },
+  {
+   "id": "studio_shelf_radio",
+   "kind": "shelf",
+   "pos": [
+    -13.93,
+    8.55,
+    8.17
+   ],
+   "yaw": 90.0,
+   "props": {
+    "topic": "engineering"
+   }
+  },
+  {
+   "id": "studio_shelf_music",
+   "kind": "shelf",
+   "pos": [
+    -9.67,
+    10.05,
+    8.17
+   ],
+   "yaw": 270.0,
+   "props": {
+    "topic": "music"
+   }
+  },
+  {
+   "id": "studio_shelf_manuals",
+   "kind": "shelf",
+   "pos": [
+    -9.67,
+    9.1,
+    8.17
+   ],
+   "yaw": 270.0,
+   "props": {
+    "topic": "engineering"
+   }
+  },
+  {
+   "id": "studio_map",
+   "kind": "board",
+   "pos": [
+    -14.0,
+    10.15,
+    8.62
+   ],
+   "yaw": 90.0,
+   "props": {
+    "topic": "travel"
+   }
+  },
+  {
+   "id": "studio_window_west",
+   "kind": "board",
+   "pos": [
+    -13.0,
+    8.02,
+    8.075
+   ],
+   "yaw": 180.0,
+   "props": {
+    "topic": "view"
+   }
+  },
+  {
+   "id": "studio_window_east",
+   "kind": "board",
+   "pos": [
+    -10.6,
+    8.02,
+    8.075
+   ],
+   "yaw": 180.0,
+   "props": {
+    "topic": "view"
+   }
+  },
+  {
+   "id": "hall_a_bench",
+   "kind": "seat",
+   "pos": [
+    -9.63,
+    13.975,
+    0.45
+   ],
+   "yaw": 270.0,
+   "props": {
+    "height": 0.45
+   }
+  },
+  {
+   "id": "hall_a_board_lost",
+   "kind": "board",
+   "pos": [
+    -9.43,
+    15.5,
+    1.55
+   ],
+   "yaw": 270.0,
+   "props": {
+    "topic": "lost"
+   }
+  },
+  {
+   "id": "hall_a_board_club",
+   "kind": "board",
+   "pos": [
+    -10.3,
+    11.63,
+    1.8
+   ],
+   "yaw": 180.0,
+   "props": {
+    "topic": "club"
+   }
+  },
+  {
+   "id": "hall_a_swap_shelf",
+   "kind": "shelf",
+   "pos": [
+    -10.7,
+    16.35,
+    1.2
+   ],
+   "yaw": 0.0,
+   "props": {
+    "topic": "travel"
+   }
+  },
+  {
+   "id": "hall_a_radio",
+   "kind": "machine",
+   "pos": [
+    -10.5,
+    11.82,
+    1.0
+   ],
+   "yaw": 180.0,
+   "props": {
+    "what": "jukebox"
+   }
+  },
+  {
+   "id": "hall_a_paper",
+   "kind": "take",
+   "pos": [
+    -10.05,
+    11.82,
+    0.8
+   ],
+   "yaw": 180.0,
+   "props": {
+    "item": "daily_paper"
+   }
+  },
+  {
+   "id": "hall_a_picture",
+   "kind": "board",
+   "pos": [
+    -13.35,
+    11.63,
+    1.8
+   ],
+   "yaw": 180.0,
+   "props": {
+    "topic": "painting"
+   }
+  },
+  {
+   "id": "hall_b_bench",
+   "kind": "seat",
+   "pos": [
+    2.77,
+    14.275,
+    0.45
+   ],
+   "yaw": 270.0,
+   "props": {
+    "height": 0.45
+   }
+  },
+  {
+   "id": "hall_b_armchair",
+   "kind": "seat",
+   "pos": [
+    0.95,
+    15.7,
+    0.44
+   ],
+   "yaw": 0.0,
+   "props": {
+    "height": 0.44
+   }
+  },
+  {
+   "id": "hall_b_board_lost",
+   "kind": "board",
+   "pos": [
+    2.97,
+    14.0,
+    1.55
+   ],
+   "yaw": 270.0,
+   "props": {
+    "topic": "lost"
+   }
+  },
+  {
+   "id": "hall_b_radio",
+   "kind": "machine",
+   "pos": [
+    1.9,
+    12.1,
+    1.0
+   ],
+   "yaw": 225.0,
+   "props": {
+    "what": "jukebox"
+   }
+  },
+  {
+   "id": "hall_b_paper",
+   "kind": "take",
+   "pos": [
+    1.6,
+    14.35,
+    0.45
+   ],
+   "yaw": 90.0,
+   "props": {
+    "item": "daily_paper"
+   }
+  },
+  {
+   "id": "hall_c_bench",
+   "kind": "seat",
+   "pos": [
+    14.07,
+    12.925,
+    0.45
+   ],
+   "yaw": 270.0,
+   "props": {
+    "height": 0.45
+   }
+  },
+  {
+   "id": "hall_c_board_lost",
+   "kind": "board",
+   "pos": [
+    14.27,
+    15.5,
+    1.55
+   ],
+   "yaw": 270.0,
+   "props": {
+    "topic": "lost"
+   }
+  },
+  {
+   "id": "hall_c_board_club",
+   "kind": "board",
+   "pos": [
+    13.3,
+    11.53,
+    1.8
+   ],
+   "yaw": 180.0,
+   "props": {
+    "topic": "club"
+   }
+  },
+  {
+   "id": "hall_c_swap_shelf",
+   "kind": "shelf",
+   "pos": [
+    12.9,
+    16.45,
+    1.2
+   ],
+   "yaw": 0.0,
+   "props": {
+    "topic": "travel"
+   }
+  },
+  {
+   "id": "hall_c_radio",
+   "kind": "machine",
+   "pos": [
+    13.1,
+    11.72,
+    1.0
+   ],
+   "yaw": 180.0,
+   "props": {
+    "what": "jukebox"
+   }
+  },
+  {
+   "id": "hall_c_paper",
+   "kind": "take",
+   "pos": [
+    13.55,
+    11.72,
+    0.8
+   ],
+   "yaw": 180.0,
+   "props": {
+    "item": "daily_paper"
+   }
+  },
+  {
+   "id": "hall_c_picture",
+   "kind": "board",
+   "pos": [
+    10.25,
+    11.53,
+    1.8
+   ],
+   "yaw": 180.0,
+   "props": {
+    "topic": "painting"
+   }
   }
  ],
  "flats": [
@@ -1858,8 +2302,8 @@
   "24 flats (3 paired); cores A/C 5 storeys, B 4; bridges at levels 1 and 3"
  ],
  "tris": {
-  "shell": 5984,
-  "detail": 5308,
+  "shell": 6276,
+  "detail": 14580,
   "windows": 116
  }
 }

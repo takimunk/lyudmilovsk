@@ -130,11 +130,11 @@
    "id": "lobby_bench",
    "kind": "bench",
    "pos": [
-    7.511,
-    8.103,
+    8.111,
+    8.079,
     0.0
    ],
-   "yaw": -2.2812208509839027
+   "yaw": 267.7187791490161
   },
   {
    "id": "lobby_view",
@@ -160,11 +160,11 @@
    "id": "caretaker_desk",
    "kind": "work",
    "pos": [
-    22.209,
-    7.482,
-    0.0
+    22.759,
+    8.187,
+    0.01
    ],
-   "yaw": 0
+   "yaw": 348.59389574508083
   },
   {
    "id": "forecourt_bench_0",
@@ -197,7 +197,17 @@
    "yaw": 353.1563374470485
   },
   {
-   "id": "sbench_front_7",
+   "id": "concierge_chair",
+   "kind": "seat",
+   "pos": [
+    8.691,
+    11.972,
+    0.01
+   ],
+   "yaw": 265.43755829803234
+  },
+  {
+   "id": "sbench_front_8",
    "kind": "bench",
    "pos": [
     7.895,
@@ -207,7 +217,7 @@
    "yaw": 0
   },
   {
-   "id": "sbench_rear_8",
+   "id": "sbench_rear_9",
    "kind": "bench",
    "pos": [
     1.038,
@@ -352,6 +362,17 @@
   },
   {
    "pos": [
+    -22.228,
+    7.58,
+    5.95
+   ],
+   "lumens": 520,
+   "colour": "#FFE0B0",
+   "kind": "lobby",
+   "radius": 6.0
+  },
+  {
+   "pos": [
     0.695,
     3.879,
     4.3
@@ -371,6 +392,467 @@
    "colour": "#FFD9A8",
    "kind": "lobby",
    "radius": 10
+  }
+ ],
+ "things": [
+  {
+   "id": "house_notices",
+   "kind": "board",
+   "pos": [
+    0.25,
+    6.7,
+    1.75
+   ],
+   "yaw": 90.0,
+   "props": {
+    "topic": "lost"
+   }
+  },
+  {
+   "id": "lobby_bench_west",
+   "kind": "seat",
+   "pos": [
+    0.45,
+    6.7,
+    0.46
+   ],
+   "yaw": 90.0,
+   "props": {
+    "height": 0.45
+   }
+  },
+  {
+   "id": "club_notices",
+   "kind": "board",
+   "pos": [
+    8.58,
+    8.068,
+    1.75
+   ],
+   "yaw": 265.4,
+   "props": {
+    "topic": "club"
+   }
+  },
+  {
+   "id": "lobby_bench_east",
+   "kind": "seat",
+   "pos": [
+    8.381,
+    8.084,
+    0.46
+   ],
+   "yaw": 265.4,
+   "props": {
+    "height": 0.45
+   }
+  },
+  {
+   "id": "concierge_desk",
+   "kind": "counter",
+   "pos": [
+    8.143,
+    12.015,
+    1.0
+   ],
+   "yaw": 265.4,
+   "props": {
+    "role": "concierge",
+    "service": "reception"
+   }
+  },
+  {
+   "id": "garden_chess_west",
+   "kind": "play",
+   "pos": [
+    -23.561,
+    7.107,
+    0.73
+   ],
+   "yaw": 11.4,
+   "props": {
+    "what": "chess"
+   }
+  },
+  {
+   "id": "garden_bench_west",
+   "kind": "seat",
+   "pos": [
+    -21.037,
+    10.779,
+    0.46
+   ],
+   "yaw": 11.4,
+   "props": {
+    "height": 0.45
+   }
+  },
+  {
+   "id": "garden_pingpong",
+   "kind": "play",
+   "pos": [
+    -4.474,
+    9.711,
+    0.77
+   ],
+   "yaw": 2.3,
+   "props": {
+    "what": "table_tennis"
+   }
+  },
+  {
+   "id": "garden_bench_mid_1",
+   "kind": "seat",
+   "pos": [
+    -6.8,
+    12.821,
+    0.46
+   ],
+   "yaw": 2.3,
+   "props": {
+    "height": 0.45
+   }
+  },
+  {
+   "id": "garden_bench_mid_2",
+   "kind": "seat",
+   "pos": [
+    -2.403,
+    12.996,
+    0.46
+   ],
+   "yaw": 2.3,
+   "props": {
+    "height": 0.45
+   }
+  },
+  {
+   "id": "garden_chess_east",
+   "kind": "play",
+   "pos": [
+    14.14,
+    8.507,
+    0.73
+   ],
+   "yaw": 353.2,
+   "props": {
+    "what": "chess"
+   }
+  },
+  {
+   "id": "garden_bench_east",
+   "kind": "seat",
+   "pos": [
+    15.55,
+    11.863,
+    0.46
+   ],
+   "yaw": 353.2,
+   "props": {
+    "height": 0.45
+   }
+  },
+  {
+   "id": "common_books_local",
+   "kind": "shelf",
+   "pos": [
+    -17.196,
+    6.352,
+    1.3
+   ],
+   "yaw": 99.1,
+   "props": {
+    "topic": "local"
+   }
+  },
+  {
+   "id": "common_books_chess",
+   "kind": "shelf",
+   "pos": [
+    -17.418,
+    7.734,
+    1.3
+   ],
+   "yaw": 99.1,
+   "props": {
+    "topic": "chess"
+   }
+  },
+  {
+   "id": "common_notices",
+   "kind": "board",
+   "pos": [
+    -17.753,
+    9.503,
+    1.7
+   ],
+   "yaw": 99.1,
+   "props": {
+    "topic": "club"
+   }
+  },
+  {
+   "id": "common_table_seats",
+   "kind": "seat",
+   "pos": [
+    -14.765,
+    8.017,
+    0.46
+   ],
+   "yaw": 45.0,
+   "props": {
+    "height": 0.45
+   }
+  },
+  {
+   "id": "common_table_cards",
+   "kind": "play",
+   "pos": [
+    -14.065,
+    8.717,
+    0.76
+   ],
+   "yaw": 0.0,
+   "props": {
+    "what": "chess"
+   }
+  },
+  {
+   "id": "common_sofa",
+   "kind": "seat",
+   "pos": [
+    -9.634,
+    10.592,
+    0.46
+   ],
+   "yaw": 274.6,
+   "props": {
+    "height": 0.45
+   }
+  },
+  {
+   "id": "common_tv",
+   "kind": "screen",
+   "pos": [
+    -9.244,
+    8.216,
+    0.91
+   ],
+   "yaw": 274.6,
+   "props": {
+    "what": "tv"
+   }
+  },
+  {
+   "id": "common_armchair",
+   "kind": "seat",
+   "pos": [
+    -9.448,
+    6.996,
+    0.46
+   ],
+   "yaw": 229.6,
+   "props": {
+    "height": 0.45
+   }
+  },
+  {
+   "id": "common_record_player",
+   "kind": "machine",
+   "pos": [
+    -14.724,
+    12.54,
+    0.87
+   ],
+   "yaw": 6.8,
+   "props": {
+    "what": "record_player"
+   }
+  },
+  {
+   "id": "caretaker_desk_counter",
+   "kind": "counter",
+   "pos": [
+    22.601,
+    7.403,
+    1.0
+   ],
+   "yaw": 348.6,
+   "props": {
+    "role": "caretaker",
+    "service": "reception"
+   }
+  },
+  {
+   "id": "caretaker_visitor_chair",
+   "kind": "seat",
+   "pos": [
+    22.403,
+    6.423,
+    0.46
+   ],
+   "yaw": 168.6,
+   "props": {
+    "height": 0.45
+   }
+  },
+  {
+   "id": "caretaker_radio",
+   "kind": "machine",
+   "pos": [
+    18.217,
+    8.922,
+    1.45
+   ],
+   "yaw": 80.9,
+   "props": {
+    "what": "jukebox"
+   }
+  },
+  {
+   "id": "caretaker_cot",
+   "kind": "bed",
+   "pos": [
+    26.654,
+    9.167,
+    0.51
+   ],
+   "yaw": 348.6,
+   "props": {
+    "rest": "private",
+    "height": 0.5
+   }
+  },
+  {
+   "id": "caretaker_rules",
+   "kind": "board",
+   "pos": [
+    26.306,
+    6.473,
+    1.7
+   ],
+   "yaw": 256.3,
+   "props": {
+    "topic": "rules"
+   }
+  },
+  {
+   "id": "flat_easel",
+   "kind": "craft",
+   "pos": [
+    -23.891,
+    4.694,
+    4.6
+   ],
+   "yaw": 191.4,
+   "props": {
+    "what": "easel"
+   }
+  },
+  {
+   "id": "flat_armchair",
+   "kind": "seat",
+   "pos": [
+    -19.342,
+    5.408,
+    3.85
+   ],
+   "yaw": 11.4,
+   "props": {
+    "height": 0.45
+   }
+  },
+  {
+   "id": "flat_sofa",
+   "kind": "seat",
+   "pos": [
+    -18.382,
+    8.693,
+    3.85
+   ],
+   "yaw": 279.1,
+   "props": {
+    "height": 0.45
+   }
+  },
+  {
+   "id": "flat_paintings",
+   "kind": "board",
+   "pos": [
+    -18.135,
+    8.733,
+    5.2
+   ],
+   "yaw": 279.1,
+   "props": {
+    "topic": "painting"
+   }
+  },
+  {
+   "id": "flat_record_player",
+   "kind": "machine",
+   "pos": [
+    -18.534,
+    10.697,
+    4.255
+   ],
+   "yaw": 279.1,
+   "props": {
+    "what": "record_player"
+   }
+  },
+  {
+   "id": "flat_books_art",
+   "kind": "shelf",
+   "pos": [
+    -25.735,
+    4.759,
+    4.7
+   ],
+   "yaw": 103.7,
+   "props": {
+    "topic": "art"
+   }
+  },
+  {
+   "id": "flat_books_poetry",
+   "kind": "shelf",
+   "pos": [
+    -26.066,
+    6.12,
+    4.7
+   ],
+   "yaw": 103.7,
+   "props": {
+    "topic": "poetry"
+   }
+  },
+  {
+   "id": "flat_bed",
+   "kind": "bed",
+   "pos": [
+    -23.262,
+    10.177,
+    3.9
+   ],
+   "yaw": 11.4,
+   "props": {
+    "rest": "private",
+    "height": 0.5
+   }
+  },
+  {
+   "id": "flat_dining_seat",
+   "kind": "seat",
+   "pos": [
+    -21.514,
+    8.591,
+    3.85
+   ],
+   "yaw": 191.4,
+   "props": {
+    "height": 0.45
+   }
   }
  ],
  "flats": [
@@ -2508,8 +2990,8 @@
   "20 flats, 247 cobogo blocks on the core front"
  ],
  "tris": {
-  "shell": 8644,
-  "detail": 7582,
+  "shell": 8886,
+  "detail": 22658,
   "windows": 172
  }
 }

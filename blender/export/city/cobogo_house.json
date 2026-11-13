@@ -62,11 +62,11 @@
    "id": "lobby_bench",
    "kind": "bench",
    "pos": [
-    4.1,
-    9.25,
+    4.65,
+    8.6,
     0.0
    ],
-   "yaw": 180
+   "yaw": 270
   },
   {
    "id": "lobby_view",
@@ -119,7 +119,27 @@
    "yaw": 0
   },
   {
-   "id": "sbench_rear_6",
+   "id": "concierge_chair",
+   "kind": "seat",
+   "pos": [
+    4.85,
+    11.8,
+    0.0
+   ],
+   "yaw": 270
+  },
+  {
+   "id": "flat_bed_spot",
+   "kind": "bench",
+   "pos": [
+    -8.3,
+    5.9,
+    0.0
+   ],
+   "yaw": 180
+  },
+  {
+   "id": "sbench_rear_8",
    "kind": "bench",
    "pos": [
     5.6,
@@ -129,7 +149,7 @@
    "yaw": 180
   },
   {
-   "id": "sbench_front_7",
+   "id": "sbench_front_9",
    "kind": "bench",
    "pos": [
     -1.6,
@@ -230,6 +250,39 @@
   },
   {
    "pos": [
+    -11.8,
+    6.4,
+    2.85
+   ],
+   "lumens": 480,
+   "colour": "#FFE0B0",
+   "kind": "lobby",
+   "radius": 5.5
+  },
+  {
+   "pos": [
+    -8.8,
+    6.0,
+    2.85
+   ],
+   "lumens": 380,
+   "colour": "#FFE0B0",
+   "kind": "lobby",
+   "radius": 4.5
+  },
+  {
+   "pos": [
+    -9.4,
+    10.8,
+    2.85
+   ],
+   "lumens": 480,
+   "colour": "#FFE0B0",
+   "kind": "lobby",
+   "radius": 5.5
+  },
+  {
+   "pos": [
     -1.6,
     14.69,
     4.3
@@ -249,6 +302,244 @@
    "colour": "#FFD9A8",
    "kind": "lobby",
    "radius": 10
+  }
+ ],
+ "things": [
+  {
+   "id": "lobby_radio",
+   "kind": "machine",
+   "pos": [
+    -0.95,
+    9.5,
+    1.3
+   ],
+   "yaw": 90.0,
+   "props": {
+    "what": "jukebox"
+   }
+  },
+  {
+   "id": "lobby_bench_seat",
+   "kind": "seat",
+   "pos": [
+    4.8,
+    8.6,
+    0.45
+   ],
+   "yaw": 270.0,
+   "props": {
+    "height": 0.45
+   }
+  },
+  {
+   "id": "house_notices",
+   "kind": "board",
+   "pos": [
+    5.05,
+    8.6,
+    1.7
+   ],
+   "yaw": 270.0,
+   "props": {
+    "topic": "lost"
+   }
+  },
+  {
+   "id": "concierge_desk",
+   "kind": "counter",
+   "pos": [
+    4.0,
+    11.8,
+    1.0
+   ],
+   "yaw": 270.0,
+   "props": {
+    "role": "concierge",
+    "service": "reception"
+   }
+  },
+  {
+   "id": "garden_bench_seat",
+   "kind": "seat",
+   "pos": [
+    14.1,
+    4.8,
+    0.45
+   ],
+   "yaw": 0.0,
+   "props": {
+    "height": 0.45
+   }
+  },
+  {
+   "id": "garden_bench_2",
+   "kind": "seat",
+   "pos": [
+    17.2,
+    7.2,
+    0.45
+   ],
+   "yaw": 270.0,
+   "props": {
+    "height": 0.45
+   }
+  },
+  {
+   "id": "garden_chess",
+   "kind": "play",
+   "pos": [
+    12.9,
+    9.2,
+    0.72
+   ],
+   "yaw": 0.0,
+   "props": {
+    "what": "chess"
+   }
+  },
+  {
+   "id": "garden_pingpong",
+   "kind": "play",
+   "pos": [
+    15.4,
+    11.7,
+    0.76
+   ],
+   "yaw": 0.0,
+   "props": {
+    "what": "table_tennis"
+   }
+  },
+  {
+   "id": "flat_sofa",
+   "kind": "seat",
+   "pos": [
+    -13.15,
+    5.6,
+    0.45
+   ],
+   "yaw": 90.0,
+   "props": {
+    "height": 0.45
+   }
+  },
+  {
+   "id": "flat_painting",
+   "kind": "board",
+   "pos": [
+    -13.65,
+    5.6,
+    1.75
+   ],
+   "yaw": 90.0,
+   "props": {
+    "topic": "painting"
+   }
+  },
+  {
+   "id": "flat_chess",
+   "kind": "play",
+   "pos": [
+    -12.1,
+    5.6,
+    0.42
+   ],
+   "yaw": 90.0,
+   "props": {
+    "what": "chess"
+   }
+  },
+  {
+   "id": "flat_armchair",
+   "kind": "seat",
+   "pos": [
+    -10.9,
+    5.6,
+    0.45
+   ],
+   "yaw": 270.0,
+   "props": {
+    "height": 0.45
+   }
+  },
+  {
+   "id": "flat_books_sea",
+   "kind": "shelf",
+   "pos": [
+    -10.05,
+    4.45,
+    1.3
+   ],
+   "yaw": 270.0,
+   "props": {
+    "topic": "sea"
+   }
+  },
+  {
+   "id": "flat_aquarium",
+   "kind": "screen",
+   "pos": [
+    -10.13,
+    7.4,
+    1.0
+   ],
+   "yaw": 270.0,
+   "props": {
+    "what": "aquarium"
+   }
+  },
+  {
+   "id": "flat_record_player",
+   "kind": "machine",
+   "pos": [
+    -12.45,
+    4.0,
+    0.8
+   ],
+   "yaw": 0.0,
+   "props": {
+    "what": "record_player"
+   }
+  },
+  {
+   "id": "flat_bed",
+   "kind": "bed",
+   "pos": [
+    -8.3,
+    4.85,
+    0.5
+   ],
+   "yaw": 180.0,
+   "props": {
+    "rest": "private",
+    "height": 0.5
+   }
+  },
+  {
+   "id": "flat_kitchen_seat",
+   "kind": "seat",
+   "pos": [
+    -9.4,
+    9.95,
+    0.45
+   ],
+   "yaw": 180.0,
+   "props": {
+    "height": 0.45
+   }
+  },
+  {
+   "id": "flat_books_cooking",
+   "kind": "shelf",
+   "pos": [
+    -7.8,
+    11.6,
+    1.3
+   ],
+   "yaw": 270.0,
+   "props": {
+    "topic": "cooking"
+   }
   }
  ],
  "flats": [
@@ -2246,8 +2537,8 @@
   "16 flats, 1034 cobogo blocks"
  ],
  "tris": {
-  "shell": 8826,
-  "detail": 16900,
+  "shell": 9018,
+  "detail": 24476,
   "windows": 164
  }
 }

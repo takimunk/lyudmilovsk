@@ -88,6 +88,101 @@
    "radius": 4.5
   }
  ],
+ "things": [
+  {
+   "id": "shelter_bench",
+   "kind": "seat",
+   "pos": [
+    -1.25,
+    3.95,
+    0.45
+   ],
+   "yaw": 0.0,
+   "props": {
+    "height": 0.45
+   }
+  },
+  {
+   "id": "stop_notices",
+   "kind": "board",
+   "pos": [
+    -2.6,
+    4.15,
+    1.45
+   ],
+   "yaw": 0.0,
+   "props": {
+    "topic": "lost"
+   }
+  },
+  {
+   "id": "timetable",
+   "kind": "board",
+   "pos": [
+    -2.15,
+    1.7,
+    1.5
+   ],
+   "yaw": 0.0,
+   "props": {
+    "topic": "timetable"
+   }
+  },
+  {
+   "id": "counter",
+   "kind": "counter",
+   "pos": [
+    1.75,
+    2.08,
+    1.02
+   ],
+   "yaw": 0.0,
+   "props": {
+    "role": "seller",
+    "service": "newspapers",
+    "shop": "kiosk_news"
+   }
+  },
+  {
+   "id": "postcards",
+   "kind": "take",
+   "pos": [
+    2.15,
+    2.08,
+    1.05
+   ],
+   "yaw": 0.0,
+   "props": {
+    "item": "postcard"
+   }
+  },
+  {
+   "id": "price_board",
+   "kind": "board",
+   "pos": [
+    0.57,
+    2.55,
+    1.45
+   ],
+   "yaw": 270.0,
+   "props": {
+    "topic": "prices"
+   }
+  },
+  {
+   "id": "paper_rack",
+   "kind": "take",
+   "pos": [
+    0.36,
+    3.9,
+    1.0
+   ],
+   "yaw": 270.0,
+   "props": {
+    "item": "daily_paper"
+   }
+  }
+ ],
  "flats": [],
  "windows": [
   {
@@ -136,8 +231,8 @@
  "light_tex": 64,
  "notes": [],
  "tris": {
-  "shell": 636,
-  "detail": 998,
+  "shell": 612,
+  "detail": 1758,
   "windows": 4
  }
 }

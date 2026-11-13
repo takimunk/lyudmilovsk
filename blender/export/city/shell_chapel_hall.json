@@ -664,6 +664,16 @@
    "yaw": 180.0
   },
   {
+   "id": "stage_piano",
+   "kind": "work",
+   "pos": [
+    -2.2,
+    21.5,
+    1.0
+   ],
+   "yaw": 90.0
+  },
+  {
    "id": "stage_a",
    "kind": "work",
    "pos": [
@@ -684,21 +694,11 @@
    "yaw": 0.0
   },
   {
-   "id": "stage_piano",
-   "kind": "work",
-   "pos": [
-    -1.15,
-    20.25,
-    1.0
-   ],
-   "yaw": 0.0
-  },
-  {
    "id": "stage_mic",
    "kind": "stand",
    "pos": [
-    -4.35,
-    19.8,
+    -5.65,
+    19.5,
     1.0
    ],
    "yaw": 0.0
@@ -747,7 +747,7 @@
    "id": "cloak_clerk",
    "kind": "work",
    "pos": [
-    -16.2,
+    -15.6,
     9.8,
     0.0
    ],
@@ -757,7 +757,7 @@
    "id": "cloak_counter",
    "kind": "counter",
    "pos": [
-    -15.2,
+    -14.15,
     9.8,
     0.0
    ],
@@ -767,18 +767,18 @@
    "id": "foyer_bench_1",
    "kind": "bench",
    "pos": [
-    -10.45,
-    11.2,
+    -11.0,
+    11.25,
     0.0
    ],
-   "yaw": 270.0
+   "yaw": 90.0
   },
   {
    "id": "foyer_bench_2",
    "kind": "bench",
    "pos": [
-    -15.0,
-    16.8,
+    -13.25,
+    17.2,
     0.0
    ],
    "yaw": 180.0
@@ -788,7 +788,7 @@
    "kind": "stand",
    "pos": [
     -13.2,
-    12.0,
+    12.6,
     0.0
    ],
    "yaw": 90.0
@@ -804,31 +804,11 @@
    "yaw": 0.0
   },
   {
-   "id": "bar_barman",
-   "kind": "work",
-   "pos": [
-    10.0,
-    7.6,
-    0.0
-   ],
-   "yaw": 270.0
-  },
-  {
-   "id": "bar_barman2",
-   "kind": "work",
-   "pos": [
-    10.0,
-    9.0,
-    0.0
-   ],
-   "yaw": 270.0
-  },
-  {
    "id": "bar_stool_1",
    "kind": "seat",
    "pos": [
-    8.35,
-    6.3,
+    7.95,
+    6.1,
     0.0
    ],
    "yaw": 90.0
@@ -837,8 +817,8 @@
    "id": "bar_stool_2",
    "kind": "seat",
    "pos": [
-    8.35,
-    7.15,
+    7.95,
+    7.05,
     0.0
    ],
    "yaw": 90.0
@@ -847,7 +827,7 @@
    "id": "bar_stool_3",
    "kind": "seat",
    "pos": [
-    8.35,
+    7.95,
     8.0,
     0.0
    ],
@@ -857,8 +837,8 @@
    "id": "bar_stool_4",
    "kind": "seat",
    "pos": [
-    8.35,
-    8.85,
+    7.95,
+    8.95,
     0.0
    ],
    "yaw": 90.0
@@ -867,18 +847,38 @@
    "id": "bar_stool_5",
    "kind": "seat",
    "pos": [
-    8.35,
-    9.7,
+    7.95,
+    9.9,
     0.0
    ],
    "yaw": 90.0
   },
   {
+   "id": "bar_barman",
+   "kind": "work",
+   "pos": [
+    9.5,
+    7.6,
+    0.0
+   ],
+   "yaw": 270.0
+  },
+  {
+   "id": "bar_barman2",
+   "kind": "work",
+   "pos": [
+    9.5,
+    9.0,
+    0.0
+   ],
+   "yaw": 270.0
+  },
+  {
    "id": "bar_counter",
    "kind": "counter",
    "pos": [
-    8.5,
-    10.9,
+    7.4,
+    10.4,
     0.0
    ],
    "yaw": 90.0
@@ -887,17 +887,17 @@
    "id": "c_table_1",
    "kind": "table",
    "pos": [
-    4.2,
+    3.3,
     6.2,
     0.0
    ],
-   "yaw": 0.0
+   "yaw": 90.0
   },
   {
    "id": "c_seat_1_1",
    "kind": "seat",
    "pos": [
-    3.2,
+    3.25,
     6.2,
     0.0
    ],
@@ -907,7 +907,7 @@
    "id": "c_seat_1_2",
    "kind": "seat",
    "pos": [
-    5.2,
+    5.15,
     6.2,
     0.0
    ],
@@ -918,7 +918,7 @@
    "kind": "seat",
    "pos": [
     4.2,
-    7.15,
+    7.05,
     0.0
    ],
    "yaw": 180.0
@@ -927,17 +927,17 @@
    "id": "c_table_2",
    "kind": "table",
    "pos": [
-    4.2,
+    3.3,
     8.0,
     0.0
    ],
-   "yaw": 0.0
+   "yaw": 90.0
   },
   {
    "id": "c_seat_2_1",
    "kind": "seat",
    "pos": [
-    3.2,
+    3.25,
     8.0,
     0.0
    ],
@@ -947,7 +947,7 @@
    "id": "c_seat_2_2",
    "kind": "seat",
    "pos": [
-    5.2,
+    5.15,
     8.0,
     0.0
    ],
@@ -958,7 +958,7 @@
    "kind": "seat",
    "pos": [
     4.2,
-    8.95,
+    8.85,
     0.0
    ],
    "yaw": 180.0
@@ -967,17 +967,17 @@
    "id": "c_table_3",
    "kind": "table",
    "pos": [
-    4.2,
+    3.3,
     13.6,
     0.0
    ],
-   "yaw": 0.0
+   "yaw": 90.0
   },
   {
    "id": "c_seat_3_1",
    "kind": "seat",
    "pos": [
-    3.2,
+    3.25,
     13.6,
     0.0
    ],
@@ -987,7 +987,7 @@
    "id": "c_seat_3_2",
    "kind": "seat",
    "pos": [
-    5.2,
+    5.15,
     13.6,
     0.0
    ],
@@ -998,7 +998,7 @@
    "kind": "seat",
    "pos": [
     4.2,
-    12.65,
+    12.75,
     0.0
    ],
    "yaw": 0.0
@@ -1007,17 +1007,17 @@
    "id": "c_table_4",
    "kind": "table",
    "pos": [
-    4.2,
+    3.3,
     15.4,
     0.0
    ],
-   "yaw": 0.0
+   "yaw": 90.0
   },
   {
    "id": "c_seat_4_1",
    "kind": "seat",
    "pos": [
-    3.2,
+    3.25,
     15.4,
     0.0
    ],
@@ -1027,7 +1027,7 @@
    "id": "c_seat_4_2",
    "kind": "seat",
    "pos": [
-    5.2,
+    5.15,
     15.4,
     0.0
    ],
@@ -1038,7 +1038,7 @@
    "kind": "seat",
    "pos": [
     4.2,
-    14.45,
+    14.55,
     0.0
    ],
    "yaw": 0.0
@@ -1087,8 +1087,8 @@
    "id": "cook_1",
    "kind": "work",
    "pos": [
-    13.5,
-    14.5,
+    13.2,
+    14.9,
     0.0
    ],
    "yaw": 180.0
@@ -1097,11 +1097,11 @@
    "id": "cook_2",
    "kind": "work",
    "pos": [
-    13.5,
-    10.5,
+    13.9,
+    12.9,
     0.0
    ],
-   "yaw": 180.0
+   "yaw": 0.0
   },
   {
    "id": "staff_break",
@@ -1289,6 +1289,648 @@
    "colour": "#FFD9A8",
    "kind": "lobby",
    "radius": 10
+  }
+ ],
+ "things": [
+  {
+   "id": "row_1_w",
+   "kind": "seat",
+   "pos": [
+    -5.86,
+    7.8,
+    0.45
+   ],
+   "yaw": 180.0,
+   "props": {
+    "height": 0.45
+   }
+  },
+  {
+   "id": "row_1_e",
+   "kind": "seat",
+   "pos": [
+    -1.64,
+    7.8,
+    0.45
+   ],
+   "yaw": 180.0,
+   "props": {
+    "height": 0.45
+   }
+  },
+  {
+   "id": "row_2_w",
+   "kind": "seat",
+   "pos": [
+    -5.86,
+    8.75,
+    0.45
+   ],
+   "yaw": 180.0,
+   "props": {
+    "height": 0.45
+   }
+  },
+  {
+   "id": "row_2_e",
+   "kind": "seat",
+   "pos": [
+    -1.64,
+    8.75,
+    0.45
+   ],
+   "yaw": 180.0,
+   "props": {
+    "height": 0.45
+   }
+  },
+  {
+   "id": "row_3_w",
+   "kind": "seat",
+   "pos": [
+    -5.86,
+    9.7,
+    0.45
+   ],
+   "yaw": 180.0,
+   "props": {
+    "height": 0.45
+   }
+  },
+  {
+   "id": "row_3_e",
+   "kind": "seat",
+   "pos": [
+    -1.64,
+    9.7,
+    0.45
+   ],
+   "yaw": 180.0,
+   "props": {
+    "height": 0.45
+   }
+  },
+  {
+   "id": "row_4_w",
+   "kind": "seat",
+   "pos": [
+    -5.86,
+    10.65,
+    0.45
+   ],
+   "yaw": 180.0,
+   "props": {
+    "height": 0.45
+   }
+  },
+  {
+   "id": "row_4_e",
+   "kind": "seat",
+   "pos": [
+    -1.64,
+    10.65,
+    0.45
+   ],
+   "yaw": 180.0,
+   "props": {
+    "height": 0.45
+   }
+  },
+  {
+   "id": "row_5_w",
+   "kind": "seat",
+   "pos": [
+    -5.86,
+    11.6,
+    0.45
+   ],
+   "yaw": 180.0,
+   "props": {
+    "height": 0.45
+   }
+  },
+  {
+   "id": "row_5_e",
+   "kind": "seat",
+   "pos": [
+    -1.64,
+    11.6,
+    0.45
+   ],
+   "yaw": 180.0,
+   "props": {
+    "height": 0.45
+   }
+  },
+  {
+   "id": "row_6_w",
+   "kind": "seat",
+   "pos": [
+    -5.86,
+    12.55,
+    0.45
+   ],
+   "yaw": 180.0,
+   "props": {
+    "height": 0.45
+   }
+  },
+  {
+   "id": "row_6_e",
+   "kind": "seat",
+   "pos": [
+    -1.64,
+    12.55,
+    0.45
+   ],
+   "yaw": 180.0,
+   "props": {
+    "height": 0.45
+   }
+  },
+  {
+   "id": "stage_piano",
+   "kind": "play",
+   "pos": [
+    -0.75,
+    21.5,
+    1.9
+   ],
+   "yaw": 270.0,
+   "props": {
+    "what": "piano"
+   }
+  },
+  {
+   "id": "choir_riser",
+   "kind": "screen",
+   "pos": [
+    -5.65,
+    22.9,
+    1.5
+   ],
+   "yaw": 0.0,
+   "props": {
+    "what": "choir"
+   }
+  },
+  {
+   "id": "stage_mic",
+   "kind": "machine",
+   "pos": [
+    -5.65,
+    19.9,
+    2.3
+   ],
+   "yaw": 0.0,
+   "props": {
+    "what": "microphone"
+   }
+  },
+  {
+   "id": "stage",
+   "kind": "screen",
+   "pos": [
+    -3.75,
+    19.4,
+    1.9
+   ],
+   "yaw": 0.0,
+   "props": {
+    "what": "stage"
+   }
+  },
+  {
+   "id": "lobby_bench_1",
+   "kind": "seat",
+   "pos": [
+    -7.15,
+    4.2,
+    0.45
+   ],
+   "yaw": 180.0,
+   "props": {
+    "height": 0.45
+   }
+  },
+  {
+   "id": "lobby_bench_2",
+   "kind": "seat",
+   "pos": [
+    -0.35,
+    4.2,
+    0.45
+   ],
+   "yaw": 180.0,
+   "props": {
+    "height": 0.45
+   }
+  },
+  {
+   "id": "lobby_stand_1",
+   "kind": "board",
+   "pos": [
+    -9.4,
+    5.4,
+    1.55
+   ],
+   "yaw": 90.0,
+   "props": {
+    "topic": "club"
+   }
+  },
+  {
+   "id": "lobby_stand_2",
+   "kind": "board",
+   "pos": [
+    1.9,
+    5.0,
+    1.6
+   ],
+   "yaw": 270.0,
+   "props": {
+    "topic": "timetable"
+   }
+  },
+  {
+   "id": "cloak_counter",
+   "kind": "counter",
+   "pos": [
+    -14.9,
+    9.8,
+    1.05
+   ],
+   "yaw": 90.0,
+   "props": {
+    "role": "caretaker",
+    "service": "cloakroom"
+   }
+  },
+  {
+   "id": "exhibit_east",
+   "kind": "board",
+   "pos": [
+    -10.2,
+    11.25,
+    1.65
+   ],
+   "yaw": 270.0,
+   "props": {
+    "topic": "painting"
+   }
+  },
+  {
+   "id": "exhibit_east_2",
+   "kind": "board",
+   "pos": [
+    -10.2,
+    16.7,
+    1.65
+   ],
+   "yaw": 270.0,
+   "props": {
+    "topic": "exhibit"
+   }
+  },
+  {
+   "id": "exhibit_north",
+   "kind": "board",
+   "pos": [
+    -13.25,
+    17.8,
+    1.7
+   ],
+   "yaw": 0.0,
+   "props": {
+    "topic": "painting"
+   }
+  },
+  {
+   "id": "exhibit_west",
+   "kind": "board",
+   "pos": [
+    -16.3,
+    10.25,
+    1.65
+   ],
+   "yaw": 90.0,
+   "props": {
+    "topic": "exhibit"
+   }
+  },
+  {
+   "id": "exhibit_west_2",
+   "kind": "board",
+   "pos": [
+    -16.3,
+    6.3,
+    1.65
+   ],
+   "yaw": 90.0,
+   "props": {
+    "topic": "exhibit"
+   }
+  },
+  {
+   "id": "foyer_bench_1",
+   "kind": "seat",
+   "pos": [
+    -11.0,
+    11.25,
+    0.45
+   ],
+   "yaw": 90.0,
+   "props": {
+    "height": 0.45
+   }
+  },
+  {
+   "id": "foyer_bench_2",
+   "kind": "seat",
+   "pos": [
+    -13.25,
+    17.2,
+    0.45
+   ],
+   "yaw": 180.0,
+   "props": {
+    "height": 0.45
+   }
+  },
+  {
+   "id": "foyer_sofa",
+   "kind": "seat",
+   "pos": [
+    -13.3,
+    6.45,
+    0.45
+   ],
+   "yaw": 180.0,
+   "props": {
+    "height": 0.45
+   }
+  },
+  {
+   "id": "foyer_armchair_1",
+   "kind": "seat",
+   "pos": [
+    -15.2,
+    14.9,
+    0.45
+   ],
+   "yaw": 90.0,
+   "props": {
+    "height": 0.45
+   }
+  },
+  {
+   "id": "foyer_armchair_2",
+   "kind": "seat",
+   "pos": [
+    -14.0,
+    16.0,
+    0.45
+   ],
+   "yaw": 0.0,
+   "props": {
+    "height": 0.45
+   }
+  },
+  {
+   "id": "bar_stools",
+   "kind": "seat",
+   "pos": [
+    7.95,
+    8.1,
+    0.75
+   ],
+   "yaw": 90.0,
+   "props": {
+    "height": 0.75
+   }
+  },
+  {
+   "id": "bar_counter",
+   "kind": "counter",
+   "pos": [
+    8.7,
+    8.1,
+    1.05
+   ],
+   "yaw": 270.0,
+   "props": {
+    "role": "caretaker",
+    "service": "bar",
+    "shop": "hall_bar"
+   }
+  },
+  {
+   "id": "c_table_1",
+   "kind": "seat",
+   "pos": [
+    3.25,
+    6.2,
+    0.45
+   ],
+   "yaw": 90.0,
+   "props": {
+    "height": 0.45
+   }
+  },
+  {
+   "id": "c_table_2",
+   "kind": "seat",
+   "pos": [
+    3.25,
+    8.0,
+    0.45
+   ],
+   "yaw": 90.0,
+   "props": {
+    "height": 0.45
+   }
+  },
+  {
+   "id": "c_table_3",
+   "kind": "seat",
+   "pos": [
+    3.25,
+    13.6,
+    0.45
+   ],
+   "yaw": 90.0,
+   "props": {
+    "height": 0.45
+   }
+  },
+  {
+   "id": "c_table_4",
+   "kind": "seat",
+   "pos": [
+    3.25,
+    15.4,
+    0.45
+   ],
+   "yaw": 90.0,
+   "props": {
+    "height": 0.45
+   }
+  },
+  {
+   "id": "dance_1",
+   "kind": "sport",
+   "pos": [
+    6.0,
+    14.0,
+    0.1
+   ],
+   "yaw": 0.0,
+   "props": {
+    "what": "dance"
+   }
+  },
+  {
+   "id": "dance_2",
+   "kind": "sport",
+   "pos": [
+    7.0,
+    15.0,
+    0.1
+   ],
+   "yaw": 180.0,
+   "props": {
+    "what": "dance"
+   }
+  },
+  {
+   "id": "dance_3",
+   "kind": "sport",
+   "pos": [
+    8.0,
+    13.0,
+    0.1
+   ],
+   "yaw": 90.0,
+   "props": {
+    "what": "dance"
+   }
+  },
+  {
+   "id": "dance_4",
+   "kind": "sport",
+   "pos": [
+    5.6,
+    16.5,
+    0.1
+   ],
+   "yaw": 270.0,
+   "props": {
+    "what": "dance"
+   }
+  },
+  {
+   "id": "dance_jukebox",
+   "kind": "machine",
+   "pos": [
+    4.0,
+    18.7,
+    1.0
+   ],
+   "yaw": 0.0,
+   "props": {
+    "what": "jukebox"
+   }
+  },
+  {
+   "id": "dance_piano",
+   "kind": "play",
+   "pos": [
+    8.3,
+    18.7,
+    1.0
+   ],
+   "yaw": 0.0,
+   "props": {
+    "what": "piano"
+   }
+  },
+  {
+   "id": "kitchen_stove",
+   "kind": "machine",
+   "pos": [
+    14.4,
+    15.7,
+    0.95
+   ],
+   "yaw": 0.0,
+   "props": {
+    "what": "stove"
+   }
+  },
+  {
+   "id": "kitchen_sink",
+   "kind": "machine",
+   "pos": [
+    13.2,
+    15.7,
+    0.95
+   ],
+   "yaw": 0.0,
+   "props": {
+    "what": "sink"
+   }
+  },
+  {
+   "id": "prep_table",
+   "kind": "craft",
+   "pos": [
+    13.9,
+    13.9,
+    0.95
+   ],
+   "yaw": 0.0,
+   "props": {
+    "what": "cooking"
+   }
+  },
+  {
+   "id": "pantry_shelf",
+   "kind": "shelf",
+   "pos": [
+    12.4,
+    8.5,
+    1.3
+   ],
+   "yaw": 180.0,
+   "props": {
+    "topic": "cooking"
+   }
+  },
+  {
+   "id": "kitchen_menu",
+   "kind": "board",
+   "pos": [
+    16.4,
+    10.95,
+    1.8
+   ],
+   "yaw": 270.0,
+   "props": {
+    "topic": "prices"
+   }
+  },
+  {
+   "id": "staff_table",
+   "kind": "seat",
+   "pos": [
+    14.85,
+    10.2,
+    0.45
+   ],
+   "yaw": 90.0,
+   "props": {
+    "height": 0.45
+   }
   }
  ],
  "flats": [],
@@ -1824,8 +2466,8 @@
   "4 parabolic vaults; hall B with stage, C dance room + bar, A foyer, D kitchen"
  ],
  "tris": {
-  "shell": 4546,
-  "detail": 10422,
+  "shell": 3938,
+  "detail": 21268,
   "windows": 50
  }
 }

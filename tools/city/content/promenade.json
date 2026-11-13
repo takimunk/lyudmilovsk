@@ -1,0 +1,20 @@
+{
+ "_doc": "The promenade units' rooms (blender/city/buildings/promenade_unit.py, one dressing per trade). Their counters use the usual shops and service acts (counters.json: the shops' roles are the town life's unit staff, city_plan.UNIT_STAFF_BY_NAME); only the photo studio's portrait is new. Rules name the things as promenade_unit/<thing id> (every unit of a trade has the same ids).",
+ "acts": {
+  "photo_portrait": {
+   "prompt": "city.do.photo_portrait.prompt",
+   "lines": "city.do.photo_portrait",
+   "minutes": 20,
+   "price": 60,
+   "pose": "sit",
+   "needs_staff": "photographer",
+   "sound": "camera_flash",
+   "daily": 1
+  }
+ },
+ "rules": {
+  "promenade_unit/photo_stool": {
+   "act": "photo_portrait"
+  }
+ }
+}

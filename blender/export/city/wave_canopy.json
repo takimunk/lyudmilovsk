@@ -1204,121 +1204,365 @@
    "radius": 6.0
   }
  ],
- "flats": [],
- "windows": [
+ "things": [
   {
-   "slot": 0,
-   "id": "pub/w1",
-   "flat": null,
-   "kind": "public",
-   "centre": [
-    -36.116,
-    27.782,
-    1.725
+   "id": "kiosk1_menu",
+   "kind": "board",
+   "pos": [
+    -33.862,
+    27.624,
+    1.65
    ],
-   "normal": [
-    -0.526,
-    -0.851,
-    0.0
-   ],
-   "size": [
-    3.3,
-    1.45
-   ],
-   "shape": "rect"
+   "yaw": 58.3,
+   "props": {
+    "topic": "prices"
+   }
   },
   {
-   "slot": 1,
-   "id": "pub/w2",
-   "flat": null,
-   "kind": "public",
-   "centre": [
-    -12.562,
-    30.033,
-    1.725
+   "id": "coffee_stool_1",
+   "kind": "seat",
+   "pos": [
+    -38.711,
+    27.387,
+    0.72
    ],
-   "normal": [
-    -0.626,
-    0.78,
-    0.0
-   ],
-   "size": [
-    3.3,
-    1.45
-   ],
-   "shape": "rect"
+   "yaw": -31.7,
+   "props": {
+    "height": 0.72
+   }
   },
   {
-   "slot": 2,
-   "id": "pub/w3",
-   "flat": null,
-   "kind": "public",
-   "centre": [
-    1.861,
-    44.303,
-    1.725
+   "id": "coffee_stool_3",
+   "kind": "seat",
+   "pos": [
+    -34.287,
+    24.653,
+    0.72
    ],
-   "normal": [
-    0.517,
-    -0.856,
-    0.0
-   ],
-   "size": [
-    3.3,
-    1.45
-   ],
-   "shape": "rect"
+   "yaw": -31.7,
+   "props": {
+    "height": 0.72
+   }
   },
   {
-   "slot": 3,
-   "id": "pub/w4",
-   "flat": null,
-   "kind": "public",
-   "centre": [
-    26.032,
-    39.129,
-    1.725
+   "id": "kiosk1_counter",
+   "kind": "counter",
+   "pos": [
+    -36.194,
+    27.654,
+    1.1
    ],
-   "normal": [
-    0.63,
-    0.777,
-    -0.0
-   ],
-   "size": [
-    3.3,
-    1.45
-   ],
-   "shape": "rect"
+   "yaw": -31.7,
+   "props": {
+    "role": "vendor",
+    "service": "shop",
+    "trade": "coffee"
+   }
   },
   {
-   "slot": 4,
-   "id": "pub/w5",
-   "flat": null,
-   "kind": "public",
-   "centre": [
-    40.029,
-    31.158,
-    1.725
+   "id": "kiosk2_menu",
+   "kind": "board",
+   "pos": [
+    -10.345,
+    30.467,
+    1.65
    ],
-   "normal": [
-    -0.598,
-    -0.801,
-    0.0
+   "yaw": 128.8,
+   "props": {
+    "topic": "prices"
+   }
+  },
+  {
+   "id": "kiosk2_counter",
+   "kind": "counter",
+   "pos": [
+    -12.656,
+    30.15,
+    1.1
    ],
-   "size": [
-    3.3,
-    1.45
+   "yaw": -141.2,
+   "props": {
+    "role": "vendor",
+    "service": "shop",
+    "trade": "icecream"
+   }
+  },
+  {
+   "id": "press_paper",
+   "kind": "take",
+   "pos": [
+    1.333,
+    43.726,
+    1.09
    ],
-   "shape": "rect"
+   "yaw": 31.2,
+   "props": {
+    "item": "daily_paper"
+   }
+  },
+  {
+   "id": "kiosk3_menu",
+   "kind": "board",
+   "pos": [
+    3.029,
+    46.236,
+    1.65
+   ],
+   "yaw": 121.2,
+   "props": {
+    "topic": "prices"
+   }
+  },
+  {
+   "id": "press_rack",
+   "kind": "shelf",
+   "pos": [
+    -0.213,
+    43.867,
+    1.2
+   ],
+   "yaw": -58.8,
+   "props": {
+    "topic": "travel"
+   }
+  },
+  {
+   "id": "kiosk3_counter",
+   "kind": "counter",
+   "pos": [
+    1.939,
+    44.174,
+    1.1
+   ],
+   "yaw": 31.2,
+   "props": {
+    "role": "vendor",
+    "service": "shop",
+    "trade": "press"
+   }
+  },
+  {
+   "id": "kiosk4_menu",
+   "kind": "board",
+   "pos": [
+    26.925,
+    37.054,
+    1.65
+   ],
+   "yaw": 51.0,
+   "props": {
+    "topic": "prices"
+   }
+  },
+  {
+   "id": "kiosk4_counter",
+   "kind": "counter",
+   "pos": [
+    26.127,
+    39.245,
+    1.1
+   ],
+   "yaw": 141.0,
+   "props": {
+    "role": "vendor",
+    "service": "shop",
+    "trade": "toys"
+   }
+  },
+  {
+   "id": "kiosk5_menu",
+   "kind": "board",
+   "pos": [
+    42.26,
+    30.803,
+    1.65
+   ],
+   "yaw": 53.3,
+   "props": {
+    "topic": "prices"
+   }
+  },
+  {
+   "id": "kiosk5_counter",
+   "kind": "counter",
+   "pos": [
+    39.939,
+    31.038,
+    1.1
+   ],
+   "yaw": -36.7,
+   "props": {
+    "role": "vendor",
+    "service": "shop",
+    "trade": "snacks"
+   }
+  },
+  {
+   "id": "fair_board",
+   "kind": "board",
+   "pos": [
+    -6.922,
+    32.743,
+    1.65
+   ],
+   "yaw": -138.5,
+   "props": {
+    "topic": "fair"
+   }
+  },
+  {
+   "id": "fair_programme",
+   "kind": "board",
+   "pos": [
+    33.966,
+    36.056,
+    1.65
+   ],
+   "yaw": -41.5,
+   "props": {
+    "topic": "cinema"
+   }
+  },
+  {
+   "id": "fair_bench_1",
+   "kind": "seat",
+   "pos": [
+    -43.789,
+    30.893,
+    0.45
+   ],
+   "yaw": 139.5,
+   "props": {
+    "height": 0.45
+   }
+  },
+  {
+   "id": "fair_bench_2",
+   "kind": "seat",
+   "pos": [
+    -27.121,
+    26.133,
+    0.45
+   ],
+   "yaw": -0.9,
+   "props": {
+    "height": 0.45
+   }
+  },
+  {
+   "id": "fair_bench_3",
+   "kind": "seat",
+   "pos": [
+    -18.346,
+    23.715,
+    0.45
+   ],
+   "yaw": -153.1,
+   "props": {
+    "height": 0.45
+   }
+  },
+  {
+   "id": "fair_bench_4",
+   "kind": "seat",
+   "pos": [
+    -6.313,
+    38.107,
+    0.45
+   ],
+   "yaw": 41.1,
+   "props": {
+    "height": 0.45
+   }
+  },
+  {
+   "id": "fair_bench_5",
+   "kind": "seat",
+   "pos": [
+    -1.216,
+    38.257,
+    0.45
+   ],
+   "yaw": -141.0,
+   "props": {
+    "height": 0.45
+   }
+  },
+  {
+   "id": "fair_bench_6",
+   "kind": "seat",
+   "pos": [
+    14.634,
+    43.737,
+    0.45
+   ],
+   "yaw": 168.4,
+   "props": {
+    "height": 0.45
+   }
+  },
+  {
+   "id": "fair_bench_7",
+   "kind": "seat",
+   "pos": [
+    20.498,
+    45.513,
+    0.45
+   ],
+   "yaw": -26.9,
+   "props": {
+    "height": 0.45
+   }
+  },
+  {
+   "id": "fair_bench_8",
+   "kind": "seat",
+   "pos": [
+    33.509,
+    35.54,
+    0.45
+   ],
+   "yaw": -41.5,
+   "props": {
+    "height": 0.45
+   }
+  },
+  {
+   "id": "fair_bench_9",
+   "kind": "seat",
+   "pos": [
+    44.69,
+    23.281,
+    0.45
+   ],
+   "yaw": 158.6,
+   "props": {
+    "height": 0.45
+   }
+  },
+  {
+   "id": "fair_bench_10",
+   "kind": "seat",
+   "pos": [
+    -44.484,
+    36.181,
+    0.45
+   ],
+   "yaw": -41.5,
+   "props": {
+    "height": 0.45
+   }
   }
  ],
+ "flats": [],
+ "windows": [],
  "light_tex": 64,
  "notes": [
   "canopy 123 m long (arc), 28 columns, 5 kiosks, 10 benches"
  ],
  "tris": {
-  "shell": 10988,
-  "detail": 15446,
-  "windows": 10
+  "shell": 9320,
+  "detail": 28790,
+  "windows": 0
  }
 }

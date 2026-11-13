@@ -55,189 +55,65 @@
    "kind": "street",
    "leaves": 2,
    "to": null
+  },
+  {
+   "id": "bio",
+   "pos": [
+    -20,
+    22.0,
+    0.0
+   ],
+   "yaw": 90.0,
+   "width": 2.0,
+   "height": 2.4,
+   "kind": "street",
+   "leaves": 1,
+   "to": null
+  },
+  {
+   "id": "music",
+   "pos": [
+    -20,
+    34.0,
+    0.0
+   ],
+   "yaw": 90.0,
+   "width": 2.0,
+   "height": 2.4,
+   "kind": "street",
+   "leaves": 1,
+   "to": null
+  },
+  {
+   "id": "canteen",
+   "pos": [
+    20,
+    26.0,
+    0.0
+   ],
+   "yaw": 270.0,
+   "width": 2.0,
+   "height": 2.4,
+   "kind": "street",
+   "leaves": 1,
+   "to": null
+  },
+  {
+   "id": "gym",
+   "pos": [
+    0.0,
+    40.0,
+    0.0
+   ],
+   "yaw": 0.0,
+   "width": 2.4,
+   "height": 2.4,
+   "kind": "street",
+   "leaves": 2,
+   "to": null
   }
  ],
  "spots": [
-  {
-   "id": "seat_0_0",
-   "kind": "seat",
-   "pos": [
-    -16.4,
-    7.5,
-    0.0
-   ],
-   "yaw": 180.0
-  },
-  {
-   "id": "seat_0_1",
-   "kind": "seat",
-   "pos": [
-    -14.0,
-    7.5,
-    0.0
-   ],
-   "yaw": 180.0
-  },
-  {
-   "id": "seat_0_2",
-   "kind": "seat",
-   "pos": [
-    -11.6,
-    7.5,
-    0.0
-   ],
-   "yaw": 180.0
-  },
-  {
-   "id": "seat_0_3",
-   "kind": "seat",
-   "pos": [
-    -9.2,
-    7.5,
-    0.0
-   ],
-   "yaw": 180.0
-  },
-  {
-   "id": "seat_1_0",
-   "kind": "seat",
-   "pos": [
-    -16.4,
-    8.8,
-    0.0
-   ],
-   "yaw": 180.0
-  },
-  {
-   "id": "seat_1_1",
-   "kind": "seat",
-   "pos": [
-    -14.0,
-    8.8,
-    0.0
-   ],
-   "yaw": 180.0
-  },
-  {
-   "id": "seat_1_2",
-   "kind": "seat",
-   "pos": [
-    -11.6,
-    8.8,
-    0.0
-   ],
-   "yaw": 180.0
-  },
-  {
-   "id": "seat_1_3",
-   "kind": "seat",
-   "pos": [
-    -9.2,
-    8.8,
-    0.0
-   ],
-   "yaw": 180.0
-  },
-  {
-   "id": "seat_2_0",
-   "kind": "seat",
-   "pos": [
-    -16.4,
-    10.1,
-    0.0
-   ],
-   "yaw": 180.0
-  },
-  {
-   "id": "seat_2_1",
-   "kind": "seat",
-   "pos": [
-    -14.0,
-    10.1,
-    0.0
-   ],
-   "yaw": 180.0
-  },
-  {
-   "id": "seat_2_2",
-   "kind": "seat",
-   "pos": [
-    -11.6,
-    10.1,
-    0.0
-   ],
-   "yaw": 180.0
-  },
-  {
-   "id": "seat_2_3",
-   "kind": "seat",
-   "pos": [
-    -9.2,
-    10.1,
-    0.0
-   ],
-   "yaw": 180.0
-  },
-  {
-   "id": "seat_3_0",
-   "kind": "seat",
-   "pos": [
-    -16.4,
-    11.4,
-    0.0
-   ],
-   "yaw": 180.0
-  },
-  {
-   "id": "seat_3_1",
-   "kind": "seat",
-   "pos": [
-    -14.0,
-    11.4,
-    0.0
-   ],
-   "yaw": 180.0
-  },
-  {
-   "id": "seat_3_2",
-   "kind": "seat",
-   "pos": [
-    -11.6,
-    11.4,
-    0.0
-   ],
-   "yaw": 180.0
-  },
-  {
-   "id": "seat_3_3",
-   "kind": "seat",
-   "pos": [
-    -9.2,
-    11.4,
-    0.0
-   ],
-   "yaw": 180.0
-  },
-  {
-   "id": "teacher",
-   "kind": "work",
-   "pos": [
-    -15.7,
-    13.6,
-    0.0
-   ],
-   "yaw": 0.0
-  },
-  {
-   "id": "staff_table",
-   "kind": "table",
-   "pos": [
-    11.2,
-    10.5,
-    0.0
-   ],
-   "yaw": 0.0
-  },
   {
    "id": "hall_bench_0",
    "kind": "bench",
@@ -284,6 +160,366 @@
    "pos": [
     -6.85,
     11.3,
+    0.0
+   ],
+   "yaw": 90.0
+  },
+  {
+   "id": "seat_0_0",
+   "kind": "seat",
+   "pos": [
+    -16.28,
+    7.05,
+    0.0
+   ],
+   "yaw": 0.0
+  },
+  {
+   "id": "seat_0_1",
+   "kind": "seat",
+   "pos": [
+    -15.72,
+    7.05,
+    0.0
+   ],
+   "yaw": 0.0
+  },
+  {
+   "id": "seat_0_2",
+   "kind": "seat",
+   "pos": [
+    -13.38,
+    7.05,
+    0.0
+   ],
+   "yaw": 0.0
+  },
+  {
+   "id": "seat_0_3",
+   "kind": "seat",
+   "pos": [
+    -12.82,
+    7.05,
+    0.0
+   ],
+   "yaw": 0.0
+  },
+  {
+   "id": "seat_0_4",
+   "kind": "seat",
+   "pos": [
+    -10.48,
+    7.05,
+    0.0
+   ],
+   "yaw": 0.0
+  },
+  {
+   "id": "seat_0_5",
+   "kind": "seat",
+   "pos": [
+    -9.92,
+    7.05,
+    0.0
+   ],
+   "yaw": 0.0
+  },
+  {
+   "id": "seat_1_0",
+   "kind": "seat",
+   "pos": [
+    -16.28,
+    8.35,
+    0.0
+   ],
+   "yaw": 0.0
+  },
+  {
+   "id": "seat_1_1",
+   "kind": "seat",
+   "pos": [
+    -15.72,
+    8.35,
+    0.0
+   ],
+   "yaw": 0.0
+  },
+  {
+   "id": "seat_1_2",
+   "kind": "seat",
+   "pos": [
+    -13.38,
+    8.35,
+    0.0
+   ],
+   "yaw": 0.0
+  },
+  {
+   "id": "seat_1_3",
+   "kind": "seat",
+   "pos": [
+    -12.82,
+    8.35,
+    0.0
+   ],
+   "yaw": 0.0
+  },
+  {
+   "id": "seat_1_4",
+   "kind": "seat",
+   "pos": [
+    -10.48,
+    8.35,
+    0.0
+   ],
+   "yaw": 0.0
+  },
+  {
+   "id": "seat_1_5",
+   "kind": "seat",
+   "pos": [
+    -9.92,
+    8.35,
+    0.0
+   ],
+   "yaw": 0.0
+  },
+  {
+   "id": "seat_2_0",
+   "kind": "seat",
+   "pos": [
+    -16.28,
+    9.65,
+    0.0
+   ],
+   "yaw": 0.0
+  },
+  {
+   "id": "seat_2_1",
+   "kind": "seat",
+   "pos": [
+    -15.72,
+    9.65,
+    0.0
+   ],
+   "yaw": 0.0
+  },
+  {
+   "id": "seat_2_2",
+   "kind": "seat",
+   "pos": [
+    -13.38,
+    9.65,
+    0.0
+   ],
+   "yaw": 0.0
+  },
+  {
+   "id": "seat_2_3",
+   "kind": "seat",
+   "pos": [
+    -12.82,
+    9.65,
+    0.0
+   ],
+   "yaw": 0.0
+  },
+  {
+   "id": "seat_2_4",
+   "kind": "seat",
+   "pos": [
+    -10.48,
+    9.65,
+    0.0
+   ],
+   "yaw": 0.0
+  },
+  {
+   "id": "seat_2_5",
+   "kind": "seat",
+   "pos": [
+    -9.92,
+    9.65,
+    0.0
+   ],
+   "yaw": 0.0
+  },
+  {
+   "id": "seat_3_0",
+   "kind": "seat",
+   "pos": [
+    -16.28,
+    10.95,
+    0.0
+   ],
+   "yaw": 0.0
+  },
+  {
+   "id": "seat_3_1",
+   "kind": "seat",
+   "pos": [
+    -15.72,
+    10.95,
+    0.0
+   ],
+   "yaw": 0.0
+  },
+  {
+   "id": "seat_3_2",
+   "kind": "seat",
+   "pos": [
+    -13.38,
+    10.95,
+    0.0
+   ],
+   "yaw": 0.0
+  },
+  {
+   "id": "seat_3_3",
+   "kind": "seat",
+   "pos": [
+    -12.82,
+    10.95,
+    0.0
+   ],
+   "yaw": 0.0
+  },
+  {
+   "id": "seat_3_4",
+   "kind": "seat",
+   "pos": [
+    -10.48,
+    10.95,
+    0.0
+   ],
+   "yaw": 0.0
+  },
+  {
+   "id": "seat_3_5",
+   "kind": "seat",
+   "pos": [
+    -9.92,
+    10.95,
+    0.0
+   ],
+   "yaw": 0.0
+  },
+  {
+   "id": "teacher",
+   "kind": "work",
+   "pos": [
+    -13.3,
+    13.7,
+    0.0
+   ],
+   "yaw": 0.0
+  },
+  {
+   "id": "staff_table",
+   "kind": "table",
+   "pos": [
+    11.2,
+    9.15,
+    0.0
+   ],
+   "yaw": 0.0
+  },
+  {
+   "id": "bio_teacher",
+   "kind": "work",
+   "pos": [
+    -25.0,
+    16.3,
+    0.0
+   ],
+   "yaw": 180.0
+  },
+  {
+   "id": "music_teacher",
+   "kind": "work",
+   "pos": [
+    -23.0,
+    38.6,
+    0.0
+   ],
+   "yaw": 0.0
+  },
+  {
+   "id": "canteen_bench_1",
+   "kind": "bench",
+   "pos": [
+    22.25,
+    17.8,
+    0.0
+   ],
+   "yaw": 90.0
+  },
+  {
+   "id": "canteen_bench_2",
+   "kind": "bench",
+   "pos": [
+    22.25,
+    20.8,
+    0.0
+   ],
+   "yaw": 90.0
+  },
+  {
+   "id": "canteen_bench_3",
+   "kind": "bench",
+   "pos": [
+    22.25,
+    29.0,
+    0.0
+   ],
+   "yaw": 90.0
+  },
+  {
+   "id": "canteen_bench_4",
+   "kind": "bench",
+   "pos": [
+    22.25,
+    32.0,
+    0.0
+   ],
+   "yaw": 90.0
+  },
+  {
+   "id": "canteen_bench_5",
+   "kind": "bench",
+   "pos": [
+    26.05,
+    17.8,
+    0.0
+   ],
+   "yaw": 90.0
+  },
+  {
+   "id": "canteen_bench_6",
+   "kind": "bench",
+   "pos": [
+    26.05,
+    20.8,
+    0.0
+   ],
+   "yaw": 90.0
+  },
+  {
+   "id": "canteen_bench_7",
+   "kind": "bench",
+   "pos": [
+    26.05,
+    29.0,
+    0.0
+   ],
+   "yaw": 90.0
+  },
+  {
+   "id": "canteen_bench_8",
+   "kind": "bench",
+   "pos": [
+    26.05,
+    32.0,
     0.0
    ],
    "yaw": 90.0
@@ -492,6 +728,737 @@
    "colour": "#FFF0DC",
    "kind": "public",
    "radius": 7
+  },
+  {
+   "pos": [
+    -25.0,
+    21.5,
+    3.0
+   ],
+   "lumens": 900,
+   "colour": "#FFF0DC",
+   "kind": "public",
+   "radius": 9.0
+  },
+  {
+   "pos": [
+    -25.0,
+    34.0,
+    3.0
+   ],
+   "lumens": 900,
+   "colour": "#FFF0DC",
+   "kind": "public",
+   "radius": 9.0
+  },
+  {
+   "pos": [
+    24.8,
+    20.0,
+    3.0
+   ],
+   "lumens": 1000,
+   "colour": "#FFF0DC",
+   "kind": "public",
+   "radius": 10.0
+  },
+  {
+   "pos": [
+    24.8,
+    31.0,
+    3.0
+   ],
+   "lumens": 1000,
+   "colour": "#FFF0DC",
+   "kind": "public",
+   "radius": 10.0
+  },
+  {
+   "pos": [
+    -6.0,
+    47.0,
+    7.4
+   ],
+   "lumens": 1800,
+   "colour": "#FFF0DC",
+   "kind": "public",
+   "radius": 16.0
+  },
+  {
+   "pos": [
+    6.0,
+    47.0,
+    7.4
+   ],
+   "lumens": 1800,
+   "colour": "#FFF0DC",
+   "kind": "public",
+   "radius": 16.0
+  }
+ ],
+ "things": [
+  {
+   "id": "seat_0_0",
+   "kind": "craft",
+   "pos": [
+    -16.0,
+    7.6,
+    0.76
+   ],
+   "yaw": 180.0,
+   "props": {
+    "what": "school_desk"
+   }
+  },
+  {
+   "id": "seat_0_4",
+   "kind": "craft",
+   "pos": [
+    -10.2,
+    7.6,
+    0.76
+   ],
+   "yaw": 180.0,
+   "props": {
+    "what": "school_desk"
+   }
+  },
+  {
+   "id": "seat_1_0",
+   "kind": "craft",
+   "pos": [
+    -16.0,
+    8.9,
+    0.76
+   ],
+   "yaw": 180.0,
+   "props": {
+    "what": "school_desk"
+   }
+  },
+  {
+   "id": "seat_1_4",
+   "kind": "craft",
+   "pos": [
+    -10.2,
+    8.9,
+    0.76
+   ],
+   "yaw": 180.0,
+   "props": {
+    "what": "school_desk"
+   }
+  },
+  {
+   "id": "seat_2_0",
+   "kind": "craft",
+   "pos": [
+    -16.0,
+    10.2,
+    0.76
+   ],
+   "yaw": 180.0,
+   "props": {
+    "what": "school_desk"
+   }
+  },
+  {
+   "id": "seat_2_4",
+   "kind": "craft",
+   "pos": [
+    -10.2,
+    10.2,
+    0.76
+   ],
+   "yaw": 180.0,
+   "props": {
+    "what": "school_desk"
+   }
+  },
+  {
+   "id": "seat_3_0",
+   "kind": "craft",
+   "pos": [
+    -16.0,
+    11.5,
+    0.76
+   ],
+   "yaw": 180.0,
+   "props": {
+    "what": "school_desk"
+   }
+  },
+  {
+   "id": "seat_3_4",
+   "kind": "craft",
+   "pos": [
+    -10.2,
+    11.5,
+    0.76
+   ],
+   "yaw": 180.0,
+   "props": {
+    "what": "school_desk"
+   }
+  },
+  {
+   "id": "teacher",
+   "kind": "craft",
+   "pos": [
+    -13.3,
+    14.2,
+    1.5
+   ],
+   "yaw": 0.0,
+   "props": {
+    "what": "blackboard"
+   }
+  },
+  {
+   "id": "class_shelf",
+   "kind": "shelf",
+   "pos": [
+    -18.4,
+    8.7,
+    1.2
+   ],
+   "yaw": 90.0,
+   "props": {
+    "topic": "science"
+   }
+  },
+  {
+   "id": "staff_seat_1",
+   "kind": "seat",
+   "pos": [
+    10.267,
+    9.58,
+    0.45
+   ],
+   "yaw": 180.0,
+   "props": {
+    "height": 0.45
+   }
+  },
+  {
+   "id": "staff_sofa",
+   "kind": "seat",
+   "pos": [
+    14.45,
+    7.9,
+    0.45
+   ],
+   "yaw": 270.0,
+   "props": {
+    "height": 0.45
+   }
+  },
+  {
+   "id": "staff_shelf",
+   "kind": "shelf",
+   "pos": [
+    7.85,
+    8.9,
+    1.2
+   ],
+   "yaw": 90.0,
+   "props": {
+    "topic": "local"
+   }
+  },
+  {
+   "id": "staff_board",
+   "kind": "board",
+   "pos": [
+    7.7,
+    10.6,
+    1.6
+   ],
+   "yaw": 90.0,
+   "props": {
+    "topic": "timetable"
+   }
+  },
+  {
+   "id": "wall_newspaper",
+   "kind": "board",
+   "pos": [
+    7.3,
+    10.9,
+    1.55
+   ],
+   "yaw": 270.0,
+   "props": {
+    "topic": "wallpaper"
+   }
+  },
+  {
+   "id": "hall_timetable",
+   "kind": "board",
+   "pos": [
+    7.3,
+    7.0,
+    1.7
+   ],
+   "yaw": 270.0,
+   "props": {
+    "topic": "timetable"
+   }
+  },
+  {
+   "id": "trophy_case",
+   "kind": "board",
+   "pos": [
+    6.9,
+    8.4,
+    1.3
+   ],
+   "yaw": 270.0,
+   "props": {
+    "topic": "exhibit"
+   }
+  },
+  {
+   "id": "hall_mural_a",
+   "kind": "board",
+   "pos": [
+    -5.5,
+    15.65,
+    1.9
+   ],
+   "yaw": 180.0,
+   "props": {
+    "topic": "painting"
+   }
+  },
+  {
+   "id": "hall_mural_b",
+   "kind": "board",
+   "pos": [
+    5.5,
+    15.65,
+    1.9
+   ],
+   "yaw": 180.0,
+   "props": {
+    "topic": "painting"
+   }
+  },
+  {
+   "id": "hall_wardrobe_bench",
+   "kind": "seat",
+   "pos": [
+    -6.85,
+    9.15,
+    0.45
+   ],
+   "yaw": 90.0,
+   "props": {
+    "height": 0.45
+   }
+  },
+  {
+   "id": "hall_back_bench_1",
+   "kind": "seat",
+   "pos": [
+    -5.5,
+    14.8,
+    0.45
+   ],
+   "yaw": 180.0,
+   "props": {
+    "height": 0.45
+   }
+  },
+  {
+   "id": "hall_back_bench_2",
+   "kind": "seat",
+   "pos": [
+    5.5,
+    14.8,
+    0.45
+   ],
+   "yaw": 180.0,
+   "props": {
+    "height": 0.45
+   }
+  },
+  {
+   "id": "bio_blackboard",
+   "kind": "craft",
+   "pos": [
+    -25.0,
+    15.9,
+    1.5
+   ],
+   "yaw": 180.0,
+   "props": {
+    "what": "blackboard"
+   }
+  },
+  {
+   "id": "bio_skeleton",
+   "kind": "board",
+   "pos": [
+    -28.9,
+    16.5,
+    1.3
+   ],
+   "yaw": 180.0,
+   "props": {
+    "topic": "exhibit"
+   }
+  },
+  {
+   "id": "bio_chart",
+   "kind": "board",
+   "pos": [
+    -27.6,
+    15.9,
+    1.6
+   ],
+   "yaw": 180.0,
+   "props": {
+    "topic": "health"
+   }
+  },
+  {
+   "id": "bio_aquarium",
+   "kind": "screen",
+   "pos": [
+    -21.2,
+    16.2,
+    1.0
+   ],
+   "yaw": 180.0,
+   "props": {
+    "what": "aquarium"
+   }
+  },
+  {
+   "id": "bio_seat_1",
+   "kind": "seat",
+   "pos": [
+    -27.8,
+    19.95,
+    0.45
+   ],
+   "yaw": 0.0,
+   "props": {
+    "height": 0.45
+   }
+  },
+  {
+   "id": "bio_bench_0",
+   "kind": "craft",
+   "pos": [
+    -27.3,
+    19.2,
+    0.9
+   ],
+   "yaw": 180.0,
+   "props": {
+    "what": "workbench"
+   }
+  },
+  {
+   "id": "bio_bench_1",
+   "kind": "craft",
+   "pos": [
+    -23.1,
+    19.2,
+    0.9
+   ],
+   "yaw": 180.0,
+   "props": {
+    "what": "workbench"
+   }
+  },
+  {
+   "id": "bio_shelf",
+   "kind": "shelf",
+   "pos": [
+    -28.0,
+    27.65,
+    1.2
+   ],
+   "yaw": 0.0,
+   "props": {
+    "topic": "medicine"
+   }
+  },
+  {
+   "id": "music_piano",
+   "kind": "play",
+   "pos": [
+    -26.0,
+    39.6,
+    1.0
+   ],
+   "yaw": 0.0,
+   "props": {
+    "what": "piano"
+   }
+  },
+  {
+   "id": "music_stool",
+   "kind": "seat",
+   "pos": [
+    -26.0,
+    38.65,
+    0.45
+   ],
+   "yaw": 180.0,
+   "props": {
+    "height": 0.45
+   }
+  },
+  {
+   "id": "music_chair_1",
+   "kind": "seat",
+   "pos": [
+    -25.8,
+    32.9,
+    0.45
+   ],
+   "yaw": 180.0,
+   "props": {
+    "height": 0.45
+   }
+  },
+  {
+   "id": "music_chair_2",
+   "kind": "seat",
+   "pos": [
+    -25.8,
+    31.6,
+    0.45
+   ],
+   "yaw": 180.0,
+   "props": {
+    "height": 0.45
+   }
+  },
+  {
+   "id": "music_shelf",
+   "kind": "shelf",
+   "pos": [
+    -28.7,
+    28.35,
+    1.2
+   ],
+   "yaw": 180.0,
+   "props": {
+    "topic": "music"
+   }
+  },
+  {
+   "id": "music_player",
+   "kind": "machine",
+   "pos": [
+    -22.4,
+    28.55,
+    0.85
+   ],
+   "yaw": 180.0,
+   "props": {
+    "what": "record_player"
+   }
+  },
+  {
+   "id": "canteen_seat_1",
+   "kind": "seat",
+   "pos": [
+    22.25,
+    17.8,
+    0.45
+   ],
+   "yaw": 90.0,
+   "props": {
+    "height": 0.45
+   }
+  },
+  {
+   "id": "canteen_seat_2",
+   "kind": "seat",
+   "pos": [
+    22.25,
+    20.8,
+    0.45
+   ],
+   "yaw": 90.0,
+   "props": {
+    "height": 0.45
+   }
+  },
+  {
+   "id": "canteen_seat_3",
+   "kind": "seat",
+   "pos": [
+    22.25,
+    29.0,
+    0.45
+   ],
+   "yaw": 90.0,
+   "props": {
+    "height": 0.45
+   }
+  },
+  {
+   "id": "canteen_seat_4",
+   "kind": "seat",
+   "pos": [
+    22.25,
+    32.0,
+    0.45
+   ],
+   "yaw": 90.0,
+   "props": {
+    "height": 0.45
+   }
+  },
+  {
+   "id": "canteen_menu",
+   "kind": "board",
+   "pos": [
+    27.6,
+    39.89,
+    2.0
+   ],
+   "yaw": 0.0,
+   "props": {
+    "topic": "prices"
+   }
+  },
+  {
+   "id": "gym_hoop_w",
+   "kind": "sport",
+   "pos": [
+    -13.2,
+    48.0,
+    3.0
+   ],
+   "yaw": 90.0,
+   "props": {
+    "what": "basketball"
+   }
+  },
+  {
+   "id": "gym_hoop_e",
+   "kind": "sport",
+   "pos": [
+    13.2,
+    48.0,
+    3.0
+   ],
+   "yaw": 270.0,
+   "props": {
+    "what": "basketball"
+   }
+  },
+  {
+   "id": "gym_court",
+   "kind": "sport",
+   "pos": [
+    0.0,
+    47.0,
+    0.3
+   ],
+   "yaw": 180.0,
+   "props": {
+    "what": "track"
+   }
+  },
+  {
+   "id": "gym_stage",
+   "kind": "screen",
+   "pos": [
+    0.0,
+    54.5,
+    1.0
+   ],
+   "yaw": 0.0,
+   "props": {
+    "what": "stage"
+   }
+  },
+  {
+   "id": "gym_wall_bars_w",
+   "kind": "sport",
+   "pos": [
+    -8.2,
+    55.6,
+    1.3
+   ],
+   "yaw": 0.0,
+   "props": {
+    "what": "wall_bars"
+   }
+  },
+  {
+   "id": "gym_wall_bars_e",
+   "kind": "sport",
+   "pos": [
+    8.2,
+    55.6,
+    1.3
+   ],
+   "yaw": 0.0,
+   "props": {
+    "what": "wall_bars"
+   }
+  },
+  {
+   "id": "gym_bench_w",
+   "kind": "seat",
+   "pos": [
+    -4.2,
+    40.7,
+    0.45
+   ],
+   "yaw": 180.0,
+   "props": {
+    "height": 0.45
+   }
+  },
+  {
+   "id": "gym_bench_e",
+   "kind": "seat",
+   "pos": [
+    4.2,
+    40.7,
+    0.45
+   ],
+   "yaw": 180.0,
+   "props": {
+    "height": 0.45
+   }
+  },
+  {
+   "id": "gym_barbell",
+   "kind": "sport",
+   "pos": [
+    12.2,
+    51.5,
+    1.0
+   ],
+   "yaw": 270.0,
+   "props": {
+    "what": "barbell"
+   }
+  },
+  {
+   "id": "gym_bike",
+   "kind": "sport",
+   "pos": [
+    -12.2,
+    42.4,
+    0.9
+   ],
+   "yaw": 90.0,
+   "props": {
+    "what": "exercise_bike"
+   }
   }
  ],
  "flats": [],
@@ -2121,7 +3088,7 @@
    "centre": [
     -20.0,
     22.0,
-    1.95
+    5.55
    ],
    "normal": [
     1.0,
@@ -2141,8 +3108,8 @@
    "kind": "public",
    "centre": [
     -20.0,
-    22.0,
-    5.55
+    26.0,
+    1.95
    ],
    "normal": [
     1.0,
@@ -2163,7 +3130,7 @@
    "centre": [
     -20.0,
     26.0,
-    1.95
+    5.55
    ],
    "normal": [
     1.0,
@@ -2183,8 +3150,8 @@
    "kind": "public",
    "centre": [
     -20.0,
-    26.0,
-    5.55
+    30.0,
+    1.95
    ],
    "normal": [
     1.0,
@@ -2205,7 +3172,7 @@
    "centre": [
     -20.0,
     30.0,
-    1.95
+    5.55
    ],
    "normal": [
     1.0,
@@ -2225,7 +3192,7 @@
    "kind": "public",
    "centre": [
     -20.0,
-    30.0,
+    34.0,
     5.55
    ],
    "normal": [
@@ -2246,7 +3213,7 @@
    "kind": "public",
    "centre": [
     -20.0,
-    34.0,
+    38.0,
     1.95
    ],
    "normal": [
@@ -2267,7 +3234,7 @@
    "kind": "public",
    "centre": [
     -20.0,
-    34.0,
+    38.0,
     5.55
    ],
    "normal": [
@@ -2287,8 +3254,8 @@
    "flat": null,
    "kind": "public",
    "centre": [
-    -20.0,
-    38.0,
+    30.0,
+    7.833,
     1.95
    ],
    "normal": [
@@ -2297,7 +3264,7 @@
     0.0
    ],
    "size": [
-    3.4,
+    3.067,
     2.1
    ],
    "shape": "rect"
@@ -2308,8 +3275,8 @@
    "flat": null,
    "kind": "public",
    "centre": [
-    -20.0,
-    38.0,
+    30.0,
+    7.833,
     5.55
    ],
    "normal": [
@@ -2318,7 +3285,7 @@
     0.0
    ],
    "size": [
-    3.4,
+    3.067,
     2.1
    ],
    "shape": "rect"
@@ -2330,7 +3297,7 @@
    "kind": "public",
    "centre": [
     30.0,
-    7.833,
+    11.5,
     1.95
    ],
    "normal": [
@@ -2351,7 +3318,7 @@
    "kind": "public",
    "centre": [
     30.0,
-    7.833,
+    11.5,
     5.55
    ],
    "normal": [
@@ -2372,7 +3339,7 @@
    "kind": "public",
    "centre": [
     30.0,
-    11.5,
+    15.167,
     1.95
    ],
    "normal": [
@@ -2393,7 +3360,7 @@
    "kind": "public",
    "centre": [
     30.0,
-    11.5,
+    15.167,
     5.55
    ],
    "normal": [
@@ -2414,7 +3381,7 @@
    "kind": "public",
    "centre": [
     30.0,
-    15.167,
+    18.833,
     1.95
    ],
    "normal": [
@@ -2435,7 +3402,7 @@
    "kind": "public",
    "centre": [
     30.0,
-    15.167,
+    18.833,
     5.55
    ],
    "normal": [
@@ -2456,7 +3423,7 @@
    "kind": "public",
    "centre": [
     30.0,
-    18.833,
+    22.5,
     1.95
    ],
    "normal": [
@@ -2477,7 +3444,7 @@
    "kind": "public",
    "centre": [
     30.0,
-    18.833,
+    22.5,
     5.55
    ],
    "normal": [
@@ -2498,7 +3465,7 @@
    "kind": "public",
    "centre": [
     30.0,
-    22.5,
+    26.167,
     1.95
    ],
    "normal": [
@@ -2519,7 +3486,7 @@
    "kind": "public",
    "centre": [
     30.0,
-    22.5,
+    26.167,
     5.55
    ],
    "normal": [
@@ -2540,7 +3507,7 @@
    "kind": "public",
    "centre": [
     30.0,
-    26.167,
+    29.833,
     1.95
    ],
    "normal": [
@@ -2561,7 +3528,7 @@
    "kind": "public",
    "centre": [
     30.0,
-    26.167,
+    29.833,
     5.55
    ],
    "normal": [
@@ -2582,7 +3549,7 @@
    "kind": "public",
    "centre": [
     30.0,
-    29.833,
+    33.5,
     1.95
    ],
    "normal": [
@@ -2603,7 +3570,7 @@
    "kind": "public",
    "centre": [
     30.0,
-    29.833,
+    33.5,
     5.55
    ],
    "normal": [
@@ -2624,7 +3591,7 @@
    "kind": "public",
    "centre": [
     30.0,
-    33.5,
+    37.167,
     1.95
    ],
    "normal": [
@@ -2645,7 +3612,7 @@
    "kind": "public",
    "centre": [
     30.0,
-    33.5,
+    37.167,
     5.55
    ],
    "normal": [
@@ -2666,7 +3633,7 @@
    "kind": "public",
    "centre": [
     30.0,
-    37.167,
+    40.833,
     1.95
    ],
    "normal": [
@@ -2687,7 +3654,7 @@
    "kind": "public",
    "centre": [
     30.0,
-    37.167,
+    40.833,
     5.55
    ],
    "normal": [
@@ -2708,7 +3675,7 @@
    "kind": "public",
    "centre": [
     30.0,
-    40.833,
+    44.5,
     1.95
    ],
    "normal": [
@@ -2729,7 +3696,7 @@
    "kind": "public",
    "centre": [
     30.0,
-    40.833,
+    44.5,
     5.55
    ],
    "normal": [
@@ -2750,7 +3717,7 @@
    "kind": "public",
    "centre": [
     30.0,
-    44.5,
+    48.167,
     1.95
    ],
    "normal": [
@@ -2771,7 +3738,7 @@
    "kind": "public",
    "centre": [
     30.0,
-    44.5,
+    48.167,
     5.55
    ],
    "normal": [
@@ -2791,17 +3758,17 @@
    "flat": null,
    "kind": "public",
    "centre": [
-    30.0,
-    48.167,
+    20.0,
+    38.0,
     1.95
    ],
    "normal": [
-    1.0,
+    -1.0,
     0.0,
     0.0
    ],
    "size": [
-    3.067,
+    3.4,
     2.1
    ],
    "shape": "rect"
@@ -2812,17 +3779,17 @@
    "flat": null,
    "kind": "public",
    "centre": [
-    30.0,
-    48.167,
+    20.0,
+    38.0,
     5.55
    ],
    "normal": [
-    1.0,
+    -1.0,
     0.0,
     0.0
    ],
    "size": [
-    3.067,
+    3.4,
     2.1
    ],
    "shape": "rect"
@@ -2834,7 +3801,7 @@
    "kind": "public",
    "centre": [
     20.0,
-    38.0,
+    34.0,
     1.95
    ],
    "normal": [
@@ -2855,7 +3822,7 @@
    "kind": "public",
    "centre": [
     20.0,
-    38.0,
+    34.0,
     5.55
    ],
    "normal": [
@@ -2876,7 +3843,7 @@
    "kind": "public",
    "centre": [
     20.0,
-    34.0,
+    30.0,
     1.95
    ],
    "normal": [
@@ -2897,7 +3864,7 @@
    "kind": "public",
    "centre": [
     20.0,
-    34.0,
+    30.0,
     5.55
    ],
    "normal": [
@@ -2918,8 +3885,8 @@
    "kind": "public",
    "centre": [
     20.0,
-    30.0,
-    1.95
+    26.0,
+    5.55
    ],
    "normal": [
     -1.0,
@@ -2939,8 +3906,8 @@
    "kind": "public",
    "centre": [
     20.0,
-    30.0,
-    5.55
+    22.0,
+    1.95
    ],
    "normal": [
     -1.0,
@@ -2960,8 +3927,8 @@
    "kind": "public",
    "centre": [
     20.0,
-    26.0,
-    1.95
+    22.0,
+    5.55
    ],
    "normal": [
     -1.0,
@@ -2981,8 +3948,8 @@
    "kind": "public",
    "centre": [
     20.0,
-    26.0,
-    5.55
+    18.0,
+    1.95
    ],
    "normal": [
     -1.0,
@@ -3002,8 +3969,8 @@
    "kind": "public",
    "centre": [
     20.0,
-    22.0,
-    1.95
+    18.0,
+    5.55
    ],
    "normal": [
     -1.0,
@@ -3022,14 +3989,14 @@
    "flat": null,
    "kind": "public",
    "centre": [
-    20.0,
-    22.0,
-    5.55
+    -16.0,
+    50.0,
+    1.95
    ],
    "normal": [
-    -1.0,
     0.0,
-    0.0
+    1.0,
+    -0.0
    ],
    "size": [
     3.4,
@@ -3043,14 +4010,14 @@
    "flat": null,
    "kind": "public",
    "centre": [
-    20.0,
-    18.0,
-    1.95
+    -16.0,
+    50.0,
+    5.55
    ],
    "normal": [
-    -1.0,
     0.0,
-    0.0
+    1.0,
+    -0.0
    ],
    "size": [
     3.4,
@@ -3064,14 +4031,14 @@
    "flat": null,
    "kind": "public",
    "centre": [
-    20.0,
-    18.0,
-    5.55
+    -20.0,
+    50.0,
+    1.95
    ],
    "normal": [
-    -1.0,
     0.0,
-    0.0
+    1.0,
+    -0.0
    ],
    "size": [
     3.4,
@@ -3085,9 +4052,9 @@
    "flat": null,
    "kind": "public",
    "centre": [
-    -16.0,
+    -20.0,
     50.0,
-    1.95
+    5.55
    ],
    "normal": [
     0.0,
@@ -3106,9 +4073,9 @@
    "flat": null,
    "kind": "public",
    "centre": [
-    -16.0,
+    -24.0,
     50.0,
-    5.55
+    1.95
    ],
    "normal": [
     0.0,
@@ -3127,9 +4094,9 @@
    "flat": null,
    "kind": "public",
    "centre": [
-    -20.0,
+    -24.0,
     50.0,
-    1.95
+    5.55
    ],
    "normal": [
     0.0,
@@ -3148,9 +4115,9 @@
    "flat": null,
    "kind": "public",
    "centre": [
-    -20.0,
+    -28.0,
     50.0,
-    5.55
+    1.95
    ],
    "normal": [
     0.0,
@@ -3169,9 +4136,9 @@
    "flat": null,
    "kind": "public",
    "centre": [
-    -24.0,
+    -28.0,
     50.0,
-    1.95
+    5.55
    ],
    "normal": [
     0.0,
@@ -3190,9 +4157,9 @@
    "flat": null,
    "kind": "public",
    "centre": [
-    -24.0,
+    28.0,
     50.0,
-    5.55
+    1.95
    ],
    "normal": [
     0.0,
@@ -3211,9 +4178,9 @@
    "flat": null,
    "kind": "public",
    "centre": [
-    -28.0,
+    28.0,
     50.0,
-    1.95
+    5.55
    ],
    "normal": [
     0.0,
@@ -3232,9 +4199,9 @@
    "flat": null,
    "kind": "public",
    "centre": [
-    -28.0,
+    24.0,
     50.0,
-    5.55
+    1.95
    ],
    "normal": [
     0.0,
@@ -3253,9 +4220,9 @@
    "flat": null,
    "kind": "public",
    "centre": [
-    28.0,
+    24.0,
     50.0,
-    1.95
+    5.55
    ],
    "normal": [
     0.0,
@@ -3274,9 +4241,9 @@
    "flat": null,
    "kind": "public",
    "centre": [
-    28.0,
+    20.0,
     50.0,
-    5.55
+    1.95
    ],
    "normal": [
     0.0,
@@ -3295,9 +4262,9 @@
    "flat": null,
    "kind": "public",
    "centre": [
-    24.0,
+    20.0,
     50.0,
-    1.95
+    5.55
    ],
    "normal": [
     0.0,
@@ -3316,9 +4283,9 @@
    "flat": null,
    "kind": "public",
    "centre": [
-    24.0,
+    16.0,
     50.0,
-    5.55
+    1.95
    ],
    "normal": [
     0.0,
@@ -3337,9 +4304,9 @@
    "flat": null,
    "kind": "public",
    "centre": [
-    20.0,
+    16.0,
     50.0,
-    1.95
+    5.55
    ],
    "normal": [
     0.0,
@@ -3358,17 +4325,17 @@
    "flat": null,
    "kind": "public",
    "centre": [
-    20.0,
-    50.0,
-    5.55
+    -18.5,
+    40.0,
+    1.95
    ],
    "normal": [
     0.0,
-    1.0,
-    -0.0
+    -1.0,
+    0.0
    ],
    "size": [
-    3.4,
+    2.4,
     2.1
    ],
    "shape": "rect"
@@ -3379,17 +4346,17 @@
    "flat": null,
    "kind": "public",
    "centre": [
-    16.0,
-    50.0,
-    1.95
+    -18.5,
+    40.0,
+    5.55
    ],
    "normal": [
     0.0,
-    1.0,
-    -0.0
+    -1.0,
+    0.0
    ],
    "size": [
-    3.4,
+    2.4,
     2.1
    ],
    "shape": "rect"
@@ -3400,17 +4367,17 @@
    "flat": null,
    "kind": "public",
    "centre": [
-    16.0,
-    50.0,
-    5.55
+    -15.5,
+    40.0,
+    1.95
    ],
    "normal": [
     0.0,
-    1.0,
-    -0.0
+    -1.0,
+    0.0
    ],
    "size": [
-    3.4,
+    2.4,
     2.1
    ],
    "shape": "rect"
@@ -3421,9 +4388,9 @@
    "flat": null,
    "kind": "public",
    "centre": [
-    -18.5,
+    -15.5,
     40.0,
-    1.95
+    5.55
    ],
    "normal": [
     0.0,
@@ -3442,9 +4409,9 @@
    "flat": null,
    "kind": "public",
    "centre": [
-    -18.5,
+    15.5,
     40.0,
-    5.55
+    1.95
    ],
    "normal": [
     0.0,
@@ -3463,9 +4430,9 @@
    "flat": null,
    "kind": "public",
    "centre": [
-    -15.5,
+    15.5,
     40.0,
-    1.95
+    5.55
    ],
    "normal": [
     0.0,
@@ -3484,9 +4451,9 @@
    "flat": null,
    "kind": "public",
    "centre": [
-    -15.5,
+    18.5,
     40.0,
-    5.55
+    1.95
    ],
    "normal": [
     0.0,
@@ -3505,9 +4472,9 @@
    "flat": null,
    "kind": "public",
    "centre": [
-    15.5,
+    18.5,
     40.0,
-    1.95
+    5.55
    ],
    "normal": [
     0.0,
@@ -3526,9 +4493,9 @@
    "flat": null,
    "kind": "public",
    "centre": [
-    15.5,
+    -12.0,
     40.0,
-    5.55
+    6.0
    ],
    "normal": [
     0.0,
@@ -3536,8 +4503,8 @@
     0.0
    ],
    "size": [
-    2.4,
-    2.1
+    3.0,
+    3.0
    ],
    "shape": "rect"
   },
@@ -3547,9 +4514,9 @@
    "flat": null,
    "kind": "public",
    "centre": [
-    18.5,
+    -8.0,
     40.0,
-    1.95
+    6.0
    ],
    "normal": [
     0.0,
@@ -3557,8 +4524,8 @@
     0.0
    ],
    "size": [
-    2.4,
-    2.1
+    3.0,
+    3.0
    ],
    "shape": "rect"
   },
@@ -3568,9 +4535,9 @@
    "flat": null,
    "kind": "public",
    "centre": [
-    18.5,
+    -4.0,
     40.0,
-    5.55
+    6.0
    ],
    "normal": [
     0.0,
@@ -3578,8 +4545,8 @@
     0.0
    ],
    "size": [
-    2.4,
-    2.1
+    3.0,
+    3.0
    ],
    "shape": "rect"
   },
@@ -3589,7 +4556,7 @@
    "flat": null,
    "kind": "public",
    "centre": [
-    -12.0,
+    0.0,
     40.0,
     6.0
    ],
@@ -3610,7 +4577,7 @@
    "flat": null,
    "kind": "public",
    "centre": [
-    -8.0,
+    4.0,
     40.0,
     6.0
    ],
@@ -3631,7 +4598,7 @@
    "flat": null,
    "kind": "public",
    "centre": [
-    -4.0,
+    8.0,
     40.0,
     6.0
    ],
@@ -3652,7 +4619,7 @@
    "flat": null,
    "kind": "public",
    "centre": [
-    0.0,
+    12.0,
     40.0,
     6.0
    ],
@@ -3673,17 +4640,17 @@
    "flat": null,
    "kind": "public",
    "centre": [
-    4.0,
-    40.0,
+    -14.0,
+    54.1,
     6.0
    ],
    "normal": [
-    0.0,
     -1.0,
+    0.0,
     0.0
    ],
    "size": [
-    3.0,
+    1.8,
     3.0
    ],
    "shape": "rect"
@@ -3694,17 +4661,17 @@
    "flat": null,
    "kind": "public",
    "centre": [
-    8.0,
-    40.0,
+    -14.0,
+    51.5,
     6.0
    ],
    "normal": [
-    0.0,
     -1.0,
+    0.0,
     0.0
    ],
    "size": [
-    3.0,
+    1.8,
     3.0
    ],
    "shape": "rect"
@@ -3715,17 +4682,17 @@
    "flat": null,
    "kind": "public",
    "centre": [
-    12.0,
-    40.0,
+    14.0,
+    51.5,
     6.0
    ],
    "normal": [
+    1.0,
     0.0,
-    -1.0,
     0.0
    ],
    "size": [
-    3.0,
+    1.8,
     3.0
    ],
    "shape": "rect"
@@ -3736,17 +4703,17 @@
    "flat": null,
    "kind": "public",
    "centre": [
-    -14.0,
-    53.6,
+    14.0,
+    54.1,
     6.0
    ],
    "normal": [
-    -1.0,
+    1.0,
     0.0,
     0.0
    ],
    "size": [
-    2.0,
+    1.8,
     3.0
    ],
    "shape": "rect"
@@ -3757,17 +4724,17 @@
    "flat": null,
    "kind": "public",
    "centre": [
-    -14.0,
-    50.4,
+    12.0,
+    56.0,
     6.0
    ],
    "normal": [
-    -1.0,
     0.0,
-    0.0
+    1.0,
+    -0.0
    ],
    "size": [
-    2.0,
+    3.0,
     3.0
    ],
    "shape": "rect"
@@ -3778,17 +4745,17 @@
    "flat": null,
    "kind": "public",
    "centre": [
-    14.0,
-    52.4,
+    8.0,
+    56.0,
     6.0
    ],
    "normal": [
-    1.0,
     0.0,
-    0.0
+    1.0,
+    -0.0
    ],
    "size": [
-    2.0,
+    3.0,
     3.0
    ],
    "shape": "rect"
@@ -3799,17 +4766,17 @@
    "flat": null,
    "kind": "public",
    "centre": [
-    14.0,
-    55.6,
+    4.0,
+    56.0,
     6.0
    ],
    "normal": [
-    1.0,
     0.0,
-    0.0
+    1.0,
+    -0.0
    ],
    "size": [
-    2.0,
+    3.0,
     3.0
    ],
    "shape": "rect"
@@ -3820,7 +4787,7 @@
    "flat": null,
    "kind": "public",
    "centre": [
-    12.0,
+    0.0,
     56.0,
     6.0
    ],
@@ -3841,7 +4808,7 @@
    "flat": null,
    "kind": "public",
    "centre": [
-    8.0,
+    -4.0,
     56.0,
     6.0
    ],
@@ -3862,7 +4829,7 @@
    "flat": null,
    "kind": "public",
    "centre": [
-    4.0,
+    -8.0,
     56.0,
     6.0
    ],
@@ -3883,7 +4850,7 @@
    "flat": null,
    "kind": "public",
    "centre": [
-    0.0,
+    -12.0,
     56.0,
     6.0
    ],
@@ -3904,9 +4871,9 @@
    "flat": null,
    "kind": "public",
    "centre": [
-    -4.0,
-    56.0,
-    6.0
+    -8.95,
+    44.0,
+    9.8
    ],
    "normal": [
     0.0,
@@ -3914,8 +4881,8 @@
     -0.0
    ],
    "size": [
-    3.0,
-    3.0
+    8.9,
+    1.6
    ],
    "shape": "rect"
   },
@@ -3925,9 +4892,9 @@
    "flat": null,
    "kind": "public",
    "centre": [
-    -8.0,
-    56.0,
-    6.0
+    0.0,
+    44.0,
+    9.8
    ],
    "normal": [
     0.0,
@@ -3935,8 +4902,8 @@
     -0.0
    ],
    "size": [
-    3.0,
-    3.0
+    8.4,
+    1.6
    ],
    "shape": "rect"
   },
@@ -3946,9 +4913,9 @@
    "flat": null,
    "kind": "public",
    "centre": [
-    -12.0,
-    56.0,
-    6.0
+    8.95,
+    44.0,
+    9.8
    ],
    "normal": [
     0.0,
@@ -3956,8 +4923,8 @@
     -0.0
    ],
    "size": [
-    3.0,
-    3.0
+    8.9,
+    1.6
    ],
    "shape": "rect"
   },
@@ -3968,7 +4935,7 @@
    "kind": "public",
    "centre": [
     -8.95,
-    44.0,
+    48.0,
     9.8
    ],
    "normal": [
@@ -3989,7 +4956,7 @@
    "kind": "public",
    "centre": [
     0.0,
-    44.0,
+    48.0,
     9.8
    ],
    "normal": [
@@ -4010,7 +4977,7 @@
    "kind": "public",
    "centre": [
     8.95,
-    44.0,
+    48.0,
     9.8
    ],
    "normal": [
@@ -4031,7 +4998,7 @@
    "kind": "public",
    "centre": [
     -8.95,
-    48.0,
+    52.0,
     9.8
    ],
    "normal": [
@@ -4052,7 +5019,7 @@
    "kind": "public",
    "centre": [
     0.0,
-    48.0,
+    52.0,
     9.8
    ],
    "normal": [
@@ -4073,7 +5040,7 @@
    "kind": "public",
    "centre": [
     8.95,
-    48.0,
+    52.0,
     9.8
    ],
    "normal": [
@@ -4094,7 +5061,7 @@
    "kind": "public",
    "centre": [
     -8.95,
-    52.0,
+    56.0,
     9.8
    ],
    "normal": [
@@ -4115,7 +5082,7 @@
    "kind": "public",
    "centre": [
     0.0,
-    52.0,
+    56.0,
     9.8
    ],
    "normal": [
@@ -4132,69 +5099,6 @@
   {
    "slot": 173,
    "id": "pub/w174",
-   "flat": null,
-   "kind": "public",
-   "centre": [
-    8.95,
-    52.0,
-    9.8
-   ],
-   "normal": [
-    0.0,
-    1.0,
-    -0.0
-   ],
-   "size": [
-    8.9,
-    1.6
-   ],
-   "shape": "rect"
-  },
-  {
-   "slot": 174,
-   "id": "pub/w175",
-   "flat": null,
-   "kind": "public",
-   "centre": [
-    -8.95,
-    56.0,
-    9.8
-   ],
-   "normal": [
-    0.0,
-    1.0,
-    -0.0
-   ],
-   "size": [
-    8.9,
-    1.6
-   ],
-   "shape": "rect"
-  },
-  {
-   "slot": 175,
-   "id": "pub/w176",
-   "flat": null,
-   "kind": "public",
-   "centre": [
-    0.0,
-    56.0,
-    9.8
-   ],
-   "normal": [
-    0.0,
-    1.0,
-    -0.0
-   ],
-   "size": [
-    8.4,
-    1.6
-   ],
-   "shape": "rect"
-  },
-  {
-   "slot": 176,
-   "id": "pub/w177",
    "flat": null,
    "kind": "public",
    "centre": [
@@ -4217,8 +5121,8 @@
  "light_tex": 64,
  "notes": [],
  "tris": {
-  "shell": 5006,
-  "detail": 6126,
-  "windows": 354
+  "shell": 6522,
+  "detail": 25945,
+  "windows": 348
  }
 }

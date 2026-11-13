@@ -224,202 +224,588 @@
    "id": "reception",
    "kind": "counter",
    "pos": [
-    5.0,
-    12.9,
+    2.964,
+    13.163,
     0.0
    ],
-   "yaw": 0.0
-  },
-  {
-   "id": "bench_-4",
-   "kind": "bench",
-   "pos": [
-    -4.0,
-    10.2,
-    0.0
-   ],
-   "yaw": 0.0
-  },
-  {
-   "id": "bench_4",
-   "kind": "bench",
-   "pos": [
-    4.0,
-    10.2,
-    0.0
-   ],
-   "yaw": 0.0
-  },
-  {
-   "id": "dining_0",
-   "kind": "table",
-   "pos": [
-    -9.235,
-    14.18,
-    0.0
-   ],
-   "yaw": 0.0
-  },
-  {
-   "id": "dining_1",
-   "kind": "table",
-   "pos": [
-    -7.042,
-    12.756,
-    0.0
-   ],
-   "yaw": 0.0
-  },
-  {
-   "id": "dining_2",
-   "kind": "table",
-   "pos": [
-    -4.635,
-    11.734,
-    0.0
-   ],
-   "yaw": 0.0
-  },
-  {
-   "id": "lounge_1",
-   "kind": "seat",
-   "pos": [
-    7.0,
-    12.9,
-    0.0
-   ],
-   "yaw": 90.0
-  },
-  {
-   "id": "lounge_2",
-   "kind": "seat",
-   "pos": [
-    8.0,
-    11.9,
-    0.0
-   ],
-   "yaw": 180.0
+   "yaw": 13.0
   },
   {
    "id": "lounge_3",
    "kind": "seat",
    "pos": [
-    9.0,
-    12.9,
-    0.0
+    -0.651,
+    12.983,
+    0.43
    ],
-   "yaw": 270.0
+   "yaw": 358.5
+  },
+  {
+   "id": "lounge_1",
+   "kind": "seat",
+   "pos": [
+    -1.514,
+    12.082,
+    0.44
+   ],
+   "yaw": 83.58893318459295
+  },
+  {
+   "id": "lounge_2",
+   "kind": "seat",
+   "pos": [
+    0.783,
+    12.022,
+    0.44
+   ],
+   "yaw": 273.411066815407
+  },
+  {
+   "id": "bench_-4",
+   "kind": "bench",
+   "pos": [
+    -2.527,
+    9.266,
+    0.45
+   ],
+   "yaw": 170.2260140830624
+  },
+  {
+   "id": "bench_4",
+   "kind": "bench",
+   "pos": [
+    3.217,
+    9.385,
+    0.45
+   ],
+   "yaw": 189.7739859169376
+  },
+  {
+   "id": "dining_0",
+   "kind": "table",
+   "pos": [
+    -7.103,
+    12.06,
+    0.45
+   ],
+   "yaw": 153.0
+  },
+  {
+   "id": "dining_1",
+   "kind": "table",
+   "pos": [
+    -5.016,
+    11.181,
+    0.45
+   ],
+   "yaw": 161.29999999999995
+  },
+  {
+   "id": "dining_2",
+   "kind": "table",
+   "pos": [
+    -2.77,
+    10.602,
+    0.45
+   ],
+   "yaw": 169.79999999999995
   },
   {
    "id": "piano",
    "kind": "seat",
    "pos": [
-    9.426,
-    14.24,
+    -9.511,
+    14.297,
     0.0
    ],
-   "yaw": 135.0
+   "yaw": -135.0
+  },
+  {
+   "id": "pump_attendant",
+   "kind": "work",
+   "pos": [
+    7.259,
+    11.127,
+    0.0
+   ],
+   "yaw": 206.01428571428573
   }
  ],
  "lamps": [
   {
    "pos": [
-    -9.235,
-    14.18,
-    3.4
+    -4.777,
+    11.887,
+    3.34
    ],
-   "lumens": 800,
-   "colour": "#FFD2A0",
+   "lumens": 900,
+   "colour": "#FFD9A8",
    "kind": "public",
-   "radius": 6.5
+   "radius": 7.5
   },
   {
    "pos": [
-    -7.042,
-    12.756,
-    3.4
+    6.141,
+    12.534,
+    3.39
    ],
-   "lumens": 800,
-   "colour": "#FFD2A0",
-   "kind": "public",
-   "radius": 6.5
-  },
-  {
-   "pos": [
-    -4.635,
-    11.734,
-    3.4
-   ],
-   "lumens": 800,
-   "colour": "#FFD2A0",
-   "kind": "public",
-   "radius": 6.5
-  },
-  {
-   "pos": [
-    -8.604,
-    13.713,
-    4.2
-   ],
-   "lumens": 800,
-   "colour": "#FFD2A0",
+   "lumens": 900,
+   "colour": "#FFD9A8",
    "kind": "public",
    "radius": 7
+  },
+  {
+   "pos": [
+    9.436,
+    14.083,
+    3.29
+   ],
+   "lumens": 900,
+   "colour": "#FFD9A8",
+   "kind": "public",
+   "radius": 7
+  },
+  {
+   "pos": [
+    -0.523,
+    11.009,
+    3.29
+   ],
+   "lumens": 900,
+   "colour": "#FFD9A8",
+   "kind": "public",
+   "radius": 8
+  },
+  {
+   "pos": [
+    2.605,
+    11.228,
+    3.29
+   ],
+   "lumens": 900,
+   "colour": "#FFD9A8",
+   "kind": "public",
+   "radius": 8
   },
   {
    "pos": [
     -5.13,
     11.905,
-    4.2
+    3.29
    ],
-   "lumens": 800,
-   "colour": "#FFD2A0",
+   "lumens": 900,
+   "colour": "#FFD9A8",
    "kind": "public",
-   "radius": 7
+   "radius": 8
   },
   {
    "pos": [
-    -2.088,
-    11.146,
-    4.2
+    -9.235,
+    14.18,
+    3.09
    ],
-   "lumens": 800,
-   "colour": "#FFD2A0",
+   "lumens": 900,
+   "colour": "#FFD9A8",
    "kind": "public",
-   "radius": 7
+   "radius": 8
+  }
+ ],
+ "things": [
+  {
+   "id": "reception",
+   "kind": "counter",
+   "pos": [
+    3.149,
+    12.359,
+    1.1
+   ],
+   "yaw": 13.0,
+   "props": {
+    "role": "receptionist",
+    "service": "reception",
+    "shop": "sanatorium_kiosk"
+   }
   },
   {
+   "id": "lobby_paper",
+   "kind": "take",
    "pos": [
-    2.088,
-    11.146,
-    4.2
+    3.685,
+    12.483,
+    1.12
    ],
-   "lumens": 800,
-   "colour": "#FFD2A0",
-   "kind": "public",
-   "radius": 7
+   "yaw": 13.0,
+   "props": {
+    "item": "daily_paper"
+   }
   },
   {
+   "id": "lobby_sofa",
+   "kind": "seat",
    "pos": [
-    6.101,
-    12.297,
-    4.2
+    -0.651,
+    12.983,
+    0.43
    ],
-   "lumens": 800,
-   "colour": "#FFD2A0",
-   "kind": "public",
-   "radius": 7
+   "yaw": 358.5,
+   "props": {
+    "height": 0.45
+   }
   },
   {
+   "id": "lobby_lounge_a",
+   "kind": "seat",
    "pos": [
-    8.817,
-    13.865,
-    4.2
+    -1.514,
+    12.082,
+    0.44
    ],
-   "lumens": 800,
-   "colour": "#FFD2A0",
-   "kind": "public",
-   "radius": 7
+   "yaw": 83.6,
+   "props": {
+    "height": 0.44
+   }
+  },
+  {
+   "id": "lobby_lounge_b",
+   "kind": "seat",
+   "pos": [
+    0.783,
+    12.022,
+    0.44
+   ],
+   "yaw": 273.4,
+   "props": {
+    "height": 0.44
+   }
+  },
+  {
+   "id": "lobby_bench_w",
+   "kind": "seat",
+   "pos": [
+    -2.527,
+    9.266,
+    0.45
+   ],
+   "yaw": 170.2,
+   "props": {
+    "height": 0.45
+   }
+  },
+  {
+   "id": "lobby_bench_e",
+   "kind": "seat",
+   "pos": [
+    3.217,
+    9.385,
+    0.45
+   ],
+   "yaw": 189.8,
+   "props": {
+    "height": 0.45
+   }
+  },
+  {
+   "id": "cloakroom",
+   "kind": "counter",
+   "pos": [
+    5.057,
+    10.289,
+    1.2
+   ],
+   "yaw": -70.7,
+   "props": {
+    "role": "receptionist",
+    "service": "cloakroom"
+   }
+  },
+  {
+   "id": "lobby_board",
+   "kind": "board",
+   "pos": [
+    4.289,
+    13.516,
+    1.65
+   ],
+   "yaw": -70.7,
+   "props": {
+    "topic": "rules"
+   }
+  },
+  {
+   "id": "lobby_painting",
+   "kind": "board",
+   "pos": [
+    -3.891,
+    8.952,
+    4.1
+   ],
+   "yaw": 167.1,
+   "props": {
+    "topic": "painting"
+   }
+  },
+  {
+   "id": "dining_table_0",
+   "kind": "seat",
+   "pos": [
+    -7.103,
+    12.06,
+    0.45
+   ],
+   "yaw": 153.0,
+   "props": {
+    "height": 0.45
+   }
+  },
+  {
+   "id": "dining_table_1",
+   "kind": "seat",
+   "pos": [
+    -5.016,
+    11.181,
+    0.45
+   ],
+   "yaw": 161.3,
+   "props": {
+    "height": 0.45
+   }
+  },
+  {
+   "id": "dining_table_2",
+   "kind": "seat",
+   "pos": [
+    -2.77,
+    10.602,
+    0.45
+   ],
+   "yaw": 169.8,
+   "props": {
+    "height": 0.45
+   }
+  },
+  {
+   "id": "dining_buffet",
+   "kind": "counter",
+   "pos": [
+    -8.19,
+    11.103,
+    1.05
+   ],
+   "yaw": 151.2,
+   "props": {
+    "role": "receptionist",
+    "service": "bar"
+   }
+  },
+  {
+   "id": "dining_menu",
+   "kind": "board",
+   "pos": [
+    -8.954,
+    11.608,
+    1.7
+   ],
+   "yaw": 57.9,
+   "props": {
+    "topic": "prices"
+   }
+  },
+  {
+   "id": "piano",
+   "kind": "play",
+   "pos": [
+    -10.076,
+    14.863,
+    1.0
+   ],
+   "yaw": 45.0,
+   "props": {
+    "what": "piano"
+   }
+  },
+  {
+   "id": "garden_chair_a",
+   "kind": "seat",
+   "pos": [
+    -8.783,
+    14.586,
+    0.44
+   ],
+   "yaw": 321.4,
+   "props": {
+    "height": 0.44
+   }
+  },
+  {
+   "id": "garden_chair_b",
+   "kind": "seat",
+   "pos": [
+    -10.014,
+    13.202,
+    0.44
+   ],
+   "yaw": 141.4,
+   "props": {
+    "height": 0.44
+   }
+  },
+  {
+   "id": "garden_bench",
+   "kind": "seat",
+   "pos": [
+    -9.818,
+    12.124,
+    0.45
+   ],
+   "yaw": 141.4,
+   "props": {
+    "height": 0.45
+   }
+  },
+  {
+   "id": "garden_plants",
+   "kind": "board",
+   "pos": [
+    -9.146,
+    14.111,
+    1.4
+   ],
+   "yaw": 321.4,
+   "props": {
+    "topic": "garden"
+   }
+  },
+  {
+   "id": "pump_room",
+   "kind": "machine",
+   "pos": [
+    6.776,
+    12.115,
+    1.1
+   ],
+   "yaw": 206.0,
+   "props": {
+    "what": "pump_room"
+   }
+  },
+  {
+   "id": "pump_bench",
+   "kind": "seat",
+   "pos": [
+    5.154,
+    14.072,
+    0.45
+   ],
+   "yaw": 26.0,
+   "props": {
+    "height": 0.45
+   }
+  },
+  {
+   "id": "pump_prices",
+   "kind": "board",
+   "pos": [
+    4.645,
+    12.952,
+    1.6
+   ],
+   "yaw": 109.3,
+   "props": {
+    "topic": "prices"
+   }
+  },
+  {
+   "id": "pump_schedule",
+   "kind": "board",
+   "pos": [
+    5.487,
+    10.545,
+    1.7
+   ],
+   "yaw": 109.3,
+   "props": {
+    "topic": "timetable"
+   }
+  },
+  {
+   "id": "couch_a",
+   "kind": "bed",
+   "pos": [
+    10.102,
+    14.611,
+    0.7
+   ],
+   "yaw": -51.6,
+   "props": {
+    "height": 0.7,
+    "rest": "nap"
+   }
+  },
+  {
+   "id": "couch_b",
+   "kind": "bed",
+   "pos": [
+    8.769,
+    13.556,
+    0.7
+   ],
+   "yaw": -51.6,
+   "props": {
+    "height": 0.7,
+    "rest": "nap"
+   }
+  },
+  {
+   "id": "treat_scales",
+   "kind": "machine",
+   "pos": [
+    7.568,
+    15.315,
+    1.1
+   ],
+   "yaw": 38.4,
+   "props": {
+    "what": "scales"
+   }
+  },
+  {
+   "id": "treat_cabinet",
+   "kind": "shelf",
+   "pos": [
+    9.589,
+    12.036,
+    1.0
+   ],
+   "yaw": 218.4,
+   "props": {
+    "topic": "medicine"
+   }
+  },
+  {
+   "id": "treat_chart",
+   "kind": "board",
+   "pos": [
+    9.758,
+    15.676,
+    1.7
+   ],
+   "yaw": -45.0,
+   "props": {
+    "topic": "health"
+   }
+  },
+  {
+   "id": "treat_wall_bars",
+   "kind": "sport",
+   "pos": [
+    10.677,
+    14.757,
+    1.2
+   ],
+   "yaw": -45.0,
+   "props": {
+    "what": "wall_bars"
+   }
   }
  ],
  "flats": [
@@ -12584,8 +12970,8 @@
   "120 flats (5 storeys x 24 bays); hall sector -135..-45 deg enterable; entrance at (0, 8)"
  ],
  "tris": {
-  "shell": 15926,
-  "detail": 16530,
+  "shell": 15938,
+  "detail": 28972,
   "windows": 986
  }
 }

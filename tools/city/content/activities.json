@@ -25,7 +25,7 @@
   "payphone": {"prompt": "city.do.payphone.prompt", "lines": "city.do.payphone", "minutes": 2, "price": 1, "sound": "phone_dial"},
   "fountain": {"prompt": "city.do.fountain.prompt", "lines": "city.do.fountain", "minutes": 1, "sound": "water_sip"},
   "pump_room": {"prompt": "city.do.pump_room.prompt", "lines": "city.do.pump_room", "minutes": 5, "give": [["water", 1]], "daily": 1, "sound": "water_pour"},
-  "haircut": {"prompt": "city.do.haircut.prompt", "lines": "city.do.haircut", "minutes": 30, "price": 40, "pose": "sit", "needs_staff": "seller", "sound": "scissors"},
+  "haircut": {"prompt": "city.do.haircut.prompt", "lines": "city.do.haircut", "minutes": 30, "price": 40, "pose": "sit", "needs_staff": "barber", "sound": "scissors"},
 
   "barbell": {"prompt": "city.do.barbell.prompt", "lines": "city.do.barbell", "minutes": 20, "sound": "weights_clank"},
   "wall_bars": {"prompt": "city.do.wall_bars.prompt", "lines": "city.do.wall_bars", "minutes": 10},

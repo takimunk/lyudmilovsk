@@ -48,8 +48,18 @@
    "id": "reception",
    "kind": "counter",
    "pos": [
-    -6.5,
-    12.7,
+    -5.0,
+    10.8,
+    0.0
+   ],
+   "yaw": 180.0
+  },
+  {
+   "id": "nurse_desk",
+   "kind": "work",
+   "pos": [
+    -5.0,
+    12.65,
     0.0
    ],
    "yaw": 0.0
@@ -58,7 +68,7 @@
    "id": "wait_0",
    "kind": "bench",
    "pos": [
-    -12.7,
+    -12.85,
     7.2,
     0.0
    ],
@@ -68,7 +78,7 @@
    "id": "wait_1",
    "kind": "bench",
    "pos": [
-    -12.7,
+    -12.85,
     9.4,
     0.0
    ],
@@ -78,78 +88,18 @@
    "id": "wait_2",
    "kind": "bench",
    "pos": [
-    -8.0,
+    -8.4,
     8.0,
     0.0
    ],
-   "yaw": 0.0
+   "yaw": 180.0
   },
   {
    "id": "wait_3",
    "kind": "bench",
    "pos": [
-    -1.0,
+    -1.6,
     8.0,
-    0.0
-   ],
-   "yaw": 0.0
-  },
-  {
-   "id": "doctor_0",
-   "kind": "work",
-   "pos": [
-    5.2,
-    9.3,
-    0.0
-   ],
-   "yaw": 0.0
-  },
-  {
-   "id": "patient_0",
-   "kind": "seat",
-   "pos": [
-    5.2,
-    6.4,
-    0.0
-   ],
-   "yaw": 180.0
-  },
-  {
-   "id": "doctor_1",
-   "kind": "work",
-   "pos": [
-    8.7,
-    9.3,
-    0.0
-   ],
-   "yaw": 0.0
-  },
-  {
-   "id": "patient_1",
-   "kind": "seat",
-   "pos": [
-    8.7,
-    6.4,
-    0.0
-   ],
-   "yaw": 180.0
-  },
-  {
-   "id": "doctor_2",
-   "kind": "work",
-   "pos": [
-    12.15,
-    9.3,
-    0.0
-   ],
-   "yaw": 0.0
-  },
-  {
-   "id": "patient_2",
-   "kind": "seat",
-   "pos": [
-    12.15,
-    6.4,
     0.0
    ],
    "yaw": 180.0
@@ -158,7 +108,7 @@
    "id": "wait_4",
    "kind": "bench",
    "pos": [
-    2.85,
+    2.8,
     6.4,
     0.0
    ],
@@ -168,11 +118,121 @@
    "id": "wait_5",
    "kind": "bench",
    "pos": [
-    2.85,
+    2.8,
     8.4,
     0.0
    ],
    "yaw": 270.0
+  },
+  {
+   "id": "pharmacy",
+   "kind": "counter",
+   "pos": [
+    11.2,
+    14.0,
+    0.0
+   ],
+   "yaw": 270.0
+  },
+  {
+   "id": "pharmacist",
+   "kind": "work",
+   "pos": [
+    12.9,
+    14.0,
+    0.0
+   ],
+   "yaw": 90.0
+  },
+  {
+   "id": "queue_0",
+   "kind": "bench",
+   "pos": [
+    6.0,
+    15.4,
+    0.0
+   ],
+   "yaw": 0.0
+  },
+  {
+   "id": "queue_1",
+   "kind": "bench",
+   "pos": [
+    9.2,
+    15.4,
+    0.0
+   ],
+   "yaw": 0.0
+  },
+  {
+   "id": "doctor_0",
+   "kind": "work",
+   "pos": [
+    5.2,
+    4.72,
+    0.0
+   ],
+   "yaw": 180.0
+  },
+  {
+   "id": "patient_0",
+   "kind": "seat",
+   "pos": [
+    5.0,
+    6.35,
+    0.0
+   ],
+   "yaw": 0.0
+  },
+  {
+   "id": "doctor_1",
+   "kind": "work",
+   "pos": [
+    8.7,
+    4.72,
+    0.0
+   ],
+   "yaw": 180.0
+  },
+  {
+   "id": "patient_1",
+   "kind": "seat",
+   "pos": [
+    8.5,
+    6.35,
+    0.0
+   ],
+   "yaw": 0.0
+  },
+  {
+   "id": "eye_seat",
+   "kind": "seat",
+   "pos": [
+    9.7,
+    6.5,
+    0.0
+   ],
+   "yaw": 180.0
+  },
+  {
+   "id": "doctor_2",
+   "kind": "work",
+   "pos": [
+    12.15,
+    4.72,
+    0.0
+   ],
+   "yaw": 180.0
+  },
+  {
+   "id": "patient_2",
+   "kind": "seat",
+   "pos": [
+    11.95,
+    6.35,
+    0.0
+   ],
+   "yaw": 0.0
   }
  ],
  "lamps": [
@@ -296,6 +356,458 @@
    "colour": "#FFF0DC",
    "kind": "public",
    "radius": 6
+  }
+ ],
+ "things": [
+  {
+   "id": "reception",
+   "kind": "counter",
+   "pos": [
+    -5.0,
+    11.5,
+    1.1
+   ],
+   "yaw": 0.0,
+   "props": {
+    "role": "nurse",
+    "service": "reception",
+    "shop": "pharmacy"
+   }
+  },
+  {
+   "id": "hall_wait_0",
+   "kind": "seat",
+   "pos": [
+    -12.81,
+    7.2,
+    0.45
+   ],
+   "yaw": 90.0,
+   "props": {
+    "height": 0.45
+   }
+  },
+  {
+   "id": "hall_wait_1",
+   "kind": "seat",
+   "pos": [
+    -12.81,
+    9.4,
+    0.45
+   ],
+   "yaw": 90.0,
+   "props": {
+    "height": 0.45
+   }
+  },
+  {
+   "id": "hall_wait_2",
+   "kind": "seat",
+   "pos": [
+    -8.66,
+    8.04,
+    0.45
+   ],
+   "yaw": 180.0,
+   "props": {
+    "height": 0.45
+   }
+  },
+  {
+   "id": "hall_wait_3",
+   "kind": "seat",
+   "pos": [
+    -1.86,
+    8.04,
+    0.45
+   ],
+   "yaw": 180.0,
+   "props": {
+    "height": 0.45
+   }
+  },
+  {
+   "id": "hall_wait_4",
+   "kind": "seat",
+   "pos": [
+    2.76,
+    6.4,
+    0.45
+   ],
+   "yaw": 270.0,
+   "props": {
+    "height": 0.45
+   }
+  },
+  {
+   "id": "hall_wait_5",
+   "kind": "seat",
+   "pos": [
+    2.76,
+    8.4,
+    0.45
+   ],
+   "yaw": 270.0,
+   "props": {
+    "height": 0.45
+   }
+  },
+  {
+   "id": "hall_magazines",
+   "kind": "shelf",
+   "pos": [
+    -13.525,
+    12.9,
+    1.1
+   ],
+   "yaw": 90.0,
+   "props": {
+    "topic": "medicine"
+   }
+  },
+  {
+   "id": "water_cooler",
+   "kind": "machine",
+   "pos": [
+    3.05,
+    11.6,
+    1.0
+   ],
+   "yaw": 270.0,
+   "props": {
+    "what": "fountain"
+   }
+  },
+  {
+   "id": "hall_notices",
+   "kind": "board",
+   "pos": [
+    -12.2,
+    4.35,
+    1.6
+   ],
+   "yaw": 180.0,
+   "props": {
+    "topic": "health"
+   }
+  },
+  {
+   "id": "hall_calendar",
+   "kind": "board",
+   "pos": [
+    -13.65,
+    9.1,
+    1.6
+   ],
+   "yaw": 90.0,
+   "props": {
+    "topic": "health"
+   }
+  },
+  {
+   "id": "hall_anatomy",
+   "kind": "board",
+   "pos": [
+    3.25,
+    10.2,
+    1.6
+   ],
+   "yaw": 270.0,
+   "props": {
+    "topic": "health"
+   }
+  },
+  {
+   "id": "kids_table",
+   "kind": "seat",
+   "pos": [
+    -11.7,
+    12.85,
+    0.3
+   ],
+   "yaw": 0.0,
+   "props": {
+    "height": 0.3
+   }
+  },
+  {
+   "id": "kids_books",
+   "kind": "shelf",
+   "pos": [
+    -13.4,
+    14.4,
+    0.9
+   ],
+   "yaw": 90.0,
+   "props": {
+    "topic": "kids"
+   }
+  },
+  {
+   "id": "pharmacy",
+   "kind": "counter",
+   "pos": [
+    11.95,
+    14.0,
+    1.05
+   ],
+   "yaw": 270.0,
+   "props": {
+    "role": "nurse",
+    "service": "pharmacy",
+    "shop": "pharmacy"
+   }
+  },
+  {
+   "id": "corridor_row_1",
+   "kind": "seat",
+   "pos": [
+    6.0,
+    15.36,
+    0.45
+   ],
+   "yaw": 0.0,
+   "props": {
+    "height": 0.45
+   }
+  },
+  {
+   "id": "corridor_row_2",
+   "kind": "seat",
+   "pos": [
+    9.2,
+    15.36,
+    0.45
+   ],
+   "yaw": 0.0,
+   "props": {
+    "height": 0.45
+   }
+  },
+  {
+   "id": "corridor_notices",
+   "kind": "board",
+   "pos": [
+    6.95,
+    11.35,
+    1.6
+   ],
+   "yaw": 180.0,
+   "props": {
+    "topic": "health"
+   }
+  },
+  {
+   "id": "corridor_chart",
+   "kind": "board",
+   "pos": [
+    10.4,
+    11.35,
+    1.6
+   ],
+   "yaw": 180.0,
+   "props": {
+    "topic": "health"
+   }
+  },
+  {
+   "id": "therapist_doctor_chair",
+   "kind": "seat",
+   "pos": [
+    5.2,
+    4.72,
+    0.45
+   ],
+   "yaw": 180.0,
+   "props": {
+    "height": 0.45
+   }
+  },
+  {
+   "id": "therapist_patient_chair",
+   "kind": "seat",
+   "pos": [
+    5.0,
+    6.35,
+    0.45
+   ],
+   "yaw": 0.0,
+   "props": {
+    "height": 0.45
+   }
+  },
+  {
+   "id": "therapist_couch",
+   "kind": "bed",
+   "pos": [
+    3.98,
+    8.2,
+    0.7
+   ],
+   "yaw": 90.0,
+   "props": {
+    "height": 0.7,
+    "rest": "nap"
+   }
+  },
+  {
+   "id": "therapist_chart",
+   "kind": "board",
+   "pos": [
+    3.65,
+    8.2,
+    1.7
+   ],
+   "yaw": 90.0,
+   "props": {
+    "topic": "health"
+   }
+  },
+  {
+   "id": "patient_0",
+   "kind": "machine",
+   "pos": [
+    6.45,
+    10.3,
+    1.0
+   ],
+   "yaw": 0.0,
+   "props": {
+    "what": "scales"
+   }
+  },
+  {
+   "id": "skeleton",
+   "kind": "board",
+   "pos": [
+    3.95,
+    10.3,
+    1.2
+   ],
+   "yaw": 90.0,
+   "props": {
+    "topic": "medicine"
+   }
+  },
+  {
+   "id": "eyes_doctor_chair",
+   "kind": "seat",
+   "pos": [
+    8.7,
+    4.72,
+    0.45
+   ],
+   "yaw": 180.0,
+   "props": {
+    "height": 0.45
+   }
+  },
+  {
+   "id": "eyes_patient_chair",
+   "kind": "seat",
+   "pos": [
+    8.5,
+    6.35,
+    0.45
+   ],
+   "yaw": 0.0,
+   "props": {
+    "height": 0.45
+   }
+  },
+  {
+   "id": "eyes_couch",
+   "kind": "bed",
+   "pos": [
+    7.48,
+    8.2,
+    0.7
+   ],
+   "yaw": 90.0,
+   "props": {
+    "height": 0.7,
+    "rest": "nap"
+   }
+  },
+  {
+   "id": "eyes_chart",
+   "kind": "board",
+   "pos": [
+    7.15,
+    8.2,
+    1.7
+   ],
+   "yaw": 90.0,
+   "props": {
+    "topic": "health"
+   }
+  },
+  {
+   "id": "patient_1",
+   "kind": "board",
+   "pos": [
+    9.8,
+    10.9,
+    1.55
+   ],
+   "yaw": 0.0,
+   "props": {
+    "what": "eye_chart"
+   }
+  },
+  {
+   "id": "checkup_doctor_chair",
+   "kind": "seat",
+   "pos": [
+    12.15,
+    4.72,
+    0.45
+   ],
+   "yaw": 180.0,
+   "props": {
+    "height": 0.45
+   }
+  },
+  {
+   "id": "patient_2",
+   "kind": "seat",
+   "pos": [
+    11.95,
+    6.35,
+    0.45
+   ],
+   "yaw": 0.0,
+   "props": {
+    "height": 0.45,
+    "what": "checkup"
+   }
+  },
+  {
+   "id": "checkup_couch",
+   "kind": "bed",
+   "pos": [
+    10.98,
+    8.2,
+    0.7
+   ],
+   "yaw": 90.0,
+   "props": {
+    "height": 0.7,
+    "rest": "nap"
+   }
+  },
+  {
+   "id": "checkup_chart",
+   "kind": "board",
+   "pos": [
+    10.65,
+    8.2,
+    1.7
+   ],
+   "yaw": 90.0,
+   "props": {
+    "topic": "health"
+   }
   }
  ],
  "flats": [],
@@ -1018,8 +1530,8 @@
  "light_tex": 64,
  "notes": [],
  "tris": {
-  "shell": 2142,
-  "detail": 2942,
+  "shell": 1976,
+  "detail": 10070,
   "windows": 68
  }
 }

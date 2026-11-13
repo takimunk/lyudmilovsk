@@ -160,34 +160,44 @@
    "id": "deck_bench_1",
    "kind": "bench",
    "pos": [
-    -11.83,
-    10.322,
-    3.47
+    -12.311,
+    10.566,
+    3.0
    ],
-   "yaw": 176.2501984214511
+   "yaw": 357.1866439116209
+  },
+  {
+   "id": "deck_chess_seat",
+   "kind": "seat",
+   "pos": [
+    -3.972,
+    9.195,
+    3.0
+   ],
+   "yaw": -0.9384552991046999
   },
   {
    "id": "deck_bench_3",
    "kind": "bench",
    "pos": [
-    4.0,
-    10.066,
-    3.47
+    3.504,
+    10.278,
+    3.0
    ],
-   "yaw": 180.0
+   "yaw": 0.9384552991046999
   },
   {
    "id": "deck_bench_5",
    "kind": "bench",
    "pos": [
-    19.83,
-    10.846,
-    3.47
+    19.344,
+    11.031,
+    3.0
    ],
-   "yaw": 183.7498015785489
+   "yaw": 4.216648919384333
   },
   {
-   "id": "sbench_c1_3",
+   "id": "sbench_c1_4",
    "kind": "bench",
    "pos": [
     -20.522,
@@ -197,7 +207,7 @@
    "yaw": 0
   },
   {
-   "id": "sbench_c3_4",
+   "id": "sbench_c3_5",
    "kind": "bench",
    "pos": [
     -11.649,
@@ -207,7 +217,7 @@
    "yaw": 0
   },
   {
-   "id": "sbench_c4_5",
+   "id": "sbench_c4_6",
    "kind": "bench",
    "pos": [
     3.6,
@@ -217,7 +227,7 @@
    "yaw": 0
   },
   {
-   "id": "sbench_c7_6",
+   "id": "sbench_c7_7",
    "kind": "bench",
    "pos": [
     20.522,
@@ -260,6 +270,255 @@
    "colour": "#FFD9A8",
    "kind": "lobby",
    "radius": 10
+  }
+ ],
+ "things": [
+  {
+   "id": "niche_board_c1",
+   "kind": "board",
+   "pos": [
+    -24.011,
+    8.45,
+    1.5
+   ],
+   "yaw": -4.7,
+   "props": {
+    "topic": "lost"
+   }
+  },
+  {
+   "id": "niche_board_c2",
+   "kind": "board",
+   "pos": [
+    -16.009,
+    7.795,
+    1.5
+   ],
+   "yaw": -3.7,
+   "props": {
+    "topic": "lost"
+   }
+  },
+  {
+   "id": "niche_board_c3",
+   "kind": "board",
+   "pos": [
+    -8.004,
+    7.401,
+    1.5
+   ],
+   "yaw": -1.9,
+   "props": {
+    "topic": "lost"
+   }
+  },
+  {
+   "id": "niche_board_c4",
+   "kind": "board",
+   "pos": [
+    0.0,
+    7.27,
+    1.5
+   ],
+   "yaw": 0.0,
+   "props": {
+    "topic": "lost"
+   }
+  },
+  {
+   "id": "niche_board_c5",
+   "kind": "board",
+   "pos": [
+    8.004,
+    7.401,
+    1.5
+   ],
+   "yaw": 1.9,
+   "props": {
+    "topic": "lost"
+   }
+  },
+  {
+   "id": "niche_board_c6",
+   "kind": "board",
+   "pos": [
+    16.009,
+    7.795,
+    1.5
+   ],
+   "yaw": 3.7,
+   "props": {
+    "topic": "lost"
+   }
+  },
+  {
+   "id": "niche_board_c7",
+   "kind": "board",
+   "pos": [
+    24.011,
+    8.45,
+    1.5
+   ],
+   "yaw": 4.7,
+   "props": {
+    "topic": "lost"
+   }
+  },
+  {
+   "id": "deck_bench_1_seat",
+   "kind": "seat",
+   "pos": [
+    -12.311,
+    10.566,
+    3.45
+   ],
+   "yaw": 357.2,
+   "props": {
+    "height": 0.45
+   }
+  },
+  {
+   "id": "deck_chess",
+   "kind": "play",
+   "pos": [
+    -3.962,
+    9.815,
+    3.75
+   ],
+   "yaw": -0.9,
+   "props": {
+    "what": "chess"
+   }
+  },
+  {
+   "id": "deck_bench_3_seat",
+   "kind": "seat",
+   "pos": [
+    3.504,
+    10.278,
+    3.45
+   ],
+   "yaw": 0.9,
+   "props": {
+    "height": 0.45
+   }
+  },
+  {
+   "id": "deck_bench_5_seat",
+   "kind": "seat",
+   "pos": [
+    19.344,
+    11.031,
+    3.45
+   ],
+   "yaw": 4.2,
+   "props": {
+    "height": 0.45
+   }
+  },
+  {
+   "id": "pillar_board_1",
+   "kind": "board",
+   "pos": [
+    -23.88,
+    10.045,
+    4.5
+   ],
+   "yaw": 175.3,
+   "props": {
+    "topic": "club"
+   }
+  },
+  {
+   "id": "pillar_board_2",
+   "kind": "board",
+   "pos": [
+    -15.904,
+    9.391,
+    4.5
+   ],
+   "yaw": 176.3,
+   "props": {
+    "topic": "timetable"
+   }
+  },
+  {
+   "id": "pillar_board_3",
+   "kind": "board",
+   "pos": [
+    -7.952,
+    9.0,
+    4.5
+   ],
+   "yaw": 178.1,
+   "props": {
+    "topic": "club"
+   }
+  },
+  {
+   "id": "pillar_board_4",
+   "kind": "board",
+   "pos": [
+    0.0,
+    8.87,
+    4.5
+   ],
+   "yaw": 180.0,
+   "props": {
+    "topic": "timetable"
+   }
+  },
+  {
+   "id": "pillar_board_5",
+   "kind": "board",
+   "pos": [
+    7.952,
+    9.0,
+    4.5
+   ],
+   "yaw": 181.9,
+   "props": {
+    "topic": "club"
+   }
+  },
+  {
+   "id": "pillar_board_6",
+   "kind": "board",
+   "pos": [
+    15.904,
+    9.391,
+    4.5
+   ],
+   "yaw": 183.7,
+   "props": {
+    "topic": "timetable"
+   }
+  },
+  {
+   "id": "pillar_board_7",
+   "kind": "board",
+   "pos": [
+    23.88,
+    10.045,
+    4.5
+   ],
+   "yaw": 184.7,
+   "props": {
+    "topic": "club"
+   }
+  },
+  {
+   "id": "deck_telescope",
+   "kind": "machine",
+   "pos": [
+    21.828,
+    5.693,
+    4.2
+   ],
+   "yaw": 4.7,
+   "props": {
+    "what": "telescope"
+   }
   }
  ],
  "flats": [
@@ -1441,7 +1700,7 @@
  ],
  "tris": {
   "shell": 1699,
-  "detail": 4088,
+  "detail": 7946,
   "windows": 98
  }
 }

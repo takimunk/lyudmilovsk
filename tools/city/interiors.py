@@ -46,7 +46,8 @@ KIND_LOOK = {"seat": (0.45, False), "bed": (0.5, False), "shelf": (1.3, True), "
 # spots that become things by themselves while a building declares none (the rest only when a content rule gives them a kind)
 SPOT_KIND = {"seat": "seat", "bench": "seat", "counter": "counter", "table": "seat", "view": "board"}
 # staff who sell over a counter, best first (a derived counter gets the plot's first of them)
-SELLING = ("seller", "cashier", "barista", "librarian", "receptionist", "clerk", "vendor", "nurse", "caretaker", "master",
+SELLING = ("seller", "cashier", "barista", "waiter", "bartender", "bookseller", "fishmonger", "baker", "librarian", "receptionist",
+           "clerk", "vendor", "renter", "repairman", "barber", "photographer", "nurse", "caretaker", "master", "cook",
            "lighthouse_keeper", "lifeguard", "guard")
 # staff whose hours do not open a building to the public
 SERVICE = ("cleaner", "janitor", "guard")
@@ -58,10 +59,15 @@ ACT_FIELDS = ("prompt", "minutes", "price", "lines", "pose", "sound", "event", "
 MAIN_STRINGS = os.path.join(CONTENT, "Localization", "strings_ru.json")
 PROP_ORDER = ("topic", "what", "service", "item", "to", "role", "shop")
 MIN_GAP = 0.3
+UNIT_TYPE = "promenade_unit"   # the promenade units' rooms (exports promenade_unit__<variant>.json)
 FOOTPRINT_SLACK = 3.0
 
 errors = []
 warnings = []
+RULES_USED = set()  # the id rules (<plot|type>/<id glob>) that matched a thing: --check fails on the others
+# a shop or a talk that needs a role the plot has no staff at all for (the ground-floor shops of a residential block): it
+# runs without staff in these hours (a rule may give its own)
+NO_STAFF_HOURS = ([9, 20], "mon-sat")
 
 
 def err(msg):
@@ -270,15 +276,18 @@ def id_rules(rules, plot, btype, tid):
                 continue
             if pat == tid:
                 exact = v
+                RULES_USED.add(k)
             elif any(c in pat for c in "*?[") and fnmatch.fnmatchcase(tid, pat):
                 globs.append((pat, v))
+                RULES_USED.add(k)
         out += [v for _p, v in sorted(globs)] + ([exact] if exact else [])
     return out
 
 
 def prop_rule(rules, kind, props):
     """The best kind+prop rule: the one with the most conditions, all met (`shelf:topic=birds`, `counter:service=bar,role=clerk`);
-    a rule for any kind (`*:what=piano`) counts a little less than one for this kind."""
+    a rule for any kind (`*:what=piano`) counts a little less than one for this kind. A value may be a glob, and `id` is the
+    thing's id (`machine:what=jukebox,id=*radio*`: the hall radios declared as jukeboxes)."""
     best, best_n = None, 0
     for k in sorted(rules):
         v = rules[k]
@@ -289,7 +298,7 @@ def prop_rule(rules, kind, props):
             continue
         conds = [c.partition("=") for c in cond.split(",")]
         n = len(conds) - (0.5 if rk == "*" else 0.0)
-        if all(str(props.get(a)) == b for a, _, b in conds) and n > best_n:
+        if all(fnmatch.fnmatchcase(str(props.get(a)), b) for a, _, b in conds) and n > best_n:
             best, best_n = v, n
     return best
 
@@ -325,7 +334,7 @@ def resolve(thing, rules, defaults, by_plot_kind, plot, acts):
     if not act and props.get("shop"):
         act = "buy_" + props["shop"]
     if not act:
-        r = prop_rule(rules, kind, props)
+        r = prop_rule(rules, kind, dict(props, id=thing["id"]))
         if r:
             act = r.get("act")
             hours, days = r.get("hours", hours), r.get("days", days)
@@ -432,7 +441,8 @@ def build_shops(shops, strings, items):
 # ------------------------------------------------------------------ the plots
 
 def places(plan):
-    """Every plot with a building, and the promenade units (a unit is a frontage in the sea wall: one counter at its door)."""
+    """Every plot with a building, and the promenade units (a room behind the sea wall's face, dressed as its variant; a unit
+    whose variant is not built yet: one counter at its door)."""
     out = []
     for p in plan["plots"]:
         if not p.get("building"):
@@ -442,6 +452,15 @@ def places(plan):
                     "export": building_export(p["building"], p["id"]), "w": p["w"], "d": p["d"]})
     for u in plan.get("promenade_units", []):
         w = u.get("w", 10.0)
+        # the unit's room: promenade_unit__<variant> (blender/city/buildings/promenade_unit.py), its origin at the unit's
+        # "front" (the bay's middle on the wall's face); rules name its things as promenade_unit/<thing id>
+        export = building_export(UNIT_TYPE, u["variant"]) if u.get("variant") and u.get("front") else None
+        if export:
+            out.append({"id": u["id"], "kind": u["kind"], "building": UNIT_TYPE, "front": ue_m(plan, u["front"]), "yaw": u["yaw"],
+                        "staff": u.get("staff") or [], "name_ru": u.get("name_ru", ""), "name_en": u.get("name_en", ""),
+                        "export": export, "w": w, "d": 6.5, "unit": 1, "variant": u["variant"]})
+            continue
+        # no room built yet: one counter at its door
         fp = [[-w / 2, 0.0], [w / 2, 0.0], [w / 2, 6.0], [-w / 2, 6.0]]
         export = {"footprint": fp, "entrances": [{"id": "door", "pos": [0.0, 0.0, 0.0], "kind": "street"}],
                   "spots": [{"id": "counter", "kind": "counter", "pos": [0.0, 0.6, 0.0], "yaw": 180.0}]}
@@ -449,6 +468,25 @@ def places(plan):
                     "staff": u.get("staff") or [], "name_ru": u.get("name_ru", ""), "name_en": u.get("name_en", ""),
                     "export": export, "w": w, "d": 6.0, "unit": 1})
     return out
+
+
+def staff_variant(pl, props, kind, act, acts, tid):
+    """An act whose needs_staff role does not work at this plot: the same act for the role that does (the counter's own
+    `role`, else for a counter or a shop the plot's first selling role), or, at a plot with no staff at all, without staff
+    (`<act>@open`, NO_STAFF_HOURS). Its `target` stays the original act's, so the quests still see it. None: no fix (an error)."""
+    roles = [r[0] for r in pl["staff"]]
+    if props.get("role") in roles and props["role"] not in SERVICE:
+        alt = props["role"]
+    elif (kind == "counter" or acts[act]["shop"]) and any(s in roles for s in SELLING if s not in SERVICE):
+        alt = next(s for s in SELLING if s in roles and s not in SERVICE)
+    elif not roles:
+        alt = ""
+    else:
+        return None
+    vid = "%s@%s" % (act, alt or "open")
+    if vid not in acts:
+        acts[vid] = dict(acts[act], needs_staff=alt)
+    return vid
 
 
 def build_things(plan, rules, defaults, by_plot_kind, acts):
@@ -500,6 +538,13 @@ def build_things(plan, rules, defaults, by_plot_kind, acts):
                     acts[seated] = dict(acts[act], pose="sit")
                 act = seated
             a = acts[act]
+            if a["needs_staff"] not in ("", "*") and not role_hours(pl["staff"], a["needs_staff"]):
+                vid = staff_variant(pl, props, kind, act, acts, tid)
+                if vid:
+                    act, a = vid, acts[vid]
+                    skipped["staff variant"] += 1
+                    if not a["needs_staff"] and hours is None:
+                        hours, days = NO_STAFF_HOURS
             if hours is None:
                 rh = role_hours(pl["staff"], a["needs_staff"]) if a["needs_staff"] else None
                 if a["needs_staff"] and not rh:
@@ -507,7 +552,7 @@ def build_things(plan, rules, defaults, by_plot_kind, acts):
                 hours, days = rh or plot_hours(pl["staff"])
             elif days is None:
                 days = plot_hours(pl["staff"])[1]
-            if kind == "counter" and a["shop"] and props.get("role") and props["role"] != a["needs_staff"]:
+            if kind == "counter" and a["shop"] and a["needs_staff"] and props.get("role") != a["needs_staff"]:
                 props["role"] = a["needs_staff"]
             w = local_to_world(pl["front"], pl["yaw"], t["pos"])
             rec = {"id": tid, "plot": pl["id"], "kind": kind, "ue": [round(w[0] * 100, 1), round(w[1] * 100, 1), round(w[2] * 100, 1)],
@@ -540,11 +585,19 @@ def build_teleports(plan, things, strings, gen_strings):
         by_plot[t["plot"]].append(t)
     pf = plan["portal_face_y"] / 100.0
     for pl in places(plan):
-        if pl.get("unit") or pl["kind"] in PUBLIC_KINDS_SKIP or not pl["export"]:
+        if (pl.get("unit") and not pl.get("variant")) or pl["kind"] in PUBLIC_KINDS_SKIP or not pl["export"]:
             continue
         ex = pl["export"]
         key = pl["id"].lower().replace("-", "_")
         name_key = "city.plot.%s.name" % key
+        if pl.get("variant"):
+            # a promenade unit: "<its trade> W1-U07" (the trades' names are in strings/promenade.json)
+            tkey = "city.unit.%s.name" % pl["variant"]
+            if tkey not in strings:
+                err("teleport %s: no trade name %s" % (pl["id"], tkey))
+                continue
+            strings = dict(strings)
+            strings[name_key] = {l: "%s %s" % (strings[tkey][l], pl["id"]) for l in LANGS}
         if name_key not in strings:
             err("teleport %s: no place name %s" % (pl["id"], name_key))
             continue
@@ -722,14 +775,26 @@ def main():
     map_places = {p["id"] for p in load(MAP)["places"]}
     plot_ids = {p["id"] for p in plan["plots"]} | {u["id"] for u in plan.get("promenade_units", [])}
     check_quests(quests, acts, strings, items, plot_ids, map_places, [q for q in existing if q not in ours])
+    # every quest step a thing must make must have a thing in town that makes it, with its staff on that plot
+    staff_of = {pl["id"]: {r[0] for r in pl["staff"]} for pl in places(plan)}
+    things_in = collections.Counter(t["plot"] for t in things)
     for q in quests:
-        for st in q["stages"]:
-            for o in st["objectives"]:
-                if o["event"] == "do":
-                    pref = o.get("target", "").rstrip("*")
-                    done_by = {acts[a]["target"] for a in used}
-                    if not any(a.startswith(pref) if o["target"].endswith("*") else a == o["target"] for a in done_by):
-                        warnings.append("quest %s: no thing in town does %s yet" % (q["id"], o["target"]))
+        for o in ([q["start_on"]] if q.get("start_on") else []) + [o for st in q["stages"] for o in st["objectives"]]:
+            tgt = o.get("target", "")
+            if o["event"] == "visit" and not things_in[tgt]:
+                err("quest %s: visit %s: that plot has no things, nothing can report the visit" % (q["id"], tgt))
+            if o["event"] != "do":
+                continue
+            match = (lambda x: x.startswith(tgt[:-1])) if tgt.endswith("*") else (lambda x: x == tgt)
+            by = [t for t in things if match(acts[t["act"]]["target"])]
+            ok = [t for t in by if acts[t["act"]]["needs_staff"] in ("", "*") or acts[t["act"]]["needs_staff"] in staff_of.get(t["plot"], ())]
+            if not by:
+                err("quest %s: no thing in town does %s" % (q["id"], tgt))
+            elif not ok:
+                err("quest %s: do %s: every thing that does it needs staff its plot does not have" % (q["id"], tgt))
+    for k, r in sorted(rules.items()):
+        if "/" in k and k not in RULES_USED:
+            err("rule %s matches no thing (the id changed? fix or drop it)" % k)
 
     all_strings = dict(strings)
     for k, v in gen_strings.items():

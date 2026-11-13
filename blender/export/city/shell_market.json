@@ -428,6 +428,36 @@
     0
    ],
    "yaw": 180
+  },
+  {
+   "id": "office_window",
+   "kind": "counter",
+   "pos": [
+    -10.4,
+    1.9,
+    0
+   ],
+   "yaw": 180
+  },
+  {
+   "id": "tea_counter",
+   "kind": "counter",
+   "pos": [
+    10.4,
+    2.1,
+    0
+   ],
+   "yaw": 180
+  },
+  {
+   "id": "tea_seller",
+   "kind": "work",
+   "pos": [
+    10.4,
+    4.0,
+    0
+   ],
+   "yaw": 0
   }
  ],
  "lamps": [
@@ -435,7 +465,7 @@
    "pos": [
     -15.6,
     9.9,
-    2.956
+    3.006
    ],
    "lumens": 820,
    "colour": "#FFD2A0",
@@ -446,7 +476,7 @@
    "pos": [
     -15.6,
     20.3,
-    2.839
+    2.889
    ],
    "lumens": 820,
    "colour": "#FFD2A0",
@@ -457,7 +487,7 @@
    "pos": [
     -18.3,
     17.4,
-    2.886
+    2.936
    ],
    "lumens": 820,
    "colour": "#FFD2A0",
@@ -468,7 +498,7 @@
    "pos": [
     -15.6,
     30.7,
-    2.547
+    2.62
    ],
    "lumens": 820,
    "colour": "#FFD2A0",
@@ -479,7 +509,7 @@
    "pos": [
     -5.2,
     9.9,
-    2.556
+    2.62
    ],
    "lumens": 820,
    "colour": "#FFD2A0",
@@ -490,7 +520,7 @@
    "pos": [
     -5.2,
     20.3,
-    3.131
+    3.181
    ],
    "lumens": 820,
    "colour": "#FFD2A0",
@@ -501,7 +531,7 @@
    "pos": [
     -2.5,
     17.4,
-    3.174
+    3.224
    ],
    "lumens": 820,
    "colour": "#FFD2A0",
@@ -512,7 +542,7 @@
    "pos": [
     -5.2,
     30.7,
-    2.589
+    2.639
    ],
    "lumens": 820,
    "colour": "#FFD2A0",
@@ -523,7 +553,7 @@
    "pos": [
     5.2,
     9.9,
-    2.758
+    2.808
    ],
    "lumens": 820,
    "colour": "#FFD2A0",
@@ -534,7 +564,7 @@
    "pos": [
     5.2,
     20.3,
-    2.701
+    2.751
    ],
    "lumens": 820,
    "colour": "#FFD2A0",
@@ -545,7 +575,7 @@
    "pos": [
     2.5,
     17.4,
-    2.745
+    2.795
    ],
    "lumens": 820,
    "colour": "#FFD2A0",
@@ -556,7 +586,7 @@
    "pos": [
     5.2,
     30.7,
-    2.36
+    2.62
    ],
    "lumens": 820,
    "colour": "#FFD2A0",
@@ -567,7 +597,7 @@
    "pos": [
     15.6,
     9.9,
-    3.148
+    3.198
    ],
    "lumens": 820,
    "colour": "#FFD2A0",
@@ -578,7 +608,7 @@
    "pos": [
     15.6,
     20.3,
-    2.433
+    2.62
    ],
    "lumens": 820,
    "colour": "#FFD2A0",
@@ -589,7 +619,7 @@
    "pos": [
     18.3,
     17.4,
-    2.48
+    2.62
    ],
    "lumens": 820,
    "colour": "#FFD2A0",
@@ -600,12 +630,472 @@
    "pos": [
     15.6,
     30.7,
-    2.25
+    2.62
    ],
    "lumens": 820,
    "colour": "#FFD2A0",
    "kind": "public",
    "radius": 8.0
+  }
+ ],
+ "things": [
+  {
+   "id": "counter1",
+   "kind": "counter",
+   "pos": [
+    -15.6,
+    9.9,
+    1.03
+   ],
+   "yaw": 0.0,
+   "props": {
+    "service": "shop",
+    "shop": "market_fruit"
+   }
+  },
+  {
+   "id": "counter2",
+   "kind": "counter",
+   "pos": [
+    -15.6,
+    20.3,
+    1.03
+   ],
+   "yaw": 0.0,
+   "props": {
+    "service": "shop",
+    "shop": "market_dairy"
+   }
+  },
+  {
+   "id": "counter3",
+   "kind": "counter",
+   "pos": [
+    -18.3,
+    17.4,
+    1.03
+   ],
+   "yaw": 90.0,
+   "props": {
+    "service": "butcher",
+    "role": "butcher"
+   }
+  },
+  {
+   "id": "counter4",
+   "kind": "counter",
+   "pos": [
+    -15.6,
+    30.7,
+    1.03
+   ],
+   "yaw": 0.0,
+   "props": {
+    "service": "shop",
+    "shop": "market_bakery"
+   }
+  },
+  {
+   "id": "counter5",
+   "kind": "counter",
+   "pos": [
+    -5.2,
+    9.9,
+    1.03
+   ],
+   "yaw": 0.0,
+   "props": {
+    "service": "shop",
+    "shop": "market_birds"
+   }
+  },
+  {
+   "id": "counter6",
+   "kind": "counter",
+   "pos": [
+    -5.2,
+    20.3,
+    1.03
+   ],
+   "yaw": 0.0,
+   "props": {
+    "service": "fishmonger",
+    "role": "fishmonger"
+   }
+  },
+  {
+   "id": "counter7",
+   "kind": "counter",
+   "pos": [
+    -2.5,
+    17.4,
+    1.03
+   ],
+   "yaw": 270.0,
+   "props": {
+    "service": "shop",
+    "shop": "market_sweets"
+   }
+  },
+  {
+   "id": "counter8",
+   "kind": "counter",
+   "pos": [
+    -5.2,
+    30.7,
+    1.03
+   ],
+   "yaw": 0.0,
+   "props": {
+    "service": "shop",
+    "shop": "market_bait"
+   }
+  },
+  {
+   "id": "counter9",
+   "kind": "counter",
+   "pos": [
+    5.2,
+    9.9,
+    1.03
+   ],
+   "yaw": 0.0,
+   "props": {
+    "service": "shop",
+    "shop": "market_fruit"
+   }
+  },
+  {
+   "id": "counter10",
+   "kind": "counter",
+   "pos": [
+    5.2,
+    20.3,
+    1.03
+   ],
+   "yaw": 0.0,
+   "props": {
+    "service": "shop",
+    "shop": "market_dairy"
+   }
+  },
+  {
+   "id": "counter11",
+   "kind": "counter",
+   "pos": [
+    2.5,
+    17.4,
+    1.03
+   ],
+   "yaw": 90.0,
+   "props": {
+    "service": "fishmonger",
+    "role": "fishmonger"
+   }
+  },
+  {
+   "id": "counter12",
+   "kind": "counter",
+   "pos": [
+    5.2,
+    30.7,
+    1.03
+   ],
+   "yaw": 0.0,
+   "props": {
+    "service": "shop",
+    "shop": "market_bakery"
+   }
+  },
+  {
+   "id": "counter13",
+   "kind": "counter",
+   "pos": [
+    15.6,
+    9.9,
+    1.03
+   ],
+   "yaw": 0.0,
+   "props": {
+    "service": "shop",
+    "shop": "market_birds"
+   }
+  },
+  {
+   "id": "counter14",
+   "kind": "counter",
+   "pos": [
+    15.6,
+    20.3,
+    1.03
+   ],
+   "yaw": 0.0,
+   "props": {
+    "service": "shop",
+    "shop": "market_fruit"
+   }
+  },
+  {
+   "id": "counter15",
+   "kind": "counter",
+   "pos": [
+    18.3,
+    17.4,
+    1.03
+   ],
+   "yaw": 270.0,
+   "props": {
+    "service": "butcher",
+    "role": "butcher"
+   }
+  },
+  {
+   "id": "counter16",
+   "kind": "counter",
+   "pos": [
+    15.6,
+    30.7,
+    1.03
+   ],
+   "yaw": 0.0,
+   "props": {
+    "service": "shop",
+    "shop": "market_bait"
+   }
+  },
+  {
+   "id": "seat_bench_1",
+   "kind": "seat",
+   "pos": [
+    -19.9,
+    3.8,
+    0.45
+   ],
+   "yaw": 180.0,
+   "props": {
+    "height": 0.45
+   }
+  },
+  {
+   "id": "seat_bench_2",
+   "kind": "seat",
+   "pos": [
+    -19.9,
+    24.6,
+    0.45
+   ],
+   "yaw": 180.0,
+   "props": {
+    "height": 0.45
+   }
+  },
+  {
+   "id": "seat_bench_3",
+   "kind": "seat",
+   "pos": [
+    -10.4,
+    14.2,
+    0.45
+   ],
+   "yaw": 180.0,
+   "props": {
+    "height": 0.45
+   }
+  },
+  {
+   "id": "seat_bench_4",
+   "kind": "seat",
+   "pos": [
+    0.0,
+    3.8,
+    0.45
+   ],
+   "yaw": 180.0,
+   "props": {
+    "height": 0.45
+   }
+  },
+  {
+   "id": "seat_bench_5",
+   "kind": "seat",
+   "pos": [
+    0.0,
+    24.6,
+    0.45
+   ],
+   "yaw": 180.0,
+   "props": {
+    "height": 0.45
+   }
+  },
+  {
+   "id": "seat_bench_6",
+   "kind": "seat",
+   "pos": [
+    10.4,
+    14.2,
+    0.45
+   ],
+   "yaw": 180.0,
+   "props": {
+    "height": 0.45
+   }
+  },
+  {
+   "id": "seat_bench_7",
+   "kind": "seat",
+   "pos": [
+    19.9,
+    3.8,
+    0.45
+   ],
+   "yaw": 180.0,
+   "props": {
+    "height": 0.45
+   }
+  },
+  {
+   "id": "seat_bench_8",
+   "kind": "seat",
+   "pos": [
+    19.9,
+    24.6,
+    0.45
+   ],
+   "yaw": 180.0,
+   "props": {
+    "height": 0.45
+   }
+  },
+  {
+   "id": "market_office",
+   "kind": "counter",
+   "pos": [
+    -10.4,
+    2.7,
+    1.0
+   ],
+   "yaw": 0.0,
+   "props": {
+    "service": "reception"
+   }
+  },
+  {
+   "id": "price_board",
+   "kind": "board",
+   "pos": [
+    -7.2,
+    3.6,
+    1.45
+   ],
+   "yaw": 0.0,
+   "props": {
+    "topic": "prices"
+   }
+  },
+  {
+   "id": "rules_board",
+   "kind": "board",
+   "pos": [
+    -13.6,
+    3.6,
+    1.45
+   ],
+   "yaw": 0.0,
+   "props": {
+    "topic": "rules"
+   }
+  },
+  {
+   "id": "market_scales",
+   "kind": "machine",
+   "pos": [
+    -8.7,
+    2.5,
+    1.0
+   ],
+   "yaw": 0.0,
+   "props": {
+    "what": "scales"
+   }
+  },
+  {
+   "id": "tea_counter",
+   "kind": "counter",
+   "pos": [
+    10.4,
+    3.2,
+    1.05
+   ],
+   "yaw": 0.0,
+   "props": {
+    "service": "bar"
+   }
+  },
+  {
+   "id": "tea_seat_1",
+   "kind": "seat",
+   "pos": [
+    6.4,
+    6.2,
+    0.45
+   ],
+   "yaw": 90.0,
+   "props": {
+    "height": 0.45
+   }
+  },
+  {
+   "id": "tea_seat_2",
+   "kind": "seat",
+   "pos": [
+    13.2,
+    6.2,
+    0.45
+   ],
+   "yaw": 90.0,
+   "props": {
+    "height": 0.45
+   }
+  },
+  {
+   "id": "tea_seat_3",
+   "kind": "seat",
+   "pos": [
+    9.8,
+    7.0,
+    0.45
+   ],
+   "yaw": 90.0,
+   "props": {
+    "height": 0.45
+   }
+  },
+  {
+   "id": "tea_paper",
+   "kind": "take",
+   "pos": [
+    11.7,
+    3.1,
+    1.05
+   ],
+   "yaw": 0.0,
+   "props": {
+    "item": "daily_paper"
+   }
+  },
+  {
+   "id": "market_scales_2",
+   "kind": "machine",
+   "pos": [
+    5.9,
+    2.4,
+    1.0
+   ],
+   "yaw": 0.0,
+   "props": {
+    "what": "scales"
+   }
   }
  ],
  "flats": [],
@@ -615,8 +1105,8 @@
   "12 umbrellas, 16 stalls, 8 benches"
  ],
  "tris": {
-  "shell": 15516,
-  "detail": 12288,
+  "shell": 15132,
+  "detail": 17895,
   "windows": 0
  }
 }

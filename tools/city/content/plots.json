@@ -27,26 +27,20 @@
   "capsule_library/pod_3_01": {"props": {"topic": "local"}, "act": "read_local"},
   "capsule_library/pod_3_02": {"props": {"topic": "travel"}, "act": "read_travel"},
 
-  "clinic/reception": {"props": {"service": "pharmacy", "shop": "pharmacy", "role": "nurse"}},
+  "clinic/reception": {"act": "clinic_registry", "props": {"role": "nurse"}},
   "clinic/patient_0": {"kind": "machine", "props": {"what": "scales"}},
   "clinic/patient_1": {"kind": "board", "props": {"what": "eye_chart"}, "act": "eye_chart"},
   "clinic/patient_2": {"props": {"what": "checkup"}, "act": "checkup"},
 
   "school/seat_*": {"kind": "craft", "props": {"what": "school_desk"}},
   "school/teacher": {"kind": "craft", "props": {"what": "blackboard"}},
-  "school/staff_table": {"kind": "board", "props": {"topic": "wallpaper"}},
 
   "workers_club/seat*": {"kind": "screen", "props": {"what": "cinema"}},
   "workers_club/ticket_counter": {"props": {"service": "tickets", "role": "clerk"}},
   "workers_club/coat_check": {"props": {"service": "cloakroom", "role": "clerk"}},
   "workers_club/buffet": {"props": {"service": "bar", "shop": "club_buffet", "role": "clerk"}},
-  "workers_club/foyer_bench1": {"kind": "board", "props": {"topic": "cinema"}},
 
   "cog_club/chess*": {"kind": "play", "props": {"what": "chess"}},
-  "cog_club/read_t0_*": {"props": {"topic": "chess"}, "act": "read_chess"},
-  "cog_club/read_t1_*": {"props": {"topic": "local"}, "act": "read_local"},
-  "cog_club/read_stand": {"kind": "board", "props": {"topic": "club"}},
-  "cog_club/foyer_stand1": {"kind": "board", "props": {"topic": "lost"}},
   "cog_club/cloak": {"props": {"service": "cloakroom", "role": "clerk"}},
   "cog_club/buffet_counter": {"props": {"service": "bar", "shop": "club_buffet", "role": "clerk"}},
 
@@ -60,7 +54,6 @@
   "culture_block/cafe_counter": {"props": {"service": "bar", "shop": "sport_cafe", "role": "cashier"}},
   "culture_block/bench_-16": {"kind": "board", "props": {"topic": "club"}},
 
-  "shell_chapel_hall/seat_*": {"kind": "screen", "props": {"what": "choir"}},
   "shell_chapel_hall/stage_piano": {"kind": "play", "props": {"what": "piano"}},
   "shell_chapel_hall/stage_mic": {"kind": "machine", "props": {"what": "microphone"}},
   "shell_chapel_hall/dance_1": {"kind": "sport", "props": {"what": "dance"}},
@@ -69,10 +62,7 @@
   "shell_chapel_hall/bar_counter": {"props": {"service": "bar", "shop": "hall_bar", "role": "caretaker"}},
 
   "round_sanatorium/reception": {"props": {"service": "reception", "shop": "sanatorium_kiosk", "role": "receptionist"}},
-  "round_sanatorium/bench_4": {"kind": "machine", "props": {"what": "pump_room"}},
   "round_sanatorium/piano": {"kind": "play", "props": {"what": "piano"}},
-  "round_sanatorium/lounge_1": {"kind": "screen", "props": {"what": "tv"}},
-  "round_sanatorium/bench_-4": {"kind": "board", "props": {"topic": "health"}},
 
   "saucer_pavilion/bar": {"props": {"service": "bar", "shop": "cafe_tarelka", "role": "barista"}},
 
@@ -105,56 +95,12 @@
   "shell_market/counter14": {"props": {"service": "shop", "shop": "market_fruit"}},
   "shell_market/counter15": {"props": {"service": "butcher", "role": "butcher"}},
   "shell_market/counter16": {"props": {"service": "shop", "shop": "market_bait"}},
-  "shell_market/bench1": {"kind": "board", "props": {"topic": "prices"}},
 
   "bus_stop_kiosk/counter": {"props": {"service": "newspapers", "shop": "kiosk_news", "role": "seller"}},
-  "bus_stop_kiosk/bench": {"kind": "board", "props": {"topic": "timetable"}},
 
-  "wave_canopy/counter1": {"kind": "play", "props": {"what": "shooting_gallery"}},
-  "wave_canopy/counter2": {"kind": "play", "props": {"what": "ring_toss"}},
-  "wave_canopy/counter3": {"kind": "play", "props": {"what": "lottery"}},
-  "wave_canopy/counter4": {"kind": "sport", "props": {"what": "strongman"}},
-  "wave_canopy/counter5": {"kind": "machine", "props": {"what": "fortune"}},
 
-  "hyperboloid_tower/keeper_cot": {"kind": "bed", "props": {"rest": "private"}},
-  "hyperboloid_tower/keeper_seat": {"kind": "board", "props": {"topic": "timetable"}, "act": "look_view"},
   "lifeguard_tower/binoculars": {"kind": "machine", "props": {"what": "binoculars"}},
-  "unite_block/track_start": {"kind": "sport", "props": {"what": "track"}},
   "commune_slab/gym_mat": {"kind": "sport", "props": {"what": "wall_bars"}},
-  "commune_slab/gym_bar": {"kind": "sport", "props": {"what": "barbell"}},
-  "stacked_beam_tower/lobby_counter": {"props": {"service": "reception", "role": "guard"}, "act": "office_desk"},
-
-  "W1-U01/counter": {"props": {"service": "bar", "shop": "seagull_cafe"}},
-  "W1-U13/counter": {"props": {"service": "bar", "shop": "seagull_cafe"}},
-  "W1-U25/counter": {"props": {"service": "bar", "shop": "seagull_cafe"}},
-  "W1-U02/counter": {"props": {"service": "shop", "shop": "fish_shop"}},
-  "W1-U14/counter": {"props": {"service": "shop", "shop": "fish_shop"}},
-  "W1-U26/counter": {"props": {"service": "shop", "shop": "fish_shop"}},
-  "W1-U03/counter": {"props": {"service": "rentals"}},
-  "W1-U15/counter": {"props": {"service": "rentals"}},
-  "W1-U27/counter": {"props": {"service": "rentals"}},
-  "W1-U04/counter": {"props": {"service": "repair"}},
-  "W1-U16/counter": {"props": {"service": "repair"}},
-  "W1-U28/counter": {"props": {"service": "repair"}},
-  "W1-U05/counter": {"props": {"service": "bar", "shop": "dumplings"}},
-  "W1-U17/counter": {"props": {"service": "bar", "shop": "dumplings"}},
-  "W1-U29/counter": {"props": {"service": "bar", "shop": "dumplings"}},
-  "W1-U06/counter": {"props": {"service": "shop", "shop": "souvenirs"}},
-  "W1-U18/counter": {"props": {"service": "shop", "shop": "souvenirs"}},
-  "W1-U30/counter": {"props": {"service": "shop", "shop": "souvenirs"}},
-  "W1-U07/counter": {"props": {"service": "bar", "shop": "bakery"}},
-  "W1-U19/counter": {"props": {"service": "bar", "shop": "bakery"}},
-  "W1-U31/counter": {"props": {"service": "bar", "shop": "bakery"}},
-  "W1-U08/counter": {"kind": "machine", "props": {"what": "photo_booth"}},
-  "W1-U20/counter": {"kind": "machine", "props": {"what": "photo_booth"}},
-  "W1-U32/counter": {"kind": "machine", "props": {"what": "photo_booth"}},
-  "W1-U09/counter": {"kind": "seat", "props": {"what": "haircut"}, "act": "haircut"},
-  "W1-U21/counter": {"kind": "seat", "props": {"what": "haircut"}, "act": "haircut"},
-  "W1-U10/counter": {"props": {"service": "shop", "shop": "book_stall"}},
-  "W1-U22/counter": {"props": {"service": "shop", "shop": "book_stall"}},
-  "W1-U11/counter": {"props": {"service": "bar", "shop": "beer_bar"}},
-  "W1-U23/counter": {"props": {"service": "bar", "shop": "beer_bar"}},
-  "W1-U12/counter": {"props": {"service": "shop", "shop": "pasty_bar"}},
-  "W1-U24/counter": {"props": {"service": "shop", "shop": "pasty_bar"}}
+  "commune_slab/gym_bar": {"kind": "sport", "props": {"what": "barbell"}}
  }
 }

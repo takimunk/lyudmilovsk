@@ -1,0 +1,87 @@
+Sleep until an hour: the act field `until` (tools/city/interiors.py writes it; sleep_night has until 7, minutes 480 as the
+fallback). CityThingsModel.h reads it and Run() turns it into the minutes from now to the next such o'clock; citytest
+gets UntilChecks (4 checks). Apply with: git apply tools/citysim/until.patch && bash tools/citysim/run.sh
+
+--- a/unreal/Lyudmilovsk/Source/Lyudmilovsk/Private/City/CityThingsModel.h	2026-11-13 17:08:46.499374254 +0000
++++ b/unreal/Lyudmilovsk/Source/Lyudmilovsk/Private/City/CityThingsModel.h	2026-11-13 17:08:46.514553762 +0000
+@@ -38,6 +38,8 @@
+ 		std::string Title;
+ 		std::vector<std::string> Lines;
+ 		int Minutes = 0;
++		/** The hour the act ends at (sleep till 7): the minutes from now to the next such hour; -1: use Minutes. */
++		int Until = -1;
+ 		int Price = 0;
+ 		std::vector<std::pair<std::string, int>> Give;
+ 		std::string NeedsItem;
+@@ -453,6 +455,13 @@
+ 			return All;
+ 		}
+ 
++		/** Game minutes from Hour (0..24) to the next o'clock Until (0..23); a whole day when it is that hour already. */
++		static int MinutesUntil(float Hour, int Until)
++		{
++			int M = (int)std::lround((Until - Hour) * 60.f) % (24 * 60);
++			return M <= 0 ? M + 24 * 60 : M;
++		}
++
+ 		/** May Thing's act run now? No side effects (the prompt may ask this). */
+ 		EVerdict Check(int Thing, const FWhen& When, const FAsk& Ask) const
+ 		{
+@@ -521,7 +530,7 @@
+ 				O.Line = LineAt(Thing, *A);
+ 				LineOf[T.Id] = (LineIndex(T.Id) + 1) % (int)A->Lines.size();
+ 			}
+-			O.Minutes = A->Minutes;
++			O.Minutes = A->Until >= 0 ? MinutesUntil(When.Hour, A->Until) : A->Minutes;
+ 			O.Price = A->Price;
+ 			O.bFade = A->bFade;
+ 			O.Give = A->Give;
+@@ -753,6 +762,11 @@
+ 				}
+ 			}
+ 			A.Minutes = V["minutes"].I(0);
++			A.Until = V["until"].I(-1);
++			if (A.Until > 23)
++			{
++				A.Until = -1;
++			}
+ 			A.Price = V["price"].I(0);
+ 			for (const LyudJson::FValue& G : V["give"].Items)
+ 			{
+--- a/tools/citysim/citytest.cpp
++++ b/tools/citysim/citytest.cpp
+@@ -191,6 +191,26 @@
+ 	CHECK(Near.size() == 5 && Near[0].first == Shelf && Near[0].second < 1.0 && Near[1].second <= Near[2].second, "the nearest five, sorted");
+ }
+ 
++static void UntilChecks()
++{
++	std::printf("until (sleep till an hour)\n");
++	const std::string Text = R"({"things": [
++  {"id": "P-H/bed", "plot": "P-H", "kind": "bed", "ue": [0, 0, 50], "yaw": 0, "props": {}, "act": "sleep_night", "hours": [0, 24], "days": "mon-sun"},
++  {"id": "P-H/cot", "plot": "P-H", "kind": "bed", "ue": [500, 0, 50], "yaw": 0, "props": {}, "act": "nap", "hours": [0, 24], "days": "mon-sun"}],
++ "acts": {"sleep_night": {"prompt": "p", "minutes": 480, "until": 7, "pose": "lie", "fade": true, "any_hour": true},
++          "nap": {"prompt": "p", "minutes": 60, "until": -1, "pose": "lie", "fade": true, "any_hour": true}},
++ "shops": {}})";
++	FModel M;
++	std::string Error;
++	CHECK(M.Load(Text, Error), "it loads (%s)", Error.c_str());
++	FAsk Ask;
++	const int Bed = M.FindThing("P-H/bed"), Cot = M.FindThing("P-H/cot");
++	CHECK(Bed >= 0 && Cot >= 0 && M.Acts[M.Things[Bed].Act].Until == 7 && M.Acts[M.Things[Cot].Act].Until == -1, "until read, -1 kept");
++	CHECK(M.Run(Bed, At(2, 23.f), Ask).Minutes == 480 && M.Run(Bed, At(3, 1.5f), Ask).Minutes == 330 && M.Run(Bed, At(3, 6.5f), Ask).Minutes == 30,
++		"to bed at 23:00 sleeps 480 min, at 1:30 330, at 6:30 30");
++	CHECK(M.Run(Bed, At(3, 14.f), Ask).Minutes == 17 * 60 && M.Run(Cot, At(3, 14.f), Ask).Minutes == 60, "at 14:00 till 7 tomorrow; without until the minutes");
++}
++
+ static void RealChecks(const std::string& Path)
+ {
+ 	std::string Text, Error;
+@@ -263,6 +283,7 @@
+ int main(int Argc, char** Argv)
+ {
+ 	FixtureChecks();
++	UntilChecks();
+ 	RealChecks(Argc > 1 ? Argv[1] : "unreal/Lyudmilovsk/Content/City/interiors.json");
+ 	std::printf("%d passed, %d failed\n", Passed, Failures);
+ 	return Failures ? 1 : 0;

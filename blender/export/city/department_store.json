@@ -153,6 +153,86 @@
    "yaw": 0.0
   },
   {
+   "id": "cashier_1",
+   "kind": "counter",
+   "pos": [
+    -4.6,
+    5.1,
+    0.03
+   ],
+   "yaw": 180.0
+  },
+  {
+   "id": "cashier_work_1",
+   "kind": "work",
+   "pos": [
+    -4.6,
+    6.8,
+    0.03
+   ],
+   "yaw": 0.0
+  },
+  {
+   "id": "cashier_2",
+   "kind": "counter",
+   "pos": [
+    4.6,
+    5.1,
+    0.03
+   ],
+   "yaw": 180.0
+  },
+  {
+   "id": "cashier_work_2",
+   "kind": "work",
+   "pos": [
+    4.6,
+    6.8,
+    0.03
+   ],
+   "yaw": 0.0
+  },
+  {
+   "id": "queue_bench_1",
+   "kind": "bench",
+   "pos": [
+    -15.0,
+    4.0,
+    0.03
+   ],
+   "yaw": 0.0
+  },
+  {
+   "id": "queue_bench_2",
+   "kind": "bench",
+   "pos": [
+    15.0,
+    4.0,
+    0.03
+   ],
+   "yaw": 0.0
+  },
+  {
+   "id": "g_shoes_counter",
+   "kind": "counter",
+   "pos": [
+    -13.7,
+    6.7,
+    0.03
+   ],
+   "yaw": 270.0
+  },
+  {
+   "id": "g_shoes_seller",
+   "kind": "work",
+   "pos": [
+    -15.5,
+    6.7,
+    0.03
+   ],
+   "yaw": 90.0
+  },
+  {
    "id": "g_stand_1",
    "kind": "stand",
    "pos": [
@@ -176,11 +256,31 @@
    "id": "g_stand_3",
    "kind": "stand",
    "pos": [
-    0.0,
-    6.5,
+    -3.4,
+    7.6,
     0.03
    ],
    "yaw": 180.0
+  },
+  {
+   "id": "g_cloak_counter",
+   "kind": "counter",
+   "pos": [
+    6.4,
+    25.5,
+    0.03
+   ],
+   "yaw": 180.0
+  },
+  {
+   "id": "g_cloak_work",
+   "kind": "work",
+   "pos": [
+    6.4,
+    27.2,
+    0.03
+   ],
+   "yaw": 0.0
   },
   {
    "id": "f1_counter_1",
@@ -263,94 +363,24 @@
    "yaw": 0.0
   },
   {
-   "id": "f1_stand_1",
-   "kind": "stand",
-   "pos": [
-    -5.0,
-    14.5,
-    4.9
-   ],
-   "yaw": 180.0
-  },
-  {
-   "id": "f1_stand_2",
-   "kind": "stand",
-   "pos": [
-    5.0,
-    14.5,
-    4.9
-   ],
-   "yaw": 180.0
-  },
-  {
-   "id": "f1_stand_3",
-   "kind": "stand",
-   "pos": [
-    0.0,
-    6.5,
-    4.9
-   ],
-   "yaw": 180.0
-  },
-  {
-   "id": "cashier_1",
+   "id": "f1_cafe_counter",
    "kind": "counter",
    "pos": [
-    -4.6,
-    5.1,
-    0.03
+    20.3,
+    5.4,
+    4.9
    ],
-   "yaw": 180.0
+   "yaw": 90.0
   },
   {
-   "id": "cashier_work_1",
+   "id": "f1_cafe_work",
    "kind": "work",
    "pos": [
-    -4.6,
-    6.8,
-    0.03
+    22.0,
+    5.4,
+    4.9
    ],
-   "yaw": 0.0
-  },
-  {
-   "id": "cashier_2",
-   "kind": "counter",
-   "pos": [
-    4.6,
-    5.1,
-    0.03
-   ],
-   "yaw": 180.0
-  },
-  {
-   "id": "cashier_work_2",
-   "kind": "work",
-   "pos": [
-    4.6,
-    6.8,
-    0.03
-   ],
-   "yaw": 0.0
-  },
-  {
-   "id": "queue_bench_1",
-   "kind": "bench",
-   "pos": [
-    -15.0,
-    4.0,
-    0.03
-   ],
-   "yaw": 0.0
-  },
-  {
-   "id": "queue_bench_2",
-   "kind": "bench",
-   "pos": [
-    15.0,
-    4.0,
-    0.03
-   ],
-   "yaw": 0.0
+   "yaw": 270.0
   },
   {
    "id": "f1_cashier",
@@ -386,11 +416,41 @@
    "id": "f1_bench_e",
    "kind": "bench",
    "pos": [
-    15.0,
-    4.2,
+    13.2,
+    2.4,
     4.9
    ],
    "yaw": 0.0
+  },
+  {
+   "id": "f1_stand_1",
+   "kind": "stand",
+   "pos": [
+    -5.0,
+    14.5,
+    4.9
+   ],
+   "yaw": 180.0
+  },
+  {
+   "id": "f1_stand_2",
+   "kind": "stand",
+   "pos": [
+    5.0,
+    14.5,
+    4.9
+   ],
+   "yaw": 180.0
+  },
+  {
+   "id": "f1_stand_3",
+   "kind": "stand",
+   "pos": [
+    3.4,
+    7.6,
+    4.9
+   ],
+   "yaw": 180.0
   }
  ],
  "lamps": [
@@ -789,6 +849,801 @@
    "colour": "#FFD2A0",
    "kind": "public",
    "radius": 10.5
+  }
+ ],
+ "things": [
+  {
+   "id": "g_counter_1",
+   "kind": "counter",
+   "pos": [
+    -12.0,
+    12.5,
+    1.08
+   ],
+   "yaw": 0.0,
+   "props": {
+    "service": "shop",
+    "shop": "store_grocery"
+   }
+  },
+  {
+   "id": "g_counter_2",
+   "kind": "counter",
+   "pos": [
+    -12.0,
+    22.5,
+    1.08
+   ],
+   "yaw": 0.0,
+   "props": {
+    "service": "shop",
+    "shop": "store_sweets"
+   }
+  },
+  {
+   "id": "g_counter_3",
+   "kind": "counter",
+   "pos": [
+    12.0,
+    12.5,
+    1.08
+   ],
+   "yaw": 0.0,
+   "props": {
+    "service": "shop",
+    "shop": "store_haberdashery"
+   }
+  },
+  {
+   "id": "g_counter_4",
+   "kind": "counter",
+   "pos": [
+    12.0,
+    22.5,
+    1.08
+   ],
+   "yaw": 0.0,
+   "props": {
+    "service": "shop",
+    "shop": "store_drinks"
+   }
+  },
+  {
+   "id": "cashier_1",
+   "kind": "counter",
+   "pos": [
+    -4.6,
+    6.0,
+    1.08
+   ],
+   "yaw": 0.0,
+   "props": {
+    "service": "cashier",
+    "role": "cashier"
+   }
+  },
+  {
+   "id": "cashier_2",
+   "kind": "counter",
+   "pos": [
+    4.6,
+    6.0,
+    1.08
+   ],
+   "yaw": 0.0,
+   "props": {
+    "service": "cashier",
+    "role": "cashier"
+   }
+  },
+  {
+   "id": "g_queue_bench_1",
+   "kind": "seat",
+   "pos": [
+    -15.0,
+    3.97,
+    0.48
+   ],
+   "yaw": 0.0,
+   "props": {
+    "height": 0.45
+   }
+  },
+  {
+   "id": "g_queue_bench_2",
+   "kind": "seat",
+   "pos": [
+    15.0,
+    3.97,
+    0.48
+   ],
+   "yaw": 0.0,
+   "props": {
+    "height": 0.45
+   }
+  },
+  {
+   "id": "g_shoes_counter",
+   "kind": "counter",
+   "pos": [
+    -14.6,
+    6.7,
+    1.08
+   ],
+   "yaw": 90.0,
+   "props": {
+    "service": "cashier",
+    "role": "cashier"
+   }
+  },
+  {
+   "id": "g_shoe_stool_1",
+   "kind": "seat",
+   "pos": [
+    -20.2,
+    4.6,
+    0.43
+   ],
+   "yaw": 180.0,
+   "props": {
+    "height": 0.4
+   }
+  },
+  {
+   "id": "g_shoe_stool_2",
+   "kind": "seat",
+   "pos": [
+    -20.2,
+    6.6,
+    0.43
+   ],
+   "yaw": 180.0,
+   "props": {
+    "height": 0.4
+   }
+  },
+  {
+   "id": "g_shoe_stool_3",
+   "kind": "seat",
+   "pos": [
+    -20.2,
+    8.2,
+    0.43
+   ],
+   "yaw": 180.0,
+   "props": {
+    "height": 0.4
+   }
+  },
+  {
+   "id": "g_sewing_machine",
+   "kind": "craft",
+   "pos": [
+    19.4,
+    14.8,
+    0.83
+   ],
+   "yaw": 270.0,
+   "props": {
+    "what": "sewing_machine"
+   }
+  },
+  {
+   "id": "g_sewing_stool",
+   "kind": "seat",
+   "pos": [
+    18.5,
+    14.8,
+    0.48
+   ],
+   "yaw": 90.0,
+   "props": {
+    "height": 0.45
+   }
+  },
+  {
+   "id": "g_toy_house",
+   "kind": "board",
+   "pos": [
+    20.5,
+    25.9,
+    1.03
+   ],
+   "yaw": 180.0,
+   "props": {
+    "topic": "kids"
+   }
+  },
+  {
+   "id": "g_island_1",
+   "kind": "board",
+   "pos": [
+    -5.0,
+    15.5,
+    0.93
+   ],
+   "yaw": 0.0,
+   "props": {
+    "topic": "catalogue"
+   }
+  },
+  {
+   "id": "g_island_2",
+   "kind": "board",
+   "pos": [
+    5.0,
+    15.5,
+    0.93
+   ],
+   "yaw": 0.0,
+   "props": {
+    "topic": "catalogue"
+   }
+  },
+  {
+   "id": "g_stand_3",
+   "kind": "board",
+   "pos": [
+    -3.4,
+    8.8,
+    1.48
+   ],
+   "yaw": 0.0,
+   "props": {
+    "topic": "store"
+   }
+  },
+  {
+   "id": "g_cloakroom",
+   "kind": "counter",
+   "pos": [
+    6.4,
+    26.4,
+    1.08
+   ],
+   "yaw": 0.0,
+   "props": {
+    "service": "cloakroom",
+    "role": "cloakroom"
+   }
+  },
+  {
+   "id": "g_scales",
+   "kind": "machine",
+   "pos": [
+    -10.8,
+    3.1,
+    1.03
+   ],
+   "yaw": 0.0,
+   "props": {
+    "what": "scales"
+   }
+  },
+  {
+   "id": "g_prices",
+   "kind": "board",
+   "pos": [
+    -22.0,
+    14.8,
+    1.63
+   ],
+   "yaw": 90.0,
+   "props": {
+    "topic": "prices"
+   }
+  },
+  {
+   "id": "f1_counter_1",
+   "kind": "counter",
+   "pos": [
+    -12.0,
+    12.5,
+    5.95
+   ],
+   "yaw": 0.0,
+   "props": {
+    "service": "shop",
+    "shop": "store_books"
+   }
+  },
+  {
+   "id": "f1_counter_2",
+   "kind": "counter",
+   "pos": [
+    -12.0,
+    22.5,
+    5.95
+   ],
+   "yaw": 0.0,
+   "props": {
+    "service": "shop",
+    "shop": "store_sports"
+   }
+  },
+  {
+   "id": "f1_counter_3",
+   "kind": "counter",
+   "pos": [
+    12.0,
+    12.5,
+    5.95
+   ],
+   "yaw": 0.0,
+   "props": {
+    "service": "shop",
+    "shop": "store_garden"
+   }
+  },
+  {
+   "id": "f1_counter_4",
+   "kind": "counter",
+   "pos": [
+    12.0,
+    22.5,
+    5.95
+   ],
+   "yaw": 0.0,
+   "props": {
+    "service": "shop",
+    "shop": "store_souvenirs"
+   }
+  },
+  {
+   "id": "f1_record_player",
+   "kind": "machine",
+   "pos": [
+    -18.9,
+    4.2,
+    5.8
+   ],
+   "yaw": 90.0,
+   "props": {
+    "what": "record_player"
+   }
+  },
+  {
+   "id": "f1_listen_stool_1",
+   "kind": "seat",
+   "pos": [
+    -17.7,
+    3.9,
+    5.35
+   ],
+   "yaw": 90.0,
+   "props": {
+    "height": 0.45
+   }
+  },
+  {
+   "id": "f1_radio_table",
+   "kind": "board",
+   "pos": [
+    -18.9,
+    8.0,
+    5.7
+   ],
+   "yaw": 90.0,
+   "props": {
+    "topic": "catalogue"
+   }
+  },
+  {
+   "id": "f1_tv_1",
+   "kind": "screen",
+   "pos": [
+    -15.2,
+    9.3,
+    5.65
+   ],
+   "yaw": 90.0,
+   "props": {
+    "what": "tv"
+   }
+  },
+  {
+   "id": "f1_tv_2",
+   "kind": "screen",
+   "pos": [
+    -15.2,
+    10.3,
+    5.65
+   ],
+   "yaw": 90.0,
+   "props": {
+    "what": "tv"
+   }
+  },
+  {
+   "id": "f1_jukebox",
+   "kind": "machine",
+   "pos": [
+    -21.5,
+    10.2,
+    6.1
+   ],
+   "yaw": 90.0,
+   "props": {
+    "what": "jukebox"
+   }
+  },
+  {
+   "id": "f1_exercise_bike",
+   "kind": "sport",
+   "pos": [
+    -18.0,
+    27.6,
+    5.8
+   ],
+   "yaw": 90.0,
+   "props": {
+    "what": "exercise_bike"
+   }
+  },
+  {
+   "id": "f1_wall_bars",
+   "kind": "sport",
+   "pos": [
+    -22.0,
+    24.9,
+    6.2
+   ],
+   "yaw": 90.0,
+   "props": {
+    "what": "wall_bars"
+   }
+  },
+  {
+   "id": "f1_barbell",
+   "kind": "sport",
+   "pos": [
+    -16.4,
+    28.0,
+    5.9
+   ],
+   "yaw": 0.0,
+   "props": {
+    "what": "barbell"
+   }
+  },
+  {
+   "id": "f1_books_sea",
+   "kind": "shelf",
+   "pos": [
+    -13.6,
+    29.3,
+    6.2
+   ],
+   "yaw": 0.0,
+   "props": {
+    "topic": "sea"
+   }
+  },
+  {
+   "id": "f1_books_birds",
+   "kind": "shelf",
+   "pos": [
+    -11.9,
+    29.3,
+    6.2
+   ],
+   "yaw": 0.0,
+   "props": {
+    "topic": "birds"
+   }
+  },
+  {
+   "id": "f1_books_science",
+   "kind": "shelf",
+   "pos": [
+    -10.2,
+    29.3,
+    6.2
+   ],
+   "yaw": 0.0,
+   "props": {
+    "topic": "science"
+   }
+  },
+  {
+   "id": "f1_magazines",
+   "kind": "shelf",
+   "pos": [
+    -7.9,
+    29.3,
+    6.0
+   ],
+   "yaw": 0.0,
+   "props": {
+    "topic": "local"
+   }
+  },
+  {
+   "id": "f1_reading_seats",
+   "kind": "seat",
+   "pos": [
+    -10.6,
+    26.2,
+    5.35
+   ],
+   "yaw": 0.0,
+   "props": {
+    "height": 0.45
+   }
+  },
+  {
+   "id": "f1_cafe_counter",
+   "kind": "counter",
+   "pos": [
+    21.2,
+    5.4,
+    5.95
+   ],
+   "yaw": 90.0,
+   "props": {
+    "service": "bar"
+   }
+  },
+  {
+   "id": "f1_cafe_seat_1",
+   "kind": "seat",
+   "pos": [
+    15.88,
+    3.4,
+    5.35
+   ],
+   "yaw": 90.0,
+   "props": {
+    "height": 0.45
+   }
+  },
+  {
+   "id": "f1_cafe_seat_2",
+   "kind": "seat",
+   "pos": [
+    17.12,
+    3.4,
+    5.35
+   ],
+   "yaw": 270.0,
+   "props": {
+    "height": 0.45
+   }
+  },
+  {
+   "id": "f1_cafe_seat_3",
+   "kind": "seat",
+   "pos": [
+    15.88,
+    6.4,
+    5.35
+   ],
+   "yaw": 90.0,
+   "props": {
+    "height": 0.45
+   }
+  },
+  {
+   "id": "f1_cafe_seat_4",
+   "kind": "seat",
+   "pos": [
+    17.12,
+    6.4,
+    5.35
+   ],
+   "yaw": 270.0,
+   "props": {
+    "height": 0.45
+   }
+  },
+  {
+   "id": "f1_cafe_seat_5",
+   "kind": "seat",
+   "pos": [
+    12.68,
+    4.9,
+    5.35
+   ],
+   "yaw": 90.0,
+   "props": {
+    "height": 0.45
+   }
+  },
+  {
+   "id": "f1_cafe_seat_6",
+   "kind": "seat",
+   "pos": [
+    13.92,
+    4.9,
+    5.35
+   ],
+   "yaw": 270.0,
+   "props": {
+    "height": 0.45
+   }
+  },
+  {
+   "id": "f1_cafe_seat_7",
+   "kind": "seat",
+   "pos": [
+    12.68,
+    8.2,
+    5.35
+   ],
+   "yaw": 90.0,
+   "props": {
+    "height": 0.45
+   }
+  },
+  {
+   "id": "f1_cafe_seat_8",
+   "kind": "seat",
+   "pos": [
+    13.92,
+    8.2,
+    5.35
+   ],
+   "yaw": 270.0,
+   "props": {
+    "height": 0.45
+   }
+  },
+  {
+   "id": "f1_cafe_seat_9",
+   "kind": "seat",
+   "pos": [
+    18.38,
+    8.6,
+    5.35
+   ],
+   "yaw": 90.0,
+   "props": {
+    "height": 0.45
+   }
+  },
+  {
+   "id": "f1_cafe_seat_10",
+   "kind": "seat",
+   "pos": [
+    19.62,
+    8.6,
+    5.35
+   ],
+   "yaw": 270.0,
+   "props": {
+    "height": 0.45
+   }
+  },
+  {
+   "id": "f1_birds_board",
+   "kind": "board",
+   "pos": [
+    22.0,
+    14.6,
+    6.9
+   ],
+   "yaw": 270.0,
+   "props": {
+    "topic": "birds"
+   }
+  },
+  {
+   "id": "f1_sofa_1",
+   "kind": "seat",
+   "pos": [
+    18.6,
+    27.32,
+    5.33
+   ],
+   "yaw": 0.0,
+   "props": {
+    "height": 0.43
+   }
+  },
+  {
+   "id": "f1_armchair_1",
+   "kind": "seat",
+   "pos": [
+    15.4,
+    27.85,
+    5.34
+   ],
+   "yaw": 0.0,
+   "props": {
+    "height": 0.44
+   }
+  },
+  {
+   "id": "f1_souvenir_case",
+   "kind": "board",
+   "pos": [
+    17.0,
+    19.2,
+    5.9
+   ],
+   "yaw": 0.0,
+   "props": {
+    "topic": "local"
+   }
+  },
+  {
+   "id": "f1_cashier",
+   "kind": "counter",
+   "pos": [
+    -6.0,
+    24.0,
+    5.95
+   ],
+   "yaw": 0.0,
+   "props": {
+    "service": "cashier",
+    "role": "cashier"
+   }
+  },
+  {
+   "id": "f1_bench_e",
+   "kind": "seat",
+   "pos": [
+    13.2,
+    2.4,
+    5.35
+   ],
+   "yaw": 0.0,
+   "props": {
+    "height": 0.45
+   }
+  },
+  {
+   "id": "f1_island_1",
+   "kind": "board",
+   "pos": [
+    -5.0,
+    15.5,
+    5.8
+   ],
+   "yaw": 0.0,
+   "props": {
+    "topic": "catalogue"
+   }
+  },
+  {
+   "id": "f1_island_2",
+   "kind": "board",
+   "pos": [
+    5.0,
+    15.5,
+    5.8
+   ],
+   "yaw": 0.0,
+   "props": {
+    "topic": "catalogue"
+   }
+  },
+  {
+   "id": "f1_stand_3",
+   "kind": "board",
+   "pos": [
+    3.4,
+    8.8,
+    6.35
+   ],
+   "yaw": 0.0,
+   "props": {
+    "topic": "lost"
+   }
+  },
+  {
+   "id": "f1_photo_booth",
+   "kind": "machine",
+   "pos": [
+    6.2,
+    28.5,
+    6.0
+   ],
+   "yaw": 0.0,
+   "props": {
+    "what": "photo_booth"
+   }
   }
  ],
  "flats": [],
@@ -1933,8 +2788,8 @@
   "2 shop halls + roof sign; stair hole at x -1.8..1.8, y 21..27.3; entrances main/west/east"
  ],
  "tris": {
-  "shell": 3476,
-  "detail": 42682,
+  "shell": 4102,
+  "detail": 59396,
   "windows": 108
  }
 }

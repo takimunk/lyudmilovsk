@@ -27,6 +27,34 @@ is and does) and the game code (`ULyudCityThings`). The work list is [city_backl
   a shot on 4 cores; look at every shot before calling a room done: floating furniture, things in walls, stretched
   UVs, z-fighting, doors blocked).
 
+### Promenade units
+
+The 32 shop units of the seawall W1 (`promenade_units` in the plan, W1-U01..32) are rooms behind the wall's face:
+`blender/city/buildings/promenade_unit.py`, one type with 12 `VARIANTS` (cafe, fish, rental, workshop, dumplings,
+souvenirs, bakery, photo, barber, books, beer, pasty -> `promenade_unit__<variant>`), the variant of a unit by its name in
+one place: `tools/city_plan.py` `UNIT_VARIANTS` (written into the plan as `variant`, with `front`/`front_ue`: the bay's
+middle on the face at the promenade's level, the room's origin; `door` stays the point 0.6 m before the doorway). Its
+staff come from the same file (`UNIT_STAFF_BY_NAME`, equal to town_life's table), so a counter's role is someone who
+really works there.
+
+* Levels: T1 is only 3.3 m over the promenade. The room's floor is the promenade (+2 cm), its ceiling 3.0 m, slab to
+  3.25 under the block's top at 3.32; inside 9.7 x 6.0 m (y 0.40..6.40 behind the face; the face's reveals are 0.28 deep).
+  For the room to fit, W1's landscape stays level with the promenade under it and steps up to T1 at 7.9..8.3 m behind the
+  face (`city_plan.W1_RAMP_START`, `W1_RAMP`), and W1's block is 9.5 m deep (`W1_DEPTH`) so the step stays hidden.
+* `tools/city_mesh.py` leaves a unit's doorway open (no door panel, a concrete threshold, the plinth cut) and keeps the
+  shop window's glass (`W1-Uxx-w1`, lit by `ALyudCityWindows`); from inside, the window hole looks out through it.
+* `unreal/scripts/import_city.py place` puts an `ALyudCityBuilding` per unit (`place_units`: at `front`, yaw like a plot,
+  tags City/NoGrass/NoTree/Roof, lamp hours from the unit's staff, no door actor).
+* Each dressing declares its things with stable ids, the same in every unit of a trade (`cafe_bar`, `fish_counter`,
+  `barber_chair_1`, `shelf_birds`, `photo_booth`, `photo_stool`, `darts`...); rules may name them `promenade_unit/<id>`.
+  Spots: `staff_<role>[_n]` (kind `work`) where each role stands, `counter` where a customer is served, `stand`/`seat`
+  for visitors; `tools/town/town_life.py` (`unit_room`) makes a built unit a walked interior: staff at their spots, in
+  by the doorway (`path`: 1.2 m inside).
+* One lit pendant per room (`B.lamp`), the other fixtures unlit; a sign over the window outside where the atlas has
+  the trade's word (`sign_buffet`, `sign_canteen`, `sign_bread`, `sign_books`, `sign_barber`, `sign_photo`).
+* Preview: `python3 blender/city/shoot_interior.py -- promenade_unit:<variant> --cam 4.4,0.8,1.65,232,-12 --lens 15`
+  (from inside the doorway across the room).
+
 ### Thing kinds
 
 | kind | What it is | Props |
@@ -106,10 +134,15 @@ python3 tools/city/interiors.py --check    # write nothing; fail on broken conte
   object faces (plan yaw minus the kit yaw). `hours` `[open, close)` and `days` (`mon-sun`, `tue-sun`, or `mon,wed`) come
   from the staff of the act's `needs_staff` role, else from the plot's public staff (cleaners, janitors, guards don't
   open a building), else round the clock; a rule may give its own. Every thing has an act, every act every field.
+* **Staff variants.** An act whose `needs_staff` role does not work at the plot gets a copy for the role that does: the
+  counter's own `role` when the plot has it, else (a counter or a shop) the plot's first selling role, e.g.
+  `buy_club_buffet@seller`; at a plot with no staff at all (the shops on a residential block's ground floor, a house
+  canteen) `<act>@open` without staff, open 9-20 Mon-Sat unless a rule gives hours. The copy keeps the original
+  `target`, so quests see it as the original act. Any other staff mismatch is an error.
 * **Auto things.** While a building declares no `things`, its `spots` become things flagged `"auto": 1`: `seat`/`bench`/
   `table` → seat, `counter` → counter (role: the plot's first selling role), `view` → board `topic=view`; a rule
-  (`tools/city/content/plots.json`) may give any other spot (a `stand`, a `work` place) a kind, or `skip` one. Promenade
-  units get one counter at their door. As soon as a building exports one `thing`, its spots are no longer used.
+  (`tools/city/content/plots.json`) may give any other spot (a `stand`, a `work` place) a kind, or `skip` one. A promenade
+  unit whose variant is not built gets one counter at its door; built ones use their room's things (see "Promenade units"). As soon as a building exports one `thing`, its spots are no longer used.
 * `Content/Dev/teleports/interiors.json`: one teleport per public building (1.5 m inside its main street door, facing
   in; kiosks and open halls: 2 m in front, facing them) and one per upper storey that has things; x/y map metres
   (docs/world_map.md), z world cm = floor + 1 m, names `dev.tp.city.<plot>[.<storey>]` in the city strings.
@@ -123,9 +156,11 @@ python3 tools/city/interiors.py --check    # write nothing; fail on broken conte
 
 `--check` fails on: an unknown kind or act, a string missing in any language (prompts, lines, titles, quest words), a
 prompt with a placeholder, an unknown item (the ids are parsed from `LyudInventory.cpp`), a shop without a staff role,
-a `needs_staff` role that does not work at the plot, duplicate thing ids, a declared thing more than 3 m outside its
-footprint or closer than 0.3 m to another (auto things that would fail are dropped and counted), a quest event or target
-that does not exist. It warns when a quest waits for an act no thing does yet.
+a `needs_staff` role that does not work at the plot (and no staff variant fits), duplicate thing ids, a declared thing
+more than 3 m outside its footprint or closer than 0.3 m to another (auto things that would fail are dropped and
+counted), a quest event or target that does not exist, a quest `do` step no thing in town makes (or only things whose
+staff their plot lacks), a quest `visit` of a plot without things, and an id rule (`<plot|type>/<id>`) that matches no
+thing (ids change when a building is refurnished: fix or drop the rule).
 
 ### Acts
 
@@ -137,7 +172,7 @@ An act is what happens when the hero presses E at a thing:
 | `lines` | keys of texts shown in order, wrapping round (pages of a shelf, notices of a board, what happened at a game) |
 | `title` | key of the page/trade screen title (every `buy_<shop>` act: the shop's title) |
 | `minutes` | game minutes that pass (0: none). With `fade` the screen fades out and in |
-| `until` | the hour the act ends at instead of `minutes` (sleep till 7; -1: none); `minutes` is the fallback |
+| `until` | the hour the act ends at instead of `minutes` (sleep till 7; -1: none); `minutes` is the fallback. The game does not read it yet: `tools/citysim/until.patch` (model + checks) adds it |
 | `price` | roubles taken (refused with `city.act.no_money` if the hero has less) |
 | `give` | items put in the pocket: `[["item_id", n]]` (existing items only) |
 | `needs_item` | an item the hero must have |
@@ -157,7 +192,8 @@ shelves, boards), `activities.json` (machines, games, sport, crafts, screens), `
 inherit, and `"lines": "<prefix>"` for all `<prefix>.<n>` strings. A thing's act is found by its rules, first match
 wins: `<plot>/<thing id>`, then `<type>/<thing id>` (globs allowed: `workers_club/seat*`; an exact id beats a glob; these
 may also set `kind`, `props`, `act`, `hours`, `days`), then `shop=<id>` in its props (act `buy_<id>`), then
-`<kind>:<prop>=<value>[,<prop>=<value>]` (most conditions win; `*:what=piano` matches any kind), then `take` with
+`<kind>:<prop>=<value>[,<prop>=<value>]` (most conditions win; `*:what=piano` matches any kind; a value may be a glob
+and `id` is the thing's id: `machine:what=jukebox,id=*radio*`), then `take` with
 `item=<id>` (`take_<id>`), then the plot kind's default (`hotel` beds sleep the night, `clinic` beds nap, `residential`
 counters are closed), then the kind's default (`sit`, `bed_private`, `read_misc`, `look_misc`, `counter_talk`,
 `use_misc`, `watch_misc`, `take_any`, `door_any`).
@@ -169,23 +205,33 @@ counters are closed), then the kind's default (`sit`, `bed_private`, `read_misc`
 2. `shelf`: `topic=` `birds` `sea` `science` `poetry` `kids` `local` (=`history`) `music` `art` `cooking` `travel`
    `chess` `sun` (=`astronomy`) `garden` (=`gardening`) `engineering` `medicine`. Anything else reads the generic pages.
 3. `board`: `topic=` `timetable` `lost` `club` `wallpaper` (=`school`) `health` `cinema` `prices` (=`market`) `rules`
-   `exhibit` `painting` `view` `store` `catalogue`.
+   `exhibit` `painting` `view` `store` `catalogue` `logbook` `fair` `birds` (the feed-the-birds poster: points to the
+   library's guide and the garden department) `garden` `kids` (=`toys`) `local` (=`history`, a case of local things)
+   `medicine` `sun` `travel` (=`map`).
 4. `machine`/`play`/`sport`/`craft`/`screen` (any kind works): `what=` `piano` `chess` `table_tennis` `billiards`
    `darts` `table_football` `shooting_gallery` `ring_toss` `lottery` `strongman` `fortune` `arcade` `jukebox`
    `record_player` `scales` `eye_chart` `checkup` `photo_booth` `telescope` `binoculars` `payphone` `fountain`
    `pump_room` `haircut` `barbell` `wall_bars` `punching_bag` `exercise_bike` (=`treadmill`) `pool` `basketball` `track`
-   `dance` `easel` `potters_wheel` `workbench` `sewing_machine` `darkroom` `school_desk` `blackboard` `cinema` `stage`
-   `choir` `microphone` `tv` `aquarium` `slide_projector`. Some need staff on the plot: `cinema` projectionist,
-   `school_desk` teacher, `checkup` doctor, `pool` lifeguard, `haircut` seller, fair games vendor, `choir` choir_leader.
+   `dance` `vaulting_horse` `mats` `easel` `potters_wheel` `workbench` `sewing_machine` `darkroom` `school_desk`
+   `study_desk` (homework, no teacher) `cooking` `blackboard` `cinema` `stage` `choir` `microphone` `tv` `aquarium`
+   `slide_projector` `stove` `sink` `washing_machine` `radio` (a broadcast set; hall radios declared `jukebox` with
+   `radio` in the id get it too) `radio_set` (a radio amateur's station). Some need staff on the plot: `cinema`
+   projectionist, `school_desk` teacher, `checkup` doctor, `pool` lifeguard, `haircut` barber, fair games vendor,
+   `choir` choir_leader.
 5. `counter`: `shop=<id>` (see `counters.json`: `store_*`, `market_*`, `kiosk_news`, `cafe_tarelka`, `pharmacy`,
    `club_buffet`, `hall_bar`, `sport_cafe`, `library_desk`, `sanatorium_kiosk`, `seagull_cafe`, `fish_shop`, `dumplings`,
-   `souvenirs`, `bakery`, `book_stall`, `beer_bar`, `pasty_bar`) and/or `service=` `cashier` `cloakroom` `tickets`
-   `reception` `lending` `bar` `butcher` `fishmonger` `rentals` `repair` `pharmacy` `newspapers`; `role=` the staff
-   role standing there (must be on the plot's staff).
-6. `bed`: `rest=night|nap|private` (default by plot: sanatorium night, clinic nap, elsewhere "someone's bed").
-   `take`: `item=daily_paper|postcard` (once a day). `door`: `to=roof|staff`.
+   `souvenirs`, `bakery`, `book_stall`, `beer_bar`, `pasty_bar`; `furnished.json`: `fair_*`, `market_tea`, `store_cafe`,
+   `sanatorium_buffet`, `cafe_ice_cream`, `canteen`, `bookshop`, `hardware` (bird feed and feeders), `fabrics`,
+   `toy_shop`, `corner_grocery`) and/or `service=` `cashier` `cloakroom` `tickets` `reception` `lending` `bar`
+   `butcher` `fishmonger` `rentals` `repair` `pharmacy` `newspapers` `bank` (the savings bank: a talk) `records`
+   `shoes`; a fair kiosk says what it sells with `trade=` `coffee` `icecream` `press` `toys` `snacks`. `role=` the staff
+   role standing there; a house desk (`service=reception`, `role=concierge|caretaker|janitor`) is a talk that needs no
+   staff. A role the plot lacks gets a staff variant (above).
+6. `bed`: `rest=night|nap|private` (default by plot: sanatorium night, clinic nap, elsewhere "someone's bed"; a bed in
+   a family's home is `private` even if it is a mat). `take`: `item=daily_paper|postcard` (once a day). `door`:
+   `to=roof|staff` (a rule may give a caption of its own: the bridge house's lift `door_gallery`).
 7. Keep the ids the auto layer uses where the quests rely on them (library `stack_*`/`core_wall_*`/`pod_*`, clinic
-   `patient_0..2`, school `seat_*`/`teacher`, `workers_club/seat*`, `cog_club/chess*`, sanatorium `bench_4`), or give
+   `patient_0..2`, school `seat_*`/`teacher`, `workers_club/seat*`, `cog_club/chess*`, sanatorium `pump_room`), or give
    the new things the same props (e.g. `shelf topic=birds`, `machine what=scales`): the quests wait for `do read_birds`,
    `read_local`, `read_sun`, `cinema`, `chess`, `scales`, `eye_chart`, `checkup`, `photo_booth`, `pump_room`,
    `school_desk`, `blackboard`.

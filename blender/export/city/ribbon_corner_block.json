@@ -170,21 +170,21 @@
    "id": "lobby_bench_292",
    "kind": "bench",
    "pos": [
-    22.183,
-    4.151,
+    22.952,
+    4.6,
     0.0
    ],
-   "yaw": 202.5
+   "yaw": 218.00000000000003
   },
   {
    "id": "lobby_bench_337",
    "kind": "bench",
    "pos": [
-    23.969,
-    5.937,
+    24.021,
+    6.071,
     0.0
    ],
-   "yaw": 247.5
+   "yaw": 250.0
   },
   {
    "id": "lobby_stand",
@@ -197,10 +197,40 @@
    "yaw": 180.0
   },
   {
+   "id": "roof_bench_1",
+   "kind": "bench",
+   "pos": [
+    -3.0,
+    10.3,
+    15.54
+   ],
+   "yaw": 0.0
+  },
+  {
+   "id": "roof_bench_2",
+   "kind": "bench",
+   "pos": [
+    4.0,
+    10.3,
+    15.54
+   ],
+   "yaw": 0.0
+  },
+  {
+   "id": "roof_bench_3",
+   "kind": "bench",
+   "pos": [
+    9.0,
+    10.3,
+    15.54
+   ],
+   "yaw": 0.0
+  },
+  {
    "id": "shop_counter",
    "kind": "counter",
    "pos": [
-    -14.3,
+    -14.0,
     3.7,
     0.0
    ],
@@ -210,8 +240,8 @@
    "id": "shop_staff",
    "kind": "work",
    "pos": [
-    -14.3,
-    5.5,
+    -14.0,
+    5.3,
     0.0
    ],
    "yaw": 0.0
@@ -230,8 +260,8 @@
    "id": "shop_stand2",
    "kind": "stand",
    "pos": [
-    -12.0,
-    2.8,
+    -12.9,
+    2.7,
     0.0
    ],
    "yaw": 180.0
@@ -240,8 +270,8 @@
    "id": "wash1",
    "kind": "work",
    "pos": [
-    -6.3,
-    4.6,
+    -6.2,
+    4.9,
     0.0
    ],
    "yaw": 180.0
@@ -250,8 +280,8 @@
    "id": "wash2",
    "kind": "work",
    "pos": [
-    -5.15,
-    4.6,
+    -5.05,
+    4.9,
     0.0
    ],
    "yaw": 180.0
@@ -260,8 +290,8 @@
    "id": "wash3",
    "kind": "work",
    "pos": [
-    -4.0,
-    4.6,
+    -3.9,
+    4.9,
     0.0
    ],
    "yaw": 180.0
@@ -270,8 +300,8 @@
    "id": "wash4",
    "kind": "work",
    "pos": [
-    -2.85,
-    4.6,
+    -2.75,
+    4.9,
     0.0
    ],
    "yaw": 180.0
@@ -307,7 +337,7 @@
    "yaw": 0.0
   },
   {
-   "id": "sbench_shop_14",
+   "id": "sbench_shop_17",
    "kind": "bench",
    "pos": [
     -13.6,
@@ -317,7 +347,7 @@
    "yaw": 0
   },
   {
-   "id": "sbench_laundry_15",
+   "id": "sbench_laundry_18",
    "kind": "bench",
    "pos": [
     -9.15,
@@ -327,7 +357,7 @@
    "yaw": 0
   },
   {
-   "id": "sbench_stair_w_16",
+   "id": "sbench_stair_w_19",
    "kind": "bench",
    "pos": [
     -23.5,
@@ -524,6 +554,374 @@
    "colour": "#FFD9A8",
    "kind": "lobby",
    "radius": 10
+  }
+ ],
+ "things": [
+  {
+   "id": "lobby_bench_292",
+   "kind": "seat",
+   "pos": [
+    22.952,
+    4.6,
+    0.45
+   ],
+   "yaw": 218.0,
+   "props": {
+    "height": 0.45
+   }
+  },
+  {
+   "id": "lobby_bench_337",
+   "kind": "seat",
+   "pos": [
+    24.021,
+    6.071,
+    0.45
+   ],
+   "yaw": 250.0,
+   "props": {
+    "height": 0.45
+   }
+  },
+  {
+   "id": "lobby_mailboxes",
+   "kind": "board",
+   "pos": [
+    13.5,
+    7.9,
+    1.4
+   ],
+   "yaw": 0.0,
+   "props": {
+    "topic": "rules"
+   }
+  },
+  {
+   "id": "lobby_notices",
+   "kind": "board",
+   "pos": [
+    11.0,
+    6.6,
+    1.7
+   ],
+   "yaw": 180.0,
+   "props": {
+    "topic": "rules"
+   }
+  },
+  {
+   "id": "roof_deck_chair_1",
+   "kind": "seat",
+   "pos": [
+    -5.6,
+    5.6,
+    15.84
+   ],
+   "yaw": 0.0,
+   "props": {
+    "height": 0.3
+   }
+  },
+  {
+   "id": "roof_deck_chair_2",
+   "kind": "seat",
+   "pos": [
+    -4.4,
+    5.6,
+    15.84
+   ],
+   "yaw": 0.0,
+   "props": {
+    "height": 0.3
+   }
+  },
+  {
+   "id": "roof_deck_chair_3",
+   "kind": "seat",
+   "pos": [
+    5.0,
+    5.6,
+    15.84
+   ],
+   "yaw": 0.0,
+   "props": {
+    "height": 0.3
+   }
+  },
+  {
+   "id": "roof_deck_chair_4",
+   "kind": "seat",
+   "pos": [
+    6.2,
+    5.6,
+    15.84
+   ],
+   "yaw": 0.0,
+   "props": {
+    "height": 0.3
+   }
+  },
+  {
+   "id": "roof_table_seats",
+   "kind": "seat",
+   "pos": [
+    0.5,
+    6.3,
+    15.99
+   ],
+   "yaw": 0.0,
+   "props": {
+    "height": 0.45
+   }
+  },
+  {
+   "id": "roof_bench_1",
+   "kind": "seat",
+   "pos": [
+    -3.0,
+    10.55,
+    15.99
+   ],
+   "yaw": 0.0,
+   "props": {
+    "height": 0.45
+   }
+  },
+  {
+   "id": "roof_bench_2",
+   "kind": "seat",
+   "pos": [
+    4.0,
+    10.55,
+    15.99
+   ],
+   "yaw": 0.0,
+   "props": {
+    "height": 0.45
+   }
+  },
+  {
+   "id": "roof_bench_3",
+   "kind": "seat",
+   "pos": [
+    9.0,
+    10.55,
+    15.99
+   ],
+   "yaw": 0.0,
+   "props": {
+    "height": 0.45
+   }
+  },
+  {
+   "id": "roof_view",
+   "kind": "board",
+   "pos": [
+    5.0,
+    3.0,
+    16.8
+   ],
+   "yaw": 0.0,
+   "props": {
+    "topic": "view"
+   }
+  },
+  {
+   "id": "roof_solarium",
+   "kind": "board",
+   "pos": [
+    -6.0,
+    7.0,
+    16.84
+   ],
+   "yaw": 90.0,
+   "props": {
+    "topic": "sun"
+   }
+  },
+  {
+   "id": "shop_counter",
+   "kind": "counter",
+   "pos": [
+    -14.0,
+    4.55,
+    1.05
+   ],
+   "yaw": 0.0,
+   "props": {
+    "role": "seller",
+    "shop": "store_grocery",
+    "service": "shop"
+   }
+  },
+  {
+   "id": "shop_case_west",
+   "kind": "board",
+   "pos": [
+    -17.0,
+    3.0,
+    1.0
+   ],
+   "yaw": 0.0,
+   "props": {
+    "topic": "store"
+   }
+  },
+  {
+   "id": "shop_case_east",
+   "kind": "board",
+   "pos": [
+    -11.8,
+    3.0,
+    1.0
+   ],
+   "yaw": 0.0,
+   "props": {
+    "topic": "prices"
+   }
+  },
+  {
+   "id": "shop_west_1",
+   "kind": "board",
+   "pos": [
+    -18.5,
+    2.75,
+    1.3
+   ],
+   "yaw": 90.0,
+   "props": {
+    "topic": "store"
+   }
+  },
+  {
+   "id": "shop_west_2",
+   "kind": "board",
+   "pos": [
+    -18.5,
+    3.75,
+    1.3
+   ],
+   "yaw": 90.0,
+   "props": {
+    "topic": "store"
+   }
+  },
+  {
+   "id": "shop_west_3",
+   "kind": "board",
+   "pos": [
+    -18.5,
+    4.75,
+    1.3
+   ],
+   "yaw": 90.0,
+   "props": {
+    "topic": "store"
+   }
+  },
+  {
+   "id": "shop_east_1",
+   "kind": "board",
+   "pos": [
+    -7.3,
+    3.8,
+    1.3
+   ],
+   "yaw": 270.0,
+   "props": {
+    "topic": "store"
+   }
+  },
+  {
+   "id": "washer_1",
+   "kind": "machine",
+   "pos": [
+    -6.2,
+    5.7,
+    0.9
+   ],
+   "yaw": 0.0,
+   "props": {
+    "what": "washing_machine"
+   }
+  },
+  {
+   "id": "washer_2",
+   "kind": "machine",
+   "pos": [
+    -5.05,
+    5.7,
+    0.9
+   ],
+   "yaw": 0.0,
+   "props": {
+    "what": "washing_machine"
+   }
+  },
+  {
+   "id": "washer_3",
+   "kind": "machine",
+   "pos": [
+    -3.9,
+    5.7,
+    0.9
+   ],
+   "yaw": 0.0,
+   "props": {
+    "what": "washing_machine"
+   }
+  },
+  {
+   "id": "washer_4",
+   "kind": "machine",
+   "pos": [
+    -2.75,
+    5.7,
+    0.9
+   ],
+   "yaw": 0.0,
+   "props": {
+    "what": "washing_machine"
+   }
+  },
+  {
+   "id": "laundry_folding_table",
+   "kind": "craft",
+   "pos": [
+    -4.0,
+    3.2,
+    0.8
+   ],
+   "yaw": 0.0,
+   "props": {
+    "what": "workbench"
+   }
+  },
+  {
+   "id": "laundry_bench",
+   "kind": "seat",
+   "pos": [
+    -1.45,
+    4.0,
+    0.45
+   ],
+   "yaw": 270.0,
+   "props": {
+    "height": 0.45
+   }
+  },
+  {
+   "id": "laundry_rules",
+   "kind": "board",
+   "pos": [
+    -1.3,
+    5.0,
+    1.7
+   ],
+   "yaw": 270.0,
+   "props": {
+    "topic": "rules"
+   }
   }
  ],
  "flats": [
@@ -5028,8 +5426,8 @@
   "48 flats (corridor type) in 6 bays x 4 floors, two stairs (drum and tower), shop and laundry below"
  ],
  "tris": {
-  "shell": 14548,
-  "detail": 15458,
+  "shell": 13838,
+  "detail": 28937,
   "windows": 362
  }
 }

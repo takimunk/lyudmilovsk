@@ -55,16 +55,6 @@
    "yaw": 0.0
   },
   {
-   "id": "chair",
-   "kind": "seat",
-   "pos": [
-    -0.82,
-    2.45,
-    5.6
-   ],
-   "yaw": 270.0
-  },
-  {
    "id": "view",
    "kind": "view",
    "pos": [
@@ -73,6 +63,16 @@
     5.6
    ],
    "yaw": 0.0
+  },
+  {
+   "id": "chair",
+   "kind": "seat",
+   "pos": [
+    -0.85,
+    2.1,
+    5.6
+   ],
+   "yaw": 270.0
   }
  ],
  "lamps": [
@@ -86,6 +86,112 @@
    "colour": "#FFE8C8",
    "kind": "public",
    "radius": 4.5
+  }
+ ],
+ "things": [
+  {
+   "id": "log_book",
+   "kind": "board",
+   "pos": [
+    0.85,
+    2.38,
+    6.4
+   ],
+   "yaw": 270.0,
+   "props": {
+    "topic": "view"
+   }
+  },
+  {
+   "id": "lookout_chair",
+   "kind": "seat",
+   "pos": [
+    -0.82,
+    2.1,
+    6.05
+   ],
+   "yaw": 270.0,
+   "props": {
+    "height": 0.45
+   }
+  },
+  {
+   "id": "first_aid",
+   "kind": "board",
+   "pos": [
+    -0.75,
+    2.95,
+    6.47
+   ],
+   "yaw": 90.0,
+   "props": {
+    "topic": "health"
+   }
+  },
+  {
+   "id": "deck_telescope",
+   "kind": "machine",
+   "pos": [
+    1.05,
+    0.55,
+    6.8
+   ],
+   "yaw": 0.0,
+   "props": {
+    "what": "telescope"
+   }
+  },
+  {
+   "id": "flags_board",
+   "kind": "board",
+   "pos": [
+    -1.0,
+    0.3,
+    6.55
+   ],
+   "yaw": 180.0,
+   "props": {
+    "topic": "rules"
+   }
+  },
+  {
+   "id": "deck_bench",
+   "kind": "seat",
+   "pos": [
+    1.25,
+    3.62,
+    6.05
+   ],
+   "yaw": 180.0,
+   "props": {
+    "height": 0.45
+   }
+  },
+  {
+   "id": "binoculars",
+   "kind": "machine",
+   "pos": [
+    -0.75,
+    1.1,
+    6.9
+   ],
+   "yaw": 0.0,
+   "props": {
+    "what": "binoculars"
+   }
+  },
+  {
+   "id": "view_cabin",
+   "kind": "board",
+   "pos": [
+    0.0,
+    1.0,
+    7.1
+   ],
+   "yaw": 0.0,
+   "props": {
+    "topic": "view"
+   }
   }
  ],
  "flats": [],
@@ -220,8 +326,8 @@
  "light_tex": 64,
  "notes": [],
  "tris": {
-  "shell": 418,
-  "detail": 878,
+  "shell": 430,
+  "detail": 1674,
   "windows": 12
  }
 }

@@ -59,146 +59,6 @@
  ],
  "spots": [
   {
-   "id": "counter1",
-   "kind": "counter",
-   "pos": [
-    -29.2,
-    10.6,
-    0.0
-   ],
-   "yaw": 180.0
-  },
-  {
-   "id": "table1",
-   "kind": "table",
-   "pos": [
-    -32.0,
-    4.2,
-    0.0
-   ],
-   "yaw": 0.0
-  },
-  {
-   "id": "table2",
-   "kind": "table",
-   "pos": [
-    -32.0,
-    7.0,
-    0.0
-   ],
-   "yaw": 0.0
-  },
-  {
-   "id": "table3",
-   "kind": "table",
-   "pos": [
-    -29.0,
-    4.2,
-    0.0
-   ],
-   "yaw": 0.0
-  },
-  {
-   "id": "table4",
-   "kind": "table",
-   "pos": [
-    -29.0,
-    7.0,
-    0.0
-   ],
-   "yaw": 0.0
-  },
-  {
-   "id": "table5",
-   "kind": "table",
-   "pos": [
-    -26.0,
-    4.2,
-    0.0
-   ],
-   "yaw": 0.0
-  },
-  {
-   "id": "table6",
-   "kind": "table",
-   "pos": [
-    -26.0,
-    7.0,
-    0.0
-   ],
-   "yaw": 0.0
-  },
-  {
-   "id": "work1",
-   "kind": "work",
-   "pos": [
-    -33.2,
-    3.65,
-    0.0
-   ],
-   "yaw": 270.0
-  },
-  {
-   "id": "work2",
-   "kind": "work",
-   "pos": [
-    -33.2,
-    4.85,
-    0.0
-   ],
-   "yaw": 270.0
-  },
-  {
-   "id": "work3",
-   "kind": "work",
-   "pos": [
-    -33.2,
-    6.05,
-    0.0
-   ],
-   "yaw": 270.0
-  },
-  {
-   "id": "work4",
-   "kind": "work",
-   "pos": [
-    -33.2,
-    7.25,
-    0.0
-   ],
-   "yaw": 270.0
-  },
-  {
-   "id": "work5",
-   "kind": "work",
-   "pos": [
-    -33.2,
-    8.45,
-    0.0
-   ],
-   "yaw": 270.0
-  },
-  {
-   "id": "gym_mat",
-   "kind": "stand",
-   "pos": [
-    -23.6,
-    9.6,
-    0.0
-   ],
-   "yaw": 270.0
-  },
-  {
-   "id": "gym_bar",
-   "kind": "work",
-   "pos": [
-    -23.35,
-    2.6,
-    0.0
-   ],
-   "yaw": 180.0
-  },
-  {
    "id": "bench1",
    "kind": "bench",
    "pos": [
@@ -227,13 +87,195 @@
     0.0
    ],
    "yaw": 0.0
+  },
+  {
+   "id": "table1",
+   "kind": "table",
+   "pos": [
+    -32.0,
+    4.25,
+    0.0
+   ],
+   "yaw": 180.0
+  },
+  {
+   "id": "table2",
+   "kind": "table",
+   "pos": [
+    -29.0,
+    4.25,
+    0.0
+   ],
+   "yaw": 180.0
+  },
+  {
+   "id": "table3",
+   "kind": "table",
+   "pos": [
+    -26.0,
+    4.25,
+    0.0
+   ],
+   "yaw": 180.0
+  },
+  {
+   "id": "table4",
+   "kind": "table",
+   "pos": [
+    -32.0,
+    7.15,
+    0.0
+   ],
+   "yaw": 180.0
+  },
+  {
+   "id": "table5",
+   "kind": "table",
+   "pos": [
+    -29.0,
+    7.15,
+    0.0
+   ],
+   "yaw": 180.0
+  },
+  {
+   "id": "table6",
+   "kind": "table",
+   "pos": [
+    -26.0,
+    7.15,
+    0.0
+   ],
+   "yaw": 180.0
+  },
+  {
+   "id": "counter1",
+   "kind": "counter",
+   "pos": [
+    -29.2,
+    10.1,
+    0.0
+   ],
+   "yaw": 180.0
+  },
+  {
+   "id": "work1",
+   "kind": "work",
+   "pos": [
+    -33.5,
+    4.2,
+    0.0
+   ],
+   "yaw": 270.0
+  },
+  {
+   "id": "work2",
+   "kind": "work",
+   "pos": [
+    -33.5,
+    5.3,
+    0.0
+   ],
+   "yaw": 270.0
+  },
+  {
+   "id": "work3",
+   "kind": "work",
+   "pos": [
+    -33.5,
+    6.4,
+    0.0
+   ],
+   "yaw": 270.0
+  },
+  {
+   "id": "work4",
+   "kind": "work",
+   "pos": [
+    -33.5,
+    7.5,
+    0.0
+   ],
+   "yaw": 270.0
+  },
+  {
+   "id": "work5",
+   "kind": "work",
+   "pos": [
+    -33.5,
+    8.6,
+    0.0
+   ],
+   "yaw": 270.0
+  },
+  {
+   "id": "reading_1",
+   "kind": "seat",
+   "pos": [
+    -33.8,
+    2.8,
+    0.0
+   ],
+   "yaw": 90.0
+  },
+  {
+   "id": "reading_2",
+   "kind": "seat",
+   "pos": [
+    -31.4,
+    2.8,
+    0.0
+   ],
+   "yaw": 270.0
+  },
+  {
+   "id": "gym_mat",
+   "kind": "stand",
+   "pos": [
+    -23.6,
+    9.6,
+    0.0
+   ],
+   "yaw": 270.0
+  },
+  {
+   "id": "gym_bar",
+   "kind": "work",
+   "pos": [
+    -23.35,
+    2.6,
+    0.0
+   ],
+   "yaw": 180.0
   }
  ],
  "lamps": [
   {
    "pos": [
     -32.0,
-    4.2,
+    5.0,
+    4.9
+   ],
+   "lumens": 900,
+   "colour": "#FFD2A0",
+   "kind": "public",
+   "radius": 6.5
+  },
+  {
+   "pos": [
+    -29.0,
+    5.0,
+    4.9
+   ],
+   "lumens": 900,
+   "colour": "#FFD2A0",
+   "kind": "public",
+   "radius": 6.5
+  },
+  {
+   "pos": [
+    -26.0,
+    5.0,
     4.9
    ],
    "lumens": 900,
@@ -244,7 +286,7 @@
   {
    "pos": [
     -32.0,
-    7.0,
+    7.9,
     4.9
    ],
    "lumens": 900,
@@ -255,18 +297,7 @@
   {
    "pos": [
     -29.0,
-    4.2,
-    4.9
-   ],
-   "lumens": 900,
-   "colour": "#FFD2A0",
-   "kind": "public",
-   "radius": 6.5
-  },
-  {
-   "pos": [
-    -29.0,
-    7.0,
+    7.9,
     4.9
    ],
    "lumens": 900,
@@ -277,18 +308,7 @@
   {
    "pos": [
     -26.0,
-    4.2,
-    4.9
-   ],
-   "lumens": 900,
-   "colour": "#FFD2A0",
-   "kind": "public",
-   "radius": 6.5
-  },
-  {
-   "pos": [
-    -26.0,
-    7.0,
+    7.9,
     4.9
    ],
    "lumens": 900,
@@ -339,6 +359,335 @@
    "colour": "#FFD2A0",
    "kind": "public",
    "radius": 7
+  }
+ ],
+ "things": [
+  {
+   "id": "canteen_table_1",
+   "kind": "seat",
+   "pos": [
+    -32.0,
+    4.25,
+    0.45
+   ],
+   "yaw": 180.0,
+   "props": {
+    "height": 0.45
+   }
+  },
+  {
+   "id": "canteen_table_2",
+   "kind": "seat",
+   "pos": [
+    -29.0,
+    4.25,
+    0.45
+   ],
+   "yaw": 180.0,
+   "props": {
+    "height": 0.45
+   }
+  },
+  {
+   "id": "canteen_table_3",
+   "kind": "seat",
+   "pos": [
+    -26.0,
+    4.25,
+    0.45
+   ],
+   "yaw": 180.0,
+   "props": {
+    "height": 0.45
+   }
+  },
+  {
+   "id": "canteen_table_4",
+   "kind": "seat",
+   "pos": [
+    -32.0,
+    7.15,
+    0.45
+   ],
+   "yaw": 180.0,
+   "props": {
+    "height": 0.45
+   }
+  },
+  {
+   "id": "canteen_table_5",
+   "kind": "seat",
+   "pos": [
+    -29.0,
+    7.15,
+    0.45
+   ],
+   "yaw": 180.0,
+   "props": {
+    "height": 0.45
+   }
+  },
+  {
+   "id": "canteen_table_6",
+   "kind": "seat",
+   "pos": [
+    -26.0,
+    7.15,
+    0.45
+   ],
+   "yaw": 180.0,
+   "props": {
+    "height": 0.45
+   }
+  },
+  {
+   "id": "canteen_counter",
+   "kind": "counter",
+   "pos": [
+    -29.2,
+    10.7,
+    1.05
+   ],
+   "yaw": 0.0,
+   "props": {
+    "role": "clerk",
+    "shop": "club_buffet",
+    "service": "bar"
+   }
+  },
+  {
+   "id": "canteen_menu",
+   "kind": "board",
+   "pos": [
+    -33.0,
+    12.5,
+    2.6
+   ],
+   "yaw": 0.0,
+   "props": {
+    "topic": "prices"
+   }
+  },
+  {
+   "id": "washer_1",
+   "kind": "machine",
+   "pos": [
+    -34.3,
+    4.2,
+    0.9
+   ],
+   "yaw": 90.0,
+   "props": {
+    "what": "washing_machine"
+   }
+  },
+  {
+   "id": "washer_2",
+   "kind": "machine",
+   "pos": [
+    -34.3,
+    5.3,
+    0.9
+   ],
+   "yaw": 90.0,
+   "props": {
+    "what": "washing_machine"
+   }
+  },
+  {
+   "id": "washer_3",
+   "kind": "machine",
+   "pos": [
+    -34.3,
+    6.4,
+    0.9
+   ],
+   "yaw": 90.0,
+   "props": {
+    "what": "washing_machine"
+   }
+  },
+  {
+   "id": "washer_4",
+   "kind": "machine",
+   "pos": [
+    -34.3,
+    7.5,
+    0.9
+   ],
+   "yaw": 90.0,
+   "props": {
+    "what": "washing_machine"
+   }
+  },
+  {
+   "id": "washer_5",
+   "kind": "machine",
+   "pos": [
+    -34.3,
+    8.6,
+    0.9
+   ],
+   "yaw": 90.0,
+   "props": {
+    "what": "washing_machine"
+   }
+  },
+  {
+   "id": "laundry_table",
+   "kind": "craft",
+   "pos": [
+    -33.3,
+    9.5,
+    0.8
+   ],
+   "yaw": 90.0,
+   "props": {
+    "what": "workbench"
+   }
+  },
+  {
+   "id": "hall_shelf_1",
+   "kind": "shelf",
+   "pos": [
+    -33.9,
+    1.7,
+    1.3
+   ],
+   "yaw": 180.0,
+   "props": {
+    "topic": "poetry"
+   }
+  },
+  {
+   "id": "hall_shelf_2",
+   "kind": "shelf",
+   "pos": [
+    -32.8,
+    1.7,
+    1.3
+   ],
+   "yaw": 180.0,
+   "props": {
+    "topic": "local"
+   }
+  },
+  {
+   "id": "hall_shelf_3",
+   "kind": "shelf",
+   "pos": [
+    -31.7,
+    1.7,
+    1.3
+   ],
+   "yaw": 180.0,
+   "props": {
+    "topic": "kids"
+   }
+  },
+  {
+   "id": "hall_newspaper",
+   "kind": "take",
+   "pos": [
+    -32.6,
+    2.55,
+    0.45
+   ],
+   "yaw": 0.0,
+   "props": {
+    "item": "daily_paper"
+   }
+  },
+  {
+   "id": "hall_armchair_1",
+   "kind": "seat",
+   "pos": [
+    -33.8,
+    2.8,
+    0.45
+   ],
+   "yaw": 90.0,
+   "props": {
+    "height": 0.45
+   }
+  },
+  {
+   "id": "hall_armchair_2",
+   "kind": "seat",
+   "pos": [
+    -31.4,
+    2.8,
+    0.45
+   ],
+   "yaw": 270.0,
+   "props": {
+    "height": 0.45
+   }
+  },
+  {
+   "id": "house_committee_board",
+   "kind": "board",
+   "pos": [
+    -25.2,
+    1.5,
+    1.8
+   ],
+   "yaw": 180.0,
+   "props": {
+    "topic": "rules"
+   }
+  },
+  {
+   "id": "house_committee_bench",
+   "kind": "seat",
+   "pos": [
+    -25.2,
+    2.15,
+    0.45
+   ],
+   "yaw": 0.0,
+   "props": {
+    "height": 0.45
+   }
+  },
+  {
+   "id": "house_committee_wallpaper",
+   "kind": "board",
+   "pos": [
+    -30.55,
+    1.5,
+    1.8
+   ],
+   "yaw": 180.0,
+   "props": {
+    "topic": "health"
+   }
+  },
+  {
+   "id": "gym_mat",
+   "kind": "sport",
+   "pos": [
+    -23.6,
+    9.6,
+    0.3
+   ],
+   "yaw": 270.0,
+   "props": {
+    "what": "wall_bars"
+   }
+  },
+  {
+   "id": "gym_bar",
+   "kind": "sport",
+   "pos": [
+    -23.35,
+    3.1,
+    1.6
+   ],
+   "yaw": 180.0,
+   "props": {
+    "what": "barbell"
+   }
   }
  ],
  "flats": [
@@ -2748,8 +3097,8 @@
   "16 skip-stop flats, corridors on floors 2 and 4; communal hall enterable at the west end"
  ],
  "tris": {
-  "shell": 2614,
-  "detail": 5316,
+  "shell": 2626,
+  "detail": 11323,
   "windows": 204
  }
 }

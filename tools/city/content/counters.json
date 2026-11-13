@@ -27,12 +27,12 @@
   "sanatorium_kiosk": {"role": "receptionist", "goods": [{"item": "water", "price": 20, "count": 10}, {"item": "postcard", "price": 4, "count": 10}, {"item": "daily_paper", "price": 5, "count": 6}, {"item": "kefir", "price": 14, "count": 4}]},
 
   "seagull_cafe": {"role": "barista", "goods": [{"item": "coffee", "price": 30, "count": 8}, {"item": "tea", "price": 15, "count": 8}, {"item": "ice_cream", "price": 30, "count": 8}, {"item": "pie", "price": 18, "count": 6}, {"item": "water", "price": 20, "count": 4}]},
-  "fish_shop": {"role": "seller", "goods": [{"item": "bait_shrimp", "price": 30, "count": 10}, {"item": "bait_worm", "price": 15, "count": 10}, {"item": "lure_spoon", "price": 45, "count": 2}, {"item": "fish_book", "price": 40, "count": 1}, {"item": "rod_sea", "price": 380, "count": 1}]},
-  "dumplings": {"role": "barista", "goods": [{"item": "tea", "price": 12, "count": 10}, {"item": "pie", "price": 16, "count": 8}, {"item": "kefir", "price": 14, "count": 4}]},
+  "fish_shop": {"role": "fishmonger", "goods": [{"item": "bait_shrimp", "price": 30, "count": 10}, {"item": "bait_worm", "price": 15, "count": 10}, {"item": "lure_spoon", "price": 45, "count": 2}, {"item": "fish_book", "price": 40, "count": 1}, {"item": "rod_sea", "price": 380, "count": 1}]},
+  "dumplings": {"role": "waiter", "goods": [{"item": "tea", "price": 12, "count": 10}, {"item": "pie", "price": 16, "count": 8}, {"item": "kefir", "price": 14, "count": 4}]},
   "souvenirs": {"role": "seller", "goods": [{"item": "amber_charm", "price": 85, "count": 4}, {"item": "postcard", "price": 4, "count": 12}, {"item": "badge", "price": 11, "count": 6}]},
-  "bakery": {"role": "barista", "goods": [{"item": "bread_loaf", "price": 12, "count": 8}, {"item": "pie", "price": 15, "count": 10}, {"item": "cookies", "price": 18, "count": 6}, {"item": "tea", "price": 12, "count": 6}]},
-  "book_stall": {"role": "master", "goods": [{"item": "magazine_science", "price": 30, "count": 2}, {"item": "magazine_travel", "price": 30, "count": 2}, {"item": "fish_book", "price": 35, "count": 1}, {"item": "postcard", "price": 3, "count": 8}]},
-  "beer_bar": {"role": "barista", "goods": [{"item": "drink_baikal", "price": 18, "count": 6}, {"item": "drink_tarkhun", "price": 18, "count": 6}, {"item": "seeds", "price": 10, "count": 6}]},
+  "bakery": {"role": "seller", "goods": [{"item": "bread_loaf", "price": 12, "count": 8}, {"item": "pie", "price": 15, "count": 10}, {"item": "cookies", "price": 18, "count": 6}, {"item": "tea", "price": 12, "count": 6}]},
+  "book_stall": {"role": "bookseller", "goods": [{"item": "magazine_science", "price": 30, "count": 2}, {"item": "magazine_travel", "price": 30, "count": 2}, {"item": "fish_book", "price": 35, "count": 1}, {"item": "postcard", "price": 3, "count": 8}]},
+  "beer_bar": {"role": "bartender", "goods": [{"item": "drink_baikal", "price": 18, "count": 6}, {"item": "drink_tarkhun", "price": 18, "count": 6}, {"item": "seeds", "price": 10, "count": 6}]},
   "pasty_bar": {"role": "seller", "goods": [{"item": "pie", "price": 16, "count": 10}, {"item": "tea", "price": 12, "count": 8}, {"item": "water", "price": 20, "count": 4}]}
  },
  "acts": {
@@ -42,8 +42,8 @@
   "reception": {"prompt": "city.act.ask.prompt", "lines": "city.talk.reception"},
   "butcher": {"prompt": "city.act.ask.prompt", "lines": "city.talk.butcher", "needs_staff": "butcher"},
   "fishmonger": {"prompt": "city.act.ask.prompt", "lines": "city.talk.fishmonger", "needs_staff": "fishmonger"},
-  "rentals": {"prompt": "city.act.ask.prompt", "lines": "city.talk.rentals", "needs_staff": "seller"},
-  "repair": {"prompt": "city.act.ask.prompt", "lines": "city.talk.repair", "needs_staff": "master"}
+  "rentals": {"prompt": "city.act.ask.prompt", "lines": "city.talk.rentals", "needs_staff": "renter"},
+  "repair": {"prompt": "city.act.ask.prompt", "lines": "city.talk.repair", "needs_staff": "repairman"}
  },
  "rules": {
   "counter:service=cashier": {"act": "cashier"},

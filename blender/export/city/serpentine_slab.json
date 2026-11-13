@@ -374,11 +374,11 @@
    "id": "lobby_bench_0",
    "kind": "bench",
    "pos": [
-    -83.668,
-    7.002,
+    -86.891,
+    4.859,
     0.0
    ],
-   "yaw": 0.7500000000000002
+   "yaw": 90.75
   },
   {
    "id": "lobby_view_0",
@@ -394,11 +394,11 @@
    "id": "lobby_bench_1",
    "kind": "bench",
    "pos": [
-    0.158,
-    6.098,
+    3.354,
+    3.914,
     0.0
    ],
-   "yaw": -1.4999999999999978
+   "yaw": 268.5
   },
   {
    "id": "lobby_view_1",
@@ -414,11 +414,11 @@
    "id": "lobby_bench_2",
    "kind": "bench",
    "pos": [
-    83.509,
-    5.197,
+    80.287,
+    3.055,
     0.0
    ],
-   "yaw": 0.7499999999999997
+   "yaw": 90.75
   },
   {
    "id": "lobby_view_2",
@@ -504,6 +504,297 @@
    "colour": "#FFE0B0",
    "kind": "lobby",
    "radius": 5.5
+  }
+ ],
+ "things": [
+  {
+   "id": "core0_notices",
+   "kind": "board",
+   "pos": [
+    -87.091,
+    4.857,
+    1.75
+   ],
+   "yaw": 90.8,
+   "props": {
+    "topic": "lost"
+   }
+  },
+  {
+   "id": "core0_bench_a",
+   "kind": "seat",
+   "pos": [
+    -86.891,
+    4.859,
+    0.46
+   ],
+   "yaw": 90.8,
+   "props": {
+    "height": 0.45
+   }
+  },
+  {
+   "id": "core0_radio",
+   "kind": "machine",
+   "pos": [
+    -87.04,
+    7.858,
+    1.35
+   ],
+   "yaw": 90.8,
+   "props": {
+    "what": "jukebox"
+   }
+  },
+  {
+   "id": "core0_concierge_desk",
+   "kind": "counter",
+   "pos": [
+    -86.256,
+    9.868,
+    1.0
+   ],
+   "yaw": 270.8,
+   "props": {
+    "role": "concierge",
+    "service": "reception"
+   }
+  },
+  {
+   "id": "core0_sofa",
+   "kind": "seat",
+   "pos": [
+    -80.617,
+    6.942,
+    0.46
+   ],
+   "yaw": 270.8,
+   "props": {
+    "height": 0.45
+   }
+  },
+  {
+   "id": "core0_armchair",
+   "kind": "seat",
+   "pos": [
+    -80.947,
+    9.237,
+    0.46
+   ],
+   "yaw": 117.3,
+   "props": {
+    "height": 0.45
+   }
+  },
+  {
+   "id": "core0_club_board",
+   "kind": "board",
+   "pos": [
+    -80.191,
+    4.947,
+    1.7
+   ],
+   "yaw": 270.8,
+   "props": {
+    "topic": "club"
+   }
+  },
+  {
+   "id": "core1_notices",
+   "kind": "board",
+   "pos": [
+    3.554,
+    3.908,
+    1.75
+   ],
+   "yaw": 268.5,
+   "props": {
+    "topic": "club"
+   }
+  },
+  {
+   "id": "core1_bench_a",
+   "kind": "seat",
+   "pos": [
+    3.354,
+    3.914,
+    0.46
+   ],
+   "yaw": 268.5,
+   "props": {
+    "height": 0.45
+   }
+  },
+  {
+   "id": "core1_radio",
+   "kind": "machine",
+   "pos": [
+    3.542,
+    6.91,
+    1.35
+   ],
+   "yaw": 268.5,
+   "props": {
+    "what": "jukebox"
+   }
+  },
+  {
+   "id": "core1_concierge_desk",
+   "kind": "counter",
+   "pos": [
+    2.785,
+    8.93,
+    1.0
+   ],
+   "yaw": 88.5,
+   "props": {
+    "role": "concierge",
+    "service": "reception"
+   }
+  },
+  {
+   "id": "core1_sofa",
+   "kind": "seat",
+   "pos": [
+    -2.892,
+    6.078,
+    0.46
+   ],
+   "yaw": 88.5,
+   "props": {
+    "height": 0.45
+   }
+  },
+  {
+   "id": "core1_armchair",
+   "kind": "seat",
+   "pos": [
+    -2.532,
+    8.369,
+    0.46
+   ],
+   "yaw": 241.9,
+   "props": {
+    "height": 0.45
+   }
+  },
+  {
+   "id": "core1_club_board",
+   "kind": "board",
+   "pos": [
+    -3.344,
+    4.089,
+    1.7
+   ],
+   "yaw": 88.5,
+   "props": {
+    "topic": "club"
+   }
+  },
+  {
+   "id": "core2_notices",
+   "kind": "board",
+   "pos": [
+    80.087,
+    3.052,
+    1.75
+   ],
+   "yaw": 90.8,
+   "props": {
+    "topic": "lost"
+   }
+  },
+  {
+   "id": "core2_bench_a",
+   "kind": "seat",
+   "pos": [
+    80.287,
+    3.055,
+    0.46
+   ],
+   "yaw": 90.8,
+   "props": {
+    "height": 0.45
+   }
+  },
+  {
+   "id": "core2_radio",
+   "kind": "machine",
+   "pos": [
+    80.137,
+    6.053,
+    1.35
+   ],
+   "yaw": 90.8,
+   "props": {
+    "what": "jukebox"
+   }
+  },
+  {
+   "id": "core2_concierge_desk",
+   "kind": "counter",
+   "pos": [
+    80.921,
+    8.064,
+    1.0
+   ],
+   "yaw": 270.8,
+   "props": {
+    "role": "concierge",
+    "service": "reception"
+   }
+  },
+  {
+   "id": "core2_sofa",
+   "kind": "seat",
+   "pos": [
+    86.56,
+    5.137,
+    0.46
+   ],
+   "yaw": 270.8,
+   "props": {
+    "height": 0.45
+   }
+  },
+  {
+   "id": "core2_armchair",
+   "kind": "seat",
+   "pos": [
+    86.23,
+    7.433,
+    0.46
+   ],
+   "yaw": 117.3,
+   "props": {
+    "height": 0.45
+   }
+  },
+  {
+   "id": "core2_club_board",
+   "kind": "board",
+   "pos": [
+    86.986,
+    3.143,
+    1.7
+   ],
+   "yaw": 270.8,
+   "props": {
+    "topic": "club"
+   }
+  },
+  {
+   "id": "core2_aquarium",
+   "kind": "screen",
+   "pos": [
+    86.651,
+    9.639,
+    1.0
+   ],
+   "yaw": 90.8,
+   "props": {
+    "what": "aquarium"
+   }
   }
  ],
  "flats": [
@@ -21434,8 +21725,8 @@
   "210 flats on 7 storeys, 33 bays of 7.6 m, S bend 1.5 deg (axis offset +-1.0 m)"
  ],
  "tris": {
-  "shell": 30768,
-  "detail": 44742,
+  "shell": 30924,
+  "detail": 50947,
   "windows": 1662
  }
 }
