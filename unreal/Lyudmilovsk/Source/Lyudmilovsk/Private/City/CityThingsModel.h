@@ -642,6 +642,14 @@ namespace LyudCity
 		return Out;
 	}
 
+	/** A storey link's stop (docs/city_interiors.md "Lifts and storey links"): the caption key (empty: a single "to") and the
+	 *  door thing it takes the hero to (an index into FModel::Things). */
+	struct FFloor
+	{
+		std::string Key;
+		int To = -1;
+	};
+
 	struct FThing
 	{
 		std::string Id;
@@ -662,6 +670,10 @@ namespace LyudCity
 		uint8_t Days = 0x7F;
 		/** Topics of this thing's own (a rule's "topics"), offered after its act's (indices into FModel::Topics). */
 		std::vector<int> Topics;
+		/** A lift or a stair's door: where it takes the hero (one stop: at once; more: a chooser); empty: not a link. */
+		std::vector<FFloor> Floors;
+		/** No way back is asked of its stops (a slide, a hatch). */
+		bool bOneWay = false;
 
 		std::string Prop(const std::string& Key, const std::string& Default = std::string()) const
 		{
@@ -1127,9 +1139,30 @@ namespace LyudCity
 				Th.ClosedAct = Closed == ActIndex.end() ? -1 : Closed->second;
 				Th.Collect = T["collect"].S();
 				ReadTopicList(T["topics"], Th.Topics);
+				Th.bOneWay = T["oneway"].Type == LyudJson::FValue::Bool ? T["oneway"].B : T["oneway"].I(0) != 0;
+				if (T["floors"].Type == LyudJson::FValue::Array)
+				{
+					LiftPending.push_back(std::make_pair((int)Things.size(), &T["floors"]));
+				}
 				ThingIndex[Th.Id] = (int)Things.size();
 				Things.push_back(std::move(Th));
 			}
+			// the storey links, once every thing is known: "to" is a thing id ("<plot>/<id>"), or an id in the door's own plot
+			for (const std::pair<int, const LyudJson::FValue*>& Pending : LiftPending)
+			{
+				FThing& Door = Things[(size_t)Pending.first];
+				for (const LyudJson::FValue& F : Pending.second->Items)
+				{
+					FFloor Stop;
+					Stop.Key = F["k"].S();
+					Stop.To = FindLiftTarget(Door.Plot, F["to"].S());
+					if (Stop.To >= 0 && Stop.To != Pending.first && (int)Door.Floors.size() < MaxFloors)
+					{
+						Door.Floors.push_back(Stop);
+					}
+				}
+			}
+			LiftPending.clear();
 			BuildGrid();
 			HeldBy.assign(Things.size(), 0);
 			for (int I = 0; I < (int)Things.size(); ++I)
@@ -1570,6 +1603,91 @@ namespace LyudCity
 		}
 		/** The targets the hero has done ("did" lines). */
 		bool HasDone(const std::string& Target) const { return Done.count(Target) > 0; }
+
+		// --- lifts and storey links (docs/city_interiors.md "Lifts and storey links")
+
+		static constexpr int MaxFloors = 9;
+		/** How far in front of the arrival door the hero stands (cm), and how far under or over the door's point its floor
+		 *  may be (cm): the door's point is somewhere between the floor and the lintel. */
+		static constexpr double LiftStep = 60.0;
+		static constexpr double LiftFloorBelow = 250.0;
+		static constexpr double LiftFloorAbove = 50.0;
+
+		bool IsLift(int Thing) const { return Thing >= 0 && Thing < (int)Things.size() && !Things[(size_t)Thing].Floors.empty(); }
+		/** A link's target by its data text: "<plot>/<id>" or "<id>" in Plot; -1 none. */
+		int FindLiftTarget(const std::string& Plot, const std::string& To) const
+		{
+			if (To.empty())
+			{
+				return -1;
+			}
+			const int Local = Plot.empty() ? -1 : FindThing(Plot + "/" + To);
+			return Local >= 0 ? Local : FindThing(To);
+		}
+		/** Where the hero may be put arriving at Dest (feet, z = the door's point; the game finds the floor under each and
+		 *  tests his capsule there), the first that fits wins: 0.6 m straight in front, 1 m, then to the sides, then 1.4 m.
+		 *  He faces away from the door (its yaw). How many went into Out. */
+		int LiftSpots(int Dest, FVec* Out, int Max, float& OutYaw) const
+		{
+			if (Dest < 0 || Dest >= (int)Things.size() || !Out || Max <= 0)
+			{
+				return 0;
+			}
+			static constexpr double Spots[][2] = { { LiftStep, 0.0 }, { 100.0, 0.0 }, { LiftStep, 50.0 }, { LiftStep, -50.0 },
+				{ 30.0, 75.0 }, { 30.0, -75.0 }, { 140.0, 0.0 } };
+			const FThing& T = Things[(size_t)Dest];
+			const double R = T.Yaw * 3.14159265358979323846 / 180.0;
+			const double Fx = std::cos(R), Fy = std::sin(R);
+			int N = 0;
+			for (const auto& S : Spots)
+			{
+				if (N >= Max)
+				{
+					break;
+				}
+				FVec P;
+				P.X = T.At.X + Fx * S[0] - Fy * S[1];
+				P.Y = T.At.Y + Fy * S[0] + Fx * S[1];
+				P.Z = T.At.Z;
+				Out[N++] = P;
+			}
+			OutYaw = T.Yaw;
+			return N;
+		}
+		/** Is a floor found under an arrival spot believable for a door whose point is at DoorZ? */
+		static bool LiftFloorOk(double DoorZ, double FloorZ)
+		{
+			return FloorZ >= DoorZ - LiftFloorBelow && FloorZ <= DoorZ + LiftFloorAbove;
+		}
+		/** Can the hero come back from Dest to Door through the links (directly, or stop by stop: the roof's door to the street
+		 *  floor's, that one to the ground)? Allocates (checks and the data tools only). */
+		bool LiftReturns(int Door, int Dest) const
+		{
+			if (!IsLift(Dest) || Door < 0 || Door >= (int)Things.size())
+			{
+				return false;
+			}
+			std::vector<int> Todo(1, Dest);
+			std::set<int> Seen;
+			Seen.insert(Dest);
+			while (!Todo.empty())
+			{
+				const int At = Todo.back();
+				Todo.pop_back();
+				for (const FFloor& F : Things[(size_t)At].Floors)
+				{
+					if (F.To == Door)
+					{
+						return true;
+					}
+					if (Seen.insert(F.To).second)
+					{
+						Todo.push_back(F.To);
+					}
+				}
+			}
+			return false;
+		}
 
 		// --- room tones (docs/city_interiors.md "Room tones")
 
@@ -2619,6 +2737,8 @@ namespace LyudCity
 		std::map<std::string, std::string> ReadAt;
 		/** The staff talk's topics heard (ids), and the targets the hero has done (acts' targets: "did"). */
 		std::set<std::string> Heard;
+		/** Load only: things whose "floors" wait for every thing to be read. */
+		std::vector<std::pair<int, const LyudJson::FValue*>> LiftPending;
 		std::set<std::string> Done;
 		std::unordered_map<std::string, int> TopicIndex;
 		std::unordered_map<std::string, int> ToneIndex;

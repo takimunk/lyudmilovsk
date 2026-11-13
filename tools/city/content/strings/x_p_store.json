@@ -669,5 +669,70 @@
   "ru": "Свежее объявление, приколото поверх старых: «Зонты, найденные в отделах, нести в бюро находок. Не отпускать гулять. Администрация».",
   "en": "A fresh notice pinned over the old ones: \"Umbrellas found in departments are to be taken to the lost and found. Do not let them go walking. Management.\"",
   "ja": "古い紙の上に新しい貼り紙。「売り場で見つかった傘は、お忘れ物係に届けること。散歩に行かせないこと。店長」。"
+ },
+ "city.xtx.store_complaints.title": {
+  "ru": "Книга жалоб и предложений универмага (экземпляр для посетителей)",
+  "en": "The Department Store's Book of Complaints and Suggestions (the visitors' copy)",
+  "ja": "百貨店の苦情・提案帳（お客さま用）"
+ },
+ "city.xtx.store_complaints.1": {
+  "ru": "Запись первая, красным карандашом. «Жалуюсь на лестницу. Она ведёт на второй этаж, а я хотел на третий, и теперь вынужден думать. С уважением, покупатель, не прошедший». Ответ заведующей на полях, зелёной ручкой: «Третьего этажа у нас нет. Это не лестница виновата, а ваша мечта. Но мечта похвальная: передали архитектору. Приходите, подумаем вместе».",
+  "en": "Entry one, in red pencil. \"I complain about the staircase. It leads to the second floor, and I wanted the third, and now I am forced to think. Respectfully, a customer who did not get through.\" The manager's reply in the margin, green pen: \"We have no third floor. It is not the staircase's fault but your dream's. A commendable dream, though: we have passed it to the architect. Come back and we'll think together.\"",
+  "ja": "最初の記入、赤鉛筆で。「階段について苦情を申し上げます。二階に通じていますが、私は三階に行きたく、おかげで考えなければなりません。敬具、行きつけなかった客」。余白に、店長の緑のペンでの返事。「当店に三階はありません。悪いのは階段ではなく、あなたの夢です。けれど立派な夢なので、建築家に伝えました。またお越しください、一緒に考えましょう」"
+ },
+ "city.xtx.store_complaints.2": {
+  "ru": "Запись, середина страницы. «Предлагаю повесить у входа объявление «Зонты, найденные в отделах, не гулять». Желтый с утиной головой опять гуляет, а я в очереди за ним уже третий день. Подпись: Лидия Сергеевна». Ответ: «Объявление повесили, но зонт читает не по-нашему. Просим вас ждать у бюро находок: он любит возвращаться туда, где его ждут. Сторожу дано указание не мешать».",
+  "en": "Entry, middle of the page. \"I suggest hanging a notice by the entrance: 'Umbrellas found in the departments are not to wander.' The yellow one with the duck head is out again, and I have been in the queue for it for the third day. Signed: Lidia Sergeyevna.\" Reply: \"The notice has been hung, but the umbrella does not read our language. Please wait by the lost-property desk: it likes to return to where it is expected. The watchman has been told not to interfere.\"",
+  "ja": "ページ中ほどの記入。「入口に『売り場で見つかった傘は、歩き回らないこと』と貼り出すことを提案します。アヒルの頭の黄色い傘がまた歩き回っていて、私はその順番待ちをもう三日目です。署名、リディア・セルゲーエヴナ」。返事。「貼り出しましたが、傘はこちらの言葉を読めません。忘れ物係の前でお待ちください。傘は、待ってくれている場所へ戻るのが好きです。守衛には、邪魔しないよう指示しました」"
+ },
+ "city.xtx.store_complaints.3": {
+  "ru": "Запись, ближе к концу, детским почерком. «Я хочу жаловаться на паровозик. Он ездит по кругу и не довозит меня до станции. Прошу довезти. Мне шесть. Борис». Ответ взрослым, аккуратно: «Уважаемый Борис! Станция «Станция» сейчас на ремонте, но паровозик обещает довозить в понедельник. Просьба принести с собой пассажира: желательно плюшевого. Билет не нужен, нужна вера. С уважением, универмаг».",
+  "en": "Entry, nearer the end, in a child's hand. \"I want to complain about the little train. It goes round and round and doesn't take me to the station. Please take me. I am six. Boris.\" Reply in an adult hand, neatly: \"Dear Boris, the station called 'Station' is under repair, but the little train promises to take you there on Monday. Please bring a passenger with you, preferably a plush one. No ticket is needed, only faith. Yours, the department store.\"",
+  "ja": "終わりに近い記入、子どもの字で。「汽車について苦情をいいたいです。ぐるぐる回って、駅につれていってくれません。つれていってください。六さいです。ボリス」。大人の字で丁寧に返事。「ボリスくんへ。『駅』という名の駅は今、修理中ですが、汽車は月曜日には連れていくと約束しています。乗客を連れてきてください。ぬいぐるみだとなおよいです。切符はいりません。必要なのは信じる気持ちです。百貨店より」"
+ },
+ "city.xtx.store_complaints.4": {
+  "ru": "Последняя запись, без жалоб. «Спасибо. Не за товар (я ничего не купил), а за то, что в этом здании можно простоять час у окна и никто не спросит, чего вы хотите. Хочу только, чтобы так было всегда. Это предложение. Подписи нет». Заведующая ответила ниже, чуть дрожащим почерком: «Принято. Постараемся. Зайдите в четверг: будет свежая страница и новый карандаш. А это вам»: к странице приколота булавкой маленькая конфета.",
+  "en": "The last entry, without complaints. \"Thank you. Not for the goods (I bought nothing), but for the fact that in this building you can stand an hour by a window and nobody asks what you want. I only want it always to be so. This is a suggestion. No signature.\" The manager replied below, in a slightly shaking hand: \"Accepted. We will try. Come in on Thursday: there will be a fresh page and a new pencil. And this is for you.\" A little sweet is pinned to the page.",
+  "ja": "最後の記入、苦情なし。「ありがとう。商品にではなく（何も買わなかった）、この建物では窓辺に一時間立っていても、何が欲しいのかとだれにも聞かれないことに。いつもこうであってほしい。これは提案です。署名はありません」。店長が下に、少し震える字で答えている。「承りました。努力します。木曜日にいらしてください。新しいページと新しい鉛筆を用意します。それから、これはあなたに」。ページに、小さなあめが一つ、ピンで留めてある。"
+ },
+ "city.xtx.store_pattern_raincoat.title": {
+  "ru": "Листок для домашних мастериц: плащик с капюшоном на рост",
+  "en": "A Leaflet for Home Seamstresses: a Hooded Raincoat That Grows",
+  "ja": "家庭の裁縫のためのリーフレット　大きくなる子のフード付きレインコート"
+ },
+ "city.xtx.store_pattern_raincoat.1": {
+  "ru": "Этот плащик шьётся за вечер и носится три года. Берут болонью, лучше светлую: в сумерках ребёнка видно издалека. Нужно два метра ткани, молния или пять пуговиц, нитки в тон и немного терпения. Выкройка проста: два прямоугольника на спинку и полочки, два на рукава, один на капюшон. Все размеры даны на следующей странице, а здесь тайна: резать нужно с запасом, потому что дети растут по ночам.",
+  "en": "This raincoat is sewn in an evening and worn for three years. Use a Bologna-type raincoat fabric, preferably a light one: at dusk the child can be seen from far away. You need two metres of cloth, a zip or five buttons, thread to match and a little patience. The pattern is simple: two rectangles for the back and fronts, two for the sleeves, one for the hood. All measurements are on the next page, and here is the secret: cut generously, because children grow at night.",
+  "ja": "このレインコートは一晩で縫えて、三年着られます。生地はボローニャ織の雨具地、できれば明るい色を。夕暮れに、遠くから子どもが見えるからです。必要なのは布二メートル、ファスナーか、ボタン五つ、同系色の糸、そして少しの根気。型紙は簡単。後ろ身ごろと前身ごろに二つ、袖に二つ、フードに一つの長方形。寸法は次のページに。ここでは秘密を一つ。大きめに裁つこと。子どもは夜のあいだに伸びるから。"
+ },
+ "city.xtx.store_pattern_raincoat.2": {
+  "ru": "Размеры на рост 110 см. Спинка: 40 на 55. Полочки: по 22 на 55. Рукав: 36 на 28, с запасом 6 см на манжету, которую потом выпускают. Капюшон: 28 на 34, сложить пополам и сшить по затылку. Низ подгибать широко, на ладонь: через год выпустите подгиб, и плащ станет длиннее без швейной машинки. Швы утюжить с изнанки через мокрую тряпку и очень тихо, потому что утюг, как и ребёнок, не любит спешки.",
+  "en": "Measurements for a height of 110 cm. Back: 40 by 55. Fronts: 22 by 55 each. Sleeve: 36 by 28, with 6 cm extra for the cuff, which is let down later. Hood: 28 by 34, fold in half and sew along the back of the head. Turn up the hem wide, a hand's breadth: in a year let down the hem and the coat will be longer without a sewing machine. Press the seams from the wrong side through a damp cloth, and very quietly, because an iron, like a child, dislikes hurry.",
+  "ja": "身長110センチ用の寸法。後ろ身ごろ、縦55、横40。前身ごろ、縦55、横22を二枚。袖、縦28、横36、あとで出す袖口のために六センチ余分に。フード、縦34、横28、半分に折って後頭部を縫う。裾は広く、手のひら一つ分折り上げる。一年後に裾を出せば、ミシンなしでコートが長くなる。縫い目は裏から、濡れた布を当ててアイロンをかけ、静かに。アイロンは子どもと同じで、急かされるのが嫌いだから。"
+ },
+ "city.xtx.store_pattern_raincoat.3": {
+  "ru": "Последний совет. Пришейте внутрь, у воротника, маленький лоскуток другого цвета, чтобы плащ узнавал хозяина. Надпись на лоскутке вышивать не нужно: ребёнок и так знает, чей это плащ. А на капюшон можно пришить пуговицу-грибочек, как на детском плащике на нижней перекладине в нашем отделе. Он стоит там с биркой «Для тех, кто растёт быстрее, чем шьём». Мы, кстати, сами не успеваем. Поэтому и печатаем этот листок.",
+  "en": "A last piece of advice. Sew a small scrap of a different colour inside, by the collar, so that the coat knows its owner. There is no need to embroider a name on the scrap: the child knows whose coat it is. And on the hood you can sew a mushroom button, like the child's raincoat on the lowest rail in our department. It stands there with the tag \"For those who grow faster than we sew\". We ourselves can't keep up, by the way. That is why we print this leaflet.",
+  "ja": "最後の助言。襟のところの内側に、別の色の小さな布切れを縫いつけておくと、コートが持ち主を覚えます。布切れに名前を刺繍する必要はありません。子どもは、だれのコートか知っていますから。フードには、売り場のいちばん下の横木にかかっている子ども用レインコートのように、きのこ形のボタンをつけてもいい。そこには「縫うより速く育つ子のために」という札がついています。実は私たち自身も縫いきれません。だから、このリーフレットを刷っているのです。"
+ },
+ "city.xtx.store_radio_catalogue.title": {
+  "ru": "Каталог радиоприёмников (отдел бытовой техники, выпуск осенний)",
+  "en": "Catalogue of Radio Sets (household appliances, autumn issue)",
+  "ja": "ラジオ受信機カタログ（家電売り場・秋号）"
+ },
+ "city.xtx.store_radio_catalogue.1": {
+  "ru": "«ВОЛНА-М». Настольный приёмник в деревянном корпусе, три диапазона, шкала с подсветкой. Громкость и настройка в разных руках: левой слышимость, правой — совесть. Хорошо берёт радио Людмиловска и мёртво молчит, когда по соседству включают электробритву. Продавец напоминает: «Волна» не любит, когда её переставляют. Поставили один раз, и ладно, она запомнит место и будет благодарна.",
+  "en": "\"VOLNA-M\" (Wave-M). A table set in a wooden case, three bands, an illuminated dial. Volume and tuning for different hands: the left for reception, the right for conscience. Picks up Lyudmilovsk radio well and falls dead silent when an electric razor is switched on next door. The salesman reminds you: the Volna dislikes being moved. Put it down once and that's enough; it will remember the place and be grateful.",
+  "ja": "「ヴォルナM」。木製ケースの卓上受信機。三バンド、照明つきのダイヤル。音量と同調は別々の手で。左手は受信、右手は良心。リュドミロフスクのラジオはよく拾うが、隣で電気かみそりをつけると、ぴたりと黙る。販売員からの注意。ヴォルナは動かされるのを嫌います。一度置いたらそのままに。場所を覚えて、感謝してくれます。"
+ },
+ "city.xtx.store_radio_catalogue.2": {
+  "ru": "«БЕРЕГ-4». Переносной, на батарейках, с ремешком и телескопической антенной. Рекомендован рыбакам, пастухам и тем, кто любит слушать прогноз погоды раньше, чем ему о ней расскажут. Кожаный чехол в комплекте. Вес один килограмм двести граммов, но к концу пирса он кажется легче. В примечании рукой продавщицы: «Брали два рыбака на спор: кто дальше поймает Ригу. Поймали оба. Проспорил третий».",
+  "en": "\"BEREG-4\" (Shore-4). Portable, battery powered, with a strap and a telescopic aerial. Recommended for fishermen, shepherds and those who like to hear the weather forecast before it is told to them. Leather case included. Weight one kilogram two hundred grams, but at the end of the pier it feels lighter. A note in the saleswoman's hand: \"Bought by two fishermen on a bet: who could catch Riga farther out. Both did. A third lost the bet.\"",
+  "ja": "「ベレーグ4」。携帯用、電池式、ストラップと伸縮アンテナつき。漁師、羊飼い、そして天気予報を言われるより先に聞きたい人におすすめ。革のケース付き。重さは一キロ二百グラム。ただし桟橋の先まで来ると、軽く感じられる。販売員の手書きの注記。「二人の漁師が賭けで買っていった。どちらがより遠くでリガを捕まえるか。二人とも捕まえた。賭けに負けたのは三人目だった」"
+ },
+ "city.xtx.store_radio_catalogue.3": {
+  "ru": "«ЭФИР-60». Для тех, кто готов слушать ночью. Короткие волны, точная настройка, наушники в комплекте: всё серьёзно. Из примечаний: «Радиолюбители из «Рассвета» рекомендуют. Наушники левое пищит, но это характер». Если вдруг услышите голос, которого не должно быть в эфире, не торопитесь выключать. Продавец говорит: «Сначала дослушайте. Потом выключайте. В таком порядке всё и случается».",
+  "en": "\"EFIR-60\" (Ether-60). For those ready to listen at night. Short wave, fine tuning, earphones included: all in earnest. From the notes: \"Recommended by the radio amateurs of Rassvet. The left earphone squeaks, but that's character.\" If you suddenly hear a voice that has no business on the air, don't hurry to switch off. The salesman says: \"Listen to the end first. Then switch off. That is the order in which everything happens.\"",
+  "ja": "「エフィール60」。夜に聞く覚悟のある人のために。短波、精密な同調、ヘッドホン付き。本格派。注記より。「『ラスヴェート』の無線家のおすすめ。左のヘッドホンはキーキー鳴るが、それは個性」。もし電波の中に、そこにいるはずのない声が聞こえても、あわてて切らないこと。販売員は言う。「まず最後まで聞いてください。切るのはそのあと。ものごとは、その順に起こるのです」"
  }
 }

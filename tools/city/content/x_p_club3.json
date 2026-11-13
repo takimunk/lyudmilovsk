@@ -752,6 +752,37 @@
      "after": 7
     }
    ]
+  },
+  "rd_cog_model_manual": {
+   "like": "read_engineering",
+   "target": "read_engineering",
+   "read": {
+    "texts": [
+     "cog_model_manual"
+    ]
+   },
+   "sound": "page_turn"
+  },
+  "rd_cog_photo_guide": {
+   "like": "look_exhibit",
+   "target": "look_exhibit",
+   "prompt": "city.act.read.prompt",
+   "read": {
+    "texts": [
+     "cog_photo_guide"
+    ]
+   },
+   "sound": "page_turn"
+  },
+  "rd_cog_chess_ladder": {
+   "like": "read_chess",
+   "target": "read_chess",
+   "read": {
+    "texts": [
+     "cog_chess_ladder"
+    ]
+   },
+   "sound": "page_turn"
   }
  },
  "rules": {
@@ -762,10 +793,10 @@
    "act": "cog_sh_art"
   },
   "cog_club/stack_r_3": {
-   "act": "cog_sh_chess"
+   "act": "rd_cog_chess_ladder"
   },
   "cog_club/stack_r_4": {
-   "act": "cog_sh_eng"
+   "act": "rd_cog_model_manual"
   },
   "cog_club/stack_l_1": {
    "act": "cog_sh_local"
@@ -853,6 +884,9 @@
   },
   "cog_club/clock_place": {
    "act": "cog_clock_set"
+  },
+  "P-CLUB3/photo_board": {
+   "act": "rd_cog_photo_guide"
   }
  },
  "quests": [
@@ -957,5 +991,89 @@
     }
    ]
   }
- ]
+ ],
+ "texts": {
+  "cog_model_manual": {
+   "title": "city.xtx.cog_model_manual.title",
+   "kind": "book",
+   "minutes": 3,
+   "collect": "reading/cog_model_manual",
+   "pages": [
+    "city.xtx.cog_model_manual.1",
+    "city.xtx.cog_model_manual.2",
+    "city.xtx.cog_model_manual.3",
+    [
+     "city.cog.sh.eng.2",
+     "city.cog.sh.eng.1"
+    ]
+   ]
+  },
+  "cog_photo_guide": {
+   "title": "city.xtx.cog_photo_guide.title",
+   "kind": "notice",
+   "minutes": 2,
+   "collect": "reading/cog_photo_guide",
+   "pages": [
+    "city.xtx.cog_photo_guide.1",
+    "city.xtx.cog_photo_guide.2",
+    "city.xtx.cog_photo_guide.3",
+    "city.xtx.cog_photo_guide.4",
+    [
+     {
+      "k": "city.xtx.cog_photo_guide.p5_1",
+      "every": [
+       4,
+       0
+      ]
+     },
+     {
+      "k": "city.xtx.cog_photo_guide.p5_2",
+      "every": [
+       4,
+       1
+      ]
+     },
+     {
+      "k": "city.xtx.cog_photo_guide.p5_3",
+      "every": [
+       4,
+       2
+      ]
+     },
+     {
+      "k": "city.xtx.cog_photo_guide.p5_4",
+      "every": [
+       4,
+       3
+      ]
+     }
+    ]
+   ]
+  },
+  "cog_chess_ladder": {
+   "title": "city.xtx.cog_chess_ladder.title",
+   "kind": "ledger",
+   "minutes": 2,
+   "collect": "reading/cog_chess_ladder",
+   "pages": [
+    "city.xtx.cog_chess_ladder.1",
+    "city.xtx.cog_chess_ladder.2",
+    "city.xtx.cog_chess_ladder.3",
+    [
+     {
+      "k": "city.xtx.cog_chess_ladder.p4_1",
+      "d": "thu"
+     },
+     {
+      "k": "city.cog.sh.chess.1",
+      "d": "mon-wed,fri-sun"
+     },
+     {
+      "k": "city.cog.sh.chess.2",
+      "d": "mon-wed,fri-sun"
+     }
+    ]
+   ]
+  }
+ }
 }

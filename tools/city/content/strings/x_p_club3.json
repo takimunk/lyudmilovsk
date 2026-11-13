@@ -689,5 +689,95 @@
   "ru": "Тамара Ильинична поставила мне штамп «Клуб „Шестерня“. Библиотека» на открытку и сказала, что теперь я читатель. Штамп вышел кривой, зато настоящий.",
   "en": "Tamara Ilyinichna stamped \"Cog Club. Library\" on a postcard and said I was a reader now. The stamp came out crooked, but it's real.",
   "ja": "タマーラ・イリイニチナが絵はがきに「クラブ『歯車』図書室」のスタンプを押して、これで君も読者だと言った。スタンプは曲がっていたけれど、本物だ。"
+ },
+ "city.xtx.cog_model_manual.title": {
+  "ru": "Памятка моделиста (составил Л. А., переплёт — скотч)",
+  "en": "The Model-Maker's Manual (compiled by L. A., bound in sticky tape)",
+  "ja": "模型づくりの手引き（L・A編、とじ具はテープ）"
+ },
+ "city.xtx.cog_model_manual.1": {
+  "ru": "Раздел первый: «Что нужно на верстаке». Лист фанеры в три миллиметра, лобзик, наждак, клей, прищепки, банка воды и терпение. Терпение кладите в первую очередь, остального при желании можно одолжить, а его нет. Чертёж прикрепляйте кнопками по углам и никогда посередине: середина понадобится глазам. Правило верстака: если сомневаетесь, отложите инструмент и посмотрите на деталь минуту. Часто деталь сама объяснит, чего хочет.",
+  "en": "Section one: \"What You Need at the Bench\". A sheet of three-millimetre plywood, a fretsaw, sandpaper, glue, clothes pegs, a jar of water and patience. Put the patience in first; the rest can be borrowed if need be, but not that. Pin the drawing by the corners and never in the middle: the middle will be needed by the eyes. The bench rule: if in doubt, put the tool down and look at the part for a minute. Often the part will explain what it wants.",
+  "ja": "第一章「作業台に必要なもの」。厚さ三ミリのベニヤ板、糸のこ、紙やすり、接着剤、洗濯ばさみ、水を入れた瓶、そして根気。根気は最初に入れること。ほかのものは必要なら借りられるが、これだけは借りられない。図面は四隅を画びょうで留め、真ん中には絶対に留めない。真ん中は目が使うからだ。作業台の決まり。迷ったら、道具を置いて、部品を一分間眺める。部品がしばしば、自分が何を望んでいるかを教えてくれる。"
+ },
+ "city.xtx.cog_model_manual.2": {
+  "ru": "Катер, в трёх днях. День первый: выпиливаем шпангоуты. Не торопитесь, одна лишняя пилка стоит часа правки. День второй: клеим киль и шпангоуты, стягиваем прищепками. Клей пахнет яблоками, это нормально. День третий: обтягиваем шпоном и красим: красный низ, белая палуба, синяя рубка. Потом краска сохнет сутки, и это правило не обсуждается. Нетерпеливые, которые трогают пальцем, остаются в истории катера отпечатком, но им это не в укор.",
+  "en": "The motor launch, in three days. Day one: cut the frames. Don't hurry; one extra stroke of the saw costs an hour of correction. Day two: glue the keel and frames, hold them with pegs. The glue smells of apples, which is normal. Day three: cover with veneer and paint: red below, white deck, blue wheelhouse. Then the paint dries for a day, and this rule is not up for discussion. The impatient who touch it with a finger remain in the launch's history as a print, but we don't hold it against them.",
+  "ja": "小型船は三日で作る。一日目、肋材を切り出す。急がないこと。余計な一引きは、一時間の修正に値する。二日目、竜骨と肋材を接着し、洗濯ばさみで押さえる。接着剤はりんごのにおいがするが、それは普通だ。三日目、薄板を張って塗る。下は赤、甲板は白、操舵室は青。そのあと塗料は一日乾かす。この決まりは議論しない。待てずに指で触れた人は、指紋として船の歴史に残るが、それを責めることはしない。"
+ },
+ "city.xtx.cog_model_manual.3": {
+  "ru": "Планер. Нервюры тонкие, как лучины; ломайте не стесняясь и выпиливайте новые: планер любит терпеливых, а не безупречных. Крыло обтягивайте папиросной бумагой без единой складки, складка — это воздушная яма. Брызните водой, и бумага натянется, как барабан. Первый полёт делайте внутри, с площадки, против сквозняка, а не по ветру. Хорошо, если после первого круга он сядет на скамейку. Плохо, если на чью-то шляпу. Совсем плохо, если шляпа начнёт его догонять.",
+  "en": "The glider. The ribs are thin as splinters; break them without shame and cut new ones: a glider loves the patient, not the flawless. Cover the wing in tissue without a single wrinkle; a wrinkle is an air pocket. Spray it with water and the paper tightens like a drum. Make the first flight indoors, from a landing, into the draught rather than with it. It is good if after the first circle it settles on a bench. It is bad if on somebody's hat. It is very bad if the hat starts to chase it.",
+  "ja": "グライダー。小骨は細いひごのようだ。遠慮なく折って、新しく切り出すこと。グライダーが好きなのは、完璧な人ではなく、辛抱強い人だ。翼には、しわ一本ない薄紙を張る。しわは空気の落とし穴だ。水を吹きかけると、紙は太鼓の皮のようにぴんと張る。最初の飛行は屋内の踊り場から、追い風ではなく向かい風の中で。一周してベンチに降りれば上出来。だれかの帽子の上なら悪い。帽子が追いかけてきたら、とても悪い。"
+ },
+ "city.xtx.cog_photo_guide.title": {
+  "ru": "Памятка фотокружка: четыре дня одной фотографии",
+  "en": "Photo Circle Sheet: Four Days of One Photograph",
+  "ja": "写真サークルの手引き　一枚の写真の四日間"
+ },
+ "city.xtx.cog_photo_guide.1": {
+  "ru": "День первый — негативы. Плёнку сматываем в полной темноте, на ощупь и шёпотом считая витки. Свет включать нельзя, даже если очень хочется посмотреть, что там получилось: любопытство плёнка не прощает. Проявитель, вода, закрепитель, снова вода, и всё это под счёт. В конце на леске висит полоска маленьких тёмных кадров, на которых светлое тёмное, а тёмное светлое. Привыкнуть к этому можно, но на это нужно время.",
+  "en": "Day one: negatives. We wind the film off in complete darkness, by touch, counting the turns in a whisper. The light must not be switched on, even if you are dying to see how it came out: film doesn't forgive curiosity. Developer, water, fixer, water again, all of it to a count. At the end a strip of small dark frames hangs on the line, in which the light is dark and the dark is light. You can get used to it, but it takes time.",
+  "ja": "一日目、ネガ。フィルムは真っ暗闇の中で、手探りで、小声で巻き数を数えながらほどく。どんなに出来を見たくても、明かりをつけてはいけない。フィルムは好奇心を許さない。現像液、水、定着液、また水。すべて数えながら。最後に、ひもに小さな暗いコマの細長い帯がぶら下がる。明るいものは暗く、暗いものは明るい。慣れることはできるが、時間がかかる。"
+ },
+ "city.xtx.cog_photo_guide.2": {
+  "ru": "День второй — контрольки. Все кадры кладём на один лист, они выходят мелкие, как почтовые марки. Берём лупу и красный карандаш: лучшие обводим. Правило Серёжи Гусева: «Если кадр хороший с первого взгляда, не верь ему, смотри второй раз. Если и со второго хороший, обводи один раз. Если ты обвёл трижды, значит, ты влюбился, а это уже не критерий». Выбор делается тихо, в одиночку, и объясняется потом.",
+  "en": "Day two: contact sheets. All the frames go on one sheet and come out small as postage stamps. Take a loupe and a red pencil: circle the best. Seryozha Gusev's rule: \"If a frame is good at first glance, don't trust it, look a second time. If it's good the second time too, circle it once. If you circled it three times, you've fallen in love, and that's no longer a criterion.\" The choice is made quietly, alone, and explained afterwards.",
+  "ja": "二日目、ベタ焼き。すべてのコマを一枚の紙に並べると、切手のように小さく出る。ルーペと赤鉛筆を手に、よいコマを囲む。セリョージャ・グーセフの決まり。「一目でいいコマは信じるな、もう一度見ろ。二度目もいいなら、一度だけ囲め。三回囲んだなら、恋をしたということで、もう基準ではない」。選ぶのは静かに、ひとりで。説明はあとでする。"
+ },
+ "city.xtx.cog_photo_guide.3": {
+  "ru": "День третий — печать. Лист под увеличителем, красный свет, и все говорят шёпотом, хотя красному свету всё равно. Выдержку отсчитываем по часам на втором столе: щёлк левой кнопкой, щёлк правой; на двенадцати поднимаем рамку. Если не уверены, делайте полоски: лист закрывается картоном и открывается по частям, каждую часть на две секунды дольше. Потом кладём в ванночку и смотрим, как проступает: сначала горизонт, потом всё остальное, и последним то, ради чего снимали.",
+  "en": "Day three: printing. The sheet under the enlarger, red light, and everyone whispers though the red light doesn't care. We count the exposure by the clock on the second bench: click the left button, click the right; at twelve we lift the frame. If you're not sure, make test strips: cover the sheet with card and uncover it in parts, each part two seconds longer. Then into the tray, and watch it emerge: first the horizon, then everything else, and last of all, what you took it for.",
+  "ja": "三日目、焼き付け。引き伸ばし機の下に印画紙、赤い光。赤い光は気にしないのに、みんな小声で話す。露光は二つ目の机の時計で数える。左のボタンをカチッ、右をカチッ。十二で枠を上げる。自信がなければテスト用の帯を作る。紙を厚紙で覆い、少しずつ開けていく。一か所ごとに二秒長く。それから現像皿に入れて、浮かび上がるのを見る。最初は水平線、そのあと残りのすべて、そして最後に、撮った理由そのもの。"
+ },
+ "city.xtx.cog_photo_guide.4": {
+  "ru": "День четвёртый — сушка. Отпечатки висят на леске и капают, и в лаборатории пахнет уксусом. Глянец или матовая бумага, вопрос вечный и неразрешимый; клуб поделён поровну, и обе стороны пьют чай вместе. Высохший снимок светлее, чем казался в красном свете: учитывайте при печати, а то на третий день пересолите. Подписывайте на обороте мягким карандашом: место, час и кто был рядом. Через год это окажется главным в снимке.",
+  "en": "Day four: drying. The prints hang on the line and drip, and the lab smells of vinegar. Gloss or matt paper, an eternal and unresolvable question; the club is split evenly, and both sides drink tea together. A dried print is lighter than it looked in the red light: allow for it when printing, or on day three you will overdo it. Sign on the back in soft pencil: the place, the hour and who was beside you. In a year this will turn out to be the main thing in the picture.",
+  "ja": "四日目、乾燥。印画紙がひもにぶら下がって水を垂らし、暗室には酢のにおいがする。光沢紙か半光沢紙か。永遠に解けない問いで、クラブはきれいに二つに割れ、両派は一緒にお茶を飲む。乾いた写真は、赤い光の下で見たより明るい。焼くときにそれを見込まないと、三日目にやりすぎることになる。裏には柔らかい鉛筆で、場所、時刻、そばにいた人を書く。一年後には、それが写真のいちばん大事なところになる。"
+ },
+ "city.xtx.cog_photo_guide.p5_1": {
+  "ru": "Сегодня в лаборатории: негативы. Новичкам: сначала посмотреть, потом браться. Свет не включать, пока на двери горит красная лампочка, а когда не горит, на всякий случай спросить. Плёнку мотать на ощупь и шёпотом. Серёжа Гусев дежурит и объяснит всё, если вы не стесняетесь спрашивать, а стесняться тут нечего.",
+  "en": "Today in the lab: negatives. Newcomers: look first, then get started. Don't switch the light on while the red lamp is lit on the door, and when it isn't, ask anyway, just in case. Wind the film by touch and in a whisper. Seryozha Gusev is on duty and will explain everything if you are not shy of asking, and there is nothing to be shy of.",
+  "ja": "今日の暗室：ネガ。新人は、見てから手を出すこと。戸口の赤いランプが点いているあいだは明かりをつけないこと。消えているときも、念のため聞くこと。フィルムは手探りで、小声で巻く。セリョージャ・グーセフが当番で、聞くのを恥ずかしがらなければ何でも教えてくれる。恥ずかしがることなど何もない。"
+ },
+ "city.xtx.cog_photo_guide.p5_2": {
+  "ru": "Сегодня в лаборатории: контрольки. Лупа и красный карандаш лежат у окна, не уносить. Лист-контролька сушить плашмя, а не на леске, иначе кадры закрутятся в трубочку и будут смотреть друг на друга. Выбирая кадры, помните правило: дважды обвёл, значит, уже любишь.",
+  "en": "Today in the lab: contact sheets. The loupe and red pencil are by the window; do not take them away. Dry the contact sheet flat, not on the line, or the frames will curl into a tube and look at each other. When choosing frames, remember the rule: circled twice means you already love it.",
+  "ja": "今日の暗室：ベタ焼き。ルーペと赤鉛筆は窓辺にあります。持ち出さないで。ベタ焼きはひもではなく平らにして乾かすこと。さもないとコマが筒状に丸まって、おたがいを見つめ合ってしまう。コマを選ぶときは、決まりを思い出して。二度囲んだなら、もう好きになっている。"
+ },
+ "city.xtx.cog_photo_guide.p5_3": {
+  "ru": "Сегодня в лаборатории: печать. Часы на втором столе, не толкать, они и так нервные. На двенадцати поднимаем рамку, не на одиннадцати и не на тринадцати: тринадцать у нас считается за характер, а одиннадцать за поспешность. Ванночки не путать, левая проявитель, правая закрепитель, а средняя вода и справедливость.",
+  "en": "Today in the lab: printing. The clock is on the second bench; don't jostle it, it is nervous enough. At twelve we lift the frame, not at eleven and not at thirteen: thirteen counts here as character, eleven as haste. Don't mix up the trays: the left is developer, the right is fixer, and the middle is water and justice.",
+  "ja": "今日の暗室：焼き付け。時計は二つ目の机の上。押さないで、ただでさえ神経質です。枠を上げるのは十二で。十一でも十三でもなく。十三はここでは個性、十一は性急とみなされる。皿を取りちがえないこと。左が現像液、右が定着液、真ん中は水と公平さだ。"
+ },
+ "city.xtx.cog_photo_guide.p5_4": {
+  "ru": "Сегодня в лаборатории: сушка. Отпечатки не трогать мокрыми пальцами, как бы ни хотелось. Висят на леске прищепками за уголок, не за лицо. Уксусом пахнет до вечера, и это нормально: так лаборатория сообщает, что работа идёт. Кто спорит про глянец и матовую, спорит, пожалуйста, шёпотом.",
+  "en": "Today in the lab: drying. Don't touch the prints with wet fingers, however much you want to. They hang on the line by a corner, not by the face. It smells of vinegar until evening, and that is normal: it is how the lab lets you know work is going on. Those arguing about gloss and matt, please argue in whispers.",
+  "ja": "今日の暗室：乾燥。どんなに触りたくても、濡れた指で写真に触れないこと。写真は顔ではなく角を洗濯ばさみで留めて、ひもに下げる。酢のにおいは夕方まで残るが、それは普通のこと。暗室が、作業が進んでいると知らせる方法だ。光沢か半光沢かで言い争う人は、どうぞ小声で。"
+ },
+ "city.xtx.cog_chess_ladder.title": {
+  "ru": "Лесенка шахматного клуба. Тетрадь партий",
+  "en": "The Chess Club Ladder: the Book of Games",
+  "ja": "チェスクラブの階段表　対局帳"
+ },
+ "city.xtx.cog_chess_ladder.1": {
+  "ru": "Правила лесенки. 1. Играть можно с тем, кто выше вас не более чем на две ступеньки. 2. Победитель меняется с проигравшим местами и записывает партию в тетрадь, коротко, без оправданий. 3. Проигравший ставит чай. Чай ставится с сахаром, но без упрёков. 4. По четвергам блиц, любые часы, лишь бы тикали. 5. Если спор не решается, зовите Тамару Ильиничну. Она не разбирается в шахматах, но разбирается в людях, а это в нашем клубе главное.",
+  "en": "The rules of the ladder. 1. You may play only someone no more than two rungs above you. 2. The winner swaps places with the loser and enters the game in the book, briefly, without excuses. 3. The loser stands the tea. Tea is served with sugar but without reproach. 4. Thursdays are blitz, any clock, as long as it ticks. 5. If a dispute cannot be settled, call Tamara Ilyinichna. She doesn't understand chess but she understands people, and in our club that is what matters.",
+  "ja": "階段表の決まり。一、対局できるのは、自分より二段以内の上の人まで。二、勝者は敗者と位置を入れ替え、対局を帳面に書く。短く、言い訳なしで。三、敗者がお茶をおごる。お茶は砂糖入りで、小言なし。四、木曜日は早指し。時計は何でもよい、チクタクいえば。五、争いが収まらなければ、タマーラ・イリイニチナを呼ぶこと。彼女はチェスはわからないが、人はわかる。うちのクラブでは、それがいちばん大事だ。"
+ },
+ "city.xtx.cog_chess_ladder.2": {
+  "ru": "№ 212. Гонсалес — Каск. Итальянская партия, ничья на сороковом ходу. Оба довольны. Каск записал: «Он мне предложил ничью, я хотел отказаться, но он так посмотрел, что отказываться было бы грубо». Гонсалес приписал ниже: «Я хотел выиграть. Но чай вкуснее победы». Чай поставили оба, и никто не возражал. Лесенка осталась как была, что в таком случае считается лучшим результатом.",
+  "en": "No. 212. González vs Kask. Italian Game, drawn on move forty. Both pleased. Kask wrote: \"He offered me a draw, I wanted to decline, but he looked at me in such a way that declining would have been rude.\" González added below: \"I wanted to win. But tea is tastier than victory.\" Both stood the tea and nobody objected. The ladder stayed as it was, which in such cases counts as the best result.",
+  "ja": "第二百十二局。ゴンサレス対カスク。イタリアンゲーム、四十手で引き分け。二人とも満足。カスクの書き込み。「引き分けを申し出られ、断りたかったが、あまりにもあの目で見られたので、断ったら失礼になるところだった」。ゴンサレスがその下に書き足した。「勝ちたかった。でも、お茶は勝利よりおいしい」。お茶は二人ともおごり、誰も異議を唱えなかった。階段表は元のまま。こういう場合は、それが最良の結果とされる。"
+ },
+ "city.xtx.cog_chess_ladder.3": {
+  "ru": "№ 213. Новак — неизвестный игрок. Неизвестный был в клубной куртке не по размеру и играл чёрными. Новак записал просто: «Проиграл в двадцать восемь ходов. Было красиво. Он ушёл, не назвав имени, но оставил на столе ферзя, чтобы убрали». Под записью чужой почерк: «Это я. Приду в четверг». Тамара Ильинична поставила в конце тетради карандашом пустую строчку и подписала: «Для него».",
+  "en": "No. 213. Nowak vs an unknown player. The stranger wore a club jacket too big for him and played Black. Nowak wrote simply: \"Lost in twenty-eight moves. It was beautiful. He left without giving a name but left the queen on the table to be put away.\" Under the entry, a different hand: \"It was me. I'll come Thursday.\" At the end of the book Tamara Ilyinichna pencilled an empty line and wrote: \"For him.\"",
+  "ja": "第二百十三局。ノヴァク対名無しの選手。名無しは大きすぎるクラブのジャケットを着て、黒を持った。ノヴァクはこう書いただけ。「二十八手で負け。美しかった。名乗らずに帰ったが、片づけてもらえるようにクイーンを盤に残していった」。記入の下に、別の筆跡。「私です。木曜日に行きます」。タマーラ・イリイニチナは、帳面の最後に鉛筆で空の行を一本引き、書き添えた。「あの人のために」"
+ },
+ "city.xtx.cog_chess_ladder.p4_1": {
+  "ru": "Сегодня четверг, блиц. Часы клубные, берегите. Кто найдёт настоящие, получает право первого хода на всю неделю. Играем на любых, лишь бы тикали, но не на песочных: песок, как известно, идёт как ему вздумается. Запись у Тамары Ильиничны до шести вечера, а после шести уже у судьбы.",
+  "en": "Today is Thursday, blitz. The clock belongs to the club, take care of it. Whoever finds the real one gets the right of the first move for the whole week. We play on any clock, as long as it ticks, but not on sand ones: sand, as we know, runs as it pleases. Sign-up with Tamara Ilyinichna until six in the evening, and after six with fate.",
+  "ja": "今日は木曜、早指しの日。時計はクラブのもの、大事に。本物の時計を見つけた人は、一週間ずっと先手の権利をもらえます。時計は何でもよい、チクタクいえば。ただし砂時計は不可。砂は、ご存じのとおり、気の向くままに落ちるので。申し込みは夕方六時までタマーラ・イリイニチナへ。六時を過ぎたら運命のほうへ。"
  }
 }

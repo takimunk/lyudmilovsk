@@ -473,6 +473,39 @@
    "prompt": "city.ps.typewriter.prompt",
    "minutes": 3,
    "lines": "city.ps.type"
+  },
+  "rd_store_complaints": {
+   "like": "look_store",
+   "target": "look_store",
+   "prompt": "city.act.read.prompt",
+   "read": {
+    "texts": [
+     "store_complaints"
+    ]
+   },
+   "sound": "page_turn"
+  },
+  "rd_store_pattern_raincoat": {
+   "like": "look_catalogue",
+   "target": "look_catalogue",
+   "prompt": "city.act.read.prompt",
+   "read": {
+    "texts": [
+     "store_pattern_raincoat"
+    ]
+   },
+   "sound": "page_turn"
+  },
+  "rd_store_radio_catalogue": {
+   "like": "look_catalogue",
+   "target": "look_catalogue",
+   "prompt": "city.act.read.prompt",
+   "read": {
+    "texts": [
+     "store_radio_catalogue"
+    ]
+   },
+   "sound": "page_turn"
   }
  },
  "rules": {
@@ -535,6 +568,15 @@
   },
   "department_store/g_staff_board": {
    "act": "ps_staff_board"
+  },
+  "P-STORE/g_stand_3": {
+   "act": "rd_store_complaints"
+  },
+  "P-STORE/f1_island_1": {
+   "act": "rd_store_pattern_raincoat"
+  },
+  "P-STORE/f1_radio_table": {
+   "act": "rd_store_radio_catalogue"
   }
  },
  "quests": [
@@ -616,5 +658,41 @@
     }
    ]
   }
- ]
+ ],
+ "texts": {
+  "store_complaints": {
+   "title": "city.xtx.store_complaints.title",
+   "kind": "ledger",
+   "minutes": 2,
+   "collect": "reading/store_complaints",
+   "pages": [
+    "city.xtx.store_complaints.1",
+    "city.xtx.store_complaints.2",
+    "city.xtx.store_complaints.3",
+    "city.xtx.store_complaints.4"
+   ]
+  },
+  "store_pattern_raincoat": {
+   "title": "city.xtx.store_pattern_raincoat.title",
+   "kind": "notice",
+   "minutes": 2,
+   "collect": "reading/store_pattern_raincoat",
+   "pages": [
+    "city.xtx.store_pattern_raincoat.1",
+    "city.xtx.store_pattern_raincoat.2",
+    "city.xtx.store_pattern_raincoat.3"
+   ]
+  },
+  "store_radio_catalogue": {
+   "title": "city.xtx.store_radio_catalogue.title",
+   "kind": "notice",
+   "minutes": 2,
+   "collect": "reading/store_radio_catalogue",
+   "pages": [
+    "city.xtx.store_radio_catalogue.1",
+    "city.xtx.store_radio_catalogue.2",
+    "city.xtx.store_radio_catalogue.3"
+   ]
+  }
+ }
 }

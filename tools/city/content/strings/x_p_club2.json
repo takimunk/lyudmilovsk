@@ -548,5 +548,130 @@
   "ru": "Я вписал своё имя на пустую строчку. Мелом, мелко, чтобы можно было стереть. Лев Маркович прочитал и кивнул: так начинают все.",
   "en": "I wrote my name on the empty line. In chalk, small, so it can be rubbed out. Lev Markovich read it and nodded: that is how everybody starts.",
   "ja": "空いた行に、自分の名前を書いた。チョークで、小さく、あとで消せるように。レフ・マルコヴィチは読んで、うなずいた。誰でも、そうやって始めるのだ。"
+ },
+ "city.xtx.rassvet_programme.title": {
+  "ru": "Программка Дома культуры «Рассвет» (на неделю, бесплатно, не уносить)",
+  "en": "Programme of the House of Culture Rassvet (for the week, free, not to be taken away)",
+  "ja": "文化会館「ラスヴェート」今週の番組表（無料・持ち出し禁止）"
+ },
+ "city.xtx.rassvet_programme.1": {
+  "ru": "От киномеханика. Читатель, ты держишь в руках программку, которую я переписываю от руки каждую неделю, потому что типографии у нас нет, зато есть чернила и твёрдое намерение. Сеансов два в день: в три и в семь. Билет тридцать рублей, и это не цена, а скорее знак внимания. Просьба: не разговаривать, не шуршать, не грызть семечки. Шуршание обидно и для меня, и для героев фильма, а они, поверь, слышат.",
+  "en": "From the projectionist. Reader, you hold a programme that I copy out by hand every week, because we have no printing press, but we do have ink and firm intentions. There are two shows a day: at three and at seven. The ticket is thirty roubles, which is not a price so much as a mark of attention. Please do not talk, rustle or crack sunflower seeds. Rustling offends me and the characters in the film, and they do hear it, believe me.",
+  "ja": "映写技師より。読者よ、あなたが手にしているのは、私が毎週手書きで写している番組表です。印刷所はないが、インクと固い意志はあるので。上映は一日二回、三時と七時。切符は三十ルーブル、値段というより、気持ちの印です。お願い。話さず、がさつかず、ひまわりの種を割らないこと。がさがさ音は、私にも映画の登場人物にも失礼です。彼らは本当に聞こえているのです。"
+ },
+ "city.xtx.rassvet_programme.p2_1": {
+  "ru": "Сегодня, понедельник. Днём «Отпуск за свой счёт»: комедия о шляпе, которая сбежала в первый же день и показала курортнику весь город. Вечером «Человек, который ждал маяк»: фильм о старом рыбаке, который сорок лет поправлял шарф, а потом не знал, чем занять утро. Не стесняйтесь смеяться днём и плакать вечером: зал привык. Касса сегодня принимает только улыбки и тридцать рублей.",
+  "en": "Today, Monday. In the afternoon, \"Holiday at My Own Expense\": a comedy about a hat that ran away on the first day and showed a holidaymaker the whole town. In the evening, \"The Man Who Waited for the Lighthouse\": about an old fisherman who for forty years straightened his scarf and then did not know what to do with the morning. Don't be shy of laughing in the afternoon and crying in the evening: the hall is used to it. Today the box office takes only smiles and thirty roubles.",
+  "ja": "本日、月曜。午後は「自腹の休暇」。初日に逃げ出した帽子が、休暇客に町じゅうを見せてまわるコメディ。夜は「灯台を待った男」。四十年マフラーを直しつづけ、そのあと朝をどう過ごせばいいかわからなくなる、老漁師の物語。午後に笑い、夜に泣くのを遠慮しないでください。ホールは慣れています。今日の切符売り場は、笑顔と三十ルーブルしか受けつけません。"
+ },
+ "city.xtx.rassvet_programme.p2_2": {
+  "ru": "Сегодня, вторник. Днём «Как строили Людмиловск»: хроника, чёрно-белая, с девушкой-прорабом и рулеткой, которая командует взрослыми мужчинами, и с пианино на лестнице в финале. Вечером «Последняя кабина»: ночная смена, забытая в кабине перчатка и две минуты молчания у закрытой двери. После семи в фойе танцкласс: шуметь можно, но в такт. Из зала слышно, и не мешает.",
+  "en": "Today, Tuesday. In the afternoon, \"How Lyudmilovsk Was Built\": a black-and-white newsreel with a girl foreman and a tape measure ordering grown men about, and a piano on the stairs at the end. In the evening, \"The Last Cabin\": the night shift, a glove forgotten in a cabin and two minutes of silence at a shut door. After seven the dance class is in the foyer: noise is allowed, but in time. You can hear it from the hall and it doesn't disturb.",
+  "ja": "本日、火曜。午後は「リュドミロフスクはこうして建った」。巻き尺を持つ女の子の現場監督が大の男たちに指図し、最後には階段でピアノを運ぶ、白黒のニュース映画。夜は「最後の小部屋」。夜勤、ゴンドラに忘れられた手袋、閉じた扉の前の二分間の沈黙。七時を過ぎるとロビーでダンス教室。騒いでもいいが、拍子に合わせて。ホールにも聞こえるが、邪魔にはならない。"
+ },
+ "city.xtx.rassvet_programme.p2_3": {
+  "ru": "Сегодня, среда. Днём «Солнце — наш дом»: научно-популярный фильм, где лучи бегут к Земле восемь минут, а весь зал считает вместе с диктором. В конце подсолнух и сонная кошка, оба повернулись к свету. Вечером «Письмо в бутылке»: девушка со шведским письмом и город, каждый житель которого переводит его по-своему. Просьба приходить до звонка, а не вместе с ним. Звонок обидчив.",
+  "en": "Today, Wednesday. In the afternoon, \"The Sun Is Our Home\": a popular-science film in which the rays run to Earth for eight minutes while the whole hall counts along with the announcer. At the end a sunflower and a sleepy cat, both turned toward the light. In the evening, \"A Letter in a Bottle\": a girl with a Swedish letter and a town in which everybody translates it in their own way. Please arrive before the bell, not together with it. The bell is touchy.",
+  "ja": "本日、水曜。午後は「太陽は私たちの家」。光が八分かけて地球へ走るのを、ホールじゅうがアナウンサーと一緒に数える科学映画。最後に、ひまわりと眠そうな猫が、どちらも光のほうを向く。夜は「瓶の中の手紙」。スウェーデン語の手紙を持つ女の子と、住人がそれぞれ自分なりに訳す町。ベルの前にお越しください。ベルと一緒ではなく。ベルは気難しいのです。"
+ },
+ "city.xtx.rassvet_programme.p2_4": {
+  "ru": "Сегодня, четверг. Днём «Три товарища и арбуз»: летняя комедия о том, как три друга несли один арбуз, а их ждали вчера. Вечером «Тишина в эфире»: радиолюбитель, три ночи записывавший точки и тире, и одно слово в ответ. Радиоуголок сегодня открыт, а фотокружок собирается в шесть. После вечернего сеанса лучше помолчать: слов после «Тишины» нужно меньше, чем кажется.",
+  "en": "Today, Thursday. In the afternoon, \"Three Friends and a Watermelon\": a summer comedy about three friends carrying one watermelon while they were expected yesterday. In the evening, \"Silence on the Air\": a radio amateur who spent three nights noting dots and dashes, and one word in reply. The radio corner is open today and the photo circle meets at six. After the evening show it is better to keep quiet: after \"Silence\" fewer words are needed than it seems.",
+  "ja": "本日、木曜。午後は「三人の友だちとスイカ」。三人の友だちが一つのスイカを運んでいくと、待たれていたのは昨日だった、という夏のコメディ。夜は「電波の静けさ」。三晩かけて点と線を書き取った無線家と、その返事のひとこと。無線コーナーは今日あいていて、写真サークルは六時から。夜の上映のあとは、黙っているほうがいい。「静けさ」のあとは、思うより言葉はいらない。"
+ },
+ "city.xtx.rassvet_programme.p2_5": {
+  "ru": "Сегодня, пятница. Днём «Чемпион двора»: мальчик, который тренируется у стены дома и в очереди за хлебом, и малышка с косичками, которая выигрывает финал. Вечером «Вальс на пристани»: пара, которая никак не попадает в шаг, и фонарь, гаснущий только вместе с музыкой. После вечернего сеанса буфет работает ещё полчаса. Рекомендуем: пирожок и неспешный разговор о том, у кого что получилось в вальсе.",
+  "en": "Today, Friday. In the afternoon, \"The Yard Champion\": a boy who trains against a house wall and in the bread queue, and a little girl with plaits who wins the final. In the evening, \"Waltz on the Pier\": a couple who can't get into step, and a lamp that goes out only with the music. After the evening show the buffet stays open another half hour. We recommend a pie and an unhurried talk about who managed what in the waltz.",
+  "ja": "本日、金曜。午後は「中庭のチャンピオン」。家の壁に向かって、パンの行列で練習する男の子と、決勝に勝つおさげの女の子。夜は「桟橋のワルツ」。どうしても歩調の合わない二人と、音楽と一緒にしか消えない街灯。夜の上映のあと、売店はさらに三十分あいています。おすすめは、ピロシキと、ワルツで誰が何をやり遂げたかを語るのんびりしたおしゃべり。"
+ },
+ "city.xtx.rassvet_programme.p2_6": {
+  "ru": "Сегодня, суббота. Днём «Дело о пропавшей чайке»: детектив для маленьких, где допрашивают селёдку, кота и одного уклончивого лебедя. Вечером «Киномеханик»: он любит все фильмы, но видит только кусочек в окошко будки. Сеансы без перерыва, перерыв в буфете, там ватрушки по две в одни руки. Киномеханик просит не оборачиваться на будку во время фильма. Он знает, что вы обернётесь, но просит.",
+  "en": "Today, Saturday. In the afternoon, \"The Case of the Missing Gull\": a children's detective story in which a herring, a cat and one evasive swan are questioned. In the evening, \"The Projectionist\": he loves every film but sees only a slice through the booth window. No break between shows; the break is in the buffet, where it's two cheesecakes per person. The projectionist asks you not to look back at the booth during the film. He knows you will, but he asks.",
+  "ja": "本日、土曜。午後は「消えたカモメ事件」。ニシンと猫とはぐらかし上手の白鳥が取り調べられる、子ども向けの推理もの。夜は「映写技師」。すべての映画が好きなのに、窓から一コマ分しか見られない人。上映は休みなし、休みは売店にあり、ヴァトルーシカはお一人二つまで。映写技師からのお願い。上映中は、映写室を振り返らないこと。振り返るのはわかっているが、お願いしておく。"
+ },
+ "city.xtx.rassvet_programme.p2_7": {
+  "ru": "Сегодня, воскресенье. Днём «Приключения ёжика на канатной дороге»: ёжик везёт яблоко другу, а в кабине едут жираф, оркестр и очень серьёзная улитка. Вечером «Пустая улица»: старый немой фильм с тапёром и человеком, который всё время сворачивает не туда. Первый ряд сегодня для тех, кто пришёл с ёжиком или без. Воскресное меню в буфете: чай и всё, что осталось от субботы.",
+  "en": "Today, Sunday. In the afternoon, \"The Hedgehog's Cable-Car Adventures\": a hedgehog carries an apple to a friend, and in the cabin ride a giraffe, an orchestra and a very serious snail. In the evening, \"The Empty Street\": an old silent film with a pianist and a man who keeps turning the wrong way. The front row today is for those who came with a hedgehog or without. Sunday menu at the buffet: tea and whatever is left from Saturday.",
+  "ja": "本日、日曜。午後は「ハリネズミのロープウェイ大冒険」。ハリネズミが友だちにりんごを届け、ゴンドラにはキリンと楽団と、とても真面目なカタツムリが乗り合わせる。夜は「からっぽの通り」。伴奏のピアニストがつく古い無声映画と、いつも曲がる道をまちがえる男。今日の最前列は、ハリネズミ連れでも、そうでなくても。日曜の売店は、お茶と、土曜日の残りもの。"
+ },
+ "city.xtx.rassvet_programme.3": {
+  "ru": "Как смотреть. Место выбирайте по характеру. Пятый ряд — для тех, кто любит слышать всё: звук там собирается, как вода в ложбинке. Первый ряд — для детей и романтиков: экран нависает, как небо. Задние места для тех, кто пришёл подумать, а кино взял с собой на всякий случай. Если рядом с вами человек смеётся не там, где все, не оборачивайтесь. Скорее всего, он видит то, чего не заметили остальные.",
+  "en": "How to watch. Choose your seat by temperament. The fifth row is for those who like to hear everything: the sound gathers there like water in a hollow. The front row is for children and romantics: the screen hangs over you like the sky. The back seats are for those who came to think and brought the film along just in case. If the person next to you laughs where nobody else does, don't turn round. Most likely he sees what the rest have missed.",
+  "ja": "見かた。座席は気質で選ぶこと。五列目は、すべてを聞きたい人に。音がくぼみに水がたまるように集まる。最前列は、子どもとロマンチストに。スクリーンが空のようにかぶさってくる。後ろの席は、考えごとをしに来て、念のため映画も持ってきた人に。隣の人がほかの誰も笑わないところで笑っても、振り向かないで。たぶんその人は、ほかの人が見落としたものを見ているのだ。"
+ },
+ "city.xtx.rassvet_programme.4": {
+  "ru": "В конце программки напечатано мелко, но я прочту вслух. «Если вы дочитали до этого места, значит, вы читаете всё, что висит на стенах. Нам такие нужны. Передайте билетёру, что вы из таких, и он улыбнётся. Если не улыбнётся, проверьте, нет ли у вас билета в руках. Если есть, значит, всё хорошо: просто сегодня у него такая улыбка». Подписано: «Дирекция и киномеханик, в одном лице, потому что вторая ставка сокращена».",
+  "en": "At the end of the programme, in small print, but I'll read it aloud. \"If you have read this far, you read everything that hangs on the walls. We need such people. Tell the ticket-taker you are one of them and he will smile. If he does not smile, check whether you have a ticket in your hand. If you do, all is well: it's simply the sort of smile he has today.\" Signed: \"The Management and the Projectionist, in one person, because the second post has been cut.\"",
+  "ja": "番組表の最後に小さく印刷されている。声に出して読もう。「ここまで読んだあなたは、壁に貼られたものをすべて読む人です。私たちにはそういう人が必要です。もぎりの人に、自分はそういう者だと伝えれば、その人は微笑むでしょう。微笑まなければ、手に切符を持っているか確かめてください。持っているなら大丈夫。ただ、今日はそういう笑顔なのです」。署名。「支配人と映写技師、二つで一人。二つ目のポストは削減されたので」"
+ },
+ "city.xtx.rassvet_dance_rules.title": {
+  "ru": "Правила танцкласса (приколото к раме зеркала)",
+  "en": "Dance Class Rules (pinned to the mirror frame)",
+  "ja": "ダンス教室の決まり（鏡の枠に留めてある）"
+ },
+ "city.xtx.rassvet_dance_rules.1": {
+  "ru": "Правила пола. 1. Сменная обувь, чистая и гладкая. Пол натирают по пятницам, и он за это благодарен. 2. Считаем вслух, потому что молча никто не считает. 3. Смотреть в зеркало можно, любоваться нельзя: зеркало устаёт. 4. Не смотреть под ноги. Ноги знают сами; если не знают, они просто стесняются. 5. Партнёра, если наступили, благодарят, а не извиняются. Извинение — это ещё один шаг, а нам нужно попадать в такт.",
+  "en": "Rules of the floor. 1. Indoor shoes, clean and smooth. The floor is polished on Fridays and is grateful for it. 2. We count aloud, because nobody counts silently. 3. You may look in the mirror but not admire yourself: the mirror gets tired. 4. Don't look at your feet. The feet know; if they don't, they are only shy. 5. If you tread on your partner, thank them, don't apologise. An apology is one more step, and we need to land on the beat.",
+  "ja": "床の決まり。一、履き替えの靴で、清潔で滑らかなもの。床は金曜日に磨かれ、そのことに感謝している。二、声に出して数えること。黙って数える人はいないので。三、鏡を見てもいいが、見とれてはいけない。鏡が疲れる。四、足元を見ないこと。足は知っている。知らないなら、恥ずかしがっているだけだ。五、パートナーの足を踏んだら、謝るのではなくお礼を言う。お詫びは余計な一歩で、私たちは拍に合わせたいのだ。"
+ },
+ "city.xtx.rassvet_dance_rules.p2_1": {
+  "ru": "Сегодня вторник, вальс. Раз-два-три, раз-два-три: на «раз» тяжело, на «два» и «три» легко, как будто вы ставите ногу на ступеньку, а потом ступенька уходит из-под ноги. Начинающим: вести обязательно. Если оба решили, что ведут, получается спор, а не вальс. Учительница хлопает в ладоши, юноша, и вы тоже: это не аплодисменты, а метроном.",
+  "en": "Today is Tuesday, waltz. One-two-three, one-two-three: heavy on one, light on two and three, as if you stepped on a stair and then the stair slipped away. For beginners: somebody must lead. If both decide they are leading, you get an argument, not a waltz. The teacher claps her hands; so do you, young man: it isn't applause but a metronome.",
+  "ja": "今日は火曜、ワルツ。いち、にい、さん、いち、にい、さん。「いち」は重く、「にい」「さん」は軽く。階段に足をのせたら、その階段が足の下から消えるように。初心者へ。どちらかが必ずリードすること。二人とも自分がリードしていると思えば、ワルツではなく口論になる。先生は手を叩く。あなたもだ、青年。拍手ではなく、メトロノームである。"
+ },
+ "city.xtx.rassvet_dance_rules.p2_2": {
+  "ru": "Сегодня среда, фокстрот. Шаги быстрые и медленные: «медленно-медленно, быстро-быстро». Лица у всех серьёзные, как на экзамене, потому что фокстрот прощает ошибки, только если вы не смотрите на них. Партнёр просит не смотреть под ноги: смотрите ему в плечо. Через неделю вы забудете про плечо и просто пойдёте. Это и есть танец. Остальное оформление.",
+  "en": "Today is Wednesday, foxtrot. The steps are quick and slow: \"slow-slow, quick-quick\". Everyone's face is solemn as at an exam, because the foxtrot forgives mistakes only if you don't look at them. Your partner asks you not to look at your feet: look at his shoulder. In a week you will forget about the shoulder and simply walk. That is dancing. The rest is decoration.",
+  "ja": "今日は水曜、フォックストロット。ステップは遅いと速いの組み合わせ。「ゆっくり、ゆっくり、はやく、はやく」。みんな試験のようにまじめな顔をしている。フォックストロットは、間違いを見なければ許してくれるから。パートナーは足元を見ないでと言う。相手の肩を見よう。一週間後には肩のことを忘れて、ただ歩いている。それがダンスだ。あとは飾りである。"
+ },
+ "city.xtx.rassvet_dance_rules.p2_3": {
+  "ru": "Сегодня четверг, медленные танцы. Свет приглушён, пластинка шуршит. Шаг один: качнуться вправо, качнуться влево. Главное не шаг, а дыхание: учительница ходит между парами и шепчет «дышите». Пары качаются на месте, будто пол слегка плывёт. Тот, кто сегодня пришёл без партнёра, не обязан танцевать с зеркалом. Рядом всегда найдётся кто-то, кому тоже ни с кем.",
+  "en": "Today is Thursday, slow dances. The light is dimmed, the record rustles. There is one step: sway right, sway left. The point is not the step but the breathing: the teacher walks between the couples and whispers \"breathe\". The couples sway in place as if the floor were drifting a little. Anyone who came without a partner today needn't dance with the mirror. There is always somebody near who has nobody either.",
+  "ja": "今日は木曜、スローなダンス。照明は落とされ、レコードがさらさら鳴る。ステップは一つ。右に揺れ、左に揺れる。大事なのはステップではなく呼吸で、先生は二人組のあいだを歩きながら「息をして」とささやく。二人組はその場で揺れ、床が少しだけ流れているようだ。今日パートナーなしで来た人は、鏡と踊らなくていい。そばには、やはり相手のいない誰かが、いつもいる。"
+ },
+ "city.xtx.rassvet_dance_rules.p2_4": {
+  "ru": "Сегодня пятница, полька. Прыжок, прыжок, шаг. Пол подпрыгивает вместе с вами, зеркало дрожит, и никто не хочет остановиться первым. Когда кончается пластинка, все ещё секунду подпрыгивают, а потом смеются. Учительница просит: колени мягче, а то пол жалуется. Сегодня натирают пол, и после занятия просят не уходить, пока пол не просохнет. Он тоже должен успеть отдохнуть.",
+  "en": "Today is Friday, polka. Hop, hop, step. The floor bounces along with you, the mirror trembles, and nobody wants to stop first. When the record ends, everybody goes on hopping for a second and then laughs. The teacher asks: softer knees, or the floor will complain. Today the floor is polished, and after class you are asked not to leave until it has dried. It too must have time to rest.",
+  "ja": "今日は金曜、ポルカ。ホップ、ホップ、ステップ。床は一緒に跳ね、鏡は震え、誰も先には止まりたがらない。レコードが終わっても、みんな一秒間は跳びつづけ、それから笑う。先生のお願い。膝はもっとやわらかく、でないと床が文句を言う。今日は床を磨くので、授業のあとは乾くまで帰らないでください。床にも休む時間が必要です。"
+ },
+ "city.xtx.rassvet_dance_rules.p2_5": {
+  "ru": "Сегодня суббота, вечер по заявкам. Кто просит вальс, получает вальс, кто фокстрот — фокстрот. Заявка пишется на листочке и кладётся на пианино, с подписью или без. Если в заявке написано то, чего нет в программе, учительница играет это сама, одним пальцем, пока кто-нибудь не подберёт остальное. Так в прошлую субботу родился вальс, который теперь знает весь зал, но ни у кого нет нот.",
+  "en": "Today is Saturday, request evening. Whoever asks for a waltz gets a waltz, whoever asks for a foxtrot gets a foxtrot. A request is written on a slip and laid on the piano, signed or unsigned. If a request names something that isn't in the programme, the teacher plays it herself, with one finger, until somebody works out the rest. That is how last Saturday a waltz was born that the whole hall now knows, though nobody has the music.",
+  "ja": "今日は土曜、リクエストの夕べ。ワルツを頼めばワルツ、フォックストロットを頼めばフォックストロットがかかる。リクエストは紙きれに書いてピアノの上に置く。署名はあってもなくてもいい。番組にないものが書かれていたら、先生が自分で、指一本で弾く。誰かが残りを探し当てるまで。そうして先週の土曜日にひとつのワルツが生まれ、いまはホールじゅうが知っているが、楽譜は誰も持っていない。"
+ },
+ "city.xtx.rassvet_dance_rules.p2_6": {
+  "ru": "Сегодня занятий нет, пол отдыхает. Пластинки лежат в конвертах, зеркало смотрит в пустой зал и ждёт вторника. Правила остаются в силе и в выходные: под ноги не смотреть, считать вслух, благодарить за отдавленные ноги. Если вам хочется потанцевать, никто не мешает пройти три шага в одиночку. Эхо ответит и, возможно, сделает замечание.",
+  "en": "There is no class today, the floor is resting. The records lie in their sleeves, the mirror looks into the empty hall and waits for Tuesday. The rules stay in force at weekends: don't look at your feet, count aloud, thank people for trodden toes. If you feel like dancing, nobody prevents you from taking three steps alone. The echo will answer and may make a remark.",
+  "ja": "今日は授業がなく、床は休んでいる。レコードはジャケットに入り、鏡は空っぽのホールを見つめて火曜日を待つ。決まりは休みの日も有効だ。足元を見ない、声に出して数える、踏まれた足にお礼を言う。踊りたくなったら、ひとりで三歩歩くのを、誰も止めない。こだまが応えて、ひとこと言うかもしれない。"
+ },
+ "city.xtx.rassvet_radio_log.title": {
+  "ru": "Журнал радиоуголка. Короткие волны",
+  "en": "Radio Corner Log: Short Wave",
+  "ja": "無線コーナーの交信記録　短波"
+ },
+ "city.xtx.rassvet_radio_log.1": {
+  "ru": "Как вести журнал. Дата, время по часам на стене, частота, позывной, слышимость по пятибалльной шкале и одно слово от себя. Слово необязательное, но без него журнал превращается в бухгалтерию. Первая запись в этой тетради: «Слышимость 5, сигнал чистый, оператор в Риге просит повторить погоду. Повторили. Он поблагодарил и сказал, что у нас дождь красивее». Мы не стали спорить: дождь у нас и правда красивый.",
+  "en": "How to keep the log. Date, time by the wall clock, frequency, call sign, signal strength on a five-point scale and one word of your own. The word is optional, but without it the log turns into bookkeeping. The first entry in this notebook: \"Strength 5, clean signal, the operator in Riga asks us to repeat the weather. We repeated it. He thanked us and said our rain is prettier.\" We didn't argue: our rain really is pretty.",
+  "ja": "記録のつけ方。日付、壁の時計の時刻、周波数、コールサイン、五段階の感度、そして自分の一言。一言は任意だが、それがないと記録は帳簿になってしまう。このノートの最初の記入。「感度5、信号クリア。リガの局が天気をもう一度頼んできた。くり返した。礼を言われ、そちらの雨のほうがきれいだと言われた」。言い返さなかった。ここの雨は、たしかにきれいだ。"
+ },
+ "city.xtx.rassvet_radio_log.2": {
+  "ru": "Запись, вечер. «Таллин, слышимость 4. Радиолюбитель рассказал про кошку, которая сидит на передатчике, и потому сигнал то уходит, то возвращается. Просил передать привет всем, кто сейчас сидит на чём-то тёплом». Передали. Следом Архангельск: оператор продиктовал открытку по буквам и прочитал наш адрес. Дом культуры «Рассвет», радиоуголок. Мы не ждали открытки и очень обрадовались. Ответили в тот же вечер, и это отмечено красным.",
+  "en": "Entry, evening. \"Tallinn, strength 4. The amateur told us about a cat that sits on his transmitter, so the signal comes and goes. He asked us to send greetings to everyone sitting on something warm.\" We passed it on. Next, Arkhangelsk: the operator spelled out a card letter by letter and read our address. House of Culture Rassvet, radio corner. We hadn't expected a card and were delighted. We answered the same evening, and it is marked in red.",
+  "ja": "夕方の記入。「タリン、感度4。無線家が、送信機の上に座る猫の話をした。そのせいで信号が行ったり来たりする。いま何か温かいものの上に座っているすべての人によろしく、とのこと」。伝えた。続いてアルハンゲリスク。操作員がカードを一文字ずつ読み上げ、うちの住所を読んだ。文化会館「ラスヴェート」、無線コーナー。カードが来るとは思っていなくて、とてもうれしかった。その晩のうちに返信し、赤で印をつけてある。"
+ },
+ "city.xtx.rassvet_radio_log.3": {
+  "ru": "Запись, ночь. Мы не знаем, как эту запись оформить. «Ночью эфир широкий, как море. Диктор на чужом языке читает цифры, кто-то отвечает морзянкой, а между ними пищит совсем другое. Около трёх часов, на самом краю диапазона, в шуме мелькнуло: «…слышу вас, Людмиловск». Повторять не стали. Записали время, частоту и слышимость: единица. Поставили точку, потом вопрос, потом снова точку». Ниже другой рукой: «Я тоже слышал. Не говорите никому».",
+  "en": "Entry, night. We don't know how to enter this one. \"At night the air is wide as the sea. An announcer in a foreign language reads out numbers, someone answers in Morse, and between them something quite different beeps. Around three, at the very edge of the band, something flashed through the noise: '...hear you, Lyudmilovsk.' It did not repeat. We noted the time, the frequency and the strength: one. We put a full stop, then a question mark, then a full stop again.\" Below, in another hand: \"I heard it too. Don't tell anyone.\"",
+  "ja": "夜の記入。これはどう記入していいかわからない。「夜の電波は海のように広い。外国語のアナウンサーが数字を読み、だれかがモールスで答え、そのあいだに、まったく別の何かが鳴っている。三時ごろ、周波数帯のいちばん端で、雑音の中にひらめいた。『…あなたの声が聞こえます、リュドミロフスク』。くり返されなかった。時刻、周波数、感度を書いた。感度は一。句点を打ち、次に疑問符を打ち、また句点を打った」。その下に別の筆跡で。「私にも聞こえた。だれにも言わないで」"
+ },
+ "city.xtx.rassvet_radio_log.p4_1": {
+  "ru": "Четверг: радиоуголок открыт, вечером фильм «Тишина в эфире». Радиолюбители собираются в буфете заранее, с наушниками на шее, и спорят про антенну так, что слышно в кассе. Потом обсуждают, было ли в фильме что-нибудь неправильно. Было, но они счастливы. Просьба: не хвалить фильм при Георгии Александровиче, он потом три дня ходит с лицом оператора.",
+  "en": "Thursday: the radio corner is open, and in the evening the film \"Silence on the Air\". The radio amateurs gather in the buffet beforehand, headphones round their necks, arguing about aerials so loudly that it carries to the box office. Then they discuss whether anything in the film was wrong. There was, but they are happy. Please don't praise the film in front of Georgy Alexandrovich; afterwards he walks about for three days with the face of an operator.",
+  "ja": "木曜。無線コーナーは開いていて、夜は映画「電波の静けさ」。無線家たちは首にヘッドホンをかけて売店に早めに集まり、アンテナの話を切符売り場まで聞こえる声で論じる。そのあと、映画に間違いがなかったかを論じ合う。あったが、みんな幸せだ。お願い。ゲオルギー・アレクサンドロヴィチの前でこの映画をほめないで。そのあと三日間、操作員の顔で歩きまわるので。"
+ },
+ "city.xtx.rassvet_radio_log.p4_2": {
+  "ru": "Запись для тех, кто приходит просто так: ручку с красной пастой не трогать, она для QSL. Наушники с левой стороны пищат, это не неисправность, а характер. Если вдруг услышите в эфире слово «Людмиловск», не пугайтесь и не молчите: нажмите кнопку и ответьте «Слышу». Остальное мы запишем.",
+  "en": "A note for those who come in just like that: don't touch the red-ink pen, it is for QSL cards. The left earphone squeaks; that is not a fault but a character. If you suddenly hear the word \"Lyudmilovsk\" on the air, don't be frightened and don't keep silent: press the button and answer, \"I hear you.\" We will write down the rest.",
+  "ja": "ふらりと来た人へのメモ。赤インクのペンには触らないこと。QSLカード用だ。左のヘッドホンはキーキー鳴るが、故障ではなく性格だ。もし電波の中に「リュドミロフスク」という言葉が聞こえたら、驚かず、黙らず、ボタンを押して「聞こえます」と答えてください。残りは私たちが記録する。"
  }
 }

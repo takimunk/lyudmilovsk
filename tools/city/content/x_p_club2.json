@@ -546,6 +546,37 @@
    "lines": [
     "city.rassvet.lost.*"
    ]
+  },
+  "rd_rassvet_programme": {
+   "like": "read_local",
+   "target": "read_local",
+   "read": {
+    "texts": [
+     "rassvet_programme"
+    ]
+   },
+   "sound": "page_turn"
+  },
+  "rd_rassvet_dance_rules": {
+   "like": "look_misc",
+   "target": "look_dance_mirror",
+   "prompt": "city.act.read.prompt",
+   "read": {
+    "texts": [
+     "rassvet_dance_rules"
+    ]
+   },
+   "sound": "page_turn"
+  },
+  "rd_rassvet_radio_log": {
+   "like": "read_engineering",
+   "target": "read_engineering",
+   "read": {
+    "texts": [
+     "rassvet_radio_log"
+    ]
+   },
+   "sound": "page_turn"
   }
  },
  "rules": {
@@ -584,7 +615,7 @@
    "closed": "city.rassvet.closed.floor"
   },
   "P-CLUB2/dance_mirror": {
-   "act": "look_dance_mirror"
+   "act": "rd_rassvet_dance_rules"
   },
   "P-CLUB2/hall_piano": {
    "act": "piano_club",
@@ -603,6 +634,12 @@
   },
   "P-CLUB2/lost_property": {
    "act": "look_lost_club"
+  },
+  "P-CLUB2/magazines": {
+   "act": "rd_rassvet_programme"
+  },
+  "P-CLUB2/shelf_radio": {
+   "act": "rd_rassvet_radio_log"
   }
  },
  "quests": [
@@ -696,5 +733,105 @@
     }
    ]
   }
- ]
+ ],
+ "texts": {
+  "rassvet_programme": {
+   "title": "city.xtx.rassvet_programme.title",
+   "kind": "book",
+   "minutes": 2,
+   "collect": "reading/rassvet_programme",
+   "pages": [
+    "city.xtx.rassvet_programme.1",
+    [
+     {
+      "k": "city.xtx.rassvet_programme.p2_1",
+      "d": "mon"
+     },
+     {
+      "k": "city.xtx.rassvet_programme.p2_2",
+      "d": "tue"
+     },
+     {
+      "k": "city.xtx.rassvet_programme.p2_3",
+      "d": "wed"
+     },
+     {
+      "k": "city.xtx.rassvet_programme.p2_4",
+      "d": "thu"
+     },
+     {
+      "k": "city.xtx.rassvet_programme.p2_5",
+      "d": "fri"
+     },
+     {
+      "k": "city.xtx.rassvet_programme.p2_6",
+      "d": "sat"
+     },
+     {
+      "k": "city.xtx.rassvet_programme.p2_7",
+      "d": "sun"
+     }
+    ],
+    "city.xtx.rassvet_programme.3",
+    "city.xtx.rassvet_programme.4"
+   ]
+  },
+  "rassvet_dance_rules": {
+   "title": "city.xtx.rassvet_dance_rules.title",
+   "kind": "notice",
+   "minutes": 2,
+   "collect": "reading/rassvet_dance_rules",
+   "pages": [
+    "city.xtx.rassvet_dance_rules.1",
+    [
+     {
+      "k": "city.xtx.rassvet_dance_rules.p2_1",
+      "d": "tue"
+     },
+     {
+      "k": "city.xtx.rassvet_dance_rules.p2_2",
+      "d": "wed"
+     },
+     {
+      "k": "city.xtx.rassvet_dance_rules.p2_3",
+      "d": "thu"
+     },
+     {
+      "k": "city.xtx.rassvet_dance_rules.p2_4",
+      "d": "fri"
+     },
+     {
+      "k": "city.xtx.rassvet_dance_rules.p2_5",
+      "d": "sat"
+     },
+     {
+      "k": "city.xtx.rassvet_dance_rules.p2_6",
+      "d": "sun,mon"
+     }
+    ],
+    "city.rassvet.mirror.3"
+   ]
+  },
+  "rassvet_radio_log": {
+   "title": "city.xtx.rassvet_radio_log.title",
+   "kind": "ledger",
+   "minutes": 2,
+   "collect": "reading/rassvet_radio_log",
+   "pages": [
+    "city.xtx.rassvet_radio_log.1",
+    "city.xtx.rassvet_radio_log.2",
+    "city.xtx.rassvet_radio_log.3",
+    [
+     {
+      "k": "city.xtx.rassvet_radio_log.p4_1",
+      "d": "thu"
+     },
+     {
+      "k": "city.xtx.rassvet_radio_log.p4_2",
+      "d": "mon-wed,fri-sun"
+     }
+    ]
+   ]
+  }
+ }
 }

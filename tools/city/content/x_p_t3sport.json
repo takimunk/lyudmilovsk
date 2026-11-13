@@ -883,6 +883,38 @@
     "city.t3.t3_ballcart.2",
     "city.t3.t3_ballcart.3"
    ]
+  },
+  "rd_t3_timetable": {
+   "like": "look_misc",
+   "target": "t3_sections",
+   "prompt": "city.act.read.prompt",
+   "read": {
+    "texts": [
+     "t3_timetable"
+    ]
+   },
+   "sound": "page_turn"
+  },
+  "rd_t3_potter_notebook": {
+   "like": "read_art",
+   "target": "read_art",
+   "read": {
+    "texts": [
+     "t3_potter_notebook"
+    ]
+   },
+   "sound": "page_turn"
+  },
+  "rd_t3_tournament_rules": {
+   "like": "look_misc",
+   "target": "t3_scoreboard",
+   "prompt": "city.act.read.prompt",
+   "read": {
+    "texts": [
+     "t3_tournament_rules"
+    ]
+   },
+   "sound": "page_turn"
   }
  },
  "rules": {
@@ -890,7 +922,7 @@
    "act": "t3_coach"
   },
   "P-T3SPORT/training_board": {
-   "act": "t3_sections"
+   "act": "rd_t3_timetable"
   },
   "P-T3SPORT/tactics_board": {
    "act": "t3_tactics"
@@ -989,13 +1021,16 @@
    "act": "t3_ware"
   },
   "P-T3SPORT/scoreboard": {
-   "act": "t3_scoreboard"
+   "act": "rd_t3_tournament_rules"
   },
   "P-T3SPORT/ball_cart": {
    "act": "t3_ballcart"
   },
   "P-T3SPORT/drying_shelf": {
    "act": "t3_ware"
+  },
+  "P-T3SPORT/art_shelf": {
+   "act": "rd_t3_potter_notebook"
   }
  },
  "quests": [
@@ -1097,5 +1132,133 @@
     }
    ]
   }
- ]
+ ],
+ "texts": {
+  "t3_timetable": {
+   "title": "city.xtx.t3_timetable.title",
+   "kind": "notice",
+   "minutes": 2,
+   "collect": "reading/t3_timetable",
+   "pages": [
+    "city.xtx.t3_timetable.1",
+    "city.xtx.t3_timetable.2",
+    "city.xtx.t3_timetable.3",
+    [
+     {
+      "k": "city.t3.t3_sections.2",
+      "d": "mon,wed,fri",
+      "h": [
+       15,
+       19
+      ]
+     },
+     {
+      "k": "city.t3.t3_sections.3",
+      "d": "tue,thu",
+      "h": [
+       15,
+       19
+      ]
+     },
+     {
+      "k": "city.t3.t3_sections.4",
+      "d": "mon-fri",
+      "h": [
+       7,
+       15
+      ]
+     },
+     {
+      "k": "city.t3.t3_sections.5",
+      "d": "sat"
+     },
+     {
+      "k": "city.t3.t3_sections.6",
+      "d": "sun"
+     },
+     {
+      "k": "city.t3.t3_sections.7",
+      "d": "mon-sat",
+      "h": [
+       19,
+       7
+      ]
+     }
+    ]
+   ]
+  },
+  "t3_potter_notebook": {
+   "title": "city.xtx.t3_potter_notebook.title",
+   "kind": "ledger",
+   "minutes": 2,
+   "collect": "reading/t3_potter_notebook",
+   "pages": [
+    "city.xtx.t3_potter_notebook.1",
+    [
+     {
+      "k": "city.xtx.t3_potter_notebook.p2_1",
+      "d": "mon,tue"
+     },
+     {
+      "k": "city.xtx.t3_potter_notebook.p2_2",
+      "d": "wed"
+     },
+     {
+      "k": "city.xtx.t3_potter_notebook.p2_3",
+      "d": "thu"
+     },
+     {
+      "k": "city.xtx.t3_potter_notebook.p2_4",
+      "d": "fri"
+     },
+     {
+      "k": "city.xtx.t3_potter_notebook.p2_5",
+      "d": "sat"
+     },
+     {
+      "k": "city.xtx.t3_potter_notebook.p2_6",
+      "d": "sun"
+     }
+    ],
+    "city.xtx.t3_potter_notebook.3"
+   ]
+  },
+  "t3_tournament_rules": {
+   "title": "city.xtx.t3_tournament_rules.title",
+   "kind": "notice",
+   "minutes": 2,
+   "collect": "reading/t3_tournament_rules",
+   "pages": [
+    "city.xtx.t3_tournament_rules.1",
+    "city.xtx.t3_tournament_rules.2",
+    "city.xtx.t3_tournament_rules.3",
+    [
+     {
+      "k": "city.t3.t3_scoreboard.1",
+      "d": "sat",
+      "h": [
+       13,
+       19
+      ]
+     },
+     {
+      "k": "city.t3.t3_scoreboard.2",
+      "d": "sat",
+      "h": [
+       19,
+       13
+      ]
+     },
+     {
+      "k": "city.t3.t3_scoreboard.3",
+      "d": "mon-fri"
+     },
+     {
+      "k": "city.t3.t3_scoreboard.4",
+      "d": "sun"
+     }
+    ]
+   ]
+  }
+ }
 }

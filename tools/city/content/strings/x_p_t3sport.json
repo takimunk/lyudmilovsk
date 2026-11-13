@@ -162,5 +162,90 @@
  "quest.t3_bowl.glaze.obj": {"ru": "Глазуровать миску на верстаке", "en": "Glaze the bowl at the bench", "ja": "作業台で鉢に釉薬をかける"},
  "quest.t3_bowl.take.log": {"ru": "Второй обжиг позади. Осталось найти свою миску на полке среди остальных.", "en": "The second firing is done. All that's left is to find my bowl on the shelf among the others.", "ja": "二度目の焼成も終わった。あとは棚の中から自分の鉢を見つけるだけだ。"},
  "quest.t3_bowl.take.obj": {"ru": "Осмотреть полку с готовой посудой", "en": "Look over the shelf of finished ware", "ja": "できあがった器の棚を見る"},
- "quest.t3_bowl.done": {"ru": "Зелёная, как море в хмурый день, с двумя синими крапинками, и один бок чуть выше другого. Мастерица сказала: «Она живая». Налью в неё чай.", "en": "Green as the sea on a grey day, with two blue specks and one side a little higher than the other. The potter said: \"It's alive.\" I'll pour tea into it.", "ja": "曇りの日の海みたいな緑で、青い点が二つ、片側がほんの少し高い。先生は言った。「この子は生きてるわ」。この鉢にお茶を注ごう。"}
+ "quest.t3_bowl.done": {"ru": "Зелёная, как море в хмурый день, с двумя синими крапинками, и один бок чуть выше другого. Мастерица сказала: «Она живая». Налью в неё чай.", "en": "Green as the sea on a grey day, with two blue specks and one side a little higher than the other. The potter said: \"It's alive.\" I'll pour tea into it.", "ja": "曇りの日の海みたいな緑で、青い点が二つ、片側がほんの少し高い。先生は言った。「この子は生きてるわ」。この鉢にお茶を注ごう。"},
+ "city.xtx.t3_timetable.title": {
+  "ru": "Расписание секций и записки тренера",
+  "en": "The Sections' Timetable and the Coach's Notes",
+  "ja": "各部の時間割とコーチのメモ"
+ },
+ "city.xtx.t3_timetable.1": {
+  "ru": "РАСПИСАНИЕ НА НЕДЕЛЮ. Понедельник, среда, пятница, с 15:00 до 19:00: баскетбол, мальчики («Прибой-мл.»). Вторник и четверг, в те же часы: гимнастика, девочки, группа Лидии Павловны. Суббота: до обеда штанга, после обеда игры. Воскресенье: зал на ваше усмотрение, тренера нет, мяч под ответственность того, кто его взял. С 7 до 15 зал свободный, в 11:00 урок физкультуры у 6-го «Б». Зал закрывается в 21:00.",
+  "en": "TIMETABLE FOR THE WEEK. Monday, Wednesday, Friday, 15:00 to 19:00: basketball, boys (\"Surf Juniors\"). Tuesday and Thursday, same hours: gymnastics, girls, Lidia Pavlovna's group. Saturday: weights before lunch, games after. Sunday: the hall is at your discretion, no coach, the ball is the responsibility of whoever took it. From 7 to 15 the hall is free; at 11:00 there is a PE lesson for class 6-B. The hall closes at 21:00.",
+  "ja": "週間時間割。月・水・金、十五時から十九時：バスケットボール、男子（「プリボイ・ジュニア」）。火・木、同じ時間：体操、女子、リディア・パヴロヴナのグループ。土曜：午前はウェイト、午後は試合。日曜：ホールはご自由に、コーチはおらず、ボールは持ち出した人の責任。七時から十五時まではホールは空いていて、十一時に六年B組の体育の授業がある。ホールは二十一時に閉まる。"
+ },
+ "city.xtx.t3_timetable.2": {
+  "ru": "ЗАПИСКИ ТРЕНЕРА. Для новичков: приходите не на тренировку, а на привычку. Первую неделю можете просто смотреть. Вторую неделю смотрите и бегите по лёгкой дорожке вдоль стены. Третью неделю вы уже тренируетесь, и я делаю вид, что давно знал. Спорт не любит рывков, он любит тех, кто приходит скучным вторником. Звёзды рождаются в среду, но только потому, что во вторник кто-то пришёл.",
+  "en": "THE COACH'S NOTES. For newcomers: come not for a training session but for a habit. For the first week you may just watch. The second week, watch and run an easy lap along the wall. By the third week you are training, and I pretend I knew it all along. Sport doesn't like jerks, it likes those who come on a dull Tuesday. Stars are born on Wednesday, but only because on Tuesday somebody came.",
+  "ja": "コーチのメモ。新人へ。練習ではなく、習慣をつけに来ること。最初の一週間は見ているだけでいい。二週目は見て、壁ぞいの軽いコースを走る。三週目にはもう練習していて、私は前から知っていたふりをする。スポーツは急な動きを好まない。好きなのは、退屈な火曜日に来る人だ。スターは水曜日に生まれるが、それは火曜日にだれかが来たからにほかならない。"
+ },
+ "city.xtx.t3_timetable.3": {
+  "ru": "ЗАПИСКИ ТРЕНЕРА (продолжение). Про мяч: мяч не враг и не друг, он собеседник. Хорошо его выслушать, потом ответить. Про обувь: уличную снимать у двери. Просим вежливо, тренер просит невежливо, но с любовью. Про окна: окна мне дороже мячей, и это не шутка, это бюджет. Про соперников: «Чайки» играют жёстко, значит быстро, а быстро это не страшно, если вовремя отдавать мяч. Про лишний круг: он не наказание, он разговор с самим собой.",
+  "en": "THE COACH'S NOTES (continued). On the ball: the ball is neither enemy nor friend, it is a conversation partner. Listen to it first, then answer. On shoes: street shoes come off at the door. We ask politely; the coach asks impolitely, but with love. On windows: the windows are dearer to me than the balls, and that is no joke, it is the budget. On opponents: the Seagulls play hard, which means fast, and fast is not frightening if you pass in time. On the extra lap: it is not a punishment, it is a conversation with yourself.",
+  "ja": "コーチのメモ（続き）。ボールについて。ボールは敵でも味方でもなく、話し相手だ。まず聞いて、それから答える。靴について。外靴は入口で脱ぐこと。ていねいにお願いし、コーチはていねいでなく、でも愛をこめてお願いする。窓について。窓はボールより大事だ。冗談ではなく、予算の話だ。相手について。「チャイキ」は荒っぽい、つまり速い。速いのは、タイミングよくパスすれば怖くない。追加の一周について。罰ではなく、自分との対話だ。"
+ },
+ "city.xtx.t3_potter_notebook.title": {
+  "ru": "Тетрадь гончара: неделя одной миски",
+  "en": "The Potter's Notebook: the Week of One Bowl",
+  "ja": "陶工のノート　一つの鉢の一週間"
+ },
+ "city.xtx.t3_potter_notebook.1": {
+  "ru": "Правило первое: глина всегда права, пока вы не научились с ней спорить. Берёшь кусок размером с батон, мнёшь, как тесто, чтобы вышли пузырьки. Пузырёк в глине значит взрыв в печи, поэтому мнём подольше. Потом на круг: центруй. Глина как характер. Надавишь слишком сильно, убежит; не надавишь, не встанет. Руки мокрые, локти прижаты к бёдрам, взгляд на середину. Если центр найден, ты это почувствуешь: круг перестанет шуметь.",
+  "en": "Rule one: clay is always right until you have learned to argue with it. Take a lump the size of a loaf, knead it like dough to drive the bubbles out. A bubble in the clay means an explosion in the kiln, so we knead longer. Then onto the wheel: centre it. Clay is like character. Press too hard and it runs away; don't press and it won't stand. Hands wet, elbows against the thighs, eyes on the middle. When the centre is found you'll feel it: the wheel stops making noise.",
+  "ja": "第一のきまり。粘土は、それと言い争えるようになるまでは、いつも正しい。パンの塊ほどの粘土を取り、生地のようにこねて、気泡を追い出す。粘土の中の泡は窯の中の爆発になるから、念入りにこねる。それからろくろへ。中心を取る。粘土は性格のようなもの。強く押しすぎれば逃げるし、押さなければ立たない。手は濡らし、ひじは腿につけ、視線は真ん中に。中心が取れたら、わかる。ろくろが音を立てなくなる。"
+ },
+ "city.xtx.t3_potter_notebook.p2_1": {
+  "ru": "Понедельник-вторник. Круг. Миска № 7: центровка, стенки, края. Стенки сначала толстоваты, потом тоньше, потом слишком тонкие, и это тоже урок. Правим пальцем изнутри, снаружи ладонью, дыхание ровное. Сняли проволокой и поставили на полку сохнуть. Миска вышла с одним боком выше другого. «Это не брак», — сказала я себе. «Это характер». Потом сказала ещё раз, для убедительности.",
+  "en": "Monday–Tuesday. The wheel. Bowl No. 7: centring, walls, rim. The walls are a bit thick at first, then thinner, then too thin, and that is a lesson too. We correct with a finger inside, the palm outside, the breath even. Cut off with wire and put on the shelf to dry. The bowl came out with one side higher than the other. \"It's not a flaw,\" I told myself. \"It's character.\" Then said it again, for conviction.",
+  "ja": "月曜〜火曜。ろくろ。7番の鉢。中心取り、壁、縁。壁は最初は少し厚く、次に薄くなり、それから薄すぎる。それもまた学びだ。内側は指で、外側は手のひらで整え、息は一定に。針金で切り離して、乾かすために棚に置く。鉢は片側が高くなった。「失敗じゃない」と自分に言った。「個性だ」。それからもう一度、念を押すために言った。"
+ },
+ "city.xtx.t3_potter_notebook.p2_2": {
+  "ru": "Среда. Миски стоят на полке и сохнут: светлеют, как хлеб. Трогать их нельзя: пальцем можно оставить в них себя навсегда. Сегодня загружаем печь для первого обжига. Мисок восемь, и № 7 среди них, чуть кособокая, но хорошая. Печь гудит ровно, в глазок оранжевый свет. Заглядывать не больше трёх раз, это моё правило, и я его нарушаю четыре.",
+  "en": "Wednesday. The bowls stand on the shelf, drying: they pale like bread. They must not be touched: with a finger you can leave yourself in them for ever. Today we load the kiln for the first firing. Eight bowls, No. 7 among them, slightly lopsided but good. The kiln hums evenly, an orange light in the peephole. Look in no more than three times: that is my rule, and I break it four.",
+  "ja": "水曜。鉢は棚に並んで乾き、パンのように白っぽくなる。触ってはいけない。指で触れると、そこに自分を永遠に残してしまうから。今日は素焼きのために窯に入れる。鉢は八つ、その中に7番、少しいびつだが、よい鉢だ。窯は一定にうなり、のぞき窓に橙色の光。のぞくのは三回まで。それが私のきまりで、私はそれを四回破る。"
+ },
+ "city.xtx.t3_potter_notebook.p2_3": {
+  "ru": "Четверг. Печь остыла, дверца приоткрыта, и внутри миски розовые и звонкие: щёлкни ногтем, и запоют. № 7 цела. № 3 треснула, и я оставила её «для красоты»: трещина идёт, как река по карте. Сегодня глазуровка. Зелёная, синяя и банка «не трогать», самая красивая. В банке одного цвета глазурь, а из печи выйдет другого. Как люди. Я окунула № 7 в зелёную и на дне чуть тронула синей.",
+  "en": "Thursday. The kiln has cooled, the door ajar, and inside the bowls are pink and ringing: flick one with a nail and it sings. No. 7 is whole. No. 3 has cracked, and I have left it \"for beauty\": the crack runs like a river on a map. Today is glazing. Green, blue and the jar marked \"do not touch\", the most beautiful. In the jar the glaze is one colour, out of the kiln it will be another. Like people. I dipped No. 7 in the green and touched the bottom a little with blue.",
+  "ja": "木曜。窯は冷め、扉は少し開き、中の鉢は桃色で、よく鳴る。爪ではじけば歌いだす。7番は無事。3番はひびが入ったが、「美しさのために」そのままにした。ひびは地図の川のように走っている。今日は釉薬がけ。緑、青、そして「触るな」の瓶、いちばんきれいなもの。瓶の中では釉薬は一色だが、窯から出てくると別の色になる。人のように。7番を緑に浸し、底にほんの少し青をのせた。"
+ },
+ "city.xtx.t3_potter_notebook.p2_4": {
+  "ru": "Пятница. Второй обжиг, с глазурью, тысяча шестьдесят градусов. Красный глазок, тихое гудение, на печи мелом число. Мокрые на вид, но матовые миски стоят в печи и ничего не знают о том, что их ждёт. Мне нравится в этой работе именно это: ты запираешь то, что сделал, в огонь и идёшь домой. А утром оно уже другое, и хорошо, если лучше. Сегодня оно будет лучше. Я так решила.",
+  "en": "Friday. The second firing, with glaze, one thousand and sixty degrees. A red peephole, a quiet hum, a number in chalk on the kiln. Wet-looking but matt, the bowls stand in the kiln and know nothing of what awaits them. What I like in this work is precisely this: you lock what you have made into the fire and go home. And in the morning it is already different, and it is good if it is better. Today it will be better. I have decided so.",
+  "ja": "金曜。釉薬をかけての二度目の本焼き、千六十度。赤ののぞき窓、静かなうなり、窯にチョークで書かれた数字。濡れたように見えるが、つやのない鉢が窯に立って、自分を待つものを何も知らない。この仕事で私が好きなのは、まさにここだ。作ったものを火の中に閉じ込めて、家に帰る。朝にはもう別のものになっていて、よくなっていれば、それでいい。今日はよくなる。そう決めた。"
+ },
+ "city.xtx.t3_potter_notebook.p2_5": {
+  "ru": "Суббота. Открыли печь. Готовое блестит, как мокрые камни. № 7 зелёная, как море в хмурый день, и с двумя синими крапинками, которых я не рисовала. Печь подарила. Миска чуть кособока, и от этого стоит на столе увереннее всех остальных. Рядом бумажка: «Забирайте сами. Нельзя забирать — дарите». Я свою подарила бы, но пока рука не поднимается. Подарю в воскресенье.",
+  "en": "Saturday. We opened the kiln. The finished ware shines like wet stones. No. 7 is green as the sea on a gloomy day, with two blue specks that I didn't paint. The kiln gave them. The bowl is slightly lopsided, and for that reason stands on the table more confidently than all the others. Beside it a slip: \"Take them yourselves. If you can't take them, give them.\" I would give mine, but my hand won't rise yet. I'll give it on Sunday.",
+  "ja": "土曜。窯を開けた。焼き上がったものは濡れた石のように光っている。7番は曇りの日の海のように緑で、私が描いていない青い斑点が二つついている。窯からの贈り物だ。鉢は少しいびつで、そのせいで、ほかのどれよりも堂々と机に立っている。そばに紙きれ。「自分で持ち帰ること。持ち帰れないなら、贈ること」。私は自分のを贈りたいが、まだ手が上がらない。日曜日に贈ろう。"
+ },
+ "city.xtx.t3_potter_notebook.p2_6": {
+  "ru": "Воскресенье. Печь отдыхает, как и все. Полка пуста, на ней одна миска, чья-то, с запиской «Это мне. Не дарить». Рядом свободное место под мою. Я поставила № 7 туда, потом передумала и убрала. Потом снова поставила. Мастерица должна уметь отдавать, но сегодня воскресенье, а в воскресенье все имеют право на слабость. В понедельник начну новую, а эту подарю тому, кто больше всех будет ей рад.",
+  "en": "Sunday. The kiln rests, like everyone. The shelf is empty, and on it stands a single bowl, somebody's, with a note: \"This one is mine. Not to be given.\" Next to it a free place for mine. I put No. 7 there, then changed my mind and took it away. Then put it back. A potter must be able to give things away, but today is Sunday, and on Sunday everyone has a right to weakness. On Monday I begin a new one, and this I'll give to whoever will be happiest with it.",
+  "ja": "日曜。窯はみんなと同じように休んでいる。棚は空で、そこにだれかの鉢が一つ、「これは私のもの。贈らないこと」という紙とともに立っている。そばに私の鉢の置き場が空いている。7番をそこに置き、考え直して取り、また置いた。陶工は手放せなければならないが、今日は日曜日で、日曜日にはだれにでも弱くなる権利がある。月曜日に新しい鉢を始め、これは、いちばん喜んでくれる人に贈ろう。"
+ },
+ "city.xtx.t3_potter_notebook.3": {
+  "ru": "Рецепты глазури в двух строках, потому что остальное — не рецепт, а дело вкуса. Зелёная: полка стекла, щепотка меди и надежда. Синяя: то же самое, но кобальт и больше надежды. Банка «не трогать»: ничего не добавлять и не смотреть. Она сама решит, каким цветом выйти. Всё, что получается лучше задуманного, записываю на обороте листа, под датой. Всё, что хуже, тоже. На обороте этого листа теперь тесно.",
+  "en": "Glaze recipes in two lines, because the rest is not a recipe but a matter of taste. Green: a shelf of glass, a pinch of copper and hope. Blue: the same, but cobalt and more hope. The jar marked \"do not touch\": add nothing and don't look. It will decide for itself what colour to come out. Whatever turns out better than planned I write on the back of the sheet, under the date. Whatever turns out worse, too. The back of this sheet is crowded now.",
+  "ja": "釉薬のレシピは二行で。残りはレシピではなく好みの問題だから。緑は、ガラスの粉と、銅をひとつまみと、望み。青は同じで、コバルトを使い、望みをもっと。「触るな」の瓶は、何も足さず、見ない。どんな色で出るかは、自分で決める。想像より出来がよかったものは、紙の裏に日付の下に書く。悪かったものも書く。この紙の裏は、いまでは窮屈になっている。"
+ },
+ "city.xtx.t3_tournament_rules.title": {
+  "ru": "Правила турнира дворов «Золотой мяч»",
+  "en": "Rules of the Courtyards' Tournament \"Golden Ball\"",
+  "ja": "中庭対抗大会「ゴールデン・ボール」の規則"
+ },
+ "city.xtx.t3_tournament_rules.1": {
+  "ru": "1. Команда: пять игроков. Пятый может быть новичком, если стоит на площадке и не мешает, это обязательно. Запасные сидят на скамейке и болеют вполголоса. 2. Игра: два тайма по десять минут, между ними чай (чай платный). 3. Судья один, его решение окончательное, но разговор о нём допустим после игры. 4. Мячи на площадку приносят только капитаны, остальные смотрят.",
+  "en": "1. A team: five players. The fifth may be a newcomer if he stands on the court and doesn't get in the way; this is compulsory. Substitutes sit on the bench and cheer in half-voices. 2. The game: two halves of ten minutes, with tea in between (the tea is paid for). 3. There is one referee, his decision is final, but discussion of it is permitted after the game. 4. Balls are brought onto the court only by the captains; the others watch.",
+  "ja": "一、チームは五人。五人目は新人でもよい。コートに立って、邪魔をしなければ。これは必須。控えはベンチに座り、小声で応援する。二、試合は十分ハーフを二回。そのあいだにお茶（お茶は有料）。三、審判は一人で、その判定は最終だが、試合後の議論は許される。四、ボールをコートへ運ぶのは主将だけ。ほかの人は見ている。"
+ },
+ "city.xtx.t3_tournament_rules.2": {
+  "ru": "5. Очки: за бросок из-под кольца два, с дальней отметки три. Бросок в своё кольцо идёт в протокол, но не в счёт и не в укор: ошибки на площадке случаются у всех, а у новичков с особым усердием. 6. Победитель получает «Золотой мяч»: он, по правде, дерево, окрашенное в золото, зато очень красивый. Второе место получает грамоту и право рассказывать об этом всему двору. Третье получает чай и аплодисменты.",
+  "en": "5. Points: two for a shot from under the basket, three from the far mark. A shot into your own basket goes in the record but not in the score and not as a reproach: errors on court happen to everybody, and to newcomers with special zeal. 6. The winner receives the \"Golden Ball\": it is, truth be told, wood painted gold, but very beautiful. Second place receives a certificate and the right to tell the whole yard about it. Third receives tea and applause.",
+  "ja": "五、得点。ゴール下からのシュートは二点、遠い印からは三点。自分のゴールへのシュートは記録には残るが、得点にも、責めにも数えない。コートでの間違いはだれにでも起こり、新人にはとくに熱心に起こる。六、優勝者は「ゴールデン・ボール」を受ける。実は金色に塗った木だが、とても美しい。二位は賞状と、それを中庭じゅうに語る権利。三位はお茶と拍手。"
+ },
+ "city.xtx.t3_tournament_rules.3": {
+  "ru": "7. Болельщики: места на скамейках, мячи не ловить, ловить настроение. Шуметь можно, но только в пользу, а не против. 8. Если команда проигрывает, но играет красиво, ей полагается дополнительный аплодисмент. 9. Если команда выигрывает, но играет некрасиво, ей полагается тоже, но тише. 10. Последнее правило: турнир нужен для того, чтобы после него двор стал немного ближе. Всё остальное дополнительно.",
+  "en": "7. Spectators: places on the benches, don't catch the balls, catch the mood. Noise is permitted, but only for, not against. 8. If a team loses but plays beautifully, it is entitled to an extra round of applause. 9. If a team wins but plays ugly, it is entitled to one too, but quieter. 10. The last rule: the tournament exists so that afterwards the yard is a little closer together. Everything else is extra.",
+  "ja": "七、観客。席はベンチ、ボールは捕らない。捕るのは雰囲気だ。声を出してよいが、応援のためだけで、批判のためではない。八、負けても美しく戦ったチームには、追加の拍手を受ける権利がある。九、勝ってもみにくい試合をしたチームにも同じ権利があるが、もっと静かな拍手で。十、最後の決まり。大会は、終わったあとに中庭が少しだけ近くなるためにある。そのほかはすべておまけ。"
+ }
 }

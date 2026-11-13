@@ -606,6 +606,10 @@ def _extras(B, zf):
     cyl(d, "CT_Frame", sd[0], sd[1], top + 0.025, top + 0.04, 0.045, 6)
     B.thing("kesha_dish", "machine", (sd[0], sd[1], top + 0.1), 0.0, what="kesha_feed")
     B.thing("kesha_perch", "board", (kp[0], kp[1], top + 0.5), (127 + 90) % 360, topic="kesha")
+    # Kesha's phrase book: the barista's notebook lying on the bar between the syrups and the seed dish
+    nb = P(6.0, 115.0, top)
+    kit.books_stack(B, nb[0], nb[1], top, (127 + 90) % 360, n=1, seed=11)
+    B.thing("kesha_notebook", "board", (nb[0], nb[1], top + 0.06), (127 + 90) % 360, topic="kesha_book")
 
     # ------------------------------------------------------------------ the record crate under the sea painting, by the jukebox
     pr, ywr = _wall_pt(128, 9.95, 1)

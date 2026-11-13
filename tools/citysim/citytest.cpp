@@ -776,6 +776,42 @@ static void TalkChecks()
 	CHECK(M.NextShotIn(Quiet, Rng) < 0.0 && M.PickShot(Quiet, Rng).empty() && M.ToneAt(Hall)->EveryMin >= 2.f, "no shots: none; every is clamped to 2 s or more");
 }
 
+static void LiftChecks()
+{
+	std::printf("lifts and storey links\n");
+	const std::string Text = R"({"things": [
+  {"id": "P-U/lift_0", "plot": "P-U", "kind": "door", "ue": [0, 0, 100], "yaw": 0, "props": {"to": "lift_1"},
+   "floors": [{"k": "f.street", "to": "lift_1"}, {"k": "f.roof", "to": "P-U/lift_2"}, {"k": "f.nope", "to": "nowhere"}, {"k": "f.self", "to": "lift_0"}]},
+  {"id": "P-U/lift_1", "plot": "P-U", "kind": "door", "ue": [0, 0, 2500], "yaw": 90, "props": {}, "floors": [{"to": "lift_0"}]},
+  {"id": "P-U/lift_2", "plot": "P-U", "kind": "door", "ue": [0, 0, 5300], "yaw": 180, "props": {}, "floors": [{"to": "lift_1"}]},
+  {"id": "P-U/hatch", "plot": "P-U", "kind": "door", "ue": [500, 0, 5300], "yaw": 0, "props": {}, "oneway": true, "floors": [{"to": "P-X/yard"}]},
+  {"id": "P-X/yard", "plot": "P-X", "kind": "board", "ue": [9000, 0, 100], "yaw": 0, "props": {}},
+  {"id": "P-U/plain", "plot": "P-U", "kind": "door", "ue": [800, 0, 100], "yaw": 0, "props": {"to": "staff"}}],
+ "acts": {}})";
+	FModel M;
+	std::string Error;
+	CHECK(M.Load(Text, Error), "it loads (%s)", Error.c_str());
+	const int L0 = M.FindThing("P-U/lift_0"), L1 = M.FindThing("P-U/lift_1"), L2 = M.FindThing("P-U/lift_2"), Hatch = M.FindThing("P-U/hatch"),
+		Yard = M.FindThing("P-X/yard"), Plain = M.FindThing("P-U/plain");
+	const FThing& T0 = M.Things[(size_t)L0];
+	CHECK(T0.Floors.size() == 2 && T0.Floors[0].To == L1 && T0.Floors[0].Key == "f.street" && T0.Floors[1].To == L2,
+		"stops by local and full id; unknown and self stops dropped (%d)", (int)T0.Floors.size());
+	CHECK(M.IsLift(L0) && M.IsLift(L1) && !M.IsLift(Plain) && M.Things[(size_t)Hatch].Floors[0].To == Yard && M.Things[(size_t)Hatch].bOneWay,
+		"a caption-only door is no lift; a one-way hatch to another plot");
+	CHECK(M.FindLiftTarget("P-U", "lift_2") == L2 && M.FindLiftTarget("P-U", "P-X/yard") == Yard && M.FindLiftTarget("P-U", "") < 0,
+		"targets: own plot first, then a full id");
+	CHECK(M.LiftReturns(L0, L1) && M.LiftReturns(L1, L0) && M.LiftReturns(L0, L2) && !M.LiftReturns(Hatch, Yard), "ways back: direct, via the plot's lift; none from a yard");
+	FVec Spots[8];
+	float Yaw = 0.f;
+	const int N = M.LiftSpots(L1, Spots, 8, Yaw);
+	CHECK(N == 7 && Yaw == 90.f && std::fabs(Spots[0].X) < 1e-6 && std::fabs(Spots[0].Y - 60.0) < 1e-6 && Spots[0].Z == 2500.0,
+		"arrival: 0.6 m in front of the door (yaw 90: +Y), facing away, 7 spots (%.1f, %.1f)", Spots[0].X, Spots[0].Y);
+	CHECK(std::fabs(Spots[1].Y - 100.0) < 1e-6 && std::fabs(Spots[2].X + 50.0) < 1e-6 && std::fabs(Spots[3].X - 50.0) < 1e-6, "then 1 m, then to the sides");
+	CHECK(M.LiftSpots(L1, Spots, 2, Yaw) == 2 && M.LiftSpots(-1, Spots, 8, Yaw) == 0, "at most Max; none for no thing");
+	CHECK(FModel::LiftFloorOk(2500.0, 2400.0) && FModel::LiftFloorOk(2500.0, 2530.0) && !FModel::LiftFloorOk(2500.0, 2000.0)
+		&& !FModel::LiftFloorOk(2500.0, 2600.0), "a floor 1 m under the door's point is believed, 5 m under or 1 m over is not");
+}
+
 static void RealGameChecks(const FModel& M);
 
 static void RealChecks(const std::string& Path)
@@ -874,7 +910,7 @@ static void RealChecks(const std::string& Path)
 			{
 				if (FModel::CountHolding(A, AtDate(H % 7, (float)H + 0.5f, 100, 615, 30)) == 0)
 				{
-					EmptyNow++;
+					EmptyNow++; if (getenv("CITYSIM_GAPS")) std::printf("  gap: %s at %d\n", A.Id.c_str(), H);
 					break;
 				}
 			}
@@ -943,6 +979,25 @@ static void RealChecks(const std::string& Path)
 		Loud += (T.Volume < 0.f || T.Volume > 1.f || T.ShotVolume < 0.f || T.ShotVolume > 1.f) ? 1 : 0;
 	}
 	CHECK(!M.Tones.empty() && BadTone == 0 && Loud == 0, "%d room tones, each sound (%d bad, %d out of 0..1)", (int)M.Tones.size(), BadTone, Loud);
+	int Lifts = 0, NoWayBack = 0;
+	std::string FirstOneWay;
+	for (int I = 0; I < (int)M.Things.size(); ++I)
+	{
+		if (!M.IsLift(I))
+		{
+			continue;
+		}
+		Lifts++;
+		for (const FFloor& F : M.Things[(size_t)I].Floors)
+		{
+			if (!M.Things[(size_t)I].bOneWay && !M.LiftReturns(I, F.To))
+			{
+				NoWayBack++;
+				FirstOneWay = FirstOneWay.empty() ? M.Things[(size_t)I].Id : FirstOneWay;
+			}
+		}
+	}
+	CHECK(NoWayBack == 0, "%d lift doors, every stop has a way back unless one-way (%d not, first %s)", Lifts, NoWayBack, FirstOneWay.c_str());
 	RealGameChecks(M);
 }
 
@@ -1315,6 +1370,7 @@ int main(int Argc, char** Argv)
 	SeatChecks();
 	ReadingChecks();
 	TalkChecks();
+	LiftChecks();
 	RealChecks(Argc > 1 ? Argv[1] : "unreal/Lyudmilovsk/Content/City/interiors.json");
 	std::printf("%d passed, %d failed\n", Passed, Failures);
 	return Failures ? 1 : 0;

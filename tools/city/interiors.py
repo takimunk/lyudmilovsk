@@ -62,7 +62,7 @@ PUBLIC_KINDS_SKIP = ("residential", "square", "park", "pool")
 QUEST_EVENTS = ("do", "win", "visit", "get", "use", "have", "wear", "reach", "talk", "bird", "walk", "leave_computer", "ask")
 ACT_FIELDS = ("prompt", "minutes", "price", "lines", "pose", "sound", "event", "target", "give", "daily", "needs_staff",
               "needs_item", "fade", "shop", "screen", "until", "title", "any_hour", "rotate", "collect", "closed", "game", "read",
-              "sleep", "topics")
+              "sleep", "topics", "to", "floors", "oneway")
 # a line's conditions (docs/city_interiors.md "Lines by the day and the hour"): hours [from, to), weekdays, a calendar date or
 # range ("MM-DD" or ["MM-DD", "MM-DD"], wrapping the year), days since the game began (after N), every [n, r] game days
 # festival ("any", "none", an id of PeopleData/festivals.json or a list of ids), weather (a word of WEATHER or a list: any of
@@ -103,6 +103,8 @@ FESTIVAL_IDS = set()  # PeopleData/festivals.json
 STAMPS_USED = []  # (where, "set/piece") every collect of the content (acts, lines, things): checked against the collections
 DID_USED = []  # (where, target) every "did" line condition: checked against the acts' targets once they are built
 HEARD_USED = []  # (where, topic id) every "heard" line condition: checked against the topics
+ACT_LIFTS = {}  # act id -> {"to"/"floors"/"oneway"} of an act's storey link (docs "Lifts and storey links"), per thing in build_things
+MAX_FLOORS = 9
 # a shop or a talk that needs a role the plot has no staff at all for (the ground-floor shops of a residential block): it
 # runs without staff in these hours (a rule may give its own)
 NO_STAFF_HOURS = ([9, 20], "mon-sat")
@@ -734,6 +736,9 @@ def build_acts(acts_src, shops, strings, items):
                 act["read"] = {"texts": list(texts), "rotate": r.get("rotate", "use")}
         if a.get("topics"):
             act["topics"] = list(a["topics"]) if isinstance(a["topics"], list) else [a["topics"]]  # resolved by build_topics
+        lift = {k: a[k] for k in ("to", "floors", "oneway") if k in a}
+        if lift:
+            ACT_LIFTS[aid] = lift
         if "sleep" in a:
             if not isinstance(a["sleep"], bool):
                 err("act %s: sleep must be true or false" % aid)
@@ -1187,6 +1192,97 @@ def closed_act(value, acts, strings, where):
     return aid
 
 
+def lift_spec(props, act):
+    """A thing's storey link (docs "Lifts and storey links"): its props' "floors" / "oneway" (taken out of the props) and a
+    "to" that names a thing (has a slash or is resolved later; a plain word like "roof" stays the old caption), else its
+    act's. None: not a link."""
+    spec = {}
+    if "floors" in props:
+        spec["floors"] = props.pop("floors")
+    if "oneway" in props:
+        spec["oneway"] = props.pop("oneway")
+    if "to" in props and "floors" not in spec:
+        spec["to"] = props["to"]
+    base = ACT_LIFTS.get(act) or ACT_LIFTS.get(act.split("@")[0]) or ACT_LIFTS.get(act.replace("_seated", "")) or {}
+    for k, v in base.items():
+        spec.setdefault(k, v)
+    return spec or None
+
+
+def build_lifts(things, strings):
+    """Resolves every thing's storey link into "floors": [{"k", "to": <full thing id>}] (+ "oneway": 1) and checks it: every
+    stop exists, captions are strings, at most MAX_FLOORS, and every stop can bring the hero back (through the links) unless
+    "oneway". A props "to" that names no thing and has no slash is the old caption word: no link. Returns the links' count."""
+    ids = {t["id"]: t for t in things}
+
+    def target(plot, to):
+        if not isinstance(to, str) or not to:
+            return None
+        if "%s/%s" % (plot, to) in ids:
+            return "%s/%s" % (plot, to)
+        return to if to in ids else None
+
+    links = {}
+    for t in things:
+        spec = t.pop("_lift", None)
+        if not spec:
+            continue
+        where = t["id"]
+        oneway = spec.get("oneway", False)
+        if not isinstance(oneway, (bool, int)):
+            err("%s: oneway must be true or false" % where)
+        floors = []
+        if "floors" in spec:
+            fl = spec["floors"]
+            if not isinstance(fl, list) or not fl:
+                err("%s: floors must be a list of {\"k\": caption key, \"to\": thing id}" % where)
+                continue
+            for f in fl:
+                if not isinstance(f, dict) or set(f) - {"k", "to"} or "to" not in f:
+                    err("%s: a floor must be {\"k\": caption key, \"to\": thing id}: %r" % (where, f))
+                    continue
+                if not f.get("k"):
+                    err("%s: a floor of a chooser needs its caption key k" % where)
+                elif f["k"] not in strings:
+                    err("%s: floor caption %s is not a string" % (where, f["k"]))
+                floors.append((f.get("k", ""), f["to"]))
+        else:
+            to = spec.get("to")
+            if not isinstance(to, str) or (target(t["plot"], to) is None and "/" not in to):
+                continue  # the old caption word ("roof", "staff"): a door that only says where it leads
+            floors.append(("", to))
+        if len(floors) > MAX_FLOORS:
+            err("%s: %d floors (at most %d)" % (where, len(floors), MAX_FLOORS))
+        out = []
+        for k, to in floors:
+            full = target(t["plot"], to)
+            if full is None:
+                err("%s: lift stop %s is no thing (an id in %s or <plot>/<id>)" % (where, to, t["plot"]))
+            elif full == t["id"]:
+                err("%s: a lift stop to itself" % where)
+            else:
+                out.append({"k": k, "to": full} if k else {"to": full})
+        if out:
+            t["floors"] = out
+            if oneway:
+                t["oneway"] = 1
+            links[t["id"]] = [f["to"] for f in out]
+    for door, stops in links.items():
+        if ids[door].get("oneway"):
+            continue
+        for dest in stops:
+            seen, todo, back = {dest}, [dest], False
+            while todo and not back:
+                for nxt in links.get(todo.pop(), []):
+                    back = back or nxt == door
+                    if nxt not in seen:
+                        seen.add(nxt)
+                        todo.append(nxt)
+            if not back:
+                err("%s: lift stop %s has no way back (give it a door to %s, or \"oneway\": true)" % (door, dest, door))
+    return len(links)
+
+
 def build_things(plan, rules, defaults, by_plot_kind, acts, strings=None, closed_by=None):
     things, summary, skipped = [], collections.OrderedDict(), collections.Counter()
     strings = strings or {}
@@ -1263,6 +1359,7 @@ def build_things(plan, rules, defaults, by_plot_kind, acts, strings=None, closed
             if kind == "counter" and a["shop"] and a["needs_staff"] and props.get("role") != a["needs_staff"]:
                 props["role"] = a["needs_staff"]
             w = local_to_world(pl["front"], pl["yaw"], t["pos"])
+            lift = lift_spec(props, act)
             rec = {"id": tid, "plot": pl["id"], "kind": kind, "ue": [round(w[0] * 100, 1), round(w[1] * 100, 1), round(w[2] * 100, 1)],
                    "yaw": world_yaw(pl["yaw"], t["yaw"]), "props": {k: props[k] for k in sorted(props)}, "act": act,
                    "hours": list(hours), "days": days}
@@ -1286,6 +1383,8 @@ def build_things(plan, rules, defaults, by_plot_kind, acts, strings=None, closed
                 rec["closed"] = closed_act(closed, acts, strings, tid)
                 if not rec["closed"]:
                     del rec["closed"]
+            if lift:
+                rec["_lift"] = lift
             things.append(rec)
             kept_local.append({"id": t["id"], "pos": t["pos"], "z": t["pos"][2]})
             s = summary.setdefault(pl["id"], {"auto": 0, "declared": 0, "kinds": collections.Counter(), "acts": set(), "lines": 0})
@@ -1696,6 +1795,7 @@ def main():
         if r.get("kind") and r["kind"] not in KINDS:
             err("rule %s: unknown kind %s" % (k, r["kind"]))
     things, summary, skipped = build_things(plan, rules, defaults, by_plot_kind, acts, strings, CONTENT_EXTRA["closed_by"])
+    n_lifts = build_lifts(things, strings)
     all_plots = {p["id"] for p in plan["plots"]} | {u["id"] for u in plan.get("promenade_units", [])}
     regs = build_regulars(CONTENT_EXTRA["regulars"], strings, all_plots)
     for aid, a in sorted(acts.items()):
@@ -1770,6 +1870,7 @@ def main():
     topic_lines = {line_key(l) for tp in TOPICS.values() for l in tp["lines"]}
     print("staff talk: %d topics (%d offered somewhere), %d answer lines, on %d things; tones %d on %d plots" % (
         len(TOPICS), len(offered), len(topic_lines), n_talk, len(tones), len(plot_tones)))
+    print("lifts: %d doors with storey links" % n_lifts)
     for tp in sorted(set(TOPICS) - offered):
         warnings.append("topic %s is offered by no thing in town" % tp)
     used_unknown = {sid: w for sid, w in unknown_sounds.items() if any(x.split("#")[0] in used for x in w)}

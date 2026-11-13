@@ -1622,6 +1622,19 @@
    }
   },
   {
+   "id": "kesha_notebook",
+   "kind": "board",
+   "pos": [
+    -2.536,
+    18.438,
+    5.41
+   ],
+   "yaw": 217,
+   "props": {
+    "topic": "kesha_book"
+   }
+  },
+  {
    "id": "record_crate",
    "kind": "shelf",
    "pos": [
@@ -3265,7 +3278,7 @@
  ],
  "tris": {
   "shell": 2976,
-  "detail": 17251,
+  "detail": 17261,
   "windows": 296
  }
 }

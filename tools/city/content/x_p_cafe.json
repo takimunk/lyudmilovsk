@@ -451,6 +451,38 @@
     "city.cafe.chess.5",
     "city.cafe.chess.6"
    ]
+  },
+  "rd_tarelka_guest_book": {
+   "like": "guest_book_read",
+   "target": "guest_book_read",
+   "read": {
+    "texts": [
+     "tarelka_guest_book"
+    ]
+   },
+   "sound": "page_turn"
+  },
+  "rd_tarelka_menu": {
+   "like": "look_misc",
+   "target": "tarelka_cakes",
+   "prompt": "city.act.read.prompt",
+   "read": {
+    "texts": [
+     "tarelka_menu"
+    ]
+   },
+   "sound": "page_turn"
+  },
+  "rd_kesha_phrasebook": {
+   "like": "look_misc",
+   "target": "look_misc",
+   "prompt": "city.act.read.prompt",
+   "read": {
+    "texts": [
+     "kesha_phrasebook"
+    ]
+   },
+   "sound": "page_turn"
   }
  },
  "rules": {
@@ -464,13 +496,13 @@
    "act": "tarelka_espresso"
   },
   "P-CAFE/cake_vitrine": {
-   "act": "tarelka_cakes"
+   "act": "rd_tarelka_menu"
   },
   "P-CAFE/window_ledge": {
    "act": "tarelka_ledge"
   },
   "P-CAFE/guest_book": {
-   "act": "guest_book_read"
+   "act": "rd_tarelka_guest_book"
   },
   "P-CAFE/guest_pen": {
    "act": "guest_book_sign"
@@ -489,6 +521,9 @@
   },
   "P-CAFE/kitchen_hatch": {
    "act": "ask_cook"
+  },
+  "P-CAFE/kesha_notebook": {
+   "act": "rd_kesha_phrasebook"
   }
  },
  "quests": [
@@ -563,5 +598,189 @@
     }
    ]
   }
- ]
+ ],
+ "texts": {
+  "tarelka_guest_book": {
+   "title": "city.xtx.tarelka_guest_book.title",
+   "kind": "ledger",
+   "minutes": 2,
+   "collect": "reading/tarelka_guest_book",
+   "pages": [
+    "city.cafe.book.0",
+    [
+     {
+      "k": "city.xtx.tarelka_guest_book.p2_1",
+      "d": "mon"
+     },
+     {
+      "k": "city.xtx.tarelka_guest_book.p2_2",
+      "d": "tue"
+     },
+     {
+      "k": "city.xtx.tarelka_guest_book.p2_3",
+      "d": "wed"
+     },
+     {
+      "k": "city.xtx.tarelka_guest_book.p2_4",
+      "d": "thu"
+     },
+     {
+      "k": "city.xtx.tarelka_guest_book.p2_5",
+      "d": "fri"
+     },
+     {
+      "k": "city.xtx.tarelka_guest_book.p2_6",
+      "d": "sat"
+     },
+     {
+      "k": "city.xtx.tarelka_guest_book.p2_7",
+      "d": "sun"
+     }
+    ],
+    [
+     {
+      "k": "city.cafe.book.1",
+      "after": 1
+     },
+     {
+      "k": "city.cafe.book.2",
+      "after": 2
+     },
+     {
+      "k": "city.cafe.book.3",
+      "after": 3
+     },
+     {
+      "k": "city.cafe.book.4",
+      "after": 4
+     },
+     {
+      "k": "city.cafe.book.5",
+      "after": 5
+     },
+     {
+      "k": "city.cafe.book.6",
+      "after": 6
+     },
+     {
+      "k": "city.cafe.book.7",
+      "after": 7
+     }
+    ],
+    [
+     {
+      "k": "city.xtx.tarelka_guest_book.p4_1",
+      "h": [
+       8,
+       16
+      ]
+     },
+     {
+      "k": "city.xtx.tarelka_guest_book.p4_2",
+      "h": [
+       16,
+       8
+      ]
+     }
+    ]
+   ]
+  },
+  "tarelka_menu": {
+   "title": "city.xtx.tarelka_menu.title",
+   "kind": "notice",
+   "minutes": 2,
+   "collect": "reading/tarelka_menu",
+   "pages": [
+    "city.xtx.tarelka_menu.1",
+    [
+     {
+      "k": "city.xtx.tarelka_menu.p2_1",
+      "d": "mon"
+     },
+     {
+      "k": "city.xtx.tarelka_menu.p2_2",
+      "d": "tue"
+     },
+     {
+      "k": "city.xtx.tarelka_menu.p2_3",
+      "d": "wed"
+     },
+     {
+      "k": "city.xtx.tarelka_menu.p2_4",
+      "d": "thu"
+     },
+     {
+      "k": "city.xtx.tarelka_menu.p2_5",
+      "d": "fri"
+     },
+     {
+      "k": "city.xtx.tarelka_menu.p2_6",
+      "d": "sat"
+     },
+     {
+      "k": "city.xtx.tarelka_menu.p2_7",
+      "d": "sun"
+     }
+    ],
+    [
+     {
+      "k": "city.cafe.cake.mon",
+      "d": "mon"
+     },
+     {
+      "k": "city.cafe.cake.tue",
+      "d": "tue"
+     },
+     {
+      "k": "city.cafe.cake.wed",
+      "d": "wed"
+     },
+     {
+      "k": "city.cafe.cake.thu",
+      "d": "thu"
+     },
+     {
+      "k": "city.cafe.cake.fri",
+      "d": "fri"
+     },
+     {
+      "k": "city.cafe.cake.sat",
+      "d": "sat"
+     },
+     {
+      "k": "city.cafe.cake.sun",
+      "d": "sun"
+     }
+    ],
+    "city.xtx.tarelka_menu.4"
+   ]
+  },
+  "kesha_phrasebook": {
+   "title": "city.xtx.kesha_phrasebook.title",
+   "kind": "ledger",
+   "minutes": 2,
+   "collect": "reading/kesha_phrasebook",
+   "pages": [
+    "city.xtx.kesha_phrasebook.1",
+    "city.xtx.kesha_phrasebook.2",
+    [
+     {
+      "k": "city.xtx.kesha_phrasebook.p3_1",
+      "h": [
+       8,
+       14
+      ]
+     },
+     {
+      "k": "city.xtx.kesha_phrasebook.p3_2",
+      "h": [
+       14,
+       8
+      ]
+     }
+    ],
+    "city.xtx.kesha_phrasebook.4"
+   ]
+  }
+ }
 }

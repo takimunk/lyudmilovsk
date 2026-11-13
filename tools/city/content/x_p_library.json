@@ -390,6 +390,167 @@
      "d": "sun"
     }
    ]
+  },
+  "rd_birds_coast": {
+   "like": "read_birds",
+   "target": "read_birds",
+   "read": {
+    "texts": [
+     "birds_coast"
+    ]
+   },
+   "sound": "page_turn"
+  },
+  "rd_science_spoon": {
+   "like": "read_science",
+   "target": "read_science",
+   "read": {
+    "texts": [
+     "science_spoon"
+    ]
+   },
+   "sound": "page_turn"
+  },
+  "rd_cook_pie": {
+   "like": "read_cooking",
+   "target": "read_cooking",
+   "read": {
+    "texts": [
+     "cook_pie"
+    ]
+   },
+   "sound": "page_turn"
+  },
+  "rd_medicine_home": {
+   "like": "read_medicine",
+   "target": "read_medicine",
+   "read": {
+    "texts": [
+     "medicine_home"
+    ]
+   },
+   "sound": "page_turn"
+  },
+  "rd_sea_tides": {
+   "like": "read_sea",
+   "target": "read_sea",
+   "read": {
+    "texts": [
+     "sea_tides"
+    ]
+   },
+   "sound": "page_turn"
+  },
+  "rd_travel_terraces": {
+   "like": "read_travel",
+   "target": "read_travel",
+   "read": {
+    "texts": [
+     "travel_terraces"
+    ]
+   },
+   "sound": "page_turn"
+  },
+  "rd_music_orchestra": {
+   "like": "read_music",
+   "target": "read_music",
+   "read": {
+    "texts": [
+     "music_orchestra"
+    ]
+   },
+   "sound": "page_turn"
+  },
+  "rd_eng_cable": {
+   "like": "read_engineering",
+   "target": "read_engineering",
+   "read": {
+    "texts": [
+     "eng_cable"
+    ]
+   },
+   "sound": "page_turn"
+  },
+  "rd_local_terraces": {
+   "like": "read_local",
+   "target": "read_local",
+   "read": {
+    "texts": [
+     "local_terraces"
+    ]
+   },
+   "sound": "page_turn"
+  },
+  "rd_sun_eight_minutes": {
+   "like": "read_sun",
+   "target": "read_sun",
+   "read": {
+    "texts": [
+     "sun_eight_minutes"
+    ]
+   },
+   "sound": "page_turn"
+  },
+  "rd_poetry_steps": {
+   "like": "read_poetry",
+   "target": "read_poetry",
+   "read": {
+    "texts": [
+     "poetry_steps"
+    ]
+   },
+   "sound": "page_turn"
+  },
+  "rd_kids_lamp": {
+   "like": "read_kids",
+   "target": "read_kids",
+   "read": {
+    "texts": [
+     "kids_lamp"
+    ]
+   },
+   "sound": "page_turn"
+  },
+  "rd_art_grey_sea": {
+   "like": "read_art",
+   "target": "read_art",
+   "read": {
+    "texts": [
+     "art_grey_sea"
+    ]
+   },
+   "sound": "page_turn"
+  },
+  "rd_garden_concrete": {
+   "like": "read_garden",
+   "target": "read_garden",
+   "read": {
+    "texts": [
+     "garden_concrete"
+    ]
+   },
+   "sound": "page_turn"
+  },
+  "rd_chess_openings": {
+   "like": "read_chess",
+   "target": "read_chess",
+   "read": {
+    "texts": [
+     "chess_openings"
+    ]
+   },
+   "sound": "page_turn"
+  },
+  "rd_kids_pair": {
+   "like": "read_kids",
+   "target": "read_kids",
+   "read": {
+    "texts": [
+     "kids_lamp",
+     "kids_hedgehog"
+    ]
+   },
+   "sound": "page_turn"
   }
  },
  "rules": {
@@ -442,85 +603,134 @@
    "act": "library_press_sun"
   },
   "P-LIBRARY/stack_7_a": {
-   "collect": "library_diary/birds"
+   "collect": "library_diary/birds",
+   "act": "rd_birds_coast"
   },
   "P-LIBRARY/stack_7_c": {
-   "collect": "library_diary/cooking"
+   "collect": "library_diary/cooking",
+   "act": "rd_cook_pie"
   },
   "P-LIBRARY/stack_7_d": {
-   "collect": "library_diary/medicine"
+   "collect": "library_diary/medicine",
+   "act": "rd_medicine_home"
   },
   "P-LIBRARY/stack_7_b": {
-   "collect": "library_diary/science"
+   "collect": "library_diary/science",
+   "act": "rd_science_spoon"
   },
   "P-LIBRARY/stack_10_a": {
-   "collect": "library_diary/sea"
+   "collect": "library_diary/sea",
+   "act": "rd_sea_tides"
   },
   "P-LIBRARY/stack_10_c": {
-   "collect": "library_diary/music"
+   "collect": "library_diary/music",
+   "act": "rd_music_orchestra"
   },
   "P-LIBRARY/stack_10_d": {
-   "collect": "library_diary/engineering"
+   "collect": "library_diary/engineering",
+   "act": "rd_eng_cable"
   },
   "P-LIBRARY/stack_10_b": {
-   "collect": "library_diary/travel"
+   "collect": "library_diary/travel",
+   "act": "rd_travel_terraces"
   },
   "P-LIBRARY/core_wall_45": {
-   "collect": "library_diary/local"
+   "collect": "library_diary/local",
+   "act": "rd_local_terraces"
   },
   "P-LIBRARY/core_wall_90": {
-   "collect": "library_diary/sun"
+   "collect": "library_diary/sun",
+   "act": "rd_sun_eight_minutes"
   },
   "P-LIBRARY/core_wall_135": {
-   "collect": "library_diary/poetry"
+   "collect": "library_diary/poetry",
+   "act": "rd_poetry_steps"
   },
   "P-LIBRARY/core_wall_225": {
    "collect": "library_diary/kids"
   },
   "P-LIBRARY/core_wall_315": {
-   "collect": "library_diary/art"
+   "collect": "library_diary/art",
+   "act": "rd_art_grey_sea"
   },
   "P-LIBRARY/kids_shelf_1": {
-   "collect": "library_diary/kids"
+   "collect": "library_diary/kids",
+   "act": "rd_kids_lamp"
   },
   "P-LIBRARY/kids_shelf_2": {
-   "collect": "library_diary/kids"
+   "collect": "library_diary/kids",
+   "act": "rd_kids_pair"
   },
   "P-LIBRARY/pod_1_01": {
    "collect": "library_diary/birds"
   },
   "P-LIBRARY/pod_1_02": {
-   "collect": "library_diary/music"
+   "collect": "library_diary/music",
+   "act": "rd_music_orchestra"
   },
   "P-LIBRARY/pod_1_03": {
-   "collect": "library_diary/garden"
+   "collect": "library_diary/garden",
+   "act": "rd_garden_concrete"
   },
   "P-LIBRARY/pod_1_04": {
    "collect": "library_diary/cooking"
   },
   "P-LIBRARY/pod_1_05": {
-   "collect": "library_diary/chess"
+   "collect": "library_diary/chess",
+   "act": "rd_chess_openings"
   },
   "P-LIBRARY/pod_1_06": {
-   "collect": "library_diary/engineering"
+   "collect": "library_diary/engineering",
+   "act": "rd_eng_cable"
   },
   "P-LIBRARY/pod_2_*": {
    "collect": "library_diary/poetry"
   },
   "P-LIBRARY/pod_2_01": {
-   "collect": "library_diary/medicine"
+   "collect": "library_diary/medicine",
+   "act": "rd_medicine_home"
   },
   "P-LIBRARY/pod_2_02": {
-   "collect": "library_diary/sun"
+   "collect": "library_diary/sun",
+   "act": "rd_sun_eight_minutes"
   },
   "P-LIBRARY/pod_3_*": {
    "collect": "library_diary/sea"
   },
   "P-LIBRARY/pod_3_01": {
-   "collect": "library_diary/local"
+   "collect": "library_diary/local",
+   "act": "rd_local_terraces"
   },
   "P-LIBRARY/pod_3_02": {
-   "collect": "library_diary/travel"
+   "collect": "library_diary/travel",
+   "act": "rd_travel_terraces"
+  },
+  "P-LIBRARY/pod_3_03": {
+   "act": "rd_sea_tides"
+  },
+  "P-LIBRARY/pod_3_04": {
+   "act": "rd_sea_tides"
+  },
+  "P-LIBRARY/pod_3_05": {
+   "act": "rd_sea_tides"
+  },
+  "P-LIBRARY/pod_3_06": {
+   "act": "rd_sea_tides"
+  },
+  "P-LIBRARY/office_shelf": {
+   "act": "rd_local_terraces"
+  },
+  "P-LIBRARY/pod_2_03": {
+   "act": "rd_poetry_steps"
+  },
+  "P-LIBRARY/pod_2_04": {
+   "act": "rd_poetry_steps"
+  },
+  "P-LIBRARY/pod_2_05": {
+   "act": "rd_poetry_steps"
+  },
+  "P-LIBRARY/pod_2_06": {
+   "act": "rd_poetry_steps"
   }
  },
  "closed_by": {
@@ -641,5 +851,178 @@
     }
    ]
   }
- ]
+ ],
+ "texts": {
+  "birds_coast": {
+   "title": "city.xtx.birds_coast.title",
+   "kind": "book",
+   "minutes": 3,
+   "collect": "library_diary/birds",
+   "pages": [
+    "city.xtx.birds_coast.1",
+    "city.xtx.birds_coast.2",
+    "city.xtx.birds_coast.3",
+    "city.xtx.birds_coast.4"
+   ]
+  },
+  "science_spoon": {
+   "title": "city.xtx.science_spoon.title",
+   "kind": "book",
+   "minutes": 3,
+   "collect": "library_diary/science",
+   "pages": [
+    "city.xtx.science_spoon.1",
+    "city.xtx.science_spoon.2",
+    "city.xtx.science_spoon.3"
+   ]
+  },
+  "cook_pie": {
+   "title": "city.xtx.cook_pie.title",
+   "kind": "book",
+   "minutes": 3,
+   "collect": "library_diary/cooking",
+   "pages": [
+    "city.xtx.cook_pie.1",
+    "city.xtx.cook_pie.2",
+    "city.xtx.cook_pie.3"
+   ]
+  },
+  "medicine_home": {
+   "title": "city.xtx.medicine_home.title",
+   "kind": "book",
+   "minutes": 3,
+   "collect": "library_diary/medicine",
+   "pages": [
+    "city.xtx.medicine_home.1",
+    "city.xtx.medicine_home.2",
+    "city.xtx.medicine_home.3"
+   ]
+  },
+  "sea_tides": {
+   "title": "city.xtx.sea_tides.title",
+   "kind": "book",
+   "minutes": 3,
+   "collect": "library_diary/sea",
+   "pages": [
+    "city.xtx.sea_tides.1",
+    "city.xtx.sea_tides.2",
+    "city.xtx.sea_tides.3"
+   ]
+  },
+  "travel_terraces": {
+   "title": "city.xtx.travel_terraces.title",
+   "kind": "book",
+   "minutes": 3,
+   "collect": "library_diary/travel",
+   "pages": [
+    "city.xtx.travel_terraces.1",
+    "city.xtx.travel_terraces.2",
+    "city.xtx.travel_terraces.3"
+   ]
+  },
+  "music_orchestra": {
+   "title": "city.xtx.music_orchestra.title",
+   "kind": "book",
+   "minutes": 3,
+   "collect": "library_diary/music",
+   "pages": [
+    "city.xtx.music_orchestra.1",
+    "city.xtx.music_orchestra.2",
+    "city.xtx.music_orchestra.3"
+   ]
+  },
+  "eng_cable": {
+   "title": "city.xtx.eng_cable.title",
+   "kind": "book",
+   "minutes": 3,
+   "collect": "library_diary/engineering",
+   "pages": [
+    "city.xtx.eng_cable.1",
+    "city.xtx.eng_cable.2",
+    "city.xtx.eng_cable.3",
+    "city.xtx.eng_cable.4"
+   ]
+  },
+  "local_terraces": {
+   "title": "city.xtx.local_terraces.title",
+   "kind": "book",
+   "minutes": 3,
+   "collect": "library_diary/local",
+   "pages": [
+    "city.xtx.local_terraces.1",
+    "city.xtx.local_terraces.2",
+    "city.xtx.local_terraces.3",
+    "city.xtx.local_terraces.4"
+   ]
+  },
+  "sun_eight_minutes": {
+   "title": "city.xtx.sun_eight_minutes.title",
+   "kind": "book",
+   "minutes": 3,
+   "collect": "library_diary/sun",
+   "pages": [
+    "city.xtx.sun_eight_minutes.1",
+    "city.xtx.sun_eight_minutes.2",
+    "city.xtx.sun_eight_minutes.3",
+    "city.xtx.sun_eight_minutes.4"
+   ]
+  },
+  "poetry_steps": {
+   "title": "city.xtx.poetry_steps.title",
+   "kind": "book",
+   "minutes": 3,
+   "collect": "library_diary/poetry",
+   "pages": [
+    "city.xtx.poetry_steps.1",
+    "city.xtx.poetry_steps.2",
+    "city.xtx.poetry_steps.3",
+    "city.xtx.poetry_steps.4"
+   ]
+  },
+  "kids_lamp": {
+   "title": "city.xtx.kids_lamp.title",
+   "kind": "book",
+   "minutes": 2,
+   "collect": "library_diary/kids",
+   "pages": [
+    "city.xtx.kids_lamp.1",
+    "city.xtx.kids_lamp.2",
+    "city.xtx.kids_lamp.3",
+    "city.xtx.kids_lamp.4"
+   ]
+  },
+  "art_grey_sea": {
+   "title": "city.xtx.art_grey_sea.title",
+   "kind": "book",
+   "minutes": 3,
+   "collect": "library_diary/art",
+   "pages": [
+    "city.xtx.art_grey_sea.1",
+    "city.xtx.art_grey_sea.2",
+    "city.xtx.art_grey_sea.3"
+   ]
+  },
+  "garden_concrete": {
+   "title": "city.xtx.garden_concrete.title",
+   "kind": "book",
+   "minutes": 3,
+   "collect": "library_diary/garden",
+   "pages": [
+    "city.xtx.garden_concrete.1",
+    "city.xtx.garden_concrete.2",
+    "city.xtx.garden_concrete.3"
+   ]
+  },
+  "chess_openings": {
+   "title": "city.xtx.chess_openings.title",
+   "kind": "book",
+   "minutes": 3,
+   "collect": "library_diary/chess",
+   "pages": [
+    "city.xtx.chess_openings.1",
+    "city.xtx.chess_openings.2",
+    "city.xtx.chess_openings.3"
+   ]
+  }
+ }
 }
