@@ -129,6 +129,8 @@ bool ULyudBirdBook::NoteTamed(const UObject* WorldContext, int32 BirdId, FName S
 		{
 			F.Visits++;
 			F.LastVisit = T;
+			// an old friend fed from the palm again still counts for a quest that waits for it
+			ULyudQuests::Notify(WorldContext, TEXT("bird_tamed"), Species.ToString());
 			OnChanged.Broadcast();
 			return false;
 		}

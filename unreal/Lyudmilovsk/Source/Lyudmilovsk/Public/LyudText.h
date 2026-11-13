@@ -28,4 +28,6 @@ namespace LyudText
 
 	/** The voice of line Key (line.<speaker>.<scene>.<n>): /Game/Voice/<lang>/V_<key with dots as underscores>, else the Russian one; null if none. */
 	USoundBase* LoadVoice(const FString& Key);
+	/** Starts loading the voice of line Key in the background (current language and Russian), so that LoadVoice finds it in memory. */
+	void WarmVoice(const UObject* WorldContext, const FString& Key);
 }

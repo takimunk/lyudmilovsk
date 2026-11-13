@@ -105,7 +105,7 @@ private:
 	FDelegateHandle SaveHandle, LoadHandle;
 
 	// the befriended bird, for calling it back once you are the hero again
-	FName LastSpecies;
+	UPROPERTY(SaveGame) FName LastSpecies;
 	int32 LastClaimId = -1;
 	bool bOurFemale = false;
 	float RecallHeld = 0.f, HintShowT = 0.f;

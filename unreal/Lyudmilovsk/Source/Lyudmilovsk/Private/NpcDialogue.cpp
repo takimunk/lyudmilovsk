@@ -707,6 +707,11 @@ void ANpcTalkDirector::Interact()
 	{
 		const FName SunState = UNpcDialogueSubsystem::NpcSunState(GetWorld());
 		Lines = D->StartTalk(People[TargetIndex].Id, SunState);
+		// the later lines' voices load in the background while the first is said
+		for (int32 WI = 1; WI < Lines.Num(); ++WI)
+		{
+			LyudText::WarmVoice(this, Lines[WI].Key);
+		}
 		if (Lines.Num() > 0)
 		{
 			TalkingIndex = TargetIndex;

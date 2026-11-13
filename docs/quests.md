@@ -105,11 +105,11 @@ seen one here. The hero brings him one: himself.
 
 | Stage | Objective (event) | Where |
 |---|---|---|
-| `find` | talk to Sorokin (`talk Sorokin_oleg`) | home in the Academgorodok mornings and evenings, the island by day |
+| `find` | talk to Sorokin (`talk Sorokin_oleg`) | on a bench of the Academgorodok's square, watching the birds, 8:00–12:30 and 14:30–18:30 every day (his `birdwatch_yard` duty in `people.json`) |
 | `prepare` | the bird guide, dried rowan, a feeder in the pocket (`have`) | the guide lies on the librarian's desk (a pickup, free; Olya also sells it); the Gastronom sells the rest |
 | `journey` | reach the old forest beyond the north hills (`reach rowan_grove`) | map -420, 1780: 1.2 km north of the Academgorodok |
 | `lure` | fill a feeder with rowan there (`feeder_fill_at feed_rowan@rowan_grove`) | |
-| `wait` | a waxwing on the tray (`feeder_visit Waxwing`) | they find it 1.5 to 2.5 game hours after it is filled, by day only |
+| `wait` | a waxwing on the tray (`feeder_visit Waxwing`) | by day only. The calendar runs at real time, so while a quest waits for `feeder_visit` and the hero is within 60 m, a feeder's feed ages a minute a second (`UBirdFeederSubsystem::Hurry`): found after about 90 s |
 | `tame` | a waxwing eats from the palm (`bird_tamed Waxwing`): the hero becomes it | crouch, creep, the palm with rowan |
 | `return` | as the waxwing, sit within 14 m of Sorokin and call (`bird_call Waxwing.Sorokin_oleg`) | he says three lines; the quest ends |
 

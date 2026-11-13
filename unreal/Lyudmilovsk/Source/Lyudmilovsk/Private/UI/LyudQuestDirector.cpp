@@ -8,6 +8,7 @@
 #include "Dom/JsonObject.h"
 #include "Engine/Engine.h"
 #include "Engine/World.h"
+#include "EngineUtils.h"
 #include "GameFramework/PlayerController.h"
 #include "HAL/IConsoleManager.h"
 #include "HeroCharacter.h"
@@ -18,6 +19,7 @@
 #include "LyudGoodsItem.h"
 #include "LyudInventory.h"
 #include "LyudText.h"
+#include "NpcDialogue.h"
 #include "Misc/FileHelper.h"
 #include "Misc/Paths.h"
 #include "People/LyudBodyAnim.h"
@@ -212,6 +214,20 @@ void ULyudQuestDirector::Tick(float DeltaTime)
 	{
 		SlowTimer = 1.f;
 		TickFeeders(PC->GetPawn());
+		// the hero is a bird: the voices of what the listeners may say to it are loaded ahead (in the background)
+		if (PC->GetPawn() && !PC->GetPawn()->IsA<AHeroCharacter>())
+		{
+			for (const FListener& L : Listeners)
+			{
+				for (const FReaction& R : L.Reactions)
+				{
+					for (const FString& K : R.Lines)
+					{
+						LyudText::WarmVoice(this, QuestDirectorLocal::FullKey(K));
+					}
+				}
+			}
+		}
 	}
 	TickPickups(PC, bSlow);
 	TickSpeech();
@@ -283,11 +299,22 @@ void ULyudQuestDirector::TickPickups(APlayerController* PC, bool bSlow)
 			}
 		}
 	}
+	// nothing lies out: nothing to look for
+	if (!bPrompt && !Pickups.ContainsByPredicate([](const FPickup& P) { return P.Actor.IsValid(); }))
+	{
+		return;
+	}
+	if (bSlow && !TalkDirector.IsValid())
+	{
+		TActorIterator<ANpcTalkDirector> It(GetWorld());
+		TalkDirector = It ? *It : nullptr;
+	}
+	const bool bTalk = TalkDirector.IsValid() && TalkDirector->IsEngaged();
 	// the one the hero looks at from near by
 	FPickup* At = nullptr;
 	const ULyudGameMenuSubsystem* Menu = GetWorld()->GetSubsystem<ULyudGameMenuSubsystem>();
 	UHeroReachComponent* Reach = Hero ? UHeroReachComponent::Get(Hero) : nullptr;
-	if (Hero && UI && Reach && !Hero->IsHidden() && !UI->IsOpen() && !(Menu && Menu->IsOpen()) && !PC->IsMoveInputIgnored() && !Reach->IsBusy())
+	if (Hero && UI && Reach && !Hero->IsHidden() && !UI->IsOpen() && !(Menu && Menu->IsOpen()) && !PC->IsMoveInputIgnored() && !Reach->IsBusy() && !bTalk)
 	{
 		const FVector Eye = Hero->EyeLocation();
 		const FVector Look = PC->GetControlRotation().Vector();
@@ -316,7 +343,11 @@ void ULyudQuestDirector::TickPickups(APlayerController* PC, bool bSlow)
 		bPrompt = false;
 		return;
 	}
-	UI->SetPrompt(this, LyudText::Get(TEXT("ui.quest.take"), { FStringFormatArg(ULyudInventory::ItemName(At->Item).ToString()) }));
+	if (!bPrompt || PromptFor != At->Id)
+	{
+		UI->SetPrompt(this, LyudText::Get(TEXT("ui.quest.take"), { FStringFormatArg(ULyudInventory::ItemName(At->Item).ToString()) }));
+		PromptFor = At->Id;
+	}
 	bPrompt = true;
 	if (PC->WasInputKeyJustPressed(EKeys::E))
 	{
@@ -361,12 +392,24 @@ void ULyudQuestDirector::TickPickups(APlayerController* PC, bool bSlow)
 
 void ULyudQuestDirector::TickFeeders(const APawn* Pawn)
 {
-	const UBirdFeederSubsystem* Feeders = UBirdFeederSubsystem::Get(this);
+	UBirdFeederSubsystem* Feeders = UBirdFeederSubsystem::Get(this);
 	const UBirdLifeSubsystem* Life = UBirdLifeSubsystem::Get(this);
 	if (!Feeders || !Life || !Pawn || Feeders->Num() == 0)
 	{
 		OnTrays.Reset();
 		return;
+	}
+	// does a quest wait for a visitor now
+	bool bQuestWaits = false;
+	if (const ULyudQuests* Quests = ULyudQuests::Get(this))
+	{
+		for (const FLyudQuestProgress& QP : Quests->Progress)
+		{
+			for (const TPair<const FLyudQuestObjective*, int32>& Obj : Quests->CurrentObjectives(QP.Quest))
+			{
+				bQuestWaits |= Obj.Key->Event == TEXT("feeder_visit") && Obj.Value < Obj.Key->Need;
+			}
+		}
 	}
 	TSet<int32> Now;
 	for (int32 I = 0; I < Feeders->Num(); ++I)
@@ -374,6 +417,12 @@ void ULyudQuestDirector::TickFeeders(const APawn* Pawn)
 		if (FVector::Dist(Pawn->GetActorLocation(), Feeders->State(I).Location) > QuestDirectorLocal::FeederWatchCm)
 		{
 			continue;
+		}
+		// the calendar runs at real time: while a quest waits for a visitor and the hero keeps watch, a minute by the feeder
+		// counts as an hour (found after about 90 s instead of 90 minutes)
+		if (bQuestWaits && Feeders->State(I).Handfuls > 0.f)
+		{
+			Feeders->Hurry(I, 59.f);
 		}
 		for (const int32 Bird : Feeders->BirdsOn(I))
 		{
@@ -428,6 +477,21 @@ void ULyudQuestDirector::HandleBirdCall(FName Species, const FVector& At, bool b
 		}
 		if (Pick)
 		{
+			// a quest's reaction is never lost to a passing remark still on their lips
+			if (!Pick->Quest.IsNone())
+			{
+				for (int32 SI = Speeches.Num() - 1; SI >= 0; --SI)
+				{
+					if (Speeches[SI].Person == Id)
+					{
+						if (Speeches[SI].Voice.IsValid())
+						{
+							Speeches[SI].Voice->Stop();
+						}
+						Speeches.RemoveAt(SI);
+					}
+				}
+			}
 			Say(L.Person, Pick->Lines, &At);
 		}
 	}
@@ -446,6 +510,10 @@ bool ULyudQuestDirector::Say(const FString& PersonKey, const TArray<FString>& Ke
 	FSpeech& S = Speeches.AddDefaulted_GetRef();
 	S.Person = Id;
 	S.Keys = Keys;
+	for (const FString& K : Keys)
+	{
+		LyudText::WarmVoice(this, QuestDirectorLocal::FullKey(K));
+	}
 	S.NextAt = 0.0;
 	S.bLook = LookAt != nullptr;
 	S.LookAt = LookAt ? *LookAt : FVector::ZeroVector;
