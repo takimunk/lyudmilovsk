@@ -27,6 +27,9 @@ DAY_SPOTS = [
     ("bigdune", -1830.0, 955.0, -0.34, EYE, -3, 180),             # the crest of a 240 m dune
     ("air_east", -1150.0, 900.0, -15.09, 150.0, -15, 180),        # from 150 m: across the ridges, the join with the map
     ("air_north", -1500.0, 650.0, -10.0, 150.0, -15, 90),         # from 150 m: along the ridges
+    ("path150", -1318.9, 896.4, 6.81, EYE, -3, 164),             # on the path, 150 m in, looking along it (dunes, marram)
+    ("path400", -1559.9, 942.4, -12.44, EYE, -3, 151),             # 400 m in
+    ("path700", -1816.8, 1028.8, -10.15, EYE, -3, -155),            # 700 m in
 ]
 DAYS = [("jun10", "06-21 10:00"), ("jun18", "06-21 18:00")]
 SPOTS = [("%s_%s" % (n, dn), x, y, z, up, p, yaw, when, 0, []) for dn, when in DAYS for n, x, y, z, up, p, yaw in DAY_SPOTS]
@@ -41,6 +44,7 @@ SPOTS += [
     ("bank_night", -2150.0, 1038.0, -29.71, EYE, -4, 180, "11-13 23:30", 1, []),             # ural_bank: the river, the sign, the towels
     ("bank_back_night", -2205.0, 1050.0, -29.71, EYE, -6, -20, "11-13 23:30", 1, []),        # from the water's edge back at the sign and towels
     ("river_above_night", -2150.0, 1038.0, -29.71, 40.0, -55, 180, "11-13 23:30", 1, []),    # down at the river, the sign and the towels
+    ("bank_6m_night", -2150.0, 1038.0, -29.71, 6.0, -12, 180, "11-13 23:30", 1, []),         # the bank from 6 m: the river's points of light
     ("dissolve_night", -2150.0, 1038.0, -29.71, EYE, -4, 180, "11-13 23:30", 1, ["lyud.Topi.Dissolve"]),  # 5 s into the dive
 ]
 if os.environ.get("TOPI_SHOTS"):

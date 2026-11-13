@@ -85,7 +85,9 @@ def river():
     t = g.node(X.MaterialExpressionTime)
     look = (g.vparam("TopiLook", (1.0, 0.0, 0.0, 0.0)), "RGBA")
     foot = g.custom("return max(length(ddx(UV)), length(ddy(UV)));", [("UV", uv)], desc="Footprint")
-    out = g.custom(T.LIB + T.RIVER, [("UV", uv), ("T", t), ("Look", look), ("VC", _vc(g)), ("Foot", foot), ("Bright", g.param("Bright", 3.0))],
+    view = g.node(X.MaterialExpressionCameraVectorWS)
+    out = g.custom(T.LIB + T.RIVER, [("UV", uv), ("T", t), ("Look", look), ("VC", _vc(g)), ("Foot", foot), ("Bright", g.param("Bright", 3.0)),
+                                     ("V", view)],
                    out=F4, desc="TopiRiver")
     g.out(_mask(g, out, r=True, gg=True, b=True), MP.MP_EMISSIVE_COLOR)
     g.out(_mask(g, out, a=True), MP.MP_OPACITY)
@@ -121,7 +123,9 @@ def motes(coll):
         g.link(g.const(v), e)
         return e
 
-    ins = [("UV", uv), ("T", t), ("Look", look), ("VC", vc), ("Wind", wind), ("Right", axis((1.0, 0.0, 0.0))), ("Up", axis((0.0, 1.0, 0.0)))]
+    flow = g.node(X.MaterialExpressionVertexNormalWS)       # the streaming sparks carry the stream's direction here
+    ins = [("UV", uv), ("T", t), ("Look", look), ("VC", vc), ("Wind", wind), ("Right", axis((1.0, 0.0, 0.0))), ("Up", axis((0.0, 1.0, 0.0))),
+           ("Flow", flow)]
     g.out(g.custom(T.LIB + T.MOTE_WPO, ins, out=F3, desc="TopiMote"), MP.MP_WORLD_POSITION_OFFSET)
     out = g.custom(T.LIB + T.MOTE_LIGHT, [("UV", uv), ("T", t), ("Look", look), ("VC", vc), ("Bright", g.param("Bright", 14.0))],
                    out=F3, desc="TopiMoteLight")

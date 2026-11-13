@@ -108,13 +108,15 @@ float foot = max(length(ddx(p)), length(ddy(p)));
 float2 w = normalize(Wind.xy + float2(1e-4, 0.0));
 // pale Baltic quartz sand, a little warmer and darker in broad patches (heavier minerals gather in the hollows)
 float tone = Topi.Noise(p / 47.0, 7u) * 0.6 + Topi.Noise(p / 9.0, 8u) * 0.4;
-float3 c = lerp(float3(0.46, 0.40, 0.29), float3(0.60, 0.53, 0.40), tone);
+float3 c = lerp(float3(0.50, 0.47, 0.37), float3(0.64, 0.60, 0.48), tone);
 // the slip faces are finer, smoother sand: lighter
 float slip = saturate((0.86 - n.z) / 0.10);
-c = lerp(c, float3(0.63, 0.57, 0.44), 0.55 * slip);
+c = lerp(c, float3(0.67, 0.63, 0.52), 0.55 * slip);
 // dark streaks of garnet and magnetite along the ripples, here and there
 float streak = Topi.Noise(float2(dot(p, w) * 0.6, dot(p, float2(w.y, -w.x)) * 0.05), 9u);
-c *= 1.0 - 0.22 * smoothstep(0.62, 0.85, streak) * saturate(1.0 - foot / 0.6) * (1.0 - slip);
+// broken up so they never run on as continuous lines
+float patchy = smoothstep(0.45, 0.75, Topi.Noise(p / 13.0, 14u));
+c *= 1.0 - 0.12 * smoothstep(0.66, 0.88, streak) * patchy * saturate(1.0 - foot / 0.6) * (1.0 - slip);
 // marram country: grey litter and roots darken the sand between the tufts
 float litter = VC.r * (0.35 + 0.65 * Topi.Noise(p / 2.3, 10u));
 c = lerp(c, float3(0.30, 0.29, 0.20), 0.5 * litter);
@@ -127,7 +129,7 @@ float blow = saturate((Wind.z - 4.0) / 8.0) * (0.5 + 0.5 * Wind.w) + 0.25 * Look
 float2 q = float2(dot(p, w) * 0.035 - T * (0.25 + 0.03 * Wind.z), dot(p, float2(w.y, -w.x)) * 0.5 + 1.5 * Topi.Noise(p * 0.04 - T * 0.1, 11u));
 float ribbon = smoothstep(0.55, 0.9, Topi.Noise(q, 12u)) * smoothstep(0.3, 0.7, Topi.Noise(p * 0.02 + T * 0.03, 13u));
 float stream = ribbon * blow * saturate(1.0 - foot / 1.5) * (1.0 - bed) * saturate((n.z - 0.7) / 0.2);
-c = lerp(c, float3(0.74, 0.69, 0.58), 0.6 * stream);
+c = lerp(c, float3(0.76, 0.73, 0.64), 0.6 * stream);
 // seen from far off the dunes go paler and lose their warmth: they could be made of light
 float dist = length(Pos.xy - Cam.xy) * 0.01;
 float farK = saturate(dist / 12000.0);
@@ -147,7 +149,10 @@ float cover = 0.0;
 // the body: a soft band of teal, with long threads of brighter light drawn out by the flow
 float thread = Topi.Noise(float2(UV.x * 0.06 - T * speed * 0.06, across * 3.5), 21u);
 float thread2 = Topi.Noise(float2(UV.x * 0.21 - T * speed * 0.21, across * 9.0 + 3.0), 22u);
-float body = 0.35 + 0.5 * smoothstep(0.35, 0.8, thread) + 0.35 * smoothstep(0.5, 0.9, thread2);
+// low contrast: at a grazing angle long bright threads smear into scan lines
+float body = 0.45 + 0.25 * smoothstep(0.35, 0.8, thread) + 0.15 * smoothstep(0.5, 0.9, thread2);
+// how steeply the eye looks at the water (0 grazing .. 1 straight down): fine sparks squash into lines when grazing
+float graze = abs(V.z);
 light += float3(0.05, 0.55, 0.50) * body;
 cover += 0.5 * body;
 // the particles: three sizes, each cell of a grid moving with the stream holds one spark or none
@@ -162,14 +167,15 @@ for (int layer = 0; layer < 3; ++layer)
     float2 at = 0.25 + 0.5 * float2(Topi.Hash(id, s + 1u), Topi.Hash(id, s + 2u));
     float twinkle = 0.55 + 0.45 * sin(T * (1.5 + 4.0 * Topi.Hash(id, s + 3u)) + 6.2831853 * Topi.Hash(id, s + 4u));
     float2 d = (f - at) * float2(1.0, 1.0);
-    float r = lerp(0.10, 0.22, Topi.Hash(id, s + 5u));
+    float r = lerp(0.10, 0.22, Topi.Hash(id, s + 5u)) * (layer == 0 ? lerp(1.5, 1.0, smoothstep(0.05, 0.3, graze)) : 1.0);
     float spark = exp(-dot(d, d) / (r * r)) * step(0.45, has) * twinkle;
     // each spark has its own colour between teal, aquamarine, pale violet and a rare gold: they shift as they go
     float hue = Topi.Hash(id, s + 6u) + 0.08 * sin(T * 0.7 + UV.x * 0.05);
     float3 col = lerp(float3(0.10, 1.00, 0.85), float3(0.35, 0.75, 1.00), smoothstep(0.2, 0.6, hue));
     col = lerp(col, float3(0.80, 0.60, 1.00), smoothstep(0.6, 0.85, hue));
     col = lerp(col, float3(1.00, 0.90, 0.55), smoothstep(0.92, 1.0, hue));
-    float fade = layer == 2 ? saturate(1.0 - Foot / 0.25) : (layer == 1 ? saturate(1.0 - Foot / 0.8) : 1.0);
+    float fade = layer == 2 ? saturate(1.0 - Foot / 0.25) * smoothstep(0.08, 0.3, graze)
+               : (layer == 1 ? saturate(1.0 - Foot / 0.8) * smoothstep(0.03, 0.15, graze) : 1.0);
     light += col * spark * (layer == 0 ? 2.0 : (layer == 1 ? 3.0 : 4.0)) * fade;
     cover += spark * fade;
 }
@@ -198,24 +204,38 @@ return col * fall * rays * shimmer * focus * nearK * night * VC.a * Bright * (1.
 # (-1..1); VC: (speed, phase, size, kind 0 wind / 1 riser); Right, Up: the camera's axes in the world.
 MOTE_WPO = r"""
 float night = Look.x, dissolve = Look.y;
-float life = frac(T * (0.035 + 0.05 * VC.r) + VC.g);
+float rate = 0.035 + 0.05 * VC.r;
+float life = frac(T * rate + VC.g);
 float2 w = normalize(Wind.xy + float2(1e-4, 0.0));
-// blown down the wind from the river (the path leads up the wind's trail), or rising from the water and carried by it
-float3 drift = lerp(float3(w * (life - 0.5) * (500.0 + 90.0 * Wind.z), 35.0 * sin(life * 6.2831853 + VC.b * 20.0)),
-                    float3(260.0 * (life - 0.5) + 30.0 * sin(life * 9.0 + VC.g * 30.0), 25.0 * sin(life * 7.0 + VC.r * 40.0), 170.0 * life),
-                    VC.a);
-// mostly sparks of 3..6 cm, one in ten a larger soft one
-float big = step(0.9, VC.b);
-float size = lerp(1.5 + 1.5 * VC.b / 0.9, 6.0, big) * sin(3.14159 * life) * night * (1.0 + 2.5 * dissolve);
+// kind (VC.a): 0 blown down the wind from the river (the path leads up the wind's trail), 1 rising from the water,
+// 0.5 a spark streaming on the water with the current (Flow: the stream's direction, in the vertex normal)
+float riser = step(0.75, VC.a);
+float streamer = step(0.25, VC.a) * (1.0 - riser);
+float3 wind = float3(w * (life - 0.5) * (500.0 + 90.0 * Wind.z), 35.0 * sin(life * 6.2831853 + VC.b * 20.0));
+float3 rise = float3(260.0 * (life - 0.5) + 30.0 * sin(life * 9.0 + VC.g * 30.0), 25.0 * sin(life * 7.0 + VC.r * 40.0), 170.0 * life);
+// 240 cm/s: the stream's speed (TopiModel RiverFlow)
+float3 flow = float3(normalize(Flow.xy + float2(1e-4, 0.0)) * (life - 0.5) * 240.0 / rate, 4.0 * sin(life * 40.0 + VC.g * 30.0));
+float3 drift = riser > 0.5 ? rise : (streamer > 0.5 ? flow : wind);
+// mostly sparks of 3..6 cm, one in ten a larger soft one; the streaming ones tiny
+float big = step(0.9, VC.b) * (1.0 - streamer);
+float size = lerp(lerp(1.5 + 1.5 * VC.b / 0.9, 6.0, big), 0.8 + 1.4 * VC.b, streamer) * sin(3.14159 * life) * night * (1.0 + 2.5 * dissolve);
 return drift + (UV.x * Right + UV.y * Up) * size;
 """
 
 MOTE_LIGHT = r"""
 float night = Look.x, dissolve = Look.y;
 float d = saturate(1.0 - dot(UV, UV));
-float big = step(0.9, VC.b);
+float riser = step(0.75, VC.a);
+float streamer = step(0.25, VC.a) * (1.0 - riser);
+float big = step(0.9, VC.b) * (1.0 - streamer);
 d = lerp(d * d * d, d * d * 0.35, big);       // sparks: a sharp point; the big ones soft and dim
 float tw = 0.6 + 0.4 * sin(T * (2.0 + 5.0 * VC.r) + VC.g * 40.0);
 float3 col = lerp(float3(0.15, 1.0, 0.85), float3(0.85, 0.95, 1.0), VC.b * VC.b);
+// the streaming sparks take the river's colours: teal, aquamarine, pale violet, a rare gold
+float hue = frac(VC.r * 7.13 + VC.g * 3.71);
+float3 sc = lerp(float3(0.10, 1.00, 0.85), float3(0.35, 0.75, 1.00), smoothstep(0.2, 0.6, hue));
+sc = lerp(sc, float3(0.80, 0.60, 1.00), smoothstep(0.6, 0.85, hue));
+sc = lerp(sc, float3(1.00, 0.90, 0.55), smoothstep(0.95, 1.0, hue));
+col = lerp(col, sc * 1.6, streamer);
 return col * d * tw * night * Bright * (1.0 + 3.0 * dissolve);
 """

@@ -732,7 +732,7 @@ void ALyudTopi::GrowGrass(uint64 Key, int32 Q)
 		Patch->Species = GrassSpecies;
 		Patch->Seed = int32(Key & 0x7fffff) + Q;
 		Patch->HalfExtent = FVector2D(Size * 25.0, Size * 25.0);
-		Patch->DensityScale = FMath::Clamp(Chunk.Grass[Q] * 0.9f, 0.03f, 1.f);
+		Patch->DensityScale = FMath::Clamp(Chunk.Grass[Q] * 1.7f, 0.05f, 2.f);   // tussocks that read at eye level
 		Patch->bUseTerrainMask = false;      // the mask covers only the map's own landscape
 		Patch->MinSlopeNormalZ = 0.8f;       // none on the slip faces
 		Patch->MinWorldZ = float((LyudTopi::RiverZ + 0.6) * 100.0);
@@ -864,7 +864,8 @@ void ALyudTopi::BuildRiver()
 
 	// motes of light: over the water near where the path comes out, and blown along the path from the river.
 	// Every mote is a quad with all four corners at its place; the material opens it toward the eye and carries it
-	// along. UV0 = corner (-1..1), colour = (speed, phase, size, 0: drifts with the wind / 1: rises from the water)
+	// along. UV0 = corner (-1..1), colour = (speed, phase, size, 0: drifts with the wind / 1: rises from the water /
+	// 0.5: streams on the water with the current, whose direction is in the normal)
 	{
 		TArray<FVector> V;
 		TArray<int32> T;
@@ -872,7 +873,7 @@ void ALyudTopi::BuildRiver()
 		TArray<FVector2D> UV;
 		TArray<FLinearColor> C;
 		FRandomStream Rand(19570104);
-		const auto Mote = [&](double X, double Y, double Z, float Kind)
+		const auto Mote = [&](double X, double Y, double Z, float Kind, const FVector& Normal)
 		{
 			const int32 First = V.Num();
 			const FVector P = Local(X, Y, Z);
@@ -881,7 +882,7 @@ void ALyudTopi::BuildRiver()
 			for (const FVector2D& Corner : Corners)
 			{
 				V.Add(P);
-				N.Add(FVector::UpVector);
+				N.Add(Normal);
 				UV.Add(Corner);
 				C.Add(Seed);
 			}
@@ -893,7 +894,18 @@ void ALyudTopi::BuildRiver()
 			FVector2D Side;
 			const FVector2D Mid = Stream((Rand.FRand() * 2.0 - 1.0) * 260.0, Side);
 			const double W = (Rand.FRand() * 2.0 - 1.0) * (LyudTopi::RiverHalfWidth + 6.0);
-			Mote(Mid.X + Side.X * W, Mid.Y + Side.Y * W, LyudTopi::RiverZ + 0.05 + Rand.FRand() * Rand.FRand() * 3.5, 1.f);
+			Mote(Mid.X + Side.X * W, Mid.Y + Side.Y * W, LyudTopi::RiverZ + 0.05 + Rand.FRand() * Rand.FRand() * 3.5, 1.f, FVector::UpVector);
+		}
+		// the river made of points of light: tiny sparks streaming on the water with the current, 150 m either way of the
+		// path's end (the material carries each downstream at the stream's speed and fades it in and out)
+		for (int32 K = 0; K < 3500; ++K)
+		{
+			const double Down = (Rand.FRand() * 2.0 - 1.0) * 150.0;
+			FVector2D Side;
+			const FVector2D Mid = Stream(Down, Side);
+			const LyudTopi::FVec2 D = LyudTopi::FModel::RiverDirection(Down);
+			const double W = (Rand.FRand() * 2.0 - 1.0) * LyudTopi::RiverHalfWidth * 0.95;
+			Mote(Mid.X + Side.X * W, Mid.Y + Side.Y * W, LyudTopi::RiverZ + 0.02 + Rand.FRand() * Rand.FRand() * 0.8, 0.5f, FVector(D.X, D.Y, 0.0));
 		}
 		// along the path: thin at its start, thick by the river
 		const double Length = LyudTopi::FModel::PathLength();
@@ -902,7 +914,7 @@ void ALyudTopi::BuildRiver()
 			const double Along = Length * (1.0 - FMath::Square(double(Rand.FRand())) * 0.92);
 			const LyudTopi::FVec2 P = LyudTopi::FModel::PathPoint(Along);
 			const double X = P.X + (Rand.FRand() * 2.0 - 1.0) * 9.0, Y = P.Y + (Rand.FRand() * 2.0 - 1.0) * 9.0;
-			Mote(X, Y, M.Height(X, Y) + 0.25 + Rand.FRand() * 2.4, 0.f);
+			Mote(X, Y, M.Height(X, Y) + 0.25 + Rand.FRand() * 2.4, 0.f, FVector::UpVector);
 		}
 		Motes = MakeMesh(TEXT("Motes"), MotesMID, false);
 		Motes->TranslucencySortPriority = 3;
