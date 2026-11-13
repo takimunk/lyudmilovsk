@@ -12,7 +12,8 @@ SHOTS = os.environ.get("BLOOM_SHOTS", "/tmp/bloomshots")
 ONLY = [s for s in os.environ.get("BLOOM_ONLY", "").split(",") if s]
 PEAK = {"PyramidalPoplar": 100, "BlackPoplar": 102, "Aspen": 90, "BlackAlder": 76, "SilverBirch": 118, "DownyBirch": 122, "WeepingBirch": 118,
         "StoneBirch": 128, "DwarfBirch": 138, "SwampWhiteOak": 133, "Apple": 134, "Rowan": 150, "Maple": 120, "SeaBuckthorn": 108,
-        "ScotsPine": 150, "DunePine": 150, "NorwaySpruce": 138, "Juniper": 124}
+        "ScotsPine": 150, "DunePine": 150, "NorwaySpruce": 138, "Juniper": 124,
+        "SiberianDwarfPine": 186, "DwarfAlder": 165, "GoldenRhododendron": 175}
 SERIES = {"Apple": (100, 134, 160), "SilverBirch": (90, 118, 150), "PyramidalPoplar": (70, 100, 125), "Rowan": (130, 150, 180)}
 species = [s for s in PEAK if not ONLY or s in ONLY]
 # (species, camera, day or 0 = each plant's own peak day, summary_distance: 1e9 live, 0 its bake)

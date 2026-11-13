@@ -98,7 +98,7 @@ namespace
 		return T * T * (3.f - 2.f * T);
 	}
 
-	const TCHAR* Conifers[] = { TEXT("ScotsPine"), TEXT("DunePine"), TEXT("NorwaySpruce"), TEXT("Juniper") };
+	const TCHAR* Conifers[] = { TEXT("ScotsPine"), TEXT("DunePine"), TEXT("NorwaySpruce"), TEXT("Juniper"), TEXT("SiberianDwarfPine") };
 	bool IsConifer(FName Species)
 	{
 		for (const TCHAR* C : Conifers)
@@ -299,6 +299,9 @@ void ULyudSoundscapeSubsystem::LoadSounds()
 		{ TEXT("Restaurant"), TEXT("rest_kitchen") }, { TEXT("Restaurant"), TEXT("rest_room") }, { TEXT("Restaurant"), TEXT("rest_music") },
 		{ TEXT("Restaurant"), TEXT("rest_door") }, { TEXT("Restaurant"), TEXT("rest_menu") }, { TEXT("Restaurant"), TEXT("rest_tray") },
 		{ TEXT("Restaurant"), TEXT("rest_coins") },
+		// the North (ALyudFumarole, ALyudCampfire: tools/north_sounds.py): a vent's hiss, mud plopping, a spring simmering, the camp's fire
+		{ TEXT("North"), TEXT("north_vent") }, { TEXT("North"), TEXT("north_mudpot") }, { TEXT("North"), TEXT("north_spring") },
+		{ TEXT("North"), TEXT("north_campfire") },
 	};
 	for (const auto& G : Groups)
 	{

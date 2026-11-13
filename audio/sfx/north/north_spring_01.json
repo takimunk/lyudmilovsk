@@ -1,0 +1,11 @@
+{
+ "id": "north_spring",
+ "kind": "sfx",
+ "file": "audio/sfx/north/north_spring_01.wav",
+ "generator": "tools/north_sounds.py",
+ "seed": 7301,
+ "seconds": 4.0,
+ "sha256": "396c463e382f7f5603bc8a6d9de3450ba0506130d4b98248d198bb7f32f22d34",
+ "loop": true,
+ "license": "Procedural (tools/north_sounds.py); released by the project under CC BY 4.0."
+}

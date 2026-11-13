@@ -43,7 +43,9 @@ def main(out):
             pix[i, j] = c
     d = ImageDraw.Draw(img)
     for x, y, hx, hy, mix, *_ in W.forests():     # forest patches (trees only where the ground allows)
-        col = {"old": (35, 70, 40), "dune": (90, 120, 70), "wet": (70, 105, 60), "town": (95, 130, 75)}[mix]
+        col = {"old": (35, 70, 40), "dune": (90, 120, 70), "wet": (70, 105, 60), "town": (95, 130, 75),
+               "stonebirch": (80, 115, 65), "dwarfpine": (55, 90, 50), "alder": (75, 110, 60), "shrub": (100, 130, 80),
+               "rhodo": (120, 135, 85)}[mix]
         d.rectangle((*px(x + hx, y + hy), *px(x - hx, y - hy)), outline=col, width=3)
     houses = W.town()
     for x, y, yaw, hw, hd, fl, kind in houses:

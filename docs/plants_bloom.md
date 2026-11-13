@@ -34,3 +34,18 @@ Presets live in `ApplyBlossom` (PlantSpecies.cpp), keyed by species name; a new 
 (`Catkin`, `Blossom`, `Cone`), its days, size, colours and `FarTint`. `lyud.PlantBloom 0` switches all of it off
 (plants and bakes follow when they next re-shape or re-bake). Check: `unreal/scripts/make_plant_bloom_level.py`,
 then `shoot_plant_bloom.py` (offscreen; `BLOOM_ONLY`, `BLOOM_QUICK`).
+
+## The North
+
+The North's shrubs (`PlantSpeciesNorth.cpp`) set their `Blossom` in the species itself, not through `ApplyBlossom`;
+the dates are Kamchatka's, a month or more after the coast's:
+
+| Species | Form | Days (start..end, peak) | Look |
+|---|---|---|---|
+| SiberianDwarfPine | Cone | 172..200, 186 | purple-red male cones in clusters at the shoot bases |
+| DwarfAlder | Catkin | 150..180, 165 | yellow-green hanging catkins as the leaves open, two to a twig |
+| GoldenRhododendron | Blossom | 158..192, 175 | pale yellow five-petalled flowers, six to a cluster, as the snow goes |
+
+The North's herbs flower through `FPlantHerb` like the rest: fireweed 192..242 (magenta), mountain avens 168..205
+(white), cotton grass 175..228 (white heads). Check: the bloom level lists the three shrubs (`make_plant_bloom_level.py`,
+`shoot_plant_bloom.py`); `make_plant_north_level.py` / `shoot_plant_north.py` show all six by age and season.

@@ -4,24 +4,32 @@
    "id": "north_gate",
    "group": "north",
    "name": "dev.tp.north_gate",
-   "x": -202.0,
-   "y": 2387.0,
+   "x": -17.0,
+   "y": 2392.0,
    "yaw": 90.0
   },
   {
    "id": "north_hut",
    "group": "north",
    "name": "dev.tp.north_hut",
-   "x": -169.0,
-   "y": 2440.0,
-   "yaw": 180.0
+   "x": 1.0,
+   "y": 2446.0,
+   "yaw": 0.0
   },
   {
    "id": "north_meadows",
    "group": "north",
    "name": "dev.tp.north_meadows",
-   "x": -30.0,
-   "y": 2800.0,
+   "x": 40.0,
+   "y": 2760.0,
+   "yaw": 100.0
+  },
+  {
+   "id": "north_old_cone",
+   "group": "north",
+   "name": "dev.tp.north_old_cone",
+   "x": -370.0,
+   "y": 2780.0,
    "yaw": 90.0
   },
   {
@@ -29,72 +37,64 @@
    "group": "north",
    "name": "dev.tp.north_camp",
    "x": 134.0,
-   "y": 3155.0,
+   "y": 3095.0,
    "yaw": 45.0
   },
   {
    "id": "north_spring",
    "group": "north",
    "name": "dev.tp.north_spring",
-   "x": -366.0,
-   "y": 3392.0,
-   "yaw": 135.0
+   "x": -290.0,
+   "y": 3496.0,
+   "yaw": 180.0
   },
   {
    "id": "north_fumaroles",
    "group": "north",
    "name": "dev.tp.north_fumaroles",
-   "x": -400.0,
-   "y": 3390.0,
-   "yaw": 100.0
-  },
-  {
-   "id": "north_snowfield",
-   "group": "north",
-   "name": "dev.tp.north_snowfield",
-   "x": -150.0,
-   "y": 3622.0,
-   "yaw": 270.0
-  },
-  {
-   "id": "north_lava",
-   "group": "north",
-   "name": "dev.tp.north_lava",
-   "x": -300.0,
-   "y": 3740.0,
-   "yaw": 110.0
-  },
-  {
-   "id": "north_breach",
-   "group": "north",
-   "name": "dev.tp.north_breach",
-   "x": -490.0,
-   "y": 3884.0,
-   "yaw": 190.0
+   "x": -370.0,
+   "y": 3507.0,
+   "yaw": 180.0
   },
   {
    "id": "north_crater",
    "group": "north",
    "name": "dev.tp.north_crater",
-   "x": -618.0,
-   "y": 3844.0,
-   "yaw": 180.0
+   "x": -538.0,
+   "y": 3527.0,
+   "yaw": 160.0
+  },
+  {
+   "id": "north_lava",
+   "group": "north",
+   "name": "dev.tp.north_lava",
+   "x": -190.0,
+   "y": 3606.0,
+   "yaw": 20.0
+  },
+  {
+   "id": "north_snowfield",
+   "group": "north",
+   "name": "dev.tp.north_snowfield",
+   "x": -626.2,
+   "y": 3156.7,
+   "yaw": 90.0
+  },
+  {
+   "id": "north_saddle",
+   "group": "north",
+   "name": "dev.tp.north_saddle",
+   "x": -455.0,
+   "y": 3345.0,
+   "yaw": 0.0
   },
   {
    "id": "north_rim",
    "group": "north",
    "name": "dev.tp.north_rim",
-   "x": -642.0,
-   "y": 3789.0,
-   "yaw": 270.0
-  },
-  {
-   "id": "north_old_cone",
-   "group": "north",
-   "name": "dev.tp.north_old_cone",
-   "x": -876.0,
-   "y": 2990.0,
-   "yaw": 0.0
+   "x": -455.0,
+   "y": 3212.0,
+   "yaw": 250.0
   }
  ]
 }

@@ -1,41 +1,62 @@
 # The North (Север)
 
-Volcano country beyond the north hills: a long walk from the town (2.3 km from the Sun Square to the campsite, 3 km from
-the club). Fumaroles, summer snowfields, grass meadows, a young cinder cone with a lava flow, a campsite with tents and
-a ranger's hut at the reserve's gate. Almost no trees: stone birch park woodland at the tree line, then shrubs.
+Volcano country beyond the north hills: a long walk from the town (about 2.2 km from the Sun Square to the campsite).
+A chain of cinder cones, one of them steaming, a lava field running to the sea, summer snowfields in the cones' shade,
+grass meadows, a campsite with tents and a ranger's hut at the reserve's gate. Few trees: stone birch park woodland at the
+tree line and on the Old Cone, then dwarf pine, alder thickets and shrubs.
 Everything here is a **proposal**, not canon (docs/story/README.md): names, the ranger, the boards' words.
 
-The map grew from Y 2200 to Y 4200 for it (`tools/world_map.py` `Y_MAX`; the landscape is 21 x 41 components now).
+**The land is a real place.** Its heights are the cinder cones of the Northern Breakthrough of the Great Tolbachik
+Fissure Eruption (Kamchatka, 1975; 55.68 N 160.24 E) and the lava plain west of them, from NASA SRTM (public domain;
+fetched as Mapzen / AWS Terrain Tiles), at **half size**: 2 real metres per map metre, heights halved too, so every slope
+is the real one. `tools/north_dem/make.py` fetches the tiles, mends the radar's voids, takes the map's window, removes
+most of the flank's regional tilt (12 % inland in reality, 2 % kept) and writes `tools/north_dem/dem.i16` + `dem.json`
+(10 m cells; committed, so nobody needs the network). `tools/north_land.py` reads them (standard library only) and derives
+the rest from the heights instead of drawing it by hand:
+
+- the cones' **cinder** = whatever stands high over the land 300 m around (`relief`),
+- the **lava field** = rough ground (`rough`): the real flows' levees and channels,
+- the **snowfields** = shaded hollows and lee north slopes above 62 m (`snow`), a fixed share of that land,
+- nothing is an ellipse or a sine.
+
+The map grew from Y 2200 to Y 4200 for it (`tools/world_map.py` `Y_MAX`; the landscape is 21 x 41 components) and the
+landscape's Z scale is 100 (`LyudTerrain.cpp`, `terrain.LANDSCAPE_Z_STEP`): heights to +-256 m, the High Cone is 173 m.
 
 ## Places
 
-Map metres (docs/world_map.md's frame: X west toward the sea, Y north). All of it is authored in `tools/north.py`.
+Map metres (docs/world_map.md's frame: X west toward the sea, Y north). Chosen on the real land in `tools/north.py`.
 
 | Place | Where (X, Y) | What |
 |---|---|---|
-| Gate | -205, 2395 | a barrier across the track from the town, the reserve's board |
-| Ranger's hut (сторожка) | -178, 2440 | a small log hut with a stove, a bunk, a table and a radio; the ranger lives here |
-| Tree line | Y 2330..2700 | stone birch, rowan and dwarf birch wide apart (`FOREST_MIX["stonebirch"]`) |
-| Meadows (луга) | Y 2550..3400 | a rolling plateau of grass 35..45 m over the club's floor; dwarf birch and juniper clumps; ends at the sea in an ~80 m cliff |
-| Campsite (кемпинг) | 140, 3160 | six tents round a fire ring, a table under a tarp, log benches, a food pole, an outhouse |
-| Old Cone (Старая сопка) | -880, 2990 | an extinct cone 36 m high, grassed over, a shallow dish on top: the meadows' landmark and lookout |
-| Hot spring | -372, 3398 | a warm pool with a wooden deck at the mouth of the Fumarole Valley |
-| Fumarole Valley | -430, 3490 | a trough through the Ridge: bleached clay, 9 steam vents, 12 patches of steaming ground, 5 mud pots |
-| The Ridge (Гряда) | Y ~3520, X -960..260 | a low rise whose north slope keeps snowfields all summer |
-| Snowfields (снежники) | 8 of them, Y 3345..4030 | firn in hollows: on the Ridge's north slope, under the Cone, in the gullies of the northern foot |
-| Lava flow | from the Cone west to 330, 3668 | a tongue of blocky clinker 50..100 m wide, 4.5 m thick |
-| The Cone (Сопка) | -640, 3840 | a cinder cone 58 m high, 410 m across, its crater (27 m deep, a level floor 40 m across) breached to the west: the way in, the trail climbs through the breach; two vents on the crater floor |
-| Northern and eastern foot | Y > 3950, X < -880 | the land climbs out of the map toward the big volcanoes |
-| Far volcanoes | 5..10 km out | three backdrop cones with snow caps, one smoking (`north.far_volcanoes()`); never walked on |
+| Gate | -20, 2400 | a barrier across the track from the town, the reserve's board |
+| Ranger's hut (сторожка) | 10, 2446 | a small log hut with a stove, a bunk, a table and a radio; the ranger lives here; the Old Cone rises behind it |
+| Tree line | Y 2330..2700 | the old forest thins out among stone birch, rowan and dwarf birch |
+| Old Cone (Старая сопка) | -385, 2720 | the southernmost cone, 115 m, grassed over, stone birches on it: the landmark over the hut, a lookout |
+| Meadows (луга) | west of the cones | the old lava plain under grass, 20..50 m up, low terraces and swales; dwarf pine and alder; ends at the sea in a cliff |
+| Campsite (кемпинг) | 140, 3100 | six tents close round a fire ring, a table under a tarp, log benches, a food pole, an outhouse; under a low terrace |
+| High Cone (Высокая сопка) | -490, 3125 | the tallest, 173 m: a closed crater 150 m across with snow in it; a path gains its rim from the saddle |
+| Saddle | -455, 3345 | between the High Cone and the Cone |
+| Hot spring | -296, 3502 | a warm pool with a wooden deck at the mouth of the Fumarole Valley |
+| Fumarole Valley | -440, 3503 | the trough running out of the Cone's breach: bleached clay, steam vents, steaming ground, mud pots |
+| The Cone (Сопка) | -560, 3535 | the live one, 150 m: a horseshoe crater open to the south-west, vents on its floor |
+| Lava field | Y 3440..3830, from X -400 to the sea | blocky clinker in tongues with grass and shrub islands between them |
+| Snowfields (снежники) | `north.snowfields()` | firn in the shade of the High Cone and the Cone (north.json lists them, largest first) |
+| Small Cone (Малая сопка) | -650, 3900 | the northernmost, bare cinder |
+| Eastern cones | X < -850 | two low grassed cones nobody needs to visit |
+| Far volcanoes | 5..10 km out | three backdrop cones with snow caps, one smoking (`north.far_volcanoes()`), and the far land north of the map; never walked on |
 
-The trail (a dirt track, `north.TRACKS`, routed by `tools/terrain.py`): the town's north track -> the gate -> the camp ->
-the spring -> up the Fumarole Valley -> the Cone's breach.
+The trail (a dirt track, `north.TRACKS`, routed by `tools/terrain.py`): the town's north track -> the gate -> the meadows
+-> the camp -> the spring -> up the Fumarole Valley into the Cone's crater; from the spring also up to the saddle and the
+High Cone's rim, and out onto the lava field.
+
+East of the map lie the Topi (their thread's own ground, `tools/topi.py`): keep things that must be seen west of X -1130.
 
 ## Who owns what
 
 | What | Where |
 |---|---|
-| The region: macro shape, masks, places, camp layout, fumarole list, signs, forests, grass, trail anchors | `tools/north.py` (hooked from `world_map.plateau / keep_flat / forests / grass_patches / _tree_free`, `terrain._anchors / TRACKS`) |
+| The real heights and what follows from them (cinder, lava, snow) | `tools/north_dem/` (make.py, dem.i16, dem.json), `tools/north_land.py` |
+| The region: places, masks, camp layout, fumarole list, signs, forests, grass, trail anchors | `tools/north.py` (hooked from `world_map.plateau / keep_flat / forests / grass_patches / _tree_free`, `terrain._anchors / TRACKS`) |
 | Data for the game | `python3 tools/north.py` -> `Content/North/north.json`, `Content/Dev/teleports/north.json` |
 | Ground: lava's clinker relief, firn in the snowfields, the Snow / Scoria / Sulfur layers | `Private/Terrain/TerrainGen.cpp` on the masks `snow, scoria, lava, sulfur` that `terrain.write_inputs` appends |
 | A look without Unreal | `tools/north_sim/run.sh ground` (-> `Saved/North/north_ground.png`), `python3 tools/north_preview.py out.png` |
@@ -66,6 +87,20 @@ check one mesh in the editor and record the fix in `manifest.json` `front_yaw`),
 ("exact" | "box" | "none"), seats [[x, y, z, yaw]...], notes}` and for the hut the door's hinge, the bed, the chair,
 the stove's flue, lamp positions (hut-local metres).
 
+**Building the props.** `pip install bpy` (Blender 5.3 module), then `python3 blender/north/build_north.py [kind|kind:variant ...]`
+(`--textures` first regenerates the atlas). `northtex.py` makes one 2048 trim-sheet atlas (base colour + normal, procedural,
+material `M_North_Atlas`) shared by every prop; `northkit.py` has the geometry helpers (boxes, cylinders, tubes, cloth shells with
+thickness, rounded stones, plates with holes) and the UV lint (every face stays inside its tile window); `props*.py` are the
+kinds, `kinds.py` the list. Previews and contact sheets: `python3 blender/north/preview_north.py [--sheet] [--camp]`.
+Words on boards are typeset by `tools/north_signs.py` (strings `north.sign.*`, `north.board.*`; textures
+`textures/localized/<lang>/north_<id>.png`; the GLBs carry the Russian ones in `M_North_Text_<id>` materials, the game swaps the
+language through `LyudText::LoadTexture("North", "north_<id>")`). `sign_post` is one mesh whose planks show `sign_post_spring`;
+instances for the cone and the camp swap that texture to `sign_post_cone` / `sign_post_camp` (same UVs). The manifest's `size` is
+the mesh's bounding box including guy lines and pegs, `body_size` the object alone; `seats` are `[x, y, z, yaw]` in mesh space
+(yaw: degrees counter-clockwise from above, 0 = facing the object's front -Y). `spring_deck` has its origin at the pool's centre
+(radius 2.6), the deck on the east rim at x 2.3..4.5, top z 0.45; two steps lead down west into the pool, the game's water
+surface should be near z -0.05.
+
 **Words.** Boards carry words: follow `.claude/skills/localization/SKILL.md` (ru/en/ja, text keys `north.sign.*`,
 `place.north.*`, `dev.tp.north_*`).
 
@@ -76,3 +111,110 @@ the stove's flue, lamp positions (hut-local metres).
 Follow the perf checklist (project memory): steam, fire and snow never rebuild instanced meshes per frame, moving
 meshes stay out of Lumen, nothing ticks when the hero is far (the North is > 1 km from the town: everything there sleeps
 until the hero is within a few hundred metres).
+
+## Game side
+
+The living things of the North and the placing in Unreal (`Public/North/`, `Private/North/`, `unreal/scripts/import_north.py`).
+
+**Classes.**
+
+| Class | What |
+|---|---|
+| `ULyudNorthSubsystem` (world subsystem) | Reads `Content/North/north.json` (places, fumaroles, far volcanoes). Four times a second it measures the player (the possessed pawn: the hero or the bird he flies) to every `ALyudNorthThing` and wakes it within `lyud.North.Range` (300 m, +25 m before it sleeps again) and calls it *near* within 70 m (sound). Owns the shared steam pool and the far plume, feeds them the wind (`ULyudWindSubsystem::GetWindAt` over the valley, gusts included) and the air's density (`ULyudWeatherSubsystem`: cold and damp air keeps steam thicker and longer). Quest hooks: `GetFumaroles()`, `IsHotGround(FVector)` / `FindHotGround`, static `IsInNorth(FVector)` (map Y >= 2330), `GetPlaces()`, `HasReached(id)`, `OnRegionChanged(bEntered)`, `OnPlaceReached(PlaceId)` (first time in a play, within 30 m). Saves nothing yet. |
+| `ALyudNorthThing` | The sleeper base: no tick, no sound, no particles until the manager wakes it. |
+| `ALyudFumarole` | One per north.json fumarole (`FumaroleId`, `Kind` Vent / Steam / MudPot / Spring, `Size`). Vent: a crusted mound with a dark throat, a jet 6..15 m by size leaning downwind. Steam: wisps over a few m² (the ground is the terrain's sulphur layer). MudPot: a pool `Size` m across in a dried rim, bubbles swelling and plopping (`NorthModel.h`), light steam. Spring: a stone ring round still green water (r 2.6 m), thin steam. Rims and pools are `FLyudMeshKit` meshes (transient) drawn always, to 400 m; no collision (quests ask `IsHotGround`). |
+| `ALyudCampfire` | The camp's fire on the ring: six charred logs, three flame tongues (the festival bonfire's way), embers, a warm flickering point light without shadows (900 cd), grey smoke into the steam pool, a crackle loop. Burns from dusk (sun under 2°) until 1:30; **E** within 2.6 m lights / puts it out (polled, never consumed; prompts `ui.north.fire_light` / `ui.north.fire_out`), the hero's choice holds until the schedule itself turns. |
+| `ALyudNorthSteam` | The cigarette smoke's technique (`ALyudSmokeFx`) at valley scale: one instanced mesh of 448 camera-facing puffs moved on the CPU, only the live range written (`BatchUpdateInstancesTransforms`, no proxy rebuild), hidden and not ticking when empty; puffs drift with the wind more as they age. Material `M_North_Steam` (custom data 0 opacity, 1 seed, 2 grey), else `/Game/Smoking/M_Smoke`. |
+| `ALyudNorthPlume` | The smoking far volcano's plume (north.json far_volcanoes `plume`): 12 huge unlit sprites rising ~600 m and bending downwind, positions from the clock alone, written 4×/s, colour by the sun. |
+| `NorthModel.h` | The plain rules (wake ranges, bubbles, the fire's schedule, vent columns, steam density, hot radii): `tools/north_sim/run.sh model` checks them without Unreal. |
+
+Everything moving is out of Lumen and the distance fields, casts no shadow, has no collision; no instanced mesh is rebuilt per
+frame; nothing is allocated per frame.
+
+**Sounds.** `python3 tools/north_sounds.py` -> `audio/sfx/north/north_{vent,mudpot,spring,campfire}_01.wav` (4..6 s seamless
+mono loops, 48 kHz, numpy) -> `import_audio.py` (`IMPORT_ONLY=sfx/north`) -> `/Game/Audio/North/S_*`, pools of
+`ULyudSoundscapeSubsystem` (`AttachLoop`, released with `bAutoDestroy` before `FadeOut`). Only things *near* (70 m) play.
+
+**Console** (each a plain static of `ULyudNorthSubsystem` a dev panel can call): `lyud.North 0|1` hides / shows everything
+tagged North (asleep while hidden), `lyud.North.Goto <place id>` (onto the ground by a trace), `lyud.North.Fire -1|0|1`
+(schedule / out / burning), `lyud.North.WakeAll 0|1`, `lyud.North.Range <m>`, `lyud.North.Report` (a `NORTH` line).
+
+**Import and placing.** `unreal/scripts/import_north.sh` (closed editor; `STEPS="sounds materials import place"`,
+`FILES=...` limits the import): sounds; materials (`M_North_Steam`, `M_North_Plume`, `M_North_Mud`, `M_North_Water`,
+`MI_NO_<slot>` for any `MAT_SPEC` in `blender/north/*.py`); one process per glb listed in `blender/export/north/manifest.json`,
+`manifest_hut.json`, `far.json` (`tools/north_far.py` is run when `far.json` is missing) -> `/Game/North/Meshes/SM_North_<Kind>`
+(`_V<n>` for kinds with variants, `SM_North_Far_<Id>` for the backdrop), Nanite off, collision by the manifest; then
+`place`. `import_world.py` calls `import_north.place_safe(face_y)` too. Placing: camp things and signs as StaticMeshActors on
+`terrain.ground_z` (a sign keeps its words' key as a tag `Text:<key>`), `ALyudCampfire` on the fire ring, an `ALyudFumarole`
+per fumarole, the spring's deck, the hut (shell tagged Roof, furniture) with an `ALyudDoor` (manifest_hut.json `door` in
+place_doors.py's format, hut-local Blender metres; else the standard hole in the middle of the front wall; `hut_door` as the
+leaf mesh), the far volcanoes at `(x, y, base)` and the far land at the map's origin (no collision, no shadow, never culled,
+out of Lumen and the distance fields). A kind without a mesh gets a cube of its size tagged `NorthPlaceholder` and a log line.
+All tagged `North` (things on the ground also `NoGrass`, `NoTree`), folder `Outside/North`, lighting channels 0 and 1.
+Facing: the actor turns by `yaw - front_yaw`, `front_yaw` from the mesh's manifest row (Unreal degrees of the mesh's front in
+its own frame), default 90 (Blender -Y front -> Unreal +Y, as `import_city.py` found).
+
+**Test.** `unreal/scripts/test_north.sh` (offscreen; `NORTHTEST_ONLY=`, `NORTHTEST_WAIT=`): every place by day, the sleep
+rule (nothing awake at the gate, the valley awake in the valley, everything with WakeAll, nothing while hidden), the camp and
+the valley at night (the fire by its schedule, then forced), screenshots in `Saved/Screenshots/MacEditor`, `NORTHTEST` lines
+in `Saved/Logs/test_north.log`.
+
+## Plants
+
+All of it is the game's own plant system: six new species in `Private/Plants/PlantSpeciesNorth.cpp`
+(`PlantHerbs::NorthSpecies()`, appended to `PlantSpeciesLibrary::All()`), planted by `tools/north.py` (`FOREST_MIX`,
+`forests()`, `herb_patches()`, `grass_patches()`). Names: `plant.<name>.name` (ru/en/ja). Triangles are from
+`tools/plantsim/run.sh` (the model without Unreal, below); bake LODs switch at 15 / 55 / 150 m.
+
+| Species | Latin (ru) | Look | Where | Bloom (day) | Cost |
+|---|---|---|---|---|---|
+| SiberianDwarfPine | *Pinus pumila* (кедровый стланик) | a sprawling evergreen 1.3..2 m high, 2..2.5 m across: limbs bowed out low from the base, needles in fives as dark blue-green brushes at the tips, small purple cones | the belt above the stone birch on the drier rises (`dwarfpine`), scattered over the upper meadows (`shrub`), a few with the rhododendron | male cones, purple, 172..200 (peak 186) | bake LOD0 3.3k (4.7k in bloom), LOD1..3 1.75k / 1.5k / 1.35k |
+| DwarfAlder | *Alnus alnobetula* subsp. *fruticosa* (ольховник, ольха кустарниковая) | a many-stemmed thicket shrub 2..2.5 m, stems leaning out; toothed oval leaves, a dull yellow in late September; little woody cones kept through the winter | the hollows: the trough along the eastern mountains' foot, the swale under the Ridge's south side, the Ridge's wet north slope (`alder`) | catkins, 150..180 (peak 165) | bake LOD0 8k (16k with catkins), LOD1..3 3.3k / 1.45k / 1.3k |
+| GoldenRhododendron | *Rhododendron aureum* (рододендрон золотистый) | an evergreen mat 0.35..0.5 m high, leathery oval leaves, pale yellow five-petalled flowers in clusters | round every snowfield (`rhodo`), where the snow lies late | pale yellow, 158..192 (peak 175) | bake LOD0 3k..3.9k, LOD1..3 1.4k / 230 / 170 |
+| Fireweed | *Chamaenerion angustifolium* (иван-чай) | 1.3..1.4 m stems in clumps of four with a raceme of magenta flowers; leaves crimson to orange in September; gone in winter | herb patches along both edges of the lava flow, on the Cone's ash apron, round the camp | magenta, 192..242 | 2.9k / lite 500, drawn to 58 m |
+| MountainAvens | *Dryas octopetala* (дриада восьмилепестная) | an evergreen woody rosette ~0.1 m, scalloped leaves, white eight-petalled flowers with a golden eye | herb patches on the cinder's edge round the Cone and by the snowfields' sides | white, 168..205 | 0.7k / lite 310, drawn to 25 m |
+| CottonGrass | *Eriophorum vaginatum* (пушица влагалищная) | a tussock of fine arching leaves, 0.2 m stalks with white cotton heads; russet in autumn | herb patches in the wettest hollows (the terrain's wetness decides inside the patch) | white heads, 175..228 | 0.7k..1k / lite 320..560, drawn to 25 m |
+
+Reused: stone birch, rowan and dwarf birch (the park woodland), juniper in the belt, MeadowGrass / RedFescue /
+WavyHairGrass round the places, Lingonberry (herb patches) and ReindeerLichen (grass patches) on the Cone's apron.
+
+**Forests** (`FOREST_MIX`, baked by `AProceduralForest`; `world_map.forest_detail(mix)` gives the extra properties
+import_world sets):
+
+| Mix | Species (weight) | Where | Density | Drawn to |
+|---|---|---|---|---|
+| `stonebirch` | StoneBirch .7, Rowan .18, DwarfBirch .12 | Y 2330..2700 | 0.085 | 500 m |
+| `dwarfpine` | SiberianDwarfPine .6, DwarfBirch .2, Juniper .12, Rowan .08 | the belt, Y 2700..3060, dry cells | 0.2 thinning upward | 350 m |
+| `alder` | DwarfAlder .65, DwarfBirch .2, Rowan .15 | the belt's wet cells (`_wet_site`: `_hollow` < -0.8 m, or a north-facing slope that is not a rise): the real land's gullies, old lava channels and the cones' shaded feet | belt x 1.25, slope 0.1 | 350 m |
+| `shrub` | DwarfBirch .4, SiberianDwarfPine .3, Juniper .2, DwarfAlder .1 | the belt, Y 3060..3420, dry cells | down to 0.045 | 300 m |
+| `rhodo` | GoldenRhododendron .85, SiberianDwarfPine .15 | a frame 45 m round each snowfield | 0.45 | 150 m |
+
+The belt is sorted into 130 x 120 m cells (`BELT_CELL`) and merged into runs along X, so it is a few long actors per
+row. `world_map` carves out snow, cinder, lava, steaming ground and the pads (`tree_free`). The macro shape has no small
+gullies, so alder follows the big hollows only; TerrainGen's own runnels are not known to Python.
+
+Instances: the North had 5132 (stone birch 1813, shrub 3319); now 9634 (stone birch 1813, dwarf pine 3220, alder 1157,
+shrub 1142, rhodo 2302) in 103 actors. The whole map: 191 tiles / 110 715 trees before, 230 / 115 217 after
+(`python3 -c "import sys; sys.path.insert(0,'tools'); import world_map as W; f=W.forests(); print(len(f), sum(r[5] for r in f))"`).
+
+**Herb patches.** `AForestFloor` draws its herbs only in wild woods, so the meadow flowers come from `AProceduralGrass`:
+when its `Species` names a plant system herb instead of a grass it scatters that herb (`HerbDensity` plants per m2
+times `DensityScale`, by `HerbHabitat` on the terrain masks: none on snow, lava, full cinder or steam), as hierarchical
+instances of the herb's own two-LOD mesh (`PlantHerbs::BuildMeshLods`: LOD1 is the lite build), two seeds of ages
+`HerbAge` and twice that, no shadows, no collision, drawn only to `HerbDistance` (0: 45 x the herb's height, 25..70 m).
+They follow the calendar like the forest floor's herbs (`M_FloorPlant`, rebuilt only when the plant's state changes,
+hidden while a perennial is dormant or a low herb is under snow). Only built in a game world. `herb_patches()` returns
+them as `grass_patches` rows; `HERB_PATCH_SETTINGS` (read through `world_map.grass_patch_settings(species)`) gives each
+species' density, habitat and age, which import_world sets: 33 fireweed, 19 mountain avens, 6 lingonberry, 6 cotton
+grass patches, 4 of reindeer lichen.
+
+**Checking.** Without Unreal: `tools/plantsim/run.sh` (all species, or `run.sh all`, or `run.sh Name[:age:day] ...`)
+compiles the plant model (`PlantModel`, the species files, the herb builder up to its Unreal part) with clang and the
+Mac's warnings (`-Wshadow`, `-Wunreachable-code-loop-increment`) against a small shim of the engine types, and prints
+each species' size and triangles per LOD. In Unreal: `unreal/scripts/make_plant_north_level.py` builds
+`/Game/Dev/L_PlantNorth` (ages in rows, a row per season, a forest of the belt's mixes, three herb patches), then
+
+    UnrealEditor <uproject> /Game/Dev/L_PlantNorth -game -RenderOffscreen -ResX=1280 -ResY=720 -windowed \
+        -dpcvars=lyud.MainMenuOnStart=0 "-ExecCmds=py unreal/scripts/shoot_plant_north.py"
+
+writes the shots to `NORTH_SHOTS` (default `/tmp/northshots`).

@@ -1,0 +1,11 @@
+{
+ "id": "north_mudpot",
+ "kind": "sfx",
+ "file": "audio/sfx/north/north_mudpot_01.wav",
+ "generator": "tools/north_sounds.py",
+ "seed": 7201,
+ "seconds": 5.0,
+ "sha256": "d10265d20fe04c0e2a27d5abbbda92773c84cc29bbecfe61d679b39113d5b7f0",
+ "loop": true,
+ "license": "Procedural (tools/north_sounds.py); released by the project under CC BY 4.0."
+}

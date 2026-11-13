@@ -101,7 +101,7 @@ namespace
 
 	bool IsConifer(FName Species)
 	{
-		static const FName Names[] = { TEXT("ScotsPine"), TEXT("NorwaySpruce"), TEXT("DunePine"), TEXT("Juniper") };
+		static const FName Names[] = { TEXT("ScotsPine"), TEXT("NorwaySpruce"), TEXT("DunePine"), TEXT("Juniper"), TEXT("SiberianDwarfPine") };
 		for (const FName& N : Names)
 		{
 			if (Species == N)

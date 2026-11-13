@@ -5,6 +5,7 @@
 #                                     and Saved/North/terrain_out.bin (copy it to unreal/Lyudmilovsk/Saved/World for
 #                                     ground_z without Unreal)
 #   tools/north_sim/run.sh data    -> rewrites Content/North/north.json and Content/Dev/teleports/north.json
+#   tools/north_sim/run.sh model   -> checks the game side's plain rules (Public/North/NorthModel.h)
 set -e
 ROOT="$(cd "$(dirname "$0")/../.." && pwd)"
 SRC="$ROOT/unreal/Lyudmilovsk/Source/Lyudmilovsk/Private"
@@ -23,5 +24,10 @@ print('$OUT/north_ground.png')"
 data)
     python3 "$ROOT/tools/north.py"
     ;;
-*) echo "usage: $0 ground|data"; exit 2 ;;
+model)
+    # the game side's plain rules (Public/North/NorthModel.h): wake ranges, mud bubbles, the camp fire, vent columns
+    clang++ -std=c++17 -O2 -Wall -Wextra -Wshadow -Werror -I"$ROOT/unreal/Lyudmilovsk/Source/Lyudmilovsk/Public/North" -o "$OUT/north_model" "$ROOT/tools/north_sim/model_check.cpp"
+    "$OUT/north_model"
+    ;;
+*) echo "usage: $0 ground|data|model"; exit 2 ;;
 esac

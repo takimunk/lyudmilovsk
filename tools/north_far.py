@@ -231,12 +231,16 @@ def far_land():
     n1 = np.asarray(Image.fromarray((rng.random((14, 14)) * 2 - 1).astype(np.float32)).resize(X.shape[::-1], Image.BICUBIC))
     n2 = np.asarray(Image.fromarray((rng.random((45, 45)) * 2 - 1).astype(np.float32)).resize(X.shape[::-1], Image.BICUBIC))
     far = np.clip(d / 2500.0, 0, 1)
-    z = 20.0 + 0.07 * np.minimum(d, 1500.0) + 0.04 * np.maximum(d - 1500.0, 0.0) + (170.0 * n1 + 60.0 * n2) * far + 240.0 * np.clip((d - 3000.0) / 9000.0, 0, 1) * (0.6 + 0.4 * n1)
+    # it starts at the landscape's own height along its north edge (the real land's), easing to the far country's
+    edge = np.array([W.height(float(min(max(x, W.X_MIN + 2.0), W.X_MAX - 2.0)), W.Y_MAX + 55.0) for x in xs], np.float32)[None, :]
+    edge = np.maximum(edge, -20.0)
+    z = 20.0 + (edge - 20.0) * np.exp(-d / 350.0) + 0.07 * np.minimum(d, 1500.0) + 0.04 * np.maximum(d - 1500.0, 0.0) + (170.0 * n1 + 60.0 * n2) * far + 240.0 * np.clip((d - 3000.0) / 9000.0, 0, 1) * (0.6 + 0.4 * n1)
     # the coast: an 80 m cliff like the map's own, then the sea bed
     s = shore - X
     z = np.where(s < 90.0, -55.0 + (z + 55.0) * np.clip((s - 25.0) / 65.0, 0, 1) ** 0.6, z)
     z = np.where(s < 0.0, -55.0, z)
-    inside = (X > W.X_MIN - 6.0 + 1.0) & (Y < W.Y_MAX + 60.0 - 1.0)
+    # nothing south of the landscape's north edge: east of the map lie the Topi (tools/topi.py), their own ground
+    inside = Y < W.Y_MAX + 60.0 - 1.0
     pos = np.stack([X, Y, z], -1).astype(np.float32)
     ny, nx = X.shape
     idx = np.arange(ny * nx).reshape(ny, nx)

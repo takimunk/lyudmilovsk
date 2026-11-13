@@ -20,8 +20,8 @@
 namespace
 {
 	const TCHAR* const MaskPath = TEXT("/Game/Scene01/Terrain/DA_TerrainMask.DA_TerrainMask");
-	// cm per landscape height unit step: local height range is +-256 * ZScale cm (+-128 m)
-	constexpr float LandscapeZScale = 50.f;
+	// cm per landscape height unit step: local height range is +-256 * ZScale cm (+-256 m: the North's cones reach 175 m)
+	constexpr float LandscapeZScale = 100.f;
 	constexpr int32 MaskStep = 2;          // mask cell = 2 landscape quads
 }
 

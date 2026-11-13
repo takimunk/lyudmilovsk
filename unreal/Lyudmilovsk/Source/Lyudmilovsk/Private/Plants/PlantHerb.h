@@ -57,6 +57,11 @@ namespace PlantHerbs
 	/** A mesh of the three sections (rebuilt in place when given one). */
 	UStaticMesh* BuildMesh(UObject* Outer, UStaticMesh* Mesh, FName Name, const FHerbGeometry& G);
 
+	/** The species thinned for a far LOD: a third of the leaves, half again as large, fewer stems and flowers (as AForestFloor's). */
+	FPlantSpecies LiteSpecies(const FPlantSpecies& S);
+	/** A new mesh of two LODs (L0 near, L1 from screen size Screen1), the three sections each, for hierarchical instances. */
+	UStaticMesh* BuildMeshLods(UObject* Outer, FName Name, const FHerbGeometry& L0, const FHerbGeometry& L1, float Screen1);
+
 	/** The leaves' texture: true colours (variegation, a cactus's areoles) when the species has a pattern, else null. */
 	UTexture2D* BuildLeafTexture(UObject* Outer, const FPlantSpecies& S);
 	/** True when BuildLeafTexture paints the colours (the material's colour then stays white). */
@@ -74,6 +79,8 @@ namespace PlantHerbs
 	TArray<FPlantSpecies> FloorSpecies();
 	/** Seaweeds and eelgrass (PlantAlga.cpp, drawn by ULyudSeabedComponent). */
 	TArray<FPlantSpecies> SeaSpecies();
+	/** The North's shrubs (forest bakes) and herbs (AProceduralGrass herb patches): PlantSpeciesNorth.cpp, docs/north.md. */
+	TArray<FPlantSpecies> NorthSpecies();
 }
 
 /** The seaweeds' and sea grass's build (EPlantHerbForm::Alga, PlantAlga.cpp): Leaves the fronds, Stems the holdfast and

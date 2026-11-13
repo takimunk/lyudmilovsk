@@ -4,7 +4,8 @@ at the bark close up (bench_forest_preview.py with FOREST_VIEWS and LEVEL=/Game/
 import unreal
 
 SPECIES = ["PyramidalPoplar", "BlackPoplar", "Apple", "Maple", "SwampWhiteOak", "SilverBirch", "DownyBirch", "WeepingBirch",
-           "DwarfBirch", "StoneBirch", "ScotsPine", "DunePine", "NorwaySpruce", "BlackAlder", "Rowan", "SeaBuckthorn", "Juniper", "Aspen"]
+           "DwarfBirch", "StoneBirch", "ScotsPine", "DunePine", "NorwaySpruce", "BlackAlder", "Rowan", "SeaBuckthorn", "Juniper", "Aspen",
+           "SiberianDwarfPine", "DwarfAlder", "GoldenRhododendron"]
 AGES = (10, 35)
 eal = unreal.EditorAssetLibrary
 LEVEL = "/Game/Dev/L_BarkPreview"

@@ -5,6 +5,9 @@
 #include "Plants/GrassSpecies.h"
 #include "ProceduralGrass.generated.h"
 
+struct FPlantSpecies;
+
+class UHierarchicalInstancedStaticMeshComponent;
 class UInstancedStaticMeshComponent;
 class UMaterialInstanceDynamic;
 class UMaterialInterface;
@@ -22,6 +25,12 @@ class UStaticMesh;
  * winter height follow the calendar (UGameCalendar). Wind is in the material.
  *
  * Size a patch for ~20 000 tufts (60 m x 60 m at 5 per m2); tile bigger meadows with several.
+ *
+ * A herb patch: Species may also name a herb of the plant system (FPlantSpecies with a Herb form: Fireweed, CottonGrass,
+ * Lingonberry ...). The patch then scatters that herb instead of tufts, HerbDensity plants per square metre where its
+ * HerbHabitat allows, as hierarchical instances of the herb's own two-LOD mesh in two seeds (no shadows, no collision),
+ * only out to HerbDistance; the plants follow the calendar (leaves, flowers, autumn colour, gone in winter) like
+ * AForestFloor's herbs, drawn with its M_FloorPlant.
  */
 UCLASS()
 class LYUDMILOVSK_API AProceduralGrass : public AActor
@@ -58,6 +67,12 @@ public:
 	/** Every Nth tuft is in the far ring, drawn FarScale times as large. */
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Grass|Detail", meta = (ClampMin = "2")) int32 FarEvery = 4;
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Grass|Detail") float FarScale = 1.6f;
+	/** Herb patches: plants per square metre (times DensityScale), where they grow, and how far they are drawn, cm (0: by the herb's height, 25..70 m). */
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Grass|Herb", meta = (ClampMin = "0", ClampMax = "20")) float HerbDensity = 0.5f;
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Grass|Herb") EGrassHabitat HerbHabitat = EGrassHabitat::Meadow;
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Grass|Herb", meta = (ClampMin = "0")) float HerbDistance = 0.f;
+	/** Herb patches: the plants' age, years (one seed is this old, the other twice as old). */
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Grass|Herb", meta = (ClampMin = "0.1")) float HerbAge = 4.f;
 	/** Show the patch in the editor viewport (off for big levels: it costs a few hundred ms per change). */
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Grass|Detail") bool bPreviewInEditor = true;
 
@@ -73,6 +88,8 @@ public:
 	/** One line: species, tufts, triangles. */
 	UFUNCTION(BlueprintCallable, Category = "Grass") FString DescribeState() const;
 	UFUNCTION() TArray<FName> GetSpeciesNames() const;
+	/** The herb this patch draws (its Species names a plant system herb and no grass), else null. */
+	const FPlantSpecies* GetHerb() const;
 
 	virtual void OnConstruction(const FTransform& Transform) override;
 	virtual void BeginPlay() override;
@@ -83,12 +100,24 @@ private:
 	void EnsureAssets();
 	void Scatter();
 	void ApplySeason(float Day);
+	/** Herb patches: the materials and components (once), and the meshes for the plants' state on Day (when it changed). */
+	void EnsureHerbAssets(const FPlantSpecies& S);
+	void ApplyHerbSeason(const FPlantSpecies& S, float Day);
+	float HerbDrawDistance(const FPlantSpecies& S) const;
 
 	UPROPERTY(VisibleAnywhere, Category = "Grass") TObjectPtr<UInstancedStaticMeshComponent> NearTufts;
 	UPROPERTY(VisibleAnywhere, Category = "Grass") TObjectPtr<UInstancedStaticMeshComponent> FarTufts;
 	UPROPERTY(Transient) TObjectPtr<UStaticMesh> TuftMesh;
 	UPROPERTY(Transient) TObjectPtr<UMaterialInterface> MaterialAsset;
 	UPROPERTY(Transient) TObjectPtr<UMaterialInstanceDynamic> Material;
+
+	/** Herb patches: one component, mesh and state key per seed (two seeds); the three materials (leaves, stems, flowers) shared. */
+	UPROPERTY(Transient) TArray<TObjectPtr<UHierarchicalInstancedStaticMeshComponent>> HerbComps;
+	UPROPERTY(Transient) TArray<TObjectPtr<UStaticMesh>> HerbMeshes;
+	UPROPERTY(Transient) TArray<TObjectPtr<UMaterialInstanceDynamic>> HerbMaterials;
+	UPROPERTY(Transient) TObjectPtr<UMaterialInterface> HerbMaterialAsset;
+	uint32 HerbKeys[2] = {};
+	bool bHerbAlive = true;
 
 	FName BuiltSpecies;
 	/** lyud.GrassDensity the tufts were laid out with (-1: not yet); the graphics level's Foliage changes it. */

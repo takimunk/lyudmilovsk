@@ -26,6 +26,7 @@ import random
 import sys
 
 sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
+import north_land as L  # noqa: E402
 import world_map as W  # noqa: E402  (world_map imports this module lazily)
 
 HERE = os.path.dirname(os.path.abspath(__file__))
@@ -34,49 +35,34 @@ OUT = os.path.join(CONTENT, "North", "north.json")
 OUT_TELEPORTS = os.path.join(CONTENT, "Dev", "teleports", "north.json")
 
 Y0 = 2200.0                     # the old map's north edge: nothing south of it changes
-BLEND = (2180.0, 2560.0)        # the north hills' own height gives way to the North's over this band
+BLEND = (2180.0, 2520.0)        # the north hills' own height gives way to the North's over this band
 FOREST_END = 2330.0             # the old forest's tiles stop here; park woodland and shrubs beyond
-MAX_Z = 106.0                   # the landscape holds +-128 m: the macro shape stays under this (detail adds a few m)
+MAX_Z = 215.0                   # the landscape holds +-256 m (LyudTerrain.cpp LandscapeZScale 100)
 
-# --- places (x, y) ---------------------------------------------------------------------------------------------
-GATE = (-205.0, 2395.0)         # the barrier across the track, with the reserve's board
-HUT = (-178.0, 2440.0)          # the ranger's hut (сторожка), its door facing the track (west)
-HUT_YAW = 0.0                   # Unreal yaw of the hut's front (+X = west)
-CAMP = (140.0, 3160.0)          # the campsite's fire ring
+# --- places (map metres). The land is real (tools/north_land.py: Tolbachik's Northern Breakthrough cones at half
+# size); these are spots chosen on it -----------------------------------------------------------------------------
+GATE = (-20.0, 2400.0)          # the barrier across the track, with the reserve's board
+HUT = (10.0, 2446.0)            # the ranger's hut (сторожка), its door facing the track
+HUT_YAW = 180.0                 # Unreal yaw of the hut's front (map -X, east: toward the track)
+CAMP = (140.0, 3100.0)          # the campsite's fire ring: a level meadow under a low terrace, the cones behind it
 CAMP_R = 24.0
-FUMAROLES_C = (-430.0, 3490.0)  # the Fumarole Valley's middle
-FUMAROLES_R = (70.0, 135.0)     # its half sizes east-west, north-south
-SPRING = (-372.0, 3398.0)       # the hot spring's pool at the valley's mouth
-CONE = (-640.0, 3840.0)         # the cinder cone's centre
-CONE_RIM_R = 52.0
-CONE_BASE_R = 205.0
-CONE_H = 58.0                   # rim over the land around
-CRATER_DEPTH = 27.0
-BREACH_YAW = math.radians(8.0)  # the rim is broken toward map +X (west), a little north of it
-BREACH_HALF = math.radians(34.0)
-OLD_CONE = (-880.0, 2990.0)     # the Old Cone (Старая сопка): an extinct, grassed-over cone on the meadows, a landmark
-OLD_CONE_H = 36.0
-OLD_CONE_R = (26.0, 165.0)      # its rim and base radii
-RIDGE_X = (-960.0, 260.0)       # the Ridge runs between these, fading over 160 m at each end
-RIDGE_H = 18.0
-RIDGE_HALF = 62.0
-# the lava flow: from the breach down the trough between the Ridge and the northern foot, west to the cliff's brow
-LAVA = [(-592.0, 3846.0), (-520.0, 3832.0), (-430.0, 3800.0), (-300.0, 3772.0), (-150.0, 3786.0), (0.0, 3790.0),
-        (130.0, 3762.0), (250.0, 3712.0), (330.0, 3668.0)]
-LAVA_HALF = (26.0, 48.0)        # half width at its head and at its toe
-LAVA_THICK = 4.5
-# snowfields: (x, y, half along, half across, turn of the long axis from map X in degrees)
-SNOWFIELDS = [
-    (-150.0, 3596.0, 95.0, 30.0, 6.0),      # the Ridge's north slope, the big one over the camp's trail
-    (60.0, 3588.0, 60.0, 24.0, -8.0),
-    (-760.0, 3602.0, 70.0, 26.0, 4.0),
-    (-640.0, 4006.0, 85.0, 34.0, 0.0),      # in the hollow between the Cone and the northern foot
-    (-60.0, 4030.0, 120.0, 30.0, 5.0),      # gullies of the northern foot
-    (420.0, 4010.0, 100.0, 28.0, -6.0),
-    (-1010.0, 3920.0, 90.0, 36.0, 20.0),
-    (36.0, 3345.0, 40.0, 16.0, 30.0),       # a small one by the trail north of the camp
-]
-SNOW_HOLLOW = 1.6               # metres each snowfield's hollow is dug into the macro shape (the snow fills it)
+OLD_CONE = (-385.0, 2720.0)     # the Old Cone (Старая сопка): the southernmost cone, grassed over, over the hut
+OLD_CONE_TOP = (-370.0, 2780.0)
+HIGH_CONE = (-490.0, 3125.0)    # the High Cone (Высокая сопка): the tallest, a closed crater 150 m across, snow in it
+HIGH_RIM = (-455.0, 3212.0)     # where the path gains its rim
+CONE = (-560.0, 3535.0)         # the Cone (Сопка): the live one. Its crater is a horseshoe open to the south-west;
+CONE_RIM_R = 95.0               # steam comes out of its floor and all down the breach
+CONE_BASE_R = 330.0
+FUMAROLES_C = (-440.0, 3503.0)  # the Fumarole Valley: the trough that runs out of the Cone's breach to the meadow
+FUMAROLES_R = (125.0, 34.0)     # its half sizes east-west, north-south
+SPRING = (-296.0, 3502.0)       # the hot spring's pool at the valley's mouth
+SMALL_CONE = (-650.0, 3900.0)   # the Small Cone (Малая сопка), the northernmost
+LAVA_VENT = (-405.0, 3600.0)    # where the lava left the Cone's flank
+LAVA_HEAD_X = -400.0            # the lava field: from here west to the sea,
+LAVA_Y = (3440.0, 3830.0)       # between these
+SNOW_MIN_Z = 62.0               # no summer snow below this
+SNOW_SHARE = 0.11               # the share of the land above it that keeps snow
+SNOW_HOLLOW = 1.2               # metres a snowfield's bed is dug in (the snow fills it)
 
 
 def _smooth(t):
@@ -103,108 +89,69 @@ def _seg_dist(x, y, pts):
     return best, at
 
 
-def ridge_y(x):
-    return 3520.0 + 38.0 * math.sin(x / 300.0)
-
-
-def _ridge(x, y):
-    """The Ridge's height here (0 away from it): a gap where the Fumarole Valley cuts it."""
-    if not (RIDGE_X[0] - 170.0 < x < RIDGE_X[1] + 170.0) or abs(y - ridge_y(x)) > 3.2 * RIDGE_HALF:
-        return 0.0
-    ends = _smooth((x - RIDGE_X[0] + 160.0) / 160.0) * _smooth((RIDGE_X[1] + 160.0 - x) / 160.0)
-    gap = 1.0 - math.exp(-((x - FUMAROLES_C[0]) / 105.0) ** 2)
-    d = (y - ridge_y(x)) / RIDGE_HALF
-    # the south side long and easy, the north side shorter: snow lies on it
-    d = d * (1.25 if d > 0 else 0.85)
-    return RIDGE_H * math.exp(-d * d) * ends * gap * (0.8 + 0.2 * math.sin(x / 83.0 + 0.4))
-
-
-def _land(x, y):
-    """The North's plateau without its built-up features: the rise from the hills, broad swells, the Ridge, the
-    eastern and northern feet of the mountains."""
-    z = 12.0 + 22.0 * _smooth((y - 2250.0) / 450.0) + 11.0 * _smooth((y - 2900.0) / 650.0)
-    z += 3.6 * math.sin(x / 210.0 + 0.7) * math.sin(y / 260.0 + 1.1) + 2.2 * math.sin((x + 0.6 * y) / 140.0)
-    z += _ridge(x, y)
-    # the Fumarole Valley: a trough through the Ridge, opening south onto the meadows
-    fx, fy = (x - FUMAROLES_C[0]) / (FUMAROLES_R[0] * 1.5), (y - FUMAROLES_C[1]) / (FUMAROLES_R[1] * 1.35)
-    q = fx * fx + fy * fy
-    if q < 4.0:
-        z -= 7.0 * math.exp(-q * 1.2)
-    # the mountains' feet: inland (east) and north the land climbs out of the map
-    east = 52.0 * _smooth((-x - 880.0) / 430.0) ** 1.5
-    wav = 28.0 * math.sin(x / 260.0 + 1.9) + 14.0 * math.sin(x / 97.0)
-    north = 60.0 * _smooth((y - 3950.0 - wav) / 300.0) ** 1.3
-    z += max(east, north) + 0.35 * min(east, north)
-    return z
-
-
-def _cone(x, y):
-    """The cinder cone's height over the land (0 away from it)."""
-    dx, dy = x - CONE[0], y - CONE[1]
-    r = math.hypot(dx, dy)
-    if r > CONE_BASE_R * 1.25:
-        return 0.0
-    a = math.atan2(dy, dx)
-    floor = CONE_H - CRATER_DEPTH                     # the crater's floor: level, the same from every side
-    # the breach: toward the west the rim is gone down to the floor, where the lava broke out (the way in)
-    da = abs((a - BREACH_YAW + math.pi) % (2 * math.pi) - math.pi)
-    br = 1.0 - _smooth((da - BREACH_HALF * 0.3) / (BREACH_HALF * 0.9))
-    rim_h = CONE_H * (1.0 + 0.045 * math.sin(3.0 * a + 0.8) + 0.02 * math.sin(7.0 * a))
-    rim_h += (floor + 1.0 - rim_h) * br
-    if r >= CONE_RIM_R:
-        t = (r - CONE_RIM_R) / (CONE_BASE_R - CONE_RIM_R)
-        if t >= 1.25:
-            return 0.0
-        # ~32 degrees under the rim, easing out into the ash apron
-        h = rim_h * max(0.0, 1.0 - t) ** 1.45
-        return h + 1.2 * _smooth((1.25 - t) / 0.4) * (1.0 - _smooth((1.0 - t) / 0.3))
-    # the crater: a flat floor 40 m across, walls steepening up to a rounded rim
-    u = r / CONE_RIM_R
-    wall = _smooth((u - 0.38) / 0.62)
-    return floor + (rim_h - floor) * (0.35 * wall + 0.65 * wall * wall)
-
-
-def _old_cone(x, y):
-    """The Old Cone's height over the meadow: worn round, a shallow grassy dish on top."""
-    r = math.hypot(x - OLD_CONE[0], y - OLD_CONE[1])
-    if r > OLD_CONE_R[1] * 1.2:
-        return 0.0
-    if r >= OLD_CONE_R[0]:
-        t = (r - OLD_CONE_R[0]) / (OLD_CONE_R[1] - OLD_CONE_R[0])
-        return OLD_CONE_H * (0.5 + 0.5 * math.cos(math.pi * min(t, 1.0))) ** 1.25
-    return OLD_CONE_H - 5.0 * (0.5 + 0.5 * math.cos(math.pi * r / OLD_CONE_R[0]))
+def _near(x, y, c, r, soft):
+    return _ramp(math.hypot(x - c[0], y - c[1]), r, soft)
 
 
 def lava(x, y):
-    """0..1 on the lava flow (a rough blocky tongue from the breach to the cliff's brow)."""
-    if not (LAVA[0][0] - 80.0 < x < LAVA[-1][0] + 80.0 and 3600.0 < y < 3920.0):
+    """0..1 on the lava field: blocky clinker. It is where the real one is: the levees and channels the flows of the
+    Cone left on their way west to the sea are rough ground in the heights (north_land.rough), the ash plain smooth."""
+    if not (LAVA_Y[0] - 60.0 < y < LAVA_Y[1] + 60.0 and x > LAVA_HEAD_X - 80.0):
         return 0.0
-    d, t = _seg_dist(x, y, LAVA)
-    half = LAVA_HALF[0] + (LAVA_HALF[1] - LAVA_HALF[0]) * t
-    half *= 1.0 + 0.22 * math.sin(t * 23.0) + 0.12 * math.sin(t * 61.0 + 1.0)
-    # none inside the crater and its breach: the way in stays a cinder floor
-    return _ramp(d, half - 7.0, 7.0) * (1.0 - _ramp(math.hypot(x - CONE[0], y - CONE[1]), CONE_RIM_R + 12.0, 45.0))
-
-
-def _snow_local(x, y, f):
-    cx, cy, ha, hb, turn = f
-    c, s = math.cos(math.radians(turn)), math.sin(math.radians(turn))
-    u, v = ((x - cx) * c + (y - cy) * s) / ha, (-(x - cx) * s + (y - cy) * c) / hb
-    return u * u + v * v
+    k = _smooth((L.rough().at(x, y) - 1.8) / 1.2)
+    if k <= 0.0:
+        return 0.0
+    k *= _smooth((y - LAVA_Y[0] + 60.0) / 90.0) * _smooth((LAVA_Y[1] + 60.0 - y) / 90.0) * _smooth((x - LAVA_HEAD_X + 80.0) / 120.0)
+    k *= 1.0 - _smooth((L.relief().at(x, y) - 7.0) / 20.0)             # the cones are cinder, not lava
+    return k * (1.0 - _near(x, y, SPRING, 45.0, 50.0)) * (1.0 - _near(x, y, FUMAROLES_C, 60.0, 80.0))
 
 
 def snow(x, y):
-    """0..1 on a snowfield (TerrainGen frays the edge and lays the snow)."""
-    if y < 3300.0:
+    """0..1 on a summer snowfield (TerrainGen frays the edge and lays the firn): shaded hollows and north slopes of
+    the cones, found on the real land (north_land.snow), never on hot ground."""
+    if y < 2900.0:
         return 0.0
-    best = 0.0
-    for f in SNOWFIELDS:
-        if abs(x - f[0]) > f[2] + 10.0 or abs(y - f[1]) > f[2] + 10.0:
+    k = L.snow(SNOW_MIN_Z, SNOW_SHARE).at(x, y)
+    if k <= 0.0:
+        return 0.0
+    hot = max(_near(x, y, FUMAROLES_C, 150.0, 60.0), _near(x, y, CONE, 70.0, 40.0), lava(x, y))
+    return _smooth(k * 1.6 - 0.25) * (1.0 - hot)
+
+
+@functools.lru_cache(maxsize=1)
+def snowfields():
+    """The snowfields as patches for the game and the docs: {id, x, y, r (the radius of a circle of its area), area}.
+    Largest first; ids are stable while the land and SNOW_* stay."""
+    g = L.snow(SNOW_MIN_Z, SNOW_SHARE)
+    nx, ny, st = g.nx, g.ny, g.step
+    live = [False] * len(g.v)
+    for j in range(ny):
+        for i in range(nx):
+            x, y = g.xy(i, j)
+            live[j * nx + i] = g.v[j * nx + i] > 0.3 and snow(x, y) > 0.35
+    out = []
+    for k0 in range(len(live)):
+        if not live[k0]:
             continue
-        q = _snow_local(x, y, f)
-        if q < 1.0:
-            best = max(best, 1.0 - q)                 # a plain dome: TerrainGen's noise cuts the outline
-    return best
+        todo, cells = [k0], []
+        live[k0] = False
+        while todo:
+            k = todo.pop()
+            cells.append(k)
+            for q in (k - 1, k + 1, k - nx, k + nx):
+                if 0 <= q < len(live) and live[q]:
+                    live[q] = False
+                    todo.append(q)
+        if len(cells) * st * st < 300.0:
+            continue
+        cx = sum(g.xy(k % nx, k // nx)[0] for k in cells) / len(cells)
+        cy = sum(g.xy(k % nx, k // nx)[1] for k in cells) / len(cells)
+        area = len(cells) * st * st
+        out.append({"x": round(cx, 1), "y": round(cy, 1), "r": round(math.sqrt(area / math.pi), 1), "area": round(area)})
+    out.sort(key=lambda f: -f["area"])
+    for n, f in enumerate(out):
+        f["id"] = "S%02d" % (n + 1)
+    return out
 
 
 @functools.lru_cache(maxsize=None)
@@ -213,20 +160,14 @@ def _pad_z(px, py):
 
 
 def _raw(x, y):
-    z = _land(x, y)
-    z += _cone(x, y) + _old_cone(x, y)
-    lv = lava(x, y)
-    if lv > 0.0:
-        z += LAVA_THICK * lv
-    for f in SNOWFIELDS:
-        if abs(x - f[0]) < f[2] and abs(y - f[1]) < f[2]:
-            q = _snow_local(x, y, f)
-            if q < 1.0:
-                z -= SNOW_HOLLOW * (1.0 - q) ** 2
+    z = L.z(x, y)
+    sn = L.snow(SNOW_MIN_Z, SNOW_SHARE).at(x, y) if y > 2900.0 else 0.0
+    if sn > 0.0:
+        z -= SNOW_HOLLOW * _smooth(sn * 1.6 - 0.25)
     return min(z, MAX_Z)
 
 
-PADS = [(HUT, 10.0, 6.0), (CAMP, CAMP_R, 12.0), (SPRING, 5.0, 5.0)]     # level ground: centre, radius, fade
+PADS = [(HUT, 10.0, 8.0), (CAMP, CAMP_R, 14.0), (SPRING, 5.0, 6.0)]     # level ground: centre, radius, fade
 
 
 def plateau(x, y, natural):
@@ -254,9 +195,17 @@ def keep_flat(x, y):
 
 
 def scoria(x, y):
-    """0..1: loose volcanic cinder: the Cone and its ash apron."""
-    r = math.hypot(x - CONE[0], y - CONE[1])
-    return _ramp(r, CONE_BASE_R * 0.92, 75.0)
+    """0..1: loose volcanic cinder. Whatever stands high over the land around is a cone (north_land.relief); the young
+    ones are bare, the Old Cone and the small eastern ones have grassed over, grass climbs the feet of the rest."""
+    if y < 2700.0:
+        return 0.0
+    k = _smooth((L.relief().at(x, y) - 3.0) / 42.0)
+    if k <= 0.0:
+        return 0.0
+    k *= 1.0 - _near(x, y, OLD_CONE, 330.0, 170.0)
+    if x < -820.0:
+        k *= 1.0 - 0.75 * _smooth((-820.0 - x) / 120.0)
+    return k
 
 
 @functools.lru_cache(maxsize=1)
@@ -273,34 +222,43 @@ def fumaroles():
     cx, cy = FUMAROLES_C
     rx, ry = FUMAROLES_R
     tries = 0
-    kinds = ["vent"] * 9 + ["steam"] * 12 + ["mudpot"] * 5
-    while kinds and tries < 4000:
+    kinds = ["vent"] * 8 + ["steam"] * 11 + ["mudpot"] * 5
+    while kinds and tries < 6000:
         tries += 1
         u, v = rnd.uniform(-1, 1), rnd.uniform(-1, 1)
         if u * u + v * v > 1.0:
             continue
-        x, y = cx + u * rx, cy + v * ry
-        if any(math.hypot(x - f["x"], y - f["y"]) < 13.0 for f in out):
+        x = cx + u * rx
+        y = cy + v * ry + 14.0 * math.sin((x - cx) / 60.0)          # the trough winds a little
+        if any(math.hypot(x - f["x"], y - f["y"]) < 12.0 for f in out):
             continue
-        kind = kinds.pop(0)
+        gx, gy = L.slope(x, y)
+        kind = kinds[0]
+        if kind == "mudpot" and math.hypot(gx, gy) > 0.16:           # mud pools only where the floor is nearly level
+            continue
+        kinds.pop(0)
         add(kind, x, y, {"vent": rnd.uniform(0.7, 1.6), "steam": rnd.uniform(0.8, 1.5), "mudpot": rnd.uniform(1.2, 3.2)}[kind])
     add("spring", SPRING[0], SPRING[1], 3.2)
-    # the crater: two vents on its floor and steaming ground under the rim
-    add("vent", CONE[0] - 9.0, CONE[1] + 6.0, 1.8)
-    add("vent", CONE[0] + 14.0, CONE[1] - 11.0, 1.2)
-    add("steam", CONE[0] - 24.0, CONE[1] - 26.0, 1.4)
-    # and one far out on the lava flow's edge
-    add("steam", -120.0, 3746.0, 1.0)
+    # the Cone's crater: vents on its floor and steaming ground under the back wall
+    add("vent", CONE[0] + 8.0, CONE[1] - 4.0, 1.8)
+    add("vent", CONE[0] - 14.0, CONE[1] + 12.0, 1.3)
+    add("steam", CONE[0] - 30.0, CONE[1] - 12.0, 1.4)
+    add("steam", CONE[0] + 2.0, CONE[1] + 30.0, 1.2)
+    # one in the High Cone's crater, and one where the lava left the flank
+    add("steam", HIGH_CONE[0] + 12.0, HIGH_CONE[1] + 8.0, 1.1)
+    add("steam", LAVA_VENT[0] + 26.0, LAVA_VENT[1] - 6.0, 1.0)
     return out
 
 
 def sulfur(x, y):
     """0..1: ground altered by the steam (pale clay, sulphur crusts): the Fumarole Valley's floor and a halo round
     every vent."""
-    if not (3300.0 < y < 3950.0 and -760.0 < x < -40.0):
+    if not (3050.0 < y < 3750.0 and -700.0 < x < -220.0):
         return 0.0
-    fx, fy = (x - FUMAROLES_C[0]) / (FUMAROLES_R[0] * 1.25), (y - FUMAROLES_C[1]) / (FUMAROLES_R[1] * 1.15)
+    fx = (x - FUMAROLES_C[0]) / (FUMAROLES_R[0] * 1.2)
+    fy = (y - FUMAROLES_C[1] - 14.0 * math.sin((x - FUMAROLES_C[0]) / 60.0)) / (FUMAROLES_R[1] * 1.3)
     k = 0.42 * _smooth(1.35 - (fx * fx + fy * fy))   # patchy on the valley floor (TerrainGen's noise), solid at the vents
+    k = max(k, 0.42 * _near(x, y, CONE, 34.0, 26.0))  # and on the crater's floor
     for f in fumaroles():
         d = math.hypot(x - f["x"], y - f["y"])
         r = 4.0 + 3.5 * f["size"]
@@ -313,7 +271,7 @@ def tree_free(x, y):
     """True where nothing woody grows: the Cone, the lava, the steaming ground, snow, the camp's and the hut's pads."""
     if y < Y0:
         return False
-    if scoria(x, y) > 0.3 or lava(x, y) > 0.0 or sulfur(x, y) > 0.2 or snow(x, y) > 0.0:
+    if scoria(x, y) > 0.3 or lava(x, y) > 0.8 or sulfur(x, y) > 0.2 or snow(x, y) > 0.0:
         return True
     return any(math.hypot(x - px, y - py) < r + 4.0 for (px, py), r, _ in PADS)
 
@@ -323,25 +281,189 @@ def tree_free(x, y):
 FOREST_MIX = {
     # Kamchatka's park woodland: stone birch with rowan, wide apart over tall grass
     "stonebirch": [("StoneBirch", 0.7, 15, 70), ("Rowan", 0.18, 8, 25), ("DwarfBirch", 0.12, 6, 18)],
-    # the shrub belt above it: dwarf birch and juniper in clumps
-    "shrub": [("DwarfBirch", 0.55, 6, 20), ("Juniper", 0.3, 10, 30), ("Rowan", 0.15, 6, 14)],
+    # the belt above it on the drier rises: Siberian dwarf pine (кедровый стланик) with dwarf birch and juniper
+    "dwarfpine": [("SiberianDwarfPine", 0.6, 15, 60), ("DwarfBirch", 0.2, 6, 20), ("Juniper", 0.12, 10, 30),
+                  ("Rowan", 0.08, 6, 14)],
+    # gullies, hollows and the Ridge's wet north slope: dwarf alder thickets (ольховник)
+    "alder": [("DwarfAlder", 0.65, 8, 30), ("DwarfBirch", 0.2, 6, 20), ("Rowan", 0.15, 6, 14)],
+    # the thin scatter over the upper meadows: a dwarf pine or birch here and there, a juniper
+    "shrub": [("DwarfBirch", 0.4, 6, 20), ("SiberianDwarfPine", 0.3, 12, 45), ("Juniper", 0.2, 10, 30),
+              ("DwarfAlder", 0.1, 8, 25)],
+    # golden rhododendron carpets round the snowfields (knee-high, evergreen, pale yellow in June)
+    "rhodo": [("GoldenRhododendron", 0.85, 8, 30), ("SiberianDwarfPine", 0.15, 10, 30)],
 }
+# the forests' draw distance by mix, cm (AProceduralForest.CullDistance; 500 m when not named): knee-high shrubs go
+# sooner than trees (import_world sets it)
+FOREST_DETAIL = {"dwarfpine": {"cull_distance": 35000.0}, "alder": {"cull_distance": 35000.0},
+                 "shrub": {"cull_distance": 30000.0}, "rhodo": {"cull_distance": 15000.0}}
+
+BELT = (2700.0, 4190.0)         # the shrub belt: dense at its foot by the birches, thinning north over the lava plain
+BELT_DENSITY = (0.17, 0.05)
+BELT_CELL = (130.0, 120.0)      # cells it is sorted into (alder or dwarf pine), merged into runs along x
+
+
+def _hollow(x, y, r=45.0):
+    """The ground here over the ring r metres round it (negative in a hollow or a gully, positive on a rise)."""
+    ring = sum(_raw(x + r * math.cos(k * math.pi / 4), y + r * math.sin(k * math.pi / 4)) for k in range(8)) / 8.0
+    return _raw(x, y) - ring
+
+
+def north_slope(x, y):
+    """True on a slope that faces north and is not flat (snow lies late there and its meltwater keeps the ground wet)."""
+    gx, gy = L.slope(x, y, 20.0)
+    return gy < -0.07 and abs(gx) < 2.0 * -gy
+
+
+def _wet_site(x, y):
+    """Where alder grows rather than pine: the real land's gullies and hollows (the old lava channels, the troughs
+    between the cones' feet) and the north-facing slopes."""
+    return _hollow(x, y) < -0.8 or (north_slope(x, y) and _hollow(x, y) < 0.4)
+
+
+def _runs(x0, x1, y0, y1, cell, kind):
+    """Rectangles (x, y, hx, hy, kind) over x0..x1 x y0..y1: cells of about cell metres, each given kind(x, y, w, h)
+    (None: left out), merged into runs of one kind along x."""
+    nx, ny = max(1, round((x1 - x0) / cell[0])), max(1, round((y1 - y0) / cell[1]))
+    cw, ch = (x1 - x0) / nx, (y1 - y0) / ny
+    out = []
+    for j in range(ny):
+        cy = y0 + (j + 0.5) * ch
+        row = [kind(x0 + (i + 0.5) * cw, cy, cw, ch) for i in range(nx)]
+        i = 0
+        while i < nx:
+            k = i
+            while k < nx and row[k] == row[i]:
+                k += 1
+            if row[i] is not None:
+                out.append((x0 + (i + k) * cw / 2, cy, (k - i) * cw / 2, ch / 2, row[i]))
+            i = k
+    return out
+
+
+def _majority(x, y, w, h, test):
+    pts = [(x, y), (x - w / 3, y - h / 3), (x + w / 3, y - h / 3), (x - w / 3, y + h / 3), (x + w / 3, y + h / 3)]
+    return sum(1 for px, py in pts if test(px, py)) >= 3
 
 
 def forests(tiles):
-    """Forest tiles of the North: (x, y, half x, half y, mix, density, min z, max z). tiles = world_map._tiles."""
+    """Forest tiles of the North: (x, y, half x, half y, mix, density, min z, max z). tiles = world_map._tiles.
+    Park woodland at the tree line; above it the shrub belt: dwarf alder in the hollows and gullies, dwarf pine on the
+    rises, thinning over the meadows; alder thickets on the Ridge's north slope; rhododendron round the snowfields.
+    world_map carves out the snow, cinder, lava and steaming ground (tree_free)."""
     out = []
     x1 = W.cliff_top(2500.0) - 10.0
-    for x, y, hx, hy in tiles(W.X_MIN, x1, FOREST_END, 2700.0):
-        out.append((x, y, hx, hy, "stonebirch", 0.085, 5.0, 60.0))
-    for x, y, hx, hy in tiles(W.X_MIN, x1, 2700.0, 3420.0):
-        out.append((x, y, hx, hy, "shrub", 0.08, 20.0, 70.0))
+    for x, y, hx, hy in tiles(W.X_MIN, x1, FOREST_END, BELT[0]):
+        out.append((x, y, hx, hy, "stonebirch", 0.085, 5.0, 200.0))
+    # the old forest does not stop at a line: it thins out among the birches
+    for x, y, hx, hy in tiles(W.X_MIN, x1, FOREST_END, FOREST_END + 130.0):
+        out.append((x, y, hx, hy, "old", 0.3, 5.0, 200.0))
+    for x, y, hx, hy in tiles(W.X_MIN, x1, FOREST_END + 130.0, FOREST_END + 260.0):
+        out.append((x, y, hx, hy, "old", 0.1, 5.0, 200.0))
+
+    def belt(x, y, w, h):
+        if scoria(x, y) > 0.6 and scoria(x - w / 3, y) > 0.6 and scoria(x + w / 3, y) > 0.6:
+            return None                                  # bare cinder: nothing to carve out of
+        if _majority(x, y, w, h, _wet_site):
+            return "alder"
+        return "dwarfpine" if y < 3150.0 or scoria(x, y) > 0.05 else "shrub"
+
+    for x, y, hx, hy, mix in _runs(W.X_MIN, x1, BELT[0], BELT[1], BELT_CELL, belt):
+        t = _smooth((y - BELT[0] - BELT_CELL[1] / 2) / (1100.0 - BELT_CELL[1]))
+        d = BELT_DENSITY[0] + (BELT_DENSITY[1] - BELT_DENSITY[0]) * t
+        out.append((x, y, hx, hy, mix, d * (1.3 if mix == "alder" else 1.0), -30.0, 200.0))
+    # stone birches climb the Old Cone: it has been quiet long enough
+    for x, y, hx, hy in tiles(OLD_CONE[0] - 300.0, OLD_CONE[0] + 300.0, BELT[0], OLD_CONE[1] + 240.0):
+        out.append((x, y, hx, hy, "stonebirch", 0.05, 20.0, 200.0))
+    # rhododendron round each snowfield: a frame round its outline (the snow itself is carved out)
+    for f in snowfields()[:14]:
+        out.append((f["x"], f["y"], f["r"] + 30.0, f["r"] + 30.0, "rhodo", 0.4, 15.0, 215.0))
+    return out
+
+
+def _grass_site(x, y):
+    """Ground where meadow plants may stand (not snow, cinder, lava, steam or a pad)."""
+    return not tree_free(x, y) and scoria(x, y) < 0.15
+
+
+def _apron_site(x, y):
+    """The Cone's ash apron where the cinder thins out: pioneers take hold there."""
+    return lava(x, y) == 0.0 and snow(x, y) == 0.0 and sulfur(x, y) < 0.2 and scoria(x, y) < 0.45
+
+
+HERB_PATCH_SETTINGS = {
+    # AProceduralGrass herb patches (import_world sets these on the patch by its species): plants per m2 (times the
+    # row's density), the terrain mask they follow, age in years
+    "Fireweed": {"herb_density": 0.7, "herb_habitat": "Meadow", "herb_age": 4.0},
+    "CottonGrass": {"herb_density": 3.0, "herb_habitat": "Wet", "herb_age": 4.0},
+    "MountainAvens": {"herb_density": 2.0, "herb_habitat": "Meadow", "herb_age": 8.0},
+    "Lingonberry": {"herb_density": 1.5, "herb_habitat": "Meadow", "herb_age": 6.0},
+}
+
+
+def herb_patches(seed0=1400):
+    """The meadow flowers as world_map.grass_patches rows (AProceduralGrass herb patches, drawn within 25..60 m of the
+    camera): fireweed along the lava's edges, on the Cone's ash apron and round the camp; cotton grass in the wet
+    hollows; mountain avens and lingonberry on the cinder's edge; reindeer lichen (a grass) near the Cone."""
+    out = []
+    seed = [seed0]
+
+    def add(x, y, h, sp, density=1.0, z0=10.0, z1=110.0, need=_grass_site):
+        if not need(x, y):
+            return
+        if any(abs(x - o[0]) < h and abs(y - o[1]) < h and o[4] == sp for o in out):
+            return
+        out.append((round(x, 1), round(y, 1), h, h, sp, seed[0], density, z0, z1))
+        seed[0] += 1
+
+    # fireweed: the lava flow's edges (it is the first to take burnt ground)
+    n = 0
+    for gy in range(3380, 3960, 45):
+        for gx in range(int(LAVA_VENT[0]) + 40, int(W.cliff_top(gy)) - 60, -45):
+            if n < 26 and lava(gx, gy) == 0.0 and max(lava(gx + 26, gy), lava(gx - 26, gy), lava(gx, gy + 26), lava(gx, gy - 26)) > 0.5:
+                before = len(out)
+                add(float(gx), float(gy), 20.0, "Fireweed")
+                n += len(out) - before
+    # the young cones' ash aprons: fireweed where the cinder gives out, mountain avens, lingonberry and lichen outside
+    for c, count in ((CONE, 12), (HIGH_CONE, 12), (SMALL_CONE, 6)):
+        for k in range(count):
+            a = 2 * math.pi * k / count + 0.2
+            r = 60.0
+            while r < 520.0 and scoria(c[0] + r * math.cos(a), c[1] + r * math.sin(a)) > 0.3:
+                r += 15.0
+            if r >= 520.0:
+                continue                                  # the next cone begins before this one's cinder ends
+            add(c[0] + (r + 10.0) * math.cos(a), c[1] + (r + 10.0) * math.sin(a), 20.0, "Fireweed", z1=215.0, need=_apron_site)
+            b = a + math.pi / count
+            add(c[0] + (r + 4.0) * math.cos(b), c[1] + (r + 4.0) * math.sin(b), 15.0,
+                "MountainAvens" if k % 2 else "Lingonberry", z1=215.0, need=_apron_site)
+            if k % 3 == 0:
+                add(c[0] + (r + 60.0) * math.cos(b), c[1] + (r + 60.0) * math.sin(b), 25.0, "ReindeerLichen", z1=215.0)
+    # mountain avens on the gravel by the snowfields' lower edges
+    for f in snowfields()[:10]:
+        gx, gy = L.slope(f["x"], f["y"], 20.0)
+        g = math.hypot(gx, gy) or 1.0
+        add(f["x"] - gx / g * (f["r"] + 18.0), f["y"] - gy / g * (f["r"] + 18.0), 15.0, "MountainAvens", z1=215.0,
+            need=lambda x, y: snow(x, y) == 0.0 and lava(x, y) == 0.0)
+    # round the camp: fireweed on the trodden edge
+    for k in range(4):
+        a = math.pi / 4 + k * math.pi / 2
+        add(CAMP[0] + 52.0 * math.cos(a), CAMP[1] + 52.0 * math.sin(a), 20.0, "Fireweed")
+    # cotton grass: the wettest hollows of the meadows (the terrain's wetness mask decides inside the patch)
+    sites = []
+    for gy in range(2640, 4140, 60):
+        for gx in range(int(W.X_MIN) + 180, int(W.cliff_top(gy) - 40.0), 60):
+            if _grass_site(gx, gy) and sulfur(gx, gy) == 0.0:
+                h = _hollow(gx, gy, 35.0)
+                if h < -1.2 and math.hypot(*L.slope(gx, gy, 20.0)) < 0.06:
+                    sites.append((h, gx, gy))
+    for h, gx, gy in sorted(sites)[:16]:
+        add(float(gx), float(gy), 25.0, "CottonGrass")
     return out
 
 
 def grass_patches(seed0=1200):
     """Meadow grass where the hero walks and stops: round the hut, the camp, the spring and along the trail between
-    them, as world_map.grass_patches rows."""
+    them, as world_map.grass_patches rows; then the herb patches (herb_patches)."""
     out = []
     meadow = ("MeadowGrass", "RedFescue", "WavyHairGrass")
     spots = [HUT, CAMP, (CAMP[0] + 60.0, CAMP[1]), (CAMP[0], CAMP[1] + 60.0), (CAMP[0] - 60.0, CAMP[1]),
@@ -354,7 +476,7 @@ def grass_patches(seed0=1200):
             continue
         seen.append((cx, cy))
         out.append((cx, cy, 30.0, 30.0, meadow[len(seen) % 3], seed0 + len(seen), 1.0, 0.0, 80.0))
-    return out
+    return out + herb_patches()
 
 
 # --- the trail ----------------------------------------------------------------------------------------------------
@@ -362,20 +484,24 @@ def grass_patches(seed0=1200):
 # the dirt track's anchors (tools/terrain.py routes between them over the land)
 ANCHORS = {
     "north_gate": GATE,
+    "north_meadow": (40.0, 2760.0),
     "north_camp": (CAMP[0] - 30.0, CAMP[1] - 8.0),
-    "north_spring": (SPRING[0] + 14.0, SPRING[1] - 16.0),
-    "north_fumaroles": (FUMAROLES_C[0] + 20.0, FUMAROLES_C[1] + 150.0),
-    "north_breach": (CONE[0] + 150.0, CONE[1] + 44.0),
-    "north_crater": (CONE[0] + 20.0, CONE[1] + 4.0),
+    "north_spring": (SPRING[0] + 14.0, SPRING[1] - 12.0),
+    "north_fumaroles": (FUMAROLES_C[0], FUMAROLES_C[1] + 6.0),
+    "north_crater": (CONE[0] + 16.0, CONE[1] - 6.0),
+    "north_saddle": (-455.0, 3345.0),
+    "north_high_rim": HIGH_RIM,
+    "north_lava": (-190.0, 3610.0),
 }
-TRACKS = [("woods_north", "north_gate"), ("north_gate", "north_camp"), ("north_camp", "north_spring"),
-          ("north_spring", "north_fumaroles"), ("north_fumaroles", "north_breach"), ("north_breach", "north_crater")]
+TRACKS = [("woods_north", "north_gate"), ("north_gate", "north_meadow"), ("north_meadow", "north_camp"),
+          ("north_camp", "north_spring"), ("north_spring", "north_fumaroles"), ("north_fumaroles", "north_crater"),
+          ("north_spring", "north_saddle"), ("north_saddle", "north_high_rim"), ("north_spring", "north_lava")]
 
 
 def trail_points(step):
     """Points every step metres along the straight lines between the trail's anchors (a rough line for planting;
     the real track is terrain.tracks())."""
-    names = ["north_gate", "north_camp", "north_spring", "north_fumaroles", "north_breach", "north_crater"]
+    names = ["north_gate", "north_meadow", "north_camp", "north_spring", "north_fumaroles", "north_crater"]
     pts = [ANCHORS[n] for n in names]
     out = []
     for p, q in zip(pts, pts[1:]):
@@ -395,6 +521,7 @@ def camp():
              (12.0, 11.5, "tunnel", 0), (-2.0, 16.5, "ridge", 1)]
     for i, (dx, dy, kind, variant) in enumerate(tents):
         yaw = math.degrees(math.atan2(-dy, -dx)) + rnd.uniform(-18, 18)      # doors toward the fire
+        dx, dy = dx * 0.66, dy * 0.66                                        # close round the fire, not strewn about
         out.append({"id": "camp_tent_%d" % (i + 1), "kind": "tent_" + kind, "x": CAMP[0] + dx, "y": CAMP[1] + dy,
                     "yaw": round(yaw, 1), "variant": variant})
     for i, a in enumerate((35.0, 150.0, 265.0)):
@@ -404,10 +531,10 @@ def camp():
         {"id": "camp_table", "kind": "camp_table", "x": CAMP[0] + 6.5, "y": CAMP[1] + 4.5, "yaw": 30.0, "variant": 0},
         {"id": "camp_tarp", "kind": "tarp_shelter", "x": CAMP[0] + 6.5, "y": CAMP[1] + 4.5, "yaw": 30.0, "variant": 0},
         {"id": "camp_woodpile", "kind": "woodpile", "x": CAMP[0] - 4.5, "y": CAMP[1] - 4.0, "yaw": 70.0, "variant": 0},
-        {"id": "camp_foodpole", "kind": "food_pole", "x": CAMP[0] - 19.0, "y": CAMP[1] - 9.0, "yaw": 0.0, "variant": 0},
-        {"id": "camp_line", "kind": "clothes_line", "x": CAMP[0] + 17.0, "y": CAMP[1] + 4.0, "yaw": 100.0, "variant": 0},
-        {"id": "camp_board", "kind": "board_camp", "x": CAMP[0] - 27.0, "y": CAMP[1] - 6.0, "yaw": 190.0, "variant": 0},
-        {"id": "camp_toilet", "kind": "outhouse", "x": CAMP[0] + 31.0, "y": CAMP[1] + 22.0, "yaw": 215.0, "variant": 0},
+        {"id": "camp_foodpole", "kind": "food_pole", "x": CAMP[0] - 14.0, "y": CAMP[1] - 8.0, "yaw": 0.0, "variant": 0},
+        {"id": "camp_line", "kind": "clothes_line", "x": CAMP[0] + 13.5, "y": CAMP[1] + 2.0, "yaw": 100.0, "variant": 0},
+        {"id": "camp_board", "kind": "board_camp", "x": CAMP[0] - 19.0, "y": CAMP[1] - 6.0, "yaw": 190.0, "variant": 0},
+        {"id": "camp_toilet", "kind": "outhouse", "x": CAMP[0] + 21.0, "y": CAMP[1] + 17.0, "yaw": 215.0, "variant": 0},
     ]
     for o in out:
         o["x"], o["y"] = round(o["x"], 2), round(o["y"], 2)
@@ -420,11 +547,11 @@ def signs():
     return [
         {"id": "sign_gate", "kind": "board_reserve", "x": GATE[0] + 4.0, "y": GATE[1] + 1.5, "yaw": 250.0, "text": "north.sign.reserve"},
         {"id": "gate_barrier", "kind": "barrier", "x": GATE[0], "y": GATE[1], "yaw": 160.0, "text": ""},
-        {"id": "sign_hot_s", "kind": "sign_hot_ground", "x": SPRING[0] - 22.0, "y": SPRING[1] + 20.0, "yaw": 250.0, "text": "north.sign.hot_ground"},
-        {"id": "sign_hot_n", "kind": "sign_hot_ground", "x": fx + 6.0, "y": fy - 6.0, "yaw": 90.0, "text": "north.sign.hot_ground"},
+        {"id": "sign_hot_s", "kind": "sign_hot_ground", "x": SPRING[0] - 26.0, "y": SPRING[1] + 9.0, "yaw": 0.0, "text": "north.sign.hot_ground"},
+        {"id": "sign_hot_n", "kind": "sign_hot_ground", "x": CONE[0] + 62.0, "y": CONE[1] - 30.0, "yaw": 0.0, "text": "north.sign.hot_ground"},
         {"id": "sign_spring", "kind": "sign_post", "x": SPRING[0] + 6.5, "y": SPRING[1] - 5.0, "yaw": 200.0, "text": "north.sign.spring"},
-        {"id": "sign_cone", "kind": "sign_post", "x": ANCHORS["north_breach"][0] + 5.0, "y": ANCHORS["north_breach"][1] - 3.0, "yaw": 300.0, "text": "north.sign.cone"},
-        {"id": "sign_camp", "kind": "sign_post", "x": CAMP[0] - 34.0, "y": CAMP[1] - 12.0, "yaw": 180.0, "text": "north.sign.camp"},
+        {"id": "sign_cone", "kind": "sign_post", "x": ANCHORS["north_saddle"][0] + 4.0, "y": ANCHORS["north_saddle"][1] + 3.0, "yaw": 300.0, "text": "north.sign.cone"},
+        {"id": "sign_camp", "kind": "sign_post", "x": CAMP[0] - 24.0, "y": CAMP[1] - 10.0, "yaw": 180.0, "text": "north.sign.camp"},
     ]
 
 
@@ -443,20 +570,21 @@ def far_volcanoes():
 
 def places():
     """Named places: {id, name (a strings key), x, y, yaw (where an arriving hero looks, Unreal degrees)}."""
-    cb = ANCHORS["north_breach"]
+    sf = snowfields()
+    snow_at = (sf[0]["x"], sf[0]["y"] - sf[0]["r"] - 6.0) if sf else HIGH_CONE
     return [
         {"id": "north_gate", "name": "place.north.gate", "x": GATE[0] + 3.0, "y": GATE[1] - 8.0, "yaw": 90.0},
-        {"id": "north_hut", "name": "place.north.hut", "x": HUT[0] + 9.0, "y": HUT[1], "yaw": 180.0},
-        {"id": "north_meadows", "name": "place.north.meadows", "x": -30.0, "y": 2800.0, "yaw": 90.0},
+        {"id": "north_hut", "name": "place.north.hut", "x": HUT[0] - 9.0, "y": HUT[1], "yaw": 0.0},
+        {"id": "north_meadows", "name": "place.north.meadows", "x": 40.0, "y": 2760.0, "yaw": 100.0},
+        {"id": "north_old_cone", "name": "place.north.old_cone", "x": OLD_CONE_TOP[0], "y": OLD_CONE_TOP[1], "yaw": 90.0},
         {"id": "north_camp", "name": "place.north.camp", "x": CAMP[0] - 6.0, "y": CAMP[1] - 5.0, "yaw": 45.0},
-        {"id": "north_spring", "name": "place.north.spring", "x": SPRING[0] + 6.0, "y": SPRING[1] - 6.0, "yaw": 135.0},
-        {"id": "north_fumaroles", "name": "place.north.fumaroles", "x": FUMAROLES_C[0] + 30.0, "y": FUMAROLES_C[1] - 100.0, "yaw": 100.0},
-        {"id": "north_snowfield", "name": "place.north.snowfield", "x": -150.0, "y": 3622.0, "yaw": 270.0},
-        {"id": "north_lava", "name": "place.north.lava", "x": -300.0, "y": 3740.0, "yaw": 110.0},
-        {"id": "north_breach", "name": "place.north.breach", "x": cb[0], "y": cb[1], "yaw": 190.0},
-        {"id": "north_crater", "name": "place.north.crater", "x": CONE[0] + 22.0, "y": CONE[1] + 4.0, "yaw": 180.0},
-        {"id": "north_rim", "name": "place.north.rim", "x": CONE[0] - 2.0, "y": CONE[1] - CONE_RIM_R + 1.0, "yaw": 270.0},
-        {"id": "north_old_cone", "name": "place.north.old_cone", "x": OLD_CONE[0] + 4.0, "y": OLD_CONE[1], "yaw": 0.0},
+        {"id": "north_spring", "name": "place.north.spring", "x": SPRING[0] + 6.0, "y": SPRING[1] - 6.0, "yaw": 180.0},
+        {"id": "north_fumaroles", "name": "place.north.fumaroles", "x": FUMAROLES_C[0] + 70.0, "y": FUMAROLES_C[1] + 4.0, "yaw": 180.0},
+        {"id": "north_crater", "name": "place.north.crater", "x": CONE[0] + 22.0, "y": CONE[1] - 8.0, "yaw": 160.0},
+        {"id": "north_lava", "name": "place.north.lava", "x": -190.0, "y": 3606.0, "yaw": 20.0},
+        {"id": "north_snowfield", "name": "place.north.snowfield", "x": round(snow_at[0], 1), "y": round(snow_at[1], 1), "yaw": 90.0},
+        {"id": "north_saddle", "name": "place.north.saddle", "x": -455.0, "y": 3345.0, "yaw": 0.0},
+        {"id": "north_rim", "name": "place.north.rim", "x": HIGH_RIM[0], "y": HIGH_RIM[1], "yaw": 250.0},
     ]
 
 
@@ -469,9 +597,10 @@ def build():
         "signs": signs(),
         "fumaroles": fumaroles(),
         "spring": {"x": SPRING[0], "y": SPRING[1], "r": 2.6},
-        "cone": {"x": CONE[0], "y": CONE[1], "rim_r": CONE_RIM_R, "base_r": CONE_BASE_R},
-        "snowfields": [{"x": f[0], "y": f[1], "half_along": f[2], "half_across": f[3], "turn": f[4]} for f in SNOWFIELDS],
-        "lava": [list(p) for p in LAVA],
+        "cones": [{"id": "cone", "x": CONE[0], "y": CONE[1]}, {"id": "high", "x": HIGH_CONE[0], "y": HIGH_CONE[1]},
+                  {"id": "old", "x": OLD_CONE[0], "y": OLD_CONE[1]}, {"id": "small", "x": SMALL_CONE[0], "y": SMALL_CONE[1]}],
+        "snowfields": snowfields(),
+        "lava_vent": list(LAVA_VENT),
         "far_volcanoes": far_volcanoes(),
     }
 

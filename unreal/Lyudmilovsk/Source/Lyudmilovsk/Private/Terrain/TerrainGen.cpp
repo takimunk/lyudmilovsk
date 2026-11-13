@@ -773,7 +773,7 @@ void Generate(const FInputs& In, FOutputs& Out)
 			// the North: cinder (thinning into the meadow through a patchy apron), lava (bare rock with cinder in its
 			// cracks), the steamed ground (crusts in patches, grey mud where it is wettest)
 			const float LavaV = Mask(In.Lava, I);
-			const float CinderV = Smooth(0.18f, 0.62f, Mask(In.Scoria, I) + 0.22f * Patch);
+			const float CinderV = Smooth(0.24f, 0.66f, Mask(In.Scoria, I) + 0.42f * Noise3.Fbm(WX - 90.0, WY + 40.0, 55.f, 3) + 0.16f * Patch);
 			const float SteamV = Smooth(0.2f, 0.7f, Mask(In.Sulfur, I) + 0.3f * Patch + 0.1f * Fine);
 
 			float W[NumLayers] = {};

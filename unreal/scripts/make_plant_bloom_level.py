@@ -10,7 +10,8 @@ eal = unreal.EditorAssetLibrary
 LEVEL = "/Game/Dev/L_PlantBloom"
 SPECIES = [("PyramidalPoplar", 30), ("BlackPoplar", 30), ("Aspen", 25), ("BlackAlder", 25), ("SilverBirch", 25), ("DownyBirch", 25),
            ("WeepingBirch", 25), ("StoneBirch", 20), ("DwarfBirch", 8), ("SwampWhiteOak", 60), ("Apple", 15), ("Rowan", 18),
-           ("Maple", 40), ("SeaBuckthorn", 8), ("ScotsPine", 40), ("DunePine", 30), ("NorwaySpruce", 40), ("Juniper", 15)]
+           ("Maple", 40), ("SeaBuckthorn", 8), ("ScotsPine", 40), ("DunePine", 30), ("NorwaySpruce", 40), ("Juniper", 15),
+           ("SiberianDwarfPine", 40), ("DwarfAlder", 20), ("GoldenRhododendron", 18)]
 SPACING = 2500
 les = unreal.get_editor_subsystem(unreal.LevelEditorSubsystem)
 eas = unreal.get_editor_subsystem(unreal.EditorActorSubsystem)

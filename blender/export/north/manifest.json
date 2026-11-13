@@ -1,0 +1,700 @@
+{
+ "frame": "metres, origin on the ground under the middle, Blender -Y is the front, Z up; seats [x, y, z, yaw]: yaw = degrees of the sitter's facing, counter-clockwise seen from above, 0 = toward the object's front (-Y); size and bounds are in Blender axes (x, y, z)",
+ "front_yaw": 90.0,
+ "asset_names": "SM_North_<Kind>[_V<n>] (_V only for kinds with several variants)",
+ "atlas": "M_North_Atlas (blender/north/gen/north_atlas.png + _n.png, 2048)",
+ "meshes": [
+  {
+   "kind": "tent_dome",
+   "variant": 0,
+   "file": "tent_dome_v0.glb",
+   "tris": 2472,
+   "size": [
+    3.971,
+    3.971,
+    1.68
+   ],
+   "collision": "box",
+   "seats": [],
+   "notes": "two-pole dome, poles on the diagonals; v0 has the door flap swung open (inside dark, sleeping mat); front is -Y",
+   "body_size": [
+    2.1,
+    2.1,
+    1.3
+   ],
+   "bounds_min": [
+    -1.985,
+    -1.985,
+    -0.094
+   ],
+   "bounds_max": [
+    1.985,
+    1.985,
+    1.586
+   ],
+   "materials": [
+    "M_North_Atlas"
+   ]
+  },
+  {
+   "kind": "tent_dome",
+   "variant": 1,
+   "file": "tent_dome_v1.glb",
+   "tris": 2472,
+   "size": [
+    3.971,
+    3.971,
+    1.419
+   ],
+   "collision": "box",
+   "seats": [],
+   "notes": "two-pole dome, poles on the diagonals; v0 has the door flap swung open (inside dark, sleeping mat); front is -Y",
+   "body_size": [
+    2.1,
+    2.1,
+    1.3
+   ],
+   "bounds_min": [
+    -1.985,
+    -1.985,
+    -0.094
+   ],
+   "bounds_max": [
+    1.985,
+    1.985,
+    1.325
+   ],
+   "materials": [
+    "M_North_Atlas"
+   ]
+  },
+  {
+   "kind": "tent_dome",
+   "variant": 2,
+   "file": "tent_dome_v2.glb",
+   "tris": 2472,
+   "size": [
+    3.971,
+    3.971,
+    1.419
+   ],
+   "collision": "box",
+   "seats": [],
+   "notes": "two-pole dome, poles on the diagonals; v0 has the door flap swung open (inside dark, sleeping mat); front is -Y",
+   "body_size": [
+    2.1,
+    2.1,
+    1.3
+   ],
+   "bounds_min": [
+    -1.985,
+    -1.985,
+    -0.094
+   ],
+   "bounds_max": [
+    1.985,
+    1.985,
+    1.325
+   ],
+   "materials": [
+    "M_North_Atlas"
+   ]
+  },
+  {
+   "kind": "tent_ridge",
+   "variant": 0,
+   "file": "tent_ridge_v0.glb",
+   "tris": 3876,
+   "size": [
+    4.093,
+    5.894,
+    1.716
+   ],
+   "collision": "box",
+   "seats": [],
+   "notes": "old canvas A-frame ridge tent on wooden poles; front gable (-Y) has the flaps tied back, the back is closed",
+   "body_size": [
+    2.0,
+    2.8,
+    1.5
+   ],
+   "bounds_min": [
+    -2.047,
+    -2.947,
+    -0.107
+   ],
+   "bounds_max": [
+    2.047,
+    2.947,
+    1.61
+   ],
+   "materials": [
+    "M_North_Atlas"
+   ]
+  },
+  {
+   "kind": "tent_ridge",
+   "variant": 1,
+   "file": "tent_ridge_v1.glb",
+   "tris": 3876,
+   "size": [
+    4.093,
+    5.894,
+    1.716
+   ],
+   "collision": "box",
+   "seats": [],
+   "notes": "old canvas A-frame ridge tent on wooden poles; front gable (-Y) has the flaps tied back, the back is closed",
+   "body_size": [
+    2.0,
+    2.8,
+    1.5
+   ],
+   "bounds_min": [
+    -2.047,
+    -2.947,
+    -0.107
+   ],
+   "bounds_max": [
+    2.047,
+    2.947,
+    1.61
+   ],
+   "materials": [
+    "M_North_Atlas"
+   ]
+  },
+  {
+   "kind": "tent_tunnel",
+   "variant": 0,
+   "file": "tent_tunnel.glb",
+   "tris": 4760,
+   "size": [
+    3.993,
+    6.144,
+    1.316
+   ],
+   "collision": "box",
+   "seats": [],
+   "notes": "three-hoop tunnel tent, yellow fly, front (-Y) has the D door (zipped), rear end tapers lower",
+   "body_size": [
+    1.6,
+    4.0,
+    1.2
+   ],
+   "bounds_min": [
+    -1.996,
+    -3.097,
+    -0.094
+   ],
+   "bounds_max": [
+    1.996,
+    3.047,
+    1.221
+   ],
+   "materials": [
+    "M_North_Atlas"
+   ]
+  },
+  {
+   "kind": "fire_ring",
+   "variant": 0,
+   "file": "fire_ring.glb",
+   "tris": 2180,
+   "size": [
+    1.875,
+    1.806,
+    1.888
+   ],
+   "collision": "box",
+   "seats": [],
+   "notes": "no flame: the game adds fire; ring r ~0.62 m; tripod feet at r 1.05 m; kettle hangs z 0.5..0.78",
+   "bounds_min": [
+    -0.936,
+    -0.73,
+    -0.016
+   ],
+   "bounds_max": [
+    0.938,
+    1.076,
+    1.871
+   ],
+   "materials": [
+    "M_North_Atlas"
+   ]
+  },
+  {
+   "kind": "camp_table",
+   "variant": 0,
+   "file": "camp_table.glb",
+   "tris": 1250,
+   "size": [
+    1.807,
+    1.7,
+    0.925
+   ],
+   "collision": "exact",
+   "seats": [
+    [
+     -0.55,
+     -0.68,
+     0.45,
+     180.0
+    ],
+    [
+     0.0,
+     -0.68,
+     0.45,
+     180.0
+    ],
+    [
+     0.55,
+     -0.68,
+     0.45,
+     180.0
+    ],
+    [
+     -0.55,
+     0.68,
+     0.45,
+     0.0
+    ],
+    [
+     0.0,
+     0.68,
+     0.45,
+     0.0
+    ],
+    [
+     0.55,
+     0.68,
+     0.45,
+     0.0
+    ]
+   ],
+   "notes": "table 1.8 x 0.8, top z 0.75, long along X; two benches (z 0.45), 6 seats; same position/yaw as tarp_shelter",
+   "bounds_min": [
+    -0.909,
+    -0.85,
+    0.0
+   ],
+   "bounds_max": [
+    0.899,
+    0.85,
+    0.925
+   ],
+   "materials": [
+    "M_North_Atlas"
+   ]
+  },
+  {
+   "kind": "food_pole",
+   "variant": 0,
+   "file": "food_pole.glb",
+   "tris": 1106,
+   "size": [
+    4.574,
+    5.279,
+    5.1
+   ],
+   "collision": "box",
+   "seats": [],
+   "notes": "5 m pole, crossbar at z 4.78, orange food bag hoisted at x 0.85 (z 3.45..4.0), three guys; collision: the pole only",
+   "body_size": [
+    1.9,
+    0.3,
+    5.0
+   ],
+   "bounds_min": [
+    -3.047,
+    -2.64,
+    -0.1
+   ],
+   "bounds_max": [
+    1.527,
+    2.639,
+    5.0
+   ],
+   "materials": [
+    "M_North_Atlas"
+   ]
+  },
+  {
+   "kind": "clothes_line",
+   "variant": 0,
+   "file": "clothes_line.glb",
+   "tris": 1934,
+   "size": [
+    7.192,
+    0.293,
+    1.952
+   ],
+   "collision": "none",
+   "seats": [],
+   "notes": "5 m rope between two poles, three items; no collision except (optionally) the poles",
+   "body_size": [
+    5.2,
+    0.1,
+    1.9
+   ],
+   "bounds_min": [
+    -3.596,
+    -0.078,
+    -0.101
+   ],
+   "bounds_max": [
+    3.596,
+    0.215,
+    1.851
+   ],
+   "materials": [
+    "M_North_Atlas"
+   ]
+  },
+  {
+   "kind": "outhouse",
+   "variant": 0,
+   "file": "outhouse.glb",
+   "tris": 1020,
+   "size": [
+    1.46,
+    1.924,
+    2.263
+   ],
+   "collision": "exact",
+   "seats": [],
+   "notes": "plank outhouse 1.1 x 1.1, shed roof sloping to the back, heart cut in the door, door ajar 32 degrees; exact collision (walls); the door stands open",
+   "bounds_min": [
+    -0.73,
+    -1.241,
+    -0.04
+   ],
+   "bounds_max": [
+    0.73,
+    0.683,
+    2.223
+   ],
+   "materials": [
+    "M_North_Atlas"
+   ]
+  },
+  {
+   "kind": "log_bench",
+   "variant": 0,
+   "file": "log_bench_v0.glb",
+   "tris": 172,
+   "size": [
+    1.8,
+    0.467,
+    0.44
+   ],
+   "collision": "exact",
+   "seats": [
+    [
+     -0.45,
+     0.0,
+     0.44,
+     0.0
+    ],
+    [
+     0.45,
+     0.0,
+     0.44,
+     0.0
+    ]
+   ],
+   "notes": "split birch log on two stumps; seat top z 0.44; seats face the front (-Y)",
+   "bounds_min": [
+    -0.9,
+    -0.232,
+    0.0
+   ],
+   "bounds_max": [
+    0.9,
+    0.235,
+    0.44
+   ],
+   "materials": [
+    "M_North_Atlas"
+   ]
+  },
+  {
+   "kind": "log_bench",
+   "variant": 1,
+   "file": "log_bench_v1.glb",
+   "tris": 192,
+   "size": [
+    1.68,
+    0.461,
+    0.44
+   ],
+   "collision": "exact",
+   "seats": [
+    [
+     -0.45,
+     0.0,
+     0.44,
+     0.0
+    ],
+    [
+     0.45,
+     0.0,
+     0.44,
+     0.0
+    ]
+   ],
+   "notes": "split birch log on two stumps; seat top z 0.44; seats face the front (-Y)",
+   "bounds_min": [
+    -0.84,
+    -0.219,
+    0.0
+   ],
+   "bounds_max": [
+    0.84,
+    0.242,
+    0.44
+   ],
+   "materials": [
+    "M_North_Atlas"
+   ]
+  },
+  {
+   "kind": "tarp_shelter",
+   "variant": 0,
+   "file": "tarp_shelter.glb",
+   "tris": 1208,
+   "size": [
+    6.778,
+    5.062,
+    2.744
+   ],
+   "collision": "none",
+   "seats": [],
+   "notes": "4 x 3 m tarp on four poles, front (-Y) lower; it covers camp_table at the same position and yaw",
+   "body_size": [
+    4.0,
+    3.0,
+    2.55
+   ],
+   "bounds_min": [
+    -3.389,
+    -2.531,
+    -0.094
+   ],
+   "bounds_max": [
+    3.389,
+    2.531,
+    2.65
+   ],
+   "materials": [
+    "M_North_Atlas"
+   ]
+  },
+  {
+   "kind": "woodpile",
+   "variant": 0,
+   "file": "woodpile.glb",
+   "tris": 2050,
+   "size": [
+    2.789,
+    1.03,
+    1.258
+   ],
+   "collision": "box",
+   "seats": [],
+   "notes": "firewood stack ~1.65 m wide along X, chopping block with an axe at x 1.4; box collision of the stack and block",
+   "bounds_min": [
+    -1.403,
+    -0.486,
+    -0.1
+   ],
+   "bounds_max": [
+    1.385,
+    0.543,
+    1.157
+   ],
+   "materials": [
+    "M_North_Atlas"
+   ]
+  },
+  {
+   "kind": "board_camp",
+   "variant": 0,
+   "file": "board_camp.glb",
+   "tris": 744,
+   "size": [
+    1.855,
+    0.919,
+    2.15
+   ],
+   "collision": "exact",
+   "seats": [],
+   "notes": "board 1.6 m wide with a little roof; the notice panel (1 x 1 m, M_North_Text_board_camp, square texture) faces the front -Y",
+   "bounds_min": [
+    -0.953,
+    -0.459,
+    -0.1
+   ],
+   "bounds_max": [
+    0.902,
+    0.459,
+    2.05
+   ],
+   "materials": [
+    "M_North_Atlas",
+    "M_North_Text_board_camp"
+   ]
+  },
+  {
+   "kind": "board_reserve",
+   "variant": 0,
+   "file": "board_reserve.glb",
+   "tris": 1236,
+   "size": [
+    2.567,
+    1.152,
+    2.55
+   ],
+   "collision": "exact",
+   "seats": [],
+   "notes": "reserve board 2.2 m wide with a little roof; the panel (1.9 x 0.95 m, M_North_Text_board_reserve, 2:1) faces -Y: title, rules, map",
+   "bounds_min": [
+    -1.28,
+    -0.576,
+    -0.1
+   ],
+   "bounds_max": [
+    1.288,
+    0.576,
+    2.45
+   ],
+   "materials": [
+    "M_North_Atlas",
+    "M_North_Text_board_reserve"
+   ]
+  },
+  {
+   "kind": "barrier",
+   "variant": 0,
+   "file": "barrier.glb",
+   "tris": 212,
+   "size": [
+    5.213,
+    0.6,
+    4.803
+   ],
+   "collision": "exact",
+   "seats": [],
+   "notes": "counterweighted pole barrier across a 4.3 m track, pole raised at 62 degrees; collision only for the two posts (the pole is raised)",
+   "bounds_min": [
+    -2.813,
+    -0.3,
+    -0.018
+   ],
+   "bounds_max": [
+    2.4,
+    0.3,
+    4.785
+   ],
+   "materials": [
+    "M_North_Atlas"
+   ]
+  },
+  {
+   "kind": "sign_hot_ground",
+   "variant": 0,
+   "file": "sign_hot_ground.glb",
+   "tris": 526,
+   "size": [
+    0.7,
+    0.44,
+    1.82
+   ],
+   "collision": "exact",
+   "seats": [],
+   "notes": "0.7 m square yellow plate on a wooden post; M_North_Text_sign_hot_ground faces -Y",
+   "bounds_min": [
+    -0.35,
+    -0.16,
+    -0.1
+   ],
+   "bounds_max": [
+    0.35,
+    0.28,
+    1.72
+   ],
+   "materials": [
+    "M_North_Atlas",
+    "M_North_Text_sign_hot_ground"
+   ]
+  },
+  {
+   "kind": "sign_post",
+   "variant": 0,
+   "file": "sign_post.glb",
+   "tris": 650,
+   "size": [
+    1.0,
+    0.487,
+    2.3
+   ],
+   "collision": "exact",
+   "seats": [],
+   "notes": "fingerpost, two arrow planks (upper points +X, lower points -X); M_North_Text_sign_post_spring in the GLB, swap per instance for sign_post_cone / sign_post_camp (same UVs: upper half = plank 1)",
+   "bounds_min": [
+    -0.5,
+    -0.241,
+    -0.1
+   ],
+   "bounds_max": [
+    0.5,
+    0.246,
+    2.2
+   ],
+   "materials": [
+    "M_North_Atlas",
+    "M_North_Text_sign_post_spring"
+   ]
+  },
+  {
+   "kind": "spring_deck",
+   "variant": 0,
+   "file": "spring_deck.glb",
+   "tris": 3604,
+   "size": [
+    7.746,
+    6.477,
+    1.95
+   ],
+   "collision": "exact",
+   "seats": [
+    [
+     4.18,
+     -0.6,
+     0.9,
+     -90.0
+    ],
+    [
+     4.18,
+     0.6,
+     0.9,
+     -90.0
+    ]
+   ],
+   "notes": "origin = pool centre (r 2.6); deck x 2.3..4.5, y -1.5..1.5, top z 0.45 over the rim ground; two steps (z 0.30, 0.15) lead down west into the pool: the game's water surface should sit at about z -0.05 and the pool floor lower; rim stones open at the deck; no water in the mesh; bench seats face -X (yaw -90 in the seat convention)",
+   "bounds_min": [
+    -3.245,
+    -3.254,
+    -0.5
+   ],
+   "bounds_max": [
+    4.5,
+    3.223,
+    1.45
+   ],
+   "materials": [
+    "M_North_Atlas"
+   ]
+  }
+ ]
+}

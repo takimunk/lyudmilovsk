@@ -1,0 +1,19 @@
+{
+ "source": "Northern Breakthrough cones, Tolbachik, Kamchatka (55.675 N 160.245 E); NASA SRTM via Mapzen/AWS Terrain Tiles zoom 13",
+ "scale": 2.0,
+ "x0": -1500.0,
+ "y0": 2100.0,
+ "step": 10.0,
+ "nx": 281,
+ "ny": 231,
+ "unit": 0.1,
+ "order": "rows from y0 north, each from x0 toward +X (west)",
+ "tilt_removed": [
+  -0.086,
+  0.018
+ ],
+ "mid_at": [
+  -650.0,
+  2750.0
+ ]
+}

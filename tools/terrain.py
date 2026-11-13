@@ -211,7 +211,8 @@ def _woods():
     if not hasattr(W, "forests"):
         return [(-1050.0, 600.0, 250.0, 900.0, -100.0, 100.0), (-450.0, 2000.0, 600.0, 200.0, -100.0, 100.0),
                 (-450.0, -720.0, 600.0, 160.0, -100.0, 100.0)]
-    return [(f[0], f[1], f[2], f[3], f[7], f[8]) for f in W.forests() if f[4] in ("pine", "old")]
+    # (not the North's thinning fringe of old forest among the birches: no needle floor under a tree here and there)
+    return [(f[0], f[1], f[2], f[3], f[7], f[8]) for f in W.forests() if f[4] in ("pine", "old") and f[1] < 2330.0]
 
 
 EDGE = 30.0                           # metres over which the forest floor gives way to the meadow
@@ -228,6 +229,8 @@ def _forest(x, y, z, woods):
         if dx > EDGE or dy > EDGE:
             continue
         wave = 14.0 * math.sin(x * 0.021 + y * 0.017) + 9.0 * math.sin(x * 0.067 - y * 0.051) + 4.0 * math.sin(x * 0.19 + y * 0.13)
+        if y > 2200.0:                    # toward the North the woods fray out in long tongues
+            wave += 55.0 * math.sin(x * 0.0071 + 1.0) + 30.0 * math.sin(x * 0.0163 + y * 0.004)
         d = max(dx, dy) + wave
         best = max(best, min(1.0, max(0.0, (EDGE * 0.5 - d) / EDGE)))
     return best
@@ -472,7 +475,7 @@ def _patch_z(x, y):
     return W.height(x, y) if best is None else best
 
 
-LANDSCAPE_Z_STEP = 0.5 / 128.0       # metres per landscape height unit (Z scale 50 cm, LyudTerrain.cpp)
+LANDSCAPE_Z_STEP = 1.0 / 128.0       # metres per landscape height unit (Z scale 100 cm, LyudTerrain.cpp)
 
 
 def _landscape_h(i, j):

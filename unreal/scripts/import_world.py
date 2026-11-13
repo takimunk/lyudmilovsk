@@ -24,7 +24,8 @@ import world_mesh  # noqa: E402
 DEST = "/Game/Scene01/World"
 # Shrubs and the low dune pines turn into their level-0 summary sooner than trees (cm): a sea buckthorn
 # is ~650k leaf triangles up close, and every leaf casts a (non-Nanite) shadow.
-SUMMARY_DISTANCE = {"SeaBuckthorn": 5000.0, "Juniper": 5000.0, "DunePine": 8000.0}
+SUMMARY_DISTANCE = {"SeaBuckthorn": 5000.0, "Juniper": 5000.0, "DunePine": 8000.0,
+                    "SiberianDwarfPine": 5000.0, "DwarfAlder": 5000.0, "GoldenRhododendron": 3000.0}
 # The forests (world_map.forests); LYUD_FORESTS=0 leaves them out (a quick build).
 FORESTS = os.environ.get("LYUD_FORESTS", "1") != "0"
 eal = unreal.EditorAssetLibrary
@@ -98,6 +99,13 @@ def build(face_y, textures_dir=None, plants=True, report=False):
         import import_restaurant
         import_restaurant.place(face_y)
 
+    # the North (docs/north.md): its data is committed (Content/North/north.json), its meshes may not be imported yet
+    # (placeholders then); place_safe logs a failure instead of stopping the world's build
+    if os.path.exists(os.path.join(REPO, "unreal", "Lyudmilovsk", "Content", "North", "north.json")) and \
+            unreal.load_class(None, "/Script/Lyudmilovsk.LyudFumarole") is not None:
+        import import_north
+        import_north.place_safe(face_y)
+
     if plants:
         plant_cls = unreal.load_class(None, "/Script/Lyudmilovsk.ProceduralPlant")
         for group, items in (("Alley", W.alley_trees()), ("Coast", W.coast_plants())):
@@ -119,6 +127,9 @@ def build(face_y, textures_dir=None, plants=True, report=False):
                          ("density_scale", density), ("min_world_z", zmin * 100), ("max_world_z", zmax * 100),
                          ("trace_up", 5000.0), ("trace_down", 6000.0)):
                 g.set_editor_property(k, v)
+            # herb patches (the North's fireweed, cotton grass ...): plants per m2, habitat, age
+            for k, v in W.grass_patch_settings(species).items():
+                g.set_editor_property(k, getattr(unreal.GrassHabitat, v.upper()) if k == "herb_habitat" else v)
             g.set_folder_path("Outside/Grass")
         _log("grass: %d patches" % len(W.grass_patches()))
         forest_cls = unreal.load_class(None, "/Script/Lyudmilovsk.ProceduralForest")
@@ -132,6 +143,8 @@ def build(face_y, textures_dir=None, plants=True, report=False):
                          ("half_extent", unreal.Vector2D(hx * 100, hy * 100)), ("variants", 2),
                          ("min_world_z", zmin * 100), ("max_world_z", zmax * 100),
                          ("trace_up", 8000.0), ("trace_down", 10000.0), ("preview_in_editor", False)):
+                f.set_editor_property(k, v)
+            for k, v in W.forest_detail(mix).items():
                 f.set_editor_property(k, v)
             f.set_folder_path("Outside/Forest")
             total += count

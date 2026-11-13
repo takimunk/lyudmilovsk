@@ -36,7 +36,10 @@ FLAG_GUESSED_TREE = 1        # replace with the real forest's trees in the game
 FLAG_HERO_PLANT = 2          # one of the hero plants (AProceduralPlant): crown height from the actor
 GRID_CELL = 8.0
 MARGIN = 120.0
-CANOPY = {"old": 21.0, "dune": 7.0, "wet": 14.0, "town": 10.0}
+CANOPY = {"old": 21.0, "dune": 7.0, "wet": 14.0, "town": 10.0,
+          # the North (tools/north.py FOREST_MIX): park woodland, then knee- to head-high shrubs
+          "stonebirch": 8.0, "dwarfpine": 2.0, "alder": 2.5, "shrub": 1.5, "rhodo": 0.5}
+NORTH_SPARSE = {"stonebirch": 0.5, "dwarfpine": 0.4, "alder": 0.4, "shrub": 0.8, "rhodo": 1.0}   # share of guesses left out
 
 
 def face_y_default():
@@ -300,14 +303,17 @@ def main():
                     continue
                 if mix == "town" and (near_house(x, y, 3.0) or rnd.random() > 0.5):
                     continue
+                if mix in NORTH_SPARSE and rnd.random() < NORTH_SPARSE[mix]:
+                    continue
                 kind = {"old": "Conifer" if rnd.random() < 0.75 else "Broadleaf", "dune": "Conifer",
-                        "wet": "Broadleaf", "town": "Garden"}[mix]
+                        "wet": "Broadleaf", "town": "Garden", "stonebirch": "Broadleaf", "dwarfpine": "Conifer",
+                        "alder": "Broadleaf", "shrub": "Broadleaf", "rhodo": "Broadleaf"}[mix]
                 h = CANOPY[mix] * rnd.uniform(0.8, 1.1)
                 add(kind, (x, y, z + h * 0.7), radius=2.5, cap=6, flags=FLAG_GUESSED_TREE)
                 if mix in ("old", "wet") and rnd.random() < 0.5:
                     add("ForestFloor", (x + 4, y + 4, T.ground_z(x + 4, y + 4) + 0.02), radius=6.0, cap=10)
     for x, y, sp, seed, age in W.alley_trees() + W.coast_plants():
-        kind = "Conifer" if sp in ("ScotsPine", "DunePine", "Juniper") else "Broadleaf"
+        kind = "Conifer" if sp in ("ScotsPine", "DunePine", "Juniper", "SiberianDwarfPine") else "Broadleaf"
         h = min(age * 0.8, 18.0) if kind == "Broadleaf" else min(age * 0.35, 16.0)
         add(kind, (x, y, T.ground_z(x, y) + h * 0.75), radius=1.5, cap=4, flags=FLAG_HERO_PLANT)
     for p in W.path_points(15.0):

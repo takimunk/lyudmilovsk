@@ -8,6 +8,7 @@
 #include "Plants/PlantMeshes.h"
 #include "Plants/PlantModel.h"
 #include "StaticMeshAttributes.h"
+#include "StaticMeshResources.h"
 
 namespace
 {
@@ -790,6 +791,106 @@ void PlantHerbs::Build(const FPlantSpecies& S, uint32 Seed, const FState& St, FH
 		OutHeight = FMath::Max(OutHeight, P.Z / 100.f);
 		OutRadius = FMath::Max(OutRadius, FVector2f(P.X, P.Y).Size() / 100.f);
 	}
+}
+
+FPlantSpecies PlantHerbs::LiteSpecies(const FPlantSpecies& S)
+{
+	FPlantSpecies L = S;
+	FPlantHerb& H = L.Herb;
+	H.Leaves = FMath::Max(2, FMath::RoundToInt(H.Leaves * 0.4f));
+	H.Stems = FMath::Max(2, FMath::RoundToInt(H.Stems * 0.6f));
+	H.Branches = FMath::Min(H.Branches, 1);
+	H.Leaflets = H.Leaflets > 0 ? FMath::Max(4, H.Leaflets / 2) : 0;
+	H.Leaflet.X *= 1.5;
+	H.PerNode = 1;
+	H.Flowers = FMath::Min(H.Flowers, 2);
+	L.Leaf.Length *= H.Leaflets > 0 ? 1.f : 1.5f;
+	L.Leaf.Teeth = 0;
+	L.Leaf.Lobes = FMath::Min(L.Leaf.Lobes, 3);
+	return L;
+}
+
+// --- meshes and textures (Unreal objects): tools/plantsim compiles this file only down to here
+
+namespace
+{
+	const FName& HerbSlotName(int32 K)
+	{
+		static const FName Names[PlantHerbs::NumSlots] = { TEXT("Leaves"), TEXT("Stems"), TEXT("Flowers") };
+		return Names[K];
+	}
+
+	/** The herb's three sections as one LOD of a mesh description. */
+	void FillHerbDescription(FMeshDescription& MD, const PlantHerbs::FHerbGeometry& G)
+	{
+		FStaticMeshAttributes Attr(MD);
+		Attr.Register();
+		TVertexAttributesRef<FVector3f> VPos = Attr.GetVertexPositions();
+		TVertexInstanceAttributesRef<FVector3f> VNrm = Attr.GetVertexInstanceNormals();
+		TVertexInstanceAttributesRef<FVector3f> VTan = Attr.GetVertexInstanceTangents();
+		TVertexInstanceAttributesRef<float> VSign = Attr.GetVertexInstanceBinormalSigns();
+		TVertexInstanceAttributesRef<FVector2f> VUV = Attr.GetVertexInstanceUVs();
+		VUV.SetNumChannels(1);
+		FPolygonGroupID Groups[PlantHerbs::NumSlots];
+		for (int32 K = 0; K < PlantHerbs::NumSlots; K++)
+		{
+			Groups[K] = MD.CreatePolygonGroup();
+			Attr.GetPolygonGroupMaterialSlotNames()[Groups[K]] = HerbSlotName(K);
+		}
+		TArray<FVertexInstanceID> Inst;
+		Inst.Reserve(G.Pos.Num() + 3);
+		for (int32 I = 0; I < G.Pos.Num(); I++)
+		{
+			const FVertexID V = MD.CreateVertex();
+			VPos[V] = G.Pos[I].ContainsNaN() ? FVector3f::ZeroVector : G.Pos[I];
+			const FVertexInstanceID VI = MD.CreateVertexInstance(V);
+			const FVector3f N = G.Nrm[I].GetSafeNormal(UE_SMALL_NUMBER, Up);
+			VNrm[VI] = N;
+			FVector3f T = (G.Tan[I] - N * FVector3f::DotProduct(G.Tan[I], N)).GetSafeNormal();
+			if (T.IsNearlyZero()) T = SideOf(N, 0.f);
+			VTan[VI] = T;
+			VSign[VI] = 1.f;
+			VUV.Set(VI, 0, G.UV[I]);
+			Inst.Add(VI);
+		}
+		// every section keeps at least one (degenerate) triangle, so the material slots never shift
+		const int32 Pad = Inst.Num();
+		for (int32 I = 0; I < 3; I++)
+		{
+			const FVertexID V = MD.CreateVertex();
+			VPos[V] = FVector3f::ZeroVector;
+			const FVertexInstanceID VI = MD.CreateVertexInstance(V);
+			VNrm[VI] = Up; VTan[VI] = FVector3f::XAxisVector; VSign[VI] = 1.f; VUV.Set(VI, 0, FVector2f::ZeroVector);
+			Inst.Add(VI);
+		}
+		for (int32 K = 0; K < PlantHerbs::NumSlots; K++)
+		{
+			for (const FIntVector3& Tri : G.Tris[K]) MD.CreateTriangle(Groups[K], { Inst[Tri.X], Inst[Tri.Y], Inst[Tri.Z] });
+			if (G.Tris[K].IsEmpty()) MD.CreateTriangle(Groups[K], { Inst[Pad], Inst[Pad + 1], Inst[Pad + 2] });
+		}
+	}
+}
+
+UStaticMesh* PlantHerbs::BuildMeshLods(UObject* Outer, FName Name, const FHerbGeometry& L0, const FHerbGeometry& L1, float Screen1)
+{
+	FMeshDescription A, B;
+	FillHerbDescription(A, L0);
+	FillHerbDescription(B, L1);
+	// never saved, never copied, a fresh name each time (a herb patch makes a new one when the plant changes, never over the one drawn)
+	UStaticMesh* Mesh = NewObject<UStaticMesh>(Outer, MakeUniqueObjectName(Outer, UStaticMesh::StaticClass(), Name), RF_Transient | RF_DuplicateTransient | RF_TextExportTransient);
+	for (int32 K = 0; K < NumSlots; K++) Mesh->GetStaticMaterials().Add(FStaticMaterial(nullptr, HerbSlotName(K)));
+	UStaticMesh::FBuildMeshDescriptionsParams Params;
+	Params.bMarkPackageDirty = false;
+	Params.bBuildSimpleCollision = false;
+	Params.bCommitMeshDescription = false;
+	Params.bFastBuild = true;
+	Mesh->BuildFromMeshDescriptions({ &A, &B }, Params);
+	if (FStaticMeshRenderData* RD = Mesh->GetRenderData())
+	{
+		RD->ScreenSize[0] = 1.f;
+		RD->ScreenSize[1] = Screen1;
+	}
+	return Mesh;
 }
 
 UStaticMesh* PlantHerbs::BuildMesh(UObject* Outer, UStaticMesh* Mesh, FName Name, const FHerbGeometry& G)

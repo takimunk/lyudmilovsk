@@ -23,7 +23,7 @@ sys.path.insert(0, HERE)
 import world_map as W  # noqa: E402
 
 PX = 1.25          # metres per pixel
-MIX_CODE = {"old": 1, "dune": 2, "wet": 3}
+MIX_CODE = {"old": 1, "dune": 2, "wet": 3, "stonebirch": 4, "dwarfpine": 5, "alder": 6, "shrub": 7, "rhodo": 8}
 CONTOUR = 5.0      # metres between contour lines
 LAYOUT = os.path.join(ROOT, "blender", "export", "scene01_layout.json")
 
@@ -112,7 +112,10 @@ def paint(out_jpg):
     sea_shallow = (176, 204, 210)
     sea_deep = (118, 156, 180)
     beach = (238, 220, 168)
-    forest = {"old": (160, 190, 132), "dune": (186, 204, 150), "wet": (170, 198, 150), "town": (196, 210, 160)}
+    forest = {"old": (160, 190, 132), "dune": (186, 204, 150), "wet": (170, 198, 150), "town": (196, 210, 160),
+              # the North: park woodland and the shrub belt (tools/north.py FOREST_MIX)
+              "stonebirch": (176, 198, 146), "dwarfpine": (150, 178, 128), "alder": (164, 196, 140),
+              "shrub": (190, 206, 158), "rhodo": (204, 210, 160)}
     img = Image.new("RGB", (w, h))
     pix = img.load()
     cover_img = Image.new("L", (w, h), 0)

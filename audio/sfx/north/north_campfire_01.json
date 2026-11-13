@@ -1,0 +1,11 @@
+{
+ "id": "north_campfire",
+ "kind": "sfx",
+ "file": "audio/sfx/north/north_campfire_01.wav",
+ "generator": "tools/north_sounds.py",
+ "seed": 7401,
+ "seconds": 6.0,
+ "sha256": "2feea438c4226bfda8adbe1017bf8f2fc79e2a120f8a32dc5ef62b3e56a07ca0",
+ "loop": true,
+ "license": "Procedural (tools/north_sounds.py); released by the project under CC BY 4.0."
+}

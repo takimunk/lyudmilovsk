@@ -1,0 +1,11 @@
+{
+ "id": "north_vent",
+ "kind": "sfx",
+ "file": "audio/sfx/north/north_vent_01.wav",
+ "generator": "tools/north_sounds.py",
+ "seed": 7101,
+ "seconds": 4.0,
+ "sha256": "a3ae927a7cf78c074f39c35e3308e001a7245ab04f4d0a5162e25206719b85b5",
+ "loop": true,
+ "license": "Procedural (tools/north_sounds.py); released by the project under CC BY 4.0."
+}

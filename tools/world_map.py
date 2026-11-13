@@ -707,6 +707,18 @@ def grass_patches():
 REEDBED = (25.0, 280.0, 60.0, 45.0)   # centre x, y and half sizes, metres
 
 
+def forest_detail(mix):
+    """Extra AProceduralForest properties for a mix's tiles ({} for the default), e.g. a shorter cull distance for the
+    North's knee-high shrubs (tools/north.py FOREST_DETAIL)."""
+    return dict(_north().FOREST_DETAIL.get(mix, {}))
+
+
+def grass_patch_settings(species):
+    """Extra AProceduralGrass properties for a patch of this species ({} for grass): the herb patches' density, habitat
+    (a GrassHabitat name) and age (tools/north.py HERB_PATCH_SETTINGS)."""
+    return dict(_north().HERB_PATCH_SETTINGS.get(species, {}))
+
+
 def _ramp(d, r, soft):
     """1 within r, falling to 0 over soft metres."""
     return min(1.0, max(0.0, (r + soft - d) / soft))
