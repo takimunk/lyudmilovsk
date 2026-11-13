@@ -156,12 +156,22 @@ sun.cloudy = nao.sun_cloudy.1
 [Zotov_lev]
 first = zotov_lev.first.1
 again = zotov_lev.again1.1
+again = zotov_lev.again2.1
+again = hero.zotov_lev_again3.1 | zotov_lev.again3.2
+again = zotov_lev.again4.1
+sun.low = zotov_lev.sun_low.1
+sun.night = zotov_lev.sun_night.1
 quest.overdue_journal.visit = zotov_lev.overdue_admit.1 | zotov_lev.overdue_admit.2 | hero.overdue_admit.3 | zotov_lev.overdue_admit.4 | zotov_lev.overdue_admit.5
 quest.overdue_journal.done = zotov_lev.load_bearing_reading.1 | zotov_lev.load_bearing_reading.2
 
 [Zotova_galina]
 first = zotova_galina.first.1
 again = zotova_galina.again1.1
+again = zotova_galina.again2.1
+again = hero.zotova_galina_again3.1 | zotova_galina.again3.2
+again = zotova_galina.again4.1
+sun.low = zotova_galina.sun_low.1
+sun.night = zotova_galina.sun_night.1
 quest.soda_science.ask = zotova_galina.sodalab_ask.1 | zotova_galina.sodalab_ask.2 | hero.sodalab_ask.3 | zotova_galina.sodalab_ask.4 | zotova_galina.sodalab_ask.5
 quest.soda_science.taste = zotova_galina.sodalab_wait.1
 quest.soda_science.tell = zotova_galina.sodalab_tell.1 | hero.sodalab_tell.2 | zotova_galina.sodalab_tell.3 | zotova_galina.sodalab_tell.4 | zotova_galina.sodalab_tell.5
@@ -174,14 +184,29 @@ quest.soda_science.done.if.done:overdue_journal = zotova_galina.two_favours_lev.
 [Sato_kei]
 first = sato_kei.first.1
 again = sato_kei.again1.1
+again = sato_kei.again2.1
+again = hero.sato_kei_again3.1 | sato_kei.again3.2
+again = sato_kei.again4.1
+sun.low = sato_kei.sun_low.1
+sun.night = sato_kei.sun_night.1
 
 [Sato_mila]
 first = sato_mila.first.1
 again = sato_mila.again1.1
+again = sato_mila.again2.1
+again = hero.sato_mila_again3.1 | sato_mila.again3.2
+again = sato_mila.again4.1
+sun.day = sato_mila.sun_day.1
+sun.low = sato_mila.sun_low.1
 
 [Sato_yuki]
 first = sato_yuki.first.1
 again = sato_yuki.again1.1
+again = sato_yuki.again2.1
+again = sato_yuki.again3.1 | hero.sato_yuki_again3.2 | sato_yuki.again3.3
+again = sato_yuki.again4.1
+sun.day = sato_yuki.sun_day.1
+sun.low = sato_yuki.sun_low.1
 quest.crow_gift.ask = sato_yuki.crow_ask.1 | hero.crow_ask.2 | sato_yuki.crow_ask.3 | sato_yuki.crow_ask.4
 quest.crow_gift.feed,gift = sato_yuki.crow_wait.1
 quest.crow_gift.tell = sato_yuki.crow_tell.1 | hero.crow_tell.2 | sato_yuki.crow_tell.3
@@ -194,6 +219,11 @@ quest.crow_gift.done.if.done:magpie_key = sato_yuki.crow_magpie_uncle.1
 [Korneev_ivan]
 first = korneev_ivan.first.1
 again = korneev_ivan.again1.1
+again = korneev_ivan.again2.1
+again = hero.korneev_ivan_again3.1 | korneev_ivan.again3.2
+again = korneev_ivan.again4.1
+sun.low = korneev_ivan.sun_low.1
+sun.day = korneev_ivan.sun_day.1
 quest.hot_corn.carry = korneev_ivan.corn_handover.1 | korneev_ivan.corn_handover.2 | korneev_ivan.corn_handover.3
 quest.hot_corn.carry_empty = korneev_ivan.corn_nocob.1
 quest.hot_corn.tell = korneev_ivan.corn_eaten.1
@@ -203,6 +233,11 @@ quest.hot_corn.done = korneev_ivan.cart_visit_secret.1 | korneev_ivan.cart_visit
 [Korneeva_nina]
 first = korneeva_nina.first.1
 again = korneeva_nina.again1.1
+again = korneeva_nina.again2.1 | korneeva_nina.again2.2
+again = hero.korneeva_nina_again3.1 | korneeva_nina.again3.2
+again = korneeva_nina.again4.1
+sun.day = korneeva_nina.sun_day.1
+sun.low = korneeva_nina.sun_low.1
 quest.evening_paper.ask = korneeva_nina.paper_ask.1 | korneeva_nina.paper_ask.2 | korneeva_nina.paper_ask.3 | hero.paper_ask.4
 quest.evening_paper.buy,bring_empty = korneeva_nina.paper_wait.1
 quest.evening_paper.bring = korneeva_nina.paper_thanks.1 | korneeva_nina.paper_thanks.2 | korneeva_nina.paper_thanks.3
@@ -215,6 +250,11 @@ quest.evening_paper.done.if.done:hot_corn = korneeva_nina.paper_postman.1 | korn
 [Belov_misha]
 first = belov_misha.first.1
 again = belov_misha.again1.1
+again = belov_misha.again2.1
+again = belov_misha.again3.1
+again = belov_misha.again4.1
+sun.low = belov_misha.sun_low.1
+sun.night = belov_misha.sun_night.1
 quest.magpie_key.ask = belov_misha.magpie_ask.1 | hero.magpie_ask.2 | belov_misha.magpie_ask.3 | belov_misha.magpie_ask.4
 quest.magpie_key.search = belov_misha.magpie_wait.1
 quest.magpie_key.tell = belov_misha.magpie_tell.1 | hero.magpie_tell.2 | belov_misha.magpie_tell.3 | belov_misha.magpie_tell.4 | hero.magpie_tell.5 | belov_misha.magpie_tell.6
@@ -226,12 +266,22 @@ quest.magpie_key.done = belov_misha.key_on_string.1 | belov_misha.key_on_string.
 [Orlova_tanya]
 first = orlova_tanya.first.1
 again = orlova_tanya.again1.1
+again = orlova_tanya.again2.1
+again = orlova_tanya.again3.1
+again = orlova_tanya.again4.1
+sun.day = orlova_tanya.sun_day.1
+sun.cloudy = orlova_tanya.sun_cloudy.1
 quest.waxwing.prepare = orlova_tanya.waxwing_rowan.1 | orlova_tanya.waxwing_rowan.2
 quest.waxwing.prepare.if.have:feed_rowan+have:feeder = orlova_tanya.rowan_guide_left.1 | orlova_tanya.rowan_guide_left.2
 
 [Lange_pyotr]
 first = lange_pyotr.first.1
 again = lange_pyotr.again1.1
+again = lange_pyotr.again2.1
+again = hero.lange_pyotr_again3.1 | lange_pyotr.again3.2
+again = lange_pyotr.again4.1
+sun.day = lange_pyotr.sun_day.1
+sun.low = lange_pyotr.sun_low.1
 quest.fisherman_cheese.ask = lange_pyotr.cheese_ask.1 | lange_pyotr.cheese_ask.2 | hero.cheese_ask.3 | lange_pyotr.cheese_ask.4
 quest.fisherman_cheese.buy,bring_empty = lange_pyotr.cheese_wait.1
 quest.fisherman_cheese.bring = lange_pyotr.cheese_thanks.1 | lange_pyotr.cheese_thanks.2
@@ -252,6 +302,11 @@ quest.first_catch.done.if.low = lange_pyotr.angler_dusk_now.1
 [Kimura_dasha]
 first = kimura_dasha.first.1
 again = kimura_dasha.again1.1
+again = kimura_dasha.again2.1
+again = hero.kimura_dasha_again3.1 | kimura_dasha.again3.2
+again = kimura_dasha.again4.1
+sun.low = kimura_dasha.sun_low.1
+sun.night = kimura_dasha.sun_night.1
 quest.window_feeder.ask = kimura_dasha.feeder_ask.1 | kimura_dasha.feeder_ask.2 | hero.feeder_ask.3 | kimura_dasha.feeder_ask.4
 quest.window_feeder.fill,watch = kimura_dasha.feeder_wait.1
 quest.window_feeder.tell = kimura_dasha.feeder_tell.1 | hero.feeder_tell.2 | kimura_dasha.feeder_tell.3
@@ -264,6 +319,11 @@ quest.window_feeder.done.if.done:autumn_count = kimura_dasha.feeder_two_counts.1
 [Li_vika]
 first = li_vika.first.1
 again = li_vika.again1.1
+again = li_vika.again2.1
+again = li_vika.again3.1
+again = li_vika.again4.1
+sun.night = li_vika.sun_night.1
+sun.cloudy = li_vika.sun_cloudy.1
 quest.lab_lunch.ask = li_vika.lunch_ask.1 | li_vika.lunch_ask.2 | li_vika.lunch_ask.3 | hero.lunch_ask.4 | li_vika.lunch_ask.5
 quest.lab_lunch.eat = li_vika.lunch_wait.1
 quest.lab_lunch.tell = li_vika.lunch_tell.1 | hero.lunch_tell.2 | li_vika.lunch_tell.3 | li_vika.lunch_tell.4
@@ -274,6 +334,11 @@ quest.lab_lunch.done = li_vika.saturday_plan.1 | li_vika.saturday_plan.2
 [Valiev_rustam]
 first = valiev_rustam.first.1
 again = valiev_rustam.again1.1
+again = valiev_rustam.again2.1
+again = hero.valiev_rustam_again3.1 | valiev_rustam.again3.2
+again = valiev_rustam.again4.1
+sun.low = valiev_rustam.sun_low.1
+sun.night = valiev_rustam.sun_night.1
 quest.night_signal.ask = valiev_rustam.signal_ask.1 | hero.signal_ask.2 | valiev_rustam.signal_ask.3 | valiev_rustam.signal_ask.4 | valiev_rustam.signal_ask.5
 quest.night_signal.signal = valiev_rustam.signal_wait.1
 quest.night_signal.tell = valiev_rustam.signal_tell.1 | hero.signal_tell.2 | valiev_rustam.signal_tell.3 | hero.signal_tell.4 | valiev_rustam.signal_tell.5 | valiev_rustam.signal_tell.6
@@ -286,6 +351,11 @@ quest.night_signal.done.if.night = valiev_rustam.second_dot.1
 [Nishimura_aya]
 first = nishimura_aya.first.1
 again = nishimura_aya.again1.1
+again = nishimura_aya.again2.1
+again = hero.nishimura_aya_again3.1 | nishimura_aya.again3.2
+again = nishimura_aya.again4.1
+sun.low = nishimura_aya.sun_low.1
+sun.day = nishimura_aya.sun_day.1
 quest.painter_views.ask = nishimura_aya.views_ask.1 | nishimura_aya.views_ask.2 | hero.views_ask.3 | nishimura_aya.views_ask.4
 quest.painter_views.look = nishimura_aya.views_wait.1
 quest.painter_views.tell = nishimura_aya.views_tell.1 | hero.views_tell.2 | nishimura_aya.views_tell.3 | nishimura_aya.views_tell.4 | nishimura_aya.views_tell.5
@@ -297,6 +367,11 @@ quest.painter_views.done = nishimura_aya.new_sketchbook.1 | nishimura_aya.new_sk
 [Sorokin_oleg]
 first = sorokin_oleg.first.1
 again = sorokin_oleg.again1.1
+again = sorokin_oleg.again2.1
+again = hero.sorokin_oleg_again3.1 | sorokin_oleg.again3.2
+again = sorokin_oleg.again4.1
+sun.day = sorokin_oleg.sun_day.1
+sun.cloudy = sorokin_oleg.sun_cloudy.1
 quest.waxwing.find = sorokin_oleg.waxwing_meet.1 | hero.waxwing_meet.2 | sorokin_oleg.waxwing_meet.3 | sorokin_oleg.waxwing_meet.4 | hero.waxwing_meet.5 | sorokin_oleg.waxwing_meet.6 | sorokin_oleg.waxwing_meet.7 | hero.waxwing_meet.8 | sorokin_oleg.waxwing_meet.9
 quest.waxwing.prepare,journey = sorokin_oleg.waxwing_tips.1
 quest.waxwing.lure,wait,tame = sorokin_oleg.waxwing_wait.1
@@ -322,6 +397,11 @@ quest.autumn_count.done = sorokin_oleg.bluetit_at_dawn.1 | sorokin_oleg.bluetit_
 [Khuazhev_aslan]
 first = khuazhev_aslan.first.1
 again = khuazhev_aslan.again1.1
+again = khuazhev_aslan.again2.1
+again = hero.khuazhev_aslan_again3.1 | khuazhev_aslan.again3.2
+again = khuazhev_aslan.again4.1
+sun.day = khuazhev_aslan.sun_day.1
+sun.night = khuazhev_aslan.sun_night.1
 quest.tent_neighbours.ask = khuazhev_aslan.tent_ask.1 | khuazhev_aslan.tent_ask.2 | khuazhev_aslan.tent_ask.3 | hero.tent_ask.4 | khuazhev_aslan.tent_ask.5
 quest.tent_neighbours.taste = khuazhev_aslan.tent_wait.1
 quest.tent_neighbours.tell = khuazhev_aslan.tent_report.1 | hero.tent_report.2 | khuazhev_aslan.tent_report.3 | khuazhev_aslan.tent_report.4 | khuazhev_aslan.tent_report.5
@@ -333,6 +413,11 @@ quest.tent_neighbours.done = khuazhev_aslan.letter_to_brother.1 | khuazhev_aslan
 [Guseva_valentina]
 first = guseva_valentina.first.1
 again = guseva_valentina.again1.1
+again = guseva_valentina.again2.1
+again = hero.guseva_valentina_again3.1 | guseva_valentina.again3.2
+again = guseva_valentina.again4.1
+sun.day = guseva_valentina.sun_day.1
+sun.cloudy = guseva_valentina.sun_cloudy.1
 quest.hot_corn.ask = guseva_valentina.corn_errand.1 | guseva_valentina.corn_errand.2 | hero.corn_errand.3 | guseva_valentina.corn_errand.4
 quest.hot_corn.buy = guseva_valentina.corn_till.1
 quest.hot_corn.carry = guseva_valentina.corn_hurry.1
