@@ -100,6 +100,16 @@ stand by the door, too far from the stalls, until its slots are laid out at them
   else takes an evening stroll. Within 45 minutes of the hour the activity scores up to 0.45 more; people at work then
   simply miss it. `lyud.People.Who <key>` prints it.
 
+- **The household's weekend outing** (`ApplyLikes` sets `FPerson::OutingAct/OutingDay/OutingHour/OutingPlace`): every
+  household of two and more has one, the same every game: on Saturday or Sunday at their hour they all go to the same
+  thing at the same place (one of the four nearest home that have it): the sea front, a stroll, the fair, crumbs for
+  the birds; a table at the cafe or the restaurant for those without small children. From half an hour before the hour
+  to an hour and a quarter after (`FWorld::OutingNow`) it scores 0.7 more, people leave what they chose for it
+  (`Interrupt`), take a slot at that place and stay till the others have been there a while. Those at work miss it.
+  In mannersim 142 of the 262 households have two and more of theirs there together (120 whole); strollers and the
+  fair's visitors wander apart within a couple of hundred metres (nobody walks side by side yet). Town talk:
+  `doing = outing` (sets `outing`, `outing_kid`). `tools/mannersim/run.sh outing` prints a weekend.
+
 ## The gestures
 
 No new clips. A manner's gesture is a few goals for the hands, the head and the back worked out from the time since it
@@ -131,7 +141,8 @@ Town talk sets: `manner = smoke phone_call ...` (what their hands are doing now)
 
 ## Testing
 
-- `tools/mannersim/run.sh` (personas, the four weathers, noticing, passing, cost), `run.sh day`, `run.sh who`.
+- `tools/mannersim/run.sh` (personas, the four weathers, noticing, passing, a weekend's outings, the sky's shows, cost),
+  `run.sh day`, `run.sh outing`, `run.sh who`.
 - `tools/peoplesim/run.sh test|town`, `tools/barksim/run.sh`.
 - In the game: `lyud.People.Manner <manner|next|auto>` (everybody drawn does it), `lyud.People.Who <key>`,
   `lyud.People.SkyShow`; developer mode (F7), group "Townsfolk".

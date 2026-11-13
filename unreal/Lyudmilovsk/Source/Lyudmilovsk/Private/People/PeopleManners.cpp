@@ -3,6 +3,7 @@
 #include <algorithm>
 #include <cmath>
 #include <cstdio>
+#include <map>
 
 namespace LyudPeople
 {
@@ -496,6 +497,105 @@ namespace LyudPeople
 				P.RitualHour = R.From + (R.To - R.From) * Rand(H);
 				P.RitualMore = 0.45f;
 				break;
+			}
+		}
+		// a weekend outing for every household of two and more: on Saturday or Sunday, at the household's hour, they all go
+		// to the same thing at the same place (one of the four nearest home that have it): the sea front, a stroll, the fair, crumbs
+		// for the birds, a table at the cafe for those without small children. The same every game.
+		struct FOuting { const char* Activity; float From, To; bool bKids; };
+		static const FOuting Outings[] = {
+			{ "sea_air", 11.f, 16.f, true }, { "stroll", 11.f, 17.f, true }, { "fair_visit", 12.f, 17.f, true }, { "feed_birds", 10.5f, 15.f, true },
+			{ "sea_air", 15.f, 17.5f, true }, { "eat_out", 13.f, 19.5f, false }, { "coffee", 11.f, 16.f, false }, { "stroll", 17.f, 19.5f, false },
+		};
+		std::map<std::string, std::vector<int>> Houses;
+		for (FPerson& P : W.People)
+		{
+			P.OutingAct = P.OutingDay = P.OutingPlace = -1;
+			if (!P.Household.empty() && P.Home >= 0)
+			{
+				Houses[P.Household].push_back(P.Id);
+			}
+		}
+		for (const auto& House : Houses)
+		{
+			if (House.second.size() < 2)
+			{
+				continue;
+			}
+			uint32_t H = 2166136261u;
+			for (const char C : House.first)
+			{
+				H = (H ^ (uint8_t)C) * 16777619u;
+			}
+			H ^= 0x7a3c91e5u;
+			H |= 1u;
+			bool bKids = false;
+			for (const int Id : House.second)
+			{
+				bKids |= W.People[(size_t)Id].Age < 14;
+			}
+			const int NumOutings = (int)(sizeof(Outings) / sizeof(Outings[0]));
+			const FOuting* O = nullptr;
+			int Act = -1;
+			for (int Try = 0; Try < 8 && Act < 0; Try++)
+			{
+				const FOuting& Choice = Outings[(int)(Rand(H) * NumOutings) % NumOutings];
+				if (!Choice.bKids && bKids)
+				{
+					continue;
+				}
+				Act = W.FindActivity(Choice.Activity);
+				O = &Choice;
+			}
+			if (Act < 0)
+			{
+				continue;
+			}
+			const FActivity& A = W.Activities[(size_t)Act];
+			const FPerson& First = W.People[(size_t)House.second[0]];
+			const V3 HomeAt = W.Places[(size_t)First.Home].Portal;
+			// the four nearest places of its kinds on their side of the water
+			int Near[4] = { -1, -1, -1, -1 };
+			float NearD[4] = { 1e30f, 1e30f, 1e30f, 1e30f };
+			for (int Pi = 0; Pi < (int)W.Places.size(); Pi++)
+			{
+				const FPlace& Pl = W.Places[(size_t)Pi];
+				if (Pl.Island != W.Places[(size_t)First.Home].Island || Pl.Slots.empty()
+					|| std::find(A.Places.begin(), A.Places.end(), Pl.Kind) == A.Places.end())
+				{
+					continue;
+				}
+				float D = (Pl.Portal - HomeAt).Len2D();
+				int Put = Pi;
+				for (int K = 0; K < 4; K++)
+				{
+					if (D < NearD[K])
+					{
+						std::swap(D, NearD[K]);
+						std::swap(Put, Near[K]);
+					}
+				}
+			}
+			int Count = 0;
+			while (Count < 4 && Near[Count] >= 0)
+			{
+				Count++;
+			}
+			if (Count == 0)
+			{
+				continue;
+			}
+			const int Place = Near[(int)(Rand(H) * Count) % Count];
+			const int Day = Rand(H) < 0.45f ? 5 : 6;
+			const float Hour = O->From + (O->To - O->From) * Rand(H);
+			for (const int Id : House.second)
+			{
+				FPerson& P = W.People[(size_t)Id];
+				// (whoever the activity isn't for stays behind: a small child and the cafe's evening)
+				P.OutingAct = Act;
+				P.OutingDay = Day;
+				P.OutingPlace = Place;
+				P.OutingHour = Hour;
 			}
 		}
 	}
@@ -997,6 +1097,13 @@ namespace LyudPeople
 		{
 			std::snprintf(Buf, sizeof Buf, "; ritual %s at %d:%02d", W.Activities[(size_t)P.RitualAct].Id.c_str(), (int)P.RitualHour,
 				(int)((P.RitualHour - (int)P.RitualHour) * 60.f));
+			Out += Buf;
+		}
+		if (P.OutingAct >= 0 && P.OutingAct < (int)W.Activities.size() && P.OutingPlace >= 0 && P.OutingPlace < (int)W.Places.size())
+		{
+			std::snprintf(Buf, sizeof Buf, "; the household's outing %s at %s on %s at %d:%02d", W.Activities[(size_t)P.OutingAct].Id.c_str(),
+				W.Places[(size_t)P.OutingPlace].Id.c_str(), P.OutingDay == 5 ? "Saturday" : "Sunday", (int)P.OutingHour,
+				(int)((P.OutingHour - (int)P.OutingHour) * 60.f));
 			Out += Buf;
 		}
 		Out += "; now ";

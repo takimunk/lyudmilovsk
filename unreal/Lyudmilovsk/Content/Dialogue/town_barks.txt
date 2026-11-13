@@ -10,7 +10,7 @@
 # age =       kid (under 12), teen (12-17), adult (18-59), elder (60 and over), or years: 50-120
 # sex =       female, male (for the Russian forms of the past tense: one form per key, never both in one string)
 # doing =     activities.json ids (sit_bench, play_club, eat_out, gather_mingle, ...); work: on their duty at its place;
-#             free: not on a duty
+#             free: not on a duty; outing: at their household's weekend outing (docs/town_manners.md)
 # at =        place kinds or place ids (bench, promenade, beach, club, restaurant, market, fair_stall, P-MARKET, ...);
 #             outdoors, indoors: under the sky or a roof (alone it doesn't make a set more particular)
 # pose =      stand, walk, talk, look, sit, computer, eat, read, work
@@ -1295,6 +1295,7 @@ talk = town.chat_kids3.1 | town.chat_kids3.2 | town.chat_kids3.3
 # --- people who have come to know the player (met = seen: greeted him on a few days; known: on five and more) ---
 # The sky's shows (UPeopleLifeSubsystem::GetSkyShow adds aurora / rainbow / fireworks to the weather's words while
 # people are looking up at one)
+# The household's weekend outing (doing = outing: at it now, with their own)
 
 [manner_smoke]
 manner = smoke
@@ -1472,6 +1473,18 @@ weather = fireworks
 age = kid teen
 weight = 5
 say = town.sky_fireworks_kid.1..2
+
+[outing]
+doing = outing
+age = adult elder
+weight = 4
+say = town.outing.1..6
+
+[outing_kid]
+doing = outing
+age = kid teen
+weight = 5
+say = town.outing_kid.1..3
 
 # At the counter: a customer on their feet and whoever serves them (LyudBarks::AtCounter: the same shop, market
 # stall or kiosk, within 4 m). A is the customer unless the set says doing = work first.

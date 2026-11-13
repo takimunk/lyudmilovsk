@@ -1833,6 +1833,7 @@ namespace LyudPeople
 				}
 			}
 		}
+		const bool bOuting = OutingNow(P, A);
 		for (const int Pi : Cand)
 		{
 			const FPlace& Pl = Places[Pi];
@@ -1859,6 +1860,10 @@ namespace LyudPeople
 				}
 				const FSlot& Sl = Slots[S];
 				float Score = (Sl.Approach - From).Len2D() - Company;
+				if (bOuting && Pi == P.OutingPlace)
+				{
+					Score -= 3000.f;    // where the household goes
+				}
 				if (Pl.Island != Island)
 				{
 					Score += 600.f;     // the cable car
@@ -1907,6 +1912,11 @@ namespace LyudPeople
 		{
 			uint32_t R = P.Rng;
 			OutMinutes = A.MinMinutes + (A.MaxMinutes - A.MinMinutes) * Rand(R);
+			if (bOuting && Slots[Best].Place == P.OutingPlace)
+			{
+				// they stay till the others have come and been there a while
+				OutMinutes = std::max(OutMinutes, std::min(150.f, (P.OutingHour + 1.25f - Hour) * 60.f));
+			}
 		}
 		return Best;
 	}
@@ -1973,6 +1983,11 @@ namespace LyudPeople
 			{
 				Score += P.RitualMore * (1.f - Off / 0.75f * 0.5f);
 			}
+		}
+		// the household's weekend outing: everybody of the flat is drawn to it together
+		if (OutingNow(P, A))
+		{
+			Score += 0.7f;
 		}
 		Score -= TravelH * Opt.WalkCostPerHour;
 		// the weather: nobody chooses to be out in the rain (those who love the open air mind it less), the frost empties
@@ -2364,6 +2379,22 @@ namespace LyudPeople
 		if (bRain && Cur.bFree && Duty < 0 && !Cur.bRainOk && !Cur.bGather && !P.bIndoors && P.Place >= 0 && !Places[P.Place].bIndoor)
 		{
 			return true;
+		}
+		// the household's outing: whoever is at it stays with their own; the others leave what they chose for it
+		if (P.OutingAct >= 0 && Duty < 0 && OutingNow(P, Activities[(size_t)P.OutingAct]))
+		{
+			if (P.Activity == P.OutingAct)
+			{
+				return false;
+			}
+			if (Cur.bFree && !Cur.bGather)
+			{
+				int SlotThere = -1, SlotHere = -1;
+				if (Score(P, Activities[(size_t)P.OutingAct], SlotThere) > Score(P, Cur, SlotHere))
+				{
+					return true;
+				}
+			}
 		}
 		// something they chose: they give it at least its shortest time first
 		if (!Cur.bFree || Duty >= 0 || Time - P.StateStart < Cur.MinMinutes * 60.0)

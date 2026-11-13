@@ -816,6 +816,10 @@ namespace LyudBarks
 		{
 			const FActivity& A = W.Activities[(size_t)P.Activity];
 			Who.Doing.push_back(A.Id);
+			if (bThere && W.OutingNow(P, A))
+			{
+				Who.Doing.push_back("outing");     // the household's weekend outing (docs/town_manners.md)
+			}
 			for (const FDuty& D : P.Duties)
 			{
 				if (bThere && W.ActOf(D) == P.Activity && P.Activity != W.SleepAct && (D.Place < 0 || D.Place == P.Place))

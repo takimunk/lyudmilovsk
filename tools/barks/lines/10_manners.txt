@@ -273,3 +273,26 @@ age = kid teen
 weight = 5
 say town.sky_fireworks_kid.1 | Ещё! Ещё! А можно ещё один? | More! More! Can we have one more? | もっと！もっと！もう一発、だめ？
 say town.sky_fireworks_kid.2 | Красный! Нет, зелёный! Нет, оба! | The red one! No, the green! No, both! | 赤！いや、緑！やっぱり両方！
+
+## ---------------------------------------------------------------------------------------------------------------
+## The household's weekend outing (doing = outing: at it now, with their own)
+## ---------------------------------------------------------------------------------------------------------------
+
+[outing]
+doing = outing
+age = adult elder
+weight = 4
+say town.outing.1 | По выходным мы всегда тут, всей семьёй. Так заведено. | At weekends we're always here, the whole family. It's how we do things. | 週末はいつも家族そろってここに来るんだ。うちの決まりでね。
+say town.outing.2 | Всю неделю каждый сам по себе. А сегодня вместе. | All week it's each to their own. Today we're together. | 平日はみんなばらばら。でも今日は一緒。
+say town.outing.3 | Сначала все ворчат, что рано. А потом домой не загонишь. | First they all grumble it's too early. Then you can't get them home. | 最初はみんな「早すぎる」って文句を言う。なのに、あとで帰りたがらないんだ。
+say town.outing.4 | Мы сюда ходим столько лет, что место нас уже узнаёт. | We've been coming here so many years the place knows us by now. | もう何年も通ってるから、この場所のほうが私たちを覚えてるよ。
+say town.outing.5 | Наши где-то тут. Далеко не разбредаются, проверено. | My lot are around here somewhere. They never stray far, I've checked. | うちの家族もこの辺にいるよ。遠くへは行かない、確認済み。
+say town.outing.6 | Хороший день. Все дома, все рядом, никуда не надо. | A good day. Everyone's home, everyone's near, nowhere to be. | いい日だ。みんないて、みんなそばにいて、急ぐ用事もない。
+
+[outing_kid]
+doing = outing
+age = kid teen
+weight = 5
+say town.outing_kid.1 | Мы каждые выходные сюда ходим. Это называется традиция. | We come here every weekend. It's called a tradition. | 毎週末ここに来るんだ。「伝統」っていうんだって。
+say town.outing_kid.2 | Сегодня мы тут всей семьёй. Даже телефоны дома оставили. Почти все. | We're all here today, the whole family. Even left the phones at home. Nearly all of them. | 今日は家族みんなで来たよ。スマホも家に置いてきた。ほとんどね。
+say town.outing_kid.3 | А потом мороженое. Мне обещали. При свидетелях! | And ice cream after. I was promised. In front of witnesses! | このあとアイスなんだ。約束してもらった。証人もいるよ！

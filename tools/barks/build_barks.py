@@ -123,7 +123,7 @@ if FEST:
 VALID = {
     "to": {"hero"}, "near": {"hero"}, "on": EVENTS,
     "sex": {"female", "male"}, "sex2": {"female", "male"},
-    "doing": acts | {"work", "free"}, "doing2": acts | {"work", "free"},
+    "doing": acts | {"work", "free", "outing"}, "doing2": acts | {"work", "free", "outing"},
     "at": kinds | ids | {"outdoors", "indoors"},
     "pose": {"stand", "walk", "talk", "look", "sit", "computer", "eat", "read", "work", "shovel"},
     "manner": {r.get("manner", r["id"]) for r in json.load(open(os.path.join(D, "PeopleData", "manners.json"), encoding="utf-8"))["manners"]},
@@ -183,7 +183,7 @@ HEADER = """# What the townsfolk say on their own (docs/town_talk.md): a greetin
 # age =       kid (under 12), teen (12-17), adult (18-59), elder (60 and over), or years: 50-120
 # sex =       female, male (for the Russian forms of the past tense: one form per key, never both in one string)
 # doing =     activities.json ids (sit_bench, play_club, eat_out, gather_mingle, ...); work: on their duty at its place;
-#             free: not on a duty
+#             free: not on a duty; outing: at their household's weekend outing (docs/town_manners.md)
 # at =        place kinds or place ids (bench, promenade, beach, club, restaurant, market, fair_stall, P-MARKET, ...);
 #             outdoors, indoors: under the sky or a roof (alone it doesn't make a set more particular)
 # pose =      stand, walk, talk, look, sit, computer, eat, read, work

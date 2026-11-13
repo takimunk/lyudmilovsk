@@ -301,6 +301,109 @@ static void RunDay(FDay& D)
 	}
 }
 
+/** At their household's outing now: at the activity, at its place or (those that wander: a stroll, the fair) within 220 m of it. */
+static bool AtOuting(const FWorld& W, const FPerson& P)
+{
+	return P.OutingAct >= 0 && W.Weekday == P.OutingDay && P.State == EState::Doing && P.Activity == P.OutingAct
+		&& (P.Place == P.OutingPlace || (P.Pos - W.Places[(size_t)P.OutingPlace].Portal).Len2D() < 220.f);
+}
+
+/** A weekend: how many households keep their outing (two and more of them at it, at its place, at the same minute). */
+static void Outings(bool bPrint)
+{
+	FWorld W;
+	FManners M;
+	if (!LoadAll(W, M))
+	{
+		Failures++;
+		return;
+	}
+	FClock C;
+	C.Seconds = (5 * 24.0 + 7.0) * 3600.0;       // Saturday 07:00
+	C.Set(W);
+	W.TempC = 12.f;
+	W.Resettle();
+	std::map<std::string, int> Size, Best, Now;
+	std::map<std::string, int> ByAct, Half;
+	for (const FPerson& P : W.People)
+	{
+		if (P.OutingAct >= 0)
+		{
+			Size[P.Household]++;
+		}
+	}
+	for (const FPerson& P : W.People)
+	{
+		if (P.OutingAct >= 0 && Best.find(P.Household) == Best.end())
+		{
+			Best[P.Household] = 0;
+			ByAct[W.Activities[(size_t)P.OutingAct].Id]++;
+		}
+	}
+	const float Dt = 1.f;
+	for (double T = 0.0; T < 38.0 * 3600.0; T += Dt)        // till Sunday 21:00
+	{
+		C.Seconds += Dt;
+		C.Set(W);
+		W.Step(Dt);
+		W.Events.clear();
+		if ((long)std::lround(T) % 60 != 0)
+		{
+			continue;
+		}
+		if (bPrint)
+		{
+			for (const FPerson& P : W.People)
+			{
+				if (P.OutingAct >= 0 && W.Weekday == P.OutingDay && std::fabs(W.Hour - (P.OutingHour + 0.5f)) < 0.009f)
+				{
+					const bool bAt = AtOuting(W, P);
+					std::string What = bAt ? "AT IT" : P.Activity < 0 ? "nothing" : W.Activities[(size_t)P.Activity].Id;
+					if (!bAt && P.Activity == P.OutingAct)
+					{
+						What += P.State != EState::Doing ? " (on the way)" : " (far off)";
+					}
+					Half[W.Activities[(size_t)P.OutingAct].Id + " -> " + What]++;
+				}
+			}
+		}
+		Now.clear();
+		for (const FPerson& P : W.People)
+		{
+			if (AtOuting(W, P))
+			{
+				const int N = ++Now[P.Household];
+				int& B = Best[P.Household];
+				B = std::max(B, N);
+			}
+		}
+	}
+	int Kept = 0, Whole = 0, Lone = 0;
+	for (const auto& KV : Best)
+	{
+		Kept += KV.second >= 2 ? 1 : 0;
+		Whole += KV.second >= Size[KV.first] ? 1 : 0;
+		Lone += KV.second == 1 ? 1 : 0;
+	}
+	if (bPrint)
+	{
+		for (const auto& KV : ByAct)
+		{
+			std::printf("  %s: %d households\n", KV.first.c_str(), KV.second);
+		}
+		for (const auto& KV : Half)
+		{
+			if (KV.second >= 4)
+			{
+				std::printf("  half an hour in: %s: %d\n", KV.first.c_str(), KV.second);
+			}
+		}
+	}
+	CHECK((int)Best.size() > 150 && Kept * 2 > (int)Best.size(),
+		"households keep their weekend outing (%d of %d with two and more of them there together, %d of those whole; %d with one alone)",
+		Kept, (int)Best.size(), Whole, Lone);
+}
+
 static void Personas()
 {
 	FWorld W;
@@ -547,6 +650,11 @@ int main(int Argc, char** Argv)
 		}
 		return 0;
 	}
+	if (Mode == "outing")
+	{
+		Outings(true);
+		return Failures ? 1 : 0;
+	}
 	if (Mode == "day")
 	{
 		FDay D;
@@ -571,6 +679,8 @@ int main(int Argc, char** Argv)
 	Personas();
 	std::printf("what they notice:\n");
 	Noticing();
+	std::printf("a weekend:\n");
+	Outings(false);
 	FDay Mild, Shower, Frost, Warm;
 	Mild.Name = "a mild day";
 	Shower.Name = "a shower at 14:00";
