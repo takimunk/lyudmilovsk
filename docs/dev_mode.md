@@ -69,7 +69,7 @@ A feature is not done until it can be reached and tested from developer mode. Fo
 
    `x`, `y`: map metres in the docs/world_map.md frame (X west, Y north, from the club's portal face), the same numbers as
    `Content/UI/map.json`; or `place`: a map.json id. `z`: world cm of the feet (the floor); leave it out outdoors (the point is dropped onto whatever is solid
-   below, or onto the sea's surface), give it indoors (else you land on the roof). `yaw`: degrees, 0 looks west (+X), 90 north. `time`:
+   below, or onto the sea's surface), give it indoors (else you land on the roof). A given `z` is a hint: you stand on the first solid thing from 1.5 m above it to 20 m below. `yaw`: degrees, 0 looks west (+X), 90 north. `time`:
    sets the clock on arrival (night-only things). `name`: a string key in all three tables; `group` names a `dev.group.<group>` key.
    Places in map.json are listed on their own. `Dev.Where` gives you the numbers of where you stand.
 
