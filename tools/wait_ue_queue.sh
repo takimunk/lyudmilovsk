@@ -4,6 +4,7 @@
 # --exclusive (or EXCLUSIVE=1) until nothing else runs, and while it runs (args -LyudBench or -ueexclusive) nobody starts.
 # Dima's own editor window doesn't count: only UnrealEditor processes started with -game or -run= do.
 #   tools/wait_ue_queue.sh [seconds] [--exclusive]
+# While /tmp/lyud_dima_playing exists (Dima is playing) nothing new starts (UE_QUEUE_IGNORE_PLAYING=1 overrides).
 MAX=3600; EXCL="${EXCLUSIVE:-0}"
 for A in "$@"; do
     case "$A" in
@@ -23,6 +24,8 @@ count() {
     done
 }
 busy() {
+    # Dima is playing (touch /tmp/lyud_dima_playing; rm when done): no new offscreen runs meanwhile
+    [ -e /tmp/lyud_dima_playing ] && [ "${UE_QUEUE_IGNORE_PLAYING:-0}" != 1 ] && { N=playing; return 0; }
     count
     [ "$X" -eq 1 ] && return 0
     if [ "$EXCL" = 1 ]; then [ "$N" -gt 0 ]; else [ "$N" -ge "$SLOTS" ]; fi
