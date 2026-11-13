@@ -819,20 +819,44 @@ namespace
 			return;
 		}
 		// by the club's door, where the game settles a fifth of the small birds' groups (Setup's bAsGame: without it no tit
-		// lives within reach of the door on the terraced map, and the tray rightly stays empty); in a garden if one is near
-		V3 Garden = Door + V3(12.f, 18.f, 0.f);
-		for (const FSite& S : W.Sites)
+		// lives within reach of the door on the terraced map, and the tray rightly stays empty)
+		const V3 ByDoor = Door + V3(12.f, 18.f, 0.f);
+		// and in the town, for the town's birds (from the door the nearest pigeons are at the very edge of their range): the
+		// garden with the most groups that like the feed living near it, counting those a tray can hold (FeederScore: a
+		// flock of more than 8 never comes to one)
+		typedef std::vector<std::pair<const char*, float>> FLikes;
+		const auto TownGarden = [&](const FLikes& Like)
 		{
-			if (S.Kind == EHabitat::Garden && (S.Center() - Door).Len2D() < 150.f)
+			V3 Best = ByDoor;
+			float BestN = 0.f;
+			for (const FSite& S : W.Sites)
 			{
-				Garden = S.Center() + V3(4.f, 0.f, 0.f);
-				break;
+				float N = 0.f;
+				for (const FGroup& G : W.Groups)
+				{
+					for (const auto& L : Like)
+					{
+						const float Reach = G.Species >= 0 ? SpeciesTable()[G.Species].HomeRange : 0.f, D = (S.Center() - G.Home).Len2D();
+						if (S.Kind == EHabitat::Garden && G.Species == FindSpecies(L.first) && G.Members.size() <= 8 && D < Reach)
+						{
+							N += L.second * (1.f - D / Reach);
+						}
+					}
+				}
+				if (N > BestN)
+				{
+					BestN = N;
+					Best = S.Center() + V3(4.f, 0.f, 0.f);
+				}
 			}
-		}
+			return Best;
+		};
+		const FLikes Suet = { { "GreatTit", 1.f }, { "BlueTit", 1.f }, { "Robin", 0.6f } };
+		const FLikes Grain = { { "FeralPigeon", 1.f }, { "HouseSparrow", 0.6f }, { "TreeSparrow", 0.5f }, { "Chaffinch", 0.4f } };
 		const std::vector<FCase> Cases = {
-			{ "suet in the garden", { { "GreatTit", 1.f }, { "BlueTit", 1.f }, { "Robin", 0.6f } }, Garden, true },
-			{ "grain in the garden", { { "FeralPigeon", 1.f }, { "HouseSparrow", 0.6f }, { "TreeSparrow", 0.5f }, { "Chaffinch", 0.4f } }, Garden, true },
-			{ "a feed nobody eats", {}, Garden, false },
+			{ "suet by the club's door", Suet, ByDoor, true },
+			{ "grain in a town garden", Grain, TownGarden(Grain), true },
+			{ "a feed nobody eats", {}, ByDoor, false },
 		};
 		const std::vector<FSite> Base = W.Sites;
 		for (const FCase& C : Cases)
