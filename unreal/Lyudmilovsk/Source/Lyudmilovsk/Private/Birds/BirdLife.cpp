@@ -8,6 +8,7 @@
 #include "Sea/LyudSea.h"
 #include "Birds/BirdActor.h"
 #include "Birds/BirdFeeder.h"
+#include "Birds/BirdPawn.h"
 #include "HeroCharacter.h"
 #include "Birds/BirdSpecies.h"
 #include "Camera/CameraActor.h"
@@ -647,13 +648,18 @@ void UBirdLifeSubsystem::UpdatePlayer(float DeltaTime)
 	P.HandSpeed = HandSpeed;
 	// LOD and drawing follow the real camera; perception the hero's eyes (the bird near the hero thinks every frame too)
 	S.Camera = PC && PC->PlayerCameraManager ? FromUE(PC->PlayerCameraManager->GetCameraLocation()) : P.Eye;
-	P.bClaimedBird = false;
-	for (const FBird& B : S.Birds)
+	// the player is a bird: also one no bird of this life stands for (a loaded game, a friend called back that has
+	// gone away, Bird.Become), or every bird fled from it as from a person walking through the air
+	P.bClaimedBird = Pawn->IsA(ABirdPawn::StaticClass());
+	if (!P.bClaimedBird)
 	{
-		if (B.Act == EAct::Claimed)
+		for (const FBird& B : S.Birds)
 		{
-			P.bClaimedBird = true;
-			break;
+			if (B.Act == EAct::Claimed)
+			{
+				P.bClaimedBird = true;
+				break;
+			}
 		}
 	}
 }
