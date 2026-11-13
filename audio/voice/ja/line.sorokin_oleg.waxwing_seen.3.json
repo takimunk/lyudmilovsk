@@ -1,0 +1,20 @@
+{
+ "key": "line.sorokin_oleg.waxwing_seen.3",
+ "lang": "ja",
+ "text": "四十年、君たちを追いかけてきた。やあ、こんにちは。",
+ "speaker": "sorokin_oleg",
+ "voice": "River",
+ "voice_id": "SAz9YHcvj6GT2YYXdXww",
+ "voice_design": null,
+ "direction": "[a retired scholar, calm, dry humour, slower, gentle]",
+ "model": "fal-ai/elevenlabs/tts/eleven-v3",
+ "request": {
+  "stability": 0.5,
+  "apply_text_normalization": "auto",
+  "text": "[a retired scholar, calm, dry humour, slower, gentle] 四十年、君たちを追いかけてきた。やあ、こんにちは。",
+  "voice": "River",
+  "language_code": "ja"
+ },
+ "fal_request_id": "01a1d58e-bc38-78d0-b292-3b109ed43245",
+ "hash": "80169c7738ee"
+}

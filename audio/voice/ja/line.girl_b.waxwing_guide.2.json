@@ -1,0 +1,20 @@
+{
+ "key": "line.girl_b.waxwing_guide.2",
+ "lang": "ja",
+ "text": "そのまま持っていって。あの人が自分で書いた本で、鳥のことを聞きに来た人にはあげるように言われているの。",
+ "speaker": "girl_b",
+ "voice": "Sarah",
+ "voice_id": "EXAVITQu4vr4xnSDxMaL",
+ "voice_design": null,
+ "direction": "[curious, slightly uneasy, conspiratorial]",
+ "model": "fal-ai/elevenlabs/tts/eleven-v3",
+ "request": {
+  "stability": 0.5,
+  "apply_text_normalization": "auto",
+  "text": "[curious, slightly uneasy, conspiratorial] そのまま持っていって。あの人が自分で書いた本で、鳥のことを聞きに来た人にはあげるように言われているの。",
+  "voice": "Sarah",
+  "language_code": "ja"
+ },
+ "fal_request_id": "01a1d58c-9703-79a2-9330-67796c6453df",
+ "hash": "fc7cccfb6452"
+}

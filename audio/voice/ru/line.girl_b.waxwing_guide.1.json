@@ -1,0 +1,20 @@
+{
+ "key": "line.girl_b.waxwing_guide.1",
+ "lang": "ru",
+ "text": "Справочник птиц? Сорокин прислал, да? Вон он, у меня на столе.",
+ "speaker": "girl_b",
+ "voice": "Sarah",
+ "voice_id": "EXAVITQu4vr4xnSDxMaL",
+ "voice_design": null,
+ "direction": "[curious, slightly uneasy, conspiratorial]",
+ "model": "fal-ai/elevenlabs/tts/eleven-v3",
+ "request": {
+  "stability": 0.5,
+  "apply_text_normalization": "auto",
+  "text": "[curious, slightly uneasy, conspiratorial] Справочник птиц? Сорокин прислал, да? Вон он, у меня на столе.",
+  "voice": "Sarah",
+  "language_code": "ru"
+ },
+ "fal_request_id": "01a1d585-96f2-7651-99f7-d6a1efb5fd02",
+ "hash": "2b1d475544b6"
+}

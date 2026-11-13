@@ -1,0 +1,29 @@
+{
+ "key": "line.korneeva_nina.paper_thanks.1",
+ "lang": "en",
+ "text": "Now that's kind. Fresh, smells of ink. Keep the change.",
+ "speaker": "korneeva_nina",
+ "voice": "Wise_Woman",
+ "voice_id": "Wise_Woman",
+ "voice_design": null,
+ "direction": "",
+ "model": "fal-ai/minimax/speech-2.6-hd",
+ "request": {
+  "prompt": "Now that's kind. Fresh, smells of ink. Keep the change.",
+  "voice_setting": {
+   "speed": 0.95,
+   "pitch": 0,
+   "vol": 1,
+   "voice_id": "Wise_Woman"
+  },
+  "language_boost": "English",
+  "audio_setting": {
+   "sample_rate": 24000,
+   "format": "mp3",
+   "channel": 1
+  },
+  "output_format": "url"
+ },
+ "fal_request_id": "01a1d591-64e3-79a1-958a-35af0b689814",
+ "hash": "d2fa12641b25"
+}

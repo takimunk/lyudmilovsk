@@ -1,0 +1,20 @@
+{
+ "key": "line.sorokin_oleg.waxwing_seen.1",
+ "lang": "en",
+ "text": "Wait... That voice.",
+ "speaker": "sorokin_oleg",
+ "voice": "River",
+ "voice_id": "SAz9YHcvj6GT2YYXdXww",
+ "voice_design": null,
+ "direction": "[a retired scholar, calm, dry humour, slower, gentle]",
+ "model": "fal-ai/elevenlabs/tts/eleven-v3",
+ "request": {
+  "stability": 0.5,
+  "apply_text_normalization": "auto",
+  "text": "[a retired scholar, calm, dry humour, slower, gentle] Wait... That voice.",
+  "voice": "River",
+  "language_code": "en"
+ },
+ "fal_request_id": "01a1d58c-1129-7823-8aa7-97a9de7a17a3",
+ "hash": "0f86f73c84ca"
+}

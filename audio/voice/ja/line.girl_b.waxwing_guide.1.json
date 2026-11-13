@@ -1,0 +1,20 @@
+{
+ "key": "line.girl_b.waxwing_guide.1",
+ "lang": "ja",
+ "text": "野鳥図鑑?ソローキンさんに言われて来たんでしょう。ほら、私の机の上にあるわ。",
+ "speaker": "girl_b",
+ "voice": "Sarah",
+ "voice_id": "EXAVITQu4vr4xnSDxMaL",
+ "voice_design": null,
+ "direction": "[curious, slightly uneasy, conspiratorial]",
+ "model": "fal-ai/elevenlabs/tts/eleven-v3",
+ "request": {
+  "stability": 0.5,
+  "apply_text_normalization": "auto",
+  "text": "[curious, slightly uneasy, conspiratorial] 野鳥図鑑?ソローキンさんに言われて来たんでしょう。ほら、私の机の上にあるわ。",
+  "voice": "Sarah",
+  "language_code": "ja"
+ },
+ "fal_request_id": "01a1d58c-7ea5-7853-a36e-0ecaca8d0c06",
+ "hash": "9762103ab749"
+}

@@ -1,0 +1,20 @@
+{
+ "key": "line.sorokin_oleg.waxwing_meet.9",
+ "lang": "ja",
+ "text": "北へ歩いて一時間、町を抜けてさらに先だ。ナナカマドと餌台がなければ、キレンジャクは近づいてこない。用心深い鳥だからね。",
+ "speaker": "sorokin_oleg",
+ "voice": "River",
+ "voice_id": "SAz9YHcvj6GT2YYXdXww",
+ "voice_design": null,
+ "direction": "[a retired scholar, calm, dry humour, slower, gentle]",
+ "model": "fal-ai/elevenlabs/tts/eleven-v3",
+ "request": {
+  "stability": 0.5,
+  "apply_text_normalization": "auto",
+  "text": "[a retired scholar, calm, dry humour, slower, gentle] 北へ歩いて一時間、町を抜けてさらに先だ。ナナカマドと餌台がなければ、キレンジャクは近づいてこない。用心深い鳥だからね。",
+  "voice": "River",
+  "language_code": "ja"
+ },
+ "fal_request_id": "01a1d58e-7bbe-70d2-9ff0-700c3965a296",
+ "hash": "edb881ffe03a"
+}

@@ -1,0 +1,20 @@
+{
+ "key": "line.sorokin_oleg.waxwing_wait.1",
+ "lang": "ja",
+ "text": "餌台は開けた場所に、ただし木のそばに立てなさい。餌を入れて、離れて、しゃがむ。そして待つ。鳥は時間をかけて人を試すものだ。",
+ "speaker": "sorokin_oleg",
+ "voice": "River",
+ "voice_id": "SAz9YHcvj6GT2YYXdXww",
+ "voice_design": null,
+ "direction": "[a retired scholar, calm, dry humour, slower, gentle]",
+ "model": "fal-ai/elevenlabs/tts/eleven-v3",
+ "request": {
+  "stability": 0.5,
+  "apply_text_normalization": "auto",
+  "text": "[a retired scholar, calm, dry humour, slower, gentle] 餌台は開けた場所に、ただし木のそばに立てなさい。餌を入れて、離れて、しゃがむ。そして待つ。鳥は時間をかけて人を試すものだ。",
+  "voice": "River",
+  "language_code": "ja"
+ },
+ "fal_request_id": "01a1d58e-e98c-78f3-ba27-c8ee6fdbe14c",
+ "hash": "6900e9b970f2"
+}

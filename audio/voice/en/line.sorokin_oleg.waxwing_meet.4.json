@@ -1,0 +1,20 @@
+{
+ "key": "line.sorokin_oleg.waxwing_meet.4",
+ "lang": "en",
+ "text": "And buy proper feed. The Gastronom has everything, from grain to dried rowan. The seeds from the vending machine are only good for pigeons.",
+ "speaker": "sorokin_oleg",
+ "voice": "River",
+ "voice_id": "SAz9YHcvj6GT2YYXdXww",
+ "voice_design": null,
+ "direction": "[a retired scholar, calm, dry humour, slower, gentle]",
+ "model": "fal-ai/elevenlabs/tts/eleven-v3",
+ "request": {
+  "stability": 0.5,
+  "apply_text_normalization": "auto",
+  "text": "[a retired scholar, calm, dry humour, slower, gentle] And buy proper feed. The Gastronom has everything, from grain to dried rowan. The seeds from the vending machine are only good for pigeons.",
+  "voice": "River",
+  "language_code": "en"
+ },
+ "fal_request_id": "01a1d58b-a0c1-7df3-ac4c-17201483560b",
+ "hash": "bb205dc95da7"
+}

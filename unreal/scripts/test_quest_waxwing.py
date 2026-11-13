@@ -12,8 +12,9 @@ import unreal
 
 WATCH = float(os.environ.get("MINUTES", "6")) * 60.0
 state = {"t": 0.0, "step": 0, "shots": 0, "wait_until": None, "next_report": 0.0}
-# the librarian's desk (quest_scenes.json library_guide: Unreal metres -240.74, 629.09, floor -35.46), seen from 1.5 m
-LIBRARY = "BugItGo -23930 62880 -3400 -25 170 0"
+# the issue desk's reader's ledge (quest_scenes.json library_guide: Unreal metres -241.10, 629.11, floor -35.46), seen by a
+# visitor standing in front of the desk (eyes 1.65 m)
+LIBRARY = "BugItGo -24224 62944 -3381 -30 -11 0"
 PLAN = [
     (12.0, "Quest.Reset", None),
     (12.2, "Quest.List", None),
