@@ -1861,7 +1861,9 @@ void ULyudEuropaSubsystem::SetOnEuropa(bool bOn)
 	}
 	if (!bOn && Music)
 	{
-		Music->FadeOut(3.f, 0.f);
+		// made without auto-destroy (SayPlanetLine): only faded, the component stayed on the world settings to the
+		// level's end; ReleaseLoop lets it go when the fade is over
+		ULyudSoundscapeSubsystem::ReleaseLoop(Music, 3.f);
 		Music = nullptr;
 	}
 	UE_LOG(LogTemp, Display, TEXT("EUROPA %s"), bOn ? TEXT("arrived on Europa") : TEXT("left Europa"));
