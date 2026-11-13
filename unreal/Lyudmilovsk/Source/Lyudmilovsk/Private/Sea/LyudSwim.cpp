@@ -323,6 +323,8 @@ void ULyudSwimComponent::SetState(ELyudSwimState New)
 	}
 	else if (UnderLoop)
 	{
+		// AttachLoop spawns it with bAutoDestroy off: it destroys itself when the fade ends (it stayed on the hero for good otherwise, one a dive)
+		UnderLoop->bAutoDestroy = true;
 		UnderLoop->FadeOut(0.4f, 0.f);
 		UnderLoop = nullptr;
 	}
