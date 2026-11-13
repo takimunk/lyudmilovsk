@@ -94,11 +94,24 @@ void ULyudEcosystem::Warm(const FDateTime& Now)
 	Refresh();
 }
 
+const ALyudSky* ULyudEcosystem::FindSky(const UWorld* World) const
+{
+	if (!World) return nullptr;
+	ALyudSky* Sky = SkyRef.Get();
+	if (!Sky || Sky->GetWorld() != World)
+	{
+		Sky = nullptr;
+		if (TActorIterator<ALyudSky> It(const_cast<UWorld*>(World)); It) Sky = *It;
+		SkyRef = Sky;
+	}
+	return Sky;
+}
+
 void ULyudEcosystem::Sync(const UWorld* World)
 {
 	if (!World) return;
 	FDateTime Now = UGameCalendar::NowIn(World);
-	if (TActorIterator<ALyudSky> It(const_cast<UWorld*>(World)); It) Now = It->ShownTime();
+	if (const ALyudSky* Sky = FindSky(World)) Now = Sky->ShownTime();
 	if (SyncedWorld.Get() != World)
 	{
 		// a new level: a New Game (the calendar starts again, earlier than the web) or a save without the web starts it
@@ -211,7 +224,7 @@ TMap<FName, float> ULyudEcosystem::GetBiteWeights(const FVector& Location) const
 	Clock.Daylight = 1.f;
 	if (World)
 	{
-		if (TActorIterator<ALyudSky> It(const_cast<UWorld*>(World)); It) Clock.Daylight = FMath::SmoothStep(-6.f, 6.f, It->SunAltitude());
+		if (const ALyudSky* Sky = FindSky(World)) Clock.Daylight = FMath::SmoothStep(-6.f, 6.f, Sky->SunAltitude());
 	}
 	for (int32 S = 0; S < FishNode.Num(); S++)
 	{

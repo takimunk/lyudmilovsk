@@ -160,7 +160,13 @@ namespace
 		{
 			return C;
 		}
-		if (TActorIterator<ALyudSky> It(World); It)
+		// (the web keeps the level's sky: asked every few seconds while a float is out)
+		const ULyudEcosystem* Web = ULyudEcosystem::Get(World);
+		if (const ALyudSky* Sky = Web ? Web->FindSky(World) : nullptr)
+		{
+			C.SunAltitude = Sky->SunAltitude();
+		}
+		else if (TActorIterator<ALyudSky> It(World); It)
 		{
 			C.SunAltitude = It->SunAltitude();
 		}
