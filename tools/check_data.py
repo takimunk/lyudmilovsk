@@ -499,6 +499,6 @@ if not VERBOSE and len(notes) > 20:
     print("note    ... %d more (-v)" % (len(notes) - 20))
 for p in problems:
     print("PROBLEM " + p)
-print("check_data: %d items, %d people, %d places, %d activities, %d festivals, %d quests, %d teleports: %d problems, %d notes"
-      % (len(items), len(people), len(all_place_ids), len(act_ids), len(fest), len(quests), len(tps), len(problems), len(notes)))
+print("check_data: %d problems, %d notes (%d items, %d people, %d places, %d activities, %d festivals, %d quests, %d teleports)"
+      % (len(problems), len(notes), len(items), len(people), len(all_place_ids), len(act_ids), len(fest), len(quests), len(tps)))
 sys.exit(1 if problems else 0)
