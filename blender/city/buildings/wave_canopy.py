@@ -553,7 +553,9 @@ def string_lights(B, rnd):
                 blob(B.detail, "CT_Opal", px, py, pz - 0.06, 0.05, 5)
             if k % 2 == 0 and pts:
                 px, py, pz = pts[len(pts) // 2]
-                B.lamp((px, py, pz - 0.12), lumens=170, colour="#FFD9A0", kind="lobby", radius=6.0, fixture=False)
+                # one real light per three big bulbs (the game lights the nearest 24 lamps of a building): wider, brighter
+                if k % 6 == 0:
+                    B.lamp((px, py, pz - 0.12), lumens=480, colour="#FFD9A0", kind="lobby", radius=11.0, fixture=False)
                 blob(B.detail, "CT_Opal", px, py, pz - 0.12, 0.09, 6)
             s += ds
             k += 1
