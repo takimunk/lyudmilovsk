@@ -85,12 +85,17 @@ def escarpment_y(x):
 
 
 def valley(x, y):
-    """The valley floor: a few metres over the sea, rising a little inland and into a ridge on the map's
-    inland edge."""
+    """The valley floor: a few metres over the sea, rising a little inland; behind the town the old dune country
+    (tools/east.py) stands on it."""
     h = LOW_Z + 0.006 * max(-x - 100.0, 0.0)
-    if x < -800.0:
-        h += ((-x - 800.0) / 500.0) ** 2 * 30.0
+    if x < -700.0:                                   # the old dune country between the town and Topi (tools/east.py)
+        return _east().lift(x, y, h)
     return h
+
+
+def _east():
+    import east
+    return east
 
 
 def spur(x, y):
@@ -620,19 +625,10 @@ def forest_cover(x, y):
     """0..1: the share of a forest tile's trees that stand at (x, y); 1 where the tiles' own rectangles are the wood.
     The woods with natural outlines are drawn here: the tiles there only say which wood grows where. The game reads
     it as Content/World/forest_cover.fcv (tools/forest_cover.py; AProceduralForest drops the trees it leaves out)."""
-    east = _east()
-    if east is not None and east.claims(x, y):
+    east = _east()                                   # the east and south-east (tools/east.py)
+    if east.claims(x, y):
         return east.wood(x, y)
     return _north().cover(x, y) if y > 1450.0 else 1.0
-
-
-@functools.lru_cache(maxsize=1)
-def _east():
-    try:
-        import east                                  # the east and south-east (the Topi thread's tools/east.py)
-    except ImportError:
-        return None
-    return east
 
 
 def forests():
@@ -670,9 +666,13 @@ def forests():
     FOREST_MIX.update(N.FOREST_MIX)
     for x, y, hx, hy, mix, density, z0, z1 in N.forests(_tiles):
         add(x, y, hx, hy, mix, z0, z1, density)
-    # the inland ridge closing the valley
-    for x, y, hx, hy in _tiles(X_MIN, -880.0, 400.0, 1480.0):
-        add(x, y, hx, hy, "old", LOW_Z + 4.0, 100.0)
+    # the old dune country behind the town (tools/east.py): the tiles only say where trees may stand and of what
+    # kind; east.wood() thins them into woods on the ridges, heath in the slacks and a front with no straight line
+    # in it. Old forest toward the town, dune pines and juniper toward Topi's sand, mixed where the two overlap.
+    for x, y, hx, hy in _tiles(-1160.0, -700.0, 400.0, _east().Y_NORTH):
+        add(x, y, hx, hy, "old", LOW_Z + 4.0, 100.0, 0.75)
+    for x, y, hx, hy in _tiles(X_MIN, -1040.0, 400.0, _east().Y_NORTH):
+        add(x, y, hx, hy, "dune", LOW_Z + 4.0, 100.0, 0.45)
     # the dune bank along the valley's beach
     # the town's street trees: an irregular row along each terrace, 12 m in front of its wall (docs/city_plan.md)
     for x, y, hx, hy, z0, z1 in _city().tree_strips():

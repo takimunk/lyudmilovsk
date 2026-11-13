@@ -101,12 +101,14 @@ def _anchors():
         if "upper" in cc:
             pts.append(("cable_top", cc["upper"]))
     pts += [("woods_inland", (-1000.0, 150.0)), ("woods_south", (-350.0, -700.0)), ("club_back", (-40.0, -120.0))]
+    # the track from the back of the town's upper terrace through the old dunes' pass to Topi's sand (tools/east.py)
+    pts += [("town_east", (-730.0, 905.0)), ("topi", (-1170.0, 905.0))]
     pts += list(W._north().ANCHORS.items())           # the North's trail (tools/north.py)
     return dict(pts)
 
 
 TRACKS = [("alley_end", "town"), ("alley_end", "woods_inland"), ("club_back", "woods_south"),
-          ("alley_end", "cable_top")] + list(W._north().TRACKS)
+          ("alley_end", "cable_top"), ("town_east", "topi")] + list(W._north().TRACKS)
 
 
 def _route(a, b, step=8.0):
