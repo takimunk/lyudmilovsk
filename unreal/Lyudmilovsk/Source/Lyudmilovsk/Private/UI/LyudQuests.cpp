@@ -409,6 +409,11 @@ void ULyudQuests::FinishStage(FLyudQuestProgress& P, const FLyudQuestDef& Def)
 	{
 		return;
 	}
+	// Called from outside an event (Quest.Advance, a stage set by hand): the rewards below report "get" events, and handling
+	// them right here could finish this same stage a second time or start a quest (Progress grows and P is left pointing
+	// at freed memory). They wait in the queue instead, as they do when a stage finishes inside HandleEvent.
+	const bool bOutsideEvent = !bHandling;
+	bHandling = true;
 	// a stage out of range (an old save, quests.json edited) finishes the nearest real one, so callers still move on
 	P.Stage = FMath::Clamp(P.Stage, 0, Def.Stages.Num() - 1);
 	const FLyudQuestStage& S = Def.Stages[P.Stage];
@@ -448,6 +453,15 @@ void ULyudQuests::FinishStage(FLyudQuestProgress& P, const FLyudQuestDef& Def)
 	for (const FName& Q : Starts)
 	{
 		Start(Q);
+	}
+	if (bOutsideEvent)
+	{
+		// P is not used from here on. "settle" is no game event and no objective waits for it: it only makes the queue run.
+		bHandling = false;
+		if (Queue.Num() > 0)
+		{
+			HandleEvent(TEXT("settle"), FString(), 0);
+		}
 	}
 }
 
