@@ -527,10 +527,12 @@ def wall_bays(i):
         return out
     if i == 0:                                          # W1: shop units, a stair every STAIR_EVERY
         for k, b in enumerate(full):
-            if (b["arc"] - a_first + 3 * bay) % STAIR_EVERY < bay * 0.99:
-                b["kind"] = "stair"
-            elif abs(b["mid"][1] - 905.0) < 30.0:
+            # the grand stair wins over a wall stair: a flight along the face would cut into the 20 m grand flight
+            # (its stair number is left unused: stairs() numbers W1's stairs by their slot, ids stay stable)
+            if abs(b["mid"][1] - 905.0) < 30.0:
                 b["kind"] = "grand"                     # the square opens onto the promenade
+            elif (b["arc"] - a_first + 3 * bay) % STAIR_EVERY < bay * 0.99:
+                b["kind"] = "stair"
             elif k % 3 == 1:
                 b["kind"] = "unit"
         _BAYS[i] = out
@@ -592,6 +594,7 @@ def stairs():
         bays = wall_bays(i)
         n = 0
         seen = set()
+        first_arc = next((b["arc"] for b in bays if b["mask"] >= 0.999), 0.0)
         for k, b in enumerate(bays):
             lower, upper = b["lower"], b["upper"]
             if b["kind"] == "sea_steps":
@@ -606,7 +609,8 @@ def stairs():
                             "bottom": _bay_point(b, -DWELLING_W / 2 + 0.6, 1.1, lower),
                             "top": _bay_point(b2, DWELLING_W / 2 - 0.6, -1.0, upper)})
             elif b["kind"] == "stair" and i == 0:
-                n += 1
+                # numbered by its slot in the STAIR_EVERY rhythm (wall_bays: a slot inside the grand stair has none)
+                n = int((b["arc"] - first_arc + 3 * BAY["W1"]) // STAIR_EVERY)
                 out.append({"id": "ST-W1-%02d" % n, "wall": "W1", "kind": "wall_stair", "width": 2.2, "bays": [b["id"]],
                             "bottom": _bay_point(b, -4.0, 1.1, lower), "top": _bay_point(b, 4.0, -1.0, upper)})
             elif b["kind"] == "grand" and i >= 0:
@@ -615,7 +619,9 @@ def stairs():
                     continue
                 seen.add((gy, b["wall"]))
                 grp = [c for c in bays if c["kind"] == "grand" and c.get("grand_y", 905.0) == gy]
-                c = grp[len(grp) // 2]
+                # the flight's middle as city_mesh builds it (between the two middle bays of an even group)
+                mid, _, c = _grand_centre(grp)
+                c = dict(c, mid=[mid[0], mid[1]])
                 run = (upper - lower) / 0.175 * 0.30
                 gid = "ST-AXIS-%s" % b["wall"] if gy == 905.0 else "ST-CASCADE-%s" % b["wall"]
                 out.append({"id": gid, "wall": b["wall"], "kind": "grand_stair", "width": GRAND_W.get(gy, 8.0) if i else 20.0,
