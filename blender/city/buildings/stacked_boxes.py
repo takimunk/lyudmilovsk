@@ -23,6 +23,8 @@ import math
 import random
 
 import furn_int3 as fu
+import interior_kit as kit
+import _homekit as hk
 from citykit import box, prism, Mesh, Facade, extrude_profile
 
 INFO = {
@@ -73,6 +75,7 @@ def sheared_bar(m, mat, x0, x1, ya, za, yb, zb, t):
 def build(B):
     rnd = random.Random(1967)
     m, d = B.m, B.detail
+    TERR = {}
 
     occ = set()
     for r in range(NR):
@@ -207,10 +210,12 @@ def build(B):
             B.railing([(x0 + e, y1 - e), (x0 + e, y0 + e)], zt, h=RAIL, post=2.0)
         if c == NC - 1:
             B.railing([(x1 - e, y0 + e), (x1 - e, y1 - e)], zt, h=RAIL, post=2.0)
+        TERR[(c, r, k)] = {"planter": False, "tree": None, "deck": None}
         # planter strip with turf
         if rnd.random() < 0.8:
             px0, px1 = x0 + 0.8, x1 - 0.8
             py0 = y0 + 0.9
+            TERR[(c, r, k)]["planter"] = True
             box(m, "CT_ConcreteDark", px0, px1, py0, py0 + 0.9, zt, zt + 0.45)
             m.face("CT_Grass", [(px0 + 0.08, py0 + 0.08, zt + 0.45), (px1 - 0.08, py0 + 0.08, zt + 0.45),
                                 (px1 - 0.08, py0 + 0.82, zt + 0.45), (px0 + 0.08, py0 + 0.82, zt + 0.45)])
@@ -218,9 +223,11 @@ def build(B):
             tx = rnd.uniform(x0 + 1.5, x1 - 1.5)
             ty = y0 + 1.35
             tree(d, tx, ty, zt + 0.45, rnd.uniform(1.2, 1.8))
+            TERR[(c, r, k)]["tree"] = (tx, ty)
         if rnd.random() < 0.5:
             wx0 = rnd.uniform(x0 + 0.6, x1 - 4.6)
             box(m, "CT_Wood", wx0, wx0 + 3.6, y1 - 2.4, y1 - 0.5, zt, zt + 0.07)
+            TERR[(c, r, k)]["deck"] = (wx0, wx0 + 3.6, y1 - 2.4, y1 - 0.5, zt + 0.07)
 
     # ------------------------------------------------------------- canyon decks, rails
     bridges = {}
@@ -370,16 +377,14 @@ def build(B):
                     B.facade_window(F, h[0], h[1], h[2], h[3], kind="stair", inset=0.12)
         # transom glass above the front door
         F = Facade((xa, 0.0), (xb, 0.0))
-        B.facade_window(F, 1.2, 3.4, 2.5, 2.7, kind="stair", inset=0.12) if False else None
         prism(m, "CT_Concrete", [(xa - 0.2, -0.5), (xb + 0.2, -0.5), (xb + 0.2, Y0), (xa - 0.2, Y0)], 2.7, zr + 0.15,
               top=True, bottom=True)
         m.face("CT_Floor", [(xa + 0.3, 0.3, 0.03), (xb - 0.3, 0.3, 0.03), (xb - 0.3, Y0 - 0.3, 0.03), (xa + 0.3, Y0 - 0.3, 0.03)])
         B.entrance(ent_of_canyon[j], ((xa + xb) / 2, 0.0, 0.0), 0.0, width=2.2, height=2.45, kind="street", leaves=2)
         B.spot("bench_%s" % ent_of_canyon[j], "bench", ((xa + xb) / 2 + 3.2, -0.6, 0.0), 0.0)
         # lobby furnishing (floor z 0.03, inner walls 0.3 thick): letter boxes on the left wall, a mat, a plant, a lamp
-        fu.mailboxes(B, fu.Fr(xa + 0.3, 0.3, 90.0, 0.03), 1.5, 0.95, cols=3, rows=3)
         fu.doormat(B, fu.Fr((xa + xb) / 2, 0.3, 0.0, 0.03), 0.0, -0.45)
-        fu.plant(B, xb - 0.75, Y0 - 0.7, 0.03, 0.9, "CT_PlasterRed")
+        _lobby(B, j, xa, xb)
         B.lamp(((xa + xb) / 2, Y0 / 2, 2.4), lumens=380, colour="#FFE0B0", kind="lobby", radius=4.5)
         box(d, "CT_Steel", (xa + xb) / 2 - 0.01, (xa + xb) / 2 + 0.01, Y0 / 2 - 0.01, Y0 / 2 + 0.01, 2.48, 2.7, faces="xXyY")
     # front yard planters with trees under each bay
@@ -392,6 +397,9 @@ def build(B):
         box(d, "CT_Wood", (x0 + x1) / 2 - 1.2, (x0 + x1) / 2 + 1.2, 0.0, 0.4, 0.0, 0.45)
         B.spot("bench_front_%d" % c, "bench", ((x0 + x1) / 2, -0.3, 0.0), 0.0)
 
+    _street_life(B, O, TERR)
+    for w_ in kit.check(B):
+        print("KIT boxes", w_)
     B.footprint = [(X0, -0.5), (bx0(NC - 1) + BW, -0.5), (bx0(NC - 1) + BW, 40.0), (X0, 40.0)]
     B.height = 28.0
     B.note("%d flats (boxes; %d duplexes), 3 canyons with stairs, 3 lift towers, %d bridges" % (len(B.flats), len(duplex_low), len(bridges)))
@@ -410,3 +418,88 @@ def tree(d, x, y, z, h):
         a, b = ring[k], ring[(k + 1) % 8]
         d.face("CT_Grass", [(a[0], a[1], zc), (b[0], b[1], zc), (x, y, zc + h * 0.55)])
         d.face("CT_Grass", [(b[0], b[1], zc), (a[0], a[1], zc), (x, y, zc - h * 0.12)])
+
+
+# ================================================================================================ interiors
+def _lobby(B, j, xa, xb):
+    """The three street lobbies (inner x xa+0.3..xb-0.3, y 0.3..2.7, floor 0.03, ceiling 2.7; the passage x +1.2..+3.4
+    from the street door to the canyon stair stays clear): letter boxes, a house board, a bench under the side window,
+    and one more thing that tells who lives here (a pram, a bike, a hat stand and a payphone)."""
+    z = 0.03
+    iw, ie, iy0, iy1 = xa + 0.3, xb - 0.3, 0.3, Y0 - 0.3
+    H = hk.Home(B, lambda x, y: iw + 0.02 < x < ie - 0.02 and iy0 + 0.02 < y < iy1 - 0.02)
+    f = H.f
+    tag = "ABC"[j]
+    f(hk.mailboxes, iw, 2.42, 90.0, z=z, cols=2, rows=5)
+    f(kit.notice_board, iw, 0.62, 90.0, z=z, w=0.55, zc=1.6, seed=60 + j)
+    bn = f(kit.bench, ie - 0.25, 1.4, 270.0, z=z, w=1.0, kind="gym")
+    f(kit.hat_stand, ie - 0.38, 0.62, 0.0, z=z)
+    f(kit.plant, ie - 0.45, 2.28, 0.0, z=z, kind=("fern", "cactus", "fern")[j], pot="CT_PlasterRed", h=0.6, seed=70 + j)
+    if j == 0:      # a pram under the west window, a radio on a shelf
+        _prop_at(B, hk.pram, iw + 0.5, 1.5, z, 90.0, mat="CT_PlasterBlue")
+        B.thing("lobby_%s_board" % tag, "board", (iw, 0.62, z + 1.6), 90.0, topic="lost")
+    elif j == 1:    # a bike leaning at the west wall
+        _prop_at(B, hk.bike, iw + 0.4, 1.5, z, 0.0, mat="CT_PlasterYellow")
+        B.thing("lobby_%s_board" % tag, "board", (iw, 0.62, z + 1.6), 90.0, topic="club")
+        f(kit.picture, ie, 0.62, 270.0, z=z, name="painting_sea_night", w=0.45, zc=1.9)
+    else:           # a payphone on the back wall, the house rules on the board
+        f(kit.wall_phone, xa + 0.95, iy1, 0.0, z=z)
+        B.thing("lobby_%s_board" % tag, "board", (iw, 0.62, z + 1.6), 90.0, topic="rules")
+        B.thing("lobby_%s_payphone" % tag, "machine", (xa + 0.95, iy1, z + 1.4), 0.0, what="payphone")
+        bw = f(kit.bench, iw + 0.25, 1.5, 90.0, z=z, w=1.2, kind="gym")
+        H.seat("lobby_%s_bench_w" % tag, bw)
+    H.seat("lobby_%s_bench" % tag, bn)
+    H.check("boxes-lobby-" + tag, overlaps=False)
+
+
+def _prop_at(B, fn, x, y, z, yaw, **kw):
+    """hk.pram / hk.bike stand on z = 0: draw one and lift the new faces by z."""
+    n0 = len(B.detail.verts)
+    r = fn(B, x, y, yaw, **kw)
+    B.detail.verts[n0:] = [(vx, vy, vz + z) for vx, vy, vz in B.detail.verts[n0:]]
+    return r
+
+
+def _street_life(B, O, TERR):
+    """Life on the stair-streets and the roof: on the lowest deck of every canyon a bench, a pot and a board; one roof
+    garden corner (a deck with a chess table, stools, a bench and planters)."""
+    rng = random.Random(8)
+    f = lambda fn, x, y, yaw=0.0, z=0.0, **kw: fn(B, x, y, z, yaw, **kw)
+    # ---- canyon decks at level 1 (z 3.0), the first row
+    for j in range(NC - 1):
+        for c, side in ((j, "E"), (j + 1, "W")):
+            if not (O(c, 0, 1) or O(c, 0, 0) and not O(c, 0, 1)):
+                continue
+            z = BH
+            xa = bx0(c) + BW if side == "E" else bx0(c) - WALK
+            xw = xa if side == "E" else xa + WALK            # the box wall the deck hangs on
+            if side == "E":
+                wall_x, yaw_in = bx0(c) + BW, 90.0
+            else:
+                wall_x, yaw_in = bx0(c), 270.0
+            y = ry0(0) + 3.6
+            b = f(kit.bench, wall_x + (0.22 if side == "E" else -0.22), y, yaw_in, z=z + 0.12, w=1.1, kind="gym")
+            tid = "canyon_%d%s_bench" % (j, side.lower())
+            s = b["seats"][0]
+            B.thing(tid, "seat", s[:3], s[3], height=round(s[2] - z - 0.12, 2))
+            f(kit.plant, wall_x + (0.3 if side == "E" else -0.3), ry0(0) + 2.5, 0.0, z=z + 0.12, kind="fern", pot="CT_PlasterYellow", h=0.7, seed=80 + j)
+            f(kit.notice_board, wall_x, ry0(0) + 4.6, yaw_in, z=z + 0.12, w=0.6, zc=1.6, seed=90 + j + (0 if side == "E" else 5))
+            B.thing("canyon_%d%s_board" % (j, side.lower()), "board", (wall_x, ry0(0) + 4.6, z + 1.7), yaw_in, topic="lost" if side == "E" else "club")
+    # ---- the roof garden corner: the street-most terrace with a timber deck
+    cands = [(r_ * 100 + abs(c_ - 1) + k_, (c_, r_, k_)) for (c_, r_, k_), t in TERR.items() if t["deck"] and r_ <= 3]
+    if not cands:
+        return
+    key = min(cands)[1]
+    t = TERR[key]
+    wx0, wx1, dy0, dy1, dz = t["deck"]
+    cx = (wx0 + wx1) / 2
+    ch = f(kit.chess_table, cx - 0.6, (dy0 + dy1) / 2, 0.0, z=dz)
+    f(kit.stool, cx - 0.6, (dy0 + dy1) / 2 - 0.7, 0.0, z=dz, h=0.45)
+    f(kit.stool, cx - 0.6, (dy0 + dy1) / 2 + 0.7, 0.0, z=dz, h=0.45)
+    bn = f(kit.bench, wx1 - 0.8, dy1 - 0.3, 0.0, z=dz, w=1.3, kind="park")
+    f(kit.plant, wx0 + 0.3, dy1 - 0.4, 0.0, z=dz, kind="palm", pot="CT_PlasterRed", h=1.2, seed=95)
+    f(kit.plant, wx1 - 0.3, dy0 + 0.35, 0.0, z=dz, kind="ficus", pot="CT_TileWhite", h=1.0, seed=96)
+    s = bn["seats"][0]
+    B.thing("roof_garden_bench", "seat", s[:3], s[3], height=round(s[2] - dz, 2))
+    B.thing("roof_garden_chess", "play", (cx - 0.6, (dy0 + dy1) / 2, dz + 0.78), 0.0, what="chess")
+    B.spot("roof_garden", "bench", (s[0], s[1], dz), s[3])

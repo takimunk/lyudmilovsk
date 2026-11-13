@@ -19,8 +19,10 @@ Material requests: none.
 import math
 import random
 
+import interior_kit as kit
 from citykit import box, prism, extrude_profile, DOOR_W, DOOR_H
 from _surrounds import add_surrounds
+import _homekit as hk
 
 INFO = {
     "name_ru": "Террасный дом у лестницы", "name_en": "Terrace Riser Housing",
@@ -105,11 +107,14 @@ def _slats(B, x0, x1, y, z0, z1, mat="CT_Wood", pitch=0.14):
 
 DOOR_COLOURS = ["CT_SteelRed", "CT_PlasterYellow", "CT_PlasterBlue", "CT_Wood", "CT_PlasterRed", "CT_PlasterPink"]
 # ---- per-plot variant parameters
+OPEN_SIDE = 1               # the maisonette that is open inside: +1 east
+RESIDENT = "astronomer"     # "astronomer" (telescope, star charts) | "seamstress" (sewing machine, fabrics)
+SHR = []                    # shrub positions of the gardens (x, y, z), so the garden furniture keeps off them
 SLAT = "CT_Wood"            # window screens (slat screens and sliding panels)
 SEED = 1978                 # shrubs and planters
 VARIANTS = {
     "P-RISER1": {},
-    "P-RISER2": {"SLAT": "CT_SteelWhite", "SEED": 2011,
+    "P-RISER2": {"SLAT": "CT_SteelWhite", "SEED": 2011, "RESIDENT": "seamstress",
                  "DOOR_COLOURS": ["CT_PlasterBlue", "CT_PlasterGreen", "CT_PlasterPink", "CT_Steel", "CT_PlasterYellow",
                                   "CT_Copper"]},
 }
@@ -125,6 +130,7 @@ def _door_dressing(B, x, y, z, colour):
 
 def build(B):
     rnd = random.Random(SEED)
+    del SHR[:]
     m = B.m
     # ---------------------------------------------------------------- the stair
     _stair(B)
@@ -186,7 +192,8 @@ def build(B):
                 B.facade_window(F_, win_x0 - x_lo, mid_ - 0.15 - x_lo, wz0, wz1, flat=fid, cols=2, rows=1)
                 B.facade_window(F_, mid_ + 0.15 - x_lo, win_x1 - x_lo, wz0, wz1, flat=fid, cols=1, rows=1)
                 B.entrance(eid, (dx, y0, f), 0.0, DOOR_W, DOOR_H, "flat_door")
-                _door_dressing(B, dx, y0, f, DOOR_COLOURS[(i + 2 * k + (0 if side == 1 else 3)) % len(DOOR_COLOURS)])
+                if not (k == 3 and side == OPEN_SIDE):       # (its canopy would poke 7 cm out of the open flat's floor slab)
+                    _door_dressing(B, dx, y0, f, DOOR_COLOURS[(i + 2 * k + (0 if side == 1 else 3)) % len(DOOR_COLOURS)])
                 # timber slat screen before part of the window; a coloured sliding panel before others
                 span = win_x1 - win_x0
                 if (i + k) % 3 != 1:
@@ -217,6 +224,7 @@ def build(B):
                     gy = rnd.uniform(y1 - 1.6, y1 - 0.9)
                     ok = True
                     _shrub(B, gx, gy, zt, rnd.uniform(0.3, 0.45), rnd)
+                    SHR.append((gx, gy, zt))
             # side (end) wall facade with a window
             ex0, ex1 = (XE, XE)
             if k < 3:
@@ -237,7 +245,10 @@ def build(B):
     for side in (1, -1):
         wx0, wx1 = (SX, WING_X) if side == 1 else (-WING_X, -SX)
         # solid body (floor slab thickened to a deep cantilever beam at the front)
-        box(m, "CT_Concrete", wx0, wx1, UPPER_Y0 + WALL, 18.0, UPPER_Z0 - 0.3, UPPER_Z1 - 0.25, faces="xXyY")
+        if side == OPEN_SIDE:
+            _open_body(B, wx0, wx1)
+        else:
+            box(m, "CT_Concrete", wx0, wx1, UPPER_Y0 + WALL, 18.0, UPPER_Z0 - 0.3, UPPER_Z1 - 0.25, faces="xXyY")
         box(m, "CT_Wood", wx0, wx1, UPPER_Y0, UPPER_Y0 + WALL, UPPER_Z0 - 0.3, UPPER_Z0 - 0.3, faces="")
         # soffit of the cantilever: timber ceiling under the overhang (faces down), y 12.8..15.04
         m.face("CT_Wood", [(wx0, UPPER_Y0, UPPER_Z0 - 0.3), (wx0, B_Y[3], UPPER_Z0 - 0.3), (wx1, B_Y[3], UPPER_Z0 - 0.3), (wx1, UPPER_Y0, UPPER_Z0 - 0.3)])
@@ -255,7 +266,7 @@ def build(B):
             u1 = u0 + (L - 1.6) / 4 - 0.5
             holes.append((u0, u1, UPPER_Z0 + 0.4, UPPER_Z0 + 2.0))
             wins.append((u0, u1))
-        Fu = B.facade((wx0, UPPER_Y0), (wx1, UPPER_Y0), UPPER_Z0, wall_z1, "CT_ConcreteWhite", holes=holes, depth=WALL, back=False)
+        Fu = B.facade((wx0, UPPER_Y0), (wx1, UPPER_Y0), UPPER_Z0, wall_z1, "CT_ConcreteWhite", holes=holes, depth=WALL, back=(side == OPEN_SIDE))
         for j, (u0, u1) in enumerate(wins):
             B.facade_window(Fu, u0, u1, UPPER_Z0 + 0.4, UPPER_Z0 + 2.0, flat=fid, cols=2, rows=1)
             if j % 2 == 0:
@@ -263,7 +274,7 @@ def build(B):
         # back facade (towards the upper terrace) with two windows
         p0, p1 = ((wx1, 18.0), (wx0, 18.0))
         hb = [(1.2, 3.0, UPPER_Z0 + 0.8, UPPER_Z0 + 1.9), (7.0, 8.8, UPPER_Z0 + 0.8, UPPER_Z0 + 1.9)]
-        Fb = B.facade(p0, p1, UPPER_Z0, wall_z1, "CT_ConcreteWhite", holes=hb, depth=WALL, back=False)
+        Fb = B.facade(p0, p1, UPPER_Z0, wall_z1, "CT_ConcreteWhite", holes=hb, depth=WALL, back=(side == OPEN_SIDE))
         for u0, u1, h0, h1 in hb:
             B.facade_window(Fb, u0, u1, h0, h1, flat=fid, cols=1, rows=1)
         # end wall with the door from the side deck
@@ -274,7 +285,7 @@ def build(B):
             pe0, pe1 = (-WING_X, 18.0), (-WING_X, UPPER_Y0)
             ud = 18.0 - 13.45
         Fe = B.facade(pe0, pe1, UPPER_Z0, wall_z1, "CT_ConcreteWhite",
-                      holes=[(ud - DOOR_W / 2, ud + DOOR_W / 2, UPPER_Z0, UPPER_Z0 + DOOR_H)], depth=WALL, back=False)
+                      holes=[(ud - DOOR_W / 2, ud + DOOR_W / 2, UPPER_Z0, UPPER_Z0 + DOOR_H)], depth=WALL, back=(side == OPEN_SIDE))
         B.entrance("u%s" % ("e" if side == 1 else "w"), (WING_X * side, 13.45, UPPER_Z0), 90.0 * side, DOOR_W, DOOR_H, "flat_door")
         # coloured canopy over the end door
         box(B.detail, "CT_SteelRed" if side == 1 else "CT_PlasterYellow", WING_X * side + (0 if side == 1 else -0.9) , WING_X * side + (0.9 if side == 1 else 0), 12.85, 14.05, UPPER_Z0 + DOOR_H + 0.12, UPPER_Z0 + DOOR_H + 0.2)
@@ -328,6 +339,11 @@ def build(B):
         box(m, "CT_ConcreteDark", sx, sx + 0.2, -0.3, 0.1, 0.0, 3.0, faces="xXyYZ")
     B.entrance("stair_bottom", (0.0, 0.0, 0.0), 0.0, 3.8, 3.0, "street")
     B.entrance("stair_top", (0.0, 18.0, 7.0), 180.0, 3.8, 3.0, "street")
+    _gardens(B)
+    _maisonette(B)
+    _stair_things(B)
+    for w_ in kit.check(B):
+        print("KIT riser", w_)
     B.footprint = [(-XE, -0.3), (XE, -0.3), (XE, 18.0), (-XE, 18.0)]
     B.height = UPPER_Z1 + 2.6
     B.note("stepped terrace housing: %d flats in 4 tiers + upper maisonettes; stair walkable (rise <= 0.17)" % len(B.flats))
@@ -372,3 +388,226 @@ def _roof_deck(B, x0, x1, z, side, rnd):
         box(B.detail, "CT_Wood", xx - 0.03, xx + 0.03, ya - 0.1, yb + 0.1, z + 2.5, z + 2.58)
     for yy in (ya, yb):
         box(B.detail, "CT_Wood", px0 - 0.1, px1 + 0.1, yy - 0.07, yy + 0.07, z + 2.42, z + 2.5)
+
+
+# ================================================================================================ interiors
+def _open_body(B, wx0, wx1):
+    """The east maisonette is hollow: floor slab (its top is the floor, z 9.33), the west end wall toward the stair
+    canyon, a jamb filler at the door corner. The three facades get their inner faces (back=True) where they are made."""
+    m = B.m
+    z0, z1 = UPPER_Z0 - 0.3, UPPER_Z1 - 0.25
+    box(m, "CT_Concrete", wx0, wx1, UPPER_Y0 + WALL, 18.0, z0, UPPER_Z0, faces="xXyYz")
+    m.face("CT_Floor", [(wx0 + WALL, UPPER_Y0 + WALL, UPPER_Z0), (wx1 - WALL, UPPER_Y0 + WALL, UPPER_Z0),
+                        (wx1 - WALL, 18.0 - WALL, UPPER_Z0), (wx0 + WALL, 18.0 - WALL, UPPER_Z0)])
+    # the west end wall (outside faces the stair canyon, inside the room)
+    box(m, "CT_Concrete", wx0, wx0 + WALL, UPPER_Y0, 18.0, UPPER_Z0, z1, faces="xyYZz")
+    box(m, "CT_Interior", wx0, wx0 + WALL, UPPER_Y0 + WALL, 18.0 - WALL, UPPER_Z0, z1, faces="X")
+    # jamb filler in the door corner (x 17.3..17.6, y 12.8..13.1)
+    box(m, "CT_Interior", wx1 - WALL, wx1, UPPER_Y0, UPPER_Y0 + WALL, UPPER_Z0, z1, faces="XY")
+    # plaster ceiling under the roof slab
+    B.detail.face("CT_Interior", [(wx0 + WALL, UPPER_Y0 + WALL, z1 - 0.004), (wx0 + WALL, 18.0 - WALL, z1 - 0.004),
+                                  (wx1 - WALL, 18.0 - WALL, z1 - 0.004), (wx1 - WALL, UPPER_Y0 + WALL, z1 - 0.004)])
+
+
+def _near_shrub(x, y, r=0.9):
+    return any(math.hypot(x - sx, y - sy) < r for sx, sy, _ in SHR)
+
+
+def _gardens(B):
+    """Life on the terrace gardens in front of every tier's flats: benches, tables with chairs, a chess table, bikes,
+    a pram, a washing line, pots at the doors."""
+    f = lambda fn, x, y, yaw=0.0, z=0.0, **kw: fn(B, x, y, z, yaw, **kw)
+    spec = {   # (tier, side): list of (kind, |x|)
+        (0, 1): [("bench", 5.5), ("table", 9.8), ("bike", 14.0), ("line", 17.0)],
+        (0, -1): [("bench", 6.0), ("chess", 10.0), ("pram", 14.5), ("line", 17.5)],
+        (1, 1): [("chess", 6.5), ("bench", 10.5), ("pram", 14.0), ("tubs", 17.0)],
+        (1, -1): [("table", 6.5), ("bench", 11.0), ("bike", 14.5), ("line", 17.5)],
+        (2, 1): [("bench", 5.5), ("table", 9.5), ("bike", 13.8), ("chess", 17.0)],
+        (2, -1): [("bench", 5.8), ("tubs", 9.0), ("table", 12.5), ("line", 17.0)],
+    }
+    n = 0
+    for (k, side), items in spec.items():
+        y0, y1 = B_Y[k], B_Y[k + 1]
+        zt = ZT[k]
+        for kind, ax in items:
+            x = ax * side
+            if kind == "bench":
+                y = y0 + 1.5
+                b = f(kit.bench, x, y, 0.0, z=zt, w=1.7, kind="park", solid=False)
+                s = b["seats"][0]
+                B.thing("garden_bench_t%d%s%d" % (k, "e" if side == 1 else "w", n), "seat", s[:3], s[3], height=round(s[2] - zt, 2))
+                B.spot("garden_bench_t%d%s" % (k, "e" if side == 1 else "w"), "bench", (s[0], s[1], zt), s[3])
+            elif kind == "table":
+                y = y0 + 2.2
+                t = f(kit.table, x, y, 0.0, z=zt, w=0.9, d=0.9, kind="steel")
+                f(kit.cup, x - 0.15, y, 0.0, z=zt + 0.75)
+                f(kit.teapot, x + 0.12, y + 0.1, 0.0, z=zt + 0.75)
+                c1 = f(kit.chair, x - 0.75, y, 90.0, z=zt, kind="tube", mat="CT_PlasterYellow")
+                c2 = f(kit.chair, x + 0.75, y, 270.0, z=zt, kind="tube", mat="CT_PlasterBlue")
+                s = c1["seats"][0]
+                B.thing("garden_table_t%d%s%d" % (k, "e" if side == 1 else "w", n), "seat", s[:3], s[3], height=round(s[2] - zt, 2))
+            elif kind == "chess":
+                y = y0 + 2.2
+                t = f(kit.chess_table, x, y, 0.0, z=zt)
+                c1 = f(kit.stool, x, y - 0.75, 0.0, z=zt, h=0.45)
+                c2 = f(kit.stool, x, y + 0.75, 0.0, z=zt, h=0.45)
+                B.thing("garden_chess_t%d%s" % (k, "e" if side == 1 else "w"), "play", (x, y, zt + 0.78), 0.0, what="chess")
+            elif kind == "bike":
+                _bike_at(B, x, y0 + 2.2, zt, 90.0)
+            elif kind == "pram":
+                _pram_at(B, x, y0 + 2.3, zt)
+            elif kind == "line":
+                _washing_line(B, x, y0 + 2.4, zt, side)
+            elif kind == "tubs":
+                for j, px in enumerate((x - 0.6, x, x + 0.6)):
+                    f(kit.plant, px, y0 + 1.9 + 0.4 * (j % 2), 0.0, z=zt, kind=("fern", "ficus", "cactus")[j], pot="CT_PlasterRed", h=0.8, seed=k * 7 + j)
+            n += 1
+    # pots and a mat at every flat door of tiers 0..3 (the doors are the flat_door entrances)
+    pots = []
+    for i, e in enumerate(B.entrances):
+        if e["kind"] != "flat_door" or e["id"].startswith("u"):
+            continue
+        x, y, z = e["pos"]
+        px = x + (0.95 if i % 2 else -0.95)
+        if any(abs(px - qx) < 1.0 and abs(y - qy) < 1.0 for qx, qy in pots):
+            px = x + (-0.95 if i % 2 else 0.95)
+        pots.append((px, y))
+        f(kit.plant, px, y - 0.45, 0.0, z=z, kind=("fern", "cactus", "ficus")[i % 3], pot=DOOR_COLOURS[i % len(DOOR_COLOURS)], h=0.65, seed=i)
+        f(kit.rug, x, y - 0.55, 0.0, z=z + 0.002, w=0.9, d=0.6, name="rug_%d" % (i % 8))
+
+
+def _bike_at(B, x, y, z, yaw):
+    p = kit._P(B, x, y, z, yaw, "bicycle")
+    p.kind = "prop"
+    R = 0.33
+    for yc in (-0.55, 0.55):
+        pts = [(0.0, yc + R * math.cos(2 * math.pi * k / 14), R + R * math.sin(2 * math.pi * k / 14)) for k in range(15)]
+        p.tube("CT_Rubber", pts, 0.04, 4)
+    p.rod("CT_SteelRed", (0.0, 0.55, R), (0.0, 0.05, 0.62), 0.03, 4)
+    p.rod("CT_SteelRed", (0.0, 0.05, 0.62), (0.0, -0.4, 0.66), 0.03, 4)
+    p.rod("CT_SteelRed", (0.0, 0.55, R), (0.0, 0.0, 0.3), 0.03, 4)
+    p.rod("CT_SteelRed", (0.0, -0.4, 0.66), (0.0, -0.55, R), 0.03, 4)
+    p.rod(kit.STEEL, (-0.28, -0.42, 0.99), (0.28, -0.42, 0.99), 0.025, 4)
+    p.box(kit.LAQ, -0.06, 0.06, 0.02, 0.24, 0.92, 0.96)
+    return p.done()
+
+
+def _pram_at(B, x, y, z):
+    return hk.pram(B, x, y, 0.0, mat="CT_PlasterYellow") if z == 0 else _lift(B, hk.pram, x, y, z)
+
+
+def _lift(B, fn, x, y, z):
+    """hk.pram/bike put things at z 0: draw them and move the new faces up by z."""
+    n0 = len(B.detail.verts)
+    r = fn(B, x, y, 0.0, mat="CT_PlasterYellow")
+    B.detail.verts[n0:] = [(vx, vy, vz + z) for vx, vy, vz in B.detail.verts[n0:]]
+    return r
+
+
+def _washing_line(B, x, y, z, side):
+    """Two posts and a line with a few cloths (detail)."""
+    d = B.detail
+    for px in (x - 1.4, x + 1.4):
+        box(d, "CT_Steel", px - 0.03, px + 0.03, y - 0.03, y + 0.03, z, z + 1.9)
+    box(d, "CT_Steel", x - 1.4, x + 1.4, y - 0.01, y + 0.01, z + 1.82, z + 1.84)
+    for j, (cx, col) in enumerate(((x - 0.9, "CT_PlasterRed"), (x - 0.3, "CT_TileWhite"), (x + 0.3, "CT_PlasterBlue"), (x + 0.95, "CT_PlasterYellow"))):
+        w = 0.34 + 0.08 * (j % 2)
+        h = 0.55 + 0.1 * (j % 3)
+        d.face(col, [(cx - w / 2, y - 0.012, z + 1.82 - h), (cx + w / 2, y - 0.012, z + 1.82 - h), (cx + w / 2, y - 0.012, z + 1.82), (cx - w / 2, y - 0.012, z + 1.82)])
+        d.face(col, [(cx + w / 2, y + 0.012, z + 1.82 - h), (cx - w / 2, y + 0.012, z + 1.82 - h), (cx - w / 2, y + 0.012, z + 1.82), (cx + w / 2, y + 0.012, z + 1.82)])
+
+
+def _stair_things(B):
+    """The public stair: mailboxes and boards at the foot, a payphone, a timetable; planters on the landings."""
+    f = lambda fn, x, y, yaw=0.0, z=0.0, **kw: fn(B, x, y, z, yaw, **kw)
+    zs = lambda y: 0.16 * y / GOING * 1.0       # stair level at y on flight 1 (rise 2.4 over 15 treads of 0.28)
+    z1_ = zs(1.6)
+    mb = f(hk.mailboxes, SX + 0.02, 1.7, 270.0, z=z1_ - 0.4, cols=4, rows=3)
+    nb = f(kit.notice_board, SX + 0.02, 3.0, 270.0, z=zs(3.0) - 0.3, w=1.0, zc=1.7, seed=51)
+    B.thing("stair_board_lost", "board", (SX, 3.0, zs(3.0) + 1.4), 270.0, topic="lost")
+    B.thing("stair_board_club", "board", (-SX, 3.2, zs(3.2) + 1.4), 90.0, topic="club")
+    f(kit.notice_board, -SX - 0.02, 3.2, 90.0, z=zs(3.2) - 0.3, w=0.9, zc=1.7, seed=52)
+    ph = f(kit.wall_phone, -SX - 0.02, 1.8, 90.0, z=zs(1.8) - 0.3)
+    B.thing("stair_payphone", "machine", (-SX, 1.8, zs(1.8) + 1.1), 90.0, what="payphone")
+
+
+def _maisonette(B):
+    """The east maisonette (flat 4-01), home of an amateur astronomer (or, in the second plot, a seamstress): a long
+    flat with the front door in the east wall corner, kitchen and dining table at that end, the living room with the
+    sofa and a record player in the middle, a desk and shelves, and the bed behind a wardrobe at the west end."""
+    z = UPPER_Z0
+    xi0, xi1, yi0, yi1 = SX + WALL, WING_X - WALL, UPPER_Y0 + WALL, 18.0 - WALL
+    ceil = UPPER_Z1 - 0.25
+    inside = hk.poly_test([(xi0, yi0), (xi1, yi0), (xi1, yi1), (xi0, yi1)])
+    H = hk.Home(B, lambda x, y: inside(x, y, 0.02))
+    f = H.f
+    seam = RESIDENT == "seamstress"
+    # ---- kitchen end (east): run along the back wall under the windows, dining table, mat at the door
+    f(kit.rug, 16.5, 13.7, 0.0, z=z + 0.003, w=1.0, d=0.7, name="rug_5")
+    f(kit.kitchen_unit, 15.8, yi1 - 0.02, 0.0, z=z, modules="fridge,cupboard,sink,stove", wall_cupboards=False)
+    f(kit.samovar, 16.3, yi1 - 0.3, 0.0, z=z + 0.9)
+    dt = f(kit.table, 15.2, 15.6, 0.0, z=z, w=1.3, d=0.85)
+    f(kit.plates, 15.0, 15.6, 0.0, z=z + 0.75, n=2)
+    f(kit.vase, 15.5, 15.6, 0.0, z=z + 0.75)
+    ch1 = f(kit.chair, 14.6, 16.3, 180.0, z=z, kind="wood", mat="CT_PlasterBlue")
+    ch2 = f(kit.chair, 15.8, 16.3, 180.0, z=z, kind="wood", mat="CT_PlasterYellow")
+    ch3 = f(kit.chair, 14.6, 14.9, 0.0, z=z, kind="wood", mat="CT_PlasterRed")
+    f(kit.chair, 15.8, 14.9, 0.0, z=z, kind="wood", mat="CT_PlasterGreen")
+    f(kit.wall_clock, xi1, 16.4, 270.0, z=z, zc=1.95, face="clock_1")
+    f(kit.picture, xi1, 15.2, 270.0, z=z, name="painting_still_life", w=0.5, zc=1.5)
+    f(kit.hat_stand, xi1 - 0.35, 14.3, 0.0, z=z)
+    # ---- the living room
+    f(kit.rug, 11.3, 15.4, 0.0, z=z + 0.002, w=3.0, d=2.3, name="rug_6")
+    sofa = f(kit.sofa, 11.3, yi1 - 0.55, 0.0, z=z, seats=3, mat="CT_PlasterGreen")
+    ct = f(kit.coffee_table, 11.3, 15.6, 0.0, z=z, w=1.0, d=0.55)
+    f(kit.newspaper, 11.1, 15.6, 10.0, z=z + 0.42, cellname="news_1")
+    f(kit.cup, 11.55, 15.55, 0.0, z=z + 0.42)
+    a1 = f(kit.armchair, 9.6, 15.5, 90.0, z=z, mat="CT_PlasterRed")
+    a2 = f(kit.armchair, 13.0, 15.5, 270.0, z=z, mat="CT_PlasterYellow")
+    f(kit.floor_lamp, 9.5, 16.9, 0.0, z=z)
+    rp_c = f(kit.table, 13.0, yi1 - 0.25, 0.0, z=z, w=0.9, d=0.4, h=0.55)
+    rp = f(kit.record_player, 13.0, yi1 - 0.25, 0.0, z=z + 0.55)
+    f(kit.plant, 13.3, 13.95, 0.0, z=z, kind="monstera", pot="CT_PlasterBlue", h=1.1, seed=3)
+    f(kit.plant, 7.0, 13.7, 0.0, z=z, kind="ficus", pot="CT_PlasterRed", h=1.2, seed=4)
+    # ---- the hobby corner at the front window (astronomer: a telescope; seamstress: the machine and dress forms)
+    if seam:
+        hb = f(kit.sewing_table, 11.4, 13.75, 0.0, z=z)
+        hs = f(kit.chair, 11.4, 14.4, 0.0, z=z, kind="wood", mat="CT_PlasterPink")
+        B.thing("home_sewing_machine", "craft", hb["pos"][:2] + (z + 0.85,), 0.0, what="sewing_machine")
+    else:
+        hb = f(kit.telescope, 11.4, 13.95, 0.0, z=z)
+        B.thing("home_telescope", "machine", hb["pos"][:2] + (z + 1.2,), 0.0, what="telescope")
+    # ---- study (middle-west): desk under the back wall, shelves, charts
+    dk = f(kit.office_desk, 7.4, yi1 - 0.5, 180.0, z=z, w=1.3, d=0.6, typewriter_on=not seam, papers=True, phone=False, seed=5)
+    dc = f(kit.chair, 7.4, yi1 - 1.15, 180.0, z=z, kind="wood", mat="CT_PlasterYellow")
+    f(kit.lamp_green, 6.9, yi1 - 0.5, 180.0, z=z + 0.75)
+    f(kit.globe, 7.9, yi1 - 0.5, 0.0, z=z + 0.75)
+    sh1 = f(kit.bookshelf, 5.6, yi1, 0.0, z=z, w=1.0, h=1.9, levels=5, topic="art" if seam else "sun", seed=21)
+    sh2 = f(kit.bookshelf, 4.5, yi1, 0.0, z=z, w=1.0, h=1.9, levels=5, topic="science", seed=22)
+    f(kit.poster, 8.2, yi0, 180.0, z=z, name="poster_sun_1" if not seam else "fabric_2", w=0.6, zc=1.6)
+    f(kit.poster, 3.7, yi0, 180.0, z=z, name="chart_calendar" if not seam else "fabric_4", w=0.6, zc=1.6)
+    # ---- the bed at the west end, behind a wardrobe and a screen
+    bd = f(kit.bed, xi0 + 1.1, 15.7, 90.0, z=z, size="double", blanket="CT_PlasterBlue")
+    f(kit.bedside_table, xi0 + 0.3, 14.55, 90.0, z=z, lamp=True)
+    f(kit.bedside_table, xi0 + 0.3, 16.85, 90.0, z=z, lamp=True)
+    f(kit.wardrobe, 4.0, yi0, 180.0, z=z, w=1.1)
+    f(kit.mirror, xi0, 17.4, 90.0, z=z, zc=1.45, w=0.5, h=0.9)
+    f(kit.rug, 3.9, 15.7, 90.0, z=z + 0.002, w=1.8, d=2.4, name="rug_3")
+    # ---- lights: four pendants
+    for x, y in ((4.2, 15.7), (8.4, 15.5), (11.3, 15.4), (15.2, 15.6)):
+        kit.pendant(B, x, y, ceil, drop=0.45, light=True, lumens=450, colour="#FFE2B8", radius=6.0)
+    # ---- things
+    B.thing("home_bed", "bed", bd["pos"][:2] + (z + 0.5,), bd["yaw"], height=0.5, rest="private")
+    H.seat("home_sofa", sofa, 1)
+    H.seat("home_armchair_red", a1)
+    H.seat("home_armchair_yellow", a2)
+    H.seat("home_dining_chair", ch1)
+    H.seat("home_desk_chair", dc)
+    B.thing("home_record_player", "machine", rp["pos"][:2] + (z + 0.7,), 0.0, what="record_player")
+    B.thing("home_shelf_main", "shelf", sh1["pos"][:2] + (z + 1.3,), 180.0, topic="art" if seam else "sun")
+    B.thing("home_shelf_science", "shelf", sh2["pos"][:2] + (z + 1.3,), 180.0, topic="science")
+    B.thing("home_board_chart", "board", (8.2, yi0, z + 1.6), 180.0, topic="view")
+    B.thing("home_board_calendar", "board", (3.7, yi0, z + 1.6), 180.0, topic="club")
+    B.thing("home_picture", "board", (xi1, 15.2, z + 1.5), 270.0, topic="painting")
+    B.thing("home_paper", "take", (11.1, 15.6, z + 0.45), 10.0, item="daily_paper")
+    H.check("riser-maisonette", overlaps=False)

@@ -19,7 +19,8 @@ import math
 import random
 
 from citykit import box, prism, ring, DOOR_W, DOOR_H, Facade, Mesh, wall_with_holes
-from furn_int2 import Furn
+import interior_kit as kit
+import _homekit as hk
 
 INFO = {
     "name_ru": "Дом-мост (балочная башня)", "name_en": "Stacked Beam Tower",
@@ -129,7 +130,6 @@ def bar(B, rect, z0, storeys, axis, mat, first_storey, cores, cnt, soffit="CT_Co
                 box(lm, "CT_ConcreteDark", 0, L, -0.05, 0.22, zz - 0.22, zz + 0.22)
         B.m.extend(F2.apply(lm))
         lm2 = Mesh()
-        box(lm2, "CT_ConcreteDark", -0.0, L, -0.05, 0.3, z1 - T - 0.25, z1 - T + 0.02) if False else None
     return z1
 
 
@@ -138,43 +138,166 @@ def _ov(a, b):
 
 
 def _furnish_lobby(B, lx0, lx1, ly0, ly1, lh):
-    """Round 2: lobby (inner x -6.7..6.7, y 3.3..14.7, ceiling 4.2): reception dressing, mailboxes, benches, plants, lamps."""
-    f = Furn(B)
-    d = B.detail
-    W = "#FFE0B8"
+    """The main lobby as the hall of a big house (inner x -6.7..6.7, y 3.3..14.7, ceiling 4.2): reception desk with
+    pigeonholes, mailboxes, house boards on the walls and the core faces, benches under the windows, a waiting corner,
+    a chess table, a pram and a bike, plants, a radio. Six lamps as before (the building's only lobby lights)."""
     ix0, ix1, iy0, iy1 = lx0 + 0.3, lx1 - 0.3, ly0 + 0.3, ly1 - 0.3
-    # reception desk: fascia, monitor, bell, parcels, a lamp; the clerk's chair behind
-    box(d, "CT_SteelRed", 3.25, 6.35, 12.17, 12.2, 0.15, 0.95, faces="y")
-    box(d, "CT_Steel", 3.7, 4.2, 12.55, 12.9, 1.14, 1.45)
-    box(d, "CT_Frame", 3.65, 4.25, 12.58, 12.62, 1.2, 1.5)
-    f.cup(5.6, 12.4, 1.14, mat="CT_PlasterYellow", h=0.06)
-    f.cup(5.95, 12.55, 1.14, mat="CT_TileWhite", h=0.12)
-    box(d, "CT_Wood", 4.6, 5.1, 12.6, 12.9, 1.14, 1.28)
-    f.chair(4.8, 13.7, yaw=0.0, seat="CT_PlasterRed")
-    f.shelf(5.85, 14.5, w=1.3, d=0.35, h=2.0, yaw=0.0, rows=4, seed=3)                    # pigeonholes behind
-    # mailboxes (the residents' post) on the east wall between the windows
-    for r in range(6):
-        for c in range(4):
-            box(d, ("CT_Steel", "CT_Aluminium", "CT_SteelRed")[(r + c) % 3], 6.62, 6.7, 8.2 + c * 0.4, 8.2 + c * 0.4 + 0.36, 0.9 + r * 0.2, 0.9 + r * 0.2 + 0.17, faces="x")
-    f.panel(ix0, 9.0, 1.7, 1.6, 1.0, 90.0, mat="CT_PlasterGreen", frame="CT_Wood")        # notice board on the west wall
-    f.bench(-6.2, 9.0, yaw=90.0, w=1.6, back=False)
-    B.spot("lobby_bench_n", "bench", (-6.2, 9.0, 0.0), 90.0)
-    f.bench(-6.2, 13.6, yaw=90.0, w=1.4, back=False)
-    B.spot("lobby_bench_nw", "bench", (-6.2, 13.6, 0.0), 90.0)
-    # lift: call button, floor indicator, a carpet runner, doormat, plants
-    box(d, "CT_Steel", 1.5, 1.6, 6.1, 6.15, 1.0, 1.3)
-    box(d, "CT_SteelRed", 1.53, 1.57, 6.07, 6.1, 1.1, 1.14)
-    box(d, "CT_PlasterRed", -1.0, 1.0, 3.3, 6.05, 0.0, 0.012, faces="Z")
-    box(d, "CT_PlasterGrey", -1.1, 1.1, 3.3, 4.2, 0.012, 0.024, faces="Z")
-    for px, py, pot in ((-3.0, 3.9, "CT_PlasterRed"), (3.0, 3.9, "CT_TileWhite"), (-6.1, 5.4, "CT_TileWhite"),
-                        (6.0, 6.0, "CT_PlasterRed"), (-3.2, 14.2, "CT_PlasterRed"), (6.1, 14.3, "CT_TileWhite")):
-        f.plant(px, py, h=1.9, pot=pot)
-    f.border(ix0, ix1, iy0, iy1, w=0.4, mat="CT_ConcreteDark")
-    for seg in (((ix0, iy1), (ix0, iy0)), ((ix0, iy0), (-1.1, iy0)), ((1.1, iy0), (ix1, iy0)), ((ix1, iy0), (ix1, iy1)),
-                ((ix1, iy1), (ix0, iy1))):
-        f.skirting(list(seg), h=0.14)
-    for x, y in ((-4.2, 5.0), (4.2, 5.0), (0.0, 4.6), (-4.4, 11.5), (4.8, 10.0), (0.0, 13.2)):
-        B.lamp((x, y, lh - 0.3), lumens=800, colour=W, kind="public", radius=7)
+    CORE = (-2.5, 2.5, 6.15, 11.5)
+
+    def inside(x, y):
+        return (ix0 < x < ix1 and iy0 < y < iy1 and not (CORE[0] - 0.02 < x < CORE[1] + 0.02 and CORE[2] - 0.02 < y < CORE[3] + 0.02))
+    H = hk.Home(B, inside)
+    f = H.f
+    W = "#FFE0B8"
+    # ---- entrance: runner and mat, benches under the front windows, boards and a clock between them
+    f(kit.rug, 0.0, 4.9, 0.0, w=1.7, d=3.1, name="rug_0")
+    f(kit.rug, 0.0, 3.75, 0.0, w=1.3, d=0.8, name="rug_5")
+    bw = f(kit.bench, -5.0, 4.5, 0.0, w=2.0, kind="park", solid=True)
+    be = f(kit.bench, 5.0, 4.5, 0.0, w=2.0, kind="park", solid=True)
+    f(kit.plant, -3.0, 4.2, 0.0, kind="palm", pot="CT_PlasterRed", h=1.7, seed=11)
+    f(kit.plant, 3.0, 3.9, 0.0, kind="ficus", pot="CT_TileWhite", h=1.6, seed=12)
+    f(kit.picture, -6.68, 5.8, 90.0, name="painting_sea_storm", w=0.7, zc=1.8)
+    # ---- the lift front (wood cladding on the core, y 6.15): sign, call button, clock
+    f(kit.sign_plate, 0.0, 6.14, 0.0, name="sign_quiet", w=0.7, zc=2.9, hang=False)
+    f(kit.wall_clock, 1.6, 6.14, 0.0, zc=2.6, face="clock_2")
+    box(B.detail, "CT_Steel", 1.5, 1.6, 6.1, 6.15, 1.0, 1.3)
+    box(B.detail, "CT_SteelRed", 1.53, 1.57, 6.07, 6.1, 1.1, 1.14)
+    f(kit.fire_extinguisher, -1.7, 6.14, 0.0)
+    # ---- west side: waiting corner, boards, benches, chess
+    f(kit.rug, -4.4, 7.4, 0.0, w=2.6, d=2.0, name="rug_2")
+    a1 = f(kit.armchair, -5.4, 7.4, 90.0, mat="CT_PlasterGreen")
+    a2 = f(kit.armchair, -3.4, 7.4, 270.0, mat="CT_PlasterRed")
+    f(kit.coffee_table, -4.4, 7.4, 90.0, w=0.8, d=0.5)
+    f(kit.newspaper, -4.4, 7.3, 0.0, z=0.42, cellname="news_0")
+    f(kit.cup, -4.4, 7.6, 0.0, z=0.42)
+    f(kit.floor_lamp, -5.9, 6.4, 0.0)
+    bn = f(kit.bench, -6.35, 9.0, 90.0, w=1.5, kind="park")
+    f(kit.notice_board, -6.68, 9.0, 90.0, w=1.2, zc=1.75, seed=41)
+    f(kit.wall_clock, -6.68, 9.0, 90.0, zc=2.75, face="clock_1")
+    bnw = f(kit.bench, -6.35, 13.6, 90.0, w=1.4, kind="park")
+    ct = f(kit.chess_table, -4.4, 12.2, 0.0)
+    c1 = f(kit.chair, -4.4, 11.45, 180.0, kind="wood", mat="CT_PlasterBlue")
+    c2 = f(kit.chair, -4.4, 12.95, 0.0, kind="wood", mat="CT_PlasterYellow")
+    f(kit.plant, -3.2, 13.8, 0.0, kind="monstera", pot="CT_PlasterBlue", h=1.3, seed=13)
+    f(kit.notice_board, -5.95, 14.68, 0.0, w=0.9, zc=1.7, seed=42)
+    # ---- core faces: house rules west, a map and a bookshelf, the swap shelf north
+    rules = f(kit.notice_board, -2.52, 9.0, 270.0, w=1.0, zc=1.6, seed=43)
+    f(kit.sign_plate, -2.52, 9.0, 270.0, name="sign_quiet", w=0.5, zc=2.45)
+    f(kit.wall_map, 2.52, 9.0, 90.0, w=1.5, h=1.1, zc=1.7, name="map_town")
+    f(kit.poster, 2.52, 7.6, 90.0, name="travel_2", w=0.6, zc=1.7)
+    f(kit.poster, 2.52, 10.4, 90.0, name="travel_4", w=0.6, zc=1.7)
+    sh = f(kit.bookshelf, 0.0, 11.52, 180.0, w=1.2, h=1.8, levels=5, topic="local", seed=15)
+    ph = f(kit.wall_phone, -1.5, 11.52, 180.0)
+    # ---- reception: desk with the clerk's chair, pigeonholes behind, a till lamp and a radio
+    rd = f(kit.reception_desk, 4.8, 12.6, 0.0, w=3.0, front="CT_SteelRed")
+    ck = f(kit.chair, 4.8, 13.45, 0.0, kind="wood", mat="CT_PlasterRed")
+    f(kit.telephone, 3.7, 12.9, 200.0, z=1.1)
+    f(kit.radio, 5.9, 12.95, 180.0, z=1.1)
+    f(kit.cup, 5.4, 12.5, 0.0, z=1.1)
+    f(kit.table_lamp, 4.3, 12.85, 0.0, z=1.1, shade="CT_PlasterGreen")
+    f(kit.lockers, 5.85, 14.68, 0.0, n=3, mat="CT_PlasterGreen", solid=False)
+    # ---- east side: mailboxes and the board between the windows, prams and bikes, a visitors' table
+    f(hk.mailboxes, 6.68, 9.0, 270.0, cols=6, rows=5)
+    hk.pram(B, 6.0, 5.6, 80.0, mat="CT_PlasterBlue")
+    hk.bike(B, 6.3, 7.0, 0.0)
+    f(kit.hat_stand, 3.6, 5.4, 0.0)
+    f(kit.plant, 6.0, 10.4, 0.0, kind="fern", pot="CT_PlasterYellow", h=1.0, seed=14)
+    f(kit.plant, 3.4, 11.0, 0.0, kind="ficus", pot="CT_PlasterGreen", h=1.5, seed=16)
+    f(kit.magazine_rack, 0.0, 14.68, 0.0, w=0.9)
+    # ---- lights: the building's six lobby lamps (pendants with a real lamp)
+    for x, y, lm in ((-4.2, 5.0, 800), (4.2, 5.0, 800), (0.0, 4.6, 800), (-4.4, 11.5, 800), (4.8, 10.0, 800), (0.0, 13.2, 800)):
+        kit.pendant(B, x, y, lh, drop=0.3, light=True, lumens=lm, colour=W, radius=7.0, kind="cone")
+    # ---- spots (ids kept) on the new seats and desk
+    B.spot("lobby_bench_n", "bench", bn["seats"][0][:2] + (0.0,), bn["seats"][0][3])
+    B.spot("lobby_bench_nw", "bench", bnw["seats"][0][:2] + (0.0,), bnw["seats"][0][3])
+    B.spot("lobby_bench_w", "bench", bw["seats"][0][:2] + (0.0,), bw["seats"][0][3])
+    B.spot("lobby_bench_e", "bench", be["seats"][0][:2] + (0.0,), be["seats"][0][3])
+    B.spot("lobby_counter", "counter", rd["customer"][:2] + (0.0,), 180.0)
+    # ---- things
+    H.seat("lobby_bench_west", bw)
+    H.seat("lobby_bench_east", be)
+    H.seat("lobby_bench_wall", bn)
+    H.seat("lobby_bench_corner", bnw)
+    H.seat("lobby_armchair_green", a1)
+    H.seat("lobby_armchair_red", a2)
+    H.seat("lobby_chess_chair", c1)
+    H.seat("lobby_clerk_chair", ck)
+    B.thing("lobby_reception", "counter", rd["on"][:3], 180.0, role="concierge", service="reception")
+    B.thing("lobby_chess", "play", ct["pos"][:2] + (0.78,), 0.0, what="chess")
+    B.thing("lobby_board_lost", "board", (-6.68, 9.0, 1.75), 90.0, topic="lost")
+    B.thing("lobby_board_club", "board", (-5.95, 14.65, 1.7), 0.0, topic="club")
+    B.thing("lobby_board_rules", "board", (-2.5, 9.0, 1.6), 270.0, topic="rules")
+    B.thing("lobby_board_map", "board", (2.5, 9.0, 1.7), 90.0, topic="view")
+    B.thing("lobby_picture_storm", "board", (-6.66, 5.8, 1.8), 90.0, topic="painting")
+    B.thing("lobby_swap_shelf", "shelf", sh["pos"][:2] + (1.3,), 180.0, topic="local")
+    B.thing("lobby_magazines", "shelf", (0.0, 14.5, 1.0), 0.0, topic="travel")
+    B.thing("lobby_payphone", "machine", ph["pos"][:2] + (1.4,), 180.0, what="payphone")
+    B.thing("lobby_radio", "machine", (5.9, 12.95, 1.25), 180.0, what="jukebox")
+    B.thing("lobby_paper", "take", (-4.4, 7.3, 0.45), 0.0, item="daily_paper")
+    B.thing("lobby_lift", "door", (0.0, 6.14, 1.2), 0.0, to="roof")
+    H.check("beam-lobby")
+
+
+def _furnish_gallery(B, z=32.4):
+    """The top gallery (inner x -4.18..4.18, y 3.32..29.68, floor 32.4, glazed on both long sides and at both ends):
+    telescopes at the south end, wall benches facing the windows, pictures on the piers, a chess table, plants."""
+    def inside(x, y):
+        return -4.18 < x < 4.18 and 3.32 < y < 29.68
+    H = hk.Home(B, inside)
+    f = H.f
+    # pictures and charts on the piers between the windows (piers y 5.6..6.4, 8.6..9.4 ... on both walls)
+    piers = [6.0 + 3.0 * k for k in range(8)]
+    cells = ["map_coast", "chart_birds", "painting_sea_calm", "map_town", "poster_birds_1", "painting_sea_night",
+             "chart_calendar", "painting_lighthouse"]
+    for k, py in enumerate(piers):
+        f(kit.picture if cells[k].startswith("painting") else kit.poster, 4.17, py, 270.0, z=z, name=cells[k], w=0.55, zc=1.6)
+        c2 = cells[(k + 3) % 8]
+        f(kit.picture if c2.startswith("painting") else kit.poster, -4.17, py, 90.0, z=z, name=c2, w=0.55, zc=1.6)
+    # benches facing the windows, pairs between plants
+    benches = []
+    for k, by in enumerate((8.0, 12.0, 16.0 + 0.0, 20.0, 24.0, 27.5)):
+        for sx, yw in ((3.55, 90.0), (-3.55, 270.0)):
+            if k == 2:
+                continue
+            b = f(kit.bench, sx, by, yw, z=z, w=2.0, kind="park", solid=True)
+            benches.append(b)
+    f(kit.plant, 3.35, 10.0, 0.0, z=z, kind="palm", pot="CT_PlasterRed", h=1.8, seed=21)
+    f(kit.plant, -3.35, 10.0, 0.0, z=z, kind="palm", pot="CT_PlasterRed", h=1.8, seed=22)
+    f(kit.plant, 3.55, 22.0, 0.0, z=z, kind="ficus", pot="CT_TileWhite", h=1.7, seed=23)
+    f(kit.plant, -3.55, 22.0, 0.0, z=z, kind="ficus", pot="CT_TileWhite", h=1.7, seed=24)
+    f(kit.plant, 3.2, 4.2, 0.0, z=z, kind="fern", pot="CT_PlasterYellow", h=1.0, seed=25)
+    f(kit.plant, -3.2, 29.0, 0.0, z=z, kind="fern", pot="CT_PlasterYellow", h=1.0, seed=26)
+    # the south end: two telescopes on the glass, a rug
+    f(kit.rug, 0.0, 5.0, 0.0, z=z, w=2.6, d=2.2, name="rug_round_0", round=True)
+    t1 = f(kit.telescope, -1.5, 4.5, 0.0, z=z)
+    t2 = f(kit.telescope, 1.5, 4.5, 0.0, z=z)
+    # the north end: binoculars on a stand, a reading table with newspapers
+    t3 = f(kit.telescope, 0.0, 29.0, 180.0, z=z)
+    f(kit.rug, 0.0, 26.0, 0.0, z=z, w=2.4, d=2.4, name="rug_round_1", round=True)
+    ct = f(kit.chess_table, 0.0, 26.0, 0.0, z=z)
+    c1 = f(kit.chair, 0.0, 25.25, 180.0, z=z, kind="wood", mat="CT_PlasterBlue")
+    c2 = f(kit.chair, 0.0, 26.75, 0.0, z=z, kind="wood", mat="CT_PlasterRed")
+    # the middle: a long table of guide books with a lamp, near the view spot but clear of it
+    for y in (6.0, 11.0, 16.0, 21.0, 26.0, 29.0):
+        kit.pendant(B, 0.0, y, z + 3.2, drop=0.4, light=True, lumens=700, colour="#FFE8C8", radius=8.0, kind="opal")
+    H.seat("gallery_bench_e1", benches[0])
+    H.seat("gallery_bench_w1", benches[1])
+    H.seat("gallery_bench_e2", benches[2])
+    H.seat("gallery_bench_w2", benches[3])
+    H.seat("gallery_bench_e3", benches[6])
+    H.seat("gallery_bench_w3", benches[7])
+    H.seat("gallery_chess_chair", c1)
+    B.thing("gallery_telescope_1", "machine", t1["pos"][:2] + (z + 1.2,), 0.0, what="telescope")
+    B.thing("gallery_telescope_2", "machine", t2["pos"][:2] + (z + 1.2,), 0.0, what="telescope")
+    B.thing("gallery_binoculars", "machine", t3["pos"][:2] + (z + 1.2,), 180.0, what="binoculars")
+    B.thing("gallery_chess", "play", ct["pos"][:2] + (z + 0.78,), 0.0, what="chess")
+    B.thing("gallery_board_coast", "board", (4.17, 6.0, z + 1.6), 270.0, topic="view")
+    B.thing("gallery_board_birds", "board", (4.17, 9.0, z + 1.6), 270.0, topic="view")
+    B.thing("gallery_board_town", "board", (-4.17, 15.0, z + 1.6), 90.0, topic="view")
+    B.thing("gallery_picture_sea", "board", (4.17, 12.0, z + 1.6), 270.0, topic="painting")
+    B.thing("gallery_picture_night", "board", (-4.17, 21.0, z + 1.6), 90.0, topic="painting")
+    B.thing("gallery_picture_lighthouse", "board", (4.17, 27.0, z + 1.6), 270.0, topic="painting")
+    H.check("beam-gallery")
 
 
 def build(B):
@@ -200,7 +323,6 @@ def build(B):
     for sx in (-11.0, 11.0):
         slab_box(B.m, sx - 1.2, sx + 1.2, 7.0, 11.0, 0.0, z3b, top="CT_Concrete", bot="CT_ConcreteDark")
     slab_box(B.m, -0.9, 0.9, 22.0, 27.0, z2b + 6, z4b, top="CT_Concrete", bot="CT_ConcreteDark")
-    slab_box(B.m, -3.2, 3.2, 20.0, 28.0, z2b + 6, z2b + 6.0 + 0.0001) if False else None
     # cores with stair slits
     for n, cx, cy, top in cores:
         box(B.m, "CT_Concrete", cx - R, cx + R, cy - R, cy + R, 0.0, top, faces="xXyYz")
@@ -247,8 +369,7 @@ def build(B):
     box(B.m, "CT_Concrete", lx0 - 0.4, lx1 + 0.4, ly0 - 1.0, ly1 + 0.4, lh, lh + 0.4, faces="xXyYZ")
     box(B.m, "CT_ConcreteDark", lx0 - 0.4, lx1 + 0.4, ly0 - 1.0, ly1 + 0.4, lh, lh + 0.4, faces="z")
     # ceiling inside (just below the slab)
-    B.m.face("CT_Interior", [(lx0, ly1, lh), (lx1, ly1, lh), (lx1, ly0, lh), (lx0, ly0, lh)][::-1] if False else
-             [(lx0, ly0, lh - 0.001), (lx1, ly0, lh - 0.001), (lx1, ly1, lh - 0.001), (lx0, ly1, lh - 0.001)][::-1])
+    B.m.face("CT_Interior", [(lx0, ly0, lh - 0.001), (lx1, ly0, lh - 0.001), (lx1, ly1, lh - 0.001), (lx0, ly1, lh - 0.001)][::-1])
     lob = [((lx0, ly0), (lx1, ly0)), ((lx1, ly0), (lx1, ly1)), ((lx1, ly1), (lx0, ly1)), ((lx0, ly1), (lx0, ly0))]
     lobholes = [
         [(0.6, 5.6, 0.35, 3.7), (7 - DOOR_W, 7 + DOOR_W, 0.0, 2.45), (8.4, 13.4, 0.35, 3.7)],
@@ -279,19 +400,12 @@ def build(B):
     B.entrance("main", (0.0, ly0, 0.0), 0.0, width=DOOR_W * 2, leaves=2, kind="street")
     # lobby furniture: wood-clad lift front on the core, counter
     box(B.m, "CT_Wood", -2.5, 2.5, 6.15, 6.5, 0.0, 3.2, faces="xXyYZ")
-    box(B.m, "CT_Wood", 3.2, 6.4, 12.2, 13.0, 0.0, 1.1)
-    box(B.m, "CT_Steel", 3.2, 6.4, 12.2, 13.0, 1.1, 1.14)                 # solid since round 2: people walk round it
-    B.spot("lobby_counter", "counter", (4.8, 11.8, 0.0), 180.0)           # the customer faces +y, to the desk
-    B.spot("lobby_bench_w", "bench", (-5.0, 4.5, 0.0), 0.0)
-    B.spot("lobby_bench_e", "bench", (5.0, 4.5, 0.0), 0.0)
-    for bx in (-5.5, 5.5):
-        box(B.m, "CT_Wood", bx - 1.0, bx + 1.0, 4.1, 4.55, 0.0, 0.45)
-    _furnish_lobby(B, lx0, lx1, ly0, ly1, lh)
+    _furnish_lobby(B, lx0, lx1, ly0, ly1, lh)       # (reception desk, benches and spots now come from the kit)
+    _furnish_gallery(B, z4b + 0.4)
     # canopy over the street door
     box(B.m, "CT_Wood", -3.0, 3.0, 0.0, 3.0, 3.35, 3.6, faces="xXyYZz")
     B.spot("view", "view", (0.0, 16.0, z4b + 0.4), 0.0)
     # pilotis hall paving
-    box(B.m, "CT_Paving", -15, 15, 0.0, 30.0, -0.05, -0.01, faces="Z") if False else None
     B.footprint = [(-15.0, 2.0), (15.0, 2.0), (15.0, 30.0), (-15.0, 30.0)]
     B.height = 39.6
     nf = len(B.flats)
