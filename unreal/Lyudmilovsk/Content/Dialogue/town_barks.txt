@@ -14,6 +14,7 @@
 # at =        place kinds or place ids (bench, promenade, beach, club, restaurant, market, fair_stall, P-MARKET, ...);
 #             outdoors, indoors: under the sky or a roof (alone it doesn't make a set more particular)
 # pose =      stand, walk, talk, look, sit, computer, eat, read, work
+# manner =    what their hands are doing now (manners.json: smoke, phone_call, umbrella, feed_birds, yawn, ...)
 # gather =    at a holiday's gathering of this mode now: mingle, watch, sit, fair
 # chrono =    lark, owl, night, usual                 need =  hunger, tired, social, fun, nature, mind, sun (over 0.75)
 # hours =     5-9 (from-to; over midnight 22-4; several ranges: 6-9 17-20)    months = 10-4    weekday = mon ... sun
@@ -1284,3 +1285,106 @@ weight = 4
 talk = town.chat_kids1.1 | town.chat_kids1.2 | town.chat_kids1.3
 talk = town.chat_kids2.1 | town.chat_kids2.2 | town.chat_kids2.3
 talk = town.chat_kids3.1 | town.chat_kids3.2 | town.chat_kids3.3
+
+# Manners (docs/town_manners.md): what people say about the small thing their hands are doing now (manner = ...),
+# and what they say when they notice the player: he runs past (on = hero_runs), stands too close (on = hero_close),
+# shines the head lamp in their eyes (on = hero_lamp)
+# --- the player noticed ---
+
+[manner_smoke]
+manner = smoke
+say = town.manner_smoke.1..4
+
+[manner_phone_call]
+manner = phone_call
+say = town.manner_call.1..5
+
+[manner_phone_scroll]
+manner = phone_scroll
+say = town.manner_scroll.1..3
+
+[manner_feed_birds]
+manner = feed_birds
+say = town.manner_feed.1..4
+
+[manner_umbrella]
+manner = umbrella
+say = town.manner_umbrella.1..3
+
+[manner_cover_head]
+manner = cover_head hug_self
+weather = rain
+say = town.manner_wet.1..3
+
+[manner_cold]
+manner = rub_hands hug_self
+weather = !rain
+say = town.manner_cold.1..3
+
+[manner_yawn]
+manner = yawn stretch
+say = town.manner_yawn.1..3
+
+[manner_watch]
+manner = check_watch
+say = town.manner_watch.1..3
+
+[manner_photo]
+manner = photo
+say = town.manner_photo.1..3
+
+[manner_knit]
+manner = knit
+say = town.manner_knit.1..3
+
+[manner_newspaper]
+manner = newspaper
+say = town.manner_paper.1..3
+
+[manner_ice_cream]
+manner = ice_cream
+say = town.manner_ice.1..3
+
+[manner_drink]
+manner = drink
+say = town.manner_drink.1..2
+
+[manner_look_sky]
+manner = look_sky
+say = town.manner_sky.1..3
+
+[manner_shade_eyes]
+manner = shade_eyes
+say = town.manner_shade.1..2
+
+[manner_carry_bag]
+manner = carry_bag
+say = town.manner_bag.1..3
+
+[manner_doze]
+manner = doze
+say = town.manner_doze.1
+
+[notice_runs]
+on = hero_runs
+age = adult elder
+say = town.notice_runs.1..5
+
+[notice_runs_kid]
+on = hero_runs
+age = kid teen
+say = town.notice_runs_kid.1..3
+
+[notice_close]
+on = hero_close
+age = adult elder
+say = town.notice_close.1..4
+
+[notice_close_kid]
+on = hero_close
+age = kid teen
+say = town.notice_close_kid.1..3
+
+[notice_lamp]
+on = hero_lamp
+say = town.notice_lamp.1..4

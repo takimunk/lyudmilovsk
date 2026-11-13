@@ -270,9 +270,16 @@ static int Run(bool bDay, const std::string& Lang)
 			for (size_t I = 0; I < Book.Sets.size(); I++)
 			{
 				const FSet& S = Book.Sets[I];
-				if (S.Kind != EKind::Talk && S.Kind != EKind::Event && !FitA[I] && HoursFit(S, H) && Book.MatchWho(S.A, Who))
+				// (a set that asks for a manner: as if their hands were doing it; what the player is noticed by: anybody may)
+				const bool bNotice = S.Kind == EKind::Event && S.On.compare(0, 5, "hero_") == 0;
+				if (!FitA[I] && S.Kind != EKind::Talk && (S.Kind != EKind::Event || bNotice) && HoursFit(S, H))
 				{
-					FitA[I] = 1;
+					Who.Manner = S.A.Manner.Yes.empty() ? std::string() : S.A.Manner.Yes[0];
+					if (Book.MatchWho(S.A, Who))
+					{
+						FitA[I] = 1;
+					}
+					Who.Manner.clear();
 				}
 			}
 			// what they would say now, under one of the skies; on the holiday evening, the holiday's

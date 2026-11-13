@@ -1,0 +1,155 @@
+## ---------------------------------------------------------------------------------------------------------------
+## Manners (docs/town_manners.md): what people say about the small thing their hands are doing now (manner = ...),
+## and what they say when they notice the player: he runs past (on = hero_runs), stands too close (on = hero_close),
+## shines the head lamp in their eyes (on = hero_lamp)
+## ---------------------------------------------------------------------------------------------------------------
+
+[manner_smoke]
+manner = smoke
+say town.manner_smoke.1 | Последняя. Честное слово, последняя. | The last one. Honestly, the last one. | これが最後の一本。本当に、最後。
+say town.manner_smoke.2 | Бросаю с понедельника. С какого именно — не уточнял. | I'm quitting on Monday. Which Monday, I never said. | 月曜からやめるよ。どの月曜かは言ってないけど。
+say town.manner_smoke.3 | Ветер с моря. Третью спичку трачу. | Wind off the sea. That's my third match. | 海風だ。マッチがもう三本目だよ。
+say town.manner_smoke.4 | Не смотри, не бери пример. Дурная привычка. | Don't look, don't copy me. It's a bad habit. | 見るな、真似するなよ。悪い癖なんだ。
+
+[manner_phone_call]
+manner = phone_call
+say town.manner_call.1 | Алло! Да, слышу. Нет, это чайки. | Hello! Yes, I can hear you. No, that's the gulls. | もしもし！うん、聞こえる。いや、それはカモメ。
+say town.manner_call.2 | Да-да, хлеб куплю. И молоко. Да помню я! | Yes, yes, I'll get bread. And milk. I remember! | はいはい、パンは買う。牛乳も。覚えてるってば！
+say town.manner_call.3 | Я на набережной. На на-бе-реж-ной! Связь тут... | I'm on the promenade. The pro-me-nade! The signal here... | いま遊歩道。ゆ・う・ほ・ど・う！ここ電波が…
+say town.manner_call.4 | Мам, я перезвоню. Да, поел. Да, в шапке. | Mum, I'll call you back. Yes, I've eaten. Yes, I've got my hat on. | 母さん、かけ直す。うん、食べた。うん、帽子もかぶってる。
+say town.manner_call.5 | Подожди, тут канатка гудит, ничего не слышно. | Hang on, the cable car's humming, I can't hear a thing. | 待って、ロープウェイの音で何も聞こえない。
+
+[manner_phone_scroll]
+manner = phone_scroll
+say town.manner_scroll.1 | Обещали солнце. Где солнце? | They promised sun. Where's the sun? | 晴れるって言ってたのに。太陽はどこ？
+say town.manner_scroll.2 | Опять сеть пропала. Ну и ладно, посмотрю на море. | The signal's gone again. Oh well, I'll look at the sea. | また圏外。まあいいか、海でも見よう。
+say town.manner_scroll.3 | Так, поезд на остров в... а, уже ушёл. | Right, the train to the island is at... oh, it's gone. | ええと、島行きの列車は…あ、もう出ちゃった。
+
+[manner_feed_birds]
+manner = feed_birds
+say town.manner_feed.1 | Кушайте, кушайте. Не деритесь, всем хватит. | Eat up, eat up. No fighting, there's enough for everyone. | お食べ、お食べ。けんかしないの、みんなの分あるから。
+say town.manner_feed.2 | Вон тот, хромой, каждый день прилетает. Я ему отдельно крошу. | That one, with the limp, comes every day. I crumble his separately. | あの足の悪い子、毎日来るの。あの子には別にちぎってあげるんだ。
+say town.manner_feed.3 | Чайкам не даю. Чайки сами отберут. | I don't feed the gulls. The gulls help themselves. | カモメにはあげない。カモメは自分で奪っていくから。
+say town.manner_feed.4 | Тише, не спугни. Они только слетелись. | Quiet, don't scare them. They've only just gathered. | しーっ、おどかさないで。やっと集まったところなんだ。
+
+[manner_umbrella]
+manner = umbrella
+say town.manner_umbrella.1 | Хорошо, что взяла зонт. Как чувствовала. | Good thing I brought the umbrella. I just had a feeling. | 傘を持ってきてよかった。なんとなく、そんな気がしたの。
+say town.manner_umbrella.2 | Этот зонт пережил три шторма. Переживёт и этот дождик. | This umbrella has lived through three storms. It'll live through this drizzle. | この傘は嵐を三回くぐり抜けた。この雨くらい平気さ。
+say town.manner_umbrella.3 | Ты чего без зонта? Иди под мой, пока идём. | Why haven't you got an umbrella? Come under mine while we walk. | 傘はどうしたの？歩くあいだ、入っていきなよ。
+
+[manner_cover_head]
+manner = cover_head hug_self
+weather = rain
+say town.manner_wet.1 | Ну конечно! Именно сегодня без зонта. | Of course! Today of all days, no umbrella. | やっぱり！よりによって今日、傘がない。
+say town.manner_wet.2 | До подъезда добегу — и чай. Сразу чай. | I'll run to the door, and then tea. Tea straight away. | 玄関まで走って、それからお茶。すぐにお茶。
+say town.manner_wet.3 | Ничего, не сахарные. | Never mind, we're not made of sugar. | 平気平気、砂糖でできてるわけじゃなし。
+
+[manner_cold]
+manner = rub_hands hug_self
+weather = !rain
+say town.manner_cold.1 | Ух, пробирает. Перчатки, конечно, дома. | Brr, it gets into your bones. The gloves are at home, of course. | うう、しみる。手袋はもちろん家に置いてきた。
+say town.manner_cold.2 | С моря тянет. К вечеру ещё похолодает. | There's a draught off the sea. It'll be colder by evening. | 海から冷たい風が来る。夕方にはもっと冷えるよ。
+say town.manner_cold.3 | Сейчас бы чаю из автомата. Горячего. | I could do with tea from the machine now. Hot. | 自販機のお茶が飲みたいな。熱いやつ。
+
+[manner_yawn]
+manner = yawn stretch
+say town.manner_yawn.1 | Ой, простите. Лёг вчера в два. | Oh, excuse me. I went to bed at two last night. | あ、失礼。昨日は二時に寝たもので。
+say town.manner_yawn.2 | Море укачивает, даже когда на него просто смотришь. | The sea rocks you to sleep even when you only look at it. | 海は、見ているだけでも眠くなる。
+say town.manner_yawn.3 | Засиделся. Надо пройтись. | I've sat too long. I should walk a bit. | 座りすぎた。少し歩かないと。
+
+[manner_watch]
+manner = check_watch
+say town.manner_watch.1 | Опаздывает. Как всегда. | Late. As always. | 遅い。いつものことだけど。
+say town.manner_watch.2 | Ещё семь минут. Успею. | Seven minutes left. I'll make it. | あと七分。間に合う。
+say town.manner_watch.3 | Часы опять спешат. Или это я отстаю? | The watch is fast again. Or am I the one running slow? | また時計が進んでる。それとも、わたしが遅れてるのかな。
+
+[manner_photo]
+manner = photo
+say town.manner_photo.1 | Не двигайся, море... Вот так. Есть. | Hold still, sea... That's it. Got it. | 動かないで、海…そう。撮れた。
+say town.manner_photo.2 | Сотый кадр этого заката. И всё равно не то. | The hundredth shot of this sunset. And it's still not right. | この夕日、百枚目。それでもまだ違うんだ。
+say town.manner_photo.3 | Свет сейчас хороший. Ещё минут десять такой будет. | The light's good now. It'll stay like this for ten minutes more. | いまは光がいい。あと十分はこのままだ。
+
+[manner_knit]
+manner = knit
+say town.manner_knit.1 | Две лицевые, две изнаночные... Не сбивай. | Knit two, purl two... Don't put me off. | 表二目、裏二目…話しかけないで、わからなくなる。
+say town.manner_knit.2 | К зиме довяжу. К какой-нибудь зиме. | I'll finish it by winter. Some winter or other. | 冬までには編み上がるよ。いつかの冬までには。
+say town.manner_knit.3 | Внуку шарф. Он не носит, а я вяжу. | A scarf for my grandson. He doesn't wear them, and I knit them. | 孫のマフラー。あの子は巻かないけど、わたしは編むの。
+
+[manner_newspaper]
+manner = newspaper
+say town.manner_paper.1 | Пишут, зима будет ранняя. Они каждый год так пишут. | They say winter will come early. They say so every year. | 今年は冬が早いってさ。毎年そう書いてある。
+say town.manner_paper.2 | Кроссворд: «звезда, вокруг которой всё вертится», шесть букв. | Crossword: "the star everything turns around", three letters. | クロスワード、「すべてがそのまわりを回る星」、三文字。
+say town.manner_paper.3 | О нашем городе опять ни строчки. И слава богу. | Not a line about our town again. And thank goodness. | うちの町のことは今日も一行もなし。ありがたいことだ。
+
+[manner_ice_cream]
+manner = ice_cream
+say town.manner_ice.1 | Тает быстрее, чем ем. | It melts faster than I can eat it. | 食べるより先に溶けていく。
+say town.manner_ice.2 | Пломбир, как в детстве. Только стаканчик стал меньше. | Plain ice cream, like when I was a kid. Only the cone's got smaller. | 子どものころと同じバニラ。コーンだけ小さくなった。
+say town.manner_ice.3 | Чайка, даже не думай. | Gull, don't even think about it. | カモメ、考えるだけ無駄だよ。
+
+[manner_drink]
+manner = drink
+say town.manner_drink.1 | Горячий. Вот теперь жить можно. | Hot. Now life is bearable. | 熱い。これでやっと人心地がつく。
+say town.manner_drink.2 | Из автомата, а вкусно. Не понимаю, как они это делают. | From a machine, and it's good. I don't know how they do it. | 自販機なのに、おいしい。どうやってるんだろう。
+
+[manner_look_sky]
+manner = look_sky
+say town.manner_sky.1 | Облака сегодня идут быстро. Наверху ветер. | The clouds are moving fast today. There's wind up high. | 今日は雲が速い。上は風があるんだな。
+say town.manner_sky.2 | Стрижи высоко — к хорошей погоде. | Swifts flying high means fair weather. | アマツバメが高く飛ぶと、天気がよくなる。
+say town.manner_sky.3 | Смотри, канатка против неба. Как бусы на нитке. | Look, the cable car against the sky. Like beads on a string. | 見て、空を行くロープウェイ。糸に通したビーズみたい。
+
+[manner_shade_eyes]
+manner = shade_eyes
+say town.manner_shade.1 | Солнце прямо в глаза. Зато какое! | The sun's right in my eyes. But what a sun! | 太陽がまぶしい。でも、なんて太陽だ！
+say town.manner_shade.2 | Ничего не вижу, одно золото. | I can't see a thing, only gold. | 何も見えない、金色ばかり。
+
+[manner_carry_bag]
+manner = carry_bag
+say town.manner_bag.1 | Шла за хлебом, несу полную сумку. Как это выходит? | I went for bread and I'm carrying a full bag. How does that happen? | パンを買いに行っただけなのに、袋がいっぱい。どうして？
+say town.manner_bag.2 | В Гастрономе сегодня свежая рыба. Взял две. | There's fresh fish at the Gastronom today. I took two. | 今日のガストロノムは魚が新鮮でね。二匹買ったよ。
+say town.manner_bag.3 | Лестницы эти... С сумкой особенно. | These stairs... Especially with a bag. | この階段ときたら…荷物があるとなおさら。
+
+[manner_doze]
+manner = doze
+say town.manner_doze.1 | М-м?.. Я не сплю. Я слушаю море. | Mm?.. I'm not asleep. I'm listening to the sea. | ん…？寝てないよ。海を聴いてるんだ。
+
+## --- the player noticed ---
+
+[notice_runs]
+on = hero_runs
+age = adult elder
+say town.notice_runs.1 | Куда летишь? Ступеньки же! | Where are you flying to? Mind the steps! | どこへ飛んでくの？階段だよ！
+say town.notice_runs.2 | Ох! Напугал. | Oh! You gave me a fright. | わっ！びっくりした。
+say town.notice_runs.3 | Тише, тише, не на пожар. | Easy, easy, nothing's on fire. | ゆっくり、ゆっくり。火事じゃないんだから。
+say town.notice_runs.4 | Молодость... Бегом, всё бегом. | Youth... Always at a run. | 若いねえ…なんでも走って。
+say town.notice_runs.5 | Опаздываешь куда-то? Беги, беги. | Late for something? Run along, then. | 何かに遅れそう？ほら、行った行った。
+
+[notice_runs_kid]
+on = hero_runs
+age = kid teen
+say town.notice_runs_kid.1 | Эй, ты куда? Там что-то случилось? | Hey, where are you going? Did something happen? | ねえ、どこ行くの？何かあった？
+say town.notice_runs_kid.2 | Ого, быстро! Давай наперегонки? | Whoa, that's fast! Want to race? | わあ、速い！競走しない？
+say town.notice_runs_kid.3 | За тобой кто-то гонится? | Is somebody chasing you? | 誰かに追いかけられてるの？
+
+[notice_close]
+on = hero_close
+age = adult elder
+say town.notice_close.1 | Ты что-то хотел? | Did you want something? | 何か用かな？
+say town.notice_close.2 | Э-э... Тебе помочь? | Er... Can I help you? | ええと…何か手伝おうか？
+say town.notice_close.3 | Тут места много, мальчик. | There's plenty of room here, lad. | ここは広いんだよ、坊や。
+say town.notice_close.4 | Что такое? У меня что-то на лице? | What is it? Have I got something on my face? | どうしたの？顔に何かついてる？
+
+[notice_close_kid]
+on = hero_close
+age = kid teen
+say town.notice_close_kid.1 | Чего? | What? | なに？
+say town.notice_close_kid.2 | Ты чего так близко встал? | Why are you standing so close? | なんでそんなに近いの？
+say town.notice_close_kid.3 | Ты новенький? Я тебя раньше не видел. | Are you new? I haven't seen you before. | 新しい子？見たことないな。
+
+[notice_lamp]
+on = hero_lamp
+say town.notice_lamp.1 | Эй, фонарь! Прямо в глаза светишь. | Hey, the lamp! You're shining it right in my eyes. | ちょっと、ライト！目に入ってるよ。
+say town.notice_lamp.2 | Опусти фонарик, будь добр. | Lower the torch, would you. | ライトを下げてくれないかな。
+say town.notice_lamp.3 | Ой! Я подумал, канатка на меня едет. | Oh! I thought the cable car was coming at me. | うわっ！ロープウェイがこっちに来たのかと思った。
+say town.notice_lamp.4 | Ну и прожектор. С маяком не перепутают? | That's some searchlight. Won't they take you for the lighthouse? | すごいライトだね。灯台と間違えられない？

@@ -2,6 +2,7 @@
 
 #include "TownBarks.h"
 #include "PeopleSim.h"
+#include "PeopleManners.h"
 #include "People/PeopleLife.h"
 #include "HeroCharacter.h"
 #include "LyudText.h"
@@ -389,7 +390,44 @@ void ULyudTownTalkSubsystem::Start(UWorld& InWorld)
 	Clock = 0.f;
 	NextBarkAt = 6.f;
 	NextGreetAt = 2.f;
+	NextNoticeAt = 0.f;
+	if (UPeopleLifeSubsystem* Life = UPeopleLifeSubsystem::Get(&InWorld))
+	{
+		Life->OnPersonEvent.AddUniqueDynamic(this, &ULyudTownTalkSubsystem::OnLifeEvent);
+	}
 	bStarted = true;
+}
+
+void ULyudTownTalkSubsystem::OnLifeEvent(int32 PersonId, FName Event, int32 Other)
+{
+	// somebody noticed the player: a word about it now and then (never a chorus)
+	if (!bStarted || Clock < NextNoticeAt || !Event.ToString().StartsWith(TEXT("hero_")) || Busy(PersonId))
+	{
+		return;
+	}
+	AActor* Actor = ActorOf(PersonId);
+	if (Actor && SayMoment(Actor, Event, PersonId, NAME_None))
+	{
+		NextNoticeAt = Clock + 25.f;
+	}
+}
+
+namespace TownTalkLocal
+{
+	/** What their hands are doing, for the sets' manner = ... (after FillWho). */
+	void FillManner(const UPeopleLifeSubsystem* Life, int32 Id, LyudBarks::FWho& W)
+	{
+		const LyudPeople::FManners* Mn = Life ? Life->GetManners() : nullptr;
+		const LyudPeople::FMannerState* St = Mn ? Mn->StateOf(Id) : nullptr;
+		if (St && St->Cur != LyudPeople::EManner::None)
+		{
+			W.Manner = LyudPeople::MannerName(St->Cur);
+		}
+		else
+		{
+			W.Manner.clear();
+		}
+	}
 }
 
 void ULyudTownTalkSubsystem::Stop()
@@ -730,8 +768,15 @@ void ULyudTownTalkSubsystem::Scan()
 				continue;
 			}
 			GreetedDay[Id] = Today;
-			if (FMath::FRand() > 0.65f)
+			// the warm greet nearly everybody, the reserved hardly anyone (their persona: docs/town_manners.md); of those who
+			// say nothing, some still nod
+			const float Warmth = Life->GetTrait(Id, TEXT("warmth"));
+			if (FMath::FRand() > 0.3f + 0.7f * Warmth)
 			{
+				if (FMath::FRand() < Warmth)
+				{
+					Life->ReactManner(Id, TEXT("nod"), 1.6f);
+				}
 				continue;
 			}
 			AActor* Actor = ActorOf(Id);
@@ -740,11 +785,14 @@ void ULyudTownTalkSubsystem::Scan()
 				continue;
 			}
 			LyudBarks::FillWho(*S, P, State->Who);
+			TownTalkLocal::FillManner(Life, Id, State->Who);
 			State->Who.bHeroNear = true;
 			int SetIx = -1;
 			const std::string* Key = State->Book.PickLine(LyudBarks::EKind::Greet, State->Who, State->Now, nullptr, &SetIx);
 			if (Key && Show(Actor, Id, TownTalkLocal::ToFString(*Key)))
 			{
+				// with a wave from the warm, a nod from the rest (if their hands are free)
+				Life->ReactManner(Id, Warmth > 0.62f ? TEXT("wave") : TEXT("nod"), Warmth > 0.62f ? 2.4f : 1.6f);
 				CountSaid(SetIx);
 				NextGreetAt = Clock + 4.f;
 				break;
@@ -779,6 +827,7 @@ void ULyudTownTalkSubsystem::Scan()
 			continue;
 		}
 		LyudBarks::FillWho(*S, P, State->Who);
+		TownTalkLocal::FillManner(Life, Id, State->Who);
 		State->Who.bHeroNear = FVector::Dist(At, HeroAt) < 1000.0;
 		int SetIx = -1;
 		const std::string* Key = State->Book.PickLine(LyudBarks::EKind::Say, State->Who, State->Now, nullptr, &SetIx);
@@ -1099,6 +1148,7 @@ bool ULyudTownTalkSubsystem::SayMoment(AActor* Speaker, FName Event, int32 Perso
 	if (S && PersonId >= 0 && PersonId < (int32)S->People.size())
 	{
 		LyudBarks::FillWho(*S, S->People[(size_t)PersonId], W);
+		TownTalkLocal::FillManner(Life, PersonId, W);
 	}
 	else
 	{
