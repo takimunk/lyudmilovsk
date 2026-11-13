@@ -457,11 +457,21 @@ void ALyudTrain::CarryPlayer(const TArray<FTransform>& Old)
 	// with the car, so the car doesn't run out from under them; never both, or the rider slides along at the train's
 	// speed (as the first version did: it moved the player and the base moved them again).
 	ACharacter* Char = Cast<ACharacter>(UGameplayStatics::GetPlayerPawn(this, 0));
+	// the player is another pawn (flies as a bird): the body they left aboard rides on. Nobody plays it, so it has no
+	// movement of its own and no base carries it: it is moved with its car by hand below. (Before, the train kept the
+	// last rider for good in this case, never hid again, and the body hung over the sea where the car had been.)
+	bool bAway = false;
 	if (!Char)
 	{
+		Char = Cast<ACharacter>(Rider.Get());
+		bAway = Char != nullptr;
+	}
+	if (!Char)
+	{
+		Rider.Reset();
 		return;
 	}
-	if (TickOrderFor != Char)
+	if (!bAway && TickOrderFor != Char)
 	{
 		if (UCharacterMovementComponent* Move = Char->GetCharacterMovement())
 		{
@@ -494,7 +504,7 @@ void ALyudTrain::CarryPlayer(const TArray<FTransform>& Old)
 		return;
 	}
 	const UPrimitiveComponent* Base = Char->GetMovementBase();
-	if (Base && Base->GetOwner() == this)
+	if (!bAway && Base && Base->GetOwner() == this)
 	{
 		return;
 	}
@@ -914,7 +924,8 @@ void ALyudTrain::OnUse()
 void ALyudTrain::UpdateSeatPrompt(float DeltaSeconds)
 {
 	const AHeroCharacter* Hero = Cast<AHeroCharacter>(UGameplayStatics::GetPlayerPawn(this, 0));
-	if (PlayerSeat >= 0 && (!Hero || !Hero->IsSeated()))
+	// no hero: the player flies as a bird, the body they left sits on (E gets it up again when they are back)
+	if (PlayerSeat >= 0 && Hero && !Hero->IsSeated())
 	{
 		PlayerSeat = -1;          // got up by a step or Space
 	}
@@ -924,7 +935,7 @@ void ALyudTrain::UpdateSeatPrompt(float DeltaSeconds)
 		return;
 	}
 	PromptTimer = 0.15f;
-	const bool bSeated = PlayerSeat >= 0;
+	const bool bSeated = PlayerSeat >= 0 && Hero;
 	const bool bCan = !bSeated && SeatInView() >= 0;
 	if (bSeated || bCan || bPromptShown)
 	{
