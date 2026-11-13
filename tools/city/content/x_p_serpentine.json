@@ -1,0 +1,1027 @@
+{
+ "_doc": "Serpentine slab (P-SERPENTINE), second pass: lobby by lobby (mail, bicycles, pram, dominoes and chess tables, the water can, switches, the stair up), the first-floor gallery (cat, washing, flower boxes, a view by the hour), and Colette Bauer's open flat 1-17 with the aquarium; the running story on the three lobby boards over game days 0-6+; regulars Bohdan Kalnins and Krzysztof Beridze; quests home_bauer and serp_dominoes.",
+ "acts": {
+  "sp_board_0": {
+   "prompt": "city.act.look.prompt",
+   "lines": [
+    "city.look.lost.*",
+    "city.sp.board_0.a",
+    "city.sp.board_0.b",
+    {
+     "k": "city.sp.board_0.c",
+     "after": 3,
+     "before": 6
+    },
+    {
+     "k": "city.sp.board_0.d",
+     "after": 6
+    }
+   ],
+   "rotate": "daily"
+  },
+  "sp_board_1": {
+   "prompt": "city.act.look.prompt",
+   "lines": [
+    "city.look.club.*",
+    "city.sp.board1.a",
+    "city.sp.board1.b",
+    {
+     "k": "city.sp.board1.c",
+     "before": 3
+    },
+    {
+     "k": "city.sp.board1.d",
+     "after": 3,
+     "before": 6
+    },
+    {
+     "k": "city.sp.board1.e",
+     "after": 6
+    }
+   ],
+   "rotate": "daily"
+  },
+  "sp_board_2": {
+   "prompt": "city.act.look.prompt",
+   "lines": [
+    "city.look.lost.*",
+    "city.sp.board2.a",
+    "city.sp.board2.b",
+    {
+     "k": "city.sp.board2.c",
+     "after": 1,
+     "before": 5
+    },
+    {
+     "k": "city.sp.board2.d",
+     "after": 5
+    }
+   ],
+   "rotate": "daily"
+  },
+  "sp_mail_0": {
+   "prompt": "city.sp.mail.prompt",
+   "lines": [
+    "city.sp.mail0.1",
+    "city.sp.mail0.2",
+    {
+     "k": "city.sp.mail0.3",
+     "d": "mon"
+    }
+   ],
+   "minutes": 1,
+   "sound": "drawer_slide"
+  },
+  "sp_mail_1": {
+   "prompt": "city.sp.mail.prompt",
+   "lines": [
+    {
+     "k": "city.sp.mail1.1",
+     "h": [
+      6,
+      11
+     ]
+    },
+    {
+     "k": "city.sp.mail1.2",
+     "h": [
+      11,
+      21
+     ]
+    },
+    {
+     "k": "city.sp.mail1.3",
+     "h": [
+      21,
+      6
+     ]
+    }
+   ],
+   "minutes": 1,
+   "sound": "drawer_slide"
+  },
+  "sp_mail_2": {
+   "prompt": "city.sp.mail.prompt",
+   "lines": [
+    "city.sp.mail2.1",
+    "city.sp.mail2.2",
+    {
+     "k": "city.sp.mail2.3",
+     "weather": "rain"
+    }
+   ],
+   "minutes": 1,
+   "sound": "drawer_slide"
+  },
+  "sp_bikes": {
+   "prompt": "city.sp.bikes.prompt",
+   "lines": [
+    {
+     "k": "city.sp.bikes.1",
+     "h": [
+      6,
+      9
+     ]
+    },
+    {
+     "k": "city.sp.bikes.2",
+     "h": [
+      9,
+      17
+     ]
+    },
+    {
+     "k": "city.sp.bikes.3",
+     "h": [
+      17,
+      21
+     ]
+    },
+    {
+     "k": "city.sp.bikes.4",
+     "h": [
+      21,
+      6
+     ]
+    },
+    {
+     "k": "city.sp.bikes.5",
+     "weather": "rain"
+    }
+   ],
+   "minutes": 2,
+   "sound": "bike_whirr"
+  },
+  "sp_pram": {
+   "prompt": "city.sp.pram.prompt",
+   "lines": [
+    {
+     "k": "city.sp.pram.1",
+     "h": [
+      6,
+      11
+     ]
+    },
+    {
+     "k": "city.sp.pram.2",
+     "h": [
+      11,
+      17
+     ]
+    },
+    {
+     "k": "city.sp.pram.3",
+     "h": [
+      17,
+      21
+     ]
+    },
+    {
+     "k": "city.sp.pram.4",
+     "h": [
+      21,
+      6
+     ]
+    }
+   ],
+   "minutes": 1,
+   "sound": "wheel_hum"
+  },
+  "sp_dominoes": {
+   "like": "dominoes",
+   "target": "sp_dominoes",
+   "prompt": "city.sp.dom.prompt",
+   "lines": [
+    "city.sp.dom.1",
+    "city.sp.dom.2",
+    "city.sp.dom.3"
+   ]
+  },
+  "sp_chess": {
+   "like": "chess",
+   "target": "sp_chess",
+   "prompt": "city.sp.chess.prompt",
+   "lines": [
+    "city.sp.chess.1",
+    "city.sp.chess.2",
+    "city.sp.chess.3"
+   ]
+  },
+  "sp_water": {
+   "prompt": "city.sp.water.prompt",
+   "lines": [
+    {
+     "k": "city.sp.water.1",
+     "h": [
+      6,
+      12
+     ]
+    },
+    {
+     "k": "city.sp.water.2",
+     "h": [
+      12,
+      18
+     ]
+    },
+    {
+     "k": "city.sp.water.3",
+     "h": [
+      18,
+      6
+     ]
+    }
+   ],
+   "minutes": 4,
+   "sound": "water_pour"
+  },
+  "sp_fish_lobby": {
+   "prompt": "city.do.aquarium.prompt",
+   "lines": [
+    {
+     "k": "city.sp.fish.1",
+     "h": [
+      6,
+      21
+     ]
+    },
+    {
+     "k": "city.sp.fish.2",
+     "h": [
+      6,
+      21
+     ]
+    },
+    {
+     "k": "city.sp.fish.3",
+     "h": [
+      21,
+      6
+     ]
+    },
+    {
+     "k": "city.sp.fish.4",
+     "h": [
+      21,
+      6
+     ]
+    }
+   ],
+   "minutes": 5,
+   "sound": "aquarium_bubbles"
+  },
+  "sp_desk": {
+   "prompt": "city.act.ask.prompt",
+   "lines": [
+    {
+     "k": "city.sp.desk.1",
+     "h": [
+      8,
+      20
+     ]
+    },
+    {
+     "k": "city.sp.desk.2",
+     "h": [
+      8,
+      20
+     ]
+    },
+    {
+     "k": "city.sp.desk.3",
+     "h": [
+      20,
+      8
+     ]
+    },
+    {
+     "k": "city.sp.desk.4",
+     "h": [
+      20,
+      8
+     ]
+    }
+   ],
+   "minutes": 1
+  },
+  "sp_stairs": {
+   "prompt": "city.sp.stairs.prompt",
+   "lines": [
+    {
+     "k": "city.sp.stairs.1",
+     "h": [
+      6,
+      21
+     ]
+    },
+    {
+     "k": "city.sp.stairs.2",
+     "h": [
+      21,
+      6
+     ]
+    }
+   ],
+   "any_hour": true
+  },
+  "sp_cat": {
+   "prompt": "city.sp.cat.prompt",
+   "lines": [
+    {
+     "k": "city.sp.cat.1",
+     "h": [
+      6,
+      11
+     ]
+    },
+    {
+     "k": "city.sp.cat.2",
+     "h": [
+      11,
+      17
+     ]
+    },
+    {
+     "k": "city.sp.cat.3",
+     "h": [
+      17,
+      21
+     ]
+    },
+    {
+     "k": "city.sp.cat.4",
+     "h": [
+      21,
+      6
+     ]
+    },
+    {
+     "k": "city.sp.cat.5",
+     "weather": "rain"
+    }
+   ],
+   "minutes": 3,
+   "sound": "purr"
+  },
+  "sp_wash": {
+   "prompt": "city.sp.wash.prompt",
+   "lines": [
+    "city.sp.wash.1",
+    {
+     "k": "city.sp.wash.2",
+     "h": [
+      6,
+      11
+     ]
+    },
+    {
+     "k": "city.sp.wash.3",
+     "h": [
+      11,
+      18
+     ]
+    },
+    {
+     "k": "city.sp.wash.4",
+     "h": [
+      18,
+      6
+     ]
+    },
+    {
+     "k": "city.sp.wash.5",
+     "weather": [
+      "rain",
+      "snow"
+     ]
+    }
+   ],
+   "minutes": 2,
+   "sound": "sheets_rustle"
+  },
+  "sp_flowers": {
+   "prompt": "city.sp.flowers.prompt",
+   "lines": [
+    "city.sp.flowers.1",
+    {
+     "k": "city.sp.flowers.2",
+     "h": [
+      6,
+      11
+     ]
+    },
+    {
+     "k": "city.sp.flowers.3",
+     "h": [
+      11,
+      21
+     ]
+    },
+    {
+     "k": "city.sp.flowers.4",
+     "weather": "rain"
+    }
+   ],
+   "minutes": 2,
+   "sound": "wind_soft"
+  },
+  "sp_gview": {
+   "prompt": "city.act.look_out.prompt",
+   "lines": [
+    {
+     "k": "city.sp.gview.1",
+     "h": [
+      6,
+      11
+     ]
+    },
+    {
+     "k": "city.sp.gview.2",
+     "h": [
+      6,
+      11
+     ]
+    },
+    {
+     "k": "city.sp.gview.3",
+     "h": [
+      11,
+      17
+     ]
+    },
+    {
+     "k": "city.sp.gview.4",
+     "h": [
+      11,
+      17
+     ]
+    },
+    {
+     "k": "city.sp.gview.5",
+     "h": [
+      17,
+      21
+     ]
+    },
+    {
+     "k": "city.sp.gview.6",
+     "h": [
+      17,
+      21
+     ]
+    },
+    {
+     "k": "city.sp.gview.7",
+     "h": [
+      21,
+      6
+     ]
+    },
+    {
+     "k": "city.sp.gview.8",
+     "h": [
+      21,
+      6
+     ]
+    }
+   ],
+   "minutes": 5,
+   "sound": "wind_soft",
+   "any_hour": true
+  },
+  "sp_bdoor": {
+   "prompt": "city.sp.bdoor.prompt",
+   "lines": [
+    {
+     "k": "city.sp.bdoor.1",
+     "h": [
+      1,
+      10
+     ]
+    },
+    {
+     "k": "city.sp.bdoor.2",
+     "h": [
+      10,
+      16
+     ]
+    },
+    {
+     "k": "city.sp.bdoor.3",
+     "h": [
+      16,
+      23
+     ]
+    },
+    {
+     "k": "city.sp.bdoor.4",
+     "h": [
+      23,
+      1
+     ]
+    }
+   ],
+   "minutes": 1,
+   "sound": "wood_creak",
+   "any_hour": true
+  },
+  "sp_b_aq": {
+   "prompt": "city.do.aquarium.prompt",
+   "lines": [
+    "city.sp.baq.1",
+    {
+     "k": "city.sp.baq.2",
+     "h": [
+      10,
+      21
+     ]
+    },
+    {
+     "k": "city.sp.baq.3",
+     "h": [
+      21,
+      24
+     ]
+    },
+    {
+     "k": "city.sp.baq.4",
+     "before": 6
+    },
+    {
+     "k": "city.sp.baq.5",
+     "after": 6
+    }
+   ],
+   "minutes": 5,
+   "sound": "aquarium_bubbles"
+  },
+  "sp_b_dish": {
+   "prompt": "city.sp.dish.prompt",
+   "lines": [
+    "city.sp.dish.1",
+    "city.sp.dish.2",
+    "city.sp.dish.3"
+   ],
+   "minutes": 4,
+   "sound": "ring_clink",
+   "needs_item": "find_seaglass"
+  },
+  "sp_b_tv": {
+   "like": "tv",
+   "target": "sp_b_tv",
+   "prompt": "city.do.tv.prompt",
+   "lines": [
+    {
+     "k": "city.sp.btv.1",
+     "h": [
+      6,
+      12
+     ]
+    },
+    {
+     "k": "city.sp.btv.2",
+     "h": [
+      12,
+      18
+     ]
+    },
+    {
+     "k": "city.sp.btv.3",
+     "h": [
+      18,
+      23
+     ]
+    },
+    {
+     "k": "city.sp.btv.4",
+     "h": [
+      23,
+      6
+     ]
+    }
+   ]
+  },
+  "sp_b_radio": {
+   "prompt": "city.do.radio.prompt",
+   "lines": [
+    {
+     "k": "city.sp.bradio.1",
+     "h": [
+      10,
+      14
+     ]
+    },
+    {
+     "k": "city.sp.bradio.2",
+     "h": [
+      14,
+      20
+     ]
+    },
+    {
+     "k": "city.sp.bradio.3",
+     "h": [
+      20,
+      24
+     ]
+    },
+    {
+     "k": "city.sp.bradio.4",
+     "h": [
+      0,
+      10
+     ]
+    }
+   ],
+   "minutes": 8,
+   "sound": "radio_tune"
+  },
+  "sp_b_shelf": {
+   "prompt": "city.sp.shelf.prompt",
+   "lines": [
+    "city.sp.bshelf.1",
+    "city.sp.bshelf.2",
+    "city.sp.bshelf.3",
+    "city.sp.bshelf.4"
+   ],
+   "minutes": 4,
+   "sound": "page_turn"
+  },
+  "sp_b_photos": {
+   "prompt": "city.sp.photos.prompt",
+   "lines": [
+    "city.sp.bphotos.1",
+    "city.sp.bphotos.2",
+    "city.sp.bphotos.3",
+    "city.sp.bphotos.4"
+   ],
+   "minutes": 3,
+   "sound": "paper_rustle"
+  },
+  "sp_b_net": {
+   "prompt": "city.sp.net.prompt",
+   "lines": [
+    "city.sp.bnet.1",
+    "city.sp.bnet.2",
+    "city.sp.bnet.3"
+   ],
+   "minutes": 15,
+   "sound": "paper_rustle"
+  },
+  "sp_b_tea": {
+   "prompt": "city.sp.tea.prompt",
+   "lines": [
+    {
+     "k": "city.sp.btea.1",
+     "h": [
+      10,
+      18
+     ]
+    },
+    {
+     "k": "city.sp.btea.2",
+     "h": [
+      18,
+      24
+     ]
+    },
+    {
+     "k": "city.sp.btea.3",
+     "h": [
+      0,
+      10
+     ]
+    }
+   ],
+   "minutes": 15,
+   "sound": "cup_clink",
+   "give": [
+    [
+     "tea",
+     1
+    ]
+   ],
+   "daily": 1
+  },
+  "sp_b_window": {
+   "prompt": "city.act.look_out.prompt",
+   "lines": [
+    {
+     "k": "city.sp.bwindow.1",
+     "h": [
+      6,
+      21
+     ]
+    },
+    {
+     "k": "city.sp.bwindow.2",
+     "h": [
+      6,
+      21
+     ]
+    },
+    {
+     "k": "city.sp.bwindow.3",
+     "h": [
+      21,
+      6
+     ]
+    }
+   ],
+   "minutes": 3,
+   "sound": "wind_soft",
+   "any_hour": true
+  }
+ },
+ "rules": {
+  "P-SERPENTINE/core0_mail": {
+   "act": "sp_mail_0"
+  },
+  "P-SERPENTINE/core0_notices": {
+   "act": "sp_board_0"
+  },
+  "P-SERPENTINE/core0_concierge_desk": {
+   "act": "sp_desk"
+  },
+  "P-SERPENTINE/core1_mail": {
+   "act": "sp_mail_1"
+  },
+  "P-SERPENTINE/core1_notices": {
+   "act": "sp_board_1"
+  },
+  "P-SERPENTINE/core1_concierge_desk": {
+   "act": "sp_desk"
+  },
+  "P-SERPENTINE/core2_mail": {
+   "act": "sp_mail_2"
+  },
+  "P-SERPENTINE/core2_notices": {
+   "act": "sp_board_2"
+  },
+  "P-SERPENTINE/core2_concierge_desk": {
+   "act": "sp_desk"
+  },
+  "P-SERPENTINE/core0_bikes": {
+   "act": "sp_bikes"
+  },
+  "P-SERPENTINE/core1_pram": {
+   "act": "sp_pram"
+  },
+  "P-SERPENTINE/core0_dominoes": {
+   "act": "sp_dominoes"
+  },
+  "P-SERPENTINE/core2_chess": {
+   "act": "sp_chess"
+  },
+  "P-SERPENTINE/core2_plants": {
+   "act": "sp_water"
+  },
+  "P-SERPENTINE/core2_aquarium": {
+   "act": "sp_fish_lobby"
+  },
+  "P-SERPENTINE/core1_stairs": {
+   "act": "sp_stairs"
+  },
+  "P-SERPENTINE/gallery_cat": {
+   "act": "sp_cat"
+  },
+  "P-SERPENTINE/gallery_washing": {
+   "act": "sp_wash"
+  },
+  "P-SERPENTINE/gallery_flowers": {
+   "act": "sp_flowers"
+  },
+  "P-SERPENTINE/gallery_view": {
+   "act": "sp_gview"
+  },
+  "P-SERPENTINE/bauer_door": {
+   "act": "sp_bdoor"
+  },
+  "P-SERPENTINE/bauer_aquarium": {
+   "act": "sp_b_aq",
+   "hours": [
+    10,
+    24
+   ],
+   "closed": "city.sp.closed.flat"
+  },
+  "P-SERPENTINE/bauer_dish": {
+   "act": "sp_b_dish",
+   "hours": [
+    10,
+    24
+   ],
+   "closed": "city.sp.closed.flat"
+  },
+  "P-SERPENTINE/bauer_tv": {
+   "act": "sp_b_tv",
+   "hours": [
+    10,
+    24
+   ],
+   "closed": "city.sp.closed.flat"
+  },
+  "P-SERPENTINE/bauer_radio": {
+   "act": "sp_b_radio",
+   "hours": [
+    10,
+    24
+   ],
+   "closed": "city.sp.closed.flat"
+  },
+  "P-SERPENTINE/bauer_shelf": {
+   "act": "sp_b_shelf",
+   "hours": [
+    10,
+    24
+   ],
+   "closed": "city.sp.closed.flat"
+  },
+  "P-SERPENTINE/bauer_photos": {
+   "act": "sp_b_photos",
+   "hours": [
+    10,
+    24
+   ],
+   "closed": "city.sp.closed.flat"
+  },
+  "P-SERPENTINE/bauer_net": {
+   "act": "sp_b_net",
+   "hours": [
+    10,
+    24
+   ],
+   "closed": "city.sp.closed.flat"
+  },
+  "P-SERPENTINE/bauer_samovar": {
+   "act": "sp_b_tea",
+   "hours": [
+    10,
+    24
+   ],
+   "closed": "city.sp.closed.flat"
+  },
+  "P-SERPENTINE/bauer_window": {
+   "act": "sp_b_window",
+   "hours": [
+    10,
+    24
+   ],
+   "closed": "city.sp.closed.flat"
+  },
+  "P-SERPENTINE/bauer_sofa": {
+   "hours": [
+    10,
+    24
+   ],
+   "closed": "city.sp.closed.flat"
+  },
+  "P-SERPENTINE/bauer_armchair": {
+   "hours": [
+    10,
+    24
+   ],
+   "closed": "city.sp.closed.flat"
+  },
+  "P-SERPENTINE/bauer_kitchen_seat": {
+   "hours": [
+    10,
+    24
+   ],
+   "closed": "city.sp.closed.flat"
+  },
+  "P-SERPENTINE/bauer_bed": {
+   "hours": [
+    10,
+    24
+   ],
+   "closed": "city.sp.closed.flat"
+  },
+  "P-SERPENTINE/bauer_sink": {
+   "hours": [
+    10,
+    24
+   ],
+   "closed": "city.sp.closed.flat"
+  },
+  "P-SERPENTINE/bauer_stove": {
+   "hours": [
+    10,
+    24
+   ],
+   "closed": "city.sp.closed.flat"
+  },
+  "P-SERPENTINE/bauer_clock": {
+   "hours": [
+    10,
+    24
+   ],
+   "closed": "city.sp.closed.flat"
+  }
+ },
+ "regulars": {
+  "kalnins": {
+   "name": "npc.t_kalnins_bohdan.name",
+   "style": "bold",
+   "skill": 0.5,
+   "plays": [
+    "dominoes",
+    "chess"
+   ],
+   "plots": [
+    "P-SERPENTINE"
+   ],
+   "hello": "city.player.kalnins.hello",
+   "win": "city.player.kalnins.win",
+   "lose": "city.player.kalnins.lose"
+  },
+  "beridze": {
+   "name": "npc.t_beridze_krzysztof.name",
+   "style": "careful",
+   "skill": 0.65,
+   "plays": [
+    "chess",
+    "dominoes"
+   ],
+   "plots": [
+    "P-SERPENTINE"
+   ],
+   "hello": "city.player.beridze.hello",
+   "win": "city.player.beridze.win",
+   "lose": "city.player.beridze.lose"
+  }
+ },
+ "quests": [
+  {
+   "id": "home_bauer",
+   "kind": "side",
+   "start_on": {
+    "event": "visit",
+    "target": "P-SERPENTINE"
+   },
+   "stages": [
+    {
+     "id": "notice",
+     "objectives": [
+      {
+       "id": "notice",
+       "event": "do",
+       "target": "sp_board_1"
+      }
+     ]
+    },
+    {
+     "id": "glass",
+     "objectives": [
+      {
+       "id": "glass",
+       "event": "have",
+       "target": "find_seaglass"
+      }
+     ]
+    },
+    {
+     "id": "dish",
+     "objectives": [
+      {
+       "id": "dish",
+       "event": "do",
+       "target": "sp_b_dish"
+      }
+     ],
+     "reward": {
+      "items": {
+       "cookies": 1
+      },
+      "rubles": 30
+     }
+    }
+   ]
+  },
+  {
+   "id": "serp_dominoes",
+   "kind": "side",
+   "start_on": {
+    "event": "visit",
+    "target": "P-SERPENTINE"
+   },
+   "stages": [
+    {
+     "id": "win",
+     "objectives": [
+      {
+       "id": "win",
+       "event": "win",
+       "target": "sp_dominoes"
+      }
+     ],
+     "reward": {
+      "items": {
+       "candy": 1
+      }
+     }
+    }
+   ]
+  }
+ ]
+}
