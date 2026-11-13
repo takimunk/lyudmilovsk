@@ -42,7 +42,7 @@ PLAN += [(t, "Dev.Quest awakening forget"), (t + 0.5, "Dev.Quest awakening owner
          (t + 1.5, "Dev.Quest awakening play"), (t + 2.0, "Quest.Dump")]
 t += 3.0
 PLAN += [(t, "Dev.Do pocket.money"), (t + 0.5, "Dev.Do pocket.all"), (t + 1.0, "Inventory.Open"), (t + 2.5, shot("pocket_all")),
-         (t + 3.0, "Inventory.Open")]
+         (t + 3.0, "Inventory.Open 0")]
 t += 4.0
 PLAN += [(t, "Dev.Do move.fly"), (t + 2.0, "Dev.List"), (t + 2.5, "Dev.Do move.fly"), (t + 3.0, "Dev.List")]
 t += 4.0
