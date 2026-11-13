@@ -153,6 +153,7 @@ namespace
 		TWeakObjectPtr<ALyudSky> Sky;
 		TArray<FLamp> Lamps;
 		double BuiltAt = -1.0;
+		bool bStale = false;          // a level came into a world since: its lamps may be new
 	};
 
 	TArray<FLampCache> LampCaches;
@@ -166,11 +167,15 @@ namespace
 			Cache = &LampCaches.AddDefaulted_GetRef();
 			Cache->World = World;
 		}
-		// rebuilt once a minute too, in case lamps or the sky come later (streamed in or spawned)
+		// found again at most once a minute, and only when a level was streamed in since or no lamp was found yet (the
+		// sky: every 5 s till it is there); otherwise the lamps are the level's own and stay, so there is no walk over
+		// every actor of the world each minute
 		const double Now = FPlatformTime::Seconds();
-		if (Cache->BuiltAt < 0.0 || Now - Cache->BuiltAt > 60.0 || (!Cache->Sky.IsValid() && Now - Cache->BuiltAt > 5.0))
+		if (Cache->BuiltAt < 0.0 || (!Cache->Sky.IsValid() && Now - Cache->BuiltAt > 5.0)
+			|| ((Cache->bStale || Cache->Lamps.Num() == 0) && Now - Cache->BuiltAt > 60.0))
 		{
 			Cache->BuiltAt = Now;
+			Cache->bStale = false;
 			Cache->Lamps.Reset();
 			Cache->Sky.Reset();
 			for (TActorIterator<AActor> It(World); It; ++It)
@@ -204,6 +209,19 @@ namespace
 		if (!GEngine)
 		{
 			return true;
+		}
+		// hooked here, not at static initialisation: the engine's delegate must exist first
+		static bool bLevelHook = false;
+		if (!bLevelHook)
+		{
+			bLevelHook = true;
+			FWorldDelegates::LevelAddedToWorld.AddLambda([](ULevel*, UWorld*)
+			{
+				for (FLampCache& Stale : LampCaches)
+				{
+					Stale.bStale = true;
+				}
+			});
 		}
 		for (const FWorldContext& Context : GEngine->GetWorldContexts())
 		{
