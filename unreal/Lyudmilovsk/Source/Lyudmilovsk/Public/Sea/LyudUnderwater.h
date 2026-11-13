@@ -35,7 +35,7 @@ class LYUDMILOVSK_API ALyudSeaLife : public AActor
 public:
 	ALyudSeaLife();
 
-	/** The species' instanced mesh, made on first use (null when the species has no mesh and no stand-in). */
+	/** The species' instanced mesh, made on first use once its look is in memory (null until then: it loads in the background). */
 	UInstancedStaticMeshComponent* SpeciesMesh(int32 Species);
 	UPROPERTY(Transient) TArray<TObjectPtr<UInstancedStaticMeshComponent>> Fish;
 	UPROPERTY(Transient) TObjectPtr<UStaticMeshComponent> Motes;
