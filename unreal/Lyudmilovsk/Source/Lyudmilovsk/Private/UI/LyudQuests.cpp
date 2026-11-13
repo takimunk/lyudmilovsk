@@ -370,6 +370,12 @@ bool ULyudQuests::Start(FName Quest)
 	OnNews.Broadcast(ELyudQuestNews::Started, Quest);
 	BeginStage(P, *Def);
 	OnChanged.Broadcast();
+	// started from outside an event (a new game, a dialogue, the dev panel) with its first stage already met: P is not used
+	// from here on
+	if (!bHandling && Queue.Num() > 0)
+	{
+		HandleEvent(TEXT("settle"), FString(), 0);
+	}
 	return true;
 }
 
@@ -400,6 +406,18 @@ void ULyudQuests::BeginStage(FLyudQuestProgress& P, const FLyudQuestDef& Def)
 		{
 			P.Counts[I] = O.Need;
 		}
+	}
+	// Everything this stage asks for is there already (the items in the pocket, the hero in the place): stages only finish
+	// while an event is handled, so without one of its own the stage stood "done but open" until some unrelated event came.
+	// "settle" is no game event and no objective waits for it; whoever runs the queue next finishes the stage.
+	bool bAllMet = S.Objectives.Num() > 0;
+	for (int32 I = 0; I < S.Objectives.Num(); ++I)
+	{
+		bAllMet &= P.Counts[I] >= S.Objectives[I].Need;
+	}
+	if (bAllMet)
+	{
+		Queue.Emplace(FName(TEXT("settle")), FString(), 0);
 	}
 }
 
