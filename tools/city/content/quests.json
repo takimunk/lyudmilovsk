@@ -1,0 +1,53 @@
+{
+ "_doc": "Side quests in the town, merged into Content/UI/quests.json by tools/city/interiors.py (one line each, marked; the other quests stay as they are). Events: do <act id> (ULyudCityThings), visit <plot id> (ULyudCityThings, on stepping into a plot's building), get/have/use <item>, reach <map place>. Words: quest.<id>.* in tools/city/content/strings/quests.json.",
+ "quests": [
+  {"id": "city_tour", "kind": "side", "start_on": {"event": "reach", "target": "town"}, "stages": [
+   {"id": "walk", "objectives": [
+    {"id": "see_library", "event": "visit", "target": "P-LIBRARY"},
+    {"id": "see_store", "event": "visit", "target": "P-STORE"},
+    {"id": "see_market", "event": "visit", "target": "P-MARKET"},
+    {"id": "see_club", "event": "visit", "target": "P-CLUB2"},
+    {"id": "see_clinic", "event": "visit", "target": "P-CLINIC"},
+    {"id": "see_cafe", "event": "visit", "target": "P-CAFE"}
+   ], "reward": {"rubles": 30}}
+  ]},
+  {"id": "library_day", "kind": "side", "start_on": {"event": "visit", "target": "P-LIBRARY"}, "stages": [
+   {"id": "read", "objectives": [
+    {"id": "read_birds", "event": "do", "target": "read_birds"},
+    {"id": "read_local", "event": "do", "target": "read_local"},
+    {"id": "read_sun", "event": "do", "target": "read_sun"}
+   ], "reward": {"items": {"postcard": 1}}}
+  ]},
+  {"id": "cinema_night", "kind": "side", "start_on": {"event": "visit", "target": "P-CLUB2"}, "stages": [
+   {"id": "film", "objectives": [{"id": "watch", "event": "do", "target": "cinema"}]}
+  ]},
+  {"id": "first_chess", "kind": "side", "start_on": {"event": "visit", "target": "P-CLUB3"}, "stages": [
+   {"id": "game", "objectives": [{"id": "play", "event": "do", "target": "chess"}], "reward": {"items": {"tea": 1}}}
+  ]},
+  {"id": "checkup", "kind": "side", "start_on": {"event": "visit", "target": "P-CLINIC"}, "stages": [
+   {"id": "nurse", "objectives": [
+    {"id": "weigh", "event": "do", "target": "scales"},
+    {"id": "eyes", "event": "do", "target": "eye_chart"}
+   ]},
+   {"id": "doctor", "objectives": [{"id": "see_doctor", "event": "do", "target": "checkup"}], "reward": {"items": {"candy": 1}}}
+  ]},
+  {"id": "photo_strip", "kind": "side", "start_on": {"event": "reach", "target": "promenade"}, "stages": [
+   {"id": "photo", "objectives": [{"id": "booth", "event": "do", "target": "photo_booth"}]}
+  ]},
+  {"id": "store_errand", "kind": "side", "start_on": {"event": "visit", "target": "P-STORE"}, "stages": [
+   {"id": "buy", "objectives": [
+    {"id": "kefir", "event": "have", "target": "kefir"},
+    {"id": "bread", "event": "have", "target": "bread_loaf"}
+   ]},
+   {"id": "deliver", "objectives": [{"id": "stepped_house", "event": "visit", "target": "P-RISER1"}], "reward": {"rubles": 30}}
+  ]},
+  {"id": "mineral_water", "kind": "side", "start_on": {"event": "visit", "target": "P-SANATORIUM"}, "stages": [
+   {"id": "fill", "objectives": [{"id": "pump", "event": "do", "target": "pump_room"}]},
+   {"id": "drink", "objectives": [{"id": "sip", "event": "use", "target": "water"}]}
+  ]},
+  {"id": "school_lesson", "kind": "side", "start_on": {"event": "visit", "target": "P-SCHOOL"}, "stages": [
+   {"id": "lesson", "objectives": [{"id": "desk", "event": "do", "target": "school_desk"}]},
+   {"id": "board", "objectives": [{"id": "chalk", "event": "do", "target": "blackboard"}]}
+  ]}
+ ]
+}

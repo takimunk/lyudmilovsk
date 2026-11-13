@@ -48,30 +48,55 @@ is and does) and the game code (`ULyudCityThings`). The work list is [city_backl
 
 ## 2. Data
 
-`tools/city/interiors.py` reads the plan (`Content/City/city_plan.json`), every building export and the content
-tables in `tools/city/content/*.json`, and writes:
+`tools/city/interiors.py` (python3, stdlib) reads the plan (`Content/City/city_plan.json`), every building export
+(`blender/export/city/<type>[__<plot>].json`), the content tables `tools/city/content/*.json` and the strings
+`tools/city/content/strings/*.json`, and writes (deterministic; run it after any export or content change):
 
-* `Content/City/interiors.json`: every thing of every plot in world terms, joined with what it does:
+```
+python3 tools/city/interiors.py            # write everything below
+python3 tools/city/interiors.py --check    # write nothing; fail on broken content; per-plot summary table
+```
+
+* `Content/City/interiors.json`, one record per line:
 
 ```json
 {"things": [
-  {"id": "P-LIBRARY/shelf_birds", "plot": "P-LIBRARY", "kind": "shelf", "ue": [x, y, z], "yaw": 12.5,
-   "props": {"topic": "birds"}, "act": "read_birds", "hours": [10, 20], "days": "tue-sun"}
+  {"id": "P-LIBRARY/stack_7_a", "plot": "P-LIBRARY", "kind": "shelf", "ue": [-42162.7, 99114.6, -2070.0], "yaw": 84.4,
+   "props": {"topic": "birds"}, "act": "read_birds", "hours": [10, 20], "days": "tue-sun", "auto": 1}
  ],
  "acts": {
-  "read_birds": {"prompt": "city.act.read.prompt", "minutes": 20, "price": 0,
-                 "lines": ["city.read.birds.1", "city.read.birds.2", "city.read.birds.3"],
-                 "pose": "stand", "sound": "page_turn", "event": "read", "target": "birds",
-                 "give": [], "daily": 0, "needs_staff": "", "needs_item": "", "fade": false}
- }}
+  "read_birds": {"prompt": "city.act.read.prompt", "minutes": 15, "price": 0, "lines": ["city.read.birds.1", "..."],
+                 "pose": "stand", "sound": "page_turn", "event": "do", "target": "read_birds", "give": [], "daily": 0,
+                 "needs_staff": "", "needs_item": "", "fade": false, "shop": "", "screen": "", "until": -1, "any_hour": false}
+ },
+ "shops": {"library_desk": {"title": "city.shop.library_desk.title", "role": "librarian",
+                            "goods": [{"item": "bird_guide", "price": 60, "count": 1}]}}}
 ```
 
-  `ue` = Unreal cm, `yaw` = Unreal degrees the object faces. `act` names an entry of `acts`; a thing without content
-  gets the default act of its kind (`sit`, `look`...), so every declared thing does something.
-* `Content/Dev/teleports/interiors.json`: one teleport per enterable room for the developer mode
-  (`{"teleports": [{"id", "group": "interiors", "name", "x", "y", "z", "yaw"}]}`, x/y map metres, z world cm).
-* strings: `city.*` keys in `Content/Localization/city/strings_{ru,en,ja}.json` (a sub-table, merged at load like
-  `Localization/town/`), written from `tools/city/content/strings/*.json`.
+  `ue` = Unreal cm (the building's front point + the thing's local point, storey z included), `yaw` = Unreal degrees the
+  object faces (plan yaw minus the kit yaw). `hours` `[open, close)` and `days` (`mon-sun`, `tue-sun`, or `mon,wed`) come
+  from the staff of the act's `needs_staff` role, else from the plot's public staff (cleaners, janitors, guards don't
+  open a building), else round the clock; a rule may give its own. Every thing has an act, every act every field.
+* **Auto things.** While a building declares no `things`, its `spots` become things flagged `"auto": 1`: `seat`/`bench`/
+  `table` → seat, `counter` → counter (role: the plot's first selling role), `view` → board `topic=view`; a rule
+  (`tools/city/content/plots.json`) may give any other spot (a `stand`, a `work` place) a kind, or `skip` one. Promenade
+  units get one counter at their door. As soon as a building exports one `thing`, its spots are no longer used.
+* `Content/Dev/teleports/interiors.json`: one teleport per public building (1.5 m inside its main street door, facing
+  in; kiosks and open halls: 2 m in front, facing them) and one per upper storey that has things; x/y map metres
+  (docs/world_map.md), z world cm = floor + 1 m, names `dev.tp.city.<plot>[.<storey>]` in the city strings.
+* `Content/Localization/city/strings_{ru,en,ja}.json` (merged at load like `Localization/town/`): every key of
+  `tools/city/content/strings/*.json` (`{"key": {"ru", "en", "ja"}}`, one file per theme) plus the teleport names. A key
+  of the hand-written table may be used but never redefined (it would win).
+* `Content/UI/quests.json`: the side quests of `tools/city/content/quests.json`, one line each, marked
+  `"from": "tools/city/interiors.py"`, replaced on every run; the other quests stay byte for byte. Quest events used:
+  `do <act id>`, `visit <plot id>` (sent by the game at the first use of a thing in a plot each day), `get|have|use
+  <item>`, `reach <map place>`. The town's plots are not map places (`Content/UI/map.json`): the town quests name none.
+
+`--check` fails on: an unknown kind or act, a string missing in any language (prompts, lines, titles, quest words), a
+prompt with a placeholder, an unknown item (the ids are parsed from `LyudInventory.cpp`), a shop without a staff role,
+a `needs_staff` role that does not work at the plot, duplicate thing ids, a declared thing more than 3 m outside its
+footprint or closer than 0.3 m to another (auto things that would fail are dropped and counted), a quest event or target
+that does not exist. It warns when a quest waits for an act no thing does yet.
 
 ### Acts
 
@@ -79,31 +104,108 @@ An act is what happens when the hero presses E at a thing:
 
 | field | meaning |
 |---|---|
-| `prompt` | key of the prompt line, shown as "E — ..." |
-| `lines` | keys of texts; one is shown each time, in order, wrapping round (a shelf has several pages; a board several notices) |
+| `prompt` | key of the whole prompt line ("E — полистать"); no price in it: the game adds it with `city.act.prompt_price` |
+| `lines` | keys of texts shown in order, wrapping round (pages of a shelf, notices of a board, what happened at a game) |
+| `title` | key of the page/trade screen title (every `buy_<shop>` act: the shop's title) |
 | `minutes` | game minutes that pass (0: none). With `fade` the screen fades out and in |
-| `price` | roubles taken (the act is refused with `city.act.no_money` if the hero has less) |
-| `give` | items put in the pocket: `[["item_id", n]]` |
-| `needs_item` | an item the hero must have (a library card, a ticket) |
-| `needs_staff` | a staff role that must be on shift at this place (the cashier for a cinema ticket) |
-| `pose` | `stand`, `sit`, `lie`, or an activity of activities.json for the hero's body |
-| `sound` | a one-shot of the soundscape |
-| `event`/`target` | reported to the quests with `ULyudQuests::Notify` (default event `do`, target = the act id) |
+| `until` | the hour the act ends at instead of `minutes` (sleep till 7; -1: none); `minutes` is the fallback |
+| `price` | roubles taken (refused with `city.act.no_money` if the hero has less) |
+| `give` | items put in the pocket: `[["item_id", n]]` (existing items only) |
+| `needs_item` | an item the hero must have |
+| `needs_staff` | a staff role that must be on shift at this plot (the projectionist for a film) |
+| `any_hour` | runs outside the open hours too (seats, beds, doors, views); always written, the game defaults it for sit/lie |
+| `pose` | `stand`, `sit`, `lie`, or an activity of activities.json (a seat given a standing act gets `<act>_seated`: the same act seated, same `target`) |
+| `sound` | a one-shot of the soundscape (plausible ids; an unknown id plays nothing) |
+| `event`/`target` | reported to the quests: always `do` + the act id |
 | `daily` | how many times a day it gives its reward (0: no limit) |
-| `shop` | opens the trade screen with this stock (`shops` table: goods with prices) when staff is on shift |
-| `screen` | a full-screen picture or page to show while it lasts (film stills, an exhibit) |
+| `shop` | opens the trade screen with this stock of `shops` when `needs_staff` is on shift |
+| `screen` | a full-screen picture to show while it lasts (none yet) |
 
-Open hours and days come from the plot's staff in the plan unless the content gives its own.
+Content tables (`tools/city/content/*.json`, each with any of `acts`, `shops`, `rules`, `defaults`,
+`defaults_by_plot_kind`; a key defined in two files is an error): `acts.json` (defaults per kind, generic acts,
+shelves, boards), `activities.json` (machines, games, sport, crafts, screens), `counters.json` (shops, counter talk),
+`plots.json` (what the buildings' spots do while there are no declared things). An act may say `"like": "<act>"` to
+inherit, and `"lines": "<prefix>"` for all `<prefix>.<n>` strings. A thing's act is found by its rules, first match
+wins: `<plot>/<thing id>`, then `<type>/<thing id>` (globs allowed: `workers_club/seat*`; an exact id beats a glob; these
+may also set `kind`, `props`, `act`, `hours`, `days`), then `shop=<id>` in its props (act `buy_<id>`), then
+`<kind>:<prop>=<value>[,<prop>=<value>]` (most conditions win; `*:what=piano` matches any kind), then `take` with
+`item=<id>` (`take_<id>`), then the plot kind's default (`hotel` beds sleep the night, `clinic` beds nap, `residential`
+counters are closed), then the kind's default (`sit`, `bed_private`, `read_misc`, `look_misc`, `counter_talk`,
+`use_misc`, `watch_misc`, `take_any`, `door_any`).
+
+### How to add content (for the furnishing agents)
+
+1. Declare things with `B.thing(id, kind, pos, yaw, **props)`; ids stable and unique in the building; then run
+   `python3 tools/city/interiors.py --check` and `python3 tools/city/interiors.py`; read the table for your plot.
+2. `shelf`: `topic=` `birds` `sea` `science` `poetry` `kids` `local` (=`history`) `music` `art` `cooking` `travel`
+   `chess` `sun` (=`astronomy`) `garden` (=`gardening`) `engineering` `medicine`. Anything else reads the generic pages.
+3. `board`: `topic=` `timetable` `lost` `club` `wallpaper` (=`school`) `health` `cinema` `prices` (=`market`) `rules`
+   `exhibit` `painting` `view` `store` `catalogue`.
+4. `machine`/`play`/`sport`/`craft`/`screen` (any kind works): `what=` `piano` `chess` `table_tennis` `billiards`
+   `darts` `table_football` `shooting_gallery` `ring_toss` `lottery` `strongman` `fortune` `arcade` `jukebox`
+   `record_player` `scales` `eye_chart` `checkup` `photo_booth` `telescope` `binoculars` `payphone` `fountain`
+   `pump_room` `haircut` `barbell` `wall_bars` `punching_bag` `exercise_bike` (=`treadmill`) `pool` `basketball` `track`
+   `dance` `easel` `potters_wheel` `workbench` `sewing_machine` `darkroom` `school_desk` `blackboard` `cinema` `stage`
+   `choir` `microphone` `tv` `aquarium` `slide_projector`. Some need staff on the plot: `cinema` projectionist,
+   `school_desk` teacher, `checkup` doctor, `pool` lifeguard, `haircut` seller, fair games vendor, `choir` choir_leader.
+5. `counter`: `shop=<id>` (see `counters.json`: `store_*`, `market_*`, `kiosk_news`, `cafe_tarelka`, `pharmacy`,
+   `club_buffet`, `hall_bar`, `sport_cafe`, `library_desk`, `sanatorium_kiosk`, `seagull_cafe`, `fish_shop`, `dumplings`,
+   `souvenirs`, `bakery`, `book_stall`, `beer_bar`, `pasty_bar`) and/or `service=` `cashier` `cloakroom` `tickets`
+   `reception` `lending` `bar` `butcher` `fishmonger` `rentals` `repair` `pharmacy` `newspapers`; `role=` the staff
+   role standing there (must be on the plot's staff).
+6. `bed`: `rest=night|nap|private` (default by plot: sanatorium night, clinic nap, elsewhere "someone's bed").
+   `take`: `item=daily_paper|postcard` (once a day). `door`: `to=roof|staff`.
+7. Keep the ids the auto layer uses where the quests rely on them (library `stack_*`/`core_wall_*`/`pod_*`, clinic
+   `patient_0..2`, school `seat_*`/`teacher`, `workers_club/seat*`, `cog_club/chess*`, sanatorium `bench_4`), or give
+   the new things the same props (e.g. `shelf topic=birds`, `machine what=scales`): the quests wait for `do read_birds`,
+   `read_local`, `read_sun`, `cinema`, `chess`, `scales`, `eye_chart`, `checkup`, `photo_booth`, `pump_room`,
+   `school_desk`, `blackboard`.
+8. New words: add a theme file `tools/city/content/strings/<theme>.json` (ru first, real en and ja), new acts in a new
+   content file; never edit generated files. Only existing item ids (new items need paid icons: game-items skill).
 
 ## 3. Game
 
-* `ULyudCityThings` (world subsystem, `Public/City/LyudCityThings.h`): reads `interiors.json`, finds the thing the hero
-  looks at within reach (checked a few times a second, never per frame for all things: a grid by position), shows the
-  prompt through `ULyudInventoryUI::SetPrompt`, runs the act on E. Remembers per-day counts and the page each shelf is
-  on in the save. Nothing is spawned per thing: the furniture is part of the building mesh.
-* Pure logic (which thing, may it run now, what it gives) lives in `Private/City/CityThingsModel.h` without engine
-  types, tested in the cloud by `tools/citysim/run.sh` like the other sims.
-* Console: `lyud.City.Things` (count, the nearest five), `lyud.City.Do <thing id>` (run it from anywhere),
-  `lyud.City.Things.Show 1` (debug labels). Developer mode actions are registered when `Dev/LyudDev.h` exists.
-* Perf ([perf checklist](../README.md)): no per-frame allocation, no actors or components per thing, no ticking when
-  the hero is outside the town box.
+* `ULyudCityThings` (tickable world subsystem, `Public/City/LyudCityThings.h`, `Private/City/LyudCityThings.cpp`): loads
+  `City/interiors.json` at world begin play (no file: no things, no tick). Five times a second, and only while the hero is
+  within 30 m of the box round all things, the model picks the thing in view from a 4 m grid (reach 2.6 m from the eyes, in
+  front, near the line of sight, on the eye's floor); one trace checks no wall is between; a door in view wins (doors poll E
+  too). Not as a bird, on a bike, seated (restaurant, train, a chair), with a screen, shop or menu up
+  (`ULyudInventoryUI::CanOpen`). The prompt goes through `ULyudInventoryUI::SetPrompt` (built only when the thing changes;
+  with a price `city.act.prompt_price`). E (polled) runs the act:
+  * refused (`city.act.closed|no_money|needs_item|no_staff|daily_done`): the reason on the prompt line for 2.5 s;
+  * `price` via `ULyudInventory::Spend`, `give` via `Add` (unknown items skipped, logged at load);
+  * `lines`: a page (`Private/City/SLyudCityPage.*`, HUD style, hit-test invisible, takes no input) with the title, the
+    line and `E — next` / `E — close`; E turns through the act's lines once, walking 2.5 m away or any screen shuts it;
+  * `minutes`: `UGameCalendar::SetNow(Now + minutes)`; with `fade` a camera fade to black, the jump, a fade back;
+  * `shop`: `ULyudInventoryUI::OpenShop` with the `shops` stock, title = the act's `title` (default `city.shop.title`);
+    `needs_staff` is asked of `UPeopleLifeSubsystem::StaffOnShift(plot, role)` (role `*`: anyone);
+  * `pose` `sit`: `AHeroCharacter::SitOn` on one pooled anchor (an actor at the origin; the seat frame from the thing's
+    point, yaw, `height` and a floor trace); stands up the usual way. `lie` sits on the bed's edge (no lying pose yet:
+    TODO in `Sit`). Activity poses play nothing yet; `screen` shows the lines on the page (TODO in `Run`);
+  * `sound`: `ULyudSoundscapeSubsystem::PlayEffect(id)` (an id without a pool plays nothing);
+  * quests: `Notify(event or "do", target or act id)`, plus `Notify("visit", plot)` at the first use in a plot each game day.
+* Default acts when a thing has none: seat sits; bed rests 2 h (`rest_hours`) with a fade; shelf reads 10 min (`read`/topic);
+  board looks (`look`/topic); counter needs its `role` (`talk`/role); machine 5 min, play 20, sport 15, craft 30, screen
+  30 with a fade (event = the kind's verb, target = `what`); take gives its `item` once a day; door shows a caption. Seats,
+  beds and doors ignore the plot's hours; everything else keeps them.
+* Rules in `Private/City/CityThingsModel.h` (`LyudCity::FModel`: `Load`, `Pick`, `Check`, `Run`, `NextLine`, `Nearest`,
+  `SaveState`/`LoadState`, `ResetToday`/`ResetState`), engine-free; `tools/citysim/run.sh` checks it on
+  `tools/citysim/fixture.json` and on the real file when it is built. Save record "CityThings" (pages, today's counts,
+  uses, plots visited); a New Game starts it over.
+* Console: `lyud.City.Things` (count, the nearest five), `lyud.City.Do <thing id>` (run it from anywhere; sitting only
+  when the hero is within 4 m), `lyud.City.Things.Show 0|1` (labels within 15 m). Developer mode (when `Dev/LyudDev.h`
+  exists), group `interiors`: things nearby, use the nearest, reset today's limits, 500 rub.
+* Perf ([perf checklist](../README.md)): no per-frame allocation, no actors or components per thing, nothing past the town box.
+
+### How to test in the editor (Mac)
+
+1. Build, run `Lvl_Scene01` (PIE or `-game`); the log says `LogLyudCity: CityThings: N things, M acts, K shops from City/interiors.json (0 unknown items)`.
+2. `lyud.City.Things`: the count and the five nearest things with distances.
+3. Teleport into a room (developer mode `interiors` teleports, or `BugItGo`), `lyud.City.Things.Show 1`: labels with id and act; the one in view yellow.
+4. Look at a shelf: `E — полистать` at the bottom; E: the page, `E — дальше` turns, the clock jumps 10 min.
+5. A chair: E sits (the view drops); a step or Space stands up.
+6. A bed: E, the screen fades to black and back, the clock is 2 h on.
+7. `lyud.City.Do <counter id>` with the staff away: `refused: За стойкой никого нет`; on shift: the shop opens.
+8. A paid act with too little money: `Не хватает денег: нужно N руб.`; `lyud.Language en|ja`: no raw `city.*` keys.
+9. Save, load: the shelf goes on at the next page (`CityThings: do ... line=` in the log).
+10. Offscreen: `unreal/scripts/test_city_things.sh` (CITYTEST lines).
