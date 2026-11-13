@@ -303,7 +303,7 @@ def _furnish_hall(B, hx0, hx1, hy0, hy1):
     kit.telephone(B, 4.0, 3.5, 1.1, 270)
     kit.cash_register(B, 4.0, 4.4, 1.1, 270)
     kit.books_stack(B, 3.95, 3.0, 1.1, 0, n=3, seed=3)
-    kit.chair(B, 5.0, 4.0, yaw=90, kind="tube", mat="CT_PlasterBlue")
+    kit.chair(B, 5.0, 4.0, yaw=270, kind="tube", mat="CT_PlasterBlue")
     T("reception", "counter", (4.1, 3.9, 1.1), 270, role="cashier", service="reception")
     sp("reception_spot", "counter", (3.0, 3.9, 0.0), 270)
     kit.sign_plate(B, 5.0, fy0, yaw=180, name="sign_gym", w=1.5, zc=3.9)

@@ -302,18 +302,70 @@ def build(B):
 def _bar_and_kitchen(B, rnd, zf):
     m, d = B.m, B.detail
     top = zf + 1.05
-    # back bar: bottle shelves on the café-side face of the partition (r 7.85), a coffee machine, cake vitrine, cups
+    # back bar: shelves on the café-side face of the partition (r 7.85) that read as a bar and not as a library: a mirror
+    # strip behind, tins and jars below, glasses in the middle, bottles of different heights with necks above
+    for _ in range(180):                          # (the old row of plain cylinders drew these 180 numbers from rnd)
+        rnd.uniform(0.2, 0.3)
+    br = random.Random(77)
+    bottle_mats = ("CT_PlasterGreen", "CT_Door", "CT_PlasterBlue", "CT_PlasterGreen", "CT_SteelRed", "CT_Door")
+    cap_mats = ("CT_Brass", "CT_PlasterRed", "CT_TileWhite", "CT_Brass", "CT_Aluminium")
+    tin_mats = ("CT_PlasterYellow", "CT_SteelRed", "CT_PlasterBlue", "CT_Aluminium", "CT_PlasterGreen")
+
+    def at(a_, off, r=7.7):
+        q = P(r, a_ + off / 7.7 * 57.3, 0.0)
+        return q[0], q[1]
+
+    def bottle(x, y, z, kind, mat, cap):
+        bh, r, nh = {"wine": (0.17, 0.034, 0.10), "squat": (0.12, 0.04, 0.06), "tall": (0.22, 0.028, 0.08)}[kind]
+        cyl(d, mat, x, y, z, z + bh, r, 5, top=False)
+        cyl(d, mat, x, y, z + bh, z + bh + 0.035, r, 5, r1=0.013, top=False)
+        cyl(d, cap if kind == "squat" else mat, x, y, z + bh + 0.035, z + bh + 0.035 + nh, 0.013, 4)
+        if kind != "tall":
+            cyl(d, cap, x, y, z + bh + 0.035 + nh, z + bh + 0.035 + nh + 0.018, 0.016, 4)
+
     for a0, a1 in ((54, 85), (95, 126)):
+        am, aw = (a0 + a1) / 2, (a1 - a0) / 2
+        # the mirror strip (anodised aluminium) in a thin brass frame, behind the bottles
+        arc_band(m, "CT_Aluminium", 7.86, 7.9, am - aw, am + aw, zf + 1.5, zf + 2.55)
+        arc_band(d, "CT_Brass", 7.84, 7.9, am - aw, am + aw, zf + 2.55, zf + 2.58)
         for lv, zl in enumerate((1.45, 1.85, 2.25)):
             for k in range(0, 10):
                 a_ = a0 + (a1 - a0) * (k + 0.5) / 10
                 p = P(7.7, a_, zf)
                 rbox(d, "CT_WoodLight", p[0], p[1], zf + zl, zf + zl + 0.03, 0.2, 0.13, math.radians(a_ + 90))
-                for j in range(3):
-                    off = (j - 1) * 0.12
-                    q = P(7.7, a_ + off / 7.7 * 57.3 * 1.0, zf)
-                    mat = ("CT_PlasterGreen", "CT_Door", "CT_PlasterBlue", "CT_PlasterYellow", "CT_SteelRed")[(k + j + lv) % 5]
-                    cyl(d, mat, q[0], q[1], zf + zl + 0.03, zf + zl + 0.03 + rnd.uniform(0.2, 0.3), 0.032, 5)
+                z0 = zf + zl + 0.03
+                if lv == 0:                       # tins and jars
+                    x, y = at(a_, -0.1)
+                    if (k + a0) % 2:
+                        cyl(d, "CT_TileWhite", x, y, z0, z0 + 0.13, 0.05, 6)
+                        cyl(d, "CT_Brass", x, y, z0 + 0.13, z0 + 0.15, 0.052, 6)
+                    else:
+                        cyl(d, tin_mats[k % 5], x, y, z0, z0 + 0.09, 0.062, 6)
+                        cyl(d, tin_mats[(k + 2) % 5], x, y, z0 + 0.09, z0 + 0.16, 0.052, 6)
+                    x, y = at(a_, 0.1)
+                    if k % 3 == 0:
+                        cyl(d, "CT_PlasterPink", x, y, z0, z0 + 0.1, 0.045, 6)       # a jar of jam
+                        cyl(d, "CT_PlasterRed", x, y, z0 + 0.1, z0 + 0.115, 0.047, 6)
+                    else:
+                        cyl(d, tin_mats[(k + 1) % 5], x, y, z0, z0 + 0.08, 0.06, 6)
+                elif lv == 1:                     # a bottle and a pair of glasses
+                    x, y = at(a_, -0.13)
+                    bottle(x, y, z0, ("wine", "squat")[k % 2], bottle_mats[(k + 1) % 6], cap_mats[k % 5])
+                    for j in ((0,) if k % 2 else (0, 1)):
+                        x, y = at(a_, 0.03 + 0.1 * j)
+                        if k % 2:
+                            cyl(d, "CT_TileWhite", x, y, z0, z0 + 0.1, 0.028, 5, r1=0.04, top=False)       # tumbler
+                        else:
+                            cyl(d, "CT_TileWhite", x, y, z0, z0 + 0.05, 0.007, 4, r1=0.007, top=False)      # stem
+                            cyl(d, "CT_TileWhite", x, y, z0 + 0.05, z0 + 0.1, 0.012, 5, r1=0.036, top=False)
+                else:                             # bottles, two heights
+                    for j, off in enumerate((-0.09, 0.1)):
+                        x, y = at(a_, off)
+                        bottle(x, y, z0, br.choice(("wine", "tall", "tall", "squat")), bottle_mats[(k + j * 2 + a0) % 6],
+                               cap_mats[(k + j) % 5])
+    # a menu card on the closed wall above the serving hatch
+    mp = P(7.9, 90, zf)
+    kit.menu_board(B, mp[0], mp[1], zf, yaw_to(mp, (CX, CY)), name="menu_1", w=0.5, zc=2.58)
     # counter equipment
     em = P(6.2, 101, top)                         # beside the serving hatch (r 7.95, angle 90), not in front of it
     rbox(m, "CT_Steel", em[0], em[1], top, top + 0.42, 0.38, 0.22, 0.0)

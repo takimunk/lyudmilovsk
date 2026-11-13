@@ -639,399 +639,267 @@
   },
   {
    "pos": [
-    -18.4,
+    -15.0,
     8.0,
     4.3
    ],
-   "lumens": 1500,
+   "lumens": 2300,
    "colour": "#FFD2A0",
    "kind": "public",
-   "radius": 10.5
+   "radius": 12.0
   },
   {
    "pos": [
-    -18.4,
+    -15.0,
     16.5,
     4.3
    ],
-   "lumens": 1500,
+   "lumens": 2300,
    "colour": "#FFD2A0",
    "kind": "public",
-   "radius": 10.5
+   "radius": 12.0
   },
   {
    "pos": [
-    -18.4,
+    -15.0,
     25.0,
     4.3
    ],
-   "lumens": 1500,
+   "lumens": 2300,
    "colour": "#FFD2A0",
    "kind": "public",
-   "radius": 10.5
+   "radius": 12.0
   },
   {
    "pos": [
-    -11.0,
+    -5.5,
     8.0,
     4.3
    ],
-   "lumens": 1500,
+   "lumens": 2300,
    "colour": "#FFD2A0",
    "kind": "public",
-   "radius": 10.5
+   "radius": 12.0
   },
   {
    "pos": [
-    -11.0,
+    -5.5,
     16.5,
     4.3
    ],
-   "lumens": 1500,
+   "lumens": 2300,
    "colour": "#FFD2A0",
    "kind": "public",
-   "radius": 10.5
+   "radius": 12.0
   },
   {
    "pos": [
-    -11.0,
+    -5.5,
     25.0,
     4.3
    ],
-   "lumens": 1500,
+   "lumens": 2300,
    "colour": "#FFD2A0",
    "kind": "public",
-   "radius": 10.5
+   "radius": 12.0
   },
   {
    "pos": [
-    -3.7,
+    5.5,
     8.0,
     4.3
    ],
-   "lumens": 1500,
+   "lumens": 2300,
    "colour": "#FFD2A0",
    "kind": "public",
-   "radius": 10.5
+   "radius": 12.0
   },
   {
    "pos": [
-    -3.7,
+    5.5,
     16.5,
     4.3
    ],
-   "lumens": 1500,
+   "lumens": 2300,
    "colour": "#FFD2A0",
    "kind": "public",
-   "radius": 10.5
+   "radius": 12.0
   },
   {
    "pos": [
-    -3.7,
+    5.5,
     25.0,
     4.3
    ],
-   "lumens": 1500,
+   "lumens": 2300,
    "colour": "#FFD2A0",
    "kind": "public",
-   "radius": 10.5
+   "radius": 12.0
   },
   {
    "pos": [
-    3.7,
+    15.0,
     8.0,
     4.3
    ],
-   "lumens": 1500,
+   "lumens": 2300,
    "colour": "#FFD2A0",
    "kind": "public",
-   "radius": 10.5
+   "radius": 12.0
   },
   {
    "pos": [
-    3.7,
+    15.0,
     16.5,
     4.3
    ],
-   "lumens": 1500,
+   "lumens": 2300,
    "colour": "#FFD2A0",
    "kind": "public",
-   "radius": 10.5
+   "radius": 12.0
   },
   {
    "pos": [
-    3.7,
+    15.0,
     25.0,
     4.3
    ],
-   "lumens": 1500,
+   "lumens": 2300,
    "colour": "#FFD2A0",
    "kind": "public",
-   "radius": 10.5
+   "radius": 12.0
   },
   {
    "pos": [
-    11.0,
-    8.0,
-    4.3
-   ],
-   "lumens": 1500,
-   "colour": "#FFD2A0",
-   "kind": "public",
-   "radius": 10.5
-  },
-  {
-   "pos": [
-    11.0,
-    16.5,
-    4.3
-   ],
-   "lumens": 1500,
-   "colour": "#FFD2A0",
-   "kind": "public",
-   "radius": 10.5
-  },
-  {
-   "pos": [
-    11.0,
-    25.0,
-    4.3
-   ],
-   "lumens": 1500,
-   "colour": "#FFD2A0",
-   "kind": "public",
-   "radius": 10.5
-  },
-  {
-   "pos": [
-    18.4,
-    8.0,
-    4.3
-   ],
-   "lumens": 1500,
-   "colour": "#FFD2A0",
-   "kind": "public",
-   "radius": 10.5
-  },
-  {
-   "pos": [
-    18.4,
-    16.5,
-    4.3
-   ],
-   "lumens": 1500,
-   "colour": "#FFD2A0",
-   "kind": "public",
-   "radius": 10.5
-  },
-  {
-   "pos": [
-    18.4,
-    25.0,
-    4.3
-   ],
-   "lumens": 1500,
-   "colour": "#FFD2A0",
-   "kind": "public",
-   "radius": 10.5
-  },
-  {
-   "pos": [
-    -18.4,
+    -15.0,
     8.0,
     9.1
    ],
-   "lumens": 1500,
+   "lumens": 2300,
    "colour": "#FFD2A0",
    "kind": "public",
-   "radius": 10.5
+   "radius": 12.0
   },
   {
    "pos": [
-    -18.4,
+    -15.0,
     16.5,
     9.1
    ],
-   "lumens": 1500,
+   "lumens": 2300,
    "colour": "#FFD2A0",
    "kind": "public",
-   "radius": 10.5
+   "radius": 12.0
   },
   {
    "pos": [
-    -18.4,
+    -15.0,
     25.0,
     9.1
    ],
-   "lumens": 1500,
+   "lumens": 2300,
    "colour": "#FFD2A0",
    "kind": "public",
-   "radius": 10.5
+   "radius": 12.0
   },
   {
    "pos": [
-    -11.0,
+    -5.5,
     8.0,
     9.1
    ],
-   "lumens": 1500,
+   "lumens": 2300,
    "colour": "#FFD2A0",
    "kind": "public",
-   "radius": 10.5
+   "radius": 12.0
   },
   {
    "pos": [
-    -11.0,
+    -5.5,
     16.5,
     9.1
    ],
-   "lumens": 1500,
+   "lumens": 2300,
    "colour": "#FFD2A0",
    "kind": "public",
-   "radius": 10.5
+   "radius": 12.0
   },
   {
    "pos": [
-    -11.0,
+    -5.5,
     25.0,
     9.1
    ],
-   "lumens": 1500,
+   "lumens": 2300,
    "colour": "#FFD2A0",
    "kind": "public",
-   "radius": 10.5
+   "radius": 12.0
   },
   {
    "pos": [
-    -3.7,
+    5.5,
     8.0,
     9.1
    ],
-   "lumens": 1500,
+   "lumens": 2300,
    "colour": "#FFD2A0",
    "kind": "public",
-   "radius": 10.5
+   "radius": 12.0
   },
   {
    "pos": [
-    -3.7,
+    5.5,
     16.5,
     9.1
    ],
-   "lumens": 1500,
+   "lumens": 2300,
    "colour": "#FFD2A0",
    "kind": "public",
-   "radius": 10.5
+   "radius": 12.0
   },
   {
    "pos": [
-    -3.7,
+    5.5,
     25.0,
     9.1
    ],
-   "lumens": 1500,
+   "lumens": 2300,
    "colour": "#FFD2A0",
    "kind": "public",
-   "radius": 10.5
+   "radius": 12.0
   },
   {
    "pos": [
-    3.7,
+    15.0,
     8.0,
     9.1
    ],
-   "lumens": 1500,
+   "lumens": 2300,
    "colour": "#FFD2A0",
    "kind": "public",
-   "radius": 10.5
+   "radius": 12.0
   },
   {
    "pos": [
-    3.7,
+    15.0,
     16.5,
     9.1
    ],
-   "lumens": 1500,
+   "lumens": 2300,
    "colour": "#FFD2A0",
    "kind": "public",
-   "radius": 10.5
+   "radius": 12.0
   },
   {
    "pos": [
-    3.7,
+    15.0,
     25.0,
     9.1
    ],
-   "lumens": 1500,
+   "lumens": 2300,
    "colour": "#FFD2A0",
    "kind": "public",
-   "radius": 10.5
-  },
-  {
-   "pos": [
-    11.0,
-    8.0,
-    9.1
-   ],
-   "lumens": 1500,
-   "colour": "#FFD2A0",
-   "kind": "public",
-   "radius": 10.5
-  },
-  {
-   "pos": [
-    11.0,
-    16.5,
-    9.1
-   ],
-   "lumens": 1500,
-   "colour": "#FFD2A0",
-   "kind": "public",
-   "radius": 10.5
-  },
-  {
-   "pos": [
-    11.0,
-    25.0,
-    9.1
-   ],
-   "lumens": 1500,
-   "colour": "#FFD2A0",
-   "kind": "public",
-   "radius": 10.5
-  },
-  {
-   "pos": [
-    18.4,
-    8.0,
-    9.1
-   ],
-   "lumens": 1500,
-   "colour": "#FFD2A0",
-   "kind": "public",
-   "radius": 10.5
-  },
-  {
-   "pos": [
-    18.4,
-    16.5,
-    9.1
-   ],
-   "lumens": 1500,
-   "colour": "#FFD2A0",
-   "kind": "public",
-   "radius": 10.5
-  },
-  {
-   "pos": [
-    18.4,
-    25.0,
-    9.1
-   ],
-   "lumens": 1500,
-   "colour": "#FFD2A0",
-   "kind": "public",
-   "radius": 10.5
+   "radius": 12.0
   }
  ],
  "things": [
@@ -1562,7 +1430,7 @@
     26.2,
     5.35
    ],
-   "yaw": 0.0,
+   "yaw": 180.0,
    "props": {
     "height": 0.45
    }
@@ -3404,7 +3272,7 @@
  ],
  "tris": {
   "shell": 4246,
-  "detail": 73764,
+  "detail": 73620,
   "windows": 216
  }
 }

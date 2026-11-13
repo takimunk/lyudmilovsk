@@ -456,7 +456,7 @@ def _hall(B, rnd):
     # ---- furniture
     _furnish(B, rnd)
     # lamps in the hall
-    for (lx, ly, lm, rad) in ((-6.0, 7.0, 960, 9.5), (6.0, 7.0, 960, 9.5), (-9.0, 22.0, 720, 8.5), (9.0, 22.0, 720, 8.5),
+    for (lx, ly, lm, rad) in ((-5.0, 7.5, 1250, 10.0), (5.0, 7.5, 1250, 10.0), (-9.0, 22.0, 720, 8.5), (9.0, 22.0, 720, 8.5),
                               (-9.0, 15.0, 720, 8.5), (9.0, 15.0, 720, 8.5)):      # the front hall's three lamps merged into two
         B.lamp((lx, ly, HALL_H - 0.3), lumens=lm, colour="#FFD8A0", kind="public", radius=rad)
     return y_bot
