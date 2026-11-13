@@ -15,6 +15,9 @@ namespace LyudAudio
 		}
 		/** Coefficients are refreshed every this many samples (filter sweeps are slow next to it). */
 		constexpr int Block = 32;
+		/** The bed's output limiter: untouched under the knee, never over the ceiling (FAmbience::Render). */
+		constexpr float LimKnee = 0.8f;
+		constexpr float LimCeil = 0.95f;
 	}
 
 	float FPink::Process(float W)
@@ -175,6 +178,8 @@ namespace LyudAudio
 		SSurfH.Init(3.f, SampleRate / Block);
 		SSurfD.Init(0.6f, SampleRate / Block, 1000.f);
 		SSurfPan.Init(0.4f, SampleRate / Block);
+		LimEnv = 0.f;
+		LimRelease = std::exp(-1.f / (0.25f * SampleRate));
 		Grains.reserve(256);
 		Breaks.resize(6);
 		Strikes.resize(4);
@@ -553,14 +558,17 @@ namespace LyudAudio
 
 	void FAmbience::Render(float* L, float* R2, int Num, const FAmbienceParams& P)
 	{
-		// scratch kept between calls: no allocation on the audio thread once it has grown
-		if (Tmp.size() < size_t(Num) * 2)
+		// scratch kept between calls: no allocation on the audio thread once it has grown (the bed, then what came
+		// through the walls while the near voices are rendered)
+		if (Tmp.size() < size_t(Num) * 4)
 		{
-			Tmp.resize(size_t(Num) * 2);
+			Tmp.resize(size_t(Num) * 4);
 		}
 		std::fill(Tmp.begin(), Tmp.begin() + size_t(Num) * 2, 0.f);
 		float* TL = Tmp.data();
 		float* TR = Tmp.data() + Num;
+		float* WallOutL = Tmp.data() + 2 * size_t(Num);
+		float* WallOutR = Tmp.data() + 3 * size_t(Num);
 		float Before[NumVoices + 1] = {};
 		auto Energy = [&]() { double E = 0; for (int I = 0; I < Num; I++) E += double(TL[I]) * TL[I] + double(TR[I]) * TR[I]; return float(E); };
 
@@ -658,16 +666,34 @@ namespace LyudAudio
 			WallL.Process(TL[I]);
 			WallR.Process(TR[I]);
 			const float G = P.Master * (1.f - 0.9f * E);
-			L[I] += G * WallL.Low;
-			R2[I] += G * WallR.Low;
+			WallOutL[I] = G * WallL.Low;
+			WallOutR[I] = G * WallR.Low;
 		}
 		// right at the listener, not through any wall: footsteps, rain on the window, the umbrella
 		std::fill(Tmp.begin(), Tmp.begin() + size_t(Num) * 2, 0.f);
 		WeatherV.RenderNear(TL, TR, Num, P, Extra);
+		// the sum of the voices has no ceiling of its own (a near strike's rumble over a gale and a downpour went well
+		// past full scale and clipped hard at the output): a soft limiter on the whole bed. Untouched under the knee;
+		// above it both channels are turned down together, at once, by the louder of the two, and let back up over a
+		// quarter of a second, so the peak stays under LimCeil whatever is added.
 		for (int I = 0; I < Num; I++)
 		{
-			L[I] += P.Master * TL[I];
-			R2[I] += P.Master * TR[I];
+			const float OutL = WallOutL[I] + P.Master * TL[I];
+			const float OutR = WallOutR[I] + P.Master * TR[I];
+			float Peak = std::max(std::fabs(OutL), std::fabs(OutR));
+			if (!(Peak < 1e6f))
+			{
+				Peak = 0.f;   // never let one bad sample hold the gain down for good
+			}
+			LimEnv = std::max(Peak, LimEnv * LimRelease);
+			float Gn = 1.f;
+			if (LimEnv > LimKnee)
+			{
+				const float Span = LimCeil - LimKnee;
+				Gn = (LimKnee + Span * (1.f - std::exp(-(LimEnv - LimKnee) / Span))) / LimEnv;
+			}
+			L[I] += OutL * Gn;
+			R2[I] += OutR * Gn;
 		}
 		for (int V = Snow; V < NumVoices; V++)
 		{

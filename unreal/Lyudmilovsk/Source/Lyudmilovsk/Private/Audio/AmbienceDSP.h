@@ -234,6 +234,8 @@ namespace LyudAudio
 		FSmooth SEnc, SRain, SLeaves, SCrick, SSurfH, SSurfD, SSurfPan;
 		float Time = 0.f;
 		std::vector<float> Tmp;
+		// the output limiter: the peak it follows and its release per sample
+		float LimEnv = 0.f, LimRelease = 0.f;
 
 		void RenderLeaves(float* L, float* R, int Num, const FAmbienceParams& P);
 		void RenderSurf(float* L, float* R, int Num, const FAmbienceParams& P);
