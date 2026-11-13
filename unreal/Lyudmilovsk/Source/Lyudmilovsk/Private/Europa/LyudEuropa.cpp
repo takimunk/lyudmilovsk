@@ -1353,7 +1353,14 @@ void ULyudEuropaSubsystem::UpdateAction(ACharacter& Hero, APlayerController& PC)
 		if (bOnEuropa)
 		{
 			const FVector LidAt = Site->Kit(FVector(0, 0, 10));
-			if (Eye.Z > LidAt.Z - 30.f && Looks(LidAt, 280.f, 0.55f))
+			// down in the shaft under Europa's hatch with no climb running (a game saved halfway up it and loaded, a fall
+			// through the open hatch): the only way on is the climb down, from wherever he stands
+			const FVector InSite = Site->GetActorTransform().InverseTransformPosition(Hero.GetActorLocation());
+			if (InSite.Z < -40.f && FVector2D(InSite).Size() < K.OpenRadius + 10.f)
+			{
+				Now = TEXT("enter_europa");
+			}
+			else if (Eye.Z > LidAt.Z - 30.f && Looks(LidAt, 280.f, 0.55f))
 			{
 				Now = Site->Lid.IsShut() ? TEXT("open_europa") : Site->Lid.IsFullyOpen() ? TEXT("enter_europa") : TEXT("");
 			}
@@ -1746,6 +1753,17 @@ void ULyudEuropaSubsystem::ClimbDownFromEuropa()
 	FKey& K0 = Keys.AddDefaulted_GetRef();
 	K0.Feet = S->Kit(FVector(0, 0, 30));
 	K0.Seconds = 1.0f;
+	if (const ACharacter* Hero = PlayerHero(GetWorld()))
+	{
+		// already down in the shaft (UpdateAction): onto the ladder at his own height, not up through the lid first
+		// (the same test as there: the body's middle well under the rim, inside the shaft's bore)
+		const FVector InSite = S->GetActorTransform().InverseTransformPosition(Hero->GetActorLocation());
+		if (InSite.Z < -40.f && FVector2D(InSite).Size() < K.OpenRadius + 10.f)
+		{
+			K0.Feet = S->Kit(FVector(0, 0, S->GetActorTransform().InverseTransformPosition(FeetOf(*Hero)).Z));
+			K0.Seconds = 0.6f;
+		}
+	}
 	const FVector Shut = S->Kit(FVector(0, 0, -230));
 	Rungs(Keys, S->ShaftLadder, K0.Feet, Shut);
 	Keys.Last().OnReach = [S]() { S->Lid.bOpen = false; };
