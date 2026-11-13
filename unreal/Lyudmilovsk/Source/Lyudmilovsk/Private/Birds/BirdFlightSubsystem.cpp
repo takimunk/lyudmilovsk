@@ -1285,7 +1285,6 @@ void UBirdFlightSubsystem::TickEncounter(float Dt)
 		if (Row && !Row->Calls.IsEmpty())
 		{
 			// cached in BirdLife: not a LoadObject per call
-			UBirdLifeSubsystem* Life = GetWorld() ? GetWorld()->GetSubsystem<UBirdLifeSubsystem>() : nullptr;
 			if (USoundBase* Snd = Life ? Life->CallSound(Meet.Species, Row->Calls[0]) : nullptr)
 			{
 				UGameplayStatics::PlaySoundAtLocation(this, Snd, Where);
