@@ -162,6 +162,8 @@ namespace LyudPeople
 		bool bGather = false;               // a gathering (a holiday on the square): only at a place with one on now
 		int GatherMode = -1;                // a gathering's activity: the mode it is for (EGatherMode), -1 not one
 		bool bStaff = false;                // a workplace duty: at their own workplace (FDuty::Place), at a slot of their role
+		float Pace = 1.f;                   // "pace": how fast they go within it against their walk (a jog, children at play: 2)
+		bool bRainOk = false;               // "rain": "ok": chosen and kept up in the rain too (outdoors)
 		std::vector<int> PlaceIdx;          // the places of its kinds (built after loading; "home" and gatherings aside)
 		std::vector<int> SlotK, PlaceK;     // Slots and Places interned
 		bool bHome = false;                 // "home" among its places
@@ -276,6 +278,8 @@ namespace LyudPeople
 		EBikeAct BikeAct = EBikeAct::None;
 		double BikeActStart = 0.0, BikeActUntil = 0.0;
 		uint32_t Rng = 1;
+		int PrevActivity = -1;      // what they did before this (the manners: a bag carried from the shop), -1 nothing yet
+		double PrevActivityEnd = -1e18;     // and when they left it (sim seconds)
 		std::string Why;            // a short reason for the last choice (debug)
 		int Choices = 0;
 	};
@@ -319,6 +323,10 @@ namespace LyudPeople
 		float SunriseYaw = 45.f;        // where it comes up (the early risers face it)
 		bool bSunUp = true;
 		bool bRain = false;             // raining: people outdoors hurry (the wrapper sets it from the weather)
+		// the weather people choose by (the wrapper sets it; docs/town_manners.md): in the rain what they chose to do out of
+		// doors is left for a roof and not chosen anew, the frost empties the benches, a warm day draws to the water
+		float Rain = 0.f;               // 0 dry .. 1 pouring
+		float TempC = 12.f;
 		bool bDayOff = false;           // a public holiday: duties with holiday "off" are skipped (SetDayOff)
 
 		/** A gathering (ULyudFestivalSubsystem's holidays): people free and awake are drawn to a place, or to the places
@@ -535,6 +543,8 @@ namespace LyudPeople
 		void Move(FPerson& P, float Dt);
 		/** Their pace now, m/s: a walk, or a run outdoors when late or in the rain (a brisk walk indoors). */
 		float Pace(const FPerson& P) const;
+		/** Their pace within an activity (a walk's next spot): the activity's pace on their walk. */
+		float ActPace(const FPerson& P, const FActivity& A) const;
 		void Arrive(FPerson& P);
 		void FinishRide(FPerson& P);
 		void Leave(FPerson& P);

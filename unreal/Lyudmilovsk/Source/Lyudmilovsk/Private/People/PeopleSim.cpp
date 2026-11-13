@@ -207,6 +207,8 @@ namespace LyudPeople
 			A.bHolidayOff = V["holiday"].S() == "off";
 			A.bGather = V["gather"].F() > 0.f;
 			A.bStaff = V["staff"].F() > 0.f;
+			A.Pace = V["pace"].F(1.f);
+			A.bRainOk = V["rain"].S() == "ok";
 			if (A.bGather)
 			{
 				const std::string M = V["mode"].S("mingle");
@@ -1923,6 +1925,27 @@ namespace LyudPeople
 			}
 		}
 		Score -= TravelH * Opt.WalkCostPerHour;
+		// the weather: nobody chooses to be out in the rain (those who love the open air mind it less), the frost empties
+		// the benches and the lookouts, a warm day draws to the water
+		if (!Places[Sl.Place].bIndoor && !A.bAway && !A.bGather)
+		{
+			if (bRain && !A.bRainOk)
+			{
+				Score -= (0.9f + 0.8f * Rain) * (1.f - 0.35f * P.NatureLove);
+			}
+			if (TempC < 2.f && (IsSeated(A.Pose) || A.Pose == EPose::Look))
+			{
+				Score -= std::min(0.8f, (2.f - TempC) * 0.06f);
+			}
+			if (TempC > 20.f && bSunUp && !bRain)
+			{
+				const std::string& K = Places[Sl.Place].Kind;
+				if (K == "beach" || K == "pier" || K == "promenade" || K == "fountain")
+				{
+					Score += 0.15f;
+				}
+			}
+		}
 		// a holiday on: the town comes out (the sociable ones most; children and the old a little less late at night)
 		if (A.bGather)
 		{
@@ -2286,6 +2309,12 @@ namespace LyudPeople
 				return true;
 			}
 		}
+		// caught by the rain out of doors at something they chose: they don't sit it out (each looks up at their own
+		// moment, so a square empties over a couple of minutes, not at once)
+		if (bRain && Cur.bFree && Duty < 0 && !Cur.bRainOk && !Cur.bGather && !P.bIndoors && P.Place >= 0 && !Places[P.Place].bIndoor)
+		{
+			return true;
+		}
 		// something they chose: they give it at least its shortest time first
 		if (!Cur.bFree || Duty >= 0 || Time - P.StateStart < Cur.MinMinutes * 60.0)
 		{
@@ -2485,6 +2514,12 @@ namespace LyudPeople
 		}
 		// no running on stairs and in rooms; outdoors a jog (~2.4 m/s; children a little faster for their size)
 		return P.bIndoors ? P.WalkSpeed * 1.25f : std::max(2.3f, P.WalkSpeed * 1.95f);
+	}
+
+	float FWorld::ActPace(const FPerson& P, const FActivity& A) const
+	{
+		// a run is a run whatever their walk (as Pace's hurry)
+		return A.Pace > 1.5f ? std::max(2.3f, P.WalkSpeed * A.Pace) : P.WalkSpeed * A.Pace;
 	}
 
 	void FWorld::Move(FPerson& P, float Dt)
@@ -2708,6 +2743,8 @@ namespace LyudPeople
 	void FWorld::Leave(FPerson& P)
 	{
 		const EPose Was = P.Pose;
+		P.PrevActivity = P.Activity;
+		P.PrevActivityEnd = Time;
 		if (P.SweepT >= 0.f)
 		{
 			// called away half way along a stretch of snow: somebody else will finish it
@@ -3154,7 +3191,8 @@ namespace LyudPeople
 				{
 					// a step within the activity (walking up to the one they talk to, a walk's next spot)
 					const EPose Keep = P.Pose;
-					float Budget = P.WalkSpeed * Dt;
+					const float Go = ActPace(P, Activities[P.Activity]);
+					float Budget = Go * Dt;
 					while (Budget > 0.f && P.PathI < (int)P.Path.size())
 					{
 						V3 D = P.Path[P.PathI].P - P.Pos;
@@ -3183,7 +3221,7 @@ namespace LyudPeople
 					{
 						P.Pos.Z = GroundAt(P.Pos);
 					}
-					P.Speed = P.WalkSpeed;
+					P.Speed = Go;
 					if (P.PathI >= (int)P.Path.size())
 					{
 						P.Path.clear();
@@ -3242,6 +3280,8 @@ namespace LyudPeople
 				if (Time >= P.Until || (Duty >= 0 && Duty != P.Activity))
 				{
 					// back from town: out of the way they went
+					P.PrevActivity = P.Activity;
+					P.PrevActivityEnd = Time;
 					P.State = EState::Idle;
 					P.Pose = EPose::Stand;
 					P.Think = 0.f;
