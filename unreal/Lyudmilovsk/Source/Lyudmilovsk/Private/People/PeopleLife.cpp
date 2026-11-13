@@ -188,7 +188,7 @@ void UPeopleLifeSubsystem::Deinitialize()
 bool UPeopleLifeSubsystem::Start()
 {
 	TPimplPtr<LP::FWorld> W = MakePimpl<LP::FWorld>();
-	W->Opt.SettleBatch = 120;      // the townsfolk placed over a few frames after a load or a clock jump
+	W->Opt.SettleBatch = 24;       // the townsfolk placed over some forty frames after a load or a clock jump (a decision each: 120 a frame was a 24 ms frame)
 	const FString Dir = FPaths::ConvertRelativePathToFull(FPaths::ProjectContentDir() / TEXT("PeopleData"));
 	const FString Animals = FPaths::ConvertRelativePathToFull(FPaths::ProjectContentDir() / TEXT("AnimalsData"));
 	if (!W->Load(TCHAR_TO_UTF8(*Dir), TCHAR_TO_UTF8(*Animals)))
