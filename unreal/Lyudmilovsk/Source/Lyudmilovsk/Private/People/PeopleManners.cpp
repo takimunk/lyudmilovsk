@@ -18,7 +18,7 @@ namespace LyudPeople
 		const char* HabitNames[] = { "smoker", "phone", "reader", "feeder", "photographer", "knitter", "umbrella", "sweet", "dozer",
 			"hands_back" };
 		constexpr int NumHabits = (int)(sizeof(HabitNames) / sizeof(HabitNames[0]));
-		const char* NoticeNames[(int)ENoticeEvent::Num] = { "", "hero_runs", "hero_close", "hero_lamp", "hero_sneaks", "hero_rides" };
+		const char* NoticeNames[(int)ENoticeEvent::Num] = { "", "hero_runs", "hero_close", "hero_lamp", "hero_sneaks", "hero_rides", "hero_fishes", "hero_swims", "hero_sits" };
 
 		float Clamp01(float V) { return V < 0.f ? 0.f : (V > 1.f ? 1.f : V); }
 
@@ -910,6 +910,16 @@ namespace LyudPeople
 			&& P.Pose != EPose::Work && P.Pose != EPose::Shovel;
 		const V3 To = Hero.Pos - P.Pos;
 		const float D = To.Len2D();
+		// in the water: seen from the promenade above too, and from further off
+		if (Hero.bThere && Hero.bSwim && bAwake && !P.bIndoors && D < 32.f && std::fabs(To.Z) < 9.f && Now.Clock >= S.EventCool
+			&& S.Event == ENoticeEvent::None && (P.Pose == EPose::Stand || P.Pose == EPose::Look || P.Pose == EPose::Sit)
+			&& OffFacing(P, Hero.Pos) < 75.f && Rand(S.Rng) < 0.04f + 0.08f * Who.Curiosity)
+		{
+			S.Event = ENoticeEvent::HeroSwims;
+			S.EventCool = Now.Clock + 240.f;
+			S.LookAt = -1;
+			S.LookUntil = std::max(S.LookUntil, Now.Clock + 5.f);
+		}
 		if (!Hero.bThere || !bAwake || std::fabs(To.Z) > 2.5f || D > 14.f)
 		{
 			S.NearSince = -1.f;
@@ -992,6 +1002,19 @@ namespace LyudPeople
 		{
 			S.Event = ENoticeEvent::HeroLamp;
 			S.EventCool = Now.Clock + 90.f;
+		}
+		else if (Hero.bSeated && !P.bIndoors && IsSeated(P.Pose) && D < 2.4f && Rand(S.Rng) < 0.06f + 0.1f * Who.Warmth)
+		{
+			// he sat down beside them on the bench
+			S.Event = ENoticeEvent::HeroSits;
+			S.EventCool = Now.Clock + 600.f;
+		}
+		else if (Hero.bFishing && !Hero.bSeated && D < 7.f && bFront && Speed < 0.6f && P.Pose != EPose::Walk && S.Cur != EManner::Fish
+			&& Rand(S.Rng) < 0.02f + 0.06f * Who.Curiosity)
+		{
+			// his line is out near them: the curious have a question
+			S.Event = ENoticeEvent::HeroFishes;
+			S.EventCool = Now.Clock + 300.f;
 		}
 		if (S.Event != ENoticeEvent::None)
 		{

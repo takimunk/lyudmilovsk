@@ -670,6 +670,67 @@ static void Noticing()
 		Got = M.TakeEvent(Who);
 	}
 	CHECK(Got == ENoticeEvent::HeroRides, "a bicycle tearing past is noticed (%s)", NoticeEventName(Got));
+	// standing still with the line out a few steps in front of them
+	Got = ENoticeEvent::None;
+	Hero.bBike = false;
+	Hero.bFishing = true;
+	Hero.Vel = V3();
+	for (int I = 0; I < 400 && Got == ENoticeEvent::None; I++)
+	{
+		Now.Clock = 2000.f + I * 0.25f;
+		Hero.Pos = P.Pos + Fwd * 4.f;
+		M.Notice(W, Who, Now, Hero);
+		Got = M.TakeEvent(Who);
+	}
+	CHECK(Got == ENoticeEvent::HeroFishes, "the player fishing near somebody is noticed (%s)", NoticeEventName(Got));
+	// in the water 20 m off and 4 m below
+	Got = ENoticeEvent::None;
+	Hero.bFishing = false;
+	Hero.bSwim = true;
+	for (int I = 0; I < 400 && Got == ENoticeEvent::None; I++)
+	{
+		Now.Clock = 3000.f + I * 0.25f;
+		Hero.Pos = P.Pos + Fwd * 20.f + V3(0.f, 0.f, -4.f);
+		M.Notice(W, Who, Now, Hero);
+		Got = M.TakeEvent(Who);
+	}
+	CHECK(Got == ENoticeEvent::HeroSwims, "the player in the water is seen from the shore (%s)", NoticeEventName(Got));
+	// nothing of the kind while he just stands there
+	Got = ENoticeEvent::None;
+	Hero.bSwim = false;
+	for (int I = 0; I < 200 && Got == ENoticeEvent::None; I++)
+	{
+		Now.Clock = 4000.f + I * 0.25f;
+		Hero.Pos = P.Pos + Fwd * 4.f;
+		M.Notice(W, Who, Now, Hero);
+		Got = M.TakeEvent(Who);
+	}
+	CHECK(Got == ENoticeEvent::None, "standing a few steps off is nothing to remark on (%s)", NoticeEventName(Got));
+	// sitting down by somebody on a bench
+	int Sitter = -1;
+	for (const FPerson& Q : W.People)
+	{
+		if (Q.bTown && Drawn(W, Q) && !Q.bIndoors && Q.State == EState::Doing && Q.Pose == EPose::Sit)
+		{
+			Sitter = Q.Id;
+			break;
+		}
+	}
+	CHECK(Sitter >= 0, "somebody sits out of doors at 13:10");
+	if (Sitter >= 0)
+	{
+		const FPerson& Q = W.People[Sitter];
+		Got = ENoticeEvent::None;
+		Hero.bSeated = true;
+		for (int I = 0; I < 400 && Got == ENoticeEvent::None; I++)
+		{
+			Now.Clock = 5000.f + I * 0.25f;
+			Hero.Pos = Q.Pos + V3(0.9f, 0.f, 0.f);
+			M.Notice(W, Sitter, Now, Hero);
+			Got = M.TakeEvent(Sitter);
+		}
+		CHECK(Got == ENoticeEvent::HeroSits, "sitting down beside somebody is noticed (%s)", NoticeEventName(Got));
+	}
 	Hero.bBike = false;
 	// a wave on demand, and none over a newspaper
 	CHECK(M.React(Who, EManner::Wave, 1300.f, 2.f) && M.StateOf(Who)->Cur == EManner::Wave, "a wave can be asked for");

@@ -1297,6 +1297,8 @@ talk = town.chat_kids3.1 | town.chat_kids3.2 | town.chat_kids3.3
 # people are looking up at one)
 # The household's weekend outing (doing = outing: at it now, with their own)
 # A grown-up standing by while their child plays (doing = mind_child)
+# What the player is up to: his line is out near them (on = hero_fishes), he is in the water (hero_swims), he sat
+# down beside them on a bench (hero_sits)
 
 [manner_smoke]
 manner = smoke
@@ -1497,6 +1499,42 @@ doing = mind_child
 near = hero
 weight = 5
 say = town.mind_child_hero.1
+
+[notice_fishes]
+on = hero_fishes
+say = town.notice_fishes.1..5
+
+[notice_fishes_kid]
+on = hero_fishes
+age = kid
+weight = 3
+say = town.notice_fishes_kid.1..2
+
+[notice_swims]
+on = hero_swims
+say = town.notice_swims.1..3
+
+[notice_swims_cold]
+on = hero_swims
+weather = cold snow
+weight = 4
+say = town.notice_swims_cold.1..2
+
+[notice_swims_warm]
+on = hero_swims
+weather = warm
+weight = 4
+say = town.notice_swims_warm.1
+
+[notice_sits]
+on = hero_sits
+say = town.notice_sits.1..4
+
+[notice_sits_known]
+on = hero_sits
+met = known
+weight = 4
+say = town.notice_sits_known.1..2
 
 # At the counter: a customer on their feet and whoever serves them (LyudBarks::AtCounter: the same shop, market
 # stall or kiosk, within 4 m). A is the customer unless the set says doing = work first.

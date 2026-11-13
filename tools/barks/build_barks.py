@@ -29,7 +29,7 @@ COND_KEYS = ["to", "on", "near", "job", "age", "sex", "doing", "at", "pose", "ma
              "weekday", "sun", "weather", "festival", "phase", "job2", "age2", "sex2", "doing2", "weight"]
 EVENTS = {"rest_sit", "rest_carry", "rest_serve", "rest_bill", "rest_bye",
           # somebody noticed the player (PeopleManners.h ENoticeEvent, docs/town_manners.md)
-          "hero_runs", "hero_close", "hero_lamp", "hero_sneaks", "hero_rides"}
+          "hero_runs", "hero_close", "hero_lamp", "hero_sneaks", "hero_rides", "hero_fishes", "hero_swims", "hero_sits"}
 
 sets = []          # [{name, conds: [(k, v)], say: [keys], talk: [[keys]], file}]
 strings = collections.OrderedDict()   # key -> (ru, en, ja)

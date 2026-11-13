@@ -51,6 +51,9 @@ Only people who have a body now are updated (a few dozen); between picks an upda
   (`on = hero_runs` sets in `tools/barks/lines/10_manners.txt`).
   Also `hero_sneaks` (crouched, creeping up behind somebody's back: they start and turn round) and `hero_rides` (a
   bicycle tearing past).
+  And what he is up to: `hero_fishes` (his line is out a few steps from them: the curious ask what's biting),
+  `hero_swims` (he is in the water: seen from the shore and the promenade above, up to 32 m; other words in the cold),
+  `hero_sits` (he sat down beside them on a bench).
 - **they come to know him**: `UPeopleLifeSubsystem::NoteMet` counts the days somebody has greeted the player (kept
   with the save, `MetHero`); town talk's `met = new | seen | known` (1-4 days: seen; 5 and more: known) picks other
   greetings ("there you are, I hadn't seen you about"), and those who know him greet more readily and wave.
@@ -143,7 +146,8 @@ the hands is `LyudGesture::HoldOf`:
 ## API
 
 `UPeopleLifeSubsystem`: `GetManner(Id)`, `GetTrait(Id, "warmth")`, `ReactManner(Id, "wave", Seconds)`,
-`ForceManner(Name)`, `SetSkyShow(What, Strength, Seconds)`, `GetSkyShow()`; events `hero_runs`, `hero_close`, `hero_lamp` on `OnPersonEvent`.
+`ForceManner(Name)`, `SetSkyShow(What, Strength, Seconds)`, `GetSkyShow()`; events `hero_runs`, `hero_close`, `hero_lamp`, `hero_sneaks`, `hero_rides`, `hero_fishes`, `hero_swims`,
+`hero_sits` on `OnPersonEvent`.
 Town talk sets: `manner = smoke phone_call ...` (what their hands are doing now).
 
 ## Testing

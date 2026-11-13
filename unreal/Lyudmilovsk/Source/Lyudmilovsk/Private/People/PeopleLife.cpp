@@ -40,6 +40,9 @@
 #include "Plants/GameCalendar.h"
 #include "Sky/Ephemeris.h"
 #include "Sky/LyudRareSky.h"
+#include "Fishing/LyudFishing.h"
+#include "Sea/LyudSwim.h"
+#include "HeroCharacter.h"
 #include "Weather/LyudWeather.h"
 #include "Winter/LyudWinter.h"
 #include "Camera/PlayerCameraManager.h"
@@ -1809,6 +1812,12 @@ void UPeopleLifeSubsystem::UpdateManners(float DeltaTime)
 			Hero.bLamp = Screen && Screen->IsHeadLampOn();
 			const UHeroBikeComponent* HeroBike = Pawn->FindComponentByClass<UHeroBikeComponent>();
 			Hero.bBike = HeroBike && HeroBike->IsOnBike();
+			const ULyudFishing* Fishing = ULyudFishing::Get(World);
+			Hero.bFishing = Fishing && Fishing->IsLineOut();
+			const ULyudSwimComponent* Swim = ULyudSwimComponent::Get(World);
+			Hero.bSwim = Swim && Swim->IsSwimming();
+			const AHeroCharacter* HeroCh = Cast<AHeroCharacter>(Pawn);
+			Hero.bSeated = HeroCh && HeroCh->IsSeated();
 		}
 		for (const int32 Id : ShownIds)
 		{

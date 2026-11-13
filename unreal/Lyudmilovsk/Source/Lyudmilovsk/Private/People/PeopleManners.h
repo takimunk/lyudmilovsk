@@ -129,10 +129,13 @@ namespace LyudPeople
 		bool bLamp = false;         // the head lamp is on
 		bool bCrouch = false;
 		bool bBike = false;         // riding a bicycle
+		bool bFishing = false;      // his line is out
+		bool bSwim = false;         // in the water
+		bool bSeated = false;       // sitting (a bench, a chair)
 	};
 
 	/** What somebody just noticed (the game may say a line for it: town_barks.txt on = ...). */
-	enum class ENoticeEvent : uint8_t { None, HeroRuns, HeroTooClose, HeroLamp, HeroSneaks, HeroRides, Num };
+	enum class ENoticeEvent : uint8_t { None, HeroRuns, HeroTooClose, HeroLamp, HeroSneaks, HeroRides, HeroFishes, HeroSwims, HeroSits, Num };
 	const char* NoticeEventName(ENoticeEvent E);
 
 	/** A row of manners.json. */
