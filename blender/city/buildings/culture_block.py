@@ -336,9 +336,9 @@ def _furnish_hall(B, hx0, hx1, hy0, hy1):
     kit.poster(B, kx - 2.9, fy1, yaw=0, name="poster_health", w=0.7, zc=4.2)
     kit.poster(B, kx + 2.9, fy1, yaw=0, name="poster_safety", w=0.7, zc=4.2)
     kit.lockers(B, fx0, 3.0, yaw=90, n=7, mat="CT_PlasterBlue")
-    kit.bench(B, fx0 + 1.0, 3.0, yaw=270, w=2.4, kind="gym")
-    sp("bench_-16", "bench", (fx0 + 1.0, 3.0, 0.0), 270)
-    T("changing_bench_w", "seat", (fx0 + 1.0, 3.0, 0.45), 270, height=0.45)
+    kit.bench(B, fx0 + 1.0, 3.0, yaw=90, w=2.4, kind="gym")
+    sp("bench_-16", "bench", (fx0 + 1.0, 3.0, 0.0), 90)
+    T("changing_bench_w", "seat", (fx0 + 1.0, 3.0, 0.45), 90, height=0.45)
     T("lockers_west", "board", (fx0 + 0.3, 3.0, 1.3), 90, topic="rules")
     kit.mats(B, fx0 + 0.6, 6.9, yaw=0, w=1.0, d=2.0, n=4)
     for k, bx in enumerate((-14.4, -10.4)):

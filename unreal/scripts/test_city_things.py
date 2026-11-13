@@ -3,7 +3,7 @@ lists them (lyud.City.Things), then runs a few of each kind with lyud.City.Do fr
 a counter, something to take twice, a seat, a bed), puts the hero in front of a shelf and takes a screenshot of the prompt
 and of the page, sits and lies on the nearest seat and bed (a save and a load while seated, a sleep to 7:00), reads a text of
 the reading view to its end and lists what was read, opens the staff talk at a counter and asks a topic (the list, the reset),
-logs the room tone, saves and runs the shelf again. CITYTEST lines; the CityThings lines of LogLyudCity say what each did.
+logs the room tone, takes a lift (lyud.City.Go), saves and runs the shelf again. CITYTEST lines; the CityThings lines of LogLyudCity say what each did.
 unreal/scripts/test_city_things.sh checks them.
 """
 import json
@@ -187,6 +187,12 @@ def plan():
     add(1.0, lambda w: cmd(w, "lyud.City.Ask reset"))
     add(1.0, lambda w: cmd(w, "lyud.City.Ask no/such_thing"))
     add(1.0, lambda w: cmd(w, "lyud.City.Tone"))
+    # a storey link: to a lift door if the data has one (else any door), as a lift would put him there
+    lifts = [t for t in things if t.get("floors")] or [t for t in things if t.get("kind") == "door"]
+    for th in lifts[:1]:
+        add(2.5, lambda w, i=(th["floors"][0]["to"] if th.get("floors") else th["id"]): cmd(w, "lyud.City.Go " + i))
+        add(1.0, lambda w: shot(w, "lift_arrived"))
+    add(1.0, lambda w: cmd(w, "lyud.City.Go no/such_thing"))
     add(2.0, lambda w: cmd(w, "lyud.Save citytest"))
     if shelves:
         add(1.5, lambda w: cmd(w, "lyud.City.Do " + shelves[0]["id"]))

@@ -60,6 +60,8 @@ check "topics heard" "CityThings: topics heard [0-9]+ of [0-9]+"
 check "topics reset" "CityThings: every topic is new again"
 check "talk unknown id" "CityThings: ask: no thing no/such_thing"
 check "room tone" "CityThings: room tone"
+grep -qE "CityThings: lift arrived at|CityThings: lift to .*: no spot fits" "$LOG" && echo "PASS lift" || echo "WARN no lift trip (no door in the data?)"
+check "lift unknown id" "CityThings: go: no thing no/such_thing"
 grep -q "the seat went from under the hero" "$LOG" && echo "WARN the seat went from under the hero (recovered)" || echo "PASS never lost a seat"
 check "finished" "CITYTEST done"
 # Epic's experimental Toolset plugins fail their own init_unreal.py on every run: only errors of this test's script count

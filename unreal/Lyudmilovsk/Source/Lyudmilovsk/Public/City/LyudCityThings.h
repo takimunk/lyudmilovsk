@@ -88,11 +88,16 @@ struct LYUDMILOVSK_API FCityThingRef
  * are marked. The rules are the model's (TalkReady, AskTopic); a topic's first hearing gives its stamp and the quest event
  * "ask"/<topic id>.
  *
+ * Lifts and storey links (docs/city_interiors.md "Lifts and storey links"): a door thing with "floors" takes the hero to
+ * another door thing (one stop: at once; more: a chooser on the page, A/D and E): a short fade, his capsule placed on a floor
+ * found by a trace 0.6 m in front of the arrival door (other spots if it does not fit; none: he stays), facing away from it,
+ * a few game seconds, the fade back. The plot round him is tracked again at once.
+ *
  * Room tones (docs/city_interiors.md "Room tones"): the plot round the hero names a quiet loop and sparse one-shots in the
  * data. One pooled 2D audio component plays the loop (switched with a fade when the plot or its open state changes, stopped
  * on leaving); the one-shots go through ULyudSoundscapeSubsystem::PlayEffect on a timer. Checked at the pick rate only.
  *
- * Console: lyud.City.Things, lyud.City.Do <thing id>, lyud.City.Ask <thing id> [topic id] | list | reset, lyud.City.Tone, lyud.City.Things.Show 0|1, lyud.City.Weekday <mon..sun>,
+ * Console: lyud.City.Go <thing id>, lyud.City.Things, lyud.City.Do <thing id>, lyud.City.Ask <thing id> [topic id] | list | reset, lyud.City.Tone, lyud.City.Things.Show 0|1, lyud.City.Weekday <mon..sun>,
  * lyud.City.Collections [grant|clear <set|*>], lyud.City.Game <thing id> | press [1-3] | win | quit | regulars,
  * lyud.City.Sit [thing id], lyud.City.Lie [thing id], lyud.City.Sleep <hour>, lyud.City.Read <text id> | next | prev | close |
  * list | all | clear.
@@ -198,6 +203,15 @@ public:
 	/** Developer mode: every topic unheard (new) again. */
 	void ForgetTopics();
 	bool IsTalking() const { return TalkThing >= 0; }
+
+	// --- lifts and storey links
+
+	/** Takes the hero to a thing as if he came out of it by a lift (console, developer mode; any thing: in front of it, facing
+	 *  away); false: no such thing or no spot fits there. */
+	bool GoToThing(const FString& ThingId);
+	/** Developer mode: uses the nearest lift door (its chooser, or at once). */
+	bool UseNearestLift();
+	bool IsUsingLift() const { return LiftDest >= 0 || LiftThing >= 0; }
 
 	// --- room tones
 
@@ -319,6 +333,19 @@ private:
 	FText TalkSpeaker(int32 Thing) const;
 	/** A shop's goods the item table knows, in the inventory screen; false: nothing to sell. */
 	bool OpenShopOf(const FString& Shop, const FString& TitleKey);
+
+	// --- lifts: the chooser (several stops), then the fade, the move and the fade back
+	void BeginLiftChoice(int32 Thing);
+	void ShowLiftChoice();
+	void TickLiftChoice(AHeroCharacter* Hero, APlayerController* PC, bool bTalk);
+	void EndLiftChoice();
+	/** Starts the trip to Dest: the spot is found first (false: none fits, he stays); the fade, then TickLift moves him. */
+	bool BeginLift(int32 Dest);
+	void TickLift(AHeroCharacter* Hero, APlayerController* PC);
+	/** The trip over (or let go: a load, the level ending): the moves back, the screen back if it was still black. */
+	void EndLift();
+	/** A spot in front of Dest his capsule fits on, on a believable floor (the capsule's middle, world cm); false none. */
+	bool FindLiftSpot(int32 Dest, const AHeroCharacter* Hero, FVector& OutMiddle, float& OutYaw) const;
 
 	// --- room tones
 	/** At the pick rate: which tone the plot round the hero has now (switches the loop), and the one-shots' timer. */
@@ -479,6 +506,18 @@ private:
 	bool bTalkAnywhere = false;
 	/** The hero's moves are held while the talk is up (by this controller): A and D choose. */
 	TWeakObjectPtr<APlayerController> TalkBlockedBy;
+
+	/** Lifts: the door whose chooser is up (-1 none), the stop chosen, the frame it opened; the trip under way (LiftDest -1:
+	 *  none), the spot and yaw he arrives at, when he is moved (the screen black), when the fade back starts, the moves held. */
+	int32 LiftThing = -1;
+	int32 LiftSel = 0;
+	uint64 LiftFrame = 0;
+	int32 LiftDest = -1;
+	FVector LiftMiddle = FVector::ZeroVector;
+	float LiftYaw = 0.f;
+	double LiftMoveAt = 0.0;
+	bool bLiftMoved = false;
+	TWeakObjectPtr<APlayerController> LiftBlockedBy;
 
 	/** Room tones: the one pooled 2D component (made on first use, kept), the loop sounds of the data's tones (loaded once when
 	 *  the file is adopted, by tone index; null: no asset), the tone heard (-1 silence), the seconds to the next one-shot, the

@@ -664,9 +664,9 @@ def _furnish(B, rnd):
     _board(B, -9.8, 18.7, 0.0, 1.0, 1.1, ("kids_0", "kids_3"), h=1.3)
     thing("kids_shelf_1", "shelf", (-12.45, 13.7, 0.7), 90.0, topic="kids")
     thing("kids_shelf_2", "shelf", (-12.45, 15.7, 0.7), 90.0, topic="kids")
-    thing("kids_beanbag_1", "seat", (b1["seats"][0][0], b1["seats"][0][1], b1["seats"][0][2]), 300.0, height=0.3)
-    thing("kids_beanbag_2", "seat", (b2["seats"][0][0], b2["seats"][0][1], b2["seats"][0][2]), 130.0, height=0.3)
-    thing("kids_stool", "seat", (st1["seats"][0][0], st1["seats"][0][1], st1["seats"][0][2]), 200.0, height=0.45)
+    thing("kids_beanbag_1", "seat", (b1["seats"][0][0], b1["seats"][0][1], b1["seats"][0][2]), 64.0, height=0.3)
+    thing("kids_beanbag_2", "seat", (b2["seats"][0][0], b2["seats"][0][1], b2["seats"][0][2]), 237.0, height=0.3)
+    thing("kids_stool", "seat", (st1["seats"][0][0], st1["seats"][0][1], st1["seats"][0][2]), 348.0, height=0.45)
     B.spot("kids_corner", "stand", (-9.5, 14.2, 0.0), 180.0)
 
     # ---- listening corner (north-east of the core)
