@@ -138,6 +138,18 @@ the mesh's local **X** axis (`"axis": "x"` in the manifest), the handrail is on 
 runs along map **Y at yaw 0 / 180** and along map **X at yaw 90 / 270** (check against the table above before placing). Collision is `box`: the manifest's
 `collision_boxes` (deck, two ramps, handrail pieces; mesh space, Blender axes, `rot_y_deg` right-handed about +Y, positive tips +X down); trestles have no collision.
 
+**River and spring dressing.** `blender/north/props_river.py` (`SM_North_<Kind>[_V<n>]`; origin on the ground under the middle, front = Blender -Y as everywhere, so
+`yaw` as in the table above). `driftwood` v0..v2 (collision `box`): pale river driftwood for gravel bars, v0 a stripped trunk 6.2 m long along local X with an upright root
+plate at -X (6.8 x 2.2 m), v1 a tangle of three logs (4.8 x 3.4 m), v2 a 1 m stump with six roots (3.1 x 3.0 m); round, no front. `river_boulder` v0..v2 (`exact`):
+v0 one 1.8 m boulder + cobble (2.0 x 1.6 x 1.0), v1 three boulders (1.5 x 1.5 x 0.65), v2 three cobbles (1.3 x 1.2 x 0.5); round, bottoms just below z 0.
+`brow_bench` (`exact`, 2.2 x 0.74 x 1.0 m): plank-and-log viewpoint bench, back rails on +Y, two `seats` at x -0.55 / +0.55, z 0.46, yaw 0 (facing -Y).
+`trail_marker` (`exact`, 0.57 x 0.52 x 1.25 m): peeled 1.2 m post with a red ring and a cairn at its foot; round. `spring_bench` (`exact`, 1.3 x 0.36 x 1.5 m): low changing bench,
+back board with three pegs on +Y, two `seats` at x -0.32 / +0.32, z 0.40, yaw 0. `spring_steps` (`box`, 1.4 x 1.9 x 2.65 m incl. stakes down to z -1.45): three split-log steps 1.2 m wide,
+**origin = the top step's back edge at ground level**, the steps descend 0.9 m over 1.4 m toward the front (-Y) (treads at z -0.3 / -0.6 / -0.9), a pole handrail on +X running 0.35 m up
+the bank; the manifest's `collision_boxes` has one sloped box (`rot_x_deg` right-handed about +X, positive tips the -Y end down). `gauge_post` (`exact`, 0.15 x 0.11 x 2.5 m):
+steel post 2.2 m above ground (0.3 m buried) with a white-and-black striped board on its -Y face: turn the front to the channel. `rowboat` (`box`, 4.0 x 1.6 x 0.78 m): upturned
+flat-bottomed boat along local X, bow at +X, keel up; no front. Driftwood uses the atlas's pale `bark` tile (no pale grey wood tile exists), boulders the existing `stone` tile; no atlas change.
+
 **Words.** Boards carry words: follow `.claude/skills/localization/SKILL.md` (ru/en/ja, text keys `north.sign.*`,
 `place.north.*`, `dev.tp.north_*`).
 

@@ -4,6 +4,7 @@ import props_tents as tents
 import props_camp as camp
 import props_signs as signs
 import props_bridge as bridge
+import props_river as river
 
 KINDS = {
     "tent_dome": (tents.tent_dome, {"variants": [0, 1, 2], "collision": "box", "body": [2.1, 2.1, 1.3]}),
@@ -24,4 +25,12 @@ KINDS = {
     "sign_post": (signs.sign_post, {"variants": [0], "collision": "exact"}),
     "log_bridge": (bridge.log_bridge, {"variants": [0, 1, 2], "collision": "box"}),
     "spring_deck": (signs.spring_deck, {"variants": [0], "collision": "exact"}),
+    "driftwood": (river.driftwood, {"variants": [0, 1, 2], "collision": "box"}),
+    "river_boulder": (river.river_boulder, {"variants": [0, 1, 2], "collision": "exact"}),
+    "brow_bench": (river.brow_bench, {"variants": [0], "collision": "exact"}),
+    "trail_marker": (river.trail_marker, {"variants": [0], "collision": "exact"}),
+    "spring_bench": (river.spring_bench, {"variants": [0], "collision": "exact"}),
+    "spring_steps": (river.spring_steps, {"variants": [0], "collision": "box"}),
+    "gauge_post": (river.gauge_post, {"variants": [0], "collision": "exact"}),
+    "rowboat": (river.rowboat, {"variants": [0], "collision": "box"}),
 }
