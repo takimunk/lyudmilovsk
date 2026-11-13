@@ -74,6 +74,11 @@ namespace LyudBirds
 		return Best;
 	}
 
+	float FWorld::Becalmed(const FSpecies& S) const
+	{
+		return S.WindLimit > 28.f ? 1.f - Clamp(SoarWind(S), 0.f, 1.f) : 0.f;
+	}
+
 	float FWorld::WindStress(const FSpecies& S) const
 	{
 		return Wind.Len2D() / std::max(S.WindLimit, 1.f);
@@ -319,8 +324,9 @@ namespace LyudBirds
 		const V3 From = Plan == 3 && G.Roost >= 0 ? Sites[G.Roost].Center() : G.Home;
 		const float D = (C - From).Len2D();
 		// (in a gale a bird that can't cope with it only goes short hops)
+		// (and with no wind to soar on the albatross only paddles and makes short low hops: not across the bay)
 		const float Range = (Plan == 3 ? 700.f : (Plan == 2 ? S.HomeRange * 2.f : S.HomeRange))
-			/ (Soars(S) ? 1.f : 1.f + 3.f * Smooth((WindStress(S) - 0.7f) / 0.6f));
+			/ (Soars(S) ? 1.f + 9.f * Becalmed(S) : 1.f + 3.f * Smooth((WindStress(S) - 0.7f) / 0.6f));
 		if (D > Range * 1.5f)
 		{
 			return 0.f;
@@ -1195,7 +1201,8 @@ namespace LyudBirds
 			G.Plan = NewPlan;
 			// stay longer when it is good; aerial feeders keep moving over their beat
 			G.StayTimer = (NewPlan == 1 ? 120.f + 300.f * Rand(R) : 200.f + 500.f * Rand(R)) * (IsAerial(S) ? 0.7f : 1.f) * (NewPlan == 5 ? 0.4f : 1.f)
-				* (1.f + 2.f * Smooth(WindStress(S) - 0.7f));         // in a gale they sit tight
+				* (1.f + 2.f * Smooth(WindStress(S) - 0.7f))          // in a gale they sit tight
+				* (1.f + 5.f * Becalmed(S));                          // and the albatross in a calm: it stays on the water
 
 			if (Site >= 0 && (Site != G.Site || bScattered))
 			{
