@@ -400,7 +400,12 @@ namespace
 			};
 			const float Far = One(8000.f), Near = One(500.f);
 			Check(Near > Far * 3.f, "a near strike is much louder than a far rumble", Far, Near);
-			Check(MeanOf(R.VoiceRmsPerSecond[Thunder], 2, 36) > 0.001f, "the far storm rumbles before it arrives", MeanOf(R.VoiceRmsPerSecond[Thunder], 2, 36));
+			// sound takes 2.9 s a kilometre: the far strikes (12 km at 1 s, 8 km at 12 s, 4.5 km at 24 s) are all heard from
+			// 35-37 s on and roll till the near one (struck at 44 s) cracks at 45.5 s; nothing is heard before the first has
+			// come. (The check used to average seconds 2..36, where only the first 0.7 s of the first rumble can be: it
+			// passed or failed by the noise's draw.)
+			const float Early = MeanOf(R.VoiceRmsPerSecond[Thunder], 2, 35), Rumble = MeanOf(R.VoiceRmsPerSecond[Thunder], 37, 44);
+			Check(Early < 1e-4f && Rumble > 0.01f, "the far storm rumbles before it arrives, not before its sound can", Early, Rumble);
 		}
 		std::printf("%s (%d failed)\n", Failures ? "FAILED" : "all passed", Failures);
 		return Failures ? 1 : 0;
