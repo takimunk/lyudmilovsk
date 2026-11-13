@@ -94,3 +94,5 @@ the cost of a step (~0.3 ms for ~930 people). `run.sh test` (the residents) runs
 - Townsfolk share models (Dima: use the current ones for now).
 - On merge with perfhunt keep its GroundCache and its door fix (hidden pooled bodies don't hold doors open).
 - People inside shells are invisible; only buildings with interiors show them indoors.
+
+How they do it (characters, habits, gestures, things in the hands, noticing the player, the weather in their choices): docs/town_manners.md.

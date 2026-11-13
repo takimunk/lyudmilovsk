@@ -2553,11 +2553,20 @@ static FAutoConsoleCommandWithWorldAndArgs GPeopleReport(TEXT("lyud.People.Repor
 	}));
 
 static FAutoConsoleCommandWithWorldAndArgs GPeopleManner(TEXT("lyud.People.Manner"),
-	TEXT("lyud.People.Manner <manner|auto>: everybody drawn does this one (fold_arms, phone_call, smoke, umbrella, ...; docs/town_manners.md)."),
+	TEXT("lyud.People.Manner <manner|next|auto>: everybody drawn does this one (fold_arms, phone_call, smoke, umbrella, ...; docs/town_manners.md)."),
 	FConsoleCommandWithWorldAndArgsDelegate::CreateLambda([](const TArray<FString>& Args, UWorld* World)
 	{
 		if (UPeopleLifeSubsystem* People = UPeopleLifeSubsystem::Get(World))
 		{
+			if (Args.Num() > 0 && Args[0] == TEXT("next") && People->GetManners())
+			{
+				// the next one in turn (developer mode: a look at each)
+				LyudPeople::FManners& M = *People->GetManners();
+				const int32 Next = M.Forced == LyudPeople::EManner::Num ? 1 : (int32)M.Forced + 1;
+				M.Forced = Next >= LyudPeople::NumManners ? LyudPeople::EManner::Num : (LyudPeople::EManner)Next;
+				UE_LOG(LogTemp, Warning, TEXT("People: manner %hs"), M.Forced == LyudPeople::EManner::Num ? "auto" : LyudPeople::MannerName(M.Forced));
+				return;
+			}
 			People->ForceManner(Args.Num() > 0 && Args[0] != TEXT("auto") ? FName(*Args[0]) : NAME_None);
 		}
 	}));

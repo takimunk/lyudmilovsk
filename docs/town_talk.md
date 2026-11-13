@@ -123,3 +123,5 @@ find an exchange (40%), the restaurant's staff have a line at every moment, and 
   `gamer_morning` (nobody plays at the club between 5 and 9 that day) and `waiter_sit_festival` (no holiday that day).
 - Exchanges are between two people; a group at a gathering doesn't talk among itself.
 - The restaurant's moments read its properties until it calls `SayEvent` itself.
+
+Lines by what the hands are doing (`manner = smoke`) and for noticing the player (`on = hero_runs`, `hero_close`, `hero_lamp`): docs/town_manners.md, tools/barks/lines/10_manners.txt.
