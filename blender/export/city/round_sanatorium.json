@@ -291,6 +291,36 @@
    "yaw": 153.0
   },
   {
+   "id": "dining_0_b",
+   "kind": "table",
+   "pos": [
+    -6.426,
+    13.388,
+    0.45
+   ],
+   "yaw": 333.0
+  },
+  {
+   "id": "dining_0_c",
+   "kind": "table",
+   "pos": [
+    -7.428,
+    13.062,
+    0.45
+   ],
+   "yaw": 63.0
+  },
+  {
+   "id": "dining_0_d",
+   "kind": "table",
+   "pos": [
+    -6.101,
+    12.386,
+    0.45
+   ],
+   "yaw": 243.0
+  },
+  {
    "id": "dining_1",
    "kind": "table",
    "pos": [
@@ -301,6 +331,36 @@
    "yaw": 161.29999999999995
   },
   {
+   "id": "dining_1_b",
+   "kind": "table",
+   "pos": [
+    -4.538,
+    12.592,
+    0.45
+   ],
+   "yaw": 341.3
+  },
+  {
+   "id": "dining_1_c",
+   "kind": "table",
+   "pos": [
+    -5.483,
+    12.125,
+    0.45
+   ],
+   "yaw": 71.30000000000001
+  },
+  {
+   "id": "dining_1_d",
+   "kind": "table",
+   "pos": [
+    -4.071,
+    11.648,
+    0.45
+   ],
+   "yaw": 251.29999999999995
+  },
+  {
    "id": "dining_2",
    "kind": "table",
    "pos": [
@@ -309,6 +369,36 @@
     0.45
    ],
    "yaw": 169.79999999999995
+  },
+  {
+   "id": "dining_2_b",
+   "kind": "table",
+   "pos": [
+    -2.507,
+    12.069,
+    0.45
+   ],
+   "yaw": 349.8
+  },
+  {
+   "id": "dining_2_c",
+   "kind": "table",
+   "pos": [
+    -3.372,
+    11.467,
+    0.45
+   ],
+   "yaw": 79.80000000000001
+  },
+  {
+   "id": "dining_2_d",
+   "kind": "table",
+   "pos": [
+    -1.905,
+    11.204,
+    0.45
+   ],
+   "yaw": 259.79999999999995
   },
   {
    "id": "piano",
@@ -389,6 +479,86 @@
     0.0
    ],
    "yaw": 38.37142857142857
+  },
+  {
+   "id": "garden_bench",
+   "kind": "bench",
+   "pos": [
+    -10.13,
+    12.335,
+    0.0
+   ],
+   "yaw": 141.42857142857144
+  },
+  {
+   "id": "checkers_1",
+   "kind": "seat",
+   "pos": [
+    6.345,
+    13.296,
+    0.45
+   ],
+   "yaw": 116.01428571428572
+  },
+  {
+   "id": "checkers_2",
+   "kind": "seat",
+   "pos": [
+    7.459,
+    13.84,
+    0.45
+   ],
+   "yaw": -63.98571428571428
+  },
+  {
+   "id": "pump_bench",
+   "kind": "bench",
+   "pos": [
+    5.5,
+    14.274,
+    0.0
+   ],
+   "yaw": 26.01428571428572
+  },
+  {
+   "id": "exercise_1",
+   "kind": "stand",
+   "pos": [
+    1.278,
+    10.45,
+    0.0
+   ],
+   "yaw": 5.799999999999997
+  },
+  {
+   "id": "exercise_2",
+   "kind": "stand",
+   "pos": [
+    1.974,
+    10.52,
+    0.0
+   ],
+   "yaw": 5.799999999999997
+  },
+  {
+   "id": "exercise_3",
+   "kind": "stand",
+   "pos": [
+    1.737,
+    9.893,
+    0.0
+   ],
+   "yaw": 185.8
+  },
+  {
+   "id": "brochure",
+   "kind": "stand",
+   "pos": [
+    4.349,
+    11.609,
+    0.0
+   ],
+   "yaw": 193.0
   }
  ],
  "lamps": [
@@ -535,6 +705,19 @@
    }
   },
   {
+   "id": "lobby_sofa_b",
+   "kind": "seat",
+   "pos": [
+    -0.031,
+    12.966,
+    0.43
+   ],
+   "yaw": 358.5,
+   "props": {
+    "height": 0.45
+   }
+  },
+  {
    "id": "lobby_lounge_a",
    "kind": "seat",
    "pos": [
@@ -640,6 +823,45 @@
    }
   },
   {
+   "id": "dining_0_b",
+   "kind": "seat",
+   "pos": [
+    -6.426,
+    13.388,
+    0.45
+   ],
+   "yaw": 333.0,
+   "props": {
+    "height": 0.45
+   }
+  },
+  {
+   "id": "dining_0_c",
+   "kind": "seat",
+   "pos": [
+    -7.428,
+    13.062,
+    0.45
+   ],
+   "yaw": 63.0,
+   "props": {
+    "height": 0.45
+   }
+  },
+  {
+   "id": "dining_0_d",
+   "kind": "seat",
+   "pos": [
+    -6.101,
+    12.386,
+    0.45
+   ],
+   "yaw": 243.0,
+   "props": {
+    "height": 0.45
+   }
+  },
+  {
    "id": "dining_table_1",
    "kind": "seat",
    "pos": [
@@ -653,6 +875,45 @@
    }
   },
   {
+   "id": "dining_1_b",
+   "kind": "seat",
+   "pos": [
+    -4.538,
+    12.592,
+    0.45
+   ],
+   "yaw": 341.3,
+   "props": {
+    "height": 0.45
+   }
+  },
+  {
+   "id": "dining_1_c",
+   "kind": "seat",
+   "pos": [
+    -5.483,
+    12.125,
+    0.45
+   ],
+   "yaw": 71.3,
+   "props": {
+    "height": 0.45
+   }
+  },
+  {
+   "id": "dining_1_d",
+   "kind": "seat",
+   "pos": [
+    -4.071,
+    11.648,
+    0.45
+   ],
+   "yaw": 251.3,
+   "props": {
+    "height": 0.45
+   }
+  },
+  {
    "id": "dining_table_2",
    "kind": "seat",
    "pos": [
@@ -661,6 +922,45 @@
     0.45
    ],
    "yaw": 169.8,
+   "props": {
+    "height": 0.45
+   }
+  },
+  {
+   "id": "dining_2_b",
+   "kind": "seat",
+   "pos": [
+    -2.507,
+    12.069,
+    0.45
+   ],
+   "yaw": 349.8,
+   "props": {
+    "height": 0.45
+   }
+  },
+  {
+   "id": "dining_2_c",
+   "kind": "seat",
+   "pos": [
+    -3.372,
+    11.467,
+    0.45
+   ],
+   "yaw": 79.8,
+   "props": {
+    "height": 0.45
+   }
+  },
+  {
+   "id": "dining_2_d",
+   "kind": "seat",
+   "pos": [
+    -1.905,
+    11.204,
+    0.45
+   ],
+   "yaw": 259.8,
    "props": {
     "height": 0.45
    }
@@ -1069,6 +1369,260 @@
    "yaw": 218.4,
    "props": {
     "what": "night_radio"
+   }
+  },
+  {
+   "id": "couch_lamp",
+   "kind": "machine",
+   "pos": [
+    9.879,
+    12.266,
+    1.22
+   ],
+   "yaw": 218.4,
+   "props": {
+    "what": "switch",
+    "switch": 1.5
+   }
+  },
+  {
+   "id": "lobby_switch",
+   "kind": "machine",
+   "pos": [
+    -1.47,
+    8.513,
+    1.3
+   ],
+   "yaw": 180.0,
+   "props": {
+    "what": "switch",
+    "switch": "room"
+   }
+  },
+  {
+   "id": "dining_switch",
+   "kind": "machine",
+   "pos": [
+    -7.225,
+    14.36,
+    1.3
+   ],
+   "yaw": 57.9,
+   "props": {
+    "what": "switch",
+    "switch": "room"
+   }
+  },
+  {
+   "id": "kit_clock_3",
+   "kind": "board",
+   "pos": [
+    -8.912,
+    11.582,
+    2.5
+   ],
+   "yaw": 57.9,
+   "props": {
+    "what": "clock"
+   }
+  },
+  {
+   "id": "garden_switch",
+   "kind": "machine",
+   "pos": [
+    -9.263,
+    16.171,
+    1.3
+   ],
+   "yaw": 45.0,
+   "props": {
+    "what": "switch",
+    "switch": "room"
+   }
+  },
+  {
+   "id": "kit_clock_4",
+   "kind": "board",
+   "pos": [
+    -9.546,
+    15.818,
+    2.4
+   ],
+   "yaw": 45.0,
+   "props": {
+    "what": "clock"
+   }
+  },
+  {
+   "id": "treat_switch",
+   "kind": "machine",
+   "pos": [
+    10.182,
+    15.252,
+    1.3
+   ],
+   "yaw": -45.0,
+   "props": {
+    "what": "switch",
+    "switch": 4.8
+   }
+  },
+  {
+   "id": "kit_clock_5",
+   "kind": "board",
+   "pos": [
+    9.793,
+    15.57,
+    2.55
+   ],
+   "yaw": -45.0,
+   "props": {
+    "what": "clock"
+   }
+  },
+  {
+   "id": "garden_window",
+   "kind": "board",
+   "pos": [
+    -7.933,
+    16.211,
+    1.5
+   ],
+   "yaw": 321.4,
+   "props": {
+    "topic": "view"
+   }
+  },
+  {
+   "id": "pump_checkers",
+   "kind": "play",
+   "pos": [
+    6.902,
+    13.568,
+    0.82
+   ],
+   "yaw": 116.0,
+   "props": {
+    "what": "checkers"
+   }
+  },
+  {
+   "id": "pump_stool_w",
+   "kind": "seat",
+   "pos": [
+    6.345,
+    13.296,
+    0.45
+   ],
+   "yaw": 116.0,
+   "props": {
+    "height": 0.45
+   }
+  },
+  {
+   "id": "pump_stool_e",
+   "kind": "seat",
+   "pos": [
+    7.459,
+    13.84,
+    0.45
+   ],
+   "yaw": -64.0,
+   "props": {
+    "height": 0.45
+   }
+  },
+  {
+   "id": "lounge_dominoes",
+   "kind": "play",
+   "pos": [
+    -0.36,
+    12.255,
+    0.45
+   ],
+   "yaw": 358.5,
+   "props": {
+    "what": "dominoes"
+   }
+  },
+  {
+   "id": "lobby_letter",
+   "kind": "board",
+   "pos": [
+    -0.381,
+    11.455,
+    0.46
+   ],
+   "yaw": 358.5,
+   "props": {
+    "topic": "letter"
+   }
+  },
+  {
+   "id": "lobby_exercise",
+   "kind": "sport",
+   "pos": [
+    2.372,
+    10.561,
+    0.6
+   ],
+   "yaw": 5.8,
+   "props": {
+    "what": "morning_exercise"
+   }
+  },
+  {
+   "id": "brochure_rack",
+   "kind": "take",
+   "pos": [
+    4.124,
+    12.584,
+    1.22
+   ],
+   "yaw": 13.0,
+   "props": {
+    "item": "postcard"
+   }
+  },
+  {
+   "id": "night_bell",
+   "kind": "counter",
+   "pos": [
+    2.74,
+    12.264,
+    1.18
+   ],
+   "yaw": 13.0,
+   "props": {
+    "role": "receptionist",
+    "service": "reception"
+   }
+  },
+  {
+   "id": "treat_card",
+   "kind": "board",
+   "pos": [
+    9.073,
+    16.474,
+    0.96
+   ],
+   "yaw": 38.4,
+   "props": {
+    "topic": "card"
+   }
+  },
+  {
+   "id": "treat_desk",
+   "kind": "counter",
+   "pos": [
+    9.371,
+    16.71,
+    1.0
+   ],
+   "yaw": 38.4,
+   "props": {
+    "role": "doctor",
+    "service": "treatment"
    }
   }
  ],
@@ -13235,7 +13789,7 @@
  ],
  "tris": {
   "shell": 15986,
-  "detail": 31621,
+  "detail": 32505,
   "windows": 1972
  }
 }

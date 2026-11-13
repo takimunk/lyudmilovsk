@@ -252,6 +252,8 @@ def _furnish_hall(B, hall, t):
     s3 = kit.sofa(B, *pol(12.95, thl), yaw=_yout(thl), seats=2, mat="CT_PlasterBlue")
     B.spot("lounge_3", "seat", s3["seats"][0][:3], s3["seats"][0][3])
     B.thing("lobby_sofa", "seat", s3["seats"][0][:3], s3["seats"][0][3], height=0.45)
+    if len(s3["seats"]) > 1:
+        B.thing("lobby_sofa_b", "seat", s3["seats"][1][:3], s3["seats"][1][3], height=0.45)
     lx, ly = pol(14.0, thl)
     ct = kit.coffee_table(B, lx, ly, yaw=_yout(thl) + 90, w=0.9, d=0.5)
     kit.newspaper(B, lx - 0.1, ly, ct["top"], yaw=20, seed=5)
@@ -307,6 +309,10 @@ def _furnish_hall(B, hall, t):
         B.spot("dining_%d" % i, "table", ch[0]["seats"][0][:3], ch[0]["seats"][0][3])
         B.thing("dining_table_%d" % i, "seat", ch[0]["seats"][0][:3], ch[0]["seats"][0][3],
                 height=0.45)
+        for k_ in range(1, len(ch)):          # second pass: every chair of the table is a seat facing it
+            st = ch[k_]["seats"][0]
+            B.thing("dining_%d_%s" % (i, "bcd"[k_ - 1]), "seat", st[:3], st[3], height=0.45)
+            B.spot("dining_%d_%s" % (i, "bcd"[k_ - 1]), "table", st[:3], st[3])
         kit.pendant(B, x, y, CEIL, drop=1.15, kind="cone", light=(i == 1), lumens=900, radius=7.5)
     # serving pass-through: a buffet on the street wall next to the garden archway, menu board and cloth
     thb = -118.8
@@ -470,6 +476,7 @@ def _furnish_hall(B, hall, t):
             f.skirting([a, b], h=0.13)
     box(d, "CT_PlasterGrey", -1.0, 1.0, 8.5, 9.5, 0.0, 0.014, faces="Z")
     _depth(B, q, desk, th_r, dc)
+    _depth2(B, q, desk, th_r, dc)
     msg = kit.check(B)
     for m_ in msg:
         print("KIT:", m_)
@@ -632,6 +639,184 @@ def _depth(B, q, desk, th_r, dc):
     kit.radio(B, rx, ry, dc["top"], yaw=_yin(tc))
     B.thing("night_radio", "machine", (rx, ry, dc["top"] + 0.15), _yin(tc), what="night_radio")
     kit.table_lamp(B, *_at(16.9, tc, -0.9), z=dc["top"], yaw=0, light=True)
+
+
+# ====================================================================================================== third pass
+def _wall_switch(B, x, y, yaw, zc=1.3):
+    """[wall] A white plate with a small steel toggle on a wall face (x, y on the wall)."""
+    p = interior_kit._P(B, x, y, 0.0, yaw, "wall_switch")
+    p.kind = "wall"
+    p.box("CT_TileWhite", -0.04, 0.04, -0.014, 0.0, zc - 0.05, zc + 0.05)
+    p.box("CT_Steel", -0.008, 0.008, -0.026, -0.014, zc - 0.014, zc + 0.014)
+    return p.done()
+
+
+def _slippers(B, x, y, z, yaw):
+    """[prop] A pair of felt slippers side by side, toes toward the front."""
+    p = interior_kit._P(B, x, y, z, yaw, "slippers")
+    p.kind = "prop"
+    for sx in (-0.07, 0.07):
+        p.cushion("CT_PlasterRed", sx - 0.045, sx + 0.045, -0.13, 0.12, 0.0, 0.045, 0.012)
+        p.box("CT_Rubber", sx - 0.043, sx + 0.043, -0.12, 0.11, -0.004, 0.006)
+    return p.done(top=0.045)
+
+
+def _carafe(B, x, y, z, yaw):
+    """[prop] A water carafe with a glass upside down on its neck, and a folded card."""
+    p = interior_kit._P(B, x, y, z, yaw, "carafe")
+    p.kind = "prop"
+    p.lathe("CT_Glass", 0.0, 0.0, [(0.045, 0.0), (0.05, 0.08), (0.022, 0.17), (0.02, 0.21)], 8, top=False)
+    p.lathe("CT_Glass", 0.0, 0.0, [(0.03, 0.21), (0.036, 0.255)], 8, top=True)
+    p.box("CT_Paper", 0.07, 0.15, -0.03, 0.03, 0.0, 0.004)
+    return p.done(top=0.255)
+
+
+def _dominoes(B, x, y, z, yaw):
+    """[prop] A loose game of dominoes: a shuffled row of white tiles and a face-down pile."""
+    p = interior_kit._P(B, x, y, z, yaw, "dominoes")
+    p.kind = "prop"
+    for k in range(5):
+        u = -0.1 + 0.052 * k
+        v = 0.0 + 0.012 * (k % 2)
+        p.box("CT_TileWhite", u - 0.02, u + 0.02, v - 0.04, v + 0.04, 0.0, 0.01)
+        p.box("CT_Rubber", u - 0.02, u + 0.02, v - 0.002, v + 0.002, 0.01, 0.0115)
+    for k in range(3):
+        p.box("CT_PlasterBlue", 0.1 - 0.01 * k, 0.14 - 0.01 * k, -0.2 + 0.07 * k, -0.12 + 0.07 * k, 0.0, 0.01)
+    return p.done(top=0.012)
+
+
+def _letter(B, x, y, z, yaw):
+    """[prop] An envelope without a stamp and a folded sheet next to it."""
+    p = interior_kit._P(B, x, y, z, yaw, "letter")
+    p.kind = "prop"
+    p.box("CT_Paper", -0.11, 0.11, -0.07, 0.07, 0.0, 0.004)
+    p.box("CT_PlasterBlue", -0.1, -0.06, -0.06, -0.02, 0.004, 0.0055)
+    p.box("CT_TileWhite", 0.0, 0.1, 0.09, 0.19, 0.0, 0.003)
+    return p.done(top=0.006)
+
+
+def _clipboard(B, x, y, z, yaw):
+    """[prop] A treatment card on a wooden clipboard with a pencil on a string, lying on the bench."""
+    p = interior_kit._P(B, x, y, z, yaw, "clipboard")
+    p.kind = "prop"
+    p.box("CT_Wood", -0.12, 0.12, -0.16, 0.16, 0.0, 0.012)
+    p.box("CT_Paper", -0.105, 0.105, -0.14, 0.12, 0.012, 0.016)
+    p.box("CT_Steel", -0.04, 0.04, 0.12, 0.15, 0.012, 0.02)
+    p.rod("CT_Wood", (0.16, -0.1, 0.004), (0.16, 0.08, 0.004), 0.01, 4)
+    return p.done(top=0.02)
+
+
+def _brochures(B, x, y, z, yaw):
+    """[prop] A small wooden tray with three standing leaflets, on the end of the reception desk."""
+    p = interior_kit._P(B, x, y, z, yaw, "brochures")
+    p.kind = "prop"
+    p.box("CT_Wood", -0.2, 0.2, -0.1, 0.1, 0.0, 0.012)
+    p.box("CT_Wood", -0.2, 0.2, 0.09, 0.1, 0.012, 0.06)
+    for k, m in enumerate(("CT_PlasterBlue", "CT_PlasterYellow", "CT_Paper")):
+        u = -0.12 + 0.12 * k
+        p.box(m, u - 0.045, u + 0.045, 0.05 - 0.02 * k, 0.065 - 0.02 * k, 0.012, 0.2)
+    return p.done(top=0.2)
+
+
+def _bell(B, x, y, z, yaw):
+    """[prop] A brass desk bell on a wooden base."""
+    p = interior_kit._P(B, x, y, z, yaw, "desk_bell")
+    p.kind = "prop"
+    p.cyl("CT_Wood", 0.0, 0.0, 0.0, 0.012, 0.055, 8)
+    p.lathe("CT_Brass", 0.0, 0.0, [(0.05, 0.012), (0.045, 0.03), (0.022, 0.05), (0.004, 0.056)], 8, top=True)
+    p.cyl("CT_Brass", 0.0, 0.0, 0.056, 0.066, 0.008, 6)
+    return p.done(top=0.066)
+
+
+def _depth2(B, q, desk, th_r, dc):
+    """The third pass: the guest corner at the paid couch (rug, slippers, carafe, a lamp with a switch), room switches
+    and clocks, the games (checkers at the pump room, dominoes on the lounge table), the morning exercise on the
+    parquet, the leaflet rack, the forgotten letter, the treatment card and the doctor's desk, the night bell, the
+    garden window and a reading lamp."""
+    kit = interior_kit
+    P = PIERS
+    th_d0, th_p0, th_p1 = P[1], P[5], P[6]
+    th_g0, th_g1 = P[0], P[1]
+    th_t0, th_t1 = P[6], P[7]
+    tc = (th_t0 + th_t1) / 2 - 0.2
+    pc = (th_p0 + th_p1) / 2 + 0.3
+    g = (th_g0 + th_g1) / 2
+    thl = -91.5
+    thd = -84.2
+
+    # ---------------------------------------------------------------- the guest corner behind the screen
+    kit.rug(B, *_at(13.95, tc, -0.85), z=0.012, w=0.7, d=0.6, yaw=_yout(tc), seed=9)
+    _slippers(B, *_at(13.9, tc, -0.93), z=0.012, yaw=_yout(tc) + 12)
+    _carafe(B, *_at(16.9, tc, -1.16), z=dc["top"], yaw=_yin(tc))
+    sx_, sy_ = _at(16.9, tc, -0.78)
+    B.thing("couch_lamp", "machine", (sx_, sy_, dc["top"] + 0.22), _yin(tc), what="switch", switch=1.5)
+
+    # ---------------------------------------------------------------- switches and clocks by the doors
+    pt, yw, L = _edge_pt(q, 3, 0.5)
+    _wall_switch(B, pt[0], pt[1], yw, 1.3)
+    B.thing("lobby_switch", "machine", (pt[0], pt[1], 1.3), yw, what="switch", switch="room")
+    wx, wy = _at(13.7, th_d0, 0.075)
+    _wall_switch(B, wx, wy, _ytan(th_d0), 1.3)
+    B.thing("dining_switch", "machine", (wx, wy, 1.3), _ytan(th_d0), what="switch", switch="room")
+    wx, wy = _at(16.95, th_d0, 0.075)
+    kit.wall_clock(B, wx, wy, yaw=_ytan(th_d0), zc=2.5)                         # kit_clock_3
+    t0 = _tan(th_g0)
+    ex, ey = pol(13.5, th_g0)
+    _wall_switch(B, ex + t0[0] * 0.4, ey + t0[1] * 0.4, _ytan(th_g0), 1.3)
+    B.thing("garden_switch", "machine", (ex + t0[0] * 0.4, ey + t0[1] * 0.4, 1.3), _ytan(th_g0), what="switch",
+            switch="room")
+    ex, ey = pol(13.95, th_g0)
+    kit.wall_clock(B, ex + t0[0] * 0.4, ey + t0[1] * 0.4, yaw=_ytan(th_g0), zc=2.4)    # kit_clock_4
+    t1 = _tan(th_t1)
+    ex, ey = pol(14.8, th_t1)
+    _wall_switch(B, ex - t1[0] * 0.4, ey - t1[1] * 0.4, th_t1, 1.3)
+    B.thing("treat_switch", "machine", (ex - t1[0] * 0.4, ey - t1[1] * 0.4, 1.3), th_t1, what="switch", switch=4.8)
+    ex, ey = pol(14.3, th_t1)
+    kit.wall_clock(B, ex - t1[0] * 0.4, ey - t1[1] * 0.4, yaw=th_t1, zc=2.55)         # kit_clock_5
+
+    # ---------------------------------------------------------------- winter garden: a window
+    vx, vy = pol(12.6, g - 0.45)
+    B.thing("garden_window", "board", (vx, vy, 1.5), _yout(g), topic="view")
+    B.spot("garden_bench", "bench", (*_at(17.0, g, 0.6), 0.0), _yin(g))
+
+    # ---------------------------------------------------------------- pump room: checkers on the round table
+    tx_, ty_ = _at(14.2, pc, 0.75)
+    kit.chess_set(B, *_at(14.2, pc, 0.75 + 0.08), z=0.78, yaw=pc + 25, board=0.34, seed=11)
+    B.thing("pump_checkers", "play", (tx_, ty_, 0.82), _ytan(pc), what="checkers")
+    for sg, sid, yy in ((-1, "pump_stool_w", _ytan(pc)), (1, "pump_stool_e", pc)):
+        sx_, sy_ = _at(14.2, pc, 0.75 + sg * 0.62)
+        B.thing(sid, "seat", (sx_, sy_, 0.45), yy, height=0.45)
+        B.spot("checkers_%d" % (1 if sg < 0 else 2), "seat", (sx_, sy_, 0.45), yy)
+    B.spot("pump_bench", "bench", (*_at(12.95, pc, -0.2), 0.0), _yout(pc))
+
+    # ---------------------------------------------------------------- lobby: dominoes and a letter on the lounge table
+    lx, ly = pol(14.0, thl)
+    _dominoes(B, *pol(13.75, thl), z=0.42, yaw=_yout(thl) + 20)
+    B.thing("lounge_dominoes", "play", (*pol(13.75, thl), 0.45), _yout(thl), what="dominoes")
+    _letter(B, *pol(14.55, thl), z=0.42, yaw=_yout(thl) - 25)
+    B.thing("lobby_letter", "board", (*pol(14.55, thl), 0.46), _yout(thl), topic="letter")
+
+    # ---------------------------------------------------------------- lobby: the parquet's morning, the leaflet rack, the bell
+    ex_, ey_ = _at(15.6, thd, 0.8)
+    B.thing("lobby_exercise", "sport", (ex_, ey_, 0.6), _yout(thd), what="morning_exercise")
+    B.spot("exercise_1", "stand", (*_at(15.6, thd, -0.3), 0.0), _yout(thd))
+    B.spot("exercise_2", "stand", (*_at(15.6, thd, 0.4), 0.0), _yout(thd))
+    B.spot("exercise_3", "stand", (*_at(16.2, thd, 0.1), 0.0), _yin(thd))
+    bx, by = _at(14.0, th_r, 1.0)
+    _brochures(B, bx, by, desk["top"], yaw=_yout(th_r))
+    B.thing("brochure_rack", "take", (bx, by, desk["top"] + 0.12), _yout(th_r), item="postcard")
+    B.spot("brochure", "stand", (*_at(15.0, th_r, 1.0), 0.0), _yin(th_r))
+    bx, by = _at(14.0, th_r, -0.42)
+    _bell(B, bx, by, desk["top"], yaw=_yout(th_r))
+    B.thing("night_bell", "counter", (bx, by, desk["top"] + 0.08), _yout(th_r), role="receptionist",
+            service="reception")
+
+    # ---------------------------------------------------------------- treatment room: the card and the doctor's desk
+    cx_, cy_ = _at(13.1, tc, 1.2)
+    _clipboard(B, cx_, cy_, 0.9, yaw=_yout(tc) + 8)
+    B.thing("treat_card", "board", (cx_, cy_, 0.96), _yout(tc), topic="card")
+    dx_, dy_ = _at(13.1, tc, 1.58)
+    B.thing("treat_desk", "counter", (dx_, dy_, 1.0), _yout(tc), role="doctor", service="treatment")
 
 
 def L_of(q, e):

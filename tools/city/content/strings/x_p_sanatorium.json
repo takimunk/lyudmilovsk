@@ -1,115 +1,1158 @@
 {
- "_doc": "P-SANATORIUM second pass (tools/city/content/x_p_sanatorium.json): regime board, guest book and notices (a story of two holidaymakers), weekly menu, oxygen bar, chess, trolley, plant labels, quartz lamp, night radio, courtyard window, pump-room clock, evenings; quest words at the end. The hero's diary voice in quests; ja: 僕.",
-
- "city.san.regime.1": {"ru": "«Режим дня. Утро: 7:30 — зарядка, 8:00 — градусник и взвешивание, 8:30 — завтрак». Внизу от руки: «Кто проспал зарядку, тот проспал её с удовольствием».", "en": "\"Daily regime. Morning: 7:30 exercises, 8:00 thermometer and weighing, 8:30 breakfast.\" Underneath, by hand: \"Whoever slept through exercises slept through them with pleasure.\"", "ja": "「日課・朝。7時30分 体操、8時 検温と体重測定、8時30分 朝食」。下に手書きで「体操を寝過ごした人は、気持ちよく寝過ごしました」。"},
- "city.san.regime.2": {"ru": "«Режим дня. До обеда: 9:00 — бювет, первый стакан (мелкими глотками), 10:00 — процедуры по назначению, 11:00 — кислородный коктейль, 12:00 — прогулка по набережной. Лечиться без суеты».", "en": "\"Daily regime. Before lunch: 9:00 pump room, first glass (small sips), 10:00 treatments as prescribed, 11:00 oxygen cocktail, 12:00 a walk along the promenade. Heal without hurry.\"", "ja": "「日課・昼まで。9時 鉱泉の間で最初の一杯（ちびちびと）、10時 処方どおりの治療、11時 酸素カクテル、12時 海岸通りの散歩。あわてず療養を」。"},
- "city.san.regime.3": {"ru": "«Режим дня. 13:00 — обед. 14:00 — тихий час». Слово «тихий» подчёркнуто дважды, а рядом нарисован чайник и написано: «Шшш».", "en": "\"Daily regime. 13:00 lunch. 14:00 quiet hour.\" The word \"quiet\" is underlined twice, and beside it someone has drawn a kettle and written: \"Shhh.\"", "ja": "「日課。13時 昼食、14時 静かな時間」。「静かな」には二重線が引かれ、横にやかんの絵と「しーっ」の文字。"},
- "city.san.regime.4": {"ru": "«Режим дня. 15:30 — второй стакан в бювете, 16:00 — полдник, 17:00 — шахматы, книги, письма домой, 18:00 — свободное время: море, скамейка или облака на выбор».", "en": "\"Daily regime. 15:30 second glass at the pump room, 16:00 afternoon snack, 17:00 chess, books, letters home, 18:00 free time: the sea, a bench or the clouds, your choice.\"", "ja": "「日課。15時30分 鉱泉の間で二杯目、16時 おやつ、17時 チェス・読書・家への手紙、18時 自由時間：海でもベンチでも雲でもお好きに」。"},
- "city.san.regime.5": {"ru": "«Режим дня. 19:00 — ужин. 20:00 — вечер в вестибюле: по средам лекция врача, по пятницам чай с музыкой, по субботам танцы. Остальные вечера тихие, как положено».", "en": "\"Daily regime. 19:00 supper. 20:00 evening in the lobby: a doctor's lecture on Wednesdays, tea with music on Fridays, dancing on Saturdays. The other evenings are quiet, as they should be.\"", "ja": "「日課。19時 夕食。20時 ロビーの夕べ：水曜は医師の講話、金曜は音楽つきのお茶、土曜はダンス。ほかの晩は、決まりどおり静かに」。"},
- "city.san.regime.6": {"ru": "«Режим дня. 22:00 — отбой. В коридорах тишина, в бювете тишина, на пианино тишина». Внизу мелко: «Дежурная не спит и никому не расскажет, кто ходил за водой».", "en": "\"Daily regime. 22:00 lights out. Silence in the corridors, silence in the pump room, silence on the piano.\" In small letters below: \"The night attendant stays awake and will tell nobody who went for water.\"", "ja": "「日課。22時 消灯。廊下は静か、鉱泉の間も静か、ピアノも静か」。下に小さく「夜勤の係は起きていて、誰が水を飲みに行ったかは誰にも言いません」。"},
-
- "city.san.book.prompt": {"ru": "E — полистать книгу отзывов", "en": "E — leaf through the guest book", "ja": "E：宿帳をめくる"},
- "city.san.book.1": {"ru": "Книга отзывов. «Заезд. Лунц В. С., 3-14. Путёвка «для нервов». Нервов нет, есть пальцы, которые давно не играли». Строчкой ниже другим почерком: «Алиев Г. Р., 2-09, часовщик. Лечусь от пенсии».", "en": "The guest book. \"Arrival. Lunz V. S., 3-14. A voucher 'for the nerves'. I have no nerves, I have fingers that haven't played for a long time.\" A line below in other handwriting: \"Aliyev G. R., 2-09, watchmaker. Being treated for retirement.\"", "ja": "宿帳。「到着。ルンツ V.S.、3-14。『神経のため』の保養券。神経はないが、長いこと弾いていない指がある」。次の行に別の筆跡で「アリエフ G.R.、2-09、時計職人。定年の治療中」。"},
- "city.san.book.2": {"ru": "«В зимнем саду стоит пианино. Расстроено на четверть тона, но доброе. Играла полчаса, администратор не возражала. — В. Л.». Приписка: «Слышно в бювете сквозь стену. Не на четверть, на полтона, не скромничайте. — Г. А.».", "en": "\"There is a piano in the winter garden. A quarter tone out of tune, but kind. Played for half an hour, the receptionist did not mind. — V. L.\" Added: \"Heard it in the pump room through the wall. Not a quarter tone, a half; don't be modest. — G. A.\"", "ja": "「冬の庭にピアノがある。四分の一音狂っているが、優しい音。三十分弾いたが、受付の方は何も言わなかった。― V.L.」。書き添え「鉱泉の間まで壁越しに聞こえた。四分の一ではなく半音だ、謙遜しなくていい。― G.A.」"},
- "city.san.book.3": {"ru": "«Часы над дверью бювета стоят на 4:10. Спросил, с каких пор. Ответили: «С тех пор, как мы здесь работаем». Прошу разрешения посмотреть. — Г. Алиев». Ниже печать: «Разрешаем. Только не разбирайте до конца».", "en": "\"The clock over the pump-room door has stood at 4:10. I asked since when. They said: 'Since we started working here.' I request permission to look at it. — G. Aliyev.\" Below, a stamp: \"Permitted. Just don't take it all the way apart.\"", "ja": "「鉱泉の間の扉の上の時計は4時10分で止まっている。いつからかと聞くと『私たちが勤めはじめたときから』との答え。拝見する許可をお願いしたい。― G.アリエフ」。下に判子「許可します。ただし、最後まで分解しないこと」。"},
- "city.san.book.4": {"ru": "«Гусейн Рашидович играет в шахматы у окна в столовой так, будто время тикает на его стороне. Счёт 3:0 в его пользу. Прошу считать это ничьей: он думает вслух. — В. Л.».", "en": "\"Guseyn Rashidovich plays chess by the dining-room window as if time ticked on his side. The score is 3:0 in his favour. I ask that it be counted a draw: he thinks aloud. — V. L.\"", "ja": "「グセイン・ラシドヴィチは食堂の窓辺で、時間が自分の味方であるかのようにチェスを指す。成績は3対0で彼の勝ち。引き分けにしてほしい。彼は考えを口に出すのだから。― V.L.」"},
- "city.san.book.5": {"ru": "«Часы в бювете пошли. Пружина была цела: не хватало смазки и уважения. Вера Сергеевна говорит, что теперь воду пить страшно: в 4:10 она перестанет быть лечебной. — Г. А.».", "en": "\"The pump-room clock is running. The spring was fine; it only lacked oil and respect. Vera Sergeyevna says it is now frightening to drink the water: at 4:10 it will stop being medicinal. — G. A.\"", "ja": "「鉱泉の間の時計が動きだした。ぜんまいは無事で、足りなかったのは油と敬意だった。ヴェーラ・セルゲエヴナは、これで水を飲むのが怖くなったと言う。4時10分に薬効が切れるからだ。― G.A.」"},
- "city.san.book.6": {"ru": "«В субботу на танцах Гусейн Рашидович отдавил мне ногу в вальсе и сказал, что виноват метроном. Метронома в зале не было. Вальс был прекрасный. — В. Л.».", "en": "\"At Saturday's dance Guseyn Rashidovich trod on my foot during the waltz and said the metronome was to blame. There was no metronome in the hall. The waltz was lovely. — V. L.\"", "ja": "「土曜のダンスで、グセイン・ラシドヴィチはワルツ中に私の足を踏み、メトロノームのせいだと言った。広間にメトロノームはなかった。ワルツは素敵だった。― V.L.」"},
- "city.san.book.7": {"ru": "«Вера Сергеевна уезжает в субботу. Прошу оставить для неё в зимнем саду на пианино нотную тетрадь: я переписал «Баркаролу» по памяти, как чертёж, каждый такт подписан. Часовщики пишут ноты как чертежи. — Г. А.».", "en": "\"Vera Sergeyevna leaves on Saturday. I ask you to leave a music notebook on the winter-garden piano for her: I copied the Barcarolle from memory like a drawing, every bar labelled. Watchmakers write music like drawings. — G. A.\"", "ja": "「ヴェーラ・セルゲエヴナは土曜に発つ。冬の庭のピアノに楽譜帳を置いておいてほしい。『舟歌』を暗譜から図面のように写し、小節ごとに注記をつけた。時計職人は楽譜を図面のように書くのだ。― G.A.」"},
- "city.san.book.8": {"ru": "«Нашла на пианино тетрадь. Все такты подписаны, как шестерёнки. Играла до ужина, ни разу не сбилась. В ответ оставляю ему шахматную тетрадь: все наши партии записаны, и в каждой я ставлю ему мат. Прошу не показывать до отъезда. — В. Л.».", "en": "\"Found the notebook on the piano. Every bar labelled like a gear. Played until supper without a single slip. In return I leave him a chess notebook: all our games written down, and in every one I mate him. Please do not show it until he leaves. — V. L.\"", "ja": "「ピアノの上に楽譜帳を見つけた。小節ごとに歯車のように注記がある。夕食まで一度もつっかえず弾けた。お返しに彼へチェスの棋譜帳を残す。私たちの対局が全部書いてあり、どの対局でも私が彼を詰ませている。彼が発つまで見せないでください。― V.L.」"},
- "city.san.book.9": {"ru": "Запись администратора: «Лунц и Алиев выписались в один день, хотя приехали в разные и из разных городов. Билет у обоих до станции «Маяк». Тетрадь с нотами просили оставить в саду: «Пусть играет тот, кому не страшно»».", "en": "The receptionist's entry: \"Lunz and Aliyev checked out the same day, though they arrived on different days from different towns. Both hold tickets to the Lighthouse station. They asked us to leave the music notebook in the garden: 'Let whoever is not afraid play it.'\"", "ja": "受付の記入。「ルンツさんとアリエフさんは同じ日に退所されました。着いたのは別の日、別の町からだったのに。お二人の切符は『灯台』駅まで。楽譜帳は庭に置いておくようにとのこと。『怖くない人が弾いてください』」"},
- "city.san.book.10": {"ru": "На последней странице чистое поле и приписка карандашом: «Тетрадь лежит на пианино. Если умеете — сыграйте. Если не умеете — просто откройте и посмотрите, как это записано. Часы в бювете идут».", "en": "On the last page there is an empty field and a pencil note: \"The notebook is on the piano. If you can, play it. If you cannot, just open it and see how it is written down. The clock in the pump room is running.\"", "ja": "最後のページは空白で、鉛筆の書き込みがある。「楽譜帳はピアノの上にあります。弾ける方は弾いてください。弾けない方は、ただ開いて、どう書いてあるか見てください。鉱泉の間の時計は動いています」。"},
-
- "city.san.reg.1": {"ru": "Новое объявление: «Просьба не закрывать крышку пианино в зимнем саду. Инструмент должен дышать, а вечером его приоткрывают для игры».", "en": "A new notice: \"Please do not close the lid of the winter-garden piano. The instrument has to breathe, and in the evenings it is opened for playing.\"", "ja": "新しい掲示。「冬の庭のピアノの蓋は閉めないでください。楽器は息をする必要があり、夕方は演奏のために少し開けます」。"},
- "city.san.reg.2": {"ru": "«Часы в бювете стоят. Мастера вызывали трижды: приходит, смотрит и уходит с грустным лицом. Лечебная вода идёт по расписанию в любом случае».", "en": "\"The pump-room clock has stopped. The repairman has been called three times: he comes, looks and leaves with a sad face. The healing water runs on schedule regardless.\"", "ja": "「鉱泉の間の時計が止まっています。修理屋さんを三度呼びましたが、来て、見て、悲しい顔で帰っていきます。薬効のある水は、いずれにせよ時間どおりに出ます」。"},
- "city.san.reg.3": {"ru": "«По субботам в 19:00 танцы в вестибюле. Приносить сменную обувь, пластинки и хорошее настроение. Отдавленные ноги — не к администратору, а к партнёру».", "en": "\"Dancing in the lobby on Saturdays at 19:00. Bring indoor shoes, records and a good mood. Trodden feet are a matter for your partner, not the receptionist.\"", "ja": "「毎週土曜19時、ロビーでダンス。室内履き、レコード、良い気分をお持ちください。足を踏まれた件は、受付ではなくパートナーへ」。"},
- "city.san.reg.4": {"ru": "«По средам в 18:00 лекция врача «Как спать, чтобы выспаться». Вход свободный. Просьба не уходить, пока лектор не проснётся». Последняя фраза зачёркнута, но читается.", "en": "\"Wednesdays at 18:00, the doctor's lecture 'How to Sleep So That You Wake Rested'. Free entry. Please do not leave until the lecturer wakes up.\" The last sentence is crossed out but still readable.", "ja": "「毎週水曜18時、医師の講話『ぐっすり眠るには』。入場無料。講師が目を覚ますまでお帰りにならないでください」。最後の一文は線で消されているが、読める。"},
- "city.san.reg.5": {"ru": "«Найдена шахматная ладья, не то из слоновой кости, не то из очень хорошей пластмассы. Ждёт хозяина в ящике у администратора. Хозяина просим сначала сказать, какого она цвета».", "en": "\"Found: a chess rook, either ivory or very good plastic. It waits for its owner in the receptionist's drawer. The owner is asked first to say what colour it is.\"", "ja": "「チェスのルークの忘れ物。象牙か、とても良質なプラスチックです。受付の引き出しで持ち主をお待ちしています。持ち主の方は、まず何色かをお答えください」。"},
- "city.san.reg.6": {"ru": "«Часы в бювете идут! Просим не трогать стрелки и не опаздывать: теперь это заметно». Рядом ещё одно: «Благодарность Г. Р. Алиеву от коллектива и от воды».", "en": "\"The pump-room clock is running! Please do not touch the hands, and do not be late: it shows now.\" Next to it another: \"Thanks to G. R. Aliyev from the staff and from the water.\"", "ja": "「鉱泉の間の時計が動いています！針に触れず、遅刻もしないでください。もう分かってしまいますので」。横にもう一枚「G.R.アリエフさんに、職員と水より感謝を」。"},
- "city.san.reg.7": {"ru": "«Выписались В. С. Лунц и Г. Р. Алиев. В зимнем саду на пианино оставлена тетрадь с нотами. Просьба: не уносить, играть. Администрация».", "en": "\"V. S. Lunz and G. R. Aliyev have checked out. A notebook of music is left on the winter-garden piano. Request: do not take it away, play it. The management.\"", "ja": "「V.S.ルンツさんとG.R.アリエフさんが退所されました。冬の庭のピアノに楽譜帳が置かれています。お願い：持ち帰らず、弾いてください。管理室」。"},
-
- "city.san.menu.mon": {"ru": "Меню, понедельник. Суп овощной, котлета паровая с пюре, компот из сухофруктов, пирожок с капустой.", "en": "Menu, Monday. Vegetable soup, steamed cutlet with mash, dried-fruit compote, a cabbage pie.", "ja": "月曜のメニュー。野菜スープ、蒸しカツレツとマッシュポテト、ドライフルーツのコンポート、キャベツ入りピローグ。"},
- "city.san.menu.tue": {"ru": "Меню, вторник. Борщ (сметана — по рецепту врача), рыба под маринадом, гречка, чай.", "en": "Menu, Tuesday. Borscht (sour cream only on a doctor's prescription), fish in marinade, buckwheat, tea.", "ja": "火曜のメニュー。ボルシチ（サワークリームは医師の処方に限る）、魚のマリネ、そば粥、紅茶。"},
- "city.san.menu.wed": {"ru": "Меню, среда — рыбный день. Уха, судак с картофелем, клюквенный кисель. Кто не любит рыбу, получает яблоко и сочувствие.", "en": "Menu, Wednesday: fish day. Fish soup, pike-perch with potatoes, cranberry kissel. Whoever dislikes fish gets an apple and sympathy.", "ja": "水曜のメニュー、魚の日。魚のスープ、スズキ類とじゃがいも、クランベリーのキセーリ。魚が苦手な人にはりんごと同情を。"},
- "city.san.menu.thu": {"ru": "Меню, четверг. Щи, плов с курицей, салат из свёклы, компот. Плов варит повар, который до санатория ходил коком на сухогрузе.", "en": "Menu, Thursday. Cabbage soup, chicken pilaf, beetroot salad, compote. The pilaf is made by a cook who sailed as a ship's cook on a freighter before the sanatorium.", "ja": "木曜のメニュー。キャベツのスープ、鶏肉のプロフ、ビーツのサラダ、コンポート。プロフを炊くのは、療養所に来る前は貨物船の料理人だった人。"},
- "city.san.menu.fri": {"ru": "Меню, пятница. Рассольник, тефтели в томате, макароны, на ужин кефир. Мнение отдыхающих: на прошлой неделе тефтели были лучше. Мнение повара: так бывает каждую неделю.", "en": "Menu, Friday. Pickle soup, meatballs in tomato, pasta, kefir for supper. The guests' opinion: the meatballs were better last week. The cook's opinion: it is the same every week.", "ja": "金曜のメニュー。ピクルス入りスープ、トマト煮ミートボール、パスタ、夕食はケフィア。利用者の意見：先週のミートボールのほうがおいしかった。料理人の意見：毎週そう言われる。"},
- "city.san.menu.sat": {"ru": "Меню, суббота — праздничный обед. Окрошка на кефире, котлета по-киевски, пирожное «картошка». После обеда танцы, так что с пирожным осторожнее.", "en": "Menu, Saturday: festive lunch. Cold kefir soup, chicken Kiev, a 'potato' chocolate cake. There is dancing after lunch, so be careful with the cake.", "ja": "土曜のメニュー、お祝いの昼食。ケフィアの冷製スープ、キエフ風カツレツ、「じゃがいも」ケーキ。昼食のあとはダンスなので、ケーキは控えめに。"},
- "city.san.menu.sun": {"ru": "Меню, воскресенье. Блины со сметаной и вареньем с утра, куриный бульон, запеканка, чай с лимоном. Добавки дают без вопросов.", "en": "Menu, Sunday. Pancakes with sour cream and jam in the morning, chicken broth, a bake, tea with lemon. Second helpings come without questions.", "ja": "日曜のメニュー。朝はサワークリームとジャムのブリヌイ、鶏のブイヨン、キャセロール、レモンティー。おかわりは何も聞かずにくれる。"},
-
- "city.san.oxygen.prompt": {"ru": "E — выпить кислородный коктейль", "en": "E — drink an oxygen cocktail", "ja": "E：酸素カクテルを飲む"},
- "city.san.oxygen.1": {"ru": "Белый баллон зашипел, и стакан наполнился розовой пеной до краёв. На вкус как облако с малиной. В голове стало светло и немного смешно.", "en": "The white cylinder hissed and the glass filled with pink foam to the brim. It tastes like a cloud with raspberry. My head went light and a little giddy.", "ja": "白いボンベがしゅっと鳴り、グラスがピンクの泡でふちまで満ちた。ラズベリー味の雲みたいな味。頭が軽くなって、少しおかしくなる。"},
- "city.san.oxygen.2": {"ru": "Коктейль подали в высоком стакане: сверху пена, снизу малиновый сироп. Табличка: «Не более двух в день: после третьего начинаешь разговаривать с цветами».", "en": "The cocktail came in a tall glass: foam on top, raspberry syrup underneath. A sign: \"No more than two a day: after the third you start talking to the flowers.\"", "ja": "背の高いグラスで出てきた。上は泡、下はラズベリーシロップ。札に「一日二杯まで。三杯目からは花と話しはじめます」。"},
-
- "city.san.chess.1": {"ru": "Играем с утра, фигуры ещё холодные. Кто-то оставил партию недоигранной, чёрные в цейтноте. Делаю ход и не знаю, за кого играю.", "en": "A morning game, the pieces still cold. Someone left a game unfinished, black short of time. I make a move and do not know whose side I am playing.", "ja": "朝の一局。駒はまだ冷たい。誰かが指しかけの盤を残していて、黒は時間切れ寸前。一手指したが、どちらの側なのか分からない。"},
- "city.san.chess.2": {"ru": "Партия у окна. Напротив сидит отдыхающий в панаме, с лупой — не потому, что плохо видит, а потому, что привык рассматривать мелочи. Проигрываю красиво.", "en": "A game by the window. Opposite sits a guest in a panama hat with a magnifying glass: not because he sees badly, but because he is used to examining small things. I lose beautifully.", "ja": "窓辺の一局。向かいにはパナマ帽をかぶった利用者が、虫眼鏡を手に座っている。目が悪いからではなく、小さなものを調べる癖があるから。僕は見事に負けた。"},
- "city.san.chess.3": {"ru": "Шахматы вечером при лампе. Фигуры отбрасывают на доску длинные тени, ладья похожа на маяк. Выигрываю, а на третьем ходу понимаю, что мне дали выиграть. Вежливо.", "en": "Chess in the evening under the lamp. The pieces throw long shadows on the board and the rook looks like a lighthouse. I win, and by the third move I understand I was allowed to. Politely.", "ja": "夕方、ランプの下のチェス。駒が盤に長い影を落とし、ルークは灯台のように見える。勝ったが、三手目で、勝たせてもらったのだと気づく。礼儀正しく。"},
-
- "city.san.trolley.1": {"ru": "На тележке книги, оставленные отдыхающими: «Мартин Иден» без обложки, три кроссворда, заполненных карандашом до последней клетки, «Книга о вкусной и здоровой пище» с пятном варенья на странице про блины.", "en": "On the trolley are books left by guests: a coverless Martin Eden, three crosswords filled in with pencil to the last square, a cookbook with a jam stain on the pancake page.", "ja": "ワゴンには利用者が置いていった本。表紙のない『マーティン・イーデン』、鉛筆で最後のマスまで埋めたクロスワード三冊、ブリヌイのページにジャムの染みがある料理本。"},
- "city.san.trolley.2": {"ru": "В «Мартине Идене» чья-то закладка: билет на канатную дорогу. Дата вчерашняя. Значит, читатель ещё здесь, и ему осталось страниц пятнадцать.", "en": "Someone's bookmark in Martin Eden: a cable-car ticket. Yesterday's date. So the reader is still here, with about fifteen pages left.", "ja": "『マーティン・イーデン』にしおりが挟まっている。ロープウェイの切符、日付は昨日。読み手はまだここにいて、残りは十五ページほどだろう。"},
- "city.san.trolley.3": {"ru": "Книжка о морской соли: «Соль — единственный камень, который люди едят». На полях карандашом: «Проверил. Правда».", "en": "A book about sea salt: \"Salt is the only stone that people eat.\" In the margin in pencil: \"Checked. True.\"", "ja": "海の塩の本。「塩は、人が食べる唯一の石である」。余白に鉛筆で「確かめた。本当だ」。"},
- "city.san.trolley.4": {"ru": "Журнал «Здоровье» за 1979 год, статья «Как не бояться врача». Кто-то обвёл заголовок и приписал: «Не помогло, зато было весело».", "en": "A 1979 issue of the magazine Health, the article \"How Not to Fear the Doctor\". Someone circled the title and wrote: \"Didn't help, but it was fun.\"", "ja": "雑誌『健康』1979年号、記事「医者を怖がらないために」。誰かが見出しを丸で囲み、「効かなかったが、楽しかった」と書き添えている。"},
- "city.san.trolley.5": {"ru": "Тонкая брошюра «Нотная грамота за вечер». Страницы затёрты до дыр, на полях нарисованы пальцы с цифрами. На обложке подпись: «В. Л.».", "en": "A thin booklet, \"Reading Music in One Evening\". The pages are worn through, with fingers and numbers drawn in the margins. On the cover, a signature: \"V. L.\"", "ja": "薄い小冊子『一晩で読める楽譜入門』。ページは擦り切れ、余白には指番号つきの指の絵。表紙に署名「V.L.」。"},
- "city.san.trolley.6": {"ru": "Шахматный задачник. На 41-й странице вложен листок: «Мат в три хода. Гусейн Рашидович, это решается. Не сердитесь». Ниже зачёркнут ответ: «Не подглядывать».", "en": "A book of chess problems. A slip is tucked into page 41: \"Mate in three. Guseyn Rashidovich, it can be solved. Don't be cross.\" Below, a crossed-out answer: \"No peeking.\"", "ja": "チェスの詰め問題集。41ページにメモが挟まっている。「三手詰め。グセイン・ラシドヴィチ、これは解けます。怒らないで」。その下に線で消した答えと「見ないこと」。"},
-
- "city.san.labels.1": {"ru": "Табличка у пальмы: «Пальма веерная. Зовут Галина Петровна. Привезена поездом в 1974 году, ехала в купе с проводницей и жаловалась на сквозняк. Листья просим не гладить».", "en": "A plate by the palm: \"Fan palm. Called Galina Petrovna. Brought by train in 1974, travelled in the compartment with the conductor and complained of draughts. Please do not stroke the leaves.\"", "ja": "ヤシの鉢の札。「ウチワヤシ。名前はガリーナ・ペトローヴナ。1974年に列車で到着。車掌さんと同じ個室に乗り、隙間風に文句を言っていた。葉をなでないでください」。"},
- "city.san.labels.2": {"ru": "Табличка: «Монстера. Имя: Борис. Выросла из черенка, подаренного отдыхающим при выписке. На открытке было написано: «Пусть растёт, раз я не могу»».", "en": "A plate: \"Monstera. Name: Boris. Grown from a cutting a guest gave on leaving. The card said: 'Let it grow, since I cannot.'\"", "ja": "札。「モンステラ。名前はボリス。退所する利用者がくれた挿し穂から育ちました。カードには『僕の代わりに育ちますように』」。"},
- "city.san.labels.3": {"ru": "Табличка у арки: «Фикус Семён. Старейший житель сада. Листья протирают по пятницам влажной тряпкой, он ни разу не пожаловался».", "en": "A plate by the arch: \"Ficus Semyon. The garden's oldest resident. His leaves are wiped with a damp cloth on Fridays, and he has never once complained.\"", "ja": "アーチのそばの札。「ゴムの木セミョーン。庭の最古参。金曜に濡れ布巾で葉をふいてもらうが、一度も文句を言ったことがない」。"},
- "city.san.labels.4": {"ru": "Табличка: «Кактусы Петя и Паша. Цветут раз в три года, обычно ночью. В прошлый раз расцвели оба сразу, и дежурная до утра стояла рядом, караулила».", "en": "A plate: \"Cacti Petya and Pasha. They flower once in three years, usually at night. Last time both bloomed at once, and the night attendant stood watch beside them till morning.\"", "ja": "札。「サボテンのペーチャとパーシャ。三年に一度、たいてい夜に咲きます。前回は二つ同時に咲き、夜勤の係が朝まで付き添いました」。"},
- "city.san.labels.5": {"ru": "Табличка: «Папоротник. Имени нет. Назвать его предлагали неоднократно, но каждый отдыхающий предлагает своё. В списке: Клава, Мотя, Эльвира и «Тот, что слева»».", "en": "A plate: \"Fern. No name. Naming it has been proposed many times, but every guest proposes their own. On the list: Klava, Motya, Elvira and 'The one on the left'.\"", "ja": "札。「シダ。名前はまだありません。何度も命名が提案されましたが、利用者ごとに案が違います。候補：クラーヴァ、モーチャ、エルヴィラ、『左のやつ』」。"},
- "city.san.labels.6": {"ru": "Табличка у двери: «В зимнем саду всегда +22. Растения привыкли, отдыхающие тоже. Если вам холодно, дело не в саде».", "en": "A plate by the door: \"It is always +22 in the winter garden. The plants are used to it, and so are the guests. If you feel cold, it is not the garden.\"", "ja": "扉のそばの札。「冬の庭はいつも22度です。植物も利用者も慣れています。寒いと感じたなら、庭のせいではありません」。"},
-
- "city.san.garden_read.prompt": {"ru": "E — почитать в кресле", "en": "E — read in the armchair", "ja": "E：肘掛け椅子で本を読む"},
- "city.san.garden_read.1": {"ru": "Устроился в кресле среди пальм. Утреннее солнце ложится на страницы квадратами окон. Читаю и замечаю, что читаю одну строчку по третьему разу: так хорошо.", "en": "I settle into the armchair among the palms. The morning sun lays the window squares on the pages. I notice I am reading the same line for the third time: it is that pleasant.", "ja": "ヤシの間の肘掛け椅子に落ち着く。朝の日差しが窓の四角形になってページに落ちる。同じ行を三度読んでいることに気づく。それくらい心地いい。"},
- "city.san.garden_read.2": {"ru": "Днём в саду тихо и тепло, пахнет землёй и чаем. Где-то в трубах журчит вода. Прочитал главу и немного поспал над следующей.", "en": "In the afternoon the garden is quiet and warm and smells of earth and tea. Somewhere in the pipes water murmurs. I read a chapter and dozed a little over the next one.", "ja": "昼の庭は静かで暖かく、土とお茶の匂いがする。どこかの管で水がささやく。一章読んで、次の章の上で少しうとうとした。"},
- "city.san.garden_read.3": {"ru": "Вечером в саду горит маленькая лампа, листья на стёклах как чернильные пятна. Читать трудно, зато легко слушать тишину.", "en": "In the evening one small lamp burns in the garden and the leaves on the panes look like ink blots. Reading is hard, but listening to the quiet is easy.", "ja": "夕方の庭には小さなランプが灯り、窓ガラスの葉はインクの染みのよう。読むのは難しいけれど、静けさを聞くのは簡単だ。"},
-
- "city.san.quartz.prompt": {"ru": "E — посидеть под кварцевой лампой", "en": "E — sit under the quartz lamp", "ja": "E：石英灯の下に座る"},
- "city.san.quartz.1": {"ru": "Врач выдала тёмные очки и велела не смотреть на лампу. Смотреть всё равно хочется: лампа синяя и тихо гудит, как улей. Через пять минут стало тепло, как после моря.", "en": "The doctor gave me dark goggles and told me not to look at the lamp. I want to look anyway: it is blue and hums softly like a hive. After five minutes I was warm, as after the sea.", "ja": "医師は黒い保護眼鏡を渡し、ランプを見ないよう言った。それでも見たくなる。青く、巣箱のように低くうなっている。五分で、海のあとのように温まった。"},
- "city.san.quartz.2": {"ru": "Лампа зажглась с щелчком. «Не больше десяти минут, — сказала врач, — и не засыпайте». Я не заснул. Почти.", "en": "The lamp came on with a click. \"No more than ten minutes,\" said the doctor, \"and don't fall asleep.\" I didn't. Almost.", "ja": "ランプがカチッと点いた。「十分以内ですよ」と医師は言った。「寝ないでくださいね」。寝なかった。ほとんど。"},
- "city.san.quartz.3": {"ru": "Под лампой кожа горит, а в голове тишина. Врач объясняет, что это полезно для суставов, настроения и «вообще». «Вообще» — главное слово в медицине.", "en": "Under the lamp my skin glows and my head goes quiet. The doctor explains it is good for the joints, the mood and 'generally'. 'Generally' is the key word of medicine.", "ja": "ランプの下で肌が火照り、頭の中は静まる。医師いわく、関節にも気分にも「全般に」いいとのこと。「全般に」は医学で一番大事な言葉だ。"},
- "city.san.quartz.4": {"ru": "Очки сидят смешно, как у лётчика. В зеркале на стене вижу пациента в синей подсветке: он выглядит гораздо здоровее меня.", "en": "The goggles sit funnily, like an aviator's. In the wall mirror I see a patient in blue light who looks far healthier than I do.", "ja": "眼鏡は飛行士のようにおかしな具合に顔に乗る。壁の鏡に、青い光の中の患者が映る。僕よりずっと健康そうだ。"},
-
- "city.san.radio.1": {"ru": "Радио у изголовья тихо играет танцевальную музыку. Диктор читает прогноз: ветер юго-западный, волнение моря два балла, настроение отличное.", "en": "The radio at the head of the couch plays dance music quietly. The announcer reads the forecast: south-west wind, sea state two, mood excellent.", "ja": "寝台の枕元のラジオが静かにダンス音楽を流す。アナウンサーが予報を読む。南西の風、波の高さ2、気分は上々。"},
- "city.san.radio.2": {"ru": "Ночью радио играет вполголоса: сначала вальс, потом колыбельная, потом сигналы точного времени. Под них хорошо считать овец и ждать утра.", "en": "At night the radio plays under its breath: first a waltz, then a lullaby, then the time signals. A good accompaniment for counting sheep and waiting for morning.", "ja": "夜のラジオは小声で鳴る。まずワルツ、次に子守歌、そして時報。羊を数えて朝を待つのによく合う。"},
-
- "city.san.court.1": {"ru": "Из окна виден двор-кольцо: фонтан с белой чашей, круглая лужайка и окна напротив. В одном кто-то поливает герань, в другом сушится полотенце с вышитым солнцем.", "en": "The window looks onto the ring courtyard: a fountain with a white bowl, a round lawn and the windows opposite. In one a person waters geraniums, in another a towel with an embroidered sun is drying.", "ja": "窓から輪の形の中庭が見える。白い水盤の噴水、丸い芝生、向かいの窓。一つの窓ではゼラニウムに水をやり、別の窓では太陽の刺繍のタオルが干してある。"},
- "city.san.court.2": {"ru": "Двор ночью тёмный и круглый. Шепчет фонтан, горят три окна на разных этажах. Может быть, и там кому-то не спится и он смотрит на меня.", "en": "At night the courtyard is dark and round. The fountain whispers, three windows burn on different floors. Maybe someone there cannot sleep either and is looking at me.", "ja": "夜の中庭は暗くて丸い。噴水がささやき、別々の階の三つの窓に明かりが点いている。向こうにも眠れない人がいて、こちらを見ているかもしれない。"},
-
- "city.san.clock.1": {"ru": "Часы над дверью бювета стоят. Стрелки замерли на 4:10. Под ними табличка: «Не трогать. Время отдыхает».", "en": "The clock above the pump-room door has stopped. The hands are frozen at 4:10. Beneath it a plate: \"Do not touch. Time is resting.\"", "ja": "鉱泉の間の扉の上の時計が止まっている。針は4時10分で固まったまま。下に札「触れないでください。時間は休んでいます」。"},
- "city.san.clock.2": {"ru": "Под часами стоит стремянка, на ступеньке лежат отвёртка-«звёздочка» и записка: «Прошу не убирать. Г. А.».", "en": "A stepladder stands under the clock, and on a step lie a tiny screwdriver and a note: \"Please do not move. G. A.\"", "ja": "時計の下に脚立が立ち、段の上に小さなドライバーとメモ。「片づけないでください。G.A.」"},
- "city.san.clock.3": {"ru": "Часы сняты. На подоконнике, на чистой салфетке, по порядку лежат колёсики, как кусочки пазла. Пожилой отдыхающий шепчет им что-то и пинцетом переставляет самое маленькое.", "en": "The clock is down. On the sill, on a clean napkin, the cogs lie in order like pieces of a puzzle. An elderly guest whispers something to them and moves the smallest with tweezers.", "ja": "時計は外されている。窓台の清潔なナプキンの上に、歯車がパズルのピースのように順に並ぶ。年配の利用者が何かささやきかけながら、ピンセットで一番小さな歯車を動かしている。"},
- "city.san.clock.4": {"ru": "Часы идут! Тикают тихо и уверенно. Табличка: «Ходят. Точно. Проверено по радио». Ниже кто-то приписал: «Теперь нельзя опаздывать ни на воду, ни на обед».", "en": "The clock is running! It ticks quietly and surely. A plate: \"Running. Accurate. Checked by radio.\" Below someone added: \"Now you can be late neither for the water nor for lunch.\"", "ja": "時計が動いている！静かに、確かに時を刻む。札「稼働中。正確。ラジオで確認済み」。その下に誰かが「これで水にも昼食にも遅れられません」。"},
-
- "city.san.evening.prompt": {"ru": "E — заглянуть на вечер в вестибюле", "en": "E — look in on the lobby evening", "ja": "E：ロビーの夕べをのぞく"},
- "city.san.evening.day": {"ru": "Вестибюль днём. Паркет у входа натёрт до блеска, на столике у стены патефон под крышкой. Табличка: «Вечером танцы и лекции. Расписание у администратора».", "en": "The lobby by day. The parquet by the door is polished to a shine, and on a little table by the wall a gramophone sits under its lid. A sign: \"Dances and lectures in the evening. Programme at the reception.\"", "ja": "昼のロビー。入口の寄せ木は磨かれて光り、壁際の小卓に蓋をした蓄音機がある。札「夕方にダンスと講話。予定は受付で」。"},
- "city.san.evening.early": {"ru": "Скоро вечер. Отдыхающие подтягиваются в вестибюль: кто с книгой, кто с шахматами, кто просто посмотреть на людей.", "en": "Evening is near. Guests drift into the lobby: some with a book, some with chess, some just to look at people.", "ja": "夕方が近い。利用者がロビーに集まってくる。本を持つ人、チェスを持つ人、ただ人を眺めに来た人。"},
- "city.san.evening.wed": {"ru": "Среда, лекция врача «Как спать, чтобы выспаться». Слушатели рассаживаются вдоль стен. Врач говорит, что главный секрет — не думать о сне. Половина зала уже задумалась о сне и уснула.", "en": "Wednesday, the doctor's lecture \"How to Sleep So That You Wake Rested\". The listeners sit along the walls. The doctor says the main secret is not to think about sleep. Half the hall has already thought about sleep and fallen asleep.", "ja": "水曜、医師の講話「ぐっすり眠るには」。聴衆は壁沿いに座る。医師は、眠りについて考えないことが最大の秘訣だと言う。会場の半分はもう眠りについて考えて、眠っている。"},
- "city.san.evening.fri": {"ru": "Пятница, чай с музыкой. Патефон играет Вертинского, потом Утёсова. Отдыхающие пьют чай и обсуждают погоду, которая сегодня удивительно хороша, и это, конечно, их заслуга.", "en": "Friday, tea with music. The gramophone plays old ballads, then a jazz band. Guests drink tea and discuss the weather, which is wonderful today, and of course that is their doing.", "ja": "金曜、音楽つきのお茶。蓄音機が古い歌謡曲を、続いてジャズを鳴らす。利用者はお茶を飲みながら天気を語る。今日は見事に晴れていて、もちろん自分たちのおかげだ。"},
- "city.san.evening.sat1": {"ru": "Субботние танцы! Администратор заводит патефон, отдыхающие в сменной обуви кружат по паркету. Вальс, потом фокстрот, потом снова вальс, потому что просят.", "en": "Saturday dancing! The receptionist winds the gramophone and guests in indoor shoes circle on the parquet. A waltz, then a foxtrot, then another waltz, because they ask for it.", "ja": "土曜のダンス！受付の人が蓄音機のねじを巻き、室内履きの利用者たちが寄せ木の上を回る。ワルツ、フォックストロット、そしてまたワルツ。リクエストが出るから。"},
- "city.san.evening.sat2": {"ru": "Я тоже танцую: сначала неловко, потом как получится. Пожилой часовщик ведёт партнёршу с видом инженера, который строит мост. Она улыбается: мост выдержит.", "en": "I dance too: awkwardly at first, then however it goes. An elderly watchmaker leads his partner like an engineer building a bridge. She smiles: the bridge will hold.", "ja": "僕も踊る。最初はぎこちなく、そのうち成り行きで。年配の時計職人が、橋を架ける技師のような顔でパートナーをリードする。彼女は微笑む。橋は持ちこたえそうだ。"},
- "city.san.evening.late": {"ru": "Вестибюль ночью: паркет тёмный, патефон спит под крышкой. Дежурная листает журнал и кивает: «Тише, пожалуйста, у нас отдыхают».", "en": "The lobby at night: the parquet is dark, the gramophone sleeps under its lid. The night attendant leafs through a ledger and nods: \"Quietly, please, people are resting.\"", "ja": "夜のロビー。寄せ木は暗く、蓄音機は蓋の下で眠っている。夜勤の係が帳簿をめくり、うなずく。「お静かに。皆さん休んでいます」。"},
-
- "quest.sanatorium_guests.title": {"ru": "Двое отдыхающих", "en": "Two holidaymakers", "ja": "二人の利用者"},
- "quest.sanatorium_guests.desc": {"ru": "В санатории «Дружба» все записи в книге отзывов вдруг оказались про двоих. Интересно, чем кончилось.", "en": "In the Druzhba sanatorium the guest book turned out to be, entry after entry, about two people. I wonder how it ended.", "ja": "療養所「ドルジバ」の宿帳は、どの記入も二人のことだった。どうなったのか気になる。"},
- "quest.sanatorium_guests.book.log": {"ru": "Книга отзывов лежит на стойке администратора. Читать её надо по странице в день, как письма: тогда поймёшь, кто эти люди.", "en": "The guest book lies on the reception desk. It should be read a page a day, like letters: then you understand who these people are.", "ja": "宿帳は受付のカウンターにある。手紙のように一日一ページずつ読むものだ。そうすれば、この人たちが誰か分かってくる。"},
- "quest.sanatorium_guests.read.obj": {"ru": "Прочитать запись в книге отзывов", "en": "Read an entry in the guest book", "ja": "宿帳の記入を読む"},
- "quest.sanatorium_guests.clock.log": {"ru": "Часовщик чинил часы над бюветом. Надо посмотреть, что с ними сейчас.", "en": "The watchmaker was mending the clock over the pump room. I should see how it is now.", "ja": "時計職人は鉱泉の間の時計を直していた。今どうなったか見てみよう。"},
- "quest.sanatorium_guests.clock.obj": {"ru": "Посмотреть на часы в бювете", "en": "Look at the pump-room clock", "ja": "鉱泉の間の時計を見る"},
- "quest.sanatorium_guests.chess.log": {"ru": "Они играли в шахматы у окна в столовой. Сяду за доску, раз партия не кончена.", "en": "They played chess by the dining-room window. I'll sit at the board, since the game is not finished.", "ja": "二人は食堂の窓辺でチェスを指していた。指しかけなら、僕が盤に座ってみよう。"},
- "quest.sanatorium_guests.chess.obj": {"ru": "Сыграть партию в шахматном уголке", "en": "Play a game at the chess corner", "ja": "チェスのコーナーで一局指す"},
- "quest.sanatorium_guests.piano.log": {"ru": "В зимнем саду на пианино оставлена тетрадь с нотами. Пусть она не лежит зря.", "en": "A notebook of music was left on the winter-garden piano. It should not lie there for nothing.", "ja": "冬の庭のピアノに楽譜帳が置いてある。無駄に置いておくわけにはいかない。"},
- "quest.sanatorium_guests.piano.obj": {"ru": "Сыграть на пианино в зимнем саду", "en": "Play the piano in the winter garden", "ja": "冬の庭のピアノを弾く"},
- "quest.sanatorium_guests.done": {"ru": "Я играл медленно, по тетради, где каждый такт подписан, как шестерёнка. Пианино на полтона фальшивило, и мне показалось, что так и задумано. Где-то в бювете громко тикали часы.", "en": "I played slowly from the notebook, where every bar is labelled like a gear. The piano was half a tone off, and it seemed to me that was intended. Somewhere in the pump room the clock ticked loudly.", "ja": "歯車のように小節ごとに注記のある楽譜帳を見ながら、ゆっくり弾いた。ピアノは半音狂っていたが、わざとのように思えた。どこか鉱泉の間で、時計が大きく時を刻んでいた。"},
-
- "quest.sanatorium_regime.title": {"ru": "Режим отдыхающего", "en": "A holidaymaker's regime", "ja": "利用者の日課"},
- "quest.sanatorium_regime.desc": {"ru": "В санатории всё по часам: вода, процедуры, тихий час. Хочу прожить один день по режиму, как настоящий отдыхающий.", "en": "Everything at the sanatorium runs by the clock: water, treatments, the quiet hour. I want to live one day by the regime, like a real holidaymaker.", "ja": "療養所ではすべてが時間割どおり。水、治療、静かな時間。本物の利用者のように、日課どおりに一日を過ごしてみたい。"},
- "quest.sanatorium_regime.board.log": {"ru": "Сначала узнать, что по плану: расписание висит у входа, справа от дверей.", "en": "First find out what is planned: the schedule hangs by the entrance, to the right of the doors.", "ja": "まず予定を知ろう。日課表は入口の右側に掛かっている。"},
- "quest.sanatorium_regime.regime.obj": {"ru": "Прочитать режим дня у входа", "en": "Read the daily regime by the entrance", "ja": "入口の日課表を読む"},
- "quest.sanatorium_regime.water.log": {"ru": "Первым пунктом идёт вода: бювет, мелкими глотками, не торопясь.", "en": "Water comes first: the pump room, small sips, no hurry.", "ja": "最初は水。鉱泉の間で、ちびちびと、あわてずに。"},
- "quest.sanatorium_regime.pump.obj": {"ru": "Набрать воды в бювете", "en": "Take water at the pump room", "ja": "鉱泉の間で水をくむ"},
- "quest.sanatorium_regime.oxygen.log": {"ru": "В расписании кислородный коктейль. Бар в столовой, у окон во двор. Двенадцать рублей, говорят, недорого за облако.", "en": "On the schedule is an oxygen cocktail. The bar is in the dining hall by the courtyard windows. Twelve roubles, they say, is cheap for a cloud.", "ja": "予定表には酸素カクテル。バーは食堂の中庭側の窓辺。雲が12ルーブルなら安い、と皆が言う。"},
- "quest.sanatorium_regime.cocktail.obj": {"ru": "Выпить кислородный коктейль", "en": "Drink an oxygen cocktail", "ja": "酸素カクテルを飲む"},
- "quest.sanatorium_regime.rest.log": {"ru": "После воды и пены надо отдохнуть. Зимний сад, кресло среди пальм, книжка с тележки.", "en": "After the water and the foam, a rest. The winter garden, an armchair among the palms, a book from the trolley.", "ja": "水と泡のあとは休息。冬の庭、ヤシの間の肘掛け椅子、ワゴンから借りた本。"},
- "quest.sanatorium_regime.read.obj": {"ru": "Почитать в кресле зимнего сада", "en": "Read in the winter-garden armchair", "ja": "冬の庭の肘掛け椅子で本を読む"},
- "quest.sanatorium_regime.done": {"ru": "День прошёл ровно по режиму. Даже время, кажется, шло мелкими глотками. Усталости нет, есть странная лёгкость, как после хорошего кислородного коктейля.", "en": "The day went exactly by the regime. Even time seemed to pass in small sips. No tiredness, just a strange lightness, as after a good oxygen cocktail.", "ja": "一日は日課どおりに過ぎた。時間さえ、ちびちびと流れたようだ。疲れはなく、良い酸素カクテルのあとのような不思議な軽さがある。"}
+ "_doc": "P-SANATORIUM second pass (tools/city/content/x_p_sanatorium.json): regime board, guest book and notices (a story of two holidaymakers), weekly menu, oxygen bar, chess, trolley, plant labels, quartz lamp, night radio, courtyard window, pump-room clock, evenings; quest words at the end. The hero's diary voice in quests; ja: 僕. Third pass: clocks per room ({time}), doctor's desk and duty-bell talk, games, exercise, brochure, letter, treatment card, ledger pages 11-12, quiet hour, weather and closed lines.",
+ "city.san.regime.1": {
+  "ru": "«Режим дня. Утро: 7:30 — зарядка, 8:00 — градусник и взвешивание, 8:30 — завтрак». Внизу от руки: «Кто проспал зарядку, тот проспал её с удовольствием».",
+  "en": "\"Daily regime. Morning: 7:30 exercises, 8:00 thermometer and weighing, 8:30 breakfast.\" Underneath, by hand: \"Whoever slept through exercises slept through them with pleasure.\"",
+  "ja": "「日課・朝。7時30分 体操、8時 検温と体重測定、8時30分 朝食」。下に手書きで「体操を寝過ごした人は、気持ちよく寝過ごしました」。"
+ },
+ "city.san.regime.2": {
+  "ru": "«Режим дня. До обеда: 9:00 — бювет, первый стакан (мелкими глотками), 10:00 — процедуры по назначению, 11:00 — кислородный коктейль, 12:00 — прогулка по набережной. Лечиться без суеты».",
+  "en": "\"Daily regime. Before lunch: 9:00 pump room, first glass (small sips), 10:00 treatments as prescribed, 11:00 oxygen cocktail, 12:00 a walk along the promenade. Heal without hurry.\"",
+  "ja": "「日課・昼まで。9時 鉱泉の間で最初の一杯（ちびちびと）、10時 処方どおりの治療、11時 酸素カクテル、12時 海岸通りの散歩。あわてず療養を」。"
+ },
+ "city.san.regime.3": {
+  "ru": "«Режим дня. 13:00 — обед. 14:00 — тихий час». Слово «тихий» подчёркнуто дважды, а рядом нарисован чайник и написано: «Шшш».",
+  "en": "\"Daily regime. 13:00 lunch. 14:00 quiet hour.\" The word \"quiet\" is underlined twice, and beside it someone has drawn a kettle and written: \"Shhh.\"",
+  "ja": "「日課。13時 昼食、14時 静かな時間」。「静かな」には二重線が引かれ、横にやかんの絵と「しーっ」の文字。"
+ },
+ "city.san.regime.4": {
+  "ru": "«Режим дня. 15:30 — второй стакан в бювете, 16:00 — полдник, 17:00 — шахматы, книги, письма домой, 18:00 — свободное время: море, скамейка или облака на выбор».",
+  "en": "\"Daily regime. 15:30 second glass at the pump room, 16:00 afternoon snack, 17:00 chess, books, letters home, 18:00 free time: the sea, a bench or the clouds, your choice.\"",
+  "ja": "「日課。15時30分 鉱泉の間で二杯目、16時 おやつ、17時 チェス・読書・家への手紙、18時 自由時間：海でもベンチでも雲でもお好きに」。"
+ },
+ "city.san.regime.5": {
+  "ru": "«Режим дня. 19:00 — ужин. 20:00 — вечер в вестибюле: по средам лекция врача, по пятницам чай с музыкой, по субботам танцы. Остальные вечера тихие, как положено».",
+  "en": "\"Daily regime. 19:00 supper. 20:00 evening in the lobby: a doctor's lecture on Wednesdays, tea with music on Fridays, dancing on Saturdays. The other evenings are quiet, as they should be.\"",
+  "ja": "「日課。19時 夕食。20時 ロビーの夕べ：水曜は医師の講話、金曜は音楽つきのお茶、土曜はダンス。ほかの晩は、決まりどおり静かに」。"
+ },
+ "city.san.regime.6": {
+  "ru": "«Режим дня. 22:00 — отбой. В коридорах тишина, в бювете тишина, на пианино тишина». Внизу мелко: «Дежурная не спит и никому не расскажет, кто ходил за водой».",
+  "en": "\"Daily regime. 22:00 lights out. Silence in the corridors, silence in the pump room, silence on the piano.\" In small letters below: \"The night attendant stays awake and will tell nobody who went for water.\"",
+  "ja": "「日課。22時 消灯。廊下は静か、鉱泉の間も静か、ピアノも静か」。下に小さく「夜勤の係は起きていて、誰が水を飲みに行ったかは誰にも言いません」。"
+ },
+ "city.san.book.prompt": {
+  "ru": "E — полистать книгу отзывов",
+  "en": "E — leaf through the guest book",
+  "ja": "E：宿帳をめくる"
+ },
+ "city.san.book.1": {
+  "ru": "Книга отзывов. «Заезд. Лунц В. С., 3-14. Путёвка «для нервов». Нервов нет, есть пальцы, которые давно не играли». Строчкой ниже другим почерком: «Алиев Г. Р., 2-09, часовщик. Лечусь от пенсии».",
+  "en": "The guest book. \"Arrival. Lunz V. S., 3-14. A voucher 'for the nerves'. I have no nerves, I have fingers that haven't played for a long time.\" A line below in other handwriting: \"Aliyev G. R., 2-09, watchmaker. Being treated for retirement.\"",
+  "ja": "宿帳。「到着。ルンツ V.S.、3-14。『神経のため』の保養券。神経はないが、長いこと弾いていない指がある」。次の行に別の筆跡で「アリエフ G.R.、2-09、時計職人。定年の治療中」。"
+ },
+ "city.san.book.2": {
+  "ru": "«В зимнем саду стоит пианино. Расстроено на четверть тона, но доброе. Играла полчаса, администратор не возражала. — В. Л.». Приписка: «Слышно в бювете сквозь стену. Не на четверть, на полтона, не скромничайте. — Г. А.».",
+  "en": "\"There is a piano in the winter garden. A quarter tone out of tune, but kind. Played for half an hour, the receptionist did not mind. — V. L.\" Added: \"Heard it in the pump room through the wall. Not a quarter tone, a half; don't be modest. — G. A.\"",
+  "ja": "「冬の庭にピアノがある。四分の一音狂っているが、優しい音。三十分弾いたが、受付の方は何も言わなかった。― V.L.」。書き添え「鉱泉の間まで壁越しに聞こえた。四分の一ではなく半音だ、謙遜しなくていい。― G.A.」"
+ },
+ "city.san.book.3": {
+  "ru": "«Часы над дверью бювета стоят на 4:10. Спросил, с каких пор. Ответили: «С тех пор, как мы здесь работаем». Прошу разрешения посмотреть. — Г. Алиев». Ниже печать: «Разрешаем. Только не разбирайте до конца».",
+  "en": "\"The clock over the pump-room door has stood at 4:10. I asked since when. They said: 'Since we started working here.' I request permission to look at it. — G. Aliyev.\" Below, a stamp: \"Permitted. Just don't take it all the way apart.\"",
+  "ja": "「鉱泉の間の扉の上の時計は4時10分で止まっている。いつからかと聞くと『私たちが勤めはじめたときから』との答え。拝見する許可をお願いしたい。― G.アリエフ」。下に判子「許可します。ただし、最後まで分解しないこと」。"
+ },
+ "city.san.book.4": {
+  "ru": "«Гусейн Рашидович играет в шахматы у окна в столовой так, будто время тикает на его стороне. Счёт 3:0 в его пользу. Прошу считать это ничьей: он думает вслух. — В. Л.».",
+  "en": "\"Guseyn Rashidovich plays chess by the dining-room window as if time ticked on his side. The score is 3:0 in his favour. I ask that it be counted a draw: he thinks aloud. — V. L.\"",
+  "ja": "「グセイン・ラシドヴィチは食堂の窓辺で、時間が自分の味方であるかのようにチェスを指す。成績は3対0で彼の勝ち。引き分けにしてほしい。彼は考えを口に出すのだから。― V.L.」"
+ },
+ "city.san.book.5": {
+  "ru": "«Часы в бювете пошли. Пружина была цела: не хватало смазки и уважения. Вера Сергеевна говорит, что теперь воду пить страшно: в 4:10 она перестанет быть лечебной. — Г. А.».",
+  "en": "\"The pump-room clock is running. The spring was fine; it only lacked oil and respect. Vera Sergeyevna says it is now frightening to drink the water: at 4:10 it will stop being medicinal. — G. A.\"",
+  "ja": "「鉱泉の間の時計が動きだした。ぜんまいは無事で、足りなかったのは油と敬意だった。ヴェーラ・セルゲエヴナは、これで水を飲むのが怖くなったと言う。4時10分に薬効が切れるからだ。― G.A.」"
+ },
+ "city.san.book.6": {
+  "ru": "«В субботу на танцах Гусейн Рашидович отдавил мне ногу в вальсе и сказал, что виноват метроном. Метронома в зале не было. Вальс был прекрасный. — В. Л.».",
+  "en": "\"At Saturday's dance Guseyn Rashidovich trod on my foot during the waltz and said the metronome was to blame. There was no metronome in the hall. The waltz was lovely. — V. L.\"",
+  "ja": "「土曜のダンスで、グセイン・ラシドヴィチはワルツ中に私の足を踏み、メトロノームのせいだと言った。広間にメトロノームはなかった。ワルツは素敵だった。― V.L.」"
+ },
+ "city.san.book.7": {
+  "ru": "«Вера Сергеевна уезжает в субботу. Прошу оставить для неё в зимнем саду на пианино нотную тетрадь: я переписал «Баркаролу» по памяти, как чертёж, каждый такт подписан. Часовщики пишут ноты как чертежи. — Г. А.».",
+  "en": "\"Vera Sergeyevna leaves on Saturday. I ask you to leave a music notebook on the winter-garden piano for her: I copied the Barcarolle from memory like a drawing, every bar labelled. Watchmakers write music like drawings. — G. A.\"",
+  "ja": "「ヴェーラ・セルゲエヴナは土曜に発つ。冬の庭のピアノに楽譜帳を置いておいてほしい。『舟歌』を暗譜から図面のように写し、小節ごとに注記をつけた。時計職人は楽譜を図面のように書くのだ。― G.A.」"
+ },
+ "city.san.book.8": {
+  "ru": "«Нашла на пианино тетрадь. Все такты подписаны, как шестерёнки. Играла до ужина, ни разу не сбилась. В ответ оставляю ему шахматную тетрадь: все наши партии записаны, и в каждой я ставлю ему мат. Прошу не показывать до отъезда. — В. Л.».",
+  "en": "\"Found the notebook on the piano. Every bar labelled like a gear. Played until supper without a single slip. In return I leave him a chess notebook: all our games written down, and in every one I mate him. Please do not show it until he leaves. — V. L.\"",
+  "ja": "「ピアノの上に楽譜帳を見つけた。小節ごとに歯車のように注記がある。夕食まで一度もつっかえず弾けた。お返しに彼へチェスの棋譜帳を残す。私たちの対局が全部書いてあり、どの対局でも私が彼を詰ませている。彼が発つまで見せないでください。― V.L.」"
+ },
+ "city.san.book.9": {
+  "ru": "Запись администратора: «Лунц и Алиев выписались в один день, хотя приехали в разные и из разных городов. Билет у обоих до станции «Маяк». Тетрадь с нотами просили оставить в саду: «Пусть играет тот, кому не страшно»».",
+  "en": "The receptionist's entry: \"Lunz and Aliyev checked out the same day, though they arrived on different days from different towns. Both hold tickets to the Lighthouse station. They asked us to leave the music notebook in the garden: 'Let whoever is not afraid play it.'\"",
+  "ja": "受付の記入。「ルンツさんとアリエフさんは同じ日に退所されました。着いたのは別の日、別の町からだったのに。お二人の切符は『灯台』駅まで。楽譜帳は庭に置いておくようにとのこと。『怖くない人が弾いてください』」"
+ },
+ "city.san.book.10": {
+  "ru": "На последней странице чистое поле и приписка карандашом: «Тетрадь лежит на пианино. Если умеете — сыграйте. Если не умеете — просто откройте и посмотрите, как это записано. Часы в бювете идут».",
+  "en": "On the last page there is an empty field and a pencil note: \"The notebook is on the piano. If you can, play it. If you cannot, just open it and see how it is written down. The clock in the pump room is running.\"",
+  "ja": "最後のページは空白で、鉛筆の書き込みがある。「楽譜帳はピアノの上にあります。弾ける方は弾いてください。弾けない方は、ただ開いて、どう書いてあるか見てください。鉱泉の間の時計は動いています」。"
+ },
+ "city.san.reg.1": {
+  "ru": "Новое объявление: «Просьба не закрывать крышку пианино в зимнем саду. Инструмент должен дышать, а вечером его приоткрывают для игры».",
+  "en": "A new notice: \"Please do not close the lid of the winter-garden piano. The instrument has to breathe, and in the evenings it is opened for playing.\"",
+  "ja": "新しい掲示。「冬の庭のピアノの蓋は閉めないでください。楽器は息をする必要があり、夕方は演奏のために少し開けます」。"
+ },
+ "city.san.reg.2": {
+  "ru": "«Часы в бювете стоят. Мастера вызывали трижды: приходит, смотрит и уходит с грустным лицом. Лечебная вода идёт по расписанию в любом случае».",
+  "en": "\"The pump-room clock has stopped. The repairman has been called three times: he comes, looks and leaves with a sad face. The healing water runs on schedule regardless.\"",
+  "ja": "「鉱泉の間の時計が止まっています。修理屋さんを三度呼びましたが、来て、見て、悲しい顔で帰っていきます。薬効のある水は、いずれにせよ時間どおりに出ます」。"
+ },
+ "city.san.reg.3": {
+  "ru": "«По субботам в 19:00 танцы в вестибюле. Приносить сменную обувь, пластинки и хорошее настроение. Отдавленные ноги — не к администратору, а к партнёру».",
+  "en": "\"Dancing in the lobby on Saturdays at 19:00. Bring indoor shoes, records and a good mood. Trodden feet are a matter for your partner, not the receptionist.\"",
+  "ja": "「毎週土曜19時、ロビーでダンス。室内履き、レコード、良い気分をお持ちください。足を踏まれた件は、受付ではなくパートナーへ」。"
+ },
+ "city.san.reg.4": {
+  "ru": "«По средам в 18:00 лекция врача «Как спать, чтобы выспаться». Вход свободный. Просьба не уходить, пока лектор не проснётся». Последняя фраза зачёркнута, но читается.",
+  "en": "\"Wednesdays at 18:00, the doctor's lecture 'How to Sleep So That You Wake Rested'. Free entry. Please do not leave until the lecturer wakes up.\" The last sentence is crossed out but still readable.",
+  "ja": "「毎週水曜18時、医師の講話『ぐっすり眠るには』。入場無料。講師が目を覚ますまでお帰りにならないでください」。最後の一文は線で消されているが、読める。"
+ },
+ "city.san.reg.5": {
+  "ru": "«Найдена шахматная ладья, не то из слоновой кости, не то из очень хорошей пластмассы. Ждёт хозяина в ящике у администратора. Хозяина просим сначала сказать, какого она цвета».",
+  "en": "\"Found: a chess rook, either ivory or very good plastic. It waits for its owner in the receptionist's drawer. The owner is asked first to say what colour it is.\"",
+  "ja": "「チェスのルークの忘れ物。象牙か、とても良質なプラスチックです。受付の引き出しで持ち主をお待ちしています。持ち主の方は、まず何色かをお答えください」。"
+ },
+ "city.san.reg.6": {
+  "ru": "«Часы в бювете идут! Просим не трогать стрелки и не опаздывать: теперь это заметно». Рядом ещё одно: «Благодарность Г. Р. Алиеву от коллектива и от воды».",
+  "en": "\"The pump-room clock is running! Please do not touch the hands, and do not be late: it shows now.\" Next to it another: \"Thanks to G. R. Aliyev from the staff and from the water.\"",
+  "ja": "「鉱泉の間の時計が動いています！針に触れず、遅刻もしないでください。もう分かってしまいますので」。横にもう一枚「G.R.アリエフさんに、職員と水より感謝を」。"
+ },
+ "city.san.reg.7": {
+  "ru": "«Выписались В. С. Лунц и Г. Р. Алиев. В зимнем саду на пианино оставлена тетрадь с нотами. Просьба: не уносить, играть. Администрация».",
+  "en": "\"V. S. Lunz and G. R. Aliyev have checked out. A notebook of music is left on the winter-garden piano. Request: do not take it away, play it. The management.\"",
+  "ja": "「V.S.ルンツさんとG.R.アリエフさんが退所されました。冬の庭のピアノに楽譜帳が置かれています。お願い：持ち帰らず、弾いてください。管理室」。"
+ },
+ "city.san.menu.mon": {
+  "ru": "Меню, понедельник. Суп овощной, котлета паровая с пюре, компот из сухофруктов, пирожок с капустой.",
+  "en": "Menu, Monday. Vegetable soup, steamed cutlet with mash, dried-fruit compote, a cabbage pie.",
+  "ja": "月曜のメニュー。野菜スープ、蒸しカツレツとマッシュポテト、ドライフルーツのコンポート、キャベツ入りピローグ。"
+ },
+ "city.san.menu.tue": {
+  "ru": "Меню, вторник. Борщ (сметана — по рецепту врача), рыба под маринадом, гречка, чай.",
+  "en": "Menu, Tuesday. Borscht (sour cream only on a doctor's prescription), fish in marinade, buckwheat, tea.",
+  "ja": "火曜のメニュー。ボルシチ（サワークリームは医師の処方に限る）、魚のマリネ、そば粥、紅茶。"
+ },
+ "city.san.menu.wed": {
+  "ru": "Меню, среда — рыбный день. Уха, судак с картофелем, клюквенный кисель. Кто не любит рыбу, получает яблоко и сочувствие.",
+  "en": "Menu, Wednesday: fish day. Fish soup, pike-perch with potatoes, cranberry kissel. Whoever dislikes fish gets an apple and sympathy.",
+  "ja": "水曜のメニュー、魚の日。魚のスープ、スズキ類とじゃがいも、クランベリーのキセーリ。魚が苦手な人にはりんごと同情を。"
+ },
+ "city.san.menu.thu": {
+  "ru": "Меню, четверг. Щи, плов с курицей, салат из свёклы, компот. Плов варит повар, который до санатория ходил коком на сухогрузе.",
+  "en": "Menu, Thursday. Cabbage soup, chicken pilaf, beetroot salad, compote. The pilaf is made by a cook who sailed as a ship's cook on a freighter before the sanatorium.",
+  "ja": "木曜のメニュー。キャベツのスープ、鶏肉のプロフ、ビーツのサラダ、コンポート。プロフを炊くのは、療養所に来る前は貨物船の料理人だった人。"
+ },
+ "city.san.menu.fri": {
+  "ru": "Меню, пятница. Рассольник, тефтели в томате, макароны, на ужин кефир. Мнение отдыхающих: на прошлой неделе тефтели были лучше. Мнение повара: так бывает каждую неделю.",
+  "en": "Menu, Friday. Pickle soup, meatballs in tomato, pasta, kefir for supper. The guests' opinion: the meatballs were better last week. The cook's opinion: it is the same every week.",
+  "ja": "金曜のメニュー。ピクルス入りスープ、トマト煮ミートボール、パスタ、夕食はケフィア。利用者の意見：先週のミートボールのほうがおいしかった。料理人の意見：毎週そう言われる。"
+ },
+ "city.san.menu.sat": {
+  "ru": "Меню, суббота — праздничный обед. Окрошка на кефире, котлета по-киевски, пирожное «картошка». После обеда танцы, так что с пирожным осторожнее.",
+  "en": "Menu, Saturday: festive lunch. Cold kefir soup, chicken Kiev, a 'potato' chocolate cake. There is dancing after lunch, so be careful with the cake.",
+  "ja": "土曜のメニュー、お祝いの昼食。ケフィアの冷製スープ、キエフ風カツレツ、「じゃがいも」ケーキ。昼食のあとはダンスなので、ケーキは控えめに。"
+ },
+ "city.san.menu.sun": {
+  "ru": "Меню, воскресенье. Блины со сметаной и вареньем с утра, куриный бульон, запеканка, чай с лимоном. Добавки дают без вопросов.",
+  "en": "Menu, Sunday. Pancakes with sour cream and jam in the morning, chicken broth, a bake, tea with lemon. Second helpings come without questions.",
+  "ja": "日曜のメニュー。朝はサワークリームとジャムのブリヌイ、鶏のブイヨン、キャセロール、レモンティー。おかわりは何も聞かずにくれる。"
+ },
+ "city.san.oxygen.prompt": {
+  "ru": "E — выпить кислородный коктейль",
+  "en": "E — drink an oxygen cocktail",
+  "ja": "E：酸素カクテルを飲む"
+ },
+ "city.san.oxygen.1": {
+  "ru": "Белый баллон зашипел, и стакан наполнился розовой пеной до краёв. На вкус как облако с малиной. В голове стало светло и немного смешно.",
+  "en": "The white cylinder hissed and the glass filled with pink foam to the brim. It tastes like a cloud with raspberry. My head went light and a little giddy.",
+  "ja": "白いボンベがしゅっと鳴り、グラスがピンクの泡でふちまで満ちた。ラズベリー味の雲みたいな味。頭が軽くなって、少しおかしくなる。"
+ },
+ "city.san.oxygen.2": {
+  "ru": "Коктейль подали в высоком стакане: сверху пена, снизу малиновый сироп. Табличка: «Не более двух в день: после третьего начинаешь разговаривать с цветами».",
+  "en": "The cocktail came in a tall glass: foam on top, raspberry syrup underneath. A sign: \"No more than two a day: after the third you start talking to the flowers.\"",
+  "ja": "背の高いグラスで出てきた。上は泡、下はラズベリーシロップ。札に「一日二杯まで。三杯目からは花と話しはじめます」。"
+ },
+ "city.san.chess.1": {
+  "ru": "Играем с утра, фигуры ещё холодные. Кто-то оставил партию недоигранной, чёрные в цейтноте. Делаю ход и не знаю, за кого играю.",
+  "en": "A morning game, the pieces still cold. Someone left a game unfinished, black short of time. I make a move and do not know whose side I am playing.",
+  "ja": "朝の一局。駒はまだ冷たい。誰かが指しかけの盤を残していて、黒は時間切れ寸前。一手指したが、どちらの側なのか分からない。"
+ },
+ "city.san.chess.2": {
+  "ru": "Партия у окна. Напротив сидит отдыхающий в панаме, с лупой — не потому, что плохо видит, а потому, что привык рассматривать мелочи. Проигрываю красиво.",
+  "en": "A game by the window. Opposite sits a guest in a panama hat with a magnifying glass: not because he sees badly, but because he is used to examining small things. I lose beautifully.",
+  "ja": "窓辺の一局。向かいにはパナマ帽をかぶった利用者が、虫眼鏡を手に座っている。目が悪いからではなく、小さなものを調べる癖があるから。僕は見事に負けた。"
+ },
+ "city.san.chess.3": {
+  "ru": "Шахматы вечером при лампе. Фигуры отбрасывают на доску длинные тени, ладья похожа на маяк. Выигрываю, а на третьем ходу понимаю, что мне дали выиграть. Вежливо.",
+  "en": "Chess in the evening under the lamp. The pieces throw long shadows on the board and the rook looks like a lighthouse. I win, and by the third move I understand I was allowed to. Politely.",
+  "ja": "夕方、ランプの下のチェス。駒が盤に長い影を落とし、ルークは灯台のように見える。勝ったが、三手目で、勝たせてもらったのだと気づく。礼儀正しく。"
+ },
+ "city.san.trolley.1": {
+  "ru": "На тележке книги, оставленные отдыхающими: «Мартин Иден» без обложки, три кроссворда, заполненных карандашом до последней клетки, «Книга о вкусной и здоровой пище» с пятном варенья на странице про блины.",
+  "en": "On the trolley are books left by guests: a coverless Martin Eden, three crosswords filled in with pencil to the last square, a cookbook with a jam stain on the pancake page.",
+  "ja": "ワゴンには利用者が置いていった本。表紙のない『マーティン・イーデン』、鉛筆で最後のマスまで埋めたクロスワード三冊、ブリヌイのページにジャムの染みがある料理本。"
+ },
+ "city.san.trolley.2": {
+  "ru": "В «Мартине Идене» чья-то закладка: билет на канатную дорогу. Дата вчерашняя. Значит, читатель ещё здесь, и ему осталось страниц пятнадцать.",
+  "en": "Someone's bookmark in Martin Eden: a cable-car ticket. Yesterday's date. So the reader is still here, with about fifteen pages left.",
+  "ja": "『マーティン・イーデン』にしおりが挟まっている。ロープウェイの切符、日付は昨日。読み手はまだここにいて、残りは十五ページほどだろう。"
+ },
+ "city.san.trolley.3": {
+  "ru": "Книжка о морской соли: «Соль — единственный камень, который люди едят». На полях карандашом: «Проверил. Правда».",
+  "en": "A book about sea salt: \"Salt is the only stone that people eat.\" In the margin in pencil: \"Checked. True.\"",
+  "ja": "海の塩の本。「塩は、人が食べる唯一の石である」。余白に鉛筆で「確かめた。本当だ」。"
+ },
+ "city.san.trolley.4": {
+  "ru": "Журнал «Здоровье» за 1979 год, статья «Как не бояться врача». Кто-то обвёл заголовок и приписал: «Не помогло, зато было весело».",
+  "en": "A 1979 issue of the magazine Health, the article \"How Not to Fear the Doctor\". Someone circled the title and wrote: \"Didn't help, but it was fun.\"",
+  "ja": "雑誌『健康』1979年号、記事「医者を怖がらないために」。誰かが見出しを丸で囲み、「効かなかったが、楽しかった」と書き添えている。"
+ },
+ "city.san.trolley.5": {
+  "ru": "Тонкая брошюра «Нотная грамота за вечер». Страницы затёрты до дыр, на полях нарисованы пальцы с цифрами. На обложке подпись: «В. Л.».",
+  "en": "A thin booklet, \"Reading Music in One Evening\". The pages are worn through, with fingers and numbers drawn in the margins. On the cover, a signature: \"V. L.\"",
+  "ja": "薄い小冊子『一晩で読める楽譜入門』。ページは擦り切れ、余白には指番号つきの指の絵。表紙に署名「V.L.」。"
+ },
+ "city.san.trolley.6": {
+  "ru": "Шахматный задачник. На 41-й странице вложен листок: «Мат в три хода. Гусейн Рашидович, это решается. Не сердитесь». Ниже зачёркнут ответ: «Не подглядывать».",
+  "en": "A book of chess problems. A slip is tucked into page 41: \"Mate in three. Guseyn Rashidovich, it can be solved. Don't be cross.\" Below, a crossed-out answer: \"No peeking.\"",
+  "ja": "チェスの詰め問題集。41ページにメモが挟まっている。「三手詰め。グセイン・ラシドヴィチ、これは解けます。怒らないで」。その下に線で消した答えと「見ないこと」。"
+ },
+ "city.san.labels.1": {
+  "ru": "Табличка у пальмы: «Пальма веерная. Зовут Галина Петровна. Привезена поездом в 1974 году, ехала в купе с проводницей и жаловалась на сквозняк. Листья просим не гладить».",
+  "en": "A plate by the palm: \"Fan palm. Called Galina Petrovna. Brought by train in 1974, travelled in the compartment with the conductor and complained of draughts. Please do not stroke the leaves.\"",
+  "ja": "ヤシの鉢の札。「ウチワヤシ。名前はガリーナ・ペトローヴナ。1974年に列車で到着。車掌さんと同じ個室に乗り、隙間風に文句を言っていた。葉をなでないでください」。"
+ },
+ "city.san.labels.2": {
+  "ru": "Табличка: «Монстера. Имя: Борис. Выросла из черенка, подаренного отдыхающим при выписке. На открытке было написано: «Пусть растёт, раз я не могу»».",
+  "en": "A plate: \"Monstera. Name: Boris. Grown from a cutting a guest gave on leaving. The card said: 'Let it grow, since I cannot.'\"",
+  "ja": "札。「モンステラ。名前はボリス。退所する利用者がくれた挿し穂から育ちました。カードには『僕の代わりに育ちますように』」。"
+ },
+ "city.san.labels.3": {
+  "ru": "Табличка у арки: «Фикус Семён. Старейший житель сада. Листья протирают по пятницам влажной тряпкой, он ни разу не пожаловался».",
+  "en": "A plate by the arch: \"Ficus Semyon. The garden's oldest resident. His leaves are wiped with a damp cloth on Fridays, and he has never once complained.\"",
+  "ja": "アーチのそばの札。「ゴムの木セミョーン。庭の最古参。金曜に濡れ布巾で葉をふいてもらうが、一度も文句を言ったことがない」。"
+ },
+ "city.san.labels.4": {
+  "ru": "Табличка: «Кактусы Петя и Паша. Цветут раз в три года, обычно ночью. В прошлый раз расцвели оба сразу, и дежурная до утра стояла рядом, караулила».",
+  "en": "A plate: \"Cacti Petya and Pasha. They flower once in three years, usually at night. Last time both bloomed at once, and the night attendant stood watch beside them till morning.\"",
+  "ja": "札。「サボテンのペーチャとパーシャ。三年に一度、たいてい夜に咲きます。前回は二つ同時に咲き、夜勤の係が朝まで付き添いました」。"
+ },
+ "city.san.labels.5": {
+  "ru": "Табличка: «Папоротник. Имени нет. Назвать его предлагали неоднократно, но каждый отдыхающий предлагает своё. В списке: Клава, Мотя, Эльвира и «Тот, что слева»».",
+  "en": "A plate: \"Fern. No name. Naming it has been proposed many times, but every guest proposes their own. On the list: Klava, Motya, Elvira and 'The one on the left'.\"",
+  "ja": "札。「シダ。名前はまだありません。何度も命名が提案されましたが、利用者ごとに案が違います。候補：クラーヴァ、モーチャ、エルヴィラ、『左のやつ』」。"
+ },
+ "city.san.labels.6": {
+  "ru": "Табличка у двери: «В зимнем саду всегда +22. Растения привыкли, отдыхающие тоже. Если вам холодно, дело не в саде».",
+  "en": "A plate by the door: \"It is always +22 in the winter garden. The plants are used to it, and so are the guests. If you feel cold, it is not the garden.\"",
+  "ja": "扉のそばの札。「冬の庭はいつも22度です。植物も利用者も慣れています。寒いと感じたなら、庭のせいではありません」。"
+ },
+ "city.san.garden_read.prompt": {
+  "ru": "E — почитать в кресле",
+  "en": "E — read in the armchair",
+  "ja": "E：肘掛け椅子で本を読む"
+ },
+ "city.san.garden_read.1": {
+  "ru": "Устроился в кресле среди пальм. Утреннее солнце ложится на страницы квадратами окон. Читаю и замечаю, что читаю одну строчку по третьему разу: так хорошо.",
+  "en": "I settle into the armchair among the palms. The morning sun lays the window squares on the pages. I notice I am reading the same line for the third time: it is that pleasant.",
+  "ja": "ヤシの間の肘掛け椅子に落ち着く。朝の日差しが窓の四角形になってページに落ちる。同じ行を三度読んでいることに気づく。それくらい心地いい。"
+ },
+ "city.san.garden_read.2": {
+  "ru": "Днём в саду тихо и тепло, пахнет землёй и чаем. Где-то в трубах журчит вода. Прочитал главу и немного поспал над следующей.",
+  "en": "In the afternoon the garden is quiet and warm and smells of earth and tea. Somewhere in the pipes water murmurs. I read a chapter and dozed a little over the next one.",
+  "ja": "昼の庭は静かで暖かく、土とお茶の匂いがする。どこかの管で水がささやく。一章読んで、次の章の上で少しうとうとした。"
+ },
+ "city.san.garden_read.3": {
+  "ru": "Вечером в саду горит маленькая лампа, листья на стёклах как чернильные пятна. Читать трудно, зато легко слушать тишину.",
+  "en": "In the evening one small lamp burns in the garden and the leaves on the panes look like ink blots. Reading is hard, but listening to the quiet is easy.",
+  "ja": "夕方の庭には小さなランプが灯り、窓ガラスの葉はインクの染みのよう。読むのは難しいけれど、静けさを聞くのは簡単だ。"
+ },
+ "city.san.quartz.prompt": {
+  "ru": "E — посидеть под кварцевой лампой",
+  "en": "E — sit under the quartz lamp",
+  "ja": "E：石英灯の下に座る"
+ },
+ "city.san.quartz.1": {
+  "ru": "Врач выдала тёмные очки и велела не смотреть на лампу. Смотреть всё равно хочется: лампа синяя и тихо гудит, как улей. Через пять минут стало тепло, как после моря.",
+  "en": "The doctor gave me dark goggles and told me not to look at the lamp. I want to look anyway: it is blue and hums softly like a hive. After five minutes I was warm, as after the sea.",
+  "ja": "医師は黒い保護眼鏡を渡し、ランプを見ないよう言った。それでも見たくなる。青く、巣箱のように低くうなっている。五分で、海のあとのように温まった。"
+ },
+ "city.san.quartz.2": {
+  "ru": "Лампа зажглась с щелчком. «Не больше десяти минут, — сказала врач, — и не засыпайте». Я не заснул. Почти.",
+  "en": "The lamp came on with a click. \"No more than ten minutes,\" said the doctor, \"and don't fall asleep.\" I didn't. Almost.",
+  "ja": "ランプがカチッと点いた。「十分以内ですよ」と医師は言った。「寝ないでくださいね」。寝なかった。ほとんど。"
+ },
+ "city.san.quartz.3": {
+  "ru": "Под лампой кожа горит, а в голове тишина. Врач объясняет, что это полезно для суставов, настроения и «вообще». «Вообще» — главное слово в медицине.",
+  "en": "Under the lamp my skin glows and my head goes quiet. The doctor explains it is good for the joints, the mood and 'generally'. 'Generally' is the key word of medicine.",
+  "ja": "ランプの下で肌が火照り、頭の中は静まる。医師いわく、関節にも気分にも「全般に」いいとのこと。「全般に」は医学で一番大事な言葉だ。"
+ },
+ "city.san.quartz.4": {
+  "ru": "Очки сидят смешно, как у лётчика. В зеркале на стене вижу пациента в синей подсветке: он выглядит гораздо здоровее меня.",
+  "en": "The goggles sit funnily, like an aviator's. In the wall mirror I see a patient in blue light who looks far healthier than I do.",
+  "ja": "眼鏡は飛行士のようにおかしな具合に顔に乗る。壁の鏡に、青い光の中の患者が映る。僕よりずっと健康そうだ。"
+ },
+ "city.san.radio.1": {
+  "ru": "Радио у изголовья тихо играет танцевальную музыку. Диктор читает прогноз: ветер юго-западный, волнение моря два балла, настроение отличное.",
+  "en": "The radio at the head of the couch plays dance music quietly. The announcer reads the forecast: south-west wind, sea state two, mood excellent.",
+  "ja": "寝台の枕元のラジオが静かにダンス音楽を流す。アナウンサーが予報を読む。南西の風、波の高さ2、気分は上々。"
+ },
+ "city.san.radio.2": {
+  "ru": "Ночью радио играет вполголоса: сначала вальс, потом колыбельная, потом сигналы точного времени. Под них хорошо считать овец и ждать утра.",
+  "en": "At night the radio plays under its breath: first a waltz, then a lullaby, then the time signals. A good accompaniment for counting sheep and waiting for morning.",
+  "ja": "夜のラジオは小声で鳴る。まずワルツ、次に子守歌、そして時報。羊を数えて朝を待つのによく合う。"
+ },
+ "city.san.court.1": {
+  "ru": "Из окна виден двор-кольцо: фонтан с белой чашей, круглая лужайка и окна напротив. В одном кто-то поливает герань, в другом сушится полотенце с вышитым солнцем.",
+  "en": "The window looks onto the ring courtyard: a fountain with a white bowl, a round lawn and the windows opposite. In one a person waters geraniums, in another a towel with an embroidered sun is drying.",
+  "ja": "窓から輪の形の中庭が見える。白い水盤の噴水、丸い芝生、向かいの窓。一つの窓ではゼラニウムに水をやり、別の窓では太陽の刺繍のタオルが干してある。"
+ },
+ "city.san.court.2": {
+  "ru": "Двор ночью тёмный и круглый. Шепчет фонтан, горят три окна на разных этажах. Может быть, и там кому-то не спится и он смотрит на меня.",
+  "en": "At night the courtyard is dark and round. The fountain whispers, three windows burn on different floors. Maybe someone there cannot sleep either and is looking at me.",
+  "ja": "夜の中庭は暗くて丸い。噴水がささやき、別々の階の三つの窓に明かりが点いている。向こうにも眠れない人がいて、こちらを見ているかもしれない。"
+ },
+ "city.san.clock.1": {
+  "ru": "Часы над дверью бювета стоят. Стрелки замерли на 4:10. Под ними табличка: «Не трогать. Время отдыхает».",
+  "en": "The clock above the pump-room door has stopped. The hands are frozen at 4:10. Beneath it a plate: \"Do not touch. Time is resting.\"",
+  "ja": "鉱泉の間の扉の上の時計が止まっている。針は4時10分で固まったまま。下に札「触れないでください。時間は休んでいます」。"
+ },
+ "city.san.clock.2": {
+  "ru": "Под часами стоит стремянка, на ступеньке лежат отвёртка-«звёздочка» и записка: «Прошу не убирать. Г. А.».",
+  "en": "A stepladder stands under the clock, and on a step lie a tiny screwdriver and a note: \"Please do not move. G. A.\"",
+  "ja": "時計の下に脚立が立ち、段の上に小さなドライバーとメモ。「片づけないでください。G.A.」"
+ },
+ "city.san.clock.3": {
+  "ru": "Часы сняты. На подоконнике, на чистой салфетке, по порядку лежат колёсики, как кусочки пазла. Пожилой отдыхающий шепчет им что-то и пинцетом переставляет самое маленькое.",
+  "en": "The clock is down. On the sill, on a clean napkin, the cogs lie in order like pieces of a puzzle. An elderly guest whispers something to them and moves the smallest with tweezers.",
+  "ja": "時計は外されている。窓台の清潔なナプキンの上に、歯車がパズルのピースのように順に並ぶ。年配の利用者が何かささやきかけながら、ピンセットで一番小さな歯車を動かしている。"
+ },
+ "city.san.clock.4": {
+  "ru": "Часы идут! Тикают тихо и уверенно. Табличка: «Ходят. Точно. Проверено по радио». Ниже кто-то приписал: «Теперь нельзя опаздывать ни на воду, ни на обед».",
+  "en": "The clock is running! It ticks quietly and surely. A plate: \"Running. Accurate. Checked by radio.\" Below someone added: \"Now you can be late neither for the water nor for lunch.\"",
+  "ja": "時計が動いている！静かに、確かに時を刻む。札「稼働中。正確。ラジオで確認済み」。その下に誰かが「これで水にも昼食にも遅れられません」。"
+ },
+ "city.san.evening.prompt": {
+  "ru": "E — заглянуть на вечер в вестибюле",
+  "en": "E — look in on the lobby evening",
+  "ja": "E：ロビーの夕べをのぞく"
+ },
+ "city.san.evening.day": {
+  "ru": "Вестибюль днём. Паркет у входа натёрт до блеска, на столике у стены патефон под крышкой. Табличка: «Вечером танцы и лекции. Расписание у администратора».",
+  "en": "The lobby by day. The parquet by the door is polished to a shine, and on a little table by the wall a gramophone sits under its lid. A sign: \"Dances and lectures in the evening. Programme at the reception.\"",
+  "ja": "昼のロビー。入口の寄せ木は磨かれて光り、壁際の小卓に蓋をした蓄音機がある。札「夕方にダンスと講話。予定は受付で」。"
+ },
+ "city.san.evening.early": {
+  "ru": "Скоро вечер. Отдыхающие подтягиваются в вестибюль: кто с книгой, кто с шахматами, кто просто посмотреть на людей.",
+  "en": "Evening is near. Guests drift into the lobby: some with a book, some with chess, some just to look at people.",
+  "ja": "夕方が近い。利用者がロビーに集まってくる。本を持つ人、チェスを持つ人、ただ人を眺めに来た人。"
+ },
+ "city.san.evening.wed": {
+  "ru": "Среда, лекция врача «Как спать, чтобы выспаться». Слушатели рассаживаются вдоль стен. Врач говорит, что главный секрет — не думать о сне. Половина зала уже задумалась о сне и уснула.",
+  "en": "Wednesday, the doctor's lecture \"How to Sleep So That You Wake Rested\". The listeners sit along the walls. The doctor says the main secret is not to think about sleep. Half the hall has already thought about sleep and fallen asleep.",
+  "ja": "水曜、医師の講話「ぐっすり眠るには」。聴衆は壁沿いに座る。医師は、眠りについて考えないことが最大の秘訣だと言う。会場の半分はもう眠りについて考えて、眠っている。"
+ },
+ "city.san.evening.fri": {
+  "ru": "Пятница, чай с музыкой. Патефон играет Вертинского, потом Утёсова. Отдыхающие пьют чай и обсуждают погоду, которая сегодня удивительно хороша, и это, конечно, их заслуга.",
+  "en": "Friday, tea with music. The gramophone plays old ballads, then a jazz band. Guests drink tea and discuss the weather, which is wonderful today, and of course that is their doing.",
+  "ja": "金曜、音楽つきのお茶。蓄音機が古い歌謡曲を、続いてジャズを鳴らす。利用者はお茶を飲みながら天気を語る。今日は見事に晴れていて、もちろん自分たちのおかげだ。"
+ },
+ "city.san.evening.sat1": {
+  "ru": "Субботние танцы! Администратор заводит патефон, отдыхающие в сменной обуви кружат по паркету. Вальс, потом фокстрот, потом снова вальс, потому что просят.",
+  "en": "Saturday dancing! The receptionist winds the gramophone and guests in indoor shoes circle on the parquet. A waltz, then a foxtrot, then another waltz, because they ask for it.",
+  "ja": "土曜のダンス！受付の人が蓄音機のねじを巻き、室内履きの利用者たちが寄せ木の上を回る。ワルツ、フォックストロット、そしてまたワルツ。リクエストが出るから。"
+ },
+ "city.san.evening.sat2": {
+  "ru": "Я тоже танцую: сначала неловко, потом как получится. Пожилой часовщик ведёт партнёршу с видом инженера, который строит мост. Она улыбается: мост выдержит.",
+  "en": "I dance too: awkwardly at first, then however it goes. An elderly watchmaker leads his partner like an engineer building a bridge. She smiles: the bridge will hold.",
+  "ja": "僕も踊る。最初はぎこちなく、そのうち成り行きで。年配の時計職人が、橋を架ける技師のような顔でパートナーをリードする。彼女は微笑む。橋は持ちこたえそうだ。"
+ },
+ "city.san.evening.late": {
+  "ru": "Вестибюль ночью: паркет тёмный, патефон спит под крышкой. Дежурная листает журнал и кивает: «Тише, пожалуйста, у нас отдыхают».",
+  "en": "The lobby at night: the parquet is dark, the gramophone sleeps under its lid. The night attendant leafs through a ledger and nods: \"Quietly, please, people are resting.\"",
+  "ja": "夜のロビー。寄せ木は暗く、蓄音機は蓋の下で眠っている。夜勤の係が帳簿をめくり、うなずく。「お静かに。皆さん休んでいます」。"
+ },
+ "quest.sanatorium_guests.title": {
+  "ru": "Двое отдыхающих",
+  "en": "Two holidaymakers",
+  "ja": "二人の利用者"
+ },
+ "quest.sanatorium_guests.desc": {
+  "ru": "В санатории «Дружба» все записи в книге отзывов вдруг оказались про двоих. Интересно, чем кончилось.",
+  "en": "In the Druzhba sanatorium the guest book turned out to be, entry after entry, about two people. I wonder how it ended.",
+  "ja": "療養所「ドルジバ」の宿帳は、どの記入も二人のことだった。どうなったのか気になる。"
+ },
+ "quest.sanatorium_guests.book.log": {
+  "ru": "Книга отзывов лежит на стойке администратора. Читать её надо по странице в день, как письма: тогда поймёшь, кто эти люди.",
+  "en": "The guest book lies on the reception desk. It should be read a page a day, like letters: then you understand who these people are.",
+  "ja": "宿帳は受付のカウンターにある。手紙のように一日一ページずつ読むものだ。そうすれば、この人たちが誰か分かってくる。"
+ },
+ "quest.sanatorium_guests.read.obj": {
+  "ru": "Прочитать запись в книге отзывов",
+  "en": "Read an entry in the guest book",
+  "ja": "宿帳の記入を読む"
+ },
+ "quest.sanatorium_guests.clock.log": {
+  "ru": "Часовщик чинил часы над бюветом. Надо посмотреть, что с ними сейчас.",
+  "en": "The watchmaker was mending the clock over the pump room. I should see how it is now.",
+  "ja": "時計職人は鉱泉の間の時計を直していた。今どうなったか見てみよう。"
+ },
+ "quest.sanatorium_guests.clock.obj": {
+  "ru": "Посмотреть на часы в бювете",
+  "en": "Look at the pump-room clock",
+  "ja": "鉱泉の間の時計を見る"
+ },
+ "quest.sanatorium_guests.chess.log": {
+  "ru": "Они играли в шахматы у окна в столовой. Сяду за доску, раз партия не кончена.",
+  "en": "They played chess by the dining-room window. I'll sit at the board, since the game is not finished.",
+  "ja": "二人は食堂の窓辺でチェスを指していた。指しかけなら、僕が盤に座ってみよう。"
+ },
+ "quest.sanatorium_guests.chess.obj": {
+  "ru": "Сыграть партию в шахматном уголке",
+  "en": "Play a game at the chess corner",
+  "ja": "チェスのコーナーで一局指す"
+ },
+ "quest.sanatorium_guests.piano.log": {
+  "ru": "В зимнем саду на пианино оставлена тетрадь с нотами. Пусть она не лежит зря.",
+  "en": "A notebook of music was left on the winter-garden piano. It should not lie there for nothing.",
+  "ja": "冬の庭のピアノに楽譜帳が置いてある。無駄に置いておくわけにはいかない。"
+ },
+ "quest.sanatorium_guests.piano.obj": {
+  "ru": "Сыграть на пианино в зимнем саду",
+  "en": "Play the piano in the winter garden",
+  "ja": "冬の庭のピアノを弾く"
+ },
+ "quest.sanatorium_guests.done": {
+  "ru": "Я играл медленно, по тетради, где каждый такт подписан, как шестерёнка. Пианино на полтона фальшивило, и мне показалось, что так и задумано. Где-то в бювете громко тикали часы.",
+  "en": "I played slowly from the notebook, where every bar is labelled like a gear. The piano was half a tone off, and it seemed to me that was intended. Somewhere in the pump room the clock ticked loudly.",
+  "ja": "歯車のように小節ごとに注記のある楽譜帳を見ながら、ゆっくり弾いた。ピアノは半音狂っていたが、わざとのように思えた。どこか鉱泉の間で、時計が大きく時を刻んでいた。"
+ },
+ "quest.sanatorium_regime.title": {
+  "ru": "Режим отдыхающего",
+  "en": "A holidaymaker's regime",
+  "ja": "利用者の日課"
+ },
+ "quest.sanatorium_regime.desc": {
+  "ru": "В санатории всё по часам: вода, процедуры, тихий час. Хочу прожить один день по режиму, как настоящий отдыхающий.",
+  "en": "Everything at the sanatorium runs by the clock: water, treatments, the quiet hour. I want to live one day by the regime, like a real holidaymaker.",
+  "ja": "療養所ではすべてが時間割どおり。水、治療、静かな時間。本物の利用者のように、日課どおりに一日を過ごしてみたい。"
+ },
+ "quest.sanatorium_regime.board.log": {
+  "ru": "Сначала узнать, что по плану: расписание висит у входа, справа от дверей.",
+  "en": "First find out what is planned: the schedule hangs by the entrance, to the right of the doors.",
+  "ja": "まず予定を知ろう。日課表は入口の右側に掛かっている。"
+ },
+ "quest.sanatorium_regime.regime.obj": {
+  "ru": "Прочитать режим дня у входа",
+  "en": "Read the daily regime by the entrance",
+  "ja": "入口の日課表を読む"
+ },
+ "quest.sanatorium_regime.water.log": {
+  "ru": "Первым пунктом идёт вода: бювет, мелкими глотками, не торопясь.",
+  "en": "Water comes first: the pump room, small sips, no hurry.",
+  "ja": "最初は水。鉱泉の間で、ちびちびと、あわてずに。"
+ },
+ "quest.sanatorium_regime.pump.obj": {
+  "ru": "Набрать воды в бювете",
+  "en": "Take water at the pump room",
+  "ja": "鉱泉の間で水をくむ"
+ },
+ "quest.sanatorium_regime.oxygen.log": {
+  "ru": "В расписании кислородный коктейль. Бар в столовой, у окон во двор. Двенадцать рублей, говорят, недорого за облако.",
+  "en": "On the schedule is an oxygen cocktail. The bar is in the dining hall by the courtyard windows. Twelve roubles, they say, is cheap for a cloud.",
+  "ja": "予定表には酸素カクテル。バーは食堂の中庭側の窓辺。雲が12ルーブルなら安い、と皆が言う。"
+ },
+ "quest.sanatorium_regime.cocktail.obj": {
+  "ru": "Выпить кислородный коктейль",
+  "en": "Drink an oxygen cocktail",
+  "ja": "酸素カクテルを飲む"
+ },
+ "quest.sanatorium_regime.rest.log": {
+  "ru": "После воды и пены надо отдохнуть. Зимний сад, кресло среди пальм, книжка с тележки.",
+  "en": "After the water and the foam, a rest. The winter garden, an armchair among the palms, a book from the trolley.",
+  "ja": "水と泡のあとは休息。冬の庭、ヤシの間の肘掛け椅子、ワゴンから借りた本。"
+ },
+ "quest.sanatorium_regime.read.obj": {
+  "ru": "Почитать в кресле зимнего сада",
+  "en": "Read in the winter-garden armchair",
+  "ja": "冬の庭の肘掛け椅子で本を読む"
+ },
+ "quest.sanatorium_regime.done": {
+  "ru": "День прошёл ровно по режиму. Даже время, кажется, шло мелкими глотками. Усталости нет, есть странная лёгкость, как после хорошего кислородного коктейля.",
+  "en": "The day went exactly by the regime. Even time seemed to pass in small sips. No tiredness, just a strange lightness, as after a good oxygen cocktail.",
+  "ja": "一日は日課どおりに過ぎた。時間さえ、ちびちびと流れたようだ。疲れはなく、良い酸素カクテルのあとのような不思議な軽さがある。"
+ },
+ "city.san.clk.lobby.1": {
+  "ru": "Часы над дверью показывают {time}. Под ними висит режим дня, и стрелки идут по нему, как по линейке.",
+  "en": "The clock over the door says {time}. The daily regime hangs under it, and the hands follow it like a ruler.",
+  "ja": "ドアの上の時計は{time}。その下に日課表が掛かっていて、針は定規のようにそれをなぞっていく。"
+ },
+ "city.san.clk.lobby.quiet": {
+  "ru": "{time}. Тихий час. Дежурная кладёт ключи на стойку по одному, чтобы они не звякнули.",
+  "en": "{time}. Quiet hour. The attendant puts the keys on the desk one at a time so that they do not clink.",
+  "ja": "{time}。静かな時間。当番の人は鍵が鳴らないよう、一つずつ机に置いていく。"
+ },
+ "city.san.clk.lobby.night": {
+  "ru": "{time}. В вестибюле горит одна лампа, и часы тикают громче, чем днём. Дежурная делает вид, что не слышит.",
+  "en": "{time}. One lamp burns in the lobby and the clock ticks louder than by day. The night nurse pretends not to hear it.",
+  "ja": "{time}。ロビーにはランプがひとつだけ。時計は昼より大きな音で鳴る。夜勤の看護師は聞こえないふりをしている。"
+ },
+ "city.san.clk.dining.1": {
+  "ru": "Столовые часы: {time}. Ходики приятнее обеда по расписанию, но обед всё равно по расписанию.",
+  "en": "The dining-room clock: {time}. Its tick is kinder than a meal by the timetable, but the meal is by the timetable all the same.",
+  "ja": "食堂の時計は{time}。時計の音は時間割どおりの食事より優しいけれど、食事はやっぱり時間割どおり。"
+ },
+ "city.san.clk.dining.morning": {
+  "ru": "{time}. Завтрак до девяти. Каша не ждёт, а кефир ждёт, но недолго.",
+  "en": "{time}. Breakfast until nine. The porridge will not wait; the kefir will, but not for long.",
+  "ja": "{time}。朝食は九時まで。お粥は待ってくれない。ケフィアは待つけれど、長くは待たない。"
+ },
+ "city.san.clk.dining.quiet": {
+  "ru": "{time}. Тихий час: официантка накрывает ужин на цыпочках, ложки кладёт на салфетки.",
+  "en": "{time}. Quiet hour: the waitress lays the supper on tiptoe and puts the spoons down on napkins.",
+  "ja": "{time}。静かな時間。給仕の人は忍び足で夕食の用意をし、スプーンをナプキンの上に置く。"
+ },
+ "city.san.clk.garden.1": {
+  "ru": "Часы в зимнем саду: {time}. Под ними пальмы, и кажется, что время здесь растёт, как листья: медленно и во все стороны.",
+  "en": "The winter-garden clock: {time}. Palms stand beneath it and time seems to grow here like leaves: slowly and in every direction.",
+  "ja": "温室の時計は{time}。下にはヤシの木。ここでは時間が葉っぱのように、ゆっくり四方へ伸びていくみたい。"
+ },
+ "city.san.clk.garden.rain": {
+  "ru": "{time}. За стёклами дождь, и часы в саду отсчитывают его с точностью до минуты: капля, капля, капля.",
+  "en": "{time}. It rains behind the glass and the garden clock counts it to the minute: drop, drop, drop.",
+  "ja": "{time}。ガラスの向こうは雨。温室の時計は一分単位でそれを数える。ぽつ、ぽつ、ぽつ。"
+ },
+ "city.san.clk.treat.1": {
+  "ru": "Часы в процедурной: {time}. Они висят над шведской стенкой, чтобы пациент на кушетке видел, сколько ему ещё лежать.",
+  "en": "The treatment-room clock: {time}. It hangs above the wall bars so that the patient on the couch can see how much longer to lie.",
+  "ja": "処置室の時計は{time}。横木の上に掛かっていて、寝台の患者があとどれだけ横になるか見えるようにしてある。"
+ },
+ "city.san.clk.treat.night": {
+  "ru": "{time}. Ночью в процедурной пусто: только часы да гостевая кушетка за ширмой, застеленная до утра.",
+  "en": "{time}. At night the treatment room is empty: only the clock and the guest couch behind the screen, made up till morning.",
+  "ja": "{time}。夜の処置室は空っぽ。時計と、衝立の陰に朝まで整えられた客用の寝台があるだけ。"
+ },
+ "city.san.desk.prompt": {
+  "ru": "E — поговорить с врачом",
+  "en": "E — talk to the doctor",
+  "ja": "E：医師と話す"
+ },
+ "city.san.desk.1": {
+  "ru": "Врач сидит над процедурными картами и сверяет штампики. «Что у вас?» — спрашивает она, не поднимая глаз.",
+  "en": "The doctor sits over the treatment cards, checking the stamps. “What seems to be the matter?” she asks without looking up.",
+  "ja": "医師は治療カードに向かってスタンプを確かめている。「どうしました？」と顔も上げずに聞く。"
+ },
+ "city.san.desk.quiet": {
+  "ru": "Врач шепчет: «Тихий час. Говорите тише: за стенкой люди лежат под лампой».",
+  "en": "The doctor whispers: “Quiet hour. Speak softly: people are lying under the lamp behind that wall.”",
+  "ja": "医師はささやく。「静かな時間です。小さな声でね。壁の向こうではランプの下で横になっている人がいます」"
+ },
+ "city.san.desk.rain": {
+  "ru": "Врач стряхивает с зонта воду: «Из-за дождя все пришли с картами, а не на прогулку. Лучшая погода для процедур».",
+  "en": "The doctor shakes the water off an umbrella: “Because of the rain everyone came with their cards instead of going for a walk. The best weather for treatment.”",
+  "ja": "医師は傘の水を払う。「雨のおかげで皆さん散歩ではなくカードを持ってきます。治療には最高の天気です」"
+ },
+ "city.san.desk.closed": {
+  "ru": "Стол врача пуст. На карте записка: «Приём по будням с 9 до 17. Отдыхать можно в любое время».",
+  "en": "The doctor's desk is empty. A note on the card: “Surgery on weekdays from 9 to 17. Rest is allowed at any time.”",
+  "ja": "医師の机は空。カードにメモ：「診察は平日九時から十七時。休むのはいつでも自由です」"
+ },
+ "city.ask.sand.cure": {
+  "ru": "Как идёт мой курс?",
+  "en": "How is my course going?",
+  "ja": "私の療養はどう？"
+ },
+ "city.ask.sand.cure.1": {
+  "ru": "— Покажите карту. Штампики ставят все процедуры: вода, коктейль, кварц, осмотр, зарядка и тихий час. Шесть клеток, шесть процедур, ничего лишнего.",
+  "en": "\"Show me your card. Every treatment stamps it: water, cocktail, quartz, check-up, exercises and quiet hour. Six squares, six treatments, nothing extra.\"",
+  "ja": "「カードを見せて。スタンプは全部の療法で押します。水、カクテル、石英灯、診察、体操、静かな時間。六つの枠に六つの療法、余計なものはなし」"
+ },
+ "city.ask.sand.cure.2": {
+  "ru": "— Начало положено. Одна клетка в карте — это уже не «я приехал», а «я лечусь». Разница большая.",
+  "en": "\"A start has been made. One square on the card is no longer 'I have arrived' but 'I am being treated'. That is a big difference.\"",
+  "ja": "「始まりましたね。カードに枠がひとつ埋まれば、もう『着いた』ではなく『療養している』。大きな違いです」"
+ },
+ "city.ask.sand.cure.3": {
+  "ru": "— Половина! Щёки порозовели, походка уверенная. Если так пойдёт, к концу недели выпишу вас с сожалением.",
+  "en": "\"Halfway! Pink cheeks, a steady walk. At this rate I shall discharge you at the end of the week, with regret.\"",
+  "ja": "「半分ですね。頬はばら色、足取りもしっかり。この調子なら週末に、名残惜しく退院させますよ」"
+ },
+ "city.ask.sand.cure.4": {
+  "ru": "— Все шесть! Курс пройден по всей строгости режима. Пишу «практически здоров» и ставлю печать. Печать у меня бывает раз в сезон, так что берегите карту.",
+  "en": "\"All six! The course is done by the book. I write 'practically healthy' and stamp it. I use that stamp once a season, so look after the card.\"",
+  "ja": "「六つ全部！規則どおりに療養を終えました。『ほぼ健康』と書いて判を押します。この判は一シーズンに一度だけ、カードは大事にね」"
+ },
+ "city.ask.sand.sleep": {
+  "ru": "Как мне лучше спать?",
+  "en": "How should I sleep best?",
+  "ja": "どうすればよく眠れる？"
+ },
+ "city.ask.sand.sleep.1": {
+  "ru": "— Окно приоткрыть, ужин лёгкий, радио потише. И не считать овец: считайте глотки воды в бювете.",
+  "en": "\"Window ajar, a light supper, the radio low. And don't count sheep: count the sips of water at the pump room.\"",
+  "ja": "「窓は少し開けて、夕食は軽く、ラジオは小さく。羊は数えずに、鉱泉室で水を飲む一口を数えてね」"
+ },
+ "city.ask.sand.sleep.2": {
+  "ru": "— (шёпотом) Днём не больше часа, иначе ночью будете считать плитки на потолке.",
+  "en": "\"(whispering) By day no more than an hour, or at night you will be counting the ceiling tiles.\"",
+  "ja": "「（ささやき声で）昼寝は一時間まで。でないと夜に天井のタイルを数えることになりますよ」"
+ },
+ "city.ask.sand.quartz": {
+  "ru": "Зачем очки у кварцевой лампы?",
+  "en": "Why the goggles at the quartz lamp?",
+  "ja": "石英灯の眼鏡は何のため？"
+ },
+ "city.ask.sand.quartz.1": {
+  "ru": "— Чтобы не смотреть туда, куда нельзя. Лампа добрая, но любопытных не любит.",
+  "en": "\"So that you don't look where you shouldn't. The lamp is kind, but it does not like the curious.\"",
+  "ja": "「見てはいけないところを見ないためです。ランプは優しいけれど、好奇心の強い人は嫌いなんです」"
+ },
+ "city.ask.sand.quartz.2": {
+  "ru": "— Вы уже сидели под лампой? Заметили, что всё вокруг синее? У нас это называют «синий час». Для настроения полезно.",
+  "en": "\"You have already sat under the lamp? Did you notice everything turns blue? We call it the 'blue hour'. Good for the mood.\"",
+  "ja": "「もう石英灯の下に座りましたね？周りが青くなったでしょう。ここでは『青い時間』と呼んでいます。気分にいいんですよ」"
+ },
+ "city.ask.sand.games": {
+  "ru": "А шахматы входят в курс?",
+  "en": "Are chess and draughts part of the course?",
+  "ja": "チェスは療養に入ってる？"
+ },
+ "city.ask.sand.games.1": {
+  "ru": "— Шахматы, шашки и домино у нас записаны как «умственная гимнастика»: после обеда, вдвоём, без подсказок. Выигрыш в карту не ставлю, но настроение улучшает.",
+  "en": "\"Chess, draughts and dominoes are listed here as 'mental gymnastics': after lunch, in pairs, no prompting. I don't put a win on the card, but it does improve the mood.\"",
+  "ja": "「チェス、チェッカー、ドミノは『頭の体操』として載っています。昼食のあとに二人で、助言なしで。勝ちはカードに書きませんが、気分は確かによくなります」"
+ },
+ "city.san.duty.prompt": {
+  "ru": "E — нажать на звонок",
+  "en": "E — ring the bell",
+  "ja": "E：ベルを鳴らす"
+ },
+ "city.san.duty.day": {
+  "ru": "Дежурная медсестра выходит из-за ширмы: «Слушаю. Чай, градусник, ключ от комнаты?»",
+  "en": "The duty nurse steps out from behind the screen: “Yes? Tea, a thermometer, a room key?”",
+  "ja": "当番の看護師が衝立の陰から出てくる。「はい？お茶、体温計、部屋の鍵？」"
+ },
+ "city.san.duty.night": {
+  "ru": "Ночная дежурная приподнимается над книжкой: «Не спится? В термосе горячее молоко. Только тихо: здесь все спят, даже те, кто говорит, что не спит».",
+  "en": "The night nurse looks up from her book: “Can't sleep? There is hot milk in the flask. But quietly: everyone here is asleep, even those who say they are not.”",
+  "ja": "夜勤の看護師は本から顔を上げる。「眠れませんか？魔法瓶に温かいミルクがあります。静かにね。ここでは皆さん眠っています、眠れないと言う人も」"
+ },
+ "city.san.duty.quiet": {
+  "ru": "Дежурная шепчет и пишет на бумажке: «Тихий час. Ключи на крючке, чай в буфете». Читаешь и тоже молчишь.",
+  "en": "The nurse whispers and writes on a slip: “Quiet hour. Keys on the hook, tea at the buffet.” You read it and keep quiet too.",
+  "ja": "当番の看護師はささやきながら紙に書く。「静かな時間です。鍵はフックに、お茶は売店に」。読んで、こちらも黙る。"
+ },
+ "city.ask.sand.night": {
+  "ru": "Где дежурная по ночам?",
+  "en": "Where is the duty nurse at night?",
+  "ja": "夜の当番の人はどこ？"
+ },
+ "city.ask.sand.night.1": {
+  "ru": "— Здесь, за стойкой, с десяти вечера до семи утра: градусник, валерьянка, лишнее одеяло. Не спится — можно посидеть в вестибюле, только под одной лампой.",
+  "en": "\"Here, at the desk, from ten at night to seven in the morning: a thermometer, valerian, a spare blanket. If you can't sleep you may sit in the lobby, but under one lamp only.\"",
+  "ja": "「ここ、受付です。夜十時から朝七時まで。体温計、カノコソウ、予備の毛布。眠れなければロビーに座ってもいいけれど、ランプはひとつだけ」"
+ },
+ "city.ask.sand.night.2": {
+  "ru": "— Вы как раз вовремя: в термосе кипяток, чай заварен. Потише, у нас отбой.",
+  "en": "\"You've come just in time: boiling water in the flask, the tea is brewed. Quietly, though, it's lights-out.\"",
+  "ja": "「ちょうどいいところに。魔法瓶にお湯があって、お茶も入っています。ただし静かにね、消灯時間ですから」"
+ },
+ "city.ask.sand.letter": {
+  "ru": "Не оставляли ли тут письмо?",
+  "en": "Has anyone left a letter here?",
+  "ja": "ここに手紙の忘れ物はない？"
+ },
+ "city.ask.sand.letter.1": {
+  "ru": "— Письма? Только открытки. Хотя нет: на журнальном столике в вестибюле лежит конверт без марки. Никто не просит, а выбросить рука не поднимается.",
+  "en": "\"Letters? Only postcards. Actually no: on the lounge table in the lobby there is an envelope without a stamp. Nobody asks for it and nobody has the heart to throw it away.\"",
+  "ja": "「手紙？葉書だけです。……いえ、ロビーのローテーブルに切手のない封筒があります。誰も取りに来ないし、捨てる気にもなれなくて」"
+ },
+ "city.ask.sand.letter.2": {
+  "ru": "— Прочли? Тогда вы знаете больше меня. Я не читала, но по почерку поняла, что это личное. Пусть полежит до следующего заезда.",
+  "en": "\"You've read it? Then you know more than I do. I haven't, but I could tell from the handwriting it was personal. Let it lie until the next intake.\"",
+  "ja": "「読みました？では私より詳しいですね。私は読んでいませんが、筆跡で個人的なものだと分かりました。次の入所まで置いておきましょう」"
+ },
+ "city.ask.sand.piano": {
+  "ru": "Можно поиграть на пианино?",
+  "en": "May I play the piano?",
+  "ja": "ピアノを弾いてもいい？"
+ },
+ "city.ask.sand.piano.1": {
+  "ru": "— Можно, если мягко и не после десяти. Тетрадь на крышке не уносить: она общая.",
+  "en": "\"You may, if it's gentle and not after ten. Don't take the notebook off the lid: it belongs to everyone.\"",
+  "ja": "「静かに、夜十時前なら構いません。蓋の上のノートは持ち出さないで。みんなのものですから」"
+ },
+ "city.ask.sand.piano.2": {
+  "ru": "— (шёпотом) Только не сейчас: тихий час. Вот в пять — пожалуйста.",
+  "en": "\"(whispering) Not now, though: it's quiet hour. At five, please do.\"",
+  "ja": "「（ささやき声で）今は駄目、静かな時間です。五時になったらどうぞ」"
+ },
+ "city.ask.sand.piano.3": {
+  "ru": "— В субботу вечером обязательно! Танцующим нужна музыка, а наш пианист на выписке.",
+  "en": "\"On Saturday evening, absolutely! The dancers need music and our pianist is being discharged.\"",
+  "ja": "「土曜の夜はぜひ！踊る人には音楽が必要なのに、うちのピアニストは退院するところなんです」"
+ },
+ "city.san.checkers.1": {
+  "ru": "В бювете на круглом столике лежат шашки. Утром играют на глоток воды: кто выиграл, тот пьёт первым.",
+  "en": "Draughts lie on the round table in the pump room. In the morning they play for a sip of water: the winner drinks first.",
+  "ja": "鉱泉室の丸テーブルにチェッカーが置いてある。朝は水一口を賭けて遊ぶ。勝った人が先に飲む。"
+ },
+ "city.san.checkers.2": {
+  "ru": "После обеда за шашками тихо и серьёзно: на каждый ход ждут минуту, пока остынет чай.",
+  "en": "After lunch the draughts are played quietly and seriously: each move waits a minute for the tea to cool.",
+  "ja": "昼食のあとのチェッカーは静かで真剣。一手ごとに、お茶が冷めるまで一分待つ。"
+ },
+ "city.san.checkers.3": {
+  "ru": "Вечером шашки сдвинуты в угол доски: чья-то недоигранная партия. Её лучше не трогать.",
+  "en": "In the evening the draughts are pushed to a corner of the board: somebody's unfinished game. Better not touch it.",
+  "ja": "夜、チェッカーは盤の隅に寄せられている。誰かの終わっていない勝負だ。触らないほうがいい。"
+ },
+ "city.san.checkers.quiet": {
+  "ru": "Тихий час: шашки двигают без стука, подушечкой пальца, и ходят по очереди глазами.",
+  "en": "Quiet hour: the draughts are moved without a knock, with a fingertip, and the players take turns with their eyes.",
+  "ja": "静かな時間。駒は音を立てず、指先でそっと動かし、目で順番を交代する。"
+ },
+ "city.san.checkers.rain": {
+  "ru": "В дождь в бювете тесно: все с шашками, зонтами и кружками, и каждый второй уверен, что видит победный ход.",
+  "en": "On rainy days the pump room is crowded: everyone with draughts, umbrellas and mugs, and every second person is sure they see the winning move.",
+  "ja": "雨の日の鉱泉室は混み合う。皆がチェッカーと傘とカップを持っていて、二人に一人は勝ち筋が見えていると信じている。"
+ },
+ "city.san.dom.1": {
+  "ru": "На журнальном столике в вестибюле рассыпаны костяшки домино. Утром их собирают в ряд, как вагончики.",
+  "en": "Dominoes are scattered on the lounge table in the lobby. In the morning they are set in a row like little railway carriages.",
+  "ja": "ロビーのローテーブルにドミノが散らばっている。朝になると、小さな客車のように一列に並べられる。"
+ },
+ "city.san.dom.2": {
+  "ru": "В вестибюле играют в домино до полдника: «рыба», «козёл» и просто «положи уже что-нибудь».",
+  "en": "People play dominoes in the lobby until the afternoon snack: 'fish', 'the goat' and plain 'just put something down already'.",
+  "ja": "ロビーではおやつの時間までドミノをする。「魚」「ヤギ」、そして「いいから何か置いて」。"
+ },
+ "city.san.dom.3": {
+  "ru": "Вечером домино ссыпано в коробку с этикеткой «Вестибюль. Не уносить». Коробка тёплая, как будто её только что держали.",
+  "en": "In the evening the dominoes are tipped into a box labelled 'Lobby. Do not remove'. The box is warm, as if someone had just held it.",
+  "ja": "夜、ドミノは「ロビー。持ち出し禁止」と書かれた箱に入れられている。箱は、さっきまで誰かが持っていたように温かい。"
+ },
+ "city.san.dom.quiet": {
+  "ru": "Тихий час: костяшки кладут на сукно, а не на дерево, чтобы не стучали.",
+  "en": "Quiet hour: the tiles go down on cloth, not on wood, so that they do not clack.",
+  "ja": "静かな時間。牌は木ではなく布の上に置く。音が鳴らないように。"
+ },
+ "city.san.ex.prompt": {
+  "ru": "E — зарядка на паркете",
+  "en": "E — morning exercises on the parquet",
+  "ja": "E：寄木の床で朝の体操"
+ },
+ "city.san.ex.title": {
+  "ru": "Зарядка",
+  "en": "Morning exercises",
+  "ja": "朝の体操"
+ },
+ "city.san.ex.1": {
+  "ru": "По утрам на паркете у входа делают зарядку под радио: руки в стороны, вдох, выдох. Сейчас здесь пусто, только квадраты света.",
+  "en": "In the mornings people do their exercises on the parquet by the door, to the radio: arms out, breathe in, breathe out. Now it is empty, only squares of light.",
+  "ja": "朝になると入口の寄木の床でラジオに合わせて体操をする。腕を広げて、吸って、吐いて。今は誰もいなくて、光の四角だけがある。"
+ },
+ "city.san.ex.morning": {
+  "ru": "Радио считает: «И раз, и два!» Отдыхающие в тапочках размахивают руками, как мельницы. Попробуй не отстать.",
+  "en": "The radio counts: 'And one, and two!' Guests in slippers swing their arms like windmills. Try to keep up.",
+  "ja": "ラジオが数える。「いち、にい！」スリッパ姿の皆さんが風車のように腕を回す。遅れないようについていこう。"
+ },
+ "city.san.ex.rain": {
+  "ru": "В дождь зарядка переехала с веранды на паркет, и места мало: махать приходится по очереди.",
+  "en": "When it rains the exercises move from the veranda to the parquet and there is little room: you have to wave your arms in turns.",
+  "ja": "雨の日、体操はベランダから寄木の床に移り、場所が狭い。腕を振るのも順番制だ。"
+ },
+ "city.san.ex.fest": {
+  "ru": "В праздник зарядка с музыкой: вместо радио играет пианино из зимнего сада, и все делают вид, что так и положено.",
+  "en": "On a holiday the exercises have music: the winter-garden piano plays instead of the radio and everybody pretends it is how it should be.",
+  "ja": "祝日の体操には音楽がつく。ラジオの代わりに温室のピアノが鳴り、皆それが当たり前という顔をしている。"
+ },
+ "city.san.ex.win.1": {
+  "ru": "Ты попал в такт три раза подряд. Диктор из радио одобрил бы. Отдыхающие хлопают тапочками.",
+  "en": "You hit the beat three times in a row. The announcer on the radio would approve. The guests applaud with their slippers.",
+  "ja": "三回続けて拍に合った。ラジオのアナウンサーもうなずくだろう。皆さんがスリッパで拍手してくれる。"
+ },
+ "city.san.ex.win.2": {
+  "ru": "Чётко, как по линейке: плечи ровные, дыхание спокойное. В процедурную карту штамп поставили сразу.",
+  "en": "Crisp as a ruler: shoulders level, breathing calm. The stamp went onto the treatment card at once.",
+  "ja": "定規のようにきっちり。肩は水平、呼吸は穏やか。治療カードにはすぐスタンプが押された。"
+ },
+ "city.san.ex.lose.1": {
+  "ru": "Сбился на втором счёте. Радио не обиделось, оно просто продолжило считать.",
+  "en": "You lost the count at the second beat. The radio did not take offence: it simply went on counting.",
+  "ja": "二拍目で数えそこねた。ラジオは気にせず、そのまま数え続けた。"
+ },
+ "city.san.ex.lose.2": {
+  "ru": "Руки поднялись раньше музыки. Соседка по паркету улыбнулась и показала, как надо.",
+  "en": "Your arms went up before the music. The neighbour on the parquet smiled and showed how it is done.",
+  "ja": "音楽より先に腕が上がってしまった。隣の人がにっこりして、やり方を見せてくれた。"
+ },
+ "city.san.ex.draw.1": {
+  "ru": "Половина упражнений в такт, половина по вдохновению. Врач называет это «индивидуальным ритмом».",
+  "en": "Half the exercises on the beat, half by inspiration. The doctor calls it an 'individual rhythm'.",
+  "ja": "体操の半分は拍どおり、半分はひらめき。医師はこれを「個人のリズム」と呼ぶ。"
+ },
+ "city.san.ex.closed": {
+  "ru": "Паркет у входа пуст. На стене: «Зарядка с 7 до 9. Радио включает дежурная».",
+  "en": "The parquet by the door is empty. On the wall: 'Exercises from 7 to 9. The nurse on duty switches the radio on.'",
+  "ja": "入口の寄木の床は空っぽ。壁に：「体操は七時から九時。ラジオは当番の人がつけます」"
+ },
+ "city.san.brochure.prompt": {
+  "ru": "E — взять буклет",
+  "en": "E — take a leaflet",
+  "ja": "E：パンフレットをもらう"
+ },
+ "city.san.brochure.1": {
+  "ru": "Буклет «Санаторий «Дружба». Отдых по режиму». Тонкий, как открытка, и пахнет типографской краской.",
+  "en": "The leaflet 'Druzhba Sanatorium. Rest by the regime'. Thin as a postcard, and it smells of printing ink.",
+  "ja": "パンフレット「サナトリウム『ドルージバ』。日課どおりの休養」。葉書のように薄くて、印刷インクの匂いがする。"
+ },
+ "city.san.text.brochure.title": {
+  "ru": "Буклет санатория",
+  "en": "The sanatorium leaflet",
+  "ja": "サナトリウムのパンフレット"
+ },
+ "city.san.bro.1": {
+  "ru": "«Санаторий «Дружба». Круглый дом на берегу Балтики: кольцо из пяти этажей и двадцати четырёх лоджий. Построен короной: из каждого окна видно море, а каждый балкон стоит в треугольнике между соседями».",
+  "en": "'Druzhba Sanatorium. A round house on the Baltic shore: a ring of five storeys and twenty-four loggias. Built like a crown: every window faces the sea and every balcony stands in the triangle between its neighbours.'",
+  "ja": "「サナトリウム『ドルージバ』。バルト海沿いの円形の建物。五階建て、二十四のロッジアが輪になっています。王冠のように造られ、どの窓からも海が見え、どのバルコニーも隣り合う部屋の三角形の中にあります」"
+ },
+ "city.san.bro.2": {
+  "ru": "«Режим отдыхающего. Утро: зарядка, градусник, завтрак. До обеда: бювет и процедуры. После обеда: тихий час. Вечером: прогулка и вестибюль. Распорядок висит справа от входа».",
+  "en": "'The guest's regime. Morning: exercises, thermometer, breakfast. Before lunch: pump room and treatments. After lunch: quiet hour. Evening: a walk and the lobby. The timetable hangs to the right of the entrance.'",
+  "ja": "「滞在者の日課。朝は体操、検温、朝食。昼前は鉱泉室と療法。昼食のあとは静かな時間。夜は散歩とロビー。時間割は入口の右側に掲示しています」"
+ },
+ "city.san.bro.3": {
+  "ru": "«Процедуры. Минеральная вода в бювете. Кислородный коктейль в столовой, у окон во двор. Кварцевая лампа и осмотр у врача. Утренняя зарядка на паркете. Тихий час в зимнем саду. Каждая процедура даёт штамп в процедурной карте».",
+  "en": "'Treatments. Mineral water in the pump room. The oxygen cocktail in the dining hall by the courtyard windows. The quartz lamp and the check-up with the doctor. Morning exercises on the parquet. Quiet hour in the winter garden. Every treatment earns a stamp on the treatment card.'",
+  "ja": "「療法。鉱泉室でミネラルウォーター。食堂の中庭側の窓辺で酸素カクテル。石英灯と医師の診察。寄木の床で朝の体操。温室で静かな時間。どの療法も、治療カードにスタンプがひとつ押されます」"
+ },
+ "city.san.bro.4r": {
+  "ru": "«В дождь: зимний сад, шашки в бювете и домино в вестибюле. На всё найдётся кресло».",
+  "en": "'When it rains: the winter garden, draughts in the pump room and dominoes in the lobby. There is an armchair for everything.'",
+  "ja": "「雨の日は温室、鉱泉室でチェッカー、ロビーでドミノ。どれにも肘掛け椅子があります」"
+ },
+ "city.san.bro.4c": {
+  "ru": "«В ясную погоду: шезлонги во дворе, скамейка у фонтана, море с лоджий. Панамки выдаются у дежурной».",
+  "en": "'In clear weather: deck chairs in the courtyard, a bench by the fountain, the sea from the loggias. Sun hats are issued by the nurse on duty.'",
+  "ja": "「晴れの日は中庭のデッキチェア、噴水のそばのベンチ、ロッジアからの海。日よけ帽は当番の者がお貸しします」"
+ },
+ "city.san.bro.5": {
+  "ru": "«Правила. После десяти вечера тишина. В бювете вода, в зимнем саду пианино по очереди, в процедурной за ширмой гостевая кушетка (восемьдесят рублей за ночь, спросить у дежурной). Приятного отдыха!»",
+  "en": "'Rules. After ten in the evening, silence. Water in the pump room, the piano in the winter garden by turns, a guest couch behind the screen in the treatment room (eighty roubles a night, ask the nurse on duty). Enjoy your rest!'",
+  "ja": "「規則。夜十時以降は静かに。鉱泉室では水を、温室ではピアノを順番に。処置室の衝立の陰には客用の寝台があります（一泊八十ルーブル、当番の者にお尋ねください）。どうぞごゆっくり！」"
+ },
+ "city.san.letter.prompt": {
+  "ru": "E — прочитать письмо",
+  "en": "E — read the letter",
+  "ja": "E：手紙を読む"
+ },
+ "city.san.letter.1": {
+  "ru": "На столике лежит конверт без марки. Адрес не написан, только «Г. Р.» и маленькая шахматная ладья вместо точки.",
+  "en": "An envelope without a stamp lies on the table. There is no address, only 'G. R.' and a small chess rook in place of a full stop.",
+  "ja": "テーブルに切手のない封筒がある。宛名はなく、「G.R.」と、ピリオドの代わりに小さなチェスのルークが描かれている。"
+ },
+ "city.san.text.letter.title": {
+  "ru": "Письмо без марки",
+  "en": "The unstamped letter",
+  "ja": "切手のない手紙"
+ },
+ "city.san.let.1": {
+  "ru": "«Гусейн Рашидович! Пишу на обороте режима дня, другой бумаги нет. Если Вы это читаете, значит, я опять оставила письмо там, где его найдут раньше, чем нужно. — В. Л.»",
+  "en": "'Huseyn Rashidovich! I am writing on the back of the daily regime, there is no other paper. If you are reading this, I have once again left a letter where it will be found sooner than it should be. — V. L.'",
+  "ja": "「ギュセイン・ラシドヴィチ！日課表の裏に書いています、ほかに紙がないので。これを読んでいるなら、私はまた、見つかってはいけない時より早く見つかる場所に手紙を置いてしまったのでしょう。――V・L」"
+ },
+ "city.san.let.2": {
+  "ru": "«Про ладью. Не ищите её в ящике у администратора: она у меня. Я унесла её нечаянно, пока Вы думали вслух. Возвращаю вместе с партией, где Вы мне всё же поставили мат. Никому не показывайте».",
+  "en": "'About the rook. Do not look for it in the administrator's drawer: I have it. I took it by accident while you were thinking aloud. I return it with the game in which you did checkmate me after all. Show nobody.'",
+  "ja": "「ルークのことです。管理人の引き出しを探さないで。私が持っています。あなたが声に出して考えている間に、うっかり持ってきてしまいました。あなたが私にチェックメイトをかけた対局と一緒にお返しします。誰にも見せないでください」"
+ },
+ "city.san.let.3": {
+  "ru": "«Тетрадь на пианино играется. Третий такт Вы переписали с ошибкой: там не соль, а фа-диез. Я не стала исправлять. Теперь, когда я доигрываю до этого места, я слышу, как Вы думаете вслух».",
+  "en": "'The notebook on the piano can be played. You copied the third bar with a mistake: it is F sharp there, not G. I did not correct it. Now when I reach that place I can hear you thinking aloud.'",
+  "ja": "「ピアノの上のノートは弾けます。三小節目は写し間違いで、ソではなくファ♯です。直さないでおきました。今はそこまで弾くと、あなたが声に出して考えているのが聞こえます」"
+ },
+ "city.san.let.4": {
+  "ru": "«На «Маяке» каждые сутки в 4:10 проходит товарный. Когда он пройдёт, в бювете останутся часы, а в саду пианино. Приезжайте в следующий заезд. Я займу 3-14, Вы 2-09. Если комнаты заняты, я пойду в процедурную: там кушетка и ширма. — В. Л.»",
+  "en": "'At Mayak a goods train passes at 4:10 every day. When it has gone, the clock stays in the pump room and the piano in the garden. Come on the next intake. I will take 3-14 and you 2-09. If the rooms are taken I shall go to the treatment room: there is a couch and a screen. — V. L.'",
+  "ja": "「『マヤーク』駅には毎日四時十分に貨物列車が通ります。通り過ぎたあと、鉱泉室には時計が、温室にはピアノが残ります。次の入所で来てください。私は3-14、あなたは2-09に。部屋が埋まっていたら処置室へ行きます。寝台と衝立がありますから。――V・L」"
+ },
+ "city.san.card.prompt": {
+  "ru": "E — посмотреть процедурную карту",
+  "en": "E — look at the treatment card",
+  "ja": "E：治療カードを見る"
+ },
+ "city.san.card.1": {
+  "ru": "На планшете процедурная карта: шесть клеток для штампов, в углу карандаш на верёвочке.",
+  "en": "On the clipboard lies a treatment card: six squares for stamps and a pencil on a string in the corner.",
+  "ja": "クリップボードに治療カードがある。スタンプ用の枠が六つ、隅には紐つきの鉛筆。"
+ },
+ "city.san.text.card.title": {
+  "ru": "Процедурная карта",
+  "en": "The treatment card",
+  "ja": "治療カード"
+ },
+ "city.san.card.0": {
+  "ru": "«Процедурная карта отдыхающего. Фамилия: ______ Заезд: ______ Шесть клеток для штампов. Заполняйте по порядку или как придётся: врач всё равно сверит».",
+  "en": "'Guest's treatment card. Name: ______ Intake: ______ Six squares for stamps. Fill them in order or any way you like: the doctor will check anyway.'",
+  "ja": "「滞在者の治療カード。氏名：______ 入所日：______ スタンプ用の枠が六つ。順番どおりでも好きな順でも構いません。どのみち医師が確認します」"
+ },
+ "city.san.card.hint": {
+  "ru": "Клетки: 1 вода из бювета, 2 кислородный коктейль, 3 кварцевая лампа, 4 осмотр у врача, 5 утренняя зарядка, 6 тихий час в зимнем саду (с 14 до 16).",
+  "en": "Squares: 1 water from the pump room, 2 oxygen cocktail, 3 quartz lamp, 4 check-up with the doctor, 5 morning exercises, 6 quiet hour in the winter garden (from 14 to 16).",
+  "ja": "枠：1 鉱泉室の水、2 酸素カクテル、3 石英灯、4 医師の診察、5 朝の体操、6 温室での静かな時間（十四時から十六時）。"
+ },
+ "city.san.card.mineral": {
+  "ru": "Клетка 1, минеральная вода: штамп стоит, маленькая синяя капля.",
+  "en": "Square 1, mineral water: stamped, a small blue drop.",
+  "ja": "枠1、ミネラルウォーター：スタンプ済み、小さな青いしずく。"
+ },
+ "city.san.card.oxygen": {
+  "ru": "Клетка 2, кислородный коктейль: штамп стоит, облачко с соломинкой.",
+  "en": "Square 2, oxygen cocktail: stamped, a little cloud with a straw.",
+  "ja": "枠2、酸素カクテル：スタンプ済み、ストローのついた小さな雲。"
+ },
+ "city.san.card.quartz": {
+  "ru": "Клетка 3, кварцевая лампа: штамп стоит, синий кружок с лучами.",
+  "en": "Square 3, quartz lamp: stamped, a blue circle with rays.",
+  "ja": "枠3、石英灯：スタンプ済み、光線のついた青い丸。"
+ },
+ "city.san.card.checkup": {
+  "ru": "Клетка 4, осмотр: штамп стоит, крестик и подпись врача.",
+  "en": "Square 4, check-up: stamped, a little cross and the doctor's signature.",
+  "ja": "枠4、診察：スタンプ済み、小さな十字と医師のサイン。"
+ },
+ "city.san.card.exercise": {
+  "ru": "Клетка 5, зарядка: штамп стоит, человечек с поднятыми руками.",
+  "en": "Square 5, exercises: stamped, a little person with raised arms.",
+  "ja": "枠5、体操：スタンプ済み、腕を上げた小さな人。"
+ },
+ "city.san.card.quiet": {
+  "ru": "Клетка 6, тихий час: штамп стоит, луна и три буквы «ш-ш-ш».",
+  "en": "Square 6, quiet hour: stamped, a moon and three letters 'sh-sh-sh'.",
+  "ja": "枠6、静かな時間：スタンプ済み、月と「しーっ」の文字。"
+ },
+ "city.san.card.half": {
+  "ru": "Внизу карандашом: «Курс идёт хорошо. Продолжайте. Д-р».",
+  "en": "Pencilled below: 'The course is going well. Carry on. Dr.'",
+  "ja": "下に鉛筆で：「経過は良好です。続けてください。医師」"
+ },
+ "city.san.card.done": {
+  "ru": "Все шесть клеток закрыты. Внизу печать: «Практически здоров». Печать ещё пахнет чернилами.",
+  "en": "All six squares are filled. Below is a seal: 'Practically healthy'. The seal still smells of ink.",
+  "ja": "六つの枠はすべて埋まった。下に判：「ほぼ健康」。判はまだインクの匂いがする。"
+ },
+ "city.san.text.ledger.title": {
+  "ru": "Книга отзывов",
+  "en": "The guest book",
+  "ja": "宿帳"
+ },
+ "city.san.book.11": {
+  "ru": "Запись администратора: «На журнальном столике в вестибюле найден конверт без марки. Адресата нет. Положили на видное место: вдруг вернутся».",
+  "en": "The administrator's entry: 'An envelope without a stamp has been found on the lounge table in the lobby. No addressee. We have put it where it can be seen: perhaps they will come back.'",
+  "ja": "管理人の記入：「ロビーのローテーブルに切手のない封筒が見つかりました。宛先なし。目につく場所に置きました。戻ってくるかもしれません」"
+ },
+ "city.san.book.12": {
+  "ru": "Последняя запись той недели, две фамилии рядом: «Были. Вернёмся. Пианино оставьте открытым. — В. Л., Г. А.»",
+  "en": "The last entry of that week, two names side by side: 'We were here. We shall return. Leave the piano open. — V. L., G. A.'",
+  "ja": "その週の最後の記入。二つの名前が並んでいる：「来ました。また来ます。ピアノは開けておいてください。――V・L、G・A」"
+ },
+ "city.san.reg.8": {
+  "ru": "«Процедурная карта отдыхающего выдаётся у врача. Шесть процедур, шесть штампов. Кто закроет все клетки, получит слово доктора и чай за счёт санатория».",
+  "en": "'The guest's treatment card is issued by the doctor. Six treatments, six stamps. Whoever fills every square gets the doctor's word and tea at the sanatorium's expense.'",
+  "ja": "「滞在者の治療カードは医師が交付します。六つの療法、六つのスタンプ。すべての枠を埋めた方には、医師のお言葉と、サナトリウム負担のお茶を差し上げます」"
+ },
+ "city.san.reg.9": {
+  "ru": "«В бювете на круглом столике шашки, в вестибюле на журнальном домино. Просьба играть вдвоём и не помогать болельщикам».",
+  "en": "'Draughts on the round table in the pump room, dominoes on the lounge table in the lobby. Please play in pairs and do not help the spectators.'",
+  "ja": "「鉱泉室の丸テーブルにはチェッカー、ロビーのローテーブルにはドミノがあります。二人で遊び、見物人は手を貸さないようお願いします」"
+ },
+ "city.san.reg.10": {
+  "ru": "«Найден конверт без марки, лежит на журнальном столике в вестибюле. Владелец может забрать. Остальным просьба не читать... хотя бы до обеда».",
+  "en": "'An envelope without a stamp has been found; it lies on the lounge table in the lobby. The owner may collect it. Everybody else is asked not to read it... at least until lunch.'",
+  "ja": "「切手のない封筒が見つかりました。ロビーのローテーブルにあります。持ち主はお持ちください。ほかの方は読まないように……せめてお昼までは」"
+ },
+ "city.san.quiet.prompt": {
+  "ru": "E — посидеть в тихий час",
+  "en": "E — sit for the quiet hour",
+  "ja": "E：静かな時間に座る"
+ },
+ "city.san.quiet.1": {
+  "ru": "Кресло у пальм. Пока не тихий час, это просто кресло, а ты в нём просто сидишь. Хорошо, но без печати.",
+  "en": "An armchair by the palms. Until quiet hour it is just an armchair and you are just sitting in it. Pleasant, but no stamp.",
+  "ja": "ヤシのそばの肘掛け椅子。静かな時間でなければ、ただの椅子で、ただ座っているだけ。心地いいけれど、スタンプはなし。"
+ },
+ "city.san.quiet.2": {
+  "ru": "Тихий час. В саду никто не говорит, даже пальмы. Слышно, как далеко капает фонтан и как на пианино тихо лежит тетрадь. Штамп в карту.",
+  "en": "Quiet hour. Nobody in the garden speaks, not even the palms. You hear the fountain dripping far off and the notebook lying quietly on the piano. A stamp for the card.",
+  "ja": "静かな時間。温室では誰も話さない、ヤシの木でさえ。遠くで噴水のしずくが落ち、ピアノの上でノートが静かに眠っている。カードにスタンプ。"
+ },
+ "city.san.quiet.3": {
+  "ru": "Тихий час давно кончился, но в кресле всё ещё тихо. Можно посидеть и подумать, что завтра будет день по режиму.",
+  "en": "Quiet hour ended long ago but the armchair is still quiet. You can sit and think that tomorrow will be a day by the regime.",
+  "ja": "静かな時間はとうに終わったのに、椅子の上はまだ静か。座って、明日も日課どおりの一日になるだろうと考える。"
+ },
+ "city.san.quiet.4": {
+  "ru": "Дежурная проходит на цыпочках, ставит на столик стакан воды и исчезает. Поблагодарить не успел, но, кажется, это не обязательно. Штамп в карту.",
+  "en": "The nurse passes on tiptoe, puts a glass of water on the table and vanishes. You had no time to thank her, but it seems you do not have to. A stamp for the card.",
+  "ja": "当番の看護師が忍び足で通り、テーブルに水のコップを置いて消える。お礼を言う間もなかったが、言わなくてもいいらしい。カードにスタンプ。"
+ },
+ "city.san.quiet.rain": {
+  "ru": "В дождь сад полон: в каждом кресле по тихому человеку, и никто не шуршит газетой.",
+  "en": "When it rains the garden is full: a quiet person in every armchair and nobody rustling a newspaper.",
+  "ja": "雨の日の温室は満員。どの椅子にも静かな人が座っていて、誰も新聞をがさがささせない。"
+ },
+ "city.san.gwin.day": {
+  "ru": "Из окна зимнего сада виден двор: фонтан, лужайка и окна напротив. Пальмы стоят у стекла, как зрители.",
+  "en": "From the winter-garden window you see the courtyard: the fountain, the lawn and the windows opposite. The palms stand by the glass like spectators.",
+  "ja": "温室の窓から中庭が見える。噴水、芝生、向かいの窓。ヤシの木はガラスのそばに観客のように立っている。"
+ },
+ "city.san.gwin.night": {
+  "ru": "Ночью стекло зимнего сада превращается в зеркало: пальмы, ты, а где-то глубже огни окон напротив.",
+  "en": "At night the winter-garden glass turns into a mirror: the palms, you, and somewhere deeper the lights of the windows opposite.",
+  "ja": "夜の温室のガラスは鏡になる。ヤシの木、自分、そのずっと奥に向かいの窓の明かり。"
+ },
+ "city.san.gwin.rain": {
+  "ru": "Дождь стучит по стеклу, во дворе пусто. Зато в зимнем саду полно: кто с книгой, кто с шахматной ладьёй, кто просто смотрит, как стекает вода.",
+  "en": "Rain taps on the glass and the courtyard is empty. But the winter garden is full: someone with a book, someone with a chess rook, someone just watching the water run down.",
+  "ja": "雨がガラスを叩き、中庭は無人。けれど温室は満員。本を持つ人、チェスのルークを持つ人、ただ水が流れるのを眺める人。"
+ },
+ "city.san.gwin.clear": {
+  "ru": "Из зимнего сада двор виден сквозь пальмы: шезлонги расставлены вокруг фонтана, и кажется, что они тоже загорают.",
+  "en": "From the winter garden the courtyard shows through the palms: deck chairs set round the fountain, and it seems they are sunbathing too.",
+  "ja": "温室からはヤシの木越しに中庭が見える。噴水の周りにデッキチェアが並び、椅子たちも日光浴をしているようだ。"
+ },
+ "city.san.gwin.snow": {
+  "ru": "Двор белый и круглый. На фонтане шапка снега, шезлонги в сарае, а в окнах напротив горит свет.",
+  "en": "The courtyard is white and round. The fountain wears a cap of snow, the deck chairs are in the shed and lights burn in the windows opposite.",
+  "ja": "中庭は白くて丸い。噴水は雪の帽子をかぶり、デッキチェアは物置の中、向かいの窓には明かりがともっている。"
+ },
+ "city.san.oxygen.quiet": {
+  "ru": "В тихий час бармен подаёт коктейль молча, вручает соломинку и прикладывает палец к губам.",
+  "en": "In quiet hour the barman serves the cocktail in silence, hands over a straw and puts a finger to his lips.",
+  "ja": "静かな時間、バーテンダーは黙ってカクテルを出し、ストローを渡して唇に指を当てる。"
+ },
+ "city.san.oxygen.rain": {
+  "ru": "Дождь, и очередь к кислороду из пижам и зонтов. Бармен только кивает и взбивает пену.",
+  "en": "Rain, and the queue for oxygen is made of pyjamas and umbrellas. The barman only nods and whips up the foam.",
+  "ja": "雨。酸素の列はパジャマと傘でできている。バーテンダーはうなずくだけで、泡を立て続ける。"
+ },
+ "city.san.oxygen.closed": {
+  "ru": "Кислородный бар закрыт: колба накрыта салфеткой, на ней записка: «Облако работает с 10 до 19».",
+  "en": "The oxygen bar is closed: the flask is covered with a napkin and a note on it says: 'The cloud works from 10 to 19.'",
+  "ja": "酸素バーは閉まっている。フラスコにはナプキンが掛かり、メモがある：「雲は十時から十九時まで営業」"
+ },
+ "city.san.quartz.quiet": {
+  "ru": "Врач включает лампу без щелчка и шёпотом называет минуты. Синий свет в тихий час кажется особенно тихим.",
+  "en": "The doctor switches the lamp on without a click and whispers the minutes. In quiet hour the blue light seems especially quiet.",
+  "ja": "医師はカチッと音を立てずにランプをつけ、ささやき声で分数を数える。静かな時間の青い光は、ことさら静かに見える。"
+ },
+ "city.san.quartz.closed": {
+  "ru": "Лампа под тканевым чехлом. Записка: «Кварц по будням с 9 до 17. Очки не уносить».",
+  "en": "The lamp is under a cloth cover. A note: 'Quartz on weekdays from 9 to 17. Do not take the goggles away.'",
+  "ja": "ランプには布のカバーが掛かっている。メモ：「石英灯は平日九時から十七時。眼鏡は持ち出さないでください」"
+ },
+ "city.san.checkup.closed": {
+  "ru": "Кабинет осмотра закрыт: ширма сложена, на кушетке чистая простыня. Врач принимает по будням с 9 до 17.",
+  "en": "The check-up room is closed: the screen is folded and there is a clean sheet on the couch. The doctor sees patients on weekdays from 9 to 17.",
+  "ja": "診察室は閉まっている。衝立はたたまれ、寝台には清潔なシーツ。医師の診察は平日九時から十七時。"
+ },
+ "city.san.garden_read.rain": {
+  "ru": "В дождь зимний сад полон: у каждого кресла по книге, у каждой пальмы по слушателю. Капли на стёклах считаешь вместе со всеми.",
+  "en": "When it rains the winter garden is full: a book by every armchair, a listener by every palm. You count the drops on the glass along with everyone.",
+  "ja": "雨の日の温室は満員。どの椅子にも本、どのヤシにも聞き手がいる。ガラスのしずくを皆と一緒に数える。"
+ },
+ "city.san.garden_read.quiet": {
+  "ru": "Тихий час: страницы переворачивают двумя пальцами. Зато слышно, как в трубах журчит вода.",
+  "en": "Quiet hour: the pages are turned with two fingers. In exchange you can hear the water gurgling in the pipes.",
+  "ja": "静かな時間。ページは二本の指でめくる。そのかわり、パイプの水の音がよく聞こえる。"
+ },
+ "city.san.court.rain": {
+  "ru": "Во дворе дождь: лужайка блестит, фонтан беззвучен. Все ушли в зимний сад, и на траве остался один забытый шезлонг.",
+  "en": "Rain in the courtyard: the lawn gleams and the fountain is silent. Everyone has gone to the winter garden and one forgotten deck chair stays on the grass.",
+  "ja": "中庭は雨。芝生は光り、噴水は音を立てない。皆は温室に引っ込み、芝の上には忘れられたデッキチェアがひとつ。"
+ },
+ "city.san.court.clear": {
+  "ru": "Во дворе расставили шезлонги, на каждом отдыхающий в панамке: лицом к солнцу, как подсолнухи. На фонтане сохнет полотенце.",
+  "en": "Deck chairs are out in the courtyard, a guest in a sun hat on each: faces to the sun like sunflowers. A towel dries on the fountain.",
+  "ja": "中庭にデッキチェアが並び、日よけ帽の滞在者がそれぞれ腰掛けている。ひまわりのように太陽のほうを向いて。噴水にはタオルが干してある。"
+ },
+ "city.san.evening.rain": {
+  "ru": "В дождь вечер в вестибюле гуще обычного: из зимнего сада принесли кресла, паркет расчистили и для танцующих, и для зрителей.",
+  "en": "In the rain the evening in the lobby is thicker than usual: armchairs have been brought from the winter garden and the parquet cleared for dancers and spectators alike.",
+  "ja": "雨の夜のロビーはいつもより人が多い。温室から肘掛け椅子が運び込まれ、寄木の床は踊る人にも見る人にも空けられている。"
+ },
+ "city.san.evening.fest": {
+  "ru": "В праздник паркет натёрли до блеска. Дежурная ставит пластинку, и первый вальс танцуют все, даже те, кто пришёл за градусником.",
+  "en": "On a holiday the parquet is polished to a shine. The nurse puts on a record and everyone dances the first waltz, even those who came for a thermometer.",
+  "ja": "祝日には寄木の床がぴかぴかに磨かれる。当番の人がレコードをかけ、最初のワルツは皆が踊る。体温計をもらいに来た人も。"
+ },
+ "city.san.regime.fest": {
+  "ru": "К режиму дня приколот листок: «В праздничные дни режим прежний, но музыка громче. Врач разрешил один лишний пирожок».",
+  "en": "A slip is pinned to the daily regime: 'On holidays the regime is the same, but the music is louder. The doctor has allowed one extra pie.'",
+  "ja": "日課表に紙が留めてある。「祝日も日課は同じですが、音楽は大きめです。医師は、パイをひとつ多く食べることを許可しました」"
+ },
+ "city.san.pclock.time": {
+  "ru": "Часы в бювете идут, и дежурная показывает на них пальцем: сейчас {time}. Табличка «Не трогать» осталась, но теперь она про время, а не про часы.",
+  "en": "The pump-room clock is running and the nurse points a finger at it: it is {time}. The 'Do not touch' sign is still there but now it is about the time, not the clock.",
+  "ja": "鉱泉室の時計は動いていて、当番の人が指さす。今は{time}。「触らないで」の札はまだあるが、今は時計ではなく時間のことを言っている。"
+ },
+ "city.san.coll.cure.title": {
+  "ru": "Процедурная карта санатория",
+  "en": "The sanatorium treatment card",
+  "ja": "サナトリウムの治療カード"
+ },
+ "quest.sanatorium_cure.title": {
+  "ru": "Курс лечения",
+  "en": "A course of treatment",
+  "ja": "療養のコース"
+ },
+ "quest.sanatorium_cure.desc": {
+  "ru": "У врача санатория есть процедурная карта на шесть штампов. Хочу начать курс и не бросить его на половине.",
+  "en": "The sanatorium doctor keeps a treatment card with six stamps. I want to begin a course and not give up halfway.",
+  "ja": "サナトリウムの医師には六つのスタンプの治療カードがある。療養のコースを始めて、途中でやめないようにしたい。"
+ },
+ "quest.sanatorium_cure.card.log": {
+  "ru": "Карта лежит на лабораторном столе в процедурной, на планшете с карандашом. Посмотрю, какие там клетки.",
+  "en": "The card lies on the lab bench in the treatment room, on a clipboard with a pencil. I'll see which squares there are.",
+  "ja": "カードは処置室の実験台の上、鉛筆つきのクリップボードにある。どんな枠があるか見てみよう。"
+ },
+ "quest.sanatorium_cure.card.obj": {
+  "ru": "Посмотреть процедурную карту",
+  "en": "Look at the treatment card",
+  "ja": "治療カードを見る"
+ },
+ "quest.sanatorium_cure.doctor.log": {
+  "ru": "Врач принимает по будням с 9 до 17. Спрошу у неё, как идёт мой курс.",
+  "en": "The doctor sees patients on weekdays from 9 to 17. I'll ask her how my course is going.",
+  "ja": "医師は平日九時から十七時に診察している。コースの経過を聞いてみよう。"
+ },
+ "quest.sanatorium_cure.doctor.obj": {
+  "ru": "Спросить врача про курс",
+  "en": "Ask the doctor about the course",
+  "ja": "コースの経過を医師に聞く"
+ },
+ "quest.sanatorium_cure.game.log": {
+  "ru": "Врач называет шашки и домино умственной гимнастикой. Сыграю и выиграю: в бювете на круглом столике стоят шашки.",
+  "en": "The doctor calls draughts and dominoes mental gymnastics. I'll play, and win: there are draughts on the round table in the pump room.",
+  "ja": "医師はチェッカーとドミノを頭の体操と呼ぶ。遊んで勝ってみよう。鉱泉室の丸テーブルにチェッカーがある。"
+ },
+ "quest.sanatorium_cure.game.obj": {
+  "ru": "Выиграть партию в шашки в бювете",
+  "en": "Win a game of draughts in the pump room",
+  "ja": "鉱泉室でチェッカーに勝つ"
+ },
+ "quest.sanatorium_cure.rest.log": {
+  "ru": "Остался тихий час: с 14 до 16 в кресле зимнего сада. Без него курс не курс.",
+  "en": "What remains is quiet hour: from 14 to 16 in the winter-garden armchair. Without it the course is not a course.",
+  "ja": "残るのは静かな時間。十四時から十六時に温室の椅子で。これがなければコースとは言えない。"
+ },
+ "quest.sanatorium_cure.quiet.obj": {
+  "ru": "Посидеть в кресле зимнего сада в тихий час",
+  "en": "Sit in the winter-garden armchair during quiet hour",
+  "ja": "静かな時間に温室の椅子に座る"
+ },
+ "quest.sanatorium_cure.done": {
+  "ru": "Я сидел так тихо, что услышал, как в пианино лежит тетрадь. Врач шепнула: «Вот это — лечение». На карте теперь не хватает только печати, но печать у неё бывает раз в сезон.",
+  "en": "I sat so quietly that I heard the notebook lying in the piano. The doctor whispered: 'Now that is treatment.' The card now lacks only a seal, but she uses the seal once a season.",
+  "ja": "あまりに静かに座っていたので、ピアノの中でノートが眠る音まで聞こえた。医師はささやいた。「これこそ療養です」。カードに足りないのは判だけ。でもその判は一シーズンに一度しか使わない。"
+ }
 }

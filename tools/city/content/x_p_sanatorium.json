@@ -1,5 +1,5 @@
 {
- "_doc": "P-SANATORIUM, second pass (depth): the regime board by the hour, the weekly menu, the oxygen bar, the holidaymakers' chess corner, the library trolley, plant labels, the quartz lamp, the night radio of the paid couch, the courtyard window, the pump-room clock, evenings in the lobby, and the guest book that tells the story of two holidaymakers over several days. Words: strings/x_p_sanatorium.json.",
+ "_doc": "P-SANATORIUM, second pass (depth): the regime board by the hour, the weekly menu, the oxygen bar, the holidaymakers' chess corner, the library trolley, plant labels, the quartz lamp, the night radio of the paid couch, the courtyard window, the pump-room clock, evenings in the lobby, and the guest book that tells the story of two holidaymakers over several days. Words: strings/x_p_sanatorium.json. Third pass: the guest corner at the paid couch, switches and clocks per room, checkers (pump room) and dominoes (lobby) with the town's regulars, a rally morning exercise on the parquet at 7-9, the leaflet rack, the forgotten letter, the treatment card with the collection san_cure (six stamps: water, oxygen, quartz, check-up, exercise, quiet hour), the doctor's desk and the duty bell with staff talk, the winter-garden window, weather, festival, quiet-hour and closed lines, the ledger guest book and the quest sanatorium_cure.",
  "acts": {
   "look_regime": {
    "like": "look_misc",
@@ -46,6 +46,10 @@
       22,
       6
      ]
+    },
+    {
+     "k": "city.san.regime.fest",
+     "festival": "any"
     }
    ]
   },
@@ -55,7 +59,13 @@
    "minutes": 4,
    "rotate": "daily",
    "sound": "page_turn",
-   "lines": "city.san.book"
+   "lines": "city.san.book",
+   "read": {
+    "texts": [
+     "san_ledger"
+    ],
+    "rotate": "use"
+   }
   },
   "look_rules_sanatorium": {
    "like": "look_rules",
@@ -120,10 +130,24 @@
       14,
       6
      ]
+    },
+    {
+     "k": "city.san.oxygen.quiet",
+     "h": [
+      14,
+      16
+     ]
+    },
+    {
+     "k": "city.san.oxygen.rain",
+     "weather": "rain"
     }
-   ]
+   ],
+   "collect": "san_cure/oxygen",
+   "closed": "city.san.oxygen.closed"
   },
-  "sanatorium_chess": {"like": "chess", 
+  "sanatorium_chess": {
+   "like": "chess",
    "prompt": "city.do.chess.prompt",
    "minutes": 40,
    "pose": "sit",
@@ -189,6 +213,17 @@
       18,
       6
      ]
+    },
+    {
+     "k": "city.san.garden_read.rain",
+     "weather": "rain"
+    },
+    {
+     "k": "city.san.garden_read.quiet",
+     "h": [
+      14,
+      16
+     ]
     }
    ]
   },
@@ -197,7 +232,18 @@
    "minutes": 10,
    "pose": "sit",
    "needs_staff": "doctor",
-   "lines": "city.san.quartz"
+   "lines": [
+    "city.san.quartz.*",
+    {
+     "k": "city.san.quartz.quiet",
+     "h": [
+      14,
+      16
+     ]
+    }
+   ],
+   "collect": "san_cure/quartz",
+   "closed": "city.san.quartz.closed"
   },
   "couch_radio": {
    "prompt": "city.do.radio.prompt",
@@ -240,6 +286,14 @@
       21,
       6
      ]
+    },
+    {
+     "k": "city.san.court.rain",
+     "weather": "rain"
+    },
+    {
+     "k": "city.san.court.clear",
+     "weather": "clear"
     }
    ]
   },
@@ -247,7 +301,13 @@
    "like": "look_misc",
    "minutes": 2,
    "rotate": "daily",
-   "lines": "city.san.clock"
+   "lines": [
+    "city.san.clock.*",
+    {
+     "k": "city.san.pclock.time",
+     "after": 8
+    }
+   ]
   },
   "sanatorium_evening": {
    "prompt": "city.san.evening.prompt",
@@ -307,6 +367,356 @@
       20,
       6
      ]
+    },
+    {
+     "k": "city.san.evening.rain",
+     "weather": "rain"
+    },
+    {
+     "k": "city.san.evening.fest",
+     "festival": "any"
+    }
+   ]
+  },
+  "sanatorium_clock_lobby": {
+   "like": "look_clock",
+   "lines": [
+    {
+     "k": "city.san.clk.lobby.1",
+     "h": [
+      6,
+      22
+     ]
+    },
+    {
+     "k": "city.san.clk.lobby.night",
+     "h": [
+      22,
+      6
+     ]
+    },
+    {
+     "k": "city.san.clk.lobby.quiet",
+     "h": [
+      14,
+      16
+     ]
+    }
+   ]
+  },
+  "sanatorium_clock_dining": {
+   "like": "look_clock",
+   "lines": [
+    "city.san.clk.dining.1",
+    {
+     "k": "city.san.clk.dining.morning",
+     "h": [
+      7,
+      9
+     ]
+    },
+    {
+     "k": "city.san.clk.dining.quiet",
+     "h": [
+      14,
+      16
+     ]
+    }
+   ]
+  },
+  "sanatorium_clock_garden": {
+   "like": "look_clock",
+   "lines": [
+    "city.san.clk.garden.1",
+    {
+     "k": "city.san.clk.garden.rain",
+     "weather": "rain"
+    }
+   ]
+  },
+  "sanatorium_clock_treat": {
+   "like": "look_clock",
+   "lines": [
+    {
+     "k": "city.san.clk.treat.1",
+     "h": [
+      6,
+      22
+     ]
+    },
+    {
+     "k": "city.san.clk.treat.night",
+     "h": [
+      22,
+      6
+     ]
+    }
+   ]
+  },
+  "sanatorium_checkers": {
+   "like": "checkers",
+   "lines": [
+    {
+     "k": "city.san.checkers.1",
+     "h": [
+      6,
+      13
+     ]
+    },
+    {
+     "k": "city.san.checkers.2",
+     "h": [
+      13,
+      19
+     ]
+    },
+    {
+     "k": "city.san.checkers.3",
+     "h": [
+      19,
+      6
+     ]
+    },
+    {
+     "k": "city.san.checkers.quiet",
+     "h": [
+      14,
+      16
+     ]
+    },
+    {
+     "k": "city.san.checkers.rain",
+     "weather": "rain"
+    }
+   ]
+  },
+  "sanatorium_dominoes": {
+   "like": "dominoes",
+   "lines": [
+    {
+     "k": "city.san.dom.1",
+     "h": [
+      6,
+      13
+     ]
+    },
+    {
+     "k": "city.san.dom.2",
+     "h": [
+      13,
+      19
+     ]
+    },
+    {
+     "k": "city.san.dom.3",
+     "h": [
+      19,
+      6
+     ]
+    },
+    {
+     "k": "city.san.dom.quiet",
+     "h": [
+      14,
+      16
+     ]
+    }
+   ]
+  },
+  "sanatorium_exercise": {
+   "prompt": "city.san.ex.prompt",
+   "minutes": 15,
+   "pose": "stand",
+   "sound": "rest_bell",
+   "collect": "san_cure/exercise",
+   "closed": "city.san.ex.closed",
+   "lines": [
+    "city.san.ex.1",
+    {
+     "k": "city.san.ex.morning",
+     "h": [
+      7,
+      9
+     ]
+    },
+    {
+     "k": "city.san.ex.rain",
+     "weather": "rain"
+    },
+    {
+     "k": "city.san.ex.fest",
+     "festival": "any"
+    }
+   ],
+   "game": {
+    "type": "rally",
+    "title": "city.san.ex.title",
+    "need": 3,
+    "speed": 0.65,
+    "zone": 0.6,
+    "shrink": 0.9,
+    "pace": 1.03,
+    "win": "city.san.ex.win",
+    "lose": "city.san.ex.lose",
+    "draw": "city.san.ex.draw",
+    "collect": "san_cure/exercise",
+    "daily": 2
+   }
+  },
+  "sanatorium_brochure": {
+   "like": "take_postcard",
+   "prompt": "city.san.brochure.prompt",
+   "lines": "city.san.brochure",
+   "read": {
+    "texts": [
+     "san_brochure"
+    ]
+   }
+  },
+  "sanatorium_letter": {
+   "like": "look_misc",
+   "prompt": "city.san.letter.prompt",
+   "minutes": 3,
+   "sound": "page_turn",
+   "lines": "city.san.letter",
+   "read": {
+    "texts": [
+     "san_letter"
+    ]
+   }
+  },
+  "sanatorium_card": {
+   "like": "look_misc",
+   "prompt": "city.san.card.prompt",
+   "minutes": 2,
+   "sound": "page_turn",
+   "lines": "city.san.card",
+   "read": {
+    "texts": [
+     "san_card"
+    ]
+   }
+  },
+  "sanatorium_doctor_desk": {
+   "like": "counter_talk",
+   "prompt": "city.san.desk.prompt",
+   "needs_staff": "doctor",
+   "closed": "city.san.desk.closed",
+   "lines": [
+    "city.san.desk.1",
+    {
+     "k": "city.san.desk.quiet",
+     "h": [
+      14,
+      16
+     ]
+    },
+    {
+     "k": "city.san.desk.rain",
+     "weather": "rain"
+    }
+   ]
+  },
+  "sanatorium_duty": {
+   "like": "counter_talk",
+   "prompt": "city.san.duty.prompt",
+   "needs_staff": "receptionist",
+   "sound": "rest_bell",
+   "lines": [
+    {
+     "k": "city.san.duty.day",
+     "h": [
+      6,
+      22
+     ]
+    },
+    {
+     "k": "city.san.duty.night",
+     "h": [
+      22,
+      6
+     ]
+    },
+    {
+     "k": "city.san.duty.quiet",
+     "h": [
+      14,
+      16
+     ]
+    }
+   ]
+  },
+  "sanatorium_quiet": {
+   "prompt": "city.san.quiet.prompt",
+   "minutes": 30,
+   "pose": "sit",
+   "sound": "page_turn",
+   "any_hour": true,
+   "lines": [
+    {
+     "k": "city.san.quiet.1",
+     "h": [
+      6,
+      14
+     ]
+    },
+    {
+     "k": "city.san.quiet.2",
+     "h": [
+      14,
+      16
+     ],
+     "collect": "san_cure/quiet"
+    },
+    {
+     "k": "city.san.quiet.4",
+     "h": [
+      14,
+      16
+     ],
+     "collect": "san_cure/quiet"
+    },
+    {
+     "k": "city.san.quiet.3",
+     "h": [
+      16,
+      6
+     ]
+    },
+    {
+     "k": "city.san.quiet.rain",
+     "weather": "rain"
+    }
+   ]
+  },
+  "sanatorium_window": {
+   "like": "look_view",
+   "lines": [
+    {
+     "k": "city.san.gwin.day",
+     "h": [
+      6,
+      21
+     ]
+    },
+    {
+     "k": "city.san.gwin.night",
+     "h": [
+      21,
+      6
+     ]
+    },
+    {
+     "k": "city.san.gwin.rain",
+     "weather": "rain"
+    },
+    {
+     "k": "city.san.gwin.clear",
+     "weather": "clear"
+    },
+    {
+     "k": "city.san.gwin.snow",
+     "weather": "snow"
     }
    ]
   }
@@ -357,6 +767,59 @@
   },
   "round_sanatorium/lobby_dance": {
    "act": "sanatorium_evening"
+  },
+  "round_sanatorium/pump_checkers": {
+   "act": "sanatorium_checkers"
+  },
+  "round_sanatorium/lounge_dominoes": {
+   "act": "sanatorium_dominoes"
+  },
+  "round_sanatorium/lobby_exercise": {
+   "act": "sanatorium_exercise",
+   "hours": [
+    7,
+    9
+   ]
+  },
+  "round_sanatorium/brochure_rack": {
+   "act": "sanatorium_brochure"
+  },
+  "round_sanatorium/lobby_letter": {
+   "act": "sanatorium_letter"
+  },
+  "round_sanatorium/treat_card": {
+   "act": "sanatorium_card"
+  },
+  "round_sanatorium/treat_desk": {
+   "act": "sanatorium_doctor_desk"
+  },
+  "round_sanatorium/night_bell": {
+   "act": "sanatorium_duty"
+  },
+  "round_sanatorium/garden_chair_b": {
+   "act": "sanatorium_quiet"
+  },
+  "round_sanatorium/garden_window": {
+   "act": "sanatorium_window"
+  },
+  "round_sanatorium/kit_clock_2": {
+   "act": "sanatorium_clock_lobby"
+  },
+  "round_sanatorium/kit_clock_3": {
+   "act": "sanatorium_clock_dining"
+  },
+  "round_sanatorium/kit_clock_4": {
+   "act": "sanatorium_clock_garden"
+  },
+  "round_sanatorium/kit_clock_5": {
+   "act": "sanatorium_clock_treat"
+  },
+  "round_sanatorium/pump_room": {
+   "collect": "san_cure/mineral"
+  },
+  "round_sanatorium/treat_checkup": {
+   "collect": "san_cure/checkup",
+   "closed": "city.san.checkup.closed"
   }
  },
  "quests": [
@@ -467,6 +930,331 @@
      }
     }
    ]
+  },
+  {
+   "id": "sanatorium_cure",
+   "kind": "side",
+   "start_on": {
+    "event": "visit",
+    "target": "P-SANATORIUM"
+   },
+   "stages": [
+    {
+     "id": "card",
+     "objectives": [
+      {
+       "id": "card",
+       "event": "do",
+       "target": "sanatorium_card"
+      }
+     ]
+    },
+    {
+     "id": "doctor",
+     "objectives": [
+      {
+       "id": "doctor",
+       "event": "ask",
+       "target": "sand.cure"
+      }
+     ]
+    },
+    {
+     "id": "game",
+     "objectives": [
+      {
+       "id": "game",
+       "event": "win",
+       "target": "sanatorium_checkers"
+      }
+     ]
+    },
+    {
+     "id": "rest",
+     "objectives": [
+      {
+       "id": "quiet",
+       "event": "do",
+       "target": "sanatorium_quiet"
+      }
+     ],
+     "reward": {
+      "rubles": 30,
+      "items": {
+       "tea": 1
+      }
+     }
+    }
+   ]
   }
- ]
+ ],
+ "topics": {
+  "sanatorium_doctor_desk": [
+   {
+    "id": "sand.cure",
+    "k": "city.ask.sand.cure",
+    "lines": [
+     "city.ask.sand.cure.1",
+     {
+      "k": "city.ask.sand.cure.2",
+      "count": [
+       "san_cure",
+       1
+      ]
+     },
+     {
+      "k": "city.ask.sand.cure.3",
+      "count": [
+       "san_cure",
+       3
+      ]
+     },
+     {
+      "k": "city.ask.sand.cure.4",
+      "count": [
+       "san_cure",
+       6
+      ]
+     }
+    ]
+   },
+   {
+    "id": "sand.sleep",
+    "k": "city.ask.sand.sleep",
+    "lines": [
+     "city.ask.sand.sleep.1",
+     {
+      "k": "city.ask.sand.sleep.2",
+      "h": [
+       14,
+       16
+      ]
+     }
+    ]
+   },
+   {
+    "id": "sand.quartz",
+    "k": "city.ask.sand.quartz",
+    "lines": [
+     "city.ask.sand.quartz.1",
+     {
+      "k": "city.ask.sand.quartz.2",
+      "did": "sanatorium_quartz"
+     }
+    ]
+   },
+   {
+    "id": "sand.games",
+    "k": "city.ask.sand.games",
+    "lines": [
+     "city.ask.sand.games.1"
+    ]
+   }
+  ],
+  "sanatorium_duty": [
+   {
+    "id": "sand.night",
+    "k": "city.ask.sand.night",
+    "lines": [
+     "city.ask.sand.night.1",
+     {
+      "k": "city.ask.sand.night.2",
+      "h": [
+       22,
+       6
+      ]
+     }
+    ]
+   },
+   {
+    "id": "sand.letter",
+    "k": "city.ask.sand.letter",
+    "lines": [
+     "city.ask.sand.letter.1",
+     {
+      "k": "city.ask.sand.letter.2",
+      "read": "san_letter"
+     }
+    ]
+   },
+   {
+    "id": "sand.piano",
+    "k": "city.ask.sand.piano",
+    "lines": [
+     "city.ask.sand.piano.1",
+     {
+      "k": "city.ask.sand.piano.2",
+      "h": [
+       14,
+       16
+      ]
+     },
+     {
+      "k": "city.ask.sand.piano.3",
+      "d": "sat",
+      "h": [
+       19,
+       23
+      ]
+     }
+    ]
+   }
+  ]
+ },
+ "collections": {
+  "san_cure": {
+   "title": "city.san.coll.cure.title",
+   "pieces": [
+    "mineral",
+    "oxygen",
+    "quartz",
+    "checkup",
+    "exercise",
+    "quiet"
+   ]
+  }
+ },
+ "texts": {
+  "san_ledger": {
+   "title": "city.san.text.ledger.title",
+   "kind": "ledger",
+   "minutes": 2,
+   "collect": "reading/san_ledger",
+   "pages": [
+    "city.san.book.1",
+    {
+     "k": "city.san.book.2",
+     "after": 1
+    },
+    {
+     "k": "city.san.book.3",
+     "after": 2
+    },
+    {
+     "k": "city.san.book.4",
+     "after": 3
+    },
+    {
+     "k": "city.san.book.5",
+     "after": 4
+    },
+    {
+     "k": "city.san.book.6",
+     "after": 5
+    },
+    {
+     "k": "city.san.book.7",
+     "after": 6
+    },
+    {
+     "k": "city.san.book.8",
+     "after": 7
+    },
+    {
+     "k": "city.san.book.9",
+     "after": 8
+    },
+    {
+     "k": "city.san.book.10",
+     "after": 9
+    },
+    {
+     "k": "city.san.book.11",
+     "after": 10
+    },
+    {
+     "k": "city.san.book.12",
+     "after": 12
+    }
+   ]
+  },
+  "san_brochure": {
+   "title": "city.san.text.brochure.title",
+   "kind": "book",
+   "minutes": 2,
+   "collect": "reading/san_brochure",
+   "pages": [
+    "city.san.bro.1",
+    "city.san.bro.2",
+    "city.san.bro.3",
+    [
+     {
+      "k": "city.san.bro.4r",
+      "weather": "rain"
+     },
+     {
+      "k": "city.san.bro.4c",
+      "weather": "clear"
+     }
+    ],
+    "city.san.bro.5"
+   ]
+  },
+  "san_letter": {
+   "title": "city.san.text.letter.title",
+   "kind": "book",
+   "minutes": 2,
+   "collect": "reading/san_letter",
+   "pages": [
+    "city.san.let.1",
+    "city.san.let.2",
+    {
+     "k": "city.san.let.3",
+     "read": "san_ledger"
+    },
+    {
+     "k": "city.san.let.4",
+     "after": 8
+    }
+   ]
+  },
+  "san_card": {
+   "title": "city.san.text.card.title",
+   "kind": "ledger",
+   "minutes": 1,
+   "collect": "reading/san_card",
+   "pages": [
+    "city.san.card.0",
+    "city.san.card.hint",
+    {
+     "k": "city.san.card.mineral",
+     "have": "san_cure/mineral"
+    },
+    {
+     "k": "city.san.card.oxygen",
+     "have": "san_cure/oxygen"
+    },
+    {
+     "k": "city.san.card.quartz",
+     "have": "san_cure/quartz"
+    },
+    {
+     "k": "city.san.card.checkup",
+     "have": "san_cure/checkup"
+    },
+    {
+     "k": "city.san.card.exercise",
+     "have": "san_cure/exercise"
+    },
+    {
+     "k": "city.san.card.quiet",
+     "have": "san_cure/quiet"
+    },
+    {
+     "k": "city.san.card.half",
+     "count": [
+      "san_cure",
+      3
+     ]
+    },
+    {
+     "k": "city.san.card.done",
+     "count": [
+      "san_cure",
+      6
+     ]
+    }
+   ]
+  }
+ }
 }
