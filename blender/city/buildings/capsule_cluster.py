@@ -15,6 +15,7 @@ import math
 import random
 
 import furn_int3 as fu
+import interior_kit as kit
 from citykit import box, prism, DOOR_W, DOOR_H
 from _surrounds import add_surrounds
 
@@ -33,6 +34,7 @@ WIN_R = 0.55
 SKINS = ("CT_Aluminium", "CT_Aluminium", "CT_Aluminium", "CT_SteelWhite", "CT_SteelWhite", "CT_SteelWhite",
          "CT_PlasterYellow", "CT_PlasterYellow", "CT_SteelRed", "CT_SteelRed")
 VARIANTS = {}
+STUDIO = "2-01"              # the flat that is opened as a furnished studio (a pair of capsules, tilt 0)
 
 CY = 14.0
 CORES = [
@@ -182,7 +184,7 @@ def _core_stairs(B, core):
 
 
 # ------------------------------------------------------------------ capsules
-def _capsule(B, rnd, fr, tilt, mat, zf, off, fid, shape, wmat):
+def _capsule(B, rnd, fr, tilt, mat, zf, off, fid, shape, wmat, body=True):
     """One capsule on face frame fr (origin on the wall plane, w out): tilt degrees in plan; returns its 2D polygon."""
     fr_t = fu.Fr(fr.x, fr.y, fr.yaw + tilt, 0.0)
     # push the capsule out until its back corners clear the wall
@@ -197,8 +199,9 @@ def _capsule(B, rnd, fr, tilt, mat, zf, off, fid, shape, wmat):
     f2 = fr.sub(0, w0, tilt)
     z0 = zf + off - 0.1
     z1 = z0 + CAP_H
-    fu.lbox(B.m, "CT_ConcreteDark", fr, -0.5, 0.5, -0.02, w0 + 0.55, zf, min(zf + 2.1, z1 - 0.1))      # neck
-    fu.lbox(B.m, mat, f2, -CAP_W / 2, CAP_W / 2, 0.0, CAP_D, z0, z1)
+    if body:                                                 # (the hollow studio builds its own walls)
+        fu.lbox(B.m, "CT_ConcreteDark", fr, -0.5, 0.5, -0.02, w0 + 0.55, zf, min(zf + 2.1, z1 - 0.1))      # neck
+        fu.lbox(B.m, mat, f2, -CAP_W / 2, CAP_W / 2, 0.0, CAP_D, z0, z1)
     # skirt, roof vent
     fu.lbox(B.detail, "CT_ConcreteDark", f2, -CAP_W / 2 - 0.03, CAP_W / 2 + 0.03, 0.0, CAP_D + 0.03, z0 - 0.0, z0 + 0.14,
             faces="xXyYz")
@@ -252,6 +255,220 @@ def _bridge(B, xa, xb, yc, zf):
             fu.rod(B.detail, "CT_Steel", (a[0], y, a[1]), (b[0], y, b[1]), 0.05)
     for x in (xa + 0.4, (xa + xb) / 2, xb - 0.4):                  # cross beams under the deck
         box(B.detail, "CT_Steel", x - 0.05, x + 0.05, yc - 1.0, yc + 1.0, zf - 0.42, zf - 0.28)
+
+
+# ------------------------------------------------------------------ interiors
+def _bike(B, x, y, yaw=0.0, mat="CT_SteelRed"):
+    """A leaning city bicycle (local: length along y, front wheel toward -y)."""
+    p = kit._P(B, x, y, 0.0, yaw, "bicycle")
+    p.kind = "prop"
+    R = 0.33
+    for yc in (-0.55, 0.55):
+        ring_pts = [(0.0, yc + R * math.cos(2 * math.pi * k / 14), R + R * math.sin(2 * math.pi * k / 14)) for k in range(15)]
+        p.tube("CT_Rubber", ring_pts, 0.04, 4)
+    p.rod(mat, (0.0, 0.55, R), (0.0, 0.05, 0.62), 0.03, 4)
+    p.rod(mat, (0.0, 0.05, 0.62), (0.0, -0.4, 0.66), 0.03, 4)
+    p.rod(mat, (0.0, 0.55, R), (0.0, 0.0, 0.3), 0.03, 4)
+    p.rod(mat, (0.0, 0.0, 0.3), (0.0, 0.05, 0.62), 0.03, 4)
+    p.rod(mat, (0.0, -0.4, 0.66), (0.0, -0.55, R), 0.03, 4)
+    p.rod(kit.STEEL, (0.0, -0.42, 0.62), (0.0, -0.42, 0.98), 0.025, 4)
+    p.rod(kit.STEEL, (-0.28, -0.42, 0.99), (0.28, -0.42, 0.99), 0.025, 4)
+    p.rod(kit.LAQ, (0.0, 0.1, 0.62), (0.0, 0.1, 0.92), 0.025, 4)
+    p.box(kit.LAQ, -0.06, 0.06, 0.02, 0.24, 0.92, 0.96)
+    return p.done()
+
+
+def _pram(B, x, y, yaw=0.0, mat="CT_PlasterBlue"):
+    """A pram: a hooded body on a chassis with four wheels and a handle (local: handle toward +y)."""
+    p = kit._P(B, x, y, 0.0, yaw, "pram")
+    p.kind = "prop"
+    for sx in (-0.26, 0.26):
+        for yc in (-0.34, 0.34):
+            pts = [(sx, yc + 0.14 * math.cos(2 * math.pi * k / 10), 0.14 + 0.14 * math.sin(2 * math.pi * k / 10)) for k in range(11)]
+            p.tube("CT_Rubber", pts, 0.035, 4)
+            p.rod(kit.ALU, (sx, yc, 0.14), (sx * 0.8, yc, 0.4), 0.02, 4)
+    p.bev(mat, -0.27, 0.27, -0.46, 0.46, 0.4, 0.62, 0.03, 0.04)
+    p.cushion("CT_TileWhite", -0.24, 0.24, -0.4, 0.36, 0.6, 0.66, 0.02)
+    p.cushion(mat, -0.27, 0.27, -0.46, -0.04, 0.62, 0.98, 0.04)
+    p.tube(kit.STEEL, [(-0.25, 0.42, 0.6), (-0.25, 0.62, 0.95), (0.25, 0.62, 0.95), (0.25, 0.42, 0.6)], 0.025, 4)
+    return p.done()
+
+
+def _seat_thing(B, tid, r, i=0):
+    s = r["seats"][i]
+    B.thing(tid, "seat", (s[0], s[1], s[2]), s[3], height=round(s[2] - r.get("z0", 0.0), 2))
+
+
+def _hall(B, core):
+    """The ground-floor hall of a core as a house entrance: letter boxes over a bench, boards, a book swap, a pram and a
+    bike, a radio on a table; plants on every landing. (Window faces are kept clear: they are known from the plan.)"""
+    cid, cx, cy = core["id"], core["c"][0], core["c"][1]
+    H = core["a"] - WALL
+    P = lambda fn, x, y, yaw=0.0, z=0.0, **kw: fn(B, x, y, z, yaw, **kw)
+    tag = cid.lower()
+    if core["kind"] == "sq":
+        xe, ys, yn = cx + H, cy - H, cy + H
+        ym = cy - 0.3 if cid == "A" else cy - 1.35         # C has a window in the middle of its east wall
+        fu.mailboxes(B, fu.Fr(xe, ym, 270.0, 0.0), 0.0, 0.9, cols=4, rows=3)
+        bn = P(kit.bench, xe - 0.2, ym, 270.0, w=1.1, kind="park", mat=kit.WOOD)
+        P(kit.notice_board, xe, cy + 1.5, 270.0, w=0.8, zc=1.55, seed=3 if cid == "A" else 4)
+        P(kit.bookshelf, cx + 1.1, yn, 0.0, w=0.9, h=1.5, levels=4, topic="travel", seed=2 if cid == "A" else 6)
+        pr = _pram(B, xe - 0.45, cy + 1.45, 0.0)
+        tb = P(kit.table, cx + 1.5, ys + 0.22, 180.0, w=0.8, d=0.4, h=0.75)
+        P(kit.radio, cx + 1.3, ys + 0.22, 180.0, z=0.75)
+        P(kit.newspaper, cx + 1.75, ys + 0.22, 180.0, z=0.75, cellname="news_%d" % (0 if cid == "A" else 1))
+        P(kit.notice_board, cx + 1.5, ys, 180.0, w=0.7, zc=1.8, seed=5 if cid == "A" else 7)
+        P(kit.picture, cx - 1.55, ys, 180.0, name="painting_sea_calm" if cid == "A" else "painting_pines", w=0.5, zc=1.8)
+        _bike(B, cx - 1.5, ys + 0.34, 90.0, mat="CT_SteelRed" if cid == "A" else "CT_PlasterBlue")
+        P(kit.plant, xe - 0.2, ys + 0.25, 0.0, kind="ficus", pot="CT_PlasterRed", h=1.1, seed=1)
+        P(kit.rug, cx + 1.1, cy + 0.0, 0.0, w=1.0, d=1.5, name="rug_%d" % (3 if cid == "A" else 5))
+        P(kit.floor_lamp, cx + 0.55, cy + 1.7, 0.0)
+        _seat_thing(B, "hall_%s_bench" % tag, bn)
+        B.thing("hall_%s_board_lost" % tag, "board", (xe - 0.03, cy + 1.5, 1.55), 270.0, topic="lost")
+        B.thing("hall_%s_board_club" % tag, "board", (cx + 1.5, ys + 0.03, 1.8), 180.0, topic="club")
+        B.thing("hall_%s_swap_shelf" % tag, "shelf", (cx + 1.1, yn - 0.05, 1.2), 0.0, topic="travel")
+        B.thing("hall_%s_radio" % tag, "machine", (cx + 1.3, ys + 0.22, 1.0), 180.0, what="jukebox")
+        B.thing("hall_%s_paper" % tag, "take", (cx + 1.75, ys + 0.22, 0.8), 180.0, item="daily_paper")
+        B.thing("hall_%s_picture" % tag, "board", (cx - 1.55, ys + 0.03, 1.8), 180.0, topic="painting")
+        B.spot("hall_%s_bench" % tag, "bench", bn["seats"][0][:2] + (0.0,), bn["seats"][0][3])
+    else:                                                # the octagon B
+        xe, xw = cx + H, cx - H
+        fu.mailboxes(B, fu.Fr(xw, cy - 0.3, 90.0, 0.0), 0.0, 0.9, cols=4, rows=3)
+        bn = P(kit.bench, xe - 0.2, cy, 270.0, w=1.1, kind="park", mat=kit.WOOD)
+        P(kit.notice_board, xe, cy, 270.0, w=0.8, zc=1.55, seed=8)
+        P(kit.rug, cx + 1.5, cy - 0.1, 0.0, w=1.7, d=1.7, round=True, name="rug_round_0")
+        ar = P(kit.armchair, cx + 0.95, cy + 1.75, 0.0, mat="CT_PlasterGreen", solid=False)
+        ct = P(kit.coffee_table, cx + 1.6, cy + 0.35, 90.0, w=0.8, d=0.5)
+        P(kit.newspaper, cx + 1.6, cy + 0.35, 0.0, z=0.42, cellname="news_0")
+        P(kit.vase, cx + 1.6, cy + 0.6, 0.0, z=0.42)
+        tb = P(kit.table, cx + 1.95, cy - 1.95, 225.0, w=0.8, d=0.4, h=0.75)
+        P(kit.radio, cx + 1.9, cy - 1.9, 225.0, z=0.75)
+        P(kit.plant, cx + 2.35, cy + 1.45, 0.0, kind="monstera", pot="CT_PlasterRed", h=1.1, seed=3)
+        P(kit.floor_lamp, cx + 2.4, cy - 0.85, 0.0)
+        pr = _pram(B, cx - 2.5, cy + 1.7, 20.0, mat="CT_PlasterRed")
+        _seat_thing(B, "hall_b_bench", bn)
+        _seat_thing(B, "hall_b_armchair", ar)
+        B.thing("hall_b_board_lost", "board", (xe - 0.03, cy, 1.55), 270.0, topic="lost")
+        B.thing("hall_b_radio", "machine", (cx + 1.9, cy - 1.9, 1.0), 225.0, what="jukebox")
+        B.thing("hall_b_paper", "take", (cx + 1.6, cy + 0.35, 0.45), 90.0, item="daily_paper")
+        B.spot("hall_b_bench", "bench", bn["seats"][0][:2] + (0.0,), bn["seats"][0][3])
+    # a plant on every landing (east side of the stair hall)
+    for lv in range(1, core["n"]):
+        P(kit.plant, cx + 1.9, cy + 1.6, 0.0, z=lv * STOREY, kind=("fern", "ficus", "palm", "monstera")[(lv + len(cid)) % 4],
+          pot=("CT_PlasterYellow", "CT_PlasterBlue", "CT_PlasterGreen")[lv % 3], h=0.9, seed=lv)
+
+
+def _strips(u0, u1, z0, z1, holes):
+    """Rectangles (ua, ub, za, zb) of a wall u0..u1 x z0..z1 with rectangular holes [(ua, ub, za, zb)]."""
+    out, cur = [], u0
+    for (a, b, za, zb) in sorted(holes):
+        if a > cur + 1e-6:
+            out.append((cur, a, z0, z1))
+        out.append((a, b, z0, za))
+        out.append((a, b, zb, z1))
+        cur = b
+    if u1 > cur + 1e-6:
+        out.append((cur, u1, z0, z1))
+    return [r for r in out if r[1] - r[0] > 1e-6 and r[3] - r[2] > 1e-6]
+
+
+def _studio(B, rnd, fr, zf, off, mat, wmat, shape, fid):
+    """The pair of capsules of flat `fid` opened as ONE studio: a radio amateur's home. The outer shape is the pair's
+    (two 2.3 m pods, the slit between them closed, the window cards unchanged); the way in is the 1.1 m hole in the
+    core's wall at the landing (a kerb step in the wall), the floor stands 0.27 m over the landing like the pods'."""
+    W2, D = CAP_W + 0.05, 0.12 + CAP_D                    # half width 2.35, depth to the front face 3.42
+    z0 = zf + off - 0.1
+    z1 = z0 + CAP_H
+    FL = zf + 0.27
+    CE = z1 - 0.08                                         # inner ceiling
+    out = (fr.s, -fr.c, 0.0)
+    for u in (-1.2, 1.2):                                  # the skirts, vents and window cards of the two pods
+        _capsule(B, rnd, fr.sub(u, 0.0), 0, mat, zf, off, fid, shape, wmat, body=False)
+    zc = (z0 + z1) / 2 + 0.05
+    r = WIN_R if shape == "round" else WIN_R * 0.95
+    L = fu.lbox
+    # shell: floor slab, roof, side walls, front wall with the two window holes
+    L(B.m, "CT_ConcreteDark", fr, -W2, W2, 0.0, D, z0, FL)
+    L(B.m, mat, fr, -W2, W2, 0.0, D, CE, z1)
+    for a, b in ((-W2, -W2 + 0.12), (W2 - 0.12, W2)):
+        L(B.m, mat, fr, a, b, 0.0, D - 0.12, z0, z1)
+    holes = [(u - r, u + r, zc - r, zc + r) for u in (-1.2, 1.2)]
+    for (a, b, za, zb) in _strips(-W2, W2, z0, z1, holes):
+        L(B.m, mat, fr, a, b, D - 0.12, D, za, zb)
+    # the doorway: a kerb step in the thickness of the core wall (landing zf -> 0.135 -> floor 0.27)
+    L(B.m, "CT_Concrete", fr, -0.55, 0.55, -WALL, 0.0, zf, zf + 0.135)
+    if shape == "round":                                    # fill the corners of the square holes outside the circle
+        wy = D + 0.004
+        for u in (-1.2, 1.2):
+            for su, sv in ((-1, -1), (1, -1), (1, 1), (-1, 1)):
+                arc = [fr.p(u + su * r * math.cos(math.pi / 2 * q / 4), wy, zc + sv * r * math.sin(math.pi / 2 * q / 4)) for q in range(5)]
+                corner = fr.p(u + su * r, wy, zc + sv * r)
+                for q in range(4):
+                    tri = [corner, arc[q], arc[q + 1]]
+                    B.detail.face(mat, tri if _tri_faces(tri, out) else tri[::-1])
+    # lining (detail, 2 cm into the room): sides, the front wall round its holes, the back round the door, floor, ceiling
+    iu, iw0, iw1 = W2 - 0.12, 0.022, D - 0.12 - 0.02
+    for a, b in ((-iu, -iu + 0.02), (iu - 0.02, iu)):
+        L(B.detail, "CT_Plaster", fr, a, b, iw0, iw1, FL + 0.01, CE - 0.01)
+    for (a, b, za, zb) in _strips(-iu, iu, FL + 0.01, CE - 0.01, holes):
+        L(B.detail, "CT_Plaster", fr, a, b, iw1, iw1 + 0.02, za, zb)
+    for (a, b, za, zb) in _strips(-iu, iu, FL + 0.01, CE - 0.01, [(-0.55, 0.55, FL + 0.01, FL + 2.3)]):
+        if zb > FL + 0.3 or abs(a) > 0.5:
+            L(B.detail, "CT_Plaster", fr, a, b, 0.0, iw0, za, zb)
+    L(B.detail, "CT_WoodLight", fr, -iu, iu, iw0, iw1, FL, FL + 0.012)
+    L(B.detail, "CT_Interior", fr, -iu, iu, iw0, iw1, CE - 0.012, CE)
+
+    def at(fn, pu, pv, yaw=0.0, z=None, **kw):
+        x, y, _ = fr.p(pu, pv)
+        return fn(B, x, y, FL if z is None else z, fr.yaw + yaw, **kw)
+
+    def pt(u, w, z):
+        return fr.p(u, w, z)
+    WF, WB = iw1, iw0                                       # front lining face, back lining face
+    # --- west pod: the bed under the shelves, the radio desk at the round window
+    bed = at(kit.bed, -1.7, 1.12, 0.0, size="single", blanket="CT_PlasterGreen")
+    bs = at(kit.bedside_table, -0.95, 0.27, 0.0, lamp=True)
+    desk = at(kit.office_desk, -1.2, WF - 0.27, 0.0, w=1.2, d=0.5, typewriter_on=False, papers=True, phone=False, seed=5)
+    ch = at(kit.chair, -0.95, WF - 0.78, 0.0, kind="wood", mat="CT_PlasterYellow")
+    top = FL + 0.75
+    at(kit.radio, -1.55, WF - 0.14, 180.0, z=top)
+    at(kit.radio, -0.95, WF - 0.14, 180.0, z=top)
+    at(kit.telephone, -1.2, WF - 0.3, 200.0, z=top)
+    at(kit.books_stack, -1.7, WF - 0.3, 20.0, z=top, n=4, seed=3)
+    at(kit.lamp_green, -0.62, WF - 0.14, 180.0, z=top)
+    sh_w = at(kit.bookshelf, -iu, 2.75, 90.0, w=0.9, h=1.9, levels=5, topic="engineering", seed=4)
+    at(kit.poster, -iu + 0.02, 1.15, 90.0, name="map_world", w=1.0, zc=1.75)
+    # --- east pod: the lounge round the other window, the kitchenette by the door, shelves on the wall
+    cab = at(kit.coffee_table, 1.2, WF - 0.3, 0.0, w=1.0, d=0.5)
+    rp = at(kit.record_player, 1.0, WF - 0.3, 0.0, z=FL + 0.42)
+    at(kit.vase, 1.5, WF - 0.3, 0.0, z=FL + 0.42)
+    ar = at(kit.armchair, 1.2, 2.25, 0.0, mat="CT_PlasterRed", solid=False)
+    at(kit.floor_lamp, 1.95, 2.85, 0.0)
+    ku = at(kit.kitchen_unit, 1.3, 0.34, 0.0, modules="cupboard,sink")
+    at(kit.samovar, 1.65, 0.3, 0.0, z=FL + 0.9)
+    sh_e1 = at(kit.bookshelf, iu, 1.25, 270.0, w=0.9, h=1.9, levels=5, topic="music", seed=6)
+    sh_e2 = at(kit.bookshelf, iu, 2.2, 270.0, w=0.9, h=1.9, levels=5, topic="engineering", seed=8)
+    # --- the middle: rug, a picture and a clock between the windows, a plant
+    at(kit.rug, 0.1, 1.85, 0.0, w=1.8, d=1.8, round=True, name="rug_round_1")
+    at(kit.picture, 0.0, WF, 180.0, name="painting_dunes", w=0.5, zc=1.5)
+    at(kit.wall_clock, 0.0, WF, 180.0, zc=2.0, face="clock_2", r=0.13)
+    at(kit.plant, 0.0, WF - 0.35, 0.0, kind="fern", pot="CT_PlasterGreen", h=0.8, seed=5)
+    kit.pendant(B, *fr.p(0.1, 1.5)[:2], CE, drop=0.2, light=True, lumens=300, colour="#FFE0B0", radius=4.0)
+    # --- things
+    s = ch["seats"][0]
+    B.thing("studio_desk_chair", "seat", (s[0], s[1], s[2]), s[3], height=round(s[2] - FL, 2))
+    s = ar["seats"][0]
+    B.thing("studio_armchair", "seat", (s[0], s[1], s[2]), s[3], height=round(s[2] - FL, 2))
+    B.thing("studio_bed", "bed", pt(-1.7, 1.12, FL + 0.5), 0.0, height=0.5, rest="private")
+    B.thing("studio_radio_set", "machine", pt(-1.55, WF - 0.14, top + 0.15), 180.0, what="radio_set")
+    B.thing("studio_records", "machine", pt(1.0, WF - 0.3, FL + 0.5), 0.0, what="record_player")
+    B.thing("studio_shelf_radio", "shelf", pt(-iu + 0.1, 2.75, FL + 1.3), 90.0, topic="engineering")
+    B.thing("studio_shelf_music", "shelf", pt(iu - 0.1, 1.25, FL + 1.3), 270.0, topic="music")
+    B.thing("studio_shelf_manuals", "shelf", pt(iu - 0.1, 2.2, FL + 1.3), 270.0, topic="engineering")
+    B.thing("studio_map", "board", pt(-iu + 0.03, 1.15, FL + 1.75), 90.0, topic="travel")
+    B.thing("studio_window_west", "board", pt(-1.2, WF, zc), 180.0, topic="view")
+    B.thing("studio_window_east", "board", pt(1.2, WF, zc), 180.0, topic="view")
+    B.spot("studio_chair", "seat", ch["seats"][0][:2] + (FL,), ch["seats"][0][3])
 
 
 # ------------------------------------------------------------------ build
@@ -372,6 +589,17 @@ def build(B):
                 used[core["id"]].setdefault(lv, set()).add(ei)
                 plan.append((core, lv, ei, tilt, offs, rnd.choice(SKINS), rnd.choice((0.0, 0.0, 0.3)),
                              rnd.choice(("round", "round", "rect"))))
+    # which flat becomes the furnished studio: its door is a hole in the core wall at the landing of its level
+    fids, cnt_ = {}, {}
+    for k_, pl in enumerate(plan):
+        cnt_[pl[1]] = cnt_.get(pl[1], 0) + 1
+        fids[k_] = "%d-%02d" % (pl[1], cnt_[pl[1]])
+    studio = next((k_ for k_, pl in enumerate(plan) if fids[k_] == STUDIO and len(pl[4]) == 2 and pl[3] == 0
+                   and abs(pl[0]["edges"][pl[2]]["yaw"]) < 1.0), None)
+    if studio is not None:
+        sc, slv, sei = plan[studio][:3]
+        sL = sc["edges"][sei]["L"]
+        holes[sc["id"]].setdefault(sei, []).append((sL / 2 - 0.55, sL / 2 + 0.55, slv * STOREY, slv * STOREY + 2.3))
     # stair windows on the free faces
     for core in CORES:
         for ei, e in enumerate(core["edges"]):
@@ -408,7 +636,7 @@ def build(B):
     n_flat = 0
     lvl_count = {}
     n_win = 0
-    for (core, lv, ei, tilt, offs, mat, off, shape) in plan:
+    for k_, (core, lv, ei, tilt, offs, mat, off, shape) in enumerate(plan):
         e = core["edges"][ei]
         zf = lv * STOREY
         lvl_count[lv] = lvl_count.get(lv, 0) + 1
@@ -417,6 +645,10 @@ def build(B):
                door=(e["mid"][0], e["mid"][1], zf), entrance=core["id"])
         wmat = "CT_Frame" if mat in ("CT_Aluminium", "CT_SteelWhite") else "CT_SteelWhite"
         fr = fu.Fr(e["mid"][0], e["mid"][1], e["yaw"], 0.0)
+        if k_ == studio:
+            _studio(B, rnd, fr, zf, off, mat, wmat, shape, fid)
+            n_flat += 1
+            continue
         for u in offs:
             _capsule(B, rnd, fr.sub(u, 0.0), tilt, mat, zf, off, fid, shape, wmat)
         if len(offs) == 2:                                                     # collar joining a pair
@@ -433,15 +665,12 @@ def build(B):
         for sx in (-1.25, 1.25):
             box(B.detail, "CT_Steel", x + sx - 0.04, x + sx + 0.04, y - 1.25, y - 1.17, 0.0, 2.55)
         cx, cy = core["c"]
-        # lobby: doormat, mailboxes on the east wall, lamps
+        # lobby: doormat, lamps, the furniture of the hall
         fu.doormat(B, fu.Fr(x, y, 0.0), 0.0, -0.7, size=(1.0, 0.6))
-        ee = core["edges"][edge_idx(core, 90.0)]
-        wall_x = ee["p0"][0] - WALL
-        fu.mailboxes(B, fu.Fr(wall_x, cy - 0.3, 270.0, 0.0), 0.0, 0.9, cols=4, rows=3) if core["kind"] == "sq" else None
         B.lamp((cx - 0.5, cy - 1.95, 2.7), lumens=420, colour="#FFE0B0", kind="lobby", radius=5.5)
         for lv in range(1, core["n"]):
             B.lamp((cx - 0.5, cy - 1.95, lv * STOREY + 2.7), lumens=380, colour="#FFE8C0", kind="stair", radius=5.0)
-        fu.plant(B, cx + 1.6, cy - 1.7, 0.0, 0.9, "CT_PlasterRed")
+        _hall(B, core)
     # a paving path from the street to the middle door
     box(B.m, "CT_Paving", -1.0, 1.0, 0.3, CORES[1]["edges"][CORES[1]["door_edge"]]["mid"][1] - 2.6, 0.0, 0.02, faces="Z")
 

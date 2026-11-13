@@ -21,6 +21,8 @@ import random
 
 from citykit import box, prism, offset_polyline, extrude_profile, Frame, Mesh, DOOR_W, DOOR_H
 import geom
+import furn_int3 as fu
+import interior_kit as kit
 from _surrounds import add_surrounds
 
 INFO = {
@@ -241,6 +243,93 @@ def _pillar(B, fr, ztop, eid):
     B.entrance(eid, pos, math.degrees(math.atan2(out[0], -out[1])), DOOR_W, DOOR_H, "flat_door")
 
 
+# ------------------------------------------------------------------------------------------------ interiors
+def _bike(B, x, y, yaw=0.0, mat="CT_SteelRed", z=0.0):
+    """A city bicycle leaning on a railing (local: length along y, front wheel toward -y)."""
+    p = kit._P(B, x, y, z, yaw, "bicycle")
+    p.kind = "prop"
+    R = 0.33
+    for yc in (-0.55, 0.55):
+        ring_pts = [(0.0, yc + R * math.cos(2 * math.pi * k / 14), R + R * math.sin(2 * math.pi * k / 14)) for k in range(15)]
+        p.tube("CT_Rubber", ring_pts, 0.04, 4)
+    p.rod(mat, (0.0, 0.55, R), (0.0, 0.05, 0.62), 0.03, 4)
+    p.rod(mat, (0.0, 0.05, 0.62), (0.0, -0.4, 0.66), 0.03, 4)
+    p.rod(mat, (0.0, 0.55, R), (0.0, 0.0, 0.3), 0.03, 4)
+    p.rod(mat, (0.0, 0.0, 0.3), (0.0, 0.05, 0.62), 0.03, 4)
+    p.rod(mat, (0.0, -0.4, 0.66), (0.0, -0.55, R), 0.03, 4)
+    p.rod(kit.STEEL, (0.0, -0.42, 0.62), (0.0, -0.42, 0.98), 0.025, 4)
+    p.rod(kit.STEEL, (-0.28, -0.42, 0.99), (0.28, -0.42, 0.99), 0.025, 4)
+    p.rod(kit.LAQ, (0.0, 0.1, 0.62), (0.0, 0.1, 0.92), 0.025, 4)
+    p.box(kit.LAQ, -0.06, 0.06, 0.02, 0.24, 0.92, 0.96)
+    return p.done()
+
+
+def _niche(B, fr, yaw_deg, i):
+    """The door niche of a pillar (1.1 m wide, 1.4 m deep, v -1.5 .. -0.1) as a house entrance: a doormat, letter boxes on
+    the west side wall, a notice board on the back wall."""
+    x, y, _ = fr((-0.55, -0.85, 0.0))
+    fu.mailboxes(B, fu.Fr(x, y, 90.0 + yaw_deg, 0.0), 0.0, 0.95, cols=2, rows=3)
+    x, y, _ = fr((0.0, -0.1, 0.0))
+    kit.notice_board(B, x, y, 0.0, yaw_deg, w=0.5, zc=1.5, seed=20 + i)
+    B.kit_items.pop()                       # a board on the dead-end wall of the niche does not block the door
+    x, y, _ = fr((0.0, -0.85, 0.0))
+    fu.doormat(B, fu.Fr(x, y, yaw_deg, 0.0), 0.0, 0.0, size=(0.8, 0.5))
+    B.thing("niche_board_c%d" % (i + 1), "board", fr((0.0, -0.13, 1.5)), yaw_deg, topic="lost")
+
+
+def _deck(B, P, th, Lp, Rp, Q, t1):
+    """Street furniture of the deck (z 3.0): park benches on the inland side, a chess table, boards on the pillars' back
+    faces, plants, a bicycle on the railing, a coin telescope at the east end."""
+    n = len(P)
+    Z = DECK_Z
+    for i in range(n - 1):
+        mx, my = (P[i][0] + P[i + 1][0]) / 2, (P[i][1] + P[i + 1][1]) / 2
+        a = (th[i] + th[i + 1]) / 2
+        fr = Frame(mx, my, a)
+        yw = math.degrees(a)
+        W = lambda u, v, z=0.0: fr((u, v, z))
+        if i % 2 == 1:                                           # a bench against the inland railing, facing the street
+            x, y, _ = W(0.0, DECK_HALF - 0.45, Z)
+            bn = kit.bench(B, x, y, Z, yw, w=1.8, kind="park")
+            sx, sy, sz, syaw = bn["seats"][0]
+            B.spot("deck_bench_%d" % i, "bench", (sx, sy, Z), syaw)
+            B.thing("deck_bench_%d_seat" % i, "seat", (sx, sy, sz), syaw, height=round(sz - Z, 2))
+            x, y, _ = W(2.0, DECK_HALF - 0.4, Z)
+            kit.plant(B, x, y, Z, 0.0, kind="fern", pot="CT_PlasterYellow", h=0.8, seed=i)
+        elif i == n // 2 - (1 if (n // 2) % 2 else 0):         # a chess corner on the inland side
+            x, y, _ = W(0.0, 2.35, Z)
+            kit.chess_table(B, x, y, Z, yw, seed=i, solid=False)
+            for sgn in (-1, 1):
+                x, y, _ = W(0.0, 2.35 + sgn * 0.62, Z)
+                kit.stool(B, x, y, Z, yw + (0 if sgn < 0 else 180.0))
+            B.thing("deck_chess", "play", W(0.0, 2.35, Z + 0.75), yw, what="chess")
+            B.spot("deck_chess_seat", "seat", W(0.0, 2.35 - 0.62, Z), yw)
+        else:                                                    # a planter pair and a bike
+            x, y, _ = W(-1.6, DECK_HALF - 0.45, Z)
+            kit.plant(B, x, y, Z, 0.0, kind=("ficus", "monstera", "palm")[i % 3], pot="CT_PlasterRed", h=1.2, seed=i)
+            if i == 0:
+                x, y, _ = W(0.8, DECK_HALF - 0.38, Z)
+                _bike(B, x, y, yw + 90.0, mat="CT_PlasterBlue", z=Z)
+        x, y, _ = W(2.4, -DECK_HALF + 0.4, Z)                    # a plant at the street rail
+        kit.plant(B, x, y, Z, 0.0, kind=("fern", "ficus")[i % 2], pot="CT_PlasterBlue", h=0.9, seed=i + 7)
+    # boards on the pillars' back faces (inland side), facing +v
+    for i in range(n):
+        fr = Frame(P[i][0], P[i][1], th[i])
+        yw = math.degrees(th[i]) + 180.0
+        x, y, _ = fr((0.0, 1.5, 0.0))
+        topic = "club" if i % 2 == 0 else "timetable"
+        if topic == "club":
+            kit.notice_board(B, x, y, Z, yw, w=0.9, zc=1.5, seed=30 + i)
+        else:
+            kit.poster(B, x, y, Z, yw, name="chart_timetable_bus", w=0.8, zc=1.5)
+        B.thing("pillar_board_%d" % (i + 1), "board", fr((0.0, 1.47, Z + 1.5)), yw, topic=topic)
+    # a coin telescope at the east end, street side, looking over the sea
+    fr = Frame(P[-1][0], P[-1][1], th[-1])
+    x, y, _ = fr((-2.4, -DECK_HALF + 0.6, Z))
+    kit.telescope(B, x, y, Z, math.degrees(th[-1]))
+    B.thing("deck_telescope", "machine", fr((-2.4, -DECK_HALF + 0.6, Z + 1.2)), math.degrees(th[-1]), what="telescope")
+
+
 # ------------------------------------------------------------------------------------------------ build
 def build(B):
     rnd = random.Random(1983)
@@ -261,6 +350,7 @@ def build(B):
         fid = "0-%02d" % (i + 1)
         B.flat(fid, storey=0, beds=2 + (i % 2), door=fr((0.0, -1.5 + 1.3, 0.0)), entrance="c%d" % (i + 1))
         _pillar(B, fr, zb + 1.9, "c%d" % (i + 1))
+        _niche(B, fr, math.degrees(th[i]), i)
         _cube(B, fr, i, zb, COLOURS[i % len(COLOURS)], fid)
         top = max(top, zb + 2 * H)
 
@@ -315,25 +405,8 @@ def build(B):
         out = _sub(fr((0.0, -1.0, 0.0)), o)
         B.entrance("deck_stair_%s" % ("w" if end == 0 else "e"), pos, math.degrees(math.atan2(out[0], -out[1])), 2.6, 2.2, "street")
 
-    # ---------------------------------------------------------------- benches on the deck (back edge)
-    for i in range(1, n - 1, 2):
-        a = Lp[i + 1]
-        b = Lp[i + 2] if i + 2 < len(Lp) else Lp[i + 1]
-        mx, my = (P[i][0] + P[i + 1][0]) / 2, (P[i][1] + P[i + 1][1]) / 2
-        nl = (-math.sin(th[i]), math.cos(th[i]))
-        bx, by = mx + nl[0] * (DECK_HALF - 0.6), my + nl[1] * (DECK_HALF - 0.6)
-        fr = Frame(bx, by, th[i])
-        bm = Mesh()
-        box(bm, "CT_Wood", -0.9, 0.9, -0.22, 0.22, 0.42, 0.47)
-        box(bm, "CT_Wood", -0.9, 0.9, 0.17, 0.22, 0.47, 0.95)
-        for sx in (-0.7, 0.7):
-            box(bm, "CT_Steel", sx - 0.04, sx + 0.04, -0.18, 0.18, 0.0, 0.42)
-        for k in range(len(bm.faces)):
-            pass
-        # bench sits on the deck: lift by DECK_Z
-        bm = bm.transformed(lambda p: (p[0], p[1], p[2] + DECK_Z))
-        B.detail.extend(fr.apply(bm))
-        B.spot("deck_bench_%d" % i, "bench", fr((0.0, -0.1, DECK_Z + 0.47)), math.degrees(th[i]) + 180.0)
+    # ---------------------------------------------------------------- the deck as a street: benches, chess, boards, plants
+    _deck(B, P, th, Lp, Rp, Q, t1)
 
     # ---------------------------------------------------------------- footprint, height
     xs_all = [v[0] for v in m.verts] + [v[0] for v in B.detail.verts]
