@@ -312,14 +312,9 @@ void ULyudEcosystem::OnGameSaving_Implementation()
 {
 	SavedKeys.Reset();
 	SavedValues.Reset();
-	if (Model && WarmLeft > 0.f)
-	{
-		// saved during a fresh game's warm-up: finish it now (WarmLeft is not saved), so the save holds a whole web
-		Model->Step(EcoDayOfYear(SteppedTo) - WarmLeft, WarmLeft);
-		WarmLeft = 0.f;
-		Refresh();
-	}
-	if (!Model) return;
+	// saved during a fresh game's warm-up (its first minute or so): no web goes into the save, and the load warms it again
+	// in slices (OnGameLoaded: no keys). Finishing the warm-up here was up to six years of the web in one frame
+	if (!Model || WarmLeft > 0.f) return;
 	std::vector<std::string> K;
 	std::vector<float> V;
 	Model->Save(K, V);
