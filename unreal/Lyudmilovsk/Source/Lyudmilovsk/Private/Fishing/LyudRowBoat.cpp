@@ -568,7 +568,13 @@ void ALyudRowBoat::Tick(float DeltaTime)
 		if (AHeroCharacter* R = Rower.Get())
 		{
 			R->RemoveTickPrerequisiteActor(this);
-			if (NearMooring())
+			if (NearMooring() && FVector::Dist2D(R->GetActorLocation(), GetActorLocation()) > 300.f)
+			{
+				// stood up and taken somewhere else in the same frame (the dev teleport): he stays there, not pulled back
+				// to the pier; the boat is tied up all the same
+				Home();
+			}
+			else if (NearMooring())
 			{
 				// up the pier's steps onto the deck (found by a trace down), the boat tied up again
 				const FVector2D L = Landing;
