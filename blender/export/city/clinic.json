@@ -233,6 +233,56 @@
     0.0
    ],
    "yaw": 0.0
+  },
+  {
+   "id": "aquarium_watch",
+   "kind": "stand",
+   "pos": [
+    -0.7,
+    14.6,
+    0.0
+   ],
+   "yaw": 180.0
+  },
+  {
+   "id": "inhaler_stool",
+   "kind": "seat",
+   "pos": [
+    0.45,
+    13.05,
+    0.0
+   ],
+   "yaw": 180.0
+  },
+  {
+   "id": "dentist_wait",
+   "kind": "stand",
+   "pos": [
+    2.3,
+    14.2,
+    0.0
+   ],
+   "yaw": 90.0
+  },
+  {
+   "id": "dentist_wait_2",
+   "kind": "bench",
+   "pos": [
+    2.6,
+    13.9,
+    0.0
+   ],
+   "yaw": 90.0
+  },
+  {
+   "id": "card_file",
+   "kind": "stand",
+   "pos": [
+    -8.7,
+    11.7,
+    0.0
+   ],
+   "yaw": 180.0
   }
  ],
  "lamps": [
@@ -356,6 +406,28 @@
    "colour": "#FFF0DC",
    "kind": "public",
    "radius": 6
+  },
+  {
+   "pos": [
+    12.0,
+    13.2,
+    2.3
+   ],
+   "lumens": 500,
+   "colour": "#E8F4F0",
+   "kind": "public",
+   "radius": 4
+  },
+  {
+   "pos": [
+    -0.7,
+    14.6,
+    2.5
+   ],
+   "lumens": 450,
+   "colour": "#CFE6FF",
+   "kind": "public",
+   "radius": 4
   }
  ],
  "things": [
@@ -807,6 +879,266 @@
    "yaw": 90.0,
    "props": {
     "topic": "health"
+   }
+  },
+  {
+   "id": "ticket_machine",
+   "kind": "machine",
+   "pos": [
+    -7.6,
+    10.6,
+    1.2
+   ],
+   "yaw": 0.0,
+   "props": {
+    "what": "tickets"
+   }
+  },
+  {
+   "id": "queue_board",
+   "kind": "board",
+   "pos": [
+    3.15,
+    13.0,
+    2.5
+   ],
+   "yaw": 270.0,
+   "props": {
+    "topic": "queue"
+   }
+  },
+  {
+   "id": "hall_aquarium",
+   "kind": "screen",
+   "pos": [
+    -0.7,
+    15.25,
+    1.0
+   ],
+   "yaw": 0.0,
+   "props": {
+    "what": "aquarium"
+   }
+  },
+  {
+   "id": "aquarium_can",
+   "kind": "machine",
+   "pos": [
+    -1.2,
+    15.4,
+    0.2
+   ],
+   "yaw": 0.0,
+   "props": {
+    "what": "watering"
+   }
+  },
+  {
+   "id": "fish_jar",
+   "kind": "machine",
+   "pos": [
+    -2.84,
+    11.9,
+    0.9
+   ],
+   "yaw": 0.0,
+   "props": {
+    "what": "jar"
+   }
+  },
+  {
+   "id": "inhaler",
+   "kind": "machine",
+   "pos": [
+    0.65,
+    13.7,
+    0.9
+   ],
+   "yaw": 0.0,
+   "props": {
+    "what": "inhaler"
+   }
+  },
+  {
+   "id": "dentist_door",
+   "kind": "board",
+   "pos": [
+    3.18,
+    14.63,
+    1.4
+   ],
+   "yaw": 270.0,
+   "props": {
+    "topic": "dentist"
+   }
+  },
+  {
+   "id": "card_file",
+   "kind": "shelf",
+   "pos": [
+    -8.7,
+    12.4,
+    1.0
+   ],
+   "yaw": 0.0,
+   "props": {
+    "topic": "cards"
+   }
+  },
+  {
+   "id": "height_rod",
+   "kind": "machine",
+   "pos": [
+    -6.2,
+    4.4,
+    1.2
+   ],
+   "yaw": 180.0,
+   "props": {
+    "what": "height"
+   }
+  },
+  {
+   "id": "radio_point",
+   "kind": "machine",
+   "pos": [
+    1.5,
+    4.4,
+    2.2
+   ],
+   "yaw": 180.0,
+   "props": {
+    "what": "radio_point"
+   }
+  },
+  {
+   "id": "hall_table_mags",
+   "kind": "shelf",
+   "pos": [
+    -8.4,
+    9.9,
+    0.45
+   ],
+   "yaw": 0.0,
+   "props": {
+    "topic": "waiting"
+   }
+  },
+  {
+   "id": "pharmacy_scale",
+   "kind": "machine",
+   "pos": [
+    12.02,
+    13.1,
+    1.2
+   ],
+   "yaw": 270.0,
+   "props": {
+    "what": "apothecary"
+   }
+  },
+  {
+   "id": "pharmacy_recipes",
+   "kind": "board",
+   "pos": [
+    13.65,
+    12.4,
+    1.75
+   ],
+   "yaw": 270.0,
+   "props": {
+    "topic": "recipes"
+   }
+  },
+  {
+   "id": "pharmacy_jars",
+   "kind": "board",
+   "pos": [
+    13.3,
+    15.25,
+    1.5
+   ],
+   "yaw": 270.0,
+   "props": {
+    "topic": "jars"
+   }
+  },
+  {
+   "id": "door_plate_0",
+   "kind": "board",
+   "pos": [
+    6.05,
+    11.35,
+    1.6
+   ],
+   "yaw": 180.0,
+   "props": {
+    "topic": "plate"
+   }
+  },
+  {
+   "id": "door_plate_1",
+   "kind": "board",
+   "pos": [
+    9.55,
+    11.35,
+    1.6
+   ],
+   "yaw": 180.0,
+   "props": {
+    "topic": "plate"
+   }
+  },
+  {
+   "id": "door_plate_2",
+   "kind": "board",
+   "pos": [
+    13.0,
+    11.35,
+    1.6
+   ],
+   "yaw": 180.0,
+   "props": {
+    "topic": "plate"
+   }
+  },
+  {
+   "id": "bp_cuff",
+   "kind": "machine",
+   "pos": [
+    4.75,
+    5.34,
+    0.85
+   ],
+   "yaw": 180.0,
+   "props": {
+    "what": "tonometer"
+   }
+  },
+  {
+   "id": "eye_plates",
+   "kind": "board",
+   "pos": [
+    8.25,
+    5.34,
+    0.85
+   ],
+   "yaw": 180.0,
+   "props": {
+    "topic": "plates"
+   }
+  },
+  {
+   "id": "reflex_hammer",
+   "kind": "machine",
+   "pos": [
+    11.8,
+    5.32,
+    0.85
+   ],
+   "yaw": 180.0,
+   "props": {
+    "what": "hammer"
    }
   }
  ],
@@ -1530,8 +1862,8 @@
  "light_tex": 64,
  "notes": [],
  "tris": {
-  "shell": 1976,
-  "detail": 10348,
+  "shell": 2012,
+  "detail": 12898,
   "windows": 136
  }
 }
