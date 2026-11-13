@@ -224,6 +224,10 @@ bool UPeopleLifeSubsystem::Start()
 		}
 	}
 	LoadManners();
+	if (ULyudWeatherSubsystem* Storms = ULyudWeatherSubsystem::Get(GetWorld()))
+	{
+		Storms->OnLightning.AddUniqueDynamic(this, &UPeopleLifeSubsystem::OnThunder);
+	}
 	TownAllowed.Init(false, (int32)Sim->People.size());
 	bLightSinksBound = false;
 	LightSinks.Reset();
@@ -1829,6 +1833,27 @@ void UPeopleLifeSubsystem::UpdateManners(float DeltaTime)
 			}
 		}
 	}
+	// the thunder of a strike has come: a start, shoulders up
+	if (ThunderAt >= 0.f && MannerClock >= ThunderAt)
+	{
+		ThunderAt = -1.f;
+		bool bSaid = false;
+		for (const int32 Id : ShownIds)
+		{
+			const LP::FPerson& P = Sim->People[Id];
+			if (P.bIndoors || Id < 0 || Id >= (int32)Mn->Personas.size())
+			{
+				continue;
+			}
+			const float Chance = (0.2f + 0.6f * ThunderNear) * (0.5f + Mn->Personas[Id].Nerve) * (P.Age < 12 ? 1.5f : 1.f);
+			if (FMath::FRand() < Chance && Mn->React(Id, LP::EManner::HugSelf, MannerClock, FMath::FRandRange(1.2f, 2.4f)) && !bSaid)
+			{
+				bSaid = true;
+				static const FName ThunderName(TEXT("thunder"));
+				OnPersonEvent.Broadcast(Id, ThunderName, -1);
+			}
+		}
+	}
 	// and each other as they pass: a glance, a wave between friends
 	PassingTimer -= DeltaTime;
 	if (PassingTimer <= 0.f)
@@ -1848,6 +1873,16 @@ float UPeopleLifeSubsystem::GetTrait(int32 Id, FName Trait) const
 {
 	const LP::FPersona* Who = Manners ? Manners->PersonaOf(Id) : nullptr;
 	return Who ? LP::PersonaTrait(*Who, TCHAR_TO_UTF8(*Trait.ToString())) : 0.5f;
+}
+
+void UPeopleLifeSubsystem::OnThunder(FVector Location, float DistanceFromViewM)
+{
+	// (one clap at a time: a nearer strike before the first is heard takes its place)
+	if (DistanceFromViewM < 4000.f && (ThunderAt < 0.f || 1.f - DistanceFromViewM / 4000.f > ThunderNear))
+	{
+		ThunderNear = 1.f - DistanceFromViewM / 4000.f;
+		ThunderAt = MannerClock + FMath::Min(DistanceFromViewM / 340.f, 12.f);
+	}
 }
 
 void UPeopleLifeSubsystem::SetSkyShow(FName What, float Strength, float Seconds)

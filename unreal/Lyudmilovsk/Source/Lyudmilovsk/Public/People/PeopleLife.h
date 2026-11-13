@@ -276,6 +276,10 @@ private:
 	TMap<int32, int32> MetDay;
 	void LoadManners();
 	void UpdateManners(float DeltaTime);
+	/** A strike (ULyudWeatherSubsystem::OnLightning): when its thunder reaches the camera people out of doors start
+	 *  (the nervy and the children more), and one of them has a word (OnPersonEvent "thunder"). */
+	UFUNCTION() void OnThunder(FVector Location, float DistanceFromViewM);
+	float ThunderAt = -1.f, ThunderNear = 0.f;
 
 	// the town: pooled bodies for the townsfolk (nearest first, lyud.People.TownBodies), the window lights
 	/** Free townsfolk bodies by model, to be given to whoever of that look comes near. */

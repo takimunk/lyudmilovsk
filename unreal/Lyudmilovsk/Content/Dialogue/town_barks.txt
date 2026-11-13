@@ -1301,6 +1301,7 @@ talk = town.chat_kids3.1 | town.chat_kids3.2 | town.chat_kids3.3
 # What the player is up to: his line is out near them (on = hero_fishes), he is in the water (hero_swims), he sat
 # down beside them on a bench (hero_sits)
 # The weekly date with a friend (doing = date: at it now)
+# Thunder (on = thunder: a strike's thunder reached them out of doors and they started)
 
 [manner_smoke]
 manner = smoke
@@ -1561,6 +1562,17 @@ doing = date
 age = kid
 weight = 4
 say = town.date_kid.1
+
+[thunder]
+on = thunder
+age = teen adult elder
+say = town.thunder.1..4
+
+[thunder_kid]
+on = thunder
+age = kid
+weight = 3
+say = town.thunder_kid.1..2
 
 # At the counter: a customer on their feet and whoever serves them (LyudBarks::AtCounter: the same shop, market
 # stall or kiosk, within 4 m). A is the customer unless the set says doing = work first.

@@ -401,7 +401,7 @@ void ULyudTownTalkSubsystem::Start(UWorld& InWorld)
 void ULyudTownTalkSubsystem::OnLifeEvent(int32 PersonId, FName Event, int32 Other)
 {
 	// somebody noticed the player: a word about it now and then (never a chorus)
-	if (!bStarted || Clock < NextNoticeAt || !Event.ToString().StartsWith(TEXT("hero_")) || Busy(PersonId))
+	if (!bStarted || Clock < NextNoticeAt || !(Event.ToString().StartsWith(TEXT("hero_")) || Event == TEXT("thunder")) || Busy(PersonId))
 	{
 		return;
 	}

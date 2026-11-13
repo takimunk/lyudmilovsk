@@ -87,6 +87,10 @@ town talk's exchanges, like two people chatting or sitting side by side: `tools/
 `doing = shop shop_town` + `doing2 = work`, or the seller first). Works at shops and kiosks; the market's visitors
 stand by the door, too far from the stalls, until its slots are laid out at them.
 
+Thunder: `UPeopleLifeSubsystem::OnThunder` hears `ULyudWeatherSubsystem::OnLightning`; when the sound of a strike within
+4 km reaches the camera, people out of doors start (shoulders up for a second or two; the nervy and the children
+more) and one of them has a word (`on = thunder`).
+
 ## Routines
 
 - **Spots of their own** (`FWorld::PickSlot`, `FOptions::OwnSpots`, 110 m): out of the many benches, cafes and

@@ -413,3 +413,22 @@ doing = date
 age = kid
 weight = 4
 say town.date_kid.1 | Мы тут с другом встречаемся после школы. Это наше место, взрослым нельзя. | My friend and I meet here after school. It's our place, no grown-ups. | 放課後、友だちとここで会うの。子どもだけの場所で、大人は入っちゃだめ。
+
+## ---------------------------------------------------------------------------------------------------------------
+## Thunder (on = thunder: a strike's thunder reached them out of doors and they started)
+## ---------------------------------------------------------------------------------------------------------------
+
+[thunder]
+on = thunder
+age = teen adult elder
+say town.thunder.1 | Ох ты! Близко ударило. | Good grief! That one was close. | うわっ！近くに落ちたね。
+say town.thunder.2 | Раз, два, три... Километр, не больше. | One, two, three... A kilometre, no more. | いち、に、さん…一キロもないな。
+say town.thunder.3 | Пора под крышу. Море такое не любит. | Time to get under a roof. The sea doesn't like this. | 屋根の下に入らなきゃ。海はこういうのを嫌うから。
+say town.thunder.4 | Каждый раз вздрагиваю. Сто лет живу, а вздрагиваю. | I jump every time. Lived here for ages, and still I jump. | 毎回びくっとする。ずっとここに住んでるのに、やっぱりびくっとする。
+
+[thunder_kid]
+on = thunder
+age = kid
+weight = 3
+say town.thunder_kid.1 | Ой! ...Я не испугался. Это я просто так. | Eek! ...I wasn't scared. I just did that. | ひゃっ！…こわくなかったよ。なんとなくやっただけ。
+say town.thunder_kid.2 | Это небо двигает мебель! | That's the sky moving its furniture! | お空が家具を動かしてるんだ！
