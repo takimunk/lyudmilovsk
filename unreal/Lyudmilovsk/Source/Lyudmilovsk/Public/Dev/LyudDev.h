@@ -18,6 +18,7 @@ class UWorld;
  *    Or in C++ (a point that moves: a station, an NPC, a bike):
  *        static LyudDev::FAutoTeleport GTp(TEXT("orni_now"), TEXT("ornithologist"), TEXT("dev.tp.orni_now"),
  *            [](UWorld* W, FTransform& At) { ...; return true; });
+ *    The city's plots, squares and promenade shops (Content/City/city_plan.json) are listed on their own, groups city_*.
  *  - Actions (a button in the Actions tab and console Dev.Do <id>):
  *        static LyudDev::FAutoAction GErupt(TEXT("north.erupt"), TEXT("north"), TEXT("dev.action.north.erupt"),
  *            [](UWorld* W) { ... });
@@ -51,7 +52,9 @@ namespace LyudDev
 		FName Group;
 		/** A string key; empty: the map place's name (Place) or the id. */
 		FString Name;
-		/** Fixed points: map metres (or Place), Z world cm (unset: onto the ground). */
+		/** Text shown as is when there is no key (the city plan's own names, chosen by the language when read). */
+		FString Label;
+		/** Fixed points: map metres (or Place), Z world cm of the feet (unset: onto the ground). Where gives the feet too. */
 		FName Place;
 		FVector2D Map = FVector2D::ZeroVector;
 		TOptional<double> Z;
@@ -84,13 +87,18 @@ namespace LyudDev
 	/** Moves the player (hero, or the bird he is) to a point. Logs "DEV tp <id> at x y z". */
 	LYUDMILOVSK_API bool Teleport(UWorld* World, const FTeleport& To);
 	LYUDMILOVSK_API bool TeleportTo(UWorld* World, FName Id);
-	/** To a world location (cm); bGround: dropped onto whatever is solid below X, Y. */
+	/** To a world location (cm, Z where the feet go); bGround: dropped onto whatever is solid below X, Y. */
 	LYUDMILOVSK_API bool TeleportWorld(UWorld* World, const FVector& At, float Yaw, bool bGround, float Pitch = 0.f);
 
 	/** Makes Quest active at stage Stage (its index), as if the stages before were done, then sets the stage up ("dev" block, setups). */
 	LYUDMILOVSK_API bool JumpToStage(UWorld* World, FName Quest, int32 Stage);
 	/** Fires the real game event of one objective of the current stage, as many times as it needs (tests the wiring too). */
 	LYUDMILOVSK_API bool CompleteObjective(UWorld* World, FName Quest, int32 Objective);
+
+	/** Plays a quest to its end from where it is (starting it if needed): every objective of every stage by its real event, logging
+	 *  "DEV play <quest> stage <id>" per stage and "DEV play <quest> done|STUCK". False if it did not finish (an objective whose event
+	 *  does not count: a broken target, a missing item id). */
+	LYUDMILOVSK_API bool PlayThrough(UWorld* World, FName Quest);
 
 	/** The player's place as a line to paste: "Dev.TpAt <x> <y> <z> <yaw>" (world cm) plus map metres. Also copied to the clipboard. */
 	LYUDMILOVSK_API FString Where(UWorld* World, bool bCopy);

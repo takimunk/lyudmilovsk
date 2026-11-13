@@ -4,6 +4,12 @@
 #include "Containers/Ticker.h"
 #include "Dom/JsonObject.h"
 #include "Engine/Engine.h"
+#include "Engine/GameViewportClient.h"
+#include "Misc/App.h"
+#include "Styling/CoreStyle.h"
+#include "Widgets/Layout/SBorder.h"
+#include "Widgets/Layout/SBox.h"
+#include "Widgets/Text/STextBlock.h"
 #include "Engine/World.h"
 #include "EngineUtils.h"
 #include "GameFramework/PhysicsVolume.h"
@@ -15,6 +21,9 @@
 #include "HAL/IConsoleManager.h"
 #include "HAL/PlatformApplicationMisc.h"
 #include "HeroCharacter.h"
+#include "Bikes/HeroBike.h"
+#include "Birds/BirdPawn.h"
+#include "World/LyudLadder.h"
 #include "Kismet/GameplayStatics.h"
 #include "LyudInventory.h"
 #include "LyudText.h"
@@ -113,6 +122,7 @@ namespace LyudDev
 
 		FString BookmarksPath() { return FPaths::ProjectSavedDir() / TEXT("Dev") / TEXT("bookmarks.json"); }
 
+		void ReadCityPlan(TMap<FName, FTeleport>& Out);   // below: the city plan's plots, squares and shops
 		void ReadFiles()
 		{
 			FRegistry& R = Reg();
@@ -146,6 +156,7 @@ namespace LyudDev
 					}
 				}
 			}
+			ReadCityPlan(R.Files);
 			// the stages' "dev" blocks in quests.json
 			if (const TSharedPtr<FJsonObject> Root = ReadJsonFile(FPaths::ProjectContentDir() / TEXT("UI") / TEXT("quests.json")))
 			{
@@ -195,6 +206,94 @@ namespace LyudDev
 				}
 			}
 			UE_LOG(LogTemp, Log, TEXT("DEV read %d teleport files (%d points), %d quest dev blocks"), Names.Num(), R.Files.Num(), R.StageDev.Num());
+		}
+
+		/** A city_plan.json point [x, y, z] in map metres. */
+		bool PlanPoint(const TSharedPtr<FJsonObject>& O, const TCHAR* Field, FVector& Out)
+		{
+			const TArray<TSharedPtr<FJsonValue>>* A = nullptr;
+			if (!O->TryGetArrayField(Field, A) || A->Num() < 3)
+			{
+				return false;
+			}
+			Out = FVector((*A)[0]->AsNumber(), (*A)[1]->AsNumber(), (*A)[2]->AsNumber());
+			return true;
+		}
+
+		/** The city's plots (at their front, facing the building), squares and parks, and the promenade's shops (at the door). */
+		void ReadCityPlan(TMap<FName, FTeleport>& Out)
+		{
+			const TSharedPtr<FJsonObject> Root = ReadJsonFile(FPaths::ProjectContentDir() / TEXT("City") / TEXT("city_plan.json"));
+			if (!Root)
+			{
+				return;
+			}
+			const FString NameField = LyudText::Language() == TEXT("ru") ? TEXT("name_ru") : TEXT("name_en");
+			auto Add = [&Out, &NameField](const TSharedPtr<FJsonObject>& O, FName Group, const FVector& Feet, float Yaw)
+			{
+				FTeleport T;
+				T.Id = *O->GetStringField(TEXT("id"));
+				T.Group = Group;
+				if (!O->TryGetStringField(*NameField, T.Label))
+				{
+					O->TryGetStringField(TEXT("name_en"), T.Label);
+				}
+				FString Kind;
+				if (O->TryGetStringField(TEXT("kind"), Kind) && T.Label.IsEmpty())
+				{
+					T.Label = Kind;
+				}
+				T.Map = FVector2D(Feet.X, Feet.Y);
+				T.Z = Feet.Z * 100.0 + 5.0;
+				T.Yaw = Yaw;
+				T.Source = TEXT("city_plan.json");
+				Out.Add(T.Id, T);
+			};
+			const TArray<TSharedPtr<FJsonValue>>* List = nullptr;
+			if (Root->TryGetArrayField(TEXT("plots"), List))
+			{
+				for (const TSharedPtr<FJsonValue>& V : *List)
+				{
+					const TSharedPtr<FJsonObject> O = V->AsObject();
+					FVector Front, Middle;
+					if (O && PlanPoint(O, TEXT("front"), Front) && PlanPoint(O, TEXT("map"), Middle))
+					{
+						// a few metres out from the front, looking at the building
+						const FVector2D In = FVector2D(Middle - Front).GetSafeNormal();
+						const FVector At = Front - FVector(In * 4.0, 0.0);
+						Add(O, TEXT("city_plots"), At, FMath::RadiansToDegrees(FMath::Atan2(In.Y, In.X)));
+					}
+				}
+			}
+			if (Root->TryGetArrayField(TEXT("spots"), List))
+			{
+				for (const TSharedPtr<FJsonValue>& V : *List)
+				{
+					const TSharedPtr<FJsonObject> O = V->AsObject();
+					FVector At;
+					double Yaw = 0.0;
+					// the benches are too many to list
+					if (O && O->GetStringField(TEXT("kind")) != TEXT("bench") && PlanPoint(O, TEXT("map"), At))
+					{
+						O->TryGetNumberField(TEXT("yaw"), Yaw);
+						Add(O, TEXT("city_spots"), At, static_cast<float>(Yaw));
+					}
+				}
+			}
+			if (Root->TryGetArrayField(TEXT("promenade_units"), List))
+			{
+				for (const TSharedPtr<FJsonValue>& V : *List)
+				{
+					const TSharedPtr<FJsonObject> O = V->AsObject();
+					FVector Door;
+					double Yaw = 0.0;
+					if (O && PlanPoint(O, TEXT("door"), Door))
+					{
+						O->TryGetNumberField(TEXT("yaw"), Yaw);
+						Add(O, TEXT("city_shops"), Door, static_cast<float>(Yaw));
+					}
+				}
+			}
 		}
 
 		void ReadBookmarks()
@@ -392,6 +491,10 @@ namespace LyudDev
 
 	bool Do(UWorld* World, FName Id)
 	{
+		if (!Enabled())
+		{
+			return false;
+		}
 		const FAction* A = FindAction(Id);
 		if (!A || !A->Run || !World)
 		{
@@ -405,18 +508,36 @@ namespace LyudDev
 
 	bool TeleportWorld(UWorld* World, const FVector& At, float Yaw, bool bGround, float Pitch)
 	{
+		if (!Enabled())
+		{
+			return false;
+		}
 		APlayerController* PC = PlayerOf(World);
 		APawn* Pawn = PC ? PC->GetPawn() : nullptr;
 		if (!Pawn)
 		{
 			return false;
 		}
-		if (AHeroCharacter* Hero = Cast<AHeroCharacter>(Pawn); Hero && Hero->IsSeated())
+		// whatever holds the body in place every frame lets go first, or the jump is undone on the next frame
+		if (AHeroCharacter* Hero = Cast<AHeroCharacter>(Pawn))
 		{
-			Hero->StandUp();
+			if (Hero->IsSeated())
+			{
+				Hero->StandUp();
+			}
+			if (UHeroBikeComponent* Bike = Hero->FindBike())
+			{
+				Bike->DropNow();
+			}
+			if (ULyudLadderClimber* Climber = Hero->FindComponentByClass<ULyudLadderClimber>(); Climber && Climber->IsOnLadder())
+			{
+				Climber->LetGo();
+			}
 		}
+		// At.Z is where the feet go (the capsule's middle is half its height above)
 		FVector P = At;
 		ACharacter* Char = Cast<ACharacter>(Pawn);
+		const double Half = Char && Char->GetCapsuleComponent() ? Char->GetCapsuleComponent()->GetScaledCapsuleHalfHeight() : 60.0;
 		if (bGround)
 		{
 			double Z = 0.0;
@@ -424,10 +545,20 @@ namespace LyudDev
 			{
 				Z = 10000.0;
 			}
-			const double Half = Char && Char->GetCapsuleComponent() ? Char->GetCapsuleComponent()->GetScaledCapsuleHalfHeight() : 60.0;
 			P.Z = Z + Half + 5.0;
 		}
-		Pawn->SetActorLocation(P, false, nullptr, ETeleportType::TeleportPhysics);
+		else
+		{
+			P.Z = At.Z + Half + 2.0;
+		}
+		if (ABirdPawn* BirdPawn = Cast<ABirdPawn>(Pawn))
+		{
+			BirdPawn->DevTeleport(P);
+		}
+		else
+		{
+			Pawn->SetActorLocation(P, false, nullptr, ETeleportType::TeleportPhysics);
+		}
 		Pawn->SetActorRotation(FRotator(0.f, Yaw, 0.f));
 		PC->SetControlRotation(FRotator(Pitch, Yaw, 0.f));
 		if (Char && Char->GetCharacterMovement())
@@ -490,6 +621,10 @@ namespace LyudDev
 
 	bool JumpToStage(UWorld* World, FName Quest, int32 Stage)
 	{
+		if (!Enabled())
+		{
+			return false;
+		}
 		ULyudQuests* Q = ULyudQuests::Get(World);
 		const FLyudQuestDef* Def = ULyudQuests::FindDef(Quest);
 		if (!Q || !Def || !Def->Stages.IsValidIndex(Stage))
@@ -540,6 +675,10 @@ namespace LyudDev
 
 	bool CompleteObjective(UWorld* World, FName Quest, int32 Objective)
 	{
+		if (!Enabled())
+		{
+			return false;
+		}
 		ULyudQuests* Q = ULyudQuests::Get(World);
 		if (!Q)
 		{
@@ -571,6 +710,53 @@ namespace LyudDev
 		return true;
 	}
 
+	bool PlayThrough(UWorld* World, FName Quest)
+	{
+		if (!Enabled())
+		{
+			return false;
+		}
+		ULyudQuests* Q = ULyudQuests::Get(World);
+		const FLyudQuestDef* Def = ULyudQuests::FindDef(Quest);
+		if (!Q || !Def)
+		{
+			return false;
+		}
+		if (Q->State(Quest) != ELyudQuestState::Active)
+		{
+			JumpToStage(World, Quest, 0);
+		}
+		// each round completes the current stage's objectives; a stage that does not move on is stuck
+		for (int32 Round = 0; Round < Def->Stages.Num() + 2 && Q->State(Quest) == ELyudQuestState::Active; ++Round)
+		{
+			const FLyudQuestProgress* P = Q->FindProgress(Quest);
+			const int32 Before = P ? P->Stage : -1;
+			UE_LOG(LogTemp, Warning, TEXT("DEV play %s stage %s"), *Quest.ToString(), Def->Stages.IsValidIndex(Before) ? *Def->Stages[Before].Id.ToString() : TEXT("?"));
+			const int32 Count = Q->CurrentObjectives(Quest).Num();
+			for (int32 O = 0; O < Count && Q->State(Quest) == ELyudQuestState::Active; ++O)
+			{
+				const FLyudQuestProgress* Now = Q->FindProgress(Quest);
+				if (!Now || Now->Stage != Before)
+				{
+					break;
+				}
+				if (!Now->Counts.IsValidIndex(O) || Now->Counts[O] < Def->Stages[Before].Objectives[O].Need)
+				{
+					CompleteObjective(World, Quest, O);
+				}
+			}
+			const FLyudQuestProgress* After = Q->FindProgress(Quest);
+			if (Q->State(Quest) == ELyudQuestState::Active && After && After->Stage == Before)
+			{
+				UE_LOG(LogTemp, Warning, TEXT("DEV play %s STUCK at stage %s"), *Quest.ToString(), *Def->Stages[Before].Id.ToString());
+				return false;
+			}
+		}
+		const bool bDone = Q->State(Quest) == ELyudQuestState::Done;
+		UE_LOG(LogTemp, Warning, TEXT("DEV play %s %s"), *Quest.ToString(), bDone ? TEXT("done") : TEXT("STUCK"));
+		return bDone;
+	}
+
 	FString Where(UWorld* World, bool bCopy)
 	{
 		APlayerController* PC = PlayerOf(World);
@@ -579,15 +765,18 @@ namespace LyudDev
 		{
 			return FString();
 		}
-		const FVector P = Pawn->GetActorLocation();
+		// the feet, as Dev.TpAt and the teleport files take it
+		const ACharacter* Char = Cast<ACharacter>(Pawn);
+		const double Half = Char && Char->GetCapsuleComponent() ? Char->GetCapsuleComponent()->GetScaledCapsuleHalfHeight() : 0.0;
+		const FVector P = Pawn->GetActorLocation() - FVector(0.0, 0.0, Half);
 		const FRotator R = PC->GetControlRotation();
 		const FVector2D M = ULyudQuests::Frame().FromWorld(P);
 		const FString Line = FString::Printf(TEXT("Dev.TpAt %.0f %.0f %.0f %.0f   (map x %.1f y %.1f)"), P.X, P.Y, P.Z, R.Yaw, M.X, M.Y);
 		if (bCopy)
 		{
 			FPlatformApplicationMisc::ClipboardCopy(*Line);
+			UE_LOG(LogTemp, Warning, TEXT("DEV where %s"), *Line);
 		}
-		UE_LOG(LogTemp, Warning, TEXT("DEV where %s"), *Line);
 		return Line;
 	}
 
@@ -615,7 +804,7 @@ namespace LyudDev
 		T.Name = Id;
 		T.Map = ULyudQuests::Frame().FromWorld(P);
 		// the feet, so the jump back drops the capsule onto the same floor (indoors too)
-		T.Z = P.Z - Half + 20.0;
+		T.Z = P.Z - Half + 5.0;
 		T.Yaw = PC->GetControlRotation().Yaw;
 		T.Source = TEXT("bookmark");
 		R.Bookmarks.Add(T.Id, T);
@@ -715,7 +904,8 @@ namespace LyudDevBuiltins
 			return;
 		}
 		AHeroCharacter* Hero = HeroOf(World);
-		if (!Hero)
+		// a seat or a bike holds the body itself
+		if (!Hero || Hero->IsSeated() || Hero->IsOnBike())
 		{
 			return;
 		}
@@ -730,6 +920,12 @@ namespace LyudDevBuiltins
 			APlayerController* PC = H ? Cast<APlayerController>(H->GetController()) : nullptr;
 			if (!H || !PC)
 			{
+				// the hero lost his controller (became a bird): give him his body back as it was
+				if (H)
+				{
+					H->SetActorEnableCollision(true);
+					H->GetCharacterMovement()->SetMovementMode(MOVE_Falling);
+				}
 				GFly.Hero.Reset();
 				GFly.Tick.Reset();
 				return false;
@@ -797,6 +993,77 @@ namespace LyudDevBuiltins
 
 	bool GStats = false;
 
+	/** A line at the top of the screen for screenshots and bug reports: where, when, frame time, the quest step. Takes no input. */
+	struct FOverlay
+	{
+		TWeakObjectPtr<UWorld> World;
+		TWeakObjectPtr<UGameViewportClient> Viewport;
+		TSharedPtr<SWidget> Widget;
+		FText Line;
+		double NextAt = 0.0;
+		float FrameMs = 0.f;
+	};
+	FOverlay GOverlay;
+
+	bool IsOverlay(UWorld* World) { return GOverlay.Widget.IsValid() && GOverlay.World.Get() == World; }
+
+	FText OverlayLine()
+	{
+		// rebuilt four times a second, not every frame
+		const float Ms = static_cast<float>(FApp::GetDeltaTime() * 1000.0);
+		GOverlay.FrameMs = GOverlay.FrameMs > 0.f ? FMath::Lerp(GOverlay.FrameMs, Ms, 0.1f) : Ms;
+		const double Now = FPlatformTime::Seconds();
+		UWorld* World = GOverlay.World.Get();
+		if (Now < GOverlay.NextAt || !World)
+		{
+			return GOverlay.Line;
+		}
+		GOverlay.NextAt = Now + 0.25;
+		FString Quest;
+		if (const ULyudQuests* Q = ULyudQuests::Get(World))
+		{
+			const FName Shown = Q->ShownQuest();
+			const FLyudQuestProgress* P = Q->FindProgress(Shown);
+			const FLyudQuestDef* Def = ULyudQuests::FindDef(Shown);
+			if (P && Def && Def->Stages.IsValidIndex(P->Stage))
+			{
+				Quest = FString::Printf(TEXT("  ·  %s/%s"), *Shown.ToString(), *Def->Stages[P->Stage].Id.ToString());
+			}
+		}
+		const UGameCalendar* Cal = World->GetSubsystem<UGameCalendar>();
+		const FString When = Cal ? Cal->Now().ToString(TEXT("%d.%m.%Y %H:%M")) : FString();
+		GOverlay.Line = FText::FromString(FString::Printf(TEXT("%s  ·  %s  ·  %.1f ms (%.0f fps)%s"), *Where(World, false), *When,
+			GOverlay.FrameMs, GOverlay.FrameMs > 0.f ? 1000.f / GOverlay.FrameMs : 0.f, *Quest));
+		return GOverlay.Line;
+	}
+
+	void SetOverlay(UWorld* World, bool bOn)
+	{
+		if (GOverlay.Widget.IsValid())
+		{
+			if (UGameViewportClient* V = GOverlay.Viewport.Get())
+			{
+				V->RemoveViewportWidgetContent(GOverlay.Widget.ToSharedRef());
+			}
+			GOverlay.Widget.Reset();
+		}
+		UGameViewportClient* Viewport = World ? World->GetGameViewport() : nullptr;
+		if (!bOn || !Viewport)
+		{
+			return;
+		}
+		GOverlay.World = World;
+		GOverlay.Viewport = Viewport;
+		GOverlay.NextAt = 0.0;
+		GOverlay.Widget = SNew(SBox).HAlign(HAlign_Center).VAlign(VAlign_Top).Padding(FMargin(0.f, 6.f)).Visibility(EVisibility::HitTestInvisible)
+		[
+			SNew(SBorder).BorderImage(FCoreStyle::Get().GetBrush("WhiteBrush")).BorderBackgroundColor(FLinearColor(0.f, 0.f, 0.f, 0.55f)).Padding(FMargin(10.f, 3.f))
+			[SNew(STextBlock).Font(FCoreStyle::GetDefaultFontStyle("Regular", 10)).ColorAndOpacity(FLinearColor::White).Text_Static(&OverlayLine)]
+		];
+		// over the HUD (40), under the dev panel (95)
+		Viewport->AddViewportWidgetContent(GOverlay.Widget.ToSharedRef(), 90);
+	}
+
 	FAutoTeleport GWakeTp(TEXT("club_wake"), TEXT("club"), TEXT("dev.tp.club_wake"), [](UWorld* W, FTransform& Out)
 	{
 		TActorIterator<APlayerStart> Start(W);
@@ -805,6 +1072,9 @@ namespace LyudDevBuiltins
 			return false;
 		}
 		Out = Start->GetActorTransform();
+		// the start's capsule middle down to its feet
+		const double StartHalf = Start->GetCapsuleComponent() ? Start->GetCapsuleComponent()->GetScaledCapsuleHalfHeight() : 0.0;
+		Out.AddToTranslation(FVector(0.0, 0.0, -StartHalf));
 		return true;
 	});
 
@@ -825,8 +1095,24 @@ namespace LyudDevBuiltins
 	FAutoAction GNight(TEXT("time.night"), TEXT("time"), TEXT("dev.action.time.night"), [](UWorld* W) { At(W, 23, 30); });
 	FAutoAction GPlusDay(TEXT("time.plus_day"), TEXT("time"), TEXT("dev.action.time.plus_day"),
 		[](UWorld* W) { if (UGameCalendar* Cal = CalOf(W)) Cal->SetNow(Cal->Now() + FTimespan::FromDays(1.0)); });
+	/** The speed time ran at before Freeze, to give back (a save while frozen keeps 0: unfreeze before saving). */
+	float GFrozenScale = 1.f;
 	FAutoAction GFreeze(TEXT("time.freeze"), TEXT("time"), TEXT("dev.action.time.freeze"),
-		[](UWorld* W) { if (UGameCalendar* Cal = CalOf(W)) Cal->SetTimeScale(Cal->TimeScale > 0.f ? 0.f : 1.f); },
+		[](UWorld* W)
+		{
+			if (UGameCalendar* Cal = CalOf(W))
+			{
+				if (Cal->TimeScale > 0.f)
+				{
+					GFrozenScale = Cal->TimeScale;
+					Cal->SetTimeScale(0.f);
+				}
+				else
+				{
+					Cal->SetTimeScale(GFrozenScale);
+				}
+			}
+		},
 		[](UWorld* W) { const UGameCalendar* Cal = CalOf(W); return Cal && Cal->TimeScale <= 0.f; });
 	FAutoAction GSlow(TEXT("time.slowmo"), TEXT("time"), TEXT("dev.action.time.slowmo"),
 		[](UWorld* W) { UGameplayStatics::SetGlobalTimeDilation(W, UGameplayStatics::GetGlobalTimeDilation(W) < 0.9f ? 1.f : 0.25f); },
@@ -874,6 +1160,8 @@ namespace LyudDevBuiltins
 	FAutoAction GLoad(TEXT("game.load"), TEXT("game"), TEXT("dev.action.game.load"), [](UWorld* W) { Exec(W, TEXT("lyud.Load 0")); });
 	FAutoAction GStatsAction(TEXT("game.stats"), TEXT("game"), TEXT("dev.action.game.stats"),
 		[](UWorld* W) { GStats = !GStats; Exec(W, TEXT("stat fps")); Exec(W, TEXT("stat unit")); }, [](UWorld*) { return GStats; });
+	FAutoAction GOverlayAction(TEXT("game.overlay"), TEXT("game"), TEXT("dev.action.game.overlay"),
+		[](UWorld* W) { SetOverlay(W, !IsOverlay(W)); }, [](UWorld* W) { return IsOverlay(W); });
 	FAutoAction GBreath(TEXT("game.breath"), TEXT("game"), TEXT("dev.action.game.breath"), [](UWorld* W) { Exec(W, TEXT("lyud.Swim.Free")); });
 
 	FAutoAction GHatch(TEXT("europa.hatch"), TEXT("europa"), TEXT("dev.action.europa.hatch"), [](UWorld* W) { Exec(W, TEXT("lyud.Europa.GoHatch")); });
@@ -943,7 +1231,7 @@ namespace LyudDevBuiltins
 			}
 		}));
 
-	FAutoConsoleCommandWithWorldAndArgs GQuestCmd(TEXT("Dev.Quest"), TEXT("Dev.Quest <quest> <stage id or index> | <quest> done <objective index> | <quest> forget: jump to a stage, complete an objective, forget a quest"),
+	FAutoConsoleCommandWithWorldAndArgs GQuestCmd(TEXT("Dev.Quest"), TEXT("Dev.Quest <quest> <stage id or index> | <quest> done <objective index> | <quest> play | <quest> forget: jump to a stage, complete an objective, play to the end, forget"),
 		FConsoleCommandWithWorldAndArgsDelegate::CreateLambda([](const TArray<FString>& Args, UWorld* World)
 		{
 			if (Args.Num() < 2)
@@ -957,6 +1245,11 @@ namespace LyudDevBuiltins
 				{
 					Q->DevForget(Quest);
 				}
+				return;
+			}
+			if (Args[1] == TEXT("play"))
+			{
+				PlayThrough(World, Quest);
 				return;
 			}
 			if (Args[1] == TEXT("done"))

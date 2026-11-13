@@ -4,7 +4,15 @@
 #include "Dev/LyudDev.h"
 #include "Engine/Engine.h"
 #include "Engine/World.h"
+#include "Festival/LyudFestival.h"
+#include "Misc/FileHelper.h"
+#include "Misc/Paths.h"
+#include "People/PeopleLife.h"
+#include "Serialization/JsonReader.h"
+#include "Serialization/JsonSerializer.h"
 #include "Framework/Application/SlateApplication.h"
+#include "GameFramework/Pawn.h"
+#include "GameFramework/PlayerController.h"
 #include "LyudInventory.h"
 #include "LyudText.h"
 #include "Plants/PlantDevTool.h"
@@ -23,13 +31,14 @@ namespace LyudDevTabs
 		TabWorld = 0,
 		TabTeleport,
 		TabQuests,
+		TabTown,
 		TabPocket,
 		TabBirds,
 		TabActions,
 		TabCount
 	};
 
-	const TCHAR* TabKeys[TabCount] = { TEXT("ui.dev.tab.world"), TEXT("ui.dev.tab.teleport"), TEXT("ui.dev.tab.quests"), TEXT("ui.dev.tab.pocket"),
+	const TCHAR* TabKeys[TabCount] = { TEXT("ui.dev.tab.world"), TEXT("ui.dev.tab.teleport"), TEXT("ui.dev.tab.quests"), TEXT("ui.dev.tab.town"), TEXT("ui.dev.tab.pocket"),
 		TEXT("ui.dev.tab.birds"), TEXT("ui.dev.tab.actions") };
 
 	const FLinearColor Dim(0.7f, 0.75f, 0.8f);
@@ -46,6 +55,10 @@ namespace LyudDevTabs
 	/** Whether a row passes the tab's search: every word of it in the shown name or the id. */
 	bool Matches(const FString& Filter, const FString& Name, FName Id)
 	{
+		if (Filter.IsEmpty())
+		{
+			return true;
+		}
 		TArray<FString> Words;
 		Filter.ParseIntoArrayWS(Words);
 		for (const FString& Word : Words)
@@ -120,7 +133,8 @@ namespace LyudDevTabs
 				Box->AddSlot().AutoHeight().Padding(0, 8, 0, 2)[GroupTitle(GroupName(ThisGroup))];
 				Box->AddSlot().AutoHeight()[Wrap.ToSharedRef()];
 			}
-			const FText Name = !T.Name.IsEmpty() ? LyudDev::NameOf(T.Name, T.Id) : !T.Place.IsNone() ? ULyudQuests::PlaceName(T.Place) : FText::FromName(T.Id);
+			const FText Name = !T.Name.IsEmpty() ? LyudDev::NameOf(T.Name, T.Id) : !T.Label.IsEmpty() ? FText::FromString(T.Label)
+				: !T.Place.IsNone() ? ULyudQuests::PlaceName(T.Place) : FText::FromName(T.Id);
 			const FString NameText = Name.ToString();
 			const FName Id = T.Id;
 			const LyudDev::FTeleport Point = T;
@@ -164,6 +178,10 @@ namespace LyudDevTabs
 							: P->State == ELyudQuestState::Done ? TEXT("ui.dev.quest.done") : TEXT("ui.dev.quest.active");
 						return FText::FromString(FString::Printf(TEXT("%s (%s) · %s"), *Title, *Quest.ToString(), *LyudText::Get(State).ToString()));
 					})]
+				+ SHorizontalBox::Slot().AutoWidth().Padding(0, 0, 4, 0)[Button(LyudText::Get(TEXT("ui.dev.quest.play")), [Tool, Quest]()
+					{
+						LyudDev::PlayThrough(WorldOf(Tool), Quest);
+					}, nullptr, 10)]
 				+ SHorizontalBox::Slot().AutoWidth()[Button(LyudText::Get(TEXT("ui.dev.quest.forget")), [Tool, Quest]()
 					{
 						if (ULyudQuests* Q = ULyudQuests::Get(WorldOf(Tool))) Q->DevForget(Quest);
@@ -206,6 +224,178 @@ namespace LyudDevTabs
 			}
 			Box->AddSlot().AutoHeight()[One];
 		}
+		return Box;
+	}
+
+	// ---- Town: festivals and people -----------------------------------------------------------------------------------
+
+	/** The festivals and their program phases (Content/PeopleData/festivals.json). */
+	TArray<TPair<FName, TArray<FName>>> ReadFestivals()
+	{
+		TArray<TPair<FName, TArray<FName>>> Out;
+		FString Text;
+		TSharedPtr<FJsonObject> Root;
+		if (!FFileHelper::LoadFileToString(Text, *(FPaths::ProjectContentDir() / TEXT("PeopleData") / TEXT("festivals.json")))
+			|| !FJsonSerializer::Deserialize(TJsonReaderFactory<>::Create(Text), Root) || !Root)
+		{
+			return Out;
+		}
+		const TArray<TSharedPtr<FJsonValue>>* List = nullptr;
+		Root->TryGetArrayField(TEXT("festivals"), List);
+		for (const TSharedPtr<FJsonValue>& V : List ? *List : TArray<TSharedPtr<FJsonValue>>())
+		{
+			const TSharedPtr<FJsonObject> F = V->AsObject();
+			if (!F)
+			{
+				continue;
+			}
+			TArray<FName> Phases;
+			const TArray<TSharedPtr<FJsonValue>>* Program = nullptr;
+			if (F->TryGetArrayField(TEXT("program"), Program))
+			{
+				for (const TSharedPtr<FJsonValue>& P : *Program)
+				{
+					if (P->AsObject())
+					{
+						Phases.Add(*P->AsObject()->GetStringField(TEXT("id")));
+					}
+				}
+			}
+			Out.Add({ FName(*F->GetStringField(TEXT("id"))), MoveTemp(Phases) });
+		}
+		return Out;
+	}
+
+	/** What the people list shows: the townspeople matching the search, at most this many rows. */
+	constexpr int32 PeopleRows = 30;
+
+	struct FPeopleList
+	{
+		/** Name, occupation and key of every person, read once the simulation runs. */
+		TArray<FString> Lines;
+		TArray<int32> Shown;
+		FString Details;
+	};
+
+	void FillPeople(const FToolPtr& Tool, FPeopleList& L, const FString& Filter)
+	{
+		const UPeopleLifeSubsystem* People = UPeopleLifeSubsystem::Get(WorldOf(Tool));
+		if (!People || !People->IsRunning())
+		{
+			L.Lines.Reset();
+			L.Shown.Reset();
+			return;
+		}
+		if (L.Lines.Num() != People->NumPeople())
+		{
+			L.Lines.Reset();
+			for (int32 Id = 0; Id < People->NumPeople(); ++Id)
+			{
+				FPersonInfo Info;
+				People->GetPerson(Id, Info);
+				L.Lines.Add(FString::Printf(TEXT("%s · %s · %d · %s"), *People->GetDisplayName(Id).ToString(), *Info.Occupation, Info.Age, *Info.Key));
+			}
+		}
+		L.Shown.Reset();
+		for (int32 Id = 0; Id < L.Lines.Num() && L.Shown.Num() < PeopleRows; ++Id)
+		{
+			if (Matches(Filter, L.Lines[Id], NAME_None))
+			{
+				L.Shown.Add(Id);
+			}
+		}
+	}
+
+	TSharedRef<SWidget> TownTab(const FToolPtr& Tool)
+	{
+		TSharedRef<SVerticalBox> Box = SNew(SVerticalBox);
+		auto Run = [Tool](const FString& Cmd) { if (UWorld* W = WorldOf(Tool)) GEngine->Exec(W, *Cmd); };
+		// the festival on now
+		Box->AddSlot().AutoHeight().Padding(0, 2)
+		[SNew(STextBlock).Font(Font(11)).ColorAndOpacity(FLinearColor::White).Text_Lambda([Tool]()
+			{
+				const ULyudFestivalSubsystem* F = ULyudFestivalSubsystem::Get(WorldOf(Tool));
+				const FName Now = F ? F->ActiveFestival() : NAME_None;
+				return Now.IsNone() ? LyudText::Get(TEXT("ui.dev.town.no_festival"))
+					: LyudText::Get(TEXT("ui.dev.town.festival_now"), { FStringFormatArg(ULyudFestivalSubsystem::FestivalName(Now).ToString()), FStringFormatArg(F->ActivePhase().ToString()) });
+			})];
+		Box->AddSlot().AutoHeight().Padding(0, 2)[Small(LyudText::Get(TEXT("ui.dev.town.festivals_hint")))];
+		Box->AddSlot().AutoHeight().Padding(0, 6, 0, 2)[GroupTitle(LyudText::Get(TEXT("ui.dev.town.festivals")))];
+		for (const TPair<FName, TArray<FName>>& Fest : ReadFestivals())
+		{
+			const FString Id = Fest.Key.ToString();
+			TSharedRef<SWrapBox> Row = SNew(SWrapBox).UseAllottedSize(true).InnerSlotPadding(FVector2D(4.f, 2.f));
+			Row->AddSlot()[SNew(SBox).WidthOverride(170.f).VAlign(VAlign_Center)
+				[SNew(STextBlock).Font(Font(10)).ColorAndOpacity(FLinearColor::White).Text(ULyudFestivalSubsystem::FestivalName(Fest.Key)).ToolTipText(FText::FromString(Id))]];
+			Row->AddSlot()[Button(LyudText::Get(TEXT("ui.dev.town.day")), [Run, Id]() { Run(TEXT("lyud.Festival.Go ") + Id); }, nullptr, 9)];
+			for (const FName& Phase : Fest.Value)
+			{
+				const FString PhaseId = Phase.ToString();
+				Row->AddSlot()[Button(FText::FromString(PhaseId), [Run, Id, PhaseId]() { Run(TEXT("lyud.Festival.Go ") + Id + TEXT(" ") + PhaseId); }, nullptr, 9)];
+			}
+			Box->AddSlot().AutoHeight().Padding(0, 1)[Row];
+		}
+		Box->AddSlot().AutoHeight().Padding(0, 4)
+		[
+			SNew(SHorizontalBox)
+			+ SHorizontalBox::Slot().AutoWidth()[Button(LyudText::Get(TEXT("ui.dev.town.first_snow")), [Run]() { Run(TEXT("lyud.Festival.Fire first_snow")); }, nullptr, 10)]
+			+ SHorizontalBox::Slot().AutoWidth().Padding(6, 0, 0, 0)[Button(LyudText::Get(TEXT("ui.dev.town.report")), [Run]() { Run(TEXT("lyud.Festival.Report")); Run(TEXT("lyud.People.Report")); }, nullptr, 10)]
+		];
+
+		// people: search by name, job or key; go to them, read what they are doing
+		TSharedRef<FPeopleList> List = MakeShared<FPeopleList>();
+		Box->AddSlot().AutoHeight().Padding(0, 10, 0, 2)[GroupTitle(LyudText::Get(TEXT("ui.dev.town.people")))];
+		Box->AddSlot().AutoHeight().Padding(0, 2)
+		[
+			SNew(SHorizontalBox)
+			+ SHorizontalBox::Slot().AutoWidth()[Label(LyudText::Get(TEXT("ui.dev.search")), 90.f)]
+			+ SHorizontalBox::Slot().FillWidth(1.f)
+			[
+				SNew(SEditableTextBox).Font(Font()).HintText(LyudText::Get(TEXT("ui.dev.town.people_hint")))
+				.OnTextChanged_Lambda([Tool, List](const FText& Typed) { FillPeople(Tool, *List, Typed.ToString()); })
+				.OnTextCommitted_Lambda([](const FText&, ETextCommit::Type) { FSlateApplication::Get().SetAllUserFocusToGameViewport(); })
+			]
+		];
+		for (int32 Row = 0; Row < PeopleRows; ++Row)
+		{
+			auto Person = [List, Row]() { return List->Shown.IsValidIndex(Row) ? List->Shown[Row] : INDEX_NONE; };
+			Box->AddSlot().AutoHeight().Padding(0, 1)
+			[
+				SNew(SHorizontalBox)
+				.Visibility_Lambda([Person]() { return Person() != INDEX_NONE ? EVisibility::Visible : EVisibility::Collapsed; })
+				+ SHorizontalBox::Slot().FillWidth(1.f).VAlign(VAlign_Center)
+				[SNew(STextBlock).Font(Font(10)).ColorAndOpacity(FLinearColor::White).Text_Lambda([List, Person]()
+					{ return List->Lines.IsValidIndex(Person()) ? FText::FromString(List->Lines[Person()]) : FText::GetEmpty(); })]
+				+ SHorizontalBox::Slot().AutoWidth()[Button(LyudText::Get(TEXT("ui.dev.town.go_to")), [Tool, Person]()
+					{
+						const UPeopleLifeSubsystem* People = UPeopleLifeSubsystem::Get(WorldOf(Tool));
+						int32 Activity = 0;
+						bool bDoing = false;
+						EPersonPose Pose = EPersonPose::Stand;
+						FVector At = FVector::ZeroVector;
+						if (People && Person() != INDEX_NONE && People->GetActivityState(Person(), Activity, bDoing, Pose, At))
+						{
+							// two metres off, facing them, at their feet's height (the simulation keeps feet: indoors too)
+							APlayerController* PC = WorldOf(Tool) ? WorldOf(Tool)->GetFirstPlayerController() : nullptr;
+							const FVector From = PC && PC->GetPawn() ? PC->GetPawn()->GetActorLocation() : At + FVector(300.0, 0.0, 0.0);
+							const FVector Dir = FVector(FVector2D(At - From).GetSafeNormal(), 0.0);
+							const FVector Stand = At - Dir * 200.0 + FVector(0.0, 0.0, 10.0);
+							LyudDev::TeleportWorld(WorldOf(Tool), Stand, Dir.Rotation().Yaw, false);
+						}
+					}, nullptr, 9)]
+				+ SHorizontalBox::Slot().AutoWidth().Padding(3, 0, 0, 0)[Button(LyudText::Get(TEXT("ui.dev.town.info")), [Tool, List, Person]()
+					{
+						const UPeopleLifeSubsystem* People = UPeopleLifeSubsystem::Get(WorldOf(Tool));
+						if (People && Person() != INDEX_NONE)
+						{
+							List->Details = People->Describe(Person());
+							UE_LOG(LogTemp, Warning, TEXT("DEV person %s"), *List->Details);
+						}
+					}, nullptr, 9)]
+			];
+		}
+		Box->AddSlot().AutoHeight().Padding(0, 4)
+		[SNew(STextBlock).AutoWrapText(true).Font(Font(9)).ColorAndOpacity(Dim).Text_Lambda([List]() { return FText::FromString(List->Details); })];
 		return Box;
 	}
 
@@ -411,6 +601,7 @@ namespace LyudDevPanel
 		return SNew(SVerticalBox)
 			+ SVerticalBox::Slot().AutoHeight()[SNew(SBox).Visibility(ShownOnTab(Tool, TabTeleport))[TeleportTab(Tool)]]
 			+ SVerticalBox::Slot().AutoHeight()[SNew(SBox).Visibility(ShownOnTab(Tool, TabQuests))[QuestsTab(Tool)]]
+			+ SVerticalBox::Slot().AutoHeight()[SNew(SBox).Visibility(ShownOnTab(Tool, TabTown))[TownTab(Tool)]]
 			+ SVerticalBox::Slot().AutoHeight()[SNew(SBox).Visibility(ShownOnTab(Tool, TabPocket))[PocketTab(Tool)]]
 			+ SVerticalBox::Slot().AutoHeight()[SNew(SBox).Visibility(ShownOnTab(Tool, TabBirds))[BirdsTab(Tool)]]
 			+ SVerticalBox::Slot().AutoHeight()[SNew(SBox).Visibility(ShownOnTab(Tool, TabActions))[ActionsTab(Tool)]];

@@ -1514,3 +1514,18 @@ FString ABirdPawn::DebugLine() const
 		*Species.ToString(), ModeName, (float)Flight->Energy, GetAirspeed(), GetVelocityCm().Size() / 100.f, GetVelocityCm().Z / 100.f, LastUpdraft, LastAir.Size(),
 		Flight->Load, Flight->SpreadL, Flight->SpreadR, Flare, Tracker->IsTracking() ? TEXT("tracked") : TEXT("mouse"), *Tracker->State(), *Head->GetComponentRotation().ToCompactString());
 }
+
+void ABirdPawn::DevTeleport(const FVector& At)
+{
+	if (Mode == EBirdMode::Ground || Mode == EBirdMode::Swimming)
+	{
+		Mode = EBirdMode::Air;
+		bAnchored = false;
+		bGripping = false;
+		bHopping = false;
+		HopVel = FVector::ZeroVector;
+	}
+	Flight->Vel = BirdFlight::V3();
+	SetActorLocation(At, false, nullptr, ETeleportType::TeleportPhysics);
+	Flight->Pos = ToM(GetActorLocation());
+}

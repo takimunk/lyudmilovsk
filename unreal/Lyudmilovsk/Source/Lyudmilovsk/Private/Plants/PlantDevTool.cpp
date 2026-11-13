@@ -12,6 +12,7 @@
 #include "HAL/IConsoleManager.h"
 #include "GameFramework/PlayerController.h"
 #include "Kismet/GameplayStatics.h"
+#include "LyudInventory.h"
 #include "LyudText.h"
 #include "Plants/GameCalendar.h"
 #include "Plants/PlantSpecies.h"
@@ -194,6 +195,11 @@ void APlantDevTool::Open()
 		return;
 	}
 	SelectInView();
+	// the inventory screen would lie under the panel and take the same clicks
+	if (ULyudInventoryUI* Inv = ULyudInventoryUI::Get(this); Inv && Inv->IsOpen())
+	{
+		Inv->Close();
+	}
 	TWeakObjectPtr<APlantDevTool> Self(this);
 	auto P = [Self]() -> AProceduralPlant* { return Self.IsValid() ? Self->Selected() : nullptr; };
 	auto Cal = [Self]() -> UGameCalendar* { return Self.IsValid() && Self->GetWorld() ? Self->GetWorld()->GetSubsystem<UGameCalendar>() : nullptr; };
@@ -218,7 +224,7 @@ void APlantDevTool::Open()
 	[
 		SNew(SBox).WidthOverride(620.f).MaxDesiredHeight_Lambda(MaxHeight)
 		[
-			SNew(SBorder).BorderImage(FCoreStyle::Get().GetBrush("WhiteBrush")).BorderBackgroundColor(FLinearColor(0.f, 0.f, 0.f, 0.7f)).Padding(14.f)
+			SNew(SBorder).BorderImage(FCoreStyle::Get().GetBrush("WhiteBrush")).BorderBackgroundColor(FLinearColor(0.f, 0.f, 0.f, 0.88f)).Padding(14.f)
 			[
 				SNew(SScrollBox).ScrollBarThickness(FVector2D(6.f, 6.f))
 				+ SScrollBox::Slot()
@@ -374,6 +380,7 @@ void APlantDevTool::Open()
 	];
 	// over the HUD, the diary and the transit screen (85, 86), under the game menu (100)
 	Viewport->AddViewportWidgetContent(Panel.ToSharedRef(), 95);
+	SetActorTickEnabled(true);
 	PC->SetShowMouseCursor(true);
 	FInputModeGameAndUI Mode;
 	Mode.SetHideCursorDuringCapture(true);
@@ -411,9 +418,21 @@ void APlantDevTool::Tick(float DeltaSeconds)
 		bRebuild = false;
 		if (Panel.IsValid())
 		{
+			// the rebuilt panel picks the tree in view: keep the one being worked on (its time-lapse goes on)
+			const TWeakObjectPtr<AProceduralPlant> Keep = Plant;
 			Close();
 			Open();
+			if (Keep.IsValid())
+			{
+				Plant = Keep;
+			}
 		}
+	}
+	// nothing to do with the panel shut and no time-lapse running: no tick until the panel opens again
+	if (bBound && !bRebuild && !Panel.IsValid() && AgeSpeed <= 0.f && DaySpeed <= 0.f)
+	{
+		SetActorTickEnabled(false);
+		return;
 	}
 	AProceduralPlant* P = Plant.Get();
 	if (!P)

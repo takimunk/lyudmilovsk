@@ -150,6 +150,9 @@ off in turn, in one process, like `bench_forest.sh`: `nobirds`, `nopeople`, `noa
 
 - **Run it alone.** A -game of Lvl_Scene01 holds ~22 GB; two at once on the 36 GB Mac swap (18 GB of swap seen) and
   frames read 300+ ms instead of ~40. `tools/wait_ue_queue.sh` before every run, and check `sysctl vm.swapusage`.
+  An exclusive run (`--exclusive`: bench.sh, soak.sh) holds the queue from the moment it starts waiting until its
+  script exits, so newer runs cannot starve it; `UE_QUEUE_HOLD_PID=$$` in a wrapper keeps the hold across several
+  benches run back to back (A/B/A/B). Holds are files in /tmp/lyud_ue_hold; every checkout needs this version of the script.
 - **Builds go through `tools/wait_ubt_queue.sh`** (no args: this checkout's LyudmilovskEditor Mac Development with
   -NoHotReloadFromIDE; or Build.sh's args). UnrealBuildTool's own mutex is global per engine install but not fair (a
   build waited 2 h while newer ones got it): the script gives each build a ticket, first come first served across

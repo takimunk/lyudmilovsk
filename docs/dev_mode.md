@@ -17,11 +17,15 @@ H shows the game's keys. F10 is the game menu. F8 is the editor's eject and stay
 | Tab | What it does |
 |---|---|
 | World | date, time of day, time speed; the weather (presets, weather types, phenomena, values, Auto); one tree's age and season |
-| Teleport | every teleport point by group, with a search box; "Bookmark this spot", "Copy position", "Fly through walls", "Reload". The line under the buttons is where you stand (world cm, map metres) |
-| Quests | every quest in quests.json: its state, a button per stage (jumps there, the current one is lit), a ✓ button per objective of the current stage (fires the real game event), "Forget" |
+| Teleport | every teleport point by group (map places, the city plan's plots, squares and promenade shops, every feature's file, code points, your bookmarks), with a search box; "Bookmark this spot", "Copy position", "Fly through walls", "Reload". The line under the buttons is where you stand (world cm, map metres) |
+| Quests | every quest in quests.json: its state, a button per stage (jumps there, the current one is lit), a ✓ button per objective of the current stage (fires the real game event), "▶ To the end" (plays it through, see `Dev.Quest <quest> play`), "Forget" |
+| Town | the festival on now; every festival in festivals.json with "Day" (the calendar to its day) and a button per part (to its start); first snow; the townspeople, searched by name, job or key (30 rows), "Go to" (two metres off, facing them) and "What now" (their state, also logged as `DEV person`) |
 | Pocket | money (+100, +1000, to zero), "One of everything", "Pocket as at the start", "Held only"; every item with +1, +10, −, Wear/Hold |
 | Birds | every species: Become (on the hero's hand), Fly (in the air), Nearby (one calm bird beside you), Befriend; back to the hero, feed ×20, all species into the bird book |
 | Actions | a console line (any command, Enter; the last six to click again), then every registered action by group. Lit buttons are toggles that are on |
+
+Actions → Game → "Debug line on top" keeps one line over the game for screenshots and bug reports: where you stand (as a
+`Dev.TpAt` line and map metres), the game date and time, frame time and fps, the tracked quest and its stage.
 
 Developer mode is always there outside Shipping builds. A Shipping build has it only with `-dev` on the command line.
 
@@ -30,13 +34,14 @@ Developer mode is always there outside Shipping builds. A Shipping build has it 
 | Command | |
 |---|---|
 | `Dev.Tp <id>` | to a teleport point |
-| `Dev.TpAt <x> <y> [z] [yaw]` | to a world point in cm; without z onto the ground |
+| `Dev.TpAt <x> <y> [z] [yaw]` | to a world point in cm, z where the feet go; without z onto the ground |
 | `Dev.TpMap <x> <y> [yaw]` | to a map point in metres (docs/world_map.md frame), onto the ground |
 | `Dev.TpList [group]` | logs the points (`DEVTP` lines) |
 | `Dev.Where` | logs where you stand as a `Dev.TpAt` line plus map metres, and copies it to the clipboard (paste it into a bug report) |
 | `Dev.Bookmark [name]`, `Dev.Bookmark remove <name>` | your own points, kept in `Saved/Dev/bookmarks.json` (not in git) |
 | `Dev.Quest <quest> <stage id or number>` | jump to a stage |
 | `Dev.Quest <quest> done <objective number>` | complete one objective of the current stage by its real event |
+| `Dev.Quest <quest> play` | plays the quest to its end by the real events of every objective (`DEV play <quest> done`, or `STUCK at stage <id>` where an objective's event does not count) |
 | `Dev.Quest <quest> forget` | the quest as if never begun |
 | `Dev.Do <action id>`, `Dev.List` | run an action, list them (`DEVACTION` lines) |
 | `Dev.Reload` | re-read the teleport files, quests.json and map.json |
@@ -61,7 +66,7 @@ A feature is not done until it can be reached and tested from developer mode. Fo
    ```
 
    `x`, `y`: map metres in the docs/world_map.md frame (X west, Y north, from the club's portal face), the same numbers as
-   `Content/UI/map.json`; or `place`: a map.json id. `z`: world cm; leave it out outdoors (the point is dropped onto whatever is solid
+   `Content/UI/map.json`; or `place`: a map.json id. `z`: world cm of the feet (the floor); leave it out outdoors (the point is dropped onto whatever is solid
    below, or onto the sea's surface), give it indoors (else you land on the roof). `yaw`: degrees, 0 looks west (+X), 90 north. `time`:
    sets the clock on arrival (night-only things). `name`: a string key in all three tables; `group` names a `dev.group.<group>` key.
    Places in map.json are listed on their own. `Dev.Where` gives you the numbers of where you stand.
@@ -109,6 +114,16 @@ A feature is not done until it can be reached and tested from developer mode. Fo
 
 5. **A system with its own controls** (like the weather) can add a whole section; talk to the dev mode's owner first, and keep it in
    its own file like `PlantDevWeather.cpp`.
+
+## Tests
+
+`unreal/scripts/test_devmode.sh` (offscreen, through the UE queue like every run) lists the actions and points, jumps to a few
+points, plays the first quest through, fills the pocket, flies, opens every tab with a shot, and fails on a jump that did not land,
+a stuck quest or a missing tab (`check_devmode_log.py`). A new quest gets its own line there: `Dev.Quest <quest> play` must end in
+`done`.
+
+The older features' shortcuts (cable car stations, the train, fishing, the restaurant and the diner, lightning, snow on the paths)
+are in `Private/Dev/LyudDevFeatures.cpp`; they call those features' own console commands.
 
 ## Rules
 
