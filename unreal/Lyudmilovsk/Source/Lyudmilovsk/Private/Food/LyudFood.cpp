@@ -93,11 +93,12 @@ namespace
 		return FString::Printf(TEXT("/Game/Food/%s.%s"), *Name, *Name);
 	}
 
-	/** The hand at rest with food: palm up at the right of the chest, fingers forward, the food across the palm toward the middle. */
+	/** The hand at rest with food: palm up at the right of the chest, fingers forward, the food across the palm toward the middle,
+	 *  high enough to be in sight at the bottom of the view (lower, at -33, it was below the screen's edge). */
 	FHeroHoldPose FoodCarry()
 	{
 		FHeroHoldPose P;
-		P.Pos = FVector(36.f, 19.f, -33.f);
+		P.Pos = FVector(42.f, 16.f, -21.f);
 		P.FingerDir = FVector(1.f, 0.f, 0.15f).GetSafeNormal();
 		P.PalmNormal = FVector(-0.25f, -0.35f, 1.f).GetSafeNormal();
 		P.Curl = 1.f;
