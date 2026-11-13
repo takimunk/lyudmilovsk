@@ -31,6 +31,7 @@ DOOR_X = -1.93                # the blast door's centre (layout exit_door.center
 # Map extents (the sky dome is 2800 m around the portal).
 X_MIN, X_MAX = -1300.0, 1300.0
 Y_MIN, Y_MAX = -900.0, 4200.0     # north of Y 2200 lies the North (tools/north.py, docs/north.md)
+SHEET_Y_MAX = 2200.0              # the paper map (tools/ui_map.py, the M page) is the town's sheet: it ends here
 
 # Water line X along the coast, (Y, X) control points: the shore runs north past the club and bends
 # out to sea in the north, so the walk out of the door sees the coast run out to a cape ahead on the

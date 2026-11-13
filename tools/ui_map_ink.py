@@ -68,7 +68,7 @@ def distance_out(land, limit):
 
 def main(out_png):
     w = int((W.X_MAX - W.X_MIN) / U.PX)
-    h = int((W.Y_MAX - W.Y_MIN) / U.PX)
+    h = int((W.SHEET_Y_MAX - W.Y_MIN) / U.PX)
     print("ink map %d x %d px" % (w, h))
     H = cached_heights(w, h)
     sea = H < W.SEA_Z
@@ -84,7 +84,7 @@ def main(out_png):
     rnd = random.Random(11)
 
     def px(x, y):
-        return (W.X_MAX - x) / U.PX * SS, (W.Y_MAX - y) / U.PX * SS
+        return (W.X_MAX - x) / U.PX * SS, (W.SHEET_Y_MAX - y) / U.PX * SS
 
     def wash(mask, color, alpha, blur=3):
         """A light coloured-pencil wash over a mask: grainy, darker at its edge."""
@@ -103,7 +103,7 @@ def main(out_png):
     forest_mask = np.zeros((h, w), bool)
     cell = 40.0
     tiles = W.forests()
-    yy = W.Y_MAX - (np.arange(h) + 0.5) * U.PX
+    yy = W.SHEET_Y_MAX - (np.arange(h) + 0.5) * U.PX
     xx = W.X_MAX - (np.arange(w) + 0.5) * U.PX
     X, Y = np.meshgrid(xx, yy)
     for t in tiles:
@@ -111,7 +111,7 @@ def main(out_png):
         if mix == "town":
             continue
         i0, i1 = int((W.X_MAX - (fx + hx)) / U.PX), int((W.X_MAX - (fx - hx)) / U.PX) + 1
-        j0, j1 = int((W.Y_MAX - (fy + hy)) / U.PX), int((W.Y_MAX - (fy - hy)) / U.PX) + 1
+        j0, j1 = int((W.SHEET_Y_MAX - (fy + hy)) / U.PX), int((W.SHEET_Y_MAX - (fy - hy)) / U.PX) + 1
         i0, j0 = max(i0, 0), max(j0, 0)
         sub = H[j0:j1, i0:i1]
         forest_mask[j0:j1, i0:i1] |= (sub >= z0) & (sub <= z1) & (slope[j0:j1, i0:i1] < 0.8)

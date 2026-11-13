@@ -23,7 +23,7 @@ Map metres (docs/world_map.md's frame: X west toward the sea, Y north). All of i
 | The Ridge (Гряда) | Y ~3520, X -960..260 | a low rise whose north slope keeps snowfields all summer |
 | Snowfields (снежники) | 8 of them, Y 3345..4030 | firn in hollows: on the Ridge's north slope, under the Cone, in the gullies of the northern foot |
 | Lava flow | from the Cone west to 330, 3668 | a tongue of blocky clinker 50..100 m wide, 4.5 m thick |
-| The Cone (Сопка) | -640, 3840 | a cinder cone 58 m high, 410 m across, its crater (21 m deep) breached to the west: the way in; two vents on the crater floor |
+| The Cone (Сопка) | -640, 3840 | a cinder cone 58 m high, 410 m across, its crater (27 m deep, a level floor 40 m across) breached to the west: the way in, the trail climbs through the breach; two vents on the crater floor |
 | Northern and eastern foot | Y > 3950, X < -880 | the land climbs out of the map toward the big volcanoes |
 | Far volcanoes | 5..10 km out | three backdrop cones with snow caps, one smoking (`north.far_volcanoes()`); never walked on |
 

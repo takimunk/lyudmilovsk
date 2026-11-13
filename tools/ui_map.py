@@ -29,7 +29,7 @@ LAYOUT = os.path.join(ROOT, "blender", "export", "scene01_layout.json")
 
 
 def _row(j):
-    y = W.Y_MAX - (j + 0.5) * PX
+    y = W.SHEET_Y_MAX - (j + 0.5) * PX
     w = int((W.X_MAX - W.X_MIN) / PX)
     return [W.height(W.X_MAX - (i + 0.5) * PX, y) for i in range(w)]
 
@@ -40,7 +40,7 @@ def heights(w, h):
 
 
 def _beach_row(j):
-    y = W.Y_MAX - (j + 0.5) * PX
+    y = W.SHEET_Y_MAX - (j + 0.5) * PX
     w = int((W.X_MAX - W.X_MIN) / PX)
     return [W.is_beach(W.X_MAX - (i + 0.5) * PX, y) for i in range(w)]
 
@@ -88,14 +88,14 @@ def academ_footprints():
 
 def paint(out_jpg):
     w = int((W.X_MAX - W.X_MIN) / PX)
-    h = int((W.Y_MAX - W.Y_MIN) / PX)
+    h = int((W.SHEET_Y_MAX - W.Y_MIN) / PX)
     print("map %d x %d px at %.2f m/px" % (w, h, PX))
     H = heights(w, h)
     with Pool() as pool:
         B = pool.map(_beach_row, range(h), chunksize=16)
 
     def px(x, y):
-        return (W.X_MAX - x) / PX, (W.Y_MAX - y) / PX
+        return (W.X_MAX - x) / PX, (W.SHEET_Y_MAX - y) / PX
 
     # forest: the tiles, only where the ground is in their height band and not too steep
     tiles = W.forests()
@@ -123,7 +123,7 @@ def paint(out_jpg):
     trees = []
     rnd = random.Random(7)
     for j in range(h):
-        y = W.Y_MAX - (j + 0.5) * PX
+        y = W.SHEET_Y_MAX - (j + 0.5) * PX
         row = H[j]
         up = H[j - 1] if j > 0 else row
         dn = H[j + 1] if j + 1 < h else row
@@ -166,7 +166,7 @@ def paint(out_jpg):
     soft = cover_img.filter(ImageFilter.GaussianBlur(9)).load()
     names = {v: k for k, v in MIX_CODE.items()}
     for j in range(h):
-        y = W.Y_MAX - (j + 0.5) * PX
+        y = W.SHEET_Y_MAX - (j + 0.5) * PX
         for i in range(w):
             code = mixes[i, j]
             if not code:
@@ -295,7 +295,7 @@ def places(out_json):
     ]
     data = {
         "comment": "Written by tools/ui_map.py from tools/world_map.py: do not edit by hand. Metres in the map frame (docs/world_map.md).",
-        "frame": {"x_min": W.X_MIN, "x_max": W.X_MAX, "y_min": W.Y_MIN, "y_max": W.Y_MAX, "portal_face_y": portal_face_y,
+        "frame": {"x_min": W.X_MIN, "x_max": W.X_MAX, "y_min": W.Y_MIN, "y_max": W.SHEET_Y_MAX, "portal_face_y": portal_face_y,
                   "metres_per_pixel": PX},
         "places": [{"id": i, "x": round(x, 1), "y": round(y, 1), "r": r, "kind": k, "known": kn} for i, x, y, r, k, kn in P],
     }

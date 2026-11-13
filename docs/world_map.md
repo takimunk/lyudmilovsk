@@ -15,8 +15,9 @@ Krai; the map follows the Baltic now.
 
 Metres, origin on the club's portal face at floor level (the spur). X is to the left of someone
 walking out of the club (west, the sea), Y is straight out of the door (north), Z is up.
-Unreal: `(X * 100, portal_face_y + Y * 100, Z * 100)` cm. The map runs X -1300..1300, Y -900..2200
-(2.6 x 3.1 km). The sea is at Z -43 at high water (the datum; the tide only falls from it, to -45 at neaps and
+Unreal: `(X * 100, portal_face_y + Y * 100, Z * 100)` cm. The map runs X -1300..1300, Y -900..4200
+(2.6 x 5.1 km; north of Y 2200 lies the North, [north.md](north.md); the paper map of the M page is the town's sheet
+and still ends at Y 2200, `W.SHEET_Y_MAX`). The sea is at Z -43 at high water (the datum; the tide only falls from it, to -45 at neaps and
 -47.5 at springs, [tides.md](tides.md)), the valley at -37, the upland at +18. Seaward of the beach lies a broad
 tidal flat (`W.tidal_flat`: ~1:80 for 350 m with bars, runnels, channels and pools), then the old 6% bed to 9 m.
 
@@ -35,7 +36,8 @@ tidal flat (`W.tidal_flat`: ~1:80 for 350 m with bars, runnels, channels and poo
 | Valley | Y ~250..1450, 6 m over the sea, open to the sea | meadows, wet alder and birch copses, reed and sedge on the wet floor below the lower station (past the Academgorodok's levelled lots) | |
 | Lyudmilovsk (town) | centre -330, 900, ~1.1 km across, in the valley | only the Academgorodok (north of the lower station); the placeholder houses are gone (2026-10-25), the ground stays level, trees grow sparse over it | whatever Dima decides |
 | Promenade | along the valley's beach, Y 450..1250 | a concrete strip | kiosks, railings, a pier |
-| North hills | beyond the town, from Y 1450 up to +12 m | old forest | |
+| North hills | beyond the town, from Y 1450 up to +12 m | old forest, thinning out past Y 2330 | |
+| The North | Y 2200..4200 | volcano country: the ranger's hut, meadows, a campsite, the Fumarole Valley, snowfields, a cinder cone with a lava flow, far volcanoes on the horizon: [north.md](north.md) (`tools/north.py`) | quests |
 | Forests | upland, north hills, inland ridge, dune bank, valley copses, the town | 57 AProceduralForest actors, ~100k real trees (shared bakes) | |
 
 The macro shape (W.height) is smooth; natural detail on top of it, the ground surface and its

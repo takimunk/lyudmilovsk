@@ -51,7 +51,7 @@ CONE = (-640.0, 3840.0)         # the cinder cone's centre
 CONE_RIM_R = 52.0
 CONE_BASE_R = 205.0
 CONE_H = 58.0                   # rim over the land around
-CRATER_DEPTH = 21.0
+CRATER_DEPTH = 27.0
 BREACH_YAW = math.radians(8.0)  # the rim is broken toward map +X (west), a little north of it
 BREACH_HALF = math.radians(34.0)
 RIDGE_X = (-960.0, 260.0)       # the Ridge runs between these, fading over 160 m at each end
@@ -136,16 +136,18 @@ def _land(x, y):
 
 
 def _cone(x, y):
-    """The cinder cone's height over the land (0 away from it) and 0..1 on its body."""
+    """The cinder cone's height over the land (0 away from it)."""
     dx, dy = x - CONE[0], y - CONE[1]
     r = math.hypot(dx, dy)
-    if r > CONE_BASE_R + 60.0:
+    if r > CONE_BASE_R * 1.25:
         return 0.0
     a = math.atan2(dy, dx)
-    # the breach: the rim sags toward the west where the lava broke out
+    floor = CONE_H - CRATER_DEPTH                     # the crater's floor: level, the same from every side
+    # the breach: toward the west the rim is gone down to the floor, where the lava broke out (the way in)
     da = abs((a - BREACH_YAW + math.pi) % (2 * math.pi) - math.pi)
-    br = 1.0 - _smooth((da - BREACH_HALF * 0.35) / (BREACH_HALF * 0.9))
-    rim_h = CONE_H * (1.0 - 0.62 * br) * (1.0 + 0.05 * math.sin(3.0 * a + 0.8))
+    br = 1.0 - _smooth((da - BREACH_HALF * 0.3) / (BREACH_HALF * 0.9))
+    rim_h = CONE_H * (1.0 + 0.045 * math.sin(3.0 * a + 0.8) + 0.02 * math.sin(7.0 * a))
+    rim_h += (floor + 1.0 - rim_h) * br
     if r >= CONE_RIM_R:
         t = (r - CONE_RIM_R) / (CONE_BASE_R - CONE_RIM_R)
         if t >= 1.25:
@@ -153,12 +155,10 @@ def _cone(x, y):
         # ~32 degrees under the rim, easing out into the ash apron
         h = rim_h * max(0.0, 1.0 - t) ** 1.45
         return h + 1.2 * _smooth((1.25 - t) / 0.4) * (1.0 - _smooth((1.0 - t) / 0.3))
-    # the crater: a bowl under the rim, its floor up at the breach (the way in)
+    # the crater: a flat floor 40 m across, walls steepening up to a rounded rim
     u = r / CONE_RIM_R
-    floor = rim_h - CRATER_DEPTH * (1.0 - 0.55 * br)
-    bowl = floor + (rim_h - floor) * u ** 2.2
-    # a rounded rim rather than a knife edge
-    return bowl - 1.5 * _smooth((u - 0.8) / 0.2) * (1.0 - u) * 4.0
+    wall = _smooth((u - 0.38) / 0.62)
+    return floor + (rim_h - floor) * (0.35 * wall + 0.65 * wall * wall)
 
 
 def lava(x, y):
@@ -168,7 +168,8 @@ def lava(x, y):
     d, t = _seg_dist(x, y, LAVA)
     half = LAVA_HALF[0] + (LAVA_HALF[1] - LAVA_HALF[0]) * t
     half *= 1.0 + 0.22 * math.sin(t * 23.0) + 0.12 * math.sin(t * 61.0 + 1.0)
-    return _ramp(d, half - 7.0, 7.0)
+    # none inside the crater and its breach: the way in stays a cinder floor
+    return _ramp(d, half - 7.0, 7.0) * (1.0 - _ramp(math.hypot(x - CONE[0], y - CONE[1]), CONE_RIM_R + 12.0, 45.0))
 
 
 def _snow_local(x, y, f):
@@ -202,7 +203,7 @@ def _raw(x, y):
     z += _cone(x, y)
     lv = lava(x, y)
     if lv > 0.0:
-        z += LAVA_THICK * lv * (1.0 - _ramp(math.hypot(x - CONE[0], y - CONE[1]), CONE_RIM_R, 30.0))
+        z += LAVA_THICK * lv
     for f in SNOWFIELDS:
         if abs(x - f[0]) < f[2] and abs(y - f[1]) < f[2]:
             q = _snow_local(x, y, f)
@@ -351,15 +352,16 @@ ANCHORS = {
     "north_spring": (SPRING[0] + 14.0, SPRING[1] - 16.0),
     "north_fumaroles": (FUMAROLES_C[0] + 20.0, FUMAROLES_C[1] + 150.0),
     "north_breach": (CONE[0] + 150.0, CONE[1] + 44.0),
+    "north_crater": (CONE[0] + 20.0, CONE[1] + 4.0),
 }
 TRACKS = [("woods_north", "north_gate"), ("north_gate", "north_camp"), ("north_camp", "north_spring"),
-          ("north_spring", "north_fumaroles"), ("north_fumaroles", "north_breach")]
+          ("north_spring", "north_fumaroles"), ("north_fumaroles", "north_breach"), ("north_breach", "north_crater")]
 
 
 def trail_points(step):
     """Points every step metres along the straight lines between the trail's anchors (a rough line for planting;
     the real track is terrain.tracks())."""
-    names = ["north_gate", "north_camp", "north_spring", "north_fumaroles", "north_breach"]
+    names = ["north_gate", "north_camp", "north_spring", "north_fumaroles", "north_breach", "north_crater"]
     pts = [ANCHORS[n] for n in names]
     out = []
     for p, q in zip(pts, pts[1:]):

@@ -1,7 +1,7 @@
 # The outdoor ground
 
 The whole outdoor map stands on one Unreal **Landscape** (`Ground` in Lvl_Scene01, folder Outside/Ground): a 1 m
-grid over 2.65 x 3.15 km (21 x 25 components of 126 quads), heightfield collision that is exactly the drawn
+grid over 2.65 x 5.17 km (21 x 41 components of 126 quads; the last 16 rows are the North, [north.md](north.md)), heightfield collision that is exactly the drawn
 surface, a layered material from seven ground photos. Nothing in Content is committed but the photos; the build
 makes it every time.
 
@@ -44,6 +44,17 @@ light). The material (`M_Ground`) mixes each photo at 2.6 m and 11 m tiling, let
 blend between layers, and drifts the brightness slowly so repeats don't show. Tints and roughness: `LOOK` in
 import_terrain.py.
 
+## The North's ground
+
+North of Y 2200 `tools/north.py` hands the generator four more masks (`snow`, `scoria`, `lava`, `sulfur`, appended to
+terrain_in.bin; inputs without them build as before). TerrainGen keeps the cinder cone's shape clean (no knolls, rain
+rills only), makes the lava flow a field of clinker blocks and pressure ridges that the erosion leaves alone, crusts the
+steaming ground, and lays firn in the snowfields' hollows (smooth, a little domed, sun-cupped, the edge melted back in
+scallops). Three more surface layers: **Snow**, **Scoria** (loose cinder; also in the lava's cracks) and **Sulfur**
+(steam-bleached clay). They have no photos of their own: `ALIAS` / `DESAT` in import_terrain.py draw them from the
+Sand, Dirt and Mud photos washed toward grey and tinted, so the material samples no more textures than before.
+`tools/north_sim/run.sh ground` builds the generator with clang++ and draws the result without Unreal.
+
 ## Forest floor
 
 Inside the forest the generator adds mossy hummocks, hollows and windthrow pit-and-mound pairs (`ForestFloorRelief`), and
@@ -75,5 +86,5 @@ leaves the landscape out inside the hole. `unreal/scripts/shoot_terrain.py` take
 
 ## Performance
 
-525 landscape components, ~8.3M vertices at LOD 0 with the usual landscape LODs; one draw per component and
+861 landscape components (525 before the North), ~13.7M vertices at LOD 0 with the usual landscape LODs; one draw per component and
 up to 3 weightmaps each. The build: ~25 s of Python sampling plus ~7 s of generation in the commandlet.

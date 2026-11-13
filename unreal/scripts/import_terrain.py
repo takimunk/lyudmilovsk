@@ -42,7 +42,15 @@ LOOK = {
     "Sand": ((0.74, 0.69, 0.6), 0.82, 0.3),
     "Rock": ((0.56, 0.56, 0.57), 0.8, 0.9),
     "Forest": ((0.72, 0.72, 0.68), 0.9, 0.5),
+    # the North (docs/north.md): firn, loose cinder, steam-bleached clay with sulphur crusts
+    "Snow": ((1.5, 1.55, 1.66), 0.62, 0.15),
+    "Scoria": ((0.3, 0.2, 0.19), 0.93, 0.8),
+    "Sulfur": ((1.3, 1.22, 0.8), 0.8, 0.4),
 }
+# Layers without photos of their own: drawn from another layer's photo (no extra texture samples), washed toward
+# grey by DESAT before the tint.
+ALIAS = {"Snow": "Sand", "Scoria": "Dirt", "Sulfur": "Mud"}
+DESAT = {"Snow": 0.9, "Scoria": 0.75, "Sulfur": 0.55}
 NEAR_TILE = 2.6       # metres per texture repeat up close
 FAR_TILE = 11.0       # and the coarser copy that takes over in the distance and breaks the repeats
 
@@ -80,6 +88,8 @@ def import_textures(layers):
     """textures/ground/<Layer>_D.jpg, _N.jpg -> DEST/Textures/T_<Layer>_D, _N."""
     tasks = []
     for name in layers:
+        if name in ALIAS:
+            continue
         for suffix in ("D", "N"):
             t = unreal.AssetImportTask()
             t.filename = os.path.join(TEX_DIR, "%s_%s.jpg" % (name, suffix))
@@ -92,6 +102,8 @@ def import_textures(layers):
     tools.import_asset_tasks(tasks)
     out = {}
     for name in layers:
+        if name in ALIAS:
+            continue
         d = eal.load_asset("%s/Textures/T_%s_D" % (DEST, name))
         n = eal.load_asset("%s/Textures/T_%s_N" % (DEST, name))
         n.set_editor_property("compression_settings", unreal.TextureCompressionSettings.TC_NORMALMAP)
@@ -99,6 +111,9 @@ def import_textures(layers):
         for tex in (d, n):
             tex.set_editor_property("lod_group", unreal.TextureGroup.TEXTUREGROUP_WORLD)
         out[name] = (d, n)
+    for name in layers:
+        if name in ALIAS:
+            out[name] = out[ALIAS[name]]
     return out
 
 
@@ -109,13 +124,15 @@ def _blend_hlsl(layers):
     tints = ", ".join("float3(%g, %g, %g)" % LOOK[l][0] for l in layers)
     rough = ", ".join("%g" % LOOK[l][1] for l in layers)
     poke = ", ".join("%g" % LOOK[l][2] for l in layers)
+    desat = ", ".join("%g" % DESAT.get(l, 0.0) for l in layers)
     lines = ["float W[%d] = {%s};" % (n, ", ".join("W%d" % i for i in range(n))),
              "float3 A[%d] = {%s};" % (n, ", ".join("A%d" % i for i in range(n))),
              "float3 F[%d] = {%s};" % (n, ", ".join("F%d" % i for i in range(n))),
              "float3 N[%d] = {%s};" % (n, ", ".join("N%d" % i for i in range(n))),
              "const float3 Tint[%d] = {%s};" % (n, tints),
              "const float Rough[%d] = {%s};" % (n, rough),
-             "const float Poke[%d] = {%s};" % (n, poke)]
+             "const float Poke[%d] = {%s};" % (n, poke),
+             "const float Desat[%d] = {%s};" % (n, desat)]
     lines.append("""
 float nearK = 1.0 - saturate((Dist - 600.0) / 5000.0);
 float farMix = lerp(0.65, 0.25, nearK);
@@ -140,6 +157,7 @@ for (int i = 0; i < %(n)d; i++)
 {
     float k = b[i] / max(total, 1e-4);
     float3 c = lerp(A[i], F[i], farMix);
+    c = lerp(c, dot(c, float3(0.33, 0.34, 0.33)).xxx, Desat[i]);
     col += k * c * Tint[i];
     nrm += k * N[i];
     r += k * Rough[i];
@@ -391,6 +409,7 @@ def make_material(layers, textures):
                   additional_outputs=[_custom_output("Normal", unreal.CustomMaterialOutputType.CMOT_FLOAT3),
                                       _custom_output("Roughness", unreal.CustomMaterialOutputType.CMOT_FLOAT1)])
     forest_w = None
+    samples = {}                                      # layer -> its photo's (near, far, normal) sample nodes
     for i, name in enumerate(layers):
         d, nm = textures[name]
         y = i * 520
@@ -398,6 +417,13 @@ def make_material(layers, textures):
                   preview_weight=1.0 if i == 0 else 0.0)
         if name == "Forest":
             forest_w = w
+        if name in ALIAS:                             # another layer's photo, its own weight, tint and wash
+            a, f, t = samples[ALIAS[name]]
+            _link(w, "", blend, "W%d" % i)
+            _link(a, "RGB", blend, "A%d" % i)
+            _link(f, "RGB", blend, "F%d" % i)
+            _link(t, "RGB", blend, "N%d" % i)
+            continue
         if name in TRIPLANAR:
             mix = _triplanar(m, d, nm, TRIPLANAR[name], -1800, y, shared)
             _link(w, "", blend, "W%d" % i)
@@ -412,6 +438,7 @@ def make_material(layers, textures):
         _link(near, "", a, "UVs")
         _link(far, "", f, "UVs")
         _link(near, "", t, "UVs")
+        samples[name] = (a, f, t)
         _link(w, "", blend, "W%d" % i)
         _link(a, "RGB", blend, "A%d" % i)
         _link(f, "RGB", blend, "F%d" % i)

@@ -553,7 +553,9 @@ void Generate(const FInputs& In, FOutputs& Out)
 			}
 			Out.Height[I] = H;
 			// rain cuts rills in the cinder but not in fresh lava
-			Free[I] = In.Kind[I] == Land ? (1.f - P) * Smooth(2.f, 15.f, ToShore[I]) * (1.f - Mask(In.Lava, I)) : 0.f;
+			// (not even at its edge: the flow dams the slopes' runoff, and drops crowding into the clinker there left
+			// metre-high spikes)
+			Free[I] = In.Kind[I] == Land ? (1.f - P) * Smooth(2.f, 15.f, ToShore[I]) * (1.f - Smooth(0.f, 0.12f, Mask(In.Lava, I))) : 0.f;
 		}
 
 	// --- the coastal bluff: gullies cut down its face, slump benches, landslide scars with their debris,
@@ -567,7 +569,9 @@ void Generate(const FInputs& In, FOutputs& Out)
 		for (size_t I = 0; I < N; ++I)
 		{
 			const float C = std::max(In.Cliff[I] / 255.f, Smooth(0.55f, 1.1f, MacroSlope[I]));
-			CliffFace[I] = In.Kind[I] == Land ? C * (1.f - In.Protect[I] / 255.f) : 0.f;
+			// not the lava flow's steep front: on the flat clinker behind it the bluff's frame (the blurred slope's
+			// direction) turns from vertex to vertex and its gullies become metre-high noise
+			CliffFace[I] = In.Kind[I] == Land ? C * (1.f - In.Protect[I] / 255.f) * (1.f - Smooth(0.f, 0.04f, Mask(In.Lava, I))) : 0.f;
 			FaceSeed[I] = CliffFace[I] > 0.4f;
 		}
 		const std::vector<float> ToFace = Distance(NX, NY, FaceSeed, 40.f);
@@ -577,7 +581,7 @@ void Generate(const FInputs& In, FOutputs& Out)
 			for (int X = 2; X < NX - 2; ++X)
 			{
 				const size_t I = size_t(Y) * NX + X;
-				if (ToFace[I] >= 25.f || In.Kind[I] == Seabed || In.Hole[I] || In.Protect[I] == 255) continue;
+				if (ToFace[I] >= 25.f || In.Kind[I] == Seabed || In.Hole[I] || In.Protect[I] == 255 || Mask(In.Lava, I) > 0.f) continue;
 				// local frame: V down the bluff, U along it
 				float GX = (Soft[I + 1] - Soft[I - 1]) * 0.5f, GY = (Soft[I + NX] - Soft[I - NX]) * 0.5f;
 				const float GL = std::sqrt(GX * GX + GY * GY);
@@ -614,7 +618,10 @@ void Generate(const FInputs& In, FOutputs& Out)
 				const float FanH = Mouth * 2.6f * Smooth(-0.15f, 0.02f, TH) * (1.f - Smooth(0.05f, 0.25f, TH)) * Near;
 				// fine rills on the bare face
 				const float Rill = Noise2.Get(float(std::fmod(U / 2.5, 256.0)), float(std::fmod(V / 18.0, 256.0))) * 0.3f * CliffFace[I];
-				const float D = -GullyDepth + Slump - ScarCut + Lobe + FanH + Rill;
+				// on the cinder cone only where the slope has a direction (not on the crater's floor or the rim's crest)
+				// and gently on its steep crater walls: loose cinder holds no 8 m gullies
+				const float Steady = Lerp(1.f, Smooth(0.2f, 0.45f, GL) * (1.f - 0.65f * Smooth(0.2f, 0.8f, CliffFace[I])), Mask(In.Scoria, I));
+				const float D = (-GullyDepth + Slump - ScarCut + Lobe + FanH + Rill) * Steady;
 				Out.Height[I] += D;
 				Fan[I] = Clamp01(std::max(FanH / 1.2f, Lobe / 2.f));
 				Scar[I] = Clamp01(ScarCut / 2.f + GullyDepth / 3.f);
@@ -632,15 +639,24 @@ void Generate(const FInputs& In, FOutputs& Out)
 		std::vector<float> Before = Out.Height;
 		Erode(Out.Height, NX, NY, Free, In.Seed, int(N / 14), Visits);
 		float MaxCut = 0.f, MaxFill = 0.f;
+		// where the runoff is dammed (the foot of the lava flow) the drops crowd into one hollow and leave metre-high
+		// spikes, vertex by vertex: there the change is taken from its neighbourhood's mean (rills, a few cells wide and
+		// a few decimetres deep, pass untouched)
+		std::vector<float> Delta(N);
+		for (size_t I = 0; I < N; ++I) Delta[I] = std::clamp(Out.Height[I] - Before[I], -2.5f, 1.2f) * (Free[I] > 0.f ? 1.f : 0.f);
+		const std::vector<float> Mean = Blur(Delta, NX, NY, 2, 2);
+		size_t Spikes = 0;
 		for (size_t I = 0; I < N; ++I)
 		{
-			const float D = std::clamp(Out.Height[I] - Before[I], -2.5f, 1.2f) * (Free[I] > 0.f ? 1.f : 0.f);
+			const float Off = std::fabs(Delta[I] - Mean[I]);
+			Spikes += Off > 0.7f;
+			const float D = Lerp(Delta[I], Mean[I], Smooth(0.45f, 0.9f, Off)) * (Free[I] > 0.f ? 1.f : 0.f);
 			Out.Height[I] = Before[I] + D;
 			MaxCut = std::min(MaxCut, D);
 			MaxFill = std::max(MaxFill, D);
 		}
 		char Buf[160];
-		std::snprintf(Buf, sizeof(Buf), "erosion: %d drops, deepest cut %.2f m, highest fill %.2f m\n", int(N / 14), -MaxCut, MaxFill);
+		std::snprintf(Buf, sizeof(Buf), "erosion: %d drops, deepest cut %.2f m, highest fill %.2f m, %zu spike vertices smoothed\n", int(N / 14), -MaxCut, MaxFill, Spikes);
 		Out.Report += Buf;
 	}
 	// a light smoothing pass so the drops' brush marks don't read as pits
@@ -682,8 +698,8 @@ void Generate(const FInputs& In, FOutputs& Out)
 					if (!In.Snow[I] || In.Kind[I] != Land) continue;
 					const double WX = MX(X), WY = MY(Y);
 					// the edge melts back unevenly: scallops a few metres across, tongues down the runnels
-					const float Fray = 0.3f + 0.42f * Noise2.Fbm(WX + 640.0, WY - 410.0, 34.f, 3) + 0.14f * Noise3.Fbm(WX, WY, 7.f, 2)
-						+ 0.05f * Noise.Fbm(WX, WY, 2.2f, 2);
+					const float Fray = 0.36f + 0.85f * Noise2.Fbm(WX + 640.0, WY - 410.0, 38.f, 3) + 0.24f * Noise3.Fbm(WX, WY, 8.f, 2)
+						+ 0.06f * Noise.Fbm(WX, WY, 2.2f, 2);
 					const float S = Smooth(Fray - 0.03f, Fray + 0.05f, In.Snow[I] / 255.f) * (1.f - In.Protect[I] / 255.f);
 					if (S <= 0.f) continue;
 					SnowV[I] = S;
