@@ -24,6 +24,7 @@ from geom import Mesh, Facade, wall_with_holes, reveal
 import furn_int3 as fu
 import interior_kit
 from furn_int3 import Fr, lbox, cyl, blob
+from interior_kit import _ring_rect
 
 INFO = {
     "name_ru": "Гиперболоидная башня-маяк", "name_en": "Hyperboloid Lighthouse Tower",
@@ -177,6 +178,7 @@ def base(B):
                                    (CX + (R_WALL - 0.05) * (a[0] - CX) / R_WALL, CY + (R_WALL - 0.05) * (a[1] - CY) / R_WALL)],
               BASE_H - 0.4, BASE_H, top=True, bottom=True)
     keeper_room(B)
+    keeper_extras(B)
     B.spot("door_bench", "bench", (CX + 2.2, CY - R_WALL - 1.8, 0.0), 180)
 
 
@@ -325,7 +327,7 @@ def keeper_room(B):
     bx_, by_ = _pol(A_IN - 0.75, fac(3))
     bn = kit.bench(B, bx_, by_, z0, _yin(fac(3)), w=1.2, kind="gym")
     B.thing("keeper_bench", "seat", (bx_, by_, z0 + 0.45), _yin(fac(3)), height=0.45)
-    kit.hat_stand(B, *_pol(A_IN - 0.4, fac(1)), z0)
+    kit.hat_stand(B, *_wallpt(1, -0.5, 0.4), z0)
     # ---- the stair up: a caption thing at its foot
     ta = -math.pi / 2 + 0.4
     B.thing("tower_stair", "door", (CX + 1.15 * math.cos(ta), CY + 1.15 * math.sin(ta), z0 + 1.0), 0.0, to="roof")
@@ -335,6 +337,376 @@ def keeper_room(B):
         x, y = CX + 3.0 * math.cos(a), CY + 3.0 * math.sin(a)
         B.lamp((x, y, 2.3), lumens=640, colour="#FFD8A8", kind="public", radius=7.0)
         lbox(d, "CT_Steel", Fr(x, y), -0.008, 0.008, -0.008, 0.008, 2.38, 2.6, faces="xXyY")
+
+
+# ------------------------------------------------------------------------------------------------ depth pass 2
+# Small pieces of this tower only (the kit has no barometer, flag locker, oilskins or fog bell): drawn with the kit's
+# primitives (interior_kit._P) in local metres, front toward -y, a wall piece's back at y = 0.
+def _fo(p, mat, pts, centre):
+    """A face whose normal points away from `centre` (local coordinates)."""
+    n = geom.cross(geom.sub(pts[1], pts[0]), geom.sub(pts[-1], pts[0]))
+    mid = tuple(sum(q[i] for q in pts) / len(pts) for i in range(3))
+    if sum(n[i] * (mid[i] - centre[i]) for i in range(3)) < 0:
+        pts = pts[::-1]
+    p.face(mat, pts)
+
+
+def _tube_y(p, mat, cx, cz, ys, rs, n=10, cap=True):
+    """A tube along local y (a bottle, a drum, a lamp barrel): radii rs at ys."""
+    rings = [[(cx + r * math.cos(2 * math.pi * k / n), y, cz + r * math.sin(2 * math.pi * k / n)) for k in range(n)]
+             for y, r in zip(ys, rs)]
+    for a, b, ya, yb in zip(rings, rings[1:], ys, ys[1:]):
+        for i in range(n):
+            j = (i + 1) % n
+            _fo(p, mat, [a[i], a[j], b[j], b[i]], (cx, (ya + yb) / 2, cz))
+    if cap:
+        _fo(p, mat, rings[0], (cx, ys[0] + 1.0, cz))
+        _fo(p, mat, rings[-1], (cx, ys[-1] - 1.0, cz))
+
+
+def _disc_y(p, mat, cx, cz, r, y, n=14, front=True):
+    """A flat disc in the plane y facing -y (front) or +y."""
+    pts = [(cx + r * math.cos(2 * math.pi * k / n), y, cz + r * math.sin(2 * math.pi * k / n)) for k in range(n)]
+    p.face(mat, pts if front else pts[::-1])
+
+
+def _wallpt(k, s=0.0, off=0.0):
+    """World point on facet k's wall, s metres along the wall (counter-clockwise), off metres out into the room."""
+    a = math.radians(-90.0 + 22.5 * k)
+    bx, by = CX + (A_IN - off) * math.cos(a), CY + (A_IN - off) * math.sin(a)
+    return bx - s * math.sin(a), by + s * math.cos(a)
+
+
+def _weather_board(B, x, y, z, yaw, zc):
+    """Barometer, thermometer and hygrometer on one wooden plaque."""
+    p = interior_kit._P(B, x, y, z, yaw, "weather_board")
+    p.kind = "wall"
+    p.box("CT_Wood", -0.5, 0.5, -0.035, 0.0, zc - 0.3, zc + 0.3, f="xXyZz")
+    bx, bz = -0.22, zc + 0.02
+    _tube_y(p, "CT_Brass", bx, bz, [-0.075, -0.035], [0.17, 0.17], 14, cap=False)
+    _disc_y(p, "CT_Brass", bx, bz, 0.17, -0.075, 14)
+    _disc_y(p, "CT_TileWhite", bx, bz, 0.145, -0.078, 14)
+    for k in range(9):                      # tick marks
+        a = math.radians(-60 + 15 * k)
+        p.rod("CT_Steel", (bx + 0.11 * math.sin(a), -0.08, bz + 0.11 * math.cos(a)),
+              (bx + 0.135 * math.sin(a), -0.08, bz + 0.135 * math.cos(a)), 0.008, 3)
+    p.rod("CT_Steel", (bx, -0.082, bz), (bx + 0.1 * math.sin(math.radians(-14)), -0.082, bz + 0.1 * math.cos(math.radians(-14))), 0.012, 3)
+    p.rod("CT_SteelRed", (bx, -0.083, bz), (bx + 0.1 * math.sin(math.radians(-38)), -0.083, bz + 0.1 * math.cos(math.radians(-38))), 0.008, 3)
+    p.box("CT_TileWhite", 0.1, 0.17, -0.06, -0.035, zc - 0.25, zc + 0.25, f="xXyZz")
+    p.box("CT_SteelRed", 0.125, 0.145, -0.063, -0.06, zc - 0.2, zc + 0.04, f="y")
+    _tube_y(p, "CT_Brass", 0.34, zc + 0.1, [-0.06, -0.035], [0.1, 0.1], 12, cap=False)
+    _disc_y(p, "CT_Brass", 0.34, zc + 0.1, 0.1, -0.06, 12)
+    _disc_y(p, "CT_TileWhite", 0.34, zc + 0.1, 0.082, -0.063, 12)
+    p.rod("CT_Steel", (0.34, -0.065, zc + 0.1), (0.38, -0.065, zc + 0.15), 0.008, 3)
+    p.box("CT_Brass", 0.27, 0.41, -0.05, -0.035, zc - 0.2, zc - 0.05, f="xXyZz")
+    return p.done()
+
+
+def _flag_locker(B, x, y, z, yaw, zc):
+    """Pigeonholes of signal flags: 2 rows x 4, rolled bunting of the code flags."""
+    p = interior_kit._P(B, x, y, z, yaw, "flag_locker")
+    p.kind = "wall"
+    w, h, d = 1.1, 0.56, 0.16
+    p.box("CT_Wood", -w / 2, w / 2, -0.012, 0.0, zc - h / 2, zc + h / 2, f="y")
+    for z_, hh in ((zc - h / 2, 0.02), (zc + h / 2 - 0.02, 0.02), (zc - 0.01, 0.02)):
+        p.box("CT_WoodLight", -w / 2, w / 2, -d, 0.0, z_, z_ + hh, f="xXyYzZ")
+    for k in range(5):
+        xx = -w / 2 + k * w / 4
+        p.box("CT_WoodLight", xx - 0.01, xx + 0.01, -d, 0.0, zc - h / 2, zc + h / 2, f="xXyY")
+    cols = ["CT_PlasterRed", "CT_PlasterBlue", "CT_PlasterYellow", "CT_TileWhite", "CT_PlasterGreen", "CT_PlasterRed", "CT_PlasterBlue", "CT_PlasterYellow"]
+    for r in range(2):
+        for k in range(4):
+            xc = -w / 2 + (k + 0.5) * w / 4
+            z0 = zc - h / 2 + 0.03 if r == 0 else zc + 0.03
+            c0 = cols[r * 4 + k]
+            c1 = cols[(r * 4 + k + 3) % 8]
+            p.box(c0, xc - 0.1, xc + 0.1, -d + 0.03, -0.03, z0, z0 + 0.1, f="xXyYZ")
+            p.box(c1, xc - 0.1, xc + 0.1, -d + 0.03, -0.03, z0 + 0.1, z0 + 0.2, f="xXyYZ")
+    return p.done()
+
+
+def _stove(B, x, y, z, yaw):
+    """A small iron stove with a kettle on top and a pipe to the ceiling; a log basket beside it."""
+    p = interior_kit._P(B, x, y, z, yaw, "keeper_stove")
+    p.kind = "floor"
+    for sx in (-0.17, 0.17):
+        for sy in (-0.17, 0.17):
+            p.box("CT_Steel", sx - 0.02, sx + 0.02, sy - 0.02, sy + 0.02, 0.0, 0.12, f="xXyYZ")
+    p.cyl("CT_ConcreteDark", 0, 0, 0.12, 0.74, 0.23, 10, r1=0.23, top=True)
+    p.cyl("CT_Steel", 0, 0, 0.74, 0.77, 0.25, 10)
+    p.box("CT_Steel", -0.1, 0.1, -0.255, -0.215, 0.3, 0.55, f="xXyZz")
+    p.box("CT_Brass", -0.015, 0.015, -0.265, -0.255, 0.4, 0.46, f="xXyZz")
+    p.cyl("CT_Steel", 0, 0.12, 0.77, 2.6, 0.045, 6, top=False)
+    p.cyl("CT_Steel", 0, 0.12, 1.5, 1.56, 0.06, 6)
+    p.lathe("CT_Copper", -0.05, -0.02, [(0.1, 0.77), (0.13, 0.82), (0.12, 0.92), (0.07, 0.97), (0.03, 0.99)], 10)
+    p.rod("CT_Copper", (0.08, -0.02, 0.88), (0.19, -0.02, 0.97), 0.025, 4, caps=True)
+    p.tube("CT_Steel", [(-0.15, -0.02, 0.9), (-0.05, -0.02, 1.06), (0.05, -0.02, 0.9)], 0.012, 3)
+    # log basket
+    bx, by = 0.52, -0.05
+    p.cyl("CT_WoodLight", bx, by, 0.0, 0.4, 0.2, 8, r1=0.23, top=False)
+    for k in range(5):
+        p.rod("CT_Wood", (bx - 0.14 + 0.07 * k, by - 0.05, 0.4), (bx - 0.12 + 0.06 * k, by + 0.06, 0.4), 0.075, 5, caps=True)
+    p.core(-0.24, 0.24, -0.24, 0.24, 0.2, 0.7)
+    return p.done(solid=True, top=0.77, footprint=(-0.28, 0.76, -0.28, 0.28))
+
+
+def _cat_basket(B, x, y, z, yaw):
+    """A wicker basket with a red cushion and a curled-up tabby."""
+    p = interior_kit._P(B, x, y, z, yaw, "cat_basket")
+    p.kind = "floor"
+    p.cyl("CT_WoodLight", 0, 0, 0.0, 0.2, 0.3, 10, r1=0.34, top=False)
+    p.cyl("CT_Wood", 0, 0, 0.19, 0.22, 0.34, 10)
+    p.cyl("CT_PlasterRed", 0, 0, 0.16, 0.2, 0.28, 10)
+    rings = []
+    for zz, rx, ry in ((0.19, 0.18, 0.15), (0.26, 0.22, 0.18), (0.33, 0.19, 0.15), (0.38, 0.1, 0.08)):
+        rings.append(interior_kit._ring_circle(0.0, 0.0, ry, zz, 8, rx=rx))
+    p.loft("CT_Wood", rings, top=True)
+    hx = -0.17
+    rings = [interior_kit._ring_circle(hx, -0.1, 0.075, zz, 7, rx=rx) for zz, rx in ((0.2, 0.06), (0.26, 0.085), (0.32, 0.07), (0.345, 0.03))]
+    p.loft("CT_Wood", rings, top=True)
+    for s_ in (-1, 1):
+        p.face("CT_PlasterGrey", [(hx - 0.03, -0.1 + s_ * 0.045, 0.32), (hx + 0.03, -0.1 + s_ * 0.045, 0.32), (hx, -0.1 + s_ * 0.06, 0.38)])
+        p.face("CT_PlasterGrey", [(hx + 0.03, -0.1 + s_ * 0.045, 0.32), (hx - 0.03, -0.1 + s_ * 0.045, 0.32), (hx, -0.1 + s_ * 0.06, 0.38)])
+    p.tube("CT_Wood", [(0.17, 0.1, 0.24), (0.26, 0.04, 0.23), (0.27, -0.1, 0.23), (0.19, -0.2, 0.23)], 0.045, 4)
+    p.cyl("CT_TileWhite", 0.2, -0.2, 0.2, 0.26, 0.026, 5)
+    return p.done(footprint=(-0.36, 0.36, -0.36, 0.36), top=0.22)
+
+
+def _oilskins(B, x, y, z, yaw):
+    """A plank with hooks, a yellow oilskin, a child's one and a sou'wester."""
+    p = interior_kit._P(B, x, y, z, yaw, "oilskins")
+    p.kind = "wall"
+    zr = 1.78
+    p.box("CT_Wood", -0.5, 0.5, -0.045, 0.0, zr - 0.06, zr + 0.06, f="xXyZz")
+    for u, hh, ww in ((-0.22, 1.0, 0.42), (0.16, 0.62, 0.3)):
+        p.rod("CT_Brass", (u, -0.045, zr), (u, -0.08, zr + 0.04), 0.02, 3, caps=True)
+        top = zr - 0.04
+        rings = [_ring_rect(u - ww / 2 - 0.04, u + ww / 2 + 0.04, -0.2, -0.05, top - hh, 0.03),
+                 _ring_rect(u - ww / 2 - 0.02, u + ww / 2 + 0.02, -0.17, -0.06, top - hh * 0.6, 0.04),
+                 _ring_rect(u - ww / 2 + 0.02, u + ww / 2 - 0.02, -0.14, -0.06, top - 0.08, 0.04)]
+        p.loft("CT_PlasterYellow", rings, top=True)
+    p.rod("CT_Brass", (0.4, -0.045, zr), (0.4, -0.08, zr + 0.04), 0.02, 3, caps=True)
+    p.lathe("CT_PlasterYellow", 0.4, -0.12, [(0.15, zr - 0.5), (0.1, zr - 0.44), (0.05, zr - 0.33), (0.0, zr - 0.3)], 8)
+    return p.done()
+
+
+def _ship_bottle(B, x, y, z, yaw):
+    """A model brigantine on a wooden stand and, beside it, a green bottle with a cork and a rolled note."""
+    p = interior_kit._P(B, x, y, z, yaw, "ship_bottle")
+    p.kind = "prop"
+    for xx in (-0.08, 0.08):
+        p.box("CT_Wood", xx - 0.012, xx + 0.012, -0.01, 0.01, 0.0, 0.05, f="xXyYZ") if False else None
+    for yy in (-0.07, 0.07):
+        p.box("CT_Wood", -0.03, 0.03, yy - 0.012, yy + 0.012, 0.0, 0.05, f="xXyYZ")
+    p.box("CT_PlasterRed", -0.04, 0.04, -0.14, 0.13, 0.05, 0.085, f="xXyYZ")
+    p.box("CT_TileWhite", -0.042, 0.042, -0.14, 0.13, 0.085, 0.1, f="xXyYZ")
+    p.face("CT_PlasterRed", [(-0.04, -0.14, 0.05), (0.04, -0.14, 0.05), (0.04, -0.14, 0.1), (-0.04, -0.14, 0.1)][::-1])
+    p.face("CT_PlasterRed", [(-0.04, -0.14, 0.1), (0.04, -0.14, 0.1), (0.0, -0.2, 0.1)])
+    p.face("CT_PlasterRed", [(0.04, -0.14, 0.1), (-0.04, -0.14, 0.1), (0.0, -0.2, 0.1)][::-1])
+    for yy, hh in ((-0.06, 0.2), (0.04, 0.24)):
+        p.rod("CT_Wood", (0.0, yy, 0.1), (0.0, yy, 0.1 + hh), 0.008, 3)
+        for k in range(2):
+            z1, z2 = 0.12 + k * 0.1 * hh / 0.2, 0.12 + (k + 1) * 0.1 * hh / 0.2 - 0.01
+            p.face("CT_Paper", [(-0.001, yy - 0.04, z1), (-0.001, yy + 0.04, z1), (-0.001, yy + 0.035, z2), (-0.001, yy - 0.035, z2)])
+            p.face("CT_Paper", [(0.001, yy + 0.04, z1), (0.001, yy - 0.04, z1), (0.001, yy - 0.035, z2), (0.001, yy + 0.035, z2)])
+    p.rod("CT_Wood", (0.0, -0.2, 0.1), (0.0, -0.3, 0.17), 0.008, 3)
+    p.lathe("CT_PlasterGreen", 0.2, 0.0, [(0.04, 0.0), (0.05, 0.03), (0.05, 0.16), (0.025, 0.22), (0.017, 0.27), (0.02, 0.29)], 8)
+    p.cyl("CT_Wood", 0.2, 0.0, 0.285, 0.31, 0.017, 6)
+    return p.done(top=0.3)
+
+
+def _clockwork(B, x, y, z, yaw):
+    """The lantern's clockwork drive: an iron cabinet with a dial, a gear window, a crank and a hanging log board."""
+    p = interior_kit._P(B, x, y, z, yaw, "lamp_clockwork")
+    p.kind = "floor"
+    w, d, h = 0.5, 0.42, 1.2
+    p.box("CT_Steel", -w / 2, w / 2, -d / 2, d / 2, 0.0, h, f="xXyYZz")
+    p.box("CT_ConcreteDark", -w / 2 - 0.03, w / 2 + 0.03, -d / 2 - 0.03, d / 2 + 0.03, 0.0, 0.1, f="xXyYZ")
+    p.box("CT_Steel", -w / 2 - 0.02, w / 2 + 0.02, -d / 2 - 0.02, d / 2 + 0.02, h, h + 0.04, f="xXyYZz")
+    fy = -d / 2
+    p.box("CT_Brass", -0.17, 0.17, fy - 0.02, fy, 0.64, 1.1, f="xXyZz")
+    p.card_front("clock_2", -0.14, 0.14, 0.82, 1.08, fy - 0.021)
+    p.box("CT_Glass", -0.14, 0.14, fy - 0.025, fy - 0.022, 0.67, 0.8, f="y")
+    for gx, gz, gr in ((-0.06, 0.735, 0.05), (0.05, 0.725, 0.035)):
+        _tube_y(p, "CT_Brass", gx, gz, [fy - 0.021, fy - 0.014], [gr, gr], 10, cap=False)
+        _disc_y(p, "CT_Brass", gx, gz, gr, fy - 0.021, 10)
+    p.rod("CT_Brass", (0.12, fy, 0.45), (0.12, fy - 0.12, 0.45), 0.025, 4, caps=True)
+    p.rod("CT_Brass", (0.12, fy - 0.12, 0.45), (0.12, fy - 0.15, 0.3), 0.02, 3, caps=True)
+    p.rod("CT_Brass", (-0.12, fy, 0.3), (-0.12, fy - 0.03, 0.3), 0.07, 6, caps=True)
+    p.box("CT_PlasterRed", -0.17, -0.07, fy - 0.012, fy, 0.18, 0.24, f="xXyZz")
+    # the log board on a nail at the right side
+    sx = w / 2
+    p.box("CT_Wood", sx, sx + 0.015, -0.14, 0.14, 0.55, 1.0, f="XyYZz")
+    p.card_side("paper_typed", -0.12, 0.12, 0.6, 0.95, sx + 0.016, facing=1)
+    return p.done(solid=True, top=h, footprint=(-0.3, 0.3, -0.25, 0.25))
+
+
+def _fog_bell(B, x, y, z, yaw):
+    """A bracket post on the gallery with a brass bell and a rope; local front = the rope's side (toward the hero)."""
+    p = interior_kit._P(B, x, y, z, yaw, "fog_bell")
+    p.kind = "floor"
+    p.cyl("CT_Steel", 0, 0.5, 0.0, 2.25, 0.04, 6, top=True)
+    p.rod("CT_Steel", (0, 0.5, 2.2), (0, -0.2, 2.2), 0.05, 4, caps=True)
+    p.rod("CT_Steel", (0, 0.5, 1.7), (0, -0.05, 2.18), 0.03, 4)
+    p.lathe("CT_Brass", 0, -0.2, [(0.2, 1.62), (0.19, 1.68), (0.15, 1.82), (0.1, 1.95), (0.05, 2.04), (0.02, 2.08)], 10)
+    p.rod("CT_Steel", (0, -0.2, 2.08), (0, -0.2, 2.2), 0.02, 3)
+    p.tube("CT_Paper", [(0, -0.2, 1.66), (0.01, -0.22, 1.3), (0.0, -0.22, 0.95)], 0.02, 3)
+    p.cyl("CT_Wood", 0, -0.22, 0.9, 1.0, 0.03, 6)
+    return p.done(footprint=(-0.1, 0.1, 0.4, 0.6), top=None)
+
+
+def _signal_lamp(B, x, y, z, yaw):
+    """A hand signalling lamp (Aldis) on a tripod: barrel, lens, trigger grip, folded shutter vanes."""
+    p = interior_kit._P(B, x, y, z, yaw, "signal_lamp")
+    p.kind = "floor"
+    for k in range(3):
+        a = 2 * math.pi * k / 3 + math.pi / 2
+        p.rod("CT_Wood", (0.32 * math.cos(a), 0.32 * math.sin(a), 0.0), (0.0, 0.0, 1.05), 0.03, 3)
+    p.cyl("CT_Steel", 0, 0, 1.03, 1.1, 0.05, 6)
+    _tube_y(p, "CT_SteelWhite", 0.0, 1.22, [-0.28, -0.2, 0.18, 0.24], [0.1, 0.11, 0.11, 0.08], 10)
+    _disc_y(p, "CT_Neon", 0.0, 1.22, 0.095, -0.285, 10)
+    p.rod("CT_Steel", (0.0, 0.12, 1.12), (0.0, 0.14, 1.0), 0.03, 3, caps=True)
+    p.rod("CT_Steel", (0.0, 0.0, 1.1), (0.0, 0.0, 1.13), 0.06, 4)
+    p.box("CT_Steel", -0.1, 0.1, -0.31, -0.29, 1.12, 1.32, f="xXzZ")
+    return p.done(top=1.3, footprint=(-0.3, 0.3, -0.3, 0.3))
+
+
+def _anemometer(B, x, y, z, yaw):
+    """A railing-post anemometer (three cups) with a vane."""
+    p = interior_kit._P(B, x, y, z, yaw, "anemometer")
+    p.kind = "prop"
+    p.cyl("CT_Steel", 0, 0, 0.0, 2.3, 0.03, 6)
+    p.cyl("CT_Steel", 0, 0, 0.0, 0.15, 0.06, 6)
+    zc = 2.2
+    for k in range(3):
+        a = 2 * math.pi * k / 3
+        ex, ey = 0.22 * math.cos(a), 0.22 * math.sin(a)
+        p.rod("CT_Steel", (0, 0, zc), (ex, ey, zc), 0.015, 3)
+        p.lathe("CT_Aluminium", ex, ey, [(0.05, zc - 0.05), (0.05, zc), (0.0, zc)], 6)
+    p.rod("CT_Steel", (0, 0.0, 2.3), (0, 0.0, 2.55), 0.02, 3)
+    p.rod("CT_Steel", (-0.25, 0.0, 2.55), (0.25, 0.0, 2.55), 0.02, 3)
+    p.face("CT_SteelRed", [(0.25, 0.0, 2.5), (0.25, 0.0, 2.6), (0.4, 0.0, 2.55)])
+    p.face("CT_SteelRed", [(0.25, 0.0, 2.6), (0.25, 0.0, 2.5), (0.4, 0.0, 2.55)])
+    p.face("CT_SteelRed", [(-0.25, -0.0, 2.48), (-0.25, 0.0, 2.62), (-0.42, 0.0, 2.62), (-0.42, 0.0, 2.48)])
+    p.face("CT_SteelRed", [(-0.25, 0.0, 2.62), (-0.25, 0.0, 2.48), (-0.42, 0.0, 2.48), (-0.42, 0.0, 2.62)])
+    return p.done(footprint=(-0.1, 0.1, -0.1, 0.1))
+
+
+def _stevenson(B, x, y, z, yaw):
+    """A louvred instrument screen on four legs."""
+    p = interior_kit._P(B, x, y, z, yaw, "stevenson")
+    p.kind = "floor"
+    for sx in (-0.2, 0.2):
+        for sy in (-0.17, 0.17):
+            p.box("CT_Wood", sx - 0.02, sx + 0.02, sy - 0.02, sy + 0.02, 0.0, 0.85, f="xXyYZ")
+    p.box("CT_TileWhite", -0.27, 0.27, -0.24, 0.24, 0.85, 0.89, f="xXyYZz")
+    p.box("CT_TileWhite", -0.3, 0.3, -0.27, 0.27, 1.3, 1.34, f="xXyYZz")
+    for k in range(6):
+        zz = 0.9 + k * 0.07
+        p.box("CT_TileWhite", -0.25, 0.25, -0.25, -0.2, zz, zz + 0.035, f="xXyYZz")
+    p.box("CT_TileWhite", -0.25, 0.25, 0.2, 0.25, 0.9, 1.3, f="xXyYZz")
+    p.box("CT_TileWhite", -0.25, -0.2, -0.2, 0.2, 0.9, 1.3, f="xYZz")
+    p.box("CT_TileWhite", 0.2, 0.25, -0.2, 0.2, 0.9, 1.3, f="XYZz")
+    return p.done(footprint=(-0.3, 0.3, -0.27, 0.27), top=1.34)
+
+
+def _lights_lectern(B, x, y, z, yaw):
+    """A slanted table of ships' lights on a steel post at the gallery rail."""
+    p = interior_kit._P(B, x, y, z, yaw, "lights_lectern")
+    p.kind = "prop"
+    p.cyl("CT_Steel", 0, 0, 0.0, 1.0, 0.035, 6)
+    p.cyl("CT_Steel", 0, 0, 0.0, 0.05, 0.12, 6)
+    p.box("CT_Wood", -0.32, 0.32, -0.22, 0.2, 0.98, 1.05, f="xXyYz")
+    p.card_tilt("poster_safety", -0.28, 0.28, -0.2, 1.065, 0.18, 1.22)
+    return p.done(footprint=(-0.35, 0.35, -0.25, 0.25), top=1.2)
+
+
+def keeper_extras(B):
+    """More life in the keeper's room: stove and kettle, cat, oilskins, barometer, tide board, flag locker, ship in a
+    bottle, the lantern's clockwork, a storm picture; their things (acts in tools/city/content/x_p_pier.json)."""
+    kit = interior_kit
+    z0 = 0.03
+    # stove (facet 15 toward 14) with a stool, and the cat's basket the other side of the extinguisher
+    sx, sy = _wallpt(15, -0.62, 0.42)
+    st = _stove(B, sx, sy, z0, _yin(-90.0 + 22.5 * 15))
+    B.thing("keeper_stove", "machine", (sx, sy, z0 + 0.9), _yin(-90.0 + 22.5 * 15), what="stove")
+    stx, sty = _wallpt(15, -0.62, 1.15)
+    kit.stool(B, stx, sty, z0, mat="CT_PlasterRed", h=0.4)
+    B.thing("keeper_stove_stool", "seat", (stx, sty, z0 + 0.4), _yin(-90.0 + 22.5 * 15) + 20, height=0.4)
+    B.spot("stove_warm", "stand", (stx + 0.0, sty, z0), _yin(-90.0 + 22.5 * 15))
+    cx_, cy_ = _wallpt(15, 0.3, 0.45)
+    _cat_basket(B, cx_, cy_, z0, _yin(-90.0 + 22.5 * 15) + 30)
+    B.thing("keeper_cat", "board", (cx_, cy_, z0 + 0.3), _yin(-90.0 + 22.5 * 15), topic="cat")
+    # oilskins on facet 1 (beside the hat stand)
+    ox, oy = _wallpt(1, 0.5)
+    _oilskins(B, ox, oy, z0, _yin(-90.0 + 22.5 * 1))
+    B.thing("keeper_oilskins", "board", (ox, oy, z0 + 1.2), _yin(-90.0 + 22.5), topic="oilskins")
+    # instruments board over the filing cabinet (5), tide board over the drafting table (6)
+    wx, wy = _wallpt(5, 0.0)
+    _weather_board(B, wx, wy, z0, _yin(-90.0 + 22.5 * 5), 1.95)
+    B.thing("keeper_weather", "board", (wx, wy, z0 + 1.95), _yin(-90.0 + 22.5 * 5), topic="weather")
+    wx, wy = _wallpt(6, 0.0)
+    kit.blackboard(B, wx, wy, z0, _yin(-90.0 + 22.5 * 6), w=1.0, h=0.62, zb=1.45, writing="board_2")
+    B.thing("keeper_tides", "board", (wx, wy, z0 + 1.75), _yin(-90.0 + 22.5 * 6), topic="tides")
+    # signal flags over the crates (2), ship in a bottle on a shelf over the boots (3)
+    wx, wy = _wallpt(2, 0.0)
+    _flag_locker(B, wx, wy, z0, _yin(-90.0 + 22.5 * 2), 1.75)
+    B.thing("keeper_flags", "board", (wx, wy, z0 + 1.75), _yin(-90.0 + 22.5 * 2), topic="flags")
+    wx, wy = _wallpt(3, 0.0)
+    sh = kit.wall_shelf(B, wx, wy, z0, _yin(-90.0 + 22.5 * 3), w=0.9, zt=1.6, props=False)
+    bx_, by_ = _wallpt(3, -0.12, 0.13)
+    _ship_bottle(B, bx_, by_, z0 + 1.6, _yin(-90.0 + 22.5 * 3) + 90)
+    cmx, cmy = _wallpt(3, 0.22, 0.13)
+    kit.books_stack(B, cmx, cmy, z0 + 1.6, yaw=_yin(-90.0 + 22.5 * 3) + 70, n=3, seed=11)
+    B.thing("keeper_bottle", "board", (bx_, by_, z0 + 1.7), _yin(-90.0 + 22.5 * 3), topic="bottle")
+    # a storm over the bedside table (11)
+    wx, wy = _wallpt(11, 0.0)
+    kit.picture(B, wx, wy, z0, _yin(-90.0 + 22.5 * 11), name="painting_sea_storm", w=0.6, zc=1.55)
+    B.thing("keeper_storm", "board", (wx, wy, z0 + 1.55), _yin(-90.0 + 22.5 * 11), topic="storm")
+    # the lantern's clockwork under the stair, and the cup on the desk that wants tea
+    ca = 100.0
+    cx2, cy2 = _pol(1.15, ca)
+    _clockwork(B, cx2, cy2, z0, 10.0)
+    B.thing("keeper_clockwork", "machine", (cx2 - 0.04, cy2 - 0.25, z0 + 0.85), 10.0, what="clockwork")
+    c10, s10 = math.cos(math.radians(10.0)), math.sin(math.radians(10.0))
+    B.thing("keeper_watch", "board", (cx2 + 0.27 * c10, cy2 + 0.27 * s10, z0 + 0.78), 100.0, topic="watch")
+    B.spot("clockwork_watch", "stand", (cx2 - 0.1, cy2 - 0.75, z0), 0.0)
+    ph = -90.0 + 22.5 * 8
+    dx, dy = _pol(A_IN - 0.37, ph)
+    B.thing("keeper_cup", "board", (dx + 0.2, dy - 0.18, z0 + 0.8), _yin(ph), topic="cup")
+    # a lamp over the stove corner
+    lx, ly = _pol(3.2, 247.5)
+    B.lamp((lx, ly, 2.3), lumens=520, colour="#FFC890", kind="public", radius=6.0)
+    lbox(B.detail, "CT_Steel", Fr(lx, ly), -0.008, 0.008, -0.008, 0.008, 2.38, 2.6, faces="xXyY")
+
+
+def gallery_extras(B, r_out):
+    """The lamp gallery: fog bell, signalling lamp, weather instruments, a table of ships' lights, a lamp."""
+    z = PLAT_Z
+    bell = 335.0
+    bx, by = _pol(r_out - 0.55, bell)
+    _fog_bell(B, bx, by, z, _yin(bell) + 180.0)
+    B.thing("gallery_bell", "machine", (bx - 0.2 * math.cos(math.radians(bell)), by - 0.2 * math.sin(math.radians(bell)), z + 1.2),
+            _yout(bell), what="fog_bell")
+    B.spot("bell_stand", "stand", _pol(r_out - 1.35, bell), _yout(bell))
+    sa = 8.0
+    sx, sy = _pol(r_out - 0.5, sa)
+    _signal_lamp(B, sx, sy, z, _yout(sa))
+    B.thing("gallery_signal", "machine", (sx, sy, z + 1.2), _yout(sa), what="signal_lamp")
+    wa = 52.0
+    wx, wy = _pol(r_out - 0.55, wa)
+    _stevenson(B, wx, wy, z, _yout(wa))
+    ax, ay = _pol(r_out - 0.2, wa + 9.0)
+    _anemometer(B, ax, ay, z, 0.0)
+    B.thing("gallery_weather", "board", (wx, wy, z + 1.1), _yout(wa), topic="gallery_weather")
+    la = 100.0
+    lx, ly = _pol(r_out - 0.55, la)
+    _lights_lectern(B, lx, ly, z, _yin(la) + 180.0)
+    B.thing("gallery_ships", "board", (lx, ly, z + 1.12), _yout(la), topic="ships")
+    B.spot("ships_watch", "view", _pol(r_out - 1.2, la), _yout(la))
+    gx, gy = _pol(r_out - 0.2, 190.0)
+    B.lamp((gx, gy, z + 2.3), lumens=600, colour="#FFE2B8", kind="lobby", radius=8.0)
+    lbox(B.detail, "CT_Steel", Fr(gx, gy), -0.03, 0.03, -0.03, 0.03, z, z + 2.15, faces="xXyY")
 
 
 def stair(B):
@@ -421,6 +793,7 @@ def platform(B, th_end):
     for j, ph_v in enumerate((30.0, 120.0, 210.0, 300.0)):
         vx, vy = _pol(r_out - 0.45, ph_v)
         B.thing("gallery_view_%d" % (j + 1), "board", (vx, vy, PLAT_Z + 1.3), _yout(ph_v), topic="view")
+    gallery_extras(B, r_out)
 
 
 def top(B):
