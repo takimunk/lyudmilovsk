@@ -87,6 +87,25 @@ noon, market sellers, pupils at school, Thursday as a day off (school empty), a 
 town, windows dark at noon, ~half lit at 21:00 and few at 03:00, meals, no overbooked slot, no way over 100 minutes and
 the cost of a step (~0.3 ms for ~930 people). `run.sh test` (the residents) runs without the town.
 
+`tools/peoplesim/run.sh week` (~2 min) first checks the generated data (`tools/peoplesim/check_town_data.py`: unique
+keys and ids, homes that exist and sleep their household, duties at places of the right kind with a staff slot for
+everybody on shift, a night of 7 to 10.5 hours that no duty cuts into, friends and counter sellers who exist, names and
+jobs in ru/en/ja in each one's script), then runs the town from the new game (Tuesday 20 October 16:00) to Monday 13:00
+through what the game does to it (`tools/peoplesim/town_week.h`): a clock jump on Wednesday, Thursday a public holiday,
+a save loaded on Friday 12:30 (twice: the same town two hours on), a gathering on Saturday cleared early, saves loaded
+on Monday at 02:00 and 03:00, steps of a second and of four (a fast clock), over the night European clocks go back (the
+game's calendar has no daylight saving). Every minute: no NaN, everybody near the map's places, nobody in two slots, no
+slot overbooked, whoever is at an activity at its slot; every day everybody sleeps 4 h or more at home; nobody stays
+at one place (not home) past its hours, idles 30 min or starts a new activity every few minutes; every job of every
+workplace staffed while open, nobody at work outside their shift (a night shift's small hours belong to the day it
+began); pupils at school on school days and nobody on the weekend; every trip ending at its slot; a step's cost.
+`LYUD_WEEK_TRACE=<key>` prints one person's week minute by minute. Without LFS the walk grid (`animal_world.bin`) is
+only a pointer: run.sh builds it into `Saved/PeopleSim/animals` first.
+
+The townsfolk's wake and bed hours are fitted to their duties (`fit_day` in the generator); `python3
+tools/town/town_life.py --refit-days` refits the town already made without making it again (its people's keys are
+their models' in `town_looks.json`).
+
 ## Known gaps
 
 - Buildings' flats and the promenade units' windows come from branches not yet in main; rerun the generator after they
