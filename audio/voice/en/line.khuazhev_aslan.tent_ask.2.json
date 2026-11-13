@@ -1,0 +1,20 @@
+{
+ "key": "line.khuazhev_aslan.tent_ask.2",
+ "lang": "en",
+ "text": "In winter I go home for stock. I want to know what this town eats when it is not eating my cheese.",
+ "speaker": "khuazhev_aslan",
+ "voice": "Brian",
+ "voice_id": "nPczCjzI2devNBz1zQrb",
+ "voice_design": null,
+ "direction": "[hearty, generous, a cheese seller from the Caucasus, proud of his family's cheese]",
+ "model": "fal-ai/elevenlabs/tts/eleven-v3",
+ "request": {
+  "stability": 0.5,
+  "apply_text_normalization": "auto",
+  "text": "[hearty, generous, a cheese seller from the Caucasus, proud of his family's cheese] In winter I go home for stock. I want to know what this town eats when it is not eating my cheese.",
+  "voice": "Brian",
+  "language_code": "en"
+ },
+ "fal_request_id": "01a1d66e-ff5d-7261-a66a-5a88f9562dd7",
+ "hash": "f57021ce5a36"
+}

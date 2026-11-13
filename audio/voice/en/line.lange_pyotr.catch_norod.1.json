@@ -1,7 +1,7 @@
 {
  "key": "line.lange_pyotr.catch_norod.1",
  "lang": "en",
- "text": "I see no rod. Tanya has them at the Gastronom, ninety rubles. Without one there's nothing to show.",
+ "text": "I see no rod. Tanya has them at the grocery, ninety rubles. Without one there's nothing to show.",
  "speaker": "lange_pyotr",
  "voice": "Brian",
  "voice_id": "nPczCjzI2devNBz1zQrb",
@@ -11,10 +11,10 @@
  "request": {
   "stability": 0.5,
   "apply_text_normalization": "auto",
-  "text": "[gruff, unhurried, a weathered fisherman of few words] I see no rod. Tanya has them at the Gastronom, ninety rubles. Without one there's nothing to show.",
+  "text": "[gruff, unhurried, a weathered fisherman of few words] I see no rod. Tanya has them at the grocery, ninety rubles. Without one there's nothing to show.",
   "voice": "Brian",
   "language_code": "en"
  },
- "fal_request_id": "01a1d665-428b-7120-aaa9-c4a57002cf7e",
- "hash": "c58fd6a13e7f"
+ "fal_request_id": "01a1d670-b018-7163-9731-c3fab443ac18",
+ "hash": "de7c5b41a415"
 }

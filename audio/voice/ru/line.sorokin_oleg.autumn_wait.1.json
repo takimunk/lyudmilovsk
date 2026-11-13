@@ -1,0 +1,20 @@
+{
+ "key": "line.sorokin_oleg.autumn_wait.1",
+ "lang": "ru",
+ "text": "Арахис, двадцать шагов, шесть прилётов, одна синица с ладони. И не шевелитесь: учётчик должен быть скучнее пня.",
+ "speaker": "sorokin_oleg",
+ "voice": "River",
+ "voice_id": "SAz9YHcvj6GT2YYXdXww",
+ "voice_design": null,
+ "direction": "[a retired scholar, calm, dry humour, slower, gentle]",
+ "model": "fal-ai/elevenlabs/tts/eleven-v3",
+ "request": {
+  "stability": 0.5,
+  "apply_text_normalization": "auto",
+  "text": "[a retired scholar, calm, dry humour, slower, gentle] Арахис, двадцать шагов, шесть прилётов, одна синица с ладони. И не шевелитесь: учётчик должен быть скучнее пня.",
+  "voice": "River",
+  "language_code": "ru"
+ },
+ "fal_request_id": "01a1d673-582a-70b2-a0e0-44aee3a41a7d",
+ "hash": "b6fc9708b007"
+}

@@ -1,7 +1,7 @@
 {
  "key": "line.lange_pyotr.cheese_ask.4",
  "lang": "ja",
- "text": "舟は置いて行けん。",
+ "text": "船は置いて行けん。",
  "speaker": "lange_pyotr",
  "voice": "Brian",
  "voice_id": "nPczCjzI2devNBz1zQrb",
@@ -11,10 +11,10 @@
  "request": {
   "stability": 0.5,
   "apply_text_normalization": "auto",
-  "text": "[gruff, unhurried, a weathered fisherman of few words] 舟は置いて行けん。",
+  "text": "[gruff, unhurried, a weathered fisherman of few words] 船は置いて行けん。",
   "voice": "Brian",
   "language_code": "ja"
  },
- "fal_request_id": "01a1d5fd-d8af-76a0-9122-b5861b3093b9",
- "hash": "9403e82536c4"
+ "fal_request_id": "01a1d672-a5e2-7d42-9470-2eacf38fe5dc",
+ "hash": "d729c2793935"
 }

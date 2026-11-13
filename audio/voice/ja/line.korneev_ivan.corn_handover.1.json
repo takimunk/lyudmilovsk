@@ -1,0 +1,20 @@
+{
+ "key": "line.korneev_ivan.corn_handover.1",
+ "lang": "ja",
+ "text": "ワーリャから？まだ熱いな。急いで来て、途中でかじりもしなかったわけだ。見上げたもんだ。",
+ "speaker": "korneev_ivan",
+ "voice": "Bill",
+ "voice_id": "pqHfZKP75CvOlQylNhV4",
+ "voice_design": null,
+ "direction": "[an old man, slow, a little gravelly, contented, a quiet joke at the end]",
+ "model": "fal-ai/elevenlabs/tts/eleven-v3",
+ "request": {
+  "stability": 0.5,
+  "apply_text_normalization": "auto",
+  "text": "[an old man, slow, a little gravelly, contented, a quiet joke at the end] ワーリャから？まだ熱いな。急いで来て、途中でかじりもしなかったわけだ。見上げたもんだ。",
+  "voice": "Bill",
+  "language_code": "ja"
+ },
+ "fal_request_id": "01a1d671-4624-7ab1-a543-88cc769ed517",
+ "hash": "b1382b0b430b"
+}

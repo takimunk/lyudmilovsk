@@ -1,0 +1,29 @@
+{
+ "key": "line.guseva_valentina.corn_report.1",
+ "lang": "ja",
+ "text": "で、ワーニャは？食べたかい？何て言ってた？",
+ "speaker": "guseva_valentina",
+ "voice": "Abbess",
+ "voice_id": "Abbess",
+ "voice_design": null,
+ "direction": "",
+ "model": "fal-ai/minimax/speech-2.6-hd",
+ "request": {
+  "prompt": "で、ワーニャは？食べたかい？何て言ってた？",
+  "voice_setting": {
+   "speed": 1,
+   "pitch": 0,
+   "vol": 1,
+   "voice_id": "Abbess"
+  },
+  "language_boost": "Japanese",
+  "audio_setting": {
+   "sample_rate": 24000,
+   "format": "mp3",
+   "channel": 1
+  },
+  "output_format": "url"
+ },
+ "fal_request_id": "01a1d66d-2644-7061-9cd2-0ba492e55b38",
+ "hash": "304d7e4dd842"
+}

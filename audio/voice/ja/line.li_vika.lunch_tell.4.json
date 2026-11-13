@@ -1,0 +1,20 @@
+{
+ "key": "line.li_vika.lunch_tell.4",
+ "lang": "ja",
+ "text": "はい、これはスープ代。チョコも持っていって、私のいつもの昼ごはんだから。土曜は自分で行く。スプーンを持って、白衣は脱いで。",
+ "speaker": "li_vika",
+ "voice": "Laura",
+ "voice_id": "FGY2WhTYpPnrIDTdsKH5",
+ "voice_design": null,
+ "direction": "[playful, quick, a lab assistant joking about her work]",
+ "model": "fal-ai/elevenlabs/tts/eleven-v3",
+ "request": {
+  "stability": 0.5,
+  "apply_text_normalization": "auto",
+  "text": "[playful, quick, a lab assistant joking about her work] はい、これはスープ代。チョコも持っていって、私のいつもの昼ごはんだから。土曜は自分で行く。スプーンを持って、白衣は脱いで。",
+  "voice": "Laura",
+  "language_code": "ja"
+ },
+ "fal_request_id": "01a1d673-7c48-74e0-ab94-81040a19f444",
+ "hash": "f34df0e261b8"
+}

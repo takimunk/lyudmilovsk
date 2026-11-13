@@ -1,7 +1,7 @@
 {
  "key": "line.orlova_tanya.waxwing_rowan.1",
  "lang": "ja",
- "text": "干しナナカマド?あれを買うのはソローキンさんだけだったよ。ずっとキレンジャクを待っていてね。",
+ "text": "干しナナカマド？あれを買うのはソローキンさんだけだったわ。ずっとキレンジャクを待ってたのよ。",
  "speaker": "orlova_tanya",
  "voice": "Aria",
  "voice_id": "9BWtsMINqrJLrRacOk9x",
@@ -11,10 +11,10 @@
  "request": {
   "stability": 0.5,
   "apply_text_normalization": "auto",
-  "text": "[a kiosk shop assistant, brisk, deadpan, a bit sassy] 干しナナカマド?あれを買うのはソローキンさんだけだったよ。ずっとキレンジャクを待っていてね。",
+  "text": "[a kiosk shop assistant, brisk, deadpan, a bit sassy] 干しナナカマド？あれを買うのはソローキンさんだけだったわ。ずっとキレンジャクを待ってたのよ。",
   "voice": "Aria",
   "language_code": "ja"
  },
- "fal_request_id": "01a1d58d-0b19-7220-9e69-1ddc7182cbb9",
- "hash": "7daa05d3f9e4"
+ "fal_request_id": "01a1d673-b1ed-7541-8970-d3aa2296c588",
+ "hash": "07c4c0d208a5"
 }

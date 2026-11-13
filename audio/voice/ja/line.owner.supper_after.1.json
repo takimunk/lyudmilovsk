@@ -1,0 +1,20 @@
+{
+ "key": "line.owner.supper_after.1",
+ "lang": "ja",
+ "text": "お茶はまた切れた。だがチーズはまだ残っている。いい晩だ。",
+ "speaker": "owner",
+ "voice": "Daniel",
+ "voice_id": "onwK4e9ZLuTAKqWW03F9",
+ "voice_design": null,
+ "direction": "[calm, tired, slow, a little ironic]",
+ "model": "fal-ai/elevenlabs/tts/eleven-v3",
+ "request": {
+  "stability": 0.5,
+  "apply_text_normalization": "auto",
+  "text": "[calm, tired, slow, a little ironic] お茶はまた切れた。だがチーズはまだ残っている。いい晩だ。",
+  "voice": "Daniel",
+  "language_code": "ja"
+ },
+ "fal_request_id": "01a1d673-e20f-7ab2-9721-342a4b2c64af",
+ "hash": "62a355c54a14"
+}

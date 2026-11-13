@@ -1,0 +1,20 @@
+{
+ "key": "line.girl_b.overdue_back.4",
+ "lang": "en",
+ "text": "Thank you. On my own I would have been setting out until I retired. Here, take these: a written-off copy of \"Shores\" and a chocolate bar from my desk drawer.",
+ "speaker": "girl_b",
+ "voice": "Sarah",
+ "voice_id": "EXAVITQu4vr4xnSDxMaL",
+ "voice_design": null,
+ "direction": "[curious, slightly uneasy, conspiratorial]",
+ "model": "fal-ai/elevenlabs/tts/eleven-v3",
+ "request": {
+  "stability": 0.5,
+  "apply_text_normalization": "auto",
+  "text": "[curious, slightly uneasy, conspiratorial] Thank you. On my own I would have been setting out until I retired. Here, take these: a written-off copy of \"Shores\" and a chocolate bar from my desk drawer.",
+  "voice": "Sarah",
+  "language_code": "en"
+ },
+ "fal_request_id": "01a1d66c-1ef8-7552-843c-9f0eebb2abd4",
+ "hash": "c85194c2cfd8"
+}

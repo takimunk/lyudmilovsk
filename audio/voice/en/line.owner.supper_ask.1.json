@@ -1,0 +1,20 @@
+{
+ "key": "line.owner.supper_ask.1",
+ "lang": "en",
+ "text": "Been sitting here since noon. Not a step from this spot till two at night.",
+ "speaker": "owner",
+ "voice": "Daniel",
+ "voice_id": "onwK4e9ZLuTAKqWW03F9",
+ "voice_design": null,
+ "direction": "[calm, tired, slow, a little ironic]",
+ "model": "fal-ai/elevenlabs/tts/eleven-v3",
+ "request": {
+  "stability": 0.5,
+  "apply_text_normalization": "auto",
+  "text": "[calm, tired, slow, a little ironic] Been sitting here since noon. Not a step from this spot till two at night.",
+  "voice": "Daniel",
+  "language_code": "en"
+ },
+ "fal_request_id": "01a1d672-0c78-7282-8e04-43031b8b03e6",
+ "hash": "46284d12aa7f"
+}

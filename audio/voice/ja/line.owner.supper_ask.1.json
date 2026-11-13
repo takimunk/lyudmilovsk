@@ -1,0 +1,20 @@
+{
+ "key": "line.owner.supper_ask.1",
+ "lang": "ja",
+ "text": "正午から座っている。夜中の二時まで、ここから一歩も動かん。",
+ "speaker": "owner",
+ "voice": "Daniel",
+ "voice_id": "onwK4e9ZLuTAKqWW03F9",
+ "voice_design": null,
+ "direction": "[calm, tired, slow, a little ironic]",
+ "model": "fal-ai/elevenlabs/tts/eleven-v3",
+ "request": {
+  "stability": 0.5,
+  "apply_text_normalization": "auto",
+  "text": "[calm, tired, slow, a little ironic] 正午から座っている。夜中の二時まで、ここから一歩も動かん。",
+  "voice": "Daniel",
+  "language_code": "ja"
+ },
+ "fal_request_id": "01a1d673-f78b-71c0-bf08-b210b67b8d3a",
+ "hash": "5525cfdef3ff"
+}

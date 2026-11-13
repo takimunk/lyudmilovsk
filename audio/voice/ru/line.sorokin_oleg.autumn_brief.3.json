@@ -1,0 +1,20 @@
+{
+ "key": "line.sorokin_oleg.autumn_brief.3",
+ "lang": "ru",
+ "text": "Учёт называется осенним. Провожу я его, когда есть кому ходить.",
+ "speaker": "sorokin_oleg",
+ "voice": "River",
+ "voice_id": "SAz9YHcvj6GT2YYXdXww",
+ "voice_design": null,
+ "direction": "[a retired scholar, calm, dry humour, slower, gentle]",
+ "model": "fal-ai/elevenlabs/tts/eleven-v3",
+ "request": {
+  "stability": 0.5,
+  "apply_text_normalization": "auto",
+  "text": "[a retired scholar, calm, dry humour, slower, gentle] Учёт называется осенним. Провожу я его, когда есть кому ходить.",
+  "voice": "River",
+  "language_code": "ru"
+ },
+ "fal_request_id": "01a1d672-6a6e-7d50-a95b-83e99afeefd2",
+ "hash": "59d4ef936df4"
+}

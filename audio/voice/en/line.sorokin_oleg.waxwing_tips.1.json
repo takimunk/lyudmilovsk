@@ -1,7 +1,7 @@
 {
  "key": "line.sorokin_oleg.waxwing_tips.1",
  "lang": "en",
- "text": "The guide is in the library, the rowan and the feeder at the Gastronom, the waxwings in the north beyond the hills. Don't mix them up.",
+ "text": "The guide is in the library, the rowan and the feeder at the grocery, the waxwings in the north beyond the hills. Don't mix them up.",
  "speaker": "sorokin_oleg",
  "voice": "River",
  "voice_id": "SAz9YHcvj6GT2YYXdXww",
@@ -11,10 +11,10 @@
  "request": {
   "stability": 0.5,
   "apply_text_normalization": "auto",
-  "text": "[a retired scholar, calm, dry humour, slower, gentle] The guide is in the library, the rowan and the feeder at the Gastronom, the waxwings in the north beyond the hills. Don't mix them up.",
+  "text": "[a retired scholar, calm, dry humour, slower, gentle] The guide is in the library, the rowan and the feeder at the grocery, the waxwings in the north beyond the hills. Don't mix them up.",
   "voice": "River",
   "language_code": "en"
  },
- "fal_request_id": "01a1d58c-43a6-72b1-b94b-f3696f7ba60a",
- "hash": "85e6bfed20a1"
+ "fal_request_id": "01a1d674-0faa-7472-9bc7-a2009227c70a",
+ "hash": "6bd8ff26e4c1"
 }

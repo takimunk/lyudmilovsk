@@ -1,0 +1,20 @@
+{
+ "key": "line.khuazhev_aslan.tent_report.4",
+ "lang": "ja",
+ "text": "決まりだ。燻製を増やして、ブリヌイに合うやわらかいチーズも持ってくる。箱とは張り合わない。あれはもう十分かわいそうだ。",
+ "speaker": "khuazhev_aslan",
+ "voice": "Brian",
+ "voice_id": "nPczCjzI2devNBz1zQrb",
+ "voice_design": null,
+ "direction": "[hearty, generous, a cheese seller from the Caucasus, proud of his family's cheese]",
+ "model": "fal-ai/elevenlabs/tts/eleven-v3",
+ "request": {
+  "stability": 0.5,
+  "apply_text_normalization": "auto",
+  "text": "[hearty, generous, a cheese seller from the Caucasus, proud of his family's cheese] 決まりだ。燻製を増やして、ブリヌイに合うやわらかいチーズも持ってくる。箱とは張り合わない。あれはもう十分かわいそうだ。",
+  "voice": "Brian",
+  "language_code": "ja"
+ },
+ "fal_request_id": "01a1d670-5220-7c70-9cd5-a8ae73f9655f",
+ "hash": "d9e130769b18"
+}

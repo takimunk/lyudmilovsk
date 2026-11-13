@@ -1,7 +1,7 @@
 {
  "key": "line.korneeva_nina.paper_wait.1",
  "lang": "ja",
- "text": "新聞、忘れてないだろうね。市場は海沿いの下町だよ。にぎやかだから間違えっこない。",
+ "text": "新聞、忘れてないわよね？市場広場は海沿いの下町よ。にぎやかだから間違えっこないわ。",
  "speaker": "korneeva_nina",
  "voice": "Wise_Woman",
  "voice_id": "Wise_Woman",
@@ -9,7 +9,7 @@
  "direction": "",
  "model": "fal-ai/minimax/speech-2.6-hd",
  "request": {
-  "prompt": "新聞、忘れてないだろうね。市場は海沿いの下町だよ。にぎやかだから間違えっこない。",
+  "prompt": "新聞、忘れてないわよね？市場広場は海沿いの下町よ。にぎやかだから間違えっこないわ。",
   "voice_setting": {
    "speed": 0.95,
    "pitch": 0,
@@ -24,6 +24,6 @@
   },
   "output_format": "url"
  },
- "fal_request_id": "01a1d592-fb03-7b03-b962-16e55b1588eb",
- "hash": "f1a788af7735"
+ "fal_request_id": "01a1d672-374d-7772-a39e-1f5231f428b1",
+ "hash": "d198b6f42716"
 }

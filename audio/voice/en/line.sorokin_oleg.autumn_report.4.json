@@ -1,0 +1,20 @@
+{
+ "key": "line.sorokin_oleg.autumn_report.4",
+ "lang": "en",
+ "text": "Thirty autumns I counted alone. With two, it turns out, the figures are more honest.",
+ "speaker": "sorokin_oleg",
+ "voice": "River",
+ "voice_id": "SAz9YHcvj6GT2YYXdXww",
+ "voice_design": null,
+ "direction": "[a retired scholar, calm, dry humour, slower, gentle]",
+ "model": "fal-ai/elevenlabs/tts/eleven-v3",
+ "request": {
+  "stability": 0.5,
+  "apply_text_normalization": "auto",
+  "text": "[a retired scholar, calm, dry humour, slower, gentle] Thirty autumns I counted alone. With two, it turns out, the figures are more honest.",
+  "voice": "River",
+  "language_code": "en"
+ },
+ "fal_request_id": "01a1d673-a08d-7fc1-a7e3-d4b172a449f2",
+ "hash": "0fbcb2d78313"
+}

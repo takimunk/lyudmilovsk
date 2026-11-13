@@ -1,0 +1,20 @@
+{
+ "key": "line.valiev_rustam.signal_tell.1",
+ "lang": "en",
+ "text": "Well, report. Were you up there?",
+ "speaker": "valiev_rustam",
+ "voice": "Roger",
+ "voice_id": "CwhRBWXzGAHq8TQ4Fs17",
+ "voice_design": null,
+ "direction": "[confident, dry, matter-of-fact engineer]",
+ "model": "fal-ai/elevenlabs/tts/eleven-v3",
+ "request": {
+  "stability": 0.5,
+  "apply_text_normalization": "auto",
+  "text": "[confident, dry, matter-of-fact engineer] Well, report. Were you up there?",
+  "voice": "Roger",
+  "language_code": "en"
+ },
+ "fal_request_id": "01a1d674-8e5d-7e11-8dd4-365c837c4347",
+ "hash": "7051a230ae3a"
+}

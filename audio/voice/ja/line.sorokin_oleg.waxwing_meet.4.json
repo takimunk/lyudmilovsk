@@ -1,7 +1,7 @@
 {
  "key": "line.sorokin_oleg.waxwing_meet.4",
  "lang": "ja",
- "text": "それから、まともな餌を買うことだ。食料品店には穀物から干しナナカマドまで何でもある。自販機の種はハトにしか向かない。",
+ "text": "それから、まともな餌を買うことだ。食料品店には穀物から干しナナカマドまで何でもある。自販機のひまわりの種はハトにしか向かない。",
  "speaker": "sorokin_oleg",
  "voice": "River",
  "voice_id": "SAz9YHcvj6GT2YYXdXww",
@@ -11,10 +11,10 @@
  "request": {
   "stability": 0.5,
   "apply_text_normalization": "auto",
-  "text": "[a retired scholar, calm, dry humour, slower, gentle] それから、まともな餌を買うことだ。食料品店には穀物から干しナナカマドまで何でもある。自販機の種はハトにしか向かない。",
+  "text": "[a retired scholar, calm, dry humour, slower, gentle] それから、まともな餌を買うことだ。食料品店には穀物から干しナナカマドまで何でもある。自販機のひまわりの種はハトにしか向かない。",
   "voice": "River",
   "language_code": "ja"
  },
- "fal_request_id": "01a1d58e-2824-7b21-8b02-819cbf84bcd4",
- "hash": "43d674740120"
+ "fal_request_id": "01a1d676-566c-7d10-acb5-eea001820f4e",
+ "hash": "3e0c08890b8a"
 }

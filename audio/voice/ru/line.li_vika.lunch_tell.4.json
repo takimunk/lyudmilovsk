@@ -1,0 +1,20 @@
+{
+ "key": "line.li_vika.lunch_tell.4",
+ "lang": "ru",
+ "text": "Держи, это за суп. И шоколадку возьми, это мой обычный обед. В субботу пойду сама. С ложкой и без халата.",
+ "speaker": "li_vika",
+ "voice": "Laura",
+ "voice_id": "FGY2WhTYpPnrIDTdsKH5",
+ "voice_design": null,
+ "direction": "[playful, quick, a lab assistant joking about her work]",
+ "model": "fal-ai/elevenlabs/tts/eleven-v3",
+ "request": {
+  "stability": 0.5,
+  "apply_text_normalization": "auto",
+  "text": "[playful, quick, a lab assistant joking about her work] Держи, это за суп. И шоколадку возьми, это мой обычный обед. В субботу пойду сама. С ложкой и без халата.",
+  "voice": "Laura",
+  "language_code": "ru"
+ },
+ "fal_request_id": "01a1d671-30a1-7cd2-b531-7b6100b4f4ce",
+ "hash": "3967e2bdd2b1"
+}

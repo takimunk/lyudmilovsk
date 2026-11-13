@@ -1,7 +1,7 @@
 {
  "key": "line.lange_pyotr.cheese_ask.2",
  "lang": "ja",
- "text": "クラブのそばでチェルケス人がチーズを売っている。燻製の編みチーズだ。一つ持ってきてくれ。礼はする。",
+ "text": "クラブのそばでチェルケス人がチーズを売っている。燻製の三つ編みチーズだ。一つ持ってきてくれ。礼はする。",
  "speaker": "lange_pyotr",
  "voice": "Brian",
  "voice_id": "nPczCjzI2devNBz1zQrb",
@@ -11,10 +11,10 @@
  "request": {
   "stability": 0.5,
   "apply_text_normalization": "auto",
-  "text": "[gruff, unhurried, a weathered fisherman of few words] クラブのそばでチェルケス人がチーズを売っている。燻製の編みチーズだ。一つ持ってきてくれ。礼はする。",
+  "text": "[gruff, unhurried, a weathered fisherman of few words] クラブのそばでチェルケス人がチーズを売っている。燻製の三つ編みチーズだ。一つ持ってきてくれ。礼はする。",
   "voice": "Brian",
   "language_code": "ja"
  },
- "fal_request_id": "01a1d5fd-b7f2-7071-916f-3a6c479ce03d",
- "hash": "3c448c6f39ce"
+ "fal_request_id": "01a1d672-8acf-73c0-995e-0dc5228902cf",
+ "hash": "f6601c05503e"
 }

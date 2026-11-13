@@ -1,7 +1,7 @@
 {
  "key": "line.korneeva_nina.paper_thanks.1",
  "lang": "ja",
- "text": "ああ、ありがとう。刷りたてだ、インクの匂いがする。おつりは取っておきな。",
+ "text": "まあ、ありがとう。刷りたてね、インクの匂いがする。おつりは取っておいて。",
  "speaker": "korneeva_nina",
  "voice": "Wise_Woman",
  "voice_id": "Wise_Woman",
@@ -9,7 +9,7 @@
  "direction": "",
  "model": "fal-ai/minimax/speech-2.6-hd",
  "request": {
-  "prompt": "ああ、ありがとう。刷りたてだ、インクの匂いがする。おつりは取っておきな。",
+  "prompt": "まあ、ありがとう。刷りたてね、インクの匂いがする。おつりは取っておいて。",
   "voice_setting": {
    "speed": 0.95,
    "pitch": 0,
@@ -24,6 +24,6 @@
   },
   "output_format": "url"
  },
- "fal_request_id": "01a1d592-bbd4-7de3-826d-b6fe67b409f8",
- "hash": "e65018ccec9f"
+ "fal_request_id": "01a1d671-fa2f-74d0-b8a2-651a8e0fc1cf",
+ "hash": "94bd527300cc"
 }

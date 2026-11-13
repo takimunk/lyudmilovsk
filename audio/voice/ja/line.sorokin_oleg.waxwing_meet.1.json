@@ -1,7 +1,7 @@
 {
  "key": "line.sorokin_oleg.waxwing_meet.1",
  "lang": "ja",
- "text": "鳥のことかね?なら私で合っている。ソローキン、鳥類学者だ。もう引退したが、鳥たちはそれを知らない。",
+ "text": "鳥のことかね？なら私で合っている。ソローキン、鳥類学者だ。もう引退したが、鳥たちはそれを知らない。",
  "speaker": "sorokin_oleg",
  "voice": "River",
  "voice_id": "SAz9YHcvj6GT2YYXdXww",
@@ -11,10 +11,10 @@
  "request": {
   "stability": 0.5,
   "apply_text_normalization": "auto",
-  "text": "[a retired scholar, calm, dry humour, slower, gentle] 鳥のことかね?なら私で合っている。ソローキン、鳥類学者だ。もう引退したが、鳥たちはそれを知らない。",
+  "text": "[a retired scholar, calm, dry humour, slower, gentle] 鳥のことかね？なら私で合っている。ソローキン、鳥類学者だ。もう引退したが、鳥たちはそれを知らない。",
   "voice": "River",
   "language_code": "ja"
  },
- "fal_request_id": "01a1d58d-f737-7c30-afdf-103f47dd2572",
- "hash": "a0a621068106"
+ "fal_request_id": "01a1d676-3cbf-7aa1-abb6-6ba461ecb94b",
+ "hash": "4da278fd6966"
 }

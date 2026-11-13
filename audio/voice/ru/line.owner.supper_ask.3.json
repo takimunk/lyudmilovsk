@@ -1,0 +1,20 @@
+{
+ "key": "line.owner.supper_ask.3",
+ "lang": "ru",
+ "text": "Ужин там, снаружи. А я тут.",
+ "speaker": "owner",
+ "voice": "Daniel",
+ "voice_id": "onwK4e9ZLuTAKqWW03F9",
+ "voice_design": null,
+ "direction": "[calm, tired, slow, a little ironic]",
+ "model": "fal-ai/elevenlabs/tts/eleven-v3",
+ "request": {
+  "stability": 0.5,
+  "apply_text_normalization": "auto",
+  "text": "[calm, tired, slow, a little ironic] Ужин там, снаружи. А я тут.",
+  "voice": "Daniel",
+  "language_code": "ru"
+ },
+ "fal_request_id": "01a1d671-8432-7553-8d81-ec81c80c1290",
+ "hash": "6e0cf01c1da0"
+}

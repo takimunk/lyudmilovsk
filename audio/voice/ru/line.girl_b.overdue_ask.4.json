@@ -1,0 +1,20 @@
+{
+ "key": "line.girl_b.overdue_ask.4",
+ "lang": "ru",
+ "text": "Я три раза собиралась. Он говорит «добрый день», и я забываю, зачем подошла. Спроси ты, пожалуйста.",
+ "speaker": "girl_b",
+ "voice": "Sarah",
+ "voice_id": "EXAVITQu4vr4xnSDxMaL",
+ "voice_design": null,
+ "direction": "[curious, slightly uneasy, conspiratorial]",
+ "model": "fal-ai/elevenlabs/tts/eleven-v3",
+ "request": {
+  "stability": 0.5,
+  "apply_text_normalization": "auto",
+  "text": "[curious, slightly uneasy, conspiratorial] Я три раза собиралась. Он говорит «добрый день», и я забываю, зачем подошла. Спроси ты, пожалуйста.",
+  "voice": "Sarah",
+  "language_code": "ru"
+ },
+ "fal_request_id": "01a1d66b-d8b4-7af1-b12b-74750b279f79",
+ "hash": "76aa84597373"
+}

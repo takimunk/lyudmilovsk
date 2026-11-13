@@ -1,0 +1,20 @@
+{
+ "key": "line.owner.supper_thanks.4",
+ "lang": "ja",
+ "text": "ほら。代金じゃない、お釣りだ。えさは鳥にやれ。あいつらも夕ごはんの時間だ。",
+ "speaker": "owner",
+ "voice": "Daniel",
+ "voice_id": "onwK4e9ZLuTAKqWW03F9",
+ "voice_design": null,
+ "direction": "[calm, tired, slow, a little ironic]",
+ "model": "fal-ai/elevenlabs/tts/eleven-v3",
+ "request": {
+  "stability": 0.5,
+  "apply_text_normalization": "auto",
+  "text": "[calm, tired, slow, a little ironic] ほら。代金じゃない、お釣りだ。えさは鳥にやれ。あいつらも夕ごはんの時間だ。",
+  "voice": "Daniel",
+  "language_code": "ja"
+ },
+ "fal_request_id": "01a1d674-8faa-7373-8113-7f08c16a9fa8",
+ "hash": "146b9b9c56df"
+}

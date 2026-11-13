@@ -1,0 +1,20 @@
+{
+ "key": "line.girl_b.overdue_ask.2",
+ "lang": "en",
+ "text": "Lev Zotov, the physicist, borrowed \"Cosmos and Us\" in spring. And never brought it back.",
+ "speaker": "girl_b",
+ "voice": "Sarah",
+ "voice_id": "EXAVITQu4vr4xnSDxMaL",
+ "voice_design": null,
+ "direction": "[curious, slightly uneasy, conspiratorial]",
+ "model": "fal-ai/elevenlabs/tts/eleven-v3",
+ "request": {
+  "stability": 0.5,
+  "apply_text_normalization": "auto",
+  "text": "[curious, slightly uneasy, conspiratorial] Lev Zotov, the physicist, borrowed \"Cosmos and Us\" in spring. And never brought it back.",
+  "voice": "Sarah",
+  "language_code": "en"
+ },
+ "fal_request_id": "01a1d66b-c3a5-7742-975a-fbc00ed4796d",
+ "hash": "e5e93219b0e5"
+}

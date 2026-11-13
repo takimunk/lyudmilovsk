@@ -1,7 +1,7 @@
 {
  "key": "line.korneeva_nina.paper_ask.2",
  "lang": "ja",
- "text": "どうせあちこち歩き回ってるんだろう。夕刊を買ってきておくれ。市場の新聞スタンドでね。",
+ "text": "どうせあちこち歩き回ってるんでしょう。夕刊を買ってきてちょうだい。市場広場の新聞スタンドでね。",
  "speaker": "korneeva_nina",
  "voice": "Wise_Woman",
  "voice_id": "Wise_Woman",
@@ -9,7 +9,7 @@
  "direction": "",
  "model": "fal-ai/minimax/speech-2.6-hd",
  "request": {
-  "prompt": "どうせあちこち歩き回ってるんだろう。夕刊を買ってきておくれ。市場の新聞スタンドでね。",
+  "prompt": "どうせあちこち歩き回ってるんでしょう。夕刊を買ってきてちょうだい。市場広場の新聞スタンドでね。",
   "voice_setting": {
    "speed": 0.95,
    "pitch": 0,
@@ -24,6 +24,6 @@
   },
   "output_format": "url"
  },
- "fal_request_id": "01a1d592-8d26-7f61-98ea-e4c90fcb126c",
- "hash": "7f7de72ba7ea"
+ "fal_request_id": "01a1d671-c96b-7590-9abe-d507fb759d93",
+ "hash": "09d69d9b4b19"
 }

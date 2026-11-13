@@ -1,7 +1,7 @@
 {
  "key": "line.lange_pyotr.catch_learn.4",
  "lang": "ja",
- "text": "ゴカイだ。ウキが揺れても合わせるな。沈んだら、そこで合わせろ。",
+ "text": "ゴカイだ。浮きが揺れても合わせるな。沈んだら、そこで合わせろ。",
  "speaker": "lange_pyotr",
  "voice": "Brian",
  "voice_id": "nPczCjzI2devNBz1zQrb",
@@ -11,10 +11,10 @@
  "request": {
   "stability": 0.5,
   "apply_text_normalization": "auto",
-  "text": "[gruff, unhurried, a weathered fisherman of few words] ゴカイだ。ウキが揺れても合わせるな。沈んだら、そこで合わせろ。",
+  "text": "[gruff, unhurried, a weathered fisherman of few words] ゴカイだ。浮きが揺れても合わせるな。沈んだら、そこで合わせろ。",
   "voice": "Brian",
   "language_code": "ja"
  },
- "fal_request_id": "01a1d669-8abd-7102-b567-933b2635f937",
- "hash": "238bf2b1a035"
+ "fal_request_id": "01a1d672-4edf-7440-99da-e39bb2c1b56b",
+ "hash": "9b33740cfa9a"
 }

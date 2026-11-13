@@ -1,0 +1,20 @@
+{
+ "key": "line.zotova_galina.sodalab_tell.5",
+ "lang": "en",
+ "text": "Here are a hundred rubles, as budgeted, and a kefir as hazard pay. Those are the rules.",
+ "speaker": "zotova_galina",
+ "voice": "Alice",
+ "voice_id": "Xb7hH8MSUJpSbSDYk0k2",
+ "voice_design": null,
+ "direction": "[warm, chatty, fondly exasperated with her husband]",
+ "model": "fal-ai/elevenlabs/tts/eleven-v3",
+ "request": {
+  "stability": 0.5,
+  "apply_text_normalization": "auto",
+  "text": "[warm, chatty, fondly exasperated with her husband] Here are a hundred rubles, as budgeted, and a kefir as hazard pay. Those are the rules.",
+  "voice": "Alice",
+  "language_code": "en"
+ },
+ "fal_request_id": "01a1d676-3089-7942-aeed-23a6ced35faf",
+ "hash": "686b73b32521"
+}

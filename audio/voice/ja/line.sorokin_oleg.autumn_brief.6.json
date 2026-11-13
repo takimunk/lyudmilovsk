@@ -1,0 +1,20 @@
+{
+ "key": "line.sorokin_oleg.autumn_brief.6",
+ "lang": "ja",
+ "text": "二十歩離れてしゃがみ、飛来を数えなさい。六回あれば、もう標本と呼べる。",
+ "speaker": "sorokin_oleg",
+ "voice": "River",
+ "voice_id": "SAz9YHcvj6GT2YYXdXww",
+ "voice_design": null,
+ "direction": "[a retired scholar, calm, dry humour, slower, gentle]",
+ "model": "fal-ai/elevenlabs/tts/eleven-v3",
+ "request": {
+  "stability": 0.5,
+  "apply_text_normalization": "auto",
+  "text": "[a retired scholar, calm, dry humour, slower, gentle] 二十歩離れてしゃがみ、飛来を数えなさい。六回あれば、もう標本と呼べる。",
+  "voice": "River",
+  "language_code": "ja"
+ },
+ "fal_request_id": "01a1d675-4ad6-75f3-8260-f7dedd480ab3",
+ "hash": "a1a1bb2af61a"
+}

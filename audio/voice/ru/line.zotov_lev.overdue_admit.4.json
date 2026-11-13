@@ -1,0 +1,20 @@
+{
+ "key": "line.zotov_lev.overdue_admit.4",
+ "lang": "ru",
+ "text": "С апреля. Теперь это несущая конструкция: вынешь, и полгода измерений пропали.",
+ "speaker": "zotov_lev",
+ "voice": "George",
+ "voice_id": "JBFqnCBsd6RMkjVDRZzb",
+ "voice_design": null,
+ "direction": "[dry, thoughtful, unhurried, a physicist's quiet irony]",
+ "model": "fal-ai/elevenlabs/tts/eleven-v3",
+ "request": {
+  "stability": 0.5,
+  "apply_text_normalization": "auto",
+  "text": "[dry, thoughtful, unhurried, a physicist's quiet irony] С апреля. Теперь это несущая конструкция: вынешь, и полгода измерений пропали.",
+  "voice": "George",
+  "language_code": "ru"
+ },
+ "fal_request_id": "01a1d674-9278-76c1-a44b-311c082f2c3a",
+ "hash": "e17be12c0468"
+}

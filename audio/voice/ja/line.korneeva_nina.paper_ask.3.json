@@ -1,7 +1,7 @@
 {
  "key": "line.korneeva_nina.paper_ask.3",
  "lang": "ja",
- "text": "海のほうまでは私には遠くてね。それにチェスの問題がないと、うちのワーニャは夜どうにも手に負えないんだよ。",
+ "text": "海のほうまでは私には遠くてね。それにチェスの問題がないと、うちのワーニャは夜どうにも手に負えないのよ。",
  "speaker": "korneeva_nina",
  "voice": "Wise_Woman",
  "voice_id": "Wise_Woman",
@@ -9,7 +9,7 @@
  "direction": "",
  "model": "fal-ai/minimax/speech-2.6-hd",
  "request": {
-  "prompt": "海のほうまでは私には遠くてね。それにチェスの問題がないと、うちのワーニャは夜どうにも手に負えないんだよ。",
+  "prompt": "海のほうまでは私には遠くてね。それにチェスの問題がないと、うちのワーニャは夜どうにも手に負えないのよ。",
   "voice_setting": {
    "speed": 0.95,
    "pitch": 0,
@@ -24,6 +24,6 @@
   },
   "output_format": "url"
  },
- "fal_request_id": "01a1d592-a457-7ac0-a1c4-bb6cc64a6ab5",
- "hash": "9bc8eff7d5e3"
+ "fal_request_id": "01a1d671-e353-7843-8097-db61a43cb908",
+ "hash": "8a8e390f233f"
 }

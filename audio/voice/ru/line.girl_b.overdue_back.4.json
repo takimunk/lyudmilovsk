@@ -1,0 +1,20 @@
+{
+ "key": "line.girl_b.overdue_back.4",
+ "lang": "ru",
+ "text": "Спасибо. Сама бы я собиралась до пенсии. Вот, возьми: списанные «Берега» и шоколадка из ящика стола.",
+ "speaker": "girl_b",
+ "voice": "Sarah",
+ "voice_id": "EXAVITQu4vr4xnSDxMaL",
+ "voice_design": null,
+ "direction": "[curious, slightly uneasy, conspiratorial]",
+ "model": "fal-ai/elevenlabs/tts/eleven-v3",
+ "request": {
+  "stability": 0.5,
+  "apply_text_normalization": "auto",
+  "text": "[curious, slightly uneasy, conspiratorial] Спасибо. Сама бы я собиралась до пенсии. Вот, возьми: списанные «Берега» и шоколадка из ящика стола.",
+  "voice": "Sarah",
+  "language_code": "ru"
+ },
+ "fal_request_id": "01a1d66c-171f-7ba1-90ee-fa874c4ee3f1",
+ "hash": "da498af83f7b"
+}

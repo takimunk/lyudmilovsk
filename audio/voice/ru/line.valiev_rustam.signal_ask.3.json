@@ -1,0 +1,20 @@
+{
+ "key": "line.valiev_rustam.signal_ask.3",
+ "lang": "ru",
+ "text": "Один можно. Из моего окна виден край плато, там, где верхняя станция канатки. Я посчитал, что маленький огонёк оттуда должен быть заметен. Хочу проверить глазами.",
+ "speaker": "valiev_rustam",
+ "voice": "Roger",
+ "voice_id": "CwhRBWXzGAHq8TQ4Fs17",
+ "voice_design": null,
+ "direction": "[confident, dry, matter-of-fact engineer]",
+ "model": "fal-ai/elevenlabs/tts/eleven-v3",
+ "request": {
+  "stability": 0.5,
+  "apply_text_normalization": "auto",
+  "text": "[confident, dry, matter-of-fact engineer] Один можно. Из моего окна виден край плато, там, где верхняя станция канатки. Я посчитал, что маленький огонёк оттуда должен быть заметен. Хочу проверить глазами.",
+  "voice": "Roger",
+  "language_code": "ru"
+ },
+ "fal_request_id": "01a1d673-912d-7871-b887-632102218b45",
+ "hash": "8855e70c60f7"
+}

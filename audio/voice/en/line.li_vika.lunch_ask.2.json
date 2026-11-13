@@ -1,0 +1,20 @@
+{
+ "key": "line.li_vika.lunch_ask.2",
+ "lang": "en",
+ "text": "The diner by the lower station makes a fish soup. Kei says it is the best thing in town. Misha says the worst. They have been at it for two weeks.",
+ "speaker": "li_vika",
+ "voice": "Laura",
+ "voice_id": "FGY2WhTYpPnrIDTdsKH5",
+ "voice_design": null,
+ "direction": "[playful, quick, a lab assistant joking about her work]",
+ "model": "fal-ai/elevenlabs/tts/eleven-v3",
+ "request": {
+  "stability": 0.5,
+  "apply_text_normalization": "auto",
+  "text": "[playful, quick, a lab assistant joking about her work] The diner by the lower station makes a fish soup. Kei says it is the best thing in town. Misha says the worst. They have been at it for two weeks.",
+  "voice": "Laura",
+  "language_code": "en"
+ },
+ "fal_request_id": "01a1d670-db72-7253-ba23-263dd429846f",
+ "hash": "c215566c11ba"
+}

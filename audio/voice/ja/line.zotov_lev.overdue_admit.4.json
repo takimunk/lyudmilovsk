@@ -1,0 +1,20 @@
+{
+ "key": "line.zotov_lev.overdue_admit.4",
+ "lang": "ja",
+ "text": "四月からね。今では構造を支える部材だ。抜いたら半年分の測定が台無しになる。",
+ "speaker": "zotov_lev",
+ "voice": "George",
+ "voice_id": "JBFqnCBsd6RMkjVDRZzb",
+ "voice_design": null,
+ "direction": "[dry, thoughtful, unhurried, a physicist's quiet irony]",
+ "model": "fal-ai/elevenlabs/tts/eleven-v3",
+ "request": {
+  "stability": 0.5,
+  "apply_text_normalization": "auto",
+  "text": "[dry, thoughtful, unhurried, a physicist's quiet irony] 四月からね。今では構造を支える部材だ。抜いたら半年分の測定が台無しになる。",
+  "voice": "George",
+  "language_code": "ja"
+ },
+ "fal_request_id": "01a1d677-bd7c-7bb0-8a84-ce9b9d36c483",
+ "hash": "2e5e8f59c4ff"
+}

@@ -1,7 +1,7 @@
 {
  "key": "line.korneeva_nina.paper_ask.1",
  "lang": "ja",
- "text": "新顔かい?ここの人はみんな知ってるよ。あんたのことはまだ知らないけど、すぐだね。",
+ "text": "新しい人？ここの人はみんな知ってるの。あなたのことはまだ知らないけど、すぐよ。",
  "speaker": "korneeva_nina",
  "voice": "Wise_Woman",
  "voice_id": "Wise_Woman",
@@ -9,7 +9,7 @@
  "direction": "",
  "model": "fal-ai/minimax/speech-2.6-hd",
  "request": {
-  "prompt": "新顔かい?ここの人はみんな知ってるよ。あんたのことはまだ知らないけど、すぐだね。",
+  "prompt": "新しい人？ここの人はみんな知ってるの。あなたのことはまだ知らないけど、すぐよ。",
   "voice_setting": {
    "speed": 0.95,
    "pitch": 0,
@@ -24,6 +24,6 @@
   },
   "output_format": "url"
  },
- "fal_request_id": "01a1d592-7bc4-7e51-9e2c-043af6afe51d",
- "hash": "8712eb1e3b0c"
+ "fal_request_id": "01a1d671-b612-7530-8c71-b62481cf0689",
+ "hash": "72c8a434b52e"
 }

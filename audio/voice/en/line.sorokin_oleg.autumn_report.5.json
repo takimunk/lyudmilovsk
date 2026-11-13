@@ -1,0 +1,20 @@
+{
+ "key": "line.sorokin_oleg.autumn_report.5",
+ "lang": "en",
+ "text": "Take the goldfinch mix and a tit cake. The goldfinches want to be in the journal too, and you know now how they are entered.",
+ "speaker": "sorokin_oleg",
+ "voice": "River",
+ "voice_id": "SAz9YHcvj6GT2YYXdXww",
+ "voice_design": null,
+ "direction": "[a retired scholar, calm, dry humour, slower, gentle]",
+ "model": "fal-ai/elevenlabs/tts/eleven-v3",
+ "request": {
+  "stability": 0.5,
+  "apply_text_normalization": "auto",
+  "text": "[a retired scholar, calm, dry humour, slower, gentle] Take the goldfinch mix and a tit cake. The goldfinches want to be in the journal too, and you know now how they are entered.",
+  "voice": "River",
+  "language_code": "en"
+ },
+ "fal_request_id": "01a1d673-b991-7740-968b-a8dc7cb1f3ca",
+ "hash": "944d1db61ac5"
+}

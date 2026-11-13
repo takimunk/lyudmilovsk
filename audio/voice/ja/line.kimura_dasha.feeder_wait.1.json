@@ -1,7 +1,7 @@
 {
  "key": "line.kimura_dasha.feeder_wait.1",
  "lang": "ja",
- "text": "で、データは?データがなければ結論もなし。数えてきて。",
+ "text": "で、データは？データがなければ結論もなし。数えてきて。",
  "speaker": "kimura_dasha",
  "voice": "Charlotte",
  "voice_id": "XB0fDUnXU5powFXDhCwa",
@@ -11,10 +11,10 @@
  "request": {
   "stability": 0.5,
   "apply_text_normalization": "auto",
-  "text": "[a tired physics student, wry, self-ironic] で、データは?データがなければ結論もなし。数えてきて。",
+  "text": "[a tired physics student, wry, self-ironic] で、データは？データがなければ結論もなし。数えてきて。",
   "voice": "Charlotte",
   "language_code": "ja"
  },
- "fal_request_id": "01a1d5fd-8d54-7683-9cf1-9dfffb60f896",
- "hash": "0a5896174645"
+ "fal_request_id": "01a1d671-0be6-78b2-958c-a09b288d4fbc",
+ "hash": "25e34ce149d9"
 }

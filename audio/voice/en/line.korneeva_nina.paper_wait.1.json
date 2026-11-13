@@ -1,7 +1,7 @@
 {
  "key": "line.korneeva_nina.paper_wait.1",
  "lang": "en",
- "text": "You haven't forgotten the paper? The fair is in the lower town, by the sea. You can't miss it, it's noisy.",
+ "text": "You haven't forgotten the paper? The fair square is in the lower town, by the sea. You can't miss it, it's noisy.",
  "speaker": "korneeva_nina",
  "voice": "Wise_Woman",
  "voice_id": "Wise_Woman",
@@ -9,7 +9,7 @@
  "direction": "",
  "model": "fal-ai/minimax/speech-2.6-hd",
  "request": {
-  "prompt": "You haven't forgotten the paper? The fair is in the lower town, by the sea. You can't miss it, it's noisy.",
+  "prompt": "You haven't forgotten the paper? The fair square is in the lower town, by the sea. You can't miss it, it's noisy.",
   "voice_setting": {
    "speed": 0.95,
    "pitch": 0,
@@ -24,6 +24,6 @@
   },
   "output_format": "url"
  },
- "fal_request_id": "01a1d591-a55b-7e12-90a3-0fdeb85dbba2",
- "hash": "55d2435a2a47"
+ "fal_request_id": "01a1d670-9be6-76f2-95f1-5eb070cd80e5",
+ "hash": "ca755bc39e9d"
 }

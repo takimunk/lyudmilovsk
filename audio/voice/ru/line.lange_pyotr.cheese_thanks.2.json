@@ -1,7 +1,7 @@
 {
  "key": "line.lange_pyotr.cheese_thanks.2",
  "lang": "ru",
- "text": "Держи червей. И селёдку, утреннюю. Удочку найдёшь, приходи, покажу, где клюёт.",
+ "text": "Держи червей. И салаку, утреннюю. Удочку найдёшь, приходи, покажу, где клюёт.",
  "speaker": "lange_pyotr",
  "voice": "Brian",
  "voice_id": "nPczCjzI2devNBz1zQrb",
@@ -11,10 +11,10 @@
  "request": {
   "stability": 0.5,
   "apply_text_normalization": "auto",
-  "text": "[gruff, unhurried, a weathered fisherman of few words] Держи червей. И селёдку, утреннюю. Удочку найдёшь, приходи, покажу, где клюёт.",
+  "text": "[gruff, unhurried, a weathered fisherman of few words] Держи червей. И салаку, утреннюю. Удочку найдёшь, приходи, покажу, где клюёт.",
   "voice": "Brian",
   "language_code": "ru"
  },
- "fal_request_id": "01a1d5fa-2024-76f1-a2ad-2baeaeee64d4",
- "hash": "bec63ce8642b"
+ "fal_request_id": "01a1d670-941f-7081-a864-711be2c53191",
+ "hash": "b5a89a882c15"
 }

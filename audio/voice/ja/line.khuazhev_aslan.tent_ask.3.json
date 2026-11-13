@@ -1,0 +1,20 @@
+{
+ "key": "line.khuazhev_aslan.tent_ask.3",
+ "lang": "ja",
+ "text": "俺はこの店から一歩も離れられない。代わりに三つ食べてきてくれ。ワレンチナのトウモロコシ、駅の自動販売機のピロシキ、下のダイナーのブリヌイだ。",
+ "speaker": "khuazhev_aslan",
+ "voice": "Brian",
+ "voice_id": "nPczCjzI2devNBz1zQrb",
+ "voice_design": null,
+ "direction": "[hearty, generous, a cheese seller from the Caucasus, proud of his family's cheese]",
+ "model": "fal-ai/elevenlabs/tts/eleven-v3",
+ "request": {
+  "stability": 0.5,
+  "apply_text_normalization": "auto",
+  "text": "[hearty, generous, a cheese seller from the Caucasus, proud of his family's cheese] 俺はこの店から一歩も離れられない。代わりに三つ食べてきてくれ。ワレンチナのトウモロコシ、駅の自動販売機のピロシキ、下のダイナーのブリヌイだ。",
+  "voice": "Brian",
+  "language_code": "ja"
+ },
+ "fal_request_id": "01a1d66f-e0a9-75b2-aec4-223a7ac18a2c",
+ "hash": "2ef1d2b0ee6d"
+}

@@ -1,0 +1,20 @@
+{
+ "key": "line.girl_b.overdue_hint.1",
+ "lang": "en",
+ "text": "Buy a new one? The machine at the station has them, the one by the pendulum. But that is forty rubles, and now I feel awkward.",
+ "speaker": "girl_b",
+ "voice": "Sarah",
+ "voice_id": "EXAVITQu4vr4xnSDxMaL",
+ "voice_design": null,
+ "direction": "[curious, slightly uneasy, conspiratorial]",
+ "model": "fal-ai/elevenlabs/tts/eleven-v3",
+ "request": {
+  "stability": 0.5,
+  "apply_text_normalization": "auto",
+  "text": "[curious, slightly uneasy, conspiratorial] Buy a new one? The machine at the station has them, the one by the pendulum. But that is forty rubles, and now I feel awkward.",
+  "voice": "Sarah",
+  "language_code": "en"
+ },
+ "fal_request_id": "01a1d66c-6275-70e0-86e3-91499b6fb9f8",
+ "hash": "5d7a542eedbd"
+}

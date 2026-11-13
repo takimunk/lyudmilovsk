@@ -1,0 +1,20 @@
+{
+ "key": "line.khuazhev_aslan.tent_ask.1",
+ "lang": "ja",
+ "text": "テントに客が来れば、それだけでもう祝いだ。こっちへおいで。商売より大事な話がある。",
+ "speaker": "khuazhev_aslan",
+ "voice": "Brian",
+ "voice_id": "nPczCjzI2devNBz1zQrb",
+ "voice_design": null,
+ "direction": "[hearty, generous, a cheese seller from the Caucasus, proud of his family's cheese]",
+ "model": "fal-ai/elevenlabs/tts/eleven-v3",
+ "request": {
+  "stability": 0.5,
+  "apply_text_normalization": "auto",
+  "text": "[hearty, generous, a cheese seller from the Caucasus, proud of his family's cheese] テントに客が来れば、それだけでもう祝いだ。こっちへおいで。商売より大事な話がある。",
+  "voice": "Brian",
+  "language_code": "ja"
+ },
+ "fal_request_id": "01a1d66f-ad0a-70f2-9479-748642fac8c9",
+ "hash": "43760657df72"
+}

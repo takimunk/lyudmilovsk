@@ -1,7 +1,7 @@
 {
  "key": "line.kimura_dasha.feeder_tell.1",
  "lang": "ja",
- "text": "五回?ハトは一羽もなし?!",
+ "text": "五回？ハトは一羽もなし？！",
  "speaker": "kimura_dasha",
  "voice": "Charlotte",
  "voice_id": "XB0fDUnXU5powFXDhCwa",
@@ -11,10 +11,10 @@
  "request": {
   "stability": 0.5,
   "apply_text_normalization": "auto",
-  "text": "[a tired physics student, wry, self-ironic] 五回?ハトは一羽もなし?!",
+  "text": "[a tired physics student, wry, self-ironic] 五回？ハトは一羽もなし？！",
   "voice": "Charlotte",
   "language_code": "ja"
  },
- "fal_request_id": "01a1d5fd-612b-7eb0-a7f7-e1242532a56c",
- "hash": "999da9f560b7"
+ "fal_request_id": "01a1d670-dd93-7292-bab6-d8b8c03eb1e3",
+ "hash": "74d5633b272e"
 }

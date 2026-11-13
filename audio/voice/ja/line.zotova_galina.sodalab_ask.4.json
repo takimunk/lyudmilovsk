@@ -1,0 +1,20 @@
+{
+ "key": "line.zotova_galina.sodalab_ask.4",
+ "lang": "ja",
+ "text": "私には先入観があります。成分表を読んでしまったので。四本とも、一本ずつ飲んで報告してください。",
+ "speaker": "zotova_galina",
+ "voice": "Alice",
+ "voice_id": "Xb7hH8MSUJpSbSDYk0k2",
+ "voice_design": null,
+ "direction": "[warm, chatty, fondly exasperated with her husband]",
+ "model": "fal-ai/elevenlabs/tts/eleven-v3",
+ "request": {
+  "stability": 0.5,
+  "apply_text_normalization": "auto",
+  "text": "[warm, chatty, fondly exasperated with her husband] 私には先入観があります。成分表を読んでしまったので。四本とも、一本ずつ飲んで報告してください。",
+  "voice": "Alice",
+  "language_code": "ja"
+ },
+ "fal_request_id": "01a1d678-34dc-7b90-b545-bc8ea3ce5d28",
+ "hash": "ce529be3e476"
+}

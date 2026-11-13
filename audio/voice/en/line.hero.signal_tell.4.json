@@ -1,0 +1,33 @@
+{
+ "key": "line.hero.signal_tell.4",
+ "lang": "en",
+ "text": "So the experiment failed?",
+ "speaker": "hero",
+ "voice": "ttv-voice-2026102201374626-TYrgTufW",
+ "voice_id": "ttv-voice-2026102201374626-TYrgTufW",
+ "voice_design": {
+  "endpoint": "fal-ai/minimax/voice-design",
+  "prompt": "Teenage boy, high school student: a light, youthful, boyish tenor voice, not deep, a bit breathy, quiet and uncertain, natural everyday speech",
+  "preview_text": "Как всегда? Я здесь впервые. Где здесь выход?"
+ },
+ "direction": "",
+ "model": "fal-ai/minimax/speech-2.6-hd",
+ "request": {
+  "prompt": "So the experiment failed?",
+  "voice_setting": {
+   "speed": 1,
+   "pitch": 0,
+   "vol": 1,
+   "voice_id": "ttv-voice-2026102201374626-TYrgTufW"
+  },
+  "language_boost": "English",
+  "audio_setting": {
+   "sample_rate": 24000,
+   "format": "mp3",
+   "channel": 1
+  },
+  "output_format": "url"
+ },
+ "fal_request_id": "01a1d66e-5160-7981-a70b-086bcd9623f4",
+ "hash": "d8d64b321cda"
+}

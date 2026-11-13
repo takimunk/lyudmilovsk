@@ -1,0 +1,20 @@
+{
+ "key": "line.khuazhev_aslan.tent_report.1",
+ "lang": "ru",
+ "text": "По глазам вижу, человек сыт. Рассказывай, чем кормят мои соседи.",
+ "speaker": "khuazhev_aslan",
+ "voice": "Brian",
+ "voice_id": "nPczCjzI2devNBz1zQrb",
+ "voice_design": null,
+ "direction": "[hearty, generous, a cheese seller from the Caucasus, proud of his family's cheese]",
+ "model": "fal-ai/elevenlabs/tts/eleven-v3",
+ "request": {
+  "stability": 0.5,
+  "apply_text_normalization": "auto",
+  "text": "[hearty, generous, a cheese seller from the Caucasus, proud of his family's cheese] По глазам вижу, человек сыт. Рассказывай, чем кормят мои соседи.",
+  "voice": "Brian",
+  "language_code": "ru"
+ },
+ "fal_request_id": "01a1d66f-6cfc-7ac1-b6f9-1e4e757aba4d",
+ "hash": "bbc43058910d"
+}

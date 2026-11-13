@@ -1,0 +1,20 @@
+{
+ "key": "line.sorokin_oleg.autumn_brief.9",
+ "lang": "ru",
+ "text": "Чёрная полоса на груди: у самца широкая, у самки узкая. Птицы одеваются строже людей.",
+ "speaker": "sorokin_oleg",
+ "voice": "River",
+ "voice_id": "SAz9YHcvj6GT2YYXdXww",
+ "voice_design": null,
+ "direction": "[a retired scholar, calm, dry humour, slower, gentle]",
+ "model": "fal-ai/elevenlabs/tts/eleven-v3",
+ "request": {
+  "stability": 0.5,
+  "apply_text_normalization": "auto",
+  "text": "[a retired scholar, calm, dry humour, slower, gentle] Чёрная полоса на груди: у самца широкая, у самки узкая. Птицы одеваются строже людей.",
+  "voice": "River",
+  "language_code": "ru"
+ },
+ "fal_request_id": "01a1d672-ccae-7e83-927e-d83e4a5d9750",
+ "hash": "6f064c78fd6c"
+}

@@ -1,0 +1,20 @@
+{
+ "key": "line.korneev_ivan.corn_handover.1",
+ "lang": "en",
+ "text": "From Valya? Still hot. So you walked fast and didn't take a bite on the way. I respect that.",
+ "speaker": "korneev_ivan",
+ "voice": "Bill",
+ "voice_id": "pqHfZKP75CvOlQylNhV4",
+ "voice_design": null,
+ "direction": "[an old man, slow, a little gravelly, contented, a quiet joke at the end]",
+ "model": "fal-ai/elevenlabs/tts/eleven-v3",
+ "request": {
+  "stability": 0.5,
+  "apply_text_normalization": "auto",
+  "text": "[an old man, slow, a little gravelly, contented, a quiet joke at the end] From Valya? Still hot. So you walked fast and didn't take a bite on the way. I respect that.",
+  "voice": "Bill",
+  "language_code": "en"
+ },
+ "fal_request_id": "01a1d670-20ed-74f2-9006-97f1b79e97e2",
+ "hash": "7ce61a34337a"
+}

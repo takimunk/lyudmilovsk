@@ -1,7 +1,7 @@
 {
  "key": "line.korneeva_nina.paper_ask.2",
  "lang": "en",
- "text": "Since you walk back and forth anyway, bring me the evening paper. From the fair, the news stall.",
+ "text": "Since you walk back and forth anyway, bring me the evening paper. From the news stall on the fair square.",
  "speaker": "korneeva_nina",
  "voice": "Wise_Woman",
  "voice_id": "Wise_Woman",
@@ -9,7 +9,7 @@
  "direction": "",
  "model": "fal-ai/minimax/speech-2.6-hd",
  "request": {
-  "prompt": "Since you walk back and forth anyway, bring me the evening paper. From the fair, the news stall.",
+  "prompt": "Since you walk back and forth anyway, bring me the evening paper. From the news stall on the fair square.",
   "voice_setting": {
    "speed": 0.95,
    "pitch": 0,
@@ -24,6 +24,6 @@
   },
   "output_format": "url"
  },
- "fal_request_id": "01a1d591-3695-79c2-9be6-942659939123",
- "hash": "932fd3aba10e"
+ "fal_request_id": "01a1d670-88c4-76a3-a167-74768f490410",
+ "hash": "8954aa9e18da"
 }

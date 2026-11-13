@@ -1,7 +1,7 @@
 {
  "key": "line.korneeva_nina.paper_thanks.2",
  "lang": "ja",
- "text": "ピロシキも持っていきな、私が焼いたんだ。キャベツ入り。まあ細いこと、見てるほうがつらいよ。",
+ "text": "ピロシキも持っていって、私が焼いたの。キャベツ入りよ。まあ細いこと、見てるほうがつらいわ。",
  "speaker": "korneeva_nina",
  "voice": "Wise_Woman",
  "voice_id": "Wise_Woman",
@@ -9,7 +9,7 @@
  "direction": "",
  "model": "fal-ai/minimax/speech-2.6-hd",
  "request": {
-  "prompt": "ピロシキも持っていきな、私が焼いたんだ。キャベツ入り。まあ細いこと、見てるほうがつらいよ。",
+  "prompt": "ピロシキも持っていって、私が焼いたの。キャベツ入りよ。まあ細いこと、見てるほうがつらいわ。",
   "voice_setting": {
    "speed": 0.95,
    "pitch": 0,
@@ -24,6 +24,6 @@
   },
   "output_format": "url"
  },
- "fal_request_id": "01a1d592-d123-73d1-bafc-5a5ed20e90dd",
- "hash": "02ebea55081c"
+ "fal_request_id": "01a1d672-0d02-7690-be27-5ec86ae3aa9a",
+ "hash": "df5d9c84f3f3"
 }

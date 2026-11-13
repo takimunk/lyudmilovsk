@@ -1,0 +1,20 @@
+{
+ "key": "line.owner.supper_thanks.2",
+ "lang": "ja",
+ "text": "太陽はうなじで感じる。だが腹が減っているのは、誰かに言われるまで気づかん。",
+ "speaker": "owner",
+ "voice": "Daniel",
+ "voice_id": "onwK4e9ZLuTAKqWW03F9",
+ "voice_design": null,
+ "direction": "[calm, tired, slow, a little ironic]",
+ "model": "fal-ai/elevenlabs/tts/eleven-v3",
+ "request": {
+  "stability": 0.5,
+  "apply_text_normalization": "auto",
+  "text": "[calm, tired, slow, a little ironic] 太陽はうなじで感じる。だが腹が減っているのは、誰かに言われるまで気づかん。",
+  "voice": "Daniel",
+  "language_code": "ja"
+ },
+ "fal_request_id": "01a1d674-764c-7c80-9c92-0551b448992d",
+ "hash": "e66b03b93b0d"
+}

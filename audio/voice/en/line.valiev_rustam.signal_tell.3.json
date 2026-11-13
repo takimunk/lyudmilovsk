@@ -1,0 +1,20 @@
+{
+ "key": "line.valiev_rustam.signal_tell.3",
+ "lang": "en",
+ "text": "I saw one point of light above the bluff. Either it was you, or something glinted at the station. From a single observation I cannot honestly tell.",
+ "speaker": "valiev_rustam",
+ "voice": "Roger",
+ "voice_id": "CwhRBWXzGAHq8TQ4Fs17",
+ "voice_design": null,
+ "direction": "[confident, dry, matter-of-fact engineer]",
+ "model": "fal-ai/elevenlabs/tts/eleven-v3",
+ "request": {
+  "stability": 0.5,
+  "apply_text_normalization": "auto",
+  "text": "[confident, dry, matter-of-fact engineer] I saw one point of light above the bluff. Either it was you, or something glinted at the station. From a single observation I cannot honestly tell.",
+  "voice": "Roger",
+  "language_code": "en"
+ },
+ "fal_request_id": "01a1d674-a806-7392-8900-580c66deac5b",
+ "hash": "3d24d1b94cf0"
+}

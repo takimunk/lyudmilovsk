@@ -1,0 +1,20 @@
+{
+ "key": "line.sorokin_oleg.autumn_brief.6",
+ "lang": "ru",
+ "text": "Отойдите на двадцать шагов, присядьте и считайте прилёты. Шесть прилётов уже выборка.",
+ "speaker": "sorokin_oleg",
+ "voice": "River",
+ "voice_id": "SAz9YHcvj6GT2YYXdXww",
+ "voice_design": null,
+ "direction": "[a retired scholar, calm, dry humour, slower, gentle]",
+ "model": "fal-ai/elevenlabs/tts/eleven-v3",
+ "request": {
+  "stability": 0.5,
+  "apply_text_normalization": "auto",
+  "text": "[a retired scholar, calm, dry humour, slower, gentle] Отойдите на двадцать шагов, присядьте и считайте прилёты. Шесть прилётов уже выборка.",
+  "voice": "River",
+  "language_code": "ru"
+ },
+ "fal_request_id": "01a1d672-9bdc-7b92-b549-8736062bff3d",
+ "hash": "3210d586e8b0"
+}

@@ -1,0 +1,20 @@
+{
+ "key": "line.girl_b.overdue_wait.1",
+ "lang": "en",
+ "text": "On weekdays he is at the Laboratory until five, then he walks in the yard. Just don't say I am cross. I am not cross.",
+ "speaker": "girl_b",
+ "voice": "Sarah",
+ "voice_id": "EXAVITQu4vr4xnSDxMaL",
+ "voice_design": null,
+ "direction": "[curious, slightly uneasy, conspiratorial]",
+ "model": "fal-ai/elevenlabs/tts/eleven-v3",
+ "request": {
+  "stability": 0.5,
+  "apply_text_normalization": "auto",
+  "text": "[curious, slightly uneasy, conspiratorial] On weekdays he is at the Laboratory until five, then he walks in the yard. Just don't say I am cross. I am not cross.",
+  "voice": "Sarah",
+  "language_code": "en"
+ },
+ "fal_request_id": "01a1d66c-79bf-7a21-adb8-cab63e12e94f",
+ "hash": "51fcc4a8fa55"
+}

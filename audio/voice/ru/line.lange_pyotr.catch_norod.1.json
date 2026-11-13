@@ -1,7 +1,7 @@
 {
  "key": "line.lange_pyotr.catch_norod.1",
  "lang": "ru",
- "text": "Удочки не вижу. У Тани в гастрономе есть, девяносто рублей. Без неё показывать нечего.",
+ "text": "Удочки не вижу. У Тани в Гастрономе есть, девяносто рублей. Без неё показывать нечего.",
  "speaker": "lange_pyotr",
  "voice": "Brian",
  "voice_id": "nPczCjzI2devNBz1zQrb",
@@ -11,10 +11,10 @@
  "request": {
   "stability": 0.5,
   "apply_text_normalization": "auto",
-  "text": "[gruff, unhurried, a weathered fisherman of few words] Удочки не вижу. У Тани в гастрономе есть, девяносто рублей. Без неё показывать нечего.",
+  "text": "[gruff, unhurried, a weathered fisherman of few words] Удочки не вижу. У Тани в Гастрономе есть, девяносто рублей. Без неё показывать нечего.",
   "voice": "Brian",
   "language_code": "ru"
  },
- "fal_request_id": "01a1d660-9ae6-7742-9d62-e3fd68d9a0d9",
- "hash": "d9771731c342"
+ "fal_request_id": "01a1d670-7ddc-7152-98ab-f56b66e88b4c",
+ "hash": "7fe45345df0a"
 }

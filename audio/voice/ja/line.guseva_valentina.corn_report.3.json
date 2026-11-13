@@ -1,0 +1,29 @@
+{
+ "key": "line.guseva_valentina.corn_report.3",
+ "lang": "ja",
+ "text": "つまり来ないってことだね。まあ、釣らせておくさ。塩のことを言ってくれた、それで十分。",
+ "speaker": "guseva_valentina",
+ "voice": "Abbess",
+ "voice_id": "Abbess",
+ "voice_design": null,
+ "direction": "",
+ "model": "fal-ai/minimax/speech-2.6-hd",
+ "request": {
+  "prompt": "つまり来ないってことだね。まあ、釣らせておくさ。塩のことを言ってくれた、それで十分。",
+  "voice_setting": {
+   "speed": 1,
+   "pitch": 0,
+   "vol": 1,
+   "voice_id": "Abbess"
+  },
+  "language_boost": "Japanese",
+  "audio_setting": {
+   "sample_rate": 24000,
+   "format": "mp3",
+   "channel": 1
+  },
+  "output_format": "url"
+ },
+ "fal_request_id": "01a1d66d-38de-7802-b6fd-f2d81d67e1f3",
+ "hash": "4ea76647d382"
+}

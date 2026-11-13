@@ -1,7 +1,7 @@
 {
  "key": "line.korneeva_nina.paper_thanks.3",
  "lang": "ja",
- "text": "鳥が好きならソローキンさんのところへ行くといい。あの人は夜まで鳥の話ができるよ。確かめ済みさ。",
+ "text": "鳥が好きならソローキンさんのところへ行くといいわ。あの人は夜まで鳥の話ができるの。確かめ済みよ。",
  "speaker": "korneeva_nina",
  "voice": "Wise_Woman",
  "voice_id": "Wise_Woman",
@@ -9,7 +9,7 @@
  "direction": "",
  "model": "fal-ai/minimax/speech-2.6-hd",
  "request": {
-  "prompt": "鳥が好きならソローキンさんのところへ行くといい。あの人は夜まで鳥の話ができるよ。確かめ済みさ。",
+  "prompt": "鳥が好きならソローキンさんのところへ行くといいわ。あの人は夜まで鳥の話ができるの。確かめ済みよ。",
   "voice_setting": {
    "speed": 0.95,
    "pitch": 0,
@@ -24,6 +24,6 @@
   },
   "output_format": "url"
  },
- "fal_request_id": "01a1d592-e635-7490-bbfd-37decf860e1e",
- "hash": "af97a492e2c5"
+ "fal_request_id": "01a1d672-2301-7ac1-85bb-e30435fe1d03",
+ "hash": "b97765fdde01"
 }

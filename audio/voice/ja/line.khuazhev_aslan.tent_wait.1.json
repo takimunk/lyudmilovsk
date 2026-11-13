@@ -1,0 +1,20 @@
+{
+ "key": "line.khuazhev_aslan.tent_wait.1",
+ "lang": "ja",
+ "text": "まだ全部は食べていないのか。急がなくていい。トウモロコシは広場、ピロシキは駅、ブリヌイはロープウェイの下だ。腹をすかせた客は話が下手だからな。",
+ "speaker": "khuazhev_aslan",
+ "voice": "Brian",
+ "voice_id": "nPczCjzI2devNBz1zQrb",
+ "voice_design": null,
+ "direction": "[hearty, generous, a cheese seller from the Caucasus, proud of his family's cheese]",
+ "model": "fal-ai/elevenlabs/tts/eleven-v3",
+ "request": {
+  "stability": 0.5,
+  "apply_text_normalization": "auto",
+  "text": "[hearty, generous, a cheese seller from the Caucasus, proud of his family's cheese] まだ全部は食べていないのか。急がなくていい。トウモロコシは広場、ピロシキは駅、ブリヌイはロープウェイの下だ。腹をすかせた客は話が下手だからな。",
+  "voice": "Brian",
+  "language_code": "ja"
+ },
+ "fal_request_id": "01a1d670-8eed-7511-90fa-37e29bb66c72",
+ "hash": "dd782826a6f5"
+}

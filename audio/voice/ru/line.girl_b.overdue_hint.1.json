@@ -1,0 +1,20 @@
+{
+ "key": "line.girl_b.overdue_hint.1",
+ "lang": "ru",
+ "text": "Купить новый? Они бывают в автомате на станции, там, где маятник. Но это сорок рублей, мне уже неловко.",
+ "speaker": "girl_b",
+ "voice": "Sarah",
+ "voice_id": "EXAVITQu4vr4xnSDxMaL",
+ "voice_design": null,
+ "direction": "[curious, slightly uneasy, conspiratorial]",
+ "model": "fal-ai/elevenlabs/tts/eleven-v3",
+ "request": {
+  "stability": 0.5,
+  "apply_text_normalization": "auto",
+  "text": "[curious, slightly uneasy, conspiratorial] Купить новый? Они бывают в автомате на станции, там, где маятник. Но это сорок рублей, мне уже неловко.",
+  "voice": "Sarah",
+  "language_code": "ru"
+ },
+ "fal_request_id": "01a1d66c-56dc-7db2-b087-692c62a16a68",
+ "hash": "474b685738a9"
+}

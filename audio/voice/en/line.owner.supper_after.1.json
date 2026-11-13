@@ -1,0 +1,20 @@
+{
+ "key": "line.owner.supper_after.1",
+ "lang": "en",
+ "text": "The tea's run out again. But there is still some cheese. A good evening.",
+ "speaker": "owner",
+ "voice": "Daniel",
+ "voice_id": "onwK4e9ZLuTAKqWW03F9",
+ "voice_design": null,
+ "direction": "[calm, tired, slow, a little ironic]",
+ "model": "fal-ai/elevenlabs/tts/eleven-v3",
+ "request": {
+  "stability": 0.5,
+  "apply_text_normalization": "auto",
+  "text": "[calm, tired, slow, a little ironic] The tea's run out again. But there is still some cheese. A good evening.",
+  "voice": "Daniel",
+  "language_code": "en"
+ },
+ "fal_request_id": "01a1d671-f8d6-7f51-abe2-fa07ee826316",
+ "hash": "ce1a699fd73d"
+}
