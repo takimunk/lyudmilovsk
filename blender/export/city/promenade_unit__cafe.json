@@ -1,0 +1,300 @@
+{
+ "type": "promenade_unit",
+ "info": {
+  "name_ru": "Лавка в подпорной стене",
+  "name_en": "Promenade unit",
+  "style": "1960s seaside shop fit-out",
+  "use": "public",
+  "inspired_by": "the small shops and cafés in the arcades of Soviet Black Sea and Baltic embankments"
+ },
+ "frame": "x along the street front, y into the plot, z up; origin on the front line, mid-frontage, z 0 = ground at the main entrance",
+ "footprint": [
+  [
+   -4.95,
+   0.0
+  ],
+  [
+   4.95,
+   0.0
+  ],
+  [
+   4.95,
+   6.55
+  ],
+  [
+   -4.95,
+   6.55
+  ]
+ ],
+ "height": 3.25,
+ "entrances": [
+  {
+   "id": "door",
+   "pos": [
+    3.4,
+    0.0,
+    0.0
+   ],
+   "yaw": 0.0,
+   "width": 1.2000000000000002,
+   "height": 2.3,
+   "kind": "street",
+   "leaves": 0,
+   "to": null
+  }
+ ],
+ "spots": [
+  {
+   "id": "counter",
+   "kind": "counter",
+   "pos": [
+    3.3,
+    3.75,
+    0.0
+   ],
+   "yaw": 180.0
+  },
+  {
+   "id": "staff_barista_1",
+   "kind": "work",
+   "pos": [
+    1.7,
+    5.35,
+    0.0
+   ],
+   "yaw": 0.0
+  },
+  {
+   "id": "staff_barista_2",
+   "kind": "work",
+   "pos": [
+    2.9,
+    5.35,
+    0.0
+   ],
+   "yaw": 0.0
+  },
+  {
+   "id": "staff_cook",
+   "kind": "work",
+   "pos": [
+    -3.3,
+    5.45,
+    0.0
+   ],
+   "yaw": 180.0
+  },
+  {
+   "id": "table1_seat0",
+   "kind": "seat",
+   "pos": [
+    -3.6,
+    0.88,
+    0.0
+   ],
+   "yaw": 180.0
+  },
+  {
+   "id": "table1_seat1",
+   "kind": "seat",
+   "pos": [
+    -3.6,
+    2.22,
+    0.0
+   ],
+   "yaw": 0.0
+  },
+  {
+   "id": "table2_seat0",
+   "kind": "seat",
+   "pos": [
+    -1.4,
+    0.88,
+    0.0
+   ],
+   "yaw": 180.0
+  },
+  {
+   "id": "table2_seat1",
+   "kind": "seat",
+   "pos": [
+    -1.4,
+    2.22,
+    0.0
+   ],
+   "yaw": 0.0
+  },
+  {
+   "id": "table3_seat0",
+   "kind": "seat",
+   "pos": [
+    -3.6,
+    2.98,
+    0.0
+   ],
+   "yaw": 180.0
+  },
+  {
+   "id": "table3_seat1",
+   "kind": "seat",
+   "pos": [
+    -3.6,
+    4.32,
+    0.0
+   ],
+   "yaw": 0.0
+  },
+  {
+   "id": "table4_seat0",
+   "kind": "seat",
+   "pos": [
+    -1.4,
+    2.98,
+    0.0
+   ],
+   "yaw": 180.0
+  },
+  {
+   "id": "table4_seat1",
+   "kind": "seat",
+   "pos": [
+    -1.4,
+    4.32,
+    0.0
+   ],
+   "yaw": 0.0
+  }
+ ],
+ "lamps": [
+  {
+   "pos": [
+    0.0,
+    3.0,
+    2.45
+   ],
+   "lumens": 1500,
+   "colour": "#FFD9A8",
+   "kind": "public",
+   "radius": 8.0
+  }
+ ],
+ "things": [
+  {
+   "id": "cafe_bar",
+   "kind": "counter",
+   "pos": [
+    2.3,
+    4.55,
+    1.05
+   ],
+   "yaw": 0.0,
+   "props": {
+    "shop": "seagull_cafe",
+    "service": "bar",
+    "role": "barista"
+   }
+  },
+  {
+   "id": "cafe_stool",
+   "kind": "seat",
+   "pos": [
+    1.0,
+    3.8,
+    0.75
+   ],
+   "yaw": 180.0,
+   "props": {
+    "height": 0.75
+   }
+  },
+  {
+   "id": "table1_chair1",
+   "kind": "seat",
+   "pos": [
+    -3.6,
+    0.88,
+    0.45
+   ],
+   "yaw": 180.0,
+   "props": {
+    "height": 0.45
+   }
+  },
+  {
+   "id": "table2_chair1",
+   "kind": "seat",
+   "pos": [
+    -1.4,
+    0.88,
+    0.45
+   ],
+   "yaw": 180.0,
+   "props": {
+    "height": 0.45
+   }
+  },
+  {
+   "id": "table3_chair1",
+   "kind": "seat",
+   "pos": [
+    -3.6,
+    2.98,
+    0.45
+   ],
+   "yaw": 180.0,
+   "props": {
+    "height": 0.45
+   }
+  },
+  {
+   "id": "table4_chair1",
+   "kind": "seat",
+   "pos": [
+    -1.4,
+    2.98,
+    0.45
+   ],
+   "yaw": 180.0,
+   "props": {
+    "height": 0.45
+   }
+  },
+  {
+   "id": "cafe_menu",
+   "kind": "board",
+   "pos": [
+    -0.6,
+    6.36,
+    1.65
+   ],
+   "yaw": 0.0,
+   "props": {
+    "topic": "prices"
+   }
+  },
+  {
+   "id": "cafe_picture",
+   "kind": "board",
+   "pos": [
+    -4.81,
+    2.6,
+    1.75
+   ],
+   "yaw": 90.0,
+   "props": {
+    "topic": "painting"
+   }
+  }
+ ],
+ "flats": [],
+ "windows": [],
+ "light_tex": 64,
+ "notes": [
+  "promenade unit room, variant cafe: placed at each W1 unit whose plan variant is cafe"
+ ],
+ "tris": {
+  "shell": 214,
+  "detail": 5898,
+  "windows": 0
+ }
+}

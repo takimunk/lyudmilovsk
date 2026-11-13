@@ -63,7 +63,19 @@ RAMP_START = 1.1     # the ramp starts this far behind the face: the landscape's
 WALL_RAMP = 6.0      # the landscape climbs from the lower terrace to the upper over this many metres behind the
                      # wall's face; the wall block (WALL_DEPTH deep) hides it
 WALL_DEPTH = 8.0
+# W1 (3.3 m) holds the promenade's shop units: a room 6 m deep behind each unit's face (blender/city/buildings/
+# promenade_unit.py). Its landscape stays level with the promenade under the rooms and steps up to T1 just behind them
+# (the 1 m landscape grid, tilted up to ~8 deg to the face, needs ~1.2 m either side), and its block is deeper so the
+# step stays hidden under the block's top (docs/city_plan.md "Promenade units").
+W1_RAMP_START = 7.9
+W1_RAMP = 0.4
+W1_DEPTH = 9.5
 SEAWALL_H = W.BEACH_TOP
+
+
+def wall_depth(i):
+    """Depth of wall i's concrete block behind its face (0 = W1)."""
+    return W1_DEPTH if i == 0 else WALL_DEPTH
 
 
 def _lin(pts, y):
@@ -113,7 +125,7 @@ def terrace_z(x, y):
         z = TERRACES[0][3]
     for i in range(len(WALLS)):
         ws = wall_s(i, y)
-        t = (s - ws - RAMP_START) / WALL_RAMP
+        t = (s - ws - (W1_RAMP_START if i == 0 else RAMP_START)) / (W1_RAMP if i == 0 else WALL_RAMP)
         if t <= 0.0:
             break
         t = min(1.0, t)
@@ -704,8 +716,34 @@ def wall_dwellings():
     return out
 
 
+# A unit's trade by its name: the room's dressing (blender/city/buildings/promenade_unit.py VARIANTS, built as
+# promenade_unit__<variant>) and who works there. The staff are the town life's (tools/town/town_life.py
+# UNIT_STAFF_BY_NAME, which it prefers over these: keep the two equal), so the interiors' counters wait for the people
+# who really stand behind them; a name not listed keeps the plan's hints by kind (STAFF).
+UNIT_VARIANTS = {
+    "Кафе «Чайка»": "cafe", "Рыбная лавка": "fish", "Прокат": "rental", "Мастерская": "workshop",
+    "Пельменная": "dumplings", "Сувениры": "souvenirs", "Булочная": "bakery", "Фотоателье": "photo",
+    "Парикмахерская": "barber", "Книжный развал": "books", "Пивной бар": "beer", "Чебуречная": "pasty",
+}
+UNIT_STAFF_BY_NAME = {
+    "Прокат": [["renter", 1, [9, 20], "mon-sun"]],
+    "Мастерская": [["repairman", 1, [9, 18], "mon-sat"]],
+    "Фотоателье": [["photographer", 1, [10, 19], "tue-sat"]],
+    "Парикмахерская": [["barber", 2, [9, 20], "tue-sun"]],
+    "Книжный развал": [["bookseller", 1, [10, 19], "mon-sun"]],
+    "Рыбная лавка": [["fishmonger", 2, [7, 15], "mon-sat"]],
+    "Сувениры": [["seller", 1, [10, 20], "mon-sun"]],
+    "Чебуречная": [["cook", 1, [10, 21], "mon-sun"], ["seller", 1, [10, 21], "mon-sun"]],
+    "Пивной бар": [["bartender", 2, [14, 24], "mon-sun"]],
+    "Булочная": [["baker", 1, [5, 13], "mon-sat"], ["seller", 1, [7, 19], "mon-sun"]],
+    "Пельменная": [["cook", 1, [10, 21], "mon-sun"], ["waiter", 1, [11, 21], "mon-sun"]],
+}
+
+
 def shops_in_seawall():
-    """Units in W1 (the promenade's back wall, 3.3 m): small shops and cafés opening onto the promenade."""
+    """Units in W1 (the promenade's back wall, 3.3 m): small shops and cafés opening onto the promenade. Each is a room
+    behind its face (front = the bay's middle on the face at the promenade's level: the room's origin, its front
+    looking `yaw`), dressed as its `variant`; `door` stays the point 0.6 m in front of the doorway."""
     out = []
     kinds = ["cafe", "shop", "kiosk", "workshop", "cafe", "shop"]
     names = [("Кафе «Чайка»", "Seagull café"), ("Рыбная лавка", "Fish shop"), ("Прокат", "Rentals"),
@@ -723,7 +761,9 @@ def shops_in_seawall():
                     "name_en": names[k][1], "door": _bay_point(b, UNIT_OPENINGS[0][1], 0.6, b["lower"]),
                     "windows": [{"id": "W1-U%02d-w1" % n, "map": _bay_point(b, su, -0.27, b["lower"] + ssill + sh / 2),
                                  "size": [sw, sh], "storey": 0}],
-                    "yaw": b["yaw"], "w": BAY["W1"], "staff": STAFF.get(kinds[k % len(kinds)])})
+                    "yaw": b["yaw"], "w": BAY["W1"],
+                    "staff": UNIT_STAFF_BY_NAME.get(names[k][0]) or STAFF.get(kinds[k % len(kinds)]),
+                    "front": _bay_point(b, 0.0, 0.0, b["lower"]), "variant": UNIT_VARIANTS[names[k][0]]})
     return out
 
 
@@ -761,7 +801,7 @@ def build():
         "city_y": [CITY_Y0, CITY_Y1],
         "terraces": [{"id": t[0], "name_ru": t[1], "name_en": t[2], "z": t[3]} for t in TERRACES],
         "walls": [{"id": wid, "below": TERRACES[i][0], "above": TERRACES[i + 1][0],
-                   "height": round(TERRACES[i + 1][3] - TERRACES[i][3], 2), "depth": WALL_DEPTH,
+                   "height": round(TERRACES[i + 1][3] - TERRACES[i][3], 2), "depth": wall_depth(i),
                    "line": [[round(c, 2) for c in to_map(wall_s(i, y), y)] for y in range(int(CITY_Y0) - 40, int(CITY_Y1) + 41, 10)]}
                   for i, (wid, _) in enumerate(WALLS)],
         "building_types": {k: {"name_ru": v[0], "name_en": v[1], "after": v[2]} for k, v in BUILDING_TYPES.items()},
@@ -788,6 +828,7 @@ def build():
             lp["foot_ue"], lp["head_ue"] = ue(lp["foot"], face_y), ue(lp["head"], face_y)
         for d in data["promenade_units"]:
             d["door_ue"] = ue(d["door"], face_y)
+            d["front_ue"] = ue(d["front"], face_y)
             for w in d["windows"]:
                 w["ue"] = ue(w["map"], face_y)
         for s in data["stairs"]:

@@ -1,0 +1,191 @@
+{
+ "type": "promenade_unit",
+ "info": {
+  "name_ru": "Лавка в подпорной стене",
+  "name_en": "Promenade unit",
+  "style": "1960s seaside shop fit-out",
+  "use": "public",
+  "inspired_by": "the small shops and cafés in the arcades of Soviet Black Sea and Baltic embankments"
+ },
+ "frame": "x along the street front, y into the plot, z up; origin on the front line, mid-frontage, z 0 = ground at the main entrance",
+ "footprint": [
+  [
+   -4.95,
+   0.0
+  ],
+  [
+   4.95,
+   0.0
+  ],
+  [
+   4.95,
+   6.55
+  ],
+  [
+   -4.95,
+   6.55
+  ]
+ ],
+ "height": 3.25,
+ "entrances": [
+  {
+   "id": "door",
+   "pos": [
+    3.4,
+    0.0,
+    0.0
+   ],
+   "yaw": 0.0,
+   "width": 1.2000000000000002,
+   "height": 2.3,
+   "kind": "street",
+   "leaves": 0,
+   "to": null
+  }
+ ],
+ "spots": [
+  {
+   "id": "staff_barber_1",
+   "kind": "work",
+   "pos": [
+    -3.1,
+    1.95,
+    0.0
+   ],
+   "yaw": 270.0
+  },
+  {
+   "id": "staff_barber_2",
+   "kind": "work",
+   "pos": [
+    -3.1,
+    4.05,
+    0.0
+   ],
+   "yaw": 270.0
+  },
+  {
+   "id": "wait0",
+   "kind": "seat",
+   "pos": [
+    0.88,
+    6.01,
+    0.0
+   ],
+   "yaw": 0.0
+  },
+  {
+   "id": "wait1",
+   "kind": "seat",
+   "pos": [
+    1.4,
+    6.01,
+    0.0
+   ],
+   "yaw": 0.0
+  },
+  {
+   "id": "wait2",
+   "kind": "seat",
+   "pos": [
+    1.92,
+    6.01,
+    0.0
+   ],
+   "yaw": 0.0
+  }
+ ],
+ "lamps": [
+  {
+   "pos": [
+    -2.6,
+    3.2,
+    2.45
+   ],
+   "lumens": 1500,
+   "colour": "#FFD9A8",
+   "kind": "public",
+   "radius": 8.0
+  }
+ ],
+ "things": [
+  {
+   "id": "barber_chair_1",
+   "kind": "seat",
+   "pos": [
+    -3.87,
+    2.2,
+    0.58
+   ],
+   "yaw": 270.0,
+   "props": {
+    "height": 0.58,
+    "what": "haircut"
+   }
+  },
+  {
+   "id": "barber_chair_2",
+   "kind": "seat",
+   "pos": [
+    -3.87,
+    4.3,
+    0.58
+   ],
+   "yaw": 270.0,
+   "props": {
+    "height": 0.58,
+    "what": "haircut"
+   }
+  },
+  {
+   "id": "barber_waiting",
+   "kind": "seat",
+   "pos": [
+    1.4,
+    6.01,
+    0.45
+   ],
+   "yaw": 0.0,
+   "props": {
+    "height": 0.45
+   }
+  },
+  {
+   "id": "barber_magazines",
+   "kind": "shelf",
+   "pos": [
+    3.3,
+    6.2,
+    1.0
+   ],
+   "yaw": 0.0,
+   "props": {
+    "topic": "local"
+   }
+  },
+  {
+   "id": "barber_prices",
+   "kind": "board",
+   "pos": [
+    4.81,
+    4.5,
+    1.6
+   ],
+   "yaw": 270.0,
+   "props": {
+    "topic": "prices"
+   }
+  }
+ ],
+ "flats": [],
+ "windows": [],
+ "light_tex": 64,
+ "notes": [
+  "promenade unit room, variant barber: placed at each W1 unit whose plan variant is barber"
+ ],
+ "tris": {
+  "shell": 166,
+  "detail": 1604,
+  "windows": 0
+ }
+}

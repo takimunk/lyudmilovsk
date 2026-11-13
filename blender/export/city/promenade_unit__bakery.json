@@ -1,0 +1,178 @@
+{
+ "type": "promenade_unit",
+ "info": {
+  "name_ru": "Лавка в подпорной стене",
+  "name_en": "Promenade unit",
+  "style": "1960s seaside shop fit-out",
+  "use": "public",
+  "inspired_by": "the small shops and cafés in the arcades of Soviet Black Sea and Baltic embankments"
+ },
+ "frame": "x along the street front, y into the plot, z up; origin on the front line, mid-frontage, z 0 = ground at the main entrance",
+ "footprint": [
+  [
+   -4.95,
+   0.0
+  ],
+  [
+   4.95,
+   0.0
+  ],
+  [
+   4.95,
+   6.55
+  ],
+  [
+   -4.95,
+   6.55
+  ]
+ ],
+ "height": 3.25,
+ "entrances": [
+  {
+   "id": "door",
+   "pos": [
+    3.4,
+    0.0,
+    0.0
+   ],
+   "yaw": 0.0,
+   "width": 1.2000000000000002,
+   "height": 2.3,
+   "kind": "street",
+   "leaves": 0,
+   "to": null
+  }
+ ],
+ "spots": [
+  {
+   "id": "counter",
+   "kind": "counter",
+   "pos": [
+    0.8,
+    3.05,
+    0.0
+   ],
+   "yaw": 180.0
+  },
+  {
+   "id": "staff_seller",
+   "kind": "work",
+   "pos": [
+    0.8,
+    4.7,
+    0.0
+   ],
+   "yaw": 0.0
+  },
+  {
+   "id": "staff_baker",
+   "kind": "work",
+   "pos": [
+    3.2,
+    5.7,
+    0.0
+   ],
+   "yaw": 90.0
+  },
+  {
+   "id": "table1_seat0",
+   "kind": "seat",
+   "pos": [
+    -3.87,
+    1.5,
+    0.0
+   ],
+   "yaw": 90.0
+  },
+  {
+   "id": "table1_seat1",
+   "kind": "seat",
+   "pos": [
+    -2.53,
+    1.5,
+    0.0
+   ],
+   "yaw": 270.0
+  }
+ ],
+ "lamps": [
+  {
+   "pos": [
+    -0.4,
+    3.0,
+    2.45
+   ],
+   "lumens": 1500,
+   "colour": "#FFD9A8",
+   "kind": "public",
+   "radius": 8.0
+  }
+ ],
+ "things": [
+  {
+   "id": "bakery_counter",
+   "kind": "counter",
+   "pos": [
+    0.8,
+    3.9,
+    1.1
+   ],
+   "yaw": 0.0,
+   "props": {
+    "shop": "bakery",
+    "service": "shop",
+    "role": "seller"
+   }
+  },
+  {
+   "id": "bread_rack",
+   "kind": "board",
+   "pos": [
+    0.6,
+    6.15,
+    1.2
+   ],
+   "yaw": 0.0,
+   "props": {
+    "topic": "store"
+   }
+  },
+  {
+   "id": "bread_prices",
+   "kind": "board",
+   "pos": [
+    3.2,
+    6.36,
+    1.7
+   ],
+   "yaw": 0.0,
+   "props": {
+    "topic": "prices"
+   }
+  },
+  {
+   "id": "table1_chair1",
+   "kind": "seat",
+   "pos": [
+    -3.87,
+    1.5,
+    0.45
+   ],
+   "yaw": 90.0,
+   "props": {
+    "height": 0.45
+   }
+  }
+ ],
+ "flats": [],
+ "windows": [],
+ "light_tex": 64,
+ "notes": [
+  "promenade unit room, variant bakery: placed at each W1 unit whose plan variant is bakery"
+ ],
+ "tris": {
+  "shell": 190,
+  "detail": 4255,
+  "windows": 0
+ }
+}

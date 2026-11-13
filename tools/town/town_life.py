@@ -49,6 +49,7 @@ UNIT_STAFF = {
     "workshop": [["repairman", 1, [9, 18], "mon-sat"]],
 }
 # a promenade unit's staff by what it is (its name in the plan), over the plan's hints by kind
+# (tools/city_plan.py UNIT_STAFF_BY_NAME writes the same table into the plan: keep the two equal)
 UNIT_STAFF_BY_NAME = {
     "Прокат": [["renter", 1, [9, 20], "mon-sun"]],
     "Мастерская": [["repairman", 1, [9, 18], "mon-sat"]],
@@ -261,6 +262,37 @@ def local_to_world(front, yaw, local):
     return [round(front[0] + x * math.sin(a) - y * math.cos(a), 2), round(front[1] - x * math.cos(a) - y * math.sin(a), 2), round(front[2] + z, 2)]
 
 
+def unit_room(w, room, places):
+    """A promenade unit with its room built (blender/city/buildings/promenade_unit.py, promenade_unit__<variant>.json): a
+    walked interior like the restaurant's. In by the doorway (w["door"], 0.6 m in front of it) and 1.2 m inside; each role
+    at its work spot behind the counter (spots "staff_<role>[_n]", else any work spot), visitors at the counter and the
+    standing places, diners on the seats."""
+    front, yaw = w["front"], w["yaw"]
+    sp = [dict(s, world=local_to_world(front, yaw, s["pos"]), wyaw=round((yaw - s.get("yaw", 0.0)) % 360, 1))
+          for s in room.get("spots", [])]
+    ent = next((e for e in room.get("entrances", []) if e.get("kind") == "street"), None)
+    inside = local_to_world(front, yaw, [ent["pos"][0], ent["pos"][1] + 1.2, ent["pos"][2]] if ent else [0.0, 1.5, 0.0])
+    work = [s for s in sp if s["kind"] == "work"]
+    slots = []
+    for role, count, _hours, _days in w["staff"]:
+        mine = [s for s in work if s["id"] == "staff_" + role or s["id"].startswith("staff_%s_" % role)] or work
+        for i in range(count):
+            if mine:
+                s = mine[i % len(mine)]
+                slots.append({"kind": "staff", "tag": role, "pos": s["world"], "yaw": s["wyaw"]})
+            else:
+                slots.append({"kind": "staff", "tag": role, "pos": inside, "yaw": (yaw + 180) % 360})
+    for s in sp:
+        if s["kind"] in ("counter", "stand"):
+            slots.append({"kind": "visit", "pos": s["world"], "yaw": s["wyaw"]})
+        elif s["kind"] == "seat":
+            slots.append({"kind": "seat", "pos": s["world"], "yaw": s["wyaw"], "height": 0.45})
+    if not any(s["kind"] == "visit" for s in slots):
+        slots.append({"kind": "visit", "pos": inside, "yaw": (yaw + 180) % 360, "capacity": 3})
+    places.append({"id": w["id"], "kind": w["kind"], "door": w["door"], "yaw": yaw, "island": 0, "slots": slots,
+                   "roles": sorted({r[0] for r in w["staff"]}), "building": w["plot"], "path": [inside]})
+
+
 def flat_slots(beds, sleepers_max):
     """A flat's slots for the simulation (all at its door: the flat is a shell)."""
     out = []
@@ -331,7 +363,8 @@ def build_places(plan, extra, args):
                      "centre": from_ue_cm(p["ue"])})
     for u in plan.get("promenade_units", []):
         work.append({"id": u["id"], "plot": u["id"], "kind": u["kind"], "door": from_ue_cm(u["door_ue"]), "yaw": u["yaw"],
-                     "staff": UNIT_STAFF_BY_NAME.get(u.get("name_ru")) or u.get("staff") or UNIT_STAFF.get(u["kind"], []), "w": u.get("w", 10.0), "d": 6.0, "centre": from_ue_cm(u["door_ue"])})
+                     "staff": UNIT_STAFF_BY_NAME.get(u.get("name_ru")) or u.get("staff") or UNIT_STAFF.get(u["kind"], []), "w": u.get("w", 10.0), "d": 6.0, "centre": from_ue_cm(u["door_ue"]),
+                     "variant": u.get("variant"), "front": from_ue_cm(u["front_ue"]) if u.get("front_ue") else None})
     rest = read_input("unreal/Lyudmilovsk/Content/Restaurant/seats.json")
     if rest and "restaurant" not in extra_work:
         extra_work["restaurant"] = {"seats": rest.get("seats", rest if isinstance(rest, list) else []),
@@ -353,6 +386,11 @@ def build_places(plan, extra, args):
             ent = next((e for e in bdata.get("entrances", []) if e.get("kind") == "street"), None)
             if ent and shell:
                 w["door"] = local_to_world(front, w["yaw"], ent["pos"])
+        room = flats_of_type("promenade_unit", w["variant"]) if w.get("variant") and w.get("front") else None
+        if room:
+            unit_room(w, room, places)
+            workplaces.append(w)
+            continue
         if w["kind"] == "kiosk" and bspots.get("counter"):
             # the seller behind the kiosk's counter, a customer at its window, the stop's bench
             c = bspots["counter"][0]

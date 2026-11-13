@@ -1,0 +1,134 @@
+{
+ "type": "promenade_unit",
+ "info": {
+  "name_ru": "Лавка в подпорной стене",
+  "name_en": "Promenade unit",
+  "style": "1960s seaside shop fit-out",
+  "use": "public",
+  "inspired_by": "the small shops and cafés in the arcades of Soviet Black Sea and Baltic embankments"
+ },
+ "frame": "x along the street front, y into the plot, z up; origin on the front line, mid-frontage, z 0 = ground at the main entrance",
+ "footprint": [
+  [
+   -4.95,
+   0.0
+  ],
+  [
+   4.95,
+   0.0
+  ],
+  [
+   4.95,
+   6.55
+  ],
+  [
+   -4.95,
+   6.55
+  ]
+ ],
+ "height": 3.25,
+ "entrances": [
+  {
+   "id": "door",
+   "pos": [
+    3.4,
+    0.0,
+    0.0
+   ],
+   "yaw": 0.0,
+   "width": 1.2000000000000002,
+   "height": 2.3,
+   "kind": "street",
+   "leaves": 0,
+   "to": null
+  }
+ ],
+ "spots": [
+  {
+   "id": "counter",
+   "kind": "counter",
+   "pos": [
+    2.9,
+    3.85,
+    0.0
+   ],
+   "yaw": 180.0
+  },
+  {
+   "id": "staff_renter",
+   "kind": "work",
+   "pos": [
+    2.9,
+    5.45,
+    0.0
+   ],
+   "yaw": 0.0
+  }
+ ],
+ "lamps": [
+  {
+   "pos": [
+    -0.8,
+    3.3,
+    2.45
+   ],
+   "lumens": 1500,
+   "colour": "#FFD9A8",
+   "kind": "public",
+   "radius": 8.0
+  }
+ ],
+ "things": [
+  {
+   "id": "rental_counter",
+   "kind": "counter",
+   "pos": [
+    2.9,
+    4.65,
+    1.1
+   ],
+   "yaw": 0.0,
+   "props": {
+    "service": "rentals",
+    "role": "renter"
+   }
+  },
+  {
+   "id": "rental_deckchair",
+   "kind": "seat",
+   "pos": [
+    -2.1,
+    1.47,
+    0.3
+   ],
+   "yaw": 0.0,
+   "props": {
+    "height": 0.3
+   }
+  },
+  {
+   "id": "rental_rules",
+   "kind": "board",
+   "pos": [
+    4.81,
+    3.0,
+    1.6
+   ],
+   "yaw": 270.0,
+   "props": {
+    "topic": "rules"
+   }
+  }
+ ],
+ "flats": [],
+ "windows": [],
+ "light_tex": 64,
+ "notes": [
+  "promenade unit room, variant rental: placed at each W1 unit whose plan variant is rental"
+ ],
+ "tris": {
+  "shell": 142,
+  "detail": 1780,
+  "windows": 0
+ }
+}
