@@ -12,7 +12,9 @@
 #             instead of everything above; 'done' is the stage of a finished quest. A quest this very talk begins
 #             (start_on talk) counts as on its first stage. quest.<quest>.<stage>.again = every later talk there
 #             (without it the same lines again; a 'done' talk without it is said once, then the everyday talks go on).
-#             docs/quests.md.
+#             .again may be written several times (said in turn). quest.<quest>.<stage>.if.<cond>[+<cond>] = a variant said
+#             instead while the conditions hold: night, low, day, cloudy, have:<item>, no:<item>, done:<quest>, on:<quest>,
+#             flag:<flag>. docs/quests.md "Branching talk"; tools/check_quest_talk.py checks these lines.
 
 [Owner]
 first = owner.first.1 | hero.owner_first.2 | owner.first.3 | hero.owner_first.4 | owner.first.5

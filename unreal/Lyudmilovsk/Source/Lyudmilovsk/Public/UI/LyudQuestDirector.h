@@ -17,6 +17,8 @@ class UAudioComponent;
  *  - "listeners": people who notice a bird that calls beside them. The hero, as a bird, comes down within reach of one
  *    and calls (F): the quests get "bird_call <Species>.<Body>" and the person says the lines of the first reaction that
  *    fits (the species, a quest's stage, called from the air), over their head and aloud, looking at the bird.
+ *  - "remarks": somebody says a line or two of their own accord when the hero comes near while a quest is on certain stages
+ *    (the grocer about the rowan he came for). Once each ("remark.<id>" in ULyudQuests::Flags); never while a talk is on.
  *  - "feeder_visit <Species>" is reported when a bird comes down onto one of the hero's feeders while he is within 60 m.
  *
  * Say() is for any scene: somebody says lines one after another over their head (ULyudTownTalkSubsystem's bubbles), each
@@ -88,6 +90,16 @@ private:
 		TArray<FReaction> Reactions;
 	};
 
+	struct FRemark
+	{
+		FName Id;
+		FString Person;
+		FName Quest;
+		TArray<FName> Stages;
+		float WithinCm = 600.f;
+		TArray<FString> Lines;
+	};
+
 	struct FSpeech
 	{
 		int32 Person = -1;
@@ -103,12 +115,14 @@ private:
 	void HandleBirdCall(FName Species, const FVector& At, bool bInAir);
 	void TickPickups(class APlayerController* PC, bool bSlow);
 	void TickFeeders(const class APawn* Pawn);
+	void TickRemarks(const class APawn* Pawn);
 	void TickSpeech();
 	void DropPickup(FPickup& P);
 	AActor* PersonActor(int32 PersonId) const;
 
 	TArray<FPickup> Pickups;
 	TArray<FListener> Listeners;
+	TArray<FRemark> Remarks;
 	TArray<FSpeech> Speeches;
 	/** Birds on the hero's feeders at the last look (bird life ids): a visit is told once, when a bird comes down. */
 	TSet<int32> OnTrays;
