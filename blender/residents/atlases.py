@@ -1,9 +1,9 @@
 #!/usr/bin/env python3
 """Texture atlases of the residents: every skin, garment, hairstyle, eye and accessory texture in four shared maps.
 
-    python3 blender/residents/atlases.py [--tile 512] [--out blender/residents/atlases]
-    (needs the scan: wardrobe_scan.py; accessories' tiles come from accessories.py, which wants bpy importable:
-    run it with Blender's python or pip bpy)
+    Blender -b -P blender/residents/atlases.py -- [--tile 512] [--out blender/residents/atlases]
+    (needs the scan: wardrobe_scan.py; the accessories' tiles come from accessories.py, which needs bpy: Blender, or
+    a python with pip bpy. Without it this stops rather than write atlases with no accessory tiles)
 
 All residents share four materials, one per atlas: Skin, Cloth, Hair (alpha-tested strands, beards, string bags) and
 Eyes (irises, teeth, tongue). Each source texture gets a tile (tile px square, pad px of its own colour around it); a
@@ -231,8 +231,8 @@ def accessory_tiles(size, tmp):
     try:
         import accessories as A
     except Exception as e:                                  # noqa: BLE001
-        print("atlases: accessories.py not importable (%s): no accessory tiles" % e)
-        return {}
+        # atlases without them would drop the accessories' tiles and could move every other tile of a section
+        sys.exit("atlases: accessories.py doesn't import (%s): run this with Blender (Blender -b -P atlases.py)" % e)
     paths = A.make_tiles(tmp)
     out = {}
     for name, p in sorted(paths.items()):
@@ -328,7 +328,13 @@ def build(size, pad, out_dir):
             sections["Hair"].append(("%s/%s" % (sub, name), strands_tile(info["texture_abs"], size)))
     eyes = scans("eyes").get("high-poly") or scans("eyes").get("low-poly")
     if eyes:
-        tex_dir = os.path.dirname(eyes["texture_abs"])
+        if eyes.get("texture_abs"):
+            tex_dir = os.path.dirname(eyes["texture_abs"])
+        else:
+            # the original MakeHuman packs (the UE Mac): the eyes carry no .mhmat, their irises sit in eyes/materials
+            sys.path.insert(0, os.path.join(HERE, "..", "humans"))
+            import mpfb_pipeline as P
+            tex_dir = os.path.join(P.services()["LocationService"].get_user_data("eyes"), "materials")
         for iris in W.IRISES:
             p = os.path.join(tex_dir, "%s_eye.png" % iris)
             if os.path.isfile(p):

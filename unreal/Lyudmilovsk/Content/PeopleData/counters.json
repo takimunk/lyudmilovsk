@@ -13,7 +13,7 @@
              {"item": "feed_grain", "price": 15, "count": 5}, {"item": "feed_peanuts", "price": 30, "count": 5},
              {"item": "bird_feed", "price": 10, "count": 5}, {"item": "feeder", "price": 80, "count": 1},
              {"item": "bread_loaf", "price": 12, "count": 1}, {"item": "kefir", "price": 14, "count": 1}, {"item": "cigarettes", "price": 35, "count": 1}, {"item": "lighter", "price": 10, "count": 1}]},
-  {"person": "khuazheva_susanna", "activity": "work_cheese", "title": "ui.shop.title_cheese", "reach_cm": 300,
+  {"person": "khuazhev_aslan", "activity": "work_cheese", "title": "ui.shop.title_cheese", "reach_cm": 300,
    "goods": [{"item": "cheese_braid", "price": 25, "count": 1}, {"item": "cheese_round_small", "price": 40, "count": 1},
              {"item": "cheese_round_big", "price": 110, "count": 1}]},
   {"person": "guseva_valentina", "activity": "work_corn", "title": "ui.shop.title_corn", "reach_cm": 280,

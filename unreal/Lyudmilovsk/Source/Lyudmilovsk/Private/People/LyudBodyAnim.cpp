@@ -703,7 +703,9 @@ void ULyudBodyAnimInstance::UpdateBody(USkeletalMeshComponent* Mesh, float Dt)
 	P.LeanPitch = Lean.X;
 	P.LeanRoll = Lean.Y;
 	// the feet on the ground: a trace under each foot (where it was last frame)
-	FootAlpha += ((bOnFeet ? 1.f : 0.f) - FootAlpha) * FMath::Min(1.f, Dt * 5.f);
+	static const IConsoleVariable* FeetIK = IConsoleManager::Get().RegisterConsoleVariable(TEXT("lyud.Body.FeetIK"), 1,
+		TEXT("0: no body plants its feet on the ground by traces (checks: is a pose's foot lifted by what is under it?)"));
+	FootAlpha += ((bOnFeet && FeetIK->GetInt() != 0 ? 1.f : 0.f) - FootAlpha) * FMath::Min(1.f, Dt * 5.f);
 	FootTraceAge += Dt;
 	if (FootAlpha > 0.01f && GetWorld())
 	{

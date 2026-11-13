@@ -5,9 +5,9 @@
    "id": "cheese_tent",
    "mesh": "SM_Stall_CheeseTent",
    "pos_cm": [
-    -780.0,
-    1940.0,
-    -59.8
+    -660.0,
+    1350.0,
+    0.0
    ],
    "yaw": 0.0,
    "walkable": true
