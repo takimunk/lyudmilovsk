@@ -1177,16 +1177,27 @@ void UPeopleLifeSubsystem::Tick(float DeltaTime)
 		LightTimer = 2.f;
 		UpdateLights(false);
 	}
-	// the life runs on the game's calendar (its time scale), in steps of at most a second
-	double Dt = S.Time - Was;
+	// the life runs on the game's calendar (its time scale), in steps of at most a second; at a high time scale (the
+	// developer's slider) in at most eight longer steps a frame, and no more than a few milliseconds of them: what isn't
+	// stepped stays behind in the life's own clock (Was) and is taken up in the next frames
+	const double Target = S.Time;
+	double Dt = Target - Was;
 	S.Time = Was;
 	Dt = FMath::Clamp(Dt, 0.0, 900.0);
+	const double StepLen = FMath::Max(1.0, Dt / 8.0);
+	const double Deadline = FPlatformTime::Seconds() + 0.004;
 	while (Dt > 0.0)
 	{
-		const float Step = (float)FMath::Min(Dt, 1.0);
+		const float Step = (float)FMath::Min(Dt, StepLen);
 		S.Step(Step);
 		Dt -= Step;
+		if (FPlatformTime::Seconds() > Deadline)
+		{
+			break;
+		}
 	}
+	// never more than the quarter of an hour a clock jump is counted from behind the calendar
+	S.Time = FMath::Max(S.Time, Target - 900.0);
 	DispatchEvents();
 	Present(DeltaTime);
 	SaveTimer -= DeltaTime;
