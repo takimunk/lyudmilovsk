@@ -1296,6 +1296,7 @@ talk = town.chat_kids3.1 | town.chat_kids3.2 | town.chat_kids3.3
 # The sky's shows (UPeopleLifeSubsystem::GetSkyShow adds aurora / rainbow / fireworks to the weather's words while
 # people are looking up at one)
 # The household's weekend outing (doing = outing: at it now, with their own)
+# A grown-up standing by while their child plays (doing = mind_child)
 
 [manner_smoke]
 manner = smoke
@@ -1485,6 +1486,17 @@ doing = outing
 age = kid teen
 weight = 5
 say = town.outing_kid.1..3
+
+[mind_child]
+doing = mind_child
+weight = 5
+say = town.mind_child.1..6
+
+[mind_child_hero]
+doing = mind_child
+near = hero
+weight = 5
+say = town.mind_child_hero.1
 
 # At the counter: a customer on their feet and whoever serves them (LyudBarks::AtCounter: the same shop, market
 # stall or kiosk, within 4 m). A is the customer unless the set says doing = work first.

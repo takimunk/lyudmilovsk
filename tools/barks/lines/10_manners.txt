@@ -296,3 +296,23 @@ weight = 5
 say town.outing_kid.1 | Мы каждые выходные сюда ходим. Это называется традиция. | We come here every weekend. It's called a tradition. | 毎週末ここに来るんだ。「伝統」っていうんだって。
 say town.outing_kid.2 | Сегодня мы тут всей семьёй. Даже телефоны дома оставили. Почти все. | We're all here today, the whole family. Even left the phones at home. Nearly all of them. | 今日は家族みんなで来たよ。スマホも家に置いてきた。ほとんどね。
 say town.outing_kid.3 | А потом мороженое. Мне обещали. При свидетелях! | And ice cream after. I was promised. In front of witnesses! | このあとアイスなんだ。約束してもらった。証人もいるよ！
+
+## ---------------------------------------------------------------------------------------------------------------
+## A grown-up standing by while their child plays (doing = mind_child)
+## ---------------------------------------------------------------------------------------------------------------
+
+[mind_child]
+doing = mind_child
+weight = 5
+say town.mind_child.1 | Не дальше фонтана! Слышишь? Не дальше! | No further than the fountain! Do you hear? No further! | 噴水より向こうはだめ！聞こえた？そこまでだよ！
+say town.mind_child.2 | Ещё пять минут. Это третьи «ещё пять минут». | Five more minutes. This is the third "five more minutes". | あと五分。これで三回目の「あと五分」だけど。
+say town.mind_child.3 | Откуда в них столько сил? Мне бы половину. | Where do they get the energy? I'd settle for half. | あの元気はどこから来るんだろう。半分でいいから分けてほしい。
+say town.mind_child.4 | Стою, смотрю. Самая спокойная часть дня, если честно. | I stand, I watch. The calmest part of my day, to be honest. | 立って、見てるだけ。正直、一日でいちばん落ち着く時間だよ。
+say town.mind_child.5 | Шапку! Шапку надень! ...Ну вот, опять не слышит. | Hat! Put your hat on! ...There, can't hear me again. | 帽子！帽子かぶって！…ほら、また聞こえてない。
+say town.mind_child.6 | Коленки, конечно, опять зелёные. Трава не отстирывается. | Green knees again, of course. Grass doesn't wash out. | ひざはもちろん、また緑色。草のしみは落ちないんだよね。
+
+[mind_child_hero]
+doing = mind_child
+near = hero
+weight = 5
+say town.mind_child_hero.1 | Мои вон там носятся. Осторожно: под ноги они не смотрят. | Those are mine tearing about over there. Careful: they never look where they're going. | あそこで走り回ってるのがうちの子。気をつけて、前を見てないから。

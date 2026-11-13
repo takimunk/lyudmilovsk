@@ -111,6 +111,12 @@ stand by the door, too far from the stalls, until its slots are laid out at them
   id), to the free spot nearest theirs, a few seconds behind (83% of the time within 40 m). Town talk:
   `doing = outing` (sets `outing`, `outing_kid`). `tools/mannersim/run.sh outing` prints a weekend.
 
+- **Keeping an eye on the children** (activity `mind_child`, `FWorld::ChildToMind`): while a child under 12 of theirs is
+  out at play (`playground`, `play_run`) within 450 m and nobody of the household is by, one grown-up leaves what they
+  chose, comes to a spot by the child and stands turned to wherever the child runs; they go when the child does. Those
+  at work or asleep don't. In mannersim's weekend 55% of the child-minutes at play have a grown-up of theirs within 80 m
+  (most of the rest is the walk there). Town talk: `doing = mind_child`.
+
 ## The gestures
 
 No new clips. A manner's gesture is a few goals for the hands, the head and the back worked out from the time since it

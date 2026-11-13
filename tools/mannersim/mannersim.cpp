@@ -325,7 +325,7 @@ static void Outings(bool bPrint)
 	W.Resettle();
 	std::map<std::string, int> Size, Best, Now;
 	std::map<std::string, int> ByAct, Half, Lead;
-	long WalkPairs = 0, WalkNear = 0;
+	long WalkPairs = 0, WalkNear = 0, PlayMinutes = 0, MindedMinutes = 0, MindAlone = 0, MindMinutes = 0;
 	for (const FPerson& P : W.People)
 	{
 		if (P.OutingAct >= 0)
@@ -367,6 +367,38 @@ static void Outings(bool bPrint)
 					Half[W.Activities[(size_t)P.OutingAct].Id + " -> " + What]++;
 				}
 			}
+		}
+		// children out at play, and those of them with a grown-up of theirs standing by
+		for (const FPerson& P : W.People)
+		{
+			if (P.Age < 12 && P.State == EState::Doing && (P.Activity == W.PlayActs[0] || P.Activity == W.PlayActs[1]) && P.Home >= 0)
+			{
+				bool bGrownUp = false, bBy = false;
+				for (const int R : W.Places[(size_t)P.Home].Residents)
+				{
+					const FPerson& Q = W.People[(size_t)R];
+					bGrownUp |= Q.Age >= 18 && Q.Household == P.Household;
+					bBy |= Q.Activity == W.MindAct && Q.State == EState::Doing && Q.Household == P.Household && (Q.Pos - P.Pos).Len2D() < 80.f;
+				}
+				PlayMinutes += bGrownUp ? 1 : 0;
+				if (bPrint && !bBy)
+				{
+					for (const int R : W.Places[(size_t)P.Home].Residents)
+					{
+						const FPerson& Q = W.People[(size_t)R];
+						if (Q.Age >= 18 && Q.Household == P.Household)
+						{
+							const int Sl = 0;
+							const float Sc = W.ChildToMind(Q) < 0 ? -1e9f : 0.f;
+							Half[std::string("unminded, grown-up at: ") + (Q.Activity < 0 ? "nothing" : W.Activities[(size_t)Q.Activity].Id)
+								+ (Q.State == EState::Doing ? "" : " (going)") + (Sc < -1e8f ? " [can't]" : Sl < 0 ? " [no slot]" : "")]++;
+						}
+					}
+				}
+				MindedMinutes += bBy ? 1 : 0;
+			}
+			MindAlone += P.Activity == W.MindAct && P.State == EState::Doing && W.ChildToMind(P) < 0 ? 1 : 0;
+			MindMinutes += P.Activity == W.MindAct && P.State == EState::Doing ? 1 : 0;
 		}
 		Now.clear();
 		Lead.clear();
@@ -418,6 +450,9 @@ static void Outings(bool bPrint)
 	CHECK((int)Best.size() > 150 && Kept * 2 > (int)Best.size(),
 		"households keep their weekend outing (%d of %d with two and more of them there together, %d of those whole; %d with one alone)",
 		Kept, (int)Best.size(), Whole, Lone);
+	CHECK(PlayMinutes > 500 && MindedMinutes * 5 > PlayMinutes * 2 && MindAlone * 10 < MindMinutes + 10,
+		"a grown-up stands by while their child plays (%ld of %ld child-minutes; %ld of %ld minding minutes linger after the child has gone)",
+		MindedMinutes, PlayMinutes, MindAlone, MindMinutes);
 	CHECK(WalkPairs > 500 && WalkNear * 10 > WalkPairs * 7, "a household out walking keeps together (%ld of %ld person-minutes within 40 m of the first of them)",
 		WalkNear, WalkPairs);
 }

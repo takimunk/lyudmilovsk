@@ -456,6 +456,10 @@ namespace LyudPeople
 		int FindActivity(const std::string& Id) const;
 		int ActOf(const FDuty& D) const { return D.Act >= 0 ? D.Act : FindActivity(D.Activity); }
 		int SleepAct = -1, RestHomeAct = -1;   // Index()
+		int MindAct = -1, PlayActs[2] = { -1, -1 };     // mind_child; playground, play_run (Index())
+		/** The household's child (under 12) out at play whom P could keep an eye on: nobody else of the household does
+		 *  already. -1 none. */
+		int ChildToMind(const FPerson& P) const;
 		/** A route between two points (each indoors at a place's slot or outdoors); false = no way. */
 		bool Route(const FPerson& P, const V3& From, int FromSlot, int ToSlot, std::vector<FPerson::FWay>& Out) const;
 		/** Where they are drawn and which way they face (between steps it is Pos). */

@@ -1201,6 +1201,9 @@ namespace LyudPeople
 		}
 		SleepAct = FindActivity("sleep");
 		RestHomeAct = FindActivity("rest_home");
+		MindAct = FindActivity("mind_child");
+		PlayActs[0] = FindActivity("playground");
+		PlayActs[1] = FindActivity("play_run");
 		FlatLit.assign(Places.size(), -1);
 		Indexed = Places.size();
 	}
@@ -1834,6 +1837,9 @@ namespace LyudPeople
 			}
 		}
 		const bool bOuting = OutingNow(P, A);
+		// keeping an eye on their child: where the child plays
+		const int MindKid = MindAct >= 0 && &A == &Activities[(size_t)MindAct] ? ChildToMind(P) : -1;
+		const int MindPlace = MindKid >= 0 ? People[(size_t)MindKid].Place : -1;
 		for (const int Pi : Cand)
 		{
 			const FPlace& Pl = Places[Pi];
@@ -1863,6 +1869,11 @@ namespace LyudPeople
 				if (bOuting && Pi == P.OutingPlace)
 				{
 					Score -= 3000.f;    // where the household goes
+				}
+				if (MindKid >= 0)
+				{
+					// by the child (a spot of the same place, else the nearest to them)
+					Score = (Sl.Approach - People[(size_t)MindKid].Pos).Len2D() - (Pi == MindPlace ? 200.f : 0.f);
 				}
 				if (Pl.Island != Island)
 				{
@@ -1921,9 +1932,46 @@ namespace LyudPeople
 		return Best;
 	}
 
+	int FWorld::ChildToMind(const FPerson& P) const
+	{
+		if (P.bChild || P.Age < 18 || P.Home < 0 || P.Household.empty())
+		{
+			return -1;
+		}
+		int Kid = -1;
+		for (const int R : Places[P.Home].Residents)
+		{
+			const FPerson& Q = People[R];
+			if (R == P.Id || Q.Household != P.Household)
+			{
+				continue;
+			}
+			if (Q.Age >= 18)
+			{
+				if (Q.Activity == MindAct && MindAct >= 0 && Q.State != EState::Idle)
+				{
+					return -1;      // somebody of theirs is with the child already
+				}
+				continue;
+			}
+			// (not from the other end of town: the child would be home again before they got there)
+			if (Kid < 0 && Q.Age < 12 && Q.State == EState::Doing && Q.Place >= 0 && !Places[Q.Place].bIndoor && Q.Island == P.Island
+				&& (Q.Activity == PlayActs[0] || Q.Activity == PlayActs[1]) && (Q.Pos - P.Pos).Len2D() < 450.f)
+			{
+				Kid = R;
+			}
+		}
+		return Kid;
+	}
+
 	float FWorld::Score(const FPerson& P, const FActivity& A, int& OutSlot) const
 	{
 		OutSlot = -1;
+		const bool bMind = MindAct >= 0 && &A == &Activities[(size_t)MindAct];
+		if (bMind && ChildToMind(P) < 0)
+		{
+			return -1e9f;
+		}
 		if (!A.bFree || P.Age < A.MinAge || P.Age > A.MaxAge || !InHours(A.From, A.To, Hour))
 		{
 			return -1e9f;
@@ -1988,6 +2036,12 @@ namespace LyudPeople
 		if (OutingNow(P, A))
 		{
 			Score += 0.7f;
+		}
+		// their child is out at play: one of the grown-ups goes to stand by (the activity's own base keeps it from being
+		// chosen for itself)
+		if (bMind)
+		{
+			Score += 3.2f;
 		}
 		Score -= TravelH * Opt.WalkCostPerHour;
 		// the weather: nobody chooses to be out in the rain (those who love the open air mind it less), the frost empties
@@ -2379,6 +2433,20 @@ namespace LyudPeople
 		if (bRain && Cur.bFree && Duty < 0 && !Cur.bRainOk && !Cur.bGather && !P.bIndoors && P.Place >= 0 && !Places[P.Place].bIndoor)
 		{
 			return true;
+		}
+		// keeping an eye on their child: for as long as the child plays
+		if (P.Activity == MindAct)
+		{
+			return ChildToMind(P) < 0;
+		}
+		// their child went out to play and nobody of theirs is by: they leave what they chose for it
+		if (MindAct >= 0 && Cur.bFree && Duty < 0 && !Cur.bGather && Time - P.StateStart > 120.0 && ChildToMind(P) >= 0)
+		{
+			int SlotThere = -1, SlotHere = -1;
+			if (Score(P, Activities[(size_t)MindAct], SlotThere) > Score(P, Cur, SlotHere))
+			{
+				return true;
+			}
 		}
 		// the household's outing: whoever is at it stays with their own; the others leave what they chose for it
 		if (P.OutingAct >= 0 && Duty < 0 && OutingNow(P, Activities[(size_t)P.OutingAct]))
@@ -3385,6 +3453,15 @@ namespace LyudPeople
 				else if (Activities[P.Activity].bWander)
 				{
 					Wander(P);
+				}
+				else if (P.Activity == MindAct)
+				{
+					// their eyes on the child: turned to wherever the child has run to
+					const int Kid = ChildToMind(P);
+					if (Kid >= 0 && (People[(size_t)Kid].Pos - P.Pos).Len2D() > 1.f)
+					{
+						P.Yaw = YawTo(P.Pos, People[(size_t)Kid].Pos);
+					}
 				}
 				break;
 			}
