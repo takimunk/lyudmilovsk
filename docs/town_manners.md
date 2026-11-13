@@ -69,7 +69,9 @@ Only people who have a body now are updated (a few dozen); between picks an upda
 
 `FWorld::Rain` and `TempC` (from `ULyudWeatherSubsystem`) weigh on what people choose: outdoor seats and lookouts lose in
 the rain and the frost, the water gains on a warm day, and a free outdoor activity is left when the rain starts
-(activities with `"rain": "ok"` are not). New activities: `jog`, `play_run` (children), `feed_birds`, `read_bench`;
+(activities with `"rain": "ok"` are not). A fine evening (18:00-21:30, dry, over 12 C) draws walkers and those who stand and
+look to the promenade, the pier, the fountain and the squares, the more the warmer (twice the mild evening's crowd at 23 C).
+New activities: `jog`, `play_run` (children), `feed_birds`, `read_bench`;
 `"pace"` makes an activity's walk a run.
 
 ## The sky's shows

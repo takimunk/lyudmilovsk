@@ -96,6 +96,7 @@ struct FDay
 	long Updates = 0;
 	int BenchNoon = 0;
 	int Ritualists = 0, RitualKept = 0;
+	int FrontEvening = 0;       // people on the sea front and the squares, summed over the evening's samples (18:30-21:00)
 	bool bDates = false;
 	std::map<std::string, int> DateHalf;
 	int AllDates = 0, Dates = 0, DatesKept = 0;      // pairs of friends with a weekly date; those whose day is this Wednesday; kept
@@ -263,6 +264,18 @@ static void RunDay(FDay& D)
 				if (P.bTown && P.Activity >= 0 && P.State == EState::Doing)
 				{
 					D.ActMinutes[W.Activities[P.Activity].Id] += 1.0;
+				}
+			}
+		}
+		if (Sec % 600 == 0 && W.Hour >= 18.5f && W.Hour < 21.f)
+		{
+			// the sea front of an evening
+			for (const FPerson& P : W.People)
+			{
+				if (P.bTown && P.State == EState::Doing && P.Place >= 0 && !P.bIndoors)
+				{
+					const std::string& K = W.Places[(size_t)P.Place].Kind;
+					D.FrontEvening += K == "promenade" || K == "pier" || K == "fountain" || K == "square" ? 1 : 0;
 				}
 			}
 		}
@@ -889,6 +902,9 @@ int main(int Argc, char** Argv)
 	CHECK(Mild.PointNoShow == 0, "nobody points at an empty sky (%d)", Mild.PointNoShow);
 	CHECK(Mild.AllDates > 250 && Mild.Dates > 30 && Mild.DatesKept * 5 > Mild.Dates * 2,
 		"friends keep their weekly date (%d of the %d pairs whose day it is met; %d pairs in the town)", Mild.DatesKept, Mild.Dates, Mild.AllDates);
+	CHECK(Warm.FrontEvening > Mild.FrontEvening && Warm.FrontEvening * 2 > Frost.FrontEvening * 3,
+		"a warm evening brings the town out to the sea front (%d person-samples warm, %d mild, %d in the frost)", Warm.FrontEvening, Mild.FrontEvening,
+		Frost.FrontEvening);
 	CHECK(Mild.Ritualists > 300 && Mild.RitualKept > Mild.Ritualists / 4, "people keep their rituals (%d of the %d who have one were at it at their hour; the rest at work)",
 		Mild.RitualKept, Mild.Ritualists);
 	CHECK(Mild.UmbrellasDry == 0 && Frost.UmbrellasDry == 0, "no umbrellas on a dry day");

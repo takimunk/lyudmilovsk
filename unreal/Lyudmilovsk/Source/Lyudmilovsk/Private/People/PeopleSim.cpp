@@ -2068,6 +2068,16 @@ namespace LyudPeople
 				}
 			}
 		}
+		// a fine evening: the town comes out to walk the sea front (the warmer, the more of them; nobody in the rain)
+		if (Hour >= 18.f && Hour < 21.5f && !bRain && TempC > 12.f && !A.bAway && !A.bGather && !Places[Sl.Place].bIndoor
+			&& (A.bWander || A.Pose == EPose::Look))
+		{
+			const std::string& K = Places[Sl.Place].Kind;
+			if (K == "promenade" || K == "pier" || K == "fountain" || K == "square")
+			{
+				Score += 0.15f + 0.25f * std::min(1.f, (TempC - 12.f) / 10.f);
+			}
+		}
 		// a holiday on: the town comes out (the sociable ones most; children and the old a little less late at night)
 		if (A.bGather)
 		{
