@@ -395,6 +395,92 @@ children's wall, the store's, clinic's, hall's and club's shelves and every dail
 `lyud.City.Read <text id>|next|prev|close|list|all|clear`; developer mode `interiors.read_nearest`,
 `interiors.read_all` (toggle: every text read / none), `interiors.read_list`.
 
+### Staff talk
+
+At a counter whose act (or thing) has `topics` and whose staff is on shift, E opens a chooser on the page instead of the
+shop or the act's page: the title is the name of the staff member on shift nearest the counter (`UPeopleLifeSubsystem::
+GetDisplayName`; `city.talk.speaker` when nobody is drawn), the act's line on top, then numbered entries (`city.talk.entry`,
+`city.talk.entry_new` for a topic not heard yet, `▸` on the chosen one) with `city.talk.buy` first when the act sells. 1-9
+pick at once, A/D (left/right, up/down) move, E asks, Esc/W/S/Space or walking 2.5 m off leave; the hero's steps are held
+while it is up. An answer's lines come one per E (`city.talk.keys_answer`, the last `city.talk.keys_back`), then the chooser
+again with the topics of now (a `once` topic heard is gone; a `heard` line or topic may open). A topic is offered only when
+its conditions hold and at least one answer line holds now; at most 8 per counter, at most 6 lines per answer. Nobody on
+shift, the plot shut (its closed words), a game, a show, a text, sitting or lying, or minutes behind a fade: no chooser,
+the act runs as before. `@open` shops without staff never talk. Asking: the lines that hold now (a `once` line only the
+first time), the quest event `ask`/<topic id> every time, the topic heard (`h:<topic>` in the save), and the first time
+its `collect` stamp (`staff/<trade>`: the collection "Faces behind the counters", 31 pieces).
+
+```
+"acts":   {"<act>": {..., "topics": ["<topic id>" | "@<set>" | {topic}, ...]}}     (a rule's "topics" too: its things)
+"topics": {"<act id>": [ {topic}, ... ]}                                           (any content file: adds to that act)
+"topic_sets": {"<set>": [ {topic}, ... ]}                                          (shared: "@rassvet" = the film topic)
+{topic} = {"id": "<trade>.<topic>", "k": "<title key>", "lines": [<line keys or {"k", <line conditions>}>],
+           "once": 0|1, "gives": {"collect": "<set>/<piece>"}, <line conditions: the topic is offered only while they hold>}
+line conditions (everywhere): h, d, date, after, before, once, every, festival, weather, have, count, read, and
+  "did": "<act target>" | "!<target>" (the hero has done it at least once: watched the film, played chess, the telescope),
+  "heard": "<topic id>" | "!<topic id>"
+```
+
+The model (`TalkReady`, `TopicsNow`, `TopicOffered`, `AskTopic`, `ForgetTopics`, `TalkRole`, `HasDone`) is checked in
+citysim; `did` is filled by every act run (`w:<target>` in the save; an old save seeds it from its uses). Content:
+`tools/city/content/talk.json` with words in `strings/talk.json` (`city.ask.<trade>.<topic>` titles, `.N` lines): 31
+trades (the six kiosks, «Тарелка», the library desk, the club buffet and cloakroom, the store's tills and departments, the
+market, its bird/bait/tea stalls, fish shop, bakery, «Чайка», dumplings, pasties, beer, the book stall, souvenirs, rentals,
+the photo desk, the clinic, the sanatorium, the hall bar, the fair, the sports café, «Шестерня»'s lending desk, the
+lifeguards and the keeper), 93 topics, 218 answer lines, ru/en/ja. They point at each other: the film of the day at
+«Рассвет» (one topic shared by the buffet and the cashiers), the library's stamp diary, the potter's week at the culture
+block, Kesha the parrot, the chess regulars, the morning paper. `--check` fails on an unknown act or topic, a topic without
+a plain line, more than 8, an unknown `did` target or `heard` topic. Console `lyud.City.Ask <thing id> [topic id] | list |
+reset` (from anywhere, whatever the hour and staff); developer mode `interiors.topics` (heard, on the page and the log),
+`interiors.topics_reset` (every topic new again), `interiors.ask_nearest`.
+
+### Room tones
+
+Each plot may name a tone: a quiet loop and sparse one-shots. Five times a second (the pick's rate, nothing per frame) the
+nearest thing within 10 m on the hero's floor names the plot; its tone (or, while the plot is shut, the tone's `closed`
+one) plays; none near, past the town box or a plot without a tone: silence. One 2D `UAudioComponent` (made once with
+`UGameplayStatics::CreateSound2D`, kept in a UPROPERTY, never auto-destroyed) plays the loop: a new loop stops the old and
+fades in over 1.5 s, the same loop only moves its level, silence fades out over 1 s; a loop asset that does not loop by
+itself is started again. Level = the tone's `volume` x the soundscape's master and ambience volumes, kept down to 20 % as
+`GetOutdoors()` goes to 1 (an open kiosk). One-shots: a pool id of the soundscape every `every` seconds (random in the
+range, the model's dice) via `ULyudSoundscapeSubsystem::PlayEffect` 2-5 m from the hero at `shot_volume`. The loops are
+loaded once when the file is adopted (`LoadObject`, a handful).
+
+```
+"tones":   {"<id>": {"loop": "<sound id>", "volume": 0..1, "shots": ["<sound id>"], "every": [min, max] s (12..30, 2..600),
+                     "shot_volume": 0..1, "closed": "<tone id>", "about": "..."}}
+"tone_by": {"<plot id>" | "unit:<variant>" | "<building type>" | "<plot kind>": "<tone id>"}     (first match in that order)
+"sound_alias": {"<id an act uses>": "<soundscape id>"}                                           (page_turn -> diary_page ...)
+```
+
+interiors.py writes `tones` (with the loop's asset path, `/Game/Audio/<Group>/S_<id>_01`) and `plot_tones`. Now: ten tones
+(`hall_quiet`, `reading_room`, `cafe_room`, `bar_room`, `kitchen_shop`, `shop_room`, `cold_counter`, `empty_room`,
+`sport_hall`, `clock_room`) on 50 plots, all from sounds that exist (station hall, restaurant room and kitchen, the
+vending hum, diary pages), except `clock_tick` and `ball_bounce` (silent until made). Console `lyud.City.Tone`; developer
+mode `interiors.tone`.
+
+### Sound ids
+
+Every act `sound` is checked against the soundscape's pools (`Private/Audio/LyudSoundscape.cpp` `Groups`) and the files
+(`audio/sounds.json`, `Content/Audio`): `python3 tools/city/interiors.py` prints the ids that play nothing, `--sounds`
+the table. 16 aliases map ids the acts use onto existing ones (`page_turn`/`paper_rustle` -> `diary_page(s)`,
+`coin(_drop)` -> `rest_coins`, `cup_clink` -> `rest_clink`, `plate_clink` -> `rest_plate`, `water_pour` -> `rest_pour`,
+`purr` -> `cat_purr`, `shop_bell`/`bell_ding`/`bell_ring` -> `rest_bell`, `fridge_hum` -> `vending_hum`, `arcade_blip` ->
+`console_game_far`, `pan_sizzle` -> `rest_sizzle`, `aquarium_bubbles`/`water_bubble` -> `swim_bubbles`); the game's own
+page turns use `diary_page` (its wav exists under `audio/sfx/diary`, it plays once imported). Still missing (56 ids, no
+file anywhere; the acts are silent until they are made):
+
+| group | ids (acts) |
+|---|---|
+| games and sport | `air_rifle` (gallery), `ball_bounce` (basketball, school), `billiard_click`, `chess_piece` (12 acts), `dart_thud`, `foosball_rattle`, `pingpong_ball`, `ring_clink`, `mat_thud`, `weights_clank`, `bike_whirr`, `footsteps_run`, `whistle_short` |
+| rooms and machines | `clock_tick` (8), `radio_tune` (14), `tv_hiss`, `vinyl_crackle` (12), `tape_hiss`, `projector_whirr`, `slide_click`, `jukebox_click`, `washer_hum`, `dryer_hum`, `sewing_rattle`, `wheel_hum`, `phone_dial`, `morse_beep`, `mic_feedback`, `train_clack`, `music_box` |
+| hands and paper | `drawer_slide` (10), `pencil_scratch`, `paper_tear`, `stamp_thump`, `ticket_punch`, `scissors`, `chalk`, `brush_strokes`, `plane_wood`, `scale_clunk` (9), `hanger_clink`, `camera_flash`, `sack_rustle` |
+| home and weather | `sheets_rustle` (20 beds), `kettle_whistle`, `tap_water`, `water_sip`, `steam_hiss`, `fire_crackle`, `wood_creak`, `wind_soft` (14) |
+| music and voices | `piano_chord`, `choir_hum`, `waltz`, `school_bell`, `stage_curtain` |
+
+Also known: the `Fishing` group is in the soundscape's list with no files; `Bikes` and `Railway` are imported but not in
+the list (their ids play nothing from an act).
+
 ### How to add content (for the furnishing agents)
 
 1. Declare things with `B.thing(id, kind, pos, yaw, **props)`; ids stable and unique in the building; then run
@@ -480,7 +566,8 @@ children's wall, the store's, clinic's, hall's and club's shelves and every dail
   * `read`: the reading view (see "The reading page");
   * `screen`: the show (see the act field), subtitles 2.8..7 s each by length, the minutes in equal shares as they come;
     over at E (`E — stop watching`), at getting up, walking off or any screen;
-  * `sound`: `ULyudSoundscapeSubsystem::PlayEffect(id)` (an id without a pool plays nothing);
+  * `sound`: `ULyudSoundscapeSubsystem::PlayEffect(id)` (an id without a pool plays nothing; see "Sound ids");
+  * `topics` with the staff on shift: the talk's chooser (see "Staff talk");
   * quests: `Notify(event or "do", target or act id)` and `Notify("visit", plot)` at every use; also `visit` when the plot
     round the hero changes (the nearest thing within 4 m on his floor, five times a second; walking out between buildings
     keeps the last plot). A quest's last stage should wait for a `do` (or `have`), never a bare `visit`: the quest engine
@@ -492,19 +579,20 @@ children's wall, the store's, clinic's, hall's and club's shelves and every dail
 * Rules in `Private/City/CityThingsModel.h` (`LyudCity::FModel`: `Load`, `Pick`, `Check`, `Run`, `NextLine`, `Nearest`,
   `NearestThing`, `ScreenFrom`, `NeedsSeatFirst`, `SeatHeight`, `Subtitles`, `SaveState`/`LoadState`,
   `ResetToday`/`ResetState`; also `IsShut`/`ActIndexNow` (the closed act), `GiveStamp`/`CountStamps`/`GrantSet`/`ClearSet`,
-  `FindFree`/`Claim`/`Release`/`ThingsOfPlot`, `WeatherBits`), engine-free; `tools/citysim/run.sh` checks it (224 checks, the mini-games, sitting, sleeping and reading included) on `tools/citysim/fixture.json`, made-up
+  `FindFree`/`Claim`/`Release`/`ThingsOfPlot`, `WeatherBits`), engine-free; `tools/citysim/run.sh` checks it (257 checks, the mini-games, sitting, sleeping, reading, the staff talk and the room tones included) on `tools/citysim/fixture.json`, made-up
   acts in the test itself and the real file when it is built. Save record "CityThings" (pages, daily boards' days, today's
   counts, uses, plots visited); a New Game starts it over.
 * Console: `lyud.City.Things` (count, the nearest five), `lyud.City.Do <thing id>` (run it from anywhere; sitting only
   when the hero is within 4 m), `lyud.City.Things.Show 0|1` (labels within 15 m), `lyud.City.Weekday <mon..sun>` (the clock
   on to the next such day, same time), `lyud.City.Collections [grant|clear <set|*>]`, `lyud.City.Sit|Lie [thing id]`, `lyud.City.Sleep <hour>`,
-  `lyud.City.Read <text id>|next|prev|close|list|all|clear`. Developer mode, group `interiors`:
+  `lyud.City.Read <text id>|next|prev|close|list|all|clear`, `lyud.City.Ask <thing id> [topic id]|list|reset`, `lyud.City.Tone`. Developer mode, group `interiors`:
   things nearby, use the nearest, reset today's limits, 500 rub., `interiors.open_all_hours` (toggle: no hours, days or staff
   asked; no closed acts), `interiors.show_things` (toggle: the labels), `interiors.collections` (the collections' page),
   `interiors.collections_all` (toggle: every set complete / cleared), `interiors.game_aim|game_rally|game_duel` (the
   nearest game of that type, from anywhere), `interiors.game_win` (win the game being played), `interiors.regulars` (the
   regulars' page; the log lists each one's style, skill, games, plots), `interiors.sit_nearest`, `interiors.lie_nearest`,
-  `interiors.read_nearest`, `interiors.read_all` (toggle), `interiors.read_list`. Console `lyud.City.Game <thing id>|press [1-3]|win|quit|regulars`. Every city quest stage has a `dev` block written by interiors.py (`quest_dev`): a teleport in front of a thing
+  `interiors.read_nearest`, `interiors.read_all` (toggle), `interiors.read_list`, `interiors.topics`, `interiors.topics_reset`,
+  `interiors.ask_nearest`, `interiors.tone`. Console `lyud.City.Game <thing id>|press [1-3]|win|quit|regulars`. Every city quest stage has a `dev` block written by interiors.py (`quest_dev`): a teleport in front of a thing
   that makes its first objective (`city.q.<quest>.<n>`), the clock an hour after it opens, `lyud.City.Weekday` to a day it is
   open, `Inventory.Earn` for its price, the items a later stage only checks; a stage's own `dev` in
   `tools/city/content/quests.json` wins key by key.

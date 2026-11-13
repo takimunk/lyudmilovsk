@@ -9,6 +9,7 @@
 #include "Camera/CameraComponent.h"
 #include "Camera/PlayerCameraManager.h"
 #include "CollisionQueryParams.h"
+#include "Components/AudioComponent.h"
 #include "Components/CapsuleComponent.h"
 #include "Components/SceneComponent.h"
 #include "Doors/LyudDoor.h"
@@ -34,6 +35,7 @@
 #include "Misc/FileHelper.h"
 #include "Misc/Paths.h"
 #include "NpcDialogue.h"
+#include "Sound/SoundBase.h"
 #include "People/PeopleLife.h"
 #include "People/TownTalk.h"
 #include "Plants/GameCalendar.h"
@@ -88,6 +90,15 @@ namespace LyudCityThingsImpl
 	constexpr int32 ShowMaxParts = 5;
 	/** A light switch reaches the lamps up to this much over it (cm): the ceiling of its room, not the floor above. */
 	constexpr float SwitchFloor = 400.f;
+	/** Room tones: the plot's tone is heard while a thing of it is this near on the hero's floor (cm); the loop fades in and
+	 *  out over these seconds; outdoors (ULyudSoundscapeSubsystem::GetOutdoors 1) it keeps this much of its level; a
+	 *  one-shot plays this far from the hero (cm). */
+	constexpr double ToneRadius = 1000.0;
+	constexpr float ToneFadeIn = 1.5f;
+	constexpr float ToneFadeOut = 1.0f;
+	constexpr float ToneOutdoorKeep = 0.2f;
+	constexpr double ToneShotNear = 200.0;
+	constexpr double ToneShotFar = 500.0;
 
 	FString Str(const std::string& S)
 	{
@@ -255,6 +266,15 @@ void ULyudCityThings::Deinitialize()
 	bBookAdded = false;
 	SleepHour = -1;
 	bSleeping = false;
+	EndTalk();
+	if (ToneAudio)
+	{
+		ToneAudio->Stop();
+		ToneAudio->DestroyComponent();
+	}
+	ToneAudio = nullptr;
+	ToneSounds.Reset();
+	ToneHeard = -1;
 	EndShow();
 	EndLie(false);
 	UnhookSeatKeys();
@@ -339,6 +359,22 @@ void ULyudCityThings::AdoptLoaded()
 	}
 	UE_LOG(LogLyudCity, Display, TEXT("CityThings: %d things, %d acts, %d shops from City/interiors.json (%d unknown items, parsed in %.1f ms on a worker)"),
 		(int32)Model->Things.size(), (int32)Model->Acts.size(), (int32)Model->Shops.size(), Unknown, Job->Ms);
+	// the room tones' loops, once (a handful of assets; a tone with no asset is silent until its sound exists)
+	ToneSounds.Reset();
+	ToneSounds.SetNum((int32)Model->Tones.size());
+	int32 ToneLoaded = 0;
+	for (int32 I = 0; I < ToneSounds.Num(); ++I)
+	{
+		const std::string& Asset = Model->Tones[(size_t)I].Asset;
+		if (!Asset.empty())
+		{
+			ToneSounds[I] = LoadObject<USoundBase>(nullptr, *LyudCityThingsImpl::Str(Asset), nullptr, LOAD_NoWarn | LOAD_Quiet);
+			ToneLoaded += ToneSounds[I] ? 1 : 0;
+		}
+	}
+	ToneHeard = -1;
+	UE_LOG(LogLyudCity, Display, TEXT("CityThings: %d staff talk topics, %d room tones (%d loops loaded)"), (int32)Model->Topics.size(),
+		ToneSounds.Num(), ToneLoaded);
 	// a load restored the save before the file was parsed: its state is applied now
 	ApplySaved();
 }
@@ -977,6 +1013,13 @@ void ULyudCityThings::Run(int32 Thing, bool bFromConsole, bool bFromSeat)
 		Refuse(LyudText::Get(TEXT("city.act.sit_first")));
 		return;
 	}
+	EndTalk();
+	// the staff talk is asked before the act runs (a daily act's count or the money spent must not hide it): its topics now
+	std::vector<int> TalkOffer;
+	if (!bShutWords && Model->HasTopics(Thing))
+	{
+		Model->TalkReady(Thing, Now, LyudCityThingsImpl::Ask(this), TalkOffer);
+	}
 	const LyudCity::FOutcome O = Model->Run(Thing, Now, LyudCityThingsImpl::Ask(this));
 	UE_LOG(LogLyudCity, Display, TEXT("CityThings: do %s (%s, act %s) -> %s line=%s minutes=%d price=%d shop=%s event=%s/%s%s"),
 		*LyudCityThingsImpl::Str(T.Id), *LyudCityThingsImpl::Str(T.Kind), O.Act >= 0 ? *LyudCityThingsImpl::Str(Model->Acts[O.Act].Id) : TEXT("-"), UTF8_TO_TCHAR(LyudCity::VerdictName(O.Verdict)),
@@ -1049,6 +1092,24 @@ void ULyudCityThings::Run(int32 Thing, bool bFromConsole, bool bFromSeat)
 	AHeroCharacter* Hero = Cast<AHeroCharacter>(UGameplayStatics::GetPlayerPawn(World, 0));
 	APlayerController* PC = Hero ? Cast<APlayerController>(Hero->GetController()) : nullptr;
 	ULyudInventoryUI* UI = ULyudInventoryUI::Get(this);
+	// a counter with topics and its staff on shift: the chooser instead of the shop or the page (the act's line on top, "Buy..."
+	// first when it sells); not for games, shows, reading, sitting or lying, or a stretch of time behind a fade
+	if (!TalkOffer.empty() && O.Game < 0 && O.Screen.empty() && O.Text < 0 && O.Pose != "sit" && O.Pose != "lie" && !(O.Minutes > 0 && O.bFade))
+	{
+		TArray<int32> Topics;
+		Topics.Reserve((int32)TalkOffer.size());
+		for (const int Topic : TalkOffer)
+		{
+			Topics.Add(Topic);
+		}
+		if (O.Minutes > 0)
+		{
+			JumpMinutes(O.Minutes, false);
+		}
+		BeginTalk(Thing, Topics, TalkSpeaker(Thing), O.Line.empty() ? FText::GetEmpty() : LineText(LyudCityThingsImpl::Str(O.Line)),
+			LyudCityThingsImpl::Str(O.Shop), LyudCityThingsImpl::Str(O.Title), bFromConsole);
+		return;
+	}
 	if (O.Game >= 0)
 	{
 		// a mini-game instead of the page: seated first when the act sits (a chess table) and the hero is at it
@@ -1061,32 +1122,7 @@ void ULyudCityThings::Run(int32 Thing, bool bFromConsole, bool bFromSeat)
 	}
 	if (!O.Shop.empty())
 	{
-		const std::vector<LyudCity::FGood>* Stock = Model->FindShop(O.Shop);
-		TArray<FLyudShopGood> Goods;
-		if (Stock)
-		{
-			for (const LyudCity::FGood& G : *Stock)
-			{
-				FLyudShopGood Good;
-				Good.Item = LyudCityThingsImpl::Name(G.Item);
-				Good.Price = G.Price;
-				Good.Count = G.Count;
-				if (ULyudInventory::FindDef(Good.Item))
-				{
-					Goods.Add(Good);
-				}
-			}
-		}
-		if (UI && Goods.Num() > 0)
-		{
-			SetPrompted(-1);
-			ClosePage();
-			UI->OpenShop(LyudText::Get(O.Title.empty() ? FString(TEXT("city.shop.title")) : LyudCityThingsImpl::Str(O.Title)), Goods);
-		}
-		else
-		{
-			UE_LOG(LogLyudCity, Warning, TEXT("CityThings: shop %s has nothing to sell"), *LyudCityThingsImpl::Str(O.Shop));
-		}
+		OpenShopOf(LyudCityThingsImpl::Str(O.Shop), LyudCityThingsImpl::Str(O.Title));
 		return;
 	}
 	const FText Title = O.Title.empty() ? FText::GetEmpty() : LyudText::Get(LyudCityThingsImpl::Str(O.Title));
@@ -1335,6 +1371,7 @@ void ULyudCityThings::Tick(float DeltaTime)
 				TalkDirector = It ? *It : nullptr;
 			}
 		}
+		TickTone(Hero, LyudCityThingsImpl::PickEvery);
 	}
 	// E is the talk's while he faces somebody or is talking (one press must not both talk and buy)
 	const bool bTalk = TalkDirector.IsValid() && TalkDirector->IsEngaged();
@@ -1346,6 +1383,12 @@ void ULyudCityThings::Tick(float DeltaTime)
 	{
 		SetPrompted(-1);
 		TickSleepChoice(Hero, PC, bTalk);
+		return;
+	}
+	if (TalkThing >= 0)
+	{
+		SetPrompted(-1);
+		TickTalk(Hero, PC, bTalk);
 		return;
 	}
 	if (BookText >= 0)
@@ -1406,7 +1449,7 @@ void ULyudCityThings::Tick(float DeltaTime)
 					ShowPage(PageTitle, LineText(LyudCityThingsImpl::Str(Next)), PageLeft > 0);
 					if (ULyudSoundscapeSubsystem* Sound = ULyudSoundscapeSubsystem::Get(this))
 					{
-						Sound->PlayEffect(TEXT("page_turn"), ThingLocation(PageThing));
+						Sound->PlayEffect(TEXT("diary_page"), ThingLocation(PageThing));
 					}
 				}
 			}
@@ -2316,6 +2359,7 @@ void ULyudCityThings::ResetHeroState()
 	APlayerController* PC = World ? UGameplayStatics::GetPlayerController(World, 0) : nullptr;
 	AHeroCharacter* Hero = PC ? Cast<AHeroCharacter>(PC->GetPawn()) : nullptr;
 	CloseBook();
+	EndTalk();
 	SleepHour = -1;
 	SleepThing = -1;
 	bSleeping = false;
@@ -2563,7 +2607,7 @@ void ULyudCityThings::OpenBook(int32 Text, int32 Thing, bool bSeated)
 	JumpMinutes(T->Minutes, false);
 	if (ULyudSoundscapeSubsystem* Sound = ULyudSoundscapeSubsystem::Get(this))
 	{
-		Sound->PlayEffect(TEXT("page_turn"), Thing >= 0 ? ThingLocation(Thing) : BookFrom);
+		Sound->PlayEffect(TEXT("diary_page"), Thing >= 0 ? ThingLocation(Thing) : BookFrom);
 	}
 	UE_LOG(LogLyudCity, Display, TEXT("CityThings: reads %s (%s, %d pages) at page %d"), *LyudCityThingsImpl::Str(T->Id), *Kind, Num, BookPage + 1);
 	BookTurned(Turn);
@@ -2631,7 +2675,7 @@ void ULyudCityThings::TurnBook(int32 Delta)
 	ShowBookPage();
 	if (ULyudSoundscapeSubsystem* Sound = ULyudSoundscapeSubsystem::Get(this))
 	{
-		Sound->PlayEffect(TEXT("page_turn"), BookThing >= 0 ? ThingLocation(BookThing) : BookFrom);
+		Sound->PlayEffect(TEXT("diary_page"), BookThing >= 0 ? ThingLocation(BookThing) : BookFrom);
 	}
 	if (Delta > 0)
 	{
@@ -2833,6 +2877,564 @@ bool ULyudCityThings::AreAllRead() const
 
 // --- console
 
+// --- the staff talk (docs/city_interiors.md "Staff talk"): a chooser on the page, the answers one per E
+
+bool ULyudCityThings::OpenShopOf(const FString& Shop, const FString& TitleKey)
+{
+	const std::vector<LyudCity::FGood>* Stock = Model ? Model->FindShop(std::string(TCHAR_TO_UTF8(*Shop))) : nullptr;
+	TArray<FLyudShopGood> Goods;
+	if (Stock)
+	{
+		for (const LyudCity::FGood& G : *Stock)
+		{
+			FLyudShopGood Good;
+			Good.Item = LyudCityThingsImpl::Name(G.Item);
+			Good.Price = G.Price;
+			Good.Count = G.Count;
+			if (ULyudInventory::FindDef(Good.Item))
+			{
+				Goods.Add(Good);
+			}
+		}
+	}
+	ULyudInventoryUI* UI = ULyudInventoryUI::Get(this);
+	if (!UI || Goods.Num() == 0)
+	{
+		UE_LOG(LogLyudCity, Warning, TEXT("CityThings: shop %s has nothing to sell"), *Shop);
+		return false;
+	}
+	SetPrompted(-1);
+	ClosePage();
+	UI->OpenShop(LyudText::Get(TitleKey.IsEmpty() ? FString(TEXT("city.shop.title")) : TitleKey), Goods);
+	return true;
+}
+
+FText ULyudCityThings::TalkSpeaker(int32 Thing) const
+{
+	const UPeopleLifeSubsystem* People = UPeopleLifeSubsystem::Get(this);
+	if (People && Model && Thing >= 0 && Thing < NumThings())
+	{
+		const std::string Role = Model->TalkRole(Thing);
+		const FName Plot = LyudCityThingsImpl::Name(Model->Things[(size_t)Thing].Plot);
+		const FVector At = ThingLocation(Thing);
+		// the one on shift nearest the counter (somebody not drawn yet counts as far)
+		int32 Best = -1;
+		double BestDist = TNumericLimits<double>::Max();
+		for (const int32 Person : People->StaffOnShift(Plot, Role == "*" ? FName() : LyudCityThingsImpl::Name(Role)))
+		{
+			FPersonInfo Info;
+			const AActor* Body = People->GetPerson(Person, Info) ? Info.Actor.Get() : nullptr;
+			const double BodyDist = IsValid(Body) ? FVector::Dist(Body->GetActorLocation(), At) : 1.0e12;
+			if (Best < 0 || BodyDist < BestDist)
+			{
+				Best = Person;
+				BestDist = BodyDist;
+			}
+		}
+		const FText Speaker = Best >= 0 ? People->GetDisplayName(Best) : FText::GetEmpty();
+		if (!Speaker.IsEmpty())
+		{
+			return Speaker;
+		}
+	}
+	return LyudText::Get(TEXT("city.talk.speaker"));
+}
+
+void ULyudCityThings::BeginTalk(int32 Thing, const TArray<int32>& Topics, const FText& Title, const FText& Opener, const FString& Shop,
+	const FString& ShopTitle, bool bAnywhere)
+{
+	UWorld* World = GetWorld();
+	if (!World || !Model || Thing < 0 || Thing >= NumThings() || Topics.Num() == 0)
+	{
+		return;
+	}
+	ClosePage();
+	TalkThing = Thing;
+	TalkTopics = Topics;
+	TalkSel = 0;
+	// "Buy..." only when the shop has something the item table knows
+	TalkShop.Reset();
+	TalkShopTitle = ShopTitle;
+	if (const std::vector<LyudCity::FGood>* Stock = Shop.IsEmpty() ? nullptr : Model->FindShop(std::string(TCHAR_TO_UTF8(*Shop))))
+	{
+		for (const LyudCity::FGood& G : *Stock)
+		{
+			if (ULyudInventory::FindDef(LyudCityThingsImpl::Name(G.Item)))
+			{
+				TalkShop = Shop;
+				break;
+			}
+		}
+	}
+	TalkTitle = Title;
+	TalkOpener = Opener;
+	TalkAnswer.Reset();
+	TalkAnswerAt = 0;
+	bTalkAnywhere = bAnywhere;
+	AHeroCharacter* Hero = Cast<AHeroCharacter>(UGameplayStatics::GetPlayerPawn(World, 0));
+	TalkFrom = Hero ? Hero->GetActorLocation() : FVector::ZeroVector;
+	TalkFrame = GFrameCounter;
+	APlayerController* PC = Hero ? Cast<APlayerController>(Hero->GetController()) : nullptr;
+	if (PC && !Hero->IsSeated() && !TalkBlockedBy.IsValid())
+	{
+		PC->SetIgnoreMoveInput(true);
+		TalkBlockedBy = PC;
+	}
+	SetPrompted(-1);
+	ShowTalk();
+	UE_LOG(LogLyudCity, Display, TEXT("CityThings: talk at %s: %d topics%s, speaker %s"), *LyudCityThingsImpl::Str(Model->Things[(size_t)Thing].Id),
+		TalkTopics.Num(), TalkShop.IsEmpty() ? TEXT("") : TEXT(" and the shop"), *TalkTitle.ToString());
+}
+
+void ULyudCityThings::ShowTalk()
+{
+	UWorld* World = GetWorld();
+	UGameViewportClient* Viewport = World ? World->GetGameViewport() : nullptr;
+	if (!Viewport || !Model || TalkThing < 0)
+	{
+		return;
+	}
+	if (!Page)
+	{
+		Page = SNew(SLyudCityPage);
+		Viewport->AddViewportWidgetContent(Page.ToSharedRef(), 61);
+	}
+	PageThing = -1;
+	PageLeft = 0;
+	const int32 ShopEntries = TalkShop.IsEmpty() ? 0 : 1;
+	const int32 Entries = ShopEntries + TalkTopics.Num();
+	FString Body = TalkOpener.ToString();
+	if (!Body.IsEmpty())
+	{
+		Body += TEXT("\n\n");
+	}
+	for (int32 I = 0; I < Entries; ++I)
+	{
+		const LyudCity::FTopic* T = I < ShopEntries ? nullptr : Model->TopicAt(TalkTopics[I - ShopEntries]);
+		const FString EntryName = T ? LyudText::Get(LyudCityThingsImpl::Str(T->Title)).ToString() : LyudText::Get(TEXT("city.talk.buy")).ToString();
+		const bool bNew = T && !Model->IsHeard(T->Id);
+		Body += I == TalkSel ? TEXT("\u25B8 ") : TEXT("   ");
+		Body += LyudText::Get(bNew ? TEXT("city.talk.entry_new") : TEXT("city.talk.entry"), { FStringFormatArg(I + 1), FStringFormatArg(EntryName) }).ToString();
+		Body += TEXT("\n");
+	}
+	Page->SetScreen(false);
+	Page->SetPage(TalkTitle, FText::FromString(Body), LyudText::Get(TEXT("city.talk.keys")));
+}
+
+void ULyudCityThings::ShowTalkAnswer()
+{
+	if (!Page || !TalkAnswer.IsValidIndex(TalkAnswerAt))
+	{
+		return;
+	}
+	Page->SetScreen(false);
+	Page->SetPage(TalkTitle, LineText(TalkAnswer[TalkAnswerAt]),
+		LyudText::Get(TalkAnswerAt + 1 < TalkAnswer.Num() ? TEXT("city.talk.keys_answer") : TEXT("city.talk.keys_back")));
+}
+
+void ULyudCityThings::ChooseTalk(int32 Entry)
+{
+	UWorld* World = GetWorld();
+	if (!World || !Model || TalkThing < 0)
+	{
+		return;
+	}
+	const int32 ShopEntries = TalkShop.IsEmpty() ? 0 : 1;
+	if (Entry < ShopEntries)
+	{
+		const FString Shop = TalkShop;
+		const FString Title = TalkShopTitle;
+		EndTalk();
+		OpenShopOf(Shop, Title);
+		return;
+	}
+	if (!TalkTopics.IsValidIndex(Entry - ShopEntries))
+	{
+		return;
+	}
+	TalkSel = Entry;
+	const LyudCity::FTopicAnswer A = Model->AskTopic(TalkTopics[Entry - ShopEntries], LyudCityThingsImpl::When(World));
+	UE_LOG(LogLyudCity, Display, TEXT("CityThings: asked %s: %d lines%s"), *LyudCityThingsImpl::Str(A.Target), (int32)A.Lines.size(),
+		A.bFirst ? TEXT(" (first time)") : TEXT(""));
+	if (!A.NewStamps.empty())
+	{
+		TArray<FString> Fresh;
+		for (const std::string& Stamp : A.NewStamps)
+		{
+			Fresh.Add(LyudCityThingsImpl::Str(Stamp));
+		}
+		AnnounceStamps(Fresh);
+	}
+	ULyudQuests::Notify(this, LyudCityThingsImpl::Name(A.Event), LyudCityThingsImpl::Str(A.Target));
+	TalkAnswer.Reset();
+	for (const std::string& Line : A.Lines)
+	{
+		TalkAnswer.Add(LyudCityThingsImpl::Str(Line));
+	}
+	TalkAnswerAt = 0;
+	if (TalkAnswer.Num() > 0)
+	{
+		ShowTalkAnswer();
+	}
+	else
+	{
+		ShowTalk();
+	}
+}
+
+void ULyudCityThings::TickTalk(AHeroCharacter* Hero, APlayerController* PC, bool bTalk)
+{
+	UWorld* World = GetWorld();
+	const ULyudInventoryUI* UI = World ? ULyudInventoryUI::Get(World) : nullptr;
+	if (!World || !Model || !Hero || !PC || !Page || (UI && UI->IsOpen())
+		|| (!bTalkAnywhere && FVector::Dist(Hero->GetActorLocation(), TalkFrom) > LyudCityThingsImpl::PageWalkAway))
+	{
+		EndTalk();
+		return;
+	}
+	const ULyudGameMenuSubsystem* Menu = World->GetSubsystem<ULyudGameMenuSubsystem>();
+	if ((Menu && Menu->IsOpen()) || bTalk || GFrameCounter == TalkFrame)
+	{
+		return;     // the keys are another screen's now; the talk waits
+	}
+	if (PC->WasInputKeyJustPressed(EKeys::Escape) || PC->WasInputKeyJustPressed(EKeys::W) || PC->WasInputKeyJustPressed(EKeys::S)
+		|| PC->WasInputKeyJustPressed(EKeys::SpaceBar))
+	{
+		EndTalk();
+		return;
+	}
+	const bool bE = PC->WasInputKeyJustPressed(EKeys::E) || PC->WasInputKeyJustPressed(EKeys::Enter);
+	if (TalkAnswer.Num() > 0)
+	{
+		if (!bE)
+		{
+			return;
+		}
+		if (++TalkAnswerAt < TalkAnswer.Num())
+		{
+			ShowTalkAnswer();
+			return;
+		}
+		// the answer is over: back to the chooser with the topics now (a once topic heard is gone, a heard one may open another)
+		TalkAnswer.Reset();
+		TalkAnswerAt = 0;
+		std::vector<int> Offer;
+		Model->TopicsNow(TalkThing, LyudCityThingsImpl::When(World), Offer, bOpenAllHours || bTalkAnywhere);
+		TalkTopics.Reset();
+		for (const int Topic : Offer)
+		{
+			TalkTopics.Add(Topic);
+		}
+		const int32 Entries = (TalkShop.IsEmpty() ? 0 : 1) + TalkTopics.Num();
+		if (Entries == 0)
+		{
+			EndTalk();
+			return;
+		}
+		TalkSel = FMath::Clamp(TalkSel, 0, Entries - 1);
+		ShowTalk();
+		return;
+	}
+	const int32 Entries = (TalkShop.IsEmpty() ? 0 : 1) + TalkTopics.Num();
+	if (Entries <= 0)
+	{
+		EndTalk();
+		return;
+	}
+	static const FKey Digits[] = { EKeys::One, EKeys::Two, EKeys::Three, EKeys::Four, EKeys::Five, EKeys::Six, EKeys::Seven, EKeys::Eight, EKeys::Nine };
+	for (int32 I = 0; I < Entries && I < (int32)UE_ARRAY_COUNT(Digits); ++I)
+	{
+		if (PC->WasInputKeyJustPressed(Digits[I]))
+		{
+			ChooseTalk(I);
+			return;
+		}
+	}
+	const int32 Delta = (PC->WasInputKeyJustPressed(EKeys::D) || PC->WasInputKeyJustPressed(EKeys::Right) || PC->WasInputKeyJustPressed(EKeys::Down)) ? 1
+		: ((PC->WasInputKeyJustPressed(EKeys::A) || PC->WasInputKeyJustPressed(EKeys::Left) || PC->WasInputKeyJustPressed(EKeys::Up)) ? -1 : 0);
+	if (Delta != 0)
+	{
+		TalkSel = (TalkSel + Delta + Entries) % Entries;
+		ShowTalk();
+		return;
+	}
+	if (bE)
+	{
+		ChooseTalk(TalkSel);
+	}
+}
+
+void ULyudCityThings::EndTalk()
+{
+	if (APlayerController* PC = TalkBlockedBy.Get())
+	{
+		PC->SetIgnoreMoveInput(false);
+	}
+	TalkBlockedBy.Reset();
+	if (TalkThing < 0)
+	{
+		return;
+	}
+	TalkThing = -1;
+	TalkTopics.Reset();
+	TalkAnswer.Reset();
+	TalkAnswerAt = 0;
+	TalkSel = 0;
+	bTalkAnywhere = false;
+	if (Page && PageThing < 0)
+	{
+		ClosePage();
+	}
+}
+
+bool ULyudCityThings::AskAt(const FString& ThingId, const FString& TopicId)
+{
+	UWorld* World = GetWorld();
+	const int32 Thing = Model ? Model->FindThing(std::string(TCHAR_TO_UTF8(*ThingId))) : -1;
+	if (!World || Thing < 0)
+	{
+		UE_LOG(LogLyudCity, Warning, TEXT("CityThings: ask: no thing %s"), *ThingId);
+		return false;
+	}
+	if (BookText >= 0 || SleepHour >= 0 || IsPlayingGame() || ShowAt >= 0)
+	{
+		UE_LOG(LogLyudCity, Warning, TEXT("CityThings: ask: a text, a game, a show or the sleep chooser is up"));
+		return false;
+	}
+	// the console: whatever the hour and whoever is on shift
+	std::vector<int> Offer;
+	Model->TopicsNow(Thing, LyudCityThingsImpl::When(World), Offer, true);
+	if (Offer.empty())
+	{
+		UE_LOG(LogLyudCity, Warning, TEXT("CityThings: ask: %s offers no topics now"), *ThingId);
+		return false;
+	}
+	TArray<int32> Topics;
+	for (const int Topic : Offer)
+	{
+		Topics.Add(Topic);
+	}
+	const LyudCity::FAct* A = Model->ActOf(Thing);
+	EndTalk();
+	ClosePage();
+	BeginTalk(Thing, Topics, TalkSpeaker(Thing), FText::GetEmpty(), A ? LyudCityThingsImpl::Str(A->Shop) : FString(),
+		A ? LyudCityThingsImpl::Str(A->Title) : FString(), true);
+	if (TopicId.IsEmpty())
+	{
+		return true;
+	}
+	const int32 Topic = Model->FindTopic(std::string(TCHAR_TO_UTF8(*TopicId)));
+	const int32 At = Topics.Find(Topic);
+	if (Topic < 0 || At == INDEX_NONE)
+	{
+		UE_LOG(LogLyudCity, Warning, TEXT("CityThings: ask: %s does not offer %s now"), *ThingId, *TopicId);
+		return false;
+	}
+	ChooseTalk(At + (TalkShop.IsEmpty() ? 0 : 1));
+	return true;
+}
+
+bool ULyudCityThings::AskNearest()
+{
+	const APawn* Pawn = UGameplayStatics::GetPlayerPawn(GetWorld(), 0);
+	if (!Model || !Pawn)
+	{
+		return false;
+	}
+	for (const std::pair<int, double>& P : Model->Nearest(LyudCityThingsImpl::Vec(Pawn->GetActorLocation()), 64))
+	{
+		if (Model->HasTopics(P.first))
+		{
+			return AskAt(LyudCityThingsImpl::Str(Model->Things[(size_t)P.first].Id), FString());
+		}
+	}
+	UE_LOG(LogLyudCity, Warning, TEXT("CityThings: ask: no thing with topics near"));
+	return false;
+}
+
+void ULyudCityThings::ShowHeardTopics(bool bPage)
+{
+	if (!Model)
+	{
+		return;
+	}
+	const int32 Heard = (int32)Model->GetHeard().size();
+	const int32 All = (int32)Model->Topics.size();
+	UE_LOG(LogLyudCity, Display, TEXT("CityThings: topics heard %d of %d"), Heard, All);
+	for (const std::string& Id : Model->GetHeard())
+	{
+		UE_LOG(LogLyudCity, Display, TEXT("  %s"), *LyudCityThingsImpl::Str(Id));
+	}
+	UWorld* World = GetWorld();
+	const APawn* Pawn = World ? UGameplayStatics::GetPlayerPawn(World, 0) : nullptr;
+	if (!bPage || !Pawn || NumThings() == 0 || ShowAt >= 0 || BookText >= 0 || SleepHour >= 0 || TalkThing >= 0)
+	{
+		return;
+	}
+	PageThing = -1;
+	PageLeft = 0;
+	PageTitle = LyudText::Get(TEXT("city.talk.heard.title"));
+	PageFrom = Pawn->GetActorLocation();
+	PageFrame = GFrameCounter;
+	ShowPage(PageTitle, LyudText::Get(TEXT("city.talk.heard.body"), { FStringFormatArg(Heard), FStringFormatArg(All) }), false);
+	SetPrompted(-1);
+}
+
+void ULyudCityThings::ForgetTopics()
+{
+	if (!Model)
+	{
+		return;
+	}
+	Model->ForgetTopics();
+	UE_LOG(LogLyudCity, Display, TEXT("CityThings: every topic is new again"));
+	Note(LyudText::Get(TEXT("city.talk.heard.reset")));
+}
+
+// --- room tones (docs/city_interiors.md "Room tones"): one pooled 2D loop and sparse one-shots by the plot round the hero
+
+float ULyudCityThings::ToneLevel(float Volume) const
+{
+	const ULyudSoundscapeSubsystem* Sound = ULyudSoundscapeSubsystem::Get(this);
+	if (!Sound)
+	{
+		return Volume;
+	}
+	const float Keep = FMath::Lerp(1.f, LyudCityThingsImpl::ToneOutdoorKeep, FMath::Clamp(Sound->GetOutdoors(), 0.f, 1.f));
+	return FMath::Clamp(Volume * Sound->MasterVolume * Sound->AmbienceVolume * Keep, 0.f, 1.f);
+}
+
+void ULyudCityThings::SetTone(int32 Tone)
+{
+	UWorld* World = GetWorld();
+	const LyudCity::FTone* T = Model ? Model->ToneAt(Tone) : nullptr;
+	USoundBase* Loop = T && ToneSounds.IsValidIndex(Tone) ? ToneSounds[Tone].Get() : nullptr;
+	const USoundBase* Playing = ToneAudio ? ToneAudio->Sound.Get() : nullptr;
+	UE_LOG(LogLyudCity, Verbose, TEXT("CityThings: tone %s"), T ? *LyudCityThingsImpl::Str(T->Id) : TEXT("off"));
+	ToneHeard = T ? Tone : -1;
+	{
+		LyudCity::FRng Rng;
+		Rng.State = ToneDice;
+		ToneShotIn = T ? Model->NextShotIn(Tone, Rng) : -1.0;
+		ToneDice = Rng.State;
+	}
+	if (!Loop)
+	{
+		if (ToneAudio && ToneAudio->IsPlaying())
+		{
+			ToneAudio->FadeOut(LyudCityThingsImpl::ToneFadeOut, 0.f);
+		}
+		ToneLevelSet = -1.f;
+		return;
+	}
+	const float Level = ToneLevel(T->Volume);
+	if (!ToneAudio && World)
+	{
+		// made once and kept (never destroyed by itself): the next tones reuse it
+		ToneAudio = UGameplayStatics::CreateSound2D(World, Loop, 1.f, 1.f, 0.f, nullptr, false, false);
+	}
+	if (!ToneAudio)
+	{
+		return;
+	}
+	if (Playing == Loop && ToneAudio->IsPlaying())
+	{
+		// the same loop in the next room (a cafe after a cafe): only the level moves
+		ToneAudio->AdjustVolume(LyudCityThingsImpl::ToneFadeIn, Level);
+	}
+	else
+	{
+		ToneAudio->Stop();
+		ToneAudio->SetSound(Loop);
+		ToneAudio->FadeIn(LyudCityThingsImpl::ToneFadeIn, Level);
+	}
+	ToneLevelSet = Level;
+}
+
+void ULyudCityThings::TickTone(const AHeroCharacter* Hero, float DeltaTime)
+{
+	UWorld* World = GetWorld();
+	if (!World || !Model || Model->Tones.empty())
+	{
+		return;
+	}
+	int32 Want = -1;
+	int32 Near = -1;
+	if (Hero && !bOutside)
+	{
+		Near = Model->NearestThing(LyudCityThingsImpl::Vec(Hero->GetActorLocation()), LyudCityThingsImpl::ToneRadius, LyudCityThingsImpl::PlotFloor);
+		Want = Near >= 0 ? Model->ToneNow(Near, LyudCityThingsImpl::When(World, false), bOpenAllHours) : -1;
+	}
+	if (Want != ToneHeard)
+	{
+		SetTone(Want);
+		return;
+	}
+	const LyudCity::FTone* T = Model->ToneAt(ToneHeard);
+	if (!T)
+	{
+		return;
+	}
+	if (ToneAudio && ToneSounds.IsValidIndex(ToneHeard) && ToneSounds[ToneHeard])
+	{
+		// the level follows the volumes and the open air; a loop asset that does not loop by itself is started again
+		const float Level = ToneLevel(T->Volume);
+		if (!ToneAudio->IsPlaying())
+		{
+			ToneAudio->FadeIn(0.3f, Level);
+			ToneLevelSet = Level;
+		}
+		else if (FMath::Abs(Level - ToneLevelSet) > 0.02f)
+		{
+			ToneAudio->AdjustVolume(0.5f, Level);
+			ToneLevelSet = Level;
+		}
+	}
+	if (ToneShotIn < 0.0 || !Hero)
+	{
+		return;
+	}
+	ToneShotIn -= (double)DeltaTime;
+	if (ToneShotIn > 0.0)
+	{
+		return;
+	}
+	LyudCity::FRng Rng;
+	Rng.State = ToneDice;
+	const std::string& Shot = Model->PickShot(ToneHeard, Rng);
+	const double Angle = Rng.Unit() * 2.0 * UE_DOUBLE_PI;
+	const double ShotDist = LyudCityThingsImpl::ToneShotNear + Rng.Unit() * (LyudCityThingsImpl::ToneShotFar - LyudCityThingsImpl::ToneShotNear);
+	ToneShotIn = Model->NextShotIn(ToneHeard, Rng);
+	ToneDice = Rng.State;
+	ULyudSoundscapeSubsystem* Sound = ULyudSoundscapeSubsystem::Get(this);
+	if (Sound && !Shot.empty())
+	{
+		const float Keep = FMath::Lerp(1.f, LyudCityThingsImpl::ToneOutdoorKeep, FMath::Clamp(Sound->GetOutdoors(), 0.f, 1.f));
+		const FVector Where = Hero->GetActorLocation() + FVector(FMath::Cos(Angle) * ShotDist, FMath::Sin(Angle) * ShotDist, 60.0);
+		Sound->PlayEffect(LyudCityThingsImpl::Name(Shot), Where, T->ShotVolume * Keep);
+	}
+}
+
+FString ULyudCityThings::ReportTone() const
+{
+	const LyudCity::FTone* T = Model ? Model->ToneAt(ToneHeard) : nullptr;
+	FString Out;
+	if (!T)
+	{
+		Out = TEXT("room tone: silence");
+	}
+	else
+	{
+		const bool bLoaded = ToneSounds.IsValidIndex(ToneHeard) && ToneSounds[ToneHeard] != nullptr;
+		Out = FString::Printf(TEXT("room tone %s: loop %s (%s, volume %.2f, level %.2f, %s), %d one-shots every %.0f..%.0f s, next in %.1f s"),
+			*LyudCityThingsImpl::Str(T->Id), *LyudCityThingsImpl::Str(T->Loop), bLoaded ? TEXT("loaded") : TEXT("no asset: silent"), T->Volume,
+			ToneLevelSet, ToneAudio && ToneAudio->IsPlaying() ? TEXT("playing") : TEXT("stopped"), (int32)T->Shots.size(), T->EveryMin, T->EveryMax,
+			ToneShotIn);
+	}
+	UE_LOG(LogLyudCity, Display, TEXT("CityThings: %s"), *Out);
+	return Out;
+}
+
 static FAutoConsoleCommandWithWorldAndArgs GCityThingsList(TEXT("lyud.City.Things"),
 	TEXT("lyud.City.Things: how many things to do there are in the buildings (City/interiors.json) and the five nearest the hero"),
 	FConsoleCommandWithWorldAndArgsDelegate::CreateLambda([](const TArray<FString>&, UWorld* World)
@@ -3008,6 +3610,40 @@ static FAutoConsoleCommandWithWorldAndArgs GCityRead(TEXT("lyud.City.Read"),
 		}
 	}));
 
+static FAutoConsoleCommandWithWorldAndArgs GCityAsk(TEXT("lyud.City.Ask"),
+	TEXT("lyud.City.Ask <thing id> [topic id] | list | reset: opens the staff talk at a thing wherever the hero is (whatever the hour and the staff), or asks one topic of it at once; lists the topics heard; makes every topic new again"),
+	FConsoleCommandWithWorldAndArgsDelegate::CreateLambda([](const TArray<FString>& Args, UWorld* World)
+	{
+		ULyudCityThings* Things = ULyudCityThings::Get(World);
+		if (!Things)
+		{
+			return;
+		}
+		const FString Verb = Args.Num() > 0 ? Args[0] : FString(TEXT("list"));
+		if (Verb == TEXT("list"))
+		{
+			Things->ShowHeardTopics(true);
+		}
+		else if (Verb == TEXT("reset"))
+		{
+			Things->ForgetTopics();
+		}
+		else
+		{
+			Things->AskAt(Verb, Args.Num() > 1 ? Args[1] : FString());
+		}
+	}));
+
+static FAutoConsoleCommandWithWorldAndArgs GCityTone(TEXT("lyud.City.Tone"),
+	TEXT("lyud.City.Tone: logs the room tone heard now (its loop, level, one-shots)"),
+	FConsoleCommandWithWorldAndArgsDelegate::CreateLambda([](const TArray<FString>&, UWorld* World)
+	{
+		if (const ULyudCityThings* Things = ULyudCityThings::Get(World))
+		{
+			Things->ReportTone();
+		}
+	}));
+
 // --- developer mode (docs/dev_mode.md), when it is in the tree
 
 #if LYUD_CITY_THINGS_DEV
@@ -3151,6 +3787,34 @@ static LyudDev::FAutoAction GCityDevReadList(TEXT("interiors.read_list"), TEXT("
 	if (ULyudCityThings* Things = ULyudCityThings::Get(W))
 	{
 		Things->ShowReadList(true);
+	}
+});
+static LyudDev::FAutoAction GCityDevTopics(TEXT("interiors.topics"), TEXT("interiors"), TEXT("dev.action.interiors.topics"), [](UWorld* W)
+{
+	if (ULyudCityThings* Things = ULyudCityThings::Get(W))
+	{
+		Things->ShowHeardTopics(true);
+	}
+});
+static LyudDev::FAutoAction GCityDevTopicsReset(TEXT("interiors.topics_reset"), TEXT("interiors"), TEXT("dev.action.interiors.topics_reset"), [](UWorld* W)
+{
+	if (ULyudCityThings* Things = ULyudCityThings::Get(W))
+	{
+		Things->ForgetTopics();
+	}
+});
+static LyudDev::FAutoAction GCityDevAskNear(TEXT("interiors.ask_nearest"), TEXT("interiors"), TEXT("dev.action.interiors.ask_nearest"), [](UWorld* W)
+{
+	if (ULyudCityThings* Things = ULyudCityThings::Get(W))
+	{
+		Things->AskNearest();
+	}
+});
+static LyudDev::FAutoAction GCityDevTone(TEXT("interiors.tone"), TEXT("interiors"), TEXT("dev.action.interiors.tone"), [](UWorld* W)
+{
+	if (const ULyudCityThings* Things = ULyudCityThings::Get(W))
+	{
+		Things->ReportTone();
 	}
 });
 #endif

@@ -1706,10 +1706,10 @@ def main():
     tones, plot_tones, missing_tone_sounds = build_tones(places(plan), reg)
     targets = {a["target"] for a in acts.values()} | set(acts)
     for where, v in DID_USED:
-        if v not in targets:
+        if v.lstrip("!") not in targets:
             err("%s: did %s is no act's target" % (where, v))
     for where, v in HEARD_USED:
-        if v not in TOPICS:
+        if v.lstrip("!") not in TOPICS:
             err("%s: heard %s is not a topic" % (where, v))
     offered = {tp for t in things for tp in t.get("topics", []) + acts[t["act"]].get("topics", [])}
     things.sort(key=lambda t: t["id"])

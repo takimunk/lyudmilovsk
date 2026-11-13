@@ -671,6 +671,111 @@ static void ReadingChecks()
 	CHECK(M2.CountRead() == 0, "a new game forgets what was read");
 }
 
+static void TalkChecks()
+{
+	std::printf("the staff talk and the room tones\n");
+	const std::string Text = R"({"things": [
+  {"id": "P-K/counter", "plot": "P-K", "kind": "counter", "ue": [0, 0, 110], "yaw": 0, "props": {}, "act": "buy_paper",
+   "hours": [8, 20], "days": "daily", "closed": "kiosk_shut"},
+  {"id": "P-K/plain", "plot": "P-K", "kind": "counter", "ue": [400, 0, 110], "yaw": 0, "props": {}, "act": "plain", "topics": ["k.own", "k.weather", "nope"]},
+  {"id": "P-C/screen", "plot": "P-C", "kind": "screen", "ue": [3000, 0, 300], "yaw": 0, "props": {}, "act": "film"},
+  {"id": "P-Q/door", "plot": "P-Q", "kind": "board", "ue": [6000, 0, 150], "yaw": 0, "props": {}, "act": "plain"}],
+ "acts": {"buy_paper": {"prompt": "p", "needs_staff": "seller", "lines": ["hello"], "topics": ["k.weather", "k.film", "k.secret", "k.once", "k.night", "k.weather"]},
+          "plain": {"prompt": "p", "lines": ["x"]},
+          "kiosk_shut": {"prompt": "p", "lines": ["shut"]},
+          "film": {"prompt": "p", "lines": ["f"], "target": "film_today"}},
+ "topics": {
+  "k.weather": {"k": "t.weather", "lines": ["w.1", {"k": "w.rain", "weather": "rain"}, {"k": "w.first", "once": 1}], "collect": "staff/kiosk"},
+  "k.film": {"k": "t.film", "lines": [{"k": "f.before", "did": "!film_today"}, {"k": "f.after", "did": "film_today"}]},
+  "k.secret": {"k": "t.secret", "heard": "k.weather", "lines": ["s.1"]},
+  "k.once": {"k": "t.once", "once": 1, "lines": ["o.1"], "collect": "staff/once"},
+  "k.night": {"k": "t.night", "h": [18, 20], "lines": ["n.1"]},
+  "k.own": {"k": "t.own", "lines": ["own.1"]},
+  "k.empty": {"k": "t.empty", "lines": []}},
+ "tones": {
+  "shop": {"loop": "hum", "asset": "/Game/A/S_hum_01.S_hum_01", "volume": 3.0, "shots": ["a", "b"], "every": [10, 20], "shot_volume": 0.5, "closed": "quiet"},
+  "quiet": {"loop": "hum", "volume": 0.05},
+  "hall": {"loop": "far", "every": [0, 1]}},
+ "plot_tones": {"P-K": "shop", "P-C": "hall", "P-Q": "nope"},
+ "collections": {"staff": {"title": "c", "pieces": ["kiosk", "once"]}}})";
+	FModel M;
+	std::string Error;
+	CHECK(M.Load(Text, Error), "it loads (%s)", Error.c_str());
+	CHECK(M.Topics.size() == 6 && M.FindTopic("k.empty") < 0, "6 topics, one with no lines left out (%d)", (int)M.Topics.size());
+	const int Counter = M.FindThing("P-K/counter"), Plain = M.FindThing("P-K/plain"), Screen = M.FindThing("P-C/screen"), Door = M.FindThing("P-Q/door");
+	CHECK(M.ActOf(Counter)->Topics.size() == 5 && M.Things[(size_t)Plain].Topics.size() == 2, "unknown and repeated topic ids are dropped");
+	CHECK(M.HasTopics(Counter) && M.HasTopics(Plain) && !M.HasTopics(Screen), "who has topics");
+
+	bool bOnShift = true;
+	FAsk Ask;
+	Ask.ItemCount = [](const std::string&) { return 0; };
+	Ask.StaffOnShift = [&bOnShift](const std::string&, const std::string& Role) { return bOnShift && (Role == "seller" || Role == "*"); };
+	std::vector<int> Offer;
+	const FWhen Noon = At(2, 12.f, 400);
+	CHECK(M.TalkReady(Counter, Noon, Ask, Offer) == 3, "at noon: weather, film and the once topic (secret before weather, night by day not): %d", (int)Offer.size());
+	CHECK(M.TopicAt(Offer[0])->Id == "k.weather" && M.TopicAt(Offer[1])->Id == "k.film", "in the act's order");
+	CHECK(M.TalkReady(Counter, At(2, 19.f, 400), Ask, Offer) == 4, "at 19 the evening topic too");
+	CHECK(M.TalkReady(Counter, At(2, 22.f, 400), Ask, Offer) == 0 && M.TopicsNow(Counter, At(2, 22.f, 400), Offer) == 0,
+		"shut (its closed words): no talk");
+	CHECK(M.TalkReady(Counter, At(2, 22.f, 400), FAsk{0, true, Ask.ItemCount, nullptr}, Offer) == 3, "developer mode opens all hours and needs nobody");
+	bOnShift = false;
+	CHECK(M.TalkReady(Counter, Noon, Ask, Offer) == 0, "nobody on shift: no talk");
+	bOnShift = true;
+	CHECK(M.TalkRole(Counter) == "seller" && M.TalkRole(Plain) == "*", "the speaker's role: needs_staff or anybody");
+	CHECK(M.TalkReady(Plain, Noon, Ask, Offer) == 2 && M.TopicAt(Offer[0])->Id == "k.own", "a thing's own topics");
+
+	const int Weather = M.FindTopic("k.weather"), Film = M.FindTopic("k.film"), Secret = M.FindTopic("k.secret"), Once = M.FindTopic("k.once");
+	FTopicAnswer A1 = M.AskTopic(Weather, Noon);
+	CHECK(A1.bFirst && A1.Lines.size() == 2 && A1.Lines[0] == "w.1" && A1.Lines[1] == "w.first" && A1.Event == "ask" && A1.Target == "k.weather",
+		"asked: the plain line and the once line (no rain: weather unknown), event ask/k.weather (%d lines)", (int)A1.Lines.size());
+	CHECK(A1.NewStamps.size() == 1 && A1.NewStamps[0] == "staff/kiosk" && M.IsHeard("k.weather"), "heard; the first time the stamp staff/kiosk");
+	FWhen Rain = Noon;
+	Rain.Weather = WeatherRain;
+	FTopicAnswer A2 = M.AskTopic(Weather, Rain);
+	CHECK(!A2.bFirst && A2.NewStamps.empty() && A2.Lines.size() == 2 && A2.Lines[1] == "w.rain", "asked again in the rain: the rain line, no once line, no stamp");
+	CHECK(M.TopicOffered(Secret, Noon) && M.TalkReady(Counter, Noon, Ask, Offer) == 4, "the secret topic opens once weather was heard");
+	CHECK(M.AskTopic(Film, Noon).Lines[0] == "f.before", "film not seen: the before line");
+	M.Run(Screen, Noon, Ask);
+	CHECK(M.HasDone("film_today") && M.AskTopic(Film, Noon).Lines[0] == "f.after", "after the film: the after line (did)");
+	FTopicAnswer A3 = M.AskTopic(Once, Noon);
+	CHECK(A3.bFirst && A3.NewStamps.size() == 1 && !M.TopicOffered(Once, Noon), "a once topic is gone once heard");
+
+	std::map<std::string, std::string> Saved;
+	M.SaveState(Saved);
+	CHECK(Saved.count("h:k.weather") && Saved.count("h:k.once") && Saved.count("w:film_today"), "saved: heard topics and what was done");
+	FModel M2;
+	M2.Load(Text, Error);
+	M2.LoadState(Saved);
+	CHECK(M2.IsHeard("k.weather") && M2.IsHeard("k.once") && M2.HasDone("film_today") && M2.GetHeard().size() == 3, "loaded: the same (%d heard)",
+		(int)M2.GetHeard().size());
+	CHECK(M2.AskTopic(M2.FindTopic("k.weather"), Noon).Lines.size() == 1, "the once line stays shown after a load");
+	M2.ForgetTopics();
+	CHECK(M2.GetHeard().empty() && M2.TopicOffered(M2.FindTopic("k.once"), Noon) && M2.AskTopic(M2.FindTopic("k.weather"), Noon).Lines.size() == 2,
+		"developer: forgotten, once topics and lines back");
+	M2.ResetState();
+	CHECK(M2.GetHeard().empty() && !M2.HasDone("film_today"), "a new game forgets them");
+
+	// room tones
+	const int Shop = M.FindTone("shop"), Quiet = M.FindTone("quiet"), Hall = M.FindTone("hall");
+	CHECK(M.Tones.size() == 3 && M.ToneAt(Shop)->Volume == 1.f && M.ToneAt(Shop)->Closed == Quiet && M.ToneAt(Shop)->Asset == "/Game/A/S_hum_01.S_hum_01",
+		"3 tones; volume clamped to 1; the closed tone resolved");
+	CHECK(M.ToneOfPlot("P-K") == Shop && M.ToneOfPlot("P-Q") < 0 && M.ToneOfPlot("P-X") < 0, "plots to tones, an unknown tone dropped");
+	CHECK(M.ToneNow(Counter, Noon, false) == Shop && M.ToneNow(Counter, At(2, 22.f, 400), false) == Quiet
+		&& M.ToneNow(Counter, At(2, 22.f, 400), true) == Shop && M.ToneNow(Door, Noon, false) < 0, "open: the shop tone, shut: the quiet one, no tone: silence");
+	FRng Rng;
+	Rng.State = 7;
+	bool bInRange = true;
+	std::set<std::string> Picked;
+	for (int I = 0; I < 200; ++I)
+	{
+		const double S = M.NextShotIn(Shop, Rng);
+		bInRange = bInRange && S >= 10.0 && S <= 20.0;
+		Picked.insert(M.PickShot(Shop, Rng));
+	}
+	CHECK(bInRange && Picked.size() == 2, "one-shots every 10..20 s, both ids come up");
+	CHECK(M.NextShotIn(Quiet, Rng) < 0.0 && M.PickShot(Quiet, Rng).empty() && M.ToneAt(Hall)->EveryMin >= 2.f, "no shots: none; every is clamped to 2 s or more");
+}
+
 static void RealGameChecks(const FModel& M);
 
 static void RealChecks(const std::string& Path)
@@ -777,6 +882,67 @@ static void RealChecks(const std::string& Path)
 	}
 	std::printf("  daily acts %d, lines with conditions %d, screen acts %d\n", Daily, Conditional, Screens);
 	CHECK(EmptyNow == 0, "every act with lines has a line for every hour (%d have a gap)", EmptyNow);
+
+	// the staff talk: every thing with topics talks at some hour of its open day (developer mode: nobody needed), every
+	// topic is offered somewhere, and every offered topic answers with at least one line
+	FAsk Dev = Ask;
+	Dev.bOpenAll = true;
+	int WithTopics = 0, Silent = 0, NoAnswer = 0;
+	std::string FirstSilent;
+	std::set<int> Reached;
+	std::vector<int> Offer;
+	std::vector<std::pair<int, FWhen>> FirstAsk;
+	for (int I = 0; I < (int)M.Things.size(); ++I)
+	{
+		if (!M.HasTopics(I))
+		{
+			continue;
+		}
+		WithTopics++;
+		bool bTalks = false;
+		for (int H = 0; H < 24; ++H)
+		{
+			FWhen W = AtDate(H % 7, (float)H + 0.5f, 100, 615, 30);
+			if (M.TalkReady(I, W, Dev, Offer) > 0)
+			{
+				bTalks = true;
+				for (const int Topic : Offer)
+				{
+					if (Reached.insert(Topic).second)
+					{
+						FirstAsk.push_back(std::make_pair(Topic, W));
+					}
+				}
+			}
+		}
+		if (!bTalks)
+		{
+			Silent++;
+			FirstSilent = FirstSilent.empty() ? M.Things[(size_t)I].Id : FirstSilent;
+		}
+	}
+	for (const auto& Ask1 : FirstAsk)
+	{
+		NoAnswer += M.AskTopic(Ask1.first, Ask1.second).Lines.empty() ? 1 : 0;
+	}
+	M.ResetState();
+	int NoTitle = 0;
+	for (const FTopic& T : M.Topics)
+	{
+		NoTitle += T.Title.empty() || T.Lines.empty() ? 1 : 0;
+	}
+	CHECK(Silent == 0, "%d things with topics, each talks at some hour (%d do not, first %s)", WithTopics, Silent, FirstSilent.c_str());
+	CHECK(NoTitle == 0 && NoAnswer == 0, "%d topics, each with a title and lines; every offered one answers (%d, %d not)", (int)M.Topics.size(), NoTitle, NoAnswer);
+	CHECK((int)Reached.size() + 2 >= (int)M.Topics.size(), "%d of %d topics are offered on a fresh save at some hour (the rest wait for heard, did, read or count)",
+		(int)Reached.size(), (int)M.Topics.size());
+	// the room tones: every tone a plot names is there, a closed tone is a tone, volumes in 0..1, every min <= max
+	int BadTone = 0, Loud = 0;
+	for (const FTone& T : M.Tones)
+	{
+		BadTone += (T.Closed >= (int)M.Tones.size() || T.EveryMin > T.EveryMax || (T.Loop.empty() && T.Shots.empty())) ? 1 : 0;
+		Loud += (T.Volume < 0.f || T.Volume > 1.f || T.ShotVolume < 0.f || T.ShotVolume > 1.f) ? 1 : 0;
+	}
+	CHECK(!M.Tones.empty() && BadTone == 0 && Loud == 0, "%d room tones, each sound (%d bad, %d out of 0..1)", (int)M.Tones.size(), BadTone, Loud);
 	RealGameChecks(M);
 }
 
@@ -1148,6 +1314,7 @@ int main(int Argc, char** Argv)
 	GameChecks();
 	SeatChecks();
 	ReadingChecks();
+	TalkChecks();
 	RealChecks(Argc > 1 ? Argv[1] : "unreal/Lyudmilovsk/Content/City/interiors.json");
 	std::printf("%d passed, %d failed\n", Passed, Failures);
 	return Failures ? 1 : 0;

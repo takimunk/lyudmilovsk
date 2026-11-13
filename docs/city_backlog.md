@@ -114,7 +114,13 @@ rental, souvenirs, a dumpling house, a cheburek house, a beer bar). Each is now 
   (the chess clock), «Тарелка» (Kesha the parrot), the market (the jam contest), the department store (the yellow
   umbrella). Still open: the notices cycle, they don't change by date (needs the game to pick lines by day); the other
   public buildings; the lighthouse keepers' room has its own lines but no quest
-- [ ] Staff talk: each counter's staff has greetings and three topics (voice pinned per the voice rule)
+- [~] Staff talk: each counter's staff has greetings and three topics (voice pinned per the voice rule). 2026-11-13:
+  `topics` on acts and rules, a chooser on the page at a counter with its staff on shift (the speaker's name from the
+  town's life, "Buy..." first, 1-9 / A-D + E), answers by hour, day, weather, festival, count, read, `did` and `heard`,
+  heard topics saved and new ones marked, the stamp set `staff` (31), the quest event `ask`; 31 trades, 93 topics, 218
+  answer lines in ru/en/ja (docs "Staff talk"). Model and citysim checked; the game side not built on the Mac yet. Still
+  open: no voice (text only), the building agents' own counters (`ask_cook`, the library stamp desk, the lost-and-found,
+  the culture block's reception) have no topics, `@open` unstaffed shops never talk
 - [~] Festival variants of interiors (New Year tree in the store, lanterns in the café) tied to `ULyudFestivalSubsystem`.
   2026-11-13: lines by holiday (`"festival": "any" | "none" | <id>`) and by weather (`"weather": "rain"...`) in the model,
   citysim, interiors.py and the docs; holiday notices on 13 public boards and counters (club, cinema, prices, school wall
@@ -141,7 +147,11 @@ rental, souvenirs, a dumpling house, a cheburek house, a beer bar). Each is now 
 ## P5: quality passes that never end
 
 - [ ] Unique wall art per building from the atlas (no picture repeated inside one room)
-- [ ] Room sounds (reverb by room size, clock ticks, a radio behind a wall, the store's tannoy)
+- [~] Room sounds (reverb by room size, clock ticks, a radio behind a wall, the store's tannoy). 2026-11-13: room tones
+  by data (`tones`, `tone_by`: a quiet loop and sparse one-shots per plot, its own when shut; one pooled 2D component,
+  checked five times a second), ten tones on 50 plots from existing sounds; every act `sound` checked, 16 aliases onto
+  existing ids, the 56 still missing listed in docs "Sound ids". Not built on the Mac yet. Still open: no reverb, no
+  clock tick or radio files (no new audio in this pass), the tannoy; the Diary wavs (page turns) are not imported yet
 - [~] Wall clocks and light switches (2026-11-13): `look_clock` with `{time}` lines, `what=switch` turns the room lamps
   (`B.lamp`) round it on or off till the hero leaves the plot. Still open: no building declares a clock or a switch yet
   (the building modules' things), no ticking sound (no file), the lamp's fitting does not change, only its light

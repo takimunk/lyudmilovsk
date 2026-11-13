@@ -12,6 +12,8 @@ class ACameraActor;
 class AHeroCharacter;
 class ANpcTalkDirector;
 class APlayerController;
+class UAudioComponent;
+class USoundBase;
 class SLyudCityBook;
 class SLyudCityGame;
 class SLyudCityPage;
@@ -80,7 +82,17 @@ struct LYUDMILOVSK_API FCityThingRef
  * SLyudCityBook (made once, kept collapsed): E/D/right next, A/left back, Esc/W/S/Space close; the page each text was left on,
  * the texts read to the end and where are saved; game minutes pass per page; the last page gives the text's stamp.
  *
- * Console: lyud.City.Things, lyud.City.Do <thing id>, lyud.City.Things.Show 0|1, lyud.City.Weekday <mon..sun>,
+ * Staff talk (docs/city_interiors.md "Staff talk"): at a counter whose act has "topics" and whose staff is on shift, E opens a
+ * chooser on the page (the staff member's name from the town's life as its title; "Buy..." first when the act sells; 1-9 or
+ * A/D pick, E asks, Esc/W/S leave): the answer's lines one per E, then back to the chooser. Heard topics are saved; new ones
+ * are marked. The rules are the model's (TalkReady, AskTopic); a topic's first hearing gives its stamp and the quest event
+ * "ask"/<topic id>.
+ *
+ * Room tones (docs/city_interiors.md "Room tones"): the plot round the hero names a quiet loop and sparse one-shots in the
+ * data. One pooled 2D audio component plays the loop (switched with a fade when the plot or its open state changes, stopped
+ * on leaving); the one-shots go through ULyudSoundscapeSubsystem::PlayEffect on a timer. Checked at the pick rate only.
+ *
+ * Console: lyud.City.Things, lyud.City.Do <thing id>, lyud.City.Ask <thing id> [topic id] | list | reset, lyud.City.Tone, lyud.City.Things.Show 0|1, lyud.City.Weekday <mon..sun>,
  * lyud.City.Collections [grant|clear <set|*>], lyud.City.Game <thing id> | press [1-3] | win | quit | regulars,
  * lyud.City.Sit [thing id], lyud.City.Lie [thing id], lyud.City.Sleep <hour>, lyud.City.Read <text id> | next | prev | close |
  * list | all | clear.
@@ -173,6 +185,24 @@ public:
 	/** Developer mode: every text read (their stamps given) or none (and the pages left on forgotten). */
 	void SetAllRead(bool bRead);
 	bool AreAllRead() const;
+
+	// --- the staff talk
+
+	/** Opens the talk at a thing wherever the hero is (console; nobody on shift needed), or asks one topic of it at once
+	 *  (TopicId not empty: its answer on the page); false: no such thing, no topics there, or no such topic offered now. */
+	bool AskAt(const FString& ThingId, const FString& TopicId);
+	/** Developer mode: the talk at the nearest thing with topics. */
+	bool AskNearest();
+	/** Logs the topics heard ("12 of 93" and each id); with bPage also the count on the page. */
+	void ShowHeardTopics(bool bPage);
+	/** Developer mode: every topic unheard (new) again. */
+	void ForgetTopics();
+	bool IsTalking() const { return TalkThing >= 0; }
+
+	// --- room tones
+
+	/** "tone cafe_room (loop rest_room, 0.30) at P-CAFE" or "silence": logs and returns it. */
+	FString ReportTone() const;
 
 	// --- API for townsfolk (docs/city_interiors.md): the people's life asks for seats and things to use
 
@@ -273,6 +303,29 @@ private:
 	void TickSleepChoice(AHeroCharacter* Hero, APlayerController* PC, bool bTalk);
 	/** bSleep: the fade and the clock on to the hour, then up; else he gets up at once. */
 	void EndSleepChoice(bool bSleep);
+
+	// --- the staff talk: a chooser on the page, then an answer's lines one per E
+	/** Opens the chooser at Thing with Topics (model indexes) under the act's line Opener; Shop: the act's shop to offer
+	 *  first (empty: none). bAnywhere: the console (walking off does not shut it). */
+	void BeginTalk(int32 Thing, const TArray<int32>& Topics, const FText& Title, const FText& Opener, const FString& Shop, const FString& ShopTitle,
+		bool bAnywhere);
+	void ShowTalk();
+	/** Asks the entry (0-based: the shop first when there is one). */
+	void ChooseTalk(int32 Entry);
+	void ShowTalkAnswer();
+	void TickTalk(AHeroCharacter* Hero, APlayerController* PC, bool bTalk);
+	void EndTalk();
+	/** The name of the staff member on shift nearest Thing (its talk role), else the generic "behind the counter". */
+	FText TalkSpeaker(int32 Thing) const;
+	/** A shop's goods the item table knows, in the inventory screen; false: nothing to sell. */
+	bool OpenShopOf(const FString& Shop, const FString& TitleKey);
+
+	// --- room tones
+	/** At the pick rate: which tone the plot round the hero has now (switches the loop), and the one-shots' timer. */
+	void TickTone(const AHeroCharacter* Hero, float DeltaTime);
+	void SetTone(int32 Tone);
+	/** The loop's level: the tone's volume x the master and ambience volumes, quieter the more the listener is outdoors. */
+	float ToneLevel(float Volume) const;
 
 	// --- the reading view
 	void OpenBook(int32 Text, int32 Thing, bool bSeated);
@@ -408,4 +461,33 @@ private:
 	FString BookPlot;
 	bool bBookSeated = false;
 	TWeakObjectPtr<APlayerController> BookBlockedBy;
+
+	/** The staff talk: the thing (-1: none), its topics now (model indexes; the array is kept and reused), the entry chosen,
+	 *  the shop offered first (empty: none) and its title key, the page's title (the speaker) and opener, the answer's lines
+	 *  (empty: the chooser shows) and the one shown, where the hero stood, the frame it opened (its own E must not ask). */
+	int32 TalkThing = -1;
+	TArray<int32> TalkTopics;
+	int32 TalkSel = 0;
+	FString TalkShop;
+	FString TalkShopTitle;
+	FText TalkTitle;
+	FText TalkOpener;
+	TArray<FString> TalkAnswer;
+	int32 TalkAnswerAt = 0;
+	FVector TalkFrom = FVector::ZeroVector;
+	uint64 TalkFrame = 0;
+	bool bTalkAnywhere = false;
+	/** The hero's moves are held while the talk is up (by this controller): A and D choose. */
+	TWeakObjectPtr<APlayerController> TalkBlockedBy;
+
+	/** Room tones: the one pooled 2D component (made on first use, kept), the loop sounds of the data's tones (loaded once when
+	 *  the file is adopted, by tone index; null: no asset), the tone heard (-1 silence), the seconds to the next one-shot, the
+	 *  one-shots' dice. */
+	UPROPERTY(Transient) TObjectPtr<UAudioComponent> ToneAudio;
+	UPROPERTY(Transient) TArray<TObjectPtr<USoundBase>> ToneSounds;
+	int32 ToneHeard = -1;
+	double ToneShotIn = -1.0;
+	uint64 ToneDice = 0x5EEDull;
+	/** The loop's level last set (it is adjusted only when it moves). */
+	float ToneLevelSet = -1.f;
 };

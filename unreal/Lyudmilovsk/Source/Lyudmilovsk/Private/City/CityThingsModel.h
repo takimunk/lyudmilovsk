@@ -186,12 +186,22 @@ namespace LyudCity
 		std::string Collect;
 		/** "read": the id of a text (FReadText) the hero must have read to the end (empty: no condition). */
 		std::string ReadText;
-		/** "did": an act's target (what the quests hear as "do") the hero has done at least once (empty: no condition). */
+		/** "did": an act's target (what the quests hear as "do") the hero has done at least once; "!target": not yet (empty: no condition). */
 		std::string Did;
-		/** "heard": the id of a staff talk topic (FTopic) the hero has asked about (empty: no condition). */
+		/** "heard": the id of a staff talk topic (FTopic) the hero has asked about; "!id": not yet (empty: no condition). */
 		std::string Heard;
 
 		bool IsFestive() const { return Festival == EFestivalCond::Any || Festival == EFestivalCond::Ids; }
+
+		/** "did"/"heard" against a set: Name in it, or "!name": not in it (a null set holds nothing). */
+		static bool HasName(const std::set<std::string>* Set, const std::string& Name)
+		{
+			if (!Name.empty() && Name[0] == '!')
+			{
+				return !Set || Set->count(Name.substr(1)) == 0;
+			}
+			return Set && Set->count(Name) > 0;
+		}
 
 		/** Do the conditions hold? Stamps: the collections (null: none collected, so "have" and "count" fail); ReadMap: the
 		 *  texts read to the end (text id -> plot; null: none read, so "read" fails); DoneSet: the targets done ("did"; null:
@@ -203,11 +213,11 @@ namespace LyudCity
 			{
 				return false;
 			}
-			if (!Did.empty() && (!DoneSet || DoneSet->count(Did) == 0))
+			if (!Did.empty() && !HasName(DoneSet, Did))
 			{
 				return false;
 			}
-			if (!Heard.empty() && (!HeardSet || HeardSet->count(Heard) == 0))
+			if (!Heard.empty() && !HasName(HeardSet, Heard))
 			{
 				return false;
 			}
@@ -1493,6 +1503,27 @@ namespace LyudCity
 			Add(A->Topics);
 			Add(Things[(size_t)Thing].Topics);
 			return (int)Out.size();
+		}
+		/** The role whose staff answer at Thing: its act's needs_staff, or "*" (anybody on shift at the plot). */
+		std::string TalkRole(int Thing) const
+		{
+			const FAct* A = ActOf(Thing);
+			return A && !A->NeedsStaff.empty() ? A->NeedsStaff : std::string("*");
+		}
+		/** May the hero talk at Thing now: the act would run (Check is ok, not its closed words), somebody of TalkRole is on
+		 *  shift there (not asked in developer mode) and some topic is offered. The topics go into Out; how many (0: no talk). */
+		int TalkReady(int Thing, const FWhen& When, const FAsk& Ask, std::vector<int>& Out) const
+		{
+			Out.clear();
+			if (!HasTopics(Thing) || Check(Thing, When, Ask) != EVerdict::Ok)
+			{
+				return 0;
+			}
+			if (!Ask.bOpenAll && !(Ask.StaffOnShift && Ask.StaffOnShift(Things[(size_t)Thing].Plot, TalkRole(Thing))))
+			{
+				return 0;
+			}
+			return TopicsNow(Thing, When, Out, Ask.bOpenAll);
 		}
 		bool IsHeard(const std::string& TopicId) const { return Heard.count(TopicId) > 0; }
 		const std::set<std::string>& GetHeard() const { return Heard; }
@@ -3380,7 +3411,7 @@ namespace LyudCity
 			{
 				A.Prompt = "city.act.shelf.prompt";
 				A.Minutes = 10;
-				A.Sound = "page_turn";
+				A.Sound = "diary_page";
 				A.Event = "read";
 				A.Target = T.Prop("topic");
 				Lines("city.act.shelf", 3);

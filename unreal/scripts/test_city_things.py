@@ -2,7 +2,8 @@
 lists them (lyud.City.Things), then runs a few of each kind with lyud.City.Do from wherever the hero stands (a shelf, a board,
 a counter, something to take twice, a seat, a bed), puts the hero in front of a shelf and takes a screenshot of the prompt
 and of the page, sits and lies on the nearest seat and bed (a save and a load while seated, a sleep to 7:00), reads a text of
-the reading view to its end and lists what was read, saves and runs the shelf again. CITYTEST lines; the CityThings lines of LogLyudCity say what each did.
+the reading view to its end and lists what was read, opens the staff talk at a counter and asks a topic (the list, the reset),
+logs the room tone, saves and runs the shelf again. CITYTEST lines; the CityThings lines of LogLyudCity say what each did.
 unreal/scripts/test_city_things.sh checks them.
 """
 import json
@@ -173,6 +174,19 @@ def plan():
     for th in readers:
         add(1.5, lambda w, i=th["id"]: cmd(w, "lyud.City.Do " + i))
         add(1.0, lambda w: cmd(w, "lyud.City.Read close"))
+    # the staff talk: the chooser at a counter with topics (wherever the hero is), one topic asked, the list, the reset;
+    # the room tone where the hero stands
+    talkers = [t for t in things if t.get("topics") or acts.get(t.get("act"), {}).get("topics")][:1]
+    for th in talkers:
+        add(1.5, lambda w, i=th["id"]: cmd(w, "lyud.City.Ask " + i))
+        add(1.0, lambda w: shot(w, "talk"))
+        topic = (th.get("topics") or acts.get(th.get("act"), {}).get("topics"))[0]
+        add(1.5, lambda w, i=th["id"], tp=topic: cmd(w, "lyud.City.Ask %s %s" % (i, tp)))
+        add(1.0, lambda w: shot(w, "talk_answer"))
+    add(1.0, lambda w: cmd(w, "lyud.City.Ask list"))
+    add(1.0, lambda w: cmd(w, "lyud.City.Ask reset"))
+    add(1.0, lambda w: cmd(w, "lyud.City.Ask no/such_thing"))
+    add(1.0, lambda w: cmd(w, "lyud.City.Tone"))
     add(2.0, lambda w: cmd(w, "lyud.Save citytest"))
     if shelves:
         add(1.5, lambda w: cmd(w, "lyud.City.Do " + shelves[0]["id"]))
