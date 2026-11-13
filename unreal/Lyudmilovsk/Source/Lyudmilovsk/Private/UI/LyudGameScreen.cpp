@@ -17,6 +17,7 @@
 #include "LyudInventory.h"
 #include "LyudSave.h"
 #include "LyudText.h"
+#include "Misc/PackageName.h"
 #include "Audio/LyudSoundscape.h"
 #include "Birds/BirdBook.h"
 #include "Engine/TextureRenderTarget2D.h"
@@ -27,6 +28,7 @@
 #include "UI/LyudDiaryBook.h"
 #include "UI/SLyudDiary.h"
 #include "UI/SLyudHud.h"
+#include "World/LyudPrefetch.h"
 
 namespace
 {
@@ -118,6 +120,19 @@ void ULyudGameScreen::OnWorldBeginPlay(UWorld& InWorld)
 	bAnnounced = false;
 	bWalked = false;
 	bWalkFromSet = false;
+	// what the diary's first opening loads (its handwriting, paper, page material, the maps): read in the background
+	// from the level's start, so that opening only finds them in memory
+	static const TCHAR* const DiaryAssets[] = {
+		TEXT("/Game/UI/Diary/Fonts/FF_Caveat_Regular"), TEXT("/Game/UI/Diary/Fonts/FF_Caveat_Bold"), TEXT("/Game/UI/Diary/Fonts/FF_Yomogi_Regular"),
+		TEXT("/Game/UI/Diary/T_PaperLeft"), TEXT("/Game/UI/Diary/T_PaperRight"), TEXT("/Game/UI/Diary/T_MapInk"), TEXT("/Game/UI/Diary/M_DiaryPage"),
+		TEXT("/Game/UI/T_WorldMap") };
+	for (const TCHAR* Package : DiaryAssets)
+	{
+		if (FPackageName::DoesPackageExist(Package))
+		{
+			ULyudPrefetch::Ready(&InWorld, FString(Package) + TEXT(".") + FPackageName::GetShortName(Package));
+		}
+	}
 }
 
 void ULyudGameScreen::Deinitialize()
