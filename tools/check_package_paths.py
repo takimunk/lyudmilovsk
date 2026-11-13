@@ -243,6 +243,9 @@ def check_asset(lit, where, game, engine_cook, cook_dirs, rep, covered):
             elif real:
                 rep.error("CASE", where, "%s: on disk it is %s" % (lit, real))
                 return
+            elif parent and parent not in game.dirs and game.real_case(parent):
+                rep.error("CASE", where, "%s: the folder on disk is %s" % (lit, game.real_case(parent)))
+                return
             else:
                 rep.missing(pkg + ".uasset", where, lit)
                 found = None
