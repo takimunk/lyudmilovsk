@@ -301,6 +301,7 @@ void ULyudQuests::Reset()
 	Progress.Reset();
 	Entries.Reset();
 	Found.Reset();
+	Flags.Reset();
 	Tracked = NAME_None;
 	Queue.Reset();
 	Inside.Reset();
@@ -561,6 +562,83 @@ void ULyudQuests::Advance(FName Quest)
 	}
 }
 
+bool ULyudQuests::SetStage(FName Quest, const FString& Stage)
+{
+	const FLyudQuestDef* Def = FindDef(Quest);
+	if (!Def || Def->Stages.IsEmpty())
+	{
+		return false;
+	}
+	const bool bDone = Stage == TEXT("done");
+	int32 Index = Def->Stages.Num() - 1;
+	if (!bDone)
+	{
+		Index = Def->Stages.IndexOfByPredicate([&Stage](const FLyudQuestStage& S) { return S.Id.ToString() == Stage; });
+		if (Index == INDEX_NONE && Stage.IsNumeric())
+		{
+			Index = FCString::Atoi(*Stage);
+		}
+		if (!Def->Stages.IsValidIndex(Index))
+		{
+			return false;
+		}
+	}
+	{
+		FLyudQuestProgress& P = ProgressOf(Quest);
+		if (P.State == ELyudQuestState::Inactive)
+		{
+			P.Started = Today();
+		}
+		P.State = ELyudQuestState::Active;
+		P.Stage = Index;
+		P.Finished = FDateTime();
+		Tracked = Quest;
+		if (bDone)
+		{
+			// may begin other quests (the stage's reward): P is not used after it
+			FinishStage(P, *Def);
+		}
+		else
+		{
+			OnNews.Broadcast(ELyudQuestNews::Stage, Quest);
+			BeginStage(P, *Def);
+		}
+	}
+	UE_LOG(LogTemp, Log, TEXT("LyudQuests: %s set to stage %s"), *Quest.ToString(), *Stage);
+	OnChanged.Broadcast();
+	return true;
+}
+
+FName ULyudQuests::StageId(FName Quest) const
+{
+	const FLyudQuestProgress* P = FindProgress(Quest);
+	const FLyudQuestDef* Def = FindDef(Quest);
+	if (!P || !Def || P->State == ELyudQuestState::Inactive)
+	{
+		return NAME_None;
+	}
+	if (P->State == ELyudQuestState::Done)
+	{
+		return TEXT("done");
+	}
+	return Def->Stages.IsValidIndex(P->Stage) ? Def->Stages[P->Stage].Id : NAME_None;
+}
+
+FName ULyudQuests::TalkStage(FName Quest, const FString& Npc) const
+{
+	const FName Now = StageId(Quest);
+	if (!Now.IsNone())
+	{
+		return Now;
+	}
+	const FLyudQuestDef* Def = FindDef(Quest);
+	if (Def && Def->Stages.Num() > 0 && Def->StartEvent == TEXT("talk") && TargetMatches(Def->StartTarget, Npc))
+	{
+		return Def->Stages[0].Id;
+	}
+	return NAME_None;
+}
+
 void ULyudQuests::UpdatePosition(const UObject* WorldContext, const FVector& P)
 {
 	const FVector2D M = Frame().FromWorld(P);
@@ -660,6 +738,33 @@ static FAutoConsoleCommandWithWorldAndArgs GQuestAdvance(TEXT("Quest.Advance"), 
 		if (ULyudQuests* Q = ULyudQuests::Get(World); Q && Args.Num() > 0)
 		{
 			Q->Advance(*Args[0]);
+		}
+	}));
+
+static FAutoConsoleCommandWithWorldAndArgs GQuestSetStage(TEXT("Quest.SetStage"), TEXT("Quest.SetStage <quest id> <stage id | index | done>: puts a quest on a stage at once (begins it if it has not begun)"),
+	FConsoleCommandWithWorldAndArgsDelegate::CreateLambda([](const TArray<FString>& Args, UWorld* World)
+	{
+		if (ULyudQuests* Q = ULyudQuests::Get(World); Q && Args.Num() > 1)
+		{
+			const bool bOk = Q->SetStage(*Args[0], Args[1]);
+			UE_LOG(LogTemp, Warning, TEXT("QUESTTEST set %s %s: %s"), *Args[0], *Args[1], bOk ? TEXT("ok") : TEXT("no such quest or stage"));
+		}
+	}));
+
+static FAutoConsoleCommand GQuestList(TEXT("Quest.List"), TEXT("Quest.List: logs every quest with its stages and what each objective waits for (QUESTTEST lines)"),
+	FConsoleCommandDelegate::CreateLambda([]()
+	{
+		for (const FLyudQuestDef& D : ULyudQuests::Defs())
+		{
+			for (int32 I = 0; I < D.Stages.Num(); ++I)
+			{
+				FString Objs;
+				for (const FLyudQuestObjective& O : D.Stages[I].Objectives)
+				{
+					Objs += FString::Printf(TEXT(" [%s: %s %s x%d]"), *O.Id.ToString(), *O.Event.ToString(), *O.Target, O.Need);
+				}
+				UE_LOG(LogTemp, Warning, TEXT("QUESTTEST %s %d %s%s"), *D.Id.ToString(), I, *D.Stages[I].Id.ToString(), *Objs);
+			}
 		}
 	}));
 

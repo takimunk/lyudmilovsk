@@ -8,6 +8,11 @@
 # sun.<state> = now and then (every third later talk) a line about what the sun is doing now: day, low (sunrise or
 #             sunset), night, cloudy. The motif: docs/story/motifs.md. Quiet hints, not every character has them.
 # Keys are separated by ' | '; a key whose speaker is 'hero' is said by the player.
+# quest.<quest>.<stage>[,<stage>...] = what they say while that quest (Content/UI/quests.json) is on one of these stages,
+#             instead of everything above; 'done' is the stage of a finished quest. A quest this very talk begins
+#             (start_on talk) counts as on its first stage. quest.<quest>.<stage>.again = every later talk there
+#             (without it the same lines again; a 'done' talk without it is said once, then the everyday talks go on).
+#             docs/quests.md.
 
 [Owner]
 first = owner.first.1 | hero.owner_first.2 | owner.first.3 | hero.owner_first.4 | owner.first.5
@@ -82,6 +87,7 @@ again = girl_b.again1.1
 again = hero.girl_b_again2.1 | girl_b.again2.2
 again = girl_b.again3.1
 again = girl_b.again4.1
+quest.waxwing.prepare = girl_b.waxwing_guide.1 | girl_b.waxwing_guide.2
 
 sun.day = girl_b.sun_day.1
 
@@ -133,6 +139,7 @@ again = belov_misha.again1.1
 [Orlova_tanya]
 first = orlova_tanya.first.1
 again = orlova_tanya.again1.1
+quest.waxwing.prepare = orlova_tanya.waxwing_rowan.1 | orlova_tanya.waxwing_rowan.2
 
 [Lange_pyotr]
 first = lange_pyotr.first.1
@@ -157,6 +164,12 @@ again = nishimura_aya.again1.1
 [Sorokin_oleg]
 first = sorokin_oleg.first.1
 again = sorokin_oleg.again1.1
+quest.waxwing.find = sorokin_oleg.waxwing_meet.1 | hero.waxwing_meet.2 | sorokin_oleg.waxwing_meet.3 | sorokin_oleg.waxwing_meet.4 | hero.waxwing_meet.5 | sorokin_oleg.waxwing_meet.6 | sorokin_oleg.waxwing_meet.7 | hero.waxwing_meet.8 | sorokin_oleg.waxwing_meet.9
+quest.waxwing.prepare,journey = sorokin_oleg.waxwing_tips.1
+quest.waxwing.lure,wait,tame = sorokin_oleg.waxwing_wait.1
+quest.waxwing.return = sorokin_oleg.waxwing_back.1
+quest.waxwing_after.visit = sorokin_oleg.waxwing_after.1 | hero.waxwing_after.2 | sorokin_oleg.waxwing_after.3 | sorokin_oleg.waxwing_after.4
+quest.waxwing_after.done = sorokin_oleg.waxwing_journal.1
 
 [Khuazheva_susanna]
 first = khuazheva_susanna.first.1

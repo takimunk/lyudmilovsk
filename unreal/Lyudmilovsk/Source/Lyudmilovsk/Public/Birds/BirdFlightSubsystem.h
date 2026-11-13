@@ -52,6 +52,9 @@ public:
 
 	FOnBirdFlightChanged OnBecameBird;
 	FOnBirdFlightChanged OnReturnedToHero;
+	/** The player, as a bird, called (F): the species, where its feet are, and whether it was on the wing. */
+	DECLARE_MULTICAST_DELEGATE_ThreeParams(FOnPlayerBirdCall, FName /*Species*/, const FVector& /*At*/, bool /*bInAir*/);
+	FOnPlayerBirdCall OnPlayerCall;
 
 	/** Seconds the camera takes from the hero's eyes into the bird's. */
 	static constexpr float ArrivalSeconds = 1.6f;

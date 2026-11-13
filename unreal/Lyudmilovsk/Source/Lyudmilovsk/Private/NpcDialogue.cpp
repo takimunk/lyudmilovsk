@@ -121,6 +121,34 @@ void UNpcDialogueSubsystem::Reload()
 		{
 			Current->Sun.Add(FName(Key.Mid(4)), ParseExchange(Value));
 		}
+		else if (Key.StartsWith(TEXT("quest.")))
+		{
+			// quest.<quest>.<stage>[,<stage>...] = the talk while the quest is on one of these stages; ....again = later talks there
+			TArray<FString> Parts;
+			Key.ParseIntoArray(Parts, TEXT("."));
+			if (Parts.Num() < 3)
+			{
+				UE_LOG(LogTemp, Warning, TEXT("NpcDialogue: '%s' needs quest.<quest>.<stage>"), *Key);
+				continue;
+			}
+			const FName Quest(*Parts[1]);
+			TArray<FString> StageNames;
+			Parts[2].ParseIntoArray(StageNames, TEXT(","));
+			TArray<FName> Stages;
+			for (FString& StageName : StageNames)
+			{
+				StageName.TrimStartAndEndInline();
+				Stages.Add(FName(*StageName));
+			}
+			FNpcQuestTalk* Talk = Current->QuestTalks.FindByPredicate([&Quest, &Stages](const FNpcQuestTalk& T) { return T.Quest == Quest && T.Stages == Stages; });
+			if (!Talk)
+			{
+				Talk = &Current->QuestTalks.AddDefaulted_GetRef();
+				Talk->Quest = Quest;
+				Talk->Stages = Stages;
+			}
+			(Parts.Num() > 3 && Parts[3] == TEXT("again") ? Talk->Again : Talk->Lines) = ParseExchange(Value);
+		}
 	}
 	UE_LOG(LogTemp, Log, TEXT("NpcDialogue: %d characters from %s"), Characters.Num(), *Path);
 }
@@ -154,9 +182,38 @@ TArray<FNpcLine> UNpcDialogueSubsystem::StartTalk(FName Id, FName SunState)
 	{
 		return {};
 	}
-	int32& Count = TalkCounts.FindOrAdd(Id);
-	const int32 Held = Count++;
+	// a quest's talk (quest.<quest>.<stage> in npc_dialogue.txt) comes before everything else; which stage the quest is on
+	// is read before the talk is reported, because the talk itself may finish that stage
+	const FNpcQuestTalk* QuestTalk = nullptr;
+	if (const ULyudQuests* Quests = ULyudQuests::Get(this))
+	{
+		for (const FNpcQuestTalk& T : Npc->QuestTalks)
+		{
+			const FName Stage = Quests->TalkStage(T.Quest, Id.ToString());
+			if (!Stage.IsNone() && T.Stages.Contains(Stage))
+			{
+				QuestTalk = &T;
+				break;
+			}
+		}
+	}
+	const int32 Held = TalkCounts.FindOrAdd(Id)++;
 	ULyudQuests::Notify(this, TEXT("talk"), Id.ToString());
+	if (QuestTalk && QuestTalk->Lines.Num() > 0)
+	{
+		// counted apart from the everyday talks, per quest and stages: "<Id>/<quest>.<first stage>"
+		const FName CountKey(*FString::Printf(TEXT("%s/%s.%s"), *Id.ToString(), *QuestTalk->Quest.ToString(), *QuestTalk->Stages[0].ToString()));
+		const int32 QuestHeld = TalkCounts.FindOrAdd(CountKey)++;
+		if (QuestHeld > 0 && QuestTalk->Again.Num() > 0)
+		{
+			return QuestTalk->Again;
+		}
+		// what is said after a quest is said once; then the everyday talks go on
+		if (QuestHeld == 0 || !QuestTalk->Stages.Contains(FName(TEXT("done"))))
+		{
+			return QuestTalk->Lines;
+		}
+	}
 	if (Held == 0 && Npc->First.Num() > 0)
 	{
 		return Npc->First;

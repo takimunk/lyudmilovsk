@@ -18,6 +18,17 @@ struct FNpcLine
 	FString Key;
 };
 
+/** What a character says while a quest is on one of its stages (npc_dialogue.txt quest.<quest>.<stage>[,<stage>...]). */
+struct FNpcQuestTalk
+{
+	FName Quest;
+	/** Stage ids of quests.json; "done" = after the quest is finished. */
+	TArray<FName> Stages;
+	/** The first talk on these stages, and every later one (empty: the first again). */
+	TArray<FNpcLine> Lines;
+	TArray<FNpcLine> Again;
+};
+
 /** How one character's conversations go, read from Content/Dialogue/npc_dialogue.txt; the words are in the string tables. */
 struct FNpcLines
 {
@@ -30,6 +41,8 @@ struct FNpcLines
 	TArray<TArray<FNpcLine>> Again;
 	/** Now and then a later conversation is about the sun instead, picked by what it is doing now (day, low, night, cloudy). */
 	TMap<FName, TArray<FNpcLine>> Sun;
+	/** Quest talks, in the file's order: the first whose quest is on one of its stages is said instead of everything above. */
+	TArray<FNpcQuestTalk> QuestTalks;
 };
 
 /**

@@ -1,5 +1,5 @@
 {
- "comment": "The quests (docs/ui.md). Words: quest.<id>.title|desc, quest.<id>.<stage>.log, quest.<id>.<objective>.obj, quest.<id>.done in strings_<lang>.json. Events: talk <npc>, leave_computer, reach <place in map.json>, get|have|use|wear <item>, bird. A target ending in * matches by prefix.",
+ "comment": "The quests (docs/quests.md: how to write one; docs/ui.md). Words: quest.<id>.title|desc, quest.<id>.<stage>.log, quest.<id>.<objective>.obj, quest.<id>.done in strings_<lang>.json. Events: talk <npc>, leave_computer, reach <place in map.json>, get|have|use|wear <item>, bird, feeder_fill <feed>, feeder_fill_at <feed>@<place>, feeder_visit <Species>, bird_tamed <Species>, bird_call <Species>.<Npc>. A target ending in * matches by prefix. A stage's \"dev\" block is the developer mode's (where a jump to the stage lands: tp, give, time, exec) and is ignored by the game.",
  "quests": [
   {
    "id": "awakening",
@@ -10,7 +10,7 @@
     {"id": "owner", "objectives": [{"id": "talk_owner", "event": "talk", "target": "owner", "place": "club"}]},
     {"id": "outside", "objectives": [{"id": "go_out", "event": "reach", "target": "club_door"}]},
     {"id": "cable", "objectives": [{"id": "reach_cable", "event": "reach", "target": "cable_upper"}],
-     "reward": {"start": ["explore"]}}
+     "reward": {"start": ["explore", "waxwing"]}}
    ]
   },
   {
@@ -40,6 +40,41 @@
      {"id": "see_promenade", "event": "reach", "target": "promenade"}
     ],
      "reward": {"rubles": 50}}
+   ]
+  },
+  {
+   "id": "waxwing",
+   "kind": "side",
+   "start_on": {"event": "talk", "target": "Sorokin_oleg"},
+   "stages": [
+    {"id": "find", "objectives": [{"id": "talk_sorokin", "event": "talk", "target": "Sorokin_oleg", "place": "academ"}],
+     "dev": {"time": "17:30", "exec": ["Quest.GoToPerson sorokin_oleg"]}},
+    {"id": "prepare", "objectives": [
+     {"id": "get_guide", "event": "have", "target": "bird_guide", "place": "academ"},
+     {"id": "get_rowan", "event": "have", "target": "feed_rowan", "place": "academ"},
+     {"id": "get_feeder", "event": "have", "target": "feeder", "place": "academ"}
+    ],
+     "dev": {"tp": "orni_library", "time": "11:00"}},
+    {"id": "journey", "objectives": [{"id": "reach_grove", "event": "reach", "target": "rowan_grove"}],
+     "dev": {"tp": "orni_gastronom", "time": "11:00", "give": {"bird_guide": 1, "feed_rowan": 5, "feeder": 1}}},
+    {"id": "lure", "objectives": [{"id": "fill_feeder", "event": "feeder_fill_at", "target": "feed_rowan@rowan_grove", "place": "rowan_grove"}],
+     "dev": {"tp": "orni_grove", "time": "08:00", "give": {"bird_guide": 1, "feed_rowan": 5, "feeder": 1}}},
+    {"id": "wait", "objectives": [{"id": "see_waxwing", "event": "feeder_visit", "target": "Waxwing", "place": "rowan_grove"}],
+     "dev": {"tp": "orni_grove", "time": "08:00", "give": {"bird_guide": 1, "feed_rowan": 5, "feeder": 1}, "exec": ["lyud.Feeder.Place", "lyud.Feeder.Fill feed_rowan 4"]}},
+    {"id": "tame", "objectives": [{"id": "tame_waxwing", "event": "bird_tamed", "target": "Waxwing", "place": "rowan_grove"}],
+     "dev": {"tp": "orni_grove", "time": "10:00", "give": {"bird_guide": 1, "feed_rowan": 5, "feeder": 1}, "exec": ["lyud.Feeder.Place", "lyud.Feeder.Fill feed_rowan 4", "lyud.Feeder.Age 3"]}},
+    {"id": "return", "objectives": [{"id": "call_sorokin", "event": "bird_call", "target": "Waxwing.Sorokin_oleg"}],
+     "dev": {"time": "10:00", "exec": ["Quest.GoToPerson sorokin_oleg 25", "Bird.Become Waxwing"]},
+     "reward": {"start": ["waxwing_after"]}}
+   ]
+  },
+  {
+   "id": "waxwing_after",
+   "kind": "side",
+   "stages": [
+    {"id": "visit", "objectives": [{"id": "hear_sorokin", "event": "talk", "target": "Sorokin_oleg", "place": "academ"}],
+     "dev": {"time": "17:30", "exec": ["Quest.GoToPerson sorokin_oleg"]},
+     "reward": {"items": {"feed_mealworm": 5, "feed_peanuts": 5}}}
    ]
   },
   {"id": "fest_sea_festival", "kind": "side", "start_on": {"event": "festival", "target": "sea_festival"}, "stages": [{"id": "go", "objectives": [{"id": "fair", "event": "festival_visit", "target": "sea_festival.fair"}, {"id": "fireworks", "event": "festival_watch", "target": "sea_festival.fireworks"}]}]},

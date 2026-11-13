@@ -1,4 +1,5 @@
 #include "Birds/BirdFeeder.h"
+#include "UI/LyudQuests.h"
 
 #include "BirdSim.h"
 #include "Birds/BirdLife.h"
@@ -652,6 +653,15 @@ int32 UBirdFeederSubsystem::Fill(int32 Index, FName Feed, int32 Count)
 		Actors[Index]->ShowFeed(S.Feed, S.Handfuls);
 	}
 	UE_LOG(LogTemp, Display, TEXT("Feeder: %d gets %d of %s (%.1f)"), Index, N, *Feed.ToString(), S.Handfuls);
+	if (ULyudQuests* Quests = ULyudQuests::Get(this))
+	{
+		Quests->HandleEvent(TEXT("feeder_fill"), Feed.ToString(), N);
+		// and where: "feed_rowan@rowan_grove" for a quest that wants the feeder in a certain place
+		for (const FName& Place : Quests->InsidePlaces())
+		{
+			Quests->HandleEvent(TEXT("feeder_fill_at"), Feed.ToString() + TEXT("@") + Place.ToString(), N);
+		}
+	}
 	return N;
 }
 

@@ -50,6 +50,8 @@ volumes into every new world's soundscape. Console: `lyud.Menu settings|pause|ma
 
 ## Quests
 
+How to write a quest (stages, lines by stage, staging in the world, developer commands, a worked example): [quests.md](quests.md).
+
 `Content/UI/quests.json`: a quest is a chain of stages, a stage a few objectives; each objective waits for a game event `Need`
 times. A quest begins at a new game (`auto_start`), on an event (`start_on`), or from another quest's reward (`reward.start`);
 rewards also give items and roubles. Any system reports events with `ULyudQuests::Notify(this, "event", "target")`:

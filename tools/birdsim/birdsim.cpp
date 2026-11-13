@@ -877,9 +877,111 @@ namespace
 		(void)Base;
 	}
 
+	/**
+	 * A rare species kept to one corner of the map (FSpecies::bRanged, species.json "range": the waxwings of the quest,
+	 * docs/quests.md): its few birds live in the old forest beyond the north hills and nowhere else, and come to a feeder
+	 * with dried rowan put up there. The same feeder in the Academgorodok never sees one.
+	 */
+	void Ranged(FResult& R)
+	{
+		const int Sp = FindSpecies("Waxwing");
+		if (Sp < 0)
+		{
+			Check(R, false, "ranged: there are waxwings");
+			return;
+		}
+		const FSpecies Saved = SpeciesTable()[Sp];
+		{
+			// as UBirdLifeSubsystem::FillSpeciesFromTable sets it from species.json (map -420, 1780: the sim's Y is 7.9 m more)
+			FSpecies& S = MutableSpeciesTable()[Sp];
+			S.bRanged = true;
+			S.RangeX = -420.f;
+			S.RangeY = 1780.f + 7.9f;
+			S.RangeR = 260.f;
+			S.Population = 7;
+			S.FlockMin = 2;
+			S.FlockMax = 3;
+			S.HomeRange = 350.f;
+		}
+		const V3 Grove(-420.f, 1787.9f, 0.f);
+		const V3 Academ(-240.f, 640.f, 0.f);
+		struct FCase { const char* Name; V3 Where; bool bExpect; };
+		const FCase Cases[] = { { "rowan in the far forest", Grove, true }, { "rowan in the Academgorodok", Academ, false } };
+		for (const FCase& C : Cases)
+		{
+			FWorld X;
+			if (!Setup(X, 8.f))
+			{
+				Check(R, false, "ranged: world loads");
+				break;
+			}
+			int Count = 0;
+			float FarHome = 0.f;
+			for (const FGroup& G : X.Groups)
+			{
+				if (G.Species == Sp)
+				{
+					Count += (int)G.Members.size();
+					FarHome = std::max(FarHome, (G.Home - Grove).Len2D());
+				}
+			}
+			V3 Tray = C.Where;
+			Tray.Z = X.GroundZ(Tray.X, Tray.Y) + 1.2f;
+			const int F = X.AddFeeder(Tray, 0.2f, X.KindsAround(Tray));
+			X.Feeders[F].Like[Sp] = 1.f;       // feeds.json feed_rowan, the waxwing alone (thrushes would crowd the test)
+			X.Feeders[F].Food = 5.f;
+			X.Player.bPresent = false;
+			float T = 0.f, FirstAt = -1.f, Farthest = 0.f;
+			int Peak = 0;
+			Advance(X, 4.5f, 0.1f, [&]()
+			{
+				T += 0.1f;
+				X.Feeders[F].Ready = std::min(1.f, std::max(0.f, T / 3600.f - 1.5f));
+				int On = 0;
+				for (const FBird& B : X.Birds)
+				{
+					if (B.Species != Sp || B.bGone)
+					{
+						continue;
+					}
+					Farthest = std::max(Farthest, (B.Pos - Grove).Len2D());
+					if (B.Site == X.Feeders[F].Site && !IsAirborne(B.Act))
+					{
+						On++;
+						if (FirstAt < 0.f)
+						{
+							FirstAt = T / 3600.f;
+						}
+					}
+				}
+				Peak = std::max(Peak, On);
+			});
+			std::printf("ranged, %s: %d waxwings, homes within %.0f m of the grove, never farther than %.0f m; first on the tray after %.2f h, at most %d at once\n",
+				C.Name, Count, FarHome, Farthest, FirstAt, Peak);
+			if (C.bExpect)
+			{
+				Check(R, Count == 7, "ranged: the species has the few birds its range gives it");
+				Check(R, FarHome <= 260.f, "ranged: every group's home is inside the range");
+				Check(R, Farthest < 260.f + 350.f * 2.2f, "ranged: the birds keep to their corner of the map");
+				Check(R, FirstAt > 1.4f && Peak > 0, "ranged: waxwings come to the rowan in their forest after a couple of hours");
+			}
+			else
+			{
+				Check(R, Peak == 0, "ranged: no waxwing comes to a feeder far from their forest");
+			}
+		}
+		MutableSpeciesTable()[Sp] = Saved;
+	}
+
 	int Test()
 	{
 		FResult R;
+		if (std::getenv("BIRD_ONLY") && !std::strcmp(std::getenv("BIRD_ONLY"), "ranged"))
+		{
+			Ranged(R);
+			std::printf("birdsim test: %d passed, %d failed\n", R.Pass, R.Fail);
+			return R.Fail ? 1 : 0;
+		}
 		if (std::getenv("BIRD_ONLY") && !std::strcmp(std::getenv("BIRD_ONLY"), "feeders"))
 		{
 			Feeders(R);
@@ -1193,6 +1295,7 @@ namespace
 			Check(R, SparrowStalk > 0.f && SparrowStalk < SparrowCat, "a stalking cat gets closer still");
 		}
 		Feeders(R);
+		Ranged(R);
 		Routines(R);
 		int CorvidPasses = 0;
 		R.Fail += CorvidTests(&CorvidPasses);

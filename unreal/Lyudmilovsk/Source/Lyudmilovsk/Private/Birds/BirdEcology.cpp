@@ -167,7 +167,7 @@ namespace LyudBirds
 			{ "Chaffinch",      "",                                       0.f, 10.f, 0.3f, false,false,false,false, "Meadow 1, Garden .6, ForestFloor .6",            2.f },
 			{ "Bullfinch",      "",                                       0.f, 10.f, 0.2f, false,false,false,false, "Garden 1, Broadleaf 1",                          1.f },
 			// waxwings: berry trees in gardens, a whole flock on one rowan, then off to the next
-			{ "Waxwing",        "Broadleaf 1, Wire .6",                  10.f, 10.f, 0.1f, false,false,false,false, "Garden 1",                                       1.5f },
+			{ "Waxwing",        "Broadleaf 1, Wire .6",                  10.f, 10.f, 0.1f, false,false,false,false, "Garden 1, Broadleaf .7",                                       1.5f },
 			// wagtails: the waterline and puddles; gather on roofs at dusk, then roost together in the reed
 			{ "WhiteWagtail",   "Roof 1, Street .5",                     20.f, 10.f, 0.6f, true, false,false,false, "",                                               1.f },
 			{ "HouseSparrow",   "Garden 1",                              15.f,  5.f, 0.7f, false,false,false,false, "",                                               1.3f },
