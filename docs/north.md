@@ -341,6 +341,19 @@ before Unreal. In Unreal: `unreal/scripts/make_plant_north_level.py` builds
         -dpcvars=lyud.MainMenuOnStart=0 "-ExecCmds=py unreal/scripts/shoot_plant_north.py"
 
 writes the shots to `NORTH_SHOTS` (default `/tmp/northshots`).
+## Birds
+
+The wild birds (docs/bird_life.md) live here from the North's own habitats, `tools/bird_habitats_north.py`, called
+by `python3 tools/bird_habitats.py` (rerun after this region's land, river or props change, and commit
+`Content/BirdsData/bird_habitats.json` and the LFS `bird_world.bin`). Same 36 species and fixed numbers, no new kinds:
+crowns from the forest cover and mixes (ridge forest: conifers, thrushes, jays, the nutcracker in dwarf pine; stone
+birch and shrub: tits, bullfinches, waxwings, fieldfares, thinner beyond the woods), meadows in the open herbs and
+tall-herb patches (rooks, goldfinches, swallows hawking), gulls, wagtails and crows on the river's bars and at the mouth,
+a resting raft of gulls and cormorants off each cape (and ledges on the sea stacks when `things()` has them),
+jackdaws, crows and magpies round the camp and the hut. Few birds on cinder, lava and snow; none on the fumaroles or
+sulfur. Perches: the footbridges' rails, driftwood, boulders, trail posts, the gauge, the hut's ridge, the camp's
+food pole and clothes line. About a third of the map's non-starling birds now live north of Y 1450.
+
 ## People
 
 Everything here is a **proposal** (not canon, docs/story/README.md): names, ages, hours, lines, voice, looks.

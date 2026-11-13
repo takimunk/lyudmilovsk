@@ -27,6 +27,7 @@ import world_map as W  # noqa: E402
 import terrain as T  # noqa: E402
 import plan as AP  # noqa: E402  (the Academgorodok's houses)
 from geom import Frame  # noqa: E402
+import bird_habitats_north as BN  # noqa: E402  (the North, north of Y 1450: its own rules)
 OUT_DIR = os.path.join(ROOT, "unreal", "Lyudmilovsk", "Content", "BirdsData")
 
 # Order matters: LyudBirds::EHabitat (BirdSim.h) has the same order.
@@ -37,9 +38,8 @@ FLAG_HERO_PLANT = 2          # one of the hero plants (AProceduralPlant): crown 
 GRID_CELL = 8.0
 MARGIN = 120.0
 CANOPY = {"old": 21.0, "dune": 7.0, "wet": 14.0, "town": 10.0,
-          # the North (tools/north.py FOREST_MIX): park woodland, then knee- to head-high shrubs
-          "stonebirch": 8.0, "dwarfpine": 2.0, "alder": 2.5, "shrub": 1.5, "rhodo": 0.5}
-NORTH_SPARSE = {"stonebirch": 0.5, "dwarfpine": 0.4, "alder": 0.4, "shrub": 0.8, "rhodo": 1.0}   # share of guesses left out
+          # the North (tools/north.py FOREST_MIX): park woodland, then knee- to head-high shrubs; the river's woods
+          "stonebirch": 8.0, "dwarfpine": 2.0, "alder": 2.5, "shrub": 1.5, "rhodo": 0.5, **BN.CANOPY_NORTH}
 
 
 def face_y_default():
@@ -178,7 +178,7 @@ def main():
     fy = face_y / 100.0
     rnd = random.Random(2026)
     tiles = W.forests()
-    houses = house_boxes()
+    houses = house_boxes() + [BN.hut_box()]
     sites = []
 
     def add(kind, p, q=None, radius=0.0, cap=8, flags=0):
@@ -190,18 +190,26 @@ def main():
     def near_house(x, y, grow):
         return any(in_box(x, y, b, grow) for b in houses if abs(b[0] - x) < 40 and abs(b[1] - y) < 40)
 
-    # the sea off the coast, the wet sand at the water line, the clay cliff's face
-    for y in range(int(W.Y_MIN), int(W.Y_MAX) + 1, 70):
+    # the sea off the coast, the wet sand at the water line, the clay cliff's face (the North's long empty coast
+    # keeps fewer of them, its river mouth's bay all: bird_habitats_north)
+    nrnd = random.Random(1450)                        # the North's own stream: the rest of the map stays as it was
+    for n, y in enumerate(range(int(W.Y_MIN), int(W.Y_MAX) + 1, 70)):
         for off in (35.0, 100.0, 190.0, 320.0):
             x = W.shore_x(y) + off + rnd.uniform(-10, 10)
+            yy = y + rnd.uniform(-15, 15)
+            if BN.in_north(y) and not (BN.BAY_Y[0] <= y <= BN.BAY_Y[1]) and (off not in BN.SEA_KEEP_OFFSETS or n % BN.SEA_ROW_EVERY):
+                continue
             if x < W.X_MAX + MARGIN:
-                add("Sea", (x, y + rnd.uniform(-15, 15), W.SEA_Z), radius=20.0, cap=30)
-    for y in range(int(W.Y_MIN), int(W.Y_MAX) + 1, 30):
+                add("Sea", (x, yy, W.SEA_Z), radius=20.0, cap=30)
+    for n, y in enumerate(range(int(W.Y_MIN), int(W.Y_MAX) + 1, 30)):
         x = W.shore_x(y) - 6.0
+        if BN.in_north(y) and not (BN.BAY_Y[0] <= y <= BN.BAY_Y[1]):
+            if n % BN.BEACH_ROW_EVERY or BN.bare(x, y) > 0.3 or BN.hot(x, y):
+                continue                              # the lava cape's clinker is no beach
         add("Beach", (x, y, T.ground_z(x, y) + 0.02), radius=6.0, cap=16)
-    for y in range(int(W.Y_MIN), int(W.Y_MAX) + 1, 25):
+    for n, y in enumerate(range(int(W.Y_MIN), int(W.Y_MAX) + 1, 25)):
         top = W._edge_top(y)
-        if top - W.BEACH_TOP < 20.0:
+        if top - W.BEACH_TOP < 20.0 or (BN.in_north(y) and n % BN.CLIFF_ROW_EVERY):
             continue
         s = W.BEACH_W + W.cliff_width(top) * 0.5
         p = []
@@ -215,6 +223,16 @@ def main():
         for gx in range(int(W.X_MIN), int(W.X_MAX) + 1, 45):
             x, y = gx + rnd.uniform(-12, 12), gy + rnd.uniform(-12, 12)
             if W.inland(x, y) < W.BEACH_W + 6.0:
+                continue
+            if BN.in_north(y):
+                # the North: a coarser grid (it is wide and empty), open ground only (the cover mask's glades and
+                # birch groves count; dense wood does not), nothing on the river's plain or on hot ground, few on
+                # bare cinder, lava and snow
+                if (gx // 45) % BN.MEADOW_LATTICE or (gy // 45) % BN.MEADOW_LATTICE:
+                    continue
+                if not BN.woods_open(x, y) or not BN.open_ground_ok(x, y, nrnd) or slope(x, y) > 0.35:
+                    continue
+                add("Meadow", (x, y, T.ground_z(x, y) + 0.02), radius=BN.MEADOW_SITE[0], cap=BN.MEADOW_SITE[1])
                 continue
             z = T.ground_z(x, y)
             if slope(x, y) > 0.35 or forest_at(x, y, z, tiles) in ("old", "wet", "dune"):
@@ -291,6 +309,8 @@ def main():
 
     # trees: guessed from the forest tiles (the game puts the real crowns in), the hero plants
     for fx, fyy, hx, hy, mix, count, spacing, z0, z1, seed in tiles:
+        if BN.in_north(fyy):
+            continue                                  # the North's tiles: below, by the cover mask
         step = 28.0 if mix != "town" else 40.0
         ny_ = max(1, int(2 * hy / step))
         nx_ = max(1, int(2 * hx / step))
@@ -303,14 +323,34 @@ def main():
                     continue
                 if mix == "town" and (near_house(x, y, 3.0) or rnd.random() > 0.5):
                     continue
-                if mix in NORTH_SPARSE and rnd.random() < NORTH_SPARSE[mix]:
-                    continue
                 kind = {"old": "Conifer" if rnd.random() < 0.75 else "Broadleaf", "dune": "Conifer",
-                        "wet": "Broadleaf", "town": "Garden", "stonebirch": "Broadleaf", "dwarfpine": "Conifer",
-                        "alder": "Broadleaf", "shrub": "Broadleaf", "rhodo": "Broadleaf"}[mix]
+                        "wet": "Broadleaf", "town": "Garden"}[mix]
                 h = CANOPY[mix] * rnd.uniform(0.8, 1.1)
                 add(kind, (x, y, z + h * 0.7), radius=2.5, cap=6, flags=FLAG_GUESSED_TREE)
                 if mix in ("old", "wet") and rnd.random() < 0.5:
+                    add("ForestFloor", (x + 4, y + 4, T.ground_z(x + 4, y + 4) + 0.02), radius=6.0, cap=10)
+    # the North's woods (bird_habitats_north): the tiles only say which wood grows where, the cover mask says how much
+    # of it stands (old pine and spruce on the ridge, the river's galleries and willow thickets, the stone birch
+    # groves); the shrub belt's crowns are mostly too low to sit in
+    for fx, fyy, hx, hy, mix, count, spacing, z0, z1, seed in tiles:
+        if not BN.in_north(fyy):
+            continue
+        ny_ = max(1, int(2 * hy / 28.0))
+        nx_ = max(1, int(2 * hx / 28.0))
+        for j in range(ny_):
+            for i in range(nx_):
+                x = fx - hx + (i + 0.5) * 2 * hx / nx_ + nrnd.uniform(-6, 6)
+                y = fyy - hy + (j + 0.5) * 2 * hy / ny_ + nrnd.uniform(-6, 6)
+                if not BN.tree_keep(x, y, mix, nrnd):
+                    continue
+                z = T.ground_z(x, y)
+                if not (z0 <= z <= z1) or slope(x, y) > 0.6 or W.inland(x, y) < W.BEACH_W + 3:
+                    continue
+                h = CANOPY[mix] * nrnd.uniform(0.8, 1.1)
+                add(BN.tree_kind(mix, nrnd), (x, y, z + h * 0.7), radius=2.5 if mix != "riverbar" else 2.0, cap=6,
+                    flags=FLAG_GUESSED_TREE)
+                floor = {"old": 0.5, "gallery": 0.2}.get(mix, 0.0)
+                if floor and nrnd.random() < floor and not BN.hot(x + 4, y + 4):
                     add("ForestFloor", (x + 4, y + 4, T.ground_z(x + 4, y + 4) + 0.02), radius=6.0, cap=10)
     for x, y, sp, seed, age in W.alley_trees() + W.coast_plants():
         kind = "Conifer" if sp in ("ScotsPine", "DunePine", "Juniper", "SiberianDwarfPine") else "Broadleaf"
@@ -320,6 +360,8 @@ def main():
         x, y = p[0] + 2.2, p[1]
         add("Meadow", (x, y, T.ground_z(x, y) + 0.02), radius=2.0, cap=6)
     city_gardens(add)
+    north = BN.add_extras(add, nrnd)           # the river's bars and mouth, the stacks, tall herbs, perches, camp and hut
+    print("bird_habitats: the North's own sites %s" % north)
 
     # the ground and the tallest thing on it (roofs, crowns) on an 8 m grid, for flight clearance
     gx0, gy0 = W.X_MIN - MARGIN, W.Y_MIN - MARGIN
@@ -334,7 +376,7 @@ def main():
             g = max(g, W.SEA_Z)
             t = g
             mix = forest_at(x, y, g, tiles)
-            if mix and W.inland(x, y) > W.BEACH_W + 3:
+            if mix and W.inland(x, y) > W.BEACH_W + 3 and (not BN.in_north(y) or BN.canopy_cover(x, y) > 0.3):
                 t = g + CANOPY[mix] * (1.15 if mix != "town" else 0.6)
             ground.append(g)
             top.append(t)

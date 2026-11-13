@@ -15,20 +15,37 @@ species' looks, sizes and animations are the species table's (`Content/BirdsData
 | The Academgorodok's power lines (poles, wires; the birds' wire perches) | `tools/academ_wires.py` -> `Content/BirdsData/wires.json`, `Private/World/LyudWires.cpp` |
 | Game side: subsystem, drawing, API | `Public/Birds/BirdLife.h`, `Private/Birds/BirdLife.cpp` |
 | Places birds can be, from the map | `tools/bird_habitats.py` -> `Content/BirdsData/bird_habitats.json`, `bird_world.bin` |
+| The North's places (north of Y 1450), from its land functions | `tools/bird_habitats_north.py` (used by bird_habitats.py; `python3 tools/bird_habitats_north.py` prints its extras) |
 | Run it outside the engine, tests, maps | `tools/birdsim/run.sh day|test|trace`, `tools/birdsim/render_birds.py` |
 | Offscreen play test | `unreal/scripts/test_birds.sh` (test_birds.py) |
 
-Rebuild the habitats whenever `tools/world_map.py`, the terrain or the wires change: `python3 tools/academ_wires.py && python3 tools/bird_habitats.py`.
+Rebuild the habitats whenever `tools/world_map.py`, `tools/north.py`, `tools/north_river.py`, the terrain or the wires change: `python3 tools/academ_wires.py && python3 tools/bird_habitats.py`.
 
 ## How it works
 
-**Places.** `bird_habitats.py` writes ~7700 sites of 13 kinds: sea, beach (wet sand), the clay cliff's face,
+**Places.** `bird_habitats.py` writes ~7350 sites of 13 kinds: sea, beach (wet sand), the clay cliff's face,
 meadows and fields, reed, streets and yards, roof ridges and eaves (the Academgorodok's houses), the church tower, wires
 (the cable car's ropes and the Academgorodok's power lines, each conductor in sagging pieces of up to 4 m), gardens,
 broadleaf and conifer crowns, the forest floor. A site is a point or a segment (a ridge, a rope) with a patch
 round it. In the game the guessed tree sites are replaced by the real crowns of the forests and hero plants
 (`AProceduralForest::ForEachTree`, `PlantModel::Summary`), so birds sit in real trees. An 8 m grid of the ground
 and of the tallest thing on it (crowns, roofs) keeps flights over obstacles.
+
+**The North** (north of Y 1450, docs/north.md; `bird_habitats_north.py`, its own random stream so the town's sites
+do not move when the North changes). No new kinds: the North is made of the same 13, picked from the land functions.
+Trees from `world_map.forest_cover` and the North's mixes: old forest on the ridge is conifer (3 in 4) and broadleaf
+with forest floor, the gallery and bar willows broadleaf, stone birch, dwarf pine, alder and shrub thinned by mix
+(more so beyond the woods, since every remote site is a likely home: best-of-10 farthest picks). Meadows on a 315 m
+lattice of open ground, off the woods, the river plain and the hot ground, one in six on cinder, lava or snow; one
+meadow site per tall-herb patch (Kamchatka meadowsweet, cow parsnip), four round the camp and two round the hut (the
+corvids' ground). Sea, beach and cliff rows thinned outside the bay; the river's gravel bars and the mouth are beach
+(gulls, wagtails, crows; note the tide weighting applies to them too), a raft of sea 18 m off each cape or sea
+stack, and the stacks' ledges (`north.things()` kind `sea_stack`, when present) are cliff perches. Perches: the
+footbridges' handrails, the hut's ridge, the camp's food-pole crossbar and clothes line, trail posts and the gauge
+post are wire; driftwood and boulders are cliff. Nothing on fumaroles or sulfur. About 1340 of the sites; with the
+fixed populations, ~33% of the non-starling birds live north of 1450 (23% before the North's own habitats, when
+the map stopped at Y 2200). In the game the guessed tree sites are replaced by real crowns there too, so the
+North's tree birds follow its real forests.
 
 **Groups.** Every species lives in groups (rook flocks of 8-24, pairs of crows, single robins and thrushes) with a
 home spread out from the other groups of its species (best-of-10 farthest picks), so birds are all over the map
@@ -70,7 +87,7 @@ dev/test actor: in Lvl_Scene01 it stands down (`lyud.Starlings.Legacy 1` keeps i
 `stragglers` keeps a few on into the autumn (14 swallows leaving between 27 October and 5 November, 6 martins between
 25 October and 2 November, each on its own day, out of sight). They hawk low over the meadows, the reed and the water,
 sit in rows on the Academgorodok's wires (a body and a half apart, ~13 cm for a swallow, all facing the same way)
-and sleep in the reed. Swifts keep their months (none in October). With `lyud.Birds.Migration 0` every species stays,
+and sleep in the reed. Stragglers' homes are always picked near the club (`FocusShare`), never on a far coast. Swifts keep their months (none in October). With `lyud.Birds.Migration 0` every species stays,
 in full numbers.
 
 **Each other.** A bigger bird walking up makes a smaller one give way; gulls and crows chase a bird that found
@@ -196,6 +213,9 @@ up to 5 m nearer (bodies are posed at once and the instance stays one more frame
 the near ring. `lyud.Birds.Steady 0` brings back the old hard cuts for A/B; the report ends with `pops N, body spawns
 N releases N` and the last pops with their reasons. Check: `STARTEST_ONLY=pop unreal/scripts/test_starlings.sh`
 (walks past the swallows' wires at dusk, a feeding starling flock and the wires at noon, both ways; POPCHECK ok/FAIL).
+
+A flushed bird looks for cover in trees, gardens and reed, never on a feeder's tray. The peregrine gives up a chase
+when its plan turns to the night roost.
 
 After a fright a bird stays watchful for 45-90 s (its alertness fades over ~45 s instead of ~7) and its group keeps
 away from the danger, or from the player wherever they are, for one to two minutes.
