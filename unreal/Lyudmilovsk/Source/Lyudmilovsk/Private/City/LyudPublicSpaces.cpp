@@ -758,6 +758,12 @@ void ALyudPublicSpaces::SpawnPendingPlants()
 			const double D = FVector::DistSquared(PendingPlants[I].Xf.GetLocation(), Cam);
 			if (D < BestD) { BestD = D; Best = I; }
 		}
+		// none within 300 m of the camera: they wait in the queue (a bed is culled at 90 m), so a start far from the
+		// town has no plant builds and no far plants ticking
+		if (BestD > FMath::Square(30000.0))
+		{
+			return;
+		}
 		const FPendingPlant Q = PendingPlants[Best];
 		PendingPlants.RemoveAtSwap(Best);
 		if (AProceduralPlant* Pl = GetWorld()->SpawnActorDeferred<AProceduralPlant>(AProceduralPlant::StaticClass(), Q.Xf, nullptr, nullptr,
