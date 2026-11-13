@@ -1,0 +1,9 @@
+{
+ "comment": "Developer-mode teleport points (docs/dev_mode.md). One file per feature in this folder; x, y map metres (docs/world_map.md frame) or place (a map.json id); z world cm (omitted: onto the ground); yaw degrees (0 = +X, west; 90 = north); time HH:MM sets the clock on arrival; name a string key.",
+ "teleports": [
+  {"id": "beach_under_club", "group": "core", "name": "dev.tp.beach_under_club", "x": 122.0, "y": 40.0, "yaw": 90},
+  {"id": "valley_meadow", "group": "core", "name": "dev.tp.valley_meadow", "x": -500.0, "y": 700.0, "yaw": 0},
+  {"id": "north_hills_edge", "group": "core", "name": "dev.tp.north_hills_edge", "x": -400.0, "y": 1500.0, "yaw": 90},
+  {"id": "starlings_dusk", "group": "core", "name": "dev.tp.starlings_dusk", "x": 115.0, "y": 120.0, "yaw": 20, "time": "16:30"}
+ ]
+}
