@@ -485,8 +485,8 @@ namespace LyudTopi
 		};
 		Layer(5200.0, 260.0, 0.84, 71, Mega * Smooth((In - 2500.0) / 5000.0), nullptr, 0.21);
 		Layer(1150.0, 75.0, 0.82, 61, Mega, nullptr, -0.12);
-		Layer(240.0, 22.0, 0.80, 21, Env, &BigWind, 0.0);
-		Layer(78.0, 5.5, 0.80, 31, Env * (0.35 + 0.65 * BigWind) * Corridor, &MedWind, 0.16);
+		Layer(240.0, 31.0, 0.80, 21, Env, &BigWind, 0.0);
+		Layer(78.0, 7.5, 0.80, 31, Env * (0.35 + 0.65 * BigWind) * Corridor, &MedWind, 0.16);
 		Layer(19.0, 0.9, 0.78, 41, Env * (0.3 + 0.7 * BigWind * MedWind) * Corridor, nullptr, -0.33);
 
 		double Z = Base + Great * (1.0 - Plain) + Dunes;
@@ -508,8 +508,11 @@ namespace LyudTopi
 		}
 		Out.Z = Z;
 
-		// marram: round the edge, thinning into the deep; none on the river's plain
+		// marram: thick round the edge; further in it holds the dunes' long backs and crests in tussocky patches
+		// (none on the slip faces), thinning out past the river; none on the river's plain
 		const double Edgeward = 1.0 - Smooth((In - 120.0) / 420.0);
-		Out.Grass = K * Edgeward * (1.0 - Plain) * (0.35 + 0.65 * Noise(L.X / 37.0, L.Y / 37.0, 91));
+		const double Patch = Smooth((Noise(L.X / 95.0, L.Y / 80.0, 92) - 0.42) / 0.2);
+		const double Inner = 0.55 * Patch * BigWind * (1.0 - Smooth((In - 1300.0) / 900.0));
+		Out.Grass = K * std::max(Edgeward, Inner) * (1.0 - Plain) * (0.35 + 0.65 * Noise(L.X / 37.0, L.Y / 37.0, 91));
 	}
 }
