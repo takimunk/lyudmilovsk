@@ -25,7 +25,7 @@ if not os.path.exists(FEST):
     FEST = None
 
 LANGS = ["ru", "en", "ja"]
-COND_KEYS = ["to", "on", "near", "job", "age", "sex", "doing", "at", "pose", "manner", "met", "gather", "chrono", "need", "hours", "months",
+COND_KEYS = ["to", "on", "near", "job", "age", "sex", "doing", "at", "pose", "manner", "met", "temper", "gather", "chrono", "need", "hours", "months",
              "weekday", "sun", "weather", "festival", "phase", "job2", "age2", "sex2", "doing2", "weight"]
 EVENTS = {"rest_sit", "rest_carry", "rest_serve", "rest_bill", "rest_bye",
           # somebody noticed the player (PeopleManners.h ENoticeEvent, docs/town_manners.md)
@@ -133,6 +133,7 @@ VALID = {
     "need": {"hunger", "tired", "social", "fun", "nature", "mind", "sun"},
     "weekday": {"mon", "tue", "wed", "thu", "fri", "sat", "sun"},
     "sun": {"day", "low", "night", "cloudy"},
+    "temper": {"warm", "reserved", "nervy", "calm", "curious", "tidy", "careless"},
     "weather": {"rain", "snow", "fog", "cold", "warm", "clear", "wet", "aurora", "rainbow", "fireworks"},
     "job": jobs, "job2": jobs,
 }
@@ -189,6 +190,7 @@ HEADER = """# What the townsfolk say on their own (docs/town_talk.md): a greetin
 #             outdoors, indoors: under the sky or a roof (alone it doesn't make a set more particular)
 # pose =      stand, walk, talk, look, sit, computer, eat, read, work
 # manner =    what their hands are doing now (manners.json: smoke, phone_call, umbrella, feed_birds, yawn, ...)
+# temper =    who they are in manner (their persona's strong sides): warm, reserved, nervy, calm, curious, tidy, careless
 # met =       how well the speaker knows the player: new (never greeted him), seen (on 1-4 days), known (5 and more)
 # gather =    at a holiday's gathering of this mode now: mingle, watch, sit, fair
 # chrono =    lark, owl, night, usual                 need =  hunger, tired, social, fun, nature, mind, sun (over 0.75)

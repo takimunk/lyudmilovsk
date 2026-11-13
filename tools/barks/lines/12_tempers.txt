@@ -1,0 +1,78 @@
+## ---------------------------------------------------------------------------------------------------------------
+## Who they are in manner (docs/town_manners.md personas; temper = warm reserved nervy calm curious tidy careless):
+## the same bench, the same weather, said differently by different people
+## ---------------------------------------------------------------------------------------------------------------
+
+[temper_warm]
+temper = warm
+at = outdoors
+age = adult elder
+say town.temper_warm.1 | Какой сегодня народ хороший на улице. Все здороваются. | Such nice people out today. Everyone says hello. | 今日は外にいい人ばかり。みんな挨拶してくれる。
+say town.temper_warm.2 | Заходи как-нибудь на чай. Я серьёзно, не из вежливости. | Come round for tea some time. I mean it, I'm not just being polite. | そのうちお茶に来てね。社交辞令じゃなくて、本気で。
+say town.temper_warm.3 | Люблю, когда на набережной людно. Город как будто дышит. | I love it when the promenade's busy. It's as if the town were breathing. | 遊歩道がにぎやかなのが好き。町が息をしてるみたいで。
+
+[temper_warm_hello]
+temper = warm
+to = hero
+weight = 2
+say town.temper_warm_hello.1 | Здравствуй, здравствуй! Как ты? Только честно. | Hello, hello! How are you? Honestly, now. | こんにちは、こんにちは！元気？正直に言ってごらん。
+say town.temper_warm_hello.2 | О, какие люди! Хорошего тебе дня, слышишь? | Well, look who it is! Have a good day, you hear? | おや、これはこれは！いい一日をね、わかった？
+
+[temper_reserved]
+temper = reserved
+at = outdoors
+age = adult elder
+say town.temper_reserved.1 | Хороший день. Тихий. | A good day. Quiet. | いい日だ。静かで。
+say town.temper_reserved.2 | Я не молчу. Я просто не говорю лишнего. | I'm not being silent. I just don't say more than's needed. | 黙ってるんじゃない。余計なことを言わないだけ。
+say town.temper_reserved.3 | Людей много. Пойду туда, где поменьше. | A lot of people. I'll go where there are fewer. | 人が多いな。少ないほうへ行くよ。
+
+[temper_reserved_hello]
+temper = reserved
+to = hero
+weight = 2
+say town.temper_reserved_hello.1 | Угу. | Mm. | うん。
+say town.temper_reserved_hello.2 | Добрый. | Morning. | どうも。
+
+[temper_nervy]
+temper = nervy
+at = outdoors
+age = teen adult elder
+say town.temper_nervy.1 | Утюг. Утюг выключен? Выключен. Наверное. | The iron. Did I switch the iron off? I did. Probably. | アイロン。アイロン、切ったっけ？切った。たぶん。
+say town.temper_nervy.2 | Который час? Нет, я не опаздываю. Я просто хочу знать. | What's the time? No, I'm not late. I just want to know. | いま何時？いや、遅れてるわけじゃない。知りたいだけ。
+say town.temper_nervy.3 | Канатка сегодня скрипит не так, как вчера. Никто не замечает? | The cable car's creaking differently from yesterday. Does nobody notice? | 今日のロープウェイ、昨日ときしみ方が違う。誰も気づかないの？
+
+[temper_calm]
+temper = calm
+at = outdoors
+age = adult elder
+say town.temper_calm.1 | Успеется. Тут всё всегда успевается. | There's time. There's always time for everything here. | 間に合うよ。ここでは何だっていつも間に合う。
+say town.temper_calm.2 | Прилив придёт, отлив уйдёт. Чего волноваться. | The tide comes in, the tide goes out. Why worry. | 潮は満ちて、また引く。心配することなんてないさ。
+say town.temper_calm.3 | Я никуда не спешу уже лет двадцать. И опозданий за мной не числится. | I haven't hurried anywhere in twenty years. And not once been late. | もう二十年、どこへも急いでない。それで一度も遅れたことがない。
+
+[temper_curious]
+temper = curious
+at = outdoors
+age = teen adult elder
+say town.temper_curious.1 | А ты видел, что у пирса новую лодку привязали? Чья, интересно. | Did you see there's a new boat tied up at the pier? Whose, I wonder. | 桟橋に新しいボートがつないであるの、見た？誰のだろうね。
+say town.temper_curious.2 | Вон в том окне третий вечер свет до утра. Я не подглядываю, я наблюдаю. | That window's had a light on till morning three nights running. I'm not spying, I'm observing. | あの窓、三晩続けて朝まで明かりがついてる。のぞきじゃないよ、観察。
+say town.temper_curious.3 | Куда это все идут? Пойду посмотрю. | Where's everyone going? I'll go and see. | みんなどこへ行くんだろう。見てこよう。
+
+[temper_curious_hero]
+temper = curious
+near = hero
+weight = 2
+say town.temper_curious_hero.1 | А ты откуда идёшь? А куда? Просто интересно. | Where've you come from? And where are you off to? Just curious. | どこから来たの？どこへ行くの？ちょっと気になって。
+
+[temper_tidy]
+temper = tidy
+at = outdoors
+age = adult elder
+say town.temper_tidy.1 | Зонт, платок, ключи, запасные ключи. Всё при мне. | Umbrella, handkerchief, keys, spare keys. All present. | 傘、ハンカチ、鍵、予備の鍵。ぜんぶ持ってる。
+say town.temper_tidy.2 | Скамейку опять сдвинули. Она стояла на ладонь левее. | Somebody's moved the bench again. It stood a hand's width to the left. | またベンチが動かされてる。手のひら一つ分、左にあったのに。
+
+[temper_careless]
+temper = careless
+at = outdoors
+age = teen adult elder
+say town.temper_careless.1 | Где-то тут был мой шарф. Или не тут. Или не шарф. | My scarf was round here somewhere. Or not here. Or not a scarf. | この辺にマフラーがあったはず。ここじゃないかも。マフラーじゃないかも。
+say town.temper_careless.2 | Зонт? Зачем. Дождь либо будет, либо нет. | An umbrella? What for. It'll either rain or it won't. | 傘？なんで。雨は降るか降らないか、どっちかでしょ。

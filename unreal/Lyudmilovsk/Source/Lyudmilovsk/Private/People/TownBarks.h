@@ -56,6 +56,7 @@ namespace LyudBarks
 		FValues Job, Sex, Doing, At, Pose, Gather, Chrono, Need;
 		FValues Met;                // how well they know the player: new, seen, known
 		FValues Manner;             // what their hands are doing (manners.json: smoke, phone_call, umbrella, ...)
+		FValues Temper;             // who they are in manner: warm, reserved, nervy, calm, curious, tidy, careless
 		FValues AgeGroup;           // kid, teen, adult, elder
 		FRanges AgeYears;           // 50-120
 		bool bNearHero = false;
@@ -75,6 +76,9 @@ namespace LyudBarks
 		std::string Met;                    // new (never greeted him), seen (a few days), known (five days and more); the caller sets it
 		std::string Manner;                 // their manner now (PeopleManners.h), "" none or not drawn; the caller sets it after FillWho
 		std::vector<std::string> Needs;     // the needs over 0.75: hunger, tired, social, fun, nature, mind, sun
+		// their persona's strong sides (PeopleManners.h FPersona: a trait over 0.66 or under 0.34): warm / reserved, nervy /
+		// calm, curious, tidy / careless; the caller sets it after FillWho
+		std::vector<std::string> Temper;
 		bool bHeroNear = false;             // the player is within 10 m
 		/** Empties it, keeping the memory (filled again every scan without allocating). */
 		void Reset();

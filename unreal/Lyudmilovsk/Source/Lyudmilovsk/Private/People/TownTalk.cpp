@@ -430,6 +430,26 @@ namespace TownTalkLocal
 		// and how well they know the player by now
 		const int32 Met = Life ? Life->GetMet(Id) : 0;
 		W.Met = Met >= 5 ? "known" : (Met >= 1 ? "seen" : "new");
+		// and who they are in manner (the sets' temper = ...)
+		W.Temper.clear();
+		if (const LyudPeople::FPersona* Persona = Mn ? Mn->PersonaOf(Id) : nullptr)
+		{
+			auto Side = [&W](float Trait, const char* High, const char* Low)
+			{
+				if (Trait > 0.66f && High)
+				{
+					W.Temper.push_back(High);
+				}
+				else if (Trait < 0.34f && Low)
+				{
+					W.Temper.push_back(Low);
+				}
+			};
+			Side(Persona->Warmth, "warm", "reserved");
+			Side(Persona->Nerve, "nervy", "calm");
+			Side(Persona->Curiosity, "curious", nullptr);
+			Side(Persona->Tidy, "tidy", "careless");
+		}
 	}
 }
 

@@ -16,6 +16,7 @@
 #             outdoors, indoors: under the sky or a roof (alone it doesn't make a set more particular)
 # pose =      stand, walk, talk, look, sit, computer, eat, read, work
 # manner =    what their hands are doing now (manners.json: smoke, phone_call, umbrella, feed_birds, yawn, ...)
+# temper =    who they are in manner (their persona's strong sides): warm, reserved, nervy, calm, curious, tidy, careless
 # met =       how well the speaker knows the player: new (never greeted him), seen (on 1-4 days), known (5 and more)
 # gather =    at a holiday's gathering of this mode now: mingle, watch, sit, fair
 # chrono =    lark, owl, night, usual                 need =  hunger, tired, social, fun, nature, mind, sun (over 0.75)
@@ -1688,3 +1689,66 @@ age = teen adult elder
 weight = 4
 talk = town.counter_evening1.1 | town.counter_evening1.2
 talk = town.counter_evening2.1 | town.counter_evening2.2
+
+# Who they are in manner (docs/town_manners.md personas; temper = warm reserved nervy calm curious tidy careless):
+# the same bench, the same weather, said differently by different people
+
+[temper_warm]
+temper = warm
+at = outdoors
+age = adult elder
+say = town.temper_warm.1..3
+
+[temper_warm_hello]
+temper = warm
+to = hero
+weight = 2
+say = town.temper_warm_hello.1..2
+
+[temper_reserved]
+temper = reserved
+at = outdoors
+age = adult elder
+say = town.temper_reserved.1..3
+
+[temper_reserved_hello]
+temper = reserved
+to = hero
+weight = 2
+say = town.temper_reserved_hello.1..2
+
+[temper_nervy]
+temper = nervy
+at = outdoors
+age = teen adult elder
+say = town.temper_nervy.1..3
+
+[temper_calm]
+temper = calm
+at = outdoors
+age = adult elder
+say = town.temper_calm.1..3
+
+[temper_curious]
+temper = curious
+at = outdoors
+age = teen adult elder
+say = town.temper_curious.1..3
+
+[temper_curious_hero]
+temper = curious
+near = hero
+weight = 2
+say = town.temper_curious_hero.1
+
+[temper_tidy]
+temper = tidy
+at = outdoors
+age = adult elder
+say = town.temper_tidy.1..2
+
+[temper_careless]
+temper = careless
+at = outdoors
+age = teen adult elder
+say = town.temper_careless.1..2

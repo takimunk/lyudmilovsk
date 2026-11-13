@@ -23,6 +23,9 @@ Age, occupation and temper shift the odds (a pensioner feeds the birds and walks
 student lives in the phone). Habits also draw people to what suits them: `FManners::ApplyLikes` adds to their likes once
 (a feeder to `feed_birds`, a reader to `read_bench`).
 
+Town talk knows them too: `temper = warm | reserved | nervy | calm | curious | tidy | careless` (a trait over 0.66 or
+under 0.34; lines in `tools/barks/lines/12_tempers.txt`), so the same bench is talked about differently by different people.
+
 `lyud.People.Who <key>` prints somebody's persona; `tools/mannersim/run.sh who` lists the town's.
 
 ## Manners
