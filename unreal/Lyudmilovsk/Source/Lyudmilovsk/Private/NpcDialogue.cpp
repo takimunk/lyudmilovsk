@@ -448,9 +448,11 @@ FVector ANpcTalkDirector::HeadOf(const FNpc& Npc) const
 	{
 		return FVector::ZeroVector;
 	}
-	if (Mesh->GetBoneIndex(TEXT("head")) != INDEX_NONE)
+	// asked several times per person every frame: the name is looked up in the name table once, not on every call
+	static const FName HeadBone(TEXT("head"));
+	if (Mesh->GetBoneIndex(HeadBone) != INDEX_NONE)
 	{
-		return Mesh->GetBoneLocation(TEXT("head")) + FVector(0, 0, 26.f);
+		return Mesh->GetBoneLocation(HeadBone) + FVector(0, 0, 26.f);
 	}
 	return Mesh->Bounds.Origin + FVector(0, 0, Mesh->Bounds.BoxExtent.Z + 8.f);
 }
