@@ -151,7 +151,7 @@ python3 tools/city/interiors.py --check    # write nothing; fail on broken conte
   unit whose variant is not built gets one counter at its door; built ones use their room's things (see "Promenade units"). As soon as a building exports one `thing`, its spots are no longer used.
 * `Content/Dev/teleports/interiors.json`: one teleport per public building (1.5 m inside its main street door, facing
   in; kiosks and open halls: 2 m in front, facing them) and one per upper storey that has things; x/y map metres
-  (docs/world_map.md), z world cm = floor + 1 m, names `dev.tp.city.<plot>[.<storey>]` in the city strings.
+  (docs/world_map.md), z world cm = the floor (feet), names `dev.tp.city.<plot>[.<storey>]` in the city strings.
 * `Content/Localization/city/strings_{ru,en,ja}.json` (merged at load like `Localization/town/`): every key of
   `tools/city/content/strings/*.json` (`{"key": {"ru", "en", "ja"}}`, one file per theme) plus the teleport names. A key
   of the hand-written table may be used but never redefined (it would win).

@@ -615,7 +615,7 @@ def build_teleports(plan, things, strings, gen_strings):
         w = local_to_world(pl["front"], pl["yaw"], local)
         tid = "city." + key
         tps.append({"id": tid, "group": "interiors", "name": "dev.tp." + tid, "x": round(w[0], 2), "y": round(w[1] - pf, 2),
-                    "z": round(w[2] * 100 + 100, 1), "yaw": world_yaw(pl["yaw"], 180.0)})
+                    "z": round(w[2] * 100, 1), "yaw": world_yaw(pl["yaw"], 180.0)})
         gen_strings["dev.tp." + tid] = {l: strings[name_key][l] for l in LANGS}
         ground = pl["front"][2] * 100
         storeys = collections.OrderedDict()
@@ -635,7 +635,7 @@ def build_teleports(plan, things, strings, gen_strings):
                 p = step(p, t["yaw"], 0.9)
             sid = "%s.%d" % (tid, n)
             tps.append({"id": sid, "group": "interiors", "name": "dev.tp." + sid, "x": round(p[0], 2), "y": round(p[1] - pf, 2),
-                        "z": round(floor + 100, 1), "yaw": round(((t["yaw"] + 180.0) % 360.0) - (360.0 if (t["yaw"] + 180.0) % 360.0 > 180 else 0), 1)})
+                        "z": round(floor, 1), "yaw": round(((t["yaw"] + 180.0) % 360.0) - (360.0 if (t["yaw"] + 180.0) % 360.0 > 180 else 0), 1)})
             gen_strings["dev.tp." + sid] = {l: "%s: %s" % (strings[name_key][l], storey_name(n, l)) if l != "ja"
                                             else "%s・%s" % (strings[name_key][l], storey_name(n, l)) for l in LANGS}
     return tps
@@ -834,7 +834,7 @@ def main():
     data["acts"] = collections.OrderedDict(sorted(acts.items()))
     data["shops"] = collections.OrderedDict(sorted(shops.items()))
     write(OUT_THINGS, dump_things(data))
-    tp = collections.OrderedDict([("about", "Written by tools/city/interiors.py: x/y map metres (docs/world_map.md), z world cm (floor + 1 m), yaw Unreal degrees."),
+    tp = collections.OrderedDict([("about", "Written by tools/city/interiors.py: x/y map metres (docs/world_map.md), z world cm (the floor, feet), yaw Unreal degrees."),
                                   ("teleports", teleports)])
     write(OUT_TELEPORTS, dump_things(tp))
     for l in LANGS:
