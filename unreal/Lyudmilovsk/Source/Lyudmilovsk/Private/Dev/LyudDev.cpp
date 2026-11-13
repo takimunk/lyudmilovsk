@@ -6,6 +6,7 @@
 #include "Engine/Engine.h"
 #include "Engine/World.h"
 #include "EngineUtils.h"
+#include "GameFramework/PhysicsVolume.h"
 #include "GameFramework/PlayerStart.h"
 #include "GameFramework/Character.h"
 #include "GameFramework/CharacterMovementComponent.h"

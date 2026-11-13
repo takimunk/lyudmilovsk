@@ -75,7 +75,7 @@ namespace LyudDev
 	/** Every action, sorted by group then id. */
 	LYUDMILOVSK_API TArray<const FAction*> Actions();
 	LYUDMILOVSK_API const FAction* FindAction(FName Id);
-	/** Every teleport point: map.json places, Content/Dev/teleports/*.json, code, bookmarks; sorted by group then name. */
+	/** Every teleport point: map.json places, Content/Dev/teleports/<feature>.json, code, bookmarks; sorted by group then name. */
 	LYUDMILOVSK_API TArray<FTeleport> Teleports();
 	LYUDMILOVSK_API bool FindTeleport(FName Id, FTeleport& Out);
 
@@ -101,7 +101,7 @@ namespace LyudDev
 	/** The text for a registered name key (the id when the key is not in the tables). */
 	LYUDMILOVSK_API FText NameOf(const FString& Key, FName Id);
 
-	/** Re-reads Content/Dev/teleports/*.json and the quests' dev blocks (done at every level start too). */
+	/** Re-reads Content/Dev/teleports/<feature>.json and the quests' dev blocks (done at every level start too). */
 	LYUDMILOVSK_API void Reload();
 
 	/** Whether developer mode is allowed in this build: always outside Shipping; in Shipping with -dev on the command line. */
