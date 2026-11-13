@@ -1,18 +1,85 @@
 {
  "comment": "What the quests stage in the world (ULyudQuestDirector, docs/quests.md). pickups: an item lying out while its quest is on one of the stages; ux, uy, floor_uz are Unreal metres as in PeopleData/people_places.json (the floor under it; it drops from drop_m above onto whatever stands there), yaw the way its top points. listeners: people who notice a bird calling beside them; the first reaction that fits is said (species, quest + stage, air = called on the wing near by); the quests get bird_call <Species>.<Body> when the bird sat within within_m.",
  "pickups": [
-  {"id": "library_guide", "item": "bird_guide", "quest": "waxwing", "stages": ["prepare"],
-   "ux": -241.10, "uy": 629.11, "floor_uz": -35.46, "drop_m": 1.3, "yaw": -11,
-   "note": "the issue desk's reader's ledge (top 1.05 m over the floor), between the returned books and the card tray, its top towards the librarian: blender/academgorodok/library.py issue_desk() at ISSUE_DESK through people_map.py's house frame (her chair: -240.21, 628.99, facing 169); a visitor stands at about -241.8, 629.25"}
+  {
+   "id": "library_guide",
+   "item": "bird_guide",
+   "quest": "waxwing",
+   "stages": [
+    "prepare"
+   ],
+   "ux": -241.1,
+   "uy": 629.11,
+   "floor_uz": -35.46,
+   "drop_m": 1.3,
+   "yaw": -11,
+   "note": "the issue desk's reader's ledge (top 1.05 m over the floor), between the returned books and the card tray, its top towards the librarian: blender/academgorodok/library.py issue_desk() at ISSUE_DESK through people_map.py's house frame (her chair: -240.21, 628.99, facing 169); a visitor stands at about -241.8, 629.25"
+  }
  ],
  "listeners": [
-  {"person": "sorokin_oleg", "within_m": 14, "air_within_m": 45,
+  {
+   "person": "sorokin_oleg",
+   "within_m": 14,
+   "air_within_m": 45,
    "reactions": [
-    {"species": "Waxwing", "quest": "waxwing", "stage": "return",
-     "lines": ["sorokin_oleg.waxwing_seen.1", "sorokin_oleg.waxwing_seen.2", "sorokin_oleg.waxwing_seen.3"]},
-    {"species": "Waxwing", "lines": ["sorokin_oleg.waxwing_again.1"]},
-    {"air": true, "lines": ["sorokin_oleg.bird_over.1"]},
-    {"lines": ["sorokin_oleg.bird_visit.1"]}
-   ]}
+    {
+     "species": "Waxwing",
+     "quest": "waxwing",
+     "stage": "return",
+     "lines": [
+      "sorokin_oleg.waxwing_seen.1",
+      "sorokin_oleg.waxwing_seen.2",
+      "sorokin_oleg.waxwing_seen.3"
+     ]
+    },
+    {
+     "species": "Waxwing",
+     "lines": [
+      "sorokin_oleg.waxwing_again.1"
+     ]
+    },
+    {
+     "air": true,
+     "lines": [
+      "sorokin_oleg.bird_over.1"
+     ]
+    },
+    {
+     "lines": [
+      "sorokin_oleg.bird_visit.1"
+     ]
+    }
+   ]
+  },
+  {
+   "person": "kid_girl",
+   "within_m": 22,
+   "air_within_m": 22,
+   "note": "22 m, not Sorokin's 14: at her iMac (club seat 7) she is 20.3 m down the hall from the club's door, so a sparrow that only reaches the doorstep still counts; outdoors any perch near her does",
+   "reactions": [
+    {
+     "species": "HouseSparrow",
+     "quest": "sparrow_hello",
+     "stage": "call",
+     "lines": [
+      "kid_girl.sparrow_seen.1",
+      "kid_girl.sparrow_seen.2",
+      "kid_girl.sparrow_seen.3"
+     ]
+    },
+    {
+     "quest": "sparrow_hello",
+     "stage": "call",
+     "lines": [
+      "kid_girl.sparrow_other.1"
+     ]
+    },
+    {
+     "lines": [
+      "kid_girl.sparrow_again.1"
+     ]
+    }
+   ]
+  }
  ]
 }

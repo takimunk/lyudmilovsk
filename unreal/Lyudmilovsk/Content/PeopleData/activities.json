@@ -29,6 +29,8 @@
     {"id": "work_shop", "places": ["shop"], "slots": ["counter"], "pose": "stand", "minutes": [60, 60], "meets": {"social": 0.35}, "free": 0},
     {"id": "work_cheese", "places": ["cheese_tent"], "slots": ["counter"], "pose": "stand", "minutes": [60, 60], "meets": {"social": 0.4, "sun": 0.2}, "free": 0},
     {"id": "work_corn", "places": ["corn_stall"], "slots": ["counter"], "pose": "stand", "minutes": [60, 60], "meets": {"social": 0.4, "sun": 0.2}, "free": 0},
+    {"id": "sketch_yard", "places": ["bench"], "slots": ["bench"], "pose": "sit", "minutes": [60, 60], "meets": {"nature": 0.3, "sun": 0.3, "mind": 0.3}, "free": 0},
+    {"id": "mend_nets", "places": ["promenade_bench"], "slots": ["bench"], "pose": "sit", "minutes": [60, 60], "meets": {"nature": 0.3, "sun": 0.4}, "free": 0},
     {"id": "birdwatch_yard", "places": ["bench"], "slots": ["bench"], "pose": "sit", "minutes": [60, 60], "meets": {"nature": 0.5, "sun": 0.3, "mind": 0.1}, "free": 0},
     {"id": "work_sea", "places": ["beach"], "pose": "hidden", "minutes": [60, 60], "meets": {"nature": 0.5, "sun": 0.4, "hunger": 0.2}, "free": 0, "away": 1},
     {"id": "shop", "places": ["shop"], "slots": ["stand"], "pose": "stand", "minutes": [4, 9], "hours": [9, 19], "days": [0, 1, 2, 3, 4, 5], "ages": [9, 200], "meets": {"hunger": 1.2, "social": 0.4}, "base": 0.0, "trait": "social"},
