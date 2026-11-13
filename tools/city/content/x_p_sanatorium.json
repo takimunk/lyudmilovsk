@@ -1,0 +1,75 @@
+{
+ "_doc": "P-SANATORIUM, second pass (depth): the regime board by the hour, the weekly menu, the oxygen bar, the holidaymakers' chess corner, the library trolley, plant labels, the quartz lamp, the night radio of the paid couch, the courtyard window, the pump-room clock, evenings in the lobby, and the guest book that tells the story of two holidaymakers over several days. Words: strings/x_p_sanatorium.json.",
+ "acts": {
+  "look_regime": {"like": "look_misc", "minutes": 3, "lines": [
+   {"k": "city.san.regime.1", "h": [6, 9]},
+   {"k": "city.san.regime.2", "h": [9, 13]},
+   {"k": "city.san.regime.3", "h": [13, 15]},
+   {"k": "city.san.regime.4", "h": [15, 19]},
+   {"k": "city.san.regime.5", "h": [19, 22]},
+   {"k": "city.san.regime.6", "h": [22, 6]}
+  ]},
+  "look_guest_book": {"like": "look_misc", "prompt": "city.san.book.prompt", "minutes": 4, "rotate": "daily", "sound": "page_turn", "lines": "city.san.book"},
+  "look_rules_sanatorium": {"like": "look_rules", "lines": ["city.look.rules.*", "city.san.reg.*"], "target": "look_rules", "minutes": 4},
+  "look_menu_week": {"like": "look_misc", "minutes": 2, "lines": [
+   {"k": "city.san.menu.mon", "d": "mon"},
+   {"k": "city.san.menu.tue", "d": "tue"},
+   {"k": "city.san.menu.wed", "d": "wed"},
+   {"k": "city.san.menu.thu", "d": "thu"},
+   {"k": "city.san.menu.fri", "d": "fri"},
+   {"k": "city.san.menu.sat", "d": "sat"},
+   {"k": "city.san.menu.sun", "d": "sun"}
+  ]},
+  "sanatorium_oxygen": {"prompt": "city.san.oxygen.prompt", "minutes": 10, "price": 12, "pose": "stand", "sound": "aquarium_bubbles", "lines": [
+   {"k": "city.san.oxygen.1", "h": [6, 14]},
+   {"k": "city.san.oxygen.2", "h": [14, 6]}
+  ]},
+  "sanatorium_chess": {"prompt": "city.do.chess.prompt", "minutes": 40, "pose": "sit", "sound": "chess_piece", "lines": [
+   {"k": "city.san.chess.1", "h": [6, 13]},
+   {"k": "city.san.chess.2", "h": [13, 19]},
+   {"k": "city.san.chess.3", "h": [19, 6]}
+  ]},
+  "read_trolley": {"like": "read_misc", "minutes": 10, "lines": "city.san.trolley"},
+  "look_plant_labels": {"like": "look_misc", "minutes": 3, "lines": "city.san.labels"},
+  "garden_read": {"prompt": "city.san.garden_read.prompt", "minutes": 20, "pose": "sit", "sound": "page_turn", "any_hour": true, "lines": [
+   {"k": "city.san.garden_read.1", "h": [6, 12]},
+   {"k": "city.san.garden_read.2", "h": [12, 18]},
+   {"k": "city.san.garden_read.3", "h": [18, 6]}
+  ]},
+  "sanatorium_quartz": {"prompt": "city.san.quartz.prompt", "minutes": 10, "pose": "sit", "needs_staff": "doctor", "lines": "city.san.quartz"},
+  "couch_radio": {"prompt": "city.do.radio.prompt", "minutes": 10, "sound": "radio_tune", "any_hour": true, "lines": [
+   {"k": "city.san.radio.1", "h": [6, 22]},
+   {"k": "city.san.radio.2", "h": [22, 6]}
+  ]},
+  "look_courtyard": {"prompt": "city.act.look_out.prompt", "minutes": 5, "sound": "wind_soft", "any_hour": true, "lines": [
+   {"k": "city.san.court.1", "h": [6, 21]},
+   {"k": "city.san.court.2", "h": [21, 6]}
+  ]},
+  "look_pump_clock": {"like": "look_misc", "minutes": 2, "rotate": "daily", "lines": "city.san.clock"},
+  "sanatorium_evening": {"prompt": "city.san.evening.prompt", "minutes": 20, "pose": "stand", "sound": "waltz", "lines": [
+   {"k": "city.san.evening.day", "h": [6, 18]},
+   {"k": "city.san.evening.early", "h": [18, 20]},
+   {"k": "city.san.evening.wed", "d": "wed", "h": [18, 20]},
+   {"k": "city.san.evening.fri", "d": "fri", "h": [19, 22]},
+   {"k": "city.san.evening.sat1", "d": "sat", "h": [19, 23]},
+   {"k": "city.san.evening.sat2", "d": "sat", "h": [19, 23]},
+   {"k": "city.san.evening.late", "h": [20, 6]}
+  ]}
+ },
+ "rules": {
+  "round_sanatorium/regime_board": {"act": "look_regime"},
+  "round_sanatorium/guest_book": {"act": "look_guest_book"},
+  "round_sanatorium/lobby_board": {"act": "look_rules_sanatorium"},
+  "round_sanatorium/menu_week": {"act": "look_menu_week"},
+  "round_sanatorium/oxygen_bar": {"act": "sanatorium_oxygen", "hours": [10, 19]},
+  "round_sanatorium/chess_corner": {"act": "sanatorium_chess"},
+  "round_sanatorium/book_trolley": {"act": "read_trolley"},
+  "round_sanatorium/garden_labels": {"act": "look_plant_labels"},
+  "round_sanatorium/garden_chair_a": {"act": "garden_read"},
+  "round_sanatorium/treat_quartz": {"act": "sanatorium_quartz"},
+  "round_sanatorium/night_radio": {"act": "couch_radio"},
+  "round_sanatorium/treat_window": {"act": "look_courtyard"},
+  "round_sanatorium/pump_clock": {"act": "look_pump_clock"},
+  "round_sanatorium/lobby_dance": {"act": "sanatorium_evening"}
+ }
+}
