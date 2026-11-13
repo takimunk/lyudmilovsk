@@ -553,6 +553,15 @@ void ULyudLadderSubsystem::Tick(float DeltaTime)
 	ACharacter* Hero = PC ? Cast<ACharacter>(PC->GetPawn()) : nullptr;
 	if (!Hero || Ladders.Num() == 0)
 	{
+		// not the hero any more (a bird's flight, a seat that takes the pawn): the prompt does not stay on the screen
+		if (bPrompt)
+		{
+			bPrompt = false;
+			if (ULyudInventoryUI* UI = ULyudInventoryUI::Get(this))
+			{
+				UI->SetPrompt(this, FText::GetEmpty());
+			}
+		}
 		return;
 	}
 	ULyudLadderClimber* Climber = ULyudLadderClimber::Get(Hero, false);
