@@ -361,12 +361,17 @@ FOREST_MIX = {
     # the thin scatter over the upper meadows: a dwarf pine or birch here and there, a juniper
     "shrub": [("DwarfBirch", 0.4, 6, 20), ("SiberianDwarfPine", 0.3, 12, 45), ("Juniper", 0.2, 10, 30),
               ("DwarfAlder", 0.1, 8, 25)],
+    # the river: shrub willow thickets with young chosenia on the islands and old bars; galleries of chosenia
+    # (Sakhalin willow) with stone birch and alder on the terraces
+    "riverbar": [("BarWillow", 0.75, 4, 15), ("SakhalinWillow", 0.15, 3, 8), ("DwarfAlder", 0.1, 6, 20)],
+    "gallery": [("SakhalinWillow", 0.55, 10, 40), ("StoneBirch", 0.15, 15, 60), ("DwarfAlder", 0.15, 8, 30),
+                ("BarWillow", 0.1, 5, 15), ("Rowan", 0.05, 6, 14)],
     # golden rhododendron carpets round the snowfields (knee-high, evergreen, pale yellow in June)
     "rhodo": [("GoldenRhododendron", 0.85, 8, 30), ("SiberianDwarfPine", 0.15, 10, 30)],
 }
 # the forests' draw distance by mix, cm (AProceduralForest.CullDistance; 500 m when not named): knee-high shrubs go
 # sooner than trees (import_world sets it)
-FOREST_DETAIL = {"dwarfpine": {"cull_distance": 35000.0}, "alder": {"cull_distance": 35000.0},
+FOREST_DETAIL = {"riverbar": {"cull_distance": 35000.0}, "dwarfpine": {"cull_distance": 35000.0}, "alder": {"cull_distance": 35000.0},
                  "shrub": {"cull_distance": 30000.0}, "rhodo": {"cull_distance": 15000.0}}
 
 BELT = (2700.0, 4190.0)         # the shrub belt: dense at its foot by the birches, thinning north over the lava plain
@@ -453,11 +458,11 @@ def wood(x, y):
     if i is not None:
         e = i["e"]
         if e <= 0.0:
-            mix, c = "wet", 0.9 * _smooth((i["island"] - 0.3) / 0.4)
+            mix, c = "riverbar", 0.9 * _smooth((i["island"] - 0.3) / 0.4)
         elif e < 100.0:
             g = _smooth(e / 9.0) * _smooth((L.fbm(x, y, 110.0, 2, 71) + 0.22) / 0.3) * (1.0 - _smooth((e - 55.0) / 45.0))
             if g > c:
-                mix, c = "wet", g
+                mix, c = "gallery", g
             else:
                 c *= _smooth(e / 20.0)
     c *= 1.0 - _smooth((-1100.0 - x) / 100.0)                            # the Topi's dune: no trees by X -1200
@@ -474,7 +479,7 @@ def cover(x, y):
     return wood(x, y)[1]
 
 
-WOOD_DENSITY = {"old": 1.0, "wet": 0.5, "stonebirch": 0.2}
+WOOD_DENSITY = {"old": 1.0, "gallery": 0.5, "riverbar": 1.6, "stonebirch": 0.2}
 
 
 def forests(tiles):
@@ -535,6 +540,9 @@ HERB_PATCH_SETTINGS = {
     "CottonGrass": {"herb_density": 3.0, "herb_habitat": "Wet", "herb_age": 4.0},
     "MountainAvens": {"herb_density": 2.0, "herb_habitat": "Meadow", "herb_age": 8.0},
     "Lingonberry": {"herb_density": 1.5, "herb_habitat": "Meadow", "herb_age": 6.0},
+    "KamchatkaMeadowsweet": {"herb_density": 0.5, "herb_habitat": "Meadow", "herb_age": 4.0},
+    "CowParsnip": {"herb_density": 0.2, "herb_habitat": "Meadow", "herb_age": 3.0},
+    "RiverSedge": {"herb_density": 2.5, "herb_habitat": "Wet", "herb_age": 4.0},
 }
 
 
@@ -582,6 +590,26 @@ def herb_patches(seed0=1400):
         g = math.hypot(gx, gy) or 1.0
         add(f["x"] - gx / g * (f["r"] + 18.0), f["y"] - gy / g * (f["r"] + 18.0), 15.0, "MountainAvens", z1=215.0,
             need=lambda x, y: snow(x, y) == 0.0 and lava(x, y) == 0.0)
+    # the river's terraces: the tall herbs (шеломайник: meadowsweet and cow parsnip over one's head) in the galleries'
+    # gaps, where the trail comes off the footbridges and along the north bank; sedge on the channels' wet edges
+    def bank(x, off):
+        sr, _ = R.locate(x, 2000.0)
+        bx, by, _, ny = R.at(sr)
+        return bx, by + ny * (R.half(sr) + off)        # off metres outside the plain's north edge (inside when < 0)
+
+    river_ok = lambda x, y: True
+    for k, bx in enumerate(range(-520, 141, 60)):
+        px, py = bank(float(bx), 30.0)
+        add(px, py, 20.0, "KamchatkaMeadowsweet", z0=-42.0, need=river_ok)
+        if k % 3 == 0:
+            px, py = bank(float(bx) + 25.0, 62.0)
+            add(px, py, 20.0, "CowParsnip", z0=-42.0, need=river_ok)
+    for bx in (-240.0, -150.0, -60.0):
+        for off in (-22.0, 24.0):
+            px, py = bank(bx, off)
+            add(px, py, 15.0, "RiverSedge", z0=-42.0, need=river_ok)
+        px, py = bank(bx, -8.0)
+        add(px, py, 15.0, "RiverSedge", z0=-42.0, need=river_ok)
     # round the camp: fireweed on the trodden edge
     for k in range(4):
         a = math.pi / 4 + k * math.pi / 2

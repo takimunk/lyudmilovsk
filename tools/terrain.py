@@ -228,7 +228,7 @@ def _north_floor():
     for j in range(ny):
         for i in range(nx):
             mix, c = N.wood(W.X_MIN + i * st, y0 + j * st)
-            v.append({"old": 1.0, "wet": 0.55}.get(mix, 0.0) * min(1.0, max(0.0, (c - 0.3) / 0.35)))
+            v.append({"old": 1.0, "gallery": 0.55}.get(mix, 0.0) * min(1.0, max(0.0, (c - 0.3) / 0.35)))
     return L.Grid(W.X_MIN, y0, st, nx, ny, v)
 
 
