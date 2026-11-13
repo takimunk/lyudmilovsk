@@ -1,0 +1,693 @@
+{
+ "_doc": "Second pass of P-T4H2 (ribbon_corner_block): shop, laundry, roof acts.",
+ "acts": {
+  "rcb_scale": {
+   "prompt": "city.rcb.scale.prompt",
+   "lines": [
+    "city.rcb.scale.1",
+    "city.rcb.scale.2",
+    "city.rcb.scale.3"
+   ],
+   "sound": "scale_clunk",
+   "minutes": 1
+  },
+  "rcb_abacus": {
+   "prompt": "city.rcb.abacus.prompt",
+   "lines": [
+    {
+     "k": "city.rcb.abacus.1",
+     "h": [
+      9,
+      13
+     ]
+    },
+    {
+     "k": "city.rcb.abacus.2",
+     "h": [
+      13,
+      17
+     ]
+    },
+    {
+     "k": "city.rcb.abacus.3",
+     "h": [
+      17,
+      20
+     ]
+    },
+    {
+     "k": "city.rcb.abacus.4",
+     "h": [
+      20,
+      9
+     ]
+    }
+   ],
+   "sound": "ring_clink",
+   "minutes": 2
+  },
+  "rcb_goods_day": {
+   "prompt": "city.rcb.goods_day.prompt",
+   "lines": [
+    {
+     "k": "city.rcb.goods_day.1",
+     "d": "mon"
+    },
+    {
+     "k": "city.rcb.goods_day.2",
+     "d": "tue"
+    },
+    {
+     "k": "city.rcb.goods_day.3",
+     "d": "wed"
+    },
+    {
+     "k": "city.rcb.goods_day.4",
+     "d": "thu"
+    },
+    {
+     "k": "city.rcb.goods_day.5",
+     "d": "fri"
+    },
+    {
+     "k": "city.rcb.goods_day.6",
+     "d": "sat"
+    },
+    {
+     "k": "city.rcb.goods_day.7",
+     "d": "sun"
+    }
+   ],
+   "minutes": 1
+  },
+  "rcb_bread": {
+   "prompt": "city.rcb.bread.prompt",
+   "lines": [
+    {
+     "k": "city.rcb.bread.1",
+     "h": [
+      9,
+      11
+     ]
+    },
+    {
+     "k": "city.rcb.bread.2",
+     "h": [
+      11,
+      16
+     ]
+    },
+    {
+     "k": "city.rcb.bread.3",
+     "h": [
+      16,
+      20
+     ]
+    },
+    {
+     "k": "city.rcb.bread.4",
+     "h": [
+      20,
+      9
+     ]
+    }
+   ],
+   "minutes": 2
+  },
+  "rcb_deposit": {
+   "prompt": "city.rcb.deposit.prompt",
+   "lines": [
+    "city.rcb.deposit.1",
+    "city.rcb.deposit.2",
+    "city.rcb.deposit.3"
+   ],
+   "sound": "bell_ding",
+   "minutes": 3
+  },
+  "rcb_radio": {
+   "prompt": "city.rcb.radio.prompt",
+   "lines": [
+    {
+     "k": "city.rcb.radio.1",
+     "h": [
+      9,
+      10
+     ]
+    },
+    {
+     "k": "city.rcb.radio.2",
+     "h": [
+      10,
+      13
+     ]
+    },
+    {
+     "k": "city.rcb.radio.3",
+     "h": [
+      13,
+      17
+     ]
+    },
+    {
+     "k": "city.rcb.radio.4",
+     "h": [
+      17,
+      20
+     ]
+    },
+    {
+     "k": "city.rcb.radio.5",
+     "h": [
+      20,
+      9
+     ]
+    }
+   ],
+   "sound": "radio_tune",
+   "minutes": 2
+  },
+  "rcb_wash": {
+   "prompt": "city.rcb.wash.prompt",
+   "lines": [
+    {
+     "k": "city.rcb.wash.1",
+     "h": [
+      7,
+      12
+     ]
+    },
+    {
+     "k": "city.rcb.wash.2",
+     "h": [
+      12,
+      18
+     ]
+    },
+    {
+     "k": "city.rcb.wash.3",
+     "h": [
+      18,
+      22
+     ]
+    },
+    {
+     "k": "city.rcb.wash.4",
+     "h": [
+      22,
+      7
+     ]
+    }
+   ],
+   "price": 3,
+   "minutes": 40,
+   "fade": true,
+   "sound": "washer_hum"
+  },
+  "rcb_fold": {
+   "prompt": "city.rcb.fold.prompt",
+   "lines": [
+    "city.rcb.fold.1",
+    "city.rcb.fold.2",
+    "city.rcb.fold.3"
+   ],
+   "sound": "sheets_rustle",
+   "minutes": 10
+  },
+  "rcb_mangle": {
+   "prompt": "city.rcb.mangle.prompt",
+   "lines": [
+    "city.rcb.mangle.1",
+    "city.rcb.mangle.2",
+    "city.rcb.mangle.3"
+   ],
+   "sound": "wheel_hum",
+   "minutes": 5
+  },
+  "rcb_mags": {
+   "prompt": "city.rcb.mags.prompt",
+   "lines": [
+    "city.rcb.mags.1",
+    "city.rcb.mags.2",
+    "city.rcb.mags.3",
+    "city.rcb.mags.4",
+    "city.rcb.mags.5"
+   ],
+   "sound": "page_turn",
+   "minutes": 30
+  },
+  "rcb_cork": {
+   "prompt": "city.rcb.cork.prompt",
+   "lines": [
+    "city.rcb.cork.1",
+    "city.rcb.cork.2",
+    "city.rcb.cork.3",
+    "city.rcb.cork.4",
+    "city.rcb.cork.5",
+    "city.rcb.cork.6"
+   ],
+   "rotate": "daily",
+   "minutes": 2
+  },
+  "rcb_socks": {
+   "prompt": "city.rcb.socks.prompt",
+   "lines": [
+    "city.rcb.socks.1",
+    "city.rcb.socks.2",
+    "city.rcb.socks.3",
+    "city.rcb.socks.4"
+   ],
+   "rotate": "daily",
+   "minutes": 2
+  },
+  "rcb_lost_box": {
+   "prompt": "city.rcb.lost_box.prompt",
+   "lines": [
+    "city.rcb.lost_box.1",
+    "city.rcb.lost_box.2",
+    {
+     "k": "city.rcb.lost_box.3",
+     "after": 3
+    }
+   ],
+   "sound": "paper_rustle",
+   "minutes": 3
+  },
+  "rcb_lie": {
+   "prompt": "city.rcb.lie.prompt",
+   "lines": [
+    {
+     "k": "city.rcb.lie.1",
+     "h": [
+      6,
+      11
+     ]
+    },
+    {
+     "k": "city.rcb.lie.2",
+     "h": [
+      11,
+      17
+     ]
+    },
+    {
+     "k": "city.rcb.lie.3",
+     "h": [
+      17,
+      21
+     ]
+    },
+    {
+     "k": "city.rcb.lie.4",
+     "h": [
+      21,
+      6
+     ]
+    }
+   ],
+   "pose": "lie",
+   "minutes": 30,
+   "fade": true,
+   "any_hour": true,
+   "sound": "wind_soft"
+  },
+  "rcb_feed": {
+   "prompt": "city.rcb.feed.prompt",
+   "lines": [
+    {
+     "k": "city.rcb.feed.1",
+     "h": [
+      6,
+      12
+     ]
+    },
+    {
+     "k": "city.rcb.feed.2",
+     "h": [
+      12,
+      19
+     ]
+    },
+    {
+     "k": "city.rcb.feed.3",
+     "h": [
+      19,
+      6
+     ]
+    }
+   ],
+   "needs_item": "seeds",
+   "minutes": 5
+  },
+  "rcb_feeder": {
+   "prompt": "city.rcb.feeder.prompt",
+   "lines": [
+    {
+     "k": "city.rcb.feeder.1",
+     "h": [
+      6,
+      10
+     ]
+    },
+    {
+     "k": "city.rcb.feeder.2",
+     "h": [
+      10,
+      17
+     ]
+    },
+    {
+     "k": "city.rcb.feeder.3",
+     "h": [
+      17,
+      22
+     ]
+    },
+    {
+     "k": "city.rcb.feeder.4",
+     "h": [
+      22,
+      6
+     ]
+    }
+   ],
+   "minutes": 3
+  },
+  "rcb_tub1": {
+   "prompt": "city.rcb.tub1.prompt",
+   "lines": [
+    "city.rcb.tub1.1",
+    "city.rcb.tub1.2"
+   ],
+   "rotate": "daily",
+   "minutes": 1
+  },
+  "rcb_tub2": {
+   "prompt": "city.rcb.tub2.prompt",
+   "lines": [
+    "city.rcb.tub2.1",
+    "city.rcb.tub2.2"
+   ],
+   "rotate": "daily",
+   "minutes": 1
+  },
+  "rcb_tub3": {
+   "prompt": "city.rcb.tub3.prompt",
+   "lines": [
+    "city.rcb.tub3.1",
+    "city.rcb.tub3.2"
+   ],
+   "rotate": "daily",
+   "minutes": 1
+  },
+  "rcb_tub4": {
+   "prompt": "city.rcb.tub4.prompt",
+   "lines": [
+    "city.rcb.tub4.1",
+    "city.rcb.tub4.2"
+   ],
+   "rotate": "daily",
+   "minutes": 1
+  },
+  "rcb_shower": {
+   "prompt": "city.rcb.shower.prompt",
+   "lines": [
+    "city.rcb.shower.1",
+    "city.rcb.shower.2"
+   ],
+   "sound": "water_pour",
+   "minutes": 10,
+   "fade": true
+  },
+  "rcb_telescope": {
+   "prompt": "city.rcb.telescope.prompt",
+   "lines": [
+    {
+     "k": "city.rcb.telescope.1",
+     "h": [
+      6,
+      21
+     ]
+    },
+    {
+     "k": "city.rcb.telescope.2",
+     "h": [
+      21,
+      6
+     ]
+    },
+    {
+     "k": "city.rcb.telescope.3",
+     "h": [
+      21,
+      6
+     ],
+     "date": [
+      "08-10",
+      "08-14"
+     ]
+    },
+    {
+     "k": "city.rcb.telescope.4",
+     "h": [
+      21,
+      6
+     ],
+     "date": [
+      "12-20",
+      "01-10"
+     ]
+    }
+   ],
+   "any_hour": true,
+   "sound": "slide_click",
+   "minutes": 5
+  },
+  "rcb_washline": {
+   "prompt": "city.rcb.washline.prompt",
+   "lines": [
+    {
+     "k": "city.rcb.washline.1",
+     "d": "mon-tue"
+    },
+    {
+     "k": "city.rcb.washline.2",
+     "d": "wed-thu"
+    },
+    {
+     "k": "city.rcb.washline.3",
+     "d": "fri"
+    },
+    {
+     "k": "city.rcb.washline.4",
+     "d": "sat-sun"
+    }
+   ],
+   "sound": "sheets_rustle",
+   "minutes": 2
+  },
+  "rcb_roofnote": {
+   "prompt": "city.rcb.roofnote.prompt",
+   "lines": [
+    "city.rcb.roofnote.1",
+    "city.rcb.roofnote.2",
+    "city.rcb.roofnote.3",
+    "city.rcb.roofnote.4",
+    "city.rcb.roofnote.5"
+   ],
+   "rotate": "daily",
+   "minutes": 2
+  },
+  "rcb_tea": {
+   "prompt": "city.rcb.tea.prompt",
+   "lines": [
+    {
+     "k": "city.rcb.tea.1",
+     "h": [
+      6,
+      17
+     ]
+    },
+    {
+     "k": "city.rcb.tea.2",
+     "h": [
+      17,
+      22
+     ]
+    },
+    {
+     "k": "city.rcb.tea.3",
+     "h": [
+      22,
+      6
+     ]
+    }
+   ],
+   "sound": "kettle_whistle",
+   "minutes": 15,
+   "any_hour": true
+  }
+ },
+ "rules": {
+  "ribbon_corner_block/shop_floor_scale": {
+   "act": "rcb_scale",
+   "hours": [
+    9,
+    20
+   ],
+   "days": "mon-sat"
+  },
+  "ribbon_corner_block/shop_abacus": {
+   "act": "rcb_abacus",
+   "hours": [
+    9,
+    20
+   ],
+   "days": "mon-sat"
+  },
+  "ribbon_corner_block/shop_goods_day": {
+   "act": "rcb_goods_day",
+   "hours": [
+    9,
+    20
+   ],
+   "days": "mon-sat"
+  },
+  "ribbon_corner_block/shop_bread_rack": {
+   "act": "rcb_bread",
+   "hours": [
+    9,
+    20
+   ],
+   "days": "mon-sat"
+  },
+  "ribbon_corner_block/shop_deposit": {
+   "act": "rcb_deposit",
+   "hours": [
+    9,
+    20
+   ],
+   "days": "mon-sat"
+  },
+  "ribbon_corner_block/shop_radio": {
+   "act": "rcb_radio",
+   "hours": [
+    9,
+    20
+   ],
+   "days": "mon-sat"
+  },
+  "ribbon_corner_block/washer_1": {
+   "act": "rcb_wash",
+   "hours": [
+    7,
+    22
+   ]
+  },
+  "ribbon_corner_block/washer_2": {
+   "act": "rcb_wash",
+   "hours": [
+    7,
+    22
+   ]
+  },
+  "ribbon_corner_block/washer_3": {
+   "act": "rcb_wash",
+   "hours": [
+    7,
+    22
+   ]
+  },
+  "ribbon_corner_block/washer_4": {
+   "act": "rcb_wash",
+   "hours": [
+    7,
+    22
+   ]
+  },
+  "ribbon_corner_block/laundry_folding_table": {
+   "act": "rcb_fold",
+   "hours": [
+    7,
+    22
+   ]
+  },
+  "ribbon_corner_block/laundry_mangle": {
+   "act": "rcb_mangle",
+   "hours": [
+    7,
+    22
+   ]
+  },
+  "ribbon_corner_block/laundry_magazines": {
+   "act": "rcb_mags",
+   "hours": [
+    7,
+    22
+   ]
+  },
+  "ribbon_corner_block/laundry_rules": {
+   "act": "rcb_cork",
+   "hours": [
+    7,
+    22
+   ]
+  },
+  "ribbon_corner_block/laundry_sock_line": {
+   "act": "rcb_socks",
+   "hours": [
+    7,
+    22
+   ]
+  },
+  "ribbon_corner_block/laundry_lost_box": {
+   "act": "rcb_lost_box",
+   "hours": [
+    7,
+    22
+   ]
+  },
+  "ribbon_corner_block/roof_lounger_1": {
+   "act": "rcb_lie"
+  },
+  "ribbon_corner_block/roof_lounger_2": {
+   "act": "rcb_lie"
+  },
+  "ribbon_corner_block/roof_dovecote": {
+   "act": "rcb_feed"
+  },
+  "ribbon_corner_block/roof_feeder": {
+   "act": "rcb_feeder"
+  },
+  "ribbon_corner_block/roof_tub_1": {
+   "act": "rcb_tub1"
+  },
+  "ribbon_corner_block/roof_tub_2": {
+   "act": "rcb_tub2"
+  },
+  "ribbon_corner_block/roof_tub_3": {
+   "act": "rcb_tub3"
+  },
+  "ribbon_corner_block/roof_tub_4": {
+   "act": "rcb_tub4"
+  },
+  "ribbon_corner_block/roof_shower": {
+   "act": "rcb_shower",
+   "hours": [
+    10,
+    20
+   ]
+  },
+  "ribbon_corner_block/roof_telescope": {
+   "act": "rcb_telescope"
+  },
+  "ribbon_corner_block/roof_washing_line": {
+   "act": "rcb_washline"
+  },
+  "ribbon_corner_block/roof_solarium": {
+   "act": "rcb_roofnote"
+  },
+  "ribbon_corner_block/roof_samovar": {
+   "act": "rcb_tea"
+  }
+ }
+}
