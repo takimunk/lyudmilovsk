@@ -640,10 +640,11 @@ namespace CityKit
 			}
 			M.Tube(FVector(0, -1.35f, H), FVector(0, 1.35f, H), 0.18f, 0.18f, 12, Hub, true, true);
 			// the boarding platform under the lowest gondola
-			M.Box(FVector(0, 0, 0.22f), FVector(1.6f, 1.6f, 0.22f), Paint(120, 90, 60, 0.7f));
+			// its top (0.36 m) under the lowest gondola's floor (hub 9.2 m - radius 7.5 m - 1.29 m hanger and car = 0.41 m)
+			M.Box(FVector(0, 0, 0.18f), FVector(1.6f, 1.6f, 0.18f), Paint(120, 90, 60, 0.7f));
 			M.Collide(FVector(-3.6f, 0, 0.6f), FVector(0.6f, 2.0f, 0.6f));
 			M.Collide(FVector(3.6f, 0, 0.6f), FVector(0.6f, 2.0f, 0.6f));
-			M.Collide(FVector(0, 0, 0.22f), FVector(1.6f, 1.6f, 0.22f));
+			M.Collide(FVector(0, 0, 0.18f), FVector(1.6f, 1.6f, 0.18f));
 		}
 	}
 
