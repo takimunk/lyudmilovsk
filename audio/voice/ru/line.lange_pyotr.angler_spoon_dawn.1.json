@@ -1,7 +1,7 @@
 {
  "key": "line.lange_pyotr.angler_spoon_dawn.1",
  "lang": "ru",
- "text": "Ну что, рыбак. Блесна для хищника: на зорьке кидай её с конца пирса, там ходит сарган.",
+ "text": "Ну что, рыбак. Блесна для хищника: на зорьке кидай её с конца пирса, там у свай стоит треска.",
  "speaker": "lange_pyotr",
  "voice": "Brian",
  "voice_id": "nPczCjzI2devNBz1zQrb",
@@ -11,10 +11,10 @@
  "request": {
   "stability": 0.5,
   "apply_text_normalization": "auto",
-  "text": "[gruff, unhurried, a weathered fisherman of few words] Ну что, рыбак. Блесна для хищника: на зорьке кидай её с конца пирса, там ходит сарган.",
+  "text": "[gruff, unhurried, a weathered fisherman of few words] Ну что, рыбак. Блесна для хищника: на зорьке кидай её с конца пирса, там у свай стоит треска.",
   "voice": "Brian",
   "language_code": "ru"
  },
- "fal_request_id": "01a1d6e6-fe21-7703-918a-4724ef9e8a52",
- "hash": "dd3338308383"
+ "fal_request_id": "01a1d755-1f5b-7ed1-9df2-e0c0c89693e8",
+ "hash": "d454c78e520c"
 }

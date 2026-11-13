@@ -1,7 +1,7 @@
 {
  "key": "line.korneeva_nina.paper_after_dark.1",
  "lang": "en",
- "text": "It's dark already and Vanya still has no chess problem. The fair square's down by the sea, with the news stall. I'm not rushing you, I'm reminding you.",
+ "text": "The sun's going down and Vanya still has no chess problem. The evening paper is in the machine at the cable car station, and at weekends at the news stall on the fair square too. I'm not rushing you, I'm reminding you.",
  "speaker": "korneeva_nina",
  "voice": "Wise_Woman",
  "voice_id": "Wise_Woman",
@@ -9,7 +9,7 @@
  "direction": "",
  "model": "fal-ai/minimax/speech-2.6-hd",
  "request": {
-  "prompt": "It's dark already and Vanya still has no chess problem. The fair square's down by the sea, with the news stall. I'm not rushing you, I'm reminding you.",
+  "prompt": "The sun's going down and Vanya still has no chess problem. The evening paper is in the machine at the cable car station, and at weekends at the news stall on the fair square too. I'm not rushing you, I'm reminding you.",
   "voice_setting": {
    "speed": 0.95,
    "pitch": 0,
@@ -24,6 +24,6 @@
   },
   "output_format": "url"
  },
- "fal_request_id": "01a1d6db-53ac-7000-9d70-861831b16d16",
- "hash": "edd0fb185474"
+ "fal_request_id": "01a1d754-daf3-7340-8b4b-7c7da10e5d94",
+ "hash": "edb5895229dc"
 }

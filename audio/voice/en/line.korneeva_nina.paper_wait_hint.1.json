@@ -1,7 +1,7 @@
 {
  "key": "line.korneeva_nina.paper_wait_hint.1",
  "lang": "en",
- "text": "The fair square's down by the sea, with the news stall. Get the evening one with the chess problem, Vanya won't have any other.",
+ "text": "On weekdays the paper is in the machine at the cable car station, at weekends at the news stall on the fair square too, down by the sea. Get the evening one with the chess problem, Vanya won't have any other.",
  "speaker": "korneeva_nina",
  "voice": "Wise_Woman",
  "voice_id": "Wise_Woman",
@@ -9,7 +9,7 @@
  "direction": "",
  "model": "fal-ai/minimax/speech-2.6-hd",
  "request": {
-  "prompt": "The fair square's down by the sea, with the news stall. Get the evening one with the chess problem, Vanya won't have any other.",
+  "prompt": "On weekdays the paper is in the machine at the cable car station, at weekends at the news stall on the fair square too, down by the sea. Get the evening one with the chess problem, Vanya won't have any other.",
   "voice_setting": {
    "speed": 0.95,
    "pitch": 0,
@@ -24,6 +24,6 @@
   },
   "output_format": "url"
  },
- "fal_request_id": "01a1d6db-6beb-71a3-b628-abcce9934e71",
- "hash": "e85d1df80c41"
+ "fal_request_id": "01a1d754-f152-7442-8809-0cc70cddc91a",
+ "hash": "08318c283b18"
 }

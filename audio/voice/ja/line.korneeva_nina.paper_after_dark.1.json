@@ -1,7 +1,7 @@
 {
  "key": "line.korneeva_nina.paper_after_dark.1",
  "lang": "ja",
- "text": "もう暗いのに、ワーニャはまだチェスの問題なしよ。市場広場は下の海沿い、新聞スタンドがあるわ。急かしてるんじゃないの、念を押してるだけ。",
+ "text": "日が沈むのに、ワーニャはまだチェスの問題なしよ。夕刊はロープウェイの駅の自動販売機にあるわ。週末なら市場広場の新聞スタンドにもね。急かしてるんじゃないの、念を押してるだけ。",
  "speaker": "korneeva_nina",
  "voice": "Wise_Woman",
  "voice_id": "Wise_Woman",
@@ -9,7 +9,7 @@
  "direction": "",
  "model": "fal-ai/minimax/speech-2.6-hd",
  "request": {
-  "prompt": "もう暗いのに、ワーニャはまだチェスの問題なしよ。市場広場は下の海沿い、新聞スタンドがあるわ。急かしてるんじゃないの、念を押してるだけ。",
+  "prompt": "日が沈むのに、ワーニャはまだチェスの問題なしよ。夕刊はロープウェイの駅の自動販売機にあるわ。週末なら市場広場の新聞スタンドにもね。急かしてるんじゃないの、念を押してるだけ。",
   "voice_setting": {
    "speed": 0.95,
    "pitch": 0,
@@ -24,6 +24,6 @@
   },
   "output_format": "url"
  },
- "fal_request_id": "01a1d6d5-b380-7212-811c-cb9e48d69cd9",
- "hash": "3880ff4b0a85"
+ "fal_request_id": "01a1d754-e0f3-74c3-8837-995fa1252876",
+ "hash": "ddb554f182fb"
 }

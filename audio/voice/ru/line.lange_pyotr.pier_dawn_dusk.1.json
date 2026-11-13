@@ -1,7 +1,7 @@
 {
  "key": "line.lange_pyotr.pier_dawn_dusk.1",
  "lang": "ru",
- "text": "Ночью ловят те, кто знает воду. Тебе бы на зорьке: на рассвете и на закате рыба смелее.",
+ "text": "Вот сейчас самое время: на зорьке рыба смелее, что утром, что вечером.",
  "speaker": "lange_pyotr",
  "voice": "Brian",
  "voice_id": "nPczCjzI2devNBz1zQrb",
@@ -11,10 +11,10 @@
  "request": {
   "stability": 0.5,
   "apply_text_normalization": "auto",
-  "text": "[gruff, unhurried, a weathered fisherman of few words] Ночью ловят те, кто знает воду. Тебе бы на зорьке: на рассвете и на закате рыба смелее.",
+  "text": "[gruff, unhurried, a weathered fisherman of few words] Вот сейчас самое время: на зорьке рыба смелее, что утром, что вечером.",
   "voice": "Brian",
   "language_code": "ru"
  },
- "fal_request_id": "01a1d6d6-4267-7371-b306-1a1ff7e25ecb",
- "hash": "2c8f65d7354f"
+ "fal_request_id": "01a1d755-381c-7e90-b0e6-1009e30b8911",
+ "hash": "67db1e3af6d1"
 }

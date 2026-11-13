@@ -1,7 +1,7 @@
 {
  "key": "line.lange_pyotr.pier_dawn_dusk.1",
  "lang": "ja",
- "text": "夜の釣りは海を知っている者のものだ。あんたは朝まずめか夕まずめにしろ。その時分は魚が大胆になる。",
+ "text": "今がちょうどいい時分だ。朝まずめも夕まずめも、魚は大胆になる。",
  "speaker": "lange_pyotr",
  "voice": "Brian",
  "voice_id": "nPczCjzI2devNBz1zQrb",
@@ -11,10 +11,10 @@
  "request": {
   "stability": 0.5,
   "apply_text_normalization": "auto",
-  "text": "[gruff, unhurried, a weathered fisherman of few words] 夜の釣りは海を知っている者のものだ。あんたは朝まずめか夕まずめにしろ。その時分は魚が大胆になる。",
+  "text": "[gruff, unhurried, a weathered fisherman of few words] 今がちょうどいい時分だ。朝まずめも夕まずめも、魚は大胆になる。",
   "voice": "Brian",
   "language_code": "ja"
  },
- "fal_request_id": "01a1d6d6-696d-7fa2-b3bb-cca37b90cfa1",
- "hash": "3b132d8f3f34"
+ "fal_request_id": "01a1d755-3e11-7f21-8f34-d86e9b9d6120",
+ "hash": "b633a0050d41"
 }

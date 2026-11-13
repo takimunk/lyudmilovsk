@@ -1,7 +1,7 @@
 {
  "key": "line.girl_a.sparrow_retold.1",
  "lang": "en",
- "text": "Sonya has told me three times now about the sparrow that came by itself. I listen to the end every time, I even leave my program.",
+ "text": "Sonya can't stop telling me about the sparrow that came by itself. I listen to the end, I even leave my program.",
  "speaker": "girl_a",
  "voice": "Matilda",
  "voice_id": "XrExE9yKIg1WjnnlVkGX",
@@ -11,10 +11,10 @@
  "request": {
   "stability": 0.5,
   "apply_text_normalization": "auto",
-  "text": "[whispering, concentrated] Sonya has told me three times now about the sparrow that came by itself. I listen to the end every time, I even leave my program.",
+  "text": "[whispering, concentrated] Sonya can't stop telling me about the sparrow that came by itself. I listen to the end, I even leave my program.",
   "voice": "Matilda",
   "language_code": "en"
  },
- "fal_request_id": "01a1d6e2-3324-7303-b2af-dd20c3d5d3b8",
- "hash": "06e1192c8033"
+ "fal_request_id": "01a1d754-8af6-7333-ba0a-633335e6d86c",
+ "hash": "ef505cfd7f08"
 }

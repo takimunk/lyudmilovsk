@@ -1,7 +1,7 @@
 {
  "key": "line.korneeva_nina.paper_wait_hint.1",
  "lang": "ja",
- "text": "市場広場は下の海沿い、そこに新聞スタンドがあるの。チェスの問題が載ってる夕刊にしてね。ワーニャはそれ以外認めないから。",
+ "text": "平日はロープウェイの駅の自動販売機に、週末なら海沿いの市場広場の新聞スタンドにもあるの。チェスの問題が載ってる夕刊にしてね。ワーニャはそれ以外認めないから。",
  "speaker": "korneeva_nina",
  "voice": "Wise_Woman",
  "voice_id": "Wise_Woman",
@@ -9,7 +9,7 @@
  "direction": "",
  "model": "fal-ai/minimax/speech-2.6-hd",
  "request": {
-  "prompt": "市場広場は下の海沿い、そこに新聞スタンドがあるの。チェスの問題が載ってる夕刊にしてね。ワーニャはそれ以外認めないから。",
+  "prompt": "平日はロープウェイの駅の自動販売機に、週末なら海沿いの市場広場の新聞スタンドにもあるの。チェスの問題が載ってる夕刊にしてね。ワーニャはそれ以外認めないから。",
   "voice_setting": {
    "speed": 0.95,
    "pitch": 0,
@@ -24,6 +24,6 @@
   },
   "output_format": "url"
  },
- "fal_request_id": "01a1d6d5-c637-7d93-af92-be8550d3af6b",
- "hash": "ba8ee94221c7"
+ "fal_request_id": "01a1d754-f711-7f31-8dad-ad9b107316d8",
+ "hash": "dd065b578028"
 }

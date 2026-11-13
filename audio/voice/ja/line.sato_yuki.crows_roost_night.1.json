@@ -1,7 +1,7 @@
 {
  "key": "line.sato_yuki.crows_roost_night.1",
  "lang": "ja",
- "text": "カラスはもう寝てるよ。みんないっしょに、一本の大きな木で。パパが言ってた、だれがえさをくれたか、そこでお話しするんだって。",
+ "text": "カラスはもうすぐ寝に行くよ。みんないっしょに、一本の大きな木へ。パパが言ってた、だれがえさをくれたか、そこでお話しするんだって。",
  "speaker": "sato_yuki",
  "voice": "Lovely_Girl",
  "voice_id": "Lovely_Girl",
@@ -9,7 +9,7 @@
  "direction": "",
  "model": "fal-ai/minimax/speech-2.6-hd",
  "request": {
-  "prompt": "カラスはもう寝てるよ。みんないっしょに、一本の大きな木で。パパが言ってた、だれがえさをくれたか、そこでお話しするんだって。",
+  "prompt": "カラスはもうすぐ寝に行くよ。みんないっしょに、一本の大きな木へ。パパが言ってた、だれがえさをくれたか、そこでお話しするんだって。",
   "voice_setting": {
    "speed": 1,
    "pitch": 0,
@@ -24,6 +24,6 @@
   },
   "output_format": "url"
  },
- "fal_request_id": "01a1d6d7-d6cc-70d0-b1a3-f77e7a13d6d2",
- "hash": "d8a2ed743b91"
+ "fal_request_id": "01a1d755-b291-79d0-a1b0-7410a37b2327",
+ "hash": "7ad1779fa34e"
 }

@@ -1,7 +1,7 @@
 {
  "key": "line.owner.door_at_sunset.1",
  "lang": "ja",
- "text": "行け。いま日が沈む、わかるんだ。ドアはブースのすぐ先だ。",
+ "text": "行け。日はもう低い、わかるんだ。ドアはブースのすぐ先だ。",
  "speaker": "owner",
  "voice": "Daniel",
  "voice_id": "onwK4e9ZLuTAKqWW03F9",
@@ -11,10 +11,10 @@
  "request": {
   "stability": 0.5,
   "apply_text_normalization": "auto",
-  "text": "[calm, tired, slow, a little ironic] 行け。いま日が沈む、わかるんだ。ドアはブースのすぐ先だ。",
+  "text": "[calm, tired, slow, a little ironic] 行け。日はもう低い、わかるんだ。ドアはブースのすぐ先だ。",
   "voice": "Daniel",
   "language_code": "ja"
  },
- "fal_request_id": "01a1d73d-26dc-7e23-b3cb-80bd326d7482",
- "hash": "fd83ebd1f132"
+ "fal_request_id": "01a1d755-6de6-7c52-815a-3b862ad539f7",
+ "hash": "7017bd67bd49"
 }

@@ -1,7 +1,7 @@
 {
  "key": "line.sato_yuki.black_cousin.1",
  "lang": "ru",
- "text": "А ты без серой жилетки. Ты, наверное, её родственница? Клюв точно такой же.",
+ "text": "А ты без серой жилетки. Ты, наверное, родственница серой вороны? Клюв точно такой же.",
  "speaker": "sato_yuki",
  "voice": "Lovely_Girl",
  "voice_id": "Lovely_Girl",
@@ -9,7 +9,7 @@
  "direction": "",
  "model": "fal-ai/minimax/speech-2.6-hd",
  "request": {
-  "prompt": "А ты без серой жилетки. Ты, наверное, её родственница? Клюв точно такой же.",
+  "prompt": "А ты без серой жилетки. Ты, наверное, родственница серой вороны? Клюв точно такой же.",
   "voice_setting": {
    "speed": 1,
    "pitch": 0,
@@ -24,6 +24,6 @@
   },
   "output_format": "url"
  },
- "fal_request_id": "01a1d74b-9488-7421-bc45-0d2d7d5e03fb",
- "hash": "6162f9f92b90"
+ "fal_request_id": "01a1d755-7ae4-77a0-b1ac-cadc09244f44",
+ "hash": "5d1d234acd13"
 }

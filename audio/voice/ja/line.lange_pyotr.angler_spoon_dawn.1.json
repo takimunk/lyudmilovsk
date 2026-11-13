@@ -1,7 +1,7 @@
 {
  "key": "line.lange_pyotr.angler_spoon_dawn.1",
  "lang": "ja",
- "text": "どうだ、釣り師。スプーンは肉食の魚用だ。朝か夕方のまずめに、桟橋の先から投げてみろ。ダツが回ってくる。",
+ "text": "どうだ、釣り師。スプーンは肉食の魚用だ。朝か夕方のまずめに、桟橋の先から投げてみろ。杭のそばにタラがついている。",
  "speaker": "lange_pyotr",
  "voice": "Brian",
  "voice_id": "nPczCjzI2devNBz1zQrb",
@@ -11,10 +11,10 @@
  "request": {
   "stability": 0.5,
   "apply_text_normalization": "auto",
-  "text": "[gruff, unhurried, a weathered fisherman of few words] どうだ、釣り師。スプーンは肉食の魚用だ。朝か夕方のまずめに、桟橋の先から投げてみろ。ダツが回ってくる。",
+  "text": "[gruff, unhurried, a weathered fisherman of few words] どうだ、釣り師。スプーンは肉食の魚用だ。朝か夕方のまずめに、桟橋の先から投げてみろ。杭のそばにタラがついている。",
   "voice": "Brian",
   "language_code": "ja"
  },
- "fal_request_id": "01a1d6e7-1f3e-7673-96fc-4972f70d652a",
- "hash": "ead7cd6ca3f0"
+ "fal_request_id": "01a1d755-23ef-7391-9fca-3071bf0d483d",
+ "hash": "6dcd9e733793"
 }

@@ -1,7 +1,7 @@
 {
  "key": "line.sato_yuki.crow_wait_hint.1",
  "lang": "en",
- "text": "Crows walk about by the sea and in the fields. Throw them food, three times. They watch who's kind.",
+ "text": "Crows walk about by the sea and in the fields. Throw them food, three times, and then look what they leave. They watch who's kind.",
  "speaker": "sato_yuki",
  "voice": "Lovely_Girl",
  "voice_id": "Lovely_Girl",
@@ -9,7 +9,7 @@
  "direction": "",
  "model": "fal-ai/minimax/speech-2.6-hd",
  "request": {
-  "prompt": "Crows walk about by the sea and in the fields. Throw them food, three times. They watch who's kind.",
+  "prompt": "Crows walk about by the sea and in the fields. Throw them food, three times, and then look what they leave. They watch who's kind.",
   "voice_setting": {
    "speed": 1,
    "pitch": 0,
@@ -24,6 +24,6 @@
   },
   "output_format": "url"
  },
- "fal_request_id": "01a1d6de-12ce-7571-82ce-56cd73afe44a",
- "hash": "46bb207786fb"
+ "fal_request_id": "01a1d755-8c88-7cf3-bf77-8ae942ed1734",
+ "hash": "d61b8edc75ff"
 }

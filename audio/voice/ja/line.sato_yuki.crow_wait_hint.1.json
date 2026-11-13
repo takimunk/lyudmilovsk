@@ -1,7 +1,7 @@
 {
  "key": "line.sato_yuki.crow_wait_hint.1",
  "lang": "ja",
- "text": "カラスは海のそばと畑にいるよ。えさを三回投げてあげて。だれがやさしいか、見てるんだから。",
+ "text": "カラスは海のそばと畑にいるよ。えさを三回投げてあげて、それから何を置いていくか見てて。だれがやさしいか、見てるんだから。",
  "speaker": "sato_yuki",
  "voice": "Lovely_Girl",
  "voice_id": "Lovely_Girl",
@@ -9,7 +9,7 @@
  "direction": "",
  "model": "fal-ai/minimax/speech-2.6-hd",
  "request": {
-  "prompt": "カラスは海のそばと畑にいるよ。えさを三回投げてあげて。だれがやさしいか、見てるんだから。",
+  "prompt": "カラスは海のそばと畑にいるよ。えさを三回投げてあげて、それから何を置いていくか見てて。だれがやさしいか、見てるんだから。",
   "voice_setting": {
    "speed": 1,
    "pitch": 0,
@@ -24,6 +24,6 @@
   },
   "output_format": "url"
  },
- "fal_request_id": "01a1d6d7-aa62-7fc1-9db9-865a065266a8",
- "hash": "c9c34d3837d9"
+ "fal_request_id": "01a1d755-93a8-7da3-ac3d-f6f4f604809f",
+ "hash": "efed6dfe85c7"
 }

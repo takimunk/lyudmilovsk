@@ -1,7 +1,7 @@
 {
  "key": "line.korneeva_nina.paper_wait_vanya.1",
  "lang": "ja",
- "text": "ワーニャったら、新聞はまだかってもう三回も聞くのよ。海のほうへ向かってるって言っておいたから、がっかりさせないでね。",
+ "text": "ワーニャったら、新聞はまだかってもう三回も聞くのよ。もう向かってるって言っておいたから、がっかりさせないでね。",
  "speaker": "korneeva_nina",
  "voice": "Wise_Woman",
  "voice_id": "Wise_Woman",
@@ -9,7 +9,7 @@
  "direction": "",
  "model": "fal-ai/minimax/speech-2.6-hd",
  "request": {
-  "prompt": "ワーニャったら、新聞はまだかってもう三回も聞くのよ。海のほうへ向かってるって言っておいたから、がっかりさせないでね。",
+  "prompt": "ワーニャったら、新聞はまだかってもう三回も聞くのよ。もう向かってるって言っておいたから、がっかりさせないでね。",
   "voice_setting": {
    "speed": 0.95,
    "pitch": 0,
@@ -24,6 +24,6 @@
   },
   "output_format": "url"
  },
- "fal_request_id": "01a1d6d5-d77c-77a1-a1ce-0cb5b2d0bc14",
- "hash": "61a91e36a266"
+ "fal_request_id": "01a1d755-0f61-7ba1-83dc-baaea33ec9a1",
+ "hash": "a6a22641a723"
 }

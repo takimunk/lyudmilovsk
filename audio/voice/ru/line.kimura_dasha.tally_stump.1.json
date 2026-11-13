@@ -1,7 +1,7 @@
 {
  "key": "line.kimura_dasha.tally_stump.1",
  "lang": "ru",
- "text": "Сидишь как пень и шевелишь губами, значит, считаешь для Сорокина. Уважаю, я так даже на экзамене не умею.",
+ "text": "Это ты считаешь синиц для Сорокина? Он велит сидеть как пень и шевелить губами. Уважаю, я так даже на экзамене не умею.",
  "speaker": "kimura_dasha",
  "voice": "Charlotte",
  "voice_id": "XB0fDUnXU5powFXDhCwa",
@@ -11,10 +11,10 @@
  "request": {
   "stability": 0.5,
   "apply_text_normalization": "auto",
-  "text": "[a tired physics student, wry, self-ironic] Сидишь как пень и шевелишь губами, значит, считаешь для Сорокина. Уважаю, я так даже на экзамене не умею.",
+  "text": "[a tired physics student, wry, self-ironic] Это ты считаешь синиц для Сорокина? Он велит сидеть как пень и шевелить губами. Уважаю, я так даже на экзамене не умею.",
   "voice": "Charlotte",
   "language_code": "ru"
  },
- "fal_request_id": "01a1d6d5-30c5-7da2-a675-3fe3df2c6e2b",
- "hash": "3ca9d127d46a"
+ "fal_request_id": "01a1d754-bcf6-7d92-a15d-60e0ed7997e2",
+ "hash": "3e8df5d8254f"
 }

@@ -1,7 +1,7 @@
 {
  "key": "line.owner.door_at_sunset.1",
  "lang": "en",
- "text": "Go on. The sun's setting, I can feel it. The door's right past the booth.",
+ "text": "Go on. The sun is low already, I can feel it. The door's right past the booth.",
  "speaker": "owner",
  "voice": "Daniel",
  "voice_id": "onwK4e9ZLuTAKqWW03F9",
@@ -11,10 +11,10 @@
  "request": {
   "stability": 0.5,
   "apply_text_normalization": "auto",
-  "text": "[calm, tired, slow, a little ironic] Go on. The sun's setting, I can feel it. The door's right past the booth.",
+  "text": "[calm, tired, slow, a little ironic] Go on. The sun is low already, I can feel it. The door's right past the booth.",
   "voice": "Daniel",
   "language_code": "en"
  },
- "fal_request_id": "01a1d73c-de98-7333-b69a-cd7e1e15bec6",
- "hash": "2114a128b238"
+ "fal_request_id": "01a1d755-60d6-7cd1-b4d9-65daf87f1a51",
+ "hash": "b0c51e404969"
 }

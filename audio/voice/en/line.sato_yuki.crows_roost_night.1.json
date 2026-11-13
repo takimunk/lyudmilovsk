@@ -1,7 +1,7 @@
 {
  "key": "line.sato_yuki.crows_roost_night.1",
  "lang": "en",
- "text": "The crows are asleep now. All together, in one big tree. Papa says they tell each other who fed them.",
+ "text": "The crows will fly off to bed soon. All together, to one big tree. Papa says they tell each other who fed them.",
  "speaker": "sato_yuki",
  "voice": "Lovely_Girl",
  "voice_id": "Lovely_Girl",
@@ -9,7 +9,7 @@
  "direction": "",
  "model": "fal-ai/minimax/speech-2.6-hd",
  "request": {
-  "prompt": "The crows are asleep now. All together, in one big tree. Papa says they tell each other who fed them.",
+  "prompt": "The crows will fly off to bed soon. All together, to one big tree. Papa says they tell each other who fed them.",
   "voice_setting": {
    "speed": 1,
    "pitch": 0,
@@ -24,6 +24,6 @@
   },
   "output_format": "url"
  },
- "fal_request_id": "01a1d6de-399a-77c0-994f-391a3fff2c09",
- "hash": "7208c934aca4"
+ "fal_request_id": "01a1d755-a22e-7ec2-96b2-6ff6c7c29429",
+ "hash": "645454b0e074"
 }

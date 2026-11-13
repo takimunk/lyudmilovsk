@@ -1,7 +1,7 @@
 {
  "key": "line.girl_a.sparrow_retold.1",
  "lang": "ja",
- "text": "ソーニャったら、自分から来たスズメの話をもう三回もしてくれたの。わたし、毎回最後まで聞いてる。プログラムの手も止めて。",
+ "text": "ソーニャったら、自分から来たスズメの話ばっかりなの。わたし、最後まで聞いてる。プログラムの手も止めて。",
  "speaker": "girl_a",
  "voice": "Matilda",
  "voice_id": "XrExE9yKIg1WjnnlVkGX",
@@ -11,10 +11,10 @@
  "request": {
   "stability": 0.5,
   "apply_text_normalization": "auto",
-  "text": "[whispering, concentrated] ソーニャったら、自分から来たスズメの話をもう三回もしてくれたの。わたし、毎回最後まで聞いてる。プログラムの手も止めて。",
+  "text": "[whispering, concentrated] ソーニャったら、自分から来たスズメの話ばっかりなの。わたし、最後まで聞いてる。プログラムの手も止めて。",
   "voice": "Matilda",
   "language_code": "ja"
  },
- "fal_request_id": "01a1d6e2-610c-7730-806d-3acfe42cd2f6",
- "hash": "5bb17d15e8c1"
+ "fal_request_id": "01a1d754-8ea7-7ec0-8dc8-1425490e2713",
+ "hash": "677a7a2bbad5"
 }

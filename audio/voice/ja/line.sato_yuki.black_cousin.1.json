@@ -1,7 +1,7 @@
 {
  "key": "line.sato_yuki.black_cousin.1",
  "lang": "ja",
- "text": "羽がぜんぶ、夜みたいにまっくろ。ズキンガラスのいとこでしょ？そっくり。でも灰色がないね。",
+ "text": "灰色のチョッキ、着てないんだね。ズキンガラスのしんせき？くちばしがそっくり。",
  "speaker": "sato_yuki",
  "voice": "Lovely_Girl",
  "voice_id": "Lovely_Girl",
@@ -9,7 +9,7 @@
  "direction": "",
  "model": "fal-ai/minimax/speech-2.6-hd",
  "request": {
-  "prompt": "羽がぜんぶ、夜みたいにまっくろ。ズキンガラスのいとこでしょ？そっくり。でも灰色がないね。",
+  "prompt": "灰色のチョッキ、着てないんだね。ズキンガラスのしんせき？くちばしがそっくり。",
   "voice_setting": {
    "speed": 1,
    "pitch": 0,
@@ -24,6 +24,6 @@
   },
   "output_format": "url"
  },
- "fal_request_id": "01a1d749-1e69-7ea2-abe2-11ab71c64eb0",
- "hash": "b936092c6fae"
+ "fal_request_id": "01a1d755-8088-7a11-bbc4-235f3dab2dce",
+ "hash": "322e77f55800"
 }

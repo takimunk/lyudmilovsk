@@ -1,7 +1,7 @@
 {
  "key": "line.zotov_lev.soda_mixed_up.1",
  "lang": "ja",
- "text": "バイカルとタルフンは、約束どおり区別できたよ。だがドゥシェスとブラチーノを取り違えた。ガリーナはそれを記録に残した。",
+ "text": "ガリーナがもうコップを四つ運んでくる、私を試すつもりだ。バイカルとタルフンは区別できる。ドゥシェスとブラチーノは請け合えないが、彼女には言わないでくれ。",
  "speaker": "zotov_lev",
  "voice": "George",
  "voice_id": "JBFqnCBsd6RMkjVDRZzb",
@@ -11,10 +11,10 @@
  "request": {
   "stability": 0.5,
   "apply_text_normalization": "auto",
-  "text": "[dry, thoughtful, unhurried, a physicist's quiet irony] バイカルとタルフンは、約束どおり区別できたよ。だがドゥシェスとブラチーノを取り違えた。ガリーナはそれを記録に残した。",
+  "text": "[dry, thoughtful, unhurried, a physicist's quiet irony] ガリーナがもうコップを四つ運んでくる、私を試すつもりだ。バイカルとタルフンは区別できる。ドゥシェスとブラチーノは請け合えないが、彼女には言わないでくれ。",
   "voice": "George",
   "language_code": "ja"
  },
- "fal_request_id": "01a1d6eb-947b-7db1-9547-2ecd7d02347d",
- "hash": "f465ab1074e2"
+ "fal_request_id": "01a1d755-cc43-7731-b044-82770f96793f",
+ "hash": "b0bd0308e386"
 }

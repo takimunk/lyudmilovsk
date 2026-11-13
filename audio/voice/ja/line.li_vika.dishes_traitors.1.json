@@ -1,7 +1,7 @@
 {
  "key": "line.li_vika.dishes_traitors.1",
  "lang": "ja",
- "text": "もう何日も皿洗い。なのにハトはあなたの餌台にちっとも来ない。裏切り者。",
+ "text": "皿洗い中。一週間はまだ始まったばかり。なのにハトはあなたの餌台にちっとも来ない。裏切り者。",
  "speaker": "li_vika",
  "voice": "Laura",
  "voice_id": "FGY2WhTYpPnrIDTdsKH5",
@@ -11,10 +11,10 @@
  "request": {
   "stability": 0.5,
   "apply_text_normalization": "auto",
-  "text": "[playful, quick, a lab assistant joking about her work] もう何日も皿洗い。なのにハトはあなたの餌台にちっとも来ない。裏切り者。",
+  "text": "[playful, quick, a lab assistant joking about her work] 皿洗い中。一週間はまだ始まったばかり。なのにハトはあなたの餌台にちっとも来ない。裏切り者。",
   "voice": "Laura",
   "language_code": "ja"
  },
- "fal_request_id": "01a1d6e7-e3df-7742-bcbc-52e4403c77d0",
- "hash": "09941e171b3f"
+ "fal_request_id": "01a1d755-5648-7e33-8a03-b02473a3216f",
+ "hash": "e335bbb9f546"
 }

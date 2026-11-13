@@ -1,7 +1,7 @@
 {
  "key": "line.kimura_dasha.feeder_table_rows.1",
  "lang": "ja",
- "text": "あなたの餌台、まだ中庭にあるよ。私、毎朝表をつけてるの。シジュウカラ、スズメ、それから見るだけ見て帰ったカササギが一羽。",
+ "text": "今は自分で毎朝表をつけてるの。シジュウカラ、スズメ、それから見るだけ見て帰ったカササギが一羽。",
  "speaker": "kimura_dasha",
  "voice": "Charlotte",
  "voice_id": "XB0fDUnXU5powFXDhCwa",
@@ -11,10 +11,10 @@
  "request": {
   "stability": 0.5,
   "apply_text_normalization": "auto",
-  "text": "[a tired physics student, wry, self-ironic] あなたの餌台、まだ中庭にあるよ。私、毎朝表をつけてるの。シジュウカラ、スズメ、それから見るだけ見て帰ったカササギが一羽。",
+  "text": "[a tired physics student, wry, self-ironic] 今は自分で毎朝表をつけてるの。シジュウカラ、スズメ、それから見るだけ見て帰ったカササギが一羽。",
   "voice": "Charlotte",
   "language_code": "ja"
  },
- "fal_request_id": "01a1d6e5-260c-72e3-8ce5-45c07fb18271",
- "hash": "cda97e4d6ccb"
+ "fal_request_id": "01a1d754-ab1e-7163-a7e6-854a5f30e8ec",
+ "hash": "03ed0aaaa898"
 }

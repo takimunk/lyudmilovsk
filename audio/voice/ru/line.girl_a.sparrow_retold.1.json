@@ -1,7 +1,7 @@
 {
  "key": "line.girl_a.sparrow_retold.1",
  "lang": "ru",
- "text": "Соня уже три раза пересказала мне про воробья, который сам пришёл. Я каждый раз дослушиваю до конца, даже программу бросаю.",
+ "text": "Соня мне все уши прожужжала про воробья, который сам пришёл. Я дослушиваю до конца, даже программу бросаю.",
  "speaker": "girl_a",
  "voice": "Matilda",
  "voice_id": "XrExE9yKIg1WjnnlVkGX",
@@ -11,10 +11,10 @@
  "request": {
   "stability": 0.5,
   "apply_text_normalization": "auto",
-  "text": "[whispering, concentrated] Соня уже три раза пересказала мне про воробья, который сам пришёл. Я каждый раз дослушиваю до конца, даже программу бросаю.",
+  "text": "[whispering, concentrated] Соня мне все уши прожужжала про воробья, который сам пришёл. Я дослушиваю до конца, даже программу бросаю.",
   "voice": "Matilda",
   "language_code": "ru"
  },
- "fal_request_id": "01a1d6e2-60b1-7531-8c1a-b54fc263dadc",
- "hash": "a459757289f4"
+ "fal_request_id": "01a1d754-8ae8-7d31-91cd-408087a74ee8",
+ "hash": "10fa812fd24f"
 }
