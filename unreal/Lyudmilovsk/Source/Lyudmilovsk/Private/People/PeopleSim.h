@@ -495,6 +495,9 @@ namespace LyudPeople
 		std::function<bool(int Person, int Job, float Progress)> SnowProgress;
 		/** Hands the snow place's free slots the stretches that want clearing now, near Near (the wrapper calls it every few seconds). */
 		void UpdateSnowSlots(const V3& Near);
+		/** Somebody clearing a stretch stops for good or bad (called away, resettled, the life stopped): the winter gets the
+		 *  stretch back, or it would stay held and nobody would be given it again. */
+		void DropSweep(FPerson& P);
 
 		float Ground_Z(const V3& P) const;
 		/** Ground under a point: the island's own height field where it has one (people_places.json ground_patches), else

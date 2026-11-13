@@ -2166,7 +2166,7 @@ namespace LyudPeople
 		const FActivity& A = Activities[Act];
 		const FSlot& Sl = Slots[Slot];
 		const int FromSlot = P.Slot;
-		P.SweepT = -1.f;
+		DropSweep(P);       // (an order, a resettle: not through Leave)
 		if (P.Partner >= 0)
 		{
 			FPerson& Q = People[P.Partner];
@@ -2708,15 +2708,8 @@ namespace LyudPeople
 	void FWorld::Leave(FPerson& P)
 	{
 		const EPose Was = P.Pose;
-		if (P.SweepT >= 0.f)
-		{
-			// called away half way along a stretch of snow: somebody else will finish it
-			if (SnowProgress && P.Slot >= 0 && Slots[P.Slot].SnowJob >= 0)
-			{
-				SnowProgress(P.Id, Slots[P.Slot].SnowJob, -1.f);
-			}
-			P.SweepT = -1.f;
-		}
+		// called away half way along a stretch of snow: somebody else will finish it
+		DropSweep(P);
 		if (P.Partner >= 0)
 		{
 			FPerson& Q = People[P.Partner];
@@ -2840,6 +2833,15 @@ namespace LyudPeople
 		OutdoorWay(P.Pos, Slots[S].Approach, P.Path);
 		P.PathI = 0;
 		P.Pose = EPose::Walk;
+	}
+
+	void FWorld::DropSweep(FPerson& P)
+	{
+		if (P.SweepT >= 0.f && SnowProgress && P.Slot >= 0 && P.Slot < (int)Slots.size() && Slots[P.Slot].SnowJob >= 0)
+		{
+			SnowProgress(P.Id, Slots[P.Slot].SnowJob, -1.f);
+		}
+		P.SweepT = -1.f;
 	}
 
 	void FWorld::Sweep(FPerson& P, float Dt)
@@ -3304,6 +3306,7 @@ namespace LyudPeople
 		}
 		for (FPerson& P : People)
 		{
+			DropSweep(P);
 			P.Path.clear();
 			P.PathI = 0;
 			P.Partner = -1;

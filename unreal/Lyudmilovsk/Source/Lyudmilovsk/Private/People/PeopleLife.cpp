@@ -297,6 +297,14 @@ void UPeopleLifeSubsystem::Stop()
 	Talkable.Reset();
 	TrainSeats.Reset();
 	bRailSynced = false;
+	if (Sim)
+	{
+		// whoever was clearing snow gives the stretch back to the winter (it outlives this life: lyud.People 0)
+		for (LP::FPerson& P : Sim->People)
+		{
+			Sim->DropSweep(P);
+		}
+	}
 	Sim.Reset();
 	bStarted = false;
 }
