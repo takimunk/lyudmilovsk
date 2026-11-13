@@ -417,7 +417,8 @@ def _dress_lobby(B, k, lid, xa, xz):
     B.thing(pre + "concierge_desk", "counter", (ax(sa, 0.95), 6.9, 1.0), fyw(sa), role="concierge", service="reception")
     B.thing(pre + "radio", "machine", (ax(sa, 0.95), 6.6, d["top"] + 0.15), fyw(sa), what="jukebox")
     kit.plant(B, ax(sa, 0.4), 8.4, Z, 0.0, kind=("ficus", "ficus")[k % 2], pot=pal[0], h=1.5, seed=k)
-    kit.picture(B, ax(sa, 0.0), 5.4, Z, fyw(sa), name=("painting_sea_calm", "painting_dunes")[k % 2], w=0.9, zc=2.0)
+    # QA: on the left wall (sa > 0) the letter boxes hang at y 4.5..6.1: hang the picture over the desk instead
+    kit.picture(B, ax(sa, 0.0), 5.4 if sa < 0 else 7.0, Z, fyw(sa), name=("painting_sea_calm", "painting_dunes")[k % 2], w=0.9, zc=2.0)
     # side B: sofa corner with a coffee table, armchair, lamp, pictures
     kit.sofa(B, ax(sb, 0.45), 3.4, Z, fyw(sb), seats=2, mat=pal[1])
     B.thing(pre + "sofa", "seat", (ax(sb, 0.45), 3.4, 0.47), fyw(sb), height=0.45)
@@ -462,6 +463,9 @@ def _dress_pilotis(B):
     for bx in (-46.0, -40.0):
         kit.bench(B, bx, 15.4, Z, 0.0, w=1.8, kind="park")
         B.thing("yard_bench_w_%d" % int(-bx), "seat", (bx, 15.4, 0.47), 0.0, height=0.45)
+    # QA: no light in the yards at dusk: one lamp under the slab over each
+    B.lamp((-43.0, 12.0, 4.95), lumens=1200, colour="#FFE0B0", kind="lobby", radius=9.0)
+    B.lamp((43.0, 12.0, 4.95), lumens=1200, colour="#FFE0B0", kind="lobby", radius=9.0)
     _planter(B, -38.0, 8.2, seed=1)
     _planter(B, -49.0, 12.0, d=1.0, w=0.5, kind="ficus", seed=2)
     # east yard, mirrored with a second chess table instead of the second bench

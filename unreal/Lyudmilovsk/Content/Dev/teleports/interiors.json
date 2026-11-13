@@ -104,9 +104,9 @@
   {"id": "city.q.home_santos.3", "group": "interiors", "name": "dev.tp.city.q.home_santos.3", "x": -10.55, "y": 1384.56, "z": -3330.0, "yaw": -8.4},
   {"id": "city.q.home_girma.1", "group": "interiors", "name": "dev.tp.city.q.home_girma.1", "x": -160.52, "y": 1095.36, "z": -2687.0, "yaw": -5.5},
   {"id": "city.q.home_girma.2", "group": "interiors", "name": "dev.tp.city.q.home_girma.2", "x": -154.99, "y": 1089.01, "z": -2677.0, "yaw": 174.5},
-  {"id": "city.q.home_girma.3", "group": "interiors", "name": "dev.tp.city.q.home_girma.3", "x": -155.92, "y": 1096.83, "z": -2677.0, "yaw": -5.5},
+  {"id": "city.q.home_girma.3", "group": "interiors", "name": "dev.tp.city.q.home_girma.3", "x": -156.14, "y": 1094.57, "z": -2677.0, "yaw": -5.5},
   {"id": "city.q.home_aoki.1", "group": "interiors", "name": "dev.tp.city.q.home_aoki.1", "x": -513.67, "y": 999.01, "z": -1272.0, "yaw": 174.3},
-  {"id": "city.q.home_aoki.2", "group": "interiors", "name": "dev.tp.city.q.home_aoki.2", "x": -515.09, "y": 1002.37, "z": -1257.0, "yaw": -5.7},
+  {"id": "city.q.home_aoki.2", "group": "interiors", "name": "dev.tp.city.q.home_aoki.2", "x": -515.22, "y": 1001.08, "z": -1257.0, "yaw": -5.7},
   {"id": "city.q.home_aoki.3", "group": "interiors", "name": "dev.tp.city.q.home_aoki.3", "x": -70.11, "y": 1068.17, "z": -3615.0, "yaw": 174.5}
  ]
 }

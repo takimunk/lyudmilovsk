@@ -485,6 +485,28 @@
   },
   {
    "pos": [
+    -83.617,
+    3.102,
+    2.85
+   ],
+   "lumens": 330,
+   "colour": "#FFE0B0",
+   "kind": "lobby",
+   "radius": 4.5
+  },
+  {
+   "pos": [
+    -83.719,
+    10.901,
+    2.85
+   ],
+   "lumens": 330,
+   "colour": "#FFE0B0",
+   "kind": "lobby",
+   "radius": 4.5
+  },
+  {
+   "pos": [
     0.158,
     6.098,
     2.85
@@ -496,6 +518,28 @@
   },
   {
    "pos": [
+    0.056,
+    2.199,
+    2.85
+   ],
+   "lumens": 330,
+   "colour": "#FFE0B0",
+   "kind": "lobby",
+   "radius": 4.5
+  },
+  {
+   "pos": [
+    0.26,
+    9.997,
+    2.85
+   ],
+   "lumens": 330,
+   "colour": "#FFE0B0",
+   "kind": "lobby",
+   "radius": 4.5
+  },
+  {
+   "pos": [
     83.509,
     5.197,
     2.85
@@ -504,6 +548,28 @@
    "colour": "#FFE0B0",
    "kind": "lobby",
    "radius": 5.5
+  },
+  {
+   "pos": [
+    83.561,
+    1.298,
+    2.85
+   ],
+   "lumens": 330,
+   "colour": "#FFE0B0",
+   "kind": "lobby",
+   "radius": 4.5
+  },
+  {
+   "pos": [
+    83.458,
+    9.097,
+    2.85
+   ],
+   "lumens": 330,
+   "colour": "#FFE0B0",
+   "kind": "lobby",
+   "radius": 4.5
   }
  ],
  "things": [
@@ -21725,8 +21791,8 @@
   "210 flats on 7 storeys, 33 bays of 7.6 m, S bend 1.5 deg (axis offset +-1.0 m)"
  ],
  "tris": {
-  "shell": 30924,
-  "detail": 50947,
-  "windows": 1662
+  "shell": 30876,
+  "detail": 51499,
+  "windows": 3324
  }
 }

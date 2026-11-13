@@ -354,7 +354,7 @@ def _dress(B, rnd):
         cyl(d, "CT_Steel", 0.35, 1.85, 0.0, 0.8, 0.02, 4)
         cyl(d, "CT_Steel", 0.35, 1.85, 0.8, 0.88, 0.1, 8, bottom=True)
         cyl(d, "CT_Steel", 0.35, 1.85, 0.0, 0.03, 0.14, 8, bottom=True)
-        kit.sandwich_board(B, 0.1, 1.3, 0.0, 10.0, name="poster_safety")
+        kit.sandwich_board(B, 0.1, 1.3, 0.0, 10.0, name="price_1")
     elif TRADE == "flowers":
         kit.awning(B, 1.7, ky0 - 0.02, 0.0, 0.0, w=1.9, proj=0.6, zt=2.35, drop=0.3, mat=ACCENT, mat2="CT_TileWhite")
         fm = ["CT_PlasterRed", "CT_PlasterYellow", "CT_PlasterPink", "CT_TileWhite", "CT_PlasterBlue"]

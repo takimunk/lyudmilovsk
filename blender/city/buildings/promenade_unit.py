@@ -529,6 +529,10 @@ def rental(B):
     B.thing("rental_rules", "board", (XR - 0.04, 3.0, 1.6), 270.0, topic="rules")
     kit.poster(B, XL, 2.4, 0.0, 90.0, name="travel_2", w=0.6, zc=1.7)
     kit.wall_clock(B, 2.9, YB, 0.0, 0.0, zc=2.3, face="clock_0")
+    # QA: the back-right corner and the right wall were bare
+    kit.plant(B, 4.45, 5.9, 0.0, 0.0, h=1.3, kind="ficus")
+    kit.picture(B, XR, 5.0, 0.0, 270.0, name="painting_sea_calm", w=0.8, zc=1.7)
+    kit.rug(B, 1.0, 2.9, FLOOR, 0.0, w=2.2, d=1.3, name="rug_1", seed=3)
     _lamp(B, -0.8, 3.3, kind="cone")
 
 
@@ -555,6 +559,9 @@ def workshop(B):
     kit.poster(B, XR, 2.4, 0.0, 270.0, name="poster_safety", w=0.6, zc=1.7)
     B.thing("workshop_poster", "board", (XR - 0.04, 2.4, 1.7), 270.0, topic="rules")
     kit.fire_extinguisher(B, XR, 1.2, 0.0, 270.0)
+    # QA: the front-left of the room was an empty floor
+    kit.plant(B, -4.45, 0.95, 0.0, 0.0, h=1.1, kind="fern")
+    kit.rug(B, -1.6, 2.4, FLOOR, 0.0, w=2.0, d=1.2, name="rug_2", seed=5)
     _lamp(B, 0.6, 3.6, kind="cone")
     kit.pendant(B, -0.4, 5.6, CEIL, drop=0.8, kind="cone")
 
@@ -590,6 +597,7 @@ def dumplings(B):
     kit.shop_shelf(B, XL, 4.6, 0.0, 90.0, w=1.2, goods="bottles", levels=4, seed=14)
     kit.radiator(B, -1.2, YB, 0.0, 0.0, w=1.0)
     kit.plant(B, -4.4, 5.85, 0.0, 0.0, h=1.1, kind="fern")
+    kit.plant(B, 4.45, 5.9, 0.0, 0.0, h=1.2, kind="ficus")      # QA: back-right corner was empty
     kit.sign_plate(B, 1.4, 4.3, 0.0, 0.0, name="sign_till", w=0.8, zc=2.55, hang=True)
     _lamp(B, -0.3, 3.2)
 
@@ -640,6 +648,9 @@ def bakery(B):
     kit.cup(B, -3.3, 1.5, 0.75, 0.0)
     kit.sack(B, -1.5, 5.95, 0.0, 0.0)
     kit.sack(B, -2.0, 6.0, 0.0, 30.0)
+    # QA: the left wall by the window table was bare
+    kit.plant(B, -4.5, 2.9, 0.0, 0.0, h=1.1, kind="fern")
+    kit.poster(B, XL, 2.2, 0.0, 90.0, name="travel_1", w=0.6, zc=1.7)
     kit.picture(B, XR, 3.0, 0.0, 270.0, name="painting_still_life", w=0.8, zc=1.7)
     kit.wall_clock(B, XR, 4.6, 0.0, 270.0, zc=2.3, face="clock_2")
     _lamp(B, -0.4, 3.0)
@@ -670,6 +681,12 @@ def photo(B):
     kit.picture(B, 2.4, YB, 0.0, 0.0, name="painting_sea_calm", w=0.6, zc=1.75)
     kit.plant(B, 0.2, 5.95, 0.0, 0.0, h=1.2, kind="monstera")
     kit.hat_stand(B, 4.4, 2.3, 0.0, 0.0)
+    # QA: the middle and the left wall were bare
+    kit.wall_clock(B, -0.6, YB, 0.0, 0.0, zc=2.3, face="clock_2")
+    kit.picture(B, XL, 1.4, 0.0, 90.0, name="painting_dunes", w=0.7, zc=1.7, frame="CT_Brass")
+    kit.picture(B, XL, 5.4, 0.0, 90.0, name="painting_lighthouse", w=0.8, zc=1.7)
+    kit.rug(B, 0.6, 2.0, FLOOR, 0.0, w=2.0, d=1.2, name="rug_4", seed=8)
+    kit.plant(B, 4.45, 0.95, 0.0, 0.0, h=1.0, kind="fern")
     _lamp(B, 0.6, 3.0)
     kit.pendant(B, -3.0, 4.2, CEIL, drop=0.5, kind="cone")
 
@@ -698,6 +715,11 @@ def barber(B):
     B.thing("barber_prices", "board", (XR - 0.04, 4.5, 1.6), 270.0, topic="prices")
     kit.hat_stand(B, 4.4, 2.4, 0.0, 0.0)
     kit.plant(B, -0.4, 0.85, 0.0, 0.0, h=1.0, kind="fern", pot="CT_TileWhite")
+    # QA: the room's middle and the back wall were bare
+    kit.rug(B, 1.4, 5.0, FLOOR, 0.0, w=2.0, d=1.3, name="rug_1", seed=9)
+    kit.picture(B, -1.2, YB, 0.0, 0.0, name="painting_sea_calm", w=0.7, zc=1.7)
+    kit.wall_clock(B, XR, 5.6, 0.0, 270.0, zc=2.3, face="clock_1")
+    kit.plant(B, 4.45, 5.9, 0.0, 0.0, h=1.2, kind="palm")
     _lamp(B, -2.6, 3.2)
     kit.pendant(B, 1.4, 4.4, CEIL, drop=0.5)
 

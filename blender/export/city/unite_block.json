@@ -163,6 +163,28 @@
    "colour": "#FFE0B0",
    "kind": "lobby",
    "radius": 6.0
+  },
+  {
+   "pos": [
+    -43.0,
+    12.0,
+    4.95
+   ],
+   "lumens": 1200,
+   "colour": "#FFE0B0",
+   "kind": "lobby",
+   "radius": 9.0
+  },
+  {
+   "pos": [
+    43.0,
+    12.0,
+    4.95
+   ],
+   "lumens": 1200,
+   "colour": "#FFE0B0",
+   "kind": "lobby",
+   "radius": 9.0
   }
  ],
  "things": [
@@ -23480,7 +23502,7 @@
  ],
  "tris": {
   "shell": 38928,
-  "detail": 40008,
-  "windows": 1870
+  "detail": 40032,
+  "windows": 3740
  }
 }

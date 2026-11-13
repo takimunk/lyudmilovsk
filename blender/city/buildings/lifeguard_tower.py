@@ -171,7 +171,7 @@ def _cabin(B, z0):
     kit.cup(B, 0.75, 2.62, top, 0.0)
     B.thing("log_book", "board", (0.85, 2.38, top + 0.05), 270.0, topic="view")
     # ---- the lookout's chair at the left window and a small table with the first-aid kit and a flask
-    kit.rug(B, -0.75, 2.25, z0, 90.0, w=1.0, d=1.5, name="rug_5", seed=1)
+    kit.rug(B, -0.7, 2.45, z0, 0.0, w=0.8, d=1.0, name="rug_5", seed=1)      # QA: was 1.5 m long and poked through the west wall
     ch = kit.chair(B, -0.82, 2.1, z0, 270.0, kind="wood", mat="CT_WoodLight")
     B.thing("lookout_chair", "seat", (-0.82, 2.1, z0 + 0.45), 270.0, height=0.45)
     tb = kit.table(B, -0.92, 2.95, z0, 90.0, w=0.5, d=0.45, h=0.75, kind="steel")

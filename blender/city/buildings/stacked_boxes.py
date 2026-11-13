@@ -441,7 +441,7 @@ def _lobby(B, j, xa, xb):
     elif j == 1:    # a bike leaning at the west wall
         _prop_at(B, hk.bike, iw + 0.4, 1.5, z, 0.0, mat="CT_PlasterYellow")
         B.thing("lobby_%s_board" % tag, "board", (iw, 0.62, z + 1.6), 90.0, topic="club")
-        f(kit.picture, ie, 0.62, 270.0, z=z, name="painting_sea_night", w=0.45, zc=1.9)
+        f(kit.picture, ie, 0.62, 270.0, z=z, name="painting_sea_night", w=0.45, zc=2.15)
     else:           # a payphone on the back wall, the house rules on the board
         f(kit.wall_phone, xa + 0.95, iy1, 0.0, z=z)
         B.thing("lobby_%s_board" % tag, "board", (iw, 0.62, z + 1.6), 90.0, topic="rules")

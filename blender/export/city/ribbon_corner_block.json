@@ -491,6 +491,28 @@
   },
   {
    "pos": [
+    3.5,
+    4.4,
+    2.3
+   ],
+   "lumens": 500,
+   "colour": "#FFE2B5",
+   "kind": "public",
+   "radius": 6.0
+  },
+  {
+   "pos": [
+    12.6,
+    4.4,
+    2.3
+   ],
+   "lumens": 500,
+   "colour": "#FFE2B5",
+   "kind": "public",
+   "radius": 6.0
+  },
+  {
+   "pos": [
     -9.0,
     7.2,
     2.5
@@ -5426,8 +5448,8 @@
   "48 flats (corridor type) in 6 bays x 4 floors, two stairs (drum and tower), shop and laundry below"
  ],
  "tris": {
-  "shell": 13838,
-  "detail": 28937,
+  "shell": 13874,
+  "detail": 31699,
   "windows": 362
  }
 }

@@ -1079,6 +1079,17 @@
   },
   {
    "pos": [
+    -25.0,
+    11.402,
+    2.9
+   ],
+   "lumens": 420,
+   "colour": "#FFE0B0",
+   "kind": "lobby",
+   "radius": 6.0
+  },
+  {
+   "pos": [
     -20.55,
     5.9,
     2.9
@@ -1120,6 +1131,28 @@
    "colour": "#FFD2A0",
    "kind": "public",
    "radius": 7.0
+  },
+  {
+   "pos": [
+    -12.5,
+    4.602,
+    2.9
+   ],
+   "lumens": 520,
+   "colour": "#FFE0B0",
+   "kind": "lobby",
+   "radius": 6.0
+  },
+  {
+   "pos": [
+    -12.5,
+    9.402,
+    2.9
+   ],
+   "lumens": 520,
+   "colour": "#FFE0B0",
+   "kind": "lobby",
+   "radius": 6.0
   },
   {
    "pos": [
@@ -1172,6 +1205,17 @@
     2.9
    ],
    "lumens": 520,
+   "colour": "#FFE0B0",
+   "kind": "lobby",
+   "radius": 6.0
+  },
+  {
+   "pos": [
+    0.0,
+    14.0,
+    2.9
+   ],
+   "lumens": 420,
    "colour": "#FFE0B0",
    "kind": "lobby",
    "radius": 6.0
@@ -1315,6 +1359,17 @@
     2.9
    ],
    "lumens": 520,
+   "colour": "#FFE0B0",
+   "kind": "lobby",
+   "radius": 6.0
+  },
+  {
+   "pos": [
+    25.0,
+    16.598,
+    2.9
+   ],
+   "lumens": 420,
    "colour": "#FFE0B0",
    "kind": "lobby",
    "radius": 6.0
@@ -25734,7 +25789,7 @@
  ],
  "tris": {
   "shell": 49600,
-  "detail": 66094,
+  "detail": 66570,
   "windows": 1902
  }
 }

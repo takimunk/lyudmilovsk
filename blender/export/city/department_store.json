@@ -2788,8 +2788,8 @@
   "2 shop halls + roof sign; stair hole at x -1.8..1.8, y 21..27.3; entrances main/west/east"
  ],
  "tris": {
-  "shell": 4102,
-  "detail": 59396,
-  "windows": 108
+  "shell": 4138,
+  "detail": 61082,
+  "windows": 216
  }
 }

@@ -238,9 +238,7 @@ def build(B):
         d = norm2((FP[min(i + 1, N)][0] - FP[max(i - 1, 0)][0], FP[min(i + 1, N)][1] - FP[max(i - 1, 0)][1]))
         nl = (-d[1], d[0])
         q = (FP[i][0] + nl[0] * 1.5, FP[i][1] + nl[1] * 1.5)
-        _v_column(m, q, d, nl)
-        if not (i in cores or (i - 1) in cores):
-            pass
+        _v_column(m, q, d, nl, legs=(-1,) if i in cores else (1,) if (i - 1) in cores else (-1, 1))
         bx, by = BP[i][0] - nl[0] * 0.7, BP[i][1] - nl[1] * 0.7
         B.column_round(bx, by, 0.0, PIL, 0.3, mat="CT_ConcreteWhite", segs=10)
         # slender round posts at the gallery edge carrying the roof canopy
@@ -273,11 +271,13 @@ def _outline(FP, GP):
     return pts
 
 
-def _v_column(m, q, d, nl):
-    """A V-shaped column: a narrow foot on the ground spreading to two tops under the slab (2 legs of one V)."""
+def _v_column(m, q, d, nl, legs=(-1, 1)):
+    """A V-shaped column: a narrow foot on the ground spreading to two tops under the slab (2 legs of one V).
+    legs: which legs to draw (-1 = toward -d, +1 = toward +d); a core's lobby walls keep only the outer leg (QA: the
+    inner one stood inside the lobby)."""
     def pt(cx, cy, dd, nn, a, b, z):
         return (cx + d[0] * (dd + a) + nl[0] * (nn + b), cy + d[1] * (dd + a) + nl[1] * (nn + b), z)
-    for sgn in (-1, 1):
+    for sgn in legs:
         foot = [pt(q[0], q[1], 0, 0, a * 0.2, b * 0.3, 0.0) for b in (-1, 1) for a in (-1, 1)]
         topc = [pt(q[0], q[1], sgn * 1.05, 0, a * 0.28, b * 0.4, PIL) for b in (-1, 1) for a in (-1, 1)]
         hexa(m, "CT_ConcreteWhite", foot + topc, faces="xXyY")
@@ -380,6 +380,8 @@ def _lobby(B, i, cid, p0, p1, q0, q1, rnd):
     fu.doormat(B, fu.Fr(p0[0] + tx * mid + nl[0] * (WALL + 0.5), p0[1] + ty * mid + nl[1] * (WALL + 0.5), yw_u, 0.01), 0.0, 0.0)
     fu.plant(B, p1[0] - tx * (WALL + 0.45) + nl[0] * (D - WALL - 0.6), p1[1] - ty * (WALL + 0.45) + nl[1] * (D - WALL - 0.6), 0.01, 0.9, "CT_PlasterBlue")
     B.lamp((cx[0], cx[1], PIL - 0.35), lumens=480, colour="#FFE0B0", kind="lobby", radius=5.5)
+    for sg in (-1, 1):      # QA: the 12 m deep lobby was dark at both ends (bench, desk)
+        B.lamp((cx[0] + nl[0] * sg * 3.9, cx[1] + nl[1] * sg * 3.9, PIL - 0.35), lumens=330, colour="#FFE0B0", kind="lobby", radius=4.5)
     _dress_lobby(B, i, cid, p0, p1, nl, Lb, D)
     B.spot("lobby_view_%d" % cid, "view", (cx[0] + nl[0] * 2, cx[1] + nl[1] * 2, 0.0), yaw_of(nl))
 
@@ -558,6 +560,8 @@ def _dress_lobby(B, i, cid, p0, p1, nl, Lb, D):
     # --- front wall: hat stand and a mirror
     x, y = F.p(mid + 1.7, 0.75)
     kit.hat_stand(B, x, y, Z, 0.0)
+    x, y = at(sb, 0.5, 1.8)                      # QA: the front half of the lobby was an empty floor
+    kit.plant(B, x, y, Z, 0.0, kind=("fern", "ficus", "fern")[cid % 3], pot=pal[3], h=1.1, seed=cid + 5)
     # --- one extra per core
     if cid == 0:
         x, y = at(sb, 0.55, 10.6)
