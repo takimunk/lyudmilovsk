@@ -113,6 +113,26 @@
    "yaw": 90.0
   },
   {
+   "id": "stove_warm",
+   "kind": "stand",
+   "pos": [
+    -2.006,
+    3.776,
+    0.03
+   ],
+   "yaw": 157.5
+  },
+  {
+   "id": "clockwork_watch",
+   "kind": "stand",
+   "pos": [
+    -0.3,
+    7.383,
+    0.03
+   ],
+   "yaw": 0.0
+  },
+  {
    "id": "door_bench",
    "kind": "bench",
    "pos": [
@@ -161,6 +181,24 @@
     20.0
    ],
    "yaw": 30.00000000000001
+  },
+  {
+   "id": "bell_stand",
+   "kind": "stand",
+   "pos": [
+    2.719,
+    5.732
+   ],
+   "yaw": 65.0
+  },
+  {
+   "id": "ships_watch",
+   "kind": "view",
+   "pos": [
+    -0.547,
+    10.102
+   ],
+   "yaw": 190.0
   }
  ],
  "lamps": [
@@ -199,6 +237,17 @@
   },
   {
    "pos": [
+    -1.225,
+    4.044,
+    2.3
+   ],
+   "lumens": 520,
+   "colour": "#FFC890",
+   "kind": "public",
+   "radius": 6.0
+  },
+  {
+   "pos": [
     1.074,
     11.009,
     22.3
@@ -218,6 +267,17 @@
    "colour": "#FFE2B8",
    "kind": "lobby",
    "radius": 9.0
+  },
+  {
+   "pos": [
+    -4.087,
+    6.279,
+    22.3
+   ],
+   "lumens": 600,
+   "colour": "#FFE2B8",
+   "kind": "lobby",
+   "radius": 8.0
   }
  ],
  "things": [
@@ -340,6 +400,162 @@
    }
   },
   {
+   "id": "keeper_stove",
+   "kind": "machine",
+   "pos": [
+    -2.286,
+    3.102,
+    0.93
+   ],
+   "yaw": 157.5,
+   "props": {
+    "what": "stove"
+   }
+  },
+  {
+   "id": "keeper_stove_stool",
+   "kind": "seat",
+   "pos": [
+    -2.006,
+    3.776,
+    0.43
+   ],
+   "yaw": 177.5,
+   "props": {
+    "height": 0.4
+   }
+  },
+  {
+   "id": "keeper_cat",
+   "kind": "board",
+   "pos": [
+    -1.424,
+    2.777,
+    0.33
+   ],
+   "yaw": 157.5,
+   "props": {
+    "topic": "cat"
+   }
+  },
+  {
+   "id": "keeper_oilskins",
+   "kind": "board",
+   "pos": [
+    2.336,
+    2.668,
+    1.23
+   ],
+   "yaw": 202.5,
+   "props": {
+    "topic": "oilskins"
+   }
+  },
+  {
+   "id": "keeper_weather",
+   "kind": "board",
+   "pos": [
+    4.524,
+    8.874,
+    1.98
+   ],
+   "yaw": 292.5,
+   "props": {
+    "topic": "weather"
+   }
+  },
+  {
+   "id": "keeper_tides",
+   "kind": "board",
+   "pos": [
+    3.462,
+    10.462,
+    1.78
+   ],
+   "yaw": 315.0,
+   "props": {
+    "topic": "tides"
+   }
+  },
+  {
+   "id": "keeper_flags",
+   "kind": "board",
+   "pos": [
+    3.462,
+    3.538,
+    1.78
+   ],
+   "yaw": 225.0,
+   "props": {
+    "topic": "flags"
+   }
+  },
+  {
+   "id": "keeper_bottle",
+   "kind": "board",
+   "pos": [
+    4.358,
+    5.065,
+    1.73
+   ],
+   "yaw": 247.5,
+   "props": {
+    "topic": "bottle"
+   }
+  },
+  {
+   "id": "keeper_storm",
+   "kind": "board",
+   "pos": [
+    -4.524,
+    8.874,
+    1.58
+   ],
+   "yaw": 67.5,
+   "props": {
+    "topic": "storm"
+   }
+  },
+  {
+   "id": "keeper_clockwork",
+   "kind": "machine",
+   "pos": [
+    -0.24,
+    7.883,
+    0.88
+   ],
+   "yaw": 10.0,
+   "props": {
+    "what": "clockwork"
+   }
+  },
+  {
+   "id": "keeper_watch",
+   "kind": "board",
+   "pos": [
+    0.066,
+    8.179,
+    0.81
+   ],
+   "yaw": 100.0,
+   "props": {
+    "topic": "watch"
+   }
+  },
+  {
+   "id": "keeper_cup",
+   "kind": "board",
+   "pos": [
+    0.2,
+    11.346,
+    0.83
+   ],
+   "yaw": 0.0,
+   "props": {
+    "topic": "cup"
+   }
+  },
+  {
    "id": "tower_telescope",
    "kind": "machine",
    "pos": [
@@ -428,6 +644,58 @@
    "yaw": 30.0,
    "props": {
     "topic": "view"
+   }
+  },
+  {
+   "id": "gallery_bell",
+   "kind": "machine",
+   "pos": [
+    3.263,
+    5.479,
+    21.2
+   ],
+   "yaw": 65.0,
+   "props": {
+    "what": "fog_bell"
+   }
+  },
+  {
+   "id": "gallery_signal",
+   "kind": "machine",
+   "pos": [
+    3.813,
+    7.536,
+    21.2
+   ],
+   "yaw": 98.0,
+   "props": {
+    "what": "signal_lamp"
+   }
+  },
+  {
+   "id": "gallery_weather",
+   "kind": "board",
+   "pos": [
+    2.34,
+    9.994,
+    21.1
+   ],
+   "yaw": 142.0,
+   "props": {
+    "topic": "gallery_weather"
+   }
+  },
+  {
+   "id": "gallery_ships",
+   "kind": "board",
+   "pos": [
+    -0.66,
+    10.742,
+    21.12
+   ],
+   "yaw": 190.0,
+   "props": {
+    "topic": "ships"
    }
   }
  ],
@@ -607,8 +875,8 @@
   "118 stair treads up to 20.0 m; lattice 20 bars x2 x3 sections"
  ],
  "tris": {
-  "shell": 4284,
-  "detail": 10181,
-  "windows": 16
+  "shell": 4296,
+  "detail": 12595,
+  "windows": 32
  }
 }

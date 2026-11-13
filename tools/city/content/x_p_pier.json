@@ -1,0 +1,636 @@
+{
+ "_doc": "Lighthouse tower (P-PIER, hyperboloid_tower) depth pass: the keeper's room as a lived-in place (stove and kettle, cat, oilskins, barometer, tide board, signal flags, ship model, storm picture, the lantern's clockwork with its watch book, a cup for tea), and the lamp gallery (fog bell, signal lamp, instrument screen, table of ships' lights). The watch book tells one eight-day story (every [8, r]): the seiner Maria overdue, a storm, her return, a bottle with a note. Words: strings/x_p_pier.json.",
+ "acts": {
+  "keeper_stove": {
+   "like": "look_misc",
+   "prompt": "city.px.keeper_stove.prompt",
+   "lines": [
+    {
+     "k": "city.px.stove.1",
+     "h": [
+      5,
+      12
+     ]
+    },
+    {
+     "k": "city.px.stove.2",
+     "h": [
+      12,
+      19
+     ]
+    },
+    {
+     "k": "city.px.stove.3",
+     "h": [
+      19,
+      5
+     ]
+    }
+   ],
+   "any_hour": true,
+   "minutes": 10,
+   "sound": "kettle_whistle",
+   "give": [
+    [
+     "tea",
+     1
+    ]
+   ],
+   "daily": 2
+  },
+  "keeper_cat": {
+   "like": "look_misc",
+   "prompt": "city.px.keeper_cat.prompt",
+   "lines": [
+    {
+     "k": "city.px.cat.1",
+     "h": [
+      6,
+      12
+     ]
+    },
+    {
+     "k": "city.px.cat.2",
+     "h": [
+      12,
+      19
+     ]
+    },
+    {
+     "k": "city.px.cat.3",
+     "h": [
+      19,
+      6
+     ]
+    },
+    {
+     "k": "city.px.cat.4",
+     "d": "sat-sun",
+     "h": [
+      6,
+      21
+     ]
+    }
+   ],
+   "any_hour": true,
+   "minutes": 3,
+   "sound": "paper_rustle"
+  },
+  "keeper_oilskins": {
+   "like": "look_misc",
+   "prompt": "city.px.keeper_oilskins.prompt",
+   "lines": [
+    "city.px.oilskins.1",
+    "city.px.oilskins.2",
+    "city.px.oilskins.3"
+   ],
+   "any_hour": true,
+   "minutes": 2,
+   "sound": "hanger_clink"
+  },
+  "keeper_weather": {
+   "like": "look_misc",
+   "prompt": "city.px.keeper_weather.prompt",
+   "lines": [
+    {
+     "k": "city.px.weather.1",
+     "every": [
+      8,
+      0
+     ]
+    },
+    {
+     "k": "city.px.weather.2",
+     "every": [
+      8,
+      1
+     ]
+    },
+    {
+     "k": "city.px.weather.3",
+     "every": [
+      8,
+      2
+     ]
+    },
+    {
+     "k": "city.px.weather.4",
+     "every": [
+      8,
+      3
+     ]
+    },
+    {
+     "k": "city.px.weather.5",
+     "every": [
+      8,
+      4
+     ]
+    },
+    {
+     "k": "city.px.weather.6",
+     "every": [
+      8,
+      5
+     ]
+    },
+    {
+     "k": "city.px.weather.7",
+     "every": [
+      8,
+      6
+     ]
+    },
+    {
+     "k": "city.px.weather.8",
+     "every": [
+      8,
+      7
+     ]
+    }
+   ],
+   "any_hour": true,
+   "minutes": 2,
+   "rotate": "daily"
+  },
+  "keeper_tides": {
+   "like": "look_misc",
+   "prompt": "city.px.keeper_tides.prompt",
+   "lines": [
+    {
+     "k": "city.px.tides.1",
+     "d": "mon"
+    },
+    {
+     "k": "city.px.tides.2",
+     "d": "tue"
+    },
+    {
+     "k": "city.px.tides.3",
+     "d": "wed"
+    },
+    {
+     "k": "city.px.tides.4",
+     "d": "thu"
+    },
+    {
+     "k": "city.px.tides.5",
+     "d": "fri"
+    },
+    {
+     "k": "city.px.tides.6",
+     "d": "sat"
+    },
+    {
+     "k": "city.px.tides.7",
+     "d": "sun"
+    }
+   ],
+   "any_hour": true,
+   "minutes": 3,
+   "sound": "chalk"
+  },
+  "keeper_flags": {
+   "like": "look_misc",
+   "prompt": "city.px.keeper_flags.prompt",
+   "lines": [
+    "city.px.flags.1",
+    "city.px.flags.2",
+    "city.px.flags.3",
+    "city.px.flags.4"
+   ],
+   "any_hour": true,
+   "minutes": 4,
+   "sound": "paper_rustle"
+  },
+  "keeper_bottle": {
+   "like": "look_misc",
+   "prompt": "city.px.keeper_bottle.prompt",
+   "lines": [
+    "city.px.bottle.1",
+    {
+     "k": "city.px.bottle.2",
+     "every": [
+      8,
+      0
+     ]
+    },
+    {
+     "k": "city.px.bottle.2",
+     "every": [
+      8,
+      1
+     ]
+    },
+    {
+     "k": "city.px.bottle.2",
+     "every": [
+      8,
+      2
+     ]
+    },
+    {
+     "k": "city.px.bottle.2",
+     "every": [
+      8,
+      3
+     ]
+    },
+    {
+     "k": "city.px.bottle.2",
+     "every": [
+      8,
+      4
+     ]
+    },
+    {
+     "k": "city.px.bottle.2",
+     "every": [
+      8,
+      5
+     ]
+    },
+    {
+     "k": "city.px.bottle.3",
+     "every": [
+      8,
+      6
+     ]
+    },
+    {
+     "k": "city.px.bottle.3",
+     "every": [
+      8,
+      7
+     ]
+    }
+   ],
+   "any_hour": true,
+   "minutes": 4
+  },
+  "keeper_storm": {
+   "like": "look_misc",
+   "prompt": "city.px.keeper_storm.prompt",
+   "lines": [
+    {
+     "k": "city.px.storm.1",
+     "h": [
+      6,
+      21
+     ]
+    },
+    {
+     "k": "city.px.storm.2",
+     "h": [
+      21,
+      6
+     ]
+    }
+   ],
+   "any_hour": true,
+   "minutes": 3
+  },
+  "keeper_clockwork": {
+   "like": "look_misc",
+   "prompt": "city.px.keeper_clockwork.prompt",
+   "lines": [
+    {
+     "k": "city.px.clockwork.1",
+     "h": [
+      6,
+      18
+     ]
+    },
+    {
+     "k": "city.px.clockwork.2",
+     "h": [
+      18,
+      21
+     ]
+    },
+    {
+     "k": "city.px.clockwork.3",
+     "h": [
+      21,
+      6
+     ]
+    }
+   ],
+   "any_hour": true,
+   "minutes": 10,
+   "sound": "clock_tick"
+  },
+  "keeper_watch": {
+   "like": "look_misc",
+   "prompt": "city.px.keeper_watch.prompt",
+   "lines": [
+    {
+     "k": "city.px.watch.1",
+     "every": [
+      8,
+      0
+     ]
+    },
+    {
+     "k": "city.px.watch.2",
+     "every": [
+      8,
+      1
+     ]
+    },
+    {
+     "k": "city.px.watch.3",
+     "every": [
+      8,
+      2
+     ]
+    },
+    {
+     "k": "city.px.watch.4",
+     "every": [
+      8,
+      3
+     ]
+    },
+    {
+     "k": "city.px.watch.5",
+     "every": [
+      8,
+      4
+     ]
+    },
+    {
+     "k": "city.px.watch.6",
+     "every": [
+      8,
+      5
+     ]
+    },
+    {
+     "k": "city.px.watch.7",
+     "every": [
+      8,
+      6
+     ]
+    },
+    {
+     "k": "city.px.watch.8",
+     "every": [
+      8,
+      7
+     ]
+    }
+   ],
+   "any_hour": true,
+   "minutes": 5,
+   "rotate": "daily",
+   "sound": "page_turn"
+  },
+  "keeper_cup": {
+   "like": "look_misc",
+   "prompt": "city.px.keeper_cup.prompt",
+   "lines": [
+    {
+     "k": "city.px.cup.1",
+     "h": [
+      6,
+      18
+     ]
+    },
+    {
+     "k": "city.px.cup.2",
+     "h": [
+      18,
+      6
+     ]
+    }
+   ],
+   "any_hour": true,
+   "minutes": 2,
+   "needs_item": "tea",
+   "sound": "water_pour"
+  },
+  "keeper_fogbell": {
+   "like": "look_misc",
+   "prompt": "city.px.keeper_fogbell.prompt",
+   "lines": [
+    {
+     "k": "city.px.bell.1",
+     "h": [
+      6,
+      21
+     ]
+    },
+    {
+     "k": "city.px.bell.2",
+     "h": [
+      21,
+      6
+     ]
+    },
+    {
+     "k": "city.px.bell.3",
+     "d": "sat-sun",
+     "h": [
+      6,
+      21
+     ]
+    }
+   ],
+   "any_hour": true,
+   "minutes": 3,
+   "sound": "bell_ding"
+  },
+  "keeper_signal": {
+   "like": "look_misc",
+   "prompt": "city.px.keeper_signal.prompt",
+   "lines": [
+    {
+     "k": "city.px.signal.1",
+     "h": [
+      6,
+      21
+     ]
+    },
+    {
+     "k": "city.px.signal.2",
+     "h": [
+      21,
+      6
+     ]
+    }
+   ],
+   "any_hour": true,
+   "minutes": 5,
+   "sound": "morse_beep"
+  },
+  "keeper_gallery_weather": {
+   "like": "look_misc",
+   "prompt": "city.px.keeper_gallery_weather.prompt",
+   "lines": [
+    {
+     "k": "city.px.gweather.1",
+     "h": [
+      6,
+      21
+     ]
+    },
+    {
+     "k": "city.px.gweather.2",
+     "h": [
+      21,
+      6
+     ]
+    }
+   ],
+   "any_hour": true,
+   "minutes": 3,
+   "sound": "wind_soft"
+  },
+  "keeper_ships": {
+   "like": "look_misc",
+   "prompt": "city.px.keeper_ships.prompt",
+   "lines": [
+    {
+     "k": "city.px.ships.1",
+     "h": [
+      6,
+      21
+     ],
+     "every": [
+      4,
+      0
+     ]
+    },
+    {
+     "k": "city.px.ships.2",
+     "h": [
+      6,
+      21
+     ],
+     "every": [
+      4,
+      1
+     ]
+    },
+    {
+     "k": "city.px.ships.3",
+     "h": [
+      6,
+      21
+     ],
+     "every": [
+      4,
+      2
+     ]
+    },
+    {
+     "k": "city.px.ships.4",
+     "h": [
+      6,
+      21
+     ],
+     "every": [
+      4,
+      3
+     ]
+    },
+    {
+     "k": "city.px.ships.5",
+     "h": [
+      21,
+      6
+     ],
+     "every": [
+      4,
+      0
+     ]
+    },
+    {
+     "k": "city.px.ships.6",
+     "h": [
+      21,
+      6
+     ],
+     "every": [
+      4,
+      1
+     ]
+    },
+    {
+     "k": "city.px.ships.7",
+     "h": [
+      21,
+      6
+     ],
+     "every": [
+      4,
+      2
+     ]
+    },
+    {
+     "k": "city.px.ships.8",
+     "h": [
+      21,
+      6
+     ],
+     "every": [
+      4,
+      3
+     ]
+    }
+   ],
+   "any_hour": true,
+   "minutes": 5,
+   "sound": "wind_soft",
+   "rotate": "daily"
+  }
+ },
+ "rules": {
+  "P-PIER/keeper_stove": {
+   "act": "keeper_stove"
+  },
+  "P-PIER/keeper_cat": {
+   "act": "keeper_cat"
+  },
+  "P-PIER/keeper_oilskins": {
+   "act": "keeper_oilskins"
+  },
+  "P-PIER/keeper_weather": {
+   "act": "keeper_weather"
+  },
+  "P-PIER/keeper_tides": {
+   "act": "keeper_tides"
+  },
+  "P-PIER/keeper_flags": {
+   "act": "keeper_flags"
+  },
+  "P-PIER/keeper_bottle": {
+   "act": "keeper_bottle"
+  },
+  "P-PIER/keeper_storm": {
+   "act": "keeper_storm"
+  },
+  "P-PIER/keeper_clockwork": {
+   "act": "keeper_clockwork"
+  },
+  "P-PIER/keeper_watch": {
+   "act": "keeper_watch"
+  },
+  "P-PIER/keeper_cup": {
+   "act": "keeper_cup"
+  },
+  "P-PIER/gallery_bell": {
+   "act": "keeper_fogbell"
+  },
+  "P-PIER/gallery_signal": {
+   "act": "keeper_signal"
+  },
+  "P-PIER/gallery_weather": {
+   "act": "keeper_gallery_weather"
+  },
+  "P-PIER/gallery_ships": {
+   "act": "keeper_ships"
+  }
+ }
+}
