@@ -3109,7 +3109,9 @@ void ALyudBonfire::Setup(const FVector& At, bool bEffigy, double InEndsAt)
 	Light->SetRelativeLocation(FVector(0.f, 0.f, 160.f));
 	if (USoundBase* Crackle = LoadObject<USoundBase>(nullptr, TEXT("/Game/Audio/Festival/S_bonfire_loop_01.S_bonfire_loop_01"), nullptr, LOAD_NoWarn | LOAD_Quiet))
 	{
-		UGameplayStatics::SpawnSoundAttached(Crackle, RootComponent);
+		// with an attenuation of its own (the imported sound has none and would be heard all over the map)
+		UGameplayStatics::SpawnSoundAttached(Crackle, RootComponent, NAME_None, FVector::ZeroVector, EAttachLocation::KeepRelativeOffset,
+			true, 1.f, 1.f, 0.f, MakeAttenuation(this, 400.f, 5000.f));
 	}
 }
 
