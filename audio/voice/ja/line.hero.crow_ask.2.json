@@ -1,7 +1,7 @@
 {
  "key": "line.hero.crow_ask.2",
  "lang": "ja",
- "text": "それで、どうするの?",
+ "text": "それで、どうするの？",
  "speaker": "hero",
  "voice": "ttv-voice-2026102201374626-TYrgTufW",
  "voice_id": "ttv-voice-2026102201374626-TYrgTufW",
@@ -13,7 +13,7 @@
  "direction": "",
  "model": "fal-ai/minimax/speech-2.6-hd",
  "request": {
-  "prompt": "それで、どうするの?",
+  "prompt": "それで、どうするの？",
   "voice_setting": {
    "speed": 1,
    "pitch": 0,
@@ -28,6 +28,6 @@
   },
   "output_format": "url"
  },
- "fal_request_id": "01a1d592-44dd-7e31-a7c2-c24e88c638c2",
- "hash": "a3ff4267b593"
+ "fal_request_id": "01a1d66d-ff52-7a40-884c-3e7716742ee3",
+ "hash": "518e09621372"
 }

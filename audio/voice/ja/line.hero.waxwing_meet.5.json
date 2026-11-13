@@ -1,7 +1,7 @@
 {
  "key": "line.hero.waxwing_meet.5",
  "lang": "ja",
- "text": "あなたはどの鳥を研究していたんですか?",
+ "text": "あなたはどの鳥を研究していたんですか？",
  "speaker": "hero",
  "voice": "ttv-voice-2026102201374626-TYrgTufW",
  "voice_id": "ttv-voice-2026102201374626-TYrgTufW",
@@ -13,7 +13,7 @@
  "direction": "",
  "model": "fal-ai/minimax/speech-2.6-hd",
  "request": {
-  "prompt": "あなたはどの鳥を研究していたんですか?",
+  "prompt": "あなたはどの鳥を研究していたんですか？",
   "voice_setting": {
    "speed": 1,
    "pitch": 0,
@@ -28,6 +28,6 @@
   },
   "output_format": "url"
  },
- "fal_request_id": "01a1d58c-e0c2-7ed2-adfb-074ad11ebf0f",
- "hash": "378d6384d2af"
+ "fal_request_id": "01a1d66f-6b61-7cf3-af43-2c4ae9f09c6e",
+ "hash": "5c97b36077e1"
 }

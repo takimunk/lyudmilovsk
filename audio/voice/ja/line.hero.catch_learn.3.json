@@ -1,7 +1,7 @@
 {
  "key": "line.hero.catch_learn.3",
  "lang": "ja",
- "text": "えさは何がいいですか。",
+ "text": "餌は何がいいですか。",
  "speaker": "hero",
  "voice": "ttv-voice-2026102201374626-TYrgTufW",
  "voice_id": "ttv-voice-2026102201374626-TYrgTufW",
@@ -13,7 +13,7 @@
  "direction": "",
  "model": "fal-ai/minimax/speech-2.6-hd",
  "request": {
-  "prompt": "えさは何がいいですか。",
+  "prompt": "餌は何がいいですか。",
   "voice_setting": {
    "speed": 1,
    "pitch": 0,
@@ -28,6 +28,6 @@
   },
   "output_format": "url"
  },
- "fal_request_id": "01a1d667-860a-7e13-afe4-f2ba2387331e",
- "hash": "0cee4a6c545c"
+ "fal_request_id": "01a1d66d-b19d-7101-8cc9-1a2a02f8f483",
+ "hash": "18fdf48d105e"
 }

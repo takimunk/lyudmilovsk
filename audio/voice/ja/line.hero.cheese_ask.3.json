@@ -1,7 +1,7 @@
 {
  "key": "line.hero.cheese_ask.3",
  "lang": "ja",
- "text": "自分では行かないんですか?",
+ "text": "自分では行かないんですか？",
  "speaker": "hero",
  "voice": "ttv-voice-2026102201374626-TYrgTufW",
  "voice_id": "ttv-voice-2026102201374626-TYrgTufW",
@@ -13,7 +13,7 @@
  "direction": "",
  "model": "fal-ai/minimax/speech-2.6-hd",
  "request": {
-  "prompt": "自分では行かないんですか?",
+  "prompt": "自分では行かないんですか？",
   "voice_setting": {
    "speed": 1,
    "pitch": 0,
@@ -28,6 +28,6 @@
   },
   "output_format": "url"
  },
- "fal_request_id": "01a1d5fc-98c4-7b01-b4a2-52bed3974b79",
- "hash": "fa79cf41c2b4"
+ "fal_request_id": "01a1d66d-c898-7b13-9013-3abebf39f38b",
+ "hash": "c71f9ce5ab39"
 }

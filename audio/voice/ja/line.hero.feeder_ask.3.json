@@ -1,7 +1,7 @@
 {
  "key": "line.hero.feeder_ask.3",
  "lang": "ja",
- "text": "餌台を置いて数えればいい。",
+ "text": "餌台を置いて、数えてみればいいんじゃないですか。",
  "speaker": "hero",
  "voice": "ttv-voice-2026102201374626-TYrgTufW",
  "voice_id": "ttv-voice-2026102201374626-TYrgTufW",
@@ -13,7 +13,7 @@
  "direction": "",
  "model": "fal-ai/minimax/speech-2.6-hd",
  "request": {
-  "prompt": "餌台を置いて数えればいい。",
+  "prompt": "餌台を置いて、数えてみればいいんじゃないですか。",
   "voice_setting": {
    "speed": 1,
    "pitch": 0,
@@ -28,6 +28,6 @@
   },
   "output_format": "url"
  },
- "fal_request_id": "01a1d5fc-b853-7153-a89f-1138f30b1a27",
- "hash": "7b96f33ff84b"
+ "fal_request_id": "01a1d66e-0ce5-7e60-94b3-9d6a08599d89",
+ "hash": "7a190a29a7e6"
 }

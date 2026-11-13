@@ -1,8 +1,10 @@
 """Offscreen check of the side quests after the first four (docs/quests.md), with the game's real systems where a script can:
   1. Dev.QA quests: every quest forgotten and played through by its real events (DEVQA quest <id> done / STUCK)
-  2. the chains: waxwing_after's end begins autumn_count (stage kit) and Sorokin's next talk is autumn_*, not waxwing_journal;
+  2. the chains (and no skipping: the grove before Sorokin's talk leaves waxwing on find; a feeder visit after
+     waxwing_after leaves autumn_count before its talk): waxwing_after's end begins autumn_count (stage kit) and Sorokin's next talk is autumn_*, not waxwing_journal;
      waxwing's `prepare` done begins overdue_journal; awakening's end begins owner_supper
-  3. first_catch begins when fisherman_cheese ends, and the reward's own fish_herring does not finish `catch` early
+  3. first_catch begins when fisherman_cheese ends; neither the reward's fish_herring nor a fish given by hand finishes
+     `catch`, a fish_caught does
   4. eating from the hand (corn cob, pie: lyud.Food.Hold + the mouse held) and at the diner (pancakes, soup: lyud.Diner.Serve,
      lyud.Diner.Eat, bites) sends `eat <item>`: tent_neighbours, lab_lunch
   5. night_signal (have, wear the head lamp, reach the upper station), soda_science (four sodas), magpie_key, painter_views,
@@ -44,8 +46,14 @@ def talk(n, gap=1.1):
 at("Dev.QA quests", None, 40.0)
 # 2. chains
 at("Quest.Reset", None, 1.0)
+at("Quest.Start waxwing")
+at("Bird.Hero -420 1780", None, 4.0)
+dump("grove_before_talk")
+at("Quest.Reset", None, 1.0)
 at("Dev.Quest waxwing_after play", None, 4.0)
 dump("chain_after_waxwing_after")
+at("Quest.Event feeder_visit GreatTit", None, 1.0)
+dump("chain_feeder_visit_before_talk")
 at("lyud.Birds.Time 10", None, 2.5)
 go("sorokin_oleg", 1.3)
 at("Npc.Where")
@@ -69,7 +77,9 @@ at("Inventory.Give fishing_rod 1", None, 1.0)
 at("Quest.Event talk Lange_pyotr", None, 1.0)
 dump("catch_with_herring")
 at("Inventory.Give fish_flounder 1", None, 1.0)
-dump("catch_flounder")
+dump("catch_flounder_given")
+at("Quest.Event fish_caught fish_flounder", None, 1.0)
+dump("catch_fish_caught")
 # 4. eating: from the hand, then at the diner
 at("Quest.Reset", None, 1.0)
 at("Quest.Start tent_neighbours")
@@ -105,11 +115,18 @@ at("Dev.Tp cable_upper", None, 4.0)
 dump("night_signal")
 at("Quest.Start soda_science")
 at("Quest.Event talk Zotova_galina")
-for d in ("drink_baikal", "drink_dyushes", "drink_buratino"):
-    at("Quest.Event use %s" % d)
+at("lyud.Food.Hold drink_baikal", None, 1.5)
+for _ in range(6):
+    at("lyud.Hand.Press 1", None, 5.0)
+    at("lyud.Hand.Press 0", None, 0.8)
+dump("soda_1_drunk")
+for d in ("drink_dyushes", "drink_buratino"):
+    at("Quest.Event eat %s" % d)
 dump("soda_3")
-at("Quest.Event use drink_tarkhun", None, 1.0)
+at("Quest.Event eat drink_tarkhun", None, 1.0)
 dump("soda_4")
+at("Quest.Event talk Zotova_galina", None, 1.0)
+dump("soda_told")
 at("Quest.Start magpie_key")
 at("Quest.Event talk Belov_misha")
 at("Quest.Event corvid_find BottleCap")
@@ -144,6 +161,14 @@ at("Quest.Scenes")
 at("Quest.BirdCall HouseSparrow kid_girl", None, 1.0)
 at("shot showui", "kid_girl_hears", 9.0)
 dump("sparrow_called")
+# Aslan at his cheese tent by the club door: drawn? talk?
+at("lyud.Birds.Time 12", None, 2.5)
+go("khuazhev_aslan", 1.5)
+at("Npc.Where")
+at("shot showui", "aslan_tent_12h")
+talk(3)
+at("Dev.Tp club_door", None, 3.0)
+at("shot showui", "club_door_12h")
 # 6. who is drawn where
 at("Dev.Tp club_door", None, 3.0)
 at("Dev.Where")

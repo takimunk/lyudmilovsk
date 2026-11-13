@@ -1,7 +1,7 @@
 {
  "key": "line.hero.waxwing_meet.8",
  "lang": "ja",
- "text": "遠いんですか?",
+ "text": "遠いんですか？",
  "speaker": "hero",
  "voice": "ttv-voice-2026102201374626-TYrgTufW",
  "voice_id": "ttv-voice-2026102201374626-TYrgTufW",
@@ -13,7 +13,7 @@
  "direction": "",
  "model": "fal-ai/minimax/speech-2.6-hd",
  "request": {
-  "prompt": "遠いんですか?",
+  "prompt": "遠いんですか？",
   "voice_setting": {
    "speed": 1,
    "pitch": 0,
@@ -28,6 +28,6 @@
   },
   "output_format": "url"
  },
- "fal_request_id": "01a1d58c-f8f4-7841-96a0-2e79e22e94c3",
- "hash": "129899795054"
+ "fal_request_id": "01a1d66f-7c0b-7682-a85c-9be585cbbeb4",
+ "hash": "4e24981ca831"
 }

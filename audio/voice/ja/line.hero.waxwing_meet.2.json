@@ -1,7 +1,7 @@
 {
  "key": "line.hero.waxwing_meet.2",
  "lang": "ja",
- "text": "ここの鳥は手から食べるんです。そんなことあるんですか?",
+ "text": "ここの鳥は手から食べるんです。そんなことあるんですか？",
  "speaker": "hero",
  "voice": "ttv-voice-2026102201374626-TYrgTufW",
  "voice_id": "ttv-voice-2026102201374626-TYrgTufW",
@@ -13,7 +13,7 @@
  "direction": "",
  "model": "fal-ai/minimax/speech-2.6-hd",
  "request": {
-  "prompt": "ここの鳥は手から食べるんです。そんなことあるんですか?",
+  "prompt": "ここの鳥は手から食べるんです。そんなことあるんですか？",
   "voice_setting": {
    "speed": 1,
    "pitch": 0,
@@ -28,6 +28,6 @@
   },
   "output_format": "url"
  },
- "fal_request_id": "01a1d58c-c7f4-72c1-93a9-f9145b7be90b",
- "hash": "66b2ece15305"
+ "fal_request_id": "01a1d66f-4dac-7110-b4e7-57f93997a9fc",
+ "hash": "f365f5b9ea09"
 }
