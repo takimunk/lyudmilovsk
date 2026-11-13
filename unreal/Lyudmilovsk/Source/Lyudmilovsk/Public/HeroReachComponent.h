@@ -185,6 +185,9 @@ private:
 	TWeakObjectPtr<AActor> Held;
 	FHeroReachPose Pose;
 	bool bLocked = false;
+	/** Whose look and move input Begin locked: Finish gives it back to the same controller (the hero may have another one,
+	 *  or none, by then: the player turned into a bird in the middle of a reach). */
+	TWeakObjectPtr<class APlayerController> LockedPC;
 	bool bPoseForced = false;
 	void TickHold(float DeltaTime);
 	FHeroHoldPose Hold;
