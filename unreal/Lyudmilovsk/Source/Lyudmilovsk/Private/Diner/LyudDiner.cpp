@@ -408,6 +408,27 @@ void ALyudDinerDish::Tick(float DeltaTime)
 	const APlayerController* PC = LyudDiner::Controller(World);
 	const ULyudInventoryUI* UI = ULyudInventoryUI::Get(this);
 	const ULyudBiteSubsystem* Bite = ULyudBiteSubsystem::Get(this);
+	// left unfinished and walked away from: cleared away too after a couple of minutes. Only an empty dish was ever cleared, so
+	// each one left with food on it kept its serving place (and its tick) until the level ended, and with all the places
+	// taken nothing more could be served
+	if (!bEating && bReady && Hero && FVector::DistSquared(Hero->GetActorLocation(), GetActorLocation()) > FMath::Square(2000.f))
+	{
+		LeftAloneFor += DeltaTime;
+		if (LeftAloneFor > 120.f)
+		{
+			ShowPrompt(false);
+			if (ALyudDiner* D = Diner.Get())
+			{
+				D->DishGone(this);
+			}
+			Destroy();
+			return;
+		}
+	}
+	else
+	{
+		LeftAloneFor = 0.f;
+	}
 	if (bEating || !bReady || !Hero || !PC || (UI && UI->IsOpen()) || (Bite && Bite->IsEating()))
 	{
 		ShowPrompt(false);
@@ -921,6 +942,8 @@ bool ALyudDiner::PourCoffee()
 	ALyudDinerDish* Mug = SpawnDish(TEXT("diner_coffee"), FTransform(YawToWorld(0.f), ToWorld(CoffeeMugs)), 1.f);
 	if (!Mug)
 	{
+		// no mug to pour into (food.json has no plated diner_coffee): the coffee was paid for above
+		Inv->Earn(CoffeePrice);
 		return false;
 	}
 	Mug->SetPoured(0.f);

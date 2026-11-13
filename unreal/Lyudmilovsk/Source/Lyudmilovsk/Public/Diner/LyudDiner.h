@@ -87,6 +87,8 @@ private:
 	bool bReady = true;
 	bool bPrompted = false;
 	float EmptyFor = 0.f;
+	/** Seconds it has stood unfinished with the hero far from it (cleared away after a while, as an empty one is). */
+	float LeftAloneFor = 0.f;
 	float FoodZ = 0.f;
 
 	void ShowPrompt(bool bOn);
