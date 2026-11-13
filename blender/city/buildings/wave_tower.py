@@ -788,6 +788,379 @@ def _passage(B, a, b):
     kit.poster(B, XS[b] - 0.16, y + 0.6, 0.0, 270.0, name="poster_sun_2", w=0.7, zc=1.7)
 
 
+
+# ==================================================================================================== depth pass (round 2)
+# Every shop gets a wall dado of its own colour, a window display and a few things to look at or do; the arcade gets a
+# notice board with a running story, a weighing machine, benches, sandwich boards and four lamps.
+def _strip_back(S, mat, u0, u1, z0, z1, t=0.025):
+    x = S.xl + (u0 + u1) / 2
+    th = _th(x)
+    y = yb(x) - 0.3 / math.cos(th) + 0.004
+    p = kit._P(S.B, x, y, 0.0, math.degrees(th), "wall_strip")
+    p.kind = "wall"
+    w = (u1 - u0) / math.cos(th)
+    p.box(mat, -w / 2, w / 2, -t, 0.0, z0, z1, f="xXyZz")
+    r = p.done()
+    S.B.kit_items.pop()
+    return r
+
+
+def _strip_side(S, side, s0, s1, z0, z1, mat, t=0.025):
+    xa = S.xl if side == "l" else S.xr - t
+    ya, yb_ = S.y_front(S.xl if side == "l" else S.xr) + s0, S.y_front(S.xl if side == "l" else S.xr) + s1
+    box(S.B.detail, mat, xa + (0.004 if side == "l" else -0.004), xa + t + (0.004 if side == "l" else -0.004), ya, yb_, z0, z1)
+
+
+def _dado(S, mat, trim, zh=1.1, front=0.2, side_to=None, back=True):
+    """A painted panel band along the side walls (from the front wall to side_to) and the back wall."""
+    sb = side_to if side_to is not None else S.vback(S.W / 2) - 0.1
+    for side in ("l", "r"):
+        _strip_side(S, side, front, sb, 0.0, zh, mat)
+        _strip_side(S, side, front, sb, zh, zh + 0.06, trim)
+    if back:
+        _strip_back(S, mat, 0.12, S.W - 0.12, 0.0, zh)
+        _strip_back(S, trim, 0.12, S.W - 0.12, zh, zh + 0.06, t=0.03)
+
+
+def _headphones(B, x, y, z=0.0, yaw=0.0, seed=0):
+    """[prop] Two pairs of headphones lying on a table: a band and two cups each."""
+    p = kit._P(B, x, y, z, yaw, "headphones")
+    p.kind = "prop"
+    for k, (cu, cv) in enumerate(((-0.2, 0.0), (0.2, 0.02))):
+        m = ("CT_Leather", "CT_PlasterRed")[k]
+        for sgn in (-1, 1):
+            p.cyl("CT_Steel", cu + sgn * 0.075, cv, 0.0, 0.035, 0.04, 8)
+        pts = [(cu - 0.075, cv, 0.03), (cu - 0.065, cv, 0.1), (cu - 0.03, cv, 0.13), (cu + 0.03, cv, 0.13),
+               (cu + 0.065, cv, 0.1), (cu + 0.075, cv, 0.03)]
+        p.tube(m, pts, 0.015, 3)
+    return p.done()
+
+
+def _headphone_post(B, x, y, z=0.0, yaw=0.0):
+    """Listening post: a long table with a record player, two pairs of headphones and a shelf of sleeves under it;
+    two stools stand behind (+y). Returns the stools' seats."""
+    r = kit.table(B, x, y, z, yaw, w=1.3, d=0.55, mat=kit.WOOD)
+    zt = r["top"]
+    p = kit._P(B, x, y, z, yaw, "post_shelf")
+    p.box("CT_Leather", -0.6, 0.6, -0.22, 0.22, 0.2, 0.23, f="xXyYZz")
+    for k in range(6):
+        p.card_front("sleeve_%d" % ((k * 3 + 1) % 8), -0.56 + k * 0.19, -0.4 + k * 0.19, 0.23, 0.4, -0.2)
+    p.done()
+    B.kit_items.pop()
+    rp = kit.record_player(B, x - 0.28, y, zt, yaw)
+    _headphones(B, x + 0.3, y, zt, yaw)
+    kit.lamp_green(B, x - 0.52, y, zt, yaw + 90)
+    seats = []
+    for sx in (-0.32, 0.32):
+        px, py = r["foot"][0][0] * 0 + x, y
+        a = math.radians(yaw)
+        # stools sit behind the table: local (sx, +0.6)
+        wx = x + sx * math.cos(a) - 0.62 * math.sin(a)
+        wy = y + sx * math.sin(a) + 0.62 * math.cos(a)
+        st = kit.stool(B, wx, wy, z, yaw)
+        seats.append(st)
+    return r, rp, seats
+
+
+def _sleeve_stand(B, x, y, z=0.0, yaw=0.0, w=1.2, names=("sleeve_3", "sleeve_5", "sleeve_1", "sleeve_7")):
+    """Window display: a wooden plinth with slanted record sleeves facing the street (-y) on a low stand."""
+    p = kit._P(B, x, y, z, yaw, "sleeve_stand")
+    p.bev(kit.WOOD, -w / 2, w / 2, -0.25, 0.25, 0.0, 0.45, 0.01)
+    p.box("CT_Leather", -w / 2 + 0.03, w / 2 - 0.03, -0.21, 0.21, 0.45, 0.46, f="Z")
+    n = len(names)
+    cw = (w - 0.1) / n
+    for k, nm in enumerate(names):
+        x0 = -w / 2 + 0.05 + k * cw + 0.02
+        p.card_tilt(nm, x0, x0 + cw - 0.04, -0.12, 0.47, 0.0, 0.47 + 0.34)
+        p.rod(kit.ALU, (x0 + 0.02, -0.1, 0.47), (x0 + 0.02, 0.0, 0.5), 0.015, 3)
+    p.core(-w / 2 + 0.02, w / 2 - 0.02, -0.23, 0.23, 0.0, 0.4)
+    return p.done(solid=True, top=0.46)
+
+
+def _cat_basket(B, x, y, z=0.0, yaw=0.0):
+    """A wicker basket with a folded blanket, a sleeping ginger cat and, under the blanket's corner, a glint of shiny
+    small things (a green toy locomotive's chimney)."""
+    p = kit._P(B, x, y, z, yaw, "cat_basket")
+    p.kind = "prop"
+    p.bev("CT_WoodLight", -0.33, 0.33, -0.25, 0.25, 0.0, 0.2, 0.012, 0.05)
+    for k in range(3):
+        zz = 0.05 + k * 0.05
+        p.box("CT_Wood", -0.335, 0.335, -0.255, -0.248, zz, zz + 0.012, f="xXyYZ")
+        p.box("CT_Wood", -0.335, 0.335, 0.248, 0.255, zz, zz + 0.012, f="xXyYZ")
+    p.bev("CT_PlasterBlue", -0.28, 0.28, -0.2, 0.2, 0.17, 0.22, 0.015, 0.03)
+    p.cushion("CT_PlasterRed", -0.1, 0.22, -0.12, 0.14, 0.2, 0.3, puff=0.02)             # blanket fold
+    p.lathe("CT_PlasterYellow", -0.08, 0.0, [(0.0, 0.2), (0.12, 0.23), (0.17, 0.3), (0.12, 0.38), (0.0, 0.4)], 8)  # curled cat
+    p.lathe("CT_PlasterYellow", -0.2, -0.1, [(0.0, 0.22), (0.07, 0.27), (0.075, 0.33), (0.0, 0.38)], 7)             # head
+    for sgn in (-1, 1):
+        p.rod("CT_PlasterYellow", (-0.2 + sgn * 0.04, -0.1, 0.36), (-0.2 + sgn * 0.045, -0.1, 0.42), 0.035, 3)
+    p.cyl("CT_Leaf", 0.2, 0.1, 0.22, 0.31, 0.022, 6)                                      # loco chimney
+    p.box("CT_Leaf", 0.12, 0.28, 0.06, 0.15, 0.22, 0.27)
+    p.cyl("CT_SteelRed", 0.2, 0.1, 0.31, 0.33, 0.032, 6)
+    return p.done(top=0.3, footprint=(-0.33, 0.33, -0.25, 0.25), front=0.7)
+
+
+def _book_cart(B, x, y, z=0.0, yaw=0.0, seed=0, solid=True):
+    """A two-shelf wooden book trolley on castors with a push bar; second-hand books in rows."""
+    p = kit._P(B, x, y, z, yaw, "book_cart")
+    rnd = random.Random(seed + 41)
+    w, d = 0.9, 0.42
+    for sx in (-w / 2, w / 2):
+        p.box(kit.WOOD, sx - 0.02, sx + 0.02, -d / 2, d / 2, 0.08, 0.86, f="xXyYZz")
+        p.cyl("CT_Steel", sx, -d / 2 + 0.04, 0.0, 0.07, 0.035, 6)
+        p.cyl("CT_Steel", sx, d / 2 - 0.04, 0.0, 0.07, 0.035, 6)
+    for zb in (0.14, 0.5):
+        p.bev(kit.WOODL, -w / 2, w / 2, -d / 2, d / 2, zb, zb + 0.03, 0.006)
+        u = -w / 2 + 0.05
+        while u < w / 2 - 0.08:
+            bw = rnd.uniform(0.025, 0.05)
+            bh = rnd.uniform(0.18, 0.28)
+            m = rnd.choice(["CT_PlasterRed", "CT_PlasterBlue", "CT_PlasterGreen", "CT_PlasterYellow", "CT_Leather", "CT_Paper"])
+            p.box(m, u, u + bw, -d / 2 + 0.04, d / 2 - 0.05, zb + 0.03, zb + 0.03 + bh, f="xXyYZ")
+            u += bw + 0.004
+    p.rod(kit.ALU, (-w / 2 + 0.02, d / 2, 0.86), (w / 2 - 0.02, d / 2, 0.86), 0.03, 5)
+    p.box("CT_Paper", -0.3, 0.3, -d / 2 - 0.004, -d / 2, 0.62, 0.78, f="y")
+    p.core(-w / 2 + 0.03, w / 2 - 0.03, -d / 2 + 0.03, d / 2 - 0.03, 0.14, 0.17)
+    return p.done(solid=solid, top=0.86, footprint=(-w / 2, w / 2, -d / 2, d / 2), front=0.7)
+
+
+def _dryer_hood(B, x, y, z=0.0, yaw=0.0, mat="CT_PlasterPink", solid=False):
+    """A salon chair with a hood drier on a pole behind it (hood swung up over the sitter's head). The sitter faces
+    -y at yaw 0."""
+    p = kit._P(B, x, y, z, yaw, "dryer_hood")
+    p.cyl(kit.ALU, 0, 0, 0.0, 0.03, 0.3, 10, top=True)
+    p.cyl("CT_Steel", 0, 0, 0.03, 0.4, 0.045, 8)
+    p.bev(mat, -0.26, 0.26, -0.26, 0.24, 0.4, 0.48, 0.025, 0.03)
+    p.bev(mat, -0.25, 0.25, 0.18, 0.28, 0.48, 0.98, 0.03, 0.03)
+    for s in (-1, 1):
+        p.bev("CT_Steel", s * 0.3 - 0.03, s * 0.3 + 0.03, -0.18, 0.2, 0.6, 0.64, 0.01)
+    p.cyl(kit.ALU, 0, 0.42, 0.0, 1.7, 0.025, 8, top=False)
+    p.cyl("CT_Steel", 0, 0.42, 0.0, 0.03, 0.2, 10)
+    p.rod(kit.ALU, (0, 0.42, 1.7), (0, 0.08, 1.64), 0.03, 5)
+    p.lathe("CT_SteelWhite", 0.0, 0.06, [(0.0, 1.5), (0.26, 1.54), (0.33, 1.66), (0.27, 1.84), (0.1, 1.92), (0.0, 1.93)], 8, top=True)
+    p.cyl("CT_SteelRed", 0.0, 0.06, 1.56, 1.6, 0.34, 8, r1=0.345, top=False)
+    return p.done(solid=solid, seats=[(0.0, 0.0, 0.48, 0.0)], front=0.9)
+
+
+def _dress_form(B, x, y, z=0.0, yaw=0.0, mat="CT_Paper"):
+    """A tailor's dummy on a tripod: torso without head, a pinned strip of fabric (atlas) on one side."""
+    p = kit._P(B, x, y, z, yaw, "dress_form")
+    p.cyl("CT_Steel", 0, 0, 0.0, 1.0, 0.016, 6, top=False)
+    for k in range(3):
+        a = 2 * math.pi * k / 3 + 0.4
+        p.rod("CT_Steel", (0.0, 0.0, 0.25), (0.22 * math.cos(a), 0.22 * math.sin(a), 0.0), 0.02, 3)
+    p.lathe(mat, 0.0, 0.0, [(0.0, 0.85), (0.15, 0.88), (0.17, 1.02), (0.13, 1.18), (0.15, 1.32), (0.17, 1.45), (0.08, 1.52), (0.0, 1.54)], 10)
+    p.cyl("CT_WoodLight", 0, 0, 1.52, 1.62, 0.025, 6)
+    p.card_front("fabric_1", -0.16, 0.16, 0.9, 1.4, -0.168)
+    return p.done(top=None, footprint=(-0.22, 0.22, -0.22, 0.22), front=0.7)
+
+
+def _pattern_stand(B, x, y, z=0.0, yaw=0.0, seed=0):
+    """[prop] A slanted stand on a counter with the big pattern album open: six swatches of the atlas fabrics."""
+    p = kit._P(B, x, y, z, yaw, "pattern_stand")
+    p.kind = "prop"
+    p.box("CT_Wood", -0.24, 0.24, -0.1, 0.12, 0.0, 0.03, f="xXyYZ")
+    p.hexa("CT_Leather", [(-0.24, -0.1, 0.03), (0.24, -0.1, 0.03), (0.24, 0.12, 0.03), (-0.24, 0.12, 0.03)],
+           [(-0.24, 0.1, 0.34), (0.24, 0.1, 0.34), (0.24, 0.12, 0.34), (-0.24, 0.12, 0.34)])
+    k = 0
+    for cu in (-0.22, 0.0):
+        for t0, t1 in ((0.08, 0.45), (0.53, 0.92)):
+            nm = "fabric_%d" % ((k * 2 + seed) % 6)
+            k += 1
+            p.card_tilt(nm, cu + 0.01, cu + 0.21, -0.1 + 0.2 * t0 - 0.004, 0.03 + 0.31 * t0, -0.1 + 0.2 * t1 - 0.004, 0.03 + 0.31 * t1)
+    return p.done(top=0.34)
+
+
+def _ticket_post(B, x, y, z=0.0, yaw=0.0):
+    """A pedestal with the queue-ticket dispenser on top (a red box with a paper tongue) and a small number display."""
+    p = kit._P(B, x, y, z, yaw, "ticket_post")
+    p.cyl("CT_Steel", 0, 0, 0.0, 0.03, 0.2, 8)
+    p.cyl(kit.ALU, 0, 0, 0.03, 1.0, 0.03, 8, top=False)
+    p.bev("CT_SteelRed", -0.13, 0.13, -0.1, 0.1, 1.0, 1.22, 0.015)
+    p.box("CT_Paper", -0.04, 0.04, -0.18, -0.1, 1.06, 1.065, f="Zz")
+    p.card_front("price_0", -0.1, 0.1, 1.08, 1.2, -0.1015, rect=(0.0, 0.5, 1.0, 1.0))
+    p.box("CT_Steel", -0.09, 0.09, -0.06, 0.06, 1.22, 1.5, f="xXyYZ")
+    p.card_front("cash_display", -0.08, 0.08, 1.3, 1.42, -0.0615)
+    return p.done(top=None, footprint=(-0.2, 0.2, -0.2, 0.2), front=0.7)
+
+
+def _model_railway(B, x, y, z=0.0, yaw=0.0, w=1.5, d=0.9):
+    """A model railway on a low table: green baize, an oval track with sleepers, a red loco with three wagons, a little
+    station, trees, and an empty siding with a buffer stop (the depot) at the back right."""
+    p = kit._P(B, x, y, z, yaw, "model_railway")
+    for sx in (-w / 2 + 0.06, w / 2 - 0.06):
+        for sy in (-d / 2 + 0.06, d / 2 - 0.06):
+            p.box(kit.WOOD, sx - 0.03, sx + 0.03, sy - 0.03, sy + 0.03, 0.0, 0.7, f="xXyYZ")
+    p.bev(kit.WOOD, -w / 2, w / 2, -d / 2, d / 2, 0.7, 0.76, 0.01)
+    p.box("CT_Baize", -w / 2 + 0.03, w / 2 - 0.03, -d / 2 + 0.03, d / 2 - 0.03, 0.76, 0.77, f="Z")
+    zt = 0.77
+    rx, ry, cu, cv = w / 2 - 0.3, d / 2 - 0.2, -0.1, -0.02
+    n = 16
+    pts = [(cu + rx * math.cos(2 * math.pi * k / n), cv + ry * math.sin(2 * math.pi * k / n)) for k in range(n)]
+    for k in range(n):
+        a, b = pts[k], pts[(k + 1) % n]
+        p.rod("CT_Steel", (a[0], a[1], zt + 0.012), (b[0], b[1], zt + 0.012), 0.012, 4)
+        mx, my = (a[0] + b[0]) / 2, (a[1] + b[1]) / 2
+        ang = math.atan2(b[1] - a[1], b[0] - a[0]) + math.pi / 2
+        p.rod("CT_Wood", (mx - 0.05 * math.cos(ang), my - 0.05 * math.sin(ang), zt + 0.004),
+              (mx + 0.05 * math.cos(ang), my + 0.05 * math.sin(ang), zt + 0.004), 0.016, 4)
+    # train on the front straight (y = cv - ry), heading +x
+    ty = cv - ry
+    ux = cu - 0.28
+    p.box("CT_PlasterRed", ux, ux + 0.11, ty - 0.03, ty + 0.03, zt + 0.015, zt + 0.06)
+    p.box("CT_PlasterRed", ux + 0.07, ux + 0.11, ty - 0.03, ty + 0.03, zt + 0.06, zt + 0.095)
+    p.cyl("CT_Steel", ux + 0.02, ty, zt + 0.06, zt + 0.1, 0.012, 5)
+    for k, m in enumerate(("CT_PlasterYellow", "CT_PlasterBlue", "CT_PlasterGreen")):
+        a0 = ux - 0.13 * (k + 1) - 0.01
+        p.box(m, a0, a0 + 0.11, ty - 0.028, ty + 0.028, zt + 0.015, zt + 0.07)
+    # station on the back straight: a house with a roof, a platform and a lamp
+    sx0 = cu - 0.25
+    p.box("CT_Concrete", sx0 - 0.02, sx0 + 0.34, cv + ry + 0.06, cv + ry + 0.14, zt, zt + 0.02)
+    p.box("CT_PlasterYellow", sx0, sx0 + 0.3, cv + ry + 0.1, cv + ry + 0.2, zt + 0.02, zt + 0.1)
+    p.bev("CT_SteelRed", sx0 - 0.03, sx0 + 0.33, cv + ry + 0.07, cv + ry + 0.23, zt + 0.1, zt + 0.12, 0.008)
+    # trees and a tunnel mouth
+    for tx, ty2 in ((cu + rx + 0.12, cv - 0.15), (cu + rx + 0.12, cv + 0.2), (cu - rx - 0.1, cv + 0.18), (cu - rx - 0.12, cv - 0.1)):
+        p.cyl("CT_Wood", tx, ty2, zt, zt + 0.05, 0.008, 4)
+        p.cyl("CT_Leaf", tx, ty2, zt + 0.04, zt + 0.2, 0.05, 6, r1=0.005)
+    p.box("CT_ConcreteDark", cu + 0.35, cu + 0.55, cv - ry - 0.07, cv - ry + 0.07, zt, zt + 0.04, f="xXyYZz")
+    # siding with the empty depot (the 'Sever' belongs here)
+    sdx = w / 2 - 0.12
+    p.rod("CT_Steel", (sdx, cv + 0.02, zt + 0.012), (sdx, cv + ry - 0.04, zt + 0.012), 0.012, 4)
+    p.rod("CT_Steel", (sdx + 0.04, cv + 0.02, zt + 0.012), (sdx + 0.04, cv + ry - 0.04, zt + 0.012), 0.012, 4)
+    p.box("CT_SteelRed", sdx - 0.01, sdx + 0.05, cv + ry - 0.04, cv + ry - 0.02, zt, zt + 0.03)
+    p.box("CT_Wood", sdx - 0.06, sdx + 0.1, cv + 0.02, cv + 0.14, zt + 0.0, zt + 0.07, f="xXyYZ")
+    p.core(-w / 2 + 0.03, w / 2 - 0.03, -d / 2 + 0.03, d / 2 - 0.03, 0.66, 0.76)
+    return p.done(solid=True, top=0.78, front=0.7)
+
+
+def _arcade(B):
+    """Under the mezzanine: a notice board with the running story, a weighing machine, benches, sandwich boards, a
+    planter, four ceiling lamps."""
+    def at(x, d):
+        return x, yf(x) + d, math.degrees(_th(x))
+    x, y, a = at(-9.0, 1.4)
+    r = kit.notice_stand(B, x, y, 0.0, a, w=1.2, front="notice", back="price", seed=5, solid=True)
+    B.thing("arcade_board", "board", (x, y, 1.5), a, topic="local")
+    B.spot("arcade_board_stand", "stand", (x, y - 0.8, 0.0), a)
+    x, y, a = at(-21.3, 1.3)
+    kit.scales(B, x, y, 0.0, a)
+    B.thing("arcade_scales", "machine", (x, y, 1.2), a, what="scales")
+    B.spot("arcade_scales_stand", "stand", (x, y - 0.7, 0.0), a)
+    for bx in (-3.8, 8.6, 28.2):
+        x, y, a = at(bx, 1.55)
+        kit.bench(B, x, y, 0.0, a, w=1.7, kind="park")
+        B.spot("arcade_bench_%d" % int(bx), "bench", (x, y, 0.0), a)
+    for bx, nm in ((-32.2, "menu_0"), (-7.5, "price_1"), (21.0, "menu_1")):
+        x, y, a = at(bx, 1.6)
+        kit.sandwich_board(B, x, y, 0.0, a, name=nm)
+    x, y, a = at(11.0, 1.5)
+    kit.planter(B, x, y, 0.0, a, w=1.6, seed=3)
+    for lx in (-30.0, -8.0, 14.0, 32.0):
+        x, y, a = at(lx, 1.0)
+        B.lamp((x, y, 2.9), lumens=620, colour="#FFE2B8", kind="public", radius=7.0, fixture=False)
+        kit.pendant(B, x, y, 3.2, drop=0.3, kind="opal")
+
+
+def _bakery2(S):
+    B = S.B
+    _dado(S, "CT_TileWhite", "CT_PlasterRed", zh=1.15)
+    ck = S.f(_cat_basket, 5.2, 0.75, 0)
+    B.thing("bakery_cat_basket", "machine", (ck["pos"][0], ck["pos"][1], 0.3), S.yw(5.2), what="cat_basket")
+    S.spot("bakery_cat_stand", "stand", 5.2, 1.7, 0)
+    S.back(kit.menu_board, 3.75, name="menu_0", w=0.8, zc=1.75)
+    x = S.xl + 3.75
+    B.thing("bakery_menu", "board", (x, S.y_back(x) - 0.25, 1.75), S.yw(3.75), topic="prices")
+    S.spot("bakery_menu_stand", "stand", 3.75, 6.9, 180)
+
+
+def _records2(S):
+    B = S.B
+    _dado(S, "CT_Leather", "CT_Brass", zh=1.0)
+    r, rp, seats = _headphone_post(B, *S.P(3.7, 1.95), 0.0, S.yw(3.7))
+    S.check(r)
+    B.thing("records_booth", "machine", (rp["pos"][0], rp["pos"][1], 1.0), S.yw(3.7), what="record_player")
+    for k, st in enumerate(seats):
+        B.spot("records_booth_seat%d" % (k + 1), "seat", (st["seats"][0][0], st["seats"][0][1], 0.0), S.yw(3.7))
+    S.f(_sleeve_stand, 5.5, 0.5, 0, w=1.2)
+    S.right(kit.notice_board, 1.0, w=0.9, zc=1.7, seed=9)
+    B.thing("records_hits", "board", (S.xr - 0.1, S.y_front(S.xr) + 1.0, 1.7), 270, topic="catalogue")
+    S.spot_w("records_hits_stand", "stand", "r", 1.0)
+
+
+def _books2(S):
+    B = S.B
+    _dado(S, "CT_PlasterGreen", "CT_WoodLight", zh=1.0)
+    c = S.f(_book_cart, 3.6, 2.4, 0)
+    B.thing("books_cart", "shelf", (c["pos"][0], c["pos"][1], 0.9), S.yw(3.6), topic="local")
+    S.spot("books_cart_stand", "stand", 3.6, 3.1, 180)
+    S.f(kit.table, 1.9, 0.55, 0, w=0.9, d=0.6, mat=kit.WOOD)
+    S.on_top(kit.books_stack, 1.9, 0.55, -0.22, 0.0, z=0.75, n=5, seed=8)
+    S.on_top(kit.books_stack, 1.9, 0.55, 0.05, 0.05, z=0.75, n=3, seed=2)
+    S.on_top(kit.lamp_green, 1.9, 0.55, 0.3, 0.0, z=0.75)
+    S.right(kit.picture, 0.6, name="painting_lighthouse", w=0.5, zc=1.9)
+    S.spot("books_new_stand", "stand", 5.3, 4.5, 180)
+
+
+def _hardware2(S):
+    B = S.B
+    _dado(S, "CT_Steel", "CT_PlasterYellow", zh=1.0, front=2.2)
+    S.left(kit.bin_rack, 1.4, cols=4, rows=6, seed=3)
+    for k, u in enumerate((6.3, 7.2, 8.1)):
+        x, y = S.P(u, 1.3)
+        kit.bird_feeder(B, x, y, 0.0, S.yw(u), kind="hang", top_z=3.1)
+    fp = S.f(kit.bird_feeder, 4.9, 0.6, 0, kind="post")
+    B.thing("hardware_feeders", "board", (fp["pos"][0], fp["pos"][1], 1.3), S.yw(4.9), topic="birds")
+    S.spot("hardware_feeder_stand", "stand", 4.9, 1.6, 0)
+    x, y = S.P(5.3, 3.3)
+    ks = kit.kitchen_scales(B, x - 0.5, y, 1.0, S.yw(5.3))
+    B.thing("hardware_nail_scale", "machine", (x - 0.5, y, 1.1), S.yw(5.3), what="weigh_nails")
+    S.spot("hardware_nails_stand", "stand", 4.8, 4.2, 180)
+    S.spot("hardware_garden_stand", "stand", 7.2, 2.4, 0)
+
+
+def _salon2(S):
+    B = S.B
+    _dado(S, "CT_PlasterPink", "CT_TileWhite", zh=1.1, front=0.2, side_to=4.2, back=False)
+    for k, u in enumerate((5.4, 6.55)):
+        d = S.f(_dryer_hood, u, 1.0, 0)
+        s = d["seats"][0]
+        B.thing("salon_dryer_%d" % (k + 1), "machine", (s[0], s[1], 0.6), s[3], what="dryer")
+        B.spot("salon_dryer_seat%d" % (k + 1), "seat", (s[0], s[1], 0.0), s[3])
+    # savings bank: the queue-ticket post by the door, the bond board in the waiting hall
+    tp = S.f(_ticket_post, 2.45, 1.5, 0)
+    B.thing("bank_ticket", "machine", (tp["pos"][0], tp["pos"][1], 1.15), S.yw(2.45), what="queue_ticket")
+    S.spot("bank_ticket_stand", "stand", 2.45, 2.2, 0)
+    ns = S.f(kit.notice_stand, 1.55, 3.2, 0, w=1.0, front="price", back="notice", seed=4)
+    B.thing("bank_bonds", "board", (ns["pos"][0], ns["pos"][1], 1.45), S.yw(1.55), topic="prices")
+    S.spot("bank_bonds_stand", "stand", 1.55, 2.5, 0)
+    S.f(kit.coffee_table, 7.7, 2.5, 0, w=0.9, d=0.5)
+    S.on_top(kit.newspaper, 7.7, 2.5, -0.25, 0.0, z=0.42, cellname="mag_3")
+    S.on_top(kit.newspaper, 7.7, 2.5, 0.05, 0.05, z=0.42, cellname="mag_6")
+    S.on_top(kit.cup, 7.7, 2.5, 0.3, 0.0, z=0.42)
+    x, y = S.P(7.7, 2.5)
+    B.thing("salon_magtable", "shelf", (x, y, 0.5), S.yw(7.7), topic="art")
+    S.spot("salon_magtable_stand", "stand", 7.7, 3.4, 180)
+
+
+def _toyfab2(S):
+    B = S.B
+    _dado(S, "CT_PlasterYellow", "CT_PlasterRed", zh=0.9, front=0.2, side_to=3.4, back=False)
+    # fabrics: a dummy in the window, the pattern album on the counter
+    S.f(_dress_form, 1.9, 3.0, 0)
+    S.spot("fabric_dummy_stand", "stand", 1.9, 3.9, 180)
+    pa = S.on_top(_pattern_stand, 1.6, 5.0, 0.55, -0.05, z=1.05)
+    x, y = S.P(1.6 + 0.55, 5.0)
+    B.thing("fabric_pattern_book", "board", (x, y, 1.25), S.yw(1.6), topic="art")
+    # toys: the model railway in the window, two planes in the air
+    rr = S.f(_model_railway, 6.6, 1.2, 0, w=1.5, d=0.9)
+    x, y = S.P(6.6, 1.2)
+    B.thing("toys_railway", "machine", (x - 0.2, y, 0.85), S.yw(6.6), what="railway")
+    B.thing("toys_loco_depot", "board", (x + 0.55, y + 0.2, 0.85), S.yw(6.6), topic="kids")
+    S.spot("toys_railway_watch1", "stand", 6.0, 2.3, 0)
+    S.spot("toys_railway_watch2", "stand", 7.2, 2.3, 0)
+    x, y = S.P(5.6, 3.9)
+    kit.model_plane(B, x, y, 0.0, S.yw(5.6), top_z=3.15)
+
+
 def furnish(B, rnd):
     done = []
     for a, b, name in UNITS:
@@ -796,6 +1169,8 @@ def furnish(B, rnd):
             S.awning()
             {"bakery": _bakery, "records": _records, "books": _books, "hardware": _hardware,
              "salon": _salon, "toyfab": _toyfab}[S.trade](S)
+            {"bakery": _bakery2, "records": _records2, "books": _books2, "hardware": _hardware2,
+             "salon": _salon2, "toyfab": _toyfab2}[S.trade](S)
             done.append(S)
         elif name.startswith("core"):
             _lobby(B, rnd, a, b, name)
@@ -971,6 +1346,7 @@ def build(B):
             else:
                 fwin(B, F, 0.2, L - 0.2, 0.45 if not core else 0.7, 3.05 if not core else 2.8, kind=kind, cols=2 if L > 2 else 1, rows=1, frame=0.05, inset=0.15)
     furnish(B, random.Random(1960))
+    _arcade(B)
     # partitions between units (the passage sides are blue tile)
     bounds = sorted({a for a, b, _ in UNITS} | {b for a, b, _ in UNITS})
     for k in bounds:
