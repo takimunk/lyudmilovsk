@@ -10,6 +10,8 @@ Plot 6 x 5 m, height 4.95 m. Not enterable (the seller's room is hollow, one doo
 Spots: bench (under the roof), counter (seller inside), stand (buyer at the window).
 Window kinds: "public" (serving window + side window). No flats.
 Ideas for later: a timetable board, a ticket-machine, a litter bin, an ice-cream sign (neon), tile variants.
+Six plots use it (VARIANTS, one per kiosk: its trade, accent colour, sign): news, ice cream, tobacco, flowers,
+cable-car information, repairs. Things, spots, windows, entrance and footprint are the same in every variant.
 Requests: none.
 """
 import math
@@ -26,6 +28,26 @@ INFO = {
     "name_ru": "Остановка-киоск", "name_en": "Bus-stop Kiosk",
     "style": "late-soviet expressionism", "use": "public",
     "inspired_by": "Soviet concrete bus stops of the 1960s-80s (folded-plate roofs, mosaic panels, wave walls)",
+}
+
+TRADE = "news"                  # news | ice | tobacco | flowers | cable | repair
+ACCENT = "CT_PlasterRed"        # fascia / awning colour
+SIGN = "sign_books"             # atlas sign cell on the fascia (None: plain coloured fascia)
+VARIANTS = {
+    "P-KIOSK1": {"TRADE": "news", "ACCENT": "CT_PlasterRed", "SIGN": "sign_books"},
+    "P-KIOSK2": {"TRADE": "ice", "ACCENT": "CT_PlasterBlue", "SIGN": "sign_milk"},
+    "P-KIOSK3": {"TRADE": "tobacco", "ACCENT": "CT_PlasterGreen", "SIGN": None},
+    "P-KIOSK4": {"TRADE": "flowers", "ACCENT": "CT_PlasterPink", "SIGN": "sign_greens"},
+    "P-KIOSK5": {"TRADE": "cable", "ACCENT": "CT_PlasterYellow", "SIGN": "sign_till"},
+    "P-KIOSK6": {"TRADE": "repair", "ACCENT": "CT_Leather", "SIGN": None},
+}
+
+SHELF_MATS = {
+    "tobacco": ["CT_TileWhite", "CT_PlasterRed", "CT_PlasterGreen", "CT_TileWhite", "CT_PlasterYellow"],
+    "flowers": ["CT_PlasterPink", "CT_PlasterYellow", "CT_TileWhite", "CT_PlasterGreen"],
+    "cable": ["CT_PlasterYellow", "CT_TileWhite", "CT_PlasterBlue", "CT_TileWhite"],
+    "repair": ["CT_Leather", "CT_Wood", "CT_Steel", "CT_Leather", "CT_PlasterRed"],
+    "ice": ["CT_TileWhite", "CT_PlasterBlue", "CT_PlasterPink", "CT_PlasterYellow"],
 }
 
 # roof corner heights (top face), x -2.9..2.9, y 0.7..4.6
@@ -148,13 +170,14 @@ def build(B):
     # the back wall of the kiosk is the concrete wall; floor and roof
     box(m, "CT_Floor", kx0 - W, kx1, ky0 - W, ky1, 0.0, 0.02, faces="Z")
     box(m, "CT_Concrete", kx0 - 0.35, kx1 + 0.2, ky0 - 0.35, ky1, kh, kh + 0.15)
-    box(m, "CT_SteelRed", kx0 - 0.37, kx1 + 0.22, ky0 - 0.37, ky0 - 0.34, kh - 0.02, kh + 0.30, faces="all")
+    box(m, ACCENT, kx0 - 0.37, kx1 + 0.22, ky0 - 0.37, ky0 - 0.34, kh - 0.02, kh + 0.30, faces="all")
     # serving shelf under the window
     box(m, "CT_Wood", kx0 + 0.25, kx1 - 0.45, ky0 - 0.30, ky0, 0.96, 1.02)
     for u in (kx0 + 0.45, kx1 - 0.65):
         box(m, "CT_Steel", u, u + 0.05, ky0 - 0.28, ky0 - 0.03, 0.80, 0.96)
-    # red awning blades over the window
-    box(m, "CT_SteelRed", kx0 + 0.25, kx1 - 0.45, ky0 - 0.55, ky0 - 0.05, 2.22, 2.27)
+    # awning blades over the window (a striped canvas awning replaces them for ice cream and flowers)
+    if TRADE not in ("ice", "flowers"):
+        box(m, ACCENT, kx0 + 0.25, kx1 - 0.45, ky0 - 0.55, ky0 - 0.05, 2.22, 2.27)
     # litter bin / pillar tiling accent
     box(m, "CT_Steel", -2.95, -2.7, 0.2, 0.45, 0.0, 0.75)
     # ---- the kiosk's goods: counter, freezer, soda shelves, newspaper rack, lamp
@@ -165,6 +188,8 @@ def build(B):
     # soda bottles in two rows on the counter, with a till and a cash tray
     for row, yy in enumerate((ky0 + 0.35, ky0 + 0.52)):
         for i in range(9):
+            if TRADE in ("tobacco", "flowers", "cable", "repair") or (TRADE == "ice" and i % 3):
+                continue
             cyl(d, PACK[(i + row) % 4], kx0 + 0.5 + i * 0.16, yy, 0.96, 0.96 + 0.2, 0.032, 5)
             cyl(d, "CT_Steel", kx0 + 0.5 + i * 0.16, yy, 1.16, 1.2, 0.012, 4)
     box(d, "CT_Steel", kx1 - 0.65, kx1 - 0.3, ky0 + 0.35, ky0 + 0.62, 0.96, 1.15)
@@ -172,20 +197,25 @@ def build(B):
     box(m, "CT_TileWhite", kx0 + 0.15, kx0 + 0.75, 3.05, 4.15, 0.02, 0.7)
     for j in range(5):
         for i in range(2):
+            if TRADE != "ice":
+                break
             box(d, rnd.choice(["CT_PlasterPink", "CT_PlasterBlue", "CT_PlasterYellow", "CT_TileWhite", "CT_PlasterGreen"]),
                 kx0 + 0.22 + i * 0.25, kx0 + 0.42 + i * 0.25, 3.12 + j * 0.2, 3.26 + j * 0.2, 0.7, 0.88, faces="xXyYZ")
     # soda / snack shelves on the back wall beside the door
-    fu.shelving(B, Fr(1.3, 4.2 - 0.0, 0), -0.55, 0.65, rnd, depth=0.3, tiers=4, zmax=2.2, z0=0.2, kind="box", mats=PACK)
+    fu.shelving(B, Fr(1.3, 4.2 - 0.0, 0), -0.55, 0.65, rnd, depth=0.3, tiers=4 if TRADE != "tobacco" else 6, zmax=2.2,
+                z0=0.2, kind="box", mats=SHELF_MATS.get(TRADE, PACK), fill=0.95 if TRADE == "tobacco" else 0.85,
+                hh=(0.06, 0.1) if TRADE == "tobacco" else (0.14, 0.34))
     # newspaper rack on the outside of the left wall near the back
     rx = kx0 - 0.04
-    box(d, "CT_Steel", rx - 0.4, rx, 3.65, 4.1, 0.0, 0.05)
-    box(d, "CT_Steel", rx - 0.03, rx, 3.65, 4.1, 0.05, 1.55)
-    for zz in (0.45, 0.85, 1.25):
-        box(d, "CT_Steel", rx - 0.3, rx, 3.65, 4.1, zz, zz + 0.025)
-        box(d, "CT_Steel", rx - 0.3, rx - 0.27, 3.65, 4.1, zz, zz + 0.12)
-        for k in range(3):
-            box(d, rnd.choice(["CT_TileWhite", "CT_PlasterYellow", "CT_PlasterPink", "CT_TileWhite"]),
-                rx - 0.26, rx - 0.04, 3.7 + 0.14 * k, 3.82 + 0.14 * k, zz + 0.025, zz + 0.07 + 0.015 * k, faces="xXyYZ")
+    if TRADE == "news":
+        box(d, "CT_Steel", rx - 0.4, rx, 3.65, 4.1, 0.0, 0.05)
+        box(d, "CT_Steel", rx - 0.03, rx, 3.65, 4.1, 0.05, 1.55)
+        for zz in (0.45, 0.85, 1.25):
+            box(d, "CT_Steel", rx - 0.3, rx, 3.65, 4.1, zz, zz + 0.025)
+            box(d, "CT_Steel", rx - 0.3, rx - 0.27, 3.65, 4.1, zz, zz + 0.12)
+            for k in range(3):
+                box(d, rnd.choice(["CT_TileWhite", "CT_PlasterYellow", "CT_PlasterPink", "CT_TileWhite"]),
+                    rx - 0.26, rx - 0.04, 3.7 + 0.14 * k, 3.82 + 0.14 * k, zz + 0.025, zz + 0.07 + 0.015 * k, faces="xXyYZ")
     # one lamp
     B.lamp((1.7, 3.3, 2.2), lumens=480, colour="#FFD2A0", kind="public", radius=4.5)
     box(d, "CT_Steel", 1.69, 1.71, 3.29, 3.31, 2.28, kh, faces="xXyY")
@@ -194,6 +224,7 @@ def build(B):
     B.spot("counter", "counter", (1.5, 3.2, 0.0), 0.0)
     B.spot("stand", "stand", (1.4, 1.3, 0.0), 180.0)
     _furnish(B, rnd)
+    _dress(B, rnd)
     B.footprint = [(-3.0, 0.0), (3.0, 0.0), (3.0, 5.0), (-3.0, 5.0)]
     B.height = 4.95
     if os.environ.get("KIT_CHECK"):
@@ -224,15 +255,22 @@ def _furnish(B, rnd):
     # ---- the timetable on a stand at the kerb of the shelter
     _stand(B, -2.15, 1.75, "chart_timetable_bus", w=0.6, zc=1.5)
     B.thing("timetable", "board", (-2.15, 1.7, 1.5), 0.0, topic="timetable")
-    # ---- the serving window: newspapers and magazines on the shelf, sodas, magazines pinned beside the glass
+    # ---- the serving window: the goods of the trade on the shelf, pinned notices beside the glass
     sh = 1.02
-    for k, x in enumerate((1.1, 1.38, 1.66)):
-        kit.newspaper(B, x, ky0 - 0.12, sh, (-10, 8, -4)[k], seed=k + 1)
-    kit.bottles(B, 2.0, ky0 - 0.12, sh, 0.0, n=3, seed=5)
-    kit.cup(B, 2.28, ky0 - 0.12, sh, 0.0, mat="CT_PlasterRed")
-    for k, (nm, zc) in enumerate((("mag_2", 1.35), ("mag_5", 1.75))):
-        kit.poster(B, 0.78, ky0, 0.0, 180.0 - 180.0, name=nm, w=0.26, zc=zc)
-    kit.poster(B, 2.67, ky0, 0.0, 0.0, name="news_1", w=0.2, zc=1.6)
+    if TRADE == "news":
+        for k, x in enumerate((1.1, 1.38, 1.66)):
+            kit.newspaper(B, x, ky0 - 0.12, sh, (-10, 8, -4)[k], seed=k + 1)
+        kit.bottles(B, 2.0, ky0 - 0.12, sh, 0.0, n=3, seed=5)
+        kit.cup(B, 2.28, ky0 - 0.12, sh, 0.0, mat="CT_PlasterRed")
+        for k, (nm, zc) in enumerate((("mag_2", 1.35), ("mag_5", 1.75))):
+            kit.poster(B, 0.78, ky0, 0.0, 0.0, name=nm, w=0.26, zc=zc)
+        kit.poster(B, 2.67, ky0, 0.0, 0.0, name="news_1", w=0.2, zc=1.6)
+    else:
+        notes = {"ice": ("price_1", "poster_sun_1"), "tobacco": ("price_0", "poster_safety"),
+                 "flowers": ("poster_sun_2", "price_0"), "cable": ("chart_timetable_cable", "map_town"),
+                 "repair": ("price_1", "board_0")}[TRADE]
+        kit.poster(B, 0.78, ky0, 0.0, 0.0, name=notes[0], w=0.26, zc=1.5)
+        kit.poster(B, 2.67, ky0, 0.0, 0.0, name=notes[1], w=0.2, zc=1.6)
     pc = (1.75, ky0 - 0.12, sh)
     B.thing("counter", "counter", pc, 0.0, role="seller", service="newspapers", shop="kiosk_news")
     B.thing("postcards", "take", (2.15, ky0 - 0.12, sh + 0.03), 0.0, item="postcard")
@@ -241,7 +279,140 @@ def _furnish(B, rnd):
     B.thing("price_board", "board", (kx0 - 0.03, 2.55, 1.45), 270.0, topic="prices")
     B.thing("paper_rack", "take", (0.36, 3.9, 1.0), 270.0, item="daily_paper")
     # ---- crates of soda bottles by the front corner and a stool for the seller's friend
-    kit.crate(B, 0.3, 2.5, 0.0, 0.0, w=0.5, d=0.34, h=0.28, fill=None)
-    kit.bottles(B, 0.3, 2.5, 0.28, 0.0, n=3, seed=7)
-    kit.crate(B, 0.3, 2.9, 0.0, 0.0, w=0.5, d=0.34, h=0.28, fill=None)
+    if TRADE in ("news", "ice", "tobacco"):
+        kit.crate(B, 0.3, 2.5, 0.0, 0.0, w=0.5, d=0.34, h=0.28, fill=None)
+        kit.bottles(B, 0.3, 2.5, 0.28, 0.0, n=3, seed=7)
+        kit.crate(B, 0.3, 2.9, 0.0, 0.0, w=0.5, d=0.34, h=0.28, fill=None)
     kit.stool(B, 0.0, 3.4, 0.0, 90.0)
+
+
+def _sign(B, kx0, kx1, ky0, kh):
+    """The trade's sign: an atlas plate on the fascia (or a plain accent fascia)."""
+    if SIGN:
+        kit.sign_plate(B, (kx0 + kx1) / 2 - 0.08, ky0 - 0.37, 0.0, 0.0, name=SIGN, w=1.2, zc=kh + 0.14)
+
+
+def _cone(d, x, y, z, mat, scoop="CT_PlasterPink", s=1.0):
+    """An ice-cream cone with one scoop (z = where the tip rests... the cone's tip points down)."""
+    cyl(d, "CT_WoodLight", x, y, z, z + 0.1 * s, 0.006 * s, 4)
+    cyl(d, "CT_WoodLight", x, y, z + 0.1 * s, z + 0.2 * s, 0.03 * s, 6)
+    blob(d, scoop, x, y, z + 0.25 * s, 0.045 * s, 6)
+
+
+def _bucket(d, x, y, rnd, mats, n=7, h=0.32, r=0.13):
+    """A steel bucket with a bunch of flowers (stems and heads)."""
+    cyl(d, "CT_Steel", x, y, 0.0, h, r, 7)
+    cyl(d, "CT_Leaf", x, y, h - 0.02, h + 0.12, r * 0.55, 6)
+    for k in range(n):
+        a = rnd.uniform(0, 6.28)
+        rr = rnd.uniform(0.0, r * 0.6)
+        fx, fy, fz = x + rr * math.cos(a), y + rr * math.sin(a), h + rnd.uniform(0.3, 0.45)
+        box(d, "CT_Leaf", fx - 0.006, fx + 0.006, fy - 0.006, fy + 0.006, h + 0.1, fz, faces="xXyY")
+        blob(d, rnd.choice(mats), fx, fy, fz, rnd.uniform(0.045, 0.06), 5)
+
+
+def _dress(B, rnd):
+    """Everything that tells the trade at a glance, outside and on the shelf (no new things, no new lamps)."""
+    d = B.detail
+    kx0, kx1, ky0, ky1, kh = 0.6, 2.8, 2.2, 4.2, 2.45
+    sh = 1.02
+    r = random.Random(7 + len(TRADE))
+    _sign(B, kx0, kx1, ky0, kh)
+    if TRADE == "news":
+        kit.magazine_rack(B, 0.56, 3.5, 0.0, 270.0, w=0.8, seed=2, solid=False)
+        # a bundle of newspapers tied up by the front corner
+        kit.newspaper(B, 0.35, 1.95, 0.0, 15.0, seed=9)
+        kit.newspaper(B, 0.35, 1.95, 0.03, -10.0, seed=10)
+        kit.newspaper(B, 0.35, 1.95, 0.06, 5.0, seed=11)
+        kit.sandwich_board(B, 0.1, 1.5, 0.0, 12.0, name="news_0")
+    elif TRADE == "ice":
+        kit.awning(B, 1.7, ky0 - 0.02, 0.0, 0.0, w=1.9, proj=0.6, zt=2.35, drop=0.3, mat=ACCENT, mat2="CT_TileWhite")
+        kit.ice_cream_chest(B, -0.15, 1.9, 0.0, 0.0, solid=False)
+        kit.sandwich_board(B, 0.55, 1.2, 0.0, -10.0, name="menu_1")
+        for k in range(3):
+            _cone(d, 1.2 + 0.4 * k, ky0 - 0.12, sh, "CT_WoodLight", ["CT_PlasterPink", "CT_TileWhite", "CT_PlasterYellow"][k])
+        # a big cone sign on a pole at the kiosk's front corner: waffle cone and three scoops
+        cx, cy, z0 = 2.9, 1.75, 1.5
+        cyl(d, "CT_Steel", cx, cy, 0.0, z0, 0.02, 4)
+        cyl(d, "CT_Steel", cx, cy, 0.0, 0.03, 0.12, 8, bottom=True)
+        cyl(d, "CT_WoodLight", cx, cy, z0, z0 + 0.04, 0.015, 4)
+        cyl(d, "CT_WoodLight", cx, cy, z0 + 0.04, z0 + 0.3, 0.12, 8, bottom=True)
+        for k, mt in enumerate(("CT_PlasterPink", "CT_TileWhite", "CT_PlasterYellow")):
+            blob(d, mt, cx + 0.02 * (k % 2), cy, z0 + 0.38 + 0.13 * k, 0.12 - 0.01 * k, 8)
+    elif TRADE == "tobacco":
+        # a lighter, neat counter-top display: a steel frame with packs and lighters, two small jars of matches
+        box(d, "CT_Steel", 1.0, 1.4, ky0 - 0.26, ky0 - 0.06, sh, sh + 0.02)
+        for k in range(8):
+            box(d, ["CT_TileWhite", "CT_PlasterRed", "CT_PlasterGreen", "CT_PlasterYellow"][k % 4],
+                1.03 + 0.045 * k, 1.07 + 0.045 * k, ky0 - 0.22, ky0 - 0.18, sh + 0.02, sh + 0.09, faces="xXyYZ")
+        for k in range(5):
+            box(d, "CT_SteelRed" if k % 2 else "CT_PlasterBlue", 1.05 + 0.07 * k, 1.09 + 0.07 * k, ky0 - 0.12, ky0 - 0.09,
+                sh + 0.02, sh + 0.08, faces="xXyYZ")
+        cyl(d, "CT_Glass", 1.65, ky0 - 0.14, sh, sh + 0.1, 0.04, 6)
+        cyl(d, "CT_Wood", 1.8, ky0 - 0.14, sh, sh + 0.06, 0.03, 6)
+        # an ash stand at the kerb of the kiosk
+        cyl(d, "CT_Steel", 0.35, 1.85, 0.0, 0.8, 0.02, 4)
+        cyl(d, "CT_Steel", 0.35, 1.85, 0.8, 0.88, 0.1, 8, bottom=True)
+        cyl(d, "CT_Steel", 0.35, 1.85, 0.0, 0.03, 0.14, 8, bottom=True)
+        kit.sandwich_board(B, 0.1, 1.3, 0.0, 10.0, name="poster_safety")
+    elif TRADE == "flowers":
+        kit.awning(B, 1.7, ky0 - 0.02, 0.0, 0.0, w=1.9, proj=0.6, zt=2.35, drop=0.3, mat=ACCENT, mat2="CT_TileWhite")
+        fm = ["CT_PlasterRed", "CT_PlasterYellow", "CT_PlasterPink", "CT_TileWhite", "CT_PlasterBlue"]
+        for k, (bx, by) in enumerate(((0.28, 1.95), (0.58, 1.55), (0.05, 1.5), (2.2, 1.75), (2.5, 1.5), (2.85, 1.85))):
+            _bucket(d, bx, by, r, fm, n=8)
+        for k in range(3):
+            kit.vase(B, 1.15 + 0.4 * k, ky0 - 0.12, sh, 0.0, seed=k + 20)
+        kit.planter(B, 1.4, 1.0, 0.0, 0.0, w=1.2, d=0.4, h=0.35, seed=3, solid=False)
+        kit.plant(B, 0.15, 2.45, 0.0, 0.0, kind="fern", pot="CT_PlasterYellow", h=0.7, seed=4)
+        kit.plant(B, 3.0, 2.3, 0.0, 0.0, kind="ficus", pot="CT_PlasterRed", h=1.2, seed=5)
+        # watering can by the door side
+        wx, wy = 0.8, 1.75
+        cyl(d, "CT_SteelWhite", wx, wy, 0.0, 0.22, 0.09, 8, top=False)
+        box(d, "CT_SteelWhite", wx - 0.1, wx + 0.1, wy - 0.015, wy + 0.015, 0.22, 0.24)
+        for t in range(4):
+            box(d, "CT_SteelWhite", wx - 0.2 - 0.03 * t, wx - 0.1 - 0.03 * t, wy - 0.015, wy + 0.015, 0.1 + 0.08 * t, 0.13 + 0.08 * t)
+        cyl(d, "CT_SteelWhite", wx - 0.31, wy, 0.4, 0.43, 0.035, 6)
+        box(d, "CT_SteelWhite", wx + 0.08, wx + 0.12, wy - 0.015, wy + 0.015, 0.0, 0.3)
+        box(d, "CT_SteelWhite", wx - 0.1, wx + 0.1, wy - 0.015, wy + 0.015, 0.3, 0.34)
+    elif TRADE == "cable":
+        # timetable and route boards at the kiosk front, a ticket window sign and a model cabin on the roof
+        kit.notice_stand(B, -0.1, 1.55, 0.0, 0.0, w=0.8, h=0.6, front="chart_timetable_cable", back="map_town", seed=1)
+        kit.sandwich_board(B, 3.0, 1.3, 0.0, -8.0, name="price_0")
+        kit.poster(B, 1.7, ky0, 0.0, 0.0, name="sign_till", w=0.3, zc=2.05)
+        for k in range(4):
+            box(d, "CT_Paper", 1.15 + 0.12 * k, 1.25 + 0.12 * k, ky0 - 0.2, ky0 - 0.08, sh, sh + 0.004 + 0.003 * k)
+        cx, cy, z0 = 2.3, ky0 - 0.12, sh
+        box(d, "CT_Steel", cx - 0.01, cx + 0.01, cy - 0.01, cy + 0.01, z0, z0 + 0.04, faces="xXyY")
+        box(d, ACCENT, cx - 0.1, cx + 0.1, cy - 0.06, cy + 0.06, z0 + 0.04, z0 + 0.19)
+        box(d, "CT_Glass", cx - 0.085, cx + 0.085, cy - 0.065, cy - 0.06, z0 + 0.09, z0 + 0.16, faces="y")
+        box(d, "CT_TileWhite", cx - 0.11, cx + 0.11, cy - 0.07, cy + 0.07, z0 + 0.19, z0 + 0.205)
+        box(d, "CT_Steel", cx - 0.008, cx + 0.008, cy - 0.008, cy + 0.008, z0 + 0.205, z0 + 0.28, faces="xXyY")
+    elif TRADE == "repair":
+        kit.shoe_rack(B, 0.56, 3.75, 0.0, 270.0, w=0.8, rows=3, seed=6, solid=False)
+        # key board on the left wall: a wooden board with brass keys on hooks
+        box(d, "CT_Wood", kx0 - 0.03, kx0, 3.0, 3.4, 1.0, 1.6)
+        for row in range(3):
+            for k in range(5):
+                box(d, "CT_Brass", kx0 - 0.045, kx0 - 0.03, 3.05 + 0.07 * k, 3.08 + 0.07 * k, 1.1 + 0.15 * row, 1.22 + 0.15 * row)
+        # a tray of watches and a few pairs of shoes on the serving shelf
+        box(d, "CT_Wood", 1.1, 1.55, ky0 - 0.28, ky0 - 0.06, sh, sh + 0.02)
+        for k in range(6):
+            cyl(d, ["CT_Brass", "CT_Steel", "CT_TileWhite"][k % 3], 1.17 + 0.07 * (k % 3) * 1.6, ky0 - 0.2 + 0.1 * (k // 3), sh + 0.02, sh + 0.035, 0.028, 8)
+        for k in range(2):
+            box(d, "CT_Leather", 1.7 + 0.25 * k, 1.95 + 0.25 * k - 0.05, ky0 - 0.24, ky0 - 0.06, sh, sh + 0.09, faces="xXyYZ")
+        # a gooseneck lamp over the tiny workbench inside (an unlit fixture: the kiosk keeps its single lamp)
+        kit.table_lamp(B, 2.35, 2.55, 0.92, 0.0, shade="CT_SteelRed", light=False)
+        kit.tools(B, 1.35, 2.5, 0.92, 0.0)
+        # a big brass key on the fascia instead of a sign
+        cx, cz, yk = 1.6, kh + 0.14, ky0 - 0.37 - 0.012
+        for k in range(8):
+            a0, a1 = 2 * math.pi * k / 8, 2 * math.pi * (k + 1) / 8
+            for rr0, rr1 in ((0.05, 0.11),):
+                B.detail.face("CT_Brass", [(cx - 0.45 + rr0 * math.cos(a0), yk, cz + rr0 * math.sin(a0)),
+                                           (cx - 0.45 + rr1 * math.cos(a0), yk, cz + rr1 * math.sin(a0)),
+                                           (cx - 0.45 + rr1 * math.cos(a1), yk, cz + rr1 * math.sin(a1)),
+                                           (cx - 0.45 + rr0 * math.cos(a1), yk, cz + rr0 * math.sin(a1))])
+        box(d, "CT_Brass", cx - 0.34, cx + 0.45, yk - 0.015, yk, cz - 0.02, cz + 0.02, faces="xXyYZz")
+        for k in range(3):
+            box(d, "CT_Brass", cx + 0.2 + 0.08 * k, cx + 0.26 + 0.08 * k, yk - 0.015, yk, cz - 0.1, cz - 0.02, faces="xXyYZz")
+        kit.wall_clock(B, 2.67, ky0, 0.0, 0.0, zc=1.75, r=0.1)
