@@ -106,6 +106,21 @@ namespace LyudTopi
 					{ 215.0, -1215.0 }, { 150.0, -1290.0 }, { 118.0, -1350.0 }, { 192.0, -1470.0 }, { 128.0, -1590.0 },
 					{ 162.0, -1690.0 },
 					{ EndX, LocalRiverY(EndX) + RiverHalfWidth + 6.0 } };
+				// a walked path has no corners: cut them three times (Chaikin), keeping both ends
+				for (int Pass = 0; Pass < 3; ++Pass)
+				{
+					std::vector<FVec2> Cut;
+					Cut.push_back(D.Points.front());
+					for (size_t I = 0; I + 1 < D.Points.size(); ++I)
+					{
+						const FVec2& A = D.Points[I];
+						const FVec2& B = D.Points[I + 1];
+						Cut.push_back({ 0.75 * A.X + 0.25 * B.X, 0.75 * A.Y + 0.25 * B.Y });
+						Cut.push_back({ 0.25 * A.X + 0.75 * B.X, 0.25 * A.Y + 0.75 * B.Y });
+					}
+					Cut.push_back(D.Points.back());
+					D.Points = Cut;
+				}
 				D.Along.push_back(0.0);
 				for (size_t I = 1; I < D.Points.size(); ++I)
 				{
@@ -485,7 +500,11 @@ namespace LyudTopi
 		};
 		Layer(5200.0, 260.0, 0.84, 71, Mega * Smooth((In - 2500.0) / 5000.0), nullptr, 0.21);
 		Layer(1150.0, 75.0, 0.82, 61, Mega, nullptr, -0.12);
-		Layer(240.0, 31.0, 0.80, 21, Env, &BigWind, 0.0);
+		// the land is not combed evenly: here the big dunes stand high and close, there they sink into wide bowls
+		const double Knots = 0.45 + 1.0 * Smooth((Noise(L.X / 330.0 + 3.0, L.Y / 410.0, 81) - 0.25) / 0.5);
+		Layer(240.0, 31.0, 0.80, 21, Env * Knots / 1.1, &BigWind, 0.0);
+		// a second, lower family lying askew to the first: it breaks the long parallel ridges into knots, saddles and bowls
+		Layer(165.0, 8.0, 0.80, 51, Env * (0.4 + 0.6 * BigWind) * (1.6 - Knots), nullptr, 0.62);
 		Layer(78.0, 7.5, 0.80, 31, Env * (0.35 + 0.65 * BigWind) * Corridor, &MedWind, 0.16);
 		Layer(19.0, 0.9, 0.78, 41, Env * (0.3 + 0.7 * BigWind * MedWind) * Corridor, nullptr, -0.33);
 
