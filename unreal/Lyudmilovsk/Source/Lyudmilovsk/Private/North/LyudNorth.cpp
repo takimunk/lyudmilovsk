@@ -180,6 +180,15 @@ void ULyudNorthSubsystem::OnWorldBeginPlay(UWorld& InWorld)
 	SpawnPlumes();
 	SpawnRiver();
 	UpdateAir();
+	// the steam pool's material, card and instances now, where a few ms cost nothing, not at the first vent in play
+	if (Things.Num() > 0 || Fumaroles.Num() > 0)
+	{
+		if (ALyudNorthSteam* Fx = Steam())
+		{
+			Fx->Prepare();
+			Fx->SetActorHiddenInGame(!bShown);
+		}
+	}
 }
 
 void ULyudNorthSubsystem::Deinitialize()

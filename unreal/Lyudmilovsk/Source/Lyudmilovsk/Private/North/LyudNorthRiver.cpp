@@ -69,6 +69,8 @@ void ALyudNorthRiver::Setup(const TArray<FVector4>& InSamples)
 	}
 	SetActorLocation(Points[0].Pos);
 	BuildParts();
+	// the flow loop once, at spawn (world start): never a load when the player comes near, nor a failed one per approach
+	LoopSound = LoadObject<USoundBase>(nullptr, RiverSoundPath, nullptr, LOAD_NoWarn | LOAD_Quiet);
 	UE_LOG(LogTemp, Display, TEXT("NORTH river: %d samples, %d points, %.0f m, %d parts"), Samples.Num(), Points.Num(), LengthM(), Parts.Num());
 }
 
@@ -343,7 +345,7 @@ void ALyudNorthRiver::StartLoop()
 	{
 		return;
 	}
-	USoundBase* Sound = LoadObject<USoundBase>(nullptr, RiverSoundPath, nullptr, LOAD_NoWarn | LOAD_Quiet);
+	USoundBase* Sound = LoopSound;
 	if (!Sound)
 	{
 		if (!bWarnedSound)
