@@ -286,9 +286,28 @@ void ULyudLadderClimber::TickComponent(float DeltaTime, ELevelTick TickType, FAc
 	Super::TickComponent(DeltaTime, TickType, ThisTickFunction);
 	if (!Ladder.IsValid())
 	{
+		// the ladder went away under the climber (its actor destroyed or streamed out): what the climb took is given back
+		ACharacter* Who = Cast<ACharacter>(GetOwner());
+		if (!bReleasing)
+		{
+			if (AHeroCharacter* Hero = Cast<AHeroCharacter>(Who))
+			{
+				Hero->HoldBodyYaw(false);
+			}
+		}
+		if (bPlayerDriven)
+		{
+			// the player's own climb took the movement away (a scripted climb's caller looks after its own)
+			bPlayerDriven = false;
+			if (Who && Who->GetCharacterMovement() && Who->GetCharacterMovement()->MovementMode == MOVE_None)
+			{
+				Who->GetCharacterMovement()->SetMovementMode(MOVE_Falling);
+			}
+		}
+		bStepping = false;
 		bReleasing = false;
 		Weight = 0.f;
-		if (UHeroAnimInstance* Anim = HeroAnim(Cast<ACharacter>(GetOwner())))
+		if (UHeroAnimInstance* Anim = HeroAnim(Who))
 		{
 			Anim->Ladder = FBikeRiderPose();
 		}
