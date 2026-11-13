@@ -46,6 +46,8 @@ ST = 2.85                # storey height
 NST = 7
 BODY = 12.2              # flats' depth
 GAL = 1.8                # gallery depth
+FLAT_NO = 17             # the open flat of the first storey: 1-17 (Colette Bauer, a pensioner), bay 18
+STAIR_W = 1.0            # the stair of the middle core, up from its lobby to the first gallery
 WALL = 0.3
 FIN_D = 0.85             # depth of the brise-soleil
 FIN_PITCH = BAY / 4.0
@@ -125,6 +127,7 @@ def build(B):
     cores = sorted({N // 6, N // 2, N - 1 - N // 6})
     zs = [PIL + ST * j for j in range(NST + 1)]
     flat_count = {}
+    flat_ctx = {}
     bays_done = 0
 
     def new_flat(storey):
@@ -139,8 +142,11 @@ def build(B):
         a, b, c_, d = FP[i], FP[i + 1], BP[i + 1], BP[i]
         # roof of body and gallery (one slab over both, overhanging the gallery)
         m.face("CT_Roof", [(a[0], a[1], ZR), (b[0], b[1], ZR), (GP[i + 1][0], GP[i + 1][1], ZR), (GP[i][0], GP[i][1], ZR)])
-        # soffit over the pilotis
-        m.face("CT_Concrete", [(a[0], a[1], PIL), (d[0], d[1], PIL), (c_[0], c_[1], PIL), (b[0], b[1], PIL)])
+        # soffit over the pilotis (the middle core's has the stairwell hole up to the first gallery)
+        if i == cores[1]:
+            _soffit_with_hole(m, a, b, c_, d)
+        else:
+            m.face("CT_Concrete", [(a[0], a[1], PIL), (d[0], d[1], PIL), (c_[0], c_[1], PIL), (b[0], b[1], PIL)])
         # roof slab edge towards the gallery (underside of the roof slab over the gallery)
         m.face("CT_ConcreteWhite", [(BP[i][0], BP[i][1], ZR - 0.22), (BP[i + 1][0], BP[i + 1][1], ZR - 0.22),
                                     (GP[i + 1][0], GP[i + 1][1], ZR - 0.22), (GP[i][0], GP[i][1], ZR - 0.22)][::-1])
@@ -174,7 +180,8 @@ def build(B):
                 else:
                     wins = [(0.6, 3.4), (4.2, Lb - 0.6)]
                 holes = [(u0, u1, z0 + 0.85, z0 + 2.15) for u0, u1 in wins]
-                F = B.facade(p0, p1, z0, z1, mat, holes=holes, depth=WALL, back=False)
+                mine = (j == 0 and flat_count.get(1, 0) + 1 == FLAT_NO)      # Colette Bauer's flat: open, with an inner skin
+                F = B.facade(p0, p1, z0, z1, mat, holes=holes, depth=WALL, back=mine)
                 # back facade of this flat with the gallery door and a kitchen window
                 fid = new_flat(j + 1)
                 du0 = 0.9 if (i + j) % 2 == 0 else Lb - 0.9 - DOOR_W
@@ -183,7 +190,9 @@ def build(B):
                 bholes.append((kw[0], kw[1], z0 + 1.0, z0 + 2.1))
                 # the back facade goes from q1 to q0 (outside faces +y); u runs from q1
                 Fb = B.facade(q1, q0, z0, z1, "CT_ConcreteWhite", holes=[(Lb - h[1], Lb - h[0], h[2], h[3]) for h in bholes],
-                              depth=WALL, back=False)
+                              depth=WALL, back=mine)
+                if mine:
+                    flat_ctx.update(bay=i, wins=wins, du0=du0)
                 door_u = Lb - (du0 + DOOR_W / 2)
                 dp = Fb.to_building((door_u, -0.6, z0))
                 B.flat(fid, storey=j + 1, beds=1 + (i + j) % 3, door=dp, entrance="core%d_back" % core_id)
@@ -201,7 +210,7 @@ def build(B):
             for z in zs:
                 lbox(det, "CT_Louvre", Ff, 0.0, Lb, 0.0, FIN_D, z - 0.14, z, faces="yzZ")
         else:
-            _core_bay(B, i, core_id, p0, p1, q0, q1, zs, rnd, new_flat)
+            _core_bay(B, i, core_id, p0, p1, q0, q1, zs, rnd, new_flat, door=(i == cores[1]))
 
         # ---- ground floor of a core bay: the lobby (hollow room with floor, ceiling = the soffit)
         if is_core:
@@ -217,6 +226,10 @@ def build(B):
             t = 0.25
             inner = [(a[0] + nl[0] * t * (1 if mat_front else 1), a[1] + nl[1] * t), (b_[0] + nl[0] * t, b_[1] + nl[1] * t)]
             band(m, "CT_ConcreteWhite", [a, b_], inner, ZR + 0.9)
+
+    if flat_ctx:
+        _bauer_flat(B, FP, BP, GP, flat_ctx, zs)
+    _gallery(B, FP, cores, zs)
 
     # ---------------------------------------------------------------- end walls
     for end in (0, 1):
@@ -314,7 +327,7 @@ def _gallery_parapet(B, a, b, z, rnd):
     # note: the Facade's outward is +y; local y -0.14.. is inside
 
 
-def _core_bay(B, i, cid, p0, p1, q0, q1, zs, rnd, new_flat):
+def _core_bay(B, i, cid, p0, p1, q0, q1, zs, rnd, new_flat, door=False):
     """A stair/lift core bay above the pilotis: blue tile mosaic with white bands and slit windows."""
     Lb = math.dist(p0, p1)
     ZR = zs[-1]
@@ -322,6 +335,9 @@ def _core_bay(B, i, cid, p0, p1, q0, q1, zs, rnd, new_flat):
         z0 = zs[j]
         for side in ("front", "back"):
             a, b = (p0, p1) if side == "front" else (q1, q0)
+            if door and j == 0 and side == "back":
+                _core_back_door(B, a, b, Lb, z0)
+                continue
             # white spandrel band, blue field with 2 slit windows, white cap band
             B.facade(a, b, z0, z0 + 0.85, "CT_TileWhite", depth=WALL, back=False)
             slit = [(1.5, 2.1, z0 + 0.85, z0 + 2.2), (Lb - 2.1, Lb - 1.5, z0 + 0.85, z0 + 2.2)]
@@ -545,10 +561,17 @@ def _dress_lobby(B, i, cid, p0, p1, nl, Lb, D):
     ct = kit.coffee_table(B, x, y, Z, fy)
     kit.newspaper(B, x, y, ct["top"] + Z, 0.0, seed=cid)
     kit.cup(B, x + 0.1, y + 0.1, ct["top"] + Z, 0.0)
-    x, y = at(sb, 0.75, 8.3)
-    kit.armchair(B, x, y, Z, F.yaw(-sb, 0.5), mat=pal[2])
-    B.thing(pre + "armchair", "seat", (x, y, 0.46), F.yaw(-sb, 0.5), height=0.45)
-    x, y = at(sb, 0.4, 9.4)
+    if cid == 1:                                   # the left wall's back half is the stair now
+        x, y = F.p(2.15, 7.9)
+        ay = F.yaw(-0.35, -1.0)
+        kit.armchair(B, x, y, Z, ay, mat=pal[2])
+        B.thing(pre + "armchair", "seat", (x, y, 0.46), ay, height=0.45)
+        x, y = F.p(2.85, 9.0)
+    else:
+        x, y = at(sb, 0.75, 8.3)
+        kit.armchair(B, x, y, Z, F.yaw(-sb, 0.5), mat=pal[2])
+        B.thing(pre + "armchair", "seat", (x, y, 0.46), F.yaw(-sb, 0.5), height=0.45)
+        x, y = at(sb, 0.4, 9.4)
     kit.floor_lamp(B, x, y, Z, 0.0)
     (px, py), fy = wall(sb, 4.0)
     kit.poster(B, px, py, Z, fy, name=("poster_birds_0", "poster_cons_1", "poster_sun_1")[cid % 3], w=0.6, zc=1.7)
@@ -560,18 +583,355 @@ def _dress_lobby(B, i, cid, p0, p1, nl, Lb, D):
     x, y = F.p(mid, yb)
     kit.wall_clock(B, x, y, Z, F.yaw(0, -1), zc=2.8, face="clock_%d" % (cid % 4))
     # --- front wall: hat stand and a mirror
-    x, y = F.p(mid + 1.7, 0.75)
+    x, y = F.p(mid + (-1.9 if cid == 0 else 1.7), 0.75)      # lobby 0 keeps the right corner for bicycles
     kit.hat_stand(B, x, y, Z, 0.0)
-    x, y = at(sb, 0.5, 1.8)                      # QA: the front half of the lobby was an empty floor
-    kit.plant(B, x, y, Z, 0.0, kind=("fern", "ficus", "fern")[cid % 3], pot=pal[3], h=1.1, seed=cid + 5)
+    if cid != 0:                                 # lobby 0 parks bicycles in this corner
+        x, y = at(sb, 0.5, 1.8)                  # QA: the front half of the lobby was an empty floor
+        kit.plant(B, x, y, Z, 0.0, kind=("fern", "ficus", "fern")[cid % 3], pot=pal[3], h=1.1, seed=cid + 5)
     # --- one extra per core
     if cid == 0:
         x, y = at(sb, 0.55, 10.6)
         _bike(B, x, y, F.ev, mat=pal[4])
     elif cid == 1:
-        x, y = at(sb, 0.6, 10.4)
-        _pram(B, x, y, F.eu if sb > 0 else (-F.eu[0], -F.eu[1]), mat=pal[4])
+        # QA (textured renders): the pram's handle stood inside the wall at the back corner, a dark bar hanging on it.
+        # The pram now parks near the front under the club board, hood to the door, well clear of every wall.
+        x, y = F.p(1.15, 4.1)
+        kit.pram(B, x, y, Z, F.yaw(0, -1), mat=pal[4])
+        B.thing(pre + "pram", "machine", (x, y, 0.7), F.yaw(0, -1), what="pram")
+        _stair(B, F, Lb, D)
+        B.thing(pre + "stairs", "door", (*F.p(0.8, 7.4), 1.0), F.yaw(0, -1), to="gallery")
     else:
         x, y = at(sb, 0.3, 10.5)
         kit.aquarium(B, x, y, Z, F.yaw(-sb, 0), w=1.0, seed=3)
         B.thing(pre + "aquarium", "screen", (x, y, 1.0), F.yaw(-sb, 0), what="aquarium")
+    _lobby_extras(B, cid, F, Lb, D, sa, sb, Z, pre, mid, at)
+
+
+# ================================================================================================ round 2: the stair, the flat, the gallery
+# Colette Bauer (74, a pensioner of the town's data, home P-SERPENTINE/1-17) lives in flat 1-17, bay 18 of the first
+# storey. The way up: the middle lobby's stair (left wall, back half) climbs through a hole in the soffit and a small
+# shaft to a door in the core's back wall onto the first gallery; the gallery runs on to her door.
+HOLE = (0.3, 1.5, 9.2, 11.9)       # stairwell hole in the middle core's soffit: u0, u1 (from the bay's p0), v0, v1 (from the front line)
+
+
+def _bil(a, b, c, d, u, v, Lb, D, z):
+    s, t = u / Lb, v / D
+    return ((1 - s) * (1 - t) * a[0] + s * (1 - t) * b[0] + s * t * c[0] + (1 - s) * t * d[0],
+            (1 - s) * (1 - t) * a[1] + s * (1 - t) * b[1] + s * t * c[1] + (1 - s) * t * d[1], z)
+
+
+def _soffit_with_hole(m, a, b, c, d):
+    Lb, D = math.dist(a, b), math.dist(a, d)
+    u0, u1, v0, v1 = HOLE
+    for ua, ub, va, vb in ((0, Lb, 0, v0), (0, u0, v0, D), (u1, Lb, v0, D), (u0, u1, v1, D)):
+        m.face("CT_Concrete", [_bil(a, b, c, d, ua, va, Lb, D, PIL), _bil(a, b, c, d, ua, vb, Lb, D, PIL),
+                               _bil(a, b, c, d, ub, vb, Lb, D, PIL), _bil(a, b, c, d, ub, va, Lb, D, PIL)])
+
+
+def _core_back_door(B, a, b, Lb, z0):
+    """The middle core's back on the first storey: blue tile with its slit windows and a door (the stair from the lobby comes
+    out here onto the gallery); the white spandrel band is drawn as an overlay either side of the door."""
+    ud = (Lb - WALL - STAIR_W, Lb - WALL)               # the facade runs from q1: the stair is at the p0 end
+    slit = [(1.5, 2.1, z0 + 0.85, z0 + 2.2), (Lb - 2.1, Lb - 1.5, z0 + 0.85, z0 + 2.2)]
+    F = B.facade(a, b, z0, z0 + 2.6, "CT_Tile", holes=slit + [(ud[0], ud[1], z0, z0 + 2.2)], depth=WALL, back=False)
+    for u0, u1, h0, h1 in slit:
+        B.facade_window(F, u0, u1, h0, h1, kind="stair", cols=1, rows=2)
+    for ua, ub in ((0.0, ud[0]), (ud[1], Lb)):
+        lbox(B.detail, "CT_TileWhite", F, ua, ub, 0.0, 0.02, z0, z0 + 0.85, faces="yXx")
+    B.facade(a, b, z0 + 2.6, z0 + ST, "CT_TileWhite", depth=WALL, back=False)
+
+
+def _fbox(m, mat, F, u0, u1, v0, v1, z0, z1, faces="xXyYzZ"):
+    """A box in a bay's frame (u along the front line, v into the plot)."""
+    c = []
+    for i in range(8):
+        x, y = F.p(u1 if i & 1 else u0, v1 if i & 2 else v0)
+        c.append((x, y, z1 if i & 4 else z0))
+    hexa(m, mat, c, faces)
+
+
+def _p3(F, u, v, z):
+    x, y = F.p(u, v)
+    return (x, y, z)
+
+
+def _bay_frame(FP, i):
+    p0, p1 = FP[i], FP[i + 1]
+    Lb = math.dist(p0, p1)
+    return _Fr(p0, ((p1[0] - p0[0]) / Lb, (p1[1] - p0[1]) / Lb), left_normal(p0, p1)), Lb
+
+
+def _stair(B, F, Lb, D):
+    """The stair of the middle lobby: left wall, from v = 7.58 up to the back wall (16 steps of 0.2 x 0.27), solid to the floor;
+    the shaft above the soffit hole (walls, a ceiling, a lamp); a handrail on the open side."""
+    m = B.m
+    z0, top, n = 0.01, PIL, 16
+    ve = D - WALL
+    g = 0.27
+    for k in range(n):
+        zt = z0 + (top - z0) * (k + 1) / n
+        _fbox(m, "CT_Concrete", F, WALL, WALL + STAIR_W, ve - (n - k) * g, ve - (n - k - 1) * g, z0, zt, faces="xXyYZ")
+    u0, u1, v0, v1 = HOLE
+    zc = PIL + 2.65
+    t = 0.1
+    _fbox(m, "CT_ConcreteWhite", F, 0.0, u1 + t, v0 - t, v0, PIL, zc, faces="xXyY")          # front of the shaft
+    _fbox(m, "CT_ConcreteWhite", F, u1, u1 + t, v0, v1, PIL, zc, faces="xXyY")               # its open side
+    _fbox(m, "CT_ConcreteWhite", F, 0.0, WALL, v0, v1, PIL, zc, faces="XyY")                  # the lobby's left wall carried up
+    _fbox(m, "CT_ConcreteWhite", F, 0.0, u1 + t, v0 - t, v1, zc, zc + 0.12, faces="zZxXyY")  # ceiling of the shaft
+    # handrail on the open side, in the detail mesh
+    d = B.detail
+    ur = WALL + STAIR_W + 0.04
+    va, vb = ve - n * g + 0.1, ve - 0.15
+    za, zb = z0 + (top - z0) * 1.0 / n + 0.9, top + 0.9
+    fu.rod(d, "CT_Steel", _p3(F, ur, va, za), _p3(F, ur, vb, zb), 0.022)
+    fu.rod(d, "CT_Steel", _p3(F, ur, va, za - 0.4), _p3(F, ur, vb, zb - 0.4), 0.015)
+    for k in range(0, n, 3):
+        v = ve - (n - k - 0.5) * g
+        zt = z0 + (top - z0) * (k + 1) / n
+        fu.rod(d, "CT_Steel", _p3(F, ur, v, zt), _p3(F, ur, v, zt + 0.9 + 0.0), 0.014)
+    B.lamp(_p3(F, 0.9, 10.6, zc - 0.3), lumens=420, colour="#FFE0B0", kind="public", radius=5.0)
+
+
+def _bauer_flat(B, FP, BP, GP, ctx, zs):
+    """Flat 1-17: the home of Colette Bauer, a retired net-mender (the harbour net loft), owl, fish keeper. Hall with the
+    door from the gallery; kitchen at the back; bedroom and living room along the street front. Everything inside the bay."""
+    i = ctx["bay"]
+    F, Lb = _bay_frame(FP, i)
+    D = math.dist(FP[i], BP[i])
+    m, d = B.m, B.detail
+    Z0 = zs[0]
+    Zf = Z0 + 0.01
+    ZC = Z0 + 2.65
+    OH = Z0 + 2.1
+    u0, u1 = 0.2, Lb - 0.2
+    v0, v1 = WALL, D - WALL
+    E, W, S, N = F.yaw(1, 0), F.yaw(-1, 0), F.yaw(0, -1), F.yaw(0, 1)
+
+    def at(u, v):
+        return F.p(u, v)
+
+    # ---- floors, ceiling, party walls
+    quad = [_p3(F, u0, v0, Zf), _p3(F, u1, v0, Zf), _p3(F, u1, v1, Zf), _p3(F, u0, v1, Zf)]
+    m.face("CT_Floor", quad)
+    m.face("CT_TileWhite", [_p3(F, 2.97, 7.82, Zf + 0.004), _p3(F, u1, 7.82, Zf + 0.004), _p3(F, u1, v1, Zf + 0.004), _p3(F, 2.97, v1, Zf + 0.004)])
+    m.face("CT_ConcreteWhite", [_p3(F, u0, v0, ZC), _p3(F, u0, v1, ZC), _p3(F, u1, v1, ZC), _p3(F, u1, v0, ZC)])
+    _fbox(m, "CT_ConcreteWhite", F, 0.0, u0, v0, v1, Z0, ZC, faces="XyYZ")
+    _fbox(m, "CT_ConcreteWhite", F, u1, Lb, v0, v1, Z0, ZC, faces="xyYZ")
+    # ---- partitions: bedroom | living (u 2.85), hall+bedroom | kitchen+living (v 7.7), hall | kitchen (u 2.85)
+    T = 0.12
+    _fbox(m, "CT_PlasterGreen", F, 2.85, 2.85 + T, v0, 7.7 + T, Z0, ZC)
+    _fbox(m, "CT_PlasterYellow", F, u0, 0.25, 7.7, 7.7 + T, Z0, ZC)
+    _fbox(m, "CT_PlasterYellow", F, 1.2, 2.85, 7.7, 7.7 + T, Z0, ZC)
+    _fbox(m, "CT_PlasterYellow", F, 0.25, 1.2, 7.7, 7.7 + T, OH, ZC)
+    _fbox(m, "CT_PlasterBlue", F, 2.97, 5.3, 7.7, 7.7 + T, Z0, ZC)
+    _fbox(m, "CT_PlasterBlue", F, 6.3, u1, 7.7, 7.7 + T, Z0, ZC)
+    _fbox(m, "CT_PlasterBlue", F, 5.3, 6.3, 7.7, 7.7 + T, OH, ZC)
+    _fbox(m, "CT_PlasterGreen", F, 2.85, 2.85 + T, 7.7 + T, 9.2, Z0, ZC)
+    _fbox(m, "CT_PlasterGreen", F, 2.85, 2.85 + T, 10.2, v1, Z0, ZC)
+    _fbox(m, "CT_PlasterGreen", F, 2.85, 2.85 + T, 9.2, 10.2, OH, ZC)
+
+    # ---- lamps (living room, kitchen)
+    B.lamp(_p3(F, 4.8, 3.6, ZC - 0.3), lumens=520, colour="#FFD9A8", kind="public", radius=8.0)
+    B.lamp(_p3(F, 3.7, 9.6, ZC - 0.3), lumens=440, colour="#FFE8C8", kind="public", radius=5.5)
+
+    # ---- living room
+    kit.rug(B, *at(5.2, 4.3), Zf, N, w=2.0, d=3.2, name="rug_4", seed=4)
+    ac = kit.aquarium(B, *at(Lb - 0.2 - 0.2, 2.4), Zf, W, w=1.0, seed=7)
+    B.thing("bauer_aquarium", "screen", _p3(F, Lb - 0.45, 2.4, Zf + 1.0), W, what="aquarium")
+    x, y = at(Lb - 0.2 - 0.2, 1.3)                  # the little table by the tank: a saucer of beach finds
+    st = kit.table(B, x, y, Zf, W, w=0.45, d=0.4, h=0.62)
+    kit.plates(B, x, y, st["top"], 0.0, n=1)
+    for k, mt in enumerate(("CT_PlasterGreen", "CT_PlasterBlue", "CT_ConcreteWhite")):
+        _fbox(d, mt, F, Lb - 0.45 + 0.04 * k - 0.04, Lb - 0.45 + 0.04 * k - 0.01, 1.3 - 0.04 + 0.03 * k, 1.3 - 0.01 + 0.03 * k,
+              st["top"] + 0.012, st["top"] + 0.03, faces="xXyYZ")
+    B.thing("bauer_dish", "machine", (x, y, st["top"] + 0.1), W, what="beach_finds")
+    x, y = at(5.7, 2.4)
+    kit.armchair(B, x, y, Zf, E, mat="CT_PlasterRed")
+    B.thing("bauer_armchair", "seat", (x, y, Zf + 0.45), E, height=0.45)
+    x, y = at(Lb - 0.2 - 0.43, 5.35)
+    kit.sofa(B, x, y, Zf, W, seats=2, mat="CT_PlasterGreen")
+    B.thing("bauer_sofa", "seat", (x, y, Zf + 0.45), W, height=0.45)
+    x, y = at(5.75, 5.35)
+    ct = kit.coffee_table(B, x, y, Zf, W)
+    kit.teapot(B, x, y, ct["top"], 0.0)
+    kit.newspaper(B, x + 0.25 * F.ev[0], y + 0.25 * F.ev[1], ct["top"], 0.0, seed=4)
+    x, y = at(3.4, 5.35)
+    kit.tv_set(B, x, y, Zf, E)
+    B.thing("bauer_tv", "screen", (x, y, Zf + 0.7), E, what="tv")
+    x, y = at(2.97, 1.9)
+    kit.bookshelf(B, x, y, Zf, E, w=1.0, topic="sea", seed=3)
+    B.thing("bauer_shelf", "shelf", (x + F.eu[0] * 0.2, y + F.eu[1] * 0.2, Zf + 1.3), E, topic="sea")
+    x, y = at(2.97, 3.7)
+    kit.wall_shelf(B, x, y, Zf, E, w=0.7, zt=1.2, props=False)
+    rx, ry = at(3.12, 3.7)
+    kit.radio(B, rx, ry, Zf + 1.2, E)
+    B.thing("bauer_radio", "machine", (rx, ry, Zf + 1.35), E, what="radio")
+    x, y = at(3.55, 7.7)
+    kit.picture(B, x, y, Zf, S, name="painting_portrait", w=0.7, zc=1.65)
+    B.thing("bauer_photos", "board", (x, y, Zf + 1.65), S, topic="photos")
+    x, y = at(4.55, 7.7)
+    kit.wall_clock(B, x, y, Zf, S, zc=2.1, face="clock_2")
+    B.thing("bauer_clock", "machine", (x, y, Zf + 2.1), S, what="clock")
+    x, y = at(7.05, 6.85)
+    kit.floor_lamp(B, x, y, Zf, 0.0)
+    for cu, cw in ((3.85, 1.6), (6.1, 1.9), (1.55, 2.0)):
+        x, y = at(cu, v0)
+        kit.curtains(B, x, y, Zf, N, w=cw, h=2.3, mat="CT_PlasterYellow" if cu < 2 else "CT_PlasterRed")
+    x, y = at(4.3, 0.75)
+    kit.plant(B, x, y, Zf, 0.0, kind="fern", pot="CT_PlasterBlue", h=0.9, seed=2)
+    x, y = at(6.1, v0)
+    B.thing("bauer_window", "board", (x, y, Zf + 1.5), N, topic="view")
+    # ---- kitchen
+    x, y = at(4.4, v1)
+    kit.kitchen_unit(B, x, y, Zf, S, modules="cupboard,sink,stove,fridge", wall_cupboards=False)
+    B.thing("bauer_sink", "machine", _p3(F, 4.1, v1 - 0.25, Zf + 1.0), S, what="sink")
+    B.thing("bauer_stove", "machine", _p3(F, 4.7, v1 - 0.25, Zf + 1.0), S, what="stove")
+    x, y = at(6.5, 10.0)
+    tb = kit.table(B, x, y, Zf, N, w=0.8, d=0.8)
+    kit.samovar(B, x, y, tb["top"], N)
+    B.thing("bauer_samovar", "machine", (x, y, Zf + 1.05), N, what="samovar")
+    xa, ya = at(5.75, 10.0)
+    kit.chair(B, xa, ya, Zf, E, kind="wood")
+    B.thing("bauer_kitchen_seat", "seat", (xa, ya, Zf + 0.45), E, height=0.45)
+    xb, yb = at(6.5, 11.05)
+    kit.chair(B, xb, yb, Zf, S, kind="wood")
+    # ---- hall
+    x, y = at(2.35, 11.3)
+    kit.hat_stand(B, x, y, Zf, 0.0)
+    x, y = at(0.2, 10.2)
+    kit.shoe_rack(B, x, y, Zf, E, w=0.8)
+    x, y = at(0.2, 9.0)
+    kit.mirror(B, x, y, Zf, E, zc=1.5, w=0.55, h=0.9)
+    x, y = at(2.85, 8.5)
+    kit.wall_phone(B, x, y, Zf, W, zc=1.45)
+    x, y = at(1.45, 11.3)
+    kit.rug(B, x, y, Zf, S, w=0.9, d=0.6, name="rug_1", seed=1)
+    # ---- bedroom
+    x, y = at(2.33, 6.65)
+    kit.bed(B, x, y, Zf, S, size="single", blanket="CT_PlasterGreen")
+    B.thing("bauer_bed", "bed", (x, y, Zf + 0.5), S, rest="private", height=0.5)
+    x, y = at(1.55, 7.45)
+    kit.bedside_table(B, x, y, Zf, S, lamp=True)
+    x, y = at(0.2, 3.6)
+    kit.wardrobe(B, x, y, Zf, E, w=1.2)
+    x, y = at(1.5, 1.4)
+    kit.loom(B, x, y, Zf, N)
+    B.thing("bauer_net", "craft", (x, y, Zf + 1.0), N, what="net_mending")
+    x, y = at(1.4, 4.4)
+    kit.rug(B, x, y, Zf, N, w=1.5, d=2.4, name="rug_5", seed=5)
+    x, y = at(0.2, 5.7)
+    kit.picture(B, x, y, Zf, E, name="painting_lighthouse", w=0.6, zc=1.7)
+    # ---- the door from the gallery (a caption for the hero standing at the threshold)
+    B.thing("bauer_door", "door", _p3(F, 1.45 + 0.0, D - 0.1, Z0 + 1.1), N, to="flat")
+    # ---- townsfolk: Colette's places
+    B.spot("bauer_sofa_spot", "bench", (*at(Lb - 1.25, 5.35), Zf), W)
+    B.spot("bauer_window_spot", "view", (*at(6.1, 1.0), Zf), S)
+    B.spot("bauer_table_spot", "table", (*at(5.75, 10.0), Zf), E)
+    B.spot("bauer_aquarium_spot", "view", (*at(5.0, 2.4), Zf), E)
+
+
+def _lobby_extras(B, cid, F, Lb, D, sa, sb, Z, pre, mid, at):
+    """Round 2: what makes each lobby its own (mailboxes with a thing, a light switch, and per lobby: bicycles and a
+    dominoes table / the stair and the pram / a chess table and a planter wall)."""
+    d = B.detail
+    # light switch on the pier beside the front door
+    x0, y0 = F.p(5.1, WALL)
+    _fbox(d, "CT_ConcreteWhite", F, 5.06, 5.14, WALL, WALL + 0.015, Z + 1.24, Z + 1.36, faces="yXxzZ")
+    _fbox(d, "CT_Steel", F, 5.085, 5.115, WALL + 0.015, WALL + 0.025, Z + 1.28, Z + 1.32, faces="yXxzZ")
+    B.thing(pre + "switch", "machine", (x0, y0, 1.3), F.yaw(0, 1), what="switch", switch="hall")
+    # the letter boxes on the left wall get their thing
+    mx, my = F.p(WALL + 0.02, 1.8)
+    B.thing(pre + "mail", "board", (mx, my, 1.45), F.yaw(1, 0), topic="mail")
+    sbu = lambda off: (WALL + off) if sb > 0 else (Lb - WALL - off)
+    if cid == 0:
+        bx, by = F.p(6.45, 1.0)
+        kit.bicycle(B, bx, by, Z, F.yaw(1, 0), kind="stand", mat="CT_SteelRed")
+        bx, by = F.p(6.45, 1.0)
+        B.thing(pre + "bikes", "machine", (bx, by, 0.8), F.yaw(-1, 0), what="bike_rack")
+        # the dominoes table: two chairs, a stool, the tiles and a cup of cold tea
+        tx, ty = F.p(sbu(1.5), 3.9)
+        tb = kit.table(B, tx, ty, Z, F.yaw(0, 1), w=0.8, d=0.8)
+        for cu, cv, dy in ((0.0, -0.75, F.yaw(0, 1)), (0.0, 0.75, F.yaw(0, -1)), (-0.85, 0.0, F.yaw(1, 0))):
+            cx, cy = tx + F.eu[0] * cu + F.ev[0] * cv, ty + F.eu[1] * cu + F.ev[1] * cv
+            kit.chair(B, cx, cy, Z, dy, kind="wood")
+        for k in range(7):
+            ux, vx = -0.22 + k * 0.07, 0.04 * ((-1) ** k)
+            _fbox(d, "CT_ConcreteDark", F, sbu(1.5) + ux - 0.03, sbu(1.5) + ux + 0.03, 3.9 + vx - 0.055, 3.9 + vx + 0.055,
+                  tb["top"], tb["top"] + 0.014, faces="xXyYZ")
+        kit.cup(B, tx + F.eu[0] * 0.2 + F.ev[0] * 0.25, ty + F.eu[1] * 0.2 + F.ev[1] * 0.25, tb["top"], 0.0)
+        B.thing(pre + "dominoes", "play", (tx, ty, tb["top"]), F.yaw(0, 1), what="dominoes")
+        B.spot("lobby_table_0", "table", (tx - F.eu[0] * 0.85, ty - F.eu[1] * 0.85, 0.0), F.yaw(1, 0))
+    elif cid == 2:
+        tx, ty = F.p(sbu(1.5), 3.9)
+        tb = kit.chess_table(B, tx, ty, Z, F.yaw(0, 1), seed=cid)
+        for cv, dy in ((-0.7, F.yaw(0, 1)), (0.7, F.yaw(0, -1))):
+            kit.chair(B, tx + F.ev[0] * cv, ty + F.ev[1] * cv, Z, dy, kind="wood")
+        B.thing(pre + "chess", "play", (tx, ty, tb["top"]), F.yaw(0, 1), what="chess")
+        B.spot("lobby_table_2", "table", (tx + F.ev[0] * -0.7, ty + F.ev[1] * -0.7, 0.0), F.yaw(0, 1))
+        px, py = F.p(1.9, D - WALL - 0.3)
+        kit.planter(B, px, py, Z, F.yaw(0, -1), w=1.5, d=0.45, h=0.5, seed=cid)
+        B.thing(pre + "plants", "machine", (px, py, 0.7), F.yaw(0, -1), what="watering_can")
+
+
+
+def _cat(B, x, y, z, yaw, mat="CT_ConcreteDark"):
+    """A grey cat with a white forepaw, sitting, looking along yaw (kit convention)."""
+    f = fu.Fr(x, y, yaw, z)
+    d = B.detail
+    fu.lbox(d, mat, f, -0.07, 0.07, -0.12, 0.12, 0.0, 0.17)           # body
+    fu.lbox(d, mat, f, -0.05, 0.05, -0.17, -0.06, 0.15, 0.26)         # head (forward = -w here: w grows toward -y at yaw 0)
+    for sx in (-0.035, 0.035):
+        fu.lbox(d, mat, f, sx - 0.012, sx + 0.012, -0.15, -0.11, 0.26, 0.295)   # ears
+    fu.lbox(d, "CT_ConcreteWhite", f, -0.045, 0.0, -0.15, -0.1, 0.0, 0.05)       # the white forepaw
+    fu.rod(d, mat, f.p(0.0, 0.12, 0.04), f.p(0.12, 0.2, 0.08), 0.02)             # the tail along the floor
+    fu.rod(d, mat, f.p(0.12, 0.2, 0.08), f.p(0.14, 0.3, 0.2), 0.018)
+
+
+def _gallery(B, FP, cores, zs):
+    """The first storey's long gallery between the middle core's door and flat 1-17: two benches, a neighbour's cat, washing,
+    flower boxes, a view over the parapet, a lamp, the mat and pots at Colette's door."""
+    Z = zs[0]
+    c = cores[1]
+    d = B.detail
+    VW = BODY + 0.23                                  # bench back against the flats' wall
+    VP = BODY + GAL - 0.14                            # inner face of the parapet
+    Fc, Lc = _bay_frame(FP, c)
+    F1, L1 = _bay_frame(FP, c + 1)
+    F2, L2 = _bay_frame(FP, c + 2)
+    # bench by the core door
+    x, y = Fc.p(5.1, VW)
+    kit.bench(B, x, y, Z, Fc.yaw(0, 1), w=1.5, kind="park")
+    B.thing("gallery_bench_core", "seat", (x, y, Z + 0.46), Fc.yaw(0, 1), height=0.45)
+    B.spot("gallery_bench_core_spot", "bench", (*Fc.p(5.1, VW + 0.45), Z), Fc.yaw(0, 1))
+    # bench with the cat, in front of flat 1-16
+    x, y = F1.p(2.4, VW)
+    kit.bench(B, x, y, Z, F1.yaw(0, 1), w=1.5, kind="park")
+    B.thing("gallery_bench", "seat", (x, y, Z + 0.46), F1.yaw(0, 1), height=0.45)
+    B.spot("gallery_bench_spot", "bench", (*F1.p(2.4, VW + 0.45), Z), F1.yaw(0, 1))
+    cx, cy = F1.p(2.95, VW + 0.02)
+    _cat(B, cx, cy, Z + 0.45, F1.yaw(0, 1))
+    B.thing("gallery_cat", "machine", (cx, cy, Z + 0.62), F1.yaw(0, 1), what="gallery_cat")
+    # washing between two poles by the parapet
+    va = VP - 0.15
+    for u in (3.7, 7.1):
+        fu.rod(d, "CT_Steel", _p3(F1, u, va, Z), _p3(F1, u, va, Z + 2.15), 0.022)
+    fu.rod(d, "CT_Steel", _p3(F1, 3.7, va, Z + 2.12), _p3(F1, 7.1, va, Z + 2.12), 0.008)
+    for u, w_, h_, mt in ((3.95, 0.5, 0.75, "CT_PlasterBlue"), (4.6, 0.42, 0.6, "CT_ConcreteWhite"), (5.2, 0.55, 0.85, "CT_PlasterYellow"),
+                          (5.85, 0.3, 0.45, "CT_PlasterRed"), (6.4, 0.5, 0.7, "CT_ConcreteWhite")):
+        _fbox(d, mt, F1, u, u + w_, va - 0.015, va + 0.015, Z + 2.12 - h_, Z + 2.12, faces="yYxXz")
+    wx, wy = F1.p(5.2, va)
+    B.thing("gallery_washing", "machine", (wx, wy, Z + 1.7), F1.yaw(0, -1), what="clothesline")
+    # Colette's door: mat, a pot, flower boxes under the kitchen window and on the parapet, a lamp
+    x, y = F2.p(1.45, BODY + 0.45)
+    kit.rug(B, x, y, Z + 0.01, F2.yaw(0, 1), w=0.9, d=0.55, name="rug_2", seed=2)
+    x, y = F2.p(0.45, BODY + 0.3)
+    kit.plant(B, x, y, Z, 0.0, kind="cactus", pot="CT_PlasterRed", h=0.5, seed=8)
+    x, y = F2.p(4.1, BODY + 0.3)
+    kit.planter(B, x, y, Z, F2.yaw(0, 1), w=1.5, d=0.3, h=0.4, seed=9, solid=False)
+    B.thing("gallery_flowers", "machine", (x, y, Z + 0.62), F2.yaw(0, 1), what="flower_boxes")
+    x, y = F2.p(6.5, VP - 0.15)
+    kit.planter(B, x, y, Z, F2.yaw(0, 1), w=1.3, d=0.3, h=0.4, seed=11, solid=False)
+    B.lamp(_p3(F2, 1.45, BODY + 0.55, Z + 2.5), lumens=300, colour="#FFD9A8", kind="lobby", radius=5.0)
+    x, y = F2.p(4.9, VP)
+    B.thing("gallery_view", "board", (x, y, Z + 1.25), F2.yaw(0, -1), topic="view")
+    B.spot("gallery_view_spot", "view", (*F2.p(4.9, VP - 0.5), Z), F2.yaw(0, 1))

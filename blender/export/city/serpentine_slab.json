@@ -381,6 +381,16 @@
    "yaw": 90.75
   },
   {
+   "id": "lobby_table_0",
+   "kind": "table",
+   "pos": [
+    -82.49,
+    4.817,
+    0.0
+   ],
+   "yaw": 90.75
+  },
+  {
    "id": "lobby_view_0",
    "kind": "view",
    "pos": [
@@ -421,6 +431,16 @@
    "yaw": 90.75
   },
   {
+   "id": "lobby_table_2",
+   "kind": "table",
+   "pos": [
+    85.547,
+    2.324,
+    0.0
+   ],
+   "yaw": 180.75
+  },
+  {
    "id": "lobby_view_2",
    "kind": "view",
    "pos": [
@@ -429,6 +449,76 @@
     0.0
    ],
    "yaw": -179.25
+  },
+  {
+   "id": "bauer_sofa_spot",
+   "kind": "bench",
+   "pos": [
+    17.874,
+    4.899,
+    3.21
+   ],
+   "yaw": 268.6074481004759
+  },
+  {
+   "id": "bauer_window_spot",
+   "kind": "view",
+   "pos": [
+    17.519,
+    0.557,
+    3.21
+   ],
+   "yaw": 358.6074481004759
+  },
+  {
+   "id": "bauer_table_spot",
+   "kind": "table",
+   "pos": [
+    17.388,
+    9.562,
+    3.21
+   ],
+   "yaw": 88.60744810047589
+  },
+  {
+   "id": "bauer_aquarium_spot",
+   "kind": "view",
+   "pos": [
+    16.453,
+    1.983,
+    3.21
+   ],
+   "yaw": 88.60744810047589
+  },
+  {
+   "id": "gallery_bench_core_spot",
+   "kind": "bench",
+   "pos": [
+    1.637,
+    12.842,
+    3.2
+   ],
+   "yaw": 178.50000000000003
+  },
+  {
+   "id": "gallery_bench_spot",
+   "kind": "bench",
+   "pos": [
+    6.529,
+    12.715,
+    3.2
+   ],
+   "yaw": 178.52710695410593
+  },
+  {
+   "id": "gallery_view_spot",
+   "kind": "view",
+   "pos": [
+    16.619,
+    12.942,
+    3.2
+   ],
+   "yaw": 178.6074481004759
   },
   {
    "id": "pilotis_bench_3",
@@ -540,6 +630,17 @@
   },
   {
    "pos": [
+    -2.622,
+    10.672,
+    5.55
+   ],
+   "lumens": 420,
+   "colour": "#FFE0B0",
+   "kind": "public",
+   "radius": 5.0
+  },
+  {
+   "pos": [
     83.509,
     5.197,
     2.85
@@ -570,6 +671,39 @@
    "colour": "#FFE0B0",
    "kind": "lobby",
    "radius": 4.5
+  },
+  {
+   "pos": [
+    16.282,
+    3.187,
+    5.55
+   ],
+   "lumens": 520,
+   "colour": "#FFD9A8",
+   "kind": "public",
+   "radius": 8.0
+  },
+  {
+   "pos": [
+    15.328,
+    9.212,
+    5.55
+   ],
+   "lumens": 440,
+   "colour": "#FFE8C8",
+   "kind": "public",
+   "radius": 5.5
+  },
+  {
+   "pos": [
+    13.156,
+    12.416,
+    5.7
+   ],
+   "lumens": 300,
+   "colour": "#FFD9A8",
+   "kind": "lobby",
+   "radius": 5.0
   }
  ],
  "things": [
@@ -679,6 +813,59 @@
    }
   },
   {
+   "id": "core0_switch",
+   "kind": "machine",
+   "pos": [
+    -82.293,
+    1.219,
+    1.3
+   ],
+   "yaw": 180.8,
+   "props": {
+    "what": "switch",
+    "switch": "hall"
+   }
+  },
+  {
+   "id": "core0_mail",
+   "kind": "board",
+   "pos": [
+    -87.092,
+    2.656,
+    1.45
+   ],
+   "yaw": 90.8,
+   "props": {
+    "topic": "mail"
+   }
+  },
+  {
+   "id": "core0_bikes",
+   "kind": "machine",
+   "pos": [
+    -80.952,
+    1.937,
+    0.8
+   ],
+   "yaw": 270.8,
+   "props": {
+    "what": "bike_rack"
+   }
+  },
+  {
+   "id": "core0_dominoes",
+   "kind": "play",
+   "pos": [
+    -81.64,
+    4.828,
+    0.76
+   ],
+   "yaw": 180.8,
+   "props": {
+    "what": "dominoes"
+   }
+  },
+  {
    "id": "core1_notices",
    "kind": "board",
    "pos": [
@@ -748,11 +935,11 @@
    "id": "core1_armchair",
    "kind": "seat",
    "pos": [
-    -2.532,
-    8.369,
+    -1.443,
+    7.94,
     0.46
    ],
-   "yaw": 241.9,
+   "yaw": 339.2,
    "props": {
     "height": 0.45
    }
@@ -781,6 +968,59 @@
    "yaw": 358.5,
    "props": {
     "what": "clock"
+   }
+  },
+  {
+   "id": "core1_pram",
+   "kind": "machine",
+   "pos": [
+    -2.542,
+    4.168,
+    0.7
+   ],
+   "yaw": 358.5,
+   "props": {
+    "what": "pram"
+   }
+  },
+  {
+   "id": "core1_stairs",
+   "kind": "door",
+   "pos": [
+    -2.805,
+    7.476,
+    1.0
+   ],
+   "yaw": 358.5,
+   "props": {
+    "to": "gallery"
+   }
+  },
+  {
+   "id": "core1_switch",
+   "kind": "machine",
+   "pos": [
+    1.307,
+    0.266,
+    1.3
+   ],
+   "yaw": 178.5,
+   "props": {
+    "what": "switch",
+    "switch": "hall"
+   }
+  },
+  {
+   "id": "core1_mail",
+   "kind": "board",
+   "pos": [
+    -3.432,
+    1.89,
+    1.45
+   ],
+   "yaw": 88.5,
+   "props": {
+    "topic": "mail"
    }
   },
   {
@@ -899,6 +1139,359 @@
    "yaw": 90.8,
    "props": {
     "what": "aquarium"
+   }
+  },
+  {
+   "id": "core2_switch",
+   "kind": "machine",
+   "pos": [
+    84.885,
+    -0.585,
+    1.3
+   ],
+   "yaw": 180.8,
+   "props": {
+    "what": "switch",
+    "switch": "hall"
+   }
+  },
+  {
+   "id": "core2_mail",
+   "kind": "board",
+   "pos": [
+    80.085,
+    0.852,
+    1.45
+   ],
+   "yaw": 90.8,
+   "props": {
+    "topic": "mail"
+   }
+  },
+  {
+   "id": "core2_chess",
+   "kind": "play",
+   "pos": [
+    85.537,
+    3.024,
+    0.73
+   ],
+   "yaw": 180.8,
+   "props": {
+    "what": "chess"
+   }
+  },
+  {
+   "id": "core2_plants",
+   "kind": "machine",
+   "pos": [
+    81.537,
+    10.672,
+    0.7
+   ],
+   "yaw": 0.7,
+   "props": {
+    "what": "watering_can"
+   }
+  },
+  {
+   "id": "bauer_aquarium",
+   "kind": "screen",
+   "pos": [
+    18.602,
+    1.931,
+    4.21
+   ],
+   "yaw": 268.6,
+   "props": {
+    "what": "aquarium"
+   }
+  },
+  {
+   "id": "bauer_dish",
+   "kind": "machine",
+   "pos": [
+    18.626,
+    0.83,
+    3.93
+   ],
+   "yaw": 268.6,
+   "props": {
+    "what": "beach_finds"
+   }
+  },
+  {
+   "id": "bauer_armchair",
+   "kind": "seat",
+   "pos": [
+    17.153,
+    1.966,
+    3.66
+   ],
+   "yaw": 88.6,
+   "props": {
+    "height": 0.45
+   }
+  },
+  {
+   "id": "bauer_sofa",
+   "kind": "seat",
+   "pos": [
+    18.494,
+    4.884,
+    3.66
+   ],
+   "yaw": 268.6,
+   "props": {
+    "height": 0.45
+   }
+  },
+  {
+   "id": "bauer_tv",
+   "kind": "screen",
+   "pos": [
+    14.925,
+    4.971,
+    3.91
+   ],
+   "yaw": 88.6,
+   "props": {
+    "what": "tv"
+   }
+  },
+  {
+   "id": "bauer_shelf",
+   "kind": "shelf",
+   "pos": [
+    14.611,
+    1.528,
+    4.51
+   ],
+   "yaw": 88.6,
+   "props": {
+    "topic": "sea"
+   }
+  },
+  {
+   "id": "bauer_radio",
+   "kind": "machine",
+   "pos": [
+    14.605,
+    3.328,
+    4.56
+   ],
+   "yaw": 88.6,
+   "props": {
+    "what": "radio"
+   }
+  },
+  {
+   "id": "bauer_photos",
+   "kind": "board",
+   "pos": [
+    15.132,
+    7.317,
+    4.86
+   ],
+   "yaw": 358.6,
+   "props": {
+    "topic": "photos"
+   }
+  },
+  {
+   "id": "bauer_clock",
+   "kind": "machine",
+   "pos": [
+    16.132,
+    7.292,
+    5.31
+   ],
+   "yaw": 358.6,
+   "props": {
+    "what": "clock"
+   }
+  },
+  {
+   "id": "bauer_window",
+   "kind": "board",
+   "pos": [
+    17.502,
+    -0.143,
+    4.71
+   ],
+   "yaw": 178.6,
+   "props": {
+    "topic": "view"
+   }
+  },
+  {
+   "id": "bauer_sink",
+   "kind": "machine",
+   "pos": [
+    15.778,
+    11.252,
+    4.21
+   ],
+   "yaw": 358.6,
+   "props": {
+    "what": "sink"
+   }
+  },
+  {
+   "id": "bauer_stove",
+   "kind": "machine",
+   "pos": [
+    16.378,
+    11.238,
+    4.21
+   ],
+   "yaw": 358.6,
+   "props": {
+    "what": "stove"
+   }
+  },
+  {
+   "id": "bauer_samovar",
+   "kind": "machine",
+   "pos": [
+    18.137,
+    9.544,
+    4.26
+   ],
+   "yaw": 178.6,
+   "props": {
+    "what": "samovar"
+   }
+  },
+  {
+   "id": "bauer_kitchen_seat",
+   "kind": "seat",
+   "pos": [
+    17.388,
+    9.562,
+    3.66
+   ],
+   "yaw": 88.6,
+   "props": {
+    "height": 0.45
+   }
+  },
+  {
+   "id": "bauer_bed",
+   "kind": "bed",
+   "pos": [
+    13.887,
+    6.297,
+    3.71
+   ],
+   "yaw": 358.6,
+   "props": {
+    "rest": "private",
+    "height": 0.5
+   }
+  },
+  {
+   "id": "bauer_net",
+   "kind": "craft",
+   "pos": [
+    12.93,
+    1.068,
+    4.21
+   ],
+   "yaw": 178.6,
+   "props": {
+    "what": "net_mending"
+   }
+  },
+  {
+   "id": "bauer_door",
+   "kind": "door",
+   "pos": [
+    13.14,
+    11.766,
+    4.3
+   ],
+   "yaw": 178.6,
+   "props": {
+    "to": "flat"
+   }
+  },
+  {
+   "id": "gallery_bench_core",
+   "kind": "seat",
+   "pos": [
+    1.625,
+    12.392,
+    3.66
+   ],
+   "yaw": 178.5,
+   "props": {
+    "height": 0.45
+   }
+  },
+  {
+   "id": "gallery_bench",
+   "kind": "seat",
+   "pos": [
+    6.517,
+    12.265,
+    3.66
+   ],
+   "yaw": 178.5,
+   "props": {
+    "height": 0.45
+   }
+  },
+  {
+   "id": "gallery_cat",
+   "kind": "machine",
+   "pos": [
+    7.068,
+    12.271,
+    3.82
+   ],
+   "yaw": 178.5,
+   "props": {
+    "what": "gallery_cat"
+   }
+  },
+  {
+   "id": "gallery_washing",
+   "kind": "machine",
+   "pos": [
+    9.349,
+    13.472,
+    4.9
+   ],
+   "yaw": 358.5,
+   "props": {
+    "what": "clothesline"
+   }
+  },
+  {
+   "id": "gallery_flowers",
+   "kind": "machine",
+   "pos": [
+    15.799,
+    12.102,
+    3.82
+   ],
+   "yaw": 178.6,
+   "props": {
+    "what": "flower_boxes"
+   }
+  },
+  {
+   "id": "gallery_view",
+   "kind": "board",
+   "pos": [
+    16.632,
+    13.442,
+    4.45
+   ],
+   "yaw": 358.6,
+   "props": {
+    "topic": "view"
    }
   }
  ],
@@ -21830,8 +22423,8 @@
   "210 flats on 7 storeys, 33 bays of 7.6 m, S bend 1.5 deg (axis offset +-1.0 m)"
  ],
  "tris": {
-  "shell": 30876,
-  "detail": 51499,
+  "shell": 31490,
+  "detail": 57795,
   "windows": 3324
  }
 }
