@@ -344,16 +344,6 @@
   "en": "The mirror shows all of me, which is usually enough for a minute. I pretended to be only straightening my shirt, and straightened it three times.",
   "ja": "鏡には全身が映っている。ふだんなら一分で十分だ。シャツを直しているだけのふりをして、三回直した。"
  },
- "city.rassvet.mirror.1": {
-  "ru": "В зеркале пары и часы на стене у меня за спиной. Половина зала смотрит на себя, другая половина — на часы.",
-  "en": "In the mirror: the couples, and the clock on the wall behind me. Half the hall looks at itself, the other half at the clock.",
-  "ja": "鏡には、ペアたちと、背後の壁の時計が映っている。場内の半分は自分を見ていて、あとの半分は時計を見ている。"
- },
- "city.rassvet.mirror.2": {
-  "ru": "В зеркале пустой зал, рояль и я. Рояль выглядит увереннее.",
-  "en": "In the mirror: an empty hall, a piano and me. The piano looks more confident.",
-  "ja": "鏡には、誰もいないホールと、ピアノと、僕。ピアノのほうが自信ありげに見える。"
- },
  "city.rassvet.mirror.3": {
   "ru": "К раме подоткнуты бумажки: расписание, телефон учительницы и чей-то рисунок танцующей собаки. Собака в ритме лучше многих.",
   "en": "Slips of paper are tucked into the frame: the timetable, the teacher's phone number and somebody's drawing of a dancing dog. The dog keeps better time than many.",
@@ -838,5 +828,70 @@
   "ru": "— Дождь! Смотрю на дверь. Нет, не он. Наверное, у него есть второй.",
   "en": "\"Rain! I look at the door. No, not him. He must have a second one.\"",
   "ja": "「雨ね！ 戸口を見るけど、違うわ、あの人じゃない。きっと二本目を持ってるのね。」"
+ },
+ "city.rassvet.lost.4": {
+  "ru": "В дождь ведро с зонтиками пустеет: гардеробщица раздаёт их всем, кто без зонта, под честное слово. Честных слов у неё целая тетрадка.",
+  "en": "When it rains the umbrella bucket empties: the cloakroom attendant lends them to anyone without one, on their word of honour. She keeps a whole exercise book of words of honour.",
+  "ja": "雨の日は傘のバケツが空になる。クロークの係が、傘のない人に約束ひとつで貸してしまうのだ。約束はノート一冊ぶんたまっている。"
+ },
+ "city.rassvet.lost.5": {
+  "ru": "По понедельникам находки пересчитывают. Сегодня: три зонта, шарф, очки в футляре и одна варежка. Варежку записали в книгу отдельной строкой.",
+  "en": "On Mondays the finds are counted. Today: three umbrellas, a scarf, glasses in a case and one mitten. The mitten got its own line in the book.",
+  "ja": "月曜日は忘れ物を数える日。今日は傘三本、マフラー、ケース入りの眼鏡、それに手袋が片方。手袋は台帳に一行もらった。"
+ },
+ "city.rassvet.lost.6": {
+  "ru": "Зимой на вешалке над ведром растёт гора шапок. В зале тепло, и после сеанса хозяева уходят, забыв, что пришли в шапке.",
+  "en": "In winter a heap of hats grows on the rack above the bucket. It's warm in the hall, and after the film their owners leave forgetting they came in a hat.",
+  "ja": "冬は、バケツの上のコート掛けに帽子の山ができる。ホールが暖かいので、上映のあと、帽子で来たことを忘れて帰ってしまうのだ。"
+ },
+ "city.rassvet.lost.7": {
+  "ru": "Рядом с ведром появилась коробка с надписью «Ждут хозяев больше месяца». Сверху тот самый чёрный зонт с запиской про дождь.",
+  "en": "A box has joined the bucket, labelled \"Waiting for their owners over a month\". On top lies that black umbrella with the note about rain.",
+  "ja": "バケツの横に「持ち主を一か月以上待っています」と書いた箱が増えた。いちばん上には、雨のメモをつけたあの黒い傘。"
+ },
+ "city.rassvet.shchess.1": {
+  "ru": "В субботу полку разбирают до обеда: перед партиями все листают дебюты, как перед экзаменом. Осталась одна книга, про эндшпиль. До эндшпиля никто не доживает.",
+  "en": "On Saturday the shelf is picked clean by lunchtime: before their games everyone leafs through openings as if before an exam. One book is left, on the endgame. Nobody lasts that long.",
+  "ja": "土曜日は昼までに棚が空になる。対局の前、みんな試験前みたいに序盤の本をめくるのだ。残っているのは終盤の本が一冊だけ。そこまで生き残る人はいない。"
+ },
+ "city.rassvet.shchess.2": {
+  "ru": "Вечером из-за стены слышно, как в зале стучат шахматные часы. Читаю задачу и невольно считаю ходы под этот стук.",
+  "en": "In the evening you can hear the chess clocks ticking in the hall through the wall. I read a problem and can't help counting the moves to that tick.",
+  "ja": "夕方、壁の向こうのホールから対局時計の音が聞こえる。問題を読みながら、つい、その音に合わせて手を数えてしまう。"
+ },
+ "city.rassvet.shchess.3": {
+  "ru": "Из сборника выпала закладка: счастливый автобусный билет. На обороте карандашом записан ход «Кf3». Видно, на удачу.",
+  "en": "A bookmark fell out of the book: a lucky bus ticket. On the back, in pencil, a move: \"Nf3\". For luck, evidently.",
+  "ja": "本からしおりが落ちた。数字のそろった、幸運のバスの切符だ。裏に鉛筆で一手「Nf3」と書いてある。どうやら験かつぎらしい。"
+ },
+ "city.rassvet.radiobench.1": {
+  "ru": "Паяльник лежит на подставке из консервной банки. Канифоль пахнет сосной и немного аптекой. Я спаял два проводка, и они держатся.",
+  "en": "The soldering iron rests on a stand made from a tin can. The rosin smells of pine and a little of the chemist's. I soldered two wires together, and they hold.",
+  "ja": "はんだごては缶詰の缶で作ったスタンドに置いてある。松やにのにおいと、少し薬局のにおい。導線を二本つないだら、ちゃんとくっついた。"
+ },
+ "city.rassvet.radiobench.2": {
+  "ru": "На столе раскрыта схема приёмника, вся в карандашных стрелках. Одна подписана: «Здесь Вадим сжёг транзистор. Не повторять».",
+  "en": "A receiver diagram lies open on the table, covered in pencil arrows. One is labelled: \"Vadim burnt out a transistor here. Don't repeat.\"",
+  "ja": "机には受信機の回路図が広げてあって、鉛筆の矢印だらけだ。ひとつにはこう書いてある。「ここでワジムがトランジスタを焼いた。まねしないこと」"
+ },
+ "city.rassvet.radiobench.3": {
+  "ru": "Вторник и четверг — дни кружка. За столом трое мальчишек и руководитель в нарукавниках. Мне дали подержать плату, и я держал её, как хрусталь.",
+  "en": "Tuesday and Thursday are club days. Three boys at the table and the leader in sleeve protectors. They let me hold the circuit board, and I held it like crystal.",
+  "ja": "火曜と木曜はクラブの日。机には男の子が三人と、腕カバーをした先生。基板を持たせてもらい、僕はガラス細工みたいに持っていた。"
+ },
+ "city.rassvet.radiobench.4": {
+  "ru": "В сырую погоду приёмник на полке трещит громче. В журнале кружка запись: «Помехи. Похоже на прибой».",
+  "en": "In damp weather the receiver on the shelf crackles louder. In the club's log: \"Interference. Sounds like surf.\"",
+  "ja": "湿った日は、棚の受信機の雑音が大きくなる。クラブの記録帳には「雑音。波の音に似ている」とある。"
+ },
+ "city.rassvet.radiobench.5": {
+  "ru": "В ящике стола нашёлся старый значок «Юный радиолюбитель», весь в канифоли. Я протёр его и положил обратно: пусть найдёт следующий.",
+  "en": "In the table drawer I found an old \"Young Radio Amateur\" badge, all over rosin. I wiped it and put it back: let the next one find it.",
+  "ja": "引き出しから、松やにまみれの古いバッジ「少年無線家」が出てきた。拭いて元に戻した。次の誰かが見つけるように。"
+ },
+ "city.rassvet.radiobench.prompt": {
+  "ru": "E — повозиться с паяльником",
+  "en": "E — tinker with the soldering iron",
+  "ja": "E：はんだごてをいじる"
  }
 }

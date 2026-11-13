@@ -954,5 +954,100 @@
   "ru": "— Вечером в зале и на сцене репетиции: идти между рядами можно, но не сквозь актёров.",
   "en": "\"In the evening there are rehearsals in the hall and on stage: you may walk between the rows, but not through the actors.\"",
   "ja": "「夕方は客席と舞台でリハーサルがあるの。席のあいだは歩いていいけど、役者さんの中を突っ切るのはだめよ。」"
+ },
+ "city.cog.tv.1": {
+  "ru": "Утренняя гимнастика: пианист играет, ведущий считает до восьми. Вахтёрша в кресле поднимает руки на «раз» и опускает на «пять».",
+  "en": "Morning exercises: a pianist plays, the presenter counts to eight. The attendant in the armchair raises her arms on \"one\" and lowers them on \"five\".",
+  "ja": "朝の体操番組。ピアノが鳴り、司会者が八まで数える。肘掛け椅子の係のおばさんは「いち」で腕を上げ、「ご」で下ろす。"
+ },
+ "city.cog.tv.2": {
+  "ru": "Вечерние новости. Диктор говорит об урожае, и все в комнате кивают, как будто сами его собирали.",
+  "en": "The evening news. The announcer talks about the harvest, and everyone in the room nods as if they'd brought it in themselves.",
+  "ja": "夜のニュース。アナウンサーが収穫の話をすると、部屋のみんながうなずく。自分たちで刈り入れたみたいに。"
+ },
+ "city.cog.tv.3": {
+  "ru": "Передачи кончились. На экране настроечная таблица и тонкий писк. Один из шахматистов всё равно сидит перед ней и думает о своём.",
+  "en": "The programmes are over. The test card on the screen and a thin whine. One of the chess players still sits in front of it, thinking his own thoughts.",
+  "ja": "放送は終わった。画面にはテストパターンと細い音。それでもチェスの常連がひとり、その前に座って考えごとをしている。"
+ },
+ "city.cog.tv.4": {
+  "ru": "Воскресенье, по телевизору мультфильмы. Взрослые делают вид, что ждут футбол, но никто не переключает.",
+  "en": "Sunday, cartoons on the television. The grown-ups pretend to be waiting for the football, but nobody switches over.",
+  "ja": "日曜日、テレビはアニメ。大人たちはサッカーを待っているふりをしているけど、誰もチャンネルを変えない。"
+ },
+ "city.cog.board.1": {
+  "ru": "Четверг: на доске сетка блица, восемь фамилий и пустые клеточки. Я вписал в угол «гость» — мелко, чтобы можно было стереть.",
+  "en": "Thursday: a blitz grid on the board, eight names and empty squares. In the corner I wrote \"guest\", small, so it can be rubbed out.",
+  "ja": "木曜日。黒板には早指し戦の表、名前が八つと空欄。隅に小さく「ゲスト」と書いた。消せるように。"
+ },
+ "city.cog.board.2": {
+  "ru": "В понедельник доска чистая, только в углу след от тряпки в форме облака. Я нарисовал под облаком дождь и отошёл, пока никто не заметил.",
+  "en": "On Monday the board is clean, just a cloud-shaped smear from the rag in the corner. I drew rain under the cloud and stepped away before anyone noticed.",
+  "ja": "月曜の黒板はまっさらで、隅に雑巾のあとが雲の形に残っているだけ。その下に雨を描いて、誰にも気づかれないうちに離れた。"
+ },
+ "city.cog.board.3": {
+  "ru": "Вечером на доске чертёж крыла планера с размерами. Кто-то из кружковцев исправил одну цифру и подписал: «Проверено на сквозняке».",
+  "en": "In the evening there's a glider wing drawn on the board with its dimensions. One of the club members has corrected a figure and written: \"Tested in a draught.\"",
+  "ja": "夕方、黒板にはグライダーの翼の図と寸法。部員の誰かが数字をひとつ直して「すきま風で確認済み」と書いている。"
+ },
+ "city.cog.board.4": {
+  "ru": "К празднику на доске написали цветными мелками: «Всех с праздником! Чай в буфете с шести». Слова «чай» и «шесть» обведены дважды.",
+  "en": "For the holiday someone has written on the board in coloured chalk: \"Happy holiday, everyone! Tea in the buffet from six.\" The words \"tea\" and \"six\" are traced over twice.",
+  "ja": "祝日に合わせて、色チョークで「みなさん、おめでとう！　六時からビュッフェでお茶」。「お茶」と「六時」は二重になぞってある。"
+ },
+ "city.cog.dance.1": {
+  "ru": "Субботний вечер танцев. Баянист в третий раз играет одно и то же танго, потому что пары не расходятся.",
+  "en": "Saturday dance night. The accordion player is on the same tango for the third time, because the couples won't leave the floor.",
+  "ja": "土曜のダンスの夕べ。カップルが離れないので、アコーディオン弾きは同じタンゴを三回目だ。"
+ },
+ "city.cog.dance.2": {
+  "ru": "Днём сцена пустая, пол только что натёрли. Я прошёлся по ней вальсом, считая вслух, и эхо считало со мной.",
+  "en": "In the daytime the stage is empty, the floor freshly waxed. I waltzed across it counting aloud, and the echo counted with me.",
+  "ja": "昼間の舞台はがらんとして、床は磨いたばかり。声に出して数えながらワルツで横切ると、こだまも一緒に数えた。"
+ },
+ "city.cog.dance.3": {
+  "ru": "Новогодний вечер: под потолком серпантин, у сцены ёлка, и все танцуют в бумажных колпаках. Мне тоже надели колпак, не спросив.",
+  "en": "New Year's evening: streamers under the ceiling, a fir tree by the stage, and everyone dancing in paper hats. Someone put a hat on me too without asking.",
+  "ja": "大晦日の夕べ。天井には紙テープ、舞台のそばにはモミの木、みんな紙の帽子で踊っている。僕にも、断りなく帽子がかぶせられた。"
+ },
+ "city.cog.dance.4": {
+  "ru": "Женщина из хора взяла меня за руку: «Не бойся, я поведу». И повела. Я впервые никому не наступил на ногу.",
+  "en": "A woman from the choir took my hand: \"Don't worry, I'll lead.\" And she did. For the first time I didn't tread on anybody's foot.",
+  "ja": "合唱団の女の人が僕の手をとって「大丈夫、リードするから」と言った。そのとおりだった。初めて誰の足も踏まなかった。"
+ },
+ "city.cog.piano.1": {
+  "ru": "Утром пианино в зале холодное, клавиши как льдинки. Первые аккорды звучат осторожно, будто инструмент ещё не проснулся.",
+  "en": "In the morning the piano in the hall is cold, the keys like ice. The first chords come out cautiously, as if the instrument hasn't woken yet.",
+  "ja": "朝のホールのピアノは冷たくて、鍵盤が氷のかけらみたいだ。最初の和音はおそるおそる鳴る。楽器がまだ目覚めていないみたいに。"
+ },
+ "city.cog.piano.2": {
+  "ru": "Среда, репетиция хора. Я успел сыграть гамму, пока руководительница не попросила освободить инструмент. Вежливо, но так, что сразу встаёшь.",
+  "en": "Wednesday, choir practice. I managed one scale before the choir leader asked me to free the instrument. Politely, but in a way that has you up at once.",
+  "ja": "水曜日は合唱の練習。音階をひとつ弾いたところで、指揮の先生に楽器を空けるよう頼まれた。ていねいに、でもすぐ立ち上がりたくなる言い方で。"
+ },
+ "city.cog.piano.3": {
+  "ru": "Под стук дождя по крыше играть легче: ошибки тонут. Я сыграл весь вальс и сбился только раз.",
+  "en": "Playing is easier with rain drumming on the roof: the mistakes drown. I played the whole waltz and only slipped once.",
+  "ja": "屋根を打つ雨の音のなかだと弾きやすい。まちがいが沈むから。ワルツを最後まで弾いて、外したのは一度だけ。"
+ },
+ "city.cog.piano.4": {
+  "ru": "Под крышкой пианино лежит забытая нотная тетрадь. На обложке детским почерком: «Этюды. Не для всех».",
+  "en": "Under the piano lid lies a forgotten music book. On the cover, in a child's hand: \"Studies. Not for everyone.\"",
+  "ja": "ピアノのふたの下に、忘れられた楽譜ノートがあった。表紙に子どもの字で「練習曲。だれにでもではない」。"
+ },
+ "city.cog.catalogue.1": {
+  "ru": "Ящики каталога подписаны от руки: «История клуба», «Город», «Море и порт». Утром они пахнут лаком: вчера их протирали.",
+  "en": "The catalogue drawers are labelled by hand: \"Club History\", \"The Town\", \"Sea and Harbour\". In the morning they smell of varnish: they were polished yesterday.",
+  "ja": "目録の引き出しには手書きの札。「クラブの歴史」「町」「海と港」。朝はニスのにおいがする。きのう磨いたのだ。"
+ },
+ "city.cog.catalogue.2": {
+  "ru": "В выходные к каталогу выстраиваются пенсионеры: каждый ищет фотографию, где он молодой. Находят и спорят, кто это стоит рядом.",
+  "en": "At weekends pensioners queue at the catalogue: each is looking for a photograph of himself young. They find it, and argue about who's standing next to them.",
+  "ja": "週末は目録の前にお年寄りが並ぶ。みんな若いころの自分の写真を探している。見つけると、隣に写っているのは誰か言い争いになる。"
+ },
+ "city.cog.catalogue.3": {
+  "ru": "Одна карточка заполнена детским почерком: «Клуб. Построен. Очень большой». Библиотекарь не стала её выбрасывать и поставила в самое начало.",
+  "en": "One card is filled in a child's hand: \"The club. Built. Very big.\" The librarian didn't throw it away and put it right at the front.",
+  "ja": "一枚のカードは子どもの字だった。「クラブ。たてられた。とても大きい」。司書は捨てずに、いちばん前に入れた。"
  }
 }

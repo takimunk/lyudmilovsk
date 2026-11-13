@@ -859,5 +859,105 @@
   "ru": "Повар не обернулся, но пирожок оказался горячим. Значит, всё сделано правильно.",
   "en": "The cook didn't turn round, but the pie was hot. So everything was done right.",
   "ja": "料理人は振り向かなかったけれど、ピロシキは熱々だった。つまり、やり方は正しかったってことだ。"
+ },
+ "city.cafe.feed.4": {
+  "ru": "Утро, Кеша ещё сонный. Взял одно семечко, подержал в клюве и сказал шёпотом: «Осторожно, двери закрываются». Бариста поставила передо мной пирожное.",
+  "en": "Morning, and Kesha is still sleepy. He took one seed, held it in his beak and whispered, \"Mind the doors.\" The barista put a pastry in front of me.",
+  "ja": "朝で、ケーシャはまだ眠そうだ。種をひとつくわえて、小声で「ドアが閉まります」と言った。バリスタが僕の前にケーキを置いてくれた。"
+ },
+ "city.cafe.feed.5": {
+  "ru": "За окном дождь, и Кеша нахохлился. Семечки ел молча, только в конце буркнул: «Зонты не забываем». Пирожное мне выдали с салфеткой.",
+  "en": "Rain outside, and Kesha has fluffed himself up. He ate the seeds in silence and only at the end muttered, \"Don't forget your umbrellas.\" My pastry came with a napkin.",
+  "ja": "外は雨で、ケーシャは羽をふくらませている。黙って種を食べ、最後にぼそっと「傘をお忘れなく」。ケーキは紙ナプキンつきで出てきた。"
+ },
+ "city.cafe.feed.6": {
+  "ru": "Сегодня праздник, и на жёрдочке у Кеши бумажный флажок. Он склевал семечки и прокричал: «С праздником, граждане пассажиры!» Весь зал ответил.",
+  "en": "It's a holiday, and Kesha has a paper flag on his perch. He cracked the seeds and shouted, \"Happy holiday, dear passengers!\" The whole room answered.",
+  "ja": "今日は祝日で、ケーシャの止まり木には紙の旗が立っている。種を食べ終えると「乗客の皆さん、おめでとう！」と叫んだ。店じゅうが返事をした。"
+ },
+ "city.cafe.feed.7": {
+  "ru": "В первый раз Кеша долго разглядывал меня одним глазом, потом другим. Решил, видно, что я свой, и взял семечко прямо с ладони.",
+  "en": "The first time, Kesha studied me with one eye, then the other. He must have decided I was all right, and took a seed straight from my palm.",
+  "ja": "初めてのとき、ケーシャは片目で、それからもう片方の目で、僕をじっと見た。仲間だと決めたらしく、手のひらから直接種を取った。"
+ },
+ "city.cafe.pen.5": {
+  "ru": "С утра книга открыта на чистой странице. Я написал первым: «Доброе утро, „Тарелка“». Почерк вышел сонный, но честный.",
+  "en": "In the morning the book lies open at a clean page. I wrote first: \"Good morning, Tarelka.\" The handwriting came out sleepy, but honest.",
+  "ja": "朝、ノートは白いページで開いていた。いちばん乗りで「おはよう、ターレルカ」と書いた。字は眠そうだけど、正直だ。"
+ },
+ "city.cafe.pen.6": {
+  "ru": "Ручка оставляет кляксы: у всех мокрые рукава. Я написал: «Дождь. Кофе. Жить можно» — и промокнул салфеткой.",
+  "en": "The pen leaves blots: everyone's sleeves are wet. I wrote, \"Rain. Coffee. Life goes on,\" and blotted it with a napkin.",
+  "ja": "ペンがにじむ。みんな袖が濡れているからだ。「雨。コーヒー。生きていける」と書いて、ナプキンで押さえた。"
+ },
+ "city.cafe.pen.7": {
+  "ru": "Страница вся в снежинках, вырезанных из салфеток и вклеенных между пожеланиями. Я написал своё в самом уголке, чтобы не задеть ни одной.",
+  "en": "The page is covered with snowflakes cut from napkins and glued between the wishes. I wrote mine in the very corner so as not to touch any of them.",
+  "ja": "ページは紙ナプキンを切った雪の結晶でいっぱいで、願いごとの間に貼ってある。僕はどれにも触れないように、すみっこに書いた。"
+ },
+ "city.cafe.pen.8": {
+  "ru": "Листаю назад и нахожу свою первую запись. Под ней кто-то приписал: «И я тоже». Не знаю кто, но стало теплее.",
+  "en": "I leaf back and find my first entry. Under it somebody has added: \"Me too.\" I don't know who, but it feels warmer.",
+  "ja": "ページをさかのぼると、僕の最初の書きこみがあった。その下に誰かが「わたしも」と書き足している。誰かはわからないけど、あたたかくなった。"
+ },
+ "city.cafe.crate.6": {
+  "ru": "Вечером ящик пустеет наполовину: пластинки разошлись по столикам, и конверты стоят без них, как пальто без хозяев.",
+  "en": "In the evening the crate is half empty: the records have gone round the tables, and the sleeves stand without them like coats without owners.",
+  "ja": "夕方になると箱は半分空になる。レコードはテーブルへ散り、ジャケットだけが持ち主のいないコートのように並んでいる。"
+ },
+ "city.cafe.crate.7": {
+  "ru": "В выходные сверху кладут танцевальные: на конвертах пары в повороте и крупно — «Вечер отдыха».",
+  "en": "At weekends the dance records go on top: couples mid-turn on the sleeves and, in big letters, \"An Evening Out\".",
+  "ja": "週末は、ダンスのレコードがいちばん上に置かれる。ジャケットには回るカップルと、大きく「憩いの夕べ」の文字。"
+ },
+ "city.cafe.crate.8": {
+  "ru": "В дождь кто-то всегда ставит наверх пластинку со звуками прибоя. Говорят, чтобы море не обижалось, что на него не смотрят.",
+  "en": "When it rains somebody always puts the record of the surf on top. So the sea won't feel left out, they say.",
+  "ja": "雨の日は、誰かがかならず波の音のレコードをいちばん上に置く。見てもらえない海がすねないように、だそうだ。"
+ },
+ "city.cafe.mags.1": {
+  "ru": "Утром журналы ещё лежат ровной стопкой. Сверху свежий номер с горным озером на обложке, страницы липнут друг к другу.",
+  "en": "In the morning the magazines still lie in a neat pile. On top, the new issue with a mountain lake on the cover; the pages stick together.",
+  "ja": "朝、雑誌はまだきちんと積まれている。いちばん上は山の湖が表紙の最新号で、ページどうしがくっついている。"
+ },
+ "city.cafe.mags.2": {
+  "ru": "К обеду журналы растрёпаны, а на развороте про пароходы кольцо от чашки. Как печать порта.",
+  "en": "By lunchtime the magazines are dog-eared, and there's a cup ring on the spread about steamers. Like a harbour stamp.",
+  "ja": "昼過ぎには雑誌はよれよれで、汽船の見開きにはカップの輪のあとがついている。港のスタンプみたいだ。"
+ },
+ "city.cafe.mags.3": {
+  "ru": "В холодный день все берут один и тот же журнал, про юг: пальмы, белые теплоходы. Его передают от столика к столику.",
+  "en": "On a cold day everybody takes the same magazine, the one about the south: palms, white liners. It goes from table to table.",
+  "ja": "寒い日は、みんな同じ雑誌を手に取る。南の特集で、ヤシの木と白い客船。テーブルからテーブルへ回っていく。"
+ },
+ "city.cafe.mags.4": {
+  "ru": "По понедельникам привозят новые номера. Старые бариста перевязывает бечёвкой и уносит, но один всегда остаётся: кто-то его не дочитал.",
+  "en": "New issues come on Mondays. The barista ties up the old ones with string and takes them away, but one always stays: somebody hasn't finished it.",
+  "ja": "月曜日には新しい号が届く。バリスタは古い号をひもで束ねて運んでいくが、一冊だけはいつも残る。誰かが読みかけなのだ。"
+ },
+ "city.cafe.painting.1": {
+  "ru": "Над диваном море маслом: серая вода, белая полоса прибоя и маленький красный буёк. Буёк художник, похоже, добавил в последний момент, для храбрости.",
+  "en": "Over the sofa, the sea in oils: grey water, a white line of surf and a small red buoy. The painter seems to have added the buoy at the last moment, for courage.",
+  "ja": "ソファの上に海の油絵。灰色の水、白い波の線、小さな赤いブイ。画家はブイを最後に、勇気づけに描き足したらしい。"
+ },
+ "city.cafe.painting.2": {
+  "ru": "Утреннее солнце ложится прямо на раму, и нарисованная вода становится светлее настоящей за окном.",
+  "en": "The morning sun falls right on the frame, and the painted water turns brighter than the real water outside.",
+  "ja": "朝日が額縁にまっすぐ当たり、描かれた水は窓の外の本物より明るくなる。"
+ },
+ "city.cafe.painting.3": {
+  "ru": "К вечеру картина темнеет раньше окна. Остаются только полоса прибоя и буёк, как будто его зажгли.",
+  "en": "Towards evening the painting darkens before the window does. Only the line of surf is left, and the buoy, as if someone had lit it.",
+  "ja": "夕方、絵は窓より先に暗くなる。残るのは波の線と、灯をともしたようなブイだけ。"
+ },
+ "city.cafe.painting.4": {
+  "ru": "В туман из окна моря не видно, и все смотрят на это. Бариста говорит, что в такие дни картина работает за двоих.",
+  "en": "In fog you can't see the sea from the window, so everyone looks at this one. The barista says on days like these the painting does the work of two.",
+  "ja": "霧で窓から海が見えない日は、みんなこの絵を見る。こういう日は絵が二人分働く、とバリスタは言う。"
+ },
+ "city.cafe.painting.5": {
+  "ru": "Внизу на раме бумажка: «Подарок от отдыхающих, лето». Год кто-то стёр пальцем, наверное, нечаянно.",
+  "en": "On the bottom of the frame, a slip of paper: \"A gift from the holidaymakers, summer.\" Somebody has rubbed out the year with a finger, probably by accident.",
+  "ja": "額縁の下に紙きれ。「保養客より、夏」。年は誰かが指でこすって消してしまった。たぶん、うっかり。"
  }
 }

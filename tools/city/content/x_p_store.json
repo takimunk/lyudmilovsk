@@ -312,7 +312,26 @@
   "ps_fitting_mirror": {
    "like": "look_misc",
    "minutes": 2,
-   "lines": "city.ps.fmirror"
+   "lines": [
+    "city.ps.fmirror.1",
+    "city.ps.fmirror.2",
+    "city.ps.fmirror.3",
+    {
+     "k": "city.ps.fmirror.4",
+     "h": [
+      9,
+      12
+     ]
+    },
+    {
+     "k": "city.ps.fmirror.5",
+     "weather": "rain"
+    },
+    {
+     "k": "city.ps.fmirror.6",
+     "festival": "any"
+    }
+   ]
   },
   "ps_clothes": {
    "like": "look_misc",
@@ -472,7 +491,26 @@
    "like": "look_misc",
    "prompt": "city.ps.typewriter.prompt",
    "minutes": 3,
-   "lines": "city.ps.type"
+   "lines": [
+    "city.ps.type.1",
+    "city.ps.type.2",
+    "city.ps.type.3",
+    {
+     "k": "city.ps.type.4",
+     "h": [
+      17,
+      24
+     ]
+    },
+    {
+     "k": "city.ps.type.5",
+     "d": "mon"
+    },
+    {
+     "k": "city.ps.type.6",
+     "once": true
+    }
+   ]
   },
   "rd_store_complaints": {
    "like": "look_store",
@@ -506,6 +544,283 @@
     ]
    },
    "sound": "page_turn"
+  },
+  "ps_tv": {
+   "like": "tv",
+   "target": "tv",
+   "lines": [
+    "city.do.tv.*",
+    "city.ps.tv.1",
+    {
+     "k": "city.ps.tv.2",
+     "h": [
+      10,
+      14
+     ],
+     "d": "mon-fri"
+    },
+    {
+     "k": "city.ps.tv.3",
+     "d": "sat,sun"
+    },
+    {
+     "k": "city.ps.tv.4",
+     "festival": "new_year"
+    }
+   ]
+  },
+  "ps_player": {
+   "like": "record_player",
+   "target": "record_player",
+   "lines": [
+    "city.do.record_player.*",
+    {
+     "k": "city.ps.player.1",
+     "h": [
+      10,
+      13
+     ]
+    },
+    {
+     "k": "city.ps.player.2",
+     "d": "fri"
+    },
+    {
+     "k": "city.ps.player.3",
+     "weather": "rain"
+    }
+   ]
+  },
+  "ps_radio": {
+   "like": "radio",
+   "target": "radio",
+   "lines": [
+    "city.do.radio.*",
+    {
+     "k": "city.ps.radio.1",
+     "h": [
+      10,
+      12
+     ]
+    },
+    "city.ps.radio.2",
+    {
+     "k": "city.ps.radio.3",
+     "h": [
+      18,
+      24
+     ]
+    },
+    {
+     "k": "city.ps.radio.4",
+     "weather": "cold"
+    }
+   ]
+  },
+  "ps_barbell": {
+   "like": "barbell",
+   "target": "barbell",
+   "minutes": 5,
+   "lines": [
+    "city.ps.barbell.1",
+    "city.ps.barbell.2",
+    {
+     "k": "city.ps.barbell.3",
+     "d": "sat"
+    },
+    {
+     "k": "city.ps.barbell.4",
+     "once": true
+    }
+   ]
+  },
+  "ps_bike": {
+   "like": "exercise_bike",
+   "target": "exercise_bike",
+   "minutes": 5,
+   "lines": [
+    "city.ps.bike.1",
+    "city.ps.bike.2",
+    {
+     "k": "city.ps.bike.3",
+     "weather": [
+      "rain",
+      "snow"
+     ]
+    },
+    {
+     "k": "city.ps.bike.4",
+     "h": [
+      17,
+      24
+     ]
+    }
+   ]
+  },
+  "ps_wall_bars": {
+   "like": "wall_bars",
+   "target": "wall_bars",
+   "minutes": 5,
+   "lines": [
+    "city.ps.bars.1",
+    "city.ps.bars.2",
+    {
+     "k": "city.ps.bars.3",
+     "d": "mon-fri",
+     "h": [
+      15,
+      19
+     ]
+    },
+    {
+     "k": "city.ps.bars.4",
+     "once": true
+    }
+   ]
+  },
+  "ps_birds_board": {
+   "like": "look_birds",
+   "target": "look_birds",
+   "lines": [
+    "city.look.birds.*",
+    {
+     "k": "city.ps.birds.1",
+     "weather": [
+      "cold",
+      "snow"
+     ]
+    },
+    {
+     "k": "city.ps.birds.2",
+     "festival": "bird_day"
+    },
+    {
+     "k": "city.ps.birds.3",
+     "h": [
+      10,
+      13
+     ]
+    }
+   ]
+  },
+  "ps_souvenir_case": {
+   "like": "look_local",
+   "target": "look_local",
+   "lines": [
+    "city.look.local.*",
+    {
+     "k": "city.ps.souv.1",
+     "d": "sat,sun"
+    },
+    {
+     "k": "city.ps.souv.2",
+     "festival": "sea_festival"
+    },
+    {
+     "k": "city.ps.souv.3",
+     "weather": "rain"
+    }
+   ]
+  },
+  "ps_scales": {
+   "like": "scales",
+   "target": "scales",
+   "prompt": "city.ps.scales.prompt",
+   "lines": [
+    "city.ps.scales.1",
+    "city.ps.scales.2",
+    {
+     "k": "city.ps.scales.3",
+     "h": [
+      17,
+      24
+     ]
+    },
+    {
+     "k": "city.ps.scales.4",
+     "d": "sat"
+    },
+    {
+     "k": "city.ps.scales.5",
+     "once": true
+    }
+   ]
+  },
+  "ps_sewing": {
+   "like": "sewing_machine",
+   "target": "sewing_machine",
+   "minutes": 10,
+   "lines": [
+    "city.ps.sewing.1",
+    "city.ps.sewing.2",
+    {
+     "k": "city.ps.sewing.3",
+     "d": "sat"
+    },
+    {
+     "k": "city.ps.sewing.4",
+     "h": [
+      18,
+      24
+     ]
+    },
+    {
+     "k": "city.ps.sewing.5",
+     "once": true
+    }
+   ]
+  },
+  "ps_toy_house": {
+   "like": "look_kids",
+   "target": "look_kids",
+   "lines": [
+    "city.look.kids.*",
+    {
+     "k": "city.ps.toyhouse.1",
+     "festival": "new_year"
+    },
+    {
+     "k": "city.ps.toyhouse.2",
+     "festival": "children_day"
+    },
+    {
+     "k": "city.ps.toyhouse.3",
+     "d": "mon-fri",
+     "h": [
+      15,
+      19
+     ]
+    },
+    {
+     "k": "city.ps.toyhouse.4",
+     "once": true
+    }
+   ]
+  },
+  "ps_island": {
+   "like": "look_misc",
+   "prompt": "city.act.watch.prompt",
+   "minutes": 3,
+   "target": "look_catalogue",
+   "lines": [
+    "city.ps.island.1",
+    "city.ps.island.2",
+    {
+     "k": "city.ps.island.3",
+     "d": "thu"
+    },
+    {
+     "k": "city.ps.island.4",
+     "h": [
+      9,
+      12
+     ]
+    },
+    {
+     "k": "city.ps.island.5",
+     "festival": "new_year"
+    }
+   ]
   }
  },
  "rules": {
@@ -639,6 +954,51 @@
   },
   "P-STORE/f1_radio_table": {
    "act": "rd_store_radio_catalogue"
+  },
+  "P-STORE/f1_tv_1": {
+   "act": "ps_tv"
+  },
+  "P-STORE/f1_tv_2": {
+   "act": "ps_tv"
+  },
+  "P-STORE/f1_record_player": {
+   "act": "ps_player"
+  },
+  "P-STORE/f1_island_radio": {
+   "act": "ps_radio"
+  },
+  "P-STORE/f1_barbell": {
+   "act": "ps_barbell"
+  },
+  "P-STORE/f1_exercise_bike": {
+   "act": "ps_bike"
+  },
+  "P-STORE/f1_wall_bars": {
+   "act": "ps_wall_bars"
+  },
+  "P-STORE/f1_birds_board": {
+   "act": "ps_birds_board"
+  },
+  "P-STORE/f1_souvenir_case": {
+   "act": "ps_souvenir_case"
+  },
+  "P-STORE/g_scales": {
+   "act": "ps_scales"
+  },
+  "P-STORE/g_sewing_machine": {
+   "act": "ps_sewing"
+  },
+  "P-STORE/g_toy_house": {
+   "act": "ps_toy_house"
+  },
+  "P-STORE/f1_island_2": {
+   "act": "ps_island"
+  },
+  "P-STORE/g_island_1": {
+   "act": "ps_island"
+  },
+  "P-STORE/g_island_2": {
+   "act": "ps_island"
   }
  },
  "quests": [

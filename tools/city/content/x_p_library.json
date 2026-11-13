@@ -194,7 +194,22 @@
    "sound": "paper_rustle",
    "lines": [
     "city.xpl.leave.1",
-    "city.xpl.leave.2"
+    "city.xpl.leave.2",
+    {
+     "k": "city.xpl.leave.3",
+     "weather": "rain"
+    },
+    {
+     "k": "city.xpl.leave.4",
+     "h": [
+      17,
+      24
+     ]
+    },
+    {
+     "k": "city.xpl.leave.5",
+     "festival": "any"
+    }
    ]
   },
   "library_stamp": {
@@ -551,6 +566,106 @@
     ]
    },
    "sound": "page_turn"
+  },
+  "library_player": {
+   "like": "record_player",
+   "target": "record_player",
+   "lines": [
+    "city.do.record_player.*",
+    {
+     "k": "city.xpl.player.1",
+     "h": [
+      10,
+      13
+     ]
+    },
+    {
+     "k": "city.xpl.player.2",
+     "h": [
+      17,
+      24
+     ]
+    },
+    {
+     "k": "city.xpl.player.3",
+     "weather": "rain"
+    },
+    {
+     "k": "city.xpl.player.4",
+     "once": true
+    }
+   ]
+  },
+  "library_radio": {
+   "like": "radio",
+   "target": "radio",
+   "lines": [
+    "city.do.radio.*",
+    {
+     "k": "city.xpl.radio.1",
+     "h": [
+      6,
+      11
+     ]
+    },
+    {
+     "k": "city.xpl.radio.2",
+     "h": [
+      13,
+      15
+     ]
+    },
+    {
+     "k": "city.xpl.radio.3",
+     "weather": [
+      "rain",
+      "fog"
+     ]
+    },
+    {
+     "k": "city.xpl.radio.4",
+     "festival": "any"
+    }
+   ]
+  },
+  "library_scope": {
+   "prompt": "city.do.telescope.prompt",
+   "minutes": 5,
+   "target": "telescope",
+   "lines": [
+    {
+     "k": "city.xpl.scope.1",
+     "h": [
+      6,
+      21
+     ]
+    },
+    {
+     "k": "city.xpl.scope.2",
+     "h": [
+      6,
+      21
+     ]
+    },
+    {
+     "k": "city.xpl.scope.3",
+     "h": [
+      21,
+      6
+     ]
+    },
+    {
+     "k": "city.xpl.scope.4",
+     "h": [
+      21,
+      6
+     ]
+    },
+    {
+     "k": "city.xpl.scope.5",
+     "weather": "fog"
+    }
+   ]
   }
  },
  "rules": {
@@ -736,6 +851,24 @@
   },
   "P-LIBRARY/pod_2_06": {
    "act": "rd_poetry_steps"
+  },
+  "P-LIBRARY/listening_player": {
+   "act": "library_player"
+  },
+  "P-LIBRARY/pod_1_02_player": {
+   "act": "library_player"
+  },
+  "P-LIBRARY/office_radio": {
+   "act": "library_radio"
+  },
+  "P-LIBRARY/pod_2_02_telescope": {
+   "act": "library_scope"
+  },
+  "P-LIBRARY/pod_3_02_telescope": {
+   "act": "library_scope"
+  },
+  "P-LIBRARY/pod_3_05_telescope": {
+   "act": "library_scope"
   }
  },
  "closed_by": {
