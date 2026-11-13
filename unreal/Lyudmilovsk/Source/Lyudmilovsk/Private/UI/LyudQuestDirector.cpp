@@ -759,7 +759,8 @@ static FAutoConsoleCommandWithWorldAndArgs GQuestGoToPerson(TEXT("Quest.GoToPers
 		FHitResult Hit;
 		FCollisionQueryParams Q(SCENE_QUERY_STAT(QuestGoTo), false);
 		Q.AddIgnoredActor(Pawn);
-		if (World->LineTraceSingleByChannel(Hit, To + FVector(0.0, 0.0, 250.0), To - FVector(0.0, 0.0, 600.0), ECC_Visibility, Q))
+		// from 1.5 m over their floor: under a stall's awning, never onto it
+		if (World->LineTraceSingleByChannel(Hit, To + FVector(0.0, 0.0, 150.0), To - FVector(0.0, 0.0, 600.0), ECC_Visibility, Q))
 		{
 			To = Hit.ImpactPoint;
 		}

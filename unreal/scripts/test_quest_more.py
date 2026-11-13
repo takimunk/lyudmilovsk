@@ -130,7 +130,7 @@ at("Quest.Start soda_science")
 at("Quest.Event talk Zotova_galina")
 for d in ("drink_baikal", "drink_dyushes", "drink_buratino", "drink_tarkhun"):
     at("Inventory.Give %s 1" % d)
-    at("Inventory.Use %s" % d, None, 1.0)
+    at("Inventory.Use %s" % d, None, 12.0)      # a bottle takes a while: another Use meanwhile is dropped
     dump("soda_" + d)
 at("Quest.Event talk Zotova_galina", None, 1.0)
 dump("soda_told")

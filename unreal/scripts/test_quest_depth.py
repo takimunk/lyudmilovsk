@@ -14,9 +14,44 @@ test_quest_depth.sh also checks the director's count line and runs tools/check_q
 
   sh unreal/scripts/test_quest_depth.sh
 """
+import os
+
 import unreal
 
-state = {"t": 0.0, "step": 0, "shots": 0}
+state = {"t": 0.0, "step": 0, "shots": 0, "find": None}
+LOG = os.path.join(unreal.Paths.project_saved_dir(), "Logs", "test_quest_depth.log")
+
+
+def seen_in_log(person):
+    try:
+        with open(LOG, encoding="utf-8", errors="replace") as f:
+            lines = [l for l in f if "QUESTTEST goto %s:" % person in l]
+    except OSError:
+        return False
+    return bool(lines) and ", seen)" in lines[-1]
+
+
+def find_tick(w, dt):
+    """FIND <person> <m> <h,h,...>: each hour in turn, go to them three times (their body is drawn by then), until seen"""
+    f = state["find"]
+    f["wait"] -= dt
+    if f["wait"] > 0.0:
+        return True
+    if f["phase"] == 0:
+        unreal.SystemLibrary.execute_console_command(w, "lyud.Birds.Time %s" % f["hours"][f["i"]])
+        f["phase"], f["wait"] = 1, 2.5
+    elif f["phase"] < 4:
+        unreal.SystemLibrary.execute_console_command(w, "Quest.GoToPerson %s %s" % (f["person"], f["m"]))
+        f["phase"], f["wait"] = f["phase"] + 1, 3.5
+    else:
+        if seen_in_log(f["person"]) or f["i"] + 1 >= len(f["hours"]):
+            unreal.log_warning("QUESTDEPTH found %s at %s h: %s" % (f["person"], f["hours"][f["i"]], seen_in_log(f["person"])))
+            state["find"] = None
+            if state["step"] < len(PLAN):
+                state["t"] = PLAN[state["step"]][0] - 0.3
+            return False
+        f["i"], f["phase"], f["wait"] = f["i"] + 1, 0, 0.0
+    return True
 PLAN = []
 T = [12.0]
 
@@ -26,9 +61,12 @@ def at(cmd, label=None, gap=0.6):
     T[0] += gap
 
 
-def go(person, m=1.3):
-    at("Quest.GoToPerson %s %s" % (person, m), None, 3.0)
-    at("Quest.GoToPerson %s %s" % (person, m), None, 2.0)
+def go(person, m=1.3, hours=None):
+    if hours:
+        at("FIND %s %s %s" % (person, m, ",".join(str(h) for h in hours)), None, 1.0)
+    else:
+        for _ in range(3):
+            at("Quest.GoToPerson %s %s" % (person, m), None, 3.5)
 
 
 def conversation(n=2):
@@ -41,8 +79,7 @@ def conversation(n=2):
 at("Quest.Reset", None, 1.0)
 at("Dev.Do pocket.reset", None, 1.0)
 at("Quest.SetStage waxwing prepare", None, 1.0)
-at("lyud.Birds.Time 10", None, 2.5)
-go("sorokin_oleg")
+go("sorokin_oleg", 1.3, [10, 11, 9, 15, 16])
 at("QUESTDEPTH mark b_no_feeder")
 conversation()
 at("Inventory.Give feeder 1", None, 1.0)
@@ -55,8 +92,7 @@ at("QUESTDEPTH mark d_day_again")
 for _ in range(4):
     conversation()
 # c) after sunset, still on his bench (14:30-18:30)
-at("lyud.Birds.Time 18.4", None, 2.5)
-go("sorokin_oleg")
+go("sorokin_oleg", 1.3, [18.4, 18.3, 18.45])
 at("Quest.SetStage waxwing wait", None, 1.0)
 at("QUESTDEPTH mark c_dusk")
 conversation()
@@ -64,8 +100,7 @@ at("shot showui", "sorokin_dusk")
 # g) a finished quest's after-talk once, then everyday talk (Nina strolls in the Academgorodok at 9)
 at("Quest.Reset", None, 1.0)
 at("Quest.SetStage evening_paper done", None, 1.0)
-at("lyud.Birds.Time 9", None, 2.5)
-go("korneeva_nina")
+go("korneeva_nina", 1.3, [9, 18.25, 10, 17, 11, 16, 12])
 at("QUESTDEPTH mark g_nina")
 for _ in range(7):
     at("Npc.Talk", None, 1.2)
@@ -133,13 +168,20 @@ def tick(dt):
     w = world()
     if not w:
         return
-    state["t"] += min(dt, 0.25)
+    dt = min(dt, 0.25)
+    if state["find"] is not None and find_tick(w, dt):
+        return
+    state["t"] += dt
     while state["step"] < len(PLAN) and state["t"] > PLAN[state["step"]][0]:
         _, cmd, label = PLAN[state["step"]]
         state["step"] += 1
         unreal.log_warning("QUESTDEPTH %s %s" % (cmd, label or ""))
         if cmd.startswith("QUESTDEPTH"):
             continue
+        if cmd.startswith("FIND "):
+            _, person, m, hours = cmd.split()
+            state["find"] = {"person": person, "m": m, "hours": hours.split(","), "i": 0, "phase": 0, "wait": 0.0}
+            return
         if cmd.startswith("shot"):
             unreal.log_warning("QUESTDEPTH shot %02d %s" % (state["shots"], label))
             state["shots"] += 1
