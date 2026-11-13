@@ -110,6 +110,11 @@ namespace LyudDiner
 		const FString Pkg = FString::Printf(TEXT("/Game/Audio/Food/%s"), Name);
 		return FPackageName::DoesPackageExist(Pkg) ? LoadObject<USoundBase>(nullptr, *FString::Printf(TEXT("%s.%s"), *Pkg, Name)) : nullptr;
 	}
+
+	/** ALyudDiner::DinerMesh's lookups (weak: the dishes hold their meshes) and the names found to have no mesh (cleared at
+	 *  each play start: a mesh may have been imported since). */
+	TMap<FName, TWeakObjectPtr<UStaticMesh>> MeshCache;
+	TSet<FName> MeshMissing;
 }
 
 // ---- dish definitions (Content/Food/food.json, "plated": true) ------------------------------------------------------------------
@@ -167,9 +172,30 @@ UStaticMesh* ALyudDiner::DinerMesh(FName Name)
 	{
 		return nullptr;
 	}
+	// asked several times for every dish served and every meal begun: the loaded mesh is remembered (weak: the dishes' components
+	// hold it), and so is a name with no mesh; the disk is only asked the first time
+	const TWeakObjectPtr<UStaticMesh>* Known = LyudDiner::MeshCache.Find(Name);
+	if (Known && Known->IsValid())
+	{
+		return Known->Get();
+	}
+	if (LyudDiner::MeshMissing.Contains(Name))
+	{
+		return nullptr;
+	}
+	const bool bSeenBefore = Known != nullptr;     // loaded once, collected since: it exists
 	const FString N = TEXT("SM_Diner_") + Name.ToString();
 	const FString Pkg = TEXT("/Game/Diner/Meshes/") + N;
-	return FPackageName::DoesPackageExist(Pkg) ? LoadObject<UStaticMesh>(nullptr, *(Pkg + TEXT(".") + N)) : nullptr;
+	UStaticMesh* M = (bSeenBefore || FPackageName::DoesPackageExist(Pkg)) ? LoadObject<UStaticMesh>(nullptr, *(Pkg + TEXT(".") + N)) : nullptr;
+	if (M)
+	{
+		LyudDiner::MeshCache.Add(Name, M);
+	}
+	else if (!bSeenBefore)
+	{
+		LyudDiner::MeshMissing.Add(Name);
+	}
+	return M;
 }
 
 // ---- the dish ------------------------------------------------------------------------------------------------------------------
@@ -439,6 +465,7 @@ FRotator ALyudDiner::YawToWorld(float LocalYawDeg) const
 void ALyudDiner::BeginPlay()
 {
 	Super::BeginPlay();
+	LyudDiner::MeshMissing.Reset();
 	LoadLayout();
 	FindParts();
 	if (ULyudInventoryUI* UI = ULyudInventoryUI::Get(this))
