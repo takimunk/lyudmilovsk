@@ -398,7 +398,8 @@ namespace
 				Total += B.Species == Star && !B.bGone;
 			}
 			int MaxIn = 0, Asleep = 0, Over = 0;
-			float Spread = 0.f, CostMax = 0.f;
+			float Spread = 0.f, CostMax = 0.f, MaxStray = 0.f;
+			int StraySteps = 0;
 			double Cost = 0.0;
 			long CostN = 0;
 			bool bSpreadSeen = false;
@@ -408,6 +409,18 @@ namespace
 			{
 				const auto A = std::chrono::steady_clock::now();
 				MaxIn = std::max(MaxIn, M->Count());
+				// how far any bird of the flock gets from its centre, up or sideways (a few hundred metres while it forms)
+				if (++StraySteps % 10 == 0 && M->Count() > 0)
+				{
+					const V3 Mid = M->Centre();
+					for (const FBird& B : W.Birds)
+					{
+						if (B.Act == EAct::Murmur)
+						{
+							MaxStray = std::max(MaxStray, (B.Pos - Mid).Len());
+						}
+					}
+				}
 				static int Printed = 0;
 				if (std::getenv("BIRD_TRACE") && Printed < 12)
 				{
@@ -482,12 +495,15 @@ namespace
 			std::printf("murmuration cost: %.3f ms per simulated second (%.3f ms a frame at 60 fps)\n", M->CpuMs / ((Dusk + 1.f - 15.5f) * 3600.f),
 				M->CpuMs / ((Dusk + 1.f - 15.5f) * 3600.f) / 60.f);
 			std::printf("murmuration: up to %d of %d starlings, 90%% within %.0f m of its centre at sunset-10 min; farthest over the sea %.0f m "
-				"(bound %.0f); %.0f m from the roost at most; %d escape rolls; %d asleep in the reed at dusk+1 h\n",
-				MaxIn, Total, Spread, M->MaxOffshore, W.Opt.MurmurOffshore, M->MaxFromRoost, M->Escapes, Asleep);
+				"(bound %.0f); %.0f m from the roost at most, no bird more than %.0f m from the flock's centre; %d escape rolls; %d asleep in the reed at dusk+1 h\n",
+				MaxIn, Total, Spread, M->MaxOffshore, W.Opt.MurmurOffshore, M->MaxFromRoost, MaxStray, M->Escapes, Asleep);
 			Check(R, MaxIn > Total * 0.7f, "most starlings join the evening murmuration");
 			Check(R, Spread > 10.f && Spread < 160.f, "the murmuration is one flock (90% within 160 m of its centre)");
 			Check(R, M->MaxOffshore <= W.Opt.MurmurOffshore, "the murmuration never goes farther out to sea than the coastal strip");
 			Check(R, M->MaxFromRoost < 450.f, "it keeps over its roost and round it");
+			// (birds pulled straight up over the scarp behind the reed used to climb for good, 5 km up by sunset: the hawk
+			// then stooped at them, far from the flock, and the escape waves below depended on how many had gone)
+			Check(R, MaxStray < 1000.f, "no starling leaves the flock for the sky (none more than 1 km from its centre)");
 			Check(R, M->Escapes > 50, "the peregrine's attacks send escape waves through it");
 			Check(R, Asleep == Total, "every starling is asleep in the reed by dusk + 1 h");
 
