@@ -804,11 +804,13 @@ void UBirdLifeSubsystem::SyncTrust(bool bToSave)
 	if (bToSave)
 	{
 		SavedTrust.Reset();
+		SavedTrustSpecies.Reset();
 		for (const FBird& B : S.Birds)
 		{
 			if (B.Trust > 0.05f)
 			{
 				SavedTrust.Add(B.Id, B.Trust);
+				SavedTrustSpecies.Add(B.Id, B.Species);
 			}
 		}
 		return;
@@ -817,6 +819,11 @@ void UBirdLifeSubsystem::SyncTrust(bool bToSave)
 	{
 		if (T.Key >= 0 && T.Key < (int32)S.Birds.size() && FMath::IsFinite(T.Value))
 		{
+			// loaded in another season the same id may be another bird: never onto another species
+			if (const int32* WasSpecies = SavedTrustSpecies.Find(T.Key); WasSpecies && *WasSpecies != S.Birds[T.Key].Species)
+			{
+				continue;
+			}
 			S.Birds[T.Key].Trust = FMath::Clamp(T.Value, 0.f, 1.f);
 		}
 	}

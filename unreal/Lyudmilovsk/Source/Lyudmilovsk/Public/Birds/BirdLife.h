@@ -213,6 +213,9 @@ public:
 
 	/** Trust per bird id, kept with the save. */
 	UPROPERTY(SaveGame) TMap<int32, float> SavedTrust;
+	/** The species (index) each of those birds was: the ids are places in the population, which changes with the season,
+	 *  so trust is given back only to a bird of the same species (a save from before this has none: all are taken). */
+	UPROPERTY(SaveGame) TMap<int32, int32> SavedTrustSpecies;
 
 	/** One line: how many birds do what, where (console: lyud.Birds.Report). */
 	UFUNCTION(BlueprintCallable, Category = "Birds")
