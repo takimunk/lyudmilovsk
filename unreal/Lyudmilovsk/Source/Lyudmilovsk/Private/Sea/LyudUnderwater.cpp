@@ -557,11 +557,17 @@ void ULyudUnderwaterSubsystem::Tick(float DeltaTime)
 	if (CVarSeaLifeFish.GetValueOnGameThread() != 0)
 	{
 		Sim->Step(DeltaTime, *Env, LyudFish::FV(Eye.X, Eye.Y, Eye.Z) * 0.01f, FC);
+		if (SpeciesNames.Num() != LyudFish::NumSpecies() && !Sim->Eaten().empty())
+		{
+			SpeciesNames.Reset();
+			for (int32 S = 0; S < LyudFish::NumSpecies(); S++) SpeciesNames.Add(FName(ANSI_TO_TCHAR(LyudFish::Species(S).Id)));
+		}
 		for (const LyudFish::FEaten& E : Sim->Eaten())
 		{
-			const FName Predator(ANSI_TO_TCHAR(LyudFish::Species(E.Predator).Id)), Prey(ANSI_TO_TCHAR(LyudFish::Species(E.Prey).Id));
+			if (!SpeciesNames.IsValidIndex(E.Predator) || !SpeciesNames.IsValidIndex(E.Prey)) continue;
+			const FName Predator = SpeciesNames[E.Predator], Prey = SpeciesNames[E.Prey];
 			const FVector At = FVector(E.Pos.X, E.Pos.Y, E.Pos.Z) * 100.f;
-			MealsSeen.FindOrAdd(Predator.ToString() + (E.bCaught ? TEXT("<-") : TEXT("<-(missed)")) + Prey.ToString())++;
+			MealsSeen.FindOrAdd((uint32(E.Predator) << 16) | (uint32(E.Prey) << 1) | (E.bCaught ? 1u : 0u))++;
 			OnFishHunt.Broadcast(Predator, Prey, At, E.bCaught);
 			if (E.bCaught) OnFishEaten.Broadcast(Predator, Prey, At);
 		}
@@ -668,7 +674,13 @@ FString ULyudUnderwaterSubsystem::GetDebugReport() const
 	if (MealsSeen.Num())
 	{
 		Out += TEXT("; meals seen:");
-		for (const TPair<FString, int32>& M : MealsSeen) Out += FString::Printf(TEXT(" %s %d"), *M.Key, M.Value);
+		for (const TPair<uint32, int32>& M : MealsSeen)
+		{
+			const int32 Predator = int32(M.Key >> 16), Prey = int32((M.Key >> 1) & 0x7FFFu);
+			if (Predator >= LyudFish::NumSpecies() || Prey >= LyudFish::NumSpecies()) continue;
+			Out += FString::Printf(TEXT(" %s%s%s %d"), ANSI_TO_TCHAR(LyudFish::Species(Predator).Id), (M.Key & 1u) ? TEXT("<-") : TEXT("<-(missed)"),
+				ANSI_TO_TCHAR(LyudFish::Species(Prey).Id), M.Value);
+		}
 	}
 	if (const ALyudSeaLife* L = Life.Get())
 	{
