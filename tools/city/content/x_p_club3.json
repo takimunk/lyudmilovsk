@@ -1,0 +1,858 @@
+{
+ "_doc": "The club «Шестерня» (P-CLUB3), second pass: the club library lends (cog_lending, the swap rack, the returns trolley, topic shelves with the club's own pencilled margins), billiards and table tennis by weekday, the model-makers' three-day boat and four-day glider, a photo print that takes four days and a tray that shows the hours, the small stage's rehearsal week, and the running story of the lost chess clock told by boards and lines by `after` (found at the photo lab's second bench; the quest cog_clock waits for look_club, exposure_clock and cog_clock_set). Ids refer to the cog_club module's things; all words in strings/x_p_club3.json (also the words of the quests cog_clock and cog_reader, whose JSON is in the report, not in quests.json).",
+ "shops": {
+  "cog_lending": {
+   "role": "clerk",
+   "goods": [
+    {
+     "item": "bird_guide",
+     "price": 5,
+     "count": 1
+    },
+    {
+     "item": "fish_book",
+     "price": 5,
+     "count": 1
+    },
+    {
+     "item": "magazine_science",
+     "price": 3,
+     "count": 3
+    },
+    {
+     "item": "magazine_travel",
+     "price": 3,
+     "count": 3
+    }
+   ]
+  }
+ },
+ "acts": {
+  "cog_sh_poetry": {
+   "like": "read_poetry",
+   "lines": [
+    "city.read.poetry.*",
+    "city.cog.sh.poetry.*"
+   ],
+   "target": "read_poetry"
+  },
+  "cog_sh_art": {
+   "like": "read_art",
+   "lines": [
+    "city.read.art.*",
+    "city.cog.sh.art.*"
+   ],
+   "target": "read_art"
+  },
+  "cog_sh_chess": {
+   "like": "read_chess",
+   "lines": [
+    "city.read.chess.*",
+    "city.cog.sh.chess.*"
+   ],
+   "target": "read_chess"
+  },
+  "cog_sh_eng": {
+   "like": "read_engineering",
+   "lines": [
+    "city.read.engineering.*",
+    "city.cog.sh.eng.*"
+   ],
+   "target": "read_engineering"
+  },
+  "cog_sh_local": {
+   "like": "read_local",
+   "lines": [
+    "city.read.local.*",
+    "city.cog.sh.local.*"
+   ],
+   "target": "read_local"
+  },
+  "cog_sh_birds": {
+   "like": "read_birds",
+   "lines": [
+    "city.read.birds.*",
+    "city.cog.sh.birds.*"
+   ],
+   "target": "read_birds"
+  },
+  "cog_sh_sea": {
+   "like": "read_sea",
+   "lines": [
+    "city.read.sea.*",
+    "city.cog.sh.sea.*"
+   ],
+   "target": "read_sea"
+  },
+  "cog_sh_science": {
+   "like": "read_science",
+   "lines": [
+    "city.read.science.*",
+    "city.cog.sh.science.*"
+   ],
+   "target": "read_science"
+  },
+  "cog_cart": {
+   "like": "read_misc",
+   "prompt": "city.cog.cart.prompt",
+   "minutes": 5,
+   "lines": [
+    {
+     "k": "city.cog.cart.1"
+    },
+    {
+     "k": "city.cog.cart.2",
+     "d": "mon"
+    },
+    {
+     "k": "city.cog.cart.3",
+     "d": "fri-sun"
+    },
+    {
+     "k": "city.cog.cart.4",
+     "after": 5
+    }
+   ]
+  },
+  "cog_swap": {
+   "like": "take_any",
+   "prompt": "city.cog.swap.prompt",
+   "minutes": 2,
+   "give": [
+    [
+     "magazine_science",
+     1
+    ]
+   ],
+   "daily": 1,
+   "sound": "paper_rustle",
+   "lines": [
+    {
+     "k": "city.cog.swap.1"
+    },
+    {
+     "k": "city.cog.swap.2",
+     "d": "mon-wed"
+    },
+    {
+     "k": "city.cog.swap.3",
+     "d": "thu-sat"
+    },
+    {
+     "k": "city.cog.swap.4",
+     "d": "sun"
+    }
+   ]
+  },
+  "cog_billiards": {
+   "like": "billiards",
+   "target": "billiards",
+   "lines": [
+    "city.do.billiards.*",
+    {
+     "k": "city.cog.bil.1",
+     "d": "tue,thu",
+     "h": [
+      17,
+      23
+     ]
+    },
+    {
+     "k": "city.cog.bil.2",
+     "d": "fri",
+     "h": [
+      17,
+      23
+     ]
+    },
+    {
+     "k": "city.cog.bil.3",
+     "d": "sat",
+     "h": [
+      12,
+      23
+     ]
+    },
+    {
+     "k": "city.cog.bil.4",
+     "d": "sun",
+     "h": [
+      10,
+      19
+     ]
+    },
+    {
+     "k": "city.cog.bil.5",
+     "after": 8
+    }
+   ]
+  },
+  "cog_tt": {
+   "like": "table_tennis",
+   "target": "table_tennis",
+   "lines": [
+    "city.do.table_tennis.*",
+    {
+     "k": "city.cog.tt.1",
+     "d": "mon,wed",
+     "h": [
+      16,
+      20
+     ]
+    },
+    {
+     "k": "city.cog.tt.2",
+     "d": "tue,thu",
+     "h": [
+      17,
+      22
+     ]
+    },
+    {
+     "k": "city.cog.tt.3",
+     "d": "fri,sat",
+     "h": [
+      17,
+      23
+     ]
+    },
+    {
+     "k": "city.cog.tt.4",
+     "d": "sun",
+     "h": [
+      8,
+      13
+     ]
+    }
+   ]
+  },
+  "cog_league": {
+   "like": "look_misc",
+   "rotate": "daily",
+   "minutes": 3,
+   "lines": [
+    {
+     "k": "city.cog.league.1"
+    },
+    {
+     "k": "city.cog.league.2",
+     "after": 2
+    },
+    {
+     "k": "city.cog.league.3",
+     "after": 5
+    },
+    {
+     "k": "city.cog.league.4",
+     "after": 8
+    },
+    {
+     "k": "city.cog.league.5",
+     "after": 11
+    }
+   ]
+  },
+  "cog_cues": {
+   "like": "use_misc",
+   "prompt": "city.cog.cues.prompt",
+   "minutes": 2,
+   "sound": "billiard_click",
+   "lines": [
+    {
+     "k": "city.cog.cues.1"
+    },
+    {
+     "k": "city.cog.cues.2"
+    },
+    {
+     "k": "city.cog.cues.3",
+     "d": "sat,sun"
+    }
+   ]
+  },
+  "cog_bench_boat": {
+   "like": "workbench",
+   "target": "workbench",
+   "prompt": "city.cog.bench.boat.prompt",
+   "lines": [
+    {
+     "k": "city.cog.bench.boat.1",
+     "every": [
+      3,
+      0
+     ]
+    },
+    {
+     "k": "city.cog.bench.boat.2",
+     "every": [
+      3,
+      1
+     ]
+    },
+    {
+     "k": "city.cog.bench.boat.3",
+     "every": [
+      3,
+      2
+     ]
+    }
+   ]
+  },
+  "cog_bench_glider": {
+   "like": "workbench",
+   "target": "workbench",
+   "prompt": "city.cog.bench.glider.prompt",
+   "lines": [
+    {
+     "k": "city.cog.bench.glider.1",
+     "every": [
+      4,
+      0
+     ]
+    },
+    {
+     "k": "city.cog.bench.glider.2",
+     "every": [
+      4,
+      1
+     ]
+    },
+    {
+     "k": "city.cog.bench.glider.3",
+     "every": [
+      4,
+      2
+     ]
+    },
+    {
+     "k": "city.cog.bench.glider.4",
+     "every": [
+      4,
+      3
+     ]
+    }
+   ]
+  },
+  "cog_draft": {
+   "like": "look_misc",
+   "prompt": "city.cog.draft.prompt",
+   "minutes": 4,
+   "rotate": "daily",
+   "lines": [
+    {
+     "k": "city.cog.draft.1"
+    },
+    {
+     "k": "city.cog.draft.2",
+     "after": 3
+    },
+    {
+     "k": "city.cog.draft.3",
+     "after": 6
+    }
+   ]
+  },
+  "cog_models": {
+   "like": "read_engineering",
+   "target": "read_engineering",
+   "lines": [
+    "city.read.engineering.*",
+    {
+     "k": "city.cog.models.1",
+     "every": [
+      3,
+      0
+     ]
+    },
+    {
+     "k": "city.cog.models.2",
+     "every": [
+      3,
+      1
+     ]
+    },
+    {
+     "k": "city.cog.models.3",
+     "every": [
+      3,
+      2
+     ]
+    },
+    {
+     "k": "city.cog.models.4",
+     "after": 9
+    }
+   ]
+  },
+  "cog_dry": {
+   "like": "look_exhibit",
+   "prompt": "city.cog.dry.prompt",
+   "lines": [
+    {
+     "k": "city.cog.dry.1",
+     "every": [
+      3,
+      0
+     ]
+    },
+    {
+     "k": "city.cog.dry.2",
+     "every": [
+      3,
+      1
+     ]
+    },
+    {
+     "k": "city.cog.dry.3",
+     "every": [
+      3,
+      2
+     ]
+    }
+   ]
+  },
+  "cog_workshop_board": {
+   "like": "look_club",
+   "target": "look_club",
+   "minutes": 4,
+   "lines": [
+    "city.look.club.*",
+    {
+     "k": "city.cog.wsb.1",
+     "every": [
+      3,
+      0
+     ]
+    },
+    {
+     "k": "city.cog.wsb.2",
+     "every": [
+      3,
+      1
+     ]
+    },
+    {
+     "k": "city.cog.wsb.3",
+     "every": [
+      3,
+      2
+     ]
+    },
+    {
+     "k": "city.cog.wsb.4",
+     "after": 3
+    }
+   ]
+  },
+  "cog_darkroom": {
+   "like": "darkroom",
+   "target": "darkroom",
+   "prompt": "city.cog.dark.prompt",
+   "lines": [
+    {
+     "k": "city.cog.dark.1",
+     "every": [
+      4,
+      0
+     ]
+    },
+    {
+     "k": "city.cog.dark.2",
+     "every": [
+      4,
+      1
+     ]
+    },
+    {
+     "k": "city.cog.dark.3",
+     "every": [
+      4,
+      2
+     ]
+    },
+    {
+     "k": "city.cog.dark.4",
+     "every": [
+      4,
+      3
+     ]
+    }
+   ]
+  },
+  "cog_tray": {
+   "like": "look_misc",
+   "prompt": "city.cog.tray.prompt",
+   "minutes": 3,
+   "lines": [
+    {
+     "k": "city.cog.tray.1",
+     "h": [
+      6,
+      11
+     ]
+    },
+    {
+     "k": "city.cog.tray.2",
+     "h": [
+      11,
+      15
+     ]
+    },
+    {
+     "k": "city.cog.tray.3",
+     "h": [
+      15,
+      19
+     ]
+    },
+    {
+     "k": "city.cog.tray.4",
+     "h": [
+      19,
+      6
+     ]
+    }
+   ]
+  },
+  "cog_clock": {
+   "like": "look_misc",
+   "prompt": "city.cog.clock.prompt",
+   "minutes": 2,
+   "sound": "clock_tick",
+   "lines": [
+    {
+     "k": "city.cog.clock.1"
+    },
+    {
+     "k": "city.cog.clock.2",
+     "after": 4
+    },
+    {
+     "k": "city.cog.clock.3",
+     "after": 7
+    }
+   ]
+  },
+  "cog_prints": {
+   "like": "look_exhibit",
+   "prompt": "city.cog.prints.prompt",
+   "lines": [
+    {
+     "k": "city.cog.prints.1",
+     "every": [
+      4,
+      0
+     ]
+    },
+    {
+     "k": "city.cog.prints.2",
+     "every": [
+      4,
+      1
+     ]
+    },
+    {
+     "k": "city.cog.prints.3",
+     "every": [
+      4,
+      2
+     ]
+    },
+    {
+     "k": "city.cog.prints.4",
+     "every": [
+      4,
+      3
+     ]
+    }
+   ]
+  },
+  "cog_stage": {
+   "like": "stage",
+   "target": "stage",
+   "lines": [
+    "city.do.stage.*",
+    {
+     "k": "city.cog.stage.1",
+     "d": "tue,thu",
+     "h": [
+      17,
+      21
+     ]
+    },
+    {
+     "k": "city.cog.stage.2",
+     "d": "sat",
+     "h": [
+      17,
+      22
+     ]
+    },
+    {
+     "k": "city.cog.stage.3",
+     "d": "wed",
+     "h": [
+      16,
+      19
+     ]
+    }
+   ]
+  },
+  "cog_rehearsals": {
+   "like": "look_misc",
+   "prompt": "city.cog.reh.prompt",
+   "rotate": "daily",
+   "minutes": 3,
+   "lines": [
+    {
+     "k": "city.cog.reh.1"
+    },
+    {
+     "k": "city.cog.reh.2",
+     "d": "tue,thu"
+    },
+    {
+     "k": "city.cog.reh.3",
+     "d": "wed"
+    },
+    {
+     "k": "city.cog.reh.4",
+     "d": "sat"
+    },
+    {
+     "k": "city.cog.reh.5",
+     "d": "mon,fri"
+    },
+    {
+     "k": "city.cog.reh.6",
+     "after": 8
+    }
+   ]
+  },
+  "cog_reading_notice": {
+   "like": "look_club",
+   "target": "look_club",
+   "minutes": 4,
+   "lines": [
+    "city.look.club.*",
+    {
+     "k": "city.cog.rd.1",
+     "after": 2
+    },
+    {
+     "k": "city.cog.rd.2",
+     "after": 3
+    },
+    {
+     "k": "city.cog.rd.3",
+     "after": 7
+    }
+   ]
+  },
+  "cog_lounge_notice": {
+   "like": "look_club",
+   "target": "look_club",
+   "minutes": 4,
+   "lines": [
+    "city.look.club.*",
+    {
+     "k": "city.cog.lounge.1"
+    },
+    {
+     "k": "city.cog.lounge.2"
+    },
+    {
+     "k": "city.cog.lounge.3",
+     "after": 4
+    }
+   ]
+  },
+  "cog_stage_notice": {
+   "like": "look_club",
+   "target": "look_club",
+   "minutes": 4,
+   "lines": [
+    "city.look.club.*",
+    {
+     "k": "city.cog.stagen.1"
+    },
+    {
+     "k": "city.cog.stagen.2",
+     "after": 9
+    }
+   ]
+  },
+  "cog_meeting_notice": {
+   "like": "look_club",
+   "target": "look_club",
+   "minutes": 4,
+   "lines": [
+    "city.look.club.*",
+    {
+     "k": "city.cog.meet.1"
+    },
+    {
+     "k": "city.cog.meet.2",
+     "after": 12
+    }
+   ]
+  },
+  "cog_chess_a": {
+   "like": "chess",
+   "target": "chess",
+   "lines": [
+    "city.do.chess.*",
+    {
+     "k": "city.cog.chess.1"
+    },
+    {
+     "k": "city.cog.chess.2",
+     "d": "thu",
+     "h": [
+      17,
+      22
+     ]
+    },
+    {
+     "k": "city.cog.chess.3",
+     "after": 3
+    }
+   ]
+  },
+  "cog_chess_b": {
+   "like": "chess",
+   "target": "chess",
+   "lines": [
+    "city.do.chess.*",
+    {
+     "k": "city.cog.chess.4",
+     "after": 7
+    },
+    {
+     "k": "city.cog.chess.5",
+     "after": 7
+    }
+   ]
+  },
+  "cog_clock_set": {
+   "like": "look_misc",
+   "prompt": "city.cog.place.prompt",
+   "minutes": 2,
+   "sound": "chess_piece",
+   "lines": [
+    {
+     "k": "city.cog.place.1"
+    },
+    {
+     "k": "city.cog.place.2",
+     "after": 5
+    },
+    {
+     "k": "city.cog.place.3",
+     "after": 7
+    }
+   ]
+  }
+ },
+ "rules": {
+  "cog_club/stack_r_1": {
+   "act": "cog_sh_poetry"
+  },
+  "cog_club/stack_r_2": {
+   "act": "cog_sh_art"
+  },
+  "cog_club/stack_r_3": {
+   "act": "cog_sh_chess"
+  },
+  "cog_club/stack_r_4": {
+   "act": "cog_sh_eng"
+  },
+  "cog_club/stack_l_1": {
+   "act": "cog_sh_local"
+  },
+  "cog_club/stack_l_2": {
+   "act": "cog_sh_birds"
+  },
+  "cog_club/stack_l_3": {
+   "act": "cog_sh_sea"
+  },
+  "cog_club/stack_l_4": {
+   "act": "cog_sh_science"
+  },
+  "cog_club/book_cart": {
+   "act": "cog_cart"
+  },
+  "cog_club/swap_shelf": {
+   "act": "cog_swap"
+  },
+  "cog_club/billiards_1": {
+   "act": "cog_billiards"
+  },
+  "cog_club/table_tennis_1": {
+   "act": "cog_tt"
+  },
+  "cog_club/league_board": {
+   "act": "cog_league"
+  },
+  "cog_club/cue_rack": {
+   "act": "cog_cues"
+  },
+  "cog_club/workbench_1": {
+   "act": "cog_bench_boat"
+  },
+  "cog_club/workbench_2": {
+   "act": "cog_bench_glider"
+  },
+  "cog_club/drafting_board": {
+   "act": "cog_draft"
+  },
+  "cog_club/model_shelf": {
+   "act": "cog_models"
+  },
+  "cog_club/drying_shelf": {
+   "act": "cog_dry"
+  },
+  "cog_club/workshop_board": {
+   "act": "cog_workshop_board"
+  },
+  "cog_club/darkroom_bench": {
+   "act": "cog_darkroom"
+  },
+  "cog_club/developing_tray": {
+   "act": "cog_tray"
+  },
+  "cog_club/exposure_clock": {
+   "act": "cog_clock"
+  },
+  "cog_club/drying_line": {
+   "act": "cog_prints"
+  },
+  "cog_club/stage": {
+   "act": "cog_stage"
+  },
+  "cog_club/rehearsal_board": {
+   "act": "cog_rehearsals"
+  },
+  "cog_club/club_notices": {
+   "act": "cog_reading_notice"
+  },
+  "cog_club/lounge_board": {
+   "act": "cog_lounge_notice"
+  },
+  "cog_club/stage_board": {
+   "act": "cog_stage_notice"
+  },
+  "cog_club/meeting_board": {
+   "act": "cog_meeting_notice"
+  },
+  "cog_club/chess_0": {
+   "act": "cog_chess_a"
+  },
+  "cog_club/chess_1": {
+   "act": "cog_chess_b"
+  },
+  "cog_club/clock_place": {
+   "act": "cog_clock_set"
+  }
+ }
+}

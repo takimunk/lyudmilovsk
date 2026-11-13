@@ -707,6 +707,66 @@
    "yaw": 111.0
   },
   {
+   "id": "chess_seat_a",
+   "kind": "seat",
+   "pos": [
+    4.748,
+    7.795,
+    4.3
+   ],
+   "yaw": 180.0
+  },
+  {
+   "id": "chess_seat_b",
+   "kind": "seat",
+   "pos": [
+    4.748,
+    9.035,
+    4.3
+   ],
+   "yaw": 0.0
+  },
+  {
+   "id": "ledge_1",
+   "kind": "seat",
+   "pos": [
+    -0.261,
+    3.654,
+    4.3
+   ],
+   "yaw": -1.6000000000000139
+  },
+  {
+   "id": "ledge_2",
+   "kind": "seat",
+   "pos": [
+    0.912,
+    3.695,
+    4.3
+   ],
+   "yaw": 5.599999999999997
+  },
+  {
+   "id": "guest_book",
+   "kind": "stand",
+   "pos": [
+    2.509,
+    9.613,
+    4.3
+   ],
+   "yaw": 0.0
+  },
+  {
+   "id": "hatch",
+   "kind": "stand",
+   "pos": [
+    0.0,
+    20.3,
+    4.3
+   ],
+   "yaw": -180.0
+  },
+  {
    "id": "bar",
    "kind": "counter",
    "pos": [
@@ -768,6 +828,28 @@
   }
  ],
  "lamps": [
+  {
+   "pos": [
+    4.898,
+    10.285,
+    5.7
+   ],
+   "lumens": 350,
+   "colour": "#FFD9A8",
+   "kind": "public",
+   "radius": 4.0
+  },
+  {
+   "pos": [
+    1.478,
+    3.11,
+    5.49
+   ],
+   "lumens": 180,
+   "colour": "#FFD9A8",
+   "kind": "public",
+   "radius": 3.0
+  },
   {
    "pos": [
     6.568,
@@ -1356,6 +1438,202 @@
    "yaw": 242,
    "props": {
     "topic": "view"
+   }
+  },
+  {
+   "id": "chess_chair_a",
+   "kind": "seat",
+   "pos": [
+    4.748,
+    7.795,
+    4.75
+   ],
+   "yaw": 180.0,
+   "props": {
+    "height": 0.45
+   }
+  },
+  {
+   "id": "chess_chair_b",
+   "kind": "seat",
+   "pos": [
+    4.748,
+    9.035,
+    4.75
+   ],
+   "yaw": 0.0,
+   "props": {
+    "height": 0.45
+   }
+  },
+  {
+   "id": "regulars_chess",
+   "kind": "play",
+   "pos": [
+    4.748,
+    8.415,
+    5.02
+   ],
+   "yaw": 0.0,
+   "props": {
+    "what": "chess"
+   }
+  },
+  {
+   "id": "ledge_stool_1",
+   "kind": "seat",
+   "pos": [
+    -0.261,
+    3.654,
+    4.98
+   ],
+   "yaw": -1.6,
+   "props": {
+    "height": 0.68
+   }
+  },
+  {
+   "id": "ledge_stool_2",
+   "kind": "seat",
+   "pos": [
+    0.912,
+    3.695,
+    4.98
+   ],
+   "yaw": 5.6,
+   "props": {
+    "height": 0.68
+   }
+  },
+  {
+   "id": "window_ledge",
+   "kind": "board",
+   "pos": [
+    0.349,
+    3.006,
+    5.6
+   ],
+   "yaw": 2.0,
+   "props": {
+    "topic": "view"
+   }
+  },
+  {
+   "id": "guest_pen",
+   "kind": "board",
+   "pos": [
+    2.309,
+    10.333,
+    5.46
+   ],
+   "yaw": 0.0,
+   "props": {
+    "topic": "guestpen"
+   }
+  },
+  {
+   "id": "guest_book",
+   "kind": "board",
+   "pos": [
+    2.609,
+    10.163,
+    5.43
+   ],
+   "yaw": 0.0,
+   "props": {
+    "topic": "guestbook"
+   }
+  },
+  {
+   "id": "kesha_dish",
+   "kind": "machine",
+   "pos": [
+    -3.193,
+    18.314,
+    5.45
+   ],
+   "yaw": 0.0,
+   "props": {
+    "what": "kesha_feed"
+   }
+  },
+  {
+   "id": "kesha_perch",
+   "kind": "board",
+   "pos": [
+    -3.701,
+    17.912,
+    5.85
+   ],
+   "yaw": 217,
+   "props": {
+    "topic": "kesha"
+   }
+  },
+  {
+   "id": "record_crate",
+   "kind": "shelf",
+   "pos": [
+    -6.331,
+    20.681,
+    5.2
+   ],
+   "yaw": 308.0,
+   "props": {
+    "topic": "music"
+   }
+  },
+  {
+   "id": "cake_vitrine",
+   "kind": "board",
+   "pos": [
+    2.121,
+    18.826,
+    5.65
+   ],
+   "yaw": 0.0,
+   "props": {
+    "topic": "cakes"
+   }
+  },
+  {
+   "id": "espresso",
+   "kind": "machine",
+   "pos": [
+    -0.756,
+    19.154,
+    5.65
+   ],
+   "yaw": 0.0,
+   "props": {
+    "what": "espresso"
+   }
+  },
+  {
+   "id": "lounge_paper",
+   "kind": "take",
+   "pos": [
+    -3.931,
+    8.869,
+    4.8
+   ],
+   "yaw": 20,
+   "props": {
+    "item": "daily_paper"
+   }
+  },
+  {
+   "id": "kitchen_hatch",
+   "kind": "counter",
+   "pos": [
+    0.1,
+    20.95,
+    5.45
+   ],
+   "yaw": 0.0,
+   "props": {
+    "role": "cook",
+    "service": "talk"
    }
   }
  ],
@@ -2921,8 +3199,8 @@
   "saucer hall at z 4.3; entrance tunnel -> glazed spiral core; closed underside"
  ],
  "tris": {
-  "shell": 2912,
-  "detail": 14205,
+  "shell": 2960,
+  "detail": 17023,
   "windows": 296
  }
 }

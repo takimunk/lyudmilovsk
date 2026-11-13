@@ -1,0 +1,920 @@
+{
+ "_doc": "P-T3SPORT (culture_block), depth pass: training sections by weekday and hour (basketball, gymnastics, weights), the coach who notices the hero's visits, the results board, the pool's repair notices, the sauna and shower cabin, the changing screen, the kiln and a bowl No. 7 over a pottery week (wheel Mon-Tue, kiln Wed, glaze Thu-Fri, ready Sat), three easels by the hour, the teacher's canvas by days, and the building's small story: a fifth player for the courtyard tournament (boards, lockers, cashier, tactics board, results). Strings: strings/x_p_t3sport.json.",
+ "acts": {
+  "t3_coach": {
+   "prompt": "city.t3.coach.prompt",
+   "needs_staff": "coach",
+   "lines": [
+    "city.t3.t3_coach.1",
+    {
+     "k": "city.t3.t3_coach.2",
+     "after": 1
+    },
+    {
+     "k": "city.t3.t3_coach.3",
+     "after": 3
+    },
+    {
+     "k": "city.t3.t3_coach.4",
+     "d": "mon,wed,fri",
+     "h": [
+      15,
+      19
+     ]
+    },
+    {
+     "k": "city.t3.t3_coach.5",
+     "d": "tue,thu",
+     "h": [
+      15,
+      19
+     ]
+    },
+    {
+     "k": "city.t3.t3_coach.6",
+     "after": 5
+    },
+    {
+     "k": "city.t3.t3_coach.7",
+     "after": 7
+    },
+    {
+     "k": "city.t3.t3_coach.8",
+     "after": 10
+    },
+    {
+     "k": "city.t3.t3_coach.9",
+     "d": "sat",
+     "after": 12
+    },
+    {
+     "k": "city.t3.t3_coach.10",
+     "after": 14
+    }
+   ],
+   "rotate": "use"
+  },
+  "t3_sections": {
+   "like": "look_misc",
+   "minutes": 2,
+   "lines": [
+    "city.t3.t3_sections.1",
+    {
+     "k": "city.t3.t3_sections.2",
+     "d": "mon,wed,fri",
+     "h": [
+      15,
+      19
+     ]
+    },
+    {
+     "k": "city.t3.t3_sections.3",
+     "d": "tue,thu",
+     "h": [
+      15,
+      19
+     ]
+    },
+    {
+     "k": "city.t3.t3_sections.4",
+     "d": "mon-fri",
+     "h": [
+      7,
+      15
+     ]
+    },
+    {
+     "k": "city.t3.t3_sections.5",
+     "d": "sat"
+    },
+    {
+     "k": "city.t3.t3_sections.6",
+     "d": "sun"
+    },
+    {
+     "k": "city.t3.t3_sections.7",
+     "d": "mon-sat",
+     "h": [
+      19,
+      7
+     ]
+    }
+   ],
+   "rotate": "use"
+  },
+  "t3_tactics": {
+   "like": "look_misc",
+   "minutes": 3,
+   "rotate": "daily",
+   "lines": [
+    "city.t3.t3_tactics.1",
+    {
+     "k": "city.t3.t3_tactics.2",
+     "after": 4
+    },
+    {
+     "k": "city.t3.t3_tactics.3",
+     "after": 8
+    },
+    {
+     "k": "city.t3.t3_tactics.4",
+     "after": 11
+    },
+    {
+     "k": "city.t3.t3_tactics.5",
+     "after": 14
+    }
+   ]
+  },
+  "t3_club_board": {
+   "like": "look_club",
+   "minutes": 4,
+   "target": "look_club",
+   "rotate": "daily",
+   "lines": [
+    "city.t3.t3_club_board.1",
+    "city.t3.t3_club_board.2",
+    {
+     "k": "city.t3.t3_club_board.3",
+     "after": 2
+    },
+    {
+     "k": "city.t3.t3_club_board.4",
+     "after": 4
+    },
+    {
+     "k": "city.t3.t3_club_board.5",
+     "after": 6
+    },
+    {
+     "k": "city.t3.t3_club_board.6",
+     "after": 9
+    },
+    {
+     "k": "city.t3.t3_club_board.7",
+     "after": 11
+    },
+    {
+     "k": "city.t3.t3_club_board.8",
+     "after": 14
+    }
+   ]
+  },
+  "t3_results": {
+   "like": "look_misc",
+   "minutes": 3,
+   "rotate": "daily",
+   "lines": [
+    "city.t3.t3_results.1",
+    "city.t3.t3_results.2",
+    {
+     "k": "city.t3.t3_results.3",
+     "after": 3
+    },
+    {
+     "k": "city.t3.t3_results.4",
+     "after": 13
+    },
+    {
+     "k": "city.t3.t3_results.5",
+     "after": 14
+    }
+   ]
+  },
+  "t3_pool": {
+   "like": "look_misc",
+   "minutes": 3,
+   "rotate": "daily",
+   "lines": [
+    "city.t3.t3_pool.1",
+    {
+     "k": "city.t3.t3_pool.2",
+     "after": 4
+    },
+    {
+     "k": "city.t3.t3_pool.3",
+     "after": 8
+    },
+    {
+     "k": "city.t3.t3_pool.4",
+     "after": 12
+    },
+    {
+     "k": "city.t3.t3_pool.5",
+     "after": 16
+    }
+   ]
+  },
+  "t3_sauna_sit": {
+   "prompt": "city.act.sit.prompt",
+   "pose": "sit",
+   "minutes": 30,
+   "sound": "wood_creak",
+   "lines": [
+    {
+     "k": "city.t3.t3_sauna_sit.1",
+     "d": "mon-fri",
+     "h": [
+      6,
+      17
+     ]
+    },
+    {
+     "k": "city.t3.t3_sauna_sit.2",
+     "d": "mon-fri",
+     "h": [
+      17,
+      6
+     ]
+    },
+    {
+     "k": "city.t3.t3_sauna_sit.3",
+     "d": "sat"
+    },
+    {
+     "k": "city.t3.t3_sauna_sit.4",
+     "d": "sun"
+    }
+   ]
+  },
+  "t3_sauna_water": {
+   "prompt": "city.t3.stove.prompt",
+   "minutes": 5,
+   "sound": "steam_hiss",
+   "lines": [
+    "city.t3.t3_sauna_water.1",
+    "city.t3.t3_sauna_water.2",
+    "city.t3.t3_sauna_water.3"
+   ]
+  },
+  "t3_shower": {
+   "prompt": "city.t3.shower.prompt",
+   "minutes": 10,
+   "fade": true,
+   "sound": "water_pour",
+   "lines": [
+    "city.t3.t3_shower.1",
+    "city.t3.t3_shower.2",
+    "city.t3.t3_shower.3",
+    "city.t3.t3_shower.4"
+   ]
+  },
+  "t3_changing": {
+   "like": "door_any",
+   "prompt": "city.t3.changing.prompt",
+   "minutes": 5,
+   "fade": true,
+   "any_hour": false,
+   "lines": [
+    "city.t3.t3_changing.1",
+    "city.t3.t3_changing.2",
+    "city.t3.t3_changing.3"
+   ]
+  },
+  "t3_lockers": {
+   "like": "look_misc",
+   "minutes": 2,
+   "rotate": "daily",
+   "lines": [
+    "city.t3.t3_lockers.1",
+    "city.t3.t3_lockers.2",
+    {
+     "k": "city.t3.t3_lockers.3",
+     "after": 5
+    },
+    {
+     "k": "city.t3.t3_lockers.4",
+     "after": 10
+    },
+    {
+     "k": "city.t3.t3_lockers.5",
+     "after": 14
+    }
+   ]
+  },
+  "t3_reception": {
+   "like": "sport_reception",
+   "lines": [
+    "city.t3.t3_reception.1",
+    "city.t3.t3_reception.2",
+    "city.t3.t3_reception.3",
+    "city.t3.t3_reception.4",
+    {
+     "k": "city.t3.t3_reception.5",
+     "after": 5
+    },
+    {
+     "k": "city.t3.t3_reception.6",
+     "after": 9
+    }
+   ],
+   "rotate": "use"
+  },
+  "t3_hoop_main": {
+   "like": "basketball",
+   "minutes": 15,
+   "lines": [
+    {
+     "k": "city.t3.t3_hoop_main.1",
+     "d": "mon,wed,fri",
+     "h": [
+      15,
+      19
+     ]
+    },
+    {
+     "k": "city.t3.t3_hoop_main.2",
+     "d": "tue,thu",
+     "h": [
+      15,
+      19
+     ]
+    },
+    {
+     "k": "city.t3.t3_hoop_main.3",
+     "d": "mon-fri",
+     "h": [
+      6,
+      15
+     ]
+    },
+    {
+     "k": "city.t3.t3_hoop_main.4",
+     "d": "mon-fri",
+     "h": [
+      19,
+      6
+     ]
+    },
+    {
+     "k": "city.t3.t3_hoop_main.5",
+     "d": "sat"
+    },
+    {
+     "k": "city.t3.t3_hoop_main.6",
+     "d": "sun"
+    }
+   ]
+  },
+  "t3_hoop_free": {
+   "like": "basketball",
+   "minutes": 15,
+   "lines": [
+    {
+     "k": "city.t3.t3_hoop_free.1",
+     "h": [
+      6,
+      12
+     ]
+    },
+    {
+     "k": "city.t3.t3_hoop_free.2",
+     "h": [
+      12,
+      18
+     ]
+    },
+    {
+     "k": "city.t3.t3_hoop_free.3",
+     "h": [
+      18,
+      6
+     ]
+    }
+   ]
+  },
+  "t3_court": {
+   "like": "basketball",
+   "prompt": "city.t3.court.prompt",
+   "minutes": 30,
+   "lines": [
+    {
+     "k": "city.t3.t3_court.1",
+     "d": "sat",
+     "h": [
+      13,
+      19
+     ]
+    },
+    {
+     "k": "city.t3.t3_court.2",
+     "d": "sat",
+     "h": [
+      13,
+      19
+     ]
+    },
+    {
+     "k": "city.t3.t3_court.3",
+     "d": "sat",
+     "h": [
+      19,
+      13
+     ]
+    },
+    {
+     "k": "city.t3.t3_court.4",
+     "d": "mon-fri"
+    },
+    {
+     "k": "city.t3.t3_court.5",
+     "d": "mon-fri"
+    },
+    {
+     "k": "city.t3.t3_court.6",
+     "d": "sun"
+    }
+   ]
+  },
+  "t3_bars": {
+   "like": "wall_bars",
+   "minutes": 10,
+   "lines": [
+    {
+     "k": "city.t3.t3_bars.1",
+     "d": "tue,thu",
+     "h": [
+      15,
+      19
+     ]
+    },
+    {
+     "k": "city.t3.t3_bars.2",
+     "d": "tue,thu",
+     "h": [
+      19,
+      15
+     ]
+    },
+    {
+     "k": "city.t3.t3_bars.2",
+     "d": "mon,wed,fri,sat,sun"
+    },
+    {
+     "k": "city.t3.t3_bars.3",
+     "d": "tue,thu",
+     "h": [
+      19,
+      15
+     ]
+    },
+    {
+     "k": "city.t3.t3_bars.3",
+     "d": "mon,wed,fri,sat,sun"
+    }
+   ]
+  },
+  "t3_vault": {
+   "like": "vaulting_horse",
+   "minutes": 10,
+   "lines": [
+    {
+     "k": "city.t3.t3_vault.1",
+     "d": "tue,thu",
+     "h": [
+      15,
+      19
+     ]
+    },
+    {
+     "k": "city.t3.t3_vault.2",
+     "d": "tue,thu",
+     "h": [
+      19,
+      15
+     ]
+    },
+    {
+     "k": "city.t3.t3_vault.2",
+     "d": "mon,wed,fri,sat,sun"
+    }
+   ]
+  },
+  "t3_mats": {
+   "like": "mats",
+   "minutes": 10,
+   "lines": [
+    {
+     "k": "city.t3.t3_mats.1",
+     "d": "tue,thu",
+     "h": [
+      15,
+      19
+     ]
+    },
+    {
+     "k": "city.t3.t3_mats.2",
+     "d": "tue,thu",
+     "h": [
+      19,
+      15
+     ]
+    },
+    {
+     "k": "city.t3.t3_mats.2",
+     "d": "mon,wed,fri,sat,sun"
+    }
+   ]
+  },
+  "t3_weights": {
+   "like": "barbell",
+   "minutes": 20,
+   "lines": [
+    {
+     "k": "city.t3.t3_weights.1",
+     "d": "tue,thu,sat",
+     "h": [
+      17,
+      21
+     ]
+    },
+    {
+     "k": "city.t3.t3_weights.2",
+     "d": "mon,wed,fri",
+     "h": [
+      15,
+      19
+     ]
+    },
+    {
+     "k": "city.t3.t3_weights.3",
+     "d": "tue,thu,sat",
+     "h": [
+      21,
+      17
+     ]
+    },
+    {
+     "k": "city.t3.t3_weights.3",
+     "d": "mon,wed,fri",
+     "h": [
+      19,
+      15
+     ]
+    },
+    {
+     "k": "city.t3.t3_weights.3",
+     "d": "sun"
+    },
+    {
+     "k": "city.t3.t3_weights.4",
+     "d": "tue,thu,sat",
+     "h": [
+      21,
+      17
+     ]
+    },
+    {
+     "k": "city.t3.t3_weights.4",
+     "d": "mon,wed,fri",
+     "h": [
+      19,
+      15
+     ]
+    },
+    {
+     "k": "city.t3.t3_weights.4",
+     "d": "sun"
+    }
+   ]
+  },
+  "t3_bike": {
+   "like": "exercise_bike",
+   "minutes": 20,
+   "lines": [
+    {
+     "k": "city.t3.t3_bike.1",
+     "h": [
+      6,
+      11
+     ]
+    },
+    {
+     "k": "city.t3.t3_bike.2",
+     "h": [
+      11,
+      17
+     ]
+    },
+    {
+     "k": "city.t3.t3_bike.3",
+     "h": [
+      17,
+      22
+     ]
+    },
+    {
+     "k": "city.t3.t3_bike.4",
+     "h": [
+      22,
+      6
+     ]
+    }
+   ]
+  },
+  "t3_easel_sea": {
+   "like": "easel",
+   "minutes": 40,
+   "lines": [
+    {
+     "k": "city.t3.t3_easel_sea.1",
+     "h": [
+      6,
+      11
+     ]
+    },
+    {
+     "k": "city.t3.t3_easel_sea.2",
+     "h": [
+      11,
+      17
+     ]
+    },
+    {
+     "k": "city.t3.t3_easel_sea.3",
+     "h": [
+      17,
+      22
+     ]
+    },
+    {
+     "k": "city.t3.t3_easel_sea.4",
+     "h": [
+      22,
+      6
+     ]
+    }
+   ]
+  },
+  "t3_easel_lighthouse": {
+   "like": "easel",
+   "minutes": 40,
+   "lines": [
+    {
+     "k": "city.t3.t3_easel_lighthouse.1",
+     "h": [
+      6,
+      11
+     ]
+    },
+    {
+     "k": "city.t3.t3_easel_lighthouse.2",
+     "h": [
+      11,
+      17
+     ]
+    },
+    {
+     "k": "city.t3.t3_easel_lighthouse.3",
+     "h": [
+      17,
+      22
+     ]
+    },
+    {
+     "k": "city.t3.t3_easel_lighthouse.4",
+     "h": [
+      22,
+      6
+     ]
+    }
+   ]
+  },
+  "t3_easel_teacher": {
+   "like": "look_misc",
+   "minutes": 5,
+   "rotate": "daily",
+   "target": "easel",
+   "lines": [
+    "city.t3.t3_easel_teacher.1",
+    {
+     "k": "city.t3.t3_easel_teacher.2",
+     "after": 4
+    },
+    {
+     "k": "city.t3.t3_easel_teacher.3",
+     "after": 9
+    },
+    {
+     "k": "city.t3.t3_easel_teacher.4",
+     "after": 13
+    }
+   ]
+  },
+  "t3_wheel": {
+   "like": "potters_wheel",
+   "minutes": 40,
+   "lines": [
+    {
+     "k": "city.t3.t3_wheel.1",
+     "d": "mon,tue"
+    },
+    {
+     "k": "city.t3.t3_wheel.2",
+     "d": "wed"
+    },
+    {
+     "k": "city.t3.t3_wheel.3",
+     "d": "thu,fri"
+    },
+    {
+     "k": "city.t3.t3_wheel.4",
+     "d": "sat,sun"
+    }
+   ]
+  },
+  "t3_kiln": {
+   "prompt": "city.t3.kiln.prompt",
+   "minutes": 3,
+   "sound": "fire_crackle",
+   "lines": [
+    {
+     "k": "city.t3.t3_kiln.1",
+     "d": "mon,tue"
+    },
+    {
+     "k": "city.t3.t3_kiln.2",
+     "d": "wed"
+    },
+    {
+     "k": "city.t3.t3_kiln.3",
+     "d": "thu"
+    },
+    {
+     "k": "city.t3.t3_kiln.4",
+     "d": "fri"
+    },
+    {
+     "k": "city.t3.t3_kiln.5",
+     "d": "sat"
+    },
+    {
+     "k": "city.t3.t3_kiln.6",
+     "d": "sun"
+    }
+   ]
+  },
+  "t3_glaze": {
+   "prompt": "city.t3.glaze.prompt",
+   "minutes": 30,
+   "sound": "brush_strokes",
+   "lines": [
+    {
+     "k": "city.t3.t3_glaze.1",
+     "d": "mon-wed"
+    },
+    {
+     "k": "city.t3.t3_glaze.2",
+     "d": "thu,fri"
+    },
+    {
+     "k": "city.t3.t3_glaze.3",
+     "d": "sat"
+    },
+    {
+     "k": "city.t3.t3_glaze.4",
+     "d": "sun"
+    }
+   ]
+  },
+  "t3_ware": {
+   "prompt": "city.t3.ware.prompt",
+   "like": "look_misc",
+   "minutes": 3,
+   "lines": [
+    {
+     "k": "city.t3.t3_ware.1",
+     "d": "mon"
+    },
+    {
+     "k": "city.t3.t3_ware.2",
+     "d": "tue"
+    },
+    {
+     "k": "city.t3.t3_ware.3",
+     "d": "wed"
+    },
+    {
+     "k": "city.t3.t3_ware.4",
+     "d": "thu"
+    },
+    {
+     "k": "city.t3.t3_ware.5",
+     "d": "fri"
+    },
+    {
+     "k": "city.t3.t3_ware.6",
+     "d": "sat"
+    },
+    {
+     "k": "city.t3.t3_ware.7",
+     "d": "sun"
+    }
+   ]
+  }
+ },
+ "rules": {
+  "P-T3SPORT/coach_table": {
+   "act": "t3_coach"
+  },
+  "P-T3SPORT/training_board": {
+   "act": "t3_sections"
+  },
+  "P-T3SPORT/tactics_board": {
+   "act": "t3_tactics"
+  },
+  "P-T3SPORT/bench_-16": {
+   "act": "t3_club_board"
+  },
+  "P-T3SPORT/cabin_results": {
+   "act": "t3_results"
+  },
+  "P-T3SPORT/pool_sign": {
+   "act": "t3_pool"
+  },
+  "P-T3SPORT/sauna_bench": {
+   "act": "t3_sauna_sit"
+  },
+  "P-T3SPORT/sauna_stove": {
+   "act": "t3_sauna_water"
+  },
+  "P-T3SPORT/shower_stall": {
+   "act": "t3_shower"
+  },
+  "P-T3SPORT/changing_screen": {
+   "act": "t3_changing"
+  },
+  "P-T3SPORT/lockers_west": {
+   "act": "t3_lockers"
+  },
+  "P-T3SPORT/reception": {
+   "act": "t3_reception"
+  },
+  "P-T3SPORT/hoop_back": {
+   "act": "t3_hoop_main"
+  },
+  "P-T3SPORT/hoop_west": {
+   "act": "t3_hoop_free"
+  },
+  "P-T3SPORT/court_game": {
+   "act": "t3_court"
+  },
+  "P-T3SPORT/wall_bars_1": {
+   "act": "t3_bars"
+  },
+  "P-T3SPORT/wall_bars_2": {
+   "act": "t3_bars"
+  },
+  "P-T3SPORT/wall_bars_3": {
+   "act": "t3_bars"
+  },
+  "P-T3SPORT/vault_horse": {
+   "act": "t3_vault"
+  },
+  "P-T3SPORT/landing_mats": {
+   "act": "t3_mats"
+  },
+  "P-T3SPORT/barbell_rack_1": {
+   "act": "t3_weights"
+  },
+  "P-T3SPORT/barbell_rack_2": {
+   "act": "t3_weights"
+  },
+  "P-T3SPORT/bench_press_1": {
+   "act": "t3_weights"
+  },
+  "P-T3SPORT/bench_press_2": {
+   "act": "t3_weights"
+  },
+  "P-T3SPORT/bike_1": {
+   "act": "t3_bike"
+  },
+  "P-T3SPORT/bike_2": {
+   "act": "t3_bike"
+  },
+  "P-T3SPORT/table_-12": {
+   "act": "t3_easel_sea"
+  },
+  "P-T3SPORT/easel_2": {
+   "act": "t3_easel_lighthouse"
+  },
+  "P-T3SPORT/easel_3": {
+   "act": "t3_easel_teacher"
+  },
+  "P-T3SPORT/table_-6": {
+   "act": "t3_wheel"
+  },
+  "P-T3SPORT/wheel_2": {
+   "act": "t3_wheel"
+  },
+  "P-T3SPORT/kiln": {
+   "act": "t3_kiln"
+  },
+  "P-T3SPORT/work_table": {
+   "act": "t3_glaze"
+  },
+  "P-T3SPORT/clay_shelf": {
+   "act": "t3_ware"
+  }
+ }
+}

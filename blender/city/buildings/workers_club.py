@@ -138,6 +138,7 @@ def build(B):
     # ------------------------------------------------------------ interior: foyer
     _foyer(B)
     _hall_decor(B)
+    _deepen(B)
     # ------------------------------------------------------------ interior: hall
     y0 = 14.55
     rows, going, rise = 10, 1.3, 0.16
@@ -385,7 +386,7 @@ def _foyer(B):
         kit.chair(B, cx, 5.55, 0.0, 180.0, kind="wood")
         kit.chair(B, cx, 6.85, 0.0, 0.0, kind="wood")
         B.thing("chess_%d" % (k + 1), "play", (cx, 6.2, 0.72), 0.0, what="chess")
-        B.spot("chess_seat_%d" % (k + 1), "seat", (cx, 5.55, 0.0), 0.0)
+        B.spot("chess_seat_%d" % (k + 1), "seat", (cx, 5.55, 0.0), 180.0)
     kit.table(B, -8.6, 5.4, 0.0, 0.0, w=2.2, d=0.8, mat="CT_WoodLight")
     for k, rx in enumerate((-9.3, -8.6, -7.9)):
         kit.radio(B, rx, 5.45, 0.75, 0.0)
@@ -435,3 +436,76 @@ def _foyer(B):
     # pendants over the buffet and the corners (no light: the building's own lamps stay)
     for px, py in ((-2.5, 9.1), (2.5, 9.1), (-14.0, 7.0), (14.0, 7.0)):
         kit.pendant(B, px, py, ZF, drop=0.9, kind="cone", light=False)
+
+
+def _rod(m, x, y, z0, z1, r, mat, segs):
+    prism(m, mat, [(x + r * math.cos(2 * math.pi * k / segs), y + r * math.sin(2 * math.pi * k / segs))
+                   for k in range(segs)], z0, z1)
+
+
+def _deepen(B):
+    """Second pass: the chess ladder, the radio amateurs' corner, a door with a rehearsal behind it, the ticket stubs,
+    the buffet menu, the lost-property stand, the old film tins on the stage step and the extra people's spots."""
+    det = B.detail
+    yp = YD - 0.4
+    xw, xe = X0 + 0.4, X1 - 0.4
+    # ---------------------------------------------------------------- chess ladder (chalk board, west wall)
+    xb = xw + 0.65                      # a standing board (the wall here is a window)
+    kit.blackboard(B, xb, 7.25, 0.0, 90.0, w=0.95, h=0.75, zb=0.9, writing="board_3")
+    for yl in (6.74, 7.71):
+        box(det, "CT_Wood", xb - 0.1, xb + 0.0, yl, yl + 0.05, 0.0, 1.75)
+    box(det, "CT_Wood", xb - 0.1, xb + 0.0, 6.74, 7.76, 1.7, 1.75)
+    B.thing("chess_ladder", "board", (xb + 0.06, 7.25, 1.28), 90.0, topic="chess")
+    B.lamp((xb + 0.9, 7.25, ZF - 0.5), lumens=260, colour="#FFD8A8", radius=3.2)
+    B.spot("chess_ladder_stand", "stand", (xb + 1.0, 7.25, 0.0), 270.0)
+    for k, cx in enumerate((-15.2, -12.8)):                 # the second seat of each board
+        B.spot("chess_seat_%db" % (k + 1), "seat", (cx, 6.85, 0.0), 0.0)
+    # ---------------------------------------------------------------- radio amateurs: two sets on the table
+    B.thing("radio_set_a", "craft", (-9.3, 5.45, 0.92), 180.0, what="radio")
+    B.thing("radio_set_b", "craft", (-7.9, 5.45, 0.92), 180.0, what="radio_set")
+    box(det, "CT_Steel", -8.32, -8.18, 5.62, 5.74, 0.75, 0.78)                  # a morse key on a bakelite base
+    box(det, "CT_Rubber", -8.34, -8.16, 5.60, 5.76, 0.75, 0.765)
+    box(det, "CT_Rubber", -8.95, -8.8, 5.62, 5.72, 0.75, 0.78)                  # headphones, one cup each
+    box(det, "CT_Rubber", -8.77, -8.62, 5.62, 5.72, 0.75, 0.78)
+    B.lamp((-8.6, 5.7, 2.35), lumens=240, colour="#FFB070", radius=3.4)
+    for k, rx in enumerate((-9.0, -8.0)):
+        B.spot("radio_seat_%d" % (k + 1), "seat", (rx, 6.1, 0.0), 0.0)
+    # ---------------------------------------------------------------- a door in the east wall with a rehearsal behind
+    box(det, "CT_PlasterGreen", xe - 0.18, xe, 6.55, 8.35, 0.0, 2.55, faces="xyYZz")      # a plywood partition built in
+    xd = xe - 0.18                                                                         # front of the window
+    box(det, "CT_WoodLight", xd - 0.09, xd, 6.95, 7.95, 0.0, 2.1, faces="xyYZz")
+    box(det, "CT_Wood", xd - 0.06, xd - 0.02, 7.03, 7.87, 0.06, 2.04, faces="xyYZz")
+    box(det, "CT_Brass", xd - 0.09, xd - 0.04, 7.78, 7.84, 0.98, 1.02, faces="xyYZz")
+    box(det, "CT_PlasterRed", xd - 0.12, xd, 7.25, 7.65, 2.18, 2.34, faces="xyYZz")  # the red "quiet" lamp over it
+    box(det, "CT_Neon", xd - 0.125, xd - 0.12, 7.3, 7.6, 2.21, 2.31, faces="x")
+    B.lamp((xd - 0.4, 7.45, 2.35), lumens=110, colour="#FF5A40", radius=2.4)
+    B.thing("rehearsal_door", "board", (xd - 0.06, 7.45, 1.4), 270.0, topic="rehearsal")
+    B.spot("rehearsal_listen", "stand", (xd - 0.8, 7.45, 0.0), 90.0)
+    # ---------------------------------------------------------------- dance floor and piano: people's places
+    B.lamp((13.9, 6.5, ZF - 0.4), lumens=320, colour="#FFE0B0", radius=4.2)
+    for k, (dx, dy, dyaw) in enumerate(((12.3, 5.4, 90.0), (13.2, 5.4, 270.0), (14.8, 7.6, 90.0), (15.7, 7.6, 270.0))):
+        B.spot("dance_stand_%d" % (k + 1), "stand", (dx, dy, 0.0), dyaw)
+    B.spot("piano_stool", "seat", (16.0, 4.2, 0.0), 90.0)
+    B.spot("lounge_seat_1", "seat", (X1 - 0.9, 9.3, 0.0), 270.0)
+    B.spot("lounge_seat_2", "seat", (X1 - 0.9, 9.9, 0.0), 270.0)
+    # ---------------------------------------------------------------- ticket stubs on the box-office counter
+    box(det, "CT_WoodLight", -7.0, -6.6, 10.72, 10.88, 1.05, 1.07)
+    box(det, "CT_WoodLight", -7.0, -6.6, 10.72, 10.74, 1.07, 1.11)
+    box(det, "CT_WoodLight", -7.0, -6.6, 10.86, 10.88, 1.07, 1.11)
+    for k, c in enumerate(("CT_PlasterRed", "CT_PlasterYellow", "CT_PlasterBlue", "CT_PlasterRed", "CT_PlasterYellow")):
+        box(det, c, -6.95 + 0.07 * k, -6.9 + 0.07 * k, 10.75, 10.84, 1.07, 1.1 + 0.005 * k)
+    B.thing("ticket_stubs", "board", (-6.8, 10.8, 1.14), 0.0, topic="stubs")
+    # ---------------------------------------------------------------- buffet menu board (divider wall)
+    kit.menu_board(B, -5.1, yp, 0.0, 0.0, name="menu_1", w=0.8, zc=1.9)
+    B.thing("buffet_menu", "board", (-5.1, yp - 0.04, 1.9), 0.0, topic="prices")
+    # ---------------------------------------------------------------- lost property: an umbrella bucket by the hat stand
+    _rod(det, -13.95, 9.05, 0.0, 0.34, 0.17, "CT_Steel", 12)
+    for k, (ox, oy, hh) in enumerate(((-0.06, 0.0, 0.92), (0.04, 0.05, 0.84), (0.05, -0.05, 0.78))):
+        _rod(det, -13.95 + ox, 9.05 + oy, 0.3, hh, 0.012, "CT_Wood", 6)
+    B.thing("lost_property", "board", (-14.55, 9.0, 1.45), 0.0, topic="lost")
+    # ---------------------------------------------------------------- the old film tins on the stage step, a seat in row 1
+    for k, (tx, tw) in enumerate(((-2.4, 0.36), (-1.9, 0.3))):
+        box(det, "CT_Steel", tx - tw / 2, tx + tw / 2, 13.0, 13.0 + tw, 0.4, 0.44)
+        box(det, "CT_Brass", tx - 0.04, tx + 0.04, 13.0 + tw / 2 - 0.04, 13.0 + tw / 2 + 0.04, 0.44, 0.455)
+    box(det, "CT_Paper", -2.2, -1.95, 13.5, 13.65, 0.4, 0.42)                    # the label, still unread
+    B.thing("reel_seat", "screen", (0.0, 15.2, 0.16 + 0.45), 0.0, what="cinema", height=0.45)

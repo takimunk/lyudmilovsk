@@ -597,5 +597,107 @@
   "P-T3H3/hall_lost_box": {
    "act": "cm_lost_b"
   }
- }
+ },
+ "quests": [
+  {
+   "id": "commune_cloud",
+   "kind": "side",
+   "start_on": {
+    "event": "visit",
+    "target": "P-T2H2"
+   },
+   "stages": [
+    {
+     "id": "board",
+     "objectives": [
+      {
+       "id": "read_board",
+       "event": "do",
+       "target": "cm_board_a"
+      }
+     ]
+    },
+    {
+     "id": "gossip",
+     "objectives": [
+      {
+       "id": "play_chess",
+       "event": "do",
+       "target": "cm_chess"
+      },
+      {
+       "id": "read_news",
+       "event": "do",
+       "target": "cm_wallnews"
+      }
+     ]
+    },
+    {
+     "id": "evening",
+     "objectives": [
+      {
+       "id": "watch_tv",
+       "event": "do",
+       "target": "cm_tv"
+      }
+     ],
+     "reward": {
+      "items": {
+       "tea": 1
+      }
+     }
+    }
+   ]
+  },
+  {
+   "id": "commune_cat",
+   "kind": "side",
+   "start_on": {
+    "event": "visit",
+    "target": "P-T3H3"
+   },
+   "stages": [
+    {
+     "id": "board",
+     "objectives": [
+      {
+       "id": "read_board",
+       "event": "do",
+       "target": "cm_board_b"
+      }
+     ]
+    },
+    {
+     "id": "search",
+     "objectives": [
+      {
+       "id": "fold_laundry",
+       "event": "do",
+       "target": "cm_fold"
+      },
+      {
+       "id": "lost_box",
+       "event": "do",
+       "target": "cm_lost_b"
+      }
+     ]
+    },
+    {
+     "id": "evening",
+     "objectives": [
+      {
+       "id": "watch_tv",
+       "event": "do",
+       "target": "cm_tv"
+      }
+     ],
+     "reward": {
+      "items": {
+       "tea": 1
+      }
+     }
+    }
+   ]
+  }
+ ]
 }

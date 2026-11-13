@@ -1374,5 +1374,119 @@
   "lifeguard_tower/lost_box": {
    "act": "lg_lost_box"
   }
- }
+ },
+ "quests": [
+  {
+   "id": "lifeguard_sandal",
+   "kind": "side",
+   "start_on": {
+    "event": "visit",
+    "target": "P-LIFEGUARD1"
+   },
+   "stages": [
+    {
+     "id": "notice",
+     "objectives": [
+      {
+       "id": "read",
+       "event": "do",
+       "target": "lg_lost_board"
+      }
+     ]
+    },
+    {
+     "id": "look",
+     "objectives": [
+      {
+       "id": "search",
+       "event": "do",
+       "target": "lg_binoculars"
+      }
+     ]
+    },
+    {
+     "id": "call",
+     "objectives": [
+      {
+       "id": "shout",
+       "event": "do",
+       "target": "lg_megaphone"
+      }
+     ]
+    },
+    {
+     "id": "box",
+     "objectives": [
+      {
+       "id": "peek",
+       "event": "do",
+       "target": "lg_lost_box"
+      }
+     ],
+     "reward": {
+      "rubles": 20,
+      "items": {
+       "candy": 1
+      }
+     }
+    }
+   ]
+  },
+  {
+   "id": "lifeguard_thesis",
+   "kind": "side",
+   "start_on": {
+    "event": "visit",
+    "target": "P-LIFEGUARD2"
+   },
+   "stages": [
+    {
+     "id": "board",
+     "objectives": [
+      {
+       "id": "chalk",
+       "event": "do",
+       "target": "lg_temp_board"
+      }
+     ]
+    },
+    {
+     "id": "log",
+     "objectives": [
+      {
+       "id": "book",
+       "event": "do",
+       "target": "lg_water_log"
+      }
+     ]
+    },
+    {
+     "id": "gulls",
+     "objectives": [
+      {
+       "id": "count",
+       "event": "do",
+       "target": "lg_binoculars"
+      }
+     ]
+    },
+    {
+     "id": "rest",
+     "objectives": [
+      {
+       "id": "sit",
+       "event": "do",
+       "target": "lg_deck_chair"
+      }
+     ],
+     "reward": {
+      "rubles": 30,
+      "items": {
+       "tea": 1
+      }
+     }
+    }
+   ]
+  }
+ ]
 }

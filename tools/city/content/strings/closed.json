@@ -1,0 +1,15 @@
+{
+ "_doc": "What things of a shut public building say instead of nothing (collections.json closed_by).",
+ "city.closed.cafe.chairs": {"ru": "Стулья подняты на столы ножками вверх. Пол ещё влажный после швабры.", "en": "The chairs are up on the tables, legs in the air. The floor is still damp from the mop.", "ja": "椅子は脚を上にしてテーブルに載せてある。床はまだモップで湿っている。"},
+ "city.closed.cafe.bar": {"ru": "Стойка пуста, кофемашина накрыта полотенцем. На кассе записка: «Откроемся в восемь».", "en": "The bar is empty, the coffee machine under a towel. A note on the till: \"Open at eight.\"", "ja": "カウンターは空っぽで、コーヒーマシンにはタオルがかけてある。レジにメモ：「八時開店」。"},
+ "city.closed.cafe.machine": {"ru": "Вилка выдернута из розетки и аккуратно повешена на крючок. Музыка спит.", "en": "The plug is pulled and hung neatly on a hook. The music is asleep.", "ja": "プラグは抜かれて、きちんとフックに掛けてある。音楽はおやすみ中。"},
+ "city.closed.club.seats": {"ru": "Зал пуст, сиденья подняты. Пахнет пылью от занавеса и чуть-чуть — мандаринами.", "en": "The hall is empty, the seats folded up. It smells of curtain dust and, faintly, of tangerines.", "ja": "ホールは空っぽで、座席は跳ね上げてある。幕のほこりと、かすかにみかんの匂い。"},
+ "city.closed.club.screen": {"ru": "Экран задёрнут бархатным занавесом. Следующий сеанс — завтра.", "en": "The screen is behind its velvet curtain. The next show is tomorrow.", "ja": "スクリーンにはビロードの幕が引かれている。次の上映は明日。"},
+ "city.closed.club.counter": {"ru": "Окошко закрыто на щеколду. На стекле табличка: «Перерыв до завтра».", "en": "The window is latched shut. A card on the glass: \"Closed till tomorrow.\"", "ja": "窓口には掛け金がかかっている。ガラスに札：「明日まで休み」。"},
+ "city.closed.cog.seats": {"ru": "Стулья задвинуты под столы ровными рядами. Кто-то забыл на одном шарф.", "en": "The chairs are pushed under the tables in neat rows. Someone left a scarf on one.", "ja": "椅子はきれいに並べて机の下に押し込んである。一つにマフラーの忘れ物。"},
+ "city.closed.cog.games": {"ru": "Всё накрыто чехлами, шары и фигуры убраны в шкаф под замок.", "en": "Everything is under covers, the balls and pieces locked away in the cupboard.", "ja": "どれもカバーがかけられ、球も駒も戸棚にしまって鍵がかかっている。"},
+ "city.closed.library.shelf": {"ru": "Поперёк полки натянут шнурок с картонкой: «Библиотека закрыта. Книги тоже спят».", "en": "A cord with a card is strung across the shelf: \"The library is closed. The books are asleep too.\"", "ja": "棚にひもが張られ、厚紙の札：「図書館は閉館中。本もおやすみ」。"},
+ "city.closed.library.desk": {"ru": "На столе выдачи лампа погашена, штемпель убран в ящик. Ждут утра.", "en": "The lamp on the lending desk is out, the date stamp put away in the drawer. Waiting for morning.", "ja": "貸出カウンターのランプは消え、日付印は引き出しの中。朝を待っている。"},
+ "city.closed.market.stall": {"ru": "Прилавок накрыт брезентом и придавлен кирпичом. Весы унесли домой.", "en": "The stall is under a tarpaulin weighed down with a brick. The scales went home.", "ja": "売り台は防水シートで覆われ、レンガで押さえてある。はかりは持ち帰られた。"},
+ "city.closed.store.counter": {"ru": "Отдел закрыт. Витрина накрыта серой тканью, на ней табличка «Учёт».", "en": "The department is closed. The display case is under grey cloth with a card: \"Stocktaking.\"", "ja": "売り場は閉まっている。ショーケースには灰色の布がかけられ、「棚卸し中」の札。"}
+}

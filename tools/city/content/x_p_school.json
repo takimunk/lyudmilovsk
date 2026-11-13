@@ -603,5 +603,95 @@
   "school/wall_newspaper": {
    "act": "school_gazette"
   }
- }
+ },
+ "quests": [
+  {
+   "id": "school_bag",
+   "kind": "side",
+   "start_on": {
+    "event": "visit",
+    "target": "P-SCHOOL"
+   },
+   "stages": [
+    {
+     "id": "notice",
+     "objectives": [
+      {
+       "id": "gazette",
+       "event": "do",
+       "target": "school_gazette"
+      }
+     ]
+    },
+    {
+     "id": "box",
+     "objectives": [
+      {
+       "id": "box",
+       "event": "do",
+       "target": "school_lostbox"
+      }
+     ]
+    },
+    {
+     "id": "gym",
+     "objectives": [
+      {
+       "id": "bag",
+       "event": "do",
+       "target": "gym_bag_search"
+      }
+     ],
+     "reward": {
+      "rubles": 40
+     }
+    }
+   ]
+  },
+  {
+   "id": "school_concert",
+   "kind": "side",
+   "start_on": {
+    "event": "visit",
+    "target": "P-SCHOOL"
+   },
+   "stages": [
+    {
+     "id": "poster",
+     "objectives": [
+      {
+       "id": "poster",
+       "event": "do",
+       "target": "school_concert_poster"
+      }
+     ]
+    },
+    {
+     "id": "piano",
+     "objectives": [
+      {
+       "id": "keys",
+       "event": "do",
+       "target": "piano"
+      }
+     ]
+    },
+    {
+     "id": "stage",
+     "objectives": [
+      {
+       "id": "recital",
+       "event": "do",
+       "target": "school_recital"
+      }
+     ],
+     "reward": {
+      "items": {
+       "badge": 1
+      }
+     }
+    }
+   ]
+  }
+ ]
 }

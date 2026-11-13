@@ -247,6 +247,8 @@ def build(B):
 
     _ground(B, rnd)
     _first(B, rnd)
+    _extras(B, rnd)
+    _third(B, rnd)
     _stair_rails(B, n, g, r_, ya, yl, hole)
     # lamps: 6 x 3 per floor, 0.3 m under each ceiling (none under the stair opening)
     for zc in (Z_SLAB0, Z_ROOF0):
@@ -783,6 +785,242 @@ def _first_mid(B, zf, rnd):
             kit.picture(B, -22.1, y, zf, 90.0, name="sleeve_0", w=0.7, zc=zc_)
         else:
             kit.poster(B, -22.1, y, zf, 90.0, name=nme, w=0.85, zc=zc_)
+
+
+# ------------------------------------------------------------------------------------------------ second pass
+# Things to look at, try on, listen to and ask about (the store sells no clothes, toys or records: those departments are
+# for the hero's eyes and ears). Ids and spots below are new; nothing above moved.
+def _umbrella(d, x, y, z, mat):
+    """A closed umbrella handle up in a stand: a thin shaft, the furled canopy widening upward, a crook."""
+    cyl(d, "CT_Steel", x, y, z, z + 0.8, 0.008, 4)
+    cyl(d, mat, x, y, z + 0.08, z + 0.58, 0.012, 6, r1=0.048)
+    box(d, "CT_Wood", x - 0.035, x + 0.035, y - 0.012, y + 0.012, z + 0.78, z + 0.82, faces="xXyYZ")
+
+
+def _extras(B, rnd):
+    d, m = B.detail, B.m
+    zg, zf = 0.03, Z_SLAB1
+
+    # ================================================================ ground floor
+    # ---- the shop window dresser's corner: a stepladder, a crate of coats, a bare dummy waiting its turn
+    lx, ly = -9.0, 2.35
+    for sx in (-0.26, 0.26):
+        box(d, "CT_WoodLight", lx + sx - 0.02, lx + sx + 0.02, ly - 0.3, ly - 0.26, zg, zg + 1.3)
+        box(d, "CT_WoodLight", lx + sx - 0.02, lx + sx + 0.02, ly + 0.26, ly + 0.3, zg, zg + 1.3)
+    for k, z_ in enumerate((0.35, 0.7, 1.05)):
+        box(d, "CT_Wood", lx - 0.26, lx + 0.26, ly - 0.34, ly - 0.06, zg + z_, zg + z_ + 0.03)
+    box(d, "CT_Wood", lx - 0.3, lx + 0.3, ly - 0.3, ly + 0.3, zg + 1.3, zg + 1.33)
+    rbox(d, "CT_WoodLight", -7.7, 2.5, zg, zg + 0.32, 0.3, 0.2, 12.0)
+    for k, c in enumerate(("CT_PlasterBlue", "CT_PlasterRed", "CT_PlasterGreen")):       # folded coats in the crate
+        rbox(d, c, -7.85 + k * 0.15, 2.5, zg + 0.32, zg + 0.40, 0.07, 0.16, 12.0)
+    mannequin(d, -10.0, 2.7, zg, "CT_PlasterGrey", ang=200.0)
+    B.spot("g_window_dresser", "work", (lx, 2.95, zg), 0.0)
+    B.spot("g_window_watch", "stand", (lx + 0.2, 4.6, zg), 0.0)
+    _thing(B, "g_window_display", "board", (lx, 2.45, zg + 1.25), 180.0, topic="window")
+
+    # ---- the delivery day at the grocery: a chalk board on the queue line, crates and a pallet by the wall
+    cx_, cy_ = -8.3, 10.7
+    for sx in (-0.5, 0.5):
+        box(d, "CT_Steel", cx_ + sx - 0.02, cx_ + sx + 0.02, cy_ + 0.0, cy_ + 0.04, zg, zg + 1.75, faces="xXyYZ")
+    kit.blackboard(B, cx_, cy_, zg, 0.0, w=0.8, h=0.75, zb=0.85, seed=5)
+    _thing(B, "g_chalk_board", "board", (cx_, cy_ - 0.05, zg + 1.2), 0.0, topic="queue")
+    box(d, "CT_Wood", -8.35, -6.85, 12.5, 13.4, zg, zg + 0.14)
+    for k, (px, pz, c) in enumerate(((-7.9, 0.14, "CT_WoodLight"), (-7.3, 0.14, "CT_WoodLight"),
+                                     (-7.9, 0.40, "CT_WoodLight"), (-7.3, 0.40, "CT_WoodLight"), (-7.6, 0.66, "CT_WoodLight"))):
+        rbox(d, c, px, 12.95, zg + pz, zg + pz + 0.26, 0.27, 0.19, 0.0)
+        box(d, "CT_PlasterGrey", px - 0.2, px + 0.2, 12.755, 12.76, zg + pz + 0.06, zg + pz + 0.2, faces="y")
+    kit.bottles(B, -7.6, 13.0, zg + 0.92, 0.0, n=3, seed=9)
+    _thing(B, "g_delivery_pile", "board", (-7.6, 12.95, zg + 0.8), 180.0, topic="delivery")
+    for k in range(3):
+        B.spot("g_delivery_queue_%d" % (k + 1), "stand", (-12.0, 10.0 - k * 1.0, zg), 180.0)
+
+    # ---- the cloakroom: an umbrella stand (the yellow one with the duck handle comes and goes) and the coat hooks to read
+    ux, uy = 9.3, 26.2
+    cyl(d, "CT_PlasterGrey", ux, uy, zg, zg + 0.5, 0.15, 8, r1=0.13)
+    for k, (dx, dy, c) in enumerate(((-0.05, -0.04, "CT_PlasterGrey"), (0.05, 0.03, "CT_Steel"), (-0.02, 0.06, "CT_PlasterBlue"),
+                                     (0.04, -0.06, "CT_PlasterYellow"))):
+        _umbrella(d, ux + dx, uy + dy, zg + 0.35, c)
+    _thing(B, "g_umbrella_stand", "board", (ux, uy, zg + 0.9), 0.0, topic="umbrellas")
+    _thing(B, "g_cloak_hooks", "board", (5.0, 28.6, zg + 1.3), 0.0, topic="cloak")
+    B.spot("g_cloak_wait", "stand", (6.4, 24.6, zg), 180.0)
+
+    # ---- the tannoy over the back wall of the ground hall
+    _tannoy(B, -6.4, 29.6, zg + 2.45, "g_tannoy")
+
+    # ---- shoes: the low slanted mirror by the try-on stools
+    _thing(B, "g_shoe_mirror", "board", (-22.0, 9.45, zg + 0.9), 90.0, topic="mirror")
+
+    # ---- toys: a clockwork railway on a low table, to watch and wind (nothing to buy)
+    tx, ty = 15.8, 24.0
+    t = kit.table(B, tx, ty, zg, 90.0, w=1.5, d=1.0, h=0.5, solid=True)
+    tt = t["top"]
+    for k in range(20):
+        a = k / 20.0 * 2 * math.pi
+        px, py = tx + 0.35 * math.cos(a), ty + 0.6 * math.sin(a)
+        rbox(d, "CT_Steel", px, py, tt, tt + 0.012, 0.045, 0.015, math.degrees(a) + 90.0)
+    for k, (c, off) in enumerate((("CT_PlasterRed", 0.0), ("CT_PlasterBlue", 0.30), ("CT_PlasterBlue", 0.5))):
+        a = 0.6 + off
+        px, py = tx + 0.35 * math.cos(a), ty + 0.6 * math.sin(a)
+        rbox(d, c, px, py, tt + 0.012, tt + (0.07 if k else 0.09), 0.035 if k else 0.04, 0.07 if k else 0.09, math.degrees(a) + 90.0)
+    rbox(d, "CT_PlasterYellow", tx, ty, tt, tt + 0.07, 0.1, 0.1, 0.0)
+    _thing(B, "g_toy_train", "machine", (tx, ty, tt + 0.1), 270.0, what="toy_train")
+    B.spot("g_toy_look", "stand", (tx - 0.9, ty, zg), 270.0)
+
+    # ================================================================ first floor
+    # ---- a fitting cubicle (curtain, mirror, a stool, a hook) in the clothes department
+    fx, fy = -16.74, 17.5
+    box(m, "CT_WoodLight", fx - 0.03, fx + 0.01, fy - 0.7, fy + 0.7, zf, zf + 2.0)
+    for sy in (-0.7, 0.7):
+        box(m, "CT_WoodLight", fx - 0.03, fx + 1.4, fy + sy - 0.02, fy + sy + 0.02, zf, zf + 2.0)
+    kit.mirror(B, fx + 0.01, fy, zf, 90.0, zc=1.25, w=0.55, h=1.35)
+    kit.curtains(B, fx + 1.4, fy, zf, 90.0, w=1.2, h=2.05, mat="CT_PlasterRed", open_=0.55)
+    kit.stool(B, fx + 0.6, fy, zf, 270.0, h=0.45)
+    box(d, "CT_Steel", fx + 0.01, fx + 0.06, fy - 0.55, fy - 0.35, zf + 1.78, zf + 1.8)
+    for k in range(3):
+        cyl(d, "CT_PlasterGreen", fx + 0.05, fy - 0.45 + k * 0.05, zf + 1.4, zf + 1.78, 0.02, 4)
+    B.lamp((fx + 0.6, fy, zf + 1.95), lumens=400, colour="#FFD2A0", radius=2.4)
+    _thing(B, "f1_fitting_room", "craft", (fx + 0.7, fy, zf + 1.1), 90.0, what="fitting_room")
+    _thing(B, "f1_fitting_mirror", "board", (fx + 0.02, fy, zf + 1.25), 90.0, topic="mirror")
+    B.spot("f1_fitting_wait", "stand", (fx + 2.3, fy - 0.3, zf), 270.0)
+    _thing(B, "f1_clothes_rail", "board", (-20.4, 14.1, zf + 1.1), 90.0, topic="clothes")
+
+    # ---- the listening booth: three panels, a roof, a player on a shelf, a stool; a hanging sign
+    bx, by = -17.95, 7.1
+    for sy in (-1.0, 1.0):
+        box(m, "CT_PlasterBlue", bx, bx + 1.5, by + sy - 0.03, by + sy + 0.03, zf, zf + 2.0)
+    box(m, "CT_PlasterBlue", bx - 0.02, bx + 0.02, by - 1.0, by + 1.0, zf, zf + 2.0)
+    box(d, "CT_WoodLight", bx, bx + 1.55, by - 1.03, by + 1.03, zf + 2.0, zf + 2.05)
+    sh = kit.table(B, bx + 0.3, by, zf, 90.0, w=1.2, d=0.45, h=0.72, solid=False)
+    kit.record_player(B, bx + 0.3, by - 0.2, sh["top"], 90.0)
+    kit.books_stack(B, bx + 0.3, by + 0.4, sh["top"], 0.0, n=4, seed=51)
+    kit.poster(B, bx + 0.02, by + 0.6, zf, 90.0, name="sleeve_2", w=0.45, zc=1.5)
+    kit.poster(B, bx + 0.02, by - 0.6, zf, 90.0, name="sleeve_5", w=0.45, zc=1.5)
+    st = kit.stool(B, bx + 1.0, by, zf, 270.0, h=0.45)
+    _thing(B, "f1_booth_player", "machine", (bx + 0.3, by - 0.2, sh["top"] + 0.1), 90.0, what="record_booth")
+    _seat(B, "f1_booth_stool", st)
+    B.lamp((bx + 0.75, by, zf + 1.9), lumens=450, colour="#FFC890", radius=2.6)
+    B.spot("f1_booth_listener", "seat", (bx + 1.0, by, zf), 270.0)
+
+    # ---- the lost-and-found desk: a counter, the shelves behind it, an umbrella stand, a microphone for announcements
+    dx, dy = 8.6, 9.6
+    kit.shop_counter(B, dx, dy, zf, 0.0, w=2.2, d=0.7, mat=kit.WOODL, top="CT_TileWhite", front="CT_PlasterBlue", till=False)
+    kit.shop_shelf(B, dx, 11.55, zf, 0.0, w=2.0, h=2.0, levels=4, goods="boxes", seed=77)
+    _back(B, dx - 1.0, dx + 1.0, 11.56, zf, 2.0)
+    box(d, "CT_Wood", dx - 0.95, dx - 0.45, dy - 0.15, dy + 0.05, zf + 1.05, zf + 1.17)           # a violin case, lost
+    for k, (gx, gy) in enumerate(((dx + 0.1, dy - 0.05), (dx + 0.28, dy + 0.1))):
+        blob(d, ("CT_PlasterRed", "CT_PlasterGrey")[k], gx, gy, zf + 1.09, 0.06, 5)
+    kit.cup(B, dx + 0.7, dy + 0.1, zf + 1.05, 0.0)
+    kit.table_lamp(B, dx + 0.95, dy + 0.12, zf + 1.05, 0.0, light=True)
+    ux2, uy2 = 10.2, 9.7
+    cyl(d, "CT_PlasterGrey", ux2, uy2, zf, zf + 0.5, 0.15, 8, r1=0.13)
+    for dxu, dyu, c in ((-0.05, -0.04, "CT_PlasterBlue"), (0.05, 0.03, "CT_PlasterYellow"), (0.0, 0.07, "CT_Steel")):
+        _umbrella(d, ux2 + dxu, uy2 + dyu, zf + 0.35, c)
+    mic_x = dx - 0.2
+    cyl(d, "CT_Steel", mic_x, dy + 0.15, zf + 1.05, zf + 1.3, 0.012, 4)
+    cyl(d, "CT_PlasterGrey", mic_x, dy + 0.15, zf + 1.3, zf + 1.36, 0.035, 6)
+    B.spot("f1_lost_desk", "counter", (dx, dy - 0.9, zf), 180.0)
+    B.spot("f1_lost_work", "work", (dx, dy + 0.8, zf), 0.0)
+    _thing(B, "f1_lost_desk", "counter", (dx + 0.4, dy, zf + 1.05), 0.0, service="lost", role="cashier")
+    _thing(B, "f1_lost_mic", "machine", (mic_x, dy + 0.15, zf + 1.3), 0.0, what="announce_mic")
+    _thing(B, "f1_lost_shelf", "shelf", (dx, 11.3, zf + 1.1), 0.0, topic="lost_things")
+    _thing(B, "f1_lost_umbrellas", "board", (ux2, uy2, zf + 0.8), 0.0, topic="umbrellas")
+
+    # ---- the tannoy of the upper hall, the café's menu, the stationery island's typewriter, the radios
+    _tannoy(B, 9.4, 29.6, zf + 2.45, "f1_tannoy")
+    _thing(B, "f1_cafe_menu", "board", (22.0, 5.4, zf + 2.3), 270.0, topic="cafe_menu")
+    _thing(B, "f1_typewriter", "craft", (5.6, 15.35, zf + 1.05), 0.0, what="typewriter")
+    _thing(B, "f1_island_radio", "machine", (-5.8, 15.3, zf + 1.1), 0.0, what="radio")
+
+
+def _tannoy(B, x, y, z, tid):
+    """A horn loudspeaker on a short steel column bracketed to the wall (y = wall face): a driver can, a flared horn
+    built of four shrinking frames, a bracket, a cable down the wall."""
+    d = B.detail
+    box(d, "CT_Steel", x - 0.03, x + 0.03, y - 0.34, y, z - 0.03, z + 0.03)                       # arm out of the wall
+    box(d, "CT_Steel", x - 0.05, x + 0.05, y - 0.34, y - 0.30, z - 0.35, z + 0.2)                 # the column
+    box(d, "CT_PlasterGrey", x - 0.09, x + 0.09, y - 0.46, y - 0.34, z - 0.09, z + 0.09)          # driver can
+    for k, (r, y0) in enumerate(((0.12, 0.46), (0.17, 0.56), (0.23, 0.66), (0.30, 0.76))):
+        box(d, "CT_PlasterGrey" if k % 2 else "CT_Steel", x - r, x + r, y - y0 - 0.10, y - y0, z - r, z + r, faces="xXZz")
+    box(d, "CT_ConcreteDark", x - 0.27, x + 0.27, y - 0.861, y - 0.86, z - 0.27, z + 0.27, faces="y")
+    box(d, "CT_Steel", x + 0.06, x + 0.07, y - 0.02, y - 0.012, zg_floor(z) , z - 0.05)
+    _thing(B, tid, "machine", (x, y - 0.6, z), 0.0, what="tannoy")
+
+
+def zg_floor(z):
+    return 0.03 if z < 4.0 else Z_SLAB1
+
+
+def _hooks(B, x0, x1, y, zf):
+    """Numbered plates over the cloakroom racks (atlas labels) and a few dangling tags."""
+    n = 6
+    for k in range(n):
+        xx = x0 + (x1 - x0) * k / (n - 1)
+        kit.poster(B, xx, y, zf, 0.0, name="label_%02d" % (10 + k * 3), w=0.16, zc=2.15)
+    for k in range(4):
+        xx = x0 + 0.25 + k * (x1 - x0 - 0.5) / 3.0
+        box(B.detail, "CT_TileWhite", xx - 0.03, xx + 0.03, y - 0.36, y - 0.35, zf + 1.55, zf + 1.62, faces="y")
+
+
+def _abacus(d, x, y, z, yaw=0.0):
+    """A wooden abacus, six wires, a few beads pushed over (z = the desk top)."""
+    box(d, "CT_Wood", x - 0.17, x + 0.17, y - 0.07, y + 0.07, z, z + 0.015)
+    box(d, "CT_Wood", x - 0.17, x - 0.155, y - 0.07, y + 0.07, z, z + 0.2)
+    box(d, "CT_Wood", x + 0.155, x + 0.17, y - 0.07, y + 0.07, z, z + 0.2)
+    box(d, "CT_Wood", x - 0.17, x + 0.17, y - 0.07, y + 0.07, z + 0.2, z + 0.215)
+    for k in range(5):
+        zz = z + 0.03 + k * 0.034
+        box(d, "CT_Steel", x - 0.155, x + 0.155, y - 0.003, y + 0.003, zz + 0.012, zz + 0.016)
+        for j in range(3):
+            bx = x - 0.13 + (0.0 if k % 2 else 0.18) + j * 0.034
+            box(d, ("CT_PlasterRed", "CT_PlasterYellow")[k % 2], bx, bx + 0.028, y - 0.012, y + 0.012, zz, zz + 0.026)
+
+
+def _queue_rail(d, x, y0, y1, zf):
+    """Two lines of chrome posts joined by bars either side of the lane (x = lane middle) between y0 and y1."""
+    for sx in (-0.75, 0.75):
+        for yy in (y0, y1):
+            cyl(d, "CT_Steel", x + sx, yy, zf, zf + 0.95, 0.022, 5)
+            cyl(d, "CT_PlasterGrey", x + sx, yy, zf, zf + 0.03, 0.09, 6)
+        box(d, "CT_PlasterRed", x + sx - 0.012, x + sx + 0.012, y0, y1, zf + 0.84, zf + 0.88)
+
+
+def _third(B, rnd):
+    """Third layer: price cards, hanging signs, tills that look used, benches by the stair, the staff door and notices."""
+    d = B.detail
+    zg, zf = 0.03, Z_SLAB1
+    # price cards on the sales counters (customer edge) and small hanging signs per department
+    for (cx, cy, z0) in ((-12.0, 12.5, zg), (-12.0, 22.5, zg), (12.0, 12.5, zg), (12.0, 22.5, zg),
+                         (-12.0, 12.5, zf), (-12.0, 22.5, zf), (12.0, 12.5, zf), (12.0, 22.5, zf)):
+        for k, dx in enumerate((-1.2, 1.4)):
+            kit.menu_board(B, cx + dx, cy - 0.22, z0 + 1.05, 0.0, name="price_%d" % ((k + int(cy)) % 2), w=0.26, zc=0.1, seed=int(cx + cy) + k)
+    kit.sign_plate(B, -12.0, 12.5, zg, 0.0, name="sign_bread", w=1.3, zc=3.55, hang=True)
+    kit.sign_plate(B, 15.8, 24.0, zg, 0.0, name="sign_toys", w=1.1, zc=3.2, hang=True)
+    kit.sign_plate(B, 6.2, 29.6, zf, 0.0, name="sign_photo", w=0.9, zc=2.75)
+    kit.sign_plate(B, -17.95 + 0.75, 7.1, zf, 0.0, name="sign_quiet", w=0.7, zc=2.45, hang=True)
+    # tills that look used: abacus, a paper roll on a spike, a queue lane
+    for k, cx in enumerate((-4.6, 4.6)):
+        _abacus(d, cx + 0.55, 5.85, zg + 1.08)
+        cyl(d, "CT_Steel", cx + 0.1, 6.25, zg + 1.08, zg + 1.22, 0.004, 3)
+        cyl(d, "CT_TileWhite", cx + 0.1, 6.25, zg + 1.08, zg + 1.14, 0.04, 6)
+        _queue_rail(d, cx, 2.9, 4.3, zg)
+    _abacus(d, -5.5, 23.9, zf + 1.08)
+    cyl(d, "CT_Steel", -6.4, 24.2, zf + 1.08, zf + 1.22, 0.004, 3)
+    cyl(d, "CT_TileWhite", -6.4, 24.2, zf + 1.08, zf + 1.14, 0.04, 6)
+    _queue_rail(d, -6.0, 20.9, 22.3, zf)
+    # a bench by each foot of the stair, both halls
+    for tid, x, yw, z0 in (("g_stair_bench_w", -3.3, 90.0, zg), ("g_stair_bench_e", 3.3, 270.0, zg),
+                           ("f1_stair_bench_w", -3.3, 90.0, zf), ("f1_stair_bench_e", 3.3, 270.0, zf)):
+        r = kit.bench(B, x, 22.6, z0, yw, w=1.6, kind="park")
+        _seat(B, tid, r)
+        B.spot(tid, "bench", (x, 22.6, z0), yw)
+    # the staff door in the back wall, its notice board, hooks on the cloak racks
+    box(d, "CT_Door", -8.0, -7.0, 29.57, 29.6, zg, zg + 2.05, faces="y")
+    box(d, "CT_Steel", -8.04, -6.96, 29.55, 29.6, zg + 2.05, zg + 2.09)
+    kit.sign_plate(B, -7.5, 29.6, zg, 0.0, name="sign_quiet", w=0.5, zc=2.35)
+    _thing(B, "g_staff_door", "door", (-7.5, 29.5, zg + 1.0), 0.0, to="staff")
+    kit.notice_board(B, -5.7, 29.6, zg, 0.0, w=0.8, zc=1.45, seed=91)
+    _thing(B, "g_staff_board", "board", (-5.7, 29.5, zg + 1.45), 0.0, topic="staff")
+    _hooks(B, 4.3, 8.6, 29.6, zg)
 
 
 def _stair_rails(B, n, g, r_, ya, yl, hole):

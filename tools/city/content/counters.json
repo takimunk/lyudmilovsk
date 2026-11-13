@@ -36,9 +36,9 @@
   "pasty_bar": {"role": "seller", "goods": [{"item": "pie", "price": 16, "count": 10}, {"item": "tea", "price": 12, "count": 8}, {"item": "water", "price": 20, "count": 4}]}
  },
  "acts": {
-  "cashier": {"prompt": "city.act.ask.prompt", "lines": "city.talk.cashier"},
-  "cloakroom": {"prompt": "city.act.cloakroom.prompt", "lines": "city.talk.cloakroom", "sound": "hanger_clink"},
-  "tickets": {"prompt": "city.act.tickets.prompt", "lines": "city.talk.tickets", "needs_staff": "clerk"},
+  "cashier": {"prompt": "city.act.ask.prompt", "lines": ["city.talk.cashier.*", {"k": "city.fest.cashier.1", "festival": "any"}]},
+  "cloakroom": {"prompt": "city.act.cloakroom.prompt", "lines": ["city.talk.cloakroom.*", {"k": "city.fest.cloakroom.1", "festival": "any"}, {"k": "city.weather.cloakroom.1", "weather": "rain"}, {"k": "city.weather.cloakroom.2", "weather": "snow"}], "sound": "hanger_clink"},
+  "tickets": {"prompt": "city.act.tickets.prompt", "lines": ["city.talk.tickets.*", {"k": "city.fest.tickets.1", "festival": "any"}], "needs_staff": "clerk"},
   "reception": {"prompt": "city.act.ask.prompt", "lines": "city.talk.reception"},
   "butcher": {"prompt": "city.act.ask.prompt", "lines": "city.talk.butcher", "needs_staff": "butcher"},
   "fishmonger": {"prompt": "city.act.ask.prompt", "lines": "city.talk.fishmonger", "needs_staff": "fishmonger"},

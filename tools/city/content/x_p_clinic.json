@@ -659,5 +659,100 @@
     "shop": "clinic_pharmacy"
    }
   }
- }
+ },
+ "quests": [
+  {
+   "id": "clinic_fish",
+   "kind": "side",
+   "start_on": {
+    "event": "do",
+    "target": "clinic_aquarium"
+   },
+   "stages": [
+    {
+     "id": "notice",
+     "objectives": [
+      {
+       "id": "read",
+       "event": "do",
+       "target": "look_clinic_board"
+      }
+     ]
+    },
+    {
+     "id": "bottle",
+     "objectives": [
+      {
+       "id": "water",
+       "event": "have",
+       "target": "water"
+      }
+     ]
+    },
+    {
+     "id": "pour",
+     "objectives": [
+      {
+       "id": "pour",
+       "event": "do",
+       "target": "clinic_aquarium_water"
+      }
+     ]
+    },
+    {
+     "id": "jar",
+     "objectives": [
+      {
+       "id": "jar",
+       "event": "do",
+       "target": "clinic_fish_jar"
+      }
+     ],
+     "reward": {
+      "rubles": 25
+     }
+    }
+   ]
+  },
+  {
+   "id": "clinic_ticket",
+   "kind": "side",
+   "start_on": {
+    "event": "do",
+    "target": "clinic_ticket"
+   },
+   "stages": [
+    {
+     "id": "prep",
+     "objectives": [
+      {
+       "id": "height",
+       "event": "do",
+       "target": "clinic_height"
+      },
+      {
+       "id": "bp",
+       "event": "do",
+       "target": "clinic_bp"
+      }
+     ]
+    },
+    {
+     "id": "door",
+     "objectives": [
+      {
+       "id": "door",
+       "event": "do",
+       "target": "clinic_dentist_door"
+      }
+     ],
+     "reward": {
+      "items": {
+       "candy": 2
+      }
+     }
+    }
+   ]
+  }
+ ]
 }

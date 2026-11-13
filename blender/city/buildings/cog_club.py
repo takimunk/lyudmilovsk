@@ -589,6 +589,76 @@ def _foyer(B):
     B.lamp((x, y, ZS[1] + 3.4), lumens=800, colour=WARM, kind=PUB, radius=7.5)
 
 
+# ------------------------------------------------------------------ small hand-made props (second pass)
+def _obox(B, mat, x, y, yaw, u0, u1, v0, v1, z0, z1):
+    """An oriented box in the building frame: (x, y) the piece's centre, u to its right, v toward its facing (kit yaw)."""
+    a = math.radians(yaw)
+    rx, ry = math.cos(a), math.sin(a)
+    fx, fy = math.sin(a), -math.cos(a)
+
+    def pt(u, v):
+        return (x + u * rx + v * fx, y + u * ry + v * fy)
+    prism(B.detail, mat, [pt(u0, v0), pt(u0, v1), pt(u1, v1), pt(u1, v0)], z0, z1)
+
+
+def _chess_clock(B, x, y, z, yaw, k=1.5):
+    """A two-dial chess clock (the club's lost one, found in the darkroom): wooden case, two white dials, two red buttons
+    (k: a little larger than life so it reads from across the bench)."""
+    _obox(B, "CT_Wood", x, y, yaw, -0.11 * k, 0.11 * k, -0.045 * k, 0.045 * k, z, z + 0.07 * k)
+    for s_ in (-1, 1):
+        _obox(B, "CT_TileWhite", x, y, yaw, (s_ * 0.055 - 0.032) * k, (s_ * 0.055 + 0.032) * k, 0.045 * k, 0.05 * k, z + 0.012 * k, z + 0.062 * k)
+        _obox(B, "CT_PlasterRed", x, y, yaw, (s_ * 0.055 - 0.015) * k, (s_ * 0.055 + 0.015) * k, -0.015 * k, 0.015 * k, z + 0.07 * k, z + 0.088 * k)
+
+
+def _ribs(B, x, y, z, yaw, n=7, scale=1.0):
+    """A hull of a model boat before planking: a keel and plywood frames standing on it."""
+    _obox(B, "CT_WoodLight", x, y, yaw, -0.3 * scale, 0.3 * scale, -0.008, 0.008, z, z + 0.022)
+    for i in range(n):
+        u = (-0.27 + 0.54 * i / (n - 1)) * scale
+        h = 0.045 + 0.075 * math.sin(math.pi * (0.12 + 0.76 * i / (n - 1)))
+        w = 0.03 + 0.05 * math.sin(math.pi * (0.1 + 0.8 * i / (n - 1)))
+        _obox(B, "CT_Wood", x, y, yaw, u - 0.004, u + 0.004, -w, w, z + 0.02, z + 0.02 + h)
+
+
+def _glider(B, x, y, z, yaw):
+    """A glider's wing before covering: two spars and ribs, on two blocks."""
+    for s in (-1, 1):
+        _obox(B, "CT_WoodLight", x, y, yaw, s * 0.2 - 0.03, s * 0.2 + 0.03, -0.05, 0.05, z, z + 0.04)
+    for k in (-0.04, 0.04):
+        _obox(B, "CT_WoodLight", x, y, yaw, -0.28, 0.28, k - 0.004, k + 0.004, z + 0.04, z + 0.052)
+    for i in range(9):
+        u = -0.26 + 0.065 * i
+        _obox(B, "CT_Wood", x, y, yaw, u - 0.003, u + 0.003, -0.075, 0.075, z + 0.052, z + 0.058)
+
+
+def _hull(B, x, y, z, yaw):
+    """A finished little model boat on its stand: painted hull, white deck house, mast."""
+    _obox(B, "CT_WoodLight", x, y, yaw, -0.12, 0.12, -0.035, 0.035, z, z + 0.03)
+    _obox(B, "CT_PlasterRed", x, y, yaw, -0.22, 0.22, -0.065, 0.065, z + 0.03, z + 0.07)
+    _obox(B, "CT_Plaster", x, y, yaw, -0.2, 0.2, -0.056, 0.056, z + 0.07, z + 0.1)
+    _obox(B, "CT_PlasterBlue", x, y, yaw, -0.05, 0.12, -0.04, 0.04, z + 0.1, z + 0.15)
+    a = math.radians(yaw)
+    mx, my = x + 0.02 * math.cos(a), y + 0.02 * math.sin(a)
+    rod(B.detail, "CT_Steel", (mx, my, z + 0.15), (mx, my, z + 0.3), 0.006)
+
+
+def _cue_rack(B, c, a, side, z=0.0):
+    """Billiard cues on the wall: two rails and six cues leaning against them."""
+    x, y = c.W(a, side * INNER)
+    yaw = c.fy(0, -side)
+    for zz in (0.75, 1.45):
+        _obox(B, "CT_Wood", x, y, yaw, -0.45, 0.45, 0.0, 0.07, z + zz, z + zz + 0.05)
+    _obox(B, "CT_WoodLight", x, y, yaw, -0.45, 0.45, 0.0, 0.015, z + 0.7, z + 1.55)
+    ax, ay = math.cos(math.radians(yaw)), math.sin(math.radians(yaw))
+    fx, fy = math.sin(math.radians(yaw)), -math.cos(math.radians(yaw))
+    for i in range(6):
+        u = -0.36 + 0.144 * i
+        base = (x + u * ax + 0.11 * fx, y + u * ay + 0.11 * fy, z + 0.04)
+        top = (x + (u + 0.01) * ax + 0.045 * fx, y + (u + 0.01) * ay + 0.045 * fy, z + 1.62 - 0.03 * (i % 3))
+        rod(B.detail, "CT_Wood" if i % 2 else "CT_WoodLight", base, top, 0.016)
+    _obox(B, "CT_Leather", x, y, yaw, 0.30, 0.42, 0.02, 0.07, z + 0.75, z + 0.8)       # chalk tin on the lower rail
+
+
 def _reading(B):
     c = Ctx(B, "reading")
     # rugs
@@ -619,6 +689,11 @@ def _reading(B):
             kit.chair(B, cx, cy, 0.0, yw, kind="wood")
             B.spot("chess%d_%d" % (ci, sgn), "seat", (cx, cy, 0.0), yw)
         B.thing("chess_%d" % ci, "play", (x, y, 0.72), c.fy(-1, 0), what="chess")
+        if ci == 1:                      # the clock's own place on the second table: a pale mark and a slip, nothing on it
+            qx, qy = c.W(15.54, p)
+            _obox(B, "CT_Paper", qx, qy, c.fy(-1, 0), -0.12, 0.12, -0.06, 0.06, 0.72, 0.724)
+            qx, qy = c.W(15.63, p)
+            B.thing("clock_place", "machine", (qx, qy, 0.76), c.fy(-1, 0), what="clock_place")
     # bookshelves along both walls (topics!)
     topics = {1: ["local", "birds", "sea", "science"], -1: ["poetry", "art", "chess", "engineering"]}
     for sgn in (-1, 1):
@@ -634,6 +709,25 @@ def _reading(B):
     c.spot("librarian", "work", 16.4, 0.0, (-1, 0))
     c.thing("library_desk", "counter", 15.7, 0.0, 1.0, (-1, 0), role="clerk", service="lending")
     c.put(kit.table_lamp, 15.7, 0.3, z=1.0)
+    # the lending hatch end of the desk: a ledger pile of books on loan, and a second place to be served
+    c.put(kit.books_stack, 15.9, -0.5, z=1.0, n=3, seed=7)
+    c.thing("lend_hatch", "counter", 15.45, -0.5, 1.0, (-1, 0), role="clerk", service="lending", shop="cog_lending")
+    # the returns trolley between the shelves and the chess tables
+    c.along(kit.table, 14.3, -1.95, w=0.9, d=0.45, h=0.8, mat="CT_WoodLight", kind="wood")
+    c.put(kit.books_stack, 14.05, -1.95, z=0.8, n=4, seed=9)
+    c.put(kit.books_stack, 14.55, -1.95, z=0.8, n=3, seed=10)
+    x, y = c.W(14.3, -1.95)
+    B.thing("book_cart", "shelf", (x, y, 0.9), c.fy(0, 1), topic="local")
+    # the swap rack on the end wall: leave a magazine, take a magazine
+    c.wall_end(kit.magazine_rack, -1.35, w=0.9, rows=4, seed=3)
+    c.wall_end(kit.notice_board, -1.35, zc=2.45, w=0.7, seed=5)
+    x, y = c.W(c.L - WT, -1.35)
+    B.thing("swap_shelf", "take", (x, y, 0.9), c.fy(-1, 0), item="magazine_science")
+    # high on the long walls (the room is 8 m tall): a map, a lighthouse, pines, a still life
+    c.wall_side(kit.wall_map, 10.5, -1, zc=4.0, w=2.2, h=1.5, name="map_world")
+    c.wall_side(kit.picture, 10.5, 1, zc=4.0, name="painting_lighthouse", w=1.4)
+    c.wall_side(kit.picture, 13.6, -1, zc=4.0, name="painting_pines", w=1.1)
+    c.wall_side(kit.picture, 13.6, 1, zc=4.0, name="painting_still_life", w=1.1)
     # card catalogues by the door
     c.put(kit.card_catalogue, 7.5, 2.1, face=(0, -1))
     c.put(kit.card_catalogue, 7.5, -2.1, face=(0, 1))
@@ -647,7 +741,7 @@ def _reading(B):
     sx, sy = c.W(c.L - WT, 1.0)
     B.thing("club_notices", "board", (sx, sy, 1.7), c.fy(0, -1), topic="club")
     for sgn in (-1, 1):
-        c.put(kit.plant, 16.4, sgn * 2.0, kind="ficus", pot="CT_PlasterBlue", h=1.7, seed=sgn)
+        c.put(kit.plant, 16.4, sgn * 2.4, kind="ficus", pot="CT_PlasterBlue", h=1.7, seed=sgn)
     # pendants on long cords from the 8.1 m ceiling (same five lamps)
     for a, pp in ((8.4, 0.0), (11.2, 0.0), (14.0, -1.3), (14.0, 1.3), (16.0, 0.0)):
         x, y = c.W(a, pp)
@@ -655,6 +749,9 @@ def _reading(B):
     x, y = c.W(15.3, -1.3)
     B.lamp((x, y, 3.3), lumens=500, colour="#FFE2B5", kind=PUB, radius=5.0)
     B.spot("read_stand", "stand", c.W(6.9, 0.0) + (0.0,), c.fy(1, 0))
+    B.spot("lend_stand", "stand", c.W(14.6, -0.5) + (0.0,), c.fy(1, 0))
+    B.spot("cart_stand", "stand", c.W(14.3, -1.3) + (0.0,), c.fy(0, -1))
+    B.spot("swap_stand", "stand", c.W(15.8, -1.5) + (0.0,), c.fy(1, 0))
 
 
 def _buffet(B):
@@ -713,10 +810,17 @@ def _stack(B):
     c.wall_end(kit.banner, 0.0, zc=2.1, name="poster_cons_3", w=1.3)
     c.wall_side(kit.wall_clock, 7.0, -1, zc=3.0, face="clock_2")
     c.put(kit.plant, 14.3, 1.9, kind="palm", pot="CT_PlasterBlue", h=1.9)
-    for a in (8.6, 12.4):
+    for a, lm in ((8.6, 650), (12.4, 520)):
         x, y = c.W(a, 0.0)
-        kit.pendant(B, x, y, 4.0, drop=0.7, kind="green", light=False)
+        kit.pendant(B, x, y, 4.0, drop=0.7, kind="green", light=True, lumens=lm, colour=WARM, radius=6.0)
     c.thing("games_board", "board", 9.2, -INNER, 1.7, (0, 1), topic="club")
+    # the league blackboard and the cue rack on the other wall
+    c.wall_side(kit.picture, 8.7, 1, zc=1.65, name="chart_calendar", w=0.9)
+    c.thing("league_board", "board", 8.7, INNER, 1.6, (0, -1), topic="club")
+    _cue_rack(B, c, 11.95, 1)
+    c.thing("cue_rack", "machine", 11.95, INNER, 1.1, (0, -1), what="cue_rack")
+    for k, (a, p, fa, fp) in enumerate(((8.6, -1.55, 0, 1), (8.6, 1.55, 0, -1), (12.4, -1.35, 0, 1), (12.4, 1.35, 0, -1))):
+        c.spot("games_stand_%d" % (k + 1), "stand", a, p, (fa, fp))
     # ---------------------------------------------------------------- 4.4: the model-makers' workshop
     z = 4.4
     c = Ctx(B, "stack", z)
@@ -733,6 +837,12 @@ def _stack(B):
                 kit.stool(B, sx, sy, z, 0.0)
         x, y = c.W(a, 0.0)
         B.thing("workbench_%d" % (k + 1), "craft", (x, y, z + 0.8), c.ang, what="workbench")
+        (_ribs if k == 0 else _glider)(B, *c.W(a + 0.05, -0.12), z + 0.8, c.ang + (0 if k == 0 else 90))
+        for sgn in (-1, 1):
+            for s2 in (-1, 1):
+                sx, sy = c.W(a + 0.45 * sgn, s2 * 0.85)
+                if sgn == 1:
+                    B.spot("bench_seat_%d_%d" % (k + 1, s2 + 1), "seat", (sx, sy, z), c.fy(0, -s2))
     c.put(kit.drafting_table, 13.9, 0.2, face=(-1, 0))
     x, y = c.W(13.9, 0.2)
     B.thing("drafting_board", "craft", (x, y, z + 0.9), c.fy(-1, 0), what="workbench")
@@ -750,6 +860,12 @@ def _stack(B):
     for k, (a, p) in enumerate(((9.5, 0.6), (12.8, -0.5))):
         _model_plane(B, *c.W(a, p), z + 3.3, c.ang + 30 * k)
     c.thing("workshop_board", "board", 9.8, -INNER, 1.7, (0, 1), topic="club")
+    # the drying shelf: finished boats waiting for their paint to harden
+    c.wall_end(kit.wall_shelf, 1.75, zt=1.45, w=1.0, props=False)
+    _hull(B, *c.W(c.L - WT - 0.12, 1.5), z + 1.45, c.fy(-1, 0))
+    _hull(B, *c.W(c.L - WT - 0.12, 2.0), z + 1.45, c.fy(-1, 0) + 8)
+    c.thing("drying_shelf", "board", c.L - WT, 1.75, 1.5, (-1, 0), topic="exhibit")
+    c.spot("bench_stand", "stand", 13.0, 0.6, (1, 0))
     kit.pendant(B, *c.W(8.4, 0.0), z + 4.0, drop=0.6, kind="cone", light=False)
     kit.pendant(B, *c.W(11.6, 0.0), z + 4.0, drop=0.6, kind="cone", light=False)
     B.lamp((*c.W(10.5, 0.0), z + 3.5), lumens=700, colour=WARM, kind=PUB, radius=7.0)
@@ -770,17 +886,30 @@ def _stack(B):
     for sgn in (-1, 1):
         kit.stool(B, *c.W(9.0 + 0.5 * sgn, -0.55), z, 0.0)
     c.put(kit.screen_divider, 12.5, -0.4, face=(0, 1))
+    # the second bench: the exposure timer (the club's lost chess clock), three trays of the print's baths
+    _chess_clock(B, *c.W(10.3, INNER - 0.4), z + 0.9, c.fy(0, -1))
+    B.thing("exposure_clock", "machine", (*c.W(10.3, INNER - 0.4), z + 0.96), c.fy(0, -1), what="exposure_clock")
+    for k, a in enumerate((11.2, 11.65, 12.1)):
+        tx, ty = c.W(a, INNER - 0.4)
+        _obox(B, "CT_TileWhite", tx, ty, c.fy(0, -1), -0.17, 0.17, -0.13, 0.13, z + 0.9, z + 0.94)
+        _obox(B, "CT_Paper" if k == 1 else "CT_Rubber", tx, ty, c.fy(0, -1), -0.15, 0.15, -0.11, 0.11, z + 0.94, z + 0.945)
+    B.thing("developing_tray", "craft", (*c.W(11.65, INNER - 0.4), z + 0.95), c.fy(0, -1), what="developing")
+    B.lamp((*c.W(11.6, INNER - 0.6), z + 2.2), lumens=260, colour="#FF3320", kind=PUB, radius=4.0)
+    for k, a in enumerate((8.5, 9.5)):
+        B.spot("photo_seat_%d" % (k + 1), "seat", (*c.W(a, -0.55), z), c.fy(0, -1))
     # drying line with prints along the end wall side
-    pa, pb = c.W(14.6, 2.0), c.W(14.6, -2.0)
+    pa, pb = c.W(14.2, 2.2), c.W(14.2, -0.6)
     rod(B.detail, "CT_Steel", (pa[0], pa[1], z + 2.1), (pb[0], pb[1], z + 2.1), 0.01)
-    for k in range(5):
-        px, py = c.W(14.6, 1.6 - 0.8 * k)
+    for k, nm in enumerate(("painting_sea_calm", "painting_dunes", "canvas_blank", "painting_pines")):
+        c.put(kit.poster, 14.2, 1.9 - 0.6 * k, z=z, face=(-1, 0), name=nm, w=0.34, zc=1.9)
     for k in range(4):
         c.wall_end(kit.poster, 1.5 - 1.0 * k, zc=1.75, name=("travel_0", "travel_1", "travel_3", "travel_4")[k], w=0.55)
     c.wall_end(kit.sign_plate, 0.0, zc=2.7, name="sign_photo", w=1.6)
     kit.pendant(B, *c.W(9.5, 0.0), z + 3.0, drop=0.6, kind="opal", light=False)
     B.lamp((*c.W(11.0, 0.0), z + 2.7), lumens=500, colour="#FFB090", kind=PUB, radius=6.0)
     c.thing("photo_board", "board", c.L - WT, 0.0, 1.6, (-1, 0), topic="exhibit")
+    c.thing("drying_line", "board", 14.2, 1.0, 1.9, (-1, 0), topic="exhibit")
+    c.spot("photo_stand", "stand", 13.2, 1.3, (1, 0))
 
 
 def _model_plane(B, x, y, z, yaw):
@@ -834,6 +963,12 @@ def _studio(B):
     c.wall_side(kit.fire_extinguisher, 7.4, -1)
     c.put(kit.plant, 6.3, 2.2, kind="ficus", pot="CT_PlasterRed", h=1.6)
     c.thing("stage_board", "board", 9.0, -INNER, 1.7, (0, 1), topic="club")
+    c.wall_side(kit.notice_board, 11.6, -1, zc=1.7, w=0.9, seed=13)
+    c.thing("rehearsal_board", "board", 11.6, -INNER, 1.7, (0, 1), topic="club")
+    B.lamp((*c.W(11.4, 0.0), 3.4), lumens=700, colour="#FFE2B5", kind=PUB, radius=6.5)
+    for k, (a, p) in enumerate(((7.4, -1.35), (9.4, -1.35), (7.4, 1.35), (9.4, 1.35))):
+        c.spot("hall_seat_%d" % (k + 1), "seat", a, p, (1, 0))
+    c.spot("stage_wing", "stand", 10.6, -1.3, (1, 0))
     for a in (8.0, 10.6):
         kit.pendant(B, *c.W(a, 0.0), 4.0, drop=0.6, kind="cone", light=False)
     # ---------------------------------------------------------------- 4.4: lounge
@@ -866,6 +1001,11 @@ def _studio(B):
     c.wall_side(kit.wall_clock, 12.5, -1, zc=3.0, face="clock_0")
     c.put(kit.plant, 6.9, -2.2, kind="monstera", pot="CT_PlasterBlue", h=1.5)
     c.thing("lounge_board", "board", c.L - WT, 0.0, 1.8, (-1, 0), topic="club")
+    c.spot("lounge_sofa_1", "seat", 9.5, 1.5, (0, -1))
+    c.spot("lounge_sofa_2", "seat", 8.7, 1.5, (0, -1))
+    c.spot("football_stand_1", "stand", 13.2, -1.2, (0, 1))
+    c.spot("football_stand_2", "stand", 13.2, 1.2, (0, -1))
+    c.spot("arcade_stand", "stand", 13.5, 2.1, (-1, -1))
     B.lamp((*c.W(10.0, 0.0), z + 3.4), lumens=700, colour=WARM, kind=PUB, radius=7.0)
     kit.pendant(B, *c.W(9.5, 0.0), z + 4.0, drop=0.6, kind="opal", light=False)
 
@@ -911,4 +1051,5 @@ def _front_room(B):
 
 
 def _lamps_misc(B):
-    pass
+    for w_ in kit.check(B):
+        print('KITCHK', w_)

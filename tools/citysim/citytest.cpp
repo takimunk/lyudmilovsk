@@ -8,6 +8,7 @@
 #include <cmath>
 #include <cstdio>
 #include <fstream>
+#include <vector>
 #include <map>
 #include <set>
 #include <sstream>
@@ -340,6 +341,184 @@ static void WhenChecks()
 	CHECK(S4.size() == 3 && S5.size() == 1 && S5[0] == "No full stop at all" && Subtitles("", 5).empty(), "at most MaxParts; one sentence stays whole; nothing is nothing");
 }
 
+static void MoreChecks()
+{
+	std::printf("festivals, weather, collections, the closed state, the townsfolk's seats\n");
+	const std::string Text = R"({"things": [
+  {"id": "P-C/board", "plot": "P-C", "kind": "board", "ue": [0, 0, 150], "yaw": 0, "props": {}, "act": "club_board"},
+  {"id": "P-C/talk", "plot": "P-C", "kind": "counter", "ue": [400, 0, 110], "yaw": 0, "props": {}, "act": "talk"},
+  {"id": "P-C/jukebox", "plot": "P-C", "kind": "machine", "ue": [800, 0, 110], "yaw": 0, "props": {}, "act": "jukebox",
+   "hours": [10, 22], "days": "mon-sun"},
+  {"id": "P-C/chair", "plot": "P-C", "kind": "seat", "ue": [1200, 0, 45], "yaw": 0, "props": {"height": 0.45}, "act": "sit",
+   "hours": [10, 22], "days": "mon-sun", "closed": "_closed:chairs"},
+  {"id": "P-C/chair2", "plot": "P-C", "kind": "seat", "ue": [1300, 0, 45], "yaw": 0, "props": {"height": 0.45}, "act": "sit",
+   "hours": [10, 22], "days": "mon-sun"},
+  {"id": "P-C/upstairs_chair", "plot": "P-C", "kind": "seat", "ue": [1250, 0, 445], "yaw": 0, "props": {}, "act": "sit"},
+  {"id": "P-C/shelf", "plot": "P-C", "kind": "shelf", "ue": [1600, 0, 130], "yaw": 0, "props": {}, "act": "read_birds",
+   "hours": [10, 22], "days": "mon-sun", "closed": "no_such_act"},
+  {"id": "P-C/news", "plot": "P-C", "kind": "board", "ue": [2800, 0, 150], "yaw": 0, "props": {}, "act": "notices"},
+  {"id": "P-C/news2", "plot": "P-C", "kind": "board", "ue": [3200, 0, 150], "yaw": 0, "props": {}, "act": "notices"},
+  {"id": "P-C/film", "plot": "P-C", "kind": "screen", "ue": [2400, 0, 300], "yaw": 0, "props": {}, "act": "film"},
+  {"id": "P-K1/counter", "plot": "P-K1", "kind": "counter", "ue": [9000, 0, 110], "yaw": 0, "props": {}, "act": "talk", "collect": "kiosks/P-K1"},
+  {"id": "P-K2/counter", "plot": "P-K2", "kind": "counter", "ue": [9500, 0, 110], "yaw": 0, "props": {}, "act": "talk", "collect": "kiosks/P-K2"}],
+ "acts": {
+  "club_board": {"prompt": "p", "rotate": "daily", "lines": ["n.1", "n.2", "n.3", {"k": "fest.any", "festival": "any"},
+                 {"k": "fest.ny", "festival": "new_year"}]},
+  "talk": {"prompt": "p", "lines": ["t.1", {"k": "t.rain", "weather": "rain"}, {"k": "t.coldsnow", "weather": ["cold", "snow"]},
+           {"k": "t.bad", "weather": "hail_of_frogs"}, {"k": "t.calm", "festival": "none"},
+           {"k": "t.fan", "count": ["records", 2]}, {"k": "t.song2", "have": "records/2"}]},
+  "jukebox": {"prompt": "p", "lines": [{"k": "j.1", "collect": "records/1"}, {"k": "j.2", "collect": "records/2"}, {"k": "j.3", "collect": "records/3"}]},
+  "sit": {"prompt": "p", "pose": "sit", "any_hour": true},
+  "_closed:chairs": {"prompt": "look", "lines": ["closed.chairs"], "any_hour": true, "event": "look", "target": "closed"},
+  "read_birds": {"prompt": "p", "lines": ["b.1"], "minutes": 10, "collect": "shelves/birds"},
+  "film": {"prompt": "p", "lines": ["f.a", {"k": "f.b", "h": [19, 23]}], "collect": "films/{line}"},
+  "notices": {"prompt": "p", "rotate": "daily", "lines": [{"k": "w.1", "before": 3}, {"k": "w.2", "after": 3, "before": 6}, {"k": "w.3", "after": 6},
+              {"k": "news.once", "once": true}, "plain"]}},
+ "collections": {"records": {"title": "c.records", "pieces": ["1", "2", "3"]},
+                 "shelves": {"title": "c.shelves", "pieces": ["birds", "sea"]},
+                 "kiosks": {"title": "c.kiosks", "pieces": ["P-K1", "P-K2"]},
+                 "films": {"title": "c.films", "pieces": ["f.a", "f.b"]}},
+ "shops": {}})";
+	FModel M;
+	std::string Error;
+	CHECK(M.Load(Text, Error), "it loads (%s)", Error.c_str());
+	FAsk Ask;
+	Ask.Money = 100;
+	const int Board = M.FindThing("P-C/board"), Talk = M.FindThing("P-C/talk"), Juke = M.FindThing("P-C/jukebox");
+	const int Chair = M.FindThing("P-C/chair"), Chair2 = M.FindThing("P-C/chair2"), Up = M.FindThing("P-C/upstairs_chair");
+	const int Shelf = M.FindThing("P-C/shelf"), K1 = M.FindThing("P-K1/counter"), K2 = M.FindThing("P-K2/counter");
+	auto Seen = [&M](int Thing, const FWhen& W)
+	{
+		std::set<std::string> Keys;
+		for (int K = 0; K < 10; ++K)
+		{
+			Keys.insert(M.NextLine(Thing, W));
+		}
+		std::string All;
+		for (const std::string& L : Keys)
+		{
+			All += L + " ";
+		}
+		return All;
+	};
+	// festivals: a daily board's notice takes the holiday, the run goes on after it
+	FWhen Plain = At(2, 12.f, 400);
+	FWhen Fest = At(3, 12.f, 401);
+	Fest.bFestival = true;
+	Fest.Festivals = { "new_year" };
+	const FOutcome B1 = M.Run(Board, Plain, Ask);
+	const FOutcome B2 = M.Run(Board, Fest, Ask);
+	const FOutcome B2b = M.Run(Board, Fest, Ask);
+	FWhen Next = At(4, 12.f, 402);
+	const FOutcome B3 = M.Run(Board, Next, Ask);
+	CHECK(B1.Line == "n.1" && B2.Line == "fest.any" && B2b.Line == "fest.any" && B3.Line == "n.2",
+		"a daily board: n.1, on the holiday its notice all day, then n.2 (nothing skipped): %s %s %s", B1.Line.c_str(), B2.Line.c_str(), B3.Line.c_str());
+	FWhen Market = At(5, 12.f, 403);
+	Market.Festivals = { "weekend_market" };
+	CHECK(Seen(Talk, Plain).find("t.calm") != std::string::npos && Seen(Talk, Fest).find("t.calm") == std::string::npos,
+		"\"festival\": \"none\" holds only on a day with no holiday");
+	CHECK(M.FindAct("club_board") >= 0 && M.Acts[(size_t)M.FindAct("club_board")].Lines[4].Holds(Fest) && !M.Acts[(size_t)M.FindAct("club_board")].Lines[4].Holds(Market)
+		&& !M.Acts[(size_t)M.FindAct("club_board")].Lines[3].Holds(Market), "a festival id holds on its day; the market is no holiday for \"any\"");
+	// weather
+	CHECK(WeatherBits(0.9f, 2.f, 0.f, 0.f, 12.f, 0.8f) == (WeatherRain | WeatherWet) && WeatherBits(0.1f, 0.f, 0.f, 0.f, 25.f, 0.f) == (WeatherWarm | WeatherClear | WeatherDry)
+		&& WeatherBits(1.f, 1.f, 1.f, 0.6f, -3.f, 0.f) == (WeatherSnow | WeatherFog | WeatherCold) && WeatherBit("fog") == WeatherFog && WeatherBit("frogs") == 0,
+		"weather words from the sky's summary");
+	FWhen Rain = Plain;
+	Rain.Weather = WeatherRain | WeatherWet;
+	FWhen Snow = Plain;
+	Snow.Weather = WeatherSnow | WeatherCold;
+	const std::string SRain = Seen(Talk, Rain), SDry = Seen(Talk, Plain), SSnow = Seen(Talk, Snow);
+	CHECK(SRain.find("t.rain") != std::string::npos && SDry.find("t.rain") == std::string::npos && SSnow.find("t.coldsnow") != std::string::npos
+		&& SRain.find("t.coldsnow") == std::string::npos, "weather lines: rain only in the rain, [cold, snow] any of them (%s)", SRain.c_str());
+	CHECK(SRain.find("t.bad") == std::string::npos && SSnow.find("t.bad") == std::string::npos, "a line with an unknown weather word never shows");
+	// collections: a line's stamp, an act's stamp, a thing's stamp; once each
+	CHECK(M.Collections.size() == 4 && M.FindCollection("records") && M.FindCollection("records")->Pieces.size() == 3, "collections read");
+	CHECK(SDry.find("t.fan") == std::string::npos && SDry.find("t.song2") == std::string::npos, "no records heard: no fan's lines");
+	const FOutcome J1 = M.Run(Juke, Plain, Ask);
+	const FOutcome J2 = M.Run(Juke, Plain, Ask);
+	CHECK(J1.NewStamps.size() == 1 && J1.NewStamps[0] == "records/1" && J2.NewStamps.size() == 1 && J2.NewStamps[0] == "records/2"
+		&& M.CountStamps("records") == 2, "the jukebox's records: a stamp per record heard (2 of 3)");
+	M.Run(Juke, Plain, Ask);
+	const FOutcome J4 = M.Run(Juke, Plain, Ask);
+	CHECK(J4.NewStamps.empty() && M.CountStamps("records") == 3, "a record heard again gives nothing new");
+	CHECK(Seen(Talk, Plain).find("t.fan t.song2") != std::string::npos, "\"count\" and \"have\" lines show once the stamps are there");
+	const FOutcome R1 = M.Run(Shelf, Plain, Ask);
+	const FOutcome R2 = M.Run(Shelf, Plain, Ask);
+	CHECK(R1.NewStamps.size() == 1 && R1.NewStamps[0] == "shelves/birds" && R2.NewStamps.empty() && M.CountStamps("shelves") == 1, "an act's stamp, once");
+	const FOutcome Kv = M.Run(K1, Plain, Ask);
+	CHECK(Kv.NewStamps.size() == 1 && Kv.NewStamps[0] == "kiosks/P-K1" && M.HasStamp("kiosks/P-K1") && !M.HasStamp("kiosks/P-K2"), "a thing's stamp: kiosks visited");
+	const int Film = M.FindThing("P-C/film");
+	const FOutcome F1 = M.Run(Film, Plain, Ask);
+	const FOutcome F2 = M.Run(Film, Plain, Ask);
+	const FOutcome F3 = M.Run(Film, At(2, 20.f, 400), Ask);
+	CHECK(F1.NewStamps.size() == 1 && F1.NewStamps[0] == "films/f.a" && F2.NewStamps.empty() && F3.NewStamps.size() == 1 && F3.NewStamps[0] == "films/f.b"
+		&& M.CountStamps("films") == 2, "\"films/{line}\": every film shown is a piece (the evening one in the evening)");
+	CHECK(!M.GiveStamp("records/9") && !M.GiveStamp("nope/1") && !M.GiveStamp("records"), "pieces the data does not declare are not given");
+	std::map<std::string, std::string> Saved;
+	M.SaveState(Saved);
+	FModel M2;
+	M2.Load(Text, Error);
+	M2.LoadState(Saved);
+	CHECK(Saved.count("c:records/2") && M2.CountStamps("records") == 3 && M2.CountStamps("kiosks") == 1, "stamps survive a save and a load");
+	M2.GrantSet("kiosks");
+	CHECK(M2.CountStamps("kiosks") == 2 && M2.Run(K2, Plain, Ask).NewStamps.empty(), "developer mode: a set granted");
+	M2.ClearSet("records");
+	CHECK(M2.CountStamps("records") == 0 && M2.CountStamps("kiosks") == 2, "developer mode: a set cleared");
+	M2.ClearSet("*");
+	M2.GrantSet("*");
+	CHECK(M2.CountStamps("records") == 3 && M2.CountStamps("shelves") == 2 && M2.CountStamps("films") == 2 && !M2.GrantSet("nope"), "every set at once; an unknown set is refused");
+	M2.ResetState();
+	CHECK(M2.CountStamps("kiosks") == 0, "a new game forgets the stamps");
+	// before / once: dated notices replace each other; a once line shows once at each thing, also after a load
+	auto Day = [](long long Since) { FWhen W = At((int)(Since % 7), 12.f, 500 + Since); W.Since = Since; return W; };
+	const int News = M.FindThing("P-C/news"), News2 = M.FindThing("P-C/news2");
+	std::string Got;
+	for (long long D = 0; D < 9; ++D)
+	{
+		Got += M.Run(News, Day(D), Ask).Line + " ";
+	}
+	CHECK(Got == "w.1 news.once plain w.2 plain w.2 w.3 plain w.3 ", "before/after: w.1 till day 3, w.2 days 3..5, w.3 from 6; the once line once (%s)", Got.c_str());
+	CHECK(M.Run(News2, Day(1), Ask).Line == "w.1" && M.Run(News2, Day(2), Ask).Line == "news.once", "once is per thing: the other board shows it too");
+	std::map<std::string, std::string> SavedOnce;
+	M.SaveState(SavedOnce);
+	FModel M4;
+	M4.Load(Text, Error);
+	M4.LoadState(SavedOnce);
+	std::set<std::string> After4;
+	for (long long D = 7; D < 13; ++D)
+	{
+		After4.insert(M4.Run(News2, Day(D), Ask).Line);
+	}
+	CHECK(SavedOnce.count("o:P-C/news2|news.once") && After4.count("news.once") == 0 && After4.count("w.3"), "a once line shown stays shown after a load");
+	// the closed state: the chairs on the tables, by data, instead of nothing
+	FWhen Night = At(2, 23.f, 404);
+	CHECK(M.ActIndexNow(Chair, Night, false) == M.FindAct("_closed:chairs") && M.ActIndexNow(Chair, Plain, false) == M.Things[(size_t)Chair].Act
+		&& M.ActIndexNow(Chair, Night, true) == M.Things[(size_t)Chair].Act, "a chair with a closed act: that act at night, its own by day and with open-all");
+	const FOutcome C1 = M.Run(Chair, Night, Ask);
+	CHECK(C1.Verdict == EVerdict::Ok && C1.bClosed && C1.Line == "closed.chairs" && C1.Pose == "stand" && !C1.bFirstVisitToday,
+		"at night the chair says the chairs are on the tables (no sitting, no visit)");
+	CHECK(M.Run(Chair2, Night, Ask).Pose == "sit", "a chair without one still sits at any hour");
+	CHECK(M.Things[(size_t)Shelf].ClosedAct == -1 && M.Check(Shelf, Night, Ask) == EVerdict::Closed, "an unknown closed act is none: the shelf is just refused");
+	CHECK(M.Run(Chair, Plain, Ask).Pose == "sit" && M.LineIndex("P-C/chair#closed") == 0, "by day it sits again; the closed act keeps its own page");
+	// the townsfolk: the nearest free seat, claims, the hero refused a taken seat
+	const FVec Near = V(1150, 0, 0);
+	CHECK(M.FindFree("seat", Near, 500.0, 200.0) == Chair && M.FindFree("seat", V(1150, 0, 400), 500.0, 200.0) == Up, "the nearest free seat on the floor asked");
+	CHECK(M.FindFree("seat", Near, 30.0, 200.0) == -1 && M.FindFree("", V(0, 0, 100), 100.0, 200.0) == Board, "within the radius only; any kind");
+	CHECK(M.Claim(Chair, 7) && M.Claim(Chair, 7) && !M.Claim(Chair, 8) && M.Holder(Chair) == 7, "a seat claimed: again by the same one, not by another");
+	CHECK(M.FindFree("seat", Near, 500.0, 200.0) == Chair2 && M.FindFree("seat", Near, 500.0, 200.0, Chair2) == -1, "a held seat is not free; the hero's is skipped");
+	CHECK(M.Check(Chair, Plain, Ask) == EVerdict::Taken && RefusalKey(EVerdict::Taken) == "city.act.taken" && M.Check(Talk, Plain, Ask) == EVerdict::Ok,
+		"the hero can't sit on a held seat (city.act.taken)");
+	M.Release(Chair, 8);
+	CHECK(M.Holder(Chair) == 7, "another can't release it");
+	M.Release(Chair, 7);
+	CHECK(M.Holder(Chair) == 0 && M.Check(Chair, Plain, Ask) == EVerdict::Ok && !M.Claim(Chair, 0), "released: free again; holder 0 is nobody");
+	M.Claim(Chair2, 9);
+	M.ReleaseAll();
+	CHECK(M.Holder(Chair2) == 0, "release all");
+	const std::vector<int>* Of = M.ThingsOfPlot("P-C");
+	CHECK(Of && Of->size() == 10 && M.ThingsOfPlot("P-K1")->size() == 1 && !M.ThingsOfPlot("P-NONE"), "the things of a plot, built at load");
+}
+
 static void RealChecks(const std::string& Path)
 {
 	std::string Text, Error;
@@ -451,6 +630,7 @@ int main(int Argc, char** Argv)
 	FixtureChecks();
 	UntilChecks();
 	WhenChecks();
+	MoreChecks();
 	RealChecks(Argc > 1 ? Argv[1] : "unreal/Lyudmilovsk/Content/City/interiors.json");
 	std::printf("%d passed, %d failed\n", Passed, Failures);
 	return Failures ? 1 : 0;

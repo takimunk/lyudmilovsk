@@ -689,5 +689,98 @@
   "ribbon_corner_block/roof_samovar": {
    "act": "rcb_tea"
   }
- }
+ },
+ "quests": [
+  {
+   "id": "rcb_socks",
+   "kind": "side",
+   "start_on": {
+    "event": "visit",
+    "target": "P-T4H2"
+   },
+   "stages": [
+    {
+     "id": "board",
+     "objectives": [
+      {
+       "id": "board",
+       "event": "do",
+       "target": "rcb_cork"
+      }
+     ]
+    },
+    {
+     "id": "line",
+     "objectives": [
+      {
+       "id": "line",
+       "event": "do",
+       "target": "rcb_socks"
+      }
+     ]
+    },
+    {
+     "id": "box",
+     "objectives": [
+      {
+       "id": "box",
+       "event": "do",
+       "target": "rcb_lost_box"
+      }
+     ],
+     "reward": {
+      "items": {
+       "tea": 1
+      }
+     }
+    }
+   ]
+  },
+  {
+   "id": "rcb_roof",
+   "kind": "side",
+   "start_on": {
+    "event": "visit",
+    "target": "P-T4H2"
+   },
+   "stages": [
+    {
+     "id": "seeds",
+     "objectives": [
+      {
+       "id": "seeds",
+       "event": "have",
+       "target": "seeds"
+      }
+     ]
+    },
+    {
+     "id": "pigeons",
+     "objectives": [
+      {
+       "id": "pigeons",
+       "event": "do",
+       "target": "rcb_feed"
+      }
+     ]
+    },
+    {
+     "id": "tea",
+     "objectives": [
+      {
+       "id": "tea",
+       "event": "do",
+       "target": "rcb_tea"
+      }
+     ],
+     "reward": {
+      "items": {
+       "candy": 1
+      },
+      "rubles": 20
+     }
+    }
+   ]
+  }
+ ]
 }

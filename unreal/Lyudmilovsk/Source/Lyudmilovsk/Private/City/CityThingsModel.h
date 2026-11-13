@@ -5,8 +5,9 @@
 // Unreal cm), acts{} (what E does there), shops{} (stock tables). A thing without an act gets its kind's default act.
 // What this file decides: which thing the hero looks at (a grid by position, never a pass over all things), whether its
 // act may run now (open hours and days, money, an item, staff on shift, the daily limit), and what running it yields
-// (minutes, price, items, a line of text, a quest event, a pose, a sound, a shop). What it remembers (the page each
-// thing is on, the counts per day, the uses, the plots visited today) goes into the save as a flat string map.
+// (minutes, price, items, a line of text, a quest event, a pose, a sound, a shop, a stamp of a collection). What it remembers
+// (the page each thing is on, the counts per day, the uses, the plots visited today, the stamps collected) goes into the
+// save as a flat string map.
 #pragma once
 
 #include "../People/MiniJson.h"
@@ -18,6 +19,7 @@
 #include <cstdlib>
 #include <functional>
 #include <map>
+#include <set>
 #include <string>
 #include <unordered_map>
 #include <utility>
@@ -29,6 +31,68 @@ namespace LyudCity
 	{
 		double X = 0.0, Y = 0.0, Z = 0.0;
 	};
+
+	/** The weather as the lines ask it (bits of FWhen::Weather; "weather": "rain" in the data). */
+	enum EWeatherBit : uint8_t
+	{
+		WeatherRain = 1,
+		WeatherSnow = 2,
+		WeatherFog = 4,
+		WeatherCold = 8,
+		WeatherWarm = 16,
+		WeatherClear = 32,
+		WeatherWet = 64,
+		WeatherDry = 128,
+	};
+
+	/** A weather word of the data as its bit; 0 for an unknown word. */
+	inline uint8_t WeatherBit(const std::string& Word)
+	{
+		static const char* const Words[8] = { "rain", "snow", "fog", "cold", "warm", "clear", "wet", "dry" };
+		for (int I = 0; I < 8; ++I)
+		{
+			if (Word == Words[I])
+			{
+				return (uint8_t)(1u << I);
+			}
+		}
+		return 0;
+	}
+
+	/**
+	 * The weather words of the moment from the weather's short summary (ULyudWeatherSubsystem::GetSky; the same thresholds as
+	 * the townsfolk's talk, TownBarks WeatherWords): rain (> 0.2 mm/h, not snow), snow, fog, cold (< 2 C), warm (> 22 C),
+	 * clear (few clouds, dry, no fog), wet ground, dry (nothing falling).
+	 */
+	inline uint8_t WeatherBits(float Cloud, float RainMmH, float Snow, float Fog, float TempC, float Wet)
+	{
+		uint8_t Bits = 0;
+		Bits |= RainMmH > 0.2f && Snow < 0.5f ? WeatherRain : 0;
+		Bits |= RainMmH > 0.1f && Snow >= 0.5f ? WeatherSnow : 0;
+		Bits |= Fog > 0.45f ? WeatherFog : 0;
+		Bits |= TempC < 2.f ? WeatherCold : 0;
+		Bits |= TempC > 22.f ? WeatherWarm : 0;
+		Bits |= Cloud < 0.35f && RainMmH < 0.05f && Fog <= 0.45f ? WeatherClear : 0;
+		Bits |= Wet > 0.4f ? WeatherWet : 0;
+		Bits |= RainMmH <= 0.1f ? WeatherDry : 0;
+		return Bits;
+	}
+
+	/** The stamps collected: set -> pieces (docs/city_interiors.md "Collections"). */
+	using FStamps = std::map<std::string, std::set<std::string>>;
+
+	/** "set/piece" split at the first slash; false when there is none. */
+	inline bool SplitStamp(const std::string& Stamp, std::string& Set, std::string& Piece)
+	{
+		const size_t Slash = Stamp.find('/');
+		if (Slash == std::string::npos || Slash == 0 || Slash + 1 >= Stamp.size())
+		{
+			return false;
+		}
+		Set = Stamp.substr(0, Slash);
+		Piece = Stamp.substr(Slash + 1);
+		return true;
+	}
 
 	/** The game's date as the rules need it. */
 	struct FWhen
@@ -43,6 +107,12 @@ namespace LyudCity
 		int MonthDay = 0;
 		/** Whole days since the game began (UGameCalendar::StartDate): 0 on the first day. */
 		long long Since = 0;
+		/** A holiday today (ULyudFestivalSubsystem::IsFestivalToday: not the weekly market), and the ids of every festival on
+		 *  now (ActiveFestivals, the market included). Filled only when an act runs (it allocates). */
+		bool bFestival = false;
+		std::vector<std::string> Festivals;
+		/** EWeatherBit words of the weather now; 0: unknown (every weather condition then fails). */
+		uint8_t Weather = 0;
 	};
 
 	/** Is Hour inside [Open, Close)? Close below Open runs past midnight; Close - Open >= 24 is always. */
@@ -74,10 +144,22 @@ namespace LyudCity
 		return M >= 1 && M <= 12 && D >= 1 && D <= 31 ? M * 100 + D : -1;
 	}
 
+	/** A line's festival condition: none given, "any" holiday, one of the ids in Festival, "none" (no holiday today). */
+	enum class EFestivalCond : uint8_t
+	{
+		None,
+		Any,
+		Ids,
+		NotToday,
+	};
+
 	/**
 	 * One line of an act and when it may be shown. interiors.json writes a plain key when the line has no conditions, else
 	 * {"k": key, "h": [from, to), "d": "mon-fri", "date": ["12-20", "01-10"] (or one "MM-DD"), "after": days since the game
-	 * began, "every": [n, r] (days since the game began % n == r)}. Every condition given must hold.
+	 * began, "before": days since the game began it stops, "once": true (shown once at a thing), "every": [n, r] (days since the
+	 * game began % n == r), "festival": "any" | "none" | id | [ids], "weather": word |
+	 * [words] (any of them), "have": "set/piece", "count": ["set", n] (at least n stamps of the set), "collect": "set/piece"
+	 * (not a condition: the stamp the hero gets when the line is shown)}. Every condition given must hold.
 	 */
 	struct FLine
 	{
@@ -86,9 +168,27 @@ namespace LyudCity
 		uint8_t Days = 0x7F;
 		int DateFrom = -1, DateTo = -1;
 		int After = 0;
+		/** Shown only before this many days since the game began (0: no bound): with After, a notice's days on the board. */
+		int Before = 0;
+		/** Shown once at a thing, then skipped there (the model remembers it; saved). */
+		bool bOnce = false;
 		int Every = 0, EveryAt = 0;
+		EFestivalCond Festival = EFestivalCond::None;
+		std::vector<std::string> FestivalIds;
+		/** Any of these EWeatherBit words (0: no weather condition). */
+		uint8_t Weather = 0;
+		/** "set/piece" the hero must have (empty: none). */
+		std::string Have;
+		/** At least CountMin stamps of CountSet (CountMin 0: no condition). */
+		std::string CountSet;
+		int CountMin = 0;
+		/** The stamp shown lines give ("set/piece", empty: none). */
+		std::string Collect;
 
-		bool Holds(const FWhen& W) const
+		bool IsFestive() const { return Festival == EFestivalCond::Any || Festival == EFestivalCond::Ids; }
+
+		/** Do the conditions hold? Stamps: the collections (null: none collected, so "have" and "count" fail). */
+		bool Holds(const FWhen& W, const FStamps* Stamps = nullptr) const
 		{
 			if (HourFrom >= 0.f && !InHours(W.Hour, HourFrom, HourTo))
 			{
@@ -110,12 +210,61 @@ namespace LyudCity
 			{
 				return false;
 			}
+			if (Before > 0 && W.Since >= Before)
+			{
+				return false;
+			}
 			if (Every > 1 && (((W.Since % Every) + Every) % Every) != EveryAt)
 			{
 				return false;
 			}
+			if (Festival == EFestivalCond::Any && !W.bFestival)
+			{
+				return false;
+			}
+			if (Festival == EFestivalCond::NotToday && W.bFestival)
+			{
+				return false;
+			}
+			if (Festival == EFestivalCond::Ids && std::find_first_of(W.Festivals.begin(), W.Festivals.end(), FestivalIds.begin(), FestivalIds.end()) == W.Festivals.end())
+			{
+				return false;
+			}
+			if (Weather != 0 && (W.Weather & Weather) == 0)
+			{
+				return false;
+			}
+			if (!Have.empty() || CountMin > 0)
+			{
+				std::string Set, Piece;
+				if (!Have.empty())
+				{
+					SplitStamp(Have, Set, Piece);
+					const auto It = Stamps ? Stamps->find(Set) : FStamps::const_iterator();
+					if (!Stamps || It == Stamps->end() || It->second.count(Piece) == 0)
+					{
+						return false;
+					}
+				}
+				if (CountMin > 0)
+				{
+					const auto It = Stamps ? Stamps->find(CountSet) : FStamps::const_iterator();
+					if (!Stamps || It == Stamps->end() || (int)It->second.size() < CountMin)
+					{
+						return false;
+					}
+				}
+			}
 			return true;
 		}
+	};
+
+	/** A collection: a set of stamps the hero gathers (films seen, shelves read, kiosks visited), its title key and pieces. */
+	struct FCollection
+	{
+		std::string Id;
+		std::string Title;
+		std::vector<std::string> Pieces;
 	};
 
 	/** What an act is (the defaults of a kind are made the same way). */
@@ -145,6 +294,8 @@ namespace LyudCity
 		bool bFade = false;
 		/** Usable whatever the plot's hours (seats, beds, doors: if the hero is in, he may sit down). */
 		bool bAnyHour = false;
+		/** The stamp every run gives ("set/piece", empty: none). */
+		std::string Collect;
 	};
 
 	struct FThing
@@ -157,6 +308,10 @@ namespace LyudCity
 		std::map<std::string, std::string> Props;
 		/** Index into FModel::Acts (the named act, or the kind's default). */
 		int Act = -1;
+		/** The act it does instead while its plot is closed (the chairs on the tables; -1: none, it is just refused). */
+		int ClosedAct = -1;
+		/** The stamp using it gives ("kiosks/P-KIOSK1", empty: none). */
+		std::string Collect;
 		/** Open hours [Open, Close) (Close < Open: past midnight) and the weekdays (bit 0 = Monday). */
 		bool bHours = false;
 		float Open = 0.f, Close = 24.f;
@@ -205,6 +360,8 @@ namespace LyudCity
 		NeedsItem,
 		NoStaff,
 		DailyDone,
+		/** A townsperson holds the seat or bed (ClaimThing). */
+		Taken,
 		Unknown,
 	};
 
@@ -218,6 +375,7 @@ namespace LyudCity
 		case EVerdict::NeedsItem: return "needs_item";
 		case EVerdict::NoStaff: return "no_staff";
 		case EVerdict::DailyDone: return "daily_done";
+		case EVerdict::Taken: return "taken";
 		default: return "unknown";
 		}
 	}
@@ -251,6 +409,10 @@ namespace LyudCity
 		std::string Screen;
 		/** The first use of anything in this plot today: report "visit" with the plot id. */
 		bool bFirstVisitToday = false;
+		/** The plot is closed and the thing did its closed act (no visit, no stamp). */
+		bool bClosed = false;
+		/** Stamps got for the first time by this run ("set/piece"). */
+		std::vector<std::string> NewStamps;
 		std::string Plot;
 		/** For the refusal line: the price or the item needed. */
 		int NeedMoney = 0;
@@ -444,6 +606,8 @@ namespace LyudCity
 		std::vector<FThing> Things;
 		std::vector<FAct> Acts;
 		std::map<std::string, std::vector<FGood>> Shops;
+		/** The collections of the data ("collections" of interiors.json), in their order. */
+		std::vector<FCollection> Collections;
 
 		/** Grid cell size (cm): reach is a few metres, so a pick reads 3x3 cells. */
 		static constexpr double CellCm = 400.0;
@@ -454,9 +618,12 @@ namespace LyudCity
 			Things.clear();
 			Acts.clear();
 			Shops.clear();
+			Collections.clear();
 			ActIndex.clear();
 			ThingIndex.clear();
 			Grid.clear();
+			PlotThings.clear();
+			HeldBy.clear();
 			LyudJson::FValue Root;
 			if (!LyudJson::Parse(Text, Root, Error))
 			{
@@ -488,6 +655,20 @@ namespace LyudCity
 						Goods.push_back(Good);
 					}
 				}
+			}
+			for (const auto& Field : Root["collections"].Fields)
+			{
+				FCollection C;
+				C.Id = Field.first;
+				C.Title = Field.second["title"].S();
+				for (const LyudJson::FValue& P : Field.second["pieces"].Items)
+				{
+					if (P.Type == LyudJson::FValue::String && !P.Str.empty())
+					{
+						C.Pieces.push_back(P.Str);
+					}
+				}
+				Collections.push_back(std::move(C));
 			}
 			for (const LyudJson::FValue& T : Root["things"].Items)
 			{
@@ -524,10 +705,18 @@ namespace LyudCity
 				const std::string ActId = T["act"].S();
 				const auto Found = ActIndex.find(ActId);
 				Th.Act = ActId.empty() || Found == ActIndex.end() ? DefaultAct(Th) : Found->second;
+				const auto Closed = ActIndex.find(T["closed"].S());
+				Th.ClosedAct = Closed == ActIndex.end() ? -1 : Closed->second;
+				Th.Collect = T["collect"].S();
 				ThingIndex[Th.Id] = (int)Things.size();
 				Things.push_back(std::move(Th));
 			}
 			BuildGrid();
+			HeldBy.assign(Things.size(), 0);
+			for (int I = 0; I < (int)Things.size(); ++I)
+			{
+				PlotThings[Things[(size_t)I].Plot].push_back(I);
+			}
 			return true;
 		}
 
@@ -650,22 +839,58 @@ namespace LyudCity
 			return M <= 0 ? M + 24 * 60 : M;
 		}
 
-		/** May Thing's act run now? No side effects (the prompt may ask this). */
+		/** Is Thing's plot shut now (its open hours and days; developer mode's open-all: never)? */
+		bool IsShut(int Thing, const FWhen& When, bool bOpenAll) const
+		{
+			if (Thing < 0 || Thing >= (int)Things.size() || bOpenAll)
+			{
+				return false;
+			}
+			const FThing& T = Things[Thing];
+			return T.bHours && (!(T.Days & (1u << (When.Weekday % 7))) || !InHours(When.Hour, T.Open, T.Close));
+		}
+
+		/** The act Thing does now: its closed act while its plot is shut (if it has one), else its own; -1 none. */
+		int ActIndexNow(int Thing, const FWhen& When, bool bOpenAll) const
+		{
+			if (Thing < 0 || Thing >= (int)Things.size())
+			{
+				return -1;
+			}
+			const FThing& T = Things[Thing];
+			return T.ClosedAct >= 0 && IsShut(Thing, When, bOpenAll) ? T.ClosedAct : T.Act;
+		}
+		const FAct* ActNow(int Thing, const FWhen& When, bool bOpenAll) const
+		{
+			const int I = ActIndexNow(Thing, When, bOpenAll);
+			return I >= 0 ? &Acts[(size_t)I] : nullptr;
+		}
+
+		/** May Thing's act (or its closed act) run now? No side effects (the prompt may ask this). */
 		EVerdict Check(int Thing, const FWhen& When, const FAsk& Ask) const
 		{
-			const FAct* A = ActOf(Thing);
-			if (!A)
+			const int Index = ActIndexNow(Thing, When, Ask.bOpenAll);
+			if (Index < 0)
 			{
 				return EVerdict::Unknown;
 			}
+			const FAct* A = &Acts[(size_t)Index];
 			const FThing& T = Things[Thing];
-			if (!Ask.bOpenAll && !A->bAnyHour && T.bHours && (!(T.Days & (1u << (When.Weekday % 7))) || !InHours(When.Hour, T.Open, T.Close)))
+			if (Index != T.Act)
+			{
+				return EVerdict::Ok;     // the closed act: only words, whenever
+			}
+			if (!A->bAnyHour && IsShut(Thing, When, Ask.bOpenAll))
 			{
 				return EVerdict::Closed;
 			}
 			if (!Ask.bOpenAll && !A->NeedsStaff.empty() && !(Ask.StaffOnShift && Ask.StaffOnShift(T.Plot, A->NeedsStaff)))
 			{
 				return EVerdict::NoStaff;
+			}
+			if ((A->Pose == "sit" || A->Pose == "lie") && Holder(Thing) != 0)
+			{
+				return EVerdict::Taken;
 			}
 			if (A->Daily > 0 && TodayCount(A->Id, When.Day) >= A->Daily)
 			{
@@ -688,16 +913,18 @@ namespace LyudCity
 			FOutcome O;
 			O.Thing = Thing;
 			O.Verdict = Check(Thing, When, Ask);
-			const FAct* A = ActOf(Thing);
-			if (!A)
+			const int Index = ActIndexNow(Thing, When, Ask.bOpenAll);
+			if (Index < 0)
 			{
 				return O;
 			}
+			const FAct* A = &Acts[(size_t)Index];
 			const FThing& T = Things[Thing];
-			O.Act = T.Act;
+			O.Act = Index;
 			O.Plot = T.Plot;
 			O.NeedMoney = A->Price;
 			O.NeedItem = A->NeedsItem;
+			O.bClosed = Index != T.Act;
 			if (O.Verdict != EVerdict::Ok)
 			{
 				return O;
@@ -705,19 +932,27 @@ namespace LyudCity
 			RollDay(When.Day);
 			Today[A->Id] += 1;
 			Uses[A->Id] += 1;
-			if (!T.Plot.empty())
+			if (!T.Plot.empty() && !O.bClosed)
 			{
 				long long& Last = Visited[T.Plot];
 				O.bFirstVisitToday = Last != When.Day + 1;     // stored +1: 0 means never
 				Last = When.Day + 1;
 			}
 			O.Title = A->Title;
-			const int Holding = CountHolding(*A, When);
+			const int Holding = CountUsable(PageIdOf(Thing, Index), *A, When);
 			// a daily board shows today's one; a shelf the pages that may be read now, one after another
 			O.NumLines = A->bDaily ? (Holding > 0 ? 1 : 0) : Holding;
 			if (Holding > 0)
 			{
-				O.Line = TakeLine(Thing, *A, When);
+				O.Line = TakeLine(Thing, *A, When, &O.NewStamps);
+			}
+			if (!O.bClosed)
+			{
+				if (!IsLineStamp(A->Collect))
+				{
+					GiveStamp(A->Collect, &O.NewStamps);
+				}
+				GiveStamp(T.Collect, &O.NewStamps);
 			}
 			O.Minutes = A->Until >= 0 ? MinutesUntil(When.Hour, A->Until) : A->Minutes;
 			O.Price = A->Price;
@@ -733,26 +968,214 @@ namespace LyudCity
 		}
 
 		/** The next page of Thing (the page panel's "next"): its line key, and the page turned (a daily act: today's line
-		 *  again). Empty: no line may be shown now. */
-		std::string NextLine(int Thing, const FWhen& When)
+		 *  again). Empty: no line may be shown now. A line's first-time stamps go into NewStamps (when given). */
+		std::string NextLine(int Thing, const FWhen& When, std::vector<std::string>* NewStamps = nullptr, bool bOpenAll = false)
 		{
-			const FAct* A = ActOf(Thing);
-			if (!A || CountHolding(*A, When) == 0)
+			const int Index = ActIndexNow(Thing, When, bOpenAll);
+			const FAct* A = Index >= 0 ? &Acts[(size_t)Index] : nullptr;
+			if (!A || CountUsable(PageIdOf(Thing, Index), *A, When) == 0)
 			{
 				return std::string();
 			}
-			return TakeLine(Thing, *A, When);
+			return TakeLine(Thing, *A, When, NewStamps);
 		}
 
-		/** How many of an act's lines may be shown now. */
-		static int CountHolding(const FAct& A, const FWhen& When)
+		/** How many of an act's lines may be shown now (Stamps: the collections the "have"/"count" lines ask; null none). */
+		static int CountHolding(const FAct& A, const FWhen& When, const FStamps* InStamps = nullptr)
 		{
 			int N = 0;
 			for (const FLine& L : A.Lines)
 			{
-				N += L.Holds(When) ? 1 : 0;
+				N += L.Holds(When, InStamps) ? 1 : 0;
 			}
 			return N;
+		}
+
+		/** The page a thing's act keeps (the thing's id; its closed act: "<id>#closed"). */
+		std::string PageIdOf(int Thing, int Act) const
+		{
+			const FThing& T = Things[(size_t)Thing];
+			return Act >= 0 && Act == T.ClosedAct ? T.Id + "#closed" : T.Id;
+		}
+		/** May this line be shown at this page now: its conditions hold and, a "once" line, it was not shown there yet. */
+		bool Usable(const std::string& PageId, const FLine& L, const FWhen& When) const
+		{
+			return L.Holds(When, &Stamps) && !(L.bOnce && OnceShown.count(PageId + "|" + L.Key));
+		}
+		/** How many of an act's lines may be shown at this page now. */
+		int CountUsable(const std::string& PageId, const FAct& A, const FWhen& When) const
+		{
+			int N = 0;
+			for (const FLine& L : A.Lines)
+			{
+				N += Usable(PageId, L, When) ? 1 : 0;
+			}
+			return N;
+		}
+
+		// --- the townsfolk's use of the things (docs/city_interiors.md "API for townsfolk")
+
+		/** Who holds Thing (0: nobody; the game's holder ids are never 0). */
+		uint64_t Holder(int Thing) const
+		{
+			return Thing >= 0 && Thing < (int)HeldBy.size() ? HeldBy[(size_t)Thing] : 0;
+		}
+		/** Who takes Thing: true when it was free or already theirs. */
+		bool Claim(int Thing, uint64_t Who)
+		{
+			if (Who == 0 || Thing < 0 || Thing >= (int)HeldBy.size() || (HeldBy[(size_t)Thing] != 0 && HeldBy[(size_t)Thing] != Who))
+			{
+				return false;
+			}
+			HeldBy[(size_t)Thing] = Who;
+			return true;
+		}
+		/** Who lets Thing go (nothing when somebody else holds it). */
+		void Release(int Thing, uint64_t Who)
+		{
+			if (Thing >= 0 && Thing < (int)HeldBy.size() && HeldBy[(size_t)Thing] == Who)
+			{
+				HeldBy[(size_t)Thing] = 0;
+			}
+		}
+		/** A new game or a level: nobody holds anything. */
+		void ReleaseAll() { std::fill(HeldBy.begin(), HeldBy.end(), (uint64_t)0); }
+
+		/**
+		 * The nearest thing of Kind (empty: any) to P within Radius (cm), on about P's floor (|dz| <= MaxDz), that nobody holds
+		 * and that is not Except (the hero's seat); -1 none. Reads only the grid cells round P (4 m cells), allocates nothing.
+		 */
+		int FindFree(const std::string& Kind, const FVec& P, double Radius, double MaxDz, int Except = -1) const
+		{
+			if (Things.empty() || Radius <= 0.0)
+			{
+				return -1;
+			}
+			const int Cells = (int)std::ceil(Radius / CellCm);
+			const long long CX = CellOf(P.X), CY = CellOf(P.Y);
+			int Best = -1;
+			double BestD = Radius * Radius;
+			for (long long GX = CX - Cells; GX <= CX + Cells; ++GX)
+			{
+				for (long long GY = CY - Cells; GY <= CY + Cells; ++GY)
+				{
+					const auto Cell = Grid.find(Key(GX, GY));
+					if (Cell == Grid.end())
+					{
+						continue;
+					}
+					for (const int I : Cell->second)
+					{
+						const FThing& T = Things[(size_t)I];
+						if (I == Except || HeldBy[(size_t)I] != 0 || (!Kind.empty() && T.Kind != Kind) || std::fabs(T.At.Z - P.Z) > MaxDz)
+						{
+							continue;
+						}
+						const double D2 = (T.At.X - P.X) * (T.At.X - P.X) + (T.At.Y - P.Y) * (T.At.Y - P.Y);
+						if (D2 <= BestD)
+						{
+							BestD = D2;
+							Best = I;
+						}
+					}
+				}
+			}
+			return Best;
+		}
+
+		/** The things of a plot (indices, in the file's order); null for a plot without things. Built once at load. */
+		const std::vector<int>* ThingsOfPlot(const std::string& Plot) const
+		{
+			const auto It = PlotThings.find(Plot);
+			return It == PlotThings.end() ? nullptr : &It->second;
+		}
+
+		// --- collections
+
+		const FCollection* FindCollection(const std::string& Set) const
+		{
+			for (const FCollection& C : Collections)
+			{
+				if (C.Id == Set)
+				{
+					return &C;
+				}
+			}
+			return nullptr;
+		}
+		/** Is "set/piece" a piece of a collection of the data? */
+		bool IsPiece(const std::string& Stamp) const
+		{
+			std::string Set, Piece;
+			const FCollection* C = SplitStamp(Stamp, Set, Piece) ? FindCollection(Set) : nullptr;
+			return C && std::find(C->Pieces.begin(), C->Pieces.end(), Piece) != C->Pieces.end();
+		}
+		bool HasStamp(const std::string& Stamp) const
+		{
+			std::string Set, Piece;
+			if (!SplitStamp(Stamp, Set, Piece))
+			{
+				return false;
+			}
+			const auto It = Stamps.find(Set);
+			return It != Stamps.end() && It->second.count(Piece) > 0;
+		}
+		/** How many pieces of Set the hero has (only pieces the data still declares). */
+		int CountStamps(const std::string& Set) const
+		{
+			const FCollection* C = FindCollection(Set);
+			const auto It = Stamps.find(Set);
+			if (!C || It == Stamps.end())
+			{
+				return 0;
+			}
+			int N = 0;
+			for (const std::string& P : C->Pieces)
+			{
+				N += It->second.count(P) ? 1 : 0;
+			}
+			return N;
+		}
+		const FStamps& GetStamps() const { return Stamps; }
+		/** Gives "set/piece" (a piece the data declares); true when it is new. */
+		bool GiveStamp(const std::string& Stamp, std::vector<std::string>* NewStamps = nullptr)
+		{
+			std::string Set, Piece;
+			if (Stamp.empty() || !IsPiece(Stamp) || !SplitStamp(Stamp, Set, Piece) || !Stamps[Set].insert(Piece).second)
+			{
+				return false;
+			}
+			if (NewStamps)
+			{
+				NewStamps->push_back(Stamp);
+			}
+			return true;
+		}
+		/** Developer mode: every piece of Set ("*": of every set); false for an unknown set. */
+		bool GrantSet(const std::string& Set)
+		{
+			bool bAny = false;
+			for (const FCollection& C : Collections)
+			{
+				if (Set == "*" || C.Id == Set)
+				{
+					bAny = true;
+					Stamps[C.Id].insert(C.Pieces.begin(), C.Pieces.end());
+				}
+			}
+			return bAny;
+		}
+		/** Developer mode: Set ("*": every set) starts over. */
+		void ClearSet(const std::string& Set)
+		{
+			if (Set == "*")
+			{
+				Stamps.clear();
+			}
+			else
+			{
+				Stamps.erase(Set);
+			}
 		}
 
 		/** A seat's or bed's surface over its floor, metres (see MinSeatHeight). */
@@ -897,10 +1320,13 @@ namespace LyudCity
 			LineOf.clear();
 			ReadDay.clear();
 			Visited.clear();
+			Stamps.clear();
+			OnceShown.clear();
 			CountDay = 0;
 		}
 
-		/** The state as a flat map for the save: "day", "t:<act>", "u:<act>", "l:<thing>", "d:<thing>", "v:<plot>". */
+		/** The state as a flat map for the save: "day", "t:<act>", "u:<act>", "l:<thing>", "d:<thing>", "v:<plot>",
+		 *  "c:<set>/<piece>" (a stamp). */
 		void SaveState(std::map<std::string, std::string>& Out) const
 		{
 			Out.clear();
@@ -928,6 +1354,17 @@ namespace LyudCity
 			{
 				Out["v:" + P.first] = std::to_string(P.second);
 			}
+			for (const auto& P : Stamps)
+			{
+				for (const std::string& Piece : P.second)
+				{
+					Out["c:" + P.first + "/" + Piece] = "1";
+				}
+			}
+			for (const std::string& Shown : OnceShown)
+			{
+				Out["o:" + Shown] = "1";
+			}
 		}
 		void LoadState(const std::map<std::string, std::string>& In)
 		{
@@ -949,6 +1386,17 @@ namespace LyudCity
 					case 'l': LineOf[Name] = (int)V; break;
 					case 'd': ReadDay[Name] = V; break;
 					case 'v': Visited[Name] = V; break;
+					case 'o': OnceShown.insert(Name); break;
+					case 'c':
+					{
+						// kept even when the data no longer declares it (a piece may come back with the content)
+						std::string Set, Piece;
+						if (SplitStamp(Name, Set, Piece))
+						{
+							Stamps[Set].insert(Piece);
+						}
+						break;
+					}
 					default: break;
 					}
 				}
@@ -959,6 +1407,9 @@ namespace LyudCity
 		std::unordered_map<std::string, int> ActIndex;
 		std::unordered_map<std::string, int> ThingIndex;
 		std::unordered_map<long long, std::vector<int>> Grid;
+		std::unordered_map<std::string, std::vector<int>> PlotThings;
+		/** Who holds each thing (0 nobody): a townsperson sitting on it (not saved). */
+		std::vector<uint64_t> HeldBy;
 		FVec BoxMin, BoxMax;
 		/** The game day Today counts (a new day clears it). */
 		long long CountDay = 0;
@@ -968,6 +1419,9 @@ namespace LyudCity
 		/** A daily act's thing: the game day (+1) its line was last shown. */
 		std::map<std::string, long long> ReadDay;
 		std::map<std::string, long long> Visited;
+		FStamps Stamps;
+		/** "once" lines shown: "<page id>|<line key>". */
+		std::set<std::string> OnceShown;
 
 		static double Dist(const FVec& A, const FVec& B)
 		{
@@ -1003,13 +1457,13 @@ namespace LyudCity
 		}
 
 		/** The first line at or after From (going round) that may be shown now; -1 none. */
-		static int FirstHolding(const FAct& A, int From, const FWhen& When)
+		int FirstHolding(const std::string& PageId, const FAct& A, int From, const FWhen& When) const
 		{
 			const int N = (int)A.Lines.size();
 			for (int Step = 0; Step < N; ++Step)
 			{
 				const int I = (((From + Step) % N) + N) % N;
-				if (A.Lines[(size_t)I].Holds(When))
+				if (Usable(PageId, A.Lines[(size_t)I], When))
 				{
 					return I;
 				}
@@ -1017,27 +1471,74 @@ namespace LyudCity
 			return -1;
 		}
 
-		/** Shows a line of Thing's act and turns the page: the next one that may be shown now; a daily act keeps today's line
-		 *  and goes on to the next one on the next day it is read. Call only when CountHolding > 0. */
-		std::string TakeLine(int Thing, const FAct& A, const FWhen& When)
+		/** An act's stamp "set/{line}": every line it shows gives a piece of its own (the line's key). */
+		static bool IsLineStamp(const std::string& Collect)
 		{
-			const std::string& Id = Things[Thing].Id;
+			return Collect.size() > 7 && Collect.compare(Collect.size() - 7, 7, "/{line}") == 0;
+		}
+
+		/** A festival line of a daily act that holds now (it takes the day); -1 none. */
+		int FestiveLine(const std::string& PageId, const FAct& A, const FWhen& When) const
+		{
+			for (size_t I = 0; I < A.Lines.size(); ++I)
+			{
+				if (A.Lines[I].IsFestive() && Usable(PageId, A.Lines[I], When))
+				{
+					return (int)I;
+				}
+			}
+			return -1;
+		}
+
+		/** Shows a line of Thing's act and turns the page: the next one that may be shown now; a daily act keeps today's line
+		 *  and goes on to the next one on the next day it is read (on a holiday its festival notice takes the day and the run
+		 *  goes on after it, nothing skipped). The closed act keeps a page of its own. A line's stamp is given. Call only when
+		 *  CountHolding > 0. */
+		std::string TakeLine(int Thing, const FAct& A, const FWhen& When, std::vector<std::string>* NewStamps)
+		{
+			const std::string Id = PageIdOf(Thing, (int)(&A - Acts.data()));
 			const int N = (int)A.Lines.size();
 			const int Cur = LineIndex(Id);
 			int Pos = -1;
 			if (A.bDaily)
 			{
 				long long& Read = ReadDay[Id];
-				Pos = FirstHolding(A, Read != 0 && Read != When.Day + 1 ? Cur + 1 : Cur, When);
-				Read = When.Day + 1;
-				LineOf[Id] = Pos < 0 ? Cur : Pos;
+				const int Festive = FestiveLine(Id, A, When);
+				if (Festive >= 0)
+				{
+					Pos = Festive;
+					if (Read != 0)
+					{
+						Read = When.Day + 1;     // the run goes on tomorrow after the line shown last
+					}
+				}
+				else
+				{
+					Pos = FirstHolding(Id, A, Read != 0 && Read != When.Day + 1 ? Cur + 1 : Cur, When);
+					Read = When.Day + 1;
+					LineOf[Id] = Pos < 0 ? Cur : Pos;
+				}
 			}
 			else
 			{
-				Pos = FirstHolding(A, Cur, When);
+				Pos = FirstHolding(Id, A, Cur, When);
 				LineOf[Id] = Pos < 0 ? Cur : (Pos + 1) % N;
 			}
-			return Pos < 0 ? std::string() : A.Lines[(size_t)Pos].Key;
+			if (Pos < 0)
+			{
+				return std::string();
+			}
+			if (A.Lines[(size_t)Pos].bOnce)
+			{
+				OnceShown.insert(Id + "|" + A.Lines[(size_t)Pos].Key);
+			}
+			GiveStamp(A.Lines[(size_t)Pos].Collect, NewStamps);
+			if (IsLineStamp(A.Collect))
+			{
+				// "films/{line}": the line shown is the piece (a film of the programme, a record of the jukebox)
+				GiveStamp(A.Collect.substr(0, A.Collect.size() - 6) + A.Lines[(size_t)Pos].Key, NewStamps);
+			}
+			return A.Lines[(size_t)Pos].Key;
 		}
 
 		/** How far off the line of sight a thing of this kind may be and still be looked at (cm, at the eye). */
@@ -1128,6 +1629,8 @@ namespace LyudCity
 				}
 			}
 			Line.After = L["after"].I(0);
+			Line.Before = L["before"].I(0);
+			Line.bOnce = L["once"].Type == LyudJson::FValue::Bool ? L["once"].B : L["once"].I(0) != 0;
 			const LyudJson::FValue& Every = L["every"];
 			if (Every.Type == LyudJson::FValue::Array && Every.Size() >= 1)
 			{
@@ -1142,6 +1645,44 @@ namespace LyudCity
 			{
 				Line.EveryAt = ((Line.EveryAt % Line.Every) + Line.Every) % Line.Every;
 			}
+			const LyudJson::FValue& Fest = L["festival"];
+			if (Fest.Type == LyudJson::FValue::String)
+			{
+				Line.Festival = Fest.Str == "any" ? EFestivalCond::Any : Fest.Str == "none" ? EFestivalCond::NotToday : EFestivalCond::Ids;
+				if (Line.Festival == EFestivalCond::Ids)
+				{
+					Line.FestivalIds.push_back(Fest.Str);
+				}
+			}
+			else if (Fest.Type == LyudJson::FValue::Array && Fest.Size() > 0)
+			{
+				Line.Festival = EFestivalCond::Ids;
+				for (const LyudJson::FValue& F : Fest.Items)
+				{
+					Line.FestivalIds.push_back(F.S());
+				}
+			}
+			const LyudJson::FValue& Wx = L["weather"];
+			if (Wx.Type == LyudJson::FValue::String)
+			{
+				Line.Weather = WeatherBit(Wx.Str);
+			}
+			for (const LyudJson::FValue& Word : Wx.Items)
+			{
+				Line.Weather = (uint8_t)(Line.Weather | WeatherBit(Word.S()));
+			}
+			if (Wx.Type != LyudJson::FValue::Null && Line.Weather == 0)
+			{
+				Line.Days = 0;     // only unknown words: never shown (not "no condition": a line for the snow must not show in July)
+			}
+			Line.Have = L["have"].S();
+			const LyudJson::FValue& Count = L["count"];
+			if (Count.Type == LyudJson::FValue::Array && Count.Size() >= 2)
+			{
+				Line.CountSet = Count[0].S();
+				Line.CountMin = Count[1].I(0);
+			}
+			Line.Collect = L["collect"].S();
 		}
 
 		static FAct ReadAct(const std::string& Id, const LyudJson::FValue& V)
@@ -1213,6 +1754,7 @@ namespace LyudCity
 			A.Screen = V["screen"].S();
 			A.bFade = V["fade"].Type == LyudJson::FValue::Bool ? V["fade"].B : V["fade"].I(0) != 0;
 			A.bAnyHour = V["any_hour"].Type == LyudJson::FValue::Bool ? V["any_hour"].B : (A.Pose == "sit" || A.Pose == "lie");
+			A.Collect = V["collect"].S();
 			return A;
 		}
 

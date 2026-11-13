@@ -30,7 +30,7 @@
  "quest.first_chess.desc": {"ru": "В клубе «Шестерня» за шахматными столиками сидят люди, которые, кажется, никогда не встают.", "en": "At the Cog club there are people at the chess tables who never seem to get up.", "ja": "クラブ「歯車」のチェス台には、いつまでも立ち上がらないような人たちが座っている。"},
  "quest.first_chess.game.log": {"ru": "Сяду за свободную доску. Кто-нибудь обязательно подсядет, здесь так принято.", "en": "I'll sit at a free board. Someone is bound to join me; that's the custom here.", "ja": "空いている盤の前に座ろう。きっと誰かが向かいに座る。ここではそういうものらしい。"},
  "quest.first_chess.play.obj": {"ru": "Сыграть партию в шахматы в клубе «Шестерня»", "en": "Play a game of chess at the Cog club", "ja": "クラブ「歯車」でチェスを一局指す"},
- "quest.first_chess.done": {"ru": "После партии буфетчица принесла мне чай «за смелость». Сказала, что проигравшим здесь всегда наливают.", "en": "After the game the buffet lady brought me tea \"for bravery\". She said losers always get a glass here.", "ja": "対局のあと、ビュッフェのおばさんが「勇気に」とお茶をくれた。負けた人にはいつも出すんだって。"},
+ "quest.first_chess.done": {"ru": "После партии буфетчица принесла мне чай «за смелость». Сказала, что проигравшим здесь всегда наливают.", "en": "After the game the buffet lady brought me tea \"for bravery\". She said losers always get a glass here.", "ja": "対局のあと、売店のおばさんが「勇気に」とお茶をくれた。負けた人にはいつも出すんだって。"},
 
  "quest.checkup.title": {"ru": "Практически здоров", "en": "Practically healthy", "ja": "ほぼ健康"},
  "quest.checkup.desc": {"ru": "В поликлинике на меня посмотрели так, будто давно ждали на осмотр. Что ж, раз ждали.", "en": "At the clinic they looked at me as if I'd been due for a check-up for ages. Well, if they've been waiting.", "ja": "診療所で、ずっと健診を待っていたみたいな顔で見られた。待っていたのなら、受けてみよう。"},

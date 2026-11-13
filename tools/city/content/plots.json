@@ -96,7 +96,7 @@
   "shell_market/counter15": {"props": {"service": "butcher", "role": "butcher"}},
   "shell_market/counter16": {"props": {"service": "shop", "shop": "market_bait"}},
 
-  "bus_stop_kiosk/counter": {"props": {"service": "newspapers", "shop": "kiosk_news", "role": "seller"}},
+  "bus_stop_kiosk/counter": {"props": {"service": "newspapers", "shop": "kiosk_news", "role": "seller"}, "collect": "kiosks/{plot}"},
 
 
   "lifeguard_tower/binoculars": {"kind": "machine", "props": {"what": "binoculars"}},

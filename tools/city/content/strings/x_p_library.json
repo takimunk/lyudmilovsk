@@ -1,0 +1,493 @@
+{
+ "_doc": "P-LIBRARY, second pass (tools/city/content/x_p_library.json): the day's notices, the diary stand and its stamps, the returns box, the Returned shelf and the story of the reader from 1968, the weekend story hour, the librarian's tea, the periodicals of the day, the music pod's piano, two quests. Keys city.xpl.* and quest.library_*; the collection title city.coll.library_diary.title.",
+ "city.xpl.notice.prompt": {
+  "ru": "E — прочитать объявления",
+  "en": "E — read the notices",
+  "ja": "E：お知らせを読む"
+ },
+ "city.xpl.diary.prompt": {
+  "ru": "E — посмотреть стенд",
+  "en": "E — look at the stand",
+  "ja": "E：掲示を見る"
+ },
+ "city.xpl.returns.prompt": {
+  "ru": "E — заглянуть в ящик возврата",
+  "en": "E — look into the returns box",
+  "ja": "E：返却ボックスをのぞく"
+ },
+ "city.xpl.returned.prompt": {
+  "ru": "E — посмотреть «Вернувшихся»",
+  "en": "E — look at the Returned shelf",
+  "ja": "E：「戻ってきた本」の棚を見る"
+ },
+ "city.xpl.leave.prompt": {
+  "ru": "E — вложить открытку в «Путеводитель»",
+  "en": "E — slip a postcard into the guide",
+  "ja": "E：絵はがきを案内書にはさむ"
+ },
+ "city.xpl.stamp.prompt": {
+  "ru": "E — попросить штамп в дневник",
+  "en": "E — ask for a diary stamp",
+  "ja": "E：日記にスタンプをお願いする"
+ },
+ "city.xpl.story.prompt": {
+  "ru": "E — послушать сказку",
+  "en": "E — listen to the story",
+  "ja": "E：お話を聞く"
+ },
+ "city.xpl.story.title": {
+  "ru": "Сказка для малышей",
+  "en": "Story hour",
+  "ja": "おはなしの時間"
+ },
+ "city.xpl.ledger.prompt": {
+  "ru": "E — заглянуть в журнал",
+  "en": "E — look into the ledger",
+  "ja": "E：台帳をのぞく"
+ },
+ "city.xpl.tea.prompt": {
+  "ru": "E — взять чашку чая",
+  "en": "E — take a cup of tea",
+  "ja": "E：お茶をもらう"
+ },
+ "city.xpl.press.prompt": {
+  "ru": "E — полистать свежий номер",
+  "en": "E — leaf through today's issue",
+  "ja": "E：今日の号をめくる"
+ },
+ "city.coll.library_diary.title": {
+  "ru": "Читательский дневник",
+  "en": "Reading diary",
+  "ja": "読書日記"
+ },
+ "city.xpl.notice.1": {
+  "ru": "Читальный зал открыт с 10 до 20, кроме понедельника. По понедельникам библиотека отдыхает: полкам тоже нужно иногда вздохнуть.",
+  "en": "The reading room is open from 10 to 8, except on Mondays. On Mondays the library rests: shelves need to breathe out now and then.",
+  "ja": "閲覧室は10時から20時まで、月曜はお休みです。月曜は図書館も休みます。本棚にも、ときどきひと息つく時間が必要です。"
+ },
+ "city.xpl.notice.2": {
+  "ru": "Просьба не складывать на столах башни выше пяти книг. Падающая башня — это уже не чтение, а физкультура.",
+  "en": "Please do not stack more than five books on the tables. A falling tower is not reading, it is gym class.",
+  "ja": "机の上に本を6冊以上積まないでください。崩れる塔は読書ではなく、体育です。"
+ },
+ "city.xpl.notice.3": {
+  "ru": "Потеряли шарф, варежку или мысль? Шарфы и варежки у абонемента, в коробке. С мыслями сложнее, но мы стараемся.",
+  "en": "Lost a scarf, a mitten or a thought? Scarves and mittens are in the box at the lending desk. Thoughts are harder, but we try.",
+  "ja": "マフラーや手袋、それに考えごとをなくしましたか？ マフラーと手袋は貸出カウンターの箱に。考えごとは難しいですが、探しています。"
+ },
+ "city.xpl.notice.4": {
+  "ru": "Читателю из 1968 года. Ваш формуляр нашёлся: карточка № 3-217, почерк красивый, фамилия расплылась от времени. Штраф за все прошедшие годы: ноль рублей, ноль копеек. Мы считали дважды.",
+  "en": "To the reader from 1968. Your loan card has turned up: no. 3-217, lovely handwriting, the surname blurred by time. The fine for all these years: zero roubles, zero kopecks. We counted twice.",
+  "ja": "1968年の読者の方へ。あなたの貸出カードが見つかりました。3-217番、きれいな字ですが、名字は時間でにじんでいます。これまでの延滞金は0ルーブル0コペイカ。二度数えました。"
+ },
+ "city.xpl.notice.5": {
+  "ru": "У полки «Вернувшиеся» появилась маленькая лампа. Мы её не ставили. Просим не выключать: кому-то так удобнее читать.",
+  "en": "A small lamp has appeared by the Returned shelf. We did not put it there. Please leave it on: somebody finds it easier to read that way.",
+  "ja": "「戻ってきた本」の棚に小さなランプが現れました。私たちが置いたのではありません。消さないでください。その方が読みやすい人がいるのです。"
+ },
+ "city.xpl.notice.6": {
+  "ru": "В «Путеводителе по солнечным часам» нашли вторую закладку: нарисованные часы без цифр, только тень. Подпись: «Если будет пасмурно, я всё равно приду». Запасная лампа для пасмурных дней куплена.",
+  "en": "A second bookmark was found in the Sundial Guide: a drawn clock without numbers, only a shadow. Signed: \"If it is cloudy I will come all the same.\" A spare lamp for cloudy days has been bought.",
+  "ja": "『日時計案内』に二枚目のしおりが見つかりました。数字のない時計の絵、あるのは影だけ。署名は「曇りでも、きっと行きます」。曇りの日用の予備のランプを買いました。"
+ },
+ "city.xpl.notice.7": {
+  "ru": "Молодым читателям: для одной тихой истории нужен гонец. Открытка есть в абонементе, четыре рубля. Вложить в «Путеводитель» на полке у окна. Ответ ждём по вторникам, к чаю.",
+  "en": "To our young readers: one quiet story needs a messenger. Postcards are at the lending desk, four roubles. Slip one into the Guide on the shelf by the window. We expect a reply on Tuesdays, at tea time.",
+  "ja": "若い読者のみなさんへ。ひとつの静かな物語に使いが必要です。絵はがきは貸出カウンターに、4ルーブル。窓際の棚の『案内書』にはさんでください。返事は火曜日、お茶の時間に待っています。"
+ },
+ "city.xpl.notice.8": {
+  "ru": "Во вторник обе чашки были пустые. Это хороший знак: значит, пили. Книга выдана читателю повторно, срок возврата: «как дочитает». Спасибо всем гонцам.",
+  "en": "On Tuesday both cups were empty. That is a good sign: it means they were drunk. The book has been lent to the reader again, due date: \"when he has finished\". Thank you, all messengers.",
+  "ja": "火曜日、カップは二つとも空でした。いい知らせです。飲んでくれたということですから。本はあの読者に再び貸し出されました。返却期限は「読み終えたとき」。使いのみなさん、ありがとう。"
+ },
+ "city.xpl.notice.9": {
+  "ru": "Сегодня в городе праздник. Абонемент работает до шести: библиотекарь тоже хочет на площадь, и мы его отпускаем.",
+  "en": "There is a festival in town today. The lending desk closes at six: the librarian wants to go to the square too, and we are letting him.",
+  "ja": "今日は町のお祭りです。貸出は6時まで。司書さんも広場に行きたいので、行かせてあげます。"
+ },
+ "city.xpl.notice.10": {
+  "ru": "В новогодние дни в читальном зале стоит ёлка из книг. Снимать с неё верхние можно только вдвоём, и только чтобы прочитать.",
+  "en": "Over the New Year days a tree made of books stands in the reading room. The top ones may be taken down only by two people, and only to be read.",
+  "ja": "年末年始は、閲覧室に本のツリーが立ちます。上の本は二人がかりで、読むためにだけ下ろしてください。"
+ },
+ "city.xpl.diary.mon": {
+  "ru": "Читательский дневник. Сегодня понедельник, страницы чистые: у книг выходной. Это не лень, это порядок вещей.",
+  "en": "Reading diary. Today is Monday and the pages are clean: it is the books' day off. Not laziness, just the order of things.",
+  "ja": "読書日記。今日は月曜日、ページは白紙です。本たちのお休みの日。怠けではなく、ものごとの順番です。"
+ },
+ "city.xpl.diary.tue": {
+  "ru": "Тема дня: море. Прочтите страницу на полке «Море», потом получите штамп у абонемента. По вторникам в служебной комнате чайник ставят на двоих.",
+  "en": "Theme of the day: the sea. Read a page on the Sea shelf, then get your stamp at the lending desk. On Tuesdays the kettle in the staff room is put on for two.",
+  "ja": "今日のテーマ：海。「海」の棚で一ページ読んで、貸出カウンターでスタンプをもらいましょう。火曜日は、事務室のやかんが二人分わきます。"
+ },
+ "city.xpl.diary.wed": {
+  "ru": "Тема дня: птицы. Узнайте из «Определителя», чем синица отличается от лазоревки, потом выйдите на улицу и проверьте. Штамп за честную проверку.",
+  "en": "Theme of the day: birds. Find out from the field guide how a great tit differs from a blue tit, then go outside and check. A stamp for an honest check.",
+  "ja": "今日のテーマ：鳥。図鑑でシジュウカラとアオガラの違いを調べ、外に出て確かめましょう。ちゃんと確かめたらスタンプです。"
+ },
+ "city.xpl.diary.thu": {
+  "ru": "Тема дня: стихи. Читать вслух можно вполголоса. За громкое чтение штамп не ставят, а за выражение лица ставят.",
+  "en": "Theme of the day: poems. Reading aloud is allowed in a half-voice. Loud reading earns no stamp, but a good face does.",
+  "ja": "今日のテーマ：詩。声に出して読むなら小さな声で。大声では押しませんが、いい表情にはスタンプを押します。"
+ },
+ "city.xpl.diary.fri": {
+  "ru": "Тема дня: наш город. Найдите на старой карте у книжной стены дом, в котором живёте. Если не нашли, значит, он новее карты. Тоже штамп.",
+  "en": "Theme of the day: our town. Find the house you live in on the old map by the book wall. If you cannot, the house is newer than the map. That earns a stamp too.",
+  "ja": "今日のテーマ：私たちの町。本の壁のそばの古い地図で、自分の住む家を探しましょう。見つからなければ、家が地図より新しいということ。それもスタンプです。"
+ },
+ "city.xpl.diary.sat": {
+  "ru": "Тема дня: всё подряд. По субботам разрешено перескакивать с полки на полку. В 11 часов в детском уголке читают сказку.",
+  "en": "Theme of the day: anything at all. On Saturdays you may hop from shelf to shelf. At 11 a story is read in the children's corner.",
+  "ja": "今日のテーマ：なんでも。土曜日は棚から棚へ飛び移ってかまいません。11時に子どもコーナーでお話があります。"
+ },
+ "city.xpl.diary.sun": {
+  "ru": "Тема дня: солнце. В 11 часов воскресная сказка, после неё чай. Дневник принимают к штампу до самого закрытия.",
+  "en": "Theme of the day: the sun. At 11 the Sunday story, and tea afterwards. Diaries are accepted for a stamp right up to closing time.",
+  "ja": "今日のテーマ：太陽。11時に日曜のお話、そのあとはお茶。日記へのスタンプは閉館まで受け付けます。"
+ },
+ "city.xpl.diary.half": {
+  "ru": "Внизу листка карандашом: «Штампов уже восемь. Это не оценка, это маршрут».",
+  "en": "At the bottom of the sheet, in pencil: \"Eight stamps already. That is not a grade, it is a route.\"",
+  "ja": "紙の下に鉛筆で：「もうスタンプが8個。これは成績ではなく、道のりです」。"
+ },
+ "city.xpl.diary.full": {
+  "ru": "На стенде приколота новая бумажка: «Дневник заполнен целиком? Тогда загляните к библиотекарю. Она знает, что делать с такими читателями».",
+  "en": "A new slip is pinned to the stand: \"Diary completely filled? Then drop in on the librarian. She knows what to do with readers like you.\"",
+  "ja": "掲示に新しい紙がとめてあります：「日記がスタンプでいっぱい？ なら司書さんのところへ。あなたのような読者のことは、よく知っています」。"
+ },
+ "city.xpl.returns.1": {
+  "ru": "Ящик возврата. Щель в нём ровно по толщине книги: ни тоньше, ни толще. Внутри глухо и тепло, как в почтовом ящике зимой.",
+  "en": "The returns box. Its slot is exactly the thickness of a book: no thinner, no thicker. Inside it is muffled and warm, like a mailbox in winter.",
+  "ja": "返却ボックス。投入口は本の厚みぴったりで、細くも太くもありません。中は静かで暖かく、冬の郵便受けのようです。"
+ },
+ "city.xpl.returns.2": {
+  "ru": "На крышке наклеена карточка: «Возвращать можно в любое время суток. Спрашивать, почему так долго, не будем».",
+  "en": "A card is stuck on the lid: \"Books may be returned at any hour. We will not ask why it took so long.\"",
+  "ja": "ふたにカードが貼ってあります：「返却は何時でもかまいません。遅れた理由は聞きません」。"
+ },
+ "city.xpl.returns.3": {
+  "ru": "Под щелью на металле слабый след карандаша: кто-то проверял, дойдёт ли книга до дна. Дошла.",
+  "en": "Under the slot there is a faint pencil mark on the metal: somebody checked whether a book would reach the bottom. It did.",
+  "ja": "投入口の下の金属に、鉛筆のかすかな跡があります。誰かが、本が底まで届くか試したのです。届きました。"
+ },
+ "city.xpl.returns.4": {
+  "ru": "Из щели торчит угол конверта. Адрес: «Библиотека, на полку у окна». Вытаскивать не стал: чужое. Но закладку из него, кажется, видно: часы без цифр.",
+  "en": "A corner of an envelope sticks out of the slot. Address: \"The library, to the shelf by the window.\" I did not pull it out: it is not mine. But I can almost see the bookmark inside: a clock without numbers.",
+  "ja": "投入口から封筒の角がのぞいています。宛先は「図書館、窓際の棚へ」。人のものなので引き出しませんでした。でも中のしおりが少し見えます。数字のない時計です。"
+ },
+ "city.xpl.returns.5": {
+  "ru": "Ящик пустой. Это тоже новость: впервые за много дней ничего не вернули и ничего не взяли. Библиотекарша говорит, что так бывает, когда всё стоит на своих местах.",
+  "en": "The box is empty. That is news too: for the first time in many days nothing was returned and nothing was taken. The librarian says that happens when everything is in its place.",
+  "ja": "ボックスは空です。それもひとつの知らせ。何日ぶりかで、返す人も借りる人もいませんでした。司書さんは「すべてが元の場所にあるときは、そうなります」と言います。"
+ },
+ "city.xpl.returned.1": {
+  "ru": "Полка «Вернувшиеся»: книги без формуляров и без читателей, но с аккуратными закладками. Все корешки смотрят на окно, будто ждут погоды.",
+  "en": "The Returned shelf: books with no loan slips and no readers, but with neat bookmarks. All the spines face the window as if waiting for weather.",
+  "ja": "「戻ってきた本」の棚。貸出票も読者もない本ばかりですが、しおりはきちんとはさんであります。背表紙はみんな窓のほうを向き、天気を待っているようです。"
+ },
+ "city.xpl.returned.2": {
+  "ru": "Сверху лежит «Путеводитель по солнечным часам», выдан 14 мая 1968 года. Обложка вытерта до мягкости. На первой странице карандашом: «Читал медленно. Простите».",
+  "en": "On top lies the Sundial Guide, lent on 14 May 1968. The cover is worn soft. On the first page in pencil: \"I read slowly. Forgive me.\"",
+  "ja": "一番上に『日時計案内』があります。貸出は1968年5月14日。表紙は擦り切れて柔らかくなっています。最初のページに鉛筆で：「読むのが遅くてすみません」。"
+ },
+ "city.xpl.returned.3": {
+  "ru": "Между страниц билет на канатную дорогу до станции «Маяк». Дата стёрлась, но штамп такой, какой бывает только у тех, кто дорожит билетами.",
+  "en": "Between the pages is a cable-car ticket to the Lighthouse station. The date has rubbed off, but the stamp is the kind only people who treasure tickets have.",
+  "ja": "ページのあいだに、ロープウェイの「灯台」駅行きの切符。日付は消えていますが、切符を大事にする人のスタンプの押し方です。"
+ },
+ "city.xpl.returned.4": {
+  "ru": "Новая закладка: часы без цифр, только тень от стержня. Подпись: «Если будет пасмурно, я всё равно приду». Я посмотрел в окно. Небо как раз такое.",
+  "en": "A new bookmark: a clock without numbers, only the shadow of a gnomon. Signed: \"If it is cloudy I will come all the same.\" I looked out of the window. The sky is just like that.",
+  "ja": "新しいしおり。数字のない時計、あるのは針の影だけ。署名は「曇りでも、きっと行きます」。窓の外を見ると、空はちょうどそんな色でした。"
+ },
+ "city.xpl.returned.5": {
+  "ru": "На полке карточка рукой библиотекаря: «Если вы это читаете и у вас есть открытка, вложите её в „Путеводитель“. Я передам. Не спрашивайте кому: он сам придёт».",
+  "en": "On the shelf a card in the librarian's hand: \"If you are reading this and have a postcard, slip it into the Guide. I will pass it on. Do not ask to whom: he will come himself.\"",
+  "ja": "棚に司書さんの字のカード：「これを読んでいて絵はがきがあれば、『案内書』にはさんでください。私が渡します。誰にとは聞かないで。本人が来ますから」。"
+ },
+ "city.xpl.returned.6": {
+  "ru": "В «Путеводителе» теперь три закладки: билет, часы без цифр и ромашка. Ромашка сухая, но не крошится: её бережно носили в кармане.",
+  "en": "There are now three bookmarks in the Guide: the ticket, the clock without numbers and a daisy. The daisy is dry but does not crumble: it was carried carefully in a pocket.",
+  "ja": "『案内書』のしおりは三つになりました。切符、数字のない時計、それにヒナギク。ヒナギクは乾いているのに崩れません。ポケットで大切に運ばれたのでしょう。"
+ },
+ "city.xpl.returned.rain": {
+  "ru": "Дождь. Лампа у «Вернувшихся» горит ярче обычного, и я понимаю, что она здесь не случайно: пасмурные дни — его дни.",
+  "en": "Rain. The lamp by the Returned shelf burns brighter than usual, and I see it is not here by chance: cloudy days are his days.",
+  "ja": "雨です。「戻ってきた本」の棚のランプはいつもより明るく灯っていて、偶然そこにあるのではないと分かります。曇りの日は、あの人の日なのです。"
+ },
+ "city.xpl.leave.1": {
+  "ru": "Написал на открытке одну строку: «Здесь ждут. Чайник по вторникам». Вложил между билетом и часами без цифр. Из стопки у полки взял другую, на память: их тут всегда оставляют.",
+  "en": "I wrote one line on the postcard: \"We are waiting here. The kettle is on on Tuesdays.\" I slipped it between the ticket and the clock without numbers. From the pile by the shelf I took another one to keep: they always leave a few here.",
+  "ja": "絵はがきに一行書きました。「ここで待っています。火曜日はやかんをかけます」。切符と数字のない時計のあいだにはさみ、棚のそばの束から記念にもう一枚もらいました。ここにはいつも置いてあるのです。"
+ },
+ "city.xpl.leave.2": {
+  "ru": "Подписывать не стал: он и так поймёт, кому. Положил открытку к остальным закладкам, подержал на ней ладонь, как на тёплой кружке. Из стопки взял чистую на память.",
+  "en": "I did not sign it: he will know who it is from. I laid the postcard with the other bookmarks and held my palm on it as on a warm mug. From the pile I took a clean one to keep.",
+  "ja": "名前は書きませんでした。誰からか、きっと分かるでしょう。絵はがきをほかのしおりと並べ、温かいマグカップに触れるように手をのせました。束から新しい一枚をもらって帰ります。"
+ },
+ "city.xpl.stamp.1": {
+  "ru": "Библиотекарша достаёт из ящика штемпельную подушку, дышит на печать и ставит в мой дневник круглый штамп: лампа с зелёным абажуром. «За тихие часы», говорит она.",
+  "en": "The librarian takes an ink pad from a drawer, breathes on the stamp and presses a round mark into my diary: a lamp with a green shade. \"For quiet hours,\" she says.",
+  "ja": "司書さんは引き出しからスタンプ台を出し、判に息を吹きかけて、日記に丸いスタンプを押しました。緑の傘のランプです。「静かな時間のごほうび」と彼女は言います。"
+ },
+ "city.xpl.stamp.2": {
+  "ru": "В выходные штамп другой: раскрытая книга с крыльями. «За чтение без всякой пользы», объясняет библиотекарша. «Самое ценное».",
+  "en": "At weekends the stamp is different: an open book with wings. \"For reading with no use at all,\" the librarian explains. \"The most valuable kind.\"",
+  "ja": "週末のスタンプは別のもの。翼のついた開いた本です。「何の役にも立たない読書のごほうびよ」と司書さんが説明します。「いちばん価値のある読書」。"
+ },
+ "city.xpl.stamp.3": {
+  "ru": "Четыре штампа в дневнике. Библиотекарша листает его и кивает: «Сразу видно, что читаете не ради отметки».",
+  "en": "Four stamps in the diary. The librarian leafs through it and nods: \"You can tell you are not reading for a grade.\"",
+  "ja": "日記にスタンプが4つ。司書さんはページをめくってうなずきます。「成績のために読んでいないのが、一目で分かります」。"
+ },
+ "city.xpl.stamp.4": {
+  "ru": "Восемь штампов, дневник распух. Она придерживает обложку пальцем: «Когда-нибудь его будут читать вместо вас. Не обижайтесь, это комплимент».",
+  "en": "Eight stamps, and the diary has swollen. She holds the cover down with a finger: \"One day people will read it instead of you. Do not take offence, it is a compliment.\"",
+  "ja": "スタンプが8つになり、日記はふくらみました。彼女は指で表紙を押さえます。「いつかこれが、あなたの代わりに読まれます。怒らないで、ほめ言葉ですよ」。"
+ },
+ "city.xpl.stamp.5": {
+  "ru": "Двенадцать. Библиотекарша достаёт красный карандаш и подчёркивает моё имя на обложке: «Это не отметка, это закладка».",
+  "en": "Twelve. The librarian takes out a red pencil and underlines my name on the cover: \"This is not a mark, it is a bookmark.\"",
+  "ja": "12個。司書さんは赤鉛筆を取り出して、表紙の私の名前に線を引きます。「これは評価ではなく、しおりです」。"
+ },
+ "city.xpl.stamp.6": {
+  "ru": "Дневник заполнен: на каждой полке отметка, даже на «Вернувшихся». Библиотекарша долго молчит, потом ставит последний, большой штамп: часы без цифр. «Такой я ставила одному читателю. Давно». Теперь можно и во вторник к чаю.",
+  "en": "The diary is full: a mark for every shelf, even the Returned. The librarian is silent for a long moment, then presses the last, big stamp: a clock without numbers. \"I put that one in one reader's card. Long ago.\" Now you may come on a Tuesday for tea.",
+  "ja": "日記はいっぱいになりました。どの棚にも印があります。「戻ってきた本」にも。司書さんはしばらく黙り、最後の大きなスタンプを押します。数字のない時計です。「これを押したのは、ある読者のカードだけ。ずっと前にね」。これで、火曜日のお茶にも来られます。"
+ },
+ "city.xpl.story.1": {
+  "ru": "Библиотекарь садится в кресло у круглого ковра, и малыши слетаются на мешки, как воробьи на крошки. Сегодня сказка про Маленький Маяк, который боялся темноты. Каждый вечер он зажигал свет, чтобы кораблям не было страшно, а корабли уплывали и не говорили спасибо. Но однажды маленькая лодка вернулась и мигнула в ответ. С тех пор Маяк не боится темноты: он знает, что в ней кто-то плывёт к нему.",
+  "en": "The librarian settles into the armchair by the round rug, and the little ones swoop down on the bean bags like sparrows on crumbs. Today's story is about a Little Lighthouse that was afraid of the dark. Every evening it lit its lamp so the ships would not be frightened, and the ships sailed off without saying thank you. But one day a small boat came back and blinked in reply. Since then the Lighthouse has not been afraid of the dark: it knows someone is sailing toward it in there.",
+  "ja": "司書さんが丸いラグのそばの肘掛け椅子に座ると、小さな子たちがパン屑に集まるスズメのようにビーンバッグに飛びつきます。今日のお話は、暗やみがこわい小さな灯台。毎晩、船がこわくないように明かりをともしましたが、船は礼も言わずに行ってしまいました。けれどある日、小さな舟が戻ってきて、明かりをひとつ点滅させました。それから灯台は暗やみがこわくありません。その中を、誰かが自分に向かってくると知ったからです。"
+ },
+ "city.xpl.story.2": {
+  "ru": "Сказка про Сорванную Страницу, которая всем рассказывала, что она из самой главной книги. Страницу подняли с пола, разгладили и приложили к другой книге. Подошла как родная. Оказывается, нужная страница иногда просто теряется по дороге. Малыши долго спорили, из какой она книги. Договорились: из будущей.",
+  "en": "A story about the Torn Page, which told everyone it came from the most important book. The page was picked up from the floor, smoothed out and held against another book. It fitted as if it belonged. It turns out that the right page sometimes simply gets lost on the way. The little ones argued for a long time about which book it came from. They agreed: a future one.",
+  "ja": "やぶれたページのお話。ページは、自分は一番大事な本から来たのだと誰にでも話していました。拾われて、しわをのばされ、別の本にあてがわれると、ぴったり合いました。必要なページは、道の途中でただ迷子になることもあるのです。子どもたちは、どの本のページかでずいぶん言い合いました。そして決めました。これから書かれる本のページだ、と。"
+ },
+ "city.xpl.story.3": {
+  "ru": "Сегодня читают про Кота, который жил в читальном зале и ходил по следам тех, кто обронил закладку. Он приносил закладки обратно в зубах, аккуратно, за уголок. Читатели думали, что так положено. Кот не возражал. Дети поклялись больше не терять закладок: на всякий случай, чтобы не приучать кота к работе.",
+  "en": "Today the story is about a Cat who lived in the reading room and followed those who had dropped a bookmark. He brought the bookmarks back in his teeth, carefully, by the corner. The readers thought that was how things were done. The Cat did not object. The children swore never to lose a bookmark again, just in case, so as not to teach the cat to work.",
+  "ja": "今日のお話は、閲覧室に住んでいたネコ。しおりを落とした人のあとをついて歩き、落とし物を歯でそっとくわえて、角を持って返してくれました。読者たちはそういう決まりだと思い、ネコも文句は言いません。子どもたちは、もうしおりをなくさないと誓いました。念のため、ネコを働き者にしないために。"
+ },
+ "city.xpl.story.4": {
+  "ru": "Воскресная сказка про Чайник, который по вторникам кипел на двоих. Однажды тот, для кого он кипел, опоздал на полчаса, и Чайник кипел всё это время, чтобы чай остыл не сразу. Дети слушали очень тихо. Потом спросили, пришёл ли опоздавший. Библиотекарь улыбнулась: «Это вы мне расскажете, когда вырастете».",
+  "en": "A Sunday story about the Kettle that boiled for two on Tuesdays. Once the one it boiled for was half an hour late, and the Kettle kept boiling all that time so the tea would not cool at once. The children listened very quietly. Then they asked whether the latecomer arrived. The librarian smiled: \"You will tell me that when you grow up.\"",
+  "ja": "日曜のお話は、火曜日に二人分わいていたやかん。ある日、そのお茶を飲む人が三十分遅れて、やかんはお茶がすぐ冷めないように、ずっとわき続けました。子どもたちはとても静かに聞いていました。それから、遅れた人は来たのかと尋ねました。司書さんはほほえみます。「それは、大きくなったらあなたたちが教えてね」。"
+ },
+ "city.xpl.ledger.1": {
+  "ru": "Журнал выдачи за 1968 год, в синей папке. Запись от 14 мая: «Путеводитель по солнечным часам, выдан до 28 мая. Читатель: Г. Н.». Срок возврата зачёркнут и написан заново, много раз, разными чернилами.",
+  "en": "The 1968 loan ledger, in a blue folder. Entry of 14 May: \"Guide to Sundials, lent until 28 May. Reader: G. N.\" The due date is crossed out and written again, many times, in different inks.",
+  "ja": "青いファイルに入った1968年の貸出台帳。5月14日の記入：「『日時計案内』、5月28日まで貸出。読者：G・N」。返却期限は何度も線で消され、そのたびに別のインクで書き直されています。"
+ },
+ "city.xpl.ledger.2": {
+  "ru": "Внизу страницы свежие чернила: «Возвращён». Дата сегодняшняя. Ниже второй почерк: «Принято. Не волнуйтесь. Чайник горячий».",
+  "en": "At the bottom of the page, fresh ink: \"Returned.\" Today's date. Below, a second hand: \"Received. Do not worry. The kettle is hot.\"",
+  "ja": "ページの下に新しいインクで「返却済み」。日付は今日です。その下に別の筆跡で：「受け取りました。ご心配なく。やかんは熱いです」。"
+ },
+ "city.xpl.ledger.3": {
+  "ru": "Вторая запись другой рукой: «Был во вторник. За стойку не заходил, пил чай стоя у окна. Ушёл раньше, чем я обернулась. Оставил ромашку».",
+  "en": "A second entry in another hand: \"Came on Tuesday. Did not come behind the desk, drank his tea standing by the window. Left before I turned round. Left a daisy.\"",
+  "ja": "別の筆跡の二つ目の記入：「火曜日に来館。カウンターの中には入らず、窓際に立ってお茶を飲んだ。私が振り向く前に帰った。ヒナギクを残して」。"
+ },
+ "city.xpl.ledger.4": {
+  "ru": "К журналу булавкой приколот листок: «Нужен гонец. Кто-нибудь молодой, кого он не побоится. Пусть вложит открытку в книгу, остальное моя забота».",
+  "en": "A sheet is pinned to the ledger: \"A messenger is needed. Somebody young, whom he will not be afraid of. Let them slip a postcard into the book, the rest is my business.\"",
+  "ja": "台帳にピンで紙がとめてあります。「使いが必要。若い人で、あの人がこわがらない人。絵はがきを本にはさんでもらえば、あとは私の仕事」。"
+ },
+ "city.xpl.ledger.5": {
+  "ru": "Журнал закрыт, на обложке свежая надпись: «Читатель: Г. Н. Статус: приходит по вторникам». Рядом на блюдце пустая чашка и ромашка.",
+  "en": "The ledger is closed, with a fresh line on the cover: \"Reader: G. N. Status: comes on Tuesdays.\" Beside it, on a saucer, an empty cup and a daisy.",
+  "ja": "台帳は閉じられ、表紙に新しい書き込み。「読者：G・N。状態：火曜日に来る」。そばの受け皿には、空のカップとヒナギクがひとつ。"
+ },
+ "city.xpl.tea.1": {
+  "ru": "По вторникам чайник стоит на двоих. Библиотекарша кивает на вторую чашку: «Берите. Если он придёт, налью заново». Чай крепкий, пахнет чабрецом.",
+  "en": "On Tuesdays the kettle is put on for two. The librarian nods at the second cup: \"Have it. If he comes, I will pour again.\" The tea is strong and smells of thyme.",
+  "ja": "火曜日、やかんは二人分わいています。司書さんが二つ目のカップにうなずきます。「どうぞ。あの人が来たら、また入れますから」。お茶は濃くて、タイムの香りがします。"
+ },
+ "city.xpl.tea.2": {
+  "ru": "Вторая чашка уже тёплая: кто-то был здесь до меня. Библиотекарша не поднимает головы: «Он просил передать, что открытку получил. И что чай у нас слишком крепкий». Я пью и молчу, чтобы никого не спугнуть.",
+  "en": "The second cup is already warm: somebody was here before me. The librarian does not raise her head: \"He asked me to say he got the postcard. And that our tea is too strong.\" I drink and stay quiet so as not to scare anyone off.",
+  "ja": "二つ目のカップはもう温かい。私より先に誰かが来ていたのです。司書さんは顔を上げません。「絵はがきは受け取った、と伝えてほしいそうです。それと、ここのお茶は濃すぎる、と」。私は誰も驚かせないよう、黙ってお茶を飲みます。"
+ },
+ "city.xpl.piano.1": {
+  "ru": "Приподнял крышку на два пальца и играю так, будто клавиши из ваты. Из соседней капсулы тихо стукнули в стенку: один раз, одобрительно.",
+  "en": "I lifted the lid two fingers' width and play as if the keys were cotton wool. From the next capsule somebody tapped the wall softly: once, approvingly.",
+  "ja": "ふたを指二本ぶんだけ開け、鍵盤が綿でできているつもりで弾きます。隣のカプセルから、壁を一回、やさしくたたく音。ほめてくれたようです。"
+ },
+ "city.xpl.piano.2": {
+  "ru": "Играю совсем тихо, это урок шёпота. Капсула отзывается всем бетоном, и, как ни странно, получается красиво.",
+  "en": "I play very softly, a lesson in whispering. The capsule answers with all its concrete and, oddly enough, it sounds beautiful.",
+  "ja": "ほんの小さな音で弾きます。ささやきの練習です。カプセルがコンクリートぜんぶで響き返し、不思議なほどきれいに聞こえます。"
+ },
+ "city.xpl.piano.3": {
+  "ru": "Вечер, читателей мало. Сыграл всё, что помню. Снизу, из зала, кто-то аплодирует: шуршат страницы, по одной, как ладошки.",
+  "en": "Evening, few readers. I played everything I remember. From the hall below somebody applauds: pages rustle, one by one, like small palms.",
+  "ja": "夕方で、読者は少なめ。覚えている曲を全部弾きました。下の閲覧室から拍手が聞こえます。ページをめくる音が、小さな手のひらのように一枚ずつ。"
+ },
+ "city.xpl.pressA.mon": {
+  "ru": "Подшивка «Городского вестника» за прошлую неделю. Свежего номера нет: по понедельникам типография отдыхает вместе с библиотекой.",
+  "en": "The bound run of the Town Herald for last week. There is no fresh issue: on Mondays the print shop rests together with the library.",
+  "ja": "先週分の「町の便り」の綴じ込み。新しい号はありません。月曜日は印刷所も図書館といっしょにお休みです。"
+ },
+ "city.xpl.pressA.tue": {
+  "ru": "«Городской вестник», вторник. На первой полосе канатная дорога, у которой опять новая кабина. Внизу мелко: расписание приливов и жёлтый зонтик, потерянный возле универмага. Нашедшему обещана благодарность.",
+  "en": "The Town Herald, Tuesday. On the front page the cable car, which has a new cabin again. Below in small print: the tide table and a yellow umbrella lost near the department store. A reward is promised to the finder.",
+  "ja": "「町の便り」火曜日号。一面はまた新しい車両になったロープウェイ。下に小さく、潮見表と、デパートの近くでなくなった黄色い傘のお知らせ。見つけた人にはお礼があります。"
+ },
+ "city.xpl.pressA.wed": {
+  "ru": "Среда: репортаж с рыбацкой пристани о том, как отучить чайку красть с лотка. Вывод редакции: никак. Рецепт пирожков на третьей странице дан без чаек.",
+  "en": "Wednesday: a report from the fishermen's pier on how to wean a gull off stealing from the tray. The editors' conclusion: you cannot. The recipe for pasties on page three is given without gulls.",
+  "ja": "水曜日号。漁師の桟橋から、トレイから盗むカモメをやめさせる方法の報告。編集部の結論は「方法なし」。三面のパイのレシピには、カモメは出てきません。"
+ },
+ "city.xpl.pressA.thu": {
+  "ru": "Четверг: интервью со смотрителем маяка. На вопрос, не скучно ли ему, он ответил: «Мне есть с кем поговорить: у меня тридцать три лампы, и все разные».",
+  "en": "Thursday: an interview with the lighthouse keeper. Asked whether he gets bored, he answered: \"I have people to talk to: thirty-three lamps, and all different.\"",
+  "ja": "木曜日号。灯台守へのインタビュー。退屈ではないかと聞かれて、彼は答えました。「話し相手ならいますよ。ランプが33個、どれもみんな違うんです」。"
+ },
+ "city.xpl.pressA.fri": {
+  "ru": "Пятница: афиша выходных. В «Рассвете» старое кино, в «Шестерне» шахматный вечер, в библиотеке сказка для самых маленьких. Внизу приписка: «Приходите с родителями, родители тоже слушают».",
+  "en": "Friday: the weekend listings. An old film at Rassvet, a chess evening at the Cog club, a story for the smallest at the library. A note below: \"Come with your parents, parents listen too.\"",
+  "ja": "金曜日号。週末の催し一覧。「ラスヴェート」では古い映画、「歯車」ではチェスの夕べ、図書館では小さな子のためのお話。下に添え書き：「ご両親とどうぞ。親も聞いています」。"
+ },
+ "city.xpl.pressA.sat": {
+  "ru": "Суббота, толстый номер: кроссворд на пол-листа. Кто-то уже вписал карандашом «маяк» в клетки, где нужно было «море», и вышло, что подходят оба.",
+  "en": "Saturday, the thick issue: a half-page crossword. Somebody has pencilled in \"lighthouse\" where \"sea\" was wanted, and it turns out both fit.",
+  "ja": "土曜日の分厚い号。半ページのクロスワード。誰かが「海」の入る欄に鉛筆で「灯台」と書き込んでいて、どちらも入ることが分かりました。"
+ },
+ "city.xpl.pressA.sun": {
+  "ru": "Воскресное приложение, письма читателей. Одно начинается так: «Хочу найти человека, который в мае 1968-го взял в библиотеке книгу и унёс её надолго». Подписано: «Библиотека».",
+  "en": "The Sunday supplement, readers' letters. One begins: \"I should like to find the person who borrowed a library book in May 1968 and took it away for a long while.\" Signed: \"The Library.\"",
+  "ja": "日曜付録、読者の手紙。ひとつはこう始まります。「1968年5月に図書館の本を借りて、長いあいだ持っていった方を探しています」。署名は「図書館」。"
+ },
+ "city.xpl.pressB.mt": {
+  "ru": "Журнал «Небо над нами»: таблица восходов и закатов на неделю. Один закат обведён кружком, рядом приписка: «Лучший — тот, что виден из читального зала».",
+  "en": "The magazine Sky Above Us: a table of sunrises and sunsets for the week. One sunset is circled, with a note beside it: \"The best one is the one you can see from the reading room.\"",
+  "ja": "雑誌「頭上の空」。一週間の日の出と日の入りの表。ひとつの日没が丸で囲まれ、そばに書き込みがあります。「閲覧室から見えるのが、いちばん」。"
+ },
+ "city.xpl.pressB.wt": {
+  "ru": "«Небо над нами», статья о солнечных часах: тень короче всего в полдень, потом тянется, пока не станет ночью. Автор называет это самым честным способом считать время.",
+  "en": "Sky Above Us, an article on sundials: the shadow is shortest at noon, then stretches until it becomes night. The author calls it the most honest way to count time.",
+  "ja": "「頭上の空」の日時計の記事。影は正午にいちばん短く、それから伸びて夜になります。筆者はこれを、時間を数えるいちばん正直な方法と呼んでいます。"
+ },
+ "city.xpl.pressB.fs": {
+  "ru": "Шахматный журнал: партия, сыгранная по переписке между двумя городами за четыре года. Последний ход сделан открыткой. Победитель не указан: оба настаивают, что проиграли.",
+  "en": "A chess magazine: a game played by post between two towns over four years. The last move was sent on a postcard. No winner is named: both insist they lost.",
+  "ja": "チェス雑誌。二つの町のあいだで四年かけて郵便で指された一局。最後の手は絵はがきで送られました。勝者は書かれていません。どちらも自分が負けたと言い張ったからです。"
+ },
+ "city.xpl.pressB.su": {
+  "ru": "Детский журнал: как сделать песочные часы из двух стаканов и одной терпеливой недели. Рядом чьим-то карандашом нарисованы часы без цифр, только тень.",
+  "en": "A children's magazine: how to make an hourglass from two glasses and one patient week. Beside it, in somebody's pencil, a clock without numbers, only a shadow.",
+  "ja": "子ども雑誌。二つのコップとがまん強い一週間で砂時計を作る方法。そばに、誰かの鉛筆で数字のない時計が描かれています。影だけです。"
+ },
+ "quest.library_1968.title": {
+  "ru": "Читатель из 1968 года",
+  "en": "The reader from 1968",
+  "ja": "1968年の読者"
+ },
+ "quest.library_1968.desc": {
+  "ru": "На полке у восточного окна лежит книга, которую вернули спустя больше полувека. Библиотекарша говорит, что читатель вернётся, если ему не мешать. Или если ему немного помочь.",
+  "en": "On the shelf by the east window lies a book that came back after more than half a century. The librarian says the reader will return if nobody gets in his way. Or if someone helps him a little.",
+  "ja": "東の窓際の棚に、半世紀以上たって戻ってきた本があります。司書さんは、邪魔をしなければ読者は戻ってくると言います。あるいは、少し手伝えば。"
+ },
+ "quest.library_1968.find.log": {
+  "ru": "Загляну на полку «Вернувшиеся» у восточного окна и в журнал в служебной комнате. Дверь там без замка, но табличка «Служебное» просит не шуметь.",
+  "en": "I'll look at the Returned shelf by the east window and at the ledger in the staff room. The door has no lock, but the Staff sign asks for quiet.",
+  "ja": "東の窓際の「戻ってきた本」の棚と、事務室の台帳を見てみよう。扉に鍵はないけれど、「関係者用」の札が静かにするよう求めている。"
+ },
+ "quest.library_1968.shelf.obj": {
+  "ru": "Посмотреть полку «Вернувшиеся»",
+  "en": "Look at the Returned shelf",
+  "ja": "「戻ってきた本」の棚を見る"
+ },
+ "quest.library_1968.ledger.obj": {
+  "ru": "Прочитать журнал в комнате библиотекаря",
+  "en": "Read the ledger in the librarian's room",
+  "ja": "司書さんの部屋で台帳を読む"
+ },
+ "quest.library_1968.leave.log": {
+  "ru": "Нужна открытка: в абонементе они стоят четыре рубля, бывают и в других местах города. Вложу её в «Путеводитель», остальное сделает он сам.",
+  "en": "I need a postcard: they cost four roubles at the lending desk and turn up elsewhere in town. I'll slip it into the Guide, and he will do the rest.",
+  "ja": "絵はがきが要る。貸出カウンターで4ルーブル、町のほかの場所にもある。『案内書』にはさめば、あとは本人がやってくれる。"
+ },
+ "quest.library_1968.postcard.obj": {
+  "ru": "Раздобыть открытку",
+  "en": "Get a postcard",
+  "ja": "絵はがきを手に入れる"
+ },
+ "quest.library_1968.leave.obj": {
+  "ru": "Вложить открытку в «Путеводитель»",
+  "en": "Slip the postcard into the Guide",
+  "ja": "絵はがきを『案内書』にはさむ"
+ },
+ "quest.library_1968.tea.log": {
+  "ru": "Библиотекарша сказала: ответ будет во вторник, к чаю. Значит, ждать вторника.",
+  "en": "The librarian said the reply will come on Tuesday, at tea time. So I wait for Tuesday.",
+  "ja": "司書さんは、返事は火曜日のお茶の時間に来ると言った。つまり、火曜日を待つのだ。"
+ },
+ "quest.library_1968.cup.obj": {
+  "ru": "Выпить чай у библиотекарши во вторник",
+  "en": "Have tea with the librarian on a Tuesday",
+  "ja": "火曜日に司書さんとお茶を飲む"
+ },
+ "quest.library_1968.done": {
+  "ru": "Во вторник вторая чашка опустела раньше, чем я допил свою. На блюдце лежала ромашка, а в «Путеводителе» моя открытка стояла надписью вверх: «Спасибо. Приду».",
+  "en": "On Tuesday the second cup was empty before I finished mine. A daisy lay on the saucer, and in the Guide my postcard stood with its writing up: \"Thank you. I will come.\"",
+  "ja": "火曜日、私が飲み終える前に二つ目のカップは空になっていた。受け皿にはヒナギク。『案内書』の中では、私の絵はがきが文字を上にして立っていた。「ありがとう。行きます」。"
+ },
+ "quest.library_diary.title": {
+  "ru": "Читательский дневник",
+  "en": "The reading diary",
+  "ja": "読書日記"
+ },
+ "quest.library_diary.desc": {
+  "ru": "У входа в библиотеку висит стенд: на каждой полке свой штамп, а штампы собираются в дневник. Библиотекарша ставит их тем, кто читает не ради оценки.",
+  "en": "By the library door hangs a stand: every shelf has its own stamp, and the stamps are gathered in a diary. The librarian gives them to those who read for no grade.",
+  "ja": "図書館の入口に掲示があります。どの棚にも専用のスタンプがあり、スタンプは日記に集まります。成績のためでなく読む人に、司書さんは押してくれます。"
+ },
+ "quest.library_diary.shelves.log": {
+  "ru": "Для начала три полки: стихи, море и искусство. Достаточно пролистать, штампы ставятся сами.",
+  "en": "To begin with, three shelves: poems, the sea and art. Leafing through is enough, the stamps go on by themselves.",
+  "ja": "まず三つの棚から。詩、海、美術。ぱらぱらめくるだけで十分、スタンプは自然についていく。"
+ },
+ "quest.library_diary.poetry.obj": {
+  "ru": "Полистать полку со стихами",
+  "en": "Leaf through the poetry shelf",
+  "ja": "詩の棚をめくる"
+ },
+ "quest.library_diary.sea.obj": {
+  "ru": "Полистать полку «Море»",
+  "en": "Leaf through the Sea shelf",
+  "ja": "「海」の棚をめくる"
+ },
+ "quest.library_diary.art.obj": {
+  "ru": "Полистать полку об искусстве",
+  "en": "Leaf through the art shelf",
+  "ja": "美術の棚をめくる"
+ },
+ "quest.library_diary.stamp.log": {
+  "ru": "Теперь к абонементу: пусть библиотекарша взглянет на дневник и поставит свой штамп.",
+  "en": "Now to the lending desk: let the librarian look at the diary and put in her own stamp.",
+  "ja": "次は貸出カウンター。司書さんに日記を見てもらって、自分のスタンプを押してもらおう。"
+ },
+ "quest.library_diary.ask.obj": {
+  "ru": "Получить штамп у библиотекаря",
+  "en": "Get a stamp from the librarian",
+  "ja": "司書さんにスタンプを押してもらう"
+ },
+ "quest.library_diary.story.log": {
+  "ru": "По выходным в 11 часов в детском уголке читают сказку. Сесть на мешок и послушать, никто не скажет, что я большой.",
+  "en": "On weekends at 11 a story is read in the children's corner. I'll sit on a bean bag and listen; nobody will say I'm too big.",
+  "ja": "週末の11時に、子どもコーナーでお話がある。ビーンバッグに座って聞こう。大きすぎると言う人はいないはず。"
+ },
+ "quest.library_diary.hour.obj": {
+  "ru": "Послушать сказку в детском уголке",
+  "en": "Listen to the story in the children's corner",
+  "ja": "子どもコーナーでお話を聞く"
+ },
+ "quest.library_diary.done": {
+  "ru": "В дневнике четыре новых штампа и пятый, невидимый: тот, что ставят за сказку, когда тебе уже не пять лет.",
+  "en": "There are four new stamps in the diary and a fifth, invisible one: the kind you get for a story when you are no longer five.",
+  "ja": "日記には新しいスタンプが四つ、それから目に見えない五つ目。もう五歳ではないのにお話を聞いたときに押される、あのスタンプです。"
+ }
+}

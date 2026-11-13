@@ -213,9 +213,90 @@
     0.0
    ],
    "yaw": 90.0
+  },
+  {
+   "id": "coach_table",
+   "kind": "stand",
+   "pos": [
+    -12.0,
+    2.8,
+    0.0
+   ],
+   "yaw": 0
+  },
+  {
+   "id": "schedule_view",
+   "kind": "view",
+   "pos": [
+    -2.4,
+    2.4,
+    0.0
+   ],
+   "yaw": 180
+  },
+  {
+   "id": "sauna_bench",
+   "kind": "bench",
+   "pos": [
+    -15.1,
+    4.6,
+    0.0
+   ],
+   "yaw": 0
+  },
+  {
+   "id": "kiln_spot",
+   "kind": "work",
+   "pos": [
+    17.0,
+    4.5,
+    0.0
+   ],
+   "yaw": 90
+  },
+  {
+   "id": "results_view",
+   "kind": "view",
+   "pos": [
+    -12.2,
+    4.75,
+    0.0
+   ],
+   "yaw": 270
+  },
+  {
+   "id": "court_free",
+   "kind": "stand",
+   "pos": [
+    -9.0,
+    6.0,
+    0.0
+   ],
+   "yaw": 180
+  },
+  {
+   "id": "ref_chair",
+   "kind": "stand",
+   "pos": [
+    -7.6,
+    2.7,
+    0.0
+   ],
+   "yaw": 180
   }
  ],
  "lamps": [
+  {
+   "pos": [
+    -14.3,
+    4.7,
+    2.15
+   ],
+   "lumens": 380,
+   "colour": "#FFC890",
+   "kind": "public",
+   "radius": 3.5
+  },
   {
    "pos": [
     -15.0,
@@ -856,6 +937,202 @@
    "yaw": 90,
    "props": {
     "height": 0.45
+   }
+  },
+  {
+   "id": "coach_table",
+   "kind": "counter",
+   "pos": [
+    -12.0,
+    2.0,
+    0.9
+   ],
+   "yaw": 180,
+   "props": {
+    "role": "coach",
+    "service": "coach"
+   }
+  },
+  {
+   "id": "tactics_board",
+   "kind": "board",
+   "pos": [
+    -12.0,
+    1.5,
+    1.9
+   ],
+   "yaw": 180,
+   "props": {
+    "topic": "tactics"
+   }
+  },
+  {
+   "id": "training_board",
+   "kind": "board",
+   "pos": [
+    -2.4,
+    1.5,
+    1.8
+   ],
+   "yaw": 180,
+   "props": {
+    "topic": "timetable"
+   }
+  },
+  {
+   "id": "sauna_bench",
+   "kind": "seat",
+   "pos": [
+    -15.1,
+    5.17,
+    0.45
+   ],
+   "yaw": 0,
+   "props": {
+    "height": 0.45
+   }
+  },
+  {
+   "id": "sauna_stove",
+   "kind": "machine",
+   "pos": [
+    -15.7,
+    3.95,
+    0.6
+   ],
+   "yaw": 90,
+   "props": {
+    "what": "sauna_stove"
+   }
+  },
+  {
+   "id": "shower_stall",
+   "kind": "machine",
+   "pos": [
+    -13.7,
+    5.7,
+    1.4
+   ],
+   "yaw": 0,
+   "props": {
+    "what": "shower"
+   }
+  },
+  {
+   "id": "cabin_results",
+   "kind": "board",
+   "pos": [
+    -12.95,
+    4.75,
+    1.6
+   ],
+   "yaw": 90,
+   "props": {
+    "topic": "results"
+   }
+  },
+  {
+   "id": "pool_sign",
+   "kind": "board",
+   "pos": [
+    -16.05,
+    5.15,
+    1.5
+   ],
+   "yaw": 270,
+   "props": {
+    "topic": "pool"
+   }
+  },
+  {
+   "id": "changing_screen",
+   "kind": "door",
+   "pos": [
+    -17.2,
+    5.0,
+    0.9
+   ],
+   "yaw": 90,
+   "props": {
+    "to": "staff"
+   }
+  },
+  {
+   "id": "kiln",
+   "kind": "craft",
+   "pos": [
+    17.55,
+    4.5,
+    0.8
+   ],
+   "yaw": 270,
+   "props": {
+    "what": "kiln"
+   }
+  },
+  {
+   "id": "court_game",
+   "kind": "sport",
+   "pos": [
+    -9.0,
+    6.6,
+    0.9
+   ],
+   "yaw": 180,
+   "props": {
+    "what": "basketball"
+   }
+  },
+  {
+   "id": "scoreboard",
+   "kind": "board",
+   "pos": [
+    -4.5,
+    12.4,
+    4.7
+   ],
+   "yaw": 0,
+   "props": {
+    "topic": "scores"
+   }
+  },
+  {
+   "id": "ball_cart",
+   "kind": "sport",
+   "pos": [
+    -12.6,
+    11.9,
+    0.7
+   ],
+   "yaw": 0,
+   "props": {
+    "what": "basketball"
+   }
+  },
+  {
+   "id": "ref_chair",
+   "kind": "seat",
+   "pos": [
+    -7.6,
+    3.4,
+    1.2
+   ],
+   "yaw": 180,
+   "props": {
+    "height": 1.2
+   }
+  },
+  {
+   "id": "drying_shelf",
+   "kind": "board",
+   "pos": [
+    17.45,
+    1.6,
+    1.4
+   ],
+   "yaw": 180,
+   "props": {
+    "topic": "store"
    }
   }
  ],
@@ -3282,8 +3559,8 @@
   "hall 38x12 m enterable; 115 cave windows"
  ],
  "tris": {
-  "shell": 9870,
-  "detail": 18705,
-  "windows": 230
+  "shell": 10050,
+  "detail": 22615,
+  "windows": 460
  }
 }

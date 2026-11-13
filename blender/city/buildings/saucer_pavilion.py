@@ -471,3 +471,193 @@ def _hall(B, rnd, zf):
         kit.plant(B, c[0], c[1], zf, 0.0, kind=kind_, pot=("CT_PlasterRed", "CT_PlasterBlue", "CT_PlasterYellow")[k % 3], h=h_)
     B.thing("view_west", "board", (P(10.1, 195, zf + 1.6)), 195 + 90, topic="view")
     B.thing("view_east", "board", (P(10.1, 332, zf + 1.6)), (332 + 90 + 180) % 360, topic="view")
+    _extras(B, zf)
+
+
+def _parrot(d, x, y, z, yw):
+    """Kesha: a green parrot (about 250 tris) on a perch at height z, facing yaw yw (0 = -y, 90 = +x)."""
+    a = math.radians(yw)
+    f = (math.sin(a), -math.cos(a))             # forward
+    r = (math.cos(a), math.sin(a))              # to the right
+
+    def at(u, v, h):                            # u forward, v right, h up from the perch
+        return x + f[0] * u + r[0] * v, y + f[1] * u + r[1] * v, z + h
+    ang = a - math.pi / 2 + math.pi / 2         # rbox local x runs along the bird's right
+    for sv in (-0.025, 0.025):                  # feet
+        q = at(0.0, sv, 0.0)
+        rbox(d, "CT_Steel", q[0], q[1], z, z + 0.03, 0.008, 0.012, a)
+    q = at(0.0, 0.0, 0.14)
+    blob(d, "CT_PlasterGreen", q[0], q[1], q[2], 0.062, segs=7, sq=1.45)           # body
+    q = at(0.03, 0.0, 0.10)
+    blob(d, "CT_PlasterYellow", q[0], q[1], q[2], 0.04, segs=6, sq=1.0)            # belly
+    q = at(0.045, 0.0, 0.255)
+    blob(d, "CT_PlasterGreen", q[0], q[1], q[2], 0.04, segs=7)                     # head
+    for sv in (-0.028, 0.028):
+        q = at(0.065, sv, 0.27)
+        blob(d, "CT_Frame", q[0], q[1], q[2], 0.009, segs=4)                       # eyes
+    q = at(0.085, 0.0, 0.245)
+    blob(d, "CT_SteelRed", q[0], q[1], q[2], 0.02, segs=5, sq=1.2)                 # beak
+    for sv in (-0.058, 0.058):                                                     # wings folded on the sides
+        q = at(-0.01, sv, 0.145)
+        rbox(d, "CT_PlasterBlue", q[0], q[1], z + 0.07, z + 0.22, 0.012, 0.05, a + math.pi / 2)
+    q = at(-0.08, 0.0, -0.02)
+    rbox(d, "CT_PlasterGreen", q[0], q[1], z - 0.12, z + 0.1, 0.02, 0.01, a + math.pi / 2)   # tail hangs below the perch
+    q = at(-0.08, 0.0, -0.12)
+    rbox(d, "CT_SteelRed", q[0], q[1], z - 0.2, z - 0.1, 0.02, 0.01, a + math.pi / 2)
+
+
+def _extras(B, zf):
+    """Second pass: the regulars' chess table, the window ledge for the sunset, the guest book, Kesha's perch,
+    the record crate by the jukebox, the cake vitrine and espresso machine as things, a free paper in the lounge."""
+    d, m = B.detail, B.m
+    top = zf + 1.05
+    # ------------------------------------------------------------------ the regulars' chess table (between stair and ice cream)
+    cc = P(6.6, 316, zf)
+    ct = kit.chess_table(B, cc[0], cc[1], zf, 0.0, seed=7)
+    cs = []
+    for k, (dy, yw) in enumerate(((-0.62, 180.0), (0.62, 0.0))):
+        ch = kit.chair(B, cc[0], cc[1] + dy, zf, yw, kind="tube", mat=("CT_PlasterBlue", "CT_SteelRed")[k])
+        cs.append((cc[0], cc[1] + dy, yw))
+        B.spot("chess_seat_%s" % "ab"[k], "seat", (cc[0], cc[1] + dy, zf), yw)
+        B.thing("chess_chair_%s" % "ab"[k], "seat", (cc[0], cc[1] + dy, zf + 0.45), yw, height=0.45)
+    B.thing("regulars_chess", "play", (cc[0], cc[1], zf + 0.72), 0.0, what="chess")
+    side = kit.coffee_table(B, cc[0] + 0.95, cc[1] + 0.0, zf, 90.0, w=0.4, d=0.4, h=0.5)
+    kit.cup(B, cc[0] + 0.95, cc[1] - 0.05, side["top"], 0.0)
+    kit.floor_lamp(B, *P(5.6, 331, zf)[:2], zf, 0.0, light=True)
+
+    # ------------------------------------------------------------------ window ledge with two stools (sunset seat)
+    a_l, r_l = 272.0, 10.0
+    lc_ = P(r_l, a_l, zf)
+    ang = math.radians(a_l + 90.0)
+    rbox(d, "CT_WoodLight", lc_[0], lc_[1], zf + 0.82, zf + 0.86, 0.95, 0.23, ang)
+    rbox(d, "CT_Steel", lc_[0], lc_[1], zf + 0.78, zf + 0.82, 0.93, 0.03, ang)
+    for sx in (-0.88, 0.88):
+        q = (lc_[0] + math.cos(ang) * sx, lc_[1] + math.sin(ang) * sx)
+        rbox(d, "CT_Steel", q[0], q[1], zf, zf + 0.82, 0.025, 0.025, ang)
+    for k, da in enumerate((-3.6, 3.6)):
+        sp = P(9.35, a_l + da, zf)
+        yw = yaw_to(sp, P(11.0, a_l + da))
+        s_ = kit.bar_stool(B, sp[0], sp[1], zf, yw, mat=("CT_PlasterYellow", "CT_PlasterBlue")[k], h=0.68)
+        B.spot("ledge_%d" % (k + 1), "seat", (sp[0], sp[1], zf), yw)
+        B.thing("ledge_stool_%d" % (k + 1), "seat", (sp[0], sp[1], zf + 0.68), yw, height=0.68)
+    lt = P(r_l, a_l + 6.5, zf + 0.86)
+    kit.table_lamp(B, lt[0], lt[1], zf + 0.86, 0.0, shade="CT_PlasterYellow", light=True)
+    for da, kd in ((-3.0, "c"), (2.4, "g"), (4.0, "c")):
+        q = P(r_l - 0.05, a_l + da, zf + 0.86)
+        (kit.cup if kd == "c" else kit.glass)(B, q[0], q[1], zf + 0.86, 0.0)
+    kit.vase(B, *P(r_l + 0.02, a_l - 6.0, zf + 0.86)[:2], zf + 0.86, 0.0, seed=4)
+    yw_o = yaw_to(P(9.0, a_l), P(11.0, a_l))
+    B.thing("window_ledge", "board", (lc_[0], lc_[1], zf + 1.3), yw_o, topic="view")
+
+    # ------------------------------------------------------------------ guest book on a high table by the stair
+    gb = P(3.75, 312, zf)
+    ht = kit.high_table(B, gb[0], gb[1], zf, 0.0)
+    kit.newspaper(B, gb[0], gb[1], ht["top"], 15, cellname="paper_letter")
+    kit.books_stack(B, gb[0] + 0.09, gb[1] - 0.03, ht["top"], 20, n=2, seed=5)
+    cyl(d, "CT_Frame", gb[0] - 0.2, gb[1] + 0.12, ht["top"], ht["top"] + 0.1, 0.022, 6)
+    B.thing("guest_pen", "board", (gb[0] - 0.2, gb[1] + 0.12, ht["top"] + 0.08), 0.0, topic="guestpen")
+    B.spot("guest_book", "stand", (gb[0], gb[1] - 0.6, zf), 0.0)
+    B.thing("guest_book", "board", (gb[0] + 0.1, gb[1] - 0.05, ht["top"] + 0.05), 0.0, topic="guestbook")
+
+    # ------------------------------------------------------------------ Kesha's perch at the end of the bar
+    kp = P(6.15, 127, top)
+    cyl(d, "CT_Steel", kp[0], kp[1], top, top + 0.025, 0.12, 8)
+    cyl(d, "CT_Brass", kp[0], kp[1], top + 0.025, top + 0.36, 0.012, 5)
+    rbox(d, "CT_WoodLight", kp[0], kp[1], top + 0.35, top + 0.375, 0.17, 0.014, math.radians(127 + 90))
+    _parrot(d, kp[0], kp[1], top + 0.375, yaw_to(kp, (CX, CY)))
+    sd = P(6.2, 121.0, top)
+    cyl(d, "CT_TileWhite", sd[0], sd[1], top, top + 0.025, 0.07, 8)
+    cyl(d, "CT_Frame", sd[0], sd[1], top + 0.025, top + 0.04, 0.045, 6)
+    B.thing("kesha_dish", "machine", (sd[0], sd[1], top + 0.1), 0.0, what="kesha_feed")
+    B.thing("kesha_perch", "board", (kp[0], kp[1], top + 0.5), (127 + 90) % 360, topic="kesha")
+
+    # ------------------------------------------------------------------ the record crate under the sea painting, by the jukebox
+    pr, ywr = _wall_pt(128, 9.95, 1)
+    rk = kit.magazine_rack(B, pr[0], pr[1], zf, ywr, w=0.9)
+    B.thing("record_crate", "shelf", (rk["pos"][0], rk["pos"][1], zf + 0.9), ywr, topic="music")
+
+    # ------------------------------------------------------------------ the bar: cakes and espresso as things; a free paper
+    B.thing("cake_vitrine", "board", P(6.2, 70, top + 0.3), 0.0, topic="cakes")
+    B.thing("espresso", "machine", P(6.2, 97, top + 0.3), 0.0, what="espresso")
+    lc2 = P(5.7, 225, zf)
+    B.thing("lounge_paper", "take", (lc2[0] + 0.1, lc2[1] - 0.1, zf + 0.5), 20, item="daily_paper")
+
+    _third_layer(B, zf)
+
+
+def _third_layer(B, zf):
+    """Back bar, table settings, coat stand, cones at the ice-cream counter, the serving hatch to the kitchen."""
+    d = B.detail
+    top = zf + 1.05
+    rnd = random.Random(31)
+    # ---- the bar: a grinder, a row of syrup bottles with a tall glass stand, a chalk menu in the kitchen doorway
+    g = P(6.3, 80.0, top)
+    rbox(d, "CT_Steel", g[0], g[1], top, top + 0.05, 0.1, 0.1, 0.0)
+    rbox(d, "CT_SteelRed", g[0], g[1], top + 0.05, top + 0.42, 0.075, 0.08, 0.0)
+    cyl(d, "CT_Aluminium", g[0], g[1], top + 0.42, top + 0.62, 0.11, 8, r1=0.04)
+    cyl(d, "CT_Frame", g[0], g[1] - 0.12, top + 0.15, top + 0.17, 0.02, 5)
+    for k in range(5):
+        q = P(6.45, 104 + 3.2 * k, top)
+        mat = ("CT_PlasterRed", "CT_PlasterYellow", "CT_PlasterGreen", "CT_PlasterBlue", "CT_PlasterPink")[k]
+        cyl(d, mat, q[0], q[1], top, top + 0.2, 0.034, 6, r1=0.03)
+        cyl(d, "CT_Steel", q[0], q[1], top + 0.2, top + 0.24, 0.012, 5)
+    for k in range(4):
+        q = P(6.0, 62 + 2.2 * k, top)
+        cyl(d, "CT_TileWhite", q[0], q[1], top, top + 0.1, 0.035, 6, r1=0.04, top=False)
+    mp = P(7.7, 90, zf + 2.55)
+    kit.menu_board(B, mp[0], mp[1], 0.0, yaw_to(mp, (CX, CY)) + 180.0, name="menu_1", w=0.7, zc=zf + 2.45) if False else None
+    cm = P(7.82, 62, zf)
+    kit.menu_board(B, cm[0], cm[1], zf, yaw_to(cm, (CX, CY)) + 180.0, name="menu_1", w=0.55, zc=2.65)
+    # ---- table settings that differ
+    layout = [(8.4, a) for a in (-32, 4, 38, 160, 178, 214, 250)] + [(4.8, a) for a in (150, 195, 345, 20)]
+    for ti, (r_, a_) in enumerate(layout):
+        c = P(r_, a_, zf)
+        tz = zf + 0.75
+        ox, oy = c[0] + 0.17, c[1] - 0.14
+        k = ti % 5
+        if k == 0:        # sugar bowl with a lid and a spoon
+            cyl(d, "CT_TileWhite", ox, oy, tz, tz + 0.06, 0.055, 7, r1=0.045)
+            cyl(d, "CT_Brass", ox, oy, tz + 0.06, tz + 0.085, 0.02, 5)
+        elif k == 1:      # napkin holder
+            rbox(d, "CT_Steel", ox, oy, tz, tz + 0.1, 0.05, 0.015, math.radians(rnd.uniform(0, 90)))
+            rbox(d, "CT_TileWhite", ox, oy, tz + 0.1, tz + 0.115, 0.045, 0.012, math.radians(rnd.uniform(0, 90)))
+        elif k == 2:      # a forgotten book
+            kit.books_stack(B, ox, oy, tz, rnd.uniform(0, 90), n=1, seed=ti)
+        elif k == 3:      # a forgotten glove
+            rbox(d, "CT_Leather", ox, oy, tz, tz + 0.012, 0.045, 0.035, 0.5)
+            for j in range(4):
+                rbox(d, "CT_Leather", ox + 0.045 + 0.0, oy + (j - 1.5) * 0.017, tz, tz + 0.01, 0.035, 0.007, 0.2 + 0.1 * j)
+        else:             # salt and pepper
+            cyl(d, "CT_TileWhite", ox, oy, tz, tz + 0.07, 0.02, 6)
+            cyl(d, "CT_Frame", ox + 0.05, oy, tz, tz + 0.07, 0.02, 6)
+    # ---- coat stand at the stair exit
+    hp = P(3.1, 246, zf)
+    kit.hat_stand(B, hp[0], hp[1], zf, 0.0)
+    kit.sandwich_board(B, *P(3.6, 270.0, zf)[:2], zf, 0.0, name="menu_1") if False else None
+    # ---- ice-cream counter: cones in stands behind the tubs, a stack of cups
+    a_i = 300
+    ic = P(8.6, a_i, zf)
+    ywi = math.radians(yaw_to(ic, (CX, CY)))
+    fx, fy = math.sin(ywi), -math.cos(ywi)
+    tx, ty = math.cos(ywi), math.sin(ywi)
+    for u in (-0.55, 0.55):
+        cx_, cy_ = ic[0] + tx * u - fx * 0.22, ic[1] + ty * u - fy * 0.22
+        cyl(d, "CT_Steel", cx_, cy_, top, top + 0.03, 0.1, 8)
+        for j in range(5):
+            ang_ = 2 * math.pi * j / 5
+            qx, qy = cx_ + 0.045 * math.cos(ang_), cy_ + 0.045 * math.sin(ang_)
+            cyl(d, "CT_WoodLight", qx, qy, top + 0.03, top + 0.26, 0.012, 5, r1=0.035)
+    for j in range(5):
+        cyl(d, "CT_TileWhite", ic[0] + tx * 0.0 - fx * 0.2, ic[1] + ty * 0.0 - fy * 0.2, top + 0.02 * j, top + 0.02 * j + 0.04, 0.04, 6, r1=0.05, top=False)
+    # ---- the serving hatch to the kitchen (the gap in the back-bar partition): a pass shelf, plates, a bell
+    h = P(7.95, 90, zf)
+    rbox(d, "CT_Steel", h[0], h[1], zf + 1.02, zf + 1.06, 0.55, 0.2, 0.0)
+    for dx in (-0.55, 0.55):
+        rbox(d, "CT_Steel", h[0] + dx, h[1], zf, zf + 1.02, 0.02, 0.02, 0.0)
+    kit.plates(B, h[0] - 0.25, h[1], zf + 1.06, 0.0, n=3)
+    cyl(d, "CT_Brass", h[0] + 0.3, h[1] - 0.05, zf + 1.06, zf + 1.09, 0.045, 7, r1=0.01)
+    cyl(d, "CT_Brass", h[0] + 0.3, h[1] - 0.05, zf + 1.09, zf + 1.1, 0.01, 4)
+    B.thing("kitchen_hatch", "counter", (h[0] + 0.1, h[1], zf + 1.15), 0.0, role="cook", service="talk")
+    hs = P(7.3, 90, zf)
+    B.spot("hatch", "stand", (hs[0], hs[1], zf), yaw_to(hs, (CX, CY + 9.0)))
+

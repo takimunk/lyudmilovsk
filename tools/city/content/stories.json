@@ -24,8 +24,8 @@
   "read_poetry_sale": {"like": "read_misc", "lines": "city.read.poetry_sale"},
 
   "look_rules_library": {"like": "look_rules", "lines": ["city.look.rules.*", "city.reg.library.*"], "target": "look_rules", "minutes": 4},
-  "look_club_cog": {"like": "look_club", "lines": ["city.look.club.*", "city.reg.cog.*"], "target": "look_club", "minutes": 4},
-  "look_prices_tarelka": {"like": "look_prices", "lines": ["city.look.prices.*", "city.reg.tarelka.*"], "target": "look_prices", "minutes": 4},
+  "look_club_cog": {"like": "look_club", "lines": ["city.look.club.*", "city.reg.cog.*", {"k": "city.fest.club.1", "festival": "any"}, {"k": "city.fest.club.2", "festival": "lantern_night"}], "target": "look_club", "minutes": 4},
+  "look_prices_tarelka": {"like": "look_prices", "lines": ["city.look.prices.*", "city.reg.tarelka.*", {"k": "city.fest.prices.1", "festival": "any"}], "target": "look_prices", "minutes": 4},
   "look_rules_market": {"like": "look_rules", "lines": ["city.look.rules.*", "city.reg.market.*"], "target": "look_rules", "minutes": 4},
   "look_lost_store": {"like": "look_lost", "lines": ["city.look.lost.*", "city.reg.store.*"], "target": "look_lost", "minutes": 4},
 

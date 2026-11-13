@@ -108,14 +108,30 @@ rental, souvenirs, a dumpling house, a cheburek house, a beer bar). Each is now 
   umbrella). Still open: the notices cycle, they don't change by date (needs the game to pick lines by day); the other
   public buildings; the lighthouse keepers' room has its own lines but no quest
 - [ ] Staff talk: each counter's staff has greetings and three topics (voice pinned per the voice rule)
-- [ ] Festival variants of interiors (New Year tree in the store, lanterns in the café) tied to `ULyudFestivalSubsystem`
-- [ ] Collections: library stamps, cinema ticket stubs, chess opponents beaten, records heard on the jukebox
+- [~] Festival variants of interiors (New Year tree in the store, lanterns in the café) tied to `ULyudFestivalSubsystem`.
+  2026-11-13: lines by holiday (`"festival": "any" | "none" | <id>`) and by weather (`"weather": "rain"...`) in the model,
+  citysim, interiors.py and the docs; holiday notices on 13 public boards and counters (club, cinema, prices, school wall
+  newspaper, clinic, lost and found, timetable, counters, cashier, cloakroom, tickets; New Year, lantern night and sea
+  festival ones), rain and snow lines at the cloakrooms and counters. Still open: dressing (no geometry), the building agents'
+  own boards
+- [~] Collections (2026-11-13): stamps in the model (`collect` on an act, a line or a thing; `have`/`count` line conditions;
+  saved), the HUD note "3 of 12", the page `lyud.City.Collections`, developer grant/clear; four sets: library shelf topics
+  (15), films at «Рассвет» (its programme), jukebox records, bus-stop kiosks (6). Still open: cinema ticket stubs as items,
+  chess opponents beaten (needs a chess result), a reward for a complete set, a page in the diary
+
+- [~] Townsfolk use the things (2026-11-13): `FindFreeThing`, `ClaimThing`/`ReleaseThing`, `GetThingsOfPlot` on
+  `ULyudCityThings` (docs "API for townsfolk"); the hero is refused a held seat. The people's life side is the npc-manners
+  thread's
+- [x] Side quests from several content files (`quests` in any content file, `x_<building>.json`), 2026-11-13
 
 ## P5: quality passes that never end
 
 - [ ] Unique wall art per building from the atlas (no picture repeated inside one room)
 - [ ] Room sounds (reverb by room size, clock ticks, a radio behind a wall, the store's tannoy)
-- [ ] Night state of public rooms (closed: chairs on tables, a single lamp, the cleaner at work 7-10)
+- [~] Night state of public rooms (closed: chairs on tables, a single lamp, the cleaner at work 7-10). 2026-11-13: by data
+  (`closed` on a rule or an act, `closed_by` per plot, type or plot kind): the café, both clubs, the library, the market
+  and the store say what is closed instead of refusing (149 things); still open: geometry (chairs really on the tables), the
+  single lamp, the cleaner
 - [ ] Seasonal dressing (wet umbrellas by doors on rain days, coats on racks in winter)
 - [ ] Townsfolk use every new seat, table and counter (spots follow the furniture)
 - [ ] New goods with their own icons (needs the paid icon generation to be approved): stationery, toys, records,

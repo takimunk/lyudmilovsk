@@ -376,5 +376,109 @@
   "P-FAIR/fair_board": {
    "act": "fx_fair_board"
   }
- }
+ },
+ "quests": [
+  {
+   "id": "fair_record",
+   "kind": "side",
+   "start_on": {
+    "event": "visit",
+    "target": "P-FAIR"
+   },
+   "stages": [
+    {
+     "id": "record",
+     "objectives": [
+      {
+       "id": "read",
+       "event": "do",
+       "target": "fx_strongman_record"
+      }
+     ]
+    },
+    {
+     "id": "hit",
+     "objectives": [
+      {
+       "id": "swing",
+       "event": "do",
+       "target": "fx_strongman_hit"
+      }
+     ]
+    },
+    {
+     "id": "photo",
+     "objectives": [
+      {
+       "id": "pose",
+       "event": "do",
+       "target": "fx_photo_pose"
+      }
+     ],
+     "reward": {
+      "items": {
+       "badge": 1
+      },
+      "rubles": 20
+     }
+    }
+   ]
+  },
+  {
+   "id": "fair_sandal",
+   "kind": "side",
+   "start_on": {
+    "event": "visit",
+    "target": "P-FAIR"
+   },
+   "stages": [
+    {
+     "id": "notice",
+     "objectives": [
+      {
+       "id": "read",
+       "event": "do",
+       "target": "look_fair"
+      }
+     ]
+    },
+    {
+     "id": "fortune",
+     "objectives": [
+      {
+       "id": "ask",
+       "event": "do",
+       "target": "fx_fortune"
+      }
+     ]
+    },
+    {
+     "id": "find",
+     "objectives": [
+      {
+       "id": "look",
+       "event": "do",
+       "target": "fx_sandal"
+      }
+     ]
+    },
+    {
+     "id": "basket",
+     "objectives": [
+      {
+       "id": "put",
+       "event": "do",
+       "target": "fx_lost_basket"
+      }
+     ],
+     "reward": {
+      "items": {
+       "candy": 2
+      },
+      "rubles": 15
+     }
+    }
+   ]
+  }
+ ]
 }

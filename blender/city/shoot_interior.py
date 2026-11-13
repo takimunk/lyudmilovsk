@@ -17,6 +17,7 @@ import sys
 
 import bpy
 from mathutils import Vector
+from mathutils.bvhtree import BVHTree
 
 HERE = os.path.dirname(os.path.abspath(__file__))
 sys.path.insert(0, HERE)
@@ -44,8 +45,51 @@ def look_dir(yaw, pitch=0.0):
     return Vector((math.sin(a) * math.cos(p), -math.cos(a) * math.cos(p), math.sin(p)))
 
 
+def shell_tree(B):
+    """BVH of the building's shell mesh (walls, floors, ceilings and the hidden collision boxes) for free-space tests."""
+    return BVHTree.FromPolygons([tuple(v) for v in B.m.verts], [tuple(f[1]) for f in B.m.faces])
+
+
+def _hit_dist(tree, o, d, maxd):
+    h = tree.ray_cast(o, d, maxd)
+    return h[3] if h[0] is not None else None
+
+
+def free_eye(tree, spot, eye, name=""):
+    """Pull the camera `eye` (looking back at `spot`) in so it stays in free space: the segment spot -> eye is
+    cast against the shell, the camera stops 0.3 m before the first hit (never closer than 0.8 m to the spot).
+    Returns the eye, or None when it is still enclosed (a wall / furniture right around it)."""
+    dv = eye - spot
+    dist = dv.length
+    if dist < 1e-6:
+        return None
+    d = dv / dist
+    hd = _hit_dist(tree, spot, d, dist + 0.3)
+    note = ""
+    if hd is not None and hd < dist + 0.3:
+        new = max(0.8, hd - 0.3)
+        if new < dist:
+            note = "pulled in %.1f -> %.1f m" % (dist, new)
+            eye, dist = spot + d * new, new
+    # still enclosed: walls within 0.35 m on every side horizontally, or no way out of 1 m anywhere
+    free = []
+    for k in range(8):
+        a = k * math.pi / 4
+        hdist = _hit_dist(tree, eye, Vector((math.cos(a), math.sin(a), 0.0)), 1.0)
+        free.append(hdist if hdist is not None else 9.0)
+    inside = _hit_dist(tree, eye, Vector((0, 0, 1)), 0.2) is not None
+    if max(free) < 0.9 or sum(1 for t in free if t < 0.25) >= 5 or inside:
+        print("NOTE camera %s skipped: eye (%.1f, %.1f, %.1f) is enclosed%s" % (name, eye.x, eye.y, eye.z,
+                                                                                 "; " + note if note else ""))
+        return None
+    if note:
+        print("NOTE camera %s adjusted: %s" % (name, note))
+    return eye
+
+
 def auto_cams(B, n):
     cams = []
+    tree = shell_tree(B)
     order = {"counter": 0, "work": 1, "table": 2, "stand": 3, "seat": 4, "stall": 5, "view": 6, "bench": 7}
     spots = sorted(B.spots, key=lambda s: order.get(s["kind"], 9))
     picked = []
@@ -53,9 +97,12 @@ def auto_cams(B, n):
         p = s["pos"]
         if any(math.dist(p, q) < 6.0 for q in picked):
             continue
-        picked.append(p)
         d = look_dir(s.get("yaw", 0.0))
-        eye = Vector((p[0], p[1], p[2] + 1.6)) + d * 2.5        # stand where the spot's user looks, look back at it
+        target = Vector((p[0], p[1], p[2] + 1.6))
+        eye = free_eye(tree, target, target + d * 2.5, s["id"])      # stand where the spot's user looks
+        if eye is None:
+            continue
+        picked.append(p)
         yaw = (s.get("yaw", 0.0) + 180.0) % 360.0
         cams.append((eye.x, eye.y, eye.z, yaw, -8.0, s["id"]))
         if len(cams) >= n:
@@ -65,7 +112,12 @@ def auto_cams(B, n):
             break
         d = look_dir(e["yaw"])
         p = Vector(e["pos"]) - d * 1.5
-        cams.append((p.x, p.y, p.z + 1.6, (e["yaw"] + 180.0) % 360.0, -5.0, "door_" + e["id"]))
+        eye = Vector((p.x, p.y, p.z + 1.6))
+        tgt = Vector((e["pos"][0], e["pos"][1], e["pos"][2] + 1.6))
+        eye = free_eye(tree, tgt, eye, "door_" + e["id"])
+        if eye is None:
+            continue
+        cams.append((eye.x, eye.y, eye.z, (e["yaw"] + 180.0) % 360.0, -5.0, "door_" + e["id"]))
     return cams
 
 

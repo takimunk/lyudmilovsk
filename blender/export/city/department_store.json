@@ -451,9 +451,192 @@
     4.9
    ],
    "yaw": 180.0
+  },
+  {
+   "id": "g_window_dresser",
+   "kind": "work",
+   "pos": [
+    -9.0,
+    2.95,
+    0.03
+   ],
+   "yaw": 0.0
+  },
+  {
+   "id": "g_window_watch",
+   "kind": "stand",
+   "pos": [
+    -8.8,
+    4.6,
+    0.03
+   ],
+   "yaw": 0.0
+  },
+  {
+   "id": "g_delivery_queue_1",
+   "kind": "stand",
+   "pos": [
+    -12.0,
+    10.0,
+    0.03
+   ],
+   "yaw": 180.0
+  },
+  {
+   "id": "g_delivery_queue_2",
+   "kind": "stand",
+   "pos": [
+    -12.0,
+    9.0,
+    0.03
+   ],
+   "yaw": 180.0
+  },
+  {
+   "id": "g_delivery_queue_3",
+   "kind": "stand",
+   "pos": [
+    -12.0,
+    8.0,
+    0.03
+   ],
+   "yaw": 180.0
+  },
+  {
+   "id": "g_cloak_wait",
+   "kind": "stand",
+   "pos": [
+    6.4,
+    24.6,
+    0.03
+   ],
+   "yaw": 180.0
+  },
+  {
+   "id": "g_toy_look",
+   "kind": "stand",
+   "pos": [
+    14.9,
+    24.0,
+    0.03
+   ],
+   "yaw": 270.0
+  },
+  {
+   "id": "f1_fitting_wait",
+   "kind": "stand",
+   "pos": [
+    -14.44,
+    17.2,
+    4.9
+   ],
+   "yaw": 270.0
+  },
+  {
+   "id": "f1_booth_listener",
+   "kind": "seat",
+   "pos": [
+    -16.95,
+    7.1,
+    4.9
+   ],
+   "yaw": 270.0
+  },
+  {
+   "id": "f1_lost_desk",
+   "kind": "counter",
+   "pos": [
+    8.6,
+    8.7,
+    4.9
+   ],
+   "yaw": 180.0
+  },
+  {
+   "id": "f1_lost_work",
+   "kind": "work",
+   "pos": [
+    8.6,
+    10.4,
+    4.9
+   ],
+   "yaw": 0.0
+  },
+  {
+   "id": "g_stair_bench_w",
+   "kind": "bench",
+   "pos": [
+    -3.3,
+    22.6,
+    0.03
+   ],
+   "yaw": 90.0
+  },
+  {
+   "id": "g_stair_bench_e",
+   "kind": "bench",
+   "pos": [
+    3.3,
+    22.6,
+    0.03
+   ],
+   "yaw": 270.0
+  },
+  {
+   "id": "f1_stair_bench_w",
+   "kind": "bench",
+   "pos": [
+    -3.3,
+    22.6,
+    4.9
+   ],
+   "yaw": 90.0
+  },
+  {
+   "id": "f1_stair_bench_e",
+   "kind": "bench",
+   "pos": [
+    3.3,
+    22.6,
+    4.9
+   ],
+   "yaw": 270.0
   }
  ],
  "lamps": [
+  {
+   "pos": [
+    -16.14,
+    17.5,
+    6.85
+   ],
+   "lumens": 400,
+   "colour": "#FFD2A0",
+   "kind": "public",
+   "radius": 2.4
+  },
+  {
+   "pos": [
+    -17.2,
+    7.1,
+    6.8
+   ],
+   "lumens": 450,
+   "colour": "#FFC890",
+   "kind": "public",
+   "radius": 2.6
+  },
+  {
+   "pos": [
+    9.55,
+    9.72,
+    6.28
+   ],
+   "lumens": 180,
+   "colour": "#FFD9A8",
+   "kind": "public",
+   "radius": 3.0
+  },
   {
    "pos": [
     -18.4,
@@ -1644,6 +1827,358 @@
    "props": {
     "what": "photo_booth"
    }
+  },
+  {
+   "id": "g_window_display",
+   "kind": "board",
+   "pos": [
+    -9.0,
+    2.45,
+    1.28
+   ],
+   "yaw": 180.0,
+   "props": {
+    "topic": "window"
+   }
+  },
+  {
+   "id": "g_chalk_board",
+   "kind": "board",
+   "pos": [
+    -8.3,
+    10.65,
+    1.23
+   ],
+   "yaw": 0.0,
+   "props": {
+    "topic": "queue"
+   }
+  },
+  {
+   "id": "g_delivery_pile",
+   "kind": "board",
+   "pos": [
+    -7.6,
+    12.95,
+    0.83
+   ],
+   "yaw": 180.0,
+   "props": {
+    "topic": "delivery"
+   }
+  },
+  {
+   "id": "g_umbrella_stand",
+   "kind": "board",
+   "pos": [
+    9.3,
+    26.2,
+    0.93
+   ],
+   "yaw": 0.0,
+   "props": {
+    "topic": "umbrellas"
+   }
+  },
+  {
+   "id": "g_cloak_hooks",
+   "kind": "board",
+   "pos": [
+    5.0,
+    28.6,
+    1.33
+   ],
+   "yaw": 0.0,
+   "props": {
+    "topic": "cloak"
+   }
+  },
+  {
+   "id": "g_tannoy",
+   "kind": "machine",
+   "pos": [
+    -6.4,
+    29.0,
+    2.48
+   ],
+   "yaw": 0.0,
+   "props": {
+    "what": "tannoy"
+   }
+  },
+  {
+   "id": "g_shoe_mirror",
+   "kind": "board",
+   "pos": [
+    -22.0,
+    9.45,
+    0.93
+   ],
+   "yaw": 90.0,
+   "props": {
+    "topic": "mirror"
+   }
+  },
+  {
+   "id": "g_toy_train",
+   "kind": "machine",
+   "pos": [
+    15.8,
+    24.0,
+    0.63
+   ],
+   "yaw": 270.0,
+   "props": {
+    "what": "toy_train"
+   }
+  },
+  {
+   "id": "f1_fitting_room",
+   "kind": "craft",
+   "pos": [
+    -16.04,
+    17.5,
+    6.0
+   ],
+   "yaw": 90.0,
+   "props": {
+    "what": "fitting_room"
+   }
+  },
+  {
+   "id": "f1_fitting_mirror",
+   "kind": "board",
+   "pos": [
+    -16.72,
+    17.5,
+    6.15
+   ],
+   "yaw": 90.0,
+   "props": {
+    "topic": "mirror"
+   }
+  },
+  {
+   "id": "f1_clothes_rail",
+   "kind": "board",
+   "pos": [
+    -20.4,
+    14.1,
+    6.0
+   ],
+   "yaw": 90.0,
+   "props": {
+    "topic": "clothes"
+   }
+  },
+  {
+   "id": "f1_booth_player",
+   "kind": "machine",
+   "pos": [
+    -17.65,
+    6.9,
+    5.72
+   ],
+   "yaw": 90.0,
+   "props": {
+    "what": "record_booth"
+   }
+  },
+  {
+   "id": "f1_booth_stool",
+   "kind": "seat",
+   "pos": [
+    -16.95,
+    7.1,
+    5.35
+   ],
+   "yaw": 270.0,
+   "props": {
+    "height": 0.45
+   }
+  },
+  {
+   "id": "f1_lost_desk",
+   "kind": "counter",
+   "pos": [
+    9.0,
+    9.6,
+    5.95
+   ],
+   "yaw": 0.0,
+   "props": {
+    "service": "lost",
+    "role": "cashier"
+   }
+  },
+  {
+   "id": "f1_lost_mic",
+   "kind": "machine",
+   "pos": [
+    8.4,
+    9.75,
+    6.2
+   ],
+   "yaw": 0.0,
+   "props": {
+    "what": "announce_mic"
+   }
+  },
+  {
+   "id": "f1_lost_shelf",
+   "kind": "shelf",
+   "pos": [
+    8.6,
+    11.3,
+    6.0
+   ],
+   "yaw": 0.0,
+   "props": {
+    "topic": "lost_things"
+   }
+  },
+  {
+   "id": "f1_lost_umbrellas",
+   "kind": "board",
+   "pos": [
+    10.2,
+    9.7,
+    5.7
+   ],
+   "yaw": 0.0,
+   "props": {
+    "topic": "umbrellas"
+   }
+  },
+  {
+   "id": "f1_tannoy",
+   "kind": "machine",
+   "pos": [
+    9.4,
+    29.0,
+    7.35
+   ],
+   "yaw": 0.0,
+   "props": {
+    "what": "tannoy"
+   }
+  },
+  {
+   "id": "f1_cafe_menu",
+   "kind": "board",
+   "pos": [
+    22.0,
+    5.4,
+    7.2
+   ],
+   "yaw": 270.0,
+   "props": {
+    "topic": "cafe_menu"
+   }
+  },
+  {
+   "id": "f1_typewriter",
+   "kind": "craft",
+   "pos": [
+    5.6,
+    15.35,
+    5.95
+   ],
+   "yaw": 0.0,
+   "props": {
+    "what": "typewriter"
+   }
+  },
+  {
+   "id": "f1_island_radio",
+   "kind": "machine",
+   "pos": [
+    -5.8,
+    15.3,
+    6.0
+   ],
+   "yaw": 0.0,
+   "props": {
+    "what": "radio"
+   }
+  },
+  {
+   "id": "g_stair_bench_w",
+   "kind": "seat",
+   "pos": [
+    -3.27,
+    22.6,
+    0.48
+   ],
+   "yaw": 90.0,
+   "props": {
+    "height": 0.45
+   }
+  },
+  {
+   "id": "g_stair_bench_e",
+   "kind": "seat",
+   "pos": [
+    3.27,
+    22.6,
+    0.48
+   ],
+   "yaw": 270.0,
+   "props": {
+    "height": 0.45
+   }
+  },
+  {
+   "id": "f1_stair_bench_w",
+   "kind": "seat",
+   "pos": [
+    -3.27,
+    22.6,
+    5.35
+   ],
+   "yaw": 90.0,
+   "props": {
+    "height": 0.45
+   }
+  },
+  {
+   "id": "f1_stair_bench_e",
+   "kind": "seat",
+   "pos": [
+    3.27,
+    22.6,
+    5.35
+   ],
+   "yaw": 270.0,
+   "props": {
+    "height": 0.45
+   }
+  },
+  {
+   "id": "g_staff_door",
+   "kind": "door",
+   "pos": [
+    -7.5,
+    29.5,
+    1.03
+   ],
+   "yaw": 0.0,
+   "props": {
+    "to": "staff"
+   }
+  },
+  {
+   "id": "g_staff_board",
+   "kind": "board",
+   "pos": [
+    -5.7,
+    29.5,
+    1.48
+   ],
+   "yaw": 0.0,
+   "props": {
+    "topic": "staff"
+   }
   }
  ],
  "flats": [],
@@ -2788,8 +3323,8 @@
   "2 shop halls + roof sign; stair hole at x -1.8..1.8, y 21..27.3; entrances main/west/east"
  ],
  "tris": {
-  "shell": 4138,
-  "detail": 61082,
+  "shell": 4246,
+  "detail": 73245,
   "windows": 216
  }
 }

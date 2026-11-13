@@ -1,0 +1,673 @@
+{
+ "_doc": "Words of tools/city/content/x_p_store.json: the store's window, tannoy, delivery day, cloakroom, fitting room, listening booth, lost-and-found story. Russian is the source.",
+ "city.ps.window.prompt": {
+  "ru": "E — заглянуть в витрину",
+  "en": "E — peek into the window",
+  "ja": "E：ショーウィンドウをのぞく"
+ },
+ "city.ps.tannoy.prompt": {
+  "ru": "E — прислушаться к динамику",
+  "en": "E — listen to the loudspeaker",
+  "ja": "E：スピーカーに耳をすます"
+ },
+ "city.ps.umbrellas.prompt": {
+  "ru": "E — заглянуть в подставку",
+  "en": "E — look into the stand",
+  "ja": "E：傘立てをのぞく"
+ },
+ "city.ps.toy_train.prompt": {
+  "ru": "E — завести паровозик",
+  "en": "E — wind up the little train",
+  "ja": "E：機関車のねじを巻く"
+ },
+ "city.ps.fitting.prompt": {
+  "ru": "E — примерить",
+  "en": "E — try it on",
+  "ja": "E：試着する"
+ },
+ "city.ps.booth.prompt": {
+  "ru": "E — послушать пластинку",
+  "en": "E — listen to a record",
+  "ja": "E：レコードを聴く"
+ },
+ "city.ps.mic.prompt": {
+  "ru": "E — сделать объявление",
+  "en": "E — make an announcement",
+  "ja": "E：館内放送をかける"
+ },
+ "city.ps.typewriter.prompt": {
+  "ru": "E — постучать по клавишам",
+  "en": "E — tap the keys",
+  "ja": "E：キーをたたく"
+ },
+ "city.ps.window.am.1": {
+  "ru": "За стеклом на стремянке стоит женщина с булавками во рту. Она одевает манекен в пальто и то и дело поворачивает его, пока складки не лягут как надо.",
+  "en": "Behind the glass a woman stands on a stepladder with pins in her mouth. She is dressing a dummy in a coat and keeps turning it until the folds fall right.",
+  "ja": "ガラスの向こうで、女の人が口にピンをくわえて脚立に乗っている。マネキンにコートを着せ、ひだがきれいに落ちるまで何度も向きを変えている。"
+ },
+ "city.ps.window.am.2": {
+  "ru": "Рядом стоит второй манекен, пока без головы: ждёт своей очереди. Витрина наполовину пуста. Зимнее уже привезли, осеннее ещё не убрали.",
+  "en": "A second dummy stands next to her, headless for now, waiting its turn. The window is half empty. The winter things have arrived, the autumn ones haven't been taken away yet.",
+  "ja": "隣では二体目のマネキンが、まだ頭のないまま順番を待っている。ウィンドウは半分空っぽ。冬ものは届いたのに、秋ものはまだ片づいていない。"
+ },
+ "city.ps.window.am.3": {
+  "ru": "На полу витрины мелом нарисованы следы: здесь должна стоять нога манекена. Женщина сверяется с ними, как танцор с шагами.",
+  "en": "On the window floor, chalk footprints mark where each dummy's foot belongs. The woman checks them the way a dancer checks steps.",
+  "ja": "ウィンドウの床にチョークで足跡が描いてある。マネキンの足を置く場所だ。女の人は、ダンサーが振り付けを確かめるみたいにそれを見ている。"
+ },
+ "city.ps.window.day.1": {
+  "ru": "Витрина готова. Манекены в одинаковых позах смотрят на площадь поверх прохожих. Табличка скромно сообщает: «Образец. Не продаётся».",
+  "en": "The window is finished. The dummies, all in the same pose, look out over the passers-by at the square. A small card says modestly: \"Display piece. Not for sale.\"",
+  "ja": "ウィンドウは仕上がっている。マネキンたちが同じポーズで、通行人の頭ごしに広場を見ている。小さな札に「見本です。売り物ではありません」。"
+ },
+ "city.ps.window.day.2": {
+  "ru": "С внутренней стороны стекла остались следы мела: так отмечали, где ставить ногу манекену. Теперь их закрывают ботинки.",
+  "en": "On the inside of the glass chalk marks are left, showing where each foot goes. The dummies' shoes cover them now.",
+  "ja": "ガラスの内側にチョークの跡が残っている。マネキンの足を置く位置の印だ。今はその上に靴が乗っている。"
+ },
+ "city.ps.window.day.3": {
+  "ru": "Одно пальто приколото булавкой со стороны спины: спереди сидит идеально, сзади — как повезёт. Витрина честна только с одной стороны.",
+  "en": "One coat is pinned at the back: perfect from the front, a gamble from behind. The window is honest from one side only.",
+  "ja": "コートの一着は背中側をピンで留めてある。前からは完璧、後ろは運しだい。このウィンドウは片側からしか正直じゃない。"
+ },
+ "city.ps.window.umb": {
+  "ru": "Манекен в синем пальто держит жёлтый зонт, как будто тот с утиной ручкой. Приглядевшись, читаю бирку: «Дубликат. На случай, если оригинал опять уйдёт в отдел игрушек».",
+  "en": "The dummy in the blue coat holds a yellow umbrella with what looks like a duck-head handle. Up close I read the tag: \"Duplicate. In case the original goes off to the toy department again.\"",
+  "ja": "青いコートのマネキンが、アヒルの頭の持ち手らしい黄色い傘を持っている。近づいて札を読む。「複製です。本物がまたおもちゃ売り場へ行ってしまったときのために」。"
+ },
+ "city.ps.window.night.1": {
+  "ru": "Витрина горит одна. Манекены глядят на пустую площадь с таким видом, будто и у них по ночам есть о чём подумать.",
+  "en": "The window glows alone. The dummies gaze at the empty square as if they too had something to think over at night.",
+  "ja": "ウィンドウだけが明るい。マネキンたちは人気のない広場を見つめている。夜は彼らにも、考えごとがあるみたいに。"
+ },
+ "city.ps.window.night.2": {
+  "ru": "Лампочка в витрине чуть мигает. Пальто на манекене в этом свете кажется то синим, то серым. Утром его одевают заново.",
+  "en": "The lamp in the window flickers a little. In that light the dummy's coat looks blue, then grey. In the morning it will be dressed all over again.",
+  "ja": "ウィンドウの電球が少しまたたく。その光でマネキンのコートは青にも灰色にも見える。朝になれば、また着せ替えられる。"
+ },
+ "city.ps.chalk.mon": {
+  "ru": "На доске мелом: «ПОНЕДЕЛЬНИК — УЧЁТ. Если не нашли нужное, значит оно не пропало, а учтено».",
+  "en": "In chalk on the board: \"MONDAY IS STOCKTAKING. If you can't find it, it isn't missing, it's accounted for.\"",
+  "ja": "黒板にチョークで。「月曜は棚卸しです。見つからないものは、なくなったのではなく、数えられました」。"
+ },
+ "city.ps.chalk.tue.1": {
+  "ru": "«ВТОРНИК — ЗАВОЗ МОЛОЧНОГО. Привозят к десяти. Очередь — отсюда, вдоль красной дорожки. В руки — не больше двух».",
+  "en": "\"TUESDAY IS THE DAIRY DELIVERY. The van arrives at ten. Queue starts here, along the red runner. Two per person.\"",
+  "ja": "「火曜は乳製品の入荷日。トラックは十時に来ます。列はここから、赤い絨毯に沿って。お一人さま二つまで」。"
+ },
+ "city.ps.chalk.tue.2": {
+  "ru": "Ниже мелом, другим почерком, мельче: «Кефира хватит на всех, кто стоит. Не нервничайте. Кефир нервных не любит».",
+  "en": "Lower down, in another hand and smaller: \"There is enough kefir for everyone who is standing. Don't fret. Kefir doesn't like the fretful.\"",
+  "ja": "その下に、別の筆跡で小さく。「並んでいる人全員の分のケフィアがあります。あわてないで。ケフィアはせっかちが苦手です」。"
+ },
+ "city.ps.chalk.mid": {
+  "ru": "«СРЕДА, ЧЕТВЕРГ — самые тихие дни. Выбирайте не спеша, продавщицы не кусаются, а если кусаются — то вежливо».",
+  "en": "\"WEDNESDAY AND THURSDAY are the quietest days. Choose in your own time; the shop assistants don't bite, and if they do, they do it politely.\"",
+  "ja": "「水・木はいちばん静かな日。ゆっくり選んでください。店員はかみつきません。かみついても、礼儀正しく」。"
+ },
+ "city.ps.chalk.fri.1": {
+  "ru": "«ПЯТНИЦА — ЗАВОЗ РЫБЫ И СЫРА. Брать сразу, потом скажут, что кончилось. Рыба — в отделе бакалеи, запах — везде».",
+  "en": "\"FRIDAY IS FISH AND CHEESE DELIVERY. Buy at once or they'll say it's gone. The fish is at the grocery counter, the smell is everywhere.\"",
+  "ja": "「金曜は魚とチーズの入荷日。すぐ買わないと、売り切れと言われます。魚は食料品売り場、においは売り場じゅう」。"
+ },
+ "city.ps.chalk.fri.2": {
+  "ru": "Под этим кто-то мелом написал: «Сыр — первым делом, рыба — по настроению». Продавщица не стирает: говорит, хороший совет.",
+  "en": "Under it someone has chalked: \"Cheese first, fish as you feel.\" The assistant leaves it up: she says it's good advice.",
+  "ja": "その下に誰かが書いている。「まずチーズ、魚は気分で」。店員は消さない。いい助言だからだそうだ。"
+ },
+ "city.ps.chalk.sat": {
+  "ru": "«СУББОТА — завоза нет. Берём что есть. Что есть — смотрите на полках». Рядом нарисован улыбающийся кефир.",
+  "en": "\"SATURDAY — no delivery. We take what there is. What there is, see the shelves.\" Beside it, a smiling bottle of kefir is drawn.",
+  "ja": "「土曜は入荷なし。あるものをどうぞ。何があるかは棚をご覧ください」。横に、笑っているケフィアのびんが描いてある。"
+ },
+ "city.ps.chalk.sun": {
+  "ru": "«ВОСКРЕСЕНЬЕ — продавцов нет, касса работает. Смотреть можно, хлеб — завтра». Буквы выводила явно кассирша: очень ровные.",
+  "en": "\"SUNDAY — no shop assistants, the till is open. Looking is allowed, bread is tomorrow.\" The lettering is clearly by the cashier: very even.",
+  "ja": "「日曜は店員がお休みです。レジは開いています。見るのは自由、パンは明日」。字はとてもきれいで、レジ係が書いたにちがいない。"
+ },
+ "city.ps.delivery.am.1": {
+  "ru": "У стены громоздятся ящики с молоком, бутылки звякают в гнёздах. Грузчик в клеёнчатом фартуке считает вслух, продавщица сверяет по бумажке.",
+  "en": "Crates of milk are stacked against the wall, the bottles clinking in their slots. A porter in an oilcloth apron counts aloud while the assistant checks it against a slip.",
+  "ja": "壁ぎわに牛乳の箱が積み上がり、びんが仕切りの中でカチャカチャ鳴る。前掛け姿の荷役の人が声に出して数え、店員が伝票と照らし合わせている。"
+ },
+ "city.ps.delivery.am.2": {
+  "ru": "Очередь уже вытянулась вдоль красной дорожки, хотя товар ещё не выставлен. Люди смотрят на ящики с уважением, как на гостей.",
+  "en": "The queue already stretches along the red runner, though nothing is out on the shelves yet. People look at the crates with respect, like at guests.",
+  "ja": "商品はまだ並んでいないのに、赤い絨毯に沿って列がのびている。みんな、お客さまを見るような目で箱を見つめている。"
+ },
+ "city.ps.delivery.pm.1": {
+  "ru": "Ящики пусты, остались решётки и запах кефира. Грузчик ушёл, оставив на решётке аккуратно сложенный фартук: завтра ему опять.",
+  "en": "The crates are empty; what's left are the slats and the smell of kefir. The porter has gone, leaving his apron folded neatly on a slat: back again tomorrow.",
+  "ja": "箱は空っぽで、仕切りとケフィアのにおいだけが残っている。荷役の人は前掛けをきちんとたたんで仕切りの上に置いて帰った。明日もまた。"
+ },
+ "city.ps.delivery.quiet.1": {
+  "ru": "Ручная тележка у стены стоит без дела. Ящики на ней пустые, но стенки ещё хранят холодок, как после зимы.",
+  "en": "The hand-truck by the wall stands idle. The crates on it are empty, but their sides still hold a coolness, as after winter.",
+  "ja": "壁ぎわの手押し車は使われないまま。載っている箱は空だが、側面にはまだ冬の名残のような冷たさがある。"
+ },
+ "city.ps.delivery.quiet.2": {
+  "ru": "На поддоне мелом написано: «Не трогать — сегодня не наш день». Поддон слушается и никого не трогает.",
+  "en": "On the pallet in chalk: \"Don't touch, it's not our day.\" The pallet obeys and touches nobody.",
+  "ja": "パレットにチョークで「さわらないで。今日は入荷日ではありません」。パレットはおとなしく、誰にもさわらない。"
+ },
+ "city.ps.delivery.pallet": {
+  "ru": "Деревянные поддоны сложены у стены стопкой; от них пахнет сырой доской и немного молоком.",
+  "en": "Wooden pallets are stacked by the wall; they smell of damp planks and a little of milk.",
+  "ja": "木のパレットが壁ぎわに積んである。湿った板と、ほんの少しミルクのにおいがする。"
+ },
+ "city.ps.tannoy.open.1": {
+  "ru": "Динамик щёлкнул, и приятный женский голос поздоровался со всем универмагом: «Доброе утро, дорогие покупатели! Универмаг открыт. Приятных покупок и хорошего дня».",
+  "en": "The loudspeaker clicks and a pleasant woman's voice greets the whole store: \"Good morning, dear customers! The store is open. Happy shopping and a good day.\"",
+  "ja": "スピーカーがカチッと鳴り、感じのいい女の人の声が店じゅうにあいさつする。「おはようございます、お客さま。開店いたしました。どうぞごゆっくり、よい一日を」。"
+ },
+ "city.ps.tannoy.morning.1": {
+  "ru": "«Внимание! В отделе тканей поступил ситец в цветочек. Отрезы мерим от плеча до кончиков пальцев. Линейка у продавщицы, но совесть у каждого своя».",
+  "en": "\"Attention! Flowered cotton has arrived in the fabrics department. Lengths are measured from the shoulder to the fingertips. The ruler is with the assistant, but each of us has our own conscience.\"",
+  "ja": "「お知らせです。生地売り場に花柄のさらしが入荷しました。丈は肩から指先まではかります。ものさしは店員が持っていますが、良心はお一人ずつお持ちです」。"
+ },
+ "city.ps.tannoy.morning.2": {
+  "ru": "«В буфете на втором этаже горячие пирожки. Пирожки ждут, но не слишком долго».",
+  "en": "\"Hot pies are available in the café upstairs. The pies are waiting, but not for very long.\"",
+  "ja": "「二階の喫茶コーナーに、焼きたてのピロシキがあります。ピロシキはお待ちしていますが、あまり長くは待てません」。"
+ },
+ "city.ps.tannoy.lunch.1": {
+  "ru": "«Дорогие покупатели! В отделе обуви перерыв пятнадцать минут. Ботинки никуда не уйдут, мы за ними присмотрим».",
+  "en": "\"Dear customers! The shoe department is closed for a fifteen-minute break. The shoes won't go anywhere, we'll keep an eye on them.\"",
+  "ja": "「お客さまにお知らせです。靴売り場は十五分間の休憩に入ります。靴はどこへも行きません、私たちが見ています」。"
+ },
+ "city.ps.tannoy.lost.1": {
+  "ru": "«Бюро находок, на втором этаже: найдена варежка, правая, красная в полоску. Левая, видимо, осталась у вас».",
+  "en": "\"Lost and found, upstairs: a mitten has been found, right hand, red with stripes. The left one, apparently, is still with you.\"",
+  "ja": "「二階のお忘れ物係より。右手用の赤いしま模様の手ぶくろが届いています。左手用は、おそらくお手元にあります」。"
+ },
+ "city.ps.tannoy.closing.1": {
+  "ru": "«Через час универмаг закрывается. Просим покупателей не торопиться, но и не засиживаться».",
+  "en": "\"The store closes in an hour. We ask customers not to rush, but not to linger either.\"",
+  "ja": "「閉店まであと一時間です。お急ぎにならず、かといって長居もなさらないよう、お願いいたします」。"
+ },
+ "city.ps.tannoy.night.1": {
+  "ru": "Динамик молчит. Иногда в нём что-то потрескивает: наверное, универмаг ночью слушает сам себя.",
+  "en": "The loudspeaker is silent. Now and then it crackles, as if the store were listening to itself at night.",
+  "ja": "スピーカーは黙っている。ときどきパチッと鳴る。夜の百貨店が、自分の音に耳をすましているみたいに。"
+ },
+ "city.ps.tannoy.tue": {
+  "ru": "«Молочный отдел принимает завоз. Просим не волноваться: кефира хватит на всех, кто стоит в очереди, и даже на тех, кто думает встать».",
+  "en": "\"The dairy counter is receiving its delivery. Please don't worry: there is enough kefir for everyone in the queue, and even for those who are thinking of joining it.\"",
+  "ja": "「乳製品売り場で入荷中です。ご安心ください。ケフィアは列に並ぶ方全員に、並ぼうかと考えている方にも行きわたります」。"
+ },
+ "city.ps.tannoy.sat": {
+  "ru": "«Сегодня суббота, в буфете на втором этаже есть мороженое. Просим мороженое не оставлять в кармане».",
+  "en": "\"It's Saturday and the café upstairs has ice cream. Please don't leave ice cream in your pocket.\"",
+  "ja": "「本日は土曜日、二階の喫茶コーナーにアイスクリームがあります。アイスをポケットに入れたままになさらないでください」。"
+ },
+ "city.ps.tannoy.umb1": {
+  "ru": "«Просьба к владелице жёлтого зонта с утиной ручкой: зонт найден в отделе пластинок и ждёт вас у бюро находок. Ждёт терпеливо».",
+  "en": "\"A request to the owner of the yellow umbrella with the duck-head handle: your umbrella was found in the records department and is waiting for you at the lost and found. It is waiting patiently.\"",
+  "ja": "「アヒルの持ち手の黄色い傘の持ち主さまへ。傘はレコード売り場で見つかり、お忘れ物係でお待ちです。辛抱強くお待ちです」。"
+ },
+ "city.ps.tannoy.umb2": {
+  "ru": "Голос диктора читает медленно, как просили покупатели: «Лидия Сергеевна. Лидия Сергеевна. Ваш зонт нашёлся. Повторяю: Лидия Сергеевна, ваш зонт нашёлся».",
+  "en": "The announcer reads slowly, as customers asked: \"Lidiya Sergeyevna. Lidiya Sergeyevna. Your umbrella has been found. I repeat: Lidiya Sergeyevna, your umbrella has been found.\"",
+  "ja": "アナウンサーは、お客さまの要望どおりゆっくり読む。「リディヤ・セルゲーエヴナさま。リディヤ・セルゲーエヴナさま。お傘が見つかりました。繰り返します、リディヤ・セルゲーエヴナさま、お傘が見つかりました」。"
+ },
+ "city.ps.tannoy.umb3": {
+  "ru": "«Объявление отменяется. Жёлтый зонт с утиной ручкой выдан Лидии Сергеевне. Универмаг благодарит всех, кто помогал искать, а также зонт».",
+  "en": "\"The announcement is cancelled. The yellow umbrella with the duck-head handle has been returned to Lidiya Sergeyevna. The store thanks everyone who helped to search, and the umbrella too.\"",
+  "ja": "「先ほどのお知らせは取り消します。アヒルの持ち手の黄色い傘は、リディヤ・セルゲーエヴナさまにお返ししました。捜索にご協力くださった皆さま、そして傘にも、お礼を申し上げます」。"
+ },
+ "city.ps.umbstand.base.1": {
+  "ru": "В подставке у гардероба три чёрных зонта, один клетчатый и палка с резиновым наконечником. У каждого на ручке номерок. Всё чинно.",
+  "en": "In the stand by the cloakroom: three black umbrellas, one checked, and a walking stick with a rubber tip. Each has a token tied to the handle. All very orderly.",
+  "ja": "クロークの傘立てには、黒い傘が三本、チェックの傘が一本、ゴムのついたステッキが一本。どれも持ち手に番号札がついていて、きちんとしている。"
+ },
+ "city.ps.umbstand.base.2": {
+  "ru": "Гардеробщица говорит, что по зонтам видно погоду заранее: если они стоят сухие — к вечеру придётся одалживать.",
+  "en": "The cloakroom attendant says you can tell the weather from the umbrellas: if they stand dry, by evening you'll be borrowing one.",
+  "ja": "クロークの係の人は、傘を見れば天気がわかるという。傘が乾いたまま立っていたら、夕方には誰かに借りることになる、と。"
+ },
+ "city.ps.umbstand.y1": {
+  "ru": "Среди зонтов жёлтый, с ручкой-утиной головой. К ручке привязана бирка: «Найден. Хозяйку ждём». Утка смотрит на меня с достоинством.",
+  "en": "Among the umbrellas there's a yellow one with a duck-head handle. A tag on the handle reads: \"Found. Awaiting owner.\" The duck looks at me with dignity.",
+  "ja": "傘の中に、アヒルの頭の持ち手がついた黄色いのがある。札には「発見。持ち主をお待ちしています」。アヒルは堂々とこちらを見ている。"
+ },
+ "city.ps.umbstand.y2": {
+  "ru": "Жёлтого зонта в подставке нет. На крючке рядом — пустая бирка, а на ней карандашом: «Ушёл по делам».",
+  "en": "The yellow umbrella isn't in the stand. On the hook beside it hangs an empty tag, and on it in pencil: \"Gone on business.\"",
+  "ja": "黄色い傘は傘立てにない。隣のフックには空っぽの札が下がり、鉛筆で「用事で外出中」と書いてある。"
+ },
+ "city.ps.umbstand.y3": {
+  "ru": "К подставке приколота записка: «Жёлтый зонт у бюро находок, не сюда. Он занят: ждёт Лидию Сергеевну». Подпись: гардеробщица.",
+  "en": "A note is pinned to the stand: \"The yellow umbrella is at the lost and found, not here. It is busy: waiting for Lidiya Sergeyevna.\" Signed: the cloakroom attendant.",
+  "ja": "傘立てにメモがとめてある。「黄色い傘はここではなくお忘れ物係にあります。取りこみ中です。リディヤ・セルゲーエヴナさまをお待ちしています」。署名はクロークの係。"
+ },
+ "city.ps.umbstand.y4": {
+  "ru": "Зонт на месте, чисто вытертый. Рядом записка: «Лидии Сергеевне. Возвращён в двенадцать по радио. Просим не терять до следующего вторника».",
+  "en": "The umbrella is back in the stand, wiped clean. Beside it a note: \"For Lidiya Sergeyevna. Returned at noon over the radio. Please don't lose it until next Tuesday.\"",
+  "ja": "傘は傘立てに戻り、きれいにふいてある。そばにメモ。「リディヤ・セルゲーエヴナさまへ。正午の放送でお返ししました。次の火曜日まではなくさないでください」。"
+ },
+ "city.ps.hooks.am": {
+  "ru": "Крючки почти пусты: рано. На одном висит чьё-то забытое с вечера кашне; гардеробщица делает вид, что его там нет.",
+  "en": "The hooks are almost empty: it's early. One holds somebody's scarf left over from last night; the attendant pretends it isn't there.",
+  "ja": "フックはほとんど空。まだ朝早い。一つだけ、昨夜からの忘れものらしいマフラーがかかっている。係の人は、ないふりをしている。"
+ },
+ "city.ps.hooks.day": {
+  "ru": "Занята половина крючков: пальто, плащ-болонья, шапка с меховым верхом и детская курточка на самом нижнем, чтобы хозяин дотянулся.",
+  "en": "Half the hooks are taken: coats, a rustling raincoat, a hat with a fur crown, and a child's jacket on the lowest hook so its owner can reach.",
+  "ja": "フックの半分がふさがっている。コート、ガサガサ鳴るレインコート、毛皮のついた帽子、そして持ち主の手がとどくよう一番低いところに子ども用の上着。"
+ },
+ "city.ps.hooks.eve": {
+  "ru": "К вечеру крючки забиты так, что пальто висят по двое. Гардеробщица порхает вдоль ряда, и номерки звякают у неё на запястье, как бубенцы.",
+  "en": "By evening the hooks are so full that coats hang two to a hook. The attendant flits along the row, tokens jingling on her wrist like sleigh bells.",
+  "ja": "夕方になるとフックは満員で、コートが二着ずつ重なってかかっている。係の人が列に沿って飛びまわり、手首の番号札が鈴のように鳴る。"
+ },
+ "city.ps.hooks.night": {
+  "ru": "Пустые крючки чуть покачиваются от сквозняка. Номерки сложены стопкой на прилавке: за ночь все пальто разошлись по домам.",
+  "en": "The empty hooks sway a little in the draught. The tokens are piled on the counter: every coat has gone home for the night.",
+  "ja": "からのフックがすきま風に少し揺れる。番号札はカウンターに積んである。コートはみんな家に帰ったのだ。"
+ },
+ "city.ps.hooks.any": {
+  "ru": "Над каждым крючком цифра. Пальто и номерок живут парами, как две половинки одного билета.",
+  "en": "Over every hook there's a number. A coat and its token live in pairs, like the two halves of one ticket.",
+  "ja": "フックの上にはそれぞれ番号がある。コートと番号札は、一枚の切符の半券みたいに、対になって暮らしている。"
+ },
+ "city.ps.shoemirror.1": {
+  "ru": "Низкое зеркало наклонено так, что видны только ноги. Новые ботинки отражаются в нём ещё новее, а мои собственные идут как будто отдельно от меня.",
+  "en": "The low mirror is tilted to show only feet. New shoes look even newer in it, and my own seem to walk apart from me.",
+  "ja": "低い鏡は、足もとだけが映るように傾けてある。新しい靴は鏡の中でもっと新しく見え、自分の靴は私と別々に歩いているみたいだ。"
+ },
+ "city.ps.shoemirror.2": {
+  "ru": "Я примерил один ботинок. Сел как влитой. Продавщица смотрит, как я хожу туда-сюда в одном, и кивает: «Ходите, ходите. Ботинок должен привыкнуть».",
+  "en": "I tried on one shoe. It fit like a glove. The assistant watches me walk up and down in just the one and nods: \"Go on, walk. The shoe has to get used to you.\"",
+  "ja": "片方の靴を試しにはいてみた。ぴったりだ。店員は、私が片足だけで行ったり来たりするのを見てうなずく。「どうぞ、歩いて。靴にも慣れる時間が要りますから」。"
+ },
+ "city.ps.shoemirror.3": {
+  "ru": "В зеркале мои носки не совпадают. Я это знал, но зеркало было вежливее некуда: показало и промолчало.",
+  "en": "In the mirror my socks don't match. I knew that, but the mirror couldn't have been politer: it showed them and kept quiet.",
+  "ja": "鏡に映る靴下は左右が違う。わかってはいたが、鏡はこれ以上ないほど礼儀正しかった。映して、何も言わなかった。"
+ },
+ "city.ps.shoemirror.4": {
+  "ru": "Рядом на коврике стоит ложка для обуви — длинная, как весло. Видно, у кого-то в семье были очень узкие пятки.",
+  "en": "Beside it on the mat stands a shoehorn as long as an oar. Somebody in the family must have had very narrow heels.",
+  "ja": "横のマットに、オールのように長い靴べらが立てかけてある。かかとのとても細い人が家族にいたのだろう。"
+ },
+ "city.ps.train.1": {
+  "ru": "Я повернул ключик на боку паровозика, пока не затрещала пружина. Он побежал по кругу, звякая вагончиками, и ни разу не сошёл с рельсов, хотя я надеялся.",
+  "en": "I turned the key on the little locomotive's side until the spring crackled. It ran round the loop, its wagons clinking, and never left the rails, though I hoped it would.",
+  "ja": "機関車の脇のねじを、ばねがきしむまで巻いた。機関車は貨車をカチャカチャ鳴らして輪を走り、一度も脱線しなかった。少しだけ期待していたのに。"
+ },
+ "city.ps.train.2": {
+  "ru": "Паровозик ехал торжественно и вдруг встал перед картонной коробкой с надписью «Станция». Пассажиры, видимо, садились. Я подтолкнул его пальцем: пора.",
+  "en": "The little train rolled on solemnly and stopped in front of a cardboard box marked \"Station\". The passengers must have been boarding. I nudged it with a finger: time to go.",
+  "ja": "機関車はおごそかに走り、「駅」と書かれた段ボール箱の前で止まった。乗客が乗りこんでいるのだろう。指でそっと押してやった。そろそろ出発だ。"
+ },
+ "city.ps.train.3": {
+  "ru": "Рядом застыл мальчишка с открытым ртом. Он смотрит на паровозик так, будто тот везёт его самого. Я завёл ещё раз и отошёл, чтобы не мешать.",
+  "en": "A boy stands frozen next to me, mouth open. He watches the train as if it were carrying him. I wound it once more and stepped away so as not to be in the way.",
+  "ja": "隣で男の子が口をあけたまま固まっている。機関車に自分が乗っているみたいな顔で見つめている。もう一度ねじを巻いてあげて、じゃまにならないよう離れた。"
+ },
+ "city.ps.train.4": {
+  "ru": "На днище паровозика выбита дата: ещё до моего рождения. Пружина всё ещё помнит, как бежать.",
+  "en": "A date is stamped under the little locomotive: before I was born. The spring still remembers how to run.",
+  "ja": "機関車の底に日付が刻んである。私が生まれるより前のものだ。ばねは、走り方をまだ覚えている。"
+ },
+ "city.ps.fitting.1": {
+  "ru": "Я задёрнул занавеску и остался наедине с чужим пальто. Рукава длиннее рук: пальто, видимо, шили с запасом на будущий рост.",
+  "en": "I drew the curtain and was left alone with somebody else's coat. The sleeves are longer than my arms: it was clearly cut with room for future growth.",
+  "ja": "カーテンを引いて、知らないコートと二人きりになった。袖が腕よりも長い。これから背がのびる分まで見こんで仕立ててあるらしい。"
+ },
+ "city.ps.fitting.2": {
+  "ru": "Из-за занавески: «Ну как?» — «Нормально!» — соврал я: на мне шарф от другого костюма. Продавщица тактично не стала проверять.",
+  "en": "From beyond the curtain: \"Well, how is it?\" \"Fine!\" I lied: I was wearing a scarf from a different outfit. The assistant tactfully didn't check.",
+  "ja": "カーテンの向こうから。「どう？」「だいじょうぶです！」とうそをついた。別の服のマフラーを巻いていたのだ。店員は気をきかせて、確かめなかった。"
+ },
+ "city.ps.fitting.3": {
+  "ru": "Шапка набекрень, шарф на три оборота. В зеркале на меня смотрел кто-то более взрослый. Я улыбнулся ему, он не ответил: всё-таки взрослый.",
+  "en": "Hat askew, scarf wound three times. In the mirror somebody older looked at me. I smiled at him; he didn't smile back: an adult, after all.",
+  "ja": "帽子は斜め、マフラーは三重巻き。鏡の中から、少し大人の誰かがこちらを見ていた。笑いかけたが、返事はなかった。大人だから。"
+ },
+ "city.ps.fitting.am": {
+  "ru": "Утром в примерочной пахнет глаженой тканью и пылью. Никто не торопит, и пальто хочется носить подольше.",
+  "en": "In the morning the fitting room smells of pressed cloth and dust. Nobody hurries you, and you want to keep the coat on a while longer.",
+  "ja": "朝の試着室は、アイロンをかけた布とほこりのにおいがする。誰もせかさないので、コートをもう少し着ていたくなる。"
+ },
+ "city.ps.fitting.eve": {
+  "ru": "Вечером у соседней занавески двое спорят, идёт ли синий. Слышно, как кто-то вздыхает и говорит: «Идёт».",
+  "en": "In the evening, by the next curtain, two people argue whether blue suits. Somebody sighs and says: \"It suits.\"",
+  "ja": "夕方、隣のカーテンの前で二人が、青が似合うかどうか言い合っている。誰かがため息まじりに言う。「似合うよ」。"
+ },
+ "city.ps.fmirror.1": {
+  "ru": "Зеркало в узкой раме, чуть мутное в углу. Я стою в нём по пояс, остальное дорисует воображение. Воображение у меня щедрое.",
+  "en": "A narrow-framed mirror, a little cloudy in one corner. I stand in it down to the waist, and imagination paints the rest. Mine is generous.",
+  "ja": "細い枠の鏡で、片すみが少しくもっている。私は腰まで映り、あとは想像が描き足す。私の想像力は気前がいい。"
+ },
+ "city.ps.fmirror.2": {
+  "ru": "За моей спиной в зеркале виден проход, а в нём — продавщица с метром на плече. Она кивает отражению. Я тоже кивнул: не хотелось обижать.",
+  "en": "Behind me in the mirror I can see the aisle, and in it an assistant with a tape measure on her shoulder. She nods at my reflection. I nodded too, not wanting to be rude.",
+  "ja": "鏡の中の背後に通路が見え、肩にメジャーをかけた店員がいる。彼女は鏡の中の私にうなずいた。失礼のないように、私もうなずき返した。"
+ },
+ "city.ps.fmirror.3": {
+  "ru": "На раме мелом приписано: «Зеркало не льстит, но и не врёт. Просим не путать с нами». Видно, шутка переходит из рук в руки.",
+  "en": "On the frame in chalk: \"The mirror doesn't flatter, but doesn't lie. Please don't confuse it with us.\" Seems the joke gets passed from hand to hand.",
+  "ja": "枠にチョークで書き添えてある。「鏡はおせじを言いませんが、うそもつきません。私たちと混同しないでください」。この冗談は代々受けつがれているらしい。"
+ },
+ "city.ps.clothes.1": {
+  "ru": "Я перебираю вешалки. Внутри воротников пришиты бирки: «46-3», «48-4», «50-2». Размер и рост, как шифр, который знает только продавщица.",
+  "en": "I flick through the hangers. Tags are sewn inside the collars: \"46-3\", \"48-4\", \"50-2\". Size and height, like a cipher only the assistant knows.",
+  "ja": "ハンガーをめくっていく。襟の内側に「46-3」「48-4」「50-2」と札が縫いつけてある。サイズと身長を表す暗号で、わかるのは店員だけだ。"
+ },
+ "city.ps.clothes.2": {
+  "ru": "Цены нет ни на одной вещи. Продавщица объясняет: это показ, а не продажа. «Трогайте, примеряйте, красота должна быть потрогана. Но уносить не будем».",
+  "en": "No item has a price. The assistant explains: this is a showing, not a sale. \"Touch, try, beauty has to be touched. But we won't take it away.\"",
+  "ja": "どの服にも値札がない。店員いわく、ここは展示であって販売ではないそうだ。「さわって、着てみて。美しいものはさわられるものです。ただし持ち帰りはなしです」。"
+ },
+ "city.ps.clothes.3": {
+  "ru": "Тяжёлое драповое пальто пахнет шкафом и нафталином. Рядом шуршит светлая плащ-болонья: она тонкая, как обёртка, а держит дождь не хуже пальто.",
+  "en": "A heavy woollen coat smells of wardrobes and mothballs. Next to it a pale rustling raincoat crackles: thin as wrapping paper, yet it keeps the rain out as well as the coat.",
+  "ja": "厚いウールのコートは、たんすと防虫剤のにおいがする。隣の明るい色のレインコートはガサガサ鳴る。包み紙のように薄いのに、雨はコートに負けずにはじく。"
+ },
+ "city.ps.clothes.4": {
+  "ru": "Детский плащик на самой нижней перекладине, с капюшоном и пуговицей-грибочком. На бирке: «Для тех, кто растёт быстрее, чем шьём».",
+  "en": "A small child's raincoat hangs on the lowest bar, with a hood and a mushroom-shaped button. On the tag: \"For those who grow faster than we sew.\"",
+  "ja": "一番低いバーに、フードつきの子ども用レインコートがかかっている。ボタンはきのこの形。札には「縫うよりも早く育つ子のために」。"
+ },
+ "city.ps.booth.am": {
+  "ru": "С утра в кабинке тихо. Продавщица ставит мне первую попавшуюся: кто-то поёт про море так тихо, как поют в пустом зале. Пластинка кончается, а я всё стою.",
+  "en": "Early on the booth is quiet. The assistant puts on the first record that comes to hand: someone sings about the sea as softly as one sings in an empty hall. It ends and I keep standing there.",
+  "ja": "朝の試聴ブースは静かだ。店員が手近な一枚をかけてくれる。誰かが、がらんとしたホールで歌うように、そっと海の歌を歌っている。曲が終わっても、私は立ったままでいた。"
+ },
+ "city.ps.booth.noon": {
+  "ru": "После обеда в кабинке тесно от чужих мыслей: на конверте чьи-то отпечатки пальцев. Игла ложится в канавку, играет вальс. Я его не знаю, а почему-то помню.",
+  "en": "After lunch the booth is crowded with other people's thoughts: someone's fingerprints on the sleeve. The needle settles into the groove, a waltz plays. I don't know it, yet somehow I remember it.",
+  "ja": "昼すぎのブースは、人の思いでいっぱいだ。ジャケットに誰かの指紋がついている。針が溝に落ち、ワルツが流れる。知らない曲なのに、なぜか覚えている。"
+ },
+ "city.ps.booth.eve": {
+  "ru": "К вечеру в кабинке теплее: музыка нагрела стены. Играет что-то джазовое и ленивое. За стеклом люди идут домой, а я как будто нет.",
+  "en": "By evening the booth is warmer: the music has warmed the walls. Something lazy and jazzy plays. Beyond the glass people head home, and I somehow don't.",
+  "ja": "夕方のブースは暖かい。音楽が壁をあたためたのだ。気だるいジャズが流れる。ガラスの向こうでは人々が家路につくのに、私はなぜかそうしない。"
+ },
+ "city.ps.booth.any.1": {
+  "ru": "Конверты стоят в ящике наклонными рядами, как зубы в улыбке. Я выбрал по обложке: на ней был маяк. Сыграло про маяк. Совпадение, конечно.",
+  "en": "The sleeves stand slanted in the crate like teeth in a smile. I chose by the cover: it had a lighthouse. It played one about a lighthouse. A coincidence, of course.",
+  "ja": "ジャケットが箱の中で、笑った歯のように斜めに並んでいる。表紙で選んだ。灯台の絵だ。流れたのは灯台の歌だった。もちろん偶然。"
+ },
+ "city.ps.booth.any.2": {
+  "ru": "Кабинка обита синим, и голос из динамика становится ближе, будто певец стоит за плечом. Я не стал оборачиваться: вдруг стоит.",
+  "en": "The booth is lined in blue and the voice from the speaker comes closer, as if the singer stood at my shoulder. I didn't turn round: what if he does.",
+  "ja": "ブースは青い壁でおおわれ、スピーカーの声がぐっと近く聞こえる。歌手が肩のうしろに立っているみたいだ。ふり返らなかった。本当に立っていたら困る。"
+ },
+ "city.ps.lost.b1": {
+  "ru": "За столом женщина с очками на цепочке; перед ней бланк «Акт о находке» и штемпельная подушка. «Что потеряли?» — «Ничего». — «Тогда проходите, только ничего не берите. Оно чужое».",
+  "en": "Behind the desk sits a woman with glasses on a chain; in front of her a form headed \"Record of Found Property\" and an ink pad. \"What have you lost?\" \"Nothing.\" \"Then do come in, only don't take anything. It's all somebody else's.\"",
+  "ja": "机の向こうに、鎖つきの眼鏡をかけた女の人がいる。前には「拾得物受理票」と書かれた用紙とスタンプ台。「何をなくしました？」「何も」「それならどうぞ。ただし、何も持っていかないでね。みんなほかの人のものだから」"
+ },
+ "city.ps.lost.b2": {
+  "ru": "«Бюро принимает всё, — говорит она. — Зонты, варежки, ключи. Один раз приняли аккордеон. Аккордеон потом оказался свадебным».",
+  "en": "\"The bureau takes everything,\" she says. \"Umbrellas, mittens, keys. Once we took an accordion. The accordion turned out to be a wedding one.\"",
+  "ja": "「ここは何でも受け付けますよ」と彼女は言う。「傘、手ぶくろ、鍵。一度はアコーディオンも預かりました。あとで結婚式のアコーディオンだとわかりましたけどね」"
+ },
+ "city.ps.lost.b3": {
+  "ru": "«Вещи у нас хранятся месяц. Кто не пришёл, того вещи отправляем на ярмарку, в лотерею. Пусть уж лучше кого-нибудь обрадуют».",
+  "en": "\"We keep things for a month. If nobody comes, we send them to the fair, for the lottery. Better they make somebody happy.\"",
+  "ja": "「お預かりは一か月です。それでも誰も来なければ、縁日の福引に回します。誰かを喜ばせるほうがいいでしょう」"
+ },
+ "city.ps.lost.d1": {
+  "ru": "«Жёлтый зонт с утиной ручкой? Да, он сегодня у нас. Ночью его нашёл сторож в отделе пластинок: зонт сидел на прилавке, как на жёрдочке».",
+  "en": "\"The yellow umbrella with the duck-head handle? Yes, we have it today. The night watchman found it in the records department last night, perched on the counter as if on a roost.\"",
+  "ja": "「アヒルの持ち手の黄色い傘？ ええ、今日はうちにありますよ。昨夜、夜警さんがレコード売り場で見つけたんです。カウンターの上に、止まり木みたいにのっていました」"
+ },
+ "city.ps.lost.d4": {
+  "ru": "«Хозяйка приходила, забрала. А через час мне его принесли из отдела тканей. Я уже не удивляюсь, просто пишу новый акт. Бланков хватит».",
+  "en": "\"The owner came and took it. An hour later they brought it to me from the fabrics department. I'm not surprised any more, I just write a new record. We have plenty of forms.\"",
+  "ja": "「持ち主が来て、持っていきました。一時間後には、生地売り場から届けられたんです。もう驚きません。新しい受理票を書くだけ。用紙はたっぷりありますから」"
+ },
+ "city.ps.lost.d7": {
+  "ru": "«Призналась, что теряет зонт нарочно. Я сказала: „Лидия Сергеевна, так нельзя“. Она ответила: „Знаю“ и попросила в следующий раз объявлять громче».",
+  "en": "\"She admitted she loses it on purpose. I said: 'Lidiya Sergeyevna, you can't do that.' She said: 'I know,' and asked that next time it be announced louder.\"",
+  "ja": "「わざとなくしていると打ち明けられました。私は『リディヤ・セルゲーエヴナさん、それはいけません』と言いました。彼女は『わかってます』と答えて、次はもっと大きな声で放送してほしいと」"
+ },
+ "city.ps.lost.d10": {
+  "ru": "«Решили так: объявлять будет не диктор, а кто-нибудь помоложе. Микрофон вон там, на столе. Нажмите кнопку и скажите ей, что зонт нашёлся. Только по-человечески, не как у нас».",
+  "en": "\"We've decided: the announcement will be made not by the announcer but by somebody younger. The microphone is over there on the desk. Press the button and tell her the umbrella has been found. But like a human being, not like we do it.\"",
+  "ja": "「こう決めました。放送は、アナウンサーではなくもっと若い人にお願いする。マイクはそこの机の上です。ボタンを押して、傘が見つかったと伝えてあげて。ただし、私たちみたいなお役所口調ではなく、人間らしく」"
+ },
+ "city.ps.mic.1": {
+  "ru": "Я нажал кнопку, лампочка стала красной. Голос из динамика над головой повторил мои слова с опозданием, получилось эхо: «…вниманию покупателей… покупателей… покупателей…».",
+  "en": "I pressed the button and the lamp turned red. The loudspeaker overhead repeated my words a moment late, an echo: \"...attention, customers... customers... customers...\"",
+  "ja": "ボタンを押すとランプが赤くなった。頭の上のスピーカーが、少し遅れて私の言葉をくり返す。こだまのように。「……お客さまに……お客さまに……お客さまに……」"
+ },
+ "city.ps.mic.2": {
+  "ru": "«Покупатель в синей куртке нашёл на лестнице чужую варежку. Варежка ждёт пару у бюро находок. Спасибо». Продавщица одобрительно кивнула: коротко и по делу.",
+  "en": "\"A customer in a blue jacket found someone's mitten on the stairs. The mitten awaits its pair at the lost and found. Thank you.\" The assistant nodded approvingly: short and to the point.",
+  "ja": "「青い上着のお客さまが、階段でどなたかの手ぶくろを拾われました。手ぶくろはお忘れ物係で、片方の相手を待っています。ありがとうございました」。店員は満足そうにうなずいた。短くて要領を得ている。"
+ },
+ "city.ps.mic.d10": {
+  "ru": "«Лидия Сергеевна! Ваш зонт нашёлся! Он ждёт вас у бюро находок. Повторяю: ваш зонт нашёлся. Приходите, он по вам скучает». В зале на секунду все замерли. Потом кто-то захлопал.",
+  "en": "\"Lidiya Sergeyevna! Your umbrella has been found! It is waiting for you at the lost and found. I repeat: your umbrella has been found. Come, it misses you.\" For a second everybody in the hall froze. Then somebody clapped.",
+  "ja": "「リディヤ・セルゲーエヴナさま！ お傘が見つかりました！ お忘れ物係でお待ちです。繰り返します、お傘が見つかりました。どうぞいらしてください、傘が寂しがっています」。ホールが一瞬、静まりかえった。それから誰かが拍手した。"
+ },
+ "city.ps.lostshelf.1": {
+  "ru": "Правая варежка, красная в полоску. Левой нет. На бирке: «Ждёт пары до пятнадцатого».",
+  "en": "A right-hand mitten, red with stripes. No left one. The tag: \"Waiting for its pair until the fifteenth.\"",
+  "ja": "右手の赤いしまの手ぶくろ。左手は見つからない。札には「十五日まで相手を待ちます」。"
+ },
+ "city.ps.lostshelf.2": {
+  "ru": "Ключи на кольце с пластмассовой рыбкой. Если бы рыбка умела говорить, давно бы подсказала, от чего они.",
+  "en": "Keys on a ring with a plastic fish. If the fish could talk, it would have said long ago what they open.",
+  "ja": "プラスチックの魚のついたキーホルダーの鍵。魚がしゃべれたなら、何の鍵か、とっくに教えてくれただろうに。"
+ },
+ "city.ps.lostshelf.3": {
+  "ru": "Футляр от скрипки, пустой. Бирка: «Скрипку не находили. Футляр — да. Возможно, она ушла играть сама».",
+  "en": "An empty violin case. The tag: \"No violin was found. The case was. Perhaps it has gone off to play by itself.\"",
+  "ja": "からのバイオリンケース。札には「バイオリンは見つかっていません。ケースだけです。自分で弾きに出かけたのかもしれません」。"
+ },
+ "city.ps.lostshelf.4": {
+  "ru": "Очки в роговой оправе, сложенные дужками внутрь. Бирка: «Ищут, наверное, не их, а того, кто их увидит». Я решил не примерять.",
+  "en": "Horn-rimmed glasses folded with the arms inside. The tag: \"Probably it isn't them that is wanted but whoever will see them.\" I decided not to try them on.",
+  "ja": "つるを内側にたたんだ、べっこうぶちの眼鏡。札には「探されているのは眼鏡ではなく、眼鏡を見つけてくれる人かもしれません」。かけてみるのはやめておいた。"
+ },
+ "city.ps.lostshelf.5": {
+  "ru": "Фотография: двое смеются на фоне маяка. Бирка: «Найдена под витриной. Вернём тому, кто знает, кто это».",
+  "en": "A photograph: two people laughing in front of a lighthouse. The tag: \"Found under a display case. We will return it to whoever knows who they are.\"",
+  "ja": "写真が一枚。灯台を背に、二人が笑っている。札には「ショーケースの下で発見。この二人が誰か知っている方にお返しします」。"
+ },
+ "city.ps.lostshelf.6": {
+  "ru": "Учебник алгебры за седьмой класс с закладкой на задаче про два поезда. Бирка: «Если вы всё ещё едете, вернитесь, ответ мы знаем».",
+  "en": "A seventh-grade algebra textbook with a bookmark at the problem about two trains. The tag: \"If you're still travelling, come back, we know the answer.\"",
+  "ja": "七年生の代数の教科書。しおりは、二台の列車の問題のところにはさまっている。札には「まだ旅の途中でしたら戻ってきてください。答えは私たちが知っています」。"
+ },
+ "city.ps.lostshelf.7": {
+  "ru": "Один башмак, детский, левый, со стёртым носком. Рядом записка: «Правый ушёл вперёд и пока не вернулся».",
+  "en": "A single child's shoe, left, toe worn. Beside it a note: \"The right one went ahead and hasn't come back yet.\"",
+  "ja": "子ども用の靴が片方、左足の分。つま先がすり減っている。そばにメモ。「右足は先に行ったきり、まだ戻っていません」。"
+ },
+ "city.ps.lostshelf.8": {
+  "ru": "Вязаная шапка с помпоном. Бирка: «Помпон не терялся. Он всегда был такой». Видно, помпон здесь главный спорщик.",
+  "en": "A knitted hat with a pompom. The tag: \"The pompom was not lost. It has always been like that.\" So the pompom is the great arguer here.",
+  "ja": "ポンポンのついた毛糸の帽子。札には「ポンポンは落としものではありません。もとからこうです」。ここではポンポンが一番の頑固者らしい。"
+ },
+ "city.ps.lostumb.base": {
+  "ru": "В подставке у бюро находок десять зонтов: один порванный, два детских, остальные чьи-то. У каждого бирка с датой, и все даты разные.",
+  "en": "In the stand by the lost and found: ten umbrellas, one torn, two for children, the rest somebody's. Each has a dated tag and no two dates are the same.",
+  "ja": "お忘れ物係のそばの傘立てには十本の傘。一本は破れ、二本は子ども用、あとは誰かのもの。どれにも日付の札がついていて、どれも違う日だ。"
+ },
+ "city.ps.lostumb.d1": {
+  "ru": "Жёлтого зонта с уткой среди них нет. Говорят, он ходит между отделами сам: сегодня здесь, завтра в тканях.",
+  "en": "The yellow umbrella with the duck isn't among them. They say it moves between departments by itself: here today, in fabrics tomorrow.",
+  "ja": "アヒルの黄色い傘はその中にない。売り場から売り場へ自分で歩いて移るのだそうだ。今日はここ、明日は生地売り場。"
+ },
+ "city.ps.lostumb.d5": {
+  "ru": "Один зонт сложен особенно аккуратно и перевязан лентой: жёлтый, с утиной головой. На бирке четыре записи: «Выдан. Возвращён. Выдан. Возвращён». Места на бирке больше нет.",
+  "en": "One umbrella is furled especially neatly and tied with a ribbon: yellow, with a duck's head. On the tag four entries: \"Issued. Returned. Issued. Returned.\" There's no room left on the tag.",
+  "ja": "一本だけ、とくにきちんとたたまれ、リボンで結ばれている。黄色で、アヒルの頭。札には四行。「貸出。返却。貸出。返却」。札にはもう余白がない。"
+ },
+ "city.ps.lostumb.d9": {
+  "ru": "Бирка на жёлтом зонте новая, чистая. Старая, всё исписанная, лежит рядом на память, под скрепкой.",
+  "en": "The tag on the yellow umbrella is new and clean. The old one, written over from edge to edge, lies beside it under a paper clip, for keeps.",
+  "ja": "黄色い傘の札は新しく、まっさらだ。びっしり書きこまれた古い札は、記念にクリップでとめて横に置いてある。"
+ },
+ "city.ps.menu.am": {
+  "ru": "На доске: «Завтрак: каша манная, чай, бутерброд с сыром». Манная — с вареньем, если попросить, а просить можно.",
+  "en": "On the board: \"Breakfast: semolina porridge, tea, a cheese sandwich.\" The porridge comes with jam if you ask, and asking is allowed.",
+  "ja": "ボードに「朝食：セモリナ粥、紅茶、チーズサンド」。頼めば粥にジャムをつけてくれる。頼んでもいいのだ。"
+ },
+ "city.ps.menu.noon": {
+  "ru": "«Обед: суп дня, котлета с пюре, компот». Суп дня сегодня тот же, что и вчера: «дня» тут не про сегодня, а про само понятие.",
+  "en": "\"Lunch: soup of the day, cutlet with mash, compote.\" The soup of the day is the same as yesterday: \"of the day\" here is a concept, not a date.",
+  "ja": "「昼食：本日のスープ、カツレツとマッシュポテト、コンポート」。本日のスープは昨日と同じだ。「本日の」は日付ではなく、そういう名前らしい。"
+ },
+ "city.ps.menu.eve": {
+  "ru": "«Полдник и ужин: пирожки, чай, мороженое». Мороженое записано последним и подчёркнуто дважды: чья-то надежда.",
+  "en": "\"Tea and supper: pies, tea, ice cream.\" Ice cream is written last and underlined twice: somebody's hope.",
+  "ja": "「おやつと夕食：ピロシキ、紅茶、アイスクリーム」。アイスは最後に書かれ、二重線が引かれている。誰かの願いだ。"
+ },
+ "city.ps.menu.night": {
+  "ru": "Меню стёрто до половины: уборщица оставила одно слово — «чай». Больше ничего и не надо.",
+  "en": "The menu has been wiped half away: the cleaner left a single word, \"tea\". Nothing more is needed.",
+  "ja": "メニューは半分消えている。掃除の人が一語だけ残した。「紅茶」。それ以上は要らない。"
+ },
+ "city.ps.type.1": {
+  "ru": "Я вставил лист и напечатал: «Съешь же ещё этих мягких французских булок, да выпей чаю». Все буквы на месте. Лист остался в каретке для следующего покупателя.",
+  "en": "I put in a sheet and typed: \"The quick brown fox jumps over the lazy dog.\" Every letter is there. I left the sheet in the carriage for the next customer.",
+  "ja": "紙を入れて打ってみた。「いろはにほへと ちりぬるを」。文字は全部そろっている。紙は次のお客さんのために、キャリッジに残しておいた。"
+ },
+ "city.ps.type.2": {
+  "ru": "Каретка звякнула в конце строки, и я вздрогнул: я привык, что клавиши молчат. На пробном листе десятки имён: «Вася», «Маша», «Мы были здесь».",
+  "en": "The carriage rang at the end of the line and I jumped: I'm used to keys being silent. The test sheet is full of names: \"Vasya\", \"Masha\", \"We were here\".",
+  "ja": "行の終わりでキャリッジがチンと鳴り、びくっとした。キーは音を立てないものだと思っていたから。試し打ちの紙には名前がずらり。「ワーシャ」「マーシャ」「ぼくたち、ここにいた」。"
+ },
+ "city.ps.type.3": {
+  "ru": "Одну букву, «ж», заедает. Продавец говорит, что это не брак, а характер. Машинка с характером дороже на пять рублей.",
+  "en": "One letter, the Russian \"zh\", sticks. The assistant says it isn't a fault but a character. A typewriter with character costs five roubles more.",
+  "ja": "一つのキーだけ、ひっかかる。店員は、故障ではなく個性だと言う。個性のあるタイプライターは五ルーブル高いそうだ。"
+ },
+ "quest.store_umbrella.title": {
+  "ru": "Жёлтый зонт с уткой",
+  "en": "The Yellow Umbrella with the Duck",
+  "ja": "アヒルの黄色い傘"
+ },
+ "quest.store_umbrella.desc": {
+  "ru": "В бюро находок опять объявили про жёлтый зонт: на этот раз его нашли в отделе игрушек. Кажется, зонт ходит по универмагу сам. Надо выяснить, где он сегодня, и сообщить об этом хозяйке.",
+  "en": "The lost and found has announced the yellow umbrella again; this time it was found in the toy department. The umbrella seems to wander the store by itself. I should find out where it is today and tell its owner.",
+  "ja": "お忘れ物係がまた黄色い傘の放送をした。今度はおもちゃ売り場で見つかったという。傘はひとりで店内を歩きまわっているらしい。今日はどこにあるのか突き止めて、持ち主に知らせよう。"
+ },
+ "quest.store_umbrella.cloak.log": {
+  "ru": "Первым делом загляну в подставку у гардероба: туда зонты любят приходить сами.",
+  "en": "First I'll look into the stand by the cloakroom: umbrellas like to turn up there on their own.",
+  "ja": "まずクロークの傘立てを見てみよう。傘はあそこに自分から来たがる。"
+ },
+ "quest.store_umbrella.stand.obj": {
+  "ru": "Заглянуть в подставку у гардероба",
+  "en": "Look into the umbrella stand by the cloakroom",
+  "ja": "クロークの傘立てをのぞく"
+ },
+ "quest.store_umbrella.lost.log": {
+  "ru": "Здесь его нет или уже нет. Спрошу у бюро находок: у них есть своя подставка и своя бирка.",
+  "en": "It isn't here, or isn't any more. I'll ask at the lost and found: they have their own stand and their own tag.",
+  "ja": "ここにはない、あるいは、もうない。お忘れ物係に聞いてみよう。あそこには専用の傘立てと札がある。"
+ },
+ "quest.store_umbrella.shelf.obj": {
+  "ru": "Посмотреть зонты у бюро находок",
+  "en": "Look at the umbrellas at the lost and found",
+  "ja": "お忘れ物係の傘を見る"
+ },
+ "quest.store_umbrella.mic.log": {
+  "ru": "Хозяйка зонта, говорят, любит слышать своё имя по радио. Бюро разрешило мне самому сказать ей по микрофону, что зонт нашёлся.",
+  "en": "The owner, they say, loves to hear her name over the radio. The bureau has allowed me to tell her myself, through the microphone, that the umbrella has been found.",
+  "ja": "持ち主は、館内放送で自分の名前を聞くのが好きらしい。お忘れ物係が、傘が見つかったとマイクで私から伝えてもいいと言ってくれた。"
+ },
+ "quest.store_umbrella.announce.obj": {
+  "ru": "Объявить по радио, что зонт нашёлся",
+  "en": "Announce over the loudspeaker that the umbrella has been found",
+  "ja": "傘が見つかったと館内放送で伝える"
+ },
+ "quest.store_umbrella.done": {
+  "ru": "В зале все на секунду замерли, потом кто-то захлопал. Через минуту к бюро подошла женщина в клетчатом шарфе, забрала зонт и сказала «спасибо» таким голосом, будто сто раз репетировала. Утка на ручке мне подмигнула. Или показалось.",
+  "en": "For a second everybody in the hall froze, then somebody clapped. A minute later a woman in a checked scarf came to the bureau, took the umbrella and said \"thank you\" in a voice she'd clearly rehearsed a hundred times. The duck on the handle winked at me. Or I imagined it.",
+  "ja": "ホールが一瞬しんとして、それから誰かが拍手した。一分後、チェックのマフラーの女の人がお忘れ物係に来て、傘を受け取り、百回も練習したような声で「ありがとう」と言った。持ち手のアヒルが私にウインクした。気のせいかもしれないけれど。"
+ },
+ "quest.store_fitting.title": {
+  "ru": "Побыть покупателем",
+  "en": "Being a Customer",
+  "ja": "お客さまになってみる"
+ },
+ "quest.store_fitting.desc": {
+  "ru": "В универмаге можно ничего не покупать, но не заметить его нельзя. Витрина, примерочная, пластинки: попробую побыть настоящим покупателем и ничего не потратить.",
+  "en": "In the department store you don't have to buy anything, but you can't help noticing it. A window, a fitting room, records: I'll try to be a proper customer and spend nothing.",
+  "ja": "百貨店では何も買わなくていいが、何も気づかずにいるのは難しい。ウィンドウ、試着室、レコード。本物のお客さんになって、一銭も使わずに過ごしてみよう。"
+ },
+ "quest.store_fitting.window.log": {
+  "ru": "Начну с витрины: утром там обычно кто-то работает, а днём она просто красивая.",
+  "en": "I'll start with the window: in the morning someone usually works there, and by day it's simply pretty.",
+  "ja": "まずウィンドウから。朝は誰かが作業していて、昼はただきれいなだけだ。"
+ },
+ "quest.store_fitting.look.obj": {
+  "ru": "Заглянуть в витрину снаружи или изнутри",
+  "en": "Peek into the shop window",
+  "ja": "ショーウィンドウをのぞく"
+ },
+ "quest.store_fitting.fit.log": {
+  "ru": "Наверху, в отделе одежды, есть примерочная с занавеской. Примерю хоть что-нибудь.",
+  "en": "Upstairs in the clothes department there's a fitting room with a curtain. I'll try something on, anything.",
+  "ja": "二階の洋服売り場に、カーテンのついた試着室がある。何でもいいから着てみよう。"
+ },
+ "quest.store_fitting.cubicle.obj": {
+  "ru": "Примерить что-нибудь в примерочной",
+  "en": "Try something on in the fitting room",
+  "ja": "試着室で何か着てみる"
+ },
+ "quest.store_fitting.listen.log": {
+  "ru": "В отделе пластинок стоит кабинка для прослушивания. Купить мне пластинку не на что, но послушать никто не запретит.",
+  "en": "In the records department there's a listening booth. I can't buy a record, but nobody forbids listening.",
+  "ja": "レコード売り場に試聴ブースがある。買うことはできないが、聴くのは自由だ。"
+ },
+ "quest.store_fitting.booth.obj": {
+  "ru": "Послушать пластинку в кабинке",
+  "en": "Listen to a record in the booth",
+  "ja": "ブースでレコードを聴く"
+ },
+ "quest.store_fitting.done": {
+  "ru": "Вышел из универмага с пустыми руками и полной головой: в одном ухе вальс, в другом — «ну как?» из-за занавески. Продавщицы мне, кажется, улыбнулись вслед.",
+  "en": "I left the store with empty hands and a full head: a waltz in one ear, and a \"well, how is it?\" from behind a curtain in the other. The assistants seem to have smiled after me.",
+  "ja": "手ぶらのまま、頭をいっぱいにして店を出た。片方の耳にはワルツ、もう片方の耳にはカーテンの向こうの「どう？」。店員さんたちは、私のうしろ姿に笑いかけてくれたようだった。"
+ },
+ "city.ps.staff.mon": {
+  "ru": "Листок на кнопках: «Понедельник. Планёрка в 8:40, у кассы. Кто опоздал, тот ведёт протокол. Протокол — одна строчка, не больше».",
+  "en": "A sheet held by drawing pins: \"Monday. Meeting at 8:40 by the till. Whoever is late takes the minutes. The minutes are one line, no more.\"",
+  "ja": "画びょうでとめた紙。「月曜。八時四十分にレジ前で朝礼。遅刻した人が議事録係。議事録は一行まで」。"
+ },
+ "city.ps.staff.tue": {
+  "ru": "«Вторник. Завоз молочного: грузчики в 9:30. К приёмке приготовить весы, два ведра и терпение. Терпение выдаёт заведующая, по одному в руки».",
+  "en": "\"Tuesday. Dairy delivery: porters at 9:30. Have the scales, two buckets and patience ready for the intake. Patience is issued by the manager, one per person.\"",
+  "ja": "「火曜。乳製品の入荷、荷役は九時半。受け入れ用にはかり、バケツ二つ、そして忍耐を用意すること。忍耐は店長が一人に一つずつ配ります」。"
+ },
+ "city.ps.staff.wed": {
+  "ru": "«Среда: санитарный день в отделе тканей. Не пугаться запаха нафталина. Нафталин на посту, он не уйдёт».",
+  "en": "\"Wednesday: sanitary day in the fabrics department. Do not be alarmed by the smell of mothballs. The mothballs are on duty and will not leave.\"",
+  "ja": "「水曜、生地売り場は衛生の日。防虫剤のにおいにおどろかないこと。防虫剤は勤務中で、持ち場を離れません」。"
+ },
+ "city.ps.staff.thu": {
+  "ru": "«Четверг. Зарплата в кассе до 13:00. Расписываться разборчиво: роспись «в виде ёлочки» не принимается».",
+  "en": "\"Thursday. Wages at the till until 13:00. Sign legibly: signatures 'in the shape of a fir tree' will not be accepted.\"",
+  "ja": "「木曜。給料はレジで十三時まで。署名は読めるように。『もみの木の形』の署名は受け付けません」。"
+ },
+ "city.ps.staff.fri": {
+  "ru": "«Пятница. Завоз рыбы и сыра. Рыбу домой — только по записи в журнале. Сыр по записи не выдаём: он и так весь на виду».",
+  "en": "\"Friday. Fish and cheese delivery. Fish to take home only by an entry in the log. Cheese isn't logged: it's in plain sight anyway.\"",
+  "ja": "「金曜。魚とチーズの入荷。魚の持ち帰りは台帳に記入した場合のみ。チーズは記入不要、どうせ丸見えなので」。"
+ },
+ "city.ps.staff.sat": {
+  "ru": "«Суббота — короткий день. Кассу сдаём в 19:30, прилавки протираем, кефир ставим на холод. Улыбаться покупателю — до последней минуты».",
+  "en": "\"Saturday is a short day. Cash handed in at 19:30, counters wiped, kefir put in the cold. Smile at customers until the last minute.\"",
+  "ja": "「土曜は短縮営業。十九時半にレジを締め、売り台をふき、ケフィアを冷やす。お客さまへの笑顔は最後の一分まで」。"
+ },
+ "city.ps.staff.sun": {
+  "ru": "«Воскресенье. Работают только кассиры. Продавцам: цветы на подоконнике поливать никто не отменял».",
+  "en": "\"Sunday. Only the cashiers are on. To the shop assistants: nobody has cancelled watering the flowers on the windowsill.\"",
+  "ja": "「日曜。出勤はレジ係のみ。売り場の皆さんへ。窓辺の花の水やりは、誰も免除されていません」。"
+ },
+ "city.ps.staff.umb": {
+  "ru": "Свежее объявление, приколото поверх старых: «Зонты, найденные в отделах, нести в бюро находок. Не отпускать гулять. Администрация».",
+  "en": "A fresh notice pinned over the old ones: \"Umbrellas found in departments are to be taken to the lost and found. Do not let them go walking. Management.\"",
+  "ja": "古い紙の上に新しい貼り紙。「売り場で見つかった傘は、お忘れ物係に届けること。散歩に行かせないこと。店長」。"
+ }
+}

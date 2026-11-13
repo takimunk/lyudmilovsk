@@ -1098,5 +1098,140 @@
   "promenade_unit/pasty_table": {
    "act": "pu_pasty_table"
   }
- }
+ },
+ "quests": [
+  {
+   "id": "unit_valve",
+   "kind": "side",
+   "start_on": {
+    "event": "reach",
+    "target": "promenade"
+   },
+   "stages": [
+    {
+     "id": "board",
+     "objectives": [
+      {
+       "id": "cafe_board",
+       "event": "do",
+       "target": "pu_cafe_specials"
+      }
+     ]
+    },
+    {
+     "id": "tags",
+     "objectives": [
+      {
+       "id": "shop_tags",
+       "event": "do",
+       "target": "pu_workshop_tags"
+      }
+     ]
+    },
+    {
+     "id": "cup",
+     "objectives": [
+      {
+       "id": "ask_barista",
+       "event": "do",
+       "target": "pu_cafe_chat"
+      }
+     ],
+     "reward": {
+      "items": {
+       "coffee": 1
+      }
+     }
+    }
+   ]
+  },
+  {
+   "id": "unit_herring",
+   "kind": "side",
+   "start_on": {
+    "event": "reach",
+    "target": "promenade"
+   },
+   "stages": [
+    {
+     "id": "tides",
+     "objectives": [
+      {
+       "id": "read_tides",
+       "event": "do",
+       "target": "pu_fish_tides"
+      }
+     ]
+    },
+    {
+     "id": "bait",
+     "objectives": [
+      {
+       "id": "shrimp",
+       "event": "have",
+       "target": "bait_shrimp"
+      }
+     ]
+    },
+    {
+     "id": "ask",
+     "objectives": [
+      {
+       "id": "ask_fish",
+       "event": "do",
+       "target": "pu_fish_chat"
+      }
+     ],
+     "reward": {
+      "rubles": 25
+     }
+    }
+   ]
+  },
+  {
+   "id": "unit_regatta",
+   "kind": "side",
+   "start_on": {
+    "event": "reach",
+    "target": "promenade"
+   },
+   "stages": [
+    {
+     "id": "boats",
+     "objectives": [
+      {
+       "id": "read_boats",
+       "event": "do",
+       "target": "pu_rental_boats"
+      }
+     ]
+    },
+    {
+     "id": "rest",
+     "objectives": [
+      {
+       "id": "sit_chair",
+       "event": "do",
+       "target": "pu_deckchair_2"
+      }
+     ]
+    },
+    {
+     "id": "sign",
+     "objectives": [
+      {
+       "id": "ask_renter",
+       "event": "do",
+       "target": "pu_rental_chat"
+      }
+     ],
+     "reward": {
+      "items": {
+       "postcard": 1
+      }
+     }
+    }
+   ]
+  }
+ ]
 }
