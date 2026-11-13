@@ -93,6 +93,16 @@
     0.0
    ],
    "yaw": 270.0
+  },
+  {
+   "id": "oven",
+   "kind": "stand",
+   "pos": [
+    -3.2,
+    4.65,
+    0.0
+   ],
+   "yaw": 180.0
   }
  ],
  "lamps": [
@@ -162,6 +172,59 @@
    "props": {
     "height": 0.45
    }
+  },
+  {
+   "id": "bakery_oven",
+   "kind": "machine",
+   "pos": [
+    -3.2,
+    5.2,
+    1.0
+   ],
+   "yaw": 0.0,
+   "props": {
+    "what": "oven"
+   }
+  },
+  {
+   "id": "bakery_dough",
+   "kind": "craft",
+   "pos": [
+    2.4,
+    5.25,
+    0.85
+   ],
+   "yaw": 0.0,
+   "props": {
+    "what": "dough"
+   }
+  },
+  {
+   "id": "bakery_today",
+   "kind": "board",
+   "pos": [
+    2.2,
+    1.15,
+    0.6
+   ],
+   "yaw": 195.0,
+   "props": {
+    "topic": "store"
+   }
+  },
+  {
+   "id": "bakery_chat",
+   "kind": "counter",
+   "pos": [
+    -0.2,
+    3.9,
+    1.1
+   ],
+   "yaw": 0.0,
+   "props": {
+    "service": "chat",
+    "role": "seller"
+   }
   }
  ],
  "flats": [],
@@ -171,8 +234,8 @@
   "promenade unit room, variant bakery: placed at each W1 unit whose plan variant is bakery"
  ],
  "tris": {
-  "shell": 190,
-  "detail": 4427,
+  "shell": 214,
+  "detail": 4851,
   "windows": 0
  }
 }

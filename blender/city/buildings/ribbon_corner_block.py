@@ -21,6 +21,10 @@ Ground floor: shop (x -19..-7, two shop windows, door "shop"), laundry (x -7..-1
 Windows: flats "flat" (front ribbon + balcony door, back ribbon, end windows), stair drum / tower "stair", shops "public".
 Entrances: "main" (drum), "shop", "laundry", "stair_w" (all street doors with door actors).
 Spots: shop counter / work / stand, laundry "work" at the machines, lobby benches, bike benches.
+Second pass (depth): the grocery gets floor scales, the shopkeeper's abacus and radio, a bread rack, a goods-of-the-day
+board and a bottle-deposit corner; the laundry a forgotten-sock line, a mangle, magazines, a lost-property box and
+baskets; the roof loungers, a dovecote, a bird feeder, named plant tubs, a rain-barrel shower, a telescope, a samovar
+and washing lines. Content: tools/city/content/x_p_t4h2.json.
 Ideas for later: interiors of the flats, a glazed solarium cabin on the roof, a cinema poster board, shutters.
 """
 import math
@@ -229,6 +233,9 @@ def build(B):
     _roof(B)
     # ------------------------------------------------------------ ground floor rooms
     _ground_rooms(B)
+    _depth_shop(B)
+    _depth_laundry(B)
+    _depth_roof(B)
     # ------------------------------------------------------------ footprint, surrounds
     fp = [(-25.0, TY0), (X0, TY0), (X0, 0.4), (X1, 0.4)]
     ch = [DP(11.25 + 22.5 * j + 180 + 22.5, RD) for j in range(ND - 1)]
@@ -619,3 +626,309 @@ def _roof(B):
     # ventilation stacks
     for x in (-12.0, -9.0):
         box(m, "CT_Concrete", x - 0.3, x + 0.3, 10.2, 10.8, ZR, ZR + 1.4)
+
+
+# ------------------------------------------------------------------ second pass: pieces drawn here
+def _abacus(B, x, y, z=0.0, yaw=0.0):
+    """[prop] A shopkeeper's abacus 0.36 x 0.24: timber frame on two feet, six wires, beads slid to both sides."""
+    p = kit._P(B, x, y, z, yaw, "abacus")
+    w, h = 0.36, 0.25
+    for (a, b, c, d) in ((-w / 2, w / 2, 0.0, 0.02), (-w / 2, w / 2, h - 0.02, h)):
+        p.box(kit.WOOD, a, b, -0.015, 0.015, c + 0.02 if c == 0.0 else c, d + (0.02 if c == 0.0 else 0.0))
+    for sx in (-w / 2, w / 2 - 0.02):
+        p.box(kit.WOOD, sx, sx + 0.02, -0.015, 0.015, 0.0, h)
+    p.box(kit.WOOD, -w / 2 + 0.03, -w / 2 + 0.06, 0.015, 0.1, 0.0, 0.02)
+    p.box(kit.WOOD, w / 2 - 0.06, w / 2 - 0.03, 0.015, 0.1, 0.0, 0.02)
+    mats = ["CT_PlasterRed", "CT_PlasterYellow", "CT_Wood", "CT_PlasterRed", "CT_PlasterYellow", "CT_Wood"]
+    cuts = (0.07, 0.11, 0.05, 0.13, 0.09, 0.06)
+    for i in range(6):
+        zz = 0.045 + i * 0.033
+        p.box(kit.BRASS, -w / 2 + 0.02, w / 2 - 0.02, -0.003, 0.003, zz - 0.002, zz + 0.002)
+        for k in range(4):
+            xa = -w / 2 + 0.025 + k * 0.026
+            p.box(mats[i], xa, xa + 0.022, -0.011, 0.011, zz - 0.012, zz + 0.012)
+        for k in range(3):
+            xb = w / 2 - 0.025 - 0.022 - k * 0.026
+            p.box(mats[i], xb, xb + 0.022, -0.011, 0.011, zz - 0.012, zz + 0.012)
+    return p.done()
+
+
+def _floor_scale(B, x, y, z=0.0, yaw=0.0, solid=True):
+    """A platform scale with a column and a round dial (customer steps on it; the dial faces -y)."""
+    p = kit._P(B, x, y, z, yaw, "floor_scale")
+    p.bev("CT_Steel", -0.25, 0.25, -0.3, 0.3, 0.0, 0.07, 0.01)
+    p.bev("CT_Aluminium", -0.22, 0.22, -0.27, 0.2, 0.07, 0.1, 0.006)
+    p.box("CT_Steel", -0.04, 0.04, 0.2, 0.28, 0.07, 1.0)
+    p.box("CT_SteelRed", -0.15, 0.15, 0.12, 0.3, 1.0, 1.26)
+    cn = kit.cell("clock", kit._rng(3, x, y, "scale"))
+    p.card_front(cn, -0.12, 0.12, 1.02, 1.24, 0.118)
+    p.box(kit.BRASS, -0.16, 0.16, 0.12, 0.3, 1.26, 1.28, f="xXyYZ")
+    p.core(-0.22, 0.22, -0.27, 0.27, 0.01, 0.06)
+    return p.done(solid=solid, top=0.1, front=0.7)
+
+
+def _mangle(B, x, y, z=0.0, yaw=0.0, solid=True):
+    """[floor] A laundry mangle: cast-iron cheeks, two timber rollers on a crank, a zinc tray; user at -y."""
+    p = kit._P(B, x, y, z, yaw, "mangle")
+    for sx in (-0.4, 0.34):
+        p.box("CT_SteelRed", sx, sx + 0.06, -0.22, 0.22, 0.0, 0.98)
+    p.box("CT_Steel", -0.4, 0.4, -0.22, -0.16, 0.0, 0.08)
+    p.box("CT_Steel", -0.4, 0.4, 0.16, 0.22, 0.0, 0.08)
+    p.box("CT_Steel", -0.4, 0.4, -0.02, 0.02, 0.3, 0.34)
+    p.rod(kit.WOODL, (-0.36, 0.0, 0.82), (0.36, 0.0, 0.82), 0.16, 10, True)
+    p.rod(kit.WOODL, (-0.36, 0.0, 0.67), (0.36, 0.0, 0.67), 0.16, 10, True)
+    p.rod(kit.STEEL, (0.4, 0.0, 0.82), (0.55, 0.0, 0.82), 0.03, 5, True)
+    p.rod(kit.STEEL, (0.55, 0.0, 0.82), (0.55, 0.0, 0.62), 0.025, 4, True)
+    p.rod(kit.WOOD, (0.55, 0.0, 0.62), (0.55, -0.1, 0.62), 0.035, 5, True)
+    p.box("CT_Aluminium", -0.34, 0.3, -0.5, -0.24, 0.6, 0.63, f="xXyYZz")
+    p.box("CT_Aluminium", -0.34, 0.3, -0.5, -0.47, 0.6, 0.68)
+    p.box("CT_Steel", -0.34, 0.34, -0.16, 0.16, 0.08, 0.5)
+    p.core(-0.3, 0.3, -0.12, 0.12, 0.12, 0.46)
+    return p.done(solid=solid, top=0.98, front=0.8, footprint=(-0.4, 0.62, -0.5, 0.22))
+
+
+def _sock_line(B, pts, z):
+    """A rope across the laundry (building coords) with pegs, a forgotten shirt and a handful of lone socks."""
+    p = kit._P(B, 0.0, 0.0, 0.0, 0.0, "sock_line")
+    for a, b in zip(pts, pts[1:]):
+        p.rod(kit.STEEL, (a[0], a[1], z + a[2]), (b[0], b[1], z + b[2]), 0.012, 5)
+    for (x, y, _) in (pts[0], pts[-1]):
+        pass
+    hang = [(0.35, "CT_PlasterRed", 0.22, 0.07), (0.9, "CT_PlasterBlue", 0.2, 0.07), (1.15, "CT_PlasterYellow", 0.18, 0.06),
+            (2.2, "CT_PlasterGreen", 0.2, 0.07), (2.55, "CT_FrameWhite", 0.18, 0.07), (4.1, "CT_PlasterRed", 0.22, 0.07)]
+    x0, y0 = pts[0][0], pts[0][1]
+    x1 = pts[-1][0]
+    for (u, mat, hh, ww) in hang:
+        x = x0 + u
+        if x > x1 - 0.1:
+            continue
+        zt = z - 0.012 + (0.0 if abs(x - (x0 + x1) / 2) > 1.0 else -0.05)
+        zt -= 0.05 * (1.0 - abs(2 * (x - x0) / (x1 - x0) - 1.0) ** 2)
+        p.box(kit.WOOD, x - 0.012, x + 0.012, y0 - 0.012, y0 + 0.012, zt - 0.005, zt + 0.07)
+        p.box(mat, x - ww / 2, x + ww / 2, y0 - 0.02, y0 + 0.02, zt - hh, zt)
+        p.box(mat, x - ww / 2 - 0.05, x + ww / 2, y0 - 0.02, y0 + 0.02, zt - hh, zt - hh + 0.07)
+    xm = x0 + 2.9
+    p.box(kit.WOOD, xm - 0.012, xm + 0.012, y0 - 0.012, y0 + 0.012, z - 0.07, z + 0.07)
+    xs = x0 + 1.8
+    zs = z - 0.07
+    p.box("CT_PlasterBlue", xs - 0.25, xs + 0.25, y0 - 0.012, y0 + 0.012, zs - 0.5, zs)
+    p.box("CT_PlasterBlue", xs - 0.42, xs - 0.25, y0 - 0.012, y0 + 0.012, zs - 0.18, zs - 0.02)
+    p.box("CT_PlasterBlue", xs + 0.25, xs + 0.42, y0 - 0.012, y0 + 0.012, zs - 0.18, zs - 0.02)
+    return p.done()
+
+
+def _dovecote(B, x, y, z=0.0, yaw=0.0, solid=True):
+    """A pigeon loft on legs: a timber box with three round holes and perches, a gable roof and a landing board, four birds."""
+    p = kit._P(B, x, y, z, yaw, "dovecote")
+    for sx in (-0.38, 0.32):
+        for sy in (-0.28, 0.22):
+            p.box(kit.WOOD, sx, sx + 0.06, sy, sy + 0.06, 0.0, 1.15)
+    p.box("CT_WoodLight", -0.5, 0.5, -0.38, 0.38, 1.15, 1.2)
+    p.box("CT_PlasterBlue", -0.46, 0.46, -0.34, 0.34, 1.2, 1.85, f="xXyYz")
+    for hx in (-0.28, 0.0, 0.28):
+        p.box("CT_ConcreteDark", hx - 0.06, hx + 0.06, -0.342, -0.338, 1.52, 1.64, f="y")
+        p.rod(kit.WOOD, (hx, -0.34, 1.46), (hx, -0.5, 1.46), 0.018, 4)
+    p.box(kit.WOODL, -0.5, 0.5, -0.56, -0.34, 1.16, 1.2)
+    for sgn in (-1, 1):
+        bot = [(sgn * 0.54, -0.44, 1.83), (0.0, -0.44, 2.2), (0.0, 0.44, 2.2), (sgn * 0.54, 0.44, 1.83)]
+        top = [(a, b, c + 0.035) for (a, b, c) in bot]
+        p.hexa("CT_SteelRed", bot, top)
+    p.box(kit.BRASS, -0.02, 0.02, -0.46, 0.46, 2.2, 2.235)
+    for (bx, by, bz, ba) in ((-0.3, -0.46, 1.2, 0), (0.1, -0.5, 1.2, 0), (0.24, -0.46, 1.2, 0), (0.0, -0.1, 2.235, 0)):
+        p.box("CT_PlasterGrey", bx - 0.08, bx + 0.08, by - 0.045, by + 0.045, bz, bz + 0.1)
+        p.box("CT_PlasterGrey", bx + 0.04, bx + 0.1, by - 0.075, by - 0.01, bz + 0.07, bz + 0.17)
+        p.box("CT_ConcreteDark", bx - 0.1, bx - 0.07, by - 0.03, by + 0.03, bz + 0.03, bz + 0.07)
+    p.box("CT_WoodLight", -0.42, 0.42, -0.3, 0.3, 0.0, 1.15)
+    p.box(kit.WOOD, -0.3, 0.3, -0.302, -0.3, 0.1, 1.0, f="y")
+    p.core(-0.38, 0.38, -0.26, 0.26, 0.05, 1.1)
+    return p.done(solid=solid, top=1.2, front=0.9, footprint=(-0.5, 0.5, -0.4, 0.4))
+
+
+def _lounger(B, x, y, z=0.0, yaw=0.0, mat="CT_PlasterBlue", mat2="CT_FrameWhite", solid=False):
+    """A long sun lounger of timber and canvas: feet toward -y, the back rises toward +y; lie with the head at +y."""
+    p = kit._P(B, x, y, z, yaw, "lounger")
+    for s in (-0.3, 0.3):
+        p.rod(kit.WOOD, (s, -0.95, 0.15), (s, 0.15, 0.3), 0.04, 4)
+        p.rod(kit.WOOD, (s, 0.15, 0.3), (s, 0.95, 0.72), 0.04, 4)
+        p.rod(kit.WOOD, (s, -0.8, 0.0), (s, -0.8, 0.2), 0.04, 4)
+        p.rod(kit.WOOD, (s, 0.3, 0.0), (s, 0.3, 0.33), 0.04, 4)
+    for k in range(4):
+        y0 = -0.95 + k * 0.275
+        z0 = 0.16 + (y0 + 0.95) * (0.14 / 1.1)
+        z1 = 0.16 + (y0 + 0.275 + 0.95) * (0.14 / 1.1)
+        m_ = mat if k % 2 == 0 else mat2
+        bot = [(-0.28, y0, z0 + 0.012), (0.28, y0, z0 + 0.012), (0.28, y0 + 0.275, z1 + 0.012), (-0.28, y0 + 0.275, z1 + 0.012)]
+        p.hexa(m_, bot, [(a, b, c + 0.012) for (a, b, c) in bot])
+    for k in range(3):
+        y0 = 0.15 + k * 0.267
+        z0 = 0.31 + (y0 - 0.15) * (0.41 / 0.8)
+        z1 = 0.31 + (y0 + 0.267 - 0.15) * (0.41 / 0.8)
+        m_ = mat if k % 2 == 0 else mat2
+        bot = [(-0.28, y0, z0 + 0.012), (0.28, y0, z0 + 0.012), (0.28, y0 + 0.267, z1 + 0.012), (-0.28, y0 + 0.267, z1 + 0.012)]
+        p.hexa(m_, bot, [(a, b, c + 0.012) for (a, b, c) in bot])
+    p.box("CT_FrameWhite", -0.2, 0.2, 0.62, 0.9, 0.62, 0.69)
+    return p.done(solid=solid, top=0.32, seats=[(0.0, 0.2, 0.35, 0.0)], footprint=(-0.35, 0.35, -0.97, 0.97))
+
+
+def _shower(B, x, y, z=0.0, yaw=0.0, solid=True):
+    """A roof shower: duckboard, canvas screen on two sides, a sun-warmed tank on posts and a rose; step in from -y."""
+    p = kit._P(B, x, y, z, yaw, "shower")
+    p.box(kit.WOODL, -0.45, 0.45, -0.45, 0.45, 0.0, 0.05)
+    for k in range(4):
+        p.box(kit.WOOD, -0.45, 0.45, -0.45 + k * 0.23, -0.45 + k * 0.23 + 0.02, 0.05, 0.06, f="xXyYZ")
+    for sx in (-0.45, 0.43):
+        p.box(kit.STEEL, sx, sx + 0.03, 0.4, 0.43, 0.0, 2.2)
+    p.box(kit.STEEL, -0.45, -0.42, -0.43, -0.4, 0.0, 2.2)
+    p.box("CT_PlasterBlue", -0.43, 0.43, 0.4, 0.412, 0.5, 2.0)
+    p.box("CT_PlasterBlue", -0.43, -0.415, -0.4, 0.4, 0.5, 2.0)
+    p.cyl("CT_SteelRed", 0.0, 0.3, 2.2, 2.62, 0.24, 10, top=True, bottom=True)
+    p.rod(kit.STEEL, (0.0, 0.3, 2.2), (0.0, 0.3, 1.95), 0.03, 5)
+    p.rod(kit.STEEL, (0.0, 0.3, 1.95), (0.0, 0.05, 1.95), 0.03, 5)
+    p.cyl(kit.ALU, 0.0, 0.0, 1.9, 1.95, 0.09, 8, r1=0.04, top=True, bottom=False)
+    p.rod(kit.STEEL, (0.2, 0.3, 2.2), (0.2, 0.3, 1.2), 0.012, 4)
+    p.box("CT_PlasterRed", 0.36, 0.42, 0.405, 0.42, 1.0, 1.9)
+    return p.done(solid=False, top=0.06, front=0.8, footprint=(-0.45, 0.45, -0.45, 0.45))
+
+
+def _tub_dressing(B, x, y, kind, zt):
+    """Plants of one roof tub (the tub itself is in _roof) and its name stick; zt = the soil level."""
+    p = kit._P(B, x, y, zt, 0.0, "tub_" + kind)
+    if kind == "tomato":
+        for sx, sy in ((-0.25, -0.2), (0.0, 0.25), (0.25, -0.15)):
+            p.rod(kit.WOOD, (sx, sy, 0.0), (sx, sy, 1.35), 0.025, 4)
+            for hz in (0.5, 0.8, 1.05):
+                p.box("CT_PlasterRed" if hz > 0.6 else "CT_PlasterYellow", sx + 0.03, sx + 0.11, sy - 0.04, sy + 0.04, hz, hz + 0.08)
+            p.box("CT_Leaf", sx - 0.14, sx + 0.14, sy - 0.02, sy + 0.02, 0.9, 1.0)
+    elif kind == "dahlia":
+        for i, (sx, sy) in enumerate(((-0.3, -0.2), (0.0, 0.1), (0.3, -0.1), (-0.1, 0.3), (0.25, 0.3))):
+            hh = 0.6 + 0.12 * (i % 3)
+            p.rod("CT_Leaf", (sx, sy, 0.0), (sx, sy, hh), 0.02, 4)
+            p.cyl(("CT_PlasterPink", "CT_PlasterRed", "CT_PlasterYellow", "CT_PlasterPink", "CT_PlasterRed")[i], sx, sy, hh - 0.04, hh + 0.04, 0.09, 7, r1=0.07)
+    elif kind == "mint":
+        for sx, sy in ((-0.3, -0.25), (0.1, -0.3), (0.3, 0.1), (-0.2, 0.2), (0.0, 0.0)):
+            p.box("CT_Leaf", sx - 0.12, sx + 0.12, sy - 0.12, sy + 0.12, 0.0, 0.28)
+        for sx, sy in ((-0.3, 0.3), (0.3, -0.3)):
+            p.cyl("CT_PlasterYellow", sx, sy, 0.12, 0.2, 0.09, 6, r1=0.06)
+            p.cyl("CT_PlasterYellow", sx, sy + 0.01, 0.0, 0.12, 0.012, 4)
+    else:
+        for sx, sy in ((-0.3, -0.2), (0.0, 0.3), (0.3, -0.1), (-0.2, 0.25)):
+            p.box("CT_Leaf", sx - 0.015, sx + 0.015, sy - 0.015, sy + 0.015, 0.0, 0.85)
+            p.box("CT_PlasterYellow", sx - 0.09, sx + 0.09, sy - 0.09, sy + 0.09, 0.82, 0.88)
+        for sx, sy in ((0.1, -0.3), (-0.35, 0.05)):
+            p.box("CT_Leaf", sx - 0.1, sx + 0.1, sy - 0.1, sy + 0.1, 0.0, 0.22)
+    p.rod(kit.WOOD, (0.0, -0.46, -0.45), (0.0, -0.46, 0.3), 0.025, 4)
+    p.box("CT_Paper", -0.13, 0.13, -0.475, -0.46, 0.15, 0.3)
+    return p.done()
+
+
+def _wash_line(B, x0, x1, y, z, sheets):
+    """A roof drying line between two posts: pegs and hanging linen (sheets = [(centre x, width, drop, material)])."""
+    p = kit._P(B, 0.0, 0.0, 0.0, 0.0, "wash_line")
+    zt = z + 1.9
+    for x in (x0, x1):
+        p.box(kit.STEEL, x - 0.04, x + 0.04, y - 0.04, y + 0.04, z, zt + 0.1)
+    p.rod(kit.STEEL, (x0, y, zt), (x1, y, zt), 0.014, 5)
+    for cx, w, drop, mat in sheets:
+        sag = 0.04 * (1 - ((cx - (x0 + x1) / 2) / ((x1 - x0) / 2)) ** 2)
+        top = zt - sag
+        p.box(mat, cx - w / 2, cx + w / 2, y - 0.012, y + 0.012, top - drop, top)
+        for ex in (cx - w / 2 + 0.05, cx + w / 2 - 0.05):
+            p.box(kit.WOOD, ex - 0.012, ex + 0.012, y - 0.02, y + 0.02, top - 0.04, top + 0.06)
+    return p.done()
+
+
+# ------------------------------------------------------------------ second pass: shop, laundry, roof
+def _depth_shop(B):
+    T = B.thing
+    f = Furn(B)
+    # floor scales on the customer side, left of the counter
+    _floor_scale(B, -16.8, 4.55, 0.0, 0.0)
+    T("shop_floor_scale", "machine", (-16.8, 4.55, 1.1), 0.0, what="weighing_scale")
+    B.spot("shop_scale_stand", "stand", (-16.8, 3.9, 0.0), 180.0)
+    # the shopkeeper's abacus and the radio on the counter
+    _abacus(B, -14.5, 4.3, 1.05, 0.0)
+    T("shop_abacus", "craft", (-14.5, 4.3, 1.17), 0.0, what="abacus")
+    kit.radio(B, -12.65, 4.55, 1.05, 340.0)
+    T("shop_radio", "machine", (-12.65, 4.55, 1.2), 0.0, what="radio")
+    # bread rack right of the counter, goods of the day above the back shelves
+    kit.bread_rack(B, -11.1, 5.3, 0.0, 0.0, w=0.9, seed=5)
+    T("shop_bread_rack", "board", (-11.1, 5.3, 1.0), 0.0, topic="bread")
+    B.spot("shop_bread_stand", "stand", (-11.1, 4.5, 0.0), 180.0)
+    kit.menu_board(B, -10.0, YC0 - 0.01, 0.0, 0.0, name="price_1", w=1.2, zc=2.42, seed=3)
+    T("shop_goods_day", "board", (-10.0, 6.1, 2.42), 0.0, topic="goods_day")
+    # bottle-deposit corner: a table of empties and crates stacked to the east wall
+    kit.table(B, -8.7, 4.35, 0.0, 90.0, w=0.9, d=0.5, kind="wood")
+    for k, y_ in enumerate((4.05, 4.35, 4.65)):
+        kit.bottles(B, -8.7, y_, 0.75, 0.0, n=3, seed=20 + k)
+    for k in range(3):
+        kit.crate(B, -9.6, 3.55 if k < 2 else 3.55, 0.3 * k, 90.0, w=0.55, d=0.38, h=0.3, fill="CT_PlasterGreen", seed=30 + k)
+    kit.bottles(B, -9.6, 3.55, 0.9, 0.0, n=4, seed=35)
+    T("shop_deposit", "machine", (-8.8, 4.35, 0.95), 90.0, what="deposit_window")
+    B.spot("shop_deposit_stand", "stand", (-9.6, 4.35, 0.0), 270.0)
+    B.lamp((-17.0, 4.2, 2.65), lumens=600, colour="#FFE2B5", kind="public", radius=6.0)
+
+
+def _depth_laundry(B):
+    T = B.thing
+    f = Furn(B)
+    # a forgotten-sock line over the folding table, under the front window
+    _sock_line(B, [(-6.8, 2.6, 0.0), (-5.1, 2.6, -0.1), (-3.5, 2.6, 0.0)], 2.18)
+    T("laundry_sock_line", "board", (-5.1, 2.6, 2.0), 0.0, topic="socks")
+    # mangle at the west wall, magazines at the east wall
+    _mangle(B, -6.5, 4.2, 0.0, 90.0)
+    T("laundry_mangle", "craft", (-6.45, 4.2, 0.9), 90.0, what="mangle")
+    B.spot("laundry_mangle_stand", "stand", (-5.6, 4.2, 0.0), 270.0)
+    kit.magazine_rack(B, -1.105, 2.65, 0.0, 270.0, w=0.8, rows=4, seed=9)
+    T("laundry_magazines", "shelf", (-1.3, 2.65, 1.0), 270.0, topic="laundry_mags")
+    B.spot("laundry_read_stand", "stand", (-2.1, 2.7, 0.0), 270.0)
+    # lost-property box = the upper cardboard box on the wall shelf; baskets by the machines
+    T("laundry_lost_box", "board", (-6.7, 3.0, 1.75), 90.0, topic="lost_box")
+    kit.crate(B, -5.6, 4.45, 0.0, 0.0, w=0.5, d=0.38, h=0.28, fill="CT_FrameWhite", seed=41)
+    kit.crate(B, -3.3, 4.45, 0.0, 10.0, w=0.5, d=0.38, h=0.28, fill="CT_PlasterBlue", seed=42)
+    kit.poster(B, -6.9 + 0.005, 5.3, 0.0, 90.0, name="poster_health_0" if "poster_health_0" in kit.ATLAS else "poster_health", w=0.5, zc=1.7)
+    B.spot("laundry_fold", "stand", (-4.0, 2.45, 0.0), 180.0)
+    B.spot("laundry_bench_sit", "bench", (-1.45, 4.0, 0.0), 270.0)
+    f.pendant(-2.0, 4.6, 2.8, lumens=600, colour="#FFE2B5", radius=6.0, drop=0.5)
+
+
+def _depth_roof(B):
+    T = B.thing
+    zd = ZR + 0.04
+    # loungers
+    for k, x in enumerate((-4.7, -3.5)):
+        _lounger(B, x, 8.2, zd, 0.0, mat=("CT_PlasterBlue", "CT_PlasterRed")[k])
+        T("roof_lounger_%d" % (k + 1), "bed", (x, 8.2, zd + 0.35), 0.0, height=0.35)
+        B.spot("roof_lounger_%d" % (k + 1), "bench", (x, 8.0, zd), 0.0)
+    # telescope on its tripod, aimed at the sea
+    kit.telescope(B, 9.5, 4.0, zd, 0.0)
+    T("roof_telescope", "machine", (9.5, 4.0, zd + 1.3), 0.0, what="roof_telescope")
+    B.spot("roof_telescope_stand", "stand", (9.5, 3.4, zd), 180.0 if False else 0.0)
+    # pigeon loft and a bird feeder on the east end of the roof, away from the drum's roof door
+    _dovecote(B, 15.9, 9.7, ZR, 0.0)
+    T("roof_dovecote", "machine", (15.9, 9.7, ZR + 1.5), 0.0, what="dovecote")
+    B.spot("roof_pigeons", "stand", (15.9, 8.8, ZR), 180.0)
+    kit.bird_feeder(B, 15.8, 5.2, ZR, 0.0, kind="post")
+    T("roof_feeder", "board", (15.8, 5.2, ZR + 1.5), 0.0, topic="feeder")
+    B.spot("roof_feeder_stand", "stand", (15.8, 4.5, ZR), 180.0)
+    # named plant tubs: dressing on the four concrete tubs of _roof
+    for k, ((x, y), kd) in enumerate((((-8.5, 4.0), "tomato"), ((-8.5, 10.5), "dahlia"), ((14.5, 4.0), "mint"), ((14.5, 10.5), "dill"))):
+        _tub_dressing(B, x, y, kd, ZR + 0.54)
+        T("roof_tub_%d" % (k + 1), "board", (x, y - 0.4, ZR + 0.9), 0.0, topic="tub")
+    B.spot("roof_tub_work", "work", (-8.5, 3.2, ZR), 0.0)
+    # rain-barrel shower west of the pergola
+    _shower(B, -8.2, 8.7, ZR, 0.0)
+    T("roof_shower", "machine", (-8.2, 8.5, ZR + 1.2), 0.0, what="roof_shower")
+    B.spot("roof_shower_stand", "stand", (-8.2, 7.7, ZR), 180.0)
+    # samovar on the table: tea in the evening
+    T("roof_samovar", "machine", (0.2, 7.2, zd + 0.95), 0.0, what="samovar")
+    # drying lines west of the pergola, either side of the tower's roof door path (y ~7.2)
+    _wash_line(B, -17.0, -10.5, 4.6, ZR, [(-16.0, 1.3, 1.0, "CT_FrameWhite"), (-14.6, 1.0, 0.9, "CT_PlasterBlue"),
+                                         (-13.3, 0.5, 0.6, "CT_PlasterYellow"), (-12.4, 1.3, 1.1, "CT_FrameWhite"),
+                                         (-11.2, 0.6, 0.8, "CT_PlasterRed")])
+    _wash_line(B, -17.0, -10.5, 9.3, ZR, [(-16.2, 1.0, 0.8, "CT_PlasterGreen"), (-14.9, 1.4, 1.1, "CT_FrameWhite"),
+                                         (-13.5, 0.6, 0.7, "CT_PlasterBlue"), (-12.3, 1.0, 1.0, "CT_PlasterPink")])
+    T("roof_washing_line", "board", (-13.7, 4.6, ZR + 1.3), 0.0, topic="washing_line")
+    B.spot("roof_washing", "work", (-13.7, 3.9, ZR), 180.0)
+    B.lamp((0.5, 7.2, ZR + 2.0), lumens=700, colour="#FFD9A8", kind="lobby", radius=8.0)
+    box(B.detail, STEEL, -13.43, -13.37, 6.87, 6.93, ZR, ZR + 2.2)
+    B.lamp((-13.4, 6.9, ZR + 2.3), lumens=500, colour="#FFD9A8", kind="lobby", radius=8.0)

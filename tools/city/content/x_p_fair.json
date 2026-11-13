@@ -1,0 +1,484 @@
+{
+ "_doc": "The fair's second pass (docs/city_interiors.md): the games' own models get acts whose results differ by weekday and hour, the record plaque, the prize shelf, the chalk board and the notice board run a story over several game days (strongman record, travelling photographer, a lost sandal); the two quests are in /home/user/wt/quests_wave_canopy.json for the lead. Strings: strings/x_p_fair.json.",
+ "acts": {
+  "fx_strongman_hit": {
+   "like": "strongman",
+   "lines": [
+    "city.fx.hit.any.1",
+    "city.fx.hit.any.2",
+    {
+     "k": "city.fx.hit.fri.1",
+     "d": "fri"
+    },
+    {
+     "k": "city.fx.hit.fri.2",
+     "d": "fri"
+    },
+    {
+     "k": "city.fx.hit.sat.1",
+     "d": "sat"
+    },
+    {
+     "k": "city.fx.hit.sat.2",
+     "d": "sat"
+    },
+    {
+     "k": "city.fx.hit.sun.1",
+     "d": "sun"
+    },
+    {
+     "k": "city.fx.hit.sun.2",
+     "d": "sun"
+    },
+    {
+     "k": "city.fx.hit.rec",
+     "after": 6
+    }
+   ]
+  },
+  "fx_strongman_record": {
+   "like": "look_misc",
+   "prompt": "city.fx.prompt.record",
+   "rotate": "daily",
+   "minutes": 3,
+   "sound": "paper_rustle",
+   "lines": [
+    {
+     "k": "city.fx.rec.1"
+    },
+    {
+     "k": "city.fx.rec.2",
+     "after": 1
+    },
+    {
+     "k": "city.fx.rec.3",
+     "after": 2
+    },
+    {
+     "k": "city.fx.rec.4",
+     "after": 4
+    },
+    {
+     "k": "city.fx.rec.5",
+     "after": 6
+    },
+    {
+     "k": "city.fx.rec.6",
+     "after": 7
+    },
+    {
+     "k": "city.fx.rec.7",
+     "after": 8
+    },
+    {
+     "k": "city.fx.rec.8",
+     "after": 9
+    }
+   ]
+  },
+  "fx_gallery": {
+   "like": "shooting_gallery",
+   "lines": [
+    "city.fx.gal.any",
+    {
+     "k": "city.fx.gal.fri.1",
+     "d": "fri"
+    },
+    {
+     "k": "city.fx.gal.fri.2",
+     "d": "fri"
+    },
+    {
+     "k": "city.fx.gal.sat.1",
+     "d": "sat"
+    },
+    {
+     "k": "city.fx.gal.sat.2",
+     "d": "sat"
+    },
+    {
+     "k": "city.fx.gal.sun.1",
+     "d": "sun"
+    },
+    {
+     "k": "city.fx.gal.sun.2",
+     "d": "sun"
+    }
+   ]
+  },
+  "fx_ring_toss": {
+   "like": "ring_toss",
+   "lines": [
+    "city.fx.ring.any",
+    {
+     "k": "city.fx.ring.fri.1",
+     "d": "fri"
+    },
+    {
+     "k": "city.fx.ring.sat.1",
+     "d": "sat"
+    },
+    {
+     "k": "city.fx.ring.sun.1",
+     "d": "sun"
+    }
+   ]
+  },
+  "fx_lottery": {
+   "like": "lottery",
+   "lines": [
+    "city.fx.lot.any",
+    {
+     "k": "city.fx.lot.fri.1",
+     "d": "fri"
+    },
+    {
+     "k": "city.fx.lot.sat.1",
+     "d": "sat"
+    },
+    {
+     "k": "city.fx.lot.sun.1",
+     "d": "sun"
+    }
+   ]
+  },
+  "fx_fortune": {
+   "like": "fortune",
+   "lines": [
+    {
+     "k": "city.fx.for.1",
+     "h": [
+      6,
+      12
+     ]
+    },
+    {
+     "k": "city.fx.for.2",
+     "h": [
+      12,
+      18
+     ]
+    },
+    {
+     "k": "city.fx.for.3",
+     "h": [
+      18,
+      6
+     ]
+    },
+    {
+     "k": "city.fx.for.fri",
+     "d": "fri"
+    },
+    {
+     "k": "city.fx.for.sat",
+     "d": "sat"
+    },
+    {
+     "k": "city.fx.for.sun",
+     "d": "sun"
+    },
+    {
+     "k": "city.fx.for.sandal",
+     "after": 1
+    }
+   ]
+  },
+  "fx_weigh": {
+   "like": "scales",
+   "prompt": "city.fx.prompt.weigh",
+   "lines": [
+    "city.fx.wei.1",
+    {
+     "k": "city.fx.wei.2",
+     "d": "sat-sun"
+    },
+    {
+     "k": "city.fx.wei.3",
+     "h": [
+      18,
+      21
+     ]
+    }
+   ]
+  },
+  "fx_prize_shelf": {
+   "like": "look_misc",
+   "prompt": "city.fx.prompt.prizes",
+   "rotate": "daily",
+   "minutes": 2,
+   "lines": [
+    {
+     "k": "city.fx.pri.1"
+    },
+    {
+     "k": "city.fx.pri.2",
+     "after": 1
+    },
+    {
+     "k": "city.fx.pri.3",
+     "after": 3
+    },
+    {
+     "k": "city.fx.pri.4",
+     "after": 5
+    },
+    {
+     "k": "city.fx.pri.5",
+     "after": 8
+    }
+   ]
+  },
+  "fx_prize_board": {
+   "like": "look_misc",
+   "prompt": "city.fx.prompt.chalk",
+   "rotate": "daily",
+   "minutes": 2,
+   "lines": [
+    "city.fx.cha.any",
+    {
+     "k": "city.fx.cha.fri",
+     "d": "fri"
+    },
+    {
+     "k": "city.fx.cha.sat",
+     "d": "sat"
+    },
+    {
+     "k": "city.fx.cha.sun",
+     "d": "sun"
+    },
+    {
+     "k": "city.fx.cha.late",
+     "after": 7
+    }
+   ]
+  },
+  "fx_photo_pose": {
+   "prompt": "city.fx.prompt.photo",
+   "minutes": 5,
+   "price": 10,
+   "give": [
+    [
+     "postcard",
+     1
+    ]
+   ],
+   "daily": 1,
+   "sound": "camera_flash",
+   "pose": "stand",
+   "lines": [
+    "city.fx.pho.1",
+    {
+     "k": "city.fx.pho.2",
+     "after": 6
+    },
+    {
+     "k": "city.fx.pho.we",
+     "d": "sat-sun"
+    },
+    {
+     "k": "city.fx.pho.eve",
+     "h": [
+      17,
+      21
+     ]
+    }
+   ]
+  },
+  "fx_sandal": {
+   "like": "look_misc",
+   "prompt": "city.fx.prompt.sandal",
+   "minutes": 2,
+   "any_hour": true,
+   "lines": [
+    "city.fx.san.1",
+    "city.fx.san.2",
+    "city.fx.san.3"
+   ]
+  },
+  "fx_lost_basket": {
+   "like": "look_misc",
+   "prompt": "city.fx.prompt.basket",
+   "minutes": 2,
+   "any_hour": true,
+   "lines": [
+    "city.fx.bas.1",
+    "city.fx.bas.2"
+   ]
+  },
+  "fx_fair_board": {
+   "like": "look_fair",
+   "rotate": "daily",
+   "target": "look_fair",
+   "minutes": 4,
+   "lines": [
+    "city.look.fair.*",
+    {
+     "k": "city.reg.fair.1"
+    },
+    {
+     "k": "city.reg.fair.2",
+     "after": 2
+    },
+    {
+     "k": "city.reg.fair.3",
+     "after": 4
+    },
+    {
+     "k": "city.reg.fair.4",
+     "after": 6
+    },
+    {
+     "k": "city.reg.fair.5",
+     "after": 8
+    }
+   ]
+  }
+ },
+ "rules": {
+  "P-FAIR/strongman_tower": {
+   "act": "fx_strongman_hit"
+  },
+  "P-FAIR/strongman_record": {
+   "act": "fx_strongman_record"
+  },
+  "P-FAIR/shooting_booth": {
+   "act": "fx_gallery"
+  },
+  "P-FAIR/ring_table": {
+   "act": "fx_ring_toss"
+  },
+  "P-FAIR/lottery_drum": {
+   "act": "fx_lottery"
+  },
+  "P-FAIR/fortune_automaton": {
+   "act": "fx_fortune"
+  },
+  "P-FAIR/weighing_chair": {
+   "act": "fx_weigh"
+  },
+  "P-FAIR/prize_shelf": {
+   "act": "fx_prize_shelf"
+  },
+  "P-FAIR/prize_board": {
+   "act": "fx_prize_board"
+  },
+  "P-FAIR/photo_camera": {
+   "act": "fx_photo_pose"
+  },
+  "P-FAIR/fair_sandal": {
+   "act": "fx_sandal"
+  },
+  "P-FAIR/fair_lost_basket": {
+   "act": "fx_lost_basket"
+  },
+  "P-FAIR/fair_board": {
+   "act": "fx_fair_board"
+  }
+ },
+ "quests": [
+  {
+   "id": "fair_record",
+   "kind": "side",
+   "start_on": {
+    "event": "visit",
+    "target": "P-FAIR"
+   },
+   "stages": [
+    {
+     "id": "record",
+     "objectives": [
+      {
+       "id": "read",
+       "event": "do",
+       "target": "fx_strongman_record"
+      }
+     ]
+    },
+    {
+     "id": "hit",
+     "objectives": [
+      {
+       "id": "swing",
+       "event": "do",
+       "target": "fx_strongman_hit"
+      }
+     ]
+    },
+    {
+     "id": "photo",
+     "objectives": [
+      {
+       "id": "pose",
+       "event": "do",
+       "target": "fx_photo_pose"
+      }
+     ],
+     "reward": {
+      "items": {
+       "badge": 1
+      },
+      "rubles": 20
+     }
+    }
+   ]
+  },
+  {
+   "id": "fair_sandal",
+   "kind": "side",
+   "start_on": {
+    "event": "visit",
+    "target": "P-FAIR"
+   },
+   "stages": [
+    {
+     "id": "notice",
+     "objectives": [
+      {
+       "id": "read",
+       "event": "do",
+       "target": "look_fair"
+      }
+     ]
+    },
+    {
+     "id": "fortune",
+     "objectives": [
+      {
+       "id": "ask",
+       "event": "do",
+       "target": "fx_fortune"
+      }
+     ]
+    },
+    {
+     "id": "find",
+     "objectives": [
+      {
+       "id": "look",
+       "event": "do",
+       "target": "fx_sandal"
+      }
+     ]
+    },
+    {
+     "id": "basket",
+     "objectives": [
+      {
+       "id": "put",
+       "event": "do",
+       "target": "fx_lost_basket"
+      }
+     ],
+     "reward": {
+      "items": {
+       "candy": 2
+      },
+      "rubles": 15
+     }
+    }
+   ]
+  }
+ ]
+}

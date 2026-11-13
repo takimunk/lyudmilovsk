@@ -1,0 +1,602 @@
+{
+ "city.sch.p.bell": {
+  "ru": "E — позвонить в звонок",
+  "en": "E — ring the handbell",
+  "ja": "E：ベルを鳴らす"
+ },
+ "city.sch.p.tea": {
+  "ru": "E — взять стакан чая",
+  "en": "E — take a glass of tea",
+  "ja": "E：お茶をもらう"
+ },
+ "city.sch.p.tray": {
+  "ru": "E — поставить поднос",
+  "en": "E — put the tray back",
+  "ja": "E：トレーを返す"
+ },
+ "city.sch.p.globe": {
+  "ru": "E — покрутить глобус",
+  "en": "E — spin the globe",
+  "ja": "E：地球儀を回す"
+ },
+ "city.sch.p.scope": {
+  "ru": "E — посмотреть в микроскоп",
+  "en": "E — look into the microscope",
+  "ja": "E：顕微鏡をのぞく"
+ },
+ "city.sch.p.metro": {
+  "ru": "E — запустить метроном",
+  "en": "E — start the metronome",
+  "ja": "E：メトロノームを動かす"
+ },
+ "city.sch.p.score": {
+  "ru": "E — перекинуть счёт",
+  "en": "E — flip the score",
+  "ja": "E：得点をめくる"
+ },
+ "city.sch.p.bag": {
+  "ru": "E — заглянуть за маты",
+  "en": "E — look behind the mats",
+  "ja": "E：マットの裏をのぞく"
+ },
+ "city.sch.p.board": {
+  "ru": "E — посмотреть, что на доске",
+  "en": "E — see what is on the board",
+  "ja": "E：黒板を見る"
+ },
+ "city.sch.p.stage": {
+  "ru": "E — выйти на сцену",
+  "en": "E — step onto the stage",
+  "ja": "E：舞台に立つ"
+ },
+ "city.sch.p.lost": {
+  "ru": "E — порыться в ящике находок",
+  "en": "E — rummage in the lost-and-found box",
+  "ja": "E：忘れ物箱をあさる"
+ },
+ "city.sch.p.duty": {
+  "ru": "E — открыть журнал дежурных",
+  "en": "E — open the duty log",
+  "ja": "E：当番日誌を開く"
+ },
+ "city.shop.school_canteen.title": {
+  "ru": "Школьный буфет",
+  "en": "School buffet",
+  "ja": "学校の売店"
+ },
+ "city.sch.lesson.1": {
+  "ru": "Понедельник, география. Учительница провела указкой вдоль нашего берега и попросила назвать три города на «Л». Я назвал два и чуть не назвал свой.",
+  "en": "Monday, geography. The teacher ran her pointer along our own coast and asked for three towns starting with L. I named two and nearly named the one we were sitting in.",
+  "ja": "月曜日、地理。先生は指示棒で私たちの海岸線をなぞり、Lで始まる町を三つ挙げなさいと言った。二つ答えて、あと少しで今いる町の名を言いそうになった。"
+ },
+ "city.sch.lesson.2": {
+  "ru": "Вторник, литература. Читали вслух «Бежин луг». Девочка впереди читала про ночь так тихо, что в классе замолчали даже батареи.",
+  "en": "Tuesday, literature. We read aloud from Turgenev's night in the meadow. The girl in front read so quietly that even the radiators fell silent.",
+  "ja": "火曜日、国語。ツルゲーネフの夜の草原を声に出して読んだ。前の席の女の子があまりに静かに読むので、暖房のパイプまで黙ってしまった。"
+ },
+ "city.sch.lesson.3": {
+  "ru": "Среда, физика. Учитель подвесил на нитке гирьку и сказал: «Смотрите, как всё возвращается». Гирька качалась, а мы считали качания и сбивались.",
+  "en": "Wednesday, physics. The teacher hung a weight on a thread and said: \"Watch how everything comes back.\" It swung, and we counted the swings and kept losing count.",
+  "ja": "水曜日、物理。先生は糸におもりを吊るして言った。「ほら、すべては元に戻ってくる」。おもりは揺れ、私たちは揺れを数えては何度も数え間違えた。"
+ },
+ "city.sch.lesson.4": {
+  "ru": "Четверг, история. Рассказывали про старый порт. На месте нашей набережной когда-то сушили сети, и у каждого дома были свои мостки.",
+  "en": "Thursday, history. We heard about the old port. Where our seafront is now, nets used to dry, and every house had its own little jetty.",
+  "ja": "木曜日、歴史。昔の港の話を聞いた。今の海沿いの遊歩道の場所には昔は網が干してあって、どの家にも自分の小さな桟橋があったらしい。"
+ },
+ "city.sch.lesson.5": {
+  "ru": "Пятница, рисование. Нужно было нарисовать то, что видно из окна. Я нарисовал чайку. Соседка по парте сказала, что вышла картофелина, но довольная.",
+  "en": "Friday, drawing. We had to draw what we could see from the window. I drew a seagull. My deskmate said it came out as a potato, but a contented one.",
+  "ja": "金曜日、図工。窓から見えるものを描く授業だった。私はカモメを描いた。隣の席の子は、ジャガイモみたいだけど満足そうだね、と言った。"
+ },
+ "city.sch.lesson.6": {
+  "ru": "Первый урок. В классе пахнет мелом и мокрыми куртками; все ещё немного спят с открытыми глазами.",
+  "en": "The first lesson. The room smells of chalk and wet jackets; everyone is still a little asleep with their eyes open.",
+  "ja": "一時間目。教室はチョークと濡れた上着のにおいがして、みんなまだ目を開けたまま少し眠っている。"
+ },
+ "city.sch.lesson.7": {
+  "ru": "Последний урок. Стрелки ползут по сантиметру, а за окном уже вовсю гуляет солнце. Учительница делает вид, что не замечает наши взгляды.",
+  "en": "The last lesson. The clock hands crawl a centimetre at a time while the sun is already out strolling. The teacher pretends not to notice our glances.",
+  "ja": "最後の授業。時計の針は一センチずつしか進まず、窓の外ではもう太陽が散歩している。先生は私たちの視線に気づかないふりをしている。"
+ },
+ "city.sch.lesson.8": {
+  "ru": "Урок как урок: тетрадь в клетку, выцветшая промокашка и чья-то записка «не списывай у Миши, он тоже не знает».",
+  "en": "A lesson like any lesson: a squared notebook, a faded blotter and somebody's note: \"don't copy from Misha, he doesn't know either.\"",
+  "ja": "ごく普通の授業。方眼ノート、色あせた吸い取り紙、そして誰かのメモ。「ミーシャの答えは写すな、あいつもわかってない」。"
+ },
+ "city.sch.tt.1": {
+  "ru": "Расписание, понедельник: 1. русский, 2. география, 3. математика, 4. музыка, 5. физкультура. Внизу красным: «Сменку не забывать!»",
+  "en": "Timetable, Monday: 1. Russian, 2. geography, 3. maths, 4. music, 5. PE. At the bottom in red: \"Don't forget your gym shoes!\"",
+  "ja": "時間割、月曜日：1国語、2地理、3算数、4音楽、5体育。下に赤字で「体育館履きを忘れずに！」"
+ },
+ "city.sch.tt.2": {
+  "ru": "Вторник: 1. литература, 2. алгебра, 3. биология, 4. английский, 5. рисование.",
+  "en": "Tuesday: 1. literature, 2. algebra, 3. biology, 4. English, 5. drawing.",
+  "ja": "火曜日：1国語、2代数、3生物、4英語、5図工。"
+ },
+ "city.sch.tt.3": {
+  "ru": "Среда: 1. физика, 2. алгебра, 3. история, 4. физкультура, 5. классный час. На физике, говорят, всегда немного качает.",
+  "en": "Wednesday: 1. physics, 2. algebra, 3. history, 4. PE, 5. form period. Physics, they say, always sways a little.",
+  "ja": "水曜日：1物理、2代数、3歴史、4体育、5学級活動。物理はいつも少し揺れる、という噂だ。"
+ },
+ "city.sch.tt.4": {
+  "ru": "Четверг: 1. история, 2. русский, 3. химия, 4. музыка, 5. труд. На труде мальчики в мастерскую, девочки на кухню, а потом наоборот.",
+  "en": "Thursday: 1. history, 2. Russian, 3. chemistry, 4. music, 5. crafts. In crafts the boys go to the workshop and the girls to the kitchen, then the other way round.",
+  "ja": "木曜日：1歴史、2国語、3化学、4音楽、5技術。技術では男子は工作室、女子は調理室へ行き、あとで入れ替わる。"
+ },
+ "city.sch.tt.5": {
+  "ru": "Пятница: 1. математика, 2. литература, 3. биология, 4. рисование, 5. сдвоенная физкультура. Последний звонок — в 13:40.",
+  "en": "Friday: 1. maths, 2. literature, 3. biology, 4. drawing, 5. double PE. The last bell is at 13:40.",
+  "ja": "金曜日：1算数、2国語、3生物、4図工、5体育二コマ。最後のチャイムは13時40分。"
+ },
+ "city.sch.tt.6": {
+  "ru": "Суббота и воскресенье в расписании не значатся. Кто-то приписал под таблицей карандашом: «И слава богу».",
+  "en": "Saturday and Sunday are not in the timetable. Someone has pencilled under the table: \"Thank goodness.\"",
+  "ja": "土曜日と日曜日は時間割に載っていない。表の下に誰かが鉛筆で書き足している。「ありがたや」。"
+ },
+ "city.sch.menu.1": {
+  "ru": "Меню на понедельник: суп гороховый, котлета с пюре, компот из сухофруктов. В уголке мелом: «Хлеб — без ограничений».",
+  "en": "Monday's menu: pea soup, a cutlet with mash, dried-fruit compote. In the corner in chalk: \"Bread: unlimited.\"",
+  "ja": "月曜日のメニュー：えんどう豆のスープ、マッシュポテト添えのカツレツ、ドライフルーツのコンポート。隅にチョークで「パンは食べ放題」。"
+ },
+ "city.sch.menu.2": {
+  "ru": "Вторник: борщ, макароны по-флотски, кисель. Кисель сегодня такой густой, что ложка стоит сама.",
+  "en": "Tuesday: borscht, navy-style pasta, kissel. Today's kissel is so thick the spoon stands up by itself.",
+  "ja": "火曜日：ボルシチ、海軍風パスタ、キセーリ。今日のキセーリはスプーンが自分で立つほど濃い。"
+ },
+ "city.sch.menu.3": {
+  "ru": "Среда — рыбный день: рассольник, рыба с картошкой, чай. Во дворе уже собрались чайки с серьёзными лицами.",
+  "en": "Wednesday is fish day: pickle soup, fish and potatoes, tea. The seagulls have already gathered in the yard with serious faces.",
+  "ja": "水曜日は魚の日：ピクルスのスープ、魚とじゃがいも、お茶。中庭にはもう真面目な顔のカモメたちが集まっている。"
+ },
+ "city.sch.menu.4": {
+  "ru": "Четверг: щи, гуляш с гречкой, компот. Кто-то приписал: «Гуляш по-людмиловски». Что это значит, никто не знает.",
+  "en": "Thursday: cabbage soup, goulash with buckwheat, compote. Someone added: \"Lyudmilovsk-style goulash.\" Nobody knows what that means.",
+  "ja": "木曜日：シチー、そば粥添えのグーラッシュ、コンポート。誰かが書き足している。「リュドミロフスク風グーラッシュ」。それが何なのか誰も知らない。"
+ },
+ "city.sch.menu.5": {
+  "ru": "Пятница: суп с вермишелью, сырники со сметаной, какао. Сырников выдают по два в руки. Буфет: пирожки, булочки, кефир, яблоки.",
+  "en": "Friday: vermicelli soup, cheese pancakes with sour cream, cocoa. Two pancakes per person. Buffet: pies, buns, kefir, apples.",
+  "ja": "金曜日：春雨のスープ、サワークリームのシルニキ、ココア。シルニキはひとり二枚まで。売店にはピロシキ、パン、ケフィア、りんご。"
+ },
+ "city.sch.menu.6": {
+  "ru": "На выходные меню не пишут: столовая закрыта, доска вымыта до скрипа. Только в уголке осталась нарисованная маленькая тарелка.",
+  "en": "No menu is written for the weekend: the canteen is closed and the board is wiped squeaky clean. Only a little drawn plate is left in the corner.",
+  "ja": "週末はメニューを書かない。食堂は閉まっていて、黒板はきゅっと鳴るほど拭かれている。隅に小さな皿の絵だけが残っている。"
+ },
+ "city.sch.tea.1": {
+  "ru": "Большая перемена. Из титана идёт густой чай с лимонной коркой; дежурный наливает в гранёный стакан и кивает: «Только не бегом».",
+  "en": "The big break. Thick tea with lemon peel comes out of the urn; the duty teacher pours it into a faceted glass and nods: \"Just don't run.\"",
+  "ja": "大休憩。湯沸かし器からレモンの皮入りの濃いお茶が出てくる。当番の先生が角のあるコップに注いで言う。「走らないでね」。"
+ },
+ "city.sch.tea.2": {
+  "ru": "Очередь уже растаяла. Чай в титане стал цвета старой меди, зато остался горячим, а стакан тёплым, как варежка.",
+  "en": "The queue has melted away. The tea in the urn is the colour of old copper, but still hot, and the glass is warm as a mitten.",
+  "ja": "行列はもう溶けてなくなった。お茶は古い銅の色になったが熱いままで、コップはミトンのように温かい。"
+ },
+ "city.sch.tea.3": {
+  "ru": "Титан остывает и тихо щёлкает. Сейчас чай никому не наливают.",
+  "en": "The urn is cooling and clicking quietly. Nobody is pouring tea right now.",
+  "ja": "湯沸かし器は冷めながら小さくカチカチ鳴っている。今はだれもお茶を注いでいない。"
+ },
+ "city.sch.tray.1": {
+  "ru": "Поставил поднос на тележку. Ложки в стакан, тарелки стопкой: так велит бумажка на стене, и так же велит чувство приличия.",
+  "en": "Put the tray on the trolley. Spoons in the glass, plates in a stack: the paper on the wall says so, and so does common decency.",
+  "ja": "トレーをワゴンに戻した。スプーンはコップに、皿は重ねて。壁の貼り紙もそう言うし、礼儀もそう言っている。"
+ },
+ "city.sch.tray.2": {
+  "ru": "На верхней полке чья-то недоеденная корка и записка карандашом: «Дежурные, я не виноват». Разбираться не стал.",
+  "en": "On the top shelf: somebody's unfinished crust and a pencilled note: \"Duty pupils, it wasn't me.\" I didn't investigate.",
+  "ja": "上の段に誰かの食べ残しの耳と、鉛筆のメモ。「当番さん、ぼくじゃありません」。深入りはしなかった。"
+ },
+ "city.sch.tray.3": {
+  "ru": "Тележка чуть поехала: у колеса свой характер. Из окошка раздачи кивнули: хороший мальчик.",
+  "en": "The trolley rolled a little: one wheel has a mind of its own. Someone nodded from the serving hatch: a good lad.",
+  "ja": "ワゴンが少し動いた。車輪のひとつは気まぐれなのだ。配膳口から誰かがうなずいた。いい子だね、と。"
+ },
+ "city.sch.bell.1": {
+  "ru": "Звякнул так, что из-за двери класса выглянули сразу три головы. Первый урок: не опаздывать.",
+  "en": "I rang it so loudly that three heads looked out from behind a classroom door at once. First lesson: don't be late.",
+  "ja": "ベルを鳴らすと、教室のドアの陰から三つの頭が一斉にのぞいた。一時間目、遅刻厳禁。"
+ },
+ "city.sch.bell.2": {
+  "ru": "Позвонил посреди урока. Из ближайшей двери выглянула учительница, посмотрела на меня и тихо закрыла дверь. Ничего не сказала, но запомнила.",
+  "en": "I rang in the middle of a lesson. A teacher looked out of the nearest door, regarded me, and quietly shut it. She said nothing, but she will remember.",
+  "ja": "授業のまっただ中に鳴らしてしまった。近くのドアから先生が顔を出し、私を見て、静かにドアを閉めた。何も言わなかったが、きっと覚えている。"
+ },
+ "city.sch.bell.3": {
+  "ru": "Звонок эхом пробежал по пустеющим коридорам. Кто-то далеко засмеялся: «Опять ты!»",
+  "en": "The bell ran as an echo through the emptying corridors. Somebody laughed far away: \"You again!\"",
+  "ja": "ベルの音が人気のなくなっていく廊下にこだました。遠くで誰かが笑った。「またおまえか！」"
+ },
+ "city.sch.bell.4": {
+  "ru": "В пустой школе звонок звучит иначе, длиннее, чем днём. Я положил его на место и пошёл дальше на цыпочках.",
+  "en": "In an empty school the bell sounds different, longer than by day. I put it back and went on tiptoe.",
+  "ja": "からっぽの学校ではベルの音が昼間と違って、もっと長く響く。元の場所に戻し、つま先立ちで歩き出した。"
+ },
+ "city.sch.duty.1": {
+  "ru": "Журнал дежурных по школе. Записи в столбик: «8:10 двери открыл. 8:25 Петров опоздал, но с цветами. 9:40 в 5 «А» сломалась указка, указку починили».",
+  "en": "The school duty log. Entries in a column: \"8:10 opened the doors. 8:25 Petrov late, but with flowers. 9:40 the pointer broke in 5A; the pointer was mended.\"",
+  "ja": "学校の当番日誌。縦に並んだ記録。「8:10 ドアを開けた。8:25 ペトロフが遅刻、ただし花を持参。9:40 5年Aの指示棒が折れた。指示棒は直った」。"
+ },
+ "city.sch.duty.2": {
+  "ru": "«Замечания: в раздевалке пропал синий мешок со сменкой. Просьба проверить ящик находок». Рядом приписано: «Уже проверили. Нет».",
+  "en": "\"Remarks: a blue bag with gym shoes has gone missing from the cloakroom. Please check the lost-and-found box.\" Beside it: \"Checked already. No.\"",
+  "ja": "「連絡事項：更衣室から体育館履き入りの青い袋がなくなりました。忘れ物箱を確認してください」。横に書き足し。「確認済み。なし」。"
+ },
+ "city.sch.duty.3": {
+  "ru": "«Правила дежурного: встречать у двери, не пускать на мокрый пол в обуви, на звонок отвечать вовремя, на вопросы отвечать вежливо». Последнее слово дописано: «и терпеливо».",
+  "en": "\"Duty rules: greet at the door, keep shoes off the wet floor, answer the bell on time, answer questions politely.\" Someone has added: \"and patiently.\"",
+  "ja": "「当番の決まり：玄関で出迎える、濡れた床に靴で上げない、チャイムには時間どおりに答える、質問には丁寧に答える」。最後に誰かが書き足している。「そして辛抱強く」。"
+ },
+ "city.sch.duty.4": {
+  "ru": "На последней странице детским почерком: «Если ты дежурный, не дрейфь. Звонок не кусается». Рядом рисунок звонка с зубами.",
+  "en": "On the last page, in a child's hand: \"If you're on duty, don't panic. The bell doesn't bite.\" Next to it, a drawing of a bell with teeth.",
+  "ja": "最後のページに子どもの字。「当番になっても怖がるな。ベルは噛みつかない」。横には歯の生えたベルの絵。"
+ },
+ "city.sch.lost.1": {
+  "ru": "Ящик находок: варежка (левая), варежка (правая, другого цвета), учебник географии за седьмой класс с закладкой на Тихом океане. Вещи ждут хозяев с терпением старых игрушек.",
+  "en": "The lost-and-found: a mitten (left), a mitten (right, another colour), a seventh-grade geography book bookmarked at the Pacific. The things wait for owners with the patience of old toys.",
+  "ja": "忘れ物箱：左の手袋、右の手袋（色違い）、七年生の地理の教科書（太平洋のページに栞）。持ち主を待つ物たちは古いおもちゃのように辛抱強い。"
+ },
+ "city.sch.lost.2": {
+  "ru": "Ещё шлёпанец без пары, футляр от очков, шапка с помпоном и бумажка: «Если шапка ваша, скажите, какой формы помпон».",
+  "en": "Also an unpaired slipper, a spectacle case, a bobble hat and a note: \"If the hat is yours, tell us the shape of the bobble.\"",
+  "ja": "ほかに片方だけのスリッパ、眼鏡ケース、ぼんぼんつきの帽子、そしてメモ。「帽子があなたのなら、ぼんぼんの形を言ってください」。"
+ },
+ "city.sch.lost.3": {
+  "ru": "Синего мешка со сменкой здесь нет. Зато к ящику пришпилена записка: «Лёша К., 6 «Б», ищи в спортзале, а не здесь: ты там последний раз прыгал».",
+  "en": "No blue gym bag here. But a note is pinned to the box: \"Lyosha K., 6B, look in the gym, not here: that's where you last jumped.\"",
+  "ja": "ここに青い体育館履き袋はない。でも箱にメモが留めてある。「6年Bのリョーシャ・K、探すのはここじゃなくて体育館だ。最後に跳んだのはあそこだろう」。"
+ },
+ "city.sch.lost.4": {
+  "ru": "На дне карандаш, расчёска и фотография неизвестного кота. Фотографии в ящик кладут чаще всего. Никто за ними не приходит.",
+  "en": "At the bottom: a pencil, a comb and a photograph of an unknown cat. Photographs are what is left in the box most often. Nobody comes for them.",
+  "ja": "底には鉛筆、くし、そして見知らぬ猫の写真。箱に入れられる物でいちばん多いのが写真だ。取りに来る人はいない。"
+ },
+ "city.sch.concert.1": {
+  "ru": "Афиша: «В субботу в 15:00 в спортзале школьный концерт. Поют все, кто не успел спрятаться. Играют: ученица 8 «А» (пианино), оркестр ложек 5 «Б»».",
+  "en": "Poster: \"On Saturday at 15:00 in the gym, the school concert. Everyone who failed to hide will sing. Performing: a girl from 8A (piano), the spoon orchestra of 5B.\"",
+  "ja": "ポスター：「土曜15時、体育館で学校の音楽会。隠れそびれた人は全員歌います。演奏：8年Aの生徒（ピアノ）、5年Bのスプーン楽団」。"
+ },
+ "city.sch.concert.2": {
+  "ru": "Приписка от руки: «Для «Песенки про море» нужен второй пианист. Репетиции каждый день после шестого урока. Метроном выдадим».",
+  "en": "A handwritten addition: \"The Song about the Sea needs a second pianist. Rehearsals every day after sixth period. Metronome provided.\"",
+  "ja": "手書きの追記：「『海の歌』には二人目のピアニストが必要。リハーサルは毎日六時間目のあと。メトロノームは貸します」。"
+ },
+ "city.sch.coats.1": {
+  "ru": "Вешалки забиты: клетчатые куртки, красное пальто с вышитым зайцем, три шапки на одном крючке. Под скамейкой выводок сменных ботинок.",
+  "en": "The racks are stuffed: checked jackets, a red coat with an embroidered hare, three hats on one hook. Under the bench, a brood of indoor shoes.",
+  "ja": "ハンガーはぎっしりだ。チェックの上着、うさぎの刺繍の赤いコート、ひとつのフックに三つの帽子。ベンチの下には上履きがひとかたまり。"
+ },
+ "city.sch.coats.2": {
+  "ru": "Крючки почти пусты. На одном висит забытый шарф, длинный, в полоску, пахнет осенью. Хозяина ждёт.",
+  "en": "The hooks are nearly empty. On one hangs a forgotten scarf, long and striped, smelling of autumn. It waits for its owner.",
+  "ja": "フックはほとんど空だ。ひとつに忘れられたマフラーが掛かっている。長くて縞模様で、秋のにおいがする。持ち主を待っている。"
+ },
+ "city.sch.coats.3": {
+  "ru": "В пустой раздевалке пахнет мокрой шерстью и остывающими батареями. Только шарф на крючке не теряет надежды.",
+  "en": "The empty cloakroom smells of wet wool and cooling radiators. Only the scarf on its hook has not lost hope.",
+  "ja": "だれもいない更衣室は濡れた毛糸と冷めていく暖房のにおいがする。フックのマフラーだけが希望を捨てていない。"
+ },
+ "city.sch.globe.1": {
+  "ru": "Глобус скрипит на оси. Палец остановился на Тихом океане: там, как водится, ни одного города.",
+  "en": "The globe creaks on its axis. My finger stopped on the Pacific, where, as usual, there is not a single town.",
+  "ja": "地球儀は軸の上できしむ。指が止まったのは太平洋。いつものことだが、町はひとつもない。"
+ },
+ "city.sch.globe.2": {
+  "ru": "Искал на глобусе нашу бухту. Точнее, место, где она должна быть: ни Людмиловска, ни точки. Масштаб подвёл.",
+  "en": "I looked for our bay on the globe. Or rather for the place where it ought to be: no Lyudmilovsk, not even a dot. The scale let us down.",
+  "ja": "地球儀でうちの入り江を探した。正確にはあるはずの場所を。リュドミロフスクはなく、点ひとつもない。縮尺のせいだ。"
+ },
+ "city.sch.globe.3": {
+  "ru": "Закрутил слишком сильно: Африка слилась с Антарктидой, а Австралия на секунду стала радугой. Притормозил ладонью.",
+  "en": "I spun it too hard: Africa merged with Antarctica and Australia turned into a rainbow for a second. I braked with my palm.",
+  "ja": "回しすぎた。アフリカが南極と溶け合い、オーストラリアが一瞬虹になった。手のひらでブレーキをかけた。"
+ },
+ "city.sch.globe.4": {
+  "ru": "Под подставкой бумажка: «Не крутить во время контрольной». Бумажка пожелтела: значит, правило давнее и нарушали его ещё родители.",
+  "en": "Under the stand a slip of paper: \"Do not spin during tests.\" The paper has yellowed, so the rule is old and our parents broke it too.",
+  "ja": "台座の下に紙切れ。「テスト中に回さないこと」。紙は黄ばんでいる。つまり古い決まりで、親たちもこれを破ったのだ。"
+ },
+ "city.sch.scope.1": {
+  "ru": "Под стеклом срез листа герани: зелёные клетки стоят ровными кирпичиками, как стена нашей школы.",
+  "en": "Under the glass, a slice of geranium leaf: green cells stand in even bricks, like our school's wall.",
+  "ja": "レンズの下にゼラニウムの葉の切片。緑の細胞が、この学校の壁のようにきれいなレンガの形で並んでいる。"
+ },
+ "city.sch.scope.2": {
+  "ru": "Лапка мухи из коллекции: на ней столько волосков, что стало неловко за такое увеличение.",
+  "en": "A fly's leg from the collection: so many hairs that the magnification felt almost impolite.",
+  "ja": "標本のハエの脚。毛があまりに多くて、こんなに拡大するのが失礼に思えてきた。"
+ },
+ "city.sch.scope.3": {
+  "ru": "Зеркальце ловит свет лампы. На стекле оставили каплю из аквариума: в ней неспешно проплывают какие-то бусинки.",
+  "en": "The little mirror catches the lamp's light. Somebody left a drop from the aquarium on the slide: unhurried beads drift through it.",
+  "ja": "小さな鏡がランプの光を拾う。スライドには水槽の水が一滴残されていて、のんびりした粒がゆっくり泳いでいく。"
+ },
+ "city.sch.herb.1": {
+  "ru": "Гербарий 7 «А»: ромашка, клевер, подорожник, кленовый лист с нарисованными жилками. Подписи каллиграфические; у подорожника две ошибки.",
+  "en": "Herbarium of 7A: daisy, clover, plantain, a maple leaf with veins drawn on. Calligraphic labels; the plantain's has two spelling mistakes.",
+  "ja": "7年Aの押し花標本：デイジー、クローバー、オオバコ、葉脈を描き足したカエデの葉。ラベルは達筆だが、オオバコには誤字が二つ。"
+ },
+ "city.sch.herb.2": {
+  "ru": "Рамка с морской травой, выброшенной штормом на пляж. Карточка: «Зостера. Собрана Катей Л. после шторма 14 октября. Пахнет до сих пор».",
+  "en": "A frame with eelgrass thrown up on the beach by a storm. The card: \"Zostera. Collected by Katya L. after the storm of 14 October. Still smells.\"",
+  "ja": "嵐で浜に打ち上げられたアマモの額。カード：「アマモ。10月14日の嵐のあと、カーチャ・Lが採集。今もにおいます」。"
+ },
+ "city.sch.herb.3": {
+  "ru": "Сосновая ветка с шишкой и крошечным засохшим грибом. Под ней: «Для урока про лес. Гриб не есть».",
+  "en": "A pine twig with a cone and a tiny dried mushroom. Beneath: \"For the lesson on the forest. Do not eat the mushroom.\"",
+  "ja": "松ぼっくりのついた松の枝と、ちいさな干からびたキノコ。下に「森の授業用。キノコは食べないこと」。"
+ },
+ "city.sch.herb.4": {
+  "ru": "Пустая рамка с карточкой: «Здесь будет то, что вы найдёте. Краснокнижное не рвать».",
+  "en": "An empty frame with a card: \"What you find will go here. Do not pick anything protected.\"",
+  "ja": "空の額にカード。「ここにはあなたが見つけたものが入ります。保護されている植物は摘まないこと」。"
+ },
+ "city.sch.bbio.1": {
+  "ru": "На доске мелом сердце с четырьмя камерами. Две подписаны, две пока «разберёмся».",
+  "en": "On the board, a heart with four chambers in chalk. Two are labelled; the other two say \"we'll sort it out.\"",
+  "ja": "黒板にチョークで四つの部屋のある心臓。二つにはラベルがあり、残り二つは「あとで考える」。"
+ },
+ "city.sch.bbio.2": {
+  "ru": "На доске строение листа: черешок, жилки, всё в зелёных стрелках. Внизу: «Кто сорвал лист с фикуса, тот знает».",
+  "en": "On the board, the structure of a leaf: stalk, veins, green arrows everywhere. At the bottom: \"Whoever picked a leaf off the ficus knows.\"",
+  "ja": "黒板には葉のつくり。葉柄、葉脈、緑の矢印だらけ。下に「ゴムの木の葉をちぎった人は、自分でわかっているはず」。"
+ },
+ "city.sch.bbio.3": {
+  "ru": "Сегодня биологии нет. На доске вчерашний скелет в смешной позе, и кто-то дорисовал ему шляпу.",
+  "en": "No biology today. On the board, yesterday's skeleton in a funny pose, and someone has drawn it a hat.",
+  "ja": "今日は生物の授業がない。黒板には昨日の骸骨が変なポーズで残っていて、誰かが帽子を描き足している。"
+ },
+ "city.sch.bbio.4": {
+  "ru": "В пустом кабинете на доске только: «Полить цветы! Дежурные». Цветы, кстати, живые.",
+  "en": "In the empty room the board says only: \"Water the plants! Duty pupils.\" The plants, by the way, are alive.",
+  "ja": "だれもいない教室の黒板には「花に水をやること！当番」とだけ。ちなみに花はちゃんと生きている。"
+ },
+ "city.sch.mboard.1": {
+  "ru": "На доске нотный стан мелом: ключ, четыре такта и подпись «Песенка про море». Над третьим тактом стоит жирный вопрос.",
+  "en": "A staff in chalk: a clef, four bars and the title \"Song about the Sea.\" Over the third bar a fat question mark.",
+  "ja": "黒板にチョークの五線譜。ト音記号、四小節、そして「海の歌」の題。三小節目の上には太い疑問符。"
+ },
+ "city.sch.mboard.2": {
+  "ru": "Внизу написано: «Дыхание берём из живота, а не из ушей». Рядом нарисован живот с улыбкой.",
+  "en": "At the bottom: \"We take breath from the belly, not from the ears.\" Next to it, a smiling belly.",
+  "ja": "下に「息はお腹から吸う、耳からではなく」。横には笑っているお腹の絵。"
+ },
+ "city.sch.mboard.3": {
+  "ru": "Объявление: «Хор — вторник и четверг после шестого. Оркестр ложек — по настроению».",
+  "en": "A notice: \"Choir: Tuesday and Thursday after sixth period. Spoon orchestra: as the mood takes it.\"",
+  "ja": "お知らせ：「合唱は火曜と木曜の六時間目のあと。スプーン楽団は気分次第」。"
+ },
+ "city.sch.metro.1": {
+  "ru": "Щёлк. Щёлк. Щёлк. Грузик ходит по стержню туда и обратно, как маятник очень спокойных часов. Под него хочется дышать.",
+  "en": "Tick. Tick. Tick. The weight swings to and fro like the pendulum of very calm clocks. It makes you want to breathe in time.",
+  "ja": "カチ、カチ、カチ。おもりは、とても落ち着いた時計の振り子のように行ったり来たりする。それに合わせて呼吸したくなる。"
+ },
+ "city.sch.metro.2": {
+  "ru": "Передвинул грузик выше: метроном засуетился, будто опаздывает. Передвинул вниз: вздохнул и пошёл вразвалочку.",
+  "en": "I slid the weight up: the metronome bustled as if it were late. I slid it down: it sighed and waddled along.",
+  "ja": "おもりを上げると、メトロノームは遅刻したみたいにせかせかと動いた。下げると、ため息をついてのんびり歩き出した。"
+ },
+ "city.sch.metro.3": {
+  "ru": "На крышке выцарапано «адажио» и «не трогать, если не умеешь». Я умею только слушать. Послушал.",
+  "en": "On the lid are scratched \"adagio\" and \"don't touch if you can't.\" I can only listen. I listened.",
+  "ja": "ふたに「アダージョ」と「できないなら触るな」と彫ってある。私にできるのは聴くことだけ。だから聴いた。"
+ },
+ "city.sch.score.1": {
+  "ru": "На табло застыло «7 : 5». Девочки 7 «Б» обыгрывают мальчиков, а учитель физкультуры делает вид, что судит честно.",
+  "en": "The board is frozen at \"7 : 5.\" The girls of 7B are beating the boys, and the PE teacher pretends to referee fairly.",
+  "ja": "得点板は「7：5」で止まっている。7年Bの女子が男子に勝っていて、体育の先生は公平に審判しているふりをしている。"
+ },
+ "city.sch.score.2": {
+  "ru": "После уроков на табло «0 : 0»: секция баскетбола ещё не началась, но кто-то уже стучит мячом об пол.",
+  "en": "After lessons the board says \"0 : 0\": basketball club has not started, but someone is already bouncing a ball.",
+  "ja": "放課後、得点板は「0：0」。バスケ部はまだ始まっていないが、誰かがもうボールを床にはずませている。"
+ },
+ "city.sch.score.3": {
+  "ru": "Выходной. Табло показывает «0 : 0», как будто матч решили не начинать до понедельника.",
+  "en": "A day off. The board shows \"0 : 0,\" as if the match was put off until Monday.",
+  "ja": "休日。得点板は「0：0」を示している。試合は月曜日まで延期されたかのようだ。"
+ },
+ "city.sch.score.4": {
+  "ru": "Вечером табло тёмное; цифры только отражаются в окнах. Счёт остался такой, какой был.",
+  "en": "In the evening the board is dark; the digits only glimmer in the windows. The score is whatever it was.",
+  "ja": "夜は得点板が暗く、数字は窓にぼんやり映るだけ。スコアは最後に残ったままだ。"
+ },
+ "city.sch.bag.1": {
+  "ru": "За матами в углу прячется синий мешок. Лямка потёрта, на боку чернилами «Л.К.», из кармана торчит подошва кроссовка. Похоже, нашёл.",
+  "en": "Behind the mats in the corner hides a blue bag. The strap is worn, \"L.K.\" in ink on the side, a sneaker's sole sticking out of the pocket. Found it, it seems.",
+  "ja": "隅のマットの陰に青い袋が隠れている。持ち手はすり切れ、脇にはインクで「L.K.」、ポケットからスニーカーの底がのぞく。見つけたらしい。"
+ },
+ "city.sch.bag.2": {
+  "ru": "Мешок пахнет резиной и бананом, который, видимо, живёт здесь с пятницы. Кроссовки внутри: один зашнурован, другой нет. Хозяин торопился.",
+  "en": "The bag smells of rubber and a banana that has probably lived here since Friday. The sneakers inside: one laced, one not. The owner was in a hurry.",
+  "ja": "袋はゴムと、たぶん金曜日からここに住んでいるバナナのにおいがする。中のスニーカーは片方だけ靴ひもが結ばれている。持ち主は急いでいたのだ。"
+ },
+ "city.sch.bag.3": {
+  "ru": "Поставил мешок на скамейку у входа в зал: пусть будет на виду. Заберут.",
+  "en": "I put the bag on the bench by the gym door where it can be seen. Someone will collect it.",
+  "ja": "袋は体育館の入口のベンチに置いた。目につくように。きっと誰かが取りに来る。"
+ },
+ "city.sch.run.1": {
+  "ru": "Урок физкультуры: две шеренги, свисток, и класс трусцой огибает зал. Я пристроился в хвост, никто не заметил, что я лишний.",
+  "en": "A PE lesson: two lines, a whistle, and the class jogs round the hall. I tagged on at the back and nobody noticed an extra.",
+  "ja": "体育の授業：二列に並んで、笛が鳴り、クラスが体育館をぐるりと走る。最後尾について走ったが、ひとり多いことに誰も気づかなかった。"
+ },
+ "city.sch.run.2": {
+  "ru": "После уроков зал занят секцией: мячи стучат, кроссовки пищат. Побегал по краю, не мешая, и получил кивок от тренера.",
+  "en": "After lessons the hall belongs to the club: balls thud, sneakers squeak. I jogged along the edge without getting in the way and got a nod from the coach.",
+  "ja": "放課後の体育館は部活のものだ。ボールがはずみ、スニーカーがきゅっと鳴る。邪魔しないよう端を走ると、コーチがうなずいてくれた。"
+ },
+ "city.sch.run.3": {
+  "ru": "Выходной: в зале сквозит и пахнет мастикой. Пол натёрт так, что бежать хочется только в носках.",
+  "en": "A day off: the hall is draughty and smells of floor polish. The floor is waxed so well you only want to run in socks.",
+  "ja": "休日の体育館はすきま風がして、ワックスのにおいがする。床はよく磨かれていて、靴下で走りたくなるほどだ。"
+ },
+ "city.sch.run.4": {
+  "ru": "Вечерний зал огромный и тёмный. Бежишь и слышишь только свои шаги, а эхо за ними не поспевает.",
+  "en": "The evening hall is huge and dark. You run and hear only your own steps, with the echo failing to keep up.",
+  "ja": "夜の体育館は広くて暗い。走ると自分の足音しか聞こえず、こだまが追いつかない。"
+ },
+ "city.sch.recital.1": {
+  "ru": "Вышел на край сцены. Зал пустой, но стулья расставлены, и от этого почему-то страшнее, чем если бы он был полон. Сказал «здравствуйте». Эхо ответило: «...ствуйте».",
+  "en": "I stepped to the edge of the stage. The hall is empty but the chairs are set out, which is somehow scarier than a full house. I said \"hello.\" The echo said: \"...llo.\"",
+  "ja": "舞台の端に出た。客席は空だが椅子は並べられていて、満員よりなぜか怖い。「こんにちは」と言うと、こだまが「……にちは」と答えた。"
+ },
+ "city.sch.recital.2": {
+  "ru": "Прочёл вслух два четверостишия про море. На втором из-за кулис кто-то тихо захлопал. Обернулся: никого, только занавес качнулся.",
+  "en": "I read two quatrains about the sea aloud. At the second, somebody clapped softly from behind the curtain. I turned: no one, only the curtain swaying.",
+  "ja": "海についての四行詩を二つ朗読した。二つ目で幕の陰から誰かが小さく拍手した。振り向くと誰もおらず、幕が揺れているだけだった。"
+ },
+ "city.sch.recital.3": {
+  "ru": "Взял воображаемый микрофон и объявил: «Песенка про море. Исполняет всё побережье». Поклонился. Эхо тоже.",
+  "en": "I took an imaginary microphone and announced: \"The Song about the Sea. Performed by the entire coast.\" I bowed. So did the echo.",
+  "ja": "見えないマイクを持って告げた。「『海の歌』。演奏は海岸全員です」。お辞儀をした。こだまもお辞儀をした。"
+ },
+ "city.sch.reg.1": {
+  "ru": "Стенгазета «Юный людмиловец». Срочно: в пятницу после физкультуры пропал синий мешок со сменной обувью. Хозяин: Лёша К., 6 «Б». Нашедшему благодарность в стенгазете и стакан чая.",
+  "en": "Wall newspaper \"Young Lyudmilovsker.\" Urgent: on Friday after PE a blue bag with gym shoes went missing. Owner: Lyosha K., 6B. A finder gets thanks in the paper and a glass of tea.",
+  "ja": "壁新聞「若きリュドミロフスク人」。緊急：金曜日の体育のあと、体育館履き入りの青い袋がなくなりました。持ち主は6年Bのリョーシャ・K。見つけた人には壁新聞での感謝と、お茶一杯。"
+ },
+ "city.sch.reg.2": {
+  "ru": "Рубрика «Спрашивали, отвечаем»: «Почему в буфете нет мороженого?» Ответ: «Потому что зима начинается раньше, чем кончается лето». Редколлегия просит не плакать.",
+  "en": "Column \"You asked, we answer\": \"Why is there no ice cream in the buffet?\" Answer: \"Because winter starts before summer ends.\" The editors ask you not to cry.",
+  "ja": "「質問にお答えします」コーナー：「どうして売店にアイスがないのですか？」答え：「夏が終わる前に冬が始まるからです」。編集部は泣かないようお願いしています。"
+ },
+ "city.sch.reg.3": {
+  "ru": "Редколлегия провела расследование. Опрошены: гардеробщица, дежурный, герань на подоконнике. Выяснилось, что в раздевалке мешка нет. Продолжаем искать.",
+  "en": "The editors have investigated. Questioned: the cloakroom attendant, the duty pupil, the geranium on the sill. It turns out the bag is not in the cloakroom. The search goes on.",
+  "ja": "編集部が調査しました。聞き取り相手：更衣室の係、当番、窓辺のゼラニウム。袋は更衣室にないことが判明。捜索は続きます。"
+ },
+ "city.sch.reg.4": {
+  "ru": "Учитель физкультуры заявил, что мешок «определённо был, когда я его видел в последний раз». Совет дружины создал поисковый отряд из двух человек и одного сквозняка.",
+  "en": "The PE teacher declared that the bag \"was definitely there the last time I saw it.\" The pupils' council formed a search party of two people and one draught.",
+  "ja": "体育の先生は、袋は「最後に見たときには確かにあった」と述べました。生徒会は二人と一筋のすきま風からなる捜索隊を結成しました。"
+ },
+ "city.sch.reg.5": {
+  "ru": "Музыкальная страничка. К субботнему концерту готовим «Песенку про море». Нужен пианист: оркестр ложек с аккомпанементом не справляется. Обращаться в музыкальный класс.",
+  "en": "Music page. We are preparing the \"Song about the Sea\" for Saturday's concert. A pianist is needed: the spoon orchestra cannot manage the accompaniment. Ask in the music room.",
+  "ja": "音楽のページ。土曜の音楽会に向けて「海の歌」を準備中。ピアニスト募集：スプーン楽団では伴奏が務まりません。音楽室まで。"
+ },
+ "city.sch.reg.6": {
+  "ru": "Поиски мешка: проверены ящик находок (варежка, варежка, учебник), раздевалка, коридор. Спортзал осмотрен не до конца: маты тяжёлые, а Лёша боится заглядывать.",
+  "en": "The bag hunt: checked the lost-and-found (mitten, mitten, textbook), the cloakroom, the corridor. The gym is not fully searched: the mats are heavy and Lyosha is afraid to look.",
+  "ja": "袋の捜索：忘れ物箱（手袋、手袋、教科書）、更衣室、廊下は確認済み。体育館は完全には調べていません。マットは重く、リョーシャはのぞくのが怖いそうです。"
+ },
+ "city.sch.reg.7": {
+  "ru": "Лёша К. ходит на физкультуру в носках. Учитель разрешил, но просит не наступать на сквозняки. Редколлегия желает Лёше тёплой погоды и чужих сухих кроссовок.",
+  "en": "Lyosha K. goes to PE in his socks. The teacher allowed it but asks him not to step on the draughts. The editors wish Lyosha warm weather and somebody's dry sneakers.",
+  "ja": "リョーシャ・Kは靴下で体育に出ています。先生は許可しましたが、すきま風を踏まないようにとのこと。編集部はリョーシャに暖かい天気と、だれかの乾いたスニーカーを願っています。"
+ },
+ "city.sch.reg.8": {
+  "ru": "Хорошие новости: мешок нашёлся! Он лежал за матами в спортзале. Дежурному его принёс кто-то, кто не назвал себя. Лёша обещает больше не бросать сменку где попало. Просим неизвестного зайти за стаканом чая.",
+  "en": "Good news: the bag has been found! It was behind the mats in the gym. Somebody who gave no name brought it to the duty pupil. Lyosha promises never to leave his shoes lying about. We ask the unknown helper to come for a glass of tea.",
+  "ja": "朗報：袋が見つかりました！体育館のマットの裏にありました。名乗らない誰かが当番に届けてくれました。リョーシャはもう靴をそのへんに置かないと約束しています。名乗り出ない恩人さん、お茶を飲みにきてください。"
+ },
+ "city.sch.reg.9": {
+  "ru": "Концерт состоялся: «Песенка про море» прозвучала дважды, второй раз по просьбе гардеробщицы. Пианист вышел без нот и не ошибся. Почти.",
+  "en": "The concert took place: the \"Song about the Sea\" was played twice, the second time at the cloakroom attendant's request. The pianist came out without sheet music and made no mistakes. Almost.",
+  "ja": "音楽会が開かれました。「海の歌」は二度演奏され、二度目は更衣室の係のリクエストでした。ピアニストは楽譜なしで出てきて、間違えませんでした。ほとんど。"
+ },
+ "city.sch.reg.10": {
+  "ru": "Новое объявление: из спортзала пропал красный мяч. Мы ничего не утверждаем, но советуем заглянуть под маты.",
+  "en": "A new notice: a red ball has gone missing from the gym. We assert nothing, but we advise looking under the mats.",
+  "ja": "新しいお知らせ：体育館から赤いボールがなくなりました。何も断言しませんが、マットの下をのぞくことをおすすめします。"
+ },
+ "city.sch.reg.11": {
+  "ru": "Вывод недели от редколлегии: в школе всё находится, надо только перестать торопиться.",
+  "en": "The editors' conclusion of the week: everything in a school turns up, you just have to stop hurrying.",
+  "ja": "今週の編集部の結論：学校ではなんでも見つかる。ただ、あわてるのをやめればいい。"
+ },
+ "quest.school_bag.title": {
+  "ru": "Мешок со сменкой",
+  "en": "The lost gym bag",
+  "ja": "なくなった体育館履き袋"
+ },
+ "quest.school_bag.desc": {
+  "ru": "В стенгазете Школы № 1 висит объявление о пропаже синего мешка. Кажется, его ищет вся школа, кроме тех, кто знает, где он.",
+  "en": "A notice in School No. 1's wall newspaper says a blue bag is missing. The whole school seems to be looking for it, except those who know where it is.",
+  "ja": "第一学校の壁新聞に、青い袋が見つからないというお知らせが出ている。学校じゅうが探しているようだ。袋の場所を知っている人以外は。"
+ },
+ "quest.school_bag.notice.log": {
+  "ru": "Сначала прочту объявление в стенгазете: она висит в холле.",
+  "en": "First the notice in the wall newspaper, which hangs in the hall.",
+  "ja": "まず壁新聞のお知らせを読もう。ホールに貼ってある。"
+ },
+ "quest.school_bag.gazette.obj": {
+  "ru": "Прочитать стенгазету в холле",
+  "en": "Read the wall newspaper in the hall",
+  "ja": "ホールの壁新聞を読む"
+ },
+ "quest.school_bag.box.log": {
+  "ru": "В раздевалке мешка нет. Загляну в ящик находок в холле.",
+  "en": "It is not in the cloakroom. I'll look in the lost-and-found box in the hall.",
+  "ja": "更衣室に袋はない。ホールの忘れ物箱をのぞいてみよう。"
+ },
+ "quest.school_bag.box.obj": {
+  "ru": "Заглянуть в ящик находок",
+  "en": "Look in the lost-and-found box",
+  "ja": "忘れ物箱をのぞく"
+ },
+ "quest.school_bag.gym.log": {
+  "ru": "Записка в ящике намекает на спортзал. Загляну за маты.",
+  "en": "The note in the box points to the gym. I'll look behind the mats.",
+  "ja": "箱のメモは体育館をほのめかしている。マットの裏を見てみよう。"
+ },
+ "quest.school_bag.bag.obj": {
+  "ru": "Заглянуть за маты в спортзале",
+  "en": "Look behind the mats in the gym",
+  "ja": "体育館のマットの裏をのぞく"
+ },
+ "quest.school_bag.done": {
+  "ru": "Мешок стоит на скамейке у входа в зал: синий, с чернильным «Л.К.». Вечером в стенгазете, говорят, появится строчка о неизвестном, который его вернул. А Лёша, наверное, уже прыгает. В кроссовках.",
+  "en": "The bag sits on the bench by the gym door: blue, with an inked \"L.K.\" They say the wall newspaper will soon have a line about the unknown person who brought it back. And Lyosha is probably already jumping. In sneakers.",
+  "ja": "袋は体育館の入口のベンチに置いてある。青くて、インクで「L.K.」。あとで壁新聞に、袋を返した名乗らない誰かのことが載るらしい。リョーシャはもう跳びはねているだろう。スニーカーで。"
+ },
+ "quest.school_concert.title": {
+  "ru": "Песенка про море",
+  "en": "Song about the Sea",
+  "ja": "海の歌"
+ },
+ "quest.school_concert.desc": {
+  "ru": "В холле висит афиша субботнего концерта, а в музыкальном классе, судя по всему, не хватает пианиста.",
+  "en": "A poster for Saturday's concert hangs in the hall, and the music room, it seems, is short of a pianist.",
+  "ja": "ホールには土曜の音楽会のポスターが貼ってあり、音楽室ではどうやらピアニストが足りないらしい。"
+ },
+ "quest.school_concert.poster.log": {
+  "ru": "Прочитаю афишу в холле: там, кажется, ищут пианиста.",
+  "en": "I'll read the poster in the hall: they seem to want a pianist.",
+  "ja": "ホールのポスターを読もう。ピアニストを探しているようだ。"
+ },
+ "quest.school_concert.poster.obj": {
+  "ru": "Прочитать афишу концерта",
+  "en": "Read the concert poster",
+  "ja": "音楽会のポスターを読む"
+ },
+ "quest.school_concert.piano.log": {
+  "ru": "Загляну в музыкальный класс и попробую пианино.",
+  "en": "I'll go to the music room and try the piano.",
+  "ja": "音楽室に行って、ピアノを弾いてみよう。"
+ },
+ "quest.school_concert.keys.obj": {
+  "ru": "Поиграть на пианино в музыкальном классе",
+  "en": "Play the piano in the music room",
+  "ja": "音楽室でピアノを弾く"
+ },
+ "quest.school_concert.stage.log": {
+  "ru": "Репетиция без сцены не репетиция. Пойду в спортзал.",
+  "en": "A rehearsal without a stage is no rehearsal. To the gym, then.",
+  "ja": "舞台のないリハーサルはリハーサルじゃない。体育館に行こう。"
+ },
+ "quest.school_concert.recital.obj": {
+  "ru": "Выйти на сцену в спортзале",
+  "en": "Step onto the gym stage",
+  "ja": "体育館の舞台に立つ"
+ },
+ "quest.school_concert.done": {
+  "ru": "Отыграл два раза: в первый вышло по нотам, во второй так, как хотелось. Учительница музыки сказала, что на концерте меня будут ждать, и выдала значок на память.",
+  "en": "I played twice: the first time by the notes, the second as I wished. The music teacher said I'd be expected at the concert and gave me a badge to remember it by.",
+  "ja": "二回弾いた。一回目は楽譜どおりに、二回目は思ったままに。音楽の先生は、音楽会で待っていると言って、記念のバッジをくれた。"
+ }
+}

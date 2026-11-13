@@ -159,6 +159,59 @@
    "props": {
     "what": "payphone"
    }
+  },
+  {
+   "id": "pasty_fryer",
+   "kind": "machine",
+   "pos": [
+    0.8,
+    6.1,
+    1.05
+   ],
+   "yaw": 0.0,
+   "props": {
+    "what": "fryer"
+   }
+  },
+  {
+   "id": "pasty_today",
+   "kind": "board",
+   "pos": [
+    2.2,
+    1.15,
+    0.6
+   ],
+   "yaw": 165.0,
+   "props": {
+    "topic": "prices"
+   }
+  },
+  {
+   "id": "pasty_table",
+   "kind": "board",
+   "pos": [
+    -1.7,
+    1.5,
+    1.1
+   ],
+   "yaw": 0.0,
+   "props": {
+    "topic": "store"
+   }
+  },
+  {
+   "id": "pasty_chat",
+   "kind": "counter",
+   "pos": [
+    0.2,
+    4.3,
+    1.1
+   ],
+   "yaw": 0.0,
+   "props": {
+    "service": "chat",
+    "role": "seller"
+   }
   }
  ],
  "flats": [],
@@ -169,7 +222,7 @@
  ],
  "tris": {
   "shell": 202,
-  "detail": 3867,
+  "detail": 4137,
   "windows": 0
  }
 }

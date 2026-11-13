@@ -73,6 +73,26 @@
     0.0
    ],
    "yaw": 180.0
+  },
+  {
+   "id": "bins",
+   "kind": "stand",
+   "pos": [
+    -2.9,
+    5.6,
+    0.0
+   ],
+   "yaw": 180.0
+  },
+  {
+   "id": "tags",
+   "kind": "stand",
+   "pos": [
+    4.1,
+    3.75,
+    0.0
+   ],
+   "yaw": 90.0
   }
  ],
  "lamps": [
@@ -141,6 +161,72 @@
    "props": {
     "topic": "rules"
    }
+  },
+  {
+   "id": "workshop_bins",
+   "kind": "board",
+   "pos": [
+    -2.9,
+    6.2,
+    1.1
+   ],
+   "yaw": 0.0,
+   "props": {
+    "topic": "store"
+   }
+  },
+  {
+   "id": "workshop_tags",
+   "kind": "board",
+   "pos": [
+    4.81,
+    3.75,
+    1.6
+   ],
+   "yaw": 270.0,
+   "props": {
+    "topic": "lost"
+   }
+  },
+  {
+   "id": "workshop_radios",
+   "kind": "board",
+   "pos": [
+    1.9,
+    6.2,
+    1.7
+   ],
+   "yaw": 0.0,
+   "props": {
+    "topic": "catalogue"
+   }
+  },
+  {
+   "id": "workshop_tv",
+   "kind": "machine",
+   "pos": [
+    3.9,
+    5.85,
+    0.9
+   ],
+   "yaw": 0.0,
+   "props": {
+    "what": "test_card"
+   }
+  },
+  {
+   "id": "workshop_chat",
+   "kind": "counter",
+   "pos": [
+    2.1,
+    3.35,
+    1.1
+   ],
+   "yaw": 0.0,
+   "props": {
+    "service": "chat",
+    "role": "repairman"
+   }
   }
  ],
  "flats": [],
@@ -151,7 +237,7 @@
  ],
  "tris": {
   "shell": 178,
-  "detail": 2672,
+  "detail": 3328,
   "windows": 0
  }
 }

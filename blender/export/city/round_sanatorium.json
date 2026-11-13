@@ -329,6 +329,66 @@
     0.0
    ],
    "yaw": 206.01428571428573
+  },
+  {
+   "id": "dance_floor",
+   "kind": "stand",
+   "pos": [
+    1.576,
+    10.48,
+    0.0
+   ],
+   "yaw": 5.799999999999997
+  },
+  {
+   "id": "oxygen_bar",
+   "kind": "stand",
+   "pos": [
+    -4.386,
+    12.968,
+    0.0
+   ],
+   "yaw": 161.4
+  },
+  {
+   "id": "chess_1",
+   "kind": "seat",
+   "pos": [
+    -6.403,
+    10.508,
+    0.45
+   ],
+   "yaw": 69.8
+  },
+  {
+   "id": "chess_2",
+   "kind": "seat",
+   "pos": [
+    -5.164,
+    10.052,
+    0.45
+   ],
+   "yaw": -110.2
+  },
+  {
+   "id": "trolley",
+   "kind": "stand",
+   "pos": [
+    -3.221,
+    12.684,
+    0.0
+   ],
+   "yaw": 166.4
+  },
+  {
+   "id": "doctor",
+   "kind": "work",
+   "pos": [
+    9.458,
+    15.504,
+    0.0
+   ],
+   "yaw": 38.37142857142857
   }
  ],
  "lamps": [
@@ -408,6 +468,28 @@
    "colour": "#FFD9A8",
    "kind": "public",
    "radius": 8
+  },
+  {
+   "pos": [
+    -4.178,
+    13.584,
+    2.99
+   ],
+   "lumens": 700,
+   "colour": "#FFD9A8",
+   "kind": "public",
+   "radius": 5
+  },
+  {
+   "pos": [
+    9.785,
+    12.192,
+    1.33
+   ],
+   "lumens": 180,
+   "colour": "#FFD9A8",
+   "kind": "public",
+   "radius": 3.0
   }
  ],
  "things": [
@@ -805,6 +887,175 @@
    "yaw": -45.0,
    "props": {
     "what": "wall_bars"
+   }
+  },
+  {
+   "id": "regime_board",
+   "kind": "board",
+   "pos": [
+    1.55,
+    8.513,
+    1.55
+   ],
+   "yaw": 180.0,
+   "props": {
+    "topic": "regime"
+   }
+  },
+  {
+   "id": "guest_book",
+   "kind": "board",
+   "pos": [
+    2.389,
+    12.183,
+    1.2
+   ],
+   "yaw": 13.0,
+   "props": {
+    "topic": "guestbook"
+   }
+  },
+  {
+   "id": "lobby_dance",
+   "kind": "machine",
+   "pos": [
+    1.576,
+    10.48,
+    0.6
+   ],
+   "yaw": 5.8,
+   "props": {
+    "what": "dance"
+   }
+  },
+  {
+   "id": "menu_week",
+   "kind": "board",
+   "pos": [
+    -6.961,
+    10.655,
+    0.75
+   ],
+   "yaw": 155.6,
+   "props": {
+    "topic": "menu"
+   }
+  },
+  {
+   "id": "oxygen_bar",
+   "kind": "machine",
+   "pos": [
+    -4.131,
+    13.726,
+    1.2
+   ],
+   "yaw": 341.4,
+   "props": {
+    "what": "oxygen_bar"
+   }
+  },
+  {
+   "id": "chess_corner",
+   "kind": "play",
+   "pos": [
+    -5.784,
+    10.28,
+    0.8
+   ],
+   "yaw": 69.8,
+   "props": {
+    "what": "chess"
+   }
+  },
+  {
+   "id": "book_trolley",
+   "kind": "shelf",
+   "pos": [
+    -3.033,
+    13.462,
+    0.85
+   ],
+   "yaw": 346.4,
+   "props": {
+    "topic": "trolley"
+   }
+  },
+  {
+   "id": "garden_labels",
+   "kind": "board",
+   "pos": [
+    -8.318,
+    15.304,
+    0.5
+   ],
+   "yaw": 321.4,
+   "props": {
+    "topic": "labels"
+   }
+  },
+  {
+   "id": "pump_clock",
+   "kind": "board",
+   "pos": [
+    7.757,
+    13.513,
+    2.5
+   ],
+   "yaw": -57.9,
+   "props": {
+    "topic": "clock"
+   }
+  },
+  {
+   "id": "treat_checkup",
+   "kind": "machine",
+   "pos": [
+    8.446,
+    15.978,
+    1.0
+   ],
+   "yaw": 38.4,
+   "props": {
+    "what": "checkup"
+   }
+  },
+  {
+   "id": "treat_quartz",
+   "kind": "machine",
+   "pos": [
+    8.798,
+    16.257,
+    1.15
+   ],
+   "yaw": 38.4,
+   "props": {
+    "what": "quartz"
+   }
+  },
+  {
+   "id": "treat_window",
+   "kind": "board",
+   "pos": [
+    7.751,
+    16.13,
+    1.5
+   ],
+   "yaw": 38.4,
+   "props": {
+    "topic": "view"
+   }
+  },
+  {
+   "id": "night_radio",
+   "kind": "machine",
+   "pos": [
+    9.291,
+    11.801,
+    1.15
+   ],
+   "yaw": 218.4,
+   "props": {
+    "what": "night_radio"
    }
   }
  ],
@@ -12970,8 +13221,8 @@
   "120 flats (5 storeys x 24 bays); hall sector -135..-45 deg enterable; entrance at (0, 8)"
  ],
  "tris": {
-  "shell": 15938,
-  "detail": 28955,
+  "shell": 15986,
+  "detail": 31621,
   "windows": 1972
  }
 }

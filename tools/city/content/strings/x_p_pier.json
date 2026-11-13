@@ -1,0 +1,483 @@
+{
+ "_doc": "Words of tools/city/content/x_p_pier.json (the lighthouse tower's depth pass) and of the two side quests px_maria, px_tea (/home/user/wt/quests_hyperboloid_tower.json): ru source, en, ja.",
+ "city.px.stove.1": {
+  "ru": "Растопил печурку берёзовыми поленьями. Чайник начинает шуметь раньше, чем я успеваю найти кружку. Налил себе и сунул в карман ещё одну порцию.",
+  "en": "I lit the little stove with birch logs. The kettle starts to hum before I've found a mug. I poured myself some and slipped a second helping into my pocket.",
+  "ja": "白樺の薪で小さなストーブに火を入れた。マグカップを探すより早く、やかんが唸りだす。自分の分を注いで、もう一杯分をポケットにしのばせた。"
+ },
+ "city.px.stove.2": {
+  "ru": "Чайник пыхтит, на стене подпрыгивает тень от крышки. Пахнет дымком и сушёной мятой из жестяной банки. Хороший чай, крепкий, с морской солью в воздухе.",
+  "en": "The kettle puffs and the shadow of its lid jumps on the wall. It smells of smoke and dried mint from a tin. Good strong tea, with sea salt in the air.",
+  "ja": "やかんがぷくぷく言い、蓋の影が壁で跳ねる。煙と、缶に入った乾燥ミントの匂い。濃くておいしい紅茶で、空気には潮が混じっている。"
+ },
+ "city.px.stove.3": {
+  "ru": "Ночная вахта начинается с чайника. Огонь в печке тихо потрескивает, а наверху, над потолком, медленно ходит свет. Чай получился почти такой же, как у смотрителей.",
+  "en": "The night watch begins with the kettle. The fire crackles softly in the stove while above the ceiling the light slowly turns. The tea came out nearly as good as the keepers'.",
+  "ja": "夜番はやかんから始まる。ストーブの火が小さくはぜ、天井の上では光がゆっくり回っている。紅茶は灯台守たちのとほとんど同じ味になった。"
+ },
+ "city.px.keeper_stove.prompt": {
+  "ru": "E — вскипятить чайник",
+  "en": "E — boil the kettle",
+  "ja": "E：やかんを沸かす"
+ },
+ "city.px.cat.1": {
+  "ru": "Кот-смотритель спит в корзине клубком, одно ухо у него всё равно наготове. Я почесал его за щекой: он продолжил спать, но заметно громче.",
+  "en": "The keepers' cat sleeps curled in the basket, one ear still on duty. I scratched his cheek: he kept sleeping, only noticeably louder.",
+  "ja": "灯台守の猫はかごの中で丸くなって眠っているが、片耳だけは当番のままだ。頬をかくと、眠ったまま、さっきより明らかに大きく喉を鳴らした。"
+ },
+ "city.px.cat.2": {
+  "ru": "Кот приоткрыл глаз, оценил меня и снова закрыл. По-моему, я принят на испытательный срок. Срок, наверное, до первой селёдки.",
+  "en": "The cat opened one eye, appraised me and closed it again. I think I've been taken on probation. Until the first herring, probably.",
+  "ja": "猫は片目をあけて僕を値踏みし、また閉じた。試用期間つきで受け入れられたらしい。最初のニシンが出るまで、たぶん。"
+ },
+ "city.px.cat.3": {
+  "ru": "Кот не спит: сидит в корзине столбиком и следит, как наверху поворачивается свет. Я тоже посмотрел на потолок. По стенам ходит бледное пятно, он провожает его глазами.",
+  "en": "The cat isn't asleep: he sits upright in the basket, watching the light turn above. I looked at the ceiling too. A pale patch walks across the walls and he follows it with his eyes.",
+  "ja": "猫は眠っていない。かごの中で背筋を伸ばし、上で回る光を見つめている。僕も天井を見上げた。壁を淡い光の斑がゆっくり渡り、猫はそれを目で追う。"
+ },
+ "city.px.cat.4": {
+  "ru": "По выходным кот спит ещё усерднее. Смотрители уверяют, что в городе он единственный, кто читает расписание, и выходной у него по расписанию.",
+  "en": "At weekends the cat sleeps even harder. The keepers swear he's the only one in town who reads the timetable, and his day off is on it.",
+  "ja": "週末の猫はいっそう熱心に眠る。町でダイヤを読むのはこの猫だけで、休日もちゃんとダイヤどおりだ、と灯台守たちは言い張る。"
+ },
+ "city.px.keeper_cat.prompt": {
+  "ru": "E — погладить кота",
+  "en": "E — stroke the cat",
+  "ja": "E：猫をなでる"
+ },
+ "city.px.oilskins.1": {
+  "ru": "Два жёлтых плаща и один маленький, детский. На подкладках вышито «А. О.» и «А. К.», а на маленьком — «Для гостей». Его дают тем, кого берут наверх в дождь.",
+  "en": "Two yellow oilskins and one small, a child's. The linings are stitched \"A. O.\" and \"A. K.\", the small one \"For guests\". It goes to whoever is taken up top in the rain.",
+  "ja": "黄色い雨具が二着と、小さな子ども用が一着。裏地に「A.O.」「A.K.」の刺繡、小さいのには「お客さま用」。雨の日に上へ連れて行く人に貸すらしい。"
+ },
+ "city.px.oilskins.2": {
+  "ru": "Плащи ещё влажные: кто-то недавно выходил на галерею проверить колокол. С капюшона на пол ползёт тонкая капля, прямо в подставленную банку из-под леденцов.",
+  "en": "The oilskins are still damp: someone has just been out on the gallery to check the bell. A thin drip crawls from a hood into an old boiled-sweet tin set on the floor.",
+  "ja": "雨具はまだ湿っている。誰かがさっき鐘の点検に回廊へ出たのだ。フードから細いしずくが、床に置かれた飴の空き缶へ落ちていく。"
+ },
+ "city.px.oilskins.3": {
+  "ru": "Зюйдвестка висит на крючке носом к двери. Примета: чтобы не забыть, когда выходишь. Арам говорит, что без неё шторм вообще не начинается.",
+  "en": "The sou'wester hangs on its hook with its brim toward the door. A habit, so you don't forget it going out. Aram says no storm ever starts without it.",
+  "ja": "南西帽はつばをドアに向けてフックにかかっている。出がけに忘れないための習慣だ。これがないと嵐は始まらない、とアラムは言う。"
+ },
+ "city.px.keeper_oilskins.prompt": {
+  "ru": "E — осмотреть плащи",
+  "en": "E — look at the oilskins",
+  "ja": "E：雨具を見る"
+ },
+ "city.px.weather.1": {
+  "ru": "Барометр: 1018, стрелка стоит как вкопанная. Термометр показывает девять. Влажность средняя. Всё предвещает хороший день и скучную вахту. Рядом карандашом: «Мария» вышла».",
+  "en": "Barometer: 1018, the needle planted. Thermometer: nine. Humidity middling. Everything promises a fine day and a dull watch. Pencilled beside it: \"Maria sailed.\"",
+  "ja": "気圧計は1018、針は根が生えたように動かない。温度計は九度。湿度はふつう。穏やかな一日と退屈な当番を約束している。横に鉛筆で「マリヤ出航」。"
+ },
+ "city.px.weather.2": {
+  "ru": "Барометр: 1014. Стрелка чуть сползла влево, а может, мне показалось. Постучал пальцем по стеклу: стоит. На картонке: «Вечером проверить ещё раз».",
+  "en": "Barometer: 1014. The needle has crept a hair to the left, or I imagined it. I tapped the glass: it holds. On the card: \"Check again this evening.\"",
+  "ja": "気圧計は1014。針がほんの少し左へ寄った気がするが、気のせいかもしれない。ガラスを指でたたく。動かない。紙に「夕方もう一度確認」。"
+ },
+ "city.px.weather.3": {
+  "ru": "Барометр: 1006, и стрелка ползёт на глазах. Приписка Арама: «Сдать вахту с бутербродами. Ночью будет шумно». Под ней приписка Аркадия: «Будет шумно и долго».",
+  "en": "Barometer: 1006, and the needle is crawling as I watch. Aram's note: \"Take sandwiches to the watch. It will be noisy tonight.\" Under it, Arkady's: \"Noisy and long.\"",
+  "ja": "気圧計は1006、針は見ている間にも下がっていく。アラムの書き込み「当番にサンドイッチを。今夜はうるさくなる」。その下にアルカージーの字。「うるさくて、長い」。"
+ },
+ "city.px.weather.4": {
+  "ru": "Барометр: 998. Стрелка прижалась к слову «Буря» и дрожит. Стекло в трещинках от старых постукиваний. Кто-то приклеил рядом бумажку: «Не стучать. Она и так всё знает».",
+  "en": "Barometer: 998. The needle presses against the word \"Storm\" and trembles. The glass is hairlined from old tapping. Someone has stuck a slip beside it: \"Don't tap. It knows.\"",
+  "ja": "気圧計は998。針は「嵐」の文字に張りついて震えている。ガラスは昔のノックでひびだらけ。横に紙切れ。「たたくな。もうわかっている」。"
+ },
+ "city.px.weather.5": {
+  "ru": "Барометр: 994, ниже, чем когда-либо в этой книжке. Стрелка легла на «Бурю» и не шевелится. На обороте картонки Аркадий записал число и обвёл его два раза.",
+  "en": "Barometer: 994, lower than anything in this notebook. The needle lies on \"Storm\" and doesn't stir. On the back of the card Arkady wrote the number and ringed it twice.",
+  "ja": "気圧計は994、この手帳の中でいちばん低い。針は「嵐」に横たわって動かない。紙の裏にアルカージーが数字を書き、二重丸で囲んでいた。"
+ },
+ "city.px.weather.6": {
+  "ru": "Барометр: 1003, стрелка пошла вверх. Мелом на раме: «Отпустило». Термометр осторожно показывает восемь. Кажется, даже он не верит.",
+  "en": "Barometer: 1003, the needle's on its way up. Chalked on the frame: \"Easing.\" The thermometer cautiously says eight. Even it doesn't seem to believe it.",
+  "ja": "気圧計は1003、針が上向いた。枠にチョークで「やわらいだ」。温度計は用心深く八度を指す。温度計自身も信じていないようだ。"
+ },
+ "city.px.weather.7": {
+  "ru": "Барометр: 1015. Стрелка вернулась на «Переменно» и, по-моему, смущена. Ветер за стеной вздыхает уже без злости.",
+  "en": "Barometer: 1015. The needle is back at \"Change\" and looks, I think, embarrassed. Beyond the wall the wind sighs without any malice now.",
+  "ja": "気圧計は1015。針は「変わりやすい」に戻り、どこか決まり悪そうだ。壁の向こうの風は、もう恨みなしにため息をついている。"
+ },
+ "city.px.weather.8": {
+  "ru": "Барометр: 1021. Над ним кто-то нарисовал маленькое солнце и подписал: «Это Аркадий. Не верит, но рисует». Солнце получилось кривое и очень тёплое.",
+  "en": "Barometer: 1021. Someone has drawn a small sun above it and signed: \"This is Arkady. Doesn't believe it, draws it anyway.\" The sun came out crooked and very warm.",
+  "ja": "気圧計は1021。上に誰かが小さな太陽を描き、署名した。「これはアルカージー。信じていないが描く」。太陽は歪んでいて、とても暖かそうだ。"
+ },
+ "city.px.keeper_weather.prompt": {
+  "ru": "E — постучать по барометру",
+  "en": "E — tap the barometer",
+  "ja": "E：気圧計をたたく"
+ },
+ "city.px.tides.1": {
+  "ru": "Понедельник. Полная вода у пирса в 06:40 и 19:05, малая в 00:30 и 12:50. Мелом: «Заказать мел».",
+  "en": "Monday. High water at the pier 06:40 and 19:05, low water 00:30 and 12:50. In chalk: \"Order chalk.\"",
+  "ja": "月曜。桟橋の満潮は6時40分と19時5分、干潮は0時30分と12時50分。チョークで「チョークを注文」。"
+ },
+ "city.px.tides.2": {
+  "ru": "Вторник. Полная вода в 07:25 и 19:50, малая в 01:15 и 13:35. На сваях к вечеру откроются ракушки: можно собрать на ужин.",
+  "en": "Tuesday. High water 07:25 and 19:50, low 01:15 and 13:35. By evening the mussels on the piles will show: enough for supper.",
+  "ja": "火曜。満潮は7時25分と19時50分、干潮は1時15分と13時35分。夕方には杭のムール貝が顔を出す。夕食分くらいは採れる。"
+ },
+ "city.px.tides.3": {
+  "ru": "Среда. Полная вода в 08:10 и 20:35, малая в 02:00 и 14:20. Внизу приписка: «Лодочникам: ближе к восьми под пирсом тянет».",
+  "en": "Wednesday. High water 08:10 and 20:35, low 02:00 and 14:20. A note below: \"Boatmen: toward eight there's a pull under the pier.\"",
+  "ja": "水曜。満潮は8時10分と20時35分、干潮は2時と14時20分。下に書き込み。「船頭へ。八時ごろ桟橋の下に引きがある」。"
+ },
+ "city.px.tides.4": {
+  "ru": "Четверг. Полная вода в 08:55 и 21:20, малая в 02:45 и 15:05. Цифры написаны чётко, как для экзамена.",
+  "en": "Thursday. High water 08:55 and 21:20, low 02:45 and 15:05. The figures are written clearly, as for an exam.",
+  "ja": "木曜。満潮は8時55分と21時20分、干潮は2時45分と15時5分。数字は試験のようにきっちり書かれている。"
+ },
+ "city.px.tides.5": {
+  "ru": "Пятница. Полная вода в 09:40 и 22:05, малая в 03:30 и 15:50. В углу нарисована рыбка, подмигивающая тому, кто читает.",
+  "en": "Friday. High water 09:40 and 22:05, low 03:30 and 15:50. In the corner a little fish is drawn, winking at the reader.",
+  "ja": "金曜。満潮は9時40分と22時5分、干潮は3時30分と15時50分。隅に、読む人にウインクする小さな魚が描いてある。"
+ },
+ "city.px.tides.6": {
+  "ru": "Суббота. Полная вода в 10:25 и 22:50, малая в 04:15 и 16:35. Субботний прилив самый длинный: Арам говорит, что море тоже никуда не торопится.",
+  "en": "Saturday. High water 10:25 and 22:50, low 04:15 and 16:35. Saturday's tide is the longest: Aram says even the sea is in no hurry.",
+  "ja": "土曜。満潮は10時25分と22時50分、干潮は4時15分と16時35分。土曜の潮はいちばん長い。海も急がないんだ、とアラムは言う。"
+ },
+ "city.px.tides.7": {
+  "ru": "Воскресенье. Полная вода в 11:10 и 23:35, малая в 05:00 и 17:20. Подчёркнуто красным: «К вечеру на набережной будет много людей. Звонить в колокол тихо».",
+  "en": "Sunday. High water 11:10 and 23:35, low 05:00 and 17:20. Underlined in red: \"Many people on the promenade by evening. Ring the bell softly.\"",
+  "ja": "日曜。満潮は11時10分と23時35分、干潮は5時と17時20分。赤線で「夕方は遊歩道に人が多い。鐘はそっと鳴らすこと」。"
+ },
+ "city.px.keeper_tides.prompt": {
+  "ru": "E — прочитать приливную доску",
+  "en": "E — read the tide board",
+  "ja": "E：潮汐板を読む"
+ },
+ "city.px.flags.1": {
+  "ru": "Жёлтый флаг сигнального свода значит: «Судно здорово, прошу разрешения войти в порт». Смотрители держат его на самом верху ячеек: гостям здесь всегда рады.",
+  "en": "The yellow flag of the signal code means: \"My vessel is healthy, I request permission to enter.\" The keepers keep it at the top of the pigeonholes: visitors are always welcome here.",
+  "ja": "信号旗の黄色は「本船は健康、入港許可を求む」。灯台守たちはそれを仕切りの一番上に入れている。客はいつでも歓迎、ということだ。"
+ },
+ "city.px.flags.2": {
+  "ru": "Красно-жёлтый по диагонали: «Человек за бортом». Флаг потёрт на сгибах. Ни разу не пришлось поднимать, а проверяют каждую весну. Сначала проверяют, потом молчат.",
+  "en": "Red and yellow on the diagonal: \"Man overboard.\" The flag is worn at the folds. Never once had to be raised, and checked every spring. First they check it, then they say nothing.",
+  "ja": "赤と黄の斜め分割は「人が落ちた」。畳み目がすり切れている。一度も揚げずにすんだが、毎春点検する。点検して、あとは黙る。"
+ },
+ "city.px.flags.3": {
+  "ru": "Бело-синий флаг: «Под водой водолазы, держитесь подальше». Его вывешивают, когда у пирса чистят сваи. Рядом в ячейке лежит маленькая свистулька: водолазам.",
+  "en": "The white and blue flag: \"Divers below, keep clear.\" It goes up when the piles at the pier are cleaned. In the next pigeonhole lies a small whistle for the divers.",
+  "ja": "白と青の旗は「潜水夫が水中にいる、離れよ」。桟橋の杭を掃除するときに揚げる。隣の仕切りには潜水夫のための小さな笛が入っている。"
+ },
+ "city.px.flags.4": {
+  "ru": "В одной ячейке клетчатый платок вместо флага, на бумажке: «Для «Марии». Если спросят, что значит, — «Мы вас ждём»». Платок свежевыстиран.",
+  "en": "In one pigeonhole there's a checked kerchief instead of a flag, with a slip: \"For Maria. If they ask what it means: 'We're waiting for you.'\" The kerchief is freshly washed.",
+  "ja": "ひとつの仕切りには旗の代わりに格子柄のハンカチ。紙片に「マリヤ用。意味を聞かれたら『待っている』と答える」。洗いたてだ。"
+ },
+ "city.px.keeper_flags.prompt": {
+  "ru": "E — разобрать флаги",
+  "en": "E — sort through the flags",
+  "ja": "E：旗をより分ける"
+ },
+ "city.px.keeper_bottle.prompt": {
+  "ru": "E — рассмотреть кораблик",
+  "en": "E — look at the little ship",
+  "ja": "E：模型の船を眺める"
+ },
+ "city.px.bottle.prompt": {
+  "ru": "E — рассмотреть кораблик",
+  "en": "E — look at the little ship",
+  "ja": "E：模型の船を眺める"
+ },
+ "city.px.bottle.1": {
+  "ru": "Модель бригантины на подставке, паруса из папиросной бумаги. Аркадий делал её три зимы. Рядом зелёная бутылка с пробкой: «Вскрывать только вместе».",
+  "en": "A model brigantine on a stand, sails of cigarette paper. Arkady took three winters to make it. Beside it a green bottle with a cork: \"Open only together.\"",
+  "ja": "台に載ったブリガンティンの模型。帆は巻き煙草の紙でできている。アルカージーが三冬かけて作った。隣に栓をした緑の瓶。「開けるなら二人で」。"
+ },
+ "city.px.bottle.2": {
+  "ru": "Бутылка засмолена, внутри свёрнутая записка. На стекле мелом: «Не вскрывать, пока не вернётся «Мария»». Мел свежий: подновляют каждый день.",
+  "en": "The bottle is sealed with tar, a rolled note inside. Chalked on the glass: \"Do not open until Maria returns.\" The chalk is fresh: they renew it every day.",
+  "ja": "瓶はタールで封がされ、中に丸めた手紙が入っている。ガラスにチョークで「マリヤが戻るまで開けないこと」。チョークは新しい。毎日書き直しているのだ。"
+ },
+ "city.px.bottle.3": {
+  "ru": "Бутылку вскрыли и снова закрыли. Записка внутри: «Видели ваш свет за одиннадцать миль. Спасибо. Капитан Лаптев». Пробку засмолили заново, теперь уже на память.",
+  "en": "The bottle has been opened and closed again. The note inside: \"We saw your light eleven miles off. Thank you. Captain Laptev.\" The cork is freshly tarred, this time for keeps.",
+  "ja": "瓶は開けられ、また閉じられた。中の手紙。「十一マイル先から貴方がたの灯が見えました。ありがとう。ラプチェフ船長」。栓は新しくタールを塗り直された。今度は記念に。"
+ },
+ "city.px.storm.1": {
+  "ru": "Картина: бурное море и одинокий сейнер на гребне. Подпись на раме карандашом: «Не наш, но очень похож на «Марию»». Художник явно видел шторм вблизи.",
+  "en": "A painting: a stormy sea and a lone seiner on a crest. Pencilled on the frame: \"Not ours, but very like Maria.\" The painter clearly saw a storm up close.",
+  "ja": "荒れた海と、波頭に乗った一隻の巻き網船の絵。枠に鉛筆で「うちの船ではないが、マリヤによく似ている」。画家は嵐を間近で見たのだろう。"
+ },
+ "city.px.storm.2": {
+  "ru": "При лампе волны на картине кажутся живыми. Если смотреть долго, сейнер вот-вот скроется за гребнем. Я отвёл глаза первым.",
+  "en": "By lamplight the waves in the painting seem alive. Look long enough and the seiner is about to vanish behind a crest. I looked away first.",
+  "ja": "ランプの下では絵の波が生きているように見える。長く見つめていると、船が波の向こうに消えそうだ。先に目をそらしたのは僕だった。"
+ },
+ "city.px.keeper_storm.prompt": {
+  "ru": "E — рассмотреть картину",
+  "en": "E — look at the picture",
+  "ja": "E：絵を眺める"
+ },
+ "city.px.clockwork.1": {
+  "ru": "Механизм вращения линзы: гиря в шахте, шестерёнки в латунных щеках. Днём свет не нужен, линза зашторена льном, но завод подкручивают заранее, чтобы вечером не ждать. Я сделал десять оборотов.",
+  "en": "The lens's turning gear: a weight in the shaft, wheels in brass cheeks. Daylight needs no beam and the lens is under a linen cover, but they wind it ahead so there's no waiting at dusk. I gave it ten turns.",
+  "ja": "レンズを回す仕掛け。竪穴の錘と、真鍮の頬板に挟まれた歯車。昼は光がいらず、レンズは麻布で覆われているが、夕方に慌てないよう前もって巻いておく。僕は十回まわした。"
+ },
+ "city.px.clockwork.2": {
+  "ru": "Закат: шторы сняты, завод затянут. Рукоятка идёт туго. Гиря медленно ползёт вверх по шахте, а потом шестерёнки подхватывают её и начинают считать время.",
+  "en": "Sunset: the covers are off and the clockwork wound. The handle goes stiffly. The weight crawls up the shaft, then the wheels take it and start counting time.",
+  "ja": "日没。覆いが外され、仕掛けは巻かれている。ハンドルは固い。錘がゆっくり竪穴を上がり、歯車がそれを受け取って時を数え始める。"
+ },
+ "city.px.clockwork.3": {
+  "ru": "Ночью механизм слышно по всему дому: тик, тик, тик, и каждые двадцать секунд наверху ложится луч. Подкрутил завод: гирю нельзя оставлять на самом дне.",
+  "en": "At night you can hear the gear all through the house: tick, tick, tick, and every twenty seconds a beam lays down upstairs. I wound it: the weight must never be left at the bottom.",
+  "ja": "夜、仕掛けの音は家じゅうに響く。カチ、カチ、カチ。二十秒ごとに上で光の筋が横たわる。巻いておいた。錘を底まで下ろしきってはいけない。"
+ },
+ "city.px.keeper_clockwork.prompt": {
+  "ru": "E — подкрутить завод маяка",
+  "en": "E — wind up the lantern's clockwork",
+  "ja": "E：灯台の時計仕掛けを巻く"
+ },
+ "city.px.watch.1": {
+  "ru": "Вахтенная книга механизма. «06:10. Ветер зюйд-вест, четыре балла, видимость хорошая. Сейнер «Мария» вышел на сельдь, обещал быть завтра к вечеру. Аркадий».",
+  "en": "The clockwork's watch book. \"06:10. Wind south-west, force four, visibility good. Seiner Maria sailed for herring, promised to be back tomorrow by evening. Arkady.\"",
+  "ja": "仕掛けの当直帳。「6時10分。風は南西、風力4、視界良好。巻き網船マリヤはニシン漁に出港、明日の夕方に戻る予定。アルカージー」。"
+ },
+ "city.px.watch.2": {
+  "ru": "«21:00. «Марию» ждём до полуночи. Огонь зажжён на двадцать минут раньше срока: пусть видят издалека. Арам».",
+  "en": "\"21:00. We wait for Maria till midnight. The light was lit twenty minutes early: let them see it from far off. Aram.\"",
+  "ja": "「21時。零時までマリヤを待つ。灯は予定より二十分早くともした。遠くからでも見えるように。アラム」。"
+ },
+ "city.px.watch.3": {
+  "ru": "«23:50. «Марии» нет. Рация молчит. Барометр падает. Завод заводил каждые четыре часа, не только по расписанию. Аркадий».",
+  "en": "\"23:50. No Maria. The radio is silent. The barometer is falling. I wound the clockwork every four hours, not only by the book. Arkady.\"",
+  "ja": "「23時50分。マリヤは来ない。無線は沈黙。気圧は下がる。当番表より多く、四時間ごとに仕掛けを巻いた。アルカージー」。"
+ },
+ "city.px.watch.4": {
+  "ru": "«04:00. Шторм. Колокол звоним каждые две минуты, вторую ночь подряд. Руки дрожат, но звонит. В порт по рации передали: «Марию» не видели. Арам».",
+  "en": "\"04:00. Storm. We ring the bell every two minutes, a second night running. Hands shaking, but it rings. Told the port by radio: Maria not seen. Aram.\"",
+  "ja": "「4時。嵐。二晩つづけて、二分ごとに鐘を鳴らしている。手は震えるが、鐘は鳴る。無線で港に伝えた。マリヤは見えず。アラム」。"
+ },
+ "city.px.watch.5": {
+  "ru": "«Ночь без сна, луч идёт ровно, ураган не сбил его ни разу. Чайник пуст, хлеб кончился. Если кто-то зайдёт, заварите нам чаю, пожалуйста. Аркадий».",
+  "en": "\"A night without sleep, the beam runs true, the gale never knocked it off once. The kettle is empty, the bread gone. If anyone comes in, please make us tea. Arkady.\"",
+  "ja": "「眠れぬ夜。光は乱れず、嵐も一度としてそれを狂わせなかった。やかんは空、パンも尽きた。誰か来たら、お茶をいれてやってくれ。アルカージー」。"
+ },
+ "city.px.watch.6": {
+  "ru": "«05:20. Стихло. По рации слабый голос: «Маяк, мы «Мария». Двигатель встал, сутки нас сносило. Видели ваш свет. Идём к вам». Арам заплакал, Аркадий сделал вид, что не заметил».",
+  "en": "\"05:20. It's eased. A faint voice on the radio: 'Lighthouse, this is Maria. Engine failed, we drifted a day. We saw your light. Coming to you.' Aram wept, Arkady pretended not to notice.\"",
+  "ja": "「5時20分。風がやんだ。無線にか細い声。『灯台へ、こちらマリヤ。エンジンが止まり、一日流された。貴方がたの灯が見えた。そちらへ向かう』。アラムは泣き、アルカージーは気づかぬふりをした」。"
+ },
+ "city.px.watch.7": {
+  "ru": "«18:40. «Мария» у пирса. Капитан Лаптев оставил у двери бутылку, внутри записка. Поставили на полку к кораблику. Колокол звонил в этот раз просто так: от радости».",
+  "en": "\"18:40. Maria is at the pier. Captain Laptev left a bottle by the door, a note inside. Put it on the shelf by the little ship. The bell rang this time for nothing: for joy.\"",
+  "ja": "「18時40分。マリヤが桟橋に着いた。ラプチェフ船長が戸口に瓶を置いていった。中に手紙。模型の船の隣の棚に置いた。今回は鐘をただ鳴らした。うれしさで」。"
+ },
+ "city.px.watch.8": {
+  "ru": "«Тихо. Выходной по приказу обоих. Писали стихи: Арам предложил рифму «вернулся — улыбнулся», Аркадий отверг, но записал на всякий случай».",
+  "en": "\"Quiet. A day off by order of both of us. Wrote verses: Aram offered the rhyme 'came back, grinned back', Arkady rejected it, but wrote it down just in case.\"",
+  "ja": "「静か。二人の命令で休み。詩を書いた。アラムが「戻った、笑った」の韻を提案し、アルカージーは却下したが念のため書き留めた」。"
+ },
+ "city.px.keeper_watch.prompt": {
+  "ru": "E — открыть вахтенную книгу механизма",
+  "en": "E — open the clockwork's watch book",
+  "ja": "E：仕掛けの当直帳を開く"
+ },
+ "city.px.cup.1": {
+  "ru": "Поставил горячую чашку рядом с журналом. Пар поднимается, и лампа за ним кажется мутной. Кто-то найдёт её, придёт и сначала улыбнётся, а потом выпьет.",
+  "en": "I set a hot cup beside the log. The steam climbs and the lamp behind it goes hazy. Whoever comes will find it, smile first and drink after.",
+  "ja": "熱いカップを日誌の横に置いた。湯気が立ちのぼり、向こうのランプがぼやける。見つけた人はまず笑って、それから飲むだろう。"
+ },
+ "city.px.cup.2": {
+  "ru": "Оставил чашку у ночного журнала, чтобы тот, кто придёт на вахту, нашёл её тёплой. Придвинул вплотную к его ручке. Теперь это место чьё-то.",
+  "en": "I left the cup by the night log so that whoever comes on watch finds it warm. Slid it right up to his pen. Now this place belongs to someone.",
+  "ja": "夜の日誌の横にカップを置いた。当番に来た人が温かいうちに見つけられるように。ペンのすぐそばへ寄せる。この場所はもう誰かのものだ。"
+ },
+ "city.px.keeper_cup.prompt": {
+  "ru": "E — поставить чашку чая на стол",
+  "en": "E — set a cup of tea on the desk",
+  "ja": "E：机にお茶のカップを置く"
+ },
+ "city.px.bell.1": {
+  "ru": "Дёрнул за верёвку. Колокол ударил густо, «бом», и звук ушёл над водой далеко-далеко. Чайки на перилах шарахнулись, но через минуту вернулись.",
+  "en": "I pulled the rope. The bell struck thickly, bong, and the sound went out over the water, far, far away. The gulls on the rail flinched but came back within a minute.",
+  "ja": "綱を引いた。鐘が太く鳴り、その音が水面を遠く遠くへ渡っていった。手すりのカモメは飛びのいたが、一分で戻ってきた。"
+ },
+ "city.px.bell.2": {
+  "ru": "Звонил медленно, как положено в тумане: раз в минуту. С моря никто не ответил. Но на соседнем пирсе зажёгся фонарь: кто-то услышал и не спит.",
+  "en": "I rang slowly, as you do in fog: once a minute. Nobody answered from the sea. But a lantern lit on the next pier: someone heard and is awake.",
+  "ja": "霧の日の作法どおり、ゆっくり、一分に一度鳴らした。海からの返事はない。けれど隣の桟橋でランタンがともった。誰かが聞いて、起きている。"
+ },
+ "city.px.bell.3": {
+  "ru": "В выходной звонить велено вежливо: на набережной отдыхают люди. Звонил так тихо, как только можно звонить в колокол в человеческий рост.",
+  "en": "On a day off the order is to ring politely: people are resting on the promenade. I rang as softly as one can ring a bell the size of a person.",
+  "ja": "休日は礼儀正しく、との決まりだ。遊歩道で人が休んでいる。人の背丈ほどもある鐘を、できるだけそっと鳴らした。"
+ },
+ "city.px.keeper_fogbell.prompt": {
+  "ru": "E — позвонить в туманный колокол",
+  "en": "E — ring the fog bell",
+  "ja": "E：霧の鐘を鳴らす"
+ },
+ "city.px.signal.1": {
+  "ru": "Днём лампа почти не видна. Я всё равно простучал заслонкой три раза, «Я здесь». Из порта взмахнули красной тряпкой: наверное, механик с буксира.",
+  "en": "By day the lamp is hardly seen. I clacked the shutter three times anyway: \"I'm here.\" Someone in the port waved a red rag: the tug's mechanic, probably.",
+  "ja": "昼間、灯はほとんど見えない。それでもシャッターを三回鳴らした。「ここにいる」。港から誰かが赤い布を振り返した。たぶん曳き船の機関士だ。"
+ },
+ "city.px.signal.2": {
+  "ru": "Ночью лампа бьёт как кулак: три вспышки к морю. С горизонта мигнули в ответ. Сердце сделало «тук» вместе с ними и ещё долго держало ритм.",
+  "en": "At night the lamp strikes like a fist: three flashes toward the sea. A blink came back from the horizon. My heart went thump with it and kept the rhythm a long while.",
+  "ja": "夜、灯は拳のように打つ。海へ三回の閃光。水平線から点滅が返ってきた。胸がそれといっしょにどくんと鳴り、長いあいだ拍子を刻んだ。"
+ },
+ "city.px.keeper_signal.prompt": {
+  "ru": "E — подать сигнал лампой",
+  "en": "E — flash the signal lamp",
+  "ja": "E：信号灯を点滅させる"
+ },
+ "city.px.gweather.1": {
+  "ru": "Будка с приборами: белые жалюзи, внутри два термометра. Флюгер смотрит на запад: оттуда придёт погода, так считают смотрители. Ветромер крутится ровно, как три маленьких солнца.",
+  "en": "The instrument screen: white louvres, two thermometers inside. The vane points west: that's where weather comes from, the keepers say. The anemometer spins evenly, like three small suns.",
+  "ja": "計器箱。白い鎧戸と、中に二本の温度計。風見は西を向いている。天気はそこから来る、と灯台守たちは考える。風速計は三つの小さな太陽のように均等に回る。"
+ },
+ "city.px.gweather.2": {
+  "ru": "Ночью ветромер звенит тонко-тонко. В будке темно, на дверце мелом: «Показания в 02:00. Аркадий». Дописано мелом помельче: «Не спать».",
+  "en": "At night the anemometer rings thin and fine. The screen is dark, chalked on its door: \"Readings at 02:00. Arkady.\" Added smaller in chalk: \"Don't sleep.\"",
+  "ja": "夜、風速計は細く澄んだ音を立てる。計器箱は暗く、扉にチョークで「観測は2時。アルカージー」。もっと小さな字で「寝るな」。"
+ },
+ "city.px.keeper_gallery_weather.prompt": {
+  "ru": "E — посмотреть на приборы",
+  "en": "E — look at the instruments",
+  "ja": "E：計器を見る"
+ },
+ "city.px.ships.1": {
+  "ru": "Таблица огней судов: белый топовый, красный по левому борту, зелёный по правому. Днём на море видно сейнер: тёмный силуэт и стая чаек над ним.",
+  "en": "The table of ships' lights: white masthead, red to port, green to starboard. By day a seiner on the sea: a dark silhouette and a flock of gulls over it.",
+  "ja": "船の灯火表。白い檣灯、左舷は赤、右舷は緑。昼の海に巻き網船が一隻。黒い影と、その上のカモメの群れ。"
+ },
+ "city.px.ships.2": {
+  "ru": "Днём вдали ползёт пассажирский теплоход: белый, как сахар, и такой же маленький. По таблице ночью у него будет три белых огня и красный с зелёным.",
+  "en": "Far off a passenger steamer crawls: white as sugar and as small. By the table, at night it will show three white lights and a red and a green.",
+  "ja": "遠くを客船がゆっくり進む。砂糖のように白く、同じくらい小さい。灯火表によれば、夜は白い灯が三つと赤と緑が出る。"
+ },
+ "city.px.ships.3": {
+  "ru": "Баржа вдоль берега, дымок, сидит низко. Таблица: «Буксир с баржей: два топовых огня в линию». Сверил: правда, совпадает до последней мелочи.",
+  "en": "A barge along the shore, a thread of smoke, riding low. The table: \"Tug with tow: two masthead lights in line.\" Checked: true, down to the last detail.",
+  "ja": "岸ぞいに平底船、細い煙、喫水が深い。表には「曳航中の船、二つの檣灯が縦に並ぶ」。確かめた。細部までその通りだ。"
+ },
+ "city.px.ships.4": {
+  "ru": "Пустое море, только блики. Смотрители шутят, что в такие дни ищешь корабли, а находишь мысли. Я нашёл одну, но она была маленькая.",
+  "en": "An empty sea, only glints. The keepers joke that on days like this you look for ships and find thoughts. I found one, but it was a small one.",
+  "ja": "空っぽの海に、ただ光のきらめき。こういう日は船を探して考えごとを見つける、と灯台守たちは冗談を言う。ひとつ見つけたが、小さなものだった。"
+ },
+ "city.px.ships.5": {
+  "ru": "Ночью на воде два огня рядом, красный и зелёный: корабль идёт прямо на меня. По таблице идёт к пирсу, но не сейчас: ещё минут сорок.",
+  "en": "At night two lights side by side on the water, red and green: a ship heading straight at me. By the table it's bound for the pier, but not yet, another forty minutes.",
+  "ja": "夜、水の上に赤と緑の二つの灯が並ぶ。船が正面から来る。表によれば桟橋行きだが、まだ先、あと四十分ほどだ。"
+ },
+ "city.px.ships.6": {
+  "ru": "Над горизонтом белый огонь, чуть выше ещё один: идёт сейнер, ловит. Лучи фонарей качаются на воде вместе с его бортом.",
+  "en": "A white light low over the horizon, another a little higher: a seiner, fishing. The lantern beams rock on the water with her side.",
+  "ja": "水平線の上に白い灯がひとつ、少し上にもうひとつ。巻き網船が漁をしている。ランタンの光が船腹といっしょに水面で揺れる。"
+ },
+ "city.px.ships.7": {
+  "ru": "Одинокий зелёный огонёк у самого края. По таблице: правый борт, судно идёт влево. Загадал, чтобы это была «Мария», и сам удивился, как просто это сказалось.",
+  "en": "A single green light at the very edge. By the table: starboard side, the vessel is going left. I wished it were Maria, and was surprised how easily the wish came.",
+  "ja": "いちばん端にぽつんと緑の灯。表によれば右舷、船は左へ進んでいる。マリヤであればいいと願い、それがあまり簡単に出てきたので自分でも驚いた。"
+ },
+ "city.px.ships.8": {
+  "ru": "Тьма, только луч маяка касается воды раз в двадцать секунд. Между лучами темнота такая густая, что кажется живой и очень внимательной.",
+  "en": "Darkness, only the beam touching the water once every twenty seconds. Between beams the dark is so thick it seems alive and very attentive.",
+  "ja": "闇の中、二十秒に一度だけ光の筋が水面に触れる。光と光のあいだの闇は濃く、生きていて、とても注意深いように思える。"
+ },
+ "city.px.keeper_ships.prompt": {
+  "ru": "E — сверить огни кораблей",
+  "en": "E — check the ships' lights",
+  "ja": "E：船の灯火を照合する"
+ },
+ "quest.px_maria.title": {
+  "ru": "Свет для «Марии»",
+  "en": "A light for Maria",
+  "ja": "マリヤのための灯"
+ },
+ "quest.px_maria.desc": {
+  "ru": "В башне на пирсе пахнет углём и нагретой латунью. На столе открытая книга, а на ней мелом: «Если «Мария» не вернётся до рассвета, звони, не стесняйся».",
+  "en": "The tower on the pier smells of coal and warm brass. A book lies open on the table, chalked across it: \"If Maria isn't back by dawn, ring, don't be shy.\"",
+  "ja": "桟橋の塔は石炭と温まった真鍮の匂いがする。机に開いた本があり、チョークで「夜明けまでにマリヤが戻らなければ、遠慮なく鳴らせ」。"
+ },
+ "quest.px_maria.done": {
+  "ru": "Пятнадцать минут на галерее, и руки пахнут латунью и морем. Когда я спускался, кот в корзине поднял голову и посмотрел так, будто сказал: «Ну вот, теперь можно и поспать». Смотрители оставили мне открытку с маяком: «Тому, кто помог держать свет».",
+  "en": "Fifteen minutes on the gallery and my hands smell of brass and sea. As I went down, the cat in his basket raised his head and looked as if to say: \"There. Now we can sleep.\" The keepers left me a postcard of the lighthouse: \"To one who helped keep the light.\"",
+  "ja": "回廊で十五分過ごすと、手は真鍮と海の匂いになった。降りるとき、かごの猫が顔を上げ、「さあ、これで眠れる」と言いたげに僕を見た。灯台守たちは灯台の絵葉書を残していた。「光を守るのを手伝ってくれた人へ」。"
+ },
+ "quest.px_maria.book.log": {
+  "ru": "Вахтенная книга механизма лежит у лестницы, под часами. Если «Мария» правда в беде, там про это написано. Загляну.",
+  "en": "The clockwork's watch book lies by the stair under the clock. If Maria's truly in trouble, it will say so. I'll take a look.",
+  "ja": "仕掛けの当直帳は階段のそば、時計の下にある。マリヤが本当に困っているなら、そこに書いてあるはずだ。のぞいてみよう。"
+ },
+ "quest.px_maria.book.obj": {
+  "ru": "Прочитать вахтенную книгу механизма внизу",
+  "en": "Read the clockwork's watch book downstairs",
+  "ja": "階下で仕掛けの当直帳を読む"
+ },
+ "quest.px_maria.bell.log": {
+  "ru": "Колокол на галерее виден из любой точки порта. Если в тумане кто-то ищет вход, он пойдёт на звук. Поднимусь по винтовой лестнице.",
+  "en": "The bell on the gallery can be heard from anywhere in the harbour. Anyone feeling for the entrance in fog will steer by its sound. I'll climb the spiral stair.",
+  "ja": "回廊の鐘は港のどこからでも聞こえる。霧の中で入口を探す人は、音を頼りに進む。螺旋階段をのぼろう。"
+ },
+ "quest.px_maria.bell.obj": {
+  "ru": "Позвонить в туманный колокол на галерее",
+  "en": "Ring the fog bell on the gallery",
+  "ja": "回廊の霧の鐘を鳴らす"
+ },
+ "quest.px_maria.lamp.log": {
+  "ru": "Колокол слышно, но корабль хочет увидеть. Сигнальная лампа на штативе стоит у перил: три вспышки, и «Мария» узнает, что её ждут.",
+  "en": "The bell is heard, but a ship wants to see. The signal lamp on its tripod stands by the rail: three flashes and Maria will know she's awaited.",
+  "ja": "鐘は聞こえるが、船は見たがっている。三脚の信号灯が手すりのそばにある。三回光らせれば、マリヤは待たれているとわかる。"
+ },
+ "quest.px_maria.lamp.obj": {
+  "ru": "Подать сигнал лампой на галерее",
+  "en": "Flash the signal lamp on the gallery",
+  "ja": "回廊の信号灯を点滅させる"
+ },
+ "quest.px_tea.title": {
+  "ru": "Чай для смотрителей",
+  "en": "Tea for the keepers",
+  "ja": "灯台守にお茶を"
+ },
+ "quest.px_tea.desc": {
+  "ru": "В башне у входа тихо. На печке пустой чайник, на столе остывшая кружка, а на листке: «Вернёмся к четырём. Если зайдёте, заварите себе. И нам, если не жалко».",
+  "en": "It's quiet inside the tower by the door. An empty kettle on the stove, a cold mug on the table, a slip: \"Back by four. If you drop in, make yourself some. And for us, if you don't mind.\"",
+  "ja": "入口のそばの塔の中は静かだ。ストーブに空のやかん、机に冷めたマグ、そして紙片。「四時には戻る。来たら自分の分を入れてくれ。よければ僕らの分も」。"
+ },
+ "quest.px_tea.done": {
+  "ru": "Кот в корзине открыл глаз и, кажется, одобрил. На столе осталось две чашки, одна горячая, другая недопитая. Под ними записка: «Спасибо, незнакомец. Ты заварил лучше Арама, только ему не говори». Мне оставили пятнадцать рублей на леденцы.",
+  "en": "The cat in the basket opened an eye and, it seems, approved. Two cups stood on the table, one hot, one half-drunk. A note under them: \"Thank you, stranger. You brew better than Aram, just don't tell him.\" They left me fifteen roubles for sweets.",
+  "ja": "かごの猫が片目をあけ、どうやら認めてくれたらしい。机には二つのカップ、ひとつは熱く、ひとつは飲みかけ。下にメモ。「ありがとう、見知らぬ人。アラムよりおいしくいれたね。彼には内緒で」。飴代に十五ルーブルが置いてあった。"
+ },
+ "quest.px_tea.kettle.log": {
+  "ru": "Печурка в углу ещё тёплая, дрова в плетёной корзине рядом. Поставлю чайник: на себя, на смотрителей и, раз уж так, на кота.",
+  "en": "The stove in the corner is still warm, logs in the wicker basket beside it. I'll put the kettle on: for me, for the keepers and, while I'm at it, for the cat.",
+  "ja": "隅のストーブはまだ温かく、そばの籐かごに薪がある。やかんをかけよう。自分と灯台守たちと、ついでに猫の分も。"
+ },
+ "quest.px_tea.kettle.obj": {
+  "ru": "Вскипятить чайник на печке",
+  "en": "Boil the kettle on the stove",
+  "ja": "ストーブでやかんを沸かす"
+ },
+ "quest.px_tea.cup.log": {
+  "ru": "Чай готов. Отнесу чашку к вахтенному столу, туда, где журнал. Они увидят её, как только вернутся.",
+  "en": "The tea is ready. I'll carry a cup to the watch desk, by the log. They'll see it the moment they return.",
+  "ja": "お茶ができた。当直机の日誌のそばへカップを運ぼう。戻ってきたらすぐ目に入る。"
+ },
+ "quest.px_tea.cup.obj": {
+  "ru": "Поставить чашку чая на вахтенный стол",
+  "en": "Set a cup of tea on the watch desk",
+  "ja": "当直机にお茶のカップを置く"
+ },
+ "quest.px_tea.cat.log": {
+  "ru": "Осталось выпросить у кота разрешение. По слухам, он выдаёт его только тому, кто заварил чай как следует.",
+  "en": "Just the cat's permission left to ask for. They say he grants it only to whoever brewed the tea properly.",
+  "ja": "あとは猫に許しをもらうだけだ。ちゃんとお茶をいれた人にしか許さない、という噂だ。"
+ },
+ "quest.px_tea.cat.obj": {
+  "ru": "Погладить кота в корзине у печки",
+  "en": "Stroke the cat in the basket by the stove",
+  "ja": "ストーブのそばのかごの猫をなでる"
+ }
+}
