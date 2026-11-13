@@ -17,6 +17,11 @@ they keep their key, age and sex. What it decides:
 - hair style and colour (greying with age, now and then dyed), beard or moustache, glasses;
 - clothes by job, age and style (blender/residents/wardrobe.py) with colours from palettes, a coat now and then;
 - accessories (blender/residents/accessories.py: caps, headscarves, bags, string bags, aprons, a cane).
+
+The named people of Content/PeopleData/people.json listed in CAST get their model from the generator too (nobody made one
+by hand): drawn the same way from their key, with what their story fixes (origin, hair, clothes, accessories) set by CAST.
+Their model takes the name of their people.json "body" (Khuazhev_aslan: /Game/Characters/Humans/Khuazhev_aslan), so the
+game, their lines and their quests find them as before.
 """
 import argparse
 import hashlib
@@ -221,6 +226,18 @@ WORK_OUTFITS = {
 }
 
 
+# named people of people.json whose body the generator makes, and what their story fixes about their look; the rest is
+# drawn from their key like anybody's. mix/tone: ancestry; acc replaces every drawn accessory (facial hair included).
+CAST = {
+    # the Adyghe cheese seller at the tent by the club (docs/food.md), 56: brings his family's cheese from Adygea;
+    # sturdy, short grey hair under a flat cap, a moustache, a white apron over a work shirt and trousers
+    "khuazhev_aslan": dict(mix=[0.08, 0.02, 0.9], tone=0.88, weight=0.64, muscle=0.52, iris="brown",
+                           hair="short02", hair_color="grey", brow_color="darkbrown",
+                           clothes=["male_casualsuit05", "shoes03"], acc=["flat_cap", "bib_apron", "mustache"],
+                           acc_tints={"bib_apron": [0.93, 0.93, 0.92]}),
+}
+
+
 def wearable(name, sex, age, styles):
     g = W.GARMENTS[name]
     return (g["sex"] in ("u", sex)) and g["ages"][0] <= age <= g["ages"][1] and any(s in g["styles"] for s in styles)
@@ -310,7 +327,9 @@ def tint_for(rnd, garment, slot, style, extras, age):
 
 # ------------------------------------------------------------------------------------------------ a look
 
-def make_look(person, seed, names, parents_looks=None):
+def make_look(person, seed, names, parents_looks=None, fixed=None):
+    """fixed: a CAST entry; each value replaces its draw after the draw (the order of the draws stays)."""
+    fixed = fixed or {}
     key = person["key"]
     rnd = rng_for(seed, key, "look%d" % VERSION)
     sex = "f" if person.get("female") else "m"
@@ -337,6 +356,7 @@ def make_look(person, seed, names, parents_looks=None):
         genes = fresh_genes(rnd)
         hair_nat = natural_hair(rnd, mix)
         iris = natural_iris(rnd, mix)
+    mix, tone, iris = fixed.get("mix", mix), fixed.get("tone", tone), fixed.get("iris", iris)
     temper = person.get("temper", {})
 
     # body
@@ -349,6 +369,7 @@ def make_look(person, seed, names, parents_looks=None):
     else:
         weight, muscle = gauss(rnd, 0.56, 0.11, 0.35, 0.85), gauss(rnd, 0.38, 0.07, 0.22, 0.55)
     height = gauss(rnd, 0.5, 0.13, 0.15, 0.85)
+    weight, muscle, height = fixed.get("weight", weight), fixed.get("muscle", muscle), fixed.get("height", height)
     if age >= 70:
         height -= 0.06
     macro = dict(gender=round(rnd.uniform(0.0, 0.08) if sex == "f" else rnd.uniform(0.92, 1.0), 3),
@@ -413,15 +434,18 @@ def make_look(person, seed, names, parents_looks=None):
     bald_p = 0.0 if sex == "f" or age < 30 else clamp((age - 30) / 50, 0, 0.5)
     if rnd.random() < bald_p:
         hair = None
+    hair_color, hair = fixed.get("hair_color", hair_color), fixed.get("hair", hair)
     # brows, lashes, eyes
     brows = rnd.choice(W.EYEBROWS_F if sex == "f" else W.EYEBROWS_M)
     lashes = rnd.choice(W.EYELASHES_F if sex == "f" else W.EYELASHES_M)
     brow_color = hair_nat if hair_color in ("dyed_purple", "dyed_blue", "dyed_pink", "platinum") else hair_color
     if brow_color in ("white", "silver") and rnd.random() < 0.5:
         brow_color = "grey"
+    brow_color = fixed.get("brow_color", brow_color)
 
     # clothes and accessories
     outfit, style, extras = choose_outfit(rnd, sex, age, person.get("occupation", ""), temper)
+    outfit = list(fixed.get("clothes", outfit))
     tints = {}
     for g in outfit:
         for slot in sorted(set(s for _, s in W.GARMENTS[g]["slots"])):
@@ -466,6 +490,7 @@ def make_look(person, seed, names, parents_looks=None):
                                      "mindfront_fishing_hat_01")]
     for extra in heads[1:]:
         acc.remove(extra)
+    acc = list(fixed.get("acc", acc))
     acc_tints = {}
     for a in acc:
         base = a.split(":")[0]
@@ -475,6 +500,7 @@ def make_look(person, seed, names, parents_looks=None):
                                                  "chef_toque": "white_coat", "bib_apron": "white_coat" if style == "cook" else "jacket",
                                                  "waist_apron": "suit" if style == "waiter" else "jacket",
                                                  "backpack": "kid_top" if age < 16 else "jacket"}.get(base, "coat")))
+    acc_tints.update(fixed.get("acc_tints", {}))
 
     look = dict(key=key, model=model_name(key), sex=sex, age=age, occupation=person.get("occupation", ""),
                 style=style, ancestry=mix, tone=tone, genes=genes, macro=macro, targets=targets,
@@ -482,6 +508,8 @@ def make_look(person, seed, names, parents_looks=None):
                 hair=hair, hair_natural=hair_nat, hair_color=hair_color, brow_color=brow_color,
                 hair_rgb=list(W.HAIR_COLORS[hair_color]), brow_rgb=list(W.HAIR_COLORS[brow_color]),
                 clothes=outfit, tints=tints, accessories=acc, accessory_tints=acc_tints)
+    if fixed.get("model"):
+        look["model"] = fixed["model"]
     look["hash"] = hashlib.sha1(json.dumps({k: v for k, v in look.items() if k not in ("genes", "hash")},
                                            sort_keys=True).encode()).hexdigest()[:12]
     return look
@@ -538,6 +566,33 @@ def make_all(people, seed, names):
     return looks
 
 
+def handmade(body):
+    """A model in git under the body's name (the cast's are made by hand and committed; the generator's never are)."""
+    rel = "unreal/Lyudmilovsk/Content/Characters/Humans/%s/SK_%s.uasset" % (body, body)
+    return subprocess.run(["git", "-C", ROOT, "ls-files", "--error-unmatch", rel], capture_output=True).returncode == 0
+
+
+def make_cast(people, seed, names):
+    """The CAST's looks, from their people.json entries; the model is named after their "body"."""
+    by_key = {p["key"]: p for p in people}
+    looks = {}
+    for key, fixed in sorted(CAST.items()):
+        p = by_key.get(key)
+        if p is None or not p.get("body"):
+            print("looks: %s (CAST) isn't in people.json or has no body: left out" % key)
+            continue
+        if handmade(p["body"]):          # the import would replace it: never
+            print("looks: %s (CAST) has a hand-made model %s in git: left out" % (key, p["body"]))
+            continue
+        looks[key] = make_look(p, seed, names, None, dict(fixed, model=p["body"]))
+    return looks
+
+
+def game_model(look):
+    """The model as the game names it: Town/R_<key> for a townsperson, the people.json body for the CAST."""
+    return look["model"] if look["key"] in CAST else "Town/" + look["model"]
+
+
 def summary(looks):
     from collections import Counter
     c = Counter()
@@ -557,6 +612,7 @@ def main():
     ap = argparse.ArgumentParser()
     ap.add_argument("--townsfolk", default=os.path.join(PEOPLE, "townsfolk.json"))
     ap.add_argument("--names", default=os.path.join(ROOT, "tools", "town", "names.json"))
+    ap.add_argument("--people", default=os.path.join(PEOPLE, "people.json"), help="the named people (CAST)")
     ap.add_argument("--ref", help="read townsfolk.json and names.json from this git ref (e.g. origin/town-life)")
     ap.add_argument("--seed", type=int, default=SEED)
     ap.add_argument("--out", default=os.path.join(HERE, "cache", "looks.json"))
@@ -571,13 +627,15 @@ def main():
     people = load_json(tf)["people"]
     names = load_names(nm)
     looks = make_all(people, a.seed, names)
+    looks.update(make_cast(load_json(a.people)["people"], a.seed, names))
     os.makedirs(os.path.dirname(a.out), exist_ok=True)
     with open(a.out, "w", encoding="utf-8") as f:
         json.dump({"seed": a.seed, "version": VERSION, "looks": looks}, f, indent=1, sort_keys=True)
     game = {"_doc": "Each townsperson's own model, made by blender/residents (docs/residents.md). tools/town/town_life.py "
-                    "copies it into townsfolk.json 'body'; the pool model stays as 'mesh' until the model is imported.",
+                    "copies it into townsfolk.json 'body'; the pool model stays as 'mesh' until the model is imported. "
+                    "Keys without t_ are named people of people.json (looks.py CAST): their model is their 'body'.",
             "seed": a.seed, "version": VERSION,
-            "people": {k: {"model": "Town/" + lk["model"], "hash": lk["hash"]} for k, lk in sorted(looks.items())}}
+            "people": {k: {"model": game_model(lk), "hash": lk["hash"]} for k, lk in sorted(looks.items())}}
     with open(a.game_out, "w", encoding="utf-8") as f:
         json.dump(game, f, indent=1, sort_keys=True)
     print("looks: %d people -> %s, %s" % (len(looks), os.path.relpath(a.out, ROOT), os.path.relpath(a.game_out, ROOT)))

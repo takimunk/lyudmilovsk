@@ -63,9 +63,9 @@ an `ALyudSky`; `lyud.Food.Stalls 0` leaves them out). Not in the level: a scene 
 | Adyghe cheese tent (red and white) | on the flat forecourt by the club's door, 4.7 m east of it and 5.6 m out, front to the path | Аслан Хуажев (56), `work_cheese` | 10–20, closed Mondays | braid 25, small round 40, big round 110 |
 | Boiled corn cart (yellow umbrella) | the Academgorodok's square, 14.5 m north of the fountain, front to it | Валентина Гусева (67), `work_corn` | 11–18 daily | corn 15 |
 
-Sellers: `people.json` (bodies `Khuazhev_aslan`, `Guseva_valentina` don't exist yet: they are shown by the `Clerk` and
-`Girl_b` models until generated), `activities.json`, `counters.json` (T trades while they are at work), lines in the strings
-and `npc_dialogue.txt`.
+Sellers: `people.json` (Valentina Guseva has her own body; Aslan's, `Khuazhev_aslan`, comes from the residents generator,
+docs/residents.md "Named people": until it is imported he lives unseen, his stand-in `Clerk` being the clerk's),
+`activities.json`, `counters.json` (T trades while they are at work), lines in the strings and `npc_dialogue.txt`.
 
 Note: `people_map.py` rewrites the whole `people_places.json`; with a stale `--cache` the flats move by centimetres. To add
 only the stalls, keep the committed file and append the two places.
