@@ -26,6 +26,10 @@ is and does) and the game code (`ULyudCityThings`). The work list is [city_backl
 * Preview without Unreal: `python3 blender/city/shoot_interior.py -- <type> --auto 4 --top 0,2.6` (Cycles, about 40 s
   a shot on 4 cores; look at every shot before calling a room done: floating furniture, things in walls, stretched
   UVs, z-fighting, doors blocked).
+* Windows from inside: `B.window` also puts a room-side card facing in (`CT_WindowIn`: a bright daylight pane by day,
+  dark blue at night, after the sun; it lights nothing, so keep lighting rooms with `B.lamp`). Nothing to do in a
+  module: every window gets one (`B.inside_windows`, [city_buildings.md](city_buildings.md#windows-and-lights)). Do not
+  draw your own glowing panes behind windows; leave the wall's inner face open at the window so the card shows.
 
 ### Promenade units
 
@@ -175,10 +179,11 @@ An act is what happens when the hero presses E at a thing:
 | field | meaning |
 |---|---|
 | `prompt` | key of the whole prompt line ("E — полистать"); no price in it: the game adds it with `city.act.prompt_price` |
-| `lines` | keys of texts shown in order, wrapping round (pages of a shelf, notices of a board, what happened at a game) |
+| `lines` | keys of texts shown in order, wrapping round (pages of a shelf, notices of a board, what happened at a game); an entry may carry conditions (below) |
+| `rotate` | `use` (the default: the next line at every use, a shelf's next page) or `daily` (one line a game day, the next one on the next day the thing is read, so a running story is never skipped: notice boards, wall newspapers, price boards, the cinema's posters) |
 | `title` | key of the page/trade screen title (every `buy_<shop>` act: the shop's title) |
 | `minutes` | game minutes that pass (0: none). With `fade` the screen fades out and in |
-| `until` | the hour the act ends at instead of `minutes` (sleep till 7; -1: none); `minutes` is the fallback. The game does not read it yet: `tools/citysim/until.patch` (model + checks) adds it |
+| `until` | the hour the act ends at instead of `minutes` (sleep till 7; -1: none); `minutes` is the fallback |
 | `price` | roubles taken (refused with `city.act.no_money` if the hero has less) |
 | `give` | items put in the pocket: `[["item_id", n]]` (existing items only) |
 | `needs_item` | an item the hero must have |
@@ -189,7 +194,16 @@ An act is what happens when the hero presses E at a thing:
 | `event`/`target` | reported to the quests: always `do` + the act id |
 | `daily` | how many times a day it gives its reward (0: no limit) |
 | `shop` | opens the trade screen with this stock of `shops` when `needs_staff` is on shift |
-| `screen` | a full-screen picture to show while it lasts (none yet) |
+| `screen` | a screen show (`film`, `stage`, `tv`, `slides`): the page in the dark wide style, the line cut into subtitles shown one after another, the minutes passing with them; a sitting show on a thing that is not a seat wants the hero seated first (a seat of the plot within 25 m) and is then offered from the seat |
+
+**Lines by the day and the hour.** In the content an entry of `lines` may be `{"k": "<key or prefix.*>", <conditions>}`;
+interiors.py writes each line it gives as `{"k": key, <conditions>}` (plain keys stay strings, so old data reads the same):
+`"h": [from, to]` hours (`[21, 6]` runs past midnight), `"d": "mon-fri"` weekdays, `"date": "05-09"` or `["12-20", "01-10"]`
+(wrapping the year), `"after": N` (N game days after the game began, `UGameCalendar::StartDate`), `"every": [n, r]` (on the
+days since the game began with `% n == r`: a notice of its own each game day, in order). A line shows only while all its
+conditions hold; among those the act turns (`rotate`). Every act must have a line for every hour (citysim checks it): give
+day lines `[6, 21]` and night lines `[21, 6]` together (`look_view`, `telescope`, `binoculars_post`). `--check` fails on an
+unknown condition or a bad value. Weather conditions are not there yet.
 
 Content tables (`tools/city/content/*.json`, each with any of `acts`, `shops`, `rules`, `defaults`,
 `defaults_by_plot_kind`; a key defined in two files is an error): `acts.json` (defaults per kind, generic acts,
@@ -255,37 +269,62 @@ counters are closed), then the kind's default (`sit`, `bed_private`, `read_misc`
 
 ## 3. Game
 
-* `ULyudCityThings` (tickable world subsystem, `Public/City/LyudCityThings.h`, `Private/City/LyudCityThings.cpp`): loads
-  `City/interiors.json` at world begin play (no file: no things, no tick). Five times a second, and only while the hero is
-  within 30 m of the box round all things, the model picks the thing in view from a 4 m grid (reach 2.6 m from the eyes, in
-  front, near the line of sight, on the eye's floor); one trace checks no wall is between; a door in view wins (doors poll E
-  too). Not as a bird, on a bike, seated (restaurant, train, a chair), with a screen, shop or menu up
-  (`ULyudInventoryUI::CanOpen`). The prompt goes through `ULyudInventoryUI::SetPrompt` (built only when the thing changes;
-  with a price `city.act.prompt_price`). E (polled) runs the act:
-  * refused (`city.act.closed|no_money|needs_item|no_staff|daily_done`): the reason on the prompt line for 2.5 s;
+* `ULyudCityThings` (tickable world subsystem, `Public/City/LyudCityThings.h`, `Private/City/LyudCityThings.cpp`): at world
+  begin play `City/interiors.json` is read and parsed on a worker (`UE::Tasks`, bytes straight to the parser; the log says the
+  milliseconds) and handed over on the next tick; the things simply appear a moment later (no file: no things, no tick). A
+  load that restores the save before then keeps the record and applies it when the model arrives. Five times a second, and
+  only while the hero is within 30 m of the box round all things, the model picks the thing in view from a 4 m grid (reach
+  2.6 m from the eyes, in front, near the line of sight, on the eye's floor); one trace checks no wall is between; a door in
+  view wins (doors poll E too). Not as a bird, on a bike, seated on somebody else's seat (restaurant, train), with a screen,
+  shop or menu up (`ULyudInventoryUI::CanOpen`), while the NPC talk has E (`ANpcTalkDirector::IsEngaged`: somebody in front
+  to talk to, or a talk going on; one press never both talks and buys), while the clock is running on. The prompt goes
+  through `ULyudInventoryUI::SetPrompt` (built only when the thing changes; with a price `city.act.prompt_price`). E
+  (polled) runs the act:
+  * refused (`city.act.closed|no_money|needs_item|no_staff|daily_done|sit_first`): the reason on the prompt line for 2.5 s;
   * `price` via `ULyudInventory::Spend`, `give` via `Add` (unknown items skipped, logged at load);
   * `lines`: a page (`Private/City/SLyudCityPage.*`, HUD style, hit-test invisible, takes no input) with the title, the
-    line and `E — next` / `E — close`; E turns through the act's lines once, walking 2.5 m away or any screen shuts it;
-  * `minutes`: `UGameCalendar::SetNow(Now + minutes)`; with `fade` a camera fade to black, the jump, a fade back;
+    line and `E — next` / `E — close`; E turns through the lines that hold now once (a `daily` act shows today's one),
+    walking 2.5 m away or any screen shuts it;
+  * `minutes`: up to 15 pass over about 0.6 s (at most 30 game s a frame: the people's life steps 1 s at a time and must
+    not run 900 steps in one frame), the hero's moves held meanwhile; more pass at once (the people's life resettles,
+    cheap); with `fade` a camera fade to black, the time, a fade back;
   * `shop`: `ULyudInventoryUI::OpenShop` with the `shops` stock, title = the act's `title` (default `city.shop.title`);
-    `needs_staff` is asked of `UPeopleLifeSubsystem::StaffOnShift(plot, role)` (role `*`: anyone);
-  * `pose` `sit`: `AHeroCharacter::SitOn` on one pooled anchor (an actor at the origin; the seat frame from the thing's
-    point, yaw, `height` and a floor trace); stands up the usual way. `lie` sits on the bed's edge (no lying pose yet:
-    TODO in `Sit`). Activity poses play nothing yet; `screen` shows the lines on the page (TODO in `Run`);
+    `needs_staff` is asked of `UPeopleLifeSubsystem::StaffOnShift(plot, role)` (role `*`: anyone); the one on shift says a
+    greeting over their head once a visit (`ULyudTownTalkSubsystem::SayEvent(.., "counter_hello")`, sets
+    `counter_hello_*` in `Content/Dialogue/town_barks.txt`; only if their body is drawn within 6 m of the counter);
+  * `pose` `sit`: `AHeroCharacter::SitOn` on one pooled anchor (an actor at the origin, made again if it went away; the
+    seat frame from the thing's point, yaw, `height` and a floor trace); stands up the usual way. A `height` outside
+    0.05..1.2 m is not believed (the usual 0.45, a warning): some exports gave the height over the building's base;
+  * `pose` `lie`: he sits on the bed's edge (the body holds there) and the view goes to a pooled camera at the pillow
+    looking at the ceiling (the hero hidden meanwhile); with `fade` the switch is made in the dark; once the time has passed
+    he gets up by himself after 2.5 s; any step, Space or E gets him up at once. The view and the hero's visibility come
+    back on every way out (standing up, the hero gone, the level ending). No lying animation: none to reuse safely;
+  * `screen`: the show (see the act field), subtitles 2.8..7 s each by length, the minutes in equal shares as they come;
+    over at E (`E — stop watching`), at getting up, walking off or any screen;
   * `sound`: `ULyudSoundscapeSubsystem::PlayEffect(id)` (an id without a pool plays nothing);
-  * quests: `Notify(event or "do", target or act id)`, plus `Notify("visit", plot)` at the first use in a plot each game day.
+  * quests: `Notify(event or "do", target or act id)` and `Notify("visit", plot)` at every use; also `visit` when the plot
+    round the hero changes (the nearest thing within 4 m on his floor, five times a second; walking out between buildings
+    keeps the last plot). A quest's last stage should wait for a `do` (or `have`), never a bare `visit`: the quest engine
+    takes an event a later stage waits for as a skip-ahead (`errands.json`: `aoki_fitting`, `okonkwo_barber`).
 * Default acts when a thing has none: seat sits; bed rests 2 h (`rest_hours`) with a fade; shelf reads 10 min (`read`/topic);
   board looks (`look`/topic); counter needs its `role` (`talk`/role); machine 5 min, play 20, sport 15, craft 30, screen
   30 with a fade (event = the kind's verb, target = `what`); take gives its `item` once a day; door shows a caption. Seats,
   beds and doors ignore the plot's hours; everything else keeps them.
 * Rules in `Private/City/CityThingsModel.h` (`LyudCity::FModel`: `Load`, `Pick`, `Check`, `Run`, `NextLine`, `Nearest`,
-  `SaveState`/`LoadState`, `ResetToday`/`ResetState`), engine-free; `tools/citysim/run.sh` checks it on
-  `tools/citysim/fixture.json` and on the real file when it is built. Save record "CityThings" (pages, today's counts,
-  uses, plots visited); a New Game starts it over.
+  `NearestThing`, `ScreenFrom`, `NeedsSeatFirst`, `SeatHeight`, `Subtitles`, `SaveState`/`LoadState`,
+  `ResetToday`/`ResetState`), engine-free; `tools/citysim/run.sh` checks it (83 checks) on `tools/citysim/fixture.json`, made-up
+  acts in the test itself and the real file when it is built. Save record "CityThings" (pages, daily boards' days, today's
+  counts, uses, plots visited); a New Game starts it over.
 * Console: `lyud.City.Things` (count, the nearest five), `lyud.City.Do <thing id>` (run it from anywhere; sitting only
-  when the hero is within 4 m), `lyud.City.Things.Show 0|1` (labels within 15 m). Developer mode (when `Dev/LyudDev.h`
-  exists), group `interiors`: things nearby, use the nearest, reset today's limits, 500 rub.
-* Perf ([perf checklist](../README.md)): no per-frame allocation, no actors or components per thing, nothing past the town box.
+  when the hero is within 4 m), `lyud.City.Things.Show 0|1` (labels within 15 m), `lyud.City.Weekday <mon..sun>` (the clock
+  on to the next such day, same time). Developer mode, group `interiors`: things nearby, use the nearest, reset today's
+  limits, 500 rub., `interiors.open_all_hours` (toggle: no hours, days or staff asked), `interiors.show_things` (toggle:
+  the labels). Every city quest stage has a `dev` block written by interiors.py (`quest_dev`): a teleport in front of a thing
+  that makes its first objective (`city.q.<quest>.<n>`), the clock an hour after it opens, `lyud.City.Weekday` to a day it is
+  open, `Inventory.Earn` for its price, the items a later stage only checks; a stage's own `dev` in
+  `tools/city/content/quests.json` wins key by key.
+* Perf ([perf checklist](../README.md)): no per-frame allocation, no actors or components per thing, nothing past the town box,
+  the file parsed off the game thread.
 
 ### How to test in the editor (Mac)
 
@@ -298,4 +337,14 @@ counters are closed), then the kind's default (`sit`, `bed_private`, `read_misc`
 7. `lyud.City.Do <counter id>` with the staff away: `refused: За стойкой никого нет`; on shift: the shop opens.
 8. A paid act with too little money: `Не хватает денег: нужно N руб.`; `lyud.Language en|ja`: no raw `city.*` keys.
 9. Save, load: the shelf goes on at the next page (`CityThings: do ... line=` in the log).
-10. Offscreen: `unreal/scripts/test_city_things.sh` (CITYTEST lines).
+10. A notice board twice today: the same notice; `Dev.Do time.plus_day`, again: the next one.
+11. A window with a view or the promenade telescope at noon and at 23:00 (`lyud.Birds.Time 23`): sea by day, stars at night.
+12. A bed: the screen goes dark, the view from the pillow at the ceiling, the clock on, he gets up by himself; again, and
+    press W while lying: up at once, the view back, the hero visible.
+13. The cinema (`Dev.Do interiors.open_all_hours`, a hall seat in P-CLUB2): he sits, the dark wide panel, subtitles one after
+    another, the clock moving; E stops it. A home TV from standing: `Сначала надо сесть`; sit on the sofa: the TV is offered.
+14. A shelf (10 min): the clock runs on over half a second, no hitch (`stat unit`), moves held meanwhile.
+15. Talk to somebody in front of a shelf: E only advances the talk.
+16. `P-BRIDGEHOUSE/gallery_bench_e1`: sit, stand up: on the gallery floor, not under it.
+17. Developer panel, Quests: each city quest's stages jump to the right room, open, with the money.
+18. Offscreen: `unreal/scripts/test_city_things.sh` (CITYTEST lines, PASS/FAIL).

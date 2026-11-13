@@ -117,7 +117,7 @@ static void FixtureChecks()
 	CHECK(Sit.Verdict == EVerdict::Ok && !Sit.bFirstVisitToday && Sit.Event == "sit" && Sit.Target == "seat", "sitting: no second visit");
 	FOutcome Tomorrow = M.Run(Chair, At(3, 11.f, 101), Ask);
 	CHECK(Tomorrow.bFirstVisitToday, "a new day: a visit again");
-	CHECK(M.NextLine(Shelf) == "city.read.birds.2" && M.NextLine(Shelf) == "city.read.birds.3", "the page panel's next turns on");
+	CHECK(M.NextLine(Shelf, At(3, 12.f, 101)) == "city.read.birds.2" && M.NextLine(Shelf, At(3, 12.f, 101)) == "city.read.birds.3", "the page panel's next turns on");
 
 	// a shop needs the librarian
 	const int Desk = M.FindThing("P-LIBRARY/desk");
@@ -211,6 +211,135 @@ static void UntilChecks()
 	CHECK(M.Run(Bed, At(3, 14.f), Ask).Minutes == 17 * 60 && M.Run(Cot, At(3, 14.f), Ask).Minutes == 60, "at 14:00 till 7 tomorrow; without until the minutes");
 }
 
+
+static FWhen AtDate(int Weekday, float Hour, long long Day, int MonthDay, long long Since)
+{
+	FWhen W = At(Weekday, Hour, Day);
+	W.MonthDay = MonthDay;
+	W.Since = Since;
+	return W;
+}
+
+static void WhenChecks()
+{
+	std::printf("lines by the day and the hour, rotation, seats, screens, the plot round the hero\n");
+	const std::string Text = R"({"things": [
+  {"id": "P-A/scope", "plot": "P-A", "kind": "machine", "ue": [0, 0, 150], "yaw": 0, "props": {"what": "telescope"}, "act": "scope"},
+  {"id": "P-A/board", "plot": "P-A", "kind": "board", "ue": [400, 0, 150], "yaw": 0, "props": {}, "act": "board"},
+  {"id": "P-A/board2", "plot": "P-A", "kind": "board", "ue": [800, 0, 150], "yaw": 0, "props": {}, "act": "board"},
+  {"id": "P-A/calendar", "plot": "P-A", "kind": "board", "ue": [1200, 0, 150], "yaw": 0, "props": {}, "act": "calendar"},
+  {"id": "P-A/sofa", "plot": "P-A", "kind": "seat", "ue": [2000, 0, 45], "yaw": 0, "props": {"height": 32.85}},
+  {"id": "P-A/pod", "plot": "P-A", "kind": "seat", "ue": [2000, 300, 10], "yaw": 0, "props": {"height": 0.07}},
+  {"id": "P-A/tv", "plot": "P-A", "kind": "screen", "ue": [2500, 0, 120], "yaw": 180, "props": {"what": "tv"}, "act": "tv"},
+  {"id": "P-A/hall_seat", "plot": "P-A", "kind": "screen", "ue": [2000, -600, 45], "yaw": 0, "props": {"height": 0.45, "what": "tv"}, "act": "tv"},
+  {"id": "P-B/tv", "plot": "P-B", "kind": "screen", "ue": [9000, 0, 120], "yaw": 180, "props": {"what": "tv"}, "act": "tv"},
+  {"id": "P-B/bed", "plot": "P-B", "kind": "bed", "ue": [9000, 500, 50], "yaw": 0, "props": {"height": 9.7}}],
+ "acts": {
+  "scope": {"prompt": "p", "lines": [{"k": "day.1", "h": [6, 21]}, {"k": "day.2", "h": [6, 21]}, {"k": "night.1", "h": [21, 6]}, "any.1"]},
+  "board": {"prompt": "p", "rotate": "daily", "lines": ["n.1", "n.2", "n.3", {"k": "n.weekend", "d": "sat-sun"}]},
+  "calendar": {"prompt": "p", "lines": [{"k": "c.newyear", "date": ["12-30", "01-02"]}, {"k": "c.may", "date": "05-09"},
+               {"k": "c.later", "after": 10}, {"k": "c.even", "every": [2, 0]}, {"k": "c.odd", "every": [2, 1]}, {"k": "c.bad", "date": ["13-01", "x"]}]},
+  "tv": {"prompt": "p", "lines": ["tv.1"], "minutes": 20, "pose": "sit", "screen": "tv"}},
+ "shops": {}})";
+	FModel M;
+	std::string Error;
+	CHECK(M.Load(Text, Error), "it loads (%s)", Error.c_str());
+	FAsk Ask;
+	const int Scope = M.FindThing("P-A/scope"), Board = M.FindThing("P-A/board"), Board2 = M.FindThing("P-A/board2");
+	const int Cal = M.FindThing("P-A/calendar");
+	CHECK(M.ActOf(Scope)->Lines.size() == 4 && M.ActOf(Scope)->Lines[0].HourFrom == 6.f && M.ActOf(Scope)->Lines[3].HourFrom < 0.f,
+		"lines with conditions and plain keys read side by side");
+	// day and night
+	const FOutcome D1 = M.Run(Scope, At(2, 12.f), Ask);
+	const FOutcome D2 = M.Run(Scope, At(2, 12.f), Ask);
+	const FOutcome D3 = M.Run(Scope, At(2, 12.f), Ask);
+	CHECK(D1.Line == "day.1" && D2.Line == "day.2" && D3.Line == "any.1" && D1.NumLines == 3, "by day: the day lines and the plain one, in turn (%s %s %s)",
+		D1.Line.c_str(), D2.Line.c_str(), D3.Line.c_str());
+	const FOutcome N1 = M.Run(Scope, At(2, 23.f), Ask);
+	const FOutcome N2 = M.Run(Scope, At(2, 2.f), Ask);
+	CHECK(N1.Line == "night.1" && N2.Line == "any.1" && N1.NumLines == 2, "at night: only the night line and the plain one (%s %s)", N1.Line.c_str(), N2.Line.c_str());
+	CHECK(M.NextLine(Scope, At(2, 23.5f)) == "night.1", "the page's next keeps to the night lines");
+	// daily boards: one a day, the next on the next day it is read, the same all day long
+	const FOutcome B1 = M.Run(Board, At(2, 10.f, 200), Ask);
+	const FOutcome B1b = M.Run(Board, At(2, 18.f, 200), Ask);
+	CHECK(B1.Line == "n.1" && B1b.Line == "n.1" && B1.NumLines == 1, "a daily board: n.1 all day, one line a time");
+	CHECK(M.NextLine(Board, At(2, 18.f, 200)) == "n.1", "the page's next on a daily board stays on today's");
+	const FOutcome B2 = M.Run(Board, At(3, 10.f, 201), Ask);
+	const FOutcome B3 = M.Run(Board, At(1, 10.f, 207), Ask);
+	CHECK(B2.Line == "n.2" && B3.Line == "n.3", "the next day the next notice, a week later the one after (not skipped): %s %s", B2.Line.c_str(), B3.Line.c_str());
+	const FOutcome B4 = M.Run(Board, At(5, 10.f, 208), Ask);
+	const FOutcome B5 = M.Run(Board, At(6, 10.f, 209), Ask);
+	CHECK(B4.Line == "n.weekend" && B5.Line == "n.1", "the weekend notice on a Saturday, then round again (%s %s)", B4.Line.c_str(), B5.Line.c_str());
+	CHECK(M.Run(Board2, At(6, 10.f, 209), Ask).Line == "n.1", "each board has its own page");
+	// calendar dates, days since the game began
+	auto CalLines = [&M, Cal](const FWhen& W)
+	{
+		std::set<std::string> Seen;
+		for (int K = 0; K < 8; ++K)
+		{
+			Seen.insert(M.NextLine(Cal, W));
+		}
+		std::string All;
+		for (const std::string& L : Seen)
+		{
+			All += L + " ";
+		}
+		return All;
+	};
+	// c.bad has a date that is not one: no condition, always there
+	const std::string C1 = CalLines(AtDate(0, 12.f, 300, 1231, 3)), C2 = CalLines(AtDate(0, 12.f, 301, 102, 12)), C3 = CalLines(AtDate(0, 12.f, 302, 509, 4));
+	CHECK(C1 == "c.bad c.newyear c.odd ", "31 December, day 3: the New Year line and the odd day (%s)", C1.c_str());
+	CHECK(C2 == "c.bad c.even c.later c.newyear ", "2 January, day 12: the range wraps the year, 'after 10' holds, an even day (%s)", C2.c_str());
+	CHECK(C3 == "c.bad c.even c.may ", "9 May, day 4: the one-day date (%s)", C3.c_str());
+	CHECK(M.ActOf(Cal)->Lines[5].DateFrom == -1 && ParseMonthDay("12-31") == 1231 && ParseMonthDay("13-01") == -1 && ParseMonthDay("x") == -1,
+		"dates: MM-DD parsed, a bad one is no condition");
+	// state of the daily boards survives a save
+	std::map<std::string, std::string> Saved;
+	M.SaveState(Saved);
+	FModel M2;
+	M2.Load(Text, Error);
+	M2.LoadState(Saved);
+	CHECK(M2.Run(Board, At(6, 20.f, 209), Ask).Line == "n.1" && M2.Run(Board, At(0, 9.f, 210), Ask).Line == "n.2",
+		"after a load the board keeps today's notice, the next day the next");
+	// seats: an absurd height is not believed
+	const int Sofa = M.FindThing("P-A/sofa"), Pod = M.FindThing("P-A/pod"), Bed = M.FindThing("P-B/bed");
+	CHECK(FModel::SeatHeight(M.Things[Sofa], false) == 0.45f && FModel::SeatHeight(M.Things[Pod], false) == 0.07f
+		&& FModel::SeatHeight(M.Things[Bed], true) == 0.5f, "seat heights: 32.85 m -> 0.45, a floor pod keeps 0.07, a 9.7 m bed -> 0.5");
+	// screens
+	const int Tv = M.FindThing("P-A/tv"), Hall = M.FindThing("P-A/hall_seat"), TvB = M.FindThing("P-B/tv");
+	CHECK(M.ScreenFrom(Sofa, 2500.0) == Tv, "from the sofa (facing +x) the TV in front is the screen");
+	CHECK(M.ScreenFrom(Pod, 2500.0) == Tv && M.ScreenFrom(Sofa, 300.0) == -1, "within reach only");
+	CHECK(M.ScreenFrom(Bed, 2500.0) == -1, "another plot's TV is not watched from here");
+	CHECK(M.NeedsSeatFirst(Tv, 2500.0) && !M.NeedsSeatFirst(Hall, 2500.0) && !M.NeedsSeatFirst(TvB, 2500.0),
+		"a TV with a sofa near: sit first; a hall seat is the seat; a TV with no seat near plays standing");
+	// the plot round the hero
+	CHECK(M.NearestThing(V(380, 50, 150), 400.0, 250.0) == Board && M.NearestThing(V(380, 50, 900), 400.0, 250.0) == -1
+		&& M.NearestThing(V(5000, 5000, 150), 400.0, 250.0) == -1, "the nearest thing round the hero: on his floor, within reach");
+	// developer mode: open all hours
+	FModel M3;
+	std::string Text3;
+	ReadFile("tools/citysim/fixture.json", Text3);
+	M3.Load(Text3, Error);
+	FAsk Open;
+	Open.Money = 100;
+	Open.bOpenAll = true;
+	const int Shelf = M3.FindThing("P-LIBRARY/shelf_birds"), Desk = M3.FindThing("P-LIBRARY/desk");
+	CHECK(M3.Check(Shelf, At(0, 3.f), Open) == EVerdict::Ok && M3.Check(Desk, At(0, 3.f), Open) == EVerdict::Ok
+		&& M3.Check(Shelf, At(0, 3.f), Ask) == EVerdict::Closed, "open all hours: no hours, no days, no staff asked");
+	// subtitles
+	const auto S1 = Subtitles("The Man Who Waited for the Lighthouse. He waited forty years, and all that time the lighthouse waited for him. The whole hall cried at the end. Me too.", 5);
+	CHECK(S1.size() == 3 && S1[0] == "The Man Who Waited for the Lighthouse." && S1[2] == "The whole hall cried at the end. Me too.",
+		"subtitles: by sentences, a short one joined (%d: %s | %s)", (int)S1.size(), S1.empty() ? "" : S1[0].c_str(), S1.size() > 2 ? S1[2].c_str() : "");
+	const auto S2 = Subtitles(u8"«Лекция: Почему мы любим солнце?» Вход свободный. Вопросы из зала приветствуются; ответы не гарантированы.", 5);
+	CHECK(S2.size() == 3 && S2[0] == u8"«Лекция: Почему мы любим солнце?»", "Russian with closing guillemets (%d: %s)", (int)S2.size(), S2.empty() ? "" : S2[0].c_str());
+	const auto S3 = Subtitles(u8"灯台を待った男。四十年待った。その間、灯台も彼を待っていた。最後は会場中が泣いた。僕も。", 5);
+	CHECK(S3.size() == 4 && S3[0] == u8"灯台を待った男。" && S3[3] == u8"最後は会場中が泣いた。僕も。", "Japanese: 。 ends a subtitle, short ones joined with no space (%d: %s)",
+		(int)S3.size(), S3.empty() ? "" : S3[0].c_str());
+	const auto S4 = Subtitles("One. Two two two. Three three three. Four four four. Five five five. Six six six. Seven seven seven.", 3);
+	const auto S5 = Subtitles("No full stop at all", 5);
+	CHECK(S4.size() == 3 && S5.size() == 1 && S5[0] == "No full stop at all" && Subtitles("", 5).empty(), "at most MaxParts; one sentence stays whole; nothing is nothing");
+}
+
 static void RealChecks(const std::string& Path)
 {
 	std::string Text, Error;
@@ -278,12 +407,50 @@ static void RealChecks(const std::string& Path)
 		Ran += M.Run(I, At(2, 12.f), Ask).Verdict == EVerdict::Ok ? 1 : 0;
 	}
 	CHECK(Ran > 0, "at noon on a Wednesday with everything allowed %d of %d things run", Ran, (int)M.Things.size());
+	// seat heights as written (the game falls back to the usual one, but the data should not need it)
+	int BadHeight = 0;
+	std::string FirstBad;
+	for (const FThing& T : M.Things)
+	{
+		const float H = T.PropF("height", 0.45f);
+		if (H < MinSeatHeight || H > MaxSeatHeight)
+		{
+			BadHeight++;
+			FirstBad = FirstBad.empty() ? T.Id : FirstBad;
+		}
+	}
+	CHECK(BadHeight == 0, "every seat and bed height is over its own floor, %.2f..%.1f m (%d not, first %s)", MinSeatHeight, MaxSeatHeight, BadHeight, FirstBad.c_str());
+	int Daily = 0, Conditional = 0, Screens = 0, EmptyNow = 0;
+	for (const FAct& A : M.Acts)
+	{
+		Daily += A.bDaily ? 1 : 0;
+		Screens += FModel::IsScreen(A) ? 1 : 0;
+		for (const FLine& L : A.Lines)
+		{
+			Conditional += (L.HourFrom >= 0.f || L.Days != 0x7F || L.DateFrom > 0 || L.After > 0 || L.Every > 1) ? 1 : 0;
+		}
+		// an act with lines must have one to show at any hour of any day it may run (else the page would be empty)
+		if (!A.Lines.empty())
+		{
+			for (int H = 0; H < 24; ++H)
+			{
+				if (FModel::CountHolding(A, AtDate(H % 7, (float)H + 0.5f, 100, 615, 30)) == 0)
+				{
+					EmptyNow++;
+					break;
+				}
+			}
+		}
+	}
+	std::printf("  daily acts %d, lines with conditions %d, screen acts %d\n", Daily, Conditional, Screens);
+	CHECK(EmptyNow == 0, "every act with lines has a line for every hour (%d have a gap)", EmptyNow);
 }
 
 int main(int Argc, char** Argv)
 {
 	FixtureChecks();
 	UntilChecks();
+	WhenChecks();
 	RealChecks(Argc > 1 ? Argv[1] : "unreal/Lyudmilovsk/Content/City/interiors.json");
 	std::printf("%d passed, %d failed\n", Passed, Failures);
 	return Failures ? 1 : 0;

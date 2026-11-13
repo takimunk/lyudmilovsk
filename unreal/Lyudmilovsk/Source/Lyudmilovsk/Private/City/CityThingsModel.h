@@ -30,13 +30,104 @@ namespace LyudCity
 		double X = 0.0, Y = 0.0, Z = 0.0;
 	};
 
+	/** The game's date as the rules need it. */
+	struct FWhen
+	{
+		/** Whole days since some fixed day (the daily limits reset when it changes). */
+		long long Day = 0;
+		/** 0..24. */
+		float Hour = 12.f;
+		/** Monday = 0 .. Sunday = 6. */
+		int Weekday = 0;
+		/** The calendar date as month * 100 + day (1231 = 31 December); 0: unknown (date conditions then hold). */
+		int MonthDay = 0;
+		/** Whole days since the game began (UGameCalendar::StartDate): 0 on the first day. */
+		long long Since = 0;
+	};
+
+	/** Is Hour inside [Open, Close)? Close below Open runs past midnight; Close - Open >= 24 is always. */
+	inline bool InHours(float Hour, float Open, float Close)
+	{
+		if (Close - Open >= 24.f || (Open <= 0.f && Close >= 24.f))
+		{
+			return true;
+		}
+		const float O = std::fmod(Open + 48.f, 24.f);
+		const float C = std::fmod(Close + 48.f, 24.f);
+		if (O == C)
+		{
+			return true;
+		}
+		return O < C ? (Hour >= O && Hour < C) : (Hour >= O || Hour < C);
+	}
+
+	/** "MM-DD" (or "M-D") as month * 100 + day; -1 when it is not a date. */
+	inline int ParseMonthDay(const std::string& Text)
+	{
+		const size_t Dash = Text.find('-');
+		if (Dash == std::string::npos || Dash == 0 || Dash + 1 >= Text.size())
+		{
+			return -1;
+		}
+		const int M = std::atoi(Text.substr(0, Dash).c_str());
+		const int D = std::atoi(Text.substr(Dash + 1).c_str());
+		return M >= 1 && M <= 12 && D >= 1 && D <= 31 ? M * 100 + D : -1;
+	}
+
+	/**
+	 * One line of an act and when it may be shown. interiors.json writes a plain key when the line has no conditions, else
+	 * {"k": key, "h": [from, to), "d": "mon-fri", "date": ["12-20", "01-10"] (or one "MM-DD"), "after": days since the game
+	 * began, "every": [n, r] (days since the game began % n == r)}. Every condition given must hold.
+	 */
+	struct FLine
+	{
+		std::string Key;
+		float HourFrom = -1.f, HourTo = -1.f;
+		uint8_t Days = 0x7F;
+		int DateFrom = -1, DateTo = -1;
+		int After = 0;
+		int Every = 0, EveryAt = 0;
+
+		bool Holds(const FWhen& W) const
+		{
+			if (HourFrom >= 0.f && !InHours(W.Hour, HourFrom, HourTo))
+			{
+				return false;
+			}
+			if (Days != 0x7F && !(Days & (1u << (W.Weekday % 7))))
+			{
+				return false;
+			}
+			if (DateFrom > 0 && W.MonthDay > 0)
+			{
+				const bool bIn = DateFrom <= DateTo ? (W.MonthDay >= DateFrom && W.MonthDay <= DateTo) : (W.MonthDay >= DateFrom || W.MonthDay <= DateTo);
+				if (!bIn)
+				{
+					return false;
+				}
+			}
+			if (After > 0 && W.Since < After)
+			{
+				return false;
+			}
+			if (Every > 1 && (((W.Since % Every) + Every) % Every) != EveryAt)
+			{
+				return false;
+			}
+			return true;
+		}
+	};
+
 	/** What an act is (the defaults of a kind are made the same way). */
 	struct FAct
 	{
 		std::string Id;
 		std::string Prompt;
 		std::string Title;
-		std::vector<std::string> Lines;
+		std::vector<FLine> Lines;
+		/** "rotate": "daily": one line a game day, the next one on the next day it is read (notice boards, wall newspapers); else
+		 *  the next line on every use (a shelf's pages). */
+		bool bDaily = false;
 		int Minutes = 0;
 		/** The hour the act ends at (sleep till 7): the minutes from now to the next such hour; -1: use Minutes. */
 		int Until = -1;
@@ -96,21 +187,12 @@ namespace LyudCity
 		int Count = 1;
 	};
 
-	/** The game's date as the rules need it. */
-	struct FWhen
-	{
-		/** Whole days since some fixed day (the daily limits reset when it changes). */
-		long long Day = 0;
-		/** 0..24. */
-		float Hour = 12.f;
-		/** Monday = 0 .. Sunday = 6. */
-		int Weekday = 0;
-	};
-
 	/** What the rules ask the game about the hero and the town. */
 	struct FAsk
 	{
 		int Money = 0;
+		/** Developer mode (interiors.open_all_hours): open hours, days and staff are not asked. */
+		bool bOpenAll = false;
 		std::function<int(const std::string& /*Item*/)> ItemCount;
 		std::function<bool(const std::string& /*Plot*/, const std::string& /*Role*/)> StaffOnShift;
 	};
@@ -234,20 +316,126 @@ namespace LyudCity
 		return Mask ? Mask : (uint8_t)0x7F;
 	}
 
-	/** Is Hour inside [Open, Close)? Close below Open runs past midnight; Close - Open >= 24 is always. */
-	inline bool InHours(float Hour, float Open, float Close)
+	/** A seat's or bed's surface over its own floor (m): the "height" prop when it is plausible, else the usual one. Some
+	 *  exports gave the height over the building's base (6..33 m): sitting there would put the seat's frame metres under the
+	 *  floor, and standing up drops the hero through it. */
+	constexpr float MinSeatHeight = 0.05f;
+	constexpr float MaxSeatHeight = 1.2f;
+
+	/** The bytes of a UTF-8 character starting with Lead. */
+	inline int Utf8Len(unsigned char Lead)
 	{
-		if (Close - Open >= 24.f || (Open <= 0.f && Close >= 24.f))
+		return Lead < 0x80 ? 1 : (Lead >> 5) == 0x6 ? 2 : (Lead >> 4) == 0xE ? 3 : (Lead >> 3) == 0x1E ? 4 : 1;
+	}
+
+	/**
+	 * A line cut into subtitles for a screen (a film, a play, a TV programme): at the ends of sentences (". ", "! ", "? ",
+	 * "… ", a closing quote after them, and the Japanese "。！？" with a closing bracket after them), a piece shorter than
+	 * 10 bytes joined to its neighbour, then the shortest neighbours joined until there are at most MaxParts. UTF-8 in and out.
+	 */
+	inline std::vector<std::string> Subtitles(const std::string& Text, int MaxParts)
+	{
+		std::vector<std::string> Parts;
+		// Japanese runs on without a space
+		auto Joiner = [](const std::string& Prev) -> std::string
 		{
-			return true;
-		}
-		const float O = std::fmod(Open + 48.f, 24.f);
-		const float C = std::fmod(Close + 48.f, 24.f);
-		if (O == C)
+			const size_t N = Prev.size();
+			const bool bCjk = N >= 3 && ((unsigned char)Prev[N - 3] == 0xE3 || (unsigned char)Prev[N - 3] == 0xEF);
+			return bCjk ? std::string() : std::string(" ");
+		};
+		auto IsCloser = [&Text](size_t I, size_t& Len) -> bool
 		{
-			return true;
+			const unsigned char C = (unsigned char)Text[I];
+			if (C == '"' || C == ')' || C == '\'')
+			{
+				Len = 1;
+				return true;
+			}
+			// » (C2 BB), ” (E2 80 9D), 」 (E3 80 8D), 』 (E3 80 8F)
+			if (C == 0xC2 && I + 1 < Text.size() && (unsigned char)Text[I + 1] == 0xBB)
+			{
+				Len = 2;
+				return true;
+			}
+			if (I + 2 < Text.size() && ((C == 0xE2 && (unsigned char)Text[I + 1] == 0x80 && (unsigned char)Text[I + 2] == 0x9D)
+				|| (C == 0xE3 && (unsigned char)Text[I + 1] == 0x80 && ((unsigned char)Text[I + 2] == 0x8D || (unsigned char)Text[I + 2] == 0x8F))))
+			{
+				Len = 3;
+				return true;
+			}
+			return false;
+		};
+		std::string Cur;
+		size_t I = 0;
+		while (I < Text.size())
+		{
+			const unsigned char C = (unsigned char)Text[I];
+			const int Len = Utf8Len(C);
+			Cur.append(Text, I, (size_t)Len);
+			I += (size_t)Len;
+			const bool bLatinEnd = C == '.' || C == '!' || C == '?';
+			const bool bEllipsis = Len == 3 && C == 0xE2 && (unsigned char)Text[I - 2] == 0x80 && (unsigned char)Text[I - 1] == 0xA6;
+			const bool bCjkEnd = Len == 3 && ((C == 0xE3 && (unsigned char)Text[I - 2] == 0x80 && (unsigned char)Text[I - 1] == 0x82)
+				|| (C == 0xEF && (unsigned char)Text[I - 2] == 0xBC && ((unsigned char)Text[I - 1] == 0x81 || (unsigned char)Text[I - 1] == 0x9F)));
+			if (!bLatinEnd && !bEllipsis && !bCjkEnd)
+			{
+				continue;
+			}
+			// more of the same mark ("?!", "...") and closing quotes stay with the sentence
+			size_t CloserLen = 0;
+			while (I < Text.size() && (Text[I] == '.' || Text[I] == '!' || Text[I] == '?' || IsCloser(I, CloserLen)))
+			{
+				const size_t Step = (Text[I] == '.' || Text[I] == '!' || Text[I] == '?') ? 1 : CloserLen;
+				Cur.append(Text, I, Step);
+				I += Step;
+			}
+			if (bCjkEnd || I >= Text.size() || Text[I] == ' ')
+			{
+				while (I < Text.size() && Text[I] == ' ')
+				{
+					++I;
+				}
+				Parts.push_back(Cur);
+				Cur.clear();
+			}
 		}
-		return O < C ? (Hour >= O && Hour < C) : (Hour >= O || Hour < C);
+		if (!Cur.empty())
+		{
+			Parts.push_back(Cur);
+		}
+		// a piece too short to stand alone ("No.", "Me too") goes with its neighbour
+		for (size_t P = 0; P < Parts.size() && Parts.size() > 1;)
+		{
+			if (Parts[P].size() >= 10)
+			{
+				++P;
+				continue;
+			}
+			if (P > 0)
+			{
+				Parts[P - 1] += Joiner(Parts[P - 1]) + Parts[P];
+			}
+			else
+			{
+				Parts[1] = Parts[0] + Joiner(Parts[0]) + Parts[1];
+			}
+			Parts.erase(Parts.begin() + (long)P);
+		}
+		const size_t Cap = (size_t)(MaxParts > 0 ? MaxParts : 1);
+		while (Parts.size() > Cap)
+		{
+			size_t Best = 0;
+			for (size_t P = 1; P + 1 < Parts.size(); ++P)
+			{
+				if (Parts[P].size() + Parts[P + 1].size() < Parts[Best].size() + Parts[Best + 1].size())
+				{
+					Best = P;
+				}
+			}
+			Parts[Best] += Joiner(Parts[Best]) + Parts[Best + 1];
+			Parts.erase(Parts.begin() + (long)Best + 1);
+		}
+		return Parts;
 	}
 
 	class FModel
@@ -471,11 +659,11 @@ namespace LyudCity
 				return EVerdict::Unknown;
 			}
 			const FThing& T = Things[Thing];
-			if (!A->bAnyHour && T.bHours && (!(T.Days & (1u << (When.Weekday % 7))) || !InHours(When.Hour, T.Open, T.Close)))
+			if (!Ask.bOpenAll && !A->bAnyHour && T.bHours && (!(T.Days & (1u << (When.Weekday % 7))) || !InHours(When.Hour, T.Open, T.Close)))
 			{
 				return EVerdict::Closed;
 			}
-			if (!A->NeedsStaff.empty() && !(Ask.StaffOnShift && Ask.StaffOnShift(T.Plot, A->NeedsStaff)))
+			if (!Ask.bOpenAll && !A->NeedsStaff.empty() && !(Ask.StaffOnShift && Ask.StaffOnShift(T.Plot, A->NeedsStaff)))
 			{
 				return EVerdict::NoStaff;
 			}
@@ -524,11 +712,12 @@ namespace LyudCity
 				Last = When.Day + 1;
 			}
 			O.Title = A->Title;
-			O.NumLines = (int)A->Lines.size();
-			if (!A->Lines.empty())
+			const int Holding = CountHolding(*A, When);
+			// a daily board shows today's one; a shelf the pages that may be read now, one after another
+			O.NumLines = A->bDaily ? (Holding > 0 ? 1 : 0) : Holding;
+			if (Holding > 0)
 			{
-				O.Line = LineAt(Thing, *A);
-				LineOf[T.Id] = (LineIndex(T.Id) + 1) % (int)A->Lines.size();
+				O.Line = TakeLine(Thing, *A, When);
 			}
 			O.Minutes = A->Until >= 0 ? MinutesUntil(When.Hour, A->Until) : A->Minutes;
 			O.Price = A->Price;
@@ -543,17 +732,140 @@ namespace LyudCity
 			return O;
 		}
 
-		/** The next page of Thing (the page panel's "next"): its line key, and the page turned. Empty: no lines. */
-		std::string NextLine(int Thing)
+		/** The next page of Thing (the page panel's "next"): its line key, and the page turned (a daily act: today's line
+		 *  again). Empty: no line may be shown now. */
+		std::string NextLine(int Thing, const FWhen& When)
 		{
 			const FAct* A = ActOf(Thing);
-			if (!A || A->Lines.empty())
+			if (!A || CountHolding(*A, When) == 0)
 			{
 				return std::string();
 			}
-			const std::string Line = LineAt(Thing, *A);
-			LineOf[Things[Thing].Id] = (LineIndex(Things[Thing].Id) + 1) % (int)A->Lines.size();
-			return Line;
+			return TakeLine(Thing, *A, When);
+		}
+
+		/** How many of an act's lines may be shown now. */
+		static int CountHolding(const FAct& A, const FWhen& When)
+		{
+			int N = 0;
+			for (const FLine& L : A.Lines)
+			{
+				N += L.Holds(When) ? 1 : 0;
+			}
+			return N;
+		}
+
+		/** A seat's or bed's surface over its floor, metres (see MinSeatHeight). */
+		static float SeatHeight(const FThing& T, bool bLie)
+		{
+			const float Usual = bLie ? 0.5f : 0.45f;
+			const float H = T.PropF("height", Usual);
+			return H >= MinSeatHeight && H <= MaxSeatHeight ? H : Usual;
+		}
+
+		/**
+		 * The thing nearest P within Radius (cm) on about P's floor (|dz| <= MaxDz), from the grid only (no allocation); -1
+		 * none. The game asks it a few times a second for the plot the hero is in (a "visit" when it changes).
+		 */
+		int NearestThing(const FVec& P, double Radius, double MaxDz) const
+		{
+			if (Things.empty())
+			{
+				return -1;
+			}
+			const int Cells = (int)std::ceil(Radius / CellCm);
+			const long long CX = CellOf(P.X), CY = CellOf(P.Y);
+			int Best = -1;
+			double BestD = Radius;
+			for (long long GX = CX - Cells; GX <= CX + Cells; ++GX)
+			{
+				for (long long GY = CY - Cells; GY <= CY + Cells; ++GY)
+				{
+					const auto Cell = Grid.find(Key(GX, GY));
+					if (Cell == Grid.end())
+					{
+						continue;
+					}
+					for (const int I : Cell->second)
+					{
+						const FVec& At = Things[I].At;
+						if (std::fabs(At.Z - P.Z) > MaxDz)
+						{
+							continue;
+						}
+						const double D = std::sqrt((At.X - P.X) * (At.X - P.X) + (At.Y - P.Y) * (At.Y - P.Y));
+						if (D <= BestD)
+						{
+							BestD = D;
+							Best = I;
+						}
+					}
+				}
+			}
+			return Best;
+		}
+
+		/** Is this act a screen show (a film, a play, the TV: the page in the screen style, its line as subtitles)? */
+		static bool IsScreen(const FAct& A) { return !A.Screen.empty(); }
+		/** Does the hero sit on the thing itself (a seat, a bed, or anything with a seat height: the cinema's hall seats)? */
+		static bool IsSeatThing(const FThing& T) { return T.Kind == "seat" || T.Kind == "bed" || T.Props.count("height") > 0; }
+
+		/**
+		 * The screen a hero seated on Seat watches: the nearest thing of the same plot within Radius (cm) whose act is a screen
+		 * show and that is not a seat itself, in front of the seat (within 70 degrees of its yaw) and on about its floor; -1
+		 * none. Asked once when he sits down (a pass over all things).
+		 */
+		int ScreenFrom(int Seat, double Radius) const
+		{
+			if (Seat < 0 || Seat >= (int)Things.size())
+			{
+				return -1;
+			}
+			const FThing& S = Things[Seat];
+			const double R = S.Yaw * 3.14159265358979 / 180.0;
+			const double FX = std::cos(R), FY = std::sin(R);
+			int Best = -1;
+			double BestD = Radius;
+			for (int I = 0; I < (int)Things.size(); ++I)
+			{
+				const FThing& T = Things[I];
+				const FAct* A = ActOf(I);
+				if (I == Seat || T.Plot != S.Plot || !A || !IsScreen(*A) || IsSeatThing(T) || std::fabs(T.At.Z - S.At.Z) > 450.0)
+				{
+					continue;
+				}
+				const double DX = T.At.X - S.At.X, DY = T.At.Y - S.At.Y;
+				const double D = std::sqrt(DX * DX + DY * DY);
+				if (D > BestD || D < 1.0 || (DX * FX + DY * FY) / D < 0.34)
+				{
+					continue;
+				}
+				BestD = D;
+				Best = I;
+			}
+			return Best;
+		}
+
+		/** Must the hero sit down first to watch Thing's show? A sitting screen act on a thing that is not a seat, in a plot
+		 *  that has a seat within Radius (cm) to watch it from. */
+		bool NeedsSeatFirst(int Thing, double Radius) const
+		{
+			const FAct* A = ActOf(Thing);
+			if (!A || !IsScreen(*A) || A->Pose != "sit" || IsSeatThing(Things[Thing]))
+			{
+				return false;
+			}
+			const FThing& T = Things[Thing];
+			for (int I = 0; I < (int)Things.size(); ++I)
+			{
+				const FThing& S = Things[I];
+				if (I != Thing && S.Plot == T.Plot && S.Kind == "seat" && std::fabs(S.At.Z - T.At.Z) < 450.0
+					&& std::sqrt((S.At.X - T.At.X) * (S.At.X - T.At.X) + (S.At.Y - T.At.Y) * (S.At.Y - T.At.Y)) <= Radius)
+				{
+					return true;
+				}
+			}
+			return false;
 		}
 
 		int TodayCount(const std::string& ActId, long long Day) const
@@ -583,11 +895,12 @@ namespace LyudCity
 			Today.clear();
 			Uses.clear();
 			LineOf.clear();
+			ReadDay.clear();
 			Visited.clear();
 			CountDay = 0;
 		}
 
-		/** The state as a flat map for the save: "day", "t:<act>", "u:<act>", "l:<thing>", "v:<plot>". */
+		/** The state as a flat map for the save: "day", "t:<act>", "u:<act>", "l:<thing>", "d:<thing>", "v:<plot>". */
 		void SaveState(std::map<std::string, std::string>& Out) const
 		{
 			Out.clear();
@@ -606,6 +919,10 @@ namespace LyudCity
 				{
 					Out["l:" + P.first] = std::to_string(P.second);
 				}
+			}
+			for (const auto& P : ReadDay)
+			{
+				Out["d:" + P.first] = std::to_string(P.second);
 			}
 			for (const auto& P : Visited)
 			{
@@ -630,6 +947,7 @@ namespace LyudCity
 					case 't': Today[Name] = (int)V; break;
 					case 'u': Uses[Name] = (int)V; break;
 					case 'l': LineOf[Name] = (int)V; break;
+					case 'd': ReadDay[Name] = V; break;
 					case 'v': Visited[Name] = V; break;
 					default: break;
 					}
@@ -647,6 +965,8 @@ namespace LyudCity
 		std::map<std::string, int> Today;
 		std::map<std::string, int> Uses;
 		std::map<std::string, int> LineOf;
+		/** A daily act's thing: the game day (+1) its line was last shown. */
+		std::map<std::string, long long> ReadDay;
 		std::map<std::string, long long> Visited;
 
 		static double Dist(const FVec& A, const FVec& B)
@@ -682,11 +1002,42 @@ namespace LyudCity
 			}
 		}
 
-		std::string LineAt(int Thing, const FAct& A) const
+		/** The first line at or after From (going round) that may be shown now; -1 none. */
+		static int FirstHolding(const FAct& A, int From, const FWhen& When)
 		{
 			const int N = (int)A.Lines.size();
-			const int I = LineIndex(Things[Thing].Id);
-			return A.Lines[(size_t)(((I % N) + N) % N)];
+			for (int Step = 0; Step < N; ++Step)
+			{
+				const int I = (((From + Step) % N) + N) % N;
+				if (A.Lines[(size_t)I].Holds(When))
+				{
+					return I;
+				}
+			}
+			return -1;
+		}
+
+		/** Shows a line of Thing's act and turns the page: the next one that may be shown now; a daily act keeps today's line
+		 *  and goes on to the next one on the next day it is read. Call only when CountHolding > 0. */
+		std::string TakeLine(int Thing, const FAct& A, const FWhen& When)
+		{
+			const std::string& Id = Things[Thing].Id;
+			const int N = (int)A.Lines.size();
+			const int Cur = LineIndex(Id);
+			int Pos = -1;
+			if (A.bDaily)
+			{
+				long long& Read = ReadDay[Id];
+				Pos = FirstHolding(A, Read != 0 && Read != When.Day + 1 ? Cur + 1 : Cur, When);
+				Read = When.Day + 1;
+				LineOf[Id] = Pos < 0 ? Cur : Pos;
+			}
+			else
+			{
+				Pos = FirstHolding(A, Cur, When);
+				LineOf[Id] = Pos < 0 ? Cur : (Pos + 1) % N;
+			}
+			return Pos < 0 ? std::string() : A.Lines[(size_t)Pos].Key;
 		}
 
 		/** How far off the line of sight a thing of this kind may be and still be looked at (cm, at the eye). */
@@ -748,6 +1099,51 @@ namespace LyudCity
 			}
 		}
 
+		/** A line with its conditions: {"k", "h", "d", "date", "after", "every"} (see FLine). */
+		static void ReadLine(const LyudJson::FValue& L, FLine& Line)
+		{
+			Line.Key = L["k"].S();
+			const LyudJson::FValue& H = L["h"];
+			if (H.Type == LyudJson::FValue::Array && H.Size() >= 2)
+			{
+				Line.HourFrom = H[0].F(0.f);
+				Line.HourTo = H[1].F(24.f);
+			}
+			if (L["d"].Type == LyudJson::FValue::String)
+			{
+				Line.Days = ParseDays(L["d"].S());
+			}
+			const LyudJson::FValue& Date = L["date"];
+			if (Date.Type == LyudJson::FValue::String)
+			{
+				Line.DateFrom = Line.DateTo = ParseMonthDay(Date.Str);
+			}
+			else if (Date.Type == LyudJson::FValue::Array && Date.Size() >= 2)
+			{
+				Line.DateFrom = ParseMonthDay(Date[0].S());
+				Line.DateTo = ParseMonthDay(Date[1].S());
+				if (Line.DateFrom < 0 || Line.DateTo < 0)
+				{
+					Line.DateFrom = Line.DateTo = -1;
+				}
+			}
+			Line.After = L["after"].I(0);
+			const LyudJson::FValue& Every = L["every"];
+			if (Every.Type == LyudJson::FValue::Array && Every.Size() >= 1)
+			{
+				Line.Every = Every[0].I(0);
+				Line.EveryAt = Every[1].I(0);
+			}
+			else
+			{
+				Line.Every = Every.I(0);
+			}
+			if (Line.Every > 1)
+			{
+				Line.EveryAt = ((Line.EveryAt % Line.Every) + Line.Every) % Line.Every;
+			}
+		}
+
 		static FAct ReadAct(const std::string& Id, const LyudJson::FValue& V)
 		{
 			FAct A;
@@ -756,11 +1152,21 @@ namespace LyudCity
 			A.Title = V["title"].S();
 			for (const LyudJson::FValue& L : V["lines"].Items)
 			{
-				if (L.Type == LyudJson::FValue::String && !L.Str.empty())
+				FLine Line;
+				if (L.Type == LyudJson::FValue::String)
 				{
-					A.Lines.push_back(L.Str);
+					Line.Key = L.Str;
+				}
+				else if (L.Type == LyudJson::FValue::Object)
+				{
+					ReadLine(L, Line);
+				}
+				if (!Line.Key.empty())
+				{
+					A.Lines.push_back(Line);
 				}
 			}
+			A.bDaily = V["rotate"].S() == "daily";
 			A.Minutes = V["minutes"].I(0);
 			A.Until = V["until"].I(-1);
 			if (A.Until > 23)
@@ -836,7 +1242,9 @@ namespace LyudCity
 			{
 				for (int I = 1; I <= N; ++I)
 				{
-					A.Lines.push_back(Base + "." + std::to_string(I));
+					FLine Line;
+					Line.Key = Base + "." + std::to_string(I);
+					A.Lines.push_back(Line);
 				}
 			};
 			if (K == "seat")

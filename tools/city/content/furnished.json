@@ -35,7 +35,7 @@
   "look_kids": {"like": "look_misc", "lines": "city.look.kids"},
   "look_local": {"like": "look_misc", "lines": "city.look.local", "minutes": 5},
   "look_medicine": {"like": "look_misc", "lines": "city.look.medicine"},
-  "look_sun": {"like": "look_misc", "lines": "city.look.sun", "minutes": 5, "any_hour": true},
+  "look_sun": {"like": "look_misc", "lines": ["city.look.sun.1", "city.look.sun.2", {"k": "city.look.sun.3", "h": [7, 19]}, "city.look.sun.4"], "minutes": 5, "any_hour": true},
   "look_travel": {"like": "look_misc", "lines": "city.look.travel", "minutes": 5},
 
   "concierge": {"prompt": "city.act.ask.prompt", "lines": "city.talk.concierge"},

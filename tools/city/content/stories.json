@@ -119,11 +119,11 @@
   "santos_map": {"like": "_home_look", "lines": "city.home.santos.map"},
   "santos_sewing": {"prompt": "city.home.sewing.prompt", "minutes": 3, "any_hour": true, "lines": "city.home.santos.sewing"},
   "santos_science": {"like": "_home_read", "lines": "city.home.santos.science"},
-  "santos_telescope": {"like": "_home_scope", "lines": "city.home.santos.telescope"},
+  "santos_telescope": {"like": "_home_scope", "lines": ["city.home.santos.telescope.1", {"k": "city.home.santos.telescope.2", "h": [18, 6]}, {"k": "city.home.santos.telescope.3", "h": [6, 18]}, "city.home.santos.telescope.4"]},
   "santos_sea": {"like": "_home_look", "lines": "city.home.santos.sea"},
 
   "girma_shelf": {"like": "_home_read", "lines": "city.home.girma.shelf"},
-  "girma_telescope": {"like": "_home_scope", "lines": "city.home.girma.telescope"},
+  "girma_telescope": {"like": "_home_scope", "lines": ["city.home.girma.telescope.1", {"k": "city.home.girma.telescope.2", "h": [7, 19]}, "city.home.girma.telescope.3", "city.home.girma.telescope.4"]},
   "girma_calendar": {"like": "_home_look", "lines": "city.home.girma.calendar"},
   "girma_chart": {"like": "_home_look", "lines": "city.home.girma.chart"},
   "girma_picture": {"like": "_home_look", "lines": "city.home.girma.picture"},

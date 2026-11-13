@@ -55,7 +55,14 @@ DAYS = ("mon", "tue", "wed", "thu", "fri", "sat", "sun")
 PUBLIC_KINDS_SKIP = ("residential", "square", "park", "pool")
 QUEST_EVENTS = ("do", "visit", "get", "use", "have", "wear", "reach", "talk", "bird", "walk", "leave_computer")
 ACT_FIELDS = ("prompt", "minutes", "price", "lines", "pose", "sound", "event", "target", "give", "daily", "needs_staff",
-              "needs_item", "fade", "shop", "screen", "until", "title", "any_hour")
+              "needs_item", "fade", "shop", "screen", "until", "title", "any_hour", "rotate")
+# a line's conditions (docs/city_interiors.md "Lines by the day and the hour"): hours [from, to), weekdays, a calendar date or
+# range ("MM-DD" or ["MM-DD", "MM-DD"], wrapping the year), days since the game began (after N), every [n, r] game days
+LINE_CONDS = ("h", "d", "date", "after", "every")
+ROTATE = ("use", "daily")
+# a seat's or bed's surface over its own floor (m): a bigger "height" was measured from the building's base
+SEAT_HEIGHT = (0.05, 1.2)
+SEAT_USUAL = {"seat": 0.45, "bed": 0.5}
 MAIN_STRINGS = os.path.join(CONTENT, "Localization", "strings_ru.json")
 PROP_ORDER = ("topic", "what", "service", "item", "to", "role", "shop")
 MIN_GAP = 0.3
@@ -351,13 +358,44 @@ def resolve(thing, rules, defaults, by_plot_kind, plot, acts):
 
 # ------------------------------------------------------------------ acts
 
-def expand_lines(spec, strings):
+def line_key(line):
+    """The string key of an act's line as written: a plain key, or {"k": key, <conditions>}."""
+    return line["k"] if isinstance(line, dict) else line
+
+
+def check_line_conds(where, cond):
+    for k, v in cond.items():
+        if k not in LINE_CONDS:
+            err("%s: unknown line condition %s" % (where, k))
+        elif k == "h" and not (isinstance(v, list) and len(v) == 2 and all(isinstance(x, (int, float)) and 0 <= x <= 24 for x in v)):
+            err("%s: h must be [from, to] hours" % where)
+        elif k == "d" and not (isinstance(v, str) and re.match(r"^(%s)(-(%s))?(,(%s)(-(%s))?)*$" % ((("|".join(DAYS)),) * 4), v)):
+            err("%s: d must be a weekday list (mon-fri, sat,sun)" % where)
+        elif k == "date":
+            ds = v if isinstance(v, list) else [v]
+            if len(ds) not in (1, 2) or not all(isinstance(x, str) and re.match(r"^(0?[1-9]|1[0-2])-(0?[1-9]|[12]\d|3[01])$", x) for x in ds):
+                err("%s: date must be \"MM-DD\" or [\"MM-DD\", \"MM-DD\"]" % where)
+        elif k == "after" and not (isinstance(v, int) and v >= 0):
+            err("%s: after must be whole days" % where)
+        elif k == "every" and not (isinstance(v, list) and len(v) == 2 and all(isinstance(x, int) for x in v) and v[0] > 1 and 0 <= v[1] < v[0]):
+            err("%s: every must be [n > 1, 0 <= r < n]" % where)
+
+
+def expand_lines(spec, strings, where="lines"):
     """A prefix (all <prefix>.<n> strings, in order) or a list of keys, where an entry '<prefix>.*' stands for that prefix's
-    strings (a board's generic notices followed by a building's own: ["city.look.club.*", "city.reg.cog.*"])."""
+    strings (a board's generic notices followed by a building's own: ["city.look.club.*", "city.reg.cog.*"]). An entry may
+    be {"k": key or "<prefix>.*", <conditions>}: each line it gives is written as {"k": key, <conditions>} (the game shows it
+    only while they hold); plain keys stay plain strings, so old data reads the same."""
     if isinstance(spec, list):
         out = []
         for s in spec:
-            out += expand_lines(s[:-2], strings) if s.endswith(".*") else [s]
+            if isinstance(s, dict):
+                cond = {k: v for k, v in s.items() if k != "k"}
+                check_line_conds(where, cond)
+                keys = expand_lines(s["k"][:-2], strings) if s.get("k", "").endswith(".*") else [s.get("k", "")]
+                out += [dict({"k": k}, **cond) if cond else k for k in keys]
+            else:
+                out += expand_lines(s[:-2], strings) if s.endswith(".*") else [s]
         return out
     if not spec:
         return []
@@ -396,18 +434,21 @@ def build_acts(acts_src, shops, strings, items):
             continue
         a = full(aid)
         act = {"prompt": a.get("prompt", "city.act.use.prompt"), "minutes": int(a.get("minutes", 0)), "price": int(a.get("price", 0)),
-               "lines": expand_lines(a.get("lines", []), strings), "pose": a.get("pose", "stand"), "sound": a.get("sound", ""),
+               "lines": expand_lines(a.get("lines", []), strings, "act " + aid), "pose": a.get("pose", "stand"), "sound": a.get("sound", ""),
                "event": a.get("event", "do"), "target": a.get("target", aid), "give": [list(g) for g in a.get("give", [])],
                "daily": int(a.get("daily", 0)), "needs_staff": a.get("needs_staff", ""), "needs_item": a.get("needs_item", ""),
                "fade": bool(a.get("fade", False)), "shop": a.get("shop", ""), "screen": a.get("screen", ""),
                "until": int(a.get("until", -1))}
         if a.get("title"):
             act["title"] = a["title"]
+        act["rotate"] = a.get("rotate", "use")
+        if act["rotate"] not in ROTATE:
+            err("act %s: rotate must be one of %s" % (aid, ", ".join(ROTATE)))
         act["any_hour"] = bool(a.get("any_hour", False))  # explicit: the game's default is true for sit/lie poses
         for k in a:
             if k not in ACT_FIELDS and k not in ("like",):
                 err("act %s: unknown field %s" % (aid, k))
-        for key in [act["prompt"]] + act["lines"] + ([act["title"]] if act.get("title") else []):
+        for key in [act["prompt"]] + [line_key(l) for l in act["lines"]] + ([act["title"]] if act.get("title") else []):
             if key not in strings and key not in MAIN:
                 err("act %s: string %s is missing" % (aid, key))
         if "{" in (strings.get(act["prompt"]) or {}).get("ru", MAIN.get(act["prompt"], "")):
@@ -494,6 +535,26 @@ def staff_variant(pl, props, kind, act, acts, tid):
     return vid
 
 
+def normalise_height(tid, kind, props):
+    """A seat's or bed's `height` is its surface over its own floor (m). Some building modules passed the absolute z (6..33 m
+    over the building's base, equal to the thing's own z): the game would seat the hero metres under the floor and stand him
+    up there. Such a height becomes the usual one (with a warning); anything still outside SEAT_HEIGHT is an error."""
+    if "height" not in props:
+        return
+    try:
+        h = float(props["height"])
+    except (TypeError, ValueError):
+        err("%s: height %r is not a number" % (tid, props["height"]))
+        return
+    if h > SEAT_HEIGHT[1]:
+        usual = SEAT_USUAL.get(kind, 0.45)
+        warnings.append("%s: height %.2f m is over the building's base, not the floor: %.2f used (fix the module's B.thing)" % (tid, h, usual))
+        props["height"] = usual
+        h = usual
+    if not SEAT_HEIGHT[0] <= h <= SEAT_HEIGHT[1]:
+        err("%s: height %.2f m is outside %.2f..%.1f (the seat's surface over its own floor)" % (tid, h, SEAT_HEIGHT[0], SEAT_HEIGHT[1]))
+
+
 def build_things(plan, rules, defaults, by_plot_kind, acts):
     things, summary, skipped = [], collections.OrderedDict(), collections.Counter()
     for pl in places(plan):
@@ -557,6 +618,8 @@ def build_things(plan, rules, defaults, by_plot_kind, acts):
                 hours, days = rh or plot_hours(pl["staff"])
             elif days is None:
                 days = plot_hours(pl["staff"])[1]
+            if kind in SEAT_USUAL or "height" in props:
+                normalise_height(tid, kind, props)
             if kind == "counter" and a["shop"] and a["needs_staff"] and props.get("role") != a["needs_staff"]:
                 props["role"] = a["needs_staff"]
             w = local_to_world(pl["front"], pl["yaw"], t["pos"])
@@ -694,6 +757,119 @@ def check_quests(quests, acts, strings, items, plot_ids, map_places, existing_id
             err("quest string %s is missing" % k)
 
 
+def quest_dev(quests, things, acts, shops, plan, strings, gen_strings):
+    """Developer mode (docs/dev_mode.md): a "dev" block for every stage of our quests, so a jump to the stage lands where it is
+    played and when it can be: a teleport in front of a thing that makes the stage's first objective ("city.q.<quest>.<n>"),
+    the clock an hour after that thing opens, a weekday it is open (lyud.City.Weekday), the roubles its acts cost
+    (Inventory.Earn) and the items a later step only checks (`have`, `use`). A stage's own "dev" in the content wins, key by
+    key. Returns the teleports to add."""
+    pf = plan["portal_face_y"] / 100.0
+    tps = []
+    things_of_plot = collections.defaultdict(list)
+    for t in things:
+        things_of_plot[t["plot"]].append(t)
+    staff_of = {pl["id"]: {r[0] for r in pl["staff"]} for pl in places(plan)}
+
+    def staffed(t):
+        a = acts[t["act"]]
+        return a["needs_staff"] in ("", "*") or a["needs_staff"] in staff_of.get(t["plot"], ())
+
+    def makers(o, home):
+        ev, tgt = o["event"].split("|")[0], o.get("target", "")
+        match = (lambda x: x.startswith(tgt[:-1])) if tgt.endswith("*") else (lambda x: x == tgt)
+        if ev == "do":
+            by = [t for t in things if match(acts[t["act"]]["target"]) and staffed(t)]
+        elif ev == "visit":
+            by = list(things_of_plot.get(tgt, []))
+        elif ev in ("have", "get"):
+            by = [t for t in things if staffed(t) and (any(g[0] == tgt for g in acts[t["act"]]["give"])
+                                                         or any(g["item"] == tgt for g in shops.get(acts[t["act"]]["shop"], {}).get("goods", [])))]
+        else:
+            by = []
+        # the quest's own building first, then things without hours, then by id
+        return sorted(by, key=lambda t: (t["plot"] != home, t["kind"] == "seat", t["id"]))
+
+    for q in quests:
+        home = (q.get("start_on") or {}).get("target", "")
+        title = "quest.%s.title" % q["id"]
+        last_tp = None
+        for n, st in enumerate(q["stages"], 1):
+            dev = {}
+            give, earn, hours, days = {}, 0, None, None
+            first = None
+            for o in st["objectives"]:
+                ev, tgt = o["event"].split("|")[0], o.get("target", "")
+                if ev in ("have", "use") and not tgt.endswith("*") and (ev == "use" or n > 1):
+                    # a check of the pocket (or using a thing from it) in a later stage: what an earlier stage would have got
+                    give[tgt] = max(give.get(tgt, 0), int(o.get("need", 1)))
+                    continue
+                by = makers(o, home)
+                if not by:
+                    continue
+                t = by[0]
+                first = first or t
+                a = acts[t["act"]]
+                earn += a["price"] * int(o.get("need", 1))
+                if ev in ("have", "get"):
+                    earn += max([g["price"] for g in shops.get(a["shop"], {}).get("goods", []) if g["item"] == tgt] or [0]) * int(o.get("need", 1))
+                if a["needs_item"]:
+                    give[a["needs_item"]] = max(give.get(a["needs_item"], 0), 1)
+                if not a["any_hour"] and t["hours"] != [0, 24]:
+                    hours = hours or t["hours"]
+                    days = days or t["days"]
+            if first:
+                kind = first["kind"]
+                floor = first["ue"][2] - KIND_LOOK[kind][0] * 100
+                if "height" in first["props"]:
+                    floor = first["ue"][2] - float(first["props"]["height"]) * 100
+                p = step([first["ue"][0] / 100.0, first["ue"][1] / 100.0, floor / 100.0], first["yaw"], 1.2 if kind not in ("seat", "bed") else 0.9)
+                tid = "city.q.%s.%d" % (q["id"], n)
+                yaw = (first["yaw"] + 180.0) % 360.0
+                tps.append({"id": tid, "group": "interiors", "name": "dev.tp." + tid, "x": round(p[0], 2), "y": round(p[1] - pf, 2),
+                            "z": round(floor, 1), "yaw": round(yaw - 360.0 if yaw > 180.0 else yaw, 1)})
+                if title in strings:
+                    gen_strings["dev.tp." + tid] = {l: "%s: %d" % (strings[title][l], n) for l in LANGS}
+                else:
+                    gen_strings["dev.tp." + tid] = {l: "%s: %d" % (q["id"], n) for l in LANGS}
+                last_tp = tid
+            if last_tp:
+                dev["tp"] = last_tp
+            if give:
+                dev["give"] = give
+            exec_ = []
+            if hours:
+                h = int(hours[0]) + 1 if hours[1] - hours[0] > 1 or hours[1] < hours[0] else int(hours[0])
+                dev["time"] = "%02d:00" % (h % 24)
+                if days and days != "mon-sun":
+                    open_days = days_of(days)
+                    exec_.append("lyud.City.Weekday %s" % DAYS[2 if 2 in open_days else min(open_days)])
+            if earn:
+                exec_.append("Inventory.Earn %d" % earn)
+            if exec_:
+                dev["exec"] = exec_
+            own = st.get("dev") or {}
+            dev.update(own)
+            if dev:
+                st["dev"] = dev
+    return tps
+
+
+def days_of(spec):
+    """'mon-sun', 'tue-sun', 'fri-mon', 'mon,wed' -> the set of day indices (0 = Monday)."""
+    out = set()
+    for part in spec.split(","):
+        a, _, b = part.partition("-")
+        if a not in DAYS or (b and b not in DAYS):
+            continue
+        i, j = DAYS.index(a), DAYS.index(b or a)
+        while True:
+            out.add(i)
+            if i == j:
+                break
+            i = (i + 1) % 7
+    return out or set(range(7))
+
+
 def merge_quests(text, quests):
     """Drop our previous lines (marked), then append ours before the closing bracket of "quests"; the rest stays as it was."""
     lines = text.split("\n")
@@ -801,6 +977,7 @@ def main():
         if "/" in k and k not in RULES_USED:
             err("rule %s matches no thing (the id changed? fix or drop it)" % k)
 
+    teleports += quest_dev(quests, things, acts, shops, plan, strings, gen_strings)
     all_strings = dict(strings)
     for k, v in gen_strings.items():
         if k in all_strings:
@@ -813,7 +990,7 @@ def main():
         kinds = " ".join("%s:%d" % (k, n) for k, n in sorted(s["kinds"].items()))
         print("%-14s %5d %5d  %-44s %4d %5d" % (pid, s["auto"], s["declared"], kinds[:44], len(s["acts"]), s["lines"]))
     n_auto = sum(1 for t in things if t.get("auto"))
-    line_keys = {k for a in acts.values() for k in a["lines"]}
+    line_keys = {line_key(k) for a in acts.values() for k in a["lines"]}
     print("things %d (auto %d, declared %d; derived spots skipped: %s), acts %d (%d used), shops %d, teleports %d, strings %d "
           "(%d act lines), quests %d" % (len(things), n_auto, len(things) - n_auto, dict(skipped) or "none", len(acts), len(used),
                                          len(shops), len(teleports), len(all_strings), len(line_keys), len(quests)))

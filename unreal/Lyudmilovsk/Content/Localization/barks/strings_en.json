@@ -592,5 +592,14 @@
  "line.town.chat_kids2.3": "I don't know. I'm asking you.",
  "line.town.chat_kids3.1": "Can the sun see us?",
  "line.town.chat_kids3.2": "Of course. It's looking.",
- "line.town.chat_kids3.3": "Then wave to it."
+ "line.town.chat_kids3.3": "Then wave to it.",
+ "line.town.counter_hello.1": "Hello. What can I show you?",
+ "line.town.counter_hello.2": "Come in, have a look, don't be shy.",
+ "line.town.counter_hello.3": "Yes, what will it be?",
+ "line.town.counter_hello.4": "Hello! Haven't seen you in a while.",
+ "line.town.counter_hello_early.1": "Good morning! You're the first one today.",
+ "line.town.counter_hello_early.2": "Morning. We've only just opened, everything's fresh.",
+ "line.town.counter_hello_evening.1": "Good evening. Just in time, we're closing soon.",
+ "line.town.counter_hello_evening.2": "Evening. Something for tomorrow?",
+ "line.town.counter_hello_festival.1": "Happy holiday! It's busy here today."
 }

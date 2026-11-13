@@ -1719,6 +1719,8 @@
  "city.act.unknown": "Nothing happens",
  "city.page.next": "E — next",
  "city.page.close": "E — close",
+ "city.page.stop_watching": "E — stop watching",
+ "city.act.sit_first": "Better find a seat first",
  "city.shop.title": "Counter",
  "city.act.use.prompt": "E — look",
  "city.act.sit.prompt": "E — sit down",
@@ -1758,5 +1760,7 @@
  "dev.action.interiors.near": "Interiors: things nearby (to the log)",
  "dev.action.interiors.run_nearest": "Interiors: use the nearest thing",
  "dev.action.interiors.reset_daily": "Interiors: reset today's limits",
- "dev.action.interiors.money": "Give 500 rub."
+ "dev.action.interiors.money": "Give 500 rub.",
+ "dev.action.interiors.open_all_hours": "Interiors: everything open at any hour (no staff needed)",
+ "dev.action.interiors.show_things": "Interiors: thing labels"
 }

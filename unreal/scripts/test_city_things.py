@@ -87,6 +87,34 @@ def plan():
             add(3.0, lambda w, x=th: look_at(w, x))
             add(4.0, lambda w, i=th["id"]: cmd(w, "lyud.City.Do " + i))
             add(1.0, lambda w, k=kind: shot(w, k))
+    # second pass: a daily board twice (the same notice), the telescope by day and by night, a show's subtitles, the
+    # 32.85 m bench of the bridge house (sat at its real height), the weekday command, open-all-hours
+    acts = json.load(open(DATA, encoding="utf-8")).get("acts", {}) if os.path.exists(DATA) else {}
+    daily = [t for t in things if acts.get(t.get("act"), {}).get("rotate") == "daily"][:1]
+    for th in daily:
+        add(1.0, lambda w, i=th["id"]: cmd(w, "lyud.City.Do " + i))
+        add(1.0, lambda w, i=th["id"]: cmd(w, "lyud.City.Do " + i))
+    scope = [t for t in things if t.get("act") == "telescope"][:1]
+    for th in scope:
+        add(1.0, lambda w: cmd(w, "lyud.Birds.Time 12"))
+        add(1.0, lambda w, i=th["id"]: cmd(w, "lyud.City.Do " + i))
+        add(1.0, lambda w: cmd(w, "lyud.Birds.Time 23"))
+        add(1.0, lambda w, i=th["id"]: cmd(w, "lyud.City.Do " + i))
+        add(1.0, lambda w: cmd(w, "lyud.Birds.Time 16"))
+    add(1.0, lambda w: cmd(w, "lyud.City.Weekday wed"))
+    show = [t for t in things if acts.get(t.get("act"), {}).get("screen") and "height" in t.get("props", {})][:1]
+    for th in show:
+        add(1.0, lambda w: cmd(w, "Dev.Do interiors.open_all_hours"))
+        add(3.0, lambda w, x=th: look_at(w, x))
+        add(3.0, lambda w, i=th["id"]: cmd(w, "lyud.City.Do " + i))
+        add(1.0, lambda w: shot(w, "screen_show"))
+        add(6.0, lambda w: shot(w, "screen_show_later"))
+        add(1.0, lambda w: cmd(w, "Dev.Do interiors.open_all_hours"))
+    bench = [t for t in things if t["id"] == "P-BRIDGEHOUSE/gallery_bench_e1"]
+    for th in bench:
+        add(3.0, lambda w, x=th: look_at(w, x))
+        add(2.0, lambda w, i=th["id"]: cmd(w, "lyud.City.Do " + i))
+        add(1.0, lambda w: shot(w, "bridge_bench"))
     add(2.0, lambda w: cmd(w, "lyud.Save citytest"))
     if shelves:
         add(1.5, lambda w: cmd(w, "lyud.City.Do " + shelves[0]["id"]))

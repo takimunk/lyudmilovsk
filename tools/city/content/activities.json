@@ -20,8 +20,8 @@
   "eye_chart": {"prompt": "city.do.eye_chart.prompt", "lines": "city.do.eye_chart", "minutes": 5},
   "checkup": {"prompt": "city.do.checkup.prompt", "lines": "city.do.checkup", "minutes": 15, "pose": "sit", "needs_staff": "doctor"},
   "photo_booth": {"prompt": "city.do.photo_booth.prompt", "lines": "city.do.photo_booth", "minutes": 5, "price": 20, "sound": "camera_flash"},
-  "telescope": {"prompt": "city.do.telescope.prompt", "lines": "city.do.telescope", "minutes": 5, "price": 1, "sound": "coin_drop"},
-  "binoculars_post": {"prompt": "city.do.binoculars_post.prompt", "lines": "city.do.binoculars_post", "minutes": 5},
+  "telescope": {"prompt": "city.do.telescope.prompt", "lines": [{"k": "city.do.telescope.*", "h": [6, 21]}, {"k": "city.night.telescope.*", "h": [21, 6]}], "minutes": 5, "price": 1, "sound": "coin_drop"},
+  "binoculars_post": {"prompt": "city.do.binoculars_post.prompt", "lines": [{"k": "city.do.binoculars_post.*", "h": [6, 21]}, {"k": "city.night.binoculars.*", "h": [21, 6]}], "minutes": 5},
   "payphone": {"prompt": "city.do.payphone.prompt", "lines": "city.do.payphone", "minutes": 2, "price": 1, "sound": "phone_dial"},
   "fountain": {"prompt": "city.do.fountain.prompt", "lines": "city.do.fountain", "minutes": 1, "sound": "water_sip"},
   "pump_room": {"prompt": "city.do.pump_room.prompt", "lines": "city.do.pump_room", "minutes": 5, "give": [["water", 1]], "daily": 1, "sound": "water_pour"},
@@ -44,13 +44,13 @@
   "school_desk": {"prompt": "city.do.school_desk.prompt", "lines": "city.do.school_desk", "minutes": 45, "pose": "sit", "fade": true, "needs_staff": "teacher", "sound": "school_bell"},
   "blackboard": {"prompt": "city.do.blackboard.prompt", "lines": "city.do.blackboard", "minutes": 5, "sound": "chalk"},
 
-  "cinema": {"prompt": "city.do.cinema.prompt", "lines": "city.do.cinema", "minutes": 90, "price": 30, "pose": "sit", "fade": true, "needs_staff": "projectionist", "sound": "projector_whirr"},
-  "stage": {"prompt": "city.do.stage.prompt", "lines": "city.do.stage", "minutes": 30, "pose": "sit"},
+  "cinema": {"prompt": "city.do.cinema.prompt", "lines": "city.do.cinema", "minutes": 90, "price": 30, "pose": "sit", "fade": true, "needs_staff": "projectionist", "sound": "projector_whirr", "screen": "film", "title": "city.screen.film.title"},
+  "stage": {"prompt": "city.do.stage.prompt", "lines": "city.do.stage", "minutes": 30, "pose": "sit", "screen": "stage", "title": "city.screen.stage.title"},
   "choir": {"prompt": "city.do.choir.prompt", "lines": "city.do.choir", "minutes": 40, "pose": "sit", "fade": true, "needs_staff": "choir_leader", "sound": "choir_hum"},
   "microphone": {"prompt": "city.do.microphone.prompt", "lines": "city.do.microphone", "minutes": 2, "sound": "mic_feedback"},
-  "tv": {"prompt": "city.do.tv.prompt", "lines": "city.do.tv", "minutes": 20, "pose": "sit", "sound": "tv_hiss"},
+  "tv": {"prompt": "city.do.tv.prompt", "lines": "city.do.tv", "minutes": 20, "pose": "sit", "sound": "tv_hiss", "screen": "tv", "title": "city.screen.tv.title"},
   "aquarium": {"prompt": "city.do.aquarium.prompt", "lines": "city.do.aquarium", "minutes": 5, "sound": "aquarium_bubbles"},
-  "slide_projector": {"prompt": "city.do.slide_projector.prompt", "lines": "city.do.slide_projector", "minutes": 15, "sound": "slide_click"}
+  "slide_projector": {"prompt": "city.do.slide_projector.prompt", "lines": "city.do.slide_projector", "minutes": 15, "sound": "slide_click", "screen": "slides", "title": "city.screen.slides.title"}
  },
  "rules": {
   "*:what=piano": {"act": "piano"},

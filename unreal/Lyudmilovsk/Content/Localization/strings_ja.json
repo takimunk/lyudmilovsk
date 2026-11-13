@@ -1719,6 +1719,8 @@
  "city.act.unknown": "何も起きない",
  "city.page.next": "E：次へ",
  "city.page.close": "E：閉じる",
+ "city.page.stop_watching": "E：見るのをやめる",
+ "city.act.sit_first": "先に座ったほうがいい",
  "city.shop.title": "カウンター",
  "city.act.use.prompt": "E：見る",
  "city.act.sit.prompt": "E：座る",
@@ -1758,5 +1760,7 @@
  "dev.action.interiors.near": "内装：近くの物（ログへ）",
  "dev.action.interiors.run_nearest": "内装：一番近い物を使う",
  "dev.action.interiors.reset_daily": "内装：今日の回数制限をリセット",
- "dev.action.interiors.money": "500ルーブルもらう"
+ "dev.action.interiors.money": "500ルーブルもらう",
+ "dev.action.interiors.open_all_hours": "内装：いつでも全部開いている（係員不要）",
+ "dev.action.interiors.show_things": "内装：物のラベル"
 }

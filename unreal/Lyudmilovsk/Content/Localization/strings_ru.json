@@ -1719,6 +1719,8 @@
  "city.act.unknown": "Ничего не выходит",
  "city.page.next": "E — дальше",
  "city.page.close": "E — закрыть",
+ "city.page.stop_watching": "E — перестать смотреть",
+ "city.act.sit_first": "Сначала надо сесть",
  "city.shop.title": "Прилавок",
  "city.act.use.prompt": "E — посмотреть",
  "city.act.sit.prompt": "E — сесть",
@@ -1758,5 +1760,7 @@
  "dev.action.interiors.near": "Интерьеры: вещи рядом (в лог)",
  "dev.action.interiors.run_nearest": "Интерьеры: применить ближайшую вещь",
  "dev.action.interiors.reset_daily": "Интерьеры: сбросить дневные лимиты",
- "dev.action.interiors.money": "Дать 500 руб."
+ "dev.action.interiors.money": "Дать 500 руб.",
+ "dev.action.interiors.open_all_hours": "Интерьеры: всё открыто в любой час (без персонала)",
+ "dev.action.interiors.show_things": "Интерьеры: подписи вещей"
 }

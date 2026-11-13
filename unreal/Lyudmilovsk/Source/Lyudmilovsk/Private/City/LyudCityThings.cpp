@@ -3,6 +3,8 @@
 #include "CityThingsModel.h"
 #include "City/SLyudCityPage.h"
 #include "Audio/LyudSoundscape.h"
+#include "Camera/CameraActor.h"
+#include "Camera/CameraComponent.h"
 #include "Camera/PlayerCameraManager.h"
 #include "CollisionQueryParams.h"
 #include "Components/SceneComponent.h"
@@ -12,9 +14,11 @@
 #include "Engine/GameViewportClient.h"
 #include "Engine/HitResult.h"
 #include "Engine/World.h"
+#include "EngineUtils.h"
 #include "Food/LyudHandUse.h"
 #include "GameFramework/PlayerController.h"
 #include "HAL/IConsoleManager.h"
+#include "HAL/PlatformTime.h"
 #include "HeroCharacter.h"
 #include "InputCoreTypes.h"
 #include "Kismet/GameplayStatics.h"
@@ -23,9 +27,13 @@
 #include "LyudText.h"
 #include "Misc/FileHelper.h"
 #include "Misc/Paths.h"
+#include "NpcDialogue.h"
 #include "People/PeopleLife.h"
+#include "People/TownTalk.h"
 #include "Plants/GameCalendar.h"
+#include "Tasks/Task.h"
 #include "UI/LyudQuests.h"
+#include <atomic>
 #if __has_include("Dev/LyudDev.h")
 #include "Dev/LyudDev.h"
 #define LYUD_CITY_THINGS_DEV 1
@@ -34,6 +42,19 @@
 #endif
 
 DEFINE_LOG_CATEGORY_STATIC(LogLyudCity, Log, All);
+
+/** interiors.json parsed on a worker: the model is built there and handed over once (bDone) to the game thread. */
+struct FLyudCityLoad
+{
+	std::atomic<bool> bDone{ false };
+	bool bFound = false;
+	bool bOk = false;
+	std::string Error;
+	double Ms = 0.0;
+	LyudCity::FModel Model;
+};
+
+bool ULyudCityThings::bOpenAllHours = false;
 
 namespace LyudCityThingsImpl
 {
@@ -44,6 +65,18 @@ namespace LyudCityThingsImpl
 	constexpr double TownMargin = 3000.0;
 	/** The page shuts when the hero has walked this far from where he opened it (cm). */
 	constexpr float PageWalkAway = 250.f;
+	/** The plot round the hero: the nearest thing within this (cm) on his floor. */
+	constexpr double PlotRadius = 400.0;
+	constexpr double PlotFloor = 250.0;
+	/** How far from a seat a screen is watched, and how far a seat must be for "sit down first" (cm). */
+	constexpr double ScreenRadius = 2500.0;
+	/** Time passing in steps: how long it takes (real s), the most a frame passes (game s: the people's life steps 1 s at
+	 *  a time), and the longest stretch that is stepped through (more: UPeopleLifeSubsystem resettles, cheap, so at once). */
+	constexpr double JumpSeconds = 0.6;
+	constexpr double JumpMaxPerFrame = 30.0;
+	constexpr int32 JumpStepMaxMinutes = 15;
+	/** A screen show: at most this many subtitles, each up for a time by its length. */
+	constexpr int32 ShowMaxParts = 5;
 
 	FString Str(const std::string& S)
 	{
@@ -67,10 +100,14 @@ namespace LyudCityThingsImpl
 	LyudCity::FWhen When(const UWorld* World)
 	{
 		const FDateTime Now = UGameCalendar::NowIn(World);
+		const UGameCalendar* Cal = World ? World->GetSubsystem<UGameCalendar>() : nullptr;
+		const FDateTime Start = Cal ? Cal->StartDate : FDateTime(2026, 10, 20, 16, 0, 0);
 		LyudCity::FWhen W;
 		W.Day = (long long)(Now.GetDate().GetTicks() / ETimespan::TicksPerDay);
 		W.Hour = (float)Now.GetHour() + (float)Now.GetMinute() / 60.f;
 		W.Weekday = (int)Now.GetDayOfWeek();     // Monday = 0
+		W.MonthDay = Now.GetMonth() * 100 + Now.GetDay();
+		W.Since = FMath::Max<long long>(0, W.Day - (long long)(Start.GetDate().GetTicks() / ETimespan::TicksPerDay));
 		return W;
 	}
 
@@ -80,6 +117,7 @@ namespace LyudCityThingsImpl
 		LyudCity::FAsk A;
 		ULyudInventory* Inv = ULyudInventory::Get(Context);
 		A.Money = Inv ? Inv->Rubles : 0;
+		A.bOpenAll = ULyudCityThings::bOpenAllHours;
 		TWeakObjectPtr<ULyudInventory> WeakInv(Inv);
 		A.ItemCount = [WeakInv](const std::string& Item) -> int
 		{
@@ -97,6 +135,20 @@ namespace LyudCityThingsImpl
 			return People->StaffOnShift(Name(Plot), Role == "*" ? FName() : Name(Role)).Num() > 0;
 		};
 		return A;
+	}
+
+	/** The floor under a seat or bed at At whose surface is HeightCm over it: chairs never block, so a trace from the cushion
+	 *  down meets the floor; a bed or a bench with a blocking box is met on its top, and the floor is its height below. */
+	double FloorUnder(UWorld* World, const AActor* Hero, const FVector& At, double HeightCm)
+	{
+		double FloorZ = At.Z - HeightCm;
+		FHitResult Hit;
+		FCollisionQueryParams Q(SCENE_QUERY_STAT(CitySeatFloor), false, Hero);
+		if (World->LineTraceSingleByChannel(Hit, At + FVector(0.0, 0.0, 30.0), At - FVector(0.0, 0.0, 300.0), ECC_Visibility, Q))
+		{
+			FloorZ = Hit.ImpactPoint.Z > At.Z - 0.5 * HeightCm ? Hit.ImpactPoint.Z - HeightCm : Hit.ImpactPoint.Z;
+		}
+		return FloorZ;
 	}
 }
 
@@ -117,7 +169,8 @@ int32 ULyudCityThings::NumThings() const
 void ULyudCityThings::OnWorldBeginPlay(UWorld& InWorld)
 {
 	Super::OnWorldBeginPlay(InWorld);
-	Load();
+	Model = MakePimpl<LyudCity::FModel>();
+	StartLoad();
 	if (ULyudSaveSubsystem* Saves = ULyudSaveSubsystem::Get(&InWorld))
 	{
 		Saves->RegisterSaveObject(TEXT("CityThings"), this);
@@ -127,8 +180,13 @@ void ULyudCityThings::OnWorldBeginPlay(UWorld& InWorld)
 
 void ULyudCityThings::Deinitialize()
 {
+	EndShow();
+	EndLie(false);
+	UnblockMove();
 	SetPrompted(-1);
 	ClosePage();
+	// a parse still under way finishes on its own (it holds its own data) and is dropped
+	Loading.Reset();
 	if (ULyudSaveSubsystem* Saves = ULyudSaveSubsystem::Get(GetWorld()))
 	{
 		Saves->UnregisterSaveObject(TEXT("CityThings"));
@@ -137,23 +195,47 @@ void ULyudCityThings::Deinitialize()
 	Super::Deinitialize();
 }
 
-void ULyudCityThings::Load()
+void ULyudCityThings::StartLoad()
 {
-	Model = MakePimpl<LyudCity::FModel>();
-	FString Text;
 	const FString Path = FPaths::ProjectContentDir() / TEXT("City/interiors.json");
-	if (!FFileHelper::LoadFileToString(Text, *Path))
+	TSharedPtr<FLyudCityLoad, ESPMode::ThreadSafe> Job = MakeShared<FLyudCityLoad, ESPMode::ThreadSafe>();
+	Loading = Job;
+	// the bytes go to the parser as they are (UTF-8): no FString round trip, and none of it on the game thread
+	UE::Tasks::Launch(UE_SOURCE_LOCATION, [Job, Path]()
+	{
+		const double T0 = FPlatformTime::Seconds();
+		TArray<uint8> Bytes;
+		Job->bFound = FFileHelper::LoadFileToArray(Bytes, *Path, FILEREAD_Silent);
+		if (Job->bFound)
+		{
+			size_t Skip = Bytes.Num() >= 3 && Bytes[0] == 0xEF && Bytes[1] == 0xBB && Bytes[2] == 0xBF ? 3 : 0;
+			const std::string Text((const char*)Bytes.GetData() + Skip, (size_t)Bytes.Num() - Skip);
+			Job->bOk = Job->Model.Load(Text, Job->Error);
+		}
+		Job->Ms = (FPlatformTime::Seconds() - T0) * 1000.0;
+		Job->bDone.store(true, std::memory_order_release);
+	});
+}
+
+void ULyudCityThings::AdoptLoaded()
+{
+	TSharedPtr<FLyudCityLoad, ESPMode::ThreadSafe> Job = MoveTemp(Loading);
+	Loading.Reset();
+	if (!Job.IsValid())
+	{
+		return;
+	}
+	if (!Job->bFound)
 	{
 		UE_LOG(LogLyudCity, Display, TEXT("CityThings: no City/interiors.json: no things to do in the buildings"));
 		return;
 	}
-	std::string Error;
-	if (!Model->Load(std::string(TCHAR_TO_UTF8(*Text)), Error))
+	if (!Job->bOk)
 	{
-		UE_LOG(LogLyudCity, Warning, TEXT("CityThings: City/interiors.json unreadable: %s"), *LyudCityThingsImpl::Str(Error));
-		Model = MakePimpl<LyudCity::FModel>();
+		UE_LOG(LogLyudCity, Warning, TEXT("CityThings: City/interiors.json unreadable: %s"), *LyudCityThingsImpl::Str(Job->Error));
 		return;
 	}
+	*Model = std::move(Job->Model);
 	// items the data names that the item table doesn't know (they are skipped when given or sold)
 	int32 Unknown = 0;
 	for (const LyudCity::FAct& A : Model->Acts)
@@ -178,8 +260,24 @@ void ULyudCityThings::Load()
 			}
 		}
 	}
-	UE_LOG(LogLyudCity, Display, TEXT("CityThings: %d things, %d acts, %d shops from City/interiors.json (%d unknown items)"),
-		(int32)Model->Things.size(), (int32)Model->Acts.size(), (int32)Model->Shops.size(), Unknown);
+	UE_LOG(LogLyudCity, Display, TEXT("CityThings: %d things, %d acts, %d shops from City/interiors.json (%d unknown items, parsed in %.1f ms on a worker)"),
+		(int32)Model->Things.size(), (int32)Model->Acts.size(), (int32)Model->Shops.size(), Unknown, Job->Ms);
+	// a load restored the save before the file was parsed: its state is applied now
+	ApplySaved();
+}
+
+void ULyudCityThings::ApplySaved()
+{
+	if (!Model || Saved.Num() == 0)
+	{
+		return;
+	}
+	std::map<std::string, std::string> In;
+	for (const TPair<FString, FString>& KV : Saved)
+	{
+		In[std::string(TCHAR_TO_UTF8(*KV.Key))] = std::string(TCHAR_TO_UTF8(*KV.Value));
+	}
+	Model->LoadState(In);
 }
 
 void ULyudCityThings::StartOver()
@@ -189,15 +287,18 @@ void ULyudCityThings::StartOver()
 		Model->ResetState();
 	}
 	Saved.Reset();
+	GreetedPlot = NAME_None;
+	PlotThing = -1;
 }
 
 void ULyudCityThings::OnGameSaving_Implementation()
 {
-	Saved.Reset();
-	if (!Model)
+	if (Loading.IsValid() || !Model)
 	{
+		// still parsing: what was restored (or nothing) is what there is
 		return;
 	}
+	Saved.Reset();
 	std::map<std::string, std::string> Out;
 	Model->SaveState(Out);
 	for (const std::pair<const std::string, std::string>& KV : Out)
@@ -208,16 +309,15 @@ void ULyudCityThings::OnGameSaving_Implementation()
 
 void ULyudCityThings::OnGameLoaded_Implementation()
 {
-	if (!Model)
+	// while the file is still being parsed, Saved waits for AdoptLoaded
+	if (!Loading.IsValid())
 	{
-		return;
+		if (Model)
+		{
+			Model->ResetState();
+		}
+		ApplySaved();
 	}
-	std::map<std::string, std::string> In;
-	for (const TPair<FString, FString>& KV : Saved)
-	{
-		In[std::string(TCHAR_TO_UTF8(*KV.Key))] = std::string(TCHAR_TO_UTF8(*KV.Value));
-	}
-	Model->LoadState(In);
 }
 
 FVector ULyudCityThings::ThingLocation(int32 Thing) const
@@ -263,6 +363,31 @@ int32 ULyudCityThings::PickInView(const AHeroCharacter* Hero, const APlayerContr
 		}
 	}
 	return -1;
+}
+
+void ULyudCityThings::TrackPlot(const AHeroCharacter* Hero)
+{
+	if (!Model || !Hero)
+	{
+		return;
+	}
+	const int32 Near = Model->NearestThing(LyudCityThingsImpl::Vec(Hero->GetActorLocation()), LyudCityThingsImpl::PlotRadius, LyudCityThingsImpl::PlotFloor);
+	if (Near < 0)
+	{
+		return;     // between buildings: the last plot stays (walking out and back in is not a new visit)
+	}
+	if (PlotThing >= 0 && PlotThing < NumThings() && Model->Things[PlotThing].Plot == Model->Things[Near].Plot)
+	{
+		return;
+	}
+	PlotThing = Near;
+	GreetedPlot = NAME_None;
+	const std::string& Plot = Model->Things[Near].Plot;
+	if (!Plot.empty())
+	{
+		UE_LOG(LogLyudCity, Verbose, TEXT("CityThings: in %s"), *LyudCityThingsImpl::Str(Plot));
+		ULyudQuests::Notify(this, TEXT("visit"), LyudCityThingsImpl::Str(Plot));
+	}
 }
 
 void ULyudCityThings::SetPrompted(int32 Thing)
@@ -311,6 +436,7 @@ void ULyudCityThings::ShowPage(const FText& Title, const FText& Body, bool bMore
 		Page = SNew(SLyudCityPage);
 		Viewport->AddViewportWidgetContent(Page.ToSharedRef(), 61);
 	}
+	Page->SetScreen(false);
 	Page->SetPage(Title, Body, LyudText::Get(bMore ? TEXT("city.page.next") : TEXT("city.page.close")));
 }
 
@@ -330,24 +456,74 @@ void ULyudCityThings::ClosePage()
 	Page.Reset();
 }
 
-void ULyudCityThings::JumpMinutes(int32 Minutes)
+void ULyudCityThings::JumpMinutes(int32 Minutes, bool bBlockMove)
 {
 	UWorld* World = GetWorld();
 	UGameCalendar* Cal = World ? World->GetSubsystem<UGameCalendar>() : nullptr;
-	if (Cal && Minutes > 0)
+	if (!Cal || Minutes <= 0)
 	{
+		return;
+	}
+	if (Minutes > LyudCityThingsImpl::JumpStepMaxMinutes)
+	{
+		// more than 15 minutes: the town's life resettles instead of stepping through it (UPeopleLifeSubsystem), so at once
 		Cal->SetNow(Cal->Now() + FTimespan::FromMinutes((double)Minutes));
+		return;
+	}
+	// a few minutes: over the next frames, so the people's life (which steps 1 s at a time) never runs 900 steps in one
+	JumpLeft += 60.0 * Minutes;
+	JumpRate = FMath::Max(JumpRate, JumpLeft / LyudCityThingsImpl::JumpSeconds);
+	APlayerController* PC = UGameplayStatics::GetPlayerController(World, 0);
+	if (bBlockMove && PC && !MoveBlockedBy.IsValid())
+	{
+		PC->SetIgnoreMoveInput(true);
+		MoveBlockedBy = PC;
 	}
 }
 
-void ULyudCityThings::Sit(int32 Thing, AHeroCharacter* Hero, bool bLie)
+void ULyudCityThings::TickJump(float DeltaTime)
+{
+	if (JumpLeft <= 0.0)
+	{
+		return;
+	}
+	UWorld* World = GetWorld();
+	UGameCalendar* Cal = World ? World->GetSubsystem<UGameCalendar>() : nullptr;
+	if (!Cal)
+	{
+		JumpLeft = 0.0;
+		UnblockMove();
+		return;
+	}
+	const double Add = FMath::Min(JumpLeft, FMath::Clamp(JumpRate * (double)DeltaTime, 1.0, LyudCityThingsImpl::JumpMaxPerFrame));
+	Cal->SetNow(Cal->Now() + FTimespan::FromSeconds(Add));
+	JumpLeft -= Add;
+	if (JumpLeft <= 0.0)
+	{
+		JumpLeft = 0.0;
+		JumpRate = 0.0;
+		UnblockMove();
+	}
+}
+
+void ULyudCityThings::UnblockMove()
+{
+	if (APlayerController* PC = MoveBlockedBy.Get())
+	{
+		PC->SetIgnoreMoveInput(false);
+	}
+	MoveBlockedBy.Reset();
+}
+
+bool ULyudCityThings::Sit(int32 Thing, AHeroCharacter* Hero, bool bLie)
 {
 	UWorld* World = GetWorld();
 	if (!World || !Hero || !Model || Thing < 0 || Thing >= NumThings() || Hero->IsSeated())
 	{
-		return;
+		return false;
 	}
-	if (!SeatRoot)
+	// the anchor may have gone with a level's actors (or be pending kill): one is made again
+	if (!IsValid(SeatAnchor) || !IsValid(SeatRoot))
 	{
 		// one anchor at the world origin for every seat in town: the seat's frame is given to SitOn in world terms
 		FActorSpawnParameters P;
@@ -357,7 +533,7 @@ void ULyudCityThings::Sit(int32 Thing, AHeroCharacter* Hero, bool bLie)
 		AActor* Anchor = World->SpawnActor<AActor>(AActor::StaticClass(), FTransform::Identity, P);
 		if (!Anchor)
 		{
-			return;
+			return false;
 		}
 		USceneComponent* Root = NewObject<USceneComponent>(Anchor, TEXT("Seat"));
 		Root->SetMobility(EComponentMobility::Static);
@@ -368,16 +544,14 @@ void ULyudCityThings::Sit(int32 Thing, AHeroCharacter* Hero, bool bLie)
 	}
 	const LyudCity::FThing& T = Model->Things[Thing];
 	const FVector At = ThingLocation(Thing);
-	const float Height = T.PropF("height", bLie ? 0.5f : 0.45f) * 100.f;
-	// the floor under it: chairs and stools never block, so a trace from the cushion down meets the floor; a bed or a bench with
-	// a blocking box is met on its top, and the floor is a seat's height below that
-	double FloorZ = At.Z - Height;
-	FHitResult Hit;
-	FCollisionQueryParams Q(SCENE_QUERY_STAT(CitySeatFloor), false, Hero);
-	if (World->LineTraceSingleByChannel(Hit, At + FVector(0.0, 0.0, 30.0), At - FVector(0.0, 0.0, 300.0), ECC_Visibility, Q))
+	// metres over its own floor; a height measured from the building's base (some exports) would seat him metres under it
+	const float HeightM = LyudCity::FModel::SeatHeight(T, bLie);
+	if (HeightM != T.PropF("height", HeightM))
 	{
-		FloorZ = Hit.ImpactPoint.Z > At.Z - 0.5 * Height ? Hit.ImpactPoint.Z - Height : Hit.ImpactPoint.Z;
+		UE_LOG(LogLyudCity, Warning, TEXT("CityThings: %s has height %s m: %.2f used"), *LyudCityThingsImpl::Str(T.Id), *LyudCityThingsImpl::Str(T.Prop("height")), HeightM);
 	}
+	const double Height = (double)HeightM * 100.0;
+	const double FloorZ = LyudCityThingsImpl::FloorUnder(World, Hero, At, Height);
 	if (ULyudHandUse* Hand = ULyudHandUse::Get(this))
 	{
 		Hand->PutAway();
@@ -385,21 +559,269 @@ void ULyudCityThings::Sit(int32 Thing, AHeroCharacter* Hero, bool bLie)
 	// the seat's frame: the floor under the cushion's front edge, X the way the sitter faces (the way the thing faces)
 	const FRotator Facing(0.0, (double)T.Yaw, 0.0);
 	const FVector Front = FVector(At.X, At.Y, FloorZ) + Facing.Vector() * (bLie ? 40.0 : 20.0);
-	Hero->SitOn(SeatRoot, FTransform(Facing, Front), Height);
+	Hero->SitOn(SeatRoot, FTransform(Facing, Front), (float)Height);
 	Hero->SetStandUpOffset(FVector(45.f, 0.f, 0.f));
 	if (APlayerController* PC = Cast<APlayerController>(Hero->GetController()))
 	{
 		PC->SetControlRotation(FRotator(-8.0, (double)T.Yaw, 0.0));
 	}
-	// TODO(city): "lie" sits on the bed's edge: the hero's body has no lying pose yet (HeroAnimInstance)
 	SeatedOn = Thing;
+	SeatScreen = bLie ? -1 : Model->ScreenFrom(Thing, LyudCityThingsImpl::ScreenRadius);
+	if (bLie)
+	{
+		// the pillow's eye: over the middle of the bed, a hand over its surface
+		LieEye = FVector(At.X, At.Y, FloorZ + Height + 22.0);
+		LieYaw = T.Yaw;
+	}
+	return true;
 }
 
-void ULyudCityThings::Run(int32 Thing, bool bFromConsole)
+// --- lying down: the hero sits on the bed's edge (the body holds there), the view goes to a camera at the pillow looking at
+// the ceiling (the hero hidden: his body would be in the picture); any step, Space or E gets him up
+
+void ULyudCityThings::BeginLie(int32 Thing, bool bFade, bool bTimePasses)
+{
+	UWorld* World = GetWorld();
+	if (!World)
+	{
+		return;
+	}
+	LyingOn = Thing;
+	bLieAutoStand = bTimePasses;
+	LieUntil = 0.0;
+	PageFrame = GFrameCounter;
+	if (!bFade)
+	{
+		ShowLieView(false);
+		if (bTimePasses)
+		{
+			LieUntil = World->GetTimeSeconds() + LyudCityThingsImpl::JumpSeconds + 2.5;
+		}
+	}
+	// with a fade the view changes once the screen is black (Tick)
+}
+
+void ULyudCityThings::ShowLieView(bool bCut)
+{
+	UWorld* World = GetWorld();
+	APlayerController* PC = World ? UGameplayStatics::GetPlayerController(World, 0) : nullptr;
+	AHeroCharacter* Hero = PC ? Cast<AHeroCharacter>(PC->GetPawn()) : nullptr;
+	if (!PC || !Hero || PC->GetViewTarget() != Hero)
+	{
+		return;     // somebody else has the view (a bird, a cutscene): leave it
+	}
+	if (!IsValid(LieCamera))
+	{
+		FActorSpawnParameters P;
+		P.ObjectFlags |= RF_Transient;
+		P.Name = MakeUniqueObjectName(World, ACameraActor::StaticClass(), TEXT("LyudCityPillow"));
+		P.SpawnCollisionHandlingOverride = ESpawnActorCollisionHandlingMethod::AlwaysSpawn;
+		LieCamera = World->SpawnActor<ACameraActor>(LieEye, FRotator::ZeroRotator, P);
+		if (!LieCamera)
+		{
+			return;
+		}
+		LieCamera->GetCameraComponent()->SetConstraintAspectRatio(false);
+		LieCamera->GetCameraComponent()->SetFieldOfView(80.f);
+	}
+	LieCamera->SetActorLocationAndRotation(LieEye, FRotator(85.0, (double)LieYaw, 0.0));
+	PC->SetViewTargetWithBlend(LieCamera.Get(), bCut ? 0.f : 0.6f);
+	if (!Hero->IsHidden())
+	{
+		Hero->SetActorHiddenInGame(true);
+		bHeroHiddenForLie = true;
+	}
+}
+
+void ULyudCityThings::EndLie(bool bStandUp)
+{
+	if (LyingOn < 0 && !bHeroHiddenForLie)
+	{
+		return;
+	}
+	UWorld* World = GetWorld();
+	APlayerController* PC = World ? UGameplayStatics::GetPlayerController(World, 0) : nullptr;
+	AHeroCharacter* Hero = PC ? Cast<AHeroCharacter>(PC->GetPawn()) : nullptr;
+	if (bHeroHiddenForLie)
+	{
+		if (Hero)
+		{
+			Hero->SetActorHiddenInGame(false);
+		}
+		bHeroHiddenForLie = false;
+	}
+	if (PC && IsValid(LieCamera) && PC->GetViewTarget() == LieCamera.Get())
+	{
+		PC->SetViewTargetWithBlend(PC->GetPawn(), bStandUp ? 0.5f : 0.f);
+	}
+	if (bStandUp && Hero && Hero->IsSeated() && SeatedOn == LyingOn)
+	{
+		Hero->StandUp();
+	}
+	LyingOn = -1;
+	LieUntil = 0.0;
+}
+
+void ULyudCityThings::TickLie(AHeroCharacter* Hero, APlayerController* PC, bool bTalk)
+{
+	UWorld* World = GetWorld();
+	if (!World || !Hero || !PC || !Hero->IsSeated() || SeatedOn != LyingOn)
+	{
+		EndLie(false);     // he got up (a step, Space) or is not the hero any more
+		return;
+	}
+	const bool bSettled = FadeMinutes == 0 && !bFadingIn && JumpLeft <= 0.0;
+	if (bSettled && !Page && !bTalk && GFrameCounter != PageFrame && PC->WasInputKeyJustPressed(EKeys::E))
+	{
+		EndLie(true);
+	}
+	else if (bSettled && LieUntil > 0.0 && World->GetTimeSeconds() >= LieUntil)
+	{
+		EndLie(true);
+	}
+}
+
+// --- a screen show: the act's line cut into subtitles, one after another, the game minutes passing with them
+
+void ULyudCityThings::StartShow(int32 Thing, const FText& Title, const FText& Line, int32 Minutes, bool bSeated)
+{
+	UWorld* World = GetWorld();
+	if (!World)
+	{
+		return;
+	}
+	ShowParts.Reset();
+	for (const std::string& Part : LyudCity::Subtitles(std::string(TCHAR_TO_UTF8(*Line.ToString())), LyudCityThingsImpl::ShowMaxParts))
+	{
+		ShowParts.Add(FText::FromString(LyudCityThingsImpl::Str(Part)));
+	}
+	if (ShowParts.Num() == 0)
+	{
+		ShowParts.Add(Line);
+	}
+	ShowThing = Thing;
+	ShowTitle = Title;
+	ShowMinutes = FMath::Max(0, Minutes);
+	bShowSeated = bSeated;
+	ShowAt = -1;
+	AHeroCharacter* Hero = Cast<AHeroCharacter>(UGameplayStatics::GetPlayerPawn(World, 0));
+	PageFrom = Hero ? Hero->GetActorLocation() : FVector::ZeroVector;
+	PageFrame = GFrameCounter;
+	SetPrompted(-1);
+	NextShowPart();
+}
+
+void ULyudCityThings::NextShowPart()
+{
+	UWorld* World = GetWorld();
+	UGameViewportClient* Viewport = World ? World->GetGameViewport() : nullptr;
+	++ShowAt;
+	if (!World || !Viewport || ShowAt >= ShowParts.Num())
+	{
+		EndShow();
+		return;
+	}
+	if (!Page)
+	{
+		Page = SNew(SLyudCityPage);
+		Viewport->AddViewportWidgetContent(Page.ToSharedRef(), 61);
+	}
+	Page->SetScreen(true);
+	Page->SetPage(ShowTitle, ShowParts[ShowAt], LyudText::Get(TEXT("city.page.stop_watching")));
+	// each subtitle stays by its length; the game minutes pass in equal shares as they come
+	const int32 Len = ShowParts[ShowAt].ToString().Len();
+	ShowNext = World->GetTimeSeconds() + FMath::Clamp(1.6 + 0.055 * (double)Len, 2.8, 7.0);
+	const int32 N = ShowParts.Num();
+	const int32 Share = ShowMinutes * (ShowAt + 1) / N - ShowMinutes * ShowAt / N;
+	JumpMinutes(Share, false);
+}
+
+void ULyudCityThings::EndShow()
+{
+	if (ShowAt < 0 && ShowParts.Num() == 0)
+	{
+		return;
+	}
+	ShowAt = -1;
+	ShowThing = -1;
+	ShowParts.Reset();
+	if (Page)
+	{
+		Page->SetScreen(false);
+	}
+	ClosePage();
+}
+
+void ULyudCityThings::TickShow(AHeroCharacter* Hero, APlayerController* PC, bool bTalk)
+{
+	UWorld* World = GetWorld();
+	ULyudInventoryUI* UI = ULyudInventoryUI::Get(World);
+	// over when he gets up (a seated show), walks off (a standing one), stops being the hero, or a screen comes up
+	if (!World || !Hero || !PC || !UI || UI->IsOpen() || (bShowSeated && !Hero->IsSeated())
+		|| (!bShowSeated && FVector::Dist(Hero->GetActorLocation(), PageFrom) > LyudCityThingsImpl::PageWalkAway))
+	{
+		EndShow();
+		return;
+	}
+	if (!bTalk && GFrameCounter != PageFrame && PC->WasInputKeyJustPressed(EKeys::E))
+	{
+		EndShow();
+		return;
+	}
+	if (World->GetTimeSeconds() >= ShowNext)
+	{
+		NextShowPart();
+	}
+}
+
+// --- the staff say hello once a visit when the hero steps up to their counter
+
+void ULyudCityThings::Greet(int32 Thing)
+{
+	const LyudCity::FAct* A = Model ? Model->ActOf(Thing) : nullptr;
+	if (!A || A->NeedsStaff.empty())
+	{
+		return;
+	}
+	const LyudCity::FThing& T = Model->Things[Thing];
+	const FName Plot = LyudCityThingsImpl::Name(T.Plot);
+	if (Plot.IsNone() || Plot == GreetedPlot)
+	{
+		return;
+	}
+	const UPeopleLifeSubsystem* People = UPeopleLifeSubsystem::Get(this);
+	ULyudTownTalkSubsystem* Talk = ULyudTownTalkSubsystem::Get(this);
+	if (!People || !Talk)
+	{
+		return;
+	}
+	const FName Role = A->NeedsStaff == "*" ? FName() : LyudCityThingsImpl::Name(A->NeedsStaff);
+	const FVector At = ThingLocation(Thing);
+	for (const int32 Person : People->StaffOnShift(Plot, Role))
+	{
+		FPersonInfo Info;
+		AActor* Body = People->GetPerson(Person, Info) ? Info.Actor.Get() : nullptr;
+		// only somebody drawn near the counter (not one still walking to work across town)
+		if (IsValid(Body) && !Body->IsHidden() && FVector::Dist(Body->GetActorLocation(), At) < 600.0)
+		{
+			GreetedPlot = Plot;
+			Talk->SayEvent(Body, TEXT("counter_hello"), Person, Role);
+			return;
+		}
+	}
+}
+
+void ULyudCityThings::Run(int32 Thing, bool bFromConsole, bool bFromSeat)
 {
 	UWorld* World = GetWorld();
 	if (!World || !Model || Thing < 0 || Thing >= NumThings())
 	{
+		return;
+	}
+	// a film, a play or the TV from a sofa: sit down first (not from the console, which runs things from anywhere)
+	if (!bFromConsole && !bFromSeat && Model->NeedsSeatFirst(Thing, LyudCityThingsImpl::ScreenRadius))
+	{
+		Refuse(LyudText::Get(TEXT("city.act.sit_first")));
 		return;
 	}
 	const LyudCity::FOutcome O = Model->Run(Thing, LyudCityThingsImpl::When(World), LyudCityThingsImpl::Ask(this));
@@ -447,9 +869,14 @@ void ULyudCityThings::Run(int32 Thing, bool bFromConsole)
 		}
 	}
 	ULyudQuests::Notify(this, LyudCityThingsImpl::Name(O.Event), LyudCityThingsImpl::Str(O.Target));
-	if (O.bFirstVisitToday && !O.Plot.empty())
+	// "visit" at every use (an objective waiting for it must not wait for tomorrow because the plot was used this morning)
+	if (!O.Plot.empty())
 	{
 		ULyudQuests::Notify(this, TEXT("visit"), LyudCityThingsImpl::Str(O.Plot));
+	}
+	if (!bFromConsole)
+	{
+		Greet(Thing);
 	}
 
 	AHeroCharacter* Hero = Cast<AHeroCharacter>(UGameplayStatics::GetPlayerPawn(World, 0));
@@ -485,15 +912,34 @@ void ULyudCityThings::Run(int32 Thing, bool bFromConsole)
 		}
 		return;
 	}
+	const FText Title = O.Title.empty() ? FText::GetEmpty() : LyudText::Get(LyudCityThingsImpl::Str(O.Title));
 	// sitting and lying only when the hero is at the thing (a console run from across town doesn't carry him there)
 	const bool bNear = Hero && FVector::Dist(Hero->GetActorLocation(), At) < 400.f;
-	if (bNear && (O.Pose == "sit" || O.Pose == "lie"))
+	if (!O.Screen.empty())
 	{
-		Sit(Thing, Hero, O.Pose == "lie");
+		// a show: seated on the thing itself when it is a seat (a cinema's hall seat), else where he is (a sofa, standing)
+		bool bSeated = bFromSeat && Hero && Hero->IsSeated();
+		if (!bSeated && bNear && O.Pose == "sit" && LyudCity::FModel::IsSeatThing(T))
+		{
+			bSeated = Sit(Thing, Hero, false);
+		}
+		ClosePage();
+		StartShow(Thing, Title, O.Line.empty() ? FText::GetEmpty() : LyudText::Get(LyudCityThingsImpl::Str(O.Line)), O.Minutes, bSeated);
+		return;
+	}
+	const bool bLie = bNear && O.Pose == "lie" && Sit(Thing, Hero, true);
+	if (bNear && O.Pose == "sit")
+	{
+		Sit(Thing, Hero, false);
+	}
+	const bool bFade = O.Minutes > 0 && O.bFade && PC && PC->PlayerCameraManager;
+	if (bLie)
+	{
+		BeginLie(Thing, bFade, O.Minutes > 0);
 	}
 	if (O.Minutes > 0)
 	{
-		if (O.bFade && PC && PC->PlayerCameraManager)
+		if (bFade)
 		{
 			PC->PlayerCameraManager->StartCameraFade(0.f, 1.f, 0.6f, FLinearColor::Black, false, true);
 			FadeMinutes = O.Minutes;
@@ -502,21 +948,19 @@ void ULyudCityThings::Run(int32 Thing, bool bFromConsole)
 		}
 		else
 		{
-			JumpMinutes(O.Minutes);
+			JumpMinutes(O.Minutes, !bLie);
 		}
 	}
-	// TODO(city): "screen" (a picture shown while it lasts) shows the act's lines on the page for now
 	if (!O.Line.empty())
 	{
 		PageThing = Thing;
 		PageLeft = FMath::Max(0, O.NumLines - 1);
-		PageTitle = O.Title.empty() ? FText::GetEmpty() : LyudText::Get(LyudCityThingsImpl::Str(O.Title));
+		PageTitle = Title;
 		PageFrom = Hero ? Hero->GetActorLocation() : FVector::ZeroVector;
 		PageFrame = GFrameCounter;
 		ShowPage(PageTitle, LyudText::Get(LyudCityThingsImpl::Str(O.Line)), PageLeft > 0);
 		SetPrompted(-1);
 	}
-	(void)bFromConsole;
 }
 
 bool ULyudCityThings::RunThingById(const FString& Id)
@@ -524,7 +968,7 @@ bool ULyudCityThings::RunThingById(const FString& Id)
 	const int32 Thing = Model ? Model->FindThing(std::string(TCHAR_TO_UTF8(*Id))) : -1;
 	if (Thing < 0)
 	{
-		UE_LOG(LogLyudCity, Warning, TEXT("CityThings: no thing %s"), *Id);
+		UE_LOG(LogLyudCity, Warning, TEXT("CityThings: no thing %s%s"), *Id, Loading.IsValid() ? TEXT(" (City/interiors.json is still being read)") : TEXT(""));
 		return false;
 	}
 	Run(Thing, true);
@@ -604,15 +1048,32 @@ void ULyudCityThings::Tick(float DeltaTime)
 	{
 		return;
 	}
-	// a fade round a jump of the clock: black, jump, hold a moment, back
-	if (FadeMinutes > 0 && World->GetTimeSeconds() >= FadeAt)
+	if (Loading.IsValid())
 	{
-		JumpMinutes(FadeMinutes);
+		if (!Loading->bDone.load(std::memory_order_acquire))
+		{
+			return;
+		}
+		AdoptLoaded();
+	}
+	if (Model->Things.empty())
+	{
+		return;
+	}
+	const double Now = World->GetTimeSeconds();
+	// a fade round a jump of the clock: black, (the pillow's view), the jump, hold a moment, back
+	if (FadeMinutes > 0 && Now >= FadeAt)
+	{
+		if (LyingOn >= 0)
+		{
+			ShowLieView(true);
+		}
+		JumpMinutes(FadeMinutes, LyingOn < 0);
 		FadeMinutes = 0;
 		bFadingIn = true;
-		FadeAt = World->GetTimeSeconds() + 0.4;
+		FadeAt = Now + 0.4;
 	}
-	else if (bFadingIn && World->GetTimeSeconds() >= FadeAt)
+	else if (bFadingIn && JumpLeft <= 0.0 && Now >= FadeAt)
 	{
 		bFadingIn = false;
 		APlayerController* FadePC = UGameplayStatics::GetPlayerController(World, 0);
@@ -620,7 +1081,12 @@ void ULyudCityThings::Tick(float DeltaTime)
 		{
 			FadePC->PlayerCameraManager->StartCameraFade(1.f, 0.f, 0.8f, FLinearColor::Black, false, false);
 		}
+		if (LyingOn >= 0 && bLieAutoStand)
+		{
+			LieUntil = Now + 2.5;     // a moment of the ceiling, then up
+		}
 	}
+	TickJump(DeltaTime);
 	if (bShowLabels)
 	{
 		LabelClock -= DeltaTime;
@@ -636,14 +1102,36 @@ void ULyudCityThings::Tick(float DeltaTime)
 	if (SeatedOn >= 0 && (!Hero || !Hero->IsSeated()))
 	{
 		SeatedOn = -1;
+		SeatScreen = -1;
 	}
-	// the thing in view, a few times a second, and nothing at all outside the town's box
+	// the thing in view, the plot round the hero and the talk, a few times a second; nothing at all outside the town's box
 	PickClock -= DeltaTime;
 	if (PickClock <= 0.f)
 	{
 		PickClock = LyudCityThingsImpl::PickEvery;
 		bOutside = !Hero || !Model->InBounds(LyudCityThingsImpl::Vec(Hero->GetActorLocation()), LyudCityThingsImpl::TownMargin);
 		Picked = bOutside ? -1 : PickInView(Hero, PC);
+		if (!bOutside)
+		{
+			TrackPlot(Hero);
+			if (!TalkDirector.IsValid())
+			{
+				TActorIterator<ANpcTalkDirector> It(World);
+				TalkDirector = It ? *It : nullptr;
+			}
+		}
+	}
+	// E is the talk's while he faces somebody or is talking (one press must not both talk and buy)
+	const bool bTalk = TalkDirector.IsValid() && TalkDirector->IsEngaged();
+	if (LyingOn >= 0)
+	{
+		TickLie(Hero, PC, bTalk);
+	}
+	if (ShowAt >= 0)
+	{
+		SetPrompted(-1);
+		TickShow(Hero, PC, bTalk);
+		return;
 	}
 	if (bOutside && !Page)
 	{
@@ -660,15 +1148,23 @@ void ULyudCityThings::Tick(float DeltaTime)
 	if (Page)
 	{
 		SetPrompted(-1);
-		if (PC && FadeMinutes == 0 && !bFadingIn && PC->WasInputKeyJustPressed(EKeys::E) && GFrameCounter != PageFrame)
+		if (PC && !bTalk && FadeMinutes == 0 && !bFadingIn && PC->WasInputKeyJustPressed(EKeys::E) && GFrameCounter != PageFrame)
 		{
 			if (PageLeft > 0 && PageThing >= 0)
 			{
 				--PageLeft;
-				ShowPage(PageTitle, LyudText::Get(LyudCityThingsImpl::Str(Model->NextLine(PageThing))), PageLeft > 0);
-				if (ULyudSoundscapeSubsystem* Sound = ULyudSoundscapeSubsystem::Get(this))
+				const std::string Next = Model->NextLine(PageThing, LyudCityThingsImpl::When(World));
+				if (Next.empty())
 				{
-					Sound->PlayEffect(TEXT("page_turn"), ThingLocation(PageThing));
+					ClosePage();
+				}
+				else
+				{
+					ShowPage(PageTitle, LyudText::Get(LyudCityThingsImpl::Str(Next)), PageLeft > 0);
+					if (ULyudSoundscapeSubsystem* Sound = ULyudSoundscapeSubsystem::Get(this))
+					{
+						Sound->PlayEffect(TEXT("page_turn"), ThingLocation(PageThing));
+					}
 				}
 			}
 			else
@@ -678,22 +1174,24 @@ void ULyudCityThings::Tick(float DeltaTime)
 		}
 		return;
 	}
-	// on foot, nothing else on screen, not seated (the restaurant, a train, a chair), not on a bike, not mid-fade
-	const bool bFree = PC && UI && UI->CanOpen(true) && !Hero->IsSeated() && !Hero->IsOnBike() && !Hero->IsLeadingBike()
-		&& FadeMinutes == 0 && !bFadingIn;
-	if (!bFree)
+	// nothing else on screen, not talking, the clock not running on, not on a bike
+	const bool bCalm = PC && UI && UI->CanOpen(true) && !bTalk && !Hero->IsOnBike() && !Hero->IsLeadingBike()
+		&& FadeMinutes == 0 && !bFadingIn && JumpLeft <= 0.0 && LyingOn < 0;
+	// seated on a seat of ours with a screen in front (a sofa and the TV): the screen is offered from there
+	const int32 Offer = bCalm && Hero->IsSeated() ? (SeatedOn >= 0 ? SeatScreen : -1) : (bCalm ? Picked : -1);
+	if (Offer < 0)
 	{
 		SetPrompted(-1);
 		return;
 	}
-	if (World->GetTimeSeconds() < RefusedUntil)
+	if (Now < RefusedUntil)
 	{
 		return;
 	}
-	SetPrompted(Picked);
-	if (Picked >= 0 && PC->WasInputKeyJustPressed(EKeys::E))
+	SetPrompted(Offer);
+	if (PC->WasInputKeyJustPressed(EKeys::E))
 	{
-		Run(Picked, false);
+		Run(Offer, false, Hero->IsSeated());
 	}
 }
 
@@ -730,6 +1228,35 @@ static FAutoConsoleCommandWithWorldAndArgs GCityThingsShow(TEXT("lyud.City.Thing
 		}
 	}));
 
+static FAutoConsoleCommandWithWorldAndArgs GCityWeekday(TEXT("lyud.City.Weekday"),
+	TEXT("lyud.City.Weekday <mon..sun | 0..6>: moves the game clock on to the next such weekday, same time of day (the quests' dev blocks: a day the place is open)"),
+	FConsoleCommandWithWorldAndArgsDelegate::CreateLambda([](const TArray<FString>& Args, UWorld* World)
+	{
+		UGameCalendar* Cal = World ? World->GetSubsystem<UGameCalendar>() : nullptr;
+		if (!Cal || Args.Num() == 0)
+		{
+			return;
+		}
+		static const TCHAR* const Days[7] = { TEXT("mon"), TEXT("tue"), TEXT("wed"), TEXT("thu"), TEXT("fri"), TEXT("sat"), TEXT("sun") };
+		int32 Want = Args[0].IsNumeric() ? FCString::Atoi(*Args[0]) : -1;
+		for (int32 D = 0; D < 7 && Want < 0; ++D)
+		{
+			Want = Args[0].StartsWith(Days[D], ESearchCase::IgnoreCase) ? D : -1;
+		}
+		if (Want < 0 || Want > 6)
+		{
+			UE_LOG(LogLyudCity, Warning, TEXT("lyud.City.Weekday: %s is not a weekday"), *Args[0]);
+			return;
+		}
+		const int32 Today = (int32)Cal->Now().GetDayOfWeek();
+		const int32 Ahead = (Want - Today + 7) % 7;
+		if (Ahead > 0)
+		{
+			Cal->SetNow(Cal->Now() + FTimespan::FromDays((double)Ahead));
+		}
+		UE_LOG(LogLyudCity, Display, TEXT("lyud.City.Weekday: %s (%d days on)"), *Cal->Now().ToString(), Ahead);
+	}));
+
 // --- developer mode (docs/dev_mode.md), when it is in the tree
 
 #if LYUD_CITY_THINGS_DEV
@@ -761,6 +1288,22 @@ static LyudDev::FAutoAction GCityDevMoney(TEXT("interiors.money"), TEXT("interio
 		Inv->Earn(500);
 	}
 });
+static LyudDev::FAutoAction GCityDevOpenAll(TEXT("interiors.open_all_hours"), TEXT("interiors"), TEXT("dev.action.interiors.open_all_hours"),
+	[](UWorld*) { ULyudCityThings::bOpenAllHours = !ULyudCityThings::bOpenAllHours; },
+	[](UWorld*) { return ULyudCityThings::bOpenAllHours; });
+static LyudDev::FAutoAction GCityDevLabels(TEXT("interiors.show_things"), TEXT("interiors"), TEXT("dev.action.interiors.show_things"),
+	[](UWorld* W)
+	{
+		if (ULyudCityThings* Things = ULyudCityThings::Get(W))
+		{
+			Things->SetShowLabels(!Things->AreLabelsShown());
+		}
+	},
+	[](UWorld* W)
+	{
+		const ULyudCityThings* Things = ULyudCityThings::Get(W);
+		return Things && Things->AreLabelsShown();
+	});
 #endif
 
 #undef LYUD_CITY_THINGS_DEV

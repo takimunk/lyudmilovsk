@@ -27,7 +27,7 @@ if not os.path.exists(FEST):
 LANGS = ["ru", "en", "ja"]
 COND_KEYS = ["to", "on", "near", "job", "age", "sex", "doing", "at", "pose", "gather", "chrono", "need", "hours", "months",
              "weekday", "sun", "weather", "festival", "phase", "job2", "age2", "sex2", "doing2", "weight"]
-EVENTS = {"rest_sit", "rest_carry", "rest_serve", "rest_bill", "rest_bye"}
+EVENTS = {"rest_sit", "rest_carry", "rest_serve", "rest_bill", "rest_bye", "counter_hello"}
 
 sets = []          # [{name, conds: [(k, v)], say: [keys], talk: [[keys]], file}]
 strings = collections.OrderedDict()   # key -> (ru, en, ja)

@@ -35,6 +35,10 @@ check "listed" "CityThings: [0-9]+ things, [0-9]+ acts, [0-9]+ shops$"
 check "ran" "CityThings: do .* -> ok"
 grep -q -- "-> daily_done" "$LOG" && echo "PASS daily limit" || echo "WARN no daily_done (the first take thing may have no daily limit)"
 check "unknown id" "CityThings: no thing no/such_thing"
+check "parsed on a worker" "parsed in [0-9.]+ ms on a worker"
+check "weekday" "lyud.City.Weekday: "
+grep -q "city.night.telescope" "$LOG" && echo "PASS night line" || echo "WARN no night telescope line (no telescope in the data?)"
+grep -q "gallery_bench_e1 has height" "$LOG" && echo "PASS bench height sanitised in game" || echo "INFO bench height already right in the data"
 check "finished" "CITYTEST done"
 if grep -qE "LogScript.*Error|Python: Error|Traceback" "$LOG"; then echo "FAIL script errors"; FAIL=1; fi
 exit $FAIL
