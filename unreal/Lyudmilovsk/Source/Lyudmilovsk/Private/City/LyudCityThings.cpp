@@ -566,6 +566,8 @@ bool ULyudCityThings::Sit(int32 Thing, AHeroCharacter* Hero, bool bLie)
 		PC->SetControlRotation(FRotator(-8.0, (double)T.Yaw, 0.0));
 	}
 	SeatedOn = Thing;
+	UE_LOG(LogLyudCity, Display, TEXT("CityThings: %s on %s (floor z %.0f, seat %.0f cm): seated=%d"), bLie ? TEXT("lies") : TEXT("sits"),
+		*LyudCityThingsImpl::Str(T.Id), FloorZ, Height, Hero->IsSeated() ? 1 : 0);
 	SeatScreen = bLie ? -1 : Model->ScreenFrom(Thing, LyudCityThingsImpl::ScreenRadius);
 	if (bLie)
 	{

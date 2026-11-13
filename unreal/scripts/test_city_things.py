@@ -70,6 +70,8 @@ def plan():
     for kind, n in (("shelf", 2), ("board", 2), ("counter", 2), ("machine", 1), ("play", 1), ("screen", 1)):
         for th in first_of(things, kind, n):
             add(1.5, lambda w, i=th["id"]: cmd(w, "lyud.City.Do " + i))
+            if kind == "counter":
+                add(0.5, lambda w: cmd(w, "Inventory.Open 0"))    # a shop left open would hide every later step
     for th in first_of(things, "take"):
         add(1.0, lambda w, i=th["id"]: cmd(w, "lyud.City.Do " + i))
         add(1.0, lambda w, i=th["id"]: cmd(w, "lyud.City.Do " + i))      # the second time today: daily_done
