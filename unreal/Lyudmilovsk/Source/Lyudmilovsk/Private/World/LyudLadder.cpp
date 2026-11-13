@@ -418,6 +418,11 @@ void ULyudLadderClimber::GrabByPlayer(ULyudLadderComponent* InLadder)
 	{
 		return;
 	}
+	// not from a seat or a saddle: both hold his movement and collision and would hand them back in the middle of the climb
+	if (const AHeroCharacter* Hero = Cast<AHeroCharacter>(C); Hero && (Hero->IsSeated() || Hero->IsOnBike()))
+	{
+		return;
+	}
 	// from where the feet are now: on the floor, or (from above) at the top
 	const float Z = InLadder->FromWorld(C->GetActorLocation() - FVector(0.f, 0.f, C->GetCapsuleComponent()->GetScaledCapsuleHalfHeight())).Z;
 	const float Start = FMath::Clamp(Z, 0.f, InLadder->TopRungZ() - HandAboveFeet + InLadder->RungSpacing);
