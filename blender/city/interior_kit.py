@@ -460,9 +460,10 @@ class _P:
     def tris(self):
         return self.m.tri_count()
 
-    def done(self, solid=False, top=None, front=0.6, seats=(), footprint=None, **extra):
+    def done(self, solid=False, top=None, front=0.6, seats=(), footprint=None, pin=None, **extra):
         """footprint=(x0, x1, y0, y1) local: report this as the footprint/size/front instead of the mesh bounds
-        (a plant's leaves do not block, only its pot does)."""
+        (a plant's leaves do not block, only its pot does). pin=(x0, x1, y0, y1, z0, z1) local: report exactly these
+        bounds (a piece redrawn with finer geometry keeps the size/pos/foot its callers were built against)."""
         m = self.m
         # Dima's rule (geom.coplanar_offsets): of overlapping faces in one plane facing the same way the smaller
         # goes 4 mm over the larger (a label on a drawer, a picture on its board), so nothing z-fights
@@ -480,6 +481,8 @@ class _P:
         ys = [p[1] for p in m.verts] or [0]
         zs = [p[2] for p in m.verts] or [0]
         x0, x1, y0, y1, z0, z1 = min(xs), max(xs), min(ys), max(ys), min(zs), max(zs)
+        if pin is not None:
+            x0, x1, y0, y1, z0, z1 = pin
         if footprint is not None:
             x0, x1, y0, y1 = footprint
         foot = [self.w(u, v)[:2] for u, v in ((x0, y0), (x1, y0), (x1, y1), (x0, y1))]
@@ -522,6 +525,215 @@ def _legs(p, mat, xs, ys, z1, w=0.035, taper=0.7, sides=4):
             p.cyl(mat, x, y, 0.0, z1, w / 2 * taper, sides, r1=w / 2, top=False, a0=math.pi / 4)
 
 
+def _rrect(x0, x1, y0, y1, z, c, k=2):
+    """Rounded rectangle ring, CCW from above at z: corner radius c with k segments per corner (k=1: a chamfer).
+    The ring touches x0, x1, y0, y1 exactly, so a rounded part keeps the bounds of the box it replaces."""
+    c = max(0.004, min(c, (x1 - x0) / 2 - 1e-4, (y1 - y0) / 2 - 1e-4))
+    pts = []
+    for cx, cy, a0 in ((x1 - c, y0 + c, -90.0), (x1 - c, y1 - c, 0.0), (x0 + c, y1 - c, 90.0), (x0 + c, y0 + c, 180.0)):
+        for i in range(k + 1):
+            a = math.radians(a0 + 90.0 * i / k)
+            pts.append((cx + c * math.cos(a), cy + c * math.sin(a), z))
+    return pts
+
+
+def _pad(p, mat, x0, x1, y0, y1, z0, z1, c=0.04, b=0.01, k=1, bottom=False):
+    """A board / seat with rounded plan corners and a chamfered top edge (b)."""
+    b = min(b, (z1 - z0) * 0.6, (x1 - x0) * 0.3, (y1 - y0) * 0.3)
+    cc = max(0.006, c - b * 0.5)
+    p.loft(mat, [_rrect(x0, x1, y0, y1, z0, c, k), _rrect(x0, x1, y0, y1, z1 - b, c, k),
+                 _rrect(x0 + b, x1 - b, y0 + b, y1 - b, z1, cc, k)], top=True, bottom=bottom)
+
+
+def _soft(p, mat, x0, x1, y0, y1, z0, z1, puff=0.015, c=0.05, k=2, crown=0.6):
+    """A rounded cushion: rounded plan corners, belly in the middle, a softly domed top (crown 0..1)."""
+    h = z1 - z0
+    rings = [_rrect(x0 + puff, x1 - puff, y0 + puff, y1 - puff, z0, c, k),
+             _rrect(x0, x1, y0, y1, z0 + h * 0.3, c, k),
+             _rrect(x0, x1, y0, y1, z0 + h * 0.75, c, k),
+             _rrect(x0 + puff * (1 + crown), x1 - puff * (1 + crown), y0 + puff * (1 + crown), y1 - puff * (1 + crown), z1,
+                    c * 0.8, k)]
+    p.loft(mat, rings, top=True, bottom=False)
+
+
+def _post(p, mat, a, b, ra, rb, sides=4, a0=None, caps=False):
+    """A tapered post from point a (radius ra) to point b (radius rb); square when sides=4 (radius = circumradius)."""
+    a0 = math.pi / 4 if (a0 is None and sides == 4) else (math.pi / 2 if a0 is None else a0)
+    ra_ = [(a[0] + ra * math.cos(a0 + 2 * math.pi * k / sides), a[1] + ra * math.sin(a0 + 2 * math.pi * k / sides), a[2])
+           for k in range(sides)]
+    rb_ = [(b[0] + rb * math.cos(a0 + 2 * math.pi * k / sides), b[1] + rb * math.sin(a0 + 2 * math.pi * k / sides), b[2])
+           for k in range(sides)]
+    p.loft(mat, [ra_, rb_], top=caps, bottom=caps)
+
+
+def _prof_top(x0, x1, z0, z1, c, k=1):
+    """Profile (x, z) CCW seen from -y: a plate with the two top corners rounded (radius c, k segments)."""
+    pts = [(x0, z0), (x1, z0)]
+    for cx, a0 in ((x1 - c, 0.0), (x0 + c, 90.0)):
+        for i in range(k + 1):
+            a = math.radians(a0 + 90.0 * i / k)
+            pts.append((cx + c * math.cos(a), z1 - c + c * math.sin(a)))
+    return pts
+
+
+def _plate(p, mat, prof, y0, t, slope=0.0, zr=0.0):
+    """Extrude a convex profile [(x, z)] (CCW seen from -y) into a plate t thick toward +y; its front plane is
+    y = y0 + slope * (z - zr), so a seat back can lean."""
+    fr = [(x, y0 + slope * (z - zr), z) for x, z in prof]
+    bk = [(x, y + t, z) for x, y, z in fr]
+    p.face(mat, fr)
+    p.face(mat, bk[::-1])
+    n = len(fr)
+    for i in range(n):
+        j = (i + 1) % n
+        p.face(mat, [fr[i], bk[i], bk[j], fr[j]])
+
+
+def _rail(p, mat, xs, zs, y0, t, bow=0.0, slope=0.0, zr=0.0):
+    """A curved rail (a chair-back slat bowed in plan): xs = x positions, the middle ones are pushed back by `bow`;
+    z0..z1 = zs; thickness t; front plane leans by slope. Closed box strip."""
+    z0, z1 = zs
+    n = len(xs)
+    def yf(i, z):
+        mid = 1.0 - abs((i - (n - 1) / 2) / ((n - 1) / 2)) ** 2
+        return y0 + slope * (z - zr) + bow * mid
+    for i in range(n - 1):
+        a, b = xs[i], xs[i + 1]
+        p.face(mat, [(a, yf(i, z0), z0), (b, yf(i + 1, z0), z0), (b, yf(i + 1, z1), z1), (a, yf(i, z1), z1)])
+        p.face(mat, [(b, yf(i + 1, z0) + t, z0), (a, yf(i, z0) + t, z0), (a, yf(i, z1) + t, z1), (b, yf(i + 1, z1) + t, z1)])
+        p.face(mat, [(a, yf(i, z1), z1), (b, yf(i + 1, z1), z1), (b, yf(i + 1, z1) + t, z1), (a, yf(i, z1) + t, z1)])
+        p.face(mat, [(a, yf(i, z0) + t, z0), (b, yf(i + 1, z0) + t, z0), (b, yf(i + 1, z0), z0), (a, yf(i, z0), z0)])
+    for i, sgn in ((0, -1), (n - 1, 1)):
+        x = xs[i]
+        q = [(x, yf(i, z0), z0), (x, yf(i, z0) + t, z0), (x, yf(i, z1) + t, z1), (x, yf(i, z1), z1)]
+        p.face(mat, q if sgn > 0 else q[::-1])
+
+
+def _frond(p, mat, base, ang, L, w, rise=0.0, drop=0.0, lift=0.0, secs=3, shape="taper", fold=0.0):
+    """An arching blade (frond / leaf), two-sided, from `base` along the compass angle `ang`: reach L, width w, the
+    middle rises by `rise`, the end falls by `drop`, `lift` tilts it up. shape taper (fern, palm) | leaf (widest
+    in the middle). fold lowers the two edges (a V section)."""
+    ca, sa = math.cos(ang), math.sin(ang)
+    st = []
+    for i in range(secs + 1):
+        t = i / secs
+        zz = base[2] + lift * t + rise * 4 * t * (1 - t) - drop * t * t
+        cx, cy = base[0] + ca * L * t, base[1] + sa * L * t
+        hw = w / 2 * (math.sin(math.pi * t) ** 0.75 if shape == "leaf" else (1 - t) ** 0.8)
+        st.append(((cx - sa * hw, cy + ca * hw, zz - fold * hw), (cx + sa * hw, cy - ca * hw, zz - fold * hw)))
+    for (l0, r0), (l1, r1) in zip(st, st[1:]):
+        q = [r0, r1, l1, l0]
+        q = [a for k, a in enumerate(q) if math.dist(a, q[k - 1]) > 1e-5]
+        if len(q) >= 3:
+            p.face(mat, q)
+            p.face(mat, q[::-1])
+
+
+HEART = [(0.0, 0.1), (-0.2, 0.0), (-0.5, 0.3), (-0.3, 0.42), (-0.4, 0.68), (0.0, 1.0),
+         (0.4, 0.68), (0.3, 0.42), (0.5, 0.3), (0.2, 0.0)]
+
+
+def _heart(p, mat, base, ang, L, W, lift=0.0, droop=0.25, arch=0.0):
+    """A split monstera leaf (outline HEART, both sides) folded along its midrib, drooping toward its edges."""
+    ca, sa = math.cos(ang), math.sin(ang)
+    pts = []
+    for u, v in HEART:
+        ph_ = v * L
+        pts.append((base[0] + ca * ph_ - sa * u * W, base[1] + sa * ph_ + ca * u * W,
+                    base[2] + lift * v + arch * 4 * v * (1 - v) - droop * abs(u) * W))
+    for k in range(1, len(pts) - 1):
+        tri = [pts[0], pts[k], pts[k + 1]]
+        p.face(mat, tri)
+        p.face(mat, tri[::-1])
+
+
+def _pot(p, pot, pr, ph):
+    """A flower pot: tapered body, a lip, soil."""
+    p.lathe(pot, 0, 0, [(pr * 0.7, 0.0), (pr * 0.98, ph * 0.88), (pr * 1.06, ph * 0.93), (pr * 1.06, ph + 0.02)], 10,
+            top=False, a0=math.pi / 10)
+    p.lathe("CT_ConcreteDark", 0, 0, [(pr * 0.98, ph - 0.012), (0.0, ph - 0.008)], 10, top=False, a0=math.pi / 10)
+
+
+class _Scratch:
+    """A throwaway building: measuring what an older drawing of a piece would have reported."""
+
+    def __init__(self):
+        self.detail, self.m, self.kit_items = Mesh(), Mesh(), []
+
+
+def _plant_old_bounds(x, y, kind, h, seed):
+    """Local bounds of the original plant drawing (blobs / bars): kept so the dict a plant returns never changes
+    when the leaves are redrawn (callers placed things by it)."""
+    p = _P(_Scratch(), 0.0, 0.0, 0.0, 0.0, "plant")
+    rnd = _rng(seed, x, y, "plant" + kind)
+    small = kind in ("fern", "cactus")
+    pr = 0.12 if small else 0.2
+    ph = 0.2 if small else 0.34
+    p.lathe("CT_Wood", 0, 0, [(pr * 0.75, 0.0), (pr, ph), (pr * 1.06, ph + 0.02)], 8, top=False)
+    p.cyl("CT_ConcreteDark", 0, 0, ph - 0.02, ph - 0.01, pr * 0.98, 8)
+    L_ = "CT_Leaf"
+    if kind == "ficus":
+        p.rod(WOOD, (0, 0, ph), (0.03, 0.02, h * 0.8), 0.035, 3)
+        for k in range(7):
+            a = k * 2.4 + rnd.uniform(-0.3, 0.3)
+            zc = ph + (h - ph) * (0.45 + 0.08 * (k % 4))
+            rr = (h - ph) * 0.2
+            cx, cy = 0.18 * math.cos(a) * (h / 1.3), 0.18 * math.sin(a) * (h / 1.3)
+            p.lathe(L_, cx, cy, [(0.0, zc - rr * 0.8), (rr, zc - rr * 0.2), (rr * 0.85, zc + rr * 0.4), (0.0, zc + rr)], 6)
+    elif kind == "monstera":
+        for k in range(7):
+            a = 2 * math.pi * k / 7 + rnd.uniform(-0.2, 0.2)
+            L = rnd.uniform(0.45, 0.75) * h / 1.3
+            tip = (math.cos(a) * L * 0.75, math.sin(a) * L * 0.75, ph + L * rnd.uniform(0.7, 1.0))
+            p.rod(L_, (0, 0, ph), tip, 0.015, 3)
+            ca, sa = math.cos(a), math.sin(a)
+            ln, wd = 0.34 * h / 1.3, 0.2 * h / 1.3
+            base = tip
+            end = (tip[0] + ca * ln, tip[1] + sa * ln, tip[2] - 0.12)
+            side = (-sa * wd, ca * wd)
+            mid = ((base[0] + end[0]) / 2, (base[1] + end[1]) / 2, (base[2] + end[2]) / 2 + 0.03)
+            for sgn in (-1, 1):
+                q = (mid[0] + side[0] * sgn, mid[1] + side[1] * sgn, mid[2] - 0.05)
+                tri = [base, end, q] if sgn > 0 else [base, q, end]
+                p.face(L_, tri)
+                p.face(L_, [tri[0], tri[2], tri[1]])
+    elif kind == "palm":
+        p.rod(WOOD, (0, 0, ph), (0.0, 0.0, h * 0.62), 0.05, 4)
+        for k in range(8):
+            a = 2 * math.pi * k / 8 + rnd.uniform(-0.2, 0.2)
+            top = (0, 0, h * 0.62)
+            L = 0.55 * h / 1.3
+            mid = (math.cos(a) * L * 0.5, math.sin(a) * L * 0.5, h * 0.62 + 0.25 * h / 1.3)
+            end = (math.cos(a) * L, math.sin(a) * L, h * 0.62 - 0.05)
+            side = (-math.sin(a) * 0.08, math.cos(a) * 0.08)
+            for a_, b_ in ((top, mid), (mid, end)):
+                q0 = (a_[0] - side[0], a_[1] - side[1], a_[2])
+                q1 = (b_[0] - side[0] * 0.6, b_[1] - side[1] * 0.6, b_[2])
+                q2 = (b_[0] + side[0] * 0.6, b_[1] + side[1] * 0.6, b_[2])
+                q3 = (a_[0] + side[0], a_[1] + side[1], a_[2])
+                p.face(L_, [q0, q1, q2, q3])
+                p.face(L_, [q3, q2, q1, q0])
+    elif kind == "cactus":
+        p.lathe(L_, 0, 0, [(0.06, ph - 0.01), (0.07, ph + 0.2), (0.05, ph + 0.32), (0.0, ph + 0.36)], 7)
+        p.lathe(L_, 0.08, 0, [(0.0, ph + 0.1), (0.035, ph + 0.13), (0.03, ph + 0.22), (0.0, ph + 0.25)], 5)
+    else:
+        for k in range(9):
+            a = 2 * math.pi * k / 9
+            L = 0.35
+            base = (0, 0, ph)
+            end = (math.cos(a) * L, math.sin(a) * L, ph + 0.05)
+            mid = (math.cos(a) * L * 0.5, math.sin(a) * L * 0.5, ph + 0.25)
+            side = (-math.sin(a) * 0.05, math.cos(a) * 0.05)
+            for a_, b_ in ((base, mid), (mid, end)):
+                q = [(a_[0] - side[0], a_[1] - side[1], a_[2]), (b_[0] - side[0], b_[1] - side[1], b_[2]),
+                     (b_[0] + side[0], b_[1] + side[1], b_[2]), (a_[0] + side[0], a_[1] + side[1], a_[2])]
+                p.face(L_, q)
+                p.face(L_, q[::-1])
+    geom.separate_coplanar(p.m, 0.004)
+    vs = p.m.verts
+    return tuple(f(q[i] for q in vs) for i in range(3) for f in (min, max))
+
+
 # ================================================================================================ SEATING
 def chair(B, x, y, z=0.0, yaw=0.0, kind="wood", mat=None, frame=None, solid=False, seed=0):
     """A chair; the sitter faces yaw. kind wood | tube | school."""
@@ -533,69 +745,70 @@ def chair(B, x, y, z=0.0, yaw=0.0, kind="wood", mat=None, frame=None, solid=Fals
         for s in (-0.2, 0.2):
             p.tube(fm, [(s, 0.17, 0.012), (s, -0.21, 0.012), (s, -0.21, h - 0.06), (s, 0.15, h - 0.05),
                         (s, 0.22, 0.86)], 0.024, 3)
-        p.box(mt, -0.22, 0.22, -0.23, 0.18, h - 0.04, h, f="xXyYZz")
-        p.hexa(mt, [(-0.22, 0.16, h + 0.08), (0.22, 0.16, h + 0.08), (0.22, 0.2, h + 0.08), (-0.22, 0.2, h + 0.08)],
-               [(-0.22, 0.2, 0.84), (0.22, 0.2, 0.84), (0.22, 0.24, 0.84), (-0.22, 0.24, 0.84)])
+        _pad(p, mt, -0.22, 0.22, -0.23, 0.18, h - 0.04, h, 0.05, 0.012, 1, bottom=True)
+        _plate(p, mt, _prof_top(-0.22, 0.22, h + 0.08, 0.84, 0.07, 1), 0.16, 0.04, slope=(0.04 / 0.31), zr=h + 0.08)
+        pin = (-0.22, 0.22, -0.23, 0.24, -0.0019, 0.8618)
     elif kind == "school":
         fm = frame or STEEL
         mt = mat or WOODL
-        p.box(mt, -0.2, 0.2, -0.2, 0.18, h - 0.025, h, f="xXyYZz")
+        _pad(p, mt, -0.2, 0.2, -0.2, 0.18, h - 0.025, h, 0.045, 0.008, 1, bottom=True)
         for s in (-0.18, 0.18):
             p.rod(fm, (s, -0.17, 0.0), (s, -0.16, h - 0.025), 0.022, 3)
             p.rod(fm, (s, 0.15, 0.0), (s, 0.17, 0.82), 0.022, 3)
             p.rod(fm, (s, -0.16, 0.12), (s, 0.155, 0.12), 0.018, 3)
-        p.hexa(mt, [(-0.2, 0.15, 0.6), (0.2, 0.15, 0.6), (0.2, 0.175, 0.6), (-0.2, 0.175, 0.6)],
-               [(-0.2, 0.17, 0.8), (0.2, 0.17, 0.8), (0.2, 0.195, 0.8), (-0.2, 0.195, 0.8)])
+        _plate(p, mt, _prof_top(-0.2, 0.2, 0.6, 0.8, 0.05, 1), 0.15, 0.025, slope=0.1, zr=0.6)
+        pin = (-0.2, 0.2, -0.2, 0.195, -0.0003, 0.8203)
     else:
         mt = mat or WOOD
-        p.bev(mt, -0.21, 0.21, -0.2, 0.19, h - 0.035, h, 0.012)
+        _pad(p, mt, -0.21, 0.21, -0.2, 0.19, h - 0.035, h, 0.04, 0.012, 1)
         for s in (-0.17, 0.17):
-            p.rod(mt, (s, -0.16, 0.0), (s, -0.15, h - 0.035), 0.032, 4)
-            p.rod(mt, (s, 0.14, 0.0), (s, 0.17, 0.88), 0.032, 4)
+            # front legs: tapered toward the floor and splayed a little; back posts lean and taper
+            _post(p, mt, (s * 1.1, -0.19, 0.0), (s, -0.16, h - 0.035), 0.0125, 0.0175)
+            _post(p, mt, (s * 1.06, 0.2, 0.0), (s, 0.17, 0.88), 0.012, 0.0185)
+            p.rod(mt, (s * 1.06, -0.175, 0.2), (s * 1.04, 0.17, 0.22), 0.016, 3)          # side stretcher
         for zz in (0.62, 0.8):
-            p.hexa(mt, [(-0.19, 0.155 + (zz - 0.45) * 0.07, zz - 0.05), (0.19, 0.155 + (zz - 0.45) * 0.07, zz - 0.05),
-                        (0.19, 0.18 + (zz - 0.45) * 0.07, zz - 0.05), (-0.19, 0.18 + (zz - 0.45) * 0.07, zz - 0.05)],
-                   [(-0.19, 0.16 + (zz - 0.45) * 0.07, zz + 0.04), (0.19, 0.16 + (zz - 0.45) * 0.07, zz + 0.04),
-                    (0.19, 0.185 + (zz - 0.45) * 0.07, zz + 0.04), (-0.19, 0.185 + (zz - 0.45) * 0.07, zz + 0.04)])
-    return p.done(solid=False, seats=[(0.0, 0.0, h, 0.0)])
+            _rail(p, mt, [-0.185, 0.0, 0.185], (zz - 0.05, zz + 0.04), 0.1525 + (zz - 0.45) * 0.07, 0.024, bow=0.008)
+        pin = (-0.21, 0.21, -0.2, 0.2095, -0.0005, 0.8805)
+    return p.done(solid=False, seats=[(0.0, 0.0, h, 0.0)], pin=pin)
 
 
 def stool(B, x, y, z=0.0, yaw=0.0, mat=WOOD, h=0.45, solid=False):
     p = _P(B, x, y, z, yaw, "stool")
-    p.cyl(mat, 0, 0, h - 0.035, h, 0.17, 8, r1=0.16)
+    p.lathe(mat, 0, 0, [(0.158, h - 0.035), (0.173, h - 0.014), (0.15, h)], 10, a0=math.pi / 10)
     for k in range(3):
         a = 2 * math.pi * k / 3 + 0.5
-        p.rod(mat, (0.2 * math.cos(a), 0.2 * math.sin(a), 0.0), (0.11 * math.cos(a), 0.11 * math.sin(a), h - 0.035), 0.03, 3)
-    return p.done(seats=[(0, 0, h, 0.0)])
+        _post(p, mat, (0.215 * math.cos(a), 0.215 * math.sin(a), 0.0), (0.11 * math.cos(a), 0.11 * math.sin(a), h - 0.035),
+              0.012, 0.019, 3, a0=a)
+    return p.done(seats=[(0, 0, h, 0.0)], pin=(-0.1879, 0.1841, -0.2147, 0.1571, -0.0033, h))
 
 
 def bar_stool(B, x, y, z=0.0, yaw=0.0, mat="CT_PlasterRed", h=0.75, solid=False):
     p = _P(B, x, y, z, yaw, "bar_stool")
-    p.cyl(ALU, 0, 0, 0.0, 0.03, 0.2, 5, r1=0.18)
-    p.cyl(ALU, 0, 0, 0.03, h - 0.06, 0.03, 4, top=False)
-    p.lathe(mat, 0, 0, [(0.08, h - 0.07), (0.18, h - 0.04), (0.17, h)], 7)
-    ring = _ring_circle(0, 0, 0.16, 0.3, 4)
-    for a, b in zip(ring, ring[1:] + ring[:1]):
-        p.rod(ALU, a, b, 0.018, 3)
-    return p.done(seats=[(0, 0, h, 0.0)])
+    p.lathe(ALU, 0, 0, [(0.2, 0.0), (0.18, 0.03)], 8, a0=math.pi / 8)
+    p.lathe(ALU, 0, 0, [(0.036, 0.03), (0.026, 0.3), (0.03, h - 0.1), (0.06, h - 0.07)], 6, top=False)
+    p.lathe(mat, 0, 0, [(0.09, h - 0.075), (0.186, h - 0.035), (0.162, h)], 8, a0=math.pi / 8)
+    p.lathe(ALU, 0, 0, [(0.162, 0.292), (0.162, 0.312)], 10, top=False, a0=math.pi / 10)
+    for k in range(3):
+        a = 2 * math.pi * k / 3 + 0.3
+        p.rod(ALU, (0.026 * math.cos(a), 0.026 * math.sin(a), 0.3), (0.16 * math.cos(a), 0.16 * math.sin(a), 0.3), 0.014, 3)
+    return p.done(seats=[(0, 0, h, 0.0)], pin=(-0.2, 0.18, -0.1902, 0.1902, 0.0, h))
 
 
 def armchair(B, x, y, z=0.0, yaw=0.0, mat="CT_PlasterGreen", wood=WOOD, solid=True):
     p = _P(B, x, y, z, yaw, "armchair")
     for sx in (-0.33, 0.33):
         for sy, lean in ((-0.3, -0.04), (0.3, 0.05)):
-            p.rod(wood, (sx * 1.08, sy + lean, 0.0), (sx, sy, 0.3), 0.04, 4)
+            _post(p, wood, (sx * 1.08, sy + lean, 0.0), (sx, sy, 0.3), 0.017, 0.026)
     p.bev(wood, -0.37, 0.37, -0.36, 0.36, 0.26, 0.3, 0.01)
-    p.cushion(mat, -0.3, 0.3, -0.36, 0.28, 0.3, 0.44)
-    p.hexa(mat, [(-0.3, 0.2, 0.36), (0.3, 0.2, 0.36), (0.3, 0.36, 0.36), (-0.3, 0.36, 0.36)],
-           [(-0.3, 0.3, 0.8), (0.3, 0.3, 0.8), (0.3, 0.42, 0.8), (-0.3, 0.42, 0.8)])
+    _soft(p, mat, -0.3, 0.3, -0.36, 0.28, 0.3, 0.44, 0.015, 0.06, 2)
+    _plate(p, mat, _prof_top(-0.3, 0.3, 0.36, 0.8, 0.12, 2), 0.2, 0.12, slope=(0.1 / 0.44), zr=0.36)
     for s in (-1, 1):
         xa = s * 0.345
-        p.rod(wood, (xa, 0.28, 0.3), (xa, 0.3, 0.6), 0.035, 4)
-        p.rod(wood, (xa, -0.3, 0.3), (xa, -0.3, 0.58), 0.035, 4)
-        p.bev(wood, xa - 0.04, xa + 0.04, -0.38, 0.34, 0.58, 0.61, 0.008)
+        _post(p, wood, (xa, 0.28, 0.3), (xa, 0.3, 0.6), 0.02, 0.016)
+        _post(p, wood, (xa, -0.3, 0.3), (xa, -0.3, 0.58), 0.02, 0.016)
+        _pad(p, wood, xa - 0.04, xa + 0.04, -0.38, 0.34, 0.58, 0.61, 0.03, 0.008, 1)
     p.core(-0.28, 0.28, -0.3, 0.25, 0.31, 0.42)
-    return p.done(solid=solid, seats=[(0, -0.05, 0.44, 0.0)])
+    return p.done(solid=solid, seats=[(0, -0.05, 0.44, 0.0)], pin=(-0.385, 0.385, -0.38, 0.42, -0.005, 0.8))
 
 
 def sofa(B, x, y, z=0.0, yaw=0.0, seats=3, mat="CT_PlasterBlue", wood=WOOD, solid=True):
@@ -605,20 +818,20 @@ def sofa(B, x, y, z=0.0, yaw=0.0, seats=3, mat="CT_PlasterBlue", wood=WOOD, soli
     hw = W / 2
     for sx in (-hw + 0.08, hw - 0.08):
         for sy in (-0.34, 0.34):
-            p.rod(wood, (sx * 1.02, sy * 1.05, 0.0), (sx, sy, 0.16), 0.04, 4)
+            _post(p, wood, (sx * 1.02, sy * 1.05, 0.0), (sx, sy, 0.16), 0.017, 0.026)
     p.bev(wood, -hw, hw, -0.4, 0.42, 0.15, 0.2, 0.01)
     for s in (-1, 1):
-        p.cushion(mat, s * hw - (0.15 if s > 0 else 0), s * hw + (0.15 if s < 0 else 0), -0.4, 0.42, 0.2, 0.6, 0.015)
+        a0, a1 = (s * hw - 0.15, s * hw) if s > 0 else (s * hw, s * hw + 0.15)
+        _soft(p, mat, a0, a1, -0.4, 0.42, 0.2, 0.6, 0.015, 0.06, 2, 0.8)
     p.box(mat, -hw + 0.15, hw - 0.15, 0.24, 0.42, 0.2, 0.42, f="yZ")
     seat_pts = []
     for k in range(seats):
         a = -hw + 0.15 + k * sw
-        p.cushion(mat, a + 0.005, a + sw - 0.005, -0.38, 0.24, 0.2, 0.43, 0.014)
-        p.hexa(mat, [(a + 0.01, 0.12, 0.42), (a + sw - 0.01, 0.12, 0.42), (a + sw - 0.01, 0.32, 0.42), (a + 0.01, 0.32, 0.42)],
-               [(a + 0.01, 0.24, 0.82), (a + sw - 0.01, 0.24, 0.82), (a + sw - 0.01, 0.4, 0.82), (a + 0.01, 0.4, 0.82)])
+        _soft(p, mat, a + 0.005, a + sw - 0.005, -0.38, 0.24, 0.2, 0.43, 0.014, 0.07, 1)
+        _plate(p, mat, _prof_top(a + 0.01, a + sw - 0.01, 0.42, 0.82, 0.1, 2), 0.12, 0.2, slope=(0.12 / 0.4), zr=0.42)
         seat_pts.append((a + sw / 2, -0.08, 0.43, 0.0))
     p.core(-hw + 0.05, hw - 0.05, -0.35, 0.38, 0.21, 0.4)
-    return p.done(solid=solid, seats=seat_pts)
+    return p.done(solid=solid, seats=seat_pts, pin=(-hw, hw, -0.4, 0.42, -0.0046, 0.82))
 
 
 def bench(B, x, y, z=0.0, yaw=0.0, w=1.6, kind="park", mat=WOOD, frame=STEEL, solid=False):
@@ -638,16 +851,18 @@ def bench(B, x, y, z=0.0, yaw=0.0, w=1.6, kind="park", mat=WOOD, frame=STEEL, so
     for k in range(4):
         y0 = -0.2 + k * 0.1
         p.bev(mat, -hw, hw, y0, y0 + 0.085, 0.41, 0.45, 0.008)
-    for k in range(2):
-        zz = 0.58 + k * 0.14
-        p.hexa(mat, [(-hw, 0.2 + (zz - 0.5) * 0.15, zz), (hw, 0.2 + (zz - 0.5) * 0.15, zz), (hw, 0.225 + (zz - 0.5) * 0.15, zz),
-                     (-hw, 0.225 + (zz - 0.5) * 0.15, zz)],
-               [(-hw, 0.21 + (zz - 0.5) * 0.15, zz + 0.1), (hw, 0.21 + (zz - 0.5) * 0.15, zz + 0.1),
-                (hw, 0.235 + (zz - 0.5) * 0.15, zz + 0.1), (-hw, 0.235 + (zz - 0.5) * 0.15, zz + 0.1)])
+    for zz in (0.52, 0.64, 0.76):                        # three back slats, leaning back
+        o = (zz - 0.5) * 0.15
+        p.hexa(mat, [(-hw, 0.2 + o, zz), (hw, 0.2 + o, zz), (hw, 0.225 + o, zz), (-hw, 0.225 + o, zz)],
+               [(-hw, 0.2 + o + 0.0125, zz + 0.085), (hw, 0.2 + o + 0.0125, zz + 0.085),
+                (hw, 0.225 + o + 0.0125, zz + 0.085), (-hw, 0.225 + o + 0.0125, zz + 0.085)])
     for sx in (-hw + 0.12, hw - 0.12):
         p.tube(frame, [(sx, -0.22, 0.0), (sx, -0.18, 0.41), (sx, 0.2, 0.41), (sx, 0.24, 0.86)], 0.04, 4)
         p.rod(frame, (sx, 0.2, 0.0), (sx, 0.2, 0.41), 0.04, 4)
-    return p.done(seats=[(-w / 4, -0.03, 0.45, 0.0), (w / 4, -0.03, 0.45, 0.0)])
+        p.rod(frame, (sx, -0.17, 0.41), (sx, -0.17, 0.62), 0.03, 4)           # armrest post and arm
+        _pad(p, mat, sx - 0.032, sx + 0.032, -0.21, 0.19, 0.62, 0.645, 0.026, 0.008, 1)
+    return p.done(seats=[(-w / 4, -0.03, 0.45, 0.0), (w / 4, -0.03, 0.45, 0.0)],
+                  pin=(-hw, hw, -0.2399, 0.268, -0.0019, 0.8618))
 
 
 def cinema_row(B, x, y, z=0.0, yaw=0.0, n=6, mat="CT_PlasterRed", frame=STEEL, number=None, solid=True):
@@ -718,41 +933,51 @@ def zabuton(B, x, y, z=0.0, yaw=0.0, mat="CT_PlasterBlue", solid=False):
 def table(B, x, y, z=0.0, yaw=0.0, w=1.2, d=0.8, h=0.75, mat=WOODL, legs=None, kind="wood", solid=True):
     p = _P(B, x, y, z, yaw, "table")
     lm = legs or (mat if kind == "wood" else STEEL)
-    p.bev(mat, -w / 2, w / 2, -d / 2, d / 2, h - 0.035, h, 0.012, bottom=True)
+    _pad(p, mat, -w / 2, w / 2, -d / 2, d / 2, h - 0.035, h, min(0.035, w / 4, d / 4), 0.012, 1, bottom=True)
     lw = 0.045 if kind == "wood" else 0.03
-    _legs(p, lm, (-w / 2 + 0.06, w / 2 - 0.06), (-d / 2 + 0.06, d / 2 - 0.06), h - 0.035, lw, 0.65 if kind == "wood" else 1.0)
+    xs, ys = (-w / 2 + 0.06, w / 2 - 0.06), (-d / 2 + 0.06, d / 2 - 0.06)
+    _legs(p, lm, xs, ys, h - 0.035, lw, 0.65 if kind == "wood" else 1.0)
+    if kind == "wood":                                   # aprons under the top, outer face + underside
+        za, zb, e = h - 0.1, h - 0.035, lw * 0.35
+        p.box(lm, xs[0], xs[1], ys[0] - e, ys[0] - e + 0.014, za, zb, f="yz")
+        p.box(lm, xs[0], xs[1], ys[1] + e - 0.014, ys[1] + e, za, zb, f="Yz")
+        p.box(lm, xs[0] - e, xs[0] - e + 0.014, ys[0], ys[1], za, zb, f="xz")
+        p.box(lm, xs[1] + e - 0.014, xs[1] + e, ys[0], ys[1], za, zb, f="Xz")
     p.core(-w / 2 + 0.01, w / 2 - 0.01, -d / 2 + 0.01, d / 2 - 0.01, h - 0.03, h - 0.008)
     return p.done(solid=solid, top=h)
 
 
 def table_round(B, x, y, z=0.0, yaw=0.0, r=0.45, h=0.75, mat=WOODL, base=STEEL, solid=True):
     p = _P(B, x, y, z, yaw, "table_round")
-    p.cyl(mat, 0, 0, h - 0.03, h, r, 10)
-    p.cyl(base, 0, 0, 0.02, h - 0.03, 0.035, 6, top=False)
-    p.cyl(base, 0, 0, 0.0, 0.025, 0.24, 6, r1=0.2)
+    p.lathe(mat, 0, 0, [(r * 0.985, h - 0.03), (r, h - 0.017), (r * 0.975, h)], 12, bottom=True, a0=math.pi / 12)
+    p.lathe(base, 0, 0, [(0.038, 0.026), (0.03, h - 0.03)], 6, top=False, a0=0.0)
+    p.lathe(base, 0, 0, [(0.24, 0.0), (0.2, 0.026)], 6, top=True, a0=0.0)
     s = r * 0.62
     p.core(-s, s, -s, s, h - 0.025, h - 0.006)
-    return p.done(solid=solid, top=h)
+    c = r * math.cos(math.pi / 10)
+    return p.done(solid=solid, top=h, pin=(-c, c, -r, r, 0.0, h))
 
 
 def lamp_green(B, x, y, z=0.0, yaw=0.0, light=False, solid=False):
-    """[prop] The library's green-shaded brass lamp (z = desk top)."""
+    """[prop] The library's green-shaded brass lamp (z = desk top): a banker's half-round shade on a stepped base."""
     p = _P(B, x, y, z, yaw, "lamp_green")
     p.kind = "prop"
-    p.cyl(BRASS, 0, 0.04, 0.0, 0.025, 0.07, 6, r1=0.06)
+    p.lathe(BRASS, 0, 0.04, [(0.07, 0.0), (0.064, 0.018), (0.02, 0.03)], 6, a0=0.0)
     p.rod(BRASS, (0, 0.04, 0.02), (0, 0.04, 0.36), 0.015, 3)
-    p.rod(BRASS, (0, 0.04, 0.36), (0, -0.02, 0.37), 0.015, 3)
-    rings = [[(px, py - 0.02, pz) for px, py, pz in _ring_circle(0, 0, 0.0, 0.0, 6, 0.0)]]
-    hw, d = 0.17, 0.09
-    shade = [[(-hw, -d, 0.3), (hw, -d, 0.3), (hw, d, 0.3), (-hw, d, 0.3)],
-             [(-hw * 0.95, -0.03, 0.4), (hw * 0.95, -0.03, 0.4), (hw * 0.95, 0.03, 0.4), (-hw * 0.95, 0.03, 0.4)]]
-    _ = rings
-    p.loft("CT_Baize", shade, top=True)
-    p.face("CT_Opal", [(-hw + 0.01, d - 0.01, 0.301), (hw - 0.01, d - 0.01, 0.301), (hw - 0.01, -d + 0.01, 0.301),
-                       (-hw + 0.01, -d + 0.01, 0.301)])
+    p.rod(BRASS, (0, 0.04, 0.36), (0, -0.01, 0.37), 0.015, 3)
+    hw = 0.17
+    ys = [0.0 + 0.09 * math.cos(math.radians(a)) for a in (0, 36, 72, 108, 144, 180)]
+    zs = [0.3 + 0.1 * math.sin(math.radians(a)) for a in (0, 36, 72, 108, 144, 180)]
+    ring_l = [(-hw, yy, zz) for yy, zz in zip(ys, zs)]
+    ring_r = [(hw, yy, zz) for yy, zz in zip(ys, zs)]
+    for i in range(5):                               # outside green, inside pale
+        p.face("CT_Opal", [ring_l[i], ring_r[i], ring_r[i + 1], ring_l[i + 1]])
+        p.face("CT_Baize", [ring_l[i + 1], ring_r[i + 1], ring_r[i], ring_l[i]])
+    p.face("CT_Baize", [ring_l[k] for k in range(5, -1, -1)])
+    p.face("CT_Baize", ring_r)
     if light:
         B.lamp(p.w(0, 0, 0.25), lumens=220, colour="#FFD9A0", kind="public", radius=3.0, fixture=False)
-    return p.done(top=0.4)
+    return p.done(top=0.4, pin=(-0.17, 0.17, -0.09, 0.11, 0.0, 0.4))
 
 
 def reading_table(B, x, y, z=0.0, yaw=0.0, w=2.4, d=1.0, h=0.75, lamps=2, light=False, mat=WOOD, solid=True):
@@ -780,7 +1005,7 @@ def reading_table(B, x, y, z=0.0, yaw=0.0, w=2.4, d=1.0, h=0.75, lamps=2, light=
 
 def coffee_table(B, x, y, z=0.0, yaw=0.0, w=1.0, d=0.55, h=0.42, mat=WOOD, solid=True):
     p = _P(B, x, y, z, yaw, "coffee_table")
-    p.bev(mat, -w / 2, w / 2, -d / 2, d / 2, h - 0.03, h, 0.01, 0.12, bottom=True)
+    _pad(p, mat, -w / 2, w / 2, -d / 2, d / 2, h - 0.03, h, 0.12, 0.01, 2, bottom=True)
     for sx in (-w / 2 + 0.12, w / 2 - 0.12):
         p.tube(STEEL, [(sx - 0.04, -d / 2 + 0.1, 0.0), (sx, -d / 2 + 0.12, h - 0.03), (sx, d / 2 - 0.12, h - 0.03),
                        (sx - 0.04, d / 2 - 0.1, 0.0)], 0.015, 3)
@@ -990,7 +1215,8 @@ def _books_row(p, x0, x1, y0, y1, zb, zmax, rnd, spines=None, gap=0.35):
             x += 0.27
             continue
         w = min(rnd.uniform(0.09, 0.26), x1 - x - 0.005)
-        h = min(zmax - zb, rnd.uniform(0.18, 0.29))
+        tall = rnd.random()
+        h = min(zmax - zb, rnd.uniform(0.17, 0.25) if tall < 0.45 else rnd.uniform(0.24, 0.34))
         sp = spines or "spine_%02d" % rnd.randrange(40)
         if spines and not spines.startswith("spine_"):
             sp = cell(spines, rnd)
@@ -999,10 +1225,21 @@ def _books_row(p, x0, x1, y0, y1, zb, zmax, rnd, spines=None, gap=0.35):
         frac = w / strip_m
         a0 = rnd.uniform(0.0, max(0.0, 1.0 - frac))
         yf = y0 + rnd.uniform(0.0, 0.025)
-        p.card_front(sp, x, x + w, zb, zb + h, yf, rect=(a0, 0.0, min(1.0, a0 + frac), 1.0))
-        p.box("CT_Paper", x + 0.004, x + w - 0.004, yf + 0.004, y1 - 0.01, zb, zb + h - 0.004, f="Z")
-        p.box("CT_Wood", x, x + w, yf, y1 - 0.01, zb, zb + h, f="xX")
-        x += w + rnd.uniform(0.0, 0.008)
+        dx = 0.0
+        if rnd.random() < 0.13 and x1 - x > 0.5 and w < 0.2:       # a book leaning into a gap left on one side
+            dx = h * rnd.uniform(0.1, 0.2) * rnd.choice((-1, 1))
+            if dx < 0:
+                x += -dx + 0.01
+            w = min(w, x1 - x - abs(dx) - 0.02)
+        yb = y1 - 0.01
+        zt = zb + h
+        p.card(sp, (x, yf, zb), (x + w, yf, zb), (x + w + dx, yf, zt), (x + dx, yf, zt),
+               rect=(a0, 0.0, min(1.0, a0 + frac), 1.0))
+        p.face("CT_Paper", [(x + dx + 0.004, yf + 0.004, zt - 0.004), (x + w + dx - 0.004, yf + 0.004, zt - 0.004),
+                            (x + w + dx - 0.004, yb, zt - 0.004), (x + dx + 0.004, yb, zt - 0.004)])
+        p.face("CT_Wood", [(x, yb, zb), (x, yf, zb), (x + dx, yf, zt), (x + dx, yb, zt)])
+        p.face("CT_Wood", [(x + w, yf, zb), (x + w, yb, zb), (x + w + dx, yb, zt), (x + w + dx, yf, zt)])
+        x += w + rnd.uniform(0.0, 0.008) + max(0.0, dx)
 
 
 def bookshelf(B, x, y, z=0.0, yaw=0.0, w=0.9, h=2.0, d=0.32, levels=5, mat=WOOD, topic=None, seed=0, fill=0.92,
@@ -1394,9 +1631,13 @@ def safe(B, x, y, z=0.0, yaw=0.0, mat="CT_PlasterGreen", solid=True):
 def _counter_body(p, w, d, h, mat, top, front=None, kick=0.08):
     p.box("CT_ConcreteDark", -w / 2 + 0.03, w / 2 - 0.03, -d / 2 + kick, d / 2, 0.0, kick, f="xXy")
     p.box(mat, -w / 2, w / 2, -d / 2, d / 2, kick, h - 0.04, f="xXyY")
-    p.bev(top, -w / 2 - 0.02, w / 2 + 0.02, -d / 2 - 0.05, d / 2 + 0.01, h - 0.04, h, 0.008, 0.01)
+    _pad(p, top, -w / 2 - 0.02, w / 2 + 0.02, -d / 2 - 0.05, d / 2 + 0.01, h - 0.04, h, 0.05, 0.008, 1)
     if front:
         p.box(front, -w / 2 + 0.06, w / 2 - 0.06, -d / 2 - 0.012, -d / 2, kick + 0.06, h - 0.12, f="xXyZz")
+        n = max(2, int(w / 0.5))                          # battens over the front panel
+        for k in range(n + 1):
+            bx = -w / 2 + 0.06 + (w - 0.12) * k / n
+            p.box(mat, bx - 0.02, bx + 0.02, -d / 2 - 0.02, -d / 2 - 0.012, kick + 0.06, h - 0.12, f="xXy")
     p.core(-w / 2 + 0.02, w / 2 - 0.02, -d / 2 + 0.02, d / 2 - 0.02, kick + 0.02, h - 0.06)
 
 
@@ -1582,18 +1823,24 @@ def bed(B, x, y, z=0.0, yaw=0.0, size="single", mat=WOOD, blanket="CT_PlasterBlu
     W = 0.95 if size == "single" else 1.65
     L = 2.05 if size == "single" else 2.1
     hw, hl = W / 2, L / 2
-    _legs(p, mat, (-hw + 0.04, hw - 0.04), (-hl + 0.04, hl - 0.04), 0.15, 0.05)
+    for sx in (-hw + 0.04, hw - 0.04):
+        for sy in (-hl + 0.04, hl - 0.04):
+            _post(p, mat, (sx * 1.03, sy * 1.01, 0.0), (sx, sy, 0.15), 0.026, 0.036)
     p.box(mat, -hw, hw, -hl, hl, 0.15, 0.3, f="xXyYZ")
-    p.bev(mat, -hw - 0.02, hw + 0.02, hl - 0.04, hl + 0.01, 0.0, 0.95, 0.015)
-    p.bev(mat, -hw - 0.02, hw + 0.02, -hl - 0.01, -hl + 0.03, 0.0, 0.55, 0.015)
-    p.cushion("CT_Paper", -hw + 0.02, hw - 0.02, -hl + 0.04, hl - 0.05, 0.3, 0.46, 0.01)
-    p.cushion(blanket, -hw - 0.03, hw + 0.03, -hl + 0.02, hl * 0.35, 0.3, 0.5, 0.012)
+    # headboard: a tall plate with rounded top corners; footboard: low plate
+    _plate(p, mat, _prof_top(-hw - 0.02, hw + 0.02, 0.0, 0.95, 0.1, 2), hl - 0.04, 0.05)
+    _plate(p, mat, _prof_top(-hw - 0.02, hw + 0.02, 0.0, 0.55, 0.05, 1), -hl - 0.01, 0.04)
+    _soft(p, "CT_Paper", -hw + 0.02, hw - 0.02, -hl + 0.04, hl - 0.05, 0.3, 0.46, 0.01, 0.05, 1)
+    _soft(p, blanket, -hw - 0.03, hw + 0.03, -hl + 0.02, hl * 0.35, 0.3, 0.5, 0.012, 0.05, 1)
+    fy = hl * 0.35                                       # the sheet folded back over the blanket's edge
+    _pad(p, "CT_TileWhite", -hw - 0.012, hw + 0.012, fy - 0.17, fy - 0.01, 0.486, 0.512, 0.03, 0.008, 1)
     np_ = 1 if size == "single" else 2
     for k in range(np_):
         a = -hw + 0.08 + k * (W - 0.16) / np_
-        p.cushion("CT_TileWhite", a, a + (W - 0.16) / np_ - 0.04, hl - 0.48, hl - 0.08, 0.46, 0.58, 0.02)
+        _soft(p, "CT_TileWhite", a, a + (W - 0.16) / np_ - 0.04, hl - 0.48, hl - 0.08, 0.46, 0.58, 0.02, 0.05, 2, 0.8)
     p.core(-hw + 0.02, hw - 0.02, -hl + 0.04, hl - 0.06, 0.17, 0.29)
-    return p.done(solid=solid, top=0.5, seats=[(0.0, -0.2, 0.48, 0.0)])
+    return p.done(solid=solid, top=0.5, seats=[(0.0, -0.2, 0.48, 0.0)],
+                  pin=(-(hw + 0.03), hw + 0.03, -(hl + 0.01), hl + 0.01, 0.0, 0.95))
 
 
 def bunk_bed(B, x, y, z=0.0, yaw=0.0, mat=STEEL, blanket="CT_PlasterGreen", solid=True):
@@ -1729,25 +1976,26 @@ def radio(B, x, y, z=0.0, yaw=0.0, mat=WOOD, solid=False):
 
 def floor_lamp(B, x, y, z=0.0, yaw=0.0, shade="CT_Paper", light=False, solid=False):
     p = _P(B, x, y, z, yaw, "floor_lamp")
-    p.cyl(LAQ, 0, 0, 0.0, 0.03, 0.17, 8, r1=0.15)
-    p.rod(BRASS, (0, 0, 0.03), (0, 0, 1.3), 0.025, 4)
-    p.lathe(shade, 0, 0, [(0.24, 1.25), (0.15, 1.6)], 8, top=False)
-    p.lathe("CT_Opal", 0, 0, [(0.14, 1.59), (0.0, 1.595)], 8, top=False)
+    p.lathe(LAQ, 0, 0, [(0.17, 0.0), (0.15, 0.016), (0.03, 0.03)], 8, a0=math.pi / 8)
+    p.rod(BRASS, (0, 0, 0.03), (0, 0, 1.3), 0.026, 6)
+    p.lathe(shade, 0, 0, [(0.24, 1.25), (0.2, 1.44), (0.15, 1.6)], 8, top=False)
+    p.lathe("CT_Opal", 0, 0, [(0.145, 1.595), (0.0, 1.598)], 8, top=False)
     if light:
         B.lamp(p.w(0, 0, 1.4), lumens=350, colour="#FFD9A8", kind="public", radius=4.0, fixture=False)
-    return p.done()
+    return p.done(pin=(-0.24, 0.24, -0.24, 0.24, 0.0, 1.6))
 
 
 def table_lamp(B, x, y, z=0.0, yaw=0.0, shade="CT_PlasterYellow", light=False, solid=False):
     p = _P(B, x, y, z, yaw, "table_lamp")
     p.kind = "prop"
-    p.lathe("CT_TileWhite", 0, 0, [(0.07, 0.0), (0.08, 0.06), (0.04, 0.2), (0.015, 0.24)], 6, top=False)
+    p.lathe("CT_TileWhite", 0, 0, [(0.07, 0.0), (0.082, 0.05), (0.07, 0.12), (0.035, 0.19), (0.015, 0.24)], 8, top=False,
+            a0=math.pi / 8)
     p.rod(BRASS, (0, 0, 0.23), (0, 0, 0.3), 0.012, 3)
-    p.lathe(shade, 0, 0, [(0.13, 0.26), (0.08, 0.42)], 8, top=False)
-    p.lathe("CT_Opal", 0, 0, [(0.075, 0.415), (0.0, 0.42)], 8, top=False)
+    p.lathe(shade, 0, 0, [(0.13, 0.26), (0.108, 0.345), (0.08, 0.42)], 8, top=False)
+    p.lathe("CT_Opal", 0, 0, [(0.075, 0.415), (0.0, 0.418)], 8, top=False)
     if light:
         B.lamp(p.w(0, 0, 0.33), lumens=180, colour="#FFD9A8", kind="public", radius=3.0, fixture=False)
-    return p.done(top=0.42)
+    return p.done(top=0.42, pin=(-0.13, 0.13, -0.13, 0.13, 0.0, 0.42))
 
 
 def wall_clock(B, x, y, z=0.0, yaw=0.0, zc=2.2, r=0.17, face=None, solid=False):
@@ -1769,9 +2017,14 @@ def wall_clock(B, x, y, z=0.0, yaw=0.0, zc=2.2, r=0.17, face=None, solid=False):
 def mirror(B, x, y, z=0.0, yaw=0.0, zc=1.45, w=0.6, h=1.0, frame=WOOD, solid=False):
     p = _P(B, x, y, z, yaw, "mirror")
     p.kind = "wall"
-    p.box(frame, -w / 2, w / 2, -0.03, 0.0, zc - h / 2, zc + h / 2, f="xXyZz")
-    p.box(ALU, -w / 2 + 0.05, w / 2 - 0.05, -0.036, -0.03, zc - h / 2 + 0.05, zc + h / 2 - 0.05, f="y")
-    return p.done()
+
+    def rect(hw, hh, yy):
+        return [(-hw, yy, zc - hh), (hw, yy, zc - hh), (hw, yy, zc + hh), (-hw, yy, zc + hh)]
+
+    p.loft(frame, [rect(w / 2, h / 2, 0.0), rect(w / 2, h / 2, -0.032), rect(w / 2 - 0.05, h / 2 - 0.05, -0.032)], top=False)
+    p.face(ALU, [(-w / 2 + 0.05, -0.02, zc - h / 2 + 0.05), (w / 2 - 0.05, -0.02, zc - h / 2 + 0.05),
+                 (w / 2 - 0.05, -0.02, zc + h / 2 - 0.05), (-w / 2 + 0.05, -0.02, zc + h / 2 - 0.05)])
+    return p.done(pin=(-w / 2, w / 2, -0.036, 0.0, zc - h / 2, zc + h / 2))
 
 
 def rug(B, x, y, z=0.0, yaw=0.0, w=2.0, d=3.0, name="rug", round=False, seed=0, solid=False):
@@ -1827,11 +2080,18 @@ def radiator(B, x, y, z=0.0, yaw=0.0, w=1.0, h=0.6, mat="CT_SteelWhite", solid=F
     n = int(w / 0.08)
     for k in range(n):
         a = -w / 2 + k * w / n
-        p.bev(mat, a + 0.005, a + w / n - 0.005, -0.12, -0.04, 0.12, 0.12 + h, 0.012)
+        fw = w / n - 0.01
+        c = fw / 2 - 0.005
+        # a cast-iron column: rounded in plan, a little narrower at the top
+        r1 = _rrect(a + 0.005, a + 0.005 + fw, -0.12, -0.04, 0.12, c, 1)
+        r2 = _rrect(a + 0.005 + 0.007, a + 0.005 + fw - 0.007, -0.113, -0.047, 0.12 + h, c, 1)
+        p.loft(mat, [r1, r2], top=True, bottom=False)
     p.box(mat, -w / 2, w / 2, -0.09, -0.07, 0.17, 0.17 + h - 0.1, f="yZz")
+    for zz in (0.12 + h - 0.05, 0.12 + 0.05):
+        p.rod(mat, (-w / 2 + 0.004, -0.08, zz), (w / 2 - 0.004, -0.08, zz), 0.03, 5)
     for sx in (-w / 2 + 0.1, w / 2 - 0.1):
         p.rod(mat, (sx, -0.08, 0.12), (sx, -0.08, 0.0), 0.03, 4)
-    return p.done(top=0.12 + h)
+    return p.done(top=0.12 + h, pin=(-w / 2, w / 2, -0.12, -0.04, 0.0, 0.12 + h))
 
 
 def plant(B, x, y, z=0.0, yaw=0.0, kind="ficus", pot="CT_PlasterRed", h=1.3, seed=0, solid=False):
@@ -1841,67 +2101,54 @@ def plant(B, x, y, z=0.0, yaw=0.0, kind="ficus", pot="CT_PlasterRed", h=1.3, see
     small = kind in ("fern", "cactus")
     pr = 0.12 if small else 0.2
     ph = 0.2 if small else 0.34
-    p.lathe(pot, 0, 0, [(pr * 0.75, 0.0), (pr, ph), (pr * 1.06, ph + 0.02)], 8, top=False)
-    p.cyl("CT_ConcreteDark", 0, 0, ph - 0.02, ph - 0.01, pr * 0.98, 8)
+    s = h / 1.3
+    _pot(p, pot, pr, ph)
+    LF = "CT_Leaf"
     if kind == "ficus":
-        p.rod(WOOD, (0, 0, ph), (0.03, 0.02, h * 0.8), 0.035, 3)
-        for k in range(7):
-            a = k * 2.4 + rnd.uniform(-0.3, 0.3)
-            zc = ph + (h - ph) * (0.45 + 0.08 * (k % 4))
-            rr = (h - ph) * 0.2
-            cx, cy = 0.18 * math.cos(a) * (h / 1.3), 0.18 * math.sin(a) * (h / 1.3)
-            p.lathe("CT_Leaf", cx, cy, [(0.0, zc - rr * 0.8), (rr, zc - rr * 0.2), (rr * 0.85, zc + rr * 0.4), (0.0, zc + rr)], 6)
+        # a bent trunk, four branches, a fan of pointed leaves at each tip and a crown
+        top = (0.02 * s, 0.015 * s, h * 0.8)
+        _post(p, WOOD, (0, 0, ph - 0.01), (0.035 * s, 0.0, ph + (h * 0.8 - ph) * 0.5), 0.026, 0.02, 5)
+        _post(p, WOOD, (0.035 * s, 0.0, ph + (h * 0.8 - ph) * 0.5), top, 0.02, 0.012, 5)
+        tips = []
+        for k in range(4):
+            a = k * 1.6 + rnd.uniform(-0.3, 0.3)
+            zb = ph + (h * 0.8 - ph) * (0.35 + 0.17 * k)
+            r_ = (0.2 + 0.05 * (k % 2)) * s
+            tip = (r_ * math.cos(a), r_ * math.sin(a), zb + 0.1 * s)
+            p.rod(WOOD, (0.02 * s * k / 3, 0.0, zb), tip, 0.014, 3)
+            tips.append((tip, a))
+        tips.append((top, rnd.uniform(0, 6)))
+        for tip, a in tips:
+            for j in range(8):
+                aa = a + (j - 3.5) * 0.55 + rnd.uniform(-0.12, 0.12)
+                _frond(p, LF, tip, aa, rnd.uniform(0.22, 0.3) * s, 0.14 * s, rise=0.03 * s, drop=0.08 * s,
+                       lift=(0.1 if j % 2 else -0.02) * s, secs=2, shape="leaf", fold=0.4)
     elif kind == "monstera":
-        for k in range(7):
-            a = 2 * math.pi * k / 7 + rnd.uniform(-0.2, 0.2)
-            L = rnd.uniform(0.45, 0.75) * h / 1.3
-            tip = (math.cos(a) * L * 0.75, math.sin(a) * L * 0.75, ph + L * rnd.uniform(0.7, 1.0))
-            p.rod("CT_Leaf", (0, 0, ph), tip, 0.015, 3)
-            # a big split leaf: two triangles folded along the midrib
-            ca, sa = math.cos(a), math.sin(a)
-            ln, wd = 0.34 * h / 1.3, 0.2 * h / 1.3
-            base = tip
-            end = (tip[0] + ca * ln, tip[1] + sa * ln, tip[2] - 0.12)
-            side = (-sa * wd, ca * wd)
-            mid = ((base[0] + end[0]) / 2, (base[1] + end[1]) / 2, (base[2] + end[2]) / 2 + 0.03)
-            for sgn in (-1, 1):
-                q = (mid[0] + side[0] * sgn, mid[1] + side[1] * sgn, mid[2] - 0.05)
-                tri = [base, end, q] if sgn > 0 else [base, q, end]
-                p.face("CT_Leaf", tri)
-                p.face("CT_Leaf", [tri[0], tri[2], tri[1]])
+        for k in range(6):
+            a = 2 * math.pi * k / 6 + rnd.uniform(-0.25, 0.25)
+            L = rnd.uniform(0.45, 0.75) * s
+            reach = L * 0.72
+            tip = (math.cos(a) * reach, math.sin(a) * reach, ph + L * rnd.uniform(0.7, 0.95))
+            p.rod(LF, (0, 0, ph - 0.01), tip, 0.014, 3)
+            _heart(p, LF, tip, a, 0.34 * s, 0.34 * s, lift=-0.18 * s, droop=0.45, arch=0.1 * s)
     elif kind == "palm":
-        p.rod(WOOD, (0, 0, ph), (0.0, 0.0, h * 0.62), 0.05, 4)
-        for k in range(8):
-            a = 2 * math.pi * k / 8 + rnd.uniform(-0.2, 0.2)
-            top = (0, 0, h * 0.62)
-            L = 0.55 * h / 1.3
-            mid = (math.cos(a) * L * 0.5, math.sin(a) * L * 0.5, h * 0.62 + 0.25 * h / 1.3)
-            end = (math.cos(a) * L, math.sin(a) * L, h * 0.62 - 0.05)
-            side = (-math.sin(a) * 0.08, math.cos(a) * 0.08)
-            for a_, b_ in ((top, mid), (mid, end)):
-                q0 = (a_[0] - side[0], a_[1] - side[1], a_[2])
-                q1 = (b_[0] - side[0] * 0.6, b_[1] - side[1] * 0.6, b_[2])
-                q2 = (b_[0] + side[0] * 0.6, b_[1] + side[1] * 0.6, b_[2])
-                q3 = (a_[0] + side[0], a_[1] + side[1], a_[2])
-                p.face("CT_Leaf", [q0, q1, q2, q3])
-                p.face("CT_Leaf", [q3, q2, q1, q0])
+        _post(p, WOOD, (0, 0, ph - 0.01), (0.015 * s, 0.0, h * 0.35), 0.04, 0.028, 5)
+        _post(p, WOOD, (0.015 * s, 0.0, h * 0.35), (0.0, 0.0, h * 0.62), 0.028, 0.02, 5)
+        for k in range(11):
+            a = 2 * math.pi * k / 11 + rnd.uniform(-0.2, 0.2)
+            _frond(p, LF, (0, 0, h * 0.62), a, rnd.uniform(0.5, 0.68) * s, 0.17 * s, rise=0.1 * s * rnd.uniform(0.6, 1.2),
+                   drop=0.3 * s, lift=0.05 * s, secs=3)
     elif kind == "cactus":
-        p.lathe("CT_Leaf", 0, 0, [(0.06, ph - 0.01), (0.07, ph + 0.2), (0.05, ph + 0.32), (0.0, ph + 0.36)], 7)
-        p.lathe("CT_Leaf", 0.08, 0, [(0.0, ph + 0.1), (0.035, ph + 0.13), (0.03, ph + 0.22), (0.0, ph + 0.25)], 5)
+        p.lathe(LF, 0, 0, [(0.048, ph - 0.012), (0.066, ph + 0.07), (0.07, ph + 0.2), (0.05, ph + 0.32), (0.0, ph + 0.36)], 8)
+        p.rod(LF, (0.05, 0, ph + 0.12), (0.12, 0, ph + 0.15), 0.05, 5)
+        p.lathe(LF, 0.12, 0, [(0.027, ph + 0.13), (0.034, ph + 0.18), (0.03, ph + 0.24), (0.0, ph + 0.27)], 6)
+        p.face("CT_PlasterPink", [(0.0, 0.03, ph + 0.355), (-0.025, -0.015, ph + 0.355), (0.025, -0.015, ph + 0.355)])
     else:   # fern
-        for k in range(9):
-            a = 2 * math.pi * k / 9
-            L = 0.35
-            base = (0, 0, ph)
-            end = (math.cos(a) * L, math.sin(a) * L, ph + 0.05)
-            mid = (math.cos(a) * L * 0.5, math.sin(a) * L * 0.5, ph + 0.25)
-            side = (-math.sin(a) * 0.05, math.cos(a) * 0.05)
-            for a_, b_ in ((base, mid), (mid, end)):
-                q = [(a_[0] - side[0], a_[1] - side[1], a_[2]), (b_[0] - side[0], b_[1] - side[1], b_[2]),
-                     (b_[0] + side[0], b_[1] + side[1], b_[2]), (a_[0] + side[0], a_[1] + side[1], a_[2])]
-                p.face("CT_Leaf", q)
-                p.face("CT_Leaf", q[::-1])
-    return p.done(footprint=(-pr, pr, -pr, pr) if kind == "monstera" else None)
+        for k in range(11):
+            a = 2 * math.pi * k / 11 + rnd.uniform(-0.1, 0.1)
+            _frond(p, LF, (0, 0, ph - 0.005), a, rnd.uniform(0.3, 0.38), 0.11, rise=0.14, drop=0.2, lift=0.0, secs=3)
+    pin = _plant_old_bounds(x, y, kind, h, seed)
+    return p.done(footprint=(-pr, pr, -pr, pr) if kind == "monstera" else None, pin=pin)
 
 
 def aquarium(B, x, y, z=0.0, yaw=0.0, w=1.0, mat=WOOD, solid=True, seed=0):
@@ -1927,14 +2174,17 @@ def aquarium(B, x, y, z=0.0, yaw=0.0, w=1.0, mat=WOOD, solid=True, seed=0):
 
 def hat_stand(B, x, y, z=0.0, yaw=0.0, mat=WOOD, solid=False):
     p = _P(B, x, y, z, yaw, "hat_stand")
-    p.rod(mat, (0, 0, 0.0), (0, 0, 1.8), 0.04, 4)
+    p.lathe(mat, 0, 0, [(0.03, 0.3), (0.021, 0.4), (0.03, 0.43), (0.019, 0.47), (0.017, 1.6), (0.03, 1.66)], 6, top=False,
+            bottom=False, a0=0.0)
+    p.lathe(mat, 0, 0, [(0.03, 1.66), (0.0, 1.8)], 6, top=False, a0=0.0)
     for k in range(3):
         a = 2 * math.pi * k / 3
-        p.rod(mat, (0, 0, 0.35), (0.25 * math.cos(a), 0.25 * math.sin(a), 0.0), 0.03, 3)
+        _post(p, mat, (0.27 * math.cos(a), 0.27 * math.sin(a), 0.0), (0.02 * math.cos(a), 0.02 * math.sin(a), 0.36), 0.012,
+              0.022, 3, a0=a)
     for k in range(4):
         a = 2 * math.pi * k / 4 + 0.4
         p.tube(mat, [(0, 0, 1.62), (0.12 * math.cos(a), 0.12 * math.sin(a), 1.68), (0.17 * math.cos(a), 0.17 * math.sin(a), 1.78)], 0.02, 3)
-    return p.done()
+    return p.done(pin=(-0.1661, 0.2571, -0.2302, 0.2302, -0.0101, 1.8))
 
 
 # ================================================================================================ CULTURE, LEISURE
@@ -2589,10 +2839,14 @@ def picture(B, x, y, z=0.0, yaw=0.0, name="painting", w=0.7, h=None, zc=1.6, fra
     cn = cell(name, _rng(seed, x, y, "pic"))
     w, h = _fit_pic(cn, w, h)
     f = 0.045
-    # frame as 4 bevelled bars
-    for (a0, a1, b0, b1) in ((-w / 2 - f, w / 2 + f, zc - h / 2 - f, zc - h / 2), (-w / 2 - f, w / 2 + f, zc + h / 2, zc + h / 2 + f),
-                             (-w / 2 - f, -w / 2, zc - h / 2, zc + h / 2), (w / 2, w / 2 + f, zc - h / 2, zc + h / 2)):
-        p.box(frame, a0, a1, -0.035, 0.0, b0, b1, f="xXyZz")
+
+    def rect(hw, hh, yy):
+        return [(-hw, yy, zc - hh), (hw, yy, zc - hh), (hw, yy, zc + hh), (-hw, yy, zc + hh)]
+
+    # the frame as one mitred moulding: back edge, outer wall, a chamfer, the flat front, the lip down to the picture
+    p.loft(frame, [rect(w / 2 + f, h / 2 + f, 0.0), rect(w / 2 + f, h / 2 + f, -0.027),
+                   rect(w / 2 + f - 0.012, h / 2 + f - 0.012, -0.035), rect(w / 2 + 0.012, h / 2 + 0.012, -0.035),
+                   rect(w / 2, h / 2, -0.02)], top=False)
     p.card_front(cn, -w / 2, w / 2, zc - h / 2, zc + h / 2, -0.018)
     return p.done(cell=cn)
 
@@ -2716,19 +2970,26 @@ def pendant(B, x, y, ceiling, drop=0.6, z=0.0, yaw=0.0, kind="opal", light=False
     p = _P(B, x, y, ceiling, yaw, "pendant")
     p.kind = "ceiling"
     p.rod(STEEL, (0, 0, 0.0), (0, 0, -drop + 0.1), 0.008, 3)
-    p.cyl(STEEL, 0, 0, -0.02, 0.0, 0.05, 6, top=False, bottom=True)
+    p.lathe(STEEL, 0, 0, [(0.05, 0.0), (0.05, -0.012), (0.022, -0.022)], 8, top=False, bottom=True, a0=0.0)
     zb = -drop
     if kind == "opal":
-        p.lathe("CT_Opal", 0, 0, [(0.0, zb - 0.1), (0.12, zb - 0.02), (0.13, zb + 0.06), (0.06, zb + 0.13), (0.02, zb + 0.15)], 8)
+        p.cyl(BRASS, 0, 0, zb + 0.12, zb + 0.17, 0.02, 6, top=False)
+        p.lathe("CT_Opal", 0, 0, [(0.0, zb - 0.1), (0.07, zb - 0.075), (0.115, zb - 0.02), (0.13, zb + 0.04),
+                                  (0.1, zb + 0.1), (0.04, zb + 0.14), (0.02, zb + 0.15)], 8, a0=0.0)
+        pin = (-0.13, 0.13, -0.13, 0.13, -drop - 0.1, 0.0)
     elif kind == "green":
-        p.lathe("CT_Baize", 0, 0, [(0.22, zb), (0.12, zb + 0.08), (0.03, zb + 0.13)], 8, top=True)
-        p.lathe("CT_Opal", 0, 0, [(0.2, zb + 0.005), (0.0, zb + 0.01)], 8, top=False)
+        p.lathe("CT_Baize", 0, 0, [(0.22, zb), (0.216, zb + 0.01), (0.15, zb + 0.07), (0.07, zb + 0.115), (0.03, zb + 0.13)], 8,
+                top=True, a0=0.0)
+        p.lathe("CT_Opal", 0, 0, [(0.2, zb + 0.005), (0.0, zb + 0.01)], 8, top=False, a0=0.0)
+        pin = (-0.22, 0.22, -0.22, 0.22, -drop, 0.0)
     else:
-        p.lathe("CT_SteelWhite", 0, 0, [(0.2, zb), (0.08, zb + 0.15), (0.03, zb + 0.18)], 8, top=True)
-        p.lathe("CT_Opal", 0, 0, [(0.18, zb + 0.005), (0.0, zb + 0.02)], 8, top=False)
+        p.lathe("CT_SteelWhite", 0, 0, [(0.2, zb), (0.196, zb + 0.012), (0.12, zb + 0.1), (0.06, zb + 0.15), (0.03, zb + 0.18)], 8,
+                top=True, a0=0.0)
+        p.lathe("CT_Opal", 0, 0, [(0.18, zb + 0.005), (0.0, zb + 0.02)], 8, top=False, a0=0.0)
+        pin = (-0.2, 0.2, -0.2, 0.2, -drop, 0.0)
     if light:
         B.lamp((x, y, ceiling - drop), lumens=lumens, colour=colour, kind=lamp_kind, radius=radius, fixture=False)
-    return p.done()
+    return p.done(pin=pin)
 
 
 def ceiling_fan(B, x, y, ceiling, z=0.0, yaw=0.0, solid=False):
@@ -2758,10 +3019,13 @@ def books_stack(B, x, y, z=0.0, yaw=0.0, n=4, seed=0, solid=False):
         a = rnd.uniform(-0.2, 0.2)
         c, s = math.cos(a), math.sin(a)
         pts = [(u * c - v * s, u * s + v * c) for u, v in ((-w / 2, -d / 2), (w / 2, -d / 2), (w / 2, d / 2), (-w / 2, d / 2))]
+        pin = [(u * c - v * s, u * s + v * c) for u, v in ((-w / 2 + 0.006, -d / 2 + 0.006), (w / 2 - 0.006, -d / 2 + 0.006),
+                                                           (w / 2 - 0.006, d / 2 - 0.006), (-w / 2 + 0.006, d / 2 - 0.006))]
         mat = rnd.choice(["CT_PlasterRed", "CT_PlasterBlue", "CT_PlasterGreen", WOOD, "CT_Leather", "CT_PlasterYellow"])
-        p.loft(mat, [[(u, v, zz) for u, v in pts], [(u, v, zz + t) for u, v in pts]], top=True)
+        p.loft(mat, [[(u, v, zz) for u, v in pts], [(u, v, zz + t - 0.006) for u, v in pts], [(u, v, zz + t) for u, v in pin]],
+               top=True)
         zz += t + 0.001
-    return p.done(top=zz)
+    return p.done(top=zz, pin=None)
 
 
 def newspaper(B, x, y, z=0.0, yaw=0.0, cellname=None, seed=0, solid=False):
@@ -2776,12 +3040,19 @@ def newspaper(B, x, y, z=0.0, yaw=0.0, cellname=None, seed=0, solid=False):
 def cup(B, x, y, z=0.0, yaw=0.0, mat="CT_TileWhite", saucer=True, solid=False):
     p = _P(B, x, y, z, yaw, "cup")
     p.kind = "prop"
-    if saucer:
-        p.cyl(mat, 0, 0, 0.0, 0.01, 0.06, 8, r1=0.07)
-    p.lathe(mat, 0, 0, [(0.03, 0.01), (0.042, 0.07)], 7, top=False)
-    p.cyl("CT_Wood", 0, 0, 0.06, 0.062, 0.039, 7) if True else None
-    p.rod(mat, (0.042, 0.0, 0.055), (0.06, 0.0, 0.035), 0.012, 3)
-    return p.done(top=0.07)
+    if not saucer:
+        p.lathe(mat, 0, 0, [(0.03, 0.01), (0.042, 0.07)], 7, top=False)
+        p.cyl("CT_Wood", 0, 0, 0.06, 0.062, 0.039, 7)
+        p.rod(mat, (0.042, 0.0, 0.055), (0.06, 0.0, 0.035), 0.012, 3)
+        return p.done(top=0.07)
+    a0 = math.pi / 8
+    p.lathe(mat, 0, 0, [(0.04, 0.0), (0.07, 0.01), (0.072, 0.014)], 8, top=True, a0=a0)        # saucer with a lip
+    p.lathe(mat, 0, 0, [(0.03, 0.012), (0.04, 0.042), (0.043, 0.07)], 8, top=False, a0=a0)      # the cup, flaring
+    p.face("CT_Wood", [(0.039 * math.cos(a0 + 2 * math.pi * k / 8), 0.039 * math.sin(a0 + 2 * math.pi * k / 8), 0.062)
+                       for k in range(8)])                                                      # the drink
+    p.tube(mat, [(0.042, 0.0, 0.063), (0.062, 0.0, 0.058), (0.062, 0.0, 0.036), (0.041, 0.0, 0.028)], 0.011, 3)
+    r_ = 0.07 * math.cos(math.pi / 8)
+    return p.done(top=0.07, pin=(-r_, r_, -r_, r_, 0.0, 0.07))
 
 
 def glass(B, x, y, z=0.0, yaw=0.0, solid=False):
@@ -2794,18 +3065,23 @@ def glass(B, x, y, z=0.0, yaw=0.0, solid=False):
 def teapot(B, x, y, z=0.0, yaw=0.0, mat="CT_TileWhite", solid=False):
     p = _P(B, x, y, z, yaw, "teapot")
     p.kind = "prop"
-    p.lathe(mat, 0, 0, [(0.05, 0.0), (0.08, 0.04), (0.08, 0.09), (0.05, 0.13), (0.02, 0.15)], 8)
-    p.rod(mat, (0.07, 0.0, 0.05), (0.14, 0.0, 0.12), 0.02, 3)
-    p.tube(mat, [(-0.07, 0.0, 0.11), (-0.12, 0.0, 0.1), (-0.12, 0.0, 0.05), (-0.075, 0.0, 0.04)], 0.014, 3)
-    return p.done(top=0.15)
+    p.lathe(mat, 0, 0, [(0.05, 0.0), (0.075, 0.025), (0.082, 0.06), (0.07, 0.1), (0.048, 0.122), (0.04, 0.132), (0.016, 0.142),
+                        (0.012, 0.15)], 8)
+    _post(p, mat, (0.072, 0.0, 0.05), (0.095, 0.0, 0.085), 0.02, 0.014, 3, a0=0.0)
+    _post(p, mat, (0.095, 0.0, 0.085), (0.14, 0.0, 0.12), 0.014, 0.01, 3, a0=0.0)
+    p.tube(mat, [(-0.075, 0.0, 0.115), (-0.12, 0.0, 0.1), (-0.125, 0.0, 0.055), (-0.075, 0.0, 0.04)], 0.014, 3)
+    return p.done(top=0.15, pin=(-0.1281, 0.1482, -0.08, 0.08, 0.0, 0.15))
 
 
 def plates(B, x, y, z=0.0, yaw=0.0, n=4, mat="CT_TileWhite", solid=False):
     p = _P(B, x, y, z, yaw, "plates")
     p.kind = "prop"
     for k in range(n):
-        p.cyl(mat, 0, 0, k * 0.015, k * 0.015 + 0.012, 0.1, 10, r1=0.12)
-    return p.done(top=n * 0.015)
+        y0 = k * 0.015
+        p.lathe(mat, 0, 0, [(0.075, y0), (0.12, y0 + 0.012), (0.078, y0 + 0.0075), (0.0, y0 + 0.006)], 10, top=False,
+                a0=math.pi / 10)
+    c = 0.12 * math.cos(math.pi / 10)
+    return p.done(top=n * 0.015, pin=(-c, c, -0.12, 0.12, 0.0, (n - 1) * 0.015 + 0.012))
 
 
 def bottles(B, x, y, z=0.0, yaw=0.0, n=3, seed=0, solid=False):
