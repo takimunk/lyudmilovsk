@@ -13,11 +13,13 @@ Ideas for later: a timetable board, a ticket-machine, a litter bin, an ice-cream
 Requests: none.
 """
 import math
+import os
 
 from citykit import box, prism, DOOR_H  # noqa: F401
 import geom
 import random
 import furn_int3 as fu
+import interior_kit as kit
 from furn_int3 import Fr, lbox, cyl, blob
 
 INFO = {
@@ -153,12 +155,6 @@ def build(B):
         box(m, "CT_Steel", u, u + 0.05, ky0 - 0.28, ky0 - 0.03, 0.80, 0.96)
     # red awning blades over the window
     box(m, "CT_SteelRed", kx0 + 0.25, kx1 - 0.45, ky0 - 0.55, ky0 - 0.05, 2.22, 2.27)
-    # ---- bench under the roof: concrete ends, three timber slats and back
-    bx0, bx1 = -2.3, -0.2
-    for u in (bx0 + 0.1, bx1 - 0.35):
-        box(m, "CT_Concrete", u, u + 0.25, 3.45, 3.95, 0.0, 0.42)
-    for j in range(3):
-        box(d, "CT_Wood", bx0, bx1, 3.45 + j * 0.17, 3.45 + j * 0.17 + 0.14, 0.42, 0.47)
     # litter bin / pillar tiling accent
     box(m, "CT_Steel", -2.95, -2.7, 0.2, 0.45, 0.0, 0.75)
     # ---- the kiosk's goods: counter, freezer, soda shelves, newspaper rack, lamp
@@ -197,5 +193,55 @@ def build(B):
     B.spot("bench", "bench", (-1.25, 3.7, 0.0), 0.0)
     B.spot("counter", "counter", (1.5, 3.2, 0.0), 0.0)
     B.spot("stand", "stand", (1.4, 1.3, 0.0), 180.0)
+    _furnish(B, rnd)
     B.footprint = [(-3.0, 0.0), (3.0, 0.0), (3.0, 5.0), (-3.0, 5.0)]
     B.height = 4.95
+    if os.environ.get("KIT_CHECK"):
+        print("KITCHECK", kit.check(B))
+
+
+def _stand(B, x, y, name, w=0.6, zc=1.5):
+    """A board on two steel posts, facing the street (-y); the poster sits on its front face."""
+    d = B.detail
+    u0, v0, u1, v1 = kit.ATLAS.get(name, [0, 0, 1, 1])
+    h = w * (v1 - v0) / max(1e-6, (u1 - u0))
+    for sx in (x - w / 2 - 0.02, x + w / 2 + 0.02):
+        box(d, "CT_Steel", sx - 0.03, sx + 0.03, y + 0.0, y + 0.06, 0.0, zc + h / 2 + 0.12)
+    box(d, "CT_SteelWhite", x - w / 2 - 0.05, x + w / 2 + 0.05, y, y + 0.04, zc - h / 2 - 0.05, zc + h / 2 + 0.05)
+    kit.poster(B, x, y, 0.0, 0.0, name=name, w=w, zc=zc)
+    return h
+
+
+def _furnish(B, rnd):
+    kx0, kx1, ky0, ky1 = 0.6, 2.8, 2.2, 4.2
+    # ---- the bench under the roof (back to the wall) with a newspaper left on it, a pot, a notice board above
+    bn = kit.bench(B, -1.25, 3.95, 0.0, 0.0, w=2.0, kind="park")
+    B.thing("shelter_bench", "seat", (-1.25, 3.95, 0.45), 0.0, height=0.45)
+    kit.newspaper(B, -0.55, 3.78, 0.45, 12, seed=3)
+    kit.plant(B, -2.65, 3.7, 0.0, 0.0, h=0.9, kind="cactus", pot="CT_PlasterYellow")
+    kit.notice_board(B, -2.6, 4.2, 0.0, 0.0, w=0.55, zc=1.45)
+    B.thing("stop_notices", "board", (-2.6, 4.15, 1.45), 0.0, topic="lost")
+    # ---- the timetable on a stand at the kerb of the shelter
+    _stand(B, -2.15, 1.75, "chart_timetable_bus", w=0.6, zc=1.5)
+    B.thing("timetable", "board", (-2.15, 1.7, 1.5), 0.0, topic="timetable")
+    # ---- the serving window: newspapers and magazines on the shelf, sodas, magazines pinned beside the glass
+    sh = 1.02
+    for k, x in enumerate((1.1, 1.38, 1.66)):
+        kit.newspaper(B, x, ky0 - 0.12, sh, (-10, 8, -4)[k], seed=k + 1)
+    kit.bottles(B, 2.0, ky0 - 0.12, sh, 0.0, n=3, seed=5)
+    kit.cup(B, 2.28, ky0 - 0.12, sh, 0.0, mat="CT_PlasterRed")
+    for k, (nm, zc) in enumerate((("mag_2", 1.35), ("mag_5", 1.75))):
+        kit.poster(B, 0.78, ky0, 0.0, 180.0 - 180.0, name=nm, w=0.26, zc=zc)
+    kit.poster(B, 2.67, ky0, 0.0, 0.0, name="news_1", w=0.2, zc=1.6)
+    pc = (1.75, ky0 - 0.12, sh)
+    B.thing("counter", "counter", pc, 0.0, role="seller", service="newspapers", shop="kiosk_news")
+    B.thing("postcards", "take", (2.15, ky0 - 0.12, sh + 0.03), 0.0, item="postcard")
+    # ---- the side wall: the price list, the free paper rack
+    kit.menu_board(B, kx0, 2.55, 0.0, 270.0, name="price_0", w=0.4, zc=1.45)
+    B.thing("price_board", "board", (kx0 - 0.03, 2.55, 1.45), 270.0, topic="prices")
+    B.thing("paper_rack", "take", (0.36, 3.9, 1.0), 270.0, item="daily_paper")
+    # ---- crates of soda bottles by the front corner and a stool for the seller's friend
+    kit.crate(B, 0.3, 2.5, 0.0, 0.0, w=0.5, d=0.34, h=0.28, fill=None)
+    kit.bottles(B, 0.3, 2.5, 0.28, 0.0, n=3, seed=7)
+    kit.crate(B, 0.3, 2.9, 0.0, 0.0, w=0.5, d=0.34, h=0.28, fill=None)
+    kit.stool(B, 0.0, 3.4, 0.0, 90.0)

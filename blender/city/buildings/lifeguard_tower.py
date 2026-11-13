@@ -14,10 +14,12 @@ Ideas for later: a rescue-boat rack at the foot, a siren horn, a risk-flag halya
 Requests: none.
 """
 import math
+import os
 
 from citykit import box, prism
 import geom
 import furn_int3 as fu
+import interior_kit as kit
 from furn_int3 import Fr, lbox, cyl
 
 INFO = {
@@ -113,14 +115,7 @@ def build(B):
     # ---- the cabin's furniture (inner floor z = DECK_Z1; the hatch x -0.4..0.4, y 1.15..1.88 and the path from it to
     # the back door (x -0.6..0.3, y 3.3) stay clear)
     z0 = DECK_Z1
-    # a shelf-desk along the right wall under the windows, with the first-aid box, a logbook and a flask
-    box(m, "CT_Wood", 0.62, 1.15, 1.6, 2.95, z0, z0 + 0.84)
-    box(d, "CT_ConcreteDark", 0.6, 1.15, 1.58, 2.97, z0 + 0.84, z0 + 0.88)
-    box(d, "CT_TileWhite", 0.72, 1.08, 1.7, 2.1, z0 + 0.88, z0 + 1.14, faces="xXyYZ")            # first-aid box
-    box(d, "CT_SteelRed", 0.9 - 0.02, 0.9 + 0.02, 1.7 - 0.005, 1.7, z0 + 0.94, z0 + 1.08, faces="y")
-    box(d, "CT_SteelRed", 0.9 - 0.07, 0.9 + 0.07, 1.7 - 0.005, 1.7, z0 + 1.0, z0 + 1.02, faces="y")
-    box(d, "CT_PlasterBlue", 0.78, 1.04, 2.35, 2.65, z0 + 0.88, z0 + 0.92, faces="xXyYZ")        # logbook
-    cyl(d, "CT_Steel", 0.9, 2.82, z0 + 0.88, z0 + 1.1, 0.045, 6)                                 # flask
+    _cabin(B, z0)
     # binoculars on a tripod by the front window
     bx, by = -0.75, 1.2
     top = z0 + 1.15
@@ -132,12 +127,74 @@ def build(B):
     for dx in (-0.06, 0.06):
         cyl(d, "CT_Steel", bx + dx, by - 0.2, top + 0.13, top + 0.2, 0.045, 6)
     B.spot("binoculars", "stand", (bx, by + 0.45, z0), 0.0)
-    # the lookout's chair at the left window
-    fu.chair(B, -0.82, 2.45, 270, "CT_PlasterRed", z=z0)
-    B.spot("chair", "seat", (-0.82, 2.45, z0), 270.0)
+    B.thing("binoculars", "machine", (bx, by - 0.1, top + 0.15), 0.0, what="binoculars")
     B.lamp((0.0, 2.2, z0 + 2.2), lumens=450, colour="#FFE8C8", kind="public", radius=4.5)
     box(d, "CT_Steel", -0.01, 0.01, 2.19, 2.21, z0 + 2.28, WALL_Z1, faces="xXyY")
     B.entrance("ladder", (0.0, ly - 0.05, 0.5), 0.0, width=0.5, height=2.0, kind="service")
     B.spot("view", "view", (0.0, 2.6, DECK_Z1), 0.0)
+    B.spot("chair", "seat", (-0.85, 2.1, z0), 270.0)
+    B.thing("view_cabin", "board", (0.0, 1.0, z0 + 1.5), 0.0, topic="view")
     B.footprint = [(-2.0, 0.0), (2.0, 0.0), (2.0, 4.0), (-2.0, 4.0)]
     B.height = 9.0
+    if os.environ.get("KIT_CHECK"):
+        print("KITCHECK", kit.check(B))
+
+
+def _pennants(d, z, y, x0, x1, n, sag=0.09, drop=0.26):
+    cols = ["CT_SteelRed", "CT_PlasterYellow", "CT_TileWhite", "CT_PlasterBlue", "CT_PlasterGreen"]
+    w = (x1 - x0) / n
+    prev = None
+    for i in range(n):
+        xa = x0 + i * w
+        za = z - sag * math.sin(math.pi * (i + 0.5) / n)
+        tri = [(xa + 0.02, y, za), (xa + w - 0.02, y, za), (xa + w / 2, y, za - drop)]
+        d.face(cols[i % 5], [(px, py + 0.004, pz) for px, py, pz in tri])
+        d.face(cols[i % 5], [(px, py - 0.004, pz) for px, py, pz in tri[::-1]])
+        pt = (xa + w / 2, y, za)
+        if prev:
+            fu.rod(d, "CT_Steel", prev, pt, 0.008, caps=False)
+        prev = pt
+
+
+def _cabin(B, z0):
+    """Inside the cabin (inner x -1.15..1.15, y 0.85..3.15; the hatch x +-0.4, y 1.15..1.88 and the way to the back
+    door x -0.6..0.3 stay clear) and on the deck."""
+    d = B.detail
+    # ---- the logbook desk along the right wall
+    dk = kit.office_desk(B, 0.87, 2.45, z0, 270.0, w=1.4, d=0.55, typewriter_on=False, papers=False, phone=False)
+    top = dk["top"]
+    kit.telephone(B, 0.9, 1.95, top, 250)
+    box(d, "CT_PlasterBlue", 0.7, 1.0, 2.25, 2.5, top, top + 0.025, faces="xXyYZ")                      # the log
+    box(d, "CT_TileWhite", 0.74, 0.96, 2.28, 2.46, top + 0.025, top + 0.027, faces="Z")
+    kit.table_lamp(B, 1.0, 2.7, top, 0.0)
+    kit.radio(B, 0.95, 2.98, top, 270.0)
+    kit.cup(B, 0.75, 2.62, top, 0.0)
+    B.thing("log_book", "board", (0.85, 2.38, top + 0.05), 270.0, topic="view")
+    # ---- the lookout's chair at the left window and a small table with the first-aid kit and a flask
+    kit.rug(B, -0.75, 2.25, z0, 90.0, w=1.0, d=1.5, name="rug_5", seed=1)
+    ch = kit.chair(B, -0.82, 2.1, z0, 270.0, kind="wood", mat="CT_WoodLight")
+    B.thing("lookout_chair", "seat", (-0.82, 2.1, z0 + 0.45), 270.0, height=0.45)
+    tb = kit.table(B, -0.92, 2.95, z0, 90.0, w=0.5, d=0.45, h=0.75, kind="steel")
+    tt = tb["top"]
+    box(d, "CT_TileWhite", -1.05, -0.72, 2.8, 3.1, tt, tt + 0.22, faces="xXyYZ")                       # first-aid kit
+    box(d, "CT_SteelRed", -0.72, -0.716, 2.9, 3.0, tt + 0.08, tt + 0.14, faces="X")
+    box(d, "CT_SteelRed", -0.72, -0.716, 2.94, 2.96, tt + 0.05, tt + 0.17, faces="X")
+    cyl(d, "CT_Steel", -1.0, 2.7, tt, tt + 0.2, 0.04, 6)                                               # flask
+    B.thing("first_aid", "board", (-0.75, 2.95, tt + 0.12), 90.0, topic="health")
+    # ---- a stool by the hatch, a stack of cork life belts, the clock over the door, pennants along the ceiling
+    kit.stool(B, 0.72, 1.5, z0, 0.0)
+    kit.wall_clock(B, -0.15, 3.15, z0, 0.0, zc=2.15, face="clock_3")
+    _pennants(d, z0 + 2.2, 1.0, -1.1, 1.1, 8)
+    kit.plant(B, 1.0, 1.05, z0, 0.0, h=0.7, kind="cactus", pot="CT_PlasterRed")
+    # ---- the deck: a telescope at the front rail, the flags board and a rescue tube on the rail, a bench at the back
+    ts = kit.telescope(B, 1.05, 0.5, z0, 0.0)
+    B.thing("deck_telescope", "machine", (1.05, 0.55, z0 + 1.2), 0.0, what="telescope")
+    for sx in (-1.5, -0.5):
+        box(d, "CT_Steel", sx - 0.03, sx + 0.03, 0.2, 0.26, z0, z0 + 1.35, faces="xXyYZ")
+    box(d, "CT_SteelWhite", -1.58, -0.42, 0.2, 0.25, z0 + 0.55, z0 + 1.28, faces="xXyYZz")
+    kit.poster(B, -1.0, 0.25, z0, 180.0, name="poster_safety", w=0.62, zc=0.95)
+    B.thing("flags_board", "board", (-1.0, 0.3, z0 + 0.95), 180.0, topic="rules")
+    fu.rod(d, "CT_SteelRed", (1.2, 0.18, z0 + 0.75), (1.75, 0.18, z0 + 0.75), 0.11)                       # rescue tube
+    fu.rod(d, "CT_SteelWhite", (1.43, 0.18, z0 + 0.75), (1.52, 0.18, z0 + 0.75), 0.115)
+    kit.bench(B, 1.25, 3.62, z0, 180.0, w=1.1, kind="gym")
+    B.thing("deck_bench", "seat", (1.25, 3.62, z0 + 0.45), 180.0, height=0.45)

@@ -13,15 +13,18 @@ Enterable:
     seats each, a curved bar counter with stools (spots "counter" for the customers' side, 2 "work" baristas behind
     it), a kitchen corner behind a partition (1 "work" cook), pendant lamps, glass railing-free stair well with a
     steel railing.
-Spots: 12 tables ("table" + "seat"), bar "counter", 5 stools ("seat"), 3 "work", 2 "view".
+Spots: 11 tables ("table" + "seat"), bar "counter", 5 stools ("seat"), 3 "work", 2 "view" + ice-cream/lounge/telescope.
+Furnished with interior_kit: tables+chairs, lounge, jukebox, ice-cream counter, telescope, 28 things.
 Ideas for later: an outdoor terrace ring on the plaza, awnings, a kiosk window, neon sign on the lantern.
 Kit wishes: a revolve helper (done here: revolve()), curved glazing cards (a card per facet is used).
 """
 import math
+import os
 import random
 
 from citykit import box, prism, ring, ribbon_wall, Mesh
-from _furn1 import rbox, cyl, blob, chair, stool, plant, goods_row
+from _furn1 import rbox, cyl, blob, goods_row
+import interior_kit as kit
 
 INFO = {
     "name_ru": "Кафе «Летающая тарелка»", "name_en": "Saucer Café",
@@ -225,30 +228,7 @@ def build(B):
     box(d, "CT_Steel", k_c[0] - 1.6, k_c[0] - 0.4, k_c[1] - 0.4, k_c[1] + 0.4, zf, zf + 0.9)
     box(d, "CT_Aluminium", k_c[0] + 0.5, k_c[0] + 1.7, k_c[1] - 0.35, k_c[1] + 0.35, zf, zf + 0.9)
 
-    # tables: round tops on a pedestal (solid, in the shell), real chairs with backs at each seat spot
-    layout = [(8.4, a) for a in (-32, 4, 38, 142, 178, 214, 250, 322)] + [(4.8, a) for a in (150, 195, 345, 20)]
-    cols = ["CT_SteelRed", "CT_Steel", "CT_PlasterBlue", "CT_PlasterYellow"]
-    for ti, (r_, a_) in enumerate(layout):
-        c = P(r_, a_, zf)
-        cyl(m, "CT_WoodLight", c[0], c[1], zf + 0.72, zf + 0.77, 0.5, 10, bottom=True)
-        cyl(m, "CT_Steel", c[0], c[1], zf, zf + 0.72, 0.05, 6, top=False)
-        cyl(m, "CT_Steel", c[0], c[1], zf, zf + 0.03, 0.22, 8)
-        cyl(d, "CT_TileWhite", c[0] + 0.12, c[1] - 0.08, zf + 0.77, zf + 0.82, 0.07, 6)        # a saucer
-        cyl(d, "CT_PlasterRed" if ti % 2 else "CT_PlasterBlue", c[0] - 0.15, c[1] + 0.1, zf + 0.77, zf + 0.84, 0.045, 6)
-        tid = "table_%d" % (ti + 1)
-        B.spot(tid, "table", (c[0], c[1], zf), 0.0)
-        ns = 3 if ti % 3 else 2
-        a_chair = rnd.uniform(0, 360)
-        for si in range(ns):
-            ac = a_chair + 360.0 * si / ns
-            sp = (c[0] + 0.92 * math.cos(math.radians(ac)), c[1] + 0.92 * math.sin(math.radians(ac)))
-            chair(d, sp[0], sp[1], zf, c[0] - sp[0], c[1] - sp[1], seat=cols[(ti + si) % 4])
-            B.spot("seat_%d_%d" % (ti + 1, si + 1), "seat", (sp[0], sp[1], zf), yaw_to(sp, c))
-    # bar stools + customers' side of the counter
-    for si, a_ in enumerate((62, 76, 90, 104, 118)):
-        sp = P(5.25, a_, zf)
-        stool(d, sp[0], sp[1], zf)
-        B.spot("stool_%d" % (si + 1), "seat", (sp[0], sp[1], zf), yaw_to(sp, (CX, CY + 6.2)))
+    _hall(B, rnd, zf)
     cu = P(5.15, 90, zf)
     B.spot("bar", "counter", (cu[0], cu[1], zf), yaw_to(cu, (CX, CY + 6.2)))
     for nm, a_ in (("barista_1", 72), ("barista_2", 108)):
@@ -260,13 +240,6 @@ def build(B):
         vp = P(9.7, a_, zf)
         B.spot("view_%d" % a_, "view", (vp[0], vp[1], zf), yaw_to(vp, (CX, CY)) + 180)
     _bar_and_kitchen(B, rnd, zf)
-    # plants between the tables, by the glass
-    for a_, h in ((-14, 1.5), (21, 1.3), (160, 1.5), (196, 1.2), (232, 1.4), (286, 1.5), (-60 + 0, 1.2)):
-        c = P(9.85, a_, zf)
-        plant(m, c[0], c[1], zf, h=h, pot=("CT_PlasterRed", "CT_PlasterBlue", "CT_PlasterYellow")[int(a_) % 3])
-    for a_ in (60, 120):                                                    # hanging pots on the partition's café side? small
-        c = P(7.55, a_, zf + 1.05)
-        cyl(d, "CT_PlasterYellow", c[0], c[1], zf + 1.05, zf + 1.2, 0.08, 6)
     # pendant lamps: a real point light in each shade; plus a ring of ceiling lights and the kitchen
     for i in range(12):
         a_ = 30 * i + 15
@@ -289,6 +262,8 @@ def build(B):
     B.footprint = B.footprint[:35] + [(-1.8, 1.2), (1.8, 1.2)] + B.footprint[38:]
     B.height = 10.0
     B.note("saucer hall at z %.1f; entrance tunnel -> glazed spiral core; closed underside" % Z_FLOOR)
+    if os.environ.get("KIT_CHECK"):
+        print("KITCHECK", kit.check(B))
 
 
 def _bar_and_kitchen(B, rnd, zf):
@@ -351,3 +326,148 @@ def _bar_and_kitchen(B, rnd, zf):
     box(d, "CT_Steel", k_c[0] - 1.2, k_c[0] - 0.8, k_c[1] + 0.2, k_c[1] + 0.4, zk + 2.1, zk + 2.9)
     cyl(d, "CT_Steel", k_c[0] + 1.1, k_c[1] - 0.05, zk + 0.9, zk + 1.05, 0.12, 8)
     cyl(d, "CT_Aluminium", k_c[0] + 0.8, k_c[1] + 0.05, zk + 0.9, zk + 1.0, 0.09, 8)
+
+
+def _wall_pt(a_w, r, side):
+    """A point on the café face of a radial kitchen wall (angle a_w, wall half thickness 0.08) and the yaw facing out."""
+    ar = math.radians(a_w)
+    tx, ty = -math.sin(ar), math.cos(ar)
+    sgn = 1.0 if side > 0 else -1.0
+    nx, ny = tx * sgn, ty * sgn
+    c = P(r, a_w)
+    return (c[0] + nx * 0.085, c[1] + ny * 0.085), math.degrees(math.atan2(nx, -ny)) % 360.0
+
+
+def _seat_thing(B, tid, r, h=None):
+    x, y, z, yw = r["seats"][0]
+    B.thing(tid, "seat", (x, y, z), yw, height=h or r.get("height", 0.45))
+
+
+def _hall(B, rnd, zf):
+    """Tables with chairs, bar stools, lounge, jukebox, ice-cream counter, telescope, decor, plants."""
+    d = B.detail
+    # ------------------------------------------------------------------ tables and chairs
+    layout = [(8.4, a) for a in (-32, 4, 38, 160, 178, 214, 250)] + [(4.8, a) for a in (150, 195, 345, 20)]
+    cols = ["CT_SteelRed", "CT_PlasterBlue", "CT_PlasterYellow", "CT_PlasterGreen"]
+    for ti, (r_, a_) in enumerate(layout):
+        c = P(r_, a_, zf)
+        if r_ < 6:
+            kit.rug(B, c[0], c[1], zf, 0.0, w=2.5, d=2.5, round=True, seed=ti)
+        t = kit.table_round(B, c[0], c[1], zf, 0.0, r=0.5, mat="CT_WoodLight" if ti % 2 else "CT_TileWhite")
+        B.spot("table_%d" % (ti + 1), "table", (c[0], c[1], zf), 0.0)
+        ns = 3 if ti % 3 else 2
+        a_chair = rnd.uniform(0, 360)
+        first = None
+        for si in range(ns):
+            ac = a_chair + 360.0 * si / ns
+            sp = (c[0] + 0.85 * math.cos(math.radians(ac)), c[1] + 0.85 * math.sin(math.radians(ac)))
+            yw = yaw_to(sp, c)
+            ch = kit.chair(B, sp[0], sp[1], zf, yw, kind="tube", mat=cols[(ti + si) % 4])
+            first = first or ch
+            B.spot("seat_%d_%d" % (ti + 1, si + 1), "seat", (sp[0], sp[1], zf), yw)
+            ox, oy = c[0] + 0.28 * math.cos(math.radians(ac)), c[1] + 0.28 * math.sin(math.radians(ac))
+            if (ti + si) % 3 == 0:
+                kit.glass(B, ox, oy, t["top"])
+            else:
+                kit.cup(B, ox, oy, t["top"], math.degrees(math.radians(ac)) )
+        if ti % 3 == 1:
+            kit.vase(B, c[0], c[1], t["top"], seed=ti)
+        elif ti % 3 == 2:
+            kit.newspaper(B, c[0] + 0.05, c[1] + 0.05, t["top"], rnd.uniform(0, 360), seed=ti)
+        _seat_thing(B, "table_seat_%d" % (ti + 1), first)
+
+    # ------------------------------------------------------------------ bar stools
+    for si, a_ in enumerate((62, 76, 90, 104, 118)):
+        sp = P(5.3, a_, zf)
+        yw = yaw_to(sp, (CX, CY + 6.2))
+        s_ = kit.bar_stool(B, sp[0], sp[1], zf, yw)
+        B.spot("stool_%d" % (si + 1), "seat", (sp[0], sp[1], zf), yw)
+        _seat_thing(B, "stool_%d" % (si + 1), s_, 0.75)
+    bar_top = zf + 1.05
+    bp = P(6.2, 90, bar_top)
+    B.thing("bar", "counter", (bp[0], bp[1], bar_top), 0.0, role="barista", service="bar", shop="cafe_tarelka")
+    for a_, kind_ in ((66, "g"), (98, "g"), (106, "c"), (124, "c")):
+        q = P(6.2, a_, bar_top)
+        (kit.glass if kind_ == "g" else kit.cup)(B, q[0], q[1], bar_top, 0.0)
+    kit.plates(B, *P(6.2, 80, bar_top)[:2], bar_top, 0.0, n=3)
+    kit.bottles(B, *P(6.55, 100, bar_top)[:2], bar_top, 0.0, n=3, seed=2)
+
+    # ------------------------------------------------------------------ ice-cream counter (west of the entrance)
+    a_i = 300
+    ic = P(8.6, a_i, zf)
+    yw_i = yaw_to(ic, (CX, CY))
+    cnt = kit.shop_counter(B, ic[0], ic[1], zf, yw_i, w=2.2, d=0.7, mat="CT_TileWhite", top="CT_TileWhite",
+                           front="CT_PlasterPink", till=True)
+    # chest freezer behind the counter, sloping lids
+    ar = math.radians(a_i)
+    ux, uy = math.cos(ar), math.sin(ar)             # outward (behind the counter)
+    tx, ty = -uy, ux
+    fz = P(9.45, a_i, zf)
+    box(d, "CT_SteelWhite", fz[0] - 0.9 * abs(tx) - 0.3 * abs(ux), fz[0] + 0.9 * abs(tx) + 0.3 * abs(ux),
+        fz[1] - 0.9 * abs(ty) - 0.3 * abs(uy), fz[1] + 0.9 * abs(ty) + 0.3 * abs(uy), zf, zf + 0.9)
+    for k in range(6):                                     # ice-cream tubs on the counter, lids off, scoops in
+        u = -0.95 + 0.38 * k
+        tx_, ty_ = ic[0] + (-math.sin(math.radians(yw_i)) * 0) + math.cos(math.radians(yw_i)) * u, \
+            ic[1] + math.sin(math.radians(yw_i)) * u
+        ox_, oy_ = -math.sin(math.radians(yw_i)) * -0.12, math.cos(math.radians(yw_i)) * -0.12
+        tub = ("CT_PlasterPink", "CT_TileWhite", "CT_PlasterYellow", "CT_WoodLight", "CT_PlasterGreen", "CT_PlasterRed")[k]
+        cyl(d, "CT_Steel", tx_ + ox_, ty_ + oy_, zf + 1.05, zf + 1.17, 0.13, 8, bottom=False)
+        cyl(d, tub, tx_ + ox_, ty_ + oy_, zf + 1.17, zf + 1.225, 0.115, 8)
+    kit.sign_plate(B, ic[0], ic[1], zf, yw_i, name="sign_milk", w=1.1, zc=2.75, hang=True)
+    on = P(8.5, a_i + 4, zf + 1.05)
+    kit.cup(B, on[0], on[1], zf + 1.05, 0.0)
+    ip = P(8.6, a_i, zf + 1.05)
+    B.thing("ice_cream", "counter", (ip[0], ip[1], zf + 1.05), yw_i, role="barista", service="bar", shop="cafe_tarelka")
+    cu = P(7.7, a_i, zf)
+    B.spot("counter_ice", "counter", (cu[0], cu[1], zf), yw_i + 180.0)
+    wp = P(9.15, a_i - 6, zf)
+    B.spot("work_ice", "work", (wp[0], wp[1], zf), yw_i)
+
+    # ------------------------------------------------------------------ lounge by the stair: sofa, armchairs, low table
+    lc = P(5.7, 225, zf)
+    kit.rug(B, lc[0], lc[1], zf, yaw_to(lc, (CX, CY)), w=2.4, d=3.0, name="rug_3", seed=5)
+    cof = kit.coffee_table(B, lc[0], lc[1], zf, yaw_to(lc, (CX, CY)))
+    kit.newspaper(B, lc[0], lc[1], cof["top"], 20, seed=1)
+    kit.cup(B, lc[0] + 0.2, lc[1] + 0.1, cof["top"], 0.0)
+    sf_c = P(6.9, 225, zf)
+    sofa = kit.sofa(B, sf_c[0], sf_c[1], zf, yaw_to(sf_c, (CX, CY)), seats=3, mat="CT_PlasterBlue")
+    _seat_thing(B, "lounge_sofa", sofa, 0.45)
+    B.spot("lounge_sofa", "seat", (sf_c[0], sf_c[1], zf), yaw_to(sf_c, (CX, CY)))
+    for k, (ra, aa) in enumerate(((5.2, 247), (4.3, 225))):
+        ap = P(ra, aa, zf)
+        yw = yaw_to(ap, lc)
+        arm = kit.armchair(B, ap[0], ap[1], zf, yw, mat=("CT_PlasterGreen", "CT_PlasterYellow")[k])
+        _seat_thing(B, "lounge_armchair_%d" % (k + 1), arm, 0.42)
+    kit.floor_lamp(B, *P(7.7, 245, zf)[:2], zf, 0.0)
+    kit.plant(B, *P(8.0, 266, zf)[:2], zf, 0.0, kind="palm", h=1.7)
+
+    # ------------------------------------------------------------------ kitchen walls: jukebox, menu, rack
+    pt, yw = _wall_pt(128, 8.95, 1)
+    jb = kit.jukebox(B, pt[0] + math.sin(math.radians(yw)) * 0.31, pt[1] - math.cos(math.radians(yw)) * 0.31, zf, yw)
+    B.thing("jukebox", "machine", (jb["pos"][0], jb["pos"][1], zf + 1.1), yw, what="jukebox")
+    pt2, yw2 = _wall_pt(128, 9.95, 1)
+    kit.picture(B, pt2[0], pt2[1], zf, yw2, name="painting_sea_calm", w=0.9, zc=1.65)
+    B.thing("sea_painting", "board", (pt2[0], pt2[1], zf + 1.65), yw2, topic="painting")
+    ptc, ywc = _wall_pt(128, 8.95, 1)
+    kit.wall_clock(B, ptc[0], ptc[1], zf, ywc, zc=2.5, face="clock_1")
+    pt3, yw3 = _wall_pt(52, 9.85, -1)
+    kit.menu_board(B, pt3[0], pt3[1], zf, yw3, name="menu_0", w=0.8, zc=1.7)
+    B.thing("menu_board", "board", (pt3[0], pt3[1], zf + 1.7), yw3, topic="prices")
+    pt4, yw4 = _wall_pt(52, 8.85, -1)
+    rk = kit.magazine_rack(B, pt4[0], pt4[1], zf, yw4, w=0.9)
+    B.thing("magazine_rack", "shelf", (rk["pos"][0], rk["pos"][1], zf + 1.1), yw4, topic="travel")
+    pt5, yw5 = _wall_pt(52, 9.4, -1)
+    kit.poster(B, pt5[0], pt5[1], zf, yw5, name="poster_sun_1", w=0.55, zc=2.35)
+
+    # ------------------------------------------------------------------ the window: telescope, benches, plants
+    tp = P(9.7, 21, zf)
+    yw_t = math.degrees(math.atan2(math.cos(math.radians(21)), -math.sin(math.radians(21)))) % 360.0
+    ts = kit.telescope(B, tp[0], tp[1], zf, yw_t)
+    B.thing("telescope", "machine", (tp[0], tp[1], zf + 1.25), yw_t, what="telescope")
+    B.spot("telescope_view", "view", (tp[0], tp[1], zf), yw_t)
+    for k, (a_, h_, kind_) in enumerate(((-14, 1.6, "palm"), (142, 1.3, "monstera"), (196, 1.4, "ficus"),
+                                         (232, 1.5, "palm"), (286, 1.5, "ficus"), (336, 1.2, "monstera"))):
+        c = P(9.95, a_, zf)
+        kit.plant(B, c[0], c[1], zf, 0.0, kind=kind_, pot=("CT_PlasterRed", "CT_PlasterBlue", "CT_PlasterYellow")[k % 3], h=h_)
+    B.thing("view_west", "board", (P(10.1, 195, zf + 1.6)), 195 + 90, topic="view")
+    B.thing("view_east", "board", (P(10.1, 332, zf + 1.6)), (332 + 90 + 180) % 360, topic="view")
