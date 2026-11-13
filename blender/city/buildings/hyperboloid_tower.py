@@ -678,6 +678,294 @@ def keeper_extras(B):
     lx, ly = _pol(3.2, 247.5)
     B.lamp((lx, ly, 2.3), lumens=520, colour="#FFC890", kind="public", radius=6.0)
     lbox(B.detail, "CT_Steel", Fr(lx, ly), -0.008, 0.008, -0.008, 0.008, 2.38, 2.6, faces="xXyY")
+    keeper_extras2(B)
+
+
+# ------------------------------------------------------------------------------------------------ depth pass 3
+# Visitors' desk, ship's wheel, glass floats, bunting, chess corner (the keeper's room); morse key, sea-level staff,
+# bottle post, plaque, flag mast, gulls (the gallery). All drawn here with the kit's primitives, no people.
+def _yaw_to(dx, dy):
+    """Kit yaw of a piece that faces the direction (dx, dy)."""
+    return math.degrees(math.atan2(dx, -dy)) % 360.0
+
+
+def _guest_lectern(B, x, y, z, yaw):
+    """A visitors' lectern: turned post, slanted top with an open guest book, a ribbon and a pencil on a string."""
+    p = interior_kit._P(B, x, y, z, yaw, "guest_lectern")
+    p.kind = "floor"
+    p.cyl("CT_Wood", 0, 0, 0.0, 0.05, 0.25, 10, top=True)
+    p.lathe("CT_Wood", 0, 0, [(0.05, 0.05), (0.07, 0.3), (0.05, 0.6), (0.06, 0.9), (0.08, 0.96)], 8, top=True)
+    r0 = [(-0.27, -0.2, 0.95), (0.27, -0.2, 0.95), (0.27, 0.2, 1.07), (-0.27, 0.2, 1.07)]
+    r1 = [(-0.27, -0.2, 1.0), (0.27, -0.2, 1.0), (0.27, 0.2, 1.12), (-0.27, 0.2, 1.12)]
+    p.loft("CT_Wood", [r0, r1], top=True, bottom=True)
+    p.box("CT_Wood", -0.27, 0.27, -0.235, -0.2, 0.98, 1.03, f="xXyYZz")
+    p.card_tilt("paper_letter", -0.23, -0.005, -0.15, 1.027, 0.16, 1.12, rect=(0, 0, 1, 1))
+    p.card_tilt("paper_typed", 0.005, 0.23, -0.15, 1.027, 0.16, 1.12)
+    p.rod("CT_PlasterRed", (0.0, -0.15, 1.02), (0.0, -0.3, 0.98), 0.012, 3)
+    p.rod("CT_Wood", (0.26, -0.1, 1.04), (0.17, 0.0, 1.075), 0.012, 5, caps=True)
+    p.tube("CT_Paper", [(0.265, -0.1, 1.03), (0.3, -0.1, 0.9), (0.28, -0.05, 0.78)], 0.006, 3)
+    p.rod("CT_Wood", (0.28, -0.05, 0.78), (0.28, -0.05, 0.7), 0.012, 5, caps=True)
+    return p.done(top=1.12, footprint=(-0.28, 0.28, -0.25, 0.25))
+
+
+def _switch_plate(B, x, y, z, yaw, zc):
+    """A wall switch: a brass plate with a lever (wall piece, back at y = 0)."""
+    p = interior_kit._P(B, x, y, z, yaw, "switch_plate")
+    p.kind = "wall"
+    p.box("CT_PlasterGrey", -0.045, 0.045, -0.02, 0.0, zc - 0.07, zc + 0.07, f="xXyZz")
+    p.box("CT_Brass", -0.03, 0.03, -0.024, -0.02, zc - 0.045, zc + 0.045, f="xXyZz")
+    p.rod("CT_Steel", (0, -0.024, zc - 0.015), (0, -0.065, zc + 0.02), 0.014, 4, caps=True)
+    return p.done()
+
+
+def _ships_wheel(B, x, y, z, yaw, zc, R=0.3):
+    """A ship's wheel on a wall plaque: rim in 16 bars, eight spokes with turned handles, brass hub."""
+    p = interior_kit._P(B, x, y, z, yaw, "ships_wheel")
+    p.kind = "wall"
+    yv = -0.07
+    n = 16
+    p.box("CT_Wood", -R - 0.1, R + 0.1, -0.025, 0.0, zc - R - 0.1, zc + R + 0.1, f="xXyZz")
+    for k in range(n):
+        a0, a1 = 2 * math.pi * k / n, 2 * math.pi * (k + 1) / n
+        p.rod("CT_WoodLight", (R * math.cos(a0), yv, zc + R * math.sin(a0)), (R * math.cos(a1), yv, zc + R * math.sin(a1)), 0.04, 4)
+    for k in range(8):
+        a = 2 * math.pi * k / 8
+        p.rod("CT_Wood", (0.0, yv, zc), ((R + 0.09) * math.cos(a), yv, zc + (R + 0.09) * math.sin(a)), 0.03, 4)
+        p.rod("CT_Brass", (R * math.cos(a) * 1.03, yv, zc + R * math.sin(a) * 1.03),
+              ((R + 0.1) * math.cos(a), yv, zc + (R + 0.1) * math.sin(a)), 0.035, 5, caps=True)
+    p.rod("CT_Steel", (0, -0.025, zc), (0, -0.13, zc), 0.03, 5, caps=True)
+    _tube_y(p, "CT_Brass", 0.0, zc, [yv - 0.06, yv - 0.02, yv + 0.02], [0.05, 0.065, 0.05], 10)
+    return p.done()
+
+
+def _float_row(B, x, y, z, yaw):
+    """A row of green glass fishing floats in a rope sling lying on a shelf (z = the shelf's top)."""
+    p = interior_kit._P(B, x, y, z, yaw, "glass_floats")
+    p.kind = "prop"
+    for k, (u, r) in enumerate(((-0.3, 0.075), (-0.15, 0.09), (0.0, 0.07), (0.15, 0.1), (0.3, 0.08))):
+        p.lathe("CT_PlasterGreen" if k % 2 == 0 else "CT_Glass", u, -0.08, [(0.02, 0.0), (r * 0.8, r * 0.3), (r, r), (r * 0.8, r * 1.7), (0.02, r * 2.0)], 8)
+        p.rod("CT_Paper", (u - r * 0.8, -0.08, r * 1.4), (u + r * 0.8, -0.08, r * 1.4), 0.012, 3)
+    p.tube("CT_Paper", [(-0.4, -0.04, 0.02), (-0.2, -0.17, 0.03), (0.0, -0.04, 0.03), (0.2, -0.17, 0.03), (0.4, -0.04, 0.02)], 0.012, 3)
+    return p.done()
+
+
+def _bunting(B, a, b, sag=0.25, n=12, mats=None):
+    """Signal bunting on a string between world points a and b (z included): small flags hanging from a sagging line."""
+    mats = mats or ["CT_PlasterRed", "CT_TileWhite", "CT_PlasterBlue", "CT_PlasterYellow", "CT_PlasterGreen"]
+    d = B.detail
+    prev = None
+    for i in range(n + 1):
+        t = i / n
+        pt = (a[0] + (b[0] - a[0]) * t, a[1] + (b[1] - a[1]) * t, a[2] + (b[2] - a[2]) * t - sag * 4 * t * (1 - t))
+        if prev is not None:
+            _prism_pt(d, "CT_Paper", prev, pt, 0.012)
+            mid = tuple((prev[k] + pt[k]) / 2 for k in range(3))
+            ux, uy = pt[0] - prev[0], pt[1] - prev[1]
+            ln = math.hypot(ux, uy) or 1.0
+            ux, uy = ux / ln * 0.09, uy / ln * 0.09
+            q = [(mid[0] - ux, mid[1] - uy, mid[2]), (mid[0] + ux, mid[1] + uy, mid[2]), (mid[0], mid[1], mid[2] - 0.2)]
+            mat = mats[(i - 1) % len(mats)]
+            d.face(mat, q)
+            d.face(mat, q[::-1])
+        prev = pt
+
+
+def _morse_post(B, x, y, z, yaw):
+    """A signal-practice post: a little round table with a brass Morse key, a paper tape and a pencil."""
+    p = interior_kit._P(B, x, y, z, yaw, "morse_post")
+    p.kind = "floor"
+    p.cyl("CT_Steel", 0, 0, 0.0, 0.05, 0.18, 8)
+    p.cyl("CT_Steel", 0, 0, 0.05, 0.95, 0.035, 6, top=False)
+    p.cyl("CT_Wood", 0, 0, 0.95, 0.99, 0.24, 10, top=True, bottom=True)
+    p.box("CT_Wood", -0.12, 0.12, -0.08, 0.08, 0.99, 1.02, f="xXyYZ")
+    p.box("CT_Brass", -0.1, 0.1, -0.05, 0.05, 1.02, 1.035, f="xXyYZ")
+    p.rod("CT_Brass", (-0.08, 0.0, 1.05), (0.08, 0.0, 1.07), 0.014, 4)
+    p.lathe("CT_Wood", 0.1, 0.0, [(0.02, 1.07), (0.025, 1.09), (0.02, 1.11), (0.008, 1.115)], 6)
+    p.rod("CT_Brass", (-0.08, 0.0, 1.035), (-0.08, 0.0, 1.06), 0.02, 4)
+    p.box("CT_Paper", 0.04, 0.2, -0.17, -0.12, 0.99, 0.995, f="xXyYZ")
+    p.rod("CT_Wood", (-0.19, -0.1, 1.0), (-0.07, -0.15, 1.0), 0.012, 5, caps=True)
+    return p.done(footprint=(-0.25, 0.25, -0.25, 0.25), top=1.0)
+
+
+def _tide_staff(B, x, y, z, yaw):
+    """A sea-level staff: a painted post with bands every 10 cm and red decimetre marks, on a stand."""
+    p = interior_kit._P(B, x, y, z, yaw, "level_staff")
+    p.kind = "floor"
+    p.box("CT_ConcreteDark", -0.2, 0.2, -0.15, 0.15, 0.0, 0.08, f="xXyYZ")
+    p.box("CT_Wood", -0.09, 0.09, -0.02, 0.02, 0.08, 1.9, f="xXyYZz")
+    for k in range(16):
+        zz = 0.12 + k * 0.11
+        p.box("CT_PlasterBlue" if k % 2 == 0 else "CT_TileWhite", -0.085, 0.085, -0.025, -0.02, zz, zz + 0.1, f="y")
+        if k % 5 == 0:
+            p.box("CT_PlasterRed", 0.03, 0.085, -0.027, -0.025, zz, zz + 0.02, f="y")
+    p.rod("CT_Steel", (-0.12, 0.0, 0.25), (-0.12, 0.0, 1.4), 0.014, 3)
+    p.rod("CT_Steel", (0.12, 0.0, 0.25), (0.12, 0.0, 1.4), 0.014, 3)
+    return p.done(footprint=(-0.2, 0.2, -0.15, 0.15), top=1.9)
+
+
+def _bottle_box(B, x, y, z, yaw):
+    """The bottle post: a tarred chest with a slot, a stack of corked bottles lying on a rack and a paper tag."""
+    p = interior_kit._P(B, x, y, z, yaw, "bottle_post")
+    p.kind = "floor"
+    w, d, h = 0.5, 0.32, 0.5
+    p.box("CT_ConcreteDark", -w / 2, w / 2, -d / 2, d / 2, 0.0, h, f="xXyYZ")
+    p.box("CT_Wood", -w / 2 - 0.02, w / 2 + 0.02, -d / 2 - 0.02, d / 2 + 0.02, h, h + 0.04, f="xXyYZz")
+    p.box("CT_Steel", -0.1, 0.1, -d / 2 - 0.023, -d / 2 - 0.02, h + 0.01, h + 0.03, f="y")
+    for k in range(3):
+        zz = 0.07 + k * 0.1
+        p.rod("CT_Steel", (-w / 2 - 0.03, -d / 2 - 0.02, zz), (w / 2 + 0.03, -d / 2 - 0.02, zz), 0.012, 3)
+    for k, u in enumerate((-0.14, 0.0, 0.14)):
+        _tube_y(p, "CT_PlasterGreen" if k != 1 else "CT_Glass", u, h + 0.09, [-0.13, -0.1, 0.06, 0.1, 0.13],
+                [0.015, 0.045, 0.045, 0.02, 0.015], 8)
+        p.cyl("CT_Wood", u, -0.135, h + 0.075, h + 0.105, 0.014, 5)
+    p.card_front("paper_letter", 0.14, 0.22, 0.16, 0.3, -d / 2 - 0.0235)
+    return p.done(top=h + 0.04, footprint=(-0.28, 0.28, -0.18, 0.18))
+
+
+def _plaque_stand(B, x, y, z, yaw):
+    """A weathered information stand: two posts and a slanted board with a notice."""
+    p = interior_kit._P(B, x, y, z, yaw, "plaque_stand")
+    p.kind = "floor"
+    for sx in (-0.38, 0.38):
+        p.cyl("CT_Wood", sx, 0, 0.0, 1.15, 0.04, 6, top=True)
+    r0 = [(-0.47, -0.05, 0.62), (0.47, -0.05, 0.62), (0.47, 0.03, 1.1), (-0.47, 0.03, 1.1)]
+    r1 = [(-0.47, -0.08, 0.62), (0.47, -0.08, 0.62), (0.47, 0.0, 1.1), (-0.47, 0.0, 1.1)]
+    p.loft("CT_WoodLight", [r0, r1], top=True, bottom=True)
+    p.card_tilt("notice_1", -0.4, 0.4, -0.085, 0.67, -0.0, 1.05, rect=None)
+    p.box("CT_Brass", -0.47, 0.47, -0.095, -0.08, 0.6, 0.62, f="xXyZz")
+    return p.done(top=1.15, footprint=(-0.5, 0.5, -0.1, 0.1))
+
+
+def _flag_mast(B, x, y, z, yaw):
+    """A flag mast on the gallery: pole, spar, halyard and three pennants (the day's signal)."""
+    p = interior_kit._P(B, x, y, z, yaw, "flag_mast")
+    p.kind = "floor"
+    p.cyl("CT_Steel", 0, 0, 0.0, 0.18, 0.1, 8)
+    p.cyl("CT_Wood", 0, 0, 0.0, 3.3, 0.04, 6, top=True)
+    p.lathe("CT_Brass", 0, 0, [(0.02, 3.3), (0.04, 3.33), (0.02, 3.37)], 6)
+    p.rod("CT_Wood", (-0.4, 0.0, 2.9), (0.4, 0.0, 2.9), 0.03, 4)
+    p.tube("CT_Paper", [(-0.4, 0.0, 2.9), (-0.38, 0.03, 2.2), (-0.3, 0.05, 1.5)], 0.008, 3)
+    for k, (c, w_, h_) in enumerate((("CT_PlasterRed", 0.45, 0.2), ("CT_PlasterBlue", 0.38, 0.17), ("CT_PlasterYellow", 0.3, 0.14))):
+        zz = 3.2 - 0.3 * k
+        q1 = [(0.0, 0.0, zz), (0.0, 0.0, zz - h_), (w_ * 0.5, 0.1, zz - h_ * 0.5)]
+        q2 = [(w_ * 0.5, 0.1, zz - h_ * 0.5), (0.0, 0.0, zz - h_), (w_, 0.04, zz - h_ * 0.55)]
+        q3 = [(0.0, 0.0, zz), (w_ * 0.5, 0.1, zz - h_ * 0.5), (w_, 0.04, zz - h_ * 0.5)]
+        for q in (q1, q2, q3):
+            p.face(c, q)
+            p.face(c, q[::-1])
+    return p.done(footprint=(-0.1, 0.1, -0.1, 0.1), top=None)
+
+
+def _gull(B, x, y, z, yaw, mat="CT_TileWhite"):
+    """A gull standing on the rail (an animal prop, 100 triangles)."""
+    p = interior_kit._P(B, x, y, z, yaw, "gull")
+    p.kind = "prop"
+    _tube_y(p, mat, 0.0, 0.14, [-0.14, -0.06, 0.08, 0.2], [0.035, 0.07, 0.065, 0.02], 8)
+    p.lathe(mat, 0.0, -0.14, [(0.025, 0.2), (0.035, 0.24), (0.03, 0.28), (0.01, 0.295)], 6)
+    p.face("CT_PlasterYellow", [(-0.012, -0.17, 0.25), (0.012, -0.17, 0.25), (0.0, -0.24, 0.24)])
+    p.face("CT_PlasterYellow", [(0.012, -0.17, 0.25), (-0.012, -0.17, 0.25), (0.0, -0.24, 0.24)])
+    for s_ in (-1, 1):
+        wq = [(s_ * 0.06, -0.06, 0.2), (s_ * 0.075, 0.1, 0.19), (s_ * 0.06, 0.24, 0.15), (s_ * 0.045, 0.0, 0.12)]
+        p.face("CT_PlasterGrey", wq)
+        p.face("CT_PlasterGrey", wq[::-1])
+        p.rod("CT_PlasterYellow", (s_ * 0.025, 0.0, 0.1), (s_ * 0.025, 0.0, 0.0), 0.012, 3)
+    return p.done(footprint=(-0.08, 0.08, -0.1, 0.1), top=0.3)
+
+
+def keeper_extras2(B):
+    """Third pass in the keeper's room: visitors' lectern and desk at the door, a light switch, ship's wheel, glass
+    floats, bunting, a chess corner with its own lamp."""
+    kit = interior_kit
+    z0 = 0.03
+    # light switch beside the door (facet 0)
+    wx, wy = _wallpt(0, 0.8, 0.0)
+    _switch_plate(B, wx, wy, z0, _yin(-90.0), 1.3)
+    B.thing("tower_switch", "machine", (wx, wy + 0.05, z0 + 1.3), _yin(-90.0), what="switch", switch="room")
+    # visitors' lectern: free-standing right of the door path, facing the door
+    lx, ly = _pol(3.55, -62.0)
+    _guest_lectern(B, lx, ly, z0, _yaw_to(CX - lx, CY - 4.4 - ly))
+    B.thing("tower_guestbook", "board", (lx, ly, z0 + 1.1), _yaw_to(CX - lx, CY - 4.4 - ly), topic="guestbook")
+    B.spot("guestbook_stand", "stand", (lx + 0.55, ly - 0.25, z0), _yaw_to(CX - lx, CY - 4.4 - ly) + 180.0)
+    # the keeper's visitors' desk: a counter by the stair post, a steel-top table with a stamp pad and a bell
+    dxp, dyp = _pol(2.95, -118.0)
+    yw = _yaw_to(CX - dxp, CY - 4.4 - dyp)
+    tb = kit.table(B, dxp, dyp, z0, yw, w=0.9, d=0.5, kind="steel")
+    kit.cup(B, dxp - 0.28 * math.cos(math.radians(yw)), dyp - 0.28 * math.sin(math.radians(yw)), tb["top"])
+    kit.books_stack(B, dxp + 0.25 * math.cos(math.radians(yw)), dyp + 0.25 * math.sin(math.radians(yw)), tb["top"], yaw=yw + 10, n=2, seed=4)
+    B.thing("tower_desk", "counter", (dxp, dyp, z0 + 0.95), yw, role="lighthouse_keeper", service="visits")
+    B.spot("desk_keeper", "stand", (dxp - 0.65 * math.sin(math.radians(yw)), dyp + 0.65 * math.cos(math.radians(yw)), z0), yw)
+    # ship's wheel over the cot (facet 12), glass floats under the lifebuoy (facet 14)
+    wx, wy = _wallpt(12, 0.0)
+    _ships_wheel(B, wx, wy, z0, _yin(fac_(12)), 1.62)
+    B.thing("keeper_wheel", "board", (wx, wy, z0 + 1.62), _yin(fac_(12)), topic="wheel")
+    wx, wy = _wallpt(14, 0.0)
+    kit.wall_shelf(B, wx, wy, z0, _yin(fac_(14)), w=0.9, zt=1.0, props=False)
+    fx, fy = _wallpt(14, 0.0, 0.12)
+    _float_row(B, fx, fy, z0 + 1.0, _yin(fac_(14)))
+    B.thing("keeper_floats", "board", (fx, fy, z0 + 1.1), _yin(fac_(14)), topic="floats")
+    # bunting across two wall corners and a doormat
+    for a_, b_ in ((7, 9), (10, 12)):
+        pa = _wallpt(a_, 0.0, 0.08)
+        pb = _wallpt(b_, 0.0, 0.08)
+        _bunting(B, (pa[0], pa[1], 2.4), (pb[0], pb[1], 2.4), sag=0.35, n=14)
+    kit.rug(B, *_pol(4.15, -90.0), z0, w=1.2, d=0.8, seed=3)
+    # chess corner (between the safe and the cot) with two stools and a lamp over it
+    cxp, cyp = _pol(3.15, 135.0)
+    kit.chess_table(B, cxp, cyp, z0, 45.0, seed=2)
+    B.thing("keeper_chess", "play", (cxp, cyp, z0 + 0.78), 0.0, what="chess")
+    kit.rug(B, cxp, cyp, z0, w=1.7, round=True, seed=5)
+    tx_, ty_ = -math.sin(math.radians(135.0)), math.cos(math.radians(135.0))
+    for k, sg in enumerate((-1, 1)):
+        sx, sy = cxp + sg * 0.68 * tx_, cyp + sg * 0.68 * ty_
+        kit.stool(B, sx, sy, z0, mat="CT_PlasterBlue", h=0.45)
+        yws = _yaw_to(cxp - sx, cyp - sy)
+        B.thing("keeper_chess_stool_%s" % "ab"[k], "seat", (sx, sy, z0 + 0.45), yws, height=0.45)
+        B.spot("chess_seat_%s" % "ab"[k], "seat", (sx, sy, z0), yws)
+    lx2, ly2 = _pol(3.15, 135.0)
+    B.lamp((lx2, ly2, 2.3), lumens=520, colour="#FFD8A8", kind="public", radius=6.0)
+    lbox(B.detail, "CT_Steel", Fr(lx2, ly2), -0.008, 0.008, -0.008, 0.008, 2.38, 2.6, faces="xXyY")
+
+
+def fac_(k):
+    return -90.0 + 22.5 * k
+
+
+def gallery_extras2(B, r_out):
+    """Third pass on the lamp gallery: Morse key, sea-level staff, bottle post, plaque, flag mast, gulls, a switch."""
+    z = PLAT_Z
+    ma = 22.0
+    mx, my = _pol(r_out - 0.45, ma)
+    _morse_post(B, mx, my, z, _yin(ma))
+    B.thing("gallery_morse", "machine", (mx, my, z + 1.1), _yin(ma), what="morse")
+    B.spot("morse_stand", "stand", _pol(r_out - 1.1, ma), _yout(ma))
+    ga = 140.0
+    gx, gy = _pol(r_out - 0.42, ga)
+    _tide_staff(B, gx, gy, z, _yin(ga))
+    B.thing("gallery_gauge", "board", (gx, gy, z + 1.2), _yin(ga), topic="gauge")
+    ba = 282.0
+    bx, by = _pol(r_out - 0.5, ba)
+    _bottle_box(B, bx, by, z, _yin(ba))
+    B.thing("gallery_bottlepost", "machine", (bx, by, z + 0.6), _yin(ba), what="bottle_post")
+    B.spot("bottle_stand", "stand", _pol(r_out - 1.2, ba), _yout(ba))
+    pa = 232.0
+    px, py = _pol(r_out - 0.5, pa)
+    _plaque_stand(B, px, py, z, _yin(pa))
+    B.thing("gallery_plaque", "board", (px, py, z + 0.9), _yin(pa), topic="plaque")
+    ma2 = 357.0
+    fx, fy = _pol(r_out - 0.4, ma2)
+    _flag_mast(B, fx, fy, z, _yaw_to(1.0, 0.3))
+    for a_ in (42.0, 176.0, 268.0):
+        gx2, gy2 = _pol(r_out - 0.08, a_)
+        _gull(B, gx2, gy2, z + 1.05, (a_ + 90.0 + 15.0) % 360.0)
+    # a switch for the gallery lamps on the lamp post at 190 deg
+    sa = 190.0
+    spx, spy = _pol(r_out - 0.2 - 0.04, sa)
+    _switch_plate(B, spx, spy, z, _yin(sa), 1.4)
+    B.thing("gallery_switch", "machine", (spx, spy, z + 1.4), _yin(sa), what="switch", switch="room")
+    # one more lamp over the morse key and the staff
+    lx, ly = _pol(r_out - 0.2, 305.0)
+    B.lamp((lx, ly, z + 2.3), lumens=600, colour="#FFE2B8", kind="lobby", radius=8.0)
+    lbox(B.detail, "CT_Steel", Fr(lx, ly), -0.03, 0.03, -0.03, 0.03, z, z + 2.15, faces="xXyY")
 
 
 def gallery_extras(B, r_out):
@@ -707,6 +995,7 @@ def gallery_extras(B, r_out):
     gx, gy = _pol(r_out - 0.2, 190.0)
     B.lamp((gx, gy, z + 2.3), lumens=600, colour="#FFE2B8", kind="lobby", radius=8.0)
     lbox(B.detail, "CT_Steel", Fr(gx, gy), -0.03, 0.03, -0.03, 0.03, z, z + 2.15, faces="xXyY")
+    gallery_extras2(B, r_out)
 
 
 def stair(B):
