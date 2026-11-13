@@ -73,6 +73,27 @@ BAYS = [
         "front": ["bench_press", "punching_bag", "vaulting_horse", "exercise_bike", "medical_couch", "scales",
                   "screen_divider", "dentist_chair"],
     }),
+    ("services", {
+        "wall": ["mailboxes", "first_aid_box", "lifebuoy", ("awning", {"w": 1.8, "proj": 0.7, "posts": True}), "rod_rack", "bin_rack",
+                 ("ballet_barre", {"w": 1.8})],
+        "back": [("bicycle", {"kind": "lean"}), ("bicycle", {"kind": "stand"}), "pram", "washing_machine",
+                 ("washing_machine", {"kind": "top"}), "deck_chair", "barber_chair", "tub_chair", "high_table", "mic_stand"],
+        "front": ["teller_grille", "ice_cream_chest", "notice_stand", "sandwich_board", "planter", "rope_coil"],
+    }),
+    ("goods", {
+        "wall": [("oars_rack", {"w": 2.4}), ("first_aid_box", {"zc": 1.2})],
+        "back": ["bread_rack", "fish_ice_counter", "dumpling_pot", ("serving_line", {"w": 3.0}),
+                 ("high_table", {})],
+        "front": ["toy_bin", "toy_house", "bird_feeder", ("bird_feeder", {"kind": "hang", "top_z": 2.3}), "ring_buoy",
+                  "springboard", ("choir_riser", {"w": 2.4, "d": 1.5})],
+    }),
+    ("studio_sport", {
+        "wall": [],
+        "back": ["kiln", "camera_tripod", "photo_backdrop", ("palm", {}), ("palm", {"h": 2.2, "pot": "CT_PlasterBlue"}),
+                 ("model_plane", {"top_z": 3.4})],
+        "front": [("parquet", {"w": 2.6, "d": 2.6}), ("court_lines", {"kind": "basketball", "w": 2.6, "d": 4.4}),
+                  ("court_lines", {"kind": "volleyball", "w": 2.0, "d": 4.0})],
+    }),
 ]
 PROPS = ["books_stack", "newspaper", "cup", "glass", "teapot", "plates", "bottles", "vase", "typewriter", "telephone",
          "cash_register", "kitchen_scales", "samovar", "radio", "record_player", "projector", "slide_projector",
@@ -130,6 +151,13 @@ def build(B, which=None):
                     r = fn(B, cx, y_line, 0.0, 0.0, **opts)
                 stats.append((bay, name, r["tris"]))
                 x += w + gap
+        if bay == "goods":
+            # bar-top and canteen props on a long table at the front right
+            tx, ty = x0 + BAY_W - 3.2, WALL_Y - 7.9
+            t = kit.table(B, tx, ty, 0.0, 0.0, w=2.4, d=0.9)
+            for k, (name, opts) in enumerate((("beer_taps", {"n": 4}), ("tray_stack", {}), ("tray_stack", {"n": 3}))):
+                r = kit.PIECES[name](B, tx - 0.7 + k * 0.7, ty, t["top"], 0.0, **opts)
+                stats.append(("props", name, r["tris"]))
         if bay == "seating":
             # a dressed table: the props, on a long table at the front right
             tx, ty = x0 + BAY_W - 3.2, WALL_Y - 7.9

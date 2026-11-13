@@ -84,7 +84,7 @@ CATALOGUE  (name: footprint w x d x h, m; what it is; notable options)
   rug              w x d           atlas rug_* cell (round=True for rug_round_*)
   curtains         [wall] w x h    two drapes and a rod (mat)
   radiator         [wall] w x0.1x0.6 cast-iron fins
-  plant            kind ficus | monstera | palm | cactus | fern, pot colour
+  plant            kind ficus | monstera | palm | cactus | fern, pot colour (reported footprint = the pot; leaves do not block)
   aquarium         1.0x0.4x1.25    on a cabinet, back picture, fish
   hat_stand        d0.45 x1.8      bentwood coat stand
  culture, leisure
@@ -139,6 +139,48 @@ CATALOGUE  (name: footprint w x d x h, m; what it is; notable options)
   wall_phone              payphone with handset and dial
   pendant          [ceiling] (x, y, ceiling z) a lamp on a cord; light=False: only when the caller asks it calls B.lamp
   ceiling_fan      [ceiling] four blades
+ round 2 (transport, services, shop goods, studio, sport, canteen)
+  bicycle          0.8x1.7x1.07    kind lean (tilted 17 deg toward +x: 'touch' = handlebar) | stand (kick stand); mat = frame
+  pram             0.6x1.15x1.05   folding hood at -y, handle at +y ('hold')
+  mailboxes        [wall] cols*0.24 x rows*0.17 x0.11  letter boxes with slots and name labels (zc)
+  washing_machine  0.6x0.68x0.86   kind front (porthole) | top (lid, 0.5x0.55x0.9)
+  deck_chair       0.6x1.15x0.96   striped canvas on a wooden frame (mat, mat2), seat
+  barber_chair     0.8x1.25x1.3    hydraulic chair, arms, footrest, headrest; seat
+  tub_chair        0.7x0.7x0.86    wrap-around back, cushion; seat
+  high_table       d0.7 x1.08      stand-up cafe table, foot ring; spots = 4 standing places
+  teller_grille    w x0.8x2.2      bank counter with a brass-barred grille, window, sign; staff / customer / on
+  mic_stand        0.4x0.66x1.6    boom stand
+  lifebuoy         [wall] d0.66    red-white ring with rope (zc)
+  ring_buoy        0.6x0.4x2.4     ring buoy hung on a post (pool, pier)
+  rope_coil        [prop] d0.7x0.15 coiled rope
+  ice_cream_chest  1.2x0.65x1.3    freezer chest, lids, labels, header sign
+  fish_ice_counter w x0.9x1.6      fishmonger: tray of ice with fish, price board; staff / customer / on
+  dumpling_pot     0.8x0.65x1.6    stove with a big pot, steamers=n, lid=False shows dumplings
+  serving_line     w x0.8x1.95     canteen line: pans, tray rail, sneeze guard, menu board; staff / customer / on
+  tray_stack       [prop] 0.45x0.33 n trays
+  beer_taps        [prop] n*0.1x0.2x0.5 tap tower for a bar top
+  notice_stand     1.5x0.3x2.1     free-standing two-sided board, front= / back= atlas cell or group
+  sandwich_board   0.55x0.65x0.95  A-frame board with an atlas picture (name=menu|price...)
+  awning           [wall] w x proj  striped canopy at height zt (posts=True: two posts to the floor)
+  planter          w x0.45x0.9     long concrete box with bushes and flowers
+  bird_feeder      kind post (1.5 m pole, house) | hang (tube on a cord from top_z)
+  rod_rack         [wall] 1.0x0.2x2.1 fishing rods with grips and reels
+  oars_rack        [wall] w x0.2x1.2 oars on pegs
+  bin_rack         [wall] 1.06x0.34x1.5 hardware bins cols x rows with labels
+  bread_rack       0.9x0.55x1.85   slanted shelves of loaves, sign
+  toy_bin          0.7x0.45x0.64   box of blocks, ball, bear
+  toy_house        1.4x1.2x1.56    child's playhouse (door looks -y)
+  first_aid_box    [wall] 0.3x0.13x0.3 white box with a red cross (zc)
+  springboard      0.56x2.45x0.7   diving board toward -y ('tip')
+  ballet_barre     [wall] w x0.22  one or two round rails (top)
+  choir_riser      w x d x rows*0.2 tiers rising to +y; spots
+  kiln             1.1x1.0x1.9     brick dome on a steel stand, door at -y
+  model_plane      [ceiling hung] 0.9x0.85 banked balsa plane on cords (top_z)
+  camera_tripod    0.95x1.2x1.8    studio camera, lens toward -y
+  photo_backdrop   w+0.6 x1.7xh    paper sweep onto the floor toward -y (mat)
+  palm             d0.5 (tub) x h  tall palm: bent V-folded fronds in two tiers (h, fronds, pot=None for no tub)
+  parquet          [flat] w x d    basket-weave dance floor patch
+  court_lines      [flat] w x d    painted lines: kind basketball | volleyball | badminton | box
  props ([prop]: z = top of a surface)
   books_stack, newspaper, cup, teapot, plates, bottles, vase, typewriter, telephone, cash_register, kitchen_scales,
   crate, sack, cardboard_box, tools, chess_set, paint_jars, glass, lamp_green (the reading lamp alone)
@@ -395,7 +437,9 @@ class _P:
     def tris(self):
         return self.m.tri_count()
 
-    def done(self, solid=False, top=None, front=0.6, seats=(), **extra):
+    def done(self, solid=False, top=None, front=0.6, seats=(), footprint=None, **extra):
+        """footprint=(x0, x1, y0, y1) local: report this as the footprint/size/front instead of the mesh bounds
+        (a plant's leaves do not block, only its pot does)."""
         m = self.m
         # Dima's rule (geom.coplanar_offsets): of overlapping faces in one plane facing the same way the smaller
         # goes 4 mm over the larger (a label on a drawer, a picture on its board), so nothing z-fights
@@ -413,6 +457,8 @@ class _P:
         ys = [p[1] for p in m.verts] or [0]
         zs = [p[2] for p in m.verts] or [0]
         x0, x1, y0, y1, z0, z1 = min(xs), max(xs), min(ys), max(ys), min(zs), max(zs)
+        if footprint is not None:
+            x0, x1, y0, y1 = footprint
         foot = [self.w(u, v)[:2] for u, v in ((x0, y0), (x1, y0), (x1, y1), (x0, y1))]
         out = {"name": self.name, "pos": self.w((x0 + x1) / 2, (y0 + y1) / 2, (z0 + z1) / 2), "yaw": self.yaw,
                "top": None if top is None else round(self.z + top, 3), "size": (round(x1 - x0, 3), round(y1 - y0, 3),
@@ -748,7 +794,7 @@ def school_desk(B, x, y, z=0.0, yaw=0.0, mat=WOODL, frame=STEEL, solid=True, see
 def office_desk(B, x, y, z=0.0, yaw=0.0, w=1.4, d=0.7, mat=WOOD, typewriter_on=True, papers=True, phone=True,
                 solid=True, seed=0):
     """A desk; the worker sits at +y facing yaw... the desk FACES yaw (visitors at -y), the worker sits behind it
-    (returned 'chair': place a chair there facing yaw+180)."""
+    (returned 'chair' = (x, y, z, yaw): a chair there with the same yaw faces the desk)."""
     p = _P(B, x, y, z, yaw, "office_desk")
     h = 0.75
     p.bev(mat, -w / 2, w / 2, -d / 2, d / 2, h - 0.035, h, 0.01, 0.0, bottom=True)
@@ -774,7 +820,7 @@ def office_desk(B, x, y, z=0.0, yaw=0.0, w=1.4, d=0.7, mat=WOOD, typewriter_on=T
         qx, qy = at(w / 2 - 0.25, 0.1)
         telephone(B, qx, qy, z + h, yaw + 160)
     cx_, cy_ = at(-0.1, d / 2 + 0.35)
-    r["chair"] = (round(cx_, 3), round(cy_, 3), z, (yaw + 180) % 360)
+    r["chair"] = (round(cx_, 3), round(cy_, 3), z, yaw % 360)      # the worker looks -y, across the desk
     return r
 
 
@@ -1817,7 +1863,7 @@ def plant(B, x, y, z=0.0, yaw=0.0, kind="ficus", pot="CT_PlasterRed", h=1.3, see
                      (b_[0] + side[0], b_[1] + side[1], b_[2]), (a_[0] + side[0], a_[1] + side[1], a_[2])]
                 p.face("CT_Leaf", q)
                 p.face("CT_Leaf", q[::-1])
-    return p.done()
+    return p.done(footprint=(-pr, pr, -pr, pr) if kind == "monstera" else None)
 
 
 def aquarium(B, x, y, z=0.0, yaw=0.0, w=1.0, mat=WOOD, solid=True, seed=0):
@@ -3105,6 +3151,1118 @@ def _c(foot):
     return "(%.1f, %.1f)" % (sum(p[0] for p in foot) / len(foot), sum(p[1] for p in foot) / len(foot))
 
 
+# ================================================================================================ ROUND 2 ADDITIONS
+# (pieces the furnishing passes had to improvise: transport, services, shop goods, studio, sport, canteen...)
+def _axp(axis, c, a, e1, e2):
+    """A point on the axis `axis` at coordinate a, offset e1/e2 in the cyclic plane (x: y,z | y: z,x | z: x,y)."""
+    if axis == "x":
+        return (c[0] + a, c[1] + e1, c[2] + e2)
+    if axis == "y":
+        return (c[0] + e2, c[1] + a, c[2] + e1)
+    return (c[0] + e1, c[1] + e2, c[2] + a)
+
+
+def _ax(p, mat, c, axis, a0, a1, r, r1=None, segs=8, caps=True):
+    """A cylinder / cone lying along x, y or z between axis coordinates a0 < a1 (centre point c = (x, y, z)); r at a0, r1 at a1."""
+    r1 = r if r1 is None else r1
+    c = tuple(0.0 if "xyz"[i] == axis else c[i] for i in range(3))      # the axis coordinate comes from a0 / a1
+    rings = []
+    for a, rr in ((a0, r), (a1, r1)):
+        rings.append([_axp(axis, c, a, rr * math.cos(math.pi / segs + 2 * math.pi * k / segs),
+                           rr * math.sin(math.pi / segs + 2 * math.pi * k / segs)) for k in range(segs)])
+    p.loft(mat, rings, top=caps and r1 > 1e-6, bottom=caps and r > 1e-6)
+
+
+def _outf(p, mat, pts, ref):
+    """A face turned so that it looks away from the reference point (inside of the solid)."""
+    n = geom.cross(geom.sub(pts[1], pts[0]), geom.sub(pts[2], pts[0]))
+    c = tuple(sum(q[i] for q in pts) / len(pts) for i in range(3))
+    if sum(n[i] * (c[i] - ref[i]) for i in range(3)) < 0:
+        pts = pts[::-1]
+    p.face(mat, pts)
+
+
+def _torus(p, mat, c, R, r, axis="y", segs=12, prof=6, mat2=None, every=2, squash=1.0):
+    """A ring (tyre, lifebuoy, rope turn) round `axis` through c: main radius R, tube radius r; mat2 on every
+    other group of `every` segments (stripes)."""
+    def pt(k, j):
+        t = 2 * math.pi * (k % segs) / segs
+        s = 2 * math.pi * j / prof + math.pi / prof
+        rad = R + r * math.cos(s)
+        return _axp(axis, c, r * math.sin(s) * squash, rad * math.cos(t), rad * math.sin(t))
+    for k in range(segs):
+        m = mat2 if (mat2 and (k // every) % 2) else mat
+        t = 2 * math.pi * (k + 0.5) / segs
+        ref = _axp(axis, c, 0.0, R * math.cos(t), R * math.sin(t))
+        for j in range(prof):
+            _outf(p, m, [pt(k, j), pt(k + 1, j), pt(k + 1, j + 1), pt(k, j + 1)], ref)
+
+
+def _tilt(p, n0, deg, pivot=(0.0, 0.0)):
+    """Rotate the vertices added since index n0 about the y axis through pivot (x, z); positive leans toward +x."""
+    a = math.radians(deg)
+    ca, sa = math.cos(a), math.sin(a)
+    px, pz = pivot
+    p.m.verts[n0:] = [((x - px) * ca + (z - pz) * sa + px, y, -(x - px) * sa + (z - pz) * ca + pz)
+                      for (x, y, z) in p.m.verts[n0:]]
+
+
+def _cell_h(name, w):
+    u0, v0, u1, v1 = _uvrect(name)
+    return w * (v1 - v0) / max(1e-6, (u1 - u0))
+
+
+def _line(p, mat, a, b, lw, z):
+    """A flat painted line from a to b (local x, y), lw wide, lying at height z (only its top face)."""
+    dx, dy = b[0] - a[0], b[1] - a[1]
+    L = math.hypot(dx, dy) or 1.0
+    nx, ny = -dy / L * lw / 2, dx / L * lw / 2
+    ex, ey = dx / L * lw / 2, dy / L * lw / 2
+    # counter-clockwise seen from above: along the line, then back on the left side
+    p.face(mat, [(a[0] - ex + nx, a[1] - ey + ny, z), (a[0] - ex - nx, a[1] - ey - ny, z),
+                 (b[0] + ex - nx, b[1] + ey - ny, z), (b[0] + ex + nx, b[1] + ey + ny, z)])
+
+
+# ------------------------------------------------------------------------------------------------ transport, street
+def bicycle(B, x, y, z=0.0, yaw=0.0, kind="lean", mat="CT_SteelRed", solid=False):
+    """Gents' bicycle 0.65x1.45x1.05 seen from the side along y (front wheel toward -y). kind lean: tilted 17 degrees
+    toward +x (against a wall there; 'touch' = the handlebar) | stand: upright-ish on a kick stand (tilt 8)."""
+    p = _P(B, x, y, z, yaw, "bicycle")
+    R = 0.34
+    ya, yb = 0.5, -0.5
+    for ay in (ya, yb):
+        _torus(p, "CT_Rubber", (0.0, ay, R), R - 0.02, 0.02, "x", 14, 4)
+        _ax(p, STEEL, (0.0, ay, R), "x", -0.025, 0.025, 0.025, segs=6)
+        for k in range(3):
+            a = math.pi * k / 3 + 0.25
+            c_, s_ = (R - 0.04) * math.cos(a), (R - 0.04) * math.sin(a)
+            p.rod(ALU, (0.0, ay + c_, R + s_), (0.0, ay - c_, R - s_), 0.006, 3)
+    bb = (0.04, 0.3)
+
+    def t(a, b, w=0.03, s=4, xo=0.0):
+        p.rod(mat, (xo, a[0], a[1]), (xo, b[0], b[1]), w, s)
+    t((0.19, 0.8), (-0.37, 0.86))                  # top tube
+    t(bb, (-0.35, 0.8))                            # down tube
+    t(bb, (0.21, 0.88))                            # seat tube
+    for sx in (-0.05, 0.05):
+        t(bb, (ya, R), 0.022, 3, sx)               # chain stays
+        t((0.2, 0.8), (ya, R), 0.018, 3, sx)       # seat stays
+        t((yb, R), (-0.38, 0.88), 0.022, 3, sx)    # fork
+    t((-0.37, 0.8), (-0.4, 0.93), 0.035)           # head tube
+    p.rod(ALU, (0.0, -0.4, 0.93), (0.0, -0.44, 1.0), 0.025, 4)
+    p.rod(ALU, (-0.3, -0.44, 1.0), (0.3, -0.44, 1.0), 0.022, 5)
+    for sx in (-1, 1):
+        p.rod(ALU, (sx * 0.3, -0.44, 1.0), (sx * 0.29, -0.36, 0.97), 0.02, 4)
+        p.box("CT_Rubber", sx * 0.3 - 0.03, sx * 0.3 + 0.03, -0.43, -0.32, 0.985, 1.025, f="xXyYZ")
+    p.rod(ALU, (0.21, 0.88, 0.88), (0.21, 0.88, 0.93), 0.025, 4)
+    p.bev("CT_Leather", -0.07, 0.07, 0.13, 0.38, 0.93, 0.97, 0.012, 0.025)
+    _ax(p, ALU, (0.07, 0.04, 0.3), "x", 0.0, 0.012, 0.09, segs=8)
+    for sx, (dy, dz) in ((-1, (-0.04, -0.17)), (1, (0.04, 0.17))):
+        p.rod(ALU, (sx * 0.1, 0.04, 0.3), (sx * 0.1, 0.04 + dy, 0.3 + dz), 0.02, 4)
+        p.box(STEEL, sx * 0.1 - 0.05 + sx * 0.05, sx * 0.1 + 0.05 + sx * 0.05, 0.04 + dy - 0.05, 0.04 + dy + 0.05,
+              0.3 + dz - 0.012, 0.3 + dz + 0.012)
+    p.rod(STEEL, (0.065, 0.04, 0.39), (0.065, ya, R + 0.025), 0.01, 3)
+    p.rod(STEEL, (0.065, 0.04, 0.21), (0.065, ya, R - 0.025), 0.01, 3)
+    ang = 17.0 if kind == "lean" else 8.0
+    _tilt(p, 0, ang, (0.02, 0.0))
+    if kind != "lean":
+        p.rod(ALU, (0.07, 0.4, 0.3), (0.22, 0.42, 0.0), 0.02, 3)
+    ca = math.radians(ang)
+    return p.done(touch=(math.sin(ca) * 1.0 + 0.02, -0.44, math.cos(ca) * 1.0), front=0.7)
+
+
+def pram(B, x, y, z=0.0, yaw=0.0, mat="CT_PlasterBlue", solid=False):
+    """Pram 0.6x1.2x1.05: the pusher stands at +y (handle), the hood is at -y."""
+    p = _P(B, x, y, z, yaw, "pram")
+    for sx in (-0.27, 0.27):
+        _ax(p, "CT_Rubber", (sx, 0.34, 0.16), "x", -0.02, 0.02, 0.16, segs=8)
+        _ax(p, "CT_Rubber", (sx, -0.36, 0.12), "x", -0.02, 0.02, 0.12, segs=8)
+    p.rod(STEEL, (-0.27, 0.34, 0.16), (0.27, 0.34, 0.16), 0.02, 4)
+    p.rod(STEEL, (-0.27, -0.36, 0.12), (0.27, -0.36, 0.12), 0.02, 4)
+    for sx in (-0.2, 0.2):
+        p.rod(ALU, (sx, -0.42, 0.3), (sx, 0.42, 0.3), 0.025, 4)
+        p.rod(ALU, (sx * 1.35, 0.34, 0.16), (sx, 0.14, 0.3), 0.02, 3)
+        p.rod(ALU, (sx * 1.35, -0.36, 0.12), (sx, -0.14, 0.3), 0.02, 3)
+    p.rod(ALU, (-0.2, 0.0, 0.3), (0.2, 0.0, 0.3), 0.02, 4)
+    rings = [_ring_rect(-0.19, 0.19, -0.4, 0.4, 0.33, 0.07), _ring_rect(-0.26, 0.26, -0.46, 0.46, 0.5, 0.09),
+             _ring_rect(-0.27, 0.27, -0.47, 0.47, 0.66, 0.09)]
+    p.loft(mat, rings, top=False, bottom=True)
+    p.box("CT_Paper", -0.22, 0.22, -0.4, 0.4, 0.5, 0.505, f="Z")
+    # folding hood: arches over the head end
+    secs = [(-0.1, 0.27, 0.40), (-0.25, 0.27, 0.37), (-0.40, 0.26, 0.28), (-0.50, 0.17, 0.1)]
+    arcs = []
+    for (yy, rx, rz) in secs:
+        arcs.append([(rx * math.cos(math.pi * k / 6), yy, 0.66 + rz * math.sin(math.pi * k / 6)) for k in range(7)])
+    for a, b in zip(arcs, arcs[1:]):
+        for k in range(6):
+            q = [a[k], b[k], b[k + 1], a[k + 1]]
+            p.face(mat, q)
+            p.face(mat, q[::-1])
+    for k in range(6):
+        p.rod(STEEL, arcs[0][k], arcs[0][k + 1], 0.016, 3)
+    for k in (0, 6):
+        p.rod(STEEL, arcs[0][k], (arcs[0][k][0], 0.0, 0.66), 0.016, 3)
+    for sx in (-0.24, 0.24):
+        p.rod(ALU, (sx, 0.44, 0.62), (sx * 0.95, 0.63, 1.0), 0.025, 4)
+    p.rod("CT_Leather", (-0.25, 0.63, 1.0), (0.25, 0.63, 1.0), 0.032, 5)
+    return p.done(front=0.9, hold=(0.0, 0.7, 0.0))
+
+
+def mailboxes(B, x, y, z=0.0, yaw=0.0, cols=4, rows=3, mat="CT_PlasterBlue", zc=1.3, seed=0, solid=False):
+    """[wall] A block of letter boxes (cols x rows) 0.24 x 0.17 each, slot and a name label on every door."""
+    p = _P(B, x, y, z, yaw, "mailboxes")
+    p.kind = "wall"
+    rnd = _rng(seed, x, y, "mail")
+    cw, ch = 0.24, 0.17
+    W, H = cols * cw + 0.04, rows * ch + 0.04
+    zb = zc - H / 2
+    p.box(STEEL, -W / 2, W / 2, -0.1, 0.0, zb, zb + H, f="xXyZz")
+    for i in range(cols):
+        for j in range(rows):
+            x0 = -W / 2 + 0.02 + i * cw
+            z0 = zb + 0.02 + j * ch
+            p.box(mat, x0 + 0.006, x0 + cw - 0.006, -0.108, -0.1, z0 + 0.006, z0 + ch - 0.006, f="yZ")
+            p.box("CT_Rubber", x0 + cw / 2 - 0.07, x0 + cw / 2 + 0.07, -0.11, -0.108, z0 + ch - 0.04, z0 + ch - 0.032, f="y")
+            p.card_front(cell("label", rnd), x0 + cw / 2 - 0.06, x0 + cw / 2 + 0.06, z0 + 0.02, z0 + 0.075, -0.1095)
+            p.box(ALU, x0 + cw - 0.05, x0 + cw - 0.03, -0.114, -0.108, z0 + 0.045, z0 + 0.07, f="yZ")
+    return p.done()
+
+
+def washing_machine(B, x, y, z=0.0, yaw=0.0, kind="front", mat="CT_TileWhite", solid=True):
+    """0.6x0.6x0.86 front-loader (porthole door, dials) | kind top: 0.5x0.55x0.9 top-loader with a lid."""
+    p = _P(B, x, y, z, yaw, "washing_machine")
+    if kind == "top":
+        w, d, h = 0.5, 0.55, 0.9
+        p.bev(mat, -w / 2, w / 2, -d / 2, d / 2, 0.0, h, 0.012, 0.02)
+        p.bev(ALU, -w / 2 + 0.03, w / 2 - 0.03, -0.01, d / 2 - 0.03, h, h + 0.03, 0.008, 0.02)
+        p.box("CT_PlasterGrey", -w / 2 + 0.03, w / 2 - 0.03, -d / 2 - 0.008, -d / 2, h - 0.12, h - 0.02, f="yZ")
+        for sx in (-0.1, 0.0, 0.1):
+            _ax(p, ALU, (sx, -d / 2 - 0.008, h - 0.07), "y", -d / 2 - 0.03, -d / 2 - 0.008, 0.02, segs=8)
+        p.rod(ALU, (-0.1, -0.015, h + 0.03), (0.1, -0.015, h + 0.03), 0.02, 4)
+        p.core(-w / 2 + 0.02, w / 2 - 0.02, -d / 2 + 0.02, d / 2 - 0.02, 0.3, 0.8)
+        return p.done(solid=solid, top=h + 0.03)
+    w, d, h = 0.6, 0.6, 0.86
+    p.bev(mat, -w / 2, w / 2, -d / 2, d / 2, 0.0, h, 0.012, 0.025)
+    p.box("CT_PlasterGrey", -0.27, 0.27, -d / 2 - 0.008, -d / 2, 0.74, 0.83, f="yZ")
+    for sx, rr in ((-0.18, 0.026), (0.2, 0.02)):
+        _ax(p, ALU, (sx, -d / 2 - 0.008, 0.785), "y", -d / 2 - 0.03, -d / 2 - 0.008, rr, segs=8)
+    p.box("CT_PlasterRed", -0.04, 0.04, -d / 2 - 0.011, -d / 2 - 0.008, 0.77, 0.80, f="y")
+    _ax(p, ALU, (0.0, -d / 2, 0.4), "y", -d / 2 - 0.035, -d / 2, 0.235, segs=12)
+    _ax(p, "CT_Glass", (0.0, -d / 2, 0.4), "y", -d / 2 - 0.075, -d / 2 - 0.035, 0.15, 0.19, segs=12)
+    p.box(ALU, 0.19, 0.215, -d / 2 - 0.05, -d / 2 - 0.035, 0.37, 0.43, f="xXyZz")
+    for sx in (-0.26, 0.26):
+        p.box(STEEL, sx - 0.02, sx + 0.02, -0.28, -0.26, 0.0, 0.03, f="xXyY")
+    p.core(-0.28, 0.28, -0.26, 0.26, 0.2, 0.72)
+    return p.done(solid=solid, top=h, front=0.7)
+
+
+def deck_chair(B, x, y, z=0.0, yaw=0.0, mat="CT_PlasterRed", mat2="CT_TileWhite", frame=WOOD, solid=False):
+    """Folding deck chair 0.6x1.2x0.95: striped canvas on a wooden A-frame; the sitter faces -y."""
+    p = _P(B, x, y, z, yaw, "deck_chair")
+    for sx in (-0.27, 0.27):
+        p.rod(frame, (sx, 0.15, 0.0), (sx, 0.64, 0.93), 0.034, 4)                 # tall back rail
+        p.rod(frame, (sx, -0.45, 0.0), (sx, -0.40, 0.56), 0.034, 4)               # front rail
+        p.rod(frame, (sx, 0.66, 0.0), (sx, 0.42, 0.52), 0.03, 4)                  # prop
+        p.rod(frame, (sx, 0.0, 0.2), (sx, -0.42, 0.5), 0.026, 4)                  # seat rail
+    p.rod(frame, (-0.27, 0.66, 0.0), (0.27, 0.66, 0.0), 0.03, 4)
+    p.rod(frame, (-0.27, 0.64, 0.93), (0.27, 0.64, 0.93), 0.03, 4)
+    p.rod(frame, (-0.27, -0.40, 0.56), (0.27, -0.40, 0.56), 0.03, 4)
+    prof = [(0.61, 0.9), (0.2, 0.36), (-0.40, 0.58)]
+    n = 5
+    for k in range(n):
+        xa, xb = -0.25 + k * 0.1, -0.25 + (k + 1) * 0.1
+        m = mat if k % 2 == 0 else mat2
+        for (ya, za), (yb, zb) in zip(prof, prof[1:]):
+            q = [(xa, ya, za), (xb, ya, za), (xb, yb, zb), (xa, yb, zb)]
+            p.face(m, q)
+            p.face(m, q[::-1])
+    return p.done(seats=[(0.0, 0.2, 0.37, 0.0)], front=0.8)
+
+
+def barber_chair(B, x, y, z=0.0, yaw=0.0, mat="CT_SteelRed", solid=False):
+    """Barber chair 0.8x1.25x1.2: round base, chrome pillar, padded seat and back, arms, footrest; sitter faces -y."""
+    p = _P(B, x, y, z, yaw, "barber_chair")
+    p.lathe(ALU, 0, 0, [(0.3, 0.0), (0.3, 0.035), (0.2, 0.075), (0.1, 0.11)], 10, top=False)
+    p.cyl(ALU, 0, 0, 0.11, 0.4, 0.07, 8, r1=0.055)
+    p.cyl(STEEL, 0, 0, 0.3, 0.37, 0.09, 8)
+    p.box(STEEL, -0.2, 0.2, -0.22, 0.22, 0.38, 0.43, f="xXyYZ")
+    p.cushion(mat, -0.3, 0.3, -0.32, 0.26, 0.43, 0.58, 0.03)
+    # reclined back: sheared padded board
+    p.hexa(mat, [(-0.27, 0.2, 0.55), (0.27, 0.2, 0.55), (0.27, 0.3, 0.55), (-0.27, 0.3, 0.55)],
+           [(-0.27, 0.42, 1.05), (0.27, 0.42, 1.05), (0.27, 0.52, 1.05), (-0.27, 0.52, 1.05)])
+    p.hexa(mat, [(-0.13, 0.44, 1.07), (0.13, 0.44, 1.07), (0.13, 0.54, 1.07), (-0.13, 0.54, 1.07)],
+           [(-0.12, 0.45, 1.3), (0.12, 0.45, 1.3), (0.12, 0.55, 1.3), (-0.12, 0.55, 1.3)])
+    p.rod(ALU, (0.0, 0.5, 1.04), (0.0, 0.47, 1.1), 0.04, 4)
+    for s in (-1, 1):
+        sx = s * 0.37
+        p.rod(ALU, (sx, -0.12, 0.5), (sx, -0.12, 0.72), 0.03, 5)
+        p.rod(ALU, (sx, 0.2, 0.6), (sx, 0.2, 0.72), 0.03, 5)
+        p.bev(mat, sx - 0.045, sx + 0.045, -0.2, 0.28, 0.72, 0.77, 0.012, 0.02)
+        p.rod(ALU, (sx * 0.8, 0.24, 0.5), (sx, 0.2, 0.62), 0.025, 4)
+    p.rod(ALU, (0.0, -0.3, 0.45), (0.0, -0.5, 0.26), 0.05, 5)
+    p.hexa(ALU, [(-0.2, -0.46, 0.2), (0.2, -0.46, 0.2), (0.2, -0.7, 0.14), (-0.2, -0.7, 0.14)],
+           [(-0.2, -0.46, 0.235), (0.2, -0.46, 0.235), (0.2, -0.7, 0.175), (-0.2, -0.7, 0.175)])
+    return p.done(seats=[(0.0, -0.02, 0.58, 0.0)], front=0.9)
+
+
+def teller_grille(B, x, y, z=0.0, yaw=0.0, w=1.6, d=0.7, mat=WOOD, solid=True):
+    """Bank counter w x0.7x2.2: counter 1.05 high, a grille above it with a transaction window and a money dish;
+    customers at -y, the teller at +y ('staff', 'customer', 'on')."""
+    p = _P(B, x, y, z, yaw, "teller_grille")
+    h = 1.05
+    p.bev(mat, -w / 2, w / 2, -d / 2, d / 2, h - 0.04, h, 0.01, 0.0, bottom=True)
+    p.box(mat, -w / 2 + 0.03, w / 2 - 0.03, -d / 2 + 0.05, d / 2 - 0.03, 0.0, h - 0.04, f="xXyYZ")
+    for k in range(int(w / 0.4)):
+        xa = -w / 2 + 0.08 + k * (w - 0.16) / int(w / 0.4)
+        p.box(WOODL, xa, xa + (w - 0.16) / int(w / 0.4) - 0.03, -d / 2 + 0.036, -d / 2 + 0.05, 0.1, h - 0.1, f="y")
+    gy = -0.18
+    zt = 2.0
+    for sx in (-w / 2 + 0.03, w / 2 - 0.03):
+        p.box(mat, sx - 0.03, sx + 0.03, gy - 0.03, gy + 0.03, h, zt, f="xXyY")
+    p.box(mat, -w / 2 + 0.03, w / 2 - 0.03, gy - 0.035, gy + 0.035, zt - 0.06, zt, f="xXyYZz")
+    win0, win1 = -0.3, 0.3
+    p.box(mat, -w / 2 + 0.06, w / 2 - 0.06, gy - 0.03, gy + 0.03, h, h + 0.06, f="yYZ")
+    bars = int((w - 0.12) / 0.07)
+    for k in range(bars + 1):
+        bx = -w / 2 + 0.06 + k * (w - 0.12) / bars
+        z0 = 1.5 if win0 < bx < win1 else h + 0.06
+        p.rod(BRASS, (bx, gy, z0), (bx, gy, zt - 0.06), 0.014, 3)
+    p.box(mat, win0 - 0.03, win1 + 0.03, gy - 0.035, gy + 0.035, 1.46, 1.5, f="xXyYZz")
+    p.lathe(BRASS, 0.0, gy - 0.12, [(0.1, h), (0.14, h + 0.012), (0.17, h + 0.03)], 8, top=False)
+    uh = _cell_h("sign_till", 0.5)
+    p.box(WOODL, -0.27, 0.27, gy - 0.07, gy - 0.04, zt, zt + uh + 0.04, f="xXyZ")
+    p.card_front("sign_till", -0.25, 0.25, zt + 0.02, zt + 0.02 + uh, gy - 0.0705)
+    p.core(-w / 2 + 0.02, w / 2 - 0.02, -d / 2 + 0.02, d / 2 - 0.02, h - 0.03, h - 0.008)
+    return p.done(solid=solid, top=h, staff=(0.0, d / 2 + 0.5, 0.0), customer=(0.0, -d / 2 - 0.45, 0.0),
+                  on=(0.0, -d / 2 + 0.12, h))
+
+
+def mic_stand(B, x, y, z=0.0, yaw=0.0, solid=False):
+    """Boom microphone stand 0.45x0.5x1.6 on a round heavy foot; the microphone points toward -y."""
+    p = _P(B, x, y, z, yaw, "mic_stand")
+    p.lathe(STEEL, 0, 0, [(0.2, 0.0), (0.2, 0.025), (0.06, 0.05)], 8, top=False)
+    p.cyl(STEEL, 0, 0, 0.0, 0.3, 0.014, 6, r1=0.014, top=False)
+    p.cyl(STEEL, 0, 0, 0.3, 1.45, 0.011, 6, top=False)
+    p.cyl(ALU, 0, 0, 0.58, 0.64, 0.02, 6)
+    p.cyl(ALU, 0, 0, 1.4, 1.46, 0.025, 6)
+    p.rod(STEEL, (0.0, 0.1, 1.43), (0.0, -0.32, 1.52), 0.014, 5)
+    p.rod(STEEL, (0.0, 0.1, 1.43), (0.0, 0.17, 1.38), 0.016, 5)
+    _ax(p, "CT_Rubber", (0.0, -0.4, 1.545), "y", -0.46, -0.32, 0.026, 0.03, segs=7)
+    return p.done(front=0.7)
+
+
+def lifebuoy(B, x, y, z=0.0, yaw=0.0, zc=1.7, solid=False):
+    """[wall] Ring lifebuoy 0.62 across (red and white quarters) on a wall hook plate, with a rope round it."""
+    p = _P(B, x, y, z, yaw, "lifebuoy")
+    p.kind = "wall"
+    cy = -0.075
+    _torus(p, "CT_SteelRed", (0.0, cy, zc), 0.245, 0.06, "y", 16, 6, mat2="CT_TileWhite", every=2)
+    pts = [(0.325 * math.cos(2 * math.pi * k / 16), cy - 0.01, zc + 0.325 * math.sin(2 * math.pi * k / 16)) for k in range(16)]
+    for a, b in zip(pts, pts[1:] + pts[:1]):
+        p.rod("CT_WoodLight", a, b, 0.014, 3)
+    p.box(STEEL, -0.07, 0.07, -0.025, 0.0, zc + 0.25, zc + 0.35, f="xXyZz")
+    p.rod(STEEL, (0.0, -0.025, zc + 0.3), (0.0, -0.1, zc + 0.3), 0.025, 4)
+    return p.done()
+
+
+def rope_coil(B, x, y, z=0.0, yaw=0.0, mat="CT_WoodLight", solid=False):
+    """[prop] A heap of coiled rope on the floor or a deck, d 0.6 x 0.16."""
+    p = _P(B, x, y, z, yaw, "rope_coil")
+    p.kind = "prop"
+    prof = [(0.09, 0.0), (0.29, 0.0), (0.3, 0.03), (0.275, 0.05), (0.27, 0.07), (0.25, 0.085), (0.23, 0.07), (0.2, 0.085),
+            (0.18, 0.1), (0.16, 0.115), (0.15, 0.13), (0.11, 0.14), (0.09, 0.12), (0.075, 0.06)]
+    p.lathe(mat, 0, 0, prof, 10, top=False)
+    p.rod(mat, (0.28, -0.05, 0.03), (0.42, -0.2, 0.012), 0.035, 4)
+    return p.done(top=0.14)
+
+
+def ice_cream_chest(B, x, y, z=0.0, yaw=0.0, mat="CT_TileWhite", solid=True):
+    """Freezer chest of ice cream 1.2x0.65x1.2: red band, two sliding lids, labels on the front, a header sign."""
+    p = _P(B, x, y, z, yaw, "ice_cream_chest")
+    w, d, h = 1.2, 0.65, 0.88
+    p.bev(mat, -w / 2, w / 2, -d / 2, d / 2, 0.08, h, 0.012, 0.025)
+    p.box(STEEL, -w / 2 + 0.05, w / 2 - 0.05, -d / 2 + 0.05, d / 2 - 0.05, 0.0, 0.08, f="xXyY")
+    p.box("CT_SteelRed", -w / 2 - 0.004, w / 2 + 0.004, -d / 2 - 0.004, d / 2 + 0.004, 0.5, 0.6, f="xXyY")
+    p.box(ALU, -w / 2 - 0.006, w / 2 + 0.006, -d / 2 - 0.006, d / 2 + 0.006, 0.84, 0.88, f="xXyYZ")
+    rnd = _rng(0, x, y, "ice")
+    for k in range(2):
+        xa = -w / 2 + 0.04 + k * (w / 2 - 0.02)
+        p.box("CT_Glass", xa, xa + w / 2 - 0.06, -d / 2 + 0.04, d / 2 - 0.04, h + 0.01, h + 0.03, f="Z")
+        p.box(ALU, xa, xa + w / 2 - 0.06, -d / 2 + 0.04, -d / 2 + 0.06, h + 0.03, h + 0.05, f="xXyYZ")
+        p.rod(ALU, (xa + 0.06, -d / 2 + 0.05, h + 0.06), (xa + w / 2 - 0.12, -d / 2 + 0.05, h + 0.06), 0.02, 4)
+    for k in range(3):
+        xa = -w / 2 + 0.08 + k * 0.37
+        p.card_front(cell("label", rnd), xa, xa + 0.32, 0.18, 0.38, -d / 2 - 0.0065)
+    p.box(WOODL, -0.3, 0.3, d / 2 - 0.12, d / 2 - 0.09, h + 0.05, h + 0.4, f="xXyYZ")
+    p.card_front("sign_milk", -0.28, 0.28, h + 0.07, h + 0.07 + min(0.3, _cell_h("sign_milk", 0.56)), d / 2 - 0.12 - 0.003)
+    p.core(-w / 2 + 0.02, w / 2 - 0.02, -d / 2 + 0.02, d / 2 - 0.02, h - 0.05, h - 0.02)
+    return p.done(solid=solid, top=h + 0.05, front=0.7, customer=(0.0, -d / 2 - 0.5, 0.0))
+
+
+def notice_stand(B, x, y, z=0.0, yaw=0.0, w=1.2, h=0.85, front="notice", back="notice", seed=0, solid=False):
+    """Free-standing two-sided notice board 1.4x0.3x2.1: two posts, a small roof, atlas cells on both faces
+    (front/back = a cell or group name)."""
+    p = _P(B, x, y, z, yaw, "notice_stand")
+    rnd = _rng(seed, x, y, "nstand")
+    cf, cb = cell(front, rnd), cell(back, rnd)
+    zb = 1.05
+    for sx in (-w / 2 - 0.04, w / 2 + 0.04):
+        p.box(WOOD, sx - 0.04, sx + 0.04, -0.04, 0.04, 0.0, zb + h + 0.12, f="xXyYZ")
+        p.box(WOOD, sx - 0.12, sx + 0.12, -0.14, 0.14, 0.0, 0.04, f="xXyYZ")
+    p.box(WOODL, -w / 2, w / 2, -0.02, 0.02, zb - 0.04, zb + h + 0.04, f="xXzZ")
+    p.card_front(cf, -w / 2 + 0.02, w / 2 - 0.02, zb, zb + h, -0.0225)
+    p.card_back(cb, -w / 2 + 0.02, w / 2 - 0.02, zb, zb + h, 0.0225)
+    p.hexa(WOOD, [(-w / 2 - 0.14, -0.14, zb + h + 0.12), (w / 2 + 0.14, -0.14, zb + h + 0.12), (w / 2 + 0.14, 0.14, zb + h + 0.12),
+                  (-w / 2 - 0.14, 0.14, zb + h + 0.12)],
+           [(-w / 2 - 0.14, -0.08, zb + h + 0.2), (w / 2 + 0.14, -0.08, zb + h + 0.2), (w / 2 + 0.14, 0.08, zb + h + 0.2),
+            (-w / 2 - 0.14, 0.08, zb + h + 0.2)])
+    return p.done(cells=(cf, cb), front=0.8)
+
+
+def sandwich_board(B, x, y, z=0.0, yaw=0.0, w=0.55, name="menu", solid=False):
+    """A-frame pavement board 0.55x0.65x0.95, the atlas picture (menu / price...) on its front (-y), plain back."""
+    p = _P(B, x, y, z, yaw, "sandwich_board")
+    cn = cell(name, _rng(0, x, y, "sb"))
+    H, b, a = 0.95, 0.32, 0.02
+    p.slab(WOOD, (-w / 2, -b, 0.0), (w / 2, -b, 0.0), (w / 2, -a, H), (-w / 2, -a, H), 0.025)
+    p.slab(WOODL, (w / 2, b, 0.0), (-w / 2, b, 0.0), (-w / 2, a, H), (w / 2, a, H), 0.025)
+    p.rod(STEEL, (-w / 2 + 0.01, -a, H - 0.02), (w / 2 - 0.01, -a, H - 0.02), 0.02, 4)
+    t0, t1 = 0.14, 0.88
+    ya = -b + (b - a) * t0 / H - 0.005
+    yb = -b + (b - a) * t1 / H - 0.005
+    ch = min(t1 - t0, _cell_h(cn, w - 0.1) * 1.4)
+    p.card_tilt(cn, -w / 2 + 0.05, w / 2 - 0.05, ya, t0, yb, t1)
+    return p.done(cell=cn, front=0.8)
+
+
+def awning(B, x, y, z=0.0, yaw=0.0, w=2.0, proj=0.9, zt=2.6, drop=0.35, mat="CT_PlasterRed", mat2="CT_TileWhite",
+           posts=False, solid=False):
+    """[wall] Striped canvas awning w wide, jutting proj out of the wall at height zt and falling `drop` to a valance;
+    posts=True adds two posts to the floor (a stall, a kiosk)."""
+    p = _P(B, x, y, z, yaw, "awning")
+    p.kind = "prop"
+    zf = zt - drop
+    n = max(2, int(round(w / 0.22)))
+    sw = w / n
+    for k in range(n):
+        a = -w / 2 + k * sw
+        m = mat if k % 2 == 0 else mat2
+        p.slab(m, (a, -proj, zf), (a + sw, -proj, zf), (a + sw, -0.01, zt), (a, -0.01, zt), 0.008)
+        p.box(m, a, a + sw, -proj - 0.008, -proj, zf - 0.16, zf, f="yY")
+    for s in (-1, 1):
+        sx = s * w / 2
+        tri = [(sx, -0.01, zt), (sx, -proj, zf), (sx, -0.01, zf)]
+        p.face(mat, tri if s > 0 else tri[::-1])
+        p.face(mat, tri[::-1] if s > 0 else tri)
+        p.rod(STEEL, (sx * 0.9, 0.0, zt - 0.14), (sx * 0.9, -proj + 0.03, zf - 0.02), 0.025, 4)
+        p.rod(STEEL, (sx * 0.9, 0.0, zt - 0.02), (sx * 0.9, -0.01, zt - 0.14), 0.025, 4)
+        if posts:
+            p.rod(WOOD, (sx * 0.96, -proj + 0.04, 0.0), (sx * 0.96, -proj + 0.04, zf - 0.02), 0.06, 4)
+    return p.done(front=proj + 0.6)
+
+
+def planter(B, x, y, z=0.0, yaw=0.0, w=1.6, d=0.45, h=0.48, plants=None, seed=0, solid=True):
+    """Long concrete planter w x0.45x(h + plants), soil and bushes with a few flowers."""
+    p = _P(B, x, y, z, yaw, "planter")
+    t = 0.05
+    p.bev("CT_Concrete", -w / 2, w / 2, -d / 2, -d / 2 + t, 0.0, h, 0.01)
+    p.bev("CT_Concrete", -w / 2, w / 2, d / 2 - t, d / 2, 0.0, h, 0.01)
+    p.box("CT_Concrete", -w / 2, -w / 2 + t, -d / 2 + t, d / 2 - t, 0.0, h, f="xXZ")
+    p.box("CT_Concrete", w / 2 - t, w / 2, -d / 2 + t, d / 2 - t, 0.0, h, f="xXZ")
+    p.box("CT_Gravel", -w / 2 + t, w / 2 - t, -d / 2 + t, d / 2 - t, 0.0, h - 0.07, f="Z")
+    rnd = _rng(seed, x, y, "planter")
+    n = plants or max(3, int(w / 0.3))
+    for k in range(n):
+        px = -w / 2 + 0.2 + k * (w - 0.4) / max(1, n - 1)
+        py = rnd.uniform(-0.05, 0.05)
+        r = rnd.uniform(0.12, 0.17)
+        hh = rnd.uniform(0.25, 0.45)
+        p.lathe("CT_Leaf", px, py, [(0.0, h - 0.08), (r, h - 0.02), (r * 0.9, h + hh * 0.5), (0.0, h + hh)], 6)
+        if k % 2 == 0:
+            fm = rnd.choice(["CT_PlasterYellow", "CT_PlasterPink", "CT_PlasterRed"])
+            for j in range(3):
+                a = rnd.uniform(0, 6.28)
+                fx, fy, fz = px + 0.07 * math.cos(a), py + 0.07 * math.sin(a), h + hh * 0.6 + j * 0.05
+                p.lathe(fm, fx, fy, [(0.0, fz - 0.02), (0.035, fz), (0.0, fz + 0.03)], 5)
+    p.core(-w / 2 + 0.01, w / 2 - 0.01, -d / 2 + 0.01, -d / 2 + t - 0.01, 0.1, h - 0.02)
+    p.core(-w / 2 + 0.01, w / 2 - 0.01, d / 2 - t + 0.01, d / 2 - 0.01, 0.1, h - 0.02)
+    return p.done(solid=solid, top=h - 0.07, footprint=(-w / 2, w / 2, -d / 2, d / 2), front=0.7)
+
+
+# ------------------------------------------------------------------------------------------------ shop goods
+def bird_feeder(B, x, y, z=0.0, yaw=0.0, kind="post", mat=WOOD, top_z=2.2, solid=False):
+    """Bird feeder (shop goods). kind post: a pole 1.5 m with a little house on top (d 0.35) | hang: a seed tube with
+    perches on a cord from top_z (or a hook arm)."""
+    p = _P(B, x, y, z, yaw, "bird_feeder")
+    if kind == "hang":
+        zb = top_z - 0.62
+        p.rod("CT_WoodLight", (0.0, 0.0, top_z), (0.0, 0.0, zb + 0.4), 0.008, 3)
+        p.cyl(STEEL, 0, 0, zb + 0.4, zb + 0.43, 0.06, 8, r1=0.065)
+        p.cyl("CT_Glass", 0, 0, zb + 0.03, zb + 0.4, 0.05, 8, top=False)
+        p.cyl("CT_PlasterYellow", 0, 0, zb + 0.04, zb + 0.3, 0.043, 8)
+        p.cyl(STEEL, 0, 0, zb, zb + 0.03, 0.06, 8, r1=0.065)
+        for k in range(3):
+            a = 2 * math.pi * k / 3
+            p.rod(mat, (0.0, 0.0, zb + 0.12), (0.13 * math.cos(a), 0.13 * math.sin(a), zb + 0.12), 0.012, 3)
+        return p.done(top=None, front=0.6)
+    p.cyl(mat, 0, 0, 0.0, 1.5, 0.028, 5, r1=0.022, top=False)
+    for k in range(3):
+        a = 2 * math.pi * k / 3 + 0.5
+        p.rod(mat, (0.16 * math.cos(a), 0.16 * math.sin(a), 0.0), (0.0, 0.0, 0.3), 0.03, 3)
+    zb = 1.5
+    p.box("CT_Plaster", -0.16, 0.16, -0.12, 0.12, zb, zb + 0.04, f="xXyYZz")
+    p.box(WOODL, -0.14, 0.14, -0.1, 0.1, zb + 0.04, zb + 0.24, f="xXyY")
+    p.box("CT_PlasterYellow", -0.1, 0.1, -0.1 - 0.004, -0.1, zb + 0.07, zb + 0.2, f="y")
+    p.hexa("CT_SteelRed", [(-0.2, -0.15, zb + 0.24), (0.2, -0.15, zb + 0.24), (0.2, 0.15, zb + 0.24), (-0.2, 0.15, zb + 0.24)],
+           [(-0.2, -0.01, zb + 0.36), (0.2, -0.01, zb + 0.36), (0.2, 0.01, zb + 0.36), (-0.2, 0.01, zb + 0.36)])
+    p.rod(mat, (0.0, -0.1, zb + 0.1), (0.0, -0.2, zb + 0.1), 0.02, 4)
+    return p.done(top=None, front=0.6)
+
+
+def rod_rack(B, x, y, z=0.0, yaw=0.0, w=1.0, n=5, solid=False):
+    """[wall] Rack of n fishing rods 1.0x0.2x2.1: floor trough, two wall rails with notches, rods with cork grips and reels."""
+    p = _P(B, x, y, z, yaw, "rod_rack")
+    p.kind = "wall"
+    p.box(WOOD, -w / 2, w / 2, -0.2, 0.0, 0.0, 0.08, f="xXyZ")
+    for zz in (0.95, 1.65):
+        p.box(WOOD, -w / 2, w / 2, -0.08, 0.0, zz, zz + 0.07, f="xXyZz")
+    rnd = _rng(0, x, y, "rods")
+    for k in range(n):
+        rx = -w / 2 + 0.1 + k * (w - 0.2) / max(1, n - 1)
+        ry = -0.1
+        p.cyl(WOODL if k % 2 else "CT_Plaster", rx, ry, 0.08, 2.08, 0.012, 5, r1=0.004, top=False)
+        p.cyl("CT_Leather", rx, ry, 0.95, 1.2, 0.019, 6)
+        _ax(p, ALU, (rx + 0.03, ry, 0.93), "x", -0.02, 0.02, 0.035, segs=7)
+    return p.done(front=0.7)
+
+
+def toy_bin(B, x, y, z=0.0, yaw=0.0, mat="CT_PlasterYellow", seed=0, solid=False):
+    """Low wooden toy box 0.7x0.45x0.6 on little feet, full of blocks, a ball and a plush bear's head."""
+    p = _P(B, x, y, z, yaw, "toy_bin")
+    rnd = _rng(seed, x, y, "toys")
+    w, d, h, t = 0.7, 0.45, 0.42, 0.02
+    p.box(WOOD, -w / 2, w / 2, -d / 2, d / 2, 0.06, 0.08, f="xXyYz")
+    p.box(mat, -w / 2, -w / 2 + t, -d / 2, d / 2, 0.08, h, f="xXyYZ")
+    p.box(mat, w / 2 - t, w / 2, -d / 2, d / 2, 0.08, h, f="xXyYZ")
+    p.box(mat, -w / 2 + t, w / 2 - t, -d / 2, -d / 2 + t, 0.08, h, f="yYZ")
+    p.box(mat, -w / 2 + t, w / 2 - t, d / 2 - t, d / 2, 0.08, h, f="yYZ")
+    p.box("CT_Paper", -w / 2 + t, w / 2 - t, -d / 2 + t, d / 2 - t, 0.1, 0.101, f="Z")
+    for sx in (-w / 2 + 0.05, w / 2 - 0.05):
+        for sy in (-d / 2 + 0.05, d / 2 - 0.05):
+            p.box(WOOD, sx - 0.025, sx + 0.025, sy - 0.025, sy + 0.025, 0.0, 0.06, f="xXyY")
+    cols = ["CT_PlasterRed", "CT_PlasterBlue", "CT_PlasterGreen", "CT_PlasterPink", "CT_PlasterYellow"]
+    for k in range(7):
+        bx, by = rnd.uniform(-w / 2 + 0.1, w / 2 - 0.1), rnd.uniform(-d / 2 + 0.1, d / 2 - 0.1)
+        s = rnd.uniform(0.07, 0.1)
+        zz = h - 0.12 + rnd.uniform(0, 0.12)
+        a = rnd.uniform(0, 1.5)
+        ca, sa = math.cos(a), math.sin(a)
+        c4 = [(bx + (u * ca - v * sa) * s / 2, by + (u * sa + v * ca) * s / 2) for u, v in ((-1, -1), (1, -1), (1, 1), (-1, 1))]
+        p.hexa(rnd.choice(cols), [(q[0], q[1], zz) for q in c4], [(q[0], q[1], zz + s) for q in c4])
+    p.lathe("CT_PlasterRed", 0.18, 0.0, [(0.0, h - 0.02), (0.07, h + 0.03), (0.07, h + 0.1), (0.0, h + 0.17)], 7)
+    p.lathe("CT_Leather", -0.18, 0.02, [(0.0, h - 0.02), (0.08, h + 0.03), (0.075, h + 0.13), (0.0, h + 0.19)], 6)
+    for sx in (-0.05, 0.05):
+        p.lathe("CT_Leather", -0.18 + sx, 0.02, [(0.0, h + 0.16), (0.03, h + 0.18), (0.0, h + 0.22)], 4)
+    return p.done(front=0.6)
+
+
+def toy_house(B, x, y, z=0.0, yaw=0.0, mat="CT_PlasterYellow", roof="CT_SteelRed", solid=False):
+    """Child's playhouse 1.2x1.0x1.4: walls with an arched-less door and a window, gable roof, chimney; the door looks -y."""
+    p = _P(B, x, y, z, yaw, "toy_house")
+    w, d, wh = 1.2, 1.0, 1.0
+    t = 0.04
+    yf = -d / 2
+    p.box(mat, -w / 2, -w / 2 + t, -d / 2, d / 2, 0.0, wh, f="xXyYZ")
+    p.box(mat, w / 2 - t, w / 2, -d / 2, d / 2, 0.0, wh, f="xXyYZ")
+    p.box(mat, -w / 2 + t, w / 2 - t, d / 2 - t, d / 2, 0.0, wh, f="yYZ")
+    segs = [(-w / 2 + t, -0.4, 0.0, wh), (-0.05, 0.2, 0.0, wh), (0.45, w / 2 - t, 0.0, wh),
+            (-0.4, -0.05, 0.85, wh), (0.2, 0.45, 0.0, 0.45), (0.2, 0.45, 0.8, wh)]
+    for (xa, xb, za, zb) in segs:
+        p.box(mat, xa, xb, yf, yf + t, za, zb, f="xXyYZz")
+    p.box("CT_Floor", -w / 2 + t, w / 2 - t, -d / 2 + t, d / 2 - t, 0.0, 0.01, f="Z")
+    p.box(WOOD, 0.2 - 0.03, 0.45 + 0.03, yf - 0.03, yf + 0.03, 0.42, 0.45, f="xXyYZ")
+    p.box(WOOD, 0.2 - 0.03, 0.45 + 0.03, yf - 0.03, yf + 0.03, 0.8, 0.83, f="xXyYz")
+    p.box(WOOD, -0.4 - 0.03, -0.4, yf - 0.03, yf + 0.03, 0.0, 0.88, f="xXyY")
+    p.box(WOOD, -0.05, -0.02, yf - 0.03, yf + 0.03, 0.0, 0.88, f="xXyY")
+    p.box(WOOD, -0.43, 0.0, yf - 0.03, yf + 0.03, 0.85, 0.88, f="xXyYZ")
+    for yy, sg in ((yf, 1), (d / 2, -1)):
+        tri = [(-w / 2, yy, wh), (w / 2, yy, wh), (0.0, yy, 1.35)]
+    p.hexa(mat, [(-w / 2 + t, yf, wh), (w / 2 - t, yf, wh), (w / 2 - t, yf + t, wh), (-w / 2 + t, yf + t, wh)],
+           [(-0.01, yf, 1.33), (0.01, yf, 1.33), (0.01, yf + t, 1.33), (-0.01, yf + t, 1.33)])
+    p.hexa(mat, [(-w / 2 + t, d / 2 - t, wh), (w / 2 - t, d / 2 - t, wh), (w / 2 - t, d / 2, wh), (-w / 2 + t, d / 2, wh)],
+           [(-0.01, d / 2 - t, 1.33), (0.01, d / 2 - t, 1.33), (0.01, d / 2, 1.33), (-0.01, d / 2, 1.33)])
+    for s in (-1, 1):
+        p.slab(roof, (s * (w / 2 + 0.1), -d / 2 - 0.1, wh - 0.02), (s * (w / 2 + 0.1), d / 2 + 0.1, wh - 0.02),
+               (0.0, d / 2 + 0.1, 1.38), (0.0, -d / 2 - 0.1, 1.38), 0.03) if s > 0 else \
+            p.slab(roof, (0.0, d / 2 + 0.1, 1.38), (0.0, -d / 2 - 0.1, 1.38), (s * (w / 2 + 0.1), -d / 2 - 0.1, wh - 0.02),
+                   (s * (w / 2 + 0.1), d / 2 + 0.1, wh - 0.02), 0.03)
+    p.box("CT_Brick", 0.3, 0.46, 0.15, 0.31, 1.1, 1.56, f="xXyYZ")
+    return p.done(front=0.9)
+
+
+def bread_rack(B, x, y, z=0.0, yaw=0.0, w=0.9, seed=0, solid=False):
+    """Bakery rack 0.9x0.55x1.85: four slanted wooden shelves with loaves, round breads and baguettes, a sign on top."""
+    p = _P(B, x, y, z, yaw, "bread_rack")
+    rnd = _rng(seed, x, y, "bread")
+    d = 0.5
+    for sx in (-w / 2, w / 2 - 0.04):
+        for sy in (-d / 2, d / 2 - 0.04):
+            p.box(WOOD, sx, sx + 0.04, sy, sy + 0.04, 0.0, 1.62, f="xXyY")
+    crust = ["CT_Wood", "CT_WoodLight", "CT_Leather"]
+    for k in range(4):
+        zb = 0.25 + k * 0.36
+        p.hexa(WOODL, [(-w / 2, -d / 2, zb), (w / 2, -d / 2, zb), (w / 2, d / 2, zb + 0.07), (-w / 2, d / 2, zb + 0.07)],
+               [(-w / 2, -d / 2, zb + 0.025), (w / 2, -d / 2, zb + 0.025), (w / 2, d / 2, zb + 0.095), (-w / 2, d / 2, zb + 0.095)])
+        p.box(WOOD, -w / 2, w / 2, -d / 2 - 0.02, -d / 2, zb, zb + 0.06, f="xXyYZ")
+        xa = -w / 2 + 0.06
+        while xa < w / 2 - 0.2:
+            kind = rnd.choice(["loaf", "loaf", "round", "stick"])
+            cm = rnd.choice(crust)
+            sl = lambda yy: zb + 0.025 + (yy + d / 2) / d * 0.07
+            if kind == "loaf":
+                lw = rnd.uniform(0.2, 0.26)
+                p.bev(cm, xa, xa + lw, -0.12, 0.08, sl(-0.02), sl(-0.02) + 0.1, 0.03, 0.04)
+                xa += lw + 0.04
+            elif kind == "round":
+                p.lathe(cm, xa + 0.1, -0.03, [(0.06, sl(-0.03)), (0.11, sl(-0.03) + 0.04), (0.1, sl(-0.03) + 0.08), (0.0, sl(-0.03) + 0.115)], 7)
+                xa += 0.24
+            else:
+                for j in range(3):
+                    p.rod(cm, (xa + 0.025 + j * 0.055, -0.2, sl(-0.2) + 0.03), (xa + 0.025 + j * 0.055, 0.15, sl(0.15) + 0.03), 0.045, 5)
+                xa += 0.2
+    p.box(WOODL, -w / 2, w / 2, -d / 2 - 0.02, -d / 2 + 0.01, 1.62, 1.84, f="xXyYZ")
+    p.card_front("sign_bread", -w / 2 + 0.05, w / 2 - 0.05, 1.64, 1.82, -d / 2 - 0.0225)
+    return p.done(front=0.7)
+
+
+def bin_rack(B, x, y, z=0.0, yaw=0.0, cols=5, rows=8, seed=0, solid=False):
+    """[wall] Hardware bin rack (cols x rows pull-out bins 0.2x0.17) on a steel frame with labels, handles, feet."""
+    p = _P(B, x, y, z, yaw, "bin_rack")
+    p.kind = "wall"
+    rnd = _rng(seed, x, y, "bins")
+    cw, ch = 0.2, 0.17
+    W, H = cols * cw + 0.06, rows * ch + 0.06
+    zb = 0.1
+    p.box(STEEL, -W / 2, W / 2, -0.3, 0.0, zb, zb + H, f="xXyZz")
+    cols_ = ["CT_PlasterYellow", "CT_PlasterBlue", "CT_PlasterRed", "CT_PlasterGreen"]
+    for i in range(cols):
+        for j in range(rows):
+            x0 = -W / 2 + 0.03 + i * cw
+            z0 = zb + 0.03 + j * ch
+            m = cols_[(i + j) % 4] if rnd.random() < 0.7 else "CT_PlasterGrey"
+            p.box(m, x0 + 0.005, x0 + cw - 0.005, -0.32, -0.3, z0 + 0.005, z0 + ch - 0.005, f="yZ")
+            p.card_front(cell("label", rnd), x0 + 0.04, x0 + cw - 0.04, z0 + ch * 0.5, z0 + ch * 0.5 + 0.06, -0.3215)
+            p.box(ALU, x0 + cw / 2 - 0.035, x0 + cw / 2 + 0.035, -0.336, -0.32, z0 + 0.02, z0 + 0.04, f="yZ")
+    for sx in (-W / 2 + 0.03, W / 2 - 0.03):
+        p.box(STEEL, sx - 0.02, sx + 0.02, -0.3, -0.26, 0.0, 0.1, f="xXyY")
+    return p.done(front=0.8)
+
+
+def first_aid_box(B, x, y, z=0.0, yaw=0.0, zc=1.5, solid=False):
+    """[wall] White first-aid box 0.3x0.12x0.28 with a red cross and a latch."""
+    p = _P(B, x, y, z, yaw, "first_aid_box")
+    p.kind = "wall"
+    p.bev("CT_TileWhite", -0.15, 0.15, -0.12, 0.0, zc - 0.14, zc + 0.14, 0.012, 0.015)
+    p.box("CT_SteelRed", -0.085, 0.085, -0.1225, -0.12, zc - 0.03, zc + 0.03, f="yZ")
+    p.box("CT_SteelRed", -0.03, 0.03, -0.1225, -0.12, zc - 0.085, zc + 0.085, f="yZ")
+    p.box(ALU, -0.02, 0.02, -0.13, -0.12, zc + 0.1, zc + 0.12, f="yZ")
+    p.box(STEEL, -0.04, 0.04, -0.12, 0.0, zc + 0.14, zc + 0.16, f="xXyZ")
+    return p.done(front=0.5)
+
+
+def ring_buoy(B, x, y, z=0.0, yaw=0.0, solid=False):
+    """Ring buoy on a stand 0.7x0.5x2.3 (pool, pier): a post on a foot with the buoy hung on it, a warning plate on top."""
+    p = _P(B, x, y, z, yaw, "ring_buoy")
+    p.box(STEEL, -0.3, 0.3, -0.2, 0.2, 0.0, 0.05, f="xXyYZ")
+    p.box(STEEL, -0.045, 0.045, -0.045, 0.045, 0.05, 2.0, f="xXyY")
+    p.box(STEEL, -0.07, 0.07, -0.07, 0.07, 1.98, 2.02, f="xXyYZ")
+    p.rod(STEEL, (0.0, -0.045, 1.55), (0.0, -0.13, 1.55), 0.03, 4)
+    _torus(p, "CT_SteelRed", (0.0, -0.17, 1.2), 0.24, 0.06, "y", 16, 6, mat2="CT_TileWhite", every=2)
+    p.rod(STEEL, (0.0, -0.13, 1.55), (0.0, -0.17, 1.48), 0.02, 3)
+    ph = min(0.4, _cell_h("poster_safety", 0.34))
+    p.box(WOODL, -0.2, 0.2, -0.065, -0.045, 2.02, 2.02 + ph + 0.06, f="xXyZ")
+    p.card_front("poster_safety", -0.17, 0.17, 2.05, 2.05 + ph, -0.0655)
+    return p.done(front=0.8)
+
+
+def springboard(B, x, y, z=0.0, yaw=0.0, solid=True):
+    """Diving springboard 0.5x2.4x0.8: the board juts toward -y over the water (pool edge at the back), fulcrum roller, steel base."""
+    p = _P(B, x, y, z, yaw, "springboard")
+    for sx in (-0.2, 0.2):
+        p.rod(STEEL, (sx, 0.75, 0.0), (sx, 0.65, 0.5), 0.05, 4)
+        p.rod(STEEL, (sx, 0.45, 0.0), (sx, 0.65, 0.5), 0.05, 4)
+        p.rod(STEEL, (sx, -0.1, 0.0), (sx, -0.1, 0.4), 0.04, 4)
+        p.rod(STEEL, (sx, 0.5, 0.2), (sx, -0.1, 0.2), 0.03, 4)
+    p.box(STEEL, -0.28, 0.28, 0.5, 0.9, 0.0, 0.03, f="xXyYZ")
+    _ax(p, STEEL, (0.0, -0.1, 0.45), "x", -0.24, 0.24, 0.07, segs=8)
+    p.hexa("CT_PlasterBlue", [(-0.25, 0.85, 0.52), (0.25, 0.85, 0.52), (0.25, -1.55, 0.62), (-0.25, -1.55, 0.62)],
+           [(-0.25, 0.85, 0.57), (0.25, 0.85, 0.57), (0.25, -1.55, 0.67), (-0.25, -1.55, 0.67)])
+    p.hexa("CT_Rubber", [(-0.21, 0.8, 0.575), (0.21, 0.8, 0.575), (0.21, -1.5, 0.675), (-0.21, -1.5, 0.675)],
+           [(-0.21, 0.8, 0.58), (0.21, 0.8, 0.58), (0.21, -1.5, 0.68), (-0.21, -1.5, 0.68)], f="Z")
+    p.core(-0.15, 0.15, 0.3, 0.8, 0.52, 0.56)
+    return p.done(solid=solid, top=0.6, front=1.0, tip=(0.0, -1.5, 0.68))
+
+
+def ballet_barre(B, x, y, z=0.0, yaw=0.0, w=2.4, low=True, solid=False):
+    """[wall] Ballet barre w x0.2x1.1: a round wooden rail at 1.0 m (and a low one at 0.75 m) on steel brackets."""
+    p = _P(B, x, y, z, yaw, "ballet_barre")
+    p.kind = "wall"
+    for zz in ((1.0, 0.75) if low else (1.0,)):
+        p.rod(WOOD, (-w / 2, -0.2, zz), (w / 2, -0.2, zz), 0.05, 8)
+    nb = max(2, int(w / 0.9) + 1)
+    for k in range(nb):
+        bx = -w / 2 + 0.1 + k * (w - 0.2) / (nb - 1)
+        for zz in ((1.0, 0.75) if low else (1.0,)):
+            p.rod(STEEL, (bx, 0.0, zz - 0.035), (bx, -0.2, zz - 0.035), 0.022, 4)
+        p.box(STEEL, bx - 0.03, bx + 0.03, -0.012, 0.0, 0.68 if low else 0.92, 1.08, f="xXyZz")
+    return p.done(top=1.0, front=0.9)
+
+
+def choir_riser(B, x, y, z=0.0, yaw=0.0, w=3.0, d=1.8, rows=3, step=0.2, solid=True):
+    """Choir risers w x d x (rows * 0.2): the front tier is the lowest (-y), rows go up toward +y. Returns 'spots'
+    (standing places, 4 per tier) and 'top' (the highest tier)."""
+    p = _P(B, x, y, z, yaw, "choir_riser")
+    td = d / rows
+    spots = []
+    for k in range(rows):
+        y0 = -d / 2 + k * td
+        h = (k + 1) * step
+        p.box(WOOD, -w / 2, w / 2, y0, y0 + td, 0.0, h, f="xXyZ")
+        p.core(-w / 2 + 0.02, w / 2 - 0.02, y0 + 0.03, y0 + td - 0.03, h - 0.06, h - 0.02)
+        for i in range(4):
+            spots.append((-w / 2 + (i + 0.5) * w / 4, y0 + td * 0.5, h))
+    return p.done(solid=solid, top=rows * step, spots=spots, front=0.9)
+
+
+def kiln(B, x, y, z=0.0, yaw=0.0, solid=True):
+    """Ceramic kiln 0.95x1.0x1.9: round brick body on a steel stand, front door (-y) with a peephole and a handle, chimney, controller."""
+    p = _P(B, x, y, z, yaw, "kiln")
+    for sx in (-0.34, 0.34):
+        for sy in (-0.34, 0.34):
+            p.rod(STEEL, (sx, sy, 0.0), (sx, sy, 0.5), 0.05, 4)
+    p.box(STEEL, -0.4, 0.4, -0.4, 0.4, 0.46, 0.52, f="xXyYZz")
+    p.lathe("CT_Brick", 0, 0, [(0.42, 0.52), (0.46, 0.56), (0.46, 1.02), (0.4, 1.28), (0.24, 1.42), (0.0, 1.46)], 10)
+    p.box(STEEL, -0.22, 0.22, -0.505, -0.42, 0.64, 1.08, f="xXyZz")
+    p.box("CT_Rubber", -0.04, 0.04, -0.512, -0.505, 0.9, 0.97, f="y")
+    p.rod(BRASS, (0.16, -0.505, 0.7), (0.16, -0.56, 0.7), 0.025, 4)
+    p.rod(BRASS, (0.12, -0.56, 0.7), (0.2, -0.56, 0.7), 0.02, 4)
+    p.cyl("CT_Brick", 0.0, 0.2, 1.42, 1.9, 0.08, 6, r1=0.065)
+    p.box("CT_PlasterGrey", 0.5, 0.62, -0.1, 0.1, 0.9, 1.15, f="xXyYZz")
+    _ax(p, ALU, (0.5, 0.0, 1.07), "x", 0.44, 0.5, 0.03, segs=8)
+    p.core(-0.3, 0.3, -0.3, 0.3, 0.65, 1.2)
+    return p.done(solid=solid, top=None, front=0.9)
+
+
+def model_plane(B, x, y, z=0.0, yaw=0.0, top_z=3.0, solid=False):
+    """[ceiling hung] Balsa model aeroplane 0.9x0.8 on two cords from top_z (banked 12 degrees); the nose points to -y."""
+    p = _P(B, x, y, z, yaw, "model_plane")
+    p.kind = "prop"
+    zc = top_z - 0.75
+    n0 = len(p.m.verts)
+    _ax(p, "CT_SteelRed", (0.0, 0.0, zc), "y", -0.32, 0.45, 0.04, 0.012, segs=6)
+    _ax(p, ALU, (0.0, 0.0, zc), "y", -0.36, -0.32, 0.02, 0.04, segs=6)
+    p.hexa("CT_PlasterYellow", [(-0.46, 0.08, zc + 0.03), (0.46, 0.08, zc + 0.03), (0.46, -0.03, zc + 0.03), (-0.46, -0.03, zc + 0.03)],
+           [(-0.46, 0.08, zc + 0.036), (0.46, 0.08, zc + 0.036), (0.46, -0.03, zc + 0.036), (-0.46, -0.03, zc + 0.036)])
+    p.hexa("CT_PlasterYellow", [(-0.2, 0.08, zc + 0.03), (0.2, 0.08, zc + 0.03), (0.2, -0.17, zc + 0.03), (-0.2, -0.17, zc + 0.03)],
+           [(-0.2, 0.08, zc + 0.036), (0.2, 0.08, zc + 0.036), (0.2, -0.17, zc + 0.036), (-0.2, -0.17, zc + 0.036)])
+    p.hexa("CT_PlasterYellow", [(-0.2, 0.46, zc), (0.2, 0.46, zc), (0.2, 0.37, zc), (-0.2, 0.37, zc)],
+           [(-0.2, 0.46, zc + 0.006), (0.2, 0.46, zc + 0.006), (0.2, 0.37, zc + 0.006), (-0.2, 0.37, zc + 0.006)])
+    p.hexa("CT_SteelRed", [(-0.003, 0.48, zc), (0.003, 0.48, zc), (0.003, 0.34, zc), (-0.003, 0.34, zc)],
+           [(-0.003, 0.48, zc + 0.16), (0.003, 0.48, zc + 0.16), (0.003, 0.4, zc + 0.16), (-0.003, 0.4, zc + 0.16)])
+    p.hexa(WOODL, [(-0.12, -0.375, zc - 0.012), (0.12, -0.375, zc - 0.012), (0.12, -0.36, zc - 0.012), (-0.12, -0.36, zc - 0.012)],
+           [(-0.12, -0.375, zc + 0.012), (0.12, -0.375, zc + 0.012), (0.12, -0.36, zc + 0.012), (-0.12, -0.36, zc + 0.012)])
+    _tilt(p, n0, 12.0, (0.0, zc))
+    for sx in (-0.12, 0.12):
+        p.rod("CT_Paper", (sx * 0.96, 0.02, zc + 0.035 + sx * -0.2 * 0.0), (0.0, 0.02, top_z), 0.006, 3)
+    return p.done(front=0.6)
+
+
+def parquet(B, x, y, z=0.0, yaw=0.0, w=3.0, d=3.0, solid=False):
+    """[flat] A patch of parquet (a dance floor) w x d x 0.015 on the floor: basket-weave of planks, a dark border."""
+    p = _P(B, x, y, z, yaw, "parquet")
+    p.kind = "flat"
+    bd, hh = 0.1, 0.015
+    nx, ny = max(1, round((w - 2 * bd) / 0.4)), max(1, round((d - 2 * bd) / 0.4))
+    sx, sy = (w - 2 * bd) / nx, (d - 2 * bd) / ny
+    for i in range(nx):
+        for j in range(ny):
+            x0, y0 = -w / 2 + bd + i * sx, -d / 2 + bd + j * sy
+            for k in range(3):
+                m = WOODL if (k + i + j) % 2 == 0 else WOOD
+                if (i + j) % 2 == 0:
+                    p.box(m, x0 + k * sx / 3, x0 + (k + 1) * sx / 3, y0, y0 + sy, 0.0, hh, f="Z")
+                else:
+                    p.box(m, x0, x0 + sx, y0 + k * sy / 3, y0 + (k + 1) * sy / 3, 0.0, hh, f="Z")
+    p.bev(WOOD, -w / 2, w / 2, -d / 2, -d / 2 + bd, 0.0, hh + 0.004, 0.003)
+    p.bev(WOOD, -w / 2, w / 2, d / 2 - bd, d / 2, 0.0, hh + 0.004, 0.003)
+    p.bev(WOOD, -w / 2, -w / 2 + bd, -d / 2 + bd, d / 2 - bd, 0.0, hh + 0.004, 0.003)
+    p.bev(WOOD, w / 2 - bd, w / 2, -d / 2 + bd, d / 2 - bd, 0.0, hh + 0.004, 0.003)
+    return p.done(top=hh + 0.004, front=0.3)
+
+
+def court_lines(B, x, y, z=0.0, yaw=0.0, kind="basketball", w=None, d=None, lw=0.05, mat="CT_TileWhite"):
+    """[flat] Painted lines of a court on the floor (only their top faces, 4 mm up): kind basketball (7.5x14: boundary,
+    centre line and circle, keys and free-throw circles) | volleyball (9x18: boundary, net line, attack lines) |
+    badminton (6.1x13.4) | box (just the boundary). x across, y along (w x d); z = the floor's top."""
+    dw = {"basketball": (7.5, 14.0), "volleyball": (9.0, 18.0), "badminton": (6.1, 13.4), "box": (4.0, 6.0)}[kind]
+    w, d = w or dw[0], d or dw[1]
+    p = _P(B, x, y, z, yaw, "court_lines")
+    p.kind = "flat"
+    zz = 0.004
+    a, b, c_, e = -w / 2, w / 2, -d / 2, d / 2
+    for (p0, p1) in (((a, c_), (b, c_)), ((b, c_), (b, e)), ((b, e), (a, e)), ((a, e), (a, c_))):
+        _line(p, mat, p0, p1, lw, zz)
+
+    def circle(cx, cy, r, a0=0.0, a1=2 * math.pi, n=16):
+        pts = [(cx + r * math.cos(a0 + (a1 - a0) * k / n), cy + r * math.sin(a0 + (a1 - a0) * k / n)) for k in range(n + 1)]
+        for q0, q1 in zip(pts, pts[1:]):
+            _line(p, mat, q0, q1, lw, zz)
+    if kind == "basketball":
+        _line(p, mat, (a, 0.0), (b, 0.0), lw, zz)
+        circle(0.0, 0.0, min(w, d) * 0.12)
+        kw, kd = w * 0.32, d * 0.2
+        for s in (-1, 1):
+            yb, yk = s * e, s * (e - kd)
+            _line(p, mat, (-kw / 2, yb), (-kw / 2, yk), lw, zz)
+            _line(p, mat, (kw / 2, yb), (kw / 2, yk), lw, zz)
+            _line(p, mat, (-kw / 2, yk), (kw / 2, yk), lw, zz)
+            circle(0.0, yk, kw / 2, 0.0 if s < 0 else math.pi, math.pi if s < 0 else 2 * math.pi, 10)
+    elif kind == "volleyball":
+        _line(p, mat, (a, 0.0), (b, 0.0), lw * 1.4, zz)
+        for s in (-1, 1):
+            _line(p, mat, (a, s * d / 6), (b, s * d / 6), lw, zz)
+    elif kind == "badminton":
+        _line(p, mat, (a + w * 0.07, c_), (a + w * 0.07, e), lw, zz)
+        _line(p, mat, (b - w * 0.07, c_), (b - w * 0.07, e), lw, zz)
+        _line(p, mat, (a, 0.0), (b, 0.0), lw, zz)
+        for s in (-1, 1):
+            _line(p, mat, (a, s * d * 0.23), (b, s * d * 0.23), lw, zz)
+            _line(p, mat, (a, s * (e - 0.76)), (b, s * (e - 0.76)), lw, zz)
+            _line(p, mat, (0.0, s * d * 0.23), (0.0, s * e), lw, zz)
+    return p.done(front=0.3)
+
+
+# ------------------------------------------------------------------------------------------------ studio, cafe, canteen
+def palm(B, x, y, z=0.0, yaw=0.0, h=2.8, fronds=9, pot="CT_PlasterRed", seed=0, solid=False):
+    """A tall palm in a tub (h overall, default 2.8): a ringed, slightly leaning trunk and `fronds` bent multi-segment
+    blades (arching ridge, drooping tips, V-folded) in two tiers. The footprint reported is the tub; leaves don't block."""
+    p = _P(B, x, y, z, yaw, "palm")
+    rnd = _rng(seed, x, y, "palm")
+    pr, ph = 0.24, 0.34
+    if pot:
+        p.lathe(pot, 0, 0, [(pr * 0.75, 0.0), (pr, ph), (pr * 1.05, ph + 0.03)], 8, top=False)
+        p.cyl("CT_ConcreteDark", 0, 0, ph - 0.02, ph - 0.01, pr * 0.98, 8)
+    zb = ph if pot else 0.0
+    zc = h - 0.5 * h / 2.8                         # the crown
+    lean = 0.12 * h / 2.8
+    n = 8
+    rings = []
+    for k in range(n):
+        t = k / (n - 1)
+        cx = lean * t * t
+        r = (0.085 - 0.03 * t) * (1.0 + (0.12 if k % 2 else 0.0))
+        zz = zb + (zc - zb) * t
+        rings.append(_ring_circle(cx, 0.0, r, zz, 7, a0=0.2))
+    p.loft("CT_Wood", rings, top=True)
+    cx = lean
+    p.lathe("CT_Leaf", cx, 0.0, [(0.05, zc - 0.06), (0.13, zc + 0.02), (0.09, zc + 0.12), (0.0, zc + 0.16)], 7)
+    L0 = 1.05 * h / 2.8
+    for k in range(fronds):
+        a = 2 * math.pi * k / fronds + rnd.uniform(-0.15, 0.15)
+        tier = k % 2
+        L = L0 * rnd.uniform(0.85, 1.05) * (0.85 if tier else 1.0)
+        up = 1.15 if tier else 0.72
+        g = 1.05 if tier else 1.3
+        ca, sa = math.cos(a), math.sin(a)
+        wmax = 0.17 * h / 2.8
+        ss = [0.0, 0.25, 0.5, 0.75, 1.0]
+        ws = [0.2, 0.85, 1.0, 0.72, 0.04]
+        ridge, left, right = [], [], []
+        for s, wf in zip(ss, ws):
+            hx = L * s * 0.92
+            hz = L * (up * s * 0.8 - g * s * s * 0.7) + 0.08
+            c3 = (cx + ca * hx, sa * hx, zc + 0.08 + hz)
+            wd = wmax * wf
+            ridge.append(c3)
+            left.append((c3[0] - sa * wd, c3[1] + ca * wd, c3[2] - wd * 0.45))
+            right.append((c3[0] + sa * wd, c3[1] - ca * wd, c3[2] - wd * 0.45))
+        for i in range(4):
+            for edge, flip in ((left, False), (right, True)):
+                q = [ridge[i], ridge[i + 1], edge[i + 1], edge[i]]
+                if i == 3:
+                    q = [ridge[3], ridge[4], edge[3]] if edge is left else [ridge[3], edge[3], ridge[4]]
+                elif flip:
+                    q = q[::-1]
+                p.face("CT_Leaf", q)
+                p.face("CT_Leaf", q[::-1])
+    return p.done(footprint=(-pr, pr, -pr, pr) if pot else None)
+
+
+def camera_tripod(B, x, y, z=0.0, yaw=0.0, solid=False):
+    """Studio camera 1.1x1.2x1.8 on a tripod with a floor spreader: lens and hood toward -y, viewfinder, pan handle at +y."""
+    p = _P(B, x, y, z, yaw, "camera_tripod")
+    feet = []
+    for k in range(3):
+        a = math.pi / 2 + 2 * math.pi * k / 3
+        feet.append((0.52 * math.cos(a), 0.52 * math.sin(a)))
+        p.rod(STEEL, (0.04 * math.cos(a), 0.04 * math.sin(a), 1.0), (feet[-1][0], feet[-1][1], 0.012), 0.035, 4)
+    for f0, f1 in zip(feet, feet[1:] + feet[:1]):
+        p.rod(STEEL, (f0[0] * 0.5, f0[1] * 0.5, 0.2), (f1[0] * 0.5, f1[1] * 0.5, 0.2), 0.02, 3)
+    p.cyl(ALU, 0, 0, 0.9, 1.3, 0.04, 6, r1=0.035)
+    p.cyl(STEEL, 0, 0, 1.28, 1.34, 0.09, 8)
+    p.bev("CT_PlasterGrey", -0.12, 0.12, -0.12, 0.38, 1.34, 1.62, 0.015, 0.03)
+    _ax(p, STEEL, (0.0, 0.0, 1.48), "y", -0.4, -0.12, 0.075, 0.095, segs=8)
+    _ax(p, "CT_Rubber", (0.0, 0.0, 1.48), "y", -0.5, -0.4, 0.13, 0.075, segs=8)
+    p.box("CT_PlasterGrey", -0.07, 0.07, -0.05, 0.3, 1.62, 1.78, f="xXyYZ")
+    p.box("CT_SteelRed", -0.015, 0.015, -0.125, -0.12, 1.55, 1.58, f="y")
+    p.rod(STEEL, (0.0, 0.15, 1.34), (0.28, 0.62, 1.18), 0.025, 4)
+    p.cyl("CT_Rubber", 0.28, 0.66, 1.1, 1.27, 0.022, 6)
+    return p.done(front=1.0)
+
+
+def photo_backdrop(B, x, y, z=0.0, yaw=0.0, w=2.4, h=2.3, mat="CT_PlasterBlue", solid=False):
+    """Studio backdrop w x1.6xh: two stands, a cross bar, a paper roll that sweeps down and forward onto the floor (toward -y)."""
+    p = _P(B, x, y, z, yaw, "photo_backdrop")
+    for sx in (-w / 2 - 0.1, w / 2 + 0.1):
+        p.rod(STEEL, (sx, 0.18, 0.0), (sx, 0.18, h + 0.1), 0.04, 4)
+        for k in range(3):
+            a = math.pi / 2 + 2 * math.pi * k / 3
+            p.rod(STEEL, (sx, 0.18, 0.08), (sx + 0.3 * math.cos(a), 0.18 + 0.3 * math.sin(a), 0.012), 0.03, 3)
+    p.rod(STEEL, (-w / 2 - 0.12, 0.18, h + 0.1), (w / 2 + 0.12, 0.18, h + 0.1), 0.04, 5)
+    p.rod("CT_Paper", (-w / 2, 0.14, h + 0.04), (w / 2, 0.14, h + 0.04), 0.12, 8)
+    prof = [(0.12, h + 0.04), (0.1, h * 0.6), (0.08, 0.5), (0.0, 0.2), (-0.2, 0.05), (-0.6, 0.012), (-1.2, 0.01)]
+    for (ya, za), (yb, zb) in zip(prof, prof[1:]):
+        q = [(-w / 2, ya, za), (w / 2, ya, za), (w / 2, yb, zb), (-w / 2, yb, zb)]
+        p.face(mat, q)
+        p.face(mat, q[::-1])
+    return p.done(front=1.4, footprint=(-w / 2 - 0.3, w / 2 + 0.3, -1.2, 0.48))
+
+
+def oars_rack(B, x, y, z=0.0, yaw=0.0, w=2.4, n=3, solid=False):
+    """[wall] Oar rack w x0.2x2.0: two wooden boards with pegs, n oars lying across them (blades at alternate ends)."""
+    p = _P(B, x, y, z, yaw, "oars_rack")
+    p.kind = "wall"
+    zs = [0.85 + 0.45 * k for k in range(n)]
+    xs = (-w / 2 + 0.4, w / 2 - 0.4)
+    for bx in xs:
+        p.box(WOOD, bx - 0.05, bx + 0.05, -0.03, 0.0, zs[0] - 0.15, zs[-1] + 0.15, f="xXyZz")
+        for zz in zs:
+            p.rod(WOOD, (bx, -0.03, zz - 0.005), (bx, -0.16, zz - 0.005), 0.04, 4)
+    cols = ["CT_PlasterBlue", "CT_SteelRed", "CT_PlasterYellow"]
+    for k, zz in enumerate(zs):
+        s = 1 if k % 2 == 0 else -1
+        zo = zz + 0.045
+        p.rod(WOODL, (-w / 2 + 0.05, -0.1, zo), (w / 2 - 0.05, -0.1, zo), 0.045, 6)
+        m = cols[k % 3]
+        bl = (w / 2 - 0.55, w / 2 + 0.05) if s > 0 else (-w / 2 - 0.05, -w / 2 + 0.55)
+        p.hexa(m, [(bl[0], -0.16, zo - 0.01), (bl[1], -0.16, zo - 0.01), (bl[1], -0.04, zo - 0.01), (bl[0], -0.04, zo - 0.01)],
+               [(bl[0], -0.158, zo + 0.012), (bl[1], -0.158, zo + 0.012), (bl[1], -0.042, zo + 0.012), (bl[0], -0.042, zo + 0.012)])
+        gx = (-w / 2 + 0.05 + 0.3) if s > 0 else (w / 2 - 0.05 - 0.3)
+        p.rod("CT_Leather", (gx - 0.15, -0.1, zo), (gx + 0.15, -0.1, zo), 0.055, 6)
+    return p.done(front=0.8)
+
+
+def tub_chair(B, x, y, z=0.0, yaw=0.0, mat="CT_PlasterGreen", seat_mat="CT_PlasterYellow", solid=False):
+    """Tub armchair 0.75x0.7x0.85: a round wrap-around back that turns into arms, loose seat cushion, four wooden legs."""
+    p = _P(B, x, y, z, yaw, "tub_chair")
+    cy0 = 0.05
+    ro, ri = 0.36, 0.3
+    zb = 0.3
+    a0, a1, n = math.radians(-12), math.radians(192), 10
+    angs = [a0 + (a1 - a0) * k / n for k in range(n + 1)]
+
+    def zt(a):
+        return 0.58 + 0.27 * max(0.0, math.sin(a)) ** 0.7
+    O = [(ro * math.cos(a), cy0 + ro * math.sin(a)) for a in angs]
+    I = [(ri * math.cos(a), cy0 + ri * math.sin(a)) for a in angs]
+    for k in range(n):
+        ob0, ob1 = O[k] + (zb,), O[k + 1] + (zb,)
+        ot0, ot1 = O[k] + (zt(angs[k]),), O[k + 1] + (zt(angs[k + 1]),)
+        ib0, ib1 = I[k] + (zb,), I[k + 1] + (zb,)
+        it0, it1 = I[k] + (zt(angs[k]),), I[k + 1] + (zt(angs[k + 1]),)
+        p.face(mat, [ob0, ob1, ot1, ot0])
+        p.face(mat, [ib1, ib0, it0, it1])
+        p.face(mat, [ot0, ot1, it1, it0])
+    p.face(mat, [O[0] + (zb,), O[0] + (zt(a0),), I[0] + (zt(a0),), I[0] + (zb,)])
+    p.face(mat, [I[-1] + (zb,), I[-1] + (zt(a1),), O[-1] + (zt(a1),), O[-1] + (zb,)])
+    p.bev(WOOD, -0.3, 0.3, -0.27, 0.36, 0.26, 0.31, 0.01, 0.1)
+    p.cushion(seat_mat, -0.26, 0.26, -0.24, 0.32, 0.31, 0.43, 0.025)
+    for sx in (-1, 1):
+        for sy, ly in ((-1, -0.04), (1, 0.04)):
+            p.rod(WOOD, (sx * 0.3, sy * 0.24 + 0.05 + ly, 0.0), (sx * 0.24, sy * 0.2 + 0.05, 0.27), 0.04, 4)
+    return p.done(seats=[(0.0, 0.05, 0.43, 0.0)], front=0.7)
+
+
+def high_table(B, x, y, z=0.0, yaw=0.0, r=0.35, h=1.08, solid=True):
+    """Stand-up cafe table d0.7 x 1.08 on a pedestal with a round foot and a foot ring; 'spots' = four standing places."""
+    p = _P(B, x, y, z, yaw, "high_table")
+    p.lathe(WOODL, 0, 0, [(r * 0.96, h - 0.03), (r, h - 0.02), (r, h)], 12)
+    p.lathe(ALU, 0, 0, [(0.26, 0.0), (0.26, 0.025), (0.06, 0.05)], 10, top=False)
+    p.cyl(ALU, 0, 0, 0.0, h - 0.03, 0.035, 6, top=False)
+    ring = _ring_circle(0, 0, 0.2, 0.28, 8)
+    for a, b in zip(ring, ring[1:] + ring[:1]):
+        p.rod(ALU, a, b, 0.016, 3)
+    for k in range(4):
+        a = math.pi / 4 + k * math.pi / 2
+        p.rod(ALU, (0.035 * math.cos(a), 0.035 * math.sin(a), 0.28), (0.2 * math.cos(a), 0.2 * math.sin(a), 0.28), 0.014, 3)
+    p.core(-r + 0.04, r - 0.04, -r + 0.04, r - 0.04, h - 0.03, h - 0.012)
+    spots = [(0.7 * math.cos(a), 0.7 * math.sin(a), 0.0) for a in (-math.pi / 2, 0.0, math.pi / 2, math.pi)]
+    return p.done(solid=solid, top=h, spots=spots, front=0.8)
+
+
+def beer_taps(B, x, y, z=0.0, yaw=0.0, n=3, solid=False):
+    """[prop] Bar-top tap tower: z = top of the bar. A chrome column with n taps (coloured handles), a drip tray; taps toward -y."""
+    p = _P(B, x, y, z, yaw, "beer_taps")
+    p.kind = "prop"
+    w = 0.1 * n + 0.1
+    p.box(STEEL, -w / 2, w / 2, -0.17, 0.02, 0.0, 0.025, f="xXyYZ")
+    p.bev(ALU, -w / 2 + 0.03, w / 2 - 0.03, -0.06, 0.04, 0.025, 0.4, 0.012, 0.015)
+    cols = ["CT_PlasterRed", "CT_PlasterYellow", "CT_PlasterGreen", "CT_PlasterBlue", "CT_Leather"]
+    for k in range(n):
+        tx = (k - (n - 1) / 2) * 0.1
+        p.rod(ALU, (tx, -0.06, 0.28), (tx, -0.11, 0.28), 0.03, 5)
+        p.rod(ALU, (tx, -0.11, 0.28), (tx, -0.12, 0.2), 0.026, 5)
+        p.cyl(cols[k % 5], tx, -0.04, 0.4, 0.5, 0.02, 6, r1=0.012)
+    return p.done(top=0.5, front=0.4)
+
+
+def _fish(p, cx, cy, zb, ang, L, mat):
+    ca, sa = math.cos(ang), math.sin(ang)
+
+    def at(u, v, h):
+        return (cx + u * ca - v * sa, cy + u * sa + v * ca, zb + h)
+    hw, th = L * 0.09, L * 0.1
+    bot = [at(-L / 2, -hw, 0), at(-L / 2, hw, 0), at(L / 2, hw * 0.25, 0), at(L / 2, -hw * 0.25, 0)]
+    top = [at(-L / 2 + L * 0.06, -hw * 0.8, th), at(-L / 2 + L * 0.06, hw * 0.8, th), at(L / 2, hw * 0.2, th * 0.4), at(L / 2, -hw * 0.2, th * 0.4)]
+    p.hexa(mat, bot, top)
+    tail = [at(L / 2, 0, th * 0.2), at(L / 2 + L * 0.22, -hw * 1.1, th * 0.2), at(L / 2 + L * 0.22, hw * 1.1, th * 0.2)]
+    p.face(mat, tail)
+    p.face(mat, tail[::-1])
+
+
+def fish_ice_counter(B, x, y, z=0.0, yaw=0.0, w=1.6, seed=0, solid=True):
+    """Fishmonger's counter w x0.85x1.5: tiled body, a steel tray of crushed ice with fish and crabs, a price board;
+    customers at -y, the seller at +y ('staff', 'customer', 'on')."""
+    p = _P(B, x, y, z, yaw, "fish_ice_counter")
+    d, h = 0.85, 0.9
+    rnd = _rng(seed, x, y, "fish")
+    p.bev("CT_TileWhite", -w / 2, w / 2, -d / 2, d / 2, 0.0, h, 0.012)
+    p.bev(ALU, -w / 2 - 0.02, w / 2 + 0.02, -d / 2 - 0.02, d / 2 + 0.02, h, h + 0.05, 0.01)
+    t = 0.03
+    p.box(STEEL, -w / 2 + 0.05, w / 2 - 0.05, -d / 2 + 0.07, -d / 2 + 0.07 + t, h + 0.05, h + 0.2, f="xXyYZ")
+    p.box(STEEL, -w / 2 + 0.05, w / 2 - 0.05, d / 2 - 0.07 - t, d / 2 - 0.07, h + 0.05, h + 0.15, f="xXyYZ")
+    for sx in (-w / 2 + 0.05, w / 2 - 0.05 - t):
+        p.hexa(STEEL, [(sx, -d / 2 + 0.07, h + 0.05), (sx + t, -d / 2 + 0.07, h + 0.05), (sx + t, d / 2 - 0.07, h + 0.05), (sx, d / 2 - 0.07, h + 0.05)],
+               [(sx, -d / 2 + 0.07, h + 0.2), (sx + t, -d / 2 + 0.07, h + 0.2), (sx + t, d / 2 - 0.07, h + 0.15), (sx, d / 2 - 0.07, h + 0.15)])
+    p.cushion("CT_TileWhite", -w / 2 + 0.08, w / 2 - 0.08, -d / 2 + 0.1, d / 2 - 0.1, h + 0.05, h + 0.16, 0.04)
+    nf = int(w / 0.28)
+    for k in range(nf):
+        fx = -w / 2 + 0.22 + k * (w - 0.44) / max(1, nf - 1)
+        fy = rnd.uniform(-0.1, 0.12)
+        _fish(p, fx, fy, h + 0.15, rnd.uniform(1.1, 2.0), rnd.uniform(0.22, 0.32), ALU)
+    for k in range(2):
+        cx = rnd.uniform(-w / 2 + 0.2, w / 2 - 0.2)
+        p.lathe("CT_SteelRed", cx, -0.18, [(0.05, h + 0.14), (0.09, h + 0.17), (0.06, h + 0.21), (0.0, h + 0.22)], 6)
+    ph = min(0.3, _cell_h("price_0", 0.5))
+    p.rod(STEEL, (-0.28, d / 2 - 0.1, h + 0.05), (-0.28, d / 2 - 0.1, h + 0.65), 0.02, 3)
+    p.rod(STEEL, (0.28, d / 2 - 0.1, h + 0.05), (0.28, d / 2 - 0.1, h + 0.65), 0.02, 3)
+    p.box(WOODL, -0.3, 0.3, d / 2 - 0.12, d / 2 - 0.1, h + 0.4, h + 0.4 + ph + 0.04, f="xXyYZz")
+    p.card_front("price_0", -0.27, 0.27, h + 0.42, h + 0.42 + ph, d / 2 - 0.1205)
+    p.core(-w / 2 + 0.02, w / 2 - 0.02, -d / 2 + 0.02, d / 2 - 0.02, h - 0.1, h - 0.02)
+    return p.done(solid=solid, top=h + 0.05, staff=(0.0, d / 2 + 0.5, 0.0), customer=(0.0, -d / 2 - 0.45, 0.0),
+                  on=(0.0, 0.0, h + 0.2), front=0.7)
+
+
+def dumpling_pot(B, x, y, z=0.0, yaw=0.0, steamers=2, lid=True, solid=True):
+    """Big pot on a stove 0.8x0.6x1.5 (dumpling shop): tiled range with burner rings, a steel pot with `steamers` bamboo
+    baskets and a lid (lid=False: dumplings visible); 'staff' at +y, 'customer' at -y."""
+    p = _P(B, x, y, z, yaw, "dumpling_pot")
+    h = 0.85
+    p.bev("CT_TileWhite", -0.4, 0.4, -0.3, 0.3, 0.0, h, 0.012, 0.02)
+    p.box(STEEL, -0.38, 0.38, -0.28, 0.28, h, h + 0.02, f="xXyYZ")
+    p.box("CT_PlasterGrey", -0.38, 0.38, -0.304, -0.3, 0.55, 0.78, f="y")
+    for sx in (-0.2, 0.0, 0.2):
+        _ax(p, ALU, (sx, -0.31, 0.74), "y", -0.33, -0.304, 0.02, segs=7)
+    ring = _ring_circle(0.0, 0.0, 0.2, h + 0.03, 8)
+    for a, b in zip(ring, ring[1:] + ring[:1]):
+        p.rod("CT_ConcreteDark", a, b, 0.03, 3)
+    zt = h + 0.02
+    p.lathe(STEEL, 0.0, 0.0, [(0.22, zt), (0.29, zt + 0.04), (0.3, zt + 0.32), (0.31, zt + 0.34)], 12, top=False)
+    zz = zt + 0.34
+    for k in range(steamers):
+        p.lathe("CT_WoodLight", 0.0, 0.0, [(0.285, zz), (0.29, zz + 0.1)], 12, top=False)
+        p.lathe(WOOD, 0.0, 0.0, [(0.292, zz + 0.04), (0.292, zz + 0.055)], 12, top=False)
+        zz += 0.1
+    if lid:
+        p.lathe(WOOD, 0.0, 0.0, [(0.3, zz), (0.29, zz + 0.04), (0.18, zz + 0.1), (0.06, zz + 0.13), (0.0, zz + 0.13)], 12)
+        p.cyl(WOODL, 0, 0, zz + 0.13, zz + 0.17, 0.035, 6, r1=0.03)
+    else:
+        p.cyl("CT_Paper", 0, 0, zz - 0.02, zz - 0.01, 0.27, 12)
+        for k in range(7):
+            a = 2 * math.pi * k / 7
+            rr = 0.15 if k else 0.0
+            p.lathe("CT_TileWhite", rr * math.cos(a), rr * math.sin(a), [(0.04, zz - 0.01), (0.05, zz + 0.02), (0.0, zz + 0.055)], 5)
+    for s in (-1, 1):
+        p.rod(STEEL, (s * 0.3, 0.0, zt + 0.28), (s * 0.4, 0.0, zt + 0.26), 0.035, 4)
+    p.core(-0.36, 0.36, -0.26, 0.26, h - 0.03, h - 0.005)
+    return p.done(solid=solid, top=h + 0.02, staff=(0.0, 0.8, 0.0), customer=(0.0, -0.8, 0.0), front=0.8)
+
+
+def serving_line(B, x, y, z=0.0, yaw=0.0, w=3.0, seed=0, solid=True):
+    """Canteen serving line w x1.0x1.95: tiled body, hot-food pans (heaped), tray rail with steel runners on the customer
+    side (-y), sneeze-guard frame with heat lamps, a menu board on the staff side; 'staff', 'customer', 'on'."""
+    p = _P(B, x, y, z, yaw, "serving_line")
+    d, h = 0.8, 0.9
+    rnd = _rng(seed, x, y, "line")
+    p.bev("CT_TileWhite", -w / 2, w / 2, -d / 2 + 0.2, d / 2, 0.0, h, 0.012)
+    p.bev(ALU, -w / 2, w / 2, -d / 2 + 0.2, d / 2, h, h + 0.03, 0.01)
+    for zz in (0.82, 0.9):
+        p.rod(ALU, (-w / 2 - 0.02, -d / 2 + 0.02, zz), (w / 2 + 0.02, -d / 2 + 0.02, zz), 0.03, 5)
+    nr = int(w / 0.8)
+    for k in range(nr + 1):
+        bx = -w / 2 + k * w / nr
+        p.rod(ALU, (bx, -d / 2 + 0.02, 0.82), (bx, -d / 2 + 0.2, 0.74), 0.025, 3)
+        p.rod(ALU, (bx, -d / 2 + 0.02, 0.9), (bx, -d / 2 + 0.02, 0.82), 0.02, 3)
+    nw = max(2, int(w / 0.55))
+    ww = (w - 0.2) / nw
+    food = ["CT_PlasterYellow", "CT_Leather", "CT_PlasterRed", "CT_Leaf", "CT_PlasterPink", "CT_TileWhite"]
+    for k in range(nw):
+        xa = -w / 2 + 0.1 + k * ww
+        p.bev(ALU, xa + 0.01, xa + ww - 0.01, -0.12, 0.28, h + 0.03, h + 0.09, 0.012, 0.015)
+        p.cushion(food[(k + rnd.randint(0, 5)) % 6], xa + 0.05, xa + ww - 0.05, -0.08, 0.24, h + 0.09, h + 0.14, 0.03)
+        if k % 2 == 0:
+            p.rod(ALU, (xa + ww / 2, 0.2, h + 0.13), (xa + ww / 2 + 0.05, 0.36, h + 0.34), 0.016, 3)
+    ng = int(w / 1.0)
+    for k in range(ng + 1):
+        bx = -w / 2 + 0.06 + k * (w - 0.12) / ng
+        p.rod(ALU, (bx, -0.18, h + 0.03), (bx, -0.18, h + 0.5), 0.022, 4)
+        p.rod(ALU, (bx, -0.18, h + 0.5), (bx, 0.0, h + 0.56), 0.02, 3)
+    p.rod(ALU, (-w / 2 + 0.06, -0.18, h + 0.5), (w / 2 - 0.06, -0.18, h + 0.5), 0.022, 4)
+    p.rod(ALU, (-w / 2 + 0.06, 0.0, h + 0.56), (w / 2 - 0.06, 0.0, h + 0.56), 0.022, 4)
+    for k in range(nw):
+        xa = -w / 2 + 0.1 + (k + 0.5) * ww
+        p.rod(BRASS, (xa - 0.12, -0.08, h + 0.53), (xa + 0.12, -0.08, h + 0.53), 0.03, 4)
+    mw = min(1.6, w - 0.4)
+    mh = min(0.5, _cell_h("menu_0", mw))
+    for sx in (-mw / 2 + 0.04, mw / 2 - 0.04):
+        p.rod(STEEL, (sx, d / 2 - 0.05, h + 0.03), (sx, d / 2 - 0.05, 1.95), 0.03, 4)
+    p.box(WOODL, -mw / 2, mw / 2, d / 2 - 0.06, d / 2 - 0.04, 1.95 - mh - 0.04, 1.95, f="xXyYZz")
+    p.card_front("menu_0", -mw / 2 + 0.02, mw / 2 - 0.02, 1.95 - mh - 0.02, 1.93, d / 2 - 0.0605)
+    p.core(-w / 2 + 0.02, w / 2 - 0.02, -d / 2 + 0.22, d / 2 - 0.02, h - 0.1, h - 0.02)
+    return p.done(solid=solid, top=h + 0.03, staff=(0.0, d / 2 + 0.5, 0.0), customer=(0.0, -d / 2 - 0.4, 0.0),
+                  on=(0.0, 0.0, h + 0.14), front=0.8)
+
+
+def tray_stack(B, x, y, z=0.0, yaw=0.0, n=5, mat="CT_PlasterBlue", solid=False):
+    """[prop] A stack of n canteen trays 0.45x0.33 (z = the table top)."""
+    p = _P(B, x, y, z, yaw, "tray_stack")
+    p.kind = "prop"
+    for k in range(n):
+        z0 = k * 0.024
+        p.bev(mat, -0.225, 0.225, -0.165, 0.165, z0, z0 + 0.022, 0.006, 0.035)
+    return p.done(top=n * 0.024 + 0.002)
+
+
 # every placeable piece by name (kit_showroom.py walks this)
 PIECES = {f.__name__: f for f in (
     chair, stool, bar_stool, armchair, sofa, bench, cinema_row, waiting_row, bean_bag, zabuton,
@@ -3123,7 +4281,19 @@ PIECES = {f.__name__: f for f in (
     picture, poster, notice_board, banner, mosaic_panel, wall_shelf, sign_plate, menu_board, fire_extinguisher, wall_phone,
     pendant, ceiling_fan,
     books_stack, newspaper, cup, glass, teapot, plates, bottles, vase, typewriter, telephone, cash_register,
-    kitchen_scales, crate, sack, cardboard_box, tools, chess_set, paint_jars, lamp_green)}
+    kitchen_scales, crate, sack, cardboard_box, tools, chess_set, paint_jars, lamp_green,
+    # round 2: transport, services, shop goods, studio, sport, canteen
+    bicycle, pram, mailboxes, washing_machine, deck_chair, barber_chair, teller_grille, mic_stand, lifebuoy, rope_coil, ice_cream_chest, notice_stand, sandwich_board, awning, planter, bird_feeder, rod_rack, toy_bin, toy_house, bread_rack, bin_rack, first_aid_box, ring_buoy, springboard, ballet_barre, choir_riser, kiln, model_plane, parquet, court_lines, palm, camera_tripod, photo_backdrop, oars_rack, tub_chair, high_table, beer_taps,
+    fish_ice_counter, dumpling_pot, serving_line, tray_stack)}
 
 BUDGET = {"chair": 80, "stool": 80, "bar_stool": 80, "table": 60, "table_round": 60, "bookshelf": 400, "piano": 500,
-          "grand_piano": 500}
+          "grand_piano": 500,
+          # round 2
+          "bicycle": 560, "pram": 360, "mailboxes": 200, "washing_machine": 180, "deck_chair": 150, "barber_chair": 400,
+          "teller_grille": 300, "mic_stand": 140, "lifebuoy": 340, "rope_coil": 300, "ice_cream_chest": 150,
+          "notice_stand": 80, "sandwich_board": 50, "awning": 260, "planter": 300, "bird_feeder": 120, "rod_rack": 260,
+          "toy_bin": 260, "toy_house": 240, "bread_rack": 620, "bin_rack": 470, "first_aid_box": 70, "ring_buoy": 280,
+          "springboard": 130, "ballet_barre": 130, "choir_riser": 40, "kiln": 240, "model_plane": 120, "parquet": 420,
+          "court_lines": 120, "palm": 500, "camera_tripod": 220, "photo_backdrop": 120, "oars_rack": 200,
+          "tub_chair": 220, "high_table": 200, "beer_taps": 220, "fish_ice_counter": 340, "dumpling_pot": 470,
+          "serving_line": 760, "tray_stack": 220}
