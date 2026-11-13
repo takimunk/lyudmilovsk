@@ -619,6 +619,729 @@
    "minutes": 2,
    "sound": "clock_tick",
    "like": "use_misc"
+  },
+  "xk_timetable": {
+   "prompt": "city.act.look.prompt",
+   "like": "look_misc",
+   "rotate": "use",
+   "minutes": 1,
+   "any_hour": true,
+   "lines": [
+    {
+     "k": "city.xk.tt.1",
+     "d": "mon-fri",
+     "h": [
+      6,
+      9
+     ]
+    },
+    {
+     "k": "city.xk.tt.2",
+     "d": "mon-fri",
+     "h": [
+      9,
+      17
+     ]
+    },
+    {
+     "k": "city.xk.tt.3",
+     "d": "mon-fri",
+     "h": [
+      17,
+      21
+     ]
+    },
+    {
+     "k": "city.xk.tt.4",
+     "d": "sat-sun",
+     "h": [
+      6,
+      21
+     ]
+    },
+    {
+     "k": "city.xk.tt.5",
+     "h": [
+      21,
+      6
+     ]
+    },
+    {
+     "k": "city.xk.tt.6",
+     "weather": "rain"
+    },
+    {
+     "k": "city.xk.tt.7",
+     "weather": "snow"
+    },
+    {
+     "k": "city.xk.tt.8",
+     "festival": "any"
+    },
+    {
+     "k": "city.xk.tt.9",
+     "every": [
+      3,
+      0
+     ]
+    },
+    {
+     "k": "city.xk.tt.10",
+     "every": [
+      3,
+      1
+     ]
+    },
+    {
+     "k": "city.xk.tt.11",
+     "every": [
+      3,
+      2
+     ]
+    }
+   ]
+  },
+  "xk_notices": {
+   "prompt": "city.act.look.prompt",
+   "like": "look_misc",
+   "rotate": "daily",
+   "minutes": 2,
+   "any_hour": true,
+   "lines": [
+    "city.look.lost.*",
+    {
+     "k": "city.xk.nt.1",
+     "after": 0
+    },
+    {
+     "k": "city.xk.nt.2",
+     "after": 1
+    },
+    {
+     "k": "city.xk.nt.3",
+     "after": 3
+    },
+    {
+     "k": "city.xk.nt.4",
+     "after": 5
+    },
+    {
+     "k": "city.xk.nt.5",
+     "after": 7
+    },
+    {
+     "k": "city.xk.nt.6",
+     "after": 10
+    },
+    {
+     "k": "city.xk.nt.7",
+     "festival": "any"
+    },
+    {
+     "k": "city.xk.nt.8",
+     "weather": "rain"
+    }
+   ]
+  },
+  "xk1_stamp": {
+   "prompt": "city.xk.stamp.prompt",
+   "like": "use_misc",
+   "any_hour": true,
+   "minutes": 1,
+   "sound": "stamp_thump",
+   "collect": "kiosk_pass/news",
+   "lines": [
+    "city.xk.stamp1.1",
+    {
+     "k": "city.xk.stamp1.2",
+     "h": [
+      6,
+      12
+     ]
+    },
+    {
+     "k": "city.xk.stamp1.3",
+     "h": [
+      21,
+      6
+     ]
+    },
+    {
+     "k": "city.xk.stamp.rain",
+     "weather": "rain"
+    }
+   ]
+  },
+  "xk2_stamp": {
+   "prompt": "city.xk.stamp.prompt",
+   "like": "use_misc",
+   "any_hour": true,
+   "minutes": 1,
+   "sound": "stamp_thump",
+   "collect": "kiosk_pass/ice",
+   "lines": [
+    "city.xk.stamp2.1",
+    {
+     "k": "city.xk.stamp2.2",
+     "h": [
+      11,
+      18
+     ]
+    },
+    {
+     "k": "city.xk.stamp2.3",
+     "h": [
+      21,
+      6
+     ]
+    },
+    {
+     "k": "city.xk.stamp.rain",
+     "weather": "rain"
+    }
+   ]
+  },
+  "xk3_stamp": {
+   "prompt": "city.xk.stamp.prompt",
+   "like": "use_misc",
+   "any_hour": true,
+   "minutes": 1,
+   "sound": "stamp_thump",
+   "collect": "kiosk_pass/tobacco",
+   "lines": [
+    "city.xk.stamp3.1",
+    {
+     "k": "city.xk.stamp3.2",
+     "h": [
+      7,
+      18
+     ]
+    },
+    {
+     "k": "city.xk.stamp3.3",
+     "h": [
+      18,
+      23
+     ]
+    },
+    {
+     "k": "city.xk.stamp.rain",
+     "weather": "rain"
+    }
+   ]
+  },
+  "xk4_stamp": {
+   "prompt": "city.xk.stamp.prompt",
+   "like": "use_misc",
+   "any_hour": true,
+   "minutes": 1,
+   "sound": "stamp_thump",
+   "collect": "kiosk_pass/flowers",
+   "lines": [
+    "city.xk.stamp4.1",
+    {
+     "k": "city.xk.stamp4.2",
+     "h": [
+      6,
+      11
+     ]
+    },
+    {
+     "k": "city.xk.stamp4.3",
+     "h": [
+      17,
+      23
+     ]
+    },
+    {
+     "k": "city.xk.stamp.rain",
+     "weather": "rain"
+    }
+   ]
+  },
+  "xk5_stamp": {
+   "prompt": "city.xk.stamp.prompt",
+   "like": "use_misc",
+   "any_hour": true,
+   "minutes": 1,
+   "sound": "stamp_thump",
+   "collect": "kiosk_pass/cable",
+   "lines": [
+    "city.xk.stamp5.1",
+    {
+     "k": "city.xk.stamp5.2",
+     "h": [
+      7,
+      10
+     ]
+    },
+    {
+     "k": "city.xk.stamp5.3",
+     "h": [
+      21,
+      6
+     ]
+    },
+    {
+     "k": "city.xk.stamp.rain",
+     "weather": "rain"
+    }
+   ]
+  },
+  "xk6_stamp": {
+   "prompt": "city.xk.stamp.prompt",
+   "like": "use_misc",
+   "any_hour": true,
+   "minutes": 1,
+   "sound": "stamp_thump",
+   "collect": "kiosk_pass/repair",
+   "lines": [
+    "city.xk.stamp6.1",
+    {
+     "k": "city.xk.stamp6.2",
+     "h": [
+      8,
+      18
+     ]
+    },
+    {
+     "k": "city.xk.stamp6.3",
+     "h": [
+      18,
+      23
+     ]
+    },
+    {
+     "k": "city.xk.stamp.rain",
+     "weather": "rain"
+    }
+   ]
+  },
+  "xk1_wallpaper": {
+   "prompt": "city.xk.1_wall.prompt",
+   "like": "look_misc",
+   "any_hour": true,
+   "minutes": 2,
+   "sound": "paper_rustle",
+   "lines": [
+    "city.xk.1_wall.l1"
+   ],
+   "read": {
+    "texts": [
+     "kiosk_wallpaper"
+    ],
+    "rotate": "use"
+   }
+  },
+  "xk2_crate": {
+   "prompt": "city.xk.use2.prompt",
+   "like": "sit",
+   "pose": "sit",
+   "any_hour": true,
+   "minutes": 10,
+   "sound": "wind_soft",
+   "lines": [
+    {
+     "k": "city.xk.2_crate.1",
+     "h": [
+      6,
+      21
+     ]
+    },
+    {
+     "k": "city.xk.2_crate.2",
+     "weather": "warm",
+     "h": [
+      6,
+      21
+     ]
+    },
+    {
+     "k": "city.xk.2_crate.3",
+     "weather": "rain"
+    },
+    {
+     "k": "city.xk.2_crate.4",
+     "h": [
+      21,
+      6
+     ]
+    }
+   ]
+  },
+  "xk2_thermo": {
+   "prompt": "city.xk.2_thermo.prompt",
+   "like": "look_misc",
+   "any_hour": true,
+   "minutes": 1,
+   "lines": [
+    {
+     "k": "city.xk.2_thermo.1",
+     "h": [
+      6,
+      21
+     ]
+    },
+    {
+     "k": "city.xk.2_thermo.2",
+     "weather": "warm",
+     "h": [
+      6,
+      21
+     ]
+    },
+    {
+     "k": "city.xk.2_thermo.3",
+     "weather": "cold",
+     "h": [
+      6,
+      21
+     ]
+    },
+    {
+     "k": "city.xk.2_thermo.4",
+     "weather": "rain",
+     "h": [
+      6,
+      21
+     ]
+    },
+    {
+     "k": "city.xk.2_thermo.5",
+     "h": [
+      21,
+      6
+     ]
+    }
+   ]
+  },
+  "xk3_lotto": {
+   "prompt": "city.xk.3_lotto.prompt",
+   "like": "look_misc",
+   "rotate": "use",
+   "any_hour": true,
+   "minutes": 1,
+   "lines": [
+    "city.xk.3_lotto.1",
+    {
+     "k": "city.xk.3_lotto.2",
+     "every": [
+      4,
+      0
+     ]
+    },
+    {
+     "k": "city.xk.3_lotto.3",
+     "every": [
+      4,
+      1
+     ]
+    },
+    {
+     "k": "city.xk.3_lotto.4",
+     "every": [
+      4,
+      2
+     ]
+    },
+    {
+     "k": "city.xk.3_lotto.5",
+     "every": [
+      4,
+      3
+     ]
+    }
+   ]
+  },
+  "xk3_chair": {
+   "prompt": "city.xk.use2.prompt",
+   "like": "sit",
+   "pose": "sit",
+   "any_hour": true,
+   "minutes": 10,
+   "sound": "wood_creak",
+   "lines": [
+    {
+     "k": "city.xk.3_chair.1",
+     "h": [
+      6,
+      18
+     ]
+    },
+    {
+     "k": "city.xk.3_chair.2",
+     "d": "sat-sun",
+     "h": [
+      6,
+      18
+     ]
+    },
+    {
+     "k": "city.xk.3_chair.3",
+     "weather": "rain"
+    },
+    {
+     "k": "city.xk.3_chair.4",
+     "h": [
+      18,
+      6
+     ]
+    }
+   ]
+  },
+  "xk4_calendar": {
+   "prompt": "city.xk.4_cal.prompt",
+   "like": "look_misc",
+   "rotate": "use",
+   "any_hour": true,
+   "minutes": 2,
+   "lines": [
+    {
+     "k": "city.xk.4_cal.1",
+     "date": [
+      "12-01",
+      "02-28"
+     ]
+    },
+    {
+     "k": "city.xk.4_cal.2",
+     "date": [
+      "03-01",
+      "05-31"
+     ]
+    },
+    {
+     "k": "city.xk.4_cal.3",
+     "date": [
+      "06-01",
+      "08-31"
+     ]
+    },
+    {
+     "k": "city.xk.4_cal.4",
+     "date": [
+      "09-01",
+      "11-30"
+     ]
+    },
+    {
+     "k": "city.xk.4_cal.5",
+     "festival": "any"
+    }
+   ]
+  },
+  "xk4_bench": {
+   "prompt": "city.xk.use2.prompt",
+   "like": "sit",
+   "pose": "sit",
+   "any_hour": true,
+   "minutes": 10,
+   "sound": "wind_soft",
+   "lines": [
+    {
+     "k": "city.xk.4_bench.1",
+     "h": [
+      11,
+      19
+     ]
+    },
+    {
+     "k": "city.xk.4_bench.2",
+     "h": [
+      6,
+      11
+     ]
+    },
+    {
+     "k": "city.xk.4_bench.3",
+     "h": [
+      19,
+      6
+     ]
+    }
+   ]
+  },
+  "xk4_sniff": {
+   "prompt": "city.xk.4_sniff.prompt",
+   "like": "use_misc",
+   "any_hour": true,
+   "minutes": 1,
+   "lines": [
+    {
+     "k": "city.xk.4_sniff.1",
+     "h": [
+      6,
+      21
+     ]
+    },
+    {
+     "k": "city.xk.4_sniff.2",
+     "weather": "rain",
+     "h": [
+      6,
+      21
+     ]
+    },
+    {
+     "k": "city.xk.4_sniff.3",
+     "weather": "warm",
+     "h": [
+      6,
+      21
+     ]
+    },
+    {
+     "k": "city.xk.4_sniff.4",
+     "h": [
+      21,
+      6
+     ]
+    }
+   ]
+  },
+  "xk5_departures": {
+   "prompt": "city.xk.5_dep.prompt",
+   "like": "look_misc",
+   "rotate": "use",
+   "any_hour": true,
+   "minutes": 2,
+   "lines": [
+    {
+     "k": "city.xk.5_dep.1",
+     "d": "mon-fri",
+     "h": [
+      6,
+      21
+     ]
+    },
+    {
+     "k": "city.xk.5_dep.2",
+     "d": "sat-sun",
+     "h": [
+      6,
+      21
+     ]
+    },
+    {
+     "k": "city.xk.5_dep.3",
+     "h": [
+      21,
+      6
+     ]
+    },
+    {
+     "k": "city.xk.5_dep.4",
+     "weather": "fog"
+    },
+    {
+     "k": "city.xk.5_dep.5",
+     "weather": "snow"
+    },
+    {
+     "k": "city.xk.5_dep.6",
+     "festival": "any"
+    }
+   ]
+  },
+  "xk5_chair": {
+   "prompt": "city.xk.use2.prompt",
+   "like": "sit",
+   "pose": "sit",
+   "any_hour": true,
+   "minutes": 10,
+   "sound": "wind_soft",
+   "lines": [
+    {
+     "k": "city.xk.5_chair.1",
+     "h": [
+      10,
+      21
+     ]
+    },
+    {
+     "k": "city.xk.5_chair.2",
+     "h": [
+      6,
+      10
+     ]
+    },
+    {
+     "k": "city.xk.5_chair.3",
+     "h": [
+      21,
+      6
+     ]
+    }
+   ]
+  },
+  "xk6_keyboard": {
+   "prompt": "city.act.look.prompt",
+   "like": "look_misc",
+   "rotate": "daily",
+   "minutes": 2,
+   "any_hour": true,
+   "lines": [
+    "city.xk.6_keys.1",
+    {
+     "k": "city.xk.6_keys.2",
+     "after": 2
+    },
+    {
+     "k": "city.xk.6_keys.3",
+     "after": 4
+    },
+    {
+     "k": "city.xk.6_keys.4",
+     "after": 7
+    }
+   ]
+  },
+  "xk6_umbrellas": {
+   "prompt": "city.xk.6_umb.prompt",
+   "like": "use_misc",
+   "any_hour": true,
+   "minutes": 1,
+   "lines": [
+    {
+     "k": "city.xk.6_umb.1"
+    },
+    {
+     "k": "city.xk.6_umb.2",
+     "weather": "rain"
+    },
+    {
+     "k": "city.xk.6_umb.3",
+     "weather": "snow"
+    },
+    {
+     "k": "city.xk.6_umb.4",
+     "weather": "clear"
+    }
+   ]
+  },
+  "xk6_stool": {
+   "prompt": "city.xk.use2.prompt",
+   "like": "sit",
+   "pose": "sit",
+   "any_hour": true,
+   "minutes": 10,
+   "sound": "clock_tick",
+   "lines": [
+    {
+     "k": "city.xk.6_stool.1",
+     "h": [
+      6,
+      18
+     ]
+    },
+    {
+     "k": "city.xk.6_stool.2",
+     "h": [
+      18,
+      6
+     ]
+    }
+   ]
   }
  },
  "rules": {
@@ -626,76 +1349,163 @@
    "act": "xk_bin"
   },
   "P-KIOSK1/k1_payphone": {
-   "act": "xk1_phone"
+   "act": "xk1_phone",
+   "closed": "city.xk.closed.1.*"
   },
   "P-KIOSK1/k1_crossword": {
-   "act": "xk1_crossword"
+   "act": "xk1_crossword",
+   "closed": "city.xk.closed.1.*"
   },
   "P-KIOSK1/k1_bench_paper": {
-   "act": "xk1_pencil"
+   "act": "xk1_pencil",
+   "closed": "city.xk.closed.1.*"
   },
   "P-KIOSK1/stop_notices": {
-   "act": "xk1_notices"
+   "act": "xk1_notices",
+   "closed": "city.xk.closed.1.*"
   },
   "P-KIOSK2/k2_flavours": {
-   "act": "xk2_flavours"
+   "act": "xk2_flavours",
+   "closed": "city.xk.closed.2.*"
   },
   "P-KIOSK2/k2_cone_sign": {
-   "act": "xk2_cone"
+   "act": "xk2_cone",
+   "closed": "city.xk.closed.2.*"
   },
   "P-KIOSK2/k2_bell": {
-   "act": "xk2_bell"
+   "act": "xk2_bell",
+   "closed": "city.xk.closed.2.*"
   },
   "P-KIOSK2/k2_fountain": {
-   "act": "xk2_fountain"
+   "act": "xk2_fountain",
+   "closed": "city.xk.closed.2.*"
   },
   "P-KIOSK3/k3_pipes": {
-   "act": "xk3_pipes"
+   "act": "xk3_pipes",
+   "closed": "city.xk.closed.3.*"
   },
   "P-KIOSK3/k3_jar": {
-   "act": "xk3_jar"
+   "act": "xk3_jar",
+   "closed": "city.xk.closed.3.*"
   },
   "P-KIOSK3/k3_scales": {
-   "act": "xk3_weigh"
+   "act": "xk3_weigh",
+   "closed": "city.xk.closed.3.*"
   },
   "P-KIOSK4/k4_wrap": {
-   "act": "xk4_wrap"
+   "act": "xk4_wrap",
+   "closed": "city.xk.closed.4.*"
   },
   "P-KIOSK4/k4_watering": {
-   "act": "xk4_watering"
+   "act": "xk4_watering",
+   "closed": "city.xk.closed.4.*"
   },
   "P-KIOSK4/k4_lilac": {
-   "act": "xk4_lilac"
+   "act": "xk4_lilac",
+   "closed": "city.xk.closed.4.*"
   },
   "P-KIOSK5/k5_diagram": {
-   "act": "xk5_diagram"
+   "act": "xk5_diagram",
+   "closed": "city.xk.closed.5.*"
   },
   "P-KIOSK5/k5_rolls": {
-   "act": "xk5_punch"
+   "act": "xk5_punch",
+   "closed": "city.xk.closed.5.*"
   },
   "P-KIOSK5/k5_fountain": {
-   "act": "xk5_fountain"
+   "act": "xk5_fountain",
+   "closed": "city.xk.closed.5.*"
   },
   "P-KIOSK5/k5_lost": {
-   "act": "xk5_lost"
+   "act": "xk5_lost",
+   "closed": "city.xk.closed.5.*"
   },
   "P-KIOSK5/k5_ledger": {
-   "act": "xk5_ledger"
+   "act": "xk5_ledger",
+   "closed": "city.xk.closed.5.*"
   },
   "P-KIOSK6/k6_keycut": {
-   "act": "xk6_keycut"
+   "act": "xk6_keycut",
+   "closed": "city.xk.closed.6.*"
   },
   "P-KIOSK6/k6_radios": {
-   "act": "xk6_radios"
+   "act": "xk6_radios",
+   "closed": "city.xk.closed.6.*"
   },
   "P-KIOSK6/k6_clocks": {
-   "act": "xk6_clocks"
+   "act": "xk6_clocks",
+   "closed": "city.xk.closed.6.*"
   },
   "P-KIOSK6/k6_shoes": {
-   "act": "xk6_shoes"
+   "act": "xk6_shoes",
+   "closed": "city.xk.closed.6.*"
   },
   "P-KIOSK6/k6_watch": {
-   "act": "xk6_watch"
+   "act": "xk6_watch",
+   "closed": "city.xk.closed.6.*"
+  },
+  "bus_stop_kiosk/timetable": {
+   "act": "xk_timetable"
+  },
+  "bus_stop_kiosk/stop_notices": {
+   "act": "xk_notices"
+  },
+  "P-KIOSK1/stop_stamp": {
+   "act": "xk1_stamp"
+  },
+  "P-KIOSK2/stop_stamp": {
+   "act": "xk2_stamp"
+  },
+  "P-KIOSK3/stop_stamp": {
+   "act": "xk3_stamp"
+  },
+  "P-KIOSK4/stop_stamp": {
+   "act": "xk4_stamp"
+  },
+  "P-KIOSK5/stop_stamp": {
+   "act": "xk5_stamp"
+  },
+  "P-KIOSK6/stop_stamp": {
+   "act": "xk6_stamp"
+  },
+  "P-KIOSK1/k1_wallpaper": {
+   "act": "xk1_wallpaper"
+  },
+  "P-KIOSK2/k2_crate_seat": {
+   "act": "xk2_crate"
+  },
+  "P-KIOSK2/k2_thermo": {
+   "act": "xk2_thermo"
+  },
+  "P-KIOSK3/k3_lotto": {
+   "act": "xk3_lotto"
+  },
+  "P-KIOSK3/k3_chair": {
+   "act": "xk3_chair"
+  },
+  "P-KIOSK4/k4_calendar": {
+   "act": "xk4_calendar"
+  },
+  "P-KIOSK4/k4_bench": {
+   "act": "xk4_bench"
+  },
+  "P-KIOSK4/k4_bucket_sniff": {
+   "act": "xk4_sniff"
+  },
+  "P-KIOSK5/k5_stand": {
+   "act": "xk5_departures"
+  },
+  "P-KIOSK5/k5_chair": {
+   "act": "xk5_chair"
+  },
+  "P-KIOSK6/k6_keyboard": {
+   "act": "xk6_keyboard"
+  },
+  "P-KIOSK6/k6_umbrellas": {
+   "act": "xk6_umbrellas"
+  },
+  "P-KIOSK6/k6_stool": {
+   "act": "xk6_stool"
   }
  },
  "quests": [
@@ -790,6 +1600,108 @@
      }
     }
    ]
+  },
+  {
+   "id": "kiosk_circuit",
+   "kind": "side",
+   "start_on": {
+    "event": "visit",
+    "target": "P-KIOSK2"
+   },
+   "stages": [
+    {
+     "id": "ice",
+     "objectives": [
+      {
+       "id": "stamp2",
+       "event": "do",
+       "target": "xk2_stamp"
+      }
+     ]
+    },
+    {
+     "id": "flowers",
+     "objectives": [
+      {
+       "id": "stamp4",
+       "event": "do",
+       "target": "xk4_stamp"
+      }
+     ]
+    },
+    {
+     "id": "cable",
+     "objectives": [
+      {
+       "id": "stamp5",
+       "event": "do",
+       "target": "xk5_stamp"
+      }
+     ]
+    },
+    {
+     "id": "news",
+     "objectives": [
+      {
+       "id": "stamp1",
+       "event": "do",
+       "target": "xk1_stamp"
+      }
+     ],
+     "reward": {
+      "rubles": 25,
+      "items": {
+       "postcard": 1
+      }
+     }
+    }
+   ]
   }
- ]
+ ],
+ "texts": {
+  "kiosk_wallpaper": {
+   "title": "city.xk.1_wall.title",
+   "kind": "newspaper",
+   "minutes": 2,
+   "collect": "reading/kiosk_wallpaper",
+   "pages": [
+    "city.xk.1_wall.p1",
+    [
+     "city.xk.1_wall.p2a",
+     "city.xk.1_wall.p2b",
+     "city.xk.1_wall.p2c"
+    ],
+    [
+     {
+      "k": "city.xk.1_wall.p3a",
+      "weather": "rain"
+     },
+     {
+      "k": "city.xk.1_wall.p3b",
+      "weather": "clear"
+     },
+     "city.xk.1_wall.p3c"
+    ]
+   ]
+  }
+ },
+ "collections": {
+  "kiosk_pass": {
+   "title": "city.xk.coll.pass.title",
+   "pieces": [
+    "news",
+    "ice",
+    "tobacco",
+    "flowers",
+    "cable",
+    "repair"
+   ]
+  }
+ },
+ "closed_by": {
+  "bus_stop_kiosk": {
+   "counter": "city.xk.closed.counter.*",
+   "*": "city.xk.closed.hatch.*"
+  }
+ }
 }

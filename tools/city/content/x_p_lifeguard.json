@@ -1290,6 +1290,359 @@
     }
    ],
    "minutes": 2
+  },
+  "lg_gear": {
+   "prompt": "city.lgx.gear.prompt",
+   "like": "look_misc",
+   "any_hour": true,
+   "minutes": 2,
+   "sound": "drawer_slide",
+   "lines": [
+    {
+     "k": "city.lgx.gear.1",
+     "h": [
+      6,
+      21
+     ]
+    },
+    {
+     "k": "city.lgx.gear.2",
+     "h": [
+      6,
+      10
+     ]
+    },
+    {
+     "k": "city.lgx.gear.3",
+     "d": "sat-sun",
+     "h": [
+      6,
+      21
+     ]
+    },
+    {
+     "k": "city.lgx.gear.4",
+     "weather": "rain",
+     "h": [
+      6,
+      21
+     ]
+    },
+    {
+     "k": "city.lgx.gear.5",
+     "h": [
+      21,
+      6
+     ]
+    }
+   ]
+  },
+  "lg_board": {
+   "prompt": "city.lgx.board.prompt",
+   "like": "look_misc",
+   "rotate": "daily",
+   "any_hour": true,
+   "minutes": 2,
+   "lines": [
+    "city.lgx.board.1",
+    {
+     "k": "city.lgx.board.2",
+     "after": 1
+    },
+    {
+     "k": "city.lgx.board.3",
+     "after": 4
+    }
+   ]
+  },
+  "lg_throw": {
+   "prompt": "city.lgx.throw.prompt",
+   "like": "look_misc",
+   "any_hour": true,
+   "minutes": 8,
+   "sound": "ring_clink",
+   "lines": [
+    {
+     "k": "city.lgx.throw.1",
+     "h": [
+      6,
+      21
+     ]
+    },
+    {
+     "k": "city.lgx.throw.2",
+     "h": [
+      6,
+      21
+     ]
+    },
+    {
+     "k": "city.lgx.throw.2",
+     "h": [
+      21,
+      6
+     ]
+    }
+   ],
+   "game": {
+    "type": "aim",
+    "title": "city.lgx.throw.title",
+    "rounds": 5,
+    "need": 6,
+    "speed": 0.8,
+    "zone": 0.22,
+    "win": [
+     "city.lgx.throw.win.1",
+     "city.lgx.throw.win.2"
+    ],
+    "lose": "city.lgx.throw.lose",
+    "draw": "city.lgx.throw.draw",
+    "collect": "lg_towers/throw",
+    "prize": [
+     [
+      "candy",
+      1
+     ]
+    ],
+    "daily": 2,
+    "sounds": {
+     "hit": "ring_clink",
+     "end": "rest_bell"
+    }
+   }
+  },
+  "lg_flagstate": {
+   "prompt": "city.lgx.flag.prompt",
+   "like": "look_misc",
+   "any_hour": true,
+   "minutes": 1,
+   "lines": [
+    {
+     "k": "city.lgx.flag.1",
+     "h": [
+      6,
+      21
+     ]
+    },
+    {
+     "k": "city.lgx.flag.2",
+     "weather": "rain",
+     "h": [
+      6,
+      21
+     ]
+    },
+    {
+     "k": "city.lgx.flag.3",
+     "weather": "fog",
+     "h": [
+      6,
+      21
+     ]
+    },
+    {
+     "k": "city.lgx.flag.4",
+     "weather": "cold",
+     "h": [
+      6,
+      21
+     ]
+    },
+    {
+     "k": "city.lgx.flag.5",
+     "weather": "warm",
+     "h": [
+      6,
+      21
+     ]
+    },
+    {
+     "k": "city.lgx.flag.6",
+     "weather": "snow",
+     "h": [
+      6,
+      21
+     ]
+    },
+    {
+     "k": "city.lgx.flag.7",
+     "h": [
+      21,
+      6
+     ]
+    },
+    {
+     "k": "city.lgx.flag.8",
+     "festival": "any"
+    }
+   ]
+  },
+  "lg_tidestaff": {
+   "prompt": "city.lgx.staff.prompt",
+   "like": "look_misc",
+   "any_hour": true,
+   "minutes": 1,
+   "lines": [
+    {
+     "k": "city.lgx.staff.1"
+    },
+    {
+     "k": "city.lgx.staff.2",
+     "weather": "rain"
+    },
+    {
+     "k": "city.lgx.staff.3",
+     "weather": "fog"
+    },
+    {
+     "k": "city.lgx.staff.4",
+     "weather": "clear",
+     "h": [
+      6,
+      21
+     ]
+    }
+   ]
+  },
+  "lg_bell": {
+   "prompt": "city.lgx.bell.prompt",
+   "like": "use_misc",
+   "any_hour": true,
+   "minutes": 1,
+   "sound": "bell_ring",
+   "lines": [
+    {
+     "k": "city.lgx.bell.1",
+     "h": [
+      10,
+      21
+     ]
+    },
+    {
+     "k": "city.lgx.bell.2",
+     "h": [
+      6,
+      10
+     ]
+    },
+    {
+     "k": "city.lgx.bell.3",
+     "weather": "fog",
+     "h": [
+      6,
+      21
+     ]
+    },
+    {
+     "k": "city.lgx.bell.4",
+     "h": [
+      21,
+      6
+     ]
+    }
+   ]
+  },
+  "lg_binoc_w": {
+   "prompt": "city.lgx.binw.prompt",
+   "like": "use_misc",
+   "any_hour": true,
+   "minutes": 4,
+   "price": 0,
+   "sound": "coin_drop",
+   "lines": [
+    {
+     "k": "city.lgx.binw.1",
+     "h": [
+      10,
+      17
+     ]
+    },
+    {
+     "k": "city.lgx.binw.2",
+     "h": [
+      6,
+      10
+     ]
+    },
+    {
+     "k": "city.lgx.binw.3",
+     "h": [
+      17,
+      21
+     ]
+    },
+    {
+     "k": "city.lgx.binw.4",
+     "h": [
+      21,
+      6
+     ]
+    },
+    {
+     "k": "city.lgx.binw.5",
+     "weather": "fog",
+     "h": [
+      6,
+      21
+     ]
+    },
+    {
+     "k": "city.lgx.binw.6",
+     "weather": "rain",
+     "h": [
+      6,
+      21
+     ]
+    },
+    {
+     "k": "city.lgx.binw.7",
+     "weather": "cold",
+     "h": [
+      6,
+      21
+     ]
+    },
+    {
+     "k": "city.lgx.binw.8",
+     "festival": "any",
+     "h": [
+      6,
+      21
+     ]
+    }
+   ]
+  },
+  "lg1_duty": {
+   "prompt": "city.lgx.duty.prompt",
+   "like": "look_misc",
+   "any_hour": true,
+   "minutes": 2,
+   "sound": "page_turn",
+   "lines": [
+    "city.lgx.duty.l1"
+   ],
+   "read": {
+    "texts": [
+     "lg1_duty"
+    ],
+    "rotate": "use"
+   }
+  },
+  "lg2_duty": {
+   "prompt": "city.lgx.duty.prompt",
+   "like": "look_misc",
+   "any_hour": true,
+   "minutes": 2,
+   "sound": "page_turn",
+   "lines": [
+    "city.lgx.duty.l1"
+   ],
+   "read": {
+    "texts": [
+     "lg2_duty"
+    ],
+    "rotate": "use"
+   }
   }
  },
  "rules": {
@@ -1373,6 +1726,33 @@
   },
   "lifeguard_tower/lost_box": {
    "act": "lg_lost_box"
+  },
+  "lifeguard_tower/gear_locker": {
+   "act": "lg_gear"
+  },
+  "lifeguard_tower/spine_board": {
+   "act": "lg_board"
+  },
+  "lifeguard_tower/ring_post": {
+   "act": "lg_throw"
+  },
+  "lifeguard_tower/flag_mast": {
+   "act": "lg_flagstate"
+  },
+  "lifeguard_tower/tide_staff": {
+   "act": "lg_tidestaff"
+  },
+  "lifeguard_tower/deck_bell": {
+   "act": "lg_bell"
+  },
+  "lifeguard_tower/deck_binoc_w": {
+   "act": "lg_binoc_w"
+  },
+  "P-LIFEGUARD1/duty_ledger": {
+   "act": "lg1_duty"
+  },
+  "P-LIFEGUARD2/duty_ledger": {
+   "act": "lg2_duty"
   }
  },
  "quests": [
@@ -1487,6 +1867,127 @@
      }
     }
    ]
+  },
+  {
+   "id": "lifeguard_rounds",
+   "kind": "side",
+   "start_on": {
+    "event": "visit",
+    "target": "P-LIFEGUARD1"
+   },
+   "stages": [
+    {
+     "id": "ledger",
+     "objectives": [
+      {
+       "id": "read1",
+       "event": "do",
+       "target": "lg1_duty"
+      }
+     ]
+    },
+    {
+     "id": "throw",
+     "objectives": [
+      {
+       "id": "win",
+       "event": "win",
+       "target": "lg_throw"
+      }
+     ]
+    },
+    {
+     "id": "second",
+     "objectives": [
+      {
+       "id": "read2",
+       "event": "do",
+       "target": "lg2_duty"
+      }
+     ],
+     "reward": {
+      "rubles": 30,
+      "items": {
+       "tea": 1
+      }
+     }
+    }
+   ]
   }
- ]
+ ],
+ "texts": {
+  "lg1_duty": {
+   "title": "city.lgx.duty.title1",
+   "kind": "ledger",
+   "minutes": 2,
+   "collect": "lg_towers/tower1",
+   "pages": [
+    "city.lgx.d1.1",
+    {
+     "k": "city.lgx.d1.2",
+     "after": 0
+    },
+    {
+     "k": "city.lgx.d1.3",
+     "after": 2
+    },
+    {
+     "k": "city.lgx.d1.4",
+     "after": 4
+    },
+    {
+     "k": "city.lgx.d1.5",
+     "after": 7
+    },
+    {
+     "k": "city.lgx.d1.6",
+     "after": 10
+    }
+   ]
+  },
+  "lg2_duty": {
+   "title": "city.lgx.duty.title2",
+   "kind": "ledger",
+   "minutes": 2,
+   "collect": "lg_towers/tower2",
+   "pages": [
+    "city.lgx.d2.1",
+    {
+     "k": "city.lgx.d2.2",
+     "after": 0
+    },
+    {
+     "k": "city.lgx.d2.3",
+     "after": 2
+    },
+    {
+     "k": "city.lgx.d2.4",
+     "after": 4
+    },
+    {
+     "k": "city.lgx.d2.5",
+     "after": 7
+    },
+    {
+     "k": "city.lgx.d2.6",
+     "after": 10
+    }
+   ]
+  }
+ },
+ "collections": {
+  "lg_towers": {
+   "title": "city.lgx.coll.title",
+   "pieces": [
+    "tower1",
+    "tower2",
+    "throw"
+   ]
+  }
+ },
+ "closed_by": {
+  "lifeguard_tower": {
+   "*": "city.lgx.closed.*"
+  }
+ }
 }

@@ -688,5 +688,670 @@
   "ru": "Мастер ничего не сказал, только поставил на прилавок чашку чая и вторую рядом. Кому она, спрашивать не стал. Мне дали ключ — «на всякий случай».",
   "en": "The mender said nothing, only put a cup of tea on the counter and a second beside it. I didn't ask for whom. I was given a key, \"just in case.\"",
   "ja": "修理屋は何も言わず、カウンターにお茶を一杯、その隣にもう一杯置いた。誰の分かは聞かなかった。「念のため」と鍵を渡された。"
+ },
+ "city.xk.use2.prompt": {
+  "ru": "E — сесть",
+  "en": "E — sit down",
+  "ja": "E：座る"
+ },
+ "city.xk.tt.1": {
+  "ru": "Будни, утро: автобус каждые десять минут. Кто-то подписал карандашом: «Каждые двенадцать».",
+  "en": "Weekday mornings: a bus every ten minutes. Someone has pencilled underneath: \"Every twelve.\"",
+  "ja": "平日の朝は十分おきにバスが来る。誰かが鉛筆で「実際は十二分おき」と書き足している。"
+ },
+ "city.xk.tt.2": {
+  "ru": "Будни, день: интервал двадцать минут. Под столбцом «Дневные» мелом: «Кроме обеда».",
+  "en": "Weekdays, midday: a twenty-minute gap. Under the \"Daytime\" column in chalk: \"Except lunch.\"",
+  "ja": "平日の昼間は二十分おき。「昼の便」の欄の下にチョークで「昼食時は除く」。"
+ },
+ "city.xk.tt.3": {
+  "ru": "Будни, вечер: опять чаще. На остановке пахнет пирожками из чьей-то сумки.",
+  "en": "Weekday evenings: more often again. The stop smells of pies from somebody's bag.",
+  "ja": "平日の夕方はまた本数が増える。誰かの鞄から出たピロシキの匂いが停留所に漂っている。"
+ },
+ "city.xk.tt.4": {
+  "ru": "Выходные: автобус реже, зато в каждом рейсе кто-нибудь с корзиной или с удочкой.",
+  "en": "Weekends: fewer buses, but every one carries somebody with a basket or a fishing rod.",
+  "ja": "週末は本数が減る。そのかわりどの便にも、かごか釣り竿を持った人がいる。"
+ },
+ "city.xk.tt.5": {
+  "ru": "Сейчас {time}. Автобусов до утра нет; расписание просто держит место до первого рейса.",
+  "en": "It is {time}. No buses until morning; the timetable just keeps the place till the first run.",
+  "ja": "いまは{time}。朝までバスは来ない。時刻表は始発まで場所を取っておくだけだ。"
+ },
+ "city.xk.tt.6": {
+  "ru": "В дождь рядом с цифрами приписано от руки: «+5 минут». Дописали и под вчерашней цифрой.",
+  "en": "In the rain someone has written \"+5 minutes\" by the figures. Yesterday's figure has one too.",
+  "ja": "雨の日は数字の横に手書きで「+5分」。きのうの数字の下にも書いてある。"
+ },
+ "city.xk.tt.7": {
+  "ru": "В снег расписание — пожелание. В уголке кто-то нарисовал снеговика с билетом в руке.",
+  "en": "In snow the timetable is a wish. In the corner somebody drew a snowman holding a ticket.",
+  "ja": "雪の日の時刻表は願望にすぎない。隅に、切符を持った雪だるまが描かれている。"
+ },
+ "city.xk.tt.8": {
+  "ru": "В праздники автобус ходит по воскресному расписанию. Об этом сообщает бумажка, приклеенная прямо на стекло.",
+  "en": "On holidays the bus runs to the Sunday timetable. A scrap of paper stuck on the glass says so.",
+  "ja": "祝日は日曜ダイヤで運行される。ガラスに貼られた紙切れがそう告げている。"
+ },
+ "city.xk.tt.9": {
+  "ru": "Внизу наклейка: «Остановка по требованию. Подними руку».",
+  "en": "At the bottom a sticker: \"Request stop. Raise your hand.\"",
+  "ja": "下にシールが貼ってある。「リクエスト停留所。手を上げてください」。"
+ },
+ "city.xk.tt.10": {
+  "ru": "Внизу карандашом: «Водитель Лёва машет рукой. Помашите в ответ».",
+  "en": "Pencilled at the bottom: \"The driver, Lyova, waves. Wave back.\"",
+  "ja": "下に鉛筆で「運転手のリョーヴァは手を振る。振り返してあげて」。"
+ },
+ "city.xk.tt.11": {
+  "ru": "Внизу детским почерком: «Автобус нарисован на обороте». Оборот приклеен к стеклу, так что верить приходится на слово.",
+  "en": "At the bottom in a child's hand: \"The bus is drawn on the back.\" The back is stuck to the glass, so you have to take it on trust.",
+  "ja": "下に子どもの字で「バスの絵は裏にあります」。裏はガラスに貼りついているので、信じるしかない。"
+ },
+ "city.xk.nt.1": {
+  "ru": "«Нашлась варежка. Левая. Спросите у киоскёра: он носит её на лацкане, пока хозяин не объявится».",
+  "en": "\"A mitten found. A left one. Ask the kiosk keeper: he wears it on his lapel until the owner turns up.\"",
+  "ja": "「手袋を拾いました。左手用。持ち主が現れるまで、売り子さんが襟に付けています」。"
+ },
+ "city.xk.nt.2": {
+  "ru": "Школьный проект: «Паспорт остановки». Нужны печати со всех шести киосков. Бумага у вожатой, чернила у киоскёров.",
+  "en": "A school project: \"Bus-stop passport.\" It needs stamps from all six kiosks. The paper is with the group leader, the ink with the kiosk keepers.",
+  "ja": "学校のプロジェクト「停留所パスポート」。六つのキオスクすべてのスタンプが必要。紙は指導員、インクは売り子さんのところ。"
+ },
+ "city.xk.nt.3": {
+  "ru": "Листок: «Куплю велосипед. Не очень быстрый». Номер телефона оторван весь, кроме последней цифры.",
+  "en": "A slip: \"Wanted: a bicycle. Not too fast.\" The phone number has been torn off, all but the last digit.",
+  "ja": "紙切れ。「自転車求む。あまり速くないもの」。電話番号は最後の一桁を残してちぎられている。"
+ },
+ "city.xk.nt.4": {
+  "ru": "Печатей в паспортах уже набралось у троих. Кто-то приписал: «А четвёртый вернулся за последней и забыл, где она».",
+  "en": "Three people already have a full row of stamps in their passports. Someone added: \"A fourth went back for the last one and forgot where it was.\"",
+  "ja": "パスポートのスタンプを集め終えたのはもう三人。誰かが書き足した。「四人目は最後の一つを取りに戻って、場所を忘れた」。"
+ },
+ "city.xk.nt.5": {
+  "ru": "Записка: «Пропал абажур. Приметы: жёлтый, любит ветер».",
+  "en": "A note: \"Lost: a lampshade. Marks: yellow, likes the wind.\"",
+  "ja": "メモ。「ランプシェード紛失。特徴：黄色、風が好き」。"
+ },
+ "city.xk.nt.6": {
+  "ru": "«Проект защищён на пятёрку. Спасибо всем шести киоскам. Печати оставьте себе, они красивее оценки».",
+  "en": "\"The project was defended with top marks. Thanks to all six kiosks. Keep the stamps, they are prettier than the grade.\"",
+  "ja": "「プロジェクトは満点で発表を終えました。六つのキオスクのみなさん、ありがとう。スタンプはお手元に。成績より綺麗です」。"
+ },
+ "city.xk.nt.7": {
+  "ru": "Над всеми объявлениями лента: сегодня праздник. Автобус ходит по воскресному.",
+  "en": "A ribbon runs over all the notices: it is a holiday. The bus keeps to its Sunday run.",
+  "ja": "掲示の上に飾りのリボンが渡してある。今日は祝日。バスは日曜ダイヤで走る。"
+ },
+ "city.xk.nt.8": {
+  "ru": "Чернила на листках с телефонами расплылись под дождём. Читается только слово «звоните».",
+  "en": "The ink on the phone-number slips has run in the rain. Only the word \"call\" can be read.",
+  "ja": "雨で電話番号の紙のインクがにじんでいる。読めるのは「お電話を」の一語だけ。"
+ },
+ "city.xk.stamp.prompt": {
+  "ru": "E — поставить печать в паспорт остановки",
+  "en": "E — stamp the bus-stop passport",
+  "ja": "E：停留所パスポートに押印する"
+ },
+ "city.xk.coll.pass.title": {
+  "ru": "Паспорт остановки",
+  "en": "Bus-stop passport",
+  "ja": "停留所パスポート"
+ },
+ "city.xk.stamp.rain": {
+  "ru": "От дождя оттиск выходит чуть размытым, как печать на старой открытке. Так даже красивее.",
+  "en": "In the rain the print comes out a little blurred, like a postmark on an old card. It looks better that way.",
+  "ja": "雨のせいでスタンプは少しにじみ、古い絵葉書の消印のようになる。かえっていい感じだ。"
+ },
+ "city.xk.stamp1.1": {
+  "ru": "Печать «Газета»: развёрнутый лист с колонками. Оттиск выходит чуть косым, будто спешил в номер.",
+  "en": "The \"Newspaper\" stamp: an open sheet with columns. The print comes out slightly slanted, as if rushing to make the issue.",
+  "ja": "「新聞」のスタンプ。段組みの紙面が開いている。押すと少し斜めになる。締め切りに急いでいるみたいに。"
+ },
+ "city.xk.stamp1.2": {
+  "ru": "Утром чернила свежие: даже мелкие колонки читаются, а дата выходит жирно.",
+  "en": "In the morning the ink is fresh: even the small columns read, and the date prints bold.",
+  "ja": "朝はインクが新しい。細かい段組みまで読めて、日付が太く出る。"
+ },
+ "city.xk.stamp1.3": {
+  "ru": "В темноте печать получается вслепую. На бумаге остаётся пятно в форме облака, и всё равно засчитывают.",
+  "en": "In the dark the stamp goes down blind. A cloud-shaped blot stays on the paper, and it still counts.",
+  "ja": "暗がりでは手探りで押すことになる。紙には雲の形のしみが残るが、それでも有効だ。"
+ },
+ "city.xk.stamp2.1": {
+  "ru": "Печать «Мороженое»: рожок с тремя шариками. Чернила пахнут ванилью. Наверное, кто-то подмешал.",
+  "en": "The \"Ice cream\" stamp: a cone with three scoops. The ink smells of vanilla. Somebody must have mixed it in.",
+  "ja": "「アイス」のスタンプ。三段のコーン。インクはバニラの香りがする。誰かが混ぜたのだろう。"
+ },
+ "city.xk.stamp2.2": {
+  "ru": "Днём печать липнет к пальцам: рядом холодильник, и в нём всегда что-нибудь капает.",
+  "en": "By day the stamp sticks to the fingers: the freezer is next to it and always drips something.",
+  "ja": "昼間はスタンプが指にくっつく。すぐ横の冷凍庫がいつも何かしら滴らせているからだ。"
+ },
+ "city.xk.stamp2.3": {
+  "ru": "Ночью рожок на печати выходит перевёрнутым. Продавщица говорит, что так он не тает.",
+  "en": "At night the cone prints upside down. The seller says that way it doesn't melt.",
+  "ja": "夜はコーンが逆さに出る。売り子さんは「こうすれば溶けない」と言う。"
+ },
+ "city.xk.stamp3.1": {
+  "ru": "Печать «Спички»: один коробок на всю картинку. Оттиск ровный, пальцы пахнут серой и смолой.",
+  "en": "The \"Matches\" stamp: one matchbox filling the whole picture. The print is even; the fingers smell of sulphur and resin.",
+  "ja": "「マッチ」のスタンプ。マッチ箱が一つだけ絵になっている。押し跡は整っていて、指は硫黄と松脂の匂いがする。"
+ },
+ "city.xk.stamp3.2": {
+  "ru": "Днём киоск открыт, и печать лежит на видном месте. Вес у неё такой, что оттиск не шевелится.",
+  "en": "By day the kiosk is open and the stamp lies in plain view. It is heavy enough that the print never shifts.",
+  "ja": "昼間はキオスクが開いていて、スタンプが目立つところにある。重みがあるので押し跡がずれない。"
+ },
+ "city.xk.stamp3.3": {
+  "ru": "Вечером коробок выходит светлее: чернила на печати к ночи сохнут. Чуть нажми сильнее, и всё видно.",
+  "en": "In the evening the box prints paler: the ink dries toward night. Press a little harder and it shows.",
+  "ja": "夕方にはマッチ箱が淡く出る。インクが夜に向かって乾くのだ。少し強く押せば、ちゃんと写る。"
+ },
+ "city.xk.stamp4.1": {
+  "ru": "Печать «Цветок»: ромашка из шести лепестков. Один лепесток всегда не дотягивает: так задумано.",
+  "en": "The \"Flower\" stamp: a six-petal daisy. One petal always falls short; it is meant to.",
+  "ja": "「花」のスタンプ。六枚の花びらのデイジー。一枚だけいつも足りない。そういうデザインだ。"
+ },
+ "city.xk.stamp4.2": {
+  "ru": "С утра на печати капля росы, и оттиск блестит, пока не высохнет.",
+  "en": "In the morning there is a drop of dew on the stamp, and the print gleams until it dries.",
+  "ja": "朝はスタンプに露のしずくが付いていて、押し跡は乾くまで光っている。"
+ },
+ "city.xk.stamp4.3": {
+  "ru": "Вечером цветочница перед закрытием поливает всё, включая печать. Оттиск выходит влажным.",
+  "en": "In the evening the florist waters everything before closing, the stamp included. The print comes out damp.",
+  "ja": "夕方、花屋さんは閉店前に何でも水やりする。スタンプも例外ではなく、押し跡は湿っている。"
+ },
+ "city.xk.stamp5.1": {
+  "ru": "Печать «Кабина»: красная гондола на тросе. Чернила красные, как и положено линии «Академгородок — Атон».",
+  "en": "The \"Cabin\" stamp: a red gondola on a cable. The ink is red, as the Akademgorodok-Aton line should have it.",
+  "ja": "「ゴンドラ」のスタンプ。ケーブルに下がる赤いゴンドラ。インクは赤。アカデムゴロドク―アトン線にふさわしい。"
+ },
+ "city.xk.stamp5.2": {
+  "ru": "В часы поездок оттиск ставят все подряд, и на листе уже набирается маленькая очередь из гондол.",
+  "en": "At travel hours everybody stamps, and a little queue of gondolas builds up on the sheet.",
+  "ja": "乗客の多い時間は誰もが押していくので、紙の上にゴンドラの小さな行列ができる。"
+ },
+ "city.xk.stamp5.3": {
+  "ru": "Ночью кабина на печати выходит на фоне звёзд: чернила тёмно-синие. Диспетчер говорит: так положено после девяти.",
+  "en": "At night the cabin prints against stars: the ink is dark blue. The dispatcher says that is the rule after nine.",
+  "ja": "夜はゴンドラが星空を背景に出る。インクは濃紺。「九時を過ぎたらそう決まっている」と運行係。"
+ },
+ "city.xk.stamp6.1": {
+  "ru": "Печать «Ключ»: латунный ключ с тремя зубцами. Оттиск такой чёткий, что им можно было бы открыть бумагу.",
+  "en": "The \"Key\" stamp: a brass key with three teeth. The print is so crisp you could unlock the paper with it.",
+  "ja": "「鍵」のスタンプ。三つの歯のある真鍮の鍵。押し跡があまりに鮮明で、紙も開けられそうだ。"
+ },
+ "city.xk.stamp6.2": {
+  "ru": "Днём в будке тикают часы, и печать ставится в ритм: тик, тик, оттиск.",
+  "en": "By day the clocks tick in the booth and the stamp goes down in rhythm: tick, tick, print.",
+  "ja": "昼間は小屋の中で時計が鳴り、スタンプも拍子に合わせて押される。チク、タク、ポン。"
+ },
+ "city.xk.stamp6.3": {
+  "ru": "Вечером мастер протирает печать тряпкой для часов. После этого ключ на оттиске блестит, как настоящий.",
+  "en": "In the evening the repairer wipes the stamp with the watch cloth. After that the key on the print shines like a real one.",
+  "ja": "夕方、修理屋さんは時計用の布でスタンプを拭く。そのあと押し跡の鍵は本物みたいに光る。"
+ },
+ "city.xk.1_wall.prompt": {
+  "ru": "E — прочесть газету на стенде",
+  "en": "E — read the paper on the stand",
+  "ja": "E：スタンドの新聞を読む"
+ },
+ "city.xk.1_wall.l1": {
+  "ru": "Газета на стенде под стеклом: сегодняшний номер, уже с отпечатками носов.",
+  "en": "The paper on the stand, under glass: today's issue, already with nose prints on it.",
+  "ja": "スタンドのガラスの下の新聞。今日の号で、もう鼻の跡がついている。"
+ },
+ "city.xk.1_wall.title": {
+  "ru": "Стенная газета у киоска",
+  "en": "The wall paper by the kiosk",
+  "ja": "キオスク脇の壁新聞"
+ },
+ "city.xk.1_wall.p1": {
+  "ru": "ПЕРЕДОВАЯ. «Остановка — это место, где город на минуту перестаёт спешить и начинает читать». Редколлегия: продавец газет и один голубь.",
+  "en": "LEADER. \"A bus stop is the place where the town stops hurrying for a minute and starts reading.\" Editorial board: the newspaper seller and one pigeon.",
+  "ja": "社説。「停留所とは、町がほんの一分あわてるのをやめて、読書を始める場所である」。編集部：新聞売りと鳩一羽。"
+ },
+ "city.xk.1_wall.p2a": {
+  "ru": "ЖИЗНЬ ГОРОДА. Вчера на пирсе прошла выставка удочек. Победила та, которая ничего не поймала, зато красиво висела.",
+  "en": "TOWN LIFE. Yesterday the pier held an exhibition of fishing rods. The winner caught nothing, but hung beautifully.",
+  "ja": "町の話題。昨日、桟橋で釣り竿の展覧会があった。優勝したのは何も釣れなかったが、飾りとして美しかった一本。"
+ },
+ "city.xk.1_wall.p2b": {
+  "ru": "ЖИЗНЬ ГОРОДА. На канатной дороге нашли чемодан без хозяина. Внутри только вторая варежка и бутерброд с запиской «Тёплое с утра».",
+  "en": "TOWN LIFE. An unclaimed suitcase was found on the cable car. Inside: just a second mitten and a sandwich with a note, \"Warm since morning.\"",
+  "ja": "町の話題。ロープウェイで持ち主のいないスーツケースが見つかった。中には手袋の片方と、「朝からあったかい」というメモ付きのサンドイッチだけ。"
+ },
+ "city.xk.1_wall.p2c": {
+  "ru": "ЖИЗНЬ ГОРОДА. Школьники собирают печати со всех киосков: «Паспорт остановки». Взрослым тоже можно, но с мороженым.",
+  "en": "TOWN LIFE. Schoolchildren are collecting stamps from every kiosk: the \"Bus-stop passport.\" Grown-ups may join too, with ice cream.",
+  "ja": "町の話題。子どもたちがすべてのキオスクでスタンプを集めている。「停留所パスポート」だ。大人も参加できる。ただしアイス付きで。"
+ },
+ "city.xk.1_wall.p3a": {
+  "ru": "ПОГОДА. Дождь, сказано в сводке. Пусть пока сам вспомнит, зачем пришёл.",
+  "en": "WEATHER. Rain, says the forecast. Let it remember first what it came for.",
+  "ja": "天気。予報は雨。まず、何をしに来たのか思い出してもらおう。"
+ },
+ "city.xk.1_wall.p3b": {
+  "ru": "ПОГОДА. Ясно. Редакция рекомендует выйти из дома без зонта и вернуться без него же.",
+  "en": "WEATHER. Clear. The editors advise leaving the house without an umbrella and coming back without one.",
+  "ja": "天気。晴れ。編集部のおすすめ：傘を持たずに出かけて、傘なしで帰ってくること。"
+ },
+ "city.xk.1_wall.p3c": {
+  "ru": "ПОГОДА. Облачно с прояснениями в разговорах. Прогноз на завтра будет в завтрашнем номере.",
+  "en": "WEATHER. Overcast with sunny spells in conversation. Tomorrow's forecast will be in tomorrow's issue.",
+  "ja": "天気。くもり、会話の中でときどき晴れ。明日の予報は明日の号に。"
+ },
+ "city.xk.2_crate.1": {
+  "ru": "Ящик из-под лимонада: сидеть жёстко и очень хорошо. Отсюда видно очередь, а значит, видно, как идут дела.",
+  "en": "A lemonade crate: hard to sit on and very good. From here you see the queue, so you see how business goes.",
+  "ja": "レモネードの木箱。座り心地は硬いが、とてもいい。行列が見えるので、商売の具合もわかる。"
+ },
+ "city.xk.2_crate.2": {
+  "ru": "Жарко: ящик в тени навеса кажется самым прохладным местом в городе. Рядом растёт лужица от растаявшего рожка.",
+  "en": "Hot: in the awning's shade the crate seems the coolest spot in town. A puddle from a melted cone is growing next to it.",
+  "ja": "暑い日。日よけの影の木箱は町でいちばん涼しい場所に思える。そばには溶けたコーンの水たまりが広がっていく。"
+ },
+ "city.xk.2_crate.3": {
+  "ru": "Дождь стучит по тенту, а под ним сухо. Продавщица передаёт через окошко салфетку, не спрашивая.",
+  "en": "Rain drums on the awning and it is dry beneath. The seller passes a napkin through the hatch without being asked.",
+  "ja": "雨が日よけを叩くが、下は乾いている。売り子さんは何も言わずに窓から紙ナプキンを渡してくれる。"
+ },
+ "city.xk.2_crate.4": {
+  "ru": "Ящик ещё хранит дневное тепло. Холодильник за стенкой тихо гудит колыбельную.",
+  "en": "The crate still holds the day's warmth. The freezer behind the wall hums a quiet lullaby.",
+  "ja": "木箱にはまだ昼の温もりが残っている。壁の向こうで冷凍庫が小さな子守唄をうなっている。"
+ },
+ "city.xk.2_thermo.prompt": {
+  "ru": "E — взглянуть на термометр",
+  "en": "E — check the thermometer",
+  "ja": "E：温度計を見る"
+ },
+ "city.xk.2_thermo.1": {
+  "ru": "Уличный термометр с крупными цифрами. Продавщица ставит по нему ассортимент: ниже десяти — только пломбир, выше двадцати — всё.",
+  "en": "A street thermometer with big figures. The seller sets her range by it: under ten, only plain ice cream; over twenty, everything.",
+  "ja": "大きな数字の屋外温度計。売り子さんはこれで品ぞろえを決める。十度以下はクリームアイスだけ、二十度以上は全種類。"
+ },
+ "city.xk.2_thermo.2": {
+  "ru": "Столбик высоко: у отметки красным фломастером написано «рожки идут». Очередь тоже.",
+  "en": "The column is high: by the mark in red felt-tip, \"cones going well.\" So is the queue.",
+  "ja": "水銀柱が高い。赤いフェルトペンの目盛りに「コーン好調」。行列も好調だ。"
+ },
+ "city.xk.2_thermo.3": {
+  "ru": "Столбик спрятался внизу. Рядом синим: «Всё равно приходите. Мы вам обрадуемся, а мороженое — нет».",
+  "en": "The column has crept to the bottom. In blue beside it: \"Come anyway. We'll be glad; the ice cream won't be.\"",
+  "ja": "水銀柱は下のほうに縮こまっている。横に青字で「それでも来てね。こっちは嬉しい、アイスはそうでもない」。"
+ },
+ "city.xk.2_thermo.4": {
+  "ru": "Моросит. Столбик на ровной отметке, а продавщица читает книжку и подкладывает под неё картонку: на случай капель.",
+  "en": "Drizzle. The column sits on an even mark and the seller reads a book, with a piece of card under it in case of drops.",
+  "ja": "小雨。水銀柱は中間くらい。売り子さんは本を読みながら、水滴に備えて下に厚紙を敷いている。"
+ },
+ "city.xk.2_thermo.5": {
+  "ru": "Ночью столбик стоит, как часовой. На картонке под ним мелом: «Спокойной ночи, лето».",
+  "en": "At night the column stands like a sentry. On the card below, in chalk: \"Goodnight, summer.\"",
+  "ja": "夜、水銀柱は見張りのように立っている。下の厚紙にチョークで「おやすみ、夏」。"
+ },
+ "city.xk.3_lotto.prompt": {
+  "ru": "E — посмотреть таблицу тиража",
+  "en": "E — look at the draw sheet",
+  "ja": "E：抽選結果の表を見る"
+ },
+ "city.xk.3_lotto.1": {
+  "ru": "Лотерейная таблица, напечатанная на машинке: номера, суммы, пустые клетки. Победителей в списке нет, но место для них оставлено.",
+  "en": "A typed lottery sheet: numbers, sums, empty boxes. No winners are listed, but room has been left for them.",
+  "ja": "タイプで打った宝くじの表。番号、賞金、空欄。当選者の名前はないが、書く場所は空けてある。"
+ },
+ "city.xk.3_lotto.2": {
+  "ru": "Вчерашний тираж: 4, 11, 17, 23, 31, 37. Кто-то обвёл тридцатку красным и поставил три вопроса.",
+  "en": "Yesterday's draw: 4, 11, 17, 23, 31, 37. Somebody circled the thirty in red with three question marks.",
+  "ja": "昨日の抽選。4、11、17、23、31、37。誰かが三十を赤で囲み、疑問符を三つ付けている。"
+ },
+ "city.xk.3_lotto.3": {
+  "ru": "Тираж: 2, 9, 14, 21, 28, 40. Рядом дописано: «Выпали все семёрки, кроме нужных».",
+  "en": "The draw: 2, 9, 14, 21, 28, 40. Written beside it: \"All the sevens came up except the right ones.\"",
+  "ja": "抽選。2、9、14、21、28、40。横に「七はぜんぶ出たが、必要な七だけ出ない」と書いてある。"
+ },
+ "city.xk.3_lotto.4": {
+  "ru": "Тираж: 6, 13, 19, 26, 33, 39. Под номерами чья-то подпись: «Мой день рождения 26-го. Проверено».",
+  "en": "The draw: 6, 13, 19, 26, 33, 39. A signature underneath: \"My birthday is the 26th. Checked.\"",
+  "ja": "抽選。6、13、19、26、33、39。下に誰かの書き込み。「誕生日は26日。確認済み」。"
+ },
+ "city.xk.3_lotto.5": {
+  "ru": "Тираж: 1, 8, 15, 22, 29, 36. Все числа через семь. Кто-то подписал: «Календарь выиграл».",
+  "en": "The draw: 1, 8, 15, 22, 29, 36. Every number seven apart. Someone wrote: \"The calendar won.\"",
+  "ja": "抽選。1、8、15、22、29、36。どの数字も七ずつ離れている。誰かが書いた。「カレンダーの勝ち」。"
+ },
+ "city.xk.3_chair.1": {
+  "ru": "Стул с ватной подушкой: хозяин держит его для тех, кто стесняется попросить присесть.",
+  "en": "A chair with a cotton cushion: the owner keeps it for those who are too shy to ask for a seat.",
+  "ja": "綿入りのクッションの椅子。座っていいかと言い出せない人のために、店主が置いている。"
+ },
+ "city.xk.3_chair.2": {
+  "ru": "В выходные на стуле сидят старики и обсуждают расписание так, будто пишут его сами.",
+  "en": "At weekends old men sit here and discuss the timetable as if they were writing it.",
+  "ja": "週末はお年寄りがこの椅子に座り、まるで自分たちで作ったかのように時刻表を論じている。"
+ },
+ "city.xk.3_chair.3": {
+  "ru": "Дождь стекает с края навеса ровно в пяти сантиметрах от колен. Хозяин говорит, что рассчитал.",
+  "en": "Rain runs off the awning's edge exactly five centimetres from the knees. The owner says he worked it out.",
+  "ja": "雨は日よけの端から、ちょうど膝の五センチ手前に落ちる。店主は「計算した」と言う。"
+ },
+ "city.xk.3_chair.4": {
+  "ru": "Вечерами подушка пахнет трубочным табаком и яблоками. Кто-то оставил здесь надкусанное.",
+  "en": "In the evenings the cushion smells of pipe tobacco and apples. Someone has left a bitten one here.",
+  "ja": "夕方のクッションはパイプ煙草とリンゴの匂いがする。誰かがかじりかけのリンゴを置いていった。"
+ },
+ "city.xk.4_cal.prompt": {
+  "ru": "E — прочесть календарь цветочницы",
+  "en": "E — read the florist's calendar",
+  "ja": "E：花屋さんのカレンダーを読む"
+ },
+ "city.xk.4_cal.1": {
+  "ru": "Календарь цветочницы, зима: гиацинты в горшках, еловые ветки и всё, что можно унести в тёплую квартиру. Красным обведён день, когда привозят мимозу.",
+  "en": "The florist's calendar, winter: hyacinths in pots, fir twigs and whatever can be carried into a warm flat. The day the mimosa arrives is ringed in red.",
+  "ja": "花屋さんのカレンダー、冬。鉢のヒヤシンス、モミの枝、暖かい部屋に持ち帰れるものすべて。ミモザが届く日は赤で囲んである。"
+ },
+ "city.xk.4_cal.2": {
+  "ru": "Календарь цветочницы, весна: тюльпаны к Восьмому марта, нарциссы, потом сирень. На сирень стоит цифра «приблизительно», нарисованная двумя разными ручками.",
+  "en": "The florist's calendar, spring: tulips for the Eighth of March, narcissi, then lilac. The lilac has \"approximately\" written by it, with two different pens.",
+  "ja": "花屋さんのカレンダー、春。三月八日のチューリップ、水仙、それからライラック。ライラックの欄には二本の別のペンで「だいたい」と書いてある。"
+ },
+ "city.xk.4_cal.3": {
+  "ru": "Календарь цветочницы, лето: ромашки, васильки, подсолнухи по субботам. На полях: «Не продавать бабочек».",
+  "en": "The florist's calendar, summer: daisies, cornflowers, sunflowers on Saturdays. In the margin: \"Do not sell the butterflies.\"",
+  "ja": "花屋さんのカレンダー、夏。デイジー、ヤグルマギク、土曜はひまわり。余白に「蝶は売らないこと」。"
+ },
+ "city.xk.4_cal.4": {
+  "ru": "Календарь цветочницы, осень: астры, хризантемы, веточки рябины. Первого сентября приписано: «Много белых. Не путать с бантами».",
+  "en": "The florist's calendar, autumn: asters, chrysanthemums, sprigs of rowan. On the first of September: \"Lots of white. Don't mix up with the hair bows.\"",
+  "ja": "花屋さんのカレンダー、秋。アスター、菊、ナナカマドの小枝。九月一日の欄に「白が多い。髪のリボンと間違えないように」。"
+ },
+ "city.xk.4_cal.5": {
+  "ru": "К празднику на календаре приклеена ленточка. Под ней: «Всё, что цветёт, — сегодня подарок».",
+  "en": "A ribbon has been stuck to the calendar for the holiday. Beneath it: \"Anything that blooms is a gift today.\"",
+  "ja": "祝日にあわせてカレンダーにリボンが貼ってある。下には「咲くものは今日、すべて贈りもの」。"
+ },
+ "city.xk.4_bench.1": {
+  "ru": "Скамейка у цветочного навеса: спинка тёплая, потому что в неё упираются ведро и мотки ленты.",
+  "en": "A bench by the flower awning: the backrest is warm because a bucket and reels of ribbon lean against it.",
+  "ja": "花屋の日よけのそばのベンチ。背もたれが温かいのは、バケツとリボンの束がもたれているからだ。"
+ },
+ "city.xk.4_bench.2": {
+  "ru": "Утром скамейка влажная и пахнет водой из вёдер. Сидеть можно: цветочница подкладывает старую газету.",
+  "en": "In the morning the bench is damp and smells of the bucket water. You can sit: the florist lays down an old newspaper.",
+  "ja": "朝のベンチは湿っていて、バケツの水の匂いがする。座っても大丈夫。花屋さんが古新聞を敷いてくれる。"
+ },
+ "city.xk.4_bench.3": {
+  "ru": "Вечером здесь ждут автобус и невольно выбирают цветы. Многие сходят потом с теми, за которыми пришли.",
+  "en": "In the evening people wait for the bus here and end up choosing flowers. Many get off later holding what they came for.",
+  "ja": "夕方はバスを待つうちに、つい花を選んでしまう人が多い。降りるときには、探していた花を手にしている。"
+ },
+ "city.xk.4_sniff.prompt": {
+  "ru": "E — понюхать цветы из ведра",
+  "en": "E — smell the flowers in the bucket",
+  "ja": "E：バケツの花の香りをかぐ"
+ },
+ "city.xk.4_sniff.1": {
+  "ru": "Ткнулся носом в ближайшие цветы: пахнут горьковатой свежестью, почти как после уроков, когда открыли окна.",
+  "en": "I put my nose to the nearest flowers: a bitter freshness, almost like after lessons when the windows are opened.",
+  "ja": "いちばん近い花に鼻を寄せた。ほろ苦い新鮮さ。授業のあと窓を開けた教室のようだ。"
+ },
+ "city.xk.4_sniff.2": {
+  "ru": "После дождя хризантемы пахнут землёй и холодной водой. Хочется стоять и дышать, пока не позовут.",
+  "en": "After rain the chrysanthemums smell of earth and cold water. You want to stand and breathe until somebody calls.",
+  "ja": "雨のあとの菊は土と冷たい水の匂いがする。呼ばれるまで立って息をしていたくなる。"
+ },
+ "city.xk.4_sniff.3": {
+  "ru": "В жару пахнет мёдом и тёплой пылью. Над ведром гудит шмель и не собирается уходить.",
+  "en": "In the heat it smells of honey and warm dust. A bumblebee hums over the bucket and has no plans to leave.",
+  "ja": "暑い日は蜂蜜とあたたかい埃の匂い。バケツの上でマルハナバチがうなり、立ち去る気配はない。"
+ },
+ "city.xk.4_sniff.4": {
+  "ru": "Ночью цветы пахнут сильнее, чем днём. Или это просто тише и слышнее.",
+  "en": "At night the flowers smell stronger than by day. Or it is simply quieter and so easier to notice.",
+  "ja": "夜は花の匂いが昼より強い。それとも、静かだから気づきやすいだけだろうか。"
+ },
+ "city.xk.5_dep.prompt": {
+  "ru": "E — посмотреть на стенд с отправлениями",
+  "en": "E — look at the departures stand",
+  "ja": "E：発車案内のスタンドを見る"
+ },
+ "city.xk.5_dep.1": {
+  "ru": "Стенд отправлений: по будням кабины идут часто, для тех, кому на работу. Над расписанием маленькая красная кабинка из картона.",
+  "en": "The departures stand: on weekdays the cabins run often, for those on their way to work. Over the schedule a tiny red cardboard cabin.",
+  "ja": "発車案内のスタンド。平日はゴンドラが頻繁に出る。通勤の人のためだ。時刻表の上に小さな赤いボール紙のゴンドラ。"
+ },
+ "city.xk.5_dep.2": {
+  "ru": "Выходные: кабины идут реже и медленнее. На стенде приписка: «Вид оплачивается временем».",
+  "en": "Weekends: cabins run less often and slower. A note on the stand: \"The view is paid for in time.\"",
+  "ja": "週末はゴンドラの本数が減り、速度も遅い。スタンドに「眺めは時間で支払うもの」と書き足してある。"
+ },
+ "city.xk.5_dep.3": {
+  "ru": "Сейчас {time}. Стенд обещает: последняя кабина уходит поздно, но диспетчер просит не рисковать с последней минутой.",
+  "en": "It is {time}. The stand promises: the last cabin leaves late, but the dispatcher asks you not to risk the last minute.",
+  "ja": "いまは{time}。スタンドによれば最終のゴンドラは遅くまである。ただし運行係は、ぎりぎりを狙わないでと言う。"
+ },
+ "city.xk.5_dep.4": {
+  "ru": "Туман: на стенде красная карточка «Идём осторожно». Кабины ходят реже, но пассажиров у каждой больше.",
+  "en": "Fog: a red card on the stand, \"Running with care.\" The cabins are fewer, but each carries more passengers.",
+  "ja": "霧。スタンドに赤いカード「慎重運転中」。ゴンドラは少ないが、一台あたりの乗客は多い。"
+ },
+ "city.xk.5_dep.5": {
+  "ru": "Снег: «Кабины идут. Скамья греет. Шапку не забудьте». Последние слова приписаны чьей-то бабушкой.",
+  "en": "Snow: \"Cabins running. The bench keeps you warm. Don't forget your hat.\" The last words were added by someone's grandmother.",
+  "ja": "雪。「ゴンドラ運行中。ベンチは暖かい。帽子をお忘れなく」。最後の一言は誰かのおばあさんの書き込みだ。"
+ },
+ "city.xk.5_dep.6": {
+  "ru": "Праздничный стенд: ленточки на каждом столбике. Кабины ходят с шарами у окон.",
+  "en": "A festive stand: ribbons on every post. The cabins run with balloons at their windows.",
+  "ja": "お祭りのスタンド。どの支柱にもリボン。ゴンドラは窓に風船をつけて走る。"
+ },
+ "city.xk.5_chair.1": {
+  "ru": "Стальной стул у стенда отправлений: сидеть удобно, как в кабине, только она не раскачивается.",
+  "en": "A steel chair by the departures stand: comfortable like a cabin seat, except that it does not sway.",
+  "ja": "発車案内の脇のスチールの椅子。ゴンドラの座席のように座りやすい。ただし揺れない。"
+ },
+ "city.xk.5_chair.2": {
+  "ru": "Утром на стуле сидят те, кто едет в Атон. Они читают одну и ту же газету, но разные страницы.",
+  "en": "In the morning those bound for Aton sit here. They read the same paper, but different pages.",
+  "ja": "朝、この椅子にはアトンへ行く人が座る。同じ新聞の、別々のページを読んでいる。"
+ },
+ "city.xk.5_chair.3": {
+  "ru": "Ночью с этого стула видно, как кабина идёт по тросу огоньком. Никуда не торопится, как и ты.",
+  "en": "At night from this chair you see a cabin cross the cable as a small light. In no hurry, like you.",
+  "ja": "夜、この椅子からはゴンドラがケーブルを渡る小さな灯りになって見える。急がないところが、きみとそっくりだ。"
+ },
+ "city.xk.6_keys.1": {
+  "ru": "Доска с ключами на крючках. К каждому привязана бирка с цифрой и словом: «ждёт», «не ждёт», «ушёл, но вернётся».",
+  "en": "A board of keys on hooks. Each has a tag with a number and a word: \"waiting,\" \"not waiting,\" \"gone but will be back.\"",
+  "ja": "フックに掛かった鍵の板。どの鍵にも番号と一言の札が付いている。「待ってる」「待ってない」「出かけたが戻る」。"
+ },
+ "city.xk.6_keys.2": {
+  "ru": "Ключ с биркой «Дверь, которую нельзя открывать до среды». Среда сегодня не наступила, ключ ждёт спокойно.",
+  "en": "A key tagged \"The door not to be opened before Wednesday.\" It isn't Wednesday yet, so the key waits calmly.",
+  "ja": "「水曜までは開けてはいけない扉」という札付きの鍵。まだ水曜ではないので、鍵は静かに待っている。"
+ },
+ "city.xk.6_keys.3": {
+  "ru": "Ключ без бирки, но с красной ниткой. Мастер говорит: «Хозяин просто не любит бирки. Я вижу, что он вернётся».",
+  "en": "A key without a tag but with a red thread. The repairer says: \"The owner just doesn't like tags. I can see he will be back.\"",
+  "ja": "札はないが赤い糸の付いた鍵。修理屋さんは言う。「持ち主は札が嫌いなだけ。きっと戻ってきますよ」。"
+ },
+ "city.xk.6_keys.4": {
+  "ru": "Ключ с биркой «Маяк». Самый тяжёлый, висит ниже всех. Забирать его пока никто не пришёл.",
+  "en": "A key tagged \"Lighthouse.\" The heaviest, hanging the lowest. No one has come for it yet.",
+  "ja": "「灯台」の札の鍵。いちばん重く、いちばん低く垂れている。まだ誰も取りに来ていない。"
+ },
+ "city.xk.6_umb.prompt": {
+  "ru": "E — осмотреть зонты в стойке",
+  "en": "E — look over the umbrellas in the stand",
+  "ja": "E：傘立ての傘を調べる"
+ },
+ "city.xk.6_umb.1": {
+  "ru": "Стойка с зонтами на ремонт. У каждого бирка: у чёрного «спица», у синего «кнопка», у жёлтого «характер».",
+  "en": "A stand of umbrellas awaiting repair. Each has a tag: the black one \"spoke,\" the blue \"button,\" the yellow \"temper.\"",
+  "ja": "修理待ちの傘立て。どの傘にも札がある。黒には「骨」、青には「ボタン」、黄色には「性格」。"
+ },
+ "city.xk.6_umb.2": {
+  "ru": "Дождь, и зонтов в стойке стало меньше: мастер вернул три и взял с хозяев слово. Слово чинить не пришлось.",
+  "en": "Rain, and the stand has fewer umbrellas: the repairer has handed back three and taken the owners' word. The word needed no mending.",
+  "ja": "雨が降り、傘立ての傘が減った。修理屋さんは三本を返し、持ち主から約束を受け取った。約束は直さなくて済んだ。"
+ },
+ "city.xk.6_umb.3": {
+  "ru": "Снег: зонтов почти нет, зато появилась лопатка с биркой «ремонту не подлежит, но нужна». Её тоже взяли.",
+  "en": "Snow: almost no umbrellas, but a small shovel has appeared with a tag, \"beyond repair, but needed.\" It got taken too.",
+  "ja": "雪の日は傘がほとんどない。かわりに「修理不能、でも必要」と札のついた小さなスコップが立っている。それも持っていかれた。"
+ },
+ "city.xk.6_umb.4": {
+  "ru": "Ясно: зонты стоят без дела, как отпускники. Мастер перебирает спицы и напевает.",
+  "en": "Clear: the umbrellas stand idle like people on leave. The repairer sorts spokes and hums.",
+  "ja": "晴れの日、傘は休暇中の人のようにのんびり立っている。修理屋さんは骨をより分けて鼻歌を歌う。"
+ },
+ "city.xk.6_stool.1": {
+  "ru": "Табурет для тех, чьи часы «просто остановились». Сидеть, пока мастер не посмотрит, тик-так за стенкой вместо музыки.",
+  "en": "A stool for those whose watch has \"just stopped.\" You sit until the repairer looks, the tick-tock behind the wall in place of music.",
+  "ja": "時計が「ただ止まっただけ」の人のための丸椅子。修理屋さんが見るまで座って待つ。BGMのかわりに壁の向こうからチクタク。"
+ },
+ "city.xk.6_stool.2": {
+  "ru": "Вечером табурет тёплый от лампы за стеной. На сиденье царапина в форме стрелки: как раз без пяти.",
+  "en": "In the evening the stool is warm from the lamp behind the wall. A scratch on the seat looks like a clock hand: five to the hour.",
+  "ja": "夕方、丸椅子は壁の向こうのランプで温かい。座面の傷は時計の針のよう。ちょうど五分前だ。"
+ },
+ "city.xk.closed.hatch.1": {
+  "ru": "Окошко закрыто ставнем, на нём мелом: «Вернусь, когда вернусь». Пока ничего не происходит.",
+  "en": "The hatch is shuttered and chalked: \"Back when I'm back.\" Nothing happens meanwhile.",
+  "ja": "窓には雨戸が下り、チョークで「戻ったら戻ります」。いまは何も起こらない。"
+ },
+ "city.xk.closed.hatch.2": {
+  "ru": "Ставень опущен, замок висит на честном слове. За стеклом темно, только блестят три стеклянные банки.",
+  "en": "The shutter is down, the padlock hangs on its honour. It is dark behind the glass; only three glass jars gleam.",
+  "ja": "雨戸は下り、南京錠は信用だけでぶら下がっている。ガラスの奥は暗く、ガラスびんが三つ光っているだけ。"
+ },
+ "city.xk.closed.counter.1": {
+  "ru": "Киоск закрыт. На окошке бумажка: «Откроемся утром. Спасибо, что дождались».",
+  "en": "The kiosk is shut. A scrap on the hatch: \"Open in the morning. Thanks for waiting.\"",
+  "ja": "キオスクは閉まっている。窓に紙。「朝に開けます。待ってくださってありがとう」。"
+ },
+ "city.xk.closed.counter.2": {
+  "ru": "За ставнем тишина. Слышно только, как внутри тикает остывающий холодильник.",
+  "en": "Silence behind the shutter. Only a cooling fridge ticks inside.",
+  "ja": "雨戸の向こうは静か。中で冷えていく冷蔵庫の音だけがカチカチと鳴っている。"
+ },
+ "city.xk.closed.1.1": {
+  "ru": "Газетный киоск закрыт: стойка пуста, на крючке остались вчерашние газеты, а к ним вежливая записка «Забирайте за так».",
+  "en": "The newspaper kiosk is closed: the rack is bare, yesterday's papers hang on a hook with a polite note, \"Take them free.\"",
+  "ja": "新聞キオスクは閉まっている。ラックは空で、昨日の新聞がフックに掛かり、「ご自由にお持ちください」と丁寧なメモが添えてある。"
+ },
+ "city.xk.closed.1.2": {
+  "ru": "Свёрнутые на ночь газеты перевязаны бечёвкой. Утром их разложат, и город снова узнает, что произошло.",
+  "en": "The papers are tied up for the night with string. In the morning they will be laid out and the town will learn what happened.",
+  "ja": "新聞は夜のあいだ紐でくくられている。朝になれば並べられ、町はまた何が起きたかを知る。"
+ },
+ "city.xk.closed.2.1": {
+  "ru": "Мороженое на ночь закрыто крышкой, сверху записка: «Не мечтайте, оно всё равно твёрдое».",
+  "en": "The ice cream is under a lid for the night, a note on top: \"Don't dream, it's rock solid anyway.\"",
+  "ja": "アイスは夜のあいだ蓋の下。上のメモに「夢見ても無駄、どのみちカチカチです」。"
+ },
+ "city.xk.closed.2.2": {
+  "ru": "Над окошком погасла полосатая тень от тента, и очередь из двух воробьёв тоже разошлась.",
+  "en": "The awning's striped shadow over the hatch has gone out, and the queue of two sparrows has dispersed.",
+  "ja": "窓の上の日よけの縞模様の影は消え、スズメ二羽の行列も解散した。"
+ },
+ "city.xk.closed.3.1": {
+  "ru": "Табачный киоск закрыт: на витрине пусто, только коробок спичек стоит на ребре, как сторож.",
+  "en": "The tobacco kiosk is closed: the display is empty, only a matchbox stands on its edge like a watchman.",
+  "ja": "タバコのキオスクは閉まっている。棚は空で、マッチ箱が一つ、見張りのように立っている。"
+ },
+ "city.xk.closed.3.2": {
+  "ru": "Окошко затянуто газетой изнутри. Через неё видно только лампочку, обёрнутую в вату.",
+  "en": "The hatch is papered over from inside. Through it you see only a bulb wrapped in cotton wool.",
+  "ja": "窓は内側から新聞で覆われている。透けて見えるのは、綿でくるんだ電球だけ。"
+ },
+ "city.xk.closed.4.1": {
+  "ru": "Цветочный киоск закрыт, вёдра убрали под навес, и от этого цветов будто больше. Записка: «Пейте воду. Цветы тоже».",
+  "en": "The flower kiosk is shut, the buckets moved under the awning, which makes there seem more flowers. A note: \"Drink water. The flowers do too.\"",
+  "ja": "花屋は閉まっている。バケツは日よけの下に寄せられ、かえって花が増えたように見える。メモ。「水を飲んで。花もね」。"
+ },
+ "city.xk.closed.4.2": {
+  "ru": "Рулон бумаги на столе накрыт полотенцем, как птичья клетка. Цветочница придёт, когда рассветёт.",
+  "en": "The paper roll on the bench is covered with a towel like a birdcage. The florist will come when it gets light.",
+  "ja": "作業台の包み紙のロールは、鳥かごのようにタオルで覆われている。花屋さんは夜が明けたら来る。"
+ },
+ "city.xk.closed.5.1": {
+  "ru": "Билетная касса закрыта: на стекле схема, а на схеме «Вы здесь» стрелкой прямо в закрытое окошко. Остроумно.",
+  "en": "The ticket kiosk is closed: a diagram on the glass with \"You are here\" pointing right at the shut hatch. Witty.",
+  "ja": "切符売り場は閉まっている。ガラスに路線図があり、「現在地」の矢印がまさに閉じた窓を指している。気が利いている。"
+ },
+ "city.xk.closed.5.2": {
+  "ru": "Касса закрыта, но кабины ещё идут: огонёк над тросом всё так же ползёт от станции к станции.",
+  "en": "The booth is closed but the cabins still run: the light over the cable creeps from station to station as ever.",
+  "ja": "窓口は閉まっているが、ゴンドラはまだ動いている。ケーブルの上の灯りは、駅から駅へいつものように進む。"
+ },
+ "city.xk.closed.6.1": {
+  "ru": "Мастерская закрыта: часы в окошке стоят каждые на своём времени, и ни одни не ошибаются, ведь никто не торопится.",
+  "en": "The workshop is shut: the clocks in the hatch each show their own time, and none is wrong, since nobody is in a hurry.",
+  "ja": "修理屋は閉まっている。窓の時計はそれぞれ別の時刻を指しているが、誰も急いでいないので間違いではない。"
+ },
+ "city.xk.closed.6.2": {
+  "ru": "На табличке: «Ушёл чинить время. Приду вовремя, но не ваше». Ключи на доске тихо звенят от сквозняка.",
+  "en": "On the sign: \"Gone to mend time. Back on time, but not yours.\" The keys on the board jingle in the draught.",
+  "ja": "札に「時間を直しに出かけました。時間どおりに戻りますが、あなたの時間とは限りません」。板の鍵が隙間風で小さく鳴る。"
+ },
+ "quest.kiosk_circuit.title": {
+  "ru": "Паспорт остановки",
+  "en": "Bus-stop passport",
+  "ja": "停留所パスポート"
+ },
+ "quest.kiosk_circuit.desc": {
+  "ru": "Школьный проект: собрать печати со всех киосков. Начну с мороженого, а там как пойдёт.",
+  "en": "A school project: collect stamps from all the kiosks. I'll start with the ice cream and see how it goes.",
+  "ja": "学校のプロジェクト。すべてのキオスクでスタンプを集める。まずアイスのキオスクから、あとはなりゆきで。"
+ },
+ "quest.kiosk_circuit.ice.log": {
+  "ru": "Продавщица мороженого говорит, что печать лежит у окошка, на цепочке. Начну с неё.",
+  "en": "The ice-cream seller says the stamp lies by the hatch on a chain. I'll start there.",
+  "ja": "アイス屋さんによると、スタンプは窓のそばに鎖でつないである。ここから始めよう。"
+ },
+ "quest.kiosk_circuit.stamp2.obj": {
+  "ru": "Поставить печать у киоска с мороженым",
+  "en": "Stamp the passport at the ice-cream kiosk",
+  "ja": "アイスのキオスクでスタンプを押す"
+ },
+ "quest.kiosk_circuit.flowers.log": {
+  "ru": "Одна печать есть. Цветочница сказала, что следующая у неё, там ромашка из шести лепестков.",
+  "en": "One stamp in. The florist said the next is at her kiosk, the six-petal daisy.",
+  "ja": "一つ目のスタンプを押した。花屋さんによれば、次は彼女のところにある。六枚の花びらのデイジーだ。"
+ },
+ "quest.kiosk_circuit.stamp4.obj": {
+  "ru": "Поставить печать у цветочного киоска",
+  "en": "Stamp the passport at the flower kiosk",
+  "ja": "花屋のキオスクでスタンプを押す"
+ },
+ "quest.kiosk_circuit.cable.log": {
+  "ru": "Две печати. Билетёр пишет на стенде: «Следующая здесь, красная гондола. Идите».",
+  "en": "Two stamps. The ticket clerk writes on the stand: \"The next one is here, the red gondola. Go on.\"",
+  "ja": "スタンプは二つ。切符係がスタンドに書いている。「次はここ、赤いゴンドラです。どうぞ」。"
+ },
+ "quest.kiosk_circuit.stamp5.obj": {
+  "ru": "Поставить печать у кассы канатной дороги",
+  "en": "Stamp the passport at the cable-car ticket kiosk",
+  "ja": "ロープウェイの切符売り場でスタンプを押す"
+ },
+ "quest.kiosk_circuit.news.log": {
+  "ru": "Три печати. Осталось вернуться к газетному киоску: он ставит последнюю и подписывает паспорт.",
+  "en": "Three stamps. All that is left is the newspaper kiosk: it gives the last stamp and signs the passport.",
+  "ja": "スタンプは三つ。あとは新聞キオスクへ戻るだけ。最後の一つを押して、パスポートにサインしてくれる。"
+ },
+ "quest.kiosk_circuit.stamp1.obj": {
+  "ru": "Поставить печать у газетного киоска",
+  "en": "Stamp the passport at the newspaper kiosk",
+  "ja": "新聞キオスクでスタンプを押す"
+ },
+ "quest.kiosk_circuit.done": {
+  "ru": "Четыре киоска, четыре печати, и каждая пахнет по-своему: ванилью, водой, красными чернилами и бумагой. Продавец газет подписал паспорт и подмигнул: «Остальные два сами найдёте».",
+  "en": "Four kiosks, four stamps, each smelling its own way: vanilla, water, red ink and paper. The newspaper seller signed the passport and winked: \"You'll find the other two yourself.\"",
+  "ja": "四つのキオスク、四つのスタンプ。それぞれ匂いが違う。バニラ、水、赤いインク、紙。新聞売りはパスポートにサインして片目をつぶった。「残りの二つは自分で見つけなさい」。"
  }
 }
