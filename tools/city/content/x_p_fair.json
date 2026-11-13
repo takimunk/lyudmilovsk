@@ -1,5 +1,5 @@
 {
- "_doc": "The fair's second pass (docs/city_interiors.md): the games' own models get acts whose results differ by weekday and hour, the record plaque, the prize shelf, the chalk board and the notice board run a story over several game days (strongman record, travelling photographer, a lost sandal); the two quests are in /home/user/wt/quests_wave_canopy.json for the lead. Strings: strings/x_p_fair.json.",
+ "_doc": "The fair's second pass (docs/city_interiors.md): the games' own models get acts whose results differ by weekday and hour, the record plaque, the prize shelf, the chalk board and the notice board run a story over several game days (strongman record, travelling photographer, a lost sandal); the two quests are in /home/user/wt/quests_wave_canopy.json for the lead. Strings: strings/x_p_fair.json. Third pass (depth): second-pass dressing and 20 new things (programme sheet, strongman ledger and weights, radio, prices, numbers board, prize stand, height post, table tennis, dominoes, shell game, children's roundabout, street clock, festoon switches), staff talk at the games and the roundabout, the collection fair_prizes, texts, closed lines, the quest fair_prize_run. Strings city.xf.*.",
  "acts": {
   "fx_strongman_hit": {
    "like": "strongman",
@@ -34,7 +34,26 @@
      "k": "city.fx.hit.rec",
      "after": 6
     }
-   ]
+   ],
+   "game": {
+    "type": "aim",
+    "title": "city.game.strongman.title",
+    "keys": "city.game.keys.hammer",
+    "rounds": 1,
+    "need": 2,
+    "speed": 0.9,
+    "zone": 0.24,
+    "win": [
+     "city.game.strongman.win.*",
+     {
+      "k": "city.xf.win.strong"
+     }
+    ],
+    "lose": "city.game.strongman.lose",
+    "draw": "city.game.strongman.draw",
+    "collect": "fair_prizes/lighthouse",
+    "daily": 3
+   }
   },
   "fx_strongman_record": {
    "like": "look_misc",
@@ -104,7 +123,32 @@
      "k": "city.fx.gal.sun.2",
      "d": "sun"
     }
-   ]
+   ],
+   "game": {
+    "type": "aim",
+    "title": "city.game.shooting_gallery.title",
+    "keys": "city.game.keys.shot",
+    "rounds": 5,
+    "need": 6,
+    "speed": 0.8,
+    "zone": 0.18,
+    "prize": [
+     [
+      "postcard",
+      1
+     ]
+    ],
+    "win": [
+     "city.game.shooting_gallery.win.*",
+     {
+      "k": "city.xf.win.gallery"
+     }
+    ],
+    "lose": "city.game.shooting_gallery.lose",
+    "draw": "city.game.shooting_gallery.draw",
+    "collect": "fair_prizes/hedgehog",
+    "daily": 3
+   }
   },
   "fx_ring_toss": {
    "like": "ring_toss",
@@ -122,7 +166,31 @@
      "k": "city.fx.ring.sun.1",
      "d": "sun"
     }
-   ]
+   ],
+   "game": {
+    "type": "aim",
+    "title": "city.game.ring_toss.title",
+    "rounds": 3,
+    "need": 4,
+    "speed": 0.65,
+    "zone": 0.2,
+    "win": [
+     "city.game.ring_toss.win.*",
+     {
+      "k": "city.xf.win.ring"
+     }
+    ],
+    "lose": "city.game.ring_toss.lose",
+    "draw": "city.game.ring_toss.draw",
+    "collect": "fair_prizes/duck",
+    "prize": [
+     [
+      "candy",
+      1
+     ]
+    ],
+    "daily": 3
+   }
   },
   "fx_lottery": {
    "like": "lottery",
@@ -140,7 +208,8 @@
      "k": "city.fx.lot.sun.1",
      "d": "sun"
     }
-   ]
+   ],
+   "collect": "fair_prizes/postcard"
   },
   "fx_fortune": {
    "like": "fortune",
@@ -334,6 +403,597 @@
      "after": 8
     }
    ]
+  },
+  "fx_programme": {
+   "like": "look_misc",
+   "prompt": "city.xf.prog.prompt",
+   "lines": [
+    "city.xf.progl.1",
+    {
+     "k": "city.xf.progl.rain",
+     "weather": "rain"
+    }
+   ],
+   "minutes": 3,
+   "sound": "paper_rustle",
+   "read": {
+    "texts": [
+     "fair_programme_sheet"
+    ],
+    "rotate": "use"
+   }
+  },
+  "fx_ledger": {
+   "like": "look_misc",
+   "prompt": "city.xf.led.prompt",
+   "lines": [
+    "city.xf.ledl.1",
+    "city.xf.ledl.2"
+   ],
+   "minutes": 3,
+   "sound": "paper_rustle",
+   "read": {
+    "texts": [
+     "fair_ledger"
+    ],
+    "rotate": "use"
+   }
+  },
+  "fx_album": {
+   "like": "look_misc",
+   "prompt": "city.xf.alb.prompt",
+   "lines": [
+    "city.xf.albl.1",
+    "city.xf.albl.2"
+   ],
+   "minutes": 3,
+   "sound": "paper_rustle",
+   "read": {
+    "texts": [
+     "fair_album"
+    ],
+    "rotate": "use"
+   }
+  },
+  "fx_lotto_numbers": {
+   "like": "look_misc",
+   "prompt": "city.xf.lotn.prompt",
+   "lines": [
+    "city.xf.lotn.1",
+    {
+     "k": "city.xf.lotn.fri",
+     "d": "fri"
+    },
+    {
+     "k": "city.xf.lotn.sat",
+     "d": "sat"
+    },
+    {
+     "k": "city.xf.lotn.sun",
+     "d": "sun"
+    },
+    {
+     "k": "city.xf.lotn.fest",
+     "festival": "any"
+    }
+   ],
+   "rotate": "daily",
+   "minutes": 1
+  },
+  "fx_gallery_prices": {
+   "like": "look_misc",
+   "prompt": "city.xf.galp.prompt",
+   "lines": [
+    "city.xf.galp.1",
+    {
+     "k": "city.xf.galp.sat",
+     "d": "sat"
+    },
+    {
+     "k": "city.xf.galp.sun",
+     "d": "sun"
+    }
+   ],
+   "minutes": 1
+  },
+  "fx_radio": {
+   "prompt": "city.xf.radio.prompt",
+   "minutes": 2,
+   "sound": "radio_tune",
+   "lines": [
+    {
+     "k": "city.xf.radio.am",
+     "h": [
+      6,
+      10
+     ]
+    },
+    {
+     "k": "city.xf.radio.day",
+     "h": [
+      10,
+      17
+     ]
+    },
+    {
+     "k": "city.xf.radio.eve",
+     "h": [
+      17,
+      22
+     ]
+    },
+    {
+     "k": "city.xf.radio.night",
+     "h": [
+      22,
+      6
+     ]
+    },
+    {
+     "k": "city.xf.radio.rain",
+     "weather": "rain"
+    }
+   ]
+  },
+  "fx_weights": {
+   "prompt": "city.xf.weights.prompt",
+   "minutes": 5,
+   "sound": "weights_clank",
+   "lines": [
+    "city.xf.weights.1",
+    {
+     "k": "city.xf.weights.am",
+     "h": [
+      6,
+      14
+     ]
+    },
+    {
+     "k": "city.xf.weights.pm",
+     "h": [
+      14,
+      6
+     ]
+    },
+    {
+     "k": "city.xf.weights.we",
+     "d": "sat-sun"
+    },
+    {
+     "k": "city.xf.weights.rain",
+     "weather": "rain"
+    }
+   ]
+  },
+  "fx_height": {
+   "prompt": "city.xf.height.prompt",
+   "minutes": 1,
+   "lines": [
+    "city.xf.height.1",
+    "city.xf.height.2",
+    {
+     "k": "city.xf.height.3",
+     "h": [
+      17,
+      6
+     ]
+    }
+   ]
+  },
+  "fx_prize_stand": {
+   "like": "look_misc",
+   "prompt": "city.xf.stand.prompt",
+   "lines": [
+    "city.xf.stand.1",
+    {
+     "k": "city.xf.stand.duck",
+     "have": "fair_prizes/duck"
+    },
+    {
+     "k": "city.xf.stand.lighthouse",
+     "have": "fair_prizes/lighthouse"
+    },
+    {
+     "k": "city.xf.stand.hedgehog",
+     "have": "fair_prizes/hedgehog"
+    },
+    {
+     "k": "city.xf.stand.harmonica",
+     "have": "fair_prizes/harmonica"
+    },
+    {
+     "k": "city.xf.stand.gull",
+     "have": "fair_prizes/gull"
+    },
+    {
+     "k": "city.xf.stand.postcard",
+     "have": "fair_prizes/postcard"
+    },
+    {
+     "k": "city.xf.stand.all",
+     "count": [
+      "fair_prizes",
+      6
+     ]
+    }
+   ],
+   "rotate": "daily",
+   "minutes": 2
+  },
+  "fx_pingpong": {
+   "like": "table_tennis",
+   "prompt": "city.xf.pp.prompt",
+   "minutes": 15,
+   "game": {
+    "type": "rally",
+    "vs": "table_tennis",
+    "title": "city.xf.pp.title",
+    "need": 3,
+    "speed": 0.9,
+    "zone": 0.5,
+    "shrink": 0.88,
+    "pace": 1.05,
+    "win": "city.game.table_tennis.win",
+    "lose": "city.game.table_tennis.lose",
+    "draw": "city.game.table_tennis.draw",
+    "collect": "fair_prizes/harmonica",
+    "daily": 3
+   },
+   "lines": [
+    "city.xf.pp.after.1",
+    "city.xf.pp.after.2",
+    {
+     "k": "city.xf.pp.after.rain",
+     "weather": "rain"
+    }
+   ]
+  },
+  "fx_dominoes": {
+   "like": "dominoes",
+   "prompt": "city.xf.dom.prompt",
+   "lines": [
+    "city.xf.dom.1",
+    {
+     "k": "city.xf.dom.pm",
+     "h": [
+      16,
+      6
+     ]
+    },
+    {
+     "k": "city.xf.dom.rain",
+     "weather": "rain"
+    }
+   ]
+  },
+  "fx_shells": {
+   "prompt": "city.xf.shell.prompt",
+   "needs_staff": "vendor",
+   "price": 2,
+   "minutes": 5,
+   "pose": "stand",
+   "sound": "rest_clink",
+   "lines": [
+    "city.xf.shell.after.1",
+    "city.xf.shell.after.2"
+   ],
+   "game": {
+    "type": "duel",
+    "vs": "fair_shells",
+    "title": "city.xf.shell.title",
+    "daily": 3,
+    "collect": "fair_prizes/gull",
+    "prize": [
+     [
+      "candy",
+      1
+     ]
+    ],
+    "moves": [
+     {
+      "k": "city.xf.shell.move.1",
+      "power": 2,
+      "tell": "city.xf.shell.tell.1"
+     },
+     {
+      "k": "city.xf.shell.move.2",
+      "power": 1,
+      "tell": "city.xf.shell.tell.2"
+     },
+     {
+      "k": "city.xf.shell.move.3",
+      "power": 2,
+      "tell": "city.xf.shell.tell.3"
+     }
+    ],
+    "win": "city.xf.shell.win",
+    "lose": "city.xf.shell.lose",
+    "draw": "city.xf.shell.draw"
+   }
+  },
+  "fx_carousel": {
+   "prompt": "city.xf.car.prompt",
+   "needs_staff": "carousel_operator",
+   "price": 3,
+   "minutes": 6,
+   "pose": "stand",
+   "sound": "music_box",
+   "lines": [
+    {
+     "k": "city.xf.car.1",
+     "h": [
+      6,
+      17
+     ]
+    },
+    {
+     "k": "city.xf.car.pm",
+     "h": [
+      17,
+      6
+     ]
+    },
+    {
+     "k": "city.xf.car.we",
+     "d": "sat-sun"
+    },
+    {
+     "k": "city.xf.car.rain",
+     "weather": "rain"
+    },
+    {
+     "k": "city.xf.car.fest",
+     "festival": "any"
+    }
+   ]
+  },
+  "fx_keep_strong": {
+   "prompt": "city.xf.talk.prompt",
+   "needs_staff": "vendor",
+   "sound": "rest_bell",
+   "lines": [
+    {
+     "k": "city.xf.keep.str.h1",
+     "h": [
+      6,
+      17
+     ]
+    },
+    {
+     "k": "city.xf.keep.str.h2",
+     "h": [
+      17,
+      6
+     ]
+    }
+   ],
+   "topics": [
+    {
+     "id": "fairx.str.t1",
+     "k": "city.xf.keep.str.t1",
+     "lines": [
+      "city.xf.keep.str.t1.1",
+      {
+       "k": "city.xf.keep.str.t1.2",
+       "after": 4
+      }
+     ]
+    },
+    {
+     "id": "fairx.str.t2",
+     "k": "city.xf.keep.str.t2",
+     "lines": [
+      "city.xf.keep.str.t2.1",
+      "city.xf.keep.str.t2.2"
+     ]
+    },
+    {
+     "id": "fairx.str.t3",
+     "k": "city.xf.keep.str.t3",
+     "lines": [
+      "city.xf.keep.str.t3.1",
+      {
+       "k": "city.xf.keep.str.t3.2",
+       "did": "fx_strongman_hit"
+      }
+     ]
+    }
+   ]
+  },
+  "fx_keep_gallery": {
+   "prompt": "city.xf.talk.prompt",
+   "needs_staff": "vendor",
+   "sound": "air_rifle",
+   "lines": [
+    {
+     "k": "city.xf.keep.gal.h1",
+     "h": [
+      6,
+      17
+     ]
+    },
+    {
+     "k": "city.xf.keep.gal.h2",
+     "h": [
+      17,
+      6
+     ]
+    }
+   ],
+   "topics": [
+    {
+     "id": "fairx.gal.t1",
+     "k": "city.xf.keep.gal.t1",
+     "lines": [
+      "city.xf.keep.gal.t1.1",
+      "city.xf.keep.gal.t1.2"
+     ]
+    },
+    {
+     "id": "fairx.gal.t2",
+     "k": "city.xf.keep.gal.t2",
+     "lines": [
+      "city.xf.keep.gal.t2.1",
+      "city.xf.keep.gal.t2.2"
+     ]
+    },
+    {
+     "id": "fairx.gal.t3",
+     "k": "city.xf.keep.gal.t3",
+     "lines": [
+      "city.xf.keep.gal.t3.1",
+      "city.xf.keep.gal.t3.2"
+     ]
+    }
+   ]
+  },
+  "fx_keep_ring": {
+   "prompt": "city.xf.talk.prompt",
+   "needs_staff": "vendor",
+   "sound": "ring_clink",
+   "lines": [
+    {
+     "k": "city.xf.keep.ring.h1",
+     "h": [
+      6,
+      17
+     ]
+    },
+    {
+     "k": "city.xf.keep.ring.h2",
+     "h": [
+      17,
+      6
+     ]
+    }
+   ],
+   "topics": [
+    {
+     "id": "fairx.ring.t1",
+     "k": "city.xf.keep.ring.t1",
+     "lines": [
+      "city.xf.keep.ring.t1.1",
+      {
+       "k": "city.xf.keep.ring.t1.2",
+       "after": 3
+      }
+     ]
+    },
+    {
+     "id": "fairx.ring.t2",
+     "k": "city.xf.keep.ring.t2",
+     "lines": [
+      "city.xf.keep.ring.t2.1",
+      "city.xf.keep.ring.t2.2"
+     ]
+    },
+    {
+     "id": "fairx.ring.t3",
+     "k": "city.xf.keep.ring.t3",
+     "lines": [
+      "city.xf.keep.ring.t3.1",
+      "city.xf.keep.ring.t3.2"
+     ],
+     "after": 3
+    }
+   ]
+  },
+  "fx_keep_lottery": {
+   "prompt": "city.xf.talk.prompt",
+   "needs_staff": "vendor",
+   "sound": "paper_tear",
+   "lines": [
+    {
+     "k": "city.xf.keep.lot.h1",
+     "h": [
+      6,
+      17
+     ]
+    },
+    {
+     "k": "city.xf.keep.lot.h2",
+     "h": [
+      17,
+      6
+     ]
+    }
+   ],
+   "topics": [
+    {
+     "id": "fairx.lot.t1",
+     "k": "city.xf.keep.lot.t1",
+     "lines": [
+      "city.xf.keep.lot.t1.1",
+      "city.xf.keep.lot.t1.2"
+     ]
+    },
+    {
+     "id": "fairx.lot.t2",
+     "k": "city.xf.keep.lot.t2",
+     "lines": [
+      "city.xf.keep.lot.t2.1",
+      {
+       "k": "city.xf.keep.lot.t2.2",
+       "did": "fx_lottery"
+      }
+     ]
+    },
+    {
+     "id": "fairx.lot.t3",
+     "k": "city.xf.keep.lot.t3",
+     "lines": [
+      "city.xf.keep.lot.t3.1",
+      "city.xf.keep.lot.t3.2"
+     ]
+    }
+   ]
+  },
+  "fx_keep_carousel": {
+   "prompt": "city.xf.talk.car.prompt",
+   "needs_staff": "carousel_operator",
+   "sound": "music_box",
+   "lines": [
+    {
+     "k": "city.xf.keep.car.h1",
+     "h": [
+      6,
+      17
+     ]
+    },
+    {
+     "k": "city.xf.keep.car.h2",
+     "h": [
+      17,
+      6
+     ]
+    }
+   ],
+   "topics": [
+    {
+     "id": "fairx.car.t1",
+     "k": "city.xf.keep.car.t1",
+     "lines": [
+      "city.xf.keep.car.t1.1",
+      "city.xf.keep.car.t1.2"
+     ]
+    },
+    {
+     "id": "fairx.car.t2",
+     "k": "city.xf.keep.car.t2",
+     "lines": [
+      "city.xf.keep.car.t2.1",
+      "city.xf.keep.car.t2.2"
+     ]
+    },
+    {
+     "id": "fairx.car.t3",
+     "k": "city.xf.keep.car.t3",
+     "lines": [
+      "city.xf.keep.car.t3.1",
+      "city.xf.keep.car.t3.2"
+     ]
+    }
+   ]
   }
  },
  "rules": {
@@ -375,6 +1035,60 @@
   },
   "P-FAIR/fair_board": {
    "act": "fx_fair_board"
+  },
+  "P-FAIR/fair_programme": {
+   "act": "fx_programme"
+  },
+  "P-FAIR/strongman_ledger": {
+   "act": "fx_ledger"
+  },
+  "P-FAIR/photo_album": {
+   "act": "fx_album"
+  },
+  "P-FAIR/lottery_numbers": {
+   "act": "fx_lotto_numbers"
+  },
+  "P-FAIR/gallery_prices": {
+   "act": "fx_gallery_prices"
+  },
+  "P-FAIR/gallery_radio": {
+   "act": "fx_radio"
+  },
+  "P-FAIR/strongman_weights": {
+   "act": "fx_weights"
+  },
+  "P-FAIR/fair_height_post": {
+   "act": "fx_height"
+  },
+  "P-FAIR/fair_pingpong": {
+   "act": "fx_pingpong"
+  },
+  "P-FAIR/fair_dominoes": {
+   "act": "fx_dominoes"
+  },
+  "P-FAIR/fair_shells": {
+   "act": "fx_shells"
+  },
+  "P-FAIR/fair_carousel": {
+   "act": "fx_carousel"
+  },
+  "P-FAIR/prize_stand": {
+   "act": "fx_prize_stand"
+  },
+  "P-FAIR/strongman_keeper": {
+   "act": "fx_keep_strong"
+  },
+  "P-FAIR/gallery_keeper": {
+   "act": "fx_keep_gallery"
+  },
+  "P-FAIR/ring_keeper": {
+   "act": "fx_keep_ring"
+  },
+  "P-FAIR/lottery_keeper": {
+   "act": "fx_keep_lottery"
+  },
+  "P-FAIR/carousel_keeper": {
+   "act": "fx_keep_carousel"
   }
  },
  "quests": [
@@ -479,6 +1193,205 @@
      }
     }
    ]
+  },
+  {
+   "id": "fair_prize_run",
+   "kind": "side",
+   "start_on": {
+    "event": "visit",
+    "target": "P-FAIR"
+   },
+   "stages": [
+    {
+     "id": "board",
+     "objectives": [
+      {
+       "id": "board",
+       "event": "do",
+       "target": "fx_programme"
+      }
+     ]
+    },
+    {
+     "id": "ticket",
+     "objectives": [
+      {
+       "id": "lot",
+       "event": "do",
+       "target": "fx_lottery"
+      }
+     ]
+    },
+    {
+     "id": "ring",
+     "objectives": [
+      {
+       "id": "toss",
+       "event": "win",
+       "target": "fx_ring_toss"
+      }
+     ]
+    },
+    {
+     "id": "shelf",
+     "objectives": [
+      {
+       "id": "look",
+       "event": "do",
+       "target": "fx_prize_stand"
+      }
+     ],
+     "reward": {
+      "items": {
+       "chocolate": 1
+      },
+      "rubles": 30
+     }
+    }
+   ]
   }
- ]
+ ],
+ "texts": {
+  "fair_programme_sheet": {
+   "title": "city.xf.text.prog.title",
+   "kind": "notice",
+   "minutes": 2,
+   "collect": "reading/fair_programme_sheet",
+   "pages": [
+    "city.xf.prog.1",
+    [
+     {
+      "k": "city.xf.prog.fri",
+      "d": "fri"
+     },
+     {
+      "k": "city.xf.prog.sat",
+      "d": "sat"
+     },
+     {
+      "k": "city.xf.prog.sun",
+      "d": "sun"
+     }
+    ],
+    [
+     {
+      "k": "city.xf.prog.pr.fri",
+      "d": "fri"
+     },
+     {
+      "k": "city.xf.prog.pr.sat",
+      "d": "sat"
+     },
+     {
+      "k": "city.xf.prog.pr.sun",
+      "d": "sun"
+     }
+    ],
+    "city.xf.prog.rules",
+    {
+     "k": "city.xf.prog.late",
+     "after": 6
+    }
+   ]
+  },
+  "fair_ledger": {
+   "title": "city.xf.text.led.title",
+   "kind": "ledger",
+   "minutes": 3,
+   "collect": "reading/fair_ledger",
+   "pages": [
+    "city.xf.led.1",
+    {
+     "k": "city.xf.led.2",
+     "after": 1
+    },
+    {
+     "k": "city.xf.led.3",
+     "after": 2
+    },
+    {
+     "k": "city.xf.led.4",
+     "after": 4
+    },
+    {
+     "k": "city.xf.led.5",
+     "after": 7
+    },
+    {
+     "k": "city.xf.led.6",
+     "after": 9
+    }
+   ]
+  },
+  "fair_album": {
+   "title": "city.xf.text.alb.title",
+   "kind": "book",
+   "minutes": 2,
+   "collect": "reading/fair_album",
+   "pages": [
+    "city.xf.alb.1",
+    {
+     "k": "city.xf.alb.2",
+     "after": 4
+    },
+    {
+     "k": "city.xf.alb.3",
+     "after": 6
+    },
+    {
+     "k": "city.xf.alb.4",
+     "after": 8
+    },
+    {
+     "k": "city.xf.alb.5",
+     "after": 9
+    },
+    {
+     "k": "city.xf.alb.6",
+     "after": 10
+    }
+   ]
+  }
+ },
+ "collections": {
+  "fair_prizes": {
+   "title": "city.xf.coll.prizes.title",
+   "pieces": [
+    "duck",
+    "lighthouse",
+    "hedgehog",
+    "harmonica",
+    "gull",
+    "postcard"
+   ]
+  }
+ },
+ "closed_by": {
+  "P-FAIR": {
+   "*": "city.xf.closed.any.*",
+   "counter": "city.xf.closed.counter.*",
+   "play": "city.xf.closed.play.*",
+   "sport": "city.xf.closed.sport.*",
+   "machine": "city.xf.closed.machine.*",
+   "board": "city.xf.closed.board.*",
+   "shelf": "city.xf.closed.shelf.1",
+   "take": "city.xf.closed.take.1"
+  }
+ },
+ "regulars": {
+  "rashid": {
+   "name": "npc.t_kask_rashid.name",
+   "style": "tricky",
+   "skill": 0.5,
+   "plays": [
+    "fair_shells"
+   ],
+   "plots": [
+    "P-FAIR"
+   ],
+   "hello": "city.xf.player.rashid.hello",
+   "win": "city.xf.player.rashid.win",
+   "lose": "city.xf.player.rashid.lose"
+  }
+ }
 }

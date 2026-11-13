@@ -169,6 +169,84 @@ def bench(B, s, t, k):
         cyl(B.detail, "CT_ConcreteDark", bx, by, 0.62, 0.65, 0.19, 8)
 
 
+# Atlas goods labels are label_NN = GOODS[NN % 30] (tools/city/atlas.py): the tins on a stall's shelf carry what that
+# trade really sells (the kit's shop_shelf picks a label at random: a coffee kiosk with SPRATS on its shelf).
+LABELS = {
+    "coffee": (5, 6, 9, 11, 29, 10, 13, 14),            # TEA COFFEE SUGAR HONEY COCOA JAM BISCUITS SWEETS
+    "icecream": (23, 24, 4, 21, 22, 9, 29, 14),         # MILK KEFIR CONDENSED MILK LEMONADE KVASS SUGAR COCOA SWEETS
+    "snacks": (25, 26, 12, 8, 27, 28, 2, 3, 0, 1, 13),  # PICKLES MUSHROOMS GROATS SALT PEPPER CAVIAR PEAS TOMATOES SPRATS SPRATLETS BISCUITS
+    "toys": (14, 13, 10),                               # SWEETS BISCUITS JAM (the toys themselves are plain painted)
+}
+TOY_MATS = ["CT_PlasterRed", "CT_PlasterYellow", "CT_PlasterBlue", "CT_PlasterPink", "CT_PlasterGreen", "CT_TileWhite"]
+
+
+def trade_shelf(B, x, y, yaw, w=1.1, h=2.0, d=0.34, trade="coffee", seed=0, z0=0.05, levels=4):
+    """A light wooden shelf unit [wall] standing out of the wall toward `yaw`, goods by trade: tins and jars whose labels
+    are the trade's own (LABELS), or painted toys. About a third of the kit's shop_shelf in triangles."""
+    d_ = B.detail
+    a_ = math.radians(yaw)
+    F = MFr(x + d * math.sin(a_), y - d * math.cos(a_), yaw, z0)           # (x, y) is on the wall: the unit stands out from it
+    rnd = random.Random(seed * 31 + len(trade))
+    lbox(d_, "CT_WoodLight", F, -w / 2, w / 2, -d, -d + 0.02, 0.0, h)
+    for sg in (-1, 1):
+        u0 = sg * w / 2
+        lbox(d_, "CT_Wood", F, min(u0, u0 - sg * 0.03), max(u0, u0 - sg * 0.03), -d, -0.01, 0.0, h)
+    labs = LABELS[trade]
+    pitch = (h - 0.28) / levels
+    for k in range(levels):
+        zb = 0.22 + pitch * k
+        lbox(d_, "CT_Wood", F, -w / 2, w / 2, -d, -0.01, zb - 0.025, zb)
+        u = -w / 2 + 0.07
+        while u < w / 2 - 0.1:
+            room = pitch - 0.04
+            if trade == "toys":
+                if rnd.random() < 0.55:
+                    r = rnd.uniform(0.035, 0.06)
+                    px, py, _ = F.p(u + r, -0.17)
+                    blob(d_, rnd.choice(TOY_MATS), px, py, F.z + zb + r, r, 5)
+                    u += 2 * r + 0.035
+                else:
+                    ww = rnd.uniform(0.07, 0.12)
+                    hh = min(room, rnd.uniform(0.07, 0.15))
+                    lbox(d_, rnd.choice(TOY_MATS), F, u, u + ww, -0.2, -0.1, zb, zb + hh)
+                    lbox(d_, "CT_TileWhite", F, u + 0.01, u + ww - 0.01, -0.1, -0.098, zb + 0.015, zb + hh * 0.5)
+                    u += ww + 0.03
+            else:
+                ww = rnd.uniform(0.09, 0.125)
+                hh = min(room, rnd.uniform(0.13, 0.2))
+                if u + ww > w / 2 - 0.05:
+                    break
+                lbox(d_, "CT_TileWhite", F, u, u + ww, -0.2, -0.1, zb, zb + hh)
+                px, py, _ = F.p(u + ww / 2, -0.1)
+                nn = labs[rnd.randrange(len(labs))] + 30 * rnd.randrange(2)
+                kit.poster(B, px, py, F.z, yaw, name="label_%02d" % nn, w=ww * 0.95, h=hh * 0.85, zc=zb + hh / 2)
+                u += ww + 0.02
+
+
+def toy_case(B, x, y, yaw, w=1.0, d=0.5, seed=0, z0=0.0):
+    """A counter-high open case of plain painted toys (the kit's display_case puts random goods labels on toy boxes)."""
+    d_ = B.detail
+    F = MFr(x, y, yaw, z0)
+    rnd = random.Random(seed + 77)
+    lbox(B.m, "CT_Wood", F, -w / 2, w / 2, -d / 2, d / 2, 0.0, 0.78)
+    lbox(d_, "CT_WoodLight", F, -w / 2 - 0.02, w / 2 + 0.02, -d / 2 - 0.02, d / 2 + 0.02, 0.78, 0.82)
+    for sx, sy in ((-1, -1), (1, -1), (1, 1), (-1, 1)):
+        lbox(d_, "CT_Wood", F, sx * (w / 2 - 0.02) - 0.015, sx * (w / 2 - 0.02) + 0.015, sy * (d / 2 - 0.02) - 0.015,
+             sy * (d / 2 - 0.02) + 0.015, 0.82, 1.3)
+    lbox(d_, "CT_WoodLight", F, -w / 2, w / 2, -d / 2, d / 2, 1.28, 1.3)
+    lbox(d_, "CT_WoodLight", F, -w / 2 + 0.02, w / 2 - 0.02, -d / 2 + 0.03, d / 2 - 0.03, 1.04, 1.06)
+    for zb in (0.82, 1.06):
+        u = -w / 2 + 0.08
+        while u < w / 2 - 0.1:
+            r = rnd.uniform(0.04, 0.065)
+            px, py, pz = F.p(u + r, rnd.uniform(-0.1, 0.1), zb)
+            if rnd.random() < 0.5:
+                blob(d_, rnd.choice(TOY_MATS), px, py, pz + r, r, 5)
+            else:
+                lbox(d_, rnd.choice(TOY_MATS), F, u, u + 2 * r, -r, r, zb, zb + 1.6 * r)
+            u += 2 * r + 0.05
+
+
 KIOSK_MATS = ["CT_PlasterRed", "CT_PlasterBlue", "CT_PlasterYellow", "CT_PlasterPink", "CT_PlasterBlue"]
 KIOSK_TRADE = ["coffee", "icecream", "press", "toys", "snacks"]
 KIOSK_SIGN = {"coffee": "sign_buffet", "icecream": "sign_milk", "press": "sign_books", "toys": "sign_toys",
@@ -278,7 +356,7 @@ def kiosk_outside(B, fr, k, mat):
         kit.magazine_rack(B, mxr, myr, 0.0, fr.yaw_dir(-side_, 0), w=0.9, seed=k)
         B.thing("press_rack", "shelf", (mxr, myr, 1.2), fr.yaw_dir(-side_, 0), topic="travel")
     elif trade == "toys":
-        dc = kit.display_case(B, *fr.p(-side_ * 2.7, -0.6), 0.0, fr.yaw_dir(-side_, 0), w=1.0, d=0.5, goods="toys", seed=k)
+        toy_case(B, *fr.p(-side_ * 2.7, -0.6), fr.yaw_dir(-side_, 0), w=1.0, d=0.5, seed=k)
         B.thing("shooting_gallery", "play", (*fr.p(-side_ * 2.7, -0.6), 0.9), fr.yaw_dir(-side_, 0),
                 what="shooting_gallery")                                                        # the prizes' case
     elif trade == "snacks":
@@ -286,9 +364,67 @@ def kiosk_outside(B, fr, k, mat):
         kit.crate(B, *fr.p(2.55, -1.2), 0.0, fr.yaw_dir(1, 0), fill="CT_PlasterYellow", seed=8)
         kit.cardboard_box(B, *fr.p(2.55, -0.6), 0.38, fr.yaw_dir(1, 0), seed=9)
         B.thing("strongman", "sport", (*fr.p(2.55, -0.9), 0.6), fr.yaw_dir(1, 0), what="strongman")  # by the crates
+    kiosk_extras(B, fr, k, trade, side_, front)
     # the hatch counter thing: where the vendor serves
     hx, hy = fr.p(0, -1.55)
     B.thing("kiosk%d_counter" % k, "counter", (hx, hy, 1.1), front, role="vendor", service="shop", trade=trade)
+
+
+def kiosk_extras(B, fr, k, trade, side_, front):
+    """Second pass: one more thing by each kiosk's side that tells its trade (all in B.detail, none on the walk's line)."""
+    d = B.detail
+    K = MFr(fr.c[0], fr.c[1], front)               # K.p(u, w): u = fr's lx, w toward the street front
+    if trade == "coffee":                          # a milk churn and a crate of bottles, a sack of coffee beans
+        x, y, _ = K.p(-side_ * 2.5, 0.7)
+        cyl(d, "CT_Aluminium", x, y, 0.0, 0.58, 0.16, 8, top=False)
+        cyl(d, "CT_Aluminium", x, y, 0.58, 0.66, 0.11, 8)
+        blob(d, "CT_Aluminium", x, y, 0.69, 0.05, 5)
+        kit.crate(B, *K.p(-side_ * 2.5, 1.25)[:2], 0.0, front + 90, w=0.5, d=0.34, h=0.3, fill="CT_PlasterBlue", seed=k)
+        kit.sack(B, *K.p(-side_ * 2.5, 0.15)[:2], 0.0)
+    elif trade == "icecream":                      # the freezer chest on the pavement, a cone on a stick over the hatch
+        kit.ice_cream_chest(B, *K.p(-side_ * 2.75, 0.5)[:2], 0.0, K.yaw + 90 * (-side_))
+        x, y, _ = K.p(-side_ * 1.55, 1.2)
+        _bar(d, "CT_Steel", K, (-side_ * 1.55, 1.2, 1.06), (-side_ * 1.55, 1.2, 2.3), 0.012)
+        for j in range(6):                         # a cone: stripes of wafer and a ball of pink on top
+            a0, a1 = 2 * math.pi * j / 6, 2 * math.pi * (j + 1) / 6
+            pa = K.p(-side_ * 1.55 + 0.1 * math.cos(a0), 1.2 + 0.1 * math.sin(a0), 2.3)
+            pb = K.p(-side_ * 1.55 + 0.1 * math.cos(a1), 1.2 + 0.1 * math.sin(a1), 2.3)
+            d.face("CT_PlasterYellow", [pa, pb, K.p(-side_ * 1.55, 1.2, 2.12)])
+            d.face("CT_PlasterYellow", [pb, pa, K.p(-side_ * 1.55, 1.2, 2.12)])
+        blob(d, "CT_PlasterPink", x, y, 2.38, 0.11, 6)
+    elif trade == "press":                         # a postcard spinner and newspapers pegged on a wire
+        x, y, _ = K.p(side_ * 2.6, 1.4)
+        cyl(d, "CT_Steel", x, y, 0.0, 1.35, 0.015, 5, top=False)
+        cyl(d, "CT_Steel", x, y, 0.0, 0.03, 0.17, 8)
+        for j in range(8):
+            a = 2 * math.pi * j / 8
+            px, py, _ = K.p(side_ * 2.6 + 0.1 * math.cos(a), 1.4 + 0.1 * math.sin(a))
+            kit.poster(B, px, py, 0.0, K.yaw + 90 - math.degrees(a), name="travel", w=0.12, h=0.17, zc=0.95 + 0.2 * (j % 2), seed=j + k)
+        blob(d, "CT_Brass", x, y, 1.38, 0.04, 4)
+        fu.rod(d, "CT_Steel", K.p(side_ * 1.45, 1.75, 1.9), K.p(side_ * 2.4, 1.75, 1.9), 0.008, caps=False)
+        for j in range(4):
+            lbox(d, "CT_Paper", K, side_ * (1.55 + 0.22 * j) - 0.07, side_ * (1.55 + 0.22 * j) + 0.07, 1.74, 1.76, 1.5, 1.88)
+    elif trade == "toys":                          # a bunch of balloons tied to the shelf and a bucket of pinwheels
+        base = K.p(-side_ * 2.2, 1.72, 1.06)
+        for j in range(7):
+            bx = -side_ * 2.2 + 0.16 * math.cos(j * 2.4)
+            by = 1.72 + 0.16 * math.sin(j * 2.4)
+            bz = 1.95 + 0.11 * (j % 3) + 0.05 * j / 7
+            fu.rod(d, "CT_Steel", base, K.p(bx, by, bz - 0.14), 0.004, caps=False)
+            blob(d, TOY_MATS[j % 5], *K.p(bx, by)[:2], bz, 0.12, 6)
+        x, y, _ = K.p(side_ * 2.5, 1.7)
+        cyl(d, "CT_SteelRed", x, y, 0.0, 0.34, 0.13, 8, top=False)
+        for j in range(4):
+            sx, sy, _ = K.p(side_ * 2.5 + 0.06 * (j - 1.5), 1.7 + 0.04 * (j % 2))
+            _bar(d, "CT_Wood", K, (side_ * 2.5 + 0.06 * (j - 1.5), 1.7 + 0.04 * (j % 2), 0.3), (side_ * 2.5 + 0.06 * (j - 1.5), 1.7 + 0.04 * (j % 2), 0.78 + 0.05 * j), 0.012)
+            for a in range(4):
+                ang = math.pi / 2 * a + 0.4 * j
+                _tri(d, TOY_MATS[(a + j) % 4], K.p(side_ * 2.5 + 0.06 * (j - 1.5), 1.7 + 0.04 * (j % 2), 0.78 + 0.05 * j),
+                     K.p(side_ * 2.5 + 0.06 * (j - 1.5) + 0.07 * math.cos(ang), 1.7 + 0.04 * (j % 2) + 0.07 * math.sin(ang), 0.84 + 0.05 * j),
+                     K.p(side_ * 2.5 + 0.06 * (j - 1.5) + 0.07 * math.cos(ang + 1.0), 1.7 + 0.04 * (j % 2) + 0.07 * math.sin(ang + 1.0), 0.84 + 0.05 * j))
+    else:                                          # the corn steamer on its stand, a sack of seeds
+        kit.dumpling_pot(B, *K.p(-side_ * 2.6, 0.6)[:2], 0.0, K.yaw + 90 * (-side_), steamers=2, lid=False)
+        kit.sack(B, *K.p(-side_ * 2.5, 1.5)[:2], 0.0)
 
 
 def kiosk_interior(B, fr, k, rnd):
@@ -339,7 +475,7 @@ def kiosk_interior(B, fr, k, rnd):
         if trade == "press":
             kit.bookshelf(B, bx, by, z0, toward_hatch, w=1.1, h=2.0, seed=lx, topic="library")
         else:
-            kit.shop_shelf(B, bx, by, z0, toward_hatch, w=1.1, h=2.0, goods=goods, seed=k + int(lx * 5))
+            trade_shelf(B, bx, by, toward_hatch, w=1.1, h=2.0, trade=trade, seed=k + int(lx * 5), z0=z0)
     for sgn in (-1, 1):
         bx, by = fr.p(sgn * 1.8, 0.1)
         yaw_in = fr.yaw_dir(-sgn, 0)
@@ -348,9 +484,9 @@ def kiosk_interior(B, fr, k, rnd):
         elif trade == "press":
             kit.magazine_rack(B, bx, by, z0, yaw_in, w=0.8, seed=k + sgn)
         elif trade == "toys" and sgn > 0:
-            kit.display_case(B, bx - 0.0, by, z0, yaw_in, w=1.0, d=0.45, goods="toys", seed=k)
+            toy_case(B, bx, by, yaw_in, w=1.0, d=0.45, seed=k, z0=z0)
         else:
-            kit.shop_shelf(B, bx, by, z0, yaw_in, w=0.9, h=1.9, goods=goods or "boxes", seed=k + 9 * sgn)
+            trade_shelf(B, bx, by, yaw_in, w=0.9, h=1.9, trade=trade, seed=k + 9 * sgn, z0=z0)
     # a rug and a stool for the stall-holder, a clock and a poster
     rx, ry = fr.p(0.2, 0.15)
     kit.rug(B, rx, ry, z0, toward_hatch, w=1.1, d=1.5, seed=k)
@@ -608,7 +744,7 @@ def shooting_booth(B, s=73.0, t=0.0, face=1):
         _bar(d, "CT_Steel", gf, (u + 0.18, 0.88, 0.88), (u + 0.32, 0.95, 1.18), 0.008, caps=False)
         lbox(d, "CT_Steel", gf, u + 0.3, u + 0.34, 0.93, 0.97, 1.0, 1.22)
     lbox(d, "CT_PlasterRed", gf, -0.15, 0.15, 0.7, 0.9, 1.0, 1.04)                     # pellets tin
-    kit.shop_shelf(B, *gf.p(-1.57, 0.0)[:2], 0.0, yaw + 90 * (1 if True else 1), w=1.1, h=1.9, goods="toys", seed=3)
+    trade_shelf(B, *gf.p(-1.57, 0.0)[:2], yaw + 90, w=1.1, h=1.9, trade="toys", seed=3, z0=0.0)
     B.lamp(gf.p(0, 0.2, 2.45), lumens=320, colour="#FFD2A0", kind="public", radius=6.0)
     B.thing("shooting_booth", "play", gf.p(0, 0.8, 1.15), yaw, what="shooting_gallery")
     _stand(B, gf, "gallery_stand", -0.5, 1.5)
@@ -641,7 +777,7 @@ def ring_toss_table(B, s=34.0, t=0.0, face=1):
     for j in range(3):
         _ring(d, ("CT_PlasterRed", "CT_PlasterYellow", "CT_PlasterGreen")[j], gf, 1.0, 0.7, 0.72 + 0.04 * j, r=0.1)
     # the prize shelf behind
-    kit.shop_shelf(B, *gf.p(0, -0.95)[:2], 0.0, yaw, w=2.4, h=2.2, goods="toys", seed=7)
+    trade_shelf(B, *gf.p(0, -0.95)[:2], yaw, w=2.4, h=2.2, trade="toys", seed=7, z0=0.0)
     for sg in (-1, 1):                                                               # posts and roof
         lbox(d, "CT_Wood", gf, sg * 1.3 - 0.04, sg * 1.3 + 0.04, 0.95, 1.03, 0.0, 2.55)
     _roof(B, gf, 1.5, -1.1, 1.1, 2.55)
@@ -710,13 +846,31 @@ def fortune_automaton(B, s=109.0, t=-0.4, face=1):
     for k in range(9):
         blob(d, "CT_Brass", *gf.p(-0.4 + 0.1 * ((k * 5) % 9), -0.32)[:2], 1.5 + 0.09 * ((k * 4) % 8), 0.018, 4)
     lbox(d, "CT_PlasterRed", gf, -0.3, 0.3, -0.3, 0.12, 0.93, 1.1)                      # the fortune-teller's table
-    cyl(d, "CT_PlasterRed", *gf.p(0, -0.05)[:2], 1.1, 1.38, 0.2, 8)                      # robe
-    cyl(d, "CT_PlasterBlue", *gf.p(0, -0.05)[:2], 1.38, 1.6, 0.14, 8)
-    blob(d, "CT_PlasterPink", *gf.p(0, -0.05)[:2], 1.72, 0.1, 6)                          # head
-    cyl(d, "CT_PlasterYellow", *gf.p(0, -0.05)[:2], 1.78, 1.86, 0.11, 8)                 # turban
-    blob(d, "CT_PlasterYellow", *gf.p(0, -0.05)[:2], 1.9, 0.08, 6)
-    for sg in (-1, 1):                                                               # arms to the crystal ball
-        _bar(d, "CT_PlasterBlue", gf, (sg * 0.16, -0.05, 1.56), (sg * 0.1, 0.18, 1.32), 0.07)
+    # no figure of a person: a wooden owl nods on its perch, a brass pointer arm sweeps the cards, a wheel of fortune
+    # turns on the back panel
+    _bar(d, "CT_Wood", gf, (-0.32, -0.08, 1.1), (-0.32, -0.08, 1.2), 0.03)                # the owl's perch
+    lbox(d, "CT_Wood", gf, -0.45, -0.19, -0.14, -0.02, 1.2, 1.23)
+    blob(d, "CT_Wood", *gf.p(-0.32, -0.08)[:2], gf.p(0, 0, 1.32)[2], 0.1, 6)              # body
+    blob(d, "CT_WoodLight", *gf.p(-0.32, 0.0)[:2], gf.p(0, 0, 1.28)[2], 0.06, 5)          # breast
+    blob(d, "CT_Wood", *gf.p(-0.32, 0.0)[:2], gf.p(0, 0, 1.46)[2], 0.075, 6)              # head
+    for sg in (-1, 1):
+        blob(d, "CT_Opal", *gf.p(-0.32 + sg * 0.035, 0.06)[:2], gf.p(0, 0, 1.47)[2], 0.022, 4)     # eyes
+        _tri(d, "CT_Wood", gf.p(-0.32 + sg * 0.05, 0.0, 1.5), gf.p(-0.32 + sg * 0.085, 0.0, 1.58), gf.p(-0.32 + sg * 0.01, 0.0, 1.52))
+    _tri(d, "CT_Brass", gf.p(-0.34, 0.07, 1.45), gf.p(-0.3, 0.07, 1.45), gf.p(-0.32, 0.11, 1.42))
+    blob(d, "CT_Brass", *gf.p(0.3, -0.12)[:2], gf.p(0, 0, 1.16)[2], 0.035, 5)             # the pointer's pivot
+    _bar(d, "CT_Brass", gf, (0.3, -0.12, 1.16), (0.12, 0.22, 1.13), 0.022)
+    _tri(d, "CT_Brass", gf.p(0.12, 0.22, 1.13), gf.p(0.08, 0.2, 1.125), gf.p(0.1, 0.3, 1.12))
+    wz = 1.78                                                                          # the wheel of fortune
+    for kk in range(8):
+        a0, a1 = 2 * math.pi * kk / 8, 2 * math.pi * (kk + 1) / 8
+        _tri(d, ("CT_PlasterRed", "CT_PlasterYellow")[kk % 2], gf.p(0, -0.31, wz), gf.p(0.27 * math.cos(a0), -0.31, wz + 0.27 * math.sin(a0)),
+             gf.p(0.27 * math.cos(a1), -0.31, wz + 0.27 * math.sin(a1)))
+        fu.rod(d, "CT_Brass", gf.p(0.27 * math.cos(a0), -0.305, wz + 0.27 * math.sin(a0)), gf.p(0.27 * math.cos(a1), -0.305, wz + 0.27 * math.sin(a1)), 0.016, caps=False)
+    blob(d, "CT_Brass", *gf.p(0, -0.3)[:2], gf.p(0, 0, wz)[2], 0.04, 5)
+    _tri(d, "CT_SteelRed", gf.p(-0.03, -0.29, wz + 0.31), gf.p(0.03, -0.29, wz + 0.31), gf.p(0, -0.29, wz + 0.22))
+    for sg in (-1, 1):                                                                 # velvet curtains at the case's sides
+        lbox(d, "CT_PlasterRed", gf, sg * 0.49 - 0.025, sg * 0.49 + 0.025, -0.35, 0.33, 1.05, 2.25)
+    lbox(d, "CT_Brass", gf, 0.28, 0.4, 0.32, 0.4, 0.93, 0.96)                          # the coin dish
     blob(d, "CT_Opal", *gf.p(0, 0.2)[:2], 1.27, 0.09, 6)                                  # the crystal ball
     lbox(d, "CT_Brass", gf, -0.06, 0.06, 0.14, 0.26, 1.1, 1.17)
     for j in range(5):                                                               # a fan of cards on the table
@@ -812,14 +966,382 @@ def lost_sandal(B, s=12.0, t=-0.35):
     B.thing("fair_sandal", "board", (px, py, 0.1), 20.0, topic="lost")
 
 
+# ======================================================================================================== second pass
+def _post(d, gf, u, w, z1, mat="CT_Wood", r=0.03, segs=6):
+    x, y, _ = gf.p(u, w)
+    cyl(d, mat, x, y, 0.0, z1, r, segs, top=True)
+
+
+def _rope(d, gf, a, b, z, sag=0.07, mat="CT_PlasterRed", wd=0.018):
+    """A sagging rope between two floor points (u, w) at height z."""
+    ax, ay = a
+    bx, by = b
+    mid = ((ax + bx) / 2, (ay + by) / 2)
+    pts = [gf.p(ax, ay, z), gf.p(mid[0], mid[1], z - sag), gf.p(bx, by, z)]
+    for p0, p1 in zip(pts, pts[1:]):
+        fu.rod(d, mat, p0, p1, wd, caps=False)
+
+
+def _toy_duck(d, gf, u, w, z):
+    blob(d, "CT_PlasterYellow", *gf.p(u, w)[:2], z + 0.045, 0.05, 6)
+    blob(d, "CT_PlasterYellow", *gf.p(u + 0.04, w)[:2], z + 0.1, 0.03, 5)
+    lbox(d, "CT_PlasterRed", gf, u + 0.065, u + 0.1, w - 0.012, w + 0.012, z + 0.095, z + 0.105)
+    _tri(d, "CT_PlasterYellow", gf.p(u - 0.045, w, z + 0.06), gf.p(u - 0.085, w, z + 0.09), gf.p(u - 0.04, w, z + 0.09))
+    lbox(d, "CT_Steel", gf, u - 0.01, u + 0.01, w - 0.03, w + 0.03, z, z + 0.012)             # the key's base plate
+
+
+def _toy_lighthouse(d, gf, u, w, z):
+    for j, mat in enumerate(("CT_PlasterRed", "CT_TileWhite", "CT_PlasterRed")):
+        x, y, _ = gf.p(u, w)
+        cyl(d, mat, x, y, z + 0.07 * j, z + 0.07 * (j + 1), 0.04 - 0.004 * j, 6, top=(j == 2))
+    lbox(d, "CT_Steel", gf, u - 0.03, u + 0.03, w - 0.03, w + 0.03, z + 0.21, z + 0.235)
+    blob(d, "CT_Opal", *gf.p(u, w)[:2], z + 0.255, 0.022, 4)
+
+
+def _toy_hedgehog(d, gf, u, w, z):
+    blob(d, "CT_ConcreteDark", *gf.p(u, w)[:2], z + 0.045, 0.06, 6)
+    blob(d, "CT_PlasterPink", *gf.p(u + 0.06, w)[:2], z + 0.035, 0.03, 4)
+    for j in range(6):
+        fu.rod(d, "CT_Wood", gf.p(u - 0.02 - 0.012 * j, w + (j - 2.5) * 0.015, z + 0.06), gf.p(u - 0.06 - 0.01 * j, w + (j - 2.5) * 0.022, z + 0.11), 0.008, caps=False)
+
+
+def _toy_harmonica(d, gf, u, w, z):
+    lbox(d, "CT_Steel", gf, u - 0.06, u + 0.06, w - 0.015, w + 0.015, z, z + 0.028)
+    lbox(d, "CT_Brass", gf, u - 0.062, u - 0.05, w - 0.017, w + 0.017, z - 0.002, z + 0.03)
+    lbox(d, "CT_Brass", gf, u + 0.05, u + 0.062, w - 0.017, w + 0.017, z - 0.002, z + 0.03)
+
+
+def _toy_gull(d, gf, u, w, z):
+    blob(d, "CT_TileWhite", *gf.p(u, w)[:2], z + 0.04, 0.045, 5)
+    blob(d, "CT_TileWhite", *gf.p(u + 0.04, w)[:2], z + 0.085, 0.025, 4)
+    _tri(d, "CT_PlasterRed", gf.p(u + 0.06, w, z + 0.085), gf.p(u + 0.1, w, z + 0.08), gf.p(u + 0.06, w, z + 0.07))
+    for sg in (-1, 1):
+        _tri(d, "CT_Steel", gf.p(u - 0.01, w + sg * 0.03, z + 0.05), gf.p(u + 0.03, w + sg * 0.03, z + 0.06), gf.p(u - 0.02, w + sg * 0.12, z + 0.09))
+    lbox(d, "CT_Steel", gf, u - 0.012, u + 0.012, w - 0.012, w + 0.012, z, z + 0.01)
+
+
+def strongman_extra(B, gf, yaw):
+    d = B.detail
+    # a queue: three posts and two ropes along the left of the stand, a ledger slate, a bucket and a ladle, the weights
+    for j, w in enumerate((0.95, 1.75, 2.55)):
+        _post(d, gf, -1.0, w, 0.9, "CT_SteelRed", 0.03)
+        x, y, _ = gf.p(-1.0, w)
+        blob(d, "CT_Brass", x, y, 0.94, 0.05, 5)
+        cyl(d, "CT_SteelRed", x, y, 0.0, 0.02, 0.12, 8)
+    for a, b in (((-1.0, 0.95), (-1.0, 1.75)), ((-1.0, 1.75), (-1.0, 2.55))):
+        _rope(d, gf, a, b, 0.82)
+    su, sw = -1.95, 0.45
+    for sg in (-1, 1):
+        _bar(d, "CT_Wood", gf, (su + sg * 0.3, sw - 0.12, 0.0), (su + sg * 0.3, sw, 0.8), 0.045)
+        _bar(d, "CT_Wood", gf, (su + sg * 0.3, sw + 0.12, 0.0), (su + sg * 0.3, sw, 0.8), 0.045)
+    lbox(d, "CT_Wood", gf, su - 0.38, su + 0.38, sw - 0.03, sw + 0.03, 0.78, 1.46)
+    lbox(d, "CT_ConcreteDark", gf, su - 0.33, su + 0.33, sw + 0.03, sw + 0.036, 0.84, 1.4)
+    for k, ln in enumerate((0.5, 0.35, 0.58, 0.28, 0.45)):
+        z = 1.3 - 0.095 * k
+        lbox(d, "CT_TileWhite", gf, su - 0.28, su - 0.28 + ln, sw + 0.036, sw + 0.039, z, z + 0.018)
+        lbox(d, "CT_TileWhite", gf, su + 0.2, su + 0.28, sw + 0.036, sw + 0.039, z, z + 0.018)
+    lbox(d, "CT_Wood", gf, su - 0.36, su + 0.36, sw + 0.03, sw + 0.1, 0.8, 0.84)
+    B.thing("strongman_ledger", "board", gf.p(su, sw + 0.1, 1.12), yaw, topic="logbook")
+    bx, by, _ = gf.p(-0.6, 0.6)
+    cyl(d, "CT_SteelRed", bx, by, 0.2, 0.46, 0.12, 8, top=False)
+    cyl(d, "CT_PlasterBlue", bx, by, 0.44, 0.45, 0.108, 8)
+    _bar(d, "CT_Wood", gf, (-0.6 + 0.05, 0.6, 0.45), (-0.3, 0.55, 0.3), 0.014)                 # the ladle
+    blob(d, "CT_Steel", *gf.p(-0.28, 0.55)[:2], 0.3, 0.035, 5)
+    lbox(d, "CT_Wood", gf, 1.2, 2.3, -0.1, 0.32, 0.0, 0.3)                                    # the weights' bench
+    lbox(d, "CT_Steel", gf, 1.22, 2.28, -0.08, 0.3, 0.3, 0.32)
+    for u, r in ((1.45, 0.09), (1.75, 0.115), (2.07, 0.145)):
+        x, y, _ = gf.p(u, 0.11)
+        blob(d, "CT_Steel", x, y, 0.32 + r, r, 6)
+        for sg in (-1, 1):
+            _bar(d, "CT_Steel", gf, (u + sg * 0.05, 0.11, 0.32 + 1.7 * r), (u + sg * 0.05, 0.11, 0.32 + 2.3 * r), 0.016, caps=False)
+        lbox(d, "CT_Steel", gf, u - 0.055, u + 0.055, 0.1, 0.12, 0.32 + 2.28 * r, 0.32 + 2.34 * r)
+    lbox(d, "CT_TileWhite", gf, 1.3, 2.2, 0.31, 0.318, 0.06, 0.24)                             # a numbers plate: 16, 24, 32
+    B.thing("strongman_weights", "sport", gf.p(1.75, 0.11, 0.55), yaw, what="barbell")
+    B.thing("strongman_keeper", "counter", gf.p(-1.35, 0.35, 1.2), yaw, role="vendor", service="games", trade="strongman")
+    _stand(B, gf, "strongman_work", -1.35, 0.0, face_back=False, kind="stall")
+
+
+def shooting_extra(B, gf, yaw):
+    d = B.detail
+    kit.stool(B, *gf.p(-0.95, 0.05)[:2], 0.0, yaw, mat="CT_PlasterBlue", h=0.55)
+    kit.radio(B, *gf.p(-1.15, 0.78)[:2], 1.0, yaw + 12)
+    B.thing("gallery_radio", "machine", gf.p(-1.15, 0.78, 1.15), yaw, what="radio")
+    x, y, _ = gf.p(1.4, 0.76)
+    cyl(d, "CT_PlasterGreen", x, y, 1.0, 1.24, 0.045, 8, top=False)
+    cyl(d, "CT_Aluminium", x, y, 1.24, 1.27, 0.05, 8)
+    kit.cup(B, *gf.p(1.22, 0.85)[:2], 1.0, yaw=yaw)
+    kit.sandwich_board(B, *gf.p(2.25, 1.5)[:2], 0.0, yaw + 10, name="price_0", w=0.55)
+    B.thing("gallery_prices", "board", gf.p(2.25, 1.5, 0.55), yaw, topic="prices")
+    for k, (w0, z0) in enumerate(((-0.3, 1.5), (0.15, 1.25), (0.55, 1.55))):                  # target cards pinned on the right wall
+        lbox(d, "CT_TileWhite", gf, 1.54, 1.558, w0, w0 + 0.22, z0, z0 + 0.3)
+        for r_, mat in ((0.1, "CT_SteelRed"), (0.06, "CT_TileWhite"), (0.025, "CT_SteelRed")):
+            lbox(d, mat, gf, 1.5535 - 0.001 * k, 1.5545 + 0.0, w0 + 0.11 - r_ * 0.8, w0 + 0.11 + r_ * 0.8, z0 + 0.15 - r_ * 0.8, z0 + 0.15 + r_ * 0.8)
+    for j in range(5):                                                                        # the day's tally: pellets in a row of cups
+        x, y, _ = gf.p(0.95 + 0.07 * j, 0.62)
+        cyl(d, "CT_Steel", x, y, 1.0, 1.04, 0.025, 5)
+    B.thing("gallery_keeper", "counter", gf.p(1.0, 0.85, 1.1), yaw, role="vendor", service="games", trade="gallery")
+    _stand(B, gf, "gallery_work", 0.15, 0.0, face_back=False, kind="stall")
+
+
+def ring_extra(B, gf, yaw):
+    d = B.detail
+    # a three-tier prize stand left of the table with the toys that the chalk board names
+    su, sw = -2.05, 0.35
+    for sx, sy in ((-1, -1), (1, -1), (1, 1), (-1, 1)):
+        _bar(d, "CT_Wood", gf, (su + sx * 0.25, sw + sy * 0.17, 0.0), (su + sx * 0.25, sw + sy * 0.17, 1.28), 0.03, caps=True)
+    for zb, dw in ((0.62, 0.2), (0.95, 0.19), (1.26, 0.17)):
+        lbox(d, "CT_WoodLight", gf, su - 0.3, su + 0.3, sw - dw, sw + dw, zb - 0.025, zb)
+    _toy_duck(d, gf, su - 0.12, sw, 0.62)
+    _toy_hedgehog(d, gf, su + 0.14, sw, 0.62)
+    _toy_lighthouse(d, gf, su - 0.15, sw, 0.95)
+    _toy_harmonica(d, gf, su + 0.12, sw + 0.02, 0.95)
+    _toy_gull(d, gf, su, sw, 1.26)
+    B.thing("prize_stand", "board", gf.p(su, sw + 0.2, 1.1), yaw, topic="kids")
+    kit.sandwich_board(B, *gf.p(1.95, 1.25)[:2], 0.0, yaw - 8, name="price_1", w=0.55)
+    x, y, _ = gf.p(1.75, 0.35)
+    cyl(d, "CT_PlasterBlue", x, y, 0.0, 0.3, 0.14, 8, top=False)                                # the pail of spare rings
+    for j in range(5):
+        _ring(d, ("CT_PlasterRed", "CT_PlasterYellow", "CT_PlasterGreen", "CT_PlasterBlue", "CT_Brass")[j], gf, 1.75, 0.35, 0.31 + 0.025 * j, r=0.1)
+    B.thing("ring_keeper", "counter", gf.p(-0.95, 0.95, 0.85), yaw, role="vendor", service="games", trade="rings")
+    _stand(B, gf, "ring_work", 0.0, -0.4, face_back=False, kind="stall")
+
+
+def lottery_extra(B, gf, yaw):
+    d = B.detail
+    # the numbers board on two posts, a clothesline of postcards, the keeper's spot behind the parasol pole
+    for u in (1.1, 2.0):
+        _bar(d, "CT_Wood", gf, (u, 0.0, 0.0), (u, 0.0, 1.95), 0.05)
+    lbox(d, "CT_PlasterBlue", gf, 1.05, 2.05, -0.03, 0.03, 1.0, 1.85)
+    lbox(d, "CT_Wood", gf, 1.02, 2.08, -0.05, 0.05, 1.85, 1.91)
+    for r_ in range(3):
+        for c in range(4):
+            u0 = 1.12 + 0.22 * c
+            z0 = 1.08 + 0.24 * r_
+            lbox(d, FLAGS[(r_ * 4 + c) % 6], gf, u0, u0 + 0.17, 0.03, 0.04, z0, z0 + 0.17)
+            lbox(d, "CT_TileWhite", gf, u0 + 0.05, u0 + 0.12, 0.04, 0.045, z0 + 0.05, z0 + 0.12)
+    B.thing("lottery_numbers", "board", gf.p(1.55, 0.1, 1.4), yaw, topic="prices")
+    for u in (-1.1, -2.1):
+        _bar(d, "CT_Wood", gf, (u, 0.6, 0.0), (u, 0.6, 1.8), 0.045)
+    fu.rod(d, "CT_Steel", gf.p(-1.1, 0.6, 1.72), gf.p(-2.1, 0.6, 1.72), 0.008, caps=False)
+    for j in range(5):
+        u0 = -1.2 - 0.18 * j
+        lbox(d, "CT_Paper", gf, u0 - 0.07, u0 + 0.07, 0.585, 0.615, 1.5, 1.72)
+        lbox(d, FLAGS[j % 5], gf, u0 - 0.055, u0 + 0.055, 0.615, 0.62, 1.55, 1.66)
+    B.thing("lottery_keeper", "counter", gf.p(-0.95, 0.2, 0.95), yaw, role="vendor", service="games", trade="lottery")
+    _stand(B, gf, "lottery_work", 0.0, -1.0, face_back=False, kind="stall")
+
+
+def weigh_extra(B, gf, yaw):
+    d = B.detail
+    su, sw = -0.95, 0.5
+    lbox(d, "CT_Wood", gf, su - 0.04, su + 0.04, sw - 0.025, sw + 0.025, 0.0, 2.05)
+    for k in range(15):
+        z = 0.5 + 0.1 * k
+        lbox(d, "CT_TileWhite", gf, su - (0.07 if k % 5 == 0 else 0.045), su, sw + 0.025, sw + 0.03, z, z + 0.012)
+    lbox(d, "CT_Brass", gf, su - 0.1, su + 0.1, sw + 0.03, sw + 0.06, 1.42, 1.46)               # the sliding bar
+    lbox(d, "CT_SteelRed", gf, su - 0.11, su - 0.09, sw + 0.03, sw + 0.065, 1.38, 1.5)
+    lbox(d, "CT_Wood", gf, su - 0.14, su + 0.14, sw - 0.06, sw + 0.1, 0.0, 0.03)
+    B.thing("fair_height_post", "machine", gf.p(su, sw + 0.1, 1.45), yaw, what="scales")
+
+
+def photo_extra(B, gf, yaw):
+    d = B.detail
+    tb = kit.table(B, *gf.p(1.95, 1.65)[:2], 0.0, yaw, w=0.8, d=0.5, h=0.8)
+    top = tb["top"]
+    lbox(d, "CT_Leather", gf, 1.7, 2.0, 1.55, 1.78, top, top + 0.035)                         # the album, open
+    lbox(d, "CT_Paper", gf, 1.72, 1.98, 1.57, 1.76, top + 0.035, top + 0.045)
+    for j in range(4):
+        lbox(d, "CT_Paper", gf, 2.05 + 0.02 * j, 2.2 + 0.02 * j, 1.55 + 0.01 * j, 1.7 + 0.01 * j, top + 0.0, top + 0.004 + 0.002 * j)
+    B.thing("photo_album", "board", gf.p(1.85, 1.66, top + 0.08), yaw, topic="exhibit")
+    for w in (0.2, 1.9):                                                                       # a line of prints drying
+        _bar(d, "CT_Wood", gf, (-2.35, w, 0.0), (-2.35, w, 1.85), 0.045)
+    fu.rod(d, "CT_Steel", gf.p(-2.35, 0.2, 1.78), gf.p(-2.35, 1.9, 1.78), 0.008, caps=False)
+    for j in range(6):
+        w = 0.33 + 0.27 * j
+        lbox(d, "CT_Paper", gf, -2.38, -2.32, w - 0.08, w + 0.08, 1.46, 1.76)
+        lbox(d, ("CT_PlasterBlue", "CT_ConcreteDark", "CT_PlasterGreen")[j % 3], gf, -2.381, -2.319, w - 0.065, w + 0.065, 1.51, 1.7)
+    lbox(d, "CT_TileWhite", gf, 1.0, 1.7, -0.72, -0.69, 0.95, 1.75)                            # a reflector on a tripod
+    for sg in (-1, 0, 1):
+        _bar(d, "CT_Steel", gf, (1.35, -0.7, 0.95), (1.35 + sg * 0.3, -0.7 + (0.0 if sg else -0.2), 0.0), 0.015, caps=False)
+
+
+def carousel(B, s=118.0, t=0.1):
+    """A small children's roundabout in the east clearing: a platform, a striped drum and roof, six horses on brass poles,
+    the operator's control box with a bell (spot staff_carousel_operator). Pure animals and machinery, nobody on it."""
+    cx, cy = surf(s, t)
+    x_, y_, tx, ty = at(s)
+    d = B.detail
+    R = 1.5
+    cyl(d, "CT_Wood", cx, cy, 0.0, 0.18, R, 16)
+    cyl(d, "CT_PlasterRed", cx, cy, 0.18, 0.21, R - 0.02, 16)
+    cyl(d, "CT_PlasterYellow", cx, cy, 0.21, 2.3, 0.3, 12, top=False)
+    for z0_, z1_ in ((0.5, 0.85), (1.35, 1.7)):
+        cyl(d, "CT_PlasterRed", cx, cy, z0_, z1_, 0.315, 12, top=False)
+    gf = MFr(cx, cy, 0.0)
+    _parasol(B, gf, 0.0, 0.0, 2.35, r=R + 0.05, zp=3.0, n=12, mats=("CT_PlasterRed", "CT_TileWhite"))
+    for j in range(12):                                                                       # bulbs round the roof's rim
+        a = 2 * math.pi * (j + 0.5) / 12
+        blob(d, "CT_Opal", cx + (R + 0.04) * math.cos(a), cy + (R + 0.04) * math.sin(a), 2.31, 0.04, 4)
+    for k in range(6):
+        a = 2 * math.pi * k / 6
+        px, py = cx + 1.0 * math.cos(a), cy + 1.0 * math.sin(a)
+        heading = (-math.sin(a), math.cos(a))
+        yawh = math.degrees(math.atan2(heading[0], -heading[1]))
+        F = MFr(px, py, yawh)
+        up = 0.14 if k % 2 else 0.0
+        _bar(d, "CT_Brass", F, (0, 0, 0.21), (0, 0, 2.35), 0.03)
+        mat = ("CT_PlasterRed", "CT_PlasterBlue", "CT_PlasterYellow")[k % 3]
+        lbox(d, mat, F, -0.07, 0.07, -0.27, 0.27, 0.86 + up, 1.14 + up)                       # body
+        lbox(d, "CT_Leather", F, -0.075, 0.075, -0.1, 0.12, 1.14 + up, 1.17 + up)             # saddle
+        _bar(d, mat, F, (0, 0.2, 1.1 + up), (0, 0.33, 1.4 + up), 0.1)                         # neck
+        lbox(d, mat, F, -0.06, 0.06, 0.28, 0.47, 1.28 + up, 1.46 + up)                         # head
+        lbox(d, "CT_Wood", F, -0.012, 0.012, 0.18, 0.33, 1.4 + up, 1.5 + up)                    # mane
+        _bar(d, "CT_TileWhite", F, (0, -0.27, 1.1 + up), (0, -0.4, 0.85 + up), 0.035)          # tail
+        for fx_, fy_, fz_ in ((0.14, 0.2, 0.12), (-0.14, 0.2, 0.12)):
+            for gx in (-0.04, 0.04):
+                _bar(d, "CT_Wood", F, (gx, 0.17, 0.9 + up), (gx, 0.26, 0.66 + up), 0.03, caps=False)
+                _bar(d, "CT_Wood", F, (gx, -0.17, 0.9 + up), (gx, -0.24, 0.66 + up), 0.03, caps=False)
+            break
+    # control box and bell on the walk side (west of the roundabout along the walk)
+    bx, by = surf(s - 2.7, t)
+    face = math.degrees(math.atan2(tx, -ty))                                                   # toward the carousel = +tangent
+    F = MFr(bx, by, face)
+    lbox(d, "CT_PlasterBlue", F, -0.28, 0.28, -0.2, 0.2, 0.0, 1.0)
+    lbox(d, "CT_Wood", F, -0.32, 0.32, -0.24, 0.24, 1.0, 1.04)
+    _bar(d, "CT_Steel", F, (-0.1, 0.0, 1.04), (-0.1, 0.07, 1.3), 0.02)
+    blob(d, "CT_SteelRed", *F.p(-0.1, 0.07)[:2], 1.32, 0.04, 5)
+    blob(d, "CT_Brass", *F.p(0.15, 0.0)[:2], 1.1, 0.075, 6)                                   # the bell
+    lbox(d, "CT_Steel", F, 0.1, 0.2, -0.04, 0.04, 1.04, 1.06)
+    lbox(d, "CT_TileWhite", F, -0.2, 0.2, -0.2, -0.198, 0.3, 0.9)
+    lbox(d, "CT_PlasterRed", F, -0.2, 0.2, -0.201, -0.2, 0.7, 0.85)
+    B.thing("fair_carousel", "machine", (cx, cy, 1.1), face, what="carousel")
+    B.thing("carousel_keeper", "counter", F.p(0.0, 0.35, 1.05), face + 180, role="carousel_operator", service="rides", trade="carousel")
+    B.spot("staff_carousel_operator", "work", (*F.p(0.0, -0.55)[:2], 0.0), face)
+    B.spot("carousel_view", "stand", (*F.p(0.0, 1.0)[:2], 0.0), face)
+
+
+def pingpong(B, s=53.5, t=0.25):
+    gf, yaw = _gframe(s, t, 1)
+    cx, cy = gf.p(0, 0)[:2]
+    kit.pingpong_table(B, cx, cy, 0.0, yaw)
+    B.thing("fair_pingpong", "play", (cx, cy, 0.85), yaw, what="table_tennis")
+    d = B.detail
+    lbox(d, "CT_Wood", gf, 1.55, 1.85, 1.1, 1.3, 0.0, 0.5)                                    # a box of bats and balls
+    lbox(d, "CT_PlasterRed", gf, 1.58, 1.82, 1.12, 1.28, 0.5, 0.52)
+    lbox(d, "CT_Wood", gf, 1.65, 1.77, 1.19, 1.21, 0.52, 0.64)
+    blob(d, "CT_TileWhite", *gf.p(1.72, 1.25)[:2], 0.545, 0.02, 4)
+    B.spot("pingpong_end_1", "stand", (*gf.p(-1.95, 0.0)[:2], 0.0), yaw + 90)
+    B.spot("pingpong_end_2", "stand", (*gf.p(1.95, 0.0)[:2], 0.0), yaw - 90)
+
+
+def dominoes_table(B, s=4.5, t=0.0):
+    gf, yaw = _gframe(s, t, 1)
+    cx, cy = gf.p(0, 0)[:2]
+    tb = kit.table(B, cx, cy, 0.0, yaw, w=0.8, d=0.8, h=0.75)
+    top = tb["top"]
+    d = B.detail
+    for k in range(7):                                                                       # a row of tiles, some face-up
+        u = -0.3 + 0.085 * k
+        lbox(d, "CT_TileWhite", gf, u, u + 0.04, 0.02, 0.1, top, top + 0.012)
+        lbox(d, "CT_ConcreteDark", gf, u + 0.0, u + 0.04, 0.059, 0.061, top + 0.0, top + 0.0125)
+    for k in range(5):
+        lbox(d, "CT_Steel", gf, -0.25 + 0.07 * k, -0.21 + 0.07 * k, -0.3, -0.22, top, top + 0.012)
+    for sg, nm in ((-1, "dom_seat_1"), (1, "dom_seat_2")):
+        px, py = gf.p(0, sg * 0.66)[:2]
+        face = yaw + (0 if sg < 0 else 180)                                                   # looking over the table
+        kit.stool(B, px, py, 0.0, face, mat="CT_PlasterGreen", h=0.45)
+        B.thing(nm, "seat", (px, py, 0.45), face, height=0.45)
+        B.spot(nm, "seat", (px, py, 0.45), face)
+    for sg in (-1, 1):
+        px, py = gf.p(sg * 0.66, 0.0)[:2]
+        kit.stool(B, px, py, 0.0, yaw + (90 if sg < 0 else -90), mat="CT_PlasterRed", h=0.45)
+        B.spot("dom_seat_%d" % (3 if sg < 0 else 4), "seat", (px, py, 0.45), yaw + (90 if sg < 0 else -90))
+    B.thing("fair_dominoes", "play", (cx, cy, top + 0.05), yaw, what="dominoes")
+
+
+def shell_table(B, s=96.0, t=0.3):
+    gf, yaw = _gframe(s, t, -1)
+    d = B.detail
+    for sx, sy in ((-1, -1), (1, -1), (1, 1), (-1, 1)):
+        _bar(d, "CT_Wood", gf, (sx * 0.3, sy * 0.2, 0.0), (sx * 0.34, sy * 0.22, 0.78), 0.035, caps=True)
+    lbox(B.m, "CT_PlasterGreen", gf, -0.36, 0.36, -0.26, 0.26, 0.76, 0.8)
+    lbox(d, "CT_Paper", gf, -0.3, 0.3, -0.2, 0.2, 0.8, 0.805)
+    for k, u in enumerate((-0.2, 0.0, 0.2)):                                                  # three cups, a pea under one
+        x, y, _ = gf.p(u, 0.0)
+        cyl(d, "CT_Brass", x, y, 0.805, 0.88, 0.055, 8, top=True)
+        blob(d, "CT_Brass", x, y, 0.89, 0.025, 4)
+    blob(d, "CT_PlasterRed", *gf.p(0.33, 0.1)[:2], 0.83, 0.022, 4)
+    kit.stool(B, *gf.p(0.0, -0.75)[:2], 0.0, yaw, mat="CT_PlasterRed", h=0.5)
+    B.thing("fair_shells", "play", gf.p(0.0, 0.0, 0.9), yaw, what="shells")
+    _stand(B, gf, "shell_stand", 0.0, 0.95)
+
+
+def clock_post(B, s=63.0, t=-0.1):
+    """A street clock on a post in the middle of the walk: two dials back to back."""
+    cx, cy = surf(s, t)
+    x, y, tx, ty = at(s)
+    fr = Fr(cx, cy, tx, ty)
+    face = fr.yaw_dir(0, 1)
+    d = B.detail
+    F = MFr(cx, cy, face)
+    lbox(d, "CT_SteelRed", F, -0.05, 0.05, -0.05, 0.05, 0.0, 2.9)
+    lbox(d, "CT_Steel", F, -0.12, 0.12, -0.12, 0.12, 0.0, 0.12)
+    lbox(d, "CT_SteelRed", F, -0.2, 0.2, -0.09, 0.09, 3.28, 3.34)
+    for sg in (-1, 1):
+        px, py, _ = F.p(0, 0.06 * sg)
+        kit.wall_clock(B, px, py, 0.0, face + (0 if sg > 0 else 180), zc=3.0)
+    blob(d, "CT_Brass", cx, cy, 3.4, 0.05, 5)
+    B.thing("fair_clock", "board", F.p(0.0, 0.2, 3.0), face, topic="clock")
+
+
+def festoon_switch(B, s, t, tid):
+    cx, cy = surf(s, t)
+    x, y, tx, ty = at(s)
+    fr = Fr(cx, cy, tx, ty)
+    face = fr.yaw_dir(0, 1 if t < 0 else -1)
+    F = MFr(cx, cy, face)
+    d = B.detail
+    lbox(d, "CT_Wood", F, -0.06, 0.06, -0.06, 0.06, 0.0, 2.25)
+    lbox(d, "CT_Steel", F, -0.13, 0.13, 0.06, 0.12, 1.65, 2.0)
+    lbox(d, "CT_TileWhite", F, -0.08, 0.08, 0.12, 0.125, 1.8, 1.95)
+    _bar(d, "CT_SteelRed", F, (0.0, 0.13, 1.74), (0.0, 0.2, 1.84), 0.02)
+    blob(d, "CT_SteelRed", *F.p(0.0, 0.2)[:2], 1.86, 0.03, 4)
+    B.thing(tid, "machine", F.p(0.0, 0.15, 1.85), face, what="switch", switch=30)
+
+
+def planters(B):
+    for s, t, tag in ((1.6, 0.5, 0), (1.6, -0.5, 1), (121.0, 0.4, 2), (121.0, -0.4, 3)):
+        cx, cy = surf(s, t)
+        x, y, tx, ty = at(s)
+        kit.planter(B, cx, cy, 0.0, math.degrees(math.atan2(tx, -ty)) + 90, w=1.4, d=0.45, seed=tag)
+
+
+def second_pass(B, G):
+    strongman_extra(B, G["strong"], G["strong"].yaw)
+    shooting_extra(B, G["gallery"], G["gallery"].yaw)
+    ring_extra(B, G["ring"], G["ring"].yaw)
+    lottery_extra(B, G["lottery"], G["lottery"].yaw)
+    weigh_extra(B, G["weigh"], G["weigh"].yaw)
+    photo_extra(B, G["photo"], G["photo"].yaw)
+    carousel(B)
+    pingpong(B)
+    dominoes_table(B)
+    shell_table(B)
+    clock_post(B)
+    festoon_switch(B, 2.6, 0.3, "festoon_switch_w")
+    festoon_switch(B, 119.5, -0.35, "festoon_switch_e")
+    planters(B)
+
+
 def fair_games(B):
-    strongman_tower(B)
-    ring_toss_table(B)
-    lottery_drum(B)
-    shooting_booth(B)
+    G = {}
+    G["strong"] = strongman_tower(B)
+    G["ring"] = ring_toss_table(B)
+    G["lottery"] = lottery_drum(B)
+    G["gallery"] = shooting_booth(B)
     chalk_board(B)
-    photographer(B)
-    weighing_chair(B)
+    G["photo"] = photographer(B)
+    G["weigh"] = weighing_chair(B)
     fortune_automaton(B)
     lost_sandal(B)
     for i, s in enumerate((9, 21, 31, 43, 57, 69, 83, 95, 111)):
@@ -827,6 +1349,7 @@ def fair_games(B):
     # people watch from the far side of the walk
     B.spot("fair_view_1", "view", (*surf(60.0, 0.1), 0.0), 0.0)
     B.spot("fair_view_2", "view", (*surf(30.0, 0.0), 0.0), 0.0)
+    second_pass(B, G)
 
 
 def build(B):
