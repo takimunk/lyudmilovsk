@@ -243,6 +243,10 @@ void FSim::Settle(const FEnv& Env, const FV& Eye, const FClock& Clock)
 	const int Reach = int(std::ceil(Radius / CellSize));
 	std::unordered_map<uint64_t, int> Keep;
 	const float Water = Env.SurfaceZ();
+	// only so many new cells a call (each asks the bed at dozens of points, a trace each the first time in the game):
+	// the rest on the next steps
+	int NewCells = 0;
+	bool bMore = false;
 	for (int Y = CY - Reach; Y <= CY + Reach; ++Y)
 		for (int X = CX - Reach; X <= CX + Reach; ++X)
 		{
@@ -255,6 +259,12 @@ void FSim::Settle(const FEnv& Env, const FV& Eye, const FClock& Clock)
 				Keep[Key] = 1;
 				continue;
 			}
+			if (NewCells >= NewCellsPerSettle)
+			{
+				bMore = true;
+				continue;
+			}
+			++NewCells;
 			Keep[Key] = 1;
 			FCellRng R{ Hash(uint32_t(X), uint32_t(Y), Seed) };
 			for (int S = 0; S < NumTable; ++S)
@@ -303,6 +313,8 @@ void FSim::Settle(const FEnv& Env, const FV& Eye, const FClock& Clock)
 		It = Keep.count(It->first) ? std::next(It) : Cells.erase(It);
 	for (const auto& K : Keep) Cells[K.first] = 1;
 	All.erase(std::remove_if(All.begin(), All.end(), [&](const FFish& F) { return F.Cell && !Cells.count(F.Cell); }), All.end());
+	// cells still to fill: again on the next step, not in half a second
+	if (bMore) SettleTimer = 0.f;
 }
 
 void FSim::SpawnGroup(int S, const FEnv& Env, const FV& Eye, const FClock& Clock)

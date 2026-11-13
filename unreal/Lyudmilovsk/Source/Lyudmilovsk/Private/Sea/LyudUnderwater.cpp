@@ -315,7 +315,7 @@ void ULyudUnderwaterSubsystem::Deinitialize()
 void ULyudUnderwaterSubsystem::Release()
 {
 	if (Sim) Sim->Clear();
-	if (Env) Env->Beds.Empty();
+	// (the bed's traced heights are kept: the bed does not change, the map is capped, and coming back traces nothing)
 	if (ALyudSeaLife* L = Life.Get())
 	{
 		L->Destroy();
@@ -542,6 +542,8 @@ void ULyudUnderwaterSubsystem::Tick(float DeltaTime)
 		Eco->ForEachFishDiet([S](int32 Predator, int32 Prey, float Share) { S->SetDiet(Predator, Prey, Share); });
 	}
 	Sim->Density = FMath::Max(CVarSeaLifeDensity.GetValueOnGameThread(), 0.f);
+	// three 6 m cells of bottom fish a frame (each traces its bed the first time): the reach fills in half a second
+	Sim->NewCellsPerSettle = 3;
 	LyudFish::FClock FC;
 	FDateTime Now = UGameCalendar::NowIn(World);
 	float SunAlt = 30.f;
