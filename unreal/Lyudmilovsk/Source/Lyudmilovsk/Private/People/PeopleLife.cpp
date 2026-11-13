@@ -524,7 +524,12 @@ void UPeopleLifeSubsystem::SyncMemory(bool bToSave)
 		{
 			for (int32 N = 0; N < LP::NumNeeds && N < M->Needs.Num(); N++)
 			{
-				P.N[N] = M->Needs[N];
+				// a damaged save: a need that isn't a number keeps Resettle's guess, one out of range is brought back in
+				const float Need = M->Needs[N];
+				if (FMath::IsFinite(Need))
+				{
+					P.N[N] = FMath::Clamp(Need, 0.f, 1.f);
+				}
 			}
 		}
 	}
