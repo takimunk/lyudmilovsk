@@ -82,7 +82,8 @@ def conversation(n=2):
 # l) asides wait for the first conversation: awakening on owner, Guy_b (the club): first.1.., then owner_says_odd.1, then everyday
 at("Quest.Reset", None, 1.0)
 at("Quest.SetStage awakening owner", None, 1.0)
-go("guy_b", 1.3)
+# Guy_b sits at a club computer (head about 65, -152, 148 cm): stand behind him in the aisle, eyes on his head
+at("BugItGo -60 -152 100 -5 0 0", None, 3.0)
 at("Npc.Where")
 at("QUESTDEPTH mark l_guy_b")
 for _ in range(10):
@@ -96,7 +97,8 @@ for _ in range(12):
 # n) the Owner: on awakening's owner stage his first exchange (the stage finishes); on outside door_never_locked (or the sun's variant)
 at("Quest.Reset", None, 1.0)
 at("Quest.SetStage awakening owner", None, 1.0)
-go("owner", 1.3)
+# the Owner talks through his window: stand in its call zone (40, 390) facing him (head about 163, 640)
+at("BugItGo 40 390 100 0 64 0", None, 4.0)
 at("Npc.Where")
 at("QUESTDEPTH mark n_owner")
 for _ in range(6):
