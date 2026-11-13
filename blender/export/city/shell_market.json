@@ -458,6 +458,96 @@
     0
    ],
    "yaw": 0
+  },
+  {
+   "id": "jam_stand",
+   "kind": "stand",
+   "pos": [
+    -6.4,
+    4.8,
+    0
+   ],
+   "yaw": 0
+  },
+  {
+   "id": "tasting_stand",
+   "kind": "stand",
+   "pos": [
+    -3.2,
+    4.7,
+    0
+   ],
+   "yaw": 0
+  },
+  {
+   "id": "control_stand",
+   "kind": "stand",
+   "pos": [
+    -11.9,
+    5.2,
+    0
+   ],
+   "yaw": 0
+  },
+  {
+   "id": "grinder_work",
+   "kind": "work",
+   "pos": [
+    -10.4,
+    13.6,
+    0
+   ],
+   "yaw": 0
+  },
+  {
+   "id": "grinder_customer",
+   "kind": "stand",
+   "pos": [
+    -10.4,
+    11.6,
+    0
+   ],
+   "yaw": 0
+  },
+  {
+   "id": "herb_stand",
+   "kind": "stand",
+   "pos": [
+    -18.6,
+    21.6,
+    0
+   ],
+   "yaw": 90
+  },
+  {
+   "id": "cat_stand",
+   "kind": "stand",
+   "pos": [
+    0.3,
+    15.7,
+    0
+   ],
+   "yaw": 0
+  },
+  {
+   "id": "pigeon_stand",
+   "kind": "stand",
+   "pos": [
+    0.35,
+    25.7,
+    0
+   ],
+   "yaw": 0
+  },
+  {
+   "id": "day_board_stand",
+   "kind": "stand",
+   "pos": [
+    0.0,
+    1.5,
+    0
+   ],
+   "yaw": 0
   }
  ],
  "lamps": [
@@ -636,9 +726,67 @@
    "colour": "#FFD2A0",
    "kind": "public",
    "radius": 8.0
+  },
+  {
+   "pos": [
+    -8.8,
+    6.2,
+    2.897
+   ],
+   "lumens": 760,
+   "colour": "#FFD9A8",
+   "kind": "public",
+   "radius": 7.0
+  },
+  {
+   "pos": [
+    -10.4,
+    12.6,
+    4.887
+   ],
+   "lumens": 760,
+   "colour": "#FFD9A8",
+   "kind": "public",
+   "radius": 7.0
+  },
+  {
+   "pos": [
+    -19.4,
+    21.6,
+    4.108
+   ],
+   "lumens": 760,
+   "colour": "#FFD9A8",
+   "kind": "public",
+   "radius": 7.0
+  },
+  {
+   "pos": [
+    0.5,
+    16.9,
+    3.118
+   ],
+   "lumens": 760,
+   "colour": "#FFD9A8",
+   "kind": "public",
+   "radius": 7.0
   }
  ],
  "things": [
+  {
+   "id": "slate_1",
+   "kind": "board",
+   "pos": [
+    -16.75,
+    9.6,
+    1.28
+   ],
+   "yaw": 0.0,
+   "props": {
+    "topic": "slate",
+    "trade": "fruit"
+   }
+  },
   {
    "id": "counter1",
    "kind": "counter",
@@ -651,6 +799,20 @@
    "props": {
     "service": "shop",
     "shop": "market_fruit"
+   }
+  },
+  {
+   "id": "slate_2",
+   "kind": "board",
+   "pos": [
+    -16.75,
+    20.0,
+    1.28
+   ],
+   "yaw": 0.0,
+   "props": {
+    "topic": "slate",
+    "trade": "dairy"
    }
   },
   {
@@ -668,6 +830,20 @@
    }
   },
   {
+   "id": "slate_3",
+   "kind": "board",
+   "pos": [
+    -18.0,
+    16.25,
+    1.28
+   ],
+   "yaw": 90,
+   "props": {
+    "topic": "slate",
+    "trade": "butcher"
+   }
+  },
+  {
    "id": "counter3",
    "kind": "counter",
    "pos": [
@@ -679,6 +855,20 @@
    "props": {
     "service": "butcher",
     "role": "butcher"
+   }
+  },
+  {
+   "id": "slate_4",
+   "kind": "board",
+   "pos": [
+    -16.75,
+    30.4,
+    1.28
+   ],
+   "yaw": 0.0,
+   "props": {
+    "topic": "slate",
+    "trade": "bread"
    }
   },
   {
@@ -696,6 +886,20 @@
    }
   },
   {
+   "id": "slate_5",
+   "kind": "board",
+   "pos": [
+    -6.35,
+    9.6,
+    1.28
+   ],
+   "yaw": 0.0,
+   "props": {
+    "topic": "slate",
+    "trade": "birds"
+   }
+  },
+  {
    "id": "counter5",
    "kind": "counter",
    "pos": [
@@ -707,6 +911,20 @@
    "props": {
     "service": "shop",
     "shop": "market_birds"
+   }
+  },
+  {
+   "id": "slate_6",
+   "kind": "board",
+   "pos": [
+    -6.35,
+    20.0,
+    1.28
+   ],
+   "yaw": 0.0,
+   "props": {
+    "topic": "slate",
+    "trade": "fish"
    }
   },
   {
@@ -724,6 +942,20 @@
    }
   },
   {
+   "id": "slate_7",
+   "kind": "board",
+   "pos": [
+    -2.8,
+    18.55,
+    1.28
+   ],
+   "yaw": 270,
+   "props": {
+    "topic": "slate",
+    "trade": "sweets"
+   }
+  },
+  {
    "id": "counter7",
    "kind": "counter",
    "pos": [
@@ -735,6 +967,20 @@
    "props": {
     "service": "shop",
     "shop": "market_sweets"
+   }
+  },
+  {
+   "id": "slate_8",
+   "kind": "board",
+   "pos": [
+    -6.35,
+    30.4,
+    1.28
+   ],
+   "yaw": 0.0,
+   "props": {
+    "topic": "slate",
+    "trade": "bait"
    }
   },
   {
@@ -752,6 +998,20 @@
    }
   },
   {
+   "id": "slate_9",
+   "kind": "board",
+   "pos": [
+    4.05,
+    9.6,
+    1.28
+   ],
+   "yaw": 0.0,
+   "props": {
+    "topic": "slate",
+    "trade": "veg"
+   }
+  },
+  {
    "id": "counter9",
    "kind": "counter",
    "pos": [
@@ -763,6 +1023,20 @@
    "props": {
     "service": "shop",
     "shop": "market_fruit"
+   }
+  },
+  {
+   "id": "slate_10",
+   "kind": "board",
+   "pos": [
+    4.05,
+    20.0,
+    1.28
+   ],
+   "yaw": 0.0,
+   "props": {
+    "topic": "slate",
+    "trade": "dairy"
    }
   },
   {
@@ -780,6 +1054,20 @@
    }
   },
   {
+   "id": "slate_11",
+   "kind": "board",
+   "pos": [
+    2.8,
+    16.25,
+    1.28
+   ],
+   "yaw": 90,
+   "props": {
+    "topic": "slate",
+    "trade": "fish"
+   }
+  },
+  {
    "id": "counter11",
    "kind": "counter",
    "pos": [
@@ -791,6 +1079,20 @@
    "props": {
     "service": "fishmonger",
     "role": "fishmonger"
+   }
+  },
+  {
+   "id": "slate_12",
+   "kind": "board",
+   "pos": [
+    4.05,
+    30.4,
+    1.28
+   ],
+   "yaw": 0.0,
+   "props": {
+    "topic": "slate",
+    "trade": "bread"
    }
   },
   {
@@ -808,6 +1110,20 @@
    }
   },
   {
+   "id": "slate_13",
+   "kind": "board",
+   "pos": [
+    14.45,
+    9.6,
+    1.28
+   ],
+   "yaw": 0.0,
+   "props": {
+    "topic": "slate",
+    "trade": "birds"
+   }
+  },
+  {
    "id": "counter13",
    "kind": "counter",
    "pos": [
@@ -819,6 +1135,20 @@
    "props": {
     "service": "shop",
     "shop": "market_birds"
+   }
+  },
+  {
+   "id": "slate_14",
+   "kind": "board",
+   "pos": [
+    14.45,
+    20.0,
+    1.28
+   ],
+   "yaw": 0.0,
+   "props": {
+    "topic": "slate",
+    "trade": "fruit"
    }
   },
   {
@@ -836,6 +1166,20 @@
    }
   },
   {
+   "id": "slate_15",
+   "kind": "board",
+   "pos": [
+    18.0,
+    18.55,
+    1.28
+   ],
+   "yaw": 270,
+   "props": {
+    "topic": "slate",
+    "trade": "butcher"
+   }
+  },
+  {
    "id": "counter15",
    "kind": "counter",
    "pos": [
@@ -847,6 +1191,20 @@
    "props": {
     "service": "butcher",
     "role": "butcher"
+   }
+  },
+  {
+   "id": "slate_16",
+   "kind": "board",
+   "pos": [
+    14.45,
+    30.4,
+    1.28
+   ],
+   "yaw": 0.0,
+   "props": {
+    "topic": "slate",
+    "trade": "bait"
    }
   },
   {
@@ -1096,6 +1454,175 @@
    "props": {
     "what": "scales"
    }
+  },
+  {
+   "id": "jam_jars",
+   "kind": "shelf",
+   "pos": [
+    -6.4,
+    5.7,
+    0.95
+   ],
+   "yaw": 0.0,
+   "props": {
+    "topic": "jam"
+   }
+  },
+  {
+   "id": "jam_tasting",
+   "kind": "shelf",
+   "pos": [
+    -3.2,
+    5.7,
+    0.95
+   ],
+   "yaw": 0.0,
+   "props": {
+    "topic": "jam"
+   }
+  },
+  {
+   "id": "control_scales",
+   "kind": "machine",
+   "pos": [
+    -11.9,
+    6.2,
+    1.15
+   ],
+   "yaw": 0.0,
+   "props": {
+    "what": "control_scales"
+   }
+  },
+  {
+   "id": "unlabeled_jar",
+   "kind": "board",
+   "pos": [
+    -10.9,
+    6.5,
+    0.7
+   ],
+   "yaw": 0.0,
+   "props": {
+    "topic": "jam"
+   }
+  },
+  {
+   "id": "knife_grinder",
+   "kind": "craft",
+   "pos": [
+    -10.4,
+    12.6,
+    1.0
+   ],
+   "yaw": 0.0,
+   "props": {
+    "what": "grinder"
+   }
+  },
+  {
+   "id": "herb_corner",
+   "kind": "shelf",
+   "pos": [
+    -19.9,
+    21.6,
+    0.75
+   ],
+   "yaw": 270.0,
+   "props": {
+    "topic": "herbs"
+   }
+  },
+  {
+   "id": "cat_bowl",
+   "kind": "board",
+   "pos": [
+    0.5,
+    16.55,
+    0.3
+   ],
+   "yaw": 0.0,
+   "props": {
+    "topic": "cat"
+   }
+  },
+  {
+   "id": "pigeon_crumbs",
+   "kind": "board",
+   "pos": [
+    0.35,
+    26.7,
+    0.2
+   ],
+   "yaw": 0.0,
+   "props": {
+    "topic": "pigeons"
+   }
+  },
+  {
+   "id": "complaint_book",
+   "kind": "board",
+   "pos": [
+    -12.3,
+    2.5,
+    1.07
+   ],
+   "yaw": 0.0,
+   "props": {
+    "topic": "complaints"
+   }
+  },
+  {
+   "id": "day_board",
+   "kind": "board",
+   "pos": [
+    0.0,
+    2.2,
+    1.4
+   ],
+   "yaw": 0.0,
+   "props": {
+    "topic": "fair"
+   }
+  },
+  {
+   "id": "tea_radio",
+   "kind": "machine",
+   "pos": [
+    11.35,
+    3.55,
+    1.2
+   ],
+   "yaw": 0.0,
+   "props": {
+    "what": "radio"
+   }
+  },
+  {
+   "id": "catch_6",
+   "kind": "board",
+   "pos": [
+    -5.9,
+    20.3,
+    1.15
+   ],
+   "yaw": 0.0,
+   "props": {
+    "topic": "catch"
+   }
+  },
+  {
+   "id": "catch_11",
+   "kind": "board",
+   "pos": [
+    2.5,
+    17.1,
+    1.15
+   ],
+   "yaw": 270.0,
+   "props": {
+    "topic": "catch"
+   }
   }
  ],
  "flats": [],
@@ -1105,8 +1632,8 @@
   "12 umbrellas, 16 stalls, 8 benches"
  ],
  "tris": {
-  "shell": 15132,
-  "detail": 21607,
+  "shell": 15168,
+  "detail": 30594,
   "windows": 0
  }
 }

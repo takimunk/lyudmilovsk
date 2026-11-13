@@ -231,7 +231,7 @@ def _furnish_hall(B, hall, t):
     # reception desk on the courtyard side of bay 4; the clerk stands behind it facing the street wall
     th_r = -77.0
     x, y = pol(14.0, th_r)
-    r = kit.reception_desk(B, x, y, yaw=_yout(th_r), w=2.4, front="CT_PlasterBlue")
+    r = desk = kit.reception_desk(B, x, y, yaw=_yout(th_r), w=2.4, front="CT_PlasterBlue")
     B.spot("reception", "counter", r["staff"][:2] + (0.0,), _yout(th_r))
     B.thing("reception", "counter", (x, y, 1.1), _yout(th_r), role="receptionist", service="reception",
             shop="sanatorium_kiosk")
@@ -333,7 +333,7 @@ def _furnish_hall(B, hall, t):
         pt, yw, L = _edge_pt(q, 8 + (6 - pn), L_of(q, 8 + (6 - pn)) / 2)
         kit.radiator(B, pt[0], pt[1], yaw=yw, w=1.3, h=0.42)
     # planters along the courtyard windows
-    for thp in (-120.2, -112.8, -104.6, -98.0):
+    for thp in (-120.2, -112.8, -98.0):     # -104.6: the library trolley now stands there
         kit.plant(B, *pol(12.85, thp), kind=("fern", "ficus")[int(thp) % 2], pot="CT_TileWhite", h=1.1, seed=int(thp))
     # a dado of floor border
     _floor_sector(B, "CT_ConcreteDark", th_d0 + 0.4, th_d1 - 0.2, 12.45, 12.7, z=0.01)
@@ -444,7 +444,7 @@ def _furnish_hall(B, hall, t):
     wx, wy = _at(17.0, th_t0, 0.075)
     kit.mirror(B, wx, wy, yaw=_ytan(th_t0), zc=1.5, w=0.5, h=0.9)
     kit.pendant(B, *pol(15.2, tc), CEIL, drop=1.2, kind="cone", light=True, lumens=900, radius=7)
-    kit.plant(B, *pol(13.1, tc + 2.6), kind="ficus", pot="CT_TileWhite", h=1.4, seed=21)
+    kit.plant(B, *pol(16.95, tc + 4.2), kind="ficus", pot="CT_TileWhite", h=1.4, seed=21)     # was on the lab bench
 
     # ------------------------------------------------------------------------------------------ lobby/dining light
     kit.pendant(B, *pol(15.0, -92.0), CEIL, drop=1.2, kind="opal", light=True, lumens=900, radius=8)
@@ -469,9 +469,169 @@ def _furnish_hall(B, hall, t):
         else:
             f.skirting([a, b], h=0.13)
     box(d, "CT_PlasterGrey", -1.0, 1.0, 8.5, 9.5, 0.0, 0.014, faces="Z")
+    _depth(B, q, desk, th_r, dc)
     msg = kit.check(B)
     for m_ in msg:
         print("KIT:", m_)
+
+
+# ====================================================================================================== second pass
+def _guest_book(B, x, y, z, yaw):
+    """[prop] An open visitors' book with a pen, lying on the desk."""
+    p = interior_kit._P(B, x, y, z, yaw, "guest_book")
+    p.kind = "prop"
+    p.box("CT_PlasterRed", -0.19, 0.19, -0.14, 0.14, 0.0, 0.022)
+    p.box("CT_Paper", -0.175, -0.004, -0.125, 0.125, 0.022, 0.036)
+    p.box("CT_Paper", 0.004, 0.175, -0.125, 0.125, 0.022, 0.034)
+    p.rod("CT_Steel", (0.24, -0.06, 0.012), (0.3, 0.1, 0.012), 0.012, 6)
+    return p.done(top=0.036)
+
+
+def _trolley(B, x, y, yaw):
+    """A three-shelf library trolley on four small wheels with a push handle; books on two shelves."""
+    p = interior_kit._P(B, x, y, 0.0, yaw, "book_trolley")
+    W, D = 0.8, 0.4
+    for sx in (-W / 2 + 0.03, W / 2 - 0.03):
+        for sy in (-D / 2 + 0.03, D / 2 - 0.03):
+            p.rod("CT_Wood", (sx, sy, 0.07), (sx, sy, 0.86), 0.035, 4)
+            p.cyl("CT_Rubber", sx, sy, 0.0, 0.07, 0.04, 6)
+    for zz in (0.16, 0.48, 0.80):
+        p.box("CT_WoodLight", -W / 2, W / 2, -D / 2, D / 2, zz, zz + 0.025)
+    for zz in (0.185, 0.505):                           # low rails so the books do not slide off
+        p.box("CT_Wood", -W / 2, W / 2, -D / 2, -D / 2 + 0.015, zz, zz + 0.07)
+    p.rod("CT_Steel", (-W / 2 + 0.03, D / 2 - 0.03, 0.86), (-W / 2 + 0.03, D / 2 + 0.12, 0.95), 0.025, 6)
+    p.rod("CT_Steel", (W / 2 - 0.03, D / 2 - 0.03, 0.86), (W / 2 - 0.03, D / 2 + 0.12, 0.95), 0.025, 6)
+    p.rod("CT_Steel", (-W / 2 + 0.03, D / 2 + 0.12, 0.95), (W / 2 - 0.03, D / 2 + 0.12, 0.95), 0.03, 6)
+    p.core(-W / 2 + 0.03, W / 2 - 0.03, -D / 2 + 0.03, D / 2 - 0.03, 0.482, 0.495)
+    r = p.done(solid=True, top=0.825)
+    for k, (zz, u) in enumerate(((0.185, -0.22), (0.185, 0.14), (0.505, -0.12), (0.505, 0.24))):
+        wx, wy, _ = p.w(u, 0.0, 0.0)
+        interior_kit.books_stack(B, wx, wy, zz + 0.0, yaw=yaw + 90 * (k % 2), n=3 + k % 2, seed=40 + k)
+    return r
+
+
+def _oxygen_unit(B, x, y, z, yaw):
+    """[prop] A white oxygen cylinder with a brass valve, a rubber hose and a glass whisk jar, for the cocktail bar."""
+    p = interior_kit._P(B, x, y, z, yaw, "oxygen_unit")
+    p.kind = "prop"
+    p.cyl("CT_SteelWhite", -0.25, 0.0, 0.0, 0.5, 0.075, 8, top=False)
+    p.lathe("CT_SteelWhite", -0.25, 0.0, [(0.075, 0.5), (0.055, 0.56), (0.02, 0.6)], 8)
+    p.cyl("CT_Brass", -0.25, 0.0, 0.6, 0.64, 0.025, 6)
+    p.rod("CT_Rubber", (-0.25, 0.0, 0.62), (-0.1, -0.12, 0.42), 0.018, 5)
+    p.rod("CT_Rubber", (-0.1, -0.12, 0.42), (0.1, -0.1, 0.2), 0.018, 5)
+    p.cyl("CT_Glass", 0.1, -0.1, 0.0, 0.2, 0.065, 8, r1=0.075)
+    p.cyl("CT_PlasterPink", 0.1, -0.1, 0.0, 0.1, 0.06, 8)
+    p.cyl("CT_TileWhite", 0.1, -0.1, 0.1, 0.19, 0.063, 8)
+    return p.done(top=0.64)
+
+
+def _quartz_lamp(B, x, y, z, yaw):
+    """[prop] A tabletop quartz lamp (a blue-white tube in a round reflector on a stand) and a pair of goggles."""
+    p = interior_kit._P(B, x, y, z, yaw, "quartz_lamp")
+    p.kind = "prop"
+    p.cyl("CT_Steel", 0.0, 0.0, 0.0, 0.03, 0.12, 8)
+    p.rod("CT_Steel", (0.0, 0.0, 0.03), (0.0, 0.0, 0.34), 0.03, 6)
+    p.cyl("CT_SteelWhite", 0.0, -0.1, 0.30, 0.42, 0.2, 10, r1=0.13, top=False)
+    p.cyl("CT_Glass", 0.0, -0.1, 0.32, 0.33, 0.12, 10)
+    p.rod("CT_Neon", (-0.1, -0.2, 0.36), (0.1, -0.2, 0.36), 0.03, 6)
+    p.box("CT_Rubber", 0.2, 0.3, -0.05, 0.02, 0.0, 0.012)
+    p.cyl("CT_Glass", 0.225, -0.015, 0.012, 0.02, 0.025, 6)
+    p.cyl("CT_Glass", 0.275, -0.015, 0.012, 0.02, 0.025, 6)
+    return p.done(top=0.0)
+
+
+def _depth(B, q, desk, th_r, dc):
+    """The second, deeper pass: regime board, guest book, weekly menu, oxygen bar, chess corner, library trolley,
+    plant labels, quartz lamp and check-up, the night radio of the paid couch, courtyard window, pump-room clock,
+    the lobby's evening floor."""
+    kit = interior_kit
+    P = PIERS
+    th_g1, th_p0, th_p1 = P[1], P[5], P[6]
+    th_t0, th_t1 = P[6], P[7]
+    tc = (th_t0 + th_t1) / 2 - 0.2
+    pc = (th_p0 + th_p1) / 2 + 0.3
+
+    # ---------------------------------------------------------------- lobby: the regime board by the door, the book
+    pt, yw, L = _edge_pt(q, 3, L_of(q, 3) - 0.42)
+    kit.notice_board(B, pt[0], pt[1], yaw=yw, w=0.55, zc=1.55, seed=8)
+    B.thing("regime_board", "board", (pt[0], pt[1], 1.55), yw, topic="regime")
+    pt, yw, L = _edge_pt(q, 3, 0.5)
+    kit.wall_clock(B, pt[0], pt[1], yaw=yw, zc=2.55)
+    gx, gy = _at(14.0, th_r, -0.78)
+    _guest_book(B, gx, gy, desk["top"], yaw=_yout(th_r) - 12)
+    B.thing("guest_book", "board", (gx, gy, desk["top"] + 0.1), _yout(th_r), topic="guestbook")
+    # evening floor: a patch of parquet by the door, the gramophone's corner
+    thd = -84.2
+    kit.parquet(B, *pol(15.6, thd), yaw=_yout(thd), w=2.3, d=1.5)
+    B.thing("lobby_dance", "machine", (*pol(15.6, thd), 0.6), _yout(thd), what="dance")
+    B.spot("dance_floor", "stand", (*pol(15.6, thd), 0.0), _yout(thd))
+
+    # ---------------------------------------------------------------- dining hall
+    thm = -114.4
+    mx, my = pol(16.85, thm)
+    kit.sandwich_board(B, mx, my, yaw=_yin(thm), w=0.55, name="menu")
+    B.thing("menu_week", "board", (mx, my, 0.75), _yin(thm), topic="menu")
+    # the oxygen cocktail bar on the courtyard windows
+    tho = -108.6
+    ox, oy = pol(12.95, tho)
+    ob = kit.bar_counter(B, ox, oy, yaw=_yout(tho), w=1.0, d=0.5, taps=0, front="CT_PlasterPink", top="CT_Steel")
+    _oxygen_unit(B, *_at(12.95, tho, -0.3), z=ob["top"], yaw=_yout(tho))
+    for k in range(3):
+        kit.glass(B, *_at(13.1, tho, 0.15 + 0.17 * k), z=ob["top"], yaw=0)
+    B.thing("oxygen_bar", "machine", (ox, oy, ob["top"] + 0.15), _yout(tho), what="oxygen_bar")
+    B.spot("oxygen_bar", "stand", (*pol(13.75, tho), 0.0), _yin(tho))
+    kit.pendant(B, *pol(13.1, tho), CEIL, drop=1.5, kind="cone", light=True, lumens=700, radius=5)
+    # the holidaymakers' chess corner on the street wall
+    thc = -110.2
+    cx_, cy_ = pol(16.75, thc)
+    kit.chess_table(B, cx_, cy_, yaw=_ytan(thc), seed=5)
+    B.thing("chess_corner", "play", (cx_, cy_, 0.8), _ytan(thc), what="chess")
+    for sg, nm, yy in ((-1, "chess_1", _ytan(thc)), (1, "chess_2", thc)):
+        sx_, sy_ = _at(16.75, thc, sg * 0.66)
+        kit.chair(B, sx_, sy_, yaw=yy, kind="wood", mat="CT_PlasterRed" if sg < 0 else "CT_PlasterBlue")
+        B.spot(nm, "seat", (sx_, sy_, 0.45), yy)
+    # the library trolley where the fourth dining plant used to stand (courtyard window)
+    thr = -103.6
+    tx_, ty_ = pol(12.9, thr)
+    _trolley(B, tx_, ty_, _yout(thr))
+    B.thing("book_trolley", "shelf", (tx_, ty_, 0.85), _yout(thr), topic="trolley")
+    B.spot("trolley", "stand", (*pol(13.7, thr), 0.0), _yin(thr))
+
+    # ---------------------------------------------------------------- winter garden: plant labels, a reading chair
+    g = (PIERS[0] + PIERS[1]) / 2
+    lx, ly = pol(13.55, g + 0.7)
+    p = kit._P(B, lx, ly, 0.0, _yout(g), "plant_tag")
+    p.kind = "prop"
+    p.rod("CT_Wood", (0.0, 0.0, 0.0), (0.0, 0.0, 0.42), 0.02, 4)
+    p.box("CT_Paper", -0.09, 0.09, -0.03, -0.012, 0.3, 0.42)
+    p.done(top=0.42)
+    B.thing("garden_labels", "board", (lx, ly, 0.5), _yout(g), topic="labels")
+
+    # ---------------------------------------------------------------- pump room: the clock that stopped
+    wx, wy = _at(14.7, th_p1, -0.075)
+    B.thing("pump_clock", "board", (wx, wy, 2.5), th_p1, topic="clock")
+
+    # ---------------------------------------------------------------- treatment room: check-up, quartz, the night corner
+    bx_, by_ = _at(13.1, tc, 0.4)
+    B.thing("treat_checkup", "machine", (bx_, by_, 1.0), _yout(tc), what="checkup")
+    B.spot("doctor", "work", (*_at(14.1, tc, 0.9), 0.0), _yout(tc))
+    qx, qy = _at(13.1, tc, 0.85)
+    _quartz_lamp(B, qx, qy, 0.9, yaw=_yout(tc))
+    B.thing("treat_quartz", "machine", (qx, qy, 1.15), _yout(tc), what="quartz")
+    vx, vy = _at(12.55, tc, -0.05)
+    B.thing("treat_window", "board", (vx, vy, 1.5), _yout(tc), topic="view")
+    # the paid couch is a guest bed: blanket, pillow, the bedside radio and a night lamp on the cabinet
+    cbx, cby = _at(15.2, tc, -0.85)
+    p = kit._P(B, cbx, cby, 0.7, tc, "couch_bedding")
+    p.kind = "prop"
+    p.cushion("CT_PlasterBlue", -0.86, -0.04, -0.28, 0.28, 0.0, 0.1, 0.02)
+    p.cushion("CT_TileWhite", 0.26, 0.56, -0.2, 0.2, 0.0, 0.1, 0.02)
+    p.box("CT_PlasterYellow", -0.12, -0.05, -0.285, 0.285, 0.0, 0.103, f="xXyYZ")
+    p.done(top=0.8)
+    rx, ry = _at(16.9, tc, -1.53)
+    kit.radio(B, rx, ry, dc["top"], yaw=_yin(tc))
+    B.thing("night_radio", "machine", (rx, ry, dc["top"] + 0.15), _yin(tc), what="night_radio")
+    kit.table_lamp(B, *_at(16.9, tc, -0.9), z=dc["top"], yaw=0, light=True)
 
 
 def L_of(q, e):

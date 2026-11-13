@@ -73,6 +73,26 @@
     0.0
    ],
    "yaw": 0.0
+  },
+  {
+   "id": "darkroom",
+   "kind": "stand",
+   "pos": [
+    1.9,
+    5.0,
+    0.0
+   ],
+   "yaw": 180.0
+  },
+  {
+   "id": "negatives",
+   "kind": "stand",
+   "pos": [
+    -4.1,
+    4.3,
+    0.0
+   ],
+   "yaw": 90.0
   }
  ],
  "lamps": [
@@ -142,6 +162,58 @@
    "props": {
     "topic": "exhibit"
    }
+  },
+  {
+   "id": "photo_darkroom",
+   "kind": "craft",
+   "pos": [
+    1.9,
+    5.7,
+    1.0
+   ],
+   "yaw": 0.0,
+   "props": {
+    "what": "darkroom"
+   }
+  },
+  {
+   "id": "photo_camera",
+   "kind": "machine",
+   "pos": [
+    -3.0,
+    2.3,
+    1.5
+   ],
+   "yaw": 180.0,
+   "props": {
+    "what": "camera"
+   }
+  },
+  {
+   "id": "photo_props",
+   "kind": "board",
+   "pos": [
+    4.4,
+    2.3,
+    1.3
+   ],
+   "yaw": 0.0,
+   "props": {
+    "topic": "store"
+   }
+  },
+  {
+   "id": "photo_negatives",
+   "kind": "shelf",
+   "pos": [
+    -4.6,
+    4.3,
+    1.0
+   ],
+   "yaw": 90.0,
+   "props": {
+    "topic": "local"
+   }
   }
  ],
  "flats": [],
@@ -151,8 +223,8 @@
   "promenade unit room, variant photo: placed at each W1 unit whose plan variant is photo"
  ],
  "tris": {
-  "shell": 178,
-  "detail": 1470,
+  "shell": 190,
+  "detail": 1668,
   "windows": 0
  }
 }

@@ -73,6 +73,16 @@
     0.0
    ],
    "yaw": 180.0
+  },
+  {
+   "id": "wait",
+   "kind": "stand",
+   "pos": [
+    -1.9,
+    2.4,
+    0.0
+   ],
+   "yaw": 0.0
   }
  ],
  "lamps": [
@@ -86,6 +96,17 @@
    "colour": "#FFD2A0",
    "kind": "public",
    "radius": 4.5
+  },
+  {
+   "pos": [
+    -1.5,
+    2.6,
+    2.75
+   ],
+   "lumens": 420,
+   "colour": "#FFE2B8",
+   "kind": "public",
+   "radius": 4.0
   }
  ],
  "things": [
@@ -181,6 +202,84 @@
    "props": {
     "item": "daily_paper"
    }
+  },
+  {
+   "id": "stop_bin",
+   "kind": "board",
+   "pos": [
+    -0.42,
+    2.5,
+    0.8
+   ],
+   "yaw": 0.0,
+   "props": {
+    "topic": "bin"
+   }
+  },
+  {
+   "id": "k6_keycut",
+   "kind": "craft",
+   "pos": [
+    1.07,
+    2.04,
+    1.14
+   ],
+   "yaw": 0.0,
+   "props": {
+    "what": "keycut"
+   }
+  },
+  {
+   "id": "k6_radios",
+   "kind": "machine",
+   "pos": [
+    0.36,
+    3.65,
+    1.26
+   ],
+   "yaw": 270.0,
+   "props": {
+    "what": "radio"
+   }
+  },
+  {
+   "id": "k6_clocks",
+   "kind": "board",
+   "pos": [
+    0.23,
+    4.1,
+    1.8
+   ],
+   "yaw": 0.0,
+   "props": {
+    "topic": "clocks"
+   }
+  },
+  {
+   "id": "k6_shoes",
+   "kind": "board",
+   "pos": [
+    0.5,
+    3.75,
+    0.6
+   ],
+   "yaw": 270.0,
+   "props": {
+    "topic": "shoes"
+   }
+  },
+  {
+   "id": "k6_watch",
+   "kind": "machine",
+   "pos": [
+    0.1,
+    4.08,
+    1.1
+   ],
+   "yaw": 0.0,
+   "props": {
+    "what": "pocketwatch"
+   }
   }
  ],
  "flats": [],
@@ -232,7 +331,7 @@
  "notes": [],
  "tris": {
   "shell": 612,
-  "detail": 1507,
+  "detail": 2166,
   "windows": 8
  }
 }

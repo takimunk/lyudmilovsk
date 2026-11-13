@@ -133,6 +133,16 @@
     0.0
    ],
    "yaw": 180.0
+  },
+  {
+   "id": "foosball",
+   "kind": "stand",
+   "pos": [
+    -1.0,
+    4.65,
+    0.0
+   ],
+   "yaw": 180.0
   }
  ],
  "lamps": [
@@ -202,6 +212,72 @@
    "props": {
     "topic": "rules"
    }
+  },
+  {
+   "id": "beer_foosball",
+   "kind": "play",
+   "pos": [
+    -1.0,
+    5.35,
+    0.95
+   ],
+   "yaw": 0.0,
+   "props": {
+    "what": "table_football"
+   }
+  },
+  {
+   "id": "beer_taps",
+   "kind": "machine",
+   "pos": [
+    0.7,
+    4.55,
+    1.35
+   ],
+   "yaw": 0.0,
+   "props": {
+    "what": "tap_list"
+   }
+  },
+  {
+   "id": "beer_radio",
+   "kind": "machine",
+   "pos": [
+    3.2,
+    4.5,
+    1.2
+   ],
+   "yaw": 10.0,
+   "props": {
+    "what": "radio"
+   }
+  },
+  {
+   "id": "beer_league",
+   "kind": "board",
+   "pos": [
+    4.8,
+    1.9,
+    1.5
+   ],
+   "yaw": 270.0,
+   "props": {
+    "topic": "club"
+   }
+  },
+  {
+   "id": "beer_chat",
+   "kind": "counter",
+   "pos": [
+    2.75,
+    4.55,
+    1.05
+   ],
+   "yaw": 0.0,
+   "props": {
+    "service": "chat",
+    "role": "bartender"
+   }
   }
  ],
  "flats": [],
@@ -211,8 +287,8 @@
   "promenade unit room, variant beer: placed at each W1 unit whose plan variant is beer"
  ],
  "tris": {
-  "shell": 202,
-  "detail": 6077,
+  "shell": 214,
+  "detail": 6435,
   "windows": 0
  }
 }

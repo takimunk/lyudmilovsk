@@ -1,0 +1,562 @@
+{
+ "city.cm.menu.mon": {
+  "ru": "Понедельник. Щи со сметаной, тефтели с гречкой, компот. Внизу мелом: «Хлеб бесплатно, добавка по совести».",
+  "en": "Monday. Cabbage soup with sour cream, meatballs with buckwheat, stewed-fruit compote. In chalk underneath: \"Bread is free, seconds by conscience.\"",
+  "ja": "月曜日。サワークリームのせキャベツスープ、そばの実つきミートボール、果物のコンポート。下にチョークで「パンは無料、おかわりは良心にまかせます」。"
+ },
+ "city.cm.menu.tue": {
+  "ru": "Вторник. Борщ, макароны по-флотски, кисель. Приписано: «Борщ по вторникам — закон, а не пожелание».",
+  "en": "Tuesday. Borscht, navy-style pasta, fruit jelly. Added by hand: \"Borscht on Tuesdays is a law, not a wish.\"",
+  "ja": "火曜日。ボルシチ、海軍風パスタ、フルーツゼリー。書き足し。「火曜のボルシチは願いではなく決まりです」。"
+ },
+ "city.cm.menu.wed": {
+  "ru": "Среда. Рассольник, куриная ножка с рисом, чай с лимоном. «Лимон — по одному кружку на человека. Мы считаем».",
+  "en": "Wednesday. Pickle soup, a chicken leg with rice, tea with lemon. \"One slice of lemon per person. We are counting.\"",
+  "ja": "水曜日。ピクルス入りスープ、鶏もも肉のごはん添え、レモンティー。「レモンは一人一枚。数えています」。"
+ },
+ "city.cm.menu.thu": {
+  "ru": "Четверг — рыбный день. Уха, хек с картошкой, кисель. Приписка: «Окна открыть заранее! Это не шутка».",
+  "en": "Thursday is fish day. Fish soup, hake with potatoes, fruit jelly. Added by hand: \"Open the windows early! This is not a joke.\"",
+  "ja": "木曜日は魚の日。魚のスープ、タラ科の魚とじゃがいも、フルーツゼリー。書き足し。「窓は早めに開けること！冗談ではありません」。"
+ },
+ "city.cm.menu.fri": {
+  "ru": "Пятница. Гороховый суп, сосиски с капустой, компот. «В пятницу повар обещает пирожки. Если не забудет».",
+  "en": "Friday. Pea soup, sausages with cabbage, compote. \"On Fridays the cook promises pies. If he doesn't forget.\"",
+  "ja": "金曜日。えんどう豆のスープ、キャベツ添えソーセージ、コンポート。「金曜日、料理人はピロシキを約束します。忘れなければ」。"
+ },
+ "city.cm.menu.sat": {
+  "ru": "Суббота, сокращённый день: суп дня, пирожок, чай. Закрываемся в 19:00, как всегда, и ни минутой позже.",
+  "en": "Saturday, short menu: the soup of the day, a pie, tea. We close at 19:00, as always, and not a minute later.",
+  "ja": "土曜日は短縮メニュー。本日のスープ、ピロシキ、お茶。閉店はいつもどおり十九時、一分も延びません。"
+ },
+ "city.cm.menu.sun": {
+  "ru": "Воскресенье. Столовая закрыта. Кипяток в зале, у самовара, бесплатно. Приходите в понедельник голодными.",
+  "en": "Sunday. The canteen is closed. Hot water is in the hall, at the samovar, free. Come on Monday, hungry.",
+  "ja": "日曜日。食堂はお休みです。お湯はホールのサモワールで無料。月曜日にお腹をすかせてお越しください。"
+ },
+ "city.cm.menu2.1": {
+  "ru": "Завтрак с 8 до 11: каша (манная или пшённая, как повезёт), бутерброд с сыром, чай. Хлеб на подносе, считать не надо.",
+  "en": "Breakfast 8 to 11: porridge (semolina or millet, as luck has it), a cheese sandwich, tea. Bread is on the tray; no need to count it.",
+  "ja": "朝食は八時から十一時。おかゆ（セモリナかキビ、運しだい）、チーズのサンドイッチ、お茶。パンはお盆の上、数えなくて大丈夫。"
+ },
+ "city.cm.menu2.2": {
+  "ru": "Обед с 11 до 15: комплексный. Суп, второе, компот. Берите поднос слева, идите вдоль линии, повар скажет, чего нет.",
+  "en": "Lunch 11 to 15: the set meal. Soup, a main, compote. Take a tray on the left, walk along the line; the cook will say what's gone.",
+  "ja": "昼食は十一時から十五時、日替わりセット。スープ、メイン、コンポート。左でお盆を取って列に沿って進めば、売り切れは料理人が教えてくれます。"
+ },
+ "city.cm.menu2.3": {
+  "ru": "Ужин с 15 до 19: запеканка, пирожок, кефир. Кто пришёл за пять минут до закрытия, получает что осталось и улыбку.",
+  "en": "Supper 15 to 19: a bake, a pie, kefir. Whoever comes five minutes before closing gets what is left, and a smile.",
+  "ja": "夕食は十五時から十九時。グラタン風のオーブン料理、ピロシキ、ケフィア。閉店五分前に来た人には、残りものと笑顔を。"
+ },
+ "city.cm.menu2.4": {
+  "ru": "Закрыто. Завтрак с 8:00. Карандашом внизу: «Повар тоже человек. Чайник у зала, не стучите».",
+  "en": "Closed. Breakfast from 8:00. In pencil at the bottom: \"The cook is a person too. The kettle is in the hall, don't knock.\"",
+  "ja": "閉店中。朝食は八時から。下に鉛筆で「料理人も人間です。やかんはホールにあります、ノックしないで」。"
+ },
+ "city.cm.menu2.5": {
+  "ru": "Сегодня воскресенье, столовая отдыхает. Повар оставил записку в субботу: «Кастрюли вымыты, ложки пересчитаны, до понедельника».",
+  "en": "Today is Sunday and the canteen rests. The cook left a note on Saturday: \"Pots washed, spoons counted, see you Monday.\"",
+  "ja": "今日は日曜日、食堂はお休み。料理人が土曜に置いたメモ。「鍋は洗い、スプーンは数えました。月曜日に会いましょう」。"
+ },
+ "city.cm.book.1": {
+  "ru": "Книга жалоб и предложений, первая страница: «Прошу вернуть в компот изюм. Кв. 3-02». Ответ пером повара: «Изюм сварился. Он там, просто в рассеянном виде».",
+  "en": "The complaints and suggestions book, first page: \"Please bring the raisins back into the compote. Flat 3-02.\" The cook's reply in pen: \"The raisins boiled down. They are in there, only in a scattered form.\"",
+  "ja": "意見・苦情ノート、最初のページ。「コンポートにレーズンを戻してください。3-02号室」。料理人のペンの返事。「レーズンは煮崩れました。中にいます、散らばった姿で」。"
+ },
+ "city.cm.book.2": {
+  "ru": "«Котлеты хорошие. Но повар слишком громко поёт на раздаче, а голос у него, простите, лучше котлет. Кв. 1-06». Ответ: «Спасибо. Петь буду тише. Котлеты не обещаю, они и так молчат».",
+  "en": "\"The cutlets are good. But the cook sings too loudly at the serving line, and his voice, forgive me, is better than the cutlets. Flat 1-06.\" Reply: \"Thank you. I'll sing quieter. I make no promise for the cutlets, they are quiet enough.\"",
+  "ja": "「カツレツはおいしい。でも料理人が配膳で歌いすぎです。失礼ながら声のほうがカツレツよりおいしい。1-06号室」。返事。「ありがとう。小さな声で歌います。カツレツは約束できません、もう十分静かなので」。"
+ },
+ "city.cm.book.3": {
+  "ru": "«Предлагаю по субботам блины. Лёва, кв. 3-07, 11 лет». Рядом синей ручкой: «Поддерживаем! Вся третья лестница». Повар: «Блины будут, когда подарят сковородку побольше».",
+  "en": "\"I suggest pancakes on Saturdays. Lyova, flat 3-07, aged 11.\" Beside it in blue ink: \"We support it! The whole third staircase.\" The cook: \"Pancakes will come when somebody gives me a bigger pan.\"",
+  "ja": "「土曜日にブリヌイを提案します。リョーワ、3-07号室、十一歳」。横に青いペンで「賛成！三番階段全員」。料理人。「もっと大きなフライパンをもらえたら焼きます」。"
+ },
+ "city.cm.book.4": {
+  "ru": "«Благодарность повару за четверговую уху: после неё жизнь налаживается. Пётр Семёнович и шахматная секция». Повар приписал: «Передал привет рыбакам».",
+  "en": "\"Thanks to the cook for Thursday's fish soup: after it, life gets better. Pyotr Semyonovich and the chess section.\" The cook added: \"Passed your regards to the fishermen.\"",
+  "ja": "「木曜日の魚のスープに料理人へ感謝。食べると人生が少し上向きます。ピョートル・セミョーノヴィチとチェス部一同」。料理人の書き足し。「漁師さんたちに伝えておきました」。"
+ },
+ "city.cm.duty.mon": {
+  "ru": "График дежурств по залу. Понедельник, кв. 1-03: подмести, протереть столы, проверить кипятильник. Роспись: «Лидия Аркадьевна. Уже подмела, уже проверила».",
+  "en": "The hall duty rota. Monday, flat 1-03: sweep, wipe the tables, check the water heater. Signed: \"Lidia Arkadyevna. Already swept, already checked.\"",
+  "ja": "ホール当番表。月曜日、1-03号室。掃く、テーブルを拭く、湯沸かしを確かめる。署名。「リディア・アルカージエヴナ。もう掃きました、もう確かめました」。"
+ },
+ "city.cm.duty.tue": {
+  "ru": "Вторник, кв. 3-06: зал, окна, цветы. Цветы поливать из чайника, но не из того, из которого пьют. Роспись детская, с хвостиком у буквы «Д».",
+  "en": "Tuesday, flat 3-06: the hall, the windows, the flowers. Water the flowers from a kettle, but not the one people drink from. The signature is a child's, with a tail on the letter D.",
+  "ja": "火曜日、3-06号室。ホール、窓、花。花はやかんで水やり、ただし飲むほうのやかんは使わないこと。署名は子どもの字で、「Д」にしっぽがついている。"
+ },
+ "city.cm.duty.wed": {
+  "ru": "Среда, кв. 1-07: вынести бумагу, сложить стулья после собрания домкома. Стулья считать по головам и по ножкам.",
+  "en": "Wednesday, flat 1-07: take out the paper, fold the chairs after the committee meeting. Count the chairs by heads and by legs.",
+  "ja": "水曜日、1-07号室。古紙を出す、委員会のあとに椅子をたたむ。椅子は頭の数と脚の数の両方で数えること。"
+ },
+ "city.cm.duty.thu": {
+  "ru": "Четверг, кв. 3-02: рыбный день, проветрить зал до обеда и после. Приписка: «Дважды. Я не шучу».",
+  "en": "Thursday, flat 3-02: fish day, air the hall before lunch and after. A note: \"Twice. I am not joking.\"",
+  "ja": "木曜日、3-02号室。魚の日なので、昼の前と後にホールの換気。書き足し。「二回です。冗談ではありません」。"
+ },
+ "city.cm.duty.fri": {
+  "ru": "Пятница, кв. 1-08: подготовить зал к выходным, протереть доску у двери, отнести забытые варежки в ящик потеряшек.",
+  "en": "Friday, flat 1-08: get the hall ready for the weekend, wipe the board by the door, take forgotten mittens to the lost-property box.",
+  "ja": "金曜日、1-08号室。週末にむけてホールを整える、入口の掲示板を拭く、忘れ物の手袋を落とし物箱へ。"
+ },
+ "city.cm.duty.sat": {
+  "ru": "Суббота. Общий субботник в 10:00: вёдра и тряпки у кухни. Кто дежурит, тот командует, остальные слушаются хотя бы до обеда.",
+  "en": "Saturday. The general clean-up at 10:00: buckets and rags by the kitchen. Whoever is on duty is in command; the rest obey at least until lunch.",
+  "ja": "土曜日。十時から全員の大掃除。バケツと雑巾は台所のそば。当番の人が指揮をとり、ほかの人は少なくとも昼まで従うこと。"
+ },
+ "city.cm.duty.sun": {
+  "ru": "Воскресенье, у зала выходной, дежурных нет. Правило со стены: «Кто насорил, тот и убирает. Кто не насорил, всё равно возьми тряпку, если рядом».",
+  "en": "Sunday, the hall rests, nobody is on duty. The rule from the wall: \"Whoever made the mess cleans it up. Whoever didn't, take a rag anyway if one is near.\"",
+  "ja": "日曜日、ホールは休み、当番もなし。壁の決まり。「散らかした人が片づける。散らかさなかった人も、雑巾が近くにあれば手に取る」。"
+ },
+ "city.cm.duty.extra": {
+  "ru": "Приписка красным карандашом: «К субботнику готовим генеральную уборку. Окна зала мыть только изнутри. Снаружи их моют те, кто не боится высоты: Лидия Аркадьевна и ветер».",
+  "en": "A note in red pencil: \"We are preparing a general clean for the clean-up day. Wash the hall windows only from the inside. Outside, they are washed by those not afraid of heights: Lidia Arkadyevna and the wind.\"",
+  "ja": "赤鉛筆の書き足し。「大掃除にむけて総ざらいをします。ホールの窓は内側からだけ拭くこと。外側は高いところが平気な人、リディア・アルカージエヴナと風が拭きます」。"
+ },
+ "city.cm.news.1": {
+  "ru": "Стенгазета «Наш дом». «Итоги месяца: в доме 16 квартир, 41 жилец, 1 шахматная секция и 0 тихих вечеров. Редколлегия считает это успехом».",
+  "en": "The wall newspaper \"Our House\". \"The month in numbers: 16 flats, 41 residents, 1 chess section and 0 quiet evenings. The editors consider this a success.\"",
+  "ja": "壁新聞『わが家』。「今月のまとめ。十六世帯、住人四十一人、チェス部一つ、静かな夜ゼロ。編集部はこれを成功と考えます」。"
+ },
+ "city.cm.news.2": {
+  "ru": "Рубрика «Наши таланты»: Лёва из 3-07 нарисовал дом на ножках, совсем как наш, только с лапами. Рисунок висит в зале у окна.",
+  "en": "The column \"Our Talents\": Lyova from 3-07 drew a house on legs, just like ours, only with paws. The drawing hangs in the hall by the window.",
+  "ja": "「わが家の才能」欄。3-07号室のリョーワが、うちとそっくりの、でも足が生き物みたいな脚付きの家を描きました。絵はホールの窓ぎわに。"
+ },
+ "city.cm.news.3": {
+  "ru": "Рубрика «Спорт»: подтягивания в зале. Лидия Аркадьевна, 14 раз, на спор с внуком. Внук считал вслух, но сбился от уважения.",
+  "en": "The sports column: pull-ups in the hall. Lidia Arkadyevna, 14 times, on a bet with her grandson. The grandson counted aloud but lost count out of respect.",
+  "ja": "スポーツ欄。ホールで懸垂。リディア・アルカージエヴナ、十四回、孫との賭けで。孫は声に出して数えていたが、感心して数えそこなった。"
+ },
+ "city.cm.news.4": {
+  "ru": "Стихи жильцов. «Дом наш длинный, как вокзал, / в нём и суп, и шахматы, / и стиральных машин зал, / и вода на чай». Кв. 1-04, поэт-любитель.",
+  "en": "Poems by residents. \"Our house is long as a station hall, / with soup in it, and chess, and all, / and a row of washers in a line, / and water for tea, boiling fine.\" Flat 1-04, an amateur poet.",
+  "ja": "住人の詩。「うちの家は駅のように長い、/ スープもあって、チェスもある、/ 洗濯機がずらり並んで、/ お茶のお湯もわいている」。1-04号室、アマチュア詩人。"
+ },
+ "city.cm.news.5": {
+  "ru": "Редколлегия просит жильцов сдавать заметки о вечере у телевизора: как сидели, о чём спорили, кто заснул первым. Победитель получает место в первом ряду.",
+  "en": "The editors ask residents to hand in notes about the television evening: how we sat, what we argued about, who fell asleep first. The winner gets a seat in the front row.",
+  "ja": "編集部より。テレビの夜についての原稿をお寄せください。どう座ったか、何を議論したか、誰が最初に眠ったか。優勝者には最前列の席を進呈します。"
+ },
+ "city.cm.queue.1": {
+  "ru": "Запись на стирку. Пн, ср, пт: 1-й и 2-й этажи. 1) кв. 1-02, «всё»; 2) кв. 1-05, наволочки; 3) кв. 1-07, сказал, что придёт, но ему можно не верить.",
+  "en": "The laundry list. Mon, Wed, Fri: floors one and two. 1) flat 1-02, \"everything\"; 2) flat 1-05, pillowcases; 3) flat 1-07, said he'd come, but he need not be believed.",
+  "ja": "洗濯の予約表。月・水・金は一階と二階。1) 1-02号室「ぜんぶ」、2) 1-05号室、枕カバー、3) 1-07号室、来ると言ったが、信じなくてよい。"
+ },
+ "city.cm.queue.2": {
+  "ru": "Вт, чт: 3-й и 4-й этажи. 1) кв. 3-04, полотенца; 2) кв. 3-06, детское, срочно; 3) кв. 3-01, шторы. Внизу: «Машина № 3 гудит. Это нормально».",
+  "en": "Tue, Thu: floors three and four. 1) flat 3-04, towels; 2) flat 3-06, children's things, urgent; 3) flat 3-01, curtains. At the bottom: \"Machine No. 3 hums. That is normal.\"",
+  "ja": "火・木は三階と四階。1) 3-04号室、タオル、2) 3-06号室、子ども服、急ぎ、3) 3-01号室、カーテン。下に。「三号機はうなります。普通のことです」。"
+ },
+ "city.cm.queue.3": {
+  "ru": "Сб, вс: кто успел. Лист висит, ручка на верёвочке, верёвочка перегрызена. Записывайтесь на словах, а помнить будем вместе.",
+  "en": "Sat, Sun: whoever gets there first. The sheet hangs, the pen is on a string, the string is chewed through. Sign up by word of mouth, and we'll remember together.",
+  "ja": "土・日は早い者勝ち。紙は掛けてあり、ペンはひもでつないであるが、ひもはかじられている。口頭で申し込んで、みんなで覚えておきましょう。"
+ },
+ "city.cm.wash.prompt": {
+  "ru": "E — запустить стирку",
+  "en": "E — start a wash",
+  "ja": "E：洗濯機を回す"
+ },
+ "city.cm.wash.1": {
+  "ru": "Загрузил бельё, нажал рычаг. Машина вздохнула, набрала воды и затарахтела, как маленький трактор. На табуретке рядом чья-то сухая рубашка ждёт своей очереди.",
+  "en": "I loaded the washing and pulled the lever. The machine sighed, took in water and began to rattle like a small tractor. On the stool beside it, somebody's dry shirt waits for its turn.",
+  "ja": "洗濯物を入れてレバーを引いた。機械はため息をつき、水をためて、小さなトラクターのようにガタガタ鳴りだした。横のスツールでは、誰かの乾いたシャツが順番を待っている。"
+ },
+ "city.cm.wash.2": {
+  "ru": "Пока стирается, смотрю в окошко барабана: полосатая футболка, моя майка, снова полоска. Странная машина: возвращает ровно то, что взяла, и немного мыльного воздуха.",
+  "en": "While it washes I watch the little window: a striped shirt, my vest, a stripe again. A strange machine: it gives back exactly what it took, and a bit of soapy air.",
+  "ja": "回っているあいだ、ドラムの小窓をのぞく。しま模様のシャツ、ぼくのシャツ、またしま。不思議な機械だ。取り込んだものをそのまま返し、ほんの少し石けんの空気も添えてくれる。"
+ },
+ "city.cm.wash.3": {
+  "ru": "Вечерняя стирка. В зале пахнет порошком и супом сразу. Кто-то у соседней машины тихо считает носки и, кажется, проигрывает.",
+  "en": "Evening wash. The hall smells of washing powder and soup at the same time. Someone at the next machine is quietly counting socks, and seems to be losing.",
+  "ja": "夜の洗濯。ホールには洗剤とスープの匂いが同時にただよう。隣の機械のところで、誰かが小声で靴下を数えていて、どうやら負けているようだ。"
+ },
+ "city.cm.wash.4": {
+  "ru": "Ночью барабан гремит на весь дом, поэтому я положил бельё мокнуть в таз и ушёл. Утром достану. Над машинами листок: «Домком спит».",
+  "en": "At night the drum thunders through the whole house, so I left the washing to soak in a basin. I'll fetch it in the morning. Above the machines, a sheet: \"The committee is asleep.\"",
+  "ja": "夜はドラムの音が家じゅうに響くので、洗濯物はたらいにつけて置いてきた。朝に取りにこよう。機械の上に紙。「委員会はねています」。"
+ },
+ "city.cm.fold.prompt": {
+  "ru": "E — сложить бельё",
+  "en": "E — fold the laundry",
+  "ja": "E：洗濯物をたたむ"
+ },
+ "city.cm.fold.1": {
+  "ru": "Складываю чужие простыни: два угла в одну руку, два в другую, как показывала Лидия Аркадьевна. Выходит ровно, как в магазине.",
+  "en": "I fold somebody's sheets: two corners in one hand, two in the other, as Lidia Arkadyevna showed me. It comes out as neat as in a shop.",
+  "ja": "人のシーツをたたむ。二隅を片手に、二隅をもう片手に、リディア・アルカージエヴナに教わったとおり。お店のようにきれいに仕上がる。"
+ },
+ "city.cm.fold.2": {
+  "ru": "Из корзины торчит полосатый рукав. Достал: тельняшка, большая, пахнет морем и хозяйственным мылом. Положил обратно, сверху накинул наволочку, как одеяло.",
+  "en": "A striped sleeve sticks out of the basket. I pulled it out: a sailor's vest, a big one, smelling of the sea and laundry soap. I put it back and laid a pillowcase over it like a blanket.",
+  "ja": "かごからしましまの袖がのぞいている。引き出すと、大きな水兵シャツで、海と洗濯せっけんの匂いがした。もとに戻して、上に枕カバーを毛布のようにかけた。"
+ },
+ "city.cm.fold.3": {
+  "ru": "Стол для белья скрипит на одну ногу. Подложил под неё сложенную газету. Теперь скрипит на две, зато в другой тональности.",
+  "en": "The folding table creaks on one leg. I put a folded newspaper under it. Now it creaks on two, but in a different key.",
+  "ja": "たたみ台が片脚できしむ。折った新聞紙をかませた。今度は二本できしむが、音の高さがちがう。"
+ },
+ "city.cm.tv.1": {
+  "ru": "Утренняя гимнастика. Ведущая в синем трико считает: «И раз, и два…» — и весь зал, не вставая, поднимает правую руку. Кто-то у стены уже вдохнул на «три».",
+  "en": "Morning exercises. The presenter in a blue leotard counts: \"And one, and two...\" and the whole hall, without standing up, raises its right arm. Someone by the wall has already breathed in on \"three\".",
+  "ja": "朝の体操。青いレオタードの司会者が数える。「いち、にい……」。ホールじゅうが座ったまま右腕を上げる。壁ぎわの誰かは、もう「さん」で息を吸っている。"
+ },
+ "city.cm.tv.2": {
+  "ru": "Школьная передача: география, Балтика. Карта, указка, море цвета «пасмурно». Диктор говорит: «Здесь мы живём». Так и есть, живём.",
+  "en": "A school broadcast: geography, the Baltic. A map, a pointer, a sea the colour of overcast. The announcer says: \"This is where we live.\" And so we do.",
+  "ja": "学校放送。地理、バルト海。地図、指し棒、曇り空の色の海。アナウンサーが言う。「ここが私たちの住む場所です」。そのとおり、住んでいる。"
+ },
+ "city.cm.tv.3": {
+  "ru": "«Клуб кинопутешествий»: ведущий в шарфе идёт по пустыне и жалуется на жару. Зал сочувствует, хотя за окном ветер с моря.",
+  "en": "\"The Film Travellers' Club\": the host in a scarf walks across a desert and complains of the heat. The hall sympathises, though outside there is a wind from the sea.",
+  "ja": "「映像の旅人クラブ」。マフラー姿の司会者が砂漠を歩きながら暑さを嘆く。ホールは同情するが、窓の外は海風だ。"
+ },
+ "city.cm.tv.4": {
+  "ru": "Перерыв. На экране полосатая таблица и тихая мелодия. Никто не переключает: канала всего два, и оба на перерыве.",
+  "en": "An interval. On the screen a striped test card and a soft tune. Nobody switches over: there are only two channels, and both are on a break.",
+  "ja": "休憩中。画面にはしま模様のテストパターンと小さな音楽。誰もチャンネルを変えない。二つしかない局が、どちらも休んでいるから。"
+ },
+ "city.cm.tv.5": {
+  "ru": "Мультфильм: заяц и медведь меняются шапками. Дети затихли. Взрослые сделали вид, что смотрят в окно, но тоже смотрят.",
+  "en": "A cartoon: a hare and a bear swap hats. The children go quiet. The grown-ups pretend to look out of the window, but they are watching too.",
+  "ja": "アニメ。うさぎとくまが帽子を取りかえる。子どもたちは静かになる。大人は窓の外を見るふりをして、やっぱり見ている。"
+ },
+ "city.cm.tv.6": {
+  "ru": "Новости. Диктор строго читает про урожай и про рыбаков Балтики. Потом погода: «Ветер северо-западный, море три балла». В зале кивают, будто это про их собственную прогулку.",
+  "en": "The news. The announcer reads sternly about the harvest and the Baltic fishermen. Then the weather: \"North-westerly wind, sea state three.\" The hall nods as if it were about their own walk.",
+  "ja": "ニュース。アナウンサーが厳しい声で収穫とバルト海の漁師について読む。つづいて天気。「北西の風、波は三」。ホールではみんな、自分の散歩の話みたいにうなずく。"
+ },
+ "city.cm.tv.7": {
+  "ru": "Вечерний фильм: чёрно-белый, про моряков и письма. Сюжет понятен с третьей минуты, но все всё равно ждут конца.",
+  "en": "The evening film: black and white, about sailors and letters. The plot is clear from the third minute, and still everyone waits for the end.",
+  "ja": "夜の映画。白黒で、水兵と手紙の話。筋は三分でわかるのに、みんな結末を待っている。"
+ },
+ "city.cm.tv.8": {
+  "ru": "Суббота, вечер у телевизора. Зал полон: стулья принесены из квартир, опоздавшие стоят у стены. Лидия Аркадьевна комментирует чуть слышно, Пётр Семёнович «не спит, а думает». Когда герои обнимаются, кто-то громко вздыхает. Вот ради этого телевизор и ставили в зале.",
+  "en": "Saturday, the television evening. The hall is full: chairs carried down from the flats, latecomers standing along the wall. Lidia Arkadyevna comments under her breath, Pyotr Semyonovich \"is not asleep, he is thinking\". When the heroes embrace, somebody sighs loudly. This is what the television in the hall is for.",
+  "ja": "土曜日、テレビの夜。ホールは満員で、椅子は各部屋から運ばれ、遅れた人は壁ぎわに立つ。リディア・アルカージエヴナは小声で解説し、ピョートル・セミョーノヴィチは「寝ているのではなく、考えている」。主人公たちが抱き合うと、誰かが大きくため息をつく。ホールにテレビを置いたのは、このためだ。"
+ },
+ "city.cm.tv.9": {
+  "ru": "Экран серый, шипит, в центре таблица. Диктор пожелал спокойной ночи ещё в одиннадцать. Телевизор не спит, а зал должен, и кто-то выключил его щелчком.",
+  "en": "The screen is grey and hissing, a test card in the middle. The announcer said good night at eleven. The television does not sleep, but the hall must, and somebody switched it off with a click.",
+  "ja": "画面は灰色でザーッと鳴り、真ん中にテストパターン。アナウンサーは十一時におやすみを言った。テレビは眠らないがホールは眠らなければならず、誰かがカチッと消した。"
+ },
+ "city.cm.tv.prompt": {
+  "ru": "E — посмотреть телевизор в зале",
+  "en": "E — watch the hall television",
+  "ja": "E：ホールのテレビを見る"
+ },
+ "city.cm.chess.prompt": {
+  "ru": "E — подсесть к шахматистам",
+  "en": "E — sit down with the chess players",
+  "ja": "E：チェスをさす人たちのそばに座る"
+ },
+ "city.cm.chess.1": {
+  "ru": "Утром доска занята: Пётр Семёнович играет белыми против дяди Гены с третьего этажа, оба в тапочках. Я сел напротив победителя. Партия вышла длинной, ничья «по возрасту».",
+  "en": "In the morning the board is taken: Pyotr Semyonovich plays white against Uncle Gena from the third floor, both in slippers. I sat opposite the winner. The game was long and ended in a draw \"on account of age\".",
+  "ja": "朝は盤が埋まっている。ピョートル・セミョーノヴィチが白で、三階のゲーナおじさんと対局。二人ともスリッパ。勝ったほうの向かいに座った。長い勝負は「年の功」で引き分けになった。"
+ },
+ "city.cm.chess.2": {
+  "ru": "Днём за доской один Пётр Семёнович, играет сам с собой. «Когда соперника нет, надо быть честным с обеих сторон», — сказал он и подвинул мне чёрных. Проиграл с достоинством.",
+  "en": "In the afternoon Pyotr Semyonovich sits alone at the board, playing himself. \"When there is no opponent, one must be honest on both sides,\" he said, and slid the black pieces to me. I lost with dignity.",
+  "ja": "昼は、ピョートル・セミョーノヴィチがひとりで盤に向かい、自分と対局している。「相手がいないときは、両方に正直でなければならん」と言って、黒を譲ってくれた。堂々と負けた。"
+ },
+ "city.cm.chess.3": {
+  "ru": "К вечеру у доски собираются зрители: все знают, как надо ходить, никто не знает, как играть. Мне подсказывали с трёх сторон, и ход я сделал четвёртый, свой. Проиграл красиво.",
+  "en": "Towards evening spectators gather at the board: all of them know how one ought to move, none of them knows how to play. I was advised from three sides and made a fourth move, my own. I lost beautifully.",
+  "ja": "夕方になると盤のまわりに見物人が集まる。どう指すべきかは全員が知っていて、どう指すかは誰も知らない。三方から助言され、自分で四つ目の手を指した。きれいに負けた。"
+ },
+ "city.cm.chess.4": {
+  "ru": "Ночью верхний свет гасят, остаётся лампа над шахматным столиком. Партию не доигрываем: ставим часы «до утра». Фигуры никуда не денутся.",
+  "en": "At night the main light is put out and only the lamp over the chess table stays on. We don't finish the game: we set the clock to \"till morning\". The pieces won't go anywhere.",
+  "ja": "夜は上の明かりが消され、チェス台の上のランプだけが残る。対局は終わらせず、時計を「朝まで」にしておく。駒はどこにも行かない。"
+ },
+ "city.cm.sew.prompt": {
+  "ru": "E — подшить и починить",
+  "en": "E — mend and hem",
+  "ja": "E：縫いものと繕いをする"
+ },
+ "city.cm.sew.1": {
+  "ru": "Ножная машинка, чёрная, с золотым зверем на боку. Подшил брюки: сначала ровно, потом криво, потом распорол и сделал заново. Брюки согласны быть короче.",
+  "en": "A treadle machine, black, with a golden beast on its side. I hemmed trousers: straight at first, then crooked, then I unpicked it and did it again. The trousers agree to be shorter.",
+  "ja": "足踏みミシン、黒くて、脇に金色の獣の絵。ズボンの裾を縫った。最初はまっすぐ、次はゆがみ、ほどいてやり直した。ズボンは短くなることに同意した。"
+ },
+ "city.cm.sew.2": {
+  "ru": "Сшиваю порванный край шторы. На корзине записка: «Из 3-01, срочно». Теперь у шторы будет шов и история.",
+  "en": "I stitch a torn edge of a curtain. A note on the basket: \"From 3-01, urgent.\" Now the curtain will have a seam and a story.",
+  "ja": "破れたカーテンの端を縫い合わせる。かごのメモ。「3-01号室から、急ぎ」。これでカーテンには縫い目と物語がつく。"
+ },
+ "city.cm.sew.3": {
+  "ru": "Рядом коробка из-под печенья: пуговицы всех размеров, одна золотая с якорем. На крышке: «Бери, что подойдёт. Лидия Аркадьевна».",
+  "en": "Beside it a biscuit tin: buttons of every size, one golden with an anchor. On the lid: \"Take what fits. Lidia Arkadyevna.\"",
+  "ja": "そばにクッキーの缶。あらゆる大きさのボタンが入っていて、一つは錨のついた金色。ふたに。「合うものを持っていきなさい。リディア・アルカージエヴナ」。"
+ },
+ "city.cm.sam.prompt": {
+  "ru": "E — налить кипятка",
+  "en": "E — pour hot water",
+  "ja": "E：お湯をつぐ"
+ },
+ "city.cm.sam.1": {
+  "ru": "Самовар тёплый ещё с утра. Налил кипятку из краника в кружку, подул. Кружка на цепочке, на ней выжжено: «ОБЩАЯ».",
+  "en": "The samovar has been warm since the morning. I poured hot water from the tap into a mug and blew on it. The mug is on a chain, burnt into it: \"COMMON\".",
+  "ja": "サモワールは朝から温かい。蛇口からカップにお湯をつぎ、ふうふう吹く。カップは鎖でつながれ、焼き文字で「みんなの」。"
+ },
+ "city.cm.sam.2": {
+  "ru": "Кипяток в зале горячий весь день, за этим следит дежурный. Заварка в банке «для всех». Спасибо банке.",
+  "en": "The hot water in the hall stays hot all day; the person on duty sees to it. The tea leaves are in a tin \"for everyone\". Thank you, tin.",
+  "ja": "ホールのお湯は一日じゅう熱い。当番の人が見ている。茶葉は「みんなのため」の缶に。ありがとう、缶。"
+ },
+ "city.cm.sam.3": {
+  "ru": "Самовар остыл. На краснике записка: «Будить дежурного не обязательно, но можно».",
+  "en": "The samovar has cooled. On the tap, a note: \"It is not necessary to wake the person on duty, but you may.\"",
+  "ja": "サモワールは冷めている。蛇口にメモ。「当番の人を起こす必要はありませんが、起こしてもかまいません」。"
+ },
+ "city.cm.kids.1": {
+  "ru": "Детские рисунки: дом на ножках, большой, с красной крышей. Из каждого окна кто-то выглядывает с чашкой. Подпись: «Мы». Лёва, 11 лет.",
+  "en": "Children's drawings: a house on legs, big, with a red roof. From every window somebody looks out with a cup. The caption: \"Us.\" Lyova, aged 11.",
+  "ja": "子どもたちの絵。脚の生えた大きな家、赤い屋根。どの窓からも誰かがカップを持ってのぞいている。題は「ぼくたち」。リョーワ、十一歳。"
+ },
+ "city.cm.kids.2": {
+  "ru": "Второй рисунок: зал и самовар, огромный, как маяк. Вокруг него человечки в шапках. Подпись: «Мы пьём чай. Чай не кончается».",
+  "en": "The second drawing: the hall and a samovar as huge as a lighthouse. Little people in hats stand around it. The caption: \"We drink tea. The tea never runs out.\"",
+  "ja": "二枚目の絵。ホールと、灯台のように巨大なサモワール。そのまわりに帽子の小さな人たち。題は「ぼくたちはお茶を飲む。お茶はなくならない」。"
+ },
+ "city.cm.kids.3": {
+  "ru": "Совсем маленький листок: кот в ушанке. Подпись «Маркис», с буквой «и» не в ту сторону.",
+  "en": "A very small sheet: a cat in a fur hat. The caption \"Markiz\", with one letter turned the wrong way.",
+  "ja": "とても小さな紙。毛皮の帽子をかぶった猫。題は「マルキス」、一文字が逆向き。"
+ },
+ "city.cm.kids.4": {
+  "ru": "Рисунок углём: канатная дорога над морем, в кабине три чайки и один человек. Человек машет рукой. Чайки держатся солидно.",
+  "en": "A charcoal drawing: a cable car over the sea, three gulls and one person in the cabin. The person is waving. The gulls look dignified.",
+  "ja": "木炭の絵。海の上のロープウェイ、キャビンに三羽のカモメと一人の人間。人間は手を振っている。カモメは威厳たっぷり。"
+ },
+ "city.cm.gymtt.1": {
+  "ru": "Секция «Здоровье». Понедельник и среда, 19:00: зарядка для всех, кто дойдёт. Ведёт Зинаида Павловна, свисток у неё один на всех.",
+  "en": "The \"Health\" section. Monday and Wednesday, 19:00: exercises for all who make it. Led by Zinaida Pavlovna; she has one whistle for everybody.",
+  "ja": "「健康」部。月曜と水曜の十九時、来られる人みんなで体操。指導はジナイーダ・パーヴロヴナ、笛は全員にひとつだけ。"
+ },
+ "city.cm.gymtt.2": {
+  "ru": "Вторник и четверг, 18:00: брусья и подтягивания для школьников. Ниже карандашом: «Кто не подтянется, тот потом расскажет почему».",
+  "en": "Tuesday and Thursday, 18:00: wall bars and pull-ups for schoolchildren. Pencilled underneath: \"Whoever can't pull up will explain why afterwards.\"",
+  "ja": "火曜と木曜の十八時、小中学生の肋木と懸垂。下に鉛筆で。「懸垂できなかった人は、あとで理由を説明すること」。"
+ },
+ "city.cm.gymtt.3": {
+  "ru": "Пятница и воскресенье: зал свободный. Мат один, стенка одна, совесть общая.",
+  "en": "Friday and Sunday: the gym is free. One mat, one wall of bars, a shared conscience.",
+  "ja": "金曜と日曜は自由開放。マットは一枚、肋木は一つ、良心はみんなのもの。"
+ },
+ "city.cm.gymtt.4": {
+  "ru": "Суббота, 9:00: пенсионеры. Осторожно, без рывков, с чаем по окончании. Остальным до десяти не мешать.",
+  "en": "Saturday, 9:00: the pensioners. Gently, no jerking, tea afterwards. Everyone else, do not disturb until ten.",
+  "ja": "土曜九時は年配の方々の時間。ゆっくり、急な動きなし、終わったらお茶。ほかの人は十時までじゃましないこと。"
+ },
+ "city.cm.lostA.1": {
+  "ru": "Ящик потеряшек. Сверху: одна варежка в красную полоску, шарф без хозяина, детская галоша на правую ногу и бирка «Лёва, 3-07». Пусть заберёт. Вторую варежку подождём.",
+  "en": "The lost-property box. On top: one red-striped mitten, a scarf with no owner, a child's boot for the right foot and a tag \"Lyova, 3-07\". Let him collect it. We'll wait for the second mitten.",
+  "ja": "落とし物箱。いちばん上に、赤じまの手袋が片方、持ち主不明のマフラー、右足の子ども用長靴、「リョーワ、3-07号室」のタグ。取りにきてください。もう片方の手袋は待ちます。"
+ },
+ "city.cm.lostA.2": {
+  "ru": "В ящике появился синий таз с биркой «из 3-05». Приписано: «Таз ходил по этажам, пока не нашёл дорогу вниз. Хозяйка просит прощения и ждёт обратно».",
+  "en": "A blue basin has appeared in the box with a tag \"from 3-05\". Added: \"The basin walked about the floors until it found the way down. Its owner asks forgiveness and wants it back.\"",
+  "ja": "箱に、「3-05号室」のタグがついた青いたらいが現れた。書き足し。「たらいは階を歩きまわって下りる道を見つけました。持ち主はお詫びして、返してほしいと言っています」。"
+ },
+ "city.cm.lostA.3": {
+  "ru": "Таз вернули. На его месте банка вишнёвого варенья, на крышке: «За потолок». Банка не потеряшка, но положена в ящик из самых добрых соображений. Пусть стоит.",
+  "en": "The basin has been returned. In its place a jar of cherry jam, on the lid: \"For the ceiling.\" A jar is not lost property, but it was put in the box for the kindest of reasons. Let it stand.",
+  "ja": "たらいは返された。かわりにさくらんぼジャムの瓶、ふたに「天井のお詫び」。瓶は落とし物ではないが、とても親切な理由で箱に入れられた。そのままにしておこう。"
+ },
+ "city.cm.lostB.1": {
+  "ru": "Ящик потеряшек: одна варежка, зонтик без спиц и ошейник с биркой «Маркиз, кв. 3-07». Ошейник пустой. Это тревожно.",
+  "en": "The lost-property box: one mitten, an umbrella without spokes and a collar with a tag \"Markiz, flat 3-07\". The collar is empty. That is worrying.",
+  "ja": "落とし物箱。手袋が片方、骨のない傘、「マルキ、3-07号室」のタグがついた首輪。首輪は空っぽだ。心配になる。"
+ },
+ "city.cm.lostB.2": {
+  "ru": "У ошейника лежит записка: «Найден в корзине для белья у стола, спал на тельняшке». Сама тельняшка рядом: большая, полосатая, пахнет морем и чуть-чуть котом.",
+  "en": "A note lies by the collar: \"Found in the laundry basket by the table, asleep on a sailor's vest.\" The vest itself is next to it: big, striped, smelling of the sea and a little of cat.",
+  "ja": "首輪のそばにメモ。「テーブルのそばの洗濯かごで発見、水兵シャツの上で寝ていました」。シャツ本体も隣に。大きくてしましま、海と、ほんの少し猫の匂い。"
+ },
+ "city.cm.lostB.3": {
+  "ru": "Тельняшку забрал хозяин из 1-04, моряк на пенсии. На её месте сидит кот Маркиз и смотрит на всех, как на комиссию. Записка на коробке: «Кот не потеряшка. Но пусть сидит».",
+  "en": "The vest was collected by its owner from 1-04, a retired sailor. In its place sits Markiz the cat, looking at everyone like a commission. A note on the box: \"A cat is not lost property. But let him sit.\"",
+  "ja": "シャツは1-04号室の持ち主、引退した水兵さんが引き取った。その場所には猫のマルキが座り、みんなを審査員のような目で見ている。箱のメモ。「猫は落とし物ではありません。でも座らせておきましょう」。"
+ },
+ "city.cm.boardA.1": {
+  "ru": "Объявление: в среду в 19:00 в зале заседание домкома. Повестка: 1) протечка из 3-05 в 1-05, 2) чайник в зале, 3) разное. Чай будет.",
+  "en": "Notice: on Wednesday at 19:00 the house committee meets in the hall. Agenda: 1) the leak from 3-05 into 1-05, 2) the kettle in the hall, 3) any other business. There will be tea.",
+  "ja": "お知らせ。水曜十九時、ホールで委員会の会合。議題は 1) 3-05号室から1-05号室への水漏れ、2) ホールのやかん、3) その他。お茶あり。"
+ },
+ "city.cm.boardA.2": {
+  "ru": "Приписано от руки: «В 1-05 с потолка капает на пианино. Пианино настроено, потолок нет. Прошу принять меры. Соседи снизу».",
+  "en": "Added by hand: \"In 1-05 it drips from the ceiling onto the piano. The piano is in tune, the ceiling is not. Please take measures. The neighbours below.\"",
+  "ja": "手書きの書き足し。「1-05号室では天井からピアノに水が落ちています。ピアノは調律済み、天井は未調整。対策をお願いします。下の階の住人より」。"
+ },
+ "city.cm.boardA.3": {
+  "ru": "Ответ: «В 3-05 никто ничего не лил. Это конденсат. Жильцы 3-05». Ниже чужим почерком: «Конденсат не бывает с мыльной пеной».",
+  "en": "Reply: \"Nobody in 3-05 poured anything. It is condensation. The residents of 3-05.\" Below, in another hand: \"Condensation does not come with soap suds.\"",
+  "ja": "返事。「3-05号室では誰も水をこぼしていません。結露です。3-05号室住人」。その下に別の筆跡。「結露に石けんの泡はつきません」。"
+ },
+ "city.cm.boardA.4": {
+  "ru": "Протокол заседания: комиссия поднималась в 3-05 с тазом. Установлено: кран в ванной закрыт, но не до конца, а слив в раковине закрыт до конца, но не туда. Стороны помирились на чае.",
+  "en": "Minutes of the meeting: the commission went up to 3-05 with a basin. Established: the bath tap was shut, but not quite, and the sink drain was shut quite, but not where it should. The parties made peace over tea.",
+  "ja": "会合の議事録。委員はたらいを持って3-05号室へ上がった。判明したこと。浴室の蛇口は閉まっていたが完全ではなく、洗面台の排水は完全に閉まっていたが、閉まる場所が違った。両者はお茶で仲直りした。"
+ },
+ "city.cm.boardA.5": {
+  "ru": "Домком сообщает: кран в 3-05 заменили, пятно на потолке в 1-05 побелили. Дежурная ладонью нарисовала на побелке маленькую тучку: «Пусть будет на память». Всем спасибо.",
+  "en": "The committee reports: the tap in 3-05 has been replaced and the stain on the ceiling in 1-05 whitewashed. The person on duty drew a small cloud on the whitewash with her palm: \"Let it stay as a keepsake.\" Thanks to all.",
+  "ja": "委員会より。3-05号室の蛇口を交換し、1-05号室の天井のしみを白く塗りました。当番の人が塗りたての上に手のひらで小さな雲を描きました。「記念に残しましょう」。みなさんありがとう。"
+ },
+ "city.cm.boardA.6": {
+  "ru": "Объявление: в субботу в 19:00 общий вечер у телевизора. Показывают фильм про моряков. Стулья брать с собой: у нас они наперечёт.",
+  "en": "Notice: on Saturday at 19:00, a joint evening at the television. A film about sailors will be shown. Bring your own chairs: we have very few.",
+  "ja": "お知らせ。土曜十九時、みんなでテレビの夜。水兵の映画を上映します。椅子は各自持参のこと。数がわずかです。"
+ },
+ "city.cm.boardA.7": {
+  "ru": "Приписка домкома: «Просьба в субботу не разговаривать, не греметь стульями и не комментировать моряков. Кто опоздает, стоит у стены. Тучку на потолке можно посмотреть после фильма».",
+  "en": "The committee's note: \"On Saturday please do not talk, do not rattle the chairs and do not comment on the sailors. Latecomers stand by the wall. The little cloud on the ceiling may be viewed after the film.\"",
+  "ja": "委員会の追記。「土曜日は、おしゃべり、椅子の音、水兵へのコメントはご遠慮ください。遅れた人は壁ぎわに立つこと。天井の小さな雲は映画のあとにどうぞ」。"
+ },
+ "city.cm.boardB.1": {
+  "ru": "Пропал кот. Серый, с белой манишкой, откликается на «Маркиз» и на звук консервной банки. Последний раз видели в зале у кухни. Если найдёте, не кормите, а зовите кв. 3-07: он у нас на диете.",
+  "en": "A cat is missing. Grey, with a white shirt-front, answers to \"Markiz\" and to the sound of a tin being opened. Last seen in the hall near the kitchen. If you find him, don't feed him, call flat 3-07: he is on a diet.",
+  "ja": "猫がいなくなりました。灰色で胸の白い、「マルキ」と缶詰を開ける音に反応します。最後に見たのはホールの台所のそば。見つけたら、えさはやらずに3-07号室へ。ダイエット中です。"
+ },
+ "city.cm.boardB.2": {
+  "ru": "Маркиза видели: 1) в подвале, уверена Лидия; 2) на крыше, мальчик из 3-07 не уверен; 3) в столовой, у кастрюли с ухой, повар огорчён. Вариантов три, кот один.",
+  "en": "Markiz has been seen: 1) in the cellar, Lidia is sure; 2) on the roof, the boy from 3-07 is not sure; 3) in the canteen by the fish-soup pot, the cook is upset. Three versions, one cat.",
+  "ja": "マルキの目撃情報。1) 地下室、リディアは確信している、2) 屋根、3-07号室の男の子は自信がない、3) 食堂の魚スープの鍋のそば、料理人は気を落としている。説は三つ、猫は一匹。"
+ },
+ "city.cm.boardB.3": {
+  "ru": "Дописано: «Если Маркиз не вернётся к четвергу, значит, он ушёл к рыбакам. Не обижайтесь на кота: у него вкус».",
+  "en": "Added: \"If Markiz is not back by Thursday, he has gone to the fishermen. Don't be cross with the cat: he has taste.\"",
+  "ja": "書き足し。「木曜までにマルキが戻らなければ、漁師のところへ行ったのでしょう。猫を怒らないで。趣味がいいだけです」。"
+ },
+ "city.cm.boardB.4": {
+  "ru": "Девочка из 1-03 принесла рисунок: кот в ушанке и табличка «Я не потерялся, я гуляю». Домком рисунок принял и повесил. Поиски продолжаются.",
+  "en": "A girl from 1-03 brought a drawing: a cat in a fur hat and a sign \"I'm not lost, I'm out for a walk.\" The committee accepted the drawing and hung it up. The search goes on.",
+  "ja": "1-03号室の女の子が絵を持ってきた。毛皮の帽子の猫と、「迷子じゃない、散歩中」の札。委員会は絵を受け取って掲げた。捜索は続く。"
+ },
+ "city.cm.boardB.5": {
+  "ru": "Домком радостно сообщает: кот Маркиз найден! Спал в корзине для белья у стола, на чьей-то тельняшке. Тельняшка в ящике потеряшек, пусть хозяин заберёт.",
+  "en": "The committee is glad to announce: Markiz the cat has been found! He was asleep in the laundry basket by the folding table, on somebody's sailor vest. The vest is in the lost-property box; let its owner collect it.",
+  "ja": "委員会より喜びのお知らせ。猫のマルキが見つかりました！ たたみ台のそばの洗濯かごで、誰かの水兵シャツの上で寝ていました。シャツは落とし物箱にあります。持ち主は取りにきてください。"
+ },
+ "city.cm.boardB.6": {
+  "ru": "Объявление: в субботу в 19:00 общий вечер у телевизора, кино про моряков. Кот Маркиз приглашён, место на скамье домкома. Стулья брать с собой.",
+  "en": "Notice: on Saturday at 19:00, a joint evening at the television, a film about sailors. Markiz the cat is invited; his place is on the committee's bench. Bring your own chairs.",
+  "ja": "お知らせ。土曜十九時、みんなでテレビの夜、水兵の映画。猫のマルキもご招待、席は委員会のベンチ。椅子は各自持参のこと。"
+ },
+ "city.cm.boardB.7": {
+  "ru": "Приписка домкома: «Просьба не разговаривать, не греметь стульями и не будить Маркиза во время финала. Он смотрит про моряков внимательнее всех».",
+  "en": "The committee's note: \"Please don't talk, rattle the chairs or wake Markiz during the finale. He watches the sailors more closely than anyone.\"",
+  "ja": "委員会の追記。「結末のあいだ、おしゃべり、椅子の音、マルキを起こすことはご遠慮ください。水兵の映画をいちばん真剣に見ているのは彼です」。"
+ },
+ "quest.commune_cloud.title": {
+  "ru": "Тучка на потолке",
+  "en": "A Cloud on the Ceiling",
+  "ja": "天井の小さな雲"
+ },
+ "quest.commune_cloud.desc": {
+  "ru": "В зале дома-коммуны у двери висит протокол домкома про протечку. Хочется узнать, чем всё кончилось.",
+  "en": "By the door of the commune's hall hangs the house committee's report about a leak. I'd like to know how it all ended.",
+  "ja": "コミューンハウスのホールの入口に、水漏れについての委員会の議事録が貼ってある。結末が気になる。"
+ },
+ "quest.commune_cloud.board.log": {
+  "ru": "Доска домкома у входа: листок на каждый день. Прочту, что на ней сегодня написано.",
+  "en": "The committee board by the entrance has a sheet for every day. I'll read what it says today.",
+  "ja": "入口の委員会の掲示板には、毎日ちがう紙がある。今日の分を読んでみよう。"
+ },
+ "quest.commune_cloud.read_board.obj": {
+  "ru": "Прочитать доску домкома в зале",
+  "en": "Read the house committee board in the hall",
+  "ja": "ホールの委員会の掲示板を読む"
+ },
+ "quest.commune_cloud.gossip.log": {
+  "ru": "Самые верные новости бывают у шахматной доски и в стенгазете. Загляну и туда, и туда.",
+  "en": "The surest news is found at the chess board and in the wall newspaper. I'll look in at both.",
+  "ja": "いちばん確かなニュースは、チェス盤のそばと壁新聞にある。両方のぞいてみよう。"
+ },
+ "quest.commune_cloud.play_chess.obj": {
+  "ru": "Подсесть к шахматистам у стены",
+  "en": "Sit down with the chess players by the wall",
+  "ja": "壁ぎわのチェスの人たちのそばに座る"
+ },
+ "quest.commune_cloud.read_news.obj": {
+  "ru": "Прочитать стенгазету «Наш дом»",
+  "en": "Read the wall newspaper \"Our House\"",
+  "ja": "壁新聞「わが家」を読む"
+ },
+ "quest.commune_cloud.evening.log": {
+  "ru": "Домком зовёт на вечер у телевизора. Возьму место поближе к экрану.",
+  "en": "The committee calls everyone to the television evening. I'll take a seat close to the screen.",
+  "ja": "委員会がテレビの夜に誘っている。画面に近い席をとろう。"
+ },
+ "quest.commune_cloud.watch_tv.obj": {
+  "ru": "Посмотреть телевизор в зале",
+  "en": "Watch the television in the hall",
+  "ja": "ホールのテレビを見る"
+ },
+ "quest.commune_cloud.done": {
+  "ru": "После передачи Лидия Аркадьевна повела всех смотреть тучку на потолке в 1-05, с чайником вместо указки. Мне налили чаю: сказали, что зрителям положено.",
+  "en": "After the programme Lidia Arkadyevna led everyone to see the little cloud on the ceiling in 1-05, with a kettle instead of a pointer. They poured me tea: viewers are entitled to it, they said.",
+  "ja": "番組のあと、リディア・アルカージエヴナがやかんを指し棒がわりに、1-05号室の天井の小さな雲を見にみんなを連れていった。お茶をもらった。見る人にはその権利があるそうだ。"
+ },
+ "quest.commune_cat.title": {
+  "ru": "Кот в тельняшке",
+  "en": "The Cat in the Sailor Vest",
+  "ja": "水兵シャツの猫"
+ },
+ "quest.commune_cat.desc": {
+  "ru": "На доске домкома просят не кормить кота Маркиза и сообщать, где его видели. Видели его везде.",
+  "en": "The house committee board asks people not to feed Markiz the cat and to report where he was seen. He has been seen everywhere.",
+  "ja": "委員会の掲示板には、猫のマルキにえさをやらず、見かけた場所を知らせるようにとある。マルキはあちこちで目撃されている。"
+ },
+ "quest.commune_cat.board.log": {
+  "ru": "Доска домкома у входа. Прочту, что нового про кота.",
+  "en": "The committee board by the entrance. I'll read the news about the cat.",
+  "ja": "入口の委員会の掲示板。猫の最新情報を読んでみよう。"
+ },
+ "quest.commune_cat.read_board.obj": {
+  "ru": "Прочитать доску домкома в зале",
+  "en": "Read the house committee board in the hall",
+  "ja": "ホールの委員会の掲示板を読む"
+ },
+ "quest.commune_cat.search.log": {
+  "ru": "Говорят, кот любит тёплое и мягкое. Загляну в корзину у стола для белья и в ящик потеряшек.",
+  "en": "They say the cat likes things warm and soft. I'll check the basket by the folding table and the lost-property box.",
+  "ja": "猫は暖かくてやわらかいものが好きだという。たたみ台のそばのかごと、落とし物箱をのぞいてみよう。"
+ },
+ "quest.commune_cat.fold_laundry.obj": {
+  "ru": "Разобрать бельё на столе у стиральных машин",
+  "en": "Sort the laundry on the table by the washers",
+  "ja": "洗濯機のそばの台で洗濯物を整える"
+ },
+ "quest.commune_cat.lost_box.obj": {
+  "ru": "Заглянуть в ящик потеряшек у двери",
+  "en": "Look in the lost-property box by the door",
+  "ja": "入口のそばの落とし物箱をのぞく"
+ },
+ "quest.commune_cat.evening.log": {
+  "ru": "Домком приглашает на вечер у телевизора, и Маркиза тоже. Сяду рядом с ним.",
+  "en": "The committee invites everyone to the television evening, Markiz too. I'll sit near him.",
+  "ja": "委員会がテレビの夜に誘っていて、マルキも招待されている。彼のそばに座ろう。"
+ },
+ "quest.commune_cat.watch_tv.obj": {
+  "ru": "Посмотреть телевизор в зале",
+  "en": "Watch the television in the hall",
+  "ja": "ホールのテレビを見る"
+ },
+ "quest.commune_cat.done": {
+  "ru": "Маркиз пришёл на фильм, сел на скамью домкома и досмотрел до конца. Мне досталось место рядом. Домком налил чаю нам обоим, ему в блюдце.",
+  "en": "Markiz came to the film, sat on the committee's bench and watched to the end. I got the place beside him. The committee poured tea for us both, his in a saucer.",
+  "ja": "マルキは映画に来て、委員会のベンチに座り、最後まで見た。ぼくはその隣の席。委員会はふたりにお茶をついでくれた。彼のぶんは受け皿に。"
+ }
+}

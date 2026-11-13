@@ -823,6 +823,192 @@ def pasty(B):
     _lamp(B, -0.4, 3.2, kind="cone")
 
 
+# ------------------------------------------------------------------------------------------------ the second pass
+# Depth pass: per trade a few more things to do or read (ids are the same in every unit of the trade; their acts are in
+# tools/city/content/x_w1_units.json), a few props that make the room that trade's room, spots for the townsfolk.
+# No new lamps, at most ~2k triangles per variant.
+def strop(B, x, y, z=0.0, yaw=0.0):
+    """[wall] A barber's razor strop: a hook, a wooden handle and a long leather band hanging down."""
+    p = _P(B, x, y, z, yaw, "strop")
+    p.kind = "wall"
+    p.rod(BRASS, (0.0, -0.01, 1.45), (0.0, -0.06, 1.45), 0.02, 5)
+    p.box(WOOD, -0.03, 0.03, -0.09, -0.05, 1.3, 1.44)
+    p.box("CT_Leather", -0.025, 0.025, -0.07, -0.062, 0.75, 1.3, f="yYxX")
+    p.box(STEEL, -0.035, 0.035, -0.075, -0.06, 0.68, 0.76)
+    return p.done()
+
+
+def _stand_spot(B, sid, x, y, yaw, kind="stand"):
+    B.spot(sid, kind, (x, y, 0.0), yaw)
+
+
+def cafe_more(B):
+    j = kit.jukebox(B, XR - 0.4, 2.35, 0.0, 270.0)
+    B.thing("cafe_jukebox", "machine", (XR - 0.4, 2.35, 1.0), 270.0, what="jukebox")
+    _stand_spot(B, "jukebox", 3.6, 2.4, 90.0)
+    kit.magazine_rack(B, -1.65, YB, 0.0, 0.0, w=0.9, seed=3)
+    B.thing("cafe_papers", "shelf", (-1.65, YB - 0.2, 1.0), 0.0, topic="local")
+    _stand_spot(B, "papers", -1.65, 5.55, 180.0)
+    kit.sandwich_board(B, 2.2, 1.15, 0.0, 200.0, w=0.55, name="menu")
+    B.thing("cafe_specials", "board", (2.2, 1.15, 0.6), 200.0, topic="prices")
+    B.thing("cafe_window", "board", (-2.5, 0.46, 1.5), 0.0, topic="view")
+    _stand_spot(B, "window_stand", -2.5, 1.0, 0.0)
+    B.thing("cafe_chat", "counter", (0.95, 4.55, 1.05), 0.0, service="chat", role="barista")
+    kit.ceiling_fan(B, -2.5, 2.6, CEIL)
+
+
+def fish_more(B):
+    kit.rod_rack(B, XR, 1.35, 0.0, 270.0, w=1.0, n=5)
+    B.thing("fish_rods", "board", (XR - 0.12, 1.35, 1.3), 270.0, topic="store")
+    kit.poster(B, XR, 2.45, 0.0, 270.0, name="chart_calendar", w=0.55, zc=1.6)
+    B.thing("fish_tides", "board", (XR - 0.04, 2.45, 1.6), 270.0, topic="view")
+    _stand_spot(B, "tide_board", 4.0, 2.45, 90.0)
+    kit.notice_board(B, XL, 3.65, 0.0, 90.0, w=0.55, zc=1.6, seed=3)
+    B.thing("fish_knots", "board", (XL + 0.04, 3.65, 1.6), 90.0, topic="rules")
+    kit.rope_coil(B, -4.3, 4.95, 0.0, 0.0)
+    B.thing("fish_scale", "machine", (1.75, 4.35, 1.15), 0.0, what="steelyard")
+    B.thing("fish_chat", "counter", (-0.3, 4.4, 1.1), 0.0, service="chat", role="fishmonger")
+
+
+def rental_more(B):
+    for k, bx in enumerate((-2.6, -2.0)):
+        bicycle(B, bx, 5.15, 0.0, 0.0, mat=("CT_PlasterYellow", "CT_SteelRed")[k])
+    B.thing("rental_bikes", "board", (-3.8, 4.6, 0.95), 0.0, topic="store")
+    _stand_spot(B, "bikes", -3.4, 3.7, 0.0)
+    kit.blackboard(B, XL, 3.45, 0.0, 90.0, w=1.4, h=1.1, zb=0.95, seed=4)
+    B.thing("rental_boats", "board", (XL + 0.05, 3.45, 1.5), 90.0, topic="timetable")
+    _stand_spot(B, "boats", -3.9, 3.45, 90.0)
+    kit.notice_board(B, XR, 1.55, 0.0, 270.0, w=0.7, zc=1.6, seed=5)
+    B.thing("rental_keys", "board", (XR - 0.04, 1.55, 1.6), 270.0, topic="store")
+    kit.sandwich_board(B, 2.1, 1.15, 0.0, 165.0, w=0.55, name="price")
+    B.thing("rental_tariff", "board", (2.1, 1.15, 0.6), 165.0, topic="prices")
+    B.thing("rental_chat", "counter", (2.15, 4.65, 1.1), 0.0, service="chat", role="renter")
+    B.thing("rental_deckchair_2", "seat", (-3.3, 1.47, 0.3), 0.0, height=0.3)
+    kit.rope_coil(B, 0.6, 5.7, 0.0, 0.0)
+
+
+def workshop_more(B):
+    kit.bin_rack(B, -2.9, YB, 0.0, 0.0, cols=5, rows=7, seed=2)
+    B.thing("workshop_bins", "board", (-2.9, YB - 0.2, 1.1), 0.0, topic="store")
+    _stand_spot(B, "bins", -2.9, 5.6, 180.0)
+    kit.notice_board(B, XR, 3.75, 0.0, 270.0, w=1.0, zc=1.6, seed=6)
+    B.thing("workshop_tags", "board", (XR - 0.04, 3.75, 1.6), 270.0, topic="lost")
+    _stand_spot(B, "tags", 4.1, 3.75, 90.0)
+    kit.wall_shelf(B, 1.9, YB, 0.0, 0.0, w=1.5, zt=1.5, props=False)
+    for k, rx in enumerate((1.4, 1.9, 2.4)):
+        kit.radio(B, rx, YB - 0.14, 1.5, 0.0 if k != 1 else 8.0, mat=(WOOD, WOODL, WOOD)[k])
+    B.thing("workshop_radios", "board", (1.9, YB - 0.2, 1.7), 0.0, topic="catalogue")
+    B.thing("workshop_tv", "machine", (3.9, 5.85, 0.9), 0.0, what="test_card")
+    B.thing("workshop_chat", "counter", (2.1, 3.35, 1.1), 0.0, service="chat", role="repairman")
+    kit.lamp_green(B, 0.4, 6.08, 0.9, 0.0)
+
+
+def dumplings_more(B):
+    dp = kit.dumpling_pot(B, -3.2, 5.8, 0.0, 0.0, steamers=2, lid=False)
+    B.thing("dumpling_pot", "machine", (-3.2, 5.8, 1.0), 0.0, what="dumpling_pot")
+    _stand_spot(B, "pot", -3.2, 4.95, 180.0)
+    kit.tray_stack(B, 2.9, 4.3, 1.05, 0.0, n=6)
+    kit.notice_board(B, XR, 4.6, 0.0, 270.0, w=0.9, zc=1.6, seed=8)
+    B.thing("dumpling_rules", "board", (XR - 0.04, 4.6, 1.6), 270.0, topic="rules")
+    kit.sandwich_board(B, 2.2, 1.15, 0.0, 195.0, w=0.55, name="menu")
+    B.thing("dumpling_today", "board", (2.2, 1.15, 0.6), 195.0, topic="prices")
+    B.thing("dumpling_chat", "counter", (0.1, 4.3, 1.1), 0.0, service="chat", role="cook")
+
+
+def souvenirs_more(B):
+    kit.globe(B, -0.4, 5.6, 0.0, 0.0, floor=True)
+    B.thing("souvenir_globe", "board", (-0.4, 5.6, 1.1), 0.0, topic="travel")
+    t = kit.table(B, -0.9, 1.5, 0.0, 0.0, w=0.8, d=0.5, mat="CT_WoodLight")
+    kit.books_stack(B, -0.9, 1.5, t["top"], 5.0, n=2, seed=15)
+    kit.vase(B, -0.6, 1.45, t["top"], 0.0, seed=2)
+    B.thing("souvenir_guestbook", "board", (-0.9, 1.5, 0.82), 0.0, topic="logbook")
+    _stand_spot(B, "guestbook", -0.9, 0.95, 0.0)
+    kit.display_case(B, 0.6, 2.9, 0.0, 0.0, w=0.9, goods="boxes", seed=7)
+    B.thing("souvenir_amber", "board", (0.6, 2.9, 1.0), 0.0, topic="exhibit")
+    B.thing("souvenir_boxes", "shelf", (-3.2, YB - 0.25, 1.2), 0.0, topic="art")
+    B.thing("souvenir_chat", "counter", (2.1, 4.5, 1.1), 0.0, service="chat", role="seller")
+
+
+def bakery_more(B):
+    kit.kiln(B, -3.2, 5.7, 0.0, 0.0)
+    B.thing("bakery_oven", "machine", (-3.2, 5.2, 1.0), 0.0, what="oven")
+    _stand_spot(B, "oven", -3.2, 4.65, 180.0)
+    t = kit.table(B, 2.4, 5.25, 0.0, 0.0, w=1.0, d=0.6, mat="CT_WoodLight")
+    kit.sack(B, 2.05, 5.25, t["top"], 20.0)
+    kit.plates(B, 2.7, 5.25, t["top"], 0.0, n=2, mat="CT_WoodLight")
+    B.thing("bakery_dough", "craft", (2.4, 5.25, 0.85), 0.0, what="dough")
+    kit.sandwich_board(B, 2.2, 1.15, 0.0, 195.0, w=0.55, name="price")
+    B.thing("bakery_today", "board", (2.2, 1.15, 0.6), 195.0, topic="store")
+    B.thing("bakery_chat", "counter", (-0.2, 3.9, 1.1), 0.0, service="chat", role="seller")
+
+
+def photo_more(B):
+    kit.screen_divider(B, 1.9, 5.9, 0.0, 0.0)
+    B.thing("photo_darkroom", "craft", (1.9, 5.7, 1.0), 0.0, what="darkroom")
+    _stand_spot(B, "darkroom", 1.9, 5.0, 180.0)
+    B.thing("photo_camera", "machine", (-3.0, 2.3, 1.5), 180.0, what="camera")
+    B.thing("photo_props", "board", (4.4, 2.3, 1.3), 0.0, topic="store")
+    kit.filing_cabinet(B, XL, 4.3, 0.0, 90.0)
+    B.thing("photo_negatives", "shelf", (XL + 0.25, 4.3, 1.0), 90.0, topic="local")
+    _stand_spot(B, "negatives", -4.1, 4.3, 90.0)
+
+
+def barber_more(B):
+    kit.wall_shelf(B, 0.2, YB, 0.0, 0.0, w=1.0, zt=1.5, props=False)
+    kit.radio(B, 0.0, YB - 0.14, 1.5, 0.0)
+    kit.bottles(B, 0.4, YB - 0.12, 1.5, 0.0, n=2, seed=9)
+    B.thing("barber_radio", "machine", (0.1, YB - 0.2, 1.65), 0.0, what="radio")
+    strop(B, XL, 3.25, 0.0, 90.0)
+    B.thing("barber_strop", "craft", (XL + 0.1, 3.25, 1.1), 90.0, what="strop")
+    B.thing("barber_bottles", "board", (XL + 0.15, 2.2, 1.0), 90.0, topic="store")
+    B.thing("barber_newspapers", "shelf", (1.4, 5.05, 0.5), 0.0, topic="local")
+    B.thing("barber_sink", "machine", (-3.6, YB - 0.3, 1.0), 0.0, what="sink")
+    _stand_spot(B, "sink", -3.6, 5.6, 180.0)
+    _stand_spot(B, "radio", 0.1, 5.5, 180.0)
+
+
+def books_more(B):
+    kit.globe(B, -0.9, 5.9, 0.0, 0.0, floor=True)
+    B.thing("books_globe", "board", (-0.9, 5.9, 1.1), 0.0, topic="travel")
+    kit.magazine_rack(B, XR, 5.4, 0.0, 270.0, w=0.9, seed=11)
+    B.thing("books_mags", "shelf", (XR - 0.2, 5.4, 1.0), 270.0, topic="science")
+    t = kit.table(B, -3.4, 1.35, 0.0, 0.0, w=0.7, d=0.5, mat="CT_Wood")
+    kit.newspaper(B, -3.5, 1.35, t["top"], 10.0, seed=3)
+    kit.newspaper(B, -3.25, 1.4, t["top"], -15.0, seed=4)
+    B.thing("books_free_papers", "take", (-3.4, 1.35, 0.8), 0.0, item="daily_paper")
+    _stand_spot(B, "papers", -3.4, 0.9, 0.0)
+    kit.notice_board(B, XR, 1.8, 0.0, 270.0, w=0.8, zc=1.6, seed=12)
+    B.thing("books_board", "board", (XR - 0.04, 1.8, 1.6), 270.0, topic="lost")
+    B.thing("books_chat", "counter", (2.5, 4.3, 1.1), 0.0, service="chat", role="bookseller")
+
+
+def beer_more(B):
+    kit.table_football(B, -1.0, 5.35, 0.0, 0.0)
+    B.thing("beer_foosball", "play", (-1.0, 5.35, 0.95), 0.0, what="table_football")
+    _stand_spot(B, "foosball", -1.0, 4.65, 180.0)
+    B.thing("beer_taps", "machine", (0.7, 4.55, 1.35), 0.0, what="tap_list")
+    kit.radio(B, 3.2, 4.5, 1.05, 10.0)
+    B.thing("beer_radio", "machine", (3.2, 4.5, 1.2), 10.0, what="radio")
+    kit.blackboard(B, XR, 1.9, 0.0, 270.0, w=1.2, h=1.0, zb=0.95, seed=6)
+    B.thing("beer_league", "board", (XR - 0.05, 1.9, 1.5), 270.0, topic="club")
+    B.thing("beer_chat", "counter", (2.75, 4.55, 1.05), 0.0, service="chat", role="bartender")
+
+
+def pasty_more(B):
+    B.thing("pasty_fryer", "machine", (0.8, 6.1, 1.05), 0.0, what="fryer")
+    kit.sandwich_board(B, 2.2, 1.15, 0.0, 165.0, w=0.55, name="menu")
+    B.thing("pasty_today", "board", (2.2, 1.15, 0.6), 165.0, topic="prices")
+    kit.bottles(B, -1.9, 1.5, 1.08, 0.0, n=2, seed=21)
+    B.thing("pasty_table", "board", (-1.7, 1.5, 1.1), 0.0, topic="store")
+    kit.tray_stack(B, 2.6, 4.3, 1.05, 0.0, n=4, mat="CT_PlasterYellow")
+    B.thing("pasty_chat", "counter", (0.2, 4.3, 1.1), 0.0, service="chat", role="seller")
+
+
+MORE = {"cafe": cafe_more, "fish": fish_more, "rental": rental_more, "workshop": workshop_more, "dumplings": dumplings_more,
+        "souvenirs": souvenirs_more, "bakery": bakery_more, "photo": photo_more, "barber": barber_more, "books": books_more,
+        "beer": beer_more, "pasty": pasty_more}
+
+
 DRESS = {"cafe": cafe, "fish": fish, "rental": rental, "workshop": workshop, "dumplings": dumplings, "souvenirs": souvenirs,
          "bakery": bakery, "photo": photo, "barber": barber, "books": books, "beer": beer, "pasty": pasty}
 
@@ -832,6 +1018,7 @@ def build(B):
     _shell(B, wall, dado, floor)
     _sign(B, VARIANT)
     DRESS[VARIANT](B)
+    MORE[VARIANT](B)
     B.note("promenade unit room, variant %s: placed at each W1 unit whose plan variant is %s" % (VARIANT, VARIANT))
     if os.environ.get("KIT_CHECK"):
         print("KITCHECK", VARIANT, kit.check(B))

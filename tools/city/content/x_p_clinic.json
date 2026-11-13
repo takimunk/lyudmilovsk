@@ -1,0 +1,758 @@
+{
+ "_doc": "Clinic second pass (P-CLINIC): queue ticket and board, aquarium with the Head Doctor and the nurse's running story, inhalation corner, the dentist's door, card file, height rod, pharmacy window instruments, doctors' desk instruments, radio point, magazines by date, bulletins by date. Strings: strings/x_p_clinic.json. Quests for the lead: /home/user/wt/quests_clinic.json.",
+ "shops": {
+  "clinic_pharmacy": {
+   "role": "nurse",
+   "goods": [
+    {
+     "item": "water",
+     "price": 20,
+     "count": 6
+    },
+    {
+     "item": "tea",
+     "price": 15,
+     "count": 4
+    },
+    {
+     "item": "candy",
+     "price": 8,
+     "count": 8
+    },
+    {
+     "item": "apple",
+     "price": 12,
+     "count": 6
+    },
+    {
+     "item": "kefir",
+     "price": 25,
+     "count": 4
+    },
+    {
+     "item": "cookies",
+     "price": 18,
+     "count": 4
+    },
+    {
+     "item": "magazine_science",
+     "price": 30,
+     "count": 2
+    }
+   ]
+  }
+ },
+ "acts": {
+  "clinic_aquarium": {
+   "prompt": "city.act.watch.prompt",
+   "minutes": 5,
+   "sound": "aquarium_bubbles",
+   "lines": [
+    {
+     "k": "city.xcl.aq.0"
+    },
+    {
+     "k": "city.xcl.aq.1",
+     "h": [
+      8,
+      12
+     ]
+    },
+    {
+     "k": "city.xcl.aq.2",
+     "h": [
+      12,
+      17
+     ]
+    },
+    {
+     "k": "city.xcl.aq.3",
+     "h": [
+      17,
+      21
+     ]
+    },
+    {
+     "k": "city.xcl.aq.4",
+     "h": [
+      21,
+      8
+     ]
+    },
+    {
+     "k": "city.xcl.aq.5"
+    },
+    {
+     "k": "city.xcl.aq.6",
+     "after": 3
+    },
+    {
+     "k": "city.xcl.aq.7",
+     "after": 5
+    },
+    {
+     "k": "city.xcl.aq.8",
+     "after": 9
+    }
+   ]
+  },
+  "clinic_aquarium_water": {
+   "prompt": "city.xcl.p.water",
+   "minutes": 3,
+   "needs_item": "water",
+   "daily": 1,
+   "sound": "water_pour",
+   "lines": [
+    {
+     "k": "city.xcl.aqw.1"
+    },
+    {
+     "k": "city.xcl.aqw.2"
+    }
+   ]
+  },
+  "clinic_fish_jar": {
+   "prompt": "city.xcl.p.jar",
+   "minutes": 1,
+   "price": 10,
+   "daily": 1,
+   "sound": "coin",
+   "lines": [
+    {
+     "k": "city.xcl.jar.1"
+    },
+    {
+     "k": "city.xcl.jar.2"
+    },
+    {
+     "k": "city.xcl.jar.3",
+     "after": 9
+    }
+   ]
+  },
+  "clinic_ticket": {
+   "prompt": "city.xcl.p.ticket",
+   "minutes": 1,
+   "sound": "page_turn",
+   "lines": [
+    {
+     "k": "city.xcl.tk.1",
+     "h": [
+      8,
+      10
+     ]
+    },
+    {
+     "k": "city.xcl.tk.2",
+     "h": [
+      10,
+      14
+     ]
+    },
+    {
+     "k": "city.xcl.tk.3",
+     "h": [
+      14,
+      17
+     ]
+    },
+    {
+     "k": "city.xcl.tk.4",
+     "h": [
+      17,
+      8
+     ]
+    }
+   ]
+  },
+  "clinic_queue_board": {
+   "like": "look_misc",
+   "minutes": 1,
+   "any_hour": true,
+   "lines": [
+    {
+     "k": "city.xcl.qb.1",
+     "h": [
+      8,
+      17
+     ],
+     "d": "mon-fri"
+    },
+    {
+     "k": "city.xcl.qb.2",
+     "h": [
+      17,
+      8
+     ]
+    },
+    {
+     "k": "city.xcl.qb.3",
+     "d": "sat-sun"
+    }
+   ]
+  },
+  "clinic_inhale": {
+   "prompt": "city.xcl.p.inhale",
+   "minutes": 15,
+   "needs_staff": "nurse",
+   "sound": "water_bubble",
+   "lines": [
+    {
+     "k": "city.xcl.in.1"
+    },
+    {
+     "k": "city.xcl.in.2"
+    },
+    {
+     "k": "city.xcl.in.3"
+    }
+   ]
+  },
+  "clinic_dentist_door": {
+   "like": "look_misc",
+   "prompt": "city.xcl.p.door",
+   "minutes": 2,
+   "any_hour": true,
+   "lines": [
+    {
+     "k": "city.xcl.dn.0"
+    },
+    {
+     "k": "city.xcl.dn.1",
+     "h": [
+      8,
+      12
+     ],
+     "d": "mon-fri"
+    },
+    {
+     "k": "city.xcl.dn.2",
+     "h": [
+      12,
+      17
+     ],
+     "d": "mon-fri"
+    },
+    {
+     "k": "city.xcl.dn.3",
+     "h": [
+      17,
+      21
+     ],
+     "d": "mon-fri"
+    },
+    {
+     "k": "city.xcl.dn.4",
+     "h": [
+      21,
+      8
+     ]
+    },
+    {
+     "k": "city.xcl.dn.5",
+     "d": "sat-sun"
+    }
+   ]
+  },
+  "clinic_height": {
+   "prompt": "city.xcl.p.height",
+   "minutes": 1,
+   "any_hour": true,
+   "lines": [
+    {
+     "k": "city.xcl.ht.1"
+    },
+    {
+     "k": "city.xcl.ht.2"
+    },
+    {
+     "k": "city.xcl.ht.3"
+    }
+   ]
+  },
+  "clinic_pharmacy_jars": {
+   "like": "look_misc",
+   "lines": [
+    {
+     "k": "city.xcl.ph.j1"
+    },
+    {
+     "k": "city.xcl.ph.j2"
+    },
+    {
+     "k": "city.xcl.ph.j3"
+    }
+   ]
+  },
+  "clinic_pharmacy_scale": {
+   "prompt": "city.xcl.p.scale",
+   "minutes": 2,
+   "needs_staff": "nurse",
+   "sound": "scale_clunk",
+   "lines": [
+    {
+     "k": "city.xcl.ph.s1"
+    },
+    {
+     "k": "city.xcl.ph.s2"
+    }
+   ]
+  },
+  "clinic_pharmacy_recipes": {
+   "like": "look_misc",
+   "lines": [
+    {
+     "k": "city.xcl.ph.r1"
+    },
+    {
+     "k": "city.xcl.ph.r2"
+    }
+   ]
+  },
+  "clinic_bp": {
+   "prompt": "city.xcl.p.bp",
+   "minutes": 5,
+   "needs_staff": "nurse",
+   "lines": [
+    {
+     "k": "city.xcl.bp.1"
+    },
+    {
+     "k": "city.xcl.bp.2"
+    },
+    {
+     "k": "city.xcl.bp.3"
+    }
+   ]
+  },
+  "clinic_eye_plates": {
+   "like": "look_misc",
+   "lines": [
+    {
+     "k": "city.xcl.ep.1"
+    },
+    {
+     "k": "city.xcl.ep.2"
+    }
+   ]
+  },
+  "clinic_hammer": {
+   "prompt": "city.xcl.p.hammer",
+   "minutes": 3,
+   "needs_staff": "nurse",
+   "lines": [
+    {
+     "k": "city.xcl.hm.1"
+    },
+    {
+     "k": "city.xcl.hm.2"
+    }
+   ]
+  },
+  "clinic_door_plate": {
+   "like": "look_misc",
+   "minutes": 1,
+   "any_hour": true,
+   "lines": [
+    {
+     "k": "city.xcl.pl.0",
+     "d": "mon-fri"
+    },
+    {
+     "k": "city.xcl.pl.1",
+     "d": "sat-sun"
+    }
+   ]
+  },
+  "clinic_card_file": {
+   "prompt": "city.xcl.p.cards",
+   "minutes": 5,
+   "sound": "page_turn",
+   "needs_staff": "nurse",
+   "lines": [
+    {
+     "k": "city.xcl.cf.1"
+    },
+    {
+     "k": "city.xcl.cf.2"
+    },
+    {
+     "k": "city.xcl.cf.3"
+    },
+    {
+     "k": "city.xcl.cf.4"
+    }
+   ]
+  },
+  "clinic_mags": {
+   "prompt": "city.xcl.p.mags",
+   "minutes": 10,
+   "sound": "page_turn",
+   "rotate": "daily",
+   "lines": [
+    {
+     "k": "city.xcl.mg.1"
+    },
+    {
+     "k": "city.xcl.mg.2"
+    },
+    {
+     "k": "city.xcl.mg.3"
+    },
+    {
+     "k": "city.xcl.mg.v",
+     "date": [
+      "11-09",
+      "11-22"
+     ]
+    }
+   ]
+  },
+  "clinic_radio_point": {
+   "prompt": "city.xcl.p.radio",
+   "minutes": 3,
+   "any_hour": true,
+   "lines": [
+    {
+     "k": "city.xcl.rd.1",
+     "h": [
+      8,
+      9
+     ]
+    },
+    {
+     "k": "city.xcl.rd.2",
+     "h": [
+      9,
+      13
+     ]
+    },
+    {
+     "k": "city.xcl.rd.3",
+     "h": [
+      13,
+      17
+     ]
+    },
+    {
+     "k": "city.xcl.rd.4",
+     "h": [
+      17,
+      21
+     ]
+    },
+    {
+     "k": "city.xcl.rd.5",
+     "h": [
+      21,
+      8
+     ]
+    }
+   ]
+  },
+  "clinic_registry_x": {
+   "prompt": "city.act.ask.prompt",
+   "needs_staff": "nurse",
+   "target": "clinic_registry",
+   "lines": [
+    "city.talk.registry.*",
+    {
+     "k": "city.xcl.rg.1",
+     "h": [
+      8,
+      10
+     ]
+    },
+    {
+     "k": "city.xcl.rg.2",
+     "h": [
+      10,
+      14
+     ]
+    },
+    {
+     "k": "city.xcl.rg.3",
+     "h": [
+      14,
+      17
+     ],
+     "d": "mon-fri"
+    },
+    {
+     "k": "city.xcl.rg.4",
+     "h": [
+      17,
+      20
+     ]
+    },
+    {
+     "k": "city.xcl.rg.5",
+     "d": "sat"
+    },
+    {
+     "k": "city.xcl.rg.6",
+     "after": 4
+    },
+    {
+     "k": "city.xcl.rg.7",
+     "after": 6
+    }
+   ]
+  },
+  "look_clinic_board": {
+   "like": "look_misc",
+   "rotate": "daily",
+   "minutes": 3,
+   "lines": [
+    "city.look.health.*",
+    {
+     "k": "city.reg.clinic.1",
+     "after": 0
+    },
+    {
+     "k": "city.reg.clinic.2",
+     "after": 1
+    },
+    {
+     "k": "city.reg.clinic.3",
+     "after": 2
+    },
+    {
+     "k": "city.reg.clinic.4",
+     "after": 3
+    },
+    {
+     "k": "city.reg.clinic.5",
+     "after": 4
+    },
+    {
+     "k": "city.reg.clinic.6",
+     "after": 5
+    },
+    {
+     "k": "city.reg.clinic.7",
+     "after": 6
+    }
+   ]
+  },
+  "look_clinic_bulletin": {
+   "like": "look_misc",
+   "rotate": "daily",
+   "minutes": 2,
+   "lines": [
+    {
+     "k": "city.xcl.bl.1",
+     "date": [
+      "10-20",
+      "11-08"
+     ]
+    },
+    {
+     "k": "city.xcl.bl.2",
+     "date": [
+      "11-09",
+      "11-15"
+     ]
+    },
+    {
+     "k": "city.xcl.bl.3",
+     "date": [
+      "11-16",
+      "11-22"
+     ]
+    },
+    {
+     "k": "city.xcl.bl.4",
+     "date": [
+      "11-23",
+      "12-10"
+     ]
+    },
+    {
+     "k": "city.xcl.bl.5",
+     "date": [
+      "12-11",
+      "01-31"
+     ]
+    },
+    {
+     "k": "city.xcl.bl.6",
+     "date": [
+      "02-01",
+      "10-19"
+     ]
+    }
+   ]
+  }
+ },
+ "rules": {
+  "P-CLINIC/hall_aquarium": {
+   "act": "clinic_aquarium"
+  },
+  "P-CLINIC/aquarium_can": {
+   "act": "clinic_aquarium_water"
+  },
+  "P-CLINIC/fish_jar": {
+   "act": "clinic_fish_jar"
+  },
+  "P-CLINIC/ticket_machine": {
+   "act": "clinic_ticket"
+  },
+  "P-CLINIC/queue_board": {
+   "act": "clinic_queue_board"
+  },
+  "P-CLINIC/inhaler": {
+   "act": "clinic_inhale"
+  },
+  "P-CLINIC/dentist_door": {
+   "act": "clinic_dentist_door"
+  },
+  "P-CLINIC/height_rod": {
+   "act": "clinic_height"
+  },
+  "P-CLINIC/pharmacy_jars": {
+   "act": "clinic_pharmacy_jars"
+  },
+  "P-CLINIC/pharmacy_scale": {
+   "act": "clinic_pharmacy_scale"
+  },
+  "P-CLINIC/pharmacy_recipes": {
+   "act": "clinic_pharmacy_recipes"
+  },
+  "P-CLINIC/bp_cuff": {
+   "act": "clinic_bp"
+  },
+  "P-CLINIC/eye_plates": {
+   "act": "clinic_eye_plates"
+  },
+  "P-CLINIC/reflex_hammer": {
+   "act": "clinic_hammer"
+  },
+  "P-CLINIC/door_plate_*": {
+   "act": "clinic_door_plate"
+  },
+  "P-CLINIC/card_file": {
+   "act": "clinic_card_file"
+  },
+  "P-CLINIC/hall_table_mags": {
+   "act": "clinic_mags"
+  },
+  "P-CLINIC/radio_point": {
+   "act": "clinic_radio_point"
+  },
+  "P-CLINIC/reception": {
+   "act": "clinic_registry_x",
+   "props": {
+    "role": "nurse"
+   }
+  },
+  "P-CLINIC/hall_notices": {
+   "act": "look_clinic_board"
+  },
+  "P-CLINIC/corridor_notices": {
+   "act": "look_clinic_bulletin"
+  },
+  "P-CLINIC/pharmacy": {
+   "props": {
+    "role": "nurse",
+    "service": "pharmacy",
+    "shop": "clinic_pharmacy"
+   }
+  }
+ },
+ "quests": [
+  {
+   "id": "clinic_fish",
+   "kind": "side",
+   "start_on": {
+    "event": "do",
+    "target": "clinic_aquarium"
+   },
+   "stages": [
+    {
+     "id": "notice",
+     "objectives": [
+      {
+       "id": "read",
+       "event": "do",
+       "target": "look_clinic_board"
+      }
+     ]
+    },
+    {
+     "id": "bottle",
+     "objectives": [
+      {
+       "id": "water",
+       "event": "have",
+       "target": "water"
+      }
+     ]
+    },
+    {
+     "id": "pour",
+     "objectives": [
+      {
+       "id": "pour",
+       "event": "do",
+       "target": "clinic_aquarium_water"
+      }
+     ]
+    },
+    {
+     "id": "jar",
+     "objectives": [
+      {
+       "id": "jar",
+       "event": "do",
+       "target": "clinic_fish_jar"
+      }
+     ],
+     "reward": {
+      "rubles": 25
+     }
+    }
+   ]
+  },
+  {
+   "id": "clinic_ticket",
+   "kind": "side",
+   "start_on": {
+    "event": "do",
+    "target": "clinic_ticket"
+   },
+   "stages": [
+    {
+     "id": "prep",
+     "objectives": [
+      {
+       "id": "height",
+       "event": "do",
+       "target": "clinic_height"
+      },
+      {
+       "id": "bp",
+       "event": "do",
+       "target": "clinic_bp"
+      }
+     ]
+    },
+    {
+     "id": "door",
+     "objectives": [
+      {
+       "id": "door",
+       "event": "do",
+       "target": "clinic_dentist_door"
+      }
+     ],
+     "reward": {
+      "items": {
+       "candy": 2
+      }
+     }
+    }
+   ]
+  }
+ ]
+}

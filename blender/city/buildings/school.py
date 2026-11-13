@@ -355,8 +355,8 @@ def _bio_room(B, x0, x1):
     K.plant(B, -22.0, 27.3, 0.0, 0.0, kind="ficus", pot="CT_PlasterGreen", h=1.1)
     K.plant(B, -20.9, 27.2, 0.0, 0.0, kind="fern", pot="CT_PlasterYellow", h=0.8)
     K.wall_clock(B, -22.0, 15.76, 0.0, 180.0, zc=2.7, r=0.2)
-    K.pendant(B, -25.0, 21.0, H1, drop=0.5, kind="cone")
-    B.lamp((-25.0, 21.5, 3.0), lumens=900, colour="#FFF0DC", kind="public", radius=9.0, fixture=False)
+    K.pendant(B, -25.0, 19.0, H1, drop=0.5, kind="cone")
+    B.lamp((-25.0, 19.0, 3.0), lumens=1400, colour="#FFF0DC", kind="public", radius=11.0, fixture=False)
 
 
 def _music_room(B, x0, x1):
@@ -404,9 +404,10 @@ def _canteen(B, x0, x1):
                 B.thing("canteen_seat_%d" % (n + 1), "seat", (cx - 0.65, y, 0.45), 90.0, height=0.45)
             n += 1
             B.spot("canteen_bench_%d" % n, "bench", (cx - 0.65, y, 0.0), 90.0)
-    cn = K.shop_counter(B, 25.0, 36.2, 0.0, 0.0, w=4.4, front="CT_PlasterRed")
-    K.plates(B, 23.8, 36.2, 1.05, 0.0, n=6)
-    K.cash_register(B, 26.2, 36.3, 1.05, 180.0)
+    cn = K.serving_line(B, 25.0, 36.4, 0.0, 0.0, w=4.4)
+    ct = K.table(B, 28.4, 36.4, 0.0, 0.0, w=0.8, d=0.6, kind="steel")           # the cashier's table at the end of the line
+    K.cash_register(B, 28.4, 36.4, ct["top"], 0.0)
+    B.thing("canteen_counter", "counter", (25.0, 36.2, 1.0), 0.0, shop="school_canteen", role="teacher")
     K.sign_plate(B, 25.0, 36.2, 0.0, 0.0, name="sign_canteen", w=1.6, zc=2.9, hang=True)
     K.kitchen_unit(B, 24.0, Y1 - 0.34, 0.0, 0.0, modules="fridge,cupboard,sink,stove,cupboard")
     K.samovar(B, 22.6, Y1 - 0.4, 0.0 + 0.9, 0.0)
@@ -463,6 +464,176 @@ def _gym(B):
     K.fire_extinguisher(B, 13.7, 41.2, 0.0, 270.0)
     B.lamp((-6.0, 47.0, 7.4), lumens=1800, colour="#FFF0DC", kind="public", radius=16.0)
     B.lamp((6.0, 47.0, 7.4), lumens=1800, colour="#FFF0DC", kind="public", radius=16.0)
+
+
+# ---------------------------------------------------------------- second pass: depth (props, new things, spots)
+def _bell_piece(m):
+    for r, a, b in ((0.055, 0.0, 0.022), (0.047, 0.022, 0.05), (0.034, 0.05, 0.074), (0.02, 0.074, 0.09)):
+        prism(m, "CT_Brass", ring(0, 0, r, 10), a, b, top=(r < 0.03), bottom=False)
+    prism(m, "CT_Wood", ring(0, 0, 0.011, 6), 0.09, 0.17, top=True, bottom=False)
+
+
+def _microscope_piece(m):
+    box(m, "CT_Frame", -0.07, 0.07, -0.09, 0.09, 0.0, 0.02)
+    box(m, "CT_Steel", -0.012, 0.012, 0.05, 0.075, 0.02, 0.29)
+    box(m, "CT_Steel", -0.012, 0.012, -0.005, 0.075, 0.26, 0.29)
+    prism(m, "CT_Frame", ring(0, -0.005, 0.021, 8), 0.14, 0.3, top=True, bottom=False)
+    prism(m, "CT_Steel", ring(0, -0.005, 0.012, 6), 0.3, 0.35, top=True, bottom=False)
+    prism(m, "CT_Steel", ring(0, -0.005, 0.01, 6), 0.1, 0.14, top=False, bottom=True)
+    box(m, "CT_Steel", -0.05, 0.05, -0.06, 0.04, 0.085, 0.095)
+    prism(m, "CT_Glass", ring(0, -0.005, 0.026, 8), 0.04, 0.05, top=True, bottom=False)
+
+
+def _metronome_piece(m):
+    box(m, "CT_Wood", -0.055, 0.055, -0.045, 0.045, 0.0, 0.04)
+    box(m, "CT_Wood", -0.044, 0.044, -0.035, 0.035, 0.04, 0.1)
+    box(m, "CT_Wood", -0.031, 0.031, -0.024, 0.024, 0.1, 0.18)
+    box(m, "CT_Steel", -0.004, 0.004, -0.03, -0.026, 0.06, 0.24)
+    box(m, "CT_Brass", -0.012, 0.012, -0.034, -0.026, 0.15, 0.17)
+
+
+def _scoreboard_piece(m):
+    box(m, "CT_Frame", -0.95, 0.95, -0.09, 0.0, 0.0, 0.85)
+    box(m, "CT_PlasterGreen", -0.9, 0.9, -0.1, -0.09, 0.05, 0.8)
+    for cx in (-0.6, -0.28, 0.28, 0.6):
+        for (a, b, c, e) in ((-0.07, -0.04, 0.22, 0.58), (0.04, 0.07, 0.22, 0.58), (-0.07, 0.07, 0.55, 0.58),
+                             (-0.07, 0.07, 0.38, 0.41), (-0.07, 0.07, 0.22, 0.25)):
+            box(m, "CT_TileWhite", cx + a, cx + b, -0.11, -0.1, c, e)
+    box(m, "CT_PlasterYellow", -0.03, 0.03, -0.11, -0.1, 0.52, 0.56)
+    box(m, "CT_PlasterYellow", -0.03, 0.03, -0.11, -0.1, 0.3, 0.34)
+    box(m, "CT_Steel", -0.5, 0.5, -0.11, -0.095, 0.06, 0.1)
+
+
+def _duffel_piece(m):
+    box(m, "CT_PlasterBlue", -0.3, 0.3, -0.13, 0.13, 0.0, 0.25)
+    box(m, "CT_PlasterBlue", -0.26, 0.26, -0.11, 0.11, 0.25, 0.29)
+    box(m, "CT_Leather", -0.3, 0.3, -0.135, -0.125, 0.12, 0.17)
+    box(m, "CT_Leather", -0.31, -0.28, -0.14, 0.14, 0.0, 0.26)
+    box(m, "CT_Leather", 0.28, 0.31, -0.14, 0.14, 0.0, 0.26)
+    box(m, "CT_Leather", -0.14, 0.14, -0.04, 0.04, 0.29, 0.31)
+    box(m, "CT_TileWhite", -0.12, 0.12, -0.145, -0.135, 0.19, 0.23)
+    box(m, "CT_PlasterRed", 0.18, 0.28, 0.05, 0.12, 0.25, 0.3)           # the sole of a sneaker sticks out
+
+
+def _trolley_piece(m):
+    for z in (0.22, 0.78):
+        box(m, "CT_Steel", -0.4, 0.4, -0.25, 0.25, z, z + 0.025)
+        box(m, "CT_Steel", -0.4, 0.4, -0.25, -0.235, z + 0.025, z + 0.06)
+    for sx in (-0.37, 0.37):
+        for sy in (-0.22, 0.22):
+            box(m, "CT_Steel", sx - 0.012, sx + 0.012, sy - 0.012, sy + 0.012, 0.05, 0.8)
+            prism(m, "CT_Rubber", ring(sx, sy, 0.04, 8), 0.0, 0.05, top=True, bottom=False)
+    box(m, "CT_Steel", -0.37, 0.37, 0.24, 0.26, 0.98, 1.0)
+    box(m, "CT_Steel", -0.38, -0.36, 0.22, 0.26, 0.8, 1.0)
+    box(m, "CT_Steel", 0.36, 0.38, 0.22, 0.26, 0.8, 1.0)
+
+
+def _herbarium_piece(m, k=0):
+    leaf = ("CT_PlasterGreen", "CT_PlasterYellow", "CT_Leaf", "CT_PlasterRed")[k % 4]
+    box(m, "CT_Wood", -0.2, 0.2, -0.03, 0.0, 2.44, 2.96)
+    box(m, "CT_Paper", -0.17, 0.17, -0.034, -0.03, 2.47, 2.93)
+    box(m, leaf, -0.006, 0.006, -0.038, -0.034, 2.5, 2.88)
+    for i in range(3):
+        box(m, leaf, 0.0, 0.1 - 0.02 * i, -0.038, -0.034, 2.6 + i * 0.1, 2.625 + i * 0.1)
+        box(m, leaf, -0.1 + 0.02 * i, 0.0, -0.038, -0.034, 2.65 + i * 0.1, 2.675 + i * 0.1)
+
+
+def _stand_piece(m):
+    box(m, "CT_Steel", -0.22, 0.22, -0.02, 0.02, 0.0, 0.02)
+    box(m, "CT_Steel", -0.02, 0.02, -0.22, 0.22, 0.0, 0.02)
+    box(m, "CT_Steel", -0.01, 0.01, -0.01, 0.01, 0.02, 1.05)
+    box(m, "CT_Steel", -0.24, 0.24, -0.05, -0.02, 1.0, 1.04)
+    box(m, "CT_Steel", -0.24, 0.24, 0.0, 0.015, 1.0, 1.3)
+    box(m, "CT_Paper", -0.2, 0.2, -0.004, 0.0, 1.03, 1.27)
+
+
+def _bag_piece(m, mat="CT_PlasterRed"):
+    box(m, mat, -0.14, 0.14, -0.05, 0.05, 0.0, 0.22)
+    box(m, "CT_Leather", -0.15, 0.15, -0.056, -0.04, 0.12, 0.24)
+    box(m, "CT_Leather", -0.1, -0.08, -0.06, 0.06, 0.2, 0.22)
+
+
+def _depth(B):
+    """Second pass: the canteen line, the duty desk and the bell, the lost box, the microscope, herbarium, scoreboard and
+    the lost bag; new things (rules and acts in tools/city/content/x_p_school.json) and spots for the townsfolk."""
+    K = kit
+    f = Furn(B)
+    # ---------------------------------------------------------------- canteen
+    tt = K.table(B, 21.5, 36.2, 0.0, 0.0, w=0.8, d=0.5, kind="steel")           # trays and the tea urn before the line
+    K.tray_stack(B, 21.25, 36.2, tt["top"], 0.0, n=6, mat="CT_PlasterRed")
+    K.samovar(B, 21.8, 36.2, tt["top"], 0.0)
+    B.thing("canteen_tea", "take", (21.8, 36.2, 1.2), 0.0, item="tea")
+    f.put(_trolley_piece, 29.2, 23.0, 270.0)
+    K.plates(B, 29.2, 22.8, 0.82, 0.0, n=5)
+    K.plates(B, 29.2, 23.2, 0.82, 0.0, n=3, mat="CT_PlasterBlue")
+    K.plates(B, 29.2, 23.0, 0.27, 0.0, n=6)
+    B.thing("canteen_return", "machine", (29.1, 23.0, 0.95), 270.0, what="trolley")
+    K.blackboard(B, 27.6, 15.76, 0.0, 180.0, w=1.4, h=0.8, zb=1.0, writing="board_3")
+    B.thing("canteen_dayboard", "board", (27.6, 15.9, 1.4), 180.0, topic="menu_day")
+    K.poster(B, 21.8, 15.76, 0.0, 180.0, name="poster_health", w=0.6, zc=1.7)
+    K.fire_extinguisher(B, 29.6, 16.6, 0.0, 270.0)
+    K.pendant(B, 25.0, 35.2, H1, drop=0.5, kind="cone")
+    B.lamp((25.0, 35.2, 3.0), lumens=900, colour="#FFE8C8", kind="public", radius=8.0, fixture=False)
+    B.spot("canteen_duty", "work", (25.0, 37.6, 0.0), 0.0)
+    B.spot("canteen_queue_0", "stand", (23.6, 35.2, 0.0), 180.0)
+    B.spot("canteen_queue_1", "stand", (25.4, 35.2, 0.0), 180.0)
+    B.spot("canteen_tea_stand", "stand", (21.8, 35.4, 0.0), 180.0)
+    B.spot("canteen_return_stand", "stand", (28.4, 23.0, 0.0), 270.0)
+    # ---------------------------------------------------------------- entrance hall: duty desk, bell, lost box, concert poster
+    dk = K.table(B, 2.9, 7.5, 0.0, 0.0, w=1.0, d=0.5)
+    K.chair(B, 2.9, 8.2, 0.0, 0.0, kind="school")
+    f.z0 = dk["top"]
+    f.put(_bell_piece, 2.55, 7.5, 0.0)
+    f.z0 = 0.0
+    K.books_stack(B, 3.15, 7.52, dk["top"], 8.0, n=2)
+    K.table_lamp(B, 3.4, 7.42, dk["top"], 0.0, light=True)
+    B.thing("hall_handbell", "machine", (2.55, 7.5, dk["top"] + 0.1), 0.0, what="handbell")
+    B.thing("hall_duty_desk", "board", (3.15, 7.5, dk["top"] + 0.1), 0.0, topic="duty")
+    B.spot("hall_duty", "work", (2.9, 8.2, 0.0), 0.0)
+    K.shoe_rack(B, -3.0, 15.7, 0.0, 0.0, w=1.0, rows=3, seed=4)
+    K.crate(B, -3.0, 15.45, 1.1, 0.0, w=0.5, d=0.3, h=0.25, fill="CT_PlasterBlue", seed=6)
+    B.thing("hall_lost_box", "board", (-3.0, 15.4, 0.9), 0.0, topic="lostbox")
+    B.spot("hall_lost_stand", "stand", (-3.0, 14.4, 0.0), 180.0)
+    K.poster(B, 7.35, 14.5, 0.0, 270.0, name="kids_1", w=0.8, zc=1.6)
+    B.thing("hall_concert_poster", "board", (7.3, 14.5, 1.6), 270.0, topic="concert")
+    B.thing("hall_coats", "board", (-7.3, 9.1, 1.2), 90.0, topic="coats")
+    # ---------------------------------------------------------------- classroom: timetable, globe, satchels
+    K.notice_board(B, -18.6, 7.1, 0.0, 90.0, w=0.8, zc=1.55, seed=2)
+    B.thing("class_timetable", "board", (-18.5, 7.1, 1.55), 90.0, topic="lessons")
+    B.thing("class_globe", "machine", (-12.8, 12.9, 1.15), 0.0, what="globe")
+    for i, (bx, by, bm) in enumerate(((-14.55, 7.15, "CT_PlasterRed"), (-11.65, 8.6, "CT_PlasterBlue"), (-17.2, 10.0, "CT_PlasterGreen"),
+                                      (-9.0, 11.4, "CT_Leather"), (-14.5, 11.1, "CT_PlasterYellow"))):
+        f.put(lambda m, mat=bm: _bag_piece(m, mat), bx, by, 90.0 * (i % 3))
+    # ---------------------------------------------------------------- biology room: microscope, herbarium, second lamp
+    f.z0 = 0.91
+    f.put(_microscope_piece, -24.3, 17.15, 180.0)
+    f.z0 = 0.0
+    B.thing("bio_microscope", "machine", (-24.3, 17.15, 1.15), 180.0, what="microscope")
+    for k, hx in enumerate((-28.2, -27.2, -26.2, -25.2)):
+        f.put(lambda m, kk=k: _herbarium_piece(m, kk), hx, 27.85, 0.0)
+    B.thing("bio_herbarium", "board", (-26.7, 27.78, 2.7), 0.0, topic="herbarium")
+    K.pendant(B, -25.0, 24.6, H1, drop=0.5, kind="cone")
+    B.lamp((-25.0, 24.6, 3.0), lumens=1400, colour="#FFF0DC", kind="public", radius=11.0, fixture=False)
+    B.spot("bio_scope_stand", "stand", (-24.3, 18.2, 0.0), 0.0)
+    # ---------------------------------------------------------------- music room: stands, metronome, lamp
+    f.z0 = 1.25
+    f.put(_metronome_piece, -26.55, 39.7, 0.0)
+    f.z0 = 0.0
+    K.table_lamp(B, -25.5, 39.7, 1.25, 0.0, light=True)
+    B.thing("music_metronome", "machine", (-26.55, 39.7, 1.4), 0.0, what="metronome")
+    for x in (-27.4, -25.8, -24.2):
+        f.put(_stand_piece, x, 35.0, 180.0)
+    B.thing("music_blackboard", "craft", (-22.8, 39.85, 1.5), 0.0, what="blackboard")
+    B.spot("music_stand_spot", "stand", (-26.55, 38.6, 0.0), 0.0)
+    # ---------------------------------------------------------------- gym: scoreboard, the lost bag
+    f.z0 = 3.6
+    f.put(_scoreboard_piece, -13.7, 44.5, 90.0)
+    f.z0 = 0.0
+    B.thing("gym_scoreboard", "machine", (-13.5, 44.5, 4.0), 90.0, what="scoreboard")
+    f.put(_duffel_piece, -13.0, 55.2, 20.0)
+    B.thing("gym_bag", "craft", (-13.0, 55.2, 0.2), 20.0, what="bag")
+    B.spot("gym_whistle", "work", (0.0, 41.6, 0.0), 180.0)
+    B.spot("gym_bag_stand", "stand", (-12.2, 53.9, 0.0), 270.0)
 
 
 def build(B):
@@ -642,6 +813,7 @@ def build(B):
     _skin_x(B, -13.7, 40.3, 55.7, [(56 - 5.4, 56 - 3.6, 4.5, 7.5), (56 - 2.8, 56 - 1.0, 4.5, 7.5)], True, mat="CT_Brick", z1=HZ)
     _skin_x(B, 13.7, 40.3, 55.7, [(50 + 0.6, 50 + 2.4, 4.5, 7.5), (50 + 3.2, 50 + 5.0, 4.5, 7.5)], False, mat="CT_Brick", z1=HZ)
     _gym(B)
+    _depth(B)
     # saw-tooth roof: 4 teeth along y (each 4 m), ramps rise to +y, vertical faces glazed facing +y
     # build CCW polygon: bottom left->right (y 40->56), then back along the top from y=56 to 40
     top = [(56.0, HZ)]

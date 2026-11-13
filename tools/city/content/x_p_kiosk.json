@@ -1,0 +1,795 @@
+{
+ "_doc": "Second pass on the six bus-stop kiosks (docs/city_interiors.md): the stop's litter bin, payphone, drinking fountains, weighing machine, the pipe rack, jar of matchboxes, the florist's wrapping bench, the cable car's route diagram, ticket punch and lost-things case, the repairer's key machine, radio, clocks and watch; each kiosk's small running story on its boards (lines with `after` days). Words: strings/x_p_kiosk.json. Quests: the lead pastes quests_kiosk.json.",
+ "acts": {
+  "xk_bin": {
+   "prompt": "city.xk._bin.prompt",
+   "lines": [
+    "city.xk._bin.1",
+    "city.xk._bin.2",
+    {
+     "k": "city.xk._bin.3",
+     "h": [
+      6,
+      12
+     ]
+    },
+    {
+     "k": "city.xk._bin.4",
+     "h": [
+      12,
+      18
+     ]
+    },
+    {
+     "k": "city.xk._bin.5",
+     "h": [
+      18,
+      23
+     ]
+    },
+    {
+     "k": "city.xk._bin.6",
+     "h": [
+      23,
+      6
+     ]
+    }
+   ],
+   "like": "look_misc",
+   "rotate": "daily",
+   "minutes": 1
+  },
+  "xk1_phone": {
+   "prompt": "city.xk.1_phone.prompt",
+   "lines": [
+    {
+     "k": "city.xk.1_phone.1",
+     "h": [
+      7,
+      12
+     ]
+    },
+    {
+     "k": "city.xk.1_phone.2",
+     "h": [
+      12,
+      19
+     ]
+    },
+    {
+     "k": "city.xk.1_phone.3",
+     "h": [
+      19,
+      23
+     ]
+    },
+    {
+     "k": "city.xk.1_phone.4",
+     "h": [
+      23,
+      7
+     ]
+    },
+    {
+     "k": "city.xk.1_phone.5",
+     "d": "sat-sun"
+    }
+   ],
+   "price": 1,
+   "minutes": 2,
+   "sound": "phone_dial",
+   "like": "use_misc"
+  },
+  "xk1_crossword": {
+   "prompt": "city.act.look.prompt",
+   "lines": [
+    "city.xk.1_crossword.1",
+    "city.xk.1_crossword.2",
+    {
+     "k": "city.xk.1_crossword.3",
+     "after": 0
+    },
+    {
+     "k": "city.xk.1_crossword.4",
+     "after": 2
+    },
+    {
+     "k": "city.xk.1_crossword.5",
+     "after": 4
+    },
+    {
+     "k": "city.xk.1_crossword.6",
+     "after": 6
+    },
+    {
+     "k": "city.xk.1_crossword.7",
+     "after": 8
+    }
+   ],
+   "like": "look_misc",
+   "rotate": "daily",
+   "minutes": 2
+  },
+  "xk1_pencil": {
+   "prompt": "city.xk.1_pencil.prompt",
+   "lines": [
+    "city.xk.1_pencil.1",
+    "city.xk.1_pencil.2",
+    "city.xk.1_pencil.3",
+    "city.xk.1_pencil.4",
+    {
+     "k": "city.xk.1_pencil.5",
+     "after": 6
+    }
+   ],
+   "like": "use_misc",
+   "minutes": 10
+  },
+  "xk1_notices": {
+   "prompt": "city.act.look.prompt",
+   "lines": [
+    "city.look.lost.*",
+    {
+     "k": "city.xk.k1notice.1",
+     "after": 0
+    },
+    {
+     "k": "city.xk.k1notice.2",
+     "after": 2
+    },
+    {
+     "k": "city.xk.k1notice.3",
+     "after": 5
+    }
+   ],
+   "like": "look_misc",
+   "rotate": "daily",
+   "minutes": 2
+  },
+  "xk2_flavours": {
+   "prompt": "city.act.look.prompt",
+   "lines": [
+    {
+     "k": "city.xk.2_flavours.1",
+     "d": "mon-fri"
+    },
+    {
+     "k": "city.xk.2_flavours.2",
+     "d": "mon-fri"
+    },
+    {
+     "k": "city.xk.2_flavours.3",
+     "d": "sat-sun"
+    },
+    {
+     "k": "city.xk.2_flavours.4",
+     "d": "sat-sun"
+    },
+    {
+     "k": "city.xk.2_flavours.5",
+     "h": [
+      7,
+      11
+     ]
+    }
+   ],
+   "like": "look_misc",
+   "rotate": "use",
+   "minutes": 1
+  },
+  "xk2_cone": {
+   "prompt": "city.act.look.prompt",
+   "lines": [
+    "city.xk.2_cone.1",
+    {
+     "k": "city.xk.2_cone.2",
+     "after": 0
+    },
+    {
+     "k": "city.xk.2_cone.3",
+     "after": 2
+    },
+    {
+     "k": "city.xk.2_cone.4",
+     "after": 4
+    },
+    {
+     "k": "city.xk.2_cone.5",
+     "after": 6
+    },
+    {
+     "k": "city.xk.2_cone.6",
+     "after": 8
+    }
+   ],
+   "like": "look_misc",
+   "rotate": "daily",
+   "minutes": 1
+  },
+  "xk2_bell": {
+   "prompt": "city.xk.2_bell.prompt",
+   "lines": [
+    "city.xk.2_bell.1",
+    "city.xk.2_bell.2",
+    {
+     "k": "city.xk.2_bell.3",
+     "h": [
+      7,
+      12
+     ]
+    }
+   ],
+   "needs_staff": "seller",
+   "price": 14,
+   "give": [
+    [
+     "ice_cream",
+     1
+    ]
+   ],
+   "daily": 1,
+   "minutes": 3,
+   "sound": "bell_ring"
+  },
+  "xk2_fountain": {
+   "prompt": "city.xk.2_fountain.prompt",
+   "lines": [
+    {
+     "k": "city.xk.2_fountain.1",
+     "h": [
+      6,
+      21
+     ]
+    },
+    {
+     "k": "city.xk.2_fountain.2",
+     "h": [
+      21,
+      6
+     ]
+    }
+   ],
+   "minutes": 1,
+   "sound": "water_sip",
+   "like": "use_misc"
+  },
+  "xk3_pipes": {
+   "prompt": "city.xk.3_pipes.prompt",
+   "lines": [
+    "city.xk.3_pipes.1",
+    {
+     "k": "city.xk.3_pipes.2",
+     "after": 0
+    },
+    {
+     "k": "city.xk.3_pipes.3",
+     "after": 2
+    },
+    {
+     "k": "city.xk.3_pipes.4",
+     "after": 4
+    },
+    {
+     "k": "city.xk.3_pipes.5",
+     "after": 7
+    }
+   ],
+   "like": "look_misc",
+   "rotate": "daily",
+   "minutes": 2
+  },
+  "xk3_jar": {
+   "prompt": "city.act.look.prompt",
+   "lines": [
+    "city.xk.3_jar.1",
+    {
+     "k": "city.xk.3_jar.2",
+     "after": 0
+    },
+    {
+     "k": "city.xk.3_jar.3",
+     "after": 3
+    },
+    {
+     "k": "city.xk.3_jar.4",
+     "after": 6
+    },
+    {
+     "k": "city.xk.3_jar.5",
+     "after": 9
+    }
+   ],
+   "like": "look_misc",
+   "rotate": "daily",
+   "minutes": 1
+  },
+  "xk3_weigh": {
+   "prompt": "city.xk.3_weigh.prompt",
+   "lines": [
+    {
+     "k": "city.xk.3_weigh.1",
+     "h": [
+      6,
+      12
+     ]
+    },
+    {
+     "k": "city.xk.3_weigh.2",
+     "h": [
+      12,
+      18
+     ]
+    },
+    {
+     "k": "city.xk.3_weigh.3",
+     "h": [
+      18,
+      23
+     ]
+    },
+    {
+     "k": "city.xk.3_weigh.4",
+     "h": [
+      23,
+      6
+     ]
+    }
+   ],
+   "price": 1,
+   "minutes": 1,
+   "sound": "scale_clunk",
+   "like": "use_misc"
+  },
+  "xk4_wrap": {
+   "prompt": "city.xk.4_wrap.prompt",
+   "lines": [
+    "city.xk.4_wrap.1",
+    "city.xk.4_wrap.2",
+    "city.xk.4_wrap.3",
+    "city.xk.4_wrap.4"
+   ],
+   "needs_staff": "seller",
+   "minutes": 6,
+   "sound": "paper_rustle",
+   "like": "use_misc"
+  },
+  "xk4_watering": {
+   "prompt": "city.xk.4_watering.prompt",
+   "lines": [
+    {
+     "k": "city.xk.4_watering.1",
+     "h": [
+      6,
+      17
+     ]
+    },
+    {
+     "k": "city.xk.4_watering.2",
+     "h": [
+      17,
+      23
+     ]
+    },
+    {
+     "k": "city.xk.4_watering.3",
+     "h": [
+      23,
+      6
+     ]
+    }
+   ],
+   "minutes": 5,
+   "daily": 1,
+   "sound": "water_pour",
+   "like": "use_misc"
+  },
+  "xk4_lilac": {
+   "prompt": "city.act.look.prompt",
+   "lines": [
+    "city.xk.4_lilac.1",
+    {
+     "k": "city.xk.4_lilac.2",
+     "after": 0
+    },
+    {
+     "k": "city.xk.4_lilac.3",
+     "after": 2
+    },
+    {
+     "k": "city.xk.4_lilac.4",
+     "after": 4
+    },
+    {
+     "k": "city.xk.4_lilac.5",
+     "after": 6
+    },
+    {
+     "k": "city.xk.4_lilac.6",
+     "after": 8
+    }
+   ],
+   "like": "look_misc",
+   "rotate": "daily",
+   "minutes": 2
+  },
+  "xk5_diagram": {
+   "prompt": "city.act.look.prompt",
+   "lines": [
+    "city.xk.5_diagram.1",
+    "city.xk.5_diagram.2",
+    "city.xk.5_diagram.3",
+    "city.xk.5_diagram.4"
+   ],
+   "like": "look_misc",
+   "rotate": "daily",
+   "minutes": 3
+  },
+  "xk5_punch": {
+   "prompt": "city.xk.5_punch.prompt",
+   "lines": [
+    "city.xk.5_punch.1",
+    "city.xk.5_punch.2",
+    "city.xk.5_punch.3"
+   ],
+   "minutes": 1,
+   "sound": "ticket_punch",
+   "like": "use_misc"
+  },
+  "xk5_fountain": {
+   "prompt": "city.xk.5_fountain.prompt",
+   "lines": [
+    {
+     "k": "city.xk.5_fountain.1",
+     "h": [
+      6,
+      21
+     ]
+    },
+    {
+     "k": "city.xk.5_fountain.2",
+     "h": [
+      21,
+      6
+     ]
+    }
+   ],
+   "minutes": 1,
+   "sound": "water_sip",
+   "like": "use_misc"
+  },
+  "xk5_lost": {
+   "prompt": "city.act.look.prompt",
+   "lines": [
+    "city.xk.5_lost.1",
+    {
+     "k": "city.xk.5_lost.2",
+     "after": 0
+    },
+    {
+     "k": "city.xk.5_lost.3",
+     "after": 3
+    },
+    {
+     "k": "city.xk.5_lost.4",
+     "after": 6
+    },
+    {
+     "k": "city.xk.5_lost.5",
+     "after": 9
+    }
+   ],
+   "like": "look_misc",
+   "rotate": "daily",
+   "minutes": 2
+  },
+  "xk5_ledger": {
+   "prompt": "city.xk.5_ledger.prompt",
+   "lines": [
+    "city.xk.5_ledger.1",
+    "city.xk.5_ledger.2",
+    "city.xk.5_ledger.3"
+   ],
+   "minutes": 5,
+   "sound": "page_turn",
+   "like": "use_misc"
+  },
+  "xk6_keycut": {
+   "prompt": "city.xk.6_keycut.prompt",
+   "lines": [
+    "city.xk.6_keycut.1",
+    "city.xk.6_keycut.2",
+    "city.xk.6_keycut.3"
+   ],
+   "needs_staff": "seller",
+   "price": 6,
+   "minutes": 10,
+   "daily": 1,
+   "give": [
+    [
+     "find_key",
+     1
+    ]
+   ],
+   "sound": "drawer_slide"
+  },
+  "xk6_radios": {
+   "prompt": "city.xk.6_radios.prompt",
+   "lines": [
+    {
+     "k": "city.xk.6_radios.1",
+     "h": [
+      6,
+      9
+     ]
+    },
+    {
+     "k": "city.xk.6_radios.2",
+     "h": [
+      9,
+      12
+     ]
+    },
+    {
+     "k": "city.xk.6_radios.3",
+     "h": [
+      12,
+      18
+     ]
+    },
+    {
+     "k": "city.xk.6_radios.4",
+     "h": [
+      18,
+      23
+     ]
+    },
+    {
+     "k": "city.xk.6_radios.5",
+     "h": [
+      23,
+      6
+     ]
+    }
+   ],
+   "minutes": 3,
+   "sound": "radio_tune",
+   "like": "use_misc"
+  },
+  "xk6_clocks": {
+   "prompt": "city.act.look.prompt",
+   "lines": [
+    {
+     "k": "city.xk.6_clocks.1",
+     "h": [
+      7,
+      12
+     ]
+    },
+    {
+     "k": "city.xk.6_clocks.2",
+     "h": [
+      12,
+      19
+     ]
+    },
+    {
+     "k": "city.xk.6_clocks.3",
+     "h": [
+      19,
+      7
+     ]
+    }
+   ],
+   "like": "look_misc",
+   "minutes": 2,
+   "sound": "clock_tick"
+  },
+  "xk6_shoes": {
+   "prompt": "city.act.look.prompt",
+   "lines": [
+    "city.xk.6_shoes.1",
+    "city.xk.6_shoes.2",
+    "city.xk.6_shoes.3"
+   ],
+   "like": "look_misc",
+   "rotate": "daily",
+   "minutes": 2
+  },
+  "xk6_watch": {
+   "prompt": "city.xk.6_watch.prompt",
+   "lines": [
+    "city.xk.6_watch.1",
+    {
+     "k": "city.xk.6_watch.2",
+     "after": 0
+    },
+    {
+     "k": "city.xk.6_watch.3",
+     "after": 3
+    },
+    {
+     "k": "city.xk.6_watch.4",
+     "after": 6
+    },
+    {
+     "k": "city.xk.6_watch.5",
+     "after": 9
+    }
+   ],
+   "minutes": 2,
+   "sound": "clock_tick",
+   "like": "use_misc"
+  }
+ },
+ "rules": {
+  "bus_stop_kiosk/stop_bin": {
+   "act": "xk_bin"
+  },
+  "P-KIOSK1/k1_payphone": {
+   "act": "xk1_phone"
+  },
+  "P-KIOSK1/k1_crossword": {
+   "act": "xk1_crossword"
+  },
+  "P-KIOSK1/k1_bench_paper": {
+   "act": "xk1_pencil"
+  },
+  "P-KIOSK1/stop_notices": {
+   "act": "xk1_notices"
+  },
+  "P-KIOSK2/k2_flavours": {
+   "act": "xk2_flavours"
+  },
+  "P-KIOSK2/k2_cone_sign": {
+   "act": "xk2_cone"
+  },
+  "P-KIOSK2/k2_bell": {
+   "act": "xk2_bell"
+  },
+  "P-KIOSK2/k2_fountain": {
+   "act": "xk2_fountain"
+  },
+  "P-KIOSK3/k3_pipes": {
+   "act": "xk3_pipes"
+  },
+  "P-KIOSK3/k3_jar": {
+   "act": "xk3_jar"
+  },
+  "P-KIOSK3/k3_scales": {
+   "act": "xk3_weigh"
+  },
+  "P-KIOSK4/k4_wrap": {
+   "act": "xk4_wrap"
+  },
+  "P-KIOSK4/k4_watering": {
+   "act": "xk4_watering"
+  },
+  "P-KIOSK4/k4_lilac": {
+   "act": "xk4_lilac"
+  },
+  "P-KIOSK5/k5_diagram": {
+   "act": "xk5_diagram"
+  },
+  "P-KIOSK5/k5_rolls": {
+   "act": "xk5_punch"
+  },
+  "P-KIOSK5/k5_fountain": {
+   "act": "xk5_fountain"
+  },
+  "P-KIOSK5/k5_lost": {
+   "act": "xk5_lost"
+  },
+  "P-KIOSK5/k5_ledger": {
+   "act": "xk5_ledger"
+  },
+  "P-KIOSK6/k6_keycut": {
+   "act": "xk6_keycut"
+  },
+  "P-KIOSK6/k6_radios": {
+   "act": "xk6_radios"
+  },
+  "P-KIOSK6/k6_clocks": {
+   "act": "xk6_clocks"
+  },
+  "P-KIOSK6/k6_shoes": {
+   "act": "xk6_shoes"
+  },
+  "P-KIOSK6/k6_watch": {
+   "act": "xk6_watch"
+  }
+ },
+ "quests": [
+  {
+   "id": "kiosk_crossword",
+   "kind": "side",
+   "start_on": {
+    "event": "visit",
+    "target": "P-KIOSK1"
+   },
+   "stages": [
+    {
+     "id": "board",
+     "objectives": [
+      {
+       "id": "look",
+       "event": "do",
+       "target": "xk1_crossword"
+      }
+     ]
+    },
+    {
+     "id": "pencil",
+     "objectives": [
+      {
+       "id": "write",
+       "event": "do",
+       "target": "xk1_pencil"
+      }
+     ]
+    },
+    {
+     "id": "paper",
+     "objectives": [
+      {
+       "id": "paper",
+       "event": "have",
+       "target": "daily_paper"
+      }
+     ],
+     "reward": {
+      "rubles": 15,
+      "items": {
+       "postcard": 1
+      }
+     }
+    }
+   ]
+  },
+  {
+   "id": "kiosk_watch",
+   "kind": "side",
+   "start_on": {
+    "event": "visit",
+    "target": "P-KIOSK6"
+   },
+   "stages": [
+    {
+     "id": "tray",
+     "objectives": [
+      {
+       "id": "tray",
+       "event": "do",
+       "target": "kiosk6_tray"
+      }
+     ]
+    },
+    {
+     "id": "notice",
+     "objectives": [
+      {
+       "id": "notices",
+       "event": "do",
+       "target": "xk1_notices"
+      }
+     ]
+    },
+    {
+     "id": "watch",
+     "objectives": [
+      {
+       "id": "listen",
+       "event": "do",
+       "target": "xk6_watch"
+      }
+     ],
+     "reward": {
+      "rubles": 20,
+      "items": {
+       "find_key": 1
+      }
+     }
+    }
+   ]
+  }
+ ]
+}
