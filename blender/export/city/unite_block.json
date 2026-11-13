@@ -609,6 +609,17 @@
   },
   {
    "pos": [
+    -7.5,
+    6.3,
+    27.35
+   ],
+   "lumens": 900,
+   "colour": "#FFE0B0",
+   "kind": "public",
+   "radius": 11.0
+  },
+  {
+   "pos": [
     0.0,
     6.3,
     27.35
@@ -620,6 +631,17 @@
   },
   {
    "pos": [
+    7.5,
+    6.3,
+    27.35
+   ],
+   "lumens": 900,
+   "colour": "#FFE0B0",
+   "kind": "public",
+   "radius": 11.0
+  },
+  {
+   "pos": [
     15.0,
     6.3,
     27.35
@@ -631,6 +653,39 @@
   },
   {
    "pos": [
+    -18.5,
+    10.8,
+    26.45
+   ],
+   "lumens": 450,
+   "colour": "#FFE0B0",
+   "kind": "public",
+   "radius": 4.5
+  },
+  {
+   "pos": [
+    -12.6,
+    10.6,
+    26.5
+   ],
+   "lumens": 450,
+   "colour": "#FFE0B0",
+   "kind": "public",
+   "radius": 4.5
+  },
+  {
+   "pos": [
+    -9.0,
+    10.5,
+    26.5
+   ],
+   "lumens": 450,
+   "colour": "#FFE0B0",
+   "kind": "public",
+   "radius": 4.5
+  },
+  {
+   "pos": [
     -3.6,
     15.0,
     26.5
@@ -639,6 +694,116 @@
    "colour": "#FFE8C0",
    "kind": "public",
    "radius": 9.0
+  },
+  {
+   "pos": [
+    1.8,
+    10.8,
+    26.5
+   ],
+   "lumens": 450,
+   "colour": "#FFE0B0",
+   "kind": "public",
+   "radius": 4.5
+  },
+  {
+   "pos": [
+    5.4,
+    10.8,
+    26.5
+   ],
+   "lumens": 450,
+   "colour": "#FFE0B0",
+   "kind": "public",
+   "radius": 4.5
+  },
+  {
+   "pos": [
+    10.8,
+    11.0,
+    26.45
+   ],
+   "lumens": 450,
+   "colour": "#FFE0B0",
+   "kind": "public",
+   "radius": 4.5
+  },
+  {
+   "pos": [
+    18.0,
+    11.5,
+    26.45
+   ],
+   "lumens": 450,
+   "colour": "#FFE0B0",
+   "kind": "public",
+   "radius": 4.5
+  },
+  {
+   "pos": [
+    -7.7,
+    17.3,
+    19.4
+   ],
+   "lumens": 350,
+   "colour": "#FFD9A8",
+   "kind": "public",
+   "radius": 4.0
+  },
+  {
+   "pos": [
+    -9.0,
+    6.4,
+    23.3
+   ],
+   "lumens": 300,
+   "colour": "#FFD9A8",
+   "kind": "public",
+   "radius": 4.0
+  },
+  {
+   "pos": [
+    -7.9,
+    11.3,
+    23.4
+   ],
+   "lumens": 300,
+   "colour": "#FFD9A8",
+   "kind": "public",
+   "radius": 4.0
+  },
+  {
+   "pos": [
+    -9.0,
+    16.8,
+    23.2
+   ],
+   "lumens": 300,
+   "colour": "#FFD9A8",
+   "kind": "public",
+   "radius": 4.0
+  },
+  {
+   "pos": [
+    -9.0,
+    7.2,
+    20.3
+   ],
+   "lumens": 300,
+   "colour": "#FFD9A8",
+   "kind": "public",
+   "radius": 4.0
+  },
+  {
+   "pos": [
+    -8.4,
+    12.4,
+    20.4
+   ],
+   "lumens": 300,
+   "colour": "#FFD9A8",
+   "kind": "public",
+   "radius": 4.0
   }
  ],
  "things": [
@@ -761,6 +926,19 @@
    }
   },
   {
+   "id": "lift_g_1",
+   "kind": "door",
+   "pos": [
+    -23.0,
+    8.96,
+    1.12
+   ],
+   "yaw": 0.0,
+   "props": {
+    "to": "lift"
+   }
+  },
+  {
    "id": "lobby2_notices",
    "kind": "board",
    "pos": [
@@ -879,6 +1057,19 @@
    }
   },
   {
+   "id": "lift_g_2",
+   "kind": "door",
+   "pos": [
+    27.4,
+    8.96,
+    1.12
+   ],
+   "yaw": 0.0,
+   "props": {
+    "to": "lift"
+   }
+  },
+  {
    "id": "lobby2_aquarium",
    "kind": "screen",
    "pos": [
@@ -915,6 +1106,19 @@
    "yaw": 0.0,
    "props": {
     "height": 0.45
+   }
+  },
+  {
+   "id": "lift_roof",
+   "kind": "door",
+   "pos": [
+    25.2,
+    10.96,
+    52.6
+   ],
+   "yaw": 0.0,
+   "props": {
+    "to": "lift"
    }
   },
   {
@@ -1124,6 +1328,19 @@
    "props": {
     "what": "switch",
     "switch": "hall"
+   }
+  },
+  {
+   "id": "lift_street",
+   "kind": "door",
+   "pos": [
+    -21.56,
+    5.3,
+    25.1
+   ],
+   "yaw": 90.0,
+   "props": {
+    "to": "lift"
    }
   },
   {
@@ -25037,7 +25254,7 @@
  ],
  "tris": {
   "shell": 40634,
-  "detail": 56619,
+  "detail": 57395,
   "windows": 3740
  }
 }

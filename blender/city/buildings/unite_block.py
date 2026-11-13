@@ -444,7 +444,7 @@ def _dress_lobby(B, k, lid, xa, xz):
     kit.wall_clock(B, xm, yb, Z, 0.0, zc=3.45, face="clock_%d" % (k + 1))
     kit.notice_board(B, xm - 2.2, yb, Z, 0.0, w=0.9, zc=1.7, seed=21 + k)
     B.thing(pre + "club_board", "board", (xm - 2.2, yb - 0.05, 1.7), 0.0, topic="club" if k == 0 else "lost")
-    kit.picture(B, xm + 2.2, yb, Z, 0.0, name=("painting_portrait", "painting_abstract")[k % 2], w=0.7, zc=1.8)
+    _lift_door(B, "lift_g_%d" % (k + 1), xm + 2.2, yb, Z, 0.0)
     # front: hat stand beside the door
     kit.hat_stand(B, xm + 1.7, 1.9, Z, 0.0)
     # extras
@@ -498,6 +498,7 @@ def _dress_roof(B, zr):
     kit.chess_table(B, 50.5, 12.2, zr, 0.0, seed=7)
     for sgn in (-1, 1):
         kit.stool(B, 50.5 + sgn * 0.55, 12.2, zr, 90.0 + sgn * 90.0)
+    _lift_door(B, "lift_roof", (xb(22) + xb(24)) / 2, 11.0, zr, 0.0)
     B.thing("roof_chess", "play", (50.5, 12.2, zr + 0.73), 0.0, what="chess")
     for j, (x, y) in enumerate(((46.0, 6.5), (55.0, 14.0))):
         _planter(B, x, y, seed=20 + j, z=zr, kind=("fern", "ficus")[j % 2])
@@ -568,6 +569,24 @@ def _stairs(B, xa, xb_, y0, ztop, zfloor, n=16, dy=1.0, top="CT_WoodLight"):
     return y0 + dy * STEP_D * (n - 1)
 
 
+def _lift_door(B, tid, cx, cy, z, yaw):
+    """A lift door in a wall: steel frame, two leaves, a call button; the wall is at (cx, cy) for yaw 0 (normal -y) and for yaw 90
+    (normal +x, cy runs along the wall). Thing: kind door, to=lift (a caption for now)."""
+    def bx(u0, u1, v0, v1, z0, z1, mat, faces="all"):
+        if yaw == 0:
+            box(B.detail, mat, cx + u0, cx + u1, cy - v1, cy - v0, z + z0, z + z1, faces=faces)
+        else:
+            box(B.detail, mat, cx + v0, cx + v1, cy + u0, cy + u1, z + z0, z + z1, faces=faces)
+    bx(-0.55, 0.55, 0.0, 0.05, 0.0, 2.2, "CT_Steel")
+    bx(-0.45, -0.005, 0.05, 0.075, 0.0, 2.1, "CT_SteelWhite")
+    bx(0.005, 0.45, 0.05, 0.075, 0.0, 2.1, "CT_SteelWhite")
+    bx(-0.04, 0.04, 0.075, 0.09, 0.0, 2.1, "CT_Steel")
+    bx(0.62, 0.7, 0.0, 0.03, 1.0, 1.2, "CT_ConcreteWhite")
+    bx(0.645, 0.675, 0.03, 0.045, 1.07, 1.13, "CT_Steel")
+    px, py = (cx, cy - 0.04) if yaw == 0 else (cx + 0.04, cy)
+    B.thing(tid, "door", (px, py, z + 1.1), yaw, to="lift")
+
+
 def _street_shell(B):
     """Floor, corridor ceiling, shop fronts with openings, party walls, shop ceilings, the hall of flat 5-12."""
     # the street floor: one slab over the whole segment with the hole of flat 5-12's stair
@@ -621,7 +640,7 @@ def _fascia(B, key, sign, w=2.2, zc=3.75):
 def _street(B):
     """The street itself: lamps, benches, boards, the clock, the phone, the photo booth, then each unit."""
     Z = ZS
-    for x in (-15.0, 0.0, 15.0):
+    for x in (-15.0, -7.5, 0.0, 7.5, 15.0):
         kit.pendant(B, x, 6.3, Z_CE, drop=2.4, kind="opal", light=True, lumens=900, colour="#FFE0B0", lamp_kind="public", radius=11.0)
     # benches under the glazed band (the sitter looks across the street at the shops), planters between them
     for k, bx in enumerate((-14.0, -1.5, 11.5)):
@@ -641,6 +660,7 @@ def _street(B):
     box(B.detail, "CT_Steel", x - 0.015, x + 0.015, YW - 0.025, YW - 0.015, Z + 1.28, Z + 1.32, faces="yXxzZ")
     B.thing("street_switch", "machine", (x, YW - 0.03, Z + 1.3), 0.0, what="switch", switch="hall")
     # the payphone on the west end wall, the photo booth at the east end
+    _lift_door(B, "lift_street", SX0, 5.3, Z, 90.0)
     kit.wall_phone(B, SX0 + 0.0, 6.2, Z, 90.0, zc=1.45)
     B.thing("street_phone", "machine", (SX0 + 0.1, 6.2, Z + 1.45), 90.0, what="payphone")
     kit.photo_booth(B, 20.7, 6.7, Z, 180.0)
@@ -681,7 +701,7 @@ def _u_bake(B, u):
     kit.shop_shelf(B, -18.6, YU, Z, 0.0, w=1.6, goods="boxes", levels=3, seed=5)
     kit.sack(B, -20.8, 9.2, Z, 20.0)
     kit.sack(B, -20.4, 9.5, Z, 80.0)
-    kit.pendant(B, -18.5, 10.8, Z_SH, drop=0.55, kind="cone")
+    kit.pendant(B, -18.5, 10.8, Z_SH, drop=0.55, kind="cone", light=True, lumens=450, colour="#FFE0B0", lamp_kind="public", radius=4.5)
     kit.menu_board(B, u["x1"] - 0.1, 11.4, Z, 270.0, name="price_0", w=0.8)
     kit.picture(B, u["x0"] + 0.1, 13.0, Z, 90.0, name="painting_still_life", w=0.7, zc=1.75)
     kit.rug(B, -18.3, 9.2, Z + 0.01, 0.0, w=2.6, d=0.8, name="rug_2", seed=3)
@@ -702,7 +722,7 @@ def _u_fab(B, u):
     kit.mirror(B, -12.6, 14.0, Z, 0.0, zc=1.5, w=0.55, h=1.0)
     kit.poster(B, -14.3, 13.2, Z, 90.0, name="fabric_1", w=0.6, zc=1.7)
     kit.rug(B, -12.6, 10.8, Z + 0.01, 0.0, w=1.6, d=0.9, name="rug_6", seed=6)
-    kit.pendant(B, -12.6, 10.6, Z_SH, drop=0.5, kind="cone")
+    kit.pendant(B, -12.6, 10.6, Z_SH, drop=0.5, kind="cone", light=True, lumens=450, colour="#FFE0B0", lamp_kind="public", radius=4.5)
 
 
 def _u_hall(B, u):
@@ -720,7 +740,7 @@ def _u_hall(B, u):
     kit.mirror(B, u["x1"] - 0.1, 11.3, Z, 270.0, zc=1.5, w=0.5, h=0.9)
     kit.hat_stand(B, -10.2, 13.6, Z, 0.0)
     B.thing("tul_hats", "machine", (-10.2, 13.6, Z + 1.2), 0.0, what="hat_stand")
-    kit.pendant(B, -9.0, 10.5, Z_SH, drop=0.5, kind="opal")
+    kit.pendant(B, -9.0, 10.5, Z_SH, drop=0.5, kind="opal", light=True, lumens=450, colour="#FFE0B0", lamp_kind="public", radius=4.5)
 
 
 def _u_game(B, u):
@@ -776,7 +796,7 @@ def _u_news(B, u):
     kit.poster(B, u["x0"] + 0.1, 13.0, Z, 90.0, name="poster_cons_1", w=0.6, zc=1.7)
     kit.rug(B, 1.8, 11.4, Z + 0.01, 0.0, w=1.4, d=1.4, name="rug_1", seed=1)
     B.thing("news_map", "board", (1.8, YU - 0.05, Z + 1.8), 0.0, topic="travel")
-    kit.pendant(B, 1.8, 10.8, Z_SH, drop=0.5, kind="cone")
+    kit.pendant(B, 1.8, 10.8, Z_SH, drop=0.5, kind="cone", light=True, lumens=450, colour="#FFE0B0", lamp_kind="public", radius=4.5)
 
 
 def _u_groc(B, u):
@@ -791,7 +811,7 @@ def _u_groc(B, u):
     kit.crate(B, 4.3, 7.2, Z, 0.0, fill="CT_PlasterRed", seed=1)
     B.thing("groc_apples", "machine", (4.6, 7.2, Z + 0.4), 0.0, what="fruit_crates")
     kit.kitchen_scales(B, 4.7, 9.55, Z + 1.05, 0.0)
-    kit.pendant(B, 5.4, 10.8, Z_SH, drop=0.5, kind="cone")
+    kit.pendant(B, 5.4, 10.8, Z_SH, drop=0.5, kind="cone", light=True, lumens=450, colour="#FFE0B0", lamp_kind="public", radius=4.5)
 
 
 def _u_toys(B, u):
@@ -807,7 +827,7 @@ def _u_toys(B, u):
     kit.poster(B, u["x1"] - 0.1, 12.2, Z, 270.0, name="kids_1", w=0.7, zc=1.8)
     kit.poster(B, 11.0, YU, Z, 0.0, name="kids_3", w=0.8, zc=1.8)
     kit.rug(B, 9.8, 12.0, Z + 0.01, 0.0, w=2.6, d=2.4, name="rug_round_0", round=True)
-    kit.pendant(B, 10.8, 11.0, Z_SH, drop=0.55, kind="opal")
+    kit.pendant(B, 10.8, 11.0, Z_SH, drop=0.55, kind="opal", light=True, lumens=450, colour="#FFE0B0", lamp_kind="public", radius=4.5)
 
 
 def _u_barber(B, u):
@@ -829,7 +849,7 @@ def _u_barber(B, u):
     B.thing("barber_bench", "seat", (u["x1"] - 0.3, 12.2, Z + 0.47), 270.0, height=0.45)
     kit.magazine_rack(B, u["x1"] - 0.1, 13.4, Z, 270.0, w=0.8)
     B.thing("barber_mags", "shelf", (u["x1"] - 0.3, 13.4, Z + 0.9), 270.0, topic="art")
-    kit.pendant(B, 18.0, 11.5, Z_SH, drop=0.55, kind="opal")
+    kit.pendant(B, 18.0, 11.5, Z_SH, drop=0.55, kind="opal", light=True, lumens=450, colour="#FFE0B0", lamp_kind="public", radius=4.5)
 
 
 
@@ -896,9 +916,16 @@ def _flat(B):
     B.thing("tul_window_low", "board", (xm, YC0 + 0.05, Zb + 1.5), 180.0, topic="view")
     kit.armchair(B, -8.3, 18.8, Zb, 180.0, mat="CT_PlasterYellow")
     B.thing("tul_nook", "seat", (-8.3, 18.8, Zb + 0.47), 180.0, height=0.45)
-    kit.floor_lamp(B, FX1 - 0.3, 17.3, Zb, 0.0)
+    kit.floor_lamp(B, FX1 - 0.3, 17.3, Zb, 0.0, light=True)
     kit.plant(B, FX1 - 0.3, 14.6, Zb, 0.0, kind="fern", pot="CT_PlasterGreen", h=0.9, seed=14)
     kit.books_stack(B, -8.3, 18.0, Zb, 0.0, n=3, seed=2)
+    # lamps: one per room of the flat (level 2 living room, stair hall, kitchen; level 1 bedroom, reading nook)
+    FP = dict(light=True, lumens=300, colour="#FFD9A8", lamp_kind="public", radius=4.0)
+    kit.pendant(B, -9.0, 6.4, ZS - 0.3, drop=0.4, kind="opal", **FP)
+    kit.pendant(B, -7.9, 11.3, ZS - 0.3, drop=0.3, kind="opal", **FP)
+    kit.pendant(B, -9.0, 16.8, ZS - 0.3, drop=0.5, kind="cone", **FP)
+    kit.pendant(B, -9.0, 7.2, FL2 - 0.3, drop=0.4, kind="opal", **FP)
+    kit.pendant(B, -8.4, 12.4, FL2 - 0.3, drop=0.3, kind="opal", **FP)
     # ---------------------------------------------------------------- townsfolk: Priya's places
     B.spot("tul_sofa_spot", "bench", (FX1 - 0.9, 7.2, A), 270.0)
     B.spot("tul_window_spot", "view", (xm, 5.7, A), 180.0)
