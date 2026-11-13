@@ -30,6 +30,16 @@
  "entrances": [],
  "spots": [
   {
+   "id": "haggle_stand_1",
+   "kind": "stand",
+   "pos": [
+    -16.05,
+    8.8,
+    0
+   ],
+   "yaw": 180.0
+  },
+  {
    "id": "counter1",
    "kind": "counter",
    "pos": [
@@ -68,6 +78,16 @@
     0
    ],
    "yaw": 0
+  },
+  {
+   "id": "haggle_stand_3",
+   "kind": "stand",
+   "pos": [
+    -17.2,
+    16.95,
+    0
+   ],
+   "yaw": 270
   },
   {
    "id": "counter3",
@@ -128,6 +148,16 @@
     0
    ],
    "yaw": 0
+  },
+  {
+   "id": "haggle_stand_6",
+   "kind": "stand",
+   "pos": [
+    -5.65,
+    19.2,
+    0
+   ],
+   "yaw": 180.0
   },
   {
    "id": "counter6",
@@ -268,6 +298,16 @@
     0
    ],
    "yaw": 0
+  },
+  {
+   "id": "seed_stand",
+   "kind": "stand",
+   "pos": [
+    14.15,
+    8.3,
+    0
+   ],
+   "yaw": 180.0
   },
   {
    "id": "counter13",
@@ -460,6 +500,26 @@
    "yaw": 0
   },
   {
+   "id": "tea_chat_stand",
+   "kind": "stand",
+   "pos": [
+    8.9,
+    2.1,
+    0
+   ],
+   "yaw": 180
+  },
+  {
+   "id": "tea_notice_stand",
+   "kind": "stand",
+   "pos": [
+    8.3,
+    1.2,
+    0
+   ],
+   "yaw": 180
+  },
+  {
    "id": "jam_stand",
    "kind": "stand",
    "pos": [
@@ -488,6 +548,56 @@
     0
    ],
    "yaw": 0
+  },
+  {
+   "id": "jury_stand",
+   "kind": "stand",
+   "pos": [
+    -5.3,
+    4.9,
+    0
+   ],
+   "yaw": 0
+  },
+  {
+   "id": "clock_stand",
+   "kind": "stand",
+   "pos": [
+    3.0,
+    1.6,
+    0
+   ],
+   "yaw": 180
+  },
+  {
+   "id": "rules_stand",
+   "kind": "stand",
+   "pos": [
+    -15.6,
+    2.8,
+    0
+   ],
+   "yaw": 180
+  },
+  {
+   "id": "tastes_stand",
+   "kind": "stand",
+   "pos": [
+    -9.8,
+    1.7,
+    0
+   ],
+   "yaw": 180
+  },
+  {
+   "id": "switch_stand",
+   "kind": "stand",
+   "pos": [
+    -8.8,
+    3.3,
+    0
+   ],
+   "yaw": 270
   },
   {
    "id": "grinder_work",
@@ -770,9 +880,60 @@
    "colour": "#FFD9A8",
    "kind": "public",
    "radius": 7.0
+  },
+  {
+   "pos": [
+    0.35,
+    25.2,
+    3.432
+   ],
+   "lumens": 760,
+   "colour": "#FFD9A8",
+   "kind": "public",
+   "radius": 7.0
+  },
+  {
+   "pos": [
+    10.4,
+    6.5,
+    3.263
+   ],
+   "lumens": 760,
+   "colour": "#FFD9A8",
+   "kind": "public",
+   "radius": 7.0
   }
  ],
  "things": [
+  {
+   "id": "chat_1",
+   "kind": "counter",
+   "pos": [
+    -14.8,
+    9.9,
+    1.03
+   ],
+   "yaw": 0.0,
+   "props": {
+    "service": "talk",
+    "role": "seller",
+    "trade": "fruit"
+   }
+  },
+  {
+   "id": "haggle_1",
+   "kind": "play",
+   "pos": [
+    -16.05,
+    9.51,
+    1.13
+   ],
+   "yaw": 0.0,
+   "props": {
+    "what": "haggle",
+    "trade": "fruit"
+   }
+  },
   {
    "id": "slate_1",
    "kind": "board",
@@ -799,6 +960,21 @@
    "props": {
     "service": "shop",
     "shop": "market_fruit"
+   }
+  },
+  {
+   "id": "chat_2",
+   "kind": "counter",
+   "pos": [
+    -14.8,
+    20.3,
+    1.03
+   ],
+   "yaw": 0.0,
+   "props": {
+    "service": "talk",
+    "role": "seller",
+    "trade": "dairy"
    }
   },
   {
@@ -830,6 +1006,20 @@
    }
   },
   {
+   "id": "haggle_3",
+   "kind": "play",
+   "pos": [
+    -17.91,
+    16.95,
+    1.13
+   ],
+   "yaw": 90,
+   "props": {
+    "what": "haggle",
+    "trade": "butcher"
+   }
+  },
+  {
    "id": "slate_3",
    "kind": "board",
    "pos": [
@@ -855,6 +1045,21 @@
    "props": {
     "service": "butcher",
     "role": "butcher"
+   }
+  },
+  {
+   "id": "chat_4",
+   "kind": "counter",
+   "pos": [
+    -14.8,
+    30.7,
+    1.03
+   ],
+   "yaw": 0.0,
+   "props": {
+    "service": "talk",
+    "role": "seller",
+    "trade": "bread"
    }
   },
   {
@@ -886,6 +1091,21 @@
    }
   },
   {
+   "id": "chat_5",
+   "kind": "counter",
+   "pos": [
+    -4.4,
+    9.9,
+    1.03
+   ],
+   "yaw": 0.0,
+   "props": {
+    "service": "talk",
+    "role": "seller",
+    "trade": "birds"
+   }
+  },
+  {
    "id": "slate_5",
    "kind": "board",
    "pos": [
@@ -911,6 +1131,20 @@
    "props": {
     "service": "shop",
     "shop": "market_birds"
+   }
+  },
+  {
+   "id": "haggle_6",
+   "kind": "play",
+   "pos": [
+    -5.65,
+    19.91,
+    1.25
+   ],
+   "yaw": 0.0,
+   "props": {
+    "what": "haggle",
+    "trade": "fish"
    }
   },
   {
@@ -942,6 +1176,21 @@
    }
   },
   {
+   "id": "chat_7",
+   "kind": "counter",
+   "pos": [
+    -2.5,
+    16.6,
+    1.03
+   ],
+   "yaw": 270,
+   "props": {
+    "service": "talk",
+    "role": "seller",
+    "trade": "sweets"
+   }
+  },
+  {
    "id": "slate_7",
    "kind": "board",
    "pos": [
@@ -967,6 +1216,21 @@
    "props": {
     "service": "shop",
     "shop": "market_sweets"
+   }
+  },
+  {
+   "id": "chat_8",
+   "kind": "counter",
+   "pos": [
+    -4.4,
+    30.7,
+    1.03
+   ],
+   "yaw": 0.0,
+   "props": {
+    "service": "talk",
+    "role": "seller",
+    "trade": "bait"
    }
   },
   {
@@ -998,6 +1262,21 @@
    }
   },
   {
+   "id": "chat_9",
+   "kind": "counter",
+   "pos": [
+    6.0,
+    9.9,
+    1.03
+   ],
+   "yaw": 0.0,
+   "props": {
+    "service": "talk",
+    "role": "seller",
+    "trade": "veg"
+   }
+  },
+  {
    "id": "slate_9",
    "kind": "board",
    "pos": [
@@ -1023,6 +1302,21 @@
    "props": {
     "service": "shop",
     "shop": "market_fruit"
+   }
+  },
+  {
+   "id": "chat_10",
+   "kind": "counter",
+   "pos": [
+    6.0,
+    20.3,
+    1.03
+   ],
+   "yaw": 0.0,
+   "props": {
+    "service": "talk",
+    "role": "seller",
+    "trade": "dairy"
    }
   },
   {
@@ -1082,6 +1376,21 @@
    }
   },
   {
+   "id": "chat_12",
+   "kind": "counter",
+   "pos": [
+    6.0,
+    30.7,
+    1.03
+   ],
+   "yaw": 0.0,
+   "props": {
+    "service": "talk",
+    "role": "seller",
+    "trade": "bread"
+   }
+  },
+  {
    "id": "slate_12",
    "kind": "board",
    "pos": [
@@ -1110,6 +1419,34 @@
    }
   },
   {
+   "id": "chat_13",
+   "kind": "counter",
+   "pos": [
+    16.4,
+    9.9,
+    1.03
+   ],
+   "yaw": 0.0,
+   "props": {
+    "service": "talk",
+    "role": "seller",
+    "trade": "birds"
+   }
+  },
+  {
+   "id": "seed_catalogue",
+   "kind": "shelf",
+   "pos": [
+    14.15,
+    9.0,
+    1.5
+   ],
+   "yaw": 0.0,
+   "props": {
+    "topic": "catalogue"
+   }
+  },
+  {
    "id": "slate_13",
    "kind": "board",
    "pos": [
@@ -1135,6 +1472,21 @@
    "props": {
     "service": "shop",
     "shop": "market_birds"
+   }
+  },
+  {
+   "id": "chat_14",
+   "kind": "counter",
+   "pos": [
+    16.4,
+    20.3,
+    1.03
+   ],
+   "yaw": 0.0,
+   "props": {
+    "service": "talk",
+    "role": "seller",
+    "trade": "fruit"
    }
   },
   {
@@ -1191,6 +1543,21 @@
    "props": {
     "service": "butcher",
     "role": "butcher"
+   }
+  },
+  {
+   "id": "chat_16",
+   "kind": "counter",
+   "pos": [
+    16.4,
+    30.7,
+    1.03
+   ],
+   "yaw": 0.0,
+   "props": {
+    "service": "talk",
+    "role": "seller",
+    "trade": "bait"
    }
   },
   {
@@ -1430,6 +1797,34 @@
    }
   },
   {
+   "id": "tea_notice",
+   "kind": "board",
+   "pos": [
+    8.3,
+    1.95,
+    0.75
+   ],
+   "yaw": 0.0,
+   "props": {
+    "topic": "menu"
+   }
+  },
+  {
+   "id": "tea_chat",
+   "kind": "counter",
+   "pos": [
+    9.2,
+    3.25,
+    1.05
+   ],
+   "yaw": 0.0,
+   "props": {
+    "service": "talk",
+    "role": "seller",
+    "trade": "tea"
+   }
+  },
+  {
    "id": "tea_paper",
    "kind": "take",
    "pos": [
@@ -1505,6 +1900,72 @@
    "yaw": 0.0,
    "props": {
     "topic": "jam"
+   }
+  },
+  {
+   "id": "jury_protocol",
+   "kind": "board",
+   "pos": [
+    -5.75,
+    5.85,
+    0.82
+   ],
+   "yaw": 0.0,
+   "props": {
+    "topic": "jam"
+   }
+  },
+  {
+   "id": "kit_clock_1",
+   "kind": "board",
+   "pos": [
+    3.0,
+    2.41,
+    2.2
+   ],
+   "yaw": 0.0,
+   "props": {
+    "what": "clock"
+   }
+  },
+  {
+   "id": "rules_plaque",
+   "kind": "board",
+   "pos": [
+    -15.6,
+    3.55,
+    1.4
+   ],
+   "yaw": 0.0,
+   "props": {
+    "topic": "rules"
+   }
+  },
+  {
+   "id": "tastes_board",
+   "kind": "board",
+   "pos": [
+    -9.8,
+    2.62,
+    1.55
+   ],
+   "yaw": 0.0,
+   "props": {
+    "topic": "catalogue"
+   }
+  },
+  {
+   "id": "office_switch",
+   "kind": "machine",
+   "pos": [
+    -9.4,
+    3.1,
+    1.26
+   ],
+   "yaw": 90.0,
+   "props": {
+    "what": "switch",
+    "switch": "hall"
    }
   },
   {
@@ -1633,7 +2094,7 @@
  ],
  "tris": {
   "shell": 15168,
-  "detail": 32246,
+  "detail": 35159,
   "windows": 0
  }
 }

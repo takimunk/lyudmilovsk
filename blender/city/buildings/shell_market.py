@@ -109,12 +109,40 @@ def _fish(d, mat, fr, u, w, z, ang, length=0.3, r=0.04):
     lbox(d, "CT_SteelRed", f2, length / 2 - 0.045, length / 2 - 0.03, -r * 0.8, r * 0.8, z + r - 0.02, z + r + 0.02, faces="xXyY")
 
 
-def _fruit_pile(B, x, y, z, rnd, mats, r=0.045):
-    """A heap of round fruit (blobs of a real apple's size): 3 + 2 + 1."""
-    pts = [(-r * 1.9, -r), (0.0, -r), (r * 1.9, -r), (-r, r * 0.9), (r, r * 0.9), (0.0, 0.0)]
-    for k, (dx, dy) in enumerate(pts):
-        zz = z + r + (0.0 if k < 3 else (0.08 if k < 5 else 0.14))
-        blob(B.detail, rnd.choice(mats), x + dx + rnd.uniform(-0.01, 0.01), y + dy, zz, r, 6)
+def _mound(m, mat, x, y, z, rx, h, rnd, ry=None, segs=8, yaw=0.0):
+    """A lumpy heap (potatoes, grain, a pile of fruit under the fruit): three rings and an apex, no bottom, ~5 * segs tris."""
+    ry = ry or rx
+    cy_, sy_ = math.cos(math.radians(yaw)), math.sin(math.radians(yaw))
+    rows = []
+    for s_, t_ in ((1.0, 0.0), (0.84, 0.45), (0.48, 0.82)):
+        row = []
+        for k in range(segs):
+            a = 2 * math.pi * (k + 0.5 * (len(rows) % 2)) / segs
+            j = 1 + rnd.uniform(-0.1, 0.1)
+            ex, ey = rx * s_ * j * math.cos(a), ry * s_ * j * math.sin(a)
+            row.append((x + ex * cy_ - ey * sy_, y + ex * sy_ + ey * cy_, z + h * t_ * (1 + rnd.uniform(-0.08, 0.08))))
+        rows.append(row)
+    for r in range(2):
+        for k in range(segs):
+            k2 = (k + 1) % segs
+            m.face(mat, [rows[r][k], rows[r][k2], rows[r + 1][k2]])
+            m.face(mat, [rows[r][k], rows[r + 1][k2], rows[r + 1][k]])
+    apex = (x, y, z + h)
+    for k in range(segs):
+        m.face(mat, [rows[2][k], rows[2][(k + 1) % segs], apex])
+
+
+def _fruit_pile(B, x, y, z, rnd, mats, r=0.05, yaw=0.0):
+    """A tray with a heap of fruit: a lumpy mound and seven fruits sitting on it (a real apple's size)."""
+    d = B.detail
+    fr = Fr(x, y, yaw)
+    lbox(d, "CT_WoodLight", fr, -0.25, 0.25, -0.18, 0.18, z, z + 0.04, faces="xXyYZ")
+    _mound(d, mats[0], x, y, z + 0.04, 0.2, 0.1, rnd, ry=0.14, yaw=yaw)
+    for k in range(7):
+        a = 2 * math.pi * k / 7 + rnd.uniform(-0.3, 0.3)
+        rr = 0.03 + 0.1 * (k % 2) * rnd.uniform(0.6, 1.0)
+        px, py, _ = fr.p(rr * math.cos(a) * 1.3, rr * math.sin(a))
+        blob(d, mats[k % len(mats)], px, py, z + 0.04 + 0.1 * (1 - rr / 0.2) + 0.03, r, 5)
 
 
 def _loaf(d, mat, fr, u, w, z, length=0.26, r=0.06):
@@ -149,13 +177,15 @@ def stall_goods(B, fr, kind, rnd, n):
                 c = rnd.choice(VEG)
                 px, py, _ = fr.p(u, 0.0)
                 fu.crate(B, px, py, ZT, 0.5, 0.5, 0.16, "CT_WoodLight", fill=c, yaw=fr.yaw)
-                for j in range(4):
-                    qx, qy, _ = fr.p(u + rnd.uniform(-0.17, 0.17), rnd.uniform(-0.17, 0.17))
-                    blob(d, c, qx, qy, ZT + 0.2, 0.07, 6)
+                px2, py2, _ = fr.p(u, 0.0)
+                _mound(d, c, px2, py2, ZT + 0.12, 0.2, 0.11, rnd, yaw=fr.yaw)
+                for j in range(2):
+                    qx, qy, _ = fr.p(u + rnd.uniform(-0.1, 0.1), rnd.uniform(-0.1, 0.1))
+                    blob(d, c, qx, qy, ZT + 0.25, 0.06, 5)
         else:
             for k in range(3):
                 px, py, _ = fr.p(-0.95 + 0.95 * k, 0.0)
-                _fruit_pile(B, px, py, ZT, rnd, ["CT_PlasterRed", "CT_PlasterYellow", "CT_PlasterGreen"] if k != 1 else ["CT_PlasterYellow", "CT_SteelRed"])
+                _fruit_pile(B, px, py, ZT, rnd, ["CT_PlasterRed", "CT_PlasterYellow", "CT_PlasterGreen"] if k != 1 else ["CT_PlasterYellow", "CT_SteelRed"], yaw=fr.yaw)
             for k in range(2):
                 px, py, _ = fr.p(-1.4 + 2.8 * k, 0.0)
                 fu.crate(B, px, py, ZT, 0.4, 0.45, 0.12, "CT_WoodLight", fill=rnd.choice(VEG), yaw=fr.yaw)
@@ -631,7 +661,8 @@ def _grinder(B, x, y):
     lbox(d, "CT_Steel", fr, -0.1, 0.1, -0.1, 0.1, 0.84, 0.88, faces="xXyYZ")       # the trough under the stone
     fu.rod(d, "CT_Steel", fr.p(0.1, 0.16, 0.98), fr.p(0.32, 0.16, 0.14), 0.012)            # the pedal rod
     lbox(d, "CT_Wood", fr, 0.22, 0.46, -0.16, 0.16, 0.1, 0.14)
-    kit.stool(B, *fr.p(-0.1, 0.8)[:2], 0.0, 0.0, h=0.45)
+    kit.stool(B, *fr.p(0.0, -0.78)[:2], 0.0, 180.0, h=0.45)
+    _figure(B, Fr(*fr.p(0.0, -0.78)[:2], 0.0))
     for k in range(3):                                                                     # knives waiting on the bench
         lbox(d, "CT_Steel", fr.sub(-0.35 + 0.06 * k, 0.0, 18 * k - 20), -0.12, 0.12, -0.012, 0.012, 0.82, 0.835, faces="xXyYZ")
         lbox(d, "CT_Wood", fr.sub(-0.35 + 0.06 * k, 0.0, 18 * k - 20), 0.12, 0.2, -0.015, 0.015, 0.82, 0.84, faces="xXyYZ")
@@ -731,6 +762,10 @@ def _herb_corner(B, x, y):
     fu.rod(d, "CT_PlasterGreen", (px, py, 0.14), (px + 0.0, py + 0.2, 0.28), 0.025)
     fu.rod(d, "CT_PlasterGreen", (px - 0.05, py, 0.2), (px - 0.05, py, 0.3), 0.012)
     kit.sandwich_board(B, *fr.p(1.2, 0.75)[:2], 0.0, 90.0, w=0.45, name="price_0")
+    _hanging_herbs(B, fr, -0.8, 0.8, -0.25, 1.95, rr, n=5)                      # drying bunches overhead
+    for k in range(2):                                                           # a lidded jar of dried herbs and a bag, by the pots
+        px, py, _ = fr.p(-0.62 + 1.24 * k, 0.1)
+        _jar(B, px, py, 0.48, ("CT_PlasterGreen", "CT_WoodLight")[k], lid="CT_Paper", r=0.06, h=0.16)
 
 
 def _complaint_stand(B, x, y):
@@ -742,6 +777,235 @@ def _complaint_stand(B, x, y):
     lbox(d, "CT_PlasterRed", fr.sub(0.0, 0.0, 0), -0.17, 0.17, -0.2, 0.0, 1.0, 1.07, faces="xXyYZz")
     lbox(d, "CT_TileWhite", fr, -0.15, 0.15, -0.18, -0.02, 1.07, 1.09, faces="xXyYZ")
     fu.rod(d, "CT_Steel", fr.p(0.18, 0.0, 1.11), fr.p(0.1, 0.1, 1.12), 0.006)       # a pen on a string
+
+
+# ------------------------------------------------------------------------------------------------ round 2: what the eye meets first
+def _cone(m, mat, base, tip, r, segs=6, cap=True):
+    """A cone / tapered spike from base (radius r) to tip: carrots, paper cones, ears, beaks (segs + segs - 2 tris)."""
+    ax = geom.norm(geom.sub(tip, base))
+    ref = (0, 0, 1) if abs(ax[2]) < 0.9 else (1, 0, 0)
+    u = geom.norm(geom.cross(ax, ref))
+    v = geom.cross(ax, u)
+    ring = [tuple(base[i] + r * (u[i] * math.cos(2 * math.pi * k / segs) + v[i] * math.sin(2 * math.pi * k / segs)) for i in range(3))
+            for k in range(segs)]
+    cen = tuple((base[i] + tip[i]) / 2 for i in range(3))
+    quads = [[ring[k], ring[(k + 1) % segs], tip] for k in range(segs)]
+    if cap:
+        quads.append(ring[::-1])
+    for q in quads:
+        n = geom.cross(geom.sub(q[1], q[0]), geom.sub(q[2], q[0]))
+        mid = tuple(sum(p[i] for p in q) / len(q) for i in range(3))
+        if sum(n[i] * (mid[i] - cen[i]) for i in range(3)) < 0:
+            q = q[::-1]
+        m.face(mat, q)
+
+
+def _ell(m, mat, c, rx, ry, rz, yaw=0.0, segs=6):
+    """An ellipsoid-ish body (blob scaled and turned): breasts, bodies, heads (4 * segs tris)."""
+    cy_, sy_ = math.cos(math.radians(yaw)), math.sin(math.radians(yaw))
+
+    def P(a, t, s):
+        ex, ey = rx * s * math.cos(a), ry * s * math.sin(a)
+        return (c[0] + ex * cy_ - ey * sy_, c[1] + ex * sy_ + ey * cy_, c[2] + rz * t)
+    top = (c[0], c[1], c[2] + rz * 0.97)
+    bot = (c[0], c[1], c[2] - rz * 0.97)
+    up = [P(2 * math.pi * k / segs, 0.35, 1.0) for k in range(segs)]
+    lo = [P(2 * math.pi * k / segs, -0.35, 1.0) for k in range(segs)]
+    for k in range(segs):
+        k2 = (k + 1) % segs
+        m.face(mat, [up[k], up[k2], top])
+        m.face(mat, [lo[k], up[k], up[k2], lo[k2]])
+        m.face(mat, [lo[k2], lo[k], bot])
+
+
+def _weights(B, fr, u, w, z, n=2):
+    """Brass weights by the scales: a short stack of ever smaller weights with a knob each."""
+    d = B.detail
+    for k in range(n):
+        x, y, _ = fr.p(u + 0.09 * k, w)
+        r = 0.04 - 0.008 * k
+        cyl(d, "CT_Aluminium", x, y, z, z + 0.05 - 0.01 * k, r, 5, top=True)
+        cyl(d, "CT_Aluminium", x, y, z + 0.05 - 0.01 * k, z + 0.07 - 0.01 * k, r * 0.4, 4, top=True)
+
+
+def _bunch(B, fr, u, w, z, mat, leaf, n=5, length=0.26, spread=14):
+    """A tied bunch lying on the counter (carrots, radishes, dill): tapering roots in a fan, a leafy tuft, a string round the middle."""
+    d = B.detail
+    for k in range(n):
+        a = math.radians((k - (n - 1) / 2) * spread)
+        base = fr.p(u - length * 0.45, w + 0.03 * (k - n / 2), z + 0.03 + 0.012 * (k % 2))
+        tip = fr.p(u + length * 0.55 * math.cos(a), w + length * 0.55 * math.sin(a) + 0.03 * (k - n / 2), z + 0.022)
+        _cone(d, mat, base, tip, 0.022, 5, cap=False)
+    for k in range(2):
+        px, py, _ = fr.p(u - length * 0.5, w + 0.02 * (k - 0.5) * 2)
+        blob(d, leaf, px, py, z + 0.05, 0.045 + 0.01 * k, 5)
+    _tube(d, "CT_Paper", fr.p(u, w - 0.05, z + 0.045), fr.p(u, w + 0.05, z + 0.045), 0.011, 4, caps=False)
+
+
+def _paper_cones(B, fr, u, w, z, mats, n=3):
+    """Paper cones of seeds / sweets standing in a wooden block: tip down in the holes, a heap in each mouth."""
+    d = B.detail
+    lbox(d, "CT_WoodLight", fr, u - 0.06 * n - 0.02, u + 0.06 * n + 0.02, w - 0.07, w + 0.07, z, z + 0.05, faces="xXyYZ")
+    for k in range(n):
+        x, y, _ = fr.p(u + (k - (n - 1) / 2) * 0.12, w)
+        _cone(d, "CT_Paper", (x, y, z + 0.22), (x, y, z + 0.05), 0.05, 6, cap=False)
+        cyl(d, mats[k % len(mats)], x, y, z + 0.215, z + 0.235, 0.044, 6, top=True)
+
+
+def _abacus(B, fr, u, w, z):
+    """Wooden counting frame standing on the counter's edge: frame, three wires, two blocks of beads on each."""
+    d = B.detail
+    lbox(d, "CT_Wood", fr, u - 0.16, u + 0.16, w - 0.025, w + 0.025, z, z + 0.02, faces="xXyYZz")
+    lbox(d, "CT_Wood", fr, u - 0.16, u + 0.16, w - 0.025, w + 0.025, z + 0.22, z + 0.24, faces="xXyYZz")
+    for s in (-1, 1):
+        lbox(d, "CT_Wood", fr, u + s * 0.16 - 0.012, u + s * 0.16 + 0.012, w - 0.025, w + 0.025, z + 0.02, z + 0.22, faces="xXyY")
+    for q in range(3):
+        zz = z + 0.06 + 0.06 * q
+        lbox(d, "CT_Steel", fr, u - 0.15, u + 0.15, w - 0.003, w + 0.003, zz, zz + 0.004, faces="yYZ")
+        c1, c2 = ("CT_PlasterRed", "CT_PlasterYellow", "CT_PlasterBlue")[q], ("CT_PlasterYellow", "CT_PlasterBlue", "CT_PlasterRed")[q]
+        lbox(d, c1, fr, u - 0.14, u - 0.14 + 0.07 + 0.03 * q, w - 0.014, w + 0.014, zz - 0.012, zz + 0.016, faces="xXyYZ")
+        lbox(d, c2, fr, u + 0.14 - 0.07 - 0.02 * q, u + 0.14, w - 0.014, w + 0.014, zz - 0.012, zz + 0.016, faces="xXyYZ")
+
+
+def _booklet(B, fr, u, w, z):
+    """A seed catalogue hung on a cord from the awning's price string."""
+    d = B.detail
+    lbox(d, "CT_Paper", fr, u - 0.003, u + 0.003, w - 0.003, w + 0.003, z + 0.2, z + 0.4, faces="xXyY")
+    lbox(d, "CT_PlasterGreen", fr, u - 0.1, u + 0.1, w - 0.012, w + 0.012, z - 0.04, z + 0.22, faces="xXyYZz")
+    lbox(d, "CT_TileWhite", fr, u - 0.07, u + 0.07, w + 0.012, w + 0.014, z + 0.04, z + 0.15, faces="y")
+    lbox(d, "CT_PlasterYellow", fr, u - 0.05, u + 0.05, w + 0.014, w + 0.016, z + 0.16, z + 0.19, faces="y")
+
+
+def _clipboard(B, x, y, z, yaw):
+    d = B.detail
+    fr = Fr(x, y, yaw)
+    lbox(d, "CT_WoodLight", fr, -0.11, 0.11, -0.15, 0.15, z, z + 0.012, faces="xXyYZ")
+    lbox(d, "CT_Paper", fr, -0.095, 0.095, -0.13, 0.13, z + 0.012, z + 0.017, faces="xXyYZ")
+    lbox(d, "CT_Steel", fr, -0.04, 0.04, 0.12, 0.15, z + 0.012, z + 0.025, faces="xXyYZ")
+
+
+def _bird(B, x, y, yaw, mat="CT_ConcreteDark", head_up=0.0, peck=False):
+    """A pigeon: a plump body with a puffed breast, neck and small head, a beak, a wing, a wedge tail and two pink legs (~100 tris)."""
+    fr = Fr(x, y, yaw)
+    d = B.detail
+    z0 = 0.075
+    pitch = 0.04 if peck else 0.0
+    _ell(d, mat, fr.p(-0.005, 0.0, z0 + 0.03), 0.075, 0.05, 0.05, yaw, 6)
+    _ell(d, "CT_Steel" if mat != "CT_Steel" else "CT_TileWhite", fr.p(0.055, 0.0, z0 + 0.05), 0.04, 0.042, 0.045, yaw, 5)       # the breast
+    hx, hz = (0.115, z0 + 0.1 - 0.07 * pitch * 10) if peck else (0.095, z0 + 0.1 + head_up)
+    _ell(d, mat, fr.p(hx, 0.0, hz), 0.027, 0.025, 0.027, yaw, 5)
+    _cone(d, "CT_PlasterYellow", fr.p(hx + 0.015, 0.0, hz - 0.002), fr.p(hx + 0.052, 0.0, hz - 0.012), 0.009, 4, cap=False)
+    _tube(d, mat, fr.p(0.06, 0.0, z0 + 0.05), fr.p(hx - 0.01, 0.0, hz - 0.01), 0.018, 4, caps=False)                          # the neck
+    lbox(d, "CT_Steel" if mat != "CT_Steel" else "CT_ConcreteDark", fr, -0.07, 0.03, 0.036, 0.046, z0 + 0.02, z0 + 0.075, faces="xXyYZ")   # wing
+    lbox(d, "CT_Steel" if mat != "CT_Steel" else "CT_ConcreteDark", fr, -0.07, 0.03, -0.046, -0.036, z0 + 0.02, z0 + 0.075, faces="xXyYZ")
+    f2 = fr.sub(-0.1, 0.0)
+    fu.rod(d, mat, f2.p(0.0, 0.0, z0 + 0.04), f2.p(-0.085, 0.0, z0 + 0.02), 0.035, caps=True)                               # the tail
+    for s in (-0.02, 0.02):
+        _tube(d, "CT_PlasterPink", fr.p(0.0, s, z0 - 0.01), fr.p(0.01, s, 0.0), 0.006, 3, caps=False)
+
+
+def _cat2(B, x, y, z, yaw, mat="CT_Wood", patch="CT_TileWhite"):
+    """The market cat, sitting loaf-style: a long body with a haunch, white chest and paws, a round head with ears, whiskers' pad,
+    a tail curled round the front, tabby stripes (~220 tris)."""
+    fr = Fr(x, y, yaw, z)
+    d = B.detail
+    _ell(d, mat, fr.p(-0.04, 0.0, 0.1), 0.19, 0.115, 0.11, yaw, 8)                      # the body
+    _ell(d, mat, fr.p(-0.1, 0.0, 0.11), 0.11, 0.14, 0.1, yaw, 6)                        # the haunch bulge
+    _ell(d, patch, fr.p(0.1, 0.0, 0.1), 0.06, 0.07, 0.085, yaw, 6)                       # the white chest
+    _ell(d, mat, fr.p(0.17, 0.0, 0.2), 0.07, 0.07, 0.065, yaw, 6)                       # the head
+    for s in (-1, 1):
+        _cone(d, mat, fr.p(0.155, s * 0.045, 0.235), fr.p(0.15, s * 0.06, 0.3), 0.03, 3, cap=False)   # ears
+        lbox(d, patch, fr, 0.18, 0.26, s * 0.045 - 0.014, s * 0.045 + 0.014, 0.0, 0.035, faces="xXyYZ")  # white front paws
+    lbox(d, patch, fr, 0.22, 0.24, -0.018, 0.018, 0.17, 0.2, faces="xXyYZ")              # muzzle
+    for k in range(3):                                                                  # tabby stripes over the back
+        lbox(d, "CT_ConcreteDark", fr.sub(-0.14 + 0.07 * k, 0.0), -0.012, 0.012, -0.1, 0.1, 0.165 + 0.01 * (k % 2), 0.185 + 0.01 * (k % 2), faces="xXyYZ")
+    a, b, c_ = fr.p(-0.2, 0.05, 0.05), fr.p(-0.2, 0.16, 0.03), fr.p(-0.02, 0.17, 0.03)
+    _tube(d, mat, a, b, 0.028, 5, caps=False)
+    _tube(d, mat, b, c_, 0.026, 5, caps=False)
+    _ell(d, patch, fr.p(0.0, 0.17, 0.04), 0.03, 0.025, 0.025, yaw, 4)                   # the white tail tip
+
+
+def _figure(B, fr, mat_coat="CT_PlasterBlue", mat_cap="CT_Wood", seated=True):
+    """A man at work, seated on a stool, leaning toward what he does (the knife grinder): legs, boots, torso, apron, arms, head, cap.
+    His front is the frame's +w side (toward -y at yaw 0). ~230 tris."""
+    d = B.detail
+    skin = "CT_PlasterPink"
+    zs = 0.47
+    for s in (-1, 1):
+        _tube(d, "CT_ConcreteDark", fr.p(s * 0.1, -0.02, zs + 0.06), fr.p(s * 0.11, 0.36, zs + 0.06), 0.068, 5, caps=True)     # thighs
+        _tube(d, "CT_ConcreteDark", fr.p(s * 0.11, 0.36, zs + 0.06), fr.p(s * 0.11, 0.4, 0.07), 0.055, 5, caps=False)          # shins
+        lbox(d, "CT_Wood", fr.sub(s * 0.11, 0.44), -0.05, 0.05, -0.1, 0.1, 0.0, 0.07, faces="xXyYZ")                           # boots
+    _tube(d, mat_coat, fr.p(0.0, -0.01, zs + 0.1), fr.p(0.0, 0.1, zs + 0.52), 0.15, 8, caps=True)                                # torso, leaning
+    lbox(d, "CT_Paper", fr, -0.12, 0.12, 0.14, 0.165, zs - 0.08, zs + 0.36, faces="xXyYZz")                                      # apron
+    for s in (-1, 1):
+        sh = fr.p(s * 0.17, 0.09, zs + 0.5)
+        _tube(d, mat_coat, sh, fr.p(s * 0.1, 0.4, zs + 0.38), 0.05, 5, caps=True)                                              # arms to the stone
+        blob(d, skin, *fr.p(s * 0.09, 0.44)[:2], zs + 0.37, 0.04, 5)
+    _tube(d, skin, fr.p(0.0, 0.12, zs + 0.5), fr.p(0.0, 0.15, zs + 0.64), 0.05, 5, caps=False)                                  # neck
+    _ell(d, skin, fr.p(0.0, 0.17, zs + 0.7), 0.085, 0.085, 0.1, fr.yaw, 6)                                                       # the head
+    cyl(d, mat_cap, *fr.p(0.0, 0.17)[:2], zs + 0.76, zs + 0.8, 0.095, 8, top=True)                                                # the cap
+    lbox(d, mat_cap, fr, -0.09, 0.09, 0.25, 0.3, zs + 0.74, zs + 0.765, faces="xXyYZ")                                          # peak
+
+
+def _tufts(B, fr, u, w, z, mat, n=3, r=0.07):
+    for k in range(n):
+        x, y, _ = fr.p(u + (k - (n - 1) / 2) * r * 1.2, w + 0.01 * (k % 2))
+        _cone(B.detail, mat, (x, y, z), (x + 0.01 * (k - 1), y, z + 0.16 + 0.03 * (k % 2)), r, 5, cap=False)
+
+
+def _hanging_herbs(B, fr, u0, u1, w, z, rnd, n=6):
+    """Drying bunches hung head-down from a pole across the herb stand (cones of leaves, tied with a string)."""
+    d = B.detail
+    lbox(d, "CT_Wood", fr, u0 - 0.03, u1 + 0.03, w - 0.02, w + 0.02, z, z + 0.04)
+    for u in (u0, u1):
+        lbox(d, "CT_Wood", fr, u - 0.03, u + 0.03, w - 0.03, w + 0.03, 0.0, z + 0.04, faces="xXyY")
+    for k in range(n):
+        u = u0 + 0.2 + k * (u1 - u0 - 0.4) / (n - 1)
+        x, y, _ = fr.p(u, w)
+        lbox(d, "CT_Paper", fr, u - 0.004, u + 0.004, w - 0.004, w + 0.004, z - 0.1, z, faces="xXyY")
+        _cone(d, ("CT_Leaf", "CT_Grass", "CT_PlasterGreen", "CT_PlasterYellow")[k % 4], (x, y, z - 0.42 - 0.05 * (k % 3)), (x, y, z - 0.1), 0.07, 5, cap=False)
+        _tube(d, "CT_Paper", (x, y, z - 0.14), (x, y, z - 0.16), 0.03, 5, caps=False)
+
+
+CHAT_KINDS = ("fruit", "veg", "dairy", "bread", "birds", "sweets", "bait")
+
+
+def stall_things(B, fr, n, kind):
+    """Round 2 things of a stall: a talk with the seller (every shop stall), haggling where an abacus stands, the seed catalogue."""
+    yaw = fr.yaw % 360
+    back = (fr.yaw + 180) % 360
+    if kind in CHAT_KINDS:
+        B.thing("chat_%d" % n, "counter", fr.p(0.8, 0.0, ZT), yaw, service="talk", role="seller", trade=kind)
+    if n in (1, 3, 6):
+        B.thing("haggle_%d" % n, "play", fr.p(-0.45, 0.39, ZT + (0.12 if kind == "fish" else 0.0) + 0.1), yaw, what="haggle", trade=kind)
+        x, y, _ = fr.p(-0.45, 1.1)
+        B.spot("haggle_stand_%d" % n, "stand", (x, y, 0), back)
+    if n == 13:
+        B.thing("seed_catalogue", "shelf", fr.p(-1.45, 0.9, 1.5), yaw, topic="catalogue")
+        x, y, _ = fr.p(-1.45, 1.6)
+        B.spot("seed_stand", "stand", (x, y, 0), back)
+
+
+def stall_depth(B, fr, n, kind, rg):
+    """Round 2 of a stall: weights by the scales, bunches, cones, an abacus where one haggles, the seed catalogue."""
+    ZT_ = ZT
+    if kind in ("fish", "veg", "fruit", "dairy", "butcher"):
+        _weights(B, fr, 1.0, 0.21, ZT_ if kind != "fish" else ZT_ + 0.12)
+    else:
+        _weights(B, fr, 0.98, 0.3, ZT_)
+    if kind == "veg":
+        for k, (u, mt, lf) in enumerate(((-0.6, "CT_PlasterRed", "CT_PlasterGreen"), (0.3, "CT_PlasterYellow", "CT_Leaf"))):
+            _bunch(B, fr, u, 0.33, ZT_ + 0.0, mt, lf)
+    if kind in ("birds",):
+        _paper_cones(B, fr, 1.12, -0.12, ZT_, ("CT_PlasterYellow", "CT_WoodLight", "CT_PlasterGreen"))
+    if kind == "sweets":
+        _paper_cones(B, fr, 1.12, -0.12, ZT_, ("CT_PlasterRed", "CT_PlasterPink", "CT_PlasterYellow"))
+    if n in (1, 3, 6):
+        _abacus(B, fr, -0.45, 0.39, ZT_ + (0.12 if kind == "fish" else 0.0))
+    if n == 13:
+        _booklet(B, fr, -1.45, 0.9, 1.45)
+    if n == 14:      # the jam stall: a bunch of herbs and a paper cone of sugar on the counter
+        _paper_cones(B, fr, 1.12, -0.12, ZT_, ("CT_TileWhite",), n=2)
 
 
 def _at_umbrella(B, x, y, ums):
@@ -775,6 +1039,23 @@ def _corners(B, ums):
     _unlabeled_jar(B, -10.9, 6.5)
     B.thing("unlabeled_jar", "board", (-10.9, 6.5, 0.7), 0.0, topic="jam")
     _hang_lamp(B, -8.8, 6.2, ums)
+    _clipboard(B, -5.75, 5.85, 0.77, 20.0)
+    B.thing("jury_protocol", "board", (-5.75, 5.85, 0.82), 0.0, topic="jam")
+    B.spot("jury_stand", "stand", (-5.3, 4.9, 0), 0)
+    # the market clock on a post by the entrance, a rules plaque, the tasting card at the office, the lamp switch
+    lbox(d, "CT_Steel", Fr(3.0, 2.5), -0.04, 0.04, -0.04, 0.04, 0.0, 2.45, faces="xXyYZ")
+    kit.wall_clock(B, 3.0, 2.46, 0.0, 0.0, zc=2.2, r=0.2, face="clock_1")
+    B.spot("clock_stand", "stand", (3.0, 1.6, 0), 180)
+    kit.notice_stand(B, -15.6, 3.6, 0.0, 0.0, w=1.0, h=0.7, front="notice_1", back="notice_2", seed=7)
+    B.thing("rules_plaque", "board", (-15.6, 3.55, 1.4), 0.0, topic="rules")
+    B.spot("rules_stand", "stand", (-15.6, 2.8, 0), 180)
+    kit.poster(B, -9.8, 2.69, 0.0, 0.0, name="board_3", w=0.42, h=0.55, zc=1.55)
+    B.thing("tastes_board", "board", (-9.8, 2.62, 1.55), 0.0, topic="catalogue")
+    B.spot("tastes_stand", "stand", (-9.8, 1.7, 0), 180)
+    lbox(d, "CT_TileWhite", Fr(-9.47, 3.1), -0.012, 0.012, -0.05, 0.05, 1.2, 1.32, faces="xXyYZz")
+    lbox(d, "CT_SteelRed", Fr(-9.47, 3.1), -0.02, 0.02, -0.012, 0.012, 1.245, 1.275, faces="xXyYZ")
+    B.thing("office_switch", "machine", (-9.4, 3.1, 1.26), 90.0, what="switch", switch="hall")
+    B.spot("switch_stand", "stand", (-8.8, 3.3, 0), 270)
     # the knife grinder
     _grinder(B, -10.4, 12.6)
     B.thing("knife_grinder", "craft", (-10.4, 12.6, 1.0), 0.0, what="grinder")
@@ -788,18 +1069,20 @@ def _corners(B, ums):
     _hang_lamp(B, -19.4, 21.6, ums)
     # the cat on its crate and its bowl; the aisle's pigeons by the bench
     fu.crate(B, 0.9, 16.4, 0.0, 0.55, 0.4, 0.4, "CT_WoodLight", fill="CT_Paper", yaw=10.0)
-    _cat(B, 0.9, 16.4, 0.4, 200.0)
+    _cat2(B, 0.9, 16.4, 0.4, 200.0)
     cyl(d, "CT_PlasterRed", 0.15, 16.7, 0.0, 0.06, 0.1, 8, top=False, bottom=True)
     cyl(d, "CT_PlasterYellow", 0.15, 16.7, 0.04, 0.045, 0.085, 8, top=True)
     cyl(d, "CT_TileWhite", -0.1, 16.5, 0.0, 0.04, 0.085, 8, top=True)
     B.thing("cat_bowl", "board", (0.5, 16.55, 0.3), 0.0, topic="cat")
     B.spot("cat_stand", "stand", (0.3, 15.7, 0), 0)
     _hang_lamp(B, 0.5, 16.9, ums)
+    _hang_lamp(B, 0.35, 25.2, ums)          # over the pigeons' bench
+    _hang_lamp(B, 10.4, 6.5, ums)           # over the tea tables
     pr = random.Random(5)
     for k in range(5):
         a = 2 * math.pi * k / 5
-        _pigeon(B, 0.35 + 0.42 * math.cos(a) * (0.6 + 0.4 * pr.random()), 26.7 + 0.42 * math.sin(a) * (0.6 + 0.4 * pr.random()),
-                math.degrees(a) + 180 + pr.uniform(-40, 40), "CT_ConcreteDark" if k % 3 else "CT_Steel")
+        _bird(B, 0.35 + 0.46 * math.cos(a) * (0.6 + 0.4 * pr.random()), 26.7 + 0.46 * math.sin(a) * (0.6 + 0.4 * pr.random()),
+              math.degrees(a) + 180 + pr.uniform(-40, 40), "CT_ConcreteDark" if k % 3 else "CT_Steel", head_up=0.02 * (k % 2), peck=k % 2 == 1)
     for k in range(9):
         blob(d, "CT_WoodLight" if k % 2 else "CT_PlasterYellow", 0.35 + pr.uniform(-0.25, 0.25), 26.7 + pr.uniform(-0.25, 0.25), 0.006, 0.012, 4)
     B.thing("pigeon_crumbs", "board", (0.35, 26.7, 0.2), 0.0, topic="pigeons")
@@ -855,6 +1138,8 @@ def build(B):
                 lbox(B.detail, "CT_Steel", Fr(x, y), -0.008, 0.008, -0.008, 0.008, zl + 0.08, zu + 0.02, faces="xXyY")
                 awning(B, x, y, fr.yaw % 360, kind, n)
                 stall_extra(B, fr, n, kind, rg)
+                stall_depth(B, fr, n, kind, rg)
+                stall_things(B, fr, n, kind)
                 _slate_thing(B, fr, n, kind)
                 svc, shop = SHOPS[n]
                 if ax:
@@ -929,6 +1214,11 @@ def _extras(B, hx):
             r = kit.stool(B, tx + dx, ty + dy, 0.0, yw, h=0.45)
             if j == 0:
                 B.thing("tea_seat_%d" % (k + 1), "seat", (tx + dx, ty + dy, 0.45), yw, height=0.45)
+    kit.sandwich_board(B, 8.3, 2.0, 0.0, 0.0, w=0.5, name="menu_1")
+    B.thing("tea_notice", "board", (8.3, 1.95, 0.75), 0.0, topic="menu")
+    B.thing("tea_chat", "counter", (9.2, 3.25, 1.05), 0.0, service="talk", role="seller", trade="tea")
+    B.spot("tea_chat_stand", "stand", (8.9, 2.1, 0), 180)
+    B.spot("tea_notice_stand", "stand", (8.3, 1.2, 0), 180)
     kit.newspaper(B, 11.7, 3.1, 1.05, 12.0, seed=1)
     B.thing("tea_paper", "take", (11.7, 3.1, 1.05), 0.0, item="daily_paper")
     # a second scales + litter bins at the columns
