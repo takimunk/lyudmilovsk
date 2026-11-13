@@ -97,6 +97,8 @@ private:
 		FName Quest;
 		TArray<FName> Stages;
 		float WithinCm = 600.f;
+		/** "at_once": said even if the hero begins the stage beside them (else only after he has been away and come near). */
+		bool bAtOnce = false;
 		TArray<FString> Lines;
 	};
 
@@ -123,6 +125,8 @@ private:
 	TArray<FPickup> Pickups;
 	TArray<FListener> Listeners;
 	TArray<FRemark> Remarks;
+	/** Remarks whose stage holds and whose reach the hero has been out of since: ready to be said when he comes near. */
+	TSet<FName> ArmedRemarks;
 	TArray<FSpeech> Speeches;
 	/** Birds on the hero's feeders at the last look (bird life ids): a visit is told once, when a bird comes down. */
 	TSet<int32> OnTrays;

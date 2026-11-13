@@ -166,6 +166,7 @@ void ULyudQuestDirector::Load()
 			double Within = 6.0;
 			O->TryGetNumberField(TEXT("within_m"), Within);
 			R.WithinCm = (float)Within * 100.f;
+			O->TryGetBoolField(TEXT("at_once"), R.bAtOnce);
 			for (const FName Line : QuestDirectorLocal::Names(O, TEXT("lines")))
 			{
 				R.Lines.Add(Line.ToString());
@@ -478,7 +479,8 @@ void ULyudQuestDirector::TickRemarks(const APawn* Pawn)
 		TActorIterator<ANpcTalkDirector> It(GetWorld());
 		TalkDirector = It ? *It : nullptr;
 	}
-	if (TalkDirector.IsValid() && TalkDirector->IsEngaged())
+	// never during a talk, and one voice at a time
+	if ((TalkDirector.IsValid() && TalkDirector->IsEngaged()) || Speeches.Num() > 0)
 	{
 		return;
 	}
@@ -486,8 +488,13 @@ void ULyudQuestDirector::TickRemarks(const APawn* Pawn)
 	for (const FRemark& R : Remarks)
 	{
 		const FName Flag(*(TEXT("remark.") + R.Id.ToString()));
-		if (Quests->HasFlag(Flag) || !R.Stages.Contains(Quests->StageId(R.Quest)))
+		if (Quests->HasFlag(Flag))
 		{
+			continue;
+		}
+		if (!R.Stages.Contains(Quests->StageId(R.Quest)))
+		{
+			ArmedRemarks.Remove(R.Id);
 			continue;
 		}
 		const int32 Id = People->FindPerson(R.Person);
@@ -505,8 +512,26 @@ void ULyudQuestDirector::TickRemarks(const APawn* Pawn)
 				LyudText::WarmVoice(this, QuestDirectorLocal::FullKey(K));
 			}
 		}
+		// news takes a moment to go round: a remark is ready once the hero has been out of its reach while its stage holds
+		// ("at_once": he begins the stage beside them and they speak then)
+		if (D > R.WithinCm * 1.5f)
+		{
+			ArmedRemarks.Add(R.Id);
+		}
+		if (D >= R.WithinCm || !(R.bAtOnce || ArmedRemarks.Contains(R.Id)))
+		{
+			continue;
+		}
+		// not through a wall
+		// (people at home are drawn from 40 m, walls or not; their head, standing or seated, over a counter or a screen)
+		const FVector Eyes = Hero->GetPawnViewLocation();
+		const FVector Feet = Info.Actor->GetActorLocation();
+		if (TalkDirector.IsValid() && !TalkDirector->InSight(Eyes, Feet + FVector(0.0, 0.0, 150.0), Info.Actor) && !TalkDirector->InSight(Eyes, Feet + FVector(0.0, 0.0, 110.0), Info.Actor))
+		{
+			continue;
+		}
 		// one at a time; said once, kept with the save
-		if (D < R.WithinCm && Say(R.Person, R.Lines, &HeroAt))
+		if (Say(R.Person, R.Lines, &HeroAt))
 		{
 			Quests->SetFlag(Flag);
 			UE_LOG(LogTemp, Log, TEXT("QuestDirector: remark %s by %s (%.1f m)"), *R.Id.ToString(), *R.Person, D * 0.01f);
@@ -529,7 +554,8 @@ void ULyudQuestDirector::HandleBirdCall(FName Species, const FVector& At, bool b
 	const FReaction* BestPick = nullptr;
 	int32 BestId = -1;
 	float BestD = 0.f;
-	bool bBestWaited = false;
+	int32 BestRank = -1;
+	TArray<FString> Calls;
 	for (const FListener& L : Listeners)
 	{
 		const int32 Id = People->FindPerson(L.Person);
@@ -554,20 +580,41 @@ void ULyudQuestDirector::HandleBirdCall(FName Species, const FVector& At, bool b
 			}
 		}
 		UE_LOG(LogTemp, Log, TEXT("QuestDirector: a %s calls %.1f m from %s (%s)"), *Species.ToString(), D * 0.01f, *L.Person, bInAir ? TEXT("on the wing") : TEXT("sitting"));
+		const FString Call = Species.ToString() + TEXT(".") + Info.Body.ToString();
 		if (!bInAir)
 		{
-			ULyudQuests::Notify(this, TEXT("bird_call"), Species.ToString() + TEXT(".") + Info.Body.ToString());
+			Calls.Add(Call);
 		}
-		// one person answers a call: whoever a quest in progress waits to hear from, else the nearest
-		const bool bWaited = Pick && !Pick->Quest.IsNone() && Pick->Stage != FName(TEXT("done"));
-		if (Pick && (!Best || (bWaited && !bBestWaited) || (bWaited == bBestWaited && D < BestD)))
+		// one person answers a call: the one a quest waits to hear this very call beside (3), else a reaction for a quest's
+		// stage (2), else one for the species (1), else anybody's (0); among equals the nearest
+		int32 Rank = -1;
+		if (Pick)
+		{
+			Rank = !Pick->Quest.IsNone() ? 2 : !Pick->Species.IsNone() ? 1 : 0;
+			if (!bInAir && !Pick->Quest.IsNone())
+			{
+				for (const TPair<const FLyudQuestObjective*, int32>& Obj : Quests->CurrentObjectives(Pick->Quest))
+				{
+					if (Obj.Key->Event == TEXT("bird_call") && Obj.Value < Obj.Key->Need && Obj.Key->Target == Call)
+					{
+						Rank = 3;
+					}
+				}
+			}
+		}
+		if (Pick && (Rank > BestRank || (Rank == BestRank && D < BestD)))
 		{
 			Best = &L;
 			BestPick = Pick;
 			BestId = Id;
 			BestD = D;
-			bBestWaited = bWaited;
+			BestRank = Rank;
 		}
+	}
+	// the quests hear of the call after every listener's reaction is chosen (a call may finish the stage a reaction is for)
+	for (const FString& Call : Calls)
+	{
+		ULyudQuests::Notify(this, TEXT("bird_call"), Call);
 	}
 	if (Best)
 	{
@@ -617,6 +664,23 @@ void ULyudQuestDirector::TickSpeech()
 {
 	if (Speeches.Num() == 0)
 	{
+		return;
+	}
+	// a talk begins: whatever was being said in passing stops
+	if (TalkDirector.IsValid() && TalkDirector->IsTalking())
+	{
+		for (FSpeech& Cut : Speeches)
+		{
+			if (Cut.Voice.IsValid())
+			{
+				Cut.Voice->Stop();
+			}
+			if (AActor* Speaker = PersonActor(Cut.Person))
+			{
+				ULyudBodyAnimInstance::StopLine(Speaker->FindComponentByClass<USkeletalMeshComponent>());
+			}
+		}
+		Speeches.Reset();
 		return;
 	}
 	const double Now = GetWorld()->GetTimeSeconds();

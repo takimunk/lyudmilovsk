@@ -131,6 +131,10 @@ public:
 
 	/** Is E his now: somebody in front of him to talk to, or a talk going on (others who use E step aside). */
 	bool IsEngaged() const { return TargetIndex != INDEX_NONE || TalkingIndex != INDEX_NONE; }
+	/** A conversation is being held now. */
+	bool IsTalking() const { return TalkingIndex != INDEX_NONE; }
+	/** Nothing solid between From and To (looks through glass; Npc and the player's pawn do not count). */
+	bool InSight(const FVector& From, const FVector& To, const AActor* Npc) const;
 
 	/** Npc.Where: logs where everyone is (debugging). */
 	void LogPeople() const;
@@ -161,7 +165,6 @@ private:
 	void StopVoice();
 	FVector HeadOf(const FNpc& Npc) const;
 	bool CanTalkTo(const FNpc& Npc, const FVector& CamLoc, const FVector& CamDir) const;
-	bool InSight(const FVector& From, const FVector& To, const AActor* Npc) const;
 	bool PlayerBusy() const;
 	/** The hero's seats (PlayerBusy asks each whether the player stands at it), gathered again every 2 s, not every frame. */
 	mutable TArray<TWeakObjectPtr<class AHeroSeat>> Seats;

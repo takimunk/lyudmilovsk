@@ -1,5 +1,5 @@
 {
- "comment": "What the quests stage in the world (ULyudQuestDirector, docs/quests.md). pickups: an item lying out while its quest is on one of the stages; ux, uy, floor_uz are Unreal metres as in PeopleData/people_places.json (the floor under it; it drops from drop_m above onto whatever stands there), yaw the way its top points. listeners: people who notice a bird calling beside them; the first reaction that fits is said (species, quest + stage, air = called on the wing near by); the quests get bird_call <Species>.<Body> when the bird sat within within_m. remarks: a person says the lines of their own accord, once, when the hero walks within within_m while the quest is on one of the stages. One person answers a call: whoever a quest in progress waits to hear from, else the nearest.",
+ "comment": "What the quests stage in the world (ULyudQuestDirector, docs/quests.md). pickups: an item lying out while its quest is on one of the stages; ux, uy, floor_uz are Unreal metres as in PeopleData/people_places.json (the floor under it; it drops from drop_m above onto whatever stands there), yaw the way its top points. listeners: people who notice a bird calling beside them; the first reaction that fits is said (species, quest + stage, air = called on the wing near by); the quests get bird_call <Species>.<Body> when the bird sat within within_m. remarks: a person says the lines of their own accord, once, when the hero walks within within_m while the quest is on one of the stages. One person answers a call: whoever a quest in progress waits to hear from, else the nearest. A remark is ready once the hero has been out of its reach while its stage holds (at_once: said even if he begins the stage beside them); never through a wall, never over another remark.",
  "pickups": [
   {
    "id": "library_guide",
@@ -1122,7 +1122,8 @@
    "lines": [
     "clerk.screensaver_still.1"
    ],
-   "note": "the hero's seat (hero_seat, y -16.85 in people_places.json club) is next to Yamada's station 9 (y -15.4, work_clerk 10-19 Mon-Fri; a new game is Tuesday 16:00): he gets up and passes him first on his way to the booth. Echoes the clerk's own 'Твоё место рядом с моим'."
+   "note": "the hero's seat (hero_seat, y -16.85 in people_places.json club) is next to Yamada's station 9 (y -15.4, work_clerk 10-19 Mon-Fri; a new game is Tuesday 16:00): he gets up and passes him first on his way to the booth. Echoes the clerk's own 'Твоё место рядом с моим'.",
+   "at_once": true
   },
   {
    "id": "sonya_ask_owner_sun",

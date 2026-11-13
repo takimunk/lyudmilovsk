@@ -92,6 +92,10 @@ the voice of a line is found by its key.
   `flag:<flag>` (`ULyudQuests::Flags`, a remark said: `remark.<id>`, a pickup taken: `pickup.<id>`). A variant is counted
   apart from the plain talk (its own first time, its own `.again`). It needs a plain line of the same stage to stand in for,
   and it must carry whatever the plain talk tells the player to do.
+- A quest's live stage always comes before asides and after-talks, wherever they are written in the section. A variant
+  that holds for ever (`done:<quest>`) needs its own `.again` lines if the plain talk has some (the checker says so). Sun
+  conditions: `low` is sunrise and the hour and a half before sunset too; on 20 October `night` begins about 17:50, so a
+  `night` variant is only heard from people who are still out then.
 - `quest.<quest>.done` (what they say after the quest, once) steps aside once it is said: several quests' `done` lines can
   stand in one section, and a `done.if.<cond>` variant is one more after-talk for when its conditions hold. A `done` line
   with `.again` lines is said for ever, in front of the everyday talks: do not write one.
@@ -109,13 +113,17 @@ the voice of a line is found by its key.
   hero looks at it and presses E. Taken once (kept in the save), and not put out while he already has one.
 - `listeners`: people who notice a bird calling beside them. The first reaction that fits (species, a quest's stage,
   `air` = called on the wing) is said over their head with its voice, their eyes on the bird. Sitting within `within_m`
-  also sends `bird_call`. Sleeping or unseen people hear nothing. One person answers a call: whoever a quest in progress
-  waits to hear from, else the nearest (every listener in reach still gets its `bird_call`). Fourteen people listen: the
+  also sends `bird_call`. Sleeping or unseen people hear nothing. One person answers a call: the one a quest waits to hear
+  this call beside (its `bird_call` objective), else a reaction written for a quest's stage, else one for the species,
+  else anybody's; among equals the nearest (every listener in reach still gets its `bird_call`). Fourteen people listen: the
   quest givers who sit outdoors (the square's benches, the corn cart, the net bench, the cheese tent).
 - `remarks`: `{"id", "person", "quest", "stages", "within_m", "lines"}`: that person says the lines of their own accord,
   once, when the hero walks within `within_m` (6 by default) while the quest is on one of the stages (`done` too): the
   grocer about the rowan he came for, a neighbour who has heard of his errand. Never during a talk; unseen or sleeping
-  people say nothing; kept in the save as the flag `remark.<id>`.
+  people say nothing; kept in the save as the flag `remark.<id>`. News takes a moment to go round: a remark is ready once
+  the hero has been out of its reach (1.5 × `within_m`) while its stage holds, so nobody comments on a deed the second it is
+  done beside them (`"at_once": true` for the one who speaks as the stage begins). Not through a wall, one voice at a
+  time, and a talk (E) cuts a remark short.
 - Anything else a scene needs to say: `ULyudQuestDirector::Say(person, lines)`.
 
 A species that lives in one corner of the map only: `"range": {"x", "y", "r", "population", "flock", "homeRange"}` in

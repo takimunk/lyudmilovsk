@@ -6,9 +6,9 @@ Content/UI/quest_scenes.json (docs/quests.md). Offline, no Unreal.
 
 What it looks at: the quest and its stages exist (`done`, `<stage>_empty` for a stage with a `bring`); the conditions of a
 variant (`.if.<cond>+<cond>`) are known words, items and quests; a variant has a plain line of the same quest to stand in
-for; every line key has words in ru, en and ja; a `done` line of a section is not above another quest's lines of the same
-section when it has no `.again` (it is said once, so it is harmless) ... and the people, quests, stages and lines of
-`listeners`, `pickups` and `remarks`.
+for; a variant that holds for ever (`done:`) has its own `.again` when the plain talk has some; a `done` line has no `.again`;
+every line key has words in ru, en and ja; and the people, species, quests, stages and lines of `listeners`, `pickups` and
+`remarks`.
 """
 import glob
 import json
@@ -74,6 +74,9 @@ def main():
     section = None
     plain = set()      # (section, quest, stage) with a plain line
     variants = []      # (where, section, quest, stages)
+    plain_again = set()
+    variant_keys = {}
+    variant_again = set()
     path = os.path.join(ROOT, "Dialogue", "npc_dialogue.txt")
     with open(path, encoding="utf-8") as f:
         for n, raw in enumerate(f, 1):
@@ -106,12 +109,23 @@ def main():
                 if len(tail) < 2:
                     problems.append("%s: .if needs a condition" % where)
                     continue
-                conds = tail[1].split("+")
-                tail = tail[2:]
+                # a condition may hold dots itself (flag:remark.<id>): everything up to a last ".again"
+                again = tail[-1:] == ["again"]
+                conds = ".".join(tail[1:-1] if again else tail[1:]).split("+")
+                tail = ["again"] if again else []
                 for cond in conds:
                     check_cond(where, cond)
             if tail and tail != ["again"]:
                 problems.append("%s: '%s' after the stages is not .again or .if.<cond>" % (where, ".".join(tail)))
+            if "done" in stage_list and tail == ["again"]:
+                problems.append("%s: a done line with .again is said for ever in front of the everyday talks" % where)
+            if conds and not tail:
+                variant_keys[(section + key[:5], quest, tuple(stage_list), tuple(conds))] = where
+            if conds and tail:
+                variant_again.add((section + key[:5], quest, tuple(stage_list), tuple(conds)))
+            if not conds and tail:
+                for stage in stage_list:
+                    plain_again.add((section + key[:5], quest, stage))
             if conds:
                 variants.append((where, section + key[:5], quest, stage_list))
             elif not tail:
@@ -121,6 +135,11 @@ def main():
             if not keys:
                 problems.append("%s: no lines" % where)
             check_keys(where, keys)
+    variant_info = [(w, k[0], k[1], list(k[2]), list(k[3]), k in variant_again) for k, w in variant_keys.items()]
+    for where, sec, quest, stage_list, conds, has_again in variant_info:
+        if conds and all(c.startswith("done:") for c in conds) and not has_again and "done" not in stage_list:
+            if any((sec, quest, st) in plain_again for st in stage_list):
+                problems.append("%s: a variant that holds for ever (%s) hides the plain talk's .again lines: give it its own .again" % (where, "+".join(conds)))
     for where, sec, quest, stage_list in variants:
         for stage in stage_list:
             if (sec, quest, stage) not in plain:
@@ -138,6 +157,14 @@ def main():
             if stage not in stages_of(quest, False):
                 problems.append("%s: quest %s has no stage '%s'" % (where, quest, stage))
 
+    species = set()
+    try:
+        with open(os.path.join(ROOT, "BirdsData", "species.json"), encoding="utf-8") as f:
+            sd = json.load(f)
+        for sp in (sd.get("species", sd) if isinstance(sd, dict) else sd):
+            species.add(sp.get("id") if isinstance(sp, dict) else sp)
+    except OSError:
+        pass
     for p in scenes.get("pickups", []):
         where = "quest_scenes.json pickup %s" % p.get("id")
         check_stage(where, p.get("quest"), p.get("stages", []))
@@ -148,6 +175,11 @@ def main():
         if people and listener.get("person") not in people:
             problems.append("%s: nobody of that key in people.json" % where)
         for r in listener.get("reactions", []):
+            if r.get("species") and species and r["species"] not in species:
+                problems.append("%s: no species '%s' in BirdsData/species.json" % (where, r["species"]))
+            for key in r.get("lines", []):
+                if key.replace("line.", "", 1).split(".")[0] != listener.get("person"):
+                    problems.append("%s: %s is not their own line" % (where, key))
             if r.get("quest"):
                 check_stage(where, r["quest"], [r.get("stage")])
             check_keys(where, r.get("lines", []))

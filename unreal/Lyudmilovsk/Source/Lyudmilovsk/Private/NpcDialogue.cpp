@@ -147,8 +147,19 @@ void UNpcDialogueSubsystem::Reload()
 			int32 Tail = 3;
 			if (Parts.Num() > 4 && Parts[3] == TEXT("if"))
 			{
-				Parts[4].ParseIntoArray(When, TEXT("+"));
-				Tail = 5;
+				// a condition may hold dots itself (flag:remark.<id>): everything up to a last ".again"
+				int32 CondEnd = Parts.Num();
+				if (Parts.Last() == TEXT("again"))
+				{
+					--CondEnd;
+				}
+				FString Conds = Parts[4];
+				for (int32 PI = 5; PI < CondEnd; ++PI)
+				{
+					Conds += TEXT(".") + Parts[PI];
+				}
+				Conds.ParseIntoArray(When, TEXT("+"));
+				Tail = CondEnd;
 			}
 			FNpcQuestTalk* Talk = Current->QuestTalks.FindByPredicate([&Quest, &Stages, &When, bAside](const FNpcQuestTalk& T) { return T.Quest == Quest && T.Stages == Stages && T.When == When && T.bAside == bAside; });
 			if (!Talk)
@@ -276,13 +287,21 @@ TArray<FNpcLine> UNpcDialogueSubsystem::StartTalk(FName Id, FName SunState)
 			}
 			return T.Again.Num() == 0 && T.Stages.Contains(DoneStage) && Said > 0;
 		};
-		for (const FNpcQuestTalk& T : Npc->QuestTalks)
+		// the talk of a quest's live stage first, wherever it is written; asides and after-talks second
+		for (int32 Pass = 0; Pass < 2 && !QuestTalk; ++Pass)
 		{
-			const FName Stage = Quests->TalkStage(T.Quest, Id.ToString());
-			if (!Stage.IsNone() && T.Stages.Contains(Stage) && T.Lines.Num() > 0 && !Spent(T) && QuestTalkHolds(this, *Quests, T.When, SunState))
+			for (const FNpcQuestTalk& T : Npc->QuestTalks)
 			{
-				QuestTalk = &T;
-				break;
+				if ((Pass == 0) != (!T.bAside && !T.Stages.Contains(DoneStage)))
+				{
+					continue;
+				}
+				const FName Stage = Quests->TalkStage(T.Quest, Id.ToString());
+				if (!Stage.IsNone() && T.Stages.Contains(Stage) && T.Lines.Num() > 0 && !Spent(T) && QuestTalkHolds(this, *Quests, T.When, SunState))
+				{
+					QuestTalk = &T;
+					break;
+				}
 			}
 		}
 		// a variant whose conditions hold is said rather than the plain talk of the same quest and stage, wherever it is written
