@@ -1318,6 +1318,7 @@ void ABirdLifeRenderer::Setup(const FWorld& World)
 		const int32 Sets = D.bOwnMeshes && R && R->bFemalePlumage ? 2 : 1;
 		D.Xf.SetNum(NumPoses * Sets);
 		D.Shown.Init(0, NumPoses * Sets);
+		D.Sent.SetNum(NumPoses * Sets);
 		// a plumage material asked for once per species, not once per pose (most do not exist: each miss is a package
 		// lookup)
 		TMap<FString, UMaterialInterface*> Plumages;
@@ -1396,7 +1397,7 @@ void ABirdLifeRenderer::Setup(const FWorld& World)
 	}
 }
 
-void ABirdLifeRenderer::Sync(UInstancedStaticMeshComponent* ISM, TArray<FTransform>& Arr, int32& Shown)
+void ABirdLifeRenderer::Sync(UInstancedStaticMeshComponent* ISM, TArray<FTransform>& Arr, int32& Shown, TArray<FTransform>& Sent)
 {
 	static const FTransform Hidden(FQuat::Identity, FVector::ZeroVector, FVector::ZeroVector);
 	const int32 Want = Arr.Num();
@@ -1410,6 +1411,23 @@ void ABirdLifeRenderer::Sync(UInstancedStaticMeshComponent* ISM, TArray<FTransfo
 	{
 		return;
 	}
+	// the same birds exactly where the last sync put them (a flock asleep, perched birds with the camera still or near):
+	// nothing to send, and a component that is not written to is not updated by the renderer
+	if (Want == Prev && Want == Sent.Num())
+	{
+		bool bSame = true;
+		for (int32 J = 0; J < Want && bSame; J++)
+		{
+			bSame = Arr[J].GetTranslation() == Sent[J].GetTranslation() && Arr[J].GetRotation() == Sent[J].GetRotation()
+				&& Arr[J].GetScale3D() == Sent[J].GetScale3D();
+		}
+		if (bSame)
+		{
+			return;
+		}
+	}
+	Sent.Reset();
+	Sent.Append(Arr);
 	if (Want > Have)
 	{
 		TArray<FTransform> Extra;
@@ -1653,7 +1671,7 @@ void ABirdLifeRenderer::Draw(const FWorld& World, const FVector& Camera, float P
 		{
 			if (UInstancedStaticMeshComponent* ISM = D.Poses[P].Get())
 			{
-				Sync(ISM, D.Xf[P], D.Shown[P]);
+				Sync(ISM, D.Xf[P], D.Shown[P], D.Sent[P]);
 			}
 		}
 	}

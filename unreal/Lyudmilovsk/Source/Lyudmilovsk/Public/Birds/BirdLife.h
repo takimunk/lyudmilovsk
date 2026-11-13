@@ -335,6 +335,8 @@ private:
 		TArray<TArray<FTransform>> Xf;
 		/** Per pose, the instances shown at the last sync (0: all already hidden, nothing to send). */
 		TArray<int32> Shown;
+		/** Per pose, the transforms sent at the last sync: a pose whose birds have not moved is not sent again. */
+		TArray<TArray<FTransform>> Sent;
 		/** Size relative to the mesh (placeholder meshes are a 21.5 cm starling). */
 		float Scale = 1.f;
 		/** Origin of the flight poses above the feet, cm. */
@@ -369,6 +371,6 @@ private:
 	TArray<float> NowPx;
 	TArray<int32> PopIds;
 
-	void Sync(UInstancedStaticMeshComponent* ISM, TArray<FTransform>& Arr, int32& Shown);
+	void Sync(UInstancedStaticMeshComponent* ISM, TArray<FTransform>& Arr, int32& Shown, TArray<FTransform>& Sent);
 	void DriveBody(AActor* Body, const LyudBirds::FWorld& World, int32 Id);
 };
