@@ -1257,7 +1257,10 @@ void ULyudFestivalSubsystem::TickHero(float DeltaTime)
 	if (!Hero || Active.Num() == 0)
 	{
 		Prompt(0);
-		HeroLanternsTonight = 0;
+		if (Active.Num() == 0)
+		{
+			HeroLanternsTonight = 0;       // (not while the player is a bird for a while: the night's three stay counted)
+		}
 		Watched.Reset();
 		return;
 	}
