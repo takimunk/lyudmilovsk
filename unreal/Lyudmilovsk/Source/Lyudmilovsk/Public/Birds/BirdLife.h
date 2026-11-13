@@ -246,6 +246,7 @@ private:
 	/** The instanced poses' meshes and plumages are asked from ULyudPrefetch before the start (PrefetchPoses). */
 	bool bPosesReady = false;
 	float PosePoll = 0.f;
+	/** The pose and plumage packages found on the disk, and those looked for and not there (asked once each). */
 	TSet<FString> PlumageThere;
 	TSet<FString> PlumageMissing;
 	bool PrefetchPoses();

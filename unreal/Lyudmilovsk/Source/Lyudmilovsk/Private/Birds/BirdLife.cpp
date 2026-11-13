@@ -295,6 +295,24 @@ bool UBirdLifeSubsystem::PrefetchPoses()
 {
 	bool bAll = true;
 	const int32 Month = UGameCalendar::NowIn(GetWorld()).GetMonth();
+	// asked of the disk once per package: a pose or a plumage that was never made is not asked for (no failed load)
+	auto Exists = [this](const FString& Package)
+	{
+		if (PlumageMissing.Contains(Package))
+		{
+			return false;
+		}
+		if (!PlumageThere.Contains(Package))
+		{
+			if (!FPackageName::DoesPackageExist(Package))
+			{
+				PlumageMissing.Add(Package);
+				return false;
+			}
+			PlumageThere.Add(Package);
+		}
+		return true;
+	};
 	for (const FSpecies& Sp : SpeciesTable())
 	{
 		const FName Id(Sp.Id.c_str());
@@ -306,7 +324,11 @@ bool UBirdLifeSubsystem::PrefetchPoses()
 		bool bMeshes = true;
 		for (const TCHAR* Pose : BirdPoseNames)
 		{
-			bMeshes &= ULyudPrefetch::Ready(this, FString::Printf(TEXT("/Game/Birds/%s/SM_%s_%s.SM_%s_%s"), *N, *N, Pose, *N, Pose));
+			const FString Package = FString::Printf(TEXT("/Game/Birds/%s/SM_%s_%s"), *N, *N, Pose);
+			if (Exists(Package))
+			{
+				bMeshes &= ULyudPrefetch::Ready(this, FString::Printf(TEXT("%s.SM_%s_%s"), *Package, *N, Pose));
+			}
 		}
 		bAll &= bMeshes;
 		const FBirdSpecies* R = UBirdSpeciesLibrary::Find(Id);
@@ -339,20 +361,10 @@ bool UBirdLifeSubsystem::PrefetchPoses()
 					}
 					const FString Name = Slot.MaterialInterface->GetName() + Sfx;
 					const FString Package = FString::Printf(TEXT("/Game/Birds/%s/%s"), *N, *Name);
-					if (PlumageMissing.Contains(Package))
+					if (Exists(Package))
 					{
-						continue;
+						bAll &= ULyudPrefetch::Ready(this, Package + TEXT(".") + Name);
 					}
-					if (!PlumageThere.Contains(Package))
-					{
-						if (!FPackageName::DoesPackageExist(Package))
-						{
-							PlumageMissing.Add(Package);
-							continue;
-						}
-						PlumageThere.Add(Package);
-					}
-					bAll &= ULyudPrefetch::Ready(this, Package + TEXT(".") + Name);
 				}
 			}
 		}
