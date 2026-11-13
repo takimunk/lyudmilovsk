@@ -245,7 +245,10 @@ void ULyudSaveSubsystem::NotifyWorldBeginPlay(UWorld& World)
 		ClockBase = Pending->GameTimeSeconds - World.GetTimeSeconds();
 		if (UGameCalendar* Calendar = World.GetSubsystem<UGameCalendar>())
 		{
-			Pending->ReadObject(TEXT("Calendar"), Calendar);
+			if (Pending->ReadObject(TEXT("Calendar"), Calendar))
+			{
+				Calendar->ClampLoaded();
+			}
 		}
 	}
 	if (Pending)

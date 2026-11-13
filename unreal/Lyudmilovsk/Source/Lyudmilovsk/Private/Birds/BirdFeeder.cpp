@@ -379,6 +379,13 @@ void UBirdFeederSubsystem::OnGameSaving_Implementation()
 
 void UBirdFeederSubsystem::OnGameLoaded_Implementation()
 {
+	// a corrupt or hand-edited slot must not put a feeder at a NaN place or feed NaN handfuls to the bird life
+	States.RemoveAll([](const FBirdFeederState& F) { return F.Location.ContainsNaN(); });
+	for (FBirdFeederState& F : States)
+	{
+		F.Yaw = FMath::IsFinite(F.Yaw) ? F.Yaw : 0.f;
+		F.Handfuls = FMath::IsFinite(F.Handfuls) ? FMath::Max(F.Handfuls, 0.f) : 0.f;
+	}
 	SpawnAll();
 }
 
