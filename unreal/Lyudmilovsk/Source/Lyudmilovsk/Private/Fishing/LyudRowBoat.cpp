@@ -592,7 +592,13 @@ void ALyudRowBoat::Tick(float DeltaTime)
 	{
 		if (PromptKey != 0) Prompt(Hero);
 		// left somewhere else: the boatman brings it back to the pier by the next day
-		if (PaidDay != BoatDay(World) && !NearMooring()) Home();
+		if (PaidDay != BoatDay(World) && !NearMooring())
+		{
+			Home();
+			// moved there now: this far branch never reaches the placing below, and whether the hero is near is asked of
+			// where the actor is (it stayed drawn where it was left, the pier without a boat)
+			SetActorLocationAndRotation(FVector(Pos, Sea->SurfaceZ(FVector(Pos, 0.0)) - BoatDraft), FRotator(0.f, Yaw, 0.f));
+		}
 		return;
 	}
 	if (bAboard)
