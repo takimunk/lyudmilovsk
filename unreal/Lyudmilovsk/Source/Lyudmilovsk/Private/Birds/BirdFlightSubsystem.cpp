@@ -899,15 +899,20 @@ void UBirdFlightSubsystem::OnBeforeSave(ULyudSaveGame* Save)
 {
 	ABirdPawn* B = Bird.Get();
 	bSavedAsBird = B != nullptr && B->GetMode() != EBirdMode::Leaving;
-	if (bSavedAsBird)
+	if (B)
 	{
-		// the save's player is the hero where he stands; the bird is its own record
+		// the save's player is the hero where he stands; the bird is its own record. Also during the camera's flight
+		// back to him: the pawn is still the bird then, and the save had taken the bird's place for the hero's (loaded,
+		// he stood in the air where the bird had been)
 		if (const APawn* H = Hero.Get())
 		{
 			Save->bHasPlayer = true;
 			Save->PlayerTransform = H->GetActorTransform();
 		}
 		Save->ControlRotation = HeroControl;
+	}
+	if (bSavedAsBird)
+	{
 		SavedSpecies = B->GetSpecies();
 		bSavedStanding = B->GetMode() == EBirdMode::Ground;
 		SavedLocation = B->FeetLocation();
