@@ -134,6 +134,9 @@ private:
 
 	FLyudHandThing Thing;
 	bool bHas = false;
+	/** The hero whose hand has the thing (Hold): Drop takes the hand's hold off him even when he is not the player's pawn
+	 *  any more (the player became a bird with the thing in the hand). */
+	TWeakObjectPtr<class AHeroCharacter> HandHero;
 	EPhase Phase = EPhase::Carry;
 	/** 0 carried .. 1 at the lips. */
 	float AtLips = 0.f;

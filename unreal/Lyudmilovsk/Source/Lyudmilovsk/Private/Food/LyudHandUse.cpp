@@ -97,6 +97,7 @@ bool ULyudHandUse::Hold(FLyudHandThing InThing)
 	}
 	Thing = MoveTemp(InThing);
 	bHas = true;
+	HandHero = Hero;
 	Phase = EPhase::Carry;
 	AtLips = 0.f;
 	PhaseTime = PressTime = SteadyTime = HoldTime = 0.f;
@@ -155,13 +156,16 @@ void ULyudHandUse::Drop(bool bUsedUp)
 	{
 		A->Destroy();
 	}
-	if (AHeroCharacter* Hero = Cast<AHeroCharacter>(UGameplayStatics::GetPlayerPawn(this, 0)))
+	// the hero that took it, not the player's pawn of this moment (a bird, when the player has just become one: the hand's
+	// hold would stay on the hero for good, the arm up, and nothing else could take the hand)
+	if (AHeroCharacter* Hero = HandHero.Get())
 	{
-		if (UHeroReachComponent* Reach = Hero->FindComponentByClass<UHeroReachComponent>())
+		if (UHeroReachComponent* Reach = Hero->FindReach())
 		{
 			Reach->ClearOverrideHold();
 		}
 	}
+	HandHero.Reset();
 	UE_LOG(LogTemp, Display, TEXT("HANDUSE %s %s left %.2f"), bUsedUp ? TEXT("usedup") : TEXT("putaway"), *Was.Item.ToString(), Was.Left);
 	if (bUsedUp)
 	{
