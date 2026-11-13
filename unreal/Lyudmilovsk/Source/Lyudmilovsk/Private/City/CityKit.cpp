@@ -552,7 +552,9 @@ namespace CityKit
 			M.Box(FVector(0.4f, 0, 1.02f), FVector(4.0f, 6.6f, 0.02f), Boards);
 			for (int32 I = 0; I < 6; I++)
 			{
-				M.Box(FVector(4.5f + 0.17f + I * 0.32f, 0, 0.5f - (I + 1) * 0.166f), FVector(0.17f, 3.f, 0.083f + (5 - I) * 0.166f * 0.5f), Granite());
+				// six even steps from the ground up to the boards (1.04 m), each a block standing on the ground
+				const float Top = 1.04f * (6 - I) / 7.f;
+				M.Box(FVector(4.5f + 0.17f + I * 0.32f, 0, Top * 0.5f), FVector(0.17f, 3.f, Top * 0.5f), Granite());
 			}
 			// the shell: a quarter of an ellipsoid, open to the front
 			const int32 NA = 24, NB = 10;
