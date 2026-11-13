@@ -217,9 +217,10 @@ static void Run(FWorld& W, FClock& C, float Hours, float Dt, FWatch& Watch, cons
 					Watch.TrainBy[P.Key]++;
 				}
 			}
-			// a meal: at home, in the club or at the diner's booths (snacks and the staff's bites at work aren't meals)
+			// a meal: at home, in the club, at the diner's booths or at the North's camp table (snacks and the staff's bites
+			// at work aren't meals)
 			const std::string& Act = P.Activity >= 0 ? W.Activities[P.Activity].Id : std::string();
-			if (E.Kind == EEvent::Arrive && (Act == "eat_home" || Act == "eat_club" || Act == "eat_diner"))
+			if (E.Kind == EEvent::Arrive && (Act == "eat_home" || Act == "eat_club" || Act == "eat_diner" || Act == "eat_camp"))
 			{
 				Watch.Meals[P.Key]++;
 			}
@@ -697,6 +698,135 @@ static void Snow(FWorld& W)
 
 
 /** Bicycles (docs/bikes.md): a bike in each of five entrances, owned by a household up that stair; two days. */
+/** The North (docs/north.md "People"): the ranger sleeps in his hut, keeps the gate by day, walks his round to the camp
+ *  and the hot spring, never gets stuck on the 2 km between the town and the North; the campers sleep in their tents and
+ *  sit by the fire with him some evenings; on Saturday morning he walks down to the Gastronom and is back for his round. */
+static void NorthLife(FWorld& W)
+{
+	const int R = W.FindPerson("ranger");
+	const int Hut = W.FindPlace("north_hut");
+	if (R < 0 || Hut < 0)
+	{
+		return;
+	}
+	std::printf("the North:\n");
+	const char* Campers[] = { "melnikova_anya", "ito_ren", "savin_gleb", "okada_kiyo" };
+	const FPlace& HutP = W.Places[Hut];
+	const V3 Camp = W.Places[W.FindPlace("north_campfire")].Portal;
+	const V3 Spring = W.Places[W.FindPlace("north_spring")].Portal;
+	CHECK(W.People[R].Home == Hut && W.People[R].BedSlot >= 0 && W.Slots[W.People[R].BedSlot].Place == Hut && HutP.Island == 3,
+		"the ranger lives in the hut (home %s, island %d)", W.People[R].Home >= 0 ? W.Places[W.People[R].Home].Id.c_str() : "-", HutP.Island);
+	bool bTents = true;
+	for (const char* K : Campers)
+	{
+		const FPerson& P = Who(W, K);
+		bTents &= P.Home >= 0 && W.Places[P.Home].Id.rfind("north_tent_", 0) == 0 && P.BedSlot >= 0 && W.Slots[P.BedSlot].Place == P.Home;
+	}
+	CHECK(bTents, "every camper sleeps in a tent of their own");
+	const int Trail = W.TrailOf(3);
+	CHECK(Trail >= 0 && W.Places[Trail].Island == 0 && W.Places[Trail].WayLen > 100.f, "the trail from the valley's walk grid to the North (%.0f m)",
+		Trail >= 0 ? W.Places[Trail].WayLen : 0.f);
+	bool bOwnHomes = true;
+	for (const FPerson& P : W.People)
+	{
+		const bool bNorth = P.Key == "ranger" || std::find_if(std::begin(Campers), std::end(Campers), [&](const char* K) { return P.Key == K; }) != std::end(Campers);
+		bOwnHomes &= bNorth || P.Home < 0 || !W.Places[P.Home].bPrivate;
+	}
+	CHECK(bOwnHomes, "nobody else is given the hut or a tent");
+
+	// a weekday: from Tuesday 21:00 (Resettle counts tiredness from this morning's waking: an earlier start would make a
+	// morning of the next day look sleepless) to Wednesday midnight
+	FClock C = FClock::At(1, 21.f);
+	C.Set(W);
+	W.Resettle();
+	FWatch Watch;
+	std::string At3, At10;
+	float Gate = 0.f, Round = 0.f, FireTogether = 0.f, CampersAtFire = 0.f;
+	float NearCamp = 1e9f, NearSpring = 1e9f;
+	int CampersInTentAt3 = 0;
+	bool bLeftNorth = false;
+	double Way0 = -1.0, LongestWay = 0.0;
+	Run(W, C, 27.f, 0.5f, Watch, [&]()
+	{
+		const FPerson& P = W.People[R];
+		const std::string Act = P.Activity >= 0 ? W.Activities[P.Activity].Id : std::string("-");
+		const std::string Now = Act + "/" + StateName(P.State) + "@" + (P.Place >= 0 ? W.Places[P.Place].Id : std::string("-"));
+		if (W.Hour >= 3.f && W.Hour < 3.01f && At3.empty())
+		{
+			At3 = Now + (P.Slot == P.BedSlot ? "" : " (not in his bed)");
+			for (const char* K : Campers)
+			{
+				const FPerson& Q = Who(W, K);
+				CampersInTentAt3 += Q.Slot == Q.BedSlot && Q.State == EState::Doing ? 1 : 0;
+			}
+		}
+		if (W.Hour >= 10.f && W.Hour < 10.01f && At10.empty()) At10 = Now;
+		Gate += Act == "watch_gate" && P.State == EState::Doing ? 0.5f / 60.f : 0.f;
+		if (Act == "patrol_north")
+		{
+			Round += 0.5f / 60.f;
+			NearCamp = std::min(NearCamp, (P.Pos - Camp).Len2D());
+			NearSpring = std::min(NearSpring, (P.Pos - Spring).Len2D());
+		}
+		bLeftNorth |= P.Island != 3 && P.State == EState::Doing;
+		const bool bOnWay = P.State == EState::Going || P.State == EState::Riding || P.State == EState::Waiting;
+		if (!bOnWay)
+		{
+			Way0 = -1.0;
+		}
+		else if (Way0 < 0.0)
+		{
+			Way0 = W.Time;
+		}
+		else
+		{
+			LongestWay = std::max(LongestWay, W.Time - Way0);
+		}
+		int AtFire = 0;
+		for (const char* K : Campers)
+		{
+			const FPerson& Q = Who(W, K);
+			AtFire += Q.Activity >= 0 && W.Activities[Q.Activity].Id == "campfire" && Q.State == EState::Doing ? 1 : 0;
+		}
+		CampersAtFire += AtFire * 0.5f / 60.f;
+		FireTogether += AtFire > 0 && Act == "campfire" && P.State == EState::Doing ? 0.5f / 60.f : 0.f;
+	});
+	CHECK(At3.rfind("sleep/doing@north_hut", 0) == 0 && At3.find("not in") == std::string::npos, "Wednesday 03:00: the ranger asleep in his bunk (%s)", At3.c_str());
+	CHECK(CampersInTentAt3 == 4, "Wednesday 03:00: the campers asleep in their tents (%d of 4)", CampersInTentAt3);
+	CHECK(At10.rfind("watch_gate/", 0) == 0 || At10.rfind("stove_tea", 0) == 0 || At10.rfind("eat_", 0) == 0,
+		"Wednesday 10:00: the ranger at the gate, or on a short break (%s)", At10.c_str());
+	CHECK(Gate > 180.f, "the ranger keeps the gate in the morning (%.0f min)", Gate);
+	CHECK(Round > 90.f && NearCamp < 40.f && NearSpring < 25.f, "his round reaches the camp and the hot spring (%.0f min, %.0f m and %.0f m from them)",
+		Round, NearCamp, NearSpring);
+	CHECK(!bLeftNorth, "on a weekday he stays in the North");
+	CHECK(LongestWay < 45.0 * 60.0, "the ranger never stuck on a way (the longest %.0f min)", LongestWay / 60.0);
+	CHECK(CampersAtFire > 120.f, "the campers sit by the fire in the evening (%.0f person-minutes)", CampersAtFire);
+	CHECK(FireTogether > 0.f, "the ranger by the fire with the campers (%.0f min)", FireTogether);
+	CHECK(Watch.NoWay == 0, "every route found on the weekday (%d failures)", Watch.NoWay);
+
+	// Saturday: down to the Gastronom in the morning, back up for his round
+	C = FClock::At(5, 6.5f);
+	C.Set(W);
+	W.Resettle();
+	bool bShop = false, bBack = false;
+	double ShopAt = -1.0;
+	FWatch W2;
+	Run(W, C, 7.f, 0.5f, W2, [&]()
+	{
+		const FPerson& P = W.People[R];
+		const std::string Act = P.Activity >= 0 ? W.Activities[P.Activity].Id : std::string();
+		if (Act == "supplies_town" && P.State == EState::Doing && !bShop)
+		{
+			bShop = true;
+			ShopAt = W.Hour;
+		}
+		bBack |= bShop && Act == "patrol_north" && P.State == EState::Doing && P.Island == 3;
+	});
+	CHECK(bShop, "Saturday: the ranger walks down to the Gastronom for supplies (at %02d:%02d)", (int)ShopAt, (int)(std::fmod(ShopAt, 1.0) * 60.0));
+	CHECK(bBack, "... and is back in the North for his round");
+	CHECK(W2.NoWay == 0, "every route found on Saturday (%d failures)", W2.NoWay);
+}
+
 static void Bikes(FWorld& W)
 {
 	std::printf("bicycles:\n");
@@ -808,13 +938,13 @@ static int Test()
 		}
 		W.AssignHomes();
 		AttachRail(W);
-		int Cut = 0, Valley = 0, Spur = 0, Sea = 0;
+		int Cut = 0, Valley = 0, Spur = 0, Sea = 0, North = 0;
 		for (const FPlace& P : W.Places)
 		{
-			(P.Island < 0 ? Cut : (P.Island == 0 ? Valley : (P.Island == 1 ? Spur : Sea)))++;
+			(P.Island < 0 ? Cut : (P.Island == 0 ? Valley : (P.Island == 1 ? Spur : (P.Island == 2 ? Sea : North))))++;
 		}
-		CHECK(Cut == 0, "every place reachable on foot, by the cable car or the train (valley %d, spur %d, the sea island %d, cut off %d)",
-			Valley, Spur, Sea, Cut);
+		CHECK(Cut == 0, "every place reachable on foot, by the cable car or the train (valley %d, spur %d, the sea island %d, the North %d, cut off %d)",
+			Valley, Spur, Sea, North, Cut);
 		for (const FPlace& P : W.Places)
 		{
 			if (P.Island < 0)
@@ -827,6 +957,7 @@ static int Test()
 		IslandOrder(W);
 		Snow(W);
 		Bikes(W);
+		NorthLife(W);
 		const double S = std::chrono::duration<double>(std::chrono::high_resolution_clock::now() - T0).count();
 		std::printf("  the real map's checks took %.2f s\n", S);
 	}
