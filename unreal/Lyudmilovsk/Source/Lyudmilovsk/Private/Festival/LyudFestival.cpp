@@ -861,7 +861,8 @@ void ULyudFestivalSubsystem::Update()
 			// the tunes are about two minutes and not looped: the next one starts when one ends
 			if (!(*M)->IsPlaying())
 			{
-				(*M)->FadeIn(1.f, (*M)->GetName().Contains(TEXT("crowd")) ? 0.45f : 0.8f);
+				// at the volume it was started with (StartMusic 0.8, StartSound 0.45 the crowd, 0.9 drums and bells)
+				(*M)->FadeIn(1.f, W.Value == TEXT("crowd") ? 0.45f : (W.Value == TEXT("music") ? 0.8f : 0.9f));
 			}
 			continue;
 		}
