@@ -1071,6 +1071,376 @@
    "materials": [
     "M_North_Atlas"
    ]
+  },
+  {
+   "kind": "driftwood",
+   "variant": 0,
+   "file": "driftwood_v0.glb",
+   "tris": 356,
+   "size": [
+    6.768,
+    2.157,
+    2.571
+   ],
+   "collision": "box",
+   "seats": [],
+   "notes": "bleached river driftwood for gravel bars, pale grey (atlas tile 'wood': no paler tile exists); a single stripped trunk 6.2 m long along X, root plate (upright, 1.5 m across) at -X, tip at +X",
+   "bounds_min": [
+    -3.661,
+    -1.184,
+    -0.818
+   ],
+   "bounds_max": [
+    3.107,
+    0.974,
+    1.753
+   ],
+   "materials": [
+    "M_North_Atlas"
+   ]
+  },
+  {
+   "kind": "driftwood",
+   "variant": 1,
+   "file": "driftwood_v1.glb",
+   "tris": 348,
+   "size": [
+    4.813,
+    3.359,
+    0.991
+   ],
+   "collision": "box",
+   "seats": [],
+   "notes": "bleached river driftwood for gravel bars, pale grey (atlas tile 'wood': no paler tile exists); a tangle of three logs (4.2, 3.6 and 3.0 m) in a heap ~ 4.5 x 3.5 m, the two lighter ones resting across the first",
+   "bounds_min": [
+    -2.699,
+    -1.828,
+    -0.2
+   ],
+   "bounds_max": [
+    2.114,
+    1.532,
+    0.791
+   ],
+   "materials": [
+    "M_North_Atlas"
+   ]
+  },
+  {
+   "kind": "driftwood",
+   "variant": 2,
+   "file": "driftwood_v2.glb",
+   "tris": 278,
+   "size": [
+    3.09,
+    2.961,
+    1.48
+   ],
+   "collision": "box",
+   "seats": [],
+   "notes": "bleached river driftwood for gravel bars, pale grey (atlas tile 'wood': no paler tile exists); a short flood-torn stump 1 m high with six roots splayed ~ 1.8 m round",
+   "bounds_min": [
+    -1.767,
+    -1.728,
+    -0.05
+   ],
+   "bounds_max": [
+    1.323,
+    1.233,
+    1.43
+   ],
+   "materials": [
+    "M_North_Atlas"
+   ]
+  },
+  {
+   "kind": "river_boulder",
+   "variant": 0,
+   "file": "river_boulder_v0.glb",
+   "tris": 160,
+   "size": [
+    2.009,
+    1.618,
+    1.026
+   ],
+   "collision": "exact",
+   "seats": [],
+   "notes": "one big rounded boulder 1.8 x 1.35 m (0.9 m high) and a cobble beside it; grey andesite (atlas 'stone' tile), bottoms flat and just below z 0",
+   "bounds_min": [
+    -0.832,
+    -0.975,
+    -0.042
+   ],
+   "bounds_max": [
+    1.178,
+    0.643,
+    0.984
+   ],
+   "materials": [
+    "M_North_Atlas"
+   ]
+  },
+  {
+   "kind": "river_boulder",
+   "variant": 1,
+   "file": "river_boulder_v1.glb",
+   "tris": 240,
+   "size": [
+    1.524,
+    1.453,
+    0.648
+   ],
+   "collision": "exact",
+   "seats": [],
+   "notes": "a cluster of three boulders (1.0, 0.7 and 0.55 m), about 1.5 m across; grey andesite (atlas 'stone' tile), bottoms flat and just below z 0",
+   "bounds_min": [
+    -0.641,
+    -0.681,
+    -0.028
+   ],
+   "bounds_max": [
+    0.883,
+    0.772,
+    0.619
+   ],
+   "materials": [
+    "M_North_Atlas"
+   ]
+  },
+  {
+   "kind": "river_boulder",
+   "variant": 2,
+   "file": "river_boulder_v2.glb",
+   "tris": 240,
+   "size": [
+    1.258,
+    1.181,
+    0.467
+   ],
+   "collision": "exact",
+   "seats": [],
+   "notes": "a spill of three cobbles (0.7, 0.6 and 0.5 m), about 1.3 m across; grey andesite (atlas 'stone' tile), bottoms flat and just below z 0",
+   "bounds_min": [
+    -0.688,
+    -0.416,
+    -0.019
+   ],
+   "bounds_max": [
+    0.569,
+    0.765,
+    0.448
+   ],
+   "materials": [
+    "M_North_Atlas"
+   ]
+  },
+  {
+   "kind": "brow_bench",
+   "variant": 0,
+   "file": "brow_bench.glb",
+   "tris": 180,
+   "size": [
+    2.2,
+    0.74,
+    1.0
+   ],
+   "collision": "exact",
+   "seats": [
+    [
+     -0.55,
+     0.0,
+     0.46,
+     0.0
+    ],
+    [
+     0.55,
+     0.0,
+     0.46,
+     0.0
+    ]
+   ],
+   "notes": "heavy plank-and-log viewpoint bench 2.2 x 0.7 m, log sleepers, 2-plank seat top z 0.46, two-rail back (top z 0.97) on the +Y side; seats face the front (-Y)",
+   "bounds_min": [
+    -1.1,
+    -0.34,
+    0.0
+   ],
+   "bounds_max": [
+    1.1,
+    0.4,
+    1.0
+   ],
+   "materials": [
+    "M_North_Atlas"
+   ]
+  },
+  {
+   "kind": "trail_marker",
+   "variant": 0,
+   "file": "trail_marker.glb",
+   "tris": 377,
+   "size": [
+    0.565,
+    0.523,
+    1.25
+   ],
+   "collision": "exact",
+   "seats": [],
+   "notes": "trail marker: peeled post 1.2 m with a red painted ring at z 0.86..0.98 and a small cairn of stones at its foot (~ 0.7 m across, 0.36 m high); round, no front",
+   "bounds_min": [
+    -0.264,
+    -0.249,
+    -0.05
+   ],
+   "bounds_max": [
+    0.301,
+    0.275,
+    1.2
+   ],
+   "materials": [
+    "M_North_Atlas"
+   ]
+  },
+  {
+   "kind": "spring_bench",
+   "variant": 0,
+   "file": "spring_bench.glb",
+   "tris": 168,
+   "size": [
+    1.3,
+    0.355,
+    1.5
+   ],
+   "collision": "exact",
+   "seats": [
+    [
+     -0.32,
+     0.0,
+     0.4,
+     0.0
+    ],
+    [
+     0.32,
+     0.0,
+     0.4,
+     0.0
+    ]
+   ],
+   "notes": "low changing bench 1.3 x 0.36 m, seat top z 0.40, back board at z 1.16..1.40 on the +Y side with three coat pegs at x -0.4 / 0 / 0.4 (z 1.3..1.34, pointing to -Y); seats face the front (-Y)",
+   "bounds_min": [
+    -0.65,
+    -0.178,
+    0.0
+   ],
+   "bounds_max": [
+    0.65,
+    0.178,
+    1.5
+   ],
+   "materials": [
+    "M_North_Atlas"
+   ]
+  },
+  {
+   "kind": "spring_steps",
+   "variant": 0,
+   "file": "spring_steps.glb",
+   "tris": 284,
+   "size": [
+    1.364,
+    1.88,
+    2.654
+   ],
+   "collision": "box",
+   "seats": [],
+   "notes": "three split-log steps 1.2 m wide with a pole handrail on the +X side, leading down into a pool: origin = the top step's back edge at ground level (y 0, z 0); the steps descend 0.9 m over 1.4 m toward the front (-Y): treads at z -0.3 / -0.6 / -0.9, noses at y -0.47 / -0.93 / -1.40; the rail runs 0.35 m up the bank (+Y); collision is one sloped box (collision_boxes, mesh space, rot_x_deg is a right-handed rotation about Blender +X: positive tips the -Y end down; top plane 0.15 m below the nosing line); stakes reach z -1.45",
+   "axis": "y",
+   "run": 1.4,
+   "drop": 0.9,
+   "slope_deg": 32.735,
+   "collision_boxes": [
+    {
+     "name": "slope",
+     "center": [
+      0.0,
+      -0.862,
+      -0.702
+     ],
+     "size": [
+      1.2,
+      1.664,
+      0.3
+     ],
+     "rot_x_deg": 32.735
+    }
+   ],
+   "bounds_min": [
+    -0.6,
+    -1.511,
+    -1.45
+   ],
+   "bounds_max": [
+    0.764,
+    0.369,
+    1.204
+   ],
+   "materials": [
+    "M_North_Atlas"
+   ]
+  },
+  {
+   "kind": "gauge_post",
+   "variant": 0,
+   "file": "gauge_post.glb",
+   "tris": 176,
+   "size": [
+    0.15,
+    0.114,
+    2.515
+   ],
+   "collision": "exact",
+   "seats": [],
+   "notes": "hydrologist's staff gauge: steel post (round, r 0.04) 2.2 m above the ground (0.3 m more buried), the white-and-black striped board (0.15 wide, z 0.18..2.0, nine 0.1 m white bands) on its front face (-Y): stand it with the board facing the channel",
+   "bounds_min": [
+    -0.075,
+    -0.069,
+    -0.3
+   ],
+   "bounds_max": [
+    0.075,
+    0.045,
+    2.215
+   ],
+   "materials": [
+    "M_North_Atlas"
+   ]
+  },
+  {
+   "kind": "rowboat",
+   "variant": 0,
+   "file": "rowboat.glb",
+   "tris": 592,
+   "size": [
+    4.007,
+    1.628,
+    0.781
+   ],
+   "collision": "box",
+   "seats": [],
+   "notes": "old flat-bottomed wooden rowboat lying upturned on the bank, 4.0 m long along X (stern/transom at -X, bow at +X), 1.44 m beam, flat bottom up at z ~ 0.5, gunwales touching the ground at both ends with a ~0.15 m hollow gap in the middle; no front (use yaw to lay it along the bank)",
+   "bounds_min": [
+    -2.007,
+    -0.814,
+    0.001
+   ],
+   "bounds_max": [
+    2.0,
+    0.814,
+    0.782
+   ],
+   "materials": [
+    "M_North_Atlas"
+   ]
   }
  ]
 }
