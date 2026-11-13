@@ -7,6 +7,8 @@
 #   tools/plantsim/run.sh                 the North's species (docs/north.md "Plants") with a few old ones to compare
 #   tools/plantsim/run.sh all             every species of the library (also: does each build without NaNs)
 #   tools/plantsim/run.sh <Name> ...      those species
+#   tools/plantsim/run.sh render <out.png> <Name>:<age>:<day>[:<seed>] ...
+#                                         a picture of each (tools/plantsim/render.cpp), side by side at one scale
 set -e
 ROOT="$(cd "$(dirname "$0")/../.." && pwd)"
 SRC="$ROOT/unreal/Lyudmilovsk/Source/Lyudmilovsk"
@@ -20,7 +22,7 @@ done
 awk '/^\/\/ --- meshes and textures \(Unreal objects\)/ { exit } { print }' "$SRC/Private/Plants/PlantHerb.cpp" > "$OUT/PlantHerbModel.cpp"
 clang++ -std=c++20 -O2 -Wall -Wshadow -Wunreachable-code-loop-increment -Wno-unused-function -Wno-unused-variable \
 	-I "$OUT/inc" -I "$ROOT/tools/plantsim/shim" -I "$SRC/Public" -I "$SRC/Private" \
-	-o "$OUT/plantsim" "$ROOT/tools/plantsim/plantsim.cpp" "$SRC/Private/Plants/PlantModel.cpp" \
+	-o "$OUT/plantsim" "$ROOT/tools/plantsim/plantsim.cpp" "$ROOT/tools/plantsim/render.cpp" "$SRC/Private/Plants/PlantModel.cpp" \
 	"$SRC/Private/Plants/PlantSpecies.cpp" "$SRC/Private/Plants/PlantSpeciesHerbs.cpp" "$SRC/Private/Plants/PlantSpeciesFloor.cpp" \
 	"$SRC/Private/Plants/PlantSpeciesNorth.cpp" "$SRC/Private/Plants/PlantAlga.cpp" "$OUT/PlantHerbModel.cpp"
 exec "$OUT/plantsim" "$@"

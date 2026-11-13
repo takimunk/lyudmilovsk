@@ -7,8 +7,8 @@ shoot_plant_north.py.
             spring 140, early summer 175, high summer 210, autumn 262, winter 20), Cam_Seasons
   Forest    an AProceduralForest of the belt's mixes (dwarf pine, alder, rhododendron) as the map draws it (bakes,
             LOD distances and cull as import_world sets them), Cam_Forest at 25 m and Cam_ForestFar at 90 m
-  Patches   AProceduralGrass herb patches of fireweed, cotton grass and mountain avens (no terrain mask here: the whole
-            patch grows), Cam_Patches
+  Patches   AProceduralGrass herb patches of fireweed, cotton grass and mountain avens, and the river valley's
+            meadowsweet, cow parsnip and sedge (no terrain mask here: the whole patch grows), Cam_Patches
 
   UnrealEditor-Cmd Lyudmilovsk.uproject -run=pythonscript -script=<this file>
 """
@@ -18,7 +18,10 @@ eal = unreal.EditorAssetLibrary
 LEVEL = "/Game/Dev/L_PlantNorth"
 # (species, young, middle, old age in years, camera height cm)
 SPECIES = [("SiberianDwarfPine", 12, 30, 60, 220), ("DwarfAlder", 6, 15, 30, 250), ("GoldenRhododendron", 5, 12, 30, 80),
-           ("Fireweed", 1, 3, 8, 150), ("MountainAvens", 2, 6, 15, 40), ("CottonGrass", 1, 3, 8, 50)]
+           ("Fireweed", 1, 3, 8, 150), ("MountainAvens", 2, 6, 15, 40), ("CottonGrass", 1, 3, 8, 50),
+           # the river valley
+           ("SakhalinWillow", 8, 25, 60, 900), ("BarWillow", 4, 12, 30, 250), ("KamchatkaMeadowsweet", 1, 3, 8, 250),
+           ("CowParsnip", 1, 3, 8, 200), ("RiverSedge", 1, 3, 8, 60)]
 SEASONS = (140, 175, 210, 262, 20)
 COL = 500          # cm between species
 ROW = 600          # cm between age rows
@@ -96,7 +99,10 @@ cam("Cam_ForestFar", unreal.Vector(fx, fy - 2500 - 9000, 1200), -7, 90)
 # herb patches (the map's settings: tools/north.py HERB_PATCH_SETTINGS)
 for i, (sp, density, habitat) in enumerate((("Fireweed", 0.7, unreal.GrassHabitat.MEADOW),
                                              ("CottonGrass", 3.0, unreal.GrassHabitat.WET),
-                                             ("MountainAvens", 2.0, unreal.GrassHabitat.MEADOW))):
+                                             ("MountainAvens", 2.0, unreal.GrassHabitat.MEADOW),
+                                             ("KamchatkaMeadowsweet", 0.5, unreal.GrassHabitat.MEADOW),
+                                             ("CowParsnip", 0.2, unreal.GrassHabitat.MEADOW),
+                                             ("RiverSedge", 2.5, unreal.GrassHabitat.WET))):
     g = eas.spawn_actor_from_class(grass_cls, unreal.Vector(-6000 + i * 1200, 2000, 0))
     g.set_actor_label("Patch_" + sp)
     for k, v in (("species", sp), ("seed", 11 + i), ("half_extent", unreal.Vector2D(500, 500)), ("herb_density", density),

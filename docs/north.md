@@ -242,7 +242,7 @@ Test: `test_north.py` steps `spring_sit` (seated, eyes 5..90 cm over the water) 
 
 ## Plants
 
-All of it is the game's own plant system: six new species in `Private/Plants/PlantSpeciesNorth.cpp`
+All of it is the game's own plant system: eleven new species (six of the volcano land, five of the river valley below) in `Private/Plants/PlantSpeciesNorth.cpp`
 (`PlantHerbs::NorthSpecies()`, appended to `PlantSpeciesLibrary::All()`), planted by `tools/north.py` (`FOREST_MIX`,
 `forests()`, `herb_patches()`, `grass_patches()`). Names: `plant.<name>.name` (ru/en/ja). Triangles are from
 `tools/plantsim/run.sh` (the model without Unreal, below); bake LODs switch at 15 / 55 / 150 m.
@@ -289,10 +289,38 @@ them as `grass_patches` rows; `HERB_PATCH_SETTINGS` (read through `world_map.gra
 species' density, habitat and age, which import_world sets: 33 fireweed, 19 mountain avens, 6 lingonberry, 6 cotton
 grass patches, 4 of reindeer lichen.
 
+**River valley.** Five more species in `PlantSpeciesNorth.cpp` for the braided river (the Avacha's look): willows on
+the gravel bars and islands (forest bakes), the tall-herb meadow (шеломайник) on the terraces and sedge at the wet edges
+(herb patches). Ages of the sizes below: the willows 30 years (bar willow 20), the herbs 6.
+
+| Species | Latin (ru) | Look | Where | Bloom (day) | Cost |
+|---|---|---|---|---|---|
+| SakhalinWillow | *Chosenia arbutifolia* (чозения толокнянколистная) | a straight grey trunk 11 m at 30 (14 m at most; 4.7 m at 8), a narrow open crown of steep limbs (reach ~1.9 m), narrow pale blue-green leaves, red young shoots; the leaves fall yellow from early September | gravel bars and islands, in narrow groves along the channels (`gallery`, young in `riverbar`) | yellow hanging catkins with the leaves, 145..170 (peak 156) | bake LOD0 61k (72k with catkins), LOD1..3 22k / 5.8k / 4.7k; young (8 y) 8.6k |
+| BarWillow | *Salix udensis*, *S. schwerinii* and kin (тальник) | a thicket of straight red-brown wands 2.2..2.5 m from one root, narrow 12 cm leaves; yellow in late September; bare red wands in the snow | the bars themselves, the islands' edges (`riverbar`) | upright silver pussy catkins on the bare wands, 128..158 (peak 140) | bake LOD0 8.6k..9.3k, LOD1..3 3.2k / 1k / 0.8k; bare in winter 1.1k |
+| KamchatkaMeadowsweet | *Filipendula camtschatica* (шеломайник, лабазник камчатский) | 2.3..2.5 m: three stout stems, huge palmate five-lobed leaves on long stalks, largest low down; heads of cream florets round the tops; brown in late September, gone in October | herb patches on the terraces and the islands' crowns, in drifts | cream, 192..228 | 1.2k in leaf, 5.2k in bloom / lite 0.45k..1.8k, drawn to 70 m |
+| CowParsnip | *Heracleum lanatum* (борщевик сладкий) | 1.6..1.9 m: two stems with a side branch, huge three-lobed toothed leaves, flat white umbels on the tips | herb patches with the meadowsweet, thinner, and at the terraces' edges | white, 180..218 | 1.4k in leaf, 2.7k in bloom / lite 0.85k..2.2k, drawn to 70 m |
+| RiverSedge | *Carex* (осока) | a tussock of long arching keeled blue-green leaves 0.5 m; straw in October | herb patches on the wet gravel at the channels' sides, the spring's runnels (habitat Wet) | (none drawn) | 336 / lite 120, drawn to 25 m |
+
+The willows: bar willow is drawn far as its summary from 50 m like the other shrubs (`import_world.SUMMARY_DISTANCE`),
+is no refuge for animals (`AnimalLife IsTree`). The herbs grow fast after the snow (up 135..145) and die back in early
+October; meadowsweet is the costliest herb (its plume is a third of its triangles): plant it in patches at about half a
+plant per m2, not by the thousand. Planting (`tools/north.py`, owned by the land's worker), recommended:
+
+    FOREST_MIX["riverbar"] = [("BarWillow", 0.75, 4, 15), ("SakhalinWillow", 0.15, 3, 8), ("DwarfAlder", 0.1, 6, 20)]
+    FOREST_MIX["gallery"]  = [("SakhalinWillow", 0.55, 10, 40), ("StoneBirch", 0.15, 15, 60), ("DwarfAlder", 0.15, 8, 30),
+                              ("BarWillow", 0.1, 5, 15), ("Rowan", 0.05, 6, 14)]
+    FOREST_DETAIL["riverbar"] = {"cull_distance": 35000.0}
+    HERB_PATCH_SETTINGS["KamchatkaMeadowsweet"] = {"herb_density": 0.5, "herb_habitat": "Meadow", "herb_age": 4.0}
+    HERB_PATCH_SETTINGS["CowParsnip"] = {"herb_density": 0.2, "herb_habitat": "Meadow", "herb_age": 3.0}
+    HERB_PATCH_SETTINGS["RiverSedge"] = {"herb_density": 2.5, "herb_habitat": "Wet", "herb_age": 4.0}
+
 **Checking.** Without Unreal: `tools/plantsim/run.sh` (all species, or `run.sh all`, or `run.sh Name[:age:day] ...`)
 compiles the plant model (`PlantModel`, the species files, the herb builder up to its Unreal part) with clang and the
 Mac's warnings (`-Wshadow`, `-Wunreachable-code-loop-increment`) against a small shim of the engine types, and prints
-each species' size and triangles per LOD. In Unreal: `unreal/scripts/make_plant_north_level.py` builds
+each species' size and triangles per LOD. `run.sh render out.png Name:age:day[:seed] ...` draws them (`tools/plantsim/render.cpp`: the
+skeleton's wood, leaf clusters, catkins and fruit, or the herb's real mesh; flat shaded, no textures, a 2 m pole
+red and white every half metre), panels side by side at one scale: the shape, the colours and the season to look at
+before Unreal. In Unreal: `unreal/scripts/make_plant_north_level.py` builds
 `/Game/Dev/L_PlantNorth` (ages in rows, a row per season, a forest of the belt's mixes, three herb patches), then
 
     UnrealEditor <uproject> /Game/Dev/L_PlantNorth -game -RenderOffscreen -ResX=1280 -ResY=720 -windowed \

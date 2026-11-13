@@ -85,7 +85,8 @@ namespace
 	bool IsTree(FName Species)
 	{
 		// shrubs and young plants are no refuge: only trees with a trunk to go up
-		static const FName No[] = { TEXT("Juniper"), TEXT("SeaBuckthorn"), TEXT("SiberianDwarfPine"), TEXT("DwarfAlder"), TEXT("GoldenRhododendron") };
+		static const FName No[] = { TEXT("Juniper"), TEXT("SeaBuckthorn"), TEXT("SiberianDwarfPine"), TEXT("DwarfAlder"), TEXT("GoldenRhododendron"),
+		                              TEXT("BarWillow") };
 		for (const FName& N : No)
 		{
 			if (Species == N)

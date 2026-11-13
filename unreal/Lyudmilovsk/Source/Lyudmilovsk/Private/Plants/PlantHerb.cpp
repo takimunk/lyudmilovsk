@@ -573,7 +573,7 @@ namespace
 			// more flowers on short stalks round the top of the stem (an aster's sprays)
 			for (int32 F = 1 + NumBranches; F < H.Flowers; F++)
 			{
-				const float T = 0.6f + 0.38f * Hash01(Seed, Sn, F, 22);
+				const float T = H.SprayFrom + (0.98f - H.SprayFrom) * Hash01(Seed, Sn, F, 22);
 				const FVector3f Out = FromAngles(55.f, Az + F * Golden);
 				const FVector3f Tip = Lerp3(P, T) + Out * (0.07f * H.Height);
 				TArray<FVector3f> Q = { Lerp3(P, T), Tip };
