@@ -905,6 +905,11 @@ ANpcBody* UPeopleLifeSubsystem::BodyFor(int32 Id)
 		{
 			UE_LOG(LogTemp, Warning, TEXT("PeopleLife: no model for %s (%s)"), UTF8_TO_TCHAR(P.Key.c_str()), *Model);
 		}
+		// a townsperson's own look: the body holds its mesh now; once the body goes (ReleaseBody) it can be freed
+		if (P.bTown && Model != UTF8_TO_TCHAR(P.Mesh.c_str()))
+		{
+			ULyudPrefetch::Release(this, PeopleModelPath(Model));
+		}
 		Body->TalkId = UTF8_TO_TCHAR(P.Body.c_str());
 		if (P.Key.rfind("crowd", 0) == 0 || P.bTown)
 		{

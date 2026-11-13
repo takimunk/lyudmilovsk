@@ -177,9 +177,9 @@ quest.waxwing.return = sorokin_oleg.waxwing_back.1
 quest.waxwing_after.visit = sorokin_oleg.waxwing_after.1 | hero.waxwing_after.2 | sorokin_oleg.waxwing_after.3 | sorokin_oleg.waxwing_after.4
 quest.waxwing_after.done = sorokin_oleg.waxwing_journal.1
 
-[Khuazheva_susanna]
-first = khuazheva_susanna.first.1
-again = khuazheva_susanna.again1.1
+[Khuazhev_aslan]
+first = khuazhev_aslan.first.1
+again = khuazhev_aslan.again1.1
 
 [Guseva_valentina]
 first = guseva_valentina.first.1

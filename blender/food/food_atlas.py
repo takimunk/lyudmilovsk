@@ -188,21 +188,24 @@ def oilcloth():
     return col, petals * 0.1, 0.25
 
 
-def sign(text_lines, seed, bg=(236, 230, 214)):
+def sign(text_lines, seed, bg=(236, 230, 214), font=FONT, raw=False):
     """Hand-lettered card: brown marker on white card, its lines centred."""
     from PIL import Image, ImageDraw, ImageFont
+    FONT_ = font
     img = Image.new("RGB", (CELL, CELL), bg)
     d = ImageDraw.Draw(img)
     sizes = [118, 92, 120]
     yy = 30
     for i, line in enumerate(text_lines):
-        f = ImageFont.truetype(FONT, sizes[i % len(sizes)])
+        f = ImageFont.truetype(FONT_, sizes[i % len(sizes)])
         w = d.textlength(line, font=f)
         while w > CELL - 30:
-            f = ImageFont.truetype(FONT, int(f.size * 0.92))
+            f = ImageFont.truetype(FONT_, int(f.size * 0.92))
             w = d.textlength(line, font=f)
         d.text(((CELL - w) / 2, yy), line, fill=(120, 30, 20) if i != 1 else (40, 60, 120), font=f)
         yy += f.size + 25
+    if raw:
+        return img
     col = np.asarray(img).astype(float) / 255.0
     col = col[::-1]                                  # v up: row 0 of the cell is its bottom
     n = _noise(seed)
@@ -255,6 +258,26 @@ PAINT = {
 }
 
 
+# The stalls' signs in the game's three languages (a material slot FoodSign_<name> each, ULyudStallSubsystem swaps the picture
+# by lyud.Language): export/signs/<lang>/T_FoodSign_<name>.png, imported to /Game/Food/Localized/<lang>/.
+JA_FONT = os.path.join(HERE, "..", "..", "fonts", "Yomogi-Regular.ttf")
+SIGNS = {
+    "cheese": {"bg": (236, 230, 214), "ru": ["Адыгейский", "сыр", "косичка · головки"], "en": ["Adyghe", "cheese", "braids · rounds"],
+               "ja": ["アディゲ", "チーズ", "三つ編み・ホール"]},
+    "corn": {"bg": (176, 140, 96), "ru": ["Варёная", "кукуруза", "горячая · 15 р."], "en": ["Boiled", "corn", "hot · 15 rub"],
+             "ja": ["ゆで", "トウモロコシ", "熱々・15ルーブル"]},
+}
+
+
+def signs():
+    for name, spec in SIGNS.items():
+        for lang in ("ru", "en", "ja"):
+            out = os.path.join(OUT, "signs", lang)
+            os.makedirs(out, exist_ok=True)
+            img = sign(spec[lang], 27, bg=spec["bg"], font=JA_FONT if lang == "ja" else FONT, raw=True)
+            img.save(os.path.join(out, "T_FoodSign_%s.png" % name))
+
+
 def normal_from_height(h, strength=4.0):
     gy, gx = np.gradient(h)
     n = np.stack([-gx * strength, -gy * strength, np.ones_like(h)], axis=-1)
@@ -278,7 +301,8 @@ def main():
     Image.fromarray((flip(C) * 255).astype(np.uint8)).save(os.path.join(OUT, "T_FoodKit_C.png"))
     Image.fromarray((flip(N) * 255).astype(np.uint8)).save(os.path.join(OUT, "T_FoodKit_N.png"))
     Image.fromarray((flip(R) * 255).astype(np.uint8)).save(os.path.join(OUT, "T_FoodKit_R.png"))
-    print("atlas ->", OUT)
+    signs()
+    print("atlas and signs ->", OUT)
 
 
 if __name__ == "__main__":

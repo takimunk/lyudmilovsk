@@ -1503,7 +1503,7 @@ void ULyudFishing::Draw(float DeltaTime)
 			FHitResult Hit;
 			FCollisionQueryParams Q(SCENE_QUERY_STAT(FishingWind), false, R);
 			Q.AddIgnoredActor(UGameplayStatics::GetPlayerPawn(this, 0));
-			const FVector Top(EndPos.X, EndPos.Y, FMath::Max3(Tip.Z, DryZ, FeetZ) + 150.f);
+			const FVector Top(EndPos.X, EndPos.Y, FMath::Max3<double>(Tip.Z, DryZ, FeetZ) + 150.f);
 			if (GetWorld()->LineTraceSingleByChannel(Hit, Top, FVector(EndPos.X, EndPos.Y, EndPos.Z - 300.f), ECC_Visibility, Q))
 			{
 				EndPos.Z = FMath::Max(EndPos.Z, Hit.ImpactPoint.Z + 2.f);

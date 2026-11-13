@@ -5,9 +5,11 @@ no Blender or engine needed:
 
 For each model listed in Content/PeopleData/town_looks.json whose sidecar matches its look (--all: every .glb there):
 one skin on the 56 bones of SK_Human_Skeleton, one mesh in four sections Skin/Cloth/Hair/Eyes (their order is free),
-the six face morphs on every section, UV0-2 + normals + joints/weights on every section, and with numpy also finite
-positions, skin weights summing to 1, every UV channel inside 0..1 (UV0 outside its atlas = a wrapped texture; UV1-2
-are the tint), indices in range and no degenerate triangles. Exit status 1 when anything is wrong.
+the six face morphs on every section and none of them on by default (the mesh's weights 0), UV0-2 + normals +
+joints/weights on every section. With numpy also: finite positions, joint indices inside the skin, skin weights
+summing to 1, UV1-2 (the tint) inside 0..1, UV0 inside its section's atlas tiles (atlases/layout.json; a UV in
+another tile or outside the tiles' padding shows the wrong texture), indices in range, no triangle of zero area.
+Exit status 1 when anything is wrong.
 """
 import argparse
 import json
@@ -23,6 +25,7 @@ except ImportError:                     # the structural checks still run
 HERE = os.path.dirname(os.path.abspath(__file__))
 ROOT = os.path.normpath(os.path.join(HERE, "..", ".."))
 EXPORT = os.path.join(HERE, "export")
+ATLASES = os.path.join(HERE, "atlases")
 LOOKS = os.path.join(ROOT, "unreal", "Lyudmilovsk", "Content", "PeopleData", "town_looks.json")
 
 # SK_Human_Skeleton (blender/humans/mpfb_pipeline.add_ue_rig: MPFB's game_engine rig + jaw and eyes)
@@ -71,11 +74,21 @@ def accessor(js, binc, i):
     return out
 
 
-def check(path):
-    """The problems found in one .glb (empty: fine)."""
+def tiles_of(layout):
+    """{section: (tile rects (N, 4) u0 v0 u1 v1 from the bottom, slack u, slack v: the padding)} from layout.json."""
+    out = {}
+    for s, sec in layout["sections"].items():
+        w, h = sec["size"]
+        out[s] = (np.array(list(sec["tiles"].values()), dtype=np.float64), layout["pad"] / w, layout["pad"] / h)
+    return out
+
+
+def check(path, tiles=None):
+    """The problems found in one .glb (empty: fine); tiles: tiles_of(layout.json), for the UV0 check."""
     js, binc = load(path)
     out = []
     skins = js.get("skins", [])
+    joints = len(skins[0]["joints"]) if skins else 0
     if len(skins) != 1:
         out.append("%d skins" % len(skins))
     else:
@@ -89,6 +102,8 @@ def check(path):
     morphs = set(mesh.get("extras", {}).get("targetNames", []))
     if morphs != MORPHS:
         out.append("morphs %s" % sorted(morphs))
+    if any(abs(w) > 1e-6 for w in mesh.get("weights", [])):
+        out.append("morphs on by default (mesh weights %s)" % mesh["weights"])
     sections = [js["materials"][p["material"]]["name"] if "material" in p else None for p in mesh["primitives"]]
     if len(sections) != len(SECTIONS) or set(sections) != SECTIONS:
         out.append("sections %s" % sections)
@@ -102,19 +117,35 @@ def check(path):
         pos = accessor(js, binc, at["POSITION"])
         if not np.isfinite(pos).all():
             out.append("%s: positions not finite" % sec)
-        w = accessor(js, binc, at["WEIGHTS_0"]).astype(np.float64).sum(1)
+        weights = accessor(js, binc, at["WEIGHTS_0"]).astype(np.float64)
+        w = weights.sum(1)
         if len(w) and abs(w - 1).max() > 0.02:
             out.append("%s: skin weights sum to %.3f..%.3f" % (sec, w.min(), w.max()))
-        for t in ("TEXCOORD_0", "TEXCOORD_1", "TEXCOORD_2"):
+        if ((accessor(js, binc, at["JOINTS_0"]) >= joints) & (weights > 0)).any():
+            out.append("%s: weights on joint indices past the skin's %d" % (sec, joints))
+        for t in ("TEXCOORD_1", "TEXCOORD_2"):
             uv = accessor(js, binc, at[t])
             if len(uv) and (uv.min() < -0.002 or uv.max() > 1.002):
                 out.append("%s: %s outside 0..1 (%.3f..%.3f)" % (sec, t, uv.min(), uv.max()))
+        uv = accessor(js, binc, at["TEXCOORD_0"]).astype(np.float64)
+        if tiles and sec in tiles and len(uv):
+            rects, su, sv = tiles[sec]
+            u, v = uv[:, 0:1], 1.0 - uv[:, 1:2]           # glTF's V runs down, the layout's up
+            inside = ((u >= rects[:, 0] - su) & (u <= rects[:, 2] + su) &
+                      (v >= rects[:, 1] - sv) & (v <= rects[:, 3] + sv)).any(1)
+            if not inside.all():
+                out.append("%s: %d UV0 points outside the section's atlas tiles" % (sec, int((~inside).sum())))
+        elif len(uv) and (uv.min() < -0.002 or uv.max() > 1.002):
+            out.append("%s: TEXCOORD_0 outside 0..1 (%.3f..%.3f)" % (sec, uv.min(), uv.max()))
         tri = accessor(js, binc, prim["indices"]).reshape(-1, 3)
         if len(tri) and tri.max() >= len(pos):
             out.append("%s: indices out of range" % sec)
-        deg = int(((tri[:, 0] == tri[:, 1]) | (tri[:, 1] == tri[:, 2]) | (tri[:, 0] == tri[:, 2])).sum())
-        if deg:
-            out.append("%s: %d degenerate triangles" % (sec, deg))
+            continue
+        p = pos.astype(np.float64)
+        area = 0.5 * np.linalg.norm(np.cross(p[tri[:, 1]] - p[tri[:, 0]], p[tri[:, 2]] - p[tri[:, 0]]), axis=1)
+        flat = int((area < 1e-10).sum())
+        if flat:
+            out.append("%s: %d triangles of zero area" % (sec, flat))
     return out
 
 
@@ -123,7 +154,15 @@ def main():
     ap.add_argument("--all", action="store_true", help="every .glb in export/, current or not")
     ap.add_argument("--only", default="", help="models (R_x,R_y)")
     ap.add_argument("--export", default=EXPORT)
+    ap.add_argument("--atlases", default=ATLASES, help="where layout.json is (the UV0 tile check)")
     a = ap.parse_args()
+    tiles, note = None, ""
+    lay = os.path.join(a.atlases, "layout.json")
+    if np is not None and os.path.isfile(lay):
+        with open(lay, encoding="utf-8") as f:
+            tiles = tiles_of(json.load(f))
+    elif np is not None:
+        note = " (no %s: UV0 checked against 0..1 only)" % lay
     with open(LOOKS, encoding="utf-8") as f:
         looks = json.load(f)["people"]
     want = {v["model"].split("/")[-1]: v["hash"] for v in looks.values()}
@@ -145,14 +184,14 @@ def main():
     bad = 0
     for glb in models:
         try:
-            problems = check(glb)
+            problems = check(glb, tiles)
         except Exception as e:          # a broken file is a finding, not a crash
             problems = ["unreadable: %r" % e]
         if problems:
             bad += 1
             print("%s: %s" % (os.path.basename(glb)[:-4], "; ".join(problems)))
     print("check_export: %d models checked, %d with problems%s; %d not built, %d built from an older look%s" % (
-        len(models), bad, "" if np is not None else " (no numpy: structure only)", missing, stale,
+        len(models), bad, note if np is not None else " (no numpy: structure only)", missing, stale,
         "" if not (missing or stale) else " (build_residents.py)"))
     return 1 if bad else 0
 
