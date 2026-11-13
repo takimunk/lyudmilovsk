@@ -313,6 +313,7 @@ namespace LyudAnimals
 			int CNX = 0, CNY = 0;
 			std::vector<uint8_t> CoarseWalk;   // walkable share 0..16 of each coarse cell
 			std::vector<uint8_t> CoarseKind;   // its commonest ground
+			std::vector<int> CoarsePatch;      // which joined-up patch of open cells it is in (-1 closed): no path between two patches
 		} Grid;
 		static constexpr int CoarseK = 4;
 		std::vector<int> CellHead, CellNext;
