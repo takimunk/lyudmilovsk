@@ -441,6 +441,34 @@ def ensure_far():
     _CACHE.clear()
 
 
+def _manifest_boxes(sm, body, boxes, asset):
+    """The manifest's collision_boxes (Blender mesh space, metres: center, size, rot_y_deg = right-handed about Blender +Y,
+    positive tipping the +X end down) as the mesh's simple collision. Blender -> glTF (x, z, -y) -> Unreal (glTF x, z, y)
+    (Interchange GLTFCore ConversionUtilities.h ConvertVec3), so Blender (x, y, z) m = Unreal (x, -y, z) * 100 cm; the tip
+    of +X down is a negative Unreal pitch. A footbridge walks on its deck and ramps, the trestles have none."""
+    try:
+        elems = []
+        for b in boxes:
+            c, sz = b["center"], b["size"]
+            e = unreal.KBoxElem()
+            e.set_editor_property("center", unreal.Vector(c[0] * 100.0, -c[1] * 100.0, c[2] * 100.0))
+            e.set_editor_property("rotation", unreal.Rotator(roll=0.0, pitch=-float(b.get("rot_y_deg", 0.0)), yaw=0.0))
+            e.set_editor_property("x", sz[0] * 100.0)
+            e.set_editor_property("y", sz[1] * 100.0)
+            e.set_editor_property("z", sz[2] * 100.0)
+            elems.append(e)
+        geom = unreal.KAggregateGeom()
+        geom.set_editor_property("box_elems", elems)
+        body.set_editor_property("agg_geom", geom)
+        bb = sm.get_bounding_box()
+        ext = bb.max - bb.min
+        log("%s: %d collision boxes from the manifest; mesh extent %.0f x %.0f x %.0f cm (X Y Z)" %
+            (asset, len(elems), ext.x, ext.y, ext.z))
+    except Exception:       # noqa: BLE001
+        log("%s: collision boxes failed, simple box instead:\n%s" % (asset, traceback.format_exc()))
+        unreal.get_editor_subsystem(unreal.StaticMeshEditorSubsystem).add_simple_collisions(sm, unreal.ScriptCollisionShapeType.BOX)
+
+
 def import_file(fname):
     """Imports one glb of blender/export/north into the asset its manifest row names."""
     path = os.path.join(EXPORT, fname)
@@ -491,7 +519,9 @@ def import_file(fname):
             sub.remove_collisions(sm)
         except Exception as e:      # noqa: BLE001
             log("%s: remove_collisions: %s" % (asset, e))
-        if collision == "box":
+        if collision == "box" and row.get("collision_boxes") and body:
+            _manifest_boxes(sm, body, row["collision_boxes"], asset)
+        elif collision == "box":
             try:
                 sub.add_simple_collisions(sm, unreal.ScriptCollisionShapeType.BOX)
             except Exception as e:  # noqa: BLE001
