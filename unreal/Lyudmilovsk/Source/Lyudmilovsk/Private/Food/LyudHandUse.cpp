@@ -151,6 +151,9 @@ void ULyudHandUse::Drop(bool bUsedUp)
 	Thing = FLyudHandThing();
 	bHas = false;
 	Phase = EPhase::Carry;
+	// a scripted press was for this thing (the smoking's steps hold the button for the pack, the cigarette, the lighter): it does
+	// not stay down for whatever comes into the hand next
+	bForced = bClickQueued = bClickDown = false;
 	SetPrompted(false);
 	if (AActor* A = Was.Actor.Get())
 	{
