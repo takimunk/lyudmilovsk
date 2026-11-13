@@ -416,13 +416,29 @@ namespace LyudAnimals
 		static const float DogCost[8] = { 9.f, 1.0f, 0.85f, 1.1f, 1.0f, 1.3f, 1.f, 1.f };
 		const float* Cost = Kind == EKind::Cat ? CatCost : DogCost;
 		const size_t N = (size_t)W * H;
-		std::vector<float> Gs(N, 1e30f);
-		std::vector<int> From_(N, -1);
-		std::vector<uint8_t> Closed(N, 0);
+		FPathScratch& PS = PathScratch;
+		if (PS.Cost.size() != N)
+		{
+			PS.Cost.assign(N, 0.f);
+			PS.Back.assign(N, -1);
+			PS.Set.assign(N, 0);
+			PS.Shut.assign(N, 0);
+			PS.Search = 0;
+		}
+		if (++PS.Search == 0)
+		{
+			// the counter came round (four thousand million searches): every old stamp goes
+			PS.Set.assign(N, 0);
+			PS.Shut.assign(N, 0);
+			PS.Search = 1;
+		}
+		const uint32_t Search = PS.Search;
 		using QE = std::pair<float, int>;
 		std::priority_queue<QE, std::vector<QE>, std::greater<QE>> Q;
 		const int Start = SJ * W + SI, Goal = GJ * W + GI;
-		Gs[Start] = 0.f;
+		PS.Cost[Start] = 0.f;
+		PS.Back[Start] = -1;
+		PS.Set[Start] = Search;
 		Q.push({ 0.f, Start });
 		int Expanded = 0;
 		bool bFound = false;
@@ -432,11 +448,11 @@ namespace LyudAnimals
 		{
 			const int C = Q.top().second;
 			Q.pop();
-			if (Closed[C])
+			if (PS.Shut[C] == Search)
 			{
 				continue;
 			}
-			Closed[C] = 1;
+			PS.Shut[C] = Search;
 			Expanded++;
 			if (C == Goal)
 			{
@@ -452,17 +468,18 @@ namespace LyudAnimals
 					continue;
 				}
 				const int NC = NJ * W + NI;
-				if (Closed[NC])
+				if (PS.Shut[NC] == Search)
 				{
 					continue;
 				}
 				const float Share = Grid.CoarseWalk[NC] / 16.f;
 				const float Step = (K >= 4 ? 1.4142f : 1.f) * Cost[Grid.CoarseKind[NC] & 7] * (Share < 0.75f ? 1.6f : 1.f);
-				const float G2 = Gs[C] + Step;
-				if (G2 < Gs[NC])
+				const float G2 = PS.Cost[C] + Step;
+				if (PS.Set[NC] != Search || G2 < PS.Cost[NC])
 				{
-					Gs[NC] = G2;
-					From_[NC] = C;
+					PS.Cost[NC] = G2;
+					PS.Back[NC] = C;
+					PS.Set[NC] = Search;
 					const float Hx = (float)std::abs(NI - GI), Hy = (float)std::abs(NJ - GJ);
 					Q.push({ G2 + 0.85f * (std::max(Hx, Hy) + 0.4142f * std::min(Hx, Hy)), NC });
 				}
@@ -473,7 +490,7 @@ namespace LyudAnimals
 			return false;
 		}
 		std::vector<V3> Raw;
-		for (int C = Goal; C != -1; C = From_[C])
+		for (int C = Goal; C != -1; C = PS.Back[C])
 		{
 			const int CI = C % W, CJ = C / W;
 			// the walkable fine cell nearest the coarse cell's centre
