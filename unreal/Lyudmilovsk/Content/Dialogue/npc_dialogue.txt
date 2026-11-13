@@ -150,10 +150,16 @@ quest.waxwing.prepare = orlova_tanya.waxwing_rowan.1 | orlova_tanya.waxwing_rowa
 [Lange_pyotr]
 first = lange_pyotr.first.1
 again = lange_pyotr.again1.1
+quest.fisherman_cheese.ask = lange_pyotr.cheese_ask.1 | lange_pyotr.cheese_ask.2 | hero.cheese_ask.3 | lange_pyotr.cheese_ask.4
+quest.fisherman_cheese.buy,bring_empty = lange_pyotr.cheese_wait.1
+quest.fisherman_cheese.bring = lange_pyotr.cheese_thanks.1 | lange_pyotr.cheese_thanks.2
 
 [Kimura_dasha]
 first = kimura_dasha.first.1
 again = kimura_dasha.again1.1
+quest.window_feeder.ask = kimura_dasha.feeder_ask.1 | kimura_dasha.feeder_ask.2 | hero.feeder_ask.3 | kimura_dasha.feeder_ask.4
+quest.window_feeder.fill,watch = kimura_dasha.feeder_wait.1
+quest.window_feeder.tell = kimura_dasha.feeder_tell.1 | hero.feeder_tell.2 | kimura_dasha.feeder_tell.3
 
 [Li_vika]
 first = li_vika.first.1

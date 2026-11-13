@@ -127,3 +127,7 @@ Not checked in the engine yet when this page was written: see the pull request f
   (`bring daily_paper@Korneeva_nina`): ten rubles and two pies.
 - `crow_gift`: Yuki Sato says the crows bring presents (`talk`); three handfuls thrown to them (`corvid_feed_thrown`),
   a gift picked up (`corvid_gift_taken`), back to tell her (`talk`).
+- `fisherman_cheese`: Pyotr Lange wants a cheese braid from Aslan's tent by the club (`have`, then
+  `bring cheese_braid@Lange_pyotr`): worms and a herring.
+- `window_feeder`: Dasha Kimura's bet that the yard has more than pigeons: fill any feeder (`feeder_fill *`), five
+  birds come down on it (`feeder_visit *`, `need` 5), back to tell her.
