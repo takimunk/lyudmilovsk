@@ -12,10 +12,11 @@ class ACameraActor;
 class AHeroCharacter;
 class ANpcTalkDirector;
 class APlayerController;
+class SLyudCityGame;
 class SLyudCityPage;
 class USceneComponent;
 struct FLyudCityLoad;
-namespace LyudCity { class FModel; }
+namespace LyudCity { class FModel; struct FGameState; }
 
 /** A thing of the town's buildings as the townsfolk see it (ULyudCityThings::FindFreeThing, GetThingsOfPlot). */
 USTRUCT(BlueprintType)
@@ -61,8 +62,15 @@ struct LYUDMILOVSK_API FCityThingRef
  * The townsfolk (docs/city_interiors.md "API for townsfolk"): FindFreeThing, ClaimThing / ReleaseThing (a weak holder, let go
  * when it dies; the hero can't sit on a held seat), GetThingsOfPlot.
  *
+ * Mini-games (docs/city_interiors.md "Mini-games"): an act with a "game" (darts, a cue shot, free throws: aim; table tennis,
+ * badminton: rally; chess, draughts, dominoes: a duel of three moves against a named regular) opens a panel (SLyudCityGame, made
+ * once and kept) instead of its page; the rules and the dice are the model's, the keys are polled (E; 1/2/3 for a duel) and
+ * never consumed; walking off, standing up or any screen ends it without a result. The result line, a stamp (the regular
+ * beaten), a prize and the act's minutes come at the end. Clock lines show the game's time ({time}); a thing with "switch" turns
+ * the room's lamps on and off for the hero's visit (ULyudWindowLights::SwitchLampsNear).
+ *
  * Console: lyud.City.Things, lyud.City.Do <thing id>, lyud.City.Things.Show 0|1, lyud.City.Weekday <mon..sun>,
- * lyud.City.Collections [grant|clear <set|*>].
+ * lyud.City.Collections [grant|clear <set|*>], lyud.City.Game <thing id> | press [1-3] | win | quit | regulars.
  */
 UCLASS()
 class LYUDMILOVSK_API ULyudCityThings : public UTickableWorldSubsystem, public ILyudSaveable
@@ -108,6 +116,23 @@ public:
 	bool EditCollections(const FString& Verb, const FString& Set);
 	/** Is every collection complete (the developer toggle's light)? */
 	bool AreCollectionsComplete() const;
+
+	// --- mini-games
+
+	/** Starts the game of a thing's act at once (console, developer mode: no hours, money or limit asked); false: no such
+	 *  thing or its act has no game. */
+	bool StartGameAt(const FString& ThingId);
+	/** Developer mode: the game of the type ("aim", "rally", "duel") on the thing nearest the hero. */
+	bool StartNearestGame(const FString& Type);
+	/** A key of the game being played: E (Choice -1) or a duel's move 0..2 (console: lyud.City.Game press). */
+	void PressGame(int32 Choice);
+	/** Developer mode: the game being played is won at once. */
+	void WinGame();
+	/** Ends the game being played without a result. */
+	void QuitGame();
+	bool IsPlayingGame() const;
+	/** Logs the regulars (name, style, games, where); with bPage also on the page. */
+	void ShowRegulars(bool bPage);
 
 	// --- API for townsfolk (docs/city_interiors.md): the people's life asks for seats and things to use
 
@@ -168,6 +193,22 @@ private:
 	void FillRef(int32 Thing, FCityThingRef& Out) const;
 	/** The holds of townsfolk whose holder is gone are let go (a few times a second). */
 	void DropDeadHolds();
+	/** A line's words: the key's text with {time} filled in (the wall clocks). */
+	FText LineText(const FString& Key) const;
+	/** A thing with "switch": the lamps of its room on or off for the hero's visit (all back when he leaves the plot). */
+	void FlipSwitch(int32 Thing);
+	/** A short word on the prompt line for a moment (the switch's "lights on"), like a refusal but not one. */
+	void Note(const FText& What);
+
+	// --- mini-games
+	void BeginGame(int32 Thing, int32 Minutes, bool bSeated);
+	void TickGame(AHeroCharacter* Hero, APlayerController* PC, bool bTalk, float DeltaTime);
+	/** The panel's texts (only when a beat, a round or the score changed) and its bar (every frame). */
+	void UpdateGamePanel(bool bTexts);
+	/** The game is over: the result page, the stamp, the prize, the minutes. */
+	void FinishGame();
+	/** The panel away and the state cleared (bFinished false: walked off, no result). */
+	void EndGame(bool bFinished);
 
 	TPimplPtr<LyudCity::FModel> Model;
 	/** The worker's parse while it is under way. */
@@ -245,4 +286,20 @@ private:
 		uint64 Key = 0;
 	};
 	TMap<int32, FHold> Holds;
+
+	/** The game being played (Def < 0: none; made once and reused), its panel (made once, kept collapsed between games), the act's
+	 *  minutes that pass at its end, where the hero stood, whether he sat down for it, the frame it began (its own E must not
+	 *  count), the beat and round the panel shows. */
+	TPimplPtr<LyudCity::FGameState> Playing;
+	TSharedPtr<SLyudCityGame> GamePanel;
+	bool bGamePanelAdded = false;
+	int32 GameMinutes = 0;
+	FVector GameFrom = FVector::ZeroVector;
+	bool bGameSeated = false;
+	uint64 GameFrame = 0;
+	int32 GameBeatShown = -1;
+	FText GameTitle;
+	FText GameOpponent;
+	/** Plots whose lamps the hero switched (cleared when he walks into another plot). */
+	FName SwitchedPlot;
 };

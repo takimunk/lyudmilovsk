@@ -1,6 +1,7 @@
 {
  "_doc": "Mini-games, regulars, wall clocks, light switches (tools/city/content/games.json, the games of activities.json). Result lines and tells: {0} is the opponent's name. Beats: {0} the hero's move, {1} the opponent's, {2} the opponent's name. Clock lines: {time} is the game's clock.",
  "city.game.title": {"ru": "Игра", "en": "A game", "ja": "ゲーム"},
+ "city.game.title_vs": {"ru": "{0} · соперник: {1}", "en": "{0} · against {1}", "ja": "{0}・相手：{1}"},
  "city.game.keys.aim": {"ru": "E — бросок", "en": "E — throw", "ja": "E：投げる"},
  "city.game.keys.rally": {"ru": "E — отбить, когда мяч у тебя", "en": "E — hit it back as it reaches you", "ja": "E：球が来た瞬間に打ち返す"},
  "city.game.keys.duel": {"ru": "1, 2, 3 — ход", "en": "1, 2, 3 — your move", "ja": "1・2・3：手を選ぶ"},

@@ -848,6 +848,7 @@
  "city.game.table_tennis.win.2": "Beat {0}! Tock, tock, tock, and the world shrank to the size of the table.",
  "city.game.throw": "Go {0} of {1}",
  "city.game.title": "A game",
+ "city.game.title_vs": "{0} · against {1}",
  "city.game.turn": "Move {0} of {1}",
  "city.game.vs.badminton": "badminton",
  "city.game.vs.billiards": "billiards",

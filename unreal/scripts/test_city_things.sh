@@ -43,6 +43,9 @@ check "sat" "CityThings: sits on .*seated=1"
 check "collections" "CityThings: collection [a-z_]+: [0-9]+ of [0-9]+"
 grep -q "CityThings: stamp shelves/" "$LOG" && echo "PASS stamp" || echo "WARN no shelves stamp (got it before the save? a fresh game shows it)"
 grep -qE "CityThings: do .* -> ok .* closed" "$LOG" && echo "PASS closed act" || echo "WARN no closed act ran (no shut seat with closed in the data, or the hour)"
+for G in aim rally duel; do check "game $G" "CityThings: game $G on "; done
+check "game won" "CityThings: game over on .*: win "
+check "regulars" "CityThings: regular [a-z]+ "
 check "finished" "CITYTEST done"
 # Epic's experimental Toolset plugins fail their own init_unreal.py on every run: only errors of this test's script count
 if grep -qE "LogScript.*Error|Python: Error.*test_city_things\.py" "$LOG"; then echo "FAIL script errors"; FAIL=1; fi

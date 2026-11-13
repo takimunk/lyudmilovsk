@@ -200,6 +200,7 @@ An act is what happens when the hero presses E at a thing:
 | `screen` | a screen show (`film`, `stage`, `tv`, `slides`): the page in the dark wide style, the line cut into subtitles shown one after another, the minutes passing with them; a sitting show on a thing that is not a seat wants the hero seated first (a seat of the plot within 25 m) and is then offered from the seat |
 | `collect` | a stamp every run gives (`"shelves/birds"`), or `"set/{line}"`: every line it shows is a piece of its own (the line's key: the films of «Рассвет»'s programme, a jukebox's records); an act `like` it inherits it (`"collect": ""` drops it) |
 | `closed` | what things doing this act say while their plot is shut: an act id or a line key (see "Closed") |
+| `game` | a mini-game played instead of showing `lines` (see "Mini-games"); an act `like` it inherits it (`"game": null` drops it) |
 | `like` | content only: inherit every field of that act, then override |
 
 A thing record of `interiors.json` has `id`, `plot`, `kind`, `ue`, `yaw`, `props`, `act`, `hours`, `days`, and when they
@@ -270,6 +271,62 @@ and `id` is the thing's id: `machine:what=jukebox,id=*radio*`), then `take` with
 `item=<id>` (`take_<id>`), then the plot kind's default (`hotel` beds sleep the night, `clinic` beds nap, `residential`
 counters are closed), then the kind's default (`sit`, `bed_private`, `read_misc`, `look_misc`, `counter_talk`,
 `use_misc`, `watch_misc`, `take_any`, `door_any`).
+
+### Mini-games
+
+An act's `game` (`tools/city/content/activities.json`, `games.json`) is played on a small panel instead of the act's page:
+the hero stands (or sits: `pose: sit`) at the thing (walking 2.5 m off, getting up or any screen ends it unfinished),
+and the act's `minutes` pass at the end. The
+model plays it (`LyudCity::FModel` `StartGame`/`TickGame`/`PressGame`/`FinishGame`, deterministic from a seed: the thing,
+the day, the uses), so citysim decides every rule. Three types:
+
+* `aim` (darts, billiards, the gallery, ring toss, the strongman, the arcade, the hoop): a marker runs to and fro along a
+  bar; E throws. Within the zone's bright middle (zone/6 round its centre) 2 points, within the zone 1, else a miss; a throw
+  not made in 8 s is a miss. `rounds` throws; alone: `need` points wins, half of it is a draw; against a regular: more
+  points than his (he throws by his skill).
+* `rally` (table tennis, table football, badminton): the ball flies along the bar; E while it is in the window at the
+  hero's end hits it back (a press in the first 40% of a flight is ignored; early or late loses the point). After each hit
+  the window narrows (`shrink`) and the ball quickens (`pace`). Against a regular: first to `need` points; he returns with
+  `0.55 + 0.4·skill − 0.05·hits` (0.25..0.96). Alone: `need` hits in a row wins, half of it a draw.
+* `duel` (chess, checkers, dominoes): `rounds` turns; keys 1/2/3 pick one of three `moves`, each beating the next
+  (`1 > 2 > 3 > 1`, the winner scores its `power`). The opponent leans to a move by his style (`bold` the first, `careful`
+  the second, `tricky` the third, `steady` none) and gives a tell (`tell`, `{0}` his name) that is honest with probability
+  `0.9 − 0.5·skill` (a tricky one 0.15 less; 0.35..0.85): reading it wins most games, guessing about a third.
+
+| game field | meaning |
+|---|---|
+| `type` | `aim`, `rally`, `duel` |
+| `title`, `keys` | the panel's title and keys line (defaults `city.game.title`, `city.game.keys.<type>`) |
+| `rounds`, `need` | throws / turns, and points or hits to win (defaults by type: aim 5/5, rally 1/3, duel 3/1) |
+| `speed`, `zone` | the marker's (ball's) speed in bars a second, the zone's (window's) width 0..1 |
+| `shrink`, `pace` | rally: the window ×shrink (0.5..1) and the flight ÷pace (1..1.5) after each hit |
+| `vs` | the regulars' game (`chess`, `darts`...): somebody who plays it sits in; none: the hero plays alone |
+| `moves` | duel: three `{"k", "power" 1..5, "tell"}` |
+| `win`, `lose`, `draw` | line sets (like `lines`, conditions allowed) shown on the result page, `{0}` the opponent; `--check` and citysim want one for every hour |
+| `collect` | the stamp a win gives; `{opponent}` is the regular's id (`chess_wins/{opponent}`: «chess opponents beaten») |
+| `prize` | items a win gives: `[["item", n]]` |
+| `daily` | games a day (0: no limit); after that the act runs as before, with its own lines |
+| `sounds` | `{"hit", "miss", "end"}` soundscape ids (defaults `rest_clink`/`mouse_clicks`, none, `rest_bell`) |
+
+**Regulars** (`games.json` `regulars`, written to `interiors.json`): `{"<id>": {"name": "npc.<resident>.name", "style",
+"skill" 0..1, "plays": [vs...], "plots": [...] (none: anywhere), "hello", "win", "lose"}}`: real residents of the town
+(names from `Content/Localization/town`, only read), ten of them (Giuseppe, Noam, Anahit, Nils, Lars, Ursula, Kenji, Joost,
+Freja, Hiroshi; lines `city.player.<id>.*`). The game picks one of those who play it on that plot or anywhere (else anyone
+who plays it), by the seed. A win `Notify("win", <act target>)` for the quests besides the usual `do`. Result page:
+`<thing>#<result>` keeps its own place in the lines. Words: `strings/games.json`.
+
+### Wall clocks and light switches
+
+* A clock: any thing with `what=clock` or `what=wall_clock`, or a `board` with `topic=clock`: the act `look_clock`, lines
+  `city.clock.*` with `{time}` (the game's clock, `LyudCity::FillTime`, filled in by the engine at showing). Any line of any
+  act may use `{time}`.
+* A light switch: `what=switch` with `switch=room` (7 m round it), `hall` (15 m) or a number of metres (1..30); a bare
+  `what=switch` is a room. E: if any room lamp (`B.lamp`) of the town's buildings within that radius and on the switch's floor
+  (1.5 m under to 4 m over it) is lit, all go off, else all on, whatever the hours say (`ULyudWindowLights::SwitchLampsNear`:
+  flags read by the lamp pool, no components, no windows). Back to the hours when the hero walks into another plot or starts
+  over. `city.act.switch.on|off|none` on the prompt line.
+* No building declares either yet: the building modules add `B.thing(..., "board", topic="clock")` or
+  `B.thing(..., "machine", what="switch", switch="room")` by a door.
 
 ### How to add content (for the furnishing agents)
 
@@ -365,7 +422,7 @@ counters are closed), then the kind's default (`sit`, `bed_private`, `read_misc`
 * Rules in `Private/City/CityThingsModel.h` (`LyudCity::FModel`: `Load`, `Pick`, `Check`, `Run`, `NextLine`, `Nearest`,
   `NearestThing`, `ScreenFrom`, `NeedsSeatFirst`, `SeatHeight`, `Subtitles`, `SaveState`/`LoadState`,
   `ResetToday`/`ResetState`; also `IsShut`/`ActIndexNow` (the closed act), `GiveStamp`/`CountStamps`/`GrantSet`/`ClearSet`,
-  `FindFree`/`Claim`/`Release`/`ThingsOfPlot`, `WeatherBits`), engine-free; `tools/citysim/run.sh` checks it (121 checks) on `tools/citysim/fixture.json`, made-up
+  `FindFree`/`Claim`/`Release`/`ThingsOfPlot`, `WeatherBits`), engine-free; `tools/citysim/run.sh` checks it (178 checks, the mini-games included) on `tools/citysim/fixture.json`, made-up
   acts in the test itself and the real file when it is built. Save record "CityThings" (pages, daily boards' days, today's
   counts, uses, plots visited); a New Game starts it over.
 * Console: `lyud.City.Things` (count, the nearest five), `lyud.City.Do <thing id>` (run it from anywhere; sitting only
@@ -373,7 +430,9 @@ counters are closed), then the kind's default (`sit`, `bed_private`, `read_misc`
   on to the next such day, same time), `lyud.City.Collections [grant|clear <set|*>]`. Developer mode, group `interiors`:
   things nearby, use the nearest, reset today's limits, 500 rub., `interiors.open_all_hours` (toggle: no hours, days or staff
   asked; no closed acts), `interiors.show_things` (toggle: the labels), `interiors.collections` (the collections' page),
-  `interiors.collections_all` (toggle: every set complete / cleared). Every city quest stage has a `dev` block written by interiors.py (`quest_dev`): a teleport in front of a thing
+  `interiors.collections_all` (toggle: every set complete / cleared), `interiors.game_aim|game_rally|game_duel` (the
+  nearest game of that type, from anywhere), `interiors.game_win` (win the game being played), `interiors.regulars` (the
+  regulars' page; the log lists each one's style, skill, games, plots). Console `lyud.City.Game <thing id>|press [1-3]|win|quit|regulars`. Every city quest stage has a `dev` block written by interiors.py (`quest_dev`): a teleport in front of a thing
   that makes its first objective (`city.q.<quest>.<n>`), the clock an hour after it opens, `lyud.City.Weekday` to a day it is
   open, `Inventory.Earn` for its price, the items a later stage only checks; a stage's own `dev` in
   `tools/city/content/quests.json` wins key by key.
@@ -429,3 +488,13 @@ For the people's life (a townsperson who sits down in the café, reads at a libr
     `lyud.City.Collections`: the page with every set; save, load, the counts stay.
 21. The café at 23:00 (`lyud.Birds.Time 23`): a chair says the chairs are up on the tables (no sitting), the bar is covered;
     with `interiors.open_all_hours` it sits again.
+22. Darts (`Dev.Do interiors.game_aim`, or `lyud.City.Game <thing id>`): the panel with the bar, the marker running; E
+    in the bright middle: `beat bull` in the log, the clink; five throws, then the result page and `game over on ...`.
+23. Table tennis (`interiors.game_rally`): the ball crosses the bar, E as it reaches the window; too early: `beat early`.
+    Against a regular the title says who; first to 3.
+24. Chess at the club (sit at a board, E; or `interiors.game_duel`): the three moves on keys 1-3, the opponent's look under
+    them; win (`interiors.game_win`): the stamp «Соперники за доской» 1 of 6, the regular's last word on the page.
+25. `interiors.regulars`: the page of the ten regulars and what they play. Three chess games today, the fourth: the board's
+    plain lines.
+26. A switch (once a building has one) at night in a lit room: E, the room lamps go out (`switch ...: N lamps off`), again:
+    on; walk into another building: back to the hours. A clock: `E — посмотреть на часы`, the page says the time.

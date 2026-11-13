@@ -848,6 +848,7 @@
  "city.game.table_tennis.win.2": "Победа! {0} кладёт ракетку на стол. Тук-тук-тук, и мир стал размером со стол.",
  "city.game.throw": "Попытка {0} из {1}",
  "city.game.title": "Игра",
+ "city.game.title_vs": "{0} · соперник: {1}",
  "city.game.turn": "Ход {0} из {1}",
  "city.game.vs.badminton": "бадминтон",
  "city.game.vs.billiards": "бильярд",

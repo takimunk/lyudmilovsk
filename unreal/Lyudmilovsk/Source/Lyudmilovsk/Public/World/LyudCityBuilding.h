@@ -54,9 +54,19 @@ public:
 	void SetLamps(uint8 Kind, bool bOn);
 	bool IsLampOn(int32 Lamp) const
 	{
+		if (LampSwitched.IsValidIndex(Lamp) && LampSwitched[Lamp] >= 0)
+		{
+			return LampSwitched[Lamp] == 1;     // the hero's light switch, for now
+		}
 		const uint8 K = LampKinds.IsValidIndex(Lamp) ? LampKinds[Lamp] : 0;
 		return K <= 1 && LampState[K] == 1;
 	}
+	/** The hero's light switch (ULyudWindowLights::SwitchLampsNear): this lamp on (1), off (0) or as the hours say (-1). A flag
+	 *  only, like SetLamps. Not saved. */
+	void SetLampSwitched(int32 Lamp, int8 State);
+	/** Every lamp back to the hours (the hero left the building). */
+	void ClearLampsSwitched() { LampSwitched.Reset(); }
+	bool HasLampsSwitched() const { return LampSwitched.Num() > 0; }
 
 	/** Public rooms are lit from OpenHour to CloseHour (local game time). */
 	UPROPERTY(EditAnywhere, Category = "City") float OpenHour = 8.f;
@@ -89,6 +99,8 @@ private:
 
 	UPROPERTY(Transient) TObjectPtr<UTexture2D> LightTex;
 	int8 LampState[2] = {-1, -1};
+	/** Per lamp, made on the first switch (empty: none switched): -1 as the hours say, 0 off, 1 on. */
+	TArray<int8> LampSwitched;
 	TBitArray<> Owned;
 	UPROPERTY(Transient) TObjectPtr<UMaterialInstanceDynamic> WindowMID;
 	/** BGRA texels: R = light (the shader's red channel is B in memory order: we write [2]), G = warmth, B = curtain. */
@@ -132,6 +144,17 @@ public:
 	UFUNCTION(BlueprintCallable, Category = "City") TArray<FString> AllFlats() const;
 	UFUNCTION(BlueprintPure, Category = "City") bool IsNight() const { return bNight; }
 
+	/**
+	 * A light switch in a room (ULyudCityThings, a thing with "switch"): the room lamps of the town's buildings within RadiusCm
+	 * of At and within FloorCm of its height (its floor) go on (bOn) or off whatever the hours say, until ClearSwitched. Only
+	 * flags (the lamp pool reads them on its next pass, asked for at once); no windows, no components. Returns how many lamps.
+	 */
+	int32 SwitchLampsNear(const FVector& At, float RadiusCm, float FloorCm, bool bOn);
+	/** Of the lamps SwitchLampsNear would switch: how many there are and how many are lit now. */
+	void CountLampsNear(const FVector& At, float RadiusCm, float FloorCm, int32& OutLamps, int32& OutLit) const;
+	/** Every switched lamp back to the hours (the hero has left the building, a new game). */
+	void ClearSwitched();
+
 	void Register(ALyudCityBuilding* B);
 	void Unregister(ALyudCityBuilding* B);
 	FString Report() const;
@@ -156,6 +179,7 @@ private:
 	TMap<FString, FSlotRef> WindowIndex;               // "<plot>/<id>" -> slot
 	TMap<FString, TArray<FSlotRef>> FlatIndex;          // "<plot>/<flat>" -> slots
 	TSet<TWeakObjectPtr<ALyudCityBuilding>> Pending;   // buildings with texels changed by SetFlatLit / SetWindowLit
+	TArray<TWeakObjectPtr<ALyudCityBuilding>> Switched; // buildings with lamps the hero has switched (SwitchLampsNear)
 	UPROPERTY(Transient) TArray<TObjectPtr<class UPointLightComponent>> LampPool;
 	TArray<FLampRef> PoolLamp;                          // which building lamp each pool light shows (Lamp -1: none)
 	TWeakObjectPtr<AActor> PoolOwner;

@@ -1,6 +1,7 @@
 #include "City/LyudCityThings.h"
 
 #include "CityThingsModel.h"
+#include "City/SLyudCityGame.h"
 #include "City/SLyudCityPage.h"
 #include "Audio/LyudSoundscape.h"
 #include "Camera/CameraActor.h"
@@ -36,6 +37,7 @@
 #include "UI/LyudGameScreen.h"
 #include "UI/LyudQuests.h"
 #include "Weather/LyudWeather.h"
+#include "World/LyudCityBuilding.h"
 #include <atomic>
 #if __has_include("Dev/LyudDev.h")
 #include "Dev/LyudDev.h"
@@ -80,6 +82,8 @@ namespace LyudCityThingsImpl
 	constexpr int32 JumpStepMaxMinutes = 15;
 	/** A screen show: at most this many subtitles, each up for a time by its length. */
 	constexpr int32 ShowMaxParts = 5;
+	/** A light switch reaches the lamps up to this much over it (cm): the ceiling of its room, not the floor above. */
+	constexpr float SwitchFloor = 400.f;
 
 	FString Str(const std::string& S)
 	{
@@ -211,6 +215,17 @@ void ULyudCityThings::OnWorldBeginPlay(UWorld& InWorld)
 
 void ULyudCityThings::Deinitialize()
 {
+	EndGame(false);
+	if (GamePanel.IsValid() && bGamePanelAdded)
+	{
+		UWorld* World = GetWorld();
+		if (UGameViewportClient* Viewport = World ? World->GetGameViewport() : nullptr)
+		{
+			Viewport->RemoveViewportWidgetContent(GamePanel.ToSharedRef());
+		}
+	}
+	GamePanel.Reset();
+	bGamePanelAdded = false;
 	EndShow();
 	EndLie(false);
 	UnblockMove();
@@ -320,6 +335,12 @@ void ULyudCityThings::StartOver()
 	Saved.Reset();
 	GreetedPlot = NAME_None;
 	PlotThing = -1;
+	EndGame(false);
+	if (ULyudWindowLights* Lights = ULyudWindowLights::Get(this))
+	{
+		Lights->ClearSwitched();
+	}
+	SwitchedPlot = NAME_None;
 }
 
 void ULyudCityThings::OnGameSaving_Implementation()
@@ -414,6 +435,15 @@ void ULyudCityThings::TrackPlot(const AHeroCharacter* Hero)
 	PlotThing = Near;
 	GreetedPlot = NAME_None;
 	const std::string& Plot = Model->Things[Near].Plot;
+	if (!SwitchedPlot.IsNone() && SwitchedPlot != LyudCityThingsImpl::Name(Plot))
+	{
+		// the lamps he switched in the last building go back to their hours
+		if (ULyudWindowLights* Lights = ULyudWindowLights::Get(this))
+		{
+			Lights->ClearSwitched();
+		}
+		SwitchedPlot = NAME_None;
+	}
 	if (!Plot.empty())
 	{
 		UE_LOG(LogLyudCity, Verbose, TEXT("CityThings: in %s"), *LyudCityThingsImpl::Str(Plot));
@@ -927,10 +957,24 @@ void ULyudCityThings::Run(int32 Thing, bool bFromConsole, bool bFromSeat)
 	{
 		Greet(Thing);
 	}
+	if (!O.bClosed && LyudCity::FModel::SwitchRadiusCm(T) > 0.0)
+	{
+		FlipSwitch(Thing);
+	}
 
 	AHeroCharacter* Hero = Cast<AHeroCharacter>(UGameplayStatics::GetPlayerPawn(World, 0));
 	APlayerController* PC = Hero ? Cast<APlayerController>(Hero->GetController()) : nullptr;
 	ULyudInventoryUI* UI = ULyudInventoryUI::Get(this);
+	if (O.Game >= 0)
+	{
+		// a mini-game instead of the page: seated first when the act sits (a chess table) and the hero is at it
+		if (Hero && O.Pose == "sit" && !Hero->IsSeated() && FVector::Dist(Hero->GetActorLocation(), At) < 400.f)
+		{
+			Sit(Thing, Hero, false);
+		}
+		BeginGame(Thing, O.Minutes, Hero && Hero->IsSeated() && SeatedOn == Thing);
+		return;
+	}
 	if (!O.Shop.empty())
 	{
 		const std::vector<LyudCity::FGood>* Stock = Model->FindShop(O.Shop);
@@ -973,7 +1017,7 @@ void ULyudCityThings::Run(int32 Thing, bool bFromConsole, bool bFromSeat)
 			bSeated = Sit(Thing, Hero, false);
 		}
 		ClosePage();
-		StartShow(Thing, Title, O.Line.empty() ? FText::GetEmpty() : LyudText::Get(LyudCityThingsImpl::Str(O.Line)), O.Minutes, bSeated);
+		StartShow(Thing, Title, O.Line.empty() ? FText::GetEmpty() : LineText(LyudCityThingsImpl::Str(O.Line)), O.Minutes, bSeated);
 		return;
 	}
 	const bool bLie = bNear && O.Pose == "lie" && Sit(Thing, Hero, true);
@@ -1007,7 +1051,7 @@ void ULyudCityThings::Run(int32 Thing, bool bFromConsole, bool bFromSeat)
 		PageTitle = Title;
 		PageFrom = Hero ? Hero->GetActorLocation() : FVector::ZeroVector;
 		PageFrame = GFrameCounter;
-		ShowPage(PageTitle, LyudText::Get(LyudCityThingsImpl::Str(O.Line)), PageLeft > 0);
+		ShowPage(PageTitle, LineText(LyudCityThingsImpl::Str(O.Line)), PageLeft > 0);
 		SetPrompted(-1);
 	}
 }
@@ -1177,6 +1221,12 @@ void ULyudCityThings::Tick(float DeltaTime)
 	{
 		TickLie(Hero, PC, bTalk);
 	}
+	if (IsPlayingGame())
+	{
+		SetPrompted(-1);
+		TickGame(Hero, PC, bTalk, DeltaTime);
+		return;
+	}
 	if (ShowAt >= 0)
 	{
 		SetPrompted(-1);
@@ -1220,7 +1270,7 @@ void ULyudCityThings::Tick(float DeltaTime)
 				}
 				else
 				{
-					ShowPage(PageTitle, LyudText::Get(LyudCityThingsImpl::Str(Next)), PageLeft > 0);
+					ShowPage(PageTitle, LineText(LyudCityThingsImpl::Str(Next)), PageLeft > 0);
 					if (ULyudSoundscapeSubsystem* Sound = ULyudSoundscapeSubsystem::Get(this))
 					{
 						Sound->PlayEffect(TEXT("page_turn"), ThingLocation(PageThing));
@@ -1455,6 +1505,449 @@ void ULyudCityThings::DropDeadHolds()
 	}
 }
 
+// --- the words of a line, light switches
+
+FText ULyudCityThings::LineText(const FString& Key) const
+{
+	const FText Text = LyudText::Get(Key);
+	const FString& Words = Text.ToString();
+	if (!Words.Contains(TEXT("{time}")))
+	{
+		return Text;
+	}
+	// a wall clock: the game's time, now
+	const LyudCity::FWhen Now = LyudCityThingsImpl::When(GetWorld(), false);
+	return FText::FromString(LyudCityThingsImpl::Str(LyudCity::FillTime(std::string(TCHAR_TO_UTF8(*Words)), Now.Hour)));
+}
+
+void ULyudCityThings::Note(const FText& What)
+{
+	UE_LOG(LogLyudCity, Display, TEXT("CityThings: note: %s"), *What.ToString());
+	UWorld* World = GetWorld();
+	ULyudInventoryUI* UI = ULyudInventoryUI::Get(this);
+	if (!World || !UI)
+	{
+		return;
+	}
+	Prompted = -2;     // the next SetPrompted writes the line again
+	RefusedUntil = World->GetTimeSeconds() + 2.0;
+	UI->SetPrompt(this, What);
+}
+
+void ULyudCityThings::FlipSwitch(int32 Thing)
+{
+	ULyudWindowLights* Lights = ULyudWindowLights::Get(this);
+	if (!Model || !Lights || Thing < 0 || Thing >= NumThings())
+	{
+		return;
+	}
+	const LyudCity::FThing& T = Model->Things[(size_t)Thing];
+	const float Radius = (float)LyudCity::FModel::SwitchRadiusCm(T);
+	const FVector At = ThingLocation(Thing);
+	int32 Lamps = 0;
+	int32 Lit = 0;
+	Lights->CountLampsNear(At, Radius, LyudCityThingsImpl::SwitchFloor, Lamps, Lit);
+	if (Lamps == 0)
+	{
+		UE_LOG(LogLyudCity, Display, TEXT("CityThings: switch %s: no lamps within %.0f m"), *LyudCityThingsImpl::Str(T.Id), Radius / 100.f);
+		Note(LyudText::Get(TEXT("city.act.switch.none")));
+		return;
+	}
+	// anything lit: all off; all dark: all on (for this visit: back to the hours when he walks into another plot)
+	const bool bOn = Lit == 0;
+	const int32 N = Lights->SwitchLampsNear(At, Radius, LyudCityThingsImpl::SwitchFloor, bOn);
+	SwitchedPlot = LyudCityThingsImpl::Name(T.Plot);
+	UE_LOG(LogLyudCity, Display, TEXT("CityThings: switch %s: %d lamps %s"), *LyudCityThingsImpl::Str(T.Id), N, bOn ? TEXT("on") : TEXT("off"));
+	Note(LyudText::Get(bOn ? TEXT("city.act.switch.on") : TEXT("city.act.switch.off")));
+}
+
+// --- mini-games (docs/city_interiors.md "Mini-games"): the model plays, this draws the panel, polls the keys and pays out
+
+bool ULyudCityThings::IsPlayingGame() const
+{
+	return Playing.IsValid() && Playing->Def >= 0;
+}
+
+void ULyudCityThings::BeginGame(int32 Thing, int32 Minutes, bool bSeated)
+{
+	UWorld* World = GetWorld();
+	if (!World || !Model || Thing < 0 || Thing >= NumThings())
+	{
+		return;
+	}
+	if (!Playing.IsValid())
+	{
+		Playing = MakePimpl<LyudCity::FGameState>();
+	}
+	if (!Model->StartGame(Thing, LyudCityThingsImpl::When(World, false), *Playing))
+	{
+		UE_LOG(LogLyudCity, Warning, TEXT("CityThings: %s has no game"), *LyudCityThingsImpl::Str(Model->Things[(size_t)Thing].Id));
+		return;
+	}
+	EndShow();
+	ClosePage();
+	SetPrompted(-1);
+	const AHeroCharacter* Hero = Cast<AHeroCharacter>(UGameplayStatics::GetPlayerPawn(World, 0));
+	GameFrom = Hero ? Hero->GetActorLocation() : FVector::ZeroVector;
+	bGameSeated = bSeated;
+	GameMinutes = FMath::Max(0, Minutes);
+	GameFrame = GFrameCounter;
+	GameBeatShown = -1;
+	const LyudCity::FGameDef* D = Model->GameDef(Playing->Def);
+	const LyudCity::FRegular* R = Model->RegularOf(*Playing);
+	const FText Title = LyudText::Get(LyudCityThingsImpl::Str(D->Title));
+	GameOpponent = R ? LyudText::Get(LyudCityThingsImpl::Str(R->Name)) : FText::GetEmpty();
+	GameTitle = R ? LyudText::Get(TEXT("city.game.title_vs"), { FStringFormatArg(Title.ToString()), FStringFormatArg(GameOpponent.ToString()) }) : Title;
+	// the panel: made once, kept in the viewport (collapsed between games)
+	UGameViewportClient* Viewport = World->GetGameViewport();
+	if (!GamePanel.IsValid())
+	{
+		GamePanel = SNew(SLyudCityGame);
+	}
+	if (Viewport && !bGamePanelAdded)
+	{
+		Viewport->AddViewportWidgetContent(GamePanel.ToSharedRef(), 61);
+		bGamePanelAdded = true;
+	}
+	GamePanel->SetVisibility(EVisibility::HitTestInvisible);
+	GamePanel->SetMode(D->Type == LyudCity::EGameType::Duel);
+	GamePanel->SetTitle(GameTitle);
+	GamePanel->SetKeys(LyudText::Get(LyudCityThingsImpl::Str(D->Keys.empty() ? std::string("city.game.title") : D->Keys)));
+	UpdateGamePanel(true);
+	UE_LOG(LogLyudCity, Display, TEXT("CityThings: game %s on %s against %s (seed %llu, %d min)"),
+		D->Type == LyudCity::EGameType::Aim ? TEXT("aim") : D->Type == LyudCity::EGameType::Rally ? TEXT("rally") : TEXT("duel"),
+		*LyudCityThingsImpl::Str(Model->Things[(size_t)Thing].Id), R ? *LyudCityThingsImpl::Str(R->Id) : TEXT("nobody"),
+		(unsigned long long)Playing->Seed, GameMinutes);
+}
+
+void ULyudCityThings::TickGame(AHeroCharacter* Hero, APlayerController* PC, bool bTalk, float DeltaTime)
+{
+	UWorld* World = GetWorld();
+	ULyudInventoryUI* UI = ULyudInventoryUI::Get(World);
+	// over without a result when he walks off, gets up, stops being the hero or a screen comes up
+	if (!World || !Model || !Playing.IsValid() || !Hero || !PC || !UI || UI->IsOpen() || (bGameSeated && !Hero->IsSeated())
+		|| (!bGameSeated && FVector::Dist(Hero->GetActorLocation(), GameFrom) > LyudCityThingsImpl::PageWalkAway))
+	{
+		EndGame(false);
+		return;
+	}
+	LyudCity::FGameState& G = *Playing;
+	const LyudCity::FGameDef* D = Model->GameDef(G.Def);
+	if (!D)
+	{
+		EndGame(false);
+		return;
+	}
+	Model->TickGame(G, (double)DeltaTime);
+	// the keys are polled, never consumed (the talk keeps E while somebody is in front)
+	if (!bTalk && GFrameCounter != GameFrame && !G.bOver)
+	{
+		if (D->Type == LyudCity::EGameType::Duel)
+		{
+			const int32 Choice = PC->WasInputKeyJustPressed(EKeys::One) ? 0 : PC->WasInputKeyJustPressed(EKeys::Two) ? 1
+				: PC->WasInputKeyJustPressed(EKeys::Three) ? 2 : -1;
+			if (Choice >= 0)
+			{
+				Model->PressGame(G, Choice);
+			}
+		}
+		else if (PC->WasInputKeyJustPressed(EKeys::E))
+		{
+			Model->PressGame(G, -1);
+		}
+	}
+	const bool bBeat = G.BeatSerial != GameBeatShown;
+	if (bBeat && G.Beat != LyudCity::EGameBeat::None)
+	{
+		const bool bMiss = G.Beat == LyudCity::EGameBeat::Miss || G.Beat == LyudCity::EGameBeat::Early || G.Beat == LyudCity::EGameBeat::Late;
+		const std::string& Pool = bMiss ? D->SoundMiss : D->SoundHit;
+		ULyudSoundscapeSubsystem* Sound = Pool.empty() ? nullptr : ULyudSoundscapeSubsystem::Get(this);
+		if (Sound)
+		{
+			Sound->PlayEffect(LyudCityThingsImpl::Name(Pool), ThingLocation(G.Thing));
+		}
+		UE_LOG(LogLyudCity, Display, TEXT("CityThings: game beat %s %d:%d round %d"), UTF8_TO_TCHAR(LyudCity::GameBeatName(G.Beat)), G.Score, G.OppScore, G.Round);
+	}
+	UpdateGamePanel(bBeat);
+	if (G.bOver && G.Clock >= G.Wait)
+	{
+		FinishGame();
+	}
+}
+
+void ULyudCityThings::UpdateGamePanel(bool bTexts)
+{
+	if (!GamePanel.IsValid() || !Playing.IsValid() || !Model)
+	{
+		return;
+	}
+	const LyudCity::FGameState& G = *Playing;
+	const LyudCity::FGameDef* D = Model->GameDef(G.Def);
+	if (!D)
+	{
+		return;
+	}
+	float Marker = 0.f, ZoneFrom = 0.f, ZoneTo = 0.f, InnerFrom = 0.f, InnerTo = 0.f;
+	if (Model->GameBar(G, Marker, ZoneFrom, ZoneTo, InnerFrom, InnerTo))
+	{
+		GamePanel->SetBar(Marker, ZoneFrom, ZoneTo, InnerFrom, InnerTo, D->Type == LyudCity::EGameType::Rally);
+	}
+	if (!bTexts)
+	{
+		return;
+	}
+	// the texts only when something happened (a beat, the start): built here, never per frame
+	GameBeatShown = G.BeatSerial;
+	const LyudCity::FRegular* R = Model->RegularOf(G);
+	const bool bDuel = D->Type == LyudCity::EGameType::Duel;
+	const bool bRally = D->Type == LyudCity::EGameType::Rally;
+	const FString Opp = GameOpponent.ToString();
+	const int32 Next = FMath::Min(G.Round + 1, FMath::Max(1, D->Rounds));
+	FString Status;
+	if (bDuel)
+	{
+		Status = LyudText::Get(TEXT("city.game.turn"), { FStringFormatArg(Next), FStringFormatArg(D->Rounds) }).ToString();
+	}
+	else if (!bRally)
+	{
+		Status = LyudText::Get(TEXT("city.game.throw"), { FStringFormatArg(Next), FStringFormatArg(D->Rounds) }).ToString();
+	}
+	else if (R)
+	{
+		Status = LyudText::Get(TEXT("city.game.first_to"), { FStringFormatArg(D->Need) }).ToString();
+	}
+	const FText Score = R || bDuel
+		? LyudText::Get(TEXT("city.game.score_vs"), { FStringFormatArg(G.Score), FStringFormatArg(G.OppScore), FStringFormatArg(Opp) })
+		: LyudText::Get(bRally ? TEXT("city.game.score_hits") : TEXT("city.game.score_solo"), { FStringFormatArg(bRally ? G.Hits : G.Score), FStringFormatArg(D->Need) });
+	GamePanel->SetStatus(FText::FromString(Status.IsEmpty() ? Score.ToString() : Status + TEXT("   ·   ") + Score.ToString()));
+	// what just happened (or the opponent's hello), then in a duel the look that may betray the next move
+	auto MoveName = [D](int32 Move) -> FString
+	{
+		return Move >= 0 && Move < (int32)D->Moves.size() ? LyudText::Get(LyudCityThingsImpl::Str(D->Moves[(size_t)Move].Key)).ToString() : FString();
+	};
+	FString Hint;
+	if (G.Beat != LyudCity::EGameBeat::None)
+	{
+		Hint = LyudText::Get(FString(TEXT("city.game.beat.")) + UTF8_TO_TCHAR(LyudCity::GameBeatName(G.Beat)),
+			{ FStringFormatArg(MoveName(G.HeroMove)), FStringFormatArg(MoveName(G.LastOpp)), FStringFormatArg(Opp) }).ToString();
+	}
+	else if (R && !R->Hello.empty())
+	{
+		Hint = LyudText::Get(TEXT("city.game.says"), { FStringFormatArg(Opp), FStringFormatArg(LyudText::Get(LyudCityThingsImpl::Str(R->Hello)).ToString()) }).ToString();
+	}
+	if (bDuel && !G.bOver && G.Tell >= 0 && G.Tell < (int32)D->Moves.size() && !D->Moves[(size_t)G.Tell].Tell.empty())
+	{
+		const FString Tell = LyudText::Get(LyudCityThingsImpl::Str(D->Moves[(size_t)G.Tell].Tell), { FStringFormatArg(Opp) }).ToString();
+		Hint = Hint.IsEmpty() ? Tell : Hint + TEXT("\n") + Tell;
+	}
+	GamePanel->SetHint(FText::FromString(Hint));
+	if (bDuel)
+	{
+		for (int32 I = 0; I < 3; ++I)
+		{
+			const int32 Power = I < (int32)D->Moves.size() ? FMath::Max(1, D->Moves[(size_t)I].Power) : 1;
+			GamePanel->SetMove(I, LyudText::Get(TEXT("city.game.move_option"), { FStringFormatArg(I + 1), FStringFormatArg(MoveName(I)), FStringFormatArg(Power) }));
+		}
+	}
+}
+
+void ULyudCityThings::FinishGame()
+{
+	UWorld* World = GetWorld();
+	if (!World || !Model || !Playing.IsValid())
+	{
+		return;
+	}
+	const LyudCity::FGameDef* D = Model->GameDef(Playing->Def);
+	const int32 Thing = Playing->Thing;
+	const int32 Score = Playing->Score, OppScore = Playing->OppScore;
+	const LyudCity::FGameEnd End = Model->FinishGame(*Playing, LyudCityThingsImpl::When(World));
+	if (!D || End.Result == LyudCity::EGameResult::None)
+	{
+		EndGame(false);
+		return;
+	}
+	UE_LOG(LogLyudCity, Display, TEXT("CityThings: game over on %s: %s %d:%d line=%s"), *LyudCityThingsImpl::Str(Model->Things[(size_t)Thing].Id),
+		UTF8_TO_TCHAR(LyudCity::GameResultName(End.Result)), Score, OppScore, *LyudCityThingsImpl::Str(End.Line));
+	if (ULyudInventory* Inv = ULyudInventory::Get(this))
+	{
+		for (const std::pair<std::string, int>& P : End.Prize)
+		{
+			const FName Item = LyudCityThingsImpl::Name(P.first);
+			if (ULyudInventory::FindDef(Item))
+			{
+				Inv->Add(Item, P.second);
+			}
+		}
+	}
+	if (!End.NewStamps.empty())
+	{
+		TArray<FString> Fresh;
+		for (const std::string& Stamp : End.NewStamps)
+		{
+			Fresh.Add(LyudCityThingsImpl::Str(Stamp));
+		}
+		AnnounceStamps(Fresh);
+	}
+	if (End.Result == LyudCity::EGameResult::Win)
+	{
+		if (!D->SoundEnd.empty())
+		{
+			if (ULyudSoundscapeSubsystem* Sound = ULyudSoundscapeSubsystem::Get(this))
+			{
+				Sound->PlayEffect(LyudCityThingsImpl::Name(D->SoundEnd), ThingLocation(Thing));
+			}
+		}
+		ULyudQuests::Notify(this, TEXT("win"), LyudCityThingsImpl::Str(End.Target));
+	}
+	const bool bSeated = bGameSeated;
+	const int32 Minutes = GameMinutes;
+	const FString Opp = GameOpponent.ToString();
+	EndGame(true);
+	// the result page: the line (its {0} the opponent), then what the opponent says
+	FString Body = End.Line.empty() ? FString() : LyudText::Get(LyudCityThingsImpl::Str(End.Line), { FStringFormatArg(Opp) }).ToString();
+	if (!End.Says.empty())
+	{
+		const FString Says = LyudText::Get(TEXT("city.game.says"), { FStringFormatArg(Opp), FStringFormatArg(LyudText::Get(LyudCityThingsImpl::Str(End.Says)).ToString()) }).ToString();
+		Body = Body.IsEmpty() ? Says : Body + TEXT("\n\n") + Says;
+	}
+	const APawn* Pawn = UGameplayStatics::GetPlayerPawn(World, 0);
+	PageThing = -1;
+	PageLeft = 0;
+	PageTitle = GameTitle;
+	PageFrom = Pawn ? Pawn->GetActorLocation() : FVector::ZeroVector;
+	PageFrame = GFrameCounter;
+	if (!Body.IsEmpty())
+	{
+		ShowPage(PageTitle, FText::FromString(Body), false);
+	}
+	if (Minutes > 0)
+	{
+		JumpMinutes(Minutes, !bSeated);
+	}
+}
+
+void ULyudCityThings::EndGame(bool bFinished)
+{
+	if (Playing.IsValid())
+	{
+		if (!bFinished && Playing->Def >= 0)
+		{
+			UE_LOG(LogLyudCity, Display, TEXT("CityThings: game left unfinished"));
+		}
+		*Playing = LyudCity::FGameState();
+	}
+	if (GamePanel.IsValid())
+	{
+		GamePanel->SetVisibility(EVisibility::Collapsed);
+	}
+	GameBeatShown = -1;
+}
+
+bool ULyudCityThings::StartGameAt(const FString& ThingId)
+{
+	const int32 Thing = Model ? Model->FindThing(std::string(TCHAR_TO_UTF8(*ThingId))) : -1;
+	const LyudCity::FAct* A = Thing >= 0 ? Model->ActOf(Thing) : nullptr;
+	if (!A || !Model->GameOfThing(Thing))
+	{
+		UE_LOG(LogLyudCity, Warning, TEXT("CityThings: %s: no such thing, or its act has no game"), *ThingId);
+		return false;
+	}
+	BeginGame(Thing, A->Minutes, false);
+	return IsPlayingGame();
+}
+
+bool ULyudCityThings::StartNearestGame(const FString& Type)
+{
+	const APawn* Pawn = UGameplayStatics::GetPlayerPawn(GetWorld(), 0);
+	if (!Model || !Pawn)
+	{
+		return false;
+	}
+	const LyudCity::EGameType Want = LyudCity::GameTypeOf(std::string(TCHAR_TO_UTF8(*Type)));
+	const FVector From = Pawn->GetActorLocation();
+	int32 Best = -1;
+	double BestD = 0.0;
+	// developer mode only: one pass over the things
+	for (int32 I = 0; I < NumThings(); ++I)
+	{
+		const LyudCity::FGameDef* D = Model->GameOfThing(I);
+		const double Dist = D && D->Type == Want ? FVector::DistSquared(ThingLocation(I), From) : -1.0;
+		if (Dist >= 0.0 && (Best < 0 || Dist < BestD))
+		{
+			Best = I;
+			BestD = Dist;
+		}
+	}
+	if (Best < 0)
+	{
+		UE_LOG(LogLyudCity, Warning, TEXT("CityThings: no %s game anywhere"), *Type);
+		return false;
+	}
+	return StartGameAt(LyudCityThingsImpl::Str(Model->Things[(size_t)Best].Id));
+}
+
+void ULyudCityThings::PressGame(int32 Choice)
+{
+	if (IsPlayingGame())
+	{
+		Model->PressGame(*Playing, Choice);
+	}
+}
+
+void ULyudCityThings::WinGame()
+{
+	if (IsPlayingGame())
+	{
+		Model->WinGame(*Playing);
+		UE_LOG(LogLyudCity, Display, TEXT("CityThings: game won by the developer"));
+	}
+}
+
+void ULyudCityThings::QuitGame()
+{
+	EndGame(false);
+}
+
+void ULyudCityThings::ShowRegulars(bool bPage)
+{
+	if (!Model)
+	{
+		return;
+	}
+	const FString Sep = LyudText::Get(TEXT("city.game.list_sep")).ToString();
+	FString Body;
+	for (const LyudCity::FRegular& R : Model->Regulars)
+	{
+		FString Plays, Plots;
+		for (const std::string& W : R.Plays)
+		{
+			Plays += (Plays.IsEmpty() ? FString() : Sep) + LyudText::Get(TEXT("city.game.vs.") + LyudCityThingsImpl::Str(W)).ToString();
+		}
+		for (const std::string& P : R.Plots)
+		{
+			Plots += (Plots.IsEmpty() ? FString() : FString(TEXT(" "))) + LyudCityThingsImpl::Str(P);
+		}
+		const FString Name = LyudText::Get(LyudCityThingsImpl::Str(R.Name)).ToString();
+		UE_LOG(LogLyudCity, Display, TEXT("CityThings: regular %s (%s): %s, skill %.2f, plays %s, at %s"), *LyudCityThingsImpl::Str(R.Id), *Name,
+			*LyudCityThingsImpl::Str(R.Style), R.Skill, *Plays, Plots.IsEmpty() ? TEXT("anywhere") : *Plots);
+		Body += (Body.IsEmpty() ? FString() : FString(TEXT("\n"))) + LyudText::Get(TEXT("city.game.regulars.line"), { FStringFormatArg(Name),
+			FStringFormatArg(LyudText::Get(TEXT("city.game.style.") + LyudCityThingsImpl::Str(R.Style)).ToString()), FStringFormatArg(Plays) }).ToString();
+	}
+	const APawn* Pawn = UGameplayStatics::GetPlayerPawn(GetWorld(), 0);
+	if (!bPage || !Pawn || NumThings() == 0 || ShowAt >= 0 || IsPlayingGame() || Body.IsEmpty())
+	{
+		return;
+	}
+	PageThing = -1;
+	PageLeft = 0;
+	PageTitle = LyudText::Get(TEXT("city.game.regulars.title"));
+	PageFrom = Pawn->GetActorLocation();
+	PageFrame = GFrameCounter;
+	ShowPage(PageTitle, FText::FromString(Body), false);
+	SetPrompted(-1);
+}
+
 // --- console
 
 static FAutoConsoleCommandWithWorldAndArgs GCityThingsList(TEXT("lyud.City.Things"),
@@ -1533,6 +2026,37 @@ static FAutoConsoleCommandWithWorldAndArgs GCityCollections(TEXT("lyud.City.Coll
 		Things->ShowCollections(true);
 	}));
 
+static FAutoConsoleCommandWithWorldAndArgs GCityGame(TEXT("lyud.City.Game"),
+	TEXT("lyud.City.Game <thing id> | press [1-3] | win | quit | regulars: starts the mini-game of a thing (darts, chess...) wherever the hero is; press E (or a duel's move 1..3); win it at once; leave it; list the regulars"),
+	FConsoleCommandWithWorldAndArgsDelegate::CreateLambda([](const TArray<FString>& Args, UWorld* World)
+	{
+		ULyudCityThings* Things = ULyudCityThings::Get(World);
+		if (!Things || Args.Num() == 0)
+		{
+			return;
+		}
+		if (Args[0] == TEXT("press"))
+		{
+			Things->PressGame(Args.Num() >= 2 ? FCString::Atoi(*Args[1]) - 1 : -1);
+		}
+		else if (Args[0] == TEXT("win"))
+		{
+			Things->WinGame();
+		}
+		else if (Args[0] == TEXT("quit"))
+		{
+			Things->QuitGame();
+		}
+		else if (Args[0] == TEXT("regulars"))
+		{
+			Things->ShowRegulars(true);
+		}
+		else
+		{
+			Things->StartGameAt(Args[0]);
+		}
+	}));
+
 // --- developer mode (docs/dev_mode.md), when it is in the tree
 
 #if LYUD_CITY_THINGS_DEV
@@ -1601,6 +2125,41 @@ static LyudDev::FAutoAction GCityDevCollectAll(TEXT("interiors.collections_all")
 		const ULyudCityThings* Things = ULyudCityThings::Get(W);
 		return Things && Things->AreCollectionsComplete();
 	});
+static LyudDev::FAutoAction GCityDevGameAim(TEXT("interiors.game_aim"), TEXT("interiors"), TEXT("dev.action.interiors.game_aim"), [](UWorld* W)
+{
+	if (ULyudCityThings* Things = ULyudCityThings::Get(W))
+	{
+		Things->StartNearestGame(TEXT("aim"));
+	}
+});
+static LyudDev::FAutoAction GCityDevGameRally(TEXT("interiors.game_rally"), TEXT("interiors"), TEXT("dev.action.interiors.game_rally"), [](UWorld* W)
+{
+	if (ULyudCityThings* Things = ULyudCityThings::Get(W))
+	{
+		Things->StartNearestGame(TEXT("rally"));
+	}
+});
+static LyudDev::FAutoAction GCityDevGameDuel(TEXT("interiors.game_duel"), TEXT("interiors"), TEXT("dev.action.interiors.game_duel"), [](UWorld* W)
+{
+	if (ULyudCityThings* Things = ULyudCityThings::Get(W))
+	{
+		Things->StartNearestGame(TEXT("duel"));
+	}
+});
+static LyudDev::FAutoAction GCityDevGameWin(TEXT("interiors.game_win"), TEXT("interiors"), TEXT("dev.action.interiors.game_win"), [](UWorld* W)
+{
+	if (ULyudCityThings* Things = ULyudCityThings::Get(W))
+	{
+		Things->WinGame();
+	}
+});
+static LyudDev::FAutoAction GCityDevRegulars(TEXT("interiors.regulars"), TEXT("interiors"), TEXT("dev.action.interiors.regulars"), [](UWorld* W)
+{
+	if (ULyudCityThings* Things = ULyudCityThings::Get(W))
+	{
+		Things->ShowRegulars(true);
+	}
+});
 #endif
 
 #undef LYUD_CITY_THINGS_DEV

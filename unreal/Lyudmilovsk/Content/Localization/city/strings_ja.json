@@ -848,6 +848,7 @@
  "city.game.table_tennis.win.2": "{0}に勝った！カン、カン、カン。世界が卓球台の大きさになった。",
  "city.game.throw": "{1}回中{0}回目",
  "city.game.title": "ゲーム",
+ "city.game.title_vs": "{0}・相手：{1}",
  "city.game.turn": "{1}手中{0}手目",
  "city.game.vs.badminton": "バドミントン",
  "city.game.vs.billiards": "ビリヤード",

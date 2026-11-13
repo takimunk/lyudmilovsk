@@ -218,6 +218,19 @@ void ALyudCityBuilding::SetLamps(uint8 Kind, bool bOn)
 	LampState[Kind] = int8(bOn);
 }
 
+void ALyudCityBuilding::SetLampSwitched(int32 Lamp, int8 State)
+{
+	if (!LampPositions.IsValidIndex(Lamp))
+	{
+		return;
+	}
+	if (LampSwitched.Num() != LampPositions.Num())
+	{
+		LampSwitched.Init(-1, LampPositions.Num());
+	}
+	LampSwitched[Lamp] = State < 0 ? int8(-1) : (State > 0 ? int8(1) : int8(0));
+}
+
 void ALyudCityBuilding::SetSlot(int32 Slot, float Level)
 {
 	if (Slot < 0 || Slot >= LightTexSize * LightTexSize || !Texels.IsValidIndex(TexelOf(Slot) + 2))
@@ -355,9 +368,91 @@ void ULyudWindowLights::FlushPending()
 	Pending.Reset();
 }
 
+void ULyudWindowLights::CountLampsNear(const FVector& At, float RadiusCm, float FloorCm, int32& OutLamps, int32& OutLit) const
+{
+	OutLamps = 0;
+	OutLit = 0;
+	for (const TWeakObjectPtr<ALyudCityBuilding>& W : Buildings)
+	{
+		const ALyudCityBuilding* B = W.Get();
+		if (!B || B->LampPositions.Num() == 0 || !B->Shell
+			|| FVector::DistSquared(B->Shell->Bounds.Origin, At) > FMath::Square((double)RadiusCm + B->Shell->Bounds.SphereRadius))
+		{
+			continue;
+		}
+		const FTransform& X = B->GetActorTransform();
+		for (int32 i = 0; i < B->LampPositions.Num(); ++i)
+		{
+			const FVector P = X.TransformPosition(B->LampPositions[i]);
+			// a lamp hangs over the floor the switch is on: up to FloorCm over the switch, a little under it
+			const double Dz = P.Z - At.Z;
+			if (Dz < -150.0 || Dz > (double)FloorCm || FVector::DistSquared2D(P, At) > FMath::Square((double)RadiusCm))
+			{
+				continue;
+			}
+			++OutLamps;
+			OutLit += B->IsLampOn(i) ? 1 : 0;
+		}
+	}
+}
+
+int32 ULyudWindowLights::SwitchLampsNear(const FVector& At, float RadiusCm, float FloorCm, bool bOn)
+{
+	int32 N = 0;
+	for (const TWeakObjectPtr<ALyudCityBuilding>& W : Buildings)
+	{
+		ALyudCityBuilding* B = W.Get();
+		if (!B || B->LampPositions.Num() == 0 || !B->Shell
+			|| FVector::DistSquared(B->Shell->Bounds.Origin, At) > FMath::Square((double)RadiusCm + B->Shell->Bounds.SphereRadius))
+		{
+			continue;
+		}
+		const FTransform& X = B->GetActorTransform();
+		int32 Here = 0;
+		for (int32 i = 0; i < B->LampPositions.Num(); ++i)
+		{
+			const FVector P = X.TransformPosition(B->LampPositions[i]);
+			const double Dz = P.Z - At.Z;
+			if (Dz < -150.0 || Dz > (double)FloorCm || FVector::DistSquared2D(P, At) > FMath::Square((double)RadiusCm))
+			{
+				continue;
+			}
+			B->SetLampSwitched(i, bOn ? 1 : 0);
+			++Here;
+		}
+		if (Here > 0)
+		{
+			Switched.AddUnique(W);
+			N += Here;
+		}
+	}
+	if (N > 0)
+	{
+		LampAccum = 1e9f;     // the pool takes the change on its next tick, not in half a second
+	}
+	return N;
+}
+
+void ULyudWindowLights::ClearSwitched()
+{
+	for (const TWeakObjectPtr<ALyudCityBuilding>& W : Switched)
+	{
+		if (ALyudCityBuilding* B = W.Get())
+		{
+			B->ClearLampsSwitched();
+		}
+	}
+	if (Switched.Num() > 0)
+	{
+		LampAccum = 1e9f;
+	}
+	Switched.Reset();
+}
+
 void ULyudWindowLights::Deinitialize()
 {
 	// the pool's actor and its lights are transient and go with the world
+	Switched.Reset();
 	Pending.Reset();
 	LampPool.Reset();
 	PoolLamp.Reset();

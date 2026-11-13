@@ -29,7 +29,7 @@ int32 SLyudCityGameBar::OnPaint(const FPaintArgs&, const FGeometry& Geo, const F
 	const FWidgetStyle&, bool) const
 {
 	const FSlateBrush* White = FCoreStyle::Get().GetBrush("WhiteBrush");
-	const FVector2D Size = Geo.GetLocalSize();
+	const FVector2D Size = FVector2D(Geo.GetLocalSize());
 	const float TrackH = 12.f;
 	const float TrackY = (float)(Size.Y - TrackH) * 0.5f;
 	const float W = (float)Size.X;

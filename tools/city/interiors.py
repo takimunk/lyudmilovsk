@@ -55,7 +55,7 @@ SELLING = ("seller", "cashier", "barista", "waiter", "bartender", "bookseller", 
 SERVICE = ("cleaner", "janitor", "guard")
 DAYS = ("mon", "tue", "wed", "thu", "fri", "sat", "sun")
 PUBLIC_KINDS_SKIP = ("residential", "square", "park", "pool")
-QUEST_EVENTS = ("do", "visit", "get", "use", "have", "wear", "reach", "talk", "bird", "walk", "leave_computer")
+QUEST_EVENTS = ("do", "win", "visit", "get", "use", "have", "wear", "reach", "talk", "bird", "walk", "leave_computer")
 ACT_FIELDS = ("prompt", "minutes", "price", "lines", "pose", "sound", "event", "target", "give", "daily", "needs_staff",
               "needs_item", "fade", "shop", "screen", "until", "title", "any_hour", "rotate", "collect", "closed", "game")
 # a line's conditions (docs/city_interiors.md "Lines by the day and the hour"): hours [from, to), weekdays, a calendar date or
@@ -1078,8 +1078,8 @@ def check_quests(quests, acts, strings, items, plot_ids, map_places, existing_id
                 if ev not in QUEST_EVENTS:
                     err("quest %s: unknown event %s" % (qid, ev))
                 pref = tgt[:-1] if tgt.endswith("*") else None
-                if ev == "do" and not (any(a.startswith(pref) for a in acts) if pref is not None else tgt in acts):
-                    err("quest %s: do %s: no such act" % (qid, tgt))
+                if ev in ("do", "win") and not (any(a.startswith(pref) for a in acts) if pref is not None else tgt in acts):
+                    err("quest %s: %s %s: no such act" % (qid, ev, tgt))
                 if ev == "visit" and tgt not in plot_ids:
                     err("quest %s: visit %s: no such plot" % (qid, tgt))
                 if ev in ("get", "use", "have", "wear") and not (any(i.startswith(pref) for i in items) if pref is not None else tgt in items):

@@ -116,8 +116,15 @@ rental, souvenirs, a dumpling house, a cheburek house, a beer bar). Each is now 
   own boards
 - [~] Collections (2026-11-13): stamps in the model (`collect` on an act, a line or a thing; `have`/`count` line conditions;
   saved), the HUD note "3 of 12", the page `lyud.City.Collections`, developer grant/clear; four sets: library shelf topics
-  (15), films at «Рассвет» (its programme), jukebox records, bus-stop kiosks (6). Still open: cinema ticket stubs as items,
-  chess opponents beaten (needs a chess result), a reward for a complete set, a page in the diary
+  (15), films at «Рассвет» (its programme), jukebox records, bus-stop kiosks (6); chess opponents beaten (`chess_wins`, 6, a won
+  chess game against a regular). Still open: cinema ticket stubs as items, a reward for a complete set, a page in the diary
+- [~] Mini-games (2026-11-13): `game` on an act, three types (aim, rally, duel) played in the model (citysim), a panel,
+  win/lose/draw lines, stamps, prizes, a daily limit, `Notify("win")`; on chess, billiards, darts, table tennis, table
+  football, the fair's gallery, ring toss and strongman, the arcade, the hoop, and new checkers, dominoes, badminton acts
+  (`what=`). Ten regulars of the clubs (real residents) play against the hero, each with a style, a skill and words. Not
+  built on the Mac yet. Still open: the x_ chess tables that don't `like` chess (`tarelka_chess`, `sanatorium_chess`), no
+  thing says `what=checkers|dominoes|badminton` yet, the regulars are not seen sitting at the table (the life sim's side), a
+  ladder or a weekly tournament
 
 - [~] Townsfolk use the things (2026-11-13): `FindFreeThing`, `ClaimThing`/`ReleaseThing`, `GetThingsOfPlot` on
   `ULyudCityThings` (docs "API for townsfolk"); the hero is refused a held seat. The people's life side is the npc-manners
@@ -128,6 +135,9 @@ rental, souvenirs, a dumpling house, a cheburek house, a beer bar). Each is now 
 
 - [ ] Unique wall art per building from the atlas (no picture repeated inside one room)
 - [ ] Room sounds (reverb by room size, clock ticks, a radio behind a wall, the store's tannoy)
+- [~] Wall clocks and light switches (2026-11-13): `look_clock` with `{time}` lines, `what=switch` turns the room lamps
+  (`B.lamp`) round it on or off till the hero leaves the plot. Still open: no building declares a clock or a switch yet
+  (the building modules' things), no ticking sound (no file), the lamp's fitting does not change, only its light
 - [~] Night state of public rooms (closed: chairs on tables, a single lamp, the cleaner at work 7-10). 2026-11-13: by data
   (`closed` on a rule or an act, `closed_by` per plot, type or plot kind): the café, both clubs, the library, the market
   and the store say what is closed instead of refusing (149 things); still open: geometry (chairs really on the tables), the

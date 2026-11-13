@@ -130,6 +130,18 @@ def plan():
         add(1.0, lambda w: cmd(w, "lyud.Birds.Time 23"))
         add(1.5, lambda w, i=th["id"]: cmd(w, "lyud.City.Do " + i))
         add(1.0, lambda w: cmd(w, "lyud.Birds.Time 16"))
+    # fourth pass: one mini-game of each type (docs "Mini-games"): started from here, a few presses, won at once; the log says
+    # "game aim|rally|duel on ...", "game beat ..." and "game over on ...: win"
+    for gtype in ("aim", "rally", "duel"):
+        game = [t for t in things if ((acts.get(t.get("act"), {}).get("game") or {}).get("type")) == gtype][:1]
+        for th in game:
+            add(1.5, lambda w, i=th["id"]: cmd(w, "lyud.City.Game " + i))
+            add(1.0, lambda w, g=gtype: shot(w, "game_" + g))
+            for n in range(3):
+                add(0.7, lambda w, g=gtype, k=n: cmd(w, "lyud.City.Game press" + (" %d" % (k + 1) if g == "duel" else "")))
+            add(2.5, lambda w: cmd(w, "lyud.City.Game win"))
+            add(1.0, lambda w, g=gtype: shot(w, "game_%s_over" % g))
+    add(1.0, lambda w: cmd(w, "lyud.City.Game regulars"))
     add(2.0, lambda w: cmd(w, "lyud.Save citytest"))
     if shelves:
         add(1.5, lambda w: cmd(w, "lyud.City.Do " + shelves[0]["id"]))
