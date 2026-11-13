@@ -554,6 +554,11 @@
   }
  },
  "rules": {
+  "P-LIBRARY/lending_counter*": {
+   "topics": [
+    "@x_lib_desk"
+   ]
+  },
   "P-LIBRARY/notice_board_day": {
    "act": "library_notices_day"
   },
@@ -742,6 +747,39 @@
   }
  },
  "quests": [
+  {
+   "id": "library_chess_note",
+   "kind": "side",
+   "start_on": {
+    "event": "ask",
+    "target": "lib.chessbook"
+   },
+   "stages": [
+    {
+     "id": "read",
+     "objectives": [
+      {
+       "id": "shelf",
+       "event": "do",
+       "target": "read_chess"
+      }
+     ]
+    },
+    {
+     "id": "ledger",
+     "objectives": [
+      {
+       "id": "ladder",
+       "event": "ask",
+       "target": "cog.ld.ladder"
+      }
+     ],
+     "reward": {
+      "rubles": 20
+     }
+    }
+   ]
+  },
   {
    "id": "library_1968",
    "kind": "side",
@@ -1024,5 +1062,229 @@
     "city.xtx.chess_openings.3"
    ]
   }
+ },
+ "topic_sets": {
+  "x_lib_desk": [
+   {
+    "id": "lib.postcard",
+    "k": "city.ask.lib.postcard",
+    "lines": [
+     "city.ask.lib.postcard.1",
+     {
+      "k": "city.ask.lib.postcard.2",
+      "heard": "library.returned"
+     },
+     {
+      "k": "city.ask.lib.postcard.3",
+      "did": "library_leave_card"
+     }
+    ],
+    "gives": {
+     "collect": "staff/library"
+    }
+   },
+   {
+    "id": "lib.piano",
+    "k": "city.ask.lib.piano",
+    "lines": [
+     "city.ask.lib.piano.1",
+     {
+      "k": "city.ask.lib.piano.2",
+      "h": [
+       18,
+       21
+      ]
+     },
+     {
+      "k": "city.ask.lib.piano.3",
+      "did": "library_pod_piano"
+     }
+    ],
+    "gives": {
+     "collect": "staff/library"
+    }
+   },
+   {
+    "id": "lib.map",
+    "k": "city.ask.lib.map",
+    "lines": [
+     "city.ask.lib.map.1",
+     {
+      "k": "city.ask.lib.map.2",
+      "read": "local_terraces"
+     },
+     {
+      "k": "city.ask.lib.map.3",
+      "d": "fri"
+     }
+    ],
+    "gives": {
+     "collect": "staff/library"
+    }
+   }
+  ],
+  "x_lib_stamp": [
+   {
+    "id": "lib.stamp_why",
+    "k": "city.ask.lib.stamp_why",
+    "lines": [
+     "city.ask.lib.stamp_why.1",
+     {
+      "k": "city.ask.lib.stamp_why.2",
+      "d": "sat,sun"
+     },
+     {
+      "k": "city.ask.lib.stamp_why.3",
+      "count": [
+       "library_diary",
+       8
+      ]
+     }
+    ],
+    "gives": {
+     "collect": "staff/library"
+    }
+   },
+   {
+    "id": "lib.seventeen",
+    "k": "city.ask.lib.seventeen",
+    "lines": [
+     "city.ask.lib.seventeen.1",
+     {
+      "k": "city.ask.lib.seventeen.2",
+      "count": [
+       "library_diary",
+       12
+      ]
+     },
+     {
+      "k": "city.ask.lib.seventeen.3",
+      "count": [
+       "library_diary",
+       17
+      ]
+     }
+    ],
+    "gives": {
+     "collect": "staff/library"
+    }
+   },
+   {
+    "id": "lib.quiet_hours",
+    "k": "city.ask.lib.quiet_hours",
+    "lines": [
+     {
+      "k": "city.ask.lib.quiet_hours.1",
+      "h": [
+       10,
+       11
+      ]
+     },
+     {
+      "k": "city.ask.lib.quiet_hours.2",
+      "h": [
+       17,
+       20
+      ]
+     },
+     {
+      "k": "city.ask.lib.quiet_hours.3",
+      "weather": "rain"
+     },
+     "city.ask.lib.quiet_hours.4"
+    ],
+    "gives": {
+     "collect": "staff/library"
+    }
+   },
+   {
+    "id": "lib.chessbook",
+    "k": "city.ask.lib.chessbook",
+    "lines": [
+     "city.ask.lib.chessbook.1",
+     {
+      "k": "city.ask.lib.chessbook.2",
+      "read": "chess_openings"
+     },
+     {
+      "k": "city.ask.lib.chessbook.3",
+      "count": [
+       "chess_wins",
+       1
+      ]
+     }
+    ],
+    "gives": {
+     "collect": "staff/library"
+    }
+   }
+  ],
+  "x_lib_office": [
+   {
+    "id": "lib.g_n",
+    "k": "city.ask.lib.g_n",
+    "lines": [
+     "city.ask.lib.g_n.1",
+     {
+      "k": "city.ask.lib.g_n.2",
+      "once": true
+     }
+    ],
+    "after": 3,
+    "gives": {
+     "collect": "staff/library"
+    }
+   },
+   {
+    "id": "lib.office_work",
+    "k": "city.ask.lib.office_work",
+    "lines": [
+     "city.ask.lib.office_work.1",
+     {
+      "k": "city.ask.lib.office_work.2",
+      "h": [
+       10,
+       12
+      ]
+     },
+     {
+      "k": "city.ask.lib.office_work.3",
+      "h": [
+       17,
+       20
+      ]
+     }
+    ],
+    "gives": {
+     "collect": "staff/library"
+    }
+   },
+   {
+    "id": "lib.tuesday",
+    "k": "city.ask.lib.tuesday",
+    "lines": [
+     "city.ask.lib.tuesday.1",
+     {
+      "k": "city.ask.lib.tuesday.2",
+      "d": "tue"
+     },
+     {
+      "k": "city.ask.lib.tuesday.3",
+      "did": "library_tea_tuesday"
+     }
+    ],
+    "gives": {
+     "collect": "staff/library"
+    }
+   }
+  ]
+ },
+ "topics": {
+  "library_stamp": [
+   "@x_lib_stamp"
+  ],
+  "library_office_ledger": [
+   "@x_lib_office"
+  ]
  }
 }

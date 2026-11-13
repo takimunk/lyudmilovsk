@@ -779,5 +779,180 @@
   "ru": "Сегодня четверг, блиц. Часы клубные, берегите. Кто найдёт настоящие, получает право первого хода на всю неделю. Играем на любых, лишь бы тикали, но не на песочных: песок, как известно, идёт как ему вздумается. Запись у Тамары Ильиничны до шести вечера, а после шести уже у судьбы.",
   "en": "Today is Thursday, blitz. The clock belongs to the club, take care of it. Whoever finds the real one gets the right of the first move for the whole week. We play on any clock, as long as it ticks, but not on sand ones: sand, as we know, runs as it pleases. Sign-up with Tamara Ilyinichna until six in the evening, and after six with fate.",
   "ja": "今日は木曜、早指しの日。時計はクラブのもの、大事に。本物の時計を見つけた人は、一週間ずっと先手の権利をもらえます。時計は何でもよい、チクタクいえば。ただし砂時計は不可。砂は、ご存じのとおり、気の向くままに落ちるので。申し込みは夕方六時までタマーラ・イリイニチナへ。六時を過ぎたら運命のほうへ。"
+ },
+ "city.ask.cog.lh.deposit": {
+  "ru": "Почему книги выдают под залог?",
+  "en": "Why are books lent against a deposit?",
+  "ja": "どうして本は預かり金つきで貸すの？"
+ },
+ "city.ask.cog.lh.deposit.1": {
+  "ru": "— Залог пять рублей, отдаю при возврате и выписываю расписку. Расписки у меня хранятся лучше книг.",
+  "en": "\"The deposit is five roubles; I give it back on return and write a receipt. My receipts keep better than the books.\"",
+  "ja": "「預かり金は五ルーブル。返してもらったときにお返しして、受取証を書くの。受取証のほうが、本よりよく残るのよ。」"
+ },
+ "city.ask.cog.lh.deposit.2": {
+  "ru": "— В понедельник тележка возврата полная: после выходных все вернули всё сразу. Я сортирую и не сбиваюсь со счёта.",
+  "en": "\"On Monday the returns trolley is full: after the weekend everybody returns everything at once. I sort and don't lose count.\"",
+  "ja": "「月曜は返却ワゴンがいっぱい。週末明けにみんな一度に返すから。わたしは仕分けて、数は間違えないわ。」"
+ },
+ "city.ask.cog.lh.deposit.3": {
+  "ru": "— К выходным тележка почти пустая: читатели уносят, возвращают потом, в понедельник. Закон природы.",
+  "en": "\"By the weekend the trolley is almost empty: the readers take books away and return them later, on Monday. A law of nature.\"",
+  "ja": "「週末にはワゴンはほとんど空。読者は持っていって、月曜に返すの。自然の法則ね。」"
+ },
+ "city.ask.cog.lh.swap": {
+  "ru": "Что за полка обмена?",
+  "en": "What's the swap shelf?",
+  "ja": "交換棚って何？"
+ },
+ "city.ask.cog.lh.swap.1": {
+  "ru": "— «Принёс — возьми, взял — принеси». Работает без меня. Я только слежу, чтобы не уносили пустые обложки.",
+  "en": "\"\"Bring one, take one; take one, bring one.\" It works without me. I only make sure nobody walks off with empty covers.\"",
+  "ja": "「『持ってきたら取っていい、取ったら持ってきて』。わたしがいなくても回るの。空っぽの表紙だけ持ち去られないよう、見てるだけ。」"
+ },
+ "city.ask.cog.lh.swap.2": {
+  "ru": "— По понедельникам привозят свежее из мастерских: «Знание — сила» с чертежами на вкладках. Берите верхний: верхний всегда лучше.",
+  "en": "\"On Mondays fresh stock comes from the workshops: Knowledge Is Power with blueprints on the inserts. Take the top one: the top one is always best.\"",
+  "ja": "「月曜は工房から新しいのが届くの。折り込みの図面つきの『知は力』。上のを取ってね。いつも上のがいちばんいいから。」"
+ },
+ "city.ask.cog.lh.swap.3": {
+  "ru": "— Журнал с полки ты брал, я видела. Принеси что-нибудь взамен, хоть открытку: полка не привередлива.",
+  "en": "\"You took a magazine from the shelf, I saw. Bring something in return, even a postcard: the shelf isn't fussy.\"",
+  "ja": "「棚から雑誌を持っていったでしょう、見てたわ。かわりに何か置いていって、絵はがきでもいいの。棚は好き嫌いしないから。」"
+ },
+ "city.ask.cog.lh.clock": {
+  "ru": "Что с шахматными часами?",
+  "en": "What about the chess clock?",
+  "ja": "チェス時計はどうなった？"
+ },
+ "city.ask.cog.lh.clock.1": {
+  "ru": "— Про часы лучше спросить фотокружок: Серёжа брал «на время, вернём в четверг». Четверг у нас не кончается.",
+  "en": "\"About the clock you'd better ask the photo circle: Seryozha took it \"for a while, back on Thursday\". Our Thursday never ends.\"",
+  "ja": "「時計のことは写真サークルに聞いたほうがいいわ。セリョージャが『ちょっとだけ、木曜に返す』って持っていったの。うちの木曜は終わらないのよ。」"
+ },
+ "city.ask.cog.lh.clock.2": {
+  "ru": "— Часы встали на место. Член клуба номер двадцать четыре, это ты, на всякий случай: записала карандашом, ластиком не пользуюсь.",
+  "en": "\"The clock is back in its place. Club member number twenty-four, that's you, just in case: I wrote it in pencil, I don't use the eraser.\"",
+  "ja": "「時計は元の場所に戻ったわ。会員番号二十四番、あなたよ、念のため。鉛筆で書いたわ、消しゴムは使わないの。」"
+ },
+ "city.ask.cog.lh.radio": {
+  "ru": "Что почитать про радио?",
+  "en": "What can I read about radio?",
+  "ja": "ラジオの本は何がある？"
+ },
+ "city.ask.cog.lh.radio.1": {
+  "ru": "— Журнал «Радио»: схем много, слов мало. Настоящий приёмник стоит в «Рассвете», в радиоуголке.",
+  "en": "\"The magazine Radio: lots of circuits, few words. A real receiver stands at the Rassvet, in the radio corner.\"",
+  "ja": "「雑誌『ラジオ』は回路図がたくさんで、文章は少ないの。本物の受信機は『ラスヴェート』の無線コーナーにあるわ。」"
+ },
+ "city.ask.cog.lh.radio.2": {
+  "ru": "— Сегодня четверг: радиоуголок в «Рассвете» открыт, а вечером «Тишина в эфире». Радиолюбители идут кружком.",
+  "en": "\"It's Thursday: the radio corner at the Rassvet is open, and tonight it's Silence on the Air. The radio amateurs go as a circle.\"",
+  "ja": "「今日は木曜。『ラスヴェート』の無線コーナーが開いてて、夜は『電波の静けさ』よ。無線仲間はみんなで観に行くの。」"
+ },
+ "city.ask.cog.ld.ladder": {
+  "ru": "Как попасть в шахматную лесенку?",
+  "en": "How do I join the chess ladder?",
+  "ja": "チェスの階段表にはどうやって入るの？"
+ },
+ "city.ask.cog.ld.ladder.1": {
+  "ru": "— Запишись у Тамары Ильиничны. Играть можно с тем, кто выше не больше чем на две ступеньки. Проиграл, ставишь чай: с сахаром, без упрёков.",
+  "en": "\"Sign up with Tamara Ilyinichna. You may play someone no more than two rungs above you. If you lose, you stand tea: with sugar, without reproach.\"",
+  "ja": "「タマーラ・イリイニチナに申しこんで。自分より二段までの上の人となら対戦できるわ。負けたらお茶をおごるの。砂糖つきで、文句なしでね。」"
+ },
+ "city.ask.cog.ld.ladder.2": {
+  "ru": "— Сегодня четверг, блиц. Часы клубные, берегите. Кто найдёт настоящие, получает право первого хода на неделю.",
+  "en": "\"It's Thursday, blitz. The clocks are the club's, take care. Whoever finds the real ones gets first move for a week.\"",
+  "ja": "「今日は木曜、早指しの日。時計はクラブのものだから大事にね。本物を見つけた人は、一週間先手の権利がもらえるわ。」"
+ },
+ "city.ask.cog.ld.ladder.3": {
+  "ru": "— Тебя вписали в тетрадь партий, коротко: «Выиграл. Без оправданий». Это комплимент: оправданий у нас обычно больше, чем ходов.",
+  "en": "\"You've been entered in the game book, briefly: \"Won. No excuses.\" That's a compliment: here there are usually more excuses than moves.\"",
+  "ja": "「棋譜帳にあなたの名前が入ったわ、短く。『勝ち。言い訳なし』。ほめ言葉よ。うちでは、たいてい手数より言い訳のほうが多いんだから。」"
+ },
+ "city.ask.cog.ld.cat": {
+  "ru": "Кот вахтёра правда член клуба?",
+  "en": "Is the caretaker's cat really a club member?",
+  "ja": "管理人の猫は本当に会員なの？"
+ },
+ "city.ask.cog.ld.cat.1": {
+  "ru": "— Без права голоса: так записано в протоколе. Но он единственный присутствует на всех собраниях и ни разу не заснул.",
+  "en": "\"Without a vote: so it says in the minutes. But he's the only one who attends every meeting and has never fallen asleep.\"",
+  "ja": "「議決権なし、って議事録にはある。でもあの子は、すべての会合に出て、一度も居眠りしたことがない唯一の会員よ。」"
+ },
+ "city.ask.cog.ld.cat.2": {
+  "ru": "— Днём он на подоконнике, вечером у буфета: следит, где пирожки. Это тоже участие в жизни клуба.",
+  "en": "\"By day he's on the windowsill, in the evening by the buffet, keeping track of where the pies are. That counts as taking part in club life too.\"",
+  "ja": "「昼は窓台、夕方は売店のそば。ピロシキがどこにあるか見張ってるの。それも立派なクラブ活動よ。」"
+ },
+ "city.ask.cog.bf.tea": {
+  "ru": "Что значит «чай с сахаром без упрёков»?",
+  "en": "What does \"tea with sugar, no reproach\" mean?",
+  "ja": "『砂糖つきで文句なしのお茶』ってどういう意味？"
+ },
+ "city.ask.cog.bf.tea.1": {
+  "ru": "— Правило лесенки: проигравший ставит чай. С сахаром, без упрёков. Кладу по два куска, а спрашивать не положено.",
+  "en": "\"The ladder's rule: the loser stands the tea. With sugar, no reproach. I put in two lumps, and asking is not allowed.\"",
+  "ja": "「階段表の決まりで、負けた人がお茶をおごるの。砂糖つきで、文句なしで。角砂糖は二つ入れるわ。聞くのはなしよ。」"
+ },
+ "city.ask.cog.bf.tea.2": {
+  "ru": "— Сегодня вечером финал лиги по бильярду: чай ждут вдвое. Победитель потом возвращается за кубком, забыл.",
+  "en": "\"This evening it's the billiards league final: tea is expected double. The winner comes back for the cup afterwards, having forgotten it.\"",
+  "ja": "「今夜はビリヤードリーグの決勝。お茶は倍はいると見てるわ。優勝者は杯を忘れて、あとで取りに戻ってくるの。」"
+ },
+ "city.ask.cog.bf.cup": {
+  "ru": "Что это за кубок с гнутой шестерёнкой?",
+  "en": "What's the cup with the bent cog?",
+  "ja": "曲がった歯車の杯は何？"
+ },
+ "city.ask.cog.bf.cup.1": {
+  "ru": "— Согнутая шестерёнка на подставке: кубок лиги по бильярду. Согнули нарочно, чтобы не приняли за деталь. Протираю сама, победитель всё равно забудет.",
+  "en": "\"A bent cog on a stand: the billiards league cup. It was bent on purpose, so nobody takes it for a part. I dust it myself; the winner will forget it anyway.\"",
+  "ja": "「台座の上の曲がった歯車が、ビリヤードリーグの杯よ。部品と間違えられないよう、わざと曲げたの。わたしが拭いてるわ、どうせ優勝者は忘れるから。」"
+ },
+ "city.ask.cog.bf.pingpong": {
+  "ru": "С кем играть в настольный теннис?",
+  "en": "Who can I play table tennis with?",
+  "ja": "卓球は誰とやればいい？"
+ },
+ "city.ask.cog.bf.pingpong.1": {
+  "ru": "— У нас Кэндзи Каск: смотрит налево, бьёт направо. А в спорткомплексе его ждёт Урсула Оконкво. Договориться сыграть они никак не могут: каждый ждёт, что придёт другой.",
+  "en": "\"Here it's Kenji Kask: looks left, hits right. And at the sports centre Ursula Okonkwo is waiting for him. They can't agree to play: each expects the other to come.\"",
+  "ja": "「ここにはカスク健二がいるわ。左を見て、右に打つの。それからスポーツセンターでは、ウルズラ・オコンクウォが彼を待ってる。二人とも、相手が来ると思って待ってて、勝負が決まらないのよ。」"
+ },
+ "city.ask.cog.bf.pingpong.2": {
+  "ru": "— Играл? С кем? Если с Кэндзи, ты уже знаешь: смотрит налево.",
+  "en": "\"You've played? Against whom? If it was Kenji, you already know: he looks left.\"",
+  "ja": "「もうやったの？ 誰と？ 健二なら、もうわかってるわね。左を見るのよ。」"
+ },
+ "city.ask.cog.cl.glider": {
+  "ru": "Правда, что планер пролетел через фойе?",
+  "en": "Is it true the glider flew through the foyer?",
+  "ja": "グライダーがロビーを飛んだって本当？"
+ },
+ "city.ask.cog.cl.glider.1": {
+  "ru": "— Влетел ко мне через барьер и сел на пальто. Поставила ему «четыре с плюсом»: два раза задел шляпу.",
+  "en": "\"It flew over my counter and landed on a coat. I gave it \"four plus\": it clipped a hat twice.\"",
+  "ja": "「カウンターを越えて飛んできて、コートに着陸したの。『四プラス』をつけたわ。帽子に二回ぶつかったから。」"
+ },
+ "city.ask.cog.cl.glider.2": {
+  "ru": "— Испытания в мастерской назначают заранее, но планер об этом не знает и летит когда хочет.",
+  "en": "\"Tests in the workshop are announced in advance, but the glider doesn't know and flies when it likes.\"",
+  "ja": "「工房での試験飛行は前もって決めるんだけど、グライダーはそれを知らないで、飛びたいときに飛ぶの。」"
+ },
+ "city.ask.cog.cl.where": {
+  "ru": "Что где у вас в клубе?",
+  "en": "What's where in the club?",
+  "ja": "クラブの中はどうなってるの？"
+ },
+ "city.ask.cog.cl.where.1": {
+  "ru": "— Библиотека, читальный уголок, мастерская с верстаками, фотолаборатория за красной дверью, сцена. Если за красной дверью горит красная лампа, не входи, пока не погаснет.",
+  "en": "\"The library, the reading corner, the workshop with workbenches, the photo lab behind the red door, the stage. If the red lamp is lit behind the red door, don't go in until it goes out.\"",
+  "ja": "「図書室、読書コーナー、作業台のある工房、赤い扉の奥の写真ラボ、それに舞台。赤い扉の向こうで赤いランプがついていたら、消えるまで入らないで。」"
+ },
+ "city.ask.cog.cl.where.2": {
+  "ru": "— Вечером в зале и на сцене репетиции: идти между рядами можно, но не сквозь актёров.",
+  "en": "\"In the evening there are rehearsals in the hall and on stage: you may walk between the rows, but not through the actors.\"",
+  "ja": "「夕方は客席と舞台でリハーサルがあるの。席のあいだは歩いていいけど、役者さんの中を突っ切るのはだめよ。」"
  }
 }

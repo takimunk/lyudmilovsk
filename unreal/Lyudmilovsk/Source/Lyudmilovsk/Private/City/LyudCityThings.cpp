@@ -1035,6 +1035,19 @@ void ULyudCityThings::Run(int32 Thing, bool bFromConsole, bool bFromSeat)
 		O.bFirstVisitToday ? TEXT(" visit") : (O.bClosed ? TEXT(" closed") : TEXT("")));
 	if (O.Verdict != LyudCity::EVerdict::Ok)
 	{
+		// the staff still talk when the act is refused for the hero's own reasons (done today, no money, no item)
+		if (!TalkOffer.empty() && (O.Verdict == LyudCity::EVerdict::DailyDone || O.Verdict == LyudCity::EVerdict::NoMoney
+			|| O.Verdict == LyudCity::EVerdict::NeedsItem))
+		{
+			TArray<int32> RefusedTopics;
+			RefusedTopics.Reserve((int32)TalkOffer.size());
+			for (const int Topic : TalkOffer)
+			{
+				RefusedTopics.Add(Topic);
+			}
+			BeginTalk(Thing, RefusedTopics, TalkSpeaker(Thing), FText::GetEmpty(), FString(), FString(), bFromConsole);
+			return;
+		}
 		switch (O.Verdict)
 		{
 		case LyudCity::EVerdict::NoMoney:

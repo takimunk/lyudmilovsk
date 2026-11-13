@@ -251,11 +251,11 @@ def build(B):
     _extras(B, rnd)
     _third(B, rnd)
     _stair_rails(B, n, g, r_, ya, yl, hole)
-    # lamps: 6 x 3 per floor, 0.3 m under each ceiling (none under the stair opening)
+    # lamps: 4 x 3 per floor (one per 9.5 x 8.5 m), 0.3 m under each ceiling (none under the stair opening)
     for zc in (Z_SLAB0, Z_ROOF0):
-        for lx in (-18.4, -11.0, -3.7, 3.7, 11.0, 18.4):
+        for lx in (-15.0, -5.5, 5.5, 15.0):
             for ly in (8.0, 16.5, 25.0):
-                B.lamp((lx, ly, zc - 0.3), lumens=1500, colour="#FFD2A0", radius=10.5)
+                B.lamp((lx, ly, zc - 0.3), lumens=2300, colour="#FFD2A0", radius=12.0)
 
     B.footprint = [(-HW, -1.0), (HW, -1.0), (HW, D), (-HW, D)]
     B.height = 14.0
@@ -697,9 +697,9 @@ def _first_west(B, zf, rnd):
         kit.magazine_rack(B, x, 29.6, zf, 0.0, w=0.9, seed=k)
     _thing(B, "f1_magazines", "shelf", (-7.9, 29.3, zf + 1.1), 0.0, topic="local")
     rt = kit.reading_table(B, -10.6, 26.9, zf, 0.0, w=2.2, d=0.9, lamps=2)
-    for j, (dx, dy, yw) in enumerate(((-0.55, -0.7, 0.0), (0.55, -0.7, 0.0), (-0.55, 0.7, 180.0), (0.55, 0.7, 180.0))):
+    for j, (dx, dy, yw) in enumerate(((-0.55, -0.7, 180.0), (0.55, -0.7, 180.0), (-0.55, 0.7, 0.0), (0.55, 0.7, 0.0))):      # the sitter faces the table
         r = kit.chair(B, -10.6 + dx, 26.9 + dy, zf, yw, kind="wood")
-    _thing(B, "f1_reading_seats", "seat", (-10.6, 26.2, zf + 0.45), 0.0, height=0.45)
+    _thing(B, "f1_reading_seats", "seat", (-10.6, 26.2, zf + 0.45), 180.0, height=0.45)
 
 
 def _first_east(B, zf, rnd):

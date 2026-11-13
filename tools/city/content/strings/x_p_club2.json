@@ -673,5 +673,170 @@
   "ru": "Запись для тех, кто приходит просто так: ручку с красной пастой не трогать, она для QSL. Наушники с левой стороны пищат, это не неисправность, а характер. Если вдруг услышите в эфире слово «Людмиловск», не пугайтесь и не молчите: нажмите кнопку и ответьте «Слышу». Остальное мы запишем.",
   "en": "A note for those who come in just like that: don't touch the red-ink pen, it is for QSL cards. The left earphone squeaks; that is not a fault but a character. If you suddenly hear the word \"Lyudmilovsk\" on the air, don't be frightened and don't keep silent: press the button and answer, \"I hear you.\" We will write down the rest.",
   "ja": "ふらりと来た人へのメモ。赤インクのペンには触らないこと。QSLカード用だ。左のヘッドホンはキーキー鳴るが、故障ではなく性格だ。もし電波の中に「リュドミロフスク」という言葉が聞こえたら、驚かず、黙らず、ボタンを押して「聞こえます」と答えてください。残りは私たちが記録する。"
+ },
+ "city.ask.rassvet.tk.times": {
+  "ru": "Лучше на дневной или на вечерний?",
+  "en": "Matinee or evening show?",
+  "ja": "昼の回と夜の回、どっちがいい？"
+ },
+ "city.ask.rassvet.tk.times.1": {
+  "ru": "— Дневной в три для тех, кто любит тишину в зале. Вечерний в семь для тех, кто любит буфет после. Места любые.",
+  "en": "\"The matinee at three for those who like a quiet hall. The evening one at seven for those who like the buffet afterwards. Any seat you like.\"",
+  "ja": "「三時の昼の回は、静かな客席が好きな人に。七時の夜の回は、そのあとの売店が好きな人に。席は自由よ。」"
+ },
+ "city.ask.rassvet.tk.times.2": {
+  "ru": "— Среда: просят приходить до звонка, а не вместе с ним. Я не придираюсь, это в афише.",
+  "en": "\"Wednesday: please arrive before the bell, not together with it. I'm not being fussy, it's on the poster.\"",
+  "ja": "「水曜は、ベルの前に来てくださいって。うるさく言ってるんじゃなくて、ポスターに書いてあるの。」"
+ },
+ "city.ask.rassvet.tk.times.3": {
+  "ru": "— По пятницам и субботам к вечернему приходите за двадцать минут: зал наполняется до звонка, хотя места любые.",
+  "en": "\"On Fridays and Saturdays come twenty minutes early for the evening show: the hall fills before the bell, though any seat is allowed.\"",
+  "ja": "「金曜と土曜の夜の回は、二十分前に来てね。席は自由でも、ベルの前に客席は埋まるから。」"
+ },
+ "city.ask.rassvet.tk.stubs": {
+  "ru": "Сколько сегодня билетов?",
+  "en": "How many tickets today?",
+  "ja": "今日は何枚売れた？"
+ },
+ "city.ask.rassvet.tk.stubs.1": {
+  "ru": "— Красные корешки дневные, жёлтые вечерние. Считаю на ночь, сходится не всегда. Я не сержусь: значит, зал был живой.",
+  "en": "\"Red stubs are matinee, yellow evening. I count at night and it doesn't always add up. I'm not cross: it means the hall was alive.\"",
+  "ja": "「赤い半券は昼の回、黄色は夜の回。夜に数えるんだけど、いつも合うとは限らないの。怒ったりしないわ。客席が生きていたってことだもの。」"
+ },
+ "city.ask.rassvet.tk.stubs.2": {
+  "ru": "— В выходные корешков вдвое. Стопку придавливаю чашкой, и чашка у меня всегда пустая: не заметил, как выпил.",
+  "en": "\"At weekends there are twice as many stubs. I weigh the pile down with a cup, and my cup is always empty: I never notice drinking it.\"",
+  "ja": "「週末は半券が倍になる。山を茶碗で押さえてるんだけど、その茶碗がいつも空なんだ。飲んだ覚えはないのにね。」"
+ },
+ "city.ask.rassvet.tk.costume": {
+  "ru": "Что за костюмы для спектакля?",
+  "en": "What are the costumes for the play?",
+  "ja": "お芝居の衣装って何？"
+ },
+ "city.ask.rassvet.tk.costume.1": {
+  "ru": "— Сказка про Солнце и Ветер. Плащ Ветра готов, Солнце ещё нет: швея говорит, лучи нужно пришить так, чтобы грели.",
+  "en": "\"A fairy tale about the Sun and the Wind. The Wind's cloak is ready, the Sun's isn't yet: the seamstress says the rays must be sewn on so that they warm.\"",
+  "ja": "「『太陽と風』のお話よ。風のマントはできたけど、太陽のはまだ。お針子さんが、光線は暖かくなるように縫いつけなきゃいけないって。」"
+ },
+ "city.ask.rassvet.tk.costume.2": {
+  "ru": "— Сегодня четверг, примерки. Швея звонила: пусть Солнце подождёт. Я объяснил Солнцу. Солнце не возражает: у него вечность.",
+  "en": "\"It's Thursday, fittings day. The seamstress rang: let the Sun wait. I explained it to the Sun. The Sun doesn't mind: it has eternity.\"",
+  "ja": "「今日は木曜、仮縫いの日。お針子さんから電話があって、太陽には待ってもらって、って。太陽に説明したよ。太陽は気にしない。永遠があるからね。」"
+ },
+ "city.ask.rassvet.tk.costume.3": {
+  "ru": "— Ты заходил к швее? Если у неё остался тот жёлтый, «как в семь вечера», скажи: Солнце подождёт, но не бесконечно.",
+  "en": "\"Did you visit the seamstress? If she still has that yellow, \"like seven in the evening\", tell her: the Sun will wait, but not forever.\"",
+  "ja": "「お針子さんのところに行ったの？ あの『夕方七時みたいな』黄色がまだ残ってるなら、伝えて。太陽は待つけど、ずっとじゃないって。」"
+ },
+ "city.ask.rassvet.tk.reel": {
+  "ru": "Что за плёнка с надписью «Рассвет»?",
+  "en": "What's the film can marked \"Rassvet\"?",
+  "ja": "『ラスヴェート』と書かれたフィルム缶って？"
+ },
+ "city.ask.rassvet.tk.reel.1": {
+  "ru": "— Коробка нашлась за экраном. На крышке то же слово, что на фасаде. Киномеханик говорит, что дом назвали по ней, а фильм все считали выдумкой.",
+  "en": "\"The can turned up behind the screen. The lid bears the same word as the front of the building. The projectionist says the house was named after it, though everyone thought the film was made up.\"",
+  "ja": "「缶はスクリーンの裏から出てきたの。ふたには、建物の正面と同じ言葉。映写技師は、この建物はそれにちなんで名づけたって言うけど、みんな映画のほうは作り話だと思ってたのよ。」"
+ },
+ "city.ask.rassvet.tk.reel.2": {
+  "ru": "— Открытку «На память о том, чего не доснято» я даю не всем. Только тем, кто досмотрел до белого света.",
+  "en": "\"I don't give the card \"In memory of what was never finished\" to everyone. Only to those who stayed to the white light.\"",
+  "ja": "「『撮り終えられなかったものの思い出に』の絵はがきは、誰にでもは渡さないの。白い光まで観た人にだけ。」"
+ },
+ "city.ask.rassvet.tk.after": {
+  "ru": "Куда пойти после сеанса?",
+  "en": "Where should I go after the show?",
+  "ja": "上映のあとはどこへ行けばいい？"
+ },
+ "city.ask.rassvet.tk.after.1": {
+  "ru": "— После вечернего хорошо дойти до «Тарелки»: пока ты досматривал, Кеша мог объявить последнюю станцию. А если радио ловит помехи, дело в «Шестерне»: там радиолюбители.",
+  "en": "\"After the evening show it's nice to walk to the Saucer: while you were watching, Kesha may have announced the last stop. And if the radio picks up interference, blame the Cog: the radio amateurs are there.\"",
+  "ja": "「夜の回のあとは『ソーサー』まで歩くといいわ。観ているあいだに、ケーシャが終点を告げたかもしれないから。それに、ラジオにノイズが入るなら、『歯車』のせいよ。アマチュア無線の人たちがいるから。」"
+ },
+ "city.ask.rassvet.tk.after.2": {
+  "ru": "— Сегодня пятница: в «Шестерне» полуфинал по бильярду, а у нас после «Вальса на пристани» буфет открыт ещё полчаса.",
+  "en": "\"It's Friday: at the Cog there's the billiards semi-final, and here the buffet stays open another half hour after Waltz on the Pier.\"",
+  "ja": "「今日は金曜。『歯車』ではビリヤードの準決勝、うちでは『桟橋のワルツ』のあと、売店がさらに三十分あいてるわ。」"
+ },
+ "city.ask.rassvet.tk.after.3": {
+  "ru": "— Сегодня суббота: в «Шестерне» вечером финал, запись зрителей у Тамары Ильиничны. Сеансы у нас без перерыва, так что выбирай одно из двух.",
+  "en": "\"It's Saturday: the Cog has the final this evening, spectators sign up with Tamara Ilyinichna. Our shows run back to back, so choose one of the two.\"",
+  "ja": "「今日は土曜。『歯車』では夜に決勝があって、見物の申しこみはタマーラ・イリイニチナのところ。うちは休みなしで上映するから、どちらかを選んで。」"
+ },
+ "city.ask.rassvet.bf.projectionist": {
+  "ru": "Что киномеханик ест в перерыве?",
+  "en": "What does the projectionist eat at the interval?",
+  "ja": "映写技師は休憩に何を食べるの？"
+ },
+ "city.ask.rassvet.bf.projectionist.1": {
+  "ru": "— Пирожок с вишней, один. Передаю в будку на ниточке, это он сам придумал, чтобы не бросать катушку.",
+  "en": "\"A cherry pie, one. I send it up to the booth on a string; he thought of it himself, so he needn't leave the reel.\"",
+  "ja": "「サクランボのピロシキをひとつ。映写室まで糸で吊って届けるの。リールから離れなくていいように、本人が考えたのよ。」"
+ },
+ "city.ask.rassvet.bf.projectionist.2": {
+  "ru": "— По субботам он в зале, а не в будке. Пирожок несу прямо к креслу. «Зрителям мешаешь». «Кормлю зрителя».",
+  "en": "\"On Saturdays he's in the hall, not the booth. I carry the pie straight to his seat. \"You're disturbing the audience.\" \"I'm feeding an audience member.\"\"",
+  "ja": "「土曜日は、彼は映写室じゃなくて客席にいるの。ピロシキは座席まで運ぶわ。『お客さんの邪魔よ』『お客さんに食べさせてるのさ』ってね。」"
+ },
+ "city.ask.rassvet.bf.friday": {
+  "ru": "Правда, что в пятницу буфет работает дольше?",
+  "en": "Is it true the buffet stays open later on Fridays?",
+  "ja": "金曜は売店が遅くまでって本当？"
+ },
+ "city.ask.rassvet.bf.friday.1": {
+  "ru": "— После вечернего сеанса ещё полчаса. Пятница, «Вальс на пристани»: после него все голодные, а у кого-то глаза мокрые.",
+  "en": "\"Half an hour after the evening show. Friday, Waltz on the Pier: afterwards everybody is hungry and somebody's eyes are wet.\"",
+  "ja": "「夜の上映のあと、さらに三十分。金曜は『桟橋のワルツ』で、終わるとみんなお腹がすいてて、誰かは目がうるんでるの。」"
+ },
+ "city.ask.rassvet.bf.friday.2": {
+  "ru": "— Сегодня! Чай я вскипятила на полчаса вперёд, пирожки только с капустой. Они выдержанные.",
+  "en": "\"Today! I've boiled the tea half an hour ahead, and the pies are all cabbage. They're well matured.\"",
+  "ja": "「今日よ！ お茶は三十分ぶん先に沸かしてあるし、ピロシキはキャベツだけ。熟成してるから。」"
+ },
+ "city.ask.rassvet.bf.break": {
+  "ru": "Что значит «перерыв в буфете» в афише?",
+  "en": "What does the poster mean by \"the break is in the buffet\"?",
+  "ja": "ポスターの『休憩は売店に』ってどういう意味？"
+ },
+ "city.ask.rassvet.bf.break.1": {
+  "ru": "— В субботу сеансы идут без пауз, поэтому перерыв у меня. Закрываю окошко на двадцать минут и сижу сама, как зритель. Не стучите.",
+  "en": "\"On Saturdays the shows run without a break, so the break is mine. I close the hatch for twenty minutes and sit like a spectator myself. Don't knock.\"",
+  "ja": "「土曜は上映が休みなしで続くから、休憩はわたしのぶん。二十分だけ窓口を閉めて、わたしも観客みたいに座るの。ノックしないでね。」"
+ },
+ "city.ask.rassvet.cl.dance": {
+  "ru": "А танцевать в уличной обуви можно?",
+  "en": "May I dance in outdoor shoes?",
+  "ja": "外靴のままで踊ってもいい？"
+ },
+ "city.ask.rassvet.cl.dance.1": {
+  "ru": "— Сменная обувь, чистая и гладкая: так в правилах у зеркала. Пол натирают по пятницам, и он за это благодарен.",
+  "en": "\"Changing shoes, clean and smooth: so say the rules by the mirror. The floor is polished on Fridays and is grateful for it.\"",
+  "ja": "「履きかえの靴で、きれいでつるつるのもの。鏡のそばの決まりにそう書いてあるわ。床は金曜に磨くの、床も感謝してる。」"
+ },
+ "city.ask.rassvet.cl.dance.2": {
+  "ru": "— Сегодня вальс: учительница уже хлопает в ладоши, слышно отсюда. Раз-два-три, юноша.",
+  "en": "\"It's waltz day: the teacher is already clapping, you can hear her from here. One-two-three, young man.\"",
+  "ja": "「今日はワルツ。先生がもう手を叩いてるのが、ここまで聞こえるわ。いち、に、さん、ぼうや。」"
+ },
+ "city.ask.rassvet.cl.dance.3": {
+  "ru": "— Среда, фокстрот. Лица серьёзные, как на экзамене, а пальто сдают по двое.",
+  "en": "\"Wednesday, foxtrot. The faces are serious as at an exam, and the coats come in pairs.\"",
+  "ja": "「水曜はフォックストロット。顔は試験みたいにまじめで、コートは二人ぶんまとめて預けられるの。」"
+ },
+ "city.ask.rassvet.cl.umbrella": {
+  "ru": "Чей это чёрный зонт с запиской?",
+  "en": "Whose is the black umbrella with the note?",
+  "ja": "メモつきの黒い傘は誰の？"
+ },
+ "city.ask.rassvet.cl.umbrella.1": {
+  "ru": "— «Зайду, как только пойдёт дождь». Дождя не было, он не пришёл. Теперь я жду дождя больше, чем он.",
+  "en": "\"\"I'll drop by as soon as it rains.\" It hasn't rained, so he hasn't come. Now I wait for the rain more than he does.\"",
+  "ja": "「『雨が降ったらすぐに取りに来ます』って。雨が降らなかったから、来なかったの。いまじゃ、持ち主よりわたしのほうが雨を待ってるわ。」"
+ },
+ "city.ask.rassvet.cl.umbrella.2": {
+  "ru": "— Дождь! Смотрю на дверь. Нет, не он. Наверное, у него есть второй.",
+  "en": "\"Rain! I look at the door. No, not him. He must have a second one.\"",
+  "ja": "「雨ね！ 戸口を見るけど、違うわ、あの人じゃない。きっと二本目を持ってるのね。」"
  }
 }

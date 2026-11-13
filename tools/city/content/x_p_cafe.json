@@ -486,6 +486,16 @@
   }
  },
  "rules": {
+  "P-CAFE/bar": {
+   "topics": [
+    "@x_cafe_bar"
+   ]
+  },
+  "P-CAFE/ice_cream": {
+   "topics": [
+    "@x_cafe_ice"
+   ]
+  },
   "P-CAFE/jukebox": {
    "act": "tarelka_jukebox"
   },
@@ -527,6 +537,41 @@
   }
  },
  "quests": [
+  {
+   "id": "cafe_kefir",
+   "kind": "side",
+   "start_on": {
+    "event": "ask",
+    "target": "cafe.ck.sour"
+   },
+   "stages": [
+    {
+     "id": "buy",
+     "objectives": [
+      {
+       "id": "kefir",
+       "event": "have",
+       "target": "kefir"
+      }
+     ]
+    },
+    {
+     "id": "bring",
+     "objectives": [
+      {
+       "id": "bring",
+       "event": "ask",
+       "target": "cafe.ck.kefir"
+      }
+     ],
+     "reward": {
+      "items": {
+       "pie": 1
+      }
+     }
+    }
+   ]
+  },
   {
    "id": "cafe_kesha",
    "kind": "side",
@@ -782,5 +827,196 @@
     "city.xtx.kesha_phrasebook.4"
    ]
   }
+ },
+ "topic_sets": {
+  "x_cafe_bar": [
+   {
+    "id": "cafe.espresso",
+    "k": "city.ask.cafe.espresso",
+    "lines": [
+     "city.ask.cafe.espresso.1",
+     {
+      "k": "city.ask.cafe.espresso.2",
+      "h": [
+       8,
+       11
+      ]
+     },
+     {
+      "k": "city.ask.cafe.espresso.3",
+      "h": [
+       17,
+       21
+      ]
+     }
+    ],
+    "gives": {
+     "collect": "staff/tarelka"
+    }
+   },
+   {
+    "id": "cafe.guestbook",
+    "k": "city.ask.cafe.guestbook",
+    "lines": [
+     "city.ask.cafe.guestbook.1",
+     {
+      "k": "city.ask.cafe.guestbook.2",
+      "after": 4
+     },
+     {
+      "k": "city.ask.cafe.guestbook.3",
+      "did": "guest_book_sign"
+     }
+    ],
+    "gives": {
+     "collect": "staff/tarelka"
+    }
+   },
+   {
+    "id": "cafe.chess",
+    "k": "city.ask.cafe.chess",
+    "lines": [
+     "city.ask.cafe.chess.1",
+     {
+      "k": "city.ask.cafe.chess.2",
+      "d": "sat,sun"
+     },
+     {
+      "k": "city.ask.cafe.chess.3",
+      "count": [
+       "chess_wins",
+       1
+      ]
+     },
+     "city.ask.cafe.chess.4"
+    ],
+    "gives": {
+     "collect": "staff/tarelka"
+    }
+   }
+  ],
+  "x_cafe_ice": [
+   {
+    "id": "cafe.ice.flavours",
+    "k": "city.ask.cafe.ice.flavours",
+    "lines": [
+     "city.ask.cafe.ice.flavours.1",
+     {
+      "k": "city.ask.cafe.ice.flavours.2",
+      "weather": [
+       "warm",
+       "clear"
+      ]
+     },
+     {
+      "k": "city.ask.cafe.ice.flavours.3",
+      "d": "sat"
+     }
+    ],
+    "gives": {
+     "collect": "staff/icecream"
+    }
+   },
+   {
+    "id": "cafe.ice.gallery",
+    "k": "city.ask.cafe.ice.gallery",
+    "lines": [
+     "city.ask.cafe.ice.gallery.1",
+     {
+      "k": "city.ask.cafe.ice.gallery.2",
+      "h": [
+       17,
+       21
+      ]
+     },
+     {
+      "k": "city.ask.cafe.ice.gallery.3",
+      "did": "telescope"
+     }
+    ],
+    "gives": {
+     "collect": "staff/icecream"
+    }
+   }
+  ],
+  "x_cafe_cook": [
+   {
+    "id": "cafe.ck.pilaf",
+    "k": "city.ask.cafe.ck.pilaf",
+    "lines": [
+     "city.ask.cafe.ck.pilaf.1",
+     {
+      "k": "city.ask.cafe.ck.pilaf.2",
+      "d": "sat",
+      "h": [
+       9,
+       14
+      ]
+     }
+    ],
+    "gives": {
+     "collect": "staff/tarelka"
+    }
+   },
+   {
+    "id": "cafe.ck.sour",
+    "k": "city.ask.cafe.ck.sour",
+    "lines": [
+     "city.ask.cafe.ck.sour.1",
+     "city.ask.cafe.ck.sour.2",
+     {
+      "k": "city.ask.cafe.ck.sour.3",
+      "d": "fri"
+     }
+    ],
+    "gives": {
+     "collect": "staff/tarelka"
+    }
+   },
+   {
+    "id": "cafe.ck.kefir",
+    "k": "city.ask.cafe.ck.kefir",
+    "lines": [
+     "city.ask.cafe.ck.kefir.1"
+    ],
+    "heard": "cafe.ck.sour",
+    "gives": {
+     "collect": "staff/tarelka"
+    }
+   },
+   {
+    "id": "cafe.ck.kesha",
+    "k": "city.ask.cafe.ck.kesha",
+    "lines": [
+     "city.ask.cafe.ck.kesha.1",
+     {
+      "k": "city.ask.cafe.ck.kesha.2",
+      "did": "kesha_feed"
+     }
+    ],
+    "gives": {
+     "collect": "staff/tarelka"
+    }
+   },
+   {
+    "id": "cafe.ck.after",
+    "k": "city.ask.cafe.ck.after",
+    "lines": [
+     "city.ask.cafe.ck.after.1",
+     {
+      "k": "city.ask.cafe.ck.after.2",
+      "did": "cinema"
+     }
+    ],
+    "gives": {
+     "collect": "staff/tarelka"
+    }
+   }
+  ]
+ },
+ "topics": {
+  "ask_cook": [
+   "@x_cafe_cook"
+  ]
  }
 }

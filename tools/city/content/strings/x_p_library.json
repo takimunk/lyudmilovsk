@@ -844,5 +844,240 @@
   "ru": "Испанская партия, или Рюи Лопес, — это долгий чай. Белый слон нацеливается на коня, который защищает пешку, и ничего не происходит двадцать ходов. А потом происходит всё сразу. Дядя Гриша обожает её за то, что можно думать вслух, и никто не мешает. Последний совет книги: «Дебют нужен, чтобы дойти до середины игры живым. Остальное знают те, кто играл. А те, кто не играл, пусть сядут и сыграют. Партию лучше начинать, а не откладывать».",
   "en": "The Spanish Game, or Ruy López, is a long tea. White's bishop aims at the knight that guards a pawn, and nothing happens for twenty moves. And then everything happens at once. Uncle Grisha loves it because you can think aloud and nobody interrupts. The book's last advice: \"The opening exists to get you to the middle of the game alive. The rest is known to those who have played. And those who haven't should sit down and play. A game is better begun than postponed.\"",
   "ja": "スペイン風、またの名ルイ・ロペスは、長いお茶会だ。白のビショップが、ポーンを守るナイトをねらい、二十手のあいだ何も起こらない。それから、すべてが一度に起こる。グリーシャおじさんがこれを愛するのは、声に出して考えても、誰も邪魔しないから。本の最後の助言。「序盤は、中盤まで生きてたどり着くためにある。あとは指した人が知っている。指していない人は、座って指してみるといい。対局は、延ばすより始めるほうがいい」"
+ },
+ "city.ask.lib.postcard": {
+  "ru": "Зачем у вас открытки?",
+  "en": "Why do you sell postcards?",
+  "ja": "どうして絵はがきを売ってるの？"
+ },
+ "city.ask.lib.postcard.1": {
+  "ru": "— Четыре рубля. Пишут на них мало, а хранят потом десятилетиями: в наших книгах закладок больше, чем пометок на полях.",
+  "en": "\"Four roubles. People write little on them and keep them for decades. Our books hold more bookmarks than margin notes.\"",
+  "ja": "「四ルーブル。書く人は少ないけど、何十年も持っていてくれるの。うちの本には、書き込みより栞のほうが多いくらい。」"
+ },
+ "city.ask.lib.postcard.2": {
+  "ru": "— Если захочется написать и не знаешь кому, оставь у полки «Вернувшиеся», у окна. Чья открытка, я не спрашиваю. Передам.",
+  "en": "\"If you feel like writing and don't know to whom, leave it by the Returned shelf at the window. I won't ask whose it is. I'll pass it on.\"",
+  "ja": "「誰に書けばいいかわからなくなったら、窓ぎわの『戻ってきた本』の棚に置いていって。誰のかは聞かない。ちゃんと渡すから。」"
+ },
+ "city.ask.lib.postcard.3": {
+  "ru": "— Ты вложил открытку в «Путеводитель», я видела. Во вторник к чаю не удивляйся: вторая чашка у нас уже тёплая.",
+  "en": "\"You slipped a card into the Guide, I saw. Don't be surprised on Tuesday at tea: the second cup is already warm.\"",
+  "ja": "「『案内』に絵はがきをはさんだでしょう、見てたわ。火曜のお茶の時間に驚かないでね。二つめのカップは、もうあたたかいから。」"
+ },
+ "city.ask.lib.piano": {
+  "ru": "Можно поиграть на пианино?",
+  "en": "May I play the piano?",
+  "ja": "ピアノ、弾いてもいい？"
+ },
+ "city.ask.lib.piano.1": {
+  "ru": "— Пианино в капсуле на первом ярусе. Крышка тугая, педаль тихая: слышно тому, кто играет, и немного стене.",
+  "en": "\"The piano is in a pod on the first level. The lid is stiff, the pedal quiet: the player hears it, and the wall a little.\"",
+  "ja": "「ピアノは一階のポッドの中。ふたは固いけど、ペダルは静か。聞こえるのは弾く人と、ちょっとだけ壁くらい。」"
+ },
+ "city.ask.lib.piano.2": {
+  "ru": "— Вечером удобнее: читальный зал пустеет, и сосед за стенкой не возражает. Он вообще никогда не возражает, это шкаф.",
+  "en": "\"Evenings are better: the reading room empties and the neighbour through the wall doesn't mind. He never minds. It's a cupboard.\"",
+  "ja": "「夕方のほうがいいわ。閲覧室は人が減るし、壁の向こうのお隣さんも気にしないから。気にしたことなんてないの、戸棚だもの。」"
+ },
+ "city.ask.lib.piano.3": {
+  "ru": "— Это ты играл мелодию без начала? Играй дальше. Конец у неё должен быть: я проверила, он нигде не записан.",
+  "en": "\"Was that you, playing the tune with no beginning? Keep going. It must have an ending: I checked, and it isn't written down anywhere.\"",
+  "ja": "「始まりのない曲を弾いていたの、あなた？ 続けて。終わりはあるはずよ。調べたけど、どこにも書かれていなかったの。」"
+ },
+ "city.ask.lib.map": {
+  "ru": "Где старая карта города?",
+  "en": "Where is the old map of the town?",
+  "ja": "町の古い地図はどこ？"
+ },
+ "city.ask.lib.map.1": {
+  "ru": "— У книжной стены, рядом с «Шестью террасами». Найди свой дом. Не нашёл: значит, он новее карты. Это тоже повод для штампа.",
+  "en": "\"By the book wall, next to Six Terraces. Find your house. If you can't, it's newer than the map. That's worth a stamp too.\"",
+  "ja": "「本棚の壁のそば、『六つの段』のとなり。自分の家を探してみて。見つからなければ、地図より新しい家ってこと。それでもスタンプの理由になるわ。」"
+ },
+ "city.ask.lib.map.2": {
+  "ru": "— «Шесть террас» дочитал? Тогда ты знаешь: холм не срезали, его попросили потесниться. Редкая вежливость для архитекторов.",
+  "en": "\"Finished Six Terraces? Then you know the hill wasn't cut down, it was asked to move over. Rare politeness for architects.\"",
+  "ja": "「『六つの段』は読み終えた？ なら知ってるわね。丘は削られたんじゃなく、少し寄ってもらったの。建築家にしては珍しい礼儀正しさよ。」"
+ },
+ "city.ask.lib.map.3": {
+  "ru": "— Сегодня пятница, тема дня «наш город»: найти на карте свой дом. Успеешь до закрытия, штамп твой.",
+  "en": "\"It's Friday, the theme of the day is our town: find your own house on the map. Do it before closing and the stamp is yours.\"",
+  "ja": "「今日は金曜、テーマは『わたしたちの町』。地図で自分の家を探すの。閉館までに見つければ、スタンプはあなたのもの。」"
+ },
+ "city.ask.lib.stamp_why": {
+  "ru": "Почему штамп «за тихие часы»?",
+  "en": "Why is the stamp \"for quiet hours\"?",
+  "ja": "どうして『静かな時間』のスタンプなの？"
+ },
+ "city.ask.lib.stamp_why.1": {
+  "ru": "— Штамп не за страницы, а за час, который ты провёл не торопясь. Лампа с зелёным абажуром: по будням. Раскрытая книга с крыльями: по выходным.",
+  "en": "\"The stamp isn't for pages, it's for an hour spent unhurried. The lamp with the green shade is for weekdays. The open book with wings is for weekends.\"",
+  "ja": "「スタンプはページ数じゃなくて、急がずに過ごした一時間のためのもの。緑の笠のランプは平日。翼のある開いた本は週末。」"
+ },
+ "city.ask.lib.stamp_why.2": {
+  "ru": "— Сегодня книга с крыльями: за чтение без всякой пользы. Самый дорогой штамп в моей подушке.",
+  "en": "\"Today it's the winged book: for reading with no use at all. The most expensive stamp in my pad.\"",
+  "ja": "「今日は翼のある本。何の役にも立たない読書のためのスタンプ。わたしのスタンプ台でいちばん高価なの。」"
+ },
+ "city.ask.lib.stamp_why.3": {
+  "ru": "— Восемь уже? Тогда дневник носи в левом кармане, ближе к сердцу: он потяжелел.",
+  "en": "\"Eight already? Then carry the diary in your left pocket, closer to the heart. It's got heavier.\"",
+  "ja": "「もう八つ？ なら日記は左のポケットに、心臓のそばに入れて持ち歩いて。重くなったでしょう。」"
+ },
+ "city.ask.lib.seventeen": {
+  "ru": "Сколько всего штампов?",
+  "en": "How many stamps are there in all?",
+  "ja": "スタンプは全部でいくつ？"
+ },
+ "city.ask.lib.seventeen.1": {
+  "ru": "— Пятнадцать за полки, один у стойки, это я, и один за «Вернувшихся». Семнадцать. Считать надо без спешки.",
+  "en": "\"Fifteen for the shelves, one at the desk, that's me, and one for the Returned. Seventeen. Count without hurrying.\"",
+  "ja": "「棚のぶんが十五、カウンターのが一つ、これはわたし、それから『戻ってきた本』のぶんが一つ。合わせて十七。数えるときは急がないで。」"
+ },
+ "city.ask.lib.seventeen.2": {
+  "ru": "— Двенадцать? Остались те, что на виду не лежат. Один из них у полки, где все корешки смотрят в окно.",
+  "en": "\"Twelve? What's left doesn't lie in plain sight. One of them is by the shelf where all the spines face the window.\"",
+  "ja": "「十二？ 残りは目につくところにないものばかり。ひとつは、背表紙がみんな窓を向いている棚のそばにあるわ。」"
+ },
+ "city.ask.lib.seventeen.3": {
+  "ru": "— Все семнадцать! Заходи во вторник к чаю, покажу, что у нас делают с такими читателями.",
+  "en": "\"All seventeen! Come on a Tuesday for tea and I'll show you what we do with readers like that.\"",
+  "ja": "「十七、全部そろったのね！ 火曜のお茶の時間にいらっしゃい。あなたみたいな読者に何をするか、見せてあげる。」"
+ },
+ "city.ask.lib.quiet_hours": {
+  "ru": "Когда у вас тише всего?",
+  "en": "When is it quietest here?",
+  "ja": "いちばん静かなのはいつ？"
+ },
+ "city.ask.lib.quiet_hours.1": {
+  "ru": "— С десяти до одиннадцати: читатели ещё допивают чай дома, а уборщица уже ушла. Лучшее время для полки «Море».",
+  "en": "\"Ten to eleven: the readers are still finishing their tea at home and the cleaner has already gone. The best hour for the Sea shelf.\"",
+  "ja": "「十時から十一時。読者はまだ家でお茶を飲んでいて、掃除の人はもう帰ったあと。『海』の棚にいちばんいい時間よ。」"
+ },
+ "city.ask.lib.quiet_hours.2": {
+  "ru": "— К шести приходят школьники и решают одну задачу втроём. Шёпот у них хороший, но заметный.",
+  "en": "\"Towards six the schoolchildren come and solve one problem three at a time. Their whispering is good, but noticeable.\"",
+  "ja": "「六時ごろになると、生徒たちが来て、ひとつの問題を三人で解くの。ささやき声は上手だけど、よく聞こえるわ。」"
+ },
+ "city.ask.lib.quiet_hours.3": {
+  "ru": "— В дождь у нас людно и тихо одновременно: все пришли за одним и тем же, переждать.",
+  "en": "\"On a rainy day it's crowded and quiet at once: everybody came for the same thing, to wait it out.\"",
+  "ja": "「雨の日はにぎやかなのに静か。みんな同じ理由で来るの、雨宿りよ。」"
+ },
+ "city.ask.lib.quiet_hours.4": {
+  "ru": "— Тише всего вечером в будни, и тише всего по вторникам. Выбирай сам: тишина или чай.",
+  "en": "\"Quietest on weekday evenings, and quietest of all on Tuesdays. You choose: the quiet or the tea.\"",
+  "ja": "「いちばん静かなのは平日の夕方、なかでも火曜日。選んで、静けさかお茶か。」"
+ },
+ "city.ask.lib.chessbook": {
+  "ru": "Есть что-нибудь про шахматы?",
+  "en": "Have you anything on chess?",
+  "ja": "チェスの本はある？"
+ },
+ "city.ask.lib.chessbook.1": {
+  "ru": "— Капсула с шахматами на первом ярусе: «Дебюты, рассказанные соседу». Читается как письмо, а не как учебник. Дочитаешь, зайди в «Шестерню»: Тамара Ильинична ведёт тетрадь партий и ищет, кому её показать.",
+  "en": "\"The chess pod on the first level: Chess Openings, Told to a Neighbour. It reads like a letter, not a textbook. When you finish, drop in at the Cog: Tamara Ilyinichna keeps the game notebook and is looking for someone to show it to.\"",
+  "ja": "「一階にチェスのポッドがあって、『お隣さんに語るチェスの序盤』が置いてあるわ。教科書というより手紙みたいに読める。読み終えたら『歯車』へ行ってみて。タマーラ・イリイニチナが棋譜帳をつけていて、見せる相手を探してるの。」"
+ },
+ "city.ask.lib.chessbook.2": {
+  "ru": "— Дочитал? В «Рассвете» на доске мелом нарисована лесенка из имён, а нижняя строчка пустая.",
+  "en": "\"Finished it? At the Rassvet there's a ladder of names in chalk on the board, and the bottom line is empty.\"",
+  "ja": "「読み終えた？ 『ラスヴェート』の黒板には、チョークで名前の階段が書いてあって、いちばん下の行が空いているの。」"
+ },
+ "city.ask.lib.chessbook.3": {
+  "ru": "— Говорят, ты кого-то обыграл. Принеси потом книгу с закладкой на странице, где ошибся: у неё это любимая закладка.",
+  "en": "\"I hear you beat somebody. Bring the book back with a bookmark at the page where you slipped: that's its favourite bookmark.\"",
+  "ja": "「誰かに勝ったそうね。あとで本を返すとき、間違えたページに栞をはさんで。本はそれがいちばん好きな栞なの。」"
+ },
+ "city.ask.lib.g_n": {
+  "ru": "Кто этот Г. Н. в журнале?",
+  "en": "Who is G. N. in the ledger?",
+  "ja": "台帳のG・Nって誰？"
+ },
+ "city.ask.lib.g_n.1": {
+  "ru": "— Читатель с карточкой три-двести-семнадцать. Взял «Путеводитель по солнечным часам» в мае шестьдесят восьмого и всё никак не донесёт. Срок я переписываю: рука привыкла.",
+  "en": "\"The reader with card 3-217. He took A Guide to Sundials in May sixty-eight and still hasn't brought it back. I keep rewriting the due date: my hand is used to it.\"",
+  "ja": "「貸出カード三の二一七の読者よ。六十八年の五月に『日時計案内』を借りたきり、まだ返しに来ないの。返却日は書き直してるわ。手が慣れてしまって。」"
+ },
+ "city.ask.lib.g_n.2": {
+  "ru": "— Мы переписывались карандашом на полях формуляра. Ничего не стирала с тех пор: ластик лежит в ящике, чтобы не соблазниться.",
+  "en": "\"We wrote to each other in pencil in the margins of the loan card. I haven't erased anything since: the eraser lies in the drawer so I won't be tempted.\"",
+  "ja": "「貸出カードの余白に、鉛筆でやりとりをしていたの。それ以来、何も消していない。消しゴムは引き出しの中。誘惑に負けないようにね。」"
+ },
+ "city.ask.lib.office_work": {
+  "ru": "Чем вы занимаетесь, когда никого нет?",
+  "en": "What do you do when nobody is in?",
+  "ja": "誰もいないときは何をしてるの？"
+ },
+ "city.ask.lib.office_work.1": {
+  "ru": "— Подклеиваю корешки, сверяю формуляры с полками, пишу карточки на книги без автора. У них самые красивые карточки.",
+  "en": "\"I glue the spines back, check loan cards against the shelves, write cards for books with no author. Those have the most beautiful cards.\"",
+  "ja": "「背表紙を貼りなおしたり、貸出カードと棚を照らし合わせたり、著者のいない本のカードを書いたり。そういう本のカードがいちばんきれいなの。」"
+ },
+ "city.ask.lib.office_work.2": {
+  "ru": "— С утра разбираю ящик возврата. Иногда он тёплый внутри, как варежка.",
+  "en": "\"In the morning I sort the returns box. Sometimes it's warm inside, like a mitten.\"",
+  "ja": "「朝は返却ボックスの整理。ときどき、中が手袋みたいにあたたかいの。」"
+ },
+ "city.ask.lib.office_work.3": {
+  "ru": "— К вечеру чай и тишина. Пока не закроем, в служебную дверь лучше не стучать: чайник у нас с характером.",
+  "en": "\"Towards evening there's tea and quiet. Until we close it's best not to knock on the staff door: our kettle has a temper.\"",
+  "ja": "「夕方はお茶と静けさ。閉館までは事務室のドアをたたかないほうがいいわ。うちのやかんは気難しいから。」"
+ },
+ "city.ask.lib.tuesday": {
+  "ru": "Что у вас по вторникам?",
+  "en": "What happens here on Tuesdays?",
+  "ja": "火曜日には何があるの？"
+ },
+ "city.ask.lib.tuesday.1": {
+  "ru": "— По вторникам чайник стоит на двоих, и вопросов не задаём. Я только ставлю, остальное как получится.",
+  "en": "\"On Tuesdays the kettle is on for two and we don't ask questions. I only put it on; the rest is up to chance.\"",
+  "ja": "「火曜日はやかんが二人分。質問はなし。わたしはお湯を沸かすだけで、あとはなりゆき。」"
+ },
+ "city.ask.lib.tuesday.2": {
+  "ru": "— Сегодня вторник: чайник поставлен на двоих. Зайдёшь, вторая чашка твоя.",
+  "en": "\"It's Tuesday: the kettle is on for two. If you come in, the second cup is yours.\"",
+  "ja": "「今日は火曜日。やかんは二人分よ。来てくれたら、二つめのカップはあなたの。」"
+ },
+ "city.ask.lib.tuesday.3": {
+  "ru": "— Ты уже пил с нами. Значит, свидетель. Свидетели чай допивают.",
+  "en": "\"You've had tea with us. So you're a witness. Witnesses finish their tea.\"",
+  "ja": "「もうお茶を飲んでくれたわね。つまり証人。証人は最後まで飲むものよ。」"
+ },
+ "quest.library_chess_note.title": {
+  "ru": "Тетрадь партий",
+  "en": "The Game Notebook",
+  "ja": "棋譜帳"
+ },
+ "quest.library_chess_note.desc": {
+  "ru": "Библиотекарша советует шахматную капсулу и «Шестерню»: там ведут тетрадь партий и ищут, кому её показать. Начну с книги.",
+  "en": "The librarian recommends the chess pod and the Cog, where they keep a notebook of games and look for someone to show it to. I'll start with the book.",
+  "ja": "司書さんが、チェスのポッドと『歯車』をすすめてくれた。向こうでは棋譜帳をつけていて、見せる相手を探しているらしい。まずは本から。"
+ },
+ "quest.library_chess_note.read.log": {
+  "ru": "«Дебюты, рассказанные соседу» стоят в капсуле на первом ярусе. Прочту хоть главу.",
+  "en": "Chess Openings, Told to a Neighbour sits in the pod on the first level. I'll read at least a chapter.",
+  "ja": "『お隣さんに語るチェスの序盤』は一階のポッドにある。せめて一章は読もう。"
+ },
+ "quest.library_chess_note.shelf.obj": {
+  "ru": "Почитать шахматную книгу",
+  "en": "Read the chess book",
+  "ja": "チェスの本を読む"
+ },
+ "quest.library_chess_note.ledger.log": {
+  "ru": "Теперь в «Шестерню», к Тамаре Ильиничне: спросить про лесенку и про тетрадь партий.",
+  "en": "Now to the Cog, to Tamara Ilyinichna: ask about the ladder and the game notebook.",
+  "ja": "次は『歯車』のタマーラ・イリイニチナのところへ。階段表と棋譜帳のことを聞いてみよう。"
+ },
+ "quest.library_chess_note.ladder.obj": {
+  "ru": "Спросить в «Шестерне» про шахматную лесенку",
+  "en": "Ask at the Cog about the chess ladder",
+  "ja": "『歯車』でチェスの階段表について聞く"
+ },
+ "quest.library_chess_note.done": {
+  "ru": "Тамара Ильинична открыла тетрадь на чистой странице и подвинула ко мне карандаш: «Пока без имени. Имя появится само». Я повертел карандаш и положил обратно.",
+  "en": "Tamara Ilyinichna opened the notebook at a blank page and pushed a pencil toward me: \"No name yet. The name will come by itself.\" I turned the pencil over and put it back.",
+  "ja": "タマーラ・イリイニチナは棋譜帳の白いページを開いて、鉛筆をこちらに押しやった。「まだ名前はなし。名前はそのうち自分で現れるわ」。ぼくは鉛筆をくるくる回して、元に戻した。"
  }
 }

@@ -786,6 +786,21 @@
   }
  },
  "rules": {
+  "P-CLUB3/library_desk": {
+   "topics": [
+    "@x_c_lending"
+   ]
+  },
+  "P-CLUB3/buffet_counter": {
+   "topics": [
+    "@x_c_buffet"
+   ]
+  },
+  "P-CLUB3/cloak": {
+   "topics": [
+    "@x_c_cloak"
+   ]
+  },
   "cog_club/stack_r_1": {
    "act": "cog_sh_poetry"
   },
@@ -1075,5 +1090,192 @@
     ]
    ]
   }
+ },
+ "topic_sets": {
+  "x_c_hatch": [
+   {
+    "id": "cog.lh.deposit",
+    "k": "city.ask.cog.lh.deposit",
+    "lines": [
+     "city.ask.cog.lh.deposit.1",
+     {
+      "k": "city.ask.cog.lh.deposit.2",
+      "d": "mon"
+     },
+     {
+      "k": "city.ask.cog.lh.deposit.3",
+      "d": "fri,sat,sun"
+     }
+    ],
+    "gives": {
+     "collect": "staff/cog"
+    }
+   },
+   {
+    "id": "cog.lh.swap",
+    "k": "city.ask.cog.lh.swap",
+    "lines": [
+     "city.ask.cog.lh.swap.1",
+     {
+      "k": "city.ask.cog.lh.swap.2",
+      "d": "mon"
+     },
+     {
+      "k": "city.ask.cog.lh.swap.3",
+      "did": "cog_swap"
+     }
+    ],
+    "gives": {
+     "collect": "staff/cog"
+    }
+   },
+   {
+    "id": "cog.lh.clock",
+    "k": "city.ask.cog.lh.clock",
+    "lines": [
+     "city.ask.cog.lh.clock.1",
+     {
+      "k": "city.ask.cog.lh.clock.2",
+      "did": "cog_clock_set"
+     }
+    ],
+    "gives": {
+     "collect": "staff/cog"
+    }
+   },
+   {
+    "id": "cog.lh.radio",
+    "k": "city.ask.cog.lh.radio",
+    "lines": [
+     "city.ask.cog.lh.radio.1",
+     {
+      "k": "city.ask.cog.lh.radio.2",
+      "d": "thu"
+     }
+    ],
+    "gives": {
+     "collect": "staff/cog"
+    }
+   }
+  ],
+  "x_c_lending": [
+   {
+    "id": "cog.ld.ladder",
+    "k": "city.ask.cog.ld.ladder",
+    "lines": [
+     "city.ask.cog.ld.ladder.1",
+     {
+      "k": "city.ask.cog.ld.ladder.2",
+      "d": "thu"
+     },
+     {
+      "k": "city.ask.cog.ld.ladder.3",
+      "count": [
+       "chess_wins",
+       1
+      ]
+     }
+    ],
+    "gives": {
+     "collect": "staff/cog"
+    }
+   },
+   {
+    "id": "cog.ld.cat",
+    "k": "city.ask.cog.ld.cat",
+    "lines": [
+     "city.ask.cog.ld.cat.1",
+     {
+      "k": "city.ask.cog.ld.cat.2",
+      "h": [
+       12,
+       21
+      ]
+     }
+    ],
+    "gives": {
+     "collect": "staff/cog"
+    }
+   }
+  ],
+  "x_c_buffet": [
+   {
+    "id": "cog.bf.tea",
+    "k": "city.ask.cog.bf.tea",
+    "lines": [
+     "city.ask.cog.bf.tea.1",
+     {
+      "k": "city.ask.cog.bf.tea.2",
+      "d": "sat",
+      "h": [
+       17,
+       21
+      ]
+     }
+    ],
+    "gives": {
+     "collect": "staff/buffet"
+    }
+   },
+   {
+    "id": "cog.bf.cup",
+    "k": "city.ask.cog.bf.cup",
+    "lines": [
+     "city.ask.cog.bf.cup.1"
+    ],
+    "gives": {
+     "collect": "staff/buffet"
+    }
+   },
+   {
+    "id": "cog.bf.pingpong",
+    "k": "city.ask.cog.bf.pingpong",
+    "lines": [
+     "city.ask.cog.bf.pingpong.1",
+     {
+      "k": "city.ask.cog.bf.pingpong.2",
+      "did": "table_tennis"
+     }
+    ],
+    "gives": {
+     "collect": "staff/buffet"
+    }
+   }
+  ],
+  "x_c_cloak": [
+   {
+    "id": "cog.cl.glider",
+    "k": "city.ask.cog.cl.glider",
+    "lines": [
+     "city.ask.cog.cl.glider.1",
+     "city.ask.cog.cl.glider.2"
+    ],
+    "gives": {
+     "collect": "staff/cloak"
+    }
+   },
+   {
+    "id": "cog.cl.where",
+    "k": "city.ask.cog.cl.where",
+    "lines": [
+     "city.ask.cog.cl.where.1",
+     {
+      "k": "city.ask.cog.cl.where.2",
+      "h": [
+       17,
+       21
+      ]
+     }
+    ],
+    "gives": {
+     "collect": "staff/cloak"
+    }
+   }
+  ]
+ },
+ "topics": {
+  "buy_cog_lending": [
+   "@x_c_hatch"
+  ]
  }
 }

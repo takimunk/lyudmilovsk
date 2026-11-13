@@ -247,5 +247,230 @@
   "ru": "7. Болельщики: места на скамейках, мячи не ловить, ловить настроение. Шуметь можно, но только в пользу, а не против. 8. Если команда проигрывает, но играет красиво, ей полагается дополнительный аплодисмент. 9. Если команда выигрывает, но играет некрасиво, ей полагается тоже, но тише. 10. Последнее правило: турнир нужен для того, чтобы после него двор стал немного ближе. Всё остальное дополнительно.",
   "en": "7. Spectators: places on the benches, don't catch the balls, catch the mood. Noise is permitted, but only for, not against. 8. If a team loses but plays beautifully, it is entitled to an extra round of applause. 9. If a team wins but plays ugly, it is entitled to one too, but quieter. 10. The last rule: the tournament exists so that afterwards the yard is a little closer together. Everything else is extra.",
   "ja": "七、観客。席はベンチ、ボールは捕らない。捕るのは雰囲気だ。声を出してよいが、応援のためだけで、批判のためではない。八、負けても美しく戦ったチームには、追加の拍手を受ける権利がある。九、勝ってもみにくい試合をしたチームにも同じ権利があるが、もっと静かな拍手で。十、最後の決まり。大会は、終わったあとに中庭が少しだけ近くなるためにある。そのほかはすべておまけ。"
+ },
+ "city.ask.t3.rc.sections": {
+  "ru": "Какие секции когда?",
+  "en": "Which sections are on when?",
+  "ja": "どの教室がいつあるの？"
+ },
+ "city.ask.t3.rc.sections.1": {
+  "ru": "— Расписание у двери: гимнастика, баскетбол, штанга, живопись, гончарная студия. Запись у тренера, вход свободный, носки ваши.",
+  "en": "\"The timetable is by the door: gymnastics, basketball, weights, painting, the pottery studio. Sign up with the coach, entry is free, the socks are yours.\"",
+  "ja": "「時間割は入口のところ。体操、バスケットボール、重量挙げ、絵画、陶芸教室。申しこみはコーチに、入場は無料、靴下は自分で。」"
+ },
+ "city.ask.t3.rc.sections.2": {
+  "ru": "— Сегодня баскетбол, «Прибой-мл.», с трёх до семи. В уличной обуви на площадку нельзя: тренер просит невежливо.",
+  "en": "\"Today it's basketball, Surf Juniors, three to seven. No outdoor shoes on the court: the coach asks impolitely.\"",
+  "ja": "「今日はバスケットボール、『プリボイ・ジュニア』、三時から七時まで。外靴でコートに入るのは禁止。コーチは乱暴にお願いするわよ。」"
+ },
+ "city.ask.t3.rc.sections.3": {
+  "ru": "— Сегодня гимнастика у девочек, Лидия Павловна. Не мешайте счёту прыжков: собьются, начнут сначала.",
+  "en": "\"Today it's girls' gymnastics, Lidia Pavlovna. Don't disturb the jump count: if they lose it they start over.\"",
+  "ja": "「今日は女の子の体操、リディア・パヴロヴナの教室。跳躍の数をじゃましないでね。数えそこなったら、最初からやり直しだから。」"
+ },
+ "city.ask.t3.rc.pool": {
+  "ru": "Как попасть в бассейн?",
+  "en": "How do I get into the pool?",
+  "ja": "プールにはどうやって入れる？"
+ },
+ "city.ask.t3.rc.pool.1": {
+  "ru": "— Справка от врача из поликлиники: взвесят, проверят зрение, поставят печать. С печатью принимаем, с кляксой тоже, если печать узнаётся.",
+  "en": "\"A doctor's note from the clinic: they weigh you, test your eyes, stamp it. With a stamp we let you in, with a smudge too, if the stamp is recognisable.\"",
+  "ja": "「診療所の医者の診断書よ。体重を測って、視力を調べて、判を押してもらうの。判があれば入れるわ。にじんでても、判だとわかればね。」"
+ },
+ "city.ask.t3.rc.pool.2": {
+  "ru": "— Справка уже есть? Значит, ты у нас почти пловец. Шапочку возьми из коробки: потерянные тоже ждут хозяев.",
+  "en": "\"Got the note already? Then you're nearly a swimmer. Take a cap from the box: lost ones wait for owners too.\"",
+  "ja": "「診断書はもうあるの？ ならもう、ほとんど泳ぐ人ね。帽子は箱からどうぞ。忘れられた帽子も、持ち主を待ってるのよ。」"
+ },
+ "city.ask.t3.rc.locker": {
+  "ru": "Какой у меня шкафчик?",
+  "en": "Which locker is mine?",
+  "ja": "ぼくのロッカーはどれ？"
+ },
+ "city.ask.t3.rc.locker.1": {
+  "ru": "— Номер семь, счастливый. Не путай с восьмым: там тренер. На семёрке нацарапано «Не открывать до победы». Раз открывается, значит, победа была.",
+  "en": "\"Number seven, the lucky one. Don't mix it up with eight: that's the coach's. Seven has scratched on it: \"Don't open until victory.\" If it opens, victory has come.\"",
+  "ja": "「七番、縁起がいいわ。八番とまちがえないでね。そっちはコーチの。七番には『勝つまで開けるな』って彫ってあるの。開くなら、もう勝ったってことよ。」"
+ },
+ "city.ask.t3.rc.locker.2": {
+  "ru": "— Майка с пятёркой у меня в ящике, пятый шкафчик свободен. Тренер сказал: на майке номер, а не полотенце.",
+  "en": "\"The number-five jersey is in my drawer and locker five is free. The coach said: a jersey has a number, not a towel.\"",
+  "ja": "「五番のユニフォームは引き出しにあるし、五番のロッカーもあいてるわ。コーチが言ってたの、ユニフォームは番号であって、タオルじゃないって。」"
+ },
+ "city.ask.t3.rc.after": {
+  "ru": "Что делать после тренировки?",
+  "en": "What do I do after training?",
+  "ja": "練習のあとは何をすればいい？"
+ },
+ "city.ask.t3.rc.after.1": {
+  "ru": "— После зала дойти до «Рассвета» на вечерний, в семь: сидишь, ноги гудят, и никто не требует отжиматься. Или в библиотеку: там даже штамп «за тихие часы» ставят.",
+  "en": "\"After the gym walk to the Rassvet for the seven o'clock show: you sit, your legs hum, and nobody demands push-ups. Or to the library: they even stamp you \"for quiet hours\".\"",
+  "ja": "「体育館のあとは『ラスヴェート』の七時の上映へ。座っていれば足はじんじんしても、誰も腕立て伏せを求めない。でなければ図書館ね。『静かな時間』のスタンプまで押してくれるわ。」"
+ },
+ "city.ask.t3.rc.after.2": {
+  "ru": "— Сегодня «Чемпион двора» днём: про мальчика, который тренировался у стены. После него у стола не протолкнуться.",
+  "en": "\"Today it's The Yard Champion in the afternoon: about the boy who practised against a wall. After it there's no room at the table.\"",
+  "ja": "「今日は昼に『中庭のチャンピオン』。壁で練習する男の子の話ね。観たあとは卓球台に人があふれるわよ。」"
+ },
+ "city.ask.t3.cf.kefir": {
+  "ru": "Что пить после тренировки?",
+  "en": "What should I drink after training?",
+  "ja": "練習のあとは何を飲めばいい？"
+ },
+ "city.ask.t3.cf.kefir.1": {
+  "ru": "— Кефир, а не шоколад: так тренер говорит. А шоколад после кефира, потому что тренер не смотрит.",
+  "en": "\"Kefir, not chocolate: that's what the coach says. Chocolate comes after the kefir, because the coach isn't looking.\"",
+  "ja": "「チョコレートじゃなくてケフィア。コーチはそう言うわ。チョコレートはケフィアのあと、コーチが見てないときにね。」"
+ },
+ "city.ask.t3.cf.kefir.2": {
+  "ru": "— Баскетболисты выходят в семь красные, как раки, и сметают кефир. К половине восьмого остаются яблоки.",
+  "en": "\"The basketball players come out at seven red as crabs and sweep up the kefir. By half past seven only apples are left.\"",
+  "ja": "「バスケの子たちは七時に、ゆでたカニみたいに真っ赤になって出てきて、ケフィアを飲み尽くすの。七時半には、リンゴしか残ってないわ。」"
+ },
+ "city.ask.t3.cf.kefir.3": {
+  "ru": "— В холод просят чай. Пью вместе с ними: греемся по очереди.",
+  "en": "\"In the cold they ask for tea. I drink with them: we take turns warming up.\"",
+  "ja": "「寒い日はお茶を頼まれるの。いっしょに飲むのよ。かわりばんこに温まるの。」"
+ },
+ "city.ask.t3.cf.cups": {
+  "ru": "Чьи это кубки над стойкой?",
+  "en": "Whose are the cups over the counter?",
+  "ja": "カウンターの上の杯は誰の？"
+ },
+ "city.ask.t3.cf.cups.1": {
+  "ru": "— Спортивного общества «Прибой». На самом маленьком гравировка: «За волю к победе. Почти победил». Его все хотят. Я тоже.",
+  "en": "\"The Surf sports society's. The smallest is engraved: \"For the will to win. Nearly won.\" Everybody wants that one. So do I.\"",
+  "ja": "「スポーツ協会『寄せ波』のよ。いちばん小さいのには『勝利への意志に。ほぼ勝った』って彫ってあるの。みんなあれがほしがってる。わたしもよ。」"
+ },
+ "city.ask.t3.cf.cups.2": {
+  "ru": "— Таблица лиги дворов у входа: «Прибой-мл.» на третьем месте. Карандашом приписано «будет больше». Приписал тренер, но я подозреваю уборщицу.",
+  "en": "\"The courtyard league table by the entrance: Surf Juniors in third place. In pencil: \"there will be more.\" The coach wrote it, but I suspect the cleaner.\"",
+  "ja": "「入口の中庭リーグの順位表では、『プリボイ・ジュニア』は三位。鉛筆で『もっと増える』って書き足してあるの。コーチが書いたんだけど、掃除の人じゃないかってわたしは疑ってる。」"
+ },
+ "city.ask.t3.co.windows": {
+  "ru": "Почему окна дороже мячей?",
+  "en": "Why are the windows dearer than the balls?",
+  "ja": "どうして窓のほうがボールより大事なの？"
+ },
+ "city.ask.t3.co.windows.1": {
+  "ru": "— Мяч стоит рубли и возвращается. Окно стоит дороже и не возвращается. За год мячей потеряно восемь, окон ноль. Берегу.",
+  "en": "\"A ball costs a few roubles and comes back. A window costs more and doesn't. In a year eight balls were lost and no windows. I look after them.\"",
+  "ja": "「ボールは数ルーブルで、戻ってくる。窓はもっと高くて、戻ってこない。一年でボールは八個なくなったが、窓はゼロだ。大事にしてるんだ。」"
+ },
+ "city.ask.t3.co.windows.2": {
+  "ru": "— Ты после игры не разбил ни одного окна, я заметил. Кто не разбил, выбирает мяч. Рыжий не бери: он принципиальный.",
+  "en": "\"After the game you didn't break a single window, I noticed. Whoever doesn't gets to pick the ball. Don't take the orange one: he's a man of principle.\"",
+  "ja": "「試合のあと、窓を一枚も割らなかったな、気づいてたぞ。割らなかったやつは、ボールを選べる。オレンジのは選ぶなよ。あれは頑固者だ。」"
+ },
+ "city.ask.t3.co.drill": {
+  "ru": "Что делать, если я совсем не умею?",
+  "en": "What if I can't do anything at all?",
+  "ja": "まったく下手なんだけど、どうすればいい？"
+ },
+ "city.ask.t3.co.drill.1": {
+  "ru": "— Приходи в пять, стой у задней стенки, подбирай. Подбирать мячи это половина игры, и самая честная половина.",
+  "en": "\"Come at five, stand by the back wall, pick up. Collecting balls is half the game, and the most honest half.\"",
+  "ja": "「五時に来て、奥の壁のところに立って、ボールを拾え。ボール拾いは試合の半分で、いちばん正直な半分だ。」"
+ },
+ "city.ask.t3.co.drill.2": {
+  "ru": "— Сегодня гимнастика у девочек: тихо. Лидия Павловна считает прыжки. Собьёшь, начнут сначала, а мне потом слушать.",
+  "en": "\"Today it's girls' gymnastics: quiet. Lidia Pavlovna is counting jumps. Throw her off and they start again, and I have to listen.\"",
+  "ja": "「今日は女の子の体操だから静かにな。リディア・パヴロヴナが跳躍を数えてる。数をくるわせたら最初からやり直しで、あとで聞かされるのは私だ。」"
+ },
+ "city.ask.t3.co.drill.3": {
+  "ru": "— Подбирал честно, мне говорили. Теперь бросай с дальней отметки. Лицо такое, будто попал. Остальное само.",
+  "en": "\"I hear you picked up honestly. Now throw from the far mark. Wear the face of someone who scored. The rest follows.\"",
+  "ja": "「拾いっぷりが誠実だったと聞いたぞ。次は遠いラインから投げろ。入ったような顔でな。あとはなんとかなる。」"
+ },
+ "city.ask.t3.co.yellow": {
+  "ru": "Зачем вы красите мячи в жёлтый?",
+  "en": "Why are you painting the balls yellow?",
+  "ja": "どうしてボールを黄色く塗ってるの？"
+ },
+ "city.ask.t3.co.yellow.1": {
+  "ru": "— Чтобы с трибуны отличить мяч от нас. Хотя мы и так заметны: мяч пока лучше прыгает.",
+  "en": "\"So the stands can tell the ball from us. Though we're plenty visible: the ball still jumps better.\"",
+  "ja": "「客席から、ボールと私たちを見分けられるようにだ。まあ私たちも十分目立つが。ボールのほうがまだよく跳ねるがな。」"
+ },
+ "city.ask.t3.co.yellow.2": {
+  "ru": "— В субботу штанга с утра, мячи не нужны. Можно красить без помех, краска сохнет как раз к игре.",
+  "en": "\"On Saturday the weights section runs in the morning and no balls are needed. I can paint undisturbed; the paint dries just in time for the games.\"",
+  "ja": "「土曜は朝から重量挙げで、ボールはいらない。邪魔されずに塗れるし、試合の時間にちょうど乾く。」"
+ },
+ "city.ask.t3.co.yellow.3": {
+  "ru": "— В дождь краска сохнет дольше, но не сдаётся. Как и я.",
+  "en": "\"In the rain the paint dries slower but doesn't give up. Like me.\"",
+  "ja": "「雨の日は乾くのが遅いが、あきらめない。私と同じだ。」"
+ },
+ "city.ask.t3.co.league": {
+  "ru": "Как идёт турнир дворов?",
+  "en": "How's the courtyard tournament going?",
+  "ja": "中庭トーナメントはどうなってる？"
+ },
+ "city.ask.t3.co.league.1": {
+  "ru": "— «Чайки» первые, «Маяк» вторые, мы третьи. Карандашом на таблице приписано «будет больше». Это я приписал. Тае не говори.",
+  "en": "\"The Seagulls are first, the Lighthouse second, we're third. In pencil on the table: \"there will be more.\" I wrote it. Don't tell Taya.\"",
+  "ja": "「『チャイキ』が一位、『マヤーク』が二位、うちが三位だ。順位表に鉛筆で『もっと増える』と書いたのは私だ。ターヤには言うなよ。」"
+ },
+ "city.ask.t3.co.league.2": {
+  "ru": "— Сорок один, сорок два: счёт на табло висит до сих пор. Тая говорит: стереть значит согласиться. Я с ней согласен.",
+  "en": "\"Forty-one, forty-two: the score is still up on the board. Taya says: to wipe it is to agree. I agree with her.\"",
+  "ja": "「四十一対四十二。スコアはまだボードに出てる。ターヤは、消したら認めたことになるって言う。私も同感だ。」"
+ },
+ "city.ask.t3.co.elsewhere": {
+  "ru": "Где ещё можно потренироваться?",
+  "en": "Where else can I train?",
+  "ja": "ほかにどこで練習できる？"
+ },
+ "city.ask.t3.co.elsewhere.1": {
+  "ru": "— Настольный теннис в «Шестерне»: там Кэндзи Каск смотрит налево и бьёт направо. Глаза тренирует лучше любой стенки. А терпение в «Тарелке», у Профессора.",
+  "en": "\"Table tennis at the Cog: there Kenji Kask looks left and hits right. It trains the eyes better than any wall. And patience at the Saucer, with the Professor.\"",
+  "ja": "「卓球は『歯車』だ。あそこではカスク健二が左を見て右に打つ。どんな壁よりも目が鍛えられる。それから辛抱は『ソーサー』の教授のところだな。」"
+ },
+ "city.ask.t3.co.elsewhere.2": {
+  "ru": "— Играл у Кэндзи? Как глаза? Смотри налево, бей направо: нашу тактику передавать не надо, он сам её знает.",
+  "en": "\"Played Kenji? How are the eyes? Look left, hit right: no need to hand on our tactics, he knows them himself.\"",
+  "ja": "「健二とやったか？ 目はどうだ？ 左を見て、右に打て。私たちの作戦を伝える必要はない。本人がいちばん知ってる。」"
+ },
+ "city.ask.t3.co.elsewhere.3": {
+  "ru": "— С утра в зале пусто, самое то для тех, кто стесняется. Приходи до восьми, свисток не использую.",
+  "en": "\"In the morning the hall is empty, just right for the shy. Come before eight, I don't use the whistle.\"",
+  "ja": "「朝は体育館がからっぽで、恥ずかしがり屋にはちょうどいい。八時前に来い。笛は吹かない。」"
+ },
+ "quest.t3_left_eye.title": {
+  "ru": "Левый глаз, правая рука",
+  "en": "Left Eye, Right Hand",
+  "ja": "左を見て右で打つ"
+ },
+ "quest.t3_left_eye.desc": {
+  "ru": "Тренер сказал, что глаза лучше всего тренирует настольный теннис: смотреть налево, бить направо. Надо проверить, правда ли.",
+  "en": "The coach says table tennis trains the eyes best: look left, hit right. Time to check whether it's true.",
+  "ja": "コーチいわく、目を鍛えるには卓球がいちばんらしい。左を見て、右に打つ。本当かどうか確かめてみよう。"
+ },
+ "quest.t3_left_eye.play.log": {
+  "ru": "Стол найдётся и в «Шестерне», и у нас в спорткомплексе. Сыграю хотя бы одну партию.",
+  "en": "There's a table at the Cog and one here at the sports centre. I'll play at least one game.",
+  "ja": "卓球台は『歯車』にも、ここのスポーツセンターにもある。せめて一試合はやろう。"
+ },
+ "quest.t3_left_eye.rally.obj": {
+  "ru": "Сыграть в настольный теннис",
+  "en": "Play table tennis",
+  "ja": "卓球をする"
+ },
+ "quest.t3_left_eye.report.log": {
+  "ru": "В «Шестерне» у буфета знают, кто с кем играл и кто кого ждёт. Расскажу, как прошло.",
+  "en": "At the Cog buffet they know who played whom and who is waiting for whom. I'll tell them how it went.",
+  "ja": "『歯車』の売店では、誰が誰とやったか、誰が誰を待っているか、みんな知っている。どうだったか話しに行こう。"
+ },
+ "quest.t3_left_eye.buffet.obj": {
+  "ru": "Рассказать в буфете «Шестерни», как сыграл",
+  "en": "Tell the Cog buffet how the game went",
+  "ja": "『歯車』の売店で試合の様子を話す"
+ },
+ "quest.t3_left_eye.done": {
+  "ru": "Буфетчица выслушала и сказала: «Левый глаз у тебя уже есть. Правая рука придёт». Я посмотрел налево, ударил направо и промахнулся только на вид.",
+  "en": "The buffet clerk listened and said: \"You've got the left eye already. The right hand will come.\" I looked left, hit right, and missed only in appearance.",
+  "ja": "売店の人は話を聞いて言った。「左の目はもうあるわね。右の手はそのうち来るわ」。ぼくは左を見て、右に打って、外したのは見た目だけだった。"
  }
 }

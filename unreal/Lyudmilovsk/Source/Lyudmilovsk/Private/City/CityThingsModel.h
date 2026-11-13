@@ -1548,7 +1548,13 @@ namespace LyudCity
 		int TalkReady(int Thing, const FWhen& When, const FAsk& Ask, std::vector<int>& Out) const
 		{
 			Out.clear();
-			if (!HasTopics(Thing) || Check(Thing, When, Ask) != EVerdict::Ok)
+			if (!HasTopics(Thing))
+			{
+				return 0;
+			}
+			// the staff still talk when the act itself is refused for the hero's own reasons (done today, no money, no item)
+			const EVerdict Why = Check(Thing, When, Ask);
+			if (Why != EVerdict::Ok && Why != EVerdict::DailyDone && Why != EVerdict::NoMoney && Why != EVerdict::NeedsItem)
 			{
 				return 0;
 			}
