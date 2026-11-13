@@ -328,7 +328,13 @@ def build(size, pad, out_dir):
             sections["Hair"].append(("%s/%s" % (sub, name), strands_tile(info["texture_abs"], size)))
     eyes = scans("eyes").get("high-poly") or scans("eyes").get("low-poly")
     if eyes:
-        tex_dir = os.path.dirname(eyes["texture_abs"])
+        if eyes.get("texture_abs"):
+            tex_dir = os.path.dirname(eyes["texture_abs"])
+        else:
+            # the original MakeHuman packs (the UE Mac): the eyes carry no .mhmat, their irises sit in eyes/materials
+            sys.path.insert(0, os.path.join(HERE, "..", "humans"))
+            import mpfb_pipeline as P
+            tex_dir = os.path.join(P.services()["LocationService"].get_user_data("eyes"), "materials")
         for iris in W.IRISES:
             p = os.path.join(tex_dir, "%s_eye.png" % iris)
             if os.path.isfile(p):
