@@ -152,6 +152,9 @@ void ULyudGameMenuSubsystem::Open(bool bMain)
 	{
 		bOpen = true;
 		bWasPaused = UGameplayStatics::IsGamePaused(World);
+		// a screen with the mouse on it is up under the menu (the diary, a shop, the bird guide, a route map): see RestoreGameInput
+		const APlayerController* Player = World->GetFirstPlayerController();
+		bCursorBefore = Player && Player->bShowMouseCursor;
 		Viewport->AddViewportWidgetContent(Menu.ToSharedRef(), 100);
 		UGameplayStatics::SetGamePaused(World, true);
 		// the world stands still behind the menu: fewer frames of it (power saving)
@@ -203,6 +206,16 @@ void ULyudGameMenuSubsystem::RestoreGameInput()
 			It->Activate(PC);
 			return;
 		}
+	}
+	// The menu was opened over a screen that had the mouse (its button can be clicked with the diary or a shop open). That
+	// screen is still up, and it could not have closed meanwhile (the game stood paused): give it the cursor back, in the
+	// mode ULyudInventoryUI::Lock sets for such screens. Game-only input here left it on screen with no cursor.
+	if (bCursorBefore)
+	{
+		bCursorBefore = false;
+		PC->SetShowMouseCursor(true);
+		PC->SetInputMode(FInputModeGameAndUI().SetHideCursorDuringCapture(false).SetLockMouseToViewportBehavior(EMouseLockMode::DoNotLock));
+		return;
 	}
 	PC->SetShowMouseCursor(false);
 	PC->SetInputMode(FInputModeGameOnly());
