@@ -1692,6 +1692,7 @@ talk = town.counter_evening2.1 | town.counter_evening2.2
 
 # Who they are in manner (docs/town_manners.md personas; temper = warm reserved nervy calm curious tidy careless):
 # the same bench, the same weather, said differently by different people
+# A fine evening on the sea front (the town comes out to walk: docs/town_manners.md, the weather in the choices)
 
 [temper_warm]
 temper = warm
@@ -1752,3 +1753,20 @@ temper = careless
 at = outdoors
 age = teen adult elder
 say = town.temper_careless.1..2
+
+[evening_front]
+at = promenade pier fountain square
+hours = 18-22
+weather = !rain !snow !cold
+doing = stroll walk sea_air sun_watch night_walk
+age = teen adult elder
+weight = 2
+say = town.evening_front.1..6
+
+[evening_front_warm]
+at = promenade pier fountain square
+hours = 18-22
+weather = warm
+age = teen adult elder
+weight = 3
+say = town.evening_front_warm.1..2

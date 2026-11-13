@@ -526,10 +526,11 @@ namespace LyudPeople
 			}
 			return false;
 		};
+		// (what needs daylight ends by half past three: the sun is down by five in late autumn)
 		struct FOuting { const char* Activity; float From, To; bool bKids; };
 		static const FOuting Outings[] = {
-			{ "sea_air", 11.f, 16.f, true }, { "stroll", 11.f, 17.f, true }, { "fair_visit", 12.f, 17.f, true }, { "feed_birds", 10.5f, 15.f, true },
-			{ "sea_air", 15.f, 17.5f, true }, { "eat_out", 13.f, 19.5f, false }, { "coffee", 11.f, 16.f, false }, { "stroll", 17.f, 19.5f, false },
+			{ "sea_air", 11.f, 15.f, true }, { "stroll", 11.f, 17.f, true }, { "fair_visit", 12.f, 17.f, true }, { "feed_birds", 10.5f, 15.f, true },
+			{ "sea_air", 13.f, 15.5f, true }, { "eat_out", 13.f, 19.5f, false }, { "coffee", 11.f, 16.f, false }, { "stroll", 17.f, 19.5f, false },
 		};
 		std::map<std::string, std::vector<int>> Houses;
 		for (FPerson& P : W.People)

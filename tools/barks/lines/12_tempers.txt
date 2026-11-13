@@ -76,3 +76,30 @@ at = outdoors
 age = teen adult elder
 say town.temper_careless.1 | Где-то тут был мой шарф. Или не тут. Или не шарф. | My scarf was round here somewhere. Or not here. Or not a scarf. | この辺にマフラーがあったはず。ここじゃないかも。マフラーじゃないかも。
 say town.temper_careless.2 | Зонт? Зачем. Дождь либо будет, либо нет. | An umbrella? What for. It'll either rain or it won't. | 傘？なんで。雨は降るか降らないか、どっちかでしょ。
+
+## ---------------------------------------------------------------------------------------------------------------
+## A fine evening on the sea front (the town comes out to walk: docs/town_manners.md, the weather in the choices)
+## ---------------------------------------------------------------------------------------------------------------
+
+[evening_front]
+at = promenade pier fountain square
+hours = 18-22
+weather = !rain !snow !cold
+doing = stroll walk sea_air sun_watch night_walk
+age = teen adult elder
+weight = 2
+say town.evening_front.1 | Весь город вышел. В такой вечер дома сидят только стены. | The whole town's out. On an evening like this only the walls stay home. | 町じゅうが出てきてる。こんな晩に家にいるのは壁だけだよ。
+say town.evening_front.2 | Дойдём до пирса и обратно. А потом ещё раз. | To the pier and back. And then once more. | 桟橋まで行って戻ろう。それからもう一往復。
+say town.evening_front.3 | Фонари зажглись, а уходить не хочется. | The lamps are lit, and I don't feel like leaving. | 街灯がついたのに、まだ帰りたくないな。
+say town.evening_front.4 | Слышишь? Море сегодня шепчет, а не шумит. | Hear that? The sea's whispering tonight, not roaring. | 聞こえる？今夜の海は、ざわめくんじゃなくてささやいてる。
+say town.evening_front.5 | Здороваюсь уже десятый раз. Все тут, все. | That's the tenth hello I've said. Everybody's here, everybody. | 挨拶するの、もう十回目。みんな、みんな来てる。
+say town.evening_front.6 | Такие вечера надо складывать в банку и открывать в феврале. | Evenings like this should be put up in jars and opened in February. | こういう晩は瓶に詰めておいて、二月に開けたいね。
+
+[evening_front_warm]
+at = promenade pier fountain square
+hours = 18-22
+weather = warm
+age = teen adult elder
+weight = 3
+say town.evening_front_warm.1 | Камни ещё тёплые. Потрогай парапет. | The stones are still warm. Touch the parapet. | 石がまだ温かい。手すりをさわってごらん。
+say town.evening_front_warm.2 | Тепло, как в июле. Не верю календарю. | Warm as July. I don't believe the calendar. | 七月みたいに暖かい。カレンダーなんて信じない。
