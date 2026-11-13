@@ -192,6 +192,11 @@ bool ALyudRestaurant::EnsureWaiter()
 	}
 	if (!WaiterBody)
 	{
+		if (GetWorld()->GetTimeSeconds() < WaiterRetryAt)
+		{
+			// the model was missing a moment ago: not a spawn and a failed load every frame
+			return false;
+		}
 		FActorSpawnParameters SP;
 		SP.ObjectFlags |= RF_Transient;
 		SP.SpawnCollisionHandlingOverride = ESpawnActorCollisionHandlingMethod::AlwaysSpawn;
@@ -206,6 +211,7 @@ bool ALyudRestaurant::EnsureWaiter()
 				WaiterBody->Destroy();
 			}
 			WaiterBody = nullptr;
+			WaiterRetryAt = GetWorld()->GetTimeSeconds() + 10.f;
 			return false;
 		}
 		WaiterBody->Tags.Add(TEXT("Restaurant"));

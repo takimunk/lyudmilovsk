@@ -355,6 +355,8 @@ private:
 	bool bNear = false;
 	float StateAge = 0.f;
 	EWaiter LastWaiter = EWaiter::Off;
+	/** World seconds before which a body whose model failed to load is not tried again (the waiter's, the cook's). */
+	float WaiterRetryAt = 0.f, CookRetryAt = 0.f;
 	/** Every mesh of /Game/Restaurant/Meshes, loaded in the background at BeginPlay and held here (RestMesh looks them up). */
 	UPROPERTY(Transient) TArray<TObjectPtr<UObject>> MeshRefs;
 	TSharedPtr<FStreamableHandle> Preload;
