@@ -407,6 +407,17 @@ void ULyudCityWindowsSubsystem::SetFlatLit(FName FlatId, bool bLit)
 	}
 }
 
+void ULyudCityWindowsSubsystem::SetDriven(bool bInDriven)
+{
+	if (!bInDriven)
+	{
+		if (ALyudCityWindows* A = Actor.Get())
+		{
+			A->UseSchedule();
+		}
+	}
+}
+
 void ALyudCityWindows::SetFlatLit(FName FlatId, bool bLit)
 {
 	if (const TArray<int32>* Is = ByFlat.Find(FlatId))

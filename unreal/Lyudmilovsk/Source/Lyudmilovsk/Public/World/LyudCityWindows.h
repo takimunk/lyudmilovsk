@@ -101,6 +101,9 @@ public:
 	UFUNCTION(BlueprintPure, Category = "City") bool IsWindowLit(FName WindowId) const;
 	/** Every window of a flat ("W3-D017") at once. */
 	UFUNCTION(BlueprintCallable, Category = "City") void SetFlatLit(FName FlatId, bool bLit);
+	/** The town's life calls this by name (as ULyudWindowLights::SetDriven): false = it has stopped, so every window
+	 *  it had set goes back to the built-in schedule instead of keeping its last state. */
+	UFUNCTION(BlueprintCallable, Category = "City") void SetDriven(bool bInDriven);
 
 	ALyudCityWindows* GetActor() const { return Actor.Get(); }
 
