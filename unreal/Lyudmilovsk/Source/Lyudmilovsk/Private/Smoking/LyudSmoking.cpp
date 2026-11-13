@@ -706,7 +706,8 @@ void ULyudSmoking::Smoke(float DeltaTime)
 		}
 	}
 	// the thin stream off the burning end
-	if (bLit && C && !(bAtLips && bDrag))
+	// (not while the hand's cigarette waits out of sight: it was let go where the hand left it, the smoke would rise from there)
+	if (bLit && C && !C->IsHidden() && !(bAtLips && bDrag))
 	{
 		StreamTimer -= DeltaTime;
 		if (StreamTimer <= 0.f)
