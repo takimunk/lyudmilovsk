@@ -212,6 +212,9 @@ public:
 	/** Developer mode: uses the nearest lift door (its chooser, or at once). */
 	bool UseNearestLift();
 	bool IsUsingLift() const { return LiftDest >= 0 || LiftThing >= 0; }
+	/** Has one of our modes the keys (a page, a show, a game, a text, the talk's chooser, a lift, lying, the sleep chooser)? The
+	 *  NPC talk should step aside meanwhile (docs/city_interiors.md "Open points for other threads"); seated alone is not one. */
+	bool HasModeUp() const;
 
 	// --- room tones
 

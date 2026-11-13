@@ -88,6 +88,11 @@ ROTATE = ("use", "daily")
 # a seat's or bed's surface over its own floor (m): a bigger "height" was measured from the building's base
 SEAT_HEIGHT = (0.05, 1.2)
 SEAT_USUAL = {"seat": 0.45, "bed": 0.5}
+# a sitting thing that is not a seat gets the nearest seat spot of its building (its "seat"): within this across (m), the thing
+# this much over or under the spot's floor (m), and no seat thing within SEAT_SPOT_TAKEN (m) of the spot (that one is used)
+SEAT_SPOT_RADIUS = 1.6
+SEAT_SPOT_DZ = (-0.5, 1.5)
+SEAT_SPOT_TAKEN = 0.5
 MAIN_STRINGS = os.path.join(CONTENT, "Localization", "strings_ru.json")
 # the townsfolk's names (npc.<key>.name, written by the town tools; merged by the game at load): a regular may be a resident
 TOWN_STRINGS = os.path.join(CONTENT, "Localization", "town", "strings_ru.json")
@@ -115,8 +120,16 @@ def err(msg):
 
 
 def load(path):
+    """A JSON file; a key twice in one object is an error (json would keep the last one silently: a rule or a string lost)."""
+    def pairs(items):
+        seen = set()
+        for k, _v in items:
+            if k in seen:
+                err("%s: key %s twice in one object (the first is lost)" % (os.path.relpath(path, ROOT), k))
+            seen.add(k)
+        return dict(items)
     with open(path, encoding="utf-8") as f:
-        return json.load(f)
+        return json.load(f, object_pairs_hook=pairs)
 
 
 # ------------------------------------------------------------------ geometry (tools/town/town_life.py conventions)
@@ -316,6 +329,10 @@ def load_content():
                 origin[(section, k)] = name
                 into[k] = v
         for pk, d in (data.get("defaults_by_plot_kind") or {}).items():
+            for k in d:
+                if ("defaults_by_plot_kind", pk, k) in origin:
+                    err("defaults_by_plot_kind %s.%s is in both %s and %s" % (pk, k, origin[("defaults_by_plot_kind", pk, k)], name))
+                origin[("defaults_by_plot_kind", pk, k)] = name
             by_plot_kind.setdefault(pk, {}).update(d)
     return acts, shops, rules, defaults, by_plot_kind
 
@@ -1297,7 +1314,7 @@ def build_things(plan, rules, defaults, by_plot_kind, acts, strings=None, closed
         else:
             raw = derive_things(ex, rules, pl["id"], pl["building"])
         fp = ex.get("footprint") or []
-        kept_local = []
+        kept_local, to_seat, seat_local = [], [], []
         seen = set()
         for t in raw:
             tid = "%s/%s" % (pl["id"], t["id"])
@@ -1386,6 +1403,10 @@ def build_things(plan, rules, defaults, by_plot_kind, acts, strings=None, closed
             if lift:
                 rec["_lift"] = lift
             things.append(rec)
+            if a["pose"] == "sit" and not a["screen"] and kind not in SEAT_USUAL and "height" not in props:
+                to_seat.append((rec, t["pos"]))
+            elif kind in SEAT_USUAL or "height" in props:
+                seat_local.append(t["pos"])
             kept_local.append({"id": t["id"], "pos": t["pos"], "z": t["pos"][2]})
             s = summary.setdefault(pl["id"], {"auto": 0, "declared": 0, "kinds": collections.Counter(), "acts": set(), "lines": 0})
             s["auto" if auto else "declared"] += 1
@@ -1393,7 +1414,41 @@ def build_things(plan, rules, defaults, by_plot_kind, acts, strings=None, closed
             if act not in s["acts"]:
                 s["acts"].add(act)
                 s["lines"] += len(a["lines"])
+        for rec, pos in to_seat:
+            seat = seat_spot(pl, ex.get("spots") or [], seat_local, pos)
+            if seat:
+                rec["seat"] = seat
+                skipped["seat spot"] += 1
+            else:
+                skipped["sits standing"] += 1
     return things, summary, skipped
+
+
+def seat_spot(pl, spots, seat_local, pos):
+    """Where the hero sits to use a sitting thing that is not a seat (a sewing machine, a barber's chair, a piano with a kit
+    stool): the nearest export spot of kind seat or bench within SEAT_SPOT_RADIUS (m) across, on the thing's floor (the thing
+    SEAT_SPOT_DZ over or under it), that is not a seat thing already (those the game finds and holds itself). [x, y, z of the
+    cushion (cm), yaw (the way he faces), height (m)]; None: none, he uses it standing unless a seat thing is free by it."""
+    best, best_d = None, SEAT_SPOT_RADIUS
+    for sp in spots:
+        if sp.get("kind") not in ("seat", "bench") or "pos" not in sp:
+            continue
+        p = sp["pos"]
+        dz = pos[2] - p[2]
+        if not (SEAT_SPOT_DZ[0] <= dz <= SEAT_SPOT_DZ[1]):
+            continue
+        d = math.hypot(pos[0] - p[0], pos[1] - p[1])
+        if d > best_d or any(math.hypot(q[0] - p[0], q[1] - p[1]) < SEAT_SPOT_TAKEN and abs(q[2] - p[2]) < 1.5 for q in seat_local):
+            continue
+        if d == best_d and best is not None and sp.get("id", "") >= best.get("id", ""):
+            continue
+        best, best_d = sp, d
+    if not best:
+        return None
+    h = SEAT_USUAL["seat"]
+    p = best["pos"]
+    w = local_to_world(pl["front"], pl["yaw"], [p[0], p[1], p[2] + h])
+    return [round(w[0] * 100, 1), round(w[1] * 100, 1), round(w[2] * 100, 1), world_yaw(pl["yaw"], best.get("yaw", 0.0) or 0.0), h]
 
 
 # ------------------------------------------------------------------ collections
@@ -1487,6 +1542,26 @@ def storey_name(n, lang):
     return {"ru": "%d-й этаж" % n, "en": "floor %d" % n, "ja": "%d階" % n}[lang]
 
 
+def spot_floors(pl):
+    """The floor points of a place's export (its spots), world [x m, y m, z cm]."""
+    out = []
+    for sp in (pl["export"] or {}).get("spots") or []:
+        if len(sp.get("pos") or []) >= 3:
+            w = local_to_world(pl["front"], pl["yaw"], sp["pos"])
+            out.append((w[0], w[1], w[2] * 100))
+    return out
+
+
+def thing_floor(t, floors):
+    """The floor (world cm) under a thing: its seat height or its kind's usual rise under it, put on the floor of an export spot
+    within 8 m when one is 0.3 m under to 1.2 m over that (a lost-property box 0.2 m over the deck: the deck, not 0.9 m under
+    it, where a teleport would sink the hero into the slab)."""
+    base = t["ue"][2] - (float(t["props"]["height"]) if "height" in t["props"] else KIND_LOOK[t["kind"]][0]) * 100
+    x, y = t["ue"][0] / 100.0, t["ue"][1] / 100.0
+    near = [f[2] for f in floors if math.hypot(f[0] - x, f[1] - y) <= 8.0 and -30.0 <= f[2] - base <= 120.0]
+    return min(near, key=lambda z: (abs(z - base), z)) if near else base
+
+
 def build_teleports(plan, things, strings, gen_strings):
     """One teleport per enterable building (inside its street door, facing in) and one per upper storey that has things."""
     tps = []
@@ -1524,8 +1599,9 @@ def build_teleports(plan, things, strings, gen_strings):
         gen_strings["dev.tp." + tid] = {l: strings[name_key][l] for l in LANGS}
         ground = pl["front"][2] * 100
         storeys = collections.OrderedDict()
+        floors = spot_floors(pl)
         for t in sorted(by_plot.get(pl["id"], []), key=lambda t: (t["ue"][2], t["id"])):
-            floor = t["ue"][2] - KIND_LOOK[t["kind"]][0] * 100
+            floor = thing_floor(t, floors)
             if floor - ground > 250:
                 storeys.setdefault(int(round((floor - ground) / 100.0)), (t, floor))
         merged = []
@@ -1612,7 +1688,10 @@ def quest_dev(quests, things, acts, shops, plan, strings, gen_strings):
     things_of_plot = collections.defaultdict(list)
     for t in things:
         things_of_plot[t["plot"]].append(t)
-    staff_of = {pl["id"]: {r[0] for r in pl["staff"]} for pl in places(plan)}
+    staff_of, floors_of = {}, {}
+    for pl in places(plan):
+        staff_of[pl["id"]] = {r[0] for r in pl["staff"]}
+        floors_of[pl["id"]] = spot_floors(pl)
 
     def staffed(t):
         a = acts[t["act"]]
@@ -1663,9 +1742,7 @@ def quest_dev(quests, things, acts, shops, plan, strings, gen_strings):
                     days = days or t["days"]
             if first:
                 kind = first["kind"]
-                floor = first["ue"][2] - KIND_LOOK[kind][0] * 100
-                if "height" in first["props"]:
-                    floor = first["ue"][2] - float(first["props"]["height"]) * 100
+                floor = thing_floor(first, floors_of.get(first["plot"], []))
                 p = step([first["ue"][0] / 100.0, first["ue"][1] / 100.0, floor / 100.0], first["yaw"], 1.2 if kind not in ("seat", "bed") else 0.9)
                 tid = "city.q.%s.%d" % (q["id"], n)
                 yaw = (first["yaw"] + 180.0) % 360.0

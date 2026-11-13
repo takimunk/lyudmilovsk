@@ -674,6 +674,12 @@ namespace LyudCity
 		std::vector<FFloor> Floors;
 		/** No way back is asked of its stops (a slide, a hatch). */
 		bool bOneWay = false;
+		/** A sitting thing that is not a seat: the seat spot of its building the hero sits on for it ("seat": the cushion's point
+		 *  (cm), the way he faces, the cushion's height over the floor (m)); false: none (a free seat thing by it, or standing). */
+		bool bSeatSpot = false;
+		FVec SeatAt;
+		float SeatYaw = 0.f;
+		float SeatHeightM = 0.45f;
 
 		std::string Prop(const std::string& Key, const std::string& Default = std::string()) const
 		{
@@ -1140,6 +1146,17 @@ namespace LyudCity
 				Th.Collect = T["collect"].S();
 				ReadTopicList(T["topics"], Th.Topics);
 				Th.bOneWay = T["oneway"].Type == LyudJson::FValue::Bool ? T["oneway"].B : T["oneway"].I(0) != 0;
+				const LyudJson::FValue& Spot = T["seat"];
+				if (Spot.Type == LyudJson::FValue::Array && Spot.Size() >= 5)
+				{
+					Th.bSeatSpot = true;
+					Th.SeatAt.X = Spot[0].Num;
+					Th.SeatAt.Y = Spot[1].Num;
+					Th.SeatAt.Z = Spot[2].Num;
+					Th.SeatYaw = Spot[3].F(0.f);
+					const float H = Spot[4].F(0.45f);
+					Th.SeatHeightM = H >= MinSeatHeight && H <= MaxSeatHeight ? H : 0.45f;
+				}
 				if (T["floors"].Type == LyudJson::FValue::Array)
 				{
 					LiftPending.push_back(std::make_pair((int)Things.size(), &T["floors"]));
@@ -2036,8 +2053,9 @@ namespace LyudCity
 		/**
 		 * Where the hero sits for Thing's act with "pose": "sit": the thing itself when it is one to sit on (IsSeatThing), else
 		 * the nearest free seat of its plot by it (a chess table's chair, a piano's stool; never Except, the hero's own); with none,
-		 * a table, a board or a piano ("play") is played standing (-1: its point is the middle of the table, he would sit in it),
-		 * anything else is sat at as before. Reads the grid round the thing only; no allocation.
+		 * the thing itself when it has a seat spot (bSeatSpot: a barber's chair, a school desk's bench; Sit takes SeatFrame),
+		 * else -1: he uses it standing (its point is the middle of a table or a machine, he would sit in it). Reads the grid round
+		 * the thing only; no allocation.
 		 */
 		int SeatFor(int Thing, int Except = -1) const
 		{
@@ -2055,7 +2073,18 @@ namespace LyudCity
 			{
 				return Seat;
 			}
-			return T.Kind == "play" ? -1 : Thing;
+			return T.bSeatSpot ? Thing : -1;
+		}
+
+		/** Where the hero sits on Seat (one SeatFor gave, or a bed): its seat spot when it is not a seat itself and has one, else
+		 *  the thing's own point, yaw and SeatHeight. At is the cushion's point (cm), HeightM over its floor. */
+		void SeatFrame(int Seat, bool bLie, FVec& At, float& Yaw, float& HeightM) const
+		{
+			const FThing& T = Things[(size_t)Seat];
+			const bool bSpot = !bLie && T.bSeatSpot && !IsSeatThing(T);
+			At = bSpot ? T.SeatAt : T.At;
+			Yaw = bSpot ? T.SeatYaw : T.Yaw;
+			HeightM = bSpot ? T.SeatHeightM : SeatHeight(T, bLie);
 		}
 
 		// --- sitting and lying (docs/city_interiors.md "Sitting and lying"): what the game decides from the data and its traces

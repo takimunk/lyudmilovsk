@@ -576,7 +576,10 @@ static void SeatChecks()
   {"id": "P-G/chair_up", "plot": "P-G", "kind": "seat", "ue": [20, 0, 345], "yaw": 0, "props": {"height": 0.45}},
   {"id": "P-G/lone_chess", "plot": "P-G", "kind": "play", "ue": [3000, 0, 78], "yaw": 0, "act": "chess"},
   {"id": "P-G/next_door_chair", "plot": "P-N", "kind": "seat", "ue": [3060, 0, 45], "yaw": 0, "props": {"height": 0.45}},
-  {"id": "P-G/barber", "plot": "P-G", "kind": "machine", "ue": [6000, 0, 60], "yaw": 0, "act": "haircut"}],
+  {"id": "P-G/barber", "plot": "P-G", "kind": "machine", "ue": [6000, 0, 60], "yaw": 0, "act": "haircut"},
+  {"id": "P-G/barber_spot", "plot": "P-G", "kind": "machine", "ue": [9000, 0, 60], "yaw": 0, "act": "haircut", "seat": [9010, 40, 45, 90, 0.5]},
+  {"id": "P-G/piano", "plot": "P-G", "kind": "play", "ue": [12000, 0, 90], "yaw": 0, "act": "chess", "seat": [12000, -60, 45, 180, 9]},
+  {"id": "P-G/piano_stool", "plot": "P-G", "kind": "seat", "ue": [12080, 0, 45], "yaw": 180, "props": {"height": 0.45}}],
  "acts": {"chess": {"prompt": "p", "pose": "sit"}, "haircut": {"prompt": "p", "pose": "sit"}}})";
 	FModel T;
 	CHECK(T.Load(Tables, Error), "it loads (%s)", Error.c_str());
@@ -585,8 +588,21 @@ static void SeatChecks()
 	CHECK(T.SeatFor(ChairA) == ChairA && T.SeatFor(Chess) == ChairA, "a seat is sat on itself; a chess table on its nearest chair (not upstairs)");
 	CHECK(T.SeatFor(Chess, ChairA) == ChairB && T.Claim(ChairA, 5) && T.SeatFor(Chess) == ChairB, "the hero's own or a held chair is skipped: the other one");
 	CHECK(T.Claim(ChairB, 6) && T.SeatFor(Chess) == -1, "both chairs held: the game is played standing");
-	CHECK(T.SeatFor(Lone) == -1 && T.SeatFor(Barber) == Barber && T.SeatFor(-1) == -1,
-		"a table with no chair of its plot by it: standing; a chair-like machine with none: sat at as before");
+	CHECK(T.SeatFor(Lone) == -1 && T.SeatFor(Barber) == -1 && T.SeatFor(-1) == -1,
+		"a table or a machine with no chair of its plot by it and no seat spot: used standing");
+	const int BarberSpot = T.FindThing("P-G/barber_spot"), Piano = T.FindThing("P-G/piano"), Stool = T.FindThing("P-G/piano_stool");
+	CHECK(T.SeatFor(BarberSpot) == BarberSpot && T.Things[(size_t)BarberSpot].bSeatSpot && !T.Things[(size_t)Barber].bSeatSpot,
+		"a machine with a seat spot (\"seat\" at generation) is sat at");
+	FVec SpotAt;
+	float SpotYaw = 0.f, SpotH = 0.f;
+	T.SeatFrame(BarberSpot, false, SpotAt, SpotYaw, SpotH);
+	CHECK(SpotAt.X == 9010.0 && SpotAt.Y == 40.0 && SpotAt.Z == 45.0 && SpotYaw == 90.f && SpotH == 0.5f,
+		"on its spot: the cushion's point, the spot's yaw and height (%.0f %.0f %.0f, %.0f, %.2f)", SpotAt.X, SpotAt.Y, SpotAt.Z, SpotYaw, SpotH);
+	T.SeatFrame(ChairA, false, SpotAt, SpotYaw, SpotH);
+	CHECK(SpotAt.X == 75.0 && SpotYaw == 180.f && SpotH == 0.45f, "a seat thing: its own point, yaw and height");
+	CHECK(T.SeatFor(Piano) == Stool && T.Claim(Stool, 7) && T.SeatFor(Piano) == Piano, "a free seat thing first; held, the spot");
+	T.SeatFrame(Piano, false, SpotAt, SpotYaw, SpotH);
+	CHECK(SpotH == 0.45f && SpotYaw == 180.f, "a spot's height out of 0.05..1.2 m is the usual 0.45");
 }
 
 /** The reading view (docs/city_interiors.md "The reading page"): texts, the page each is left on, read to the end, the "read" line
@@ -901,6 +917,25 @@ static void RealChecks(const std::string& Path)
 		Ran += M.Run(I, At(2, 12.f), Ask).Verdict == EVerdict::Ok ? 1 : 0;
 	}
 	CHECK(Ran > 0, "at noon on a Wednesday with everything allowed %d of %d things run", Ran, (int)M.Things.size());
+	// seat spots (docs "pose sit"): sitting things that are not seats, how many sit on a spot, on a seat thing, or stand
+	int OnSpot = 0, OnSeat = 0, Standing = 0, FarSpot = 0;
+	for (int I = 0; I < (int)M.Things.size(); ++I)
+	{
+		const FAct* A = M.ActOf(I);
+		const FThing& T = M.Things[(size_t)I];
+		if (!A || A->Pose != "sit" || !A->Screen.empty() || FModel::IsSeatThing(T))
+		{
+			continue;
+		}
+		const int Seat = M.SeatFor(I);
+		OnSeat += Seat >= 0 && Seat != I ? 1 : 0;
+		OnSpot += Seat == I ? 1 : 0;
+		Standing += Seat < 0 ? 1 : 0;
+		const double DX = T.SeatAt.X - T.At.X, DY = T.SeatAt.Y - T.At.Y;
+		FarSpot += T.bSeatSpot && (DX * DX + DY * DY > 160.0 * 160.0 || T.SeatAt.Z - T.At.Z > 100.0 || T.At.Z - T.SeatAt.Z > 160.0) ? 1 : 0;
+	}
+	CHECK(OnSpot > 0 && FarSpot == 0, "sitting things that are not seats: %d on a seat thing, %d on a seat spot (%d off their thing), %d standing",
+		OnSeat, OnSpot, FarSpot, Standing);
 	// seat heights as written (the game falls back to the usual one, but the data should not need it)
 	int BadHeight = 0;
 	std::string FirstBad;

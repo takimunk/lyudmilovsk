@@ -684,10 +684,14 @@ bool ULyudCityThings::Sit(int32 Thing, AHeroCharacter* Hero, bool bLie)
 		SeatRoot = Root;
 	}
 	const LyudCity::FThing& T = Model->Things[Thing];
-	const FVector At = ThingLocation(Thing);
-	// metres over its own floor; a height measured from the building's base (some exports) would seat him metres under it
-	const float HeightM = LyudCity::FModel::SeatHeight(T, bLie);
-	if (HeightM != T.PropF("height", HeightM))
+	// the thing itself, or the seat spot by it (a barber's chair, a school desk: SeatFrame); metres over its own floor, a height
+	// measured from the building's base (some exports) would seat him metres under it
+	LyudCity::FVec SeatAt;
+	float SeatYaw = 0.f;
+	float HeightM = 0.45f;
+	Model->SeatFrame(Thing, bLie, SeatAt, SeatYaw, HeightM);
+	const FVector At(SeatAt.X, SeatAt.Y, SeatAt.Z);
+	if (LyudCity::FModel::IsSeatThing(T) && HeightM != T.PropF("height", HeightM))
 	{
 		UE_LOG(LogLyudCity, Warning, TEXT("CityThings: %s has height %s m: %.2f used"), *LyudCityThingsImpl::Str(T.Id), *LyudCityThingsImpl::Str(T.Prop("height")), HeightM);
 	}
@@ -698,7 +702,7 @@ bool ULyudCityThings::Sit(int32 Thing, AHeroCharacter* Hero, bool bLie)
 		Hand->PutAway();
 	}
 	// the seat's frame: the floor under the cushion's front edge, X the way the sitter faces (the way the thing faces)
-	const FRotator Facing(0.0, (double)T.Yaw, 0.0);
+	const FRotator Facing(0.0, (double)SeatYaw, 0.0);
 	const FVector Front = FVector(At.X, At.Y, FloorZ) + Facing.Vector() * (bLie ? 40.0 : 20.0);
 	const FTransform Frame(Facing, Front);
 	// where he will stand up to: found now, while his capsule still collides (SitOn turns it off)
@@ -707,11 +711,11 @@ bool ULyudCityThings::Sit(int32 Thing, AHeroCharacter* Hero, bool bLie)
 	Hero->SetStandUpOffset(StandOffset);
 	if (APlayerController* PC = Cast<APlayerController>(Hero->GetController()))
 	{
-		PC->SetControlRotation(FRotator(-8.0, (double)T.Yaw, 0.0));
+		PC->SetControlRotation(FRotator(-8.0, (double)SeatYaw, 0.0));
 		// seated he looks round within a cone about the seat's facing (lying, the pillow's camera has the view)
 		if (!bLie)
 		{
-			SetLookCone(PC, T.Yaw, LyudCity::FModel::LookCone(T));
+			SetLookCone(PC, SeatYaw, LyudCity::FModel::LookCone(T));
 		}
 	}
 	SeatedOn = Thing;
@@ -722,7 +726,7 @@ bool ULyudCityThings::Sit(int32 Thing, AHeroCharacter* Hero, bool bLie)
 	{
 		// the pillow's eye: over the middle of the bed, a hand over its surface
 		LieEye = FVector(At.X, At.Y, FloorZ + Height + 22.0);
-		LieYaw = T.Yaw;
+		LieYaw = SeatYaw;
 	}
 	return true;
 }
@@ -858,7 +862,8 @@ void ULyudCityThings::TickLie(AHeroCharacter* Hero, APlayerController* PC, bool 
 		return;     // the chooser has the keys (TickSleepChoice)
 	}
 	const bool bSettled = FadeMinutes == 0 && !bFadingIn && JumpLeft <= 0.0;
-	if (bSettled && !Page && !bTalk && GFrameCounter != PageFrame && PC->WasInputKeyJustPressed(EKeys::E))
+	if (bSettled && !Page && GFrameCounter != PageFrame
+		&& ((!bTalk && PC->WasInputKeyJustPressed(EKeys::E)) || PC->WasInputKeyJustPressed(EKeys::Escape)))
 	{
 		EndLie(true);
 	}
@@ -964,7 +969,7 @@ void ULyudCityThings::TickShow(AHeroCharacter* Hero, APlayerController* PC, bool
 		EndShow();
 		return;
 	}
-	if (!bTalk && GFrameCounter != PageFrame && PC->WasInputKeyJustPressed(EKeys::E))
+	if (GFrameCounter != PageFrame && ((!bTalk && PC->WasInputKeyJustPressed(EKeys::E)) || PC->WasInputKeyJustPressed(EKeys::Escape)))
 	{
 		EndShow();
 		return;
@@ -1501,7 +1506,11 @@ void ULyudCityThings::Tick(float DeltaTime)
 	if (Page)
 	{
 		SetPrompted(-1);
-		if (PC && !bTalk && FadeMinutes == 0 && !bFadingIn && PC->WasInputKeyJustPressed(EKeys::E) && GFrameCounter != PageFrame)
+		if (PC && FadeMinutes == 0 && !bFadingIn && GFrameCounter != PageFrame && PC->WasInputKeyJustPressed(EKeys::Escape))
+		{
+			ClosePage();     // Esc reaches the game only where the F10 menu lets it (docs "Modes and exits")
+		}
+		else if (PC && !bTalk && FadeMinutes == 0 && !bFadingIn && PC->WasInputKeyJustPressed(EKeys::E) && GFrameCounter != PageFrame)
 		{
 			if (PageLeft > 0 && PageThing >= 0)
 			{
@@ -1827,6 +1836,11 @@ bool ULyudCityThings::IsPlayingGame() const
 	return Playing.IsValid() && Playing->Def >= 0;
 }
 
+bool ULyudCityThings::HasModeUp() const
+{
+	return Page.IsValid() || ShowThing >= 0 || IsPlayingGame() || IsReading() || IsTalking() || IsUsingLift() || IsChoosingSleep() || LyingOn >= 0;
+}
+
 void ULyudCityThings::BeginGame(int32 Thing, int32 Minutes, bool bSeated)
 {
 	UWorld* World = GetWorld();
@@ -1893,6 +1907,11 @@ void ULyudCityThings::TickGame(AHeroCharacter* Hero, APlayerController* PC, bool
 	LyudCity::FGameState& G = *Playing;
 	const LyudCity::FGameDef* D = Model->GameDef(G.Def);
 	if (!D)
+	{
+		EndGame(false);
+		return;
+	}
+	if (GFrameCounter != GameFrame && PC->WasInputKeyJustPressed(EKeys::Escape))
 	{
 		EndGame(false);
 		return;

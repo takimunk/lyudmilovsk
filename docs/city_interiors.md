@@ -155,7 +155,10 @@ python3 tools/city/interiors.py --check    # write nothing; fail on broken conte
   unit whose variant is not built gets one counter at its door; built ones use their room's things (see "Promenade units"). As soon as a building exports one `thing`, its spots are no longer used.
 * `Content/Dev/teleports/interiors.json`: one teleport per public building (1.5 m inside its main street door, facing
   in; kiosks and open halls: 2 m in front, facing them) and one per upper storey that has things; x/y map metres
-  (docs/world_map.md), z world cm = the floor (feet), names `dev.tp.city.<plot>[.<storey>]` in the city strings.
+  (docs/world_map.md), z world cm = the floor (feet), names `dev.tp.city.<plot>[.<storey>]` in the city strings. The floor
+  under a thing (`thing_floor`, the storeys' and the quest stages' teleports): its `height` or its kind's usual rise under
+  it, put on an export spot's floor within 8 m when one is 0.3 m under to 1.2 m over that (a box 0.2 m over the lifeguard
+  deck used to put the hero 0.9 m into the slab).
 * `Content/Localization/city/strings_{ru,en,ja}.json` (merged at load like `Localization/town/`): every key of
   `tools/city/content/strings/*.json` (`{"key": {"ru", "en", "ja"}}`, one file per theme) plus the teleport names. A key
   of the hand-written table may be used but never redefined (it would win).
@@ -593,8 +596,13 @@ the list (their ids play nothing from an act).
     (see "Sitting and lying"). A `height` outside 0.05..1.2 m is not believed (the usual 0.45, a warning): some exports gave
     the height over the building's base. A sitting act on a thing that is not a seat (a chess table, a piano: its point is
     the middle of the furniture) sits him on the nearest free seat of its plot within 1.6 m (1.5 m up or down: its chair,
-    its stool; `FModel::SeatFor`); with none, a `play` thing (a table, a board, a piano) is played standing, anything else
-    is sat at as before;
+    its stool; `FModel::SeatFor`); with none, on its `seat` spot when it has one, else it is used standing. `seat`
+    (`[x, y, z, yaw, height]`: the cushion's point in cm, the way he faces, metres over the floor) is written by
+    interiors.py for a sitting thing that is neither a seat nor a screen show: the nearest export spot of kind `seat` or
+    `bench` within 1.6 m across, the thing 0.5 m under to 1.5 m over the spot's floor, not within 0.5 m of a seat thing
+    (that one is found at run time and its holds respected), height 0.45 (the kit seats are not exported). `Sit` takes the
+    frame from `FModel::SeatFrame`. Now: 29 things have a spot (barber and salon chairs, school desks, club chess and pianos),
+    29 sit on a seat thing, 30 are used standing (garden chess 14, sewing machines 5, potter's wheels 2, others 9);
   * `pose` `lie`: he sits on the bed's edge (the body holds there) and the view settles onto a pooled camera at the pillow
     looking toward the room's window or the ceiling (the hero hidden meanwhile); with `fade` the switch is made in the dark;
     once the time has passed he gets up by himself after 2.5 s; any step, Space or E gets him up at once; a `sleep` act
@@ -617,7 +625,7 @@ the list (their ids play nothing from an act).
 * Rules in `Private/City/CityThingsModel.h` (`LyudCity::FModel`: `Load`, `Pick`, `Check`, `Run`, `NextLine`, `Nearest`,
   `NearestThing`, `ScreenFrom`, `NeedsSeatFirst`, `SeatHeight`, `Subtitles`, `SaveState`/`LoadState`,
   `ResetToday`/`ResetState`; also `IsShut`/`ActIndexNow` (the closed act), `GiveStamp`/`CountStamps`/`GrantSet`/`ClearSet`,
-  `FindFree`/`Claim`/`Release`/`ThingsOfPlot`, `WeatherBits`), engine-free; `tools/citysim/run.sh` checks it (272 checks, the mini-games, sitting, sleeping, reading, the staff talk, the room tones and the lifts included) on `tools/citysim/fixture.json`, made-up
+  `FindFree`/`Claim`/`Release`/`ThingsOfPlot`, `WeatherBits`), engine-free; `tools/citysim/run.sh` checks it (278 checks, the mini-games, sitting, sleeping, reading, the staff talk, the room tones and the lifts included) on `tools/citysim/fixture.json`, made-up
   acts in the test itself and the real file when it is built. Save record "CityThings" (pages, daily boards' days, today's
   counts, uses, plots visited); a New Game starts it over.
 * Console: `lyud.City.Things` (count, the nearest five), `lyud.City.Do <thing id>` (run it from anywhere; sitting only
@@ -642,19 +650,34 @@ the list (their ids play nothing from an act).
 
   | mode | starts from | ends on | what it gives back |
   |---|---|---|---|
-  | page | E at a thing (idle, seated on our seat: its screen) | E past the last line, 2.5 m off, any screen, a mode that takes the page | the page widget removed |
-  | show | E at a screen (idle or from the seat facing it) | E, the last subtitle, getting up (seated), 2.5 m off (standing), any screen | the page widget |
-  | mini-game | E at a game thing (idle; sits on its chair first when the act sits) | the result, walking off (standing), getting up (seated), any screen, `quit` | the panel collapsed, the result page |
+  | page | E at a thing (idle, seated on our seat: its screen) | E past the last line, Esc, 2.5 m off, any screen, a mode that takes the page | the page widget removed |
+  | show | E at a screen (idle or from the seat facing it) | E, Esc, the last subtitle, getting up (seated), 2.5 m off (standing), any screen | the page widget |
+  | mini-game | E at a game thing (idle; sits on its chair first when the act sits) | the result, Esc (no result), walking off (standing), getting up (seated), any screen, `quit` | the panel collapsed, the result page |
   | reading view | E at a `read` thing (idle; sits first when the act sits) | E on the last page, Esc/W/S/Space, a step or Space on the seat, getting up, 2.5 m off, any screen or the menu | his steps (standing), the view collapsed |
   | staff talk | E at a counter with topics and staff | Esc/W/S/Space, 2.5 m off, any screen, Buy (the shop), no topics left | his steps, the page |
   | lift chooser / trip | E at a door with a link (idle, standing) | Esc/W/S/Space, any screen; the trip ends by itself | his steps, the fade back |
-  | lying | E at a bed (idle) | E, a step, Space, woken after the time, the seat gone, not the hero | the view, his visibility, the seat |
+  | lying | E at a bed (idle) | E, Esc, a step, Space, woken after the time, the seat gone, not the hero | the view, his visibility, the seat |
   | sleep chooser | lying on a `sleep` bed | E (sleep), W/S/Esc/Space (up), getting up | the page; after the sleep the fade back, up, the bed's line |
   | seated | E at a seat, or a sitting act | a step, Space (the seat's hooks while a text or the chooser is up), the anchor gone, another pawn | the cone, collision and walking, the hooks |
 
   Every mode is also let go by a load (`ResetHeroState`: the fades, the held steps, the pillow's view, the seat) and by the
   level ending (`Deinitialize`). The F10 menu pauses the game: every mode waits under it. A fade to black (a jump of the
   clock, a sleep, a lift) is always followed by its fade back, or stopped by a load.
+
+  Esc: the menu's input preprocessor (`FLyudMenuInput` in `LyudGameMenu.cpp`) sees every key before the game and, in a
+  packaged build with the game focused, takes Esc to open the pause menu (in PIE it lets Esc through to the editor). So no
+  UI of this game closes on Esc without the menu today: the shop screen, the restaurant, the game screen, the bird guide and
+  the fish book poll Esc like we do, and the menu opens over them; they (and we) wait under it and are still up after it.
+  Every mode of ours polls Esc as its way out (above) and has a key that is not Esc (W/S/Space, E, a step), so nothing
+  depends on it; the menu change that gives Esc to an open mode is under "Open points for other threads".
+* E and the NPC talk (`ANpcTalkDirector`, `NpcDialogue.cpp`, read only here). It binds E on its own input component
+  (`bConsumeInput = false`) and takes the press in `Interact` when it has somebody in front (`TargetIndex`, found in its
+  tick within 2.4 m and 22° of the view, in sight) or a talk going on, unless `PlayerBusy()`: the pawn hidden (lying, the
+  ATON OS) or the player at an `AHeroSeat`. Its only public query is `IsEngaged()`; there is no busy or suppress call (the
+  restaurant and the shop do not tell it anything either). Our side: the input runs before our tick, so `bTalk =
+  IsEngaged()` read in our tick already covers a press the talk took this frame; every E of ours (the thing in view, the
+  page, the show, the game, the text, the choosers, lying) is skipped while `bTalk`, so one press never does both. What
+  remains: with one of our modes up and somebody stepping in front, E starts the NPC's talk over our page (ours waits).
 * Perf ([perf checklist](../README.md)): no per-frame allocation, no actors or components per thing, nothing past the town box,
   the file parsed off the game thread.
 
@@ -678,6 +701,30 @@ For the people's life (a townsperson who sits down in the café, reads at a libr
   (None: all), appended; a table by plot built once at load.
 * Holds are not saved (the people's life places everyone again after a load) and survive a New Game of the city's state.
   The things appear a moment after the level starts (parsed on a worker): before that every call finds nothing.
+
+### Open points for other threads
+
+* NPC talk while a mode of ours is up (`NpcDialogue.cpp`, owner: the dialogue thread). `ULyudCityThings::HasModeUp()` is
+  public for it; in `ANpcTalkDirector::PlayerBusy()`, after the hidden-pawn check, add (with
+  `#include "City/LyudCityThings.h"`):
+
+  ```cpp
+  const ULyudCityThings* City = ULyudCityThings::Get(this);
+  if (City && City->HasModeUp()) { return true; }
+  ```
+
+  Its tick then closes its talk and finds nobody while our page, show, game, text, chooser, lift or bed has the keys;
+  seated alone is not a mode (he still talks to the café's waiter from his chair).
+* Esc to an open mode instead of the pause menu (`LyudGameMenu.cpp`, `ULyudGameMenuSubsystem::HandleKey`), before
+  `Open(false);` (with the same include):
+
+  ```cpp
+  const ULyudCityThings* City = bEsc ? ULyudCityThings::Get(World) : nullptr;
+  if (City && City->HasModeUp()) { return false; }
+  ```
+
+  Esc then reaches the player controller and the mode's own Esc closes it (a second Esc opens the menu). The shop screen
+  and the restaurant would want the same line with their own `IsOpen()`.
 
 ### How to test in the editor (Mac)
 
@@ -725,3 +772,6 @@ For the people's life (a townsperson who sits down in the café, reads at a libr
 26. The library's reading pod (`P-LIBRARY/pod_1_01`): E sits and opens «Скворцы»: `стр. 1 из 4`; D, D, A, D, D: the last
     page, `Дочитано`, the stamp «Прочитанное: 1 из 6»; E puts it down; stand up, E again: page 1. A free newspaper: the second page
     differs tomorrow (`Dev.Do time.plus_day`). `lyud.City.Collections`: the Read list says where each was read.
+27. The barber (`lyud.City.Go P-UNITE/barber_chair_1`, `interiors.open_all_hours`, E): he sits on the chair's spot facing
+    the mirror (`sits on P-UNITE/barber_chair_1` in the log), not in the chair's middle; a garden chess table with no chair
+    (`P-T1H1/deck_chess` has one; a garden board has none): the game is played standing.
