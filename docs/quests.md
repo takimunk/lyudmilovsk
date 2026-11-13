@@ -80,6 +80,22 @@ quest that the talk itself begins counts as on its first stage. On a stage that 
 while the hero has not got the thing, the stage is `<stage>_empty` (their "well, where is it?" line). Keys are `line.<speaker>.<scene>.<n>` as everywhere;
 the voice of a line is found by its key.
 
+### Branching talk
+
+- `quest.<quest>.<stages>.if.<cond>[+<cond>] = keys`: a variant, said instead of the plain talk of that quest and stage while
+  every condition holds, wherever in the section it is written. Conditions: `night`, `low` (sunrise, sunset), `day`, `cloudy`;
+  `have:<item>`, `no:<item>` (the pocket); `done:<quest>`, `on:<quest>` (another quest finished, or going on);
+  `flag:<flag>` (`ULyudQuests::Flags`, a remark said: `remark.<id>`, a pickup taken: `pickup.<id>`). A variant is counted
+  apart from the plain talk (its own first time, its own `.again`). It needs a plain line of the same stage to stand in for,
+  and it must carry whatever the plain talk tells the player to do.
+- `quest.<quest>.done` (what they say after the quest, once) steps aside once it is said: several quests' `done` lines can
+  stand in one section, and a `done.if.<cond>` variant is one more after-talk for when its conditions hold. A `done` line
+  with `.again` lines is said for ever, in front of the everyday talks: do not write one.
+- `quest.<quest>.<stages>.again` may be written several times: later talks go through them in turn, round and round
+  (a waiting stage: a hint, then an aside).
+- `python3 tools/check_quest_talk.py` checks all of it offline (quests, stages, conditions, line keys in three languages,
+  the scenes file).
+
 ## Staging (quest_scenes.json)
 
 - `pickups`: an item (`ALyudGoodsItem`) lying on whatever stands at a point while the quest is on certain stages; the
@@ -87,6 +103,10 @@ the voice of a line is found by its key.
 - `listeners`: people who notice a bird calling beside them. The first reaction that fits (species, a quest's stage,
   `air` = called on the wing) is said over their head with its voice, their eyes on the bird. Sitting within `within_m`
   also sends `bird_call`. Sleeping or unseen people hear nothing.
+- `remarks`: `{"id", "person", "quest", "stages", "within_m", "lines"}`: that person says the lines of their own accord,
+  once, when the hero walks within `within_m` (6 by default) while the quest is on one of the stages (`done` too): the
+  grocer about the rowan he came for, a neighbour who has heard of his errand. Never during a talk; unseen or sleeping
+  people say nothing; kept in the save as the flag `remark.<id>`.
 - Anything else a scene needs to say: `ULyudQuestDirector::Say(person, lines)`.
 
 A species that lives in one corner of the map only: `"range": {"x", "y", "r", "population", "flock", "homeRange"}` in

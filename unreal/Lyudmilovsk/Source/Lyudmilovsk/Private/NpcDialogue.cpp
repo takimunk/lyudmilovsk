@@ -16,6 +16,7 @@
 #include "GameFramework/Pawn.h"
 #include "GameFramework/PlayerController.h"
 #include "HeroSeat.h"
+#include "LyudInventory.h"
 #include "LyudSave.h"
 #include "LyudText.h"
 #include "Sky/LyudSky.h"
@@ -140,14 +141,30 @@ void UNpcDialogueSubsystem::Reload()
 				StageName.TrimStartAndEndInline();
 				Stages.Add(FName(*StageName));
 			}
-			FNpcQuestTalk* Talk = Current->QuestTalks.FindByPredicate([&Quest, &Stages](const FNpcQuestTalk& T) { return T.Quest == Quest && T.Stages == Stages; });
+			// ....if.<cond>[+<cond>] = a variant of the talk for when the conditions hold (QuestTalkHolds)
+			TArray<FString> When;
+			int32 Tail = 3;
+			if (Parts.Num() > 4 && Parts[3] == TEXT("if"))
+			{
+				Parts[4].ParseIntoArray(When, TEXT("+"));
+				Tail = 5;
+			}
+			FNpcQuestTalk* Talk = Current->QuestTalks.FindByPredicate([&Quest, &Stages, &When](const FNpcQuestTalk& T) { return T.Quest == Quest && T.Stages == Stages && T.When == When; });
 			if (!Talk)
 			{
 				Talk = &Current->QuestTalks.AddDefaulted_GetRef();
 				Talk->Quest = Quest;
 				Talk->Stages = Stages;
+				Talk->When = When;
 			}
-			(Parts.Num() > 3 && Parts[3] == TEXT("again") ? Talk->Again : Talk->Lines) = ParseExchange(Value);
+			if (Parts.Num() > Tail && Parts[Tail] == TEXT("again"))
+			{
+				Talk->Again.Add(ParseExchange(Value));
+			}
+			else
+			{
+				Talk->Lines = ParseExchange(Value);
+			}
 		}
 	}
 	UE_LOG(LogTemp, Log, TEXT("NpcDialogue: %d characters from %s"), Characters.Num(), *Path);
@@ -175,6 +192,59 @@ FName UNpcDialogueSubsystem::NpcSunState(const UWorld* World)
 	return Altitude < 10.f ? TEXT("low") : TEXT("day");
 }
 
+/** Do a quest talk's conditions hold now (npc_dialogue.txt "quest.<quest>.<stages>.if.<cond>+<cond>")? */
+static bool QuestTalkHolds(const UObject* WorldContext, const ULyudQuests& Quests, const TArray<FString>& When, FName SunState)
+{
+	for (const FString& Cond : When)
+	{
+		FString Kind, Arg;
+		if (!Cond.Split(TEXT(":"), &Kind, &Arg))
+		{
+			// night, low, day, cloudy: what the sun is doing
+			if (FName(*Cond) != SunState)
+			{
+				return false;
+			}
+			continue;
+		}
+		bool bHolds = false;
+		if (Kind == TEXT("have") || Kind == TEXT("no"))
+		{
+			const ULyudInventory* Pocket = ULyudInventory::Get(WorldContext);
+			const bool bHas = Pocket && Pocket->Count(FName(*Arg)) > 0;
+			bHolds = (Kind == TEXT("have")) == bHas;
+		}
+		else if (Kind == TEXT("done"))
+		{
+			bHolds = Quests.State(FName(*Arg)) == ELyudQuestState::Done;
+		}
+		else if (Kind == TEXT("on"))
+		{
+			bHolds = Quests.State(FName(*Arg)) == ELyudQuestState::Active;
+		}
+		else if (Kind == TEXT("flag"))
+		{
+			bHolds = Quests.HasFlag(FName(*Arg));
+		}
+		if (!bHolds)
+		{
+			return false;
+		}
+	}
+	return true;
+}
+
+/** A quest talk's own count in TalkCounts, apart from the everyday talks: "<Id>/<quest>.<first stage>[?<conditions>]". */
+static FName QuestTalkCountKey(FName Id, const FNpcQuestTalk& T)
+{
+	FString CountName = FString::Printf(TEXT("%s/%s.%s"), *Id.ToString(), *T.Quest.ToString(), *T.Stages[0].ToString());
+	if (T.When.Num() > 0)
+	{
+		CountName += TEXT("?") + FString::Join(T.When, TEXT("+"));
+	}
+	return FName(*CountName);
+}
+
 TArray<FNpcLine> UNpcDialogueSubsystem::StartTalk(FName Id, FName SunState)
 {
 	const FNpcLines* Npc = Characters.Find(Id);
@@ -187,13 +257,32 @@ TArray<FNpcLine> UNpcDialogueSubsystem::StartTalk(FName Id, FName SunState)
 	const FNpcQuestTalk* QuestTalk = nullptr;
 	if (const ULyudQuests* Quests = ULyudQuests::Get(this))
 	{
+		// what is said after a quest is said once (unless it has .again lines): then it stands in nobody's way
+		const FName DoneStage(TEXT("done"));
+		const auto Spent = [this, Id, DoneStage](const FNpcQuestTalk& T)
+		{
+			return T.Stages.Num() > 0 && T.Again.Num() == 0 && T.Stages.Contains(DoneStage) && TalkCounts.FindRef(QuestTalkCountKey(Id, T)) > 0;
+		};
 		for (const FNpcQuestTalk& T : Npc->QuestTalks)
 		{
 			const FName Stage = Quests->TalkStage(T.Quest, Id.ToString());
-			if (!Stage.IsNone() && T.Stages.Contains(Stage))
+			if (!Stage.IsNone() && T.Stages.Contains(Stage) && T.Lines.Num() > 0 && !Spent(T) && QuestTalkHolds(this, *Quests, T.When, SunState))
 			{
 				QuestTalk = &T;
 				break;
+			}
+		}
+		// a variant whose conditions hold is said rather than the plain talk of the same quest and stage, wherever it is written
+		if (QuestTalk && QuestTalk->When.Num() == 0)
+		{
+			const FName Stage = Quests->TalkStage(QuestTalk->Quest, Id.ToString());
+			for (const FNpcQuestTalk& T : Npc->QuestTalks)
+			{
+				if (T.Quest == QuestTalk->Quest && T.When.Num() > 0 && T.Stages.Contains(Stage) && T.Lines.Num() > 0 && !Spent(T) && QuestTalkHolds(this, *Quests, T.When, SunState))
+				{
+					QuestTalk = &T;
+					break;
+				}
 			}
 		}
 	}
@@ -202,12 +291,11 @@ TArray<FNpcLine> UNpcDialogueSubsystem::StartTalk(FName Id, FName SunState)
 	ULyudQuests::Notify(this, TEXT("talk"), Id.ToString());
 	if (QuestTalk && QuestTalk->Lines.Num() > 0)
 	{
-		// counted apart from the everyday talks, per quest and stages: "<Id>/<quest>.<first stage>"
-		const FName CountKey(*FString::Printf(TEXT("%s/%s.%s"), *Id.ToString(), *QuestTalk->Quest.ToString(), *QuestTalk->Stages[0].ToString()));
+		const FName CountKey = QuestTalkCountKey(Id, *QuestTalk);
 		const int32 QuestHeld = TalkCounts.FindOrAdd(CountKey)++;
 		if (QuestHeld > 0 && QuestTalk->Again.Num() > 0)
 		{
-			return QuestTalk->Again;
+			return QuestTalk->Again[(QuestHeld - 1) % QuestTalk->Again.Num()];
 		}
 		// what is said after a quest is said once; then the everyday talks go on
 		if (QuestHeld == 0 || !QuestTalk->Stages.Contains(FName(TEXT("done"))))

@@ -24,9 +24,14 @@ struct FNpcQuestTalk
 	FName Quest;
 	/** Stage ids of quests.json; "done" = after the quest is finished. */
 	TArray<FName> Stages;
-	/** The first talk on these stages, and every later one (empty: the first again). */
+	/**
+	 * "quest.<quest>.<stages>.if.<cond>[+<cond>]": said instead of the plain talk of these stages while every condition holds:
+	 * night, low, day, cloudy (the sun), have:<item>, no:<item>, done:<quest>, on:<quest>, flag:<flag>. Empty: the plain talk.
+	 */
+	TArray<FString> When;
+	/** The first talk on these stages, and the later ones in turn, round and round (none: the first again). */
 	TArray<FNpcLine> Lines;
-	TArray<FNpcLine> Again;
+	TArray<TArray<FNpcLine>> Again;
 };
 
 /** How one character's conversations go, read from Content/Dialogue/npc_dialogue.txt; the words are in the string tables. */

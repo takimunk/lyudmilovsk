@@ -160,7 +160,13 @@ namespace
 		{
 			return C;
 		}
-		if (TActorIterator<ALyudSky> It(World); It)
+		// (the web keeps the level's sky: asked every few seconds while a float is out)
+		const ULyudEcosystem* Web = ULyudEcosystem::Get(World);
+		if (const ALyudSky* Sky = Web ? Web->FindSky(World) : nullptr)
+		{
+			C.SunAltitude = Sky->SunAltitude();
+		}
+		else if (TActorIterator<ALyudSky> It(World); It)
 		{
 			C.SunAltitude = It->SunAltitude();
 		}
@@ -849,10 +855,17 @@ void ULyudFishing::PutAway()
 	bFlying = false;
 	PromptKey = ~0ull;
 	ShowLeft = -1.f;
-	if (AHeroCharacter* Hero = Cast<AHeroCharacter>(UGameplayStatics::GetPlayerPawn(this, 0)))
+	// the hand that held it lets go (the hero himself while a bird is flown: he is not the player's pawn then)
+	AHeroCharacter* Holder = Cast<AHeroCharacter>(UGameplayStatics::GetPlayerPawn(this, 0));
+	if (!Holder)
 	{
-		UHeroReachComponent::Get(Hero)->ClearOverrideHold();
+		Holder = HeldBy.Get();
 	}
+	if (UHeroReachComponent* Reach = Holder ? UHeroReachComponent::Get(Holder) : nullptr)
+	{
+		Reach->ClearOverrideHold();
+	}
+	HeldBy.Reset();
 	if (ULyudInventoryUI* UI = ULyudInventoryUI::Get(this))
 	{
 		UI->SetPrompt(this, FText::GetEmpty());
@@ -1587,6 +1600,13 @@ void ULyudFishing::Tick(float DeltaTime)
 	ULyudInventory* Inv = ULyudInventory::Get(World);
 	if (!Hero || !PC || !Inv || !Session)
 	{
+		// the hero is not the player's pawn (a bird is flown): the line is wound in and the rod put away (parked, hidden,
+		// off his hand; the line, the float and a fish on the hook with it), not left hanging in the air where he stands.
+		// It comes back out by itself when he is the pawn again with the rod still in the hand
+		if (Session && Rod.IsValid())
+		{
+			PutAway();
+		}
 		return;
 	}
 	// a bait taken in the hand goes on the rig (the rod comes back into the hand); a rod in the hand comes out
@@ -1640,6 +1660,7 @@ void ULyudFishing::Tick(float DeltaTime)
 	{
 		return;
 	}
+	HeldBy = Hero;
 	UHeroReachComponent* Reach = UHeroReachComponent::Get(Hero);
 	// the diary takes the hand (it holds the book itself); a reach move, a screen, a bird's eyes: the rod is hidden and waits
 	const ULyudGameScreen* Screen = ULyudGameScreen::Get(World);

@@ -661,6 +661,18 @@ void ULyudWindowLights::UpdateAll(bool bForce)
 		SetDriven(false);
 	}
 	const int32 Mode = CVarCityLights.GetValueOnGameThread();
+	if (Mode == 0 && LastMode > 0)
+	{
+		// lyud.City.Lights 1 / 2 overwrote the flats the life had set too: back in auto they follow the seeded evening
+		// until the life sets them again, rather than staying all lit / all dark for hours
+		for (const TWeakObjectPtr<ALyudCityBuilding>& Forced : Buildings)
+		{
+			if (ALyudCityBuilding* FB = Forced.Get())
+			{
+				FB->ClearOwned();
+			}
+		}
+	}
 	for (const TWeakObjectPtr<ALyudCityBuilding>& W : Buildings)
 	{
 		ALyudCityBuilding* B = W.Get();

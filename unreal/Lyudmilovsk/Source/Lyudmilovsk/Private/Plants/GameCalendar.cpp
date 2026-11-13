@@ -26,7 +26,14 @@ void UGameCalendar::OnWorldBeginPlay(UWorld& InWorld)
 	if (ULyudSaveSubsystem* Saves = InWorld.IsGameWorld() ? ULyudSaveSubsystem::Get(&InWorld) : nullptr)
 	{
 		Saves->RegisterSaveObject(TEXT("Calendar"), this);
+		Saves->OnAfterLoad.AddWeakLambda(this, [this](ULyudSaveGame*) { ClampLoaded(); });
 	}
+}
+
+void UGameCalendar::ClampLoaded()
+{
+	TimeScale = FMath::IsFinite(TimeScale) ? FMath::Max(TimeScale, 0.f) : 1.f;
+	OffsetSeconds = FMath::IsFinite(OffsetSeconds) ? OffsetSeconds : 0.0;
 }
 
 float UGameCalendar::DayOfYear() const

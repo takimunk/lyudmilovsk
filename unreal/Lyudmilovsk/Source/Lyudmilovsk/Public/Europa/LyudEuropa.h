@@ -347,6 +347,8 @@ private:
 
 	// Europa
 	bool bOnEuropa = false;
+	/** The planet's music and line were asked from ULyudPrefetch (once per world). */
+	bool bPlanetSoundsAsked = false;
 	float SavedGravity = 1.f;
 	float SavedAirControl = 0.05f;
 	FString SavedRainFx;

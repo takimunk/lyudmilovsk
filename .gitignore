@@ -75,3 +75,5 @@ blender/residents/cache/
 renders/residents/
 # their Unreal import (unreal/scripts/import_residents.sh): ~900 meshes, made again by the script, never in git/LFS
 unreal/Lyudmilovsk/Content/Characters/Humans/Town/
+# named people the generator makes (blender/residents/looks.py CAST): beside the cast's models, local like Town/
+unreal/Lyudmilovsk/Content/Characters/Humans/Khuazhev_aslan/

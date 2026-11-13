@@ -323,7 +323,9 @@ void ULyudSwimComponent::SetState(ELyudSwimState New)
 	}
 	else if (UnderLoop)
 	{
-		UnderLoop->FadeOut(0.4f, 0.f);
+		// AttachLoop spawns it with bAutoDestroy off: released, it destroys itself when the fade ends, or at once if it was
+		// not playing (it stayed on the hero for good otherwise, one a dive)
+		ULyudSoundscapeSubsystem::ReleaseLoop(UnderLoop, 0.4f);
 		UnderLoop = nullptr;
 	}
 	if (Old == ELyudSwimState::Under && New == ELyudSwimState::Surface)

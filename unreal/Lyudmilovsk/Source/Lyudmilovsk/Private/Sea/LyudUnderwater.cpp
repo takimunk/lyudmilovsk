@@ -26,6 +26,7 @@
 #include "Sky/LyudSky.h"
 #include "StaticMeshAttributes.h"
 #include "Weather/LyudWind.h"
+#include "World/LyudPrefetch.h"
 
 namespace
 {
@@ -142,6 +143,19 @@ namespace
 		const FString Package = FPackageName::ObjectPathToPackageName(FString(Path));
 		return FPackageName::DoesPackageExist(Package) ? LoadObject<T>(nullptr, Path) : nullptr;
 	}
+
+	/** An asset ULyudPrefetch said is ready: in memory, never loaded here (null: it does not exist); with lyud.Prefetch 0
+	 *  (the old synchronous loads, A/B) loaded now as before. */
+	template <typename T>
+	T* SeaLifeFind(const FString& Path)
+	{
+		if (T* Found = FindObject<T>(nullptr, *Path))
+		{
+			return Found;
+		}
+		static IConsoleVariable* Prefetch = IConsoleManager::Get().FindConsoleVariable(TEXT("lyud.Prefetch"));
+		return Prefetch && Prefetch->GetInt() == 0 ? LoadIfThere<T>(*Path) : nullptr;
+	}
 }
 
 /** The water and bed the fish live in, from the sea, the ground (traced once per metre and kept) and the terrain mask. */
@@ -203,10 +217,27 @@ UInstancedStaticMeshComponent* ALyudSeaLife::SpeciesMesh(int32 Species)
 	if (Fish[Species]) return Fish[Species];
 	const LyudFish::FSpecies& S = LyudFish::Species(Species);
 	const FString Id = ANSI_TO_TCHAR(S.Id);
-	UStaticMesh* Mesh = LoadIfThere<UStaticMesh>(*FString::Printf(TEXT("/Game/Sea/Fish/SM_%s.SM_%s"), *Id, *Id));
-	UTexture2D* Skin = Mesh ? LoadIfThere<UTexture2D>(*FString::Printf(TEXT("/Game/Sea/Fish/T_%s_D.T_%s_D"), *Id, *Id)) : nullptr;
-	UMaterialInterface* Body = LoadObject<UMaterialInterface>(nullptr, TEXT("/Game/Sea/Underwater/M_LyudFish.M_LyudFish"));
-	UMaterialInterface* Fin = LoadObject<UMaterialInterface>(nullptr, TEXT("/Game/Sea/Underwater/M_LyudFishFin.M_LyudFishFin"));
+	// its look loads in the background (ULyudPrefetch; all asked every time, so each starts at once): the species is drawn
+	// from the frame it is in memory, never loaded here (a dozen species' packages read on the spot stopped the game on
+	// the first frame at the water)
+	const FString MeshPath = FString::Printf(TEXT("/Game/Sea/Fish/SM_%s.SM_%s"), *Id, *Id);
+	const FString SkinPath = FString::Printf(TEXT("/Game/Sea/Fish/T_%s_D.T_%s_D"), *Id, *Id);
+	const FString BodyPath(TEXT("/Game/Sea/Underwater/M_LyudFish.M_LyudFish"));
+	const FString FinPath(TEXT("/Game/Sea/Underwater/M_LyudFishFin.M_LyudFishFin"));
+	const FString StandInPath(TEXT("/Game/Sea/M_SeaFish.M_SeaFish"));
+	const bool bMeshReady = ULyudPrefetch::Ready(this, MeshPath);
+	const bool bSkinReady = ULyudPrefetch::Ready(this, SkinPath);
+	const bool bBodyReady = ULyudPrefetch::Ready(this, BodyPath);
+	const bool bFinReady = ULyudPrefetch::Ready(this, FinPath);
+	const bool bStandInReady = ULyudPrefetch::Ready(this, StandInPath);
+	if (!(bMeshReady && bSkinReady && bBodyReady && bFinReady && bStandInReady))
+	{
+		return nullptr;
+	}
+	UStaticMesh* Mesh = SeaLifeFind<UStaticMesh>(MeshPath);
+	UTexture2D* Skin = Mesh ? SeaLifeFind<UTexture2D>(SkinPath) : nullptr;
+	UMaterialInterface* Body = SeaLifeFind<UMaterialInterface>(BodyPath);
+	UMaterialInterface* Fin = SeaLifeFind<UMaterialInterface>(FinPath);
 	UInstancedStaticMeshComponent* C = NewObject<UInstancedStaticMeshComponent>(this, *FString::Printf(TEXT("Fish_%s"), *Id), RF_Transient);
 	C->SetupAttachment(GetRootComponent());
 	C->SetMobility(EComponentMobility::Movable);
@@ -243,7 +274,7 @@ UInstancedStaticMeshComponent* ALyudSeaLife::SpeciesMesh(int32 Species)
 		// no model built for it yet: the old code-built fish (10 cm, scaled to the animal in DrawFish), so the behaviour still shows
 		StandIns.AddUnique(FName(*Id));
 		C->SetStaticMesh(LyudSeaLife::Fish());
-		if (UMaterialInterface* Old = LoadObject<UMaterialInterface>(nullptr, TEXT("/Game/Sea/M_SeaFish.M_SeaFish")))
+		if (UMaterialInterface* Old = SeaLifeFind<UMaterialInterface>(StandInPath))
 		{
 			UMaterialInstanceDynamic* M = UMaterialInstanceDynamic::Create(Old, C);
 			M->SetVectorParameterValue(TEXT("Tint"), FLinearColor(0.5f, 0.52f, 0.5f));
@@ -284,7 +315,7 @@ void ULyudUnderwaterSubsystem::Deinitialize()
 void ULyudUnderwaterSubsystem::Release()
 {
 	if (Sim) Sim->Clear();
-	if (Env) Env->Beds.Empty();
+	// (the bed's traced heights are kept: the bed does not change, the map is capped, and coming back traces nothing)
 	if (ALyudSeaLife* L = Life.Get())
 	{
 		L->Destroy();
@@ -511,6 +542,8 @@ void ULyudUnderwaterSubsystem::Tick(float DeltaTime)
 		Eco->ForEachFishDiet([S](int32 Predator, int32 Prey, float Share) { S->SetDiet(Predator, Prey, Share); });
 	}
 	Sim->Density = FMath::Max(CVarSeaLifeDensity.GetValueOnGameThread(), 0.f);
+	// three 6 m cells of bottom fish a frame (each traces its bed the first time): the reach fills in half a second
+	Sim->NewCellsPerSettle = 3;
 	LyudFish::FClock FC;
 	FDateTime Now = UGameCalendar::NowIn(World);
 	float SunAlt = 30.f;
@@ -524,11 +557,17 @@ void ULyudUnderwaterSubsystem::Tick(float DeltaTime)
 	if (CVarSeaLifeFish.GetValueOnGameThread() != 0)
 	{
 		Sim->Step(DeltaTime, *Env, LyudFish::FV(Eye.X, Eye.Y, Eye.Z) * 0.01f, FC);
+		if (SpeciesNames.Num() != LyudFish::NumSpecies() && !Sim->Eaten().empty())
+		{
+			SpeciesNames.Reset();
+			for (int32 S = 0; S < LyudFish::NumSpecies(); S++) SpeciesNames.Add(FName(ANSI_TO_TCHAR(LyudFish::Species(S).Id)));
+		}
 		for (const LyudFish::FEaten& E : Sim->Eaten())
 		{
-			const FName Predator(ANSI_TO_TCHAR(LyudFish::Species(E.Predator).Id)), Prey(ANSI_TO_TCHAR(LyudFish::Species(E.Prey).Id));
+			if (!SpeciesNames.IsValidIndex(E.Predator) || !SpeciesNames.IsValidIndex(E.Prey)) continue;
+			const FName Predator = SpeciesNames[E.Predator], Prey = SpeciesNames[E.Prey];
 			const FVector At = FVector(E.Pos.X, E.Pos.Y, E.Pos.Z) * 100.f;
-			MealsSeen.FindOrAdd(Predator.ToString() + (E.bCaught ? TEXT("<-") : TEXT("<-(missed)")) + Prey.ToString())++;
+			MealsSeen.FindOrAdd((uint32(E.Predator) << 16) | (uint32(E.Prey) << 1) | (E.bCaught ? 1u : 0u))++;
 			OnFishHunt.Broadcast(Predator, Prey, At, E.bCaught);
 			if (E.bCaught) OnFishEaten.Broadcast(Predator, Prey, At);
 		}
@@ -635,7 +674,13 @@ FString ULyudUnderwaterSubsystem::GetDebugReport() const
 	if (MealsSeen.Num())
 	{
 		Out += TEXT("; meals seen:");
-		for (const TPair<FString, int32>& M : MealsSeen) Out += FString::Printf(TEXT(" %s %d"), *M.Key, M.Value);
+		for (const TPair<uint32, int32>& M : MealsSeen)
+		{
+			const int32 Predator = int32(M.Key >> 16), Prey = int32((M.Key >> 1) & 0x7FFFu);
+			if (Predator >= LyudFish::NumSpecies() || Prey >= LyudFish::NumSpecies()) continue;
+			Out += FString::Printf(TEXT(" %s%s%s %d"), ANSI_TO_TCHAR(LyudFish::Species(Predator).Id), (M.Key & 1u) ? TEXT("<-") : TEXT("<-(missed)"),
+				ANSI_TO_TCHAR(LyudFish::Species(Prey).Id), M.Value);
+		}
 	}
 	if (const ALyudSeaLife* L = Life.Get())
 	{

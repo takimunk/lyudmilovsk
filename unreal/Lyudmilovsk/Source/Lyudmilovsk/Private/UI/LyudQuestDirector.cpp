@@ -69,6 +69,7 @@ void ULyudQuestDirector::Load()
 {
 	Pickups.Reset();
 	Listeners.Reset();
+	Remarks.Reset();
 	const FString Path = FPaths::ProjectContentDir() / TEXT("UI/quest_scenes.json");
 	FString Text;
 	TSharedPtr<FJsonObject> Root;
@@ -152,7 +153,30 @@ void ULyudQuestDirector::Load()
 			Listeners.Add(MoveTemp(L));
 		}
 	}
-	UE_LOG(LogTemp, Log, TEXT("QuestDirector: %d pickups, %d listeners"), Pickups.Num(), Listeners.Num());
+	if (Root->TryGetArrayField(TEXT("remarks"), Arr))
+	{
+		for (const TSharedPtr<FJsonValue>& V : *Arr)
+		{
+			const TSharedPtr<FJsonObject> O = V->AsObject();
+			FRemark R;
+			R.Id = FName(*O->GetStringField(TEXT("id")));
+			R.Person = O->GetStringField(TEXT("person"));
+			R.Quest = FName(*O->GetStringField(TEXT("quest")));
+			R.Stages = QuestDirectorLocal::Names(O, TEXT("stages"));
+			double Within = 6.0;
+			O->TryGetNumberField(TEXT("within_m"), Within);
+			R.WithinCm = (float)Within * 100.f;
+			for (const FName Line : QuestDirectorLocal::Names(O, TEXT("lines")))
+			{
+				R.Lines.Add(Line.ToString());
+			}
+			if (R.Lines.Num() > 0)
+			{
+				Remarks.Add(MoveTemp(R));
+			}
+		}
+	}
+	UE_LOG(LogTemp, Log, TEXT("QuestDirector: %d pickups, %d listeners, %d remarks"), Pickups.Num(), Listeners.Num(), Remarks.Num());
 }
 
 void ULyudQuestDirector::OnWorldBeginPlay(UWorld& InWorld)
@@ -214,6 +238,7 @@ void ULyudQuestDirector::Tick(float DeltaTime)
 	{
 		SlowTimer = 1.f;
 		TickFeeders(PC->GetPawn());
+		TickRemarks(PC->GetPawn());
 		// the hero is a bird: the voices of what the listeners may say to it are loaded ahead (in the background)
 		if (PC->GetPawn() && !PC->GetPawn()->IsA<AHeroCharacter>())
 		{
@@ -437,6 +462,59 @@ void ULyudQuestDirector::TickFeeders(const APawn* Pawn)
 	OnTrays = MoveTemp(Now);
 }
 
+// ------------------------------------------------------------------ a word in passing
+
+void ULyudQuestDirector::TickRemarks(const APawn* Pawn)
+{
+	const AHeroCharacter* Hero = Cast<AHeroCharacter>(Pawn);
+	ULyudQuests* Quests = ULyudQuests::Get(this);
+	const UPeopleLifeSubsystem* People = UPeopleLifeSubsystem::Get(this);
+	if (Remarks.Num() == 0 || !Hero || Hero->IsHidden() || !Quests || !People || !People->IsRunning())
+	{
+		return;
+	}
+	if (!TalkDirector.IsValid())
+	{
+		TActorIterator<ANpcTalkDirector> It(GetWorld());
+		TalkDirector = It ? *It : nullptr;
+	}
+	if (TalkDirector.IsValid() && TalkDirector->IsEngaged())
+	{
+		return;
+	}
+	const FVector HeroAt = Hero->GetActorLocation();
+	for (const FRemark& R : Remarks)
+	{
+		const FName Flag(*(TEXT("remark.") + R.Id.ToString()));
+		if (Quests->HasFlag(Flag) || !R.Stages.Contains(Quests->StageId(R.Quest)))
+		{
+			continue;
+		}
+		const int32 Id = People->FindPerson(R.Person);
+		FPersonInfo Info;
+		if (Id < 0 || !People->GetPerson(Id, Info) || !IsValid(Info.Actor) || Info.Actor->IsHidden() || Info.Pose == EPersonPose::Sleep || Info.Pose == EPersonPose::Hidden)
+		{
+			continue;
+		}
+		const float D = FVector::Dist(HeroAt, Info.Actor->GetActorLocation());
+		if (D < R.WithinCm * 3.f)
+		{
+			// coming up to them: the voice is ready by the time they speak
+			for (const FString& K : R.Lines)
+			{
+				LyudText::WarmVoice(this, QuestDirectorLocal::FullKey(K));
+			}
+		}
+		// one at a time; said once, kept with the save
+		if (D < R.WithinCm && Say(R.Person, R.Lines, &HeroAt))
+		{
+			Quests->SetFlag(Flag);
+			UE_LOG(LogTemp, Log, TEXT("QuestDirector: remark %s by %s (%.1f m)"), *R.Id.ToString(), *R.Person, D * 0.01f);
+			return;
+		}
+	}
+}
+
 // ------------------------------------------------------------------ a bird calls beside somebody
 
 void ULyudQuestDirector::HandleBirdCall(FName Species, const FVector& At, bool bInAir)
@@ -597,6 +675,14 @@ FString ULyudQuestDirector::Report() const
 		const bool bThere = Id >= 0 && People->GetPerson(Id, Info);
 		Out += FString::Printf(TEXT("listener %s: %s, %s at %s, %d reactions\n"), *L.Person, bThere ? *Info.Activity : TEXT("nobody of that key"),
 			bThere && IsValid(Info.Actor) && !Info.Actor->IsHidden() ? TEXT("seen") : TEXT("unseen"), bThere ? *Info.Location.ToCompactString() : TEXT("-"), L.Reactions.Num());
+	}
+	if (Quests)
+	{
+		for (const FRemark& R : Remarks)
+		{
+			Out += FString::Printf(TEXT("remark %s: %s within %.0f m, %s\n"), *R.Id.ToString(), *R.Person, R.WithinCm * 0.01f,
+				Quests->HasFlag(FName(*(TEXT("remark.") + R.Id.ToString()))) ? TEXT("said") : R.Stages.Contains(Quests->StageId(R.Quest)) ? TEXT("waiting for the hero") : TEXT("not its stage"));
+		}
 	}
 	Out += FString::Printf(TEXT("birds on the watched feeders %d, speaking %d\n"), OnTrays.Num(), Speeches.Num());
 	return Out;

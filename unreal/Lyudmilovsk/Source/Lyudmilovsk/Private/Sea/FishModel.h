@@ -168,6 +168,9 @@ namespace LyudFish
 		/** Fish live within this of the eye, m; roamers come in from beyond SpawnMin (out of sight in the Baltic). */
 		float Radius = 24.f;
 		float SpawnMin = 13.f;
+		/** How many bed cells new to the reach are filled with their bottom fish in one step (the rest on the next steps):
+		 *  the game sets a few, so coming to the water does not ask the bed everywhere in one frame. */
+		int NewCellsPerSettle = 1 << 30;
 		/** Multiplies every species' numbers. */
 		float Density = 1.f;
 		uint32_t Seed = 7;
@@ -193,6 +196,8 @@ namespace LyudFish
 		{
 			int Species = 0;
 			FV Centre, Vel, Goal;
+			/** The water's drift at the centre this step (its members swim in it). */
+			FV Cur;
 			float Heading = 0.f;
 			float Timer = 0.f;
 			/** 0 calm .. 1 bolting; from where. */
