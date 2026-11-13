@@ -73,6 +73,36 @@
     0.0
    ],
    "yaw": 180.0
+  },
+  {
+   "id": "wait",
+   "kind": "stand",
+   "pos": [
+    -1.9,
+    2.4,
+    0.0
+   ],
+   "yaw": 0.0
+  },
+  {
+   "id": "queue",
+   "kind": "stand",
+   "pos": [
+    1.4,
+    1.1,
+    0.0
+   ],
+   "yaw": 180.0
+  },
+  {
+   "id": "drink",
+   "kind": "stand",
+   "pos": [
+    -2.1,
+    2.6,
+    0.0
+   ],
+   "yaw": 270.0
   }
  ],
  "lamps": [
@@ -86,6 +116,17 @@
    "colour": "#FFD2A0",
    "kind": "public",
    "radius": 4.5
+  },
+  {
+   "pos": [
+    -1.5,
+    2.6,
+    2.75
+   ],
+   "lumens": 420,
+   "colour": "#FFE2B8",
+   "kind": "public",
+   "radius": 4.0
   }
  ],
  "things": [
@@ -181,6 +222,71 @@
    "props": {
     "item": "daily_paper"
    }
+  },
+  {
+   "id": "stop_bin",
+   "kind": "board",
+   "pos": [
+    -0.42,
+    2.5,
+    0.8
+   ],
+   "yaw": 0.0,
+   "props": {
+    "topic": "bin"
+   }
+  },
+  {
+   "id": "k2_bell",
+   "kind": "machine",
+   "pos": [
+    1.05,
+    2.08,
+    1.06
+   ],
+   "yaw": 0.0,
+   "props": {
+    "what": "bell"
+   }
+  },
+  {
+   "id": "k2_flavours",
+   "kind": "board",
+   "pos": [
+    0.55,
+    1.2,
+    0.55
+   ],
+   "yaw": 0.0,
+   "props": {
+    "topic": "flavours"
+   }
+  },
+  {
+   "id": "k2_cone_sign",
+   "kind": "board",
+   "pos": [
+    2.9,
+    1.75,
+    1.9
+   ],
+   "yaw": 0.0,
+   "props": {
+    "topic": "coneSign"
+   }
+  },
+  {
+   "id": "k2_fountain",
+   "kind": "machine",
+   "pos": [
+    -2.72,
+    2.6,
+    1.0
+   ],
+   "yaw": 90.0,
+   "props": {
+    "what": "fountain"
+   }
   }
  ],
  "flats": [],
@@ -232,7 +338,7 @@
  "notes": [],
  "tris": {
   "shell": 600,
-  "detail": 1819,
+  "detail": 2701,
   "windows": 8
  }
 }
