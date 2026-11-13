@@ -1,0 +1,491 @@
+{
+ "_doc": "Second pass of the Vaults hall (P-HALL, shell_chapel_hall): the weekly programme, the exhibition case and plaques by weekday, the guest book, the sound desk and the light panel by the hour, the backstage (costumes, props, make-up) and the week of the amateur play Time, Forward! from casting on Monday to the Saturday premiere the hero can watch; the dance night, the barre mirror, the chalk menu. Strings: strings/x_p_hall.json (city.xh.*). Quests for it are in /home/user/wt/quests_shell_chapel_hall.json.",
+ "acts": {
+  "hall_programme": {
+   "like": "look_misc",
+   "prompt": "city.xh.prog.prompt",
+   "lines": [
+    {
+     "k": "city.xh.prog.mon",
+     "d": "mon"
+    },
+    {
+     "k": "city.xh.prog.tue",
+     "d": "tue"
+    },
+    {
+     "k": "city.xh.prog.wed",
+     "d": "wed"
+    },
+    {
+     "k": "city.xh.prog.thu",
+     "d": "thu"
+    },
+    {
+     "k": "city.xh.prog.fri",
+     "d": "fri"
+    },
+    {
+     "k": "city.xh.prog.sat",
+     "d": "sat"
+    },
+    {
+     "k": "city.xh.prog.sun",
+     "d": "sun"
+    }
+   ],
+   "minutes": 3
+  },
+  "hall_case": {
+   "like": "look_misc",
+   "prompt": "city.xh.case.prompt",
+   "lines": [
+    {
+     "k": "city.xh.case.mon",
+     "d": "mon"
+    },
+    {
+     "k": "city.xh.case.tue",
+     "d": "tue"
+    },
+    {
+     "k": "city.xh.case.wed",
+     "d": "wed"
+    },
+    {
+     "k": "city.xh.case.thu",
+     "d": "thu"
+    },
+    {
+     "k": "city.xh.case.fri",
+     "d": "fri"
+    },
+    {
+     "k": "city.xh.case.sat",
+     "d": "sat"
+    },
+    {
+     "k": "city.xh.case.sun",
+     "d": "sun"
+    }
+   ],
+   "minutes": 4
+  },
+  "hall_guest_book": {
+   "like": "look_misc",
+   "prompt": "city.xh.guest.prompt",
+   "lines": "city.xh.guest",
+   "minutes": 5,
+   "rotate": "daily",
+   "sound": "page_turn"
+  },
+  "hall_mixer": {
+   "prompt": "city.xh.mixer.prompt",
+   "minutes": 8,
+   "sound": "mic_feedback",
+   "lines": [
+    {
+     "k": "city.xh.mixer.day.*",
+     "h": [
+      6,
+      17
+     ]
+    },
+    {
+     "k": "city.xh.mixer.eve.*",
+     "h": [
+      17,
+      23
+     ],
+     "d": "mon-fri,sun"
+    },
+    {
+     "k": "city.xh.mixer.sat.*",
+     "h": [
+      17,
+      23
+     ],
+     "d": "sat"
+    },
+    {
+     "k": "city.xh.mixer.night.*",
+     "h": [
+      23,
+      6
+     ]
+    }
+   ]
+  },
+  "hall_stage_lights": {
+   "prompt": "city.xh.lights.prompt",
+   "minutes": 3,
+   "sound": "jukebox_click",
+   "lines": [
+    {
+     "k": "city.xh.lights.day.*",
+     "h": [
+      6,
+      17
+     ]
+    },
+    {
+     "k": "city.xh.lights.eve.*",
+     "h": [
+      17,
+      23
+     ],
+     "d": "mon-fri,sun"
+    },
+    {
+     "k": "city.xh.lights.sat.*",
+     "h": [
+      17,
+      23
+     ],
+     "d": "sat"
+    },
+    {
+     "k": "city.xh.lights.night.*",
+     "h": [
+      23,
+      6
+     ]
+    }
+   ]
+  },
+  "hall_ghost_light": {
+   "like": "look_misc",
+   "prompt": "city.xh.ghost.prompt",
+   "lines": [
+    {
+     "k": "city.xh.ghost.day.*",
+     "h": [
+      6,
+      21
+     ]
+    },
+    {
+     "k": "city.xh.ghost.night.*",
+     "h": [
+      21,
+      6
+     ]
+    }
+   ],
+   "minutes": 3,
+   "any_hour": true
+  },
+  "hall_costumes": {
+   "like": "look_misc",
+   "prompt": "city.xh.costumes.prompt",
+   "lines": [
+    {
+     "k": "city.xh.costumes.mon",
+     "d": "mon"
+    },
+    {
+     "k": "city.xh.costumes.tue",
+     "d": "tue"
+    },
+    {
+     "k": "city.xh.costumes.wed",
+     "d": "wed"
+    },
+    {
+     "k": "city.xh.costumes.thu",
+     "d": "thu"
+    },
+    {
+     "k": "city.xh.costumes.fri",
+     "d": "fri"
+    },
+    {
+     "k": "city.xh.costumes.sat",
+     "d": "sat"
+    },
+    {
+     "k": "city.xh.costumes.sun",
+     "d": "sun"
+    }
+   ],
+   "minutes": 5
+  },
+  "hall_props": {
+   "like": "look_misc",
+   "prompt": "city.xh.props.prompt",
+   "lines": "city.xh.props",
+   "minutes": 5
+  },
+  "hall_makeup": {
+   "prompt": "city.xh.makeup.prompt",
+   "minutes": 8,
+   "lines": [
+    {
+     "k": "city.xh.makeup.day.*",
+     "h": [
+      6,
+      17
+     ]
+    },
+    {
+     "k": "city.xh.makeup.eve.*",
+     "h": [
+      17,
+      23
+     ],
+     "d": "mon-fri,sun"
+    },
+    {
+     "k": "city.xh.makeup.sat.*",
+     "h": [
+      17,
+      23
+     ],
+     "d": "sat"
+    },
+    {
+     "k": "city.xh.makeup.night.*",
+     "h": [
+      23,
+      6
+     ]
+    }
+   ]
+  },
+  "hall_rehearsal": {
+   "like": "look_misc",
+   "prompt": "city.xh.rehearsal.prompt",
+   "lines": [
+    {
+     "k": "city.xh.rehearsal.mon",
+     "d": "mon"
+    },
+    {
+     "k": "city.xh.rehearsal.tue",
+     "d": "tue"
+    },
+    {
+     "k": "city.xh.rehearsal.wed",
+     "d": "wed"
+    },
+    {
+     "k": "city.xh.rehearsal.thu",
+     "d": "thu"
+    },
+    {
+     "k": "city.xh.rehearsal.fri",
+     "d": "fri"
+    },
+    {
+     "k": "city.xh.rehearsal.sat",
+     "d": "sat"
+    },
+    {
+     "k": "city.xh.rehearsal.sun",
+     "d": "sun"
+    }
+   ],
+   "minutes": 3
+  },
+  "hall_premiere": {
+   "prompt": "city.xh.premiere.prompt",
+   "minutes": 30,
+   "pose": "sit",
+   "fade": true,
+   "screen": "stage",
+   "title": "city.screen.stage.title",
+   "lines": [
+    {
+     "k": "city.xh.show.sat_day.*",
+     "d": "sat",
+     "h": [
+      6,
+      19
+     ]
+    },
+    {
+     "k": "city.xh.show.sat_show.*",
+     "d": "sat",
+     "h": [
+      19,
+      23
+     ]
+    },
+    {
+     "k": "city.xh.show.sat_late.*",
+     "d": "sat",
+     "h": [
+      23,
+      6
+     ]
+    },
+    {
+     "k": "city.xh.show.wk_day.*",
+     "d": "mon-fri,sun",
+     "h": [
+      6,
+      17
+     ]
+    },
+    {
+     "k": "city.xh.show.wk_eve.*",
+     "d": "mon-fri,sun",
+     "h": [
+      17,
+      23
+     ]
+    },
+    {
+     "k": "city.xh.show.wk_late.*",
+     "d": "mon-fri,sun",
+     "h": [
+      23,
+      6
+     ]
+    }
+   ]
+  },
+  "hall_bar_chalk": {
+   "like": "look_misc",
+   "prompt": "city.xh.chalk.prompt",
+   "lines": [
+    {
+     "k": "city.xh.chalk.morning",
+     "h": [
+      6,
+      12
+     ]
+    },
+    {
+     "k": "city.xh.chalk.day",
+     "h": [
+      12,
+      18
+     ]
+    },
+    {
+     "k": "city.xh.chalk.eve",
+     "h": [
+      18,
+      6
+     ],
+     "d": "mon-thu,sun"
+    },
+    {
+     "k": "city.xh.chalk.dance",
+     "h": [
+      18,
+      6
+     ],
+     "d": "fri-sat"
+    }
+   ],
+   "minutes": 2
+  },
+  "hall_dance_night": {
+   "like": "dance",
+   "prompt": "city.xh.dancenight.prompt",
+   "minutes": 10,
+   "lines": [
+    {
+     "k": "city.xh.dance.band.*",
+     "d": "fri-sat",
+     "h": [
+      19,
+      23
+     ]
+    },
+    {
+     "k": "city.xh.dance.fri_idle.*",
+     "d": "fri-sat",
+     "h": [
+      23,
+      19
+     ]
+    },
+    {
+     "k": "city.xh.dance.sun_tea.*",
+     "d": "sun",
+     "h": [
+      14,
+      19
+     ]
+    },
+    {
+     "k": "city.xh.dance.sun_idle.*",
+     "d": "sun",
+     "h": [
+      19,
+      14
+     ]
+    },
+    {
+     "k": "city.xh.dance.wk_class.*",
+     "d": "mon-thu",
+     "h": [
+      18,
+      21
+     ]
+    },
+    {
+     "k": "city.xh.dance.wk_idle.*",
+     "d": "mon-thu",
+     "h": [
+      21,
+      18
+     ]
+    }
+   ]
+  },
+  "hall_dance_mirror": {
+   "like": "look_misc",
+   "prompt": "city.xh.dancemirror.prompt",
+   "lines": "city.xh.mirror",
+   "minutes": 4
+  }
+ },
+ "rules": {
+  "shell_chapel_hall/programme_wall": {
+   "act": "hall_programme"
+  },
+  "shell_chapel_hall/exhibit_case": {
+   "act": "hall_case"
+  },
+  "shell_chapel_hall/guest_book": {
+   "act": "hall_guest_book"
+  },
+  "shell_chapel_hall/sound_desk": {
+   "act": "hall_mixer"
+  },
+  "shell_chapel_hall/light_panel": {
+   "act": "hall_stage_lights"
+  },
+  "shell_chapel_hall/ghost_light": {
+   "act": "hall_ghost_light"
+  },
+  "shell_chapel_hall/costume_rail": {
+   "act": "hall_costumes"
+  },
+  "shell_chapel_hall/prop_table": {
+   "act": "hall_props"
+  },
+  "shell_chapel_hall/makeup_mirror": {
+   "act": "hall_makeup"
+  },
+  "shell_chapel_hall/rehearsal_board": {
+   "act": "hall_rehearsal"
+  },
+  "shell_chapel_hall/premiere_seat": {
+   "act": "hall_premiere"
+  },
+  "shell_chapel_hall/bar_chalk": {
+   "act": "hall_bar_chalk"
+  },
+  "shell_chapel_hall/dance_floor_centre": {
+   "act": "hall_dance_night"
+  },
+  "shell_chapel_hall/dance_mirror": {
+   "act": "hall_dance_mirror"
+  }
+ }
+}
