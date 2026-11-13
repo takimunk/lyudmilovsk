@@ -63,6 +63,8 @@ struct FLyudQuestStage
 	TArray<TPair<FName, int32>> GiveItems;
 	int32 GiveRubles = 0;
 	TArray<FName> StartQuests;
+	/** "no_skip": events of later stages never jump over this one. */
+	bool bNoSkip = false;
 };
 
 struct FLyudQuestDef
