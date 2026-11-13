@@ -584,6 +584,577 @@
    "minutes": 5,
    "sound": "wind_soft",
    "rotate": "daily"
+  },
+  "px_scope": {
+   "like": "look_misc",
+   "prompt": "city.px.scope.prompt",
+   "any_hour": true,
+   "minutes": 5,
+   "sound": "wind_soft",
+   "lines": [
+    {
+     "k": "city.px.scope.d1",
+     "h": [
+      6,
+      21
+     ]
+    },
+    {
+     "k": "city.px.scope.d2",
+     "h": [
+      6,
+      21
+     ]
+    },
+    {
+     "k": "city.px.scope.d3",
+     "h": [
+      6,
+      21
+     ],
+     "d": "sat-sun"
+    },
+    {
+     "k": "city.px.scope.clear",
+     "h": [
+      6,
+      21
+     ],
+     "weather": "clear",
+     "collect": "pier_sights/far_shore"
+    },
+    {
+     "k": "city.px.scope.ferry",
+     "h": [
+      8,
+      19
+     ],
+     "weather": "dry",
+     "d": "mon-sat",
+     "collect": "pier_sights/ferry"
+    },
+    {
+     "k": "city.px.scope.rain",
+     "weather": "rain",
+     "collect": "pier_sights/squall"
+    },
+    {
+     "k": "city.px.scope.fog",
+     "weather": "fog"
+    },
+    {
+     "k": "city.px.scope.dawn",
+     "h": [
+      5,
+      8
+     ],
+     "collect": "pier_sights/sunrise"
+    },
+    {
+     "k": "city.px.scope.n1",
+     "h": [
+      21,
+      6
+     ]
+    },
+    {
+     "k": "city.px.scope.n2",
+     "h": [
+      21,
+      6
+     ]
+    },
+    {
+     "k": "city.px.scope.stars",
+     "h": [
+      21,
+      6
+     ],
+     "weather": "clear",
+     "collect": "pier_sights/stars"
+    }
+   ]
+  },
+  "px_view1": {
+   "like": "look_misc",
+   "prompt": "city.px.view.prompt",
+   "any_hour": true,
+   "minutes": 3,
+   "sound": "wind_soft",
+   "lines": [
+    {
+     "k": "city.px.v1.d",
+     "h": [
+      6,
+      21
+     ]
+    },
+    {
+     "k": "city.px.v1.n",
+     "h": [
+      21,
+      6
+     ]
+    },
+    {
+     "k": "city.px.v1.w",
+     "weather": "rain"
+    }
+   ]
+  },
+  "px_view2": {
+   "like": "look_misc",
+   "prompt": "city.px.view.prompt",
+   "any_hour": true,
+   "minutes": 3,
+   "sound": "wind_soft",
+   "lines": [
+    {
+     "k": "city.px.v2.d",
+     "h": [
+      6,
+      21
+     ],
+     "collect": "pier_sights/dunes"
+    },
+    {
+     "k": "city.px.v2.n",
+     "h": [
+      21,
+      6
+     ]
+    },
+    {
+     "k": "city.px.v2.w",
+     "weather": "fog"
+    }
+   ]
+  },
+  "px_view3": {
+   "like": "look_misc",
+   "prompt": "city.px.view.prompt",
+   "any_hour": true,
+   "minutes": 3,
+   "sound": "wind_soft",
+   "lines": [
+    {
+     "k": "city.px.v3.d",
+     "h": [
+      6,
+      21
+     ],
+     "collect": "pier_sights/roofs"
+    },
+    {
+     "k": "city.px.v3.n",
+     "h": [
+      21,
+      6
+     ],
+     "collect": "pier_sights/lights"
+    },
+    {
+     "k": "city.px.v3.w",
+     "weather": "snow"
+    }
+   ]
+  },
+  "px_view4": {
+   "like": "look_misc",
+   "prompt": "city.px.view.prompt",
+   "any_hour": true,
+   "minutes": 3,
+   "sound": "wind_soft",
+   "lines": [
+    {
+     "k": "city.px.v4.d",
+     "h": [
+      6,
+      21
+     ],
+     "collect": "pier_sights/cable"
+    },
+    {
+     "k": "city.px.v4.n",
+     "h": [
+      21,
+      6
+     ]
+    },
+    {
+     "k": "city.px.v4.w",
+     "weather": "rain"
+    }
+   ]
+  },
+  "px_guestbook": {
+   "like": "look_misc",
+   "prompt": "city.px.guestbook.prompt",
+   "any_hour": true,
+   "minutes": 3,
+   "sound": "pencil_scratch",
+   "lines": [
+    "city.px.guestbook.l1"
+   ],
+   "read": {
+    "texts": [
+     "tower_guestbook"
+    ],
+    "rotate": "use"
+   }
+  },
+  "px_plaque": {
+   "like": "look_misc",
+   "prompt": "city.px.plaque.prompt",
+   "any_hour": true,
+   "minutes": 2,
+   "sound": "paper_rustle",
+   "lines": [
+    "city.px.plaque.l1"
+   ],
+   "read": {
+    "texts": [
+     "tower_history"
+    ],
+    "rotate": "use"
+   }
+  },
+  "px_desk": {
+   "prompt": "city.px.desk.prompt",
+   "needs_staff": "lighthouse_keeper",
+   "minutes": 2,
+   "sound": "stamp_thump",
+   "closed": "city.px.desk.closed",
+   "lines": [
+    {
+     "k": "city.px.desk.1",
+     "h": [
+      18,
+      24
+     ]
+    },
+    {
+     "k": "city.px.desk.2",
+     "h": [
+      0,
+      7
+     ]
+    },
+    {
+     "k": "city.px.desk.3",
+     "h": [
+      7,
+      18
+     ]
+    }
+   ],
+   "topics": [
+    {
+     "id": "keeper.steps",
+     "k": "city.px.ask.steps",
+     "lines": [
+      "city.px.ask.steps.1",
+      {
+       "k": "city.px.ask.steps.2",
+       "did": "px_scope"
+      }
+     ],
+     "gives": {
+      "collect": "staff/keeper"
+     }
+    },
+    {
+     "id": "keeper.visitors",
+     "k": "city.px.ask.visitors",
+     "lines": [
+      "city.px.ask.visitors.1",
+      {
+       "k": "city.px.ask.visitors.2",
+       "after": 4
+      },
+      {
+       "k": "city.px.ask.visitors.3",
+       "read": "tower_guestbook"
+      }
+     ],
+     "gives": {
+      "collect": "staff/keeper"
+     }
+    },
+    {
+     "id": "keeper.maria",
+     "k": "city.px.ask.maria",
+     "lines": [
+      "city.px.ask.maria.0",
+      {
+       "k": "city.px.ask.maria.1",
+       "every": [
+        8,
+        0
+       ]
+      },
+      {
+       "k": "city.px.ask.maria.1",
+       "every": [
+        8,
+        1
+       ]
+      },
+      {
+       "k": "city.px.ask.maria.1",
+       "every": [
+        8,
+        2
+       ]
+      },
+      {
+       "k": "city.px.ask.maria.2",
+       "every": [
+        8,
+        3
+       ]
+      },
+      {
+       "k": "city.px.ask.maria.2",
+       "every": [
+        8,
+        4
+       ]
+      },
+      {
+       "k": "city.px.ask.maria.3",
+       "every": [
+        8,
+        5
+       ]
+      },
+      {
+       "k": "city.px.ask.maria.3",
+       "every": [
+        8,
+        6
+       ]
+      },
+      {
+       "k": "city.px.ask.maria.3",
+       "every": [
+        8,
+        7
+       ]
+      }
+     ],
+     "gives": {
+      "collect": "staff/keeper"
+     }
+    },
+    {
+     "id": "keeper.night",
+     "k": "city.px.ask.night",
+     "lines": [
+      "city.px.ask.night.1",
+      {
+       "k": "city.px.ask.night.2",
+       "h": [
+        0,
+        5
+       ]
+      }
+     ],
+     "gives": {
+      "collect": "staff/keeper"
+     }
+    },
+    {
+     "id": "keeper.gull",
+     "k": "city.px.ask.gull",
+     "lines": [
+      "city.px.ask.gull.1",
+      {
+       "k": "city.px.ask.gull.2",
+       "weather": "rain"
+      }
+     ],
+     "gives": {
+      "collect": "staff/keeper"
+     }
+    }
+   ]
+  },
+  "px_wheel": {
+   "like": "look_misc",
+   "prompt": "city.px.wheel.prompt",
+   "any_hour": true,
+   "minutes": 2,
+   "sound": "wood_creak",
+   "lines": [
+    "city.px.wheel.1",
+    "city.px.wheel.2",
+    {
+     "k": "city.px.wheel.3",
+     "weather": "rain"
+    }
+   ]
+  },
+  "px_floats": {
+   "like": "look_misc",
+   "prompt": "city.px.floats.prompt",
+   "any_hour": true,
+   "minutes": 2,
+   "sound": "cup_clink",
+   "lines": [
+    "city.px.floats.1",
+    "city.px.floats.2",
+    {
+     "k": "city.px.floats.3",
+     "festival": "sea_festival"
+    },
+    {
+     "k": "city.px.floats.4",
+     "h": [
+      19,
+      6
+     ]
+    }
+   ]
+  },
+  "px_chess": {
+   "like": "chess",
+   "any_hour": true
+  },
+  "px_morse": {
+   "like": "look_misc",
+   "prompt": "city.px.morse.prompt",
+   "any_hour": true,
+   "minutes": 6,
+   "sound": "morse_beep",
+   "lines": [
+    {
+     "k": "city.px.morse.1",
+     "h": [
+      6,
+      21
+     ]
+    },
+    {
+     "k": "city.px.morse.2",
+     "h": [
+      21,
+      6
+     ]
+    }
+   ],
+   "game": {
+    "type": "aim",
+    "title": "city.px.game.morse.title",
+    "keys": "city.px.morse.keys",
+    "rounds": 5,
+    "need": 5,
+    "speed": 0.85,
+    "zone": 0.22,
+    "prize": [
+     [
+      "tea",
+      1
+     ]
+    ],
+    "daily": 2,
+    "win": [
+     "city.px.morse.win.1",
+     {
+      "k": "city.px.morse.win.night",
+      "h": [
+       20,
+       6
+      ]
+     }
+    ],
+    "lose": "city.px.morse.lose",
+    "draw": "city.px.morse.draw"
+   }
+  },
+  "px_gauge": {
+   "like": "look_misc",
+   "prompt": "city.px.gauge.prompt",
+   "any_hour": true,
+   "minutes": 2,
+   "rotate": "daily",
+   "sound": "wind_soft",
+   "lines": [
+    {
+     "k": "city.px.gauge.1",
+     "every": [
+      5,
+      0
+     ]
+    },
+    {
+     "k": "city.px.gauge.2",
+     "every": [
+      5,
+      1
+     ]
+    },
+    {
+     "k": "city.px.gauge.3",
+     "every": [
+      5,
+      2
+     ]
+    },
+    {
+     "k": "city.px.gauge.4",
+     "every": [
+      5,
+      3
+     ]
+    },
+    {
+     "k": "city.px.gauge.5",
+     "every": [
+      5,
+      4
+     ]
+    },
+    {
+     "k": "city.px.gauge.rain",
+     "weather": "rain"
+    },
+    {
+     "k": "city.px.gauge.fog",
+     "weather": "fog"
+    }
+   ]
+  },
+  "px_bottlepost": {
+   "like": "look_misc",
+   "prompt": "city.px.bottlepost.prompt",
+   "any_hour": true,
+   "minutes": 5,
+   "sound": "water_pour",
+   "lines": [
+    {
+     "k": "city.px.bp.1",
+     "h": [
+      6,
+      21
+     ]
+    },
+    {
+     "k": "city.px.bp.2",
+     "h": [
+      21,
+      6
+     ]
+    },
+    {
+     "k": "city.px.bp.rain",
+     "weather": "rain"
+    },
+    {
+     "k": "city.px.bp.late",
+     "after": 6
+    }
+   ]
   }
  },
  "rules": {
@@ -631,6 +1202,48 @@
   },
   "P-PIER/gallery_ships": {
    "act": "keeper_ships"
+  },
+  "P-PIER/tower_telescope": {
+   "act": "px_scope"
+  },
+  "P-PIER/gallery_view_1": {
+   "act": "px_view1"
+  },
+  "P-PIER/gallery_view_2": {
+   "act": "px_view2"
+  },
+  "P-PIER/gallery_view_3": {
+   "act": "px_view3"
+  },
+  "P-PIER/gallery_view_4": {
+   "act": "px_view4"
+  },
+  "P-PIER/tower_guestbook": {
+   "act": "px_guestbook"
+  },
+  "P-PIER/tower_desk": {
+   "act": "px_desk"
+  },
+  "P-PIER/keeper_wheel": {
+   "act": "px_wheel"
+  },
+  "P-PIER/keeper_floats": {
+   "act": "px_floats"
+  },
+  "P-PIER/keeper_chess": {
+   "act": "px_chess"
+  },
+  "P-PIER/gallery_morse": {
+   "act": "px_morse"
+  },
+  "P-PIER/gallery_gauge": {
+   "act": "px_gauge"
+  },
+  "P-PIER/gallery_bottlepost": {
+   "act": "px_bottlepost"
+  },
+  "P-PIER/gallery_plaque": {
+   "act": "px_plaque"
   }
  },
  "quests": [
@@ -721,6 +1334,129 @@
      }
     }
    ]
+  },
+  {
+   "id": "px_bottle",
+   "kind": "side",
+   "start_on": {
+    "event": "visit",
+    "target": "P-PIER"
+   },
+   "stages": [
+    {
+     "id": "scope",
+     "objectives": [
+      {
+       "id": "scope",
+       "event": "do",
+       "target": "px_scope"
+      }
+     ]
+    },
+    {
+     "id": "gauge",
+     "objectives": [
+      {
+       "id": "gauge",
+       "event": "do",
+       "target": "px_gauge"
+      }
+     ]
+    },
+    {
+     "id": "bottle",
+     "objectives": [
+      {
+       "id": "bottle",
+       "event": "do",
+       "target": "px_bottlepost"
+      }
+     ]
+    },
+    {
+     "id": "beat",
+     "objectives": [
+      {
+       "id": "beat",
+       "event": "win",
+       "target": "px_morse"
+      }
+     ],
+     "reward": {
+      "items": {
+       "postcard": 1
+      },
+      "rubles": 20
+     }
+    }
+   ]
   }
- ]
+ ],
+ "texts": {
+  "tower_guestbook": {
+   "title": "city.px.text.gb.title",
+   "kind": "book",
+   "minutes": 2,
+   "collect": "reading/tower_guestbook",
+   "pages": [
+    "city.px.gb.1",
+    {
+     "k": "city.px.gb.2",
+     "after": 0
+    },
+    {
+     "k": "city.px.gb.3",
+     "after": 1
+    },
+    {
+     "k": "city.px.gb.4",
+     "after": 2
+    },
+    {
+     "k": "city.px.gb.5",
+     "after": 4
+    },
+    {
+     "k": "city.px.gb.6",
+     "after": 6
+    },
+    {
+     "k": "city.px.gb.7",
+     "after": 8
+    },
+    {
+     "k": "city.px.gb.8",
+     "after": 10
+    }
+   ]
+  },
+  "tower_history": {
+   "title": "city.px.text.hist.title",
+   "kind": "notice",
+   "minutes": 2,
+   "collect": "reading/tower_history",
+   "pages": [
+    "city.px.hist.1",
+    "city.px.hist.2",
+    "city.px.hist.3",
+    "city.px.hist.4"
+   ]
+  }
+ },
+ "collections": {
+  "pier_sights": {
+   "title": "city.px.coll.sights.title",
+   "pieces": [
+    "far_shore",
+    "ferry",
+    "squall",
+    "stars",
+    "sunrise",
+    "dunes",
+    "roofs",
+    "cable",
+    "lights"
+   ]
+  }
+ }
 }

@@ -133,6 +133,46 @@
    "yaw": 0.0
   },
   {
+   "id": "guestbook_stand",
+   "kind": "stand",
+   "pos": [
+    2.217,
+    3.616,
+    0.03
+   ],
+   "yaw": 487.21089422831994
+  },
+  {
+   "id": "desk_keeper",
+   "kind": "stand",
+   "pos": [
+    -1.782,
+    4.91,
+    0.03
+   ],
+   "yaw": 37.6474575081746
+  },
+  {
+   "id": "chess_seat_a",
+   "kind": "seat",
+   "pos": [
+    -1.747,
+    9.708,
+    0.03
+   ],
+   "yaw": 314.99999999999994
+  },
+  {
+   "id": "chess_seat_b",
+   "kind": "seat",
+   "pos": [
+    -2.708,
+    8.747,
+    0.03
+   ],
+   "yaw": 134.99999999999997
+  },
+  {
    "id": "door_bench",
    "kind": "bench",
    "pos": [
@@ -199,6 +239,24 @@
     10.102
    ],
    "yaw": 190.0
+  },
+  {
+   "id": "morse_stand",
+   "kind": "stand",
+   "pos": [
+    3.013,
+    8.217
+   ],
+   "yaw": 112.0
+  },
+  {
+   "id": "bottle_stand",
+   "kind": "stand",
+   "pos": [
+    0.655,
+    3.919
+   ],
+   "yaw": 12.0
   }
  ],
  "lamps": [
@@ -248,6 +306,17 @@
   },
   {
    "pos": [
+    -2.227,
+    9.227,
+    2.3
+   ],
+   "lumens": 520,
+   "colour": "#FFD8A8",
+   "kind": "public",
+   "radius": 6.0
+  },
+  {
+   "pos": [
     1.074,
     11.009,
     22.3
@@ -272,6 +341,17 @@
    "pos": [
     -4.087,
     6.279,
+    22.3
+   ],
+   "lumens": 600,
+   "colour": "#FFE2B8",
+   "kind": "lobby",
+   "radius": 8.0
+  },
+  {
+   "pos": [
+    2.38,
+    3.601,
     22.3
    ],
    "lumens": 600,
@@ -569,6 +649,112 @@
    }
   },
   {
+   "id": "tower_switch",
+   "kind": "machine",
+   "pos": [
+    0.8,
+    2.154,
+    1.33
+   ],
+   "yaw": 180.0,
+   "props": {
+    "what": "switch",
+    "switch": "room"
+   }
+  },
+  {
+   "id": "tower_guestbook",
+   "kind": "board",
+   "pos": [
+    1.667,
+    3.866,
+    1.13
+   ],
+   "yaw": 307.2,
+   "props": {
+    "topic": "guestbook"
+   }
+  },
+  {
+   "id": "tower_desk",
+   "kind": "counter",
+   "pos": [
+    -1.385,
+    4.395,
+    0.98
+   ],
+   "yaw": 37.6,
+   "props": {
+    "role": "lighthouse_keeper",
+    "service": "visits"
+   }
+  },
+  {
+   "id": "keeper_wheel",
+   "kind": "board",
+   "pos": [
+    -4.896,
+    7.0,
+    1.65
+   ],
+   "yaw": 90.0,
+   "props": {
+    "topic": "wheel"
+   }
+  },
+  {
+   "id": "keeper_floats",
+   "kind": "board",
+   "pos": [
+    -3.377,
+    3.623,
+    1.13
+   ],
+   "yaw": 135.0,
+   "props": {
+    "topic": "floats"
+   }
+  },
+  {
+   "id": "keeper_chess",
+   "kind": "play",
+   "pos": [
+    -2.227,
+    9.227,
+    0.81
+   ],
+   "yaw": 0.0,
+   "props": {
+    "what": "chess"
+   }
+  },
+  {
+   "id": "keeper_chess_stool_a",
+   "kind": "seat",
+   "pos": [
+    -1.747,
+    9.708,
+    0.48
+   ],
+   "yaw": 315.0,
+   "props": {
+    "height": 0.45
+   }
+  },
+  {
+   "id": "keeper_chess_stool_b",
+   "kind": "seat",
+   "pos": [
+    -2.708,
+    8.747,
+    0.48
+   ],
+   "yaw": 135.0,
+   "props": {
+    "height": 0.45
+   }
+  },
+  {
    "id": "tower_telescope",
    "kind": "machine",
    "pos": [
@@ -709,6 +895,72 @@
    "yaw": 190.0,
    "props": {
     "topic": "ships"
+   }
+  },
+  {
+   "id": "gallery_morse",
+   "kind": "machine",
+   "pos": [
+    3.616,
+    8.461,
+    21.1
+   ],
+   "yaw": 292.0,
+   "props": {
+    "what": "morse"
+   }
+  },
+  {
+   "id": "gallery_gauge",
+   "kind": "board",
+   "pos": [
+    -3.011,
+    9.526,
+    21.2
+   ],
+   "yaw": 50.0,
+   "props": {
+    "topic": "gauge"
+   }
+  },
+  {
+   "id": "gallery_bottlepost",
+   "kind": "machine",
+   "pos": [
+    0.8,
+    3.234,
+    20.6
+   ],
+   "yaw": 192.0,
+   "props": {
+    "what": "bottle_post"
+   }
+  },
+  {
+   "id": "gallery_plaque",
+   "kind": "board",
+   "pos": [
+    -2.37,
+    3.966,
+    20.9
+   ],
+   "yaw": 142.0,
+   "props": {
+    "topic": "plaque"
+   }
+  },
+  {
+   "id": "gallery_switch",
+   "kind": "machine",
+   "pos": [
+    -4.048,
+    6.286,
+    21.4
+   ],
+   "yaw": 100.0,
+   "props": {
+    "what": "switch",
+    "switch": "room"
    }
   }
  ],
@@ -888,8 +1140,8 @@
   "118 stair treads up to 20.0 m; lattice 20 bars x2 x3 sections"
  ],
  "tris": {
-  "shell": 4296,
-  "detail": 13996,
+  "shell": 4320,
+  "detail": 17227,
   "windows": 32
  }
 }

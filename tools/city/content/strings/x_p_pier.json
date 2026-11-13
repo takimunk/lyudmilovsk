@@ -479,5 +479,550 @@
   "ru": "Погладить кота в корзине у печки",
   "en": "Stroke the cat in the basket by the stove",
   "ja": "ストーブのそばのかごの猫をなでる"
+ },
+ "city.px.scope.prompt": {
+  "ru": "E — посмотреть в подзорную трубу",
+  "en": "E — look through the telescope",
+  "ja": "E：望遠鏡をのぞく"
+ },
+ "city.px.view.prompt": {
+  "ru": "E — смотреть вдаль",
+  "en": "E — look into the distance",
+  "ja": "E：遠くを眺める"
+ },
+ "city.px.guestbook.prompt": {
+  "ru": "E — открыть книгу посетителей",
+  "en": "E — open the visitors' book",
+  "ja": "E：来訪者ノートを開く"
+ },
+ "city.px.desk.prompt": {
+  "ru": "E — подойти к столу смотрителя",
+  "en": "E — go up to the keeper's table",
+  "ja": "E：灯台守の机へ行く"
+ },
+ "city.px.wheel.prompt": {
+  "ru": "E — тронуть штурвал",
+  "en": "E — touch the ship's wheel",
+  "ja": "E：舵輪に触れる"
+ },
+ "city.px.floats.prompt": {
+  "ru": "E — рассмотреть поплавки",
+  "en": "E — look at the floats",
+  "ja": "E：浮きを見る"
+ },
+ "city.px.morse.prompt": {
+  "ru": "E — постучать ключом",
+  "en": "E — tap the key",
+  "ja": "E：電鍵を叩く"
+ },
+ "city.px.gauge.prompt": {
+  "ru": "E — прочитать уровень моря",
+  "en": "E — read the sea level",
+  "ja": "E：水位を読む"
+ },
+ "city.px.bottlepost.prompt": {
+  "ru": "E — отправить бутылку с запиской",
+  "en": "E — send a bottle with a note",
+  "ja": "E：手紙入りの瓶を流す"
+ },
+ "city.px.plaque.prompt": {
+  "ru": "E — прочитать табличку",
+  "en": "E — read the plaque",
+  "ja": "E：案内板を読む"
+ },
+ "city.px.morse.keys": {
+  "ru": "E — стукнуть в такт",
+  "en": "E — tap on the beat",
+  "ja": "E：拍に合わせて叩く"
+ },
+ "city.px.scope.d1": {
+  "ru": "Труба смотрит прямо в море. Горизонт ровный, как линейка. Чуть левее створа тёмная точка: рыбак у сети. По тому, как он качает головой, понятно: поёт.",
+  "en": "The telescope points straight out to sea. The horizon is ruler-straight. Just left of the range marks there is a dark speck: a fisherman at his net. The way he nods his head, he is singing.",
+  "ja": "望遠鏡は真っすぐ海を向いている。水平線は定規で引いたようにまっすぐだ。目印の少し左に黒い点。網を繕う漁師で、頭を振る様子からすると歌っている。"
+ },
+ "city.px.scope.d2": {
+  "ru": "Подкрутил резкость: волны распались на гребешки, и у каждого свой белый хвостик. Минуту смотрел, как они бегут к пирсу, и сбился со счёта.",
+  "en": "I turned the focus: the waves broke into separate crests, each with its own white tail. I watched them run to the pier for a minute and lost count.",
+  "ja": "ピントを回すと、波が一つ一つの波頭に分かれ、どれも白い尾を引いていた。桟橋へ走ってくるのを一分ほど見て、数えきれなくなった。"
+ },
+ "city.px.scope.d3": {
+  "ru": "В выходной море полно парусов: белые треугольники ходят галсами, и никто никуда не спешит. Один чуть не налетел на буй и ловко отвернул.",
+  "en": "At the weekend the sea is full of sails: white triangles tacking back and forth, nobody in a hurry. One almost ran into a buoy and swung away neatly.",
+  "ja": "週末の海は帆でいっぱいだ。白い三角が行きつ戻りつし、誰も急いでいない。一艘がブイにぶつかりかけて、うまく舵を切った。"
+ },
+ "city.px.scope.clear": {
+  "ru": "Ясно, и на самом краю воды проступила тонкая полоска: другой берег. Тёмная капля, ещё одна, наверное, леса. Я записал себе: «дальний берег».",
+  "en": "It is clear, and at the very edge of the water a thin strip has appeared: the far shore. One dark smudge, then another, forests probably. I wrote it down: \"far shore\".",
+  "ja": "よく晴れて、水の果てに細い線が浮かんだ。向こう岸だ。黒いしみが一つ、また一つ。たぶん森だろう。「向こう岸」と書き留めた。"
+ },
+ "city.px.scope.ferry": {
+  "ru": "Паром! Белый, с двумя трубами, идёт по фарватеру. На палубе крошечные фигурки машут чему-то у меня за спиной, наверное, самому маяку. Я помахал в ответ, хоть он и не мог меня видеть.",
+  "en": "A ferry! White, with two funnels, following the channel. Tiny figures on deck wave at something behind me, the lighthouse probably. I waved back, though it could not see me.",
+  "ja": "フェリーだ。白くて煙突が二本、航路をたどっていく。甲板の小さな人影が僕の後ろの何か、たぶん灯台に手を振っている。向こうからは見えないのに、僕も手を振り返した。"
+ },
+ "city.px.scope.rain": {
+  "ru": "Дождь идёт по морю стеной. Видно, как он ползёт к пирсу: сначала серая завеса вдали, потом линия на воде, потом первые капли на моей линзе.",
+  "en": "The rain walks across the sea like a wall. You can see it crawl toward the pier: a grey curtain far off, then a line on the water, then the first drops on my lens.",
+  "ja": "雨が壁のように海を渡ってくる。桟橋へ近づくのが見える。遠くの灰色の幕、水面の線、そしてレンズに最初の水滴。"
+ },
+ "city.px.scope.fog": {
+  "ru": "В трубе молоко. Зато откуда-то издалека доносится гудок, глухой, как из банки. Может, паром, может, просто туман шутит.",
+  "en": "The telescope shows milk. But from far off comes a horn, muffled as if from a jar. A ferry, maybe, or just the fog joking.",
+  "ja": "望遠鏡の中は牛乳みたいに真っ白。それでも遠くから、瓶の中のようにくぐもった汽笛が聞こえる。フェリーか、霧の冗談か。"
+ },
+ "city.px.scope.dawn": {
+  "ru": "Солнце вылезает прямо из воды, красное, как желток. Труба налилась золотом, пришлось отвести глаз. Чайки на этом фоне чёрные, будто вырезаны из бумаги.",
+  "en": "The sun climbs straight out of the water, red as a yolk. The telescope filled with gold and I had to look away. Against it the gulls are black, as if cut from paper.",
+  "ja": "太陽が水の中から昇ってくる。黄身みたいに赤い。望遠鏡が金色に満ちて、目をそらした。その前でカモメは紙を切り抜いたように黒い。"
+ },
+ "city.px.scope.n1": {
+  "ru": "Ночью труба показывает одни огоньки. Зелёный, красный, белый: чей-то сейнер идёт домой, и его огни складываются в стрелку.",
+  "en": "At night the telescope shows only lights. Green, red, white: somebody's seiner is heading home and its lights line up into an arrow.",
+  "ja": "夜の望遠鏡には灯りだけが見える。緑、赤、白。どこかの巻き網船が帰ってくるところで、灯りが矢印の形に並んでいる。"
+ },
+ "city.px.scope.n2": {
+  "ru": "На воде лунная дорожка, и по ней ползёт чёрная точка. Если слегка качнуть трубу, дорожка дрожит, как струна.",
+  "en": "There is a moon path on the water with a black speck crawling along it. If I rock the telescope a little, the path trembles like a string.",
+  "ja": "水面に月の道ができていて、その上を黒い点が這っている。望遠鏡を少し揺らすと、道が弦のように震えた。"
+ },
+ "city.px.scope.stars": {
+  "ru": "Повернул трубу вверх. Звёзды в ней не точки, а крошечные острые иголки. Одна у самого горизонта мерцает красным, зелёным и белым: смотрители говорят, что низкие звёзды всегда такие.",
+  "en": "I tilted the telescope up. The stars in it are not dots but tiny sharp needles. One right at the horizon flickers red, green and white: the keepers say low stars always do.",
+  "ja": "望遠鏡を上へ向けた。星は点ではなく、小さくて鋭い針だ。水平線すれすれの一つが赤、緑、白とまたたく。低い星はいつもそうだ、と灯台守は言う。"
+ },
+ "city.px.v1.d": {
+  "ru": "Здесь открытое море до самого горизонта. По воде тянется тёмная полоса фарватера, буи вдоль неё стоят точками, словно кто-то начал рисовать линию и бросил.",
+  "en": "Open sea here, all the way to the horizon. A dark band of channel runs over the water, the buoys beside it standing like dots, as if someone started drawing a line and gave up.",
+  "ja": "ここは水平線まで外海だ。水面を暗い航路の帯が走り、沿ってブイが点のように並ぶ。誰かが線を描きかけてやめたみたいに。"
+ },
+ "city.px.v1.n": {
+  "ru": "Тёмная вода и огни: красный на мели, зелёный на бую, жёлтый на дальнем судне. Ветер несёт запах соли и мокрого железа.",
+  "en": "Dark water and lights: red on the shoal, green on the buoy, yellow on a far ship. The wind carries salt and wet iron.",
+  "ja": "暗い水と灯り。浅瀬に赤、ブイに緑、遠い船に黄色。風は塩と濡れた鉄の匂いを運んでくる。"
+ },
+ "city.px.v1.w": {
+  "ru": "Дождь стучит по перилам и стекает по железу. Фарватер виден только по огням. Зато чайки сидят на буях по одной, как печати на документе.",
+  "en": "Rain drums on the rail and runs down the iron. The channel shows only by its lights. The gulls sit on the buoys one each, like stamps on a document.",
+  "ja": "雨が手すりを叩き、鉄を伝って流れる。航路は灯りでしか分からない。カモメはブイに一羽ずつ、書類の判子みたいに止まっている。"
+ },
+ "city.px.v2.d": {
+  "ru": "С этой стороны берег уходит в дюны. Сосны на гребне стоят наклонённые в одну сторону, будто ветер их когда-то причесал и так оставил. Пляж пустой и золотой.",
+  "en": "On this side the shore runs off into dunes. The pines on the ridge lean all one way, as if the wind combed them once and left them. The beach is empty and golden.",
+  "ja": "こちら側は海岸が砂丘へ続いている。尾根の松はみな同じ方へ傾き、風が一度とかして、そのままにしたようだ。浜は空っぽで金色。"
+ },
+ "city.px.v2.n": {
+  "ru": "Дюны чёрные на тёмно-синем. На пляже мерцает огонёк костра, ветер приносит запах дыма и печёной картошки. Кто-то поёт под гитару, слов не разобрать.",
+  "en": "The dunes are black on dark blue. A campfire flickers on the beach and the wind brings smoke and baked potatoes. Someone sings to a guitar, the words lost.",
+  "ja": "砂丘は紺色の空に黒い。浜でたき火がちらつき、風が煙と焼き芋の匂いを運んでくる。誰かがギターで歌っているが、歌詞は聞き取れない。"
+ },
+ "city.px.v2.w": {
+  "ru": "Туман съел дюны, остались одни верхушки сосен. Они плавают в молоке, как острова.",
+  "en": "The fog has eaten the dunes and left only the pine tops. They float in the milk like islands.",
+  "ja": "霧が砂丘を呑み込み、松のてっぺんだけが残った。牛乳の中に浮かぶ島のようだ。"
+ },
+ "city.px.v3.d": {
+  "ru": "Отсюда видны городские крыши: красные, серые, одна зелёная. Над трубами столбики дыма, ветер сегодня гонит его к лесу. Между домами что-то блестит стеклом: окна ловят солнце.",
+  "en": "From here the town's roofs show: red, grey, one green. Columns of smoke over the chimneys, the wind sending it toward the woods today. Something glints between the houses: windows catching the sun.",
+  "ja": "ここから町の屋根が見える。赤、灰色、一つだけ緑。煙突から煙が柱になり、今日は風が森のほうへ流している。家々の間で何かがガラスのように光る。窓が日を受けているのだ。"
+ },
+ "city.px.v3.n": {
+  "ru": "Город ночью: окна гаснут одно за другим, но кое-где ещё светятся. Я выбрал одно и стал придумывать, кто там не спит. Решил, что человек с книгой.",
+  "en": "The town at night: the windows go out one by one, a few still lit. I picked one and began to imagine who is awake there. I decided: someone with a book.",
+  "ja": "夜の町。窓が一つずつ消えていくが、まだ灯っているものもある。一つを選んで、誰が起きているのか想像した。本を読んでいる人にした。"
+ },
+ "city.px.v3.w": {
+  "ru": "Снег ложится на крыши ровно, как мука. Каждый дом стал на одну шапку выше, а дым идёт прямо вверх.",
+  "en": "Snow settles on the roofs evenly, like flour. Every house has grown one cap taller and the smoke goes straight up.",
+  "ja": "雪が小麦粉のように屋根へ均等に積もる。どの家も帽子一つ分背が高くなり、煙はまっすぐ上へ昇る。"
+ },
+ "city.px.v4.d": {
+  "ru": "Набережная как на ладони: скамейки, киоски, люди размером с зёрнышко. Над ней ползут кабинки канатной дороги, одна вниз, другая вверх, и на миг они разминаются в воздухе.",
+  "en": "The promenade lies like a palm: benches, kiosks, people the size of grains. Over it the cable car cabins crawl, one down, one up, and for a moment they pass each other in the air.",
+  "ja": "遊歩道が手のひらのように見える。ベンチ、売店、粒ほどの人。その上をロープウェイのゴンドラが這い、一つは下り、一つは上り、一瞬だけ空中ですれ違う。"
+ },
+ "city.px.v4.n": {
+  "ru": "Набережная светится гирляндой фонарей. Кабинки канатной дороги ползут вереницей огней, и издали кажется, что светлячки тянутся вдоль нити.",
+  "en": "The promenade glows with a garland of lamps. The cable car cabins crawl in a string of lights, and from afar it looks like fireflies drawn along a thread.",
+  "ja": "遊歩道は街灯の飾りのように光っている。ゴンドラは灯りの列になって進み、遠目には糸に沿って蛍が連なっているようだ。"
+ },
+ "city.px.v4.w": {
+  "ru": "Под дождём набережная пустеет, зато зонты расцветают, как цветы: жёлтые, красные, один клетчатый. Кабинки идут сквозь дождь с включёнными огнями.",
+  "en": "In the rain the promenade empties, but umbrellas bloom like flowers: yellow, red, one checked. The cabins go through the rain with their lights on.",
+  "ja": "雨の遊歩道は人影が減るが、傘が花のように咲く。黄色、赤、一つだけチェック。ゴンドラは灯りをつけて雨の中を行く。"
+ },
+ "city.px.text.gb.title": {
+  "ru": "Книга посетителей",
+  "en": "Visitors' book",
+  "ja": "来訪者ノート"
+ },
+ "city.px.gb.1": {
+  "ru": "Книга посетителей маяка. На первой странице аккуратным почерком: «Просим вписать имя, число и что видели. Лестница: сто восемнадцать ступеней. Считайте сами, мы не обманываем. Смотрители Аркадий и Арам».",
+  "en": "The lighthouse visitors' book. On the first page in a neat hand: \"Please write your name, the date and what you saw. The stair: one hundred and eighteen steps. Count them yourself, we do not cheat. The keepers, Arkadiy and Aram.\"",
+  "ja": "灯台の来訪者ノート。一ページ目に几帳面な字。「お名前、日付、見たものをお書きください。階段は百十八段。ご自分で数えてください、ごまかしていません。灯台守アルカージーとアラム」"
+ },
+ "city.px.gb.2": {
+  "ru": "«Пришёл с мамой. Мама досчитала до шестидесяти и села. Я досчитал до ста восемнадцати и не сел. Тима, 9 лет». Под этим другим почерком: «Сели все. Мама».",
+  "en": "\"Came with Mum. Mum counted to sixty and sat down. I counted to one hundred and eighteen and did not sit. Tima, aged 9.\" Under it, in another hand: \"We all sat. Mum.\"",
+  "ja": "「お母さんと来ました。お母さんは六十まで数えて座りました。ぼくは百十八まで数えて座りませんでした。ティマ、九さい」その下に別の字で。「みんな座りました。母」"
+ },
+ "city.px.gb.3": {
+  "ru": "«Видела дельфинов! Смотрители сказали: тюлень. Всё равно дельфин. Женя».",
+  "en": "\"Saw dolphins! The keepers said: a seal. Dolphin all the same. Zhenya.\"",
+  "ja": "「イルカを見ました！灯台守さんはアザラシだと言いました。それでもイルカです。ジェーニャ」"
+ },
+ "city.px.gb.4": {
+  "ru": "«Фотограф из газеты. Сделал сорок кадров, ни один не передаёт ветра». Рядом отпечаток кошачьей лапы чернилами и подпись: «Одобряю».",
+  "en": "\"Newspaper photographer. Took forty frames, not one catches the wind.\" Beside it an inky cat's paw print and a signature: \"Approved.\"",
+  "ja": "「新聞の写真家。四十枚撮ったが、風を写したものは一枚もない」その横にインクの猫の足跡と署名。「承認」"
+ },
+ "city.px.gb.5": {
+  "ru": "«Мы с Лёвой спорили, сколько метров до воды. Он сказал двадцать, я тридцать. Бросили орех и считали вслух. Победил орех: упал раньше, чем мы закончили считать. Рита». Ниже мелом: «БРОСАТЬ ВНИЗ НИЧЕГО НЕЛЬЗЯ! Аркадий». И ещё ниже: «Но спор рассудили честно. Арам».",
+  "en": "\"Lyova and I argued how many metres to the water. He said twenty, I said thirty. We dropped a nut and counted aloud. The nut won: it landed before we finished counting. Rita.\" Below in chalk: \"NOTHING IS TO BE THROWN DOWN! Arkadiy.\" And lower still: \"But the argument was settled fairly. Aram.\"",
+  "ja": "「水面まで何メートルかでリョーヴァと言い合いました。彼は二十、私は三十。クルミを落として声に出して数えました。クルミの勝ち。数え終わる前に着きました。リタ」その下にチョークで。「下へ物を投げてはいけません！アルカージー」さらにその下。「だが勝負は公平に決まった。アラム」"
+ },
+ "city.px.gb.6": {
+  "ru": "«Капитан Лаптев, сейнер «Мария». Благодарю за свет. Мы видели его за одиннадцать миль, а последние ночи считали по нему часы». Ниже мелом: «И за чай! Арам».",
+  "en": "\"Captain Laptev, seiner Maria. Thank you for the light. We saw it from eleven miles away, and these last nights we told the hours by it.\" Below in chalk: \"And for the tea! Aram.\"",
+  "ja": "「巻き網船マリヤ、ラプチェフ船長。灯をありがとう。十一マイル先から見えました。この数夜は、あの灯で時刻を数えました」その下にチョークで。「お茶もね！アラム」"
+ },
+ "city.px.gb.7": {
+  "ru": "Страница почти чистая. В углу карандашом: «Для тех, кто придёт после «Марии». Не стесняйтесь, места много». Карандаш висит рядом на верёвочке, на конце узелок, чтобы не унесли.",
+  "en": "The page is almost clean. In the corner in pencil: \"For those who come after Maria. Don't be shy, there is plenty of room.\" The pencil hangs beside it on a string with a knot at the end so nobody carries it off.",
+  "ja": "ページはほとんど白い。隅に鉛筆で。「マリヤのあとに来る人へ。遠慮なく、場所はたっぷりあります」鉛筆は持ち去られないよう、端に結び目のある紐で横に下がっている。"
+ },
+ "city.px.gb.8": {
+  "ru": "На последней странице новая строка: «Спасибо всем, кто звонил в колокол. Завтра обещают туман, берегите уши. Смотрители». И нарисованная кружка с паром.",
+  "en": "On the last page a new line: \"Thank you to everyone who rang the bell. Fog is promised for tomorrow, mind your ears. The keepers.\" And a drawn mug with steam.",
+  "ja": "最後のページに新しい一行。「鐘を鳴らしてくれたみなさん、ありがとう。明日は霧の予報です、耳にお気をつけて。灯台守」湯気の立つマグカップの絵も添えてある。"
+ },
+ "city.px.guestbook.l1": {
+  "ru": "Книга посетителей лежит на подставке, карандаш на верёвочке рядом. Страницы шуршат от сквозняка из двери.",
+  "en": "The visitors' book lies on its stand, the pencil on its string beside it. The pages rustle in the draught from the door.",
+  "ja": "来訪者ノートが台の上にあり、鉛筆が紐で横に下がっている。戸口の隙間風でページがかさかさ鳴る。"
+ },
+ "city.px.text.hist.title": {
+  "ru": "О башне",
+  "en": "About the tower",
+  "ja": "塔について"
+ },
+ "city.px.hist.1": {
+  "ru": "БАШНЯ-МАЯК НА ПИРСЕ. Построена конструкторами из прямых стальных стержней, как спицы. Каждая секция — гиперболоид: стержни прямые, а башня выходит изогнутой. Из прямых линий растёт изгиб — вот и весь фокус.",
+  "en": "THE LIGHTHOUSE TOWER ON THE PIER. Built by engineers from straight steel bars, like spokes. Each section is a hyperboloid: the bars are straight, yet the tower comes out curved. A curve grows out of straight lines, that is the whole trick.",
+  "ja": "桟橋の灯台塔。技師たちが、スポークのようにまっすぐな鋼の棒で組み上げた。各段は双曲面で、棒はまっすぐなのに塔は曲線になる。まっすぐな線から曲線が育つ、それが種明かしのすべて。"
+ },
+ "city.px.hist.2": {
+  "ru": "Наверху бак для воды, под ним фонарь. Сначала это была водонапорная башня, потом на неё поставили лампу. Теперь она работает на два фронта: поит и светит.",
+  "en": "At the top there is a water tank with the lantern above it. First it was a water tower, then a lamp was set on it. Now it works on two fronts: it gives drink and it gives light.",
+  "ja": "てっぺんには貯水槽があり、その上にランタンがある。最初は給水塔で、のちに灯がのせられた。今は二つの務めを果たしている。水を与え、光を与える。"
+ },
+ "city.px.hist.3": {
+  "ru": "ПРАВИЛА ДЛЯ ПОСЕТИТЕЛЕЙ. Подниматься, не толкаясь. Вниз ничего не бросать (кроме бутылочной почты: ящик у перил). Чаек не кормить, они кормят себя сами. В туман колокол для всех, но по очереди.",
+  "en": "RULES FOR VISITORS. Climb without shoving. Throw nothing down (except bottle post: the chest by the rail). Do not feed the gulls, they feed themselves. In fog the bell is for everyone, but in turn.",
+  "ja": "来訪者のきまり。押し合わずに上ること。下へ物を投げないこと（瓶の手紙は除く。手すりの箱）。カモメに餌をやらないこと、自分で食べます。霧の鐘は誰でも鳴らせますが、順番に。"
+ },
+ "city.px.hist.4": {
+  "ru": "Сто восемнадцать ступеней до галереи, двадцать метров над землёй. Выше, до самой лампы, ещё шестнадцать, но туда пускают только смотрителей. С галереи видно всё, что стоит видеть.",
+  "en": "One hundred and eighteen steps to the gallery, twenty metres above the ground. Higher, to the lamp itself, another sixteen, but only the keepers go there. From the gallery you can see all worth seeing.",
+  "ja": "ギャラリーまで百十八段、地上二十メートル。そこからランプまでさらに十六メートルだが、上がれるのは灯台守だけ。ギャラリーからは見る価値のあるものがすべて見える。"
+ },
+ "city.px.plaque.l1": {
+  "ru": "Деревянный стенд у перил: правила, история башни, чуть выцветшая схема. Края объявления прижаты ржавой скрепкой.",
+  "en": "A wooden stand by the rail: rules, the tower's history, a slightly faded diagram. The edges of the notice are pinned with a rusty clip.",
+  "ja": "手すりのそばの木の案内板。きまり、塔の歴史、少し色あせた図。掲示の端はさびたクリップで押さえてある。"
+ },
+ "city.px.desk.1": {
+  "ru": "— Добрый вечер. Запишитесь в книгу у входа, поднимайтесь осторожно: ступени железные, в сырость скользкие. Спрашивайте о чём хотите, ночью разговоров мало.",
+  "en": "\"Good evening. Sign the book by the door and climb carefully: the steps are iron and slippery when it's damp. Ask whatever you like, there is little talk at night.\"",
+  "ja": "「こんばんは。入口のノートに名前を書いて、気をつけて上ってね。階段は鉄で、湿ると滑る。何でも聞いていいよ、夜は話し相手が少ないから」"
+ },
+ "city.px.desk.2": {
+  "ru": "— Тише, пожалуйста: ночью звук по лестнице идёт как по трубе. Но подниматься можно. Лампа не спит, и я не сплю.",
+  "en": "\"Quieter, please: at night sound travels up the stair like through a pipe. But you may climb. The lamp does not sleep and neither do I.\"",
+  "ja": "「静かにね。夜は音が階段を管のように伝わる。でも上ってかまわないよ。ランプは眠らないし、わたしも眠らない」"
+ },
+ "city.px.desk.3": {
+  "ru": "— Днём нас нет: мы спим после ночи. Книга у входа, поднимайтесь, если не боитесь высоты.",
+  "en": "\"We are not here by day: we sleep after the night. The book is by the door, climb if you don't fear heights.\"",
+  "ja": "「昼はいないよ、夜勤のあとで寝ているから。ノートは入口にある。高いところが平気なら上ってごらん」"
+ },
+ "city.px.desk.closed": {
+  "ru": "На столе записка: «Смотритель спит после ночной вахты. Заглядывайте после шести. Лестница открыта, книгу посетителей можно читать». Рядом кружка, ещё тёплая.",
+  "en": "A note on the table: \"The keeper sleeps after the night watch. Come back after six. The stair is open and the visitors' book may be read.\" A mug beside it, still warm.",
+  "ja": "机にメモ。「灯台守は夜勤明けで寝ています。六時すぎにまたどうぞ。階段は開いていて、来訪者ノートは読めます」横のマグカップはまだ温かい。"
+ },
+ "city.px.ask.steps": {
+  "ru": "Сколько здесь ступеней?",
+  "en": "How many steps are there?",
+  "ja": "階段は何段あるの？"
+ },
+ "city.px.ask.steps.1": {
+  "ru": "— Сто восемнадцать. Каждую ночь поднимаюсь раза три и каждый раз досчитываю до ста двадцати. Две лишних от усталости.",
+  "en": "\"One hundred and eighteen. I climb it three times a night and every time I count to one hundred and twenty. Two extra from tiredness.\"",
+  "ja": "「百十八段。毎晩三回は上るけど、そのたびに百二十まで数えてしまう。余分な二つは疲れのせい」"
+ },
+ "city.px.ask.steps.2": {
+  "ru": "— В трубу на галерее смотрел? В ясный день на краю воды видно другой берег. Мне его показал прежний смотритель, и это наш секрет. Ну, теперь и твой.",
+  "en": "\"Did you look through the telescope on the gallery? On a clear day you can see the far shore at the edge of the water. The old keeper showed it to me, and it is our secret. Well, yours too now.\"",
+  "ja": "「ギャラリーの望遠鏡はのぞいた？晴れた日は水の果てに向こう岸が見える。前の灯台守が教えてくれて、これはわたしたちの秘密。さて、きみの秘密にもなった」"
+ },
+ "city.px.ask.visitors": {
+  "ru": "Кто к вам приходит?",
+  "en": "Who comes to see you?",
+  "ja": "どんな人が来るの？"
+ },
+ "city.px.ask.visitors.1": {
+  "ru": "— Школьники весной, фотографы летом, влюблённые в любую погоду. Зимой приходит старик с барометром: сверяет свой с нашим и уходит довольный, наш врёт меньше.",
+  "en": "\"Schoolchildren in spring, photographers in summer, couples in any weather. In winter an old man comes with a barometer: he checks his against ours and leaves pleased, ours lies less.\"",
+  "ja": "「春は学校の子たち、夏は写真家、恋人たちは天気を問わず。冬は気圧計を持ったおじいさんが来て、自分のとうちのを見比べて満足して帰る。うちのほうが嘘が少ないんだ」"
+ },
+ "city.px.ask.visitors.2": {
+  "ru": "— Про орех в книге прочитал? Хотел рассердиться, а сам смеялся. Читай, там всё честно, даже про мои нотации.",
+  "en": "\"Did you read about the nut in the book? I meant to be cross and laughed instead. Read it, everything there is honest, even my lectures.\"",
+  "ja": "「ノートのクルミの話は読んだ？怒るつもりが笑ってしまった。読んでごらん、わたしの小言まで含めて、正直に書いてある」"
+ },
+ "city.px.ask.visitors.3": {
+  "ru": "— Дочитал книгу до конца? Тогда ты знаешь о башне больше меня: я свои записи не перечитываю.",
+  "en": "\"Read the book to the end? Then you know more about the tower than I do: I never reread my own entries.\"",
+  "ja": "「ノートを最後まで読んだの？それなら塔についてはわたしより詳しい。自分の書いたものは読み返さないから」"
+ },
+ "city.px.ask.maria": {
+  "ru": "Что с «Марией»?",
+  "en": "What about Maria?",
+  "ja": "マリヤはどうなった？"
+ },
+ "city.px.ask.maria.0": {
+  "ru": "— «Мария» — сейнер капитана Лаптева. Всё, что с ней, я пишу в вахтенную книгу у лестницы, и пишу честно.",
+  "en": "\"Maria is Captain Laptev's seiner. Whatever happens to her I put in the watch book by the stair, and I write it honestly.\"",
+  "ja": "「マリヤはラプチェフ船長の巻き網船だよ。あの船のことは階段脇の当直帳に全部書いている。正直にね」"
+ },
+ "city.px.ask.maria.1": {
+  "ru": "— Ушла на сельдь, обещала быть к вечеру. Пока ждём. Заходи ещё: узнаешь первым.",
+  "en": "\"She went out for herring, promised to be back by evening. We are waiting for now. Come again: you will be the first to know.\"",
+  "ja": "「ニシン漁に出て、夕方には戻ると言っていた。今は待っているところ。また来て、一番に教えるから」"
+ },
+ "city.px.ask.maria.2": {
+  "ru": "— Шторм, а её нет. Колокол звоню каждые две минуты, руки дрожат, но звоню. Радио молчит. Не говори Араму, что я боюсь.",
+  "en": "\"A storm, and no Maria. I ring the bell every two minutes, my hands shake but I ring. The radio is silent. Don't tell Aram I'm afraid.\"",
+  "ja": "「嵐なのにマリヤは戻らない。鐘は二分おきに鳴らしている。手は震えるけれど鳴らす。無線は沈黙したまま。怖いってことはアラムには言わないで」"
+ },
+ "city.px.ask.maria.3": {
+  "ru": "— Вернулась! Двигатель встал, сутки их носило, а потом увидели наш свет. Лаптев оставил бутылку с запиской, она стоит на полке у кораблика. Не вскрывай.",
+  "en": "\"She's back! The engine died, they drifted for a day, and then they saw our light. Laptev left a bottle with a note, it stands on the shelf by the little ship. Don't open it.\"",
+  "ja": "「戻ったよ！エンジンが止まって丸一日流されて、それからうちの灯が見えたんだ。ラプチェフ船長が手紙入りの瓶を置いていって、模型の船の横の棚にある。開けないでね」"
+ },
+ "city.px.ask.night": {
+  "ru": "Что вы делаете ночью?",
+  "en": "What do you do at night?",
+  "ja": "夜は何をしているの？"
+ },
+ "city.px.ask.night.1": {
+  "ru": "— Каждые два часа завожу механизм. Рукоять тугая, как у кофемолки. Между заводами пью чай, читаю, смотрю на воду. Море ночью очень разговорчивое.",
+  "en": "\"Every two hours I wind the clockwork. The crank is stiff as a coffee grinder's. Between windings I drink tea, read, watch the water. The sea is very talkative at night.\"",
+  "ja": "「二時間ごとに仕掛けを巻く。クランクはコーヒーミルみたいに固い。巻いている間はお茶を飲んで、本を読んで、水を見る。夜の海はとてもおしゃべりだよ」"
+ },
+ "city.px.ask.night.2": {
+  "ru": "— Лучше всего около четырёх. Все спят, вода как стекло, и вдруг слышно, как далеко-далеко кто-то поёт. Сейнер, наверное. Или чайка во сне.",
+  "en": "\"Best around four. Everyone sleeps, the water is like glass, and suddenly you hear someone singing far, far away. A seiner, I suppose. Or a gull in its sleep.\"",
+  "ja": "「いちばんいいのは四時ごろ。みんな眠っていて、水はガラスみたいで、ふいに遠くで誰かが歌うのが聞こえる。巻き網船だろうな。それともカモメの寝言か」"
+ },
+ "city.px.ask.gull": {
+  "ru": "Что это за чайка на перилах?",
+  "en": "Who is that gull on the rail?",
+  "ja": "手すりのカモメは誰？"
+ },
+ "city.px.ask.gull.1": {
+  "ru": "— Николай. Не смейся, он откликается. Приходит каждый вечер за корочкой, уносит на самый край и ест там. Остальные чайки завидуют и дразнятся.",
+  "en": "\"Nikolai. Don't laugh, he answers to it. Comes every evening for a crust, carries it to the very edge and eats it there. The other gulls envy him and tease.\"",
+  "ja": "「ニコライだよ。笑わないで、呼ぶと返事をする。毎晩パンの耳をもらいに来て、いちばん端まで運んで食べる。ほかのカモメはうらやんで、からかうんだ」"
+ },
+ "city.px.ask.gull.2": {
+  "ru": "— В дождь он сидит под козырьком и делает вид, что не мокрый. Знакомое поведение, по-моему.",
+  "en": "\"In rain he sits under the eaves and pretends he isn't wet. Familiar behaviour, if you ask me.\"",
+  "ja": "「雨の日は庇の下に座って、濡れていないふりをする。よく知っている振る舞いだよ」"
+ },
+ "city.px.wheel.1": {
+  "ru": "Штурвал с «Ласточки», старого рыбацкого бота, которого давно нет. Дерево тёмное и гладкое там, где держались руки. Я положил ладони на рукоятки: они подогнаны под чью-то хватку.",
+  "en": "The wheel from Swallow, an old fishing boat long gone. The wood is dark and smooth where hands held it. I put my palms on the handles: they are worn to someone's grip.",
+  "ja": "ずっと昔に姿を消した漁船「ラストチカ（つばめ）」の舵輪。手の触れたところは暗くなめらかだ。柄に手を置くと、誰かの握りに合わせてすり減っている。"
+ },
+ "city.px.wheel.2": {
+  "ru": "Покрутил: колесо идёт тихо, без скрипа, будто всё ещё что-то направляет. Между спицами засунут листок: «В тумане на север не ходить».",
+  "en": "I turned it: the wheel goes quietly, without a creak, as if it still steers something. A slip of paper is tucked between the spokes: \"Do not head north in fog.\"",
+  "ja": "回してみる。舵輪は軋まず静かに回る。まだ何かを導いているみたいだ。スポークの間に紙切れが挟んである。「霧の中で北へ行くな」"
+ },
+ "city.px.wheel.3": {
+  "ru": "В дождь дерево пахнет водой. Штурвал будто вспоминает, как это бывает по-настоящему: брызги, ветер, мозолистые руки.",
+  "en": "In the rain the wood smells of water. The wheel seems to remember how it really is: spray, wind, calloused hands.",
+  "ja": "雨の日、木は水の匂いがする。舵輪は本物を思い出すかのようだ。しぶき、風、たこのできた手。"
+ },
+ "city.px.floats.1": {
+  "ru": "Стеклянные поплавки, зелёные, как бутылочное стекло, и один голубой. Лежат в верёвочной сетке, как ожерелье. Один с трещиной, но его держат: говорят, счастливый.",
+  "en": "Glass floats, green as bottle glass, and one blue. They lie in a rope sling like a necklace. One is cracked, but it is kept: they say it is lucky.",
+  "ja": "瓶ガラスのように緑のガラスの浮きと、青いのが一つ。ロープの網の中でネックレスみたいに並ぶ。一つはひびが入っているが、縁起がいいと言って残してある。"
+ },
+ "city.px.floats.2": {
+  "ru": "Поднёс поплавок к уху: внутри ровный шум. Говорят, это море, которое в нём осталось после последнего лова. Смотрители уверяют, а вру они или нет, не скажут.",
+  "en": "I held a float to my ear: a steady hum inside. They say it is the sea left in it from the last catch. The keepers swear to it, and whether they are fibbing they won't say.",
+  "ja": "浮きを耳に当てると、中で一定の音がする。最後の漁で中に残った海の音だ、という。灯台守は断言するが、嘘かどうかは言わない。"
+ },
+ "city.px.floats.3": {
+  "ru": "К празднику моря поплавки вынесли на перила пирса. Они ловят свет, как огромные капли. К вечеру в каждом по маленькому закату.",
+  "en": "For the sea festival the floats were carried out to the pier rails. They catch the light like huge drops. By evening each holds a small sunset.",
+  "ja": "海の祭りには、浮きが桟橋の手すりに出される。大きな雫のように光をとらえ、夕方には一つ一つに小さな夕焼けが宿る。"
+ },
+ "city.px.floats.4": {
+  "ru": "Ночью поплавки тускло светятся, поймав свет лампы. Зелёные, как глаза у кота.",
+  "en": "At night the floats glow dimly with the lamp's light. Green as a cat's eyes.",
+  "ja": "夜、浮きはランプの光を受けてほのかに光る。猫の目のように緑だ。"
+ },
+ "city.px.morse.1": {
+  "ru": "Ключ тугой и блестящий. На бумажной ленте карандашом: «···  ———  ···: сигнал бедствия, но учебный». Я постучал, и лампа рядом мигнула в такт.",
+  "en": "The key is stiff and shiny. On the paper tape in pencil: \"···  ———  ···: distress signal, but a practice one.\" I tapped, and the lamp beside it blinked in time.",
+  "ja": "電鍵は固くてぴかぴか。紙テープに鉛筆で。「···  ———  ···：遭難信号、ただし練習用」叩いてみると、隣のランプが拍に合わせて瞬いた。"
+ },
+ "city.px.morse.2": {
+  "ru": "Ночью ключ стучит особенно громко, и звук уходит над водой. Далеко мигнул чей-то огонёк, наверное, совпадение.",
+  "en": "At night the key knocks especially loud and the sound goes out over the water. Far away someone's light blinked, a coincidence probably.",
+  "ja": "夜は電鍵の音がとりわけ大きく、水の上へ渡っていく。遠くで誰かの灯りが瞬いた。偶然だろう。"
+ },
+ "city.px.game.morse.title": {
+  "ru": "Ключ смотрителя",
+  "en": "The keeper's key",
+  "ja": "灯台守の電鍵"
+ },
+ "city.px.morse.win.1": {
+  "ru": "Лампа вторила каждому твоему стуку. Снизу, из башни, донеслось одобрительное: «Ровно!»",
+  "en": "The lamp echoed every tap you made. From the tower below came an approving \"Steady!\"",
+  "ja": "ランプはきみの一打ごとに応えた。下の塔から「よし、安定している！」と満足げな声が届いた。"
+ },
+ "city.px.morse.win.night": {
+  "ru": "Ночью ключ слышно далеко: лампа ответила тебе, и над водой чья-то чёрная точка мигнула в ответ. Показалось, наверное.",
+  "en": "At night the key carries far: the lamp answered you and over the water a black speck seemed to blink back. Imagination, probably.",
+  "ja": "夜は電鍵の音が遠くまで届く。ランプが応え、水の上で黒い点が瞬き返したように見えた。気のせいだろう。"
+ },
+ "city.px.morse.lose.1": {
+  "ru": "Сбился на третьем знаке. Лампа мигнула невпопад, будто засмеялась. Ничего, она добрая.",
+  "en": "I lost the beat on the third sign. The lamp blinked out of time as if laughing. Never mind, it is kind.",
+  "ja": "三つ目の符号で拍が崩れた。ランプが調子外れに瞬いて、笑ったみたいだった。大丈夫、優しいランプだ。"
+ },
+ "city.px.morse.draw.1": {
+  "ru": "Половина слов получилась, половина превратилась в «тра-та-та». Лампа считает, что это почти шутка.",
+  "en": "Half the words came out, half turned into \"rat-a-tat\". The lamp thinks it is almost a joke.",
+  "ja": "半分は言葉になり、半分は「トトトト」になった。ランプはほとんど冗談だと思っている。"
+ },
+ "city.px.gauge.1": {
+  "ru": "Рейка уровня моря: красные метки через дециметр, синие и белые полосы через десять сантиметров. Сегодня вода у отметки «+7»: тихо и ровно.",
+  "en": "The sea-level staff: red marks every decimetre, blue and white bands every ten centimetres. Today the water stands at \"+7\": quiet and level.",
+  "ja": "水位標。赤い目盛りは十センチごと、青と白の帯も十センチ幅。今日の水は「+7」のところ。静かで平らだ。"
+ },
+ "city.px.gauge.2": {
+  "ru": "Вода ушла на ноль: ветер дует от берега и выдувает воду из залива. Рыбаки в такие дни ставят сети подальше.",
+  "en": "The water has dropped to zero: the wind blows off the land and pushes water out of the bay. On such days fishermen set their nets farther out.",
+  "ja": "水位はゼロまで下がった。陸から風が吹いて、入り江の水を押し出している。こういう日、漁師は網を沖寄りに張る。"
+ },
+ "city.px.gauge.3": {
+  "ru": "«+22». Ветер с моря нагнал воду к самой кромке пирса. Нижняя ступенька скрылась, а чайки гуляют по ней, как по тротуару.",
+  "en": "\"+22\". An onshore wind has pushed the water up to the very edge of the pier. The lowest step is gone and gulls stroll over it as on a pavement.",
+  "ja": "「+22」。海からの風が水を桟橋の縁まで押し上げた。いちばん下の段は水の下で、カモメが歩道のようにその上を歩いている。"
+ },
+ "city.px.gauge.4": {
+  "ru": "«−5». Ветер с суши, вода ушла, у основания пирса показались валуны, на них сидят бакланы и сушат крылья.",
+  "en": "\"-5\". An offshore wind, the water has gone, boulders show at the foot of the pier and cormorants sit on them drying their wings.",
+  "ja": "「−5」。陸風で水が引き、桟橋の根元に岩が現れた。その上でウが翼を広げて乾かしている。"
+ },
+ "city.px.gauge.5": {
+  "ru": "«+3». Совсем тихо. Вода гладкая, как поднос, по ней расходятся круги от рыбы. В журнале смотрители записали: «штиль, скука, слава богу».",
+  "en": "\"+3\". Quite still. The water is smooth as a tray, rings spreading from a fish. In the log the keepers wrote: \"calm, boredom, thank goodness.\"",
+  "ja": "「+3」。まったくの凪。水はお盆のように滑らかで、魚の輪が広がっている。日誌に灯台守が書いた。「凪、退屈、ありがたや」"
+ },
+ "city.px.gauge.rain": {
+  "ru": "Дождь стучит по рейке, цифры стали ярче. По уровню видно: к вечеру вода поднимется на ладонь. Смотрители уже вынесли вёдра: на всякий случай.",
+  "en": "Rain drums on the staff and the numbers look brighter. By the level you can tell the water will rise a hand's width by evening. The keepers have put out buckets, just in case.",
+  "ja": "雨が水位標を叩き、数字が鮮やかになった。水位からして、夕方には手のひら一枚分上がりそうだ。灯台守はもうバケツを出した。念のために。"
+ },
+ "city.px.gauge.fog": {
+  "ru": "В тумане рейка торчит из белого, как градусник из молока. Цифр почти не видно, но красные метки светятся.",
+  "en": "In the fog the staff sticks out of the white like a thermometer from milk. The numbers hardly show but the red marks glow.",
+  "ja": "霧の中、水位標は牛乳から突き出した温度計のように立っている。数字はほとんど見えないが、赤い目盛りは光っている。"
+ },
+ "city.px.bp.1": {
+  "ru": "Просмолённый ящик с прорезью и три бутылки. На бирке: «Напиши записку, опусти, брось с галереи за перила. Доставку не гарантируем». Я написал два слова, закупорил и бросил: бутылка долго летела и ушла под воду без плеска.",
+  "en": "A tarred chest with a slot and three bottles. On the tag: \"Write a note, drop it in, throw it from the gallery over the rail. Delivery not guaranteed.\" I wrote two words, corked it and threw: the bottle flew a long way and went under without a splash.",
+  "ja": "タール塗りの箱に差し込み口と、瓶が三本。札に。「手紙を書いて入れ、ギャラリーから手すりの向こうへ投げること。配達は保証しません」二言だけ書いて栓をして投げた。瓶は長く飛び、水しぶきも立てずに沈んだ。"
+ },
+ "city.px.bp.2": {
+  "ru": "Ночью записку писать трудно: карандаш не видит бумаги. Писал на ощупь, получилось «приветсвуй» без «т». Бутылка блеснула в луче и пропала.",
+  "en": "Writing a note at night is hard: the pencil cannot see the paper. I wrote by feel and it came out \"helo\" with one l too few. The bottle flashed in the beam and was gone.",
+  "ja": "夜に手紙を書くのは難しい。鉛筆が紙を見てくれない。手探りで書いたら「こんにちは」の「に」が抜けた。瓶は光の筋できらりと光って消えた。"
+ },
+ "city.px.bp.rain": {
+  "ru": "В дождь бутылка уходит охотно: волна подхватывает и тащит к фарватеру. Если кто найдёт, пусть думает, что пишу из бури.",
+  "en": "In rain the bottle goes willingly: a wave takes it and tows it to the channel. If anyone finds it, let them think I wrote it in a storm.",
+  "ja": "雨の日、瓶は喜んで出ていく。波がさらって航路のほうへ運ぶ。誰かが拾ったら、嵐の中で書いたと思ってくれればいい。"
+ },
+ "city.px.bp.late": {
+  "ru": "Смотрители рассказывают: по весне одна бутылка вернулась. Мальчик нашёл её на пляже и принёс обратно. В ней была его собственная записка трёхлетней давности.",
+  "en": "The keepers say one bottle came back last spring. A boy found it on the beach and brought it back. Inside was his own note from three years before.",
+  "ja": "灯台守の話では、去年の春、一本の瓶が戻ってきた。浜で見つけた男の子が持ってきたのだが、中には三年前の自分の手紙が入っていた。"
+ },
+ "city.px.coll.sights.title": {
+  "ru": "Виды с галереи",
+  "en": "Views from the gallery",
+  "ja": "ギャラリーからの眺め"
+ },
+ "quest.px_bottle.title": {
+  "ru": "Записка в бутылке",
+  "en": "A note in a bottle",
+  "ja": "瓶の中の手紙"
+ },
+ "quest.px_bottle.desc": {
+  "ru": "На галерее у перил стоит смолёный ящик с бутылками. Смотритель говорит: «Кто пишет записку морю, пусть сперва хорошенько на него посмотрит».",
+  "en": "On the gallery by the rail stands a tarred chest of bottles. The keeper says: \"Whoever writes a note to the sea should first take a good look at it.\"",
+  "ja": "ギャラリーの手すり脇に、瓶の入ったタール塗りの箱がある。灯台守は言う。「海に手紙を書く人は、まずよく海を眺めなさい」"
+ },
+ "quest.px_bottle.done": {
+  "ru": "Бутылка ушла, и на галерее ещё дрожит последний стук ключа. Смотритель кивнул: «Теперь у моря есть твой адрес». Он дал мне открытку с башней, чтобы было что написать на другой стороне.",
+  "en": "The bottle has gone and the last tap of the key still trembles on the gallery. The keeper nodded: \"Now the sea has your address.\" He gave me a postcard of the tower so I would have something to write on the other side.",
+  "ja": "瓶は出ていき、ギャラリーには電鍵の最後の音がまだ震えている。灯台守はうなずいた。「これで海はきみの住所を知った」裏に書くものがあるようにと、塔の絵はがきをくれた。"
+ },
+ "quest.px_bottle.scope.log": {
+  "ru": "Сначала надо понять, кому писать. Посмотрю в подзорную трубу на море.",
+  "en": "First I need to know who I am writing to. I'll look at the sea through the telescope.",
+  "ja": "まず、誰に書くのかを知らなければ。望遠鏡で海を見てみよう。"
+ },
+ "quest.px_bottle.scope.obj": {
+  "ru": "Посмотреть в подзорную трубу на галерее",
+  "en": "Look through the telescope on the gallery",
+  "ja": "ギャラリーの望遠鏡をのぞく"
+ },
+ "quest.px_bottle.gauge.log": {
+  "ru": "Теперь узнать, куда пойдёт бутылка: ветер или штиль. Рейка уровня скажет.",
+  "en": "Now to learn where the bottle will drift: wind or calm. The sea-level staff will tell.",
+  "ja": "次に、瓶がどこへ流れるか。風か凪か。水位標が教えてくれる。"
+ },
+ "quest.px_bottle.gauge.obj": {
+  "ru": "Прочитать рейку уровня моря",
+  "en": "Read the sea-level staff",
+  "ja": "水位標を読む"
+ },
+ "quest.px_bottle.bottle.log": {
+  "ru": "Бутылка, записка, море. Бросаю.",
+  "en": "A bottle, a note, the sea. Here goes.",
+  "ja": "瓶、手紙、海。さあ、投げよう。"
+ },
+ "quest.px_bottle.bottle.obj": {
+  "ru": "Отправить бутылку с запиской",
+  "en": "Send a bottle with a note",
+  "ja": "手紙入りの瓶を流す"
+ },
+ "quest.px_bottle.beat.log": {
+  "ru": "Смотритель сказал: «Без ритма и бутылка не поплывёт». Придётся постучать ключом без сбоев.",
+  "en": "The keeper said: \"Without rhythm even a bottle won't float.\" I'll have to tap the key without a slip.",
+  "ja": "灯台守は言った。「拍がなければ瓶も浮かない」。つまずかずに電鍵を叩かなければ。"
+ },
+ "quest.px_bottle.beat.obj": {
+  "ru": "Отстучать ключом без сбоев",
+  "en": "Tap the key through without a slip",
+  "ja": "電鍵をつまずかずに叩き切る"
  }
 }
