@@ -202,6 +202,8 @@
   {"id": "city.q.sanatorium_regime.2", "group": "interiors", "name": "dev.tp.city.q.sanatorium_regime.2", "x": -713.96, "y": 1241.92, "z": -800.0, "yaw": -32.4},
   {"id": "city.q.sanatorium_regime.3", "group": "interiors", "name": "dev.tp.city.q.sanatorium_regime.3", "x": -712.16, "y": 1252.55, "z": -790.0, "yaw": -167.8},
   {"id": "city.q.sanatorium_regime.4", "group": "interiors", "name": "dev.tp.city.q.sanatorium_regime.4", "x": -712.9, "y": 1257.49, "z": -800.0, "yaw": -147.8},
+  {"id": "city.q.sanatorium_cure.1", "group": "interiors", "name": "dev.tp.city.q.sanatorium_cure.1", "x": -716.68, "y": 1238.63, "z": -854.0, "yaw": 135.2},
+  {"id": "city.q.sanatorium_cure.4", "group": "interiors", "name": "dev.tp.city.q.sanatorium_cure.4", "x": -712.91, "y": 1257.6, "z": -800.0, "yaw": 32.2},
   {"id": "city.q.school_bag.1", "group": "interiors", "name": "dev.tp.city.q.school_bag.1", "x": -170.86, "y": 1291.58, "z": -2895.0, "yaw": -97.1},
   {"id": "city.q.school_bag.2", "group": "interiors", "name": "dev.tp.city.q.school_bag.2", "x": -173.01, "y": 1301.02, "z": -2960.0, "yaw": 172.9},
   {"id": "city.q.school_bag.3", "group": "interiors", "name": "dev.tp.city.q.school_bag.3", "x": -211.39, "y": 1315.47, "z": -2970.0, "yaw": 152.9},
