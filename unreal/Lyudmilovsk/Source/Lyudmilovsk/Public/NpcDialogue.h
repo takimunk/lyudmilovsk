@@ -6,6 +6,7 @@
 #include "Subsystems/WorldSubsystem.h"
 #include "NpcDialogue.generated.h"
 
+class APlayerController;
 class SWidget;
 class UAudioComponent;
 class USkeletalMeshComponent;
@@ -106,8 +107,19 @@ public:
 	UFUNCTION(BlueprintCallable, Category = "Dialogue")
 	void Interact();
 
-	/** Is E his now: somebody in front of him to talk to, or a talk going on (others who use E step aside). */
-	bool IsEngaged() const { return TargetIndex != INDEX_NONE || TalkingIndex != INDEX_NONE; }
+	/**
+	 * Is E his now: somebody in front of him to talk to, a talk going on, or a press he has just taken (the press that says
+	 * the last line ends the talk before the others who use E look at the key in the same frame: it is still his).
+	 * Others who use E step aside.
+	 */
+	bool IsEngaged() const { return TargetIndex != INDEX_NONE || TalkingIndex != INDEX_NONE || (bTookPress && GFrameCounter - TookPressAt <= 1); }
+
+	/**
+	 * "Was E pressed for me?" for everything in the world that polls the key: true on the frame E went down unless the
+	 * dialogue has the press (IsEngaged). Use it instead of PC->WasInputKeyJustPressed(EKeys::E), so one press never both
+	 * moves a talk on and opens a door, buys a drink or sits the hero down. Nothing is consumed: everyone may ask.
+	 */
+	static bool UsePressed(const APlayerController* PC);
 
 	/** Npc.Where: logs where everyone is (debugging). */
 	void LogPeople() const;
@@ -148,6 +160,9 @@ private:
 	TArray<FNpc> People;
 	int32 TargetIndex = INDEX_NONE;
 	int32 TalkingIndex = INDEX_NONE;
+	/** The frame Interact last did something with a press of E (IsEngaged). */
+	uint64 TookPressAt = 0;
+	bool bTookPress = false;
 	TArray<FNpcLine> Lines;
 	int32 LineIndex = 0;
 

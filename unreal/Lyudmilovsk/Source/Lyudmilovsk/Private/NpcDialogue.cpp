@@ -632,6 +632,9 @@ void ANpcTalkDirector::Interact()
 {
 	if (TalkingIndex != INDEX_NONE)
 	{
+		// this press is the talk's, also when it ends it (IsEngaged)
+		bTookPress = true;
+		TookPressAt = GFrameCounter;
 		if (++LineIndex >= Lines.Num())
 		{
 			Close();
@@ -658,6 +661,23 @@ void ANpcTalkDirector::Interact()
 			ShowLine();
 		}
 	}
+}
+
+bool ANpcTalkDirector::UsePressed(const APlayerController* PC)
+{
+	if (!PC || !PC->WasInputKeyJustPressed(EKeys::E))
+	{
+		return false;
+	}
+	// only on the frame of a press: the level has one director
+	for (TActorIterator<ANpcTalkDirector> It(PC->GetWorld()); It; ++It)
+	{
+		if (It->IsEngaged())
+		{
+			return false;
+		}
+	}
+	return true;
 }
 
 void ANpcTalkDirector::UpdateLineText()
