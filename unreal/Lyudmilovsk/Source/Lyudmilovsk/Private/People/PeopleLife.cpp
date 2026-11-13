@@ -216,6 +216,7 @@ bool UPeopleLifeSubsystem::Start()
 	LightSinks.Reset();
 	LightTimer = 0.f;
 	UpdateClock(true);
+	ApplyWanted();      // (before the townsfolk are placed: a holiday's morning has no school, a festival night keeps them up)
 	ResolveModels();
 	BindClub();
 	BindRailway();
@@ -1399,6 +1400,14 @@ bool UPeopleLifeSubsystem::IsTownsperson(int32 Id) const
 
 void UPeopleLifeSubsystem::SetGathering(FName Id, FName PlaceOrKind, float FromHour, float ToHour, float Pull, EPeopleGatherMode Mode, FVector FacePoint)
 {
+	// kept for a life that starts later (the festival asks once, maybe before ours has started: ApplyWanted)
+	FWantedGathering& G = WantedGatherings.FindOrAdd(Id);
+	G.PlaceOrKind = PlaceOrKind;
+	G.From = FromHour;
+	G.To = ToHour;
+	G.Pull = Pull;
+	G.Mode = Mode;
+	G.Face = FacePoint;
 	if (!Sim)
 	{
 		return;
@@ -1411,6 +1420,7 @@ void UPeopleLifeSubsystem::SetGathering(FName Id, FName PlaceOrKind, float FromH
 
 void UPeopleLifeSubsystem::ClearGathering(FName Id)
 {
+	WantedGatherings.Remove(Id);
 	if (Sim)
 	{
 		Sim->ClearGathering(TCHAR_TO_UTF8(*Id.ToString()));
@@ -1419,6 +1429,7 @@ void UPeopleLifeSubsystem::ClearGathering(FName Id)
 
 void UPeopleLifeSubsystem::SetDayOff(bool bOff)
 {
+	bWantedDayOff = bOff;
 	if (Sim)
 	{
 		Sim->bDayOff = bOff;
@@ -1427,15 +1438,36 @@ void UPeopleLifeSubsystem::SetDayOff(bool bOff)
 
 void UPeopleLifeSubsystem::SetStayUpUntil(float Hour)
 {
+	// the night's end on the calendar (Hour counts from today's 00:00), for a life that starts before it
+	const FDateTime Now = UGameCalendar::NowIn(GetWorld());
+	WantedStayUpUntil = Hour > 0.f ? (Now.GetDate() + FTimespan::FromHours(Hour)).GetTicks() : 0;
 	if (Sim)
 	{
 		Sim->SetStayUp(Hour);
 	}
 }
 
+void UPeopleLifeSubsystem::ApplyWanted()
+{
+	// what the festivals asked while there was no life (or of the one before): a new life starts with it
+	LP::FWorld& S = *Sim;
+	S.bDayOff = bWantedDayOff;
+	for (const TPair<FName, FWantedGathering>& G : WantedGatherings)
+	{
+		const FWantedGathering& W = G.Value;
+		S.SetGathering(TCHAR_TO_UTF8(*G.Key.ToString()), TCHAR_TO_UTF8(*W.PlaceOrKind.ToString()), W.From, W.To, W.Pull, (LP::EGatherMode)(uint8)W.Mode,
+			!W.Face.IsNearlyZero(), PeopleFromUE(W.Face));
+	}
+	const FDateTime Now = UGameCalendar::NowIn(GetWorld());
+	if (WantedStayUpUntil > Now.GetTicks())
+	{
+		S.SetStayUp((float)(FDateTime(WantedStayUpUntil) - Now.GetDate()).GetTotalHours());
+	}
+}
+
 bool UPeopleLifeSubsystem::IsDayOff() const
 {
-	return Sim && Sim->bDayOff;
+	return bWantedDayOff;
 }
 
 TArray<int32> UPeopleLifeSubsystem::StaffOnShift(FName PlaceId, FName Role) const
