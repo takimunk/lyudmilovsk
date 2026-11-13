@@ -134,4 +134,10 @@ private:
 	TArray<FName> SpeciesNames;
 	TArray<TArray<FTransform>> Xf;
 	TArray<TArray<float>> Data;
+	/** Per species: how many instances showed a fish last frame, and how long most of its instances have been spare
+	 *  (a species keeps spare instances parked at FishPark, so a fish coming or going never rebuilds them). */
+	TArray<int32> FishShown;
+	TArray<float> FishSpareTime;
+	TArray<FTransform> FishAdd;
+	FVector FishPark = FVector::ZeroVector;
 };
