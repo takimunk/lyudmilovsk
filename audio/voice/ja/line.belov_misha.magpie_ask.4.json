@@ -1,0 +1,20 @@
+{
+ "key": "line.belov_misha.magpie_ask.4",
+ "lang": "ja",
+ "text": "あいつらは何でも運んで隠す。落としていった物や、埋めた物を拾ってみてくれ。三つ集まったら持ってきてくれ、見てみるから。",
+ "speaker": "belov_misha",
+ "voice": "Liam",
+ "voice_id": "TX3LPaxmHKxFdv7VOQHJ",
+ "voice_design": null,
+ "direction": "[easygoing, amused, a young technician, a little self-ironic]",
+ "model": "fal-ai/elevenlabs/tts/eleven-v3",
+ "request": {
+  "stability": 0.5,
+  "apply_text_normalization": "auto",
+  "text": "[easygoing, amused, a young technician, a little self-ironic] あいつらは何でも運んで隠す。落としていった物や、埋めた物を拾ってみてくれ。三つ集まったら持ってきてくれ、見てみるから。",
+  "voice": "Liam",
+  "language_code": "ja"
+ },
+ "fal_request_id": "01a1d666-ce52-7023-924e-f153b3d3e651",
+ "hash": "d3d0367b0fdc"
+}

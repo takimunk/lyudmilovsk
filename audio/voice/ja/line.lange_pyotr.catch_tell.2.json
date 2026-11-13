@@ -1,0 +1,20 @@
+{
+ "key": "line.lange_pyotr.catch_tell.2",
+ "lang": "ja",
+ "text": "顔を見ればわかる。最初の一匹はいつだって一番でかい。目方がどうでもな。",
+ "speaker": "lange_pyotr",
+ "voice": "Brian",
+ "voice_id": "nPczCjzI2devNBz1zQrb",
+ "voice_design": null,
+ "direction": "[gruff, unhurried, a weathered fisherman of few words]",
+ "model": "fal-ai/elevenlabs/tts/eleven-v3",
+ "request": {
+  "stability": 0.5,
+  "apply_text_normalization": "auto",
+  "text": "[gruff, unhurried, a weathered fisherman of few words] 顔を見ればわかる。最初の一匹はいつだって一番でかい。目方がどうでもな。",
+  "voice": "Brian",
+  "language_code": "ja"
+ },
+ "fal_request_id": "01a1d669-d2df-71a0-8472-2dca2c8db838",
+ "hash": "f10dd505266f"
+}

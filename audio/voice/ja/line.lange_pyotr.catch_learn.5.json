@@ -1,0 +1,20 @@
+{
+ "key": "line.lange_pyotr.catch_learn.5",
+ "lang": "ja",
+ "text": "魚が引いているときは巻くな。糸は綱じゃない。釣れたら、また来い。",
+ "speaker": "lange_pyotr",
+ "voice": "Brian",
+ "voice_id": "nPczCjzI2devNBz1zQrb",
+ "voice_design": null,
+ "direction": "[gruff, unhurried, a weathered fisherman of few words]",
+ "model": "fal-ai/elevenlabs/tts/eleven-v3",
+ "request": {
+  "stability": 0.5,
+  "apply_text_normalization": "auto",
+  "text": "[gruff, unhurried, a weathered fisherman of few words] 魚が引いているときは巻くな。糸は綱じゃない。釣れたら、また来い。",
+  "voice": "Brian",
+  "language_code": "ja"
+ },
+ "fal_request_id": "01a1d669-a62a-7951-a926-60bab5e2eb8c",
+ "hash": "0c8b23604010"
+}

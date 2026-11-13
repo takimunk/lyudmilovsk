@@ -1,0 +1,20 @@
+{
+ "key": "line.belov_misha.magpie_tell.3",
+ "lang": "ja",
+ "text": "いい暮らしをしてるな。でも俺の鍵はない。正直に言うと、あるはずがないんだ。",
+ "speaker": "belov_misha",
+ "voice": "Liam",
+ "voice_id": "TX3LPaxmHKxFdv7VOQHJ",
+ "voice_design": null,
+ "direction": "[easygoing, amused, a young technician, a little self-ironic]",
+ "model": "fal-ai/elevenlabs/tts/eleven-v3",
+ "request": {
+  "stability": 0.5,
+  "apply_text_normalization": "auto",
+  "text": "[easygoing, amused, a young technician, a little self-ironic] いい暮らしをしてるな。でも俺の鍵はない。正直に言うと、あるはずがないんだ。",
+  "voice": "Liam",
+  "language_code": "ja"
+ },
+ "fal_request_id": "01a1d667-11de-7c13-9a7e-72e828065721",
+ "hash": "5677b5dfa071"
+}

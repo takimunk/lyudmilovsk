@@ -1,0 +1,20 @@
+{
+ "key": "line.lange_pyotr.catch_learn.4",
+ "lang": "ru",
+ "text": "На червя. Поплавок дрогнул, не дёргай. Ушёл под воду, тогда подсекай.",
+ "speaker": "lange_pyotr",
+ "voice": "Brian",
+ "voice_id": "nPczCjzI2devNBz1zQrb",
+ "voice_design": null,
+ "direction": "[gruff, unhurried, a weathered fisherman of few words]",
+ "model": "fal-ai/elevenlabs/tts/eleven-v3",
+ "request": {
+  "stability": 0.5,
+  "apply_text_normalization": "auto",
+  "text": "[gruff, unhurried, a weathered fisherman of few words] На червя. Поплавок дрогнул, не дёргай. Ушёл под воду, тогда подсекай.",
+  "voice": "Brian",
+  "language_code": "ru"
+ },
+ "fal_request_id": "01a1d660-6cf1-76e3-a400-161d89e37516",
+ "hash": "4995d72fbc6f"
+}

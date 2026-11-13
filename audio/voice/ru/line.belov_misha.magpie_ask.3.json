@@ -1,0 +1,20 @@
+{
+ "key": "line.belov_misha.magpie_ask.3",
+ "lang": "ru",
+ "text": "Лежал на подоконнике и блестел. Я отвернулся на минуту, и нет его. А она сидела на карнизе, и вид у неё был довольный.",
+ "speaker": "belov_misha",
+ "voice": "Liam",
+ "voice_id": "TX3LPaxmHKxFdv7VOQHJ",
+ "voice_design": null,
+ "direction": "[easygoing, amused, a young technician, a little self-ironic]",
+ "model": "fal-ai/elevenlabs/tts/eleven-v3",
+ "request": {
+  "stability": 0.5,
+  "apply_text_normalization": "auto",
+  "text": "[easygoing, amused, a young technician, a little self-ironic] Лежал на подоконнике и блестел. Я отвернулся на минуту, и нет его. А она сидела на карнизе, и вид у неё был довольный.",
+  "voice": "Liam",
+  "language_code": "ru"
+ },
+ "fal_request_id": "01a1d65d-1b54-77d0-80a6-0b8945cf6d0a",
+ "hash": "4c0a156ce43f"
+}

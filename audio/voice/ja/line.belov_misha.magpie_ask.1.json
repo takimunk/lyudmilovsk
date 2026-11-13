@@ -1,0 +1,20 @@
+{
+ "key": "line.belov_misha.magpie_ask.1",
+ "lang": "ja",
+ "text": "くちばしに鍵をくわえたカササギ、見なかったか。小さいやつで、工具箱の鍵なんだ。",
+ "speaker": "belov_misha",
+ "voice": "Liam",
+ "voice_id": "TX3LPaxmHKxFdv7VOQHJ",
+ "voice_design": null,
+ "direction": "[easygoing, amused, a young technician, a little self-ironic]",
+ "model": "fal-ai/elevenlabs/tts/eleven-v3",
+ "request": {
+  "stability": 0.5,
+  "apply_text_normalization": "auto",
+  "text": "[easygoing, amused, a young technician, a little self-ironic] くちばしに鍵をくわえたカササギ、見なかったか。小さいやつで、工具箱の鍵なんだ。",
+  "voice": "Liam",
+  "language_code": "ja"
+ },
+ "fal_request_id": "01a1d666-7e70-7970-92e3-e2d967a99291",
+ "hash": "05b24c05069d"
+}

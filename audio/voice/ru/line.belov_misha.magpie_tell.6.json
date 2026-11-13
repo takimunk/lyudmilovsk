@@ -1,0 +1,20 @@
+{
+ "key": "line.belov_misha.magpie_tell.6",
+ "lang": "ru",
+ "text": "Не виновата. Я перед ней уже извинился, половиной печенья. Находки оставь себе, а это тебе за следствие.",
+ "speaker": "belov_misha",
+ "voice": "Liam",
+ "voice_id": "TX3LPaxmHKxFdv7VOQHJ",
+ "voice_design": null,
+ "direction": "[easygoing, amused, a young technician, a little self-ironic]",
+ "model": "fal-ai/elevenlabs/tts/eleven-v3",
+ "request": {
+  "stability": 0.5,
+  "apply_text_normalization": "auto",
+  "text": "[easygoing, amused, a young technician, a little self-ironic] Не виновата. Я перед ней уже извинился, половиной печенья. Находки оставь себе, а это тебе за следствие.",
+  "voice": "Liam",
+  "language_code": "ru"
+ },
+ "fal_request_id": "01a1d65d-968a-74b0-95c2-4807ee276c11",
+ "hash": "ddbe91722c74"
+}

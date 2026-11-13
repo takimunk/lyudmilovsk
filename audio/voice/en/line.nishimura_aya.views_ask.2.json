@@ -1,0 +1,20 @@
+{
+ "key": "line.nishimura_aya.views_ask.2",
+ "lang": "en",
+ "text": "They say there are three places to look from. The promenade, the spot where the starlings fly over the sea at dusk, and the rowan wood beyond the northern hills.",
+ "speaker": "nishimura_aya",
+ "voice": "Matilda",
+ "voice_id": "XrExE9yKIg1WjnnlVkGX",
+ "voice_design": null,
+ "direction": "[calm, soft, contemplative, a painter talking about the light]",
+ "model": "fal-ai/elevenlabs/tts/eleven-v3",
+ "request": {
+  "stability": 0.5,
+  "apply_text_normalization": "auto",
+  "text": "[calm, soft, contemplative, a painter talking about the light] They say there are three places to look from. The promenade, the spot where the starlings fly over the sea at dusk, and the rowan wood beyond the northern hills.",
+  "voice": "Matilda",
+  "language_code": "en"
+ },
+ "fal_request_id": "01a1d665-d8a2-7830-99db-6d7629a4a908",
+ "hash": "e166c85ad1e0"
+}
