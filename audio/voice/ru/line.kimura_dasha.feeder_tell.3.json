@@ -1,0 +1,20 @@
+{
+ "key": "line.kimura_dasha.feeder_tell.3",
+ "lang": "ru",
+ "text": "Вика! Неделя посуды! А тебе печенье и кофе. Это не взятка, это грант.",
+ "speaker": "kimura_dasha",
+ "voice": "Charlotte",
+ "voice_id": "XB0fDUnXU5powFXDhCwa",
+ "voice_design": null,
+ "direction": "[a tired physics student, wry, self-ironic]",
+ "model": "fal-ai/elevenlabs/tts/eleven-v3",
+ "request": {
+  "stability": 0.5,
+  "apply_text_normalization": "auto",
+  "text": "[a tired physics student, wry, self-ironic] Вика! Неделя посуды! А тебе печенье и кофе. Это не взятка, это грант.",
+  "voice": "Charlotte",
+  "language_code": "ru"
+ },
+ "fal_request_id": "01a1d5f9-9939-7b63-b5d4-8a7f8ed0459a",
+ "hash": "19b92570711e"
+}

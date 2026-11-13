@@ -1,0 +1,20 @@
+{
+ "key": "line.lange_pyotr.cheese_ask.2",
+ "lang": "en",
+ "text": "There's a Circassian selling cheese by the club. Smoked braids. Bring me one. I won't forget it.",
+ "speaker": "lange_pyotr",
+ "voice": "Brian",
+ "voice_id": "nPczCjzI2devNBz1zQrb",
+ "voice_design": null,
+ "direction": "[gruff, unhurried, a weathered fisherman of few words]",
+ "model": "fal-ai/elevenlabs/tts/eleven-v3",
+ "request": {
+  "stability": 0.5,
+  "apply_text_normalization": "auto",
+  "text": "[gruff, unhurried, a weathered fisherman of few words] There's a Circassian selling cheese by the club. Smoked braids. Bring me one. I won't forget it.",
+  "voice": "Brian",
+  "language_code": "en"
+ },
+ "fal_request_id": "01a1d5fc-1e4f-7eb2-984a-3d187afaaa2e",
+ "hash": "66b1d2fdaeda"
+}

@@ -1,0 +1,20 @@
+{
+ "key": "line.kimura_dasha.feeder_wait.1",
+ "lang": "en",
+ "text": "Well, any data? No data, no conclusion. Go and count.",
+ "speaker": "kimura_dasha",
+ "voice": "Charlotte",
+ "voice_id": "XB0fDUnXU5powFXDhCwa",
+ "voice_design": null,
+ "direction": "[a tired physics student, wry, self-ironic]",
+ "model": "fal-ai/elevenlabs/tts/eleven-v3",
+ "request": {
+  "stability": 0.5,
+  "apply_text_normalization": "auto",
+  "text": "[a tired physics student, wry, self-ironic] Well, any data? No data, no conclusion. Go and count.",
+  "voice": "Charlotte",
+  "language_code": "en"
+ },
+ "fal_request_id": "01a1d5fb-f214-73e1-8864-718a105075eb",
+ "hash": "3d44ebfd6b54"
+}

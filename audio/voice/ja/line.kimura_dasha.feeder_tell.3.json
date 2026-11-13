@@ -1,0 +1,20 @@
+{
+ "key": "line.kimura_dasha.feeder_tell.3",
+ "lang": "ja",
+ "text": "ヴィーカ!皿洗い一週間ね!あなたにはクッキーとコーヒー。賄賂じゃないよ、研究助成金。",
+ "speaker": "kimura_dasha",
+ "voice": "Charlotte",
+ "voice_id": "XB0fDUnXU5powFXDhCwa",
+ "voice_design": null,
+ "direction": "[a tired physics student, wry, self-ironic]",
+ "model": "fal-ai/elevenlabs/tts/eleven-v3",
+ "request": {
+  "stability": 0.5,
+  "apply_text_normalization": "auto",
+  "text": "[a tired physics student, wry, self-ironic] ヴィーカ!皿洗い一週間ね!あなたにはクッキーとコーヒー。賄賂じゃないよ、研究助成金。",
+  "voice": "Charlotte",
+  "language_code": "ja"
+ },
+ "fal_request_id": "01a1d5fd-7580-7700-b597-81af234f2b0e",
+ "hash": "daf25515caa3"
+}

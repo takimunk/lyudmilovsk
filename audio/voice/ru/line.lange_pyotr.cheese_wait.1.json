@@ -1,0 +1,20 @@
+{
+ "key": "line.lange_pyotr.cheese_wait.1",
+ "lang": "ru",
+ "text": "Сыр. Косичка. У клуба. Больше мне сказать нечего.",
+ "speaker": "lange_pyotr",
+ "voice": "Brian",
+ "voice_id": "nPczCjzI2devNBz1zQrb",
+ "voice_design": null,
+ "direction": "[gruff, unhurried, a weathered fisherman of few words]",
+ "model": "fal-ai/elevenlabs/tts/eleven-v3",
+ "request": {
+  "stability": 0.5,
+  "apply_text_normalization": "auto",
+  "text": "[gruff, unhurried, a weathered fisherman of few words] Сыр. Косичка. У клуба. Больше мне сказать нечего.",
+  "voice": "Brian",
+  "language_code": "ru"
+ },
+ "fal_request_id": "01a1d5fa-3cf7-7211-b67c-3c6ab6af60a5",
+ "hash": "5f39f6b8c8e3"
+}
