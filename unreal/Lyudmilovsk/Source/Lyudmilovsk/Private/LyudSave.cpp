@@ -7,6 +7,7 @@
 #include "GameFramework/PlayerController.h"
 #include "HAL/IConsoleManager.h"
 #include "Kismet/GameplayStatics.h"
+#include "Plants/GameCalendar.h"
 #include "Plants/ProceduralForest.h"
 #include "Serialization/MemoryReader.h"
 #include "Serialization/MemoryWriter.h"
@@ -232,6 +233,20 @@ void ULyudSaveSubsystem::NotifyWorldBeginPlay(UWorld& World)
 		bPendingNewGame = false;
 		ClockBase = -World.GetTimeSeconds();
 		OnNewGame.Broadcast();
+	}
+	if (Pending && MapOf(&World) == Pending->Map)
+	{
+		// the clock and the date at once: what is built in BeginPlay (plants, the sky, the weather) is built for the save's
+		// day, not for the session's that was left and then again a tick later. ApplyPending sets both again with the rest.
+		if (!FMath::IsFinite(Pending->GameTimeSeconds) || Pending->GameTimeSeconds < 0.0)
+		{
+			Pending->GameTimeSeconds = 0.0;
+		}
+		ClockBase = Pending->GameTimeSeconds - World.GetTimeSeconds();
+		if (UGameCalendar* Calendar = World.GetSubsystem<UGameCalendar>())
+		{
+			Pending->ReadObject(TEXT("Calendar"), Calendar);
+		}
 	}
 	if (Pending)
 	{
