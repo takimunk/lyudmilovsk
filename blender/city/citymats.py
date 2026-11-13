@@ -53,11 +53,13 @@ MATERIALS = {
     "CT_Atlas":         ("#FFFFFF", 0.6, "atlas", 1.0, "picture atlas: book spines, posters, signs, labels, rugs, screens"),
     # windows: one opaque card per window (dark glass by day, a lit room at night); not in the shell
     "CT_Window":        ("#1F2A30", 0.05, None, 1.0, "window card: UV0 0..1 over the pane, UV1 = its light texel"),
+    "CT_WindowIn":      ("#DCE8F0", 0.5, None, 1.0, "the same window seen from its room: a daylight pane by day, dark blue at "
+                                                    "night (unlit, emissive; UV0 as CT_Window)"),
     "CT_Glass":         ("#2A3A40", 0.05, None, 1.0, "big shop glazing seen from far (opaque, reflective)"),
 }
 
 # Materials that emit at night (Unreal: driven by the light texture or the building's hours).
-EMISSIVE = {"CT_Window", "CT_Neon", "CT_Opal"}
+EMISSIVE = {"CT_Window", "CT_WindowIn", "CT_Neon", "CT_Opal"}
 
 # Slots whose UV0 is a direct 0..1 lookup into one texture (no metre UVs, no tint, no tiling; the UV-stretch lint
 # skips them). Blender preview: build_city.material; Unreal: import_city.make_materials -> M_City_Atlas.

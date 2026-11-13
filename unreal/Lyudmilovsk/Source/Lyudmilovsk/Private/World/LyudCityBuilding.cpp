@@ -114,6 +114,10 @@ ALyudCityBuilding::ALyudCityBuilding()
 	Windows->SetMobility(EComponentMobility::Static);
 	Windows->SetCollisionEnabled(ECollisionEnabled::NoCollision);
 	Windows->SetCastShadow(false);
+	// the cards glow (lit rooms at night outside, the daylight pane M_City_WindowIn inside): out of Lumen's scene and
+	// the distance fields, as ALyudCityWindows' panes, so their emission lights nothing and costs no GI
+	Windows->SetAffectDistanceFieldLighting(false);
+	Windows->bAffectDynamicIndirectLighting = false;
 	Tags.Add(CityTag);
 }
 

@@ -3,7 +3,8 @@
   import: blender/export/city/<type>.glb (built by blender/city/build_city.py) -> /Game/City/Buildings/<type>/
           SM_<type> (Nanite, exact collision), SM_<type>_Detail (Nanite, no collision), SM_<type>_Windows (classic
           mesh, no collision, no shadow, M_City_Window); the materials /Game/City/Materials/MI_CT_<slot> from
-          blender/city/citymats.py on the Academgorodok's masters and textures, plus M_City_Window.
+          blender/city/citymats.py on the Academgorodok's masters and textures, plus M_City_Window (the window from
+          outside) and M_City_WindowIn (the same window from its room: make_city_materials.window_in).
   place:  place(face_y) puts an ALyudCityBuilding on every plot of unreal/Lyudmilovsk/Content/City/city_plan.json
           whose "building" type has been built (origin = the plot's "front", yaw = the plot's yaw: the way the front
           faces), fills its window table from blender/export/city/<type>.json, and fits a door in every street
@@ -211,7 +212,7 @@ def make_materials():
         path = "%s/MI_%s" % (MATS, slot)
         c = mp.hex_lin(hx)
         tex_d = ACADEM_MATS + "/Textures/T_Academ_%s_D" % texname if texname else None
-        if slot == "CT_Window":
+        if slot in ("CT_Window", "CT_WindowIn"):
             continue
         if slot in getattr(CM, "ATLAS_SLOTS", ()):
             # the interiors' picture atlas: its own untinted, untiled material; the kit's UVs land upright in Unreal
@@ -240,6 +241,8 @@ def make_materials():
         eal.save_loaded_asset(mi, False)
         out[slot] = mi
     out["CT_Window"] = _window_master(MATS + "/M_City_Window")
+    import make_city_materials as MCM
+    out["CT_WindowIn"] = MCM.window_in(MATS)
     log("%d materials under %s" % (len(out), MATS))
     return out
 
@@ -267,7 +270,8 @@ def import_type(type_id, mats):
         detail = name.endswith("_Detail")
         for i, sl in enumerate(sm.get_editor_property("static_materials")):
             key = str(sl.material_slot_name)
-            mi = mats.get(key) or next((v for k, v in mats.items() if key.startswith(k)), None)
+            # exact slot name, else the longest slot it starts with ("CT_WindowIn.001" is CT_WindowIn, not CT_Window)
+            mi = mats.get(key) or next((mats[k] for k in sorted(mats, key=len, reverse=True) if key.startswith(k)), None)
             if mi is not None:
                 sm.set_material(i, mi)
             else:
