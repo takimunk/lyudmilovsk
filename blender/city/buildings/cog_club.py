@@ -31,6 +31,7 @@ from _cons_util import wall, win, hface, rect
 from _surrounds import add_surrounds
 import interior_kit as kit
 from furn_int3 import rod
+import furn_int3 as fu
 
 INFO = {
     "name_ru": "Клуб «Шестерня»", "name_en": "Cog Club",
@@ -59,6 +60,37 @@ WINGS = [
     dict(id="studio", ang=126, L=15.0, floors=[0.0, 4.4], T=9.0, mat="CT_PlasterGrey", end="CT_Plaster"),
     dict(id="reading", ang=198, L=17.0, floors=[0.0], T=8.5, mat="CT_Plaster", end="CT_PlasterBlue"),
 ]
+
+
+def _switch(B, x, y, yaw, z, tid, scope="room"):
+    """A wall light switch: a small white plate with a rocker at height z on the wall at (x, y), facing yaw."""
+    fr = fu.Fr(x, y, yaw)
+    fu.lbox(B.detail, "CT_SteelWhite", fr, -0.04, 0.04, 0.0, 0.012, z - 0.06, z + 0.06)
+    fu.lbox(B.detail, "CT_Steel", fr, -0.012, 0.012, 0.012, 0.02, z - 0.025, z + 0.03)
+    B.thing(tid, "machine", fr.p(0.0, 0.03, z), yaw, what="switch", switch=scope)
+
+
+def _checkers(B, x, y, z, yaw=0.0):
+    """[prop] A draughts board (0.34 m, green with white squares) with a few men mid-game, lying on a table top at z."""
+    fr = fu.Fr(x, y, yaw)
+    s = 0.04
+    fu.lbox(B.detail, "CT_PlasterGreen", fr, -4 * s - 0.01, 4 * s + 0.01, -4 * s - 0.01, 4 * s + 0.01, z, z + 0.012)
+    for i in range(8):
+        for j in range(8):
+            if (i + j) % 2 == 0:
+                fu.lbox(B.detail, "CT_SteelWhite", fr, -4 * s + i * s, -3 * s + i * s, -4 * s + j * s, -3 * s + j * s, z + 0.012, z + 0.014)
+    for k, (i, j, red) in enumerate(((1, 1, 1), (3, 1, 1), (2, 2, 1), (5, 3, 1), (4, 4, 0), (6, 6, 0), (1, 5, 0), (3, 5, 0))):
+        px, py = fr.p(-4 * s + (i + 0.5) * s, -4 * s + (j + 0.5) * s)[:2]
+        fu.cyl(B.detail, "CT_PlasterRed" if red else "CT_Steel", px, py, z + 0.014, z + 0.03, 0.016, segs=8, top=True)
+
+
+def _dominoes(B, x, y, z, yaw=0.0):
+    """[prop] A short snake of dominoes laid out on a table top at z (white tiles with a dark centre line, 0.04 x 0.08)."""
+    fr = fu.Fr(x, y, yaw)
+    for u, w, rot in ((-0.16, 0.0, 0), (-0.08, 0.0, 0), (0.0, 0.0, 0), (0.06, 0.05, 90), (0.1, 0.12, 0), (0.1, 0.2, 0), (0.05, 0.27, 90)):
+        f = fu.Fr(*fr.p(u, w)[:2], yaw + rot)
+        fu.lbox(B.detail, "CT_SteelWhite", f, -0.02, 0.02, -0.04, 0.04, z, z + 0.01)
+        fu.lbox(B.detail, "CT_Steel", f, -0.019, 0.019, -0.002, 0.002, z + 0.0095, z + 0.0105)
 
 
 # ------------------------------------------------------------------ geometry helpers
@@ -190,6 +222,9 @@ def build(B):
     _studio(B)
     _front_room(B)
     _lamps_misc(B)
+    import os
+    if os.environ.get("KIT_CHECK"):
+        print("KITCHECK", kit.check(B))
     # ------------------------------------------------------------ footprint, height, surrounds
     fp = []
     for i, w in enumerate(sorted(WINGS, key=lambda w: w["ang"])):
@@ -520,6 +555,12 @@ class Ctx:
         return fn(self.B, x, y, self.z, self.fy(-1, 0), **extra)
 
 
+def _cswitch(c, a, side, tid, scope="room", h=1.3):
+    """A light switch on the inner face of a wing's side wall (side +1/-1) at axis distance a, h over the floor."""
+    x, y = c.W(a, side * INNER)
+    _switch(c.B, x, y, c.fy(0, -side), c.z + h, tid, scope)
+
+
 def _ring_pt(a, r):
     x, y = P(a, r)
     return x, y, yaw_at((x, y), (CX, CY))
@@ -736,6 +777,7 @@ def _reading(B):
     c.wall_side(kit.notice_board, 14.8, 1, zc=1.7, w=1.0, seed=2)
     c.wall_side(kit.picture, 14.8, -1, zc=1.7, name="painting_sea", w=0.9)
     c.wall_side(kit.wall_clock, 7.2, 1, zc=3.2, face="clock_3")
+    _cswitch(c, 6.3, 1, "light_switch_reading", "hall")
     c.wall_end(kit.sign_plate, 0.0, zc=3.4, name="sign_library", w=2.2)
     c.wall_end(kit.sign_plate, 1.9, zc=2.6, name="sign_quiet", w=0.9)
     sx, sy = c.W(c.L - WT, 1.0)
@@ -756,6 +798,7 @@ def _reading(B):
 
 def _buffet(B):
     c = Ctx(B, "buffet")
+    _cswitch(c, 6.3, -1, "light_switch_buffet", "room")
     c.along(kit.rug, 10.0, 0.0, w=5.0, d=3.2, name="rug_2")
     for i, (a, p) in enumerate(((8.8, -1.4), (8.8, 1.4), (11.4, -1.4), (11.4, 1.4))):
         x, y = c.W(a, p)
@@ -793,6 +836,7 @@ def _stack(B):
     """Wing 54, three storeys: games (ground), model-makers (4.4), photo lab (8.8)."""
     # ---------------------------------------------------------------- ground: billiards + table tennis
     c = Ctx(B, "stack", 0.0)
+    _cswitch(c, 6.3, -1, "light_switch_games", "room")
     c.along(kit.rug, 8.6, 0.0, w=4.4, d=3.0, name="rug_4")
     c.along(kit.billiard_table, 8.6, 0.0)
     c.along(kit.pingpong_table, 12.4, 0.0)
@@ -824,6 +868,7 @@ def _stack(B):
     # ---------------------------------------------------------------- 4.4: the model-makers' workshop
     z = 4.4
     c = Ctx(B, "stack", z)
+    _cswitch(c, 6.3, -1, "light_switch_workshop", "room")
     for k, a in enumerate((8.4, 11.6)):
         c.along(kit.table, a, 0.0, w=2.4, d=0.9, h=0.8, mat="CT_WoodLight", kind="wood")
         c.put(kit.tools, a - 0.5, 0.15, z=z + 0.8)
@@ -861,10 +906,17 @@ def _stack(B):
         _model_plane(B, *c.W(a, p), z + 3.3, c.ang + 30 * k)
     c.thing("workshop_board", "board", 9.8, -INNER, 1.7, (0, 1), topic="club")
     # the drying shelf: finished boats waiting for their paint to harden
-    c.wall_end(kit.wall_shelf, 1.75, zt=1.45, w=1.0, props=False)
-    _hull(B, *c.W(c.L - WT - 0.12, 1.5), z + 1.45, c.fy(-1, 0))
-    _hull(B, *c.W(c.L - WT - 0.12, 2.0), z + 1.45, c.fy(-1, 0) + 8)
-    c.thing("drying_shelf", "board", c.L - WT, 1.75, 1.5, (-1, 0), topic="exhibit")
+    rx, ry = c.W(c.L - WT - 0.3, 1.75)                   # a low rack under the end window (no glass behind it)
+    ryaw = c.fy(-1, 0)
+    for zt in (0.4, 0.82):
+        _obox(B, "CT_WoodLight", rx, ry, ryaw, -0.7, 0.7, -0.26, 0.26, z + zt, z + zt + 0.03)
+    for su in (-0.66, 0.66):
+        for sv in (-0.22, 0.22):
+            _obox(B, "CT_Wood", rx, ry, ryaw, su - 0.025, su + 0.025, sv - 0.025, sv + 0.025, z, z + 0.82)
+    for k, (u_, zt, dy) in enumerate(((-0.35, 0.85, 0), (0.3, 0.85, 8), (-0.1, 0.43, -6))):
+        hx, hy = rx + u_ * math.cos(math.radians(ryaw)), ry + u_ * math.sin(math.radians(ryaw))
+        _hull(B, hx, hy, z + zt, ryaw + dy)
+    c.thing("drying_shelf", "board", c.L - WT - 0.3, 1.75, 0.95, (-1, 0), topic="exhibit")
     c.spot("bench_stand", "stand", 13.0, 0.6, (1, 0))
     kit.pendant(B, *c.W(8.4, 0.0), z + 4.0, drop=0.6, kind="cone", light=False)
     kit.pendant(B, *c.W(11.6, 0.0), z + 4.0, drop=0.6, kind="cone", light=False)
@@ -872,6 +924,7 @@ def _stack(B):
     # ---------------------------------------------------------------- 8.8: the photo lab
     z = 8.8
     c = Ctx(B, "stack", z)
+    _cswitch(c, 6.3, -1, "light_switch_photo", "room")
     x, y = c.W(8.3, INNER - 0.4)
     kit.lab_bench(B, x, y, z, c.fy(0, -1), w=2.4, d=0.75)
     B.thing("darkroom_bench", "craft", (x, y, z + 0.9), c.fy(0, -1), what="darkroom")
@@ -902,8 +955,6 @@ def _stack(B):
     rod(B.detail, "CT_Steel", (pa[0], pa[1], z + 2.1), (pb[0], pb[1], z + 2.1), 0.01)
     for k, nm in enumerate(("painting_sea_calm", "painting_dunes", "canvas_blank", "painting_pines")):
         c.put(kit.poster, 14.2, 1.9 - 0.6 * k, z=z, face=(-1, 0), name=nm, w=0.34, zc=1.9)
-    for k in range(4):
-        c.wall_end(kit.poster, 1.5 - 1.0 * k, zc=1.75, name=("travel_0", "travel_1", "travel_3", "travel_4")[k], w=0.55)
     c.wall_end(kit.sign_plate, 0.0, zc=2.7, name="sign_photo", w=1.6)
     kit.pendant(B, *c.W(9.5, 0.0), z + 3.0, drop=0.6, kind="opal", light=False)
     B.lamp((*c.W(11.0, 0.0), z + 2.7), lumens=500, colour="#FFB090", kind=PUB, radius=6.0)
@@ -974,6 +1025,7 @@ def _studio(B):
     # ---------------------------------------------------------------- 4.4: lounge
     z = 4.4
     c = Ctx(B, "studio", z)
+    _cswitch(c, 6.3, -1, "light_switch_lounge", "room")
     c.along(kit.rug, 9.5, 0.0, w=4.6, d=3.2, name="rug_1")
     c.put(kit.sofa, 9.5, 2.0, face=(0, -1), seats=3, mat="CT_PlasterGreen")
     x, y = c.W(9.5, 2.0)
@@ -982,8 +1034,10 @@ def _studio(B):
     x, y = c.W(11.4, -1.9)
     B.thing("lounge_armchair", "seat", (x, y, z + 0.45), c.fy(-1, 1), height=0.45)
     c.along(kit.coffee_table, 9.5, 0.6, w=1.0, d=0.55)
-    c.put(kit.newspaper, 9.4, 0.6, z=z + 0.42, seed=1)
-    c.put(kit.cup, 9.8, 0.55, z=z + 0.42)
+    x, y = c.W(9.3, 0.6)                                  # a game of draughts on the coffee table
+    _checkers(B, x, y, z + 0.42, c.ang)
+    B.thing("lounge_checkers", "play", (x, y, z + 0.45), c.ang, what="checkers")
+    c.put(kit.cup, 9.85, 0.55, z=z + 0.42)
     c.along(kit.table_football, 13.2, 0.0)
     x, y = c.W(13.2, 0.0)
     B.thing("table_football", "play", (x, y, z + 0.9), c.ang, what="table_football")

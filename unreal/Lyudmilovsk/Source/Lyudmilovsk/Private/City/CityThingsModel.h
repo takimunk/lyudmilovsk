@@ -186,14 +186,28 @@ namespace LyudCity
 		std::string Collect;
 		/** "read": the id of a text (FReadText) the hero must have read to the end (empty: no condition). */
 		std::string ReadText;
+		/** "did": an act's target (what the quests hear as "do") the hero has done at least once (empty: no condition). */
+		std::string Did;
+		/** "heard": the id of a staff talk topic (FTopic) the hero has asked about (empty: no condition). */
+		std::string Heard;
 
 		bool IsFestive() const { return Festival == EFestivalCond::Any || Festival == EFestivalCond::Ids; }
 
 		/** Do the conditions hold? Stamps: the collections (null: none collected, so "have" and "count" fail); ReadMap: the
-		 *  texts read to the end (text id -> plot; null: none read, so "read" fails). */
-		bool Holds(const FWhen& W, const FStamps* Stamps = nullptr, const std::map<std::string, std::string>* ReadMap = nullptr) const
+		 *  texts read to the end (text id -> plot; null: none read, so "read" fails); DoneSet: the targets done ("did"; null:
+		 *  nothing done); HeardSet: the topics asked about ("heard"; null: none). */
+		bool Holds(const FWhen& W, const FStamps* Stamps = nullptr, const std::map<std::string, std::string>* ReadMap = nullptr,
+			const std::set<std::string>* DoneSet = nullptr, const std::set<std::string>* HeardSet = nullptr) const
 		{
 			if (!ReadText.empty() && (!ReadMap || ReadMap->count(ReadText) == 0))
+			{
+				return false;
+			}
+			if (!Did.empty() && (!DoneSet || DoneSet->count(Did) == 0))
+			{
+				return false;
+			}
+			if (!Heard.empty() && (!HeardSet || HeardSet->count(Heard) == 0))
 			{
 				return false;
 			}
@@ -311,6 +325,55 @@ namespace LyudCity
 		bool bReadDaily = false;
 		/** "sleep": lying down, the hero chooses the hour he wakes at (a home's or a hotel's bed) instead of the act's minutes. */
 		bool bSleep = false;
+		/** "topics": what the staff here can be asked about (indices into FModel::Topics), besides the act itself. */
+		std::vector<int> Topics;
+	};
+
+	/**
+	 * A thing the staff at a counter can be asked about (docs/city_interiors.md "Staff talk"; "topics" of interiors.json): the
+	 * chooser's entry, when it is offered (the line conditions), whether it goes once heard, the answer (every line that holds
+	 * now, in order: by the hour, the weather, a holiday, what the hero did, read or collected), the stamp hearing it the first
+	 * time gives. Asking reports the quest event "ask" with the topic's id.
+	 */
+	struct FTopic
+	{
+		std::string Id;
+		std::string Title;
+		/** The conditions under which the topic is offered (its Key unused). */
+		FLine When;
+		bool bOnce = false;
+		std::vector<FLine> Lines;
+		std::string Collect;
+	};
+
+	/** What asking a topic yields (FModel::AskTopic). */
+	struct FTopicAnswer
+	{
+		int Topic = -1;
+		/** The answer's line keys, in order (empty: nothing to say now). */
+		std::vector<std::string> Lines;
+		/** Heard for the first time now (the chooser's "new" mark goes). */
+		bool bFirst = false;
+		std::vector<std::string> NewStamps;
+		std::string Event = "ask";
+		std::string Target;
+	};
+
+	/**
+	 * A room's sound (docs/city_interiors.md "Room tones"; "tones" of interiors.json): a quiet loop (a soundscape pool's id and
+	 * its asset, loaded once) at a volume, and now and then a one-shot of a pool (cups, pages) at a volume, every EveryMin..EveryMax
+	 * seconds. While the plot is shut its Closed tone plays instead (-1: silence).
+	 */
+	struct FTone
+	{
+		std::string Id;
+		std::string Loop;
+		std::string Asset;
+		float Volume = 0.3f;
+		std::vector<std::string> Shots;
+		float EveryMin = 12.f, EveryMax = 30.f;
+		float ShotVolume = 0.5f;
+		int Closed = -1;
 	};
 
 	/**
@@ -587,6 +650,8 @@ namespace LyudCity
 		bool bHours = false;
 		float Open = 0.f, Close = 24.f;
 		uint8_t Days = 0x7F;
+		/** Topics of this thing's own (a rule's "topics"), offered after its act's (indices into FModel::Topics). */
+		std::vector<int> Topics;
 
 		std::string Prop(const std::string& Key, const std::string& Default = std::string()) const
 		{
@@ -890,6 +955,13 @@ namespace LyudCity
 		std::vector<FRegular> Regulars;
 		/** The texts of the reading view ("texts" of interiors.json), in the file's order. */
 		std::vector<FReadText> Texts;
+		/** The staff talk's topics ("topics" of interiors.json) and the room tones ("tones"), in the file's order. */
+		std::vector<FTopic> Topics;
+		std::vector<FTone> Tones;
+		/** The most topics a chooser offers at once. */
+		static constexpr int MaxTopics = 8;
+		/** The most lines an answer has. */
+		static constexpr int MaxAnswerLines = 6;
 
 		/** Grid cell size (cm): reach is a few metres, so a pick reads 3x3 cells. */
 		static constexpr double CellCm = 400.0;
@@ -905,6 +977,11 @@ namespace LyudCity
 			Regulars.clear();
 			Texts.clear();
 			TextIndex.clear();
+			Topics.clear();
+			TopicIndex.clear();
+			Tones.clear();
+			ToneIndex.clear();
+			PlotTone.clear();
 			ActIndex.clear();
 			ThingIndex.clear();
 			Grid.clear();
@@ -929,9 +1006,20 @@ namespace LyudCity
 					Texts.push_back(std::move(T));
 				}
 			}
+			for (const auto& Field : Root["topics"].Fields)
+			{
+				FTopic T = ReadTopic(Field.first, Field.second);
+				if (!T.Lines.empty() && TopicIndex.count(T.Id) == 0)
+				{
+					TopicIndex[T.Id] = (int)Topics.size();
+					Topics.push_back(std::move(T));
+				}
+			}
+			ReadTones(Root["tones"], Root["plot_tones"]);
 			for (const auto& Field : Root["acts"].Fields)
 			{
 				FAct A = ReadAct(Field.first, Field.second);
+				ReadTopicList(Field.second["topics"], A.Topics);
 				// "read": {"texts": [ids], "rotate": "use" | "daily"}: an id the file does not have is left out
 				const LyudJson::FValue& Read = Field.second["read"];
 				for (const LyudJson::FValue& Id : Read["texts"].Items)
@@ -1028,6 +1116,7 @@ namespace LyudCity
 				const auto Closed = ActIndex.find(T["closed"].S());
 				Th.ClosedAct = Closed == ActIndex.end() ? -1 : Closed->second;
 				Th.Collect = T["collect"].S();
+				ReadTopicList(T["topics"], Th.Topics);
 				ThingIndex[Th.Id] = (int)Things.size();
 				Things.push_back(std::move(Th));
 			}
@@ -1297,6 +1386,10 @@ namespace LyudCity
 			O.Give = A->Give;
 			O.Event = A->Event.empty() ? std::string("do") : A->Event;
 			O.Target = A->Target.empty() ? A->Id : A->Target;
+			if (!O.bClosed)
+			{
+				Done.insert(O.Target);     // what the hero did ("did" lines: the staff know he saw the film)
+			}
 			O.Pose = A->Pose;
 			O.Sound = A->Sound;
 			O.Shop = A->Shop;
@@ -1337,7 +1430,161 @@ namespace LyudCity
 		/** May this line be shown at this page now: its conditions hold and, a "once" line, it was not shown there yet. */
 		bool Usable(const std::string& PageId, const FLine& L, const FWhen& When) const
 		{
-			return L.Holds(When, &Stamps, &ReadAt) && !(L.bOnce && OnceShown.count(PageId + "|" + L.Key));
+			return HoldsNow(L, When) && !(L.bOnce && OnceShown.count(PageId + "|" + L.Key));
+		}
+		/** Do a line's conditions hold now, the hero's stamps, texts read, deeds done and topics heard included? */
+		bool HoldsNow(const FLine& L, const FWhen& When) const
+		{
+			return L.Holds(When, &Stamps, &ReadAt, &Done, &Heard);
+		}
+
+		// --- the staff talk (docs/city_interiors.md "Staff talk"): topics a counter's staff can be asked about besides the act
+
+		int FindTopic(const std::string& Id) const
+		{
+			const auto It = TopicIndex.find(Id);
+			return It == TopicIndex.end() ? -1 : It->second;
+		}
+		const FTopic* TopicAt(int Topic) const { return Topic >= 0 && Topic < (int)Topics.size() ? &Topics[(size_t)Topic] : nullptr; }
+		/** Does Thing have topics at all (its act's or its own)? No allocation (the prompt may ask). */
+		bool HasTopics(int Thing) const
+		{
+			const FAct* A = ActOf(Thing);
+			return Thing >= 0 && Thing < (int)Things.size() && ((A && !A->Topics.empty()) || !Things[(size_t)Thing].Topics.empty());
+		}
+		/** Is the topic offered now: its conditions hold, a "once" topic not heard yet, and some answer line holds? */
+		bool TopicOffered(int Topic, const FWhen& When) const
+		{
+			const FTopic* T = TopicAt(Topic);
+			if (!T || !HoldsNow(T->When, When) || (T->bOnce && Heard.count(T->Id)))
+			{
+				return false;
+			}
+			const std::string Page = "topic:" + T->Id;
+			for (const FLine& L : T->Lines)
+			{
+				if (Usable(Page, L, When))
+				{
+					return true;
+				}
+			}
+			return false;
+		}
+		/** The topics Thing offers now (its act's, then its own; each once; at most MaxTopics), into Out; how many. Nothing while
+		 *  its plot is shut and it only says its closed words. Allocates (asked when the chooser opens). */
+		int TopicsNow(int Thing, const FWhen& When, std::vector<int>& Out, bool bOpenAll = false) const
+		{
+			Out.clear();
+			const FAct* A = ActOf(Thing);
+			if (!A || ActIndexNow(Thing, When, bOpenAll) != Things[(size_t)Thing].Act)
+			{
+				return 0;
+			}
+			auto Add = [this, &Out, &When](const std::vector<int>& From)
+			{
+				for (const int Topic : From)
+				{
+					if ((int)Out.size() < MaxTopics && std::find(Out.begin(), Out.end(), Topic) == Out.end() && TopicOffered(Topic, When))
+					{
+						Out.push_back(Topic);
+					}
+				}
+			};
+			Add(A->Topics);
+			Add(Things[(size_t)Thing].Topics);
+			return (int)Out.size();
+		}
+		bool IsHeard(const std::string& TopicId) const { return Heard.count(TopicId) > 0; }
+		const std::set<std::string>& GetHeard() const { return Heard; }
+		/** The hero asks about Topic: every answer line that may be shown now (a "once" line then no more), heard (the first time:
+		 *  its stamp), the quest event "ask"/<topic id>. */
+		FTopicAnswer AskTopic(int Topic, const FWhen& When)
+		{
+			FTopicAnswer Out;
+			const FTopic* T = TopicAt(Topic);
+			if (!T)
+			{
+				return Out;
+			}
+			Out.Topic = Topic;
+			Out.Target = T->Id;
+			const std::string Page = "topic:" + T->Id;
+			for (const FLine& L : T->Lines)
+			{
+				if ((int)Out.Lines.size() < MaxAnswerLines && Usable(Page, L, When))
+				{
+					Out.Lines.push_back(L.Key);
+					if (L.bOnce)
+					{
+						OnceShown.insert(Page + "|" + L.Key);
+					}
+					GiveStamp(L.Collect, &Out.NewStamps);
+				}
+			}
+			Out.bFirst = Heard.insert(T->Id).second;
+			if (Out.bFirst)
+			{
+				GiveStamp(T->Collect, &Out.NewStamps);
+			}
+			return Out;
+		}
+		/** Developer mode: every topic unheard again (and its "once" lines shown again). */
+		void ForgetTopics()
+		{
+			Heard.clear();
+			for (auto It = OnceShown.begin(); It != OnceShown.end();)
+			{
+				It = It->compare(0, 6, "topic:") == 0 ? OnceShown.erase(It) : std::next(It);
+			}
+		}
+		/** The targets the hero has done ("did" lines). */
+		bool HasDone(const std::string& Target) const { return Done.count(Target) > 0; }
+
+		// --- room tones (docs/city_interiors.md "Room tones")
+
+		int FindTone(const std::string& Id) const
+		{
+			const auto It = ToneIndex.find(Id);
+			return It == ToneIndex.end() ? -1 : It->second;
+		}
+		const FTone* ToneAt(int Tone) const { return Tone >= 0 && Tone < (int)Tones.size() ? &Tones[(size_t)Tone] : nullptr; }
+		/** A plot's tone (-1 none). */
+		int ToneOfPlot(const std::string& Plot) const
+		{
+			const auto It = PlotTone.find(Plot);
+			return It == PlotTone.end() ? -1 : It->second;
+		}
+		/** The tone heard at Thing now: its plot's, or while the plot is shut that tone's closed one (-1: silence). */
+		int ToneNow(int Thing, const FWhen& When, bool bOpenAll) const
+		{
+			if (Thing < 0 || Thing >= (int)Things.size())
+			{
+				return -1;
+			}
+			const int Tone = ToneOfPlot(Things[(size_t)Thing].Plot);
+			const FTone* T = ToneAt(Tone);
+			if (!T)
+			{
+				return -1;
+			}
+			return IsShut(Thing, When, bOpenAll) ? T->Closed : Tone;
+		}
+		/** Seconds until a tone's next one-shot (EveryMin..EveryMax; -1: it has none). */
+		double NextShotIn(int Tone, FRng& Rng) const
+		{
+			const FTone* T = ToneAt(Tone);
+			if (!T || T->Shots.empty())
+			{
+				return -1.0;
+			}
+			return (double)T->EveryMin + Rng.Unit() * (double)std::max(0.f, T->EveryMax - T->EveryMin);
+		}
+		/** Which of a tone's one-shots plays (empty: none). */
+		const std::string& PickShot(int Tone, FRng& Rng) const
+		{
+			static const std::string None;
+			const FTone* T = ToneAt(Tone);
+			return T && !T->Shots.empty() ? T->Shots[(size_t)Rng.Below((int)T->Shots.size())] : None;
 		}
 		/** How many of an act's lines may be shown at this page now. */
 		int CountUsable(const std::string& PageId, const FAct& A, const FWhen& When) const
@@ -1751,7 +1998,7 @@ namespace LyudCity
 				int N = 0;
 				for (int I = 0; I < (int)Page.size() && N < 16; ++I)
 				{
-					if (Page[(size_t)I].Holds(When, &Stamps, &ReadAt))
+					if (HoldsNow(Page[(size_t)I], When))
 					{
 						Holding[N] = I;
 						++N;
@@ -2202,12 +2449,14 @@ namespace LyudCity
 			OnceShown.clear();
 			BookAt.clear();
 			ReadAt.clear();
+			Heard.clear();
+			Done.clear();
 			CountDay = 0;
 		}
 
 		/** The state as a flat map for the save: "day", "t:<act>", "u:<act>", "l:<thing>", "d:<thing>", "v:<plot>",
 		 *  "c:<set>/<piece>" (a stamp), "o:<page>|<line>" (a once line shown), "b:<text>" (the page it was left on), "r:<text>"
-		 *  (read to the end; the value is the plot). */
+		 *  (read to the end; the value is the plot), "h:<topic>" (a staff talk topic heard), "w:<target>" (done: "did" lines). */
 		void SaveState(std::map<std::string, std::string>& Out) const
 		{
 			Out.clear();
@@ -2254,6 +2503,14 @@ namespace LyudCity
 			{
 				Out["r:" + P.first] = P.second;
 			}
+			for (const std::string& T : Heard)
+			{
+				Out["h:" + T] = "1";
+			}
+			for (const std::string& T : Done)
+			{
+				Out["w:" + T] = "1";
+			}
 		}
 		void LoadState(const std::map<std::string, std::string>& In)
 		{
@@ -2278,6 +2535,8 @@ namespace LyudCity
 					case 'o': OnceShown.insert(Name); break;
 					case 'b': BookAt[Name] = (int)V; break;
 					case 'r': ReadAt[Name] = P.second; break;
+					case 'h': Heard.insert(Name); break;
+					case 'w': Done.insert(Name); break;
 					case 'c':
 					{
 						// kept even when the data no longer declares it (a piece may come back with the content)
@@ -2291,6 +2550,16 @@ namespace LyudCity
 					default: break;
 					}
 				}
+			}
+			// a save from before "w:": the acts used stand for what was done (a staff copy "buy_x@seller" or a seated one is "buy_x")
+			for (const auto& P : Uses)
+			{
+				std::string Target = P.first.substr(0, P.first.find('@'));
+				if (Target.size() > 7 && Target.compare(Target.size() - 7, 7, "_seated") == 0)
+				{
+					Target.resize(Target.size() - 7);
+				}
+				Done.insert(Target);
 			}
 		}
 
@@ -2317,6 +2586,13 @@ namespace LyudCity
 		/** The reading view: the page each text was left on, and the texts read to the end (text id -> the plot). */
 		std::map<std::string, int> BookAt;
 		std::map<std::string, std::string> ReadAt;
+		/** The staff talk's topics heard (ids), and the targets the hero has done (acts' targets: "did"). */
+		std::set<std::string> Heard;
+		std::set<std::string> Done;
+		std::unordered_map<std::string, int> TopicIndex;
+		std::unordered_map<std::string, int> ToneIndex;
+		/** plot id -> index into Tones. */
+		std::unordered_map<std::string, int> PlotTone;
 
 		static double Dist(const FVec& A, const FVec& B)
 		{
@@ -2883,6 +3159,99 @@ namespace LyudCity
 			}
 			Line.Collect = L["collect"].S();
 			Line.ReadText = L["read"].S();
+			Line.Did = L["did"].S();
+			Line.Heard = L["heard"].S();
+		}
+
+		/** A topic of "topics": {"k": title key, "lines": [line], <line conditions: when it is offered>, "once": true (offered until
+		 *  heard), "collect": "set/piece" (heard the first time)}. */
+		static FTopic ReadTopic(const std::string& Id, const LyudJson::FValue& V)
+		{
+			FTopic T;
+			T.Id = Id;
+			T.Title = V["k"].S();
+			ReadLine(V, T.When);
+			T.When.Key.clear();
+			T.When.bOnce = false;
+			T.When.Collect.clear();
+			T.bOnce = V["once"].Type == LyudJson::FValue::Bool ? V["once"].B : V["once"].I(0) != 0;
+			T.Collect = V["collect"].S();
+			for (const LyudJson::FValue& L : V["lines"].Items)
+			{
+				FLine Line;
+				if (L.Type == LyudJson::FValue::String)
+				{
+					Line.Key = L.Str;
+				}
+				else if (L.Type == LyudJson::FValue::Object)
+				{
+					ReadLine(L, Line);
+				}
+				if (!Line.Key.empty())
+				{
+					T.Lines.push_back(Line);
+				}
+			}
+			return T;
+		}
+
+		/** A list of topic ids (an act's or a thing's "topics"): those the file has, each once. */
+		void ReadTopicList(const LyudJson::FValue& List, std::vector<int>& Into) const
+		{
+			for (const LyudJson::FValue& Id : List.Items)
+			{
+				const int Found = FindTopic(Id.S());
+				if (Found >= 0 && std::find(Into.begin(), Into.end(), Found) == Into.end())
+				{
+					Into.push_back(Found);
+				}
+			}
+		}
+
+		/** "tones": {"<id>": {"loop", "asset", "volume", "shots": [ids], "every": [min, max] s, "shot_volume", "closed": tone id}},
+		 *  "plot_tones": {"<plot>": "<tone id>"}. Volumes are clamped to 0..1, the pause between one-shots to 2..600 s. */
+		void ReadTones(const LyudJson::FValue& Defs, const LyudJson::FValue& ByPlot)
+		{
+			std::vector<std::string> ClosedIds;
+			for (const auto& Field : Defs.Fields)
+			{
+				FTone T;
+				T.Id = Field.first;
+				const LyudJson::FValue& V = Field.second;
+				T.Loop = V["loop"].S();
+				T.Asset = V["asset"].S();
+				T.Volume = std::min(1.f, std::max(0.f, V["volume"].F(0.3f)));
+				for (const LyudJson::FValue& S : V["shots"].Items)
+				{
+					if (!S.S().empty())
+					{
+						T.Shots.push_back(S.S());
+					}
+				}
+				const LyudJson::FValue& Every = V["every"];
+				T.EveryMin = std::min(600.f, std::max(2.f, Every[0].F(12.f)));
+				T.EveryMax = std::min(600.f, std::max(T.EveryMin, Every[1].F(T.EveryMin)));
+				T.ShotVolume = std::min(1.f, std::max(0.f, V["shot_volume"].F(0.5f)));
+				if (ToneIndex.count(T.Id) == 0)
+				{
+					ToneIndex[T.Id] = (int)Tones.size();
+					ClosedIds.push_back(V["closed"].S());
+					Tones.push_back(std::move(T));
+				}
+			}
+			for (size_t I = 0; I < Tones.size(); ++I)
+			{
+				const int C = ClosedIds[I].empty() ? -1 : FindTone(ClosedIds[I]);
+				Tones[I].Closed = C == (int)I ? -1 : C;
+			}
+			for (const auto& Field : ByPlot.Fields)
+			{
+				const int Tone = FindTone(Field.second.S());
+				if (Tone >= 0)
+				{
+					PlotTone[Field.first] = Tone;
+				}
+			}
 		}
 
 		static FAct ReadAct(const std::string& Id, const LyudJson::FValue& V)

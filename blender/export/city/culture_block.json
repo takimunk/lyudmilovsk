@@ -940,6 +940,19 @@
    }
   },
   {
+   "id": "cafe_checkers",
+   "kind": "play",
+   "pos": [
+    15.2,
+    8.3,
+    0.78
+   ],
+   "yaw": 0,
+   "props": {
+    "what": "checkers"
+   }
+  },
+  {
    "id": "cafe_table_2",
    "kind": "seat",
    "pos": [
@@ -953,6 +966,19 @@
    }
   },
   {
+   "id": "cafe_dominoes",
+   "kind": "play",
+   "pos": [
+    17.0,
+    8.6,
+    0.78
+   ],
+   "yaw": 0,
+   "props": {
+    "what": "dominoes"
+   }
+  },
+  {
    "id": "cafe_table_3",
    "kind": "seat",
    "pos": [
@@ -963,6 +989,34 @@
    "yaw": 90,
    "props": {
     "height": 0.45
+   }
+  },
+  {
+   "id": "light_switch_cabin",
+   "kind": "machine",
+   "pos": [
+    -14.33,
+    3.57,
+    1.3
+   ],
+   "yaw": 0.0,
+   "props": {
+    "what": "switch",
+    "switch": 3
+   }
+  },
+  {
+   "id": "light_switch_hall",
+   "kind": "machine",
+   "pos": [
+    1.75,
+    1.43,
+    1.3
+   ],
+   "yaw": 180.0,
+   "props": {
+    "what": "switch",
+    "switch": "hall"
    }
   },
   {
@@ -3586,7 +3640,7 @@
  ],
  "tris": {
   "shell": 10050,
-  "detail": 22615,
+  "detail": 23477,
   "windows": 460
  }
 }

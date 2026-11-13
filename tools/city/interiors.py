@@ -32,6 +32,10 @@ PLAN = os.path.join(CONTENT, "City", "city_plan.json")
 EXPORTS = os.path.join(ROOT, "blender", "export", "city")
 SRC = os.path.join(os.path.dirname(os.path.abspath(__file__)), "content")
 INVENTORY_CPP = os.path.join(ROOT, "unreal", "Lyudmilovsk", "Source", "Lyudmilovsk", "Private", "LyudInventory.cpp")
+# the soundscape's pools (ULyudSoundscapeSubsystem::LoadSounds: /Game/Audio/<Group>/S_<id>_<nn>): the sound ids that can play
+SOUNDSCAPE_CPP = os.path.join(ROOT, "unreal", "Lyudmilovsk", "Source", "Lyudmilovsk", "Private", "Audio", "LyudSoundscape.cpp")
+AUDIO_CONTENT = os.path.join(CONTENT, "Audio")
+AUDIO_FILES = os.path.join(ROOT, "audio", "sfx")
 OUT_THINGS = os.path.join(CONTENT, "City", "interiors.json")
 OUT_TELEPORTS = os.path.join(CONTENT, "Dev", "teleports", "interiors.json")
 OUT_STRINGS = os.path.join(CONTENT, "Localization", "city")
@@ -55,19 +59,27 @@ SELLING = ("seller", "cashier", "barista", "waiter", "bartender", "bookseller", 
 SERVICE = ("cleaner", "janitor", "guard")
 DAYS = ("mon", "tue", "wed", "thu", "fri", "sat", "sun")
 PUBLIC_KINDS_SKIP = ("residential", "square", "park", "pool")
-QUEST_EVENTS = ("do", "win", "visit", "get", "use", "have", "wear", "reach", "talk", "bird", "walk", "leave_computer")
+QUEST_EVENTS = ("do", "win", "visit", "get", "use", "have", "wear", "reach", "talk", "bird", "walk", "leave_computer", "ask")
 ACT_FIELDS = ("prompt", "minutes", "price", "lines", "pose", "sound", "event", "target", "give", "daily", "needs_staff",
               "needs_item", "fade", "shop", "screen", "until", "title", "any_hour", "rotate", "collect", "closed", "game", "read",
-              "sleep")
+              "sleep", "topics")
 # a line's conditions (docs/city_interiors.md "Lines by the day and the hour"): hours [from, to), weekdays, a calendar date or
 # range ("MM-DD" or ["MM-DD", "MM-DD"], wrapping the year), days since the game began (after N), every [n, r] game days
 # festival ("any", "none", an id of PeopleData/festivals.json or a list of ids), weather (a word of WEATHER or a list: any of
 # them), have ("set/piece"), count (["set", n]); "collect" ("set/piece") is no condition: the stamp the line gives when shown
-LINE_CONDS = ("h", "d", "date", "after", "before", "once", "every", "festival", "weather", "have", "count", "collect", "read")
+# them), have ("set/piece"), count (["set", n]), read (a text read to its end), did (an act's target the hero has done), heard
+# (a staff talk topic asked about)
+LINE_CONDS = ("h", "d", "date", "after", "before", "once", "every", "festival", "weather", "have", "count", "collect", "read", "did",
+              "heard")
 WEATHER = ("rain", "snow", "fog", "cold", "warm", "clear", "wet", "dry")
 # the content sections a content file may have
 SECTIONS = ("acts", "shops", "rules", "defaults", "defaults_by_plot_kind", "quests", "collections", "closed_by", "regulars",
-            "texts")
+            "texts", "topics", "topic_sets", "tones", "tone_by", "sound_alias")
+# the staff talk (docs/city_interiors.md "Staff talk"): a topic's fields besides its line conditions (when it is offered)
+TOPIC_FIELDS = ("id", "k", "lines", "once", "gives")
+MAX_TOPICS = 8
+# room tones (docs/city_interiors.md "Room tones")
+TONE_FIELDS = ("loop", "volume", "shots", "every", "shot_volume", "closed", "about")
 # the reading view (docs/city_interiors.md "The reading page"): what a text is, how long a page takes, the kinds a reading act is for
 TEXT_KINDS = ("book", "notice", "ledger", "newspaper")
 TEXT_FIELDS = ("title", "kind", "minutes", "pages", "collect")
@@ -89,6 +101,8 @@ warnings = []
 RULES_USED = set()  # the id rules (<plot|type>/<id glob>) that matched a thing: --check fails on the others
 FESTIVAL_IDS = set()  # PeopleData/festivals.json
 STAMPS_USED = []  # (where, "set/piece") every collect of the content (acts, lines, things): checked against the collections
+DID_USED = []  # (where, target) every "did" line condition: checked against the acts' targets once they are built
+HEARD_USED = []  # (where, topic id) every "heard" line condition: checked against the topics
 # a shop or a talk that needs a role the plot has no staff at all for (the ground-floor shops of a residential block): it
 # runs without staff in these hours (a rule may give its own)
 NO_STAFF_HOURS = ([9, 20], "mon-sat")
@@ -249,7 +263,8 @@ def load_strings():
     return table
 
 
-CONTENT_EXTRA = {"collections": {}, "closed_by": {}, "quests": [], "regulars": {}, "texts": {}}
+CONTENT_EXTRA = {"collections": {}, "closed_by": {}, "quests": [], "regulars": {}, "texts": {}, "topics": {}, "topic_sets": {},
+                 "tones": {}, "tone_by": {}, "sound_alias": {}}
 
 
 def content_files():
@@ -287,7 +302,10 @@ def load_content():
             CONTENT_EXTRA["quests"].append(q)
         for section, into in (("acts", acts), ("shops", shops), ("rules", rules), ("defaults", defaults),
                               ("collections", CONTENT_EXTRA["collections"]), ("closed_by", CONTENT_EXTRA["closed_by"]),
-                              ("regulars", CONTENT_EXTRA["regulars"]), ("texts", CONTENT_EXTRA["texts"])):
+                              ("regulars", CONTENT_EXTRA["regulars"]), ("texts", CONTENT_EXTRA["texts"]),
+                              ("topics", CONTENT_EXTRA["topics"]), ("topic_sets", CONTENT_EXTRA["topic_sets"]),
+                              ("tones", CONTENT_EXTRA["tones"]), ("tone_by", CONTENT_EXTRA["tone_by"]),
+                              ("sound_alias", CONTENT_EXTRA["sound_alias"])):
             for k, v in (data.get(section) or {}).items():
                 if k.startswith("_doc"):
                     continue
@@ -388,6 +406,8 @@ def resolve(thing, rules, defaults, by_plot_kind, plot, acts):
         for k in ("collect", "closed"):
             if r.get(k):
                 extra[k] = r[k]
+        if r.get("topics"):
+            extra.setdefault("topics", []).extend(r["topics"] if isinstance(r["topics"], list) else [r["topics"]])
     thing["extra"] = extra
     if not act and props.get("shop"):
         act = "buy_" + props["shop"]
@@ -395,6 +415,8 @@ def resolve(thing, rules, defaults, by_plot_kind, plot, acts):
         r = prop_rule(rules, kind, dict(props, id=thing["id"]))
         if r:
             act = r.get("act")
+            if r.get("topics"):
+                extra.setdefault("topics", []).extend(r["topics"] if isinstance(r["topics"], list) else [r["topics"]])
             hours, days = r.get("hours", hours), r.get("days", days)
     if not act and kind == "take" and props.get("item"):
         act = "take_" + props["item"] if "take_" + props["item"] in acts else "take_any"
@@ -455,6 +477,16 @@ def check_line_conds(where, cond):
             STAMPS_USED.append((where + " (count)", v[0] + "/*"))
         elif k == "read" and not (isinstance(v, str) and v in CONTENT_EXTRA["texts"]):
             err("%s: read %r is not a text of any \"texts\" section" % (where, v))
+        elif k == "did":
+            if isinstance(v, str) and v:
+                DID_USED.append((where, v))
+            else:
+                err("%s: did must be an act's target (what the quests hear as do)" % where)
+        elif k == "heard":
+            if isinstance(v, str) and v:
+                HEARD_USED.append((where, v))
+            else:
+                err("%s: heard must be a topic id" % where)
 
 
 def expand_lines(spec, strings, where="lines"):
@@ -700,6 +732,8 @@ def build_acts(acts_src, shops, strings, items):
                 if r.get("rotate", "use") not in ROTATE:
                     err("act %s: read rotate must be one of %s" % (aid, ", ".join(ROTATE)))
                 act["read"] = {"texts": list(texts), "rotate": r.get("rotate", "use")}
+        if a.get("topics"):
+            act["topics"] = list(a["topics"]) if isinstance(a["topics"], list) else [a["topics"]]  # resolved by build_topics
         if "sleep" in a:
             if not isinstance(a["sleep"], bool):
                 err("act %s: sleep must be true or false" % aid)
@@ -811,6 +845,258 @@ def build_shops(shops, strings, items):
             err("shop %s sells nothing" % sid)
         out[sid] = {"title": title, "role": s.get("role", ""), "goods": goods}
     return out
+
+
+# ------------------------------------------------------------------ the staff talk
+
+TOPICS = collections.OrderedDict()  # topic id -> the record written to interiors.json
+TOPIC_ORIGIN = {}  # topic id -> the normalised source (a topic defined twice must say the same)
+
+
+def topic_id(t):
+    """A topic's id: its "id", else its title key without "city.talk." (city.talk.kiosk_news.film -> kiosk_news.film)."""
+    if t.get("id"):
+        return str(t["id"])
+    k = str(t.get("k", ""))
+    return k[len("city.talk."):] if k.startswith("city.talk.") else k
+
+
+def build_topic(where, t, strings):
+    """One topic as written: {"k", "lines", <conditions>, "once"?, "collect"?}, or None (an error is recorded)."""
+    if not isinstance(t, dict) or not isinstance(t.get("k"), str) or not t["k"]:
+        err("%s: a topic is {\"k\": title key, \"lines\": [...], <conditions>, \"once\", \"gives\"}" % where)
+        return None
+    tid = topic_id(t)
+    where = "%s topic %s" % (where, tid)
+    if not re.match(r"^[\w.-]+$", tid):
+        err("%s: the id is letters, digits, _ . - only" % where)
+    cond = {}
+    for k, v in t.items():
+        if k in TOPIC_FIELDS:
+            continue
+        if k in LINE_CONDS and k not in ("collect", "once"):
+            cond[k] = v
+        else:
+            err("%s: unknown field %s (%s, or line conditions)" % (where, k, ", ".join(TOPIC_FIELDS)))
+    check_line_conds(where, cond)
+    if not has_string(t["k"], strings):
+        err("%s: title string %s is missing" % (where, t["k"]))
+    lines = expand_lines(t.get("lines") or [], strings, where)
+    if not lines:
+        err("%s: no answer lines" % where)
+    if not any(isinstance(l, str) for l in lines):
+        err("%s: every answer line has conditions: at least one must always hold" % where)
+    for l in lines:
+        if not has_string(line_key(l), strings):
+            err("%s: line string %s is missing" % (where, line_key(l)))
+        if isinstance(l, dict) and l.get("collect"):
+            STAMPS_USED.append(("%s line %s" % (where, l["k"]), l["collect"]))
+    rec = dict({"k": t["k"]}, **cond)
+    rec["lines"] = lines
+    if "once" in t:
+        if not isinstance(t["once"], bool):
+            err("%s: once must be true or false" % where)
+        elif t["once"]:
+            rec["once"] = True
+    gives = t.get("gives") or {}
+    if not isinstance(gives, dict) or any(k != "collect" for k in gives):
+        err("%s: gives is {\"collect\": \"set/piece\"} (asking always reports the quest event ask/<topic id>)" % where)
+    elif gives.get("collect"):
+        check_line_conds(where, {"collect": gives["collect"]})
+        STAMPS_USED.append((where, gives["collect"]))
+        rec["collect"] = gives["collect"]
+    return tid, rec
+
+
+def topics_of(spec, where, strings):
+    """A list of topics (objects, or "@<set>" for a "topic_sets" list) -> their ids (each once), the records into TOPICS."""
+    out = []
+    for e in spec if isinstance(spec, list) else [spec]:
+        if isinstance(e, str) and e.startswith("@"):
+            ts = CONTENT_EXTRA["topic_sets"].get(e[1:])
+            if ts is None:
+                err("%s: no topic set %s (a \"topic_sets\" section)" % (where, e[1:]))
+                continue
+            out += [x for x in topics_of(ts, "%s %s" % (where, e), strings) if x not in out]
+            continue
+        if isinstance(e, str):
+            if e in TOPICS:
+                out += [e] if e not in out else []
+            else:
+                err("%s: topic %s is not defined (write the topic object, or \"@<set>\")" % (where, e))
+            continue
+        r = build_topic(where, e, strings)
+        if not r:
+            continue
+        tid, rec = r
+        norm = json.dumps(rec, sort_keys=True, ensure_ascii=False)
+        if tid in TOPIC_ORIGIN and TOPIC_ORIGIN[tid][0] != norm:
+            err("%s: topic %s is defined twice differently (also in %s)" % (where, tid, TOPIC_ORIGIN[tid][1]))
+            continue
+        TOPIC_ORIGIN.setdefault(tid, (norm, where))
+        TOPICS[tid] = rec
+        if tid not in out:
+            out.append(tid)
+    return out
+
+
+def TOPICS_RESOLVE(spec, where):
+    return topics_of(spec, where, STRINGS_FOR_TOPICS)
+
+
+STRINGS_FOR_TOPICS = {}
+
+
+def build_topics(acts, strings):
+    """The staff talk: an act's own "topics", and a "topics" section {"<act id>": [topics]} (any content file: a topic for an act
+    that some other file defines, a building's x_ file included), resolved to ids on the act; the topic records into TOPICS. The
+    staff copies of an act (<act>@<role>, made later per plot) inherit them."""
+    STRINGS_FOR_TOPICS.update(strings)
+    for aid in sorted(acts):
+        a = acts[aid]
+        if a.get("topics"):
+            a["topics"] = topics_of(a["topics"], "act " + aid, strings)
+    for aid in sorted(CONTENT_EXTRA["topics"]):
+        if aid.startswith("_"):
+            continue
+        if aid not in acts:
+            err("topics for %s: no such act (a topics section is keyed by act id: buy_<shop>, cloakroom...)" % aid)
+            continue
+        ids = topics_of(CONTENT_EXTRA["topics"][aid], "topics of " + aid, strings)
+        acts[aid]["topics"] = list(acts[aid].get("topics") or []) + [x for x in ids if x not in (acts[aid].get("topics") or [])]
+    for aid, a in acts.items():
+        if not a.get("topics"):
+            a.pop("topics", None)
+        elif len(a["topics"]) > MAX_TOPICS:
+            err("act %s: %d topics (at most %d: the chooser shows them all)" % (aid, len(a["topics"]), MAX_TOPICS))
+    for sid, ts in CONTENT_EXTRA["topic_sets"].items():
+        if not sid.startswith("_"):
+            topics_of(ts, "topic set " + sid, strings)
+
+
+# ------------------------------------------------------------------ sounds and room tones
+
+def sound_registry():
+    """Every sound id the game can play through the soundscape (PlayEffect, a tone's loop): {id: (group, status)}; status "ok"
+    (the asset is imported: /Game/Audio/<Group>/S_<id>_01), "file" (the wav is in audio/sfx, not imported yet: it plays once
+    unreal/scripts imports it), "missing" (in the pool list, no sound at all)."""
+    out = {}
+    if not os.path.exists(SOUNDSCAPE_CPP):
+        return out
+    src = open(SOUNDSCAPE_CPP, encoding="utf-8").read()
+    for group, sid in re.findall(r'\{\s*TEXT\("(\w+)"\)\s*,\s*TEXT\("(\w+)"\)\s*\}', src):
+        if os.path.exists(os.path.join(AUDIO_CONTENT, group, "S_%s_01.uasset" % sid)):
+            status = "ok"
+        elif os.path.exists(os.path.join(AUDIO_FILES, group.lower(), "%s_01.wav" % sid)):
+            status = "file"
+        else:
+            status = "missing"
+        out[sid] = (group, status)
+    return out
+
+
+def sound_asset(reg, sid):
+    """The loop's asset path (the pool's first take) for a tone: the game loads it once at start."""
+    g = reg.get(sid)
+    return "/Game/Audio/%s/S_%s_01.S_%s_01" % (g[0], sid, sid) if g else ""
+
+
+def playable(reg, sid):
+    return sid in reg and reg[sid][1] in ("ok", "file")
+
+
+def resolve_sounds(acts, reg):
+    """Every act's (and game's) sound: kept when the soundscape has it; else the content's "sound_alias" (an existing sound of
+    the same kind: coin -> rest_coins) when there is one; else kept as written (the game plays nothing) and listed. Returns
+    {id: [where...]} of the ids that play nothing."""
+    alias = {k: v for k, v in CONTENT_EXTRA["sound_alias"].items() if not k.startswith("_")}
+    for k, v in alias.items():
+        if not playable(reg, v):
+            err("sound_alias %s -> %s: %s is not a sound the soundscape has" % (k, v, v))
+    unknown = collections.defaultdict(list)
+
+    def fix(sid, where):
+        if not sid or playable(reg, sid):
+            return sid
+        if sid in alias and playable(reg, alias[sid]):
+            return alias[sid]
+        unknown[sid].append(where)
+        return sid
+
+    for aid in sorted(acts):
+        a = acts[aid]
+        a["sound"] = fix(a["sound"], aid)
+        g = a.get("game")
+        if g:
+            for k in ("hit", "miss", "end"):
+                g["sounds"][k] = fix(g["sounds"][k], "%s#%s" % (aid, k))
+    return unknown
+
+
+def build_tones(plan_places, reg):
+    """The room tones: "tones" {"<id>": {"loop": sound id, "volume": 0..1, "shots": [sound ids], "every": [min, max] s,
+    "shot_volume": 0..1, "closed": tone id}} and "tone_by" {"<plot id | unit:<variant> | building type | plot kind>": tone id}
+    (first found in that order) -> the tones written (with the loop's asset) and plot -> tone. A sound the soundscape lacks is
+    a warning (the data may wait for it: docs "Room tones" names the missing ones)."""
+    src = {k: v for k, v in CONTENT_EXTRA["tones"].items() if not k.startswith("_")}
+    out = collections.OrderedDict()
+    missing = collections.defaultdict(list)
+    for tid in sorted(src):
+        t = src[tid]
+        where = "tone " + tid
+        if not isinstance(t, dict):
+            err("%s must be an object" % where)
+            continue
+        for k in t:
+            if k not in TONE_FIELDS:
+                err("%s: unknown field %s (%s)" % (where, k, ", ".join(TONE_FIELDS)))
+        rec = {}
+        loop = t.get("loop", "")
+        if loop:
+            if not playable(reg, loop):
+                missing[loop].append(where + " loop")
+            rec["loop"] = loop
+            rec["asset"] = sound_asset(reg, loop)
+        vol = t.get("volume", 0.3)
+        if not isinstance(vol, (int, float)) or not 0 <= vol <= 1:
+            err("%s: volume is 0..1" % where)
+            vol = 0.3
+        rec["volume"] = float(vol)
+        shots = t.get("shots") or []
+        if not isinstance(shots, list) or not all(isinstance(x, str) and x for x in shots):
+            err("%s: shots is a list of sound ids" % where)
+            shots = []
+        for x in shots:
+            if not playable(reg, x):
+                missing[x].append(where + " shot")
+        if shots:
+            every = t.get("every", [12, 30])
+            if not (isinstance(every, list) and len(every) == 2 and all(isinstance(x, (int, float)) for x in every) and 2 <= every[0] <= every[1] <= 600):
+                err("%s: every is [min, max] seconds, 2 <= min <= max <= 600" % where)
+                every = [12, 30]
+            sv = t.get("shot_volume", 0.5)
+            if not isinstance(sv, (int, float)) or not 0 <= sv <= 1:
+                err("%s: shot_volume is 0..1" % where)
+                sv = 0.5
+            rec.update({"shots": shots, "every": every, "shot_volume": float(sv)})
+        if not loop and not shots:
+            err("%s: neither a loop nor shots" % where)
+        if t.get("closed"):
+            if t["closed"] not in src:
+                err("%s: closed tone %s is not a tone" % (where, t["closed"]))
+            rec["closed"] = t["closed"]
+        out[tid] = rec
+    by = {k: v for k, v in CONTENT_EXTRA["tone_by"].items() if not k.startswith("_")}
+    for k, v in by.items():
+        if v not in out:
+            err("tone_by %s: %s is not a tone" % (k, v))
+    plot_tones = collections.OrderedDict()
+    for pl in plan_places:
+        for key in (pl["id"], "unit:%s" % pl.get("variant", ""), pl["building"], pl["kind"]):
+            if by.get(key) in out:
+                plot_tones[pl["id"]] = by[key]
+                break
+    return out, plot_tones, missing
 
 
 # ------------------------------------------------------------------ the plots
@@ -985,6 +1271,12 @@ def build_things(plan, rules, defaults, by_plot_kind, acts, strings=None, closed
             if extra.get("collect"):
                 rec["collect"] = extra["collect"].replace("{plot}", pl["id"])
                 STAMPS_USED.append((tid, rec["collect"]))
+            if extra.get("topics"):
+                ids = [x for x in TOPICS_RESOLVE(extra["topics"], tid) if x not in a.get("topics", [])]
+                if ids:
+                    rec["topics"] = ids
+                if len(set(ids) | set(a.get("topics", []))) > MAX_TOPICS:
+                    err("%s: more than %d topics (the act's and the rule's)" % (tid, MAX_TOPICS))
             # what it says while its plot is shut: the thing's rule, its act's "closed", the closed_by of its plot, type or plot kind
             closed = extra.get("closed") or a.get("closed")
             for scope in (pl["id"], pl["building"], pl["kind"]):
@@ -1007,6 +1299,14 @@ def build_things(plan, rules, defaults, by_plot_kind, acts, strings=None, closed
 
 # ------------------------------------------------------------------ collections
 
+def given_topic(given, tp):
+    """A topic some thing offers gives its stamp (heard the first time) and its lines' stamps."""
+    rec = TOPICS.get(tp) or {}
+    for c in [rec.get("collect", "")] + [l.get("collect", "") for l in rec.get("lines", []) if isinstance(l, dict)]:
+        if c:
+            given[c.partition("/")[0]].add(c.partition("/")[2])
+
+
 def build_collections(src, things, acts, strings, regs=None, texts=None):
     """The collections (docs/city_interiors.md "Collections"): {"<set>": {"title": key, "pieces": [...]}}. Pieces omitted: every
     piece something in town gives. Every stamp named anywhere must be of a declared set (and a declared piece), and every
@@ -1028,10 +1328,14 @@ def build_collections(src, things, acts, strings, regs=None, texts=None):
             for l in g.get(res, []):
                 if isinstance(l, dict) and l.get("collect"):
                     given[l["collect"].partition("/")[0]].add(l["collect"].partition("/")[2])
+        for tp in t.get("topics", []):
+            given_topic(given, tp)
         if t["act"] in seen_acts:
             continue
         seen_acts.add(t["act"])
         a = acts[t["act"]]
+        for tp in a.get("topics", []):
+            given_topic(given, tp)
         for tx in (a.get("read") or {}).get("texts", []):
             # a text read to the end gives its stamp (only a text some thing in town opens counts)
             txt = (texts or {}).get(tx) or {}
@@ -1191,6 +1495,8 @@ def check_quests(quests, acts, strings, items, plot_ids, map_places, existing_id
                     err("quest %s: %s %s: unknown item" % (qid, ev, tgt))
                 if ev == "reach" and tgt not in map_places:
                     err("quest %s: reach %s: not a map place" % (qid, tgt))
+                if ev == "ask" and tgt not in TOPICS:
+                    err("quest %s: ask %s: no such topic" % (qid, tgt))
     for k in keys:
         if k not in strings and k not in MAIN:
             err("quest string %s is missing" % k)
@@ -1378,6 +1684,9 @@ def main():
     shops = build_shops(shops_src, strings, items)
     texts = build_texts(CONTENT_EXTRA["texts"], strings)
     acts = build_acts(acts_src, shops_src, strings, items)
+    build_topics(acts, strings)
+    reg = sound_registry()
+    unknown_sounds = resolve_sounds(acts, reg)
     for k, a in list(defaults.items()) + [(k, a) for d in by_plot_kind.values() for k, a in d.items()]:
         if a not in acts:
             err("default act %s for %s is unknown" % (a, k))
@@ -1394,6 +1703,15 @@ def main():
         if g and g["vs"] and not opponents_at(regs, g["vs"], ""):
             err("act %s: game vs %s: no regular plays it" % (aid, g["vs"]))
     colls = build_collections(CONTENT_EXTRA["collections"], things, acts, strings, regs, texts)
+    tones, plot_tones, missing_tone_sounds = build_tones(places(plan), reg)
+    targets = {a["target"] for a in acts.values()} | set(acts)
+    for where, v in DID_USED:
+        if v not in targets:
+            err("%s: did %s is no act's target" % (where, v))
+    for where, v in HEARD_USED:
+        if v not in TOPICS:
+            err("%s: heard %s is not a topic" % (where, v))
+    offered = {tp for t in things for tp in t.get("topics", []) + acts[t["act"]].get("topics", [])}
     things.sort(key=lambda t: t["id"])
     used = {t["act"] for t in things}
     gen_strings = {}
@@ -1448,6 +1766,22 @@ def main():
                                          sum(1 for t in things if t.get("closed")), sum(1 for a in acts.values() if a.get("game")),
                                          sum(1 for t in things if acts[t["act"]].get("game")), len(regs), len(texts),
                                          sum(1 for t in things if acts[t["act"]].get("read"))))
+    n_talk = sum(1 for t in things if t.get("topics") or acts[t["act"]].get("topics"))
+    topic_lines = {line_key(l) for tp in TOPICS.values() for l in tp["lines"]}
+    print("staff talk: %d topics (%d offered somewhere), %d answer lines, on %d things; tones %d on %d plots" % (
+        len(TOPICS), len(offered), len(topic_lines), n_talk, len(tones), len(plot_tones)))
+    for tp in sorted(set(TOPICS) - offered):
+        warnings.append("topic %s is offered by no thing in town" % tp)
+    used_unknown = {sid: w for sid, w in unknown_sounds.items() if any(x.split("#")[0] in used for x in w)}
+    print("sounds: %d ids the acts use play nothing (no soundscape pool): %s" % (len(used_unknown), " ".join(sorted(used_unknown))))
+    for sid, w in sorted(missing_tone_sounds.items()):
+        warnings.append("sound %s (%s) is not in the soundscape: silent until it exists" % (sid, ", ".join(w)))
+    if "--sounds" in sys.argv:
+        print("| id | status | where used (acts) |")
+        print("|---|---|---|")
+        for sid in sorted(set(used_unknown) | set(missing_tone_sounds)):
+            w = used_unknown.get(sid, []) + missing_tone_sounds.get(sid, [])
+            print("| `%s` | %s | %s%s |" % (sid, reg.get(sid, ("", "not in the soundscape"))[1], ", ".join(w[:5]), " +%d" % (len(w) - 5) if len(w) > 5 else ""))
     for w in warnings:
         print("warning:", w)
     for e in errors:
@@ -1467,6 +1801,9 @@ def main():
     data["collections"] = colls
     data["regulars"] = regs
     data["texts"] = texts
+    data["topics"] = collections.OrderedDict((k, TOPICS[k]) for k in sorted(TOPICS) if k in offered)
+    data["tones"] = tones
+    data["plot_tones"] = plot_tones
     write(OUT_THINGS, dump_things(data))
     tp = collections.OrderedDict([("about", "Written by tools/city/interiors.py: x/y map metres (docs/world_map.md), z world cm (the floor, feet), yaw Unreal degrees."),
                                   ("teleports", teleports)])

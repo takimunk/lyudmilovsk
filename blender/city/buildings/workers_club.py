@@ -28,6 +28,7 @@ Ideas for later: a stage and curtain, a stair inside the foyer to the club rooms
 """
 import math
 
+import furn_int3 as fu
 import interior_kit as kit
 from citykit import box, prism
 from _cons_util import wall, win, hface, rect
@@ -44,6 +45,37 @@ YF, YD, YB = 3.0, 12.6, 30.0     # front wall, foyer/hall divider, back wall
 ZF = 5.0                          # foyer ceiling
 HZ = 10.5                         # hall wall top
 ZL, ZC, ZRt = 13.0, 18.0, 12.0    # left, centre, right block tops
+
+
+def _switch(B, x, y, yaw, z, tid, scope="room"):
+    """A wall light switch: a small white plate with a rocker at height z on the wall at (x, y), facing yaw."""
+    fr = fu.Fr(x, y, yaw)
+    fu.lbox(B.detail, "CT_SteelWhite", fr, -0.04, 0.04, 0.0, 0.012, z - 0.06, z + 0.06)
+    fu.lbox(B.detail, "CT_Steel", fr, -0.012, 0.012, 0.012, 0.02, z - 0.025, z + 0.03)
+    B.thing(tid, "machine", fr.p(0.0, 0.03, z), yaw, what="switch", switch=scope)
+
+
+def _checkers(B, x, y, z, yaw=0.0):
+    """[prop] A draughts board (0.34 m, green with white squares) with a few men mid-game, lying on a table top at z."""
+    fr = fu.Fr(x, y, yaw)
+    s = 0.04
+    fu.lbox(B.detail, "CT_PlasterGreen", fr, -4 * s - 0.01, 4 * s + 0.01, -4 * s - 0.01, 4 * s + 0.01, z, z + 0.012)
+    for i in range(8):
+        for j in range(8):
+            if (i + j) % 2 == 0:
+                fu.lbox(B.detail, "CT_SteelWhite", fr, -4 * s + i * s, -3 * s + i * s, -4 * s + j * s, -3 * s + j * s, z + 0.012, z + 0.014)
+    for k, (i, j, red) in enumerate(((1, 1, 1), (3, 1, 1), (2, 2, 1), (5, 3, 1), (4, 4, 0), (6, 6, 0), (1, 5, 0), (3, 5, 0))):
+        px, py = fr.p(-4 * s + (i + 0.5) * s, -4 * s + (j + 0.5) * s)[:2]
+        fu.cyl(B.detail, "CT_PlasterRed" if red else "CT_Steel", px, py, z + 0.014, z + 0.03, 0.016, segs=8, top=True)
+
+
+def _dominoes(B, x, y, z, yaw=0.0):
+    """[prop] A short snake of dominoes laid out on a table top at z (white tiles with a dark centre line, 0.04 x 0.08)."""
+    fr = fu.Fr(x, y, yaw)
+    for u, w, rot in ((-0.16, 0.0, 0), (-0.08, 0.0, 0), (0.0, 0.0, 0), (0.06, 0.05, 90), (0.1, 0.12, 0), (0.1, 0.2, 0), (0.05, 0.27, 90)):
+        f = fu.Fr(*fr.p(u, w)[:2], yaw + rot)
+        fu.lbox(B.detail, "CT_SteelWhite", f, -0.02, 0.02, -0.04, 0.04, z, z + 0.01)
+        fu.lbox(B.detail, "CT_Steel", f, -0.019, 0.019, -0.002, 0.002, z + 0.0095, z + 0.0105)
 
 
 def build(B):
@@ -172,6 +204,10 @@ def build(B):
         box(det, "CT_Neon", xa + 0.55, xb - 0.55, yb - 0.49, yb - 0.47, za + 0.45, za + 0.75, faces="y")
     for xx in (-4.4, 4.4):
         box(det, "CT_Steel", xx - 0.3, xx + 0.3, yb - 0.3, yb, 6.2, 6.9)                          # speakers
+    # light switches inside the hall: by each foyer door (on the hall face of the divider) and by the side exit
+    _switch(B, 11.5, YD, 180.0, 1.3, "light_switch_hall_e", "hall")
+    _switch(B, -11.5, YD, 180.0, 1.3, "light_switch_hall_w", "hall")
+    _switch(B, X1 - 0.4, 23.7, 270.0, 2.65, "light_switch_hall_exit", "hall")
     # exit signs over the hall doors and the side exit
     for xx in (-13.0, 13.0):
         box(det, "CT_Neon", xx - 0.4, xx + 0.4, YD, YD + 0.06, 2.62, 2.85, faces="y")
@@ -428,8 +464,12 @@ def _foyer(B):
     # seated café tables (west of the lane and east of the columns)
     for k, (tx, ty) in enumerate(((-8.8, 8.7), (7.2, 5.0))):
         kit.table_round(B, tx, ty, 0.0, 0.0, r=0.45, h=0.75)
-        kit.cup(B, tx + 0.1, ty, 0.75, 0.0)
-        kit.vase(B, tx - 0.1, ty + 0.1, 0.75, 0.0, seed=k)
+        if k == 1:                                       # the east table is for dominoes
+            _dominoes(B, tx - 0.18, ty - 0.14, 0.75, 0.0)
+            B.thing("cafe_dominoes", "play", (tx, ty, 0.78), 0.0, what="dominoes")
+        else:
+            kit.cup(B, tx + 0.1, ty, 0.75, 0.0)
+            kit.vase(B, tx - 0.1, ty + 0.1, 0.75, 0.0, seed=k)
         cs = kit.around_table(B, tx, ty, 0.8, 0.8, 0.0, per_side=(1, 1, 1, 1), chair_fn=kit.chair, kind="wood")
         B.thing("cafe_seat_%d" % (k + 1), "seat", (cs[0]["seats"][0][0], cs[0]["seats"][0][1], 0.45), cs[0]["seats"][0][3],
                 height=0.45)
@@ -507,6 +547,9 @@ def _deepen(B):
     box(det, "CT_Paper", -2.2, -1.95, 13.5, 13.65, 0.4, 0.42)                    # the label, still unread
     B.thing("reel_seat", "screen", (0.0, 15.2, 0.16 + 0.45), 0.0, what="cinema", height=0.45)
     _third(B)
+    import os
+    if os.environ.get("KIT_CHECK"):
+        print("KITCHECK", kit.check(B))
 
 
 def _third(B):
@@ -561,7 +604,7 @@ def _third(B):
     _rod(det, 2.92, 10.4, 1.23, 1.27, 0.07, "CT_Glass", 10)
     # ---- radio room: QSL-card stand with diplomas on its back
     xs_, ys_ = -8.6, 4.62
-    box(det, "CT_WoodLight", xs_ - 0.8, xs_ + 0.8, ys_ - 0.03, ys_ + 0.03, 0.85, 2.0)
+    box(det, "CT_Plaster", xs_ - 0.8, xs_ + 0.8, ys_ - 0.03, ys_ + 0.03, 0.85, 2.0)         # pale back: the diplomas read against it
     for lx in (-0.75, 0.75):
         box(det, "CT_Wood", xs_ + lx - 0.04, xs_ + lx + 0.04, ys_ - 0.12, ys_ + 0.12, 0.0, 0.85)
     kit.notice_board(B, xs_, ys_ + 0.03, 0.0, 180.0, w=1.5, zc=1.45, seed=21)
@@ -571,6 +614,6 @@ def _third(B):
         z = 1.2 + 0.28 * (k % 2)
         box(det, cols[k % 5], x, x + 0.11, ys_ + 0.07, ys_ + 0.075, z, z + 0.075)
     for k, nm in enumerate(("paper_letter", "paper_typed", "paper_drawing")):
-        kit.picture(B, xs_ - 0.5 + 0.5 * k, ys_ - 0.03, 0.0, 0.0, name=nm, w=0.34, zc=1.5)
+        kit.picture(B, xs_ - 0.52 + 0.52 * k, ys_ - 0.03, 0.0, 0.0, name=nm, w=0.4, zc=1.5)
     # ---- dance shoes on a rack by the floor
     kit.shoe_rack(B, 11.35, YF + 0.4, 0.0, 180.0, w=0.9, rows=3)
