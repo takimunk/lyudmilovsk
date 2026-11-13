@@ -1,6 +1,8 @@
 #include "Plants/PlantDevTool.h"
 
 #include "Camera/PlayerCameraManager.h"
+#include "Dev/LyudDev.h"
+#include "Dev/LyudDevPanel.h"
 #include "DrawDebugHelpers.h"
 #include "Engine/Engine.h"
 #include "Engine/GameViewportClient.h"
@@ -132,6 +134,10 @@ void APlantDevTool::Step(int32 Delta)
 
 void APlantDevTool::Toggle()
 {
+	if (!LyudDev::Enabled())
+	{
+		return;
+	}
 	if (Panel.IsValid())
 	{
 		Close();
@@ -227,6 +233,12 @@ void APlantDevTool::Open()
 				]
 				+ SVerticalBox::Slot().AutoHeight().Padding(0, 0, 0, 6)
 				[SNew(STextBlock).AutoWrapText(true).Text(LyudText::Get(TEXT("ui.dev.keys_hint"))).Font(Font(10)).ColorAndOpacity(FLinearColor(0.75f, 0.8f, 0.9f))]
+				// the tabs: World (below), Teleport, Quests, Pocket, Birds, Actions (LyudDevPanel.cpp)
+				+ SVerticalBox::Slot().AutoHeight().Padding(0, 0, 0, 8)[LyudDevPanel::TabBar(this)]
+				+ SVerticalBox::Slot().AutoHeight()[LyudDevPanel::Tabs(this)]
+				+ SVerticalBox::Slot().AutoHeight()
+				[
+				SNew(SVerticalBox).Visibility_Lambda([Self]() { return Self.IsValid() && Self->Tab == 0 ? EVisibility::Visible : EVisibility::Collapsed; })
 				// the world's date, time of day and how fast time runs: everything that reads the calendar follows
 				+ SVerticalBox::Slot().AutoHeight().HAlign(HAlign_Left)[SectionHeader(TEXT("ui.dev.world"), &bWorldOpen, this)]
 				+ SVerticalBox::Slot().AutoHeight()
@@ -356,6 +368,7 @@ void APlantDevTool::Open()
 				[SNew(STextBlock).AutoWrapText(true).Font(Font(9)).ColorAndOpacity(FLinearColor(0.7f, 0.7f, 0.7f))
 					.Text(LyudText::Get(TEXT("ui.plants.hint")))]
 				]
+				]
 			]
 		]
 	];
@@ -392,6 +405,15 @@ void APlantDevTool::Tick(float DeltaSeconds)
 	if (!bBound)
 	{
 		TryBindInput();
+	}
+	if (bRebuild)
+	{
+		bRebuild = false;
+		if (Panel.IsValid())
+		{
+			Close();
+			Open();
+		}
 	}
 	AProceduralPlant* P = Plant.Get();
 	if (!P)

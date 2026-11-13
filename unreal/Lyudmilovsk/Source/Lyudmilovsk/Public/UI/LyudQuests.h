@@ -159,6 +159,10 @@ public:
 	void AddNote(const FString& Key, const TArray<FString>& Args = TArray<FString>()) { AddEntry(Key, NAME_None, Args); OnChanged.Broadcast(); }
 	/** Finishes the current stage of a quest at once (dev command Quest.Advance). */
 	void Advance(FName Quest);
+	/** Developer mode (LyudDev::JumpToStage): Quest active at stage index Stage, the stages before it counted as done (no rewards). */
+	void DevJump(FName Quest, int32 Stage);
+	/** Developer mode: the quest as if never begun (its journal lines stay). */
+	void DevForget(FName Quest);
 
 	/** The hero is at P (world cm): finds places and reports reach events. Called by the game screen every few frames. */
 	void UpdatePosition(const UObject* WorldContext, const FVector& P);
