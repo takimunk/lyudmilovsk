@@ -617,6 +617,10 @@ public:
 		Rebuild();
 	}
 
+	/** The pocket changed: the rows are refilled once at this screen's next tick (a purchase changes it two or three
+	 *  times in a row: the money, the thing, the diner taking the dish back out), not inside the click that bought. */
+	void MarkDirty() { bRowsDirty = true; }
+
 	/** Refills the rows (money or stock changed); the scroll position and selection stay. */
 	void Rebuild()
 	{
@@ -700,7 +704,7 @@ public:
 			return;
 		}
 		const FName Item = Goods[Selected].Item;
-		// a purchase fires the pocket's OnChanged, which rebuilds the rows
+		// a purchase fires the pocket's OnChanged, which marks the rows to be refilled (MarkDirty)
 		Status = U->BuyShopGood(Selected) ? LyudText::Get(TEXT("ui.shop.bought"), { FStringFormatArg(ULyudInventory::ItemName(Item).ToString()) })
 		                                  : LyudText::Get(TEXT("ui.shop.nomoney"));
 	}
@@ -752,6 +756,11 @@ public:
 	{
 		SCompoundWidget::Tick(AllottedGeometry, InCurrentTime, InDeltaTime);
 		ViewHeight = AllottedGeometry.GetLocalSize().Y;
+		if (bRowsDirty)
+		{
+			bRowsDirty = false;
+			Rebuild();
+		}
 		// the end moves for a few frames while the rows' wrapped text settles: stay on it
 		if (StickToEnd > 0.f && Scroll)
 		{
@@ -781,6 +790,7 @@ private:
 	int32 Selected = 0;
 	float ViewHeight = 1080.f;
 	float StickToEnd = 0.f;
+	bool bRowsDirty = false;
 };
 
 ULyudInventoryUI* ULyudInventoryUI::Get(const UObject* WorldContext)
@@ -953,7 +963,7 @@ void ULyudInventoryUI::OpenShop(const FText& Title, const TArray<FLyudShopGood>&
 	ShopGoods = Goods;
 	Shop = SNew(SLyudShop).Owner(this).Inventory(Inv).Title(Title).Goods(Goods);
 	Viewport->AddViewportWidgetContent(Shop.ToSharedRef(), 70);
-	Inv->OnChanged.AddWeakLambda(this, [this] { if (Shop) { Shop->Rebuild(); } });
+	Inv->OnChanged.AddWeakLambda(this, [this] { if (Shop) { Shop->MarkDirty(); } });
 	bShop = true;
 	ShopOpenedFrame = GFrameCounter;
 	Lock(true);
