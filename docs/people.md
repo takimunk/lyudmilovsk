@@ -103,6 +103,24 @@ Temper (0..1: social, active, studious, gamer, nature, sun) weighs their choices
 friends are. Everybody's `sun` is there because people in this world are drawn to the sun (docs/story/motifs.md): the
 ones who love it most leave what they do to see it go down.
 
+### The North's people
+
+Five people of the North (docs/north.md "People"; all **proposals**): they live on island 3, off the walk grid, and
+come down by the trail.
+
+| Key | Name | Age | Occupation (proposal) | Household | Day (proposal) | Shown now by |
+|---|---|---|---|---|---|---|
+| ranger | Матвей Ильич Кречет | 58 | the reserve's ranger | alone, the hut (`north_hut`) | weather post 6:00, the gate 7–12 (`watch_gate`, not Saturday), the round 12–14:30 (`patrol_north`), the radio 20–21; Saturday supplies from the Gastronom | Town/R_ranger (else unseen) |
+| melnikova_anya | Аня Мельникова | 22 | geology student | tent 1 | `field_north` 9:30–16 | Town/R_melnikova_anya |
+| ito_ren | Рэн Ито | 23 | geology student | tent 2 | `field_north` 9:30–16 | Town/R_ito_ren |
+| savin_gleb | Глеб Савин | 34 | photographer | tent 4 | up at 5; `photo_cone`, the view spots | Town/R_savin_gleb |
+| okada_kiyo | Киё Окада | 71 | pensioner, comes to the spring every autumn | tent 3 | `hot_spring`, the fire | Town/R_okada_kiyo |
+
+Their homes are `private` flats (never shuffled into the town's households). Their pastimes (`campfire`, `eat_camp`,
+`hot_spring`, `walk_north`, `photo_cone`, `porch_sit`, `stove_tea`) have low bases that only their `likes` lift, and
+the town's pastimes carry a dislike for them (a 2 km walk each way). `round` on an activity walks its place's spots in
+order (the ranger's round).
+
 ## How it works
 
 **Needs** (0 fine .. 1 urgent): hunger, tired, social, fun, nature (fresh air), mind, sun. They grow by the hour (each

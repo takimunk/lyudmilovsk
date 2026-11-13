@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 """Looks for the town's residents: one seeded appearance per townsperson (no bpy; build_residents.py builds them).
 
-    python3 blender/residents/looks.py [--townsfolk PATH] [--names PATH] [--seed N] [--out PATH] [--summary]
+    python3 blender/residents/looks.py [--townsfolk PATH] [--names PATH] [--seed N] [--out PATH] [--summary] [--people]
 
 Input: Content/PeopleData/townsfolk.json (tools/town/town_life.py: key, age, female, household, occupation, temper) and
 tools/town/names.json (the origin of every given name and surname). Output: blender/residents/cache/looks.json (every
@@ -218,6 +218,10 @@ WORK_OUTFITS = {
     "programmer": ("casual", {}), "musician": ("casual", {}), "artist": ("casual", {}), "writer": ("casual", {}),
     "student": ("casual", {"acc_p": [("backpack", 0.5), ("shoulder_bag", 0.3)]}),
     "pupil": ("kid", {"acc": ["backpack"]}),
+    # the North's people (people.json, docs/north.md People): the free stand-in models until their own exist
+    "ranger": ("work", {"acc": ["knit_beanie"], "boots": 1.0}),
+    "photographer": ("casual", {"acc": ["backpack"], "boots": 0.8}),
+    "geology_student": ("work", {"acc": ["backpack"], "acc_p": [("knit_beanie", 0.4)], "boots": 0.9}),
 }
 
 
@@ -562,6 +566,9 @@ def main():
     ap.add_argument("--out", default=os.path.join(HERE, "cache", "looks.json"))
     ap.add_argument("--game-out", default=os.path.join(PEOPLE, "town_looks.json"))
     ap.add_argument("--summary", action="store_true")
+    ap.add_argument("--people", nargs="?", const=os.path.join(PEOPLE, "people.json"),
+                    help="also the people.json people whose mesh is Town/R_<key> (the North's: docs/north.md People); "
+                         "their looks go to --out for build_residents, not to the town's --game-out")
     a = ap.parse_args()
     tf = a.townsfolk
     nm = a.names
@@ -570,6 +577,12 @@ def main():
         nm = "%s:tools/town/names.json" % a.ref
     people = load_json(tf)["people"]
     names = load_names(nm)
+    extra = set()
+    if a.people:
+        for q in load_json(a.people)["people"]:
+            if q.get("mesh", "") == "Town/" + model_name(q["key"]):
+                people.append({k: q[k] for k in ("key", "age", "female", "household", "occupation", "temper") if k in q})
+                extra.add(q["key"])
     looks = make_all(people, a.seed, names)
     os.makedirs(os.path.dirname(a.out), exist_ok=True)
     with open(a.out, "w", encoding="utf-8") as f:
@@ -577,7 +590,8 @@ def main():
     game = {"_doc": "Each townsperson's own model, made by blender/residents (docs/residents.md). tools/town/town_life.py "
                     "copies it into townsfolk.json 'body'; the pool model stays as 'mesh' until the model is imported.",
             "seed": a.seed, "version": VERSION,
-            "people": {k: {"model": "Town/" + lk["model"], "hash": lk["hash"]} for k, lk in sorted(looks.items())}}
+            "people": {k: {"model": "Town/" + lk["model"], "hash": lk["hash"]} for k, lk in sorted(looks.items())
+                       if k not in extra}}
     with open(a.game_out, "w", encoding="utf-8") as f:
         json.dump(game, f, indent=1, sort_keys=True)
     print("looks: %d people -> %s, %s" % (len(looks), os.path.relpath(a.out, ROOT), os.path.relpath(a.game_out, ROOT)))
