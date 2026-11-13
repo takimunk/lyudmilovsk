@@ -38,11 +38,38 @@ while [ $# -gt 0 ]; do
 done
 [ -x "$CMD" ] || { echo "no $CMD (UE_ROOT?)"; exit 1; }
 [ -f "$SKEL" ] || { echo "no $SKEL: import the cast first"; exit 1; }
-# an editor open on this checkout keeps its own copies of what the runs write, and may save them back over it
-if ps -A -o args= | grep -F "$PROJ" | grep -v -e " -run=" -e " -game" -e grep | grep -q UnrealEditor; then
+# an editor open on this checkout keeps its own copies of what the runs write, and may save them back over it:
+# looked for now and again before every run
+editor_open() {
+    ps -A -o args= | grep -F "$PROJ" | grep -v -e " -run=" -e " -game" -e grep | grep -q UnrealEditor
+}
+if editor_open; then
     echo "an editor is open on $PROJ: close it first"; exit 1
 fi
 mkdir -p "$OUT"
+# one wrapper at a time: a second one would clear Town/_import under the first one's editor
+LOCK="$OUT/wrapper.lock"
+if ! mkdir "$LOCK" 2>/dev/null; then
+    W=$(cat "$LOCK/pid" 2>/dev/null)
+    if [ -n "$W" ] && kill -0 "$W" 2>/dev/null; then
+        echo "import_residents.sh is already running (pid $W)"; exit 1
+    fi
+    rm -rf "$LOCK"; mkdir "$LOCK" || exit 1      # left by a wrapper that was killed
+fi
+echo $$ > "$LOCK/pid"
+trap 'rm -rf "$LOCK"' EXIT
+# an import editor that outlived a killed wrapper is still writing into Town/
+set +f
+for F in "$OUT"/editor_*.pid; do
+    [ -f "$F" ] || continue
+    E=$(cat "$F" 2>/dev/null)
+    if [ -n "$E" ] && kill -0 "$E" 2>/dev/null; then
+        echo "an import editor of an earlier run is still going (pid $E): let it finish or end it, then start again"
+        exit 1
+    fi
+    rm -f "$F"
+done
+set -f
 echo "== $(date '+%Y-%m-%d %H:%M') import_residents.sh $PRUNE $ARGS (jobs $JOBS)" >> "$LOG"
 
 # the exports first, without the engine (56 bones, four sections, six morphs, UV0-2, weights): a broken model never
@@ -55,7 +82,13 @@ if [ "${CHECK:-1}" != 0 ]; then
 fi
 
 # importing a mesh onto SK_Human_Skeleton can rewrite the skeleton's reference pose from that mesh, and every shared
-# clip then bends the others' arms into their bodies (fix_hi3d.sh): after each run it is put back as it was
+# clip then bends the others' arms into their bodies (fix_hi3d.sh): after each run it is put back as it was. The copy
+# goes when the wrapper ends; one still there was left by a wrapper that was killed and may be the only good one
+if [ -f "$KEEP" ] && ! cmp -s "$KEEP" "$SKEL"; then
+    echo "a killed import left $KEEP and SK_Human_Skeleton.uasset differs from it. If an import rewrote the"
+    echo "skeleton, put it back: cp -p \"$KEEP\" \"$SKEL\"; if you changed the skeleton since, delete the copy."
+    exit 1
+fi
 cp -p "$SKEL" "$KEEP" || exit 1
 restore() {
     cmp -s "$KEEP" "$SKEL" && return 0
@@ -87,6 +120,10 @@ run() {
     J="$1"; shift
     N=$((N + 1)); RUNLOG="$OUT/run_${J}_$((N % 6)).log"
     until "$ROOT/tools/wait_ue_queue.sh" 7200 >> "$LOG"; do :; done
+    if editor_open; then
+        echo "${P}an editor was opened on $PROJ: no more runs (start again once it is closed)" | tee -a "$LOG"
+        exit 1
+    fi
     rm -f "$ROOT/unreal/Lyudmilovsk/Saved/Autosaves/PackageRestoreData.json" "$RUNLOG"
     $PRIO "$CMD" "$PROJ" -run=pythonscript -script="$HERE/import_residents.py $*" $QUIET -nullrhi \
         -abslog="$RUNLOG" > "$RUNLOG.out" 2>&1 &
@@ -144,7 +181,7 @@ stop() {
     echo "${P}stopped" | tee -a "$LOG"
     exit 130
 }
-trap restore EXIT
+trap 'restore && rm -f "$KEEP"; rm -rf "$LOCK"' EXIT
 trap stop INT TERM HUP
 
 P=""

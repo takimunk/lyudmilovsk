@@ -20,6 +20,7 @@ One person:
 8. all joined into one mesh with four material sections Skin, Cloth, Hair, Eyes and exported as glb (no images).
 """
 import argparse
+import hashlib
 import json
 import math
 import os
@@ -122,6 +123,9 @@ class Data:
     def __init__(self, atlases=ATLASES):
         with open(os.path.join(atlases, "layout.json"), encoding="utf-8") as f:
             self.layout = json.load(f)
+        # the layout's id: the tiles the UVs point into (an atlas repainted in place needs no rebuild, a moved tile does)
+        tiles = {s: sec["tiles"] for s, sec in self.layout["sections"].items()}
+        self.layout_id = hashlib.sha1(json.dumps(tiles, sort_keys=True).encode("utf-8")).hexdigest()[:10]
         self.tile = {}
         for s, sec in self.layout["sections"].items():
             for key, rect in sec["tiles"].items():
@@ -563,10 +567,12 @@ def build_one(look, data, mats, out_dir):
     # one mesh
     mesh = join([bm] + [p for p, _ in parts], bm)
     clean_groups(mesh, arm)
+    drop_flat_faces(mesh)
     mesh.name = mesh.data.name = "SK_" + name
     for poly in mesh.data.polygons:
         poly.use_smooth = True
-    stats = dict(key=look["key"], model=name, hash=look["hash"], build=BUILD_VERSION, height_m=round(height, 3),
+    stats = dict(key=look["key"], model=name, hash=look["hash"], build=BUILD_VERSION, atlas=data.layout_id,
+                 height_m=round(height, 3),
                  tris=tris(mesh), verts=len(mesh.data.vertices),
                  sections={s: 0 for s in SECTIONS},
                  morphs=[k.name for k in mesh.data.shape_keys.key_blocks[1:]] if mesh.data.shape_keys else [])
@@ -1066,6 +1072,29 @@ def accessory_uvs(obj, look, data):
 
 # ------------------------------------------------------------------------------------------------ join
 
+def drop_flat_faces(obj, eps=1e-10):
+    """Triangles of no area go (an accessory pressed flat onto itself: backpacks, bag straps). Nobody sees them, but
+    importers warn about them and check_export.py fails on them. Only polygons holding one are cut into triangles, so
+    a quad with a collapsed edge keeps its other half. -> triangles removed"""
+    import bmesh
+    me = obj.data
+    me.calc_loop_triangles()
+    flat = sorted({t.polygon_index for t in me.loop_triangles if t.area < eps})
+    if not flat:
+        return 0
+    b = bmesh.new()
+    b.from_mesh(me)
+    b.faces.ensure_lookup_table()
+    bmesh.ops.triangulate(b, faces=[b.faces[i] for i in flat])
+    gone = [f for f in b.faces if len(f.verts) == 3 and f.calc_area() < eps]
+    bmesh.ops.delete(b, geom=gone, context="FACES")
+    b.to_mesh(me)
+    b.free()
+    if os.environ.get("RES_DEBUG"):
+        print("flat faces: %d triangles of no area go" % len(gone))
+    return len(gone)
+
+
 def join(objs, active):
     for o in objs:
         o.hide_set(False) if hasattr(o, "hide_set") else None
@@ -1156,7 +1185,8 @@ def main():
             try:
                 with open(side, encoding="utf-8") as f:
                     old = json.load(f)
-                if old.get("hash") == lk["hash"] and old.get("build") == BUILD_VERSION:
+                if old.get("hash") == lk["hash"] and old.get("build") == BUILD_VERSION and \
+                        old.get("atlas") == data.layout_id:
                     skipped += 1
                     continue
             except Exception:                               # noqa: BLE001

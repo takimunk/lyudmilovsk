@@ -4,8 +4,8 @@
   Town/Materials/M_Resident_Opaque, M_Resident_Masked  the masters (the masked one for Hair)
   Town/Materials/MI_Resident_{Skin,Cloth,Hair,Eyes}    one instance per material section, shared by everybody
   Town/Import/IP_ResidentAssets                        the glTF assets pipeline bound to SK_Human_Skeleton
+  Town/LOD_Resident                                    the residents' four LODs (LOD_GROUPS)
   Town/R_<key>/SK_R_<key>, SK_R_<key>_PhysicsAsset     each blender/residents/export/R_<key>.glb on SK_Human_Skeleton
-                                                       with the people's four LODs (lod_people.py)
 
 Normally run by unreal/scripts/import_residents.sh (UE queue, low priority, one editor run per chunk until nothing is
 left). By hand, the editor closed on this checkout:
@@ -58,15 +58,19 @@ LOOKS = os.path.join(CONTENT, "PeopleData", "town_looks.json")
 STATE = os.path.join(PROJECT, "Saved", "ImportResidents")
 BASE = "/Game/Characters/Humans"
 SKELETON = BASE + "/SK_Human_Skeleton"
-LODS = BASE + "/LOD_HumanPeople"
 TOWN = BASE + "/Town"
+LODS = TOWN + "/LOD_Resident"
+# the residents' own LODs: the cast's LOD_HumanPeople (lod_people.py) caps LOD3 at 5000 triangles for its 55-70k meshes,
+# which on a 24k resident would be heavier than its LOD2 (15 % = 3600)
+LOD_GROUPS = ((1.0, 100.0), (0.45, 45.0), (0.2, 18.0), (0.08, 6.0))   # screen size, % triangles: 24k, 11k, 4.3k, 1.4k
+# (changed later: LOD_Resident follows by itself, the meshes already in keep their LODs until imported with --force)
 TEXTURES = TOWN + "/Textures"
 MATS = TOWN + "/Materials"
 PIPELINE = TOWN + "/Import/IP_ResidentAssets"
 TMP = TOWN + "/_import"                # + "_<i>of<n>" for a shard: parallel runs clear only their own leftovers
 SECTIONS = ("Skin", "Cloth", "Hair", "Eyes")
 MORPHS = ("eyeBlinkLeft", "eyeBlinkRight", "jawOpen", "mouthFunnel", "mouthSmile", "browUp")
-TAG = "ResidentLook"                   # on SK_R_<key>: the sidecar's "<hash>/<build>"
+TAG = "ResidentLook"                   # on SK_R_<key>: the sidecar's "<hash>/<build>/<atlas layout>"
 SPEC = "ResidentSpec"                  # on the shared assets: what they were made from
 MASTER_VERSION = 1                     # bump when the master graphs change: they are rebuilt in place
 TINT_FLIP_V = True                     # the masters' TintFlipV default (see above)
@@ -195,7 +199,9 @@ def plan(args, since):
                  side_path=os.path.join(EXPORT, model + ".json"), asset="%s/%s/SK_%s" % (TOWN, model, model),
                  state=read_json(state_path(model)) or {})
         c["side"] = read_json(c["side_path"]) if os.path.isfile(c["glb"]) else None
-        c["tag"] = "%s/%s" % (c["side"].get("hash"), c["side"].get("build")) if c["side"] else None
+        # the atlas layout's id too: a model built against another layout points into the wrong tiles
+        c["tag"] = "%s/%s/%s" % (c["side"].get("hash"), c["side"].get("build"), c["side"].get("atlas", "-")) \
+            if c["side"] else None
         c["todo"] = classify(c, args, since)
         out.append(c)
     return out
@@ -223,9 +229,9 @@ def report(cands, final):
            if sorted(s.get("morphs", [])) != sorted(MORPHS)]
     log("morph targets: %d of %d meshes have the six face morphs%s" % (
         len(done) - len(bad), len(done), ("; not: " + ", ".join(bad[:20])) if bad else ""))
-    lods = ["%s (%s)" % (s.get("model"), s.get("lods")) for s in done if s.get("lods") != 4]
+    lods = ["%s (%s)" % (s.get("model"), s.get("lods")) for s in done if s.get("lods") != len(LOD_GROUPS)]
     if lods:
-        log("LODs: not 4 on %s" % ", ".join(lods[:20]))
+        log("LODs: not %d on %s" % (len(LOD_GROUPS), ", ".join(lods[:20])))
     looks = read_json(LOOKS) or {}
     stale = [c for c in by.get("up to date", []) if c["state"].get("look") and c["state"]["look"] != (
         looks.get("people", {}).get(c["key"], {}).get("hash", c["state"]["look"]))]
@@ -256,7 +262,7 @@ def atlas(section, force):
     name = "T_Resident_" + section
     path = TEXTURES + "/" + name
     if not os.path.isfile(png):
-        raise RuntimeError("no %s: python3 blender/residents/atlases.py" % png)
+        raise RuntimeError("no %s: Blender -b -P blender/residents/atlases.py" % png)
     sha = sha1(png)
     old = ""
     if eal.does_asset_exist(path):
@@ -459,9 +465,30 @@ def pipeline():
 
 
 def lod_settings():
-    import lod_people
-    # the cast's LOD_HumanPeople as it is: lod_people.settings() re-saves it on every call
-    return unreal.load_asset(LODS) if eal.does_asset_exist(LODS) else lod_people.settings()
+    """Town/LOD_Resident (SkeletalMeshLODSettings) from LOD_GROUPS, made again when they change (tag ResidentSpec)."""
+    spec = "lods " + json.dumps(LOD_GROUPS)
+    if eal.does_asset_exist(LODS):
+        s = unreal.load_asset(LODS)
+        if eal.get_metadata_tag(s, SPEC) == spec:
+            return s
+    else:
+        s = unreal.AssetToolsHelpers.get_asset_tools().create_asset(LODS.split("/")[-1], TOWN,
+                                                                     unreal.SkeletalMeshLODSettings, None)
+    groups = []
+    for screen, pct in LOD_GROUPS:
+        g = unreal.SkeletalMeshLODGroupSettings()
+        ps = unreal.PerPlatformFloat()
+        ps.set_editor_property("default", screen)
+        g.set_editor_property("screen_size", ps)
+        r = unreal.SkeletalMeshOptimizationSettings()
+        r.set_editor_property("num_of_triangles_percentage", pct / 100.0)
+        g.set_editor_property("reduction_settings", r)
+        groups.append(g)
+    s.set_editor_property("lod_groups", groups)
+    eal.set_metadata_tag(s, SPEC, spec)
+    eal.save_loaded_asset(s)
+    log("LOD_Resident: %s" % ", ".join("%g %% from screen size %g" % (p, sc) for sc, p in LOD_GROUPS))
+    return s
 
 
 def unprepared():
@@ -496,11 +523,11 @@ def prepare(force):
     lod_settings()
     face_curves()
     if changed and any(os.path.isfile(disk("%s/%s/SK_%s" % (TOWN, m, m)) + ".uasset") for _, m in town()[0]):
-        log("note: atlases %s changed: models built against the old layout point into the wrong tiles; rebuild them "
-            "(build_residents.py --force) and re-import with --force" % ",".join(changed))
+        log("note: atlases %s changed: if their layout did, build_residents.py rebuilds every model (the sidecars carry "
+            "the layout's id) and the following runs re-import them" % ",".join(changed))
     for b in BROKEN:
         log("  MISSING " + b)
-    log("prepared: atlases, masters, MI_Resident_*, %s, LOD_HumanPeople%s" % (
+    log("prepared: atlases, masters, MI_Resident_*, %s, LOD_Resident%s" % (
         PIPELINE.split("/")[-1], (" -- %d material links or parameters didn't take (MISSING above): the people import "
                                   "anyway; fix master() and bump MASTER_VERSION, the next run rebuilds it in place"
                                   % len(BROKEN)) if BROKEN else ""))
@@ -628,8 +655,8 @@ def import_model(c, nth, mis, lods, tmp_root):
     if eal.does_asset_exist(final + "_PhysicsAsset"):
         mesh.set_editor_property("physics_asset", unreal.load_asset(final + "_PhysicsAsset"))
     nanite = nanite_off(mesh)
-    import lod_people
-    lod_people.apply(mesh, lods)       # four LODs at the cast's screen sizes (saves the mesh)
+    mesh.set_editor_property("lod_settings", lods)
+    unreal.get_editor_subsystem(unreal.SkeletalMeshEditorSubsystem).regenerate_lod(mesh, len(LOD_GROUPS), True, False)
     eal.set_metadata_tag(mesh, TAG, c["tag"])
     eal.save_loaded_asset(mesh, only_if_is_dirty=False)
     eal.save_directory(dest)
@@ -740,7 +767,10 @@ def run(args):
                 continue
             checked += 1
             loads += 1
-            if check_tag(c):
+            current = check_tag(c)
+            if loads % 10 == 0:            # (a run with no records loads up to CHECKS_PER_RUN meshes only for this)
+                gc()
+            if current:
                 c["state"] = read_json(state_path(c["model"])) or {}
                 c["todo"] = "up to date"
                 continue
