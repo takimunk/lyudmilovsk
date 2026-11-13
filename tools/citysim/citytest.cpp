@@ -191,6 +191,26 @@ static void FixtureChecks()
 	CHECK(Near.size() == 5 && Near[0].first == Shelf && Near[0].second < 1.0 && Near[1].second <= Near[2].second, "the nearest five, sorted");
 }
 
+static void UntilChecks()
+{
+	std::printf("until (sleep till an hour)\n");
+	const std::string Text = R"({"things": [
+  {"id": "P-H/bed", "plot": "P-H", "kind": "bed", "ue": [0, 0, 50], "yaw": 0, "props": {}, "act": "sleep_night", "hours": [0, 24], "days": "mon-sun"},
+  {"id": "P-H/cot", "plot": "P-H", "kind": "bed", "ue": [500, 0, 50], "yaw": 0, "props": {}, "act": "nap", "hours": [0, 24], "days": "mon-sun"}],
+ "acts": {"sleep_night": {"prompt": "p", "minutes": 480, "until": 7, "pose": "lie", "fade": true, "any_hour": true},
+          "nap": {"prompt": "p", "minutes": 60, "until": -1, "pose": "lie", "fade": true, "any_hour": true}},
+ "shops": {}})";
+	FModel M;
+	std::string Error;
+	CHECK(M.Load(Text, Error), "it loads (%s)", Error.c_str());
+	FAsk Ask;
+	const int Bed = M.FindThing("P-H/bed"), Cot = M.FindThing("P-H/cot");
+	CHECK(Bed >= 0 && Cot >= 0 && M.Acts[M.Things[Bed].Act].Until == 7 && M.Acts[M.Things[Cot].Act].Until == -1, "until read, -1 kept");
+	CHECK(M.Run(Bed, At(2, 23.f), Ask).Minutes == 480 && M.Run(Bed, At(3, 1.5f), Ask).Minutes == 330 && M.Run(Bed, At(3, 6.5f), Ask).Minutes == 30,
+		"to bed at 23:00 sleeps 480 min, at 1:30 330, at 6:30 30");
+	CHECK(M.Run(Bed, At(3, 14.f), Ask).Minutes == 17 * 60 && M.Run(Cot, At(3, 14.f), Ask).Minutes == 60, "at 14:00 till 7 tomorrow; without until the minutes");
+}
+
 static void RealChecks(const std::string& Path)
 {
 	std::string Text, Error;
@@ -263,6 +283,7 @@ static void RealChecks(const std::string& Path)
 int main(int Argc, char** Argv)
 {
 	FixtureChecks();
+	UntilChecks();
 	RealChecks(Argc > 1 ? Argv[1] : "unreal/Lyudmilovsk/Content/City/interiors.json");
 	std::printf("%d passed, %d failed\n", Passed, Failures);
 	return Failures ? 1 : 0;

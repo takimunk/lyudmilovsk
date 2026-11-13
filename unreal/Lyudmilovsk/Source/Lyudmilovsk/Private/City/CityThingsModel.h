@@ -38,6 +38,8 @@ namespace LyudCity
 		std::string Title;
 		std::vector<std::string> Lines;
 		int Minutes = 0;
+		/** The hour the act ends at (sleep till 7): the minutes from now to the next such hour; -1: use Minutes. */
+		int Until = -1;
 		int Price = 0;
 		std::vector<std::pair<std::string, int>> Give;
 		std::string NeedsItem;
@@ -453,6 +455,13 @@ namespace LyudCity
 			return All;
 		}
 
+		/** Game minutes from Hour (0..24) to the next o'clock Until (0..23); a whole day when it is that hour already. */
+		static int MinutesUntil(float Hour, int Until)
+		{
+			int M = (int)std::lround((Until - Hour) * 60.f) % (24 * 60);
+			return M <= 0 ? M + 24 * 60 : M;
+		}
+
 		/** May Thing's act run now? No side effects (the prompt may ask this). */
 		EVerdict Check(int Thing, const FWhen& When, const FAsk& Ask) const
 		{
@@ -521,7 +530,7 @@ namespace LyudCity
 				O.Line = LineAt(Thing, *A);
 				LineOf[T.Id] = (LineIndex(T.Id) + 1) % (int)A->Lines.size();
 			}
-			O.Minutes = A->Minutes;
+			O.Minutes = A->Until >= 0 ? MinutesUntil(When.Hour, A->Until) : A->Minutes;
 			O.Price = A->Price;
 			O.bFade = A->bFade;
 			O.Give = A->Give;
@@ -753,6 +762,11 @@ namespace LyudCity
 				}
 			}
 			A.Minutes = V["minutes"].I(0);
+			A.Until = V["until"].I(-1);
+			if (A.Until > 23)
+			{
+				A.Until = -1;
+			}
 			A.Price = V["price"].I(0);
 			for (const LyudJson::FValue& G : V["give"].Items)
 			{
