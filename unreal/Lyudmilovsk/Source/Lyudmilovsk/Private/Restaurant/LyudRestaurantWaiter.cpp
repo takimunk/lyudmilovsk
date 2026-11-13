@@ -171,7 +171,8 @@ bool ALyudRestaurant::EnsureWaiter()
 	{
 		return false;
 	}
-	const FString Mesh = bKeep ? WaiterMesh : (StaffWaiterMesh.IsEmpty() ? WaiterStandinMesh : StaffWaiterMesh);
+	// by reference: this runs every frame while open (all three are members that outlive the call)
+	const FString& Mesh = bKeep ? WaiterMesh : (StaffWaiterMesh.IsEmpty() ? WaiterStandinMesh : StaffWaiterMesh);
 	if (Person != WaiterPerson)
 	{
 		if (WaiterPerson >= 0)

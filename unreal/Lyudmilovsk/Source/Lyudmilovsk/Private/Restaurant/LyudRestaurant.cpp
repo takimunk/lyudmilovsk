@@ -2064,6 +2064,15 @@ void ALyudRestaurant::Tick(float DeltaTime)
 		PC0->GetPlayerViewPoint(Cam, R);
 	}
 	bNear = FVector::Dist(Cam, GetActorLocation()) < 8000.f;
+	// far and nothing in hand (no visit, no order, the waiter at rest): the hours, the lights and the locks need no more than
+	// twice a second. Everything below goes by DeltaTime or the world's seconds, so a long step is safe.
+	const bool bQuiet = !bNear && HeroSeatIx < 0 && HeroTableIx < 0 && !Menu_.IsValid() && !Knife && Job == EJob::None
+		&& (Waiter == EWaiter::Off || Waiter == EWaiter::Idle) && PendingCount(false) == 0;
+	const float WantInterval = bQuiet ? 0.5f : 0.f;
+	if (GetActorTickInterval() != WantInterval)
+	{
+		SetActorTickInterval(WantInterval);
+	}
 	PropsEvery -= DeltaTime;
 	if (PropsEvery <= 0.f && bNear)
 	{
