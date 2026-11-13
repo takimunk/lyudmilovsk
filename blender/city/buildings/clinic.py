@@ -99,6 +99,7 @@ def _furnish(B, cx):
     kit.plant(B, 1.4, 15.4, 0.0, 0.0, h=1.5, kind="palm")
     kit.hat_stand(B, -3.0, 5.0, 0.0, 0.0)
     _depth(B, cx)
+    _depth2(B, cx)
     # two more lamps: the pharmacy end and the aquarium nook
     B.lamp((12.0, 13.2, 2.3), lumens=500, colour="#E8F4F0", kind="public", radius=4)
     B.lamp((-0.7, 14.6, 2.5), lumens=450, colour="#CFE6FF", kind="public", radius=4)
@@ -254,8 +255,7 @@ def _rooms(B, cx):
             ec = kit.chair(B, c + 1.0, 6.5, 0.0, 180.0, kind="school", mat="CT_PlasterBlue")
             B.spot("eye_seat", "seat", (c + 1.0, 6.5, 0.0), 180.0)
         else:
-            kit.screen_divider(B, wx + 0.75, 9.9, 0.0, 90.0)
-            kit.wardrobe(B, ex, 10.35, 0.0, 270.0, w=0.8, h=1.9)
+            kit.screen_divider(B, wx + 0.75, 9.9, 0.0, 90.0)             # the wardrobe went: the toy shelf (_depth2)
 
 
 def _seg7(d, y, z, digit, sc=0.05, x_face=3.18, mat="CT_SteelRed"):
@@ -380,6 +380,222 @@ def _depth(B, cx):
             box(d, "CT_Steel", x + 0.12, x + 0.3, 5.3, 5.33, 0.75, 0.765)
             box(d, "CT_Rubber", x + 0.3, x + 0.36, 5.29, 5.34, 0.75, 0.78)
             B.thing("reflex_hammer", "machine", (x + 0.1, 5.32, 0.85), 180.0, what="hammer")
+
+
+def _plate(d, x, y, z, side="S"):
+    """A light-switch plate on the south wall (faces +y, side S) with a rocker."""
+    box(d, "CT_FrameWhite", x - 0.04, x + 0.04, 4.3, 4.312, z - 0.06, z + 0.06)
+    box(d, "CT_Rubber", x - 0.014, x + 0.014, 4.312, 4.322, z - 0.03, z + 0.03)
+
+
+def _ball(d, x, y, z, r, mat):
+    """A low-poly ball: stacked round prisms (x, y = the middle, z = the bottom)."""
+    for k, (dz, rr) in enumerate(((0.0, 0.55), (0.18, 0.92), (0.5, 1.0), (0.82, 0.92), (1.0, 0.55))):
+        pass
+    s = 2 * r
+    for dz0, dz1, rr in ((0.0, 0.2, 0.62), (0.2, 0.8, 1.0), (0.8, 1.0, 0.62)):
+        B_col(d, x, y, z + dz0 * s, z + dz1 * s, r * rr, mat)
+
+
+def B_col(d, x, y, z0, z1, r, mat, segs=8):
+    poly = [(x + r * math.cos(2 * math.pi * k / segs), y + r * math.sin(2 * math.pi * k / segs)) for k in range(segs)]
+    prism(d, mat, poly, z0, z1, top=True, bottom=False)
+
+
+def _depth2(B, cx):
+    """Round 2: every doctor's room a specialist's (therapist, eye doctor, children's doctor), the physio corner and the
+    nurse's vaccination corner in the hall, switches, the umbrella stand, the porter's table, the queue's standing places."""
+    d = B.detail
+    wxs, exs = (3.6, 7.1, 10.6), (6.8, 10.3, 13.7)
+    # ---- a painted dado in every room, in its own colour (the rooms differ at a glance)
+    for i, (c, wx, ex) in enumerate(zip(cx, wxs, exs)):
+        mat = ("CT_PlasterGreen", "CT_PlasterBlue", "CT_PlasterPink")[i]
+        box(d, mat, wx, wx + 0.025, 4.3, 10.99, 0.12, 0.85, faces="xXyYZ")
+        box(d, mat, ex - 0.025, ex, 4.3, 10.99, 0.12, 0.85, faces="xXyYZ")
+        box(d, mat, wx, c - 0.6, 10.975, 11.0, 0.12, 0.85, faces="xXyYZ")
+        box(d, mat, c + 0.6, ex, 10.975, 11.0, 0.12, 0.85, faces="xXyYZ")
+        box(d, mat, wx, ex, 4.3, 4.325, 0.12, 0.85, faces="xXyYZ")
+        for a, b, y0, y1 in ((wx, wx + 0.035, 4.3, 10.99), (ex - 0.035, ex, 4.3, 10.99)):
+            box(d, "CT_Wood", a, b, y0, y1, 0.85, 0.88)
+        # switch beside the window, a plate on the wall (a dev/hero switch for this room's lamp only)
+        _plate(d, c - 0.88, 4.3, 1.3)
+        B.thing("room_switch_%d" % i, "machine", (c - 0.88, 4.34, 1.3), 180.0, what="switch", switch=4.2)
+
+    # ============================================================== room 0: the therapist (green)
+    c, wx, ex = cx[0], wxs[0], exs[0]
+    kit.bookshelf(B, wx, 6.2, 0.0, 90.0, w=0.9, h=1.9, levels=5, topic="medicine", seed=3)
+    B.thing("therapist_books", "shelf", (wx + 0.2, 6.2, 1.0), 90.0, topic="medicine")
+    kit.display_case(B, ex - 0.25, 5.65, 0.0, 270.0, w=0.9, d=0.45, goods="pharmacy", mat="CT_SteelWhite", seed=2)
+    kit.wall_shelf(B, ex, 5.65, 0.0, 270.0, w=0.8, zt=1.75, seed=4)
+    B.thing("therapist_remedies", "board", (ex - 0.1, 5.65, 1.3), 270.0, topic="remedies")
+    # stethoscope on the desk edge: the chest piece, a loop of tube, two ear tips
+    sx, sy = c - 0.2, 5.58
+    B_col(d, sx, sy, 0.75, 0.765, 0.035, "CT_Steel")
+    B_col(d, sx, sy, 0.765, 0.775, 0.022, "CT_Brass")
+    for k in range(4):
+        a = k * math.pi / 3.0
+        box(d, "CT_Rubber", sx - 0.012 + 0.07 * math.cos(a) * 0 + (k - 1.5) * 0.045, sx + 0.012 + (k - 1.5) * 0.045,
+            sy - 0.03 + 0.05 * (1 if k in (0, 3) else 2) * 0.5, sy + 0.01 + 0.05 * (1 if k in (0, 3) else 2) * 0.5, 0.75, 0.765)
+    box(d, "CT_Steel", sx - 0.08, sx - 0.06, sy + 0.07, sy + 0.09, 0.75, 0.77)
+    B.thing("therapist_stethoscope", "machine", (sx, sy, 0.8), 180.0, what="stethoscope")
+    # prescription pad and a blotter
+    box(d, "CT_Paper", c + 0.22, c + 0.4, 5.5, 5.7, 0.75, 0.762, faces="xXyYZ")
+    box(d, "CT_SteelRed", c + 0.22, c + 0.24, 5.5, 5.7, 0.75, 0.764)
+    B.thing("therapist_pad", "board", (c + 0.31, 5.6, 0.85), 180.0, topic="prescription")
+    B.thing("doctor_talk_0", "counter", (c + 0.5, 5.85, 0.95), 180.0, role="doctor", service="doctor")
+    kit.rug(B, 5.2, 8.6, 0.0, 0.0, w=1.5, d=2.0, name="rug_1", seed=21)
+    B.spot("therapist_listen", "stand", (4.9, 8.4, 0.0), 0.0)
+
+    # ============================================================== room 1: the eye doctor (blue)
+    c, wx, ex = cx[1], wxs[1], exs[1]
+    # the lit chart gets its own lamp; a floor tape marks the five-metre line under the eye chair's feet
+    B.lamp((c + 1.1, 10.3, 2.75), lumens=380, colour="#DDEBFF", kind="public", radius=3.2, fixture=False)
+    box(d, "CT_SteelWhite", c + 0.75, c + 1.45, 10.2, 10.4, 2.62, 2.72)
+    box(d, "CT_Opal", c + 0.8, c + 1.4, 10.22, 10.38, 2.6, 2.62)
+    box(d, "CT_SteelRed", c + 0.55, c + 1.45, 6.02, 6.06, 0.0, 0.004, faces="Z")
+    # slit lamp on the desk: base, column, chin rest, the microscope arm
+    lx, ly = c + 0.3, 5.3
+    box(d, "CT_Steel", lx - 0.16, lx + 0.16, ly - 0.14, ly + 0.14, 0.75, 0.78)
+    box(d, "CT_SteelWhite", lx - 0.03, lx + 0.03, ly - 0.02, ly + 0.04, 0.78, 1.0)
+    box(d, "CT_SteelWhite", lx - 0.04, lx + 0.04, ly - 0.2, ly + 0.02, 1.0, 1.06)
+    box(d, "CT_Steel", lx - 0.12, lx - 0.06, ly - 0.16, ly - 0.1, 0.8, 0.95)
+    box(d, "CT_Steel", lx + 0.06, lx + 0.12, ly - 0.16, ly - 0.1, 0.8, 0.95)
+    box(d, "CT_Rubber", lx - 0.12, lx + 0.12, ly - 0.17, ly - 0.09, 0.95, 0.975)
+    box(d, "CT_Glass", lx - 0.03, lx + 0.03, ly - 0.24, ly - 0.2, 1.0, 1.06)
+    B.thing("eye_slit_lamp", "machine", (lx, ly, 0.95), 180.0, what="slit_lamp")
+    # the lens box open on the desk's other end: trays of lenses
+    box(d, "CT_Wood", c - 0.28, c + 0.02, 5.2, 5.55, 0.75, 0.82, faces="xXyYZ")
+    for k in range(6):
+        box(d, "CT_Glass", c - 0.26 + k * 0.045, c - 0.235 + k * 0.045, 5.25, 5.5, 0.82, 0.832)
+        box(d, "CT_Brass", c - 0.26 + k * 0.045, c - 0.235 + k * 0.045, 5.25, 5.28, 0.832, 0.85)
+    # eye-glasses frames on a wall shelf over the sink side, a pointer by the chart
+    kit.wall_shelf(B, ex, 8.1, 0.0, 270.0, w=0.7, zt=1.6, seed=5)
+    for k, yy in enumerate((7.9, 8.1, 8.3)):
+        box(d, "CT_Rubber", ex - 0.2, ex - 0.17, yy - 0.05, yy + 0.05, 1.62, 1.68, faces="xXyYZ")
+        box(d, "CT_Glass", ex - 0.185, ex - 0.18, yy - 0.04, yy + 0.04, 1.63, 1.67)
+    B.thing("eye_frames", "board", (ex - 0.15, 8.1, 1.7), 270.0, topic="frames")
+    box(d, "CT_Wood", c + 0.78, c + 0.82, 10.84, 10.88, 0.1, 1.5)
+    B.thing("eye_pointer", "machine", (c + 0.8, 10.82, 1.2), 0.0, what="eye_test")
+    B.thing("doctor_talk_1", "counter", (c + 0.5, 5.85, 0.95), 180.0, role="doctor", service="doctor")
+    B.spot("eye_pointer", "stand", (c + 0.6, 10.1, 0.0), 180.0)
+    kit.rug(B, c - 0.4, 8.7, 0.0, 0.0, w=1.2, d=1.6, name="rug_2", seed=24)
+
+    # ============================================================== room 2: the children's doctor (pink, toys)
+    c, wx, ex = cx[2], wxs[2], exs[2]
+    kit.rug(B, c + 0.4, 7.0, 0.0, 0.0, w=2.0, d=2.0, round=True, seed=31)
+    kit.toy_house(B, ex - 0.7, 8.1, 0.0, 0.0)
+    kit.toy_bin(B, ex - 0.55, 5.85, 0.0, 0.0, seed=2)
+    B.thing("toy_chest", "machine", (ex - 0.55, 5.85, 0.45), 0.0, what="toy_chest")
+    # baby scales on a low table at the east wall: a dish with a sliding weight beam
+    tb = kit.table(B, ex - 0.3, 9.95, 0.0, 270.0, w=0.8, d=0.5, h=0.7, mat="CT_TileWhite", solid=False)
+    box(d, "CT_SteelWhite", ex - 0.5, ex - 0.12, 9.7, 10.2, 0.7, 0.76, faces="xXyYZ")
+    box(d, "CT_Steel", ex - 0.46, ex - 0.2, 9.74, 10.16, 0.76, 0.78)
+    box(d, "CT_Brass", ex - 0.14, ex - 0.1, 9.74, 10.16, 0.76, 0.9)
+    box(d, "CT_Brass", ex - 0.16, ex - 0.08, 9.74, 10.16, 0.88, 0.9)
+    B.thing("baby_scales", "machine", (ex - 0.3, 9.95, 0.85), 270.0, what="baby_scales")
+    # height and growth chart on the west wall: a giraffe board, ticks every 10 cm, a stamped line for each visit
+    box(d, "CT_PlasterYellow", wx, wx + 0.03, 5.45, 5.95, 0.3, 1.5, faces="xXyYZ")
+    for k in range(13):
+        zt = 0.35 + k * 0.095
+        box(d, "CT_Rubber", wx + 0.03, wx + 0.036, 5.5 + (0.08 if k % 5 else 0.0), 5.9, zt, zt + 0.012)
+    for yy, zz in ((5.62, 0.52), (5.74, 0.92), (5.84, 1.2)):
+        box(d, "CT_SteelRed", wx + 0.03, wx + 0.04, yy - 0.025, yy + 0.025, zz, zz + 0.03)
+    B.thing("growth_chart", "machine", (wx + 0.05, 5.7, 1.0), 90.0, what="growth")
+    # the reaction ruler on the desk: a ruler hanging over a cup of pencils
+    rx = c + 0.1
+    box(d, "CT_TileWhite", rx - 0.035, rx + 0.035, 5.4, 5.46, 0.75, 0.84)
+    box(d, "CT_Wood", rx - 0.012, rx + 0.012, 5.4, 5.402, 0.84, 1.14, faces="yYxX")
+    B.thing("reflex_ruler", "machine", (rx, 5.42, 1.0), 180.0, what="ruler")
+    B.thing("doctor_talk_2", "counter", (c + 0.5, 5.85, 0.95), 180.0, role="doctor", service="doctor")
+    # the mobile over the couch: a cross bar on a cord, four shapes on threads
+    mx, my = c - 0.35, 8.2
+    box(d, "CT_Paper", mx - 0.004, mx + 0.004, my - 0.004, my + 0.004, 2.75, 3.4)
+    box(d, "CT_Wood", mx - 0.3, mx + 0.3, my - 0.01, my + 0.01, 2.75, 2.77)
+    box(d, "CT_Wood", mx - 0.01, mx + 0.01, my - 0.3, my + 0.3, 2.77, 2.79)
+    for (ox, oy, m_) in ((-0.3, 0.0, "CT_PlasterRed"), (0.3, 0.0, "CT_PlasterBlue"), (0.0, -0.3, "CT_PlasterYellow"),
+                         (0.0, 0.3, "CT_PlasterGreen")):
+        box(d, "CT_Paper", mx + ox - 0.002, mx + ox + 0.002, my + oy - 0.002, my + oy + 0.002, 2.4, 2.75)
+        box(d, m_, mx + ox - 0.05, mx + ox + 0.05, my + oy - 0.05, my + oy + 0.05, 2.3, 2.4)
+    B.thing("kids_mobile", "board", (mx, my, 2.5), 0.0, topic="mobile")
+    # a frieze of coloured squares over the dado of the children's room (west wall only: the east wall has a window)
+    for k in range(10):
+        m_ = ("CT_PlasterRed", "CT_PlasterBlue", "CT_PlasterYellow", "CT_PlasterGreen")[k % 4]
+        yy = 4.55 + k * 0.62
+        if 5.35 <= yy <= 6.0 or 7.1 <= yy <= 9.3:
+            continue                                        # the growth chart and the couch's picture
+        z0 = 1.95 if k % 2 else 2.2
+        box(d, m_, wx, wx + 0.03, yy, yy + 0.2, z0, z0 + 0.2)
+    B.spot("kids_room_play", "stand", (c + 0.4, 7.0, 0.0), 0.0)
+    B.spot("growth_chart", "stand", (wx + 0.75, 5.7, 0.0), 270.0)
+
+    # ============================================================== the hall
+    # the umbrella stand by the door (rain: wet umbrellas) and its drip tray
+    ux, uy = -3.65, 4.78
+    box(d, "CT_Steel", ux - 0.17, ux + 0.17, uy - 0.17, uy + 0.17, 0.0, 0.03, faces="xXyYZ")
+    B_col(d, ux, uy, 0.03, 0.55, 0.15, "CT_SteelRed")
+    B_col(d, ux, uy, 0.55, 0.57, 0.16, "CT_Steel")
+    for k, (ox, oy, tilt, m_) in enumerate(((-0.06, 0.0, -0.1, "CT_PlasterBlue"), (0.05, 0.04, 0.12, "CT_Leather"),
+                                           (0.0, -0.06, 0.04, "CT_PlasterGreen"))):
+        box(d, m_, ux + ox - 0.025 + tilt * 0.2, ux + ox + 0.025 + tilt * 0.2, uy + oy - 0.025, uy + oy + 0.025, 0.2, 0.95)
+        box(d, "CT_Wood", ux + ox - 0.012 + tilt * 0.2, ux + ox + 0.012 + tilt * 0.2, uy + oy - 0.012, uy + oy + 0.012, 0.95, 1.05)
+    box(d, "CT_Glass", ux - 0.3, ux + 0.3, uy - 0.3, uy + 0.3, 0.0, 0.006, faces="Z")
+    B.thing("umbrella_stand", "machine", (ux, uy, 0.7), 0.0, what="umbrellas")
+    B.spot("umbrella_stand", "stand", (ux, 5.45, 0.0), 0.0)
+    # the hall switch on the front wall beside the door (all the building's lamps)
+    _plate(d, -3.3, 4.3, 1.35)
+    B.thing("hall_switch", "machine", (-3.3, 4.34, 1.35), 180.0, what="switch", switch="hall")
+    # the night porter's table by the radio: a thermos, a glass in a holder, a paper, his lamp, a folding cot behind
+    tp = kit.table(B, 1.0, 4.85, 0.0, 0.0, w=0.8, d=0.5, h=0.75, solid=False)
+    kit.teapot(B, 0.8, 4.85, 0.75, 20.0)
+    kit.cup(B, 1.15, 4.9, 0.75, 0.0)
+    kit.newspaper(B, 0.95, 5.0, 0.75, 8, seed=6)
+    kit.table_lamp(B, 1.28, 4.7, 0.75, 0.0, shade="CT_PlasterGreen")
+    kit.chair(B, 1.0, 5.5, 0.0, 0.0, kind="wood")
+    B.thing("porter_table", "machine", (1.0, 4.9, 0.85), 0.0, what="porter")
+    B.spot("porter_chair", "seat", (1.0, 5.5, 0.0), 0.0)
+    # ---- the physio corner on the west wall: Swedish ladder, mat, a medicine ball, a low bench
+    kit.wall_bars(B, -13.7, 11.45, 0.0, 90.0, w=0.9, h=2.4)
+    kit.mats(B, -12.65, 11.45, 0.0, 0.0, w=1.7, d=1.1, n=1, mat="CT_PlasterBlue")
+    _ball(d, -12.0, 11.45, 0.08, 0.13, "CT_PlasterRed")
+    kit.sign_plate(B, -13.7, 10.4, 0.0, 90.0, name="sign_quiet", w=0.5, zc=2.45)
+    B.thing("physio_bars", "sport", (-13.55, 11.45, 1.2), 90.0, what="physio_bars")
+    B.thing("physio_ball", "machine", (-12.0, 11.45, 0.25), 90.0, what="physio_ball")
+    B.spot("physio_bars", "stand", (-13.0, 11.45, 0.0), 270.0)
+    B.spot("physio_ball", "stand", (-11.3, 11.45, 0.0), 270.0)
+    # ---- the nurse's vaccination corner by the corridor gap: a stool, the tray table, the vaccine fridge, the schedule
+    kit.table(B, 1.4, 11.55, 0.0, 0.0, w=0.9, d=0.5, h=0.8, kind="steel", mat="CT_SteelWhite", solid=False)
+    box(d, "CT_Steel", 1.0, 1.3, 11.4, 11.7, 0.8, 0.815, faces="xXyYZ")
+    box(d, "CT_TileWhite", 1.05, 1.25, 11.45, 11.65, 0.815, 0.835)
+    box(d, "CT_Glass", 1.45, 1.55, 11.55, 11.65, 0.8, 0.9)
+    box(d, "CT_SteelRed", 1.44, 1.56, 11.54, 11.66, 0.9, 0.92)
+    box(d, "CT_Paper", 1.65, 1.8, 11.4, 11.62, 0.8, 0.808)
+    B.thing("vaccine_tray", "machine", (1.15, 11.55, 0.9), 0.0, what="vaccination")
+    B.thing("nurse_station", "counter", (1.62, 11.62, 0.9), 0.0, role="nurse", service="nurse")
+    kit.stool(B, 1.4, 10.65, 0.0, 180.0, h=0.5, mat="CT_PlasterBlue")
+    B.spot("vaccine_stool", "seat", (1.4, 10.65, 0.0), 180.0)
+    B.spot("vaccine_nurse", "work", (1.4, 12.3, 0.0), 0.0)
+    B.spot("vaccine_wait", "stand", (0.35, 10.7, 0.0), 0.0)
+    kit.kitchen_unit(B, 2.3, 12.1, 0.0, 270.0, modules="fridge", wall_cupboards=False)
+    B.thing("vaccine_fridge", "machine", (2.0, 12.1, 0.9), 270.0, what="vaccine_fridge")
+    kit.poster(B, 3.3, 12.0, 0.0, 270.0, name="notice_1", w=0.45, zc=1.75)
+    B.thing("vaccine_schedule", "board", (3.25, 12.0, 1.75), 270.0, topic="vaccines")
+    kit.first_aid_box(B, 3.3, 10.9, 0.0, 270.0, zc=1.5)
+    B.lamp((1.4, 11.3, 2.7), lumens=420, colour="#EAF4F2", kind="public", radius=3.4, fixture=False)
+    box(d, "CT_Opal", 1.0, 1.8, 11.1, 11.5, 2.6, 2.65)
+    B.thing("pharmacist_talk", "counter", (11.95, 14.78, 1.05), 270.0, role="nurse", service="pharmacy")
+    # the card book on the registry desk (stamps of the rooms)
+    box(d, "CT_PlasterBlue", -4.0, -3.76, 11.6, 11.85, 0.75, 0.77, faces="xXyYZ")
+    box(d, "CT_Paper", -3.99, -3.77, 11.61, 11.84, 0.77, 0.78)
+    B.thing("medical_card", "board", (-3.88, 11.72, 0.85), 0.0, topic="card")
+    # ---- standing places of the queue: by the ticket stand, in line to the desk, by every doctor's door, the children
+    B.spot("ticket_stand", "stand", (-7.4, 10.0, 0.0), 180.0)
+    for k, (sx_, sy_) in enumerate(((-5.0, 9.7), (-4.3, 9.2), (-5.7, 9.2))):
+        B.spot("queue_line_%d" % k, "stand", (sx_, sy_, 0.0), 180.0)
+    for i, c_ in enumerate(cx):
+        B.spot("door_wait_%d" % i, "stand", (c_, 11.9, 0.0), 0.0)
+    B.spot("kids_play_0", "stand", (-12.5, 12.55, 0.0), 0.0)
+    B.spot("kids_play_1", "stand", (-10.7, 14.3, 0.0), 270.0)
+    B.spot("inhaler_wait", "stand", (1.6, 13.1, 0.0), 180.0)
 
 
 def build(B):

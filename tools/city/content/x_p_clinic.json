@@ -1,5 +1,5 @@
 {
- "_doc": "Clinic second pass (P-CLINIC): queue ticket and board, aquarium with the Head Doctor and the nurse's running story, inhalation corner, the dentist's door, card file, height rod, pharmacy window instruments, doctors' desk instruments, radio point, magazines by date, bulletins by date. Strings: strings/x_p_clinic.json. Quests for the lead: /home/user/wt/quests_clinic.json.",
+ "_doc": "Clinic second pass (P-CLINIC): queue ticket and board, aquarium with the Head Doctor and the nurse's running story, inhalation corner, the dentist's door, card file, height rod, pharmacy window instruments, doctors' desk instruments, radio point, magazines by date, bulletins by date. Strings: strings/x_p_clinic.json. Quests for the lead: /home/user/wt/quests_clinic.json. Round 2: each doctor's room a specialist's (therapist: stethoscope; eye doctor: eye test game, slit lamp, lens box, lit chart; children's doctor: growth chart, ruler reflex game, toys, mobile), physio corner (bars + ball rally), the nurse's vaccination corner, clinic_card stamps, room and hall switches, hall clock, umbrellas by weather, the night porter, closed lines (night and Sunday), staff talk for registrar, nurse, pharmacist and the three doctors.",
  "shops": {
   "clinic_pharmacy": {
    "role": "nurse",
@@ -93,6 +93,14 @@
     {
      "k": "city.xcl.aq.8",
      "after": 9
+    },
+    {
+     "k": "city.xcl.aqx.1",
+     "festival": "any"
+    },
+    {
+     "k": "city.xcl.aqx.2",
+     "weather": "rain"
     }
    ]
   },
@@ -162,6 +170,18 @@
       17,
       8
      ]
+    },
+    {
+     "k": "city.xcl.tkx.1",
+     "weather": "cold"
+    },
+    {
+     "k": "city.xcl.tkx.2",
+     "weather": "rain"
+    },
+    {
+     "k": "city.xcl.tkx.3",
+     "festival": "any"
     }
    ]
   },
@@ -188,6 +208,10 @@
     {
      "k": "city.xcl.qb.3",
      "d": "sat-sun"
+    },
+    {
+     "k": "city.xcl.qbx.1",
+     "weather": "cold"
     }
    ]
   },
@@ -496,6 +520,41 @@
     {
      "k": "city.xcl.rg.7",
      "after": 6
+    },
+    {
+     "k": "city.xcl.rgx.1",
+     "once": true
+    },
+    {
+     "k": "city.xcl.rgx.2"
+    },
+    {
+     "k": "city.xcl.rgx.3"
+    },
+    {
+     "k": "city.xcl.rgx.4"
+    },
+    {
+     "k": "city.xcl.rgx.5",
+     "count": [
+      "clinic_card",
+      2
+     ]
+    },
+    {
+     "k": "city.xcl.rgx.6",
+     "count": [
+      "clinic_card",
+      5
+     ]
+    },
+    {
+     "k": "city.xcl.rgx.7",
+     "weather": "cold"
+    },
+    {
+     "k": "city.xcl.rgx.8",
+     "festival": "any"
     }
    ]
   },
@@ -581,8 +640,681 @@
       "02-01",
       "10-19"
      ]
+    },
+    {
+     "k": "city.xcl.blx.1",
+     "after": 4,
+     "before": 12
     }
    ]
+  },
+  "clinic_closed_any": {
+   "prompt": "city.act.look.prompt",
+   "lines": [
+    {
+     "k": "city.xcl.closed_any.1",
+     "h": [
+      20,
+      8
+     ]
+    },
+    {
+     "k": "city.xcl.closed_any.2",
+     "d": "sun"
+    },
+    {
+     "k": "city.xcl.closed_any.3"
+    }
+   ],
+   "any_hour": true,
+   "minutes": 1
+  },
+  "clinic_closed_seat": {
+   "prompt": "city.act.look.prompt",
+   "lines": [
+    {
+     "k": "city.xcl.closed_seat.1",
+     "h": [
+      20,
+      8
+     ]
+    },
+    {
+     "k": "city.xcl.closed_seat.2",
+     "d": "sun"
+    },
+    {
+     "k": "city.xcl.closed_seat.3"
+    }
+   ],
+   "any_hour": true,
+   "minutes": 1
+  },
+  "clinic_closed_counter": {
+   "prompt": "city.act.look.prompt",
+   "lines": [
+    {
+     "k": "city.xcl.closed_counter.1",
+     "h": [
+      20,
+      8
+     ]
+    },
+    {
+     "k": "city.xcl.closed_counter.2",
+     "d": "sun"
+    },
+    {
+     "k": "city.xcl.closed_counter.3",
+     "h": [
+      17,
+      20
+     ]
+    },
+    {
+     "k": "city.xcl.closed_counter.4"
+    }
+   ],
+   "any_hour": true,
+   "minutes": 1
+  },
+  "clinic_clock": {
+   "prompt": "city.act.clock.prompt",
+   "lines": [
+    {
+     "k": "city.xcl.clock.1"
+    },
+    {
+     "k": "city.xcl.clock.2",
+     "h": [
+      8,
+      12
+     ]
+    },
+    {
+     "k": "city.xcl.clock.3",
+     "h": [
+      17,
+      20
+     ]
+    },
+    {
+     "k": "city.xcl.clock.4",
+     "h": [
+      20,
+      8
+     ]
+    }
+   ],
+   "any_hour": true,
+   "minutes": 1,
+   "sound": "clock_tick"
+  },
+  "clinic_card_book": {
+   "prompt": "city.xcl.p.card",
+   "lines": [
+    {
+     "k": "city.xcl.card_book.1"
+    },
+    {
+     "k": "city.xcl.card_book.2",
+     "have": "clinic_card/therapist"
+    },
+    {
+     "k": "city.xcl.card_book.3",
+     "have": "clinic_card/eyes"
+    },
+    {
+     "k": "city.xcl.card_book.4",
+     "have": "clinic_card/children"
+    },
+    {
+     "k": "city.xcl.card_book.5",
+     "have": "clinic_card/vaccination"
+    },
+    {
+     "k": "city.xcl.card_book.6",
+     "have": "clinic_card/physio"
+    },
+    {
+     "k": "city.xcl.card_book.7",
+     "count": [
+      "clinic_card",
+      5
+     ]
+    }
+   ],
+   "minutes": 2,
+   "sound": "page_turn",
+   "any_hour": true
+  },
+  "clinic_nurse_talk": {
+   "prompt": "city.act.ask.prompt",
+   "lines": [
+    {
+     "k": "city.xcl.nurse_talk.1",
+     "once": true
+    },
+    {
+     "k": "city.xcl.nurse_talk.2"
+    },
+    {
+     "k": "city.xcl.nurse_talk.3"
+    },
+    {
+     "k": "city.xcl.nurse_talk.4"
+    },
+    {
+     "k": "city.xcl.nurse_talk.5",
+     "weather": "rain"
+    },
+    {
+     "k": "city.xcl.nurse_talk.6",
+     "festival": "any"
+    }
+   ],
+   "needs_staff": "nurse",
+   "minutes": 2
+  },
+  "clinic_pharm_talk": {
+   "prompt": "city.act.ask.prompt",
+   "lines": [
+    {
+     "k": "city.xcl.pharm_talk.1",
+     "once": true
+    },
+    {
+     "k": "city.xcl.pharm_talk.2"
+    },
+    {
+     "k": "city.xcl.pharm_talk.3"
+    },
+    {
+     "k": "city.xcl.pharm_talk.4"
+    },
+    {
+     "k": "city.xcl.pharm_talk.5",
+     "weather": "rain"
+    },
+    {
+     "k": "city.xcl.pharm_talk.6",
+     "weather": "cold"
+    }
+   ],
+   "needs_staff": "nurse",
+   "minutes": 2
+  },
+  "clinic_doc0_talk": {
+   "prompt": "city.act.ask.prompt",
+   "lines": [
+    {
+     "k": "city.xcl.doc0_talk.1",
+     "once": true
+    },
+    {
+     "k": "city.xcl.doc0_talk.2"
+    },
+    {
+     "k": "city.xcl.doc0_talk.3"
+    },
+    {
+     "k": "city.xcl.doc0_talk.4"
+    },
+    {
+     "k": "city.xcl.doc0_talk.5",
+     "weather": "rain"
+    }
+   ],
+   "needs_staff": "doctor",
+   "minutes": 3
+  },
+  "clinic_doc1_talk": {
+   "prompt": "city.act.ask.prompt",
+   "lines": [
+    {
+     "k": "city.xcl.doc1_talk.1",
+     "once": true
+    },
+    {
+     "k": "city.xcl.doc1_talk.2"
+    },
+    {
+     "k": "city.xcl.doc1_talk.3"
+    },
+    {
+     "k": "city.xcl.doc1_talk.4"
+    },
+    {
+     "k": "city.xcl.doc1_talk.5",
+     "weather": "rain"
+    }
+   ],
+   "needs_staff": "doctor",
+   "minutes": 3
+  },
+  "clinic_doc2_talk": {
+   "prompt": "city.act.ask.prompt",
+   "lines": [
+    {
+     "k": "city.xcl.doc2_talk.1",
+     "once": true
+    },
+    {
+     "k": "city.xcl.doc2_talk.2"
+    },
+    {
+     "k": "city.xcl.doc2_talk.3"
+    },
+    {
+     "k": "city.xcl.doc2_talk.4"
+    },
+    {
+     "k": "city.xcl.doc2_talk.5",
+     "weather": "rain"
+    }
+   ],
+   "needs_staff": "doctor",
+   "minutes": 3
+  },
+  "clinic_listen": {
+   "prompt": "city.xcl.p.listen",
+   "lines": [
+    {
+     "k": "city.xcl.listen.1"
+    },
+    {
+     "k": "city.xcl.listen.2"
+    },
+    {
+     "k": "city.xcl.listen.3",
+     "h": [
+      12,
+      17
+     ]
+    },
+    {
+     "k": "city.xcl.listen.4",
+     "weather": "rain"
+    },
+    {
+     "k": "city.xcl.listen.5",
+     "festival": "any"
+    }
+   ],
+   "needs_staff": "doctor",
+   "minutes": 6,
+   "sound": "clock_tick",
+   "collect": "clinic_card/therapist"
+  },
+  "clinic_remedies": {
+   "prompt": "city.act.look.prompt",
+   "lines": [
+    {
+     "k": "city.xcl.remedies.1"
+    },
+    {
+     "k": "city.xcl.remedies.2"
+    },
+    {
+     "k": "city.xcl.remedies.3"
+    }
+   ],
+   "minutes": 2,
+   "sound": "page_turn"
+  },
+  "clinic_pad": {
+   "prompt": "city.act.look.prompt",
+   "lines": [
+    {
+     "k": "city.xcl.pad.1",
+     "d": "mon-wed"
+    },
+    {
+     "k": "city.xcl.pad.2",
+     "d": "thu-sat"
+    },
+    {
+     "k": "city.xcl.pad.3",
+     "d": "sun"
+    }
+   ],
+   "minutes": 1,
+   "rotate": "daily"
+  },
+  "clinic_eye_game": {
+   "prompt": "city.xcl.p.eyetest",
+   "minutes": 6,
+   "sound": "slide_click",
+   "pose": "stand",
+   "lines": [
+    {
+     "k": "city.xcl.eye_game.1"
+    },
+    {
+     "k": "city.xcl.eye_game.2"
+    }
+   ],
+   "game": {
+    "type": "aim",
+    "title": "city.xcl.eye_game.title",
+    "keys": "city.xcl.keys.eye",
+    "rounds": 5,
+    "need": 6,
+    "speed": 0.6,
+    "zone": 0.16,
+    "daily": 3,
+    "collect": "clinic_card/eyes",
+    "win": [
+     {
+      "k": "city.xcl.eye_game.win.1"
+     }
+    ],
+    "lose": [
+     {
+      "k": "city.xcl.eye_game.lose.1"
+     }
+    ],
+    "draw": [
+     {
+      "k": "city.xcl.eye_game.draw.1"
+     }
+    ]
+   }
+  },
+  "clinic_slit_lamp": {
+   "prompt": "city.xcl.p.slit",
+   "lines": [
+    {
+     "k": "city.xcl.slit_lamp.1"
+    },
+    {
+     "k": "city.xcl.slit_lamp.2"
+    },
+    {
+     "k": "city.xcl.slit_lamp.3"
+    }
+   ],
+   "needs_staff": "doctor",
+   "minutes": 4,
+   "sound": "slide_click"
+  },
+  "clinic_frames": {
+   "prompt": "city.act.look.prompt",
+   "lines": [
+    {
+     "k": "city.xcl.frames.1"
+    },
+    {
+     "k": "city.xcl.frames.2"
+    }
+   ],
+   "minutes": 2
+  },
+  "clinic_growth": {
+   "prompt": "city.xcl.p.growth",
+   "lines": [
+    {
+     "k": "city.xcl.growth.1"
+    },
+    {
+     "k": "city.xcl.growth.2"
+    },
+    {
+     "k": "city.xcl.growth.3"
+    }
+   ],
+   "needs_staff": "doctor",
+   "minutes": 3,
+   "sound": "drawer_slide",
+   "collect": "clinic_card/children"
+  },
+  "clinic_toys": {
+   "prompt": "city.xcl.p.toys",
+   "lines": [
+    {
+     "k": "city.xcl.toys.1"
+    },
+    {
+     "k": "city.xcl.toys.2"
+    },
+    {
+     "k": "city.xcl.toys.3"
+    },
+    {
+     "k": "city.xcl.toys.4",
+     "weather": "rain"
+    }
+   ],
+   "minutes": 4,
+   "sound": "ball_bounce"
+  },
+  "clinic_baby_scales": {
+   "prompt": "city.xcl.p.baby",
+   "lines": [
+    {
+     "k": "city.xcl.baby_scales.1"
+    },
+    {
+     "k": "city.xcl.baby_scales.2"
+    }
+   ],
+   "minutes": 2,
+   "sound": "scale_clunk"
+  },
+  "clinic_mobile": {
+   "prompt": "city.act.look.prompt",
+   "lines": [
+    {
+     "k": "city.xcl.mobile.1"
+    },
+    {
+     "k": "city.xcl.mobile.2"
+    }
+   ],
+   "minutes": 2,
+   "sound": "music_box"
+  },
+  "clinic_ruler": {
+   "prompt": "city.xcl.p.ruler",
+   "minutes": 3,
+   "sound": "wood_creak",
+   "pose": "stand",
+   "lines": [
+    {
+     "k": "city.xcl.ruler.1"
+    },
+    {
+     "k": "city.xcl.ruler.2"
+    }
+   ],
+   "game": {
+    "type": "aim",
+    "title": "city.xcl.ruler.title",
+    "keys": "city.xcl.keys.ruler",
+    "rounds": 5,
+    "need": 4,
+    "speed": 0.9,
+    "zone": 0.14,
+    "daily": 2,
+    "prize": [
+     [
+      "candy",
+      1
+     ]
+    ],
+    "win": [
+     {
+      "k": "city.xcl.ruler.win.1"
+     }
+    ],
+    "lose": [
+     {
+      "k": "city.xcl.ruler.lose.1"
+     }
+    ],
+    "draw": [
+     {
+      "k": "city.xcl.ruler.draw.1"
+     }
+    ]
+   }
+  },
+  "clinic_umbrellas": {
+   "prompt": "city.xcl.p.umbrellas",
+   "lines": [
+    {
+     "k": "city.xcl.umbrellas.1"
+    },
+    {
+     "k": "city.xcl.umbrellas.2",
+     "weather": "rain"
+    },
+    {
+     "k": "city.xcl.umbrellas.3",
+     "weather": "snow"
+    },
+    {
+     "k": "city.xcl.umbrellas.4",
+     "h": [
+      21,
+      6
+     ]
+    }
+   ],
+   "minutes": 1,
+   "any_hour": true
+  },
+  "clinic_porter": {
+   "prompt": "city.xcl.p.porter",
+   "lines": [
+    {
+     "k": "city.xcl.porter.1"
+    },
+    {
+     "k": "city.xcl.porter.2"
+    },
+    {
+     "k": "city.xcl.porter.3"
+    }
+   ],
+   "minutes": 3,
+   "sound": "cup_clink",
+   "any_hour": true
+  },
+  "clinic_porter_day": {
+   "prompt": "city.act.look.prompt",
+   "minutes": 1,
+   "any_hour": true,
+   "like": "look_misc",
+   "lines": [
+    {
+     "k": "city.xcl.porter_day.1"
+    },
+    {
+     "k": "city.xcl.porter_day.2"
+    }
+   ]
+  },
+  "clinic_physio_bars": {
+   "prompt": "city.xcl.p.bars",
+   "lines": [
+    {
+     "k": "city.xcl.physio_bars.1"
+    },
+    {
+     "k": "city.xcl.physio_bars.2"
+    },
+    {
+     "k": "city.xcl.physio_bars.3"
+    }
+   ],
+   "needs_staff": "nurse",
+   "minutes": 15,
+   "sound": "mat_thud",
+   "collect": "clinic_card/physio"
+  },
+  "clinic_physio_ball": {
+   "prompt": "city.xcl.p.ball",
+   "minutes": 10,
+   "sound": "ball_bounce",
+   "lines": [
+    {
+     "k": "city.xcl.ball.1"
+    }
+   ],
+   "game": {
+    "type": "rally",
+    "title": "city.xcl.ball.title",
+    "need": 4,
+    "speed": 0.55,
+    "zone": 0.5,
+    "shrink": 0.9,
+    "pace": 1.03,
+    "collect": "clinic_card/physio",
+    "win": [
+     {
+      "k": "city.xcl.physio_ball.win.1"
+     }
+    ],
+    "lose": [
+     {
+      "k": "city.xcl.physio_ball.lose.1"
+     }
+    ],
+    "draw": [
+     {
+      "k": "city.xcl.physio_ball.draw.1"
+     }
+    ]
+   }
+  },
+  "clinic_vaccine": {
+   "prompt": "city.xcl.p.vaccine",
+   "lines": [
+    {
+     "k": "city.xcl.vaccine.1"
+    },
+    {
+     "k": "city.xcl.vaccine.2"
+    },
+    {
+     "k": "city.xcl.vaccine.3"
+    }
+   ],
+   "needs_staff": "nurse",
+   "minutes": 5,
+   "sound": "stamp_thump",
+   "collect": "clinic_card/vaccination"
+  },
+  "clinic_vaccine_fridge": {
+   "prompt": "city.xcl.p.fridge",
+   "lines": [
+    {
+     "k": "city.xcl.vaccine_fridge.1"
+    },
+    {
+     "k": "city.xcl.vaccine_fridge.2"
+    }
+   ],
+   "minutes": 1,
+   "sound": "fridge_hum"
+  },
+  "clinic_vaccine_schedule": {
+   "prompt": "city.act.look.prompt",
+   "lines": [
+    {
+     "k": "city.xcl.vaccine_schedule.1"
+    },
+    {
+     "k": "city.xcl.vaccine_schedule.2",
+     "date": [
+      "10-20",
+      "02-15"
+     ]
+    }
+   ],
+   "minutes": 2,
+   "rotate": "daily"
   }
  },
  "rules": {
@@ -658,6 +1390,87 @@
     "service": "pharmacy",
     "shop": "clinic_pharmacy"
    }
+  },
+  "P-CLINIC/kit_clock_*": {
+   "act": "clinic_clock"
+  },
+  "P-CLINIC/medical_card": {
+   "act": "clinic_card_book"
+  },
+  "P-CLINIC/nurse_station": {
+   "act": "clinic_nurse_talk"
+  },
+  "P-CLINIC/pharmacist_talk": {
+   "act": "clinic_pharm_talk"
+  },
+  "P-CLINIC/doctor_talk_0": {
+   "act": "clinic_doc0_talk"
+  },
+  "P-CLINIC/doctor_talk_1": {
+   "act": "clinic_doc1_talk"
+  },
+  "P-CLINIC/doctor_talk_2": {
+   "act": "clinic_doc2_talk"
+  },
+  "P-CLINIC/therapist_stethoscope": {
+   "act": "clinic_listen"
+  },
+  "P-CLINIC/therapist_remedies": {
+   "act": "clinic_remedies"
+  },
+  "P-CLINIC/therapist_pad": {
+   "act": "clinic_pad"
+  },
+  "P-CLINIC/eye_pointer": {
+   "act": "clinic_eye_game"
+  },
+  "P-CLINIC/eye_slit_lamp": {
+   "act": "clinic_slit_lamp"
+  },
+  "P-CLINIC/eye_frames": {
+   "act": "clinic_frames"
+  },
+  "P-CLINIC/growth_chart": {
+   "act": "clinic_growth"
+  },
+  "P-CLINIC/toy_chest": {
+   "act": "clinic_toys"
+  },
+  "P-CLINIC/baby_scales": {
+   "act": "clinic_baby_scales"
+  },
+  "P-CLINIC/kids_mobile": {
+   "act": "clinic_mobile"
+  },
+  "P-CLINIC/reflex_ruler": {
+   "act": "clinic_ruler"
+  },
+  "P-CLINIC/umbrella_stand": {
+   "act": "clinic_umbrellas"
+  },
+  "P-CLINIC/porter_table": {
+   "act": "clinic_porter",
+   "hours": [
+    21,
+    7
+   ],
+   "days": "mon-sun",
+   "closed": "clinic_porter_day"
+  },
+  "P-CLINIC/physio_bars": {
+   "act": "clinic_physio_bars"
+  },
+  "P-CLINIC/physio_ball": {
+   "act": "clinic_physio_ball"
+  },
+  "P-CLINIC/vaccine_tray": {
+   "act": "clinic_vaccine"
+  },
+  "P-CLINIC/vaccine_fridge": {
+   "act": "clinic_vaccine_fridge"
+  },
+  "P-CLINIC/vaccine_schedule": {
+   "act": "clinic_vaccine_schedule"
   }
  },
  "quests": [
@@ -753,6 +1566,127 @@
      }
     }
    ]
+  },
+  {
+   "id": "clinic_sharp",
+   "kind": "side",
+   "start_on": {
+    "event": "visit",
+    "target": "P-CLINIC"
+   },
+   "stages": [
+    {
+     "id": "eyes",
+     "objectives": [
+      {
+       "id": "eyes",
+       "event": "win",
+       "target": "clinic_eye_game"
+      }
+     ]
+    },
+    {
+     "id": "reflex",
+     "objectives": [
+      {
+       "id": "reflex",
+       "event": "win",
+       "target": "clinic_ruler"
+      }
+     ]
+    },
+    {
+     "id": "ball",
+     "objectives": [
+      {
+       "id": "ball",
+       "event": "win",
+       "target": "clinic_physio_ball"
+      }
+     ],
+     "reward": {
+      "rubles": 30,
+      "items": {
+       "candy": 2
+      }
+     }
+    }
+   ]
+  },
+  {
+   "id": "clinic_card_book",
+   "kind": "side",
+   "start_on": {
+    "event": "do",
+    "target": "clinic_registry"
+   },
+   "stages": [
+    {
+     "id": "first",
+     "objectives": [
+      {
+       "id": "listen",
+       "event": "do",
+       "target": "clinic_listen"
+      },
+      {
+       "id": "growth",
+       "event": "do",
+       "target": "clinic_growth"
+      }
+     ]
+    },
+    {
+     "id": "second",
+     "objectives": [
+      {
+       "id": "vaccine",
+       "event": "do",
+       "target": "clinic_vaccine"
+      },
+      {
+       "id": "bars",
+       "event": "do",
+       "target": "clinic_physio_bars"
+      }
+     ]
+    },
+    {
+     "id": "book",
+     "objectives": [
+      {
+       "id": "book",
+       "event": "do",
+       "target": "clinic_card_book"
+      }
+     ],
+     "reward": {
+      "items": {
+       "cookies": 2,
+       "tea": 1
+      }
+     }
+    }
+   ]
   }
- ]
+ ],
+ "collections": {
+  "clinic_card": {
+   "title": "city.coll.clinic_card.title",
+   "pieces": [
+    "therapist",
+    "eyes",
+    "children",
+    "vaccination",
+    "physio"
+   ]
+  }
+ },
+ "closed_by": {
+  "P-CLINIC": {
+   "*": "clinic_closed_any",
+   "seat": "clinic_closed_seat",
+   "counter": "clinic_closed_counter"
+  }
+ }
 }
