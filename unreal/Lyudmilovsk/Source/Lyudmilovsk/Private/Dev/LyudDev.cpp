@@ -671,6 +671,49 @@ namespace LyudDev
 		return true;
 	}
 
+	bool PlayThrough(UWorld* World, FName Quest)
+	{
+		ULyudQuests* Q = ULyudQuests::Get(World);
+		const FLyudQuestDef* Def = ULyudQuests::FindDef(Quest);
+		if (!Q || !Def)
+		{
+			return false;
+		}
+		if (Q->State(Quest) != ELyudQuestState::Active)
+		{
+			JumpToStage(World, Quest, 0);
+		}
+		// each round completes the current stage's objectives; a stage that does not move on is stuck
+		for (int32 Round = 0; Round < Def->Stages.Num() + 2 && Q->State(Quest) == ELyudQuestState::Active; ++Round)
+		{
+			const FLyudQuestProgress* P = Q->FindProgress(Quest);
+			const int32 Before = P ? P->Stage : -1;
+			UE_LOG(LogTemp, Warning, TEXT("DEV play %s stage %s"), *Quest.ToString(), Def->Stages.IsValidIndex(Before) ? *Def->Stages[Before].Id.ToString() : TEXT("?"));
+			const int32 Count = Q->CurrentObjectives(Quest).Num();
+			for (int32 O = 0; O < Count && Q->State(Quest) == ELyudQuestState::Active; ++O)
+			{
+				const FLyudQuestProgress* Now = Q->FindProgress(Quest);
+				if (!Now || Now->Stage != Before)
+				{
+					break;
+				}
+				if (!Now->Counts.IsValidIndex(O) || Now->Counts[O] < Def->Stages[Before].Objectives[O].Need)
+				{
+					CompleteObjective(World, Quest, O);
+				}
+			}
+			const FLyudQuestProgress* After = Q->FindProgress(Quest);
+			if (Q->State(Quest) == ELyudQuestState::Active && After && After->Stage == Before)
+			{
+				UE_LOG(LogTemp, Warning, TEXT("DEV play %s STUCK at stage %s"), *Quest.ToString(), *Def->Stages[Before].Id.ToString());
+				return false;
+			}
+		}
+		const bool bDone = Q->State(Quest) == ELyudQuestState::Done;
+		UE_LOG(LogTemp, Warning, TEXT("DEV play %s %s"), *Quest.ToString(), bDone ? TEXT("done") : TEXT("STUCK"));
+		return bDone;
+	}
+
 	FString Where(UWorld* World, bool bCopy)
 	{
 		APlayerController* PC = PlayerOf(World);
@@ -1122,7 +1165,7 @@ namespace LyudDevBuiltins
 			}
 		}));
 
-	FAutoConsoleCommandWithWorldAndArgs GQuestCmd(TEXT("Dev.Quest"), TEXT("Dev.Quest <quest> <stage id or index> | <quest> done <objective index> | <quest> forget: jump to a stage, complete an objective, forget a quest"),
+	FAutoConsoleCommandWithWorldAndArgs GQuestCmd(TEXT("Dev.Quest"), TEXT("Dev.Quest <quest> <stage id or index> | <quest> done <objective index> | <quest> play | <quest> forget: jump to a stage, complete an objective, play to the end, forget"),
 		FConsoleCommandWithWorldAndArgsDelegate::CreateLambda([](const TArray<FString>& Args, UWorld* World)
 		{
 			if (Args.Num() < 2)
@@ -1136,6 +1179,11 @@ namespace LyudDevBuiltins
 				{
 					Q->DevForget(Quest);
 				}
+				return;
+			}
+			if (Args[1] == TEXT("play"))
+			{
+				PlayThrough(World, Quest);
 				return;
 			}
 			if (Args[1] == TEXT("done"))

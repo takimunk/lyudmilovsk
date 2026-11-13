@@ -174,6 +174,10 @@ namespace LyudDevTabs
 							: P->State == ELyudQuestState::Done ? TEXT("ui.dev.quest.done") : TEXT("ui.dev.quest.active");
 						return FText::FromString(FString::Printf(TEXT("%s (%s) · %s"), *Title, *Quest.ToString(), *LyudText::Get(State).ToString()));
 					})]
+				+ SHorizontalBox::Slot().AutoWidth().Padding(0, 0, 4, 0)[Button(LyudText::Get(TEXT("ui.dev.quest.play")), [Tool, Quest]()
+					{
+						LyudDev::PlayThrough(WorldOf(Tool), Quest);
+					}, nullptr, 10)]
 				+ SHorizontalBox::Slot().AutoWidth()[Button(LyudText::Get(TEXT("ui.dev.quest.forget")), [Tool, Quest]()
 					{
 						if (ULyudQuests* Q = ULyudQuests::Get(WorldOf(Tool))) Q->DevForget(Quest);

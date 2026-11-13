@@ -95,6 +95,11 @@ namespace LyudDev
 	/** Fires the real game event of one objective of the current stage, as many times as it needs (tests the wiring too). */
 	LYUDMILOVSK_API bool CompleteObjective(UWorld* World, FName Quest, int32 Objective);
 
+	/** Plays a quest to its end from where it is (starting it if needed): every objective of every stage by its real event, logging
+	 *  "DEV play <quest> stage <id>" per stage and "DEV play <quest> done|STUCK". False if it did not finish (an objective whose event
+	 *  does not count: a broken target, a missing item id). */
+	LYUDMILOVSK_API bool PlayThrough(UWorld* World, FName Quest);
+
 	/** The player's place as a line to paste: "Dev.TpAt <x> <y> <z> <yaw>" (world cm) plus map metres. Also copied to the clipboard. */
 	LYUDMILOVSK_API FString Where(UWorld* World, bool bCopy);
 	/** Saves the player's place as a bookmark (Saved/Dev/bookmarks.json, not in git); empty name: "bm_<n>". */
