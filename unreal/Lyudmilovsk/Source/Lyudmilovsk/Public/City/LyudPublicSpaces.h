@@ -75,7 +75,7 @@ private:
 	TWeakObjectPtr<AProceduralForest> Forest;
 	TWeakObjectPtr<ALyudFairRides> Rides;
 	TArray<TWeakObjectPtr<AProceduralPlant>> Plants;
-	struct FPendingPlant { FName Species; int32 Seed = 0; float Age = 1.f; FTransform Xf; };
+	struct FPendingPlant { FName Species; int32 Seed = 0; float Age = 1.f; FTransform Xf; int32 Index = 0; };
 	TArray<FPendingPlant> PendingPlants;
 	void SpawnPendingPlants();
 

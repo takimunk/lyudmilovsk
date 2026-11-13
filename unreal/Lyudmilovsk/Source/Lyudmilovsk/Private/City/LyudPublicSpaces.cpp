@@ -566,6 +566,7 @@ bool ALyudPublicSpaces::Build(const TSharedPtr<FJsonObject>& Doc)
 				Q.Seed = (int32)P->GetNumberField(TEXT("seed"));
 				Q.Age = P->GetNumberField(TEXT("age"));
 				Q.Xf = FTransform(FRotator(0.f, R.FRandRange(0.f, 360.f), 0.f), VecField(P, TEXT("at")));
+				Q.Index = PendingPlants.Num();
 				PendingPlants.Add(Q);
 			}
 		}
@@ -766,8 +767,13 @@ void ALyudPublicSpaces::SpawnPendingPlants()
 		}
 		const FPendingPlant Q = PendingPlants[Best];
 		PendingPlants.RemoveAtSwap(Best);
-		if (AProceduralPlant* Pl = GetWorld()->SpawnActorDeferred<AProceduralPlant>(AProceduralPlant::StaticClass(), Q.Xf, nullptr, nullptr,
-			ESpawnActorCollisionHandlingMethod::AlwaysSpawn))
+		// the save keys actors by name, and these spawn nearest the camera first: a name from the plan's order, not from the spawn order
+		FActorSpawnParameters PlantSP;
+		PlantSP.Name = FName(*FString::Printf(TEXT("LyudCityPlant_%d"), Q.Index));
+		PlantSP.NameMode = FActorSpawnParameters::ESpawnActorNameMode::Requested;
+		PlantSP.SpawnCollisionHandlingOverride = ESpawnActorCollisionHandlingMethod::AlwaysSpawn;
+		PlantSP.bDeferConstruction = true;
+		if (AProceduralPlant* Pl = GetWorld()->SpawnActor<AProceduralPlant>(AProceduralPlant::StaticClass(), Q.Xf, PlantSP))
 		{
 			Pl->Species = Q.Species;
 			Pl->Seed = Q.Seed;
