@@ -225,7 +225,7 @@ say town.director.1 | Пришло письмо сверху: чтобы дет�
 say town.director.2 | Ремонт спортзала обещали к лету. К какому лету — не уточнили. | They promised to fix the gym by summer. Which summer, they didn't say. | 体育館の修理は夏までにって。どの夏かは言ってなかった。
 
 [master]
-job = master
+job = repairman
 say town.master.1 | Всё можно починить. Кроме времени. | Everything can be fixed. Except time. | 何でも直せる。時間以外はね。
 say town.master.2 | Принесли часы, а они идут назад. Говорю: так и задумано. | Someone brought me a clock that runs backwards. I said: that's how it's meant to be. | 逆に回る時計を持ってきた人がいてね。それで正しいんですよって言っといた。
 
