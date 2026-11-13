@@ -6,9 +6,48 @@ Quest.Dump's QUESTTEST state between the steps.
 
   sh unreal/scripts/test_quest_short.sh
 """
+import os
+
 import unreal
 
-state = {"t": 0.0, "step": 0, "shots": 0}
+state = {"t": 0.0, "step": 0, "shots": 0, "find": None}
+LOG = os.path.join(unreal.Paths.project_saved_dir(), "Logs", "test_quest_short.log")
+# the hours tried for a person who is to be seen (drawn, not away) when FIND runs; the first that works is kept
+HOURS = [9, 17, 18, 19, 20, 8, 10, 11, 12, 13, 14, 15, 16, 21]
+
+
+def seen_in_log(person):
+    """The last "QUESTTEST goto <person>: ..." line says seen?"""
+    try:
+        with open(LOG, encoding="utf-8", errors="replace") as f:
+            lines = [l for l in f if "QUESTTEST goto %s:" % person in l]
+    except OSError:
+        return False
+    return bool(lines) and ", seen)" in lines[-1]
+
+
+def find_tick(w, dt):
+    """FIND <person>: each hour in turn, go to them twice (the second time their body is drawn) and read the log."""
+    f = state["find"]
+    f["wait"] -= dt
+    if f["wait"] > 0.0:
+        return True
+    if f["phase"] == 0:
+        h = HOURS[f["i"]]
+        unreal.log_warning("QUESTSHORT find %s at %d h" % (f["person"], h))
+        unreal.SystemLibrary.execute_console_command(w, "lyud.Birds.Time %d" % h)
+        f["phase"], f["wait"] = 1, 2.5
+    elif f["phase"] in (1, 2):
+        unreal.SystemLibrary.execute_console_command(w, "Quest.GoToPerson %s 1.3" % f["person"])
+        f["phase"], f["wait"] = f["phase"] + 1, 3.0
+    else:
+        if seen_in_log(f["person"]) or f["i"] + 1 >= len(HOURS):
+            unreal.log_warning("QUESTSHORT found %s at %d h: %s" % (f["person"], HOURS[f["i"]], seen_in_log(f["person"])))
+            state["find"] = None
+            state["t"] = PLAN[state["step"]][0] - 0.5 if state["step"] < len(PLAN) else state["t"]
+            return False
+        f["i"], f["phase"], f["wait"] = f["i"] + 1, 0, 0.0
+    return True
 PLAN = [
     (12.0, "Quest.Reset", None),
     (12.2, "Quest.List", None),
@@ -60,7 +99,7 @@ PLAN = [
     (32.0, "Quest.Dump", "feeder_told"),
     # the paper again through a real conversation with Nina (her lines are logged by the talk director)
     (35.0, "Quest.Reset", None),
-    (35.5, "lyud.Birds.Time 15", None),
+    (35.5, "FIND korneeva_nina", None),
     (38.0, "Quest.GoToPerson korneeva_nina 1.3", None),
     (41.0, "Npc.Where", None),
     (41.5, "Npc.Talk", None),
@@ -89,11 +128,17 @@ def tick(dt):
     w = world()
     if not w:
         return
-    state["t"] += min(dt, 0.25)
+    dt = min(dt, 0.25)
+    if state["find"] is not None and find_tick(w, dt):
+        return
+    state["t"] += dt
     while state["step"] < len(PLAN) and state["t"] > PLAN[state["step"]][0]:
         _, cmd, label = PLAN[state["step"]]
         state["step"] += 1
         unreal.log_warning("QUESTSHORT %s %s" % (cmd, label or ""))
+        if cmd.startswith("FIND "):
+            state["find"] = {"person": cmd.split()[1], "i": 0, "phase": 0, "wait": 0.0}
+            return
         if cmd.startswith("shot"):
             unreal.log_warning("QUESTSHORT shot %02d %s" % (state["shots"], label))
             state["shots"] += 1

@@ -20,8 +20,9 @@ PLAN = [
     (12.2, "Quest.List", None),
     (12.5, "Quest.Start waxwing", None),
     (13.0, "Quest.Dump", "started"),
-    # 1. find Sorokin (wherever he is at noon) and talk
-    (13.5, "lyud.Birds.Time 12", None),
+    # 1. find Sorokin and talk (at 9 he strolls in the Academgorodok; at noon he is often at "sport" in a culture place,
+    # where no body is drawn, or "town", away)
+    (13.5, "lyud.Birds.Time 9", None),
     (16.0, "Quest.GoToPerson sorokin_oleg 2.5", None),
     (19.0, "Quest.Scenes", None),
     (19.5, "shot showui", "sorokin_found"),
@@ -52,7 +53,7 @@ PLAN = [
     (38.5, "Quest.Event bird_tamed Waxwing", None),
     (39.0, "Quest.Dump", "tamed"),
     # 6. to Sorokin: near him as the hero first (his body is drawn), then the call
-    (39.5, "lyud.Birds.Time 12", None),
+    (39.5, "lyud.Birds.Time 9", None),
     (42.0, "Quest.GoToPerson sorokin_oleg 6", None),
     (46.0, "Quest.BirdCall Starling sorokin_oleg air", None),
     (52.0, "Quest.Dump", "called_from_the_air"),

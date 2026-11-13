@@ -180,7 +180,9 @@ namespace
 		}
 		if (Want.EndsWith(TEXT("*")))
 		{
-			return Got.StartsWith(Want.LeftChop(1));
+			// a bare "*" is anything (FString::StartsWith is false for an empty prefix)
+			const FString Prefix = Want.LeftChop(1);
+			return Prefix.IsEmpty() || Got.StartsWith(Prefix);
 		}
 		return Want == Got;
 	}
