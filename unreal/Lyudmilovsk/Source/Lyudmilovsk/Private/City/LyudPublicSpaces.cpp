@@ -926,6 +926,10 @@ void ALyudFairRides::Tick(float DeltaSeconds)
 		OpenCheck = 2.f;
 		bOpen = OpenNow();
 		bOpenKnown = true;
+		// the turning parts are drawn to 300 m: farther off the rides keep their time but move nothing
+		const APlayerController* PC = GetWorld()->GetFirstPlayerController();
+		bNear = !PC || !PC->PlayerCameraManager || Rides.Num() == 0
+			|| FVector::DistSquared(PC->PlayerCameraManager->GetCameraLocation(), Rides[0].Hub) < FMath::Square(35000.0);
 	}
 	// a run of 150 s, 90 s standing for boarding; ~6 s to speed up, and on the way down each ride brakes onto the next
 	// multiple of its step (the carousel's 45 degrees, the wheel's 30) so the seats meet their spots and a gondola the platform
@@ -968,11 +972,14 @@ void ALyudFairRides::Tick(float DeltaSeconds)
 			R.Angle -= 36000.0;
 			R.Target -= 36000.0;
 		}
-		Pose(R);
+		if (bNear || R.V <= 0.0)               // out of sight only the pose it comes to rest in is set
+		{
+			Pose(R);
+		}
 		Fastest = FMath::Max(Fastest, float(R.V / Full));
 	}
 	Speed = Fastest;
-	SetActorTickInterval(Speed > 0.f ? 0.f : 0.5f);     // every frame only while something moves
+	SetActorTickInterval(Speed > 0.f && bNear ? 0.f : 0.5f);     // every frame only while something moves in sight
 }
 
 FString ALyudFairRides::DebugReport() const

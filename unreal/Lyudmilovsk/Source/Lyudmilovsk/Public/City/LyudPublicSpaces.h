@@ -97,7 +97,7 @@ private:
  * They run on the fair's hours (every day 10-21 in June-August, Sat-Sun 10-19 otherwise; lyud.City.Rides -1 by the clock,
  * 0 stopped, 1 running): a ride of ~2.5 min, ~1.5 min standing for boarding. Only the transforms move (no mesh rebuilds);
  * the turning parts are out of Lumen's GI and distance fields and cast no shadow; the actor ticks every frame only while
- * something moves.
+ * something moves within 350 m of the camera (farther off it keeps time twice a second and poses nothing).
  */
 UCLASS(NotPlaceable, Transient)
 class LYUDMILOVSK_API ALyudFairRides : public AActor
@@ -132,6 +132,8 @@ private:
 	float Cycle = 0.f;          // seconds into the run/board cycle
 	bool bOpenKnown = false, bOpen = false;
 	float OpenCheck = 0.f;
+	/** The camera is within sight of the rides (checked with the hours): far away the angles still run, nothing is posed. */
+	bool bNear = true;
 
 	bool OpenNow() const;
 	void Pose(FRide& R);
