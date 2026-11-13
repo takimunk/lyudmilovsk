@@ -108,7 +108,7 @@ private:
 	bool ResolveChunk(int32 Level, int32 IX, int32 IY, const FVector2D& EyeMap, TArray<uint64>& OutShow);
 	void FinishBuilt(double BudgetMs);
 	void DropChunk(uint64 Key);
-	void GrowGrass(uint64 Key);
+	void GrowGrass(uint64 Key, int32 Quarter);
 	void BuildRiver();
 	void UpdateLook(float DeltaSeconds, const FVector& Eye);
 	void HoldHero();
@@ -133,11 +133,14 @@ class LYUDMILOVSK_API ULyudTopiSubsystem : public UTickableWorldSubsystem
 	GENERATED_BODY()
 
 public:
+	virtual void OnWorldBeginPlay(UWorld& InWorld) override;
 	virtual void Tick(float DeltaTime) override;
 	virtual TStatId GetStatId() const override { RETURN_QUICK_DECLARE_CYCLE_STAT(ULyudTopiSubsystem, STATGROUP_Tickables); }
 	ALyudTopi* GetTopi() const { return Topi.Get(); }
 
 private:
+	void SpawnTopi(UWorld& World);
+
 	TWeakObjectPtr<ALyudTopi> Topi;
 	bool bLooked = false;
 };

@@ -43,7 +43,7 @@ namespace
 	const double GiveUpSeconds = 30.0;
 	const double TraceReachCm = 30000.0;
 
-	UStaticMesh* LoadMesh(const FString& Name)
+	UStaticMesh* LoadTopiMesh(const FString& Name)
 	{
 		return LoadObject<UStaticMesh>(nullptr, *FString::Printf(TEXT("%s%s.%s"), MeshFolder, *Name, *Name), nullptr, LOAD_NoWarn | LOAD_Quiet);
 	}
@@ -197,19 +197,19 @@ UStaticMeshComponent* ULyudTopiProps::Spawn(UStaticMesh* Mesh, const FVector& At
 
 void ULyudTopiProps::PlaceAll(ALyudTopi* Topi)
 {
-	WarnMesh = LoadMesh(TEXT("SM_Topi_WarnSign"));
-	UralMesh = LoadMesh(TEXT("SM_Topi_UralSign"));
+	WarnMesh = LoadTopiMesh(TEXT("SM_Topi_WarnSign"));
+	UralMesh = LoadTopiMesh(TEXT("SM_Topi_UralSign"));
 	StakeMeshes.Reset();
 	for (const TCHAR* Letter : { TEXT("A"), TEXT("B"), TEXT("C"), TEXT("D") })
 	{
-		if (UStaticMesh* Variant = LoadMesh(FString(TEXT("SM_Topi_Stake_")) + Letter))
+		if (UStaticMesh* Variant = LoadTopiMesh(FString(TEXT("SM_Topi_Stake_")) + Letter))
 		{
 			StakeMeshes.Add(Variant);
 		}
 	}
 	if (StakeMeshes.IsEmpty())
 	{
-		if (UStaticMesh* Single = LoadMesh(TEXT("SM_Topi_Stake")))
+		if (UStaticMesh* Single = LoadTopiMesh(TEXT("SM_Topi_Stake")))
 		{
 			StakeMeshes.Add(Single);
 		}
@@ -217,7 +217,7 @@ void ULyudTopiProps::PlaceAll(ALyudTopi* Topi)
 	TowelMeshes.Reset();
 	for (const TCHAR* Letter : { TEXT("A"), TEXT("B"), TEXT("C") })
 	{
-		TowelMeshes.Add(LoadMesh(FString(TEXT("SM_Topi_Towel_")) + Letter));
+		TowelMeshes.Add(LoadTopiMesh(FString(TEXT("SM_Topi_Towel_")) + Letter));
 	}
 	if (!WarnMesh || !UralMesh || StakeMeshes.IsEmpty() || TowelMeshes.ContainsByPredicate([](const TObjectPtr<UStaticMesh>& Towel) { return !Towel; }))
 	{

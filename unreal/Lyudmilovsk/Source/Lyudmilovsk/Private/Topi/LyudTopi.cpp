@@ -176,7 +176,7 @@ struct ALyudTopi::FState
 		int32 Level = 0, IX = 0, IY = 0;
 		bool bBuilding = false;
 		bool bShown = false;
-		bool bGrassAsked = false;
+		uint8 GrassNext = 0;            // the next quarter to grow grass on (4: done)
 		uint32 Touched = 0;
 		double ShownAt = 0.0;
 		float Grass[4] = { 0.f, 0.f, 0.f, 0.f };
@@ -646,6 +646,9 @@ void ALyudTopi::FinishBuilt(double BudgetMs)
 		Mesh->LightingChannels.bChannel1 = true;
 		// only the ground near the eye throws shadows; the far dunes' shading is in their normals
 		Mesh->SetCastShadow(Data->Level <= 2);
+		// the sand's material has a world position offset (the far heave): without this the shadow cache under every
+		// near chunk is redrawn each frame. The heave is far and slow; shadows of the unheaved shape are right.
+		Mesh->ShadowCacheInvalidationBehavior = EShadowCacheInvalidationBehavior::Static;
 		Mesh->bAffectDistanceFieldLighting = false;
 		// the rain's wet patches and puddles are decals: the sand drains, it takes none
 		Mesh->bReceivesDecals = false;
@@ -672,29 +675,51 @@ void ALyudTopi::FinishBuilt(double BudgetMs)
 	// marram on the finest chunks, once their collision has had time to cook (the tufts are traced onto it)
 	if (bGrass && CVarTopiGrass.GetValueOnGameThread() != 0)
 	{
+		// one patch (one Scatter: traces and thousands of instances) a frame, only near the eye (the tufts are culled at
+		// 90 m), and the far ones let go again
 		const double Time = GetWorld()->GetTimeSeconds();
+		const double Size = double(FinestChunkM);
+		const double Reach = 220.0;
 		for (const uint64 Key : State->Shown)
 		{
 			FState::FChunk& Chunk = State->Chunks.FindChecked(Key);
-			if (Chunk.Level == 0 && !Chunk.bGrassAsked && Chunk.bShown && Time - Chunk.ShownAt > 2.0)
+			if (Chunk.Level != 0)
 			{
-				Chunk.bGrassAsked = true;
-				GrowGrass(Key);
-				break;      // one chunk a frame
+				continue;
+			}
+			const double DX = FMath::Max3(Chunk.IX * Size - State->LastEye.X, 0.0, State->LastEye.X - (Chunk.IX + 1) * Size);
+			const double DY = FMath::Max3(Chunk.IY * Size - State->LastEye.Y, 0.0, State->LastEye.Y - (Chunk.IY + 1) * Size);
+			const double D2 = DX * DX + DY * DY;
+			if (Chunk.GrassNext < 4 && Chunk.bShown && Time - Chunk.ShownAt > 2.0 && D2 < Reach * Reach)
+			{
+				GrowGrass(Key, Chunk.GrassNext++);
+				break;
+			}
+			if (Chunk.GrassPatches.Num() > 0 && D2 > 4.0 * Reach * Reach)
+			{
+				for (const TWeakObjectPtr<AProceduralGrass>& Patch : Chunk.GrassPatches)
+				{
+					if (Patch.IsValid())
+					{
+						Patch->Destroy();
+					}
+				}
+				Chunk.GrassPatches.Reset();
+				Chunk.GrassNext = 0;
+				break;
 			}
 		}
 	}
 }
 
-void ALyudTopi::GrowGrass(uint64 Key)
+void ALyudTopi::GrowGrass(uint64 Key, int32 Q)
 {
 	FState::FChunk& Chunk = State->Chunks.FindChecked(Key);
 	const double Size = double(FinestChunkM);
-	for (int32 Q = 0; Q < 4; ++Q)
 	{
 		if (Chunk.Grass[Q] < 0.04f)
 		{
-			continue;
+			return;
 		}
 		const double CX = (Chunk.IX + 0.25 + 0.5 * (Q & 1)) * Size, CY = (Chunk.IY + 0.25 + 0.5 * (Q >> 1)) * Size;
 		const FVector At = ToWorld(CX, CY, Model().Height(CX, CY));
@@ -702,7 +727,7 @@ void ALyudTopi::GrowGrass(uint64 Key)
 			ESpawnActorCollisionHandlingMethod::AlwaysSpawn);
 		if (!Patch)
 		{
-			continue;
+			return;
 		}
 		Patch->Species = GrassSpecies;
 		Patch->Seed = int32(Key & 0x7fffff) + Q;
@@ -1012,6 +1037,17 @@ void ALyudTopi::HoldHero()
 	}
 }
 
+void ULyudTopiSubsystem::OnWorldBeginPlay(UWorld& InWorld)
+{
+	Super::OnWorldBeginPlay(InWorld);
+	// spawned with the level's actors, before the first tick: the mind registers with the saves before a load's
+	// records are applied (on the first frame's timers)
+	if (InWorld.IsGameWorld() && !Topi.IsValid())
+	{
+		SpawnTopi(InWorld);
+	}
+}
+
 void ULyudTopiSubsystem::Tick(float DeltaTime)
 {
 	UWorld* World = GetWorld();
@@ -1019,16 +1055,23 @@ void ULyudTopiSubsystem::Tick(float DeltaTime)
 	{
 		return;
 	}
-	// only a world with the open sky has Topi
+	// a fallback: the sky came after the world began play
+	SpawnTopi(*World);
 	bLooked = true;
-	TActorIterator<ALyudSky> It(World);
+}
+
+void ULyudTopiSubsystem::SpawnTopi(UWorld& World)
+{
+	// only a world with the open sky has Topi
+	TActorIterator<ALyudSky> It(&World);
 	if (!It)
 	{
 		return;
 	}
+	bLooked = true;
 	FActorSpawnParameters P;
 	P.ObjectFlags |= RF_Transient;
 	P.SpawnCollisionHandlingOverride = ESpawnActorCollisionHandlingMethod::AlwaysSpawn;
-	Topi = World->SpawnActor<ALyudTopi>(ALyudTopi::StaticClass(), FTransform::Identity, P);
+	Topi = World.SpawnActor<ALyudTopi>(ALyudTopi::StaticClass(), FTransform::Identity, P);
 	UE_LOG(LogTemp, Log, TEXT("LyudTopi: the dune land is here"));
 }

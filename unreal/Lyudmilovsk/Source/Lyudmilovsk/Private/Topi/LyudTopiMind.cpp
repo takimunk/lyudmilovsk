@@ -4,6 +4,9 @@
 #include "HAL/IConsoleManager.h"
 
 #include "Audio/LyudSoundscape.h"
+#include "Bikes/HeroBike.h"
+#include "Engine/AssetManager.h"
+#include "Misc/PackageName.h"
 #include "Camera/PlayerCameraManager.h"
 #include "Components/AudioComponent.h"
 #include "Components/CapsuleComponent.h"
@@ -62,6 +65,30 @@ namespace
 	constexpr float TopiSequenceEndsAt = TopiLightEndsAt + TopiWhiteHold + TopiClearSeconds + 0.3f;
 	constexpr float TopiChestDepthCm = 110.f;
 	const FLinearColor TopiWhiteTeal(0.75f, 1.f, 0.95f);
+
+	/** True when he is on his own feet. A rider is asked off (the bike's own dismount takes a moment: false until he
+	 *  stands), a led bike is let go, a seated hero stands up. Neither sequence may start on a bike: the bike would keep
+	 *  placing him on its saddle every frame. */
+	bool TopiOnFoot(AHeroCharacter& Hero)
+	{
+		if (UHeroBikeComponent* Bike = Hero.FindBike())
+		{
+			if (Bike->IsOnBike())
+			{
+				Bike->Dismount();
+				return false;
+			}
+			if (Bike->IsLeading())
+			{
+				Bike->LetGo();
+			}
+		}
+		if (Hero.IsSeated())
+		{
+			Hero.StandUp();
+		}
+		return true;
+	}
 
 	ULyudTopiMind* TopiMindOf(UWorld* World)
 	{
@@ -214,6 +241,29 @@ void ULyudTopiMind::BeginPlay()
 	{
 		Saves->RegisterSaveObject(TopiSaveKey, this);
 	}
+	// the music and the hero's lines here load in the background now, so nothing is loaded synchronously when they play
+	{
+		TArray<FSoftObjectPath> Paths;
+		const auto Want = [&Paths](const FString& Path)
+		{
+			if (FPackageName::DoesPackageExist(FPackageName::ObjectPathToPackageName(Path)))
+			{
+				Paths.Add(FSoftObjectPath(Path));
+			}
+		};
+		Want(TopiMusicPath);
+		Want(UralMusicPath);
+		const FString& Lang = LyudText::Language();
+		for (const TCHAR* Line : { TEXT("turn_1"), TEXT("turn_2"), TEXT("turn_3"), TEXT("turn_4"), TEXT("wake_1") })
+		{
+			const FString Name = FString::Printf(TEXT("V_line_hero_topi_%s"), Line);
+			Want(FString::Printf(TEXT("/Game/Voice/%s/%s.%s"), *Lang, *Name, *Name));
+		}
+		if (Paths.Num() > 0)
+		{
+			Preload = UAssetManager::GetStreamableManager().RequestAsyncLoad(Paths);
+		}
+	}
 }
 
 void ULyudTopiMind::EndPlay(const EEndPlayReason::Type EndPlayReason)
@@ -235,6 +285,7 @@ void ULyudTopiMind::EndPlay(const EEndPlayReason::Type EndPlayReason)
 	{
 		Saves->UnregisterSaveObject(TopiSaveKey);
 	}
+	Preload.Reset();
 	Super::EndPlay(EndPlayReason);
 }
 
@@ -250,6 +301,16 @@ void ULyudTopiMind::TickComponent(float DeltaTime, ELevelTick TickType, FActorCo
 	{
 		UE_LOG(LogTemp, Log, TEXT("LyudTopi: sequence interrupted (the pawn changed)"));
 		AbortSequences();
+	}
+	// something else moved him far in one frame (a dev teleport, a quest's jump): the sequence is not his any more
+	if ((bTurning || (bDissolving && !bWoken)) && Hero)
+	{
+		if (FVector::DistSquared(Hero->GetActorLocation(), SequenceAt) > FMath::Square(3000.0))
+		{
+			UE_LOG(LogTemp, Log, TEXT("LyudTopi: sequence interrupted (the hero was moved)"));
+			AbortSequences();
+		}
+		SequenceAt = Hero->GetActorLocation();
 	}
 	if (LastHero.IsValid() && LastHero.Get() != Hero)
 	{
@@ -328,7 +389,7 @@ void ULyudTopiMind::UpdatePressure(float DeltaTime, AHeroCharacter& Hero, const 
 
 	Grace = FMath::Max(0.f, Grace - DeltaTime);
 	HighFor = Pressure > 0.92f ? HighFor + DeltaTime : 0.f;
-	if (!bCalm && !bTurning && !bDissolving && Grace <= 0.f && (Pressure >= 0.999f || HighFor >= 4.f))
+	if (!bCalm && !bTurning && !bDissolving && Grace <= 0.f && (Pressure >= 0.999f || HighFor >= 4.f) && TopiOnFoot(Hero))
 	{
 		APlayerController* PC = nullptr;
 		if (PlayerHero(&PC) == &Hero && PC)
@@ -344,7 +405,7 @@ void ULyudTopiMind::ForceTurnBack()
 {
 	APlayerController* PC = nullptr;
 	AHeroCharacter* Hero = PlayerHero(&PC);
-	if (Hero && PC && !bTurning && !bDissolving)
+	if (Hero && PC && !bTurning && !bDissolving && TopiOnFoot(*Hero))
 	{
 		BeginTurn(*Hero, *PC);
 	}
@@ -372,6 +433,7 @@ void ULyudTopiMind::BeginTurn(AHeroCharacter& Hero, APlayerController& PC)
 	TurnTime = 0.f;
 	bTurning = true;
 	SequenceHero = &Hero;
+	SequenceAt = Hero.GetActorLocation();
 	HighFor = 0.f;
 	LockInput(&PC, true);
 
@@ -445,7 +507,7 @@ void ULyudTopiMind::UpdateRiver(float DeltaTime, AHeroCharacter& Hero, bool bNig
 	// the stream carries him (swept: he does not go through the banks)
 	const FVector Flow = T->RiverFlowAt(Feet);
 	Hero.AddActorWorldOffset(Flow * (DeltaTime * FMath::Min(Depth / 100.f, 1.f) * 0.35f), true);
-	if (Depth > TopiChestDepthCm && !bTurning)
+	if (Depth > TopiChestDepthCm && !bTurning && TopiOnFoot(Hero))
 	{
 		APlayerController* PC = nullptr;
 		if (PlayerHero(&PC) == &Hero && PC)
@@ -459,7 +521,7 @@ void ULyudTopiMind::StartDissolve()
 {
 	APlayerController* PC = nullptr;
 	AHeroCharacter* Hero = PlayerHero(&PC);
-	if (Hero && PC && !bDissolving)
+	if (Hero && PC && !bDissolving && TopiOnFoot(*Hero))
 	{
 		BeginDissolve(*Hero, *PC);
 	}
@@ -481,6 +543,7 @@ void ULyudTopiMind::BeginDissolve(AHeroCharacter& Hero, APlayerController& PC)
 	DissolveTime = 0.f;
 	Dissolve = 0.f;
 	SequenceHero = &Hero;
+	SequenceAt = Hero.GetActorLocation();
 	LockInput(&PC, true);
 	DiveStartPitch = float(FRotator::NormalizeAxis(PC.GetControlRotation().Pitch));
 	if (UCharacterMovementComponent* Move = Hero.GetCharacterMovement())
@@ -819,11 +882,17 @@ void ULyudTopiMind::SetLevel(UAudioComponent* Music, float Level) const
 
 void ULyudTopiMind::DropLoop(TObjectPtr<UAudioComponent>& Loop)
 {
-	if (IsValid(Loop.Get()))
+	// AttachLoop spawns them not to destroy themselves. FadeOut on a loop that is not playing never completes, so that
+	// one is destroyed at once (ULyudSoundscapeSubsystem::ReleaseLoop on newer main does the same)
+	if (IsValid(Loop.Get()) && Loop->IsPlaying())
 	{
-		// AttachLoop spawns them not to destroy themselves
 		Loop->bAutoDestroy = true;
 		Loop->FadeOut(1.2f, 0.f);
+	}
+	else if (IsValid(Loop.Get()))
+	{
+		Loop->Stop();
+		Loop->DestroyComponent();
 	}
 	Loop = nullptr;
 }
@@ -877,6 +946,15 @@ void ULyudTopiMind::UpdateSound(float DeltaTime, AHeroCharacter& Hero, const FVe
 	// loops: the heartbeat as it presses, the river's hum near it at night
 	const float Effects = Scape ? Scape->MasterVolume * Scape->EffectsVolume : 1.f;
 	LoopRetry = FMath::Max(0.f, LoopRetry - DeltaTime);
+	// a loop that stopped by itself is let go, so it is attached again below
+	if (HeartLoop && !HeartLoop->IsPlaying())
+	{
+		DropLoop(HeartLoop);
+	}
+	if (HumLoop && !HumLoop->IsPlaying())
+	{
+		DropLoop(HumLoop);
+	}
 	const float Heart = Pressure > 0.35f ? Pressure * Pressure : 0.f;
 	if (Heart > 0.f && !IsValid(HeartLoop.Get()) && Scape && LoopRetry <= 0.f)
 	{

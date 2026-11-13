@@ -2,6 +2,7 @@
 
 #include "CoreMinimal.h"
 #include "Components/ActorComponent.h"
+#include "Engine/StreamableManager.h"
 #include "LyudTopiMind.generated.h"
 
 class AHeroCharacter;
@@ -94,6 +95,10 @@ private:
 
 	TWeakObjectPtr<AHeroCharacter> LastHero;
 	TWeakObjectPtr<AHeroCharacter> SequenceHero;
+	/** Where he was last frame during a sequence: a jump of more than 30 m aborts it (something else moved him). */
+	FVector SequenceAt = FVector::ZeroVector;
+	/** The music and his lines here, loading in the background from BeginPlay. */
+	TSharedPtr<FStreamableHandle> Preload;
 	TWeakObjectPtr<APlayerController> LockedPC;
 	TSharedPtr<SLyudTopiSubtitle> SubtitleWidget;
 
