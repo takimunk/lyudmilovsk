@@ -29,6 +29,7 @@
  "ui.shop.bought": "Bought: {0}",
  "ui.shop.nomoney": "Not enough money",
  "ui.shop.close": "T, Tab or I — close",
+ "ui.shop.keys": "Mouse wheel or ↑↓ — scroll, Enter — buy the selected",
  "ui.menu.game_time": "{0} h {1} min in game",
  "ui.menu.slot_subtitle": "{0}  ·  {1}",
  "ui.menu.title": "LYUDMILOVSK",

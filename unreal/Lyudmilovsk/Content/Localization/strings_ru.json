@@ -29,6 +29,7 @@
  "ui.shop.bought": "Куплено: {0}",
  "ui.shop.nomoney": "Не хватает денег",
  "ui.shop.close": "T, Tab или I — закрыть",
+ "ui.shop.keys": "Колесо мыши или ↑↓ — листать, Enter — купить выбранное",
  "ui.menu.game_time": "в игре {0} ч {1} мин",
  "ui.menu.slot_subtitle": "{0}  ·  {1}",
  "ui.menu.title": "ЛЮДМИЛОВСК",
