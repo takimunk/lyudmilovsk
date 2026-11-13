@@ -197,6 +197,8 @@ the console does not change. The game's knobs in the levels: `lyud.Birds.Bodies`
   `noforestshadow` `nolive` `vsmbias10` `vsmbias05` `smrt4` `shadowlod2` `lodscale125` `vdist08` `clouds075`
   `clouds05` `grass085` `floor075` `sea1` `birds8` `shafts0`. See [benchmark.md](benchmark.md).
 - `-LyudBenchShots` in `EXTRA=` takes a screenshot per segment: compare the levels' looks.
+- `unreal/scripts/test_graphics.py`: the page in Russian, English and Japanese and the `lyud.Gfx.*` commands in an
+  offscreen game, a screenshot of the page at each step (`lyud.Menu graphics` opens it) and a `GFXTEST` line per command.
 
 Still to do, once the Mac can run Unreal again (the Metal Toolchain is missing):
 

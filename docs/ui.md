@@ -45,7 +45,7 @@ The game menu (Esc / F10) has a Settings page on the main and the pause menu: th
 menu screen is rebuilt at once), four sound volumes (master, surroundings, music, effects; `ULyudSoundscapeSubsystem::SetVolumes`,
 applied as the slider moves) and the HUD on or off. They are kept per machine, not per save, in GameUserSettings.ini
 (`[Lyudmilovsk.Settings]`, `LyudSettings` in `Private/UI/LyudSettings.cpp`): the language and the HUD are applied once per run, the
-volumes into every new world's soundscape. Console: `lyud.Menu settings|pause|main|close`, `lyud.Settings.Volume <which> <0..1>`,
+volumes into every new world's soundscape. Console: `lyud.Menu settings|graphics|pause|main|close`, `lyud.Settings.Volume <which> <0..1>`,
 `lyud.Settings.Language ru|en|ja`; offscreen check `unreal/scripts/test_settings.py`.
 
 ## Quests

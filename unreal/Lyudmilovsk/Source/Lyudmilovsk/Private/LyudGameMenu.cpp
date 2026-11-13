@@ -300,7 +300,16 @@ void ULyudGameMenuSubsystem::OpenSettings()
 	}
 }
 
-static FAutoConsoleCommandWithWorldAndArgs GLyudMenuCmd(TEXT("lyud.Menu"), TEXT("lyud.Menu pause|main|settings|close: opens a page of the game menu (headless checks)."),
+void ULyudGameMenuSubsystem::OpenGraphics()
+{
+	OpenSettings();
+	if (Menu && bOpen)
+	{
+		Menu->Push(SLyudGameMenu::EScreen::Graphics);
+	}
+}
+
+static FAutoConsoleCommandWithWorldAndArgs GLyudMenuCmd(TEXT("lyud.Menu"), TEXT("lyud.Menu pause|main|settings|graphics|close: opens a page of the game menu (headless checks)."),
 	FConsoleCommandWithWorldAndArgsDelegate::CreateLambda([](const TArray<FString>& Args, UWorld* World)
 	{
 		ULyudGameMenuSubsystem* Menu = World ? World->GetSubsystem<ULyudGameMenuSubsystem>() : nullptr;
@@ -316,6 +325,10 @@ static FAutoConsoleCommandWithWorldAndArgs GLyudMenuCmd(TEXT("lyud.Menu"), TEXT(
 		else if (Page == TEXT("settings"))
 		{
 			Menu->OpenSettings();
+		}
+		else if (Page == TEXT("graphics"))
+		{
+			Menu->OpenGraphics();
 		}
 		else
 		{
