@@ -1,0 +1,983 @@
+{
+ "_doc": "Unite block (P-UNITE), second pass: the lobbies lived in (mail, boards, concierge talk, hats, bicycle, pram, plants), the shopping street at mid-height (bakery, haberdashery, news, grocery, toys, barber, a games room with five games), the roof terrace (paddling pool, deck chairs by day and night sky, running track and lap board, badminton, kindergarten sandbox), and Priya Tulegenova's duplex flat 5-12 (entered by a stair down from the street): the postcard album story on the lobby and street boards over game days 0-8+; regulars Gennady Sorokin and Rafael Benitez; quests home_tulegenova and un_pingpong.",
+ "city.un.p.mail": {
+  "ru": "E — заглянуть в ящики",
+  "en": "E — look in the letter boxes",
+  "ja": "E：郵便受けをのぞく"
+ },
+ "city.un.p.hats": {
+  "ru": "E — оглядеть вешалку",
+  "en": "E — look over the coat stand",
+  "ja": "E：コート掛けを見る"
+ },
+ "city.un.p.bike": {
+  "ru": "E — оглядеть велосипед",
+  "en": "E — look the bicycle over",
+  "ja": "E：自転車を見る"
+ },
+ "city.un.p.pram": {
+  "ru": "E — заглянуть в коляску",
+  "en": "E — look into the pram",
+  "ja": "E：乳母車をのぞく"
+ },
+ "city.un.p.plants": {
+  "ru": "E — полить цветы",
+  "en": "E — water the plants",
+  "ja": "E：花に水をやる"
+ },
+ "city.un.p.bread": {
+  "ru": "E — посмотреть хлеб",
+  "en": "E — look at the bread",
+  "ja": "E：パンを見る"
+ },
+ "city.un.p.buttons": {
+  "ru": "E — выдвинуть ящик",
+  "en": "E — pull out a drawer",
+  "ja": "E：引き出しを開ける"
+ },
+ "city.un.p.apples": {
+  "ru": "E — перебрать яблоки",
+  "en": "E — sort through the apples",
+  "ja": "E：りんごを選ぶ"
+ },
+ "city.un.p.toyhouse": {
+  "ru": "E — заглянуть в домик",
+  "en": "E — peek into the playhouse",
+  "ja": "E：おもちゃの家をのぞく"
+ },
+ "city.un.p.toybins": {
+  "ru": "E — порыться в ящике",
+  "en": "E — rummage in the bin",
+  "ja": "E：箱をかき回す"
+ },
+ "city.un.p.door": {
+  "ru": "E — подойти к двери",
+  "en": "E — step up to the door",
+  "ja": "E：ドアに近づく"
+ },
+ "city.un.p.tea": {
+  "ru": "E — выпить чаю",
+  "en": "E — have some tea",
+  "ja": "E：お茶を飲む"
+ },
+ "city.un.p.sink": {
+  "ru": "E — заглянуть в раковину",
+  "en": "E — look in the sink",
+  "ja": "E：流しをのぞく"
+ },
+ "city.un.p.stove": {
+  "ru": "E — приподнять крышку",
+  "en": "E — lift a lid",
+  "ja": "E：ふたを持ち上げる"
+ },
+ "city.un.p.photos": {
+  "ru": "E — рассмотреть фотографии",
+  "en": "E — look at the photographs",
+  "ja": "E：写真を見る"
+ },
+ "city.un.p.cards": {
+  "ru": "E — рассмотреть открытки",
+  "en": "E — look at the postcards",
+  "ja": "E：絵はがきを見る"
+ },
+ "city.un.p.wardrobe": {
+  "ru": "E — заглянуть в шкаф",
+  "en": "E — look in the wardrobe",
+  "ja": "E：衣装だんすを開ける"
+ },
+ "city.un.p.album": {
+  "ru": "E — вклеить открытку в альбом",
+  "en": "E — paste the postcard into the album",
+  "ja": "E：絵はがきをアルバムに貼る"
+ },
+ "city.un.p.pool": {
+  "ru": "E — потрогать воду",
+  "en": "E — feel the water",
+  "ja": "E：水にさわる"
+ },
+ "city.un.p.sand": {
+  "ru": "E — поиграть в песочнице",
+  "en": "E — play in the sandbox",
+  "ja": "E：砂場で遊ぶ"
+ },
+ "city.un.p.feeder": {
+  "ru": "E — посмотреть на кормушку",
+  "en": "E — look at the feeder",
+  "ja": "E：餌台を見る"
+ },
+ "city.un.p.sit": {
+  "ru": "E — присесть",
+  "en": "E — sit down",
+  "ja": "E：腰かける"
+ },
+ "city.un.mail.1": {
+  "ru": "В ящиках ещё пусто: почтальон приходит к одиннадцати. На одном ящике от руки: «Рекламу не бросать, у нас кошка».",
+  "en": "The boxes are still empty: the postman comes at eleven. On one box, in pen: \"No junk mail, we have a cat.\"",
+  "ja": "郵便受けはまだ空っぽ。配達は十一時だ。ひとつの受けに手書きで「チラシ不要、うちには猫がいます」。"
+ },
+ "city.un.mail.2": {
+  "ru": "Восемнадцать ящиков на этой стене, а квартир в доме сто девяносто шесть: остальным почтальон поднимается выше.",
+  "en": "Eighteen boxes on this wall, and a hundred and ninety-six flats in the house: the postman carries the rest further up.",
+  "ja": "この壁に郵便受けは十八個、家は百九十六戸。残りの郵便は配達の人がもっと上まで運ぶ。"
+ },
+ "city.un.mail.3": {
+  "ru": "Ящики заперты на ночь. Из щели торчит уголок открытки с маяком: утром кому-то повезёт.",
+  "en": "The boxes are locked for the night. The corner of a postcard with a lighthouse sticks out of a slot: somebody will be glad in the morning.",
+  "ja": "郵便受けは夜のあいだ施錠されている。すき間から灯台の絵はがきの角がのぞく。朝、誰かが喜ぶだろう。"
+ },
+ "city.un.mail.4": {
+  "ru": "По понедельникам приходят счета: ящик Каск уже разбух, как булка.",
+  "en": "Bills come on Mondays: the Kasks' box has already swollen like a loaf.",
+  "ja": "月曜は請求書の日。カスク家の受けはもうパンのようにふくらんでいる。"
+ },
+ "city.un.mail.5": {
+  "ru": "С потолка капает на пол у ящиков, ведро подставлено. Письма в ящиках сухие: щели смотрят вниз.",
+  "en": "Water drips from the ceiling by the boxes, a bucket stands under it. The letters inside are dry: the slots face down.",
+  "ja": "郵便受けの前では天井から水が落ち、バケツが置いてある。中の手紙は無事だ。差し込み口が下を向いている。"
+ },
+ "city.un.l1n.1": {
+  "ru": "Прия Тулегенова из 5-12 собирает открытки с видами города для альбома. Не хватает одной, с морем. Синяя дверь на торговой улице, рядом с галантереей. Чай за мной.",
+  "en": "Priya Tulegenova of no. 5-12 is putting together an album of postcards of the town. One is missing: the sea. The blue door on the shopping street, next to the haberdashery. Tea is on me.",
+  "ja": "5-12号室のプリヤ・トゥレゲノワが、町の絵はがきでアルバムを作っています。足りないのは海の一枚。商店街の手芸店の隣、青いドアです。お茶はこちらで。"
+ },
+ "city.un.l1n.2": {
+  "ru": "Нашлась перчатка: левая, серая, вязаная. Висит на крючке у ящиков. Если ваша, она вас ждёт.",
+  "en": "A glove has turned up: left, grey, knitted. It hangs on the hook by the letter boxes. If it is yours, it is waiting for you.",
+  "ja": "手袋が見つかりました。左手用、灰色の毛糸編み。郵便受けのそばのフックに掛けてあります。心当たりのある方へ。"
+ },
+ "city.un.l1n.3": {
+  "ru": "Нашёлся ключ от велосипедного замка. Спросите у консьержа, только назовите цвет велосипеда.",
+  "en": "A bicycle-lock key has been found. Ask the concierge, but say the colour of your bicycle first.",
+  "ja": "自転車の鍵が見つかりました。管理人にどうぞ。ただし自転車の色を先に言ってください。"
+ },
+ "city.un.l1c.1": {
+  "ru": "В игровой на торговой улице шахматы, шашки, домино, теннис и настольный футбол. Играть могут все, ставки только на чай.",
+  "en": "The games room on the shopping street has chess, checkers, dominoes, table tennis and table football. Everyone may play, the stakes are tea.",
+  "ja": "商店街のゲームルームには、チェス、チェッカー、ドミノ、卓球、テーブルサッカーがあります。誰でも遊べます。賭けるのはお茶だけ。"
+ },
+ "city.un.l1c.2": {
+  "ru": "Первенство дома по домино: в субботу в шесть, в игровой. Прошлогодний чемпион Рафаэл Бенитес (13-19) принимает вызовы.",
+  "en": "House dominoes championship: Saturday at six, in the games room. Last year's champion Rafael Benítez (13-19) accepts challenges.",
+  "ja": "ドミノの棟内選手権は土曜の六時、ゲームルームで。昨年の優勝者ハファエル・ベニテス（13-19）が挑戦を受けます。"
+ },
+ "city.un.l1c.3": {
+  "ru": "Итоги первенства: Рафаэл Бенитес и Геннадий Сорокин (15-11) сыграли вничью. Решили доиграть до первой кружки чая.",
+  "en": "Championship result: Rafael Benítez and Gennady Sorokin (15-11) drew. They agreed to play on until the first mug of tea.",
+  "ja": "選手権の結果。ハファエル・ベニテスとゲンナジー・ソローキン（15-11）は引き分け。最初のお茶が出るまで続けることになりました。"
+ },
+ "city.un.l2n.1": {
+  "ru": "Хокон Янсен (13-09) по средам и субботам в пять бегает с детьми на крыше. Приходите бежать или болеть, секундомер у него свой.",
+  "en": "Håkon Jansen (13-09) runs with the children on the roof on Wednesdays and Saturdays at five. Come and run or cheer, he brings his own stopwatch.",
+  "ja": "ホーコン・ヤンセン（13-09）は水曜と土曜の五時に、屋上で子どもたちと走ります。走る人も応援する人も歓迎。ストップウォッチは本人持参。"
+ },
+ "city.un.l2n.2": {
+  "ru": "Детский бассейн на крыше залит. Дежурные взрослые на шезлонгах, с восьми до девяти вечера. Без нырков, он мелкий.",
+  "en": "The paddling pool on the roof is filled. Grown-ups on duty in the deck chairs, from eight to nine in the evening. No diving, it's shallow.",
+  "ja": "屋上の子ども用プールに水が入りました。見守りの大人はデッキチェアに、朝八時から夜九時まで。飛び込みは禁止、浅いので。"
+ },
+ "city.un.l2n.3": {
+  "ru": "Просьба: песок из песочницы на крыше не носить в карманах в подъезд. Дворник просит, и у него есть метла.",
+  "en": "Please do not carry sand from the roof sandbox into the entrance in your pockets. The caretaker asks, and he has a broom.",
+  "ja": "お願い。屋上の砂場の砂をポケットに入れて玄関に持ち込まないこと。管理人からのお願いです。ほうきも持っています。"
+ },
+ "city.un.l2c.1": {
+  "ru": "На крыше нашли синий детский носок. Висит на ограде песочницы. Если ваш, он скучает.",
+  "en": "A blue child's sock was found on the roof. It hangs on the sandbox fence. If it's yours, it misses you.",
+  "ja": "屋上で青い子どもの靴下が見つかりました。砂場の柵に掛けてあります。心当たりの方、靴下が寂しがっています。"
+ },
+ "city.un.l2c.2": {
+  "ru": "Ищу четвёртого для домино по вторникам в игровой. Рафаэл Бенитес, 13-19. Можно и Геннадия Сорокина из 15-11, но он жульничает тихо.",
+  "en": "Looking for a fourth for dominoes on Tuesdays in the games room. Rafael Benítez, 13-19. Gennady Sorokin of 15-11 will do too, but he cheats quietly.",
+  "ja": "火曜のドミノの四人目を探しています。ハファエル・ベニテス、13-19。15-11のゲンナジー・ソローキンでも可。ただし彼は静かにずるをします。"
+ },
+ "city.un.desk1.1": {
+  "ru": "Консьерж отрывается от кроссворда: «Доброе утро. Пятнадцать этажей, и всем что-нибудь нужно сразу.»",
+  "en": "The concierge looks up from a crossword: \"Good morning. Fifteen floors, and everyone wants something at once.\"",
+  "ja": "管理人はクロスワードから顔を上げた。「おはよう。十五階もあって、みんな一度に何か頼むんだよ。」"
+ },
+ "city.un.desk1.2": {
+  "ru": "«Добрый день. Почту, ключи, или просто посидеть? Скамья у стены не кусается.»",
+  "en": "\"Good afternoon. Post, keys, or just a sit? The bench by the wall doesn't bite.\"",
+  "ja": "「こんにちは。郵便、鍵、それともちょっと座る？ 壁のベンチは噛みつかないよ。」"
+ },
+ "city.un.desk1.3": {
+  "ru": "«Поздно. Дверь я запираю в одиннадцать, потом звоните. И на лестнице не топайте: стены тонкие.»",
+  "en": "\"It's late. I lock the door at eleven, ring after that. And don't stamp on the stairs: the walls are thin.\"",
+  "ja": "「遅いね。ドアは十一時に閉める、その後は呼び鈴を。階段では足音を立てないで、壁が薄いから。」"
+ },
+ "city.un.desk1.4": {
+  "ru": "«Торговая улица? Посередине дома, на седьмом. Хлеб, галантерея, игрушки, парикмахерская. И игровая: там шумно, но по-доброму.»",
+  "en": "\"The shopping street? Halfway up the house, on the seventh. Bread, haberdashery, toys, the barber. And the games room: noisy, but kindly.\"",
+  "ja": "「商店街かい？ 家のちょうど真ん中、七階だよ。パン屋、手芸店、おもちゃ屋、理髪店。それとゲームルーム。にぎやかだけど気持ちのいい音だ。」"
+ },
+ "city.un.desk1.5": {
+  "ru": "«Прия Тулегенова? Пятая, двенадцатая квартира. Дверь у неё с торговой улицы, синяя. К ней идут вниз по лестнице: у нас всё наоборот.»",
+  "en": "\"Priya Tulegenova? Fifth floor, number twelve. Her door is on the shopping street, the blue one. You go down the stair to her: with us it's the other way round.\"",
+  "ja": "「プリヤ・トゥレゲノワ？ 五階の十二号室だよ。ドアは商店街側の青いやつ。階段を下りて入るんだ、うちは何でも逆さまでね。」"
+ },
+ "city.un.desk1.6": {
+  "ru": "«Крыша открыта круглые сутки. Бассейн для малышей, дорожка, песочница, бадминтон. Только по краю не бегайте.»",
+  "en": "\"The roof is open round the clock. A paddling pool, a track, a sandbox, badminton. Just don't run along the edge.\"",
+  "ja": "「屋上は一日中開いてるよ。子ども用プール、トラック、砂場、バドミントン。ただ縁は走らないこと。」"
+ },
+ "city.un.desk2.1": {
+  "ru": "Дежурная по подъезду поднимает глаза от вязания: «Утро доброе. Чай на плитке, если кто замёрз.»",
+  "en": "The lobby warden looks up from her knitting: \"Good morning. Tea's on the hotplate if anyone is cold.\"",
+  "ja": "当番の女性が編み物から目を上げる。「おはよう。寒い人にはコンロにお茶があるよ。」"
+ },
+ "city.un.desk2.2": {
+  "ru": "«Добрый день. Если вы к рыбам, они только что поели, не просите у них любви.»",
+  "en": "\"Good afternoon. If you've come for the fish, they've just eaten, don't ask them for affection.\"",
+  "ja": "「こんにちは。お魚を見に来たなら、今ごはんの後だから愛想は期待しないでね。」"
+ },
+ "city.un.desk2.3": {
+  "ru": "«На ночь свет в холле убавим. Если не спится, аквариум светит до утра, можно с ним посидеть.»",
+  "en": "\"We dim the hall lights for the night. If you can't sleep, the aquarium glows till morning, you can sit with it.\"",
+  "ja": "「夜はホールの明かりを落とすよ。眠れないなら水槽は朝まで光ってるから、一緒に座っていていい。」"
+ },
+ "city.un.desk2.4": {
+  "ru": "«Игровая на торговой улице? Рафаэл Бенитес с тринадцатого там бывает каждый вечер, ищет, кого обыграть.»",
+  "en": "\"The games room on the shopping street? Rafael Benítez from the thirteenth is there every evening, looking for someone to beat.\"",
+  "ja": "「商店街のゲームルーム？ 十三階のハファエル・ベニテスが毎晩来ててね、勝てそうな相手を探してるよ。」"
+ },
+ "city.un.desk2.5": {
+  "ru": "«Крыша? Хокон Янсен по средам и субботам бегает там с детьми. Если захотите, он вас тоже заставит.»",
+  "en": "\"The roof? Håkon Jansen runs there with the children on Wednesdays and Saturdays. If you want to, he'll make you run too.\"",
+  "ja": "「屋上かい？ ホーコン・ヤンセンが水曜と土曜に子どもたちと走ってるよ。その気があれば、あんたも走らされる。」"
+ },
+ "city.un.desk2.6": {
+  "ru": "«Почта? Раз в неделю всё равно что-нибудь заблудится. Открытки приходят чаще писем: людям проще написать пять слов.»",
+  "en": "\"The post? Something goes astray once a week anyway. Postcards come more often than letters: people find five words easier.\"",
+  "ja": "「郵便？ 週に一度は何か迷子になるよ。手紙より絵はがきのほうが多い。五つの言葉なら書きやすいからね。」"
+ },
+ "city.un.hats.1": {
+  "ru": "Вешалка у двери. Красный шарф висит тут с осени, и все его знают: хозяин не находится.",
+  "en": "The coat stand by the door. A red scarf has hung here since autumn and everybody knows it: the owner never turns up.",
+  "ja": "ドアのそばのコート掛け。赤いマフラーが秋からずっと掛かっている。みんな知っているが、持ち主は現れない。"
+ },
+ "city.un.hats.2": {
+  "ru": "На вешалке мокрые зонты, под ними лужица в форме материка. Дырявый зонт общий: берёт кто первый.",
+  "en": "Wet umbrellas on the stand, under them a puddle the shape of a continent. The holey umbrella belongs to everybody: first come, first served.",
+  "ja": "コート掛けには濡れた傘。その下に大陸の形の水たまり。穴のあいた傘は共用で、先に来た人が使う。"
+ },
+ "city.un.hats.3": {
+  "ru": "Шапки и варежки висят парами, детские на резинке, чтобы не терялись. Одна пара всё равно потерялась.",
+  "en": "Hats and mittens hang in pairs, the children's on elastic so they won't get lost. One pair got lost anyway.",
+  "ja": "帽子と手袋は組になって掛かっている。子ども用は失くさないようにゴムつき。それでも一組はなくなった。"
+ },
+ "city.un.bike.1": {
+  "ru": "Красный велосипед, цепь смазана свежо. Кто-то ездит на нём каждое утро к морю и возвращается с мокрыми шнурками.",
+  "en": "A red bicycle, the chain freshly oiled. Somebody rides it to the sea every morning and comes back with wet shoelaces.",
+  "ja": "赤い自転車。チェーンは油をさしたばかり。毎朝誰かが海まで乗って、濡れた靴ひもで帰ってくる。"
+ },
+ "city.un.bike.2": {
+  "ru": "Велосипед стоит, шины подкачаны. На руле звонок с тремя буквами, нацарапанными ногтем: «Н. Т.»",
+  "en": "The bicycle stands there, tyres pumped. On the handlebar a bell with two letters scratched by a fingernail: \"N. T.\"",
+  "ja": "自転車は停まっていて、タイヤには空気が入っている。ハンドルのベルに、爪で引っかいた「N.T.」の文字。"
+ },
+ "city.un.bike.3": {
+  "ru": "Ночью велосипед пристёгнут к трубе. Седло накрыто пакетом: заботливый владелец.",
+  "en": "At night the bicycle is chained to the pipe. The saddle is covered with a bag: a careful owner.",
+  "ja": "夜、自転車はパイプに鎖でつながれている。サドルには袋がかぶせてある。気配りのある持ち主だ。"
+ },
+ "city.un.pram.1": {
+  "ru": "Синяя коляска с капюшоном, тормоз поставлен. Внутри игрушечный заяц и две пары варежек: хозяева на втором этаже, судя по звукам.",
+  "en": "A blue pram with a hood, the brake on. Inside, a toy rabbit and two pairs of mittens: the owners are upstairs, judging by the sounds.",
+  "ja": "フードつきの青い乳母車、ブレーキはかけてある。中にはうさぎのぬいぐるみと手袋が二組。持ち主は上の階にいるらしい、物音からすると。"
+ },
+ "city.un.pram.2": {
+  "ru": "Коляска пуста, капюшон опущен. На ручке висит сумка с батоном: прогулка закончилась хлебом.",
+  "en": "The pram is empty, the hood down. A bag with a long loaf hangs from the handle: the walk ended with bread.",
+  "ja": "乳母車は空で、フードは下りている。取っ手にはパンの入った袋。散歩はパンで終わったらしい。"
+ },
+ "city.un.plants.1": {
+  "ru": "Лейка с отбитой ручкой стоит у кадки. К листу пришпилена записка: «Поливать раз в неделю, а не раз в день. Д. К.»",
+  "en": "A watering can with a broken handle stands by the planter. A note is pinned to a leaf: \"Water once a week, not once a day. D. K.\"",
+  "ja": "取っ手の欠けたじょうろが鉢のそばに。葉に紙が留めてある。「水やりは毎日ではなく週に一度。D.K.」"
+ },
+ "city.un.plants.2": {
+  "ru": "Земля влажная: кто-то уже поливал, наперекор записке. Лист фикуса блестит и ведёт себя прилично.",
+  "en": "The soil is damp: somebody has watered it already, against the note. The rubber-plant leaf shines and behaves itself.",
+  "ja": "土はしめっている。誰かがメモに逆らって水をやったらしい。ゴムの木の葉はつやつやして、おとなしくしている。"
+ },
+ "city.un.plants.3": {
+  "ru": "Лейка пуста, кадка спит. Сквозь стекло двери на лист падает свет фонаря с улицы.",
+  "en": "The can is empty, the planter sleeps. Through the glass of the door the light of a street lamp falls on a leaf.",
+  "ja": "じょうろは空っぽ、鉢は眠っている。ドアのガラス越しに街灯の光が葉に落ちる。"
+ },
+ "city.un.sb.1": {
+  "ru": "Торговая улица открыта с девяти до восьми вечера, кроме воскресенья. Просьба: колясок у булочной не оставлять, дверь узкая.",
+  "en": "The shopping street is open from nine to eight in the evening, except Sundays. Please do not leave prams by the bakery, the door is narrow.",
+  "ja": "商店街は日曜を除く九時から夜八時まで。パン屋の前に乳母車を置かないでください。入口が狭いので。"
+ },
+ "city.un.sb.2": {
+  "ru": "Булочная: сегодня пирожки с яблоками. С вишней кончились, не просите. А кто оставил зелёный зонт в галантерее, заберите: он там с вторника.",
+  "en": "Bakery: apple pies today. The cherry ones are gone, don't ask. And whoever left the green umbrella at the haberdashery, please collect it: it has been there since Tuesday.",
+  "ja": "パン屋、今日はりんごのパイ。さくらんぼはもうありません。手芸店に緑の傘を忘れた方、火曜からあります、取りに来てください。"
+ },
+ "city.un.sb.3": {
+  "ru": "Прия Тулегенова (5-12, синяя дверь у галантереи) просит открытку с морем для альбома. Альбом подарок Шире Накамуре к её восьмидесятипятилетию. За открытку чай и разговор.",
+  "en": "Priya Tulegenova (5-12, the blue door by the haberdashery) is asking for a postcard of the sea for her album. The album is a present for Shira Nakamura's eighty-fifth birthday. A postcard buys you tea and a chat.",
+  "ja": "プリヤ・トゥレゲノワ（5-12、手芸店のそばの青いドア）が、アルバム用に海の絵はがきを探しています。アルバムはシラ・中村さんの八十五歳の誕生日の贈り物です。絵はがき一枚でお茶とおしゃべり。"
+ },
+ "city.un.sb.4": {
+  "ru": "Альбом Прии почти готов: одиннадцать мест из двенадцати заняты, двенадцатое с морем пустует. Она ждёт до субботы. Где купить: газеты, галантерея, любой киоск.",
+  "en": "Priya's album is almost ready: eleven places out of twelve are filled, the twelfth, with the sea, is empty. She will wait until Saturday. Where to buy: the news stand, the haberdashery, any kiosk.",
+  "ja": "プリヤのアルバムはほぼ完成。十二の枠のうち十一が埋まり、海の十二枚目だけが空いています。土曜まで待つそうです。買える場所は新聞売り場、手芸店、どこのキオスクでも。"
+ },
+ "city.un.hours.1": {
+  "ru": "Булочная, галантерея, газеты, продукты, игрушки, парикмахерская: с девяти до двадцати, с понедельника по субботу. Бумажка от руки: «Обед по настроению».",
+  "en": "Bakery, haberdashery, news, groceries, toys, barber: nine to twenty hundred, Monday to Saturday. A handwritten slip: \"Lunch as the mood takes us.\"",
+  "ja": "パン屋、手芸店、新聞、食料品、おもちゃ、理髪店は、月曜から土曜の九時から二十時まで。手書きの紙に「昼休みは気分しだい」。"
+ },
+ "city.un.hours.2": {
+  "ru": "Игровая: открыта, пока горит свет. Чай приносить свой, шахматы бережём. Настольный футбол: не крутить стержни до звона.",
+  "en": "Games room: open as long as the light is on. Bring your own tea, we look after the chessmen. Table football: don't spin the rods until they ring.",
+  "ja": "ゲームルーム：明かりがついている間は開いています。お茶は各自持参、チェスの駒は大事に。テーブルサッカー：棒を鳴るほど回さないこと。"
+ },
+ "city.un.hours.3": {
+  "ru": "Парикмахерская: стрижка сорок рублей, женская и мужская одинаково. Очередь живая, но воспитанная.",
+  "en": "Barber: a haircut is forty roubles, ladies' and gentlemen's alike. The queue is lively but well brought up.",
+  "ja": "理髪店：カットは四十ルーブル、男女同じ。待ち行列はにぎやかだが行儀がいい。"
+ },
+ "city.un.hours.4": {
+  "ru": "В воскресенье на улице закрыто всё, кроме игровой и скамеек. Дверь Тулегеновой тоже закрыта: у неё воскресенье для себя.",
+  "en": "On Sundays everything on the street is shut except the games room and the benches. Tulegenova's door is shut too: Sunday is for herself.",
+  "ja": "日曜は、ゲームルームとベンチ以外、通りの店はすべて休み。トゥレゲノワさんのドアも閉まる。日曜は自分のための日だから。"
+ },
+ "city.un.sit.1": {
+  "ru": "Пахнет хлебом от булочной. Мимо идут с авоськами, здороваются через одного, но с удовольствием.",
+  "en": "It smells of bread from the bakery. People pass with string bags, greeting every other person, but gladly.",
+  "ja": "パン屋からパンの匂いがする。網袋を提げた人が通り、二人に一人は挨拶してくれる。それも楽しそうに。"
+ },
+ "city.un.sit.2": {
+  "ru": "В стёклах гуляет серый свет с моря. Из игровой стучат костяшки, из парикмахерской шелестит радио.",
+  "en": "A grey light from the sea moves in the glass. Dominoes clack from the games room, a radio murmurs from the barber's.",
+  "ja": "ガラスに海からの灰色の光が揺れる。ゲームルームからドミノの音、理髪店からラジオの声。"
+ },
+ "city.un.sit.3": {
+  "ru": "Вечером лампы горят через одну, шаги отдаются от потолка. Скамья ещё тёплая от чьей-то спины.",
+  "en": "In the evening the lamps burn every other one, steps echo from the ceiling. The bench is still warm from somebody's back.",
+  "ja": "夕方、明かりはひとつおきに灯り、足音が天井に響く。ベンチはまだ誰かの背中のぬくもりを残している。"
+ },
+ "city.un.sit.4": {
+  "ru": "Ночью улица пуста и очень длинная. Где-то капает кран, и ты слышишь его на другом конце дома.",
+  "en": "At night the street is empty and very long. Somewhere a tap drips, and you hear it from the other end of the house.",
+  "ja": "夜の通りは誰もおらず、とても長い。どこかで蛇口がしたたり、家の反対の端からでも聞こえる。"
+ },
+ "city.un.bread.1": {
+  "ru": "Хлеб ещё горячий, корка потрескивает. Ржаной, батон, плетёнка. Продавщица считает вслух, чтобы не сбиться.",
+  "en": "The bread is still hot, the crust crackling. Rye, a long loaf, a plait. The assistant counts out loud so as not to lose track.",
+  "ja": "パンはまだ熱く、皮がぱちぱち鳴る。ライ麦、細長いパン、編みパン。店の人は数え間違えないように声に出して数える。"
+ },
+ "city.un.bread.2": {
+  "ru": "Ценник «вчерашний, дешевле» стоит на одном батоне уже третий день. Он держится молодцом.",
+  "en": "A tag \"yesterday's, cheaper\" has stood on one loaf for the third day. It's holding up well.",
+  "ja": "「昨日の分、お安く」の札がひとつのパンに三日目も立っている。パンのほうは堂々としたものだ。"
+ },
+ "city.un.bread.3": {
+  "ru": "Остались три буханки и грустный батон. Продавщица ставит их ближе к свету: так они выглядят свежее.",
+  "en": "Three loaves and a sad long one are left. The assistant moves them closer to the light: they look fresher so.",
+  "ja": "丸パンが三つと、しょんぼりしたバゲットが残っている。店の人は明かりのそばに寄せる。そのほうが新しく見えるから。"
+ },
+ "city.un.bread.4": {
+  "ru": "Полки пусты и накрыты салфеткой. Из-под неё пахнет вчерашним днём, это приятный запах.",
+  "en": "The shelves are empty and covered with a cloth. From under it comes the smell of yesterday, a pleasant one.",
+  "ja": "棚は空で、布がかけてある。布の下から昨日の匂いがする。悪くない匂いだ。"
+ },
+ "city.un.buttons.1": {
+  "ru": "Выдвигаешь ящик: пуговицы, как конфеты, по цветам. Говорят, Прия подшивала здесь подолы, пока не вышла на пенсию, и пуговицы ей до сих пор подмигивают.",
+  "en": "You pull out a drawer: buttons like sweets, sorted by colour. They say Priya used to hem skirts here until she retired, and the buttons still wink at her.",
+  "ja": "引き出しを開けると、ボタンが色別に、お菓子のように並んでいる。プリヤは引退するまでここで裾上げをしていたそうで、ボタンは今も彼女にウインクするという。"
+ },
+ "city.un.buttons.2": {
+  "ru": "В нижнем ящике одни перламутровые. На картонке карандашом: «Не продаются, смотреть можно».",
+  "en": "The bottom drawer holds only mother-of-pearl ones. On a card in pencil: \"Not for sale, looking allowed.\"",
+  "ja": "いちばん下の引き出しには真珠色のボタンだけ。厚紙に鉛筆で「非売品、見るだけ可」。"
+ },
+ "city.un.buttons.3": {
+  "ru": "В среднем ящике одна пуговица от военного бушлата и одна от детского пальто. Лежат рядом, не ссорятся.",
+  "en": "In the middle drawer, one button from a sailor's jacket and one from a child's coat. They lie side by side and don't quarrel.",
+  "ja": "真ん中の引き出しには、水兵服のボタンがひとつと子ども用コートのボタンがひとつ。並んで、けんかもしない。"
+ },
+ "city.un.fabsew.1": {
+  "ru": "Машинка стучит ровно. В зажиме чьи-то брюки: на бумажке «Хокон Янсен, 13-09, к пятнице». Хорошо, что подол короткий.",
+  "en": "The machine rattles evenly. In the clamp, somebody's trousers: on a slip \"Håkon Jansen, 13-09, by Friday.\" A good thing the hem is short.",
+  "ja": "ミシンは規則正しく鳴る。押さえには誰かのズボン。紙に「ホーコン・ヤンセン、13-09、金曜まで」。裾が短くて助かった。"
+ },
+ "city.un.fabsew.2": {
+  "ru": "Нитка зелёная, игла новая. Ты пробуешь строчку: она выходит косая, зато честная.",
+  "en": "Green thread, a new needle. You try a seam: it comes out crooked, but honest.",
+  "ja": "糸は緑、針は新しい。縫ってみると斜めになったが、正直な縫い目だ。"
+ },
+ "city.un.apples.1": {
+  "ru": "Яблоки с утра пахнут садом. Продавец перебирает ящик пальцами, как карты, и откладывает бока с вмятинами себе на чай.",
+  "en": "In the morning the apples smell of an orchard. The seller sorts the crate like cards and puts the dented ones aside for his own tea.",
+  "ja": "朝のりんごは果樹園の匂い。店の人は木箱のりんごをカードのように繰り、へこんだものは自分のお茶用によける。"
+ },
+ "city.un.apples.2": {
+  "ru": "К вечеру яблоки уже просто яблоки. Одно, самое румяное, кто-то держал в руке и положил обратно.",
+  "en": "By evening the apples are just apples. The rosiest one has been held in somebody's hand and put back.",
+  "ja": "夕方になると、りんごはただのりんごだ。いちばん赤いのは、誰かが手に取って、また戻した。"
+ },
+ "city.un.apples.3": {
+  "ru": "Ящики с яблоками накрыты мешковиной на ночь. Под ней тихо, как в погребе.",
+  "en": "The apple crates are covered with sacking for the night. It is quiet under it, like a cellar.",
+  "ja": "夜、りんごの木箱には麻袋がかけられる。その下は地下室のように静かだ。"
+ },
+ "city.un.toyhouse.1": {
+  "ru": "В домик помещаются два плюшевых медведя и один сердитый заяц. На двери табличка: «Звоните три раза».",
+  "en": "The little house holds two plush bears and one cross rabbit. A sign on the door: \"Ring three times.\"",
+  "ja": "小さな家にはクマのぬいぐるみが二つと、怒ったうさぎが一匹。ドアの札は「三回鳴らしてください」。"
+ },
+ "city.un.toyhouse.2": {
+  "ru": "В окошко видна кровать из спичечных коробков. Покрывало сшито из чьей-то варежки.",
+  "en": "Through the tiny window you see a bed made of matchboxes. The quilt is sewn from somebody's mitten.",
+  "ja": "小さな窓から、マッチ箱でできたベッドが見える。掛け布団は誰かの手袋を縫ったものだ。"
+ },
+ "city.un.toybins.1": {
+  "ru": "В ящике кубики с буквами. Сложилось слово «МОРЕ», с одной лишней «Р». Продавец говорит: так и задумано.",
+  "en": "In the bin, blocks with letters. They spell the Russian word for \"sea\" with one letter too many. The seller says that is intended.",
+  "ja": "箱の中に文字入りの積み木。並べると「海」という言葉になるが、一文字余る。店の人は「それで正解」と言う。"
+ },
+ "city.un.toybins.2": {
+  "ru": "Под кубиками жестяная лодка с ключиком. Заведёшь: плывёт по прилавку, пока не упадёт.",
+  "en": "Under the blocks, a tin boat with a key. You wind it up: it sails along the counter until it falls off.",
+  "ja": "積み木の下にぜんまいのブリキの船。巻くとカウンターの上を進み、落ちるまで走る。"
+ },
+ "city.un.toybins.3": {
+  "ru": "На дне деревянная лошадка без одной ноги. Её не продают, но и не выбрасывают.",
+  "en": "At the bottom, a wooden horse with one leg missing. It isn't sold, but isn't thrown out either.",
+  "ja": "底には足が一本ない木馬。売り物ではないが、捨てもしない。"
+ },
+ "city.un.tdoor.1": {
+  "ru": "Синяя дверь с карточкой «5-12 Т.». Из-под неё тянет чаем. Здесь квартиры лежат под торговой улицей: входишь сверху и идёшь вниз.",
+  "en": "A blue door with a card \"5-12 T.\" Tea drifts from under it. Here the flats lie under the shopping street: you enter from above and go down.",
+  "ja": "「5-12 T.」というカードのついた青いドア。下からお茶の匂いがする。ここの住まいは商店街の下にあって、上から入って下へ降りる。"
+ },
+ "city.un.tdoor.2": {
+  "ru": "Под дверью светится щель, значит, Прия не спит. Но стучать поздно: придёт, заварит, и разговор до рассвета.",
+  "en": "A strip of light under the door, so Priya is awake. But it's late to knock: she'd come, brew tea, and the talk would last till dawn.",
+  "ja": "ドアの下から光が漏れている。プリヤは起きているらしい。だが今ノックするには遅い。お茶を入れて、夜明けまで話が続くだろう。"
+ },
+ "city.un.g_pingpong.1": {
+  "ru": "Ракетки лежат крест-накрест: правая с резиновой накладкой, левая просто деревянная. Мячик с трещиной скачет вбок, и все к нему привыкли.",
+  "en": "The paddles lie crosswise: the right one with a rubber face, the left plain wood. The cracked ball bounces sideways and everyone has got used to it.",
+  "ja": "ラケットは交差して置いてある。右はゴムつき、左は木のまま。ひびの入った球は横に跳ねるが、みんなもう慣れている。"
+ },
+ "city.un.g_pingpong.2": {
+  "ru": "Сетка провисла посередине. По правилам игровой, подачи, которые в неё попали, засчитываются как «хорошая попытка».",
+  "en": "The net sags in the middle. By the rules of the room, serves that hit it count as \"a good try\".",
+  "ja": "ネットは真ん中がたるんでいる。ゲームルームの決まりでは、ネットに当たったサーブは「いい挑戦」と数える。"
+ },
+ "city.un.g_chess.1": {
+  "ru": "На доске отложенная партия: белые записали ход на бумажке и положили под коня. Играют третью неделю.",
+  "en": "An adjourned game on the board: White wrote the move on a slip and put it under a knight. They've been at it for three weeks.",
+  "ja": "盤上には中断した対局。白は次の手を紙に書いて、ナイトの下に挟んである。もう三週間続いている。"
+ },
+ "city.un.g_chess.2": {
+  "ru": "У чёрного слона отбита подставка, он держится на кусочке пластилина. Игрокам он дороже новых.",
+  "en": "The black bishop has lost its base and stands on a bit of plasticine. The players prefer it to new ones.",
+  "ja": "黒のビショップは台座が欠けて、粘土のかけらで立っている。選手たちは新品よりこれが好きだ。"
+ },
+ "city.un.g_checkers.1": {
+  "ru": "Шашки на клетчатой доске из линолеума: чёрные потёрты по краям, белые обкусаны. Кто-то нервничал.",
+  "en": "Checkers on a board of lineoleum squares: the black ones worn at the edges, the white ones chewed. Somebody was nervous.",
+  "ja": "リノリウムの市松盤の上のチェッカー。黒は縁がすり減り、白は噛まれた跡がある。誰かが緊張していたらしい。"
+ },
+ "city.un.g_checkers.2": {
+  "ru": "Одна дамка помечена красной точкой: счастливая. Её берут по очереди, и никто не признаётся, что считает её счастливой.",
+  "en": "One king is marked with a red dot: the lucky one. People take it by turns, and nobody admits they think it's lucky.",
+  "ja": "ひとつのキングに赤い点がついている。縁起のいい駒だ。順番に使うが、縁起がいいと思っているとは誰も認めない。"
+ },
+ "city.un.g_dominoes.1": {
+  "ru": "Костяшки жёлтые от пальцев. Дубль-шесть потерян ещё до перестройки, вместо него вырезан из картона. Играют и с ним.",
+  "en": "The tiles are yellow from fingers. The double-six was lost long ago, a cardboard one is cut in its place. They play with it too.",
+  "ja": "牌は指のあとで黄ばんでいる。六のゾロ目はずっと昔になくなり、代わりに厚紙で切ったものがある。それでも遊ぶ。"
+ },
+ "city.un.g_dominoes.2": {
+  "ru": "Рядом на блюдце три остывших чайных пакетика: счёт на сегодня. Выигравший выбирает, кого заварить.",
+  "en": "Beside it on a saucer, three cooled tea bags: today's score. The winner chooses whose to brew.",
+  "ja": "そばの小皿には冷めたティーバッグが三つ。今日のスコアだ。勝った人が誰のを入れるか決める。"
+ },
+ "city.un.g_football.1": {
+  "ru": "Игроки на стержнях выкрашены в цвета двух школ. Левый нападающий лысый: краску смыли чьим-то мизинцем.",
+  "en": "The little players on the rods are painted in the colours of two schools. The left forward is bald: the paint was rubbed off by somebody's little finger.",
+  "ja": "棒の上の小さな選手は二つの学校の色に塗られている。左のフォワードは禿げている。誰かの小指で塗料が削れたのだ。"
+ },
+ "city.un.g_football.2": {
+  "ru": "Мячик иногда застревает у штанги. Тогда все стучат по столу, пока он не выскочит: правило игровой.",
+  "en": "The ball sometimes sticks by the post. Then everybody thumps the table until it jumps out: the room's rule.",
+  "ja": "ボールはときどきゴールの柱のそばで止まる。そうなると全員がテーブルをたたく。ボールが飛び出すまで。それが決まりだ。"
+ },
+ "city.un.scores.1": {
+  "ru": "Таблица игровой. Домино: Бенитес 11, Сорокин 9. Шашки: Сорокин 14, Бенитес 12. Настольный теннис: Новотный 8, остальные «без счёта».",
+  "en": "The games room table. Dominoes: Benítez 11, Sorokin 9. Checkers: Sorokin 14, Benítez 12. Table tennis: Novotný 8, the rest \"no score\".",
+  "ja": "ゲームルームの成績表。ドミノ：ベニテス11、ソローキン9。チェッカー：ソローキン14、ベニテス12。卓球：ノヴォトニー8、ほかは「記録なし」。"
+ },
+ "city.un.scores.2": {
+  "ru": "Таблица обновлена. Домино: Бенитес 13, Сорокин 13. Приписка карандашом: «Чай за Сорокиным». Под ней другим почерком: «Нет, за Бенитесом».",
+  "en": "The table has been updated. Dominoes: Benítez 13, Sorokin 13. A pencilled note: \"Tea is on Sorokin.\" Under it, in another hand: \"No, on Benítez.\"",
+  "ja": "成績表が更新された。ドミノ：ベニテス13、ソローキン13。鉛筆で「お茶はソローキン持ち」。その下に別の字で「いや、ベニテス持ち」。"
+ },
+ "city.un.scores.3": {
+  "ru": "Таблица обведена рамкой из синей изоленты. Сверху надпись: «Первенство дома. Финал: переигровка. Зрителям тихо».",
+  "en": "The table is framed with blue tape. Above it: \"House championship. Final: replay. Spectators, quietly.\"",
+  "ja": "成績表は青いテープで縁取られている。上に「棟内選手権。決勝は再試合。観客は静かに」。"
+ },
+ "city.un.rules.1": {
+  "ru": "Правила игровой. 1. Проигравший ставит чайник. 2. Победитель не злорадствует дольше минуты. 3. Шахматы бережём.",
+  "en": "Rules of the games room. 1. The loser puts the kettle on. 2. The winner gloats for no more than a minute. 3. We look after the chessmen.",
+  "ja": "ゲームルームの決まり。1. 負けた人がやかんをかける。2. 勝った人は一分以上自慢しない。3. チェスの駒は大事に。"
+ },
+ "city.un.rules.2": {
+  "ru": "4. После девяти вечера мячик для настольного тенниса не стучит, а шуршит. 5. Окна не открывать: дует на шахматистов.",
+  "en": "4. After nine in the evening the table-tennis ball doesn't knock, it whispers. 5. Do not open the windows: it blows on the chess players.",
+  "ja": "4. 夜九時を過ぎたら、卓球の球はコツコツではなくそっと打つ。5. 窓は開けない。チェスの人たちに風が当たる。"
+ },
+ "city.un.rules.3": {
+  "ru": "Приписка: «Ключ от шкафа с фигурами у Рафаэла Бенитеса. Если его нет, фигур тоже нет».",
+  "en": "Note: \"The key to the cupboard with the pieces is with Rafael Benítez. If he isn't here, neither are the pieces.\"",
+  "ja": "追記：「駒の戸棚の鍵はハファエル・ベニテスが持っています。彼がいなければ駒もありません」。"
+ },
+ "city.un.trophies.1": {
+  "ru": "Жестяной кубок «За стойкость в домино». Табличка с датой стёрта, зато вмятина от падения сохранилась: так даже достовернее.",
+  "en": "A tin cup \"For Fortitude at Dominoes\". The date plate is worn off, but the dent from a fall has survived: more authentic that way.",
+  "ja": "ブリキの優勝カップ「ドミノ不屈賞」。日付の札は消えているが、落としたときのへこみは残っている。そのほうが本物らしい。"
+ },
+ "city.un.trophies.2": {
+  "ru": "Рядом вымпел «Дом 3: Дом 2, счёт 7:6», настольный футбол, давняя история. Кто выиграл, не уточняется.",
+  "en": "Next to it a pennant \"House 3 v House 2, 7:6\", table football, an old story. Who won is not specified.",
+  "ja": "そばにペナント「三号棟対二号棟 7対6」、テーブルサッカー、昔の話だ。どちらが勝ったかは書いていない。"
+ },
+ "city.un.trophies.3": {
+  "ru": "Фото в рамке: двое пожилых мужчин с кубком, у обоих лица людей, которые выиграли и ужасно этим довольны.",
+  "en": "A framed photo: two elderly men with the cup, both with the faces of men who won and are terribly pleased about it.",
+  "ja": "額入りの写真。カップを持つ年配の男性が二人、どちらも勝ったことがうれしくてたまらない顔をしている。"
+ },
+ "city.un.gbench.1": {
+  "ru": "С лавки видно сразу три стола. Здесь сидят болельщики, и каждый играет за кого-то про себя.",
+  "en": "From the bench you can see three tables at once. Supporters sit here, and each plays for somebody silently.",
+  "ja": "ベンチからは三つの卓が一度に見える。ここには応援の人が座り、それぞれ心の中で誰かの味方をしている。"
+ },
+ "city.un.gbench.2": {
+  "ru": "Стук мячика, шорох костяшек, и никакой музыки. После лестничных радио это почти тишина.",
+  "en": "The knock of the ball, the rustle of tiles, and no music. After the stairwell radios it is almost silence.",
+  "ja": "球の音、牌のこすれる音、音楽はなし。階段のラジオのあとでは、ほとんど静けさだ。"
+ },
+ "city.un.closed.flat": {
+  "ru": "Дверь закрыта: у Прии свои часы, до девяти и после десяти вечера гостей она не ждёт.",
+  "en": "The door is shut: Priya keeps her own hours, she expects no guests before nine or after ten at night.",
+  "ja": "ドアは閉まっている。プリヤには自分の時間があって、朝九時前と夜十時以降は客を待たない。"
+ },
+ "city.un.ttv.1": {
+  "ru": "Утренняя гимнастика: диктор бодр, зрителям предлагают наклониться вперёд. Телевизор ничего не заметит, если ты просто посидишь.",
+  "en": "Morning exercises: the presenter is brisk, the viewers are invited to bend forward. The set won't notice if you just sit.",
+  "ja": "朝の体操。アナウンサーは元気で、視聴者に前かがみを勧める。ただ座っていても、テレビは気づかない。"
+ },
+ "city.un.ttv.2": {
+  "ru": "Передача о рыбах: показывают камбалу, которая выглядит так, будто всё уже знает. Прия называет её «Зейнеп».",
+  "en": "A programme about fish: a flounder is shown, looking as if it knew everything already. Priya calls it \"Zeynep\".",
+  "ja": "魚の番組。ヒラメが映る。何でも知っているような顔だ。プリヤはそれを「ゼイネプ」と呼ぶ。"
+ },
+ "city.un.ttv.3": {
+  "ru": "Вечерние новости, потом прогноз: циклон идёт с моря. На карте он выглядит как вопросительный знак.",
+  "en": "Evening news, then the forecast: a cyclone is coming from the sea. On the map it looks like a question mark.",
+  "ja": "夕方のニュース、続いて天気予報。海から低気圧が来る。地図の上では疑問符のように見える。"
+ },
+ "city.un.ttv.4": {
+  "ru": "Настроечная таблица и ровное шипение. Это самая честная передача суток.",
+  "en": "A test card and an even hiss. The most honest programme of the day.",
+  "ja": "テストパターンと一定の雑音。一日でいちばん正直な番組だ。"
+ },
+ "city.un.tradio.1": {
+  "ru": "Приёмник ловит маячную сводку: ветер, видимость, волна. Прия записывает цифры на отрывном календаре, из привычки.",
+  "en": "The set picks up the lighthouse bulletin: wind, visibility, swell. Priya writes the numbers on a tear-off calendar, out of habit.",
+  "ja": "ラジオは灯台の気象通報を拾う。風、視界、波。プリヤは癖で、日めくりカレンダーに数字を書く。"
+ },
+ "city.un.tradio.2": {
+  "ru": "Дневной концерт по заявкам: просят вальс для кого-то с шестого этажа. Приёмник трещит, но вальс пробивается.",
+  "en": "A daytime request concert: a waltz for somebody on the sixth floor. The set crackles, but the waltz gets through.",
+  "ja": "昼のリクエスト音楽。六階の誰かにワルツを。ラジオは雑音まじりだが、ワルツは届く。"
+ },
+ "city.un.tradio.3": {
+  "ru": "Вечерняя радиопьеса. Кто-то в ней всё время уходит, и никто не может сказать, куда.",
+  "en": "An evening radio play. Somebody in it keeps leaving, and nobody can say where to.",
+  "ja": "夜のラジオドラマ。登場人物の誰かがずっと出ていくのに、どこへ行くのか誰にも言えない。"
+ },
+ "city.un.tradio.4": {
+  "ru": "Тихий ночной эфир: только ровный голос и иногда треск. Удобно слушать с закрытыми глазами.",
+  "en": "Quiet night air: only an even voice and sometimes a crackle. Good to listen to with your eyes closed.",
+  "ja": "静かな夜の放送。落ち着いた声と、ときどき雑音だけ。目を閉じて聞くのにいい。"
+ },
+ "city.un.ttea.1": {
+  "ru": "Самовар поёт тонко. Прия не любит сладкий, но на блюдце всегда лежит кусочек сахара «для гостя». Ты берёшь стакан в подстаканнике.",
+  "en": "The samovar sings thin. Priya doesn't like it sweet, but there's always a lump of sugar on the saucer \"for the guest\". You take a glass in its holder.",
+  "ja": "サモワールが細い声で歌う。プリヤは甘いのが苦手だが、小皿にはいつも「お客さん用」の角砂糖がある。ホルダーつきのグラスを手に取る。"
+ },
+ "city.un.ttea.2": {
+  "ru": "Чай крепкий, цвета старого дерева. Пока пьёшь, из окна виден уголок серого света, и всё как-то успокаивается.",
+  "en": "The tea is strong, the colour of old wood. While you drink, a corner of grey light shows in the window, and everything settles.",
+  "ja": "お茶は濃くて、古い木の色。飲んでいる間に窓の隅に灰色の光が見えて、何もかも落ち着いていく。"
+ },
+ "city.un.ttea.3": {
+  "ru": "Вечерний чай с лимоном. Лимон один на неделю, и сегодня его очередь.",
+  "en": "Evening tea with lemon. There's one lemon a week, and today is its turn.",
+  "ja": "夜のレモンティー。レモンは一週間に一個で、今日がその番。"
+ },
+ "city.un.tsink.1": {
+  "ru": "На сушилке две чашки и одна с трещиной: самая любимая. Прия говорит, что чашка с трещиной держит чай лучше.",
+  "en": "Two cups on the drying rack, and one cracked: the best loved. Priya says a cracked cup holds the tea better.",
+  "ja": "水切りに茶碗が二つと、ひびの入ったのがひとつ。いちばんのお気に入りだ。ひびのあるほうがお茶がおいしいとプリヤは言う。"
+ },
+ "city.un.tsink.2": {
+  "ru": "Из крана капает в такт радио. Прия уверяет, что починила бы, да тогда станет слишком тихо.",
+  "en": "The tap drips in time with the radio. Priya says she would mend it, but then it would be too quiet.",
+  "ja": "蛇口はラジオに合わせてしたたる。プリヤは直せるけれど、そうしたら静かすぎると言う。"
+ },
+ "city.un.tstove.1": {
+  "ru": "В кастрюльке суп с лапшой, рядом чайник со свистком. Пахнет кардамоном: Прия кладёт его и в суп, и в чай.",
+  "en": "A pot of noodle soup, a whistling kettle beside it. It smells of cardamom: Priya puts it into the soup and into the tea.",
+  "ja": "鍋には麺のスープ、隣には笛つきのやかん。カルダモンの匂い。プリヤはスープにもお茶にも入れる。"
+ },
+ "city.un.tstove.2": {
+  "ru": "На второй конфорке сковорода с блинами, накрытая тарелкой. Блинов шесть: пять для гостей, один для кухни.",
+  "en": "On the second ring, a pan of pancakes under a plate. Six pancakes: five for guests, one for the kitchen.",
+  "ja": "二つ目のコンロには皿をかぶせたフライパン。ブリヌイが六枚。五枚はお客さん用、一枚は台所の分。"
+ },
+ "city.un.tsew.1": {
+  "ru": "На столике подшитые брюки, на бумажке «Хокон Янсен, 13-09, до пятницы». Прия подшивает всем в доме, денег не берёт, берёт слово «спасибо».",
+  "en": "On the table, hemmed trousers, a slip \"Håkon Jansen, 13-09, by Friday\". Priya hems for the whole house and takes no money, only the word \"thanks\".",
+  "ja": "机の上には裾上げしたズボン。紙に「ホーコン・ヤンセン、13-09、金曜まで」。プリヤは棟の誰にでも裾上げをして、お金は取らず「ありがとう」だけ受け取る。"
+ },
+ "city.un.tsew.2": {
+  "ru": "Машинка старая, с ножным приводом. Прия говорит, что ей полвека, и она ни разу не подвела: в отличие от людей.",
+  "en": "The machine is old, treadle-driven. Priya says it's half a century old and has never let her down: unlike people.",
+  "ja": "ミシンは古い足踏み式。プリヤによれば半世紀もの、一度も裏切らなかった。人間とは違ってね、と。"
+ },
+ "city.un.tcards.1": {
+  "ru": "На пробковой доске приколоты открытки: маяк в тумане, пирс с рыбаками, дюны, сосновый бор. Двенадцать углов, одиннадцать открыток.",
+  "en": "On a cork board are pinned postcards: a lighthouse in fog, a pier with fishermen, dunes, a pine wood. Twelve corners, eleven postcards.",
+  "ja": "コルクボードに絵はがきが留めてある。霧の灯台、釣り人のいる桟橋、砂丘、松林。留め具が十二、絵はがきは十一枚。"
+ },
+ "city.un.tcards.2": {
+  "ru": "Пустой угол в нижнем ряду подписан карандашом: «Море. Настоящее, не нарисованное. Прия».",
+  "en": "The empty corner in the bottom row is labelled in pencil: \"Sea. A real one, not painted. Priya.\"",
+  "ja": "下の列の空いた角には鉛筆で書き込みがある。「海。描いたものではなく、本物の。プリヤ」。"
+ },
+ "city.un.tcards.3": {
+  "ru": "На обороте одной открытки: «Шире Накамура, чтобы помнила нас». Прия переписала это на каждую.",
+  "en": "On the back of one postcard: \"For Shira Nakamura, so that she remembers us.\" Priya wrote this on every one.",
+  "ja": "絵はがきの一枚の裏に「シラ・中村へ。私たちを忘れないように」。プリヤは全部の裏に同じことを書いた。"
+ },
+ "city.un.tphotos.1": {
+  "ru": "Фото: Прия, Шира Накамура и Зейнеп Берзиня на пирсе, у всех в руках стаканчики с чем-то горячим. Все смеются, а чему, не помнят.",
+  "en": "A photo: Priya, Shira Nakamura and Zeynep Bērziņa on the pier, each with a cup of something hot. All laughing, none remembers at what.",
+  "ja": "写真。桟橋に立つプリヤ、シラ・中村、ゼイネプ・ベールジニャ。みんな熱い飲み物のカップを持って笑っているが、何がおかしかったかは誰も覚えていない。"
+ },
+ "city.un.tphotos.2": {
+  "ru": "Фото: Рафаэл Бенитес у перил с огромной рыбой, которую он, судя по лицу, сам и не ловил.",
+  "en": "A photo: Rafael Benítez at a railing with an enormous fish, which, judging by his face, he did not catch himself.",
+  "ja": "写真。柵のそばで巨大な魚を持つハファエル・ベニテス。顔つきからして、自分で釣ったのではなさそうだ。"
+ },
+ "city.un.tphotos.3": {
+  "ru": "Пожелтевшая фотография за стеклом: молодая женщина у швейной машинки. Почерк на обороте мелкий и ровный.",
+  "en": "A yellowed photograph behind glass: a young woman at a sewing machine. The handwriting on the back is small and even.",
+  "ja": "ガラスの奥の黄ばんだ写真。ミシンの前の若い女性。裏の筆跡は小さくて整っている。"
+ },
+ "city.un.twardrobe.1": {
+  "ru": "Шкаф пахнет лавандой и нафталином. Четыре платья, два пальто, плащ для дождя. На плечиках мужской пиджак: Прия держит его «для порядка».",
+  "en": "The wardrobe smells of lavender and mothballs. Four dresses, two coats, a rain mac. On a hanger a man's jacket: Priya keeps it \"for order's sake\".",
+  "ja": "衣装だんすはラベンダーと防虫剤の匂い。ワンピースが四着、コートが二着、雨用のコート。ハンガーには男物の上着。プリヤは「けじめとして」取ってある。"
+ },
+ "city.un.twardrobe.2": {
+  "ru": "В коробке на дне катушки всех цветов, наперсток и мелок портного. Мелок стёрт до огрызка.",
+  "en": "In a box at the bottom, spools of every colour, a thimble and a tailor's chalk. The chalk is worn to a stub.",
+  "ja": "底の箱には色とりどりの糸巻き、指ぬき、仕立て用のチョーク。チョークはすり減って短くなっている。"
+ },
+ "city.un.twin.1": {
+  "ru": "Предрассветный час: Прия встречает его в кресле у окна. Далеко внизу море темнее неба, и граница между ними тонкая, как нитка.",
+  "en": "The hour before dawn: Priya meets it in the chair by the window. Far below, the sea is darker than the sky, and the line between them thin as a thread.",
+  "ja": "夜明け前。プリヤは窓辺の椅子で朝を迎える。遠く下で、海は空より暗く、その境目は糸のように細い。"
+ },
+ "city.un.twin.2": {
+  "ru": "Днём отсюда видно только серую полосу и крышу булочной с прилипшей чайкой. Прия говорит, что море надо смотреть утром, остальное время его надо помнить.",
+  "en": "By day you see only a grey strip and the bakery's roof with a gull stuck to it. Priya says the sea should be looked at in the morning, the rest of the time it should be remembered.",
+  "ja": "昼間はここから灰色の帯と、カモメがとまったパン屋の屋根しか見えない。海は朝に見るもの、あとの時間は思い出すものだ、とプリヤは言う。"
+ },
+ "city.un.twin.3": {
+  "ru": "Вечером в окне зажигаются огни порта. Они мигают в такт тому, что играет радио на кухне.",
+  "en": "In the evening the harbour lights come on in the window. They blink in time with what the radio plays in the kitchen.",
+  "ja": "夕方、窓に港の灯がともる。台所のラジオの曲に合わせるようにまたたく。"
+ },
+ "city.un.twin.4": {
+  "ru": "Ночью окно чёрное, и в нём отражается лампа. Из-за этого кажется, что в комнате есть ещё одна комната.",
+  "en": "At night the window is black and the lamp is reflected in it. It makes it seem there is another room in the room.",
+  "ja": "夜の窓は黒く、ランプが映っている。部屋の中にもうひとつ部屋があるように見える。"
+ },
+ "city.un.album.1": {
+  "ru": "Ты находишь двенадцатую страницу, ту, что пустовала. Открытка встаёт в уголки как влитая: море, серое и настоящее. Кажется, альбом вздохнул.",
+  "en": "You find the twelfth page, the one that was empty. The postcard slips into the corners as if it had grown there: the sea, grey and real. The album seems to sigh.",
+  "ja": "空いていた十二ページ目を開く。絵はがきは角の止め具にぴたりとはまる。灰色の、本物の海。アルバムがほっと息をついたようだ。"
+ },
+ "city.un.album.2": {
+  "ru": "В альбоме двенадцать страниц, на каждой подпись рукой Прии. На последней: «Шире от всех, кто писал сюда. Море нашёл молодой человек».",
+  "en": "The album has twelve pages, each captioned in Priya's hand. On the last: \"To Shira from everyone who wrote here. The sea was found by a young person.\"",
+  "ja": "アルバムは十二ページ、どれにもプリヤの字で書き込みがある。最後には「シラへ。ここに書いてくれた皆から。海は若い人が見つけてくれました」。"
+ },
+ "city.un.album.3": {
+  "ru": "Страницы с маяком и пирсом потёрты по уголкам: их листали чаще других. Прия говорит, что море листают реже, оно не для рук.",
+  "en": "The pages with the lighthouse and the pier are worn at the corners: they've been turned more than the others. Priya says the sea is turned less often, it isn't for hands.",
+  "ja": "灯台と桟橋のページは角がすり切れている。いちばんよくめくられたのだ。海のページはあまりめくられない。海は手に取るものではないから、とプリヤは言う。"
+ },
+ "city.un.pool.1": {
+  "ru": "Вода по щиколотку и тёплая от солнца на бетоне. Дети ходят по кругу и называют это плаванием. Ты опускаешь руку: да, это море, только приручённое.",
+  "en": "The water is ankle-deep and warm from the sun on the concrete. The children walk round in a circle and call it swimming. You dip a hand: yes, it's the sea, only tamed.",
+  "ja": "水はくるぶしまでで、コンクリートの日差しでぬるい。子どもたちはぐるぐる歩いて、それを泳ぐと呼ぶ。手を入れてみる。そう、これは海だ。ただし飼いならされた。"
+ },
+ "city.un.pool.2": {
+  "ru": "Вода холодная: бетон остыл. Утенок из жёлтой резины плавает у борта и выглядит героем.",
+  "en": "The water is cold: the concrete has cooled. A yellow rubber duck floats by the rim and looks like a hero.",
+  "ja": "水は冷たい。コンクリートが冷えたのだ。黄色いゴムのアヒルが縁の近くに浮かび、英雄のように見える。"
+ },
+ "city.un.pool.3": {
+  "ru": "Бассейн пустой на вид: все ушли на обед. На дне два камешка и одна заколка. В полдень здесь тихо, слышно, как гудит вентиляция.",
+  "en": "The pool looks empty: everyone has gone to lunch. On the bottom, two pebbles and one hairpin. At noon it's quiet here, you can hear the ventilation hum.",
+  "ja": "プールは空に見える。みんな昼ごはんに行った。底には小石が二つとヘアピンが一つ。昼どきは静かで、換気の音が聞こえる。"
+ },
+ "city.un.closed.pool": {
+  "ru": "Вода слита, бассейн закрыт брезентом: детский до вечера не откроется.",
+  "en": "The water has been drained, the pool is covered with tarpaulin: the paddling pool does not open again till tomorrow.",
+  "ja": "水は抜かれ、プールは防水シートで覆われている。子ども用プールは明日まで開かない。"
+ },
+ "city.un.deck.1": {
+  "ru": "Шезлонг скрипит и складывается ровно настолько, чтобы удобно лежать. Над головой чайки, а выше них только небо, которое сегодня как чистый лист.",
+  "en": "The deck chair creaks and folds just enough to lie in comfortably. Gulls overhead, and above them only the sky, today like a clean sheet of paper.",
+  "ja": "デッキチェアはきしんで、ちょうど楽に寝られる角度に倒れる。頭上にはカモメ、その上には空だけ。今日はまっさらな紙のようだ。"
+ },
+ "city.un.deck.2": {
+  "ru": "Облака идут низко и быстро. Одно похоже на сапог, другое на хлеб, третье на Рафаэла Бенитеса с рыбой.",
+  "en": "The clouds go low and fast. One looks like a boot, another like a loaf, a third like Rafael Benítez with a fish.",
+  "ja": "雲は低く速く流れる。ひとつは長靴、ひとつはパン、もうひとつは魚を持ったハファエル・ベニテスに見える。"
+ },
+ "city.un.deck.3": {
+  "ru": "Вечернее небо: розовое снизу, зелёное посередине, голубое сверху. На западе зажигается первая звезда, самая нетерпеливая.",
+  "en": "Evening sky: pink below, green in the middle, blue above. In the west the first star lights, the most impatient one.",
+  "ja": "夕方の空。下はピンク、真ん中は緑、上は青。西で最初の星が灯る。いちばんせっかちな星だ。"
+ },
+ "city.un.deck.4": {
+  "ru": "Ночное небо над домом: звёзды как сахар на синей скатерти. Ковш висит над трубой вентиляции, а луч маяка чертит по облакам.",
+  "en": "The night sky over the house: stars like sugar on a blue tablecloth. The Plough hangs over the ventilation stack, and the lighthouse beam draws across the clouds.",
+  "ja": "家の上の夜空。青いテーブルクロスにこぼした砂糖のような星。北斗七星は換気塔の上にかかり、灯台の光が雲の上を走る。"
+ },
+ "city.un.deck.5": {
+  "ru": "Ночью небо закрыто, и только луч маяка проходит по облакам раз в десять секунд, как стрелка часов.",
+  "en": "At night the sky is shut, and only the lighthouse beam passes over the clouds once in ten seconds, like a clock's hand.",
+  "ja": "夜、空は閉ざされ、灯台の光だけが十秒に一度、時計の針のように雲の上を通る。"
+ },
+ "city.un.deck.6": {
+  "ru": "На заре небо над морем становится цвета персика, потом лимона, потом просто белым. Шезлонг ещё хранит тепло.",
+  "en": "At dawn the sky over the sea turns peach, then lemon, then just white. The deck chair still keeps some warmth.",
+  "ja": "夜明け、海の上の空は桃色、次にレモン色、そして白になる。デッキチェアにはまだぬくもりが残っている。"
+ },
+ "city.un.track.1": {
+  "ru": "Ты пробегаешь круг, красная резина мягко отвечает на каждый шаг. На повороте ветер толкает в спину: подсказывает, куда торопиться.",
+  "en": "You run a lap, the red rubber answers every step softly. At the bend the wind pushes you in the back: it knows where to hurry.",
+  "ja": "トラックを一周する。赤いゴムが一歩ごとにやわらかく返す。カーブでは風が背中を押す。急ぐ先を教えてくれるようだ。"
+ },
+ "city.un.track.2": {
+  "ru": "Хокон Янсен сидит на бортике с секундомером и записывает время детям. Тебе он говорит «неплохо» и протягивает секундомер.",
+  "en": "Håkon Jansen sits on the kerb with a stopwatch and notes the children's times. To you he says \"not bad\" and holds out the stopwatch.",
+  "ja": "ホーコン・ヤンセンはへりに座り、ストップウォッチで子どもたちのタイムを書き留めている。君には「悪くない」と言ってストップウォッチを差し出す。"
+ },
+ "city.un.track.3": {
+  "ru": "В сумерках дорожка пустая и тёплая. Бежать вдоль огней города, как по набережной, но на высоте пятнадцати этажей.",
+  "en": "In the dusk the track is empty and warm. Running along the city lights as along an embankment, but at fifteen floors' height.",
+  "ja": "夕暮れのトラックは人気がなく、あたたかい。町の灯に沿って、堤防を走るように、ただし十五階の高さで走る。"
+ },
+ "city.un.track.4": {
+  "ru": "Ночью дорожка пустая, красная резина кажется чёрной. Бежать можно, но лучше недолго: ограда низкая.",
+  "en": "At night the track is empty, the red rubber looks black. You may run, but best not for long: the parapet is low.",
+  "ja": "夜のトラックは誰もいなくて、赤いゴムが黒く見える。走ってもいいが長くはやめたほうがいい。柵が低いから。"
+ },
+ "city.un.laps.1": {
+  "ru": "Листок на стойке: «Среда и суббота, 17:00, бег для всех. Круг 400 м. Рекорд дома: Деспина Янсен, 7 лет, 2 мин 40 сек. Хокон Янсен просит не обижаться: он держал секундомер».",
+  "en": "A sheet on the stand: \"Wednesday and Saturday, 17:00, running for all. A lap is 400 m. House record: Despina Jansen, aged 7, 2 min 40 sec. Håkon Jansen asks you not to mind: he held the stopwatch.\"",
+  "ja": "スタンドの紙。「水曜と土曜の十七時、誰でも走れます。一周四百メートル。棟の記録：デスピナ・ヤンセン、七歳、二分四十秒。ホーコン・ヤンセンからのお願い：怒らないでください、ストップウォッチは私が持っていました」。"
+ },
+ "city.un.laps.2": {
+  "ru": "Листок обновлён: «Рекорд дома: Деспина Янсен, 2:31. Сигурд и Калев Техрани просят пересчитать: они бежали вдвоём, и это по двое быстрее».",
+  "en": "The sheet is updated: \"House record: Despina Jansen, 2:31. Sigurd and Kalev Tehrani ask for a recount: they ran together, which is quicker for two.\"",
+  "ja": "紙が更新されている。「棟の記録：デスピナ・ヤンセン、2分31秒。シーグルとカレフ・テヘラニが再計測を希望：二人で走ったので、二人分のほうが速い」。"
+ },
+ "city.un.laps.3": {
+  "ru": "Новая запись карандашом внизу: «Сегодня хорошо, ветер попутный на втором повороте. Х. Я.». Рядом чья-то детская ладонь, обведённая мелом.",
+  "en": "A new pencilled entry at the bottom: \"Good today, a tailwind on the second bend. H. J.\" Next to it a child's hand outlined in chalk.",
+  "ja": "下に鉛筆の新しい書き込み。「今日はよかった、二つ目のカーブで追い風。H.J.」。そばには子どもの手形がチョークでなぞってある。"
+ },
+ "city.un.badminton.1": {
+  "ru": "Волан в пёстрых перьях, часть которых давно не на месте. Он летит криво, но играющие делают вид, что так и надо.",
+  "en": "A shuttlecock with mixed feathers, some long since missing. It flies crooked, but the players pretend it's meant to.",
+  "ja": "羽根は色とりどりだが、何枚かはとっくに抜けている。まっすぐ飛ばないが、遊ぶ人たちはそれでいいふりをする。"
+ },
+ "city.un.badminton.2": {
+  "ru": "Сетка натянута между двумя водосточными трубами, а линии нарисованы мелом: на крыше ветер не даёт играть всерьёз, зато даёт смеяться.",
+  "en": "The net is stretched between two drainpipes and the lines are chalked: on the roof the wind won't let you play seriously, but lets you laugh.",
+  "ja": "ネットは二本の雨どいの間に張られ、ラインはチョークで引いてある。屋上では風のせいで真剣には遊べないが、笑うことはできる。"
+ },
+ "city.un.sand.1": {
+  "ru": "В песочнице замок с тремя башнями и ров. Ров заливали из бассейна по одному ведёрку: говорят, потратили полчаса и тридцать ведёр.",
+  "en": "In the sandbox, a castle with three towers and a moat. The moat was filled from the pool one bucket at a time: they say half an hour and thirty buckets.",
+  "ja": "砂場には三つの塔と堀のある城。堀はプールから一杯ずつバケツで水を運んだそうだ。三十分と三十杯かかったという。"
+ },
+ "city.un.sand.2": {
+  "ru": "Совок воткнут в песок, как флаг. На ручке царапинами: «Сигурд + Калев». Кто-то ещё пририсовал «и Деспина».",
+  "en": "The spade is stuck in the sand like a flag. Scratched on the handle: \"Sigurd + Kalev.\" Somebody has added \"and Despina.\"",
+  "ja": "シャベルが旗のように砂に刺さっている。柄には「シーグル＋カレフ」と引っかき傷。誰かが「とデスピナ」と書き足した。"
+ },
+ "city.un.closed.sand": {
+  "ru": "Песочница накрыта сеткой от кошек и чаек. Вечером дети дома, пусть замок спит.",
+  "en": "The sandbox is covered with a net against cats and gulls. The children are at home in the evening, let the castle sleep.",
+  "ja": "砂場は猫とカモメよけの網で覆われている。夕方、子どもたちは家にいる。お城も眠らせておこう。"
+ },
+ "city.un.playhouse.1": {
+  "ru": "Домик для малышей: внутри скамейка, чайный сервиз из пластмассы и записка на стене «Взрослым пригнуться».",
+  "en": "A house for the little ones: inside a bench, a plastic tea set and a note on the wall \"Grown-ups, duck.\"",
+  "ja": "小さな子ども用の家。中にはベンチ、プラスチックの茶器、壁に「大人は頭を下げて」の貼り紙。"
+ },
+ "city.un.playhouse.2": {
+  "ru": "На подоконнике нарисованное солнце, на двери нарисованный замок. Всё нужное для жизни.",
+  "en": "On the windowsill a painted sun, on the door a painted lock. Everything one needs for living.",
+  "ja": "窓辺には描いた太陽、ドアには描いた鍵。暮らしに必要なものはぜんぶある。"
+ },
+ "city.un.feeder.1": {
+  "ru": "Кормушка-домик на столбе. Воробьи толкаются, синица действует быстро и аккуратно: хватает и улетает.",
+  "en": "A little feeder house on a post. Sparrows jostle, a tit is quick and neat: grabs one and is off.",
+  "ja": "柱の上の小さな餌台。スズメは押し合い、シジュウカラは素早く手際よく、くわえて飛び去る。"
+ },
+ "city.un.feeder.2": {
+  "ru": "Днём кормушка пуста, птицы ушли к морю. На крыше остались только вороны, они философы.",
+  "en": "In the daytime the feeder is empty, the birds have gone to the sea. Only crows are left on the roof, they are philosophers.",
+  "ja": "昼間、餌台は空。鳥たちは海へ行った。屋上に残るのはカラスだけ、彼らは哲学者だ。"
+ },
+ "city.un.feeder.3": {
+  "ru": "К вечеру на кормушку садится чайка и смотрит так, будто ждёт извинений. Ты её не угощаешь, и она улетает оскорблённой.",
+  "en": "Towards evening a gull settles on the feeder and looks as if it were waiting for an apology. You don't feed it and it flies off offended.",
+  "ja": "夕方、カモメが餌台にとまり、謝罪を待つような目で見る。何もあげないと、気を悪くして飛んでいく。"
+ },
+ "city.un.feeder.4": {
+  "ru": "Зимой корма кладут вдвое больше. В снегу вокруг кормушки узор птичьих лапок.",
+  "en": "In winter twice as much feed is put out. In the snow around the feeder there's a pattern of bird feet.",
+  "ja": "雪の日は餌を倍に出す。餌台のまわりの雪には、鳥の足あとの模様がついている。"
+ },
+ "city.un.roofchess.1": {
+  "ru": "Шахматы под перголой, доска затянута ветром, как парус: фигуры приклеены к клеткам пластилином. Поэтому здесь играют и в бурю.",
+  "en": "Chess under the pergola, the board taut in the wind like a sail: the pieces are stuck to the squares with plasticine. That's why they play here even in a storm.",
+  "ja": "パーゴラの下のチェス。盤は風を受けて帆のようにぴんと張る。駒は粘土で升目に貼りつけてあるので、嵐でも指せる。"
+ },
+ "city.un.roofchess.2": {
+  "ru": "Сорокин иногда приходит сюда по утрам один и играет сам с собой, играя за чёрных всё лучше, чем за белых.",
+  "en": "Sorokin sometimes comes here alone in the morning and plays himself, always better as Black than as White.",
+  "ja": "ソローキンは朝、ときどきここへ一人で来て、自分相手に指す。いつも白より黒のほうが上手に指す。"
+ },
+ "city.player.sorokin.hello": {
+  "ru": "Сорокин, хмуро, но вежливо: «Садись. Только не в пиджаке, он у меня на проигрыш».",
+  "en": "Sorokin, gruff but polite: \"Sit. Just not in a jacket, I save that one for losing.\"",
+  "ja": "ソローキンはむっつりと、しかし礼儀正しく。「座りなさい。ただし上着は脱いで。あれは私が負けるとき用だ」。"
+ },
+ "city.player.sorokin.win": {
+  "ru": "«Ха. Рафаэлу не говори, ему вредно».",
+  "en": "\"Ha. Don't tell Rafael, it's bad for him.\"",
+  "ja": "「はは。ハファエルには言うなよ、体に毒だ」。"
+ },
+ "city.player.sorokin.lose": {
+  "ru": "«Бывает. Я проиграл в сорок девятом и до сих пор не верю».",
+  "en": "\"It happens. I lost in forty-nine and still don't believe it.\"",
+  "ja": "「そういうこともある。私は四十九年に負けて、今でも信じていない」。"
+ },
+ "city.player.benitez.hello": {
+  "ru": "Бенитес, раскладывая костяшки: «Давай по-честному. То есть я честный, а ты не торопись».",
+  "en": "Benítez, laying out the tiles: \"Let's play fair. I mean I play fair, and you take your time.\"",
+  "ja": "ベニテスは牌を並べながら。「正々堂々といこう。つまり私は正々堂々で、君はゆっくりでいい」。"
+ },
+ "city.player.benitez.win": {
+  "ru": "«Ничья? Нет, ты выиграл, а я радуюсь, что так вышло».",
+  "en": "\"A draw? No, you won, and I'm glad it came out so.\"",
+  "ja": "「引き分け？ いや、君の勝ちだ。そうなって私はうれしい」。"
+ },
+ "city.player.benitez.lose": {
+  "ru": "«Рыба у меня не клюёт, зато костяшки слушаются. Приходи вечером, отыграешься».",
+  "en": "\"The fish won't bite for me, but the tiles obey. Come in the evening, you'll get your own back.\"",
+  "ja": "「魚は私の釣り針にかからないが、牌は言うことを聞く。夕方においで、仕返しさせてあげよう」。"
+ },
+ "quest.home_tulegenova.title": {
+  "ru": "Море для альбома",
+  "en": "The sea for the album",
+  "ja": "アルバムに海を"
+ },
+ "quest.home_tulegenova.desc": {
+  "ru": "На доске у входа висит объявление: Прия Тулегенова из 5-12 собирает альбом открыток для Ширы Накамуры. Не хватает одной, с морем. Её синяя дверь на торговой улице, на седьмом, и открыта с девяти до десяти вечера.",
+  "en": "A notice on the board by the entrance: Priya Tulegenova of no. 5-12 is making an album of postcards for Shira Nakamura. One is missing: the sea. Her blue door is on the shopping street, on the seventh floor, and open from nine to ten at night.",
+  "ja": "入口の掲示板に貼り紙がある。5-12号室のプリヤ・トゥレゲノワがシラ・中村さんに贈る絵はがきのアルバムを作っていて、足りないのは海の一枚。青いドアは七階の商店街にあって、朝九時から夜十時まで開いている。"
+ },
+ "quest.home_tulegenova.done": {
+  "ru": "Прия долго смотрела на серое море в уголках и сказала: «Вот теперь Шира узнает, откуда мы пишем». Налила чаю и добавила в кармашек альбома твою фамилию мелким почерком.",
+  "en": "Priya looked for a long time at the grey sea in the corners and said: \"Now Shira will know where we are writing from.\" She poured tea and added your name to the album's pocket in small handwriting.",
+  "ja": "プリヤは角に収まった灰色の海をしばらく見つめて言った。「これでシラも、私たちがどこから書いているかわかるわ」。お茶を注ぎ、アルバムのポケットに君の名前を小さな字で書き足した。"
+ },
+ "quest.home_tulegenova.notice.log": {
+  "ru": "Объявление висит на доске у консьержа в западном холле. Надо прочитать его до конца: там про синюю дверь и про чай.",
+  "en": "The notice hangs on the board by the concierge in the west hall. I should read all of it: there's something about a blue door and tea.",
+  "ja": "貼り紙は西のホールの管理人のそばの掲示板にある。最後まで読もう。青いドアとお茶のことが書いてある。"
+ },
+ "quest.home_tulegenova.notice.obj": {
+  "ru": "Прочитать объявление на доске в западном холле",
+  "en": "Read the notice on the board in the west hall",
+  "ja": "西のホールの掲示板で貼り紙を読む"
+ },
+ "quest.home_tulegenova.card.log": {
+  "ru": "Нужна открытка с настоящим морем. Они продаются в газетах и галантерее на торговой улице, да и в других киосках города.",
+  "en": "I need a postcard with a real sea. They are sold at the news stand and the haberdashery on the shopping street, and at other kiosks in town.",
+  "ja": "本物の海の絵はがきが要る。商店街の新聞売り場や手芸店、町のほかのキオスクで売っている。"
+ },
+ "quest.home_tulegenova.card.obj": {
+  "ru": "Раздобыть открытку",
+  "en": "Get a postcard",
+  "ja": "絵はがきを手に入れる"
+ },
+ "quest.home_tulegenova.album.log": {
+  "ru": "Открытка в кармане. Синяя дверь, потом вниз по лестнице, и в маленькой комнате альбом на полке с книгами. Он ждёт двенадцатую страницу.",
+  "en": "Postcard in my pocket. The blue door, then down the stair, and in the small room the album is on the bookshelf. It's waiting for its twelfth page.",
+  "ja": "絵はがきはポケットの中。青いドアを入って階段を下り、小さな部屋の本棚にアルバムがある。十二ページ目を待っている。"
+ },
+ "quest.home_tulegenova.album.obj": {
+  "ru": "Вклеить открытку в альбом Прии в 5-12",
+  "en": "Paste the postcard into Priya's album in no. 5-12",
+  "ja": "5-12号室のプリヤのアルバムに絵はがきを貼る"
+ },
+ "quest.un_pingpong.title": {
+  "ru": "Партия на седьмом",
+  "en": "A game on the seventh",
+  "ja": "七階で一勝"
+ },
+ "quest.un_pingpong.desc": {
+  "ru": "В игровой на торговой улице стол для настольного тенниса, и постоянные гости ждут новичка. Говорят, их мячик прыгает вбок, но к этому привыкаешь.",
+  "en": "In the games room on the shopping street there's a table-tennis table, and the regulars are waiting for a newcomer. They say their ball bounces sideways, but you get used to it.",
+  "ja": "商店街のゲームルームには卓球台があり、常連が新顔を待っている。球は横に跳ねるというが、そのうち慣れる。"
+ },
+ "quest.un_pingpong.done": {
+  "ru": "Сетка провисла, мячик с трещиной. Хироси Новотный пожал руку и сказал, что в следующий раз он точно сыграет серьёзно.",
+  "en": "The net sagged, the ball was cracked. Hiroshi Novotný shook your hand and said that next time he will definitely play seriously.",
+  "ja": "ネットはたるみ、球にはひび。ノヴォトニー博は握手をして、次こそ本気でやると言った。"
+ },
+ "quest.un_pingpong.win.log": {
+  "ru": "Найти игровую на торговой улице и выиграть партию в настольный теннис. Соперник придёт сам.",
+  "en": "Find the games room on the shopping street and win a game of table tennis. An opponent will turn up on his own.",
+  "ja": "商店街のゲームルームを見つけて、卓球で一勝する。相手はそのうち現れる。"
+ },
+ "quest.un_pingpong.win.obj": {
+  "ru": "Выиграть партию в настольный теннис в игровой",
+  "en": "Win a game of table tennis in the games room",
+  "ja": "ゲームルームで卓球に勝つ"
+ }
+}
