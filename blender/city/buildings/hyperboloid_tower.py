@@ -22,6 +22,7 @@ import random
 from citykit import prism, band, band_down, ring, DOOR_W, DOOR_H, geom
 from geom import Mesh, Facade, wall_with_holes, reveal
 import furn_int3 as fu
+import interior_kit
 from furn_int3 import Fr, lbox, cyl, blob
 
 INFO = {
@@ -179,54 +180,156 @@ def base(B):
     B.spot("door_bench", "bench", (CX + 2.2, CY - R_WALL - 1.8, 0.0), 180)
 
 
+A_IN = R_WALL * math.cos(math.pi / 16) - WALL_T      # distance of the drum's inner wall faces from the axis
+
+
+def _yin(deg):
+    """Kit yaw of a piece at polar angle deg that faces the axis of the drum (into the room)."""
+    return (deg - 90.0) % 360.0
+
+
+def _yout(deg):
+    return (deg + 90.0) % 360.0
+
+
+def _pol(r, deg):
+    a = math.radians(deg)
+    return (CX + r * math.cos(a), CY + r * math.sin(a))
+
+
+def _lifebuoy(B, x, y, yaw, zc, r_out=0.36, r_in=0.19, t=0.09, n=12):
+    """A lifebuoy hung on the wall (red and white segments); (x, y) = the wall point, yaw = facing out of the wall."""
+    fr = geom.Frame(x, y, math.radians(yaw))
+    for k in range(n):
+        a0, a1 = 2 * math.pi * k / n, 2 * math.pi * (k + 1) / n
+        mat = "CT_PlasterRed" if k % 3 == 0 else "CT_TileWhite"
+        P = {}
+        for name, a, r in (("o0", a0, r_out), ("o1", a1, r_out), ("i0", a0, r_in), ("i1", a1, r_in)):
+            for tag, v in (("f", -t), ("b", -0.01)):
+                P[name + tag] = fr((r * math.cos(a), v, zc + r * math.sin(a)))
+        cen = tuple(sum(P[key][i] for key in P) / len(P) for i in range(3))
+        for quad in (("o0f", "o1f", "i1f", "i0f"), ("o0b", "o1b", "o1f", "o0f"), ("i1b", "i0b", "i0f", "i1f"),
+                     ("o0f", "i0f", "i0b", "o0b"), ("i1f", "o1f", "o1b", "i1b")):
+            pts = [P[q] for q in quad]
+            nrm = geom.cross(geom.sub(pts[1], pts[0]), geom.sub(pts[3], pts[0]))
+            mid = tuple(sum(p[i] for p in pts) / 4 for i in range(3))
+            if sum(nrm[i] * (mid[i] - cen[i]) for i in range(3)) < 0:
+                pts = pts[::-1]
+            B.detail.face(mat, pts)
+
+
 def keeper_room(B):
-    """The keeper's room in the drum: a desk with a radio, a chair, a cabinet, a cot, buoys, rope and three lamps
-    (floor z = 0.03, ceiling underside 2.6; the spiral stair stands in the middle, r < 1.8, and the door is at -y)."""
+    """The keeper's room in the drum (floor z = 0.03, ceiling underside 2.6, door in the -y facet, the spiral stair in
+    the middle, r < 1.8). Sixteen wall facets (centre angle -90 + 22.5 k, inner face A_IN from the axis): desk with log
+    book and lamp facing the wall (k 8), the radio table (7), bookshelf (9), a safe (10), the cot with a bedside table
+    (12, 11), a wardrobe (13), lifebuoy and rope (14), tea corner (4), chart table (6), crates (2), boots (3)."""
     z0 = 0.03
     d = B.detail
-    rnd = random.Random(1923)
-    # desk at the back (+y) against the wall, facing the room
-    ydesk = CY + 4.15
-    fr = Fr(CX - 0.4, ydesk, 0.0, z0)
-    lbox(B.m, "CT_WoodLight", fr, -1.2, -0.9, 0.0, 0.7, 0.0, 0.72)
-    lbox(B.m, "CT_WoodLight", fr, 0.9, 1.2, 0.0, 0.7, 0.0, 0.72)
-    lbox(B.m, "CT_WoodLight", fr, -1.2, 1.2, 0.0, 0.7, 0.72, 0.76)
-    lbox(B.m, "CT_WoodLight", fr, -0.9, 0.9, 0.55, 0.62, 0.3, 0.72)             # modesty panel (the desk sits against the wall)
-    # radio set: a box with a dial and an antenna, a headset, a logbook and a mug, a map on the wall
-    lbox(d, "CT_ConcreteDark", fr, 0.2, 0.75, 0.1, 0.45, 0.76, 0.98, faces="xXyYZ")
-    lbox(d, "CT_Neon", fr, 0.28, 0.5, 0.45, 0.46, 0.84, 0.92, faces="y")
-    ax, ay, _ = fr.p(0.7, 0.15)
-    cyl(d, "CT_Steel", ax, ay, z0 + 0.98, z0 + 1.7, 0.012, 4)
-    lbox(d, "CT_PlasterBlue", fr, -0.8, -0.35, 0.15, 0.5, 0.76, 0.79, faces="xXyYZ")
-    lbox(d, "CT_TileWhite", fr, -0.7, -0.45, 0.2, 0.42, 0.79, 0.81, faces="xXyYZ")
-    cyl(d, "CT_PlasterRed", *fr.p(-0.1, 0.3)[:2], z0 + 0.76, z0 + 0.86, 0.04, 6)
-    lbox(d, "CT_TileWhite", Fr(CX - 0.4, CY + 4.9, 0.0, z0), -0.9, 0.5, 0.0, 0.03, 1.3, 2.0)       # chart on the wall
-    for k in range(4):
-        lbox(d, rnd.choice(("CT_PlasterBlue", "CT_PlasterGreen", "CT_PlasterYellow")), Fr(CX - 0.4, CY + 4.9, 0.0, z0),
-             -0.8 + 0.3 * k, -0.6 + 0.3 * k, 0.03, 0.04, 1.4 + 0.1 * k, 1.5 + 0.12 * k, faces="xXyYZ")
-    # the keeper's chair behind the desk, facing +y (the sitter faces the desk)
-    fu.chair(B, CX - 0.4, CY + 3.3, 180, "CT_PlasterRed", z=z0)
-    B.spot("keeper_seat", "seat", (CX - 0.4, CY + 3.3, z0), 180.0)
-    # tall cabinet on the east wall (angle ~0 deg), with shelves and tins
-    fc = Fr(CX + 4.88, CY - 0.6, 270, z0)             # faces -x into the room; u runs -y
-    lbox(B.m, "CT_WoodLight", fc, 0.0, 1.5, 0.0, 0.5, 0.0, 2.0)
-    for k in range(5):
-        lbox(d, "CT_ConcreteDark", fc, 0.04, 0.72, 0.5, 0.52, 0.2 + 0.38 * k, 0.22 + 0.38 * k, faces="Y")
-        lbox(d, "CT_ConcreteDark", fc, 0.78, 1.46, 0.5, 0.52, 0.2 + 0.38 * k, 0.22 + 0.38 * k, faces="Y")
-    lbox(d, "CT_Steel", fc, 0.7, 0.8, 0.5, 0.56, 0.9, 1.05)
-    # a cot along the west wall, a rolled blanket on it
-    fw = Fr(CX - 4.88, CY + 0.2, 90, z0)               # faces +x; u runs +y
-    lbox(B.m, "CT_Steel", fw, -0.1, 1.9, 0.0, 0.8, 0.0, 0.38)
-    lbox(d, "CT_PlasterGreen", fw, 0.0, 1.8, 0.02, 0.78, 0.38, 0.45, faces="xXyYZ")
-    cyl(d, "CT_PlasterRed", *fw.p(1.65, 0.4)[:2], z0 + 0.45, z0 + 0.6, 0.12, 6)
-    B.spot("keeper_cot", "bench", (CX - 3.6, CY + 1.1, z0), 90.0)
-    # life rings and a rope coil by the door; lifebuoys hang on the wall beside it
-    # a rope coil by the door side
-    rx, ry = CX - 3.2, CY - 3.2
+    kit = interior_kit
+
+    def fac(k):
+        return -90.0 + 22.5 * k
+
+    def wall(k, off=0.0):
+        """Point on the wall of facet k, `off` metres off the wall into the room."""
+        return _pol(A_IN - off, fac(k))
+
+    def put(fn, k, depth, **kw):
+        """A free-standing piece of depth `depth` against the wall of facet k, front toward the axis."""
+        x, y = _pol(A_IN - depth / 2 - 0.02, fac(k))
+        return fn(B, x, y, z0, _yin(fac(k)), **kw)
+
+    # ---- desk against the north wall, the keeper's chair pulled up to it facing the wall
+    ph = fac(8)
+    dx, dy = _pol(A_IN - 0.37, ph)
+    desk = kit.office_desk(B, dx, dy, z0, _yin(ph), w=1.4, d=0.7, typewriter_on=False, papers=False, phone=False)
+    ch = _pol(A_IN - 1.25, ph)
+    kit.chair(B, ch[0], ch[1], z0, _yout(ph), kind="wood", mat="CT_PlasterRed")
+    B.spot("keeper_seat", "seat", (ch[0], ch[1], z0), _yout(ph))
+    B.thing("keeper_chair", "seat", (ch[0], ch[1], z0 + 0.45), _yout(ph), height=0.45)
+    top = desk["top"]
+    kit.newspaper(B, dx + 0.0, dy - 0.12, top, yaw=ph + 10, cellname="paper_typed")
+    kit.books_stack(B, dx - 0.35, dy - 0.05, top, yaw=_yin(ph) + 15, n=1, seed=7)
+    kit.lamp_green(B, dx + 0.5, dy + 0.12, top, yaw=_yin(ph), light=False)
+    kit.cup(B, dx + 0.2, dy - 0.18, top, yaw=30)
+    kit.telephone(B, dx - 0.5, dy + 0.1, top, yaw=_yin(ph) - 25)
+    B.thing("keeper_log", "board", (dx - 0.1, dy - 0.05, top), _yin(ph), topic="logbook")
+    wx, wy = wall(8)
+    kit.wall_map(B, wx, wy, z0, _yin(ph), w=1.2, h=0.9, zc=1.85, name="map_coast")
+    B.thing("keeper_chart", "board", (wx, wy, z0 + 1.85), _yin(ph), topic="view")
+    wx, wy = wall(8)
+    wx2, wy2 = wx + 0.85 * math.cos(math.radians(ph + 90)), wy + 0.85 * math.sin(math.radians(ph + 90))
+    kit.wall_clock(B, wx2, wy2, z0, _yin(ph), zc=2.05)
+    # ---- radio table (facet 7) and a picture of the tower
+    pr = fac(7)
+    tb = put(kit.table, 7, 0.5, w=0.8, d=0.5, kind="steel")
+    rx, ry = _pol(A_IN - 0.27, pr)
+    rd = kit.radio(B, rx, ry, tb["top"], _yin(pr))
+    B.thing("tower_radio", "machine", (rx, ry, tb["top"] + 0.15), _yin(pr), what="radio")
+    kit.cup(B, rx + 0.28 * math.cos(math.radians(pr + 90)), ry + 0.28 * math.sin(math.radians(pr + 90)), tb["top"])
+    wx, wy = wall(7)
+    kit.picture(B, wx, wy, z0, _yin(pr), name="painting_lighthouse", w=0.55, zc=1.75)
+    # ---- bookshelf (facet 9), safe and a clock (facet 10)
+    wx, wy = wall(9)
+    bs = kit.bookshelf(B, wx, wy, z0, _yin(fac(9)), w=0.9, topic="library", seed=3)
+    B.thing("keeper_shelf", "shelf", (wx - 0.15 * math.cos(math.radians(fac(9))), wy - 0.15 * math.sin(math.radians(fac(9))),
+                                       z0 + 1.3), _yin(fac(9)), topic="sea")
+    wx, wy = wall(10)
+    kit.safe(B, wx, wy, z0, _yin(fac(10)))
+    kit.poster(B, wx, wy, z0, _yin(fac(10)), name="poster_cons_2", w=0.6, zc=1.7)
+    # ---- the cot (head to the wall, facet 12) with a bedside table, a wardrobe (13)
+    pb = fac(12)
+    bx, by = _pol(A_IN - 2.05 / 2 - 0.02, pb)
+    bd = kit.bed(B, bx, by, z0, _yin(pb), size="single", blanket="CT_PlasterGreen")
+    B.thing("keeper_bed", "bed", (bx, by, z0 + 0.5), _yin(pb), height=0.5, rest="nap")
+    B.spot("keeper_cot", "bench", (bx, by, z0), _yin(pb))
+    put(kit.bedside_table, 11, 0.4, lamp=True)
+    put(kit.wardrobe, 13, 0.58, w=1.0)
+    # ---- lifebuoy and a rope coil (facet 14), a fire extinguisher (15)
+    wx, wy = wall(14)
+    _lifebuoy(B, wx, wy, _yin(fac(14)), z0 + 1.6)
+    rx, ry = _pol(A_IN - 0.55, fac(14))
     cyl(d, "CT_WoodLight", rx, ry, z0, z0 + 0.35, 0.28, 8, top=False)
     cyl(d, "CT_TileWhite", rx, ry, z0 + 0.35, z0 + 0.38, 0.28, 8)
     cyl(d, "CT_ConcreteDark", rx, ry, z0 + 0.38, z0 + 0.4, 0.1, 6)
-    # lamps: over the desk, over the cot and over the door side
+    wx, wy = wall(15)
+    kit.fire_extinguisher(B, wx, wy, z0, _yin(fac(15)))
+    # ---- tea corner (facet 4): a round table with a samovar and two stools
+    pt = fac(4)
+    tx, ty = _pol(A_IN - 0.85, pt)
+    tt = kit.table_round(B, tx, ty, z0, r=0.42, h=0.72)
+    kit.samovar(B, tx, ty, tt["top"], yaw=_yin(pt))
+    kit.cup(B, tx + 0.22 * math.cos(math.radians(pt + 90)), ty + 0.22 * math.sin(math.radians(pt + 90)), tt["top"])
+    kit.glass(B, tx - 0.2 * math.cos(math.radians(pt + 90)), ty - 0.2 * math.sin(math.radians(pt + 90)), tt["top"])
+    for sg in (-1, 1):
+        sx, sy = _pol(A_IN - 0.85, pt + sg * math.degrees(0.72 / (A_IN - 0.85)))
+        kit.stool(B, sx, sy, z0, mat="CT_PlasterBlue", h=0.45)
+    sx, sy = _pol(A_IN - 0.85, pt - math.degrees(0.72 / (A_IN - 0.85)))
+    B.thing("keeper_stool", "seat", (sx, sy, z0 + 0.45), _yin(pt) + 90, height=0.45)
+    kit.rug(B, tx, ty, z0, w=1.9, round=True, seed=9)
+    # ---- filing cabinet (5), chart table (6), crates (2), boots and a bench (3), a hat stand (1)
+    wx, wy = wall(5)
+    kit.filing_cabinet(B, wx - 0.31 * math.cos(math.radians(fac(5))) - 0.0, wy - 0.31 * math.sin(math.radians(fac(5))), z0,
+                       _yin(fac(5)), mat="CT_PlasterGreen")
+    dt = put(kit.drafting_table, 6, 0.9)
+    wx, wy = wall(2)
+    for k, (dr, ds) in enumerate(((0.3, -0.35), (0.3, 0.3), (0.35, 0.0))):
+        cx_, cy_ = _pol(A_IN - dr - 0.05, fac(2) + math.degrees(ds / A_IN))
+        if k < 2:
+            kit.crate(B, cx_, cy_, z0, _yin(fac(2)), fill="CT_PlasterBlue", seed=k)
+        else:
+            kit.sack(B, cx_, cy_, z0, _yin(fac(2)))
+    kit.crate(B, *_pol(A_IN - 0.3, fac(2) - math.degrees(0.35 / A_IN)), z0 + 0.3, _yin(fac(2)) + 20, seed=5)
+    wx, wy = wall(3)
+    kit.shoe_rack(B, wx, wy, z0, _yin(fac(3)), w=1.0, seed=2)
+    bx_, by_ = _pol(A_IN - 0.75, fac(3))
+    bn = kit.bench(B, bx_, by_, z0, _yin(fac(3)), w=1.2, kind="gym")
+    B.thing("keeper_bench", "seat", (bx_, by_, z0 + 0.45), _yin(fac(3)), height=0.45)
+    kit.hat_stand(B, *_pol(A_IN - 0.4, fac(1)), z0)
+    # ---- the stair up: a caption thing at its foot
+    ta = -math.pi / 2 + 0.4
+    B.thing("tower_stair", "door", (CX + 1.15 * math.cos(ta), CY + 1.15 * math.sin(ta), z0 + 1.0), 0.0, to="roof")
+    # ---- lamps: over the desk, over the cot and over the door side (fixtures: the old opal globes)
     for a_deg in (90.0, 200.0, 330.0):
         a = math.radians(a_deg)
         x, y = CX + 3.0 * math.cos(a), CY + 3.0 * math.sin(a)
@@ -305,6 +408,19 @@ def platform(B, th_end):
     for j, a in enumerate((math.radians(30), math.radians(120), math.radians(210), math.radians(300))):
         p = (CX + (r_out - 0.9) * math.cos(a), CY + (r_out - 0.9) * math.sin(a), PLAT_Z)
         B.spot("view%d" % (j + 1), "view", p, math.degrees(math.atan2(math.cos(a), -math.sin(a))))
+    # lamp gallery furniture: a telescope aimed at the sea (+y) and a bench on the east side facing out
+    kit = interior_kit
+    ph = 75.0
+    tx, ty = _pol(4.0, ph)
+    kit.telescope(B, tx, ty, PLAT_Z, _yout(ph))
+    B.thing("tower_telescope", "machine", (tx, ty, PLAT_Z + 1.2), _yout(ph), what="telescope")
+    for ph_b, tid in ((165.0, "gallery_bench_w"), (255.0, "gallery_bench_s")):
+        bx, by = _pol(3.95, ph_b)
+        kit.bench(B, bx, by, PLAT_Z, _yout(ph_b), w=1.3, kind="park")
+        B.thing(tid, "seat", (bx, by, PLAT_Z + 0.45), _yout(ph_b), height=0.45)
+    for j, ph_v in enumerate((30.0, 120.0, 210.0, 300.0)):
+        vx, vy = _pol(r_out - 0.45, ph_v)
+        B.thing("gallery_view_%d" % (j + 1), "board", (vx, vy, PLAT_Z + 1.3), _yout(ph_v), topic="view")
 
 
 def top(B):
@@ -333,7 +449,7 @@ def top(B):
         F = Facade(wp[k], wp[(k + 1) % N])
         L = F.length
         has = k % 3 != 2 or k % 12 in (2, 5, 8, 11) and False
-        holes = [(0.28, L - 0.28, 0.55, 2.2)] if k not in (2, 5, 8, 11) else []
+        holes = [(0.28, L - 0.28, zl + 0.55, zl + 2.2)] if k not in (2, 5, 8, 11) else []
         B.facade(wp[k], wp[(k + 1) % N], zl, ZL1, "CT_SteelWhite", holes=holes, depth=0.12, back=True)
         if holes:
             B.facade_window(F, 0.28, L - 0.28, zl + 0.55, zl + 2.2, kind="public", cols=2, rows=1, inset=0.05)
@@ -359,4 +475,6 @@ def build(B):
     ang0 = -math.pi / 2 - math.pi / N
     B.footprint = [(CX + R_WALL * math.cos(ang0 + 2 * math.pi * k / N), CY + R_WALL * math.sin(ang0 + 2 * math.pi * k / N)) for k in range(N)]
     B.height = h
+    for m_ in interior_kit.check(B):
+        print("KIT:", m_)
     B.note("%d stair treads up to %.1f m; lattice %d bars x2 x3 sections" % (n, PLAT_Z, NBARS))

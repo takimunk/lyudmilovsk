@@ -18,7 +18,8 @@ Material requests: none (CT_Plaster* for kiosks, CT_ConcreteWhite for the slab).
 import math
 import random
 
-from citykit import box, DOOR_W
+from citykit import box, DOOR_W, geom
+import interior_kit as kit
 from _sheet import thick_sheet
 import furn_int3 as fu
 from furn_int3 import Fr as MFr, lbox, cyl, blob
@@ -111,20 +112,67 @@ def rect(fr, x0, x1, y0, y1):
     return [fr.p(x0, y0), fr.p(x1, y0), fr.p(x1, y1), fr.p(x0, y1)]
 
 
+def _w3(fr, lx, ly, z):
+    x, y = fr.p(lx, ly)
+    return (x, y, z)
+
+
+def _face_dir(m, mat, pts, want):
+    """A quad whose normal points along `want` (a 3-vector)."""
+    n = geom.cross(geom.sub(pts[1], pts[0]), geom.sub(pts[3], pts[0]))
+    if sum(n[i] * want[i] for i in range(3)) < 0:
+        pts = pts[::-1]
+    m.face(mat, pts)
+
+
+def awning(B, fr, mats, y0=-1.42, reach=0.95, z_top=2.52, z_out=2.18, hw=2.05, n=10, drop=0.17):
+    """A striped shop awning over the serving hatch: slanted strips, a valance at the front edge, plain underside."""
+    d = B.detail
+    for i in range(n):
+        x0 = -hw + 2 * hw * i / n
+        x1 = x0 + 2 * hw / n
+        mat = mats[i % 2]
+        top = [_w3(fr, x0, y0, z_top), _w3(fr, x1, y0, z_top), _w3(fr, x1, y0 - reach, z_out), _w3(fr, x0, y0 - reach, z_out)]
+        _face_dir(d, mat, top, (0.0, 0.0, 1.0))
+        under = [(p[0], p[1], p[2] - 0.012) for p in top]
+        _face_dir(d, "CT_PlasterGrey", under, (0.0, 0.0, -1.0))
+        fy = y0 - reach
+        val = [_w3(fr, x0, fy, z_out), _w3(fr, x1, fy, z_out), _w3(fr, x1, fy, z_out - drop), _w3(fr, x0, fy, z_out - drop)]
+        out = fr.p(0, fy - 1.0)
+        c0 = fr.p(0, fy)
+        _face_dir(d, mat, val, (out[0] - c0[0], out[1] - c0[1], 0.0))
+        val_b = [(p[0], p[1], p[2]) for p in val]
+        out_in = (c0[0] - out[0], c0[1] - out[1], 0.0)
+        _face_dir(d, "CT_PlasterGrey", [(p[0] - 0.004 * (out[0] - c0[0]), p[1] - 0.004 * (out[1] - c0[1]), p[2]) for p in val_b], out_in)
+    # two thin tie rods from the roof slab to the awning front corners
+    for sx in (-hw + 0.05, hw - 0.05):
+        a = _w3(fr, sx, y0 - reach + 0.02, z_out - 0.02)
+        b = _w3(fr, sx, y0 - 0.02, z_top + 0.35)
+        fu.rod(d, "CT_Steel", a, b, 0.012, caps=False)
+
+
 def bench(B, s, t, k):
     x, y, tx, ty = at(s)
     h = half_width(s)
     cx, cy = surf(s, t)
     fr = Fr(cx, cy, tx, ty)
-    B.slab(rect(fr, -0.9, 0.9, -0.22, 0.22), 0.42, 0.48, "CT_Wood")
-    for dx in (-0.75, 0.75):
-        B.slab(rect(fr, dx - 0.05, dx + 0.05, -0.2, 0.2), 0.0, 0.42, "CT_ConcreteDark")
     face = -1 if t > 0 else 1                      # sit facing the walk's centre line
+    yaw = fr.yaw_dir(0, face)
+    bn = kit.bench(B, cx, cy, 0.0, yaw, w=1.6, kind="park")
     px, py = fr.p(0, 0.5 * (-face))
-    B.spot("bench%d" % k, "bench", (px, py, 0.0), fr.yaw_dir(0, face))
+    B.spot("bench%d" % k, "bench", (px, py, 0.0), yaw)
+    B.thing("fair_bench_%d" % k, "seat", (cx, cy, 0.45), yaw, height=0.45)
+    # a litter bin beside every second bench
+    if k % 2 == 0:
+        bx, by = fr.p(1.15, 0.0)
+        cyl(B.detail, "CT_SteelRed", bx, by, 0.0, 0.62, 0.17, 8, top=False)
+        cyl(B.detail, "CT_ConcreteDark", bx, by, 0.62, 0.65, 0.19, 8)
 
 
 KIOSK_MATS = ["CT_PlasterRed", "CT_PlasterBlue", "CT_PlasterYellow", "CT_PlasterPink", "CT_PlasterBlue"]
+KIOSK_TRADE = ["coffee", "icecream", "press", "toys", "snacks"]
+KIOSK_SIGN = {"coffee": "sign_buffet", "icecream": "sign_milk", "press": "sign_books", "toys": "sign_toys",
+              "snacks": "sign_bread"}
 
 
 def kiosk(B, s, side, k):
@@ -133,8 +181,6 @@ def kiosk(B, s, side, k):
     off = side * (h - 2.4)
     cx, cy = x - ty * off, y + tx * off
     # local +y = away from the centre line
-    ex = (tx, ty) if side < 0 else (-tx, -ty)
-    # ey = (-ex_y, ex_x): for side>0 want ey = +n=(-ty,tx): ex=(tx,ty); for side<0 want ey=-n: ex=(-tx,-ty)
     ex = (tx, ty) if side > 0 else (-tx, -ty)
     fr = Fr(cx, cy, ex[0], ex[1])
     hw, hd, H = 2.0, 1.4, 2.9
@@ -145,7 +191,7 @@ def kiosk(B, s, side, k):
     F = {}
     for i in range(4):
         F[i] = B.facade(wp[i], wp[(i + 1) % 4], 0.0, H, mat, holes=holes[i], depth=0.2)
-    B.facade_window(F[0], 0.35, 3.65, 1.0, 2.45, kind="public", cols=3, rows=1)
+    # the serving hatch is left open (no glass): the stall-holder and the goods show from the walk
     # floor and roof
     B.slab([fr.p(-hw + 0.1, -hd + 0.1), fr.p(hw - 0.1, -hd + 0.1), fr.p(hw - 0.1, hd - 0.1), fr.p(-hw + 0.1, hd - 0.1)],
            0.0, 0.05, "CT_Floor")
@@ -163,75 +209,180 @@ def kiosk(B, s, side, k):
     cp = fr.p(0, -hd - 1.3)
     B.spot("counter%d" % k, "counter", (cp[0], cp[1], 0.0), fr.yaw_dir(0, 1))
     kiosk_interior(B, fr, k, random.Random(1960 + k))
+    kiosk_outside(B, fr, k, mat)
 
 
-KIOSK_TRADE = ["coffee", "icecream", "press", "toys", "snacks"]
+def kiosk_outside(B, fr, k, mat):
+    """The street side of a kiosk: sign over the hatch, striped awning, goods on the shelf, a board on the side wall."""
+    trade = KIOSK_TRADE[(k - 1) % len(KIOSK_TRADE)]
+    front = fr.yaw_dir(0, -1)
+    sx, sy = fr.p(0, -1.4)
+    kit.sign_plate(B, sx, sy, 0.0, front, name=KIOSK_SIGN[trade], w=1.9, zc=2.69)
+    awning(B, fr, (mat, "CT_TileWhite"))
+    top = 1.06
+    # goods on the outside shelf (z = 1.06), each trade its own
+    def at_(lx, ly=-1.62):
+        return fr.p(lx, ly)
+    rnd = random.Random(300 + k)
+    if trade == "coffee":
+        kit.glass(B, *at_(-1.3), top)
+        for lx in (-0.9, -0.5, 0.45, 0.85):
+            kit.cup(B, *at_(lx), top, yaw=rnd.uniform(0, 90))
+        kit.teapot(B, *at_(1.3), top, yaw=front)
+        kit.plates(B, *at_(0.0, -1.62), top, n=3)
+    elif trade == "icecream":
+        for lx in (-1.2, -0.7, -0.2):
+            kit.glass(B, *at_(lx), top)
+        kit.cup(B, *at_(0.5), top, mat="CT_PlasterPink")
+        kit.cup(B, *at_(0.9), top, mat="CT_PlasterYellow")
+        kit.bottles(B, *at_(1.35), top, n=2, seed=k)
+    elif trade == "press":
+        kit.newspaper(B, *at_(-1.1), top, yaw=front + 8, seed=1)
+        kit.newspaper(B, *at_(-0.4), top, yaw=front - 6, seed=2)
+        kit.books_stack(B, *at_(0.5), top, yaw=front, n=4, seed=3)
+        kit.newspaper(B, *at_(1.1), top, yaw=front + 12, seed=4)
+        B.thing("press_paper", "take", (*at_(-0.75), top + 0.03), front, item="daily_paper")
+    elif trade == "toys":
+        kit.globe(B, *at_(-1.2), top, yaw=front)
+        kit.books_stack(B, *at_(-0.2), top, yaw=front + 90, n=3, seed=5)
+        kit.vase(B, *at_(0.7), top, seed=6)
+        kit.cup(B, *at_(1.25), top, mat="CT_PlasterBlue")
+    else:
+        kit.crate(B, *at_(-1.15), top, yaw=front, fill="CT_PlasterRed", seed=1)
+        kit.crate(B, *at_(-0.5), top, yaw=front, fill="CT_PlasterYellow", seed=2)
+        kit.kitchen_scales(B, *at_(0.5), top, yaw=front)
+        kit.sack(B, *at_(1.2), top)
+    # menu board on the side wall facing out along the walk, a clock over the door side
+    side_ = 1 if k % 2 else -1
+    mx, my = fr.p(side_ * 2.0, -0.35)
+    kit.menu_board(B, mx, my, 0.0, fr.yaw_dir(side_, 0), name=("menu_0", "price_0", "menu_1", "price_1", "menu_0")[k - 1],
+                   w=0.62, zc=1.65)
+    B.thing("kiosk%d_menu" % k, "board", (mx, my, 1.65), fr.yaw_dir(side_, 0), topic="prices")
+    # outdoor extras by trade
+    if trade == "coffee":
+        for sgn in (-1, 1):
+            tx_, ty_ = fr.p(sgn * 2.6, -3.1)
+            tt = kit.table_round(B, tx_, ty_, 0.0, r=0.36, h=1.0)
+            kit.cup(B, tx_, ty_, tt["top"], yaw=sgn * 40)
+            for a in (0.0, 180.0):
+                ox, oy = fr.p(sgn * 2.6 + (0.6 if a == 0 else -0.6), -3.1)
+                st = kit.bar_stool(B, ox, oy, 0.0, 0.0, h=0.72)
+            B.thing("coffee_stool_%d" % (sgn + 2), "seat", (*fr.p(sgn * 2.6 + 0.6, -3.1), 0.72), front, height=0.72)
+    elif trade == "press":
+        for sgn in (-1, 1):
+            rx, ry = fr.p(sgn * 2.0 + (-sgn) * 0.0, -0.6)
+        mxr, myr = fr.p(-side_ * 2.0, -0.7)
+        kit.magazine_rack(B, mxr, myr, 0.0, fr.yaw_dir(-side_, 0), w=0.9, seed=k)
+        B.thing("press_rack", "shelf", (mxr, myr, 1.2), fr.yaw_dir(-side_, 0), topic="travel")
+    elif trade == "toys":
+        dc = kit.display_case(B, *fr.p(-side_ * 2.7, -0.6), 0.0, fr.yaw_dir(-side_, 0), w=1.0, d=0.5, goods="toys", seed=k)
+    elif trade == "snacks":
+        kit.crate(B, *fr.p(2.55, -0.6), 0.0, fr.yaw_dir(1, 0), fill="CT_PlasterGreen", seed=7)
+        kit.crate(B, *fr.p(2.55, -1.2), 0.0, fr.yaw_dir(1, 0), fill="CT_PlasterYellow", seed=8)
+        kit.cardboard_box(B, *fr.p(2.55, -0.6), 0.38, fr.yaw_dir(1, 0), seed=9)
+    # the hatch counter thing: where the vendor serves
+    hx, hy = fr.p(0, -1.55)
+    B.thing("kiosk%d_counter" % k, "counter", (hx, hy, 1.1), front, role="vendor", service="shop", trade=trade)
 
 
 def kiosk_interior(B, fr, k, rnd):
-    """Furnish a kiosk: shelves with goods on the back and side walls, a counter under the serving window,
-    goods on it and a lamp. fr is the kiosk's Fr (local x = ex, local +y = ey)."""
-    yk = math.degrees(math.atan2(fr.ex[1], fr.ex[0]))
+    """Furnish a kiosk for its trade (floor z 0.05, inner space x +-1.8, y -1.2..1.2; hatch toward local -y, door in the
+    back wall near x 0): a counter under the hatch, shelving on the back and side walls, a rug and a stool."""
     z0 = 0.05
     trade = KIOSK_TRADE[(k - 1) % len(KIOSK_TRADE)]
-    cx, cy = fr.c
-    kf = MFr(cx, cy, yk, z0)                       # u = local x, w = -local y (out of the back wall into the room)
-    mats = {"coffee": ["CT_TileWhite", "CT_PlasterRed", "CT_WoodLight", "CT_PlasterYellow"],
-            "icecream": ["CT_PlasterPink", "CT_PlasterBlue", "CT_TileWhite", "CT_PlasterYellow"],
-            "press": ["CT_PlasterRed", "CT_PlasterBlue", "CT_TileWhite", "CT_PlasterGreen", "CT_PlasterYellow"],
-            "toys": ["CT_PlasterRed", "CT_PlasterBlue", "CT_PlasterYellow", "CT_PlasterGreen", "CT_PlasterPink"],
-            "snacks": ["CT_PlasterYellow", "CT_WoodLight", "CT_PlasterRed", "CT_SteelRed", "CT_PlasterGreen"]}[trade]
-    kind = {"press": "book", "coffee": "jar", "icecream": "box"}.get(trade, "box")
-    # back wall (local y = +1.2): two shelf units either side of the door
-    for u0, u1 in ((-1.75, -0.7), (0.7, 1.75)):
-        fu.shelving(B, kf.sub(0, -1.2), u0, u1, rnd, depth=0.32, tiers=4, zmax=2.2, z0=0.1, kind=kind, mats=mats)
-    # side walls: left faces +local x (u runs +y), right faces -local x (u runs -y)
-    fu.shelving(B, kf.sub(-1.8, 0.4, 90), 0.0, 1.1, rnd, depth=0.3, tiers=4, zmax=2.1, z0=0.1, kind="box", mats=mats)
-    fu.shelving(B, kf.sub(1.8, -0.7, -90), 0.0, 1.1, rnd, depth=0.3, tiers=4, zmax=2.1, z0=0.1, kind="box", mats=mats)
-    # counter under the window (local y -1.2..-0.55, x -1.6..1.6, top 0.95): the stall-holder stands behind it
-    cr = MFr(cx, cy, yk, z0)         # u = local x; w = -local y (w > 0 toward the front wall)
-    lbox(B.m, "CT_WoodLight", cr, -1.6, 1.6, 0.55, 1.2, 0.0, 0.95)
-    lbox(B.detail, "CT_ConcreteDark", cr, -1.6, 1.6, 0.52, 1.22, 0.95, 0.99)
-    # goods on the counter, trade by trade
-    top = 0.99
+    toward_hatch = fr.yaw_dir(0, -1)
+    into_room = fr.yaw_dir(0, 1)
+    goods = {"coffee": "jars", "icecream": "boxes", "press": None, "toys": "toys", "snacks": "groceries"}[trade]
+    # counter under the hatch (customer side toward the hatch)
+    cx_, cy_ = fr.p(0, -0.88)
+    cn = kit.shop_counter(B, cx_, cy_, z0, toward_hatch, w=3.4, d=0.65, front=KIOSK_MATS[k % 5], till=False)
+    top = cn["top"]
+    stand_x, stand_y = fr.p(-0.3, 0.05)
+    # trade-specific counter dressing (z = counter top)
     if trade == "coffee":
-        for u in (-1.2, -0.6):
-            px, py, _ = cr.p(u, 0.85)
-            cyl(B.detail, "CT_TileWhite", px, py, top, top + 0.04, 0.2, 8, bottom=True)
-            cyl(B.detail, "CT_PlasterYellow", px, py, top + 0.04, top + 0.16, 0.15, 8)
-            blob(B.detail, "CT_Glass", px, py, top + 0.2, 0.17, 8)
-        lbox(B.detail, "CT_Steel", cr, 0.5, 1.2, 0.7, 1.05, top, top + 0.4, faces="xXyYZ")     # espresso machine
-        lbox(B.detail, "CT_SteelRed", cr, 0.55, 1.15, 0.72, 0.8, top + 0.4, top + 0.5, faces="xXyYZ")
-        for u in (-0.1, 0.1, 0.3):
-            px, py, _ = cr.p(u, 0.8)
-            cyl(B.detail, "CT_TileWhite", px, py, top, top + 0.09, 0.04, 6)
+        kit.samovar(B, *fr.p(-1.2, -0.85), top, yaw=toward_hatch)
+        kit.teapot(B, *fr.p(-0.55, -0.85), top, yaw=toward_hatch)
+        kit.cup(B, *fr.p(0.1, -0.95), top)
+        kit.cup(B, *fr.p(0.35, -0.8), top, mat="CT_PlasterRed")
+        kit.plates(B, *fr.p(0.95, -0.9), top, n=3)
+        kit.cash_register(B, *fr.p(1.35, -0.8), top, toward_hatch + 180)
     elif trade == "icecream":
-        lbox(B.m, "CT_TileWhite", cr, -1.5, 0.1, 0.62, 1.15, top, top + 0.4)           # freezer cabinet with a glass lid
-        lbox(B.detail, "CT_Glass", cr, -1.45, 0.05, 0.66, 1.1, top + 0.4, top + 0.46, faces="xXyYZ")
-        for u in [-1.35 + 0.18 * i for i in range(8)]:
-            lbox(B.detail, rnd.choice(mats), cr, u, u + 0.14, 0.75, 1.0, top + 0.18, top + 0.4, faces="xXyYZ")
-        for u in [0.4 + 0.12 * i for i in range(5)]:
-            px, py, _ = cr.p(u, 0.9)
-            cyl(B.detail, rnd.choice(mats), px, py, top, top + 0.26, 0.04, 5)
+        for lx in (-1.3, -0.9, -0.5):
+            kit.glass(B, *fr.p(lx, -0.9), top)
+        kit.cup(B, *fr.p(0.1, -0.9), top, mat="CT_PlasterPink")
+        kit.cup(B, *fr.p(0.5, -0.8), top, mat="CT_PlasterYellow")
+        kit.cash_register(B, *fr.p(1.3, -0.8), top, toward_hatch + 180)
     elif trade == "press":
-        for u in (-1.3, -0.5, 0.3, 1.0):
-            lbox(B.detail, rnd.choice(mats), cr, u, u + 0.45, 0.7, 1.05, top, top + 0.02 + rnd.choice((0.04, 0.08, 0.12)), faces="xXyYZ")
-        lbox(B.detail, "CT_Steel", cr, -1.5, -0.7, 1.12, 1.2, top, top + 0.7, faces="xXyYZ")  # a paper rack
-        for j in range(4):
-            lbox(B.detail, rnd.choice(mats), cr, -1.45 + 0.19 * j, -1.3 + 0.19 * j, 1.0, 1.12, top + 0.15, top + 0.62, faces="xXyYZ")
+        for j, lx in enumerate((-1.3, -0.85, -0.4, 0.15)):
+            kit.newspaper(B, *fr.p(lx, -0.85 + 0.03 * j), top, yaw=toward_hatch + 8 * j, seed=j)
+        kit.books_stack(B, *fr.p(0.8, -0.9), top, yaw=toward_hatch, n=3, seed=k)
+        kit.cash_register(B, *fr.p(1.35, -0.8), top, toward_hatch + 180)
     elif trade == "toys":
-        for j, u in enumerate((-1.2, -0.4, 0.4, 1.1)):
-            blob(B.detail, rnd.choice(mats), *cr.p(u, 0.85)[:2], top + 0.2, 0.17, 7)
-            lbox(B.detail, rnd.choice(mats), cr, u - 0.14, u + 0.14, 0.7, 1.0, top, top + 0.06, faces="xXyYZ")
+        kit.globe(B, *fr.p(-1.2, -0.85), top)
+        kit.vase(B, *fr.p(-0.4, -0.85), top, seed=2)
+        kit.books_stack(B, *fr.p(0.4, -0.9), top, yaw=toward_hatch + 20, n=3, seed=2)
+        kit.cash_register(B, *fr.p(1.3, -0.8), top, toward_hatch + 180)
     else:
-        for u in (-1.2, -0.3, 0.6):
-            lbox(B.detail, "CT_WoodLight", cr, u, u + 0.7, 0.65, 1.1, top, top + 0.04, faces="xXyYZ")
-            for j in range(4):
-                lbox(B.detail, rnd.choice(mats), cr, u + 0.05 + 0.16 * j, u + 0.17 + 0.16 * j, 0.72, 1.0, top + 0.04, top + 0.14, faces="xXyYZ")
+        kit.kitchen_scales(B, *fr.p(-1.1, -0.85), top, yaw=toward_hatch)
+        kit.bottles(B, *fr.p(-0.4, -0.9), top, n=3, seed=k)
+        kit.crate(B, *fr.p(0.5, -0.9), top, yaw=toward_hatch, fill="CT_PlasterRed", seed=k)
+        kit.cash_register(B, *fr.p(1.35, -0.8), top, toward_hatch + 180)
+    # shelving: back wall either side of the door, both side walls
+    for lx in (-1.2, 1.2):
+        bx, by = fr.p(lx, 1.2)
+        if trade == "press":
+            kit.bookshelf(B, bx, by, z0, toward_hatch, w=1.1, h=2.0, seed=lx, topic="library")
+        else:
+            kit.shop_shelf(B, bx, by, z0, toward_hatch, w=1.1, h=2.0, goods=goods, seed=k + int(lx * 5))
+    for sgn in (-1, 1):
+        bx, by = fr.p(sgn * 1.8, 0.1)
+        yaw_in = fr.yaw_dir(-sgn, 0)
+        if trade == "icecream" and sgn < 0:
+            kit.kitchen_unit(B, bx, by, z0, yaw_in, modules="fridge,fridge", wall_cupboards=False)
+        elif trade == "press":
+            kit.magazine_rack(B, bx, by, z0, yaw_in, w=0.8, seed=k + sgn)
+        elif trade == "toys" and sgn > 0:
+            kit.display_case(B, bx - 0.0, by, z0, yaw_in, w=1.0, d=0.45, goods="toys", seed=k)
+        else:
+            kit.shop_shelf(B, bx, by, z0, yaw_in, w=0.9, h=1.9, goods=goods or "boxes", seed=k + 9 * sgn)
+    # a rug and a stool for the stall-holder, a clock and a poster
+    rx, ry = fr.p(0.2, 0.15)
+    kit.rug(B, rx, ry, z0, toward_hatch, w=1.1, d=1.5, seed=k)
+    kit.stool(B, *fr.p(-0.95, -0.05), z0, toward_hatch, mat="CT_PlasterBlue", h=0.55)
+    kx, ky = fr.p(0.0, -1.2)
+    kit.wall_clock(B, *fr.p(1.2, 1.2), z0, toward_hatch, zc=2.35)
+    kit.poster(B, *fr.p(-1.2, 1.2), z0, toward_hatch, name=("poster_sun", "kids", "poster_cons", "kids", "poster_birds")[k - 1],
+               w=0.5, zc=2.5)
     # lamp, a pendant under the roof slab (kiosk H = 2.9)
-    lx, ly, _ = kf.p(0.0, -0.1)
+    lx, ly, _ = MFr(fr.c[0], fr.c[1], math.degrees(math.atan2(fr.ex[1], fr.ex[0])), z0).p(0.0, -0.1)
     B.lamp((lx, ly, 2.6), lumens=520, colour="#FFD2A0", kind="public", radius=5.5)
     lbox(B.detail, "CT_Steel", MFr(lx, ly), -0.01, 0.01, -0.01, 0.01, 2.68, 2.9, faces="xXyY")
+
+
+def fair_board(B, s, t, tid, topic, posters=False):
+    """A free-standing board on two wooden posts beside the walk; faces the centre line, both sides dressed."""
+    cx, cy = surf(s, t)
+    x, y, tx, ty = at(s)
+    fr = Fr(cx, cy, tx, ty)
+    face = -1 if t > 0 else 1
+    yaw = fr.yaw_dir(0, face)
+    for u in (-0.95, 0.95):
+        B.slab(rect(fr, u - 0.06, u + 0.06, -0.06, 0.06), 0.0, 2.5, "CT_Wood")
+    B.slab(rect(fr, -1.1, 1.1, -0.04, 0.04), 0.95, 2.4, "CT_WoodLight")
+    B.slab(rect(fr, -1.15, 1.15, -0.07, 0.07), 2.4, 2.46, "CT_Wood")
+    fx, fy = fr.p(0, face * 0.04)
+    bx, by = fr.p(0, -face * 0.04)
+    if posters:
+        for u, nm, w_ in ((-0.55, "cinema", 0.62), (0.15, "poster_sun", 0.6), (0.78, "travel", 0.5)):
+            px, py = fr.p(u, face * 0.04)
+            kit.poster(B, px, py, 0.0, yaw, name=nm, w=w_, zc=1.62, seed=int(u * 10))
+        kit.sign_plate(B, fx, fy, 0.0, yaw, name="sign_cinema", w=1.0, zc=2.2)
+        kit.notice_board(B, bx, by, 0.0, yaw + 180, w=1.7, zc=1.65, seed=5)
+    else:
+        kit.notice_board(B, fx, fy, 0.0, yaw, w=1.7, zc=1.65, seed=3)
+        kit.poster(B, bx, by, 0.0, yaw + 180, name="poster_cons", w=0.6, zc=1.65, seed=2)
+        kit.poster(B, *fr.p(0.65, -face * 0.04), 0.0, yaw + 180, name="kids", w=0.5, zc=1.65, seed=3)
+    B.thing(tid, "board", (fx, fy, 1.65), yaw, topic=topic)
 
 
 def string_lights(B, rnd):
@@ -309,6 +460,8 @@ def build(B):
         s += 7.0
         i += 1
     string_lights(B, None)
+    fair_board(B, 52.0, -0.5, "fair_board", "fair")
+    fair_board(B, 100.0, 0.5, "fair_programme", "cinema", posters=True)
     # benches
     k = 0
     for ss, t in [(12, -0.35), (30, 0.4), (38, -0.4), (56, 0.35), (60, -0.35), (79, -0.4), (84, 0.4), (100, 0.35), (116, -0.4), (8, 0.45)]:
@@ -320,4 +473,6 @@ def build(B):
     right = [surf(LENGTH * i / 60, -1.0) for i in range(61)]
     B.footprint = right + left[::-1]
     B.height = max(z_top(LENGTH * i / 200, 1.0) for i in range(201)) + 0.2
+    for m_ in kit.check(B):
+        print("KIT:", m_)
     B.note("canopy %.0f m long (arc), %d columns, %d kiosks, %d benches" % (LENGTH, n, len(kiosks), k))

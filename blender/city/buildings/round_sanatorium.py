@@ -23,6 +23,7 @@ import random
 from citykit import box, prism, ring, Facade, Mesh, wall_with_holes, DOOR_W
 import geom
 from furn_int2 import Furn
+import interior_kit
 
 INFO = {
     "name_ru": "Санаторий «Корона»", "name_en": "Crown Sanatorium",
@@ -101,63 +102,360 @@ def tri_orient_up(pts2, z):
     return [(x, y, z) for x, y in p]
 
 
+CEIL = Z0 - 0.01                       # underside of the hall ceiling
+PIERS = [-135.0 + 90.0 * i / 7 for i in range(8)]      # angles of the panel joints (solid piers between the windows)
+R_LO, R_HI = 12.3, 17.7                # radial span of a partition (its ends hide inside the walls)
+
+
+def _yout(th):
+    """Kit yaw of a piece at polar angle th that faces the street wall (away from the courtyard centre)."""
+    return (th + 90.0) % 360.0
+
+
+def _yin(th):
+    return (th - 90.0) % 360.0
+
+
+def _ytan(th):
+    """Facing along the arc toward growing angle (east)."""
+    return (th + 180.0) % 360.0
+
+
+def _tan(th):
+    a = math.radians(th)
+    return (-math.sin(a), math.cos(a))
+
+
+def _at(R, th, s=0.0):
+    x, y = pol(R, th)
+    tx, ty = _tan(th)
+    return (x + s * tx, y + s * ty)
+
+
+def _dth(s, R):
+    """Angle in degrees that spans s metres along the arc of radius R."""
+    return math.degrees(s / R)
+
+
+def _fy(dx, dy):
+    return math.degrees(math.atan2(dx, -dy)) % 360.0
+
+
+def _partition(B, th, gaps=(), t=0.14, lo="CT_TileWhite", hi="CT_Interior", low=1.5, lintel=2.2):
+    """A radial partition wall at polar angle th across the hall (R_LO..R_HI), solid (B.m), with doorways
+    gaps = [(R0, R1, head_z)]: lower band tile, upper plaster, a lintel over every gap, wooden door casing."""
+    p0, p1 = pol(R_LO, th), pol(R_HI, th)
+    L = math.dist(p0, p1)
+    dx, dy = (p1[0] - p0[0]) / L, (p1[1] - p0[1]) / L
+    nx, ny = -dy * t / 2, dx * t / 2
+
+    def rect(a, b, e=0.0):
+        ax, ay = p0[0] + dx * a, p0[1] + dy * a
+        bx, by = p0[0] + dx * b, p0[1] + dy * b
+        k = nx * (1 + e / (t / 2)) if e else nx
+        kk = ny * (1 + e / (t / 2)) if e else ny
+        return [(ax - k, ay - kk), (bx - k, by - kk), (bx + k, by + kk), (ax + k, ay + kk)]
+
+    cuts = sorted((g[0] - R_LO, g[1] - R_LO, g[2]) for g in gaps)
+    pos = 0.0
+    segs = []
+    for a, b, hz in cuts:
+        segs.append((pos, a))
+        pos = b
+    segs.append((pos, L))
+    for a, b in segs:
+        if b - a < 0.02:
+            continue
+        poly = rect(a, b)
+        prism(B.m, lo, poly, 0.0, low, top=False, bottom=False)
+        prism(B.m, hi, poly, low, CEIL, top=False, bottom=False)
+    for a, b, hz in cuts:
+        poly = rect(a, b)
+        prism(B.m, hi, poly, hz, CEIL, top=False, bottom=False)
+        # soffit and casing
+        B.m.face("CT_Frame", [(poly[0][0], poly[0][1], hz), (poly[1][0], poly[1][1], hz), (poly[2][0], poly[2][1], hz),
+                              (poly[3][0], poly[3][1], hz)][::-1])
+        for (u0, u1) in ((a - 0.05, a), (b, b + 0.05)):
+            prism(B.detail, "CT_Frame", rect(u0, u1, 0.025), 0.0, hz + 0.05, top=True, bottom=False)
+        prism(B.detail, "CT_Frame", rect(a - 0.05, b + 0.05, 0.025), hz, hz + 0.07, top=True, bottom=True)
+
+
+def _floor_sector(B, mat, th0, th1, r0, r1, z=0.008, n=6):
+    """A thin floor covering over an annular sector (detail, no collision)."""
+    a = [(pol(r1, th0 + (th1 - th0) * i / n)) for i in range(n + 1)]
+    b = [(pol(r0, th0 + (th1 - th0) * i / n)) for i in range(n + 1)][::-1]
+    poly = a + b
+    B.detail.face(mat, [(x, y, z) for x, y in poly])
+
+
+def _edge_pt(q, e, u):
+    """Point u metres along the e-th wall of the inset hall outline q; returns ((x, y), yaw of a piece facing the room)."""
+    n = len(q)
+    a, b = q[e], q[(e + 1) % n]
+    L = math.dist(a, b)
+    dx, dy = (b[0] - a[0]) / L, (b[1] - a[1]) / L
+    return (a[0] + dx * u, a[1] + dy * u), _fy(-dy, dx), L
+
+
+def _thing(B, tid, kind, xy, z, yaw, **props):
+    B.thing(tid, kind, (xy[0], xy[1], z), yaw, **props)
+
+
 def _furnish_hall(B, hall, t):
-    """Round 2: the ground hall (annular sector R 12..18, angles -135..-45, ceiling 4.5): reception, dining, lounge, piano."""
-    f = Furn(B)
-    d = B.detail
-    WARM = "#FFD2A0"
-    # ---- reception desk dressing + key board on the inner wall behind it
-    box(d, "CT_Steel", 3.6, 4.1, 11.45, 11.9, 1.14, 1.5)
-    box(d, "CT_Frame", 3.55, 4.15, 11.5, 11.55, 1.2, 1.55)
-    f.cup(6.3, 11.6, 1.14, mat="CT_PlasterRed", h=0.07)
-    f.cup(5.6, 11.5, 1.14, mat="CT_PlasterYellow", h=0.07)
-    box(d, "CT_PlasterBlue", 3.05, 6.95, 11.17, 11.2, 0.15, 0.95, faces="y")
-    # the long walls are glazed: wall art goes on the solid end walls, a hanging sign over the desk
-    f.panel(5.0, 12.0, 2.95, 2.6, 0.5, 0.0, mat="CT_PlasterRed", frame="CT_Frame")
-    for sx in (3.9, 6.1):
-        box(d, "CT_Steel", sx - 0.01, sx + 0.01, 11.97, 11.99, 3.2, 4.5)
-    px, py = pol(14.9, -46.5)
-    f.panel(px, py, 2.4, 1.6, 1.0, 315.0, mat="CT_PlasterBlue", frame="CT_Wood")
-    px, py = pol(15.0, -133.4)
-    f.panel(px, py, 1.9, 1.4, 1.0, 45.0, mat="CT_PlasterYellow", frame="CT_Frame")
-    # ---- dining: chairs, cloths, tableware, pendants (tables are boxes 1.6 x 1.6 at the "dining_i" spots)
-    for i, th in enumerate((-128.0, -118.0, -108.0)):
-        x, y = pol(15.0, th)
-        box(d, "CT_TileWhite", x - 0.85, x + 0.85, y - 0.85, y + 0.85, 0.76, 0.772, faces="Z")
-        for dx, dy, yaw in ((-1.05, 0.0, 90.0), (1.05, 0.0, 270.0), (0.0, -1.05, 180.0), (0.0, 1.05, 0.0)):
-            f.chair(x + dx, y + dy, yaw=yaw, seat=("CT_PlasterBlue", "CT_PlasterYellow", "CT_PlasterPink")[i])
-        f.cup(x - 0.3, y - 0.3, 0.772, mat="CT_PlasterRed", h=0.18)
-        f.cup(x + 0.3, y + 0.25, 0.772, mat="CT_TileWhite", h=0.1)
-        f.cup(x + 0.3, y - 0.3, 0.772, mat="CT_PlasterYellow", h=0.06)
-        f.cup(x - 0.3, y + 0.3, 0.772, mat="CT_PlasterGreen", h=0.06)
-        f.pendant(x, y, 4.5, lumens=800, colour=WARM, radius=6.5, drop=1.1)
-    # ---- lounge: armchairs round a low table, a rug, plants
-    f.round_table(8.0, 12.9, r=0.4, h=0.42, top="CT_Wood")
-    f.armchair(7.0, 12.9, yaw=90.0, mat="CT_PlasterRed")
-    f.armchair(8.0, 11.9, yaw=180.0, mat="CT_PlasterRed")
-    f.armchair(9.0, 12.9, yaw=270.0, mat="CT_PlasterYellow")
-    f.rug(6.6, 9.5, 11.5, 14.0, mat="CT_PlasterBlue")
-    B.spot("lounge_1", "seat", (7.0, 12.9, 0.0), 90.0)
-    B.spot("lounge_2", "seat", (8.0, 11.9, 0.0), 180.0)
-    B.spot("lounge_3", "seat", (9.0, 12.9, 0.0), 270.0)
-    # ---- piano against the east end wall (radial line at -45 deg), stool in front
-    pxy = pol(15.0, -47.9)
-    def piano(m):
-        box(m, "CT_Frame", -0.75, 0.75, -0.1, 0.3, 0.2, 1.25)
-        box(m, "CT_Frame", -0.78, 0.78, -0.12, 0.3, 1.25, 1.28)
-        box(m, "CT_TileWhite", -0.7, 0.7, -0.38, -0.1, 0.68, 0.72)
-        box(m, "CT_Steel", -0.7, 0.7, -0.38, -0.34, 0.6, 0.68)
-        for sx in (-1, 1):
-            box(m, "CT_Frame", sx * 0.7 - 0.05, sx * 0.7 + 0.05, -0.34, 0.26, 0.0, 0.2)
-        box(m, "CT_Frame", -0.75, 0.75, -0.1, 0.3, 0.0, 0.2, faces="xXyY")
-    f.put(piano, pxy[0], pxy[1], 315.0, solid=True)
-    sx_, sy_ = pxy[0] - 0.75 * math.sin(math.radians(45)) * 1.0 - 0.0, pxy[1] - 0.75 * math.sin(math.radians(45))
-    f.stool(sx_ - 0.1, sy_ - 0.1, seat="CT_PlasterRed", h=0.5)
-    B.spot("piano", "seat", (sx_ - 0.1, sy_ - 0.1, 0.0), 135.0)
-    # ---- plants, floor border and skirting along the walls
-    for px, py in ((-1.9, 9.0), (1.9, 9.0), (-6.2, 10.0), pol(13.5, -131.5), pol(16.4, -131.5), pol(13.2, -54.0)):
-        f.plant(px, py, h=1.7, pot=("CT_PlasterRed", "CT_TileWhite")[int(px * 3) % 2])
+    """The ground hall (annular sector R 12..18, angles -135..-45, ceiling 4.5), seven bays between the piers:
+    bay 0 winter garden, bays 1-2 dining hall, bays 3-4 lobby (entrance in bay 3, reception in bay 4), bay 5 the
+    mineral-water pump room, bay 6 the treatment room. Radial partitions stand on the piers."""
     q = inset_poly(hall, t)
+    d = B.detail
+    kit = interior_kit
+    P = PIERS
+    th_g0, th_g1 = P[0], P[1]
+    th_d0, th_d1 = P[1], P[3]
+    th_l0, th_l1 = P[3], P[5]
+    th_p0, th_p1 = P[5], P[6]
+    th_t0, th_t1 = P[6], P[7]
+
+    # ------------------------------------------------------------------------------------------ partitions
+    _partition(B, P[1], gaps=[(14.0, 16.2, 2.55)], lo="CT_Interior")                      # garden | dining: wide archway
+    _partition(B, P[5], gaps=[(14.45, 15.55, 2.2)])                                       # lobby | pump room: a door
+    _partition(B, P[6], gaps=[(13.0, 14.0, 2.2)], lo="CT_Tile")                           # pump room | treatment room
+
+    # ------------------------------------------------------------------------------------------ floors
+    _floor_sector(B, "CT_Stone", th_g0 + 0.5, th_g1 - 0.2, 12.45, 17.45)                  # garden paving
+    _floor_sector(B, "CT_TileWhite", th_p0 + 0.7, th_p1 - 0.6, 12.45, 17.45)               # pump room tiles
+    _floor_sector(B, "CT_TileWhite", th_t0 + 0.6, th_t1 - 0.9, 12.45, 17.45)               # treatment room tiles
+    _floor_sector(B, "CT_Tile", th_p0 + 0.7, th_p1 - 0.6, 14.75, 15.25, z=0.012)           # blue runner strip
+
+    # ============================================================================================ LOBBY
+    thc = (th_l0 + th_l1) / 2
+    # reception desk on the courtyard side of bay 4; the clerk stands behind it facing the street wall
+    th_r = -77.0
+    x, y = pol(14.0, th_r)
+    r = kit.reception_desk(B, x, y, yaw=_yout(th_r), w=2.4, front="CT_PlasterBlue")
+    B.spot("reception", "counter", r["staff"][:2] + (0.0,), _yout(th_r))
+    B.thing("reception", "counter", (x, y, 1.1), _yout(th_r), role="receptionist", service="reception",
+            shop="sanatorium_kiosk")
+    ax, ay = r["on"][0], r["on"][1]
+    kit.telephone(B, ax + 0.0, ay + 0.05, r["top"], yaw=_yout(th_r) + 30)
+    kit.cup(B, ax + 1.0 * math.cos(math.radians(th_r + 90)) * 0.0 + 0.25, ay + 0.15, r["top"], yaw=40)
+    # a free newspaper and a postcard rack on the desk
+    nx_, ny_ = _at(14.0, th_r, 0.55)
+    kit.newspaper(B, nx_, ny_ - 0.0, 1.1, yaw=_yout(th_r) + 15, cellname=None, seed=3)
+    B.thing("lobby_paper", "take", (nx_, ny_, 1.12), _yout(th_r), item="daily_paper")
+    kit.table_lamp(B, *_at(14.0, th_r, 0.0), z=1.1, yaw=_yout(th_r))
+    kit.chair(B, *_at(13.1, th_r, 0.0), yaw=_yout(th_r), kind="tube", mat="CT_PlasterRed")
+    pt, yw, L = _edge_pt(q, 10, L_of(q, 10) / 2)
+    kit.picture(B, pt[0], pt[1], yaw=yw, name="painting_sea_night", w=0.9, zc=4.12)
+    # lounge corner on the courtyard side of bay 3: a sofa against the windows, a low table, two armchairs, a rug
+    thl = -91.5
+    kit.rug(B, *pol(13.7, thl), w=2.7, round=True, seed=2)
+    s3 = kit.sofa(B, *pol(12.95, thl), yaw=_yout(thl), seats=2, mat="CT_PlasterBlue")
+    B.spot("lounge_3", "seat", s3["seats"][0][:3], s3["seats"][0][3])
+    B.thing("lobby_sofa", "seat", s3["seats"][0][:3], s3["seats"][0][3], height=0.45)
+    lx, ly = pol(14.0, thl)
+    ct = kit.coffee_table(B, lx, ly, yaw=_yout(thl) + 90, w=0.9, d=0.5)
+    kit.newspaper(B, lx - 0.1, ly, ct["top"], yaw=20, seed=5)
+    kit.vase(B, lx + 0.15, ly + 0.05, ct["top"], seed=2)
+    ths = (thl - _dth(1.2, 14.0), thl + _dth(1.2, 14.0))
+    a1 = kit.armchair(B, *pol(14.0, ths[0]), yaw=_ytan(ths[0]), mat="CT_PlasterRed")
+    a2 = kit.armchair(B, *pol(14.0, ths[1]), yaw=ths[1], mat="CT_PlasterYellow")
+    B.spot("lounge_1", "seat", a1["seats"][0][:3], a1["seats"][0][3])
+    B.spot("lounge_2", "seat", a2["seats"][0][:3], a2["seats"][0][3])
+    B.thing("lobby_lounge_a", "seat", a1["seats"][0][:3], a1["seats"][0][3], height=0.44)
+    B.thing("lobby_lounge_b", "seat", a2["seats"][0][:3], a2["seats"][0][3], height=0.44)
+    kit.floor_lamp(B, *pol(12.9, thl - _dth(1.75, 12.9)), yaw=0)
+    # benches either side of the entrance
+    for sgn, sid, tid in ((-1, "bench_-4", "lobby_bench_w"), (1, "bench_4", "lobby_bench_e")):
+        thb = -90.0 + sgn * _dth(2.9, 17.0)
+        bx, by = pol(16.95, thb)
+        bn = kit.bench(B, bx, by, yaw=_yin(thb), w=1.4, kind="park")
+        B.spot(sid, "bench", bn["seats"][0][:3], _yin(thb))
+        B.thing(tid, "seat", bn["seats"][0][:3], _yin(thb), height=0.45)
+    # east partition (lobby face, normal facing -theta): coat rack, a notice board and a health poster
+    for (rr, cls) in ((16.5, "coat"),):
+        cx_, cy_ = pol(rr, th_l1)
+        tx, ty = _tan(th_l1)
+        cr = kit.coat_rack(B, cx_ - 0.07 * tx - 0.32 * tx, cy_ - 0.07 * ty - 0.32 * ty, yaw=th_l1, w=1.7, coats=0.6)
+        B.thing("cloakroom", "counter", (cr["pos"][0], cr["pos"][1], 1.2), th_l1, role="receptionist",
+                service="cloakroom")
+    nbx, nby = _at(13.2, th_l1, -0.075)
+    kit.notice_board(B, nbx, nby, yaw=th_l1, w=1.0, zc=1.65, seed=4)
+    B.thing("lobby_board", "board", (nbx, nby, 1.65), th_l1, topic="rules")
+    px_, py_ = _at(14.0, th_l1, -0.075)
+    kit.poster(B, px_ + 0 * 1, py_, yaw=th_l1, name="poster_health", w=0.5, zc=2.2)
+    # sign above the entrance and pictures above the lobby windows
+    pt, yw, L = _edge_pt(q, 3, 2.05)
+    kit.sign_plate(B, pt[0], pt[1], yaw=yw, name="sign_quiet", w=1.1, zc=3.0)
+    for e, nm in ((4, "painting_dunes"), (2, "painting_sea_calm")):
+        pt, yw, L = _edge_pt(q, e, L_of(q, e) / 2)
+        kit.picture(B, pt[0], pt[1], yaw=yw, name=nm, w=0.9, zc=4.12)
+    B.thing("lobby_painting", "board", (pt[0], pt[1], 4.1), yw, topic="painting")
+    for e in (2, 4):
+        pt, yw, L = _edge_pt(q, e, L_of(q, e) / 2)
+        kit.radiator(B, pt[0], pt[1], yaw=yw, w=1.3, h=0.42)
+    # plants either side of the door
+    kit.plant(B, *pol(16.8, -90.0 - _dth(4.35, 16.8)), kind="ficus", pot="CT_PlasterRed", h=1.7, seed=1)
+
+    # ============================================================================================ DINING HALL
+    centres = (-117.0, -108.7, -100.2)
+    paints = ("CT_PlasterBlue", "CT_PlasterYellow", "CT_PlasterPink")
+    for i, thd in enumerate(centres):
+        x, y = pol(14.9, thd)
+        tb = kit.restaurant_table(B, x, y, yaw=_yout(thd), w=0.95, d=0.95, places=4, seed=i)
+        ch = kit.around_table(B, x, y, 0.95, 0.95, yaw=_yout(thd), per_side=(1, 1, 1, 1), kind="wood",
+                              mat=paints[i], chair_fn=None)
+        B.spot("dining_%d" % i, "table", ch[0]["seats"][0][:3], ch[0]["seats"][0][3])
+        B.thing("dining_table_%d" % i, "seat", ch[0]["seats"][0][:3], ch[0]["seats"][0][3],
+                height=0.45)
+        kit.pendant(B, x, y, CEIL, drop=1.15, kind="cone", light=(i == 1), lumens=900, radius=7.5)
+    # serving pass-through: a buffet on the street wall next to the garden archway, menu board and cloth
+    thb = -118.8
+    bx, by = pol(17.0, thb)
+    bf = kit.shop_counter(B, bx, by, yaw=_yin(thb), w=1.8, d=0.55, front="CT_PlasterYellow")
+    kit.samovar(B, bx - 0.4 * math.cos(math.radians(thb + 90)), by, bf["top"], yaw=_yin(thb))
+    kit.plates(B, *_at(17.0, thb, 0.35), z=bf["top"], yaw=thb, n=4)
+    B.thing("dining_buffet", "counter", (bx, by, 1.05), _yin(thb), role="receptionist", service="bar")
+    # partition between garden and dining (dining face, faces +theta): the menu and a still life
+    wx, wy = _at(16.95, th_d0, 0.075)
+    kit.menu_board(B, wx, wy, yaw=_ytan(th_d0), name="menu_0", w=0.62, zc=1.7)
+    B.thing("dining_menu", "board", (wx, wy, 1.7), _ytan(th_d0), topic="prices")
+    wx, wy = _at(13.1, th_d0, 0.075)
+    kit.picture(B, wx, wy, yaw=_ytan(th_d0), name="painting_still_life", w=0.7, zc=1.75)
+    for e, nm in ((1, "painting_dunes"), (2, "map_coast")):
+        pt, yw, L = _edge_pt(q, e, L_of(q, e) / 2)
+        (kit.picture if e == 1 else kit.poster)(B, pt[0], pt[1], yaw=yw, name=nm, w=0.9, zc=4.12)
+    # curtains on the courtyard windows and radiators below
+    for j, pn in enumerate((5, 4)):
+        e = 8 + (6 - pn)
+        pt, yw, L = _edge_pt(q, e, L_of(q, e) / 2)
+        kit.curtains(B, pt[0], pt[1], yaw=yw, w=1.6, h=3.0, mat=("CT_PlasterRed", "CT_PlasterBlue")[j])
+    for pn in (1, 2):
+        pt, yw, L = _edge_pt(q, 8 + (6 - pn), L_of(q, 8 + (6 - pn)) / 2)
+        kit.radiator(B, pt[0], pt[1], yaw=yw, w=1.3, h=0.42)
+    # planters along the courtyard windows
+    for thp in (-120.2, -112.8, -104.6, -98.0):
+        kit.plant(B, *pol(12.85, thp), kind=("fern", "ficus")[int(thp) % 2], pot="CT_TileWhite", h=1.1, seed=int(thp))
+    # a dado of floor border
+    _floor_sector(B, "CT_ConcreteDark", th_d0 + 0.4, th_d1 - 0.2, 12.45, 12.7, z=0.01)
+
+    # ============================================================================================ WINTER GARDEN
+    g = (th_g0 + th_g1) / 2
+    # piano against the solid west end wall (radial wall, face 0.4 m off the radial line)
+    t0 = _tan(th_g0)
+    pxy = (pol(15.0, th_g0)[0] + t0[0] * 0.75, pol(15.0, th_g0)[1] + t0[1] * 0.75)
+    pn = kit.piano(B, pxy[0], pxy[1], yaw=_ytan(th_g0))
+    B.thing("piano", "play", (pxy[0], pxy[1], 1.0), _ytan(th_g0), what="piano")
+    stx, sty = pxy[0] + t0[0] * 0.8, pxy[1] + t0[1] * 0.8
+    kit.stool(B, stx, sty, yaw=th_g0, mat="CT_PlasterRed", h=0.5)
+    B.spot("piano", "seat", (stx, sty, 0.0), th_g0)
+    kit.rug(B, *_at(15.3, g, 0.2), w=2.0, d=2.6, yaw=_yout(g), seed=3)
+    gb = kit.table_round(B, *_at(15.3, g, 0.2), r=0.35, h=0.5)
+    kit.teapot(B, *_at(15.3, g, 0.2), z=gb["top"], yaw=10)
+    kit.cup(B, *_at(15.3, g, 0.45), z=gb["top"])
+    kit.cup(B, *_at(15.3, g, -0.05), z=gb["top"], yaw=90)
+    c1 = kit.armchair(B, *_at(14.35, g, 0.25), yaw=_yout(g), mat="CT_PlasterGreen")      # faces the street wall
+    c2 = kit.armchair(B, *_at(16.3, g, 0.15), yaw=_yin(g), mat="CT_PlasterGreen")       # faces the courtyard
+    B.thing("garden_chair_a", "seat", c1["seats"][0][:3], c1["seats"][0][3], height=0.44)
+    B.thing("garden_chair_b", "seat", c2["seats"][0][:3], c2["seats"][0][3], height=0.44)
+    gbn = kit.bench(B, *_at(17.0, g, 0.6), yaw=_yin(g), w=1.5, kind="park")
+    B.thing("garden_bench", "seat", gbn["seats"][0][:3], _yin(g), height=0.45)
+    # the plants: palms in the corners, ficus and monstera, ferns on the sill, cacti by the arch
+    plan = [("palm", 12.9, th_g0 + 2.2, 2.5, "CT_PlasterRed"), ("palm", 17.0, th_g0 + 1.4, 2.6, "CT_PlasterGreen"),
+            ("palm", 17.1, th_g1 - 1.5, 2.4, "CT_PlasterYellow"), ("palm", 12.95, th_g1 - 1.7, 2.3, "CT_PlasterBlue"),
+            ("ficus", 13.4, th_g0 + 0.9, 2.0, "CT_TileWhite"), ("ficus", 16.4, th_g0 + 2.5, 1.9, "CT_PlasterRed"),
+            ("monstera", 12.9, g + 0.2, 1.4, "CT_PlasterGreen"), ("monstera", 17.1, g - 0.4, 1.5, "CT_TileWhite"),
+            ("fern", 13.0, g + 2.6, 0.9, "CT_PlasterYellow"), ("fern", 13.0, g - 2.6, 0.9, "CT_PlasterBlue"),
+            ("fern", 17.2, g + 2.2, 0.9, "CT_PlasterRed"), ("cactus", 13.8, th_g1 - 0.5, 0.7, "CT_PlasterPink"),
+            ("cactus", 16.3, th_g1 - 0.45, 0.7, "CT_PlasterYellow"), ("ficus", 12.9, g - 1.2, 1.7, "CT_PlasterPink"),
+            ("fern", 15.2, g + 2.9, 0.9, "CT_TileWhite")]
+    for k, (kind, R, th_, h, pot) in enumerate(plan):
+        kit.plant(B, *pol(R, th_), kind=kind, pot=pot, h=h, seed=k)
+    B.thing("garden_plants", "board", (*pol(15.0, g + 1.0), 1.4), _yout(g), topic="garden")
+    for R, nm, w_, zc_ in ((15.0, "painting_pines", 0.8, 2.3), (13.0, "poster_sun_1", 0.55, 1.7)):
+        ex, ey = pol(R, th_g0)
+        fn = kit.picture if nm.startswith("painting") else kit.poster
+        fn(B, ex + t0[0] * 0.4, ey + t0[1] * 0.4, yaw=_ytan(th_g0), name=nm, w=w_, zc=zc_)
+
+    # ============================================================================================ PUMP ROOM
+    pc = (th_p0 + th_p1) / 2 + 0.3
+    px_, py_ = pol(15.45, pc)
+    bc_ = kit.bar_counter(B, px_, py_, yaw=_yin(pc), w=2.3, d=0.6, taps=3, front="CT_PlasterBlue", top="CT_Steel")
+    for k in range(5):
+        kit.glass(B, *_at(15.45, pc, -0.9 + 0.45 * k), z=bc_["top"], yaw=0)
+    kit.bottles(B, *_at(15.5, pc, 0.75), z=bc_["top"], n=3, seed=7)
+    B.thing("pump_room", "machine", (px_, py_, 1.1), _yin(pc), what="pump_room")
+    B.spot("pump_attendant", "work", (*_at(16.55, pc, 0.0), 0.0), _yin(pc))
+    # drinkers' benches along the courtyard windows, a round table and the wall gear
+    pb = kit.bench(B, *_at(12.95, pc, -0.2), yaw=_yout(pc), w=1.6, kind="park")
+    B.thing("pump_bench", "seat", pb["seats"][0][:3], _yout(pc), height=0.45)
+    tr = kit.table_round(B, *_at(14.2, pc, 0.75), r=0.4, h=0.78)
+    kit.cup(B, *_at(14.2, pc, 0.75), z=tr["top"])
+    kit.teapot(B, *_at(14.25, pc, 0.62), z=tr["top"], yaw=20)
+    for sg in (-1, 1):
+        kit.stool(B, *_at(14.2, pc, 0.75 + sg * 0.62), mat="CT_PlasterBlue", h=0.45)
+    kit.rug(B, *_at(14.7, pc, -0.3), w=1.0, d=2.8, yaw=_yin(pc) + 90, seed=6)
+    # west partition (pump room face, faces +theta): the price list and schedule
+    wx, wy = _at(13.85, th_p0, 0.075)
+    kit.menu_board(B, wx, wy, yaw=_ytan(th_p0), name="price_0", w=0.5, zc=1.6)
+    B.thing("pump_prices", "board", (wx, wy, 1.6), _ytan(th_p0), topic="prices")
+    wx, wy = _at(16.4, th_p0, 0.075)
+    kit.poster(B, wx, wy, yaw=_ytan(th_p0), name="chart_calendar", w=0.6, zc=1.7)
+    B.thing("pump_schedule", "board", (wx, wy, 1.7), _ytan(th_p0), topic="timetable")
+    # east partition (pump face, faces -theta): a tile mosaic panel, a clock
+    wx, wy = _at(16.4, th_p1, -0.075)
+    kit.mosaic_panel(B, wx, wy, yaw=th_p1, name="tile", w=1.1, h=1.1, zc=1.6, seed=3)
+    wx, wy = _at(12.95, th_p1, -0.075)
+    kit.poster(B, wx, wy, yaw=th_p1, name="poster_health", w=0.5, zc=1.8)
+    wx, wy = _at(14.7, th_p1, -0.075)
+    kit.wall_clock(B, wx, wy, yaw=th_p1, zc=2.5)
+    for e, nm in ((5, "painting_sea_storm"), (6, "map_town")):
+        pt, yw, L = _edge_pt(q, e, L_of(q, e) / 2)
+        (kit.picture if e == 5 else kit.poster)(B, pt[0], pt[1], yaw=yw, name=nm, w=0.9, zc=4.12)
+    kit.plant(B, *pol(17.15, pc + 0.4), kind="palm", pot="CT_TileWhite", h=1.9, seed=11)
+    kit.plant(B, *pol(12.9, pc + 3.3), kind="fern", pot="CT_PlasterGreen", h=0.9, seed=12)
+    kit.pendant(B, *pol(14.8, pc - 1.5), CEIL, drop=1.1, kind="opal", light=True, lumens=900, radius=7)
+
+    # ============================================================================================ TREATMENT ROOM
+    tc = (th_t0 + th_t1) / 2 - 0.2
+    # couches lie along the radial direction, heads to the street wall, behind a folding screen
+    for k, (s, who) in enumerate(((0.85, "a"), (-0.85, "b"))):
+        cx_, cy_ = _at(15.2, tc, s)
+        kit.medical_couch(B, cx_, cy_, yaw=tc)
+        B.thing("couch_" + who, "bed", (cx_, cy_, 0.7), tc, height=0.7, rest="nap")
+    kit.screen_divider(B, *_at(15.6, tc, 0.0), yaw=tc, mat="fabric_2")
+    # the instrument table, scales, glass cabinet and a sink along the courtyard wall
+    tb = kit.lab_bench(B, *_at(13.1, tc, 1.0), yaw=_yout(tc), w=1.4, d=0.6, seed=2)
+    sc = kit.scales(B, *_at(13.1, tc, -0.7), yaw=_yout(tc))
+    B.thing("treat_scales", "machine", (sc["pos"][0], sc["pos"][1], 1.1), _yout(tc), what="scales")
+    dc = kit.display_case(B, *_at(16.9, tc, -1.15), yaw=_yin(tc), w=0.9, d=0.45, goods="pharmacy", seed=3)
+    B.thing("treat_cabinet", "shelf", (dc["pos"][0], dc["pos"][1], 1.0), _yin(tc), topic="medicine")
+    # east end wall (solid, face 0.4 m off the radial line, room on the -theta side)
+    t1 = _tan(th_t1)
+    for R, nm, w_ in ((14.2, "chart_anatomy", 0.8), (16.1, "poster_health", 0.55)):
+        ex, ey = pol(R, th_t1)
+        kit.poster(B, ex - t1[0] * 0.4, ey - t1[1] * 0.4, yaw=th_t1, name=nm, w=w_, zc=1.7)
+    B.thing("treat_chart", "board", (*[v - 0.4 * tt for v, tt in zip(pol(14.2, th_t1), t1)], 1.7), th_t1, topic="health")
+    wb = kit.wall_bars(B, *[v - 0.4 * tt for v, tt in zip(pol(15.5, th_t1), t1)], yaw=th_t1, w=0.9, h=2.4)
+    B.thing("treat_wall_bars", "sport", (*[v - 0.4 * tt for v, tt in zip(pol(15.5, th_t1), t1)], 1.2), th_t1,
+            what="wall_bars")
+    # west face of the P6 partition (treatment side, faces +theta): eye chart and a mirror
+    wx, wy = _at(15.8, th_t0, 0.075)
+    kit.eye_chart(B, wx, wy, yaw=_ytan(th_t0), zc=1.6)
+    wx, wy = _at(17.0, th_t0, 0.075)
+    kit.mirror(B, wx, wy, yaw=_ytan(th_t0), zc=1.5, w=0.5, h=0.9)
+    kit.pendant(B, *pol(15.2, tc), CEIL, drop=1.2, kind="cone", light=True, lumens=900, radius=7)
+    kit.plant(B, *pol(13.1, tc + 2.6), kind="ficus", pot="CT_TileWhite", h=1.4, seed=21)
+
+    # ------------------------------------------------------------------------------------------ lobby/dining light
+    kit.pendant(B, *pol(15.0, -92.0), CEIL, drop=1.2, kind="opal", light=True, lumens=900, radius=8)
+    kit.pendant(B, *pol(15.0, -80.0), CEIL, drop=1.2, kind="opal", light=True, lumens=900, radius=8)
+    kit.pendant(B, *pol(15.0, -110.0), CEIL, drop=1.2, kind="opal", light=True, lumens=900, radius=8)
+    kit.pendant(B, *pol(15.0, -128.0), CEIL, drop=1.4, kind="opal", light=True, lumens=900, radius=8)
+    for tl in (-100.2, -117.0):
+        pass
+
+    # ------------------------------------------------------------------------------------------ skirting, doormat
+    f = Furn(B)
     nh = len(q)
     for i in range(nh):
         a, b = q[i], q[(i + 1) % nh]
@@ -168,17 +466,16 @@ def _furnish_hall(B, hall, t):
             ux, uy = ux / L, uy / L
             f.skirting([a, (mx - ux * 1.3, my - uy * 1.3)], h=0.13)
             f.skirting([(mx + ux * 1.3, my + uy * 1.3), b], h=0.13)
-            f.skirting([a, (mx - ux * 1.3, my - uy * 1.3)], h=0.012, t=0.4, mat="CT_ConcreteDark")
-            f.skirting([(mx + ux * 1.3, my + uy * 1.3), b], h=0.012, t=0.4, mat="CT_ConcreteDark")
         else:
             f.skirting([a, b], h=0.13)
-            f.skirting([a, b], h=0.012, t=0.4, mat="CT_ConcreteDark")
-    # doormat
     box(d, "CT_PlasterGrey", -1.0, 1.0, 8.5, 9.5, 0.0, 0.014, faces="Z")
-    # ---- lamps
-    for th in (-125.0, -110.0, -98.0, -82.0, -66.0, -54.0):
-        x, y = pol(15.0, th)
-        B.lamp((x, y, 4.2), lumens=800, colour=WARM, kind="public", radius=7)
+    msg = kit.check(B)
+    for m_ in msg:
+        print("KIT:", m_)
+
+
+def L_of(q, e):
+    return math.dist(q[e], q[(e + 1) % len(q)])
 
 
 def build(B):
@@ -293,17 +590,6 @@ def build(B):
     m.face("CT_Interior", [(x, y, Z0 - 0.01) for x, y in q][::-1])
     ex, ey = pol(R_P, -90.0)
     B.entrance("main", (ex, ey, 0.0), 0.0, width=2.4, height=2.6, leaves=2, kind="street")
-    # hall furniture
-    box(m, "CT_Wood", 3.0, 7.0, 11.2, 12.1, 0.0, 1.1)
-    box(B.detail, "CT_Steel", 3.0, 7.0, 11.2, 12.1, 1.1, 1.14)
-    B.spot("reception", "counter", (5.0, 12.9, 0.0), 0.0)
-    for bx in (-4.0, 4.0):
-        box(m, "CT_Wood", bx - 1.0, bx + 1.0, 9.0, 9.5, 0.0, 0.45)
-        B.spot("bench_%d" % int(bx), "bench", (bx, 10.2, 0.0), 0.0)
-    for i, th in enumerate((-128.0, -118.0, -108.0)):
-        x, y = pol(15.0, th)
-        box(m, "CT_Wood", x - 0.8, x + 0.8, y - 0.8, y + 0.8, 0.0, 0.76)
-        B.spot("dining_%d" % i, "table", (x, y, 0.0), 0.0)
     _furnish_hall(B, hall, t)
     # ------------------------------------------------------------------ struts under some balcony tips
     for k in range(0, NB, 3):
