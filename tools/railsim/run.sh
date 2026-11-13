@@ -6,6 +6,6 @@ set -e
 ROOT="$(cd "$(dirname "$0")/../.." && pwd)"
 SRC="$ROOT/unreal/Lyudmilovsk/Source/Lyudmilovsk/Private"
 mkdir -p "$ROOT/Saved/RailSim"
-clang++ -std=c++17 -O2 -Wall -o "$ROOT/Saved/RailSim/railsim" "$ROOT/tools/railsim/railsim.cpp" "$SRC/Railway/RailRun.cpp"
+clang++ -std=c++17 -O2 $EXTRA_CXXFLAGS -Wall -o "$ROOT/Saved/RailSim/railsim" "$ROOT/tools/railsim/railsim.cpp" "$SRC/Railway/RailRun.cpp"
 [ -f "$ROOT/unreal/Lyudmilovsk/Content/Railway/railway_built.json" ] || python3 "$ROOT/tools/railway.py" > /dev/null
 cd "$ROOT" && exec "$ROOT/Saved/RailSim/railsim" "$@"
