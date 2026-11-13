@@ -105,15 +105,22 @@ stand by the door, too far from the stalls, until its slots are laid out at them
 
 - **The household's weekend outing** (`ApplyLikes` sets `FPerson::OutingAct/OutingDay/OutingHour/OutingPlace`): every
   household of two and more has one, the same every game: on Saturday or Sunday at their hour they all go to the same
-  thing at the same place (one of the four nearest home that have it): the sea front, a stroll, the fair, crumbs for
+  thing at the same place (one of the four nearest home that have it and room for them all): the sea front, a stroll, the fair, crumbs for
   the birds; a table at the cafe or the restaurant for those without small children. From half an hour before the hour
   to an hour and a quarter after (`FWorld::OutingNow`) it scores 0.7 more, people leave what they chose for it
   (`Interrupt`), take a slot at that place and stay till the others have been there a while. Those at work miss it.
-  In mannersim 142 of the 262 households have two and more of theirs there together (123 whole). Those who walk (a
+  In mannersim 169 of the 262 households have two and more of theirs there together (153 whole). Those who walk (a
   stroll, the fair) keep together: `FWorld::Wander` sends everybody after the first of the household at it (the lowest
   id), to the free spot nearest theirs, a few seconds behind (83% of the time within 40 m). Town talk:
   `doing = outing` (sets `outing`, `outing_kid`). `tools/mannersim/run.sh outing` prints a weekend.
 
+- **A weekly date with a friend** (`ApplyLikes` sets `FPerson::DateAct/DateDay/DateHour/DatePlace/DateWith`): everybody
+  is paired with the first friend of theirs still free (376 pairs), and one weekday a week at their hour the two meet at
+  the same thing at a place between their homes that has room: a talk, a bench, the cafe or a stroll after work; the
+  old in the daytime (a bench, crumbs for the birds); children at the playground after school. It works as the outing
+  does (`FWorld::MeetNow`: 1 the household's outing, 2 a date), and on a stroll the two keep together. In mannersim's
+  Wednesday 41 of the 77 pairs whose day it is meet (the rest: work, the culture club, supper). Town talk:
+  `doing = date` (sets `date`, `date_kid`, the exchanges `date_talk`). `tools/mannersim/run.sh dates`.
 - **Keeping an eye on the children** (activity `mind_child`, `FWorld::ChildToMind`): while a child under 12 of theirs is
   out at play (`playground`, `play_run`) within 450 m and nobody of the household is by, one grown-up leaves what they
   chose, comes to a spot by the child and stands turned to wherever the child runs; they go when the child does. Those
@@ -153,7 +160,7 @@ Town talk sets: `manner = smoke phone_call ...` (what their hands are doing now)
 ## Testing
 
 - `tools/mannersim/run.sh` (personas, the four weathers, noticing, passing, a weekend's outings, the sky's shows, cost),
-  `run.sh day`, `run.sh outing`, `run.sh who`.
+  `run.sh day`, `run.sh outing`, `run.sh dates`, `run.sh who`.
 - `tools/peoplesim/run.sh test|town`, `tools/barksim/run.sh`.
 - In the game: `lyud.People.Manner <manner|next|auto>` (everybody drawn does it), `lyud.People.Who <key>`,
   `lyud.People.SkyShow`; developer mode (F7), group "Townsfolk".

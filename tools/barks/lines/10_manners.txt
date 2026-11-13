@@ -369,3 +369,47 @@ met = known
 weight = 4
 say town.notice_sits_known.1 | А, это ты. Садись, я тебе место грею. | Ah, it's you. Sit down, I've been keeping your place warm. | ああ、きみか。座りな、席を温めておいたよ。
 say town.notice_sits_known.2 | Опять ты. Скоро скамейка нас обоих запомнит. | You again. Soon the bench will know us both. | またきみだ。そのうちベンチが二人とも覚えちゃうね。
+
+## ---------------------------------------------------------------------------------------------------------------
+## The weekly date with a friend (doing = date: at it now)
+## ---------------------------------------------------------------------------------------------------------------
+
+[date]
+doing = date
+age = teen adult elder
+weight = 4
+say town.date.1 | Мы тут каждую неделю встречаемся. В один и тот же день, в один и тот же час. | We meet here every week. Same day, same hour. | 毎週ここで会うんだ。同じ曜日、同じ時間にね。
+say town.date.2 | Друзей надо видеть по расписанию. Иначе жизнь всё время что-нибудь подсунет. | Friends have to be seen on a schedule. Otherwise life always slips something in. | 友だちとは予定を決めて会わないと。でないと、いつも何かしら用事が割り込むから。
+say town.date.3 | Опаздывает. Каждый раз на пять минут, как по часам. | Late. Five minutes every time, like clockwork. | 遅いな。毎回きっかり五分、時計みたいに。
+say town.date.4 | У нас это место своё. Занято, можно сказать, пожизненно. | This is our spot. Taken for life, you might say. | ここは私たちの場所。いわば一生分の予約済み。
+
+[date_talk]
+doing = date
+doing2 = date
+age = teen adult elder
+age2 = teen adult elder
+weight = 6
+talk
+- town.date_talk1.1 | Ну, что нового за неделю? | Well, what's new this week? | さて、この一週間、何かあった？
+- town.date_talk1.2 | Ничего. | Nothing. | 何も。
+- town.date_talk1.3 | Рассказывай подробно. | Tell me in detail. | 詳しく聞かせて。
+talk
+- town.date_talk2.1 | На том же месте через неделю? | Same place next week? | 来週も同じ場所で？
+- town.date_talk2.2 | А где же ещё. | Where else. | ほかにどこがあるの。
+talk
+- town.date_talk3.1 | Помнишь, как мы тут в первый раз сидели? | Remember the first time we sat here? | 初めてここに座ったときのこと、覚えてる？
+- town.date_talk3.2 | Помню. Скамейка была другого цвета. | I do. The bench was a different colour. | 覚えてる。ベンチの色が違ってた。
+- town.date_talk3.3 | А разговоры те же. | And the talk's the same. | 話の中身は同じだけどね。
+talk
+- town.date_talk4.1 | Мы на прошлой неделе не договорили. | We didn't finish last week. | 先週の話、途中だったね。
+- town.date_talk4.2 | Я помню, на чём. Продолжай. | I remember where. Go on. | どこまでだったか覚えてるよ。続けて。
+talk
+- town.date_talk5.1 | Что-то ты сегодня всё молчишь. | You're quiet today. | 今日はなんだか静かだね。
+- town.date_talk5.2 | Я слушаю море. Оно сегодня интереснее меня. | I'm listening to the sea. It's more interesting than me today. | 海の音を聞いてるんだ。今日は自分より海のほうが面白い。
+- town.date_talk5.3 | С морем не поспоришь. | Can't argue with the sea. | 海には勝てないね。
+
+[date_kid]
+doing = date
+age = kid
+weight = 4
+say town.date_kid.1 | Мы тут с другом встречаемся после школы. Это наше место, взрослым нельзя. | My friend and I meet here after school. It's our place, no grown-ups. | 放課後、友だちとここで会うの。子どもだけの場所で、大人は入っちゃだめ。

@@ -96,6 +96,9 @@ struct FDay
 	long Updates = 0;
 	int BenchNoon = 0;
 	int Ritualists = 0, RitualKept = 0;
+	bool bDates = false;
+	std::map<std::string, int> DateHalf;
+	int AllDates = 0, Dates = 0, DatesKept = 0;      // pairs of friends with a weekly date; those whose day is this Wednesday; kept
 	// ten minutes of something in the sky at 21:00: people out of doors, and those of them looking up, pointing or photographing,
 	// during it and in the ten minutes before; and an arm pointed at the sky at any other time
 	int SkyOut = 0, SkyUp = 0, BeforeOut = 0, BeforeUp = 0, PointNoShow = 0;
@@ -122,6 +125,7 @@ static void RunDay(FDay& D)
 	std::map<std::string, int> HourCount;
 	int LastHour = -1;
 	std::vector<char> RitualKept;
+	std::vector<char> DateKept;
 	for (double T = 0.0; T < 19.0 * 3600.0; T += Dt)        // till midnight
 	{
 		C.Seconds += Dt;
@@ -133,6 +137,31 @@ static void RunDay(FDay& D)
 		W.Events.clear();
 		if ((long)std::lround(T) % 60 == 0)
 		{
+			// friends whose weekly date is today: the two of them at it together
+			DateKept.resize(W.People.size(), 0);
+			for (const FPerson& P : W.People)
+			{
+				if (P.DateWith > P.Id && P.DateDay == W.Weekday && P.State == EState::Doing && P.Activity == P.DateAct)
+				{
+					const FPerson& F = W.People[(size_t)P.DateWith];
+					if (F.State == EState::Doing && F.Activity == F.DateAct && (F.Pos - P.Pos).Len2D() < 40.f)
+					{
+						DateKept[(size_t)P.Id] = 1;
+					}
+				}
+			}
+			if (D.bDates)
+			{
+				for (const FPerson& P : W.People)
+				{
+					if (P.DateWith >= 0 && P.DateDay == W.Weekday && std::fabs(W.Hour - (P.DateHour + 0.5f)) < 0.009f)
+					{
+						const bool bAt = P.State == EState::Doing && P.Activity == P.DateAct;
+						D.DateHalf[W.Activities[(size_t)P.DateAct].Id + " -> " + (bAt ? (P.Place == P.DatePlace ? "AT IT" : "at it elsewhere")
+							: P.Activity < 0 ? "nothing" : W.Activities[(size_t)P.Activity].Id + (P.State == EState::Doing ? "" : " (going)"))]++;
+					}
+				}
+			}
 			// who is at their ritual within the hour of it
 			RitualKept.resize(W.People.size(), 0);
 			for (const FPerson& P : W.People)
@@ -293,6 +322,12 @@ static void RunDay(FDay& D)
 			}
 			LastHour = H;
 		}
+	}
+	for (const FPerson& P : W.People)
+	{
+		D.AllDates += P.DateWith > P.Id ? 1 : 0;
+		D.Dates += P.DateWith > P.Id && P.DateDay == 2 ? 1 : 0;
+		D.DatesKept += P.DateWith > P.Id && (size_t)P.Id < DateKept.size() && DateKept[(size_t)P.Id] ? 1 : 0;
 	}
 	for (const FPerson& P : W.People)
 	{
@@ -764,6 +799,20 @@ int main(int Argc, char** Argv)
 		}
 		return 0;
 	}
+	if (Mode == "dates")
+	{
+		// a quick look: a mild Wednesday without the report
+		FDay D;
+		D.Name = "mild";
+		D.bDates = true;
+		RunDay(D);
+		for (const auto& KV : D.DateHalf)
+		{
+			std::printf("  half an hour in: %s: %d\n", KV.first.c_str(), KV.second);
+		}
+		std::printf("friends' weekly dates: %d pairs in the town, %d on Wednesdays, %d of them met\n", D.AllDates, D.Dates, D.DatesKept);
+		return 0;
+	}
 	if (Mode == "outing")
 	{
 		Outings(true);
@@ -838,6 +887,8 @@ int main(int Argc, char** Argv)
 		"something in the sky turns the heads up (%d of %d person-samples out of doors during it, %d of %d before)",
 		Mild.SkyUp, Mild.SkyOut, Mild.BeforeUp, Mild.BeforeOut);
 	CHECK(Mild.PointNoShow == 0, "nobody points at an empty sky (%d)", Mild.PointNoShow);
+	CHECK(Mild.AllDates > 250 && Mild.Dates > 30 && Mild.DatesKept * 5 > Mild.Dates * 2,
+		"friends keep their weekly date (%d of the %d pairs whose day it is met; %d pairs in the town)", Mild.DatesKept, Mild.Dates, Mild.AllDates);
 	CHECK(Mild.Ritualists > 300 && Mild.RitualKept > Mild.Ritualists / 4, "people keep their rituals (%d of the %d who have one were at it at their hour; the rest at work)",
 		Mild.RitualKept, Mild.Ritualists);
 	CHECK(Mild.UmbrellasDry == 0 && Frost.UmbrellasDry == 0, "no umbrellas on a dry day");

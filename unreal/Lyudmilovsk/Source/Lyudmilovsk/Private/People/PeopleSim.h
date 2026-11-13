@@ -235,6 +235,10 @@ namespace LyudPeople
 		// drawn to this activity at this place (the sea front on Sunday at noon, the cafe on Saturday)
 		int OutingAct = -1, OutingDay = -1, OutingPlace = -1;
 		float OutingHour = 0.f;
+		// their standing date with a friend (the same ApplyLikes): one weekday a week, round this hour, the two of them
+		// meet at this activity at this place (a bench after work on Thursdays, the cafe, the playground after school)
+		int DateAct = -1, DateDay = -1, DatePlace = -1, DateWith = -1;
+		float DateHour = 0.f;
 		std::string OwnSlot;        // "club:9": a slot only they use
 		std::string StartActivity;  // what they do when a new game begins
 		float StartMinutes[2] = { 60.f, 120.f };
@@ -424,12 +428,18 @@ namespace LyudPeople
 		static float NightH(float H) { return H < 12.f ? H + 24.f : H; }
 		/** Rolls everybody's day (wake and bed moved by Spread); the step does it at 14:00 each day. */
 		void RollDays();
-		/** A is P's household outing and it is on now (from half an hour before its hour to an hour and a quarter after). */
-		bool OutingNow(const FPerson& P, const FActivity& A) const
+		/** 1: A is P's household outing and it is on now (from half an hour before its hour to an hour and a quarter after);
+		 *  2: A is P's date with a friend and it is on now; 0: neither. */
+		int MeetNow(const FPerson& P, const FActivity& A) const
 		{
-			return P.OutingAct >= 0 && Weekday == P.OutingDay && &A == &Activities[(size_t)P.OutingAct] && Hour > P.OutingHour - 0.5f
-				&& Hour < P.OutingHour + 1.25f;
+			const int Ai = (int)(&A - Activities.data());
+			if (P.OutingAct == Ai && Weekday == P.OutingDay && Hour > P.OutingHour - 0.5f && Hour < P.OutingHour + 1.25f)
+			{
+				return 1;
+			}
+			return P.DateAct == Ai && Weekday == P.DateDay && Hour > P.DateHour - 0.5f && Hour < P.DateHour + 1.25f ? 2 : 0;
 		}
+		bool OutingNow(const FPerson& P, const FActivity& A) const { return MeetNow(P, A) == 1; }
 		float PrevHour = -1.f;
 		int DayRoll = 0;
 		V3 Camera;

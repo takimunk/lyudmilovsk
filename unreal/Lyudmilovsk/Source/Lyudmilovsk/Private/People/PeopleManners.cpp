@@ -502,6 +502,17 @@ namespace LyudPeople
 		// a weekend outing for every household of two and more: on Saturday or Sunday, at the household's hour, they all go
 		// to the same thing at the same place (one of the four nearest home that have it): the sea front, a stroll, the fair, crumbs
 		// for the birds, a table at the cafe for those without small children. The same every game.
+		// how many can be at an activity at a place: its slots of the activity's kinds
+		auto Room = [&W](const FActivity& A, const FPlace& Pl)
+		{
+			int N = 0;
+			for (const int SI : Pl.Slots)
+			{
+				const FSlot& Sl = W.Slots[(size_t)SI];
+				N += A.Slots.empty() || std::find(A.Slots.begin(), A.Slots.end(), Sl.Kind) != A.Slots.end() ? Sl.Capacity : 0;
+			}
+			return N;
+		};
 		struct FOuting { const char* Activity; float From, To; bool bKids; };
 		static const FOuting Outings[] = {
 			{ "sea_air", 11.f, 16.f, true }, { "stroll", 11.f, 17.f, true }, { "fair_visit", 12.f, 17.f, true }, { "feed_birds", 10.5f, 15.f, true },
@@ -560,8 +571,8 @@ namespace LyudPeople
 			for (int Pi = 0; Pi < (int)W.Places.size(); Pi++)
 			{
 				const FPlace& Pl = W.Places[(size_t)Pi];
-				if (Pl.Island != W.Places[(size_t)First.Home].Island || Pl.Slots.empty()
-					|| std::find(A.Places.begin(), A.Places.end(), Pl.Kind) == A.Places.end())
+				if (Pl.Island != W.Places[(size_t)First.Home].Island || std::find(A.Places.begin(), A.Places.end(), Pl.Kind) == A.Places.end()
+					|| Room(A, Pl) < (int)House.second.size())
 				{
 					continue;
 				}
@@ -596,6 +607,111 @@ namespace LyudPeople
 				P.OutingDay = Day;
 				P.OutingPlace = Place;
 				P.OutingHour = Hour;
+			}
+		}
+		// a standing date with a friend: everybody is paired with the first friend of theirs still free (in the order of
+		// the town's list), and the two meet one weekday a week at their hour, at the same thing at the same place between
+		// their homes: a talk, a bench, the cafe after work; the old in the daytime; children at the playground after school.
+		struct FDate { const char* Activity; float From, To; int MinAge, MaxAge; };
+		static const FDate Dates[] = {
+			{ "chat", 17.5f, 20.f, 13, 200 }, { "coffee", 17.f, 19.5f, 16, 200 }, { "sit_bench", 17.f, 19.f, 13, 200 },
+			{ "stroll", 17.5f, 20.f, 13, 200 }, { "eat_out", 18.f, 20.5f, 18, 200 }, { "chat", 16.f, 18.5f, 13, 200 },
+		};
+		static const FDate OldDates[] = {
+			{ "sit_bench", 10.f, 13.f, 60, 200 }, { "feed_birds", 9.f, 11.5f, 60, 200 }, { "coffee", 10.5f, 13.f, 60, 200 },
+			{ "stroll", 9.5f, 12.f, 60, 200 },
+		};
+		static const FDate KidDates[] = { { "playground", 15.f, 17.5f, 5, 12 }, { "play_run", 15.f, 17.5f, 5, 12 } };
+		std::map<std::string, int> ByKey;
+		for (FPerson& P : W.People)
+		{
+			P.DateAct = P.DateDay = P.DatePlace = P.DateWith = -1;
+			ByKey[P.Key] = P.Id;
+		}
+		for (FPerson& P : W.People)
+		{
+			if (P.DateWith >= 0 || P.Home < 0)
+			{
+				continue;
+			}
+			for (const std::string& FriendKey : P.Friends)
+			{
+				const auto It = ByKey.find(FriendKey);
+				if (It == ByKey.end() || It->second == P.Id)
+				{
+					continue;
+				}
+				FPerson& F = W.People[(size_t)It->second];
+				const int Young = std::min(P.Age, F.Age), Old = std::max(P.Age, F.Age);
+				if (F.DateWith >= 0 || F.Home < 0 || F.Household == P.Household || W.Places[(size_t)F.Home].Island != W.Places[(size_t)P.Home].Island)
+				{
+					continue;
+				}
+				const FDate* Pool = Young >= 60 ? OldDates : (Old <= 12 ? KidDates : Dates);
+				const int Num = Young >= 60 ? (int)(sizeof(OldDates) / sizeof(FDate)) : (Old <= 12 ? (int)(sizeof(KidDates) / sizeof(FDate)) : (int)(sizeof(Dates) / sizeof(FDate)));
+				uint32_t H = 2166136261u;
+				for (const char C : P.Key + "+" + F.Key)
+				{
+					H = (H ^ (uint8_t)C) * 16777619u;
+				}
+				H ^= 0x3b9f5d17u;
+				H |= 1u;
+				const FDate* D = nullptr;
+				int Act = -1;
+				for (int Try = 0; Try < 8 && Act < 0; Try++)
+				{
+					const FDate& Choice = Pool[(int)(Rand(H) * Num) % Num];
+					if (Young < Choice.MinAge || Old > Choice.MaxAge)
+					{
+						continue;
+					}
+					Act = W.FindActivity(Choice.Activity);
+					D = &Choice;
+				}
+				if (Act < 0)
+				{
+					continue;
+				}
+				const FActivity& A = W.Activities[(size_t)Act];
+				// the three nearest places of its kinds to the point between their doors
+				const V3 Mid = (W.Places[(size_t)P.Home].Portal + W.Places[(size_t)F.Home].Portal) * 0.5f;
+				int Near[3] = { -1, -1, -1 };
+				float NearD[3] = { 1e30f, 1e30f, 1e30f };
+				for (int Pi = 0; Pi < (int)W.Places.size(); Pi++)
+				{
+					const FPlace& Pl = W.Places[(size_t)Pi];
+					if (Pl.Island != W.Places[(size_t)P.Home].Island || std::find(A.Places.begin(), A.Places.end(), Pl.Kind) == A.Places.end()
+						|| Room(A, Pl) < 2)
+					{
+						continue;
+					}
+					float Dist = (Pl.Portal - Mid).Len2D();
+					int Put = Pi;
+					for (int K = 0; K < 3; K++)
+					{
+						if (Dist < NearD[K])
+						{
+							std::swap(Dist, NearD[K]);
+							std::swap(Put, Near[K]);
+						}
+					}
+				}
+				int Count = 0;
+				while (Count < 3 && Near[Count] >= 0)
+				{
+					Count++;
+				}
+				if (Count == 0)
+				{
+					continue;
+				}
+				P.DateAct = F.DateAct = Act;
+				P.DatePlace = F.DatePlace = Near[(int)(Rand(H) * Count) % Count];
+				P.DateDay = F.DateDay = (int)(Rand(H) * 5.f) % 5;
+				P.DateHour = F.DateHour = D->From + (D->To - D->From) * Rand(H);
+				P.DateWith = F.Id;
+				F.DateWith = P.Id;
+				break;
 			}
 		}
 	}
@@ -1127,6 +1243,15 @@ namespace LyudPeople
 			std::snprintf(Buf, sizeof Buf, "; the household's outing %s at %s on %s at %d:%02d", W.Activities[(size_t)P.OutingAct].Id.c_str(),
 				W.Places[(size_t)P.OutingPlace].Id.c_str(), P.OutingDay == 5 ? "Saturday" : "Sunday", (int)P.OutingHour,
 				(int)((P.OutingHour - (int)P.OutingHour) * 60.f));
+			Out += Buf;
+		}
+		if (P.DateAct >= 0 && P.DateAct < (int)W.Activities.size() && P.DatePlace >= 0 && P.DatePlace < (int)W.Places.size() && P.DateWith >= 0
+			&& P.DateWith < (int)W.People.size())
+		{
+			static const char* const Days[] = { "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday", "Sunday" };
+			std::snprintf(Buf, sizeof Buf, "; a date with %s: %s at %s on %ss at %d:%02d", W.People[(size_t)P.DateWith].Key.c_str(),
+				W.Activities[(size_t)P.DateAct].Id.c_str(), W.Places[(size_t)P.DatePlace].Id.c_str(), Days[P.DateDay % 7], (int)P.DateHour,
+				(int)((P.DateHour - (int)P.DateHour) * 60.f));
 			Out += Buf;
 		}
 		Out += "; now ";

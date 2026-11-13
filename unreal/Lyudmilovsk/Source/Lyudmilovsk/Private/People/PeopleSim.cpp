@@ -1836,7 +1836,10 @@ namespace LyudPeople
 				}
 			}
 		}
-		const bool bOuting = OutingNow(P, A);
+		const int Meet = MeetNow(P, A);
+		const bool bOuting = Meet != 0;
+		const int MeetAt = Meet == 1 ? P.OutingPlace : P.DatePlace;
+		const float MeetHour = Meet == 1 ? P.OutingHour : P.DateHour;
 		// keeping an eye on their child: where the child plays
 		const int MindKid = MindAct >= 0 && &A == &Activities[(size_t)MindAct] ? ChildToMind(P) : -1;
 		const int MindPlace = MindKid >= 0 ? People[(size_t)MindKid].Place : -1;
@@ -1866,9 +1869,9 @@ namespace LyudPeople
 				}
 				const FSlot& Sl = Slots[S];
 				float Score = (Sl.Approach - From).Len2D() - Company;
-				if (bOuting && Pi == P.OutingPlace)
+				if (bOuting && Pi == MeetAt)
 				{
-					Score -= 3000.f;    // where the household goes
+					Score -= 3000.f;    // where the household goes, where the friend waits
 				}
 				if (MindKid >= 0)
 				{
@@ -1923,10 +1926,10 @@ namespace LyudPeople
 		{
 			uint32_t R = P.Rng;
 			OutMinutes = A.MinMinutes + (A.MaxMinutes - A.MinMinutes) * Rand(R);
-			if (bOuting && Slots[Best].Place == P.OutingPlace)
+			if (bOuting && Slots[Best].Place == MeetAt)
 			{
 				// they stay till the others have come and been there a while
-				OutMinutes = std::max(OutMinutes, std::min(150.f, (P.OutingHour + 1.25f - Hour) * 60.f));
+				OutMinutes = std::max(OutMinutes, std::min(150.f, (MeetHour + 1.25f - Hour) * 60.f));
 			}
 		}
 		return Best;
@@ -2033,9 +2036,9 @@ namespace LyudPeople
 			}
 		}
 		// the household's weekend outing: everybody of the flat is drawn to it together
-		if (OutingNow(P, A))
+		if (MeetNow(P, A))
 		{
-			Score += 0.7f;
+			Score += 0.9f;
 		}
 		// their child is out at play: one of the grown-ups goes to stand by (the activity's own base keeps it from being
 		// chosen for itself)
@@ -2448,17 +2451,22 @@ namespace LyudPeople
 				return true;
 			}
 		}
-		// the household's outing: whoever is at it stays with their own; the others leave what they chose for it
-		if (P.OutingAct >= 0 && Duty < 0 && OutingNow(P, Activities[(size_t)P.OutingAct]))
+		// the household's outing, a date with a friend: whoever is at it stays with their own; the others leave what they
+		// chose for it
+		for (const int MeetAct : { P.OutingAct, P.DateAct })
 		{
-			if (P.Activity == P.OutingAct)
+			if (MeetAct < 0 || Duty >= 0 || !MeetNow(P, Activities[(size_t)MeetAct]))
+			{
+				continue;
+			}
+			if (P.Activity == MeetAct)
 			{
 				return false;
 			}
 			if (Cur.bFree && !Cur.bGather)
 			{
 				int SlotThere = -1, SlotHere = -1;
-				if (Score(P, Activities[(size_t)P.OutingAct], SlotThere) > Score(P, Cur, SlotHere))
+				if (Score(P, Activities[(size_t)MeetAct], SlotThere) > Score(P, Cur, SlotHere))
 				{
 					return true;
 				}
@@ -2958,10 +2966,12 @@ namespace LyudPeople
 		// to the free spot nearest theirs, setting off a few seconds after
 		const FSlot* Toward = nullptr;
 		float TowardBest = 25.f;
-		if (P.OutingAct == P.Activity && Weekday == P.OutingDay && P.Home >= 0)
+		const bool bWithHouse = P.OutingAct == P.Activity && Weekday == P.OutingDay && P.Home >= 0;
+		const bool bWithFriend = P.DateAct == P.Activity && Weekday == P.DateDay && P.DateWith >= 0 && P.DateWith < P.Id;
+		if (bWithHouse || bWithFriend)
 		{
 			const FPerson* Lead = nullptr;
-			for (const int R : Places[P.Home].Residents)
+			auto Leads = [&](int R)
 			{
 				const FPerson& Q = People[R];
 				if (R < P.Id && (!Lead || R < Lead->Id) && Q.Activity == P.Activity && Q.State == EState::Doing && Q.Slot >= 0
@@ -2969,6 +2979,17 @@ namespace LyudPeople
 				{
 					Lead = &Q;
 				}
+			};
+			if (bWithHouse)
+			{
+				for (const int R : Places[P.Home].Residents)
+				{
+					Leads(R);
+				}
+			}
+			else
+			{
+				Leads(P.DateWith);      // the friend they walk with
 			}
 			if (Lead)
 			{

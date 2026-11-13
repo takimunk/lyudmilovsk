@@ -10,7 +10,8 @@
 # age =       kid (under 12), teen (12-17), adult (18-59), elder (60 and over), or years: 50-120
 # sex =       female, male (for the Russian forms of the past tense: one form per key, never both in one string)
 # doing =     activities.json ids (sit_bench, play_club, eat_out, gather_mingle, ...); work: on their duty at its place;
-#             free: not on a duty; outing: at their household's weekend outing (docs/town_manners.md)
+#             free: not on a duty; outing: at their household's weekend outing; date: at their
+#             weekly date with a friend (docs/town_manners.md)
 # at =        place kinds or place ids (bench, promenade, beach, club, restaurant, market, fair_stall, P-MARKET, ...);
 #             outdoors, indoors: under the sky or a roof (alone it doesn't make a set more particular)
 # pose =      stand, walk, talk, look, sit, computer, eat, read, work
@@ -1299,6 +1300,7 @@ talk = town.chat_kids3.1 | town.chat_kids3.2 | town.chat_kids3.3
 # A grown-up standing by while their child plays (doing = mind_child)
 # What the player is up to: his line is out near them (on = hero_fishes), he is in the water (hero_swims), he sat
 # down beside them on a bench (hero_sits)
+# The weekly date with a friend (doing = date: at it now)
 
 [manner_smoke]
 manner = smoke
@@ -1535,6 +1537,30 @@ on = hero_sits
 met = known
 weight = 4
 say = town.notice_sits_known.1..2
+
+[date]
+doing = date
+age = teen adult elder
+weight = 4
+say = town.date.1..4
+
+[date_talk]
+doing = date
+doing2 = date
+age = teen adult elder
+age2 = teen adult elder
+weight = 6
+talk = town.date_talk1.1 | town.date_talk1.2 | town.date_talk1.3
+talk = town.date_talk2.1 | town.date_talk2.2
+talk = town.date_talk3.1 | town.date_talk3.2 | town.date_talk3.3
+talk = town.date_talk4.1 | town.date_talk4.2
+talk = town.date_talk5.1 | town.date_talk5.2 | town.date_talk5.3
+
+[date_kid]
+doing = date
+age = kid
+weight = 4
+say = town.date_kid.1
 
 # At the counter: a customer on their feet and whoever serves them (LyudBarks::AtCounter: the same shop, market
 # stall or kiosk, within 4 m). A is the customer unless the set says doing = work first.

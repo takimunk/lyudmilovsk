@@ -816,9 +816,10 @@ namespace LyudBarks
 		{
 			const FActivity& A = W.Activities[(size_t)P.Activity];
 			Who.Doing.push_back(A.Id);
-			if (bThere && W.OutingNow(P, A))
+			if (const int Meet = bThere ? W.MeetNow(P, A) : 0)
 			{
-				Who.Doing.push_back("outing");     // the household's weekend outing (docs/town_manners.md)
+				// the household's weekend outing, the weekly date with a friend (docs/town_manners.md)
+				Who.Doing.push_back(Meet == 1 ? "outing" : "date");
 			}
 			for (const FDuty& D : P.Duties)
 			{
