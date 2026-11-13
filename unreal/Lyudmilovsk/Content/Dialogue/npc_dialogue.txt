@@ -24,6 +24,10 @@ sun.day = owner.sun_day.1
 sun.low = owner.sun_low.1
 sun.night = owner.sun_night.1
 sun.cloudy = owner.sun_cloudy.1
+quest.owner_supper.ask = owner.supper_ask.1 | hero.supper_ask.2 | owner.supper_ask.3 | owner.supper_ask.4 | hero.supper_ask.5 | owner.supper_ask.6
+quest.owner_supper.buy,bring_empty = owner.supper_wait.1
+quest.owner_supper.bring = owner.supper_thanks.1 | owner.supper_thanks.2 | hero.supper_thanks.3 | owner.supper_thanks.4
+quest.owner_supper.done = owner.supper_after.1
 
 [Clerk]
 first = clerk.first.1 | hero.clerk_first.2 | clerk.first.3 | hero.clerk_first.4 | clerk.first.5
@@ -93,6 +97,11 @@ again = girl_b.again4.1
 quest.waxwing.prepare = girl_b.waxwing_guide.1 | girl_b.waxwing_guide.2
 
 sun.day = girl_b.sun_day.1
+quest.overdue_journal.ask = girl_b.overdue_ask.1 | girl_b.overdue_ask.2 | hero.overdue_ask.3 | girl_b.overdue_ask.4
+quest.overdue_journal.visit = girl_b.overdue_wait.1
+quest.overdue_journal.buy = girl_b.overdue_hint.1
+quest.overdue_journal.return_empty = girl_b.overdue_empty.1
+quest.overdue_journal.return = girl_b.overdue_back.1 | hero.overdue_back.2 | girl_b.overdue_back.3 | girl_b.overdue_back.4
 
 [Nao]
 first = nao.first.1 | hero.nao_first.2 | nao.first.3 | nao.first.4
@@ -110,10 +119,14 @@ sun.cloudy = nao.sun_cloudy.1
 [Zotov_lev]
 first = zotov_lev.first.1
 again = zotov_lev.again1.1
+quest.overdue_journal.visit = zotov_lev.overdue_admit.1 | zotov_lev.overdue_admit.2 | hero.overdue_admit.3 | zotov_lev.overdue_admit.4 | zotov_lev.overdue_admit.5
 
 [Zotova_galina]
 first = zotova_galina.first.1
 again = zotova_galina.again1.1
+quest.soda_science.ask = zotova_galina.sodalab_ask.1 | zotova_galina.sodalab_ask.2 | hero.sodalab_ask.3 | zotova_galina.sodalab_ask.4 | zotova_galina.sodalab_ask.5
+quest.soda_science.taste = zotova_galina.sodalab_wait.1
+quest.soda_science.tell = zotova_galina.sodalab_tell.1 | hero.sodalab_tell.2 | zotova_galina.sodalab_tell.3 | zotova_galina.sodalab_tell.4 | zotova_galina.sodalab_tell.5
 
 [Sato_kei]
 first = sato_kei.first.1
@@ -133,6 +146,9 @@ quest.crow_gift.tell = sato_yuki.crow_tell.1 | hero.crow_tell.2 | sato_yuki.crow
 [Korneev_ivan]
 first = korneev_ivan.first.1
 again = korneev_ivan.again1.1
+quest.hot_corn.carry = korneev_ivan.corn_handover.1 | korneev_ivan.corn_handover.2 | korneev_ivan.corn_handover.3
+quest.hot_corn.carry_empty = korneev_ivan.corn_nocob.1
+quest.hot_corn.tell = korneev_ivan.corn_eaten.1
 
 [Korneeva_nina]
 first = korneeva_nina.first.1
@@ -174,10 +190,16 @@ quest.window_feeder.tell = kimura_dasha.feeder_tell.1 | hero.feeder_tell.2 | kim
 [Li_vika]
 first = li_vika.first.1
 again = li_vika.again1.1
+quest.lab_lunch.ask = li_vika.lunch_ask.1 | li_vika.lunch_ask.2 | li_vika.lunch_ask.3 | hero.lunch_ask.4 | li_vika.lunch_ask.5
+quest.lab_lunch.eat = li_vika.lunch_wait.1
+quest.lab_lunch.tell = li_vika.lunch_tell.1 | hero.lunch_tell.2 | li_vika.lunch_tell.3 | li_vika.lunch_tell.4
 
 [Valiev_rustam]
 first = valiev_rustam.first.1
 again = valiev_rustam.again1.1
+quest.night_signal.ask = valiev_rustam.signal_ask.1 | hero.signal_ask.2 | valiev_rustam.signal_ask.3 | valiev_rustam.signal_ask.4 | valiev_rustam.signal_ask.5
+quest.night_signal.signal = valiev_rustam.signal_wait.1
+quest.night_signal.tell = valiev_rustam.signal_tell.1 | hero.signal_tell.2 | valiev_rustam.signal_tell.3 | hero.signal_tell.4 | valiev_rustam.signal_tell.5 | valiev_rustam.signal_tell.6
 
 [Nishimura_aya]
 first = nishimura_aya.first.1
@@ -194,12 +216,24 @@ quest.waxwing.prepare,journey = sorokin_oleg.waxwing_tips.1
 quest.waxwing.lure,wait,tame = sorokin_oleg.waxwing_wait.1
 quest.waxwing.return = sorokin_oleg.waxwing_back.1
 quest.waxwing_after.visit = sorokin_oleg.waxwing_after.1 | hero.waxwing_after.2 | sorokin_oleg.waxwing_after.3 | sorokin_oleg.waxwing_after.4
+quest.autumn_count.kit = sorokin_oleg.autumn_kit.1
+quest.autumn_count.brief = sorokin_oleg.autumn_brief.1 | sorokin_oleg.autumn_brief.2 | sorokin_oleg.autumn_brief.3 | hero.autumn_brief.4 | sorokin_oleg.autumn_brief.5 | sorokin_oleg.autumn_brief.6 | sorokin_oleg.autumn_brief.7 | hero.autumn_brief.8 | sorokin_oleg.autumn_brief.9
+quest.autumn_count.post,tally = sorokin_oleg.autumn_wait.1
+quest.autumn_count.report = hero.autumn_report.1 | sorokin_oleg.autumn_report.2 | sorokin_oleg.autumn_report.3 | sorokin_oleg.autumn_report.4 | sorokin_oleg.autumn_report.5
+# a finished quest's `done` line stays last: the first quest talk that fits is said, and a finished quest fits for ever
 quest.waxwing_after.done = sorokin_oleg.waxwing_journal.1
 
 [Khuazhev_aslan]
 first = khuazhev_aslan.first.1
 again = khuazhev_aslan.again1.1
+quest.tent_neighbours.ask = khuazhev_aslan.tent_ask.1 | khuazhev_aslan.tent_ask.2 | khuazhev_aslan.tent_ask.3 | hero.tent_ask.4 | khuazhev_aslan.tent_ask.5
+quest.tent_neighbours.taste = khuazhev_aslan.tent_wait.1
+quest.tent_neighbours.tell = khuazhev_aslan.tent_report.1 | hero.tent_report.2 | khuazhev_aslan.tent_report.3 | khuazhev_aslan.tent_report.4 | khuazhev_aslan.tent_report.5
 
 [Guseva_valentina]
 first = guseva_valentina.first.1
 again = guseva_valentina.again1.1
+quest.hot_corn.ask = guseva_valentina.corn_errand.1 | guseva_valentina.corn_errand.2 | hero.corn_errand.3 | guseva_valentina.corn_errand.4
+quest.hot_corn.buy = guseva_valentina.corn_till.1
+quest.hot_corn.carry = guseva_valentina.corn_hurry.1
+quest.hot_corn.tell = guseva_valentina.corn_report.1 | hero.corn_report.2 | guseva_valentina.corn_report.3 | guseva_valentina.corn_report.4

@@ -51,6 +51,7 @@ rest (the speakers are in `localization/voice.json`); `tools/check_localization.
 | `reach <place>` | came within a place's radius (as the hero or as a bird) | `ULyudQuests::UpdatePosition` |
 | `get`, `use`, `wear <item>`; `have <item>` | pocket changes; `have` counts what is in the pocket | `ULyudInventory` |
 | `bring <item>@<Npc>` | a talk with that person while the pocket holds `need` of the item: they are taken | `ULyudQuests` (on `talk`) |
+| `eat <item>` | food eaten to the end: a diner's dish to the last bite, food from the hand (`use` is sent for anything that leaves the pocket, a dish that is ordered too) | `ULyudBiteSubsystem`, `ULyudFoodSubsystem` |
 | `bird` | became a bird | the game screen |
 | `bird_seen`, `bird_tamed <Species>` | first sight; a bird ate from the palm | `ULyudBirdBook` |
 | `feeder_fill <feed>`, `feeder_fill_at <feed>@<place>` | a handful went into a feeder (and in which places the hero stood) | `UBirdFeederSubsystem::Fill` |
@@ -139,5 +140,18 @@ Not checked in the engine yet when this page was written: see the pull request f
 - `sparrow_hello`: Sonya (Kid_girl) does not believe birds make friends: tame a house sparrow, call beside her as the sparrow
   (a second `listeners` entry in `quest_scenes.json`), tell her as a person.
 
+- `soda_science` (Galina Zotova: four `use drink_*` objectives in one stage), `hot_corn` (Valentina Guseva to Ivan Korneev:
+  two people speak, `bring corn_cob@Korneev_ivan`), `night_signal` (Rustam Valiev: `have` + `wear head_lamp` +
+  `reach cable_upper` in one stage), `lab_lunch` (Vika Li: `eat diner_soup`).
+
+- `autumn_count` (Sorokin's sequel, begun by `waxwing_after`'s reward), `overdue_journal` (Olya the librarian and Lev Zotov,
+  begun by `waxwing`'s `prepare` reward), `owner_supper` (begun at the end of `awakening`; two `bring` objectives in one
+  stage), `tent_neighbours` (Aslan: three `eat` objectives).
+
+Two things the chained ones taught: a quest begun by a reward gets the very event that paid the reward, so its first
+stage must not wait for that event (not a `talk` with the same person); and in `npc_dialogue.txt` a `quest.<id>.done`
+line goes last in its section, because the first quest talk that fits is said and a finished quest fits for ever.
+
 People a quest needs must be findable: Sorokin, Aya and Lange have a daily duty on a bench (`birdwatch_yard`, `sketch_yard`,
-`mend_nets` in `PeopleData/activities.json`, duties in `people.json`), and the journal says when.
+`mend_nets` in `PeopleData/activities.json`, duties in `people.json`), and the journal says when; the laboratory's people and
+the Korneevs sit out an hour or two in the square after work (`yard_evening`).

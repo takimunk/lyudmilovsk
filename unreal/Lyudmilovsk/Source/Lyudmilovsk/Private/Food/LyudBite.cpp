@@ -341,6 +341,8 @@ void ULyudBiteSubsystem::ReachMouth()
 	if (Meal.Amount <= 0.f)
 	{
 		ULyudQuests::Notify(this, TEXT("use"), Meal.Item.ToString());
+		// "use" is also sent when a dish is ordered (it leaves the pocket for the table): "eat" is the plate emptied
+		ULyudQuests::Notify(this, TEXT("eat"), Meal.Item.ToString());
 	}
 }
 
