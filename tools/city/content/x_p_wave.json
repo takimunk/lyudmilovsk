@@ -1,5 +1,5 @@
 {
- "_doc": "Wave Tower arcade, depth pass: a notice board with a running story, a weighing machine, a listening post, bond board, queue tickets, seasonal feeder advice, hood driers, a pattern album and a model railway. Things are declared in blender/city/buildings/wave_tower.py; words in strings/x_p_wave.json.",
+ "_doc": "Wave Tower arcade, depth pass: a notice board with a running story, a weighing machine, a listening post, bond board, queue tickets, seasonal feeder advice, hood driers, a pattern album and a model railway. Things are declared in blender/city/buildings/wave_tower.py; words in strings/x_p_wave.json. Round 2b: the through passage as an amusement alley (three cabinets with their own games, pinball, change machine, prize counter and shelf, score board, a broken cabinet with a repair note over eight days, closed lines 9-22), a lift pair lift_g / lift_roof to the roof terrace with sea and town views by hour and weather, lobby switches; quests wave_record, wave_roof.",
  "acts": {
   "look_arcade_board": {
    "like": "look_misc",
@@ -425,6 +425,425 @@
    "lines": "city.wave.depot",
    "minutes": 3,
    "sound": "train_clack"
+  },
+  "wave_shoot": {
+   "like": "arcade",
+   "prompt": "city.wave2.shoot.prompt",
+   "lines": [
+    "city.wave2.shoot.after.1",
+    "city.wave2.shoot.after.2",
+    {
+     "k": "city.wave2.shoot.after.sun",
+     "d": "sun"
+    }
+   ],
+   "game": {
+    "type": "aim",
+    "title": "city.wave2.shoot.title",
+    "keys": "city.game.keys.shot",
+    "rounds": 5,
+    "need": 6,
+    "speed": 1.05,
+    "zone": 0.15,
+    "win": [
+     "city.wave2.shoot.win.1",
+     "city.wave2.shoot.win.2"
+    ],
+    "lose": [
+     "city.wave2.shoot.lose.1",
+     "city.wave2.shoot.lose.2"
+    ],
+    "draw": [
+     "city.wave2.shoot.draw.1"
+    ],
+    "collect": "wave_arcade/shooter",
+    "prize": [
+     [
+      "candy",
+      1
+     ]
+    ],
+    "daily": 4
+   }
+  },
+  "wave_race": {
+   "like": "arcade",
+   "prompt": "city.wave2.race.prompt",
+   "pose": "sit",
+   "minutes": 15,
+   "lines": [
+    "city.wave2.race.after.1",
+    "city.wave2.race.after.2"
+   ],
+   "game": {
+    "type": "rally",
+    "vs": "wave_racer",
+    "title": "city.wave2.race.title",
+    "need": 3,
+    "speed": 1.0,
+    "zone": 0.5,
+    "shrink": 0.9,
+    "pace": 1.05,
+    "win": [
+     "city.wave2.race.win.1"
+    ],
+    "lose": [
+     "city.wave2.race.lose.1"
+    ],
+    "draw": [
+     "city.wave2.race.draw.1"
+    ],
+    "collect": "wave_arcade/racer",
+    "daily": 4
+   }
+  },
+  "wave_pinball": {
+   "like": "arcade",
+   "prompt": "city.wave2.pin.prompt",
+   "price": 3,
+   "minutes": 8,
+   "lines": [
+    "city.wave2.pin.after.1",
+    "city.wave2.pin.after.2"
+   ],
+   "game": {
+    "type": "aim",
+    "title": "city.wave2.pin.title",
+    "keys": "city.game.keys.shot",
+    "rounds": 3,
+    "need": 4,
+    "speed": 0.85,
+    "zone": 0.22,
+    "win": [
+     "city.wave2.pin.win.1"
+    ],
+    "lose": [
+     "city.wave2.pin.lose.1"
+    ],
+    "draw": [
+     "city.wave2.pin.draw.1"
+    ],
+    "collect": "wave_arcade/pinball",
+    "daily": 4
+   }
+  },
+  "wave_change": {
+   "prompt": "city.wave2.change.prompt",
+   "lines": [
+    "city.wave2.change.1",
+    "city.wave2.change.2",
+    "city.wave2.change.3",
+    {
+     "k": "city.wave2.change.sat",
+     "d": "sat"
+    }
+   ],
+   "minutes": 1,
+   "sound": "coin",
+   "collect": "wave_arcade/tokens"
+  },
+  "wave_bin": {
+   "like": "use_misc",
+   "prompt": "city.wave2.bin.prompt",
+   "lines": [
+    "city.wave2.bin.1",
+    "city.wave2.bin.2",
+    "city.wave2.bin.3",
+    {
+     "k": "city.wave2.bin.rain",
+     "weather": "rain"
+    }
+   ],
+   "minutes": 1
+  },
+  "wave_hiscores": {
+   "like": "look_misc",
+   "prompt": "city.wave2.hisc.prompt",
+   "lines": [
+    {
+     "k": "city.wave2.hisc.1"
+    },
+    {
+     "k": "city.wave2.hisc.2"
+    },
+    {
+     "k": "city.wave2.hisc.3"
+    },
+    {
+     "k": "city.wave2.hisc.mon",
+     "d": "mon"
+    },
+    {
+     "k": "city.wave2.hisc.fri",
+     "d": "fri"
+    },
+    {
+     "k": "city.wave2.hisc.sat",
+     "d": "sat"
+    },
+    {
+     "k": "city.wave2.hisc.sun",
+     "d": "sun"
+    },
+    {
+     "k": "city.wave2.hisc.rec",
+     "after": 8
+    }
+   ],
+   "rotate": "daily",
+   "minutes": 2,
+   "collect": "wave_arcade/board"
+  },
+  "wave_repair_note": {
+   "like": "look_misc",
+   "prompt": "city.wave2.note.prompt",
+   "lines": [
+    {
+     "k": "city.wave2.note.1",
+     "before": 2
+    },
+    {
+     "k": "city.wave2.note.2",
+     "after": 2,
+     "before": 4
+    },
+    {
+     "k": "city.wave2.note.3",
+     "after": 4,
+     "before": 6
+    },
+    {
+     "k": "city.wave2.note.4",
+     "after": 6,
+     "before": 8
+    },
+    {
+     "k": "city.wave2.note.5",
+     "after": 8
+    }
+   ],
+   "rotate": "daily",
+   "minutes": 2,
+   "collect": "wave_arcade/note"
+  },
+  "wave_cab_broken": {
+   "prompt": "city.wave2.broken.prompt",
+   "lines": [
+    {
+     "k": "city.wave2.broken.1",
+     "before": 3
+    },
+    {
+     "k": "city.wave2.broken.2",
+     "before": 3
+    },
+    {
+     "k": "city.wave2.broken.3",
+     "after": 3,
+     "before": 8
+    },
+    {
+     "k": "city.wave2.broken.4",
+     "after": 8
+    }
+   ],
+   "minutes": 1,
+   "sound": "arcade_blip"
+  },
+  "wave_prize_shelf": {
+   "like": "look_misc",
+   "prompt": "city.wave2.prize.prompt",
+   "lines": [
+    "city.wave2.prize.1",
+    "city.wave2.prize.2",
+    {
+     "k": "city.wave2.prize.3",
+     "count": [
+      "wave_arcade",
+      3
+     ]
+    },
+    {
+     "k": "city.wave2.prize.6",
+     "count": [
+      "wave_arcade",
+      6
+     ]
+    }
+   ],
+   "minutes": 2
+  },
+  "wave_roof_sea": {
+   "like": "look_view",
+   "prompt": "city.wave2.sea.prompt",
+   "lines": [
+    {
+     "k": "city.wave2.roofsea.d1",
+     "h": [
+      6,
+      21
+     ]
+    },
+    {
+     "k": "city.wave2.roofsea.d2",
+     "h": [
+      6,
+      21
+     ]
+    },
+    {
+     "k": "city.wave2.roofsea.d3",
+     "h": [
+      6,
+      21
+     ]
+    },
+    {
+     "k": "city.wave2.roofsea.d4",
+     "h": [
+      6,
+      21
+     ]
+    },
+    {
+     "k": "city.wave2.roofsea.rain",
+     "weather": "rain",
+     "h": [
+      6,
+      21
+     ]
+    },
+    {
+     "k": "city.wave2.roofsea.fog",
+     "weather": "fog",
+     "h": [
+      6,
+      21
+     ]
+    },
+    {
+     "k": "city.wave2.roofsea.snow",
+     "weather": "snow",
+     "h": [
+      6,
+      21
+     ]
+    },
+    {
+     "k": "city.wave2.roofsea.clear",
+     "weather": "clear",
+     "h": [
+      6,
+      21
+     ]
+    },
+    {
+     "k": "city.wave2.roofsea.warm",
+     "weather": "warm",
+     "h": [
+      6,
+      21
+     ]
+    },
+    {
+     "k": "city.wave2.roofsea.cold",
+     "weather": "cold",
+     "h": [
+      6,
+      21
+     ]
+    },
+    {
+     "k": "city.wave2.roofsea.lantern",
+     "festival": "lantern_night",
+     "h": [
+      17,
+      21
+     ]
+    },
+    {
+     "k": "city.wave2.roofsea.n1",
+     "h": [
+      21,
+      6
+     ]
+    },
+    {
+     "k": "city.wave2.roofsea.n2",
+     "h": [
+      21,
+      6
+     ]
+    },
+    {
+     "k": "city.wave2.roofsea.n3",
+     "h": [
+      21,
+      6
+     ]
+    },
+    {
+     "k": "city.wave2.roofsea.nfog",
+     "weather": "fog",
+     "h": [
+      21,
+      6
+     ]
+    }
+   ],
+   "minutes": 5,
+   "any_hour": true
+  },
+  "wave_roof_town": {
+   "like": "look_view",
+   "prompt": "city.wave2.town.prompt",
+   "lines": [
+    {
+     "k": "city.wave2.rooftown.m",
+     "h": [
+      6,
+      11
+     ]
+    },
+    {
+     "k": "city.wave2.rooftown.d",
+     "h": [
+      11,
+      17
+     ]
+    },
+    {
+     "k": "city.wave2.rooftown.e",
+     "h": [
+      17,
+      21
+     ]
+    },
+    {
+     "k": "city.wave2.rooftown.we",
+     "d": "sat,sun",
+     "h": [
+      9,
+      19
+     ]
+    },
+    {
+     "k": "city.wave2.rooftown.n1",
+     "h": [
+      21,
+      6
+     ]
+    },
+    {
+     "k": "city.wave2.rooftown.n2",
+     "h": [
+      21,
+      6
+     ]
+    }
+   ],
+   "minutes": 5,
+   "any_hour": true
   }
  },
  "rules": {
@@ -481,6 +900,86 @@
   },
   "wave_tower/toys_loco_depot": {
    "act": "toys_loco_depot"
+  },
+  "wave_tower/wave_cab_shoot": {
+   "act": "wave_shoot",
+   "hours": [
+    9,
+    22
+   ],
+   "closed": "city.wave2.closed.cab.*"
+  },
+  "wave_tower/wave_cab_race": {
+   "act": "wave_race",
+   "hours": [
+    9,
+    22
+   ],
+   "closed": "city.wave2.closed.cab.*"
+  },
+  "wave_tower/wave_cab_broken": {
+   "act": "wave_cab_broken",
+   "hours": [
+    9,
+    22
+   ],
+   "closed": "city.wave2.closed.cab.*"
+  },
+  "wave_tower/wave_pinball": {
+   "act": "wave_pinball",
+   "hours": [
+    9,
+    22
+   ],
+   "closed": "city.wave2.closed.cab.*"
+  },
+  "wave_tower/wave_change": {
+   "act": "wave_change",
+   "hours": [
+    9,
+    22
+   ],
+   "closed": "city.wave2.closed.cab.*"
+  },
+  "wave_tower/wave_bin": {
+   "act": "wave_bin"
+  },
+  "wave_tower/wave_hiscores": {
+   "act": "wave_hiscores",
+   "hours": [
+    9,
+    22
+   ],
+   "closed": "city.wave2.closed.board.*"
+  },
+  "wave_tower/wave_repair_note": {
+   "act": "wave_repair_note",
+   "hours": [
+    9,
+    22
+   ],
+   "closed": "city.wave2.closed.board.*"
+  },
+  "wave_tower/wave_prize_shelf": {
+   "act": "wave_prize_shelf",
+   "hours": [
+    9,
+    22
+   ],
+   "closed": "city.wave2.closed.counter.*"
+  },
+  "wave_tower/wave_prize_counter": {
+   "hours": [
+    9,
+    22
+   ],
+   "closed": "city.wave2.closed.counter.*"
+  },
+  "wave_tower/roof_view_sea": {
+   "act": "wave_roof_sea"
+  },
+  "wave_tower/roof_view_town": {
+   "act": "wave_roof_town"
   }
  },
  "quests": [
@@ -579,6 +1078,157 @@
      }
     }
    ]
+  },
+  {
+   "id": "wave_record",
+   "kind": "side",
+   "start_on": {
+    "event": "visit",
+    "target": "P-WAVE"
+   },
+   "stages": [
+    {
+     "id": "board",
+     "objectives": [
+      {
+       "id": "board",
+       "event": "do",
+       "target": "wave_hiscores"
+      }
+     ]
+    },
+    {
+     "id": "tokens",
+     "objectives": [
+      {
+       "id": "change",
+       "event": "do",
+       "target": "wave_change"
+      }
+     ]
+    },
+    {
+     "id": "play",
+     "objectives": [
+      {
+       "id": "shoot",
+       "event": "win",
+       "target": "wave_shoot"
+      }
+     ],
+     "reward": {
+      "rubles": 25
+     }
+    }
+   ]
+  },
+  {
+   "id": "wave_roof",
+   "kind": "side",
+   "start_on": {
+    "event": "visit",
+    "target": "P-WAVE"
+   },
+   "stages": [
+    {
+     "id": "sea",
+     "objectives": [
+      {
+       "id": "sea",
+       "event": "do",
+       "target": "wave_roof_sea"
+      }
+     ]
+    },
+    {
+     "id": "scope",
+     "objectives": [
+      {
+       "id": "scope",
+       "event": "do",
+       "target": "telescope"
+      }
+     ]
+    },
+    {
+     "id": "town",
+     "objectives": [
+      {
+       "id": "town",
+       "event": "do",
+       "target": "wave_roof_town"
+      }
+     ],
+     "reward": {
+      "rubles": 20
+     }
+    }
+   ]
   }
- ]
+ ],
+ "shops": {
+  "wave_prizes": {
+   "role": "seller",
+   "goods": [
+    {
+     "item": "badge",
+     "price": 12,
+     "count": 6
+    },
+    {
+     "item": "candy",
+     "price": 8,
+     "count": 10
+    },
+    {
+     "item": "postcard",
+     "price": 4,
+     "count": 8
+    }
+   ]
+  }
+ },
+ "collections": {
+  "wave_arcade": {
+   "title": "city.wave2.coll.title",
+   "pieces": [
+    "shooter",
+    "racer",
+    "pinball",
+    "board",
+    "note",
+    "tokens"
+   ]
+  }
+ },
+ "regulars": {
+  "wave_valera": {
+   "name": "city.wave2.reg.valera",
+   "style": "tricky",
+   "skill": 0.55,
+   "plays": [
+    "wave_racer"
+   ],
+   "plots": [
+    "P-WAVE"
+   ],
+   "hello": "city.wave2.reg.valera.hello",
+   "win": "city.wave2.reg.valera.win",
+   "lose": "city.wave2.reg.valera.lose"
+  },
+  "wave_dina": {
+   "name": "city.wave2.reg.dina",
+   "style": "careful",
+   "skill": 0.6,
+   "plays": [
+    "wave_racer"
+   ],
+   "plots": [
+    "P-WAVE"
+   ],
+   "hello": "city.wave2.reg.dina.hello",
+   "win": "city.wave2.reg.dina.win",
+   "lose": "city.wave2.reg.dina.lose"
+  }
+ }
 }

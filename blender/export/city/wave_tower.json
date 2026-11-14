@@ -739,6 +739,16 @@
    "yaw": 90
   },
   {
+   "id": "lift_g_wait",
+   "kind": "stand",
+   "pos": [
+    1.45,
+    15.216,
+    0.0
+   ],
+   "yaw": 0.0
+  },
+  {
    "id": "shop_d_counter",
    "kind": "counter",
    "pos": [
@@ -1199,6 +1209,96 @@
    "yaw": -10.138940550296516
   },
   {
+   "id": "wave_race_seat",
+   "kind": "seat",
+   "pos": [
+    -13.5,
+    7.95,
+    0.0
+   ],
+   "yaw": 270
+  },
+  {
+   "id": "wave_shoot_stand",
+   "kind": "stand",
+   "pos": [
+    -13.65,
+    6.8,
+    0.0
+   ],
+   "yaw": 270
+  },
+  {
+   "id": "wave_broken_stand",
+   "kind": "stand",
+   "pos": [
+    -13.65,
+    9.1,
+    0.0
+   ],
+   "yaw": 270
+  },
+  {
+   "id": "wave_hiscores_stand",
+   "kind": "stand",
+   "pos": [
+    -13.95,
+    10.5,
+    0.0
+   ],
+   "yaw": 270
+  },
+  {
+   "id": "wave_pinball_stand",
+   "kind": "stand",
+   "pos": [
+    -11.45,
+    6.8,
+    0.0
+   ],
+   "yaw": 90
+  },
+  {
+   "id": "wave_change_stand",
+   "kind": "stand",
+   "pos": [
+    -11.15,
+    8.0,
+    0.0
+   ],
+   "yaw": 90
+  },
+  {
+   "id": "wave_prize_counter",
+   "kind": "counter",
+   "pos": [
+    -12.35,
+    10.4,
+    0.0
+   ],
+   "yaw": 90
+  },
+  {
+   "id": "wave_prize_clerk",
+   "kind": "work",
+   "pos": [
+    -10.85,
+    10.4,
+    0.0
+   ],
+   "yaw": 270
+  },
+  {
+   "id": "wave_prize_queue",
+   "kind": "stand",
+   "pos": [
+    -12.35,
+    11.4,
+    0.0
+   ],
+   "yaw": 90
+  },
+  {
    "id": "roof_bench_13",
    "kind": "bench",
    "pos": [
@@ -1227,6 +1327,16 @@
     54.9
    ],
    "yaw": 0.0
+  },
+  {
+   "id": "lift_roof_wait",
+   "kind": "stand",
+   "pos": [
+    0.0,
+    14.3,
+    54.9
+   ],
+   "yaw": 180.0
   }
  ],
  "lamps": [
@@ -2110,6 +2220,20 @@
    }
   },
   {
+   "id": "core1_switch",
+   "kind": "machine",
+   "pos": [
+    -27.3,
+    6.542,
+    1.45
+   ],
+   "yaw": 90,
+   "props": {
+    "what": "switch",
+    "switch": "room"
+   }
+  },
+  {
    "id": "records_wall_1",
    "kind": "shelf",
    "pos": [
@@ -2816,6 +2940,33 @@
    }
   },
   {
+   "id": "core2_switch",
+   "kind": "machine",
+   "pos": [
+    -2.3,
+    9.14,
+    1.45
+   ],
+   "yaw": 90,
+   "props": {
+    "what": "switch",
+    "switch": "room"
+   }
+  },
+  {
+   "id": "lift_g",
+   "kind": "door",
+   "pos": [
+    1.45,
+    16.076,
+    1.1
+   ],
+   "yaw": 0.0,
+   "props": {
+    "to": "lift_roof"
+   }
+  },
+  {
    "id": "hardware_wall_1",
    "kind": "shelf",
    "pos": [
@@ -3367,6 +3518,20 @@
    }
   },
   {
+   "id": "core3_switch",
+   "kind": "machine",
+   "pos": [
+    22.7,
+    11.738,
+    1.45
+   ],
+   "yaw": 90,
+   "props": {
+    "what": "switch",
+    "switch": "room"
+   }
+  },
+  {
    "id": "fabric_wall_1",
    "kind": "shelf",
    "pos": [
@@ -3745,6 +3910,255 @@
    "yaw": -3.1,
    "props": {
     "what": "scales"
+   }
+  },
+  {
+   "id": "wave_cab_shoot",
+   "kind": "machine",
+   "pos": [
+    -14.42,
+    6.8,
+    1.2
+   ],
+   "yaw": 90,
+   "props": {
+    "what": "arcade"
+   }
+  },
+  {
+   "id": "wave_cab_race",
+   "kind": "machine",
+   "pos": [
+    -14.42,
+    7.95,
+    1.2
+   ],
+   "yaw": 90,
+   "props": {
+    "what": "arcade"
+   }
+  },
+  {
+   "id": "wave_cab_broken",
+   "kind": "machine",
+   "pos": [
+    -14.42,
+    9.1,
+    1.2
+   ],
+   "yaw": 90,
+   "props": {
+    "what": "arcade"
+   }
+  },
+  {
+   "id": "wave_stool_race",
+   "kind": "seat",
+   "pos": [
+    -13.5,
+    7.95,
+    0.45
+   ],
+   "yaw": 270,
+   "props": {
+    "height": 0.45
+   }
+  },
+  {
+   "id": "wave_repair_note",
+   "kind": "board",
+   "pos": [
+    -14.8,
+    9.1,
+    2.05
+   ],
+   "yaw": 90,
+   "props": {
+    "topic": "local"
+   }
+  },
+  {
+   "id": "wave_hiscores",
+   "kind": "board",
+   "pos": [
+    -14.79,
+    10.5,
+    1.65
+   ],
+   "yaw": 90,
+   "props": {
+    "topic": "local"
+   }
+  },
+  {
+   "id": "kit_clock_7",
+   "kind": "board",
+   "pos": [
+    -14.795,
+    12.0,
+    2.5
+   ],
+   "yaw": 90,
+   "props": {
+    "what": "clock"
+   }
+  },
+  {
+   "id": "wave_switch",
+   "kind": "machine",
+   "pos": [
+    -10.2,
+    4.76,
+    1.45
+   ],
+   "yaw": 270,
+   "props": {
+    "what": "switch",
+    "switch": "room"
+   }
+  },
+  {
+   "id": "wave_pinball",
+   "kind": "play",
+   "pos": [
+    -10.6,
+    6.8,
+    0.9
+   ],
+   "yaw": 270,
+   "props": {
+    "what": "pinball"
+   }
+  },
+  {
+   "id": "wave_change",
+   "kind": "machine",
+   "pos": [
+    -10.45,
+    8.0,
+    1.2
+   ],
+   "yaw": 270,
+   "props": {
+    "what": "change"
+   }
+  },
+  {
+   "id": "wave_prize_counter",
+   "kind": "counter",
+   "pos": [
+    -11.5,
+    10.4,
+    1.05
+   ],
+   "yaw": 270,
+   "props": {
+    "role": "seller",
+    "shop": "wave_prizes"
+   }
+  },
+  {
+   "id": "wave_prize_shelf",
+   "kind": "board",
+   "pos": [
+    -10.45,
+    10.4,
+    1.4
+   ],
+   "yaw": 270,
+   "props": {
+    "topic": "kids"
+   }
+  },
+  {
+   "id": "wave_bin",
+   "kind": "machine",
+   "pos": [
+    -10.5,
+    12.9,
+    0.5
+   ],
+   "yaw": 270,
+   "props": {
+    "what": "bin"
+   }
+  },
+  {
+   "id": "lift_roof",
+   "kind": "door",
+   "pos": [
+    0.0,
+    13.44,
+    56.0
+   ],
+   "yaw": 180.0,
+   "props": {
+    "to": "lift_g"
+   }
+  },
+  {
+   "id": "roof_view_sea",
+   "kind": "board",
+   "pos": [
+    20.0,
+    8.134,
+    55.95
+   ],
+   "yaw": 0.0,
+   "props": {
+    "topic": "view"
+   }
+  },
+  {
+   "id": "roof_telescope",
+   "kind": "machine",
+   "pos": [
+    27.0,
+    7.462,
+    56.2
+   ],
+   "yaw": 0.0,
+   "props": {
+    "what": "telescope"
+   }
+  },
+  {
+   "id": "roof_view_town",
+   "kind": "board",
+   "pos": [
+    16.0,
+    18.421,
+    55.95
+   ],
+   "yaw": 180.0,
+   "props": {
+    "topic": "view"
+   }
+  },
+  {
+   "id": "roof_seat_13",
+   "kind": "seat",
+   "pos": [
+    13.0,
+    11.479,
+    55.45
+   ],
+   "yaw": 0.0,
+   "props": {
+    "height": 0.55
+   }
+  },
+  {
+   "id": "roof_seat_25",
+   "kind": "seat",
+   "pos": [
+    25.0,
+    11.418,
+    55.45
+   ],
+   "yaw": 0.0,
+   "props": {
+    "height": 0.55
    }
   }
  ],
@@ -26374,8 +26788,8 @@
   "142 flats on 16 storeys, S-curved slab with undulating brise-soleil bands"
  ],
  "tris": {
-  "shell": 49696,
-  "detail": 76976,
+  "shell": 49756,
+  "detail": 79044,
   "windows": 3804
  }
 }
