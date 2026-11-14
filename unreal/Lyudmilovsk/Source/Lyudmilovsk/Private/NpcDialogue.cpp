@@ -655,9 +655,27 @@ bool ANpcTalkDirector::InSight(const FVector& From, const FVector& To, const AAc
 		{
 			return true;
 		}
-		const UPrimitiveComponent* Comp = Hit.GetComponent();
+		UPrimitiveComponent* Comp = Hit.GetComponent();
 		const UMaterialInterface* Mat = Comp ? Comp->GetMaterial(FMath::Max<int32>(Hit.ElementIndex, 0)) : nullptr;
-		if (!Mat || !IsTranslucentBlendMode(Mat->GetBlendMode()))
+		if (Comp && (!Mat || !IsTranslucentBlendMode(Mat->GetBlendMode())))
+		{
+			// a simple-collision hit's ElementIndex is its collision shape, not a material slot: on a merged mesh (the
+			// booth's window in scene01_corridor_node_*) the box over the window reads as plywood. Ask that one component
+			// again with its real triangles: open there, or glass by the face's own material, and it is seen through
+			FHitResult Exact;
+			FCollisionQueryParams ExactParams(SCENE_QUERY_STAT(NpcSightExact), true);
+			ExactParams.bReturnFaceIndex = true;
+			if (Comp->LineTraceComponent(Exact, Start, To, ExactParams))
+			{
+				int32 Section = 0;
+				Mat = Exact.FaceIndex >= 0 ? Comp->GetMaterialFromCollisionFaceIndex(Exact.FaceIndex, Section) : nullptr;
+				if (!Mat || !IsTranslucentBlendMode(Mat->GetBlendMode()))
+				{
+					return false;
+				}
+			}
+		}
+		else if (!Comp)
 		{
 			return false;
 		}
