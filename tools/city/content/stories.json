@@ -1,7 +1,7 @@
 {
  "_doc": "Stories told by things (docs/city_interiors.md, section 2): the six bus-stop kiosks' own trades, the fair games, the sanatorium's paid night, the photo studio's desk, the bookstalls' sale tables, the open homes (one person or family per home, each object its own lines, one small quest each: tools/city/content/quests.json home_*), the lighthouse keepers' room, the caretaker of the curved slab, and the regulars' notices of five public buildings (appended to the generic ones). Strings: tools/city/content/strings/stories.json (town) and strings/homes.json (homes, quests).",
  "shops": {
-  "kiosk_icecream": {"role": "seller", "goods": [{"item": "ice_cream", "price": 28, "count": 12}, {"item": "drink_buratino", "price": 18, "count": 6}, {"item": "drink_dyushes", "price": 18, "count": 6}, {"item": "water", "price": 20, "count": 6}, {"item": "chocolate", "price": 25, "count": 3}]},
+  "kiosk_icecream": {"role": "seller", "goods": [{"item": "ice_cream", "price": 28, "count": 12}, {"item": "eskimo", "price": 22, "count": 10}, {"item": "drink_buratino", "price": 18, "count": 6}, {"item": "drink_dyushes", "price": 18, "count": 6}, {"item": "water", "price": 20, "count": 6}, {"item": "chocolate", "price": 25, "count": 3}]},
   "kiosk_tobacco": {"role": "seller", "goods": [{"item": "cigarettes", "price": 35, "count": 6}, {"item": "lighter", "price": 10, "count": 6}, {"item": "daily_paper", "price": 5, "count": 6}, {"item": "seeds", "price": 10, "count": 8}, {"item": "candy", "price": 8, "count": 10}]}
  },
  "acts": {

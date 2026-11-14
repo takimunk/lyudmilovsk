@@ -834,6 +834,258 @@
    "aspect": "1:1",
    "prompt": "See design/fishing/icons_grid_6.json (cell of lure_wobbler).",
    "source": "design/fishing/icons_grid_6.json: a Higgsfield grid, cut by tools/fishing_icons.py (the game-assets rule)"
+  },
+  "icon_bread_rye": {
+   "kind": "icon",
+   "style": "icon",
+   "aspect": "1:1",
+   "prompt": "A brick-shaped loaf of dark Soviet rye bread with a shiny brown crust and a few caraway seeds, on a scrap of plain wrapping paper.",
+   "source": "localization/icon_grids_city.json: icons_city_1, cell 1 (row 1, left), one 3x3 Higgsfield grid (the game-assets rule); not generated yet"
+  },
+  "icon_bubliki": {
+   "kind": "icon",
+   "style": "icon",
+   "aspect": "1:1",
+   "prompt": "Five glossy golden bagel rings sprinkled with poppy seeds, threaded on a loop of rough twine.",
+   "source": "localization/icon_grids_city.json: icons_city_1, cell 2 (row 1, middle), one 3x3 Higgsfield grid (the game-assets rule); not generated yet"
+  },
+  "icon_vatrushka": {
+   "kind": "icon",
+   "style": "icon",
+   "aspect": "1:1",
+   "prompt": "A round golden sweet bun with a well of white baked curd cheese in its centre, on a square of greaseproof paper.",
+   "source": "localization/icon_grids_city.json: icons_city_1, cell 3 (row 1, right), one 3x3 Higgsfield grid (the game-assets rule); not generated yet"
+  },
+  "icon_pastry": {
+   "kind": "icon",
+   "style": "icon",
+   "aspect": "1:1",
+   "prompt": "A small round shortcrust pastry basket filled with piped pale cream shaped like two tiny mushrooms and a drop of red jam, on a little white saucer.",
+   "source": "localization/icon_grids_city.json: icons_city_1, cell 4 (row 2, left), one 3x3 Higgsfield grid (the game-assets rule); not generated yet"
+  },
+  "icon_donuts": {
+   "kind": "icon",
+   "style": "icon",
+   "aspect": "1:1",
+   "prompt": "Three round ring doughnuts heavily dusted with powdered sugar, spilling out of a plain brown paper cone.",
+   "source": "localization/icon_grids_city.json: icons_city_1, cell 5 (row 2, middle), one 3x3 Higgsfield grid (the game-assets rule); not generated yet"
+  },
+  "icon_cheburek": {
+   "kind": "icon",
+   "style": "icon",
+   "aspect": "1:1",
+   "prompt": "A large half-moon fried pasty with a crimped edge and a blistered golden crust, on a square of greaseproof paper.",
+   "source": "localization/icon_grids_city.json: icons_city_1, cell 6 (row 2, right), one 3x3 Higgsfield grid (the game-assets rule); not generated yet"
+  },
+  "icon_pelmeni_portion": {
+   "kind": "icon",
+   "style": "icon",
+   "aspect": "1:1",
+   "prompt": "A dozen small boiled pelmeni dumplings on a plain white paper plate with a spoonful of sour cream on top and a small aluminium fork.",
+   "source": "localization/icon_grids_city.json: icons_city_1, cell 7 (row 3, left), one 3x3 Higgsfield grid (the game-assets rule); not generated yet"
+  },
+  "icon_sandwich": {
+   "kind": "icon",
+   "style": "icon",
+   "aspect": "1:1",
+   "prompt": "An open sandwich: a slice of white bread with a square slice of yellow cheese on top, on a small white saucer.",
+   "source": "localization/icon_grids_city.json: icons_city_1, cell 8 (row 3, middle), one 3x3 Higgsfield grid (the game-assets rule); not generated yet"
+  },
+  "icon_gingerbread": {
+   "kind": "icon",
+   "style": "icon",
+   "aspect": "1:1",
+   "prompt": "Two round domed Russian gingerbread cakes covered in a thin crackled white sugar glaze.",
+   "source": "localization/icon_grids_city.json: icons_city_1, cell 9 (row 3, right), one 3x3 Higgsfield grid (the game-assets rule); not generated yet"
+  },
+  "icon_lollipop": {
+   "kind": "icon",
+   "style": "icon",
+   "aspect": "1:1",
+   "prompt": "A translucent amber hard-candy lollipop moulded in the shape of a cockerel, on a thin wooden stick.",
+   "source": "localization/icon_grids_city.json: icons_city_2, cell 1 (row 1, left), one 3x3 Higgsfield grid (the game-assets rule); not generated yet"
+  },
+  "icon_candy_floss": {
+   "kind": "icon",
+   "style": "icon",
+   "aspect": "1:1",
+   "prompt": "A big fluffy cloud of pink candy floss on a thin wooden stick.",
+   "source": "localization/icon_grids_city.json: icons_city_2, cell 2 (row 1, middle), one 3x3 Higgsfield grid (the game-assets rule); not generated yet"
+  },
+  "icon_eskimo": {
+   "kind": "icon",
+   "style": "icon",
+   "aspect": "1:1",
+   "prompt": "A chocolate-coated vanilla ice cream bar on a wooden stick, half unwrapped from a plain silver foil wrapper, one bite taken showing white ice cream.",
+   "source": "localization/icon_grids_city.json: icons_city_2, cell 3 (row 1, right), one 3x3 Higgsfield grid (the game-assets rule); not generated yet"
+  },
+  "icon_milkshake": {
+   "kind": "icon",
+   "style": "icon",
+   "aspect": "1:1",
+   "prompt": "A tall plain glass of white milkshake with thick foam up to the brim and a striped paper straw.",
+   "source": "localization/icon_grids_city.json: icons_city_2, cell 4 (row 2, left), one 3x3 Higgsfield grid (the game-assets rule); not generated yet"
+  },
+  "icon_kvass": {
+   "kind": "icon",
+   "style": "icon",
+   "aspect": "1:1",
+   "prompt": "A heavy dimpled glass beer mug full of dark amber kvass with a thin head of foam.",
+   "source": "localization/icon_grids_city.json: icons_city_2, cell 5 (row 2, middle), one 3x3 Higgsfield grid (the game-assets rule); not generated yet"
+  },
+  "icon_tomato_juice": {
+   "kind": "icon",
+   "style": "icon",
+   "aspect": "1:1",
+   "prompt": "A faceted Soviet glass tumbler full of thick red tomato juice with a small spoon leaning in it.",
+   "source": "localization/icon_grids_city.json: icons_city_2, cell 6 (row 2, right), one 3x3 Higgsfield grid (the game-assets rule); not generated yet"
+  },
+  "icon_milk_pyramid": {
+   "kind": "icon",
+   "style": "icon",
+   "aspect": "1:1",
+   "prompt": "A tetrahedron-shaped paper milk carton, white with a plain blue diamond pattern, no lettering.",
+   "source": "localization/icon_grids_city.json: icons_city_2, cell 7 (row 3, left), one 3x3 Higgsfield grid (the game-assets rule); not generated yet"
+  },
+  "icon_condensed_milk": {
+   "kind": "icon",
+   "style": "icon",
+   "aspect": "1:1",
+   "prompt": "A squat tin can of condensed milk with a plain white and pale blue paper label without any lettering, two small holes punched in the lid.",
+   "source": "localization/icon_grids_city.json: icons_city_2, cell 8 (row 3, middle), one 3x3 Higgsfield grid (the game-assets rule); not generated yet"
+  },
+  "icon_cherries": {
+   "kind": "icon",
+   "style": "icon",
+   "aspect": "1:1",
+   "prompt": "A plain paper cone full of dark red sweet cherries on stalks, a few spilled in front.",
+   "source": "localization/icon_grids_city.json: icons_city_2, cell 9 (row 3, right), one 3x3 Higgsfield grid (the game-assets rule); not generated yet"
+  },
+  "icon_smoked_fish": {
+   "kind": "icon",
+   "style": "icon",
+   "aspect": "1:1",
+   "prompt": "A whole golden-brown hot-smoked mackerel lying on a sheet of oily brown wrapping paper.",
+   "source": "localization/icon_grids_city.json: icons_city_3, cell 1 (row 1, left), one 3x3 Higgsfield grid (the game-assets rule); not generated yet"
+  },
+  "icon_dried_fish": {
+   "kind": "icon",
+   "style": "icon",
+   "aspect": "1:1",
+   "prompt": "A whole flat salted dried roach fish, silvery-grey and stiff, with a string loop through its eye.",
+   "source": "localization/icon_grids_city.json: icons_city_3, cell 2 (row 1, middle), one 3x3 Higgsfield grid (the game-assets rule); not generated yet"
+  },
+  "icon_hematogen": {
+   "kind": "icon",
+   "style": "icon",
+   "aspect": "1:1",
+   "prompt": "A small rectangular dark brown chewy bar divided into squares, half unwrapped from a plain cream paper wrapper.",
+   "source": "localization/icon_grids_city.json: icons_city_3, cell 3 (row 1, right), one 3x3 Higgsfield grid (the game-assets rule); not generated yet"
+  },
+  "icon_ascorbic": {
+   "kind": "icon",
+   "style": "icon",
+   "aspect": "1:1",
+   "prompt": "A short paper-wrapped roll of round yellow vitamin tablets, opened at one end with three tablets spilled out.",
+   "source": "localization/icon_grids_city.json: icons_city_3, cell 4 (row 2, left), one 3x3 Higgsfield grid (the game-assets rule); not generated yet"
+  },
+  "icon_soap": {
+   "kind": "icon",
+   "style": "icon",
+   "aspect": "1:1",
+   "prompt": "An oval bar of pink soap partly unwrapped from plain white paper.",
+   "source": "localization/icon_grids_city.json: icons_city_3, cell 5 (row 2, middle), one 3x3 Higgsfield grid (the game-assets rule); not generated yet"
+  },
+  "icon_wool_ball": {
+   "kind": "icon",
+   "style": "icon",
+   "aspect": "1:1",
+   "prompt": "A round ball of soft blue woollen yarn with a loose end trailing, two wooden knitting needles stuck through it.",
+   "source": "localization/icon_grids_city.json: icons_city_3, cell 6 (row 2, right), one 3x3 Higgsfield grid (the game-assets rule); not generated yet"
+  },
+  "icon_thread_spool": {
+   "kind": "icon",
+   "style": "icon",
+   "aspect": "1:1",
+   "prompt": "A small wooden spool wound with bright red cotton thread.",
+   "source": "localization/icon_grids_city.json: icons_city_3, cell 7 (row 3, left), one 3x3 Higgsfield grid (the game-assets rule); not generated yet"
+  },
+  "icon_buttons_card": {
+   "kind": "icon",
+   "style": "icon",
+   "aspect": "1:1",
+   "prompt": "Six round mother-of-pearl buttons sewn in two rows onto a plain grey cardboard card.",
+   "source": "localization/icon_grids_city.json: icons_city_3, cell 8 (row 3, middle), one 3x3 Higgsfield grid (the game-assets rule); not generated yet"
+  },
+  "icon_handkerchief": {
+   "kind": "icon",
+   "style": "icon",
+   "aspect": "1:1",
+   "prompt": "A neatly folded cotton handkerchief with a pale blue and white check pattern.",
+   "source": "localization/icon_grids_city.json: icons_city_3, cell 9 (row 3, right), one 3x3 Higgsfield grid (the game-assets rule); not generated yet"
+  },
+  "icon_postcard_set": {
+   "kind": "icon",
+   "style": "icon",
+   "aspect": "1:1",
+   "prompt": "A paper folder of picture postcards fanned open: a seaside promenade, a cable car over a hill, a white lighthouse, a market, without any lettering.",
+   "source": "localization/icon_grids_city.json: icons_city_4, cell 1 (row 1, left), one 3x3 Higgsfield grid (the game-assets rule); not generated yet"
+  },
+  "icon_stamp_packet": {
+   "kind": "icon",
+   "style": "icon",
+   "aspect": "1:1",
+   "prompt": "A small clear glassine envelope holding a handful of colourful postage stamps with pictures of ships, birds and a rocket, without readable lettering.",
+   "source": "localization/icon_grids_city.json: icons_city_4, cell 2 (row 1, middle), one 3x3 Higgsfield grid (the game-assets rule); not generated yet"
+  },
+  "icon_notebook": {
+   "kind": "icon",
+   "style": "icon",
+   "aspect": "1:1",
+   "prompt": "A thick school exercise notebook with a plain dark green textured oilcloth cover, slightly open showing squared pages.",
+   "source": "localization/icon_grids_city.json: icons_city_4, cell 3 (row 1, right), one 3x3 Higgsfield grid (the game-assets rule); not generated yet"
+  },
+  "icon_adventure_book": {
+   "kind": "icon",
+   "style": "icon",
+   "aspect": "1:1",
+   "prompt": "A worn cloth-bound book with a faded red cover showing an embossed sailing ship, no title, pages dog-eared.",
+   "source": "localization/icon_grids_city.json: icons_city_4, cell 4 (row 2, left), one 3x3 Higgsfield grid (the game-assets rule); not generated yet"
+  },
+  "icon_toy_duck": {
+   "kind": "icon",
+   "style": "icon",
+   "aspect": "1:1",
+   "prompt": "A small yellow lithographed tin wind-up duck with an orange beak and a metal winding key in its side.",
+   "source": "localization/icon_grids_city.json: icons_city_4, cell 5 (row 2, middle), one 3x3 Higgsfield grid (the game-assets rule); not generated yet"
+  },
+  "icon_spinning_top": {
+   "kind": "icon",
+   "style": "icon",
+   "aspect": "1:1",
+   "prompt": "A tin humming spinning top with red, yellow and blue stripes and a spiral metal plunger on top.",
+   "source": "localization/icon_grids_city.json: icons_city_4, cell 6 (row 2, right), one 3x3 Higgsfield grid (the game-assets rule); not generated yet"
+  },
+  "icon_toy_car": {
+   "kind": "icon",
+   "style": "icon",
+   "aspect": "1:1",
+   "prompt": "A small die-cast metal toy van painted light blue, with rubber wheels and one door open, no markings.",
+   "source": "localization/icon_grids_city.json: icons_city_4, cell 7 (row 3, left), one 3x3 Higgsfield grid (the game-assets rule); not generated yet"
+  },
+  "icon_rubber_ball": {
+   "kind": "icon",
+   "style": "icon",
+   "aspect": "1:1",
+   "prompt": "A shiny red rubber ball with a single blue stripe around it.",
+   "source": "localization/icon_grids_city.json: icons_city_4, cell 8 (row 3, middle), one 3x3 Higgsfield grid (the game-assets rule); not generated yet"
+  },
+  "icon_shell_box": {
+   "kind": "icon",
+   "style": "icon",
+   "aspect": "1:1",
+   "prompt": "A small varnished wooden box with its lid covered in tiny glued seashells and a starfish, the lid slightly open showing a little mirror.",
+   "source": "localization/icon_grids_city.json: icons_city_4, cell 9 (row 3, right), one 3x3 Higgsfield grid (the game-assets rule); not generated yet"
   }
  }
 }

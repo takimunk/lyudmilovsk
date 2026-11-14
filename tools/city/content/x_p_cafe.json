@@ -349,7 +349,7 @@
    "needs_staff": "barista",
    "give": [
     [
-     "pie",
+     "pastry",
      1
     ]
    ],
@@ -704,7 +704,7 @@
      ],
      "reward": {
       "items": {
-       "pie": 1
+       "pastry": 1
       },
       "rubles": 20
      }
