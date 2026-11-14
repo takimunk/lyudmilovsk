@@ -58,6 +58,7 @@ IMPORTED = DEST + "/Imported"
 TAG = "North"
 FOLDER = "Outside/North"
 FRONT_YAW = 90.0                 # Unreal yaw of a Blender-built mesh's front (-Y) in its own frame
+FAR_THINGS = ("log_bridge", "sea_stack", "rowboat")   # things seen from afar: not culled at NEAR_CM
 NEAR_CM = 20000.0                # small camp things are not drawn farther than this
 # rough sizes (m) for the placeholders of kinds not built yet
 PLACEHOLDER = {"fire_ring": (1.4, 1.4, 0.3), "tent_dome": (2.4, 2.2, 1.3), "tent_ridge": (2.2, 1.6, 1.2), "tent_tunnel": (3.2, 1.8, 1.1),
@@ -452,7 +453,10 @@ def _manifest_boxes(sm, body, boxes, asset):
             c, sz = b["center"], b["size"]
             e = unreal.KBoxElem()
             e.set_editor_property("center", unreal.Vector(c[0] * 100.0, -c[1] * 100.0, c[2] * 100.0))
-            e.set_editor_property("rotation", unreal.Rotator(roll=0.0, pitch=-float(b.get("rot_y_deg", 0.0)), yaw=0.0))
+            # rot_x_deg: right-handed about Blender +X, positive tips the -Y end down; Blender -Y is Unreal +Y, and a positive
+            # Unreal roll lowers the +Y side, so it carries over as is (spring_steps' sloped box)
+            e.set_editor_property("rotation", unreal.Rotator(roll=float(b.get("rot_x_deg", 0.0)),
+                                                             pitch=-float(b.get("rot_y_deg", 0.0)), yaw=0.0))
             e.set_editor_property("x", sz[0] * 100.0)
             e.set_editor_property("y", sz[1] * 100.0)
             e.set_editor_property("z", sz[2] * 100.0)
@@ -701,7 +705,7 @@ def place(face_y=None):
             log("thing %s: no mesh for %s v%d yet, skipped" % (it["id"], it["kind"], int(it.get("variant", 0))))
             continue
         spawn_mesh(it["kind"], int(it.get("variant", 0)), it["x"], it["y"], float(it.get("yaw", 0.0)), it["id"], "Things",
-                   z=None if z is None else float(z), near="bridge" not in it["kind"])
+                   z=None if z is None else float(z), near=it["kind"] not in FAR_THINGS)
         nthings += 1
     # the camp's fire on its ring
     fire = next((it for it in data.get("camp", []) if it["kind"] == "fire_ring"), None)
