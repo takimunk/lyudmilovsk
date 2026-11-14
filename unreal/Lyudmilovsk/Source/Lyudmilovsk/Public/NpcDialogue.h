@@ -133,6 +133,8 @@ public:
 	bool IsEngaged() const { return TargetIndex != INDEX_NONE || TalkingIndex != INDEX_NONE; }
 	/** A conversation is being held now. */
 	bool IsTalking() const { return TalkingIndex != INDEX_NONE; }
+	/** Whom the conversation is with (null: nobody). */
+	const AActor* TalkingTo() const { return People.IsValidIndex(TalkingIndex) ? People[TalkingIndex].Actor.Get() : nullptr; }
 	/** Nothing solid between From and To (looks through glass; Npc and the player's pawn do not count). */
 	bool InSight(const FVector& From, const FVector& To, const AActor* Npc) const;
 

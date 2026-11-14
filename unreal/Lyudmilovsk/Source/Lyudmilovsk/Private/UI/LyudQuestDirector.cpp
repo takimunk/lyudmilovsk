@@ -692,7 +692,9 @@ void ULyudQuestDirector::TickSpeech()
 			{
 				Cut.Voice->Stop();
 			}
-			if (AActor* Speaker = PersonActor(Cut.Person))
+			// (not the one the talk is with: their lips already move with the talk's first line)
+			AActor* Speaker = PersonActor(Cut.Person);
+			if (Speaker && Speaker != TalkDirector->TalkingTo())
 			{
 				ULyudBodyAnimInstance::StopLine(Speaker->FindComponentByClass<USkeletalMeshComponent>());
 			}
