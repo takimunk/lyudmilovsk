@@ -622,7 +622,7 @@ def _studio(B, rnd, fr, zf, off, mat, wmat, shape, fid):
     B.thing("studio_bed", "bed", pt(-1.7, 1.12, FL + 0.5), 0.0, height=0.5, rest="private")
     B.thing("studio_radio_set", "machine", pt(-1.55, WF - 0.14, top + 0.15), 180.0, what="radio_set")
     B.thing("studio_records", "machine", pt(1.0, WF - 0.3, FL + 0.5), 0.0, what="record_player")
-    B.thing("studio_shelf_radio", "shelf", pt(-iu + 0.1, 2.75, FL + 1.3), 90.0, topic="engineering")
+    B.thing("studio_shelf_radio", "shelf", pt(-iu + 0.1, 2.45, FL + 1.3), 90.0, topic="engineering")
     B.thing("studio_shelf_music", "shelf", pt(iu - 0.1, 1.25, FL + 1.3), 270.0, topic="music")
     B.thing("studio_shelf_manuals", "shelf", pt(iu - 0.1, 2.2, FL + 1.3), 270.0, topic="engineering")
     B.thing("studio_map", "board", pt(-iu + 0.03, 1.15, FL + 1.75), 90.0, topic="travel")
