@@ -663,7 +663,9 @@ namespace LyudBirds
 				Count -= Size;
 				// home: of 10 weighted picks the one farthest from this species' other homes (spreads them out);
 				// some groups near the place the player is most
-				const bool bFocus = Opt.FocusShare > 0.f && Rand(R) < Opt.FocusShare && !S.bPredator;
+				// (a migrant's late stragglers too: the few swallows and martins of late October keep to the town's wires and
+				// reed, docs/bird_life.md "Late swallows", not to the far North's coast, where the reed roost is out of reach)
+				const bool bFocus = ((Opt.FocusShare > 0.f && Rand(R) < Opt.FocusShare) || bStragglers) && !S.bPredator;
 				float BestD = -1.f;
 				for (int K = 0; K < (bFocus ? 40 : 10); K++)
 				{
@@ -1461,9 +1463,10 @@ namespace LyudBirds
 			for (int I = 0; I < (int)Sites.size(); I++)
 			{
 				const FSite& C = Sites[I];
-				if (C.Kind != EHabitat::Garden && C.Kind != EHabitat::Broadleaf && C.Kind != EHabitat::Conifer && C.Kind != EHabitat::Reed)
+				if ((C.Kind != EHabitat::Garden && C.Kind != EHabitat::Broadleaf && C.Kind != EHabitat::Conifer && C.Kind != EHabitat::Reed)
+					|| (C.Flags & SiteFeeder))
 				{
-					continue;
+					continue;            // (a feeder's tray is a Garden site, but no cover: only birds that like its feed go there)
 				}
 				const V3 D = C.Center() - B.Pos;
 				const float L = D.Len2D();
@@ -2005,6 +2008,15 @@ namespace LyudBirds
 		}
 		if (Plan == 2)
 		{
+			if (H.Act == EAct::Chase && G.Roost >= 0)
+			{
+				// night falls on a hunt: give it up for the roost (only the Chase branch below ends a chase, and it is
+				// never reached at night, so the hawk went on chasing through the sleeping roosts till morning)
+				P.Prey = -1;
+				G.Plan = 2;
+				FlyTo(H, G.Roost, SpotOn(Sites[G.Roost], H.Rng));
+				return;
+			}
 			if (H.Site != G.Roost && !IsAirborne(H.Act) && G.Roost >= 0)
 			{
 				G.Plan = 2;
