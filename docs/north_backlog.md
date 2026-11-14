@@ -5,6 +5,15 @@ The North (everything north of Y 1450, docs/north.md) went into main on 2026-11-
 `north-shots`, `shots/north-2026-11-14/` (with a README). This list is the owner's "merge, but record what must be
 finished".
 
+## Performance (top item)
+
+0. **The river spot is slow**: the bench of main 877e1f88 (with the North) against 502c3603 measured about 75 ms a
+   frame (p95 78) at the North's river spot at Epic 1080p, against about 17 ms at the hot spring and 21 ms at the
+   night camp; no regression elsewhere; the North adds about 1 GB of peak memory. Likely the river's water sheet and
+   braided channels, the tall-herb patches along the north bank, or the woods there. Results and shots are on the Mac in
+   `~/projects/lyudmilovsk-wt/finish_bench/`. Find the cause with the usual perf checklist before any more dressing
+   goes on the river.
+
 ## Looks wrong in the game
 
 1. **River water**: the water sheet draws as stretched radial streaks (the flow texture's UVs along the ribbon,
@@ -33,8 +42,6 @@ finished".
 
 ## Not verified yet
 
-- **Performance**: no benchmark of the North against main (frame time and memory on the trail from the Polar station
-  to the camp). Run it alone, per the perf checklist.
 - **Tall herbs**: meadowsweet, cow parsnip and sedge patches (up to ~580k triangles in a 40 x 40 m patch at full
   detail) have not been looked at or measured in the engine.
 - **Birds**: `AddRealTrees` replaces the data's tree sites with real crowns, so the tree birds' share in the North may
