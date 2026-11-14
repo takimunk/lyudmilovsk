@@ -2405,6 +2405,16 @@ namespace LyudPeople
 		P.PathI = 0;
 		P.State = EState::Going;
 		P.Pose = EPose::Walk;
+		if (FromAct >= 0 && FromAct == P.DateAct && Weekday == P.DateDay && P.DateWith >= 0 && P.DateWith < (int)People.size() && Act != FromAct)
+		{
+			// the date is over when one of the two gets up: the other doesn't sit on alone, and goes a few seconds after
+			// (time for the goodbye)
+			FPerson& Q = People[(size_t)P.DateWith];
+			if (Q.State == EState::Doing && Q.Activity == FromAct && (Q.Pos - P.Pos).Len2D() < 12.f)
+			{
+				Q.Until = std::min(Q.Until, Time + 5.0 + 6.0 * Rand(P.Rng));
+			}
+		}
 		if (Act == P.OutingAct && P.Home >= 0 && OutingNow(P, A))
 		{
 			// the household sets out for its outing together, on foot: those of theirs who are by look up from what they
