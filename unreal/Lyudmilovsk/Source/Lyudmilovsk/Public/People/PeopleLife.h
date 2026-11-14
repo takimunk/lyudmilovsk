@@ -308,6 +308,15 @@ private:
 	void BindLights();
 	void UpdateLights(bool bAll);
 	void SendFlatLight(const FString& FlatId, bool bOn);
+	/** What the festivals asked of the town (SetGathering, SetDayOff, SetStayUpUntil), kept here and given to every life
+	 *  that starts: they ask once, often before the life has started (it waits half a second after BeginPlay), and a life
+	 *  stopped and started again (lyud.People 0/1) would forget them. */
+	struct FWantedGathering { FName PlaceOrKind; float From = 0.f, To = 0.f, Pull = 0.f; EPeopleGatherMode Mode = EPeopleGatherMode::Mingle; FVector Face = FVector::ZeroVector; };
+	TMap<FName, FWantedGathering> WantedGatherings;
+	bool bWantedDayOff = false;
+	/** The festival night's end on the calendar (FDateTime ticks), 0 none. */
+	int64 WantedStayUpUntil = 0;
+	void ApplyWanted();
 	bool bWantStart = false;
 	bool bStarted = false;
 	bool bLoaded = false;

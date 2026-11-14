@@ -151,7 +151,10 @@ void ULyudEcosystem::Sync(const FDateTime& Now)
 		if (Days < 0.0) SteppedTo = Now;
 		return;
 	}
-	Model->Step(EcoDayOfYear(SteppedTo), float(FMath::Min(Days, EcoMaxCatchUpDays)));
+	// a jump past the catch-up lives only its last years, the ones before now, so the web ends in today's season (from
+	// the day it was stepped to it would end on that day of the year: the winter's ducks still here in July)
+	const float Live = float(FMath::Min(Days, EcoMaxCatchUpDays));
+	Model->Step(Days > EcoMaxCatchUpDays ? EcoDayOfYear(Now) - Live : EcoDayOfYear(SteppedTo), Live);
 	SteppedTo = Now;
 	Refresh();
 }
