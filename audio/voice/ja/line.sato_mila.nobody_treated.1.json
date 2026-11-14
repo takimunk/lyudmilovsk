@@ -1,0 +1,20 @@
+{
+ "key": "line.sato_mila.nobody_treated.1",
+ "lang": "ja",
+ "text": "ゆっくりしていって。いまは誰も治さないの。あなたのこともね。",
+ "speaker": "sato_mila",
+ "voice": "Lily",
+ "voice_id": "pFZP5JQG7iQjIQuC4Bku",
+ "voice_design": null,
+ "direction": "[brisk, caring, a doctor's matter-of-fact warmth]",
+ "model": "fal-ai/elevenlabs/tts/eleven-v3",
+ "request": {
+  "stability": 0.5,
+  "apply_text_normalization": "auto",
+  "text": "[brisk, caring, a doctor's matter-of-fact warmth] ゆっくりしていって。いまは誰も治さないの。あなたのこともね。",
+  "voice": "Lily",
+  "language_code": "ja"
+ },
+ "fal_request_id": "01a1d7b9-20e5-77c0-9032-9a38f31539d2",
+ "hash": "fd5f86dc5d0b"
+}

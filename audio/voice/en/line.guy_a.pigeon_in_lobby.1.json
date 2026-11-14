@@ -1,0 +1,20 @@
+{
+ "key": "line.guy_a.pigeon_in_lobby.1",
+ "lang": "en",
+ "text": "Pigeon, you're standing there like me in the lobby. Waiting for the match to start.",
+ "speaker": "guy_a",
+ "voice": "Will",
+ "voice_id": "bIHbv24MWmeRgasZH58o",
+ "voice_design": null,
+ "direction": "[a young gamer in a hurry, mid-match]",
+ "model": "fal-ai/elevenlabs/tts/eleven-v3",
+ "request": {
+  "stability": 0.5,
+  "apply_text_normalization": "auto",
+  "text": "[a young gamer in a hurry, mid-match] Pigeon, you're standing there like me in the lobby. Waiting for the match to start.",
+  "voice": "Will",
+  "language_code": "en"
+ },
+ "fal_request_id": "01a1d7b6-7742-77e1-ac6d-86ab4a51d0b8",
+ "hash": "6e20fd097f4e"
+}

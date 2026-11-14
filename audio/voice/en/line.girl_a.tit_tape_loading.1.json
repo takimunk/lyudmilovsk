@@ -1,0 +1,20 @@
+{
+ "key": "line.girl_a.tit_tape_loading.1",
+ "lang": "en",
+ "text": "A great tit. You whistle like the tape recorder loading a program. Only you don't make mistakes.",
+ "speaker": "girl_a",
+ "voice": "Matilda",
+ "voice_id": "XrExE9yKIg1WjnnlVkGX",
+ "voice_design": null,
+ "direction": "[whispering, concentrated]",
+ "model": "fal-ai/elevenlabs/tts/eleven-v3",
+ "request": {
+  "stability": 0.5,
+  "apply_text_normalization": "auto",
+  "text": "[whispering, concentrated] A great tit. You whistle like the tape recorder loading a program. Only you don't make mistakes.",
+  "voice": "Matilda",
+  "language_code": "en"
+ },
+ "fal_request_id": "01a1d7b5-d290-7582-b833-19424fa781a2",
+ "hash": "a3dff413dc00"
+}

@@ -1,0 +1,20 @@
+{
+ "key": "line.sato_mila.nobody_treated.1",
+ "lang": "ru",
+ "text": "Посиди. Я сейчас никого не лечу, и тебя тоже не буду.",
+ "speaker": "sato_mila",
+ "voice": "Lily",
+ "voice_id": "pFZP5JQG7iQjIQuC4Bku",
+ "voice_design": null,
+ "direction": "[brisk, caring, a doctor's matter-of-fact warmth]",
+ "model": "fal-ai/elevenlabs/tts/eleven-v3",
+ "request": {
+  "stability": 0.5,
+  "apply_text_normalization": "auto",
+  "text": "[brisk, caring, a doctor's matter-of-fact warmth] Посиди. Я сейчас никого не лечу, и тебя тоже не буду.",
+  "voice": "Lily",
+  "language_code": "ru"
+ },
+ "fal_request_id": "01a1d7b8-a5a2-7823-a4b6-418706ddd8bd",
+ "hash": "21a2d8262810"
+}

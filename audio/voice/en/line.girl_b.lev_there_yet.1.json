@@ -1,0 +1,20 @@
+{
+ "key": "line.girl_b.lev_there_yet.1",
+ "lang": "en",
+ "text": "Have you come from the yard? Is Lev Zotov on his bench yet? Don't answer. I won't go over anyway.",
+ "speaker": "girl_b",
+ "voice": "Sarah",
+ "voice_id": "EXAVITQu4vr4xnSDxMaL",
+ "voice_design": null,
+ "direction": "[curious, slightly uneasy, conspiratorial]",
+ "model": "fal-ai/elevenlabs/tts/eleven-v3",
+ "request": {
+  "stability": 0.5,
+  "apply_text_normalization": "auto",
+  "text": "[curious, slightly uneasy, conspiratorial] Have you come from the yard? Is Lev Zotov on his bench yet? Don't answer. I won't go over anyway.",
+  "voice": "Sarah",
+  "language_code": "en"
+ },
+ "fal_request_id": "01a1d7b6-1fd8-74d1-8081-9d50560ff975",
+ "hash": "a3fe796769b5"
+}

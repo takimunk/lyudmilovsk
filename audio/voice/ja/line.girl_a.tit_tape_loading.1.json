@@ -1,0 +1,20 @@
+{
+ "key": "line.girl_a.tit_tape_loading.1",
+ "lang": "ja",
+ "text": "シジュウカラね。テープからプログラムを読みこむときの音みたい。でも、あなたのはエラーなし。",
+ "speaker": "girl_a",
+ "voice": "Matilda",
+ "voice_id": "XrExE9yKIg1WjnnlVkGX",
+ "voice_design": null,
+ "direction": "[whispering, concentrated]",
+ "model": "fal-ai/elevenlabs/tts/eleven-v3",
+ "request": {
+  "stability": 0.5,
+  "apply_text_normalization": "auto",
+  "text": "[whispering, concentrated] シジュウカラね。テープからプログラムを読みこむときの音みたい。でも、あなたのはエラーなし。",
+  "voice": "Matilda",
+  "language_code": "ja"
+ },
+ "fal_request_id": "01a1d7b5-db6f-74d3-8e96-2a4dbf01a2f8",
+ "hash": "8d3b28b2f6d3"
+}

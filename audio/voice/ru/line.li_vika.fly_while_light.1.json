@@ -1,0 +1,20 @@
+{
+ "key": "line.li_vika.fly_while_light.1",
+ "lang": "ru",
+ "text": "Лети, пока светло. Я вот опять из Лаборатории в темноте.",
+ "speaker": "li_vika",
+ "voice": "Laura",
+ "voice_id": "FGY2WhTYpPnrIDTdsKH5",
+ "voice_design": null,
+ "direction": "[playful, quick, a lab assistant joking about her work]",
+ "model": "fal-ai/elevenlabs/tts/eleven-v3",
+ "request": {
+  "stability": 0.5,
+  "apply_text_normalization": "auto",
+  "text": "[playful, quick, a lab assistant joking about her work] Лети, пока светло. Я вот опять из Лаборатории в темноте.",
+  "voice": "Laura",
+  "language_code": "ru"
+ },
+ "fal_request_id": "01a1d7b7-086a-71e2-85d1-eb07a6316545",
+ "hash": "1a97da903c7e"
+}

@@ -1,0 +1,20 @@
+{
+ "key": "line.orlova_tanya.look_for_sun.1",
+ "lang": "ja",
+ "text": "飛んでおいき。お日さまはうちには入荷しないから、せめて上から、どこにあるか見てきて。",
+ "speaker": "orlova_tanya",
+ "voice": "Aria",
+ "voice_id": "9BWtsMINqrJLrRacOk9x",
+ "voice_design": null,
+ "direction": "[a kiosk shop assistant, brisk, deadpan, a bit sassy]",
+ "model": "fal-ai/elevenlabs/tts/eleven-v3",
+ "request": {
+  "stability": 0.5,
+  "apply_text_normalization": "auto",
+  "text": "[a kiosk shop assistant, brisk, deadpan, a bit sassy] 飛んでおいき。お日さまはうちには入荷しないから、せめて上から、どこにあるか見てきて。",
+  "voice": "Aria",
+  "language_code": "ja"
+ },
+ "fal_request_id": "01a1d7b7-cbed-7651-9b87-ae06a5547311",
+ "hash": "e45b0f6a9592"
+}

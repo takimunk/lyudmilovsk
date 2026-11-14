@@ -1,0 +1,20 @@
+{
+ "key": "line.girl_a.tit_tape_loading.1",
+ "lang": "ru",
+ "text": "Синица. Свистишь, как магнитофон, когда грузит программу. Только у тебя без ошибок.",
+ "speaker": "girl_a",
+ "voice": "Matilda",
+ "voice_id": "XrExE9yKIg1WjnnlVkGX",
+ "voice_design": null,
+ "direction": "[whispering, concentrated]",
+ "model": "fal-ai/elevenlabs/tts/eleven-v3",
+ "request": {
+  "stability": 0.5,
+  "apply_text_normalization": "auto",
+  "text": "[whispering, concentrated] Синица. Свистишь, как магнитофон, когда грузит программу. Только у тебя без ошибок.",
+  "voice": "Matilda",
+  "language_code": "ru"
+ },
+ "fal_request_id": "01a1d7b5-d323-72f2-845c-a89aaac9b60f",
+ "hash": "f6ce577bb708"
+}

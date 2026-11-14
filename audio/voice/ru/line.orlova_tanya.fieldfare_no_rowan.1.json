@@ -1,0 +1,20 @@
+{
+ "key": "line.orlova_tanya.fieldfare_no_rowan.1",
+ "lang": "ru",
+ "text": "Рябинник? Рябины не дам, она Сорокину отложена. Лети в сад, там своей полно.",
+ "speaker": "orlova_tanya",
+ "voice": "Aria",
+ "voice_id": "9BWtsMINqrJLrRacOk9x",
+ "voice_design": null,
+ "direction": "[a kiosk shop assistant, brisk, deadpan, a bit sassy]",
+ "model": "fal-ai/elevenlabs/tts/eleven-v3",
+ "request": {
+  "stability": 0.5,
+  "apply_text_normalization": "auto",
+  "text": "[a kiosk shop assistant, brisk, deadpan, a bit sassy] Рябинник? Рябины не дам, она Сорокину отложена. Лети в сад, там своей полно.",
+  "voice": "Aria",
+  "language_code": "ru"
+ },
+ "fal_request_id": "01a1d7b7-81e9-7232-bd59-ffce64a44044",
+ "hash": "a44e13a62fb7"
+}

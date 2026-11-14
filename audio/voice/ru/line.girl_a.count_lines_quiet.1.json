@@ -1,0 +1,20 @@
+{
+ "key": "line.girl_a.count_lines_quiet.1",
+ "lang": "ru",
+ "text": "Тсс. Я в уме досчитываю строку. Посиди, только не чирикай под руку.",
+ "speaker": "girl_a",
+ "voice": "Matilda",
+ "voice_id": "XrExE9yKIg1WjnnlVkGX",
+ "voice_design": null,
+ "direction": "[whispering, concentrated]",
+ "model": "fal-ai/elevenlabs/tts/eleven-v3",
+ "request": {
+  "stability": 0.5,
+  "apply_text_normalization": "auto",
+  "text": "[whispering, concentrated] Тсс. Я в уме досчитываю строку. Посиди, только не чирикай под руку.",
+  "voice": "Matilda",
+  "language_code": "ru"
+ },
+ "fal_request_id": "01a1d7b5-a68e-7e20-b1d6-05fb3976825b",
+ "hash": "2faa8e4414f9"
+}

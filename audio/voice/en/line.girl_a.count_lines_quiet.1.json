@@ -1,0 +1,20 @@
+{
+ "key": "line.girl_a.count_lines_quiet.1",
+ "lang": "en",
+ "text": "Shh. I'm finishing a line in my head. Stay, just don't chirp while I count.",
+ "speaker": "girl_a",
+ "voice": "Matilda",
+ "voice_id": "XrExE9yKIg1WjnnlVkGX",
+ "voice_design": null,
+ "direction": "[whispering, concentrated]",
+ "model": "fal-ai/elevenlabs/tts/eleven-v3",
+ "request": {
+  "stability": 0.5,
+  "apply_text_normalization": "auto",
+  "text": "[whispering, concentrated] Shh. I'm finishing a line in my head. Stay, just don't chirp while I count.",
+  "voice": "Matilda",
+  "language_code": "en"
+ },
+ "fal_request_id": "01a1d7b5-a690-7940-a244-ef1b37109a98",
+ "hash": "1068e1d23420"
+}

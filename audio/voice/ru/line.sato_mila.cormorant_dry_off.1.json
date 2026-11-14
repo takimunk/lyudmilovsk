@@ -1,0 +1,20 @@
+{
+ "key": "line.sato_mila.cormorant_dry_off.1",
+ "lang": "ru",
+ "text": "Баклан. Сушишь крылья? Правильно. После моря сразу в сухое, это я как врач говорю.",
+ "speaker": "sato_mila",
+ "voice": "Lily",
+ "voice_id": "pFZP5JQG7iQjIQuC4Bku",
+ "voice_design": null,
+ "direction": "[brisk, caring, a doctor's matter-of-fact warmth]",
+ "model": "fal-ai/elevenlabs/tts/eleven-v3",
+ "request": {
+  "stability": 0.5,
+  "apply_text_normalization": "auto",
+  "text": "[brisk, caring, a doctor's matter-of-fact warmth] Баклан. Сушишь крылья? Правильно. После моря сразу в сухое, это я как врач говорю.",
+  "voice": "Lily",
+  "language_code": "ru"
+ },
+ "fal_request_id": "01a1d7b8-4e59-7862-a98a-dd6003a05e98",
+ "hash": "8a7ed1b3f380"
+}

@@ -1,0 +1,20 @@
+{
+ "key": "line.guy_a.no_time_bird.1",
+ "lang": "ru",
+ "text": "Птица. Ладно, некогда, у меня через пять минут катка.",
+ "speaker": "guy_a",
+ "voice": "Will",
+ "voice_id": "bIHbv24MWmeRgasZH58o",
+ "voice_design": null,
+ "direction": "[a young gamer in a hurry, mid-match]",
+ "model": "fal-ai/elevenlabs/tts/eleven-v3",
+ "request": {
+  "stability": 0.5,
+  "apply_text_normalization": "auto",
+  "text": "[a young gamer in a hurry, mid-match] Птица. Ладно, некогда, у меня через пять минут катка.",
+  "voice": "Will",
+  "language_code": "ru"
+ },
+ "fal_request_id": "01a1d7b6-6a21-77e3-9543-8c3d74a188f0",
+ "hash": "4784b82ba56e"
+}

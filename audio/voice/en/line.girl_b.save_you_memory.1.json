@@ -1,0 +1,20 @@
+{
+ "key": "line.girl_b.save_you_memory.1",
+ "lang": "en",
+ "text": "Hi. I've nothing to take a photo with, so I'll just remember you.",
+ "speaker": "girl_b",
+ "voice": "Sarah",
+ "voice_id": "EXAVITQu4vr4xnSDxMaL",
+ "voice_design": null,
+ "direction": "[curious, slightly uneasy, conspiratorial]",
+ "model": "fal-ai/elevenlabs/tts/eleven-v3",
+ "request": {
+  "stability": 0.5,
+  "apply_text_normalization": "auto",
+  "text": "[curious, slightly uneasy, conspiratorial] Hi. I've nothing to take a photo with, so I'll just remember you.",
+  "voice": "Sarah",
+  "language_code": "en"
+ },
+ "fal_request_id": "01a1d7b6-4cc8-7841-af25-cd07b028b539",
+ "hash": "03aeca445a9e"
+}

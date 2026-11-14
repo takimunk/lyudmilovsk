@@ -1,0 +1,20 @@
+{
+ "key": "line.girl_b.save_you_memory.1",
+ "lang": "ru",
+ "text": "Привет. Сфотографировать нечем, так что запомню тебя так.",
+ "speaker": "girl_b",
+ "voice": "Sarah",
+ "voice_id": "EXAVITQu4vr4xnSDxMaL",
+ "voice_design": null,
+ "direction": "[curious, slightly uneasy, conspiratorial]",
+ "model": "fal-ai/elevenlabs/tts/eleven-v3",
+ "request": {
+  "stability": 0.5,
+  "apply_text_normalization": "auto",
+  "text": "[curious, slightly uneasy, conspiratorial] Привет. Сфотографировать нечем, так что запомню тебя так.",
+  "voice": "Sarah",
+  "language_code": "ru"
+ },
+ "fal_request_id": "01a1d7b6-550d-72c1-8e2b-0b5cfc5d930a",
+ "hash": "6ec153a1d790"
+}

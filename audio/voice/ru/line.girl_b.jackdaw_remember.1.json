@@ -1,0 +1,20 @@
+{
+ "key": "line.girl_b.jackdaw_remember.1",
+ "lang": "ru",
+ "text": "Галка. На форуме пишут, что галки помнят лица. Запомни моё, ладно? На всякий случай.",
+ "speaker": "girl_b",
+ "voice": "Sarah",
+ "voice_id": "EXAVITQu4vr4xnSDxMaL",
+ "voice_design": null,
+ "direction": "[curious, slightly uneasy, conspiratorial]",
+ "model": "fal-ai/elevenlabs/tts/eleven-v3",
+ "request": {
+  "stability": 0.5,
+  "apply_text_normalization": "auto",
+  "text": "[curious, slightly uneasy, conspiratorial] Галка. На форуме пишут, что галки помнят лица. Запомни моё, ладно? На всякий случай.",
+  "voice": "Sarah",
+  "language_code": "ru"
+ },
+ "fal_request_id": "01a1d7b6-1021-7292-8ad6-f871f2152e78",
+ "hash": "2b8a6d84545d"
+}

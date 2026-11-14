@@ -1,0 +1,20 @@
+{
+ "key": "line.guy_a.no_time_bird.1",
+ "lang": "en",
+ "text": "A bird. Okay, no time, my match starts in five minutes.",
+ "speaker": "guy_a",
+ "voice": "Will",
+ "voice_id": "bIHbv24MWmeRgasZH58o",
+ "voice_design": null,
+ "direction": "[a young gamer in a hurry, mid-match]",
+ "model": "fal-ai/elevenlabs/tts/eleven-v3",
+ "request": {
+  "stability": 0.5,
+  "apply_text_normalization": "auto",
+  "text": "[a young gamer in a hurry, mid-match] A bird. Okay, no time, my match starts in five minutes.",
+  "voice": "Will",
+  "language_code": "en"
+ },
+ "fal_request_id": "01a1d7b6-6256-7c83-908c-b7f0fcbc945d",
+ "hash": "d36c9bf622e5"
+}

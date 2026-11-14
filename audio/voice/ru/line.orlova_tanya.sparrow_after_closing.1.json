@@ -1,0 +1,20 @@
+{
+ "key": "line.orlova_tanya.sparrow_after_closing.1",
+ "lang": "ru",
+ "text": "Воробей, крошки после закрытия. Сейчас у меня покупатели. Ну, почти покупатели.",
+ "speaker": "orlova_tanya",
+ "voice": "Aria",
+ "voice_id": "9BWtsMINqrJLrRacOk9x",
+ "voice_design": null,
+ "direction": "[a kiosk shop assistant, brisk, deadpan, a bit sassy]",
+ "model": "fal-ai/elevenlabs/tts/eleven-v3",
+ "request": {
+  "stability": 0.5,
+  "apply_text_normalization": "auto",
+  "text": "[a kiosk shop assistant, brisk, deadpan, a bit sassy] Воробей, крошки после закрытия. Сейчас у меня покупатели. Ну, почти покупатели.",
+  "voice": "Aria",
+  "language_code": "ru"
+ },
+ "fal_request_id": "01a1d7b7-af8b-74c2-9766-736ca0844812",
+ "hash": "f158362d5868"
+}

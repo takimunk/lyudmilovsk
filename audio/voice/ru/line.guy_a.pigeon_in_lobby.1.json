@@ -1,0 +1,20 @@
+{
+ "key": "line.guy_a.pigeon_in_lobby.1",
+ "lang": "ru",
+ "text": "Голубь, ты стоишь, как я в лобби. Ждёшь, пока игра начнётся.",
+ "speaker": "guy_a",
+ "voice": "Will",
+ "voice_id": "bIHbv24MWmeRgasZH58o",
+ "voice_design": null,
+ "direction": "[a young gamer in a hurry, mid-match]",
+ "model": "fal-ai/elevenlabs/tts/eleven-v3",
+ "request": {
+  "stability": 0.5,
+  "apply_text_normalization": "auto",
+  "text": "[a young gamer in a hurry, mid-match] Голубь, ты стоишь, как я в лобби. Ждёшь, пока игра начнётся.",
+  "voice": "Will",
+  "language_code": "ru"
+ },
+ "fal_request_id": "01a1d7b6-79f0-7b10-b3fa-51ce4de03bf8",
+ "hash": "aa12caac780d"
+}

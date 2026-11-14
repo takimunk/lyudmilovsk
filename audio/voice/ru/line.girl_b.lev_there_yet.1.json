@@ -1,0 +1,20 @@
+{
+ "key": "line.girl_b.lev_there_yet.1",
+ "lang": "ru",
+ "text": "Ты со двора? Лев Зотов уже на скамейке? Не отвечай. Я всё равно не подойду.",
+ "speaker": "girl_b",
+ "voice": "Sarah",
+ "voice_id": "EXAVITQu4vr4xnSDxMaL",
+ "voice_design": null,
+ "direction": "[curious, slightly uneasy, conspiratorial]",
+ "model": "fal-ai/elevenlabs/tts/eleven-v3",
+ "request": {
+  "stability": 0.5,
+  "apply_text_normalization": "auto",
+  "text": "[curious, slightly uneasy, conspiratorial] Ты со двора? Лев Зотов уже на скамейке? Не отвечай. Я всё равно не подойду.",
+  "voice": "Sarah",
+  "language_code": "ru"
+ },
+ "fal_request_id": "01a1d7b6-2b54-7932-9791-cf5246f38174",
+ "hash": "9e9b445f5aa5"
+}

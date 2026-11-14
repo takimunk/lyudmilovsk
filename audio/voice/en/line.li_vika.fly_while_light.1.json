@@ -1,0 +1,20 @@
+{
+ "key": "line.li_vika.fly_while_light.1",
+ "lang": "en",
+ "text": "Fly while it's light. Here I am coming back from the Laboratory in the dark again.",
+ "speaker": "li_vika",
+ "voice": "Laura",
+ "voice_id": "FGY2WhTYpPnrIDTdsKH5",
+ "voice_design": null,
+ "direction": "[playful, quick, a lab assistant joking about her work]",
+ "model": "fal-ai/elevenlabs/tts/eleven-v3",
+ "request": {
+  "stability": 0.5,
+  "apply_text_normalization": "auto",
+  "text": "[playful, quick, a lab assistant joking about her work] Fly while it's light. Here I am coming back from the Laboratory in the dark again.",
+  "voice": "Laura",
+  "language_code": "en"
+ },
+ "fal_request_id": "01a1d7b7-0d76-7c11-b292-17a1f377832c",
+ "hash": "00fde7a598bf"
+}

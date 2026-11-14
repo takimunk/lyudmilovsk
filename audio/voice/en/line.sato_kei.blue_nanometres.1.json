@@ -1,0 +1,20 @@
+{
+ "key": "line.sato_kei.blue_nanometres.1",
+ "lang": "en",
+ "text": "A blue tit. The blue on your head is around four hundred and seventy nanometres. Hold still, I'm doing it by eye.",
+ "speaker": "sato_kei",
+ "voice": "Eric",
+ "voice_id": "cjVigY5qzO86Huf0OWal",
+ "voice_design": null,
+ "direction": "[quiet, precise, softly puzzled, a scientist thinking aloud]",
+ "model": "fal-ai/elevenlabs/tts/eleven-v3",
+ "request": {
+  "stability": 0.5,
+  "apply_text_normalization": "auto",
+  "text": "[quiet, precise, softly puzzled, a scientist thinking aloud] A blue tit. The blue on your head is around four hundred and seventy nanometres. Hold still, I'm doing it by eye.",
+  "voice": "Eric",
+  "language_code": "en"
+ },
+ "fal_request_id": "01a1d7b8-0334-7420-810e-10120f8f2cae",
+ "hash": "953df2148877"
+}
