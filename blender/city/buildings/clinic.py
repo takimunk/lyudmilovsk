@@ -127,7 +127,7 @@ def _hall(B):
     for k, x in enumerate((-9.35, -8.8)):
         kit.filing_cabinet(B, x, 15.7, 0.0, 0.0, mat=("CT_PlasterGreen", "CT_PlasterBlue")[k])
     kit.wall_clock(B, -5.0, 15.7, 0.0, 0.0, zc=2.35, face="clock_2")
-    kit.poster(B, -5.0, 15.7, 0.0, 0.0, name="poster_safety", w=0.6, zc=1.55)
+    kit.poster(B, -5.0, 15.7, 0.0, 0.0, name="poster_health", w=0.6, zc=1.55)
     kit.filing_cabinet(B, -2.0, 15.7, 0.0, 0.0, drawers=3)
     kit.fire_extinguisher(B, -1.4, 15.7, 0.0, 0.0)
     # ---- waiting: rows along the walls and two in front of the desk
@@ -199,7 +199,7 @@ def _corridor(B):
     # ---- the corridor's south wall between the doors (faces +y)
     kit.notice_board(B, 6.95, 11.3, 0.0, 180.0, w=1.3, zc=1.6)
     B.thing("corridor_notices", "board", (6.95, 11.35, 1.6), 180.0, topic="health")
-    kit.poster(B, 10.4, 11.3, 0.0, 180.0, name="chart_periodic", w=0.8, zc=1.6)
+    kit.poster(B, 10.4, 11.3, 0.0, 180.0, name="chart_eye", w=0.8, zc=1.6)
     B.thing("corridor_chart", "board", (10.4, 11.35, 1.6), 180.0, topic="health")
     kit.fire_extinguisher(B, 4.1, 11.3, 0.0, 180.0)
     kit.wall_phone(B, 13.4, 11.3, 0.0, 180.0)
@@ -233,7 +233,7 @@ def _rooms(B, cx):
         # couch along the west wall, anatomy / health picture above it
         cu = kit.medical_couch(B, wx + 0.38, 8.2, 0.0, 90.0)
         B.thing("%s_couch" % nm, "bed", (wx + 0.38, 8.2, 0.7), 90.0, height=0.7, rest="nap")
-        kit.poster(B, wx, 8.2, 0.0, 90.0, name=("chart_anatomy", "chart_calendar", "poster_safety")[i], w=0.8, zc=1.7)
+        kit.poster(B, wx, 8.2, 0.0, 90.0, name=("chart_anatomy", "chart_calendar", "poster_health")[i], w=0.8, zc=1.7)
         B.thing("%s_chart" % nm, "board", (wx + 0.05, 8.2, 1.7), 90.0, topic="health")
         # sink and mirror on the east wall, a cabinet
         sy = 9.1 if i == 2 else 7.0                      # room 3 has a window in the east wall at y 6..8
@@ -653,8 +653,8 @@ def _depth2(B, cx):
     B.spot("vaccine_wait", "stand", (0.35, 10.7, 0.0), 0.0)
     kit.kitchen_unit(B, 2.3, 12.1, 0.0, 270.0, modules="fridge", wall_cupboards=False)
     B.thing("vaccine_fridge", "machine", (2.0, 12.1, 0.9), 270.0, what="vaccine_fridge")
-    kit.poster(B, 3.3, 12.0, 0.0, 270.0, name="notice_1", w=0.45, zc=1.75)
-    B.thing("vaccine_schedule", "board", (3.25, 12.0, 1.75), 270.0, topic="vaccines")
+    kit.poster(B, 3.3, 11.25, 0.0, 270.0, name="notice_1", w=0.45, zc=1.75)
+    B.thing("vaccine_schedule", "board", (3.25, 11.25, 1.75), 270.0, topic="vaccines")
     kit.first_aid_box(B, 3.3, 10.9, 0.0, 270.0, zc=1.5)
     B.lamp((1.4, 11.3, 2.7), lumens=420, colour="#EAF4F2", kind="public", radius=3.4, fixture=False)
     box(d, "CT_Opal", 1.0, 1.8, 11.1, 11.5, 2.6, 2.65)
