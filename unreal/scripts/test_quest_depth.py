@@ -93,6 +93,7 @@ at("Npc.Where")
 at("QUESTDEPTH mark l_guy_b")
 for _ in range(10):
     at("Npc.Talk", None, 1.2)
+at("Npc.Talk", None, 1.5)                          # close the talk: a talk in progress cuts the director's speech
 # the club's regulars hear birds too: a pigeon beside Guy_b
 at("Quest.BirdCall FeralPigeon guy_b", None, 5.0)
 # m) explore on walk: valley_way, four_places_two_by_cable, never_got_swift, then everyday
@@ -229,16 +230,19 @@ at("Dev.Tp academ", None, 2.5)                  # farther than 1.5 x within_m wh
 at("Quest.Dump", "s_before_remark")
 at("QUESTDEPTH mark e_remark")
 at("Quest.GoToPerson orlova_tanya 3", None, 3.0)
+at("Quest.GoToPerson orlova_tanya 3", None, 3.0)      # the second time her body is drawn
 at("Quest.Scenes", "e_after_first", 0.5)
 at("Quest.Dump", "s_after_remark")
 at("shot showui", "tanya_remark", 1.0)
 at("Dev.Tp academ", None, 4.0)
+at("Quest.GoToPerson orlova_tanya 3", None, 3.0)
 at("Quest.GoToPerson orlova_tanya 3", None, 4.0)
 at("Quest.Scenes", "e_after_second", 0.5)
 at("Quest.Dump", "s_after_second_approach")
 at("lyud.Save questdepth", None, 3.0)
 at("lyud.Load 0", None, 15.0)
 at("lyud.Birds.Time 12", None, 2.5)
+at("Quest.GoToPerson orlova_tanya 3", None, 3.0)
 at("Quest.GoToPerson orlova_tanya 3", None, 4.0)
 at("Quest.Scenes", "e_after_load", 0.5)
 at("Quest.Dump", "e_done", 1.0)
