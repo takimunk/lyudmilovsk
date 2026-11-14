@@ -646,7 +646,7 @@ def keeper_extras(B):
     _weather_board(B, wx, wy, z0, _yin(-90.0 + 22.5 * 5), 1.95)
     B.thing("keeper_weather", "board", (wx, wy, z0 + 1.95), _yin(-90.0 + 22.5 * 5), topic="weather")
     wx, wy = _wallpt(6, 0.0)
-    kit.blackboard(B, wx, wy, z0, _yin(-90.0 + 22.5 * 6), w=1.0, h=0.62, zb=1.45, writing="board_2")
+    kit.blackboard(B, wx, wy, z0, _yin(-90.0 + 22.5 * 6), w=1.0, h=0.62, zb=1.45, writing="board_0")
     B.thing("keeper_tides", "board", (wx, wy, z0 + 1.75), _yin(-90.0 + 22.5 * 6), topic="tides")
     # signal flags over the crates (2), ship in a bottle on a shelf over the boots (3)
     wx, wy = _wallpt(2, 0.0)
@@ -765,8 +765,9 @@ def _bunting(B, a, b, sag=0.25, n=12, mats=None):
             ux, uy = ux / ln * 0.09, uy / ln * 0.09
             q = [(mid[0] - ux, mid[1] - uy, mid[2]), (mid[0] + ux, mid[1] + uy, mid[2]), (mid[0], mid[1], mid[2] - 0.2)]
             mat = mats[(i - 1) % len(mats)]
-            d.face(mat, q)
-            d.face(mat, q[::-1])
+            nx, ny = -uy / 0.09 * 0.004, ux / 0.09 * 0.004
+            d.face(mat, [(v[0] + nx, v[1] + ny, v[2]) for v in q])
+            d.face(mat, [(v[0] - nx, v[1] - ny, v[2]) for v in q[::-1]])
         prev = pt
 
 
@@ -907,7 +908,7 @@ def keeper_extras2(B):
     for a_, b_ in ((7, 9), (10, 12)):
         pa = _wallpt(a_, 0.0, 0.08)
         pb = _wallpt(b_, 0.0, 0.08)
-        _bunting(B, (pa[0], pa[1], 2.4), (pb[0], pb[1], 2.4), sag=0.35, n=14)
+        _bunting(B, (pa[0], pa[1], 2.58), (pb[0], pb[1], 2.58), sag=0.18, n=14)
     kit.rug(B, *_pol(4.15, -90.0), z0, w=1.2, d=0.8, seed=3)
     # chess corner (between the safe and the cot) with two stools and a lamp over it
     cxp, cyp = _pol(3.15, 135.0)
