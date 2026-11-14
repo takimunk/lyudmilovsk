@@ -38,8 +38,10 @@ TEX_IN = os.path.join(ROOT, "textures", "topi")
 LOC = os.path.join(ROOT, "textures", "localized", "ru")
 ARGS = sys.argv[sys.argv.index("--") + 1:] if "--" in sys.argv else []
 QUICK = "quick" in ARGS
+# `nobake`: rebuild and export the meshes only (the baked textures stay as they are; everything here is seeded)
+NOBAKE = "nobake" in ARGS
 # names after -- (WarnSign, UralSign, Stake_A.., Towel_A..) build only those
-ONLY = {a for a in ARGS if a != "quick"}
+ONLY = {a for a in ARGS if a not in ("quick", "nobake")}
 
 
 def wanted(name):
@@ -1312,7 +1314,7 @@ def render_preview(objs, path):
 
 def export(obj, path):
     select_only(obj)
-    kw = dict(filepath=path, use_selection=True, export_format="GLB", export_yup=True, export_apply=True, export_materials="PLACEHOLDER",
+    kw = dict(filepath=path, use_selection=True, export_format="GLB", export_yup=True, export_apply=True, export_materials="EXPORT",
               export_attributes=False)
     props = bpy.ops.export_scene.gltf.get_rna_type().properties
     bpy.ops.export_scene.gltf(**{k: v for k, v in kw.items() if k in props or k == "filepath"})
@@ -1346,8 +1348,9 @@ def main():
         front = "TP_SignWarn" if wear == "warn" else "TP_SignUral"
         smart_uv(obj, [body])
         uv_overlap(obj)
-        bake(obj, SIGN_PX, skip_slots=(front,))
-        sign_layers(obj, front, wear, SIGN_PX)
+        if not NOBAKE:
+            bake(obj, SIGN_PX, skip_slots=(front,))
+            sign_layers(obj, front, wear, SIGN_PX)
         made.append((obj, {body: None, front: os.path.join(LOC, "topi_sign_%s.png" % wear)}))
     # stakes with rags
     for L in "ABCD":
@@ -1365,7 +1368,8 @@ def main():
         select_only(rag, st)
         bpy.ops.object.join()
         uv_overlap(st)
-        bake(st, SMALL_PX)
+        if not NOBAKE:
+            bake(st, SMALL_PX)
         made.append((st, {"TP_Wood": None, "TP_Rag": None}))
     # towels
     for L in "ABC":
@@ -1373,7 +1377,8 @@ def main():
             continue
         low, high, sand = towel(L)
         uv_overlap(low)
-        bake(low, SMALL_PX, high=high, extras=(sand,))
+        if not NOBAKE:
+            bake(low, SMALL_PX, high=high, extras=(sand,))
         for o in (high, sand):
             bpy.data.objects.remove(o)
         made.append((low, {"TP_Towel_" + L: None}))
@@ -1388,6 +1393,8 @@ def main():
         shutil.copyfile(os.path.join(OUT, "SM_Topi_Stake_A.glb"), os.path.join(OUT, "SM_Topi_Stake.glb"))
     preview = "preview.jpg" if not ONLY else "preview_%s.jpg" % "_".join(sorted(ONLY))
 
+    if NOBAKE:
+        return
     # preview with the baked textures
     for obj, slots in made:
         for i, m in enumerate(list(obj.data.materials)):

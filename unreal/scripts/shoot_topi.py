@@ -30,11 +30,12 @@ DAY_SPOTS = [
     ("path150", -1318.9, 896.4, 6.81, EYE, -3, 164),             # on the path, 150 m in, looking along it (dunes, marram)
     ("path400", -1559.9, 942.4, -12.44, EYE, -3, 151),             # 400 m in
     ("path700", -1816.8, 1028.8, -10.15, EYE, -3, -155),            # 700 m in
+    ("greatdune", -1330.0, 760.0, 0.0, EYE, -3, 180),            # the great dune's top, east over the land to the skyline
 ]
 DAYS = [("jun10", "06-21 10:00"), ("jun18", "06-21 18:00")]
 SPOTS = [("%s_%s" % (n, dn), x, y, z, up, p, yaw, when, 0, []) for dn, when in DAYS for n, x, y, z, up, p, yaw in DAY_SPOTS]
 SPOTS += [
-    ("air_east_jun18_5s", -1150.0, 900.0, -15.09, 150.0, -15, 180, "06-21 18:00", 0, ["@5"]),  # 5 s after air_east_jun18: the heave
+    ("air_east_jun18_20s", -1150.0, 900.0, -15.09, 150.0, -15, 180, "06-21 18:00", 0, ["@20"]),  # 20 s after air_east_jun18: the heave
     ("edge_air_jun18", -1150.0, 650.0, -11.2, 40.0, -30, 135, "06-21 18:00", 0, []),          # the join with the map's ground
     ("signs_jun18", -1120.0, 905.0, -15.09, EYE, -2, 180, "06-21 18:00", 0, []),             # the warning plates seen from the town side
     ("bank_props_jun18", -2135.0, 1030.0, -29.71, EYE, -12, 160, "06-21 18:00", 0, []),      # the Ural sign and the towels by day (no river)
@@ -45,6 +46,7 @@ SPOTS += [
     ("bank_back_night", -2205.0, 1050.0, -29.71, EYE, -6, -20, "11-13 23:30", 1, []),        # from the water's edge back at the sign and towels
     ("river_above_night", -2150.0, 1038.0, -29.71, 40.0, -55, 180, "11-13 23:30", 1, []),    # down at the river, the sign and the towels
     ("bank_6m_night", -2150.0, 1038.0, -29.71, 6.0, -12, 180, "11-13 23:30", 1, []),         # the bank from 6 m: the river's points of light
+    ("bank_30m_night", -2150.0, 1038.0, -29.71, 30.0, -35, 180, "11-13 23:30", 1, []),        # the bank from 30 m
     ("dissolve_night", -2150.0, 1038.0, -29.71, EYE, -4, 180, "11-13 23:30", 1, ["lyud.Topi.Dissolve"]),  # 5 s into the dive
 ]
 if os.environ.get("TOPI_SHOTS"):
