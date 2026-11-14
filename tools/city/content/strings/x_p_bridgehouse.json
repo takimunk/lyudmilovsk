@@ -991,9 +991,9 @@
   "ja": "橋の家のロビーの掲示板に4-03号室からのお願いが貼ってある。元道路技師のロハン・ハーグリーヴスは膝のせいで三日下りてこないが、ギャラリーの風は記録しなくてはならない。エレベーターは四階とギャラリーに行く。彼のドアは開いている。"
  },
  "quest.home_hargreaves.done": {
-  "ru": "Харгривз долго читал твою цифру, кивнул и сказал: «Почерк у вас приличный. Пятёрка — это ровно то, что я думал». Налил чаю и придвинул банку: «Гостям — берите».",
-  "en": "Hargreaves read your figure for a long time, nodded and said: \"Decent handwriting. A five is exactly what I thought.\" He poured tea and pushed the tin across: \"Help yourself.\"",
-  "ja": "ハーグリーヴスさんは君の書いた数字を長く見つめ、うなずいた。「いい字だ。5、まさに私が思ったとおりだ」。お茶を注ぎ、缶を押してよこす。「どうぞ、お持ちなさい」。"
+  "ru": "Харгривз долго читал мою цифру, кивнул и сказал: «Почерк у вас приличный. Пятёрка — это ровно то, что я думал». Налил чаю и придвинул банку: «Гостям — берите».",
+  "en": "Hargreaves read my figure for a long time, nodded and said: \"Decent handwriting. A five is exactly what I thought.\" He poured tea and pushed the tin across: \"Help yourself.\"",
+  "ja": "ハーグリーヴスさんは僕の書いた数字を長く見つめ、うなずいた。「いい字だ。5、まさに私が思ったとおりだ」。お茶を注ぎ、缶を押してよこす。「どうぞ、お持ちなさい」。"
  },
  "quest.home_hargreaves.diary.log": {
   "ru": "Его дневник лежит на чертёжном столе у окна. Там про дорогу, которую не построили, и про то, о чём он просит гостей.",

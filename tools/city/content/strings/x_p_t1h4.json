@@ -1,69 +1,69 @@
 {
  "_doc": "Capsule cluster P-T1H4 second pass: bridges, house boards, post boxes, the radio amateur's studio, quest home_okafor_cq. Keys city.t1h4.*, quest.home_okafor_cq.*, city.coll.okafor_radio.title.",
  "city.t1h4.p.view": {
-  "ru": "Посмотреть с моста",
-  "en": "Look out from the bridge",
-  "ja": "橋から眺める"
+  "ru": "E — посмотреть с моста",
+  "en": "E — look out from the bridge",
+  "ja": "E：橋から眺める"
  },
  "city.t1h4.p.sit": {
-  "ru": "Присесть на скамейку",
-  "en": "Sit on the bench",
-  "ja": "ベンチに座る"
+  "ru": "E — присесть на скамейку",
+  "en": "E — sit on the bench",
+  "ja": "E：ベンチに座る"
  },
  "city.t1h4.p.plant": {
-  "ru": "Посмотреть на ящик с цветами",
-  "en": "Look at the planter",
-  "ja": "プランターを見る"
+  "ru": "E — посмотреть на ящик с цветами",
+  "en": "E — look at the planter",
+  "ja": "E：プランターを見る"
  },
  "city.t1h4.p.chime": {
-  "ru": "Послушать подвеску-колокольчик",
-  "en": "Listen to the wind chime",
-  "ja": "風鈴に耳を澄ます"
+  "ru": "E — послушать подвеску-колокольчик",
+  "en": "E — listen to the wind chime",
+  "ja": "E：風鈴に耳を澄ます"
  },
  "city.t1h4.p.vane": {
-  "ru": "Посмотреть на флюгер",
-  "en": "Look at the weather vane",
-  "ja": "風見鶏を見る"
+  "ru": "E — посмотреть на флюгер",
+  "en": "E — look at the weather vane",
+  "ja": "E：風見鶏を見る"
  },
  "city.t1h4.p.news": {
-  "ru": "Прочесть объявления дома",
-  "en": "Read the house notices",
-  "ja": "建物のお知らせを読む"
+  "ru": "E — прочесть объявления дома",
+  "en": "E — read the house notices",
+  "ja": "E：建物のお知らせを読む"
  },
  "city.t1h4.p.mail": {
-  "ru": "Заглянуть в почтовые ящики",
-  "en": "Look at the post boxes",
-  "ja": "郵便受けをのぞく"
+  "ru": "E — заглянуть в почтовые ящики",
+  "en": "E — look at the post boxes",
+  "ja": "E：郵便受けをのぞく"
  },
  "city.t1h4.p.log": {
-  "ru": "Открыть журнал связей",
-  "en": "Open the station log",
-  "ja": "交信日誌を開く"
+  "ru": "E — открыть журнал связей",
+  "en": "E — open the station log",
+  "ja": "E：交信日誌を開く"
  },
  "city.t1h4.p.qsl": {
-  "ru": "Посмотреть открытки на стене",
-  "en": "Look at the cards on the wall",
-  "ja": "壁のカードを見る"
+  "ru": "E — посмотреть открытки на стене",
+  "en": "E — look at the cards on the wall",
+  "ja": "E：壁のカードを見る"
  },
  "city.t1h4.p.morse": {
-  "ru": "Постучать ключом",
-  "en": "Tap the Morse key",
-  "ja": "電鍵を叩く"
+  "ru": "E — постучать ключом",
+  "en": "E — tap the Morse key",
+  "ja": "E：電鍵を叩く"
  },
  "city.t1h4.p.tuner": {
-  "ru": "Посмотреть на антенный тюнер",
-  "en": "Look at the antenna tuner",
-  "ja": "アンテナチューナーを見る"
+  "ru": "E — посмотреть на антенный тюнер",
+  "en": "E — look at the antenna tuner",
+  "ja": "E：アンテナチューナーを見る"
  },
  "city.t1h4.p.phones": {
-  "ru": "Взять наушники",
-  "en": "Pick up the headphones",
-  "ja": "ヘッドホンを手に取る"
+  "ru": "E — взять наушники",
+  "en": "E — pick up the headphones",
+  "ja": "E：ヘッドホンを手に取る"
  },
  "city.t1h4.p.kettle": {
-  "ru": "Налить чаю из чайника",
-  "en": "Pour some tea from the kettle",
-  "ja": "やかんからお茶を注ぐ"
+  "ru": "E — налить чаю из чайника",
+  "en": "E — pour some tea from the kettle",
+  "ja": "E：やかんからお茶を注ぐ"
  },
  "city.t1h4.view1.d1": {
   "ru": "Внизу площадь крыш и улица. С первого моста прохожие кажутся ближе, чем на тротуаре: слышно, как кто-то спорит про сдачу.",

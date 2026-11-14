@@ -310,9 +310,9 @@
   "ja": "E：エレベーター脇の黒板を読む"
  },
  "city.t1.slate.work": {
-  "ru": "Грифельная дощечка у лифта: «Х. и Г. на работе до половины четвёртого. Почту — в ящик, посылки — Айле».",
-  "en": "The slate by the lift: \"H. and G. at work until half past three. Post in the box, parcels to Isla.\"",
-  "ja": "エレベーター脇の黒板。「HとGは三時半まで仕事。郵便は箱へ、荷物はアイラへ」。"
+  "ru": "Грифельная дощечка у лифта: «Х. и Г. на работе до четырёх. Почту — в ящик, посылки — Айле».",
+  "en": "The slate by the lift: \"H. and G. at work until four. Post in the box, parcels to Isla.\"",
+  "ja": "エレベーター脇の黒板。「HとGは四時まで仕事。郵便は箱へ、荷物はアイラへ」。"
  },
  "city.t1.slate.eve": {
   "ru": "Дощечка: «Мы дома. Кому надо — вызывайте лифт один раз, он поймёт. Синяя жестянка — чай».",
@@ -655,9 +655,9 @@
   "ja": "デッキのスタンドに、二番目のキューブが週末の園芸係を探しているというお知らせが貼ってある。入口はキューブの足元のくぼみで、小さなエレベーターがあり、上でゲンナジーがトウガラシの温室を育てている。"
  },
  "quest.home_cube_a.done": {
-  "ru": "Ген вернулся с озёр загорелый и первым делом поднялся к грядке. Потом спустился и молча поставил перед тобой банку перцового варенья. На крышке: «Осторожно: честно острое».",
-  "en": "Gennady came back from the lakes tanned and went straight up to the bed. Then he came down and silently set a jar of pepper jam before you. On the lid: \"Careful: honestly hot.\"",
-  "ja": "ゲンナジーは日焼けして湖から戻り、まず苗床へ上がっていった。それから降りてきて、黙ってトウガラシジャムの瓶を目の前に置いた。ふたには「注意：本当に辛い」。"
+  "ru": "Ген вернулся с озёр загорелый и первым делом поднялся к грядке. Потом спустился, заварил мне чаю и молча положил рядом два пакетика семян. На одном: «Осторожно: честно острое».",
+  "en": "Gennady came back from the lakes tanned and went straight up to the bed. Then he came down, made me some tea and silently put two packets of seeds beside it. On one: \"Careful: honestly hot.\"",
+  "ja": "ゲンナジーは日焼けして湖から戻り、まず苗床へ上がっていった。それから降りてきて、僕にお茶をいれ、黙って種の袋を二つ添えた。一つには「注意：本当に辛い」。"
  },
  "quest.home_cube_a.note.log": {
   "ru": "Записки на холодильнике второго куба объясняют, что надо делать. Лифт — в прихожей у ножки куба.",

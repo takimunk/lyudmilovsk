@@ -1050,9 +1050,9 @@
   "ja": "風の中のシーツ"
  },
  "quest.rcb_sheet.desc": {
-  "ru": "В прачечной сломалась сушилка, и весь дом сушит бельё на крыше. Одна чистая простыня ждёт, чтобы её постирали, повесили и сложили.",
-  "en": "The laundry's dryer has broken and the whole house is drying its washing on the roof. One clean sheet is waiting to be washed, hung and folded.",
-  "ja": "洗濯室の乾燥機が壊れて、家じゅうが屋上で洗濯物を干している。きれいなシーツが一枚、洗われて、干されて、たたまれるのを待っている。"
+  "ru": "В прачечной сломалась сушилка, и весь дом сушит бельё на крыше. Одна простыня ждёт в корзине, чтобы её постирали, повесили и сложили.",
+  "en": "The laundry's dryer has broken and the whole house is drying its washing on the roof. One sheet is waiting in the basket to be washed, hung and folded.",
+  "ja": "洗濯室の乾燥機が壊れて、家じゅうが屋上で洗濯物を干している。シーツが一枚、籠の中で、洗われて、干されて、たたまれるのを待っている。"
  },
  "quest.rcb_sheet.note.log": {
   "ru": "Сначала узнаю, что с сушилкой: объявление висит у полки с порошком.",

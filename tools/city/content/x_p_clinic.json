@@ -1762,6 +1762,11 @@
        "id": "jar",
        "event": "do",
        "target": "clinic_fish_jar"
+      },
+      {
+       "id": "water",
+       "event": "have",
+       "target": "water"
       }
      ],
      "reward": {

@@ -1247,6 +1247,11 @@
        "id": "tea",
        "event": "do",
        "target": "rcb_tea"
+      },
+      {
+       "id": "seeds",
+       "event": "have",
+       "target": "seeds"
       }
      ],
      "reward": {

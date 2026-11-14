@@ -986,9 +986,9 @@
   "ja": "階段の掲示板に3-03からのお願いが貼ってある。アガタ・ブラントは手首を折り、彼女の部屋の上の屋根ではトマトとハーブとヒマワリが育っている。水栓は2階層、じょうろは屋根の樽の中。アガタの部屋のドアは開いている。"
  },
  "quest.home_brandt.done": {
-  "ru": "Агата не поблагодарила. Она долго смотрела на мокрую землю, потом на тебя и сказала: «Вот. А я думала, что некому». Налила чаю и пододвинула яблоко: «Возьми. Оно с той самой яблони».",
-  "en": "Agata did not say thank you. She looked a long time at the wet soil, then at you, and said: \"There. And I thought there was nobody.\" She poured tea and pushed an apple across: \"Take it. It's from that very tree.\"",
-  "ja": "アガタはお礼を言わなかった。濡れた土をしばらく見つめ、それから君を見て言った。「ほら。誰もいないと思っていたのに」。お茶を注ぎ、リンゴを押してよこす。「お取り。あの木のよ」。"
+  "ru": "Агата не поблагодарила. Она долго смотрела на мокрую землю, потом на меня и сказала: «Вот. А я думала, что некому». Налила чаю и пододвинула яблоко: «Возьми. Оно с той самой яблони».",
+  "en": "Agata did not say thank you. She looked a long time at the wet soil, then at me, and said: \"There. And I thought there was nobody.\" She poured tea and pushed an apple across: \"Take it. It's from that very tree.\"",
+  "ja": "アガタはお礼を言わなかった。濡れた土をしばらく見つめ、それから僕を見て言った。「ほら。誰もいないと思っていたのに」。お茶を注ぎ、リンゴを押してよこす。「お取り。あの木のよ」。"
  },
  "quest.home_brandt.tap.log": {
   "ru": "Первое дело: набрать воды. Колонка стоит у окна на втором уровне, ведро рядом. Лестница от парадной А ведёт прямо к ней.",
@@ -1051,9 +1051,9 @@
   "ja": "ボックス集合住宅はエレベーターとドアだけではない。猫、投函箱、洗濯物、交換棚の住む階段の通りがある。三本とも歩いてみる価値がある。"
  },
  "quest.t3_canyon.done": {
-  "ru": "Ты прошёл каньоны сверху донизу, видел кошку, море и полку обмена. Теперь дом для тебя не стена, а улица. Конфета, найденная в журнале, лежала там для тебя.",
-  "en": "You've walked the canyons top to bottom, seen the cat, the sea and the swap shelf. The house is no longer a wall for you but a street. The sweet you found in the magazine had been left there for you.",
-  "ja": "谷を上から下まで歩き、猫と海と交換棚を見た。この家はもう壁ではなく通りだ。雑誌の間から見つけた飴は、君のために置かれていた。"
+  "ru": "Я прошёл каньоны сверху донизу, видел кошку, море и полку обмена. Теперь дом для меня не стена, а улица. Конфета, найденная в журнале, лежала там для меня.",
+  "en": "I've walked the canyons top to bottom, seen the cat, the sea and the swap shelf. The house is no longer a wall for me but a street. The sweet I found in the magazine had been left there for me.",
+  "ja": "谷を上から下まで歩き、猫と海と交換棚を見た。この家はもう僕にとって壁ではなく通りだ。雑誌の間から見つけた飴は、僕のために置かれていた。"
  },
  "quest.t3_canyon.cat.log": {
   "ru": "На третьем уровне первого каньона у стены лежит миска. Рядом должна быть серая кошка.",

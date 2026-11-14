@@ -1206,9 +1206,9 @@
   "ja": "「海戦」で勝つ"
  },
  "quest.wave_record.done": {
-  "ru": "Автомат показал «ПОБЕДА». Табло пока ничего не сказало, но продавец призов кивнул тебе, как своему.",
-  "en": "The cabinet said WIN. The board has not yet said a word, but the prize seller nods at you like one of his own.",
-  "ja": "筐体は「勝利」を出した。表はまだ何も言わないが、景品の売り子は仲間のようにうなずいた。"
+  "ru": "Автомат показал «ПОБЕДА». Табло пока ничего не сказало, но продавец призов кивнул мне, как своему.",
+  "en": "The cabinet said WIN. The board has not said a word yet, but the prize seller nodded at me like one of his own.",
+  "ja": "筐体は「勝利」を出した。表はまだ何も言わないが、景品の売り子は僕に仲間のようにうなずいた。"
  },
  "quest.wave_roof.title": {
   "ru": "Крыша Башни-Волны",

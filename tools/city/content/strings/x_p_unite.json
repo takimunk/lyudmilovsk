@@ -921,9 +921,9 @@
   "ja": "入口の掲示板に貼り紙がある。5-12号室のプリヤ・トゥレゲノワがシラ・中村さんに贈る絵はがきのアルバムを作っていて、足りないのは海の一枚。青いドアは七階の商店街にあって、朝九時から夜十時まで開いている。"
  },
  "quest.home_tulegenova.done": {
-  "ru": "Прия долго смотрела на серое море в уголках и сказала: «Вот теперь Шира узнает, откуда мы пишем». Налила чаю и добавила в кармашек альбома твою фамилию мелким почерком.",
-  "en": "Priya looked for a long time at the grey sea in the corners and said: \"Now Shira will know where we are writing from.\" She poured tea and added your name to the album's pocket in small handwriting.",
-  "ja": "プリヤは角に収まった灰色の海をしばらく見つめて言った。「これでシラも、私たちがどこから書いているかわかるわ」。お茶を注ぎ、アルバムのポケットに君の名前を小さな字で書き足した。"
+  "ru": "Прия долго смотрела на серое море в уголках и сказала: «Вот теперь Шира узнает, откуда мы пишем». Налила чаю и добавила в кармашек альбома мою фамилию мелким почерком.",
+  "en": "Priya looked for a long time at the grey sea in the corners and said: \"Now Shira will know where we are writing from.\" She poured tea and added my name to the album's pocket in small handwriting.",
+  "ja": "プリヤは角に収まった灰色の海をしばらく見つめて言った。「これでシラも、私たちがどこから書いているかわかるわ」。お茶を注ぎ、アルバムのポケットに僕の名前を小さな字で書き足した。"
  },
  "quest.home_tulegenova.notice.log": {
   "ru": "Объявление висит на доске у консьержа в западном холле. Надо прочитать его до конца: там про синюю дверь и про чай.",

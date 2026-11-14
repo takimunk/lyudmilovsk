@@ -958,6 +958,11 @@
        "id": "cup",
        "event": "do",
        "target": "library_tea_tuesday"
+      },
+      {
+       "id": "postcard",
+       "event": "have",
+       "target": "postcard"
       }
      ],
      "reward": {

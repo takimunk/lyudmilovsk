@@ -130,6 +130,7 @@
   "girma_record": {"like": "_home_record", "lines": "city.home.girma.record"},
   "girma_science": {"like": "_home_read", "lines": "city.home.girma.science"},
   "girma_bed": {"like": "_home_bed", "lines": "city.home.girma.bed"},
+  "riser_errand_bench": {"like": "sit"},
 
   "aoki_machine": {"prompt": "city.home.sewing.prompt", "minutes": 3, "any_hour": true, "sound": "sewing_rattle", "lines": "city.home.aoki.machine"},
   "aoki_swatches": {"like": "_home_look", "lines": "city.home.aoki.swatches"},
@@ -265,6 +266,7 @@
   "P-RISER1/home_record_player": {"act": "girma_record"},
   "P-RISER1/home_shelf_science": {"act": "girma_science"},
   "P-RISER1/home_bed": {"act": "girma_bed"},
+  "P-RISER1/garden_bench_t0e0": {"act": "riser_errand_bench"},
 
   "P-RISER2/home_sewing_machine": {"act": "aoki_machine"},
   "P-RISER2/home_board_chart": {"act": "aoki_swatches"},

@@ -39,7 +39,7 @@
     {"id": "kefir", "event": "have", "target": "kefir"},
     {"id": "bread", "event": "have", "target": "bread_loaf"}
    ]},
-   {"id": "deliver", "objectives": [{"id": "kefir", "event": "have", "target": "kefir"}, {"id": "bread", "event": "have", "target": "bread_loaf"}, {"id": "stepped_house", "event": "visit", "target": "P-RISER1"}], "reward": {"rubles": 30}}
+   {"id": "deliver", "objectives": [{"id": "stepped_house", "event": "do", "target": "riser_errand_bench"}, {"id": "kefir", "event": "have", "target": "kefir"}, {"id": "bread", "event": "have", "target": "bread_loaf"}], "reward": {"rubles": 30}}
   ]},
   {"id": "mineral_water", "kind": "side", "start_on": {"event": "visit", "target": "P-SANATORIUM"}, "stages": [
    {"id": "fill", "objectives": [{"id": "pump", "event": "do", "target": "pump_room"}]},

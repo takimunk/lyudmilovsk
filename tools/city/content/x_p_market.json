@@ -1879,6 +1879,11 @@
        "id": "tell",
        "event": "do",
        "target": "market_office"
+      },
+      {
+       "id": "apple",
+       "event": "have",
+       "target": "apple"
       }
      ],
      "reward": {
