@@ -2290,6 +2290,11 @@
        "id": "ask_fish",
        "event": "do",
        "target": "pu_fish_chat"
+      },
+      {
+       "id": "shrimp",
+       "event": "have",
+       "target": "bait_shrimp"
       }
      ],
      "reward": {
@@ -2444,6 +2449,16 @@
        "id": "see_cutout",
        "event": "do",
        "target": "pu_photo_cutout"
+      },
+      {
+       "id": "get_loaf",
+       "event": "have",
+       "target": "bread_loaf"
+      },
+      {
+       "id": "get_kefir",
+       "event": "have",
+       "target": "kefir"
       }
      ],
      "reward": {

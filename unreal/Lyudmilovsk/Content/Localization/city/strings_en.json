@@ -7963,7 +7963,7 @@
  "quest.honest_weight.title": "Honest weight",
  "quest.honest_weight.weigh.log": "The control scales are left of the office, next to the unlabelled jar.",
  "quest.honest_weight.weigh.obj": "Check the purchase on the control scales",
- "quest.jam_contest.desc": "The market's jam contest is over, but one jar has stayed without an owner. They say it can be tasted, but only at the weekend.",
+ "quest.jam_contest.desc": "The market's jam contest is over, but one jar has stayed without an owner. They say it can be tasted, but only from Friday to Sunday.",
  "quest.jam_contest.done": "The jar never found its owner. But now I know what the wind off the sea tastes like. The market director pressed a biscuit into my hand \"for taking part\".",
  "quest.jam_contest.jar.log": "Only the jar itself is left to see. It stands by the control scales on a little stand.",
  "quest.jam_contest.jar.obj": "Look at the unlabelled jar by the control scales",
