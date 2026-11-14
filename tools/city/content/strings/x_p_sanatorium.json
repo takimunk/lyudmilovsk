@@ -1154,5 +1154,100 @@
   "ru": "Я сидел так тихо, что услышал, как в пианино лежит тетрадь. Врач шепнула: «Вот это — лечение». На карте теперь не хватает только печати, но печать у неё бывает раз в сезон.",
   "en": "I sat so quietly that I heard the notebook lying in the piano. The doctor whispered: 'Now that is treatment.' The card now lacks only a seal, but she uses the seal once a season.",
   "ja": "あまりに静かに座っていたので、ピアノの中でノートが眠る音まで聞こえた。医師はささやいた。「これこそ療養です」。カードに足りないのは判だけ。でもその判は一シーズンに一度しか使わない。"
+ },
+ "city.san.canary.morning": {
+  "ru": "Кенар в клетке уже проснулся и пробует голос: три коротких, один длинный, пауза. Кажется, он репетирует то, что сыграют на пианино после завтрака.",
+  "en": "The canary is already awake and tries his voice: three short, one long, a pause. He seems to rehearse what will be played on the piano after breakfast.",
+  "ja": "カナリアはもう起きていて、声を試している。短く三つ、長く一つ、間。朝食のあとにピアノで弾かれる曲を練習しているみたいだ。"
+ },
+ "city.san.canary.day": {
+  "ru": "Кенар прыгает с жёрдочки на жёрдочку и посматривает на меня одним глазом. На клетке бирка: «Кеша. Просьба не стучать и не свистеть: он всё запоминает».",
+  "en": "The canary hops from perch to perch and watches me with one eye. A tag on the cage: \"Kesha. Please do not tap or whistle: he remembers everything.\"",
+  "ja": "カナリアは止まり木から止まり木へ跳び、片目でこちらを見ている。かごの札。「ケーシャ。たたいたり口笛を吹いたりしないでください。何でも覚えます」。"
+ },
+ "city.san.canary.night": {
+  "ru": "На клетку накинут платок, как на спящих. Из-под него доносится сонное «чвик». Свет в зимнем саду лучше не включать резко.",
+  "en": "A scarf is thrown over the cage, as over sleepers. A sleepy 'tsvik' comes from under it. Better not to switch on the winter-garden light too sharply.",
+  "ja": "かごにはスカーフがかけられている。眠っている子にするように。下から眠そうな「チュ」という声。温室の明かりは急に点けないほうがいい。"
+ },
+ "city.san.canary.rain": {
+  "ru": "По стеклу стучит дождь, и кенар поёт погромче, как будто спорит с ним. Дождь, по-моему, выигрывает.",
+  "en": "Rain taps on the glass and the canary sings louder, as if arguing with it. The rain, I think, is winning.",
+  "ja": "ガラスを雨が叩き、カナリアは言い返すようにいっそう大きな声で歌う。勝っているのは雨のほうだと思う。"
+ },
+ "city.san.canary.fest": {
+  "ru": "В праздник кенару повязали бантик на клетку. Он делает вид, что не заметил, но поёт торжественнее обычного.",
+  "en": "On the holiday somebody tied a ribbon to the cage. The canary pretends not to notice, but sings more solemnly than usual.",
+  "ja": "祝日なので、かごにリボンが結ばれている。カナリアは気づかないふりをしつつ、いつもより厳かに歌っている。"
+ },
+ "city.san.canary.first": {
+  "ru": "Кеша живёт здесь дольше половины отдыхающих. Говорят, он помнит мелодию одного вальса и больше ничего не признаёт.",
+  "en": "Kesha has lived here longer than half the guests. They say he remembers the tune of one waltz and acknowledges nothing else.",
+  "ja": "ケーシャはここに来て半分以上の滞在客より長く暮らしている。ワルツを一曲だけ覚えていて、ほかは認めないのだとか。"
+ },
+ "city.san.rota.mon": {
+  "ru": "Листок «График полива». Понедельник: пальмы, лейка у Раисы Ивановны. Приписано: «Не заливать, они не на Севере вымерзают, а от доброты».",
+  "en": "A sheet, 'Watering rota'. Monday: palms, can with Raisa Ivanovna. Added: 'Do not overwater, they die not of northern frost but of kindness.'",
+  "ja": "「水やり当番表」。月曜日、ヤシ類、じょうろはライサ・イヴァノヴナ。書き足しがある。「やりすぎないこと。枯れる原因は北の寒さではなく親切です」。"
+ },
+ "city.san.rota.tue": {
+  "ru": "График полива. Вторник: фикусы протереть влажной тряпкой, листья должны блестеть. Подпись: «садовник Фёдор».",
+  "en": "Watering rota. Tuesday: wipe the ficus leaves with a damp cloth, they must shine. Signed: 'gardener Fyodor'.",
+  "ja": "水やり当番表。火曜日、ゴムの木の葉を濡れた布で拭く。葉はつやつやでなければならない。署名は「庭師フョードル」。"
+ },
+ "city.san.rota.wed": {
+  "ru": "График полива. Среда: монстера Борис, много воды, потом разговор. Рядом карандашом: «Разговор не обязателен, но приветствуется».",
+  "en": "Watering rota. Wednesday: Boris the monstera, plenty of water, then a talk. In pencil beside it: 'Talk not obligatory, but welcome.'",
+  "ja": "水やり当番表。水曜日、モンステラのボリス。たっぷりの水、それから会話。横に鉛筆で。「会話は必須ではないが歓迎」。"
+ },
+ "city.san.rota.thu": {
+  "ru": "График полива. Четверг: кактусы не поливать вообще. Три восклицательных знака и чья-то обиженная приписка: «Они же живые!».",
+  "en": "Watering rota. Thursday: do not water the cacti at all. Three exclamation marks and somebody's offended note: 'But they are alive!'",
+  "ja": "水やり当番表。木曜日、サボテンには一切水をやらない。感嘆符が三つ。誰かの不満そうな書き込み。「だって生きてるのに!」。"
+ },
+ "city.san.rota.fri": {
+  "ru": "График полива. Пятница: папоротники опрыскать из пульверизатора. Пульверизатор лежит в тумбе. Тумбы нет. Ищите.",
+  "en": "Watering rota. Friday: mist the ferns with the spray bottle. The spray bottle is in the cupboard. There is no cupboard. Look for it.",
+  "ja": "水やり当番表。金曜日、シダは霧吹きで湿らせる。霧吹きは戸棚の中。戸棚はない。探してください。"
+ },
+ "city.san.rota.sat": {
+  "ru": "График полива. Суббота: «Садовник отдыхает. Лейка общая. Кто полил — тот молодец, кто не полил — тоже, главное, не утопить».",
+  "en": "Watering rota. Saturday: 'The gardener is off. The can is for all. Whoever watered is a good fellow, whoever did not too; the main thing is not to drown them.'",
+  "ja": "水やり当番表。土曜日。「庭師は休み。じょうろはみんなのもの。水をやった人はえらい、やらなかった人もえらい、溺れさせないことだけが大事」。"
+ },
+ "city.san.rota.sun": {
+  "ru": "График полива. Воскресенье: пусто, только нарисованное солнышко и слова «Отдыхают все, даже листья».",
+  "en": "Watering rota. Sunday: empty, only a drawn little sun and the words 'Everybody rests, even the leaves.'",
+  "ja": "水やり当番表。日曜日、空欄。描かれた小さな太陽と「みんな休む。葉っぱも」の一言だけ。"
+ },
+ "city.san.water.prompt": {
+  "ru": "Полить цветы из лейки",
+  "en": "Water the plants from the can",
+  "ja": "じょうろで花に水をやる"
+ },
+ "city.san.water.morning": {
+  "ru": "Утром земля в горшках сухая и сразу пьёт. Лейка тяжелеет, а потом легчает, и пальма как будто выпрямляется.",
+  "en": "In the morning the soil in the pots is dry and drinks at once. The can gets heavy, then light, and the palm seems to straighten up.",
+  "ja": "朝は鉢の土が乾いていて、すぐに水を吸う。じょうろは重く、やがて軽くなり、ヤシが背筋を伸ばしたように見える。"
+ },
+ "city.san.water.day": {
+  "ru": "Днём лучше поливать у стен: на солнце вода испаряется. Я лью понемногу под листья и слушаю, как она уходит в землю.",
+  "en": "By day it is better to water near the walls: in the sun the water evaporates. I pour a little under the leaves and listen to it going into the soil.",
+  "ja": "昼は壁ぎわに水をやるほうがいい。日なたでは水が蒸発してしまうから。葉の下に少しずつ注いで、土にしみ込む音を聞く。"
+ },
+ "city.san.water.night": {
+  "ru": "Вечером поливать поздно: корни мёрзнут. Но я лью чуть-чуть, а листья вздыхают, или это просто сквозняк.",
+  "en": "Evening is late for watering: the roots get cold. But I pour just a little, and the leaves sigh, or maybe it is just the draught.",
+  "ja": "夕方に水やりは遅い。根が冷えるから。でもほんの少しだけ注ぐと、葉がため息をついた。ただの隙間風かもしれない。"
+ },
+ "city.san.water.rain": {
+  "ru": "За стеклом идёт дождь, а я поливаю внутри. Выходит, у зимнего сада своя собственная погода, и ей я управляю сам.",
+  "en": "It rains outside the glass and I water inside. So the winter garden has its own weather, and I run it myself.",
+  "ja": "ガラスの外は雨なのに、僕は中で水をやっている。温室には自分だけの天気があって、それは僕が決めるわけだ。"
+ },
+ "city.san.water.weekend": {
+  "ru": "По выходным садовник отдыхает, и лейку никто не ждёт. Кактусы мимо, остальным по полстакана, как в графике.",
+  "en": "On weekends the gardener rests and nobody waits for the can. Skip the cacti, half a glass for the rest, as on the rota.",
+  "ja": "週末は庭師が休みで、じょうろを待つ人もいない。サボテンは飛ばして、あとは当番表どおり半カップずつ。"
  }
 }

@@ -719,6 +719,118 @@
      "weather": "snow"
     }
    ]
+  },
+  "sanatorium_canary": {
+   "like": "look_misc",
+   "minutes": 3,
+   "sound": "music_box",
+   "lines": [
+    {
+     "k": "city.san.canary.morning",
+     "h": [
+      6,
+      10
+     ]
+    },
+    {
+     "k": "city.san.canary.day",
+     "h": [
+      10,
+      20
+     ]
+    },
+    {
+     "k": "city.san.canary.night",
+     "h": [
+      20,
+      6
+     ]
+    },
+    {
+     "k": "city.san.canary.rain",
+     "weather": "rain"
+    },
+    {
+     "k": "city.san.canary.fest",
+     "festival": "any"
+    },
+    {
+     "k": "city.san.canary.first",
+     "once": true
+    }
+   ]
+  },
+  "sanatorium_rota": {
+   "like": "look_misc",
+   "minutes": 2,
+   "lines": [
+    {
+     "k": "city.san.rota.mon",
+     "d": "mon"
+    },
+    {
+     "k": "city.san.rota.tue",
+     "d": "tue"
+    },
+    {
+     "k": "city.san.rota.wed",
+     "d": "wed"
+    },
+    {
+     "k": "city.san.rota.thu",
+     "d": "thu"
+    },
+    {
+     "k": "city.san.rota.fri",
+     "d": "fri"
+    },
+    {
+     "k": "city.san.rota.sat",
+     "d": "sat"
+    },
+    {
+     "k": "city.san.rota.sun",
+     "d": "sun"
+    }
+   ]
+  },
+  "sanatorium_watering": {
+   "prompt": "city.san.water.prompt",
+   "minutes": 5,
+   "pose": "stand",
+   "sound": "water_pour",
+   "any_hour": true,
+   "lines": [
+    {
+     "k": "city.san.water.morning",
+     "h": [
+      6,
+      12
+     ]
+    },
+    {
+     "k": "city.san.water.day",
+     "h": [
+      12,
+      20
+     ]
+    },
+    {
+     "k": "city.san.water.night",
+     "h": [
+      20,
+      6
+     ]
+    },
+    {
+     "k": "city.san.water.rain",
+     "weather": "rain"
+    },
+    {
+     "k": "city.san.water.weekend",
+     "d": "sat,sun"
+    }
+   ]
   }
  },
  "rules": {
@@ -820,6 +932,15 @@
   "round_sanatorium/treat_checkup": {
    "collect": "san_cure/checkup",
    "closed": "city.san.checkup.closed"
+  },
+  "round_sanatorium/garden_canary": {
+   "act": "sanatorium_canary"
+  },
+  "round_sanatorium/garden_rota": {
+   "act": "sanatorium_rota"
+  },
+  "round_sanatorium/garden_can": {
+   "act": "sanatorium_watering"
   }
  },
  "quests": [

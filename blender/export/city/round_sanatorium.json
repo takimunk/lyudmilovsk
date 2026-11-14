@@ -1637,6 +1637,71 @@
     "role": "doctor",
     "service": "treatment"
    }
+  },
+  {
+   "id": "garden_canary",
+   "kind": "board",
+   "pos": [
+    -10.439,
+    14.755,
+    1.95
+   ],
+   "yaw": 321.4,
+   "props": {
+    "topic": "canary"
+   }
+  },
+  {
+   "id": "garden_rota",
+   "kind": "board",
+   "pos": [
+    -7.086,
+    14.863,
+    1.6
+   ],
+   "yaw": -122.1,
+   "props": {
+    "topic": "rota"
+   }
+  },
+  {
+   "id": "garden_can",
+   "kind": "machine",
+   "pos": [
+    -7.581,
+    14.97,
+    0.2
+   ],
+   "yaw": 321.4,
+   "props": {
+    "what": "watering"
+   }
+  },
+  {
+   "id": "pump_mugs",
+   "kind": "shelf",
+   "pos": [
+    5.058,
+    11.772,
+    1.2
+   ],
+   "yaw": 109.3,
+   "props": {
+    "topic": "mugs"
+   }
+  },
+  {
+   "id": "pump_analysis",
+   "kind": "board",
+   "pos": [
+    7.225,
+    14.36,
+    1.55
+   ],
+   "yaw": -57.9,
+   "props": {
+    "topic": "analysis"
+   }
   }
  ],
  "flats": [
@@ -13802,7 +13867,7 @@
  ],
  "tris": {
   "shell": 15986,
-  "detail": 37607,
+  "detail": 38209,
   "windows": 1972
  }
 }
