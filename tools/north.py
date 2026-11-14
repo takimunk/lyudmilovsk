@@ -990,10 +990,6 @@ def write():
     return data
 
 
-if __name__ == "__main__":
-    d = write()
-    print("north: %d places, %d fumaroles, %d camp things, %d signs -> %s" %
-          (len(d["places"]), len(d["fumaroles"]), len(d["camp"]), len(d["signs"]), os.path.normpath(OUT)))
 
 
 # --- people (the ranger and the campers: tools/people_map.py build_north -> people_places.json, docs/north.md "People")
@@ -1195,3 +1191,9 @@ def river_spots():
     m = R.mouth()
     out["overlook"] = [spot((GATE[0] - 150.0, GATE[1] - 67.0), at=m), spot((GATE[0] - 162.0, GATE[1] - 69.0), at=m)]
     return out
+
+
+if __name__ == "__main__":
+    d = write()
+    print("north: %d places, %d fumaroles, %d camp things, %d signs -> %s" %
+          (len(d["places"]), len(d["fumaroles"]), len(d["camp"]), len(d["signs"]), os.path.normpath(OUT)))

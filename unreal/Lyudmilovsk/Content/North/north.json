@@ -3502,6 +3502,14 @@
    "yaw": 19.0,
    "variant": 3,
    "z": -43.0
+  },
+  {
+   "id": "river_log_1",
+   "kind": "log_bench",
+   "x": -140.41,
+   "y": 2085.42,
+   "yaw": 260.0,
+   "variant": 0
   }
  ],
  "cones": [
