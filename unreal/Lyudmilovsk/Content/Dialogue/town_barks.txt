@@ -1284,3 +1284,59 @@ weight = 4
 talk = town.chat_kids1.1 | town.chat_kids1.2 | town.chat_kids1.3
 talk = town.chat_kids2.1 | town.chat_kids2.2 | town.chat_kids2.3
 talk = town.chat_kids3.1 | town.chat_kids3.2 | town.chat_kids3.3
+
+# The North (docs/north.md "People"): the ranger at the river, the footbridges and the brow; the campers in the hot
+# spring and at the overlook. The North's people are not townsfolk: they speak only with lyud.Barks.Residents 1 until
+# ULyudTownTalkSubsystem lets the North's island speak (docs/north.md). The river has no name: people call it "река";
+# where its water comes from is the ranger's to hint at, never to explain.
+
+[north_ranger_greet]
+to = hero
+job = ranger
+say = town.north_ranger_greet.1..3
+
+[north_ranger_bridges]
+job = ranger
+doing = bridges_round
+weight = 2
+say = town.north_ranger_bridges.1..3
+
+[north_ranger_bank]
+job = ranger
+doing = river_bank
+weight = 2
+say = town.north_ranger_bank.1..3
+
+[north_ranger_brow]
+job = ranger
+doing = brow_evening
+weight = 2
+say = town.north_ranger_brow.1..2
+
+[north_camper_greet]
+to = hero
+job = geology_student photographer
+at = north_campfire north_camp_table north_spring north_spring_pool north_walk north_field north_view north_river_view north_patrol north_gate
+say = town.north_camper_greet.1..2
+
+[north_okada_greet]
+to = hero
+job = pensioner
+at = north_spring north_spring_pool
+say = town.north_okada_greet.1
+
+[north_soak]
+doing = spring_soak
+weight = 2
+say = town.north_soak.1..4
+
+[north_soak_talk]
+doing = spring_soak
+doing2 = spring_soak
+weight = 3
+talk = town.north_soak_talk1.1 | town.north_soak_talk1.2 | town.north_soak_talk1.3
+
+[north_overlook]
+doing = river_view
+weight = 2
+say = town.north_overlook.1..3

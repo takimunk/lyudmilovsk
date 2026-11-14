@@ -356,17 +356,26 @@ Everything here is a **proposal** (not canon, docs/story/README.md): names, ages
 
 | Key (body) | Name | Age | Who | Home | Day |
 |---|---|---|---|---|---|
-| ranger (Ranger) | Матвей Ильич Кречет | 58 | the reserve's ranger, thirty years at the barrier | the hut (`north_hut`) | up 5:30; the weather post 6:00; the gate 7–12 (not Saturday); the round gate → camp → spring and back 12–14:30; stove and tea, the porch; the radio hour 20–21; bed 21:45. Saturday morning down to the Gastronom for supplies (~09:00), back for the round |
-| melnikova_anya | Аня Мельникова | 22 | geology student, maps the lava | tent 1 | field work 9:30–16; the fire, the spring |
-| ito_ren | Рэн Ито | 23 | geology student | tent 2 | field work 9:30–16; the fire, the spring |
-| savin_gleb | Глеб Савин | 34 | photographer, waits for the light on the Cone | tent 4 | up at 5 for the dawn; the view spots at sunrise and sunset |
-| okada_kiyo | Киё Окада | 71 | comes to the spring every autumn (forty years) | tent 3 | the spring, the fire, short walks |
+| ranger (Ranger) | Матвей Ильич Кречет | 58 | the reserve's ranger, thirty years at the barrier | the hut (`north_hut`) | up 5:30; the weather post 5:45; breakfast; the morning round to the footbridges 6:30–7:15 (down the track to the crossing's north end, the north bridge's end, the bar by the main channel, a pause at each, and back up); the gate 7:15–12 (not Saturday); the round gate → camp → spring and back 12–14:30; stove and tea, the porch; some evenings on the river's bank (16:30–18:30, a drift log by the north channel) and by the campfire; the radio hour 20–21; a last look over the valley from the brow 21–21:30; bed 21:45. Saturday morning down to the Gastronom for supplies (~09:00), back for the round |
+| melnikova_anya | Аня Мельникова | 22 | geology student, maps the lava | tent 1 | field work 9:30–16; the fire, the spring (a soak after the field work and at dusk), the overlook |
+| ito_ren | Рэн Ито | 23 | geology student | tent 2 | field work 9:30–16; the fire, the spring (a soak after the field work and at dusk), the overlook |
+| savin_gleb | Глеб Савин | 34 | photographer, waits for the light on the Cone | tent 4 | up at 5 for the dawn; the view spots at sunrise and sunset; the overlook over the river |
+| okada_kiyo | Киё Окада | 71 | comes to the spring every autumn (forty years) | tent 3 | the spring's deck by day, in the water at dusk; the fire, short walks |
 
 **Places** (`tools/people_map.py` `build_north`, from `tools/north.py` `people_spots()`; all `"north": 1` = island 3):
 `north_hut` (a home, kind flat, `private`: never given to a town household; bunk, table chair with the radio, stool,
 stove), `north_porch`, `north_gate` (4 spots), `north_weather`, `north_campfire` (two seats a log bench),
 `north_camp_table`, `north_spring` (the deck's bench), `north_patrol` (the round's spots in order), `north_walk`,
-`north_field`, `north_view`, `north_tent_1..4` (homes, private). Every spot is an offset from `HUT`/`GATE`/`CAMP`/
+`north_field`, `north_view`, `north_tent_1..4` (homes, private); by the river and on the brow (`north.river_spots()`):
+`north_bridges` (the ranger's morning round in order: the gate, down the track's line, snapped onto the routed track by
+people_map, the crossing's north end, the north footbridge's end, the bar by the main channel, and back), `north_river_bank`
+(one seat, a drift log on the bar by the north channel: **no prop stands there yet**, see below), `north_brow` (two standing
+spots where the hut's shelf ends over the drop, looking at the crossing), `north_spring_pool` (the four `spring.seats` in the
+water: bench slots with the cushion 5 cm over the underwater ledge, so the water is at the sitter's chest and the legs go into
+the ledge as the hero's do), `north_river_view` (the campers' overlook on the brow west of the gate, looking down the valley to
+the mouth). Activities: `bridges_round` (duty, a round), `brow_evening` (duty), `river_bank` (the ranger's evenings),
+`spring_soak` (12–20 min in the water, 16–21:30), `river_view` (daylight; also a `sun_watch` place). The ground patch reaches
+the bar by the main channel (~410 m south of the gate): 96 x 171 cells of 10 m instead of 96 x 130. Every spot is an offset from `HUT`/`GATE`/`CAMP`/
 `SPRING`/`FUMAROLES_C`/`CONE`/`ANCHORS` (and `snowfields()` when the land has them), read at run time, so it follows the
 land when it moves; the hut's seats and the fire's benches come from `blender/export/north/manifest.json` when it has
 them.
@@ -380,9 +389,20 @@ strong like (`supplies_town`, Saturday) takes the ranger down; the townsfolk kee
 (`campfire`, `hot_spring`, `walk_north`, `photo_cone` have low bases; the North's people like them). The North takes no
 part in festivals (`LyudFestival` uses island 0).
 
-**Words.** `npc.<key>.name|role`, the ranger's 15 lines (first meeting, three plain ones, fumaroles, bears and the food
-pole, the spring, the snowfields, the Cone, the campers, the weather, four sun lines) and two lines a camper, ru/en/ja,
-`[Ranger]` ... `[Okada_kiyo]` in `Content/Dialogue/npc_dialogue.txt`.
+**Words.** `npc.<key>.name|role`, the ranger's 21 lines (first meeting, three plain ones, fumaroles, bears and the food
+pole, the spring, the snowfields, the Cone, the campers, the weather, four sun lines; the river (the hero asks its name: it has
+none, its water comes out of the ground under the dunes in the east and nobody has followed it: say no more), the footbridges,
+sitting in the spring, the hut's view, bears on the gravel bars) and three lines a camper (the river, the spring), ru/en/ja,
+`[Ranger]` ... `[Okada_kiyo]` in `Content/Dialogue/npc_dialogue.txt`. Lines said on their own by place and activity (the
+ranger's greeting, at the footbridges, on the bank, on the brow; the campers' greeting, in the pool, an exchange in the pool, at
+the overlook: 24 lines) are bark sets in `tools/barks/lines/09_north.txt` (docs/town_talk.md). Only townsfolk bark, so the
+North's people say them only with `lyud.Barks.Residents 1` until the talk subsystem lets the North speak.
+
+**Not expressible yet (needs engine work).** The drift log on the bank (a `log_bench` at `north_river_bank`'s seat, yaw = the
+seat's yaw) is not in `north.things()`: until it is placed the ranger sits on air there. `ALyudNorthSpring` does not know the
+people: an NPC soaking does not `Occupy` its seat, so the hero can take the same seat (UPeopleLifeSubsystem should Occupy /
+Release the nearest `FindFreeSeat` while a person does `spring_soak`). A slot cannot be lower than the ground it stands on
+(`ANpcBody::Drive` treats a height <= 0 as the default 47 cm), so the pool's seats sit on the ledge, not hanging in the water.
 
 **Voice.** `localization/voice.json` `ranger`: a MiniMax voice designed from a pinned prompt (an older, weathered,
 hoarse baritone; speed 0.92, pitch -2). Not designed or voiced yet (paid, ~$3 + ~$0.32); until then his lines show as

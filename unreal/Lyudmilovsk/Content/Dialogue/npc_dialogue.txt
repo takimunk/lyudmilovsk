@@ -173,13 +173,18 @@ again = guseva_valentina.again1.1
 first = ranger.first.1 | hero.ranger_first.2 | ranger.first.3
 again = ranger.again1.1
 again = ranger.fumaroles.1
+again = hero.ranger_river.1 | ranger.river.2 | ranger.river.3
 again = ranger.bears.1
+again = ranger.bridges.1
 again = ranger.again2.1
 again = ranger.spring.1
+again = ranger.view.1
 again = ranger.snowfields.1
 again = ranger.again3.1
+again = ranger.bars.1
 again = ranger.cone.1
 again = ranger.campers.1
+again = ranger.spring_sit.1
 again = ranger.weather.1
 sun.day = ranger.sun_day.1
 sun.low = ranger.sun_low.1
@@ -188,12 +193,16 @@ sun.cloudy = ranger.sun_cloudy.1
 [Melnikova_anya]
 first = melnikova_anya.first.1
 again = melnikova_anya.again1.1
+again = melnikova_anya.river.1
 [Ito_ren]
 first = ito_ren.first.1
 again = ito_ren.again1.1
+again = ito_ren.spring.1
 [Savin_gleb]
 first = savin_gleb.first.1
 again = savin_gleb.again1.1
+again = savin_gleb.river.1
 [Okada_kiyo]
 first = okada_kiyo.first.1
 again = okada_kiyo.again1.1
+again = okada_kiyo.spring.1

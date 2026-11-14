@@ -1,0 +1,73 @@
+## ---------------------------------------------------------------------------------------------------------------
+## The North (docs/north.md "People"): the ranger at the river, the footbridges and the brow; the campers in the hot
+## spring and at the overlook. The North's people are not townsfolk: they speak only with lyud.Barks.Residents 1 until
+## ULyudTownTalkSubsystem lets the North's island speak (docs/north.md). The river has no name: people call it "река";
+## where its water comes from is the ranger's to hint at, never to explain.
+## ---------------------------------------------------------------------------------------------------------------
+
+[north_ranger_greet]
+to = hero
+job = ranger
+say town.north_ranger_greet.1 | Здравствуй. Журнал на крыльце. | Hello. The logbook's on the porch. | よう。記帳ノートは小屋の前だ。
+say town.north_ranger_greet.2 | По тропе иди. По косам не ходи. | Keep to the trail. Stay off the gravel bars. | 道から外れるな。砂利の州には入るな。
+say town.north_ranger_greet.3 | Пришёл? Ну, смотри. Трогать — только снег. | Made it? Well, look around. Touch nothing but the snow. | 来たか。まあ見ていけ。触っていいのは雪だけだ。
+
+[north_ranger_bridges]
+job = ranger
+doing = bridges_round
+weight = 2
+say town.north_ranger_bridges.1 | Доски на месте. Пока. | The planks are in place. For now. | 板はある。今のところは。
+say town.north_ranger_bridges.2 | После каждого паводка доски обратно кладу. Привычка. | After every flood I put the planks back. Habit. | 洪水のたびに板を戻す。習慣だ。
+say town.north_ranger_bridges.3 | Вода за ночь спала. Можно и вброд. | The water's dropped overnight. You could wade it. | 一晩で水が引いた。歩いて渡れる。
+
+[north_ranger_bank]
+job = ranger
+doing = river_bank
+weight = 2
+say town.north_ranger_bank.1 | Медведь на косе. Не шуми. Он рыбу смотрит, не нас. | Bear on the bar. Keep quiet. He's watching the fish, not us. | 州に熊だ。静かに。見てるのは魚で、俺たちじゃない。
+say town.north_ranger_bank.2 | Вода холодная, как из погреба. Из-под земли же. | The water's cold as a cellar. It comes out of the ground. | 水は地下室みたいに冷たい。地面の下から出てるからな。
+say town.north_ranger_bank.3 | Река шумит одинаково. Тридцать лет. Успокаивает. | The river makes the same noise. Thirty years. It calms you. | 川の音はいつも同じだ。三十年。落ち着く。
+
+[north_ranger_brow]
+job = ranger
+doing = brow_evening
+weight = 2
+say town.north_ranger_brow.1 | Отсюда весь брод видно. Никого. Хорошо. | You can see the whole ford from here. Nobody. Good. | ここから浅瀬が全部見える。誰もいない。よし。
+say town.north_ranger_brow.2 | Туман с моря по реке пошёл. К утру до сторожки дойдёт. | Fog's coming up the river from the sea. By morning it'll reach the hut. | 海から川沿いに霧が上がってくる。朝には小屋まで来る。
+
+[north_camper_greet]
+to = hero
+job = geology_student photographer
+at = north_campfire north_camp_table north_spring north_spring_pool north_walk north_field north_view north_river_view north_patrol north_gate
+say town.north_camper_greet.1 | Привет. Через реку шли? Мостки целы? | Hi. Came over the river? Are the footbridges still there? | こんにちは。川を渡ってきた？丸木橋は無事？
+say town.north_camper_greet.2 | О, гости. Сюда нечасто доходят. | Oh, a visitor. Not many make it up here. | あ、お客さん。ここまで来る人は少ないよ。
+
+[north_okada_greet]
+to = hero
+job = pensioner
+at = north_spring north_spring_pool
+say town.north_okada_greet.1 | Здравствуйте. Вода сегодня хорошая. | Hello. The water's good today. | こんにちは。今日はお湯がいいですよ。
+
+[north_soak]
+doing = spring_soak
+weight = 2
+say town.north_soak.1 | Двадцать минут. Не больше. | Twenty minutes. No more. | 二十分。それ以上はだめ。
+say town.north_soak.2 | Серой пахнет. Значит, живой. | Smells of sulphur. Means it's alive. | 硫黄の匂い。生きてる証拠。
+say town.north_soak.3 | Плечи мёрзнут, а ноги варятся. | Shoulders freezing, feet cooking. | 肩は冷えて、足は煮えてる。
+say town.north_soak.4 | Сопка дымит. Отсюда лучше всего видно. | The Cone's smoking. You see it best from here. | ソプカが煙を上げてる。ここからが一番よく見える。
+
+[north_soak_talk]
+doing = spring_soak
+doing2 = spring_soak
+weight = 3
+talk
+- town.north_soak_talk1.1 | Сколько уже сидим? | How long have we been in? | どのくらい浸かってる？
+- town.north_soak_talk1.2 | Минут пятнадцать. Ещё пять — и вылезаем. | Fifteen minutes or so. Five more, then out. | 十五分くらい。あと五分で出よう。
+- town.north_soak_talk1.3 | Матвей Ильич всё равно посчитает. | Matvei Ilyich will be counting anyway. | どうせマトヴェイ・イリイチが数えてる。
+
+[north_overlook]
+doing = river_view
+weight = 2
+say town.north_overlook.1 | Река как заплетённая коса. Протоки сходятся и расходятся. | The river's like a braid. The channels meet and part. | 川は編んだ髪みたい。流れが寄っては離れる。
+say town.north_overlook.2 | Вон мостки. Отсюда как спички. | There are the footbridges. Like matches from up here. | あそこに丸木橋。ここからだとマッチ棒みたい。
+say town.north_overlook.3 | На косе кто-то ходит. Медведь, кажется. Ну и ладно, он далеко. | Something's walking on the bar. A bear, I think. Fine, it's far off. | 州を何かが歩いてる。熊みたい。まあいい、遠いし。
