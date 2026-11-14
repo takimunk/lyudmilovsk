@@ -1379,7 +1379,7 @@
     11.801,
     1.15
    ],
-   "yaw": 218.4,
+   "yaw": 128.4,
    "props": {
     "what": "night_radio"
    }
@@ -1629,10 +1629,10 @@
    "kind": "counter",
    "pos": [
     9.371,
-    16.71,
+    16.31,
     1.0
    ],
-   "yaw": 38.4,
+   "yaw": 353.4,
    "props": {
     "role": "doctor",
     "service": "treatment"
@@ -1698,7 +1698,7 @@
     12.921,
     1.55
    ],
-   "yaw": -57.9,
+   "yaw": 272.1,
    "props": {
     "topic": "analysis"
    }
