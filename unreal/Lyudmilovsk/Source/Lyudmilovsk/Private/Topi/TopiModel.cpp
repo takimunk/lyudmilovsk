@@ -518,7 +518,7 @@ namespace LyudTopi
 
 		double Dunes = 0.0;
 		double BigWind = 1.0, MedWind = 1.0;
-		const auto Layer = [&](double Length, double Amp, double Lee, uint32_t Seed, double Scale, double* Windward, double Turn)
+		const auto Layer = [&](double Length, double Amp, double Lee, uint32_t Seed, double Scale, double* Windward, double Turn, double Bend = 0.0)
 		{
 			if (Scale <= 0.0)
 			{
@@ -530,7 +530,7 @@ namespace LyudTopi
 				return;
 			}
 			const double C = std::cos(Turn), S = std::sin(Turn);
-			Dunes += Scale * DuneLayer(U * C + V * S, V * C - U * S, Length, Amp, Lee, Seed, Windward);
+			Dunes += Scale * DuneLayer(U * C + V * S + Bend, V * C - U * S, Length, Amp, Lee, Seed, Windward);
 		};
 		Layer(5200.0, 260.0, 0.84, 71, Mega * Smooth((In - 2500.0) / 5000.0), nullptr, 0.21);
 		Layer(1150.0, 75.0, 0.82, 61, Mega, nullptr, -0.12);
@@ -540,9 +540,11 @@ namespace LyudTopi
 		// a second, lower family lying askew to the first: it breaks the long parallel ridges into knots, saddles and bowls
 		Layer(165.0, 8.0, 0.80, 51, Env * (0.4 + 0.6 * BigWind) * (1.6 - Knots), nullptr, 0.62);
 		Layer(78.0, 7.5, 0.80, 31, Env * (0.35 + 0.65 * BigWind) * Corridor, &MedWind, 0.16);
-		Layer(19.0, 1.3, 0.78, 41, Env * (0.3 + 0.7 * BigWind * MedWind) * Corridor, nullptr, -0.33);
-		// the smallest: knee-high sand waves on the backs of the others, what the eye has to hold on to at its feet
-		Layer(6.5, 0.34, 0.74, 45, Env * BigWind * MedWind * Corridor, nullptr, 0.27);
+		// the small crests wander and fork (bent by a few metres): left straight they read as ruled lines from eye level
+		const double Bend = 8.0 * (Noise(L.X / 27.0, L.Y / 36.0, 47) - 0.5) + 3.0 * (Noise(L.X / 10.0, L.Y / 12.0, 48) - 0.5);
+		Layer(19.0, 1.3, 0.78, 41, Env * (0.3 + 0.7 * BigWind * MedWind) * Corridor, nullptr, -0.33, Bend);
+		// the smallest (9 m: the finest ground is drawn at 2 m): knee-high sand waves on the backs of the others, what the eye has to hold on to at its feet
+		Layer(9.0, 0.42, 0.74, 45, Env * BigWind * MedWind * Corridor * (0.25 + 0.75 * Smooth((Noise(L.X / 40.0, L.Y / 55.0, 49) - 0.3) / 0.3)), nullptr, 0.27, 0.6 * Bend);
 
 		// marram: thick round the edge; further in it holds the dunes' long backs and crests in tussocky patches
 		// (none on the slip faces), thinning out past the river; none on the river's plain
@@ -555,7 +557,7 @@ namespace LyudTopi
 		const double Tussocky = Smooth((Grass - 0.12) / 0.3) * Corridor * Smooth((PathD - 3.0) / 6.0) * BigWind * MedWind;
 		if (Tussocky > 0.0)
 		{
-			if (Cell > 0.0 && 9.0 < 3.0 * Cell)
+			if (Cell > 4.5)                       // (drawn down to 4 m cells: the mounds must not pop out 240 m from the eye)
 			{
 				Dunes += Tussocky * 1.35 * 0.12;
 			}
