@@ -26,7 +26,7 @@ if os.environ.get("MANNERS"):
     MANNERS = os.environ["MANNERS"].split(",")
 WANT = {"newspaper": ("SIT",), "knit": ("SIT", "STAND"), "carry_bag": ("WALK",)}
 T0, T1 = -39.5, -36.2
-WHEN = unreal.DateTime(2026, 9, 12, 16, 30, 0, 0)
+WHEN = unreal.DateTime(2026, 10, 21, 15, 0, 0, 0)
 
 st = {"t": 0.0, "i": 0, "t0": 0.0, "wait": 0.0, "used": {}}
 
@@ -57,15 +57,35 @@ def log(msg):
     unreal.log_warning("MANNERSHOT " + msg)
 
 
-def people(w):
-    l = life(w)
+def all_bodies(w):
+    return [a for a in unreal.ObjectIterator(unreal.NpcBody) if a.get_world() == w and not a.get_name().startswith("Default__")]
+
+
+def bodies(w):
+    """Drawn townsfolk bodies: (actor, facing unit vector (mesh +Y), pose name of the nearest person record)."""
     out = []
+    recs = []
+    l = life(w)
     for i in range(l.num_people()):
         r = l.get_person(i)
         if isinstance(r, tuple):
             r = r[1] if r[0] else None
-        if r and r.pose != unreal.PersonPose.HIDDEN and r.actor and not r.actor.is_hidden():
-            out.append(r)
+        if r and r.pose != unreal.PersonPose.HIDDEN:
+            recs.append(r)
+    for a in all_bodies(w):
+        root = a.root_component
+        if not root or not root.is_visible():
+            continue
+        loc = a.get_actor_location()
+        f = root.get_right_vector()
+        pose, key, d0 = "STAND", "?", 1e9
+        for r in recs:
+            d = math.hypot(r.location.x - loc.x, r.location.y - loc.y)
+            if d < d0:
+                d0, pose, key = d, str(r.pose).split(".")[-1].upper(), r.key
+        if d0 > 400.0:
+            pose, key = "STAND", a.get_name()
+        out.append((a, f, pose, key))
     return out
 
 
@@ -85,30 +105,59 @@ def place(w, eye, target):
                                            yaw=math.degrees(math.atan2(dy, dx))))
 
 
-def pick(w, manner):
+def cam_loc(w):
+    return unreal.GameplayStatics.get_player_controller(w, 0).player_camera_manager.get_camera_location()
+
+
+def pick(w, manner, near=None):
+    """The drawn body nearest to the camera (or `near`) in a fitting pose; those already shot count as farther."""
     want = WANT.get(manner, ("STAND", "TALK", "LOOK", "WALK", "SIT"))
+    c = near or cam_loc(w)
     best = None
-    for r in people(w):
-        pose = str(r.pose).split(".")[-1].upper()
-        if pose not in want:
+    for b in bodies(w):
+        a, f, pose, key = b
+        loc = a.get_actor_location()
+        if abs(loc.z - c.z) > 1500.0:
             continue
-        loc = r.location
-        d = min(math.hypot(loc.x - c[0], loc.y - c[1]) for c in CENTRES)
-        rank = want.index(pose) * 3000.0 + d + st["used"].get(r.id, 0) * 1500.0
+        d = math.hypot(loc.x - c.x, loc.y - c.y)
+        if d > 6000.0:
+            continue
+        rank = d + st["used"].get(a.get_name(), 0) * 900.0 + (0.0 if pose in want else 4000.0)
         if best is None or rank < best[0]:
-            best = (rank, r)
+            best = (rank, b)
     return best[1] if best else None
 
 
-def frame(w, r, back=350.0, side=0.55, up=150.0):
-    a = r.actor
-    t = a.get_actor_location() if a else r.location
-    yaw = math.radians(r.yaw)
-    fx, fy = math.cos(yaw), math.sin(yaw)
+def always_tick(w):
+    # offscreen only the HighResShot frames render, and a body's pose ticks only when rendered: without this every
+    # shot shows the pose of the shot before
+    for a in all_bodies(w):
+        try:
+            a.root_component.set_editor_property("visibility_based_anim_tick_option",
+                                                 unreal.VisibilityBasedAnimTickOption.ALWAYS_TICK_POSE_AND_REFRESH_BONES)
+        except Exception as e:  # noqa: BLE001
+            if not st.get("tickerr"):
+                st["tickerr"] = 1
+                log("tick option: %s" % e)
+
+
+def visible(b):
+    try:
+        return b[0].root_component.is_visible()
+    except Exception:  # noqa: BLE001
+        return False
+
+
+def frame(w, b, back=350.0, side=0.55, up=150.0):
+    a, _, _, _ = b
+    t = a.get_actor_location()
+    f = a.root_component.get_right_vector()
+    fx, fy = f.x, f.y
+    n = math.hypot(fx, fy) or 1.0
+    fx, fy = fx / n, fy / n
     ex = t.x + fx * back - fy * back * side
     ey = t.y + fy * back + fx * back * side
-    ground = r.location.z
-    place(w, (ex, ey, ground + up), (t.x, t.y, ground + 115.0))
+    place(w, (ex, ey, t.z + up), (t.x, t.y, t.z + 110.0))
 
 
 STEPS = []
@@ -119,47 +168,107 @@ def step(fn, wait=1.0):
 
 
 def s_start(w):
-    for c in ["ghost", "r.MotionBlurQuality 0", "t.MaxFPS 0", "au.LinearGainScalarForFinalOutut 0",
-              "lyud.Weather.Preset clear"]:
+    for c in ["lyud.Prefetch 0", "ghost", "r.MotionBlurQuality 0", "t.MaxFPS 0", "au.LinearGainScalarForFinalOutut 0",
+              "lyud.Weather.Preset clear"] + [c for c in os.environ.get("MANNER_CMDS", "").split(";") if c]:
         cmd(w, c)
     for cal in unreal.ObjectIterator(unreal.GameCalendar):
         if cal.get_world() == w:
             cal.set_now(WHEN)
     c = CENTRES[0]
-    place(w, (c[0] - 1500.0, c[1], c[2] + 900.0), (c[0], c[1], c[2]))
-    log("start people=%d drawn=%d" % (life(w).num_people(), len(people(w))))
+    place(w, (c[0] - 600.0, c[1], c[2] + 300.0), (c[0], c[1], c[2] + 100.0))
+    log("start people=%d" % life(w).num_people())
 
 
 step(s_start, 20.0)
 
 
 def s_census(w):
-    ps = people(w)
-    log("drawn %d: %s" % (len(ps), ", ".join("%s(%s)" % (r.key, str(r.pose).split(".")[-1]) for r in ps[:40])))
+    l = life(w)
+    alls = all_bodies(w)
+    vis = [a for a in alls if a.root_component and a.root_component.is_visible()]
+    log("all NpcBody objects anywhere: %d" % len([a for a in unreal.ObjectIterator(unreal.NpcBody)]))
+    dup = 0
+    try:
+        log("instances: %s" % (l.instance_report(),))
+    except Exception as e:  # noqa: BLE001
+        log("instance_report: %s" % e)
+    log("report: %s" % l.report()[:600])
+    pc = unreal.GameplayStatics.get_player_controller(w, 0)
+    cam = pc.player_camera_manager.get_camera_location()
+    log("bodies %d, visible %d; camera %s" % (len(alls), len(vis), cam))
+    recs = []
+    for i in range(l.num_people()):
+        r = l.get_person(i)
+        if isinstance(r, tuple):
+            r = r[1] if r[0] else None
+        if r and r.pose != unreal.PersonPose.HIDDEN:
+            recs.append((math.hypot(r.location.x - cam.x, r.location.y - cam.y), r))
+    recs.sort(key=lambda x: x[0])
+    log("nearest people: " + ", ".join("%s %s %s %.0fm z%.0f" % (r.key, str(r.pose).split(".")[-1], r.place, d / 100.0,
+        r.location.z) for d, r in recs[:15]))
+    out = [x for x in recs if x[1].place.startswith("S-")]
+    for d, r in out[:3]:
+        log("near %s: model %s town %s actor %s | %s" % (r.key, l.shown_model(r.id), l.is_townsperson(r.id), r.actor,
+                                                       l.describe(r.id)[:300]))
+    if not vis and out:
+        # move to where people are out of doors
+        t = out[0][1].location
+        st["centre"] = (t.x, t.y, t.z)
+        place(w, (t.x - 500.0, t.y, t.z + 250.0), (t.x, t.y, t.z + 100.0))
+        log("moved the camera to %s by %s" % (t, out[0][1].key))
 
 
-step(s_census, 1.0)
+step(s_census, 6.0)
+step(lambda w: log("after 6 s: %d bodies" % len(all_bodies(w))), 10.0)
+step(lambda w: log("after 16 s: %d bodies" % len(all_bodies(w))), 1.0)
+
+
+def s_census2(w):
+    cmd(w, "HighResShot 1600x900 filename=manner_census")
+    if st.get("centre"):
+        CENTRES.insert(0, st["centre"])
+    bs = bodies(w)
+    log("drawn %d: %s" % (len(bs), ", ".join("%s(%s %.0fm)" % (k, p, min(math.hypot(a.get_actor_location().x - c[0],
+        a.get_actor_location().y - c[1]) for c in CENTRES) / 100.0) for a, _, p, k in bs[:60])))
+
+
+step(s_census2, 1.0)
 
 for m in MANNERS:
     def _force(w, m=m):
         cmd(w, "lyud.People.Manner %s" % m)
-        r = pick(w, m)
-        st["who"] = r.id if r else None
-        if r:
-            st["used"][r.id] = st["used"].get(r.id, 0) + 1
-            frame(w, r)
+        always_tick(w)
+        b = pick(w, m)
+        st["who"] = b
+        if b:
+            st["used"][b[0].get_name()] = st["used"].get(b[0].get_name(), 0) + 1
+            frame(w, b)
     step(_force, 2.5)
+
+    def _check(w, m=m):
+        b = st.get("who")
+        if b and not visible(b):
+            b = pick(w, m)
+            st["who"] = b
+            log("%s: subject gone, now %s" % (m, b[0].get_name() if b else None))
+        if b:
+            always_tick(w)
+            frame(w, b)
+    step(_check, 1.5)
 
     def _shoot(w, m=m):
         if st.get("who") is None:
             log("%s: nobody" % m)
             return
-        r = life(w).get_person(st["who"])
-        if isinstance(r, tuple):
-            r = r[1]
-        frame(w, r)
-        man = life(w).get_manner(r.id)
-        log("%s: %s pose %s activity %s manner now %s" % (m, r.key, r.pose, r.activity, man))
+        b = st["who"]
+        if not visible(b):
+            b = pick(w, m)
+            if not b:
+                log("%s: lost the subject, nobody else" % m)
+                return
+            st["who"] = b
+        frame(w, b)
+        log("%s: %s (%s) pose %s at %s" % (m, b[3], b[0].get_name(), b[2], b[0].get_actor_location()))
         cmd(w, "HighResShot 1600x900 filename=manner_%s" % m)
     step(_shoot, 2.0)
 

@@ -386,9 +386,10 @@ namespace LyudGesture
 		case EManner::Newspaper:
 			for (int32 S = 0; S < 2; S++)
 			{
-				Hand(G, S, E, Chest, { 19.f, 31.f, -10.f }, { 0.f, 0.45f, 0.9f }, { -1.f, 0.f, 0.f }, 0.7f);
+				// held up open before the face (the sheet stands, ANpcBody::PlaceMannerProp), a little lower when seated
+				Hand(G, S, E, Chest, { 21.f, 33.f, 3.f - 5.f * Sit }, { 0.f, 0.3f, 0.95f }, { -1.f, 0.f, 0.f }, 0.7f);
 			}
-			G.HeadPitch = -15.f * E;
+			G.HeadPitch = -9.f * E;
 			G.HeadYaw = 9.f * FMath::Sin(T * 0.35f + Ph) * E;
 			break;
 		case EManner::Knit:

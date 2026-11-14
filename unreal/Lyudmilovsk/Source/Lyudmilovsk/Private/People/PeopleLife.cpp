@@ -2177,7 +2177,13 @@ void ANpcBody::PlaceMannerProp(bool bShow)
 	{
 		Loc = (At[0] + At[1]) * 0.5;
 		const FVector Across = (At[0] - At[1]).GetSafeNormal(UE_SMALL_NUMBER, Q.GetAxisX());
-		Rot = FRotationMatrix::MakeFromXZ(Across, Mesh->GetBoneLocation(TEXT("head")) + Up * 8.f - Loc).Rotator();
+		FVector Face = Mesh->GetBoneLocation(TEXT("head")) + Up * 8.f - Loc;
+		if ((LyudPeople::EProp)MannerPropKind == LyudPeople::EProp::Newspaper)
+		{
+			// a newspaper stands up before the eyes (only tipped back a little), not lying in the hands like a tray
+			Face.Z *= 0.3f;
+		}
+		Rot = FRotationMatrix::MakeFromXZ(Across, Face).Rotator();
 		break;
 	}
 	case EHold::Pointing:

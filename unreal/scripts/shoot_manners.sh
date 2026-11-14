@@ -6,7 +6,7 @@ UE="${UE_ROOT:-/Users/Shared/Epic Games/UE_5.8}"
 ROOT="$(cd "$(dirname "$0")/../.." && pwd)"
 PROJ="$ROOT/unreal/Lyudmilovsk/Lyudmilovsk.uproject"
 LOG="$ROOT/unreal/Lyudmilovsk/Saved/Logs/shoot_manners.log"
-SHOTS="$ROOT/unreal/Lyudmilovsk/Saved/Screenshots/Mac"
+SHOTS="$ROOT/unreal/Lyudmilovsk/Saved/Screenshots/MacEditor"
 OUT="$ROOT/Saved/MannerShots"
 mkdir -p "$(dirname "$LOG")" "$OUT"
 rm -f "$SHOTS"/manner_*.png
