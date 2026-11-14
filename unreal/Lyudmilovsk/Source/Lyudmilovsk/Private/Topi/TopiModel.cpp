@@ -167,6 +167,10 @@ namespace LyudTopi
 					const double Radius = 380.0 + 2.1 * Tall;
 					// three arms: the star's ridges run out further than its hollows
 					const double DX = X - CX, DY = Y - CY;
+					if (DX * DX + DY * DY >= 1.5 * Radius * Radius)
+					{
+						continue;
+					}
 					const double Arms = 1.0 + 0.22 * std::cos(3.0 * std::atan2(DY, DX) + 6.283 * Hash01(I, J, Seed + 3));
 					const double R = std::sqrt(DX * DX + DY * DY) / (Radius * Arms);
 					if (R < 1.0)
@@ -573,7 +577,8 @@ namespace LyudTopi
 		}
 		// where the path climbs it the great dune has a saddle, so the way in is a climb and not a wall: there it
 		// stands only a little over the map's own ground at this very place, not over the highest ground around
-		const double Saddle = 1.0 - Smooth((LocalPathDistance(L.X, L.Y, nullptr) - 25.0) / 90.0);
+		const double PathD = LocalPathDistance(L.X, L.Y, nullptr);
+		const double Saddle = 1.0 - Smooth((PathD - 25.0) / 90.0);
 		if (Saddle > 0.0 && Great > 0.0)
 		{
 			const double Here = std::max(Edge.At(WestX, Y), std::max(Edge.At(WestX + 30.0, Y), Edge.At(WestX + 60.0, Y))) + 4.5;
@@ -588,7 +593,6 @@ namespace LyudTopi
 		// the dunes: the wind blows from the sea across the town and on (toward the map's -X, local -LY), so the
 		// slip faces look away from the town
 		const double U = -L.Y, V = L.X;
-		const double PathD = LocalPathDistance(L.X, L.Y, nullptr);
 		const double Corridor = 1.0 - 0.5 * (1.0 - Smooth((PathD - 6.0) / 16.0));
 		const double Env = K * (0.3 + 0.7 * Smooth(In / 220.0)) * (1.0 - Plain);
 		const double Mega = Smooth((In - 1050.0) / 1900.0);      // past the river the land begins to rise in ranges
