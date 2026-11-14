@@ -11,6 +11,7 @@ remarks (quest_scenes.json): QUESTDEPTH lines, the dialogue's "NpcDialogue: line
   h) Lange on first_catch's catch: catch_wait, catch_wait_hint, catch_wait_nets, braid_three_days, round again; done:
      angler_spoon_dawn, then everyday lines
   p) waxwing on return, soda_science on taste: the waxwing's call beside Sorokin (Galina on a bench near by) is his
+  r) waxwing on return, a call by Valentina's cart: at 13:00 she answers (pointing to Sorokin's bench), at 15:00 he does
   q) two remarks in range at once (the Clerk, Sonya): the second begins after the first has finished
   j) a great tit beside Dasha at 17:30 (Aya on the same bench): exactly one person answers
   k) waxwing on return: a call by Valentina's cart and one by Sorokin both get his waxwing_seen lines and finish the quest
@@ -173,6 +174,19 @@ at("Quest.Scenes", "p_listeners", 0.5)
 at("QUESTDEPTH mark p_call")
 at("Quest.BirdCall Waxwing sorokin_oleg", None, 10.0)
 at("Quest.Dump", "p_done")
+# r) waxwing on return, the call beside Valentina's cart: at 13:00 (Sorokin away from his bench) she points to his bench and the
+#    quest stays on return; at 15:00 (Sorokin on his bench 4.6 m from her cart) the same call is his and the quest ends
+at("Quest.Reset", None, 1.0)
+at("Quest.SetStage waxwing return", None, 1.0)
+go("guseva_valentina", 4, [13, 13.25])
+at("Quest.Scenes", "r_listeners_13h", 0.5)
+at("QUESTDEPTH mark r_call_13h")
+at("Quest.BirdCall Waxwing guseva_valentina", None, 8.0)
+at("Quest.Dump", "r_after_13h")
+go("guseva_valentina", 4, [15, 15.5, 16])
+at("QUESTDEPTH mark r_call_15h")
+at("Quest.BirdCall Waxwing guseva_valentina", None, 10.0)
+at("Quest.Dump", "r_after_15h")
 # q) two remarks in range at once (awakening on owner: the Clerk's at once, Sonya's once the hero came from afar): one voice
 #    at a time, the second after the first has finished
 at("Quest.Reset", None, 1.0)
