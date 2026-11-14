@@ -1,0 +1,799 @@
+{
+ "_doc": "Cobogo house (P-T1H2) second pass: the yard under the pilotis, the stair views, Holm's flat things. Quest t1h2_card builds on home_holm.",
+ "acts": {
+  "t1h2_notice": {
+   "like": "look_misc",
+   "prompt": "city.t1h2.p.notice",
+   "minutes": 2,
+   "lines": [
+    {
+     "k": "city.t1h2.notice.1"
+    },
+    {
+     "k": "city.t1h2.notice.2"
+    },
+    {
+     "k": "city.t1h2.notice.3"
+    },
+    {
+     "k": "city.t1h2.notice.4"
+    },
+    {
+     "k": "city.t1h2.notice.5"
+    },
+    {
+     "k": "city.t1h2.notice.6",
+     "after": 2
+    },
+    {
+     "k": "city.t1h2.notice.7",
+     "after": 4
+    },
+    {
+     "k": "city.t1h2.notice.8",
+     "after": 6
+    },
+    {
+     "k": "city.t1h2.notice.fest",
+     "festival": "any"
+    },
+    {
+     "k": "city.t1h2.notice.rain",
+     "weather": "rain"
+    }
+   ],
+   "any_hour": true,
+   "rotate": "daily",
+   "sound": "page_turn",
+   "collect": "t1h2_garden/notice"
+  },
+  "t1h2_post": {
+   "like": "look_misc",
+   "prompt": "city.t1h2.p.post",
+   "minutes": 3,
+   "lines": [
+    {
+     "k": "city.t1h2.post.1"
+    },
+    {
+     "k": "city.t1h2.post.2",
+     "h": [
+      6,
+      12
+     ]
+    },
+    {
+     "k": "city.t1h2.post.3",
+     "h": [
+      12,
+      21
+     ]
+    },
+    {
+     "k": "city.t1h2.post.n",
+     "h": [
+      21,
+      6
+     ]
+    }
+   ],
+   "any_hour": true,
+   "sound": "paper_rustle",
+   "give": [
+    [
+     "postcard",
+     1
+    ]
+   ],
+   "daily": 1,
+   "collect": "t1h2_garden/post"
+  },
+  "t1h2_tap": {
+   "like": "look_misc",
+   "prompt": "city.t1h2.p.tap",
+   "minutes": 2,
+   "lines": [
+    {
+     "k": "city.t1h2.tap.1"
+    },
+    {
+     "k": "city.t1h2.tap.2"
+    },
+    {
+     "k": "city.t1h2.tap.n",
+     "h": [
+      22,
+      6
+     ]
+    },
+    {
+     "k": "city.t1h2.tap.cold",
+     "weather": "cold"
+    },
+    {
+     "k": "city.t1h2.tap.rain",
+     "weather": "rain"
+    }
+   ],
+   "any_hour": true,
+   "sound": "water_pour",
+   "give": [
+    [
+     "water",
+     1
+    ]
+   ],
+   "daily": 3,
+   "collect": "t1h2_garden/tap"
+  },
+  "t1h2_bike": {
+   "like": "look_misc",
+   "prompt": "city.act.look.prompt",
+   "minutes": 1,
+   "lines": [
+    {
+     "k": "city.t1h2.bike.1"
+    },
+    {
+     "k": "city.t1h2.bike.2"
+    },
+    {
+     "k": "city.t1h2.bike.rain",
+     "weather": "rain"
+    },
+    {
+     "k": "city.t1h2.bike.n",
+     "h": [
+      21,
+      6
+     ]
+    }
+   ],
+   "any_hour": true,
+   "collect": "t1h2_garden/bike"
+  },
+  "t1h2_pot1": {
+   "like": "look_misc",
+   "prompt": "city.t1h2.p.tag",
+   "minutes": 2,
+   "lines": [
+    {
+     "k": "city.t1h2.pot1.1"
+    },
+    {
+     "k": "city.t1h2.pot1.2"
+    },
+    {
+     "k": "city.t1h2.pot1.rain",
+     "weather": "rain"
+    }
+   ],
+   "any_hour": true,
+   "collect": "t1h2_garden/pots"
+  },
+  "t1h2_pot2": {
+   "like": "look_misc",
+   "prompt": "city.t1h2.p.tag",
+   "minutes": 2,
+   "lines": [
+    {
+     "k": "city.t1h2.pot2.1"
+    },
+    {
+     "k": "city.t1h2.pot2.2"
+    },
+    {
+     "k": "city.t1h2.pot2.cold",
+     "weather": "cold"
+    }
+   ],
+   "any_hour": true,
+   "collect": "t1h2_garden/pots"
+  },
+  "t1h2_pot3": {
+   "like": "look_misc",
+   "prompt": "city.t1h2.p.tag",
+   "minutes": 2,
+   "lines": [
+    {
+     "k": "city.t1h2.pot3.1"
+    },
+    {
+     "k": "city.t1h2.pot3.2"
+    }
+   ],
+   "any_hour": true,
+   "collect": "t1h2_garden/pots"
+  },
+  "t1h2_tree": {
+   "like": "look_misc",
+   "prompt": "city.t1h2.p.tag",
+   "minutes": 2,
+   "lines": [
+    {
+     "k": "city.t1h2.tree.1"
+    },
+    {
+     "k": "city.t1h2.tree.2"
+    },
+    {
+     "k": "city.t1h2.tree.n",
+     "h": [
+      21,
+      6
+     ]
+    }
+   ],
+   "any_hour": true,
+   "collect": "t1h2_garden/tree"
+  },
+  "t1h2_games": {
+   "like": "dominoes",
+   "target": "t1h2_dominoes",
+   "lines": [
+    "city.t1h2.games.1",
+    "city.t1h2.games.2"
+   ],
+   "any_hour": true
+  },
+  "t1h2_stool": {
+   "like": "sit",
+   "minutes": 10,
+   "lines": [
+    {
+     "k": "city.t1h2.stool.1"
+    },
+    {
+     "k": "city.t1h2.stool.2",
+     "h": [
+      6,
+      21
+     ]
+    },
+    {
+     "k": "city.t1h2.stool.n",
+     "h": [
+      21,
+      6
+     ]
+    }
+   ],
+   "any_hour": true
+  },
+  "t1h2_bench": {
+   "like": "sit",
+   "minutes": 10,
+   "lines": [
+    {
+     "k": "city.t1h2.bench.1",
+     "h": [
+      6,
+      21
+     ]
+    },
+    {
+     "k": "city.t1h2.bench.2",
+     "h": [
+      6,
+      21
+     ]
+    },
+    {
+     "k": "city.t1h2.bench.n",
+     "h": [
+      21,
+      6
+     ]
+    },
+    {
+     "k": "city.t1h2.bench.rain",
+     "weather": "rain"
+    }
+   ],
+   "any_hour": true
+  },
+  "t1h2_view1": {
+   "like": "look_misc",
+   "prompt": "city.act.look_out.prompt",
+   "minutes": 5,
+   "lines": [
+    {
+     "k": "city.t1h2.v1.1",
+     "h": [
+      6,
+      21
+     ]
+    },
+    {
+     "k": "city.t1h2.v1.2",
+     "h": [
+      6,
+      21
+     ]
+    },
+    {
+     "k": "city.t1h2.v1.n",
+     "h": [
+      21,
+      6
+     ]
+    },
+    {
+     "k": "city.t1h2.v1.fog",
+     "weather": "fog"
+    },
+    {
+     "k": "city.t1h2.v1.rain",
+     "weather": "rain"
+    }
+   ],
+   "sound": "wind_soft",
+   "collect": "t1h2_garden/view",
+   "any_hour": true
+  },
+  "t1h2_view3": {
+   "like": "look_misc",
+   "prompt": "city.act.look_out.prompt",
+   "minutes": 5,
+   "lines": [
+    {
+     "k": "city.t1h2.v3.1",
+     "h": [
+      6,
+      21
+     ]
+    },
+    {
+     "k": "city.t1h2.v3.2",
+     "h": [
+      6,
+      21
+     ]
+    },
+    {
+     "k": "city.t1h2.v3.n",
+     "h": [
+      21,
+      6
+     ]
+    },
+    {
+     "k": "city.t1h2.v3.fog",
+     "weather": "fog"
+    },
+    {
+     "k": "city.t1h2.v3.rain",
+     "weather": "rain"
+    }
+   ],
+   "sound": "wind_soft",
+   "collect": "t1h2_garden/view",
+   "any_hour": true
+  },
+  "t1h2_charts": {
+   "like": "look_misc",
+   "prompt": "city.t1h2.p.charts",
+   "minutes": 5,
+   "lines": [
+    {
+     "k": "city.t1h2.charts.1"
+    },
+    {
+     "k": "city.t1h2.charts.2"
+    },
+    {
+     "k": "city.t1h2.charts.3"
+    },
+    {
+     "k": "city.t1h2.charts.n",
+     "h": [
+      21,
+      6
+     ]
+    }
+   ],
+   "any_hour": true,
+   "sound": "paper_rustle",
+   "collect": "t1h2_holm/charts"
+  },
+  "t1h2_logopen": {
+   "like": "_home_read",
+   "prompt": "city.t1h2.p.rough",
+   "target": "t1h2_logopen",
+   "lines": [
+    {
+     "k": "city.t1h2.tx.rough.1"
+    }
+   ],
+   "read": {
+    "texts": [
+     "t1h2_rough_log"
+    ],
+    "rotate": "use"
+   },
+   "any_hour": true
+  },
+  "t1h2_sextant": {
+   "like": "look_misc",
+   "prompt": "city.t1h2.p.sextant",
+   "minutes": 4,
+   "lines": [
+    {
+     "k": "city.t1h2.sextant.m",
+     "h": [
+      6,
+      11
+     ]
+    },
+    {
+     "k": "city.t1h2.sextant.d",
+     "h": [
+      11,
+      17
+     ]
+    },
+    {
+     "k": "city.t1h2.sextant.e",
+     "h": [
+      17,
+      21
+     ]
+    },
+    {
+     "k": "city.t1h2.sextant.n",
+     "h": [
+      21,
+      6
+     ]
+    }
+   ],
+   "any_hour": true,
+   "collect": "t1h2_holm/sextant"
+  },
+  "t1h2_compass": {
+   "like": "look_misc",
+   "prompt": "city.t1h2.p.compass",
+   "minutes": 2,
+   "lines": [
+    {
+     "k": "city.t1h2.compass.1"
+    },
+    {
+     "k": "city.t1h2.compass.2"
+    }
+   ],
+   "any_hour": true,
+   "collect": "t1h2_holm/compass"
+  },
+  "t1h2_postcards": {
+   "like": "_home_read",
+   "prompt": "city.t1h2.p.cards",
+   "target": "t1h2_postcards",
+   "lines": [
+    {
+     "k": "city.t1h2.cards.4"
+    }
+   ],
+   "read": {
+    "texts": [
+     "t1h2_cards"
+    ],
+    "rotate": "use"
+   },
+   "any_hour": true
+  },
+  "t1h2_baro": {
+   "like": "look_misc",
+   "prompt": "city.t1h2.p.baro",
+   "minutes": 1,
+   "lines": [
+    {
+     "k": "city.t1h2.baro.1"
+    },
+    {
+     "k": "city.t1h2.baro.rain",
+     "weather": "rain"
+    },
+    {
+     "k": "city.t1h2.baro.clear",
+     "weather": "clear"
+    },
+    {
+     "k": "city.t1h2.baro.fog",
+     "weather": "fog"
+    },
+    {
+     "k": "city.t1h2.baro.snow",
+     "weather": "snow"
+    },
+    {
+     "k": "city.t1h2.baro.cold",
+     "weather": "cold"
+    }
+   ],
+   "any_hour": true,
+   "collect": "t1h2_holm/barometer"
+  },
+  "t1h2_kettle": {
+   "prompt": "city.t1h2.p.kettle",
+   "minutes": 8,
+   "lines": [
+    {
+     "k": "city.t1h2.kettle.d",
+     "h": [
+      6,
+      21
+     ]
+    },
+    {
+     "k": "city.t1h2.kettle.n",
+     "h": [
+      21,
+      6
+     ]
+    }
+   ],
+   "sound": "rest_pour",
+   "give": [
+    [
+     "tea",
+     1
+    ]
+   ],
+   "daily": 1,
+   "collect": "t1h2_holm/kettle",
+   "any_hour": true
+  },
+  "t1h2_radio": {
+   "prompt": "city.t1h2.p.radio",
+   "minutes": 2,
+   "lines": [
+    {
+     "k": "city.t1h2.radio.1"
+    },
+    {
+     "k": "city.t1h2.radio.2",
+     "did": "holm_radio"
+    },
+    {
+     "k": "city.t1h2.radio.3",
+     "did": "holm_write"
+    }
+   ],
+   "sound": "radio_tune",
+   "any_hour": true
+  },
+  "t1h2_shadow": {
+   "like": "look_misc",
+   "prompt": "city.t1h2.p.light",
+   "minutes": 3,
+   "lines": [
+    {
+     "k": "city.t1h2.shadow.m",
+     "h": [
+      6,
+      10
+     ]
+    },
+    {
+     "k": "city.t1h2.shadow.d",
+     "h": [
+      10,
+      15
+     ]
+    },
+    {
+     "k": "city.t1h2.shadow.e",
+     "h": [
+      15,
+      19
+     ]
+    },
+    {
+     "k": "city.t1h2.shadow.n",
+     "h": [
+      19,
+      6
+     ]
+    }
+   ],
+   "any_hour": true,
+   "collect": "t1h2_holm/shadow"
+  }
+ },
+ "rules": {
+  "P-T1H2/garden_notices": {
+   "act": "t1h2_notice"
+  },
+  "P-T1H2/garden_post": {
+   "act": "t1h2_post"
+  },
+  "P-T1H2/garden_tap": {
+   "act": "t1h2_tap"
+  },
+  "P-T1H2/garden_bike": {
+   "act": "t1h2_bike"
+  },
+  "P-T1H2/garden_pot_1": {
+   "act": "t1h2_pot1"
+  },
+  "P-T1H2/garden_pot_2": {
+   "act": "t1h2_pot2"
+  },
+  "P-T1H2/garden_pot_3": {
+   "act": "t1h2_pot3"
+  },
+  "P-T1H2/garden_tree": {
+   "act": "t1h2_tree"
+  },
+  "P-T1H2/garden_games": {
+   "act": "t1h2_games"
+  },
+  "P-T1H2/garden_games_stool_s": {
+   "act": "t1h2_stool"
+  },
+  "P-T1H2/garden_games_stool_n": {
+   "act": "t1h2_stool"
+  },
+  "P-T1H2/garden_bench_seat": {
+   "act": "t1h2_bench"
+  },
+  "P-T1H2/garden_bench_2": {
+   "act": "t1h2_bench"
+  },
+  "P-T1H2/stair_view_1": {
+   "act": "t1h2_view1"
+  },
+  "P-T1H2/stair_view_3": {
+   "act": "t1h2_view3"
+  },
+  "P-T1H2/flat_charts": {
+   "act": "t1h2_charts"
+  },
+  "P-T1H2/flat_log_open": {
+   "act": "t1h2_logopen"
+  },
+  "P-T1H2/flat_sextant": {
+   "act": "t1h2_sextant"
+  },
+  "P-T1H2/flat_compass": {
+   "act": "t1h2_compass"
+  },
+  "P-T1H2/flat_postcards": {
+   "act": "t1h2_postcards"
+  },
+  "P-T1H2/flat_barometer": {
+   "act": "t1h2_baro"
+  },
+  "P-T1H2/flat_kettle": {
+   "act": "t1h2_kettle"
+  },
+  "P-T1H2/flat_radio": {
+   "act": "t1h2_radio"
+  },
+  "P-T1H2/flat_shadow": {
+   "act": "t1h2_shadow"
+  }
+ },
+ "texts": {
+  "t1h2_rough_log": {
+   "title": "city.t1h2.tx.rough.title",
+   "kind": "ledger",
+   "minutes": 2,
+   "collect": "t1h2_holm/log",
+   "pages": [
+    "city.t1h2.tx.rough.1",
+    "city.t1h2.tx.rough.2",
+    "city.t1h2.tx.rough.3",
+    {
+     "k": "city.t1h2.tx.rough.4",
+     "after": 2
+    },
+    {
+     "k": "city.t1h2.tx.rough.5",
+     "after": 4
+    },
+    {
+     "k": "city.t1h2.tx.rough.6",
+     "did": "t1h2_postcards"
+    },
+    {
+     "k": "city.t1h2.tx.rough.7",
+     "after": 8,
+     "did": "t1h2_postcards"
+    }
+   ]
+  },
+  "t1h2_cards": {
+   "title": "city.t1h2.cards.title",
+   "kind": "book",
+   "minutes": 3,
+   "collect": "t1h2_holm/postcards",
+   "pages": [
+    "city.t1h2.cards.1",
+    "city.t1h2.cards.2",
+    "city.t1h2.cards.3",
+    "city.t1h2.cards.4",
+    {
+     "k": "city.t1h2.cards.5",
+     "did": "t1h2_post"
+    }
+   ]
+  }
+ },
+ "collections": {
+  "t1h2_garden": {
+   "title": "city.coll.t1h2_garden.title",
+   "pieces": [
+    "notice",
+    "post",
+    "tap",
+    "bike",
+    "pots",
+    "tree",
+    "view"
+   ]
+  },
+  "t1h2_holm": {
+   "title": "city.coll.t1h2_holm.title",
+   "pieces": [
+    "charts",
+    "sextant",
+    "compass",
+    "barometer",
+    "kettle",
+    "postcards",
+    "log",
+    "shadow"
+   ]
+  }
+ },
+ "quests": [
+  {
+   "id": "t1h2_card",
+   "kind": "side",
+   "start_on": {
+    "event": "visit",
+    "target": "P-T1H2"
+   },
+   "stages": [
+    {
+     "id": "board",
+     "objectives": [
+      {
+       "id": "notice",
+       "event": "do",
+       "target": "t1h2_notice"
+      }
+     ]
+    },
+    {
+     "id": "post",
+     "objectives": [
+      {
+       "id": "box",
+       "event": "do",
+       "target": "t1h2_post"
+      }
+     ]
+    },
+    {
+     "id": "cards",
+     "objectives": [
+      {
+       "id": "stack",
+       "event": "do",
+       "target": "t1h2_postcards"
+      }
+     ],
+     "reward": {
+      "rubles": 30,
+      "items": {
+       "tea": 1
+      }
+     }
+    }
+   ]
+  }
+ ]
+}
