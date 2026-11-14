@@ -1840,6 +1840,24 @@ namespace LyudPeople
 		const bool bOuting = Meet != 0;
 		const int MeetAt = Meet == 1 ? P.OutingPlace : P.DatePlace;
 		const float MeetHour = Meet == 1 ? P.OutingHour : P.DateHour;
+		// whoever of theirs is there already (or on the way): the seat next to them, the spot beside them
+		const FSlot* MeetBy = nullptr;
+		if (Meet == 2 && P.DateWith >= 0)
+		{
+			const FPerson& Q = People[(size_t)P.DateWith];
+			MeetBy = Q.Slot >= 0 && Q.Place == MeetAt && Q.Activity == P.DateAct ? &Slots[(size_t)Q.Slot] : nullptr;
+		}
+		else if (Meet == 1 && P.Home >= 0)
+		{
+			for (const int R : Places[P.Home].Residents)
+			{
+				const FPerson& Q = People[(size_t)R];
+				if (R != P.Id && !MeetBy && Q.Slot >= 0 && Q.Place == MeetAt && Q.Activity == P.OutingAct && Q.Household == P.Household)
+				{
+					MeetBy = &Slots[(size_t)Q.Slot];
+				}
+			}
+		}
 		// keeping an eye on their child: where the child plays
 		const int MindKid = MindAct >= 0 && &A == &Activities[(size_t)MindAct] ? ChildToMind(P) : -1;
 		const int MindPlace = MindKid >= 0 ? People[(size_t)MindKid].Place : -1;
@@ -1871,7 +1889,8 @@ namespace LyudPeople
 				float Score = (Sl.Approach - From).Len2D() - Company;
 				if (bOuting && Pi == MeetAt)
 				{
-					Score -= 3000.f;    // where the household goes, where the friend waits
+					// where the household goes, where the friend waits: by them if they are there
+					Score = (MeetBy ? (Sl.Approach - MeetBy->Approach).Len2D() : Score) - 3000.f;
 				}
 				if (MindKid >= 0)
 				{

@@ -129,7 +129,7 @@ more) and one of them has a word (`on = thunder`).
   the same thing at a place between their homes that has room: a talk, a bench, the cafe or a stroll after work; the
   old in the daytime (a bench, crumbs for the birds); children at the playground after school. It works as the outing
   does (`FWorld::MeetNow`: 1 the household's outing, 2 a date), and on a stroll the two keep together. In mannersim's
-  Wednesday 41 of the 73 pairs whose day it is meet (the day and hour are picked so that both are off work) (the rest: work, the culture club, supper). Town talk:
+  Wednesday 41 of the 73 pairs whose day it is meet (the day and hour are picked so that both are off work) (the rest: work, the culture club, supper). Whoever comes second takes the seat next to the one already there (`PickSlot`: 39 of the 43 side by side). Town talk:
   `doing = date` (sets `date`, `date_kid`, the exchanges `date_talk`). `tools/mannersim/run.sh dates`.
 - **A word with their own** (`LyudBarks::WithTheirOwn`): two of a household at their outing, two friends at their date, a
   grown-up and the child they mind, within 4 m, are a pair for town talk's exchanges (sets `own_talk`, `own_talk_child`,

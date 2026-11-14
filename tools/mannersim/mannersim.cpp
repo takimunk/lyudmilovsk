@@ -99,6 +99,7 @@ struct FDay
 	int FrontEvening = 0;       // people on the sea front and the squares, summed over the evening's samples (18:30-21:00)
 	bool bDates = false;
 	std::map<std::string, int> DateHalf;
+	int DatesClose = 0;         // of the kept: side by side (within 3 m) at some minute
 	int AllDates = 0, Dates = 0, DatesKept = 0;      // pairs of friends with a weekly date; those whose day is this Wednesday; kept
 	// ten minutes of something in the sky at 21:00: people out of doors, and those of them looking up, pointing or photographing,
 	// during it and in the ten minutes before; and an arm pointed at the sky at any other time
@@ -147,7 +148,7 @@ static void RunDay(FDay& D)
 					const FPerson& F = W.People[(size_t)P.DateWith];
 					if (F.State == EState::Doing && F.Activity == F.DateAct && (F.Pos - P.Pos).Len2D() < 40.f)
 					{
-						DateKept[(size_t)P.Id] = 1;
+						DateKept[(size_t)P.Id] = (F.Pos - P.Pos).Len2D() < 3.f || DateKept[(size_t)P.Id] == 2 ? 2 : 1;
 					}
 				}
 			}
@@ -341,6 +342,7 @@ static void RunDay(FDay& D)
 		D.AllDates += P.DateWith > P.Id ? 1 : 0;
 		D.Dates += P.DateWith > P.Id && P.DateDay == 2 ? 1 : 0;
 		D.DatesKept += P.DateWith > P.Id && (size_t)P.Id < DateKept.size() && DateKept[(size_t)P.Id] ? 1 : 0;
+		D.DatesClose += P.DateWith > P.Id && (size_t)P.Id < DateKept.size() && DateKept[(size_t)P.Id] == 2 ? 1 : 0;
 	}
 	for (const FPerson& P : W.People)
 	{
@@ -823,7 +825,7 @@ int main(int Argc, char** Argv)
 		{
 			std::printf("  half an hour in: %s: %d\n", KV.first.c_str(), KV.second);
 		}
-		std::printf("friends' weekly dates: %d pairs in the town, %d on Wednesdays, %d of them met\n", D.AllDates, D.Dates, D.DatesKept);
+		std::printf("friends' weekly dates: %d pairs in the town, %d on Wednesdays, %d of them met, %d side by side\n", D.AllDates, D.Dates, D.DatesKept, D.DatesClose);
 		return 0;
 	}
 	if (Mode == "outing")
