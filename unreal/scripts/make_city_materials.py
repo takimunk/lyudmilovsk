@@ -201,8 +201,8 @@ class _InPlace(S.Graph):
 
 
 def window_in(dest=DEST + "/Materials"):
-    """M_City_WindowIn (see the module doc). Emissive levels are parameters: DayIntensity (default 80: a pane well over
-    a lamp-lit wall, so it reads blown out against it) and NightIntensity; Daylight >= 0 overrides the sun (tests).
+    """M_City_WindowIn (see the module doc). Emissive levels are parameters: DayIntensity (default 3: under the club-tuned manual exposure indoors 8 and up already clip to a white sheet; at
+    3 the pale sky gradient still reads as a bright window) and NightIntensity; Daylight >= 0 overrides the sun (tests).
     The emission lights nothing: ALyudCityBuilding keeps its Windows component out of Lumen and the distance fields."""
     import academ_materials as AM
     if not S.eal.does_directory_exist(dest):
@@ -210,7 +210,7 @@ def window_in(dest=DEST + "/Materials"):
     g = _InPlace(AM.master(dest + "/M_City_WindowIn"))
     uv0 = g.node(X.MaterialExpressionTextureCoordinate, coordinate_index=0)
     sun = g.node(X.MaterialExpressionSkyAtmosphereLightDirection, light_index=0)
-    col = g.custom(WINDOW_IN, [("UV", uv0), ("L", sun), ("DayIntensity", g.param("DayIntensity", 80.0)),
+    col = g.custom(WINDOW_IN, [("UV", uv0), ("L", sun), ("DayIntensity", g.param("DayIntensity", 3.0)),
                                ("NightIntensity", g.param("NightIntensity", 4.0)), ("Daylight", g.param("Daylight", -1.0)),
                                ("SunLo", g.param("SunLo", -0.05)), ("SunHi", g.param("SunHi", 0.10)),
                                ("Frame", g.param("Frame", 0.018))], out=F3, desc="WindowIn")
