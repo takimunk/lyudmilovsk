@@ -909,6 +909,314 @@
      "diary": "journal.heard.clerk.twelve_by_twelve"
     }
    ]
+  },
+  {
+   "person": "kid_boy",
+   "within_m": 5,
+   "air_within_m": 10,
+   "note": "Never in reach inside the club: the hall has no windows and every station is 9 m or more from the blast door (y 7.9), the drinks machine 5.7 m, so 5 m keeps a bird in the corridor from reaching anybody at a seat. A bird reaches Tyoma (station 6, after school 8:15-13:30 on weekdays, bed 21:30) only outdoors: the club's forecourt and the upper cable car station's doorstep on his way in and home (the spur is reached only by the cable car, docs/people.md \"Ways\"), the Academgorodok's yard and streets by his flat, and on free time a walk or a chat at the playground (active 0.8). Sparrows and pigeons are the forecourt's birds (Nao's note), hooded crows feed in the streets (bird_life.md). The done reaction follows his own remark tyoma_sparrow_no_hello (Sonya stopped saying hello to him); Aslan's and Sonya's sparrow_hello/done reactions may take the same call when nearer.",
+   "reactions": [
+    {
+     "species": "HouseSparrow",
+     "quest": "sparrow_hello",
+     "stage": "done",
+     "lines": [
+      "kid_boy.kuzya_hello_me.1"
+     ],
+     "diary": "journal.heard.kid_boy.kuzya_hello_me"
+    },
+    {
+     "species": "FeralPigeon",
+     "lines": [
+      "kid_boy.pigeon_patrol.1"
+     ]
+    },
+    {
+     "species": "HoodedCrow",
+     "lines": [
+      "kid_boy.crow_big_boss.1"
+     ],
+     "diary": "journal.heard.kid_boy.crow_big_boss"
+    },
+    {
+     "air": true,
+     "lines": [
+      "kid_boy.fly_over_level.1"
+     ]
+    },
+    {
+     "lines": [
+      "kid_boy.bird_no_save.1"
+     ]
+    }
+   ]
+  },
+  {
+   "person": "guy_a",
+   "within_m": 5,
+   "air_within_m": 10,
+   "note": "Never in reach inside the club: the hall has no windows and every station is 9 m or more from the blast door (y 7.9), the drinks machine 5.7 m, so 5 m keeps a bird in the corridor from reaching anybody at a seat. A bird reaches Stas (station 5; lectures 9-14 on weekdays, work_away, then the club till about 1) only outdoors: crossing the club's forecourt to and from the upper cable car station, and the Academgorodok's streets to his flat (household stas_timur). Little else: nature 0.3, gamer 0.95, so this is the thinnest of the eight, kept because he crosses the forecourt twice a day. Sparrows and pigeons are the forecourt's birds. The air line answers his own better_signal_outside.",
+   "reactions": [
+    {
+     "species": "FeralPigeon",
+     "lines": [
+      "guy_a.pigeon_in_lobby.1"
+     ],
+     "diary": "journal.heard.guy_a.pigeon_in_lobby"
+    },
+    {
+     "species": "HouseSparrow",
+     "lines": [
+      "guy_a.sparrow_ping.1"
+     ]
+    },
+    {
+     "air": true,
+     "lines": [
+      "guy_a.signal_from_above.1"
+     ],
+     "diary": "journal.heard.guy_a.signal_from_above"
+    },
+    {
+     "lines": [
+      "guy_a.no_time_bird.1"
+     ]
+    }
+   ]
+  },
+  {
+   "person": "girl_a",
+   "within_m": 5,
+   "air_within_m": 10,
+   "note": "Never in reach inside the club: the hall has no windows and every station is 9 m or more from the blast door (y 7.9), the drinks machine 5.7 m, so 5 m keeps a bird in the corridor from reaching anybody at a seat. A bird reaches Vera (station 4, y -7.7; the Laboratory 9-15 on weekdays, hidden at its gate) only outdoors: the Academgorodok's streets on the way to Laboratory No. 2's gate and back, the yard by her flat (household vera, with Sonya), the club's forecourt and the upper station's doorstep, and walks (nature 0.5). Sparrows on the forecourt and in the streets, great tits in the Academgorodok's gardens (bird_life.md). Lines rest on her Spectrum and tape recorder (again4, first) and her promise to take Sonya to the sea (promised_sonya_sea).",
+   "reactions": [
+    {
+     "species": "HouseSparrow",
+     "lines": [
+      "girl_a.not_the_sparrow.1"
+     ],
+     "diary": "journal.heard.girl_a.not_the_sparrow"
+    },
+    {
+     "species": "GreatTit",
+     "lines": [
+      "girl_a.tit_tape_loading.1"
+     ],
+     "diary": "journal.heard.girl_a.tit_tape_loading"
+    },
+    {
+     "air": true,
+     "lines": [
+      "girl_a.to_the_sea_first.1"
+     ]
+    },
+    {
+     "lines": [
+      "girl_a.count_lines_quiet.1"
+     ]
+    }
+   ]
+  },
+  {
+   "person": "girl_b",
+   "within_m": 5,
+   "air_within_m": 12,
+   "note": "Never in reach inside the club: the hall has no windows and every station is 9 m or more from the blast door (y 7.9), the drinks machine 5.7 m, so 5 m keeps a bird in the corridor from reaching anybody at a seat. A bird reaches Olya (station 8; the library's desk 10-15 Wednesday to Saturday) only outdoors: the Academgorodok's square on the way to and from the library (its door is 8-9 m from academ_bench_1), the yard, the forecourt and the upper station on the way to the club, and walks or watching the sunset (nature 0.6, sun 0.85). Jackdaws and pigeons on the square's roofs and streets (bird_life.md). The overdue_journal reaction has no species, as Galina's soda_science one: while the hero is sent to Lev (visit) it answers any sitting bird near her; it fits overdue_wait/lev_bench_hint (Lev in the yard after work) and her ask.4 (she forgets why she went over).",
+   "reactions": [
+    {
+     "species": "Jackdaw",
+     "lines": [
+      "girl_b.jackdaw_remember.1"
+     ],
+     "diary": "journal.heard.girl_b.jackdaw_remember"
+    },
+    {
+     "species": "FeralPigeon",
+     "lines": [
+      "girl_b.pigeon_no_card.1"
+     ]
+    },
+    {
+     "quest": "overdue_journal",
+     "stage": "visit",
+     "lines": [
+      "girl_b.lev_there_yet.1"
+     ],
+     "diary": "journal.heard.girl_b.lev_there_yet"
+    },
+    {
+     "air": true,
+     "lines": [
+      "girl_b.high_up_longer.1"
+     ]
+    },
+    {
+     "lines": [
+      "girl_b.save_you_memory.1"
+     ]
+    }
+   ]
+  },
+  {
+   "person": "sato_kei",
+   "within_m": 8,
+   "air_within_m": 20,
+   "note": "Outdoors after Laboratory No. 2 (work_lab 10-18 on weekdays, hidden) and all weekend: no fixed bench, so the yard and square of the Academgorodok, the promenade and beach (he measures the sea's light: first.1) and the island (likes island_walk 0.2). Blue tits and great tits in the gardens, magpies in the streets and gardens, herring gulls on the beach and roofs (bird_life.md). 8 / 20 as the square's bench listeners. No quest reaction: lab_lunch is Vika's and his done remark kei_soup_measured already covers it.",
+   "reactions": [
+    {
+     "species": "BlueTit",
+     "lines": [
+      "sato_kei.blue_nanometres.1"
+     ],
+     "diary": "journal.heard.sato_kei.blue_nanometres"
+    },
+    {
+     "species": "HerringGull",
+     "lines": [
+      "sato_kei.gull_sea_light.1"
+     ],
+     "diary": "journal.heard.sato_kei.gull_sea_light"
+    },
+    {
+     "species": "Magpie",
+     "lines": [
+      "sato_kei.magpie_white_black.1"
+     ]
+    },
+    {
+     "air": true,
+     "lines": [
+      "sato_kei.above_my_instruments.1"
+     ]
+    },
+    {
+     "lines": [
+      "sato_kei.data_for_yuki.1"
+     ]
+    }
+   ]
+  },
+  {
+   "person": "sato_mila",
+   "within_m": 8,
+   "air_within_m": 20,
+   "note": "Outdoors after the clinic (work_away 8-15 on weekdays, hidden) and at weekends: the sea in the evening (\"ten minutes I treat nobody\", again3.2), the island by train (likes island_walk 0.25, nature 0.7, sun 0.8), the Academgorodok's yard. Cormorants dry their wings on the beach, herring gulls on the beach and roofs, hooded crows on the beach at low tide and in the streets (bird_life.md). The crow_gift/done reaction follows Yuki's button_suits_you (she told the crow it could keep the button): Mila is her mother and has heard it. 8 / 20 as the bench listeners.",
+   "reactions": [
+    {
+     "species": "HoodedCrow",
+     "quest": "crow_gift",
+     "stage": "done",
+     "lines": [
+      "sato_mila.crow_peace_made.1"
+     ],
+     "diary": "journal.heard.sato_mila.crow_peace_made"
+    },
+    {
+     "species": "Cormorant",
+     "lines": [
+      "sato_mila.cormorant_dry_off.1"
+     ],
+     "diary": "journal.heard.sato_mila.cormorant_dry_off"
+    },
+    {
+     "species": "HerringGull",
+     "lines": [
+      "sato_mila.gull_too_loud.1"
+     ]
+    },
+    {
+     "air": true,
+     "lines": [
+      "sato_mila.fly_good_for_you.1"
+     ]
+    },
+    {
+     "lines": [
+      "sato_mila.nobody_treated.1"
+     ]
+    }
+   ]
+  },
+  {
+   "person": "orlova_tanya",
+   "within_m": 9,
+   "air_within_m": 12,
+   "note": "At work behind the Gastronom's counter (work_shop 9-19, Monday to Saturday): the counter is in the service aisle about 7 m back from the pavilion's front wall and its three shop windows (blender/academgorodok/gastronom.py: front inside y -6.75, counter y -1 to -0.2, windows at x 8.4, 12.45, 16.5 along the counter's 5.2-16.9), so 9 m lets a bird on a window sill or at the entrance reach her (a guess from the model's numbers, not measured in the engine). Evenings and Sundays (the shop is shut) she is out: sea air (likes 0.15), walks, chat with Nina and Galina. Sparrows by the shop and its yard, fieldfares on the gardens' berries (bird_life.md), great tits in the gardens. The window_feeder/watch line rests on Dasha's feeder_wait_hint (suet from Tanya) and the quest's own logs (the feeder full in the Academgorodok, Dasha and Vika's week of dishes); Tanya knows it the way she knows everything, from Nina (again2). Fieldfare: her waxwing_rowan.2 (thrushes carry off rowan).",
+   "reactions": [
+    {
+     "species": "GreatTit",
+     "quest": "window_feeder",
+     "stage": "watch",
+     "lines": [
+      "orlova_tanya.tit_to_the_yard.1"
+     ],
+     "diary": "journal.heard.orlova_tanya.tit_to_the_yard"
+    },
+    {
+     "species": "Fieldfare",
+     "lines": [
+      "orlova_tanya.fieldfare_no_rowan.1"
+     ]
+    },
+    {
+     "species": "HouseSparrow",
+     "lines": [
+      "orlova_tanya.sparrow_after_closing.1"
+     ],
+     "diary": "journal.heard.orlova_tanya.sparrow_after_closing"
+    },
+    {
+     "air": true,
+     "lines": [
+      "orlova_tanya.look_for_sun.1"
+     ]
+    },
+    {
+     "lines": [
+      "orlova_tanya.come_warm_up.1"
+     ]
+    }
+   ]
+  },
+  {
+   "person": "li_vika",
+   "within_m": 8,
+   "air_within_m": 20,
+   "note": "Bench academ_bench_3 on the Academgorodok's square, yard_evening 18:00-19:30 every day (the Laboratory 9-17:30 on weekdays, hidden); the yard before nine and at weekends (lab_lunch.ask.log). Ivan has the same bench 15-17:30, so they do not overlap; Rustam and Misha are on bench_5 then (4.0 m away), so one call may make several answer. Great tits and pigeons are the yard's birds of the window_feeder bet (she says the yard has only pigeons). The lab_lunch/eat reaction has no species, as Galina's: during eat it answers any sitting bird near her and outranks Rustam's and Misha's species lines; it fits lunch_wait and lunch_borscht_debate (she waits for the expert's verdict without eating). The air line follows her sun_night (back from the Laboratory in the dark).",
+   "reactions": [
+    {
+     "species": "GreatTit",
+     "lines": [
+      "li_vika.tit_not_seen.1"
+     ],
+     "diary": "journal.heard.li_vika.tit_not_seen"
+    },
+    {
+     "species": "FeralPigeon",
+     "lines": [
+      "li_vika.pigeon_is_bird.1"
+     ]
+    },
+    {
+     "quest": "lab_lunch",
+     "stage": "eat",
+     "lines": [
+      "li_vika.hungry_together.1"
+     ],
+     "diary": "journal.heard.li_vika.hungry_together"
+    },
+    {
+     "air": true,
+     "lines": [
+      "li_vika.fly_while_light.1"
+     ]
+    },
+    {
+     "lines": [
+      "li_vika.last_flask_clean.1"
+     ]
+    }
+   ]
   }
  ],
  "remarks": [
