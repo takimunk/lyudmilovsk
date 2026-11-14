@@ -1867,7 +1867,7 @@ def _dumplings3(B):
     _seat(B, "dumpling_regular", c)
     B.spot("regular", "seat", (c["seats"][0][0], c["seats"][0][1], 0.0), 0.0)
     # the chalk board of the week's fillings
-    kit.menu_board(B, XL, 0.85, 0.0, 90.0, name="menu_1", w=0.7, zc=1.65)
+    kit.menu_board(B, XL, 0.85, 0.0, 90.0, name="menu_0", w=0.7, zc=1.65)
     B.thing("dumpling_week", "board", (XL + 0.04, 0.85, 1.65), 90.0, topic="prices")
     _stand_spot(B, "week", -4.2, 0.85, 90.0)
     # the dough-ball toss: a floured table with a basin, a sack of flour beside it
