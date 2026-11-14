@@ -375,6 +375,7 @@ static void Outings(bool bPrint)
 	W.Resettle();
 	std::map<std::string, int> Size, Best, Now;
 	std::map<std::string, int> ByAct, Half, Lead;
+	long WayMinutes = 0, WayNear = 0;
 	long WalkPairs = 0, WalkNear = 0, PlayMinutes = 0, MindedMinutes = 0, MindAlone = 0, MindMinutes = 0;
 	for (const FPerson& P : W.People)
 	{
@@ -450,6 +451,24 @@ static void Outings(bool bPrint)
 			MindAlone += P.Activity == W.MindAct && P.State == EState::Doing && W.ChildToMind(P) < 0 ? 1 : 0;
 			MindMinutes += P.Activity == W.MindAct && P.State == EState::Doing ? 1 : 0;
 		}
+		// on the way to the outing: on foot out of doors, and how many of them with one of theirs beside them
+		for (const FPerson& P : W.People)
+		{
+			if (P.OutingAct < 0 || W.Weekday != P.OutingDay || P.State != EState::Going || P.Activity != P.OutingAct || P.bIndoors || P.Bike >= 0
+				|| P.Home < 0)
+			{
+				continue;
+			}
+			bool bBeside = false;
+			for (const int R : W.Places[(size_t)P.Home].Residents)
+			{
+				const FPerson& Q = W.People[(size_t)R];
+				bBeside |= R != P.Id && Q.Household == P.Household && Q.State == EState::Going && Q.Activity == P.Activity
+					&& (Q.Pos - P.Pos).Len2D() < 10.f;
+			}
+			WayMinutes++;
+			WayNear += bBeside ? 1 : 0;
+		}
 		Now.clear();
 		Lead.clear();
 		for (const FPerson& P : W.People)
@@ -505,6 +524,8 @@ static void Outings(bool bPrint)
 		MindedMinutes, PlayMinutes, MindAlone, MindMinutes);
 	CHECK(WalkPairs > 500 && WalkNear * 10 > WalkPairs * 7, "a household out walking keeps together (%ld of %ld person-minutes within 40 m of the first of them)",
 		WalkNear, WalkPairs);
+	CHECK(WayMinutes > 300, "a household sets out for its outing together (%ld of %ld person-minutes on the way with one of theirs within 10 m)",
+		WayNear, WayMinutes);
 }
 
 static void Personas()

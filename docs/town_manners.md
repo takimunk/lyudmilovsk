@@ -124,6 +124,10 @@ more) and one of them has a word (`on = thunder`).
   stroll, the fair) keep together: `FWorld::Wander` sends everybody after the first of the household at it (the lowest
   id), to the free spot nearest theirs, a few seconds behind (83% of the time within 40 m). Town talk:
   `doing = outing` (sets `outing`, `outing_kid`). `tools/mannersim/run.sh outing` prints a weekend.
+  Setting out: whoever leaves for the outing goes on foot (no bicycle), those of theirs within 25 m look up within a few
+  seconds and follow, and on the way (`FWorld::WayTogether`) the one in front dawdles, the one behind steps out, and side
+  by side they go at the slowest's walk. Most households are scattered about town before their hour, so this shows
+  mostly with those who leave home together.
 
 - **A weekly date with a friend** (`ApplyLikes` sets `FPerson::DateAct/DateDay/DateHour/DatePlace/DateWith`): everybody
   is paired with the first friend of theirs still free (376 pairs), and one weekday a week at their hour the two meet at

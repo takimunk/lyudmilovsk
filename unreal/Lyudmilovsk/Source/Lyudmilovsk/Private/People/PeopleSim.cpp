@@ -2404,7 +2404,24 @@ namespace LyudPeople
 		P.PathI = 0;
 		P.State = EState::Going;
 		P.Pose = EPose::Walk;
-		PlanBike(P);
+		if (Act == P.OutingAct && P.Home >= 0 && OutingNow(P, A))
+		{
+			// the household sets out for its outing together, on foot: those of theirs who are by look up from what they
+			// do within a few seconds
+			DropBike(P);
+			for (const int R : Places[(size_t)P.Home].Residents)
+			{
+				FPerson& Q = People[(size_t)R];
+				if (R != P.Id && Q.Household == P.Household && Q.State == EState::Doing && Q.Activity != Act && (Q.Pos - P.Pos).Len2D() < 25.f)
+				{
+					Q.Recheck = std::min(Q.Recheck, 1.f + 4.f * Rand(P.Rng));
+				}
+			}
+		}
+		else
+		{
+			PlanBike(P);
+		}
 		// late: a duty (not bed) that will have begun before they'd get there walking
 		P.bHurry = false;
 		float WayM = 0.f;
@@ -2704,10 +2721,56 @@ namespace LyudPeople
 		const bool bRush = P.bHurry || (bRain && !P.bIndoors && P.State == EState::Going);
 		if (!bRush)
 		{
-			return P.WalkSpeed;
+			return P.WalkSpeed * WayTogether(P);
 		}
 		// no running on stairs and in rooms; outdoors a jog (~2.4 m/s; children a little faster for their size)
 		return P.bIndoors ? P.WalkSpeed * 1.25f : std::max(2.3f, P.WalkSpeed * 1.95f);
+	}
+
+	float FWorld::WayTogether(const FPerson& P) const
+	{
+		// on the way to the household's outing they keep together: whoever is in front dawdles, whoever fell behind steps
+		// out, and side by side they go at the slowest's walk
+		if (P.OutingAct < 0 || P.Activity != P.OutingAct || P.State != EState::Going || P.bIndoors || P.Home < 0 || P.OutingPlace < 0
+			|| Weekday != P.OutingDay)
+		{
+			return 1.f;
+		}
+		const V3& To = Places[(size_t)P.OutingPlace].Portal;
+		const float Mine = (To - P.Pos).Len2D();
+		float Slowest = P.WalkSpeed;
+		bool bBehind = false, bAhead = false;
+		for (const int R : Places[(size_t)P.Home].Residents)
+		{
+			const FPerson& Q = People[(size_t)R];
+			if (R == P.Id || Q.Household != P.Household || Q.Activity != P.Activity || Q.State != EState::Going || Q.bIndoors || Q.Bike >= 0)
+			{
+				continue;
+			}
+			const float Apart = (Q.Pos - P.Pos).Len2D();
+			if (Apart > 45.f)
+			{
+				continue;
+			}
+			const float Theirs = (To - Q.Pos).Len2D();
+			if (Apart < 4.f)
+			{
+				Slowest = std::min(Slowest, Q.WalkSpeed);
+			}
+			else if (Theirs > Mine)
+			{
+				bBehind = true;     // one of theirs is behind: wait for them
+			}
+			else
+			{
+				bAhead = true;
+			}
+		}
+		if (bBehind)
+		{
+			return 0.55f;
+		}
+		return bAhead ? 1.3f : Slowest / P.WalkSpeed;
 	}
 
 	float FWorld::ActPace(const FPerson& P, const FActivity& A) const
