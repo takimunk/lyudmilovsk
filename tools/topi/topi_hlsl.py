@@ -153,7 +153,7 @@ float thread2 = Topi.Noise(float2(UV.x * 0.21 - T * speed * 0.21, across * 9.0 +
 float body = 0.45 + 0.25 * smoothstep(0.35, 0.8, thread) + 0.15 * smoothstep(0.5, 0.9, thread2);
 // how steeply the eye looks at the water (0 grazing .. 1 straight down): fine sparks squash into lines when grazing
 float graze = abs(V.z);
-light += float3(0.05, 0.55, 0.50) * body;
+light += float3(0.035, 0.30, 0.33) * body;   // a dim sea-green body (the sparks carry the colour, not a turquoise slab)
 cover += 0.5 * body;
 // the particles: three sizes, each cell of a grid moving with the stream holds one spark or none
 for (int layer = 0; layer < 3; ++layer)
@@ -196,7 +196,7 @@ float fall = pow(1.0 - up, 2.6) * smoothstep(0.0, 0.03, up) * lerp(1.0, 0.5, up)
 float focus = 0.3 + 0.7 * exp(-(UV.x * UV.x) / (520.0 * 520.0));
 // near the river the curtain goes: there the river itself is the light
 float nearK = smoothstep(120.0, 700.0, Dist * 0.01);
-float3 col = lerp(float3(0.10, 0.85, 0.70), float3(0.30, 0.55, 1.00), up * 1.4);
+float3 col = lerp(float3(0.12, 0.55, 0.52), float3(0.30, 0.45, 0.85), up * 1.4);
 return col * fall * rays * shimmer * focus * nearK * night * VC.a * Bright * (1.0 + 2.0 * dissolve);
 """
 

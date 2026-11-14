@@ -86,7 +86,7 @@ def river():
     look = (g.vparam("TopiLook", (1.0, 0.0, 0.0, 0.0)), "RGBA")
     foot = g.custom("return max(length(ddx(UV)), length(ddy(UV)));", [("UV", uv)], desc="Footprint")
     view = g.node(X.MaterialExpressionCameraVectorWS)
-    out = g.custom(T.LIB + T.RIVER, [("UV", uv), ("T", t), ("Look", look), ("VC", _vc(g)), ("Foot", foot), ("Bright", g.param("Bright", 3.0)),
+    out = g.custom(T.LIB + T.RIVER, [("UV", uv), ("T", t), ("Look", look), ("VC", _vc(g)), ("Foot", foot), ("Bright", g.param("Bright", 1.8)),
                                      ("V", view)],
                    out=F4, desc="TopiRiver")
     g.out(_mask(g, out, r=True, gg=True, b=True), MP.MP_EMISSIVE_COLOR)
@@ -101,7 +101,7 @@ def glow():
     t = g.node(X.MaterialExpressionTime)
     look = (g.vparam("TopiLook", (1.0, 0.0, 0.0, 0.0)), "RGBA")
     dist = g.node(X.MaterialExpressionPixelDepth)
-    out = g.custom(T.LIB + T.GLOW, [("UV", uv), ("T", t), ("Look", look), ("VC", _vc(g)), ("Dist", dist), ("Bright", g.param("Bright", 0.9))],
+    out = g.custom(T.LIB + T.GLOW, [("UV", uv), ("T", t), ("Look", look), ("VC", _vc(g)), ("Dist", dist), ("Bright", g.param("Bright", 0.5))],
                    out=F3, desc="TopiGlow")
     g.out(out, MP.MP_EMISSIVE_COLOR)
     return g.finish()

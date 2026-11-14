@@ -1018,7 +1018,7 @@ void ALyudTopi::UpdateLook(float DeltaSeconds, const FVector& Eye)
 				MID->SetVectorParameterValue(TEXT("TopiLook"), Water);
 			}
 		}
-		const float Candelas = 1200.f * NightNow * (1.f + 5.f * Dissolve);
+		const float Candelas = 650.f * NightNow * (1.f + 5.f * Dissolve);
 		for (UPointLightComponent* Light : RiverLights)
 		{
 			if (Light)
