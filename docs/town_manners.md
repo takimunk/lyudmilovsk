@@ -149,7 +149,9 @@ more) and one of them has a word (`on = thunder`).
   out at play (`playground`, `play_run`) within 450 m and nobody of the household is by, one grown-up leaves what they
   chose, comes to a spot by the child and stands turned to wherever the child runs; they go when the child does. Those
   at work or asleep don't. In mannersim's weekend 55% of the child-minutes at play have a grown-up of theirs within 80 m
-  (most of the rest is the walk there). Town talk: `doing = mind_child`.
+  (most of the rest is the walk there). When the child goes home from play, the grown-up goes along (`HomeWith`: to a
+  rest at home) and the two walk side by side (`WayTogether`): about half of the children's way home from play is walked
+  with their grown-up within 12 m. Town talk: `doing = mind_child`.
 
 ## The gestures
 

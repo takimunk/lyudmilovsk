@@ -1,5 +1,6 @@
 #include "PeopleSim.h"
 
+#include <cstring>
 #include <algorithm>
 #include <cmath>
 #include <cstdio>
@@ -2405,6 +2406,19 @@ namespace LyudPeople
 		P.PathI = 0;
 		P.State = EState::Going;
 		P.Pose = EPose::Walk;
+		if (FromAct >= 0 && (FromAct == PlayActs[0] || FromAct == PlayActs[1]) && P.Age < 12 && P.Home >= 0 && Sl.Place == P.Home && MindAct >= 0)
+		{
+			// a child goes home from play: the grown-up who stood by goes along
+			for (const int R : Places[(size_t)P.Home].Residents)
+			{
+				FPerson& Q = People[(size_t)R];
+				if (R != P.Id && Q.Household == P.Household && Q.State == EState::Doing && Q.Activity == MindAct && (Q.Pos - P.Pos).Len2D() < 80.f)
+				{
+					Q.HomeWith = Act;
+					Q.Until = std::min(Q.Until, Time + 1.0 + 3.0 * Rand(P.Rng));
+				}
+			}
+		}
 		if (FromAct >= 0 && FromAct == P.DateAct && Weekday == P.DateDay && P.DateWith >= 0 && P.DateWith < (int)People.size() && Act != FromAct)
 		{
 			// the date is over when one of the two gets up: the other doesn't sit on alone, and goes a few seconds after
@@ -2443,6 +2457,10 @@ namespace LyudPeople
 					Q.Until = std::min(Q.Until, Time + 1.0 + 4.0 * Rand(P.Rng));
 				}
 			}
+		}
+		else if (std::strcmp(Why, "home with theirs") == 0)
+		{
+			DropBike(P);        // on foot, beside them
 		}
 		else
 		{
@@ -2591,13 +2609,20 @@ namespace LyudPeople
 			// one of theirs got up to go home from the outing: they go along, to the same thing at home
 			const int With = P.HomeWith;
 			P.HomeWith = -1;
-			int S = -1;
-			if (Duty < 0 && !bSnap && P.Home >= 0 && Score(P, Activities[(size_t)With], S) > -1e8f && S >= 0 && Slots[(size_t)S].Place == P.Home)
+			if (Duty < 0 && !bSnap && P.Home >= 0)
 			{
-				const FActivity& A = Activities[(size_t)With];
-				if (Start(P, With, S, A.MinMinutes + (A.MaxMinutes - A.MinMinutes) * Rand(P.Rng), false, "home with theirs"))
+				// (what a child goes home to is not for a grown-up: they have a rest at home then)
+				for (const int Try : { With, RestHomeAct })
 				{
-					return;
+					int S = -1;
+					if (Try >= 0 && Score(P, Activities[(size_t)Try], S) > -1e8f && S >= 0 && Slots[(size_t)S].Place == P.Home)
+					{
+						const FActivity& A = Activities[(size_t)Try];
+						if (Start(P, Try, S, A.MinMinutes + (A.MaxMinutes - A.MinMinutes) * Rand(P.Rng), false, "home with theirs"))
+						{
+							return;
+						}
+					}
 				}
 			}
 		}
