@@ -328,7 +328,7 @@ def _bio_room(B, x0, x1):
     K = kit
     Y0, Y1 = 15.76, 27.85
     box(B.m, "CT_Interior", x0, x1, Y1, Y1 + 0.3, 0.0, H1)                      # partition to the music room
-    K.blackboard(B, -25.0, 15.76, 0.0, 180.0, w=3.6, h=1.15, zb=0.9)
+    K.blackboard(B, -25.0, 15.76, 0.0, 180.0, w=3.6, h=1.15, zb=0.9, writing="board_0")
     td = K.teacher_desk(B, -25.0, 17.1, 0.0, 180.0)
     B.spot("bio_teacher", "work", (-25.0, 16.3, 0.0), 180.0)
     B.thing("bio_blackboard", "craft", (-25.0, 15.9, 1.5), 180.0, what="blackboard")
@@ -366,7 +366,7 @@ def _music_room(B, x0, x1):
     st = K.stool(B, pn["seat"][0], pn["seat"][1], 0.0, 180.0)
     B.thing("music_piano", "play", (-26.0, Y1 - 0.34, 1.0), 0.0, what="piano")
     _seat_thing(B, "music_stool", st)
-    K.blackboard(B, -22.8, Y1, 0.0, 0.0, w=2.2, h=1.15, zb=0.9, writing="board_2")
+    K.blackboard(B, -22.8, Y1, 0.0, 0.0, w=2.2, h=1.15, zb=0.9, writing="chart_calendar")
     B.spot("music_teacher", "work", (-23.0, 38.6, 0.0), 0.0)
     cs = []
     for r_, y in enumerate((31.6, 32.9, 34.2)):
