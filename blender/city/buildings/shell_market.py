@@ -1022,6 +1022,162 @@ def _hang_lamp(B, x, y, ums):
     lbox(B.detail, "CT_Steel", Fr(x, y), -0.008, 0.008, -0.008, 0.008, zl + 0.08, zu + 0.02, faces="xXyY")
 
 
+def _carp_tank(B, x, y):
+    """A glass tank of live carp on a steel stand at the east end of the fish stall 6: a lid board, a dip net, a water line."""
+    d = B.detail
+    fr = Fr(x, y, 0.0)
+    for u in (-0.42, 0.42):
+        for w in (-0.22, 0.22):
+            lbox(d, "CT_Steel", fr, u - 0.025, u + 0.025, w - 0.025, w + 0.025, 0.0, 0.6, faces="xXyYz")
+    lbox(d, "CT_Steel", fr, -0.48, 0.48, -0.28, 0.28, 0.58, 0.62, faces="xXyYZz")          # the tray
+    lbox(d, "CT_Glass", fr, -0.46, 0.46, -0.26, 0.26, 0.62, 0.9, faces="xXyY")            # the glass walls
+    lbox(d, "CT_TileWhite", fr, -0.44, 0.44, -0.24, 0.24, 0.62, 0.66, faces="xXyYZ")     # a pale tank floor
+    for k, (u, w, a, mat) in enumerate(((-0.2, 0.05, 20.0, "CT_Wood"), (0.08, -0.08, 160.0, "CT_WoodLight"),
+                                        (0.16, 0.12, 70.0, "CT_Wood"))):
+        _fish(d, mat, fr, u, w, 0.74 + 0.05 * k, a, length=0.26, r=0.045)
+    lbox(d, "CT_WoodLight", fr, 0.2, 0.56, 0.3, 0.46, 0.05, 0.09, faces="xXyYZ")            # a lid board leaning by the stand
+    lbox(d, "CT_WoodLight", fr, 0.3, 0.46, 0.3, 0.46, 0.05, 0.62, faces="xXyYZ")
+    fu.rod(d, "CT_Steel", fr.p(-0.6, 0.38, 0.0), fr.p(-0.56, 0.3, 1.0), 0.012)           # a dip net on a pole
+    _tube(d, "CT_Steel", fr.p(-0.56, 0.3, 1.0), fr.p(-0.5, 0.18, 1.04), 0.008, 6)
+    cyl(d, "CT_PlasterGreen", *fr.p(-0.52, 0.22)[:2], 0.98, 1.02, 0.1, 8, top=True)  # the net bag
+
+
+def _ice_bed(B, x, y):
+    """The day's catch on a bed of crushed ice: a steel tray on a trestle, ice heaps, six fish, a chalk A-board."""
+    d = B.detail
+    fr = Fr(x, y, 0.0)
+    for u in (-0.26, 0.26):
+        for w in (-0.46, 0.46):
+            lbox(d, "CT_Wood", fr, u - 0.03, u + 0.03, w - 0.03, w + 0.03, 0.0, 0.86, faces="xXyYz")
+    lbox(d, "CT_Steel", fr, -0.34, 0.34, -0.54, 0.54, 0.84, 0.88, faces="xXyYZz")
+    for u, w in ((-0.34, 0), (0.34, 0)):
+        lbox(d, "CT_Steel", fr, u - 0.012, u + 0.012, -0.54, 0.54, 0.88, 0.95, faces="xXyYZ")
+    for w in (-0.54, 0.54):
+        lbox(d, "CT_Steel", fr, -0.34, 0.34, w - 0.012, w + 0.012, 0.88, 0.95, faces="xXyYZ")
+    r = random.Random(41)
+    for k in range(14):
+        blob(d, "CT_TileWhite", x + r.uniform(-0.26, 0.26), y + r.uniform(-0.46, 0.46), 0.92 + r.uniform(0, 0.03), 0.07 + r.uniform(0, 0.025), 5)
+    for k, (u, w, a, mat, ln) in enumerate(((-0.15, -0.36, 80.0, "CT_Steel", 0.3), (0.12, -0.2, 100.0, "CT_PlasterBlue", 0.26),
+                                           (-0.1, -0.02, 70.0, "CT_ConcreteDark", 0.28), (0.15, 0.14, 105.0, "CT_Steel", 0.3),
+                                           (-0.08, 0.3, 85.0, "CT_WoodLight", 0.26), (0.14, 0.42, 95.0, "CT_PlasterBlue", 0.24))):
+        _fish(d, mat, fr, u, w, 0.93 + 0.02 * (k % 2), a, length=ln, r=0.035)
+    lbox(d, "CT_ConcreteDark", fr, 0.4, 0.44, 0.6, 1.05, 0.0, 0.5, faces="xXyYZ")           # the chalk board on its own foot
+    lbox(d, "CT_Paper", fr, 0.44, 0.445, 0.66, 0.99, 0.18, 0.44, faces="X")
+
+
+def _gallows(B, x, y):
+    """A post with an arm and a hanging steelyard for weighing the catch (east of the carp tank)."""
+    d = B.detail
+    fr = Fr(x, y, 0.0)
+    lbox(d, "CT_Steel", fr, -0.04, 0.04, -0.04, 0.04, 0.0, 2.0, faces="xXyYZ")
+    lbox(d, "CT_Steel", fr, -0.4, 0.04, -0.02, 0.02, 1.96, 2.0, faces="xXyYZz")
+    _steelyard(B, Fr(x - 0.4, y, 0.0), 0.0, 0.0, 1.5)
+
+
+def _cuts_chart(B, x, y):
+    """The cuts chart of the meat row: a notice board on two posts with butcher's labels pinned in a row (the labels of the stall cards)."""
+    kit.notice_stand(B, x, y, 0.0, 90.0, w=1.1, h=0.8, front="notice_1", back="notice_2", seed=11)
+    fr = Fr(x, y, 90.0)
+    for k, cell in enumerate((8, 38, 27, 57)):
+        px, py, _ = fr.p(-0.45 + 0.3 * k, 0.17)
+        kit.poster(B, px, py, 0.0, 90.0, name="label_%02d" % cell, w=0.24, h=0.17, zc=1.5 - 0.02 * (k % 2))
+
+
+def _hook_rack(B, x, y):
+    """A rail of meat hooks along y at 1.85 m: posts, six hooks, three joints and a ham hanging, a cleaver and a hanging steel."""
+    d = B.detail
+    fr = Fr(x, y, 0.0)
+    for w in (-0.7, 0.7):
+        lbox(d, "CT_Steel", fr, -0.04, 0.04, w - 0.04, w + 0.04, 0.0, 2.0, faces="xXyYZ")
+    lbox(d, "CT_Steel", fr, -0.03, 0.03, -0.7, 0.7, 1.9, 1.96, faces="xXyYZz")
+    for k in range(6):
+        w = -0.55 + 0.22 * k
+        fu.rod(d, "CT_Steel", fr.p(0.0, w, 1.9), fr.p(0.05, w, 1.7), 0.012)
+    for k, (w, mat) in enumerate(((-0.55, "CT_PlasterRed"), (-0.11, "CT_SteelRed"), (0.33, "CT_PlasterRed"))):
+        px, py, _ = fr.p(0.05, w)
+        _tube(d, mat, (px, py, 1.66), (px, py, 1.34), 0.055, 8)
+        blob(d, mat, px, py, 1.42, 0.12, 8)
+        lbox(d, "CT_WoodLight", fr, 0.0, 0.1, w - 0.015, w + 0.015, 1.7, 1.72, faces="xXyYZ")
+    lbox(d, "CT_Paper", fr, 0.05, 0.065, 0.58, 0.68, 1.2, 1.3, faces="xXyYZ")          # a tag on the post
+
+
+def _bone_bowl(B, x, y):
+    """The dog's enamel bowl with a marrow bone and a chalk-marked brick."""
+    d = B.detail
+    cyl(d, "CT_PlasterRed", x, y, 0.0, 0.05, 0.14, 10, top=False, bottom=True)
+    cyl(d, "CT_TileWhite", x, y, 0.04, 0.062, 0.12, 10, top=True)
+    fr = Fr(x, y, 25.0)
+    _tube(d, "CT_Paper", fr.p(-0.1, 0.0, 0.09), fr.p(0.1, 0.0, 0.09), 0.022, 6)
+    for s_ in (-1, 1):
+        for t_ in (-1, 1):
+            blob(d, "CT_Paper", *fr.p(s_ * 0.108, t_ * 0.018)[:2], 0.092, 0.026, 5)
+    lbox(d, "CT_Brick", Fr(x + 0.28, y + 0.05, 10.0), -0.1, 0.1, -0.05, 0.05, 0.0, 0.07, faces="xXyYZ")
+
+
+def _bell_post(B, x, y):
+    """The market bell on a steel post with an arm: a bronze bell, a clapper and a rope with a knot."""
+    d = B.detail
+    lbox(d, "CT_Steel", Fr(x, y), -0.04, 0.04, -0.04, 0.04, 0.0, 2.15, faces="xXyYZ")
+    lbox(d, "CT_Steel", Fr(x, y), -0.04, 0.4, -0.025, 0.025, 2.08, 2.14, faces="xXyYZz")
+    bx = x + 0.32
+    cyl(d, "CT_Brass", bx, y, 1.74, 1.84, 0.13, 12, top=False, bottom=True)
+    cyl(d, "CT_Brass", bx, y, 1.84, 1.93, 0.095, 12, top=False)
+    cyl(d, "CT_Brass", bx, y, 1.93, 1.99, 0.045, 10, top=True)
+    fu.rod(d, "CT_Steel", (bx, y, 1.99), (bx, y, 2.08), 0.012)
+    blob(d, "CT_Steel", bx, y, 1.72, 0.03, 5)
+    fu.rod(d, "CT_Paper", (bx, y, 1.72), (bx, y + 0.0, 1.0), 0.012)
+    blob(d, "CT_Paper", bx, y, 1.04, 0.025, 5)
+    cyl(d, "CT_Brass", x, y, 1.3, 1.34, 0.06, 8, top=True)
+
+
+def _ticket_post(B, x, y):
+    """The grinder's ticket board on a post: a pegboard with paper tags and a bag of whetstones."""
+    d = B.detail
+    fr = Fr(x, y, 0.0)
+    lbox(d, "CT_Wood", fr, -0.03, 0.03, -0.03, 0.03, 0.0, 1.5, faces="xXyYZ")
+    lbox(d, "CT_WoodLight", fr, -0.24, 0.24, 0.03, 0.06, 1.12, 1.5, faces="xXyYZz")
+    for k in range(5):
+        lbox(d, "CT_Paper", fr, -0.2 + 0.085 * k, -0.15 + 0.085 * k, 0.06, 0.085, 1.2 + 0.07 * (k % 2), 1.31 + 0.07 * (k % 2), faces="xXyYZ")
+    for k in range(3):
+        lbox(d, "CT_ConcreteDark", fr, 0.12 + 0.07 * k, 0.17 + 0.07 * k, 0.08, 0.13, 0.0, 0.05, faces="xXyYZ")
+
+
+def _rows(B):
+    """Third depth pass: what the fish and meat rows and the corners lacked: live carp, an ice bed with the day's board, a catch
+    weighing, a cuts chart, a hook rail, the dog's bowl, the market bell and the grinder's tickets (+ the staff's posts)."""
+    # fish row
+    _carp_tank(B, -2.7, 20.3)
+    B.thing("carp_tank", "board", (-2.7, 20.3, 1.05), 0.0, topic="carp")
+    B.spot("carp_stand", "stand", (-2.7, 19.3, 0), 180)
+    _gallows(B, -1.4, 20.3)
+    B.thing("fish_weigh", "play", (-1.8, 20.3, 1.4), 0.0, what="weigh", trade="fish")
+    B.spot("weigh_stand", "stand", (-1.8, 19.3, 0), 180)
+    _ice_bed(B, 2.5, 19.7)
+    B.thing("ice_board", "board", (2.5, 19.75, 1.0), 270.0, topic="ice")
+    B.spot("ice_stand", "stand", (1.5, 19.7, 0), 90)
+    # meat row
+    _cuts_chart(B, -17.6, 14.9)
+    B.thing("cuts_chart", "board", (-17.6, 14.9, 1.3), 90.0, topic="cuts")
+    B.spot("cuts_stand", "stand", (-16.7, 14.9, 0), 270)
+    _hook_rack(B, 18.4, 19.85)
+    B.thing("hook_rack", "board", (18.4, 19.85, 1.6), 90.0, topic="hooks")
+    B.spot("hook_stand", "stand", (19.4, 19.85, 0), 270)
+    _bone_bowl(B, 18.95, 19.2)
+    B.thing("bone_bowl", "board", (18.95, 19.2, 0.15), 90.0, topic="dog")
+    # the bell at the entrance, the grinder's tickets
+    _bell_post(B, 1.6, 2.4)
+    B.thing("market_bell", "board", (1.9, 2.4, 1.2), 0.0, topic="bell")
+    B.spot("bell_stand", "stand", (1.9, 1.6, 0), 180)
+    _ticket_post(B, -9.4, 12.6)
+    B.thing("grinder_tickets", "board", (-9.4, 12.56, 1.3), 0.0, topic="tickets")
+    B.spot("tickets_stand", "stand", (-9.4, 11.7, 0), 180)
+    # the stalls' own people at their posts (roles of the workplace: fishmonger, butcher)
+    B.spot("staff_fishmonger_1", "work", (-5.2, 21.3, 0), 0)
+    B.spot("staff_fishmonger_2", "work", (3.5, 17.4, 0), 270)
+    B.spot("staff_butcher_1", "work", (-19.3, 17.4, 0), 90)
+    B.spot("staff_butcher_2", "work", (19.3, 17.4, 0), 270)
+
+
 def _corners(B, ums):
     """The market's life between the stalls: the jam contest, control scales, a knife grinder, herbs and flowers, the cat,
     the pigeons, the complaint book, the day board, the tea stand's radio, the fishmongers' trays."""
@@ -1098,6 +1254,7 @@ def _corners(B, ums):
     # the fishmongers' trays
     B.thing("catch_6", "board", (-5.9, 20.3, 1.15), 0.0, topic="catch")
     B.thing("catch_11", "board", (2.5, 17.1, 1.15), 270.0, topic="catch")
+    _rows(B)
 
 
 def build(B):

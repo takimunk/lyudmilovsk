@@ -658,6 +658,116 @@
     0
    ],
    "yaw": 0
+  },
+  {
+   "id": "carp_stand",
+   "kind": "stand",
+   "pos": [
+    -2.7,
+    19.3,
+    0
+   ],
+   "yaw": 180
+  },
+  {
+   "id": "weigh_stand",
+   "kind": "stand",
+   "pos": [
+    -1.8,
+    19.3,
+    0
+   ],
+   "yaw": 180
+  },
+  {
+   "id": "ice_stand",
+   "kind": "stand",
+   "pos": [
+    1.5,
+    19.7,
+    0
+   ],
+   "yaw": 90
+  },
+  {
+   "id": "cuts_stand",
+   "kind": "stand",
+   "pos": [
+    -16.7,
+    14.9,
+    0
+   ],
+   "yaw": 270
+  },
+  {
+   "id": "hook_stand",
+   "kind": "stand",
+   "pos": [
+    19.4,
+    19.85,
+    0
+   ],
+   "yaw": 270
+  },
+  {
+   "id": "bell_stand",
+   "kind": "stand",
+   "pos": [
+    1.9,
+    1.6,
+    0
+   ],
+   "yaw": 180
+  },
+  {
+   "id": "tickets_stand",
+   "kind": "stand",
+   "pos": [
+    -9.4,
+    11.7,
+    0
+   ],
+   "yaw": 180
+  },
+  {
+   "id": "staff_fishmonger_1",
+   "kind": "work",
+   "pos": [
+    -5.2,
+    21.3,
+    0
+   ],
+   "yaw": 0
+  },
+  {
+   "id": "staff_fishmonger_2",
+   "kind": "work",
+   "pos": [
+    3.5,
+    17.4,
+    0
+   ],
+   "yaw": 270
+  },
+  {
+   "id": "staff_butcher_1",
+   "kind": "work",
+   "pos": [
+    -19.3,
+    17.4,
+    0
+   ],
+   "yaw": 90
+  },
+  {
+   "id": "staff_butcher_2",
+   "kind": "work",
+   "pos": [
+    19.3,
+    17.4,
+    0
+   ],
+   "yaw": 270
   }
  ],
  "lamps": [
@@ -2084,6 +2194,111 @@
    "props": {
     "topic": "catch"
    }
+  },
+  {
+   "id": "carp_tank",
+   "kind": "board",
+   "pos": [
+    -2.7,
+    20.3,
+    1.05
+   ],
+   "yaw": 0.0,
+   "props": {
+    "topic": "carp"
+   }
+  },
+  {
+   "id": "fish_weigh",
+   "kind": "play",
+   "pos": [
+    -1.8,
+    20.3,
+    1.4
+   ],
+   "yaw": 0.0,
+   "props": {
+    "what": "weigh",
+    "trade": "fish"
+   }
+  },
+  {
+   "id": "ice_board",
+   "kind": "board",
+   "pos": [
+    2.5,
+    19.75,
+    1.0
+   ],
+   "yaw": 270.0,
+   "props": {
+    "topic": "ice"
+   }
+  },
+  {
+   "id": "cuts_chart",
+   "kind": "board",
+   "pos": [
+    -17.6,
+    14.9,
+    1.3
+   ],
+   "yaw": 90.0,
+   "props": {
+    "topic": "cuts"
+   }
+  },
+  {
+   "id": "hook_rack",
+   "kind": "board",
+   "pos": [
+    18.4,
+    19.85,
+    1.6
+   ],
+   "yaw": 90.0,
+   "props": {
+    "topic": "hooks"
+   }
+  },
+  {
+   "id": "bone_bowl",
+   "kind": "board",
+   "pos": [
+    18.95,
+    19.2,
+    0.15
+   ],
+   "yaw": 90.0,
+   "props": {
+    "topic": "dog"
+   }
+  },
+  {
+   "id": "market_bell",
+   "kind": "board",
+   "pos": [
+    1.9,
+    2.4,
+    1.2
+   ],
+   "yaw": 0.0,
+   "props": {
+    "topic": "bell"
+   }
+  },
+  {
+   "id": "grinder_tickets",
+   "kind": "board",
+   "pos": [
+    -9.4,
+    12.56,
+    1.3
+   ],
+   "yaw": 0.0,
+   "props": {
+    "topic": "tickets"
+   }
   }
  ],
  "flats": [],
@@ -2094,7 +2309,7 @@
  ],
  "tris": {
   "shell": 15168,
-  "detail": 39309,
+  "detail": 41295,
   "windows": 0
  }
 }
