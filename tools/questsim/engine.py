@@ -77,6 +77,7 @@ class Stage:
         self.rubles = int(r.get('rubles', 0) or 0)
         self.items = [(k, int(v)) for k, v in (r.get('items', {}) or {}).items()]
         self.starts = list(r.get('start', []) or [])
+        self.no_skip = bool(s.get('no_skip', False))  # a stage that must be done itself: never jumped over
 
 
 class QuestDef:
@@ -271,6 +272,8 @@ class Sim:
                     # skip-ahead (:488-505): a later stage wants this event -> the stages before it are done
                     if not (self.rules.talk_no_skip and low(ev) == 'talk'):
                         for later in range(p.stage + 1, len(d.stages)):
+                            if d.stages[later - 1].no_skip:
+                                break
                             if any(o.event != 'have' and event_matches(o.event, ev) and target_matches(o.target, tgt, self.rules)
                                    for o in d.stages[later].objectives):
                                 self.trace.append(('skip', d.id, p.stage, later, ev, tgt))

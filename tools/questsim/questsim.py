@@ -157,6 +157,12 @@ class Tree:
                 if re.search(r'\b(Notify|HandleEvent|HeroEvent)\(', line) and 'void ' not in line:
                     for word in re.findall(r'TEXT\("([a-z_]+)"\)', line):
                         self.emitted.setdefault(word, '%s:%d' % (rel, n))
+                    # City/LyudCityThings.cpp reports a model struct's own event (Name(A.Event)): the struct's default
+                    # (CityThingsModel.h FTopicAnswer: std::string Event = "ask")
+                    if re.search(r'Name\(\w+\.Event\)', line):
+                        for other in self.cpp.values():
+                            for word in re.findall(r'std::string\s+Event\s*=\s*"([a-z_]+)"', other):
+                                self.emitted.setdefault(word, '%s:%d (the struct\'s default event)' % (rel, n))
                     if 'Name(O.Event)' in line:  # City/LyudCityThings.cpp: the acts' own events (interiors.json)
                         for ev in self.act_events:
                             self.emitted.setdefault(ev, '%s:%d (interiors.json acts)' % (rel, n))
@@ -210,7 +216,7 @@ def check_schema(t):
                 probs.append('%s: stage id must be lowercase [a-z0-9_]' % sw)
             if not s.get('objectives'):
                 probs.append('%s: no objectives (it would finish on any event)' % sw)
-            unknown = set(s) - {'id', 'objectives', 'reward', 'dev', 'comment'}
+            unknown = set(s) - {'id', 'objectives', 'reward', 'dev', 'comment', 'no_skip'}
             if unknown:
                 probs.append('%s: unknown fields %s' % (sw, sorted(unknown)))
             for o in s.get('objectives', []):
@@ -624,11 +630,15 @@ def check_dialogue_lines(t):
 def check_dialogue_quests(t):
     probs = []
     for npc, key, lines, n in t.dialogue:
-        if not key.startswith('quest.'):
+        if not key.startswith(('quest.', 'aside.')):
             continue
-        parts = key.split('.')
-        if len(parts) not in (3, 4) or (len(parts) == 4 and parts[3] != 'again'):
-            probs.append('npc_dialogue.txt:%d [%s] %s: needs quest.<quest>.<stage>[,<stage>...][.again]' % (n, npc, key))
+        # quest.<quest>.<stages>[.if.<cond>+<cond>][.again], aside.<quest>.<stages>[.again] (docs/quests.md "Branching talk";
+        # the conditions themselves are checked by tools/check_quest_talk.py)
+        plain = key[:-len('.again')] if key.endswith('.again') else key
+        plain, has_if, conds = plain.partition('.if.')
+        parts = plain.split('.')
+        if len(parts) != 3 or (has_if and not all(c.strip() for c in conds.split('+'))):
+            probs.append('npc_dialogue.txt:%d [%s] %s: needs quest.<quest>.<stage>[,<stage>...][.if.<cond>+<cond>][.again]' % (n, npc, key))
             continue
         d = next((x for x in t.defs if low(x.id) == low(parts[1])), None)
         if not d:
@@ -688,6 +698,11 @@ def check_scenes(t):
     return probs
 
 
+# talk stages that are the person's everyday first conversation on purpose (awakening: the owner's own first words are the
+# step; the other stages of that quest do have quest talks)
+EVERYDAY_TALK_STAGES = {('awakening', 'owner')}
+
+
 def check_talk_lines(t):
     """Where the dialogue has quest talks (npc_dialogue.txt quest.<quest>.<stage>), a stage that sends the hero to talk to
     (or bring something to) somebody has words of theirs for it: else they greet him with everyday lines."""
@@ -704,8 +719,10 @@ def check_talk_lines(t):
     talking = {q for _, q, _ in said}
     for d in t.defs:
         if low(d.id) not in talking:
-            continue  # a quest written without quest talks (awakening: the owner's first conversation is the step)
+            continue  # a quest written without quest talks
         for s in d.stages:
+            if (low(d.id), low(s.id)) in EVERYDAY_TALK_STAGES:
+                continue
             for o in s.objectives:
                 who = o.target if low(o.event) == 'talk' else (o.target.partition('@')[2] if o.event == 'bring' else '')
                 if who and '*' not in who and (low(who), low(d.id), low(s.id)) not in said:
