@@ -1,0 +1,25 @@
+{
+ "id": "topi_heart",
+ "variant": 1,
+ "kind": "sfx",
+ "file": "audio/sfx/topi/topi_heart_01.wav",
+ "endpoint": "fal-ai/elevenlabs/sound-effects/v2",
+ "request": {
+  "output_format": "mp3_44100_192",
+  "prompt_influence": 0.45,
+  "text": "A slow heavy human heartbeat heard from inside the head, muffled deep thuds with a faint high ringing in the ears, seamless loop, no other sounds",
+  "duration_seconds": 8.0,
+  "loop": true
+ },
+ "hash": "0c899340add3",
+ "fal_request_id": "01a1d654-91f9-7db2-807f-79094f7efdaa",
+ "seed": null,
+ "source_url": "https://v3b.fal.media/files/b/0ab2568b/CBQmuH5P98HwaSnCpbjLN_sound_effect.mp3",
+ "created": "2026-11-13T19:13:53Z",
+ "postprocess": "afconvert -> 48 kHz mono; 0.5 s end-to-start cross-fade (seamless loop); RMS -24 dBFS",
+ "sha256": "a08424e160903d387c8572b01e5a547348df34b2f2fb70d5aff5f7862f30d143",
+ "seconds": 7.5,
+ "license": "Generated with ElevenLabs Sound Effects v2 through fal.ai on a paid account (commercial use granted to the requester); released by the project under CC BY 4.0.",
+ "group": "topi",
+ "loop": true
+}

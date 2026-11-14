@@ -1,0 +1,27 @@
+{
+ "id": "ural_1",
+ "variant": 1,
+ "kind": "music",
+ "file": "audio/music/ural_1.wav",
+ "endpoint": "fal-ai/stable-audio-25/text-to-audio",
+ "request": {
+  "num_inference_steps": 8,
+  "guidance_scale": 1,
+  "sync_mode": false,
+  "prompt": "Very gentle luminous ambient, warm soft synth pads and slow shimmering bell-like arpeggios, a tender simple piano motif with long reverb, glowing and weightless like floating in a river of light at night, deeply calm, comforting and bittersweet, F major, 58 BPM, slowly swelling to a bright wash then fading out, no drums, no vocals",
+  "seconds_total": 140,
+  "seed": 40201
+ },
+ "hash": "87b2a9168317",
+ "fal_request_id": "01a1d655-00d3-7e91-9576-bd4bcac52fdf",
+ "seed": 40201,
+ "source_url": "https://v3b.fal.media/files/b/0ab2568e/HgKJw6QFudoS_O0_hfJHV_KcCv4vHj.wav",
+ "created": "2026-11-13T19:14:29Z",
+ "postprocess": "afconvert -> 48 kHz stereo; 3 s fade-out; RMS -21 dBFS, peak <= -1 dBFS",
+ "sha256": "6a2ee1cf5be2dd5afe3c5c98956a98e31eb10439402c56ce7e52197ae14d3e2a",
+ "seconds": 140.0,
+ "license": "Generated with Stability AI Stable Audio 2.5 through fal.ai (outputs owned by the requester under Stability's API terms); released by the project under CC BY 4.0.",
+ "mood": [
+  "ural"
+ ]
+}
