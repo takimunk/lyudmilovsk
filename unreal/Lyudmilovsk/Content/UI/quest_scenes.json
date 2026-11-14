@@ -2261,7 +2261,7 @@
    "stages": [
     "drink"
    ],
-   "within_m": 5,
+   "within_m": 3.5,
    "lines": [
     "kid_boy.soda_advice.1"
    ],

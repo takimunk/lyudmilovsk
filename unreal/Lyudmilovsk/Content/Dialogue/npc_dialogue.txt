@@ -39,7 +39,7 @@ quest.owner_supper.bring = owner.supper_thanks.1 | owner.supper_thanks.2 | hero.
 quest.owner_supper.buy,bring_empty.again = owner.supper_where.1
 quest.owner_supper.buy,bring_empty.again = owner.supper_slow_time.1
 quest.owner_supper.done = owner.supper_after.1
-quest.owner_supper.buy.if.night = owner.supper_night_hurry.1
+quest.owner_supper.buy.if.night+no:cheese_braid+no:drink_baikal = owner.supper_night_hurry.1
 quest.owner_supper.buy.if.have:drink_baikal+no:cheese_braid = owner.supper_soda_first.1
 quest.owner_supper.buy.if.have:cheese_braid+no:drink_baikal = owner.supper_braid_first.1
 
