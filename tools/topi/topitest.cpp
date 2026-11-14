@@ -160,6 +160,38 @@ static int Test(const FModel& M)
 	const FVec2 OutFar = FModel::WayOut(L2M(900.0, -1350.0).X, L2M(900.0, -1350.0).Y);
 	Check(OutFar.X > 0.99, "away from the path the way out is straight west", OutFar.X);
 
+	// the small relief: the path itself stays smooth to walk (no hummock or sand wave under the feet), the land a
+	// stone's throw from it does not; and the two finest levels of the ground agree on the mounds (no pop at 240 m)
+	double PathRough = 0.0, SideRough = 0.0, Pop = 0.0;
+	for (double S = 40.0; S <= FModel::PathLength() - 160.0; S += 1.5)
+	{
+		// (at a 4.6 m cell the mounds and the 9 m waves are left out as their mean: the difference is what they add)
+		const FVec2 P = FModel::PathPoint(S);
+		PathRough = std::fmax(PathRough, std::fabs(M.Height(P.X, P.Y, 0.0) - M.Height(P.X, P.Y, 4.6)));
+		const double SX = P.X + 60.0, SY = P.Y + 45.0;
+		SideRough = std::fmax(SideRough, std::fabs(M.Height(SX, SY, 0.0) - M.Height(SX, SY, 4.6)));
+		Pop = std::fmax(Pop, std::fabs(M.Height(SX, SY, 0.0) - M.Height(SX, SY, 4.0)));
+	}
+	Check(PathRough < 0.3, "the path is smooth under the feet (mounds and sand waves on it), m", PathRough);
+	Check(SideRough > 0.6, "off the path the sand has hummocks and waves, m", SideRough);
+	Check(Pop < 0.3, "the mounds do not pop between the two finest levels of the ground, m", Pop);
+
+	// the deep: nothing of it before the river, and behind the river the land climbs over the great dune's head
+	double NearMax = -1e9, DeepMax = -1e9;
+	for (double Y = 0.0; Y <= 2000.0; Y += 50.0)
+	{
+		for (double X = WestX - 150.0; X >= WestX - 800.0; X -= 50.0)
+		{
+			NearMax = std::fmax(NearMax, M.Height(X, Y));
+		}
+		for (double X = WestX - 2000.0; X >= WestX - 5000.0; X -= 100.0)
+		{
+			DeepMax = std::fmax(DeepMax, M.Height(X, Y));
+		}
+	}
+	Check(NearMax < 25.0, "between the great dune and the river the dunes stay low (the highest), m", NearMax);
+	Check(DeepMax > 90.0, "behind the river the land rises into mountains of sand (the highest within 5 km), m", DeepMax);
+
 	std::printf("%d passed, %d failed\n", GPassed, GFailed);
 	return GFailed ? 1 : 0;
 }
