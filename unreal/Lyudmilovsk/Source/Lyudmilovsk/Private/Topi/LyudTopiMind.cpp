@@ -1059,6 +1059,7 @@ void ULyudTopiMind::Say(const FString& Key, const AHeroCharacter& Hero)
 	SubtitleKey = Key;
 	SubtitleFor = Voice ? FMath::Max(3.f, Voice->GetDuration() + 0.8f) : 4.5f;
 	ShowSubtitle(true);
+	UE_LOG(LogTemp, Log, TEXT("LyudTopi: says %s (%s)"), *Key, Voice ? TEXT("voice") : TEXT("subtitle only"));
 }
 
 void ULyudTopiMind::UpdateSubtitle(float DeltaTime)

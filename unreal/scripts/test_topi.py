@@ -7,6 +7,7 @@
    off first (T1), then the dive starts; ~13 s later he must wake at PlayerStart_WakeUp with TimesDissolved 1
 3. the save: lyud.Save, lyud.Load 0; after the load TimesDissolved must still be 1 (T2)
 4. developer mode: Dev.Do topi.turn (needs Topi's sand under him: put at topi_dunes by day) and Dev.Do topi.dissolve
+5. his thoughts: at night on the path (line.hero.topi.glow.1), then at the bank (river.1 or towels.1): LyudTopi: says lines
 """
 import unreal
 
@@ -146,6 +147,18 @@ def tick(dt):
         ws = wake_start(w)
         d = (pawn.get_actor_location() - ws.get_actor_location()).length() if ws else -1
         say("after Dev.Do topi.dissolve: %.0f cm from the wake-up start, times %s" % (d, times(w)))
+        # 5. his thoughts (LyudTopi: says ... lines in the log): the glow on the path at night, then the river / towels
+        cmd(w, "lyud.Birds.Time 23 30")
+        cmd(w, "lyud.Topi.Night 1")
+        cmd(w, "lyud.Topi.Calm 1")
+        cmd(w, "Dev.Tp topi_path")
+        next_step()
+    elif s == 12 and el > 12.0:
+        say("thoughts: on the path (expect glow.1 said)")
+        cmd(w, "Dev.Tp ural_bank")
+        next_step()
+    elif s == 13 and el > 12.0:
+        say("thoughts: at the bank (expect river.1 or towels.1 said)")
         cmd(w, "quit")
         next_step()
 
