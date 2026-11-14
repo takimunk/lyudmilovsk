@@ -669,5 +669,590 @@
   "ru": "Записку для тёти Нины я просунул под дверь двенадцатой: «Серия 7, номер 318 вышла. Идите в кассу с паспортом». Через минуту за дверью что-то уронили и радостно закричали.",
   "en": "I slid a note under the door of flat twelve for Aunt Nina: \"Series 7, number 318 has come up. Go to the counter with your passport.\" A minute later something was dropped behind the door, followed by a happy shout.",
   "ja": "ニーナおばさんのために、12号室のドアの下にメモを差し入れた。「シリーズ7、番号318が当たりました。パスポートを持って窓口へ」。一分後、ドアの向こうで何かを落とす音と、うれしそうな叫び声がした。"
+ },
+ "city.wave2.shoot.prompt": {
+  "ru": "E — сыграть в «Морской бой»",
+  "en": "E — play Sea Battle",
+  "ja": "E — 「海戦」で遊ぶ"
+ },
+ "city.wave2.race.prompt": {
+  "ru": "E — сесть за «Гонки»",
+  "en": "E — sit down at Racing",
+  "ja": "E — 「レース」の席に座る"
+ },
+ "city.wave2.pin.prompt": {
+  "ru": "E — запустить шарик",
+  "en": "E — launch the ball",
+  "ja": "E — 玉を弾く"
+ },
+ "city.wave2.change.prompt": {
+  "ru": "E — разменять рубль на жетоны",
+  "en": "E — change a rouble for tokens",
+  "ja": "E — 1ルーブルをコインに両替する"
+ },
+ "city.wave2.bin.prompt": {
+  "ru": "E — заглянуть в урну",
+  "en": "E — look in the bin",
+  "ja": "E — ごみ箱をのぞく"
+ },
+ "city.wave2.hisc.prompt": {
+  "ru": "E — прочесть таблицу рекордов",
+  "en": "E — read the high-score board",
+  "ja": "E — ハイスコア表を読む"
+ },
+ "city.wave2.note.prompt": {
+  "ru": "E — прочесть записку",
+  "en": "E — read the note",
+  "ja": "E — 貼り紙を読む"
+ },
+ "city.wave2.broken.prompt": {
+  "ru": "E — потрогать молчащий автомат",
+  "en": "E — poke the silent cabinet",
+  "ja": "E — 沈黙した筐体をつついてみる"
+ },
+ "city.wave2.prize.prompt": {
+  "ru": "E — посмотреть призы",
+  "en": "E — look at the prizes",
+  "ja": "E — 景品を眺める"
+ },
+ "city.wave2.sea.prompt": {
+  "ru": "E — посмотреть на море",
+  "en": "E — look out to sea",
+  "ja": "E — 海を眺める"
+ },
+ "city.wave2.town.prompt": {
+  "ru": "E — посмотреть на город",
+  "en": "E — look over the town",
+  "ja": "E — 町を見下ろす"
+ },
+ "city.shop.wave_prizes.title": {
+  "ru": "Призы автоматного прохода",
+  "en": "Arcade alley prizes",
+  "ja": "ゲーム通りの景品"
+ },
+ "city.wave2.shoot.title": {
+  "ru": "Морской бой",
+  "en": "Sea Battle",
+  "ja": "海戦"
+ },
+ "city.wave2.race.title": {
+  "ru": "Гонки",
+  "en": "Racing",
+  "ja": "レース"
+ },
+ "city.wave2.pin.title": {
+  "ru": "Пинбол",
+  "en": "Pinball",
+  "ja": "ピンボール"
+ },
+ "city.game.vs.wave_racer": {
+  "ru": "гонки",
+  "en": "racing",
+  "ja": "レース"
+ },
+ "city.wave2.shoot.win.1": {
+  "ru": "Подлодка пошла ко дну, а на экране пляшут цифры. Рекорд дня совсем рядом.",
+  "en": "The sub goes down, numbers dance on the screen. The day's record is close.",
+  "ja": "潜水艦が沈み、画面に数字が躍る。今日の記録はすぐそこだ。"
+ },
+ "city.wave2.shoot.win.2": {
+  "ru": "Автомат выплюнул три мигающих «ПОБЕДА» и затих, довольный.",
+  "en": "The cabinet flashes WIN three times and goes quiet, pleased with itself.",
+  "ja": "筐体は「勝利」を三度点滅させ、満足げに静まった。"
+ },
+ "city.wave2.shoot.lose.1": {
+  "ru": "Торпеды ушли мимо. Остался один мигающий кораблик.",
+  "en": "The torpedoes missed. One blinking little ship is left.",
+  "ja": "魚雷は全部外れた。点滅する小さな船が一隻残っただけだ。"
+ },
+ "city.wave2.shoot.lose.2": {
+  "ru": "На табло «GAME OVER» и твои очки, их стыдно показывать.",
+  "en": "GAME OVER, and your score, which is a bit shy to show.",
+  "ja": "画面には「GAME OVER」と、ちょっと見せにくい点数。"
+ },
+ "city.wave2.shoot.draw.1": {
+  "ru": "Ровно половина кораблей. Автомат кивает: ещё разок.",
+  "en": "Exactly half the ships. The cabinet nods: once more.",
+  "ja": "敵艦はちょうど半分。筐体が「もう一回」と促している。"
+ },
+ "city.wave2.race.win.1": {
+  "ru": "Ты первым пересёк финиш, а {0} ещё держится за руль, как за соломинку.",
+  "en": "You cross the line first, and {0} is still clinging to the wheel.",
+  "ja": "先にゴールしたのは君。{0}はまだハンドルにしがみついている。"
+ },
+ "city.wave2.race.lose.1": {
+  "ru": "{0} вылетел из-за поворота первым. Твой болид завяз в песке.",
+  "en": "{0} comes out of the bend first. Your car is stuck in the sand.",
+  "ja": "{0}がカーブを先に抜けた。君の車は砂にはまった。"
+ },
+ "city.wave2.race.draw.1": {
+  "ru": "Финиш бок о бок, судья-автомат объявляет ничью.",
+  "en": "A side-by-side finish; the cabinet judge calls it a draw.",
+  "ja": "横並びでゴール。審判役の筐体は引き分けを告げた。"
+ },
+ "city.wave2.pin.win.1": {
+  "ru": "Шарик заметался между бамперами и набрал на целый «джекпот». Звонок трещит.",
+  "en": "The ball ricochets between bumpers into a full jackpot. The bell rattles.",
+  "ja": "玉がバンパーの間を跳ね回り、見事ジャックポット。ベルが鳴り響く。"
+ },
+ "city.wave2.pin.lose.1": {
+  "ru": "Шарик скатился между флипперами раньше, чем ты нажал.",
+  "en": "The ball slid between the flippers before you pressed.",
+  "ja": "フリッパーが動く前に、玉は真ん中を落ちていった。"
+ },
+ "city.wave2.pin.draw.1": {
+  "ru": "Три бампера и ни одного джекпота. Нормально для первого шарика.",
+  "en": "Three bumpers and no jackpot. Fair for a first ball.",
+  "ja": "バンパーは三つ、ジャックポットはなし。最初の一球なら上出来だ。"
+ },
+ "city.wave2.shoot.after.1": {
+  "ru": "Монеты на сегодня кончились. На экране крутится заставка: подлодка кивает перископом.",
+  "en": "Out of plays for today. The attract screen loops: the sub nods its periscope.",
+  "ja": "今日の分は終わり。画面ではデモが流れ、潜水艦が潜望鏡でうなずく。"
+ },
+ "city.wave2.shoot.after.2": {
+  "ru": "Рядом кто-то ждёт своей очереди и вздыхает за плечом.",
+  "en": "Somebody waits their turn behind you, breathing.",
+  "ja": "後ろで誰かが順番を待ってため息をついている。"
+ },
+ "city.wave2.shoot.after.sun": {
+  "ru": "По воскресеньям у «Морского боя» очередь до самой лавки с пластинками.",
+  "en": "On Sundays Sea Battle has a queue all the way to the record shop.",
+  "ja": "日曜は「海戦」の前にレコード店のところまで行列ができる。"
+ },
+ "city.wave2.race.after.1": {
+  "ru": "Руль ещё тёплый. Табло показывает чужой круг, он быстрее твоего.",
+  "en": "The wheel is still warm. The board shows somebody else's lap, faster than yours.",
+  "ja": "ハンドルはまだ温かい。表示には誰かのラップ、君より速い。"
+ },
+ "city.wave2.race.after.2": {
+  "ru": "Стул качается. Кто-то явно здесь сидел часами.",
+  "en": "The stool wobbles. Somebody has clearly sat here for hours.",
+  "ja": "スツールがぐらつく。誰かが何時間も座っていたようだ。"
+ },
+ "city.wave2.pin.after.1": {
+  "ru": "Шарики кончились. Фишка «ТИЛТ» мигает, как предупреждение: не раскачивай.",
+  "en": "Out of balls. TILT blinks like a warning: no shaking.",
+  "ja": "玉切れ。「TILT」が点滅して、揺らすなと警告している。"
+ },
+ "city.wave2.pin.after.2": {
+  "ru": "На стекле след от ладони. Здесь играют с чувством.",
+  "en": "A palm print on the glass. People play with feeling here.",
+  "ja": "ガラスに手のひらの跡。ここでは皆、気持ちを込めて遊ぶ。"
+ },
+ "city.wave2.change.1": {
+  "ru": "Рубль ушёл в щель, железный лоток звякнул: пять жетонов, один с зазубриной.",
+  "en": "The rouble goes in; the steel tray clinks: five tokens, one with a nick.",
+  "ja": "1ルーブルを入れると、鉄の受け皿がカチャリ。コインが五枚、一枚は欠けている。"
+ },
+ "city.wave2.change.2": {
+  "ru": "Автомат зажевал уголок бумажки, потом сдался и выдал жетоны.",
+  "en": "The machine chews the corner of the note, then gives up the tokens.",
+  "ja": "機械は札の角をかんでいたが、観念してコインを出した。"
+ },
+ "city.wave2.change.3": {
+  "ru": "Жетоны тёплые, будто их только что отлили.",
+  "en": "The tokens are warm, as if just cast.",
+  "ja": "コインは鋳たばかりのように温かい。"
+ },
+ "city.wave2.change.sat": {
+  "ru": "В субботу лоток пустеет к обеду: сторож проходного двора подсыпает жетоны из ведра.",
+  "en": "On Saturdays the tray is empty by noon; the caretaker tops it up from a pail.",
+  "ja": "土曜は昼には受け皿が空になり、管理人がバケツからコインを足す。"
+ },
+ "city.wave2.bin.1": {
+  "ru": "Билетики, фантики и один шнурок. Всё как у людей.",
+  "en": "Ticket stubs, wrappers and one shoelace. Just as it should be.",
+  "ja": "半券、包み紙、靴ひもが一本。ごく普通の中身だ。"
+ },
+ "city.wave2.bin.2": {
+  "ru": "Поверх всего пустой стаканчик из-под мороженого и жетон, который кто-то забраковал.",
+  "en": "On top an empty ice-cream cup and a token somebody rejected.",
+  "ja": "一番上にアイスの空きカップと、誰かが突き返したコイン。"
+ },
+ "city.wave2.bin.3": {
+  "ru": "Ни одной записки о рекордах. Те, кто играет всерьёз, не выбрасывают.",
+  "en": "Not a single note about records. Serious players do not throw them away.",
+  "ja": "記録のメモは一枚もない。本気の人は捨てないのだ。"
+ },
+ "city.wave2.bin.rain": {
+  "ru": "Дно мокрое: сюда стряхивают зонтики.",
+  "en": "The bottom is wet: umbrellas get shaken out here.",
+  "ja": "底が濡れている。ここで傘のしずくを切る人がいる。"
+ },
+ "city.wave2.hisc.1": {
+  "ru": "ТАБЛИЦА РЕКОРДОВ. «Морской бой»: 1. ХИРОШИ 940. 2. ДИНА 910. 3. ВАЛЕРА 880. Вызов принят.",
+  "en": "HIGH SCORES. Sea Battle: 1. HIROSHI 940. 2. DINA 910. 3. VALERA 880. Challenge accepted.",
+  "ja": "ハイスコア表。「海戦」: 1位 ヒロシ 940、2位 ディナ 910、3位 ワレラ 880。挑戦者歓迎。"
+ },
+ "city.wave2.hisc.2": {
+  "ru": "«Гонки»: лучший круг ВАЛЕРА 1:07. Ниже карандашом: «Подвинули ему руль!»",
+  "en": "Racing: best lap VALERA 1:07. Below in pencil: \"His wheel was moved!\"",
+  "ja": "「レース」ベストラップ ワレラ 1:07。下に鉛筆で「ハンドルを動かされた!」"
+ },
+ "city.wave2.hisc.3": {
+  "ru": "«Пинбол»: ДИНА 5 400. ХИРОШИ 5 380. Разница в одну лампочку джекпота.",
+  "en": "Pinball: DINA 5,400. HIROSHI 5,380. A difference of one jackpot lamp.",
+  "ja": "「ピンボール」ディナ 5,400。ヒロシ 5,380。ジャックポットのランプ一つ分の差。"
+ },
+ "city.wave2.hisc.mon": {
+  "ru": "ПОНЕДЕЛЬНИК. Приписка мелом: «Табло не врёт, врёт только Валера».",
+  "en": "MONDAY. Chalked underneath: \"The board never lies; only Valera does.\"",
+  "ja": "月曜。下にチョークで「表は嘘をつかない、嘘つきはワレラだけ」。"
+ },
+ "city.wave2.hisc.fri": {
+  "ru": "ПЯТНИЦА. Новый рекорд в «Морском бое»: 960! Кто-то подписался одним «Х».",
+  "en": "FRIDAY. New Sea Battle record: 960! Signed with a single \"H\".",
+  "ja": "金曜。「海戦」に新記録 960! 署名は「ヒ」の一文字だけ。"
+ },
+ "city.wave2.hisc.sat": {
+  "ru": "СУББОТА. Хиро ещё не знает, что вчера его рекорд побили. Ему напишут.",
+  "en": "SATURDAY. Hiro does not know yet that his record fell. Somebody will tell him.",
+  "ja": "土曜。ヒロはまだ自分の記録が破られたと知らない。誰かが教えるだろう。"
+ },
+ "city.wave2.hisc.sun": {
+  "ru": "ВОСКРЕСЕНЬЕ. У доски кто-то оставил жетон: «Тому, кто побьёт Дину в пинбол».",
+  "en": "SUNDAY. Somebody left a token by the board: \"For whoever beats Dina at pinball.\"",
+  "ja": "日曜。表の脇にコインが一枚。「ディナにピンボールで勝った人へ」"
+ },
+ "city.wave2.hisc.rec": {
+  "ru": "Табличка новая: теперь четвёртая строчка свободна. Подпишись сам: мелок лежит на рамке.",
+  "en": "A fresh sheet: the fourth line is free. Sign it yourself; the chalk is on the frame.",
+  "ja": "新しい紙になった。四行目が空いている。自分で書こう。チョークは枠の上。"
+ },
+ "city.wave2.note.1": {
+  "ru": "«НЕ РАБОТАЕТ. Съел три жетона. Не бить, не трясти. Администрация».",
+  "en": "\"OUT OF ORDER. Ate three tokens. Do not hit or shake. Management.\"",
+  "ja": "「故障中。コインを三枚のみ込みました。叩かない、揺らさない。管理」"
+ },
+ "city.wave2.note.2": {
+  "ru": "Вторая бумажка поверх: «Мастер был. Нужна лампа ЛЭ-6, заказана на складе».",
+  "en": "A second slip on top: \"Repairman came. Needs an LE-6 tube, ordered from the depot.\"",
+  "ja": "上にもう一枚。「修理屋が来ました。LE-6の真空管が必要、倉庫に注文済み」"
+ },
+ "city.wave2.note.3": {
+  "ru": "Новая приписка: «Лампа пришла, но не та. Ждём правильную. Просьба не звонить».",
+  "en": "New line: \"The tube came, the wrong one. Waiting for the right one. Please do not call.\"",
+  "ja": "追記。「管は届いたが違うもの。正しいのを待っています。電話はご遠慮ください」"
+ },
+ "city.wave2.note.4": {
+  "ru": "«Лампу поставили! Экран мигает, но уже показывает цифры. Завтра проверим на жетоне. Коля».",
+  "en": "\"Tube in! The screen flickers, but it shows numbers now. We test it on a token tomorrow. Kolya.\"",
+  "ja": "「管を交換しました! 画面はちらつくが数字は出ます。明日コインで試験。コーリャ」"
+ },
+ "city.wave2.note.5": {
+  "ru": "«РАБОТАЕТ. Первый рекорд записан на табло. Спасибо всем, кто не бил. Коля». Рядом чьи-то пальцы нарисовали сердечко.",
+  "en": "\"WORKS. The first record is on the board. Thanks to all who didn't hit it. Kolya.\" Somebody has drawn a small heart beside it.",
+  "ja": "「直りました。最初の記録は表に書きました。叩かなかった皆さんに感謝。コーリャ」横に誰かがハートを描いている。"
+ },
+ "city.wave2.broken.1": {
+  "ru": "Экран тёмный, в стекле отражаешься ты сам. Монетоприёмник заклеен скотчем.",
+  "en": "The screen is dark; you see your own reflection. The coin slot is taped over.",
+  "ja": "画面は暗く、自分の姿が映る。コイン投入口はテープで塞がれている。"
+ },
+ "city.wave2.broken.2": {
+  "ru": "Из корпуса тихо пощёлкивает остывающая лампа.",
+  "en": "A cooling tube ticks softly inside the cabinet.",
+  "ja": "筐体の中で冷えていく管が小さくカチカチ鳴っている。"
+ },
+ "city.wave2.broken.3": {
+  "ru": "Экран моргнул и показал «INSERT COIN». Скотч держит.",
+  "en": "The screen blinks and says INSERT COIN. The tape holds.",
+  "ja": "画面が瞬いて「INSERT COIN」と出た。テープはまだ効いている。"
+ },
+ "city.wave2.broken.4": {
+  "ru": "Автомат снова поёт, за стеклом бегают человечки. Монетоприёмник свободен.",
+  "en": "The cabinet sings again, little figures run behind the glass. The coin slot is free.",
+  "ja": "筐体はまた歌い、ガラスの奥で小さな人影が走る。投入口は空いている。"
+ },
+ "city.wave2.prize.1": {
+  "ru": "На полке за прилавком: значки, леденцы, открытки. Всё на жетоны не меняют, только на рубли.",
+  "en": "On the shelf behind the counter: badges, candy, postcards. Not for tokens, only roubles.",
+  "ja": "カウンターの棚にバッジ、飴、絵はがき。コインでは買えず、ルーブルだけ。"
+ },
+ "city.wave2.prize.2": {
+  "ru": "Над полкой приколота записка: «Призы выдаём за честную игру».",
+  "en": "A note over the shelf: \"Prizes for honest play.\"",
+  "ja": "棚の上に貼り紙。「景品は正々堂々の勝負に」"
+ },
+ "city.wave2.prize.3": {
+  "ru": "Теперь у тебя три отметки на карточке: продавец смахивает пыль с самой яркой коробки и ставит её поближе.",
+  "en": "Three stamps on your card now: the seller dusts the brightest box and moves it closer.",
+  "ja": "カードのスタンプが三つ。売り子は一番きれいな箱の埃を払って手前に出した。"
+ },
+ "city.wave2.prize.6": {
+  "ru": "Шесть отметок, вся карточка! Продавец жмёт тебе руку и молча кладёт на витрину табличку: «Завсегдатай».",
+  "en": "Six stamps, the whole card! The seller shakes your hand and quietly props up a plate: \"Regular\".",
+  "ja": "スタンプが六つ、カード満点! 売り子は握手して「常連」と書いた札をそっと飾る。"
+ },
+ "city.wave2.closed.cab.1": {
+  "ru": "Автомат спит: экран тёмный, шнур убран под корпус до утра.",
+  "en": "The cabinet sleeps: dark screen, cord tucked under until morning.",
+  "ja": "筐体は眠っている。画面は暗く、コードは朝まで本体の下にしまわれた。"
+ },
+ "city.wave2.closed.cab.2": {
+  "ru": "Монетоприёмник заперт. Проход работает с девяти до десяти вечера.",
+  "en": "The coin slot is locked. The alley runs nine to ten at night.",
+  "ja": "投入口は施錠中。通りは朝九時から夜十時まで。"
+ },
+ "city.wave2.closed.board.1": {
+  "ru": "Таблица в тени, мел не разобрать. Приходи днём.",
+  "en": "The board is in shadow, the chalk unreadable. Come back by day.",
+  "ja": "表は影の中で、チョークの字は読めない。昼間にまた来よう。"
+ },
+ "city.wave2.closed.counter.1": {
+  "ru": "Прилавок накрыт тканью, на полке пусто. Призы выдают днём.",
+  "en": "The counter is under a cloth and the shelf is bare. Prizes by day.",
+  "ja": "カウンターには布がかかり、棚は空。景品は昼間だけ。"
+ },
+ "city.wave2.closed.any.1": {
+  "ru": "Проход тёмный, только лампа над входом. Игры затихли до утра.",
+  "en": "The alley is dim, only the lamp over the entrance. The games are quiet till morning.",
+  "ja": "通りは薄暗く、入口の灯りだけ。ゲームは朝まで静かだ。"
+ },
+ "city.wave2.roofsea.d1": {
+  "ru": "Отсюда море лежит ровной линией, как будто его провели по линейке. Чайки внизу выглядят точками.",
+  "en": "From here the sea is one even line, as if ruled. The gulls below are specks.",
+  "ja": "ここから見る海は定規で引いたような一本の線。下のカモメは点にしか見えない。"
+ },
+ "city.wave2.roofsea.d2": {
+  "ru": "На латунном круге выбиты стороны света и расстояния: до маяка 9 километров, до косы 14.",
+  "en": "Brass rings engraved with directions and distances: lighthouse 9 km, the spit 14.",
+  "ja": "真鍮の円盤には方角と距離が刻まれている。灯台まで9キロ、砂州まで14キロ。"
+ },
+ "city.wave2.roofsea.d3": {
+  "ru": "Ветер толкает в плечо. Поручень холодный, зато видно, как волны идут рядами.",
+  "en": "The wind nudges your shoulder. The rail is cold, but you can see the waves come in rows.",
+  "ja": "風が肩を押す。手すりは冷たいが、波が列になって寄せてくるのが見える。"
+ },
+ "city.wave2.roofsea.d4": {
+  "ru": "По морю ползёт паром, и его длинный след долго не затягивается.",
+  "en": "A ferry crawls over the sea, its long wake slow to close.",
+  "ja": "フェリーが海をゆっくり進み、長い航跡がなかなか消えない。"
+ },
+ "city.wave2.roofsea.rain": {
+  "ru": "Дождь идёт полосами: видно, как серая завеса приближается с моря.",
+  "en": "The rain comes in bands: you can watch the grey curtain approach from the sea.",
+  "ja": "雨は帯になって降る。灰色のカーテンが海から近づいてくるのが見える。"
+ },
+ "city.wave2.roofsea.fog": {
+  "ru": "Моря почти нет, только белая стена и гудок откуда-то снизу.",
+  "en": "There is almost no sea, only a white wall and a horn from far below.",
+  "ja": "海はほとんど見えず、白い壁と、どこか下から霧笛が聞こえるだけ。"
+ },
+ "city.wave2.roofsea.snow": {
+  "ru": "Снег ложится на латунный круг и тает у цифр, где рука грела металл.",
+  "en": "Snow settles on the brass and melts by the figures where hands warmed it.",
+  "ja": "雪が真鍮の円盤に積もり、手で温めた数字のあたりだけ溶ける。"
+ },
+ "city.wave2.roofsea.clear": {
+  "ru": "Ясно до самого горизонта, и кажется, что видно изгиб земли.",
+  "en": "Clear to the horizon; you almost see the curve of the earth.",
+  "ja": "水平線までくっきり晴れて、地球の丸みまで見える気がする。"
+ },
+ "city.wave2.roofsea.warm": {
+  "ru": "Жара держится даже на высоте. Бетон тёплый, как печка под ладонью.",
+  "en": "Even up here it is warm. The concrete is a stove under your palm.",
+  "ja": "この高さでも暑い。コンクリートは手のひらの下でストーブのようだ。"
+ },
+ "city.wave2.roofsea.cold": {
+  "ru": "Холодно: слёзы на ветру, зато воздух острый, как лимон.",
+  "en": "Cold: your eyes water in the wind, but the air is sharp as lemon.",
+  "ja": "寒い。風で涙が出るが、空気はレモンのように鋭い。"
+ },
+ "city.wave2.roofsea.lantern": {
+  "ru": "К вечеру на пляже зажигают небесные фонарики. С этой высоты они сначала похожи на искры, а потом поднимаются мимо тебя.",
+  "en": "In the evening sky lanterns are lit on the beach. From up here they are sparks, then they rise past you.",
+  "ja": "夕方、浜辺で天灯が放たれる。ここからは最初は火花のようで、やがて君のそばを昇っていく。"
+ },
+ "city.wave2.roofsea.n1": {
+  "ru": "Ночью море чёрное, граница с небом видна только по звёздам, которые перестают на нём отражаться.",
+  "en": "At night the sea is black; the horizon shows only where the stars stop.",
+  "ja": "夜の海は黒く、星が映らなくなるところが水平線だ。"
+ },
+ "city.wave2.roofsea.n2": {
+  "ru": "Луч маяка проходит раз в десять секунд, и каждый раз стена перед тобой на миг светлеет.",
+  "en": "The lighthouse beam passes every ten seconds, brightening the wall for a moment.",
+  "ja": "灯台の光は十秒に一度通り過ぎ、そのたび目の前の壁が一瞬明るむ。"
+ },
+ "city.wave2.roofsea.n3": {
+  "ru": "Огни рыбацких лодок стоят на воде, как точки в тетради.",
+  "en": "Fishing-boat lights stand on the water like dots in a notebook.",
+  "ja": "漁船の灯りがノートの点のように水面に並んでいる。"
+ },
+ "city.wave2.roofsea.nfog": {
+  "ru": "Туман съел всё, кроме огня лампы под навесом и голоса сирены.",
+  "en": "Fog has eaten everything but the lamp under the canopy and the siren's voice.",
+  "ja": "霧は庇の下の灯りとサイレンの声以外を全部のみ込んだ。"
+ },
+ "city.wave2.rooftown.m": {
+  "ru": "Утром над крышами тянутся дымки и пахнет хлебом: пекарня внизу уже работает.",
+  "en": "Morning smoke over the roofs and the smell of bread: the bakery below is already at work.",
+  "ja": "朝、屋根の上に煙が立ち、パンの匂いがする。下のパン屋はもう動いている。"
+ },
+ "city.wave2.rooftown.d": {
+  "ru": "Днём город как макет: каждая улица ровная, каждая машина крошечная.",
+  "en": "By day the town is a model: every street neat, every car tiny.",
+  "ja": "昼の町は模型のようだ。通りは整い、車はどれも小さい。"
+ },
+ "city.wave2.rooftown.e": {
+  "ru": "Вечером окна зажигаются одно за другим. Найти своё можно по самой тёплой лампе.",
+  "en": "In the evening windows light up one by one. Find yours by the warmest lamp.",
+  "ja": "夕方、窓が一つずつ灯る。自分の窓は一番温かい灯りで見つかる。"
+ },
+ "city.wave2.rooftown.we": {
+  "ru": "В выходной внизу людно: на площади раскрыты палатки, и с крыши они похожи на цветные зонты.",
+  "en": "On weekends it is busy below: stalls open on the square like coloured umbrellas.",
+  "ja": "週末は下がにぎやか。広場の屋台は、屋上から見ると色とりどりの傘のようだ。"
+ },
+ "city.wave2.rooftown.n1": {
+  "ru": "Ночью город светится жёлтыми окнами. Тёмные пятна: парк, залив и твой двор.",
+  "en": "At night the town glows with yellow windows. The dark patches are the park, the bay and your yard.",
+  "ja": "夜の町は黄色い窓で光る。暗い部分は公園と入り江、そして君の家の庭。"
+ },
+ "city.wave2.rooftown.n2": {
+  "ru": "Последний автобус огибает площадь, и стёкла в нём горят, как фонарик.",
+  "en": "The last bus rounds the square, its windows glowing like a lantern.",
+  "ja": "最終バスが広場を回る。窓が提灯のように光っている。"
+ },
+ "city.wave2.lift.up": {
+  "ru": "Лифт за стеклом шахты слегка гудит. Табло над дверью показывает «Крыша».",
+  "en": "The lift hums behind the door. The indicator says \"Roof\".",
+  "ja": "扉の向こうでエレベーターが低く唸る。上の表示は「屋上」。"
+ },
+ "city.wave2.reg.valera": {
+  "ru": "Валера",
+  "en": "Valera",
+  "ja": "ワレラ"
+ },
+ "city.wave2.reg.dina": {
+  "ru": "Дина",
+  "en": "Dina",
+  "ja": "ディナ"
+ },
+ "city.wave2.reg.valera.hello": {
+  "ru": "Садись, я разогрет. Только руль не трогай.",
+  "en": "Sit down, I'm warmed up. Just don't touch my wheel.",
+  "ja": "座れよ、もう温まってる。ハンドルには触るなよ。"
+ },
+ "city.wave2.reg.valera.win": {
+  "ru": "Ну-ну. Это руль подвёл, вот увидишь.",
+  "en": "Well, well. The wheel let me down, you'll see.",
+  "ja": "やるじゃないか。ハンドルのせいだ、見てろよ。"
+ },
+ "city.wave2.reg.valera.lose": {
+  "ru": "Первый вираж мой, остальные тоже. Привыкай.",
+  "en": "The first bend is mine and so are the rest. Get used to it.",
+  "ja": "最初のカーブも残りも俺のものだ。慣れるんだな。"
+ },
+ "city.wave2.reg.dina.hello": {
+  "ru": "Только не торопись на старте, там всех подводит нога.",
+  "en": "Don't rush the start, that's where everyone slips.",
+  "ja": "スタートで焦らないで。みんなそこで足を取られるの。"
+ },
+ "city.wave2.reg.dina.win": {
+  "ru": "Красиво прошёл. Покажешь, как ты входил в тот поворот?",
+  "en": "Nicely driven. Will you show me how you took that bend?",
+  "ja": "きれいな走りだったわ。あのカーブの入り方、今度教えて。"
+ },
+ "city.wave2.reg.dina.lose": {
+  "ru": "Не расстраивайся: полчаса тренировки, и мы сравняемся.",
+  "en": "Don't mind: half an hour's practice and we're level.",
+  "ja": "気にしないで。三十分練習すれば並べるわよ。"
+ },
+ "city.wave2.coll.title": {
+  "ru": "Игровой проход",
+  "en": "The arcade alley",
+  "ja": "ゲーム通り"
+ },
+ "quest.wave_record.title": {
+  "ru": "Рекорд на табло",
+  "en": "A Name on the Board",
+  "ja": "表に名前を"
+ },
+ "quest.wave_record.desc": {
+  "ru": "В проходе у Башни-Волны висит таблица рекордов, и кто-то явно хочет, чтобы её дополнили.",
+  "en": "A high-score board hangs in the alley under the Wave Tower, and somebody clearly wants it added to.",
+  "ja": "ウェーブ・タワーの通りにハイスコア表が掛かっていて、誰かが書き足してほしがっている。"
+ },
+ "quest.wave_record.board.log": {
+  "ru": "Рекорды Хироши, Дины и Валеры: до них далеко, но попробовать можно.",
+  "en": "The records of Hiroshi, Dina and Valera: far off, but worth a try.",
+  "ja": "ヒロシ、ディナ、ワレラの記録は遠いが、試してみる価値はある。"
+ },
+ "quest.wave_record.board.obj": {
+  "ru": "Прочесть таблицу рекордов",
+  "en": "Read the high-score board",
+  "ja": "ハイスコア表を読む"
+ },
+ "quest.wave_record.tokens.log": {
+  "ru": "Для игры нужны жетоны: разменный автомат стоит у стены напротив.",
+  "en": "Games need tokens: the change machine is on the opposite wall.",
+  "ja": "ゲームにはコインが要る。両替機は向かいの壁にある。"
+ },
+ "quest.wave_record.change.obj": {
+  "ru": "Разменять рубль на жетоны",
+  "en": "Change a rouble for tokens",
+  "ja": "1ルーブルをコインに両替する"
+ },
+ "quest.wave_record.play.log": {
+  "ru": "Жетоны в кармане. «Морской бой» ждёт у входа в проход.",
+  "en": "Tokens in hand. Sea Battle waits at the mouth of the alley.",
+  "ja": "コインは手の中。「海戦」は通りの入口で待っている。"
+ },
+ "quest.wave_record.shoot.obj": {
+  "ru": "Выиграть в «Морской бой»",
+  "en": "Win at Sea Battle",
+  "ja": "「海戦」で勝つ"
+ },
+ "quest.wave_record.done": {
+  "ru": "Автомат показал «ПОБЕДА». Табло пока ничего не сказало, но продавец призов кивнул тебе, как своему.",
+  "en": "The cabinet said WIN. The board has not yet said a word, but the prize seller nods at you like one of his own.",
+  "ja": "筐体は「勝利」を出した。表はまだ何も言わないが、景品の売り子は仲間のようにうなずいた。"
+ },
+ "quest.wave_roof.title": {
+  "ru": "Крыша Башни-Волны",
+  "en": "On Top of the Wave",
+  "ja": "ウェーブの屋上"
+ },
+ "quest.wave_roof.desc": {
+  "ru": "В среднем подъезде есть лифт на крышу. Говорят, оттуда видно всё побережье.",
+  "en": "The middle entrance has a lift to the roof. They say you can see the whole coast from it.",
+  "ja": "真ん中の入口に屋上行きのエレベーターがある。そこから海岸全体が見えるという。"
+ },
+ "quest.wave_roof.sea.log": {
+  "ru": "Наверху ветер и латунный круг на стойке, на нём подписаны дальние места.",
+  "en": "Up top there is wind, and a brass table on a post with far places named on it.",
+  "ja": "屋上には風と、遠い場所の名が刻まれた真鍮の円盤がある。"
+ },
+ "quest.wave_roof.sea.obj": {
+  "ru": "Посмотреть на море с крыши",
+  "en": "Look at the sea from the roof",
+  "ja": "屋上から海を眺める"
+ },
+ "quest.wave_roof.scope.log": {
+  "ru": "Рядом стоит подзорная труба на штативе.",
+  "en": "A coin telescope stands nearby on a tripod.",
+  "ja": "近くに三脚付きの望遠鏡が立っている。"
+ },
+ "quest.wave_roof.scope.obj": {
+  "ru": "Посмотреть в подзорную трубу",
+  "en": "Look through the telescope",
+  "ja": "望遠鏡をのぞく"
+ },
+ "quest.wave_roof.town.log": {
+  "ru": "С обратной стороны крыши открывается город.",
+  "en": "On the other side of the roof the town opens out.",
+  "ja": "屋上の反対側には町が広がっている。"
+ },
+ "quest.wave_roof.town.obj": {
+  "ru": "Посмотреть на город",
+  "en": "Look over the town",
+  "ja": "町を見下ろす"
+ },
+ "quest.wave_roof.done": {
+  "ru": "Море с одной стороны, город с другой. Теперь понятно, почему башню назвали Волной.",
+  "en": "The sea on one side, the town on the other. Now you see why they called it the Wave.",
+  "ja": "片側は海、反対側は町。この塔がなぜウェーブと呼ばれるか、やっと分かった。"
  }
 }
