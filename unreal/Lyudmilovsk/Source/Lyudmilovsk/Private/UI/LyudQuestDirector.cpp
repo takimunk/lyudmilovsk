@@ -776,10 +776,33 @@ FString ULyudQuestDirector::Report() const
 	}
 	if (Quests)
 	{
+		const APawn* HeroPawn = UGameplayStatics::GetPlayerPawn(this, 0);
 		for (const FRemark& R : Remarks)
 		{
-			Out += FString::Printf(TEXT("remark %s: %s within %.0f m, %s\n"), *R.Id.ToString(), *R.Person, R.WithinCm * 0.01f,
-				Quests->HasFlag(FName(*(TEXT("remark.") + R.Id.ToString()))) ? TEXT("said") : R.Stages.Contains(Quests->StageId(R.Quest)) ? TEXT("waiting for the hero") : TEXT("not its stage"));
+			const bool bSaid = Quests->HasFlag(FName(*(TEXT("remark.") + R.Id.ToString())));
+			const bool bStage = R.Stages.Contains(Quests->StageId(R.Quest));
+			// why a waiting remark is not said yet: how far, drawn or not, armed or not, in sight or not
+			FString Why;
+			if (!bSaid && bStage && HeroPawn && People)
+			{
+				const int32 Id = People->FindPerson(R.Person);
+				FPersonInfo Info;
+				if (Id >= 0 && People->GetPerson(Id, Info) && IsValid(Info.Actor))
+				{
+					const USkeletalMeshComponent* Shown = Info.Actor->FindComponentByClass<USkeletalMeshComponent>();
+					const FVector Feet = Shown ? Shown->GetComponentLocation() : Info.Actor->GetActorLocation();
+					const FVector Eyes = HeroPawn->GetPawnViewLocation();
+					const bool bSight = !TalkDirector.IsValid() || TalkDirector->InSight(Eyes, Feet + FVector(0.0, 0.0, 150.0), Info.Actor) || TalkDirector->InSight(Eyes, Feet + FVector(0.0, 0.0, 110.0), Info.Actor);
+					Why = FString::Printf(TEXT(" (%.1f m, %s, %s, %s)"), FVector::Dist(HeroPawn->GetActorLocation(), Info.Actor->GetActorLocation()) * 0.01f,
+						Info.Actor->IsHidden() ? TEXT("unseen") : TEXT("seen"), R.bAtOnce || ArmedRemarks.Contains(R.Id) ? TEXT("armed") : TEXT("not armed"), bSight ? TEXT("in sight") : TEXT("behind something"));
+				}
+				else
+				{
+					Why = TEXT(" (no body)");
+				}
+			}
+			Out += FString::Printf(TEXT("remark %s: %s within %.0f m, %s%s\n"), *R.Id.ToString(), *R.Person, R.WithinCm * 0.01f,
+				bSaid ? TEXT("said") : bStage ? TEXT("waiting for the hero") : TEXT("not its stage"), *Why);
 		}
 	}
 	Out += FString::Printf(TEXT("birds on the watched feeders %d, speaking %d\n"), OnTrays.Num(), Speeches.Num());

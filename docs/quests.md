@@ -135,7 +135,7 @@ A species that lives in one corner of the map only: `"range": {"x", "y", "r", "p
 
 ## Developer commands
 
-`Quest.List` (every quest, its stages and what they wait for), `Quest.Dump` (state), `Quest.Start <id>`,
+`Quest.List` (every quest, its stages and what they wait for), `Quest.Dump` (state; `Quest.Dump entries` lists the journal keys in order), `Quest.Start <id>`,
 `Quest.SetStage <id> <stage id | index | done>` (jump: begins the quest if needed, no rewards for what is skipped),
 `Quest.Advance <id>`, `Quest.Event <event> [target] [n]`, `Quest.Reset`, `Quest.Scenes` (pickups and listeners now),
 `Quest.Say <person> <line>...`, `Quest.GoToPerson <person> [m]`, `Quest.BirdCall <Species> <person> [air]`.

@@ -196,6 +196,8 @@ public:
 	void DevJump(FName Quest, int32 Stage);
 	/** Developer mode: the quest as if never begun (its journal lines stay). */
 	void DevForget(FName Quest);
+	/** Developer mode (LyudDev::PlayThrough): a stage jumped to with everything already in the pocket moves on, as it would in play. */
+	void DevSettle(FName Quest) { Settle(Quest); OnChanged.Broadcast(); }
 
 	/** The hero is at P (world cm): finds places and reports reach events. Called by the game screen every few frames. */
 	void UpdatePosition(const UObject* WorldContext, const FVector& P);

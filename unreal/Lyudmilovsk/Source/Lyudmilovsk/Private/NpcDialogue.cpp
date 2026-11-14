@@ -346,16 +346,19 @@ TArray<FNpcLine> UNpcDialogueSubsystem::StartTalk(FName Id, FName SunState)
 		return Npc->First;
 	}
 	// every third later talk, if they have something to say about what the sun is doing now (quietly, not every time)
+	// a word about the sun does not use up an exchange: the exchanges still come in turn, none left out
+	const FName SunCountKey(*(Id.ToString() + TEXT("/sun")));
 	if (Held % 3 == 2)
 	{
 		if (const TArray<FNpcLine>* SunLines = Npc->Sun.Find(SunState))
 		{
+			TalkCounts.FindOrAdd(SunCountKey)++;
 			return *SunLines;
 		}
 	}
 	// later talks go through the exchanges in turn (the first talk did not use one)
 	const int32 Skip = Npc->First.Num() > 0 ? 1 : 0;
-	return Npc->Again[(Held - Skip) % Npc->Again.Num()];
+	return Npc->Again[FMath::Max(0, Held - Skip - TalkCounts.FindRef(SunCountKey)) % Npc->Again.Num()];
 }
 
 // ---------------------------------------------------------------------------------------------------

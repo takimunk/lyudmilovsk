@@ -893,12 +893,20 @@ static FAutoConsoleCommandWithWorldAndArgs GQuestReset(TEXT("Quest.Reset"), TEXT
 		}
 	}));
 
-static FAutoConsoleCommandWithWorldAndArgs GQuestDump(TEXT("Quest.Dump"), TEXT("Quest.Dump: logs every quest's state (QUESTTEST lines)"),
-	FConsoleCommandWithWorldAndArgsDelegate::CreateLambda([](const TArray<FString>&, UWorld* World)
+static FAutoConsoleCommandWithWorldAndArgs GQuestDump(TEXT("Quest.Dump"), TEXT("Quest.Dump [entries]: logs every quest's state, or every journal entry's key in order (QUESTTEST lines)"),
+	FConsoleCommandWithWorldAndArgsDelegate::CreateLambda([](const TArray<FString>& Args, UWorld* World)
 	{
 		const ULyudQuests* Q = ULyudQuests::Get(World);
 		if (!Q)
 		{
+			return;
+		}
+		if (Args.Num() > 0 && Args[0] == TEXT("entries"))
+		{
+			for (int32 EI = 0; EI < Q->Entries.Num(); ++EI)
+			{
+				UE_LOG(LogTemp, Warning, TEXT("QUESTTEST entry %d %s (%s)"), EI, *Q->Entries[EI].Key, *Q->Entries[EI].Quest.ToString());
+			}
 			return;
 		}
 		for (const FLyudQuestDef& D : ULyudQuests::Defs())
