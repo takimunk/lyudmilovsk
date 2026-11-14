@@ -1433,7 +1433,7 @@
  "city.xcl3.lost.0": {
   "ru": "В ячейках: вязаная шапка, пара синих варежек, зонт без одной спицы, шарф в полоску, книга с закладкой, очки с одной дужкой. Табличка: «Хранится месяц, потом передаётся в «вещи для всех». Спросите в регистратуре».",
   "en": "In the pigeonholes: a knitted hat, a pair of blue mittens, an umbrella missing a rib, a striped scarf, a book with a bookmark, spectacles with one arm. The sign: \"Kept for a month, then passed on to the 'things for everybody' box. Ask at the desk.\"",
-  "ja": "仕切りの中には、毛糸の帽子、青いミトンの片方ずつ、骨の一本折れた傘、縞のマフラー、しおりのはさまった本、つるが一本の眼鏡。札には「一か月預かり、そのあと『みんなの物』箱へ。受付でお尋ねください」。"
+  "ja": "仕切りの中には、毛糸の帽子、青いミトンひと組、骨の一本折れた傘、縞のマフラー、しおりのはさまった本、つるが一本の眼鏡。札には「一か月預かり、そのあと『みんなの物』箱へ。受付でお尋ねください」。"
  },
  "city.xcl3.lost.1": {
   "ru": "Новая записка, приколота булавкой: «Найдена красная варежка на левую руку, лежала на третьей скамье. Правая, видимо, осталась на улице. Спросить в регистратуре».",
@@ -1462,12 +1462,12 @@
  },
  "city.xcl3.rota.1a": {
   "ru": "Понедельник, вторник, среда: приём терапевта с 9, окулист с 10, детский врач с 9. В среду после обеда прививки. На полях: «Приносить сменную обувь!»",
-  "en": "Monday, Tuesday, Wednesday: the therapist from 9, the eye doctor from 10, the children's doctor from 9. Wednesday afternoons, vaccinations. In the margin: \"Bring indoor shoes!\"",
+  "en": "Monday, Tuesday, Wednesday: the GP from 9, the eye doctor from 10, the children's doctor from 9. Wednesday afternoons, vaccinations. In the margin: \"Bring indoor shoes!\"",
   "ja": "月・火・水。内科は九時から、眼科は十時から、小児科は九時から。水曜の午後は予防接種。余白に「室内ばきを持ってくること！」"
  },
  "city.xcl3.rota.1b": {
   "ru": "Четверг, пятница, суббота: терапевт принимает до обеда, окулист и детский врач с 10. В пятницу стоит галочка: «Проветривание, уборка залов». Субботний приём короткий, до 14.",
-  "en": "Thursday, Friday, Saturday: the therapist sees patients until noon, the eye doctor and the children's doctor from 10. Friday has a tick: \"Airing, cleaning the halls.\" Saturday hours are short, until 14.",
+  "en": "Thursday, Friday, Saturday: the GP sees patients until noon, the eye doctor and the children's doctor from 10. Friday has a tick: \"Airing, cleaning the halls.\" Saturday hours are short, until 14.",
   "ja": "木・金・土。内科は午前中、眼科と小児科は十時から。金曜には「換気、ホールの掃除」のチェック。土曜の診察は短く、十四時まで。"
  },
  "city.xcl3.rota.1c": {
@@ -1488,7 +1488,7 @@
  "city.xcl3.paper.1": {
   "ru": "«Будь здоров». Выпуск выпускает санитарный актив: две медсестры и ученик из восьмого «Б». Девиз: «Мойте руки до того, как вам об этом напомнят». Рисунок: мыло в ореоле лучей.",
   "en": "\"Keep Well\". Issued by the health volunteers: two nurses and a pupil from class 8B. Motto: \"Wash your hands before you're reminded.\" The drawing: a bar of soap in a halo of rays.",
-  "ja": "「お元気で」。保健ボランティア、看護師二人と八年Ｂ組の生徒が発行。標語は「言われる前に手を洗おう」。絵は光の輪に包まれた石けん。"
+  "ja": "「お元気で」。保健ボランティア、看護師二人と8年B組の生徒が発行。標語は「言われる前に手を洗おう」。絵は光の輪に包まれた石けん。"
  },
  "city.xcl3.paper.2a": {
   "ru": "Понедельник, вторник. Рубрика «Спина»: «Если сидите за партой, подложите под поясницу свёрнутый шарф. Если лежите на диване, не читайте с телефона над лицом». Приложение: пять упражнений для шеи.",
@@ -1501,7 +1501,7 @@
   "ja": "水・木。「歯」欄。「砂時計の砂が落ちきるまで二分間みがこう。あめは敵ではない。水なしのあめが敵だ」。そばにヘルメットをかぶった笑う歯の絵。"
  },
  "city.xcl3.paper.2c": {
-  "ru": "Пятница. Рубрика «Режим»: «Ложиться до одиннадцати, вставать без будильника по субботам, завтракать теплым». Внизу подпись школьника: «Проверено на себе. Частично».",
+  "ru": "Пятница. Рубрика «Режим»: «Ложиться до одиннадцати, вставать без будильника по субботам, завтракать тёплым». Внизу подпись школьника: «Проверено на себе. Частично».",
   "en": "Friday. The \"Routine\" column: \"Bed before eleven, wake up without an alarm on Saturdays, eat a warm breakfast.\" Below, a pupil's note: \"Tested on myself. Partly.\"",
   "ja": "金。「生活リズム」欄。「十一時前に寝る、土曜はめざましなしで起きる、朝ごはんはあたたかく」。下に生徒のひとこと。「自分で試しました。一部だけ」。"
  },
@@ -1518,7 +1518,7 @@
  "city.xcl3.paper.3b": {
   "ru": "Последняя полоса, «Погода»: «Мороз: шарф до глаз, нос прикрывать ладонью. Горячий чай хорош, но кипяток из стакана на ходу не нужен никому».",
   "en": "Last page, \"Weather\": \"Frost: scarf up to the eyes, cover your nose with your palm. Hot tea is good, but nobody needs boiling water in a glass on the move.\"",
-  "ja": "最終面「天気」。「寒い日はマフラーを目の下まで、鼻は手でおおおう。熱いお茶はいいけれど、歩きながらのあつあつは誰にも必要ない」。"
+  "ja": "最終面「天気」。「寒い日はマフラーを目の下まで、鼻は手で覆おう。熱いお茶はいいけれど、歩きながらのあつあつは誰にも必要ない」。"
  },
  "city.xcl3.paper.3c": {
   "ru": "Последняя полоса: «Объявление. Нашлись две красные варежки, ищем хозяйку. Подробности — на полке забытых вещей у западной стены зала».",
@@ -1628,7 +1628,7 @@
  "city.xcl3.dr.1": {
   "ru": "Детский рисунок кнопками на стене: дом с огромным окном, у окна человечек в белом, над ним подпись печатными буквами: «ВРАЧ ДОБРЫЙ». Внизу: «Никита, 6 лет».",
   "en": "A child's drawing pinned to the wall: a house with an enormous window, a little figure in white by it, captioned in capitals: \"THE DOCTOR IS KIND\". At the bottom: \"Nikita, 6 years.\"",
-  "ja": "壁に画びょうでとめた子どもの絵。大きな窓のある家、窓辺に白い服の小さな人、大文字で「おいしゃさんはやさしい」。下に「ニキータ、六さい」。"
+  "ja": "壁に画びょうでとめた子どもの絵。大きな窓のある家、窓辺に白い服の小さな人、大きな字で「おいしゃさんはやさしい」。下に「ニキータ、六さい」。"
  },
  "city.xcl3.dr.2": {
   "ru": "Рядом приколот второй рисунок: красная варежка на заборе и рядом грустное солнце. Подпись: «Варежка потерялась. Это не моя, это ничья».",
