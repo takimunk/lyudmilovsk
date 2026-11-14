@@ -493,6 +493,66 @@
     0.0
    ],
    "yaw": 180.0
+  },
+  {
+   "id": "lost_look",
+   "kind": "stand",
+   "pos": [
+    -12.7,
+    5.4,
+    0.0
+   ],
+   "yaw": 270.0
+  },
+  {
+   "id": "scales_wait",
+   "kind": "stand",
+   "pos": [
+    -9.6,
+    5.95,
+    0.0
+   ],
+   "yaw": 180.0
+  },
+  {
+   "id": "bagtoss_stand",
+   "kind": "stand",
+   "pos": [
+    -10.4,
+    14.0,
+    0.0
+   ],
+   "yaw": 270.0
+  },
+  {
+   "id": "rota_read",
+   "kind": "stand",
+   "pos": [
+    6.0,
+    14.6,
+    0.0
+   ],
+   "yaw": 180.0
+  },
+  {
+   "id": "paper_read",
+   "kind": "stand",
+   "pos": [
+    9.75,
+    14.6,
+    0.0
+   ],
+   "yaw": 180.0
+  },
+  {
+   "id": "bell_wait",
+   "kind": "stand",
+   "pos": [
+    11.2,
+    13.4,
+    0.0
+   ],
+   "yaw": 270.0
   }
  ],
  "lamps": [
@@ -1797,6 +1857,123 @@
    "props": {
     "topic": "card"
    }
+  },
+  {
+   "id": "lost_found",
+   "kind": "shelf",
+   "pos": [
+    -13.5,
+    5.35,
+    1.0
+   ],
+   "yaw": 90.0,
+   "props": {
+    "topic": "lost"
+   }
+  },
+  {
+   "id": "hall_scales",
+   "kind": "machine",
+   "pos": [
+    -9.6,
+    5.15,
+    1.0
+   ],
+   "yaw": 0.0,
+   "props": {
+    "what": "scales"
+   }
+  },
+  {
+   "id": "hall_bagtoss",
+   "kind": "machine",
+   "pos": [
+    -9.22,
+    14.0,
+    0.9
+   ],
+   "yaw": 270.0,
+   "props": {
+    "what": "toss"
+   }
+  },
+  {
+   "id": "kids_drawings",
+   "kind": "board",
+   "pos": [
+    -13.65,
+    13.65,
+    1.65
+   ],
+   "yaw": 90.0,
+   "props": {
+    "topic": "drawings"
+   }
+  },
+  {
+   "id": "corridor_rota",
+   "kind": "board",
+   "pos": [
+    6.0,
+    15.65,
+    1.75
+   ],
+   "yaw": 0.0,
+   "props": {
+    "topic": "rota"
+   }
+  },
+  {
+   "id": "corridor_paper",
+   "kind": "board",
+   "pos": [
+    9.75,
+    15.65,
+    1.75
+   ],
+   "yaw": 0.0,
+   "props": {
+    "topic": "wallpaper"
+   }
+  },
+  {
+   "id": "pharmacy_bell",
+   "kind": "machine",
+   "pos": [
+    12.0,
+    13.68,
+    1.1
+   ],
+   "yaw": 270.0,
+   "props": {
+    "what": "bell"
+   }
+  },
+  {
+   "id": "sterilizer_0",
+   "kind": "machine",
+   "pos": [
+    6.55,
+    8.7,
+    1.52
+   ],
+   "yaw": 270.0,
+   "props": {
+    "what": "sterilizer"
+   }
+  },
+  {
+   "id": "sterilizer_1",
+   "kind": "machine",
+   "pos": [
+    10.05,
+    8.7,
+    1.52
+   ],
+   "yaw": 270.0,
+   "props": {
+    "what": "sterilizer"
+   }
   }
  ],
  "flats": [],
@@ -2520,7 +2697,7 @@
  "notes": [],
  "tris": {
   "shell": 2036,
-  "detail": 19766,
+  "detail": 20438,
   "windows": 136
  }
 }

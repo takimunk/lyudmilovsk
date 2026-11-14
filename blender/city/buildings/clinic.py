@@ -100,6 +100,7 @@ def _furnish(B, cx):
     kit.hat_stand(B, -3.0, 5.0, 0.0, 0.0)
     _depth(B, cx)
     _depth2(B, cx)
+    _depth3(B, cx)
     # two more lamps: the pharmacy end and the aquarium nook
     B.lamp((12.0, 13.2, 2.3), lumens=500, colour="#E8F4F0", kind="public", radius=4)
     B.lamp((-0.7, 14.6, 2.5), lumens=450, colour="#CFE6FF", kind="public", radius=4)
@@ -380,6 +381,81 @@ def _depth(B, cx):
             box(d, "CT_Steel", x + 0.12, x + 0.3, 5.3, 5.33, 0.75, 0.765)
             box(d, "CT_Rubber", x + 0.3, x + 0.36, 5.29, 5.34, 0.75, 0.78)
             B.thing("reflex_hammer", "machine", (x + 0.1, 5.32, 0.85), 180.0, what="hammer")
+
+
+def _depth3(B, cx):
+    """Third pass: lost-property cubbies and a column scale in the hall, a bean-bag toss and a child's drawing by the
+    children's corner, the corridor's duty rota and wall newspaper above the queue benches, the pharmacy bell and
+    the steam steriliser on the filing cabinets of the first two rooms."""
+    d = B.detail
+    # ---- lost property: a pigeonhole cabinet on the west wall (front +x), things left behind in it
+    x0, x1, ya, yb = -13.7, -13.35, 4.85, 5.85
+    box(d, "CT_Wood", x0, x1, ya, ya + 0.03, 0.0, 1.3)
+    box(d, "CT_Wood", x0, x1, yb - 0.03, yb, 0.0, 1.3)
+    box(d, "CT_Wood", x0, x1, 5.335, 5.365, 0.0, 1.3)
+    box(d, "CT_Wood", x0, x0 + 0.02, ya, yb, 0.0, 1.3)
+    for zb in (0.0, 0.43, 0.86, 1.27):
+        box(d, "CT_Wood", x0, x1, ya, yb, zb, zb + 0.03)
+    xc = -13.52
+    box(d, "CT_PlasterRed", xc - 0.1, xc + 0.1, 5.0, 5.28, 0.03, 0.2)                    # a knitted hat
+    box(d, "CT_PlasterRed", xc - 0.06, xc + 0.06, 5.07, 5.21, 0.2, 0.25)
+    box(d, "CT_PlasterBlue", xc - 0.08, xc + 0.08, 5.42, 5.6, 0.03, 0.05)               # a mitten pair
+    box(d, "CT_PlasterBlue", xc - 0.07, xc + 0.07, 5.62, 5.8, 0.03, 0.05)
+    box(d, "CT_Steel", xc - 0.01, xc + 0.01, 5.08, 5.1, 0.46, 0.84)                      # an umbrella
+    box(d, "CT_PlasterGreen", xc - 0.03, xc + 0.03, 5.0, 5.2, 0.46, 0.5)
+    box(d, "CT_PlasterYellow", xc - 0.12, xc + 0.12, 5.42, 5.78, 0.46, 0.6)              # a folded scarf
+    box(d, "CT_PlasterBlue", xc - 0.12, xc + 0.12, 5.42, 5.78, 0.52, 0.54)
+    box(d, "CT_Leather", xc - 0.09, xc + 0.09, 5.0, 5.26, 0.89, 0.97)                    # a book left on a bench
+    box(d, "CT_Paper", xc - 0.08, xc + 0.08, 5.0, 5.26, 0.97, 0.985)
+    box(d, "CT_Glass", xc - 0.05, xc + 0.05, 5.45, 5.75, 0.89, 0.91)                     # spectacles without an arm
+    box(d, "CT_Steel", xc - 0.05, xc + 0.05, 5.45, 5.75, 0.91, 0.915, faces="Z")
+    kit.poster(B, -13.7, 5.35, 0.0, 90.0, name="notice_2", w=0.4, zc=1.65)
+    B.thing("lost_found", "shelf", (-13.5, 5.35, 1.0), 90.0, topic="lost")
+    B.spot("lost_look", "stand", (-12.7, 5.4, 0.0), 270.0)
+    # ---- a column scale between the radiator and the palm
+    kit.scales(B, -9.6, 5.1, 0.0, 0.0)
+    B.thing("hall_scales", "machine", (-9.6, 5.15, 1.0), 0.0, what="scales")
+    B.spot("scales_wait", "stand", (-9.6, 5.95, 0.0), 180.0)
+    # ---- a bean-bag toss board east of the children's rug (its face -x), a basket of bags, a throwing line
+    bx = -9.2
+    box(d, "CT_PlasterBlue", bx, bx + 0.05, 13.55, 14.45, 0.4, 1.2)
+    box(d, "CT_Wood", bx, bx + 0.05, 13.5, 13.55, 0.0, 1.25)
+    box(d, "CT_Wood", bx, bx + 0.05, 14.45, 14.5, 0.0, 1.25)
+    box(d, "CT_Wood", bx, bx + 0.05, 13.5, 14.5, 1.2, 1.25)
+    box(d, "CT_Wood", bx - 0.02, bx + 0.12, 13.5, 14.5, 0.0, 0.04)
+    for k, (yy, mt) in enumerate(((13.8, "CT_SteelRed"), (14.0, "CT_PlasterYellow"), (14.2, "CT_PlasterGreen"))):
+        zz = 0.55 + 0.25 * (k % 2)
+        box(d, mt, bx - 0.006, bx, yy - 0.1, yy + 0.1, zz - 0.1, zz + 0.1)
+        box(d, "CT_Rubber", bx - 0.012, bx - 0.006, yy - 0.065, yy + 0.065, zz - 0.065, zz + 0.065)
+    box(d, "CT_Wood", -9.85, -9.55, 14.55, 14.85, 0.0, 0.22)
+    for k, mt in enumerate(("CT_PlasterRed", "CT_PlasterYellow", "CT_PlasterGreen")):
+        box(d, mt, -9.8 + 0.09 * k, -9.72 + 0.09 * k, 14.6 + 0.07 * k, 14.7 + 0.07 * k, 0.22, 0.27)
+    box(d, "CT_Rubber", -10.41, -10.39, 13.4, 14.6, 0.0, 0.006, faces="Z")
+    B.thing("hall_bagtoss", "machine", (bx - 0.02, 14.0, 0.9), 270.0, what="toss")
+    B.spot("bagtoss_stand", "stand", (-10.4, 14.0, 0.0), 270.0)
+    # ---- a child's drawing on the west wall between the rack and the bookshelf
+    kit.poster(B, -13.7, 13.65, 0.0, 90.0, name="paper_drawing", w=0.45, zc=1.65)
+    B.thing("kids_drawings", "board", (-13.65, 13.65, 1.65), 90.0, topic="drawings")
+    # ---- corridor: duty rota and wall newspaper on the wall above the two queue benches
+    kit.notice_board(B, 6.0, 15.7, 0.0, 0.0, w=1.0, zc=1.75, seed=4)
+    B.thing("corridor_rota", "board", (6.0, 15.65, 1.75), 0.0, topic="rota")
+    B.spot("rota_read", "stand", (6.0, 14.6, 0.0), 180.0)
+    kit.poster(B, 9.75, 15.7, 0.0, 0.0, name="news_1", w=0.9, zc=1.75)
+    B.thing("corridor_paper", "board", (9.75, 15.65, 1.75), 0.0, topic="wallpaper")
+    B.spot("paper_read", "stand", (9.75, 14.6, 0.0), 180.0)
+    # ---- the pharmacy bell on the counter
+    box(d, "CT_Brass", 11.95, 12.05, 13.63, 13.73, 1.05, 1.065)
+    box(d, "CT_Brass", 11.98, 12.02, 13.66, 13.70, 1.065, 1.1)
+    box(d, "CT_SteelRed", 11.99, 12.01, 13.67, 13.69, 1.1, 1.115)
+    B.thing("pharmacy_bell", "machine", (12.0, 13.68, 1.1), 270.0, what="bell")
+    B.spot("bell_wait", "stand", (11.2, 13.4, 0.0), 270.0)
+    # ---- steam steriliser on the filing cabinets of the first two rooms
+    for i in (0, 1):
+        ex = (6.8, 10.3)[i]
+        box(d, "CT_SteelWhite", ex - 0.45, ex - 0.05, 8.5, 8.9, 1.32, 1.5)
+        box(d, "CT_Steel", ex - 0.46, ex - 0.04, 8.49, 8.91, 1.5, 1.52)
+        box(d, "CT_SteelRed", ex - 0.46, ex - 0.45, 8.62, 8.78, 1.38, 1.44)
+        B.thing("sterilizer_%d" % i, "machine", (ex - 0.25, 8.7, 1.52), 270.0, what="sterilizer")
 
 
 def _plate(d, x, y, z, side="S"):
