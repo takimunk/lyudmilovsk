@@ -90,7 +90,8 @@ the voice of a line is found by its key.
   every condition holds, wherever in the section it is written. Conditions: `night`, `low` (sunrise, sunset), `day`, `cloudy`;
   `have:<item>`, `no:<item>` (the pocket); `done:<quest>`, `on:<quest>` (another quest finished, or going on);
   `flag:<flag>` (`ULyudQuests::Flags`, a remark said: `remark.<id>`, a pickup taken: `pickup.<id>`). A variant is counted
-  apart from the plain talk (its own first time, its own `.again`). It needs a plain line of the same stage to stand in for,
+  apart from the plain talk (its own first time, its own `.again`). A variant without `.again` lines is a word for the
+  moment: said once, then the plain talk and its hints go on. It needs a plain line of the same stage to stand in for,
   and it must carry whatever the plain talk tells the player to do.
 - A quest's live stage always comes before asides and after-talks, wherever they are written in the section. A variant
   that holds for ever (`done:<quest>`) needs its own `.again` lines if the plain talk has some (the checker says so). Sun
@@ -115,7 +116,7 @@ the voice of a line is found by its key.
   `air` = called on the wing) is said over their head with its voice, their eyes on the bird. Sitting within `within_m`
   also sends `bird_call`. Sleeping or unseen people hear nothing. One person answers a call: the one a quest waits to hear
   this call beside (its `bird_call` objective), else a reaction written for a quest's stage, else one for the species,
-  else anybody's; among equals the nearest (every listener in reach still gets its `bird_call`). Fourteen people listen: the
+  else anybody's; among equals the nearest (every listener in reach still gets its `bird_call`). Nineteen people listen: the
   quest givers who sit outdoors (the square's benches, the corn cart, the net bench, the cheese tent).
 - `remarks`: `{"id", "person", "quest", "stages", "within_m", "lines"}`: that person says the lines of their own accord,
   once, when the hero walks within `within_m` (6 by default) while the quest is on one of the stages (`done` too): the

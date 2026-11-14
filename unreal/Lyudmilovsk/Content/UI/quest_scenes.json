@@ -1,5 +1,5 @@
 {
- "comment": "What the quests stage in the world (ULyudQuestDirector, docs/quests.md). pickups: an item lying out while its quest is on one of the stages; ux, uy, floor_uz are Unreal metres as in PeopleData/people_places.json (the floor under it; it drops from drop_m above onto whatever stands there), yaw the way its top points. listeners: people who notice a bird calling beside them; the first reaction that fits is said (species, quest + stage, air = called on the wing near by); the quests get bird_call <Species>.<Body> when the bird sat within within_m. remarks: a person says the lines of their own accord, once, when the hero walks within within_m while the quest is on one of the stages. One person answers a call: whoever a quest in progress waits to hear from, else the nearest. A remark is ready once the hero has been out of its reach while its stage holds (at_once: said even if he begins the stage beside them); never through a wall, never over another remark.",
+ "comment": "What the quests stage in the world (ULyudQuestDirector, docs/quests.md). pickups: an item lying out while its quest is on one of the stages; ux, uy, floor_uz are Unreal metres as in PeopleData/people_places.json (the floor under it; it drops from drop_m above onto whatever stands there), yaw the way its top points. listeners: people who notice a bird calling beside them; the first reaction that fits is said (species, quest + stage, air = called on the wing near by); the quests get bird_call <Species>.<Body> when the bird sat within within_m. remarks: a person says the lines of their own accord, once, when the hero walks within within_m while the quest is on one of the stages. One person answers a call: the one a quest's bird_call objective waits for, else a reaction for a quest's stage, else one for the species, else anybody's; the nearest among equals. A remark is ready once the hero has been out of its reach while its stage holds (at_once: said even if he begins the stage beside them); never through a wall, never over another remark.",
  "pickups": [
   {
    "id": "library_guide",
@@ -1268,11 +1268,12 @@
    "stages": [
     "owner"
    ],
-   "within_m": 4,
+   "within_m": 5,
    "lines": [
     "kid_girl.ask_owner_sun.1"
    ],
-   "note": "Sonya at station 7 (y -12.35), 1.5 m off the walkway the hero takes from his seat to the owner's booth (y 6.4); at a new game she plays 60-120 min. The owner feels the sun on the back of his neck (his sun lines): she has noticed. 3 m of hall after the clerk's remark, so they may come one after the other (the director says one at a time)."
+   "note": "Sonya at station 7 (y -12.35), 1.5 m off the walkway the hero takes from his seat to the owner's booth (y 6.4); at a new game she plays 60-120 min. The owner feels the sun on the back of his neck (his sun lines): she has noticed. 3 m of hall after the clerk's remark, so they may come one after the other (the director says one at a time).",
+   "at_once": true
   },
   {
    "id": "nika_soda_bets",
@@ -1298,7 +1299,8 @@
    "lines": [
     "nao.pigeons_no_hurry.1"
    ],
-   "note": "birds starts when the hero reaches club_door; Nao keeps the door and forecourt (watch_door 10-21 every day, a new game finds her there), where he crouches with the feed. Not Sonya's palm hint again: Nao's point is patience."
+   "note": "birds starts when the hero reaches club_door; Nao keeps the door and forecourt (watch_door 10-21 every day, a new game finds her there), where he crouches with the feed. Not Sonya's palm hint again: Nao's point is patience.",
+   "at_once": true
   },
   {
    "id": "nao_cliff_from_below",

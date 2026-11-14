@@ -154,9 +154,9 @@ void UNpcDialogueSubsystem::Reload()
 					--CondEnd;
 				}
 				FString Conds = Parts[4];
-				for (int32 PI = 5; PI < CondEnd; ++PI)
+				for (int32 Part = 5; Part < CondEnd; ++Part)
 				{
-					Conds += TEXT(".") + Parts[PI];
+					Conds += TEXT(".") + Parts[Part];
 				}
 				Conds.ParseIntoArray(When, TEXT("+"));
 				Tail = CondEnd;
@@ -285,7 +285,8 @@ TArray<FNpcLine> UNpcDialogueSubsystem::StartTalk(FName Id, FName SunState)
 			{
 				return !bMet || Said > T.Again.Num();
 			}
-			return T.Again.Num() == 0 && T.Stages.Contains(DoneStage) && Said > 0;
+			// a variant without .again lines is a word for the moment, said once: then the plain talk and its hints go on
+			return T.Again.Num() == 0 && Said > 0 && (T.When.Num() > 0 || T.Stages.Contains(DoneStage));
 		};
 		// the talk of a quest's live stage first, wherever it is written; asides and after-talks second
 		for (int32 Pass = 0; Pass < 2 && !QuestTalk; ++Pass)

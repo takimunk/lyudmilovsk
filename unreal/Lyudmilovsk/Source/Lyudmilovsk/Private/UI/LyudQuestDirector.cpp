@@ -527,7 +527,9 @@ void ULyudQuestDirector::TickRemarks(const APawn* Pawn)
 		// not through a wall
 		// (people at home are drawn from 40 m, walls or not; their head, standing or seated, over a counter or a screen)
 		const FVector Eyes = Hero->GetPawnViewLocation();
-		const FVector Feet = Info.Actor->GetActorLocation();
+		// (the body itself: the owner's actor is his call zone, his body sits behind the window)
+		const USkeletalMeshComponent* Shown = Info.Actor->FindComponentByClass<USkeletalMeshComponent>();
+		const FVector Feet = Shown ? Shown->GetComponentLocation() : Info.Actor->GetActorLocation();
 		if (TalkDirector.IsValid() && !TalkDirector->InSight(Eyes, Feet + FVector(0.0, 0.0, 150.0), Info.Actor) && !TalkDirector->InSight(Eyes, Feet + FVector(0.0, 0.0, 110.0), Info.Actor))
 		{
 			continue;
