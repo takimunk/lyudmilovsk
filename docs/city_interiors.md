@@ -432,6 +432,20 @@ citysim, with a real-data check that every stop has a way back. Console `lyud.Ci
 would put him there); developer mode `interiors.lift_nearest` (the nearest lift door within reach of the list: its chooser,
 or at once). Now: no building declares a link yet (the building modules' doors).
 
+### Reach audit
+
+`python3 tools/city/reach_audit.py [type ...]` (numpy, no bpy; exit 1 on errors) asks of every thing in `interiors.json`
+whether the hero can walk to it. The export json has no floors, so it reads the collision shell (`SM_<type>`, the first mesh
+of `blender/export/city/<export>.glb`): a 0.2 m grid of vertical hits; a walkable node is an up-facing face with 1.6 m over
+it and no wall (near-vertical shell faces, grown by one cell) 0.45-1.7 m over it; virtual ground at the building's z 0 where
+the shell has none; nodes join within 0.5 m of height (stairs, ramps, door holes); the street is the grid's border; lift
+links (`floors`) carry reachability to the game's seven arrival spots. Per thing: `a` a floor under a standing place 0.6-1.2
+m in front (seats: floor within 0.3 m of `pos.z - height`), `b` the place clear, `c` connected to the street, `d` every lift
+stop's arrival spot walkable, `e` headroom >= 1.8 m; warnings: `y` reachable only beside/behind (check the yaw), `los` a wall
+between the place and the thing, and a glb older than its json (stale shell: rebuild). It cannot see `B.detail` (railings,
+ladders, chairs: no collision), ALyudDoor leaves (doorways are open holes), the terrain (flat at z 0) or a real capsule
+sweep, so a `c` it reports is a lead to walk-test, not a proof, and a pass is not one either.
+
 ### Staff talk
 
 At a counter whose act (or thing) has `topics` and whose staff is on shift, E opens a chooser on the page instead of the

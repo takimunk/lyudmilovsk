@@ -208,7 +208,9 @@ def build(B):
                 box(m, "CT_Plaster", x - 0.1, x + 0.1, YF + WT, YC0 - 0.2, z, z + 2.8)
                 box(m, "CT_Plaster", x - 0.1, x + 0.1, YC1 + 0.2, YB - WT, z, z + 2.8)
         else:
-            wall(B, (X0, YC0), (X1, YC0), 0.0, 2.8, "CT_Plaster", depth=0.2, mat_in="CT_Plaster")
+            # doorways from the ground corridor into the bike room (x 6.5) and the red corner (x 10.4): neither has a street door
+            hs = [(xd - X0 - 0.5, xd - X0 + 0.5, 0.03, 2.2) for xd in (6.5, 10.4)]
+            wall(B, (X0, YC0), (X1, YC0), 0.0, 2.8, "CT_Plaster", holes=hs, depth=0.2, mat_in="CT_Plaster")
             wall(B, (X1, YC1), (X0, YC1), 0.0, 2.8, "CT_Plaster", depth=0.2, mat_in="CT_Plaster")
     # flats, doors, entrances
     for s in range(1, 5):
@@ -557,12 +559,15 @@ def _tower(B):
     for s in range(5):
         zb = zs[s]
         for i in range(n):
-            box(m, "CT_Concrete", xl - (i + 1) * going, xl - i * going, iy0, iy0 + 1.1, zb, zb + (i + 1) * RISE)
+            # steps 0.45 m deep under their tread (not solid down to zb): the flight above clears 2.65 m, not 1.55 m
+            box(m, "CT_Concrete", xl - (i + 1) * going, xl - i * going, iy0, iy0 + 1.1, max(zb, zb + (i + 1) * RISE - 0.45),
+                zb + (i + 1) * RISE)
         xw = xl - n * going
         zh = zb + n * RISE
         box(m, "CT_Concrete", ix0, xw, iy0, iy1, zh - 0.3, zh)
         for i in range(n):
-            box(m, "CT_Concrete", xw + i * going, xw + (i + 1) * going, iy1 - 1.1, iy1, zh, zh + (i + 1) * RISE)
+            box(m, "CT_Concrete", xw + i * going, xw + (i + 1) * going, iy1 - 1.1, iy1, max(zh, zh + (i + 1) * RISE - 0.45),
+                zh + (i + 1) * RISE)
         zn = zs[s + 1]
         box(m, "CT_Concrete", xl, ix1, iy0, iy1, zn - 0.3, zn)
         # a rail along the open edge of each lane

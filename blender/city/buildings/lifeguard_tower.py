@@ -138,6 +138,10 @@ def build(B):
     B.lamp((0.0, 2.2, z0 + 2.2), lumens=450, colour="#FFE8C8", kind="public", radius=4.5)
     box(d, "CT_Steel", -0.01, 0.01, 2.19, 2.21, z0 + 2.28, WALL_Z1, faces="xXyY")
     B.entrance("ladder", (0.0, ly - 0.05, 0.5), 0.0, width=0.5, height=2.0, kind="service")
+    # the ladder is drawn (B.detail) but no ladder actor is placed for a "service" entrance: a storey link takes the hero
+    # up and down (docs/city_interiors.md "Lifts and storey links"); the top one by the hatch's back rim, facing into the cabin
+    B.thing("ladder_foot", "door", (0.0, ly - 0.03, 1.2), 0.0, to="ladder_top")
+    B.thing("ladder_top", "door", (0.0, 1.95, DECK_Z1 + 0.5), 180.0, to="ladder_foot")
     B.spot("view", "view", (0.0, 2.6, DECK_Z1), 0.0)
     B.spot("chair", "seat", (-0.85, 2.1, z0), 270.0)
     B.thing("view_cabin", "board", (0.0, 1.0, z0 + 1.5), 0.0, topic="view")

@@ -241,7 +241,7 @@ def build(B):
     for i in range(n):                                   # flight B back along -y at x 0.1..1.8
         yb1 = yl - i * g
         box(m, "CT_Concrete", 0.1, 1.8, yb1 - g, yb1, 0.03, 0.03 + r_ * (n + i + 1))
-    box(m, "CT_ConcreteWhite", -0.1, 0.1, ya, hole[3] - 0.01, 0.03, Z_SLAB1 + 0.9)
+    box(m, "CT_ConcreteWhite", -0.1, 0.1, ya, yl, 0.03, Z_SLAB1 + 0.9)   # stops at the landing: the way from flight A to B
     # railings round the opening upstairs
     B.railing([(0.1, hole[2] + 0.05), (-1.75, hole[2] + 0.05), (-1.75, hole[3] - 0.05), (1.75, hole[3] - 0.05),
                (1.75, hole[2] + 0.4)], Z_SLAB1, h=1.0, post=1.5)
