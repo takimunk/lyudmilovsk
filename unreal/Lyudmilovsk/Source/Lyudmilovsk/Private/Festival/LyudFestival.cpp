@@ -2692,6 +2692,12 @@ void ALyudFireworks::Fire(bool bFinale)
 	{
 		return;
 	}
+	// the townsfolk look up, point, photograph (docs/town_manners.md)
+	if (UPeopleLifeSubsystem* People = UPeopleLifeSubsystem::Get(GetWorld()))
+	{
+		static const FName FireworksName(TEXT("fireworks"));
+		People->SetSkyShow(FireworksName, bFinale ? 1.f : 0.8f, 8.f);
+	}
 	FShell S;
 	S.Comp = Free;
 	S.T = 0.f;

@@ -163,6 +163,8 @@ namespace LyudPeople
 		bool bGather = false;               // a gathering (a holiday on the square): only at a place with one on now
 		int GatherMode = -1;                // a gathering's activity: the mode it is for (EGatherMode), -1 not one
 		bool bStaff = false;                // a workplace duty: at their own workplace (FDuty::Place), at a slot of their role
+		float Pace = 1.f;                   // "pace": how fast they go within it against their walk (a jog, children at play: 2)
+		bool bRainOk = false;               // "rain": "ok": chosen and kept up in the rain too (outdoors)
 		std::vector<int> PlaceIdx;          // the places of its kinds (built after loading; "home" and gatherings aside)
 		std::vector<int> SlotK, PlaceK;     // Slots and Places interned
 		bool bHome = false;                 // "home" among its places
@@ -223,7 +225,22 @@ namespace LyudPeople
 		std::vector<FDuty> Duties;
 		std::string ClubSeat;       // their usual station in the club ("4"); "" none
 		std::vector<std::string> Friends;
+		mutable std::vector<int> FriendIds;     // Friends as person ids, looked up when first needed (PickSlot's company)
+		mutable bool bFriendIds = false;
 		std::vector<std::pair<std::string, float>> Likes;   // activity id -> how much more they like it (a painter and the island)
+		// their daily ritual (PeopleManners' ApplyLikes, docs/town_manners.md): this activity draws them round this hour
+		int RitualAct = -1;
+		float RitualHour = 0.f;
+		float RitualMore = 0.f;
+		// their household's weekend outing (the same ApplyLikes): on this weekday round this hour the whole household is
+		// drawn to this activity at this place (the sea front on Sunday at noon, the cafe on Saturday)
+		int OutingAct = -1, OutingDay = -1, OutingPlace = -1;
+		int HomeWith = -1;          // one of theirs left the outing for home, to this activity: they go along (Think)
+		float OutingHour = 0.f;
+		// their standing date with a friend (the same ApplyLikes): one weekday a week, round this hour, the two of them
+		// meet at this activity at this place (a bench after work on Thursdays, the cafe, the playground after school)
+		int DateAct = -1, DateDay = -1, DatePlace = -1, DateWith = -1;
+		float DateHour = 0.f;
 		std::string OwnSlot;        // "club:9": a slot only they use
 		std::string StartActivity;  // what they do when a new game begins
 		float StartMinutes[2] = { 60.f, 120.f };
@@ -259,6 +276,8 @@ namespace LyudPeople
 		struct FWay { V3 P; uint8_t Kind = 0; float Ride = 0.f; int8_t ToIsland = -1; int RailFrom = -1, RailTo = -1; uint8_t Bike = 0; EBikeAct BikeAct = EBikeAct::None; };
 		std::vector<FWay> Path;
 		int PathI = 0;
+		int BreathAt = -1;          // the old on a long way on foot: past this point of Path they stand to get their breath back
+		float BreathFor = 0.f;      // for so many seconds more
 		float Think = 0.f;
 		float Recheck = 60.f;       // s till they next look up from what they do
 		bool bBreak = false;        // wants a break from a duty (to eat)
@@ -277,6 +296,8 @@ namespace LyudPeople
 		EBikeAct BikeAct = EBikeAct::None;
 		double BikeActStart = 0.0, BikeActUntil = 0.0;
 		uint32_t Rng = 1;
+		int PrevActivity = -1;      // what they did before this (the manners: a bag carried from the shop), -1 nothing yet
+		double PrevActivityEnd = -1e18;     // and when they left it (sim seconds)
 		std::string Why;            // a short reason for the last choice (debug)
 		int Choices = 0;
 	};
@@ -296,6 +317,7 @@ namespace LyudPeople
 		float TrainSeconds = 280.f;     // the train between the halts when there is no timetable (TrainNext unset or -1): hidden
 		float WalkCostPerHour = 1.6f;   // how much an hour of walking puts people off a choice
 		float Jitter = 0.15f;
+		float OwnSpots = 110.f;         // m: how far out of their way people go for a spot of their own (their bench, their cafe); 0 none
 	};
 
 	class FWorld
@@ -320,6 +342,10 @@ namespace LyudPeople
 		float SunriseYaw = 45.f;        // where it comes up (the early risers face it)
 		bool bSunUp = true;
 		bool bRain = false;             // raining: people outdoors hurry (the wrapper sets it from the weather)
+		// the weather people choose by (the wrapper sets it; docs/town_manners.md): in the rain what they chose to do out of
+		// doors is left for a roof and not chosen anew, the frost empties the benches, a warm day draws to the water
+		float Rain = 0.f;               // 0 dry .. 1 pouring
+		float TempC = 12.f;
 		bool bDayOff = false;           // a public holiday: duties with holiday "off" are skipped (SetDayOff)
 
 		/** A gathering (ULyudFestivalSubsystem's holidays): people free and awake are drawn to a place, or to the places
@@ -406,6 +432,18 @@ namespace LyudPeople
 		static float NightH(float H) { return H < 12.f ? H + 24.f : H; }
 		/** Rolls everybody's day (wake and bed moved by Spread); the step does it at 14:00 each day. */
 		void RollDays();
+		/** 1: A is P's household outing and it is on now (from half an hour before its hour to an hour and a quarter after);
+		 *  2: A is P's date with a friend and it is on now; 0: neither. */
+		int MeetNow(const FPerson& P, const FActivity& A) const
+		{
+			const int Ai = (int)(&A - Activities.data());
+			if (P.OutingAct == Ai && Weekday == P.OutingDay && Hour > P.OutingHour - 0.5f && Hour < P.OutingHour + 1.25f)
+			{
+				return 1;
+			}
+			return P.DateAct == Ai && Weekday == P.DateDay && Hour > P.DateHour - 0.5f && Hour < P.DateHour + 1.25f ? 2 : 0;
+		}
+		bool OutingNow(const FPerson& P, const FActivity& A) const { return MeetNow(P, A) == 1; }
 		float PrevHour = -1.f;
 		int DayRoll = 0;
 		V3 Camera;
@@ -432,6 +470,10 @@ namespace LyudPeople
 		int FindActivity(const std::string& Id) const;
 		int ActOf(const FDuty& D) const { return D.Act >= 0 ? D.Act : FindActivity(D.Activity); }
 		int SleepAct = -1, RestHomeAct = -1;   // Index()
+		int MindAct = -1, PlayActs[2] = { -1, -1 };     // mind_child; playground, play_run (Index())
+		/** The household's child (under 12) out at play whom P could keep an eye on: nobody else of the household does
+		 *  already. -1 none. */
+		int ChildToMind(const FPerson& P) const;
 		/** A route between two points (each indoors at a place's slot or outdoors); false = no way. */
 		bool Route(const FPerson& P, const V3& From, int FromSlot, int ToSlot, std::vector<FPerson::FWay>& Out) const;
 		/** Where they are drawn and which way they face (between steps it is Pos). */
@@ -539,6 +581,10 @@ namespace LyudPeople
 		void Move(FPerson& P, float Dt);
 		/** Their pace now, m/s: a walk, or a run outdoors when late or in the rain (a brisk walk indoors). */
 		float Pace(const FPerson& P) const;
+		/** On the way to the household's outing, or home with one of theirs: 1, or how much slower or faster to go to keep with their own. */
+		float WayTogether(const FPerson& P, bool* bWith = nullptr) const;     // bWith: one of theirs is going along
+		/** Their pace within an activity (a walk's next spot): the activity's pace on their walk. */
+		float ActPace(const FPerson& P, const FActivity& A) const;
 		void Arrive(FPerson& P);
 		void FinishRide(FPerson& P);
 		void Leave(FPerson& P);

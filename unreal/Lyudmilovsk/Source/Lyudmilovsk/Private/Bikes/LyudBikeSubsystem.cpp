@@ -568,6 +568,12 @@ void ANpcBody::DriveBike(ALyudBike* Bike, const FLyudBikeRide& Ride, const FVect
 	Facing = Yaw;
 	Blanket->SetVisibility(false);
 	PlacePusher(false);
+	// both hands on the bars: no manner
+	if (Anim)
+	{
+		Anim->SetGesture(FLyudGesturePose());
+	}
+	PlaceMannerProp(false);
 	const bool bOnIt = Ride.Act == ELyudBikeAct::Ride || Ride.Act == ELyudBikeAct::Mount || Ride.Act == ELyudBikeAct::Dismount;
 	if (bOnIt)
 	{

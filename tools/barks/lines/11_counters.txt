@@ -1,0 +1,144 @@
+## ---------------------------------------------------------------------------------------------------------------
+## At the counter: a customer on their feet and whoever serves them (LyudBarks::AtCounter: the same shop, market
+## stall or kiosk, within 4 m). A is the customer unless the set says doing = work first.
+## ---------------------------------------------------------------------------------------------------------------
+
+[counter]
+doing = shop shop_town
+doing2 = work
+age = teen adult elder
+weight = 3
+talk
+- town.counter1.1 | Хлеб сегодняшний? | Is the bread today's? | このパン、今日の？
+- town.counter1.2 | Утренний. Ещё тёплым привезли. | This morning's. It came in still warm. | 今朝のだよ。まだ温かいうちに届いたんだ。
+- town.counter1.3 | Тогда два. | Two, then. | じゃあ二つ。
+talk
+- town.counter2.1 | Мне как обычно. | The usual for me. | いつものをお願い。
+- town.counter2.2 | Как обычно кончилось. Есть почти как обычно. | The usual's run out. There's almost-the-usual. | いつものは売り切れ。ほぼいつもの、ならあるよ。
+- town.counter2.3 | Давайте почти. | Almost will do. | じゃあ、ほぼで。
+talk
+- town.counter3.1 | Сколько с меня? | What do I owe you? | おいくら？
+- town.counter3.2 | Столько же, сколько вчера. | The same as yesterday. | 昨日と同じ。
+- town.counter3.3 | А вчера сколько было? | And what was it yesterday? | 昨日はいくらだったっけ？
+- town.counter3.4 | Столько же, сколько позавчера. | The same as the day before. | おとといと同じ。
+talk
+- town.counter4.1 | А пакет найдётся? | Have you got a bag? | 袋、ある？
+- town.counter4.2 | Найдётся. Только ручки слабые, держите снизу. | I have. The handles are weak, though, hold it from underneath. | あるよ。持ち手が弱いから、下から支えてね。
+talk
+- town.counter5.1 | Что посоветуете к чаю? | What would you suggest with tea? | お茶うけに、何がおすすめ？
+- town.counter5.2 | Пряники. Или компанию. С компанией и сухари сойдут. | Gingerbread. Or company. With company even rusks will do. | ジンジャーブレッドかな。それか、話し相手。相手がいれば乾パンでも十分。
+talk
+- town.counter6.1 | У вас сдача будет с крупной? | Can you change a big note? | 大きいお札でおつり、出る？
+- town.counter6.2 | Будет. Мелочью. Всей, что есть. | I can. In coins. All the coins I've got. | 出るよ。小銭で。あるだけ全部の小銭で。
+- town.counter6.3 | Тогда поищу помельче. | Then I'll look for something smaller. | じゃあ、もっと細かいのを探すよ。
+
+[counter_seller]
+doing = work
+doing2 = shop shop_town
+age2 = teen adult elder
+weight = 3
+talk
+- town.counter_seller1.1 | Вам взвесить или на глаз? | Shall I weigh it, or by eye? | 量る？それとも目分量で？
+- town.counter_seller1.2 | На глаз. У вас глаз точнее весов. | By eye. Your eye's truer than the scales. | 目分量で。あなたの目のほうが、はかりより正確だから。
+talk
+- town.counter_seller2.1 | Что-нибудь ещё? | Anything else? | ほかに何か？
+- town.counter_seller2.2 | Ещё хорошей погоды, если есть. | Some good weather, if you've got any. | いい天気をひとつ、あれば。
+- town.counter_seller2.3 | Завезут в четверг. | Coming in on Thursday. | 木曜に入荷します。
+talk
+- town.counter_seller3.1 | Давно вас не видно. | Haven't seen you in a while. | しばらく見なかったね。
+- town.counter_seller3.2 | Да всё тут, просто хожу в другое время. | Oh, I'm about, I just come at a different hour. | いるよ、ただ来る時間が違うだけ。
+- town.counter_seller3.3 | Ходите в это. В это свежее. | Come at this one. It's fresher at this one. | この時間においで。この時間のほうが新鮮だから。
+talk
+- town.counter_seller4.1 | Берите сыр, пока есть. К вечеру разберут. | Take the cheese while it's here. It'll be gone by evening. | チーズは今のうちに。夕方にはなくなるよ。
+- town.counter_seller4.2 | Вы так каждый день говорите. | You say that every day. | 毎日そう言ってるじゃない。
+- town.counter_seller4.3 | И каждый день разбирают. | And every day it's gone. | そして毎日なくなるの。
+
+[counter_market]
+doing = shop_town
+doing2 = work
+at = market
+age = adult elder
+weight = 4
+talk
+- town.counter_market1.1 | Яблоки кислые? | Are the apples sour? | このりんご、すっぱい？
+- town.counter_market1.2 | А вам какие надо? | What kind are you after? | どっちがいいの？
+- town.counter_market1.3 | Сладкие. | Sweet ones. | 甘いの。
+- town.counter_market1.4 | Тогда сладкие. | Then they're sweet. | じゃあ甘いよ。
+talk
+- town.counter_market2.1 | Почём рыба? | How much is the fish? | 魚はいくら？
+- town.counter_market2.2 | Утренняя дороже, вчерашней нет. | This morning's costs more; there's none of yesterday's. | 今朝のは高め。昨日のは置いてないよ。
+- town.counter_market2.3 | Честно. Давайте утреннюю. | Fair enough. This morning's, then. | 正直だね。今朝のをください。
+talk
+- town.counter_market3.1 | А уступите немного? | Would you come down a little? | 少しまけてくれない？
+- town.counter_market3.2 | Уступлю. На словах. | I will. In words. | まけるよ。気持ちだけ。
+- town.counter_market3.3 | Ну хоть укропу положите. | Well, throw in some dill at least. | せめてディルをおまけしてよ。
+- town.counter_market3.4 | Укропу положу. | Dill I can do. | ディルならいいよ。
+talk
+- town.counter_market4.1 | Это мёд с какого луга? | Which meadow is this honey from? | このはちみつ、どこの野原の？
+- town.counter_market4.2 | С того, что за верхней станцией. Пчёлы туда на канатке ездят. | The one past the upper station. The bees take the cable car up. | 山頂駅の向こうの。ミツバチはロープウェイで通ってるんだ。
+
+[counter_kiosk]
+doing = shop_town
+doing2 = work
+at = kiosk
+age = teen adult elder
+weight = 4
+talk
+- town.counter_kiosk1.1 | Свежая газета есть? | Have you got today's paper? | 今日の新聞ある？
+- town.counter_kiosk1.2 | Есть. Новости, правда, вчерашние. | I have. The news is yesterday's, mind. | あるよ。ニュースは昨日のだけどね。
+talk
+- town.counter_kiosk2.1 | Открытку с маяком, пожалуйста. | A postcard with the lighthouse, please. | 灯台の絵はがきをください。
+- town.counter_kiosk2.2 | С закатом или без? | With the sunset or without? | 夕焼けつき？なし？
+- town.counter_kiosk2.3 | А без заката бывает? | Do they come without? | 夕焼けなしなんてあるの？
+- town.counter_kiosk2.4 | Не берут. | Nobody buys them. | 売れないんだ。
+talk
+- town.counter_kiosk3.1 | Мне лимонад. Холодный. | A lemonade for me. Cold. | レモネードを。冷たいの。
+- town.counter_kiosk3.2 | Другого не держим. Море рядом, само холодит. | We keep no other kind. The sea's next door, it does the chilling. | それしか置いてないよ。海がすぐそこだから、勝手に冷えるんだ。
+
+[counter_kid]
+doing = shop shop_town
+doing2 = work
+age = kid
+weight = 5
+talk
+- town.counter_kid1.1 | А на это хватит? | Is this enough? | これで足りる？
+- town.counter_kid1.2 | Дай посчитаю... На одну хватит. На маленькую. | Let me count... Enough for one. A small one. | 数えるね…一つなら足りる。小さいのがね。
+- town.counter_kid1.3 | Маленькую! | A small one! | 小さいの、ください！
+talk
+- town.counter_kid2.1 | Мама сказала: хлеб и сдачу. | Mum said: bread and the change. | お母さんが、パンとおつりって。
+- town.counter_kid2.2 | Держи хлеб. А сдачу в кулак, и не разжимай до дома. | Here's the bread. And the change goes in your fist, and don't open it till you're home. | はい、パン。おつりは握って、家に着くまで開けちゃだめだよ。
+
+[counter_elder]
+doing = shop shop_town
+doing2 = work
+age = elder
+weight = 4
+talk
+- town.counter_elder1.1 | Раньше тут другой прилавок стоял. Деревянный. | There used to be a different counter here. A wooden one. | 昔はここ、別のカウンターだったんだよ。木のやつ。
+- town.counter_elder1.2 | Он и сейчас стоит. Под этим. | It's still here. Under this one. | 今もあるよ。この下に。
+talk
+- town.counter_elder2.1 | Мне немного. На одного человека много не надо. | Just a little for me. One person doesn't need much. | 少しでいいよ。一人だと、そんなにいらないから。
+- town.counter_elder2.2 | Я положу чуть больше. Вдруг кто зайдёт. | I'll put in a bit extra. In case somebody drops by. | 少し多めに入れておくね。誰か来るかもしれないし。
+
+[counter_rain]
+doing = shop shop_town
+doing2 = work
+weather = rain
+age = teen adult elder
+weight = 5
+talk
+- town.counter_rain1.1 | Я, честно, от дождя. Но что-нибудь куплю. | Honestly, I'm in here out of the rain. But I'll buy something. | 正直、雨宿りなんだ。でも何か買うよ。
+- town.counter_rain1.2 | Стойте так. В дождь у меня полмагазина таких. | Stay as you are. When it rains, half my shop is people like you. | そのままでいいよ。雨の日は、店の半分がそういうお客さんだから。
+
+[counter_evening]
+doing = shop shop_town
+doing2 = work
+hours = 18-23
+age = teen adult elder
+weight = 4
+talk
+- town.counter_evening1.1 | Успеваю? Вы ещё не закрылись? | Am I in time? You haven't closed? | 間に合った？まだ閉めてない？
+- town.counter_evening1.2 | Закрываюсь, когда последний уйдёт. Вы пока не последний. | I close when the last one leaves. You're not the last yet. | 最後のお客さんが帰ったら閉めるよ。あなたはまだ最後じゃない。
+talk
+- town.counter_evening2.1 | Что осталось? | What's left? | 何が残ってる？
+- town.counter_evening2.2 | Всё лучшее. Его весь день берегли для вас. | All the best things. Kept back all day for you. | いちばんいいものばかり。一日じゅう、あなたのために取っておいたの。

@@ -2,6 +2,7 @@
 
 #include "TownBarks.h"
 #include "PeopleSim.h"
+#include "PeopleManners.h"
 #include "People/PeopleLife.h"
 #include "HeroCharacter.h"
 #include "LyudText.h"
@@ -389,7 +390,67 @@ void ULyudTownTalkSubsystem::Start(UWorld& InWorld)
 	Clock = 0.f;
 	NextBarkAt = 6.f;
 	NextGreetAt = 2.f;
+	NextNoticeAt = 0.f;
+	if (UPeopleLifeSubsystem* Life = UPeopleLifeSubsystem::Get(&InWorld))
+	{
+		Life->OnPersonEvent.AddUniqueDynamic(this, &ULyudTownTalkSubsystem::OnLifeEvent);
+	}
 	bStarted = true;
+}
+
+void ULyudTownTalkSubsystem::OnLifeEvent(int32 PersonId, FName Event, int32 Other)
+{
+	// somebody noticed the player: a word about it now and then (never a chorus)
+	if (!bStarted || Clock < NextNoticeAt || !(Event.ToString().StartsWith(TEXT("hero_")) || Event == TEXT("thunder")) || Busy(PersonId))
+	{
+		return;
+	}
+	AActor* Actor = ActorOf(PersonId);
+	if (Actor && SayMoment(Actor, Event, PersonId, NAME_None))
+	{
+		NextNoticeAt = Clock + 25.f;
+	}
+}
+
+namespace TownTalkLocal
+{
+	/** What their hands are doing, for the sets' manner = ... (after FillWho). */
+	void FillManner(const UPeopleLifeSubsystem* Life, int32 Id, LyudBarks::FWho& W)
+	{
+		const LyudPeople::FManners* Mn = Life ? Life->GetManners() : nullptr;
+		const LyudPeople::FMannerState* St = Mn ? Mn->StateOf(Id) : nullptr;
+		if (St && St->Cur != LyudPeople::EManner::None)
+		{
+			W.Manner = LyudPeople::MannerName(St->Cur);
+		}
+		else
+		{
+			W.Manner.clear();
+		}
+		// and how well they know the player by now
+		const int32 Met = Life ? Life->GetMet(Id) : 0;
+		W.Met = Met >= 5 ? "known" : (Met >= 1 ? "seen" : "new");
+		// and who they are in manner (the sets' temper = ...)
+		W.Temper.clear();
+		if (const LyudPeople::FPersona* Persona = Mn ? Mn->PersonaOf(Id) : nullptr)
+		{
+			auto Side = [&W](float Trait, const char* High, const char* Low)
+			{
+				if (Trait > 0.66f && High)
+				{
+					W.Temper.push_back(High);
+				}
+				else if (Trait < 0.34f && Low)
+				{
+					W.Temper.push_back(Low);
+				}
+			};
+			Side(Persona->Warmth, "warm", "reserved");
+			Side(Persona->Nerve, "nervy", "calm");
+			Side(Persona->Curiosity, "curious", nullptr);
+			Side(Persona->Tidy, "tidy", "careless");
+		}
+	}
 }
 
 void ULyudTownTalkSubsystem::Stop()
@@ -523,6 +584,13 @@ void ULyudTownTalkSubsystem::UpdateNow()
 	const float Altitude = TheSky ? TheSky->SunAltitude() : (N.Hour > 8.f && N.Hour < 17.f ? 20.f : -10.f);
 	N.Sun = LyudBarks::SunState(Altitude, Cloud);
 	LyudBarks::WeatherWords(Cloud, Rain, Snow, Fog, TempC, Wet, N.Weather);
+	// and what there is to see up there (weather = aurora rainbow fireworks)
+	const UPeopleLifeSubsystem* SkyLife = UPeopleLifeSubsystem::Get(this);
+	const FName Show = SkyLife ? SkyLife->GetSkyShow() : NAME_None;
+	if (!Show.IsNone())
+	{
+		N.Weather.push_back(TCHAR_TO_UTF8(*Show.ToString()));
+	}
 }
 
 bool ULyudTownTalkSubsystem::Busy(int32 Person) const
@@ -730,8 +798,17 @@ void ULyudTownTalkSubsystem::Scan()
 				continue;
 			}
 			GreetedDay[Id] = Today;
-			if (FMath::FRand() > 0.65f)
+			// the warm greet nearly everybody, the reserved hardly anyone (their persona: docs/town_manners.md); of those who
+			// say nothing, some still nod
+			const float Warmth = Life->GetTrait(Id, TEXT("warmth"));
+			// (and whoever has come to know him greets him more readily)
+			const int32 Met = Life->GetMet(Id);
+			if (FMath::FRand() > 0.3f + 0.7f * Warmth + (Met >= 5 ? 0.3f : (Met >= 1 ? 0.1f : 0.f)))
 			{
+				if (FMath::FRand() < Warmth)
+				{
+					Life->ReactManner(Id, TEXT("nod"), 1.6f);
+				}
 				continue;
 			}
 			AActor* Actor = ActorOf(Id);
@@ -740,11 +817,16 @@ void ULyudTownTalkSubsystem::Scan()
 				continue;
 			}
 			LyudBarks::FillWho(*S, P, State->Who);
+			TownTalkLocal::FillManner(Life, Id, State->Who);
 			State->Who.bHeroNear = true;
 			int SetIx = -1;
 			const std::string* Key = State->Book.PickLine(LyudBarks::EKind::Greet, State->Who, State->Now, nullptr, &SetIx);
 			if (Key && Show(Actor, Id, TownTalkLocal::ToFString(*Key)))
 			{
+				// with a wave from the warm, a nod from the rest (if their hands are free)
+				const bool bWave = Warmth > 0.62f || Met >= 5;
+				Life->ReactManner(Id, bWave ? TEXT("wave") : TEXT("nod"), bWave ? 2.4f : 1.6f);
+				Life->NoteMet(Id);
 				CountSaid(SetIx);
 				NextGreetAt = Clock + 4.f;
 				break;
@@ -779,6 +861,7 @@ void ULyudTownTalkSubsystem::Scan()
 			continue;
 		}
 		LyudBarks::FillWho(*S, P, State->Who);
+		TownTalkLocal::FillManner(Life, Id, State->Who);
 		State->Who.bHeroNear = FVector::Dist(At, HeroAt) < 1000.0;
 		int SetIx = -1;
 		const std::string* Key = State->Book.PickLine(LyudBarks::EKind::Say, State->Who, State->Now, nullptr, &SetIx);
@@ -822,7 +905,9 @@ bool ULyudTownTalkSubsystem::StartExchange(const FVector& Cam, const FVector& Lo
 			const bool bPair = A.Partner == B.Id && B.Partner == A.Id;
 			const bool bSide = A.Place >= 0 && A.Place == B.Place && LyudPeople::IsSeated(A.Pose) && LyudPeople::IsSeated(B.Pose)
 				&& A.State == LyudPeople::EState::Doing && B.State == LyudPeople::EState::Doing && (A.Pos - B.Pos).Len2D() < 2.f;
-			if (!(bPair || bSide) || Busy(B.Id) || Clock - LastSpoke[B.Id] < 60.f)
+			// or a customer and whoever serves them (a shop's counter, a market stall, a kiosk)
+			// or two of a household out together, friends at their date, a grown-up and the child they mind
+			if (!(bPair || bSide || LyudBarks::AtCounter(*S, A, B) || LyudBarks::WithTheirOwn(*S, A, B)) || Busy(B.Id) || Clock - LastSpoke[B.Id] < 60.f)
 			{
 				continue;
 			}
@@ -1099,6 +1184,7 @@ bool ULyudTownTalkSubsystem::SayMoment(AActor* Speaker, FName Event, int32 Perso
 	if (S && PersonId >= 0 && PersonId < (int32)S->People.size())
 	{
 		LyudBarks::FillWho(*S, S->People[(size_t)PersonId], W);
+		TownTalkLocal::FillManner(Life, PersonId, W);
 	}
 	else
 	{

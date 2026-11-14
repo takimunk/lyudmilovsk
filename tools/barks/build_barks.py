@@ -25,9 +25,11 @@ if not os.path.exists(FEST):
     FEST = None
 
 LANGS = ["ru", "en", "ja"]
-COND_KEYS = ["to", "on", "near", "job", "age", "sex", "doing", "at", "pose", "gather", "chrono", "need", "hours", "months",
+COND_KEYS = ["to", "on", "near", "job", "age", "sex", "doing", "at", "pose", "manner", "met", "temper", "gather", "chrono", "need", "hours", "months",
              "weekday", "sun", "weather", "festival", "phase", "job2", "age2", "sex2", "doing2", "weight"]
-EVENTS = {"rest_sit", "rest_carry", "rest_serve", "rest_bill", "rest_bye"}
+EVENTS = {"rest_sit", "rest_carry", "rest_serve", "rest_bill", "rest_bye",
+          # somebody noticed the player (PeopleManners.h ENoticeEvent, docs/town_manners.md)
+          "hero_runs", "hero_close", "hero_lamp", "hero_sneaks", "hero_rides", "hero_fishes", "hero_swims", "hero_sits", "thunder"}
 
 sets = []          # [{name, conds: [(k, v)], say: [keys], talk: [[keys]], file}]
 strings = collections.OrderedDict()   # key -> (ru, en, ja)
@@ -121,15 +123,18 @@ if FEST:
 VALID = {
     "to": {"hero"}, "near": {"hero"}, "on": EVENTS,
     "sex": {"female", "male"}, "sex2": {"female", "male"},
-    "doing": acts | {"work", "free"}, "doing2": acts | {"work", "free"},
+    "doing": acts | {"work", "free", "outing", "date"}, "doing2": acts | {"work", "free", "outing", "date"},
     "at": kinds | ids | {"outdoors", "indoors"},
     "pose": {"stand", "walk", "talk", "look", "sit", "computer", "eat", "read", "work", "shovel"},
+    "manner": {r.get("manner", r["id"]) for r in json.load(open(os.path.join(D, "PeopleData", "manners.json"), encoding="utf-8"))["manners"]},
+    "met": {"new", "seen", "known"},
     "gather": {"mingle", "watch", "sit", "fair"},
     "chrono": {"lark", "owl", "night", "usual"},
     "need": {"hunger", "tired", "social", "fun", "nature", "mind", "sun"},
     "weekday": {"mon", "tue", "wed", "thu", "fri", "sat", "sun"},
     "sun": {"day", "low", "night", "cloudy"},
-    "weather": {"rain", "snow", "fog", "cold", "warm", "clear", "wet"},
+    "temper": {"warm", "reserved", "nervy", "calm", "curious", "tidy", "careless"},
+    "weather": {"rain", "snow", "fog", "cold", "warm", "clear", "wet", "aurora", "rainbow", "fireworks"},
     "job": jobs, "job2": jobs,
 }
 if FEST:
@@ -179,15 +184,20 @@ HEADER = """# What the townsfolk say on their own (docs/town_talk.md): a greetin
 # age =       kid (under 12), teen (12-17), adult (18-59), elder (60 and over), or years: 50-120
 # sex =       female, male (for the Russian forms of the past tense: one form per key, never both in one string)
 # doing =     activities.json ids (sit_bench, play_club, eat_out, gather_mingle, ...); work: on their duty at its place;
-#             free: not on a duty
+#             free: not on a duty; outing: at their household's weekend outing; date: at their
+#             weekly date with a friend (docs/town_manners.md)
 # at =        place kinds or place ids (bench, promenade, beach, club, restaurant, market, fair_stall, P-MARKET, ...);
 #             outdoors, indoors: under the sky or a roof (alone it doesn't make a set more particular)
 # pose =      stand, walk, talk, look, sit, computer, eat, read, work
+# manner =    what their hands are doing now (manners.json: smoke, phone_call, umbrella, feed_birds, yawn, ...)
+# temper =    who they are in manner (their persona's strong sides): warm, reserved, nervy, calm, curious, tidy, careless
+# met =       how well the speaker knows the player: new (never greeted him), seen (on 1-4 days), known (5 and more)
 # gather =    at a holiday's gathering of this mode now: mingle, watch, sit, fair
 # chrono =    lark, owl, night, usual                 need =  hunger, tired, social, fun, nature, mind, sun (over 0.75)
 # hours =     5-9 (from-to; over midnight 22-4; several ranges: 6-9 17-20)    months = 10-4    weekday = mon ... sun
 # sun =       day, low (sunrise or sunset), night, cloudy (overcast by day)
 # weather =   rain, snow, fog, cold (under 2 C), warm (over 22 C), clear (few clouds), wet (ULyudWeatherSubsystem)
+#             aurora, rainbow, fireworks: while people look up at one (UPeopleLifeSubsystem::GetSkyShow)
 # festival =  festivals.json ids, or any: the festival on now (ULyudFestivalSubsystem::ActiveFestival); phase = its phase ids
 # near = hero the player is within 10 m of the speaker (remarks about him)
 # to = hero   a greeting: said to the player when he walks past close, once a day per person

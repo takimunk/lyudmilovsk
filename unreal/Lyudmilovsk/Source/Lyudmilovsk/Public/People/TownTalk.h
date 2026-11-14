@@ -116,6 +116,11 @@ private:
 	float ScanTimer = 0.f;
 	float NextBarkAt = 6.f;
 	float NextGreetAt = 0.f;
+	/** No word about the player running past, standing too close or the lamp before this (the manners' notice events). */
+	float NextNoticeAt = 0.f;
+	/** The life's events: somebody noticed the player (hero_runs, hero_close, hero_lamp: docs/town_manners.md). */
+	UFUNCTION()
+	void OnLifeEvent(int32 PersonId, FName Event, int32 Other);
 	int32 Today = 0;
 
 	// the restaurant's moments, read off ALyudRestaurant by its properties' names (no link to its code)

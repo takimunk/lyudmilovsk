@@ -45,6 +45,14 @@ namespace LyudDevFeatures
 	FAutoAction GDinerOpen(TEXT("food.diner_open"), TEXT("food"), TEXT("dev.action.food.diner_open"), [](UWorld* W) { Run(W, TEXT("lyud.Diner.Open 1")); });
 	FAutoAction GSmokes(TEXT("food.cigarettes"), TEXT("food"), TEXT("dev.action.food.cigarettes"), [](UWorld* W) { Run(W, TEXT("lyud.Smoke.Give")); });
 
+	// the townsfolk's manners (docs/town_manners.md)
+	FAutoAction GMannerNext(TEXT("people.manner_next"), TEXT("people"), TEXT("dev.action.people.manner_next"), [](UWorld* W) { Run(W, TEXT("lyud.People.Manner next")); });
+	FAutoAction GMannerAuto(TEXT("people.manner_auto"), TEXT("people"), TEXT("dev.action.people.manner_auto"), [](UWorld* W) { Run(W, TEXT("lyud.People.Manner auto")); });
+	FAutoAction GMannerUmbrella(TEXT("people.manner_umbrella"), TEXT("people"), TEXT("dev.action.people.manner_umbrella"), [](UWorld* W) { Run(W, TEXT("lyud.People.Manner umbrella")); });
+	FAutoAction GMannerPhone(TEXT("people.manner_phone"), TEXT("people"), TEXT("dev.action.people.manner_phone"), [](UWorld* W) { Run(W, TEXT("lyud.People.Manner phone_call")); });
+	FAutoAction GMannerWave(TEXT("people.manner_wave"), TEXT("people"), TEXT("dev.action.people.manner_wave"), [](UWorld* W) { Run(W, TEXT("lyud.People.Manner wave")); });
+	FAutoAction GSkyShow(TEXT("people.sky_show"), TEXT("people"), TEXT("dev.action.people.sky_show"), [](UWorld* W) { Run(W, TEXT("lyud.People.SkyShow 60")); });
+
 	// the sky and the season
 	FAutoAction GLightning(TEXT("weather.lightning"), TEXT("weather"), TEXT("dev.action.weather.lightning"), [](UWorld* W) { Run(W, TEXT("lyud.Weather.Strike 800")); });
 	FAutoAction GSnowPaths(TEXT("weather.snow_paths"), TEXT("weather"), TEXT("dev.action.weather.snow_paths"), [](UWorld* W) { Run(W, TEXT("lyud.Winter.SnowOnPaths 10")); });
