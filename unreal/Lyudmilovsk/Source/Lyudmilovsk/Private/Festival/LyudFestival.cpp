@@ -1364,7 +1364,7 @@ void ULyudFestivalSubsystem::TickHero(float DeltaTime)
 		return;
 	}
 	const APlayerController* PC = Cast<APlayerController>(Hero->GetController());
-	if (!PC || !PC->WasInputKeyJustPressed(EKeys::E))
+	if (!PC || !ANpcTalkDirector::UsePressed(PC))
 	{
 		return;
 	}

@@ -377,7 +377,7 @@ void ULyudQuestDirector::TickPickups(APlayerController* PC, bool bSlow)
 		PromptFor = At->Id;
 	}
 	bPrompt = true;
-	if (PC->WasInputKeyJustPressed(EKeys::E))
+	if (ANpcTalkDirector::UsePressed(PC))
 	{
 		const FName PickupId = At->Id;
 		const FName Item = At->Item;

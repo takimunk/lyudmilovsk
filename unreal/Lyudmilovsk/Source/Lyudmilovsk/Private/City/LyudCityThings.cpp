@@ -1561,7 +1561,7 @@ void ULyudCityThings::Tick(float DeltaTime)
 		return;
 	}
 	SetPrompted(Offer);
-	if (PC->WasInputKeyJustPressed(EKeys::E))
+	if (ANpcTalkDirector::UsePressed(PC, Hero->IsSeated()))
 	{
 		Run(Offer, false, Hero->IsSeated());
 	}
