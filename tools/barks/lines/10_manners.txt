@@ -9,14 +9,14 @@ manner = smoke
 say town.manner_smoke.1 | Последняя. Честное слово, последняя. | The last one. Honestly, the last one. | これが最後の一本。本当に、最後。
 say town.manner_smoke.2 | Бросаю с понедельника. С какого именно — не уточнял. | I'm quitting on Monday. Which Monday, I never said. | 月曜からやめるよ。どの月曜かは言ってないけど。
 say town.manner_smoke.3 | Ветер с моря. Третью спичку трачу. | Wind off the sea. That's my third match. | 海風だ。マッチがもう三本目だよ。
-say town.manner_smoke.4 | Не смотри, не бери пример. Дурная привычка. | Don't look, don't copy me. It's a bad habit. | 見るな、真似するなよ。悪い癖なんだ。
+say town.manner_smoke.4 | Не смотри, не бери пример. Дурная привычка. | Don't look, don't copy me. It's a bad habit. | 見ちゃだめ、真似しないで。悪い癖なんだから。
 
 [manner_phone_call]
 manner = phone_call
 say town.manner_call.1 | Алло! Да, слышу. Нет, это чайки. | Hello! Yes, I can hear you. No, that's the gulls. | もしもし！うん、聞こえる。いや、それはカモメ。
 say town.manner_call.2 | Да-да, хлеб куплю. И молоко. Да помню я! | Yes, yes, I'll get bread. And milk. I remember! | はいはい、パンは買う。牛乳も。覚えてるってば！
 say town.manner_call.3 | Я на набережной. На на-бе-реж-ной! Связь тут... | I'm on the promenade. The pro-me-nade! The signal here... | いま遊歩道。ゆ・う・ほ・ど・う！ここ電波が…
-say town.manner_call.4 | Мам, я перезвоню. Да, поел. Да, в шапке. | Mum, I'll call you back. Yes, I've eaten. Yes, I've got my hat on. | 母さん、かけ直す。うん、食べた。うん、帽子もかぶってる。
+say town.manner_call.4 | Мам, я перезвоню. Да, ем нормально. Да, в шапке. | Mum, I'll call you back. Yes, I'm eating properly. Yes, I've got my hat on. | 母さん、かけ直す。うん、ちゃんと食べてる。うん、帽子もかぶってる。
 say town.manner_call.5 | Подожди, тут канатка гудит, ничего не слышно. | Hang on, the cable car's humming, I can't hear a thing. | 待って、ロープウェイの音で何も聞こえない。
 
 [manner_phone_scroll]
@@ -34,7 +34,7 @@ say town.manner_feed.4 | Тише, не спугни. Они только сле
 
 [manner_umbrella]
 manner = umbrella
-say town.manner_umbrella.1 | Хорошо, что взяла зонт. Как чувствовала. | Good thing I brought the umbrella. I just had a feeling. | 傘を持ってきてよかった。なんとなく、そんな気がしたの。
+say town.manner_umbrella.1 | Хорошо, что зонт с собой. Чуяло моё сердце. | Good thing I brought the umbrella. I just had a feeling. | 傘を持ってきてよかった。なんとなく、そんな気がしてたんだ。
 say town.manner_umbrella.2 | Этот зонт пережил три шторма. Переживёт и этот дождик. | This umbrella has lived through three storms. It'll live through this drizzle. | この傘は嵐を三回くぐり抜けた。この雨くらい平気さ。
 say town.manner_umbrella.3 | Ты чего без зонта? Иди под мой, пока идём. | Why haven't you got an umbrella? Come under mine while we walk. | 傘はどうしたの？歩くあいだ、入っていきなよ。
 
@@ -54,7 +54,7 @@ say town.manner_cold.3 | Сейчас бы чаю из автомата. Гор�
 
 [manner_yawn]
 manner = yawn stretch
-say town.manner_yawn.1 | Ой, простите. Лёг вчера в два. | Oh, excuse me. I went to bed at two last night. | あ、失礼。昨日は二時に寝たもので。
+say town.manner_yawn.1 | Ой, простите. Вчера только к двум уснуть удалось. | Oh, excuse me. I couldn't get to sleep till two last night. | あ、失礼。昨日は二時まで寝つけなくて。
 say town.manner_yawn.2 | Море укачивает, даже когда на него просто смотришь. | The sea rocks you to sleep even when you only look at it. | 海は、見ているだけでも眠くなる。
 say town.manner_yawn.3 | Засиделся. Надо пройтись. | I've sat too long. I should walk a bit. | 座りすぎた。少し歩かないと。
 
@@ -79,7 +79,7 @@ say town.manner_knit.3 | Внуку шарф. Он не носит, а я вяж
 [manner_newspaper]
 manner = newspaper
 say town.manner_paper.1 | Пишут, зима будет ранняя. Они каждый год так пишут. | They say winter will come early. They say so every year. | 今年は冬が早いってさ。毎年そう書いてある。
-say town.manner_paper.2 | Кроссворд: «звезда, вокруг которой всё вертится», шесть букв. | Crossword: "the star everything turns around", three letters. | クロスワード、「すべてがそのまわりを回る星」、三文字。
+say town.manner_paper.2 | Кроссворд: «звезда, вокруг которой всё вертится», шесть букв. | Crossword: "the star everything turns around", three letters. | クロスワード、「すべてがそのまわりを回る星」、四文字。
 say town.manner_paper.3 | О нашем городе опять ни строчки. И слава богу. | Not a line about our town again. And thank goodness. | うちの町のことは今日も一行もなし。ありがたいことだ。
 
 [manner_ice_cream]
@@ -106,8 +106,8 @@ say town.manner_shade.2 | Ничего не вижу, одно золото. | I
 
 [manner_carry_bag]
 manner = carry_bag
-say town.manner_bag.1 | Шла за хлебом, несу полную сумку. Как это выходит? | I went for bread and I'm carrying a full bag. How does that happen? | パンを買いに行っただけなのに、袋がいっぱい。どうして？
-say town.manner_bag.2 | В Гастрономе сегодня свежая рыба. Взял две. | There's fresh fish at the Gastronom today. I took two. | 今日のガストロノムは魚が新鮮でね。二匹買ったよ。
+say town.manner_bag.1 | Сходить за хлебом и вернуться с полной сумкой. Как это выходит? | I went for bread and I'm carrying a full bag. How does that happen? | パンを買いに行っただけなのに、袋がいっぱい。どうして？
+say town.manner_bag.2 | В Гастрономе сегодня свежая рыба. Вот, две несу. | There's fresh fish at the grocery today. I got two. | 今日は食料品店の魚が新鮮でね。二匹買ったよ。
 say town.manner_bag.3 | Лестницы эти... С сумкой особенно. | These stairs... Especially with a bag. | この階段ときたら…荷物があるとなおさら。
 
 [manner_doze]
@@ -145,13 +145,13 @@ on = hero_close
 age = kid teen
 say town.notice_close_kid.1 | Чего? | What? | なに？
 say town.notice_close_kid.2 | Ты чего так близко встал? | Why are you standing so close? | なんでそんなに近いの？
-say town.notice_close_kid.3 | Ты новенький? Я тебя раньше не видел. | Are you new? I haven't seen you before. | 新しい子？見たことないな。
+say town.notice_close_kid.3 | Ты новенький? Раньше тебя тут не было. | Are you new? You weren't here before. | 新しい子？前はいなかったよね。
 
 [notice_lamp]
 on = hero_lamp
 say town.notice_lamp.1 | Эй, фонарь! Прямо в глаза светишь. | Hey, the lamp! You're shining it right in my eyes. | ちょっと、ライト！目に入ってるよ。
 say town.notice_lamp.2 | Опусти фонарик, будь добр. | Lower the torch, would you. | ライトを下げてくれないかな。
-say town.notice_lamp.3 | Ой! Я подумал, канатка на меня едет. | Oh! I thought the cable car was coming at me. | うわっ！ロープウェイがこっちに来たのかと思った。
+say town.notice_lamp.3 | Ой! Будто канатка прямо на меня едет. | Oh! I thought the cable car was coming at me. | うわっ！ロープウェイがこっちに来たのかと思った。
 say town.notice_lamp.4 | Ну и прожектор. С маяком не перепутают? | That's some searchlight. Won't they take you for the lighthouse? | すごいライトだね。灯台と間違えられない？
 
 [notice_sneaks]
@@ -171,7 +171,7 @@ say town.notice_sneaks_kid.2 | Ты за птицами так ходишь? Н�
 [notice_rides]
 on = hero_rides
 age = adult elder
-say town.notice_rides.1 | Эй, велосипедист! Тут люди ходят! | Hey, cyclist! People walk here! | おい、自転車！ここは人が歩いてるんだよ！
+say town.notice_rides.1 | Эй, велосипедист! Тут люди ходят! | Hey, cyclist! People walk here! | ちょっと、自転車！ここは人が歩いてるんだよ！
 say town.notice_rides.2 | Звонок тебе на что? | What's your bell for? | ベルは何のためについてるの？
 say town.notice_rides.3 | Потише на спуске, тормоза побереги. | Slow down on the slope, spare your brakes. | 坂ではゆっくり。ブレーキを大事にね。
 say town.notice_rides.4 | Хороший велосипед. Только не убейся. | Nice bike. Just don't break your neck. | いい自転車だ。首だけは折らないように。
@@ -212,7 +212,7 @@ age = kid teen
 weight = 2
 say town.greet_known_kid.1 | О, привет! Ты сегодня куда? | Oh, hi! Where are you off to today? | あ、やっほー！今日はどこ行くの？
 say town.greet_known_kid.2 | Привет! Пойдём на площадку? | Hi! Coming to the playground? | やあ！公園に行かない？
-say town.greet_known_kid.3 | Это опять ты! А я тебя вчера видел у моря. | It's you again! I saw you by the sea yesterday. | また会ったね！昨日、海のそばで見かけたよ。
+say town.greet_known_kid.3 | Это опять ты! А мы тебя вчера у моря видели. | It's you again! We saw you by the sea yesterday. | また会ったね！昨日、海のそばで見かけたよ。
 
 ## ---------------------------------------------------------------------------------------------------------------
 ## The sky's shows (UPeopleLifeSubsystem::GetSkyShow adds aurora / rainbow / fireworks to the weather's words while
@@ -237,7 +237,7 @@ age = kid teen
 weight = 5
 say town.sky_aurora_kid.1 | Ого! Оно шевелится! Ты видишь? Шевелится! | Whoa! It's moving! Do you see? It's moving! | うわあ！動いてる！見える？動いてるよ！
 say town.sky_aurora_kid.2 | А его можно потрогать, если залезть на крышу? | Could you touch it if you climbed onto the roof? | 屋根に登ったら、さわれるかな？
-say town.sky_aurora_kid.3 | Я загадал. Нет, не скажу что. | I made a wish. No, I'm not telling. | お願いごとしたよ。ううん、何かは言わない。
+say town.sky_aurora_kid.3 | Загадываю желание. Нет, не скажу какое. | I'm making a wish. No, I'm not telling what. | お願いごとしてる。ううん、何かは言わない。
 
 [sky_rainbow]
 at = outdoors
@@ -254,7 +254,7 @@ weather = rainbow
 age = kid
 weight = 5
 say town.sky_rainbow_kid.1 | Радуга! Побежали, там, где она кончается, клад! | A rainbow! Come on, there's treasure where it ends! | 虹だ！行こう、虹のはしっこには宝物があるんだよ！
-say town.sky_rainbow_kid.2 | Раз, два, три... семь! Все семь, я посчитала! | One, two, three... seven! All seven, I counted! | いち、に、さん…なな！七色ぜんぶ、数えたよ！
+say town.sky_rainbow_kid.2 | Раз, два, три... семь! Все семь, можешь проверить! | One, two, three... seven! All seven, you can check! | いち、に、さん…なな！七色ぜんぶあるよ、数えてみて！
 
 [sky_fireworks]
 at = outdoors
@@ -325,7 +325,7 @@ say town.mind_child_hero.1 | Мои вон там носятся. Осторож
 [notice_fishes]
 on = hero_fishes
 say town.notice_fishes.1 | Клюёт? | Biting? | 釣れてる？
-say town.notice_fishes.2 | На что ловишь? Тут на хлеб не идёт, проверено. | What are you using? They won't take bread here, I've tried. | エサは何？ここじゃパンには食いつかないよ、試したから。
+say town.notice_fishes.2 | На что ловишь? Тут на хлеб не идёт, проверено. | What are you using? They won't take bread here, I've tried. | 餌は何？ここじゃパンには食いつかないよ、試したから。
 say town.notice_fishes.3 | Левее закинь. Там яма, там они стоят. | Cast further left. There's a hole there, that's where they sit. | もっと左に投げてごらん。深みがあって、そこにいるんだ。
 say town.notice_fishes.4 | Тихо-тихо, не мешаю. Я только посмотрю. | Hush, hush, I'm not in the way. I'll just watch. | しーっ、邪魔しないよ。見てるだけ。
 say town.notice_fishes.5 | Мелочь отпускай. Пусть подрастёт до следующего раза. | Let the small ones go. Let them grow till next time. | 小さいのは逃がしてやりな。次のときまでに大きくなるから。
@@ -430,7 +430,7 @@ say town.thunder.4 | Каждый раз вздрагиваю. Сто лет ж�
 on = thunder
 age = kid
 weight = 3
-say town.thunder_kid.1 | Ой! ...Я не испугался. Это я просто так. | Eek! ...I wasn't scared. I just did that. | ひゃっ！…こわくなかったよ。なんとなくやっただけ。
+say town.thunder_kid.1 | Ой! ...Я не боюсь. Это я просто так. | Eek! ...I'm not scared. I just did that. | ひゃっ！…こわくないもん。なんとなくやっただけ。
 say town.thunder_kid.2 | Это небо двигает мебель! | That's the sky moving its furniture! | お空が家具を動かしてるんだ！
 
 ## ---------------------------------------------------------------------------------------------------------------
@@ -444,7 +444,7 @@ age = adult elder
 age2 = adult elder
 weight = 6
 talk
-- town.own_talk1.1 | Ты ключи взял? | Have you got the keys? | 鍵、持った？
+- town.own_talk1.1 | Ключи с собой? | Got the keys on you? | 鍵、持ってる？
 - town.own_talk1.2 | Они у тебя. | You've got them. | そっちが持ってるよ。
 - town.own_talk1.3 | Тогда хорошо, что мы это выяснили не у двери. | Then it's a good thing we found that out here and not at the door. | じゃあ、玄関の前じゃなくてここで分かってよかった。
 talk

@@ -31,7 +31,7 @@ temper = reserved
 to = hero
 weight = 2
 say town.temper_reserved_hello.1 | Угу. | Mm. | うん。
-say town.temper_reserved_hello.2 | Добрый. | Morning. | どうも。
+say town.temper_reserved_hello.2 | Добрый. | Hello. | どうも。
 
 [temper_nervy]
 temper = nervy

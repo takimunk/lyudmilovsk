@@ -26,7 +26,7 @@ talk
 - town.counter4.2 | Найдётся. Только ручки слабые, держите снизу. | I have. The handles are weak, though, hold it from underneath. | あるよ。持ち手が弱いから、下から支えてね。
 talk
 - town.counter5.1 | Что посоветуете к чаю? | What would you suggest with tea? | お茶うけに、何がおすすめ？
-- town.counter5.2 | Пряники. Или компанию. С компанией и сухари сойдут. | Gingerbread. Or company. With company even rusks will do. | 蜂蜜ケーキかな。それか、話し相手。相手がいれば乾パンでも十分。
+- town.counter5.2 | Пряники. Или компанию. С компанией и сухари сойдут. | Gingerbread. Or company. With company even rusks will do. | ジンジャーブレッドかな。それか、話し相手。相手がいれば乾パンでも十分。
 talk
 - town.counter6.1 | У вас сдача будет с крупной? | Can you change a big note? | 大きいお札でおつり、出る？
 - town.counter6.2 | Будет. Мелочью. Всей, что есть. | I can. In coins. All the coins I've got. | 出るよ。小銭で。あるだけ全部の小銭で。
