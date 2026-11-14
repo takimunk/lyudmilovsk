@@ -580,6 +580,17 @@ namespace LyudTopi
 			const double Mid = std::max(0.0, 1.0 - (Off / RiverHalfWidth) * (Off / RiverHalfWidth));
 			Z -= Bank * 1.0 + Mid * RiverDeep;
 			Out.River = 1.0 - Smooth((Off - RiverHalfWidth - 3.0) / 9.0);
+			// the plain is not a table: old bars the river left lie along it, low and wandering, with shallow pans
+			// between them, and a berm stands over the water's edge (not where the path comes down to the towels)
+			if (Cell <= 4.5)
+			{
+				const double Shore = Smooth((Off - RiverHalfWidth - 3.0) / 9.0) * Plain * Corridor;
+				const double Wander = Off + 14.0 * (Noise(L.X / 60.0, L.Y / 45.0, 53) - 0.5) + 5.0 * (Noise(L.X / 17.0, L.Y / 19.0, 54) - 0.5);
+				const double Bar = 0.5 + 0.5 * std::sin(Wander / 17.0 * 6.283185307);
+				Z += Shore * (0.38 * Bar * Bar * (0.3 + 0.7 * Noise(L.X / 70.0, L.Y / 30.0, 55)) - 0.07);
+				const double Berm = std::exp(-((Off - RiverHalfWidth - 9.0) / 4.5) * ((Off - RiverHalfWidth - 9.0) / 4.5));
+				Z += 0.3 * Berm * Corridor * Smooth((PathD - 8.0) / 14.0) * (0.4 + 0.6 * Noise(L.X / 33.0, 7.0, 56));
+			}
 		}
 
 		// over the map's own ground the sand comes up from under it
