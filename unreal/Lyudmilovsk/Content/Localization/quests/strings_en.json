@@ -879,8 +879,8 @@
  "journal.heard.kid_girl.pigeon_hello_test": "Sonya says hello to pigeons too, as a test. Science doesn't stand still in the club either.",
  "journal.heard.kimura_dasha.tit_row_monday": "Dasha told a great tit it has been in her table since Monday. It's nice to have been counted for a while.",
  "journal.heard.kimura_dasha.no_column_yet": "Dasha said there's no column for a waxwing in her table and promised to start a new one. A whole column for one waxwing.",
- "journal.heard.sato_yuki.crow_soon_fed": "Yuki told a crow it would be fed soon, and that she knew by whom. So do I.",
- "journal.heard.sato_yuki.button_suits_you": "Yuki told a crow it could keep the button: it suits the crow better. So they've made peace.",
+ "journal.heard.sato_yuki.crow_soon_fed": "Yuki told a hooded crow it would be fed soon, and that she knew by whom. So do I.",
+ "journal.heard.sato_yuki.button_suits_you": "Yuki told a hooded crow it could keep the button: it suits the crow better. So they've made peace.",
  "journal.heard.sato_yuki.grandpa_bench": "Yuki was the first to understand where I needed to go: to Grandpa Sorokin, on the next bench.",
  "journal.heard.sato_yuki.jam_drops": "Yuki says the red drops on a waxwing's wings look like jam. Now I see them that way too.",
  "journal.heard.sato_yuki.not_too_close": "Yuki isn't afraid of birds, she only asks them not to come too close. I didn't.",
@@ -891,7 +891,7 @@
  "journal.heard.belov_misha.confess_magpie": "Misha questioned a magpie about the key and said he has an investigator. The investigator, by all accounts, is me.",
  "journal.heard.belov_misha.unknown_marking": "To Misha a waxwing is an unfamiliar marking: red marks, a yellow one on the tail. He said to show it to Sorokin, who reads diagrams like that.",
  "journal.heard.nishimura_aya.starling_messenger": "Aya told a starling it would see the town before her messenger did. The messenger hasn't taken offence yet.",
- "journal.heard.nishimura_aya.cadmium_tail": "Aya wrote the waxwing down in paints: pinkish grey, cadmium, crimson lake. She'll show it to Sorokin on paper, at least.",
+ "journal.heard.nishimura_aya.cadmium_tail": "Aya wrote the waxwing down in paints: pinkish grey, cadmium yellow, crimson lake. She'll show it to Sorokin on paper, at least.",
  "journal.heard.nishimura_aya.head_to_the_left": "Aya asked for the head a little to the left and said thank you. Sitting for a portrait turned out to be easy.",
  "journal.heard.zotova_galina.next_bench_longer": "Galina is formal even with a bird: she sent it on to the next bench, to Sorokin, who has waited longer than she has worked at the Laboratory.",
  "journal.heard.zotova_galina.reagent_wax": "Galina says the red on a waxwing's wings is exactly the sealing wax on old reagent bottles. Chemists have their own way of seeing birds.",
@@ -928,5 +928,5 @@
  "journal.heard.streamer.waxwing_on_air": "Nika showed the waxwing to her chat: the very one everyone's talking about. She turned the camera just in time.",
  "journal.heard.streamer.bird_more_viewers": "The moment a bird got into the shot, Nika's chat woke up. Everyone needs birds, it seems, even streams.",
  "journal.heard.clerk.precious_cells": "Yamada counted the waxwing in cells: the red drops on the wings, he says, are the most precious cells on the whole sheet.",
- "journal.heard.clerk.twelve_by_twelve": "Yamada says the bird on the threshold is exactly twelve by twelve squares. He counts everything in squares, and the birds don't seem to mind."
+ "journal.heard.clerk.twelve_by_twelve": "Yamada says the bird on the threshold is exactly twelve by twelve cells. He counts everything in cells, and the birds don't seem to mind."
 }
