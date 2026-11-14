@@ -128,6 +128,10 @@ more) and one of them has a word (`on = thunder`).
   seconds and follow, and on the way (`FWorld::WayTogether`) the one in front dawdles, the one behind steps out, and side
   by side they go at the slowest's walk. Most households are scattered about town before their hour, so this shows
   mostly with those who leave home together.
+  Going home: when the first of them gets up from the outing to go home, those of theirs still at it within 60 m get up
+  within a few seconds and go along to the same thing at home (`FPerson::HomeWith`, `Think`: "home with theirs"; not
+  those with a duty), on foot and keeping together the same way: in mannersim about a third of the way home from an
+  outing is walked with one of their own within 10 m.
 
 - **A weekly date with a friend** (`ApplyLikes` sets `FPerson::DateAct/DateDay/DateHour/DatePlace/DateWith`): everybody
   is paired with the first friend of theirs still free (376 pairs), and one weekday a week at their hour the two meet at

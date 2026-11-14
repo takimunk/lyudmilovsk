@@ -2348,6 +2348,7 @@ namespace LyudPeople
 		const FActivity& A = Activities[Act];
 		const FSlot& Sl = Slots[Slot];
 		const int FromSlot = P.Slot;
+		const int FromAct = Time - P.PrevActivityEnd < 180.0 ? P.PrevActivity : -1;      // what they just got up from (Leave)
 		P.SweepT = -1.f;
 		if (P.Partner >= 0)
 		{
@@ -2415,6 +2416,21 @@ namespace LyudPeople
 				if (R != P.Id && Q.Household == P.Household && Q.State == EState::Doing && Q.Activity != Act && (Q.Pos - P.Pos).Len2D() < 25.f)
 				{
 					Q.Recheck = std::min(Q.Recheck, 1.f + 4.f * Rand(P.Rng));
+				}
+			}
+		}
+		else if (FromAct >= 0 && FromAct == P.OutingAct && Weekday == P.OutingDay && P.Home >= 0 && Sl.Place == P.Home && A.bFree)
+		{
+			// home from the outing: those of theirs still at it get up and come along (Think), on foot
+			DropBike(P);
+			for (const int R : Places[(size_t)P.Home].Residents)
+			{
+				FPerson& Q = People[(size_t)R];
+				if (R != P.Id && Q.Household == P.Household && Q.State == EState::Doing && Q.Activity == FromAct
+					&& (Q.Pos - P.Pos).Len2D() < 60.f)
+				{
+					Q.HomeWith = Act;
+					Q.Until = std::min(Q.Until, Time + 1.0 + 4.0 * Rand(P.Rng));
 				}
 			}
 		}
@@ -2559,6 +2575,21 @@ namespace LyudPeople
 			// a break: one free activity for the need that can't wait, then back to the duty
 			P.bBreak = false;
 			Duty = -1;
+		}
+		if (P.HomeWith >= 0)
+		{
+			// one of theirs got up to go home from the outing: they go along, to the same thing at home
+			const int With = P.HomeWith;
+			P.HomeWith = -1;
+			int S = -1;
+			if (Duty < 0 && !bSnap && P.Home >= 0 && Score(P, Activities[(size_t)With], S) > -1e8f && S >= 0 && Slots[(size_t)S].Place == P.Home)
+			{
+				const FActivity& A = Activities[(size_t)With];
+				if (Start(P, With, S, A.MinMinutes + (A.MaxMinutes - A.MinMinutes) * Rand(P.Rng), false, "home with theirs"))
+				{
+					return;
+				}
+			}
 		}
 		if (Duty >= 0)
 		{
@@ -2729,21 +2760,21 @@ namespace LyudPeople
 
 	float FWorld::WayTogether(const FPerson& P) const
 	{
-		// on the way to the household's outing they keep together: whoever is in front dawdles, whoever fell behind steps
-		// out, and side by side they go at the slowest's walk
-		if (P.OutingAct < 0 || P.Activity != P.OutingAct || P.State != EState::Going || P.bIndoors || P.Home < 0 || P.OutingPlace < 0
-			|| Weekday != P.OutingDay)
+		// on the way to the household's outing, and on the way home, those of a household keep together: whoever is in
+		// front dawdles, whoever fell behind steps out, and side by side they go at the slowest's walk
+		const bool bOuting = P.OutingAct >= 0 && P.Activity == P.OutingAct && Weekday == P.OutingDay;
+		if (P.State != EState::Going || P.bIndoors || P.Home < 0 || P.Place < 0 || P.Household.empty() || (!bOuting && P.Place != P.Home))
 		{
 			return 1.f;
 		}
-		const V3& To = Places[(size_t)P.OutingPlace].Portal;
+		const V3& To = Places[(size_t)P.Place].Portal;
 		const float Mine = (To - P.Pos).Len2D();
 		float Slowest = P.WalkSpeed;
 		bool bBehind = false, bAhead = false;
 		for (const int R : Places[(size_t)P.Home].Residents)
 		{
 			const FPerson& Q = People[(size_t)R];
-			if (R == P.Id || Q.Household != P.Household || Q.Activity != P.Activity || Q.State != EState::Going || Q.bIndoors || Q.Bike >= 0)
+			if (R == P.Id || Q.Household != P.Household || Q.Place != P.Place || Q.State != EState::Going || Q.bIndoors || Q.Bike >= 0)
 			{
 				continue;
 			}

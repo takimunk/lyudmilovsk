@@ -234,6 +234,7 @@ namespace LyudPeople
 		// their household's weekend outing (the same ApplyLikes): on this weekday round this hour the whole household is
 		// drawn to this activity at this place (the sea front on Sunday at noon, the cafe on Saturday)
 		int OutingAct = -1, OutingDay = -1, OutingPlace = -1;
+		int HomeWith = -1;          // one of theirs left the outing for home, to this activity: they go along (Think)
 		float OutingHour = 0.f;
 		// their standing date with a friend (the same ApplyLikes): one weekday a week, round this hour, the two of them
 		// meet at this activity at this place (a bench after work on Thursdays, the cafe, the playground after school)
@@ -574,7 +575,7 @@ namespace LyudPeople
 		void Move(FPerson& P, float Dt);
 		/** Their pace now, m/s: a walk, or a run outdoors when late or in the rain (a brisk walk indoors). */
 		float Pace(const FPerson& P) const;
-		/** On the way to the household's outing: 1, or how much slower or faster to go to keep with their own. */
+		/** On the way to the household's outing, or home with one of theirs: 1, or how much slower or faster to go to keep with their own. */
 		float WayTogether(const FPerson& P) const;
 		/** Their pace within an activity (a walk's next spot): the activity's pace on their walk. */
 		float ActPace(const FPerson& P, const FActivity& A) const;
