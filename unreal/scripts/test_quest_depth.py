@@ -14,6 +14,8 @@ remarks (quest_scenes.json): QUESTDEPTH lines, the dialogue's "NpcDialogue: line
   r) waxwing on return, a call by Valentina's cart: at 13:00 she answers (pointing to Sorokin's bench), at 15:00 he does
   s) the diary (journal entries, Quest.Dump's count): +1 when Tanya's remark is heard, none on the second approach nor
      after save and load; the waxwing's call heard by Sorokin adds its entry once, a second call none
+  t) fisherman_cheese on ask with a braid in the pocket: Lange's cheese_smoked_pocket.1-2, the quest moves on
+  u) soda on drink, the hero by Tyoma's station: remark tyoma_soda_advice
   q) two remarks in range at once (the Clerk, Sonya): the second begins after the first has finished
   j) a great tit beside Dasha at 17:30 (Aya on the same bench): exactly one person answers
   k) waxwing on return: a call by Valentina's cart and one by Sorokin both get his waxwing_seen lines and finish the quest
@@ -90,12 +92,11 @@ at("Quest.SetStage awakening owner", None, 1.0)
 # Guy_b sits at a club computer (head about 65, -152, 148 cm): stand behind him in the aisle, eyes on his head
 at("BugItGo -60 -152 100 -5 0 0", None, 3.0)
 at("Npc.Where")
+# the club's regulars hear birds too: a pigeon beside Guy_b, before any talk (a talk in progress cuts the director's speech)
+at("Quest.BirdCall FeralPigeon guy_b", None, 6.0)
 at("QUESTDEPTH mark l_guy_b")
 for _ in range(10):
     at("Npc.Talk", None, 1.2)
-at("Npc.Talk", None, 1.5)                          # close the talk: a talk in progress cuts the director's speech
-# the club's regulars hear birds too: a pigeon beside Guy_b
-at("Quest.BirdCall FeralPigeon guy_b", None, 5.0)
 # m) explore on walk: valley_way, four_places_two_by_cable, never_got_swift, then everyday
 at("Quest.Reset", None, 1.0)
 at("Quest.Start explore", None, 1.0)
@@ -106,7 +107,7 @@ for _ in range(12):
 at("Quest.Reset", None, 1.0)
 at("Quest.SetStage awakening owner", None, 1.0)
 # the Owner talks through his window: stand in its call zone (40, 390) facing him (head about 163, 640)
-at("BugItGo 40 390 100 0 64 0", None, 4.0)
+at("BugItGo 40 390 100 0 64 0", None, 10.0)
 at("Npc.Where")
 at("QUESTDEPTH mark n_owner")
 for _ in range(6):
@@ -189,19 +190,41 @@ at("Quest.Dump", "r_after_13h")
 go("guseva_valentina", 4, [15, 15.5, 16])
 at("QUESTDEPTH mark r_call_15h")
 at("Quest.BirdCall Waxwing guseva_valentina", None, 10.0)
-at("Quest.Dump", "r_after_15h")
+at("Quest.Dump entries", "r_after_15h")
 at("Quest.SetStage waxwing return", None, 1.0)
 at("Quest.Dump", "s_before_second_call")
 at("Quest.BirdCall Waxwing sorokin_oleg", None, 10.0)
-at("Quest.Dump", "s_after_second_call")
-# q) two remarks in range at once (awakening on owner: the Clerk's at once, Sonya's once the hero came from afar): one voice
-#    at a time, the second after the first has finished
+at("Quest.Dump entries", "s_after_second_call")
+# q) two remarks in range at once (awakening on owner: the Clerk's at once, Sonya's at once): one voice at a time; where Sonya's
+#    waits, Quest.Scenes says why; a line trace from the camera to her head names what is in between
 at("Quest.Reset", None, 1.0)
 at("BugItGo -193 1500 150 0 90 0", None, 2.0)
 at("Quest.SetStage awakening owner", None, 2.0)
-at("QUESTDEPTH mark q_two_remarks")
-at("BugItGo -60 -1390 100 0 0 0", None, 14.0)
-at("Quest.Scenes", "q_after", 0.5)
+at("QUESTDEPTH mark q_walkway_station7")
+at("BugItGo -107 -1235 100 0 0 0", None, 10.0)
+at("Quest.Scenes", "q_walkway", 0.5)
+at("TRACE 52.8 -1235.1 118.9", None, 1.0)
+at("QUESTDEPTH mark q_hero_seat")
+at("BugItGo -17.5 -1585 100 0 90 0", None, 8.0)
+at("Quest.Scenes", "q_seat", 0.5)
+at("TRACE 52.8 -1235.1 118.9", None, 1.0)
+# t) fisherman_cheese jumped to ask with a cheese braid in the pocket: Lange's cheese_smoked_pocket.1-2, the quest moves on
+at("Quest.Reset", None, 1.0)
+at("Inventory.Give cheese_braid 1", None, 0.5)
+at("Quest.SetStage fisherman_cheese ask", None, 1.0)
+go("lange_pyotr", 1.3, [14, 15, 13, 16])
+at("QUESTDEPTH mark t_lange_cheese")
+for _ in range(6):
+    at("Npc.Talk", None, 1.2)
+at("Quest.Dump", "t_done")
+# u) soda on drink, the hero from the street to Tyoma's station 6 in the club: remark tyoma_soda_advice (with its diary line)
+at("Quest.Reset", None, 1.0)
+at("Quest.Start soda", None, 1.0)
+at("BugItGo -193 1500 150 0 90 0", None, 2.5)
+at("QUESTDEPTH mark u_tyoma")
+at("BugItGo -107 -1082 100 0 0 0", None, 10.0)
+at("Quest.Scenes", "u_scenes", 0.5)
+at("Quest.Dump entries", "u_done")
 # j) one listener answers: Dasha and Aya on the square's bench at 17:30, a great tit calls beside Dasha
 at("Quest.Reset", None, 1.0)
 at("lyud.Birds.Time 17.5", None, 2.5)
@@ -232,20 +255,38 @@ at("QUESTDEPTH mark e_remark")
 at("Quest.GoToPerson orlova_tanya 3", None, 3.0)
 at("Quest.GoToPerson orlova_tanya 3", None, 3.0)      # the second time her body is drawn
 at("Quest.Scenes", "e_after_first", 0.5)
-at("Quest.Dump", "s_after_remark")
+at("Quest.Dump entries", "s_after_remark")
 at("shot showui", "tanya_remark", 1.0)
 at("Dev.Tp academ", None, 4.0)
 at("Quest.GoToPerson orlova_tanya 3", None, 3.0)
 at("Quest.GoToPerson orlova_tanya 3", None, 4.0)
 at("Quest.Scenes", "e_after_second", 0.5)
-at("Quest.Dump", "s_after_second_approach")
+at("Quest.Dump entries", "s_after_second_approach")
 at("lyud.Save questdepth", None, 3.0)
 at("lyud.Load 0", None, 15.0)
 at("lyud.Birds.Time 12", None, 2.5)
 at("Quest.GoToPerson orlova_tanya 3", None, 3.0)
 at("Quest.GoToPerson orlova_tanya 3", None, 4.0)
 at("Quest.Scenes", "e_after_load", 0.5)
-at("Quest.Dump", "e_done", 1.0)
+at("Quest.Dump entries", "e_done", 1.0)
+
+
+def trace(w, to):
+    """the camera to a point (cm): what blocks the view, as the remarks' sight test would see it"""
+    pc = unreal.GameplayStatics.get_player_controller(w, 0)
+    cam = pc.player_camera_manager.get_camera_location()
+    end = unreal.Vector(*to)
+    hit = unreal.SystemLibrary.line_trace_single(w, cam, end, unreal.TraceTypeQuery.TRACE_TYPE_QUERY1, False, [pc.get_controlled_pawn()],
+                                                 unreal.DrawDebugTrace.NONE, True)
+    try:
+        t = hit.to_tuple() if hit is not None else ()
+    except Exception:
+        t = ()
+    actor = next((v for v in t if isinstance(v, unreal.Actor)), None)
+    comp = next((v for v in t if isinstance(v, unreal.ActorComponent)), None)
+    blocked = bool(t) and bool(t[0]) and actor is not None
+    unreal.log_warning("QUESTDEPTH trace from %s to %s: %s" % (cam, end, ("hit %s / %s" % (actor.get_name(), comp.get_name() if comp else None))
+                                                              if blocked else "clear"))
 
 
 def world():
@@ -268,6 +309,9 @@ def tick(dt):
         state["step"] += 1
         unreal.log_warning("QUESTDEPTH %s %s" % (cmd, label or ""))
         if cmd.startswith("QUESTDEPTH"):
+            continue
+        if cmd.startswith("TRACE "):
+            trace(w, [float(v) for v in cmd.split()[1:4]])
             continue
         if cmd.startswith("FIND "):
             _, person, m, hours = cmd.split()

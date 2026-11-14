@@ -1,0 +1,20 @@
+{
+ "key": "line.orlova_tanya.holi_pink_hands.1",
+ "lang": "ru",
+ "text": "В парке, говорят, цветной пудрой кидались. Ко мне потом приходили покупатели с розовыми руками. Деньги тоже были розовые.",
+ "speaker": "orlova_tanya",
+ "voice": "Aria",
+ "voice_id": "9BWtsMINqrJLrRacOk9x",
+ "voice_design": null,
+ "direction": "[a kiosk shop assistant, brisk, deadpan, a bit sassy]",
+ "model": "fal-ai/elevenlabs/tts/eleven-v3",
+ "request": {
+  "stability": 0.5,
+  "apply_text_normalization": "auto",
+  "text": "[a kiosk shop assistant, brisk, deadpan, a bit sassy] В парке, говорят, цветной пудрой кидались. Ко мне потом приходили покупатели с розовыми руками. Деньги тоже были розовые.",
+  "voice": "Aria",
+  "language_code": "ru"
+ },
+ "fal_request_id": "01a1d7ab-50f2-7040-a9a5-58bdc684ccd4",
+ "hash": "0a0ae09108d7"
+}

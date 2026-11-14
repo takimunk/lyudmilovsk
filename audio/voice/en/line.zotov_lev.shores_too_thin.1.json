@@ -1,0 +1,20 @@
+{
+ "key": "line.zotov_lev.shores_too_thin.1",
+ "lang": "en",
+ "text": "You've got \"Shores\"? A good magazine. Only thin, it wouldn't do under an interferometer.",
+ "speaker": "zotov_lev",
+ "voice": "George",
+ "voice_id": "JBFqnCBsd6RMkjVDRZzb",
+ "voice_design": null,
+ "direction": "[dry, thoughtful, unhurried, a physicist's quiet irony]",
+ "model": "fal-ai/elevenlabs/tts/eleven-v3",
+ "request": {
+  "stability": 0.5,
+  "apply_text_normalization": "auto",
+  "text": "[dry, thoughtful, unhurried, a physicist's quiet irony] You've got \"Shores\"? A good magazine. Only thin, it wouldn't do under an interferometer.",
+  "voice": "George",
+  "language_code": "en"
+ },
+ "fal_request_id": "01a1d7ab-ecef-7041-bf1d-99f5537cba8c",
+ "hash": "6c10e4463947"
+}

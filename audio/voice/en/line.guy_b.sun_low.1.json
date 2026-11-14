@@ -1,7 +1,7 @@
 {
  "key": "line.guy_b.sun_low.1",
  "lang": "en",
- "text": "At this hour at the warehouse a beam comes straight in through the gates and lies across the whole floor. We all stop. Nobody ever agreed to.",
+ "text": "Mornings at the warehouse a beam comes straight in through the gates and lies across the whole floor. We all stop. Nobody ever agreed to.",
  "speaker": "guy_b",
  "voice": "Chris",
  "voice_id": "iP95p4xoKVk53GoZ742B",
@@ -11,10 +11,10 @@
  "request": {
   "stability": 0.5,
   "apply_text_normalization": "auto",
-  "text": "[relaxed, lazy, friendly] At this hour at the warehouse a beam comes straight in through the gates and lies across the whole floor. We all stop. Nobody ever agreed to.",
+  "text": "[relaxed, lazy, friendly] Mornings at the warehouse a beam comes straight in through the gates and lies across the whole floor. We all stop. Nobody ever agreed to.",
   "voice": "Chris",
   "language_code": "en"
  },
- "fal_request_id": "01a1d783-641c-75d0-9592-7026880582e8",
- "hash": "778f95416ffb"
+ "fal_request_id": "01a1d7a9-bcd4-72d1-825e-f219a817fad4",
+ "hash": "2d14ede0d8a5"
 }

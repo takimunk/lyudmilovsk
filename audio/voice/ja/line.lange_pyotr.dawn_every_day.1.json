@@ -1,0 +1,20 @@
+{
+ "key": "line.lange_pyotr.dawn_every_day.1",
+ "lang": "ja",
+ "text": "町じゅうが浜で日の出を迎えたそうだな。俺はほとんど毎日迎えている、船の上でな。人は少ない。",
+ "speaker": "lange_pyotr",
+ "voice": "Brian",
+ "voice_id": "nPczCjzI2devNBz1zQrb",
+ "voice_design": null,
+ "direction": "[gruff, unhurried, a weathered fisherman of few words]",
+ "model": "fal-ai/elevenlabs/tts/eleven-v3",
+ "request": {
+  "stability": 0.5,
+  "apply_text_normalization": "auto",
+  "text": "[gruff, unhurried, a weathered fisherman of few words] 町じゅうが浜で日の出を迎えたそうだな。俺はほとんど毎日迎えている、船の上でな。人は少ない。",
+  "voice": "Brian",
+  "language_code": "ja"
+ },
+ "fal_request_id": "01a1d7aa-c3e3-70a3-8087-34bbff397c74",
+ "hash": "7ddbaf02812e"
+}

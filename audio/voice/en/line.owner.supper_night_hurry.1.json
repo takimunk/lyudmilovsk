@@ -1,0 +1,20 @@
+{
+ "key": "line.owner.supper_night_hurry.1",
+ "lang": "en",
+ "text": "The sun's set, I can feel it. Aslan by the door sells till eight, but the Baikal in the machine never sleeps.",
+ "speaker": "owner",
+ "voice": "Daniel",
+ "voice_id": "onwK4e9ZLuTAKqWW03F9",
+ "voice_design": null,
+ "direction": "[calm, tired, slow, a little ironic]",
+ "model": "fal-ai/elevenlabs/tts/eleven-v3",
+ "request": {
+  "stability": 0.5,
+  "apply_text_normalization": "auto",
+  "text": "[calm, tired, slow, a little ironic] The sun's set, I can feel it. Aslan by the door sells till eight, but the Baikal in the machine never sleeps.",
+  "voice": "Daniel",
+  "language_code": "en"
+ },
+ "fal_request_id": "01a1d7ab-ab55-7ef2-a11e-a2e95e6bafb4",
+ "hash": "f7bc45d19c72"
+}

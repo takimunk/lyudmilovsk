@@ -1,0 +1,20 @@
+{
+ "key": "line.streamer.olya_debt_closed.1",
+ "lang": "ru",
+ "text": "Чат, у нас новости: Оля закрыла читательский долг. Полгода висел. Она мне уже всё рассказала, с подробностями.",
+ "speaker": "streamer",
+ "voice": "Jessica",
+ "voice_id": "cgSgspJ2msm6clMCkdW9",
+ "voice_design": null,
+ "direction": "[bright, fast, half talking to her chat]",
+ "model": "fal-ai/elevenlabs/tts/eleven-v3",
+ "request": {
+  "stability": 0.5,
+  "apply_text_normalization": "auto",
+  "text": "[bright, fast, half talking to her chat] Чат, у нас новости: Оля закрыла читательский долг. Полгода висел. Она мне уже всё рассказала, с подробностями.",
+  "voice": "Jessica",
+  "language_code": "ru"
+ },
+ "fal_request_id": "01a1d7ab-d089-7e12-a1f1-4ccde760441b",
+ "hash": "25b0a26dcf94"
+}

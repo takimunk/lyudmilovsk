@@ -1,0 +1,20 @@
+{
+ "key": "line.li_vika.lunch_raw_herring.1",
+ "lang": "ru",
+ "text": "От тебя пахнет рыбой. Это не уха, это сырьё. Уху варят в закусочной через дорогу от нижней станции.",
+ "speaker": "li_vika",
+ "voice": "Laura",
+ "voice_id": "FGY2WhTYpPnrIDTdsKH5",
+ "voice_design": null,
+ "direction": "[playful, quick, a lab assistant joking about her work]",
+ "model": "fal-ai/elevenlabs/tts/eleven-v3",
+ "request": {
+  "stability": 0.5,
+  "apply_text_normalization": "auto",
+  "text": "[playful, quick, a lab assistant joking about her work] От тебя пахнет рыбой. Это не уха, это сырьё. Уху варят в закусочной через дорогу от нижней станции.",
+  "voice": "Laura",
+  "language_code": "ru"
+ },
+ "fal_request_id": "01a1d7ab-2c5a-7da0-860a-4a4f88127abc",
+ "hash": "6c3ffabf3989"
+}

@@ -1,0 +1,20 @@
+{
+ "key": "line.girl_b.overdue_cloudy_quiet.1",
+ "lang": "ja",
+ "text": "曇りの日は、図書館がすごく静かなの。雑誌は振り子のある駅の自販機にあるよ。四十ルーブル、レフさんがくれたでしょ？",
+ "speaker": "girl_b",
+ "voice": "Sarah",
+ "voice_id": "EXAVITQu4vr4xnSDxMaL",
+ "voice_design": null,
+ "direction": "[curious, slightly uneasy, conspiratorial]",
+ "model": "fal-ai/elevenlabs/tts/eleven-v3",
+ "request": {
+  "stability": 0.5,
+  "apply_text_normalization": "auto",
+  "text": "[curious, slightly uneasy, conspiratorial] 曇りの日は、図書館がすごく静かなの。雑誌は振り子のある駅の自販機にあるよ。四十ルーブル、レフさんがくれたでしょ？",
+  "voice": "Sarah",
+  "language_code": "ja"
+ },
+ "fal_request_id": "01a1d7a9-55eb-7a82-bd1b-755df3f30d9f",
+ "hash": "971d6debd6e7"
+}

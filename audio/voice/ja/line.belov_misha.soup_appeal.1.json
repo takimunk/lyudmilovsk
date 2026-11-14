@@ -1,0 +1,20 @@
+{
+ "key": "line.belov_misha.soup_appeal.1",
+ "lang": "ja",
+ "text": "ヴィーカが言うには、第三者の鑑定はウハーの味方だと。鑑定人がディル好きなだけだ。俺は異議を申し立てる。",
+ "speaker": "belov_misha",
+ "voice": "Liam",
+ "voice_id": "TX3LPaxmHKxFdv7VOQHJ",
+ "voice_design": null,
+ "direction": "[easygoing, amused, a young technician, a little self-ironic]",
+ "model": "fal-ai/elevenlabs/tts/eleven-v3",
+ "request": {
+  "stability": 0.5,
+  "apply_text_normalization": "auto",
+  "text": "[easygoing, amused, a young technician, a little self-ironic] ヴィーカが言うには、第三者の鑑定はウハーの味方だと。鑑定人がディル好きなだけだ。俺は異議を申し立てる。",
+  "voice": "Liam",
+  "language_code": "ja"
+ },
+ "fal_request_id": "01a1d7a8-f748-7633-9b0e-76ecabf5cf59",
+ "hash": "dcbddcadaeef"
+}

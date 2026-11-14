@@ -1,0 +1,20 @@
+{
+ "key": "line.owner.supper_braid_first.1",
+ "lang": "ru",
+ "text": "Косичку отсюда чую. Теперь «Байкал» из автомата, тут, в зале.",
+ "speaker": "owner",
+ "voice": "Daniel",
+ "voice_id": "onwK4e9ZLuTAKqWW03F9",
+ "voice_design": null,
+ "direction": "[calm, tired, slow, a little ironic]",
+ "model": "fal-ai/elevenlabs/tts/eleven-v3",
+ "request": {
+  "stability": 0.5,
+  "apply_text_normalization": "auto",
+  "text": "[calm, tired, slow, a little ironic] Косичку отсюда чую. Теперь «Байкал» из автомата, тут, в зале.",
+  "voice": "Daniel",
+  "language_code": "ru"
+ },
+ "fal_request_id": "01a1d7ab-906c-7d43-b80f-2e19dc1ee01c",
+ "hash": "3c269556d676"
+}

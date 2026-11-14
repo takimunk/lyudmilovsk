@@ -1,0 +1,20 @@
+{
+ "key": "line.owner.moon_quiet_hall.1",
+ "lang": "ja",
+ "text": "月を見たか。ここからは見えん。だがそういう晩は、ホールが静かになる。みんな遊歩道へ行くからな。",
+ "speaker": "owner",
+ "voice": "Daniel",
+ "voice_id": "onwK4e9ZLuTAKqWW03F9",
+ "voice_design": null,
+ "direction": "[calm, tired, slow, a little ironic]",
+ "model": "fal-ai/elevenlabs/tts/eleven-v3",
+ "request": {
+  "stability": 0.5,
+  "apply_text_normalization": "auto",
+  "text": "[calm, tired, slow, a little ironic] 月を見たか。ここからは見えん。だがそういう晩は、ホールが静かになる。みんな遊歩道へ行くからな。",
+  "voice": "Daniel",
+  "language_code": "ja"
+ },
+ "fal_request_id": "01a1d7ab-9b78-7971-9a64-5c80da5dfcdd",
+ "hash": "9fbd6cf0f387"
+}

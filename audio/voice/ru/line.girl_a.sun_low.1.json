@@ -1,7 +1,7 @@
 {
  "key": "line.girl_a.sun_low.1",
  "lang": "ru",
- "text": "В такое время солнце бьёт в окно лаборатории прямо в глаза. Я опускаю жалюзи наполовину. До конца жалко.",
+ "text": "Зимой к концу смены солнце бьёт в окно лаборатории прямо в глаза. Я опускаю жалюзи наполовину. До конца жалко.",
  "speaker": "girl_a",
  "voice": "Matilda",
  "voice_id": "XrExE9yKIg1WjnnlVkGX",
@@ -11,10 +11,10 @@
  "request": {
   "stability": 0.5,
   "apply_text_normalization": "auto",
-  "text": "[whispering, concentrated] В такое время солнце бьёт в окно лаборатории прямо в глаза. Я опускаю жалюзи наполовину. До конца жалко.",
+  "text": "[whispering, concentrated] Зимой к концу смены солнце бьёт в окно лаборатории прямо в глаза. Я опускаю жалюзи наполовину. До конца жалко.",
   "voice": "Matilda",
   "language_code": "ru"
  },
- "fal_request_id": "01a1d781-a555-7be3-bbc3-faab7dbcbf48",
- "hash": "31ac872076c4"
+ "fal_request_id": "01a1d7a9-2b47-7850-b2a2-d7413ae221c6",
+ "hash": "2ad8977dcf76"
 }

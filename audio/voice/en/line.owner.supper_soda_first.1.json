@@ -1,0 +1,20 @@
+{
+ "key": "line.owner.supper_soda_first.1",
+ "lang": "en",
+ "text": "I see the Baikal. Now the braid, from Aslan's tent by the door.",
+ "speaker": "owner",
+ "voice": "Daniel",
+ "voice_id": "onwK4e9ZLuTAKqWW03F9",
+ "voice_design": null,
+ "direction": "[calm, tired, slow, a little ironic]",
+ "model": "fal-ai/elevenlabs/tts/eleven-v3",
+ "request": {
+  "stability": 0.5,
+  "apply_text_normalization": "auto",
+  "text": "[calm, tired, slow, a little ironic] I see the Baikal. Now the braid, from Aslan's tent by the door.",
+  "voice": "Daniel",
+  "language_code": "en"
+ },
+ "fal_request_id": "01a1d7ab-c636-7a43-bcb6-03b5c70526e5",
+ "hash": "c403f0939840"
+}

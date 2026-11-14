@@ -1,7 +1,7 @@
 {
  "key": "line.girl_a.sun_low.1",
  "lang": "en",
- "text": "At this hour the sun comes through the lab window straight into your eyes. I lower the blinds halfway. All the way would be a shame.",
+ "text": "In winter, by the end of my shift, the sun comes through the lab window straight into your eyes. I lower the blinds halfway. All the way would be a shame.",
  "speaker": "girl_a",
  "voice": "Matilda",
  "voice_id": "XrExE9yKIg1WjnnlVkGX",
@@ -11,10 +11,10 @@
  "request": {
   "stability": 0.5,
   "apply_text_normalization": "auto",
-  "text": "[whispering, concentrated] At this hour the sun comes through the lab window straight into your eyes. I lower the blinds halfway. All the way would be a shame.",
+  "text": "[whispering, concentrated] In winter, by the end of my shift, the sun comes through the lab window straight into your eyes. I lower the blinds halfway. All the way would be a shame.",
   "voice": "Matilda",
   "language_code": "en"
  },
- "fal_request_id": "01a1d781-bb3c-7740-b90e-86ba21fe2d9d",
- "hash": "dfeeb3452a63"
+ "fal_request_id": "01a1d7a9-27f9-7173-81f9-6227d639fdfb",
+ "hash": "bc5e75f8b597"
 }
