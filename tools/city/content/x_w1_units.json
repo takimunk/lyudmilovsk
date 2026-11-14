@@ -2188,6 +2188,97 @@
     },
     "city.pu.pu_fish_cat.4"
    ]
+  },
+  "pu_bakery_bench": {
+   "prompt": "city.act.sit.prompt",
+   "minutes": 15,
+   "pose": "sit",
+   "any_hour": true,
+   "lines": [
+    {
+     "k": "city.pu.pu_bakery_bench.1",
+     "h": [
+      6,
+      10
+     ]
+    },
+    {
+     "k": "city.pu.pu_bakery_bench.2",
+     "h": [
+      10,
+      18
+     ]
+    },
+    "city.pu.pu_bakery_bench.3"
+   ]
+  },
+  "pu_bakery_shifts": {
+   "like": "look_misc",
+   "prompt": "city.act.look.prompt",
+   "minutes": 3,
+   "any_hour": true,
+   "lines": [
+    {
+     "k": "city.pu.pu_bakery_shifts.1",
+     "h": [
+      4,
+      9
+     ]
+    },
+    {
+     "k": "city.pu.pu_bakery_shifts.2",
+     "h": [
+      9,
+      16
+     ]
+    },
+    {
+     "k": "city.pu.pu_bakery_shifts.3",
+     "h": [
+      16,
+      22
+     ]
+    },
+    "city.pu.pu_bakery_shifts.4"
+   ]
+  },
+  "pu_bakery_radio": {
+   "like": "use_misc",
+   "prompt": "city.act.use.prompt",
+   "minutes": 3,
+   "sound": "radio_tune",
+   "any_hour": true,
+   "lines": [
+    {
+     "k": "city.pu.pu_bakery_radio.1",
+     "h": [
+      6,
+      8
+     ]
+    },
+    {
+     "k": "city.pu.pu_bakery_radio.2",
+     "h": [
+      8,
+      13
+     ]
+    },
+    {
+     "k": "city.pu.pu_bakery_radio.3",
+     "h": [
+      13,
+      19
+     ]
+    },
+    {
+     "k": "city.pu.pu_bakery_radio.4",
+     "h": [
+      19,
+      23
+     ]
+    },
+    "city.pu.pu_bakery_radio.5"
+   ]
   }
  },
  "rules": {
@@ -2562,6 +2653,15 @@
   },
   "promenade_unit/fish_cat": {
    "act": "pu_fish_cat"
+  },
+  "promenade_unit/bakery_bench": {
+   "act": "pu_bakery_bench"
+  },
+  "promenade_unit/bakery_shifts": {
+   "act": "pu_bakery_shifts"
+  },
+  "promenade_unit/bakery_radio": {
+   "act": "pu_bakery_radio"
   }
  },
  "quests": [

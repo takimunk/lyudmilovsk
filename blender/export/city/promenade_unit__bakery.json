@@ -113,6 +113,36 @@
     0.0
    ],
    "yaw": 180.0
+  },
+  {
+   "id": "bench",
+   "kind": "seat",
+   "pos": [
+    4.52,
+    3.3,
+    0.0
+   ],
+   "yaw": 270.0
+  },
+  {
+   "id": "shifts",
+   "kind": "stand",
+   "pos": [
+    -4.2,
+    0.95,
+    0.0
+   ],
+   "yaw": 90.0
+  },
+  {
+   "id": "radio",
+   "kind": "stand",
+   "pos": [
+    -4.2,
+    5.4,
+    0.0
+   ],
+   "yaw": 90.0
   }
  ],
  "lamps": [
@@ -314,6 +344,45 @@
    "props": {
     "topic": "cat"
    }
+  },
+  {
+   "id": "bakery_bench",
+   "kind": "seat",
+   "pos": [
+    4.52,
+    3.3,
+    0.45
+   ],
+   "yaw": 270.0,
+   "props": {
+    "height": 0.45
+   }
+  },
+  {
+   "id": "bakery_shifts",
+   "kind": "board",
+   "pos": [
+    -4.81,
+    0.95,
+    1.65
+   ],
+   "yaw": 90.0,
+   "props": {
+    "topic": "orders"
+   }
+  },
+  {
+   "id": "bakery_radio",
+   "kind": "machine",
+   "pos": [
+    -4.72,
+    5.75,
+    1.65
+   ],
+   "yaw": 90.0,
+   "props": {
+    "what": "tube_radio"
+   }
   }
  ],
  "flats": [],
@@ -324,7 +393,7 @@
  ],
  "tris": {
   "shell": 214,
-  "detail": 5804,
+  "detail": 6336,
   "windows": 0
  }
 }

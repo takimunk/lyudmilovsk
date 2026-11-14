@@ -2539,5 +2539,65 @@
   "ru": "Кошки нет на месте, только тёплая вмятина в мешковине рядом с мисочкой. Она вернётся, как возвращаются все, кто знает, где рыба.",
   "en": "The cat is not here, only a warm dent in the sacking beside her little bowl. She will come back, as everyone does who knows where the fish is.",
   "ja": "猫の姿はなく、小さな鉢のそばの麻袋に温かいくぼみだけが残っている。魚のありかを知っている者はみな戻ってくる、猫もそうだ。"
+ },
+ "city.pu.pu_bakery_bench.1": {
+  "ru": "На скамье у двери ждут первую партию: сидят с пустыми сумками и принюхиваются. Булочная пахнет раньше, чем открывается.",
+  "en": "On the bench by the door people wait for the first batch: sitting with empty bags and sniffing. The bakery smells before it opens.",
+  "ja": "ドアのそばのベンチでは、空のバッグを抱えて最初の焼きたてを待つ人たちが、鼻をひくひくさせている。パン屋は開く前から匂う。"
+ },
+ "city.pu.pu_bakery_bench.2": {
+  "ru": "Скамья у стены хороша тем, что с неё видно всё: кассу, полки и того, кто берёт последний батон и делает вид, что так и задумано.",
+  "en": "The bench by the wall is good for seeing everything: the till, the shelves and whoever takes the last loaf and pretends that was the plan.",
+  "ja": "壁際のベンチは何でも見渡せていい。レジも棚も、最後の一本を取って「最初からそのつもり」という顔をする人も。"
+ },
+ "city.pu.pu_bakery_bench.3": {
+  "ru": "Вечером на скамье тихо, на стене тепло от печи, а на полках остаются самые честные булки: вчерашние, но не забытые.",
+  "en": "In the evening the bench is quiet, the wall warm from the oven, and the shelves hold the most honest buns: yesterday's, but not forgotten.",
+  "ja": "夕方のベンチは静かで、壁は窯の熱であたたかい。棚に残るのはいちばん正直なパン。昨日のものだけれど、忘れられてはいない。"
+ },
+ "city.pu.pu_bakery_shifts.1": {
+  "ru": "{time}. В графике на сегодня стоит «04:00 — замес, 05:30 — печь, 06:30 — витрина». Первые две строки уже зачёркнуты.",
+  "en": "{time}. Today's schedule reads \"04:00 mixing, 05:30 oven, 06:30 shop window\". The first two lines are already crossed out.",
+  "ja": "{time}。今日の予定表。「4:00 こね、5:30 窯、6:30 ショーウィンドウ」。最初の二行はもう消してある。"
+ },
+ "city.pu.pu_bakery_shifts.2": {
+  "ru": "{time}. Утренние строки в графике вычеркнуты, дневная смена пишет: «хлеб на вечер, ржаной в первую очередь». Рядом нарисована печь с улыбкой.",
+  "en": "{time}. The morning lines in the schedule are struck out, the day shift writes: \"bread for the evening, rye first.\" Beside it a drawn oven with a smile.",
+  "ja": "{time}。予定表の朝の行は消され、昼の当番が「夕方のパン、まずライ麦」と書いている。横には笑顔の窯の絵。"
+ },
+ "city.pu.pu_bakery_shifts.3": {
+  "ru": "{time}. График закрыт: «Печь вымыта, закваска накормлена, свет оставить в окне». Подпись пекаря, как всегда, с завитушкой.",
+  "en": "{time}. The schedule is closed: \"Oven cleaned, starter fed, leave the light in the window.\" The baker's signature, as always, has a flourish.",
+  "ja": "{time}。予定表は閉じられている。「窯は洗い、種には餌をやり、窓の灯りは残すこと」。パン職人の署名は、いつものように渦巻き付き。"
+ },
+ "city.pu.pu_bakery_shifts.4": {
+  "ru": "{time}. В графике на завтра только одно слово, написанное крупно: «ЗАМЕС». Остальное пока пусто.",
+  "en": "{time}. In tomorrow's schedule there is only one word, written large: \"MIXING\". The rest is blank for now.",
+  "ja": "{time}。明日の予定表には、大きな字でたった一語。「こね」。あとはまだ空白。"
+ },
+ "city.pu.pu_bakery_radio.1": {
+  "ru": "Из приёмника негромко звучит утренняя гимнастика: «Руки на пояс, дышим». В подсобке кто-то выполняет упражнения с тестом.",
+  "en": "The radio plays morning exercises softly: \"Hands on hips, breathe.\" Somebody in the back is doing the exercises with dough.",
+  "ja": "ラジオから朝の体操が小さく流れる。「手を腰に、深呼吸」。奥では誰かが生地を相手に体操している。"
+ },
+ "city.pu.pu_bakery_radio.2": {
+  "ru": "Радио передаёт прогноз погоды для рыбаков: ветер, волна, видимость. Булочница слушает его так внимательно, будто выпекает по нему хлеб.",
+  "en": "The radio gives the weather for fishermen: wind, swell, visibility. The baker listens as closely as if she were baking by it.",
+  "ja": "ラジオは漁師向けの天気予報を流している。風、波、視界。パン屋の女主人は、それでパンを焼くかのように熱心に聞いている。"
+ },
+ "city.pu.pu_bakery_radio.3": {
+  "ru": "Радио ловит что-то вальсовое, и в булочной становится на полтакта медленнее. Булки никуда не торопятся, и покупатели тоже.",
+  "en": "The radio catches something waltzy, and the bakery slows by half a beat. The buns are in no hurry, and neither are the customers.",
+  "ja": "ラジオはワルツ風の曲を拾い、パン屋は半拍だけゆっくりになる。パンは急がず、お客さんも急がない。"
+ },
+ "city.pu.pu_bakery_radio.4": {
+  "ru": "Вечерний концерт по заявкам: «для булочной на набережной, от тех, кто пришёл за последним батоном». Булочница смущённо делает потише.",
+  "en": "The evening request concert: \"for the bakery on the embankment, from those who came for the last loaf.\" The baker turns it down, a little embarrassed.",
+  "ja": "夕べのリクエスト番組。「海岸通りのパン屋さんへ、最後の一本を買いに来た人たちより」。女主人は照れて少し音を下げる。"
+ },
+ "city.pu.pu_bakery_radio.5": {
+  "ru": "Ночью приёмник тихо шуршит эфиром, как закваска пузырьками. Стрелка стоит между двумя станциями.",
+  "en": "At night the radio rustles softly with static, like the starter with bubbles. The needle stands between two stations.",
+  "ja": "夜、ラジオは種が泡を立てるように、静かにさざめいている。針は二つの局の間で止まっている。"
  }
 }

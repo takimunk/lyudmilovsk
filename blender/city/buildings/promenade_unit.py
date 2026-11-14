@@ -1916,7 +1916,36 @@ def _fish3(B):
     tin_pyramid(B, -0.9, 1.05, 0.3, 0.0, label="label_00")
 
 
-DEEP3 = {"dumplings": _dumplings3, "pasty": _pasty3, "fish": _fish3}
+def radio_set(B, x, y, z=0.0, yaw=0.0):
+    """[prop] A tube radio on a shelf: wooden cabinet, a lit dial card, two knobs and a cloth speaker."""
+    p = _P(B, x, y, z, yaw, "radio_set")
+    p.kind = "prop"
+    p.bev(WOOD, -0.18, 0.18, -0.09, 0.09, 0.0, 0.2, 0.012)
+    p.box("CT_PlasterYellow", -0.15, 0.02, -0.093, -0.09, 0.11, 0.17, f="y")
+    p.box("CT_Plaster", -0.15, -0.0, -0.0935, -0.0925, 0.14, 0.145, f="y")
+    p.box("CT_PlasterGrey", 0.05, 0.16, -0.093, -0.09, 0.03, 0.19, f="y")
+    for k, u in enumerate((-0.1, -0.02)):
+        p.cyl(BRASS, u, -0.1, 0.045, 0.049, 0.022, 8)
+    p.rod(BRASS, (0.12, 0.0, 0.2), (0.17, 0.0, 0.36), 0.004, 3)
+    return p.done()
+
+
+def _bakery3(B):
+    b = kit.bench(B, XR - 0.3, 3.0, 0.0, 270.0, w=1.2, kind="park")
+    _seat(B, "bakery_bench", b)
+    B.spot("bench", "seat", (b["seats"][0][0], b["seats"][0][1], 0.0), 270.0)
+    kit.notice_board(B, XL, 0.95, 0.0, 90.0, w=0.7, zc=1.65, seed=17)
+    B.thing("bakery_shifts", "board", (XL + 0.04, 0.95, 1.65), 90.0, topic="orders")
+    _stand_spot(B, "shifts", -4.2, 0.95, 90.0)
+    kit.wall_shelf(B, XL, 5.75, 0.0, 90.0, w=0.7, zt=1.5, props=False)
+    radio_set(B, XL + 0.13, 5.75, 1.5, 90.0)
+    B.thing("bakery_radio", "machine", (XL + 0.13, 5.75, 1.65), 90.0, what="tube_radio")
+    _stand_spot(B, "radio", -4.2, 5.4, 90.0)
+    flour_sack(B, 4.5, 5.0, 0.0, 100.0, label="label_07")
+    flour_sack(B, 4.5, 4.45, 0.0, 80.0, label="label_37")
+
+
+DEEP3 = {"bakery": _bakery3, "dumplings": _dumplings3, "pasty": _pasty3, "fish": _fish3}
 
 
 def build(B):
