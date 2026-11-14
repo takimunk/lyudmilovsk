@@ -442,6 +442,21 @@ def ensure_far():
     _CACHE.clear()
 
 
+def _mesh_tools():
+    """remove_collisions / add_simple_collisions: the StaticMeshEditorSubsystem in the editor; in a -run=pythonscript
+    commandlet that subsystem is None (import_north.sh logged 'NoneType has no remove_collisions' and props got no box),
+    so the older EditorStaticMeshLibrary, which works there."""
+    sub = unreal.get_editor_subsystem(unreal.StaticMeshEditorSubsystem)
+    return sub if sub is not None else unreal.EditorStaticMeshLibrary
+
+
+def _box_shape():
+    """The BOX shape for whichever _mesh_tools() returns (the subsystem's enum, or the old library's own)."""
+    if unreal.get_editor_subsystem(unreal.StaticMeshEditorSubsystem) is not None:
+        return unreal.ScriptCollisionShapeType.BOX
+    return getattr(unreal, "ScriptingCollisionShapeType", unreal.ScriptCollisionShapeType).BOX
+
+
 def _manifest_boxes(sm, body, boxes, asset):
     """The manifest's collision_boxes (Blender mesh space, metres: center, size, rot_y_deg = right-handed about Blender +Y,
     positive tipping the +X end down) as the mesh's simple collision. Blender -> glTF (x, z, -y) -> Unreal (glTF x, z, y)
@@ -470,7 +485,7 @@ def _manifest_boxes(sm, body, boxes, asset):
             (asset, len(elems), ext.x, ext.y, ext.z))
     except Exception:       # noqa: BLE001
         log("%s: collision boxes failed, simple box instead:\n%s" % (asset, traceback.format_exc()))
-        unreal.get_editor_subsystem(unreal.StaticMeshEditorSubsystem).add_simple_collisions(sm, unreal.ScriptCollisionShapeType.BOX)
+        _mesh_tools().add_simple_collisions(sm, _box_shape())
 
 
 def import_file(fname):
@@ -513,7 +528,7 @@ def import_file(fname):
     settings.enabled = False
     sm.set_editor_property("nanite_settings", settings)
     collision = "none" if far else row.get("collision", "box")
-    sub = unreal.get_editor_subsystem(unreal.StaticMeshEditorSubsystem)
+    sub = _mesh_tools()
     body = sm.get_editor_property("body_setup")
     if collision == "exact":
         if body:
@@ -527,7 +542,7 @@ def import_file(fname):
             _manifest_boxes(sm, body, row["collision_boxes"], asset)
         elif collision == "box":
             try:
-                sub.add_simple_collisions(sm, unreal.ScriptCollisionShapeType.BOX)
+                sub.add_simple_collisions(sm, _box_shape())
             except Exception as e:  # noqa: BLE001
                 log("%s: add_simple_collisions: %s" % (asset, e))
         if body:
