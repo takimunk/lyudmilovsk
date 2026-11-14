@@ -582,7 +582,7 @@ namespace LyudPeople
 		/** Their pace now, m/s: a walk, or a run outdoors when late or in the rain (a brisk walk indoors). */
 		float Pace(const FPerson& P) const;
 		/** On the way to the household's outing, or home with one of theirs: 1, or how much slower or faster to go to keep with their own. */
-		float WayTogether(const FPerson& P) const;
+		float WayTogether(const FPerson& P, bool* bWith = nullptr) const;     // bWith: one of theirs is going along
 		/** Their pace within an activity (a walk's next spot): the activity's pace on their walk. */
 		float ActPace(const FPerson& P, const FActivity& A) const;
 		void Arrive(FPerson& P);

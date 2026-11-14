@@ -2835,13 +2835,21 @@ namespace LyudPeople
 		const bool bRush = P.bHurry || (bRain && !P.bIndoors && P.State == EState::Going);
 		if (!bRush)
 		{
-			return P.WalkSpeed * WayTogether(P);
+			bool bWith = false;
+			const float Keep = WayTogether(P, &bWith);
+			// a child off to play on their own runs there (with a grown-up of theirs along: at the grown-up's side)
+			if (!bWith && P.Age < 12 && !P.bIndoors && P.State == EState::Going && P.Activity >= 0
+				&& (P.Activity == PlayActs[0] || P.Activity == PlayActs[1]))
+			{
+				return std::max(2.3f, P.WalkSpeed * 1.8f);
+			}
+			return P.WalkSpeed * Keep;
 		}
 		// no running on stairs and in rooms; outdoors a jog (~2.4 m/s; children a little faster for their size)
 		return P.bIndoors ? P.WalkSpeed * 1.25f : std::max(2.3f, P.WalkSpeed * 1.95f);
 	}
 
-	float FWorld::WayTogether(const FPerson& P) const
+	float FWorld::WayTogether(const FPerson& P, bool* bWith) const
 	{
 		// on the way to the household's outing, and on the way home, those of a household keep together: whoever is in
 		// front dawdles, whoever fell behind steps out, and side by side they go at the slowest's walk
@@ -2869,6 +2877,10 @@ namespace LyudPeople
 			if (Apart > 45.f)
 			{
 				continue;
+			}
+			if (bWith)
+			{
+				*bWith = true;
 			}
 			const float Theirs = (To - Q.Pos).Len2D();
 			if (Apart < 4.f)
