@@ -257,6 +257,152 @@ def _bridge(B, xa, xb, yc, zf):
         box(B.detail, "CT_Steel", x - 0.05, x + 0.05, yc - 1.0, yc + 1.0, zf - 0.42, zf - 0.28)
 
 
+
+# ------------------------------------------------------------------ depth pass: small props
+def _lantern(B, x, y, z):
+    """A bridge lantern post with a weatherproof switch box on its street side; the one real lamp of the bridge."""
+    p = kit._P(B, x, y, z, 0.0, "lantern")
+    p.kind = "prop"
+    p.cyl("CT_Steel", 0.0, 0.0, 0.0, 0.03, 0.1, 8)
+    p.cyl("CT_Steel", 0.0, 0.0, 0.03, 1.5, 0.022, 6)
+    p.lathe("CT_Opal", 0.0, 0.0, [(0.0, 1.48), (0.09, 1.55), (0.1, 1.66), (0.07, 1.76), (0.0, 1.78)], 8, top=False)
+    p.cyl("CT_Steel", 0.0, 0.0, 1.78, 1.82, 0.11, 8)
+    p.box("CT_SteelWhite", -0.06, 0.06, -0.12, -0.02, 0.88, 1.04)
+    p.box("CT_Rubber", -0.012, 0.012, -0.135, -0.12, 0.93, 1.0)
+    B.lamp((x, y, z + 1.64), lumens=240, colour="#FFE2B8", kind="stair", radius=4.2, fixture=False)
+    return p.done(footprint=(-0.1, 0.1, -0.12, 0.1))
+
+
+def _chime(B, x, y, z, yaw):
+    """A wind chime on an arm over the deck (the arm hangs out of the post toward +local y)."""
+    p = kit._P(B, x, y, z, yaw, "chime")
+    p.kind = "prop"
+    p.rod("CT_Steel", (0.0, 0.0, 1.1), (0.0, 0.0, 2.3), 0.025, 4)
+    p.rod("CT_Steel", (0.0, 0.0, 2.3), (0.0, 0.5, 2.3), 0.02, 4)
+    p.cyl("CT_Brass", 0.0, 0.5, 2.2, 2.3, 0.1, 8)
+    for k, (dx, dy, ln) in enumerate(((-0.07, 0.43, 0.34), (0.0, 0.57, 0.42), (0.07, 0.43, 0.3), (-0.03, 0.5, 0.26))):
+        p.rod("CT_Rubber", (dx, dy, 2.2), (dx, dy, 2.2 - 0.12), 0.004, 3)
+        p.cyl("CT_Aluminium", dx, dy, 2.08 - ln, 2.08, 0.014, 6)
+    p.cyl("CT_Wood", 0.0, 0.5, 1.7, 1.74, 0.035, 6)
+    return p.done(footprint=(-0.1, 0.1, -0.05, 0.6))
+
+
+def _vane(B, x, y, z, yaw):
+    """A weather vane on a mast over the rail post: a crossbar with four letters' worth of tips and an arrow."""
+    p = kit._P(B, x, y, z, yaw, "vane")
+    p.kind = "prop"
+    p.rod("CT_Steel", (0.0, 0.0, 1.0), (0.0, 0.0, 2.05), 0.02, 4)
+    p.rod("CT_Steel", (-0.22, 0.0, 1.8), (0.22, 0.0, 1.8), 0.012, 4)
+    p.rod("CT_Steel", (0.0, -0.22, 1.8), (0.0, 0.22, 1.8), 0.012, 4)
+    for sx, sy in ((-0.22, 0.0), (0.22, 0.0), (0.0, -0.22), (0.0, 0.22)):
+        p.cyl("CT_Brass", sx, sy, 1.78, 1.82, 0.02, 5)
+    p.rod("CT_SteelRed", (-0.3, 0.0, 2.05), (0.34, 0.0, 2.05), 0.014, 4)
+    p.rod("CT_SteelRed", (0.46, 0.0, 2.05), (0.34, 0.0, 2.13), 0.012, 4)
+    p.rod("CT_SteelRed", (0.46, 0.0, 2.05), (0.34, 0.0, 1.97), 0.012, 4)
+    p.box("CT_SteelRed", -0.34, -0.2, -0.004, 0.004, 1.96, 2.16)
+    return p.done(footprint=(-0.1, 0.1, -0.1, 0.1))
+
+
+def _morse_key(B, x, y, z, yaw):
+    """A straight Morse key on a wooden base (operator side toward -y of the piece)."""
+    p = kit._P(B, x, y, z, yaw, "morse_key")
+    p.kind = "prop"
+    p.bev("CT_Wood", -0.07, 0.07, -0.09, 0.09, 0.0, 0.025, 0.004)
+    p.box("CT_Brass", -0.012, 0.012, 0.02, 0.07, 0.025, 0.06)
+    p.rod("CT_Brass", (0.0, 0.07, 0.065), (0.0, -0.1, 0.075), 0.007, 4)
+    p.cyl("CT_Lacquer", 0.0, -0.095, 0.07, 0.115, 0.022, 8)
+    p.cyl("CT_Brass", 0.0, -0.04, 0.025, 0.04, 0.012, 6)
+    return p.done(top=0.04, footprint=(-0.07, 0.07, -0.1, 0.09))
+
+
+def _logbook(B, x, y, z, yaw):
+    """An open log book lying on the desk."""
+    p = kit._P(B, x, y, z, yaw, "logbook")
+    p.kind = "prop"
+    p.box("CT_Leather", -0.17, 0.17, -0.12, 0.12, 0.0, 0.012)
+    p.box("CT_Paper", -0.16, -0.005, -0.11, 0.11, 0.012, 0.024)
+    p.box("CT_Paper", 0.005, 0.16, -0.11, 0.11, 0.012, 0.024)
+    p.rod("CT_SteelRed", (0.1, -0.1, 0.03), (0.2, -0.04, 0.035), 0.005, 4)
+    return p.done(top=0.03, footprint=(-0.17, 0.2, -0.12, 0.12))
+
+
+def _tuner(B, x, y, z, yaw):
+    """An antenna tuner: a grey box with two big knobs, a needle meter and a coax lead."""
+    p = kit._P(B, x, y, z, yaw, "tuner")
+    p.kind = "prop"
+    p.bev("CT_SteelWhite", -0.16, 0.16, -0.1, 0.1, 0.0, 0.12, 0.008)
+    p.box("CT_Rubber", -0.12, 0.0, -0.103, -0.1, 0.06, 0.1)
+    p.rod("CT_SteelRed", (-0.06, -0.106, 0.065), (-0.03, -0.106, 0.09), 0.003, 3)
+    for kx in (0.06, 0.12):
+        p.cyl("CT_Lacquer", kx, -0.115, 0.04, 0.06, 0.016, 8)
+    p.tube("CT_Rubber", [(0.16, 0.0, 0.08), (0.24, 0.02, 0.06), (0.3, 0.04, 0.0)], 0.007, 3)
+    return p.done(top=0.12, footprint=(-0.16, 0.3, -0.1, 0.1))
+
+
+def _headphones(B, x, y, z, yaw):
+    """Headphones lying on the shelf: a band and two cups."""
+    p = kit._P(B, x, y, z, yaw, "headphones")
+    p.kind = "prop"
+    pts = [(-0.085 * math.cos(math.pi * k / 8), 0.0, 0.02 + 0.09 * math.sin(math.pi * k / 8)) for k in range(9)]
+    p.tube("CT_Lacquer", pts, 0.008, 3)
+    for sx in (-0.085, 0.085):
+        p.cyl("CT_Leather", sx, 0.0, 0.0, 0.035, 0.036, 8)
+    return p.done(footprint=(-0.12, 0.12, -0.04, 0.04))
+
+
+def _switch_plate(B, x, y, z, yaw):
+    p = kit._P(B, x, y, z, yaw, "switch")
+    p.kind = "prop"
+    p.box("CT_SteelWhite", -0.04, 0.04, -0.012, 0.0, 0.0, 0.12)
+    p.box("CT_Rubber", -0.012, 0.012, -0.02, -0.012, 0.03, 0.08)
+    return p.done(footprint=(-0.04, 0.04, -0.02, 0.0))
+
+
+def _pins(B, x, y, z, yaw):
+    """Pins on the wall map (a wall piece: x across the map, -y out of the wall)."""
+    p = kit._P(B, x, y, z, yaw, "pins")
+    p.kind = "wall"
+    mats = ("CT_SteelRed", "CT_PlasterYellow", "CT_PlasterBlue", "CT_SteelRed", "CT_PlasterYellow", "CT_PlasterBlue", "CT_SteelRed")
+    for k, (px, pz) in enumerate(((-0.3, 0.1), (-0.12, 0.2), (0.0, 0.05), (0.18, 0.1), (0.3, -0.12), (-0.38, -0.08), (0.05, -0.2))):
+        p.rod(mats[k], (px, -0.004, pz), (px, -0.026, pz), 0.012, 4)
+    return p.done(footprint=(-0.4, 0.4, -0.03, 0.0))
+
+
+def _kettle(B, x, y, z, yaw):
+    """An enamel kettle on the kitchen unit."""
+    p = kit._P(B, x, y, z, yaw, "kettle")
+    p.kind = "prop"
+    p.lathe("CT_PlasterBlue", 0.0, 0.0, [(0.0, 0.0), (0.1, 0.0), (0.12, 0.08), (0.1, 0.17), (0.05, 0.21), (0.0, 0.215)], 10)
+    p.cyl("CT_Steel", 0.0, 0.0, 0.215, 0.235, 0.02, 6)
+    p.rod("CT_Steel", (0.1, 0.0, 0.1), (0.17, 0.0, 0.16), 0.012, 4)
+    p.tube("CT_Steel", [(-0.09, 0.0, 0.2), (0.0, 0.0, 0.3), (0.09, 0.0, 0.2)], 0.008, 3)
+    return p.done(top=0.24, footprint=(-0.12, 0.17, -0.12, 0.12))
+
+
+def _bridge_things(B, xa, xb, yc, lv, tag, extra=None):
+    """Furniture of one bridge: a bench and a planter on the north rail, the lantern with its switch between them, a
+    view point on the south rail (and a wind chime or a weather vane); the things are named br_<tag>_*."""
+    zf = lv * STOREY
+    xm = (xa + xb) / 2.0
+    yn, ys = yc + 0.55, yc - 0.8
+    bn = kit.bench(B, xa + 1.45, yn, zf, 0.0, w=1.1, kind="park", mat=kit.WOOD)
+    s = bn["seats"][0]
+    B.thing("br_%s_bench" % tag, "seat", (s[0], s[1], s[2]), s[3], height=round(s[2] - zf, 2))
+    B.spot("br_%s_bench" % tag, "bench", (s[0], s[1], zf), s[3])
+    kit.planter(B, xb - 1.25, yn, zf, 0.0, w=0.9, d=0.4, h=0.46, plants=3, seed=lv * 7 + int(xa))
+    B.thing("br_%s_planter" % tag, "board", (xb - 1.25, yn, zf + 0.8), 0.0, topic="garden")
+    _lantern(B, xm, yc + 0.72, zf)
+    B.thing("br_%s_switch" % tag, "machine", (xm, yc + 0.72 - 0.14, zf + 0.96), 0.0, what="switch", switch=5)
+    B.thing("br_%s_view" % tag, "board", (xm - 0.4, ys, zf + 1.45), 180.0, topic="view")
+    B.spot("br_%s_view" % tag, "stand", (xm - 0.4, ys + 0.6, zf), 180.0)
+    if extra == "chime":
+        _chime(B, xa + 1.5, ys, zf, 180.0)
+        B.thing("br_%s_chime" % tag, "board", (xa + 1.5, ys + 0.3, zf + 1.85), 180.0, topic="chime")
+    elif extra == "vane":
+        _vane(B, xb - 1.45, ys, zf, 0.0)
+        B.thing("br_%s_vane" % tag, "board", (xb - 1.45, ys, zf + 1.95), 180.0, topic="vane")
+
+
 # ------------------------------------------------------------------ interiors
 def _bike(B, x, y, yaw=0.0, mat="CT_SteelRed"):
     """A leaning city bicycle (local: length along y, front wheel toward -y)."""
@@ -330,6 +476,7 @@ def _hall(B, core):
         B.thing("hall_%s_radio" % tag, "machine", (cx + 1.3, ys + 0.22, 1.0), 180.0, what="jukebox")
         B.thing("hall_%s_paper" % tag, "take", (cx + 1.75, ys + 0.22, 0.8), 180.0, item="daily_paper")
         B.thing("hall_%s_picture" % tag, "board", (cx - 1.55, ys + 0.03, 1.8), 180.0, topic="painting")
+        B.thing("hall_%s_mail" % tag, "board", (xe - 0.05, ym, 1.25), 270.0, topic="mail")
         B.spot("hall_%s_bench" % tag, "bench", bn["seats"][0][:2] + (0.0,), bn["seats"][0][3])
     else:                                                # the octagon B
         xe, xw = cx + H, cx - H
@@ -349,6 +496,7 @@ def _hall(B, core):
         _seat_thing(B, "hall_b_bench", bn)
         _seat_thing(B, "hall_b_armchair", ar)
         B.thing("hall_b_board_lost", "board", (xe - 0.03, cy, 1.55), 270.0, topic="lost")
+        B.thing("hall_b_mail", "board", (xw + 0.05, cy - 0.3, 1.25), 90.0, topic="mail")
         B.thing("hall_b_radio", "machine", (cx + 1.9, cy - 1.9, 1.0), 225.0, what="jukebox")
         B.thing("hall_b_paper", "take", (cx + 1.6, cy + 0.35, 0.45), 90.0, item="daily_paper")
         B.spot("hall_b_bench", "bench", bn["seats"][0][:2] + (0.0,), bn["seats"][0][3])
@@ -454,6 +602,18 @@ def _studio(B, rnd, fr, zf, off, mat, wmat, shape, fid):
     at(kit.wall_clock, 0.0, WF, 180.0, zc=2.0, face="clock_2", r=0.13)
     at(kit.plant, 0.0, WF - 0.35, 0.0, kind="fern", pot="CT_PlasterGreen", h=0.8, seed=5)
     kit.pendant(B, *fr.p(0.1, 1.5)[:2], CE, drop=0.2, light=True, lumens=300, colour="#FFE0B0", radius=4.0)
+    # --- depth pass: Morse key, log book, tuner and headphones on the bed-head shelf, QSL cards, map pins, kettle, guest chair
+    at(_morse_key, -1.4, WF - 0.4, 180.0, z=top)
+    at(_logbook, -0.85, WF - 0.4, 180.0, z=top)
+    at(kit.wall_shelf, -1.5, WB + 0.0, 0.0, z=FL, w=0.9, zt=1.5, props=False)
+    at(_tuner, -1.78, 0.12, 0.0, z=FL + 1.5)
+    at(_headphones, -1.22, 0.1, 0.0, z=FL + 1.5)
+    for (cw, cz, nm) in ((1.88, 1.42, "paper_letter"), (2.12, 1.45, "paper_typed"), (1.9, 1.64, "paper_drawing"), (2.14, 1.68, "paper_letter")):
+        at(kit.poster, -iu + 0.02, cw, 90.0, name=nm, w=0.19, zc=cz)
+    at(_pins, -iu + 0.035, 1.15, 90.0, z=FL + 1.75)
+    at(_kettle, 0.95, 0.3, 0.0, z=FL + 0.9)
+    gch = at(kit.chair, -1.5, WF - 0.78, 0.0, kind="wood", mat="CT_PlasterRed")
+    at(_switch_plate, -0.72, WB, 0.0, z=FL + 1.3)
     # --- things
     s = ch["seats"][0]
     B.thing("studio_desk_chair", "seat", (s[0], s[1], s[2]), s[3], height=round(s[2] - FL, 2))
@@ -469,6 +629,16 @@ def _studio(B, rnd, fr, zf, off, mat, wmat, shape, fid):
     B.thing("studio_window_west", "board", pt(-1.2, WF, zc), 180.0, topic="view")
     B.thing("studio_window_east", "board", pt(1.2, WF, zc), 180.0, topic="view")
     B.spot("studio_chair", "seat", ch["seats"][0][:2] + (FL,), ch["seats"][0][3])
+    s = gch["seats"][0]
+    B.thing("studio_guest_chair", "seat", (s[0], s[1], s[2]), s[3], height=round(s[2] - FL, 2))
+    B.spot("studio_guest", "seat", s[:2] + (FL,), s[3])
+    B.thing("studio_morse", "machine", pt(-1.4, WF - 0.4, top + 0.06), 180.0, what="morse_key")
+    B.thing("studio_logbook", "board", pt(-0.85, WF - 0.4, top + 0.05), 180.0, topic="log")
+    B.thing("studio_tuner", "machine", pt(-1.78, 0.14, FL + 1.62), 0.0, what="tuner")
+    B.thing("studio_headphones", "board", pt(-1.22, 0.12, FL + 1.54), 0.0, topic="headphones")
+    B.thing("studio_qsl", "board", pt(-iu + 0.03, 2.0, FL + 1.55), 90.0, topic="qsl")
+    B.thing("studio_kettle", "take", pt(0.95, 0.3, FL + 1.1), 0.0, item="tea")
+    B.thing("studio_switch", "machine", pt(-0.72, 0.03, FL + 1.36), 0.0, what="switch", switch="room")
 
 
 # ------------------------------------------------------------------ build
@@ -631,6 +801,8 @@ def build(B):
         for lv in BRIDGE_LEVELS:
             if lv < min(c["n"] for c in CORES if c["id"] in (ida, idb)):
                 _bridge(B, xa, xb, yc, lv * STOREY)
+                tag = "%s%s%d" % (ida.lower(), idb.lower(), lv)
+                _bridge_things(B, xa, xb, yc, lv, tag, "chime" if tag == "ab3" else "vane" if tag == "bc3" else None)
 
     # capsules (now built)
     n_flat = 0
@@ -671,6 +843,9 @@ def build(B):
         for lv in range(1, core["n"]):
             B.lamp((cx - 0.5, cy - 1.95, lv * STOREY + 2.7), lumens=380, colour="#FFE8C0", kind="stair", radius=5.0)
         _hall(B, core)
+        if core["kind"] == "sq":                             # the house board beside the street door
+            kit.notice_board(B, cx + 1.75, y, 0.0, 0.0, w=0.7, zc=1.6, seed=21 if core["id"] == "A" else 22)
+            B.thing("house_%s_news" % core["id"].lower(), "board", (cx + 1.75, y - 0.06, 1.6), 0.0, topic="house")
     # a paving path from the street to the middle door
     box(B.m, "CT_Paving", -1.0, 1.0, 0.3, CORES[1]["edges"][CORES[1]["door_edge"]]["mid"][1] - 2.6, 0.0, 0.02, faces="Z")
 
