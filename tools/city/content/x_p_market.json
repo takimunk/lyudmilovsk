@@ -1545,6 +1545,11 @@
      "id": "weigh",
      "objectives": [
       {
+       "id": "apple",
+       "event": "have",
+       "target": "apple"
+      },
+      {
        "id": "weigh",
        "event": "do",
        "target": "mk_control_scales"

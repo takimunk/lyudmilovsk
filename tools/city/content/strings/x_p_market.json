@@ -620,9 +620,9 @@
   "ja": "ラベルのない瓶"
  },
  "quest.jam_contest.desc": {
-  "ru": "На рынке кончился конкурс варенья, а одна банка так и осталась без хозяина. Говорят, её можно будет попробовать, но только в выходные.",
-  "en": "The market's jam contest is over, but one jar has stayed without an owner. They say it can be tasted, but only at the weekend.",
-  "ja": "市場のジャム・コンテストは終わったが、ひとつの瓶だけ持ち主のないまま残っている。味見できるらしい。ただし週末だけ。"
+  "ru": "На рынке кончился конкурс варенья, а одна банка так и осталась без хозяина. Говорят, её можно будет попробовать, но только с пятницы по воскресенье.",
+  "en": "The market's jam contest is over, but one jar has stayed without an owner. They say it can be tasted, but only from Friday to Sunday.",
+  "ja": "市場のジャム・コンテストは終わったが、ひとつの瓶だけ持ち主のないまま残っている。味見できるらしい。ただし金曜から日曜だけ。"
  },
  "quest.jam_contest.look.log": {
   "ru": "Начну со столика жюри у входа. Там банки с лентами, номерами и одной загадкой.",

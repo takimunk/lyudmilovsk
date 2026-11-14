@@ -650,6 +650,11 @@
        "id": "bring",
        "event": "ask",
        "target": "cafe.ck.kefir"
+      },
+      {
+       "id": "kefir",
+       "event": "have",
+       "target": "kefir"
       }
      ],
      "reward": {
