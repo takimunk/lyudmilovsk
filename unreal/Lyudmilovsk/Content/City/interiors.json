@@ -4877,7 +4877,7 @@
  "tones": {
   "bar_room": {"loop": "rest_room", "asset": "/Game/Audio/Restaurant/S_rest_room_01.S_rest_room_01", "volume": 0.34, "shots": ["rest_glass", "rest_clink", "rest_coins"], "every": [8, 20], "shot_volume": 0.4, "closed": "empty_room"},
   "cafe_room": {"loop": "rest_room", "asset": "/Game/Audio/Restaurant/S_rest_room_01.S_rest_room_01", "volume": 0.3, "shots": ["rest_clink", "rest_plate", "rest_glass"], "every": [7, 18], "shot_volume": 0.4, "closed": "empty_room"},
-  "clock_room": {"loop": "clock_tick", "asset": "", "volume": 0.18},
+  "clock_room": {"loop": "clock_tick", "asset": "/Game/Audio/City/S_clock_tick_01.S_clock_tick_01", "volume": 0.18},
   "cold_counter": {"loop": "vending_hum", "asset": "/Game/Audio/Club/S_vending_hum_01.S_vending_hum_01", "volume": 0.16, "shots": ["rest_coins"], "every": [18, 50], "shot_volume": 0.3},
   "empty_room": {"loop": "station_hall", "asset": "/Game/Audio/Transport/S_station_hall_01.S_station_hall_01", "volume": 0.06},
   "hall_quiet": {"loop": "station_hall", "asset": "/Game/Audio/Transport/S_station_hall_01.S_station_hall_01", "volume": 0.22},
