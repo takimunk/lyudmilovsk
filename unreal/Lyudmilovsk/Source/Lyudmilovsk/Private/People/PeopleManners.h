@@ -198,6 +198,7 @@ namespace LyudPeople
 		std::vector<FMannerDef> Defs;
 		std::vector<FPersona> Personas;
 		std::vector<FMannerState> States;
+		int Goodbyes = 0;           // a count for the tests: waves and nods over the shoulder on leaving (Passing)
 		float IdleWeight = 3.f;         // how often people do nothing in particular, against the manners' weights
 		std::string LastError;
 		std::vector<std::string> Warnings;

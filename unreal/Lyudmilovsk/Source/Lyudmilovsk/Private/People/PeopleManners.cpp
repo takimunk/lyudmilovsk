@@ -1207,13 +1207,16 @@ namespace LyudPeople
 					continue;
 				}
 				const float D = To.Len2D();
-				if (D > 5.f || D < 0.3f || !Mannered(PB) || PB.Pose == EPose::Sleep || OffFacing(PA, PB.Pos) > 65.f)
+				// a goodbye: they have just got up from where somebody they know stays on, and turn to them as they go
+				const bool bParting = W.Time - PA.PrevActivityEnd < 6.0 && PA.PrevActivity >= 0 && PB.State == EState::Doing && PB.Pose != EPose::Walk;
+				const bool bFacing = OffFacing(PA, PB.Pos) <= 65.f;
+				if (D > 5.f || D < 0.3f || !Mannered(PB) || PB.Pose == EPose::Sleep || (!bFacing && !bParting))
 				{
 					continue;
 				}
 				FMannerState& SB = States[B];
 				// a glance at whoever comes the other way
-				if (SA.LookAt == -2 && Now.Clock >= SA.LookCool)
+				if (bFacing && SA.LookAt == -2 && Now.Clock >= SA.LookCool)
 				{
 					SA.LookAt = B;
 					SA.LookUntil = Now.Clock + 1.f + 1.5f * Personas[A].Curiosity;
@@ -1229,6 +1232,14 @@ namespace LyudPeople
 				const EManner Mine = Personas[A].Warmth > 0.5f ? EManner::Wave : EManner::Nod;
 				if (React(A, Mine, Now.Clock, Mine == EManner::Wave ? 2.4f : 1.6f))
 				{
+					if (!bFacing)
+					{
+						// over the shoulder
+						SA.LookAt = B;
+						SA.LookUntil = Now.Clock + 1.6f;
+						SA.LookCool = SA.LookUntil + 4.f;
+						Goodbyes++;
+					}
 					if (SB.LookAt == -2)
 					{
 						SB.LookAt = A;

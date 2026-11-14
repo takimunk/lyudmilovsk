@@ -91,7 +91,7 @@ struct FDay
 	std::string WrongWhat;
 	int MinDistinctDay = 99;
 	int OutBeforeRain = -1, OutInRain = -1, UmbrellasInRain = 0, UmbrellasDry = 0, CoverInRain = 0;
-	int Waves = 0, Glances = 0;
+	int Waves = 0, Glances = 0, Goodbyes = 0;
 	double UpdateNs = 0.0;
 	long Updates = 0;
 	int BenchNoon = 0;
@@ -205,6 +205,7 @@ static void RunDay(FDay& D)
 		{
 			// in the game only the few dozen nearest are drawn; here everybody, so only neighbours are paired
 			M.Passing(W, Shown.data(), (int)Shown.size(), Now);
+			D.Goodbyes = M.Goodbyes;
 		}
 		std::set<std::string> Distinct;
 		int Out = 0;
@@ -963,6 +964,7 @@ int main(int Argc, char** Argv)
 	CHECK(Mild.ActMinutes["feed_birds"] > 300.0 && Mild.ActMinutes["read_bench"] > 300.0, "somebody feeds the birds, somebody reads on a bench (%.0f, %.0f person-minutes)",
 		Mild.ActMinutes["feed_birds"], Mild.ActMinutes["read_bench"]);
 	CHECK(Mild.Waves > 5, "people who know each other wave in passing (%d waves)", Mild.Waves);
+	CHECK(Mild.Goodbyes > 5, "a wave or a nod over the shoulder on leaving somebody they know (%d in the day)", Mild.Goodbyes);
 	CHECK(Mild.Glances > 100, "people glance at each other in passing (%d)", Mild.Glances);
 	const double Ns = Mild.UpdateNs / std::max(1L, Mild.Updates);
 	CHECK(Ns < 400.0, "an update of one person costs %.0f ns (48 drawn: %.4f ms a frame)", Ns, Ns * 48.0 / 1e6);

@@ -61,7 +61,9 @@ Only people who have a body now are updated (a few dozen); between picks an upda
   with the save, `MetHero`); town talk's `met = new | seen | known` (1-4 days: seen; 5 and more: known) picks other
   greetings ("there you are, I hadn't seen you about"), and those who know him greet more readily and wave.
 - **each other** (`FManners::Passing`, twice a second): a glance at somebody passing, a wave or a nod between
-  people who know each other (friends, a household).
+  people who know each other (friends, a household). And a goodbye: whoever has just got up (within 6 s of leaving
+  what they did) from where a friend or one of their household stays on turns the head back to them and waves or nods
+  over the shoulder; the one who stays answers.
 - **greetings** (town talk): the warm greet the player nearly always, the reserved hardly ever; a greeting comes with a
   wave or a nod, and some who say nothing still nod.
 
