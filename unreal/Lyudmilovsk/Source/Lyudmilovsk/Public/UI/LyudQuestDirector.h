@@ -80,6 +80,8 @@ private:
 		/** Called on the wing near by (true), or sitting within reach (false). */
 		bool bAir = false;
 		TArray<FString> Lines;
+		/** "note": a line of the hero's diary (a string key) written the first time this is heard ("note.<key>" in the flags). */
+		FString Note;
 	};
 
 	struct FListener
@@ -100,6 +102,8 @@ private:
 		/** "at_once": said even if the hero begins the stage beside them (else only after he has been away and come near). */
 		bool bAtOnce = false;
 		TArray<FString> Lines;
+		/** "note": a line of the hero's diary (a string key) written when the remark is heard. */
+		FString Note;
 	};
 
 	struct FSpeech

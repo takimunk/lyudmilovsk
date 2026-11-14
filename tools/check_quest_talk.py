@@ -183,8 +183,19 @@ def main():
             if r.get("quest"):
                 check_stage(where, r["quest"], [r.get("stage")])
             check_keys(where, r.get("lines", []))
+    def check_note(where, r):
+        note = r.get("note")
+        if note:
+            for lang, table in strings.items():
+                if not table.get(note):
+                    problems.append("%s: note %s has no words in %s" % (where, note, lang))
+
+    for listener in scenes.get("listeners", []):
+        for r in listener.get("reactions", []):
+            check_note("quest_scenes.json listener %s" % listener.get("person"), r)
     seen = set()
     for r in scenes.get("remarks", []):
+        check_note("quest_scenes.json remark %s" % r.get("id"), r)
         where = "quest_scenes.json remark %s" % r.get("id")
         if not r.get("id") or r["id"] in seen:
             problems.append("%s: needs an id of its own" % where)
