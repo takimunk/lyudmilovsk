@@ -216,11 +216,11 @@ class Shop:
 
     def left(self, fn, s, **kw):
         y = self.y_front(self.xl) + s
-        return self.check(fn(self.B, self.xl - 0.005, y, 0.0, 90.0, **kw))
+        return self.check(fn(self.B, self.xl + 0.002, y, 0.0, 90.0, **kw))
 
     def right(self, fn, s, **kw):
         y = self.y_front(self.xr) + s
-        return self.check(fn(self.B, self.xr + 0.005, y, 0.0, 270.0, **kw))
+        return self.check(fn(self.B, self.xr - 0.002, y, 0.0, 270.0, **kw))
 
     def left_f(self, fn, s, off=0.35, **kw):
         """A free-standing piece against the left wall (its centre `off` from the wall), facing +x."""

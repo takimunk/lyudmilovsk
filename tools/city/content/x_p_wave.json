@@ -529,6 +529,7 @@
   },
   "wave_change": {
    "prompt": "city.wave2.change.prompt",
+   "price": 1,
    "lines": [
     "city.wave2.change.1",
     "city.wave2.change.2",
