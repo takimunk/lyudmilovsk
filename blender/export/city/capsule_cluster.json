@@ -73,10 +73,100 @@
  ],
  "spots": [
   {
+   "id": "br_ab1_bench",
+   "kind": "bench",
+   "pos": [
+    -7.925,
+    14.52,
+    3.3
+   ],
+   "yaw": 0.0
+  },
+  {
+   "id": "br_ab1_view",
+   "kind": "stand",
+   "pos": [
+    -6.6,
+    13.8,
+    3.3
+   ],
+   "yaw": 180.0
+  },
+  {
+   "id": "br_ab3_bench",
+   "kind": "bench",
+   "pos": [
+    -7.925,
+    14.52,
+    9.9
+   ],
+   "yaw": 0.0
+  },
+  {
+   "id": "br_ab3_view",
+   "kind": "stand",
+   "pos": [
+    -6.6,
+    13.8,
+    9.9
+   ],
+   "yaw": 180.0
+  },
+  {
+   "id": "br_bc1_bench",
+   "kind": "bench",
+   "pos": [
+    4.475,
+    14.52,
+    3.3
+   ],
+   "yaw": 0.0
+  },
+  {
+   "id": "br_bc1_view",
+   "kind": "stand",
+   "pos": [
+    5.75,
+    13.8,
+    3.3
+   ],
+   "yaw": 180.0
+  },
+  {
+   "id": "br_bc3_bench",
+   "kind": "bench",
+   "pos": [
+    4.475,
+    14.52,
+    9.9
+   ],
+   "yaw": 0.0
+  },
+  {
+   "id": "br_bc3_view",
+   "kind": "stand",
+   "pos": [
+    5.75,
+    13.8,
+    9.9
+   ],
+   "yaw": 180.0
+  },
+  {
    "id": "studio_chair",
    "kind": "seat",
    "pos": [
     -12.75,
+    8.8,
+    6.87
+   ],
+   "yaw": 0.0
+  },
+  {
+   "id": "studio_guest",
+   "kind": "seat",
+   "pos": [
+    -13.3,
     8.8,
     6.87
    ],
@@ -113,7 +203,7 @@
    "yaw": 270.0
   },
   {
-   "id": "sbench_A_4",
+   "id": "sbench_A_13",
    "kind": "bench",
    "pos": [
     -8.2,
@@ -123,7 +213,7 @@
    "yaw": 0
   },
   {
-   "id": "sbench_B_5",
+   "id": "sbench_B_14",
    "kind": "bench",
    "pos": [
     3.6,
@@ -133,7 +223,7 @@
    "yaw": 0
   },
   {
-   "id": "sbench_C_6",
+   "id": "sbench_C_15",
    "kind": "bench",
    "pos": [
     15.4,
@@ -144,6 +234,50 @@
   }
  ],
  "lamps": [
+  {
+   "pos": [
+    -6.2,
+    14.72,
+    4.94
+   ],
+   "lumens": 240,
+   "colour": "#FFE2B8",
+   "kind": "stair",
+   "radius": 4.2
+  },
+  {
+   "pos": [
+    -6.2,
+    14.72,
+    11.54
+   ],
+   "lumens": 240,
+   "colour": "#FFE2B8",
+   "kind": "stair",
+   "radius": 4.2
+  },
+  {
+   "pos": [
+    6.15,
+    14.72,
+    4.94
+   ],
+   "lumens": 240,
+   "colour": "#FFE2B8",
+   "kind": "stair",
+   "radius": 4.2
+  },
+  {
+   "pos": [
+    6.15,
+    14.72,
+    11.54
+   ],
+   "lumens": 240,
+   "colour": "#FFE2B8",
+   "kind": "stair",
+   "radius": 4.2
+  },
   {
    "pos": [
     -11.7,
@@ -345,6 +479,244 @@
  ],
  "things": [
   {
+   "id": "br_ab1_bench",
+   "kind": "seat",
+   "pos": [
+    -7.925,
+    14.52,
+    3.75
+   ],
+   "yaw": 0.0,
+   "props": {
+    "height": 0.45
+   }
+  },
+  {
+   "id": "br_ab1_planter",
+   "kind": "board",
+   "pos": [
+    -4.55,
+    14.55,
+    4.1
+   ],
+   "yaw": 0.0,
+   "props": {
+    "topic": "garden"
+   }
+  },
+  {
+   "id": "br_ab1_switch",
+   "kind": "machine",
+   "pos": [
+    -6.2,
+    14.58,
+    4.26
+   ],
+   "yaw": 0.0,
+   "props": {
+    "what": "switch",
+    "switch": 5
+   }
+  },
+  {
+   "id": "br_ab1_view",
+   "kind": "board",
+   "pos": [
+    -6.6,
+    13.2,
+    4.75
+   ],
+   "yaw": 180.0,
+   "props": {
+    "topic": "view"
+   }
+  },
+  {
+   "id": "br_ab3_bench",
+   "kind": "seat",
+   "pos": [
+    -7.925,
+    14.52,
+    10.35
+   ],
+   "yaw": 0.0,
+   "props": {
+    "height": 0.45
+   }
+  },
+  {
+   "id": "br_ab3_planter",
+   "kind": "board",
+   "pos": [
+    -4.55,
+    14.55,
+    10.7
+   ],
+   "yaw": 0.0,
+   "props": {
+    "topic": "garden"
+   }
+  },
+  {
+   "id": "br_ab3_switch",
+   "kind": "machine",
+   "pos": [
+    -6.2,
+    14.58,
+    10.86
+   ],
+   "yaw": 0.0,
+   "props": {
+    "what": "switch",
+    "switch": 5
+   }
+  },
+  {
+   "id": "br_ab3_view",
+   "kind": "board",
+   "pos": [
+    -6.6,
+    13.2,
+    11.35
+   ],
+   "yaw": 180.0,
+   "props": {
+    "topic": "view"
+   }
+  },
+  {
+   "id": "br_ab3_chime",
+   "kind": "board",
+   "pos": [
+    -7.6,
+    13.5,
+    11.75
+   ],
+   "yaw": 180.0,
+   "props": {
+    "topic": "chime"
+   }
+  },
+  {
+   "id": "br_bc1_bench",
+   "kind": "seat",
+   "pos": [
+    4.475,
+    14.52,
+    3.75
+   ],
+   "yaw": 0.0,
+   "props": {
+    "height": 0.45
+   }
+  },
+  {
+   "id": "br_bc1_planter",
+   "kind": "board",
+   "pos": [
+    7.75,
+    14.55,
+    4.1
+   ],
+   "yaw": 0.0,
+   "props": {
+    "topic": "garden"
+   }
+  },
+  {
+   "id": "br_bc1_switch",
+   "kind": "machine",
+   "pos": [
+    6.15,
+    14.58,
+    4.26
+   ],
+   "yaw": 0.0,
+   "props": {
+    "what": "switch",
+    "switch": 5
+   }
+  },
+  {
+   "id": "br_bc1_view",
+   "kind": "board",
+   "pos": [
+    5.75,
+    13.2,
+    4.75
+   ],
+   "yaw": 180.0,
+   "props": {
+    "topic": "view"
+   }
+  },
+  {
+   "id": "br_bc3_bench",
+   "kind": "seat",
+   "pos": [
+    4.475,
+    14.52,
+    10.35
+   ],
+   "yaw": 0.0,
+   "props": {
+    "height": 0.45
+   }
+  },
+  {
+   "id": "br_bc3_planter",
+   "kind": "board",
+   "pos": [
+    7.75,
+    14.55,
+    10.7
+   ],
+   "yaw": 0.0,
+   "props": {
+    "topic": "garden"
+   }
+  },
+  {
+   "id": "br_bc3_switch",
+   "kind": "machine",
+   "pos": [
+    6.15,
+    14.58,
+    10.86
+   ],
+   "yaw": 0.0,
+   "props": {
+    "what": "switch",
+    "switch": 5
+   }
+  },
+  {
+   "id": "br_bc3_view",
+   "kind": "board",
+   "pos": [
+    5.75,
+    13.2,
+    11.35
+   ],
+   "yaw": 180.0,
+   "props": {
+    "topic": "view"
+   }
+  },
+  {
+   "id": "br_bc3_vane",
+   "kind": "board",
+   "pos": [
+    7.55,
+    13.2,
+    11.85
+   ],
+   "yaw": 180.0,
+   "props": {
+    "topic": "vane"
+   }
+  },
+  {
    "id": "kit_clock_1",
    "kind": "board",
    "pos": [
@@ -502,6 +874,111 @@
    }
   },
   {
+   "id": "studio_guest_chair",
+   "kind": "seat",
+   "pos": [
+    -13.3,
+    8.8,
+    7.32
+   ],
+   "yaw": 0.0,
+   "props": {
+    "height": 0.45
+   }
+  },
+  {
+   "id": "studio_morse",
+   "kind": "machine",
+   "pos": [
+    -13.2,
+    8.42,
+    7.68
+   ],
+   "yaw": 180.0,
+   "props": {
+    "what": "morse_key"
+   }
+  },
+  {
+   "id": "studio_logbook",
+   "kind": "board",
+   "pos": [
+    -12.65,
+    8.42,
+    7.67
+   ],
+   "yaw": 180.0,
+   "props": {
+    "topic": "log"
+   }
+  },
+  {
+   "id": "studio_tuner",
+   "kind": "machine",
+   "pos": [
+    -13.58,
+    11.16,
+    8.49
+   ],
+   "yaw": 0.0,
+   "props": {
+    "what": "tuner"
+   }
+  },
+  {
+   "id": "studio_headphones",
+   "kind": "board",
+   "pos": [
+    -13.02,
+    11.18,
+    8.41
+   ],
+   "yaw": 0.0,
+   "props": {
+    "topic": "headphones"
+   }
+  },
+  {
+   "id": "studio_qsl",
+   "kind": "board",
+   "pos": [
+    -14.0,
+    9.3,
+    8.42
+   ],
+   "yaw": 90.0,
+   "props": {
+    "topic": "qsl"
+   }
+  },
+  {
+   "id": "studio_kettle",
+   "kind": "take",
+   "pos": [
+    -10.85,
+    11.0,
+    7.97
+   ],
+   "yaw": 0.0,
+   "props": {
+    "item": "tea"
+   }
+  },
+  {
+   "id": "studio_switch",
+   "kind": "machine",
+   "pos": [
+    -12.52,
+    11.27,
+    8.23
+   ],
+   "yaw": 0.0,
+   "props": {
+    "what": "switch",
+    "switch": "room"
+   }
+  },
+  {
    "id": "hall_a_bench",
    "kind": "seat",
    "pos": [
@@ -593,6 +1070,32 @@
    }
   },
   {
+   "id": "hall_a_mail",
+   "kind": "board",
+   "pos": [
+    -9.45,
+    13.7,
+    1.25
+   ],
+   "yaw": 270.0,
+   "props": {
+    "topic": "mail"
+   }
+  },
+  {
+   "id": "house_a_news",
+   "kind": "board",
+   "pos": [
+    -10.05,
+    11.24,
+    1.6
+   ],
+   "yaw": 0.0,
+   "props": {
+    "topic": "house"
+   }
+  },
+  {
    "id": "hall_b_bench",
    "kind": "seat",
    "pos": [
@@ -629,6 +1132,19 @@
    "yaw": 270.0,
    "props": {
     "topic": "lost"
+   }
+  },
+  {
+   "id": "hall_b_mail",
+   "kind": "board",
+   "pos": [
+    -2.95,
+    13.7,
+    1.25
+   ],
+   "yaw": 90.0,
+   "props": {
+    "topic": "mail"
    }
   },
   {
@@ -746,6 +1262,32 @@
    "yaw": 180.0,
    "props": {
     "topic": "painting"
+   }
+  },
+  {
+   "id": "hall_c_mail",
+   "kind": "board",
+   "pos": [
+    14.25,
+    12.65,
+    1.25
+   ],
+   "yaw": 270.0,
+   "props": {
+    "topic": "mail"
+   }
+  },
+  {
+   "id": "house_c_news",
+   "kind": "board",
+   "pos": [
+    13.55,
+    11.14,
+    1.6
+   ],
+   "yaw": 0.0,
+   "props": {
+    "topic": "house"
    }
   }
  ],
@@ -2315,8 +2857,8 @@
   "24 flats (3 paired); cores A/C 5 storeys, B 4; bridges at levels 1 and 3"
  ],
  "tris": {
-  "shell": 6276,
-  "detail": 16947,
+  "shell": 6372,
+  "detail": 20193,
   "windows": 232
  }
 }
