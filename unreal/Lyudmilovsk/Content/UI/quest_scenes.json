@@ -30,19 +30,22 @@
       "sorokin_oleg.waxwing_seen.1",
       "sorokin_oleg.waxwing_seen.2",
       "sorokin_oleg.waxwing_seen.3"
-     ]
+     ],
+     "diary": "journal.heard.sorokin_oleg.waxwing_seen"
     },
     {
      "species": "Waxwing",
      "lines": [
       "sorokin_oleg.waxwing_again.1"
-     ]
+     ],
+     "diary": "journal.heard.sorokin_oleg.waxwing_again"
     },
     {
      "species": "Magpie",
      "lines": [
       "sorokin_oleg.namesake_magpie.1"
-     ]
+     ],
+     "diary": "journal.heard.sorokin_oleg.namesake_magpie"
     },
     {
      "species": "BlackBrowedAlbatross",
@@ -65,7 +68,8 @@
     {
      "lines": [
       "sorokin_oleg.bird_visit.1"
-     ]
+     ],
+     "diary": "journal.heard.sorokin_oleg.bird_visit"
     }
    ]
   },
@@ -83,20 +87,23 @@
       "kid_girl.sparrow_seen.1",
       "kid_girl.sparrow_seen.2",
       "kid_girl.sparrow_seen.3"
-     ]
+     ],
+     "diary": "journal.heard.kid_girl.sparrow_seen"
     },
     {
      "species": "Waxwing",
      "lines": [
       "kid_girl.book_bird_tail.1"
-     ]
+     ],
+     "diary": "journal.heard.kid_girl.book_bird_tail"
     },
     {
      "quest": "sparrow_hello",
      "stage": "call",
      "lines": [
       "kid_girl.sparrow_other.1"
-     ]
+     ],
+     "diary": "journal.heard.kid_girl.sparrow_other"
     },
     {
      "species": "HouseSparrow",
@@ -104,13 +111,15 @@
      "stage": "done",
      "lines": [
       "kid_girl.kuzya_no_tea.1"
-     ]
+     ],
+     "diary": "journal.heard.kid_girl.kuzya_no_tea"
     },
     {
      "species": "FeralPigeon",
      "lines": [
       "kid_girl.pigeon_hello_test.1"
-     ]
+     ],
+     "diary": "journal.heard.kid_girl.pigeon_hello_test"
     },
     {
      "air": true,
@@ -137,7 +146,8 @@
      "stage": "done",
      "lines": [
       "kimura_dasha.tit_row_monday.1"
-     ]
+     ],
+     "diary": "journal.heard.kimura_dasha.tit_row_monday"
     },
     {
      "species": "FeralPigeon",
@@ -149,7 +159,8 @@
      "species": "Waxwing",
      "lines": [
       "kimura_dasha.no_column_yet.1"
-     ]
+     ],
+     "diary": "journal.heard.kimura_dasha.no_column_yet"
     },
     {
      "air": true,
@@ -176,7 +187,8 @@
      "stage": "feed",
      "lines": [
       "sato_yuki.crow_soon_fed.1"
-     ]
+     ],
+     "diary": "journal.heard.sato_yuki.crow_soon_fed"
     },
     {
      "species": "HoodedCrow",
@@ -184,7 +196,8 @@
      "stage": "done",
      "lines": [
       "sato_yuki.button_suits_you.1"
-     ]
+     ],
+     "diary": "journal.heard.sato_yuki.button_suits_you"
     },
     {
      "species": "CarrionCrow",
@@ -198,13 +211,15 @@
      "stage": "return",
      "lines": [
       "sato_yuki.grandpa_bench.1"
-     ]
+     ],
+     "diary": "journal.heard.sato_yuki.grandpa_bench"
     },
     {
      "species": "Waxwing",
      "lines": [
       "sato_yuki.jam_drops.1"
-     ]
+     ],
+     "diary": "journal.heard.sato_yuki.jam_drops"
     },
     {
      "air": true,
@@ -215,7 +230,8 @@
     {
      "lines": [
       "sato_yuki.not_too_close.1"
-     ]
+     ],
+     "diary": "journal.heard.sato_yuki.not_too_close"
     }
    ]
   },
@@ -231,7 +247,8 @@
      "stage": "catch",
      "lines": [
       "lange_pyotr.gull_try_pier.1"
-     ]
+     ],
+     "diary": "journal.heard.lange_pyotr.gull_try_pier"
     },
     {
      "species": "Cormorant",
@@ -249,7 +266,8 @@
      "species": "Waxwing",
      "lines": [
       "lange_pyotr.olegs_bird.1"
-     ]
+     ],
+     "diary": "journal.heard.lange_pyotr.olegs_bird"
     },
     {
      "air": true,
@@ -260,7 +278,8 @@
     {
      "lines": [
       "lange_pyotr.counting_meshes.1"
-     ]
+     ],
+     "diary": "journal.heard.lange_pyotr.counting_meshes"
     }
    ]
   },
@@ -276,7 +295,8 @@
      "stage": "done",
      "lines": [
       "belov_misha.key_under_shirt.1"
-     ]
+     ],
+     "diary": "journal.heard.belov_misha.key_under_shirt"
     },
     {
      "species": "Magpie",
@@ -284,7 +304,8 @@
      "stage": "search",
      "lines": [
       "belov_misha.confess_magpie.1"
-     ]
+     ],
+     "diary": "journal.heard.belov_misha.confess_magpie"
     },
     {
      "species": "Jackdaw",
@@ -296,7 +317,8 @@
      "species": "Waxwing",
      "lines": [
       "belov_misha.unknown_marking.1"
-     ]
+     ],
+     "diary": "journal.heard.belov_misha.unknown_marking"
     },
     {
      "air": true,
@@ -323,7 +345,8 @@
      "stage": "look",
      "lines": [
       "nishimura_aya.starling_messenger.1"
-     ]
+     ],
+     "diary": "journal.heard.nishimura_aya.starling_messenger"
     },
     {
      "species": "HerringGull",
@@ -341,7 +364,8 @@
      "species": "Waxwing",
      "lines": [
       "nishimura_aya.cadmium_tail.1"
-     ]
+     ],
+     "diary": "journal.heard.nishimura_aya.cadmium_tail"
     },
     {
      "air": true,
@@ -352,7 +376,8 @@
     {
      "lines": [
       "nishimura_aya.head_to_the_left.1"
-     ]
+     ],
+     "diary": "journal.heard.nishimura_aya.head_to_the_left"
     }
    ]
   },
@@ -374,20 +399,23 @@
      "stage": "return",
      "lines": [
       "zotova_galina.next_bench_longer.1"
-     ]
+     ],
+     "diary": "journal.heard.zotova_galina.next_bench_longer"
     },
     {
      "species": "Waxwing",
      "lines": [
       "zotova_galina.reagent_wax.1"
-     ]
+     ],
+     "diary": "journal.heard.zotova_galina.reagent_wax"
     },
     {
      "quest": "soda_science",
      "stage": "taste",
      "lines": [
       "zotova_galina.four_bottles_boy.1"
-     ]
+     ],
+     "diary": "journal.heard.zotova_galina.four_bottles_boy"
     },
     {
      "air": true,
@@ -398,7 +426,8 @@
     {
      "lines": [
       "zotova_galina.no_bread_crossword.1"
-     ]
+     ],
+     "diary": "journal.heard.zotova_galina.no_bread_crossword"
     }
    ]
   },
@@ -414,7 +443,8 @@
      "stage": "done",
      "lines": [
       "zotov_lev.rook_referee.1"
-     ]
+     ],
+     "diary": "journal.heard.zotov_lev.rook_referee"
     },
     {
      "species": "FeralPigeon",
@@ -428,13 +458,15 @@
      "stage": "return",
      "lines": [
       "zotov_lev.not_imagined.1"
-     ]
+     ],
+     "diary": "journal.heard.zotov_lev.not_imagined"
     },
     {
      "species": "Waxwing",
      "lines": [
       "zotov_lev.handsome_error.1"
-     ]
+     ],
+     "diary": "journal.heard.zotov_lev.handsome_error"
     },
     {
      "air": true,
@@ -445,7 +477,8 @@
     {
      "lines": [
       "zotov_lev.came_first.1"
-     ]
+     ],
+     "diary": "journal.heard.zotov_lev.came_first"
     }
    ]
   },
@@ -461,7 +494,8 @@
      "stage": "buy",
      "lines": [
       "korneeva_nina.pigeon_from_fair.1"
-     ]
+     ],
+     "diary": "journal.heard.korneeva_nina.pigeon_from_fair"
     },
     {
      "species": "HouseSparrow",
@@ -475,19 +509,22 @@
      "stage": "return",
      "lines": [
       "korneeva_nina.ears_off_yard.1"
-     ]
+     ],
+     "diary": "journal.heard.korneeva_nina.ears_off_yard"
     },
     {
      "species": "Waxwing",
      "lines": [
       "korneeva_nina.postcard_bird.1"
-     ]
+     ],
+     "diary": "journal.heard.korneeva_nina.postcard_bird"
     },
     {
      "air": true,
      "lines": [
       "korneeva_nina.tell_me_properly.1"
-     ]
+     ],
+     "diary": "journal.heard.korneeva_nina.tell_me_properly"
     },
     {
      "lines": [
@@ -508,7 +545,8 @@
      "stage": "done",
      "lines": [
       "korneev_ivan.cob_finished.1"
-     ]
+     ],
+     "diary": "journal.heard.korneev_ivan.cob_finished"
     },
     {
      "species": "GreyHeron",
@@ -520,7 +558,8 @@
      "species": "Waxwing",
      "lines": [
       "korneev_ivan.olegs_department.1"
-     ]
+     ],
+     "diary": "journal.heard.korneev_ivan.olegs_department"
     },
     {
      "air": true,
@@ -531,7 +570,8 @@
     {
      "lines": [
       "korneev_ivan.good_company.1"
-     ]
+     ],
+     "diary": "journal.heard.korneev_ivan.good_company"
     }
    ]
   },
@@ -551,7 +591,8 @@
      "species": "Waxwing",
      "lines": [
       "valiev_rustam.data_sheet.1"
-     ]
+     ],
+     "diary": "journal.heard.valiev_rustam.data_sheet"
     },
     {
      "air": true,
@@ -559,7 +600,8 @@
      "stage": "signal",
      "lines": [
       "valiev_rustam.not_the_signal.1"
-     ]
+     ],
+     "diary": "journal.heard.valiev_rustam.not_the_signal"
     },
     {
      "air": true,
@@ -586,7 +628,8 @@
      "stage": "done",
      "lines": [
       "guseva_valentina.hear_you_now.1"
-     ]
+     ],
+     "diary": "journal.heard.guseva_valentina.hear_you_now"
     },
     {
      "species": "HouseSparrow",
@@ -600,13 +643,15 @@
      "stage": "return",
      "lines": [
       "guseva_valentina.two_steps_bench.1"
-     ]
+     ],
+     "diary": "journal.heard.guseva_valentina.two_steps_bench"
     },
     {
      "species": "Waxwing",
      "lines": [
       "guseva_valentina.corn_butter_tail.1"
-     ]
+     ],
+     "diary": "journal.heard.guseva_valentina.corn_butter_tail"
     },
     {
      "air": true,
@@ -633,7 +678,8 @@
      "stage": "done",
      "lines": [
       "khuazhev_aslan.sonya_kuzya.1"
-     ]
+     ],
+     "diary": "journal.heard.khuazhev_aslan.sonya_kuzya"
     },
     {
      "species": "HoodedCrow",
@@ -645,7 +691,8 @@
      "species": "Waxwing",
      "lines": [
       "khuazhev_aslan.wedding_guest.1"
-     ]
+     ],
+     "diary": "journal.heard.khuazhev_aslan.wedding_guest"
     },
     {
      "air": true,
@@ -653,7 +700,8 @@
      "stage": "taste",
      "lines": [
       "khuazhev_aslan.see_my_guest.1"
-     ]
+     ],
+     "diary": "journal.heard.khuazhev_aslan.see_my_guest"
     },
     {
      "air": true,
@@ -680,7 +728,8 @@
      "stage": "done",
      "lines": [
       "nao.palm_pigeon_unhurried.1"
-     ]
+     ],
+     "diary": "journal.heard.nao.palm_pigeon_unhurried"
     },
     {
      "species": "Starling",
@@ -692,13 +741,15 @@
      "species": "Waxwing",
      "lines": [
       "nao.ice_in_glass.1"
-     ]
+     ],
+     "diary": "journal.heard.nao.ice_in_glass"
     },
     {
      "air": true,
      "lines": [
       "nao.whole_sea_from_above.1"
-     ]
+     ],
+     "diary": "journal.heard.nao.whole_sea_from_above"
     },
     {
      "lines": [
@@ -719,13 +770,15 @@
      "stage": "done",
      "lines": [
       "owner.braid_crumbs.1"
-     ]
+     ],
+     "diary": "journal.heard.owner.braid_crumbs"
     },
     {
      "species": "Waxwing",
      "lines": [
       "owner.waxwing_from_north.1"
-     ]
+     ],
+     "diary": "journal.heard.owner.waxwing_from_north"
     },
     {
      "air": true,
@@ -736,7 +789,8 @@
     {
      "lines": [
       "owner.on_the_threshold.1"
-     ]
+     ],
+     "diary": "journal.heard.owner.on_the_threshold"
     }
    ]
   },
@@ -752,7 +806,8 @@
      "stage": "done",
      "lines": [
       "guy_b.pigeon_comes_back.1"
-     ]
+     ],
+     "diary": "journal.heard.guy_b.pigeon_comes_back"
     },
     {
      "species": "Robin",
@@ -764,7 +819,8 @@
      "species": "Waxwing",
      "lines": [
       "guy_b.alarm_to_the_end.1"
-     ]
+     ],
+     "diary": "journal.heard.guy_b.alarm_to_the_end"
     },
     {
      "air": true,
@@ -775,7 +831,8 @@
     {
      "lines": [
       "guy_b.no_hurry_birds.1"
-     ]
+     ],
+     "diary": "journal.heard.guy_b.no_hurry_birds"
     }
    ]
   },
@@ -791,7 +848,8 @@
      "stage": "done",
      "lines": [
       "streamer.waxwing_on_air.1"
-     ]
+     ],
+     "diary": "journal.heard.streamer.waxwing_on_air"
     },
     {
      "species": "Magpie",
@@ -808,7 +866,8 @@
     {
      "lines": [
       "streamer.bird_more_viewers.1"
-     ]
+     ],
+     "diary": "journal.heard.streamer.bird_more_viewers"
     }
    ]
   },
@@ -834,7 +893,8 @@
      "species": "Waxwing",
      "lines": [
       "clerk.precious_cells.1"
-     ]
+     ],
+     "diary": "journal.heard.clerk.precious_cells"
     },
     {
      "air": true,
@@ -845,7 +905,8 @@
     {
      "lines": [
       "clerk.twelve_by_twelve.1"
-     ]
+     ],
+     "diary": "journal.heard.clerk.twelve_by_twelve"
     }
    ]
   }
@@ -862,7 +923,8 @@
    "lines": [
     "orlova_tanya.rowan_doorway.1"
    ],
-   "note": "the hero walks into the Gastronom (Tanya behind the counter, Mon-Sat 9-19) while he still gathers the guide, rowan and feeder; said before he talks to her, so it leads into her own 'Сушёная рябина? Её один Сорокин и брал.'"
+   "note": "the hero walks into the Gastronom (Tanya behind the counter, Mon-Sat 9-19) while he still gathers the guide, rowan and feeder; said before he talks to her, so it leads into her own 'Сушёная рябина? Её один Сорокин и брал.'",
+   "diary": "journal.heard.tanya_rowan_doorway"
   },
   {
    "id": "olya_north_send_off",
@@ -875,7 +937,8 @@
    "lines": [
     "girl_b.north_send_off.1"
    ],
-   "note": "the guide taken, the hero passes Olya (library desk 10-15 Wed-Sat, or anywhere in the Academgorodok) on his way north"
+   "note": "the guide taken, the hero passes Olya (library desk 10-15 Wed-Sat, or anywhere in the Academgorodok) on his way north",
+   "diary": "journal.heard.olya_north_send_off"
   },
   {
    "id": "dasha_tally_stump",
@@ -888,7 +951,8 @@
    "lines": [
     "kimura_dasha.tally_stump.1"
    ],
-   "note": "the hero crouches by his peanut feeder in the Academgorodok's yard; Dasha's yard_evening is on academ_bench_2, 17-18:30, and she walks the yard after lectures"
+   "note": "the hero crouches by his peanut feeder in the Academgorodok's yard; Dasha's yard_evening is on academ_bench_2, 17-18:30, and she walks the yard after lectures",
+   "diary": "journal.heard.dasha_tally_stump"
   },
   {
    "id": "sorokin_views_small_town",
@@ -902,7 +966,8 @@
     "sorokin_oleg.views_small_town.1",
     "sorokin_oleg.views_small_town.2"
    ],
-   "note": "after Aya (his friend in people.json) heard the hero's report; Sorokin on his bench (academ_bench_4, 8-12:30, 14:30-18:30) calls it out when the hero passes. Echoes Aya's 'Маленький и тихий'"
+   "note": "after Aya (his friend in people.json) heard the hero's report; Sorokin on his bench (academ_bench_4, 8-12:30, 14:30-18:30) calls it out when the hero passes. Echoes Aya's 'Маленький и тихий'",
+   "diary": "journal.heard.sorokin_views_small_town"
   },
   {
    "id": "nina_cob_for_vanya",
@@ -916,7 +981,8 @@
     "korneeva_nina.cob_for_vanya.1",
     "korneeva_nina.cob_for_vanya.2"
    ],
-   "note": "the hero crosses the yard with the cob; Nina sits on academ_bench_0 14-16:30, Ivan on academ_bench_3 15-17:30 (both yard_evening), otherwise he fishes off the beach"
+   "note": "the hero crosses the yard with the cob; Nina sits on academ_bench_0 14-16:30, Ivan on academ_bench_3 15-17:30 (both yard_evening), otherwise he fishes off the beach",
+   "diary": "journal.heard.nina_cob_for_vanya"
   },
   {
    "id": "lange_crows_crate",
@@ -930,7 +996,8 @@
    "lines": [
     "lange_pyotr.crows_herring_crate.1"
    ],
-   "note": "hooded crows live in pairs on the beach (docs/corvids.md); Lange is about the beach and the promenade (mend_nets 12:30-17, fish_shore), so the hero feeding crows there passes him"
+   "note": "hooded crows live in pairs on the beach (docs/corvids.md); Lange is about the beach and the promenade (mend_nets 12:30-17, fish_shore), so the hero feeding crows there passes him",
+   "diary": "journal.heard.lange_crows_crate"
   },
   {
    "id": "yuki_crows_from_bench",
@@ -944,7 +1011,8 @@
    "lines": [
     "sato_yuki.crows_from_bench.1"
    ],
-   "note": "Yuki sits on academ_bench_1 16-17:15 (yard_evening), the bench the crow took her button from; she watches the hero feed crows from a safe distance"
+   "note": "Yuki sits on academ_bench_1 16-17:15 (yard_evening), the bench the crow took her button from; she watches the hero feed crows from a safe distance",
+   "diary": "journal.heard.yuki_crows_from_bench"
   },
   {
    "id": "misha_rustam_window",
@@ -957,7 +1025,8 @@
    "lines": [
     "belov_misha.rustam_window.1"
    ],
-   "note": "Misha is Rustam's friend and shares academ_bench_5 with him in the evening (Misha 17-18:30); the hero passes through the yard on the way to the lamp or the station"
+   "note": "Misha is Rustam's friend and shares academ_bench_5 with him in the evening (Misha 17-18:30); the hero passes through the yard on the way to the lamp or the station",
+   "diary": "journal.heard.misha_rustam_window"
   },
   {
    "id": "vika_pigeon_twice",
@@ -971,7 +1040,8 @@
    "lines": [
     "li_vika.pigeon_counts_twice.1"
    ],
-   "note": "Vika is the other side of Dasha's bet (her flatmate); she is in the yard on academ_bench_3 18-19:30 and after work"
+   "note": "Vika is the other side of Dasha's bet (her flatmate); she is in the yard on academ_bench_3 18-19:30 and after work",
+   "diary": "journal.heard.vika_pigeon_twice"
   },
   {
    "id": "lev_soda_eyes_shut",
@@ -984,7 +1054,8 @@
    "lines": [
     "zotov_lev.soda_eyes_shut.1"
    ],
-   "note": "Lev on academ_bench_1 17:30-19 or in the yard after the Laboratory; sets up Galina's tell line 'Лев уверяет, что различит их с закрытыми глазами'"
+   "note": "Lev on academ_bench_1 17:30-19 or in the yard after the Laboratory; sets up Galina's tell line 'Лев уверяет, что различит их с закрытыми глазами'",
+   "diary": "journal.heard.lev_soda_eyes_shut"
   },
   {
    "id": "galina_interferometer",
@@ -998,7 +1069,8 @@
    "lines": [
     "zotova_galina.interferometer_file.1"
    ],
-   "note": "after Lev paid for the new issue; Galina on academ_bench_0 17:30-19 in the yard"
+   "note": "after Lev paid for the new issue; Galina on academ_bench_0 17:30-19 in the yard",
+   "diary": "journal.heard.galina_interferometer"
   },
   {
    "id": "valentina_aslan_sent",
@@ -1011,7 +1083,8 @@
    "lines": [
     "guseva_valentina.aslan_never_tried.1"
    ],
-   "note": "the hero comes to her corn cart (work_corn 11-18 every day) on Aslan's errand; they are friends in people.json"
+   "note": "the hero comes to her corn cart (work_corn 11-18 every day) on Aslan's errand; they are friends in people.json",
+   "diary": "journal.heard.valentina_aslan_sent"
   },
   {
    "id": "nao_supper_smoke",
@@ -1024,7 +1097,8 @@
    "lines": [
     "nao.supper_smoke.1"
    ],
-   "note": "Nao keeps the club's door 10-21 every day, a few metres from Aslan's tent where the owner sent the hero for the braid"
+   "note": "Nao keeps the club's door 10-21 every day, a few metres from Aslan's tent where the owner sent the hero for the braid",
+   "diary": "journal.heard.nao_supper_smoke"
   },
   {
    "id": "aslan_braid_fisher",
@@ -1037,7 +1111,8 @@
    "lines": [
     "khuazhev_aslan.braid_for_fisher.1"
    ],
-   "note": "the hero comes up to Aslan's cheese tent by the club door (work_cheese 10-20, not Monday) for Lange's braid; Lange's own line: 'Утром рыба, вечером рыба'"
+   "note": "the hero comes up to Aslan's cheese tent by the club door (work_cheese 10-20, not Monday) for Lange's braid; Lange's own line: 'Утром рыба, вечером рыба'",
+   "diary": "journal.heard.aslan_braid_fisher"
   },
   {
    "id": "clerk_soda_palette",
@@ -1050,7 +1125,8 @@
    "lines": [
     "clerk.soda_palette.1"
    ],
-   "note": "inside the club hall: Yamada sits at station 9 (work_clerk 10-19, Monday to Friday, his own_slot); the hero crosses the hall to the soda machine for Galina's four samples. Indoors, people are drawn within 40 m, so he is there to speak."
+   "note": "inside the club hall: Yamada sits at station 9 (work_clerk 10-19, Monday to Friday, his own_slot); the hero crosses the hall to the soda machine for Galina's four samples. Indoors, people are drawn within 40 m, so he is there to speak.",
+   "diary": "journal.heard.clerk_soda_palette"
   },
   {
    "id": "owner_lamp_batteries",
@@ -1063,7 +1139,8 @@
    "lines": [
     "owner.lamp_batteries.1"
    ],
-   "note": "the booth in the club (work_booth 12:00-02:00 every day): Ogawa sells the head lamp over his counter (BoothOwner.cpp goods: bird_feed, head_lamp), which Rustam sent the hero for. Echoes his everyday 'Свет не трогай. Он сам знает, когда гореть.'"
+   "note": "the booth in the club (work_booth 12:00-02:00 every day): Ogawa sells the head lamp over his counter (BoothOwner.cpp goods: bird_feed, head_lamp), which Rustam sent the hero for. Echoes his everyday 'Свет не трогай. Он сам знает, когда гореть.'",
+   "diary": "journal.heard.owner_lamp_batteries"
   },
   {
    "id": "timur_owner_ate",
@@ -1076,7 +1153,8 @@
    "lines": [
     "guy_b.owner_ate_film.1"
    ],
-   "note": "inside the club: Timur at his station 0 after the warehouse (work_away 7:30-15 on weekdays, free after); a friend of the owner in people.json. Echoes his own 'Вентиляция гудит в ля-миноре'."
+   "note": "inside the club: Timur at his station 0 after the warehouse (work_away 7:30-15 on weekdays, free after); a friend of the owner in people.json. Echoes his own 'Вентиляция гудит в ля-миноре'.",
+   "diary": "journal.heard.timur_owner_ate"
   },
   {
    "id": "vera_sparrow_retold",
@@ -1089,7 +1167,8 @@
    "lines": [
     "girl_a.sparrow_retold.1"
    ],
-   "note": "inside the club: Vera, Sonya's mother (household vera), at her Spectrum on station 4 after the Laboratory (work_lab 9-15 on weekdays); Sonya sits at station 7 in the same hall."
+   "note": "inside the club: Vera, Sonya's mother (household vera), at her Spectrum on station 4 after the Laboratory (work_lab 9-15 on weekdays); Sonya sits at station 7 in the same hall.",
+   "diary": "journal.heard.vera_sparrow_retold"
   },
   {
    "id": "tyoma_sparrow_no_hello",
@@ -1102,7 +1181,8 @@
    "lines": [
     "kid_boy.sparrow_no_hello.1"
    ],
-   "note": "inside the club: Tyoma at station 6, next to Sonya's 7, after school (8:15-13:30 on weekdays) until bed at 21:30; Sonya is his friend in people.json."
+   "note": "inside the club: Tyoma at station 6, next to Sonya's 7, after school (8:15-13:30 on weekdays) until bed at 21:30; Sonya is his friend in people.json.",
+   "diary": "journal.heard.tyoma_sparrow_no_hello"
   },
   {
    "id": "olya_aya_atlas",
@@ -1115,7 +1195,8 @@
    "lines": [
     "girl_b.aya_atlas.1"
    ],
-   "note": "the library: Olya at the issue desk (work_library 10-15, Wednesday to Saturday); Aya is her friend in people.json. Also works if she says it in the club in the evening (station 8): 'заходила' is to the library either way."
+   "note": "the library: Olya at the issue desk (work_library 10-15, Wednesday to Saturday); Aya is her friend in people.json. Also works if she says it in the club in the evening (station 8): 'заходила' is to the library either way.",
+   "diary": "journal.heard.olya_aya_atlas"
   },
   {
    "id": "tanya_rowan_again",
@@ -1128,7 +1209,8 @@
    "lines": [
     "orlova_tanya.rowan_again.1"
    ],
-   "note": "inside the Gastronom: Tanya behind the counter (work_shop 9-19, Monday to Saturday). Follows her round-1 'Её один Сорокин и брал'; dried rowan is on her counter (counters.json feed_rowan). Sorokin only hopes: the waxwings stay in the grove."
+   "note": "inside the Gastronom: Tanya behind the counter (work_shop 9-19, Monday to Saturday). Follows her round-1 'Её один Сорокин и брал'; dried rowan is on her counter (counters.json feed_rowan). Sorokin only hopes: the waxwings stay in the grove.",
+   "diary": "journal.heard.tanya_rowan_again"
   },
   {
    "id": "nao_aslan_pancakes",
@@ -1141,7 +1223,8 @@
    "lines": [
     "nao.aslan_pancake_talk.1"
    ],
-   "note": "the club's doorstep and forecourt (watch_door 10-21 every day), a few metres from Aslan's tent; the hero comes in and out of the club past her."
+   "note": "the club's doorstep and forecourt (watch_door 10-21 every day), a few metres from Aslan's tent; the hero comes in and out of the club past her.",
+   "diary": "journal.heard.nao_aslan_pancakes"
   },
   {
    "id": "lev_soda_mixed_up",
@@ -1154,7 +1237,8 @@
    "lines": [
     "zotov_lev.soda_mixed_up.1"
    ],
-   "note": "the yard: Lev on academ_bench_1 17:30-19 (yard_evening). Pays off his round-1 remark ('Байкал от Тархуна я отличу с закрытыми глазами') and Galina's 'Теперь проверим Льва'; he claimed only Baikal against Tarragon, so the mix-up is in the other pair."
+   "note": "the yard: Lev on academ_bench_1 17:30-19 (yard_evening). Pays off his round-1 remark ('Байкал от Тархуна я отличу с закрытыми глазами') and Galina's 'Теперь проверим Льва'; he claimed only Baikal against Tarragon, so the mix-up is in the other pair.",
+   "diary": "journal.heard.lev_soda_mixed_up"
   },
   {
    "id": "kei_soup_measured",
@@ -1167,7 +1251,8 @@
    "lines": [
     "sato_kei.soup_measured.1"
    ],
-   "note": "the yard after the Laboratory (work_lab 10-18 on weekdays; no fixed bench, free in the evening). Kei is the one who called the soup the best in town (Vika's lunch_ask.2); echoes his own 'Свет у моря другой. Я меряю его каждый день'."
+   "note": "the yard after the Laboratory (work_lab 10-18 on weekdays; no fixed bench, free in the evening). Kei is the one who called the soup the best in town (Vika's lunch_ask.2); echoes his own 'Свет у моря другой. Я меряю его каждый день'.",
+   "diary": "journal.heard.kei_soup_measured"
   },
   {
    "id": "misha_two_lamps",
@@ -1180,7 +1265,8 @@
    "lines": [
     "belov_misha.two_lamps.1"
    ],
-   "note": "the yard: Misha on academ_bench_5 17-18:30, the bench he shares with Rustam (friends). Agrees with Rustam's own after-talk about a brighter lamp being another experiment."
+   "note": "the yard: Misha on academ_bench_5 17-18:30, the bench he shares with Rustam (friends). Agrees with Rustam's own after-talk about a brighter lamp being another experiment.",
+   "diary": "journal.heard.misha_two_lamps"
   },
   {
    "id": "vika_dishes_traitors",
@@ -1193,7 +1279,8 @@
    "lines": [
     "li_vika.dishes_traitors.1"
    ],
-   "note": "the yard: Vika on academ_bench_3 18-19:30; she lost Dasha's bet (a week of dishes). Follows her round-1 'Голубь тоже птица'."
+   "note": "the yard: Vika on academ_bench_3 18-19:30; she lost Dasha's bet (a week of dishes). Follows her round-1 'Голубь тоже птица'.",
+   "diary": "journal.heard.vika_dishes_traitors"
   },
   {
    "id": "sorokin_magpie_faces",
@@ -1206,7 +1293,8 @@
    "lines": [
     "sorokin_oleg.magpie_faces.1"
    ],
-   "note": "Sorokin on academ_bench_4 (8-12:30, 14:30-18:30) calls it out as the hero crosses the square; magpies do recognise individual human faces."
+   "note": "Sorokin on academ_bench_4 (8-12:30, 14:30-18:30) calls it out as the hero crosses the square; magpies do recognise individual human faces.",
+   "diary": "journal.heard.sorokin_magpie_faces"
   },
   {
    "id": "valentina_cheese_salt",
@@ -1219,7 +1307,8 @@
    "lines": [
     "guseva_valentina.cheese_for_salt.1"
    ],
-   "note": "at the corn cart on the Academgorodok's square (work_corn 11-18 every day); Aslan is her friend. Pays off her round-1 'он мою кукурузу хвалит, а сам ни разу не пробовал' and Aslan's tell 'Валентина соли не жалеет'."
+   "note": "at the corn cart on the Academgorodok's square (work_corn 11-18 every day); Aslan is her friend. Pays off her round-1 'он мою кукурузу хвалит, а сам ни разу не пробовал' and Aslan's tell 'Валентина соли не жалеет'.",
+   "diary": "journal.heard.valentina_cheese_salt"
   },
   {
    "id": "ivan_cheese_for_petya",
@@ -1232,7 +1321,8 @@
    "lines": [
     "korneev_ivan.cheese_for_petya.1"
    ],
-   "note": "Ivan on academ_bench_3 15-17:30 or fishing off the beach in the morning; Lange is his friend in people.json. 'Двадцать лет' is Lange's own 'Двадцать лет рыба'."
+   "note": "Ivan on academ_bench_3 15-17:30 or fishing off the beach in the morning; Lange is his friend in people.json. 'Двадцать лет' is Lange's own 'Двадцать лет рыба'.",
+   "diary": "journal.heard.ivan_cheese_for_petya"
   },
   {
    "id": "nina_yuki_crows",
@@ -1245,7 +1335,8 @@
    "lines": [
     "korneeva_nina.yuki_talks_crows.1"
    ],
-   "note": "the yard: Nina on academ_bench_0 14-16:30, Yuki on academ_bench_1 16-17:15 (they overlap 16-16:30). Echoes Tanya's 'Нина сегодня уже третий раз. Поговорить.'"
+   "note": "the yard: Nina on academ_bench_0 14-16:30, Yuki on academ_bench_1 16-17:15 (they overlap 16-16:30). Echoes Tanya's 'Нина сегодня уже третий раз. Поговорить.'",
+   "diary": "journal.heard.nina_yuki_crows"
   },
   {
    "id": "clerk_screensaver_still",
@@ -1259,7 +1350,8 @@
     "clerk.screensaver_still.1"
    ],
    "note": "the hero's seat (hero_seat, y -16.85 in people_places.json club) is next to Yamada's station 9 (y -15.4, work_clerk 10-19 Mon-Fri; a new game is Tuesday 16:00): he gets up and passes him first on his way to the booth. Echoes the clerk's own 'Твоё место рядом с моим'.",
-   "at_once": true
+   "at_once": true,
+   "diary": "journal.heard.clerk_screensaver_still"
   },
   {
    "id": "sonya_ask_owner_sun",
@@ -1273,7 +1365,8 @@
     "kid_girl.ask_owner_sun.1"
    ],
    "note": "Sonya at station 7 (y -12.35), 1.5 m off the walkway the hero takes from his seat to the owner's booth (y 6.4); at a new game she plays 60-120 min. The owner feels the sun on the back of his neck (his sun lines): she has noticed. 3 m of hall after the clerk's remark, so they may come one after the other (the director says one at a time).",
-   "at_once": true
+   "at_once": true,
+   "diary": "journal.heard.sonya_ask_owner_sun"
   },
   {
    "id": "nika_soda_bets",
@@ -1286,7 +1379,8 @@
    "lines": [
     "streamer.soda_bets.1"
    ],
-   "note": "the drinks machine stands at y 2.2 by the hall's wall, Nika's station 1 at y -2.9 (5.1 m): the hero passes her on his way to it. The quest log names Baikal and Buratino."
+   "note": "the drinks machine stands at y 2.2 by the hall's wall, Nika's station 1 at y -2.9 (5.1 m): the hero passes her on his way to it. The quest log names Baikal and Buratino.",
+   "diary": "journal.heard.nika_soda_bets"
   },
   {
    "id": "nao_pigeons_no_hurry",
@@ -1300,7 +1394,8 @@
     "nao.pigeons_no_hurry.1"
    ],
    "note": "birds starts when the hero reaches club_door; Nao keeps the door and forecourt (watch_door 10-21 every day, a new game finds her there), where he crouches with the feed. Not Sonya's palm hint again: Nao's point is patience.",
-   "at_once": true
+   "at_once": true,
+   "diary": "journal.heard.nao_pigeons_no_hurry"
   },
   {
    "id": "nao_cliff_from_below",
@@ -1313,7 +1408,8 @@
    "lines": [
     "nao.cliff_from_below.1"
    ],
-   "note": "the club's forecourt (watch_door 10-21): the beach under the cliff is 118 m west of the door, below the spur's brow; Nao never leaves her door (her 'Я просто стою там, где начинается снаружи')."
+   "note": "the club's forecourt (watch_door 10-21): the beach under the cliff is 118 m west of the door, below the spur's brow; Nao never leaves her door (her 'Я просто стою там, где начинается снаружи').",
+   "diary": "journal.heard.nao_cliff_from_below"
   },
   {
    "id": "owner_whole_town_below",
@@ -1326,7 +1422,8 @@
    "lines": [
     "owner.whole_town_below.1"
    ],
-   "note": "the booth (work_booth 12-02 every day) at y 6.4, beside the way in and out past the blast door (y 7.9); explore begins at the upper station, so this is when the hero comes back in. Echoes his first talk's 'у тебя пока ещё есть'."
+   "note": "the booth (work_booth 12-02 every day) at y 6.4, beside the way in and out past the blast door (y 7.9); explore begins at the upper station, so this is when the hero comes back in. Echoes his first talk's 'у тебя пока ещё есть'.",
+   "diary": "journal.heard.owner_whole_town_below"
   },
   {
    "id": "timur_polar_for_the_wood",
@@ -1339,7 +1436,8 @@
    "lines": [
     "guy_b.polar_for_the_wood.1"
    ],
-   "note": "Timur at station 0 (y -1.52, 3.7 m from the drinks machine) after the warehouse (work_away 7:30-15 weekdays). TRUE hint: Transport/network.json line 1 Sun runs Aton -> Akademgorodok -> Zenith -> Polar Star (end, at map -360, 1660); the rowan grove is at -420, 1780 (r 130), ~130 m on. He rides the cable car every day. Does not contradict Sorokin's 'держите на север, через весь город'."
+   "note": "Timur at station 0 (y -1.52, 3.7 m from the drinks machine) after the warehouse (work_away 7:30-15 weekdays). TRUE hint: Transport/network.json line 1 Sun runs Aton -> Akademgorodok -> Zenith -> Polar Star (end, at map -360, 1660); the rowan grove is at -420, 1780 (r 130), ~130 m on. He rides the cable car every day. Does not contradict Sorokin's 'держите на север, через весь город'.",
+   "diary": "journal.heard.timur_polar_for_the_wood"
   },
   {
    "id": "owner_news_like_draught",
@@ -1353,7 +1451,8 @@
     "owner.news_like_draught.1",
     "owner.news_like_draught.2"
    ],
-   "note": "the booth by the door (12-02 every day): the hero passes it whenever he comes in. He has heard it from the regulars (Olya knows from the library)."
+   "note": "the booth by the door (12-02 every day): the hero passes it whenever he comes in. He has heard it from the regulars (Olya knows from the library).",
+   "diary": "journal.heard.owner_news_like_draught"
   },
   {
    "id": "nika_punk_crest_picture",
@@ -1366,7 +1465,8 @@
    "lines": [
     "streamer.punk_crest_picture.1"
    ],
-   "note": "Nika at station 1 (y -2.9) near the hall's entrance end; Olya is her friend in people.json and sits at station 8 in the evenings, so the news reached her chat. Waxwings do have a tall crest."
+   "note": "Nika at station 1 (y -2.9) near the hall's entrance end; Olya is her friend in people.json and sits at station 8 in the evenings, so the news reached her chat. Waxwings do have a tall crest.",
+   "diary": "journal.heard.nika_punk_crest_picture"
   },
   {
    "id": "vera_yellow_tip_asked",
@@ -1379,7 +1479,8 @@
    "lines": [
     "girl_a.yellow_tip_asked.1"
    ],
-   "note": "Vera at her Spectrum, station 4 (y -7.7), after the Laboratory (work_lab 9-15 weekdays); 10 m because she sits 9.9 m from the drinks machine (y 2.2) the hero comes in for. Bohemian waxwing: the tail ends in a yellow band (Japanese キレンジャク, 'yellow'). Sonya is her daughter."
+   "note": "Vera at her Spectrum, station 4 (y -7.7), after the Laboratory (work_lab 9-15 weekdays); 10 m because she sits 9.9 m from the drinks machine (y 2.2) the hero comes in for. Bohemian waxwing: the tail ends in a yellow band (Japanese キレンジャク, 'yellow'). Sonya is her daughter.",
+   "diary": "journal.heard.vera_yellow_tip_asked"
   },
   {
    "id": "nao_fireworks_small",
@@ -1392,7 +1493,8 @@
    "lines": [
     "nao.fireworks_small_from_here.1"
    ],
-   "note": "Sea Festival (4th Saturday of October, 2026-10-24 in the game's first week): festivals.json fireworks 21:30 from the pier. Nao is at the club's door 10-21 every day; the club stands 61 m over the sea on the spur, so from there they are far and small. Timeless wording: fest quests stay on 'go' until done (no expiry in ULyudQuests), she only says what is planned."
+   "note": "Sea Festival (4th Saturday of October, 2026-10-24 in the game's first week): festivals.json fireworks 21:30 from the pier. Nao is at the club's door 10-21 every day; the club stands 61 m over the sea on the spur, so from there they are far and small. Timeless wording: fest quests stay on 'go' until done (no expiry in ULyudQuests), she only says what is planned.",
+   "diary": "journal.heard.nao_fireworks_small"
   },
   {
    "id": "owner_cheerful_thunder",
@@ -1405,7 +1507,8 @@
    "lines": [
     "owner.cheerful_thunder.1"
    ],
-   "note": "the owner never leaves his booth 12-02 (the fireworks at 21:30 fall in his hours); the club is dug into the upland ('под горой'). Said when the hero next comes in."
+   "note": "the owner never leaves his booth 12-02 (the fireworks at 21:30 fall in his hours); the club is dug into the upland ('под горой'). Said when the hero next comes in.",
+   "diary": "journal.heard.owner_cheerful_thunder"
   },
   {
    "id": "lange_wish_not_fish",
@@ -1418,7 +1521,8 @@
    "lines": [
     "lange_pyotr.wish_not_fish.1"
    ],
-   "note": "Tanabata, 7 July: wish bamboo on the promenade 16:00-21:30 (the quest starts at 16:00). Lange mends nets on the promenade bench S-BENCH-P12 12:30-17:00 every day, so 16-17 the hero on his way to the bamboo passes him."
+   "note": "Tanabata, 7 July: wish bamboo on the promenade 16:00-21:30 (the quest starts at 16:00). Lange mends nets on the promenade bench S-BENCH-P12 12:30-17:00 every day, so 16-17 the hero on his way to the bamboo passes him.",
+   "diary": "journal.heard.lange_wish_not_fish"
   },
   {
    "id": "aslan_blini_with_cheese",
@@ -1431,7 +1535,8 @@
    "lines": [
     "khuazhev_aslan.blini_with_cheese.1"
    ],
-   "note": "Maslenitsa is a Sunday (Orthodox Easter - 49); Aslan's tent by the club door is open 10-20 Tuesday to Sunday; the pancake fair is 11-16 at the fair square. Fits his love of pancakes with sour cream (Nao's round-2 remark, his tent report)."
+   "note": "Maslenitsa is a Sunday (Orthodox Easter - 49); Aslan's tent by the club door is open 10-20 Tuesday to Sunday; the pancake fair is 11-16 at the fair square. Fits his love of pancakes with sour cream (Nao's round-2 remark, his tent report).",
+   "diary": "journal.heard.aslan_blini_with_cheese"
   },
   {
    "id": "nao_one_lantern_faster",
@@ -1444,7 +1549,8 @@
    "lines": [
     "nao.one_lantern_faster.1"
    ],
-   "note": "Lantern Night (2nd Saturday of November): sky lanterns from the town beach 19:00-20:30, inside Nao's hours at the door (10-21); they rise and drift out to sea, visible from the spur. TRUE: the hero's lantern rises a little faster than the others (docs/festivals.md, ALyudSkyLanterns::Release)."
+   "note": "Lantern Night (2nd Saturday of November): sky lanterns from the town beach 19:00-20:30, inside Nao's hours at the door (10-21); they rise and drift out to sea, visible from the spur. TRUE: the hero's lantern rises a little faster than the others (docs/festivals.md, ALyudSkyLanterns::Release).",
+   "diary": "journal.heard.nao_one_lantern_faster"
   },
   {
    "id": "sonya_stayed_up_almost",
@@ -1457,7 +1563,8 @@
    "lines": [
     "kid_girl.stayed_up_almost.1"
    ],
-   "note": "in the club (station 7) on the days after New Year (days off 31 Dec - 2 Jan); the fireworks are at midnight, her bed is 21:00 but festivals keep people up (late 27.5). The line holds either way."
+   "note": "in the club (station 7) on the days after New Year (days off 31 Dec - 2 Jan); the fireworks are at midnight, her bed is 21:00 but festivals keep people up (late 27.5). The line holds either way.",
+   "diary": "journal.heard.sonya_stayed_up_almost"
   },
   {
    "id": "nika_wish_three_viewers",
@@ -1470,7 +1577,8 @@
    "lines": [
     "streamer.wish_three_viewers.1"
    ],
-   "note": "Perseids, 12 August: shooting stars over the beach 22:30-02:00 (the quest starts at 22:30). Nika is up till 2 and plays in the club; station 1 near the entrance. Timeless: she asks for a wish whenever he sees one."
+   "note": "Perseids, 12 August: shooting stars over the beach 22:30-02:00 (the quest starts at 22:30). Nika is up till 2 and plays in the club; station 1 near the entrance. Timeless: she asks for a wish whenever he sees one.",
+   "diary": "journal.heard.nika_wish_three_viewers"
   },
   {
    "id": "timur_sunrise_slept_warm",
@@ -1483,7 +1591,8 @@
    "lines": [
     "guy_b.sunrise_slept_warm.1"
    ],
-   "note": "Midsummer (23 June): the bonfire on the beach 20-02, then everybody watches the sunrise (sunrise_point); the quest needs both. Timur at station 0 in the club in the evening after the warehouse. The sun motif, quietly (he feels the sun on his skin in his own sun lines)."
+   "note": "Midsummer (23 June): the bonfire on the beach 20-02, then everybody watches the sunrise (sunrise_point); the quest needs both. Timur at station 0 in the club in the evening after the warehouse. The sun motif, quietly (he feels the sun on his skin in his own sun lines).",
+   "diary": "journal.heard.timur_sunrise_slept_warm"
   },
   {
    "id": "olya_wish_third_draft",
@@ -1496,7 +1605,8 @@
    "lines": [
     "girl_b.wish_third_draft.1"
    ],
-   "note": "Olya at the library's desk (10-15 Wednesday to Saturday) or at station 8 in the club in the evening; she saves every page and writes drafts. After the hero tied his wish (festival_wish tanabata)."
+   "note": "Olya at the library's desk (10-15 Wednesday to Saturday) or at station 8 in the club in the evening; she saves every page and writes drafts. After the hero tied his wish (festival_wish tanabata).",
+   "diary": "journal.heard.olya_wish_third_draft"
   },
   {
    "id": "valentina_sorokin_words",
@@ -1510,7 +1620,8 @@
    "lines": [
     "guseva_valentina.sorokin_many_words.1"
    ],
-   "note": "corn cart on the square (work_corn 11-18 every day), 4.6 m from Sorokin's academ_bench_4: he passes her on his way to and from the bench. No 'today', so it holds whenever visit/done is heard."
+   "note": "corn cart on the square (work_corn 11-18 every day), 4.6 m from Sorokin's academ_bench_4: he passes her on his way to and from the bench. No 'today', so it holds whenever visit/done is heard.",
+   "diary": "journal.heard.valentina_sorokin_words"
   },
   {
    "id": "nina_jumped_like_young",
@@ -1524,7 +1635,8 @@
    "lines": [
     "korneeva_nina.jumped_like_young.1"
    ],
-   "note": "Nina on academ_bench_0 14-16:30 (yard_evening); Valentina is her friend and the nearest to Sorokin's bench (4.6 m). Hearsay on purpose: Nina was not there. Sorokin's knees: his own waxwing_meet.7."
+   "note": "Nina on academ_bench_0 14-16:30 (yard_evening); Valentina is her friend and the nearest to Sorokin's bench (4.6 m). Hearsay on purpose: Nina was not there. Sorokin's knees: his own waxwing_meet.7.",
+   "diary": "journal.heard.nina_jumped_like_young"
   },
   {
    "id": "ivan_margin_bird",
@@ -1538,7 +1650,8 @@
    "lines": [
     "korneev_ivan.margin_bird.1"
    ],
-   "note": "Ivan on academ_bench_3 15-17:30, overlapping Sorokin's 14:30-18:30. The evening paper with the chess problem is evening_paper's."
+   "note": "Ivan on academ_bench_3 15-17:30, overlapping Sorokin's 14:30-18:30. The evening paper with the chess problem is evening_paper's.",
+   "diary": "journal.heard.ivan_margin_bird"
   },
   {
    "id": "yuki_one_long_word",
@@ -1551,7 +1664,8 @@
    "lines": [
     "sato_yuki.one_long_word.1"
    ],
-   "note": "Yuki on academ_bench_1 16-17:15, 6.7 m from Sorokin's bench. After waxwing_after: he has entered it in his journal (quest.waxwing_after.done, waxwing_journal.1); she reads only the name, so his own 'поздоровался' stays his to tell."
+   "note": "Yuki on academ_bench_1 16-17:15, 6.7 m from Sorokin's bench. After waxwing_after: he has entered it in his journal (quest.waxwing_after.done, waxwing_journal.1); she reads only the name, so his own 'поздоровался' stays his to tell.",
+   "diary": "journal.heard.yuki_one_long_word"
   },
   {
    "id": "aya_crest_grows",
@@ -1564,7 +1678,8 @@
    "lines": [
     "nishimura_aya.crest_grows.1"
    ],
-   "note": "Aya sketches on academ_bench_2 16:30-19 (sketch_yard); Sorokin is her friend in people.json and the one who 'always notices and sits still' (her again4)."
+   "note": "Aya sketches on academ_bench_2 16:30-19 (sketch_yard); Sorokin is her friend in people.json and the one who 'always notices and sits still' (her again4).",
+   "diary": "journal.heard.aya_crest_grows"
   },
   {
    "id": "galina_binocular_honour",
@@ -1578,7 +1693,8 @@
    "lines": [
     "zotova_galina.binocular_honour.1"
    ],
-   "note": "Galina on academ_bench_0 17:30-19, Lev on academ_bench_1 at the same hours, both overlapping Sorokin until 18:30. His binoculars: waxwing.find.log, his again3."
+   "note": "Galina on academ_bench_0 17:30-19, Lev on academ_bench_1 at the same hours, both overlapping Sorokin until 18:30. His binoculars: waxwing.find.log, his again3.",
+   "diary": "journal.heard.galina_binocular_honour"
   },
   {
    "id": "dasha_rare_column",
@@ -1591,7 +1707,8 @@
    "lines": [
     "kimura_dasha.rare_column.1"
    ],
-   "note": "Dasha on academ_bench_2 17-18:30. Her table: feeder_table_rows, bird_by_the_book; follows her new Waxwing reaction ('no column for you, I'll start a new one')."
+   "note": "Dasha on academ_bench_2 17-18:30. Her table: feeder_table_rows, bird_by_the_book; follows her new Waxwing reaction ('no column for you, I'll start a new one').",
+   "diary": "journal.heard.dasha_rare_column"
   },
   {
    "id": "misha_bigger_feeder",
@@ -1604,7 +1721,8 @@
    "lines": [
     "belov_misha.bigger_feeder.1"
    ],
-   "note": "Misha on academ_bench_5 17-18:30. Agrees with Tanya's rowan_again ('if one came, the others may find the way')."
+   "note": "Misha on academ_bench_5 17-18:30. Agrees with Tanya's rowan_again ('if one came, the others may find the way').",
+   "diary": "journal.heard.misha_bigger_feeder"
   }
  ]
 }
