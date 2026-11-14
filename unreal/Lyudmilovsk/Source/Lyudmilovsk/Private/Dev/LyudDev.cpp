@@ -358,7 +358,11 @@ namespace LyudDev
 		bool GroundAt(UWorld* World, const FVector2D& XY, double& OutZ, double Top = 200000.0, double Bottom = -100000.0)
 		{
 			FHitResult Hit;
-			FCollisionObjectQueryParams Objects(ECC_WorldStatic);
+			// the town's buildings (ALyudCityBuilding's Shell) collide as WorldDynamic: with WorldStatic alone the trace went
+			// through every upper floor to the ground, and an upper storey's teleport landed on the ground floor
+			FCollisionObjectQueryParams Objects;
+			Objects.AddObjectTypesToQuery(ECC_WorldStatic);
+			Objects.AddObjectTypesToQuery(ECC_WorldDynamic);
 			FCollisionQueryParams Params(SCENE_QUERY_STAT(LyudDevGround), false);
 			ALyudSea* Sea = ALyudSea::Get(World);
 			if (Sea)
