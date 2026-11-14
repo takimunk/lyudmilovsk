@@ -635,14 +635,19 @@ void ULyudQuests::HandleEvent(FName Event, const FString& Target, int32 N)
 				const bool bWas = C >= O.Need;
 				// "have" counts the pocket: items coming in count, "use" of it takes away
 				const bool bHave = O.Event == TEXT("have");
+				// (the pocket itself is the count for a real item: a reward's "get" still waiting in the queue when the stage began
+				// was counted by BeginStage already, and would count the same item a second time; so would a late "use" take
+				// away an item BeginStage never saw. A "get" reported without an item, by a test or the console, still adds.)
+				const ULyudInventory* HavePocket = bHave && !O.Target.Contains(TEXT("*")) && ULyudInventory::FindDef(*O.Target) ? ULyudInventory::Get(GetGameInstance()->GetWorld()) : nullptr;
 				if ((EventMatches(O.Event, E.Get<0>()) || (bHave && E.Get<0>() == TEXT("get"))) && TargetMatches(O.Target, E.Get<1>()))
 				{
-					C += E.Get<2>();
+					const int32 InPocket = HavePocket ? HavePocket->Count(*O.Target) : 0;
+					C = InPocket > 0 ? InPocket : C + E.Get<2>();
 					bChanged = true;
 				}
 				else if (bHave && E.Get<0>() == TEXT("use") && TargetMatches(O.Target, E.Get<1>()))
 				{
-					C = FMath::Max(0, C - E.Get<2>());
+					C = HavePocket ? HavePocket->Count(*O.Target) : FMath::Max(0, C - E.Get<2>());
 					bChanged = true;
 				}
 				// "bring <item>@<Npc>": a talk with that person while the pocket holds Need of the item hands them over

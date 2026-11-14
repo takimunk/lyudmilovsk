@@ -14,11 +14,15 @@ import re
 class Rules:
     """Which variant of the engine a tree has."""
 
-    def __init__(self, talk_no_skip=False, bring=False, star_any=False, chain_met=False):
+    def __init__(self, talk_no_skip=False, bring=False, star_any=False, chain_met=False, have_pocket=False, queued_rewards=False,
+                 track_after_starts=False):
         self.talk_no_skip = talk_no_skip  # skip-ahead never on a talk event
         self.bring = bring                # "bring <item>@<Npc>" objectives, met by a talk with the item in the pocket
         self.star_any = star_any          # a bare "*" target matches anything (main: FString::StartsWith("") is false)
         self.chain_met = chain_met        # a stage already met when it begins finishes at once (after an objective-driven finish)
+        self.have_pocket = have_pocket    # a have objective reads the pocket on get/use (a reward item is not counted twice)
+        self.queued_rewards = queued_rewards  # FinishStage outside an event queues its rewards' events (no re-entry)
+        self.track_after_starts = track_after_starts  # the tracked quest is chosen after the reward's quests have started
 
     @staticmethod
     def detect(cpp_text):
@@ -27,10 +31,13 @@ class Rules:
             bring=bool(re.search(r'O\.Event\s*==\s*TEXT\("bring"\)', cpp_text)),
             star_any=bool(re.search(r'Prefix\.IsEmpty\(\)\s*\|\|', cpp_text)),
             chain_met=bool(re.search(r'may be met already', cpp_text)),
+            have_pocket=bool(re.search(r'\bHavePocket\b', cpp_text)),
+            queued_rewards=bool(re.search(r'\bbOutsideEvent\b', cpp_text)),
+            track_after_starts=bool(re.search(r'chosen after the quests this stage starts', cpp_text)),
         )
 
     def names(self):
-        return [n for n in ('talk_no_skip', 'bring', 'star_any', 'chain_met') if getattr(self, n)]
+        return [n for n in ('talk_no_skip', 'bring', 'star_any', 'chain_met', 'have_pocket', 'queued_rewards', 'track_after_starts') if getattr(self, n)]
 
 
 def low(s):
@@ -209,6 +216,10 @@ class Sim:
         p.stage = max(0, min(p.stage, len(d.stages) - 1))
         s = d.stages[p.stage]
         self.trace.append(('finish', d.id, p.stage, how))
+        # outside an event (Quest.Advance): the rewards' events wait in the queue instead of re-entering this stage
+        outside = self.rules.queued_rewards and not self.handling
+        if outside:
+            self.handling = True
         for item, n in s.items:
             self.inv_add(item, n)  # reports get: queued while an event is handled, handled at once otherwise
         if s.rubles > 0:
@@ -222,9 +233,16 @@ class Sim:
             self.trace.append(('done', d.id))
             if low(self.tracked) == low(d.id):  # :440-444
                 self.tracked = ''
-                self.tracked = self.shown_quest()
+                if not self.rules.track_after_starts:
+                    self.tracked = self.shown_quest()
         for q in list(s.starts):
             self.start(q)
+        if not self.tracked:
+            self.tracked = self.shown_quest()
+        if outside:
+            self.handling = False
+            if self.queue:
+                self.handle_event('settle', '', 0)
 
     def shown_quest(self):
         # LyudQuests.cpp:629-652
@@ -288,10 +306,12 @@ class Sim:
                     all_met = True
                     for i, o in enumerate(s.objectives):
                         have = o.event == 'have'
+                        pocket = self.rules.have_pocket and have and '*' not in o.target
                         if (event_matches(o.event, ev) or (have and low(ev) == 'get')) and target_matches(o.target, tgt, self.rules):
-                            p.counts[i] += num
+                            in_pocket = self.count(o.target) if pocket else 0
+                            p.counts[i] = in_pocket if in_pocket > 0 else p.counts[i] + num
                         elif have and low(ev) == 'use' and target_matches(o.target, tgt, self.rules):
-                            p.counts[i] = max(0, p.counts[i] - num)
+                            p.counts[i] = self.count(o.target) if pocket else max(0, p.counts[i] - num)
                         if self.rules.bring and o.event == 'bring' and low(ev) == 'talk' and p.counts[i] < o.need:
                             item, sep, to = o.target.partition('@')
                             if sep and low(to) == low(tgt) and self.count(item) >= o.need:
