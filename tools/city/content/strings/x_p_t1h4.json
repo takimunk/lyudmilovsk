@@ -1,0 +1,518 @@
+{
+ "_doc": "Capsule cluster P-T1H4 second pass: bridges, house boards, post boxes, the radio amateur's studio, quest home_okafor_cq. Keys city.t1h4.*, quest.home_okafor_cq.*, city.coll.okafor_radio.title.",
+ "city.t1h4.p.view": {
+  "ru": "Посмотреть с моста",
+  "en": "Look out from the bridge",
+  "ja": "橋から眺める"
+ },
+ "city.t1h4.p.sit": {
+  "ru": "Присесть на скамейку",
+  "en": "Sit on the bench",
+  "ja": "ベンチに座る"
+ },
+ "city.t1h4.p.plant": {
+  "ru": "Посмотреть на ящик с цветами",
+  "en": "Look at the planter",
+  "ja": "プランターを見る"
+ },
+ "city.t1h4.p.chime": {
+  "ru": "Послушать подвеску-колокольчик",
+  "en": "Listen to the wind chime",
+  "ja": "風鈴に耳を澄ます"
+ },
+ "city.t1h4.p.vane": {
+  "ru": "Посмотреть на флюгер",
+  "en": "Look at the weather vane",
+  "ja": "風見鶏を見る"
+ },
+ "city.t1h4.p.news": {
+  "ru": "Прочесть объявления дома",
+  "en": "Read the house notices",
+  "ja": "建物のお知らせを読む"
+ },
+ "city.t1h4.p.mail": {
+  "ru": "Заглянуть в почтовые ящики",
+  "en": "Look at the post boxes",
+  "ja": "郵便受けをのぞく"
+ },
+ "city.t1h4.p.log": {
+  "ru": "Открыть журнал связей",
+  "en": "Open the station log",
+  "ja": "交信日誌を開く"
+ },
+ "city.t1h4.p.qsl": {
+  "ru": "Посмотреть открытки на стене",
+  "en": "Look at the cards on the wall",
+  "ja": "壁のカードを見る"
+ },
+ "city.t1h4.p.morse": {
+  "ru": "Постучать ключом",
+  "en": "Tap the Morse key",
+  "ja": "電鍵を叩く"
+ },
+ "city.t1h4.p.tuner": {
+  "ru": "Посмотреть на антенный тюнер",
+  "en": "Look at the antenna tuner",
+  "ja": "アンテナチューナーを見る"
+ },
+ "city.t1h4.p.phones": {
+  "ru": "Взять наушники",
+  "en": "Pick up the headphones",
+  "ja": "ヘッドホンを手に取る"
+ },
+ "city.t1h4.p.kettle": {
+  "ru": "Налить чаю из чайника",
+  "en": "Pour some tea from the kettle",
+  "ja": "やかんからお茶を注ぐ"
+ },
+ "city.t1h4.view1.d1": {
+  "ru": "Внизу площадь крыш и улица. С первого моста прохожие кажутся ближе, чем на тротуаре: слышно, как кто-то спорит про сдачу.",
+  "en": "Below lie the roofs and the street. From the lower bridge, passers-by seem closer than on the pavement: somebody is arguing about change, and you can hear every word.",
+  "ja": "下には屋根と通りが広がる。低いほうの橋からは、歩道にいるより通行人が近く感じられる。誰かがお釣りのことで言い合っていて、一言一言が聞こえる。"
+ },
+ "city.t1h4.view1.d2": {
+  "ru": "Под мостом проезжает велосипед, звонок звякает прямо в железо перил. Гул отдаётся в подошвах.",
+  "en": "A bicycle rolls under the bridge, its bell clinking right against the steel of the rail. The hum comes up through the soles of my shoes.",
+  "ja": "橋の下を自転車が通り、ベルが手すりの鉄にちょうど響く。その振動が靴の裏に伝わってくる。"
+ },
+ "city.t1h4.view1.n": {
+  "ru": "Фонари улицы внизу — цепочка жёлтых точек. В капсулах напротив горят круглые окна, как иллюминаторы ночного парохода.",
+  "en": "The street lamps below make a chain of yellow dots. The round windows of the capsules opposite glow like the portholes of a night steamer.",
+  "ja": "下の街灯は黄色い点の連なり。向かいのカプセルの丸い窓が、夜の汽船の舷窓のように光っている。"
+ },
+ "city.t1h4.view1.rain": {
+  "ru": "Дождь стучит по настилу моста, и каждый шаг внизу отдаётся мокрым шлепком. Зонтики плывут, как цветные медузы.",
+  "en": "Rain drums on the deck of the bridge, and every step below answers with a wet slap. Umbrellas drift past like coloured jellyfish.",
+  "ja": "雨が橋の床板を叩き、下の足音はぴしゃぴしゃと濡れた音で返ってくる。傘が色つきのクラゲのように流れていく。"
+ },
+ "city.t1h4.view1.snow": {
+  "ru": "Снег ложится на перила и сразу тает у фонаря. Улица внизу тихая, как будто её накрыли ватой.",
+  "en": "Snow settles on the rail and melts at once by the lantern. The street below is quiet, as if wrapped in cotton wool.",
+  "ja": "雪が手すりに積もり、街灯のそばでたちまち溶ける。下の通りは綿でくるんだように静かだ。"
+ },
+ "city.t1h4.view1.fog": {
+  "ru": "Улица пропала в тумане, остались только звуки: шаги, чей-то кашель, хлопок двери. Мост висит в молоке.",
+  "en": "The street has vanished in fog, only sounds are left: footsteps, a cough, a door. The bridge hangs in milk.",
+  "ja": "通りは霧に消え、音だけが残る。足音、咳、ドアの閉まる音。橋はミルクの中に浮かんでいる。"
+ },
+ "city.t1h4.view1.fest": {
+  "ru": "Праздник внизу: гирлянды между столбами, и даже мост кто-то украсил бумажными флажками.",
+  "en": "A holiday down below: garlands between the poles, and somebody has even hung paper flags on the bridge.",
+  "ja": "下は祭りの日。柱のあいだに飾りが渡され、橋にまで誰かが紙の旗を吊るしている。"
+ },
+ "city.t1h4.view3.d1": {
+  "ru": "С верхнего моста видно крыши всего квартала и полоску моря в просвете. Капсулы торчат из башен, как ящики комода.",
+  "en": "From the upper bridge you can see the roofs of the whole block and a strip of sea in the gap. The capsules stick out of the towers like open drawers.",
+  "ja": "上の橋からは一帯の屋根と、すき間に海のひとすじが見える。カプセルが引き出しのように塔から突き出している。"
+ },
+ "city.t1h4.view3.d2": {
+  "ru": "Ветер здесь сильнее, чем на улице. Он гуляет между башнями, дёргает флажки и приносит запах водорослей.",
+  "en": "The wind is stronger here than in the street. It wanders between the towers, tugs at flags and brings a smell of seaweed.",
+  "ja": "ここは通りより風が強い。塔のあいだをさまよい、旗を引っ張り、海藻のにおいを運んでくる。"
+ },
+ "city.t1h4.view3.n": {
+  "ru": "Ночью отсюда видно маяк: раз в несколько секунд вспыхивает на краю неба. В капсулах свет гаснет по одному.",
+  "en": "At night you can see the lighthouse from here, flaring at the edge of the sky every few seconds. In the capsules the lights go out one by one.",
+  "ja": "夜はここから灯台が見える。数秒おきに空の端でぱっと光る。カプセルの明かりは一つずつ消えていく。"
+ },
+ "city.t1h4.view3.rain": {
+  "ru": "Дождь идёт наискосок, море и небо слились в серое. Стоишь над пустотой, а сухо: перила всё-таки держат.",
+  "en": "Rain slants across, sea and sky merged into grey. You stand over the void and are dry: the rail does hold.",
+  "ja": "雨は斜めに降り、海と空が灰色に溶け合う。空中に立っているのに乾いていて、手すりがちゃんと支えてくれる。"
+ },
+ "city.t1h4.view3.snow": {
+  "ru": "Снег идёт сверху и снизу сразу, как в стеклянном шаре. Далеко-далеко гудит снегоуборочная машина.",
+  "en": "Snow falls from above and from below at once, like in a glass globe. Far, far away a snowplough hums.",
+  "ja": "雪が上からも下からも降る、ガラス玉の中みたいに。はるか遠くで除雪車が唸っている。"
+ },
+ "city.t1h4.view3.fog": {
+  "ru": "Верхний мост в тумане — как лодка без берегов. Слышно, как внизу ходят люди, а самих нет.",
+  "en": "The upper bridge in fog is like a boat with no shores. You hear people walking below, but not one is there to see.",
+  "ja": "霧の中の上の橋は、岸のない舟のようだ。下を歩く人の気配はするのに、姿はない。"
+ },
+ "city.t1h4.view3.fest": {
+  "ru": "Праздничные огни внизу рассыпаны, как конфетти. С верхнего моста это лучший балкон квартала.",
+  "en": "Holiday lights below are scattered like confetti. From the upper bridge this is the best balcony in the block.",
+  "ja": "下では祭りの灯がコンフェッティのように散らばっている。上の橋は、この一帯で一番いいバルコニーだ。"
+ },
+ "city.t1h4.plant.1": {
+  "ru": "Ящик с геранью на мосту. Кто-то воткнул в землю палочку с биркой: «Не срывать, это для всех».",
+  "en": "A box of geraniums on the bridge. Somebody pushed a stick with a tag into the soil: \"Don't pick, it's for everybody.\"",
+  "ja": "橋の上のゼラニウムの箱。誰かが札つきの棒を土に挿している。「摘まないで、みんなのものです」。"
+ },
+ "city.t1h4.plant.2": {
+  "ru": "Земля влажная: кто-то поливает из чайника, проходя с чаем в руках. Лист слегка отогнут, как ладошка.",
+  "en": "The soil is damp: somebody waters it from a kettle while passing with tea in hand. One leaf is bent back like a little palm.",
+  "ja": "土は湿っている。お茶を持ったまま通りすがりに、やかんで水をやる人がいるらしい。葉が小さな手のみたいに反っている。"
+ },
+ "city.t1h4.plant.3": {
+  "ru": "На краю ящика сидит воробей и смотрит на меня боком, как на подозрительного. Улетел, не дождавшись крошек.",
+  "en": "A sparrow sits on the edge of the box and eyes me sideways as if I were suspicious. It flew off without waiting for crumbs.",
+  "ja": "箱の縁にスズメがとまり、疑わしいものを見るように横目でこちらをうかがう。パン屑を待たずに飛んでいった。"
+ },
+ "city.t1h4.plant.rain": {
+  "ru": "Дождь вымыл листья до блеска. Цветы пригнулись, но держатся: герань упрямая.",
+  "en": "The rain has washed the leaves to a shine. The flowers bow but hold on: geraniums are stubborn.",
+  "ja": "雨で葉がぴかぴかに洗われた。花はうなだれても踏んばっている。ゼラニウムは頑固だ。"
+ },
+ "city.t1h4.plant.snow": {
+  "ru": "В ящике под снегом только коричневые стебли. Кто-то воткнул сверху еловую ветку, чтобы было не так голо.",
+  "en": "Under the snow the box holds only brown stalks. Somebody stuck a fir twig in the top so it would not look so bare.",
+  "ja": "雪の下の箱には茶色い茎だけ。誰かがさびしくないよう、上にモミの枝を挿している。"
+ },
+ "city.t1h4.plant.warm": {
+  "ru": "На солнце герань пахнет остро и немного горько. Шмель обходит цветы по кругу, как инспектор.",
+  "en": "In the sun the geranium smells sharp and a little bitter. A bumblebee goes round the flowers like an inspector.",
+  "ja": "日なたのゼラニウムは鋭くてほろ苦いにおいがする。マルハナバチが検査官のように花を一巡りしている。"
+ },
+ "city.t1h4.chime.1": {
+  "ru": "Пять трубочек разной длины качаются на ветру. Каждая звучит по-своему, вместе получается что-то вроде неоконченной мелодии.",
+  "en": "Five tubes of different lengths sway in the wind. Each rings in its own way; together they make something like an unfinished tune.",
+  "ja": "長さの違う五本の管が風に揺れる。一本ずつ音がちがい、合わせると未完成のメロディのようになる。"
+ },
+ "city.t1h4.chime.2": {
+  "ru": "На деревянном язычке выцарапано: «Г. О. — чтоб слышать ветер из студии». Значит, звон слышно и в капсуле.",
+  "en": "Scratched on the little wooden tongue: \"G. O. — so I can hear the wind from the studio.\" So the chime can be heard in the capsule too.",
+  "ja": "木の舌に刻んである。「G・O──スタジオから風が聞こえるように」。つまりカプセルの中にも音が届くのだ。"
+ },
+ "city.t1h4.chime.n": {
+  "ru": "Ночью подвеска звенит редко и тихо, как звезда, которая что-то вспомнила.",
+  "en": "At night the chime rings seldom and softly, like a star that has just remembered something.",
+  "ja": "夜の風鈴はまれに小さく鳴る。何かを思い出した星みたいに。"
+ },
+ "city.t1h4.chime.rain": {
+  "ru": "В дождь трубочки молчат, только капли стекают по ним на язычок. Звон будет, когда ветер вернётся.",
+  "en": "In rain the tubes are silent; only drops run down them onto the tongue. The ringing will come back with the wind.",
+  "ja": "雨の日、管は黙っていて、しずくが伝って舌に落ちるだけだ。風が戻れば音も戻る。"
+ },
+ "city.t1h4.chime.fog": {
+  "ru": "В тумане звон приходит как будто издалека, с другой стороны моста, хотя подвеска рядом.",
+  "en": "In fog the ringing comes as if from afar, from the other end of the bridge, though the chime is right here.",
+  "ja": "霧の中では、風鈴がすぐそこにあるのに、音は橋の向こう端から遠く聞こえてくる。"
+ },
+ "city.t1h4.chime.clear": {
+  "ru": "Ясно и ветрено: трубочки звенят без передышки, и радиолюбитель наверняка улыбается у себя за стенкой.",
+  "en": "Clear and windy: the tubes ring without a break, and the radio amateur is surely smiling behind his wall.",
+  "ja": "晴れて風が強い。管は休みなく鳴り、壁の向こうの無線家はきっと微笑んでいる。"
+ },
+ "city.t1h4.vane.1": {
+  "ru": "Красная стрелка на мачте повернулась к морю. Под ней крестовина с четырьмя латунными шариками, как у настоящего корабельного флюгера.",
+  "en": "The red arrow on the mast has turned toward the sea. Below it is a crosspiece with four brass balls, like on a real ship's vane.",
+  "ja": "マストの赤い矢は海のほうを向いている。下の十字には真鍮の玉が四つ、本物の船の風見のようだ。"
+ },
+ "city.t1h4.vane.2": {
+  "ru": "На мачте приклеена бумажка с надписью карандашом: «Северо-западный — к дождю. Южный — к чаю на мосту».",
+  "en": "A paper strip is stuck on the mast, pencilled: \"North-westerly means rain. Southerly means tea on the bridge.\"",
+  "ja": "マストに紙切れが貼ってあり、鉛筆で。「北西の風は雨。南の風は橋でお茶」。"
+ },
+ "city.t1h4.vane.rain": {
+  "ru": "Стрелка смотрит на северо-запад, как и обещала бумажка. Радиолюбитель оказался прав.",
+  "en": "The arrow points north-west, just as the paper promised. The radio amateur was right.",
+  "ja": "矢は紙切れの約束どおり北西を向いている。無線家の言ったとおりだ。"
+ },
+ "city.t1h4.vane.snow": {
+  "ru": "Стрелка в ледяной корке, едва дрожит. Видно, ветер сегодня сам не решил, куда ему.",
+  "en": "The arrow is in a crust of ice and barely trembles. The wind has not decided where to go today.",
+  "ja": "矢は氷の殻に包まれ、かすかに震えるだけ。今日の風はまだ行き先を決めていないらしい。"
+ },
+ "city.t1h4.vane.fog": {
+  "ru": "В тумане флюгер еле виден, но слышно, как он скрипит: поворачивается то туда, то сюда, никак не выберет.",
+  "en": "In the fog the vane is barely visible, but you can hear it creak: turning this way and that, unable to choose.",
+  "ja": "霧で風見はほとんど見えないが、きしむ音がする。あちらへこちらへ回って、決めかねている。"
+ },
+ "city.t1h4.vane.clear": {
+  "ru": "Ясно, и стрелка стоит на юг. Бумажка внизу обещает чай на мосту: придётся поверить.",
+  "en": "Clear, and the arrow points south. The paper below promises tea on the bridge: I will have to believe it.",
+  "ja": "晴れていて、矢は南を指している。下の紙切れは橋でのお茶を約束している。信じるしかない。"
+ },
+ "city.t1h4.news.base": {
+  "ru": "Доска дома. «Мост — для людей, скамейки — для всех, фонарь зажигается у столба». Остальное на других листках.",
+  "en": "The house board. \"The bridge is for people, the benches for everyone, the lantern is lit at its post.\" The rest is on other slips.",
+  "ja": "建物の掲示板。「橋は人のため、ベンチはみんなのため、街灯は支柱のスイッチで」。ほかは別の紙に。"
+ },
+ "city.t1h4.news.1": {
+  "ru": "«Не стучите по перилам моста: в капсулах это слышно как колокол. Если очень хочется стучать, у второго этажа есть для этого ключ».",
+  "en": "\"Please don't bang on the bridge rail: in the capsules it sounds like a bell. If you really must tap, there is a key for that on the second floor.\"",
+  "ja": "「橋の手すりを叩かないでください。カプセルの中では鐘のように響きます。どうしても叩きたい方には、二階に電鍵があります」。"
+ },
+ "city.t1h4.news.2": {
+  "ru": "«Радиолюбитель из студии просит не включать на мосту громкие приёмники: он ловит слабые сигналы. Взамен обещает чай и разрешает постучать ключом».",
+  "en": "\"The radio amateur from the studio asks nobody to run loud receivers on the bridge: he is catching weak signals. In return he promises tea and lets people tap the key.\"",
+  "ja": "「スタジオの無線家より。橋で大きな音のラジオは控えてください、弱い電波を拾っています。お礼にお茶を出し、電鍵も叩かせます」。"
+ },
+ "city.t1h4.news.3": {
+  "ru": "«Найден коричневый шарф в полоску, лежал на скамейке моста. Спросить у радиолюбителя: на кровати у него висит такой же».",
+  "en": "\"Found: a brown striped scarf, left on the bridge bench. Ask the radio amateur: he has a twin hanging over his bed.\"",
+  "ja": "「橋のベンチに茶色の縞のマフラーの忘れ物。無線家に確認を。ベッドの上に同じものが掛かっています」。"
+ },
+ "city.t1h4.news.4": {
+  "ru": "«В субботу в 19:00 на мосту слушаем эфир вместе. Кружки свои. Радиолюбитель настроит приёмник, кто умеет — подстукивает».",
+  "en": "\"On Saturday at 7 pm we listen to the air together on the bridge. Bring your own mugs. The radio amateur will tune the receiver; whoever can taps along.\"",
+  "ja": "「土曜の十九時、橋でみんなで電波を聴きます。マグカップは各自で。無線家が受信機を合わせます。できる人は一緒に叩いて」。"
+ },
+ "city.t1h4.news.sat": {
+  "ru": "Сегодня суббота: на мосту слушаем эфир. Внизу уже ставят скамейку поближе к фонарю.",
+  "en": "It is Saturday: we listen to the air on the bridge. They are already moving a bench closer to the lantern.",
+  "ja": "今日は土曜日。橋で電波を聴く会がある。もうベンチを街灯のそばに寄せている。"
+ },
+ "city.t1h4.mail.1": {
+  "ru": "Ряды почтовых ящиков с фамилиями на бумажках. На одном — наклейка с буквами «QSL», на другом — «Не бросать рекламу, у нас и так эфир».",
+  "en": "Rows of post boxes with names on slips of paper. One has a sticker reading \"QSL\", another \"No flyers, we have enough air already.\"",
+  "ja": "名前を紙に書いた郵便受けが並ぶ。一つには「QSL」のシール、別のには「チラシお断り、電波はもう十分」。"
+ },
+ "city.t1h4.mail.m": {
+  "ru": "Утром почтальон уже был: из ящиков торчат уголки открыток и газет. Из одного выглядывает письмо с иностранной маркой.",
+  "en": "The postman has already been this morning: corners of postcards and papers stick out. From one box peeks a letter with a foreign stamp.",
+  "ja": "朝のうちに郵便配達が来ていて、はがきや新聞の角がはみ出している。一つからは外国の切手の手紙がのぞく。"
+ },
+ "city.t1h4.mail.d": {
+  "ru": "Днём в ящиках пусто и гулко. На полу под ящиками рассыпана реклама: её никто не любит, но все читают.",
+  "en": "In the afternoon the boxes are empty and hollow. Flyers lie scattered on the floor beneath: nobody likes them but everybody reads them.",
+  "ja": "昼の郵便受けは空っぽで音が響く。下の床にチラシが散らばっている。誰も好きではないのに、みんな読む。"
+ },
+ "city.t1h4.mail.e": {
+  "ru": "К вечеру ящики снова полны: у одного приоткрыта дверца, видна открытка с пароходом.",
+  "en": "By evening the boxes are full again: one door is ajar, and I can see a postcard with a steamer on it.",
+  "ja": "夕方には郵便受けがまた埋まる。一つは扉が少し開いていて、汽船の絵はがきが見える。"
+ },
+ "city.t1h4.mail.n": {
+  "ru": "Ночью ящики стоят в темноте, как ряд маленьких окошек. За каждым чья-то почта ждёт утра.",
+  "en": "At night the boxes stand in the dark like a row of little windows. Behind each, somebody's post waits for morning.",
+  "ja": "夜の郵便受けは、小さな窓の列のように暗がりに並ぶ。どれの奥にも、朝を待つ誰かの郵便がある。"
+ },
+ "city.t1h4.mail.sun": {
+  "ru": "В воскресенье почты нет. На ящике радиолюбителя приклеена бумажка: «Открытки приходят и по воскресеньям. По воздуху».",
+  "en": "No post on Sunday. A slip on the radio amateur's box says: \"Cards arrive on Sundays too. By air.\"",
+  "ja": "日曜は郵便がない。無線家の郵便受けに紙が貼ってある。「カードは日曜にも届きます。電波で」。"
+ },
+ "city.t1h4.log.title": {
+  "ru": "Журнал связей Гуннара",
+  "en": "Gunnar's station log",
+  "ja": "グンナルの交信日誌"
+ },
+ "city.t1h4.log.line": {
+  "ru": "Толстый журнал в клеёнчатой обложке лежит раскрытым у ключа. Карандаш привязан ниткой, чтобы не терялся.",
+  "en": "A thick log in an oilcloth cover lies open by the key. The pencil is tied on with thread so it won't get lost.",
+  "ja": "ビニール表紙の厚い日誌が電鍵のそばに開いてある。鉛筆は糸で結んであって、なくならない。"
+ },
+ "city.t1h4.log.1": {
+  "ru": "«Дата, время, позывной, сигнал, погода, примечания.» Первая страница разлинована аккуратно. «20:10, Т/х „Ладога“, 579. Штиль. Штурман передаёт привет».",
+  "en": "\"Date, time, call sign, signal, weather, remarks.\" The first page is ruled neatly. \"20:10, S.S. Ladoga, 579. Calm. The navigator sends greetings.\"",
+  "ja": "「日付、時刻、コールサイン、信号、天気、備考」。最初のページはきちんと罫が引いてある。「20:10、汽船ラドガ、579。凪。航海士からあいさつ」。"
+ },
+ "city.t1h4.log.2": {
+  "ru": "«23:00, Капсула напротив. Говорили о погоде сорок минут. Хорошо поговорили». Рядом — «Тикси, 4 утра, снег. Слышно шесть слов из двенадцати. Шесть — тоже много».",
+  "en": "\"23:00, the capsule opposite. We talked about the weather for forty minutes. A good talk.\" Beside it: \"Tiksi, 4 am, snow. Six words out of twelve. Six is a lot, too.\"",
+  "ja": "「23:00、向かいのカプセル。天気の話を四十分。いい会話だった」。その横に「ティクシ、朝4時、雪。十二語のうち六語が聞こえた。六語でも多い」。"
+ },
+ "city.t1h4.log.3": {
+  "ru": "«Мост, 19:00. Слушали эфир вдвоём с соседкой. Она принесла варенье, я чай. Ничего не поймали и ни о чём не пожалели».",
+  "en": "\"Bridge, 7 pm. Listened to the air with my neighbour. She brought jam, I brought tea. We caught nothing and regretted nothing.\"",
+  "ja": "「橋、19:00。隣人と二人で電波を聴いた。彼女はジャム、僕はお茶を持参。何も受信できなかったが、悔いはない」。"
+ },
+ "city.t1h4.log.4": {
+  "ru": "«Пометка красным: мелодия с 14 мая найдена. Кафе „Тарелка“, автомат, третья кнопка. Мальчик, который пришёл с катушкой, спас мне полгода. Записать в журнал: ему положен чай без очереди».",
+  "en": "\"Marked in red: the tune from 14 May is found. The Saucer café, the jukebox, third button. The boy who came with the reel saved me half a year. Put in the log: he gets tea without a queue.\"",
+  "ja": "「赤で記す。5月14日の曲が見つかった。カフェ『ソーサー』、ジュークボックス、三番目のボタン。リールを持って来た少年のおかげで半年が節約できた。記録:彼にはお茶を順番なしで」。"
+ },
+ "city.t1h4.log.5": {
+  "ru": "Последняя запись, свежим карандашом: «Завтра ставлю антенну на второй мост. Если ключ будет стучать ровно — значит, всё в порядке. Позывной тот же: UA-Людмиловск-11. 73».",
+  "en": "The last entry, in fresh pencil: \"Tomorrow I put the antenna on the second bridge. If the key taps evenly, everything is fine. Same call sign: Lyudmilovsk-11. 73.\"",
+  "ja": "最後の記入、新しい鉛筆で。「明日、二つ目の橋にアンテナを立てる。電鍵が規則正しく鳴れば万事順調。コールサインは同じ、リュドミロフスク11。73」。"
+ },
+ "city.t1h4.qsl.1": {
+  "ru": "Карточка из Тикси: нарисован олень на льду и написано «Тикси — Людмиловск, 7055 кГц, сигнал 449». Внизу приписка: «Холодно, но весело».",
+  "en": "A card from Tiksi: a reindeer on ice, \"Tiksi to Lyudmilovsk, 7055 kHz, signal 449.\" A note below: \"Cold, but cheerful.\"",
+  "ja": "ティクシからのカード。氷の上のトナカイと「ティクシ→リュドミロフスク、7055kHz、信号449」。下に一言、「寒いけれど陽気」。"
+ },
+ "city.t1h4.qsl.2": {
+  "ru": "Карточка из Вальпараисо, с пальмой и пароходом. Текст по-испански, но слово «amigo» понятно без перевода.",
+  "en": "A card from Valparaiso with a palm and a steamer. The text is in Spanish, but the word \"amigo\" needs no translation.",
+  "ja": "バルパライソからのカード。ヤシの木と汽船。文面はスペイン語だが、「amigo」の一語は訳さなくてもわかる。"
+ },
+ "city.t1h4.qsl.3": {
+  "ru": "Карточка с борта «Ладоги»: печать пароходства, пятно от чая и подпись штурмана. «Передаём привет мальчику с катушкой» приписано другой рукой.",
+  "en": "A card from aboard the Ladoga: the shipping line's stamp, a tea stain and the navigator's signature. \"Greetings to the boy with the reel\" is added in another hand.",
+  "ja": "ラドガ号からのカード。船会社の印、お茶のしみ、航海士の署名。別の筆跡で「リールの少年によろしく」と添えてある。"
+ },
+ "city.t1h4.qsl.4": {
+  "ru": "Карточка из Рейкьявика: северное сияние нарисовано зелёным карандашом. «Слышали вас вчера, пропал на середине фразы, повторите».",
+  "en": "A card from Reykjavik: the northern lights drawn in green pencil. \"We heard you yesterday, you dropped out mid-sentence, please repeat.\"",
+  "ja": "レイキャビクからのカード。緑の鉛筆でオーロラが描かれている。「昨日聞こえました、文の途中で途切れました、もう一度お願いします」。"
+ },
+ "city.t1h4.qsl.5": {
+  "ru": "Карточка из Киото с веткой клёна. На обороте шесть слов по-русски, выписанных печатными буквами: «Спасибо за музыку. Мы слушали вместе».",
+  "en": "A card from Kyoto with a maple twig. On the back six words in Russian in careful capitals: \"Thank you for the music. We listened together.\"",
+  "ja": "京都からのカード。カエデの枝が添えてある。裏にロシア語の六語が丁寧な大文字で。「音楽をありがとう。みんなで聴きました」。"
+ },
+ "city.t1h4.qsl.all": {
+  "ru": "Все пять карточек теперь на стене, и между ними протянута нитка с булавками. Над ними от руки: «Люди, которых я слышал».",
+  "en": "All five cards are on the wall now, with a thread of pins strung between them. Above, in hand: \"People I have heard.\"",
+  "ja": "五枚のカードが壁に揃い、そのあいだにピンつきの糸が渡してある。上に手書きで「僕が聞いた人たち」。"
+ },
+ "city.t1h4.morse.title": {
+  "ru": "Азбука Морзе: ключ",
+  "en": "Morse: the key",
+  "ja": "モールス:電鍵"
+ },
+ "city.t1h4.morse.keys": {
+  "ru": "E — отстучать, когда маркер в светлой середине",
+  "en": "E: tap when the marker is in the bright middle",
+  "ja": "E:マーカーが明るい中央にあるときに叩く"
+ },
+ "city.t1h4.morse.win.1": {
+  "ru": "Ровно, как метроном. В наушниках кто-то коротко ответил: «73». Это значит «всего доброго».",
+  "en": "Even as a metronome. In the headphones somebody answered briefly: \"73.\" That means \"best regards.\"",
+  "ja": "メトロノームのように正確だった。ヘッドホンの向こうが短く返した。「73」。「ご多幸を」の意味だ。"
+ },
+ "city.t1h4.morse.win.2": {
+  "ru": "Тире получились длинными, точки короткими. Чужая станция подтвердила приём: пишущий почерк опознан, видимо, как мой.",
+  "en": "The dashes came out long and the dots short. A far station confirmed reception: my fist was recognised, so it seems.",
+  "ja": "ツーは長く、トンは短く打てた。遠くの局が受信を確認した。僕の「手」は覚えられたらしい。"
+ },
+ "city.t1h4.morse.lose.1": {
+  "ru": "Рука дрогнула, и точки склеились с тире. В ответ в эфире шорох: «Повторите, не понял».",
+  "en": "My hand shook and the dots stuck to the dashes. The air answered with a rustle: \"Please repeat, did not copy.\"",
+  "ja": "手が震えて、トンとツーがくっついた。電波の返事はざわざわ。「もう一度、受信できず」。"
+ },
+ "city.t1h4.morse.lose.2": {
+  "ru": "Слишком торопился. Ключ не любит спешки: он звякнул и замолчал, будто обиделся.",
+  "en": "Too much haste. The key hates haste: it clinked and fell silent as if offended.",
+  "ja": "急ぎすぎた。電鍵は急かされるのが嫌いで、カチンと鳴って黙りこんだ。"
+ },
+ "city.t1h4.morse.draw.1": {
+  "ru": "Половина слов дошла. Для первого раза неплохо: из двенадцати знаков шесть были правильными.",
+  "en": "Half the words got through. Not bad for a first time: six of twelve signs were right.",
+  "ja": "半分の言葉が届いた。初めてならまずまず。十二の符号のうち六つが合っていた。"
+ },
+ "city.t1h4.morse.after.1": {
+  "ru": "Ключ ещё тёплый от чьей-то ладони. Рычаг пружинит, и контакт звенит тоненько, как кузнечик.",
+  "en": "The key is still warm from somebody's palm. The lever springs and the contact rings thinly, like a grasshopper.",
+  "ja": "電鍵はまだ誰かの手のぬくもりが残っている。レバーがはね、接点がバッタのように細く鳴る。"
+ },
+ "city.t1h4.morse.after.2": {
+  "ru": "Рядом на бумажке расшифровка: «·–· ·– –·· ·· ·· — РАДИО». Хороший первый урок.",
+  "en": "A slip beside it with a decoding: \"·–· ·– –·· ·· ––– RADIO.\" A good first lesson.",
+  "ja": "横の紙切れに解読が書いてある。「·–· ·– –·· ·· –––(ラジオ)」。いい最初の授業だ。"
+ },
+ "city.t1h4.morse.after.n": {
+  "ru": "Ночью ключ стучит особенно чисто: на ночном эфире нет помех, только твоя рука и чужое ухо.",
+  "en": "At night the key taps especially cleanly: on a night channel there is no interference, only your hand and a stranger's ear.",
+  "ja": "夜の電鍵は特にきれいに鳴る。夜の電波に雑音はなく、自分の手と見知らぬ誰かの耳だけがある。"
+ },
+ "city.t1h4.tuner.1": {
+  "ru": "Серый ящик с двумя ручками и стрелкой. Коаксиальный провод уходит в стену, а потом на мост к антенне.",
+  "en": "A grey box with two knobs and a needle. A coax lead runs into the wall and then out to the antenna on the bridge.",
+  "ja": "つまみが二つと針のついた灰色の箱。同軸ケーブルは壁へ入り、橋のアンテナへ続いている。"
+ },
+ "city.t1h4.tuner.n": {
+  "ru": "Ночью стрелка тюнера держится у самого края шкалы: на коротких волнах после полуночи слышно далеко.",
+  "en": "At night the tuner's needle sits at the very edge of the scale: after midnight the shortwaves carry far.",
+  "ja": "夜、チューナーの針は目盛りのいちばん端に寄っている。真夜中を過ぎると短波は遠くまで届く。"
+ },
+ "city.t1h4.tuner.rain": {
+  "ru": "В дождь стрелка скачет: антенна мокрая, и вместе с сигналом приходит шорох. На бумажке: «В дождь — только ближние».",
+  "en": "In rain the needle jumps: the antenna is wet and a rustle comes with the signal. A slip says: \"In rain, only the near ones.\"",
+  "ja": "雨の日は針が跳ねる。アンテナが濡れ、信号といっしょにざわめきが届く。紙切れに「雨の日は近い局だけ」。"
+ },
+ "city.t1h4.tuner.snow": {
+  "ru": "Снег глушит эфир: стрелка еле шевелится. «Зимой слышно далеко, но тихо», — написано на корпусе мелом.",
+  "en": "Snow muffles the air: the needle barely moves. \"In winter you hear far, but quietly,\" is chalked on the case.",
+  "ja": "雪は電波をくぐもらせ、針はほとんど動かない。ケースにチョークで「冬は遠くまで聞こえるが、静かに」。"
+ },
+ "city.t1h4.tuner.fog": {
+  "ru": "В тумане стрелка плывёт, ручки липнут от сырости. Радиолюбитель оставил записку: «Туман — самый тёплый эфир».",
+  "en": "In fog the needle drifts and the knobs stick with damp. The radio amateur left a note: \"Fog is the warmest air.\"",
+  "ja": "霧の中で針はゆらゆら流れ、つまみは湿気でべたつく。無線家のメモ。「霧は一番あたたかい電波」。"
+ },
+ "city.t1h4.tuner.clear": {
+  "ru": "Ясно: стрелка стоит ровно в зелёном секторе, и в динамике чисто. Видно, сегодня можно позвонить в Тикси.",
+  "en": "Clear: the needle sits right in the green sector and the speaker is clean. Today you could call Tiksi.",
+  "ja": "晴れ。針は緑の区間にぴたりと収まり、スピーカーはクリアだ。今日ならティクシにも呼びかけられそうだ。"
+ },
+ "city.t1h4.phones.1": {
+  "ru": "Большие наушники с кожаными чашками. На оголовье нитка: чтобы не забывать, на какую сторону надевать.",
+  "en": "Big headphones with leather cups. A thread on the band: so you remember which side goes where.",
+  "ja": "革のカップの大きなヘッドホン。ヘッドバンドに糸が巻いてある。どちらを左にするか忘れないために。"
+ },
+ "city.t1h4.phones.d": {
+  "ru": "Надел на секунду: шорох, потом далёкий женский голос по-английски читает цифры. Снял, чтобы не подслушивать.",
+  "en": "I put them on for a second: a rustle, then a far-off woman's voice reading numbers in English. I took them off so as not to eavesdrop.",
+  "ja": "一瞬かぶってみた。ざわざわのあと、遠くから女の人が英語で数字を読む声。盗み聞きにならないよう外した。"
+ },
+ "city.t1h4.phones.e": {
+  "ru": "В вечерних наушниках музыка, тихо и тепло. Кажется, это та самая труба с набережной, только очень далеко.",
+  "en": "In the evening headphones there is music, quiet and warm. It seems to be that same trumpet from the embankment, only very far away.",
+  "ja": "夕方のヘッドホンから音楽が小さく温かく聞こえる。あの河岸のトランペットに似ている、ずっと遠くで。"
+ },
+ "city.t1h4.phones.n": {
+  "ru": "Ночью в наушниках ровный гул и редкие писки, как у далёкого маяка. Хочется надеть и не снимать.",
+  "en": "At night the headphones hold a steady hum and rare beeps, like a distant lighthouse. I want to put them on and not take them off.",
+  "ja": "夜のヘッドホンは一定のうなりとときどきのピッという音、遠い灯台のようだ。かぶったまま外したくなくなる。"
+ },
+ "city.t1h4.kettle.1": {
+  "ru": "Эмалированный чайник стоит на плите тёплым боком. Гуннар разрешает: «Наливай, кружка слева, сахар в банке с почтовой маркой».",
+  "en": "An enamel kettle stands on the stove, warm on one side. Gunnar's note: \"Pour, the mug is on the left, sugar in the jar with the postage stamp.\"",
+  "ja": "ほうろうのやかんがコンロの上で片側だけ温かい。グンナルの書き置き。「注いでいいよ、マグは左、砂糖は切手の貼ってある瓶」。"
+ },
+ "city.t1h4.kettle.2": {
+  "ru": "Чай крепкий, с лимонной коркой. Я пью у окна, и по радио где-то тихо читают сводку погоды для моряков.",
+  "en": "The tea is strong, with lemon peel. I drink it by the window, and somewhere on the radio a shipping forecast is read softly.",
+  "ja": "お茶は濃く、レモンの皮入り。窓辺で飲んでいると、どこかのラジオが船乗り向けの天気予報を小さく読んでいる。"
+ },
+ "city.t1h4.kettle.m": {
+  "ru": "Утром чайник ещё не остыл с ночи: радиолюбитель, видно, пил его в эфире до рассвета.",
+  "en": "In the morning the kettle has not cooled from the night: the radio amateur must have been drinking it on air until dawn.",
+  "ja": "朝、やかんは夜のぬくもりを残している。無線家は夜明けまで交信しながら飲んでいたらしい。"
+ },
+ "city.coll.okafor_radio.title": {
+  "ru": "Станция Гуннара",
+  "en": "Gunnar's station",
+  "ja": "グンナルの無線局"
+ },
+ "quest.home_okafor_cq.title": {
+  "ru": "Позывной",
+  "en": "Call sign",
+  "ja": "コールサイン"
+ },
+ "quest.home_okafor_cq.desc": {
+  "ru": "Мелодия найдена, но Гуннар теперь затеял что-то новое: ставит антенну на второй мост и просит, чтобы ключ «стучал ровно». Журнал связей лежит раскрытым.",
+  "en": "The tune is found, but Gunnar has started something new: he is putting an antenna on the second bridge and wants the key to \"tap evenly.\" The station log lies open.",
+  "ja": "曲は見つかったが、グンナルは新しいことを始めた。二つ目の橋にアンテナを立て、電鍵が「規則正しく鳴る」ことを望んでいる。交信日誌は開いたままだ。"
+ },
+ "quest.home_okafor_cq.log.log": {
+  "ru": "Последняя запись в журнале про антенну и про ключ. Прочту, вдруг там для меня что-то есть.",
+  "en": "The last entry in the log is about the antenna and the key. I'll read it, maybe there is something in it for me.",
+  "ja": "日誌の最後の記入はアンテナと電鍵のこと。読んでみよう、僕向けのことが書いてあるかもしれない。"
+ },
+ "quest.home_okafor_cq.log.obj": {
+  "ru": "Прочесть журнал связей на столе Гуннара",
+  "en": "Read the station log on Gunnar's desk",
+  "ja": "グンナルの机の交信日誌を読む"
+ },
+ "quest.home_okafor_cq.key.log": {
+  "ru": "«Если ключ будет стучать ровно — значит, всё в порядке». Проверю антенну по-честному: сам отстучу.",
+  "en": "\"If the key taps evenly, everything is fine.\" I'll check the antenna honestly: I'll tap it out myself.",
+  "ja": "「電鍵が規則正しく鳴れば万事順調」。アンテナを正直に確かめよう。自分で叩いてみる。"
+ },
+ "quest.home_okafor_cq.key.obj": {
+  "ru": "Отстучать ключом ровно: попасть в светлую середину",
+  "en": "Tap the key evenly: hit the bright middle",
+  "ja": "電鍵を規則正しく叩く:明るい中央に合わせる"
+ },
+ "quest.home_okafor_cq.card.log": {
+  "ru": "Ответили! Станция подтвердила приём. Осталось найти на стене карточки: наверное, одна из них уже про меня.",
+  "en": "They answered! A station confirmed reception. Now to find the cards on the wall: surely one is already about me.",
+  "ja": "返事が来た!局が受信を確認した。あとは壁のカードを見よう。きっと一枚はもう僕のことだ。"
+ },
+ "quest.home_okafor_cq.card.obj": {
+  "ru": "Посмотреть открытки QSL на стене у Гуннара",
+  "en": "Look at the QSL cards on Gunnar's wall",
+  "ja": "グンナルの壁のQSLカードを見る"
+ },
+ "quest.home_okafor_cq.done": {
+  "ru": "На столе под открытками лежит чистая карточка с моим именем карандашом: «UA-Людмиловск-11 подтверждает связь с мальчиком, который стучал ровно». Рядом лежит сахар в банке с маркой. Гуннар оставил двадцать пять рублей: «На билеты, послушать море». 73.",
+  "en": "On the desk below the cards lies a blank one with my name in pencil: \"Lyudmilovsk-11 confirms contact with the boy who tapped evenly.\" Beside it sits sugar in a jar with a stamp. Gunnar left twenty-five roubles: \"For tickets, to listen to the sea.\" 73.",
+  "ja": "カードの下の机に、鉛筆で僕の名前を書いた白紙のカードがある。「リュドミロフスク11は、規則正しく叩いた少年との交信を確認します」。隣には切手つきの瓶の砂糖。グンナルは二十五ルーブルを残していた。「切符代に、海を聴きに」。73。"
+ }
+}

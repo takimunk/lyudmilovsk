@@ -310,6 +310,7 @@ def build(B):
     _furnish_lobby(B)
     _furnish_garden(B)
     _furnish_flat(B)
+    _depth_pass(B)
     B.footprint = [(-19.1, 1.9), (XE + 0.3, 1.9), (XE + 0.3, 16.7), (-19.1, 16.7)]
     B.height = roof_top(15.1) + 0.0
     add_surrounds(B, seed=2, kinds=("street",), bounds=(-20.0, 20.0, 0.3, 30.0))
@@ -547,3 +548,240 @@ def _furnish_flat(B):
     B.thing("flat_books_cooking", "shelf", (-7.8, 11.6, 1.3), 270.0, topic="cooking")
     kit.picture(B, -7.7, 10.4, 0.0, 270.0, name="painting_still_life", w=0.6, zc=1.7)
     kit.plant(B, -13.2, 9.7, 0.0, 0.0, kind="ficus", pot="CT_PlasterRed", h=1.4, seed=6)
+
+
+# ====================================================================== second pass: garden, stair, Holm's flat
+def _piece(B, x, y, z, yaw, name, kind="prop"):
+    p = kit._P(B, x, y, z, yaw, name)
+    p.kind = kind
+    return p
+
+
+def _tap(B, x, y, yaw):
+    """A standpipe with a brass tap and a zinc bucket under it, against the garden wall."""
+    p = _piece(B, x, y, 0.0, yaw, "garden_tap")
+    p.cyl("CT_ConcreteDark", 0, 0, 0.0, 0.05, 0.14, 8, bottom=True)
+    p.cyl("CT_Steel", 0, 0.0, 0.05, 0.85, 0.035, 6)
+    p.box("CT_Brass", -0.03, 0.03, -0.1, 0.03, 0.8, 0.88)
+    p.rod("CT_Brass", (0.0, -0.02, 0.84), (0.0, -0.12, 0.84), 0.028, 5)
+    p.rod("CT_Brass", (-0.06, 0.0, 0.92), (0.06, 0.0, 0.92), 0.02, 4, caps=True)
+    p.cyl("CT_Steel", 0.0, -0.17, 0.0, 0.24, 0.13, 10, r1=0.1, bottom=True)
+    p.rod("CT_Steel", (-0.12, -0.17, 0.22), (0.12, -0.17, 0.22), 0.012, 4)
+    p.face("CT_Glass", [(0.1 * math.cos(2 * math.pi * k / 10), -0.17 + 0.1 * math.sin(2 * math.pi * k / 10), 0.17) for k in range(10)])
+    return p.done()
+
+
+def _stake(B, x, y, z, yaw, mat="CT_Paper"):
+    """A plant label: a thin stake and a small paper tag."""
+    p = _piece(B, x, y, z, yaw, "plant_stake")
+    p.box("CT_Wood", -0.008, 0.008, -0.004, 0.004, 0.0, 0.34)
+    p.box(mat, -0.07, 0.07, -0.012, -0.004, 0.2, 0.31, f="y")
+    p.box("CT_ConcreteDark", -0.055, 0.055, -0.014, -0.012, 0.25, 0.262, f="y")
+    p.box("CT_ConcreteDark", -0.055, 0.02, -0.014, -0.012, 0.28, 0.288, f="y")
+    return p.done()
+
+
+def _switch_plate(B, x, y, z, yaw):
+    """A wall light switch: a pale plate with a black rocker."""
+    p = _piece(B, x, y, z, yaw, "light_switch", "wall")
+    p.box("CT_ConcreteWhite", -0.045, 0.045, -0.014, 0.0, 1.25, 1.39, f="xXyYzZ")
+    p.box("CT_Lacquer", -0.02, 0.02, -0.024, -0.014, 1.3, 1.35, f="xXyYZz")
+    return p.done()
+
+
+def _dominoes(B, x, y, z, yaw):
+    p = _piece(B, x, y, z, yaw, "domino_tiles")
+    for k, (u, v, a) in enumerate(((-0.12, -0.05, 0.3), (-0.05, 0.02, 1.2), (0.05, -0.02, 0.1), (0.14, 0.05, 2.0), (-0.1, 0.12, 0.8),
+                                   (0.03, 0.14, 0.5), (0.18, -0.12, 1.7), (-0.2, -0.16, 0.0))):
+        zz = 0.012
+        p.box("CT_Paper", u - 0.017, u + 0.017, v - 0.031, v + 0.031, 0.0, zz, f="xXyYZ")
+        p.box("CT_Lacquer", u - 0.014, u + 0.014, v - 0.001, v + 0.001, zz, zz + 0.001, f="Z")
+    return p.done(top=0.012)
+
+
+def _sextant_case(B, x, y, z, yaw):
+    """An open wooden case with a brass sextant: sector frame, arc scale, index arm, little telescope."""
+    p = _piece(B, x, y, z, yaw, "sextant")
+    p.box("CT_Wood", -0.17, 0.17, -0.095, 0.095, 0.0, 0.03, f="xXyYZz")
+    p.box("CT_Leather", -0.15, 0.15, -0.08, 0.08, 0.03, 0.036, f="Z")
+    ap = (0.09, 0.05)
+    zz = 0.045
+    arc = []
+    n = 7
+    for k in range(n + 1):
+        a = math.radians(205 + 70 * k / n)
+        arc.append((ap[0] + 0.16 * math.cos(a), ap[1] + 0.16 * math.sin(a)))
+    pts = [ap] + arc
+    for k in range(len(pts) - 1):
+        p.face("CT_Brass", [(ap[0], ap[1], zz + 0.012), (pts[k + 1][0], pts[k + 1][1], zz + 0.012), (pts[k + 2][0], pts[k + 2][1], zz + 0.012)] if k + 2 < len(pts) else [(ap[0], ap[1], zz + 0.012), (pts[k][0], pts[k][1], zz + 0.012), (pts[k + 1][0], pts[k + 1][1], zz + 0.012)])
+    for a_, b_ in zip(arc, arc[1:]):
+        p.rod("CT_Steel", (a_[0], a_[1], zz + 0.014), (b_[0], b_[1], zz + 0.014), 0.012, 4, caps=True)
+        p.rod("CT_Brass", (a_[0], a_[1], zz), (b_[0], b_[1], zz), 0.016, 4, caps=True)
+    p.rod("CT_Brass", (ap[0], ap[1], zz + 0.02), (arc[3][0], arc[3][1], zz + 0.02), 0.012, 4, caps=True)
+    p.cyl("CT_Glass", ap[0] - 0.04, ap[1] - 0.05, zz + 0.012, zz + 0.05, 0.012, 6)
+    p.rod("CT_Steel", (ap[0] - 0.05, ap[1] - 0.12, zz + 0.04), (ap[0] - 0.02, ap[1] - 0.02, zz + 0.04), 0.022, 6, caps=True)
+    p.cyl("CT_Glass", ap[0] + 0.03, ap[1] + 0.03, zz + 0.012, zz + 0.03, 0.014, 6)
+    for k in (0, n):
+        p.rod("CT_Brass", (arc[k][0], arc[k][1], 0.036), (arc[k][0], arc[k][1], zz), 0.014, 4, caps=True)
+    p.rod("CT_Brass", (ap[0], ap[1], 0.036), (ap[0], ap[1], zz), 0.014, 4, caps=True)
+    return p.done(top=0.05)
+
+
+def _compass(B, x, y, z, yaw):
+    """A brass hand compass: a bowl, a dark card with four ticks and a red-and-white needle, a hinged lid."""
+    p = _piece(B, x, y, z, yaw, "compass")
+    p.cyl("CT_Brass", 0, 0, 0.0, 0.035, 0.07, 12, r1=0.065, bottom=True)
+    p.cyl("CT_Lacquer", 0, 0, 0.035, 0.038, 0.058, 12)
+    for k in range(4):
+        a = k * math.pi / 2
+        p.rod("CT_Paper", (0.03 * math.cos(a), 0.03 * math.sin(a), 0.04), (0.052 * math.cos(a), 0.052 * math.sin(a), 0.04), 0.006, 3)
+    p.rod("CT_PlasterRed", (0.0, 0.0, 0.043), (0.0, 0.05, 0.043), 0.01, 3, caps=True)
+    p.rod("CT_Paper", (0.0, 0.0, 0.043), (0.0, -0.05, 0.043), 0.01, 3, caps=True)
+    p.cyl("CT_Brass", 0, 0, 0.038, 0.046, 0.006, 6)
+    p.rod("CT_Brass", (-0.07, 0.0, 0.0), (-0.065, 0.0, 0.035), 0.012, 3)
+    return p.done(top=0.05)
+
+
+def _postcards(B, x, y, z, yaw):
+    """A stack of postcards held with a rubber band, a lighthouse card leaning on it."""
+    p = _piece(B, x, y, z, yaw, "postcards")
+    for k in range(6):
+        p.box("CT_Paper", -0.07 + 0.002 * k, 0.07 + 0.002 * (k % 2), -0.05, 0.05, 0.006 * k, 0.006 * (k + 1), f="xXyYZ")
+    p.box("CT_PlasterRed", -0.071, 0.071, -0.008, 0.008, 0.0, 0.037, f="xXyYZ")
+    p.card_top("paper_letter", -0.065, 0.065, -0.045, 0.045, 0.037)
+    return p.done(top=0.04)
+
+
+def _barometer(B, x, y, z, yaw):
+    """A round aneroid barometer: a wooden ring, a brass bezel, a pale dial with ticks, a red needle, a brass set-hand."""
+    p = _piece(B, x, y, z, yaw, "barometer", "wall")
+    zc, r = 1.62, 0.15
+    ring = lambda rr, yy: [(rr * math.cos(2 * math.pi * k / 12), yy, zc + rr * math.sin(2 * math.pi * k / 12)) for k in range(12)]
+    p.loft("CT_Wood", [ring(r + 0.035, 0.0), ring(r + 0.035, -0.025)], top=False)
+    p.face("CT_Wood", ring(r + 0.035, -0.025))
+    p.loft("CT_Brass", [ring(r, -0.025), ring(r, -0.06), ring(r - 0.014, -0.06)], top=False)
+    p.face("CT_Paper", ring(r - 0.014, -0.05)[::-1])
+    for k in range(12):
+        a = 2 * math.pi * k / 12
+        c1, s1 = math.cos(a), math.sin(a)
+        p.rod("CT_ConcreteDark", (0.1 * c1, -0.052, zc + 0.1 * s1), (0.125 * c1, -0.052, zc + 0.125 * s1), 0.007, 3)
+    p.rod("CT_PlasterRed", (0.0, -0.056, zc), (-0.085, -0.056, zc + 0.05), 0.012, 3, caps=True)
+    p.rod("CT_Brass", (0.0, -0.054, zc), (0.06, -0.054, zc - 0.07), 0.008, 3, caps=True)
+    p.box("CT_Brass", -0.014, 0.014, -0.066, -0.054, zc - 0.014, zc + 0.014)
+    p.box("CT_Brass", -0.045, 0.045, -0.026, -0.008, zc - 0.265, zc - 0.225)
+    p.box("CT_PlasterRed", -0.005, 0.005, -0.03, -0.026, zc - 0.26, zc - 0.17)
+    return p.done()
+
+
+def _kettle(B, x, y, z, yaw):
+    """An enamel kettle: round body, spout, lid with a knob, a wooden handle over the top."""
+    p = _piece(B, x, y, z, yaw, "kettle")
+    p.lathe("CT_PlasterBlue", 0, 0, [(0.1, 0.0), (0.125, 0.04), (0.12, 0.12), (0.08, 0.16), (0.05, 0.17)], 10)
+    p.cyl("CT_PlasterBlue", 0, 0, 0.17, 0.175, 0.05, 10)
+    p.cyl("CT_Wood", 0, 0, 0.175, 0.205, 0.016, 5)
+    p.rod("CT_PlasterBlue", (0.1, 0.0, 0.08), (0.2, 0.0, 0.17), 0.026, 5, caps=True)
+    p.rod("CT_Wood", (-0.1, 0.0, 0.14), (0.0, 0.0, 0.26), 0.014, 4, caps=True)
+    p.rod("CT_Wood", (0.0, 0.0, 0.26), (0.1, 0.0, 0.14), 0.014, 4, caps=True)
+    return p.done(top=0.2)
+
+
+def _navtable_props(B, x, y, z, yaw):
+    """On the chart table (local x across, y deep): a coastal chart, a rough log, brass dividers, a parallel rule, a pencil."""
+    p = _piece(B, x, y, z, yaw, "chart_table_props")
+    p.card_top("map_coast", -0.58, 0.02, -0.33, 0.33, 0.004)
+    p.box("CT_Paper", -0.59, 0.03, -0.34, 0.34, 0.0, 0.003, f="xXyY")
+    # the rough log: a leather cover, two pages
+    p.box("CT_Leather", 0.12, 0.58, -0.3, 0.12, 0.0, 0.02, f="xXyYZz")
+    p.box("CT_Paper", 0.14, 0.35, -0.28, 0.1, 0.02, 0.03, f="xXyYZ")
+    p.box("CT_Paper", 0.355, 0.56, -0.28, 0.1, 0.02, 0.03, f="xXyYZ")
+    p.card_top("paper_typed", 0.15, 0.34, -0.27, 0.09, 0.0305)
+    p.card_top("paper_letter", 0.365, 0.55, -0.27, 0.09, 0.0305)
+    # brass dividers on the chart, hinge up
+    p.rod("CT_Brass", (-0.3, 0.1, 0.05), (-0.36, -0.1, 0.006), 0.012, 4, caps=True)
+    p.rod("CT_Brass", (-0.3, 0.1, 0.05), (-0.24, -0.1, 0.006), 0.012, 4, caps=True)
+    p.cyl("CT_Brass", -0.3, 0.1, 0.045, 0.06, 0.018, 6)
+    # parallel rule
+    p.rod("CT_Wood", (-0.5, -0.2, 0.01), (-0.1, 0.18, 0.01), 0.026, 4, caps=True)
+    p.rod("CT_Wood", (-0.49, -0.12, 0.01), (-0.09, 0.26, 0.01), 0.026, 4, caps=True)
+    # pencil
+    p.rod("CT_PlasterYellow", (0.2, 0.2, 0.012), (0.42, 0.28, 0.012), 0.01, 4, caps=True)
+    return p.done(top=0.05)
+
+
+def _shadow_lattice(B, x0, x1, y0, step=0.34, rows=4, z=0.012):
+    """The cobogo's diamond shadow as pale patches of sun on the living-room floor, rows running away from the window."""
+    for r in range(rows):
+        for k in range(int((x1 - x0) / step)):
+            cx = x0 + step * (k + 0.5 + 0.5 * (r % 2))
+            cy = y0 + r * 0.30
+            if cx + 0.11 > x1:
+                continue
+            h = 0.105 - 0.015 * r
+            kit_m = B.detail
+            for_pts = [(cx - h, cy), (cx, cy - h * 0.9), (cx + h, cy), (cx, cy + h * 0.9)]
+            pr(kit_m, "CT_PlasterYellow", for_pts, z, z + 0.002, top=True, bottom=False)
+
+
+def _depth_pass(B):
+    det = B.detail
+    T = B.thing
+    # ------------------------------------------------------------ the garden under the pilotis
+    kit.notice_board(B, 11.7, 7.4, 0.0, 90.0, w=1.2, zc=1.6, seed=21)
+    T("garden_notices", "board", (11.76, 7.4, 1.6), 90.0, topic="local")
+    fu.mailboxes(B, fu.Fr(11.75, 11.0, 90, 0.0), 0.0, 0.95, cols=3, rows=2)
+    T("garden_post", "board", (11.82, 11.0, 1.3), 90.0, topic="local")
+    _tap(B, 12.0, 12.0, 90.0)
+    T("garden_tap", "machine", (12.04, 12.0, 0.85), 90.0, what="tap")
+    B.spot("garden_tap_stand", "stand", (12.9, 12.0, 0.0), 270)
+    _bike(B, 17.78, 5.7, 90.0, "CT_PlasterBlue")
+    T("garden_bike", "board", (17.78, 5.7, 0.6), 270.0, topic="local")
+    for i, (x, y, tag) in enumerate(((12.1, 5.9, "CT_Paper"), (17.5, 4.3, "CT_PlasterYellow"), (17.5, 9.6, "CT_Paper"))):
+        _stake(B, x + 0.2, y - 0.12, 0.5, 0.0, tag)
+        T("garden_pot_%d" % (i + 1), "board", (x, y - 0.1, 0.95), 0.0, topic="garden")
+    T("garden_tree", "board", (15.0, 8.8, 1.2), 0.0, topic="garden")
+    _stake(B, 14.45, 8.4, 0.0, 0.0, "CT_PlasterYellow")
+    gt = kit.table(B, 14.0, 6.9, 0.0, 0.0, w=0.9, d=0.7)
+    _dominoes(B, 14.0, 6.9, gt["top"], 20.0)
+    kit.stool(B, 14.0, 6.25, 0.0, 180.0)
+    kit.stool(B, 14.0, 7.55, 0.0, 0.0)
+    T("garden_games", "play", (14.0, 6.9, gt["top"]), 0.0, what="dominoes")
+    T("garden_games_stool_s", "seat", (14.0, 6.25, 0.45), 180.0, height=0.45)
+    T("garden_games_stool_n", "seat", (14.0, 7.55, 0.45), 0.0, height=0.45)
+    _switch_plate(B, 11.7, 4.6, 0.0, 90.0)
+    T("garden_switch", "machine", (11.76, 4.6, 1.3), 90.0, what="switch", switch="room")
+    B.lamp((13.0, 10.9, ZF[1] - 0.5), lumens=520, colour="#FFD9A8", kind="lobby", radius=6.0)
+    B.lamp((16.6, 7.6, ZF[1] - 0.5), lumens=480, colour="#FFD9A8", kind="lobby", radius=6.0)
+    B.spot("garden_notice_stand", "stand", (12.5, 7.4, 0.0), 90)
+    B.spot("garden_games_stand", "stand", (15.0, 6.9, 0.0), 270)
+    B.spot("staff_concierge", "work", (4.9, 11.1, 0.0), 270)
+    # ------------------------------------------------------------ the stair: gallery landings
+    kit.wall_clock(B, -13.0, YB, ZF[1], 180.0, zc=2.5, face="clock_2")
+    T("stair_view_1", "board", (-11.9, 14.78, ZF[1] + 1.3), 0.0, topic="view")
+    T("stair_view_3", "board", (-11.9, 14.78, ZF[3] + 1.3), 0.0, topic="view")
+    B.spot("stair_view_spot_1", "view", (-11.9, 14.1, ZF[1]), 0)
+    B.spot("stair_view_spot_3", "view", (-11.9, 14.1, ZF[3]), 0)
+    # ------------------------------------------------------------ Holm's flat 0-01
+    _shadow_lattice(B, -13.2, -10.4, 4.35)
+    T("flat_shadow", "board", (-11.2, 3.7, 1.5), 0.0, topic="view")
+    ct = kit.table(B, -11.9, 8.65, 0.0, 0.0, w=1.3, d=0.8, h=0.75)
+    _navtable_props(B, -11.9, 8.65, ct["top"], 0.0)
+    T("flat_charts", "board", (-12.3, 8.65, ct["top"] + 0.02), 0.0, topic="travel")
+    T("flat_log_open", "board", (-11.45, 8.65, ct["top"] + 0.05), 0.0, topic="logbook")
+    B.spot("flat_chart_spot", "stand", (-11.9, 7.8, 0.0), 180)
+    kit.wall_shelf(B, -13.7, 7.2, 0.0, 90.0, w=1.04, zt=1.15, props=False)
+    _sextant_case(B, -13.58, 6.88, 1.15, 90.0)
+    T("flat_sextant", "board", (-13.55, 6.88, 1.2), 90.0, topic="travel")
+    _compass(B, -13.55, 7.22, 1.15, 90.0)
+    T("flat_compass", "board", (-13.55, 7.22, 1.22), 90.0, topic="travel")
+    _postcards(B, -13.55, 7.58, 1.15, 90.0)
+    T("flat_postcards", "board", (-13.55, 7.58, 1.22), 90.0, topic="local")
+    _barometer(B, -9.85, 4.4, 0.0, 90.0)
+    T("flat_barometer", "board", (-9.8, 4.4, 1.62), 90.0, topic="local")
+    _kettle(B, -10.0, 12.7, 0.9, 0.0)
+    T("flat_kettle", "machine", (-10.0, 12.7, 1.0), 0.0, what="kettle")
+    kit.wall_shelf(B, -7.7, 12.55, 0.0, 270.0, w=0.6, zt=1.2, props=False)
+    kit.radio(B, -7.92, 12.55, 1.2, 270.0)
+    T("flat_radio", "machine", (-7.95, 12.55, 1.32), 270.0, what="radio_dead")
+    _switch_plate(B, -12.0, 13.04, 0.0, 0.0)
+    T("flat_switch", "machine", (-12.0, 12.98, 1.3), 0.0, what="switch", switch="room")
+    B.spot("flat_kettle_spot", "stand", (-10.0, 11.9, 0.0), 180)

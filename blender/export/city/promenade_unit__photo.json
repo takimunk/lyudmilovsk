@@ -93,6 +93,46 @@
     0.0
    ],
    "yaw": 90.0
+  },
+  {
+   "id": "album",
+   "kind": "stand",
+   "pos": [
+    3.2,
+    2.35,
+    0.0
+   ],
+   "yaw": 180.0
+  },
+  {
+   "id": "lightbox",
+   "kind": "stand",
+   "pos": [
+    -0.95,
+    5.6,
+    0.0
+   ],
+   "yaw": 180.0
+  },
+  {
+   "id": "wait0",
+   "kind": "seat",
+   "pos": [
+    4.51,
+    3.96,
+    0.0
+   ],
+   "yaw": 270.0
+  },
+  {
+   "id": "wait1",
+   "kind": "seat",
+   "pos": [
+    4.51,
+    3.44,
+    0.0
+   ],
+   "yaw": 270.0
   }
  ],
  "lamps": [
@@ -164,19 +204,6 @@
    }
   },
   {
-   "id": "kit_clock_1",
-   "kind": "board",
-   "pos": [
-    -0.6,
-    6.35,
-    2.3
-   ],
-   "yaw": 0.0,
-   "props": {
-    "what": "clock"
-   }
-  },
-  {
    "id": "photo_darkroom",
    "kind": "craft",
    "pos": [
@@ -227,6 +254,98 @@
    "props": {
     "topic": "local"
    }
+  },
+  {
+   "id": "photo_stamp",
+   "kind": "machine",
+   "pos": [
+    2.35,
+    3.65,
+    0.81
+   ],
+   "yaw": 0.0,
+   "props": {
+    "what": "stamp"
+   }
+  },
+  {
+   "id": "photo_switch",
+   "kind": "machine",
+   "pos": [
+    4.4,
+    0.46,
+    1.3
+   ],
+   "yaw": 180.0,
+   "props": {
+    "what": "switch",
+    "switch": "room"
+   }
+  },
+  {
+   "id": "photo_clock",
+   "kind": "machine",
+   "pos": [
+    -0.6,
+    6.36,
+    2.3
+   ],
+   "yaw": 0.0,
+   "props": {
+    "what": "clock"
+   }
+  },
+  {
+   "id": "photo_album",
+   "kind": "shelf",
+   "pos": [
+    3.2,
+    3.0,
+    1.1
+   ],
+   "yaw": 0.0,
+   "props": {
+    "topic": "album"
+   }
+  },
+  {
+   "id": "photo_cutout",
+   "kind": "board",
+   "pos": [
+    -1.9,
+    1.62,
+    1.45
+   ],
+   "yaw": 180.0,
+   "props": {
+    "topic": "cutout"
+   }
+  },
+  {
+   "id": "photo_lightbox",
+   "kind": "machine",
+   "pos": [
+    -0.95,
+    6.34,
+    1.35
+   ],
+   "yaw": 0.0,
+   "props": {
+    "what": "lightbox"
+   }
+  },
+  {
+   "id": "photo_bench",
+   "kind": "seat",
+   "pos": [
+    4.51,
+    3.96,
+    0.45
+   ],
+   "yaw": 270.0,
+   "props": {
+    "height": 0.45
+   }
   }
  ],
  "flats": [],
@@ -236,8 +355,8 @@
   "promenade unit room, variant photo: placed at each W1 unit whose plan variant is photo"
  ],
  "tris": {
-  "shell": 190,
-  "detail": 1998,
+  "shell": 214,
+  "detail": 2864,
   "windows": 0
  }
 }

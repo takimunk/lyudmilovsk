@@ -280,9 +280,12 @@ class Shop:
         B = self.B
         ys = [(self.y_front(self.xm) + 1.7), (self.y_back(self.xm) - 2.2)]
         xs = [self.xm + (c - (cols - 1) / 2) * self.W / (cols + 0.0) for c in range(cols)]
+        # one real light per shop, in the middle (the game lights the nearest 24 lamps of a building and the whole
+        # colonnade is one storey); every pendant still glows
+        B.lamp((self.xm, (ys[0] + ys[1]) / 2, 2.9), lumens=lumens * 2.4, colour=colour, kind="public", radius=10.0,
+               fixture=False)
         for y in ys:
             for x in xs:
-                B.lamp((x, y, 2.9), lumens=lumens, colour=colour, kind="public", radius=7.0, fixture=False)
                 box(B.detail, "CT_Steel", x - 0.01, x + 0.01, y - 0.01, y + 0.01, 2.98, Z_CEIL)
                 kit.pendant(B, x, y, Z_CEIL, drop=0.3, kind="opal")
 
@@ -776,7 +779,8 @@ def _lobby(B, rnd, a, b, name):
     yback = yb(xm) - 0.3 / math.cos(th) + 0.025
     kit.picture(B, xm - 0.9, yback, 0.0, yw, name=("painting_sea_calm", "painting_dunes", "painting_lighthouse")[(int(n) - 1) % 3],
                 w=1.0, zc=1.8)
-    kit.poster(B, xm + 0.9, yback, 0.0, yw, name=("poster_sun_1", "poster_health", "poster_cons_2")[(int(n) - 1) % 3], w=0.6, zc=1.8)
+    kit.poster(B, xm + (0.0 if name == "core2" else 0.9), yback, 0.0, yw,
+               name=("poster_sun_1", "poster_health", "poster_cons_2")[(int(n) - 1) % 3], w=0.6, zc=1.8)
 
 
 def _passage(B, a, b):
@@ -1164,6 +1168,171 @@ def _toyfab2(S):
     kit.model_plane(B, x, y, 0.0, S.yw(5.6), top_z=3.15)
 
 
+# ==================================================================================================== round 2b
+# The through passage becomes an amusement alley (cabinets, pinball, change machine, prize counter, score board, a
+# broken cabinet with a repair note); the lobbies get a switch and the middle core a lift to the roof terrace, where the
+# terrace gets two viewing tables, a coin telescope and benches that face the sea.
+def _lift_leaf2(B, cx, cy, z, yaw):
+    """A lift door set in a wall plane through (cx, cy): frame, two leaves, call button, floor lamp. yaw 0: the wall's
+    face looks to -y; yaw 180: to +y. Drawing only."""
+    def bx(u0, u1, v0, v1, z0, z1, mat):
+        if yaw == 0:
+            box(B.detail, mat, cx + u0, cx + u1, cy - v1, cy - v0, z + z0, z + z1)
+        else:
+            box(B.detail, mat, cx - u1, cx - u0, cy + v0, cy + v1, z + z0, z + z1)
+    bx(-0.52, 0.52, 0.0, 0.05, 0.0, 2.2, "CT_Steel")
+    bx(-0.45, -0.005, 0.05, 0.075, 0.0, 2.1, "CT_SteelWhite")
+    bx(0.005, 0.45, 0.05, 0.075, 0.0, 2.1, "CT_SteelWhite")
+    bx(-0.04, 0.04, 0.075, 0.09, 0.0, 2.1, "CT_Steel")
+    bx(0.6, 0.68, 0.0, 0.03, 1.0, 1.2, "CT_ConcreteWhite")
+    bx(0.625, 0.655, 0.03, 0.045, 1.07, 1.13, "CT_SteelRed")
+    bx(-0.12, 0.12, 0.0, 0.03, 2.28, 2.38, "CT_Opal")
+
+
+def _pinball(B, x, y, z=0.0, yaw=0.0):
+    """A pinball table: legs, a cabinet with a baize playfield dotted with bumpers, a back box with a lit picture.
+    The player stands at -y."""
+    p = kit._P(B, x, y, z, yaw, "pinball")
+    p.kind = "floor"
+    for sx in (-0.3, 0.3):
+        for sy in (-0.5, 0.5):
+            p.box("CT_Steel", sx - 0.025, sx + 0.025, sy - 0.025, sy + 0.025, 0.0, 0.72)
+    p.box("CT_Wood", -0.36, 0.36, -0.58, 0.58, 0.72, 0.85, f="xXyYz")
+    p.box("CT_Baize", -0.31, 0.31, -0.53, 0.53, 0.85, 0.86, f="Z")
+    for bxx, byy, mt in ((-0.1, 0.25, "CT_SteelRed"), (0.12, 0.15, "CT_Neon"), (0.0, 0.0, "CT_SteelRed"),
+                         (-0.15, -0.12, "CT_Neon"), (0.17, -0.2, "CT_SteelRed")):
+        p.cyl(mt, bxx, byy, 0.86, 0.92, 0.04, 8)
+    p.box("CT_Steel", -0.3, -0.08, -0.46, -0.4, 0.86, 0.9)
+    p.box("CT_Steel", 0.08, 0.3, -0.46, -0.4, 0.86, 0.9)
+    p.box("CT_Steel", 0.32, 0.36, -0.5, 0.5, 0.85, 0.95, f="xXyYZ")
+    p.box("CT_Steel", -0.36, -0.32, -0.5, 0.5, 0.85, 0.95, f="xXyYZ")
+    p.box("CT_PlasterBlue", -0.34, 0.34, 0.4, 0.58, 0.86, 1.62, f="xXyYZz")
+    p.card_front("screen_arcade_1", -0.28, 0.28, 1.0, 1.52, 0.395)
+    p.box("CT_Neon", -0.3, 0.3, 0.39, 0.42, 1.54, 1.6)
+    p.core(-0.36, 0.36, -0.58, 0.58, 0.0, 0.88)
+    return p.done(solid=False, top=0.9, footprint=(-0.38, 0.38, -0.6, 0.6), front=0.7)
+
+
+def _change_machine(B, x, y, z=0.0, yaw=0.0):
+    """A tall token changer: blue body, a note slot, a display, a steel coin tray and a price plate. Front at -y."""
+    p = kit._P(B, x, y, z, yaw, "change_machine")
+    p.kind = "floor"
+    p.bev("CT_PlasterBlue", -0.25, 0.25, -0.2, 0.2, 0.0, 1.7, 0.02, 0.04)
+    p.box("CT_SteelRed", -0.2, 0.2, -0.205, -0.2, 1.4, 1.6, f="y")
+    p.card_front("cash_display", -0.12, 0.12, 1.45, 1.57, -0.206)
+    p.box("CT_Steel", -0.1, 0.1, -0.215, -0.2, 1.22, 1.3, f="xXyYZz")
+    p.box("CT_Steel", -0.14, 0.14, -0.26, -0.2, 0.86, 0.96, f="xXyYZz")
+    p.box("CT_ConcreteDark", -0.1, 0.1, -0.262, -0.255, 0.88, 0.94, f="y")
+    p.card_front("price_0", -0.16, 0.16, 0.45, 0.75, -0.206, rect=(0.0, 0.0, 1.0, 0.6))
+    p.core(-0.25, 0.25, -0.2, 0.2, 0.0, 1.7)
+    return p.done(solid=False, top=None, footprint=(-0.28, 0.28, -0.28, 0.2), front=0.7)
+
+
+def _bin(B, x, y, z=0.0):
+    p = kit._P(B, x, y, z, 0.0, "bin")
+    p.kind = "prop"
+    p.cyl("CT_Steel", 0, 0, 0.0, 0.62, 0.19, 10)
+    p.cyl("CT_SteelRed", 0, 0, 0.62, 0.66, 0.21, 10)
+    p.box("CT_Paper", -0.06, 0.04, -0.03, 0.05, 0.64, 0.7, f="xXyYZ")
+    return p.done(solid=False, top=None, footprint=(-0.21, 0.21, -0.21, 0.21))
+
+
+def _view_table(B, x, y, z, yaw):
+    """A brass orientation table on a post: a tilted disc with a compass rose, a plate in front. Faces -y at yaw 0."""
+    p = kit._P(B, x, y, z, yaw, "view_table")
+    p.kind = "prop"
+    p.cyl("CT_Steel", 0, 0, 0.0, 0.05, 0.22, 10)
+    p.cyl("CT_Steel", 0, 0, 0.05, 0.98, 0.05, 8)
+    p.loft("CT_Brass", [[(-0.3, -0.18, 0.98), (0.3, -0.18, 0.98), (0.3, 0.18, 1.08), (-0.3, 0.18, 1.08)],
+                        [(-0.3, -0.18, 1.0), (0.3, -0.18, 1.0), (0.3, 0.18, 1.1), (-0.3, 0.18, 1.1)]], top=True, bottom=True)
+    p.card_tilt("travel_0", -0.26, 0.26, -0.15, 1.005, 0.15, 1.097)
+    p.core(-0.3, 0.3, -0.2, 0.2, 0.0, 1.1)
+    return p.done(solid=False, top=None, footprint=(-0.32, 0.32, -0.25, 0.25), front=0.7)
+
+
+def _alley(B):
+    """The through passage between the records shop and the bookshop, x -15..-10: left wall faces +x (yaw 90), right
+    wall faces -x (yaw 270). Everything with a thing here belongs to the rules 'wave_*' in x_p_wave.json."""
+    xl, xr = XS[9] + 0.15, XS[11] - 0.15
+    # left wall: shooter, racing cabinet with its stool, the broken cabinet (note above), score board, picture
+    for y, nm, mat, sd in ((6.8, "shoot", "CT_PlasterBlue", 1), (7.95, "race", "CT_PlasterRed", 2), (9.1, "broken", "CT_PlasterGreen", 3)):
+        kit.arcade(B, xl + 0.43, y, 0.0, 90, screen="screen_arcade_%d" % (sd % 3), mat=mat, seed=sd)
+        B.thing("wave_cab_" + nm, "machine", (xl + 0.43, y, 1.2), 90, what="arcade")
+    kit.stool(B, xl + 1.35, 7.95, 0.0, 270, mat="CT_PlasterRed")
+    B.thing("wave_stool_race", "seat", (xl + 1.35, 7.95, 0.45), 270, height=0.45)
+    B.spot("wave_race_seat", "seat", (xl + 1.35, 7.95, 0.0), 270)
+    B.spot("wave_shoot_stand", "stand", (xl + 1.2, 6.8, 0.0), 270)
+    B.spot("wave_broken_stand", "stand", (xl + 1.2, 9.1, 0.0), 270)
+    kit.poster(B, xl + 0.005, 9.1, 0.0, 90, name="notice_1", w=0.3, zc=2.05)
+    B.thing("wave_repair_note", "board", (xl + 0.05, 9.1, 2.05), 90, topic="local")
+    kit.notice_board(B, xl + 0.005, 10.5, 0.0, 90, w=1.0, zc=1.65, seed=11)
+    B.thing("wave_hiscores", "board", (xl + 0.06, 10.5, 1.65), 90, topic="local")
+    B.spot("wave_hiscores_stand", "stand", (xl + 0.9, 10.5, 0.0), 270)
+    kit.poster(B, xl + 0.005, 11.7, 0.0, 90, name="poster_cons_3", w=0.7, zc=1.75)
+    kit.poster(B, xl + 0.005, 12.5, 0.0, 90, name="poster_safety", w=0.55, zc=1.75)
+    kit.wall_clock(B, xl + 0.005, 12.0, 0.0, 90, zc=2.5, r=0.2)
+    # right wall: switch, pinball, change machine, prize counter and its shelf, bin
+    kit.poster(B, xr - 0.005, 5.7, 0.0, 270, name="poster_cons_0", w=0.7, zc=1.75)
+    box(B.detail, "CT_ConcreteWhite", xr - 0.03, xr, 4.72, 4.8, 1.38, 1.5)
+    box(B.detail, "CT_SteelRed", xr - 0.045, xr - 0.03, 4.74, 4.78, 1.42, 1.46)
+    B.thing("wave_switch", "machine", (xr - 0.05, 4.76, 1.45), 270, what="switch", switch="room")
+    _pinball(B, xr - 0.45, 6.8, 0.0, 270)
+    B.thing("wave_pinball", "play", (xr - 0.45, 6.8, 0.9), 270, what="pinball")
+    B.spot("wave_pinball_stand", "stand", (xr - 1.3, 6.8, 0.0), 90)
+    _change_machine(B, xr - 0.3, 8.0, 0.0, 270)
+    B.thing("wave_change", "machine", (xr - 0.3, 8.0, 1.2), 270, what="change")
+    B.spot("wave_change_stand", "stand", (xr - 1.0, 8.0, 0.0), 90)
+    kit.shop_shelf(B, xr - 0.225, 10.4, 0.0, 270, w=1.6, goods="toys")
+    kit.shop_counter(B, xr - 1.35, 10.4, 0.0, 270, w=1.6, d=0.7, front="CT_PlasterBlue", till=False)
+    B.thing("wave_prize_counter", "counter", (xr - 1.35, 10.4, 1.05), 270, role="seller", shop="wave_prizes")
+    B.thing("wave_prize_shelf", "board", (xr - 0.3, 10.4, 1.4), 270, topic="kids")
+    B.spot("wave_prize_counter", "counter", (xr - 2.2, 10.4, 0.0), 90)
+    B.spot("wave_prize_clerk", "work", (xr - 0.7, 10.4, 0.0), 270)
+    B.spot("wave_prize_queue", "stand", (xr - 2.2, 11.4, 0.0), 90)
+    kit.poster(B, xr - 0.005, 12.4, 0.0, 270, name="poster_cons_4", w=0.7, zc=1.75)
+    _bin(B, xr - 0.35, 12.9)
+    B.thing("wave_bin", "machine", (xr - 0.35, 12.9, 0.5), 270, what="bin")
+
+
+def _lobby2(B, a, b, name):
+    """A light switch by the street door of each lobby (the middle core's lift is in _alley's neighbour, below)."""
+    xl = XS[a] + 0.15
+    xm = (XS[a] + XS[b]) / 2
+    yy = yf(xm) + 2.8 + 2.4
+    box(B.detail, "CT_ConcreteWhite", xl, xl + 0.03, yy - 0.5, yy - 0.42, 1.38, 1.5)
+    box(B.detail, "CT_SteelRed", xl + 0.03, xl + 0.045, yy - 0.48, yy - 0.44, 1.42, 1.46)
+    B.thing("%s_switch" % name, "machine", (xl + 0.05, yy - 0.46, 1.45), 90, what="switch", switch="room")
+    if name == "core2":
+        th = _th(xm)
+        yback = yb(xm) - 0.3 / math.cos(th) + 0.025
+        cx = xm + 1.45
+        _lift_leaf2(B, cx, yback, 0.0, 0)
+        B.thing("lift_g", "door", (cx, yback - 0.04, 1.1), 0.0, to="lift_roof")
+        B.spot("lift_g_wait", "stand", (cx, yback - 0.9, 0.0), 0.0)
+
+
+def _roof2(B, zr):
+    """Roof terrace: the lift stop on the back of the middle plant room, two viewing tables (sea, town), a coin
+    telescope, and the two timber benches as seats that face the sea."""
+    xm = (XS[14] + XS[16]) / 2
+    cy = yc(xm) + 3.0
+    _lift_leaf2(B, xm, cy, zr, 180)
+    B.thing("lift_roof", "door", (xm, cy + 0.04, zr + 1.1), 180.0, to="lift_g")
+    B.spot("lift_roof_wait", "stand", (xm, cy + 0.9, zr), 180.0)
+    x, y = 20.0, yf(20.0) + 0.75
+    _view_table(B, x, y, zr, 0)
+    B.thing("roof_view_sea", "board", (x, y, zr + 1.05), 0.0, topic="view")
+    x2, y2 = 27.0, yf(27.0) + 0.75
+    kit.telescope(B, x2, y2, zr, 0)
+    B.thing("roof_telescope", "machine", (x2, y2, zr + 1.3), 0.0, what="telescope")
+    x3 = 16.0
+    y3 = yb(x3) - 0.9
+    _view_table(B, x3, y3, zr, 180)
+    B.thing("roof_view_town", "board", (x3, y3, zr + 1.05), 180.0, topic="view")
+    for bx in (13.0, 25.0):
+        B.thing("roof_seat_%d" % int(bx), "seat", (bx, yc(bx) - 1.58, zr + 0.55), 0.0, height=0.55)
+
+
 def furnish(B, rnd):
     done = []
     for a, b, name in UNITS:
@@ -1177,6 +1346,7 @@ def furnish(B, rnd):
             done.append(S)
         elif name.startswith("core"):
             _lobby(B, rnd, a, b, name)
+            _lobby2(B, a, b, name)
         elif name == "passage":
             _passage(B, a, b)
     if os.environ.get("KITCHECK"):
@@ -1350,6 +1520,7 @@ def build(B):
                 fwin(B, F, 0.2, L - 0.2, 0.45 if not core else 0.7, 3.05 if not core else 2.8, kind=kind, cols=2 if L > 2 else 1, rows=1, frame=0.05, inset=0.15)
     furnish(B, random.Random(1960))
     _arcade(B)
+    _alley(B)
     # partitions between units (the passage sides are blue tile)
     bounds = sorted({a for a, b, _ in UNITS} | {b for a, b, _ in UNITS})
     for k in bounds:
@@ -1392,6 +1563,7 @@ def build(B):
         box(B.detail, "CT_Wood", bx - 1.0, bx + 1.0, yc(bx) - 1.8, yc(bx) - 1.35, zr + 0.5, zr + 0.6)
         B.spot("roof_bench_%d" % int(bx), "bench", (bx, yc(bx) - 1.0, zr + 0.1), 0.0)
     B.spot("roof_view", "view", (20.0, yf(20.0) + 0.9, zr), 0.0)
+    _roof2(B, zr)
 
     # ---------------------------------------------------------------- footprint, height
     right = [(XS[i], yf(XS[i]) - 1.5) for i in range(N + 1)]

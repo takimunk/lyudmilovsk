@@ -441,7 +441,7 @@ def _furnish_hall(B, mirror=False):
     H.thing("hall_armchair_2", "seat", -31.4, 2.8, 0.45, 270.0, height=0.45)
     H.spot("reading_1", "seat", -33.8, 2.8, 90.0)
     H.spot("reading_2", "seat", -31.4, 2.8, 270.0)
-    H.p(kit.floor_lamp, -30.9, 1.85)
+    H.p(kit.floor_lamp, -30.9, 1.85, light=True)
     # ---- house committee: notice board and wall newspaper by the door, a bench to read them
     H.p(kit.notice_board, -25.2, 1.4, 180.0, w=1.5, zc=1.8, seed=6)
     H.p(kit.poster, -23.9, 1.4, 180.0, name="poster_cons_3", w=0.55, zc=1.8)
@@ -473,3 +473,115 @@ def _furnish_hall(B, mirror=False):
     box(d, "CT_PlasterGrey", min(H.X(-29.8), H.X(-27.2)), max(H.X(-29.8), H.X(-27.2)), 1.4, 2.5, 0.0, 0.014, faces="Z")
     for lx, ly in ((-23.4, 6.5), (-28.5, 3.0), (-31.0, 10.0), (-26.5, 10.0)):
         H.lamp(lx, ly, 5.0)
+    _depth2(B, H)                 # last: new wall clocks take kit_clock_<n> numbers after the old ones
+
+
+def _switch_plate(B, x, y, z=0.0, yaw=0.0, zc=1.3):
+    """[wall] A two-button light switch plate on a backing block (0.1 x 0.14), buttons toward the room."""
+    p = kit._P(B, x, y, z, yaw, "switch_plate")
+    p.kind = "wall"
+    p.box("CT_FrameWhite", -0.05, 0.05, -0.012, 0.0, zc - 0.07, zc + 0.07)
+    p.box("CT_Steel", -0.022, -0.004, -0.02, -0.012, zc - 0.045, zc - 0.005, f="xXyYZ")
+    p.box("CT_Steel", 0.004, 0.022, -0.02, -0.012, zc + 0.005, zc + 0.045, f="xXyYZ")
+    return p.done(top=zc + 0.07)
+
+
+def _bread_basket(B, x, y, z=0.0, yaw=0.0):
+    """[prop] A wicker tray of sliced bread and two loaves (0.5 x 0.32 x 0.16)."""
+    p = kit._P(B, x, y, z, yaw, "bread_basket")
+    p.kind = "prop"
+    p.box("CT_WoodLight", -0.25, 0.25, -0.16, 0.16, 0.0, 0.03)
+    for sx in (-0.25, 0.23):
+        p.box("CT_Wood", sx, sx + 0.02, -0.16, 0.16, 0.03, 0.12)
+    for sy in (-0.16, 0.14):
+        p.box("CT_Wood", -0.25, 0.25, sy, sy + 0.02, 0.03, 0.12)
+    p.box("CT_FrameWhite", -0.23, 0.23, -0.14, 0.14, 0.03, 0.045)
+    for k, (cx, cy, ang) in enumerate(((-0.12, -0.03, 0.0), (0.1, 0.04, 0.0))):
+        p.box("CT_PlasterYellow", cx - 0.1, cx + 0.1, cy - 0.055, cy + 0.055, 0.045, 0.11)
+        p.box("CT_Wood", cx - 0.095, cx + 0.095, cy - 0.05, cy + 0.05, 0.11, 0.122, f="Z")
+    for k in range(5):
+        p.box("CT_PlasterYellow", -0.2 + k * 0.045, -0.2 + k * 0.045 + 0.035, 0.07, 0.13, 0.045, 0.12)
+    return p.done(top=0.13)
+
+
+def _cat(B, x, y, z=0.0, yaw=0.0):
+    """[prop] A grey cat with a white shirt-front curled up and asleep (0.34 x 0.36 x 0.2); the head toward -y."""
+    p = kit._P(B, x, y, z, yaw, "cat")
+    p.kind = "prop"
+    p.lathe("CT_Concrete", 0.0, 0.03, [(0.16, 0.0), (0.17, 0.05), (0.14, 0.12), (0.08, 0.17), (0.0, 0.185)], 10, top=True)
+    p.lathe("CT_FrameWhite", 0.0, -0.13, [(0.06, 0.03), (0.065, 0.07), (0.045, 0.1), (0.0, 0.105)], 8, top=True)
+    p.lathe("CT_Concrete", 0.0, -0.17, [(0.07, 0.04), (0.075, 0.09), (0.055, 0.15), (0.0, 0.165)], 8, top=True)
+    for sx in (-0.045, 0.02):
+        p.box("CT_Concrete", sx, sx + 0.028, -0.19, -0.165, 0.14, 0.2)
+    p.box("CT_FrameWhite", -0.015, 0.015, -0.248, -0.235, 0.075, 0.105, f="y")
+    p.rod("CT_Concrete", (0.14, 0.04, 0.035), (0.13, 0.15, 0.035), 0.022, 5)
+    p.rod("CT_Concrete", (0.13, 0.15, 0.035), (0.02, 0.19, 0.035), 0.022, 5)
+    return p.done(top=0.19)
+
+
+def _jar(B, x, y, z=0.0, yaw=0.0):
+    """[prop] A jar of cherry jam with a paper lid and a label (d0.1 x 0.17)."""
+    p = kit._P(B, x, y, z, yaw, "jam_jar")
+    p.kind = "prop"
+    p.cyl("CT_PlasterRed", 0.0, 0.0, 0.0, 0.14, 0.05, 8)
+    p.cyl("CT_Paper", 0.0, 0.0, 0.14, 0.15, 0.055, 8)
+    p.cyl("CT_Wood", 0.0, 0.0, 0.15, 0.17, 0.012, 6)
+    p.box("CT_FrameWhite", -0.03, 0.03, -0.052, -0.048, 0.05, 0.11, f="y")
+    return p.done(top=0.17)
+
+
+def _depth2(B, H):
+    """Round 5: depth. A dominoes table by the wall bars, the reading notebook on the nook's coffee table, a lamp with
+    a switch in the nook, a door switch, a free-bread basket on the serving line, the chalk board on the aisle, the
+    pull-up record board in the gym, the house's honour board, a second wall clock by the door. Ids: hall_dominoes,
+    hall_dom_seat_1/2, hall_nook_diary, hall_nook_switch, hall_switch_door, canteen_bread, canteen_chalk,
+    hall_pullup_board, hall_honour_board."""
+    d = B.detail
+
+    def hbox(mat, x0, x1, y0, y1, z0, z1, **kw):
+        a, b = sorted((H.X(x0), H.X(x1)))
+        box(d, mat, a, b, y0, y1, z0, z1, **kw)
+
+    # ---- dominoes: a small table and two chairs facing each other, tiles in two rows
+    H.p(kit.table, -23.8, 6.6, 0.0, w=0.8, d=0.8, h=0.72)
+    H.p(kit.chair, -23.8, 5.95, 180.0)
+    H.p(kit.chair, -23.8, 7.25, 0.0, mat="CT_PlasterRed")
+    for k in range(7):
+        hbox("CT_TileWhite", -24.12 + k * 0.095, -24.12 + k * 0.095 + 0.08, 6.5, 6.6, 0.72, 0.735, faces="Z")
+        hbox("CT_ConcreteDark", -24.12 + k * 0.095 + 0.038, -24.12 + k * 0.095 + 0.042, 6.5, 6.6, 0.735, 0.737, faces="Z")
+    for k in range(5):
+        hbox("CT_TileWhite", -23.95 + k * 0.095, -23.95 + k * 0.095 + 0.08, 6.68, 6.78, 0.72, 0.735, faces="Z")
+        hbox("CT_ConcreteDark", -23.95 + k * 0.095 + 0.038, -23.95 + k * 0.095 + 0.042, 6.68, 6.78, 0.735, 0.737, faces="Z")
+    H.thing("hall_dominoes", "play", -23.8, 6.6, 0.8, 0.0, what="dominoes")
+    H.thing("hall_dom_seat_1", "seat", -23.8, 5.95, 0.45, 180.0, height=0.45)
+    H.thing("hall_dom_seat_2", "seat", -23.8, 7.25, 0.45, 0.0, height=0.45)
+    H.spot("dom1", "seat", -23.8, 5.95, 180.0)
+    H.spot("dom2", "seat", -23.8, 7.25, 0.0)
+    # ---- the reading notebook on the nook's coffee table, a lamp with a switch beside the armchairs
+    hbox("CT_PlasterRed", -33.08, -32.84, 2.84, 3.12, 0.42, 0.445)
+    hbox("CT_Paper", -33.07, -32.85, 2.85, 3.11, 0.445, 0.452, faces="Z")
+    hbox("CT_Steel", -33.0, -32.92, 2.86, 3.06, 0.452, 0.458, faces="Z")
+    H.thing("hall_nook_diary", "board", -32.96, 2.98, 0.46, 0.0, topic="local")
+    H.thing("hall_nook_switch", "machine", -30.9, 1.85, 1.0, 0.0, what="switch", switch=2.5)
+    # ---- door switch for the whole hall and a second wall clock on the front wall
+    H.p(_switch_plate, -29.95, 1.4, 180.0, zc=1.3)
+    H.thing("hall_switch_door", "machine", -29.95, 1.48, 1.3, 180.0, what="switch", switch="hall")
+    # ---- free bread on the serving line (the menu says: bread is free)
+    H.p(_bread_basket, -28.2, 10.5, 0.0, z=1.05)
+    H.thing("canteen_bread", "take", -28.2, 10.5, 1.18, 0.0, item="bread_loaf")
+    # ---- "today in the hall": the chalk A-board at the aisle's edge by the door
+    H.p(kit.sandwich_board, -26.8, 3.3, 0.0, name="board_3")
+    H.thing("hall_today", "board", -26.8, 3.3, 0.7, 0.0, topic="rules")
+    # ---- gym: the pull-up record on a small blackboard on the east wall
+    H.p(kit.blackboard, -22.4, 3.75, 270.0, w=0.7, h=0.55, zb=1.25)
+    H.thing("hall_pullup_board", "board", -22.55, 3.75, 1.5, 270.0, topic="timetable")
+    # ---- the honour board: the framed poster by the east window
+    H.thing("hall_honour_board", "board", -23.9, 1.5, 1.8, 180.0, topic="rules")
+    # ---- the story's props: the cat Markiz asleep on the folding table between the baskets (house 2), a jar of cherry
+    # jam on the lost-property box (house 1)
+    if H.mir:
+        H.p(_cat, -33.3, 9.5, 90.0, z=0.75)
+    else:
+        H.p(_jar, -25.9, 2.1, 0.0, z=0.69)
+    # ---- a second clock by the door
+    H.p(kit.wall_clock, -26.85, 1.4, 180.0, zc=2.3, r=0.2)

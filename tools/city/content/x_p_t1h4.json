@@ -1,0 +1,576 @@
+{
+ "_doc": "Capsule cluster, plot P-T1H4, second pass (blender/city/buildings/capsule_cluster.py): the four bridges (benches, planters, a lantern with its switch, views by hour and weather, a wind chime, a weather vane), the house boards and post boxes of the cores, and the radio amateur's studio (station log text that grows by game day, QSL cards, Morse key mini-game, antenna tuner, headphones, kettle with tea). Quest home_okafor_cq builds on home_okafor. Strings: strings/x_p_t1h4.json.",
+ "acts": {
+  "t1h4_view1": {
+   "like": "look_view",
+   "prompt": "city.t1h4.p.view",
+   "minutes": 4,
+   "lines": [
+    {
+     "k": "city.t1h4.view1.d1",
+     "h": [
+      6,
+      21
+     ]
+    },
+    {
+     "k": "city.t1h4.view1.d2",
+     "h": [
+      6,
+      21
+     ]
+    },
+    {
+     "k": "city.t1h4.view1.n",
+     "h": [
+      21,
+      6
+     ]
+    },
+    {
+     "k": "city.t1h4.view1.rain",
+     "weather": "rain"
+    },
+    {
+     "k": "city.t1h4.view1.snow",
+     "weather": "snow"
+    },
+    {
+     "k": "city.t1h4.view1.fog",
+     "weather": "fog"
+    },
+    {
+     "k": "city.t1h4.view1.fest",
+     "festival": "any"
+    }
+   ]
+  },
+  "t1h4_view3": {
+   "like": "look_view",
+   "prompt": "city.t1h4.p.view",
+   "minutes": 5,
+   "lines": [
+    {
+     "k": "city.t1h4.view3.d1",
+     "h": [
+      6,
+      21
+     ]
+    },
+    {
+     "k": "city.t1h4.view3.d2",
+     "h": [
+      6,
+      21
+     ]
+    },
+    {
+     "k": "city.t1h4.view3.n",
+     "h": [
+      21,
+      6
+     ]
+    },
+    {
+     "k": "city.t1h4.view3.rain",
+     "weather": "rain"
+    },
+    {
+     "k": "city.t1h4.view3.snow",
+     "weather": "snow"
+    },
+    {
+     "k": "city.t1h4.view3.fog",
+     "weather": "fog"
+    },
+    {
+     "k": "city.t1h4.view3.fest",
+     "festival": "any"
+    }
+   ]
+  },
+  "t1h4_planter": {
+   "prompt": "city.t1h4.p.plant",
+   "minutes": 1,
+   "any_hour": true,
+   "sound": "paper_rustle",
+   "lines": [
+    "city.t1h4.plant.1",
+    "city.t1h4.plant.2",
+    "city.t1h4.plant.3",
+    {
+     "k": "city.t1h4.plant.rain",
+     "weather": "rain"
+    },
+    {
+     "k": "city.t1h4.plant.snow",
+     "weather": "snow"
+    },
+    {
+     "k": "city.t1h4.plant.warm",
+     "weather": "warm"
+    }
+   ]
+  },
+  "t1h4_chime": {
+   "prompt": "city.t1h4.p.chime",
+   "minutes": 1,
+   "any_hour": true,
+   "sound": "bell_ding",
+   "lines": [
+    "city.t1h4.chime.1",
+    "city.t1h4.chime.2",
+    {
+     "k": "city.t1h4.chime.n",
+     "h": [
+      22,
+      6
+     ]
+    },
+    {
+     "k": "city.t1h4.chime.rain",
+     "weather": "rain"
+    },
+    {
+     "k": "city.t1h4.chime.fog",
+     "weather": "fog"
+    },
+    {
+     "k": "city.t1h4.chime.clear",
+     "weather": "clear"
+    }
+   ]
+  },
+  "t1h4_vane": {
+   "prompt": "city.t1h4.p.vane",
+   "minutes": 1,
+   "any_hour": true,
+   "sound": "wind_soft",
+   "lines": [
+    "city.t1h4.vane.1",
+    "city.t1h4.vane.2",
+    {
+     "k": "city.t1h4.vane.rain",
+     "weather": "rain"
+    },
+    {
+     "k": "city.t1h4.vane.snow",
+     "weather": "snow"
+    },
+    {
+     "k": "city.t1h4.vane.fog",
+     "weather": "fog"
+    },
+    {
+     "k": "city.t1h4.vane.clear",
+     "weather": "clear"
+    }
+   ]
+  },
+  "t1h4_news": {
+   "prompt": "city.t1h4.p.news",
+   "minutes": 1,
+   "any_hour": true,
+   "rotate": "daily",
+   "sound": "paper_rustle",
+   "lines": [
+    "city.t1h4.news.base",
+    {
+     "k": "city.t1h4.news.1",
+     "after": 0,
+     "before": 3
+    },
+    {
+     "k": "city.t1h4.news.2",
+     "after": 2,
+     "before": 5
+    },
+    {
+     "k": "city.t1h4.news.3",
+     "after": 4,
+     "before": 8
+    },
+    {
+     "k": "city.t1h4.news.4",
+     "after": 7
+    },
+    {
+     "k": "city.t1h4.news.sat",
+     "d": "sat"
+    }
+   ]
+  },
+  "t1h4_mail": {
+   "prompt": "city.t1h4.p.mail",
+   "minutes": 1,
+   "any_hour": true,
+   "sound": "drawer_slide",
+   "lines": [
+    "city.t1h4.mail.1",
+    {
+     "k": "city.t1h4.mail.m",
+     "h": [
+      6,
+      10
+     ]
+    },
+    {
+     "k": "city.t1h4.mail.d",
+     "h": [
+      10,
+      16
+     ],
+     "d": "mon-sat"
+    },
+    {
+     "k": "city.t1h4.mail.e",
+     "h": [
+      16,
+      23
+     ],
+     "d": "mon-sat"
+    },
+    {
+     "k": "city.t1h4.mail.n",
+     "h": [
+      23,
+      6
+     ]
+    },
+    {
+     "k": "city.t1h4.mail.sun",
+     "d": "sun"
+    }
+   ]
+  },
+  "t1h4_logbook": {
+   "prompt": "city.t1h4.p.log",
+   "minutes": 3,
+   "any_hour": true,
+   "sound": "page_turn",
+   "lines": [
+    "city.t1h4.log.line"
+   ],
+   "read": {
+    "texts": [
+     "t1h4_log"
+    ],
+    "rotate": "use"
+   }
+  },
+  "t1h4_qsl": {
+   "prompt": "city.t1h4.p.qsl",
+   "minutes": 2,
+   "any_hour": true,
+   "sound": "paper_rustle",
+   "lines": [
+    {
+     "k": "city.t1h4.qsl.1",
+     "collect": "okafor_radio/qsl_tiksi"
+    },
+    {
+     "k": "city.t1h4.qsl.2",
+     "collect": "okafor_radio/qsl_valparaiso"
+    },
+    {
+     "k": "city.t1h4.qsl.3",
+     "collect": "okafor_radio/qsl_ladoga"
+    },
+    {
+     "k": "city.t1h4.qsl.4",
+     "collect": "okafor_radio/qsl_reykjavik"
+    },
+    {
+     "k": "city.t1h4.qsl.5",
+     "collect": "okafor_radio/qsl_kyoto"
+    },
+    {
+     "k": "city.t1h4.qsl.all",
+     "count": [
+      "okafor_radio",
+      6
+     ]
+    }
+   ]
+  },
+  "t1h4_morse": {
+   "prompt": "city.t1h4.p.morse",
+   "minutes": 5,
+   "pose": "sit",
+   "any_hour": true,
+   "sound": "morse_beep",
+   "lines": [
+    "city.t1h4.morse.after.1",
+    "city.t1h4.morse.after.2",
+    {
+     "k": "city.t1h4.morse.after.n",
+     "h": [
+      22,
+      6
+     ]
+    }
+   ],
+   "game": {
+    "type": "aim",
+    "title": "city.t1h4.morse.title",
+    "keys": "city.t1h4.morse.keys",
+    "rounds": 5,
+    "need": 5,
+    "speed": 0.85,
+    "zone": 0.22,
+    "win": [
+     "city.t1h4.morse.win.1",
+     "city.t1h4.morse.win.2"
+    ],
+    "lose": [
+     "city.t1h4.morse.lose.1",
+     "city.t1h4.morse.lose.2"
+    ],
+    "draw": [
+     "city.t1h4.morse.draw.1"
+    ],
+    "collect": "okafor_radio/morse",
+    "daily": 4
+   }
+  },
+  "t1h4_tuner": {
+   "prompt": "city.t1h4.p.tuner",
+   "minutes": 2,
+   "any_hour": true,
+   "sound": "radio_tune",
+   "lines": [
+    "city.t1h4.tuner.1",
+    {
+     "k": "city.t1h4.tuner.n",
+     "h": [
+      23,
+      5
+     ]
+    },
+    {
+     "k": "city.t1h4.tuner.rain",
+     "weather": "rain"
+    },
+    {
+     "k": "city.t1h4.tuner.snow",
+     "weather": "snow"
+    },
+    {
+     "k": "city.t1h4.tuner.fog",
+     "weather": "fog"
+    },
+    {
+     "k": "city.t1h4.tuner.clear",
+     "weather": "clear"
+    }
+   ]
+  },
+  "t1h4_phones": {
+   "prompt": "city.t1h4.p.phones",
+   "minutes": 2,
+   "any_hour": true,
+   "sound": "radio_tune",
+   "lines": [
+    "city.t1h4.phones.1",
+    {
+     "k": "city.t1h4.phones.d",
+     "h": [
+      6,
+      17
+     ]
+    },
+    {
+     "k": "city.t1h4.phones.e",
+     "h": [
+      17,
+      23
+     ]
+    },
+    {
+     "k": "city.t1h4.phones.n",
+     "h": [
+      23,
+      6
+     ]
+    }
+   ]
+  },
+  "t1h4_kettle": {
+   "prompt": "city.t1h4.p.kettle",
+   "minutes": 6,
+   "any_hour": true,
+   "sound": "rest_pour",
+   "give": [
+    [
+     "tea",
+     1
+    ]
+   ],
+   "daily": 1,
+   "collect": "okafor_radio/tea",
+   "lines": [
+    "city.t1h4.kettle.1",
+    "city.t1h4.kettle.2",
+    {
+     "k": "city.t1h4.kettle.m",
+     "h": [
+      5,
+      10
+     ]
+    }
+   ]
+  }
+ },
+ "rules": {
+  "P-T1H4/br_ab1_view": {
+   "act": "t1h4_view1"
+  },
+  "P-T1H4/br_ab1_planter": {
+   "act": "t1h4_planter"
+  },
+  "P-T1H4/br_ab3_view": {
+   "act": "t1h4_view3"
+  },
+  "P-T1H4/br_ab3_planter": {
+   "act": "t1h4_planter"
+  },
+  "P-T1H4/br_bc1_view": {
+   "act": "t1h4_view1"
+  },
+  "P-T1H4/br_bc1_planter": {
+   "act": "t1h4_planter"
+  },
+  "P-T1H4/br_bc3_view": {
+   "act": "t1h4_view3"
+  },
+  "P-T1H4/br_bc3_planter": {
+   "act": "t1h4_planter"
+  },
+  "P-T1H4/br_ab3_chime": {
+   "act": "t1h4_chime"
+  },
+  "P-T1H4/br_bc3_vane": {
+   "act": "t1h4_vane"
+  },
+  "P-T1H4/house_a_news": {
+   "act": "t1h4_news"
+  },
+  "P-T1H4/house_c_news": {
+   "act": "t1h4_news"
+  },
+  "P-T1H4/hall_a_mail": {
+   "act": "t1h4_mail"
+  },
+  "P-T1H4/hall_b_mail": {
+   "act": "t1h4_mail"
+  },
+  "P-T1H4/hall_c_mail": {
+   "act": "t1h4_mail"
+  },
+  "P-T1H4/studio_logbook": {
+   "act": "t1h4_logbook"
+  },
+  "P-T1H4/studio_qsl": {
+   "act": "t1h4_qsl"
+  },
+  "P-T1H4/studio_morse": {
+   "act": "t1h4_morse"
+  },
+  "P-T1H4/studio_tuner": {
+   "act": "t1h4_tuner"
+  },
+  "P-T1H4/studio_headphones": {
+   "act": "t1h4_phones"
+  },
+  "P-T1H4/studio_kettle": {
+   "act": "t1h4_kettle"
+  }
+ },
+ "texts": {
+  "t1h4_log": {
+   "title": "city.t1h4.log.title",
+   "kind": "ledger",
+   "minutes": 3,
+   "collect": "okafor_radio/log",
+   "pages": [
+    "city.t1h4.log.1",
+    {
+     "k": "city.t1h4.log.2",
+     "after": 1
+    },
+    {
+     "k": "city.t1h4.log.3",
+     "after": 3
+    },
+    {
+     "k": "city.t1h4.log.4",
+     "after": 5
+    },
+    {
+     "k": "city.t1h4.log.5",
+     "after": 8
+    }
+   ]
+  }
+ },
+ "collections": {
+  "okafor_radio": {
+   "title": "city.coll.okafor_radio.title",
+   "pieces": [
+    "log",
+    "qsl_tiksi",
+    "qsl_valparaiso",
+    "qsl_ladoga",
+    "qsl_reykjavik",
+    "qsl_kyoto",
+    "morse",
+    "tea"
+   ]
+  }
+ },
+ "quests": [
+  {
+   "id": "home_okafor_cq",
+   "kind": "side",
+   "start_on": {
+    "event": "do",
+    "target": "okafor_music"
+   },
+   "stages": [
+    {
+     "id": "log",
+     "objectives": [
+      {
+       "id": "log",
+       "event": "do",
+       "target": "t1h4_logbook"
+      }
+     ]
+    },
+    {
+     "id": "key",
+     "objectives": [
+      {
+       "id": "key",
+       "event": "win",
+       "target": "t1h4_morse"
+      }
+     ]
+    },
+    {
+     "id": "card",
+     "objectives": [
+      {
+       "id": "card",
+       "event": "do",
+       "target": "t1h4_qsl"
+      }
+     ],
+     "reward": {
+      "rubles": 25
+     }
+    }
+   ]
+  }
+ ]
+}
