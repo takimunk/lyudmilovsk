@@ -87,6 +87,29 @@ def conversation(n=2):
         at("Npc.Talk", None, 1.2)
 
 
+# q and u first: Sonya and Tyoma sit at their stations at a new game (Tuesday 16:00, 'start': play_club for 60-140
+# min); after the later steps' clock jumps they are out (the playground, the sea)
+# q) two remarks in range at once (awakening on owner: the Clerk's at once, Sonya's at once): one voice at a time; where Sonya's
+#    waits, Quest.Scenes says why; a line trace from the camera to her head names what is in between
+at("Quest.Reset", None, 1.0)
+at("BugItGo -193 1500 150 0 90 0", None, 2.0)
+at("Quest.SetStage awakening owner", None, 2.0)
+at("QUESTDEPTH mark q_walkway_station7")
+at("BugItGo -107 -1235 100 0 0 0", None, 10.0)
+at("Quest.Scenes", "q_walkway", 0.5)
+at("TRACE 52.8 -1235.1 118.9", None, 1.0)
+at("QUESTDEPTH mark q_hero_seat")
+at("BugItGo -17.5 -1585 100 0 90 0", None, 8.0)
+at("Quest.Scenes", "q_seat", 0.5)
+at("TRACE 52.8 -1235.1 118.9", None, 1.0)
+# u) soda on drink, the hero from the street to Tyoma's station 6 in the club: remark tyoma_soda_advice (with its diary line)
+at("Quest.Reset", None, 1.0)
+at("Quest.Start soda", None, 1.0)
+at("BugItGo -193 1500 150 0 90 0", None, 2.5)
+at("QUESTDEPTH mark u_tyoma")
+at("BugItGo -107 -1082 100 0 0 0", None, 10.0)
+at("Quest.Scenes", "u_scenes", 0.5)
+at("Quest.Dump entries", "u_done")
 # l) asides wait for the first conversation: awakening on owner, Guy_b (the club): first.1.., then owner_says_odd.1, then everyday
 at("Quest.Reset", None, 1.0)
 at("Quest.SetStage awakening owner", None, 1.0)
@@ -108,7 +131,9 @@ for _ in range(12):
 at("Quest.Reset", None, 1.0)
 at("Quest.SetStage awakening owner", None, 1.0)
 # the Owner talks through his window: stand in its call zone (40, 390) facing him (head about 163, 640)
-at("BugItGo 40 390 100 0 64 0", None, 10.0)
+at("BugItGo 40 390 100 0 64 0", None, 1.0)
+# BugItGo leaves the hero a ghost (no collision): walking again, his capsule is in the call zone and the owner comes
+at("Walk", None, 9.0)
 at("Npc.Where")
 at("QUESTDEPTH mark n_owner")
 for _ in range(6):
@@ -196,19 +221,6 @@ at("Quest.SetStage waxwing return", None, 1.0)
 at("Quest.Dump", "s_before_second_call")
 at("Quest.BirdCall Waxwing sorokin_oleg", None, 10.0)
 at("Quest.Dump entries", "s_after_second_call")
-# q) two remarks in range at once (awakening on owner: the Clerk's at once, Sonya's at once): one voice at a time; where Sonya's
-#    waits, Quest.Scenes says why; a line trace from the camera to her head names what is in between
-at("Quest.Reset", None, 1.0)
-at("BugItGo -193 1500 150 0 90 0", None, 2.0)
-at("Quest.SetStage awakening owner", None, 2.0)
-at("QUESTDEPTH mark q_walkway_station7")
-at("BugItGo -107 -1235 100 0 0 0", None, 10.0)
-at("Quest.Scenes", "q_walkway", 0.5)
-at("TRACE 52.8 -1235.1 118.9", None, 1.0)
-at("QUESTDEPTH mark q_hero_seat")
-at("BugItGo -17.5 -1585 100 0 90 0", None, 8.0)
-at("Quest.Scenes", "q_seat", 0.5)
-at("TRACE 52.8 -1235.1 118.9", None, 1.0)
 # t) fisherman_cheese jumped to ask with a cheese braid in the pocket: Lange's cheese_smoked_pocket.1-2, the quest moves on
 at("Quest.Reset", None, 1.0)
 at("Inventory.Give cheese_braid 1", None, 0.5)
@@ -218,14 +230,6 @@ at("QUESTDEPTH mark t_lange_cheese")
 for _ in range(6):
     at("Npc.Talk", None, 1.2)
 at("Quest.Dump", "t_done")
-# u) soda on drink, the hero from the street to Tyoma's station 6 in the club: remark tyoma_soda_advice (with its diary line)
-at("Quest.Reset", None, 1.0)
-at("Quest.Start soda", None, 1.0)
-at("BugItGo -193 1500 150 0 90 0", None, 2.5)
-at("QUESTDEPTH mark u_tyoma")
-at("BugItGo -107 -1082 100 0 0 0", None, 10.0)
-at("Quest.Scenes", "u_scenes", 0.5)
-at("Quest.Dump entries", "u_done")
 # v) round ten's listeners: a great tit beside Vika in the Academgorodok's yard: one line.li_vika.* reaction
 at("Quest.Reset", None, 1.0)
 go("li_vika", 4, [18.25, 18.5, 18.1])
