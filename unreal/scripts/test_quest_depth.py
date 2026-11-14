@@ -14,6 +14,8 @@ remarks (quest_scenes.json): QUESTDEPTH lines, the dialogue's "NpcDialogue: line
   r) waxwing on return, a call by Valentina's cart: at 13:00 she answers (pointing to Sorokin's bench), at 15:00 he does
   s) the diary (journal entries, Quest.Dump's count): +1 when Tanya's remark is heard, none on the second approach nor
      after save and load; the waxwing's call heard by Sorokin adds its entry once, a second call none
+  t) fisherman_cheese on ask with a braid in the pocket: Lange's cheese_smoked_pocket.1-2, the quest moves on
+  u) soda on drink, the hero by Tyoma's station: remark tyoma_soda_advice
   q) two remarks in range at once (the Clerk, Sonya): the second begins after the first has finished
   j) a great tit beside Dasha at 17:30 (Aya on the same bench): exactly one person answers
   k) waxwing on return: a call by Valentina's cart and one by Sorokin both get his waxwing_seen lines and finish the quest
@@ -207,6 +209,23 @@ at("QUESTDEPTH mark q_hero_seat")
 at("BugItGo -17.5 -1585 100 0 90 0", None, 8.0)
 at("Quest.Scenes", "q_seat", 0.5)
 at("TRACE 52.8 -1235.1 118.9", None, 1.0)
+# t) fisherman_cheese jumped to ask with a cheese braid in the pocket: Lange's cheese_smoked_pocket.1-2, the quest moves on
+at("Quest.Reset", None, 1.0)
+at("Inventory.Give cheese_braid 1", None, 0.5)
+at("Quest.SetStage fisherman_cheese ask", None, 1.0)
+go("lange_pyotr", 1.3, [14, 15, 13, 16])
+at("QUESTDEPTH mark t_lange_cheese")
+for _ in range(6):
+    at("Npc.Talk", None, 1.2)
+at("Quest.Dump", "t_done")
+# u) soda on drink, the hero from the street to Tyoma's station 6 in the club: remark tyoma_soda_advice (with its diary line)
+at("Quest.Reset", None, 1.0)
+at("Quest.Start soda", None, 1.0)
+at("BugItGo -193 1500 150 0 90 0", None, 2.5)
+at("QUESTDEPTH mark u_tyoma")
+at("BugItGo -107 -1082 100 0 0 0", None, 10.0)
+at("Quest.Scenes", "u_scenes", 0.5)
+at("Quest.Dump entries", "u_done")
 # j) one listener answers: Dasha and Aya on the square's bench at 17:30, a great tit calls beside Dasha
 at("Quest.Reset", None, 1.0)
 at("lyud.Birds.Time 17.5", None, 2.5)
