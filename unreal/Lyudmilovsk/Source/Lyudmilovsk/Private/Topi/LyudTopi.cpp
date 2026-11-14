@@ -732,7 +732,35 @@ void ALyudTopi::GrowGrass(uint64 Key, int32 Q)
 		Patch->Species = GrassSpecies;
 		Patch->Seed = int32(Key & 0x7fffff) + Q;
 		Patch->HalfExtent = FVector2D(Size * 25.0, Size * 25.0);
-		Patch->DensityScale = FMath::Clamp(Chunk.Grass[Q] * 1.7f, 0.05f, 2.f);   // tussocks that read at eye level
+		// the model's own marram at each tuft (high on the hummocks, low in the lanes, none in the blowouts), squared so the
+		// tufts crowd the mounds; sampled once on a 1 m grid over the patch (~4k samples, a few ms), then looked up
+		Patch->DensityScale = 2.6f;
+		{
+			const TSharedPtr<FTopiShared> Shared = State->Shared;
+			const double FaceY = PortalFaceY;
+			const double MX0 = CX - Size * 0.25 - 1.0, MY0 = CY - Size * 0.25 - 1.0;
+			const int32 NG = int32(Size * 0.5) + 3;
+			TArray<float> Grid;
+			Grid.SetNumUninitialized(NG * NG);
+			for (int32 GY = 0; GY < NG; ++GY)
+			{
+				for (int32 GX = 0; GX < NG; ++GX)
+				{
+					LyudTopi::FSample S;
+					Shared->Model.Sample(MX0 + GX, MY0 + GY, 0.0, S);
+					Grid[GY * NG + GX] = float(S.Grass * S.Grass);
+				}
+			}
+			Patch->DensityAt = [Grid = MoveTemp(Grid), NG, MX0, MY0, FaceY](const FVector2D& W) -> float
+			{
+				const double U = W.X / 100.0 - MX0, V = (W.Y - FaceY) / 100.0 - MY0;
+				const int32 IX = FMath::Clamp(int32(U), 0, NG - 2), IY = FMath::Clamp(int32(V), 0, NG - 2);
+				const float FX = FMath::Clamp(float(U - IX), 0.f, 1.f), FY = FMath::Clamp(float(V - IY), 0.f, 1.f);
+				const float A = FMath::Lerp(Grid[IY * NG + IX], Grid[IY * NG + IX + 1], FX);
+				const float B = FMath::Lerp(Grid[(IY + 1) * NG + IX], Grid[(IY + 1) * NG + IX + 1], FX);
+				return FMath::Lerp(A, B, FY);
+			};
+		}
 		Patch->bUseTerrainMask = false;      // the mask covers only the map's own landscape
 		Patch->MinSlopeNormalZ = 0.8f;       // none on the slip faces
 		Patch->MinWorldZ = float((LyudTopi::RiverZ + 0.6) * 100.0);

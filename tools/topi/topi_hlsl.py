@@ -108,10 +108,10 @@ float foot = max(length(ddx(p)), length(ddy(p)));
 float2 w = normalize(Wind.xy + float2(1e-4, 0.0));
 // pale Baltic quartz sand, a little warmer and darker in broad patches (heavier minerals gather in the hollows)
 float tone = Topi.Noise(p / 47.0, 7u) * 0.6 + Topi.Noise(p / 9.0, 8u) * 0.4;
-float3 c = lerp(float3(0.50, 0.47, 0.37), float3(0.64, 0.60, 0.48), tone);
+float3 c = lerp(float3(0.50, 0.48, 0.42), float3(0.64, 0.62, 0.55), tone);
 // the slip faces are finer, smoother sand: lighter
 float slip = saturate((0.86 - n.z) / 0.10);
-c = lerp(c, float3(0.67, 0.63, 0.52), 0.55 * slip);
+c = lerp(c, float3(0.68, 0.66, 0.59), 0.55 * slip);
 // dark streaks of garnet and magnetite along the ripples, here and there
 float streak = Topi.Noise(float2(dot(p, w) * 0.6, dot(p, float2(w.y, -w.x)) * 0.05), 9u);
 // broken up so they never run on as continuous lines
