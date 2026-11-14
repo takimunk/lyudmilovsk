@@ -51,13 +51,15 @@
      "species": "BlackBrowedAlbatross",
      "lines": [
       "sorokin_oleg.albatross_pencil.1"
-     ]
+     ],
+     "diary": "journal.heard.sorokin_oleg.albatross_pencil"
     },
     {
      "species": "Nutcracker",
      "lines": [
       "sorokin_oleg.nutcracker_respect.1"
-     ]
+     ],
+     "diary": "journal.heard.sorokin_oleg.nutcracker_respect"
     },
     {
      "air": true,
@@ -125,7 +127,8 @@
      "air": true,
      "lines": [
       "kid_girl.boss_or_bird.1"
-     ]
+     ],
+     "diary": "journal.heard.kid_girl.boss_or_bird"
     },
     {
      "lines": [
@@ -153,7 +156,8 @@
      "species": "FeralPigeon",
      "lines": [
       "kimura_dasha.pigeon_from_vika.1"
-     ]
+     ],
+     "diary": "journal.heard.kimura_dasha.pigeon_from_vika"
     },
     {
      "species": "Waxwing",
@@ -171,7 +175,8 @@
     {
      "lines": [
       "kimura_dasha.bird_by_the_book.1"
-     ]
+     ],
+     "diary": "journal.heard.kimura_dasha.bird_by_the_book"
     }
    ]
   },
@@ -203,7 +208,8 @@
      "species": "CarrionCrow",
      "lines": [
       "sato_yuki.black_cousin.1"
-     ]
+     ],
+     "diary": "journal.heard.sato_yuki.black_cousin"
     },
     {
      "species": "Waxwing",
@@ -254,13 +260,15 @@
      "species": "Cormorant",
      "lines": [
       "lange_pyotr.cormorant_ate_more.1"
-     ]
+     ],
+     "diary": "journal.heard.lange_pyotr.cormorant_ate_more"
     },
     {
      "species": "HerringGull",
      "lines": [
       "lange_pyotr.net_is_work.1"
-     ]
+     ],
+     "diary": "journal.heard.lange_pyotr.net_is_work"
     },
     {
      "species": "Waxwing",
@@ -311,7 +319,8 @@
      "species": "Jackdaw",
      "lines": [
       "belov_misha.not_earthed.1"
-     ]
+     ],
+     "diary": "journal.heard.belov_misha.not_earthed"
     },
     {
      "species": "Waxwing",
@@ -329,7 +338,8 @@
     {
      "lines": [
       "belov_misha.nothing_shiny.1"
-     ]
+     ],
+     "diary": "journal.heard.belov_misha.nothing_shiny"
     }
    ]
   },
@@ -352,13 +362,15 @@
      "species": "HerringGull",
      "lines": [
       "nishimura_aya.gull_sits_now.1"
-     ]
+     ],
+     "diary": "journal.heard.nishimura_aya.gull_sits_now"
     },
     {
      "species": "Bullfinch",
      "lines": [
       "nishimura_aya.vermilion_drop.1"
-     ]
+     ],
+     "diary": "journal.heard.nishimura_aya.vermilion_drop"
     },
     {
      "species": "Waxwing",
@@ -391,7 +403,8 @@
      "species": "BlueTit",
      "lines": [
       "zotova_galina.copper_sulphate.1"
-     ]
+     ],
+     "diary": "journal.heard.zotova_galina.copper_sulphate"
     },
     {
      "species": "Waxwing",
@@ -450,7 +463,8 @@
      "species": "FeralPigeon",
      "lines": [
       "zotov_lev.pendulum_pigeon.1"
-     ]
+     ],
+     "diary": "journal.heard.zotov_lev.pendulum_pigeon"
     },
     {
      "species": "Waxwing",
@@ -472,7 +486,8 @@
      "air": true,
      "lines": [
       "zotov_lev.students_shout.1"
-     ]
+     ],
+     "diary": "journal.heard.zotov_lev.students_shout"
     },
     {
      "lines": [
@@ -501,7 +516,8 @@
      "species": "HouseSparrow",
      "lines": [
       "korneeva_nina.sparrow_news.1"
-     ]
+     ],
+     "diary": "journal.heard.korneeva_nina.sparrow_news"
     },
     {
      "species": "Waxwing",
@@ -529,7 +545,8 @@
     {
      "lines": [
       "korneeva_nina.vanya_in_paper.1"
-     ]
+     ],
+     "diary": "journal.heard.korneeva_nina.vanya_in_paper"
     }
    ]
   },
@@ -552,7 +569,8 @@
      "species": "GreyHeron",
      "lines": [
       "korneev_ivan.heron_colleague.1"
-     ]
+     ],
+     "diary": "journal.heard.korneev_ivan.heron_colleague"
     },
     {
      "species": "Waxwing",
@@ -585,7 +603,8 @@
      "species": "Peregrine",
      "lines": [
       "valiev_rustam.fastest_design.1"
-     ]
+     ],
+     "diary": "journal.heard.valiev_rustam.fastest_design"
     },
     {
      "species": "Waxwing",
@@ -612,7 +631,8 @@
     {
      "lines": [
       "valiev_rustam.sits_level.1"
-     ]
+     ],
+     "diary": "journal.heard.valiev_rustam.sits_level"
     }
    ]
   },
@@ -635,7 +655,8 @@
      "species": "HouseSparrow",
      "lines": [
       "guseva_valentina.one_kernel.1"
-     ]
+     ],
+     "diary": "journal.heard.guseva_valentina.one_kernel"
     },
     {
      "species": "Waxwing",
@@ -662,7 +683,8 @@
     {
      "lines": [
       "guseva_valentina.warm_by_the_pot.1"
-     ]
+     ],
+     "diary": "journal.heard.guseva_valentina.warm_by_the_pot"
     }
    ]
   },
@@ -685,7 +707,8 @@
      "species": "HoodedCrow",
      "lines": [
       "khuazhev_aslan.braids_counted.1"
-     ]
+     ],
+     "diary": "journal.heard.khuazhev_aslan.braids_counted"
     },
     {
      "species": "Waxwing",
@@ -712,7 +735,8 @@
     {
      "lines": [
       "khuazhev_aslan.feathered_guest.1"
-     ]
+     ],
+     "diary": "journal.heard.khuazhev_aslan.feathered_guest"
     }
    ]
   },
@@ -735,7 +759,8 @@
      "species": "Starling",
      "lines": [
       "nao.starling_on_your_own.1"
-     ]
+     ],
+     "diary": "journal.heard.nao.starling_on_your_own"
     },
     {
      "species": "Waxwing",
@@ -754,7 +779,8 @@
     {
      "lines": [
       "nao.sun_likes_this_spot.1"
-     ]
+     ],
+     "diary": "journal.heard.nao.sun_likes_this_spot"
     }
    ]
   },
@@ -784,7 +810,8 @@
      "air": true,
      "lines": [
       "owner.back_to_the_light.1"
-     ]
+     ],
+     "diary": "journal.heard.owner.back_to_the_light"
     },
     {
      "lines": [
@@ -813,7 +840,8 @@
      "species": "Robin",
      "lines": [
       "guy_b.robin_clean_e.1"
-     ]
+     ],
+     "diary": "journal.heard.guy_b.robin_clean_e"
     },
     {
      "species": "Waxwing",
@@ -855,7 +883,8 @@
      "species": "Magpie",
      "lines": [
       "streamer.magpie_one_mic.1"
-     ]
+     ],
+     "diary": "journal.heard.streamer.magpie_one_mic"
     },
     {
      "air": true,
@@ -881,13 +910,15 @@
      "species": "Goldfinch",
      "lines": [
       "clerk.goldfinch_five_fills.1"
-     ]
+     ],
+     "diary": "journal.heard.clerk.goldfinch_five_fills"
     },
     {
      "species": "Bullfinch",
      "lines": [
       "clerk.bullfinch_mixed_red.1"
-     ]
+     ],
+     "diary": "journal.heard.clerk.bullfinch_mixed_red"
     },
     {
      "species": "Waxwing",
@@ -929,7 +960,8 @@
      "species": "FeralPigeon",
      "lines": [
       "kid_boy.pigeon_patrol.1"
-     ]
+     ],
+     "diary": "journal.heard.kid_boy.pigeon_patrol"
     },
     {
      "species": "HoodedCrow",
@@ -947,7 +979,8 @@
     {
      "lines": [
       "kid_boy.bird_no_save.1"
-     ]
+     ],
+     "diary": "journal.heard.kid_boy.bird_no_save"
     }
    ]
   },
@@ -980,7 +1013,8 @@
     {
      "lines": [
       "guy_a.no_time_bird.1"
-     ]
+     ],
+     "diary": "journal.heard.guy_a.no_time_bird"
     }
    ]
   },
@@ -1013,7 +1047,8 @@
     {
      "lines": [
       "girl_a.count_lines_quiet.1"
-     ]
+     ],
+     "diary": "journal.heard.girl_a.count_lines_quiet"
     }
    ]
   },
@@ -1053,7 +1088,8 @@
     {
      "lines": [
       "girl_b.save_you_memory.1"
-     ]
+     ],
+     "diary": "journal.heard.girl_b.save_you_memory"
     }
    ]
   },
@@ -1092,7 +1128,8 @@
     {
      "lines": [
       "sato_kei.data_for_yuki.1"
-     ]
+     ],
+     "diary": "journal.heard.sato_kei.data_for_yuki"
     }
    ]
   },
@@ -1133,7 +1170,8 @@
     {
      "lines": [
       "sato_mila.nobody_treated.1"
-     ]
+     ],
+     "diary": "journal.heard.sato_mila.nobody_treated"
     }
    ]
   },
@@ -1156,7 +1194,8 @@
      "species": "Fieldfare",
      "lines": [
       "orlova_tanya.fieldfare_no_rowan.1"
-     ]
+     ],
+     "diary": "journal.heard.orlova_tanya.fieldfare_no_rowan"
     },
     {
      "species": "HouseSparrow",
@@ -1214,7 +1253,8 @@
     {
      "lines": [
       "li_vika.last_flask_clean.1"
-     ]
+     ],
+     "diary": "journal.heard.li_vika.last_flask_clean"
     }
    ]
   }
