@@ -1,0 +1,20 @@
+{
+ "key": "line.zotov_lev.not_imagined.1",
+ "lang": "ja",
+ "text": "隣のベンチ、ソローキンさんだ。四十年この観測を待っている。日誌に「見間違い」と書かせないでくれ。",
+ "speaker": "zotov_lev",
+ "voice": "George",
+ "voice_id": "JBFqnCBsd6RMkjVDRZzb",
+ "voice_design": null,
+ "direction": "[dry, thoughtful, unhurried, a physicist's quiet irony]",
+ "model": "fal-ai/elevenlabs/tts/eleven-v3",
+ "request": {
+  "stability": 0.5,
+  "apply_text_normalization": "auto",
+  "text": "[dry, thoughtful, unhurried, a physicist's quiet irony] 隣のベンチ、ソローキンさんだ。四十年この観測を待っている。日誌に「見間違い」と書かせないでくれ。",
+  "voice": "George",
+  "language_code": "ja"
+ },
+ "fal_request_id": "01a1d75f-7314-73c2-991b-fe874fec5d7e",
+ "hash": "10a87f05289c"
+}

@@ -1,0 +1,20 @@
+{
+ "key": "line.nishimura_aya.crest_grows.1",
+ "lang": "ja",
+ "text": "ソローキンさんに、キレンジャクを記憶で描いてほしいって頼まれたの。私のじゃなくて、あの人の記憶で。もう二枚目。話すたびに冠羽が高くなっていくのよ。",
+ "speaker": "nishimura_aya",
+ "voice": "Matilda",
+ "voice_id": "XrExE9yKIg1WjnnlVkGX",
+ "voice_design": null,
+ "direction": "[calm, soft, contemplative, a painter talking about the light]",
+ "model": "fal-ai/elevenlabs/tts/eleven-v3",
+ "request": {
+  "stability": 0.5,
+  "apply_text_normalization": "auto",
+  "text": "[calm, soft, contemplative, a painter talking about the light] ソローキンさんに、キレンジャクを記憶で描いてほしいって頼まれたの。私のじゃなくて、あの人の記憶で。もう二枚目。話すたびに冠羽が高くなっていくのよ。",
+  "voice": "Matilda",
+  "language_code": "ja"
+ },
+ "fal_request_id": "01a1d75e-e4c7-7dd3-abf0-343c27a9a2b7",
+ "hash": "66964f2a0015"
+}

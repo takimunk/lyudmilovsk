@@ -1,0 +1,20 @@
+{
+ "key": "line.nishimura_aya.cadmium_tail.1",
+ "lang": "ja",
+ "text": "そのまま。灰がかったばら色、尾の先にカドミウムイエロー、翼にクリムソンレーキ。ソローキンさんには、せめて紙の上で見せてあげる。",
+ "speaker": "nishimura_aya",
+ "voice": "Matilda",
+ "voice_id": "XrExE9yKIg1WjnnlVkGX",
+ "voice_design": null,
+ "direction": "[calm, soft, contemplative, a painter talking about the light]",
+ "model": "fal-ai/elevenlabs/tts/eleven-v3",
+ "request": {
+  "stability": 0.5,
+  "apply_text_normalization": "auto",
+  "text": "[calm, soft, contemplative, a painter talking about the light] そのまま。灰がかったばら色、尾の先にカドミウムイエロー、翼にクリムソンレーキ。ソローキンさんには、せめて紙の上で見せてあげる。",
+  "voice": "Matilda",
+  "language_code": "ja"
+ },
+ "fal_request_id": "01a1d75e-c935-7ae2-94c2-030d80618ba3",
+ "hash": "0a9697d0fbb6"
+}

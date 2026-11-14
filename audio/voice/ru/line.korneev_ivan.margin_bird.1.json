@@ -1,0 +1,20 @@
+{
+ "key": "line.korneev_ivan.margin_bird.1",
+ "lang": "ru",
+ "text": "Олег мне свою птицу на полях газеты нарисовал, рядом с шахматной задачей. Нина ругается, а я не стираю.",
+ "speaker": "korneev_ivan",
+ "voice": "Bill",
+ "voice_id": "pqHfZKP75CvOlQylNhV4",
+ "voice_design": null,
+ "direction": "[an old man, slow, a little gravelly, contented, a quiet joke at the end]",
+ "model": "fal-ai/elevenlabs/tts/eleven-v3",
+ "request": {
+  "stability": 0.5,
+  "apply_text_normalization": "auto",
+  "text": "[an old man, slow, a little gravelly, contented, a quiet joke at the end] Олег мне свою птицу на полях газеты нарисовал, рядом с шахматной задачей. Нина ругается, а я не стираю.",
+  "voice": "Bill",
+  "language_code": "ru"
+ },
+ "fal_request_id": "01a1d75e-27e8-7953-ad30-9e9de2c19a9f",
+ "hash": "f8fb2cbff458"
+}

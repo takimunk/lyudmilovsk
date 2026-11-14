@@ -1,0 +1,20 @@
+{
+ "key": "line.nishimura_aya.crest_grows.1",
+ "lang": "en",
+ "text": "Sorokin asked me to paint his waxwing from memory. Not mine, his. Second sheet now, and with every telling the crest gets taller.",
+ "speaker": "nishimura_aya",
+ "voice": "Matilda",
+ "voice_id": "XrExE9yKIg1WjnnlVkGX",
+ "voice_design": null,
+ "direction": "[calm, soft, contemplative, a painter talking about the light]",
+ "model": "fal-ai/elevenlabs/tts/eleven-v3",
+ "request": {
+  "stability": 0.5,
+  "apply_text_normalization": "auto",
+  "text": "[calm, soft, contemplative, a painter talking about the light] Sorokin asked me to paint his waxwing from memory. Not mine, his. Second sheet now, and with every telling the crest gets taller.",
+  "voice": "Matilda",
+  "language_code": "en"
+ },
+ "fal_request_id": "01a1d75e-e28d-7352-ab1f-d8b0a13beff8",
+ "hash": "f41ede5dd37b"
+}

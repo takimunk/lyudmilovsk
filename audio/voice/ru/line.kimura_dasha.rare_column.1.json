@@ -1,0 +1,20 @@
+{
+ "key": "line.kimura_dasha.rare_column.1",
+ "lang": "ru",
+ "text": "Сорокин попросил завести в моей таблице графу «редкие». В ней пока одна строчка, и он вписал её сам.",
+ "speaker": "kimura_dasha",
+ "voice": "Charlotte",
+ "voice_id": "XB0fDUnXU5powFXDhCwa",
+ "voice_design": null,
+ "direction": "[a tired physics student, wry, self-ironic]",
+ "model": "fal-ai/elevenlabs/tts/eleven-v3",
+ "request": {
+  "stability": 0.5,
+  "apply_text_normalization": "auto",
+  "text": "[a tired physics student, wry, self-ironic] Сорокин попросил завести в моей таблице графу «редкие». В ней пока одна строчка, и он вписал её сам.",
+  "voice": "Charlotte",
+  "language_code": "ru"
+ },
+ "fal_request_id": "01a1d75e-1247-7be2-9e99-6d02360f19d1",
+ "hash": "11b7f11c07e6"
+}

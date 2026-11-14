@@ -1,0 +1,20 @@
+{
+ "key": "line.valiev_rustam.data_sheet.1",
+ "lang": "ja",
+ "text": "冠羽に、尾の黄色い縁。この型式は知らない。ソローキンさんに見せてこい。きっとおまえの仕様書を持っている。",
+ "speaker": "valiev_rustam",
+ "voice": "Roger",
+ "voice_id": "CwhRBWXzGAHq8TQ4Fs17",
+ "voice_design": null,
+ "direction": "[confident, dry, matter-of-fact engineer]",
+ "model": "fal-ai/elevenlabs/tts/eleven-v3",
+ "request": {
+  "stability": 0.5,
+  "apply_text_normalization": "auto",
+  "text": "[confident, dry, matter-of-fact engineer] 冠羽に、尾の黄色い縁。この型式は知らない。ソローキンさんに見せてこい。きっとおまえの仕様書を持っている。",
+  "voice": "Roger",
+  "language_code": "ja"
+ },
+ "fal_request_id": "01a1d75f-3ee0-79a3-af3e-994ec5ec4ffe",
+ "hash": "087e28bf0c6e"
+}

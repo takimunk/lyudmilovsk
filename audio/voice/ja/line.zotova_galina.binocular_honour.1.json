@@ -1,0 +1,20 @@
+{
+ "key": "line.zotova_galina.binocular_honour.1",
+ "lang": "ja",
+ "text": "ソローキンさんが、レフに双眼鏡をのぞかせてくれたんです。ご自分から。レフは大変な名誉だと言い、私は多幸感だと言っています。",
+ "speaker": "zotova_galina",
+ "voice": "Alice",
+ "voice_id": "Xb7hH8MSUJpSbSDYk0k2",
+ "voice_design": null,
+ "direction": "[warm, chatty, fondly exasperated with her husband]",
+ "model": "fal-ai/elevenlabs/tts/eleven-v3",
+ "request": {
+  "stability": 0.5,
+  "apply_text_normalization": "auto",
+  "text": "[warm, chatty, fondly exasperated with her husband] ソローキンさんが、レフに双眼鏡をのぞかせてくれたんです。ご自分から。レフは大変な名誉だと言い、私は多幸感だと言っています。",
+  "voice": "Alice",
+  "language_code": "ja"
+ },
+ "fal_request_id": "01a1d75f-8906-7a62-9275-8a750f03924c",
+ "hash": "6f1fd8354872"
+}

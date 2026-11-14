@@ -1,0 +1,20 @@
+{
+ "key": "line.zotova_galina.next_bench_longer.1",
+ "lang": "ru",
+ "text": "Вам не ко мне, а на соседнюю скамейку, к Сорокину. Он ждёт вас дольше, чем я работаю в Лаборатории.",
+ "speaker": "zotova_galina",
+ "voice": "Alice",
+ "voice_id": "Xb7hH8MSUJpSbSDYk0k2",
+ "voice_design": null,
+ "direction": "[warm, chatty, fondly exasperated with her husband]",
+ "model": "fal-ai/elevenlabs/tts/eleven-v3",
+ "request": {
+  "stability": 0.5,
+  "apply_text_normalization": "auto",
+  "text": "[warm, chatty, fondly exasperated with her husband] Вам не ко мне, а на соседнюю скамейку, к Сорокину. Он ждёт вас дольше, чем я работаю в Лаборатории.",
+  "voice": "Alice",
+  "language_code": "ru"
+ },
+ "fal_request_id": "01a1d75f-9d22-76e1-8071-645d47c9622a",
+ "hash": "ba4d27174bb0"
+}

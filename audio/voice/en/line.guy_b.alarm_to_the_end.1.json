@@ -1,0 +1,20 @@
+{
+ "key": "line.guy_b.alarm_to_the_end.1",
+ "lang": "en",
+ "text": "Who's ringing in here? A bird with a crest, in the club. A trill like an alarm clock you actually want to hear to the end.",
+ "speaker": "guy_b",
+ "voice": "Chris",
+ "voice_id": "iP95p4xoKVk53GoZ742B",
+ "voice_design": null,
+ "direction": "[relaxed, lazy, friendly]",
+ "model": "fal-ai/elevenlabs/tts/eleven-v3",
+ "request": {
+  "stability": 0.5,
+  "apply_text_normalization": "auto",
+  "text": "[relaxed, lazy, friendly] Who's ringing in here? A bird with a crest, in the club. A trill like an alarm clock you actually want to hear to the end.",
+  "voice": "Chris",
+  "language_code": "en"
+ },
+ "fal_request_id": "01a1d75d-b5cf-7be1-962b-a05d75ad77cf",
+ "hash": "796b5e878b3d"
+}

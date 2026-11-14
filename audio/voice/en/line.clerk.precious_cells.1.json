@@ -1,0 +1,20 @@
+{
+ "key": "line.clerk.precious_cells.1",
+ "lang": "en",
+ "text": "Don't move. The red drops on your wings are exactly one cell each. The most precious cells on the whole sheet.",
+ "speaker": "clerk",
+ "voice": "Callum",
+ "voice_id": "N2lVS1w4EtoT3dr4eOWO",
+ "voice_design": null,
+ "direction": "[polite, quiet, precise, absorbed in his work]",
+ "model": "fal-ai/elevenlabs/tts/eleven-v3",
+ "request": {
+  "stability": 0.5,
+  "apply_text_normalization": "auto",
+  "text": "[polite, quiet, precise, absorbed in his work] Don't move. The red drops on your wings are exactly one cell each. The most precious cells on the whole sheet.",
+  "voice": "Callum",
+  "language_code": "en"
+ },
+ "fal_request_id": "01a1d75d-5ee0-7023-9e83-8257a557d7b5",
+ "hash": "c8c8f2613ed5"
+}

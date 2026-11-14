@@ -1,0 +1,20 @@
+{
+ "key": "line.belov_misha.bigger_feeder.1",
+ "lang": "ru",
+ "text": "Сорокин заказал мне кормушку побольше, на случай, если прилетят остальные. Паять там нечего, но я согласился.",
+ "speaker": "belov_misha",
+ "voice": "Liam",
+ "voice_id": "TX3LPaxmHKxFdv7VOQHJ",
+ "voice_design": null,
+ "direction": "[easygoing, amused, a young technician, a little self-ironic]",
+ "model": "fal-ai/elevenlabs/tts/eleven-v3",
+ "request": {
+  "stability": 0.5,
+  "apply_text_normalization": "auto",
+  "text": "[easygoing, amused, a young technician, a little self-ironic] Сорокин заказал мне кормушку побольше, на случай, если прилетят остальные. Паять там нечего, но я согласился.",
+  "voice": "Liam",
+  "language_code": "ru"
+ },
+ "fal_request_id": "01a1d75d-2b06-7830-b608-84a44c4614ab",
+ "hash": "9c6c48ad0769"
+}

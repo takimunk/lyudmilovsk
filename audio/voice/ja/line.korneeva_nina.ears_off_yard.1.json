@@ -1,0 +1,29 @@
+{
+ "key": "line.korneeva_nina.ears_off_yard.1",
+ "lang": "ja",
+ "text": "ソローキンさん、オレグのところへ行きなさいな。ほら、隣のベンチよ。あの人、あなたの話で中庭じゅうをうんざりさせてきたんだから、一度くらい自分の目で見せてあげて。",
+ "speaker": "korneeva_nina",
+ "voice": "Wise_Woman",
+ "voice_id": "Wise_Woman",
+ "voice_design": null,
+ "direction": "",
+ "model": "fal-ai/minimax/speech-2.6-hd",
+ "request": {
+  "prompt": "ソローキンさん、オレグのところへ行きなさいな。ほら、隣のベンチよ。あの人、あなたの話で中庭じゅうをうんざりさせてきたんだから、一度くらい自分の目で見せてあげて。",
+  "voice_setting": {
+   "speed": 0.95,
+   "pitch": 0,
+   "vol": 1,
+   "voice_id": "Wise_Woman"
+  },
+  "language_boost": "Japanese",
+  "audio_setting": {
+   "sample_rate": 24000,
+   "format": "mp3",
+   "channel": 1
+  },
+  "output_format": "url"
+ },
+ "fal_request_id": "01a1d75e-6305-7de2-a56a-9cdf4ca94c51",
+ "hash": "19980dfecae1"
+}

@@ -1,0 +1,29 @@
+{
+ "key": "line.sato_yuki.one_long_word.1",
+ "lang": "en",
+ "text": "Grandpa Sorokin showed me a page in his journal. I could only read one word, a long one: \"waxwing\".",
+ "speaker": "sato_yuki",
+ "voice": "Lovely_Girl",
+ "voice_id": "Lovely_Girl",
+ "voice_design": null,
+ "direction": "",
+ "model": "fal-ai/minimax/speech-2.6-hd",
+ "request": {
+  "prompt": "Grandpa Sorokin showed me a page in his journal. I could only read one word, a long one: \"waxwing\".",
+  "voice_setting": {
+   "speed": 1,
+   "pitch": 0,
+   "vol": 1,
+   "voice_id": "Lovely_Girl"
+  },
+  "language_boost": "English",
+  "audio_setting": {
+   "sample_rate": 24000,
+   "format": "mp3",
+   "channel": 1
+  },
+  "output_format": "url"
+ },
+ "fal_request_id": "01a1d75f-3615-7233-8989-13102b8de42b",
+ "hash": "777722de8dde"
+}

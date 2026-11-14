@@ -1,0 +1,20 @@
+{
+ "key": "line.nishimura_aya.cadmium_tail.1",
+ "lang": "en",
+ "text": "Stay. Pinkish grey, cadmium yellow at the tip of the tail, crimson lake on the wings. Sorokin will see you, on paper at least.",
+ "speaker": "nishimura_aya",
+ "voice": "Matilda",
+ "voice_id": "XrExE9yKIg1WjnnlVkGX",
+ "voice_design": null,
+ "direction": "[calm, soft, contemplative, a painter talking about the light]",
+ "model": "fal-ai/elevenlabs/tts/eleven-v3",
+ "request": {
+  "stability": 0.5,
+  "apply_text_normalization": "auto",
+  "text": "[calm, soft, contemplative, a painter talking about the light] Stay. Pinkish grey, cadmium yellow at the tip of the tail, crimson lake on the wings. Sorokin will see you, on paper at least.",
+  "voice": "Matilda",
+  "language_code": "en"
+ },
+ "fal_request_id": "01a1d75e-cd45-7e40-85e5-f37e9df24294",
+ "hash": "9ef2c347e0f3"
+}

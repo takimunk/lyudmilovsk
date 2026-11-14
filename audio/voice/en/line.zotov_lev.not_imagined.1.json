@@ -1,0 +1,20 @@
+{
+ "key": "line.zotov_lev.not_imagined.1",
+ "lang": "en",
+ "text": "The next bench, Sorokin. He has waited forty years for this observation. Do not make him write down \"imagined it\".",
+ "speaker": "zotov_lev",
+ "voice": "George",
+ "voice_id": "JBFqnCBsd6RMkjVDRZzb",
+ "voice_design": null,
+ "direction": "[dry, thoughtful, unhurried, a physicist's quiet irony]",
+ "model": "fal-ai/elevenlabs/tts/eleven-v3",
+ "request": {
+  "stability": 0.5,
+  "apply_text_normalization": "auto",
+  "text": "[dry, thoughtful, unhurried, a physicist's quiet irony] The next bench, Sorokin. He has waited forty years for this observation. Do not make him write down \"imagined it\".",
+  "voice": "George",
+  "language_code": "en"
+ },
+ "fal_request_id": "01a1d75f-8415-7893-bcdb-5084cf0a08f7",
+ "hash": "125f8dbf0c6b"
+}
