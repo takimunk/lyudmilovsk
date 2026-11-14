@@ -1,0 +1,20 @@
+{
+ "key": "line.kimura_dasha.rare_column.1",
+ "lang": "en",
+ "text": "Sorokin asked me to add a \"rare\" column to my table. So far it has one row, and he filled it in himself.",
+ "speaker": "kimura_dasha",
+ "voice": "Charlotte",
+ "voice_id": "XB0fDUnXU5powFXDhCwa",
+ "voice_design": null,
+ "direction": "[a tired physics student, wry, self-ironic]",
+ "model": "fal-ai/elevenlabs/tts/eleven-v3",
+ "request": {
+  "stability": 0.5,
+  "apply_text_normalization": "auto",
+  "text": "[a tired physics student, wry, self-ironic] Sorokin asked me to add a \"rare\" column to my table. So far it has one row, and he filled it in himself.",
+  "voice": "Charlotte",
+  "language_code": "en"
+ },
+ "fal_request_id": "01a1d75e-1292-7903-b8c6-d460ee212b55",
+ "hash": "33953cbbb41a"
+}

@@ -1,0 +1,20 @@
+{
+ "key": "line.zotov_lev.overdue_admit.1",
+ "lang": "en",
+ "text": "\"Cosmos and Us\"? I took it, I don't deny it. I read it with a pencil: there is an error in a formula on page fourteen.",
+ "speaker": "zotov_lev",
+ "voice": "George",
+ "voice_id": "JBFqnCBsd6RMkjVDRZzb",
+ "voice_design": null,
+ "direction": "[dry, thoughtful, unhurried, a physicist's quiet irony]",
+ "model": "fal-ai/elevenlabs/tts/eleven-v3",
+ "request": {
+  "stability": 0.5,
+  "apply_text_normalization": "auto",
+  "text": "[dry, thoughtful, unhurried, a physicist's quiet irony] \"Cosmos and Us\"? I took it, I don't deny it. I read it with a pencil: there is an error in a formula on page fourteen.",
+  "voice": "George",
+  "language_code": "en"
+ },
+ "fal_request_id": "01a1d675-1bfb-7d03-8b89-ecbebd9e3702",
+ "hash": "92419ba498fb"
+}

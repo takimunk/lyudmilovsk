@@ -1,0 +1,20 @@
+{
+ "key": "line.korneev_ivan.corn_handover.2",
+ "lang": "ja",
+ "text": "あの屋台の車輪は、わしが付けたんだ。いまだにきしむ。あいつは、挨拶してるんだと言い張るがね。",
+ "speaker": "korneev_ivan",
+ "voice": "Bill",
+ "voice_id": "pqHfZKP75CvOlQylNhV4",
+ "voice_design": null,
+ "direction": "[an old man, slow, a little gravelly, contented, a quiet joke at the end]",
+ "model": "fal-ai/elevenlabs/tts/eleven-v3",
+ "request": {
+  "stability": 0.5,
+  "apply_text_normalization": "auto",
+  "text": "[an old man, slow, a little gravelly, contented, a quiet joke at the end] あの屋台の車輪は、わしが付けたんだ。いまだにきしむ。あいつは、挨拶してるんだと言い張るがね。",
+  "voice": "Bill",
+  "language_code": "ja"
+ },
+ "fal_request_id": "01a1d671-6791-7e40-94c7-3375eea22480",
+ "hash": "ffca6ce81302"
+}

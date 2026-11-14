@@ -1,0 +1,29 @@
+{
+ "key": "line.korneeva_nina.paper_ask.2",
+ "lang": "ru",
+ "text": "Раз уж ты всё равно ходишь туда-сюда, принеси мне вечернюю газету. С ярмарки, из газетного ларька.",
+ "speaker": "korneeva_nina",
+ "voice": "Wise_Woman",
+ "voice_id": "Wise_Woman",
+ "voice_design": null,
+ "direction": "",
+ "model": "fal-ai/minimax/speech-2.6-hd",
+ "request": {
+  "prompt": "Раз уж ты всё равно ходишь туда-сюда, принеси мне вечернюю газету. С ярмарки, из газетного ларька.",
+  "voice_setting": {
+   "speed": 0.95,
+   "pitch": 0,
+   "vol": 1,
+   "voice_id": "Wise_Woman"
+  },
+  "language_boost": "Russian",
+  "audio_setting": {
+   "sample_rate": 24000,
+   "format": "mp3",
+   "channel": 1
+  },
+  "output_format": "url"
+ },
+ "fal_request_id": "01a1d58f-b4ac-7702-b451-55a5af4735c0",
+ "hash": "437802db83b3"
+}

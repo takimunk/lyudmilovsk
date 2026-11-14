@@ -1,0 +1,20 @@
+{
+ "key": "line.lange_pyotr.sun_low.1",
+ "lang": "en",
+ "text": "At dawn at sea the first thing you do is look east. Not for the weather. You just look.",
+ "speaker": "lange_pyotr",
+ "voice": "Brian",
+ "voice_id": "nPczCjzI2devNBz1zQrb",
+ "voice_design": null,
+ "direction": "[gruff, unhurried, a weathered fisherman of few words]",
+ "model": "fal-ai/elevenlabs/tts/eleven-v3",
+ "request": {
+  "stability": 0.5,
+  "apply_text_normalization": "auto",
+  "text": "[gruff, unhurried, a weathered fisherman of few words] At dawn at sea the first thing you do is look east. Not for the weather. You just look.",
+  "voice": "Brian",
+  "language_code": "en"
+ },
+ "fal_request_id": "01a1d745-9e21-70f3-93b7-4516190b4145",
+ "hash": "2b3bb7d5d8ef"
+}

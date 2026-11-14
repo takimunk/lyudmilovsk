@@ -1,0 +1,20 @@
+{
+ "key": "line.li_vika.fly_while_light.1",
+ "lang": "en",
+ "text": "Fly while it's light. I'll be leaving the Laboratory in the dark again.",
+ "speaker": "li_vika",
+ "voice": "Laura",
+ "voice_id": "FGY2WhTYpPnrIDTdsKH5",
+ "voice_design": null,
+ "direction": "[playful, quick, a lab assistant joking about her work]",
+ "model": "fal-ai/elevenlabs/tts/eleven-v3",
+ "request": {
+  "stability": 0.5,
+  "apply_text_normalization": "auto",
+  "text": "[playful, quick, a lab assistant joking about her work] Fly while it's light. I'll be leaving the Laboratory in the dark again.",
+  "voice": "Laura",
+  "language_code": "en"
+ },
+ "fal_request_id": "01a1d7e0-1d63-74c3-93c0-110b57f40d31",
+ "hash": "ad3f1c37d179"
+}

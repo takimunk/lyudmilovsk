@@ -1,0 +1,20 @@
+{
+ "key": "line.zotova_galina.sodalab_ask.4",
+ "lang": "ru",
+ "text": "Я предвзята, я читала состав. Выпейте все четыре, по одной, и доложите.",
+ "speaker": "zotova_galina",
+ "voice": "Alice",
+ "voice_id": "Xb7hH8MSUJpSbSDYk0k2",
+ "voice_design": null,
+ "direction": "[warm, chatty, fondly exasperated with her husband]",
+ "model": "fal-ai/elevenlabs/tts/eleven-v3",
+ "request": {
+  "stability": 0.5,
+  "apply_text_normalization": "auto",
+  "text": "[warm, chatty, fondly exasperated with her husband] Я предвзята, я читала состав. Выпейте все четыре, по одной, и доложите.",
+  "voice": "Alice",
+  "language_code": "ru"
+ },
+ "fal_request_id": "01a1d674-f900-7760-8f49-15e759e20ecd",
+ "hash": "e38eb391ab5b"
+}

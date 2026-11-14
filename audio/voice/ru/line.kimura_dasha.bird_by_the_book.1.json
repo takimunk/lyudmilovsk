@@ -1,0 +1,20 @@
+{
+ "key": "line.kimura_dasha.bird_by_the_book.1",
+ "lang": "ru",
+ "text": "Привет, птица. Ты кто по справочнику? Ладно, запишу как «симпатичная».",
+ "speaker": "kimura_dasha",
+ "voice": "Charlotte",
+ "voice_id": "XB0fDUnXU5powFXDhCwa",
+ "voice_design": null,
+ "direction": "[a tired physics student, wry, self-ironic]",
+ "model": "fal-ai/elevenlabs/tts/eleven-v3",
+ "request": {
+  "stability": 0.5,
+  "apply_text_normalization": "auto",
+  "text": "[a tired physics student, wry, self-ironic] Привет, птица. Ты кто по справочнику? Ладно, запишу как «симпатичная».",
+  "voice": "Charlotte",
+  "language_code": "ru"
+ },
+ "fal_request_id": "01a1d6e4-fb3a-7af2-8ddd-c539d331c41e",
+ "hash": "c983c6360f92"
+}

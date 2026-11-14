@@ -1,0 +1,20 @@
+{
+ "key": "line.sato_kei.above_my_instruments.1",
+ "lang": "ru",
+ "text": "Ты выше моих приборов. Расскажешь потом, какой там свет?",
+ "speaker": "sato_kei",
+ "voice": "Eric",
+ "voice_id": "cjVigY5qzO86Huf0OWal",
+ "voice_design": null,
+ "direction": "[quiet, precise, softly puzzled, a scientist thinking aloud]",
+ "model": "fal-ai/elevenlabs/tts/eleven-v3",
+ "request": {
+  "stability": 0.5,
+  "apply_text_normalization": "auto",
+  "text": "[quiet, precise, softly puzzled, a scientist thinking aloud] Ты выше моих приборов. Расскажешь потом, какой там свет?",
+  "voice": "Eric",
+  "language_code": "ru"
+ },
+ "fal_request_id": "01a1d7b7-da04-7813-b89e-b8b7beb48dc6",
+ "hash": "4ec7c0e3dc3a"
+}

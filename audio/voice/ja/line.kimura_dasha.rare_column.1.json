@@ -1,0 +1,20 @@
+{
+ "key": "line.kimura_dasha.rare_column.1",
+ "lang": "ja",
+ "text": "ソローキンさんに、私の表に「珍鳥」の欄を作ってくれって頼まれた。いまのところ一行だけで、それはあの人が自分で書き込んだの。",
+ "speaker": "kimura_dasha",
+ "voice": "Charlotte",
+ "voice_id": "XB0fDUnXU5powFXDhCwa",
+ "voice_design": null,
+ "direction": "[a tired physics student, wry, self-ironic]",
+ "model": "fal-ai/elevenlabs/tts/eleven-v3",
+ "request": {
+  "stability": 0.5,
+  "apply_text_normalization": "auto",
+  "text": "[a tired physics student, wry, self-ironic] ソローキンさんに、私の表に「珍鳥」の欄を作ってくれって頼まれた。いまのところ一行だけで、それはあの人が自分で書き込んだの。",
+  "voice": "Charlotte",
+  "language_code": "ja"
+ },
+ "fal_request_id": "01a1d75e-11d8-7e50-9caa-88937f11f9d2",
+ "hash": "b2af6f6d886d"
+}

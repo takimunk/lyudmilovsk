@@ -1,0 +1,168 @@
+{
+ "_doc": "Capsule towers (P-CAPSULE, P-T5H1) second pass: lobby things, the three lift stops, the caretaker's capsule and Nora's, notices, texts, quests. Keys city.cap.*, city.t5.*, quest.capsule_*, city.lift.capsule.*.",
+ "city.t5.news.base": {
+  "ru": "Дом 2. «Лифт до 23:00», «Мост для людей, не для велосипедов», «Вахта внизу, звонок работает». Остальное на других листках.",
+  "en": "House 2. The lift runs until 11 pm; the bridge is for people, not bicycles; the front desk is downstairs and the bell works. The rest is on other slips.",
+  "ja": "二号棟。「エレベーターは二十三時まで」「橋は人のため、自転車のためではありません」「受付は下、ベルは鳴ります」。ほかは別の紙に。"
+ },
+ "city.t5.news.1": {
+  "ru": "«Нора из капсулы у входа готовится к экзамену по океанологии. Просим после 20:00 не шуметь в вестибюле. Горные песни у неё играют тихо, это можно».",
+  "en": "Nora from the capsule by the entrance is preparing for her oceanology exam. Please keep the lobby quiet after 8 pm. Her mountain songs play softly; those are allowed.",
+  "ja": "入口のカプセルのノーラは海洋学の試験の準備中です。二十時以降はロビーでお静かに。山の歌は小さな音で流れていますが、それはかまいません。"
+ },
+ "city.t5.news.2": {
+  "ru": "«Найдена кассета на скамье седьмого моста. На наклейке карандашом: «Море. Сторона Б». Хозяйку ищут. Вряд ли это чья-то лекция».",
+  "en": "A cassette was found on the bench of the seventh-floor bridge. On the label in pencil: Sea. Side B. Looking for the owner. Hardly anybody's lecture.",
+  "ja": "七階の橋のベンチでカセットが見つかりました。ラベルに鉛筆で「海。B面」。持ち主を探しています。誰かの講義ではなさそうです。"
+ },
+ "city.t5.news.3": {
+  "ru": "«Кто отнесёт кассету с седьмого моста студентке в капсуле у входа, тому спасибо от всего дома. Коробка «Тому, кто поможет Норе с экзаменом» стоит на вахте, рядом».",
+  "en": "Whoever carries the cassette from the seventh-floor bridge to the student in the capsule by the entrance has the thanks of the whole house. The box \"For whoever helps Nora with her exam\" stands by the front desk.",
+  "ja": "七階の橋のカセットを入口のカプセルの学生まで届けてくれた人には、建物じゅうからの感謝を。受付の隣に「ノーラの試験を助けてくれる人へ」の箱があります。"
+ },
+ "city.t5.news.4": {
+  "ru": "«Спасибо всем. Кассета нашлась, море на ней записано с мыса. Нора обещает: сдаст экзамен, угостит печеньем весь вестибюль».",
+  "en": "Thank you all. The cassette turned up; the sea on it was recorded from the cape. Nora promises: she'll pass the exam and treat the whole lobby to biscuits.",
+  "ja": "みなさんありがとう。カセットは見つかりました。入っている海は岬で録ったものです。ノーラは約束しています。試験に受かったら、ロビー全員にクッキーをふるまうと。"
+ },
+ "city.t5.news.sun": {
+  "ru": "«По воскресеньям вечером в капсуле у входа звонит телефон: это мама из гор. Просим не занимать лифт на это время, а то Нора бегает по лестнице».",
+  "en": "On Sunday evenings the telephone rings in the capsule by the entrance: that's Mum from the mountains. Please don't hold the lift then, or Nora runs for the stairs.",
+  "ja": "日曜の夜、入口のカプセルで電話が鳴ります。山にいるお母さんからです。その時間はエレベーターを占領しないでください。ノーラが階段を走ることになります。"
+ },
+ "city.t5.cassette.1": {
+  "ru": "Кассета без футляра лежит на скамье. На наклейке карандашом: «Море. Сторона Б. Не стирать». Почерк знакомый: такой же на конспектах в капсуле.",
+  "en": "A cassette without its case lies on the bench. On the label in pencil: Sea. Side B. Do not erase. The handwriting is familiar: the same as on the notes in the capsule.",
+  "ja": "ケースのないカセットがベンチに置いてある。ラベルに鉛筆で「海。B面。消さないこと」。筆跡に見覚えがある。カプセルのノートと同じだ。"
+ },
+ "city.t5.cassette.2": {
+  "ru": "Рядом на скамье след от чашки: ждали кого-то или просто сидели. Кассету надо вернуть, пока Нора не начала искать её по всему дому.",
+  "en": "A cup ring on the bench beside it: someone waited, or just sat. The cassette must go back before Nora starts looking for it all over the house.",
+  "ja": "隣のベンチにカップの跡。誰かを待っていたのか、ただ座っていたのか。ノーラが家じゅうを探し回る前に返さなくては。"
+ },
+ "city.t5.tapes.1": {
+  "ru": "Кассетный магнитофон с ручкой: стёртые клавиши, на крышке наклейка «Лекции». Рядом три кассеты без футляров.",
+  "en": "A cassette recorder with a handle: worn keys, a sticker \"Lectures\" on the lid. Three cassettes without cases beside it.",
+  "ja": "取っ手つきのカセットレコーダー。キーはすり減り、ふたに「講義」のシール。そばにケースのないカセットが三本。"
+ },
+ "city.t5.table.1": {
+  "ru": "Откидной столик опущен: чайник, печенье «к экзамену» в бумажном кульке и обгрызенный карандаш. Здесь учатся стоя, когда устанешь сидеть.",
+  "en": "The fold-down table is lowered: a teapot, \"exam\" biscuits in a paper bag and a chewed pencil. Here you study standing up once you're tired of sitting.",
+  "ja": "折りたたみ机が下りていて、ティーポット、紙袋入りの「試験用」クッキー、かじった鉛筆が載っている。座り疲れたら、ここで立って勉強するのだ。"
+ },
+ "city.t5.table.2": {
+  "ru": "Печенье твёрдое, как формулы. Нора кладёт его в кулёк по две штуки на каждый билет.",
+  "en": "The biscuits are hard as formulae. Nora puts two in the bag for each exam question.",
+  "ja": "クッキーは公式のように固い。ノーラは試験問題一つにつき二枚ずつ袋に入れている。"
+ },
+ "city.t5.hooks.1": {
+  "ru": "На крючках шарф с горными козлами и рюкзак, из которого торчит конспект. Шарф пахнет дымом и снегом.",
+  "en": "On the hooks: a scarf with mountain goats and a rucksack with lecture notes sticking out. The scarf smells of smoke and snow.",
+  "ja": "フックには山ヤギ柄のマフラーと、ノートがはみ出したリュック。マフラーは煙と雪の匂いがする。"
+ },
+ "city.t5.hooks.rain": {
+  "ru": "Рюкзак мокрый, конспект в нём завёрнут в пакет: Нора знает, что такое вода.",
+  "en": "The rucksack is wet, the notes inside wrapped in a bag: Nora knows about water.",
+  "ja": "リュックは濡れているが、中のノートは袋に包まれている。ノーラは水の怖さを知っているのだ。"
+ },
+ "city.t5.sill.1": {
+  "ru": "Рядом с первой банкой стоит вторая: «Пробы. 2-я неделя». Вода в ней чуть мутнее.",
+  "en": "A second jar stands beside the first: Samples. Week 2. The water in it is a little cloudier.",
+  "ja": "最初の瓶の隣にもう一つ。「サンプル。二週目」。中の水は少し濁っている。"
+ },
+ "city.t5.sill.n": {
+  "ru": "Ночью банки ловят свет фонаря и становятся маленькими маяками. Нора, наверное, смотрит на них перед сном.",
+  "en": "At night the jars catch the streetlamp and turn into little lighthouses. Nora probably looks at them before sleep.",
+  "ja": "夜、瓶は街灯の光を受けて小さな灯台になる。ノーラはきっと眠る前にそれを眺めている。"
+ },
+ "city.t5.sill.rain": {
+  "ru": "Дождь по стеклу, и вода в банках ходит волнами: кажется, море пришло в гости.",
+  "en": "Rain on the glass, and the water in the jars sways in waves: as if the sea has come to visit.",
+  "ja": "窓ガラスを雨が打ち、瓶の水が波になって揺れる。海が遊びに来たみたいだ。"
+ },
+ "city.t5.phone.1": {
+  "ru": "Телефон зелёный, дисковый. Рядом список: «Воскресенье, 19:00: звонит мама. Не занимать!»",
+  "en": "A green dial telephone. A list beside it: Sunday, 7 pm: Mum calls. Do not block the line!",
+  "ja": "緑のダイヤル式電話。そばのメモ。「日曜、19時、お母さんから。回線を塞がないこと！」"
+ },
+ "city.t5.phone.sun": {
+  "ru": "Воскресный вечер: трубка тёплая. Сейчас сюда придёт гул далёких гор.",
+  "en": "Sunday evening: the receiver is warm. Any moment now the hum of distant mountains will arrive here.",
+  "ja": "日曜の夜。受話器があたたかい。もうすぐここに遠い山のざわめきが届く。"
+ },
+ "city.t5.phone.n": {
+  "ru": "Ночью телефон молчит, кабель убран под плинтус. Нора выспится, и тогда мама дозвонится.",
+  "en": "At night the telephone is silent, its cable tucked under the skirting. Nora will sleep, and then Mum can get through.",
+  "ja": "夜の電話は黙っていて、ケーブルは幅木の下に隠してある。ノーラが眠れば、お母さんも電話をかけられる。"
+ },
+ "city.t5.tapesp.title": {
+  "ru": "Кассеты Норы",
+  "en": "Nora's cassettes",
+  "ja": "ノーラのカセット"
+ },
+ "city.t5.tapesp.1": {
+  "ru": "Кассета «Лекции, 2 курс». Профессор говорит про приливы, потом пауза, потом шёпотом Нора: «Я не понимаю. Но запишу».",
+  "en": "Cassette Lectures, 2nd year. The professor talks about tides, then a pause, then Nora in a whisper: \"I don't understand. But I'll write it down.\"",
+  "ja": "カセット「講義・二年」。教授が潮汐の話をして、間があり、ノーラのささやき。「わからない。でも書いておく」。"
+ },
+ "city.t5.tapesp.2": {
+  "ru": "Сторона Б: шум моря с мыса. Слышно её дыхание и чьи-то шаги по гальке. Она подписала: «Преподаватель, который не знает, что преподаёт».",
+  "en": "Side B: the sea from the cape. You can hear her breathing and somebody's steps on the shingle. She wrote on it: The teacher who doesn't know he's teaching.",
+  "ja": "B面。岬の海の音。ノーラの息づかいと、誰かが小石を踏む足音。彼女は書き込んでいる。「教えていることに気づいていない先生」。"
+ },
+ "city.t5.tapesp.3": {
+  "ru": "Кассета «Мама». Голос из гор, смех, чей-то кашель и песня, которую Нора подпевает тихо: «Приеду, как только море отпустит».",
+  "en": "Cassette Mum. A voice from the mountains, laughter, somebody's cough and a song Nora hums along to quietly: \"I'll come as soon as the sea lets me go.\"",
+  "ja": "カセット「お母さん」。山からの声、笑い声、誰かの咳、ノーラが小さく口ずさむ歌。「海が放してくれたらすぐ帰る」。"
+ },
+ "city.t5.tapesp.4": {
+  "ru": "Кассета «К экзамену». Нора читает билеты вслух. Билет 14: «Приливы». Читает его восемь раз, каждый раз правильнее. На девятом смеётся: «Сдам».",
+  "en": "Cassette For the exam. Nora reads the questions aloud. Question 14: Tides. She reads it eight times, each more correct. On the ninth she laughs: \"I'll pass.\"",
+  "ja": "カセット「試験まえ」。ノーラが問題を声に出して読む。問14「潮汐」。八回読み、そのたびに正確になる。九回目で笑う。「受かる」。"
+ },
+ "quest.capsule_cassette.title": {
+  "ru": "Кассета с морем",
+  "en": "The cassette with the sea",
+  "ja": "海のカセット"
+ },
+ "quest.capsule_cassette.desc": {
+  "ru": "На доске у ящиков написано: на седьмом мосту найдена кассета с наклейкой «Море. Сторона Б». Нора из капсулы у входа явно без неё скучает.",
+  "en": "A notice by the letter boxes says a cassette labelled Sea. Side B was found on the seventh-floor bridge. Nora in the capsule by the entrance must be missing it.",
+  "ja": "郵便受けのそばの掲示に、七階の橋で「海。B面」というラベルのカセットが見つかったとある。入口のカプセルのノーラは、きっとこれがなくて困っている。"
+ },
+ "quest.capsule_cassette.notice.log": {
+  "ru": "Хозяйку кассеты ищут. Объявление висит у ящиков.",
+  "en": "They're looking for the cassette's owner. The notice hangs by the boxes.",
+  "ja": "カセットの持ち主を探している。お知らせは郵便受けのそばにある。"
+ },
+ "quest.capsule_cassette.notice.obj": {
+  "ru": "Прочитать объявления на доске у ящиков",
+  "en": "Read the notices on the board by the letter boxes",
+  "ja": "郵便受けのそばの掲示板のお知らせを読む"
+ },
+ "quest.capsule_cassette.cassette.log": {
+  "ru": "Кассета на скамье седьмого моста. Туда идёт лифт.",
+  "en": "The cassette lies on the bench of the seventh-floor bridge. The lift goes there.",
+  "ja": "カセットは七階の橋のベンチにある。エレベーターで行ける。"
+ },
+ "quest.capsule_cassette.cassette.obj": {
+  "ru": "Найти кассету на седьмом мосту",
+  "en": "Find the cassette on the seventh-floor bridge",
+  "ja": "七階の橋でカセットを見つける"
+ },
+ "quest.capsule_cassette.back.log": {
+  "ru": "Кассета у меня. Нора её не потеряла, а забыла: надо поставить у её магнитофона.",
+  "en": "I have the cassette. Nora didn't lose it, she forgot it: it must go to her recorder.",
+  "ja": "カセットは手元にある。ノーラはなくしたのではなく、置き忘れたのだ。彼女のレコーダーのところへ持っていこう。"
+ },
+ "quest.capsule_cassette.back.obj": {
+  "ru": "Послушать кассеты у магнитофона Норы",
+  "en": "Listen to the cassettes at Nora's recorder",
+  "ja": "ノーラのレコーダーでカセットを聞く"
+ },
+ "quest.capsule_cassette.done": {
+  "ru": "Кассета встала на место, и из динамика пошёл шум прибоя, ровный, как дыхание. Нора, вернувшись, сначала молча послушала, потом сказала: «Теперь я знаю, как звучит четырнадцатый билет». Печенья она мне насыпала целый кулёк, на экзамен ушло бы меньше.",
+  "en": "The cassette went back into place, and the sound of surf came from the speaker, even as breathing. When Nora came back she listened in silence for a while, then said: \"Now I know what question fourteen sounds like.\" She filled a whole bag with biscuits for me; less would have gone on the exam.",
+  "ja": "カセットが元の場所に収まると、スピーカーから呼吸のように規則正しい波の音が流れた。戻ってきたノーラは、しばらく黙って聞いてから言った。「これで問14がどんな音かわかった」。彼女は袋いっぱいのクッキーをくれた。試験に持っていくより多かった。"
+ }
+}

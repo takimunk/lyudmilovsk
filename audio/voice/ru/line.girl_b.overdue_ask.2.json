@@ -1,0 +1,20 @@
+{
+ "key": "line.girl_b.overdue_ask.2",
+ "lang": "ru",
+ "text": "Лев Зотов, физик, взял весной «Космос и мы». И не вернул.",
+ "speaker": "girl_b",
+ "voice": "Sarah",
+ "voice_id": "EXAVITQu4vr4xnSDxMaL",
+ "voice_design": null,
+ "direction": "[curious, slightly uneasy, conspiratorial]",
+ "model": "fal-ai/elevenlabs/tts/eleven-v3",
+ "request": {
+  "stability": 0.5,
+  "apply_text_normalization": "auto",
+  "text": "[curious, slightly uneasy, conspiratorial] Лев Зотов, физик, взял весной «Космос и мы». И не вернул.",
+  "voice": "Sarah",
+  "language_code": "ru"
+ },
+ "fal_request_id": "01a1d66b-c3af-7b00-a714-948ba7d3bfe0",
+ "hash": "f826072f45ce"
+}

@@ -1,0 +1,229 @@
+{
+ "_doc": "Second capsule tower, plot P-T5H1: the lobby notice board (its own story), the student Nora Kravets's capsule by the entrance (cassette recorder with a growing text, fold-down table with biscuits, hooks, sill jars, telephone) and the cassette left on the seventh-floor bridge. The lobby, lifts and bridges share x_p_capsule.json (type rules capsule_tower/<id>). Quest capsule_cassette. Strings: strings/x_p_t5h1.json.",
+ "acts": {
+  "t5h1_news": {
+   "prompt": "city.cap.p.news",
+   "minutes": 1,
+   "any_hour": true,
+   "lines": [
+    "city.t5.news.base",
+    {
+     "k": "city.t5.news.1",
+     "after": 0,
+     "before": 3
+    },
+    {
+     "k": "city.t5.news.2",
+     "after": 2,
+     "before": 5
+    },
+    {
+     "k": "city.t5.news.3",
+     "after": 4,
+     "before": 8
+    },
+    {
+     "k": "city.t5.news.4",
+     "after": 7
+    },
+    {
+     "k": "city.t5.news.sun",
+     "d": "sun"
+    }
+   ],
+   "rotate": "daily",
+   "sound": "paper_rustle"
+  },
+  "t5h1_cassette": {
+   "prompt": "city.cap.p.box",
+   "minutes": 1,
+   "any_hour": true,
+   "lines": [
+    "city.t5.cassette.1",
+    "city.t5.cassette.2"
+   ],
+   "sound": "paper_rustle"
+  },
+  "t5h1_tapes": {
+   "prompt": "city.cap.p.tapes",
+   "minutes": 3,
+   "any_hour": true,
+   "lines": [
+    "city.t5.tapes.1"
+   ],
+   "sound": "page_turn",
+   "read": {
+    "texts": [
+     "t5h1_tapes"
+    ],
+    "rotate": "use"
+   }
+  },
+  "t5h1_table": {
+   "prompt": "city.cap.p.table",
+   "minutes": 6,
+   "any_hour": true,
+   "lines": [
+    "city.t5.table.1",
+    "city.t5.table.2"
+   ],
+   "sound": "paper_rustle",
+   "give": [
+    [
+     "cookies",
+     1
+    ]
+   ],
+   "daily": 1,
+   "collect": "capsule_towers/kravets_tea"
+  },
+  "t5h1_hooks": {
+   "prompt": "city.cap.p.hooks",
+   "minutes": 1,
+   "any_hour": true,
+   "lines": [
+    "city.t5.hooks.1",
+    {
+     "k": "city.t5.hooks.rain",
+     "weather": "rain"
+    }
+   ],
+   "sound": "hanger_clink"
+  },
+  "t5h1_sill": {
+   "prompt": "city.cap.p.sill",
+   "minutes": 1,
+   "any_hour": true,
+   "lines": [
+    "city.t5.sill.1",
+    {
+     "k": "city.t5.sill.n",
+     "h": [
+      21,
+      6
+     ]
+    },
+    {
+     "k": "city.t5.sill.rain",
+     "weather": "rain"
+    }
+   ]
+  },
+  "t5h1_phone": {
+   "prompt": "city.cap.p.phone",
+   "minutes": 1,
+   "any_hour": true,
+   "lines": [
+    "city.t5.phone.1",
+    {
+     "k": "city.t5.phone.sun",
+     "d": "sun",
+     "h": [
+      18,
+      21
+     ]
+    },
+    {
+     "k": "city.t5.phone.n",
+     "h": [
+      22,
+      6
+     ]
+    }
+   ]
+  }
+ },
+ "rules": {
+  "P-T5H1/lobby_news": {
+   "act": "t5h1_news"
+  },
+  "P-T5H1/s7_box": {
+   "act": "t5h1_cassette"
+  },
+  "P-T5H1/capsule_tapes": {
+   "act": "t5h1_tapes"
+  },
+  "P-T5H1/capsule_table": {
+   "act": "t5h1_table"
+  },
+  "P-T5H1/capsule_hooks": {
+   "act": "t5h1_hooks"
+  },
+  "P-T5H1/capsule_sill": {
+   "act": "t5h1_sill"
+  },
+  "P-T5H1/capsule_phone": {
+   "act": "t5h1_phone"
+  }
+ },
+ "texts": {
+  "t5h1_tapes": {
+   "title": "city.t5.tapesp.title",
+   "kind": "book",
+   "minutes": 4,
+   "collect": "capsule_towers/kravets_tapes",
+   "pages": [
+    "city.t5.tapesp.1",
+    {
+     "k": "city.t5.tapesp.2",
+     "after": 2
+    },
+    {
+     "k": "city.t5.tapesp.3",
+     "after": 5
+    },
+    {
+     "k": "city.t5.tapesp.4",
+     "after": 8
+    }
+   ]
+  }
+ },
+ "quests": [
+  {
+   "id": "capsule_cassette",
+   "kind": "side",
+   "start_on": {
+    "event": "visit",
+    "target": "P-T5H1"
+   },
+   "stages": [
+    {
+     "id": "notice",
+     "objectives": [
+      {
+       "id": "notice",
+       "event": "do",
+       "target": "t5h1_news"
+      }
+     ]
+    },
+    {
+     "id": "cassette",
+     "objectives": [
+      {
+       "id": "cassette",
+       "event": "do",
+       "target": "t5h1_cassette"
+      }
+     ]
+    },
+    {
+     "id": "back",
+     "objectives": [
+      {
+       "id": "back",
+       "event": "do",
+       "target": "t5h1_tapes"
+      }
+     ],
+     "reward": {
+      "items": {
+       "cookies": 2
+      }
+     }
+    }
+   ]
+  }
+ ]
+}

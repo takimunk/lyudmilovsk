@@ -1,0 +1,20 @@
+{
+ "key": "line.valiev_rustam.again4.1",
+ "lang": "ru",
+ "text": "Зотов предложил мне шахматы по переписке. Через стенку: наши кабинеты рядом.",
+ "speaker": "valiev_rustam",
+ "voice": "Roger",
+ "voice_id": "CwhRBWXzGAHq8TQ4Fs17",
+ "voice_design": null,
+ "direction": "[confident, dry, matter-of-fact engineer]",
+ "model": "fal-ai/elevenlabs/tts/eleven-v3",
+ "request": {
+  "stability": 0.5,
+  "apply_text_normalization": "auto",
+  "text": "[confident, dry, matter-of-fact engineer] Зотов предложил мне шахматы по переписке. Через стенку: наши кабинеты рядом.",
+  "voice": "Roger",
+  "language_code": "ru"
+ },
+ "fal_request_id": "01a1d749-dd1f-7a21-9026-7787e4b40df4",
+ "hash": "7540309f864b"
+}

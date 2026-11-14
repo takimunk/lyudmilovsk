@@ -1,0 +1,20 @@
+{
+ "key": "line.zotova_galina.two_favours_lev.1",
+ "lang": "ru",
+ "text": "Вы и с Олиным журналом разобрались, и мою гипотезу опровергли. Наш дом у вас в долгу, Лев особенно.",
+ "speaker": "zotova_galina",
+ "voice": "Alice",
+ "voice_id": "Xb7hH8MSUJpSbSDYk0k2",
+ "voice_design": null,
+ "direction": "[warm, chatty, fondly exasperated with her husband]",
+ "model": "fal-ai/elevenlabs/tts/eleven-v3",
+ "request": {
+  "stability": 0.5,
+  "apply_text_normalization": "auto",
+  "text": "[warm, chatty, fondly exasperated with her husband] Вы и с Олиным журналом разобрались, и мою гипотезу опровергли. Наш дом у вас в долгу, Лев особенно.",
+  "voice": "Alice",
+  "language_code": "ru"
+ },
+ "fal_request_id": "01a1d6ec-1ee0-7702-9dc4-ae6659aeeb57",
+ "hash": "7d1db032a07d"
+}

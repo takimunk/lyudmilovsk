@@ -1,0 +1,20 @@
+{
+ "key": "line.li_vika.again2.1",
+ "lang": "ru",
+ "text": "Мыла сегодня колбы и нашла в одной записку: «Вика, ты лучшая». Почерк Зотова. Или Галины. Спрашивать не буду.",
+ "speaker": "li_vika",
+ "voice": "Laura",
+ "voice_id": "FGY2WhTYpPnrIDTdsKH5",
+ "voice_design": null,
+ "direction": "[playful, quick, a lab assistant joking about her work]",
+ "model": "fal-ai/elevenlabs/tts/eleven-v3",
+ "request": {
+  "stability": 0.5,
+  "apply_text_normalization": "auto",
+  "text": "[playful, quick, a lab assistant joking about her work] Мыла сегодня колбы и нашла в одной записку: «Вика, ты лучшая». Почерк Зотова. Или Галины. Спрашивать не буду.",
+  "voice": "Laura",
+  "language_code": "ru"
+ },
+ "fal_request_id": "01a1d745-68b8-7b31-bcd2-5472934d607d",
+ "hash": "494603a0f95b"
+}

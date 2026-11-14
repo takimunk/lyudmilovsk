@@ -1,0 +1,29 @@
+{
+ "key": "line.guseva_valentina.cheese_for_salt.1",
+ "lang": "ru",
+ "text": "Аслан прислал мне головку сыра. Говорит, за соль. Значит, ты ему про мою кукурузу честно рассказал.",
+ "speaker": "guseva_valentina",
+ "voice": "Abbess",
+ "voice_id": "Abbess",
+ "voice_design": null,
+ "direction": "",
+ "model": "fal-ai/minimax/speech-2.6-hd",
+ "request": {
+  "prompt": "Аслан прислал мне головку сыра. Говорит, за соль. Значит, ты ему про мою кукурузу честно рассказал.",
+  "voice_setting": {
+   "speed": 1,
+   "pitch": 0,
+   "vol": 1,
+   "voice_id": "Abbess"
+  },
+  "language_boost": "Russian",
+  "audio_setting": {
+   "sample_rate": 24000,
+   "format": "mp3",
+   "channel": 1
+  },
+  "output_format": "url"
+ },
+ "fal_request_id": "01a1d6e2-d818-7681-af34-58b5c3e6cc55",
+ "hash": "5f727eac639a"
+}

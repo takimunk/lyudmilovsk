@@ -1,0 +1,20 @@
+{
+ "key": "line.valiev_rustam.signal_lamp_ready.2",
+ "lang": "ja",
+ "text": "私は窓のところにいる。ガラスまで拭いたよ、春以来だ。",
+ "speaker": "valiev_rustam",
+ "voice": "Roger",
+ "voice_id": "CwhRBWXzGAHq8TQ4Fs17",
+ "voice_design": null,
+ "direction": "[confident, dry, matter-of-fact engineer]",
+ "model": "fal-ai/elevenlabs/tts/eleven-v3",
+ "request": {
+  "stability": 0.5,
+  "apply_text_normalization": "auto",
+  "text": "[confident, dry, matter-of-fact engineer] 私は窓のところにいる。ガラスまで拭いたよ、春以来だ。",
+  "voice": "Roger",
+  "language_code": "ja"
+ },
+ "fal_request_id": "01a1d6d9-851e-7cf1-959b-50429a159f9d",
+ "hash": "86b5671fb9c8"
+}

@@ -1,0 +1,20 @@
+{
+ "key": "line.belov_misha.magpie_wait_hint.1",
+ "lang": "ja",
+ "text": "カササギは庭、カラスは浜、コクマルガラスは屋根の上。みんな何か隠してる。落ちてる物を拾って、埋めたところを掘ってくれ。",
+ "speaker": "belov_misha",
+ "voice": "Liam",
+ "voice_id": "TX3LPaxmHKxFdv7VOQHJ",
+ "voice_design": null,
+ "direction": "[easygoing, amused, a young technician, a little self-ironic]",
+ "model": "fal-ai/elevenlabs/tts/eleven-v3",
+ "request": {
+  "stability": 0.5,
+  "apply_text_normalization": "auto",
+  "text": "[easygoing, amused, a young technician, a little self-ironic] カササギは庭、カラスは浜、コクマルガラスは屋根の上。みんな何か隠してる。落ちてる物を拾って、埋めたところを掘ってくれ。",
+  "voice": "Liam",
+  "language_code": "ja"
+ },
+ "fal_request_id": "01a1d6d3-6d0b-7103-bfce-5eef3fca8a8e",
+ "hash": "51b5baeaf003"
+}

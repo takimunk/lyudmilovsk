@@ -1,0 +1,20 @@
+{
+ "key": "line.lange_pyotr.catch_learn.5",
+ "lang": "en",
+ "text": "And don't pull while she's pulling. A line is not a rope. Catch one and come back.",
+ "speaker": "lange_pyotr",
+ "voice": "Brian",
+ "voice_id": "nPczCjzI2devNBz1zQrb",
+ "voice_design": null,
+ "direction": "[gruff, unhurried, a weathered fisherman of few words]",
+ "model": "fal-ai/elevenlabs/tts/eleven-v3",
+ "request": {
+  "stability": 0.5,
+  "apply_text_normalization": "auto",
+  "text": "[gruff, unhurried, a weathered fisherman of few words] And don't pull while she's pulling. A line is not a rope. Catch one and come back.",
+  "voice": "Brian",
+  "language_code": "en"
+ },
+ "fal_request_id": "01a1d665-2c70-7220-8029-1deea74a1a5e",
+ "hash": "b2440c1104c8"
+}

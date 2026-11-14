@@ -1,0 +1,20 @@
+{
+ "key": "line.owner.supper_ask.4",
+ "lang": "ja",
+ "text": "入口のそばにアスランのテントがある。三つ編みチーズを一本買ってきてくれ。それと自販機の「バイカル」だ。",
+ "speaker": "owner",
+ "voice": "Daniel",
+ "voice_id": "onwK4e9ZLuTAKqWW03F9",
+ "voice_design": null,
+ "direction": "[calm, tired, slow, a little ironic]",
+ "model": "fal-ai/elevenlabs/tts/eleven-v3",
+ "request": {
+  "stability": 0.5,
+  "apply_text_normalization": "auto",
+  "text": "[calm, tired, slow, a little ironic] 入口のそばにアスランのテントがある。三つ編みチーズを一本買ってきてくれ。それと自販機の「バイカル」だ。",
+  "voice": "Daniel",
+  "language_code": "ja"
+ },
+ "fal_request_id": "01a1d674-338f-7b33-ac6a-03a5cd9faaa2",
+ "hash": "17ab6e3448db"
+}

@@ -1,0 +1,20 @@
+{
+ "key": "line.girl_b.overdue_dark_bench.1",
+ "lang": "en",
+ "text": "It's dark already. Lev sits on a bench in the yard till seven, if he hasn't frozen. If you miss him, ask tomorrow.",
+ "speaker": "girl_b",
+ "voice": "Sarah",
+ "voice_id": "EXAVITQu4vr4xnSDxMaL",
+ "voice_design": null,
+ "direction": "[curious, slightly uneasy, conspiratorial]",
+ "model": "fal-ai/elevenlabs/tts/eleven-v3",
+ "request": {
+  "stability": 0.5,
+  "apply_text_normalization": "auto",
+  "text": "[curious, slightly uneasy, conspiratorial] It's dark already. Lev sits on a bench in the yard till seven, if he hasn't frozen. If you miss him, ask tomorrow.",
+  "voice": "Sarah",
+  "language_code": "en"
+ },
+ "fal_request_id": "01a1d7a9-5ce8-73f1-bb34-07d95d84048f",
+ "hash": "d86236f18452"
+}

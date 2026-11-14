@@ -1,0 +1,20 @@
+{
+ "key": "line.girl_a.lab_route.2",
+ "lang": "en",
+ "text": "From there the promenade is toward the sea. And the beach under the cliff shows from above if you step a little left off the alley, to the edge.",
+ "speaker": "girl_a",
+ "voice": "Matilda",
+ "voice_id": "XrExE9yKIg1WjnnlVkGX",
+ "voice_design": null,
+ "direction": "[whispering, concentrated]",
+ "model": "fal-ai/elevenlabs/tts/eleven-v3",
+ "request": {
+  "stability": 0.5,
+  "apply_text_normalization": "auto",
+  "text": "[whispering, concentrated] From there the promenade is toward the sea. And the beach under the cliff shows from above if you step a little left off the alley, to the edge.",
+  "voice": "Matilda",
+  "language_code": "en"
+ },
+ "fal_request_id": "01a1d738-3f38-7130-9f8c-d415b5e3cf57",
+ "hash": "4381af94a68a"
+}

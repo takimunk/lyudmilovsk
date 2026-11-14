@@ -1,0 +1,29 @@
+{
+ "key": "line.guseva_valentina.corn_errand.4",
+ "lang": "ja",
+ "text": "ひとまず、あんた。うちの鍋はツケがきかないんだよ。戻ってきたら精算するからね。",
+ "speaker": "guseva_valentina",
+ "voice": "Abbess",
+ "voice_id": "Abbess",
+ "voice_design": null,
+ "direction": "",
+ "model": "fal-ai/minimax/speech-2.6-hd",
+ "request": {
+  "prompt": "ひとまず、あんた。うちの鍋はツケがきかないんだよ。戻ってきたら精算するからね。",
+  "voice_setting": {
+   "speed": 1,
+   "pitch": 0,
+   "vol": 1,
+   "voice_id": "Abbess"
+  },
+  "language_boost": "Japanese",
+  "audio_setting": {
+   "sample_rate": 24000,
+   "format": "mp3",
+   "channel": 1
+  },
+  "output_format": "url"
+ },
+ "fal_request_id": "01a1d66c-fb9a-78d0-8eca-babd036c4f06",
+ "hash": "94ba5d6d65a7"
+}

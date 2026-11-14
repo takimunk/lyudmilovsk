@@ -62,6 +62,27 @@ its seed and its inputs, so a change to the plan, the buildings or the public sp
   a solid root band, strands thinning out downwards; the shells map it sparse at their top edge, solid a third of the
   way down and ragged at the bottom, and moustaches taper and droop towards the corners.
 
+## Named people (`CAST` in `looks.py`)
+
+A named person of `people.json` whom nobody modelled by hand gets a model from the generator too. `CAST` lists them
+with what their story fixes (ancestry, build, hair, clothes, accessories); the rest is drawn from their key like
+anybody's. The model takes the name of their `body` (Аслан Хуажев, the cheese seller: `Khuazhev_aslan`), so the game,
+their lines (`npc_dialogue.txt` goes by body) and their quests find them as before. `town_looks.json` lists them under
+their key (no `t_`) with that model, and the import puts it where the game looks: `/Game/Characters/Humans/<Body>/
+SK_<Body>`, local only like `Town/` (it uses Town's atlases and materials; `.gitignore` names the folder). `looks.py`
+leaves out anybody whose body is a hand-made model in git, so the import never replaces one. Until the model is
+imported the person lives unseen when their stand-in (`mesh`) is somebody else's face (docs/people.md).
+
+A named person whose `mesh` is `Town/R_<key>` (the North's people, docs/north.md) gets that model as a free stand-in
+until their own `body` is made: `looks.py` draws it from their key like a townsperson's, lists it in `town_looks.json`
+and the import puts it in `Town/` (no `CAST` entry needed). `looks.py` always reads `people.json` (`--people PATH`
+for another).
+
+```sh
+Blender -b -P blender/residents/build_residents.py -- --only khuazhev_aslan
+unreal/scripts/import_residents.sh --only khuazhev_aslan
+```
+
 ## A model (`build_residents.py`)
 
 1. MPFB human with the look's macros and targets, the game rig (`blender/humans/mpfb_pipeline.add_ue_rig`: the 56

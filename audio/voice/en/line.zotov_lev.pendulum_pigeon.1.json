@@ -1,0 +1,20 @@
+{
+ "key": "line.zotov_lev.pendulum_pigeon.1",
+ "lang": "en",
+ "text": "A pigeon. Nodding like a pendulum. Period, by eye, half a second.",
+ "speaker": "zotov_lev",
+ "voice": "George",
+ "voice_id": "JBFqnCBsd6RMkjVDRZzb",
+ "voice_design": null,
+ "direction": "[dry, thoughtful, unhurried, a physicist's quiet irony]",
+ "model": "fal-ai/elevenlabs/tts/eleven-v3",
+ "request": {
+  "stability": 0.5,
+  "apply_text_normalization": "auto",
+  "text": "[dry, thoughtful, unhurried, a physicist's quiet irony] A pigeon. Nodding like a pendulum. Period, by eye, half a second.",
+  "voice": "George",
+  "language_code": "en"
+ },
+ "fal_request_id": "01a1d6ea-dc2b-7922-b41c-26387fd82bec",
+ "hash": "ba55aec90fbe"
+}

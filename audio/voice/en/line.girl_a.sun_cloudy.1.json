@@ -1,0 +1,20 @@
+{
+ "key": "line.girl_a.sun_cloudy.1",
+ "lang": "en",
+ "text": "Overcast, they say. On days like this I make more mistakes in the lines. Silly, but I keep a note of it.",
+ "speaker": "girl_a",
+ "voice": "Matilda",
+ "voice_id": "XrExE9yKIg1WjnnlVkGX",
+ "voice_design": null,
+ "direction": "[whispering, concentrated]",
+ "model": "fal-ai/elevenlabs/tts/eleven-v3",
+ "request": {
+  "stability": 0.5,
+  "apply_text_normalization": "auto",
+  "text": "[whispering, concentrated] Overcast, they say. On days like this I make more mistakes in the lines. Silly, but I keep a note of it.",
+  "voice": "Matilda",
+  "language_code": "en"
+ },
+ "fal_request_id": "01a1d781-89fd-7de2-b0cb-a8dce5d530c8",
+ "hash": "2c104d19ff43"
+}

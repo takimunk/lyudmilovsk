@@ -76,8 +76,14 @@ namespace PlantMeshes
 		float Radius = 0.f;
 		int32 Triangles[4] = {};
 		double Ms = 0.0;
+		/** The LOD of the four that Lods[0] is (PrepareTreeBake's FirstLod); Triangles stays indexed by the LOD of the four. */
+		int32 FirstLod = 0;
 	};
-	FTreePrep PrepareTreeBake(const FPlantSpecies& Species, uint32 Seed, float Age, float Day);
+	/**
+	 * FirstLod above 0 leaves the nearest LODs out (the mesh then has 4 - FirstLod, switching at the same distances): for a
+	 * tree only ever drawn from far away, whose nearest LODs (most of the mesh's memory) would never show.
+	 */
+	FTreePrep PrepareTreeBake(const FPlantSpecies& Species, uint32 Seed, float Age, float Day, int32 FirstLod = 0);
 	/** The second half, on the game thread: the static mesh from the descriptions. */
 	FTreeBake FinishTreeBake(UObject* Outer, const FPlantSpecies& Species, uint32 Seed, FTreePrep&& Prep, const FVector3f& LodDistances);
 

@@ -1,0 +1,20 @@
+{
+ "key": "line.guy_a.better_signal_outside.1",
+ "lang": "ru",
+ "text": "Наружу? Если найдёшь, где там сеть ловит лучше, скажи.",
+ "speaker": "guy_a",
+ "voice": "Will",
+ "voice_id": "bIHbv24MWmeRgasZH58o",
+ "voice_design": null,
+ "direction": "[a young gamer in a hurry, mid-match]",
+ "model": "fal-ai/elevenlabs/tts/eleven-v3",
+ "request": {
+  "stability": 0.5,
+  "apply_text_normalization": "auto",
+  "text": "[a young gamer in a hurry, mid-match] Наружу? Если найдёшь, где там сеть ловит лучше, скажи.",
+  "voice": "Will",
+  "language_code": "ru"
+ },
+ "fal_request_id": "01a1d738-cefe-71d1-a222-2365e2679574",
+ "hash": "ab0b4310cd59"
+}

@@ -1,0 +1,20 @@
+{
+ "key": "line.belov_misha.rustam_window.1",
+ "lang": "ja",
+ "text": "ルスタムは一晩じゅう台地の端をちらちら見てる。合図を待ってるらしい。もしかして、君がその合図か？",
+ "speaker": "belov_misha",
+ "voice": "Liam",
+ "voice_id": "TX3LPaxmHKxFdv7VOQHJ",
+ "voice_design": null,
+ "direction": "[easygoing, amused, a young technician, a little self-ironic]",
+ "model": "fal-ai/elevenlabs/tts/eleven-v3",
+ "request": {
+  "stability": 0.5,
+  "apply_text_normalization": "auto",
+  "text": "[easygoing, amused, a young technician, a little self-ironic] ルスタムは一晩じゅう台地の端をちらちら見てる。合図を待ってるらしい。もしかして、君がその合図か？",
+  "voice": "Liam",
+  "language_code": "ja"
+ },
+ "fal_request_id": "01a1d754-6fc4-7e33-a60d-dd32e24d3275",
+ "hash": "1f0a8f9698c7"
+}

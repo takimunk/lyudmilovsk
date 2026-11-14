@@ -1,0 +1,20 @@
+{
+ "key": "line.zotova_galina.sun_low.1",
+ "lang": "ja",
+ "text": "夕方の光は、ナトリウムの炎のようなオレンジ色。毎回それとわかって、毎回うれしくなるんです。",
+ "speaker": "zotova_galina",
+ "voice": "Alice",
+ "voice_id": "Xb7hH8MSUJpSbSDYk0k2",
+ "voice_design": null,
+ "direction": "[warm, chatty, fondly exasperated with her husband]",
+ "model": "fal-ai/elevenlabs/tts/eleven-v3",
+ "request": {
+  "stability": 0.5,
+  "apply_text_normalization": "auto",
+  "text": "[warm, chatty, fondly exasperated with her husband] 夕方の光は、ナトリウムの炎のようなオレンジ色。毎回それとわかって、毎回うれしくなるんです。",
+  "voice": "Alice",
+  "language_code": "ja"
+ },
+ "fal_request_id": "01a1d74b-2e27-76e1-b56d-71259eb06c11",
+ "hash": "4cff3e8fc3fc"
+}

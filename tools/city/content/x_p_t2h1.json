@@ -1,0 +1,578 @@
+{
+ "_doc": "Cube houses, plot P-T2H1 (third cube, flat 0-02: the Dubovik family, Thibault, Ananya and Mette): rules for the street room, the living level, the tip and the deck, the fisherman's ledger, the observation notebook, Mette's notebook, quest home_cube_b. Shared acts (lift, view, tea, mirror, fern, deck post/planter/view) are defined in x_p_t1h1.json.",
+ "acts": {
+  "t2h1_slate": {
+   "prompt": "city.t2.p.slate",
+   "minutes": 1,
+   "any_hour": true,
+   "lines": [
+    {
+     "k": "city.t2.slate.work",
+     "h": [
+      7,
+      16
+     ],
+     "d": "mon-fri"
+    },
+    {
+     "k": "city.t2.slate.eve",
+     "h": [
+      16,
+      22
+     ]
+    },
+    {
+     "k": "city.t2.slate.night",
+     "h": [
+      22,
+      7
+     ]
+    },
+    {
+     "k": "city.t2.slate.week",
+     "d": "sat,sun",
+     "h": [
+      8,
+      21
+     ]
+    },
+    {
+     "k": "city.t2.slate.map",
+     "after": 3
+    }
+   ]
+  },
+  "t2h1_shoes": {
+   "prompt": "city.t2.p.shoes",
+   "minutes": 1,
+   "any_hour": true,
+   "lines": [
+    "city.t2.shoes.1",
+    {
+     "k": "city.t2.shoes.wet",
+     "weather": [
+      "rain",
+      "wet"
+     ]
+    }
+   ]
+  },
+  "t2h1_hooks": {
+   "prompt": "city.t2.p.hooks",
+   "minutes": 1,
+   "any_hour": true,
+   "lines": [
+    {
+     "k": "city.t2.hooks.day",
+     "h": [
+      7,
+      16
+     ],
+     "d": "mon-fri"
+    },
+    {
+     "k": "city.t2.hooks.eve",
+     "h": [
+      16,
+      24
+     ]
+    },
+    {
+     "k": "city.t2.hooks.eve",
+     "h": [
+      7,
+      16
+     ],
+     "d": "sat,sun"
+    },
+    {
+     "k": "city.t2.hooks.eve",
+     "h": [
+      0,
+      7
+     ]
+    }
+   ]
+  },
+  "t2h1_fridge": {
+   "prompt": "city.cu.p.fridge",
+   "rotate": "daily",
+   "minutes": 2,
+   "sound": "paper_rustle",
+   "any_hour": true,
+   "collect": "cube_homes/b_fridge",
+   "lines": [
+    {
+     "k": "city.t2.fridge.0",
+     "before": 2
+    },
+    {
+     "k": "city.t2.fridge.1",
+     "after": 1,
+     "before": 4
+    },
+    {
+     "k": "city.t2.fridge.2",
+     "after": 2,
+     "before": 6
+    },
+    {
+     "k": "city.t2.fridge.3",
+     "after": 3,
+     "before": 8
+    },
+    {
+     "k": "city.t2.fridge.4",
+     "after": 4,
+     "before": 10
+    },
+    {
+     "k": "city.t2.fridge.5",
+     "after": 5
+    },
+    "city.t2.fridge.f"
+   ]
+  },
+  "t2h1_toys": {
+   "like": "read_misc",
+   "prompt": "city.t2.p.toys",
+   "minutes": 2,
+   "any_hour": true,
+   "lines": [
+    "city.t2.toys.1",
+    "city.t2.toys.2"
+   ]
+  },
+  "t2h1_photos": {
+   "prompt": "city.t2.p.photos",
+   "minutes": 1,
+   "any_hour": true,
+   "lines": [
+    "city.t2.photos.1",
+    "city.t2.photos.2"
+   ]
+  },
+  "t2h1_ledger": {
+   "like": "read_misc",
+   "prompt": "city.t2.p.ledger",
+   "minutes": 3,
+   "any_hour": true,
+   "lines": [
+    "city.t2.ledger.1"
+   ],
+   "read": {
+    "texts": [
+     "t2h1_fishing_log",
+     "t2h1_night_book"
+    ]
+   }
+  },
+  "t2h1_garden": {
+   "like": "read_misc",
+   "prompt": "city.t2.p.garden",
+   "minutes": 3,
+   "any_hour": true,
+   "lines": [
+    "city.t2.mette.1"
+   ],
+   "read": {
+    "texts": [
+     "t2h1_mette_book"
+    ]
+   }
+  },
+  "t2h1_sky": {
+   "like": "look_view",
+   "prompt": "city.t2.p.sky",
+   "collect": "cube_homes/b_sky",
+   "minutes": 5,
+   "lines": [
+    {
+     "k": "city.cu.sky.d1",
+     "h": [
+      6,
+      21
+     ]
+    },
+    {
+     "k": "city.cu.sky.d2",
+     "h": [
+      6,
+      21
+     ]
+    },
+    {
+     "k": "city.cu.sky.n1",
+     "h": [
+      21,
+      6
+     ]
+    },
+    {
+     "k": "city.cu.sky.n2",
+     "h": [
+      21,
+      6
+     ]
+    },
+    {
+     "k": "city.cu.sky.rain",
+     "weather": "rain"
+    },
+    {
+     "k": "city.cu.sky.snow",
+     "weather": "snow"
+    },
+    {
+     "k": "city.cu.sky.fog",
+     "weather": "fog"
+    },
+    {
+     "k": "city.cu.sky.stars",
+     "weather": "clear",
+     "h": [
+      21,
+      6
+     ]
+    },
+    "city.t2.sky.1"
+   ]
+  },
+  "t2h1_trays": {
+   "prompt": "city.t2.p.trays",
+   "minutes": 1,
+   "any_hour": true,
+   "lines": [
+    {
+     "k": "city.t2.trays.0",
+     "before": 4
+    },
+    {
+     "k": "city.t2.trays.1",
+     "after": 4
+    }
+   ]
+  },
+  "t2h1_water": {
+   "prompt": "city.t2.p.water",
+   "minutes": 6,
+   "sound": "rest_pour",
+   "any_hour": true,
+   "lines": [
+    "city.t2.water.1",
+    {
+     "k": "city.cu.water.rain",
+     "weather": "rain"
+    },
+    {
+     "k": "city.cu.water.clear",
+     "weather": "clear"
+    }
+   ]
+  },
+  "t2h1_tipshelf": {
+   "like": "read_misc",
+   "prompt": "city.t2.p.tipshelf",
+   "minutes": 2,
+   "any_hour": true,
+   "lines": [
+    "city.t2.tipshelf.1",
+    "city.t2.tipshelf.2"
+   ]
+  },
+  "t2h1_bed": {
+   "prompt": "city.t2.p.bed",
+   "minutes": 1,
+   "any_hour": true,
+   "lines": [
+    "city.t2.bed.1"
+   ]
+  },
+  "t2h1_treasure": {
+   "prompt": "city.t2.p.treasure",
+   "minutes": 1,
+   "give": [
+    [
+     "candy",
+     2
+    ]
+   ],
+   "daily": 1,
+   "any_hour": true,
+   "sound": "paper_rustle",
+   "collect": "cube_homes/b_chest",
+   "lines": [
+    "city.t2.treasure.1",
+    "city.t2.treasure.2"
+   ]
+  },
+  "t2h1_deck_board": {
+   "prompt": "city.t2.p.deckboard",
+   "rotate": "daily",
+   "minutes": 1,
+   "sound": "paper_rustle",
+   "any_hour": true,
+   "lines": [
+    "city.t2.deckboard.0",
+    {
+     "k": "city.t2.deckboard.1",
+     "after": 1
+    },
+    "city.t2.deckboard.2",
+    {
+     "k": "city.t2.deckboard.3",
+     "after": 2
+    },
+    {
+     "k": "city.t2.deckboard.4",
+     "after": 5
+    }
+   ]
+  }
+ },
+ "rules": {
+  "P-T2H1/lift_g": {
+   "act": "t1h1_cube_lift",
+   "props": {
+    "floors": [
+     {
+      "k": "city.lift.cube.living",
+      "to": "lift_living"
+     },
+     {
+      "k": "city.lift.cube.tip",
+      "to": "lift_tip"
+     }
+    ]
+   }
+  },
+  "P-T2H1/lift_living": {
+   "act": "t1h1_cube_lift",
+   "props": {
+    "floors": [
+     {
+      "k": "city.lift.cube.street",
+      "to": "lift_g"
+     },
+     {
+      "k": "city.lift.cube.tip",
+      "to": "lift_tip"
+     }
+    ]
+   }
+  },
+  "P-T2H1/lift_tip": {
+   "act": "t1h1_cube_lift",
+   "props": {
+    "floors": [
+     {
+      "k": "city.lift.cube.street",
+      "to": "lift_g"
+     },
+     {
+      "k": "city.lift.cube.living",
+      "to": "lift_living"
+     }
+    ]
+   }
+  },
+  "P-T2H1/cu_hall_mirror": {
+   "act": "t1h1_cube_mirror"
+  },
+  "P-T2H1/cu_hall_plant": {
+   "act": "t1h1_cube_fern"
+  },
+  "P-T2H1/cu_hall_note": {
+   "act": "t2h1_slate"
+  },
+  "P-T2H1/cu_hall_shoes": {
+   "act": "t2h1_shoes"
+  },
+  "P-T2H1/cu_hall_hooks": {
+   "act": "t2h1_hooks"
+  },
+  "P-T2H1/cu_liv_view_front": {
+   "act": "t1h1_cube_vfront"
+  },
+  "P-T2H1/cu_liv_view_back": {
+   "act": "t1h1_cube_vback"
+  },
+  "P-T2H1/cu_liv_stove": {
+   "act": "t1h1_cube_tea"
+  },
+  "P-T2H1/cu_liv_fridge": {
+   "act": "t2h1_fridge"
+  },
+  "P-T2H1/cu_liv_play": {
+   "act": "t2h1_toys"
+  },
+  "P-T2H1/cu_liv_photos": {
+   "act": "t2h1_photos"
+  },
+  "P-T2H1/cu_liv_shelf": {
+   "act": "t2h1_ledger"
+  },
+  "P-T2H1/cu_tip_view_floor": {
+   "act": "t1h1_cube_vfloor"
+  },
+  "P-T2H1/cu_tip_sky": {
+   "act": "t2h1_sky"
+  },
+  "P-T2H1/cu_tip_sky_l": {
+   "act": "t2h1_sky"
+  },
+  "P-T2H1/cu_tip_trays": {
+   "act": "t2h1_trays"
+  },
+  "P-T2H1/cu_tip_garden": {
+   "act": "t2h1_garden"
+  },
+  "P-T2H1/cu_tip_can": {
+   "act": "t2h1_water"
+  },
+  "P-T2H1/cu_tip_seeds": {
+   "act": "t2h1_treasure"
+  },
+  "P-T2H1/cu_tip_shelf": {
+   "act": "t2h1_tipshelf"
+  },
+  "P-T2H1/cu_tip_bed": {
+   "act": "t2h1_bed"
+  },
+  "P-T2H1/deck_postbox": {
+   "act": "t1h1_deck_post"
+  },
+  "P-T2H1/deck_board": {
+   "act": "t2h1_deck_board"
+  },
+  "P-T2H1/deck_view": {
+   "act": "t1h1_deck_view"
+  },
+  "P-T2H1/deck_planter": {
+   "act": "t1h1_deck_planter"
+  }
+ },
+ "texts": {
+  "t2h1_fishing_log": {
+   "title": "city.t2.ledger.title",
+   "kind": "book",
+   "minutes": 3,
+   "collect": "cube_homes/b_ledger",
+   "pages": [
+    "city.t2.ledger.1",
+    {
+     "k": "city.t2.ledger.2",
+     "after": 1
+    },
+    {
+     "k": "city.t2.ledger.3",
+     "after": 3
+    },
+    {
+     "k": "city.t2.ledger.4",
+     "after": 6
+    }
+   ]
+  },
+  "t2h1_night_book": {
+   "title": "city.t2.night.title",
+   "kind": "book",
+   "minutes": 3,
+   "collect": "cube_homes/b_nights",
+   "pages": [
+    "city.t2.night.1",
+    {
+     "k": "city.t2.night.2",
+     "after": 1
+    },
+    {
+     "k": "city.t2.night.3",
+     "after": 3
+    },
+    {
+     "k": "city.t2.night.4",
+     "after": 6
+    }
+   ]
+  },
+  "t2h1_mette_book": {
+   "title": "city.t2.mette.title",
+   "kind": "book",
+   "minutes": 2,
+   "collect": "cube_homes/b_mette",
+   "pages": [
+    "city.t2.mette.1",
+    {
+     "k": "city.t2.mette.2",
+     "after": 1
+    },
+    {
+     "k": "city.t2.mette.3",
+     "after": 2
+    },
+    {
+     "k": "city.t2.mette.4",
+     "after": 4
+    }
+   ]
+  }
+ },
+ "quests": [
+  {
+   "id": "home_cube_b",
+   "kind": "side",
+   "start_on": {
+    "event": "visit",
+    "target": "P-T2H1"
+   },
+   "stages": [
+    {
+     "id": "map",
+     "objectives": [
+      {
+       "id": "map",
+       "event": "do",
+       "target": "t2h1_fridge"
+      }
+     ]
+    },
+    {
+     "id": "stars",
+     "objectives": [
+      {
+       "id": "shoes",
+       "event": "do",
+       "target": "t2h1_shoes"
+      },
+      {
+       "id": "toys",
+       "event": "do",
+       "target": "t2h1_toys"
+      },
+      {
+       "id": "trays",
+       "event": "do",
+       "target": "t2h1_trays"
+      }
+     ]
+    },
+    {
+     "id": "box",
+     "objectives": [
+      {
+       "id": "box",
+       "event": "do",
+       "target": "t2h1_treasure"
+      }
+     ],
+     "reward": {
+      "items": {
+       "candy": 2,
+       "cookies": 1
+      }
+     }
+    }
+   ]
+  }
+ ]
+}

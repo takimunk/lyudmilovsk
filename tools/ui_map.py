@@ -292,9 +292,14 @@ def places(out_json):
         ("valley", -620.0, 560.0, 0.0, "land", True),
         ("upland", -300.0, -450.0, 0.0, "land", True),
         ("north_hills", -400.0, 1850.0, 0.0, "land", True),
+        # the old forest beyond the north hills where the waxwings keep (the quest "waxwing", docs/quests.md; the same
+        # place as the species' "range" in Content/BirdsData/species.json)
+        ("rowan_grove", -420.0, 1780.0, 130.0, "nature", False),
         ("sea", 900.0, 1200.0, 0.0, "water", True),
         # the hatch on the sea bed (docs/europa.md, tools/europa/europa_site.py)
         ("europa_hatch", 573.0, 100.0, 12.0, "building", True),
+        # where Topi's sand begins, on the map's east edge behind the town (docs/topi.md); the river Ural lies off the map
+        ("topi", -1225.0, 905.0, 70.0, "nature", True),
     ]
     data = {
         "comment": "Written by tools/ui_map.py from tools/world_map.py: do not edit by hand. Metres in the map frame (docs/world_map.md).",

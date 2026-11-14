@@ -1,0 +1,29 @@
+{
+ "key": "line.korneeva_nina.paper_thanks.3",
+ "lang": "en",
+ "text": "And if it's birds you like, go to Sorokin. He can talk about them till night. I've checked.",
+ "speaker": "korneeva_nina",
+ "voice": "Wise_Woman",
+ "voice_id": "Wise_Woman",
+ "voice_design": null,
+ "direction": "",
+ "model": "fal-ai/minimax/speech-2.6-hd",
+ "request": {
+  "prompt": "And if it's birds you like, go to Sorokin. He can talk about them till night. I've checked.",
+  "voice_setting": {
+   "speed": 0.95,
+   "pitch": 0,
+   "vol": 1,
+   "voice_id": "Wise_Woman"
+  },
+  "language_boost": "English",
+  "audio_setting": {
+   "sample_rate": 24000,
+   "format": "mp3",
+   "channel": 1
+  },
+  "output_format": "url"
+ },
+ "fal_request_id": "01a1d591-8f17-7682-876f-6baac77566e4",
+ "hash": "f17c4f2485cf"
+}

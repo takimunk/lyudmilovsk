@@ -1,0 +1,20 @@
+{
+ "key": "line.nishimura_aya.views_ask.1",
+ "lang": "ru",
+ "text": "Я каждый день уезжаю писать остров. А свой город со стороны так ни разу и не видела.",
+ "speaker": "nishimura_aya",
+ "voice": "Matilda",
+ "voice_id": "XrExE9yKIg1WjnnlVkGX",
+ "voice_design": null,
+ "direction": "[calm, soft, contemplative, a painter talking about the light]",
+ "model": "fal-ai/elevenlabs/tts/eleven-v3",
+ "request": {
+  "stability": 0.5,
+  "apply_text_normalization": "auto",
+  "text": "[calm, soft, contemplative, a painter talking about the light] Я каждый день уезжаю писать остров. А свой город со стороны так ни разу и не видела.",
+  "voice": "Matilda",
+  "language_code": "ru"
+ },
+ "fal_request_id": "01a1d661-30d8-7312-96d4-71cfa6e92e64",
+ "hash": "ff30c2a15f73"
+}

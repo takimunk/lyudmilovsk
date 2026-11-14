@@ -167,6 +167,8 @@ private:
 	double LastCameraTime = -1.0;
 	TArray<FTree> Trees;
 	TArray<FGroup> Groups;
+	/** The box round every tree's foot (AddTree): a camera farther than LiveDistance from it has no tree to swap for a live plant. */
+	FBox TreeBounds = FBox(ForceInit);
 	int32 LiveCount = 0;
 	int32 Applied = 0;
 	/** What ApplyQuality last put on the components. */

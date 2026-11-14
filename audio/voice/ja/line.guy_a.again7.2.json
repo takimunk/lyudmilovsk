@@ -1,0 +1,20 @@
+{
+ "key": "line.guy_a.again7.2",
+ "lang": "ja",
+ "text": "寝てるよ。一時から八時まで。あとは講義と対戦。この順番で。たまに逆。",
+ "speaker": "guy_a",
+ "voice": "Will",
+ "voice_id": "bIHbv24MWmeRgasZH58o",
+ "voice_design": null,
+ "direction": "[a young gamer in a hurry, mid-match]",
+ "model": "fal-ai/elevenlabs/tts/eleven-v3",
+ "request": {
+  "stability": 0.5,
+  "apply_text_normalization": "auto",
+  "text": "[a young gamer in a hurry, mid-match] 寝てるよ。一時から八時まで。あとは講義と対戦。この順番で。たまに逆。",
+  "voice": "Will",
+  "language_code": "ja"
+ },
+ "fal_request_id": "01a1d782-c420-7bb0-a8ae-8136fb71d09c",
+ "hash": "168b871bc07f"
+}

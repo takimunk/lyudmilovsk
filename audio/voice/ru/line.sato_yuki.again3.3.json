@@ -1,0 +1,29 @@
+{
+ "key": "line.sato_yuki.again3.3",
+ "lang": "ru",
+ "text": "Папа боится щекотки. Сильно-сильно. Только никому не говори.",
+ "speaker": "sato_yuki",
+ "voice": "Lovely_Girl",
+ "voice_id": "Lovely_Girl",
+ "voice_design": null,
+ "direction": "",
+ "model": "fal-ai/minimax/speech-2.6-hd",
+ "request": {
+  "prompt": "Папа боится щекотки. Сильно-сильно. Только никому не говори.",
+  "voice_setting": {
+   "speed": 1,
+   "pitch": 0,
+   "vol": 1,
+   "voice_id": "Lovely_Girl"
+  },
+  "language_boost": "Russian",
+  "audio_setting": {
+   "sample_rate": 24000,
+   "format": "mp3",
+   "channel": 1
+  },
+  "output_format": "url"
+ },
+ "fal_request_id": "01a1d748-db7e-7a80-9389-ac6e7057c6aa",
+ "hash": "d15a1a643efe"
+}

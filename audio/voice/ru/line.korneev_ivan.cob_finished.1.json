@@ -1,0 +1,20 @@
+{
+ "key": "line.korneev_ivan.cob_finished.1",
+ "lang": "ru",
+ "text": "Кукурузу ищешь? Опоздал, я её в тот же день доел. До зёрнышка.",
+ "speaker": "korneev_ivan",
+ "voice": "Bill",
+ "voice_id": "pqHfZKP75CvOlQylNhV4",
+ "voice_design": null,
+ "direction": "[an old man, slow, a little gravelly, contented, a quiet joke at the end]",
+ "model": "fal-ai/elevenlabs/tts/eleven-v3",
+ "request": {
+  "stability": 0.5,
+  "apply_text_normalization": "auto",
+  "text": "[an old man, slow, a little gravelly, contented, a quiet joke at the end] Кукурузу ищешь? Опоздал, я её в тот же день доел. До зёрнышка.",
+  "voice": "Bill",
+  "language_code": "ru"
+ },
+ "fal_request_id": "01a1d6e5-cfea-7dc0-af98-08ae420b7cd0",
+ "hash": "d7f522a2ee0c"
+}

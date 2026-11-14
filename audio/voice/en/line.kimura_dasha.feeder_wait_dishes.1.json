@@ -1,0 +1,20 @@
+{
+ "key": "line.kimura_dasha.feeder_wait_dishes.1",
+ "lang": "en",
+ "text": "Vika's already washing the dishes in her head, I can see it on her face. I only need five visits.",
+ "speaker": "kimura_dasha",
+ "voice": "Charlotte",
+ "voice_id": "XB0fDUnXU5powFXDhCwa",
+ "voice_design": null,
+ "direction": "[a tired physics student, wry, self-ironic]",
+ "model": "fal-ai/elevenlabs/tts/eleven-v3",
+ "request": {
+  "stability": 0.5,
+  "apply_text_normalization": "auto",
+  "text": "[a tired physics student, wry, self-ironic] Vika's already washing the dishes in her head, I can see it on her face. I only need five visits.",
+  "voice": "Charlotte",
+  "language_code": "en"
+ },
+ "fal_request_id": "01a1d6d5-073b-7741-9fcf-4ff6a1d56a49",
+ "hash": "b3ea3f3107f7"
+}

@@ -1,0 +1,33 @@
+{
+ "key": "line.kid_boy.again7.1",
+ "lang": "ru",
+ "text": "Автомат с газировкой иногда сам щёлкает, когда к нему никто не подходит. Я думаю, он тоже играет.",
+ "speaker": "kid_boy",
+ "voice": "ttv-voice-2026102201382326-dnI61vJ1",
+ "voice_id": "ttv-voice-2026102201382326-dnI61vJ1",
+ "voice_design": {
+  "endpoint": "fal-ai/minimax/voice-design",
+  "prompt": "Small boy, primary school kid: a very high, bright, light child's voice, like a young child actor in a cartoon dub but natural, bored and a little cheeky",
+  "preview_text": "Ну, норм так. С утра. Или со вчера."
+ },
+ "direction": "",
+ "model": "fal-ai/minimax/speech-2.6-hd",
+ "request": {
+  "prompt": "Автомат с газировкой иногда сам щёлкает, когда к нему никто не подходит. Я думаю, он тоже играет.",
+  "voice_setting": {
+   "speed": 1,
+   "pitch": 0,
+   "vol": 1,
+   "voice_id": "ttv-voice-2026102201382326-dnI61vJ1"
+  },
+  "language_boost": "Russian",
+  "audio_setting": {
+   "sample_rate": 24000,
+   "format": "mp3",
+   "channel": 1
+  },
+  "output_format": "url"
+ },
+ "fal_request_id": "01a1d784-7797-75a0-b2fe-3da4e820e37b",
+ "hash": "f42600f438de"
+}

@@ -7,7 +7,7 @@
 
 [waiter_sit]
 on = rest_sit
-say town.waiter_sit.1 | Здравствуйте! Меню на столе, я сейчас подойду. | Hello! The menu's on the table, I'll be right with you. | いらっしゃいませ！メニューはテーブルにございます。
+say town.waiter_sit.1 | Здравствуйте! Меню на столе, я сейчас подойду. | Hello! The menu's on the table, I'll be right with you. | いらっしゃいませ！メニューはテーブルにございます。すぐに伺います。
 say town.waiter_sit.2 | Добро пожаловать в «Янтарь». Хлеб и вода — от заведения. | Welcome to Yantar. Bread and water are on the house. | 「ヤンタル」へようこそ。パンとお水はサービスです。
 say town.waiter_sit.3 | Хороший столик. Отсюда закат лучше всего видно. | A good table. You get the best view of the sunset from here. | いいお席ですね。ここから夕日がいちばんよく見えます。
 

@@ -1,0 +1,1693 @@
+{
+ "_doc": "Clinic second pass strings (city.xcl.*, city.reg.clinic.*, quest.clinic_*). Russian is the source.",
+ "city.xcl.p.ticket": {
+  "ru": "E — взять талон",
+  "en": "E — take a ticket",
+  "ja": "E：整理券をとる"
+ },
+ "city.xcl.p.jar": {
+  "ru": "E — опустить монетку в банку",
+  "en": "E — drop a coin in the jar",
+  "ja": "E：瓶にコインを入れる"
+ },
+ "city.xcl.p.water": {
+  "ru": "E — налить в аквариум воды",
+  "en": "E — top up the aquarium",
+  "ja": "E：水槽に水をたす"
+ },
+ "city.xcl.p.inhale": {
+  "ru": "E — подышать над ингалятором",
+  "en": "E — breathe over the inhaler",
+  "ja": "E：吸入器の蒸気を吸う"
+ },
+ "city.xcl.p.height": {
+  "ru": "E — измерить рост",
+  "en": "E — measure my height",
+  "ja": "E：身長をはかる"
+ },
+ "city.xcl.p.scale": {
+  "ru": "E — взвесить на аптекарских весах",
+  "en": "E — weigh something on the apothecary scale",
+  "ja": "E：薬局の天秤で量る"
+ },
+ "city.xcl.p.bp": {
+  "ru": "E — измерить давление",
+  "en": "E — have my blood pressure taken",
+  "ja": "E：血圧をはかる"
+ },
+ "city.xcl.p.hammer": {
+  "ru": "E — проверить рефлексы",
+  "en": "E — test my reflexes",
+  "ja": "E：反射をみてもらう"
+ },
+ "city.xcl.p.door": {
+  "ru": "E — прочитать табличку",
+  "en": "E — read the door plate",
+  "ja": "E：札を読む"
+ },
+ "city.xcl.p.radio": {
+  "ru": "E — прислушаться к радио",
+  "en": "E — listen to the radio",
+  "ja": "E：ラジオに耳をすます"
+ },
+ "city.xcl.p.cards": {
+  "ru": "E — заглянуть в картотеку",
+  "en": "E — peek into the card file",
+  "ja": "E：カード箱をのぞく"
+ },
+ "city.xcl.p.mags": {
+  "ru": "E — взять журнал со столика",
+  "en": "E — pick a magazine off the table",
+  "ja": "E：テーブルの雑誌を手にとる"
+ },
+ "city.shop.clinic_pharmacy.title": {
+  "ru": "Аптечный киоск и буфет медсестры",
+  "en": "Pharmacy window and the nurse's snack shelf",
+  "ja": "薬局の窓口と看護師さんの売店"
+ },
+ "city.xcl.aq.0": {
+  "ru": "Оранжевая, как леденец, рыбка неторопливо плывёт от одного края стекла к другому. На табличке под аквариумом написано «Главврач».",
+  "en": "A fish, orange as a boiled sweet, drifts unhurriedly from one end of the glass to the other. A little plate under the tank says \"Head Doctor\".",
+  "ja": "あめ玉みたいにオレンジ色の金魚が、ガラスの端から端までゆっくり泳ぐ。水槽の下の札には「院長」と書いてある。"
+ },
+ "city.xcl.aq.1": {
+  "ru": "Утром рыбка стоит у самого стекла, у регистратуры. Будто тоже занимает очередь.",
+  "en": "In the morning the fish hangs right against the glass, by the reception side, as if queuing too.",
+  "ja": "朝の金魚は、受付側のガラスにぴたりと寄っている。まるで自分も順番待ちをしているみたいだ。"
+ },
+ "city.xcl.aq.2": {
+  "ru": "После обеда в зале тихо. Рыбка стоит у водорослей и шевелит плавником. Думает.",
+  "en": "After lunch the hall is quiet. The fish stands by the weed, flicking a fin. Thinking.",
+  "ja": "昼すぎ、待合室は静かだ。金魚は水草のそばでひれを動かしている。考えごとをしているらしい。"
+ },
+ "city.xcl.aq.3": {
+  "ru": "К вечеру в зале почти пусто, и рыбка смелеет: выплывает на середину и смотрит на входную дверь.",
+  "en": "Towards evening the hall is nearly empty and the fish grows bold: out to the middle of the tank, looking at the front door.",
+  "ja": "夕方になると待合室はほとんど空になり、金魚は大胆になる。水槽の真ん中まで出てきて、入口のドアを見つめている。"
+ },
+ "city.xcl.aq.4": {
+  "ru": "Ночью в зале горит один плафон. В аквариуме булькает фильтр, а рыбка спит стоя. Рыбы так умеют.",
+  "en": "At night one ceiling lamp is on. The filter bubbles in the tank and the fish sleeps upright. Fish can do that.",
+  "ja": "夜は天井の灯りがひとつだけ。水槽ではフィルターがぷくぷく鳴り、金魚は立ったまま眠っている。魚はそれができる。"
+ },
+ "city.xcl.aq.5": {
+  "ru": "Дети зовут рыбку Главврачом: она плавает у приёмной с таким видом, будто всё уже знает. Таблички никто не вешал, она появилась сама, детским почерком.",
+  "en": "The children call the fish the Head Doctor: it swims by the reception with the look of someone who already knows everything. Nobody hung the plate, it just appeared, in a child's handwriting.",
+  "ja": "子どもたちは金魚を院長と呼ぶ。受付のそばを、もう何でも知っているような顔で泳ぐからだ。札は誰が貼ったのでもなく、いつのまにか子どもの字で貼られていた。"
+ },
+ "city.xcl.aq.6": {
+  "ru": "В аквариуме просторно. Раньше с Главврачом жила вторая рыбка, а теперь остался только глиняный домик на дне, и тот пустой.",
+  "en": "The tank feels roomy. There used to be a second fish with the Head Doctor; now only a clay house is left on the bottom, and it is empty.",
+  "ja": "水槽が広く見える。前は院長にもう一匹の連れがいたけれど、今は底に素焼きの小さな家が残っているだけで、中は空っぽだ。"
+ },
+ "city.xcl.aq.7": {
+  "ru": "Вода чуть мутная. Рядом лейка, на ней записка: «Доливать отстоянную. Из крана не лить, у рыбки нервы».",
+  "en": "The water is a little cloudy. A watering can stands beside it with a note: \"Top up with settled water. Not straight from the tap, the fish has nerves.\"",
+  "ja": "水が少し濁っている。そばにじょうろがあり、メモが貼ってある。「くみ置きの水を足すこと。蛇口から直接はだめ。金魚は神経質です」"
+ },
+ "city.xcl.aq.8": {
+  "ru": "В аквариуме теперь два оранжевых пятнышка. Главврач держится ровно посередине и делает вид, что недоволен.",
+  "en": "There are now two orange flecks in the tank. The Head Doctor keeps stoutly to the middle and pretends to be displeased.",
+  "ja": "水槽にオレンジ色の点がふたつになった。院長は真ん中でどっしり構えて、不満そうなふりをしている。"
+ },
+ "city.xcl.aqw.1": {
+  "ru": "Ты наливаешь в лейку воды из своей бутылки, даёшь ей постоять и осторожно доливаешь аквариум. Рыбка отплывает, потом возвращается: проверить, не стыдно ли тебе.",
+  "en": "You pour water from your bottle into the can, let it settle and carefully top up the tank. The fish backs away, then returns to check whether you are ashamed.",
+  "ja": "ボトルの水をじょうろに移して少しおき、そっと水槽に足す。金魚はいったん離れ、それから戻ってくる。悪いと思っているか確かめに来たみたいだ。"
+ },
+ "city.xcl.aqw.2": {
+  "ru": "Вода в аквариуме поднимается на два пальца. Рыбка делает круг почёта вдоль стекла, и тебе кажется, что она кивнула.",
+  "en": "The water rises two fingers' width. The fish does a lap of honour along the glass and you could swear it nodded.",
+  "ja": "水位が指二本ぶん上がる。金魚はガラスに沿って凱旋の一周をして、うなずいたように見えた。"
+ },
+ "city.xcl.jar.1": {
+  "ru": "Монетка глухо звякает о дно банки. Бумажка на стекле гласит «На друга Главврачу», и кто-то дорисовал под надписью вторую рыбку.",
+  "en": "The coin clunks to the bottom of the jar. The paper on the glass says \"For the Head Doctor's friend\", and someone has drawn a second fish under the words.",
+  "ja": "コインが瓶の底でごとんと鳴る。ガラスの紙には「院長の友だちのために」とあり、その下に誰かが二匹目の金魚を描き足している。"
+ },
+ "city.xcl.jar.2": {
+  "ru": "Из окошка кивает медсестра: «Спасибо. Главврач пока не знает, но когда узнает, будет рад. Сделает вид, что нет».",
+  "en": "The nurse nods from her window: \"Thank you. The Head Doctor doesn't know yet, but when he does he'll be glad. He'll pretend not to be.\"",
+  "ja": "窓口から看護師さんがうなずく。「ありがとう。院長はまだ知らないけど、知ったら喜ぶわ。喜んでないふりはするでしょうけど」"
+ },
+ "city.xcl.jar.3": {
+  "ru": "Банка уже полная. Медсестра смеётся: «Хватит и на гуппи, и на корм, и ещё на красивый камушек. Остальное я вернула в кассу, не бойтесь».",
+  "en": "The jar is full now. The nurse laughs: \"That covers guppies, food and a pretty pebble besides. The rest I put back in the till, don't worry.\"",
+  "ja": "瓶はもういっぱいだ。看護師さんが笑う。「グッピーも餌もきれいな石も買えるわ。余りはレジに戻したから心配しないで」"
+ },
+ "city.xcl.tk.1": {
+  "ru": "Автомат выдаёт талон № 6. На табло горит «3». Значит, через пару человек. Все в зале делают вид, что не считают.",
+  "en": "The machine gives you ticket no. 6. The board shows \"3\", so a couple of people ahead. Everyone in the hall pretends not to be counting.",
+  "ja": "整理券は6番。掲示板には「3」と出ている。あと二、三人だ。待合室の誰もが、数えていないふりをしている。"
+ },
+ "city.xcl.tk.2": {
+  "ru": "Талон № 41, на табло «17». Бабушка рядом вздыхает и поправляет платок: «Раньше по фамилии вызывали. Хоть знали, что вызывают человека».",
+  "en": "Ticket no. 41, the board says \"17\". The old woman beside you sighs and straightens her scarf: \"They used to call you by name. At least you knew it was a person being called.\"",
+  "ja": "整理券は41番、掲示板は「17」。隣のおばあさんがため息をついてスカーフを直す。「昔は名前で呼んだものさ。少なくとも人を呼んでるってわかったよ」"
+ },
+ "city.xcl.tk.3": {
+  "ru": "Талон № 58. После обеда очередь тает: на табло «55», и скоро вызовут тебя.",
+  "en": "Ticket no. 58. After lunch the queue melts away: the board shows \"55\" and you will be called soon.",
+  "ja": "整理券は58番。午後は列が溶けるように減っていく。掲示板は「55」で、もうすぐ呼ばれそうだ。"
+ },
+ "city.xcl.tk.4": {
+  "ru": "Рулон талонов кончился, на автомате приклеена записка: «Талоны на сегодня закончились. Неотложная помощь — у регистратуры».",
+  "en": "The roll of tickets has run out and a note is taped to the machine: \"No more tickets today. Emergency help is at the reception.\"",
+  "ja": "整理券のロールが切れていて、機械にメモが貼ってある。「本日の整理券は終了しました。急ぎの方は受付へ」"
+ },
+ "city.xcl.qb.1": {
+  "ru": "Табло: «17». Под ним мигает лампочка «Кабинет 2». Пока мигает, внутри кто-то долго рассказывает про колено.",
+  "en": "The board reads \"17\". Under it a lamp blinks \"Room 2\". As long as it blinks, somebody inside is telling the long story of their knee.",
+  "ja": "掲示板は「17」。その下で「2号室」のランプが点滅している。点滅しているあいだ、中では誰かが膝の話を長々としているのだ。"
+ },
+ "city.xcl.qb.2": {
+  "ru": "Табло показывает «ЗАКРЫТО», красные цифры погашены. Под ним бумажка: «Приём окончен. Завтра с 8:00».",
+  "en": "The board shows \"CLOSED\" and the red digits are dark. A paper under it says: \"Surgery over. Tomorrow from 8:00.\"",
+  "ja": "掲示板には「終了」と出ていて、赤い数字は消えている。下の紙には「本日の診察は終了しました。明日は8時から」とある。"
+ },
+ "city.xcl.qb.3": {
+  "ru": "В выходные табло молчит: приём ведёт одна дежурная сестра, очереди ей не нужны. «Подходите, не стесняйтесь».",
+  "en": "At weekends the board is silent: one duty nurse sees everybody, and she needs no queue. \"Come on up, don't be shy.\"",
+  "ja": "週末は掲示板が消えている。当直の看護師さんがひとりで診るので、順番はいらない。「遠慮せずにどうぞ」"
+ },
+ "city.xcl.in.1": {
+  "ru": "Медсестра включает аппарат: в стеклянной банке булькает щелочная вода. Ты дышишь тёплым паром. Пахнет содой и зимой.",
+  "en": "The nurse switches the machine on: alkaline water bubbles in the glass jar. You breathe warm steam. It smells of baking soda and winter.",
+  "ja": "看護師さんが機械のスイッチを入れると、ガラス瓶の中でアルカリ水がぶくぶく鳴る。あたたかい蒸気を吸う。重曹と冬のにおいがする。"
+ },
+ "city.xcl.in.2": {
+  "ru": "Пятнадцать минут. Нос открывается, мысли тоже. Рядом сидит бабушка над вторым стаканом с таким лицом, будто в бане, а не в поликлинике.",
+  "en": "Fifteen minutes. Your nose clears, and your thoughts with it. Beside you an old lady sits over the other glass with the face of someone at the baths, not a clinic.",
+  "ja": "十五分。鼻が通り、考えもすっきりする。隣のおばあさんはもうひとつの瓶の前で、診療所ではなく銭湯にいるような顔をしている。"
+ },
+ "city.xcl.in.3": {
+  "ru": "Сестра отмеряет время песочными часами. Часы маленькие, пар большой. «Ещё минуту. Нет, это не я решила, это песок».",
+  "en": "The nurse times it with an hourglass. The hourglass is small, the steam is large. \"One more minute. No, I didn't decide, the sand did.\"",
+  "ja": "看護師さんは砂時計で時間をはかる。砂時計は小さく、蒸気は大きい。「あと一分。いえ、私が決めたんじゃなくて砂が決めたの」"
+ },
+ "city.xcl.dn.0": {
+  "ru": "Белая дверь без стекла. Табличка: «Кабинет 4. Стоматолог. Приём по записи». На стуле у двери никто не сидит, но стул стоит ровно, будто ждёт.",
+  "en": "A white door without a pane. The plate: \"Room 4. Dentist. By appointment.\" Nobody sits on the chair by the door, but the chair is squared up as if waiting.",
+  "ja": "ガラスのない白いドア。札には「4号室 歯科 予約制」。ドアのそばの椅子に人はいないのに、椅子はきちんとまっすぐ置かれ、何かを待っているようだ。"
+ },
+ "city.xcl.dn.1": {
+  "ru": "Из-за двери тихо гудит бормашина. Все в зале вдруг заинтересовались плакатом над скамьёй.",
+  "en": "A drill hums softly behind the door. Everyone in the hall has suddenly become interested in the poster above the bench.",
+  "ja": "ドアの向こうで小さくドリルの音がする。待合室の全員が急に、ベンチの上のポスターに興味を持ちはじめた。"
+ },
+ "city.xcl.dn.2": {
+  "ru": "Дверь открывается: выходит мальчик с красными ушами, прижав ладонь к щеке. «Не больно!» — говорит он маме и садится так, чтобы никто не видел лица.",
+  "en": "The door opens: a boy with red ears comes out, palm pressed to his cheek. \"It didn't hurt!\" he tells his mum, and sits so that nobody can see his face.",
+  "ja": "ドアが開き、耳の赤い男の子が頬に手を当てて出てくる。「痛くなかった！」とお母さんに言い、誰にも顔が見えないように座る。"
+ },
+ "city.xcl.dn.3": {
+  "ru": "За дверью звякают инструменты в металлической чашке. Звук такой, будто кто-то пересчитывает мелочь на твоё будущее.",
+  "en": "Instruments clink in a steel dish behind the door. It sounds like somebody counting out small change for your future.",
+  "ja": "ドアの奥で器具が金属の皿に当たってかちゃかちゃ鳴る。誰かがきみの将来のために小銭を数えているような音だ。"
+ },
+ "city.xcl.dn.4": {
+  "ru": "Дверь заперта. В темноте табличка «Кабинет 4» выглядит строже, чем днём.",
+  "en": "The door is locked. In the dark the \"Room 4\" plate looks sterner than by day.",
+  "ja": "ドアには鍵がかかっている。暗いなかで「4号室」の札は昼よりいかめしく見える。"
+ },
+ "city.xcl.dn.5": {
+  "ru": "По выходным кабинет закрыт. На двери записка: «Зуб болит? Неотложная — у дежурной сестры в регистратуре. Мужайтесь».",
+  "en": "The room is shut at weekends. A note on the door: \"Toothache? Emergencies at the duty nurse's reception desk. Be brave.\"",
+  "ja": "週末この部屋は閉まっている。ドアのメモ。「歯が痛い？ 急ぎの方は受付の当直看護師へ。勇気を出して」"
+ },
+ "city.xcl.ht.1": {
+  "ru": "Ты встаёшь спиной к стене, поднимаешь подбородок. Планка опускается на макушку и звякает. Рядом на штукатурке чьи-то карандашные метки, самые нижние подписаны именами малышей.",
+  "en": "You stand with your back to the wall, chin up. The slider comes down on your head with a clink. Beside it, pencil marks in the plaster; the lowest ones carry the names of toddlers.",
+  "ja": "壁に背中をつけ、あごを上げる。目盛りの板が頭にかちんとのる。横の漆喰に鉛筆の印があり、いちばん下には小さな子の名前が書いてある。"
+ },
+ "city.xcl.ht.2": {
+  "ru": "Сто шестьдесят с чем-то. Метка стёрта до блеска у отметки «150»: здесь мерялись все школьники района, и все чуть-чуть приподнимались на цыпочки.",
+  "en": "A hundred and sixty-something. The \"150\" mark is worn to a shine: every schoolchild in the district has been measured here, and every one rose a little on tiptoe.",
+  "ja": "百六十いくつ。「150」のあたりの目盛りはぴかぴかにすり減っている。この地区の学校の子はみなここではかり、みなちょっと背伸びをしたのだ。"
+ },
+ "city.xcl.ht.3": {
+  "ru": "На стене у линейки приклеена бумажка: «Не вставать на цыпочки. Не надевать каблуки. Не расстраиваться: ещё вырастешь».",
+  "en": "A paper by the ruler: \"No tiptoes. No heels. No sulking: you will still grow.\"",
+  "ja": "目盛りの横に紙が貼ってある。「背伸び禁止。ハイヒール禁止。がっかり禁止。まだ伸びます」"
+ },
+ "city.xcl.ph.j1": {
+  "ru": "Банки с латинскими надписями. Знакомы только «Aqua» и «Mel». Остальное звучит как заклинание.",
+  "en": "Jars with Latin labels. Only \"Aqua\" and \"Mel\" look familiar. The rest sounds like a spell.",
+  "ja": "ラテン語のラベルの瓶が並ぶ。わかるのは「Aqua」と「Mel」だけ。あとは呪文のように響く。"
+ },
+ "city.xcl.ph.j2": {
+  "ru": "Над банками бумажка: «Рецептурные без рецепта не отпускаем. Лекарство без рецепта называется конфета. Конфеты — вот здесь».",
+  "en": "A paper over the jars: \"Prescription goods not sold without a prescription. Medicine without a prescription is called a sweet. Sweets are over here.\"",
+  "ja": "瓶の上に紙が貼ってある。「処方薬は処方箋なしにはお渡ししません。処方箋のない薬はあめと呼ばれます。あめはこちら」"
+ },
+ "city.xcl.ph.j3": {
+  "ru": "На полке белая ступка с пестиком. Говорят, порошки давно не растирают: привозят готовыми. Но ступку каждое утро протирают.",
+  "en": "On the shelf a white mortar with its pestle. They say nobody grinds powders any more, they arrive ready-made. But the mortar is wiped every morning.",
+  "ja": "棚に白い乳鉢と乳棒がある。粉薬はもうすりつぶさず、出来上がったものが届くそうだ。それでも乳鉢は毎朝ふかれている。"
+ },
+ "city.xcl.ph.s1": {
+  "ru": "Аптекарские весы: две чашечки и латунное коромысло. Сестра кладёт на одну гирьку в пять граммов, на другую — щепотку сахара. Уравновесились. «Для проверки, — говорит она. — Весы честные».",
+  "en": "Apothecary scales: two little pans and a brass beam. The nurse puts a five-gram weight on one and a pinch of sugar on the other. They balance. \"Just checking,\" she says. \"The scales are honest.\"",
+  "ja": "薬局の天秤。小さな皿がふたつと真鍮のさお。看護師さんが片方に五グラムの分銅、もう片方にひとつまみの砂糖をのせる。つり合った。「確認よ。この天秤は正直なの」"
+ },
+ "city.xcl.ph.s2": {
+  "ru": "На весах фольга от шоколадки: ровно один грамм. «Раньше так проверяли, не обвешивают ли. Теперь проверяю, не обвешивает ли аптека саму себя».",
+  "en": "On the scales, foil from a chocolate bar: exactly one gram. \"We used to check nobody was being short-changed. Now I check the pharmacy isn't short-changing itself.\"",
+  "ja": "天秤にチョコレートの銀紙をのせるとちょうど一グラム。「昔は量り売りのごまかしを確かめたの。今は薬局が自分をごまかしていないか確かめてるのよ」"
+ },
+ "city.xcl.ph.r1": {
+  "ru": "«Рецепты принимаются с 8 до 12. Выдаём с 14 до 17. Нечитаемый рецепт — к врачу, который его писал. Он сам иногда не может».",
+  "en": "\"Prescriptions are accepted 8 to 12. Dispensed 2 to 5. An unreadable prescription goes back to the doctor who wrote it. He sometimes cannot read it himself.\"",
+  "ja": "「処方箋の受付は8時から12時、お渡しは14時から17時。読めない処方箋は書いた先生へ。先生ご自身にも読めないことがあります」"
+ },
+ "city.xcl.ph.r2": {
+  "ru": "«Просьба не просить у нас мёд, малину и вишнёвое варенье. Это не к нам, это к бабушке. Градусник — измерять, не кусать».",
+  "en": "\"Please do not ask us for honey, raspberries or cherry jam. That is for your grandmother. Thermometers are for measuring, not for biting.\"",
+  "ja": "「はちみつ、ラズベリー、さくらんぼジャムは当薬局では扱っておりません。おばあさんに頼んでください。体温計ははかるもので、かむものではありません」"
+ },
+ "city.xcl.bp.1": {
+  "ru": "Манжета надувается, стрелка прыгает. Сестра слушает фонендоскопом, шевелит губами и кивает: «Как у космонавта. Только у космонавта чуть ниже».",
+  "en": "The cuff swells, the needle jumps. The nurse listens through the stethoscope, her lips moving, and nods: \"Like an astronaut's. Only an astronaut's is a little lower.\"",
+  "ja": "カフがふくらみ、針が跳ねる。看護師さんは聴診器を当てて口を動かし、うなずく。「宇宙飛行士みたいね。宇宙飛行士のほうがちょっと低いけど」"
+ },
+ "city.xcl.bp.2": {
+  "ru": "«Сто двадцать на восемьдесят». Ты не знаешь, много это или мало, но сестра улыбается. Значит, хорошо.",
+  "en": "\"A hundred and twenty over eighty.\" You don't know if that's a lot or a little, but the nurse smiles. So it's good.",
+  "ja": "「百二十の八十」。多いのか少ないのかわからないが、看護師さんは笑っている。だからきっといいのだ。"
+ },
+ "city.xcl.bp.3": {
+  "ru": "Манжета отпускает руку долгим вздохом, и ты тоже вздыхаешь. Сестра записывает цифры в карточку и подчёркивает дважды.",
+  "en": "The cuff lets go of your arm with a long sigh, and you sigh too. The nurse writes the figures in your card and underlines them twice.",
+  "ja": "カフが長いため息とともに腕を放し、きみもため息をつく。看護師さんは数字をカードに書いて、二重に下線を引く。"
+ },
+ "city.xcl.ep.1": {
+  "ru": "Таблицы Рабкина: пёстрые кружки, в которых спрятаны цифры. Одни видят цифру сразу, другие после долгого взгляда. Вчера один пациент увидел там кошку.",
+  "en": "Rabkin's plates: speckled circles with numbers hidden in them. Some see the number at once, others after a long look. Yesterday one patient saw a cat.",
+  "ja": "ラブキンの色覚検査表。まだら模様の丸の中に数字が隠れている。すぐ見える人もいれば、じっと見てやっと見える人もいる。昨日の患者さんは猫が見えたそうだ。"
+ },
+ "city.xcl.ep.2": {
+  "ru": "Футляр с пробными линзами: тонкие стёклышки в металлических оправах. Врач меняет их одну за другой: «А так? А так? А теперь?»",
+  "en": "A case of trial lenses: thin discs of glass in metal rims. The doctor swaps them one after another: \"And this? And this? And now?\"",
+  "ja": "検眼レンズのケース。金属の縁に入った薄いガラスの円盤。先生は一枚ずつ入れ替える。「これは？ これは？ では今度は？」"
+ },
+ "city.xcl.hm.1": {
+  "ru": "Резиновый молоточек стучит под коленкой, и нога сама подпрыгивает вперёд. Сестра довольна: «Рефлексы в порядке. А манеры — на тройку».",
+  "en": "The rubber hammer taps below your kneecap and your leg kicks out by itself. The nurse is pleased: \"Reflexes fine. Manners, a C.\"",
+  "ja": "ゴムのハンマーが膝の下をこつんとたたくと、足がひとりでにはね上がる。看護師さんは満足そうだ。「反射は合格。お行儀は可」"
+ },
+ "city.xcl.hm.2": {
+  "ru": "Ты следишь взглядом за блестящим концом молоточка и забываешь, что у тебя есть вторая нога. Стук. Нога дёргается. Ты смеёшься.",
+  "en": "You follow the hammer's shiny tip with your eyes and forget you have another leg. Tap. The leg jumps. You laugh.",
+  "ja": "ハンマーの光る先を目で追っているうちに、もう片方の足のことを忘れる。こつん。足がはねる。思わず笑ってしまう。"
+ },
+ "city.xcl.pl.0": {
+  "ru": "Табличка на двери: «Приём с 8 до 17, перерыв с 13 до 14». Снизу карандашом: «Перерыв — это когда врач ест, а не когда он вас не слышит».",
+  "en": "The plate on the door: \"Hours 8 to 17, break 13 to 14.\" In pencil underneath: \"A break is when the doctor eats, not when he can't hear you.\"",
+  "ja": "ドアの札。「診察8時から17時、休憩13時から14時」。下に鉛筆書き。「休憩とは先生が食事をする時間であって、話を聞かない時間ではありません」"
+ },
+ "city.xcl.pl.1": {
+  "ru": "«Сегодня приём ведёт дежурная медсестра. Врачи — с понедельника». Бумажка пожелтела по краям: висит давно, выходные повторяются.",
+  "en": "\"Today the duty nurse sees patients. Doctors from Monday.\" The paper has yellowed at the edges: it has hung there a long time, weekends do repeat.",
+  "ja": "「本日は当直の看護師が診察します。医師は月曜日から」。紙は縁が黄ばんでいる。長く貼られているのだ。週末は何度もめぐってくる。"
+ },
+ "city.xcl.cf.1": {
+  "ru": "Картотека: ящички с буквами. Карточки стоят плотно, как книги на полке. На каждой фамилия, год рождения, прививки и почерк Галины Петровны, круглый и очень разборчивый.",
+  "en": "The card file: little drawers with letters. The cards stand tight as books on a shelf. Each has a surname, a birth year, vaccinations and Galina Petrovna's handwriting, round and quite legible.",
+  "ja": "カード箱。文字のついた小さな引き出し。カードは本棚の本のようにぎっしり並んでいる。名前、生年、予防接種、そしてガリーナ・ペトロヴナの丸くて読みやすい字。"
+ },
+ "city.xcl.cf.2": {
+  "ru": "Из ящика на «К» торчит карточка с припиской: «Падал с велосипеда. В последний раз — нет, не в последний». Рядом другая рука: «Шлем выдан».",
+  "en": "From the drawer marked K sticks a card with a note: \"Fell off his bicycle. For the last time? No, not the last.\" In another hand beside it: \"Helmet issued.\"",
+  "ja": "「K」の引き出しからカードが一枚はみ出している。「自転車で転倒。これが最後？ いいえ、最後ではない」。その横に別の筆跡で「ヘルメット貸与」。"
+ },
+ "city.xcl.cf.3": {
+  "ru": "Карточки школьников перевязаны красной резинкой: у них рост и вес за каждый год, а на полях пометки вроде «читает за едой» и «лазает по заборам».",
+  "en": "The schoolchildren's cards are bound with a red elastic band: height and weight for every year, and in the margins notes like \"reads at meals\" and \"climbs fences\".",
+  "ja": "学校の子のカードは赤い輪ゴムでまとめてある。毎年の身長と体重、余白には「食事中に読書」「塀によじのぼる」といった書き込み。"
+ },
+ "city.xcl.cf.4": {
+  "ru": "Самая толстая карточка принадлежит человеку, который, судя по записям, ходит в поликлинику, чтобы с кем-нибудь поговорить. Медсестра пометила: «Выслушать. Чай налить».",
+  "en": "The thickest card belongs to a man who, going by the entries, comes to the clinic to have someone to talk to. The nurse's note: \"Listen. Pour tea.\"",
+  "ja": "いちばん分厚いカードは、記録を見るかぎり、誰かと話したくて診療所に来る人のものだ。看護師さんのメモ。「話を聞く。お茶を出す」"
+ },
+ "city.xcl.mg.1": {
+  "ru": "«Здоровье» прошлого года и «Огонёк» без обложки. Кроссворд в «Здоровье» решён наполовину: «Часть уха, пять букв» — кто-то вписал «мочка» и подчеркнул с удовольствием.",
+  "en": "Last year's \"Health\" and a cover-less \"Ogonyok\". The crossword in \"Health\" is half done: \"Part of the ear, five letters\" and somebody has written \"lobe\" in, underlined with pleasure.",
+  "ja": "去年の『健康』と、表紙のない『オゴニョーク』。『健康』のクロスワードは半分解けている。「耳の一部、四文字」の欄に誰かが「耳たぶ」と書き、満足げに線を引いている。"
+ },
+ "city.xcl.mg.2": {
+  "ru": "В журнале статья «Как научиться ждать». Вырезана ножницами. Остался край страницы и подпись «Продолжение — в следующем номере».",
+  "en": "A magazine piece \"How to learn to wait\" has been cut out with scissors. What is left is the edge of the page and \"To be continued in the next issue\".",
+  "ja": "雑誌の「待つことを学ぶには」という記事がはさみで切り取られている。ページの端と「続きは次号で」だけが残っている。"
+ },
+ "city.xcl.mg.3": {
+  "ru": "Старая газета, сложенная вчетверо: на ней записаны номера телефонов и один рецепт солений. Рецепт, судя по пятнам, проверили.",
+  "en": "An old newspaper folded in four: telephone numbers jotted on it and a recipe for pickles. The stains suggest the recipe has been tested.",
+  "ja": "四つ折りの古新聞。電話番号がいくつか書きとめられ、漬物のレシピもある。しみからして、レシピは実際に試されたらしい。"
+ },
+ "city.xcl.mg.v": {
+  "ru": "Журнал раскрыт на странице «Прививка — не страшно». Поверх картинки кто-то нарисовал карандашом улыбающуюся рожицу в рукаве.",
+  "en": "A magazine lies open at \"A jab isn't scary\". Over the picture someone has pencilled a smiling face on the sleeve.",
+  "ja": "雑誌は「予防接種はこわくない」のページが開いている。絵の袖のところに、誰かが笑った顔を鉛筆で描き足している。"
+ },
+ "city.xcl.rd.1": {
+  "ru": "Из репродуктора тихо тянется утренняя гимнастика: «Глубокий вдох... и ещё глубже...» Половина очереди невольно распрямляет спины.",
+  "en": "The loudspeaker softly draws out the morning exercises: \"Deep breath in... and deeper still...\" Half the queue straightens its back without meaning to.",
+  "ja": "スピーカーから朝の体操が静かに流れる。「深く息を吸って……もっと深く……」。待っている人の半分が、思わず背筋をのばす。"
+ },
+ "city.xcl.rd.2": {
+  "ru": "Радиоточка тихо передаёт новости о выплавке стали и погоде на побережье. Погода интереснее.",
+  "en": "The wall radio quietly gives news of steel output and the weather on the coast. The weather is more interesting.",
+  "ja": "壁のラジオが小さな音で、鉄鋼の生産量と海岸の天気を伝えている。天気のほうが面白い。"
+ },
+ "city.xcl.rd.3": {
+  "ru": "Играет оркестр. Бабушка у стены покачивает носком в такт и делает вид, что не слушает.",
+  "en": "An orchestra is playing. An old woman by the wall taps her toe in time and pretends not to be listening.",
+  "ja": "オーケストラが流れている。壁ぎわのおばあさんは、つま先で拍子をとりながら、聞いていないふりをしている。"
+ },
+ "city.xcl.rd.4": {
+  "ru": "Вечерний концерт по заявкам. Диктор читает письмо: «Для мамы, которая сегодня задержалась в поликлинике. Мы ждём дома».",
+  "en": "The evening request show. The announcer reads a letter: \"For Mum, who is late at the clinic today. We are waiting at home.\"",
+  "ja": "夜のリクエスト番組。アナウンサーが手紙を読む。「今日、診療所で遅くなったお母さんへ。家で待っています」"
+ },
+ "city.xcl.rd.5": {
+  "ru": "Радиоточка молчит. В тишине слышно, как булькает фильтр в аквариуме.",
+  "en": "The wall radio is silent. In the quiet you can hear the aquarium filter bubbling.",
+  "ja": "ラジオは黙っている。静けさのなかで、水槽のフィルターのぷくぷくという音が聞こえる。"
+ },
+ "city.xcl.rg.1": {
+  "ru": "«Талон взяли? Табло видите? Вот на него и смотрите, а на меня потом».",
+  "en": "\"Have you taken a ticket? See the board? Look at that, and at me afterwards.\"",
+  "ja": "「整理券はとりましたか？ 掲示板は見えますか？ まずそちらを見て、私のことはそのあとで」"
+ },
+ "city.xcl.rg.2": {
+  "ru": "«Фамилия? Год рождения? Нет, не мой, ваш».",
+  "en": "\"Surname? Year of birth? No, not mine, yours.\"",
+  "ja": "「お名前は？ 生まれた年は？ いえ、私のではなく、あなたの」"
+ },
+ "city.xcl.rg.3": {
+  "ru": "«Врач принимает до пяти. Не до без пяти пять, а до пяти. Успеете, если не будете читать плакат целиком».",
+  "en": "\"The doctor sees patients until five. Not until five to five, until five. You'll make it if you don't read the whole poster.\"",
+  "ja": "「先生は五時までです。五分前ではなく、五時まで。ポスターを全部読まなければ間に合いますよ」"
+ },
+ "city.xcl.rg.4": {
+  "ru": "«После пяти остаёмся я и градусник. Но градусник у меня хороший, немецкий, довоенный».",
+  "en": "\"After five it is just me and the thermometer. But it's a good thermometer, German, pre-war.\"",
+  "ja": "「五時を過ぎたら私と体温計だけ。でも体温計はいいものですよ、ドイツ製の戦前のです」"
+ },
+ "city.xcl.rg.5": {
+  "ru": "«По субботам врачей нет, я одна за всех. Что болит? Говорите, я запишу и скажу, к кому в понедельник».",
+  "en": "\"On Saturdays there are no doctors, I'm all of them. What hurts? Tell me, I'll write it down and say who to see on Monday.\"",
+  "ja": "「土曜は先生がいないので、私がみんなの代わりです。どこが痛いの？ 言ってくれれば書いておいて、月曜に誰に会えばいいか教えます」"
+ },
+ "city.xcl.rg.6": {
+  "ru": "«Хотите помочь — вон банка. Деньги не мне, а Главврачу. Рыбка, не подумайте чего».",
+  "en": "\"Want to help? There's the jar. The money isn't for me, it's for the Head Doctor. The fish, I mean. Don't get ideas.\"",
+  "ja": "「力になりたいなら、あの瓶があるわ。お金は私にじゃなくて院長によ。金魚のこと、念のため」"
+ },
+ "city.xcl.rg.7": {
+  "ru": "«Спасибо, что заходите. Талоны берите не из жадности, а по порядку. Тогда и на всех хватит».",
+  "en": "\"Thank you for coming in. Take tickets in order, not out of greed. Then there'll be enough for everyone.\"",
+  "ja": "「来てくれてありがとう。整理券は欲張らずに順番にとってね。そうすればみんなに行きわたるから」"
+ },
+ "city.xcl.bl.1": {
+  "ru": "Объявление: «Осень: носки менять, шарф не терять, горло не студить. Консультация участкового — по будням».",
+  "en": "A notice: \"Autumn: change your socks, don't lose your scarf, don't chill your throat. Consultation with the district doctor on weekdays.\"",
+  "ja": "お知らせ。「秋は靴下をはきかえ、マフラーをなくさず、のどを冷やさないこと。地区担当医の相談は平日に」"
+ },
+ "city.xcl.bl.2": {
+  "ru": "«На следующей неделе — Неделя прививок. Запись у регистратуры. Приходить с карточкой и хорошим настроением». Слово «хорошим» подчёркнуто.",
+  "en": "\"Next week is Vaccination Week. Sign up at the reception. Bring your card and a good mood.\" The word \"good\" is underlined.",
+  "ja": "「来週は予防接種週間です。受付で申し込みを。カードと明るい気分を持ってきてください」。「明るい」に下線が引かれている。"
+ },
+ "city.xcl.bl.3": {
+  "ru": "«НЕДЕЛЯ ПРИВИВОК. Кабинет 3, с 9 до 12. Процедура — мгновение, конфета после неё — обязательна». Под текстом нарисована конфета, и её нельзя пропустить.",
+  "en": "\"VACCINATION WEEK. Room 3, from 9 to 12. The procedure takes a moment, the sweet afterwards is compulsory.\" A sweet is drawn under the text, impossible to miss.",
+  "ja": "「予防接種週間。3号室、9時から12時。処置は一瞬、そのあとのあめは必須」。文の下にあめの絵があり、見逃しようがない。"
+ },
+ "city.xcl.bl.4": {
+  "ru": "«Спасибо всем, кто сделал прививку! На листе 112 подписей и один отпечаток носа».",
+  "en": "\"Thank you to everyone who had their jab! The sheet bears 112 signatures and one nose print.\"",
+  "ja": "「予防接種を受けたみなさん、ありがとう！ 用紙には112人の署名と鼻の跡がひとつ」"
+ },
+ "city.xcl.bl.5": {
+  "ru": "«Зима: гулять до обеда, пить горячий чай после. Берегите уши: шапка не украшение».",
+  "en": "\"Winter: walks before lunch, hot tea afterwards. Mind your ears: a hat is not an ornament.\"",
+  "ja": "「冬は昼前に散歩し、そのあと熱いお茶を。耳を大事に。帽子は飾りではありません」"
+ },
+ "city.xcl.bl.6": {
+  "ru": "«Весна и лето: солнце в меру, вода не ледяная, велосипед со шлемом (шлемы выдаём в регистратуре)».",
+  "en": "\"Spring and summer: sun in moderation, water not icy, bicycles with helmets (helmets issued at reception).\"",
+  "ja": "「春と夏は日光はほどほど、水は冷たすぎず、自転車にはヘルメット（受付で貸し出します）」"
+ },
+ "city.reg.clinic.1": {
+  "ru": "Объявление от руки: «Аквариум в зале — не лечебный, но успокаивает. По стеклу не стучать. Рыбка называется Главврач, это дети так назвали. Кормит её Галина Петровна в половине девятого. Регистратура».",
+  "en": "A handwritten notice: \"The aquarium in the hall is not medicinal but soothing. Do not tap the glass. The fish is called the Head Doctor, the children named it so. Galina Petrovna feeds it at half past eight. Reception.\"",
+  "ja": "手書きのお知らせ。「待合室の水槽は治療用ではありませんが、気持ちが落ち着きます。ガラスはたたかないで。金魚の名前は院長、子どもたちがつけました。餌やりはガリーナ・ペトロヴナが八時半に。受付」"
+ },
+ "city.reg.clinic.2": {
+  "ru": "Записка сестры: «Лейка у аквариума. Воду надо отстоять сутки, поэтому набираем с вечера. Дежурной — не забывать, иначе рыбка обидится, а у неё характер».",
+  "en": "A note from the nurse: \"The watering can is by the aquarium. Water must settle for a day, so we draw it the evening before. Whoever is on duty, don't forget, or the fish will take offence, and it has a temper.\"",
+  "ja": "看護師さんのメモ。「水槽のそばにじょうろがあります。水は一日くみ置きするので前の晩にくんでください。当番の人は忘れないで。金魚が怒ります。気難しいので」"
+ },
+ "city.reg.clinic.3": {
+  "ru": "«Вчера Главврач не ел. Галина Петровна просидела с ним полвечера. Сегодня ест. Спасибо всем, кто спрашивал».",
+  "en": "\"Yesterday the Head Doctor wouldn't eat. Galina Petrovna sat with him half the evening. Today he is eating. Thank you to everyone who asked.\"",
+  "ja": "「昨日、院長は餌を食べませんでした。ガリーナ・ペトロヴナが夜の半分ほどそばについていました。今日は食べています。聞いてくださったみなさん、ありがとう」"
+ },
+ "city.reg.clinic.4": {
+  "ru": "«Кто кормил рыбку печеньем? Вода мутнеет. Печеньем рыбок не кормить. Они и так зловредные».",
+  "en": "\"Who has been feeding the fish biscuits? The water is clouding. Do not feed fish biscuits. They are spiteful enough as it is.\"",
+  "ja": "「金魚にクッキーをあげたのは誰ですか？ 水が濁ります。クッキーはあげないでください。ただでさえ金魚は意地悪なのですから」"
+ },
+ "city.reg.clinic.5": {
+  "ru": "«Грустная новость: у Главврача больше нет подруги. Была вторая рыбка, не пережила переезда. Собираем на нового друга. Банка на столе у регистратуры. Сколько соберём, столько и будет».",
+  "en": "\"Sad news: the Head Doctor has lost his companion. There was a second fish; it did not survive the move. We are collecting for a new friend. The jar is on the reception desk. We'll get as many as we can pay for.\"",
+  "ja": "「悲しいお知らせ。院長の連れがいなくなりました。二匹目の金魚は引っ越しに耐えられませんでした。新しい友だちのためにカンパを集めます。瓶は受付の机の上。集まっただけ迎えます」"
+ },
+ "city.reg.clinic.6": {
+  "ru": "«В банке на сегодня сорок копеек и одна пуговица. Пуговицу оставляем: подарок рыбе».",
+  "en": "\"The jar today holds forty kopecks and one button. We keep the button: a present for the fish.\"",
+  "ja": "「今日の瓶には四十コペイカとボタンがひとつ。ボタンは残します。金魚へのプレゼントです」"
+ },
+ "city.reg.clinic.7": {
+  "ru": "«С рынка обещали привезти двух гуппи в пятницу. Главврач пока не знает. Ему не говорить».",
+  "en": "\"The market has promised two guppies on Friday. The Head Doctor doesn't know yet. Don't tell him.\"",
+  "ja": "「市場から金曜にグッピーを二匹届けてもらえる予定です。院長はまだ知りません。言わないでください」"
+ },
+ "quest.clinic_fish.title": {
+  "ru": "Друг для Главврача",
+  "en": "A friend for the Head Doctor",
+  "ja": "院長に友だちを"
+ },
+ "quest.clinic_fish.desc": {
+  "ru": "В поликлинике живёт одна рыбка, которую дети зовут Главврачом. Говорят, ей одиноко.",
+  "en": "A single fish lives in the clinic, and the children call it the Head Doctor. They say it is lonely.",
+  "ja": "診療所には金魚が一匹いて、子どもたちは院長と呼んでいる。さみしそうだという。"
+ },
+ "quest.clinic_fish.notice.log": {
+  "ru": "На доске в зале висит записка про рыбку. Надо прочитать, что просят.",
+  "en": "A note about the fish hangs on the board in the hall. I should read what they ask.",
+  "ja": "待合室の掲示板に金魚についてのメモが貼ってある。何を頼まれているのか読んでみよう。"
+ },
+ "quest.clinic_fish.read.obj": {
+  "ru": "Прочитать записку на доске",
+  "en": "Read the note on the board",
+  "ja": "掲示板のメモを読む"
+ },
+ "quest.clinic_fish.bottle.log": {
+  "ru": "Воду для аквариума нужно взять своей. В аптечном киоске продают воду.",
+  "en": "I have to bring my own water for the aquarium. The pharmacy window sells water.",
+  "ja": "水槽に足す水は自分で用意しないといけない。薬局の窓口で水を売っている。"
+ },
+ "quest.clinic_fish.water.obj": {
+  "ru": "Достать бутылку воды",
+  "en": "Get a bottle of water",
+  "ja": "水のボトルを手に入れる"
+ },
+ "quest.clinic_fish.pour.log": {
+  "ru": "Лейка стоит у аквариума. Надо долить воды.",
+  "en": "The watering can is beside the aquarium. Time to top up the water.",
+  "ja": "じょうろは水槽のそばにある。水を足そう。"
+ },
+ "quest.clinic_fish.pour.obj": {
+  "ru": "Долить воду в аквариум",
+  "en": "Top up the aquarium",
+  "ja": "水槽に水を足す"
+ },
+ "quest.clinic_fish.jar.log": {
+  "ru": "Осталось опустить монетку в банку на столе регистратуры.",
+  "en": "Only the jar on the reception desk is left: drop a coin in.",
+  "ja": "あとは受付の机の上の瓶にコインを入れるだけ。"
+ },
+ "quest.clinic_fish.jar.obj": {
+  "ru": "Опустить монетку в банку",
+  "en": "Drop a coin in the jar",
+  "ja": "瓶にコインを入れる"
+ },
+ "quest.clinic_fish.done": {
+  "ru": "Банка звякнула. Медсестра кивнула и сунула мне пару рублей на проезд: «Не за деньги, за участие». Главврач, по-моему, проплыл мимо чуть бодрее.",
+  "en": "The jar clinked. The nurse nodded and pressed a few roubles into my hand for the fare: \"Not for the money, for the care.\" The Head Doctor, I think, swam by a little more briskly.",
+  "ja": "瓶がちゃりんと鳴った。看護師さんはうなずいて、交通費にと数ルーブルを握らせてくれた。「お金のためじゃなく、気持ちのお礼よ」。院長は、心なしか少し元気に泳いでいった。"
+ },
+ "quest.clinic_ticket.title": {
+  "ru": "Талон к зубному",
+  "en": "A ticket to the dentist",
+  "ja": "歯医者の整理券"
+ },
+ "quest.clinic_ticket.desc": {
+  "ru": "У двери кабинета 4 стоит ровный стул. Никто на него не садится. Любопытно почему.",
+  "en": "There is a squared-up chair by the door of Room 4. Nobody sits on it. I wonder why.",
+  "ja": "4号室のドアのそばに、まっすぐ置かれた椅子がある。誰も座らない。なぜだろう。"
+ },
+ "quest.clinic_ticket.prep.log": {
+  "ru": "Прежде чем подходить к той двери, нужно привести себя в порядок: измерить рост и давление у сестры.",
+  "en": "Before going near that door I should get myself in order: have the nurse take my height and blood pressure.",
+  "ja": "あのドアに近づく前に身だしなみを整えよう。看護師さんに身長と血圧をはかってもらう。"
+ },
+ "quest.clinic_ticket.height.obj": {
+  "ru": "Измерить рост у стены",
+  "en": "Measure my height at the wall",
+  "ja": "壁の目盛りで身長をはかる"
+ },
+ "quest.clinic_ticket.bp.obj": {
+  "ru": "Измерить давление",
+  "en": "Have my blood pressure taken",
+  "ja": "血圧をはかってもらう"
+ },
+ "quest.clinic_ticket.door.log": {
+  "ru": "Теперь можно постоять у двери стоматолога и прочитать табличку. Просто прочитать.",
+  "en": "Now I can stand by the dentist's door and read the plate. Just read it.",
+  "ja": "いよいよ歯科のドアの前に立って、札を読もう。読むだけだ。"
+ },
+ "quest.clinic_ticket.door.obj": {
+  "ru": "Прочитать табличку на двери кабинета 4",
+  "en": "Read the plate on the door of Room 4",
+  "ja": "4号室のドアの札を読む"
+ },
+ "quest.clinic_ticket.done": {
+  "ru": "Табличка как табличка. Но когда за дверью зазвенели инструменты, мне захотелось пересесть. Утешаюсь тем, что давление у меня как у космонавта.",
+  "en": "A plate like any plate. But when the instruments clinked behind the door I wanted to move seats. I console myself that my blood pressure is an astronaut's.",
+  "ja": "札は普通の札だ。でもドアの向こうで器具が鳴ったとき、席を移りたくなった。血圧は宇宙飛行士並みだと、自分に言い聞かせる。"
+ },
+ "city.coll.clinic_card.title": {
+  "ru": "Медицинская карта: печати кабинетов",
+  "en": "Medical card: the rooms' stamps",
+  "ja": "診察カード：各室のスタンプ"
+ },
+ "city.xcl.closed_any.1": {
+  "ru": "Темно и тихо. За стеклянной дверью сторож шуршит газетой. Ночью поликлиника просто тихий дом, где пахнет йодом и чуть-чуть валерьянкой.",
+  "en": "Dark and quiet. Behind the glass door the porter rustles a newspaper. At night the clinic is just a quiet house that smells of iodine and a little of valerian.",
+  "ja": "暗くて静かだ。ガラス戸の向こうで、夜勤の守衛が新聞をがさがさ鳴らしている。夜の診療所は、ヨードとほんの少しのカノコソウの匂いがする静かな家だ。"
+ },
+ "city.xcl.closed_any.2": {
+  "ru": "Воскресенье: поликлиника отдыхает. На двери записка: «Скорая помощь — 03. Врачи тоже люди и вернутся в понедельник».",
+  "en": "Sunday: the clinic is resting. A note on the door: \"Ambulance: 03. Doctors are people too, and will be back on Monday.\"",
+  "ja": "日曜日、診療所はお休み。ドアに貼り紙。「救急は03。先生たちも人間です。月曜に戻ります」"
+ },
+ "city.xcl.closed_any.3": {
+  "ru": "Приём сейчас закончился: врачи разошлись, остались запах йода и табличка с часами приёма.",
+  "en": "Appointments are over for now: the doctors have gone home, leaving the smell of iodine and a plate with the hours.",
+  "ja": "今は診察時間外。先生たちは帰ってしまって、ヨードの匂いと診察時間の札だけが残っている。"
+ },
+ "city.xcl.closed_seat.1": {
+  "ru": "Стулья стоят спинками к стене. Ночью очередь существует только в журнале сторожа: там записано, кто завтра первый.",
+  "en": "The chairs stand with their backs to the wall. At night the queue exists only in the porter's log: it says who is first tomorrow.",
+  "ja": "椅子は背を壁に向けて並んでいる。夜の行列は守衛の日誌の中だけ。明日の一番は誰か、そこに書いてある。"
+ },
+ "city.xcl.closed_seat.2": {
+  "ru": "Сидеть некому и незачем: сегодня приёма нет. Стулья отдыхают вместе с врачами.",
+  "en": "Nobody to sit with and no reason to: there is no appointment today. The chairs rest along with the doctors.",
+  "ja": "座る人も理由もない。今日は診察がないのだ。椅子も先生たちと一緒に休んでいる。"
+ },
+ "city.xcl.closed_seat.3": {
+  "ru": "На этот стул сейчас не сесть: приём закончен, всё строго по расписанию.",
+  "en": "Nobody sits here now: appointments are over, everything strictly by the timetable.",
+  "ja": "いまは座れない。診察は終わり、すべて時間割どおりだ。"
+ },
+ "city.xcl.closed_counter.1": {
+  "ru": "За стеклом окошка темно. Ночной сторож приоткрывает один глаз: «Приём с восьми. Приходите утром».",
+  "en": "It is dark behind the little window. The night porter opens one eye: \"Appointments from eight. Come in the morning.\"",
+  "ja": "窓口の向こうは暗い。夜勤の守衛が片目を開ける。「診察は八時から。朝また来なさい」"
+ },
+ "city.xcl.closed_counter.2": {
+  "ru": "Окошко закрыто. На двери объявление: «Приём — с понедельника по субботу, с восьми до восьми».",
+  "en": "The window is shut. A notice on the door: \"Open Monday to Saturday, eight to eight.\"",
+  "ja": "窓口は閉まっている。ドアの掲示。「診察は月曜から土曜、八時から二十時まで」"
+ },
+ "city.xcl.closed_counter.3": {
+  "ru": "Врач ушёл в пять. На столе записка: «Медсестра на месте до восьми, спрашивайте у неё».",
+  "en": "The doctor left at five. A note on the desk: \"The nurse is here until eight, ask her.\"",
+  "ja": "先生は五時に帰った。机に書き置き。「看護師は八時までいます。看護師にお尋ねください」"
+ },
+ "city.xcl.closed_counter.4": {
+  "ru": "Здесь сейчас никого нет. Табличка на столе: «Вернусь».",
+  "en": "Nobody is here at the moment. A little sign on the desk: \"Back soon.\"",
+  "ja": "いまは誰もいない。机の札には「すぐ戻ります」。"
+ },
+ "city.xcl.clock.1": {
+  "ru": "Часы над регистратурой показывают {time}. Приём с восьми до восьми, кроме воскресенья.",
+  "en": "The clock over the registry says {time}. Appointments eight to eight, except Sundays.",
+  "ja": "受付の上の時計は{time}を指している。診察は八時から二十時まで、日曜はお休み。"
+ },
+ "city.xcl.clock.2": {
+  "ru": "{time}. Утро в поликлинике самое людное: у каждого кабинета очередь, и у каждой очереди своя версия, кого позовут первым.",
+  "en": "{time}. Mornings are busiest: every door has a queue, and every queue its own theory of who gets called first.",
+  "ja": "{time}。診療所は朝がいちばん混む。どの部屋の前にも列があって、誰が最初に呼ばれるか、列ごとに説がある。"
+ },
+ "city.xcl.clock.3": {
+  "ru": "{time}. К вечеру врачи уходят, остаётся медсестра. Кому надо, поторопитесь.",
+  "en": "{time}. By evening the doctors go home and only the nurse stays. If you need something, hurry.",
+  "ja": "{time}。夕方には先生たちが帰り、看護師だけが残る。用のある人は急いで。"
+ },
+ "city.xcl.clock.4": {
+  "ru": "{time}. Приём закончен. Ночью часы тикают громче, чем днём: им не мешает очередь.",
+  "en": "{time}. Appointments are over. At night the clock ticks louder than by day: no queue to drown it.",
+  "ja": "{time}。診察は終わり。夜の時計は昼より大きな音で時を刻む。行列がじゃまをしないからだ。"
+ },
+ "city.xcl.p.card": {
+  "ru": "E — открыть медицинскую карту",
+  "en": "E — open the medical card",
+  "ja": "E：診察カードを開く"
+ },
+ "city.xcl.card_book.1": {
+  "ru": "На обложке «Медицинская карта». Внутри пять пустых квадратиков для печатей: терапевт, окулист, детский врач, прививочный столик, стенка.",
+  "en": "\"Medical card\" on the cover. Inside, five empty squares for stamps: therapist, eye doctor, children's doctor, the vaccination table, the wall bars.",
+  "ja": "表紙には「診察カード」。中にはスタンプ用の空欄が五つ。内科、眼科、小児科、予防接種台、肋木。"
+ },
+ "city.xcl.card_book.2": {
+  "ru": "Печать терапевта: круглая, фиолетовая, «Осмотрен. Здоров».",
+  "en": "The therapist's stamp: round, violet, \"Examined. Healthy.\"",
+  "ja": "内科のスタンプ。丸くて紫色で、「診察済み・健康」。"
+ },
+ "city.xcl.card_book.3": {
+  "ru": "Печать окулиста: две буквы «Ш» и «Б» и подпись, похожая на очки.",
+  "en": "The eye doctor's stamp: two letters, \"Sh\" and \"B\", and a signature that looks like spectacles.",
+  "ja": "眼科のスタンプ。「シ」と「ブ」の二文字と、メガネのような形のサイン。"
+ },
+ "city.xcl.card_book.4": {
+  "ru": "Печать детского врача: мордочка жирафа. Рядом от руки дописано: «растёт!».",
+  "en": "The children's doctor's stamp: a giraffe's face. Beside it, in pen: \"growing!\"",
+  "ja": "小児科のスタンプはキリンの顔。横にペンで「成長中！」"
+ },
+ "city.xcl.card_book.5": {
+  "ru": "Печать прививочного столика: синяя капля. «Всё по графику».",
+  "en": "The vaccination table's stamp: a blue drop. \"All on schedule.\"",
+  "ja": "予防接種台のスタンプは青いしずく。「予定どおり」"
+ },
+ "city.xcl.card_book.6": {
+  "ru": "Печать лечебной физкультуры: человечек, висящий на шведской стенке.",
+  "en": "The physio stamp: a little man hanging off the wall bars.",
+  "ja": "運動療法のスタンプ。肋木にぶら下がる小さな人。"
+ },
+ "city.xcl.card_book.7": {
+  "ru": "Все пять квадратиков заполнены. Карточка теперь толще и серьёзнее. Регистраторше понравится.",
+  "en": "All five squares are filled. The card is thicker and more serious now. The registrar will like it.",
+  "ja": "五つの欄がすべて埋まった。カードは厚みを増して、ちょっと貫禄がある。受付の人も喜ぶだろう。"
+ },
+ "city.xcl.rgx.1": {
+  "ru": "«Новенький? Тогда сначала карточка. Заведём, будет что штамповать. Печати ставят в кабинетах, не у меня: я только считаю».",
+  "en": "\"New here? Card first. We'll start one, so there's something to stamp. The rooms do the stamping, not me: I only count.\"",
+  "ja": "「初めてですか？ ではまずカードを。作っておけば、スタンプを押すところができます。押すのは各部屋で、私は数えるだけ」"
+ },
+ "city.xcl.rgx.2": {
+  "ru": "«Талон не теряйте. Без номера вы тут просто хороший человек, а с номером уже пациент».",
+  "en": "\"Don't lose the ticket. Without a number you're just a nice person here; with one, you're a patient.\"",
+  "ja": "「整理券をなくさないでね。番号がなければここではただのいい人、番号があれば患者さんです」"
+ },
+ "city.xcl.rgx.3": {
+  "ru": "«Табло над проходом: цифра — кого зовут. Не обижайтесь, если зовут не по имени. У нас так принято».",
+  "en": "\"The board over the passage: the number is who's being called. Don't take offence if it isn't a name. That's how we do it here.\"",
+  "ja": "「通路の上の表示板の数字が、呼ばれる番号です。名前じゃなくても怒らないでね。ここではそういうものなので」"
+ },
+ "city.xcl.rgx.4": {
+  "ru": "«В любой кабинет, какой нужен. Терапевт слушает, окулист смотрит, у детского доктора жираф. Все хорошие, каждый по-своему».",
+  "en": "\"Any room you need. The therapist listens, the eye doctor looks, the children's doctor has a giraffe. All good, each in their own way.\"",
+  "ja": "「必要な部屋にどうぞ。内科は聴いて、眼科は見て、小児科にはキリンがいます。みんな、それぞれにいい先生です」"
+ },
+ "city.xcl.rgx.5": {
+  "ru": "«Две печати уже стоят? Дело идёт. Пять — и карточку в рамку».",
+  "en": "\"Two stamps already? It's coming along. Five, and the card goes in a frame.\"",
+  "ja": "「もうスタンプ二つ？ いい調子ね。五つ揃ったら額に入れましょう」"
+ },
+ "city.xcl.rgx.6": {
+  "ru": "«Все пять! Карточка у вас теперь красивее, чем у меня самой. Берегите».",
+  "en": "\"All five! Your card is lovelier than my own now. Take care of it.\"",
+  "ja": "「五つ全部！ あなたのカードは私のより立派になったわね。大事にして」"
+ },
+ "city.xcl.rgx.7": {
+  "ru": "«Холодно, а народу, как в баню. Все приходят погреться и заодно проверить горло». Очередь действительно длиннее обычного.",
+  "en": "\"It's freezing and the place is packed like a bathhouse. Everyone comes to warm up and, while they're at it, check their throat.\" The queue is indeed longer than usual.",
+  "ja": "「寒いのに銭湯みたいな混みようよ。みんな暖まりに来て、ついでに喉を診てもらうの」。たしかに、行列がいつもより長い。"
+ },
+ "city.xcl.rgx.8": {
+  "ru": "«Праздник, так что штампуем вдвое веселее. Но очередь та же: болезни выходных не берут».",
+  "en": "\"A holiday, so we stamp twice as cheerfully. But the queue is the same: ailments take no days off.\"",
+  "ja": "「お祝いの日だから、スタンプも倍の明るさで押すわ。でも行列は同じ。病気は休みを取らないの」"
+ },
+ "city.xcl.nurse_talk.1": {
+  "ru": "«Вы ко мне? Прививочный столик здесь, у кулера. Не бойтесь, сегодня только осмотр. Остальное по графику».",
+  "en": "\"Here for me? The vaccination table's here by the cooler. Don't worry, only a check today. The rest is on schedule.\"",
+  "ja": "「私に御用？ 予防接種のテーブルは、ウォータークーラーのそばよ。心配しないで、今日は診るだけ。あとは予定どおりね」"
+ },
+ "city.xcl.nurse_talk.2": {
+  "ru": "«В холодильнике прививки и мой бутерброд. Прививки наверху, бутерброд внизу. Один раз перепутала. Больше не путаю».",
+  "en": "\"The fridge holds the vaccines and my sandwich. Vaccines on top, sandwich below. Mixed them up once. Never again.\"",
+  "ja": "「冷蔵庫にはワクチンと私のサンドイッチ。ワクチンが上、サンドイッチが下。一度間違えたけど、もう間違えないわ」"
+ },
+ "city.xcl.nurse_talk.3": {
+  "ru": "«Очередь не потерянное время. Это единственное место, где взрослые читают плакаты до конца».",
+  "en": "\"A queue isn't lost time. It's the one place grown-ups read the posters to the end.\"",
+  "ja": "「待ち時間は無駄じゃないのよ。大人がポスターを最後まで読む、唯一の場所だもの」"
+ },
+ "city.xcl.nurse_talk.4": {
+  "ru": "«Шведская стенка у окна не для красоты. После простуды: десять приседаний, потом плечи не болят».",
+  "en": "\"The wall bars by the window aren't for show. After a cold: ten squats and your shoulders stop aching.\"",
+  "ja": "「窓際の肋木は飾りじゃないわ。風邪のあとはスクワット十回、そうすると肩が痛くならないの」"
+ },
+ "city.xcl.nurse_talk.5": {
+  "ru": "«Дождь, а у нас сухо и чай горячий. Садитесь, обсохните, потом разберёмся, что у вас».",
+  "en": "\"Rain outside, but it's dry in here and the tea is hot. Sit, dry off, then we'll see what's wrong.\"",
+  "ja": "「外は雨でも、ここは乾いていてお茶は熱いわ。座って乾かして、それから何が悪いか見ましょう」"
+ },
+ "city.xcl.nurse_talk.6": {
+  "ru": "«Праздник, а я на смене. Ничего, зато в холодильнике торт: на верхней полке, вместе с прививками».",
+  "en": "\"A holiday and I'm on shift. Never mind, there's cake in the fridge: on the top shelf, with the vaccines.\"",
+  "ja": "「お祝いの日なのに勤務よ。でもいいの、冷蔵庫にケーキがあるから。ワクチンと一緒の上の段」"
+ },
+ "city.xcl.pharm_talk.1": {
+  "ru": "«Рецепт или так? Так тоже можно, но только то, что без рецепта: чай, вода, леденцы».",
+  "en": "\"A prescription, or just browsing? Either's fine, but without one it's only tea, water and sweets.\"",
+  "ja": "「処方箋ですか、それとも普通に？ 処方箋がなければお茶と水と飴だけですよ」"
+ },
+ "city.xcl.pharm_talk.2": {
+  "ru": "«Весы старые, но верные. Двадцать лет не сбиваются: я их не трогаю, они меня уважают».",
+  "en": "\"The scale is old but true. Twenty years it hasn't drifted: I don't touch it, it respects me.\"",
+  "ja": "「秤は古いけれど正確です。二十年狂いません。私が触らないので、向こうも私を信頼してくれるんです」"
+ },
+ "city.xcl.pharm_talk.3": {
+  "ru": "«Банки на полке подписаны по-латыни. Читать необязательно, достаточно знать, что в какой».",
+  "en": "\"The jars on the shelf are labelled in Latin. No need to read them, just to know what's in which.\"",
+  "ja": "「棚の瓶にはラテン語のラベル。読めなくても、どれに何が入っているか知っていればいいんです」"
+ },
+ "city.xcl.pharm_talk.4": {
+  "ru": "«Мёд от кашля, калина от простуды, тишина от нервов. Тишина бесплатная, берите».",
+  "en": "\"Honey for a cough, viburnum for a cold, quiet for the nerves. Quiet is free, help yourself.\"",
+  "ja": "「咳にははちみつ、風邪にはガマズミの実、神経には静けさ。静けさはただですから、どうぞ」"
+ },
+ "city.xcl.pharm_talk.5": {
+  "ru": "«В дождь самый ходовой день: чай разбирают, зонтики сохнут у двери. Не наступите в лужицу».",
+  "en": "\"Rain is our busiest day: the tea goes, the umbrellas dry by the door. Mind the puddle.\"",
+  "ja": "「雨の日はいちばん忙しいんです。お茶が売れて、傘が入口で乾く。水たまりに気をつけて」"
+ },
+ "city.xcl.pharm_talk.6": {
+  "ru": "«Мороз: чай, конфеты, горячее питьё. Вот и вся фармакология».",
+  "en": "\"Frost: tea, sweets, hot drinks. That's all of pharmacology.\"",
+  "ja": "「寒い日はお茶に飴に温かい飲み物。薬学なんてそんなものです」"
+ },
+ "city.xcl.doc0_talk.1": {
+  "ru": "«Проходите, садитесь. Что болит? Ничего? Тогда вы редкий гость».",
+  "en": "\"Come in, sit down. What hurts? Nothing? Then you're a rare visitor.\"",
+  "ja": "「どうぞ、座って。どこが痛いの？ 何も？ それは珍しいお客さんね」"
+ },
+ "city.xcl.doc0_talk.2": {
+  "ru": "«Главное лекарство — режим: вовремя ложиться, вовремя вставать, вовремя обедать. Остальное приправа».",
+  "en": "\"The main medicine is routine: bed on time, up on time, lunch on time. The rest is seasoning.\"",
+  "ja": "「いちばんの薬は規則正しさ。寝る時間、起きる時間、お昼の時間。あとは薬味みたいなものよ」"
+ },
+ "city.xcl.doc0_talk.3": {
+  "ru": "«От осени три правила: градусник под мышку, горло «а-а-а», шарф на шею. Шарф самое важное».",
+  "en": "\"Three rules against autumn: thermometer under the arm, throat 'aah', scarf on the neck. The scarf matters most.\"",
+  "ja": "「秋への三か条。体温計はわきの下、喉は『あー』、マフラーは首に。いちばん大事なのはマフラー」"
+ },
+ "city.xcl.doc0_talk.4": {
+  "ru": "«Стетоскоп мне достался ещё с института. Он знает обо мне больше, чем я сама».",
+  "en": "\"I got this stethoscope back at medical school. It knows more about me than I do.\"",
+  "ja": "「この聴診器は学生のころからの付き合いなの。私のことは、私よりよく知っているわ」"
+ },
+ "city.xcl.doc0_talk.5": {
+  "ru": "«Дождь: кашель пойдёт по городу, как слух. Вы шарф взяли?»",
+  "en": "\"Rain: a cough will go round town like a rumour. Did you bring a scarf?\"",
+  "ja": "「雨だ。咳がうわさのように町を回るわよ。マフラーは持ってきた？」"
+ },
+ "city.xcl.doc1_talk.1": {
+  "ru": "«Садитесь на стул у красной линии. Закройте левый глаз. Нет, не ладонью, вот этой лопаткой».",
+  "en": "\"Sit on the chair by the red line. Cover your left eye. No, not with your palm, with this paddle.\"",
+  "ja": "「赤い線のそばの椅子に座って。左目を隠して。手のひらじゃなく、このへらでね」"
+ },
+ "city.xcl.doc1_talk.2": {
+  "ru": "«Вблизи мы видим почти все. Проверять надо вдаль: пять метров от ленты на полу до таблицы».",
+  "en": "\"Nearly everyone sees up close. It's the distance that needs testing: five metres, from the tape on the floor to the chart.\"",
+  "ja": "「近くは、たいていの人がよく見える。調べるのは遠く。床のテープから表まで五メートルだ」"
+ },
+ "city.xcl.doc1_talk.3": {
+  "ru": "«Очки не слабость, а подсказка. Мир на самом деле резкий, просто не всем об этом сообщили».",
+  "en": "\"Glasses aren't a weakness, they're a hint. The world really is sharp, it's just that nobody told some of us.\"",
+  "ja": "「メガネは弱さじゃなくてヒントだよ。世界は本当はくっきりしている。ただ、みんなに知らされていないだけ」"
+ },
+ "city.xcl.doc1_talk.4": {
+  "ru": "«Если читать в темноте, глаза не портятся. Портится настроение. Лампа включается у окна, вон выключатель».",
+  "en": "\"Reading in the dark won't ruin your eyes. It ruins your mood. The lamp goes on by the window, there's the switch.\"",
+  "ja": "「暗い所で読んでも目は悪くならない。悪くなるのは気分のほうだ。明かりは窓のそばのスイッチだよ」"
+ },
+ "city.xcl.doc1_talk.5": {
+  "ru": "«В дождь все щурятся одинаково, и у здоровых, и у очкариков. Справедливая погода».",
+  "en": "\"In the rain everyone squints the same, the sharp-eyed and the bespectacled alike. A fair kind of weather.\"",
+  "ja": "「雨の日はみんな同じように目を細める。目のいい人もメガネの人も。公平な天気だ」"
+ },
+ "city.xcl.doc2_talk.1": {
+  "ru": "«Привет! Рост мерим у жирафа, вес потом, когда игрушки разберём».",
+  "en": "\"Hi there! We measure height at the giraffe, weight later, once we've sorted the toys.\"",
+  "ja": "「こんにちは！ 背はキリンのところで測るよ。体重はおもちゃを片付けてからね」"
+ },
+ "city.xcl.doc2_talk.2": {
+  "ru": "«Конфета у меня в столе есть. Не за храбрость, а за то, что пришёл вовремя. Это тоже подвиг».",
+  "en": "\"There's a sweet in my desk. Not for bravery, but for turning up on time. That's a feat too.\"",
+  "ja": "「机にあめがあるよ。勇気のごほうびじゃなくて、時間どおりに来たごほうび。それもりっぱな手柄さ」"
+ },
+ "city.xcl.doc2_talk.3": {
+  "ru": "«Линейка вот эта. Поймал, значит, рефлексы в порядке. Не поймал, значит, думал о чём-то хорошем».",
+  "en": "\"This ruler here. Catch it and your reflexes are fine. Miss it and you were thinking of something nice.\"",
+  "ja": "「このものさしだよ。つかめたら反射神経は上々。つかめなかったら、何かいいことを考えていたんだ」"
+ },
+ "city.xcl.doc2_talk.4": {
+  "ru": "«Над кушеткой «карусель». Малыши на неё смотрят и забывают плакать. Взрослые, кстати, тоже».",
+  "en": "\"The mobile above the couch. Babies watch it and forget to cry. Grown-ups do too, by the way.\"",
+  "ja": "「寝台の上のメリーゴーラウンドさ。赤ちゃんは見ると泣くのを忘れる。大人もだよ、実は」"
+ },
+ "city.xcl.doc2_talk.5": {
+  "ru": "«В дождь дети приходят в сапогах. Сапоги в углу, игрушки на ковре, лужи пока снаружи».",
+  "en": "\"In the rain the children come in wellies. Wellies in the corner, toys on the rug, puddles outside for now.\"",
+  "ja": "「雨の日の子どもたちは長靴で来る。長靴は隅に、おもちゃは絨毯に、水たまりは外に、だ」"
+ },
+ "city.xcl.p.listen": {
+  "ru": "E — послушать лёгкие",
+  "en": "E — have my chest listened to",
+  "ja": "E：胸の音を聴いてもらう"
+ },
+ "city.xcl.listen.1": {
+  "ru": "Врач греет стетоскоп между ладонями. «Дышите. Не дышите. Дышите». Слышно только своё сердце, оно, кажется, торопится.",
+  "en": "The doctor warms the stethoscope between her palms. \"Breathe. Hold it. Breathe.\" All I can hear is my own heart, which seems to be in a hurry.",
+  "ja": "先生は聴診器を両手で温める。「吸って。止めて。吸って」。聞こえるのは自分の心臓の音だけで、なんだか急いでいる。"
+ },
+ "city.xcl.listen.2": {
+  "ru": "«Чисто, — говорит терапевт. — Лёгкие, как у певчей птицы. Только шарф носите». Печать в карточку ложится с глухим «пум».",
+  "en": "\"Clear,\" says the therapist. \"Lungs like a songbird's. Just wear a scarf.\" The stamp lands on the card with a soft thump.",
+  "ja": "「きれいな音だ」と内科の先生。「鳴き鳥の肺ね。マフラーだけは忘れずに」。カードにスタンプがぽんと押される。"
+ },
+ "city.xcl.listen.3": {
+  "ru": "После обеда в кабинете пахнет чаем с лимоном. Стетоскоп тёплый, пальцы тёплые. Всё как надо.",
+  "en": "After lunch the room smells of tea with lemon. The stethoscope is warm, the fingers are warm. Just as it should be.",
+  "ja": "昼を過ぎると、診察室はレモンティーの匂いがする。聴診器もあたたかい、指もあたたかい。申し分ない。"
+ },
+ "city.xcl.listen.4": {
+  "ru": "С улицы пахнет мокрым плащом. «Вы тоже под дождь попали? Тогда слушаем особенно внимательно».",
+  "en": "A smell of wet raincoat from outside. \"Caught in the rain too? Then we'll listen extra carefully.\"",
+  "ja": "外から濡れたレインコートの匂い。「あなたも雨に降られたの？ それならいつもより念入りに聴きましょう」"
+ },
+ "city.xcl.listen.5": {
+  "ru": "На столе у врача праздничная открытка. «В праздники тоже болеют. Чаще просто хотят, чтобы кто-то послушал».",
+  "en": "A holiday card stands on the doctor's desk. \"People fall ill on holidays too. More often they just want someone to listen.\"",
+  "ja": "机の上にお祝いのカードが置いてある。「祝日にも具合は悪くなる。たいていは、誰かに聴いてほしいだけなのよ」"
+ },
+ "city.xcl.remedies.1": {
+  "ru": "В стеклянном шкафчике: градусники в стакане, горчичники стопкой, йод, зелёнка. Каждый ярлычок написан от руки, и почерк у всех один.",
+  "en": "In the glass cabinet: thermometers in a tumbler, a stack of mustard plasters, iodine, brilliant green. Every label hand-written, all in one hand.",
+  "ja": "ガラスの戸棚には、コップに立てた体温計、重ねたカラシ湿布、ヨード、ブリリアントグリーン。ラベルはすべて手書きで、筆跡は一つだ。"
+ },
+ "city.xcl.remedies.2": {
+  "ru": "На нижней полке аккуратно сложены шерстяные носки в пакетиках. На пакетиках написано: «Выдаются при температуре от 37,5».",
+  "en": "On the bottom shelf, woollen socks in neat bags. The bags say: \"Issued from a temperature of 37.5.\"",
+  "ja": "下の段には、ウールの靴下が袋に入って並んでいる。袋には「37.5度から支給」と書いてある。"
+ },
+ "city.xcl.remedies.3": {
+  "ru": "Рядом с градусниками липовый цвет в банке. Срок годности написан карандашом и уже стёрт: значит, свежий.",
+  "en": "Beside the thermometers, a jar of lime blossom. The date is pencilled and already rubbed away, so it must be fresh.",
+  "ja": "体温計の隣には菩提樹の花の瓶。期限は鉛筆で書かれ、もう消えかけている。つまり新しいということだ。"
+ },
+ "city.xcl.pad.1": {
+  "ru": "Рецептурный бланк. Запись на сегодня: «Покой, тёплое питьё, шерстяные носки. Рецепт на всех».",
+  "en": "A prescription pad. Today's entry: \"Rest, warm drinks, woollen socks. A prescription for all.\"",
+  "ja": "処方箋の用紙。今日の書き込みは「安静、温かい飲み物、ウールの靴下。全員にこの処方」"
+ },
+ "city.xcl.pad.2": {
+  "ru": "На бланке: «Прогулка двадцать минут, без шапки не выходить». Подчёркнуто дважды.",
+  "en": "On the pad: \"A twenty-minute walk, never without a hat.\" Underlined twice.",
+  "ja": "用紙には「二十分の散歩。帽子なしで出かけないこと」。二重に下線が引いてある。"
+ },
+ "city.xcl.pad.3": {
+  "ru": "Бланк чистый, только сверху фиолетовый штамп. Воскресная запись: «Отдыхать».",
+  "en": "The pad is blank except for the violet stamp on top. The Sunday entry: \"Rest.\"",
+  "ja": "用紙は白紙で、上に紫のスタンプがあるだけ。日曜の書き込みは「休むこと」"
+ },
+ "city.xcl.p.eyetest": {
+  "ru": "E — прочитать таблицу по указке",
+  "en": "E — read the chart by the pointer",
+  "ja": "E：指示棒で視力表を読む"
+ },
+ "city.xcl.eye_game.1": {
+  "ru": "Указка прислонена к стене, таблица светится. Верхняя строка, потом ниже, потом совсем крошечная. Лента на полу у стула красная, чтобы не подходить ближе.",
+  "en": "The pointer leans on the wall, the chart glows. The top row, then lower, then a really tiny one. The tape on the floor is red so nobody creeps closer.",
+  "ja": "指示棒は壁に立てかけてあり、視力表が光っている。いちばん上の行、その下、そしていちばん小さな行。床の赤いテープは、近寄りすぎないための印だ。"
+ },
+ "city.xcl.eye_game.2": {
+  "ru": "Ш Б М Н К. Если закрыть один глаз, вторая половина мира прячется. Если закрыть оба, все равно видно таблицу: так она запомнилась.",
+  "en": "Sh B M N K. Close one eye and half the world hides. Close both and the chart is still there: that's how well it's memorised.",
+  "ja": "シ ブ ム ヌ カ。片目を閉じると世界の半分が隠れる。両目を閉じても表は見える。それくらい覚えてしまった。"
+ },
+ "city.xcl.eye_game.title": {
+  "ru": "Проверка зрения",
+  "en": "Eye test",
+  "ja": "視力検査"
+ },
+ "city.xcl.keys.eye": {
+  "ru": "E — показать на строку",
+  "en": "E — point at the row",
+  "ja": "E：その行を指す"
+ },
+ "city.xcl.eye_game.win.1": {
+  "ru": "Прочитано до самой мелкой строки: «Ш Б М Н К». Окулист кивает: «Орёл». Печать в карточку ложится сразу.",
+  "en": "Read down to the smallest row: \"Sh B M N K\". The eye doctor nods: \"Eagle-eyed.\" The stamp goes on the card at once.",
+  "ja": "いちばん小さな行まで読めた。「シ ブ ム ヌ カ」。眼科の先生がうなずく。「鷹の目だ」。カードにすぐスタンプが押される。"
+ },
+ "city.xcl.eye_game.lose.1": {
+  "ru": "Дальше третьей строки всё сливается в серые пятнышки. «Скоро очки, — утешает окулист. — Зато красивые, выбирать будем вместе».",
+  "en": "Past the third row everything blurs to grey specks. \"Spectacles soon,\" the eye doctor consoles. \"Nice ones, we'll choose together.\"",
+  "ja": "三行目から先は灰色の点のようにぼやける。「じきにメガネだね」と眼科の先生。「いいのを選ぼう、一緒にね」"
+ },
+ "city.xcl.eye_game.draw.1": {
+  "ru": "Пять строк прочитано, дальше наугад. «Хорошо, — говорит окулист. — Почти орёл. Зайдите после каникул».",
+  "en": "Five rows read, then guesswork. \"Good,\" says the eye doctor. \"Nearly an eagle. Come back after the holidays.\"",
+  "ja": "五行目までは読めて、そのあとは当てずっぽう。「いいね」と眼科の先生。「ほとんど鷹だ。休みのあとにまた来て」"
+ },
+ "city.xcl.p.slit": {
+  "ru": "E — посмотреть в щелевую лампу",
+  "en": "E — look into the slit lamp",
+  "ja": "E：細隙灯をのぞく"
+ },
+ "city.xcl.slit_lamp.1": {
+  "ru": "В окуляре перевёрнутое окно и собственная ресница размером с ёлку. «Не моргайте, пожалуйста». Легко сказать.",
+  "en": "Through the eyepiece: an upside-down window and my own eyelash the size of a fir tree. \"Please don't blink.\" Easy to say.",
+  "ja": "接眼レンズの中は、逆さの窓と、もみの木ほどもある自分のまつげ。「まばたきしないでね」。言うのは簡単だ。"
+ },
+ "city.xcl.slit_lamp.2": {
+  "ru": "Подбородок на подставке, лоб на планке. Узкая полоска света ползёт по радужке, как лучик по воде.",
+  "en": "Chin on the rest, forehead on the bar. A narrow strip of light creeps across the iris like a sunbeam on water.",
+  "ja": "あごを台に、おでこを棒に。細い光の筋が、水面を走る陽射しのように虹彩の上を進む。"
+ },
+ "city.xcl.slit_lamp.3": {
+  "ru": "Окулист подкручивает рычажок: «Теперь смотрите на мой нос». Нос, кстати, в линзе огромный и добрый.",
+  "en": "The eye doctor turns a little lever: \"Now look at my nose.\" The nose, incidentally, is huge and kind in the lens.",
+  "ja": "眼科の先生がレバーを回す。「では私の鼻を見て」。レンズの中の鼻は、大きくてやさしい。"
+ },
+ "city.xcl.frames.1": {
+  "ru": "Оправы на полке: круглые, как у профессора; квадратные, как у бухгалтера; одна совсем без стёкол, для примерки.",
+  "en": "Frames on the shelf: round like a professor's, square like an accountant's, one with no lenses at all, for trying on.",
+  "ja": "棚のフレーム。教授のような丸いの、経理の人のような四角いの、試着用にレンズのまったくないのが一つ。"
+ },
+ "city.xcl.frames.2": {
+  "ru": "Рядом открытая коробка с пробными линзами: каждая в своём гнезде, как конфеты в наборе. Любая меняет мир на чуть-чуть.",
+  "en": "Beside them an open box of trial lenses: each in its slot like sweets in a box. Every one changes the world a little.",
+  "ja": "隣には試験用レンズの箱。どれも自分の穴に収まって、お菓子の詰め合わせみたいだ。どのレンズも、世界を少しだけ変える。"
+ },
+ "city.xcl.p.growth": {
+  "ru": "E — встать к жирафу",
+  "en": "E — stand against the giraffe",
+  "ja": "E：キリンの前に立つ"
+ },
+ "city.xcl.growth.1": {
+  "ru": "Спиной к стене, пятки вместе, подбородок вверх. Врач скользит линейкой по голове: «Ровно метр шестьдесят и ещё чуть-чуть». Карандашная чёрточка и печать с жирафом.",
+  "en": "Back to the wall, heels together, chin up. The doctor slides the ruler over my head: \"A metre sixty exactly and a little bit more.\" A pencil line and the giraffe stamp.",
+  "ja": "壁に背をつけ、かかとをそろえ、あごを上げる。先生が定規を頭の上にすべらせる。「ちょうど一メートル六十と、ほんの少し」。鉛筆の線と、キリンのスタンプ。"
+ },
+ "city.xcl.growth.2": {
+  "ru": "На жирафе дети отметили себя: чёрточки с датами и именами. Самая нижняя подписана «Я в три года». Выше выписана целая лесенка.",
+  "en": "The giraffe is covered in children's marks: lines with dates and names. The lowest says \"Me at three\". Above it a whole little ladder.",
+  "ja": "キリンには子どもたちの印がある。日付と名前のついた線。いちばん下には「三さいのぼく」。その上にはずらりと小さな階段。"
+ },
+ "city.xcl.growth.3": {
+  "ru": "Врач прищуривается: «С прошлого раза на палец вырос. Или в обуви стоишь, или правда». Вторая чёрточка выходит выше первой.",
+  "en": "The doctor squints: \"A finger taller since last time. Either you've got your shoes on, or it's true.\" The second line lands above the first.",
+  "ja": "先生が目を細める。「前より指一本ぶん伸びたな。靴をはいたままか、本当に伸びたかだ」。二本目の線は一本目より上に引かれた。"
+ },
+ "city.xcl.p.toys": {
+  "ru": "E — порыться в игрушках",
+  "en": "E — rummage through the toys",
+  "ja": "E：おもちゃをあさる"
+ },
+ "city.xcl.toys.1": {
+  "ru": "В ящике кубики, мячик и плюшевый медведь с одним ухом. Ухо давно оторвалось, но все делают вид, что так и надо.",
+  "en": "In the box: blocks, a ball, a plush bear with one ear. The other ear came off long ago, but everyone acts as if it should be that way.",
+  "ja": "箱には積み木、ボール、耳が片方しかないぬいぐるみのクマ。もう片耳はとっくに取れたが、みんな最初からこうだったという顔をしている。"
+ },
+ "city.xcl.toys.2": {
+  "ru": "Кубики сложены в башню. На самом верхнем нарисована буква «Я». Видимо, это первое слово, которое здесь выучивают.",
+  "en": "The blocks are stacked in a tower. The top one has the letter \"I\". It seems to be the first word anyone learns here.",
+  "ja": "積み木が塔になっている。いちばん上には「わ」の字。ここで最初に覚える言葉は、きっとこれだ。"
+ },
+ "city.xcl.toys.3": {
+  "ru": "Мячик закатился под ящик и вернулся. Видимо, в этой комнате и мячики не хотят уходить без осмотра.",
+  "en": "The ball rolled under the box and came back. It seems even the balls here don't want to leave without a check-up.",
+  "ja": "ボールは箱の下に転がって、また戻ってきた。この部屋ではボールも、診てもらわずには帰りたくないらしい。"
+ },
+ "city.xcl.toys.4": {
+  "ru": "Мокрые сапоги в углу, а в ящике у мишки на шее аккуратно повязан чужой шарф. Дождь выдаёт всех.",
+  "en": "Wet wellies in the corner, and the bear in the box wears somebody's scarf, neatly tied. Rain gives everyone away.",
+  "ja": "隅に濡れた長靴。箱の中のクマは、誰かのマフラーをきちんと巻いている。雨はみんなの正体をばらしてしまう。"
+ },
+ "city.xcl.p.baby": {
+  "ru": "E — посмотреть на детские весы",
+  "en": "E — look at the baby scales",
+  "ja": "E：赤ちゃん用の秤を見る"
+ },
+ "city.xcl.baby_scales.1": {
+  "ru": "Детские весы: неглубокая лоточка и латунная планка с гирькой. Врач двигает гирьку, и планка замирает ровно посередине. «Три пятьсот», — говорит врач. Не мне, конечно.",
+  "en": "Baby scales: a shallow tray and a brass beam with a weight. The doctor slides the weight and the beam hangs level in the middle. \"Three-five,\" says the doctor. Not to me, of course.",
+  "ja": "赤ちゃん用の秤。浅い皿と、おもりのついた真鍮の棒。先生がおもりを動かすと、棒はぴたりと真ん中で止まる。「三千五百」。僕に言ったわけじゃないけれど。"
+ },
+ "city.xcl.baby_scales.2": {
+  "ru": "На лоточке подстелена тёплая пелёнка в цветочек. Врач говорит, что весы с пелёнкой точнее: младенцы не любят холодное, и показания у них честнее.",
+  "en": "A warm flowery nappy is spread in the tray. The doctor says the scale is more accurate with it: babies dislike cold, and their readings are more honest.",
+  "ja": "皿には、花柄のあたたかいおくるみが敷いてある。おくるみがあるほうが秤は正確だそうだ。赤ちゃんは冷たいのが嫌いで、そのほうが本音の数字が出る。"
+ },
+ "city.xcl.mobile.1": {
+  "ru": "Над кушеткой вертится «карусель»: красный квадрат, синий, жёлтый, зелёный. Поворачиваются они от тёплого воздуха, а не от рук.",
+  "en": "Above the couch, a mobile turns: red square, blue, yellow, green. It turns by warm air from the radiator, not by hand.",
+  "ja": "寝台の上でモビールが回っている。赤、青、黄、緑の四角。回すのは手ではなく、暖房のあたたかい空気だ。"
+ },
+ "city.xcl.mobile.2": {
+  "ru": "Нитки тонкие, перекладинка из лёгкого дерева. Если лечь на кушетку, видно, что квадраты слегка покачиваются в такт чьему-то дыханию.",
+  "en": "The threads are thin, the crossbar light wood. Lie on the couch and you see the squares sway to someone's breathing.",
+  "ja": "糸は細く、横木は軽い木だ。寝台に横になると、四角たちが誰かの呼吸に合わせてゆっくり揺れているのがわかる。"
+ },
+ "city.xcl.p.ruler": {
+  "ru": "E — поймать линейку",
+  "en": "E — catch the ruler",
+  "ja": "E：ものさしをつかむ"
+ },
+ "city.xcl.ruler.1": {
+  "ru": "Линейка висит над стаканом с карандашами. Врач говорит: «Приготовились». Пальцы раскрыты, и вдруг она падает.",
+  "en": "The ruler hangs above a cup of pencils. The doctor says: \"Ready.\" Fingers open, and suddenly it falls.",
+  "ja": "ものさしは鉛筆立ての上にぶら下がっている。「用意」と先生。指を開いたとたん、ものさしが落ちる。"
+ },
+ "city.xcl.ruler.2": {
+  "ru": "Чем ниже цифра, где поймал, тем быстрее реакция. Если поймал у самого конца, это значит «ещё раз».",
+  "en": "The lower the number where you catch it, the faster the reaction. Catching it at the very end means \"once more.\"",
+  "ja": "つかんだ場所の数字が小さいほど、反応が速い。いちばん端でつかんだら、「もう一回」の合図だ。"
+ },
+ "city.xcl.ruler.title": {
+  "ru": "Линейка: реакция",
+  "en": "Ruler drop: reflexes",
+  "ja": "ものさしキャッチ"
+ },
+ "city.xcl.keys.ruler": {
+  "ru": "E — схватить",
+  "en": "E — grab",
+  "ja": "E：つかむ"
+ },
+ "city.xcl.ruler.win.1": {
+  "ru": "Линейка поймана на самой нижней цифре. «Быстрее моих пациентов», — вздыхает врач и достаёт из стола леденец.",
+  "en": "The ruler is caught on the very lowest number. \"Quicker than my patients,\" the doctor sighs and takes a sweet from the desk.",
+  "ja": "ものさしはいちばん下の数字でつかまえた。「うちの患者さんより速いな」と先生はため息をついて、机からあめを出す。"
+ },
+ "city.xcl.ruler.lose.1": {
+  "ru": "Линейка проскальзывает между пальцами и стукается о пол. «Ничего, — говорит врач. — Значит, вы думали о чём-то хорошем».",
+  "en": "The ruler slips between my fingers and clatters to the floor. \"Never mind,\" says the doctor. \"It means you were thinking of something nice.\"",
+  "ja": "ものさしは指のあいだをすり抜けて、床にからんと落ちる。「いいんだよ」と先生。「何かいいことを考えていたんだ」"
+ },
+ "city.xcl.ruler.draw.1": {
+  "ru": "Половину поймано, половину упущено. «Для первой половины дня отлично», — говорит врач, не глядя на часы.",
+  "en": "Half caught, half dropped. \"Excellent for the first half of the day,\" the doctor says without looking at the clock.",
+  "ja": "半分はつかんで、半分は逃した。「一日の前半にしては上出来」と、先生は時計も見ずに言う。"
+ },
+ "city.xcl.p.umbrellas": {
+  "ru": "E — посмотреть на зонты",
+  "en": "E — look at the umbrellas",
+  "ja": "E：傘を見る"
+ },
+ "city.xcl.umbrellas.1": {
+  "ru": "Зонты стоят в подставке сложенные и сухие, как строй солдатиков. Один синий, один чёрный, один клетчатый, без хозяина.",
+  "en": "The umbrellas stand in the rack, folded and dry like a row of soldiers. One blue, one black, one checked, without an owner.",
+  "ja": "傘は傘立てにたたまれて、兵隊の列のように乾いて立っている。青いの、黒いの、持ち主のいないチェックの。"
+ },
+ "city.xcl.umbrellas.2": {
+  "ru": "Три мокрых зонта капают в поддон: кап, кап, мимо такта. Лужица у двери растёт. Гардероба здесь нет, зонты стоят под честное слово.",
+  "en": "Three wet umbrellas drip into the tray: plink, plink, out of step. The puddle by the door grows. There's no cloakroom here, the umbrellas stand on trust.",
+  "ja": "濡れた傘が三本、受け皿にぽたぽた、拍子はずれに水を落とす。入口の水たまりが広がる。ここには預かり所がないので、傘は信用で立っている。"
+ },
+ "city.xcl.umbrellas.3": {
+  "ru": "Поддон под зонтами полон прозрачной водой: растаял снег, который принесли на себе. В подставке стоит и чья-то лыжная палка.",
+  "en": "The tray under the umbrellas is full of clear water: the snow they carried in has melted. Somebody's ski pole stands there too.",
+  "ja": "傘の下の受け皿は透きとおった水でいっぱいだ。持ち込まれた雪が溶けたのだ。誰かのスキーのストックまで立っている。"
+ },
+ "city.xcl.umbrellas.4": {
+  "ru": "Зонты по ночам не нужны, но стоят: поликлиника ничего не убирает. Один в клетку, видимо, уже год ждёт хозяина.",
+  "en": "Umbrellas aren't needed at night but they stand: the clinic never tidies anything away. The checked one has probably waited a year for its owner.",
+  "ja": "夜に傘はいらないけれど、立ったままだ。診療所は何も片付けない。チェックの一本は、たぶんもう一年も持ち主を待っている。"
+ },
+ "city.xcl.p.porter": {
+  "ru": "E — подойти к столику сторожа",
+  "en": "E — step up to the porter's table",
+  "ja": "E：守衛のテーブルに寄る"
+ },
+ "city.xcl.porter.1": {
+  "ru": "За столиком сидит ночной сторож: чай в гранёном стакане, шахматная задача в газете. «Закрыто, — говорит он, не поднимая глаз. — Утром придёте».",
+  "en": "At the table sits the night porter: tea in a faceted glass, a chess problem in the paper. \"Closed,\" he says without looking up. \"Come in the morning.\"",
+  "ja": "テーブルには夜勤の守衛がいる。面取りグラスのお茶、新聞のチェス問題。「閉まってるよ」と顔も上げずに言う。「朝にまた来なさい」"
+ },
+ "city.xcl.porter.2": {
+  "ru": "«Лампу не трогайте, — предупреждает сторож. — Она у меня на всю ночь. Выключатели есть, но у меня совесть».",
+  "en": "\"Don't touch the lamp,\" the porter warns. \"It's mine for the whole night. There are switches, but I have a conscience.\"",
+  "ja": "「ランプには触れないで」と守衛が言う。「一晩じゅう私のものだ。スイッチはあるが、私には良心がある」"
+ },
+ "city.xcl.porter.3": {
+  "ru": "Сторож рассказывает: «Ночью тут слышно всё: часы, аквариум, как рыба переворачивается. Привыкаешь, а потом скучаешь».",
+  "en": "The porter says: \"At night you can hear everything here: the clock, the aquarium, a fish turning over. You get used to it, then you miss it.\"",
+  "ja": "守衛が言う。「夜はここで何でも聞こえる。時計、水槽、魚が寝返りを打つ音。慣れて、そして恋しくなるんだ」"
+ },
+ "city.xcl.porter_day.1": {
+  "ru": "Столик сторожа пуст. В подстаканнике стоит чистый гранёный стакан, на спинке стула шарф. Сторож придёт к вечеру.",
+  "en": "The porter's table is empty. A clean faceted glass in the holder, a scarf on the back of the chair. The porter comes in the evening.",
+  "ja": "守衛のテーブルは空だ。ホルダーにきれいな面取りグラス、椅子の背にマフラー。守衛は夕方に来る。"
+ },
+ "city.xcl.porter_day.2": {
+  "ru": "На столике газета со вчерашней шахматной задачей. Карандашом написано: «Конь на е5?» Ответа пока нет.",
+  "en": "A newspaper on the table with yesterday's chess problem. In pencil: \"Knight to e5?\" No answer yet.",
+  "ja": "テーブルには昨日のチェス問題が載った新聞。鉛筆で「ナイトe5？」。答えはまだない。"
+ },
+ "city.xcl.p.bars": {
+  "ru": "E — позаниматься у шведской стенки",
+  "en": "E — do exercises at the wall bars",
+  "ja": "E：肋木で体操する"
+ },
+ "city.xcl.physio_bars.1": {
+  "ru": "Медсестра показывает: руки выше, подтянуться, повиснуть. Ловко и скучно, как всё полезное. Через десять секунд плечи гудят.",
+  "en": "The nurse shows: arms up, pull, hang. Deft and dull, like everything good for you. After ten seconds the shoulders hum.",
+  "ja": "看護師がやってみせる。腕を上げて、引き上げて、ぶら下がる。器用で退屈、体にいいことはみなそうだ。十秒もすると肩がうなる。"
+ },
+ "city.xcl.physio_bars.2": {
+  "ru": "«Спина прямо, дышим, — командует медсестра. — Врачи не любят, когда сидят. Двигаться надо в любую погоду».",
+  "en": "\"Straight back, breathe,\" the nurse commands. \"Doctors dislike sitting. You've got to move in any weather.\"",
+  "ja": "「背すじを伸ばして、息をして」と看護師。「医者は座りっぱなしが嫌いなの。どんな天気でも動かなくちゃ」"
+ },
+ "city.xcl.physio_bars.3": {
+  "ru": "На мате остаются вмятины от пяток. Медсестра отмечает в карточке: «лечебная физкультура, выполнена». Шведская стенка скрипит, как старый корабль.",
+  "en": "Heel dents are left on the mat. The nurse notes in the card: \"physio, done.\" The wall bars creak like an old ship.",
+  "ja": "マットにかかとのくぼみが残る。看護師はカードに「運動療法、済」と書く。肋木は古い船のようにきしむ。"
+ },
+ "city.xcl.p.ball": {
+  "ru": "E — покидать лечебный мяч",
+  "en": "E — toss the medicine ball",
+  "ja": "E：メディシンボールを投げる"
+ },
+ "city.xcl.ball.1": {
+  "ru": "Тяжёлый красный мяч лежит на мате. Бросишь в стену, вернётся, поймаешь, снова бросишь. Мяч набит песком и терпением.",
+  "en": "A heavy red ball lies on the mat. Throw it at the wall, it comes back, catch it, throw again. It's stuffed with sand and patience.",
+  "ja": "重い赤いボールがマットの上にある。壁に投げると返ってくる、受けて、また投げる。砂と辛抱が詰まっているのだ。"
+ },
+ "city.xcl.ball.title": {
+  "ru": "Лечебный мяч",
+  "en": "Medicine ball",
+  "ja": "メディシンボール"
+ },
+ "city.xcl.physio_ball.win.1": {
+  "ru": "Четыре броска подряд без промаха. Мяч возвращается, как послушная собака. Медсестра, не оборачиваясь, ставит галочку.",
+  "en": "Four throws in a row without a miss. The ball comes back like an obedient dog. The nurse ticks a box without turning around.",
+  "ja": "四回続けてミスなし。ボールは聞き分けのいい犬のように戻ってくる。看護師は振り向きもせずにチェックを入れる。"
+ },
+ "city.xcl.physio_ball.lose.1": {
+  "ru": "Мяч выскальзывает и катится под скамейку. «Ничего, — говорит медсестра. — Ещё раз. Это мне как раз сидеть, а вам двигаться».",
+  "en": "The ball slips and rolls under the bench. \"Never mind,\" says the nurse. \"Once more. I'm the one who sits, you're the one who moves.\"",
+  "ja": "ボールが滑ってベンチの下へ転がる。「いいのよ」と看護師。「もう一回。座るのは私、動くのはあなたの役目」"
+ },
+ "city.xcl.physio_ball.draw.1": {
+  "ru": "Два броска подряд, потом мимо. Мяч лежит на полу и как будто улыбается. «Для начала хорошо», — решает медсестра.",
+  "en": "Two throws in a row, then a miss. The ball lies on the floor as if smiling. \"A good start,\" the nurse decides.",
+  "ja": "二回続けて、そのあと外す。ボールは床の上で笑っているみたい。「最初としては上出来」と看護師は決める。"
+ },
+ "city.xcl.p.vaccine": {
+  "ru": "E — показать прививочную карту",
+  "en": "E — show the vaccination card",
+  "ja": "E：予防接種の記録を見せる"
+ },
+ "city.xcl.vaccine.1": {
+  "ru": "Медсестра листает вклеенный листок: корь, дифтерия, столбняк. «Всё по графику», — и ставит синюю печать в виде капли. Сахарок на блюдечке идёт в награду.",
+  "en": "The nurse turns the pasted-in sheet: measles, diphtheria, tetanus. \"All on schedule,\" and stamps a blue drop. A sugar cube on a saucer is the reward.",
+  "ja": "看護師は貼り込まれた紙をめくる。麻疹、ジフテリア、破傷風。「予定どおりね」と言って、しずく形の青いスタンプを押す。皿の角砂糖がごほうび。"
+ },
+ "city.xcl.vaccine.2": {
+  "ru": "«На всякий случай ничего колоть не буду, — улыбается медсестра. — Проверила: у вас всё в порядке». Печать лежит ровно, как приклеенная.",
+  "en": "\"I won't jab anything just in case,\" the nurse smiles. \"I checked, you're fine.\" The stamp lies straight, as if glued.",
+  "ja": "「念のため、何も打たないでおくわね」と看護師は笑う。「確かめたけど、問題なし」。スタンプはぴったり、貼ったように押されている。"
+ },
+ "city.xcl.vaccine.3": {
+  "ru": "Столик в тихом углу: лоточек, ватные шарики, склянка с йодом. Рядом табуретка, всегда чуть тёплая от предыдущего пациента.",
+  "en": "A table in a quiet corner: a tray, cotton balls, a bottle of iodine. A stool alongside, always a little warm from the last patient.",
+  "ja": "静かな隅のテーブル。皿、脱脂綿、ヨードの瓶。そばのスツールは、前の患者さんのぬくもりがいつも少し残っている。"
+ },
+ "city.xcl.p.fridge": {
+  "ru": "E — заглянуть в холодильник",
+  "en": "E — peek into the fridge",
+  "ja": "E：冷蔵庫をのぞく"
+ },
+ "city.xcl.vaccine_fridge.1": {
+  "ru": "На дверце записка: «Без медсестры не открывать». В щёлку виден холодный голубой свет и ряд коробочек с надписями по-латыни.",
+  "en": "A note on the door: \"Not to be opened without the nurse.\" Through the gap, cold blue light and a row of little boxes labelled in Latin.",
+  "ja": "ドアの貼り紙。「看護師なしで開けないこと」。すき間から冷たい青い光と、ラテン語のラベルを貼った小さな箱の列が見える。"
+ },
+ "city.xcl.vaccine_fridge.2": {
+  "ru": "Холодильник гудит ровно и заботливо. Сверху магнитик «Привет из Паланги», бог знает чей, и список температур на каждый день.",
+  "en": "The fridge hums evenly and caringly. A \"Greetings from Palanga\" magnet on top, who knows whose, and a list of temperatures for every day.",
+  "ja": "冷蔵庫は一定の調子で気遣うように唸っている。上には「パランガからの挨拶」のマグネット、誰のものやら。それと毎日の温度の一覧。"
+ },
+ "city.xcl.vaccine_schedule.1": {
+  "ru": "График прививок: от гриппа до конца ноября, от кори по записи, от дифтерии раз в десять лет. Внизу приписано от руки: «Не бойтесь, это быстро».",
+  "en": "Vaccination schedule: flu until the end of November, measles by appointment, diphtheria once in ten years. Written below by hand: \"Don't be afraid, it's quick.\"",
+  "ja": "予防接種の予定。インフルエンザは十一月末まで、麻疹は予約制、ジフテリアは十年に一度。下に手書きで「こわくない、すぐ終わるよ」"
+ },
+ "city.xcl.vaccine_schedule.2": {
+  "ru": "«Сезон гриппа: приходите заранее, а не когда уже чихаете». Объявление подчёркнуто красным и пришпилено тремя кнопками, чтобы не сорвало сквозняком.",
+  "en": "\"Flu season: come ahead of time, not once you're already sneezing.\" The notice is underlined in red and pinned with three tacks against draughts.",
+  "ja": "「インフルエンザの季節。くしゃみが出てからではなく、前もってどうぞ」。赤い下線つきで、すきま風に負けないよう画鋲三つで留めてある。"
+ },
+ "city.xcl.tkx.1": {
+  "ru": "Талон: 31. В такой мороз очередь длиннее: все пришли погреться и заодно проверить горло.",
+  "en": "Ticket: 31. In this cold the queue is longer: everyone came in to warm up and check their throat while at it.",
+  "ja": "整理券は31番。こんな寒さだから列も長い。みんな暖まりに来て、ついでに喉を診てもらうのだ。"
+ },
+ "city.xcl.tkx.2": {
+  "ru": "Талон размок под дождём: цифры расплылись, но «23» разобрать можно. Очередь у кабинета зонтичная.",
+  "en": "The ticket went soft in the rain: the numbers ran, but \"23\" can still be made out. The queue by the door is an umbrella queue.",
+  "ja": "整理券は雨で柔らかくなり、数字がにじんだけれど「23」は読める。部屋の前の列は傘の列だ。"
+ },
+ "city.xcl.tkx.3": {
+  "ru": "Талон праздничный: номер 7, и на обороте нарисована ёлочка. В праздники очередь короче, большинство лечится вареньем.",
+  "en": "A festive ticket: number 7, with a little fir tree drawn on the back. On holidays the queue is shorter, most people self-medicate with jam.",
+  "ja": "お祝いの整理券。7番で、裏にはもみの木の絵。祝日は列が短い。ほとんどの人はジャムで治すのだ。"
+ },
+ "city.xcl.qbx.1": {
+  "ru": "На табло горит 41. Очередь по такому холоду выстроилась до самой двери и обратно: теплее стоять ближе к батарее.",
+  "en": "The board says 41. In this cold the queue stretches to the door and back: it's warmer standing near the radiator.",
+  "ja": "表示板は41。この寒さで、列は入口まで伸びて戻ってくる。暖房の近くのほうがあたたかい。"
+ },
+ "city.xcl.aqx.1": {
+  "ru": "Кто-то повесил на аквариум бумажную гирлянду. Главврач плавает под ней с торжественным видом.",
+  "en": "Somebody hung a paper garland on the aquarium. The Head Doctor swims beneath it with a solemn look.",
+  "ja": "誰かが水槽に紙の飾りを吊るした。院長はその下を、荘重な顔つきで泳いでいる。"
+ },
+ "city.xcl.aqx.2": {
+  "ru": "Дождь за окном, а в аквариуме тихо: рыбка висит у стекла и наблюдает за каплями. Её любимое кино.",
+  "en": "Rain outside and quiet in the tank: the fish hangs by the glass watching the drops. Her favourite film.",
+  "ja": "窓の外は雨、水槽の中は静か。金魚はガラスの前にじっとして、雨粒を見ている。お気に入りの映画だ。"
+ },
+ "city.xcl.blx.1": {
+  "ru": "Под прежними объявлениями висит новое: «Просьба не стучать в окно регистратуры и не спрашивать, кто последний, трижды. Последний тот, кто спрашивает».",
+  "en": "Under the old notices hangs a new one: \"Please don't knock on the registry window or ask who's last more than three times. The last one is whoever asks.\"",
+  "ja": "古い掲示の下に新しい貼り紙。「受付の窓を叩かないこと。『最後は誰？』と三回以上聞かないこと。最後の人は、聞いている人です」"
+ },
+ "quest.clinic_sharp.title": {
+  "ru": "Три маленьких экзамена",
+  "en": "Three little exams",
+  "ja": "三つの小さな試験"
+ },
+ "quest.clinic_sharp.desc": {
+  "ru": "В поликлинике висят таблица, линейка и лечебный мяч: три крошечных экзамена для всех желающих. Говорят, у кого выйдут все три, того записывают в «здоровую сборную».",
+  "en": "The clinic has a chart, a ruler and a medicine ball: three tiny exams for anyone who wants them. They say whoever passes all three is entered in the \"healthy team\".",
+  "ja": "診療所には視力表、ものさし、メディシンボールがある。誰でも受けられる三つの小さな試験。全部に合格すると「健康代表」に名前が載るらしい。"
+ },
+ "quest.clinic_sharp.eyes.log": {
+  "ru": "Первый экзамен у окулиста: прочитать таблицу по указке до самой мелкой строки.",
+  "en": "First exam at the eye doctor's: read the chart by the pointer down to the smallest row.",
+  "ja": "最初の試験は眼科。指示棒で視力表を一番小さな行まで読む。"
+ },
+ "quest.clinic_sharp.eyes.obj": {
+  "ru": "Прочитать таблицу до самой мелкой строки",
+  "en": "Read the chart to the smallest row",
+  "ja": "視力表を最小の行まで読む"
+ },
+ "quest.clinic_sharp.reflex.log": {
+  "ru": "Второй экзамен в кабинете детского врача: поймать падающую линейку.",
+  "en": "Second exam in the children's doctor's room: catch the falling ruler.",
+  "ja": "二つ目の試験は小児科。落ちてくるものさしをつかむ。"
+ },
+ "quest.clinic_sharp.reflex.obj": {
+  "ru": "Поймать линейку у детского врача",
+  "en": "Catch the ruler at the children's doctor's",
+  "ja": "小児科でものさしをつかむ"
+ },
+ "quest.clinic_sharp.ball.log": {
+  "ru": "Третий экзамен в зале у шведской стенки: четыре раза подряд не уронить лечебный мяч.",
+  "en": "Third exam in the hall by the wall bars: four times in a row, don't drop the medicine ball.",
+  "ja": "三つ目の試験はホールの肋木のそば。メディシンボールを四回続けて落とさない。"
+ },
+ "quest.clinic_sharp.ball.obj": {
+  "ru": "Не уронить мяч у шведской стенки",
+  "en": "Don't drop the ball by the wall bars",
+  "ja": "肋木のそばでボールを落とさない"
+ },
+ "quest.clinic_sharp.done": {
+  "ru": "Все три экзамена сданы. В «здоровую сборную» меня не записали: такой сборной нет. Зато медсестра дала два леденца и пожала руку, как коллеге.",
+  "en": "All three exams passed. They didn't put me on a \"healthy team\": there's no such team. But the nurse gave me two sweets and shook my hand like a colleague.",
+  "ja": "三つの試験すべてに合格。「健康代表」には載せてもらえなかった。そんなチームはないからだ。でも看護師はあめを二つくれて、同僚のように握手してくれた。"
+ },
+ "quest.clinic_card_book.title": {
+  "ru": "Карточка с печатями",
+  "en": "A card full of stamps",
+  "ja": "スタンプだらけのカード"
+ },
+ "quest.clinic_card_book.desc": {
+  "ru": "В регистратуре заводят карточку с пятью квадратиками для печатей. Говорят, заполненная карточка бывает красивее иной грамоты.",
+  "en": "At the registry they start a card with five squares for stamps. A filled card, they say, can be prettier than a certificate.",
+  "ja": "受付では、スタンプ用の欄が五つあるカードを作ってくれる。埋まったカードは、賞状よりきれいなこともあるそうだ。"
+ },
+ "quest.clinic_card_book.first.log": {
+  "ru": "Две первые печати: послушать лёгкие у терапевта и встать к жирафу у детского врача.",
+  "en": "The first two stamps: have my chest listened to at the therapist's and stand against the giraffe at the children's doctor's.",
+  "ja": "最初のスタンプ二つ。内科で胸の音を聴いてもらい、小児科でキリンの前に立つ。"
+ },
+ "quest.clinic_card_book.listen.obj": {
+  "ru": "Дать послушать лёгкие терапевту",
+  "en": "Have my chest listened to by the therapist",
+  "ja": "内科で胸を聴いてもらう"
+ },
+ "quest.clinic_card_book.growth.obj": {
+  "ru": "Встать к жирафу у детского врача",
+  "en": "Stand against the giraffe at the children's doctor's",
+  "ja": "小児科でキリンの前に立つ"
+ },
+ "quest.clinic_card_book.second.log": {
+  "ru": "Ещё две: показать прививочную карту медсестре у кулера и позаниматься у шведской стенки.",
+  "en": "Two more: show the vaccination card to the nurse by the cooler and exercise at the wall bars.",
+  "ja": "あと二つ。ウォータークーラーのそばの看護師に予防接種の記録を見せ、肋木で体操する。"
+ },
+ "quest.clinic_card_book.vaccine.obj": {
+  "ru": "Показать прививочную карту медсестре",
+  "en": "Show the vaccination card to the nurse",
+  "ja": "看護師に予防接種の記録を見せる"
+ },
+ "quest.clinic_card_book.bars.obj": {
+  "ru": "Позаниматься у шведской стенки",
+  "en": "Exercise at the wall bars",
+  "ja": "肋木で体操する"
+ },
+ "quest.clinic_card_book.book.log": {
+  "ru": "Теперь открыть карточку на регистратуре и посмотреть, что получилось.",
+  "en": "Now open the card at the registry desk and see how it turned out.",
+  "ja": "受付の机でカードを開いて、出来ばえを確かめよう。"
+ },
+ "quest.clinic_card_book.book.obj": {
+  "ru": "Открыть карточку на столе регистратуры",
+  "en": "Open the card on the registry desk",
+  "ja": "受付の机でカードを開く"
+ },
+ "quest.clinic_card_book.done": {
+  "ru": "Пять печатей: капля, жираф, очки, круглая фиолетовая и человечек на стенке. Карточка получилась красивее иной грамоты. Регистраторша вручила два печенья и чай: «Без храпа в очереди, за стаж».",
+  "en": "Five stamps: a drop, a giraffe, spectacles, the round violet one and the little man on the bars. The card came out nicer than a certificate. The registrar handed over two biscuits and tea: \"For long service in the queue, and no snoring.\"",
+  "ja": "五つのスタンプ。しずく、キリン、メガネ、紫の丸、肋木の人。カードは賞状よりきれいに仕上がった。受付の人はクッキー二枚とお茶をくれた。「行列でいびきもかかずに勤め上げたごほうび」"
+ },
+ "city.xcl3.p.lost": {
+  "ru": "E — осмотреть полку",
+  "en": "E — look over the shelf",
+  "ja": "E：棚を見てみる"
+ },
+ "city.xcl3.p.rota": {
+  "ru": "E — прочитать график",
+  "en": "E — read the rota",
+  "ja": "E：当番表を読む"
+ },
+ "city.xcl3.p.paper": {
+  "ru": "E — прочитать стенгазету",
+  "en": "E — read the wall paper",
+  "ja": "E：壁新聞を読む"
+ },
+ "city.xcl3.p.scales": {
+  "ru": "E — встать на весы",
+  "en": "E — step on the scales",
+  "ja": "E：体重計にのる"
+ },
+ "city.xcl3.p.toss": {
+  "ru": "E — бросить мешочки",
+  "en": "E — toss the bags",
+  "ja": "E：お手玉を投げる"
+ },
+ "city.xcl3.p.bell": {
+  "ru": "E — позвонить в звонок",
+  "en": "E — ring the bell",
+  "ja": "E：ベルを鳴らす"
+ },
+ "city.xcl3.p.steril": {
+  "ru": "E — посмотреть на стерилизатор",
+  "en": "E — look at the steriliser",
+  "ja": "E：滅菌器を見る"
+ },
+ "city.xcl3.p.draw": {
+  "ru": "E — рассмотреть рисунок",
+  "en": "E — look at the drawing",
+  "ja": "E：絵を眺める"
+ },
+ "city.xcl3.lost.t": {
+  "ru": "Полка забытых вещей",
+  "en": "Lost property",
+  "ja": "忘れ物の棚"
+ },
+ "city.xcl3.lost.0": {
+  "ru": "В ячейках: вязаная шапка, пара синих варежек, зонт без одной спицы, шарф в полоску, книга с закладкой, очки с одной дужкой. Табличка: «Хранится месяц, потом передаётся в «вещи для всех». Спросите в регистратуре».",
+  "en": "In the pigeonholes: a knitted hat, a pair of blue mittens, an umbrella missing a rib, a striped scarf, a book with a bookmark, spectacles with one arm. The sign: \"Kept for a month, then passed on to the 'things for everybody' box. Ask at the desk.\"",
+  "ja": "仕切りの中には、毛糸の帽子、青いミトンひと組、骨の一本折れた傘、縞のマフラー、しおりのはさまった本、つるが一本の眼鏡。札には「一か月預かり、そのあと『みんなの物』箱へ。受付でお尋ねください」。"
+ },
+ "city.xcl3.lost.1": {
+  "ru": "Новая записка, приколота булавкой: «Найдена красная варежка на левую руку, лежала на третьей скамье. Правая, видимо, осталась на улице. Спросить в регистратуре».",
+  "en": "A new note, pinned: \"Found: a red mitten for the left hand, on the third bench. The right one has probably stayed outside. Ask at the desk.\"",
+  "ja": "ピンでとめた新しいメモ。「三番目のベンチで左手用の赤いミトンを見つけました。右はたぶん外に残っています。受付へ」。"
+ },
+ "city.xcl3.lost.2": {
+  "ru": "Под запиской карандашом: «Варежка не моя, но правую я видела у ворот, на заборе. Принесу в четверг. Н.». В ячейке красная варежка сидит одна и ждёт.",
+  "en": "Under the note, in pencil: \"The mitten isn't mine, but I saw the right one on the fence by the gate. I'll bring it Thursday. N.\" In the pigeonhole the red mitten sits alone and waits.",
+  "ja": "メモの下に鉛筆で。「ミトンは私のではありませんが、右手のは門の柵にかかっていました。木曜に持ってきます。N」。仕切りの中で赤いミトンがひとり待っている。"
+ },
+ "city.xcl3.lost.3": {
+  "ru": "Теперь в ячейке обе красные варежки, связанные шнурком. Новая записка: «Хозяйку так и не нашли. Няня говорит: варежки отдадим тому, кто попадёт мешочками во все три отверстия у детского уголка. Это честно».",
+  "en": "Now both red mittens are in the pigeonhole, tied with a cord. A new note: \"The owner hasn't turned up. The nurse says: the mittens go to whoever gets the bags into all three holes by the children's corner. That's fair.\"",
+  "ja": "仕切りの中には、ひもで結んだ赤いミトンが両方そろっている。新しいメモ。「持ち主は見つかりません。看護師さんいわく、子どもコーナーの板の三つの穴にお手玉を全部入れた人に渡します。これなら公平です」。"
+ },
+ "city.xcl3.rota.t": {
+  "ru": "График дежурств",
+  "en": "Duty rota",
+  "ja": "当番表"
+ },
+ "city.xcl3.rota.0": {
+  "ru": "«График дежурств на месяц». Сверху красным: «Регистратура 8 — 20, аптека 9 — 19. Ночью дежурит сторож: стучать в стекло, не в дверь». Внизу чьей-то рукой: «Чай — по очереди!»",
+  "en": "\"Duty rota for the month.\" At the top in red: \"Desk 8 to 20, pharmacy 9 to 19. At night the porter is on duty: knock on the glass, not the door.\" At the bottom, in somebody's hand: \"Tea in turns!\"",
+  "ja": "「今月の当番表」。上に赤字で「受付八時〜二十時、薬局九時〜十九時。夜は守衛が当番。ドアではなくガラスをたたいてください」。いちばん下に誰かの字で「お茶は順番に！」"
+ },
+ "city.xcl3.rota.1a": {
+  "ru": "Понедельник, вторник, среда: приём терапевта с 9, окулист с 10, детский врач с 9. В среду после обеда прививки. На полях: «Приносить сменную обувь!»",
+  "en": "Monday, Tuesday, Wednesday: the GP from 9, the eye doctor from 10, the children's doctor from 9. Wednesday afternoons, vaccinations. In the margin: \"Bring indoor shoes!\"",
+  "ja": "月・火・水。内科は九時から、眼科は十時から、小児科は九時から。水曜の午後は予防接種。余白に「室内ばきを持ってくること！」"
+ },
+ "city.xcl3.rota.1b": {
+  "ru": "Четверг, пятница, суббота: терапевт принимает до обеда, окулист и детский врач с 10. В пятницу стоит галочка: «Проветривание, уборка залов». Субботний приём короткий, до 14.",
+  "en": "Thursday, Friday, Saturday: the GP sees patients until noon, the eye doctor and the children's doctor from 10. Friday has a tick: \"Airing, cleaning the halls.\" Saturday hours are short, until 14.",
+  "ja": "木・金・土。内科は午前中、眼科と小児科は十時から。金曜には「換気、ホールの掃除」のチェック。土曜の診察は短く、十四時まで。"
+ },
+ "city.xcl3.rota.1c": {
+  "ru": "Воскресенье: вычеркнуто по всей строке. Карандашом: «Дежурный врач на вызовах, номер у сторожа. Неотложное — через окно первого кабинета».",
+  "en": "Sunday: crossed out along the whole line. In pencil: \"Doctor on call, the number is with the porter. Emergencies through the window of the first room.\"",
+  "ja": "日曜は一行まるごと線で消してある。鉛筆で「当直医は往診中、番号は守衛のところ。急病は一番目の診察室の窓から」。"
+ },
+ "city.xcl3.rota.2": {
+  "ru": "Последняя строка: «Кормить рыбок: пн, ср, пт (дежурит тот, кто первым придёт). Поливать пальму: суббота». Рыбки в этом графике, похоже, самые аккуратные сотрудники.",
+  "en": "The last line: \"Feed the fish: Mon, Wed, Fri (whoever arrives first). Water the palm: Saturday.\" The fish seem to be the most punctual staff on this rota.",
+  "ja": "最後の行。「魚のえさ：月・水・金（先に来た人）。ヤシの水やり：土曜」。この表でいちばん几帳面な職員は、魚たちらしい。"
+ },
+ "city.xcl3.paper.t": {
+  "ru": "Стенгазета «Будь здоров»",
+  "en": "Wall paper \"Keep Well\"",
+  "ja": "壁新聞「お元気で」"
+ },
+ "city.xcl3.paper.1": {
+  "ru": "«Будь здоров». Выпуск выпускает санитарный актив: две медсестры и ученик из восьмого «Б». Девиз: «Мойте руки до того, как вам об этом напомнят». Рисунок: мыло в ореоле лучей.",
+  "en": "\"Keep Well\". Issued by the health volunteers: two nurses and a pupil from class 8B. Motto: \"Wash your hands before you're reminded.\" The drawing: a bar of soap in a halo of rays.",
+  "ja": "「お元気で」。保健ボランティア、看護師二人と8年B組の生徒が発行。標語は「言われる前に手を洗おう」。絵は光の輪に包まれた石けん。"
+ },
+ "city.xcl3.paper.2a": {
+  "ru": "Понедельник, вторник. Рубрика «Спина»: «Если сидите за партой, подложите под поясницу свёрнутый шарф. Если лежите на диване, не читайте с телефона над лицом». Приложение: пять упражнений для шеи.",
+  "en": "Monday, Tuesday. The \"Back\" column: \"At a school desk, put a rolled scarf behind your lower back. On the sofa, don't read above your face.\" Enclosed: five neck exercises.",
+  "ja": "月・火。「背中」欄。「机に向かうときは、丸めたマフラーを腰に当てよう。ソファでは、顔の上で本を持って読まないこと」。付録に首の体操五つ。"
+ },
+ "city.xcl3.paper.2b": {
+  "ru": "Среда, четверг. Рубрика «Зубы»: «Чистить две минуты, пока в песочных часах пересыпается песок. Конфета не враг, враг конфета без воды». Рядом нарисован улыбающийся зуб в шлеме.",
+  "en": "Wednesday, Thursday. The \"Teeth\" column: \"Brush for two minutes, while the sand runs through the hourglass. A sweet is not the enemy; a sweet without water is.\" Beside it a smiling tooth in a helmet.",
+  "ja": "水・木。「歯」欄。「砂時計の砂が落ちきるまで二分間みがこう。あめは敵ではない。水なしのあめが敵だ」。そばにヘルメットをかぶった笑う歯の絵。"
+ },
+ "city.xcl3.paper.2c": {
+  "ru": "Пятница. Рубрика «Режим»: «Ложиться до одиннадцати, вставать без будильника по субботам, завтракать тёплым». Внизу подпись школьника: «Проверено на себе. Частично».",
+  "en": "Friday. The \"Routine\" column: \"Bed before eleven, wake up without an alarm on Saturdays, eat a warm breakfast.\" Below, a pupil's note: \"Tested on myself. Partly.\"",
+  "ja": "金。「生活リズム」欄。「十一時前に寝る、土曜はめざましなしで起きる、朝ごはんはあたたかく」。下に生徒のひとこと。「自分で試しました。一部だけ」。"
+ },
+ "city.xcl3.paper.2d": {
+  "ru": "Суббота, воскресенье. Рубрика «Воздух»: «Выходной, значит: прогулка вдоль залива, двадцать минут в одну сторону. Дойти до маяка и вернуться засчитывается за зарядку». Пририсован маяк с лучом.",
+  "en": "Saturday, Sunday. The \"Air\" column: \"A day off means: a walk along the bay, twenty minutes one way. To the lighthouse and back counts as exercise.\" A lighthouse with a beam is drawn alongside.",
+  "ja": "土・日。「空気」欄。「休みの日は湾ぞいの散歩、片道二十分。灯台まで行って帰れば体操に数えます」。光の筋を出す灯台の絵が添えてある。"
+ },
+ "city.xcl3.paper.3a": {
+  "ru": "Последняя полоса, «Погода»: «Дождь: сушите обувь на газете, не на батарее. Зонт оставляйте в стойке у входа: там и сухо, и никого не заденет».",
+  "en": "Last page, \"Weather\": \"Rain: dry shoes on newspaper, not on the radiator. Leave umbrellas in the stand by the door: dry there, and nobody gets poked.\"",
+  "ja": "最終面「天気」。「雨の日、靴は暖房ではなく新聞紙の上で乾かそう。傘は入口の傘立てへ。乾くし、誰にも当たらない」。"
+ },
+ "city.xcl3.paper.3b": {
+  "ru": "Последняя полоса, «Погода»: «Мороз: шарф до глаз, нос прикрывать ладонью. Горячий чай хорош, но кипяток из стакана на ходу не нужен никому».",
+  "en": "Last page, \"Weather\": \"Frost: scarf up to the eyes, cover your nose with your palm. Hot tea is good, but nobody needs boiling water in a glass on the move.\"",
+  "ja": "最終面「天気」。「寒い日はマフラーを目の下まで、鼻は手で覆おう。熱いお茶はいいけれど、歩きながらのあつあつは誰にも必要ない」。"
+ },
+ "city.xcl3.paper.3c": {
+  "ru": "Последняя полоса: «Объявление. Нашлись две красные варежки, ищем хозяйку. Подробности — на полке забытых вещей у западной стены зала».",
+  "en": "Last page: \"Notice. Two red mittens have turned up, we are looking for the owner. Details on the lost property shelf by the west wall of the hall.\"",
+  "ja": "最終面。「お知らせ。赤いミトンが二つ見つかりました。持ち主を探しています。くわしくはホール西の壁、忘れ物の棚で」。"
+ },
+ "city.xcl3.sc.1": {
+  "ru": "Утром весы честные: стрелка дрожит и успокаивается на цифре, которую вчера вечером она назвала сама. Медсестра обещала не смотреть.",
+  "en": "In the morning the scales are honest: the needle shivers and settles on the number it gave last night. The nurse promised not to look.",
+  "ja": "朝の体重計は正直だ。針は震えて、昨夜と同じ数字で止まった。看護師は見ないと約束してくれた。"
+ },
+ "city.xcl3.sc.2": {
+  "ru": "После обеда на пару сотен граммов больше. Табличка над весами: «Взвешиваться без пальто и без карманов, полных камешков».",
+  "en": "After lunch, a couple of hundred grams more. A sign above the scales: \"Weigh yourself without a coat and without pockets full of pebbles.\"",
+  "ja": "昼食のあとは数百グラム増えた。体重計の上の札には「コートは脱いで、ポケットの小石も出して計りましょう」。"
+ },
+ "city.xcl3.sc.3": {
+  "ru": "Вечером в зале тихо, и стрелка ползёт особенно медленно. На стене рядом мелом: «Рост растёт, вес догонит».",
+  "en": "In the evening the hall is quiet and the needle crawls especially slowly. Chalked on the wall nearby: \"Height grows, weight will catch up.\"",
+  "ja": "夕方のホールは静かで、針はとりわけゆっくり動く。そばの壁にチョークで「背は伸びる、体重はあとから追いつく」。"
+ },
+ "city.xcl3.sc.4": {
+  "ru": "Под дождём на резине коврика остаются мокрые следы. Весы показывают на килограмм больше: это куртка. Медсестра, проходя, кивает: «Мокрый плащ в счёт не идёт».",
+  "en": "In the rain the rubber mat holds wet footprints. The scales show a kilo more: that's the jacket. The nurse, passing, nods: \"A wet raincoat doesn't count.\"",
+  "ja": "雨の日、ゴムマットには濡れた足跡が残る。体重計はいつもより一キロ多い。上着のぶんだ。通りがかった看護師が「濡れたレインコートはノーカウント」とうなずく。"
+ },
+ "city.xcl3.toss.t": {
+  "ru": "Мешочки в дырки",
+  "en": "Bags in the holes",
+  "ja": "お手玉入れ"
+ },
+ "city.xcl3.toss.keys": {
+  "ru": "E — бросить мешочек",
+  "en": "E — toss a bag",
+  "ja": "E：お手玉を投げる"
+ },
+ "city.xcl3.toss.1": {
+  "ru": "Деревянная доска с тремя круглыми отверстиями и жёлтая линия на полу. В корзинке лежат мешочки с горохом. Мелом: «Бросать стоя за линией. Спиной к доске не бросать!»",
+  "en": "A wooden board with three round holes and a yellow line on the floor. Pea bags lie in the basket. Chalked: \"Throw from behind the line. Do not throw with your back to the board!\"",
+  "ja": "丸い穴が三つあいた木の板と、床の黄色い線。かごにはえんどう豆の入ったお手玉。チョークで「線の後ろから投げること。板に背を向けて投げないこと！」"
+ },
+ "city.xcl3.toss.2": {
+  "ru": "Мешочек тёплый от чьих-то ладоней. У доски кто-то нарисовал очки: красному отверстию пять, жёлтому три, зелёному один, потому что оно ближе всех к полу.",
+  "en": "The bag is warm from somebody's palms. Someone has marked scores by the board: five for the red hole, three for the yellow, one for the green because it's nearest the floor.",
+  "ja": "お手玉は誰かの手のぬくもりが残っている。板のそばに点数が書いてある。赤い穴は五点、黄色は三点、緑は床にいちばん近いので一点。"
+ },
+ "city.xcl3.toss.3": {
+  "ru": "Ночью доску не трогают: за стеклом тёмная улица, а в зале горит только дежурный свет. Мешочки спят в корзинке.",
+  "en": "At night nobody touches the board: a dark street behind the glass, only the duty light on in the hall. The bags sleep in their basket.",
+  "ja": "夜は誰も板にさわらない。ガラスの向こうは暗い通りで、ホールには当直灯だけ。お手玉はかごの中で眠っている。"
+ },
+ "city.xcl3.toss.win": {
+  "ru": "Все три мешочка в отверстиях: красный, жёлтый и даже зелёный. Няня кивает: «Вот это глаз. Забирайте леденец, и варежки теперь ваши, если ещё нужны».",
+  "en": "All three bags in the holes: red, yellow and even green. The nurse nods: \"Now that's an eye. Take a sweet, and the mittens are yours if you still want them.\"",
+  "ja": "お手玉が三つとも穴に入った。赤も黄色も、緑までも。看護師はうなずく。「見事な目だね。あめをどうぞ。まだ欲しければミトンもあげるよ」。"
+ },
+ "city.xcl3.toss.lose": {
+  "ru": "Два мешочка стукнули по доске и упали на пол, третий улетел под скамейку. Няня собирает горох в ладонь: «Ничего, у нас не последний день».",
+  "en": "Two bags thumped the board and dropped, the third flew under the bench. The nurse gathers up spilt peas: \"Never mind, it isn't our last day.\"",
+  "ja": "お手玉は二つが板に当たって落ち、三つ目はベンチの下へ。看護師はこぼれた豆を集めて「気にしないで、今日が最後の日じゃないんだから」。"
+ },
+ "city.xcl3.toss.draw": {
+  "ru": "Один мешочек в красной, один в зелёной. «Хорошо для первого раза, — говорит няня. — Дети попадают лучше, у них нет привычки целиться».",
+  "en": "One bag in the red, one in the green. \"Good for a first go,\" says the nurse. \"Children do better: they haven't learned to aim.\"",
+  "ja": "お手玉は赤に一つ、緑に一つ。「初めてにしては上出来」と看護師。「子どものほうが上手なの。ねらう癖がないから」。"
+ },
+ "city.xcl3.bell.1": {
+  "ru": "Звонок на прилавке аптеки: латунная кнопка с красной шляпкой. Рядом табличка: «Звонить один раз. Фармацевт слышит с первого».",
+  "en": "The pharmacy counter bell: a brass push-button with a red cap. A small plate: \"Ring once. The pharmacist hears the first time.\"",
+  "ja": "薬局のカウンターのベル。赤い頭の真鍮のボタン。「鳴らすのは一回。薬剤師さんは一度で聞こえます」という小さな札。"
+ },
+ "city.xcl3.bell.2": {
+  "ru": "Дзынь. Из глубины аптеки доносится шорох халата и тихое: «Иду-иду, ничего не убегайте».",
+  "en": "Ding. From deep in the pharmacy comes the rustle of a white coat and a soft \"Coming, coming, don't run off.\"",
+  "ja": "チーン。薬局の奥から白衣の衣ずれと、小さな声。「はいはい、逃げないでね」。"
+ },
+ "city.xcl3.bell.3": {
+  "ru": "Дзынь. Тишина. Потом стук ящичка и скрип стула: аптекарь дописывает рецепт и сейчас придёт.",
+  "en": "Ding. Silence. Then a drawer knocks and a chair creaks: the pharmacist is finishing a prescription and will be right out.",
+  "ja": "チーン。静か。それから引き出しの音と椅子のきしみ。薬剤師は処方箋を書き終えて、すぐ来る。"
+ },
+ "city.xcl3.bell.n": {
+  "ru": "Окошко закрыто изнутри шторкой. Звонок всё равно звонит, но только эхо отвечает ему из пустого коридора. Табличка: «Ночью — к сторожу, окно первого кабинета».",
+  "en": "The window is shut from inside with a blind. The bell rings anyway, but only an echo answers from the empty corridor. A plate: \"At night, to the porter, window of the first room.\"",
+  "ja": "窓は内側からカーテンが引かれている。ベルは鳴るが、空っぽの廊下からこだまが返るだけ。札には「夜は守衛へ、一番目の診察室の窓」。"
+ },
+ "city.xcl3.st.1": {
+  "ru": "Стерилизатор на шкафу: белый ящик с крышкой и красным глазком. Внутри что-то тихо побулькивает, и пахнет горячим металлом.",
+  "en": "The steriliser on the cabinet: a white box with a lid and a red pilot light. Something bubbles quietly inside and it smells of hot metal.",
+  "ja": "棚の上の滅菌器。ふたと赤いランプのついた白い箱。中で何かが静かにぐつぐつして、熱い金属のにおいがする。"
+ },
+ "city.xcl3.st.2": {
+  "ru": "Утром его включают первым делом, раньше чайника. На крышке записка: «Не открывать до щелчка. Серьёзно».",
+  "en": "In the morning it is switched on before the kettle. A note on the lid: \"Don't open until it clicks. Seriously.\"",
+  "ja": "朝はやかんより先にスイッチが入る。ふたのメモに「カチッと鳴るまで開けないこと。本気です」。"
+ },
+ "city.xcl3.st.3": {
+  "ru": "К вечеру глазок гаснет. Внутри в строгом порядке лежат шпатели и пинцеты, как рыбки в консервной банке.",
+  "en": "By evening the pilot light has gone out. Inside, spatulas and tweezers lie in strict order like sprats in a tin.",
+  "ja": "夕方にはランプが消えている。中ではヘラとピンセットが、缶詰のいわしのように整然と並んでいる。"
+ },
+ "city.xcl3.st.n": {
+  "ru": "Ночью кабинет заперт. Через щель видно только красный огонёк, который никто не выключил. Он немного греет дверь.",
+  "en": "At night the room is locked. Through the gap you see only a red light nobody turned off. It warms the door a little.",
+  "ja": "夜、診察室は鍵がかかっている。すきまからは、誰も消さなかった赤い灯が見えるだけ。ドアがほんの少しあたたかい。"
+ },
+ "city.xcl3.dr.1": {
+  "ru": "Детский рисунок кнопками на стене: дом с огромным окном, у окна человечек в белом, над ним подпись печатными буквами: «ВРАЧ ДОБРЫЙ». Внизу: «Никита, 6 лет».",
+  "en": "A child's drawing pinned to the wall: a house with an enormous window, a little figure in white by it, captioned in capitals: \"THE DOCTOR IS KIND\". At the bottom: \"Nikita, 6 years.\"",
+  "ja": "壁に画びょうでとめた子どもの絵。大きな窓のある家、窓辺に白い服の小さな人、大きな字で「おいしゃさんはやさしい」。下に「ニキータ、六さい」。"
+ },
+ "city.xcl3.dr.2": {
+  "ru": "Рядом приколот второй рисунок: красная варежка на заборе и рядом грустное солнце. Подпись: «Варежка потерялась. Это не моя, это ничья».",
+  "en": "Pinned beside it is a second drawing: a red mitten on a fence and a sad sun next to it. Caption: \"The mitten is lost. It's not mine, it's nobody's.\"",
+  "ja": "となりにもう一枚。柵にかかった赤いミトンと悲しそうな太陽。「ミトンがなくなりました。ぼくのじゃない、だれのでもない」。"
+ },
+ "city.xcl3.dr.3": {
+  "ru": "В субботу к рисункам прибавился третий: мальчик с мешочком и тремя дырками. Подпись: «Я попаду во все». Рядом чужим почерком: «Посмотрим».",
+  "en": "On Saturdays a third drawing joins them: a boy with a bag and three holes. Caption: \"I'll hit all of them.\" Beside it in another hand: \"We'll see.\"",
+  "ja": "土曜には三枚目が加わる。お手玉を持った男の子と、三つの穴。「ぜんぶ入れるよ」。そのとなりに別の字で「さて、どうかな」。"
+ },
+ "quest.clinic_mitten.title": {
+  "ru": "Красная варежка",
+  "en": "The red mitten",
+  "ja": "赤いミトン"
+ },
+ "quest.clinic_mitten.desc": {
+  "ru": "На полке забытых вещей лежит красная варежка, а рядом висят детские рисунки про неё. Хозяйку так и не нашли, и няня придумала, как найти хозяина: кто сумеет попасть мешочками во все три дырки.",
+  "en": "A red mitten lies on the lost property shelf and children's drawings about it hang nearby. The owner hasn't turned up, and the nurse has found a way to choose a new one: whoever gets the bags into all three holes.",
+  "ja": "忘れ物の棚に赤いミトンがあり、そのそばに子どもたちの絵がかかっている。持ち主は見つからず、看護師は、お手玉を三つの穴に全部入れた人に渡すことにした。"
+ },
+ "quest.clinic_mitten.shelf.log": {
+  "ru": "В зале у западной стены полка забытых вещей. Посмотреть, что там за варежка.",
+  "en": "By the west wall of the hall is the lost property shelf. See what that mitten is about.",
+  "ja": "ホール西の壁に忘れ物の棚がある。そのミトンがどんなものか見てみよう。"
+ },
+ "quest.clinic_mitten.look.obj": {
+  "ru": "Осмотреть полку забытых вещей",
+  "en": "Look over the lost property shelf",
+  "ja": "忘れ物の棚を見る"
+ },
+ "quest.clinic_mitten.draw.log": {
+  "ru": "У детского уголка висит рисунок. Рассмотреть его, а потом зайти на весы: няня говорит, что для броска нужна лёгкая рука.",
+  "en": "A drawing hangs by the children's corner. Look at it, then step on the scales: the nurse says a light hand throws better.",
+  "ja": "子どもコーナーに絵がかかっている。眺めてから体重計にのってみよう。看護師いわく、軽い手のほうがよく投げられる。"
+ },
+ "quest.clinic_mitten.drawing.obj": {
+  "ru": "Рассмотреть детский рисунок",
+  "en": "Look at the child's drawing",
+  "ja": "子どもの絵を眺める"
+ },
+ "quest.clinic_mitten.scales.obj": {
+  "ru": "Встать на весы в зале",
+  "en": "Step on the hall scales",
+  "ja": "ホールの体重計にのる"
+ },
+ "quest.clinic_mitten.toss.log": {
+  "ru": "Теперь доска у детского уголка: попасть мешочками во все три отверстия.",
+  "en": "Now the board by the children's corner: get the bags into all three holes.",
+  "ja": "いよいよ子どもコーナーの板。お手玉を三つの穴に全部入れる。"
+ },
+ "quest.clinic_mitten.toss.obj": {
+  "ru": "Выиграть в мешочки у детского уголка",
+  "en": "Win the bag toss by the children's corner",
+  "ja": "子どもコーナーのお手玉入れに勝つ"
+ },
+ "quest.clinic_mitten.done": {
+  "ru": "Мешочки легли в три дырки подряд. Няня повязала красные варежки на шнурок и повесила мне на шею. Тёплые, как будто хозяйка только что их сняла. Ещё она дала два леденца, чтобы не мёрзнуть.",
+  "en": "The bags dropped into three holes in a row. The nurse tied the red mittens on a cord and hung it round my neck. Warm, as if their owner had only just taken them off. She also gave me two sweets so I wouldn't freeze.",
+  "ja": "お手玉が三つの穴に続けて入った。看護師は赤いミトンをひもで結んで、首にかけてくれた。持ち主がたった今ぬいだみたいにあたたかい。寒くないようにと、あめを二つくれた。"
+ }
+}

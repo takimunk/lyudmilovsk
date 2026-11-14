@@ -7,6 +7,7 @@
 #include "LyudEcosystem.generated.h"
 
 namespace LyudEco { class FModel; }
+class ALyudSky;
 
 /**
  * The coastal sea's food web (docs/ecosystem.md; the model is LyudEco::FModel in Private/Sea/EcoModel.cpp, plain C++):
@@ -62,6 +63,9 @@ public:
 	/** The fish model's diet from the web: Fn(Predator, Prey, Share) for every pair of fish species. */
 	void ForEachFishDiet(TFunctionRef<void(int32, int32, float)> Fn) const;
 
+	/** The level's sky (its shown time, the sun's height), found once a level and kept: asked every few seconds here and by the rod. */
+	const ALyudSky* FindSky(const UWorld* World) const;
+
 	// --- console
 	void LiveDays(float Days);
 	void ResetWeb(const UWorld* World);
@@ -86,6 +90,7 @@ private:
 	TPimplPtr<LyudEco::FModel> Model;
 	/** The level the web was last synced in (a new one may be a New Game: see Sync). */
 	TWeakObjectPtr<const UWorld> SyncedWorld;
+	mutable TWeakObjectPtr<ALyudSky> SkyRef;
 	/** Days of the fresh game's warm-up still to live (sliced over the syncs). */
 	float WarmLeft = 0.f;
 	/** LyudFish species index -> web node (-1 none), and each fish's numbers now (Relative x Here). */

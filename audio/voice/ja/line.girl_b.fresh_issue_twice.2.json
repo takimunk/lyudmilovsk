@@ -1,0 +1,20 @@
+{
+ "key": "line.girl_b.fresh_issue_twice.2",
+ "lang": "ja",
+ "text": "レフさん、今は向こうから挨拶してくれるの。私も、何をしに来たのか忘れなくなった。",
+ "speaker": "girl_b",
+ "voice": "Sarah",
+ "voice_id": "EXAVITQu4vr4xnSDxMaL",
+ "voice_design": null,
+ "direction": "[curious, slightly uneasy, conspiratorial]",
+ "model": "fal-ai/elevenlabs/tts/eleven-v3",
+ "request": {
+  "stability": 0.5,
+  "apply_text_normalization": "auto",
+  "text": "[curious, slightly uneasy, conspiratorial] レフさん、今は向こうから挨拶してくれるの。私も、何をしに来たのか忘れなくなった。",
+  "voice": "Sarah",
+  "language_code": "ja"
+ },
+ "fal_request_id": "01a1d6e2-ba5b-7a93-b430-3c672f576fee",
+ "hash": "5d3368d816fa"
+}

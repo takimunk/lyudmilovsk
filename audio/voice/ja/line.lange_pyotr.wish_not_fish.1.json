@@ -1,0 +1,20 @@
+{
+ "key": "line.lange_pyotr.wish_not_fish.1",
+ "lang": "ja",
+ "text": "笹に願いを結ぶのか？魚だけは頼むなよ。魚なら自分でなんとかする。",
+ "speaker": "lange_pyotr",
+ "voice": "Brian",
+ "voice_id": "nPczCjzI2devNBz1zQrb",
+ "voice_design": null,
+ "direction": "[gruff, unhurried, a weathered fisherman of few words]",
+ "model": "fal-ai/elevenlabs/tts/eleven-v3",
+ "request": {
+  "stability": 0.5,
+  "apply_text_normalization": "auto",
+  "text": "[gruff, unhurried, a weathered fisherman of few words] 笹に願いを結ぶのか？魚だけは頼むなよ。魚なら自分でなんとかする。",
+  "voice": "Brian",
+  "language_code": "ja"
+ },
+ "fal_request_id": "01a1d73b-362a-7af2-ab08-294a710ebf72",
+ "hash": "49eda206ba13"
+}

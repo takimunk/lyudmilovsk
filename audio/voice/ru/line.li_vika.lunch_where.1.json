@@ -1,0 +1,20 @@
+{
+ "key": "line.li_vika.lunch_where.1",
+ "lang": "ru",
+ "text": "Уха сорок рублей, заказывают у стойки. «Чайка» через дорогу от нижней станции канатки.",
+ "speaker": "li_vika",
+ "voice": "Laura",
+ "voice_id": "FGY2WhTYpPnrIDTdsKH5",
+ "voice_design": null,
+ "direction": "[playful, quick, a lab assistant joking about her work]",
+ "model": "fal-ai/elevenlabs/tts/eleven-v3",
+ "request": {
+  "stability": 0.5,
+  "apply_text_normalization": "auto",
+  "text": "[playful, quick, a lab assistant joking about her work] Уха сорок рублей, заказывают у стойки. «Чайка» через дорогу от нижней станции канатки.",
+  "voice": "Laura",
+  "language_code": "ru"
+ },
+ "fal_request_id": "01a1d6e7-ffaa-70e1-8528-66eab03b5f84",
+ "hash": "457494dee5c3"
+}

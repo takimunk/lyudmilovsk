@@ -1,0 +1,20 @@
+{
+ "key": "line.kimura_dasha.again4.1",
+ "lang": "en",
+ "text": "Vika left another note on the fridge: \"Buy bread, don't buy biscuits.\" I always misread the second half.",
+ "speaker": "kimura_dasha",
+ "voice": "Charlotte",
+ "voice_id": "XB0fDUnXU5powFXDhCwa",
+ "voice_design": null,
+ "direction": "[a tired physics student, wry, self-ironic]",
+ "model": "fal-ai/elevenlabs/tts/eleven-v3",
+ "request": {
+  "stability": 0.5,
+  "apply_text_normalization": "auto",
+  "text": "[a tired physics student, wry, self-ironic] Vika left another note on the fridge: \"Buy bread, don't buy biscuits.\" I always misread the second half.",
+  "voice": "Charlotte",
+  "language_code": "en"
+ },
+ "fal_request_id": "01a1d743-c14e-7330-9d94-e00ba98faf1d",
+ "hash": "10385ee62b4a"
+}

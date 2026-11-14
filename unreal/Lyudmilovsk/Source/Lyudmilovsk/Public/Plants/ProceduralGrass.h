@@ -56,6 +56,9 @@ public:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Grass") float MaxWorldZ = 100000.f;
 	/** Ground that belongs to an actor with this tag (a path, a beach, a yard) stays bare. */
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Grass") FName BareGroundTag = TEXT("NoGrass");
+	/** Optional, set before the patch is spawned: the grass's own density 0..1 at a world point (cm). When set it replaces the
+	 *  built-in clump noise: each tuft is kept with that chance and grows 0.7..1.3 by it (Topi's marram on its hummocks). */
+	TFunction<float(const FVector2D&)> DensityAt;
 	/** Thin and place the tufts by the outdoor terrain's grass, dune grass and wetness masks (ULyudTerrainMask), by the species' habitat; off, or with no mask built, the whole patch is grown. */
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Grass") bool bUseTerrainMask = true;
 	/** How far above and below the actor the ground is searched, cm. */

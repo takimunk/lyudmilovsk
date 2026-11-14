@@ -1,0 +1,20 @@
+{
+ "key": "line.streamer.wave_for_chat.2",
+ "lang": "ja",
+ "text": "チャットが、バイバイって手を振ってって。振ってあげて、簡単でしょ。",
+ "speaker": "streamer",
+ "voice": "Jessica",
+ "voice_id": "cgSgspJ2msm6clMCkdW9",
+ "voice_design": null,
+ "direction": "[bright, fast, half talking to her chat]",
+ "model": "fal-ai/elevenlabs/tts/eleven-v3",
+ "request": {
+  "stability": 0.5,
+  "apply_text_normalization": "auto",
+  "text": "[bright, fast, half talking to her chat] チャットが、バイバイって手を振ってって。振ってあげて、簡単でしょ。",
+  "voice": "Jessica",
+  "language_code": "ja"
+ },
+ "fal_request_id": "01a1d73e-e008-7002-afcb-0a2a00c1e002",
+ "hash": "c97717aed19c"
+}

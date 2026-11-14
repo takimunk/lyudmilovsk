@@ -1,0 +1,20 @@
+{
+ "key": "line.nishimura_aya.sun_day.1",
+ "lang": "ja",
+ "text": "昼の島では、太陽が私の肩のうしろに立ってる。私は太陽を描かない。太陽が、私が描くのを見てるの。",
+ "speaker": "nishimura_aya",
+ "voice": "Matilda",
+ "voice_id": "XrExE9yKIg1WjnnlVkGX",
+ "voice_design": null,
+ "direction": "[calm, soft, contemplative, a painter talking about the light]",
+ "model": "fal-ai/elevenlabs/tts/eleven-v3",
+ "request": {
+  "stability": 0.5,
+  "apply_text_normalization": "auto",
+  "text": "[calm, soft, contemplative, a painter talking about the light] 昼の島では、太陽が私の肩のうしろに立ってる。私は太陽を描かない。太陽が、私が描くのを見てるの。",
+  "voice": "Matilda",
+  "language_code": "ja"
+ },
+ "fal_request_id": "01a1d746-cf72-7c01-a496-cce4b8d4c59d",
+ "hash": "59c0d4896d6d"
+}

@@ -1,0 +1,20 @@
+{
+ "key": "line.belov_misha.magpie_tell.1",
+ "lang": "en",
+ "text": "Well then, let's see the evidence.",
+ "speaker": "belov_misha",
+ "voice": "Liam",
+ "voice_id": "TX3LPaxmHKxFdv7VOQHJ",
+ "voice_design": null,
+ "direction": "[easygoing, amused, a young technician, a little self-ironic]",
+ "model": "fal-ai/elevenlabs/tts/eleven-v3",
+ "request": {
+  "stability": 0.5,
+  "apply_text_normalization": "auto",
+  "text": "[easygoing, amused, a young technician, a little self-ironic] Well then, let's see the evidence.",
+  "voice": "Liam",
+  "language_code": "en"
+ },
+ "fal_request_id": "01a1d662-4430-7ad2-9f14-6d1899758391",
+ "hash": "c02a3e8b6f43"
+}

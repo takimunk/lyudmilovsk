@@ -1,0 +1,20 @@
+{
+ "key": "line.sorokin_oleg.grove_after_dark.2",
+ "lang": "ja",
+ "text": "夜明けに出て、町を抜けてまっすぐ北へ。朝の鳥は腹をすかせていて、少し大胆になる。",
+ "speaker": "sorokin_oleg",
+ "voice": "River",
+ "voice_id": "SAz9YHcvj6GT2YYXdXww",
+ "voice_design": null,
+ "direction": "[a retired scholar, calm, dry humour, slower, gentle]",
+ "model": "fal-ai/elevenlabs/tts/eleven-v3",
+ "request": {
+  "stability": 0.5,
+  "apply_text_normalization": "auto",
+  "text": "[a retired scholar, calm, dry humour, slower, gentle] 夜明けに出て、町を抜けてまっすぐ北へ。朝の鳥は腹をすかせていて、少し大胆になる。",
+  "voice": "River",
+  "language_code": "ja"
+ },
+ "fal_request_id": "01a1d6d8-7f37-7232-a692-856c4cf558e8",
+ "hash": "895125405869"
+}

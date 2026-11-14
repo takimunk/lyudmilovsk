@@ -1,0 +1,20 @@
+{
+ "key": "line.guy_a.again6.1",
+ "lang": "en",
+ "text": "Yamada's making me an avatar, forty by forty cells. Till then I've got a grey square, and I tell everyone: waiting on the master.",
+ "speaker": "guy_a",
+ "voice": "Will",
+ "voice_id": "bIHbv24MWmeRgasZH58o",
+ "voice_design": null,
+ "direction": "[a young gamer in a hurry, mid-match]",
+ "model": "fal-ai/elevenlabs/tts/eleven-v3",
+ "request": {
+  "stability": 0.5,
+  "apply_text_normalization": "auto",
+  "text": "[a young gamer in a hurry, mid-match] Yamada's making me an avatar, forty by forty cells. Till then I've got a grey square, and I tell everyone: waiting on the master.",
+  "voice": "Will",
+  "language_code": "en"
+ },
+ "fal_request_id": "01a1d782-7b79-7273-9afc-ece572fde7a9",
+ "hash": "d2754f5eb76e"
+}

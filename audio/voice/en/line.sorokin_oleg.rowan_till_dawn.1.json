@@ -1,0 +1,20 @@
+{
+ "key": "line.sorokin_oleg.rowan_till_dawn.1",
+ "lang": "en",
+ "text": "It's dark, the waxwings are asleep. The rowan and the feeder can wait till morning, and so can you.",
+ "speaker": "sorokin_oleg",
+ "voice": "River",
+ "voice_id": "SAz9YHcvj6GT2YYXdXww",
+ "voice_design": null,
+ "direction": "[a retired scholar, calm, dry humour, slower, gentle]",
+ "model": "fal-ai/elevenlabs/tts/eleven-v3",
+ "request": {
+  "stability": 0.5,
+  "apply_text_normalization": "auto",
+  "text": "[a retired scholar, calm, dry humour, slower, gentle] It's dark, the waxwings are asleep. The rowan and the feeder can wait till morning, and so can you.",
+  "voice": "River",
+  "language_code": "en"
+ },
+ "fal_request_id": "01a1d6df-1867-7380-9a02-27d5c5d4ab3e",
+ "hash": "d03d2286e272"
+}

@@ -1,0 +1,20 @@
+{
+ "key": "line.girl_a.lights_of_academ.1",
+ "lang": "ru",
+ "text": "Ночью иди на огни Академгородка, канатка довезёт. А пляж оставь до утра, под обрывом темно.",
+ "speaker": "girl_a",
+ "voice": "Matilda",
+ "voice_id": "XrExE9yKIg1WjnnlVkGX",
+ "voice_design": null,
+ "direction": "[whispering, concentrated]",
+ "model": "fal-ai/elevenlabs/tts/eleven-v3",
+ "request": {
+  "stability": 0.5,
+  "apply_text_normalization": "auto",
+  "text": "[whispering, concentrated] Ночью иди на огни Академгородка, канатка довезёт. А пляж оставь до утра, под обрывом темно.",
+  "voice": "Matilda",
+  "language_code": "ru"
+ },
+ "fal_request_id": "01a1d738-691c-7191-bb80-48c8b3251de4",
+ "hash": "a8c4c5c105c5"
+}

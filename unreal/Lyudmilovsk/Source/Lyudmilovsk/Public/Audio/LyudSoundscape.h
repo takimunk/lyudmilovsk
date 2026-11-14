@@ -65,6 +65,9 @@ public:
 	/** A looping sound of a pool attached to Parent at the effects volume (a cabin's motor); null if the pool is empty.
 	 *  The caller keeps it and stops it. */
 	UAudioComponent* AttachLoop(FName Pool, USceneComponent* Parent, float Volume = 1.f);
+	/** Lets go of a loop from AttachLoop: it fades over FadeSeconds (0: stops now) and its component is destroyed, not left
+	 *  attached to its parent as a stopped one. The caller clears its own pointer. */
+	static void ReleaseLoop(UAudioComponent* Loop, float FadeSeconds = 0.f);
 	/** A spoken line (LyudText::LoadVoice) at Where, at the effects volume (the cable car's announcements). */
 	UFUNCTION(BlueprintCallable, Category = "Sound") void PlayVoiceAt(USoundBase* Voice, const FVector& Where, float Volume = 1.f);
 	/** An umbrella over the player 0..1 (rain drums on it; equipment calls this). */
@@ -75,6 +78,9 @@ public:
 	 *  go quiet; what is heard there its own system plays. */
 	UFUNCTION(BlueprintCallable, Category = "Sound") void SetVacuum(bool bOn) { bVacuum = bOn; }
 	UFUNCTION(BlueprintPure, Category = "Sound") bool IsVacuum() const { return bVacuum; }
+	/** Holds the ambient music off (fading the playing cue) while any Owner holds it, the bed and sounds untouched: a
+	 *  place playing its own music (ULyudTopiMind in the dunes) calls this. A destroyed Owner lets go by itself. */
+	void SetMusicHold(const UObject* Owner, bool bHold);
 	/** Text for logs and tests: every input of the bed and the music's state. */
 	UFUNCTION(BlueprintCallable, Category = "Sound") FString DebugReport() const;
 
@@ -95,6 +101,8 @@ private:
 	UPROPERTY(Transient) TObjectPtr<UAudioComponent> RoomTone;
 	UPROPERTY(Transient) TObjectPtr<UAudioComponent> TownLoop;
 	UPROPERTY(Transient) TArray<TObjectPtr<UAudioComponent>> ClubLoops;
+	/** Whose sound each of ClubLoops is (the placed person at that station). */
+	TArray<TWeakObjectPtr<AActor>> ClubPeople;
 	UPROPERTY(Transient) TObjectPtr<USoundAttenuation> NearAttenuation;
 	UPROPERTY(Transient) TObjectPtr<USoundAttenuation> FarAttenuation;
 	UPROPERTY(Transient) TObjectPtr<USoundAttenuation> RoomAttenuation;
@@ -125,6 +133,8 @@ private:
 	bool bLeftFoot = false;
 	bool bBirdFlying = false;
 	bool bVacuum = false;
+	/** SetMusicHold's holders. */
+	TArray<TWeakObjectPtr<const UObject>> MusicHolds;
 	TMap<FIntPoint, FTreeCell> TreeGrid;
 	bool bTreeGridBuilt = false;
 	float LastWind = 0.f, LastGust = 0.f;

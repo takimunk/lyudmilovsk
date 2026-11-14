@@ -1,0 +1,20 @@
+{
+ "key": "line.sorokin_oleg.again2.1",
+ "lang": "en",
+ "text": "The swallows left back in September. Every year I write down the date, and every year I'm a little offended.",
+ "speaker": "sorokin_oleg",
+ "voice": "River",
+ "voice_id": "SAz9YHcvj6GT2YYXdXww",
+ "voice_design": null,
+ "direction": "[a retired scholar, calm, dry humour, slower, gentle]",
+ "model": "fal-ai/elevenlabs/tts/eleven-v3",
+ "request": {
+  "stability": 0.5,
+  "apply_text_normalization": "auto",
+  "text": "[a retired scholar, calm, dry humour, slower, gentle] The swallows left back in September. Every year I write down the date, and every year I'm a little offended.",
+  "voice": "River",
+  "language_code": "en"
+ },
+ "fal_request_id": "01a1d749-3d93-7e61-baf0-d40946353c1d",
+ "hash": "614249850aab"
+}

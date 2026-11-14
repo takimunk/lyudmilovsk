@@ -1,0 +1,20 @@
+{
+ "key": "line.nishimura_aya.views_wait_hint.1",
+ "lang": "ru",
+ "text": "Набережная внизу, у моря, скворцы над морем по вечерам. А рябиновый лес далеко, за северными холмами: туда иди, пока впереди много дня.",
+ "speaker": "nishimura_aya",
+ "voice": "Matilda",
+ "voice_id": "XrExE9yKIg1WjnnlVkGX",
+ "voice_design": null,
+ "direction": "[calm, soft, contemplative, a painter talking about the light]",
+ "model": "fal-ai/elevenlabs/tts/eleven-v3",
+ "request": {
+  "stability": 0.5,
+  "apply_text_normalization": "auto",
+  "text": "[calm, soft, contemplative, a painter talking about the light] Набережная внизу, у моря, скворцы над морем по вечерам. А рябиновый лес далеко, за северными холмами: туда иди, пока впереди много дня.",
+  "voice": "Matilda",
+  "language_code": "ru"
+ },
+ "fal_request_id": "01a1d6d6-f4e5-7520-bffb-ccbbc3bf1fd5",
+ "hash": "3f1c763f302f"
+}

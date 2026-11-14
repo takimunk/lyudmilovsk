@@ -1,0 +1,20 @@
+{
+ "key": "line.khuazhev_aslan.tent_report.4",
+ "lang": "ru",
+ "text": "Решено. Везу больше копчёного и мягкий сыр к блинам. А с ящиком тягаться не стану: его и так жалко.",
+ "speaker": "khuazhev_aslan",
+ "voice": "Brian",
+ "voice_id": "nPczCjzI2devNBz1zQrb",
+ "voice_design": null,
+ "direction": "[hearty, generous, a cheese seller from the Caucasus, proud of his family's cheese]",
+ "model": "fal-ai/elevenlabs/tts/eleven-v3",
+ "request": {
+  "stability": 0.5,
+  "apply_text_normalization": "auto",
+  "text": "[hearty, generous, a cheese seller from the Caucasus, proud of his family's cheese] Решено. Везу больше копчёного и мягкий сыр к блинам. А с ящиком тягаться не стану: его и так жалко.",
+  "voice": "Brian",
+  "language_code": "ru"
+ },
+ "fal_request_id": "01a1d66f-a412-7ea3-804b-bff667435072",
+ "hash": "f5ecb4c1f001"
+}

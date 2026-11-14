@@ -1,0 +1,20 @@
+{
+ "key": "line.zotova_galina.sun_low.1",
+ "lang": "ru",
+ "text": "Вечерний свет оранжевый, как пламя натрия. Я каждый раз его узнаю и каждый раз радуюсь.",
+ "speaker": "zotova_galina",
+ "voice": "Alice",
+ "voice_id": "Xb7hH8MSUJpSbSDYk0k2",
+ "voice_design": null,
+ "direction": "[warm, chatty, fondly exasperated with her husband]",
+ "model": "fal-ai/elevenlabs/tts/eleven-v3",
+ "request": {
+  "stability": 0.5,
+  "apply_text_normalization": "auto",
+  "text": "[warm, chatty, fondly exasperated with her husband] Вечерний свет оранжевый, как пламя натрия. Я каждый раз его узнаю и каждый раз радуюсь.",
+  "voice": "Alice",
+  "language_code": "ru"
+ },
+ "fal_request_id": "01a1d74a-e446-7793-9351-5c5697f37d71",
+ "hash": "28ee997d6313"
+}

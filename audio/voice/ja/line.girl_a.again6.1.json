@@ -1,0 +1,20 @@
+{
+ "key": "line.girl_a.again6.1",
+ "lang": "ja",
+ "text": "仕事では一日じゅう機械と向き合って、夜はここでスペクトラム。オーリャに、機械で機械の疲れをとってるって言われる。",
+ "speaker": "girl_a",
+ "voice": "Matilda",
+ "voice_id": "XrExE9yKIg1WjnnlVkGX",
+ "voice_design": null,
+ "direction": "[whispering, concentrated]",
+ "model": "fal-ai/elevenlabs/tts/eleven-v3",
+ "request": {
+  "stability": 0.5,
+  "apply_text_normalization": "auto",
+  "text": "[whispering, concentrated] 仕事では一日じゅう機械と向き合って、夜はここでスペクトラム。オーリャに、機械で機械の疲れをとってるって言われる。",
+  "voice": "Matilda",
+  "language_code": "ja"
+ },
+ "fal_request_id": "01a1d781-6661-7821-81ae-7e1c1291db18",
+ "hash": "261d239f73ee"
+}

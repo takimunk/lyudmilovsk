@@ -1,4 +1,5 @@
 #include "Birds/BirdLife.h"
+#include "UI/LyudQuests.h"
 #include "World/LyudPrefetch.h"
 
 #include "BirdSim.h"
@@ -8,6 +9,7 @@
 #include "Sea/LyudSea.h"
 #include "Birds/BirdActor.h"
 #include "Birds/BirdFeeder.h"
+#include "Birds/BirdPawn.h"
 #include "HeroCharacter.h"
 #include "Birds/BirdSpecies.h"
 #include "Camera/CameraActor.h"
@@ -24,6 +26,7 @@
 #include "LyudSave.h"
 #include "Materials/MaterialInstanceDynamic.h"
 #include "Misc/FileHelper.h"
+#include "Misc/PackageName.h"
 #include "Misc/Paths.h"
 #include "Plants/GameCalendar.h"
 #include "Plants/PlantModel.h"
@@ -37,6 +40,12 @@
 #include "../Murmuration/StarlingMesh.h"
 
 using namespace LyudBirds;
+
+namespace
+{
+	/** The instanced poses, as their meshes are named (SM_<Species>_<Pose>). */
+	const TCHAR* const BirdPoseNames[ABirdLifeRenderer::NumPoses] = { TEXT("Perch"), TEXT("Peck"), TEXT("Sleep"), TEXT("Flap0"), TEXT("Flap1"), TEXT("Flap2"), TEXT("Glide") };
+}
 
 static TAutoConsoleVariable<int32> CVarBirds(TEXT("lyud.Birds"), 1,
 	TEXT("The wild birds of the outdoor map (UBirdLifeSubsystem): 1 on, 0 off (removes them at once)."));
@@ -271,12 +280,120 @@ void UBirdLifeSubsystem::FillSpeciesFromTable()
 				Sp.LeaveFrom = Doy(R->StragglersFrom);
 				Sp.LeaveUntil = Doy(R->StragglersUntil);
 			}
+			// a rare species kept to one corner of the map (species.json "range", map metres)
+			if (R->RangeR > 0.f)
+			{
+				const V3 At = FromUE(ULyudQuests::Frame().ToWorld(R->RangeAt));
+				Sp.bRanged = true;
+				Sp.RangeX = At.X;
+				Sp.RangeY = At.Y;
+				Sp.RangeR = R->RangeR;
+				if (R->RangePopulation > 0)
+				{
+					Sp.Population = R->RangePopulation;
+				}
+				if (R->RangeFlockMin > 0 && R->RangeFlockMax >= R->RangeFlockMin)
+				{
+					Sp.FlockMin = R->RangeFlockMin;
+					Sp.FlockMax = R->RangeFlockMax;
+				}
+				if (R->RangeHomeM > 0.f)
+				{
+					Sp.HomeRange = R->RangeHomeM;
+				}
+			}
 		}
 		else
 		{
 			Sp.Population = 0;      // not in species.json (yet): no body to draw it with
 		}
 	}
+}
+
+/**
+ * Asks ULyudPrefetch for what ABirdLifeRenderer::Setup loads: every species' pose meshes, then the winter and female
+ * materials where a species has them this month. True once all of it is in memory (or doesn't exist): Setup's
+ * LoadObjects then only find them, instead of reading ~250 packages in the frame the birds start.
+ */
+bool UBirdLifeSubsystem::PrefetchPoses()
+{
+	bool bAll = true;
+	const int32 Month = UGameCalendar::NowIn(GetWorld()).GetMonth();
+	// asked of the disk once per package: a pose or a plumage that was never made is not asked for (no failed load)
+	auto Exists = [this](const FString& Package)
+	{
+		if (PlumageMissing.Contains(Package))
+		{
+			return false;
+		}
+		if (!PlumageThere.Contains(Package))
+		{
+			if (!FPackageName::DoesPackageExist(Package))
+			{
+				PlumageMissing.Add(Package);
+				return false;
+			}
+			PlumageThere.Add(Package);
+		}
+		return true;
+	};
+	for (const FSpecies& Sp : SpeciesTable())
+	{
+		const FName Id(Sp.Id.c_str());
+		if (!UBirdSpeciesLibrary::HasPose(Id, TEXT("Perch")))
+		{
+			continue;   // drawn with the placeholder
+		}
+		const FString N = Id.ToString();
+		bool bMeshes = true;
+		for (const TCHAR* Pose : BirdPoseNames)
+		{
+			const FString Package = FString::Printf(TEXT("/Game/Birds/%s/SM_%s_%s"), *N, *N, Pose);
+			if (Exists(Package))
+			{
+				bMeshes &= ULyudPrefetch::Ready(this, FString::Printf(TEXT("%s.SM_%s_%s"), *Package, *N, Pose));
+			}
+		}
+		bAll &= bMeshes;
+		const FBirdSpecies* R = UBirdSpeciesLibrary::Find(Id);
+		const bool bWinter = R && R->InWinterPlumage(Month);
+		const bool bFemale = R && R->bFemalePlumage;
+		if (!bMeshes || (!bWinter && !bFemale))
+		{
+			continue;
+		}
+		// the plumages are named after the meshes' own materials: only known once the meshes are in
+		const TCHAR* const Suffixes[3] = { bWinter && bFemale ? TEXT("_FemaleWinter") : nullptr, bFemale ? TEXT("_Female") : nullptr, bWinter ? TEXT("_Winter") : nullptr };
+		for (const TCHAR* Pose : BirdPoseNames)
+		{
+			const UStaticMesh* Mesh = FindObject<UStaticMesh>(nullptr, *FString::Printf(TEXT("/Game/Birds/%s/SM_%s_%s.SM_%s_%s"), *N, *N, Pose, *N, Pose));
+			if (!Mesh)
+			{
+				continue;
+			}
+			for (const FStaticMaterial& Slot : Mesh->GetStaticMaterials())
+			{
+				if (!Slot.MaterialInterface)
+				{
+					continue;
+				}
+				for (const TCHAR* Sfx : Suffixes)
+				{
+					if (!Sfx)
+					{
+						continue;
+					}
+					const FString Name = Slot.MaterialInterface->GetName() + Sfx;
+					const FString Package = FString::Printf(TEXT("/Game/Birds/%s/%s"), *N, *Name);
+					if (Exists(Package))
+					{
+						bAll &= ULyudPrefetch::Ready(this, Package + TEXT(".") + Name);
+					}
+				}
+			}
+		}
+	}
+	return bAll;
 }
 
 /** Town pigeons that always feed on the terrace a few steps out of the club's door (to try the feed on). */
@@ -370,6 +487,8 @@ void UBirdLifeSubsystem::Stop()
 	}
 	SyncTrust(true);       // a restart keeps the trust earned since the last save
 	Sim.Reset();
+	bPosesReady = false;   // asked again before the next start (a month on, another plumage)
+	PosePoll = 0.f;
 	bStarted = false;
 	bClockSeen = false;
 }
@@ -552,13 +671,18 @@ void UBirdLifeSubsystem::UpdatePlayer(float DeltaTime)
 	P.HandSpeed = HandSpeed;
 	// LOD and drawing follow the real camera; perception the hero's eyes (the bird near the hero thinks every frame too)
 	S.Camera = PC && PC->PlayerCameraManager ? FromUE(PC->PlayerCameraManager->GetCameraLocation()) : P.Eye;
-	P.bClaimedBird = false;
-	for (const FBird& B : S.Birds)
+	// the player is a bird: also one no bird of this life stands for (a loaded game, a friend called back that has
+	// gone away, Bird.Become), or every bird fled from it as from a person walking through the air
+	P.bClaimedBird = Pawn->IsA(ABirdPawn::StaticClass());
+	if (!P.bClaimedBird)
 	{
-		if (B.Act == EAct::Claimed)
+		for (const FBird& B : S.Birds)
 		{
-			P.bClaimedBird = true;
-			break;
+			if (B.Act == EAct::Claimed)
+			{
+				P.bClaimedBird = true;
+				break;
+			}
 		}
 	}
 }
@@ -577,7 +701,19 @@ void UBirdLifeSubsystem::Tick(float DeltaTime)
 	if (!bStarted)
 	{
 		StartDelay -= DeltaTime;
-		if (!bWantStart || StartDelay > 0.f)
+		if (!bWantStart)
+		{
+			return;
+		}
+		// the species' pose meshes load in the background meanwhile; the birds start once they are in (or after 8 s
+		// anyway: Setup then loads what is still missing on the spot, as it always did)
+		PosePoll -= DeltaTime;
+		if (!bPosesReady && PosePoll <= 0.f)
+		{
+			PosePoll = 0.2f;
+			bPosesReady = PrefetchPoses();
+		}
+		if (StartDelay > 0.f || (!bPosesReady && StartDelay > -8.f))
 		{
 			return;
 		}
@@ -804,11 +940,13 @@ void UBirdLifeSubsystem::SyncTrust(bool bToSave)
 	if (bToSave)
 	{
 		SavedTrust.Reset();
+		SavedTrustSpecies.Reset();
 		for (const FBird& B : S.Birds)
 		{
 			if (B.Trust > 0.05f)
 			{
 				SavedTrust.Add(B.Id, B.Trust);
+				SavedTrustSpecies.Add(B.Id, B.Species);
 			}
 		}
 		return;
@@ -817,6 +955,11 @@ void UBirdLifeSubsystem::SyncTrust(bool bToSave)
 	{
 		if (T.Key >= 0 && T.Key < (int32)S.Birds.size() && FMath::IsFinite(T.Value))
 		{
+			// loaded in another season the same id may be another bird: never onto another species
+			if (const int32* WasSpecies = SavedTrustSpecies.Find(T.Key); WasSpecies && *WasSpecies != S.Birds[T.Key].Species)
+			{
+				continue;
+			}
 			S.Birds[T.Key].Trust = FMath::Clamp(T.Value, 0.f, 1.f);
 		}
 	}
@@ -1164,7 +1307,7 @@ void ABirdLifeRenderer::EndPlay(const EEndPlayReason::Type EndPlayReason)
 
 void ABirdLifeRenderer::Setup(const FWorld& World)
 {
-	static const TCHAR* const PoseNames[NumPoses] = { TEXT("Perch"), TEXT("Peck"), TEXT("Sleep"), TEXT("Flap0"), TEXT("Flap1"), TEXT("Flap2"), TEXT("Glide") };
+	const TCHAR* const* PoseNames = BirdPoseNames;
 	UMaterialInterface* Base = LoadObject<UMaterialInterface>(nullptr, TEXT("/Engine/BasicShapes/BasicShapeMaterial.BasicShapeMaterial"));
 	// placeholders: Murmuration's starling, perched and in four wing positions
 	PlaceholderMeshes.Reset();
@@ -1198,6 +1341,10 @@ void ABirdLifeRenderer::Setup(const FWorld& World)
 		const int32 Sets = D.bOwnMeshes && R && R->bFemalePlumage ? 2 : 1;
 		D.Xf.SetNum(NumPoses * Sets);
 		D.Shown.Init(0, NumPoses * Sets);
+		D.Sent.SetNum(NumPoses * Sets);
+		// a plumage material asked for once per species, not once per pose (most do not exist: each miss is a package
+		// lookup)
+		TMap<FString, UMaterialInterface*> Plumages;
 		for (int32 Set = 0; Set < Sets; Set++)
 		{
 			TArray<FString> Suffixes;
@@ -1253,7 +1400,12 @@ void ABirdLifeRenderer::Setup(const FWorld& World)
 								break;
 							}
 							const FString Name = BaseMat->GetName() + Sfx;
-							if (UMaterialInterface* M = LoadObject<UMaterialInterface>(nullptr, *FString::Printf(TEXT("/Game/Birds/%s/%s.%s"), *Id.ToString(), *Name, *Name), nullptr, LOAD_NoWarn | LOAD_Quiet))
+							UMaterialInterface** Known = Plumages.Find(Name);
+							if (!Known)
+							{
+								Known = &Plumages.Add(Name, LoadObject<UMaterialInterface>(nullptr, *FString::Printf(TEXT("/Game/Birds/%s/%s.%s"), *Id.ToString(), *Name, *Name), nullptr, LOAD_NoWarn | LOAD_Quiet));
+							}
+							if (UMaterialInterface* M = *Known)
 							{
 								ISM->SetMaterial(Slot, M);
 								break;
@@ -1268,7 +1420,7 @@ void ABirdLifeRenderer::Setup(const FWorld& World)
 	}
 }
 
-void ABirdLifeRenderer::Sync(UInstancedStaticMeshComponent* ISM, TArray<FTransform>& Arr, int32& Shown)
+void ABirdLifeRenderer::Sync(UInstancedStaticMeshComponent* ISM, TArray<FTransform>& Arr, int32& Shown, TArray<FTransform>& Sent)
 {
 	static const FTransform Hidden(FQuat::Identity, FVector::ZeroVector, FVector::ZeroVector);
 	const int32 Want = Arr.Num();
@@ -1282,6 +1434,23 @@ void ABirdLifeRenderer::Sync(UInstancedStaticMeshComponent* ISM, TArray<FTransfo
 	{
 		return;
 	}
+	// the same birds exactly where the last sync put them (a flock asleep, perched birds with the camera still or near):
+	// nothing to send, and a component that is not written to is not updated by the renderer
+	if (Want == Prev && Want == Sent.Num())
+	{
+		bool bSame = true;
+		for (int32 J = 0; J < Want && bSame; J++)
+		{
+			bSame = Arr[J].GetTranslation() == Sent[J].GetTranslation() && Arr[J].GetRotation() == Sent[J].GetRotation()
+				&& Arr[J].GetScale3D() == Sent[J].GetScale3D();
+		}
+		if (bSame)
+		{
+			return;
+		}
+	}
+	Sent.Reset();
+	Sent.Append(Arr);
 	if (Want > Have)
 	{
 		TArray<FTransform> Extra;
@@ -1525,7 +1694,7 @@ void ABirdLifeRenderer::Draw(const FWorld& World, const FVector& Camera, float P
 		{
 			if (UInstancedStaticMeshComponent* ISM = D.Poses[P].Get())
 			{
-				Sync(ISM, D.Xf[P], D.Shown[P]);
+				Sync(ISM, D.Xf[P], D.Shown[P], D.Sent[P]);
 			}
 		}
 	}

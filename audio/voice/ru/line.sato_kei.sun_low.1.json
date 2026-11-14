@@ -1,0 +1,20 @@
+{
+ "key": "line.sato_kei.sun_low.1",
+ "lang": "ru",
+ "text": "Закат я не меряю. Один раз попробовал, и стало неловко, будто подглядываю.",
+ "speaker": "sato_kei",
+ "voice": "Eric",
+ "voice_id": "cjVigY5qzO86Huf0OWal",
+ "voice_design": null,
+ "direction": "[quiet, precise, softly puzzled, a scientist thinking aloud]",
+ "model": "fal-ai/elevenlabs/tts/eleven-v3",
+ "request": {
+  "stability": 0.5,
+  "apply_text_normalization": "auto",
+  "text": "[quiet, precise, softly puzzled, a scientist thinking aloud] Закат я не меряю. Один раз попробовал, и стало неловко, будто подглядываю.",
+  "voice": "Eric",
+  "language_code": "ru"
+ },
+ "fal_request_id": "01a1d747-3e6e-7700-b74a-2f82323fa8ed",
+ "hash": "5bd7f7b32580"
+}

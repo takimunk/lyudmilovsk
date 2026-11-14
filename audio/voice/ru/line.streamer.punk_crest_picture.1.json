@@ -1,0 +1,20 @@
+{
+ "key": "line.streamer.punk_crest_picture.1",
+ "lang": "ru",
+ "text": "Чат узнал, что ты нашёл свиристеля. Мне прислали картинку: у него правда хохолок, как у панка?",
+ "speaker": "streamer",
+ "voice": "Jessica",
+ "voice_id": "cgSgspJ2msm6clMCkdW9",
+ "voice_design": null,
+ "direction": "[bright, fast, half talking to her chat]",
+ "model": "fal-ai/elevenlabs/tts/eleven-v3",
+ "request": {
+  "stability": 0.5,
+  "apply_text_normalization": "auto",
+  "text": "[bright, fast, half talking to her chat] Чат узнал, что ты нашёл свиристеля. Мне прислали картинку: у него правда хохолок, как у панка?",
+  "voice": "Jessica",
+  "language_code": "ru"
+ },
+ "fal_request_id": "01a1d73e-3f8f-7e53-94da-54f6ed75a5cb",
+ "hash": "7668ae6d1b98"
+}

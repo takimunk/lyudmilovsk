@@ -1,0 +1,20 @@
+{
+ "key": "line.sato_kei.gull_sea_light.1",
+ "lang": "ru",
+ "text": "Чайка. Ты живёшь у моря и знаешь, почему свет здесь другой. Жаль, не скажешь.",
+ "speaker": "sato_kei",
+ "voice": "Eric",
+ "voice_id": "cjVigY5qzO86Huf0OWal",
+ "voice_design": null,
+ "direction": "[quiet, precise, softly puzzled, a scientist thinking aloud]",
+ "model": "fal-ai/elevenlabs/tts/eleven-v3",
+ "request": {
+  "stability": 0.5,
+  "apply_text_normalization": "auto",
+  "text": "[quiet, precise, softly puzzled, a scientist thinking aloud] Чайка. Ты живёшь у моря и знаешь, почему свет здесь другой. Жаль, не скажешь.",
+  "voice": "Eric",
+  "language_code": "ru"
+ },
+ "fal_request_id": "01a1d7b8-1f33-7c53-9056-0e66e69ce185",
+ "hash": "3e52b62bb418"
+}

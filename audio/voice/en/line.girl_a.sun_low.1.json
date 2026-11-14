@@ -1,0 +1,20 @@
+{
+ "key": "line.girl_a.sun_low.1",
+ "lang": "en",
+ "text": "In winter, by the end of my shift, the sun comes through the lab window straight into your eyes. I lower the blinds halfway. All the way would be a shame.",
+ "speaker": "girl_a",
+ "voice": "Matilda",
+ "voice_id": "XrExE9yKIg1WjnnlVkGX",
+ "voice_design": null,
+ "direction": "[whispering, concentrated]",
+ "model": "fal-ai/elevenlabs/tts/eleven-v3",
+ "request": {
+  "stability": 0.5,
+  "apply_text_normalization": "auto",
+  "text": "[whispering, concentrated] In winter, by the end of my shift, the sun comes through the lab window straight into your eyes. I lower the blinds halfway. All the way would be a shame.",
+  "voice": "Matilda",
+  "language_code": "en"
+ },
+ "fal_request_id": "01a1d7a9-27f9-7173-81f9-6227d639fdfb",
+ "hash": "bc5e75f8b597"
+}

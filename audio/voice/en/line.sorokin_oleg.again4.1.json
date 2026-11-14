@@ -1,0 +1,20 @@
+{
+ "key": "line.sorokin_oleg.again4.1",
+ "lang": "en",
+ "text": "This morning a flock of starlings went over the houses, three hundred or so. I counted, lost count, and don't regret it in the least.",
+ "speaker": "sorokin_oleg",
+ "voice": "River",
+ "voice_id": "SAz9YHcvj6GT2YYXdXww",
+ "voice_design": null,
+ "direction": "[a retired scholar, calm, dry humour, slower, gentle]",
+ "model": "fal-ai/elevenlabs/tts/eleven-v3",
+ "request": {
+  "stability": 0.5,
+  "apply_text_normalization": "auto",
+  "text": "[a retired scholar, calm, dry humour, slower, gentle] This morning a flock of starlings went over the houses, three hundred or so. I counted, lost count, and don't regret it in the least.",
+  "voice": "River",
+  "language_code": "en"
+ },
+ "fal_request_id": "01a1d749-6d14-7d71-9070-c3a96d837d86",
+ "hash": "fe5d0df8f2e7"
+}

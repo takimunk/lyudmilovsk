@@ -7,7 +7,7 @@
 #include <vector>
 #include "PeopleLife.generated.h"
 
-namespace LyudPeople { class FWorld; }
+namespace LyudPeople { class FWorld; class FManners; }
 class ABoothOwner;
 class ANpcBody;
 class ALyudBike;
@@ -211,8 +211,40 @@ public:
 	/** Household -> flat id. */
 	UPROPERTY(SaveGame) TMap<FString, FString> Homes;
 	UPROPERTY(SaveGame) TMap<FString, FPersonMemory> Memory;
+	/** Person key -> on how many days they have greeted the player. */
+	UPROPERTY(SaveGame) TMap<FString, int32> MetHero;
 
 	LyudPeople::FWorld* GetSim() const { return Sim.Get(); }
+	LyudPeople::FManners* GetManners() const { return Manners.Get(); }
+
+	// --- manners (docs/town_manners.md): who people are and the small things they do with their hands ---
+	/** What somebody drawn does now: fold_arms, phone_call, smoke, umbrella, ... (manners.json), none otherwise. */
+	UFUNCTION(BlueprintPure, Category = "People|Manners")
+	FName GetManner(int32 Id) const;
+	/** warmth, nerve, curiosity, tidy: 0..1, the same every game (0.5 if unknown). */
+	UFUNCTION(BlueprintPure, Category = "People|Manners")
+	float GetTrait(int32 Id, FName Trait) const;
+	/** Somebody drawn does this for Seconds over whatever they did (wave, nod, clap, point): false if they aren't drawn or
+	 *  their hands are busy. */
+	UFUNCTION(BlueprintCallable, Category = "People|Manners")
+	bool ReactManner(int32 Id, FName Manner, float Seconds = 2.5f);
+	/** On how many days somebody has greeted the player (kept with the save): they come to know him (docs/town_manners.md). */
+	UFUNCTION(BlueprintPure, Category = "People|Manners")
+	int32 GetMet(int32 Id) const;
+	/** They greeted him today (counts once a game day). */
+	UFUNCTION(BlueprintCallable, Category = "People|Manners")
+	void NoteMet(int32 Id);
+	/** Something to see in the sky for Seconds (the fireworks say so with every shell): people out of doors look up, point,
+	 *  photograph, and have a word about it (town talk's weather = fireworks). The northern lights and a rainbow
+	 *  (ALyudRareSky) are noticed by themselves. Strength 0..1. */
+	UFUNCTION(BlueprintCallable, Category = "People|Manners")
+	void SetSkyShow(FName What, float Strength = 1.f, float Seconds = 8.f);
+	/** aurora, rainbow, fireworks or None: what people look at in the sky now. */
+	UFUNCTION(BlueprintPure, Category = "People|Manners")
+	FName GetSkyShow() const { return SkyShowWhat; }
+	/** Everybody drawn does this one (the console and developer mode; None: as they like). */
+	UFUNCTION(BlueprintCallable, Category = "People|Manners")
+	void ForceManner(FName Manner);
 
 	virtual bool ShouldCreateSubsystem(UObject* Outer) const override;
 	virtual void OnWorldBeginPlay(UWorld& InWorld) override;
@@ -223,10 +255,37 @@ public:
 
 private:
 	TPimplPtr<LyudPeople::FWorld> Sim;
+	TPimplPtr<LyudPeople::FManners> Manners;
+	/** The props' meshes by LyudPeople::EProp (null: not made or not loaded yet; such manners aren't picked), the easel. */
+	UPROPERTY(Transient) TArray<TObjectPtr<class UStaticMesh>> PropMeshes;
+	UPROPERTY(Transient) TObjectPtr<class UStaticMesh> EaselMesh;
+	TSharedPtr<struct FStreamableHandle> PropLoad;
+	/** Present's scratch: the people drawn this frame. */
+	TArray<int32> ShownIds;
+	float NoticeTimer = 0.f, PassingTimer = 0.f;
+	float MannerClock = 0.f;
+	/** The sky's show now (RefreshSkyShow, once a second): what, how much of it draws the eye (people get used to a long
+	 *  one), since when; the one somebody set for a while (SetSkyShow). */
+	FName SkyShowWhat, TimedShowWhat;
+	float SkyShow = 0.f, SkyShowSince = 0.f, SkyShowTimer = 0.f;
+	float TimedShow = 0.f, TimedShowUntil = -1.f;
+	TWeakObjectPtr<class ALyudRareSky> RareSky;
+	int32 RareSkySeek = 0;
+	void RefreshSkyShow(float Cloud, bool bSunUp);
+	/** Person -> the game day they last met the player on (NoteMet counts a day once). */
+	TMap<int32, int32> MetDay;
+	void LoadManners();
+	void UpdateManners(float DeltaTime);
+	/** A strike (ULyudWeatherSubsystem::OnLightning): when its thunder reaches the camera people out of doors start
+	 *  (the nervy and the children more), and one of them has a word (OnPersonEvent "thunder"). */
+	UFUNCTION() void OnThunder(FVector Location, float DistanceFromViewM);
+	float ThunderAt = -1.f, ThunderNear = 0.f;
 
 	// the town: pooled bodies for the townsfolk (nearest first, lyud.People.TownBodies), the window lights
 	/** Free townsfolk bodies by model, to be given to whoever of that look comes near. */
 	TMap<FString, TArray<TObjectPtr<ANpcBody>>> TownPool;
+	/** The parked bodies of townsfolk with a look of their own, oldest first: only so many are kept (ReleaseBody). */
+	TArray<TWeakObjectPtr<ANpcBody>> OwnParked;
 	/** Townsfolk allowed a body now (the nearest drawn ones), refreshed a few times a second. */
 	TBitArray<> TownAllowed;
 	TArray<TPair<float, int32>> TownNear;
@@ -235,6 +294,8 @@ private:
 	void ReleaseBody(int32 Id);
 	/** Lights: every couple of seconds the flats that changed are told to the window lights (the buildings' and the walls'). */
 	float LightTimer = 0.f;
+	/** A clock jump asks for every flat to be told again; done once the townsfolk are placed. */
+	bool bLightsAll = false;
 	std::vector<int> LightChanged;
 	TMap<FName, int32> FlatIndex;
 	TMap<FName, int32> WindowIndex;
@@ -247,6 +308,15 @@ private:
 	void BindLights();
 	void UpdateLights(bool bAll);
 	void SendFlatLight(const FString& FlatId, bool bOn);
+	/** What the festivals asked of the town (SetGathering, SetDayOff, SetStayUpUntil), kept here and given to every life
+	 *  that starts: they ask once, often before the life has started (it waits half a second after BeginPlay), and a life
+	 *  stopped and started again (lyud.People 0/1) would forget them. */
+	struct FWantedGathering { FName PlaceOrKind; float From = 0.f, To = 0.f, Pull = 0.f; EPeopleGatherMode Mode = EPeopleGatherMode::Mingle; FVector Face = FVector::ZeroVector; };
+	TMap<FName, FWantedGathering> WantedGatherings;
+	bool bWantedDayOff = false;
+	/** The festival night's end on the calendar (FDateTime ticks), 0 none. */
+	int64 WantedStayUpUntil = 0;
+	void ApplyWanted();
 	bool bWantStart = false;
 	bool bStarted = false;
 	bool bLoaded = false;
@@ -345,6 +415,17 @@ public:
 	float GetBodyScale() const { return BodyScale; }
 	/** Moves the mouth for Seconds whatever the pose: a line said over the head (ULyudTownTalkSubsystem, docs/town_talk.md). */
 	void Chatter(float Seconds) { ChatterUntil = Clock + Seconds; }
+	/** Their manner now (docs/town_manners.md; LyudPeople::EManner and EProp as numbers), told before Drive: Since seconds
+	 *  ago it began, Left to go (negative: no end in sight). PropMesh: what it puts in the hands (null: nothing, or not
+	 *  made yet), StandMesh: what stands before them (a painter's easel). Drive does the gesture and holds the prop. */
+	void SetManner(uint8 Manner, uint8 Prop, float Since, float Left, bool bLeftHanded, class UStaticMesh* PropMesh, class UStaticMesh* StandMesh);
+	/** What they look at for the next Seconds (somebody passing, the player running by), then nothing in particular again. */
+	void LookAtPoint(const FVector& Where, float Seconds);
+	void LookAtNothing();
+
+	/** What a manner puts in the hands (SM_Prop_*), and what stands before them. */
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "People") TObjectPtr<class UStaticMeshComponent> MannerProp;
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "People") TObjectPtr<class UStaticMeshComponent> MannerStand;
 
 	FString MeshName;
 	/** Who they are in npc_dialogue.txt (their own body's id, whatever model shows them now). */
@@ -353,6 +434,9 @@ public:
 private:
 	UPROPERTY(Transient) TMap<FName, TObjectPtr<class UAnimSequence>> Clips;
 	FString ComputerClip;
+	/** The computer loops' style for ComputerClip (ULyudBodyAnimInstance::StyleOfClip), at a computer and at work (Setup). */
+	FName ComputerStyle = TEXT("Gamer");
+	FName WorkStyle = TEXT("Office");
 	FName Playing;
 	bool bOnBike = false;
 	float Facing = 0.f;
@@ -376,6 +460,15 @@ private:
 	float BedYaw = 0.f;
 	float BedTop = 50.f;
 
+	uint8 Manner = 0, MannerPropKind = 0;
+	float MannerSince = 0.f, MannerLeft = -1.f;
+	bool bMannerLeft = false;
+	bool bLookGiven = false;
+	bool bStandPlaced = false;
+	/** The gesture of the manner for this pose (none in a transition, asleep, at a computer, on a bike); true if a clip of
+	 *  its own was played for it. Then the prop into the hands. */
+	bool DriveManner(EPersonPose Pose, int32 Transit, float Speed);
+	void PlaceMannerProp(bool bShow);
 	class UAnimSequence* Clip(FName Name);
 	/** Lays the pusher between the hands and the ground ahead (or hides it). */
 	void PlacePusher(bool bShow);

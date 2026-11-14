@@ -1,0 +1,20 @@
+{
+ "key": "line.guy_a.sun_day.1",
+ "lang": "ru",
+ "text": "Днём на мониках никаких бликов, окон-то нет. А я всё равно иногда щурюсь. Привычка, наверно.",
+ "speaker": "guy_a",
+ "voice": "Will",
+ "voice_id": "bIHbv24MWmeRgasZH58o",
+ "voice_design": null,
+ "direction": "[a young gamer in a hurry, mid-match]",
+ "model": "fal-ai/elevenlabs/tts/eleven-v3",
+ "request": {
+  "stability": 0.5,
+  "apply_text_normalization": "auto",
+  "text": "[a young gamer in a hurry, mid-match] Днём на мониках никаких бликов, окон-то нет. А я всё равно иногда щурюсь. Привычка, наверно.",
+  "voice": "Will",
+  "language_code": "ru"
+ },
+ "fal_request_id": "01a1d782-9c3c-75a1-83fd-32ca59958a88",
+ "hash": "076a1fa52cbe"
+}

@@ -1,0 +1,20 @@
+{
+ "key": "line.owner.supper_ask.3",
+ "lang": "en",
+ "text": "Supper is out there. And I am in here.",
+ "speaker": "owner",
+ "voice": "Daniel",
+ "voice_id": "onwK4e9ZLuTAKqWW03F9",
+ "voice_design": null,
+ "direction": "[calm, tired, slow, a little ironic]",
+ "model": "fal-ai/elevenlabs/tts/eleven-v3",
+ "request": {
+  "stability": 0.5,
+  "apply_text_normalization": "auto",
+  "text": "[calm, tired, slow, a little ironic] Supper is out there. And I am in here.",
+  "voice": "Daniel",
+  "language_code": "en"
+ },
+ "fal_request_id": "01a1d672-206a-7111-8722-6af42de0ca85",
+ "hash": "d88f28133f2a"
+}

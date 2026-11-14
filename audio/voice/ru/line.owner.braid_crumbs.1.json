@@ -1,0 +1,20 @@
+{
+ "key": "line.owner.braid_crumbs.1",
+ "lang": "ru",
+ "text": "За крошками от косички? Бери. Я ем медленно, тебе тоже хватит.",
+ "speaker": "owner",
+ "voice": "Daniel",
+ "voice_id": "onwK4e9ZLuTAKqWW03F9",
+ "voice_design": null,
+ "direction": "[calm, tired, slow, a little ironic]",
+ "model": "fal-ai/elevenlabs/tts/eleven-v3",
+ "request": {
+  "stability": 0.5,
+  "apply_text_normalization": "auto",
+  "text": "[calm, tired, slow, a little ironic] За крошками от косички? Бери. Я ем медленно, тебе тоже хватит.",
+  "voice": "Daniel",
+  "language_code": "ru"
+ },
+ "fal_request_id": "01a1d73c-ddba-7b31-82ce-db05ae65c921",
+ "hash": "e016793dbc02"
+}

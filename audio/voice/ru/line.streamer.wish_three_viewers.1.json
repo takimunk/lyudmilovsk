@@ -1,0 +1,20 @@
+{
+ "key": "line.streamer.wish_three_viewers.1",
+ "lang": "ru",
+ "text": "Чат хочет звездопад. Увидишь падающую звезду, загадай мне хотя бы трёх зрителей.",
+ "speaker": "streamer",
+ "voice": "Jessica",
+ "voice_id": "cgSgspJ2msm6clMCkdW9",
+ "voice_design": null,
+ "direction": "[bright, fast, half talking to her chat]",
+ "model": "fal-ai/elevenlabs/tts/eleven-v3",
+ "request": {
+  "stability": 0.5,
+  "apply_text_normalization": "auto",
+  "text": "[bright, fast, half talking to her chat] Чат хочет звездопад. Увидишь падающую звезду, загадай мне хотя бы трёх зрителей.",
+  "voice": "Jessica",
+  "language_code": "ru"
+ },
+ "fal_request_id": "01a1d73e-cf02-7f81-9bf6-91f2ed5858a1",
+ "hash": "5edaca38e836"
+}

@@ -1,0 +1,20 @@
+{
+ "key": "line.orlova_tanya.fieldfare_no_rowan.1",
+ "lang": "ru",
+ "text": "Рябинник? Рябина для Сорокинских свиристелей. Лети в сады, там своей полно.",
+ "speaker": "orlova_tanya",
+ "voice": "Aria",
+ "voice_id": "9BWtsMINqrJLrRacOk9x",
+ "voice_design": null,
+ "direction": "[a kiosk shop assistant, brisk, deadpan, a bit sassy]",
+ "model": "fal-ai/elevenlabs/tts/eleven-v3",
+ "request": {
+  "stability": 0.5,
+  "apply_text_normalization": "auto",
+  "text": "[a kiosk shop assistant, brisk, deadpan, a bit sassy] Рябинник? Рябина для Сорокинских свиристелей. Лети в сады, там своей полно.",
+  "voice": "Aria",
+  "language_code": "ru"
+ },
+ "fal_request_id": "01a1d7df-ca40-75a2-aaf6-71f53e2aa26f",
+ "hash": "c11d9985368a"
+}

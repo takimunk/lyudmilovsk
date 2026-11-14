@@ -277,7 +277,37 @@
  ],
  "spots": [
   {
-   "id": "sbench_main_0",
+   "id": "lobby_bench",
+   "kind": "bench",
+   "pos": [
+    5.609,
+    8.796,
+    0.0
+   ],
+   "yaw": 304.0
+  },
+  {
+   "id": "lobby_desk",
+   "kind": "seat",
+   "pos": [
+    4.5,
+    5.25,
+    0.0
+   ],
+   "yaw": 0.0
+  },
+  {
+   "id": "studio_easel",
+   "kind": "work",
+   "pos": [
+    -3.544,
+    12.117,
+    0.0
+   ],
+   "yaw": 62.47119229084849
+  },
+  {
+   "id": "sbench_main_3",
    "kind": "bench",
    "pos": [
     -4.8,
@@ -287,7 +317,417 @@
    "yaw": 0
   }
  ],
- "lamps": [],
+ "lamps": [
+  {
+   "pos": [
+    1.6,
+    6.0,
+    2.65
+   ],
+   "lumens": 600,
+   "colour": "#FFE2B8",
+   "kind": "public",
+   "radius": 6.0
+  },
+  {
+   "pos": [
+    4.0,
+    8.5,
+    2.65
+   ],
+   "lumens": 500,
+   "colour": "#FFE2B8",
+   "kind": "public",
+   "radius": 6.0
+  },
+  {
+   "pos": [
+    -2.2,
+    12.6,
+    2.55
+   ],
+   "lumens": 700,
+   "colour": "#FFE2B8",
+   "kind": "public",
+   "radius": 6.0
+  },
+  {
+   "pos": [
+    -4.798,
+    12.488,
+    2.65
+   ],
+   "lumens": 500,
+   "colour": "#FFE2B8",
+   "kind": "public",
+   "radius": 6.0
+  },
+  {
+   "pos": [
+    -1.204,
+    15.002,
+    2.65
+   ],
+   "lumens": 400,
+   "colour": "#FFE2B8",
+   "kind": "public",
+   "radius": 6.0
+  }
+ ],
+ "things": [
+  {
+   "id": "kit_clock_1",
+   "kind": "board",
+   "pos": [
+    6.74,
+    7.182,
+    2.45
+   ],
+   "yaw": 284.0,
+   "props": {
+    "what": "clock"
+   }
+  },
+  {
+   "id": "lobby_bench_seat",
+   "kind": "seat",
+   "pos": [
+    5.609,
+    8.796,
+    0.45
+   ],
+   "yaw": 304.0,
+   "props": {
+    "height": 0.45
+   }
+  },
+  {
+   "id": "lobby_sofa_seat",
+   "kind": "seat",
+   "pos": [
+    -2.02,
+    6.01,
+    0.43
+   ],
+   "yaw": 90.0,
+   "props": {
+    "height": 0.43
+   }
+  },
+  {
+   "id": "lobby_armchair",
+   "kind": "seat",
+   "pos": [
+    0.0,
+    4.85,
+    0.44
+   ],
+   "yaw": 180.0,
+   "props": {
+    "height": 0.44
+   }
+  },
+  {
+   "id": "lobby_desk_chair",
+   "kind": "seat",
+   "pos": [
+    4.5,
+    5.25,
+    0.45
+   ],
+   "yaw": 0.0,
+   "props": {
+    "height": 0.45
+   }
+  },
+  {
+   "id": "lobby_board_lost",
+   "kind": "board",
+   "pos": [
+    6.788,
+    7.194,
+    1.55
+   ],
+   "yaw": 284.0,
+   "props": {
+    "topic": "lost"
+   }
+  },
+  {
+   "id": "lobby_board_club",
+   "kind": "board",
+   "pos": [
+    4.901,
+    9.992,
+    1.55
+   ],
+   "yaw": 324.0,
+   "props": {
+    "topic": "club"
+   }
+  },
+  {
+   "id": "lobby_picture_night_sea",
+   "kind": "board",
+   "pos": [
+    6.091,
+    8.76,
+    1.7
+   ],
+   "yaw": 304.0,
+   "props": {
+    "topic": "painting"
+   }
+  },
+  {
+   "id": "lobby_picture_lighthouse",
+   "kind": "board",
+   "pos": [
+    -2.808,
+    4.848,
+    1.75
+   ],
+   "yaw": 100.0,
+   "props": {
+    "topic": "painting"
+   }
+  },
+  {
+   "id": "lobby_swap_shelf",
+   "kind": "shelf",
+   "pos": [
+    3.525,
+    10.693,
+    1.3
+   ],
+   "yaw": 342.0,
+   "props": {
+    "topic": "local"
+   }
+  },
+  {
+   "id": "lobby_radio",
+   "kind": "machine",
+   "pos": [
+    -2.25,
+    7.0,
+    0.95
+   ],
+   "yaw": 90.0,
+   "props": {
+    "what": "jukebox"
+   }
+  },
+  {
+   "id": "lobby_paper",
+   "kind": "take",
+   "pos": [
+    -0.85,
+    5.6,
+    0.45
+   ],
+   "yaw": 0.0,
+   "props": {
+    "item": "daily_paper"
+   }
+  },
+  {
+   "id": "kit_clock_2",
+   "kind": "board",
+   "pos": [
+    -5.633,
+    16.351,
+    2.55
+   ],
+   "yaw": 42.5,
+   "props": {
+    "what": "clock"
+   }
+  },
+  {
+   "id": "studio_armchair",
+   "kind": "seat",
+   "pos": [
+    -5.511,
+    14.632,
+    0.44
+   ],
+   "yaw": 238.5,
+   "props": {
+    "height": 0.44
+   }
+  },
+  {
+   "id": "studio_kitchen_chair",
+   "kind": "seat",
+   "pos": [
+    -2.068,
+    15.597,
+    0.45
+   ],
+   "yaw": 177.5,
+   "props": {
+    "height": 0.45
+   }
+  },
+  {
+   "id": "studio_stool",
+   "kind": "seat",
+   "pos": [
+    -3.63,
+    13.052,
+    0.5
+   ],
+   "yaw": 0.0,
+   "props": {
+    "height": 0.5
+   }
+  },
+  {
+   "id": "studio_daybed",
+   "kind": "bed",
+   "pos": [
+    0.336,
+    15.674,
+    0.5
+   ],
+   "yaw": 320.5,
+   "props": {
+    "height": 0.5,
+    "rest": "private"
+   }
+  },
+  {
+   "id": "studio_easel_dunes",
+   "kind": "craft",
+   "pos": [
+    -4.437,
+    12.582,
+    1.1
+   ],
+   "yaw": 62.5,
+   "props": {
+    "what": "easel"
+   }
+  },
+  {
+   "id": "studio_easel_blank",
+   "kind": "craft",
+   "pos": [
+    -3.644,
+    10.543,
+    1.1
+   ],
+   "yaw": 102.5,
+   "props": {
+    "what": "easel"
+   }
+  },
+  {
+   "id": "studio_drafting_table",
+   "kind": "craft",
+   "pos": [
+    -2.37,
+    8.746,
+    0.95
+   ],
+   "yaw": 177.5,
+   "props": {
+    "what": "easel"
+   }
+  },
+  {
+   "id": "studio_art_shelf",
+   "kind": "shelf",
+   "pos": [
+    0.169,
+    8.231,
+    1.3
+   ],
+   "yaw": 208.5,
+   "props": {
+    "topic": "art"
+   }
+  },
+  {
+   "id": "studio_board_exhibit",
+   "kind": "board",
+   "pos": [
+    -4.243,
+    7.908,
+    1.6
+   ],
+   "yaw": 156.5,
+   "props": {
+    "topic": "exhibit"
+   }
+  },
+  {
+   "id": "studio_picture_portrait",
+   "kind": "board",
+   "pos": [
+    -3.05,
+    7.536,
+    1.8
+   ],
+   "yaw": 170.5,
+   "props": {
+    "topic": "painting"
+   }
+  },
+  {
+   "id": "studio_picture_pines",
+   "kind": "board",
+   "pos": [
+    -6.532,
+    9.843,
+    1.7
+   ],
+   "yaw": 122.5,
+   "props": {
+    "topic": "painting"
+   }
+  },
+  {
+   "id": "studio_picture_abstract",
+   "kind": "board",
+   "pos": [
+    -7.011,
+    10.804,
+    1.8
+   ],
+   "yaw": 110.5,
+   "props": {
+    "topic": "painting"
+   }
+  },
+  {
+   "id": "studio_record_player",
+   "kind": "machine",
+   "pos": [
+    -6.321,
+    15.128,
+    0.65
+   ],
+   "yaw": 58.5,
+   "props": {
+    "what": "record_player"
+   }
+  },
+  {
+   "id": "studio_aquarium",
+   "kind": "screen",
+   "pos": [
+    1.401,
+    14.096,
+    1.0
+   ],
+   "yaw": 212.5,
+   "props": {
+    "what": "aquarium"
+   }
+  }
+ ],
  "flats": [
   {
    "flat": "0-01",
@@ -4173,8 +4613,8 @@
   "hex honeycomb on the back drum; loggia with curved balconies on the front drum"
  ],
  "tris": {
-  "shell": 4616,
-  "detail": 8628,
-  "windows": 348
+  "shell": 5056,
+  "detail": 18567,
+  "windows": 696
  }
 }

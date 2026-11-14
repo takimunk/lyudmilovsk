@@ -1,0 +1,20 @@
+{
+ "key": "line.valiev_rustam.signal_tell.5",
+ "lang": "ja",
+ "text": "成功だよ。計算は見えるはずだと言い、目は何かが見えたと言っている。初回にしては、なかなかの一致だ。",
+ "speaker": "valiev_rustam",
+ "voice": "Roger",
+ "voice_id": "CwhRBWXzGAHq8TQ4Fs17",
+ "voice_design": null,
+ "direction": "[confident, dry, matter-of-fact engineer]",
+ "model": "fal-ai/elevenlabs/tts/eleven-v3",
+ "request": {
+  "stability": 0.5,
+  "apply_text_normalization": "auto",
+  "text": "[confident, dry, matter-of-fact engineer] 成功だよ。計算は見えるはずだと言い、目は何かが見えたと言っている。初回にしては、なかなかの一致だ。",
+  "voice": "Roger",
+  "language_code": "ja"
+ },
+ "fal_request_id": "01a1d677-282a-75b2-912e-adcfa3ed0070",
+ "hash": "cb351e8f097f"
+}

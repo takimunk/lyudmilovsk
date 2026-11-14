@@ -1,0 +1,20 @@
+{
+ "key": "line.zotov_lev.overdue_admit.2",
+ "lang": "ru",
+ "text": "Потом у интерферометра стала качаться ножка. Журнал оказался ровно нужной толщины.",
+ "speaker": "zotov_lev",
+ "voice": "George",
+ "voice_id": "JBFqnCBsd6RMkjVDRZzb",
+ "voice_design": null,
+ "direction": "[dry, thoughtful, unhurried, a physicist's quiet irony]",
+ "model": "fal-ai/elevenlabs/tts/eleven-v3",
+ "request": {
+  "stability": 0.5,
+  "apply_text_normalization": "auto",
+  "text": "[dry, thoughtful, unhurried, a physicist's quiet irony] Потом у интерферометра стала качаться ножка. Журнал оказался ровно нужной толщины.",
+  "voice": "George",
+  "language_code": "ru"
+ },
+ "fal_request_id": "01a1d674-7de9-7863-a070-6f74665d4b57",
+ "hash": "66fb26bf21d4"
+}

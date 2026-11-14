@@ -1,0 +1,20 @@
+{
+ "key": "line.zotov_lev.again4.1",
+ "lang": "ja",
+ "text": "秋は家で、ランプとひざ掛けで本を読む。ガリーナには、博物館の展示品みたいだと言われる。",
+ "speaker": "zotov_lev",
+ "voice": "George",
+ "voice_id": "JBFqnCBsd6RMkjVDRZzb",
+ "voice_design": null,
+ "direction": "[dry, thoughtful, unhurried, a physicist's quiet irony]",
+ "model": "fal-ai/elevenlabs/tts/eleven-v3",
+ "request": {
+  "stability": 0.5,
+  "apply_text_normalization": "auto",
+  "text": "[dry, thoughtful, unhurried, a physicist's quiet irony] 秋は家で、ランプとひざ掛けで本を読む。ガリーナには、博物館の展示品みたいだと言われる。",
+  "voice": "George",
+  "language_code": "ja"
+ },
+ "fal_request_id": "01a1d74a-98a4-7563-8ddb-d8d774ef169e",
+ "hash": "1dbc539c3707"
+}

@@ -1,0 +1,20 @@
+{
+ "key": "line.guy_b.sun_low.1",
+ "lang": "ja",
+ "text": "朝、倉庫では光がまっすぐ門から入ってきて、床いっぱいに広がるんだ。みんな手を止める。誰も決めたわけじゃないのに。",
+ "speaker": "guy_b",
+ "voice": "Chris",
+ "voice_id": "iP95p4xoKVk53GoZ742B",
+ "voice_design": null,
+ "direction": "[relaxed, lazy, friendly]",
+ "model": "fal-ai/elevenlabs/tts/eleven-v3",
+ "request": {
+  "stability": 0.5,
+  "apply_text_normalization": "auto",
+  "text": "[relaxed, lazy, friendly] 朝、倉庫では光がまっすぐ門から入ってきて、床いっぱいに広がるんだ。みんな手を止める。誰も決めたわけじゃないのに。",
+  "voice": "Chris",
+  "language_code": "ja"
+ },
+ "fal_request_id": "01a1d7a9-db0d-7f30-8edb-4ec189b70c02",
+ "hash": "2b86c622c099"
+}

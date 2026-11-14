@@ -1,0 +1,20 @@
+{
+ "key": "line.korneev_ivan.corn_angler_news.2",
+ "lang": "en",
+ "text": "Tell Valya about the salt. The fish I'll tell her about myself, with the measurements.",
+ "speaker": "korneev_ivan",
+ "voice": "Bill",
+ "voice_id": "pqHfZKP75CvOlQylNhV4",
+ "voice_design": null,
+ "direction": "[an old man, slow, a little gravelly, contented, a quiet joke at the end]",
+ "model": "fal-ai/elevenlabs/tts/eleven-v3",
+ "request": {
+  "stability": 0.5,
+  "apply_text_normalization": "auto",
+  "text": "[an old man, slow, a little gravelly, contented, a quiet joke at the end] Tell Valya about the salt. The fish I'll tell her about myself, with the measurements.",
+  "voice": "Bill",
+  "language_code": "en"
+ },
+ "fal_request_id": "01a1d7aa-0ff7-7022-a657-0a565fabb454",
+ "hash": "6dc2845ab0a6"
+}

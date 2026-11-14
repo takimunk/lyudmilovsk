@@ -1,0 +1,20 @@
+{
+ "key": "line.owner.supper_ask.6",
+ "lang": "ja",
+ "text": "走らんでいい。チーズは冷めん。",
+ "speaker": "owner",
+ "voice": "Daniel",
+ "voice_id": "onwK4e9ZLuTAKqWW03F9",
+ "voice_design": null,
+ "direction": "[calm, tired, slow, a little ironic]",
+ "model": "fal-ai/elevenlabs/tts/eleven-v3",
+ "request": {
+  "stability": 0.5,
+  "apply_text_normalization": "auto",
+  "text": "[calm, tired, slow, a little ironic] 走らんでいい。チーズは冷めん。",
+  "voice": "Daniel",
+  "language_code": "ja"
+ },
+ "fal_request_id": "01a1d674-4c96-7502-a1c0-87bcb3f6348f",
+ "hash": "219a72bb5ac6"
+}

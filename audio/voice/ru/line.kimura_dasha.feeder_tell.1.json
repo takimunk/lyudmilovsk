@@ -1,0 +1,20 @@
+{
+ "key": "line.kimura_dasha.feeder_tell.1",
+ "lang": "ru",
+ "text": "Пять? И ни одного голубя?!",
+ "speaker": "kimura_dasha",
+ "voice": "Charlotte",
+ "voice_id": "XB0fDUnXU5powFXDhCwa",
+ "voice_design": null,
+ "direction": "[a tired physics student, wry, self-ironic]",
+ "model": "fal-ai/elevenlabs/tts/eleven-v3",
+ "request": {
+  "stability": 0.5,
+  "apply_text_normalization": "auto",
+  "text": "[a tired physics student, wry, self-ironic] Пять? И ни одного голубя?!",
+  "voice": "Charlotte",
+  "language_code": "ru"
+ },
+ "fal_request_id": "01a1d5f9-8892-7653-8d2a-ec59566c425b",
+ "hash": "ae67edc481bb"
+}

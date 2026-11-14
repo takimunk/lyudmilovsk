@@ -1,0 +1,20 @@
+{
+ "key": "line.nishimura_aya.new_sketchbook.2",
+ "lang": "en",
+ "text": "It's crooked, but honest. The island can wait a while, it's patient.",
+ "speaker": "nishimura_aya",
+ "voice": "Matilda",
+ "voice_id": "XrExE9yKIg1WjnnlVkGX",
+ "voice_design": null,
+ "direction": "[calm, soft, contemplative, a painter talking about the light]",
+ "model": "fal-ai/elevenlabs/tts/eleven-v3",
+ "request": {
+  "stability": 0.5,
+  "apply_text_normalization": "auto",
+  "text": "[calm, soft, contemplative, a painter talking about the light] It's crooked, but honest. The island can wait a while, it's patient.",
+  "voice": "Matilda",
+  "language_code": "en"
+ },
+ "fal_request_id": "01a1d6e8-339a-7ac1-a9b2-cfcfeaa762a8",
+ "hash": "67019e360689"
+}

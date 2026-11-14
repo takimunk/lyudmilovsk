@@ -1,0 +1,20 @@
+{
+ "key": "line.guy_b.phone_finally.1",
+ "lang": "en",
+ "text": "Who's shrieking in the corridor? Oh, a bird. I thought somebody's phone had finally charged.",
+ "speaker": "guy_b",
+ "voice": "Chris",
+ "voice_id": "iP95p4xoKVk53GoZ742B",
+ "voice_design": null,
+ "direction": "[relaxed, lazy, friendly]",
+ "model": "fal-ai/elevenlabs/tts/eleven-v3",
+ "request": {
+  "stability": 0.5,
+  "apply_text_normalization": "auto",
+  "text": "[relaxed, lazy, friendly] Who's shrieking in the corridor? Oh, a bird. I thought somebody's phone had finally charged.",
+  "voice": "Chris",
+  "language_code": "en"
+ },
+ "fal_request_id": "01a1d739-570e-7742-b8b6-a462569f0774",
+ "hash": "ced79964049e"
+}

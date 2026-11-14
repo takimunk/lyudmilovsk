@@ -1,0 +1,897 @@
+{
+ "city.rassvet.film.mon_d": {
+  "ru": "Комедия. Курортник приезжает на неделю, а шляпа улетает в первый же день. Шляпа обходит весь город: сидит на памятнике, плывёт на лодке, едет в кабине канатной дороги. Он гонится за ней весь отпуск и под конец понимает, что отдохнул лучше всех. В зале смеются так, что дрожит экран.",
+  "en": "A comedy. A holiday-maker arrives for a week and his hat blows away on the first day. The hat tours the whole town: it sits on a monument, sails in a boat, rides in a cable-car cabin. He chases it all through his holiday and at the end realises he has rested better than anyone. The hall laughs so hard the screen shakes.",
+  "ja": "コメディ。休暇で一週間だけ町に来た男の帽子が、初日に風で飛んでいく。帽子は町じゅうをめぐる。記念碑に座り、ボートで流れ、ロープウェイのゴンドラにも乗る。男は休暇のあいだずっと追いかけて、最後に、自分がいちばん休めていたと気づく。場内は画面が震えるほど笑う。"
+ },
+ "city.rassvet.film.mon_e": {
+  "ru": "Старый рыбак сорок лет ждёт, что на мысу зажгут новый маяк. Каждое утро он выходит на берег и поправляет шарф, как перед важной встречей. Маяк наконец зажигают, и рыбак впервые в жизни не знает, чем занять утро. Он просто стоит и смотрит на свет. В зале плачут, и никто не прячется.",
+  "en": "An old fisherman has waited forty years for a new lighthouse to be lit on the point. Every morning he goes down to the shore and straightens his scarf as if before an important meeting. At last the lighthouse is lit, and for the first time in his life he does not know what to do with his morning. He just stands and looks at the light. The hall weeps and nobody hides it.",
+  "ja": "年老いた漁師は、岬に新しい灯台がともる日を四十年待っている。毎朝、大事な人に会うようにマフラーを直して浜へ出る。ついに灯台がともり、漁師は生まれて初めて、朝に何をすればいいかわからなくなる。ただ立って、光を見ている。場内は泣いていて、誰も隠さない。"
+ },
+ "city.rassvet.film.tue_d": {
+  "ru": "Хроника, чёрно-белая. Краны, бетон и девушка с рулеткой, которая командует бригадой взрослых мужчин. Канатная дорога режет небо, и кабины уходят над крышами, как бусины на нитке. В конце диктор говорит: «Город готов», а в кадре люди несут в новый дом пианино по лестнице.",
+  "en": "A black-and-white newsreel. Cranes, concrete, and a girl with a tape measure giving orders to a gang of grown men. The cable car cuts across the sky and the cabins slide over the roofs like beads on a string. At the end the announcer says, \"The town is ready\", while on screen people carry a piano up the stairs of a new house.",
+  "ja": "白黒のニュース映画。クレーン、コンクリート、そして巻き尺を持って大の男たちの班に指図する女の子。ロープウェイが空を横切り、ゴンドラが屋根の上を糸に通したビーズのように滑っていく。最後にアナウンサーが「町は完成した」と言い、画面では人々が新しい家の階段でピアノを運んでいる。"
+ },
+ "city.rassvet.film.tue_e": {
+  "ru": "Ночная смена на канатной дороге. Вожатый ведёт последнюю кабину и каждый раз находит в ней что-нибудь забытое: перчатку, книгу, чьё-то слово на запотевшем стекле. Последний пассажир везёт в кармане письмо и боится его отдать. Кабина доходит до станции, дверь не открывается, и две минуты они молча смотрят на море. Потом дверь открывается.",
+  "en": "The night shift on the cable car. The operator brings down the last cabin and always finds something forgotten in it: a glove, a book, somebody's word on the misted glass. The last passenger carries a letter in his pocket and is afraid to hand it over. The cabin reaches the station, the door will not open, and for two minutes they look at the sea in silence. Then the door opens.",
+  "ja": "ロープウェイの夜勤。運転士は最後のゴンドラを下ろし、そのたびに忘れ物を見つける。手袋、本、曇った窓に残った誰かの言葉。最後の客はポケットに手紙を持っていて、渡すのをこわがっている。ゴンドラは駅に着くのに、ドアが開かず、二人は二分間、黙って海を見る。それから、ドアが開く。"
+ },
+ "city.rassvet.film.wed_d": {
+  "ru": "Научно-популярный фильм. Диктор объясняет, что солнце — звезда, а мы живём рядом, и это нормально. Нарисованные лучи бегут к Земле восемь минут, и весь зал считает вместе с диктором. В конце показывают подсолнух, который поворачивается за светом, а следом сонную кошку, делающую то же самое.",
+  "en": "A popular-science film. The announcer explains that the sun is a star and that we live next to it, which is perfectly normal. Drawn rays run to the Earth for eight minutes while the whole hall counts along with him. At the end we see a sunflower turning after the light, and then a sleepy cat doing exactly the same.",
+  "ja": "科学教育映画。アナウンサーは、太陽は星で、私たちはそのすぐそばに住んでいて、それはまったく普通のことだと説明する。描かれた光線が八分かけて地球に届くあいだ、場内じゅうが一緒に数える。最後は光を追って向きを変えるヒマワリ、その次に、まったく同じことをする眠そうな猫。"
+ },
+ "city.rassvet.film.wed_e": {
+  "ru": "Девушка находит у волнореза бутылку с письмом. Письмо по-шведски, и она идёт по городу, показывая его всем подряд: рыбаку, аптекарю, почтальону. Каждый переводит по-своему, и письмо каждый раз выходит новое. Она решает ответить сама, по-русски, и бросает бутылку обратно в воду. Зал молчит, а потом хлопает.",
+  "en": "A girl finds a bottle with a letter by the breakwater. The letter is in Swedish, so she walks through town showing it to everyone: the fisherman, the chemist, the postman. Each translates it his own way and every time the letter comes out new. She decides to answer herself, in Russian, and throws the bottle back into the water. The hall is silent, and then it claps.",
+  "ja": "少女は防波堤のそばで、手紙の入った瓶を見つける。手紙はスウェーデン語で、彼女は町じゅうの人に見せて回る。漁師、薬剤師、郵便配達員。みんな自分なりに訳すので、手紙はそのたびに新しくなる。彼女は自分で、ロシア語で返事を書くことにして、瓶を水へ投げ返す。場内は静まり、それから拍手が起こる。"
+ },
+ "city.rassvet.film.thu_d": {
+  "ru": "Летняя комедия. Трое друзей несут один арбуз через весь город к дому, где его ждут. По дороге арбуз успевает побыть подушкой, мячом и важным свидетелем. Когда они приходят, оказывается, что их ждали вчера. Арбуз всё равно съедают на крыльце вчетвером: четвёртой оказывается соседская собака.",
+  "en": "A summer comedy. Three friends carry one watermelon across the whole town to a house where it is expected. On the way the watermelon manages to be a pillow, a ball and an important witness. When they arrive it turns out they were expected yesterday. They eat it on the porch anyway, four of them: the fourth is the neighbour's dog.",
+  "ja": "夏のコメディ。三人の友だちが、待っている家へ、スイカを一つ抱えて町を横切る。道中でスイカは、枕になり、ボールになり、重要な証人にもなる。着いてみると、待たれていたのは昨日だった。それでも玄関先で四人で食べる。四人目は、隣の家の犬だ。"
+ },
+ "city.rassvet.film.thu_e": {
+  "ru": "Радиолюбитель ловит по ночам позывной, которого нет ни в одном справочнике. Три ночи он записывает точки и тире и никому не говорит, а на четвёртую набирается смелости ответить. Из динамика приходит одно слово: «Слышу». Дальше в фильме нет ни слова: только лампы светятся оранжевым и стрелка дрожит. После него хочется помолчать.",
+  "en": "A radio amateur catches a call sign at night that is in no directory. For three nights he writes down dots and dashes and tells no one, and on the fourth he finds the courage to answer. One word comes out of the speaker: \"Hearing you.\" After that there is not a word in the film: only the valves glowing orange and the needle trembling. Afterwards you want to keep quiet for a while.",
+  "ja": "アマチュア無線家が、夜ごと、どの名簿にも載っていないコールサインを拾う。三晩、点と線を書き留めて誰にも言わず、四晩目に勇気を出して応答する。スピーカーから、ひとこと返ってくる。「聞こえています」。そこから先、映画に台詞はない。真空管がオレンジ色に光り、針が震えるだけ。見終わると、しばらく黙っていたくなる。"
+ },
+ "city.rassvet.film.fri_d": {
+  "ru": "Мальчик из двора хочет выиграть чемпионат по настольному теннису и тренируется у стены дома, на крыше гаража, в очереди за хлебом. Тренер у него сторож, который играет левой рукой и без сетки. Финал выигрывает не он, а малышка с косичками, но кубок всё равно идёт по рукам, и всем весело. Во дворе потом ещё долго стучит мячик.",
+  "en": "A boy from the yard wants to win the table-tennis championship and trains against the wall of the house, on the garage roof, in the bread queue. His coach is a caretaker who plays left-handed and without a net. The final is won not by him but by a small girl with pigtails, but the cup goes round all the same and everyone is happy. For a long while afterwards the ball keeps tapping in the yard.",
+  "ja": "中庭の少年は卓球の大会で優勝したくて、家の壁に向かって、車庫の屋根で、パンの行列のなかで練習する。コーチは管理人で、左手で、ネットなしで打つ。決勝に勝つのは少年ではなく、おさげの小さな女の子だ。それでも優勝カップはみんなの手をめぐり、みんなが楽しそうだ。そのあとも長いこと、中庭では球の音が続く。"
+ },
+ "city.rassvet.film.fri_e": {
+  "ru": "Музыкальный фильм. Каждый вечер на пристани собираются те, кто умеет танцевать, и те, кто не умеет, но стесняется. Одна пара никак не попадёт в шаг: она ведёт, он наступает на ногу. Они танцуют вальс на мокрых досках, пока не гаснет последний фонарь. Фонарь гаснет не раньше, чем кончается музыка: так в кино принято. Зал выходит на улицу, и кто-то напевает.",
+  "en": "A musical. Every evening on the pier gather those who can dance and those who cannot but are shy. One couple cannot find the step: she leads, he treads on her foot. They waltz on the wet planks until the last lamp goes out. The lamp does not go out before the music ends: that is how it is done in films. The hall files out into the street, and somebody hums.",
+  "ja": "ミュージカル。毎晩、桟橋には、踊れる人と、踊れないのに照れている人が集まる。ある一組だけは、どうしても足が合わない。彼女がリードし、彼は足を踏む。二人は濡れた板の上で、最後の街灯が消えるまでワルツを踊る。街灯は音楽が終わるまで消えない。映画ではそういうものだ。場内の人々は通りに出て、誰かが口ずさむ。"
+ },
+ "city.rassvet.film.sat_d": {
+  "ru": "Детектив для детей. На рыбном причале пропала самая важная чайка, и сыщиком становится мальчик с лупой и бутербродом. Он допрашивает свидетелей: селёдку, кота и одного очень уклончивого лебедя. Чайка находится на крыше кинотеатра: ей тоже показывали кино. На этом месте зал каждый раз оборачивается на потолок.",
+  "en": "A detective story for children. The most important gull has vanished from the fish quay, and a boy with a magnifying glass and a sandwich becomes the detective. He questions the witnesses: a herring, a cat and one very evasive swan. The gull is found on the cinema roof: she was being shown the films too. At this point the hall turns round to look at the ceiling every time.",
+  "ja": "子ども向けの探偵もの。魚の桟橋から、いちばん大事なカモメが消え、虫めがねとサンドイッチを持った少年が探偵になる。証人は、ニシンと、猫と、とてもはぐらかすのがうまい白鳥。カモメは映画館の屋根で見つかる。彼女も映画を見せてもらっていたのだ。この場面では、場内がいつも天井をふり返る。"
+ },
+ "city.rassvet.film.sat_e": {
+  "ru": "Фильм о киномеханике маленького городка. Он любит все фильмы, которые крутит, но сам смотрит только кусочек в окошко будки. Однажды он спускается в зал и садится в первый ряд, чтобы увидеть всё целиком. Оказывается, самое интересное в зале происходит не на экране, а на лицах. Зал невольно оглядывается на будку.",
+  "en": "A film about the projectionist of a small town. He loves every film he runs, but he only ever watches a sliver through the little window of the booth. One day he comes down into the hall and sits in the front row to see a whole film at last. It turns out the most interesting thing in the hall is happening not on the screen but on the faces. The hall can't help glancing back at the booth.",
+  "ja": "小さな町の映写技師の映画。彼は自分がかける映画をみんな愛しているのに、見るのは映写室の小窓から覗く、ほんの一部だけ。ある日、彼は客席に降りて最前列に座り、初めて最初から最後まで見る。いちばんおもしろいのは、スクリーンではなく、人々の顔の上で起きていることだった。場内は思わず、映写室をふり返る。"
+ },
+ "city.rassvet.film.sun_d": {
+  "ru": "Мультфильм. Ёжик садится в кабину канатной дороги, чтобы отвезти яблоко другу на другой конец города. В кабине едут сначала жираф, потом оркестр, потом одна очень серьёзная улитка. К станции яблоко успевает испортиться, зато доезжают все остальные, и у друга оказывается день рождения. Дети в зале хором кричат «Лови!», хотя никто ничего не бросал.",
+  "en": "A cartoon. A hedgehog gets into a cable-car cabin to take an apple to a friend at the other end of town. First a giraffe rides along, then an orchestra, then one very serious snail. By the time they reach the station the apple has gone off, but everybody else arrives, and it turns out it is the friend's birthday. The children in the hall shout \"Catch!\" in chorus, although nobody has thrown anything.",
+  "ja": "アニメ。ハリネズミは、町の反対側の友だちにリンゴを届けようと、ロープウェイのゴンドラに乗る。最初にキリン、次に楽団、それからとてもまじめなカタツムリが乗ってくる。駅に着くころリンゴは傷んでいるけれど、ほかのみんなは無事に着いて、友だちはちょうど誕生日だった。客席の子どもたちは「受けとって！」と声をそろえる。誰も何も投げていないのに。"
+ },
+ "city.rassvet.film.sun_e": {
+  "ru": "Старый немой фильм: тапёр играет под экран, а в зале такая тишина, что слышно, как скрипят кресла. Человек идёт по пустой улице и каждый раз сворачивает не туда. Ему встречаются закрытая лавка, мокрый зонт на скамейке и окно, где кто-то играет на фортепиано. В конце он находит дом, но нам не показывают чей. Выходишь и несколько минут идёшь не спеша.",
+  "en": "An old silent film: a pianist plays to the screen, and the hall is so quiet you can hear the seats creak. A man walks down an empty street and every time turns the wrong way. He meets a closed shop, a wet umbrella on a bench and a window where somebody is playing a piano. At the end he finds the house, but we are not shown whose. You come out and for a few minutes you walk slowly.",
+  "ja": "古い無声映画。ピアニストが画面に合わせて弾き、場内はとても静かで、椅子のきしむ音まで聞こえる。男は人けのない通りを歩き、そのたびに違う角を曲がる。閉まった店、ベンチの濡れた傘、誰かがピアノを弾いている窓に出会う。最後に彼は家を見つけるが、誰の家なのかは映らない。外に出て、しばらく、ゆっくり歩く。"
+ },
+ "city.rassvet.poster.mon": {
+  "ru": "Афиша. Сегодня: днём «Отпуск за свой счёт», вечером «Человек, который ждал маяк». Завтра: днём «Как строили Людмиловск», вечером «Последняя кабина». В понедельник касса принимает только улыбки и тридцать рублей.",
+  "en": "Poster. Today: in the afternoon “Holiday at My Own Expense”, in the evening “The Man Who Waited for the Lighthouse”. Tomorrow: afternoon “How Lyudmilovsk Was Built”, evening “The Last Cabin”. On Mondays the box office takes only smiles and thirty roubles.",
+  "ja": "ポスター。本日：午後「自腹の休暇」、夜「灯台を待った男」。明日：午後「リュドミロフスクはこうして建った」、夜「最後のゴンドラ」。月曜は、切符売り場は笑顔と三十ルーブルしか受け取りません。"
+ },
+ "city.rassvet.poster.tue": {
+  "ru": "Афиша. Сегодня: днём «Как строили Людмиловск», вечером «Последняя кабина». Завтра: днём «Солнце — наш дом», вечером «Письмо в бутылке». Вторник: по вечерам в фойе танцкласс, шуметь можно, но в такт.",
+  "en": "Poster. Today: in the afternoon “How Lyudmilovsk Was Built”, in the evening “The Last Cabin”. Tomorrow: afternoon “The Sun Is Our Home”, evening “A Letter in a Bottle”. Tuesday: dance class in the foyer in the evening; noise is allowed, but in time.",
+  "ja": "ポスター。本日：午後「リュドミロフスクはこうして建った」、夜「最後のゴンドラ」。明日：午後「太陽は私たちの家」、夜「瓶の中の手紙」。火曜：夕方はロビーでダンス教室。騒いでもいいが、拍子に合わせて。"
+ },
+ "city.rassvet.poster.wed": {
+  "ru": "Афиша. Сегодня: днём «Солнце — наш дом», вечером «Письмо в бутылке». Завтра: днём «Три товарища и арбуз», вечером «Тишина в эфире». Среда. На сеанс просят приходить до звонка, а не вместе с ним.",
+  "en": "Poster. Today: in the afternoon “The Sun Is Our Home”, in the evening “A Letter in a Bottle”. Tomorrow: afternoon “Three Friends and a Watermelon”, evening “Silence on the Air”. Wednesday. Please arrive before the bell, not together with it.",
+  "ja": "ポスター。本日：午後「太陽は私たちの家」、夜「瓶の中の手紙」。明日：午後「三人の友だちとスイカ」、夜「電波の静けさ」。水曜。ベルの前に来てください。ベルと一緒ではなく。"
+ },
+ "city.rassvet.poster.thu": {
+  "ru": "Афиша. Сегодня: днём «Три товарища и арбуз», вечером «Тишина в эфире». Завтра: днём «Чемпион двора», вечером «Вальс на пристани». Четверг: радиоуголок открыт, фотокружок собирается в шесть.",
+  "en": "Poster. Today: in the afternoon “Three Friends and a Watermelon”, in the evening “Silence on the Air”. Tomorrow: afternoon “The Yard Champion”, evening “Waltz on the Pier”. Thursday: the radio corner is open; the photo circle meets at six.",
+  "ja": "ポスター。本日：午後「三人の友だちとスイカ」、夜「電波の静けさ」。明日：午後「中庭のチャンピオン」、夜「桟橋のワルツ」。木曜：無線コーナー開放、写真サークルは六時から。"
+ },
+ "city.rassvet.poster.fri": {
+  "ru": "Афиша. Сегодня: днём «Чемпион двора», вечером «Вальс на пристани». Завтра: днём «Дело о пропавшей чайке», вечером «Киномеханик». Пятница. После вечернего сеанса буфет работает ещё полчаса.",
+  "en": "Poster. Today: in the afternoon “The Yard Champion”, in the evening “Waltz on the Pier”. Tomorrow: afternoon “The Case of the Missing Gull”, evening “The Projectionist”. Friday. After the evening show the buffet stays open another half hour.",
+  "ja": "ポスター。本日：午後「中庭のチャンピオン」、夜「桟橋のワルツ」。明日：午後「消えたカモメ事件」、夜「映写技師」。金曜。夜の上映のあと、売店はさらに三十分あいています。"
+ },
+ "city.rassvet.poster.sat": {
+  "ru": "Афиша. Сегодня: днём «Дело о пропавшей чайке», вечером «Киномеханик». Завтра: днём «Приключения ёжика на канатной дороге», вечером «Пустая улица». Суббота: сеансы без перерыва, перерыв в буфете.",
+  "en": "Poster. Today: in the afternoon “The Case of the Missing Gull”, in the evening “The Projectionist”. Tomorrow: afternoon “The Hedgehog's Cable-Car Adventures”, evening “The Empty Street”. Saturday: no break between shows; the break is in the buffet.",
+  "ja": "ポスター。本日：午後「消えたカモメ事件」、夜「映写技師」。明日：午後「ハリネズミのロープウェイ大冒険」、夜「からっぽの通り」。土曜：上映は休みなし、休みは売店にあります。"
+ },
+ "city.rassvet.poster.sun": {
+  "ru": "Афиша. Сегодня: днём «Приключения ёжика на канатной дороге», вечером «Пустая улица». Завтра: днём «Отпуск за свой счёт», вечером «Человек, который ждал маяк». Воскресенье. Первый ряд — для тех, кто пришёл с ёжиком или без.",
+  "en": "Poster. Today: in the afternoon “The Hedgehog's Cable-Car Adventures”, in the evening “The Empty Street”. Tomorrow: afternoon “Holiday at My Own Expense”, evening “The Man Who Waited for the Lighthouse”. Sunday. The front row is for those who came with a hedgehog or without.",
+  "ja": "ポスター。本日：午後「ハリネズミのロープウェイ大冒険」、夜「からっぽの通り」。明日：午後「自腹の休暇」、夜「灯台を待った男」。日曜。最前列は、ハリネズミ連れでも、そうでなくても。"
+ },
+ "city.rassvet.hall.1": {
+  "ru": "Просьба: во время сеанса не разговаривать, не шуршать и не грызть семечки. Шуршание обидно и для киномеханика, и для героев фильма.",
+  "en": "A request: during the show please do not talk, rustle or crack sunflower seeds. Rustling is an insult to the projectionist and to the people in the film.",
+  "ja": "お願い：上映中は、おしゃべり、ガサガサ、ヒマワリの種を割る音はご遠慮ください。映写技師にも、映画の登場人物にも失礼です。"
+ },
+ "city.rassvet.hall.2": {
+  "ru": "Находки зала: две левые перчатки, старая программка, шарф в полоску. Спросить в гардеробе, назвать цвет и характер.",
+  "en": "Found in the hall: two left gloves, an old programme, a striped scarf. Ask at the cloakroom; name the colour and the character.",
+  "ja": "ホールの落とし物：左の手袋が二つ、古いプログラム、縞のマフラー。クロークで、色と性格を言ってお尋ねください。"
+ },
+ "city.rassvet.hall.3": {
+  "ru": "По выходным перед вечерним сеансом — десять минут журнала, потом фильм. Опаздывающим — на цыпочках и без обид.",
+  "en": "At weekends there are ten minutes of newsreel before the evening show, then the film. Latecomers: on tiptoe and no hard feelings.",
+  "ja": "週末の夜の上映前には、ニュースを十分、そのあとに本編。遅れた方は、つま先立ちで、気にせずどうぞ。"
+ },
+ "city.rassvet.hall.4": {
+  "ru": "Новогодняя неделя: в фойе ёлка, в буфете мандарины по штуке в руки, а перед вечерним сеансом весь зал хором говорит «С Новым годом».",
+  "en": "New Year's week: a tree in the foyer, tangerines at the buffet one to a customer, and before the evening show the whole hall says \"Happy New Year\" in chorus.",
+  "ja": "新年週間：ロビーにはツリー、売店ではミカンがお一人様一つ、夜の上映の前には場内みんなで声をそろえて「あけましておめでとう」。"
+ },
+ "city.rassvet.hall.5": {
+  "ru": "8 Марта: дамам чай в буфете без очереди. Кавалерам очередь, как обычно, и тоже чай.",
+  "en": "8 March: ladies get tea at the buffet without queueing. Gentlemen queue as usual, and also get tea.",
+  "ja": "3月8日：女性は売店でお茶を並ばずに。男性はいつもどおり並んで、同じくお茶を。"
+ },
+ "city.rassvet.hall.6": {
+  "ru": "1 сентября: школьникам первый ряд, если принесут дневник и улыбку. Дневник можно не открывать.",
+  "en": "1 September: schoolchildren get the front row if they bring a school diary and a smile. The diary need not be opened.",
+  "ja": "9月1日：連絡帳と笑顔を持ってきた生徒は最前列へ。連絡帳は開かなくてかまいません。"
+ },
+ "city.reg.rassvet.1": {
+  "ru": "Объявление: в кладовой за батареей киномеханик нашёл жестяную коробку без этикетки. Внутри плёнка. Кто разбирается в плёнках, зайдите после сеанса.",
+  "en": "Notice: behind the radiator in the storeroom the projectionist has found a tin with no label. Film inside. Anyone who knows about film, please come by after the show.",
+  "ja": "お知らせ：物置の暖房機のうしろで、映写技師がラベルのない缶を見つけました。中身はフィルム。フィルムに詳しい方は、上映のあとにお越しください。"
+ },
+ "city.reg.rassvet.2": {
+  "ru": "Приписка карандашом: на крышке одно слово — «Рассвет». Да, как на нашем фасаде. Киномеханик говорит, что дом назвали в честь этого фильма, а фильм все считали выдумкой.",
+  "en": "A pencilled note: the lid has one word on it, \"Rassvet\". Yes, like on our front. The projectionist says the house was named after this film, and everybody took the film for a made-up story.",
+  "ja": "鉛筆の追記：缶のふたに、ひとこと「ラスヴェート」。そう、うちの正面と同じです。映写技師いわく、この建物はこの映画にちなんで名づけられたが、映画のほうは作り話だと思われていた。"
+ },
+ "city.reg.rassvet.3": {
+  "ru": "Касса просит не крутить плёнку на нашем проекторе: она хрупкая, а аппарат у нас для новой. Спор в буфете до сих пор не кончился.",
+  "en": "The box office asks that nobody run the film on our projector: it is brittle, and the machine is meant for new stock. The argument in the buffet is still going.",
+  "ja": "切符売り場より：このフィルムをうちの映写機にかけないでください。もろいうえに、機械は新しいフィルム用です。売店での言い合いは、まだ続いています。"
+ },
+ "city.reg.rassvet.4": {
+  "ru": "Радиолюбители предлагают спросить в эфире, не знает ли кто-нибудь такой фильм. Позывной клуба на табличке у радиостола, рядом с кружкой.",
+  "en": "The radio amateurs propose asking on the air whether anyone knows such a film. The club's call sign is on the card by the radio table, next to the mug.",
+  "ja": "無線サークルの提案：電波で、そんな映画を知っている人がいないか聞いてみよう。サークルのコールサインは、無線机の脇、マグカップの隣のカードに。"
+ },
+ "city.reg.rassvet.5": {
+  "ru": "Ответили ночью, по коротким волнам, из соседнего порта: фильм снимали здесь, на пристани, всем городом, в 1931-м. Режиссёр уехал на север и доснять не успел.",
+  "en": "An answer came at night on short wave from the next port: the film was shot here, on the pier, by the whole town, in 1931. The director left for the north before he could finish it.",
+  "ja": "夜、短波で隣の港から返事が来ました。その映画は、1931年にこの桟橋で、町じゅうの人が出て撮ったもの。監督は北へ発ち、撮り終えられなかった。"
+ },
+ "city.reg.rassvet.6": {
+  "ru": "Шахматисты нашли в клубном архиве афишу тех лет: «Рассвет. Пять частей. Музыка живая». Живая — значит рояль в зале. Ноты вальса из афиши уцелели и лежат у рояля.",
+  "en": "The chess players found a poster from those years in the club archive: \"Rassvet. Five reels. Live music.\" Live means the piano in the hall. The waltz from the poster has survived and the sheet is by the piano.",
+  "ja": "チェスの人たちが、サークルの資料からその頃のポスターを見つけました。「ラスヴェート。全五巻。生演奏つき」。生演奏とは、ホールのピアノのこと。ポスターのワルツの楽譜は残っていて、ピアノのそばにあります。"
+ },
+ "city.reg.rassvet.7": {
+  "ru": "Киномеханик перемотал плёнку по кадру, один, в белых перчатках. Три части из пяти целы, четвёртая в клочьях, пятой нет. Он сказал, что и этого много.",
+  "en": "The projectionist rewound the film frame by frame, alone, in white gloves. Three reels of five are whole, the fourth is in shreds, the fifth is missing. He said even that is a lot.",
+  "ja": "映写技師は、白い手袋をはめて、一人で、フィルムを一コマずつ巻き直しました。五巻のうち三巻は無事、四巻はぼろぼろ、五巻目はありません。それでも多いほうだ、と彼は言いました。"
+ },
+ "city.reg.rassvet.8": {
+  "ru": "Танцкласс решил выучить вальс из афиши. Учитель говорит, что шаг там старинный и ему не хватает ещё двух пар. Приходите, если умеете считать до трёх.",
+  "en": "The dance class has decided to learn the waltz from the poster. The teacher says the step is an old one and it needs two more couples. Come, if you can count to three.",
+  "ja": "ダンス教室は、ポスターのワルツを覚えることにしました。先生いわく、昔のステップで、あと二組足りない。三まで数えられる方は、ぜひどうぞ。"
+ },
+ "city.reg.rassvet.9": {
+  "ru": "Решено: показ «Рассвета» — одним сеансом, из первого ряда, для всех, кто придёт и сядет. Билет, как всегда, тридцать рублей. Рояль играет вживую, если найдётся кому.",
+  "en": "It is decided: Rassvet is shown at one screening, from the front row, to anyone who comes and sits down. The ticket is thirty roubles, as always. The piano plays live, if there is somebody to play it.",
+  "ja": "決定：「ラスヴェート」は一度だけ、最前列から、来て座った人みんなに上映します。入場料はいつもどおり三十ルーブル。ピアノは、弾ける人がいれば生演奏です。"
+ },
+ "city.reg.rassvet.10": {
+  "ru": "Спасибо всем, кто был. Коробку вернули в кладовую, но теперь на крышке этикетка крупными буквами: «РАССВЕТ. Не терять». Фильм считают уже не выдумкой, а нашим.",
+  "en": "Thank you to everyone who came. The tin is back in the storeroom, but now it has a label on the lid in big letters: \"RASSVET. Do not lose.\" The film is no longer thought a made-up story but ours.",
+  "ja": "来てくださった皆さん、ありがとうございました。缶は物置に戻りましたが、ふたには大きな字のラベルが貼られています。「ラスヴェート。なくさないこと」。この映画はもう作り話ではなく、私たちのものです。"
+ },
+ "city.rassvet.reel.prompt": {
+  "ru": "E — посмотреть из первого ряда",
+  "en": "E — watch from the front row",
+  "ja": "E：最前列から観る"
+ },
+ "city.rassvet.reelfilm_1": {
+  "ru": "Плёнка шипит, и первые кадры выцвели, как открытка. По пристани идут люди с вёдрами и флагами, и все смотрят в камеру, будто не верят, что их снимают. Девочка в большом берете поднимается на маяк и зажигает лампу, но лампа не горит. Третья часть кончается, четвёртая рвётся, а пятая пропала: экран белеет там, где должно было взойти утро. Тапёр сыграл вальс по нотам из афиши, и никто в зале не шевелился.",
+  "en": "The film hisses and the first frames have faded like a postcard. People walk along the pier with buckets and flags, and all of them look into the camera as if they cannot believe they are being filmed. A girl in a big beret climbs the lighthouse and lights the lamp, but the lamp does not burn. The third reel ends, the fourth tears, the fifth is gone: the screen turns white where the morning should have risen. The pianist played the waltz from the poster's sheet, and nobody in the hall moved.",
+  "ja": "フィルムはシューッと鳴り、最初の映像は絵はがきのように色あせている。桟橋を、バケツと旗を持った人々が歩き、みんな撮られているのが信じられないようにカメラを見る。大きなベレー帽の少女が灯台にのぼってランプをつけるが、ランプはともらない。三巻目が終わり、四巻目が切れ、五巻目は消えている。朝が昇るはずの場所で、画面は白くなる。ピアニストはポスターの楽譜でワルツを弾き、場内で動く人はいなかった。"
+ },
+ "city.rassvet.reelfilm_2": {
+  "ru": "Пришли ещё раз, почти все те же. Кто-то в темноте вслух назвал имя режиссёра, и ему сразу ответило несколько голосов. Белый свет в конце теперь называют «пятой частью», и никто не жалуется.",
+  "en": "We came again, almost the same people. In the dark somebody said the director's name out loud and several voices answered at once. The white light at the end is now called \"the fifth reel\", and nobody complains.",
+  "ja": "もう一度来た。ほとんど同じ顔ぶれだった。暗がりで誰かが監督の名前を声に出し、すぐに何人かが答えた。最後の白い光は、今では「五巻目」と呼ばれていて、誰も文句を言わない。"
+ },
+ "city.rassvet.poster.fest": {
+  "ru": "Афиша, праздничная. Сегодня сеансы идут без перерыва с трёх часов до закрытия. Билет, как всегда, тридцать рублей, а в буфете чай бесплатно тем, кто пришёл в шляпе. Шляпы выдают у гардероба, но только настоящие.",
+  "en": "Poster, festive. Today the shows run without a break from three o'clock until closing. A ticket is thirty roubles as always, and the buffet gives free tea to anyone who came in a hat. Hats are lent at the cloakroom, but only real ones.",
+  "ja": "ポスター、お祝い版。本日は三時から閉館まで、休みなしで上映します。入場料はいつもどおり三十ルーブル、帽子をかぶって来た方には、売店のお茶が無料。帽子はクロークで貸します。ただし本物だけ。"
+ },
+ "city.rassvet.closed.poster": {
+  "ru": "Афиша за тёмным стеклом. В полутьме разберёшь только слово «Сегодня», а остальное — завтра, когда включат свет.",
+  "en": "The poster behind dark glass. In the dusk I can make out only the word \"Today\"; the rest tomorrow, when the lights are on.",
+  "ja": "暗いガラスの向こうのポスター。薄暗くて読めるのは「本日」の二文字だけ。あとは明日、明かりがつけばわかる。"
+ },
+ "city.rassvet.closed.hall": {
+  "ru": "В зале темно, доска с объявлениями еле видна. Кто-то дописал внизу мелом: «Свет включают в три».",
+  "en": "It is dark in the hall and the notice board is barely visible. Somebody has chalked at the bottom: \"Lights on at three.\"",
+  "ja": "ホールは暗く、掲示板はほとんど見えない。誰かが下にチョークで書いている。「明かりは三時から」。"
+ },
+ "city.rassvet.closed.menu": {
+  "ru": "Меню на доске не разобрать в полутьме. Виден только крупный верх: «ЧАЙ». Остальное, видимо, как обычно.",
+  "en": "The menu on the board cannot be made out in the dusk. Only the big word at the top shows: \"TEA\". The rest is probably as usual.",
+  "ja": "薄暗くて、黒板のメニューは読めない。いちばん上の大きな字「お茶」だけが見える。あとはたぶん、いつもどおり。"
+ },
+ "city.rassvet.closed.floor": {
+  "ru": "Пол натёрт до блеска, рояль накрыт сукном, пластинка стоит в конверте. До завтра.",
+  "en": "The floor is polished to a shine, the piano is under its cloth, the record is in its sleeve. Until tomorrow.",
+  "ja": "床はぴかぴかに磨かれ、ピアノには布がかかり、レコードは袋に入っている。また明日。"
+ },
+ "city.rassvet.closed.board": {
+  "ru": "В темноте мелом на доске что-то написано, но не разобрать. Придётся прийти днём.",
+  "en": "Something is chalked on the board in the dark but I cannot read it. I'll have to come by day.",
+  "ja": "暗がりの黒板に何か書いてあるが、読めない。昼間に出直すしかない。"
+ },
+ "city.rassvet.ladder.1": {
+  "ru": "Лесенка клуба, мелом на доске. Сверху вниз: Лев Маркович, Зоя, Вадим, дядя Гриша, Кирилл (десять лет). А под ним пустая строчка, подписанная «место для смелых».",
+  "en": "The club's ladder, in chalk on the board. From the top: Lev Markovich, Zoya, Vadim, Uncle Grisha, Kirill (ten years old). Under him an empty line labelled \"a place for the brave\".",
+  "ja": "サークルの階段表が、黒板にチョークで書いてある。上から、レフ・マルコヴィチ、ゾーヤ、ヴァジム、グリーシャおじさん、キリル（十歳）。その下に空の行があって、「勇気のある人の席」と添えてある。"
+ },
+ "city.rassvet.ladder.2": {
+  "ru": "Кирилл поднялся на ступеньку. Дядя Гриша стёр его имя и тут же вписал снова, чуть ниже: на всякий случай.",
+  "en": "Kirill has climbed a rung. Uncle Grisha rubbed out his name and at once wrote it in again, a little lower: just in case.",
+  "ja": "キリルが一段のぼった。グリーシャおじさんは名前を消して、すぐ少し下に書き直した。念のため、だそうだ。"
+ },
+ "city.rassvet.ladder.3": {
+  "ru": "Зоя вызвала Льва Марковича. Партию назначили на субботу, ставка — чай. Вокруг доски уже расставлены стулья.",
+  "en": "Zoya has challenged Lev Markovich. The game is set for Saturday, the stake is tea. Chairs are already set round the board.",
+  "ja": "ゾーヤがレフ・マルコヴィチに挑戦した。対局は土曜、賭けるのはお茶。盤のまわりには、もう椅子が並べてある。"
+ },
+ "city.rassvet.ladder.4": {
+  "ru": "Суббота: выиграла Зоя. Лев Маркович вписал себя на вторую строку и ушёл, насвистывая. Проигрывать он любит больше, чем выигрывать: дольше разбирать.",
+  "en": "Saturday: Zoya won. Lev Markovich wrote himself onto the second line and left whistling. He likes losing more than winning: there is more to go over afterwards.",
+  "ja": "土曜：勝ったのはゾーヤ。レフ・マルコヴィチは二行目に自分の名前を書いて、口笛を吹きながら帰った。彼は勝つより負けるほうが好きだ。あとで振り返ることが多いから。"
+ },
+ "city.rassvet.ladder.5": {
+  "ru": "На самой нижней, пустой строчке чья-то рука вывела: «Гость — ничья с Вадимом». Рядом знак вопроса: все ждут, придёт ли гость ещё.",
+  "en": "On the bottom, empty line someone's hand has written: \"Guest: draw with Vadim.\" A question mark beside it: everybody is waiting to see if the guest will come again.",
+  "ja": "いちばん下の空の行に、誰かの字で「客人：ヴァジムと引き分け」。となりに疑問符。客人がまた来るか、みんな待っている。"
+ },
+ "city.rassvet.ladder.6": {
+  "ru": "В шкафчике под доской лежит стопка листков для записи партий. Верхний пустой, подписан сверху: «Начало положено».",
+  "en": "In the cupboard under the board lies a pad of sheets for recording games. The top one is blank, headed: \"A start has been made.\"",
+  "ja": "黒板の下の戸棚に、棋譜を書く用紙の束がある。いちばん上は白紙で、頭に「はじめの一歩」と書かれている。"
+ },
+ "city.rassvet.radio_a.1": {
+  "ru": "Радио Людмиловска: утренняя гимнастика под рояль. Диктор считает «и раз, и два» так бодро, что хочется встать со стула, но я остаюсь.",
+  "en": "Radio Lyudmilovsk: morning exercises to a piano. The announcer counts \"and one, and two\" so briskly that I want to get off my chair, but I stay.",
+  "ja": "リュドミロフスク放送：ピアノに合わせた朝の体操。アナウンサーが「いち、にい」と威勢よく数えるので、椅子から立ちたくなる。でも、立たない。"
+ },
+ "city.rassvet.radio_a.2": {
+  "ru": "Концерт по заявкам: рыбаки просят песню про берег, и им играют песню про берег. Заявки здесь исполняют всегда, даже неудачные.",
+  "en": "A request concert: the fishermen ask for a song about the shore and are given a song about the shore. Requests are always played here, even the unfortunate ones.",
+  "ja": "リクエスト番組：漁師たちが岸辺の歌を頼むと、岸辺の歌が流れる。ここではリクエストは必ずかかる。出来のよくないものでも。"
+ },
+ "city.rassvet.radio_a.3": {
+  "ru": "Вечерний выпуск: ветер с моря, расписание кабин и объявление о потерянном зонте. Зонт, говорят, нашёлся, но хозяин ещё нет.",
+  "en": "The evening bulletin: wind from the sea, the cable-car timetable and an announcement about a lost umbrella. The umbrella, they say, has been found, but its owner has not.",
+  "ja": "夕方のニュース：海からの風、ロープウェイの時刻表、なくした傘のお知らせ。傘は見つかったそうだが、持ち主はまだらしい。"
+ },
+ "city.rassvet.radio_a.4": {
+  "ru": "Ночью радио Людмиловска молчит, приёмник только шипит, и в шипении иногда проскальзывает чья-то скрипка. Покрутишь ручку: скрипка то ближе, то дальше.",
+  "en": "At night Radio Lyudmilovsk is silent, the set only hisses, and now and then somebody's violin slips through the hiss. Turn the knob: the violin comes closer, then recedes.",
+  "ja": "夜、リュドミロフスク放送は黙っていて、受信機はシューッと鳴るだけ。そのノイズのなかを、ときどき誰かのバイオリンがすり抜ける。つまみを回すと、近づいたり、遠ざかったりする。"
+ },
+ "city.rassvet.radio_b.prompt": {
+  "ru": "E — покрутить коротковолновый",
+  "en": "E — tune the short wave",
+  "ja": "E：短波を回す"
+ },
+ "city.rassvet.radio_b.1": {
+  "ru": "Днём на коротких волнах болтают радиолюбители: кто-то из Риги просит повторить погоду, кто-то из Таллина рассказывает про свою кошку. Позывные звучат как имена соседей.",
+  "en": "By day the amateurs chatter on short wave: somebody in Riga asks for the weather again, somebody in Tallinn tells about his cat. The call signs sound like the names of neighbours.",
+  "ja": "昼間の短波は、アマチュア無線家のおしゃべりだ。リガの誰かが天気をもう一度頼み、タリンの誰かが自分の猫の話をする。コールサインは、近所の人の名前のように聞こえる。"
+ },
+ "city.rassvet.radio_b.2": {
+  "ru": "К вечеру в эфир выходят дальние. Радиолюбитель из Архангельска диктует открытку-«куэсэлку» по буквам, потом читает адрес: «Людмиловск, Дом культуры, радиоуголок». Это нам.",
+  "en": "Towards evening the distant ones come on. An amateur in Arkhangelsk spells out a QSL card letter by letter, then reads the address: \"Lyudmilovsk, House of Culture, radio corner.\" That's us.",
+  "ja": "夕方になると、遠くの局が出てくる。アルハンゲリスクの無線家が、QSLカードを一文字ずつ読み上げ、宛先を読む。「リュドミロフスク、文化会館、無線コーナー」。うちだ。"
+ },
+ "city.rassvet.radio_b.3": {
+  "ru": "Ночью эфир широкий, как море. Диктор на чужом языке читает цифры, кто-то отвечает морзянкой, а между ними пищит что-то совсем другое. Я записал точки и тире и не понял ни одной.",
+  "en": "At night the air is as wide as the sea. An announcer in a foreign language reads out numbers, someone answers in Morse, and between them something quite different chirps. I wrote down the dots and dashes and understood none of them.",
+  "ja": "夜の電波は海のように広い。外国語のアナウンサーが数字を読み、誰かがモールスで答え、そのあいだでまったく別の何かがピーと鳴る。点と線を書き留めたけれど、ひとつもわからなかった。"
+ },
+ "city.rassvet.radio_b.4": {
+  "ru": "Позывной нашего клуба знают в трёх странах. Радиолюбитель из Финляндии передал привет «кружку с кружкой»; я не понял, но передал дальше.",
+  "en": "Our club's call sign is known in three countries. An amateur in Finland sent greetings to \"the circle with the mug\"; I did not understand, but passed it on.",
+  "ja": "うちのサークルのコールサインは、三つの国で知られている。フィンランドの無線家が「マグカップのサークル」によろしくと言ってきた。意味はわからなかったが、伝えておいた。"
+ },
+ "city.rassvet.radio_b.5": {
+  "ru": "К утру станции гаснут одна за другой. Остаётся ровный шум, и в нём вдруг короткое: «…слышу вас, Людмиловск». Я проверил: в клубе в этот час никого нет, кроме меня.",
+  "en": "Towards morning the stations go out one by one. What is left is an even noise, and in it suddenly something short: \"...hearing you, Lyudmilovsk.\" I checked: at this hour there is nobody in the club but me.",
+  "ja": "朝が近づくと、局は一つずつ消えていく。残るのは一定のノイズで、そのなかに、ふと短い声。「……聞こえています、リュドミロフスク」。確かめたけれど、この時間、クラブには僕のほかに誰もいない。"
+ },
+ "city.rassvet.dance.tue": {
+  "ru": "Вторник — вальс. Учительница хлопает в ладоши: «Раз-два-три, юноша, а не раз-два-стоп!» Я постарался не наступить на себя и наступил на соседа.",
+  "en": "Tuesday is waltz. The teacher claps: \"One-two-three, young man, not one-two-stop!\" I tried not to tread on myself and trod on my neighbour.",
+  "ja": "火曜はワルツ。先生が手を叩く。「いち、にい、さん、ですよ。いち、にい、ストップじゃなくて！」自分の足を踏まないようにしたら、となりの人の足を踏んだ。"
+ },
+ "city.rassvet.dance.wed": {
+  "ru": "Среда — фокстрот. Шаги быстрые, а лица у всех серьёзные, как на экзамене. Партнёрша сказала: «Не смотрите под ноги». Я посмотрел и потерял такт.",
+  "en": "Wednesday is foxtrot. The steps are quick and everybody's face is solemn, as at an exam. My partner said, \"Don't look at your feet.\" I looked and lost the beat.",
+  "ja": "水曜はフォックストロット。ステップは速く、みんな試験のようにまじめな顔だ。パートナーは「足元を見ないで」と言った。見たら、拍を見失った。"
+ },
+ "city.rassvet.dance.thu": {
+  "ru": "Четверг — медленные. Свет приглушили, пластинка шуршит, пары качаются на месте, будто пол слегка плывёт. Учительница ходит между ними и шепчет: «Дышите».",
+  "en": "Thursday is slow dances. The light is dimmed, the record rustles, couples sway on the spot as if the floor were drifting a little. The teacher walks among them whispering, \"Breathe.\"",
+  "ja": "木曜はスロー。明かりが落とされ、レコードがさらさら鳴り、床が少し流れているかのように、二人組がその場で揺れる。先生は間を歩きながらささやく。「息をして」。"
+ },
+ "city.rassvet.dance.fri": {
+  "ru": "Пятница — полька. Прыгаем так, что дрожит зеркало, и никто не хочет остановиться первым. Когда пластинка кончилась, мы ещё секунду подпрыгивали.",
+  "en": "Friday is polka. We hop so hard the mirror trembles and nobody wants to stop first. When the record ended we kept hopping for another second.",
+  "ja": "金曜はポルカ。鏡が震えるほど跳ねて、誰も先に止まりたがらない。レコードが終わっても、まだ一秒、跳ねていた。"
+ },
+ "city.rassvet.dance.sat": {
+  "ru": "Суббота — вечер по заявкам. Кто просит вальс, получает вальс, кто фокстрот — фокстрот. Одна пара заказала то, чего нет в программе, и учительница сыграла это сама.",
+  "en": "Saturday is a request night. Whoever asks for a waltz gets a waltz, whoever asks for a foxtrot gets a foxtrot. One couple ordered something that is not in the programme, and the teacher played it herself.",
+  "ja": "土曜はリクエストの夜。ワルツを頼めばワルツ、フォックストロットを頼めばフォックストロット。ある二人が、プログラムにないものを頼むと、先生が自分で弾いた。"
+ },
+ "city.rassvet.dance.free1": {
+  "ru": "Пол пустой и натёрт до блеска. Пластинка лежит на проигрывателе и ждёт учителя. Я прошёл три шага вальса под собственный счёт, и эхо ответило.",
+  "en": "The floor is empty and polished to a shine. A record lies on the player waiting for the teacher. I did three waltz steps to my own count and the echo answered.",
+  "ja": "床は空っぽで、ぴかぴかに磨かれている。レコードがプレーヤーにのって、先生を待っている。自分のかけ声で、ワルツを三歩。こだまが答えた。"
+ },
+ "city.rassvet.dance.free2": {
+  "ru": "Зеркало показывает меня целиком, чего мне обычно хватает на минуту. Я сделал вид, что просто поправляю рубашку, и поправил её три раза.",
+  "en": "The mirror shows all of me, which is usually enough for a minute. I pretended to be only straightening my shirt, and straightened it three times.",
+  "ja": "鏡には全身が映っている。ふだんなら一分で十分だ。シャツを直しているだけのふりをして、三回直した。"
+ },
+ "city.rassvet.mirror.3": {
+  "ru": "К раме подоткнуты бумажки: расписание, телефон учительницы и чей-то рисунок танцующей собаки. Собака в ритме лучше многих.",
+  "en": "Slips of paper are tucked into the frame: the timetable, the teacher's phone number and somebody's drawing of a dancing dog. The dog keeps better time than many.",
+  "ja": "枠には紙きれが差してある。時間割、先生の電話番号、そして誰かが描いた踊る犬の絵。その犬は、多くの人よりリズムがいい。"
+ },
+ "city.rassvet.piano.1": {
+  "ru": "Днём за роялем сидит тапёр и разучивает что-то без нот. Я попросил разрешения, он кивнул и подвинулся. Вдвоём получилось вдвое хуже, но вдвое громче.",
+  "en": "By day the pianist sits at the piano learning something without the music. I asked permission, he nodded and moved over. Together it came out twice as bad but twice as loud.",
+  "ja": "昼間はピアニストが楽譜なしで何かを練習している。弾いていいかと聞くと、彼はうなずいて場所をあけた。二人でやると、二倍へたになって、二倍大きくなった。"
+ },
+ "city.rassvet.piano.2": {
+  "ru": "Вечером рояль работает на танцкласс: все ноты подчёркнуты красным. Я попробовал вставить свою мелодию, и учительница, не оборачиваясь, сказала: «В такт».",
+  "en": "In the evening the piano works for the dance class: all the music is underlined in red. I tried to slip in a tune of my own and the teacher, without turning round, said, \"In time.\"",
+  "ja": "夕方のピアノはダンス教室のためにある。楽譜はどれも赤く下線が引かれている。自分の曲をそっと混ぜてみたら、先生が振り向かずに言った。「拍に合わせて」。"
+ },
+ "city.rassvet.piano.3": {
+  "ru": "Ночью зал пуст, рояль накрыт сукном. Я приподнял сукно и нажал одну клавишу. Звук прошёл по всему фойе и вернулся. Я накрыл рояль обратно.",
+  "en": "At night the hall is empty and the piano is under a cloth. I lifted the cloth and pressed one key. The sound went all through the foyer and came back. I covered the piano again.",
+  "ja": "夜のホールには誰もおらず、ピアノには布がかかっている。布を持ち上げて、鍵盤を一つ押した。音はロビーじゅうをめぐって戻ってきた。ピアノに布をかけ直した。"
+ },
+ "city.rassvet.piano.4": {
+  "ru": "На пюпитре ноты без обложки: вальс «Пристань», переписанный от руки. Я сыграл первые такты, и из фойе кто-то негромко сказал: «Тот самый».",
+  "en": "On the stand: music with no cover, the waltz \"The Pier\", copied out by hand. I played the first bars and somebody in the foyer said quietly, \"That's the one.\"",
+  "ja": "譜面台には、表紙のない楽譜。手書きで写された、ワルツ「桟橋」。最初の数小節を弾くと、ロビーから誰かが小さく言った。「それだよ」。"
+ },
+ "city.rassvet.door.prompt": {
+  "ru": "E — прислушаться",
+  "en": "E — listen at the door",
+  "ja": "E：ドアに耳をすます"
+ },
+ "city.rassvet.door.1": {
+  "ru": "За дверью распеваются: «до-ре-ми-фа», потом «до-ре-ми-фа» ещё раз, но злее. Хормейстер просит басов. Теноры вступают первыми: у них всегда так.",
+  "en": "Behind the door they are warming up: \"do-re-mi-fa\", then \"do-re-mi-fa\" again, but crosser. The choirmaster asks for basses. The tenors come in first: they always do.",
+  "ja": "ドアの向こうで声慣らし。「ドレミファ」、そしてもう一度「ドレミファ」、今度は怒ったように。合唱指揮者がバスを求めている。テノールが先に入る。いつもそうだ。"
+ },
+ "city.rassvet.door.2": {
+  "ru": "За дверью репетирует драмкружок. Кто-то громко и с выражением говорит: «Кушать подано!», а кто-то так же громко отвечает: «Нет!» Потом оба смеются, и всё сначала.",
+  "en": "Behind the door the drama circle is rehearsing. Somebody says loudly and with feeling, \"Dinner is served!\" and somebody just as loudly answers, \"No!\" Then both laugh and it begins again.",
+  "ja": "ドアの向こうでは演劇サークルが稽古中。誰かが大声で気持ちを込めて「お食事の用意ができました！」と言い、誰かが同じ大声で「いや！」と答える。それから二人とも笑って、最初から。"
+ },
+ "city.rassvet.door.3": {
+  "ru": "Поздно. За дверью один голос и одна скрипка, оба тихие. Играют одно и то же место в четвёртый раз: оно не получается, но с каждым разом получается красивее.",
+  "en": "Late. Behind the door one voice and one violin, both quiet. They play the same passage for the fourth time: it does not come right, but it gets lovelier each time.",
+  "ja": "夜も遅い。ドアの向こうには、一つの声と一つのバイオリン、どちらも静かだ。同じ箇所を四回目に弾いている。うまくいかないが、そのたびにきれいになっていく。"
+ },
+ "city.rassvet.door.4": {
+  "ru": "Тишина. Красная лампочка над дверью погашена. Я приложил ухо: гудит батарея, и больше ничего. Решил не мешать.",
+  "en": "Silence. The red lamp over the door is out. I put my ear to it: the radiator hums and nothing else. I decided not to disturb anyone.",
+  "ja": "静かだ。ドアの上の赤いランプは消えている。耳を当ててみた。暖房機のうなりだけで、ほかには何も。邪魔しないことにした。"
+ },
+ "city.rassvet.stubs.prompt": {
+  "ru": "E — посмотреть корешки",
+  "en": "E — look at the stubs",
+  "ja": "E：半券を見る"
+ },
+ "city.rassvet.stubs.1": {
+  "ru": "Корешки билетов в лотке: красные — дневные, жёлтые — вечерние. Кассирша пересчитывает их каждый вечер и каждый раз получает новую цифру, но всегда одну и ту же улыбку.",
+  "en": "Ticket stubs in a tray: red for the afternoon shows, yellow for the evening ones. The clerk counts them every evening and gets a new number every time, but always the same smile.",
+  "ja": "トレーに入った半券。赤は昼の部、黄色は夜の部。係の人は毎晩数えて、そのたびに違う数になるが、笑顔はいつも同じだ。"
+ },
+ "city.rassvet.stubs.2": {
+  "ru": "За выходные корешков вдвое больше. Стопку придавили чашкой, чтобы не разлетелась, а чашка уже пустая.",
+  "en": "At the weekend there are twice as many stubs. The pile is weighed down with a cup so it will not fly about, and the cup is already empty.",
+  "ja": "週末は半券が二倍になる。束が飛ばないよう、カップで押さえてあるが、そのカップはもう空だ。"
+ },
+ "city.rassvet.stubs.3": {
+  "ru": "На верхнем корешке карандашом: «На «Рассвет» спросили четверо». Кассирша не знает, о каком «Рассвете» речь, о доме или о плёнке, и на всякий случай записывает всё.",
+  "en": "On the top stub in pencil: \"Four people asked for Rassvet.\" The clerk does not know which Rassvet is meant, the house or the film, and writes everything down just in case.",
+  "ja": "いちばん上の半券に鉛筆で「ラスヴェートを聞かれた人、四人」。係の人は、建物のことか、フィルムのことか、どちらのラスヴェートなのかわからず、念のため全部書きとめている。"
+ },
+ "city.rassvet.stubs.4": {
+  "ru": "Корешок с красной звёздочкой: «первый ряд, «Рассвет»». Таких уже сорок два. Кассирша перестала считать и начал улыбаться.",
+  "en": "A stub with a red star: \"front row, Rassvet\". There are already forty-two of them. The clerk has stopped counting and started smiling.",
+  "ja": "赤い星のついた半券。「最前列、ラスヴェート」。もう四十二枚ある。係の人は数えるのをやめて、にこにこしはじめた。"
+ },
+ "city.rassvet.menu.1": {
+  "ru": "Меню: чай — 15, кофе — 30, пирожок — 18, печенье — 20, «Буратино» — 18. Внизу мелом: «Мороженое после сеанса, а не во время».",
+  "en": "The menu: tea 15, coffee 30, pie 18, biscuits 20, Buratino 18. At the bottom in chalk: \"Ice cream after the show, not during.\"",
+  "ja": "メニュー：お茶15、コーヒー30、ピロシキ18、クッキー20、ブラチーノ18。下にチョークで「アイスは上映のあとで、上映中はだめ」。"
+ },
+ "city.rassvet.menu.2": {
+  "ru": "По субботам к чаю дают ватрушки, две штуки в одни руки, чтобы всем хватило. Цены те же. Буфетчица сказала, что ватрушки — её способ узнавать, кто пришёл в кино впервые.",
+  "en": "On Saturdays there are curd tarts with the tea, two to a customer so there is enough for all. The prices are the same. The buffet lady said the tarts are her way of telling who has come to the cinema for the first time.",
+  "ja": "土曜はお茶にチーズタルトが出る。みんなに行きわたるよう、お一人様二つまで。値段は同じ。売店のおばさんいわく、タルトは、映画館に初めて来た人を見分ける彼女なりの方法。"
+ },
+ "city.rassvet.menu.3": {
+  "ru": "Воскресное меню: чай и всё, что осталось от субботы. Буфетчица говорит: «Если мало осталось, значит, было вкусно».",
+  "en": "The Sunday menu: tea and whatever is left from Saturday. The buffet lady says, \"If there's little left, it was good.\"",
+  "ja": "日曜のメニュー：お茶と、土曜の残り全部。売店のおばさんは言う。「残りが少ないのは、おいしかったってことよ」。"
+ },
+ "city.rassvet.lost.1": {
+  "ru": "Ведро с зонтиками у вешалки. На ручках бирки: «синий», «чёрный», «чей-то». Над ними на вешалке шляпа с позапрошлой весны, и гардеробщица не трогает её: вдруг вернутся.",
+  "en": "A bucket of umbrellas by the hat stand. Tags on the handles: \"blue\", \"black\", \"somebody's\". Above them on the stand hangs a hat from the spring before last, and the cloakroom lady will not touch it: what if they come back.",
+  "ja": "帽子掛けのそばに、傘の入ったバケツ。持ち手には札がついている。「青」「黒」「誰かの」。その上の帽子掛けには、おととしの春からの帽子がかかっていて、クロークの係の人は触らない。もしかして戻ってくるかもしれないから。"
+ },
+ "city.rassvet.lost.2": {
+  "ru": "К бирке на чёрном зонте приколота записка: «Зайду, как только пойдёт дождь». Дождя пока нет, так что хозяин, видимо, занят.",
+  "en": "A note is pinned to the tag on the black umbrella: \"I'll call for it as soon as it rains.\" There is no rain yet, so the owner must be busy.",
+  "ja": "黒い傘の札にメモが留めてある。「雨が降ったらすぐ取りに来ます」。まだ雨は降らないので、持ち主はきっと忙しいのだろう。"
+ },
+ "city.rassvet.lost.3": {
+  "ru": "Гардеробщица говорит, что чаще всего в зале забывают перчатки, и всегда по одной. Одна перчатка — это не потеря, а намёк.",
+  "en": "The cloakroom lady says the thing most often forgotten in the hall is a glove, and always just one. One glove is not a loss, it is a hint.",
+  "ja": "クロークの係の人によると、ホールでいちばん多い忘れ物は手袋で、しかもいつも片方だけ。片方の手袋は落とし物ではなく、ほのめかしなのだそうだ。"
+ },
+ "quest.rassvet_reel.title": {
+  "ru": "Плёнка из кладовой",
+  "en": "The tin from the storeroom",
+  "ja": "物置のフィルム缶"
+ },
+ "quest.rassvet_reel.desc": {
+  "ru": "В «Рассвете» нашли коробку с плёнкой. На крышке то же слово, что и на фасаде. Весь дом гадает, что на ней.",
+  "en": "At the Rassvet they have found a tin of film. The lid has the same word as the front of the building. The whole house is wondering what is on it.",
+  "ja": "「ラスヴェート」でフィルム缶が見つかった。ふたには、建物の正面と同じ言葉。館じゅうが、中身を気にしている。"
+ },
+ "quest.rassvet_reel.board.log": {
+  "ru": "В фойе на доске висит листок про находку. Прочитаю, что там написано.",
+  "en": "A sheet about the find is pinned to the foyer board. I'll read what it says.",
+  "ja": "ロビーの掲示板に、見つかった缶のお知らせが貼ってある。読んでみよう。"
+ },
+ "quest.rassvet_reel.board.obj": {
+  "ru": "Прочитать объявление на доске в фойе",
+  "en": "Read the notice on the foyer board",
+  "ja": "ロビーの掲示板のお知らせを読む"
+ },
+ "quest.rassvet_reel.radio.log": {
+  "ru": "Радиолюбители спросили в эфире про этот фильм. Послушаю, не ответил ли кто-нибудь.",
+  "en": "The radio amateurs asked about this film on the air. I'll listen and see whether anyone has answered.",
+  "ja": "無線サークルが、この映画のことを電波で尋ねたそうだ。誰か答えていないか、聴いてみよう。"
+ },
+ "quest.rassvet_reel.radio.obj": {
+  "ru": "Послушать коротковолновый приёмник",
+  "en": "Listen to the short-wave set",
+  "ja": "短波の受信機を聴く"
+ },
+ "quest.rassvet_reel.piano.log": {
+  "ru": "Ноты вальса из старой афиши лежат у рояля. Сыграю хотя бы несколько тактов.",
+  "en": "The sheet of the waltz from the old poster lies by the piano. I'll play at least a few bars.",
+  "ja": "古いポスターのワルツの楽譜が、ピアノのそばにある。せめて数小節、弾いてみよう。"
+ },
+ "quest.rassvet_reel.piano.obj": {
+  "ru": "Сыграть на рояле в фойе",
+  "en": "Play the piano in the foyer",
+  "ja": "ロビーのピアノを弾く"
+ },
+ "quest.rassvet_reel.screening.log": {
+  "ru": "Показ в первом ряду, одним сеансом. Билет тридцать рублей, киномеханик на месте с трёх часов.",
+  "en": "The screening is in the front row, one show only. A ticket is thirty roubles; the projectionist is in from three o'clock.",
+  "ja": "上映は最前列で、一度だけ。入場料は三十ルーブル、映写技師は三時からいる。"
+ },
+ "quest.rassvet_reel.screening.obj": {
+  "ru": "Посмотреть «Рассвет» из первого ряда",
+  "en": "Watch Rassvet from the front row",
+  "ja": "最前列から「ラスヴェート」を観る"
+ },
+ "quest.rassvet_reel.done": {
+  "ru": "Белый свет в конце никто не принял за конец. Мы вышли молча, а кассирша сунула мне открытку: «На память о том, чего не доснято».",
+  "en": "Nobody took the white light at the end for the end. We went out in silence, and the clerk slipped me a postcard: \"In memory of what was never finished.\"",
+  "ja": "最後の白い光を、終わりだと思った人はいなかった。みんな黙って外へ出ると、係の人が絵はがきをくれた。「撮り終えられなかったものの、思い出に」。"
+ },
+ "quest.chess_ladder.title": {
+  "ru": "Ступенька лесенки",
+  "en": "A rung of the ladder",
+  "ja": "階段表の一段"
+ },
+ "quest.chess_ladder.desc": {
+  "ru": "В клубе на доске мелом нарисована лесенка из имён. Нижняя строчка пустая, и мне почему-то неловко проходить мимо.",
+  "en": "In the club a ladder of names is chalked on a board. The bottom line is empty, and for some reason I feel awkward walking past it.",
+  "ja": "サークルの黒板に、名前の階段表がチョークで書いてある。いちばん下の行は空で、なぜか素通りしにくい。"
+ },
+ "quest.chess_ladder.read.log": {
+  "ru": "Прежде чем садиться за доску, загляну на полку: там должна быть книжка с дебютами.",
+  "en": "Before sitting down at a board I'll check the shelf: there should be a book of openings.",
+  "ja": "盤の前に座る前に、棚を見てみよう。定跡の本があるはずだ。"
+ },
+ "quest.chess_ladder.read.obj": {
+  "ru": "Полистать шахматную полку",
+  "en": "Browse the chess shelf",
+  "ja": "チェスの棚をめくる"
+ },
+ "quest.chess_ladder.play.log": {
+  "ru": "Теперь можно и за доску. Проиграю — нальют чай, здесь так принято.",
+  "en": "Now I can sit down at a board. If I lose they will pour me tea; that's the custom here.",
+  "ja": "これで盤の前に座れる。負けたらお茶を注いでもらえる。ここではそういうことになっている。"
+ },
+ "quest.chess_ladder.play.obj": {
+  "ru": "Сыграть партию в шахматы в «Рассвете»",
+  "en": "Play a game of chess at the Rassvet",
+  "ja": "「ラスヴェート」でチェスを一局指す"
+ },
+ "quest.chess_ladder.done": {
+  "ru": "Я вписал своё имя на пустую строчку. Мелом, мелко, чтобы можно было стереть. Лев Маркович прочитал и кивнул: так начинают все.",
+  "en": "I wrote my name on the empty line. In chalk, small, so it can be rubbed out. Lev Markovich read it and nodded: that is how everybody starts.",
+  "ja": "空いた行に、自分の名前を書いた。チョークで、小さく、あとで消せるように。レフ・マルコヴィチは読んで、うなずいた。誰でも、そうやって始めるのだ。"
+ },
+ "city.xtx.rassvet_programme.title": {
+  "ru": "Программка Дома культуры «Рассвет» (на неделю, бесплатно, не уносить)",
+  "en": "Programme of the House of Culture Rassvet (for the week, free, not to be taken away)",
+  "ja": "文化会館「ラスヴェート」今週の番組表（無料・持ち出し禁止）"
+ },
+ "city.xtx.rassvet_programme.1": {
+  "ru": "От киномеханика. Читатель, ты держишь в руках программку, которую я переписываю от руки каждую неделю, потому что типографии у нас нет, зато есть чернила и твёрдое намерение. Сеансов два в день: в три и в семь. Билет тридцать рублей, и это не цена, а скорее знак внимания. Просьба: не разговаривать, не шуршать, не грызть семечки. Шуршание обидно и для меня, и для героев фильма, а они, поверь, слышат.",
+  "en": "From the projectionist. Reader, you hold a programme that I copy out by hand every week, because we have no printing press, but we do have ink and firm intentions. There are two shows a day: at three and at seven. The ticket is thirty roubles, which is not a price so much as a mark of attention. Please do not talk, rustle or crack sunflower seeds. Rustling offends me and the characters in the film, and they do hear it, believe me.",
+  "ja": "映写技師より。読者よ、あなたが手にしているのは、私が毎週手書きで写している番組表です。印刷所はないが、インクと固い意志はあるので。上映は一日二回、三時と七時。切符は三十ルーブル、値段というより、気持ちの印です。お願い。話さず、がさがさ音を立てず、ひまわりの種を割らないこと。がさがさ音は、私にも映画の登場人物にも失礼です。彼らは本当に聞こえているのです。"
+ },
+ "city.xtx.rassvet_programme.p2_1": {
+  "ru": "Сегодня, понедельник. Днём «Отпуск за свой счёт»: комедия о шляпе, которая сбежала в первый же день и показала курортнику весь город. Вечером «Человек, который ждал маяк»: фильм о старом рыбаке, который сорок лет поправлял шарф, а потом не знал, чем занять утро. Не стесняйтесь смеяться днём и плакать вечером: зал привык. Касса сегодня принимает только улыбки и тридцать рублей.",
+  "en": "Today, Monday. In the afternoon, \"Holiday at My Own Expense\": a comedy about a hat that ran away on the first day and showed a holidaymaker the whole town. In the evening, \"The Man Who Waited for the Lighthouse\": about an old fisherman who for forty years straightened his scarf and then did not know what to do with the morning. Don't be shy of laughing in the afternoon and crying in the evening: the hall is used to it. Today the box office takes only smiles and thirty roubles.",
+  "ja": "本日、月曜。午後は「自腹の休暇」。初日に逃げ出した帽子が、休暇客に町じゅうを見せてまわるコメディ。夜は「灯台を待った男」。四十年マフラーを直しつづけ、そのあと朝をどう過ごせばいいかわからなくなる、老漁師の物語。午後に笑い、夜に泣くのを遠慮しないでください。ホールは慣れています。今日の切符売り場は、笑顔と三十ルーブルしか受けつけません。"
+ },
+ "city.xtx.rassvet_programme.p2_2": {
+  "ru": "Сегодня, вторник. Днём «Как строили Людмиловск»: хроника, чёрно-белая, с девушкой-прорабом и рулеткой, которая командует взрослыми мужчинами, и с пианино на лестнице в финале. Вечером «Последняя кабина»: ночная смена, забытая в кабине перчатка и две минуты молчания у закрытой двери. После семи в фойе танцкласс: шуметь можно, но в такт. Из зала слышно, и не мешает.",
+  "en": "Today, Tuesday. In the afternoon, \"How Lyudmilovsk Was Built\": a black-and-white newsreel with a girl foreman and a tape measure ordering grown men about, and a piano on the stairs at the end. In the evening, \"The Last Cabin\": the night shift, a glove forgotten in a cabin and two minutes of silence at a shut door. After seven the dance class is in the foyer: noise is allowed, but in time. You can hear it from the hall and it doesn't disturb.",
+  "ja": "本日、火曜。午後は「リュドミロフスクはこうして建った」。巻き尺を持つ女の子の現場監督が大の男たちに指図し、最後には階段でピアノを運ぶ、白黒のニュース映画。夜は「最後のゴンドラ」。夜勤、ゴンドラに忘れられた手袋、閉じた扉の前の二分間の沈黙。七時を過ぎるとロビーでダンス教室。騒いでもいいが、拍子に合わせて。ホールにも聞こえるが、邪魔にはならない。"
+ },
+ "city.xtx.rassvet_programme.p2_3": {
+  "ru": "Сегодня, среда. Днём «Солнце — наш дом»: научно-популярный фильм, где лучи бегут к Земле восемь минут, а весь зал считает вместе с диктором. В конце подсолнух и сонная кошка, оба повернулись к свету. Вечером «Письмо в бутылке»: девушка со шведским письмом и город, каждый житель которого переводит его по-своему. Просьба приходить до звонка, а не вместе с ним. Звонок обидчив.",
+  "en": "Today, Wednesday. In the afternoon, \"The Sun Is Our Home\": a popular-science film in which the rays run to Earth for eight minutes while the whole hall counts along with the announcer. At the end a sunflower and a sleepy cat, both turned toward the light. In the evening, \"A Letter in a Bottle\": a girl with a Swedish letter and a town in which everybody translates it in their own way. Please arrive before the bell, not together with it. The bell is touchy.",
+  "ja": "本日、水曜。午後は「太陽は私たちの家」。光が八分かけて地球へ走るのを、ホールじゅうがアナウンサーと一緒に数える科学映画。最後に、ひまわりと眠そうな猫が、どちらも光のほうを向く。夜は「瓶の中の手紙」。スウェーデン語の手紙を持つ女の子と、住人がそれぞれ自分なりに訳す町。ベルの前にお越しください。ベルと一緒ではなく。ベルは気難しいのです。"
+ },
+ "city.xtx.rassvet_programme.p2_4": {
+  "ru": "Сегодня, четверг. Днём «Три товарища и арбуз»: летняя комедия о том, как три друга несли один арбуз, а их ждали вчера. Вечером «Тишина в эфире»: радиолюбитель, три ночи записывавший точки и тире, и одно слово в ответ. Радиоуголок сегодня открыт, а фотокружок собирается в шесть. После вечернего сеанса лучше помолчать: слов после «Тишины» нужно меньше, чем кажется.",
+  "en": "Today, Thursday. In the afternoon, \"Three Friends and a Watermelon\": a summer comedy about three friends carrying one watermelon while they were expected yesterday. In the evening, \"Silence on the Air\": a radio amateur who spent three nights noting dots and dashes, and one word in reply. The radio corner is open today and the photo circle meets at six. After the evening show it is better to keep quiet: after \"Silence\" fewer words are needed than it seems.",
+  "ja": "本日、木曜。午後は「三人の友だちとスイカ」。三人の友だちが一つのスイカを運んでいくと、待たれていたのは昨日だった、という夏のコメディ。夜は「電波の静けさ」。三晩かけて点と線を書き取った無線家と、その返事のひとこと。無線コーナーは今日あいていて、写真サークルは六時から。夜の上映のあとは、黙っているほうがいい。「静けさ」のあとは、思うより言葉はいらない。"
+ },
+ "city.xtx.rassvet_programme.p2_5": {
+  "ru": "Сегодня, пятница. Днём «Чемпион двора»: мальчик, который тренируется у стены дома и в очереди за хлебом, и малышка с косичками, которая выигрывает финал. Вечером «Вальс на пристани»: пара, которая никак не попадает в шаг, и фонарь, гаснущий только вместе с музыкой. После вечернего сеанса буфет работает ещё полчаса. Рекомендуем: пирожок и неспешный разговор о том, у кого что получилось в вальсе.",
+  "en": "Today, Friday. In the afternoon, \"The Yard Champion\": a boy who trains against a house wall and in the bread queue, and a little girl with plaits who wins the final. In the evening, \"Waltz on the Pier\": a couple who can't get into step, and a lamp that goes out only with the music. After the evening show the buffet stays open another half hour. We recommend a pie and an unhurried talk about who managed what in the waltz.",
+  "ja": "本日、金曜。午後は「中庭のチャンピオン」。家の壁に向かって、パンの行列で練習する男の子と、決勝に勝つおさげの女の子。夜は「桟橋のワルツ」。どうしても歩調の合わない二人と、音楽と一緒にしか消えない街灯。夜の上映のあと、売店はさらに三十分あいています。おすすめは、ピロシキと、ワルツで誰が何をやり遂げたかを語るのんびりしたおしゃべり。"
+ },
+ "city.xtx.rassvet_programme.p2_6": {
+  "ru": "Сегодня, суббота. Днём «Дело о пропавшей чайке»: детектив для маленьких, где допрашивают селёдку, кота и одного уклончивого лебедя. Вечером «Киномеханик»: он любит все фильмы, но видит только кусочек в окошко будки. Сеансы без перерыва, перерыв в буфете, там ватрушки по две в одни руки. Киномеханик просит не оборачиваться на будку во время фильма. Он знает, что вы обернётесь, но просит.",
+  "en": "Today, Saturday. In the afternoon, \"The Case of the Missing Gull\": a children's detective story in which a herring, a cat and one evasive swan are questioned. In the evening, \"The Projectionist\": he loves every film but sees only a slice through the booth window. No break between shows; the break is in the buffet, where it's two curd tarts per person. The projectionist asks you not to look back at the booth during the film. He knows you will, but he asks.",
+  "ja": "本日、土曜。午後は「消えたカモメ事件」。ニシンと猫とはぐらかし上手の白鳥が取り調べられる、子ども向けの推理もの。夜は「映写技師」。すべての映画が好きなのに、窓から一コマ分しか見られない人。上映は休みなし、休みは売店にあり、チーズタルトはお一人様二つまで。映写技師からのお願い。上映中は、映写室を振り返らないこと。振り返るのはわかっているが、お願いしておく。"
+ },
+ "city.xtx.rassvet_programme.p2_7": {
+  "ru": "Сегодня, воскресенье. Днём «Приключения ёжика на канатной дороге»: ёжик везёт яблоко другу, а в кабине едут жираф, оркестр и очень серьёзная улитка. Вечером «Пустая улица»: старый немой фильм с тапёром и человеком, который всё время сворачивает не туда. Первый ряд сегодня для тех, кто пришёл с ёжиком или без. Воскресное меню в буфете: чай и всё, что осталось от субботы.",
+  "en": "Today, Sunday. In the afternoon, \"The Hedgehog's Cable-Car Adventures\": a hedgehog carries an apple to a friend, and in the cabin ride a giraffe, an orchestra and a very serious snail. In the evening, \"The Empty Street\": an old silent film with a pianist and a man who keeps turning the wrong way. The front row today is for those who came with a hedgehog or without. Sunday menu at the buffet: tea and whatever is left from Saturday.",
+  "ja": "本日、日曜。午後は「ハリネズミのロープウェイ大冒険」。ハリネズミが友だちにりんごを届け、ゴンドラにはキリンと楽団と、とても真面目なカタツムリが乗り合わせる。夜は「からっぽの通り」。伴奏のピアニストがつく古い無声映画と、いつも曲がる道をまちがえる男。今日の最前列は、ハリネズミ連れでも、そうでなくても。日曜の売店は、お茶と、土曜日の残りもの。"
+ },
+ "city.xtx.rassvet_programme.3": {
+  "ru": "Как смотреть. Место выбирайте по характеру. Пятый ряд — для тех, кто любит слышать всё: звук там собирается, как вода в ложбинке. Первый ряд — для детей и романтиков: экран нависает, как небо. Задние места для тех, кто пришёл подумать, а кино взял с собой на всякий случай. Если рядом с вами человек смеётся не там, где все, не оборачивайтесь. Скорее всего, он видит то, чего не заметили остальные.",
+  "en": "How to watch. Choose your seat by temperament. The fifth row is for those who like to hear everything: the sound gathers there like water in a hollow. The front row is for children and romantics: the screen hangs over you like the sky. The back seats are for those who came to think and brought the film along just in case. If the person next to you laughs where nobody else does, don't turn round. Most likely he sees what the rest have missed.",
+  "ja": "見かた。座席は気質で選ぶこと。五列目は、すべてを聞きたい人に。音がくぼみに水がたまるように集まる。最前列は、子どもとロマンチストに。スクリーンが空のようにかぶさってくる。後ろの席は、考えごとをしに来て、念のため映画も持ってきた人に。隣の人がほかの誰も笑わないところで笑っても、振り向かないで。たぶんその人は、ほかの人が見落としたものを見ているのだ。"
+ },
+ "city.xtx.rassvet_programme.4": {
+  "ru": "В конце программки напечатано мелко, но я прочту вслух. «Если вы дочитали до этого места, значит, вы читаете всё, что висит на стенах. Нам такие нужны. Передайте билетёру, что вы из таких, и он улыбнётся. Если не улыбнётся, проверьте, нет ли у вас билета в руках. Если есть, значит, всё хорошо: просто сегодня у него такая улыбка». Подписано: «Дирекция и киномеханик, в одном лице, потому что вторая ставка сокращена».",
+  "en": "At the end of the programme, in small print, but I'll read it aloud. \"If you have read this far, you read everything that hangs on the walls. We need such people. Tell the ticket-taker you are one of them and he will smile. If he does not smile, check whether you have a ticket in your hand. If you do, all is well: it's simply the sort of smile he has today.\" Signed: \"The Management and the Projectionist, in one person, because the second post has been cut.\"",
+  "ja": "番組表の最後に小さく印刷されている。声に出して読もう。「ここまで読んだあなたは、壁に貼られたものをすべて読む人です。私たちにはそういう人が必要です。もぎりの人に、自分はそういう者だと伝えれば、その人は微笑むでしょう。微笑まなければ、手に切符を持っているか確かめてください。持っているなら大丈夫。ただ、今日はそういう笑顔なのです」。署名。「支配人と映写技師、一人二役。もう一人分のポストは削減されたので」"
+ },
+ "city.xtx.rassvet_dance_rules.title": {
+  "ru": "Правила танцкласса (приколото к раме зеркала)",
+  "en": "Dance Class Rules (pinned to the mirror frame)",
+  "ja": "ダンス教室の決まり（鏡の枠に留めてある）"
+ },
+ "city.xtx.rassvet_dance_rules.1": {
+  "ru": "Правила пола. 1. Сменная обувь, чистая и гладкая. Пол натирают по пятницам, и он за это благодарен. 2. Считаем вслух, потому что молча никто не считает. 3. Смотреть в зеркало можно, любоваться нельзя: зеркало устаёт. 4. Не смотреть под ноги. Ноги знают сами; если не знают, они просто стесняются. 5. Партнёра, если наступили, благодарят, а не извиняются. Извинение — это ещё один шаг, а нам нужно попадать в такт.",
+  "en": "Rules of the floor. 1. Indoor shoes, clean and smooth. The floor is polished on Fridays and is grateful for it. 2. We count aloud, because nobody counts silently. 3. You may look in the mirror but not admire yourself: the mirror gets tired. 4. Don't look at your feet. The feet know; if they don't, they are only shy. 5. If you tread on your partner, thank them, don't apologise. An apology is one more step, and we need to land on the beat.",
+  "ja": "床の決まり。一、履き替えの靴で、清潔で滑らかなもの。床は金曜日に磨かれ、そのことに感謝している。二、声に出して数えること。黙って数える人はいないので。三、鏡を見てもいいが、見とれてはいけない。鏡が疲れる。四、足元を見ないこと。足は知っている。知らないなら、恥ずかしがっているだけだ。五、パートナーの足を踏んだら、謝るのではなくお礼を言う。お詫びは余計な一歩で、私たちは拍に合わせたいのだ。"
+ },
+ "city.xtx.rassvet_dance_rules.p2_1": {
+  "ru": "Сегодня вторник, вальс. Раз-два-три, раз-два-три: на «раз» тяжело, на «два» и «три» легко, как будто вы ставите ногу на ступеньку, а потом ступенька уходит из-под ноги. Начинающим: вести обязательно. Если оба решили, что ведут, получается спор, а не вальс. Учительница хлопает в ладоши, юноша, и вы тоже: это не аплодисменты, а метроном.",
+  "en": "Today is Tuesday, waltz. One-two-three, one-two-three: heavy on one, light on two and three, as if you stepped on a stair and then the stair slipped away. For beginners: somebody must lead. If both decide they are leading, you get an argument, not a waltz. The teacher claps her hands; so do you, young man: it isn't applause but a metronome.",
+  "ja": "今日は火曜、ワルツ。いち、にい、さん、いち、にい、さん。「いち」は重く、「にい」「さん」は軽く。階段に足をのせたら、その階段が足の下から消えるように。初心者へ。どちらかが必ずリードすること。二人とも自分がリードしていると思えば、ワルツではなく口論になる。先生は手を叩く。あなたもだ、青年。拍手ではなく、メトロノームである。"
+ },
+ "city.xtx.rassvet_dance_rules.p2_2": {
+  "ru": "Сегодня среда, фокстрот. Шаги быстрые и медленные: «медленно-медленно, быстро-быстро». Лица у всех серьёзные, как на экзамене, потому что фокстрот прощает ошибки, только если вы не смотрите на них. Партнёр просит не смотреть под ноги: смотрите ему в плечо. Через неделю вы забудете про плечо и просто пойдёте. Это и есть танец. Остальное оформление.",
+  "en": "Today is Wednesday, foxtrot. The steps are quick and slow: \"slow-slow, quick-quick\". Everyone's face is solemn as at an exam, because the foxtrot forgives mistakes only if you don't look at them. Your partner asks you not to look at your feet: look at his shoulder. In a week you will forget about the shoulder and simply walk. That is dancing. The rest is decoration.",
+  "ja": "今日は水曜、フォックストロット。ステップは遅いと速いの組み合わせ。「ゆっくり、ゆっくり、はやく、はやく」。みんな試験のようにまじめな顔をしている。フォックストロットは、間違いを見なければ許してくれるから。パートナーは足元を見ないでと言う。相手の肩を見よう。一週間後には肩のことを忘れて、ただ歩いている。それがダンスだ。あとは飾りである。"
+ },
+ "city.xtx.rassvet_dance_rules.p2_3": {
+  "ru": "Сегодня четверг, медленные танцы. Свет приглушён, пластинка шуршит. Шаг один: качнуться вправо, качнуться влево. Главное не шаг, а дыхание: учительница ходит между парами и шепчет «дышите». Пары качаются на месте, будто пол слегка плывёт. Тот, кто сегодня пришёл без партнёра, не обязан танцевать с зеркалом. Рядом всегда найдётся кто-то, кому тоже ни с кем.",
+  "en": "Today is Thursday, slow dances. The light is dimmed, the record rustles. There is one step: sway right, sway left. The point is not the step but the breathing: the teacher walks between the couples and whispers \"breathe\". The couples sway in place as if the floor were drifting a little. Anyone who came without a partner today needn't dance with the mirror. There is always somebody near who has nobody either.",
+  "ja": "今日は木曜、スローなダンス。照明は落とされ、レコードがさらさら鳴る。ステップは一つ。右に揺れ、左に揺れる。大事なのはステップではなく呼吸で、先生は二人組のあいだを歩きながら「息をして」とささやく。二人組はその場で揺れ、床が少しだけ流れているようだ。今日パートナーなしで来た人は、鏡と踊らなくていい。そばには、やはり相手のいない誰かが、いつもいる。"
+ },
+ "city.xtx.rassvet_dance_rules.p2_4": {
+  "ru": "Сегодня пятница, полька. Прыжок, прыжок, шаг. Пол подпрыгивает вместе с вами, зеркало дрожит, и никто не хочет остановиться первым. Когда кончается пластинка, все ещё секунду подпрыгивают, а потом смеются. Учительница просит: колени мягче, а то пол жалуется. Сегодня натирают пол, и после занятия просят не уходить, пока пол не просохнет. Он тоже должен успеть отдохнуть.",
+  "en": "Today is Friday, polka. Hop, hop, step. The floor bounces along with you, the mirror trembles, and nobody wants to stop first. When the record ends, everybody goes on hopping for a second and then laughs. The teacher asks: softer knees, or the floor will complain. Today the floor is polished, and after class you are asked not to leave until it has dried. It too must have time to rest.",
+  "ja": "今日は金曜、ポルカ。ホップ、ホップ、ステップ。床は一緒に跳ね、鏡は震え、誰も先には止まりたがらない。レコードが終わっても、みんな一秒間は跳びつづけ、それから笑う。先生のお願い。膝はもっとやわらかく、でないと床が文句を言う。今日は床を磨くので、授業のあとは乾くまで帰らないでください。床にも休む時間が必要です。"
+ },
+ "city.xtx.rassvet_dance_rules.p2_5": {
+  "ru": "Сегодня суббота, вечер по заявкам. Кто просит вальс, получает вальс, кто фокстрот — фокстрот. Заявка пишется на листочке и кладётся на пианино, с подписью или без. Если в заявке написано то, чего нет в программе, учительница играет это сама, одним пальцем, пока кто-нибудь не подберёт остальное. Так в прошлую субботу родился вальс, который теперь знает весь зал, но ни у кого нет нот.",
+  "en": "Today is Saturday, request evening. Whoever asks for a waltz gets a waltz, whoever asks for a foxtrot gets a foxtrot. A request is written on a slip and laid on the piano, signed or unsigned. If a request names something that isn't in the programme, the teacher plays it herself, with one finger, until somebody works out the rest. That is how last Saturday a waltz was born that the whole hall now knows, though nobody has the music.",
+  "ja": "今日は土曜、リクエストの夕べ。ワルツを頼めばワルツ、フォックストロットを頼めばフォックストロットがかかる。リクエストは紙きれに書いてピアノの上に置く。署名はあってもなくてもいい。番組にないものが書かれていたら、先生が自分で、指一本で弾く。誰かが残りを探し当てるまで。そうして先週の土曜日にひとつのワルツが生まれ、いまはホールじゅうが知っているが、楽譜は誰も持っていない。"
+ },
+ "city.xtx.rassvet_dance_rules.p2_6": {
+  "ru": "Сегодня занятий нет, пол отдыхает. Пластинки лежат в конвертах, зеркало смотрит в пустой зал и ждёт вторника. Правила остаются в силе и в выходные: под ноги не смотреть, считать вслух, благодарить за отдавленные ноги. Если вам хочется потанцевать, никто не мешает пройти три шага в одиночку. Эхо ответит и, возможно, сделает замечание.",
+  "en": "There is no class today, the floor is resting. The records lie in their sleeves, the mirror looks into the empty hall and waits for Tuesday. The rules stay in force at weekends: don't look at your feet, count aloud, thank people for trodden toes. If you feel like dancing, nobody prevents you from taking three steps alone. The echo will answer and may make a remark.",
+  "ja": "今日は授業がなく、床は休んでいる。レコードはジャケットに入り、鏡は空っぽのホールを見つめて火曜日を待つ。決まりは休みの日も有効だ。足元を見ない、声に出して数える、踏まれた足にお礼を言う。踊りたくなったら、ひとりで三歩歩くのを、誰も止めない。こだまが応えて、ひとこと言うかもしれない。"
+ },
+ "city.xtx.rassvet_radio_log.title": {
+  "ru": "Журнал радиоуголка. Короткие волны",
+  "en": "Radio Corner Log: Short Wave",
+  "ja": "無線コーナーの交信記録　短波"
+ },
+ "city.xtx.rassvet_radio_log.1": {
+  "ru": "Как вести журнал. Дата, время по часам на стене, частота, позывной, слышимость по пятибалльной шкале и одно слово от себя. Слово необязательное, но без него журнал превращается в бухгалтерию. Первая запись в этой тетради: «Слышимость 5, сигнал чистый, оператор в Риге просит повторить погоду. Повторили. Он поблагодарил и сказал, что у нас дождь красивее». Мы не стали спорить: дождь у нас и правда красивый.",
+  "en": "How to keep the log. Date, time by the wall clock, frequency, call sign, signal strength on a five-point scale and one word of your own. The word is optional, but without it the log turns into bookkeeping. The first entry in this notebook: \"Strength 5, clean signal, the operator in Riga asks us to repeat the weather. We repeated it. He thanked us and said our rain is prettier.\" We didn't argue: our rain really is pretty.",
+  "ja": "記録のつけ方。日付、壁の時計の時刻、周波数、コールサイン、五段階の感度、そして自分の一言。一言は任意だが、それがないと記録は帳簿になってしまう。このノートの最初の記入。「感度5、信号クリア。リガの局が天気をもう一度頼んできた。くり返した。礼を言われ、そちらの雨のほうがきれいだと言われた」。言い返さなかった。ここの雨は、たしかにきれいだ。"
+ },
+ "city.xtx.rassvet_radio_log.2": {
+  "ru": "Запись, вечер. «Таллин, слышимость 4. Радиолюбитель рассказал про кошку, которая сидит на передатчике, и потому сигнал то уходит, то возвращается. Просил передать привет всем, кто сейчас сидит на чём-то тёплом». Передали. Следом Архангельск: оператор продиктовал открытку по буквам и прочитал наш адрес. Дом культуры «Рассвет», радиоуголок. Мы не ждали открытки и очень обрадовались. Ответили в тот же вечер, и это отмечено красным.",
+  "en": "Entry, evening. \"Tallinn, strength 4. The amateur told us about a cat that sits on his transmitter, so the signal comes and goes. He asked us to send greetings to everyone sitting on something warm.\" We passed it on. Next, Arkhangelsk: the operator spelled out a card letter by letter and read our address. House of Culture Rassvet, radio corner. We hadn't expected a card and were delighted. We answered the same evening, and it is marked in red.",
+  "ja": "夕方の記入。「タリン、感度4。無線家が、送信機の上に座る猫の話をした。そのせいで信号が行ったり来たりする。いま何か温かいものの上に座っているすべての人によろしく、とのこと」。伝えた。続いてアルハンゲリスク。操作員がカードを一文字ずつ読み上げ、うちの住所を読んだ。文化会館「ラスヴェート」、無線コーナー。カードが来るとは思っていなくて、とてもうれしかった。その晩のうちに返信し、赤で印をつけてある。"
+ },
+ "city.xtx.rassvet_radio_log.3": {
+  "ru": "Запись, ночь. Мы не знаем, как эту запись оформить. «Ночью эфир широкий, как море. Диктор на чужом языке читает цифры, кто-то отвечает морзянкой, а между ними пищит совсем другое. Около трёх часов, на самом краю диапазона, в шуме мелькнуло: «…слышу вас, Людмиловск». Повторять не стали. Записали время, частоту и слышимость: единица. Поставили точку, потом вопрос, потом снова точку». Ниже другой рукой: «Я тоже слышал. Не говорите никому».",
+  "en": "Entry, night. We don't know how to enter this one. \"At night the air is wide as the sea. An announcer in a foreign language reads out numbers, someone answers in Morse, and between them something quite different beeps. Around three, at the very edge of the band, something flashed through the noise: '...hearing you, Lyudmilovsk.' It did not repeat. We noted the time, the frequency and the strength: one. We put a full stop, then a question mark, then a full stop again.\" Below, in another hand: \"I heard it too. Don't tell anyone.\"",
+  "ja": "夜の記入。これはどう記入していいかわからない。「夜の電波は海のように広い。外国語のアナウンサーが数字を読み、だれかがモールスで答え、そのあいだに、まったく別の何かが鳴っている。三時ごろ、周波数帯のいちばん端で、雑音の中にひらめいた。『……聞こえています、リュドミロフスク』。くり返されなかった。時刻、周波数、感度を書いた。感度は一。句点を打ち、次に疑問符を打ち、また句点を打った」。その下に別の筆跡で。「私にも聞こえた。だれにも言わないで」"
+ },
+ "city.xtx.rassvet_radio_log.p4_1": {
+  "ru": "Четверг: радиоуголок открыт, вечером фильм «Тишина в эфире». Радиолюбители собираются в буфете заранее, с наушниками на шее, и спорят про антенну так, что слышно в кассе. Потом обсуждают, было ли в фильме что-нибудь неправильно. Было, но они счастливы. Просьба: не хвалить фильм при Георгии Александровиче, он потом три дня ходит с лицом оператора.",
+  "en": "Thursday: the radio corner is open, and in the evening the film \"Silence on the Air\". The radio amateurs gather in the buffet beforehand, headphones round their necks, arguing about aerials so loudly that it carries to the box office. Then they discuss whether anything in the film was wrong. There was, but they are happy. Please don't praise the film in front of Georgy Alexandrovich; afterwards he walks about for three days with the face of an operator.",
+  "ja": "木曜。無線コーナーは開いていて、夜は映画「電波の静けさ」。無線家たちは首にヘッドホンをかけて売店に早めに集まり、アンテナの話を切符売り場まで聞こえる声で論じる。そのあと、映画に間違いがなかったかを論じ合う。あったが、みんな幸せだ。お願い。ゲオルギー・アレクサンドロヴィチの前でこの映画をほめないで。そのあと三日間、操作員の顔で歩きまわるので。"
+ },
+ "city.xtx.rassvet_radio_log.p4_2": {
+  "ru": "Запись для тех, кто приходит просто так: ручку с красной пастой не трогать, она для QSL. Наушники с левой стороны пищат, это не неисправность, а характер. Если вдруг услышите в эфире слово «Людмиловск», не пугайтесь и не молчите: нажмите кнопку и ответьте «Слышу». Остальное мы запишем.",
+  "en": "A note for those who come in just like that: don't touch the red-ink pen, it is for QSL cards. The left earphone squeaks; that is not a fault but a character. If you suddenly hear the word \"Lyudmilovsk\" on the air, don't be frightened and don't keep silent: press the button and answer, \"I hear you.\" We will write down the rest.",
+  "ja": "ふらりと来た人へのメモ。赤インクのペンには触らないこと。QSLカード用だ。左のヘッドホンはキーキー鳴るが、故障ではなく性格だ。もし電波の中に「リュドミロフスク」という言葉が聞こえたら、驚かず、黙らず、ボタンを押して「聞こえます」と答えてください。残りは私たちが記録する。"
+ },
+ "city.ask.rassvet.tk.times": {
+  "ru": "Лучше на дневной или на вечерний?",
+  "en": "Matinee or evening show?",
+  "ja": "昼の回と夜の回、どっちがいい？"
+ },
+ "city.ask.rassvet.tk.times.1": {
+  "ru": "— Дневной в три для тех, кто любит тишину в зале. Вечерний в семь для тех, кто любит буфет после. Места любые.",
+  "en": "\"The matinee at three for those who like a quiet hall. The evening one at seven for those who like the buffet afterwards. Any seat you like.\"",
+  "ja": "「三時の昼の回は、静かな客席が好きな人に。七時の夜の回は、そのあとの売店が好きな人に。席は自由よ。」"
+ },
+ "city.ask.rassvet.tk.times.2": {
+  "ru": "— Среда: просят приходить до звонка, а не вместе с ним. Я не придираюсь, это в афише.",
+  "en": "\"Wednesday: please arrive before the bell, not together with it. I'm not being fussy, it's on the poster.\"",
+  "ja": "「水曜は、ベルの前に来てくださいって。うるさく言ってるんじゃなくて、ポスターに書いてあるの。」"
+ },
+ "city.ask.rassvet.tk.times.3": {
+  "ru": "— По пятницам и субботам к вечернему приходите за двадцать минут: зал наполняется до звонка, хотя места любые.",
+  "en": "\"On Fridays and Saturdays come twenty minutes early for the evening show: the hall fills before the bell, though any seat is allowed.\"",
+  "ja": "「金曜と土曜の夜の回は、二十分前に来てね。席は自由でも、ベルの前に客席は埋まるから。」"
+ },
+ "city.ask.rassvet.tk.stubs": {
+  "ru": "Сколько сегодня билетов?",
+  "en": "How many tickets today?",
+  "ja": "今日は何枚売れた？"
+ },
+ "city.ask.rassvet.tk.stubs.1": {
+  "ru": "— Красные корешки дневные, жёлтые вечерние. Считаю на ночь, сходится не всегда. Я не сержусь: значит, зал был живой.",
+  "en": "\"Red stubs are matinee, yellow evening. I count at night and it doesn't always add up. I'm not cross: it means the hall was alive.\"",
+  "ja": "「赤い半券は昼の回、黄色は夜の回。夜に数えるんだけど、いつも合うとは限らないの。怒ったりしないわ。客席が生きていたってことだもの。」"
+ },
+ "city.ask.rassvet.tk.stubs.2": {
+  "ru": "— В выходные корешков вдвое. Стопку придавливаю чашкой, и чашка у меня всегда пустая: не заметила, как выпила.",
+  "en": "\"At weekends there are twice as many stubs. I weigh the pile down with a cup, and my cup is always empty: I never notice drinking it.\"",
+  "ja": "「週末は半券が倍になる。山をカップで押さえてるんだけど、そのカップがいつも空なの。飲んだ覚えはないのにね。」"
+ },
+ "city.ask.rassvet.tk.costume": {
+  "ru": "Что за костюмы для спектакля?",
+  "en": "What are the costumes for the play?",
+  "ja": "お芝居の衣装って何？"
+ },
+ "city.ask.rassvet.tk.costume.1": {
+  "ru": "— Сказка про Солнце и Ветер. Плащ Ветра готов, Солнце ещё нет: швея говорит, лучи нужно пришить так, чтобы грели.",
+  "en": "\"A fairy tale about the Sun and the Wind. The Wind's cloak is ready, the Sun's isn't yet: the seamstress says the rays must be sewn on so that they warm.\"",
+  "ja": "「『太陽と風』のお話よ。風のマントはできたけど、太陽のはまだ。お針子さんが、光線は暖かくなるように縫いつけなきゃいけないって。」"
+ },
+ "city.ask.rassvet.tk.costume.2": {
+  "ru": "— Сегодня четверг, примерки. Швея звонила: пусть Солнце подождёт. Я объяснила Солнцу. Солнце не возражает: у него вечность.",
+  "en": "\"It's Thursday, fittings day. The seamstress rang: let the Sun wait. I explained it to the Sun. The Sun doesn't mind: it has eternity.\"",
+  "ja": "「今日は木曜、仮縫いの日。お針子さんから電話があって、太陽には待ってもらって、って。太陽に説明したわ。太陽は気にしない。永遠があるもの。」"
+ },
+ "city.ask.rassvet.tk.costume.3": {
+  "ru": "— Ты заходил к швее? Если у неё остался тот жёлтый, «как в семь вечера», скажи: Солнце подождёт, но не бесконечно.",
+  "en": "\"Did you visit the seamstress? If she still has that yellow, 'like seven in the evening', tell her: the Sun will wait, but not forever.\"",
+  "ja": "「お針子さんのところに行ったの？ あの『夕方七時みたいな』黄色がまだ残ってるなら、伝えて。太陽は待つけど、ずっとじゃないって。」"
+ },
+ "city.ask.rassvet.tk.reel": {
+  "ru": "Что за плёнка с надписью «Рассвет»?",
+  "en": "What's the film can marked \"Rassvet\"?",
+  "ja": "『ラスヴェート』と書かれたフィルム缶って？"
+ },
+ "city.ask.rassvet.tk.reel.1": {
+  "ru": "— Коробка нашлась в кладовой, за батареей. На крышке то же слово, что на фасаде. Киномеханик говорит, что дом назвали по ней, а фильм все считали выдумкой.",
+  "en": "\"The tin turned up in the storeroom, behind the radiator. The lid bears the same word as the front of the building. The projectionist says the house was named after it, though everyone thought the film was made up.\"",
+  "ja": "「缶は物置の暖房機のうしろから出てきたの。ふたには、建物の正面と同じ言葉。映写技師は、この建物はそれにちなんで名づけたって言うけど、みんな映画のほうは作り話だと思ってたのよ。」"
+ },
+ "city.ask.rassvet.tk.reel.2": {
+  "ru": "— Открытку «На память о том, чего не доснято» я даю не всем. Только тем, кто досмотрел до белого света.",
+  "en": "\"I don't give the card 'In memory of what was never finished' to everyone. Only to those who stayed to the white light.\"",
+  "ja": "「『撮り終えられなかったものの思い出に』の絵はがきは、誰にでもは渡さないの。白い光まで観た人にだけ。」"
+ },
+ "city.ask.rassvet.tk.after": {
+  "ru": "Куда пойти после сеанса?",
+  "en": "Where should I go after the show?",
+  "ja": "上映のあとはどこへ行けばいい？"
+ },
+ "city.ask.rassvet.tk.after.1": {
+  "ru": "— После вечернего хорошо дойти до «Тарелки»: пока ты досматривал, Кеша мог объявить последнюю станцию. А если радио ловит помехи, дело в «Шестерне»: там радиолюбители.",
+  "en": "\"After the evening show it's nice to walk to the Saucer: while you were watching, Kesha may have announced the last stop. And if the radio picks up interference, blame the Cog: the radio amateurs are there.\"",
+  "ja": "「夜の回のあとは『ソーサー』まで歩くといいわ。観ているあいだに、ケーシャが終点を告げたかもしれないから。それに、ラジオにノイズが入るなら、『歯車』のせいよ。アマチュア無線の人たちがいるから。」"
+ },
+ "city.ask.rassvet.tk.after.2": {
+  "ru": "— Сегодня пятница: в «Шестерне» полуфинал по бильярду, а у нас после «Вальса на пристани» буфет открыт ещё полчаса.",
+  "en": "\"It's Friday: at the Cog there's the billiards semi-final, and here the buffet stays open another half hour after Waltz on the Pier.\"",
+  "ja": "「今日は金曜。『歯車』ではビリヤードの準決勝、うちでは『桟橋のワルツ』のあと、売店がさらに三十分あいてるわ。」"
+ },
+ "city.ask.rassvet.tk.after.3": {
+  "ru": "— Сегодня суббота: в «Шестерне» вечером финал, запись зрителей у Тамары Ильиничны. Сеансы у нас без перерыва, так что выбирай одно из двух.",
+  "en": "\"It's Saturday: the Cog has the final this evening, spectators sign up with Tamara Ilyinichna. Our shows run back to back, so choose one of the two.\"",
+  "ja": "「今日は土曜。『歯車』では夜に決勝があって、見物の申しこみはタマーラ・イリイニチナのところ。うちは休みなしで上映するから、どちらかを選んで。」"
+ },
+ "city.ask.rassvet.bf.projectionist": {
+  "ru": "Что киномеханик ест в перерыве?",
+  "en": "What does the projectionist eat at the interval?",
+  "ja": "映写技師は休憩に何を食べるの？"
+ },
+ "city.ask.rassvet.bf.projectionist.1": {
+  "ru": "— Пирожок с вишней, один. Передаю в будку на ниточке, это он сам придумал, чтобы не бросать катушку.",
+  "en": "\"A cherry pie, one. I send it up to the booth on a string; he thought of it himself, so he needn't leave the reel.\"",
+  "ja": "「サクランボのピロシキをひとつ。映写室まで糸で吊って届けるの。リールから離れなくていいように、本人が考えたのよ。」"
+ },
+ "city.ask.rassvet.bf.projectionist.2": {
+  "ru": "— По субботам он в зале, а не в будке. Пирожок несу прямо к креслу. «Зрителям мешаешь». «Кормлю зрителя».",
+  "en": "\"On Saturdays he's in the hall, not the booth. I carry the pie straight to his seat. 'You're disturbing the audience.' 'I'm feeding an audience member.'\"",
+  "ja": "「土曜日は、彼は映写室じゃなくて客席にいるの。ピロシキは座席まで運ぶわ。『お客さんの邪魔よ』『お客さんに食べさせてるのさ』ってね。」"
+ },
+ "city.ask.rassvet.bf.friday": {
+  "ru": "Правда, что в пятницу буфет работает дольше?",
+  "en": "Is it true the buffet stays open later on Fridays?",
+  "ja": "金曜は売店が遅くまでって本当？"
+ },
+ "city.ask.rassvet.bf.friday.1": {
+  "ru": "— После вечернего сеанса ещё полчаса. Пятница, «Вальс на пристани»: после него все голодные, а у кого-то глаза мокрые.",
+  "en": "\"Half an hour after the evening show. Friday, Waltz on the Pier: afterwards everybody is hungry and somebody's eyes are wet.\"",
+  "ja": "「夜の上映のあと、さらに三十分。金曜は『桟橋のワルツ』で、終わるとみんなお腹がすいてて、誰かは目がうるんでるの。」"
+ },
+ "city.ask.rassvet.bf.friday.2": {
+  "ru": "— Сегодня! Чай я вскипятила на полчаса вперёд, пирожки только с капустой. Они выдержанные.",
+  "en": "\"Today! I've boiled the tea half an hour ahead, and the pies are all cabbage. They're well matured.\"",
+  "ja": "「今日よ！ お茶は三十分ぶん先に沸かしてあるし、ピロシキはキャベツだけ。熟成してるから。」"
+ },
+ "city.ask.rassvet.bf.break": {
+  "ru": "Что значит «перерыв в буфете» в афише?",
+  "en": "What does the poster mean by \"the break is in the buffet\"?",
+  "ja": "ポスターの『休憩は売店に』ってどういう意味？"
+ },
+ "city.ask.rassvet.bf.break.1": {
+  "ru": "— В субботу сеансы идут без пауз, поэтому перерыв у меня. Закрываю окошко на двадцать минут и сижу сама, как зритель. Не стучите.",
+  "en": "\"On Saturdays the shows run without a break, so the break is mine. I close the hatch for twenty minutes and sit like a spectator myself. Don't knock.\"",
+  "ja": "「土曜は上映が休みなしで続くから、休憩はわたしのぶん。二十分だけ窓口を閉めて、わたしも観客みたいに座るの。ノックしないでね。」"
+ },
+ "city.ask.rassvet.cl.dance": {
+  "ru": "А танцевать в уличной обуви можно?",
+  "en": "May I dance in outdoor shoes?",
+  "ja": "外靴のままで踊ってもいい？"
+ },
+ "city.ask.rassvet.cl.dance.1": {
+  "ru": "— Сменная обувь, чистая и гладкая: так в правилах у зеркала. Пол натирают по пятницам, и он за это благодарен.",
+  "en": "\"Changing shoes, clean and smooth: so say the rules by the mirror. The floor is polished on Fridays and is grateful for it.\"",
+  "ja": "「履きかえの靴で、きれいでつるつるのもの。鏡のそばの決まりにそう書いてあるわ。床は金曜に磨くの、床も感謝してる。」"
+ },
+ "city.ask.rassvet.cl.dance.2": {
+  "ru": "— Сегодня вальс: учительница уже хлопает в ладоши, слышно отсюда. Раз-два-три, юноша.",
+  "en": "\"It's waltz day: the teacher is already clapping, you can hear her from here. One-two-three, young man.\"",
+  "ja": "「今日はワルツ。先生がもう手を叩いてるのが、ここまで聞こえるわ。いち、に、さん、ぼうや。」"
+ },
+ "city.ask.rassvet.cl.dance.3": {
+  "ru": "— Среда, фокстрот. Лица серьёзные, как на экзамене, а пальто сдают по двое.",
+  "en": "\"Wednesday, foxtrot. The faces are serious as at an exam, and the coats come in pairs.\"",
+  "ja": "「水曜はフォックストロット。顔は試験みたいにまじめで、コートは二人ぶんまとめて預けられるの。」"
+ },
+ "city.ask.rassvet.cl.umbrella": {
+  "ru": "Чей это чёрный зонт с запиской?",
+  "en": "Whose is the black umbrella with the note?",
+  "ja": "メモつきの黒い傘は誰の？"
+ },
+ "city.ask.rassvet.cl.umbrella.1": {
+  "ru": "— «Зайду, как только пойдёт дождь». Дождя не было, он не пришёл. Теперь я жду дождя больше, чем он.",
+  "en": "\"'I'll drop by as soon as it rains.' It hasn't rained, so he hasn't come. Now I wait for the rain more than he does.\"",
+  "ja": "「『雨が降ったらすぐに取りに来ます』って。雨が降らなかったから、来なかったの。いまじゃ、持ち主よりわたしのほうが雨を待ってるわ。」"
+ },
+ "city.ask.rassvet.cl.umbrella.2": {
+  "ru": "— Дождь! Смотрю на дверь. Нет, не он. Наверное, у него есть второй.",
+  "en": "\"Rain! I look at the door. No, not him. He must have a second one.\"",
+  "ja": "「雨ね！ 戸口を見るけど、違うわ、あの人じゃない。きっと二本目を持ってるのね。」"
+ },
+ "city.rassvet.lost.4": {
+  "ru": "В дождь ведро с зонтиками пустеет: гардеробщица раздаёт их всем, кто без зонта, под честное слово. Честных слов у неё целая тетрадка.",
+  "en": "When it rains the umbrella bucket empties: the cloakroom attendant lends them to anyone without one, on their word of honour. She keeps a whole exercise book of words of honour.",
+  "ja": "雨の日は傘のバケツが空になる。クロークの係が、傘のない人に約束ひとつで貸してしまうのだ。約束はノート一冊ぶんたまっている。"
+ },
+ "city.rassvet.lost.5": {
+  "ru": "По понедельникам находки пересчитывают. Сегодня: три зонта, шарф, очки в футляре и одна варежка. Варежку записали в книгу отдельной строкой.",
+  "en": "On Mondays the finds are counted. Today: three umbrellas, a scarf, glasses in a case and one mitten. The mitten got its own line in the book.",
+  "ja": "月曜日は忘れ物を数える日。今日は傘三本、マフラー、ケース入りの眼鏡、それに手袋が片方。手袋は台帳に一行もらった。"
+ },
+ "city.rassvet.lost.6": {
+  "ru": "Зимой на вешалке над ведром растёт гора шапок. В зале тепло, и после сеанса хозяева уходят, забыв, что пришли в шапке.",
+  "en": "In winter a heap of hats grows on the rack above the bucket. It's warm in the hall, and after the film their owners leave forgetting they came in a hat.",
+  "ja": "冬は、バケツの上のコート掛けに帽子の山ができる。ホールが暖かいので、上映のあと、帽子で来たことを忘れて帰ってしまうのだ。"
+ },
+ "city.rassvet.lost.7": {
+  "ru": "Рядом с ведром появилась коробка с надписью «Ждут хозяев больше месяца». Сверху тот самый чёрный зонт с запиской про дождь.",
+  "en": "A box has joined the bucket, labelled \"Waiting for their owners over a month\". On top lies that black umbrella with the note about rain.",
+  "ja": "バケツの横に「持ち主を一か月以上待っています」と書いた箱が増えた。いちばん上には、雨のメモをつけたあの黒い傘。"
+ },
+ "city.rassvet.shchess.1": {
+  "ru": "В субботу полку разбирают до обеда: перед партиями все листают дебюты, как перед экзаменом. Осталась одна книга, про эндшпиль. До эндшпиля никто не доживает.",
+  "en": "On Saturday the shelf is picked clean by lunchtime: before their games everyone leafs through openings as if before an exam. One book is left, on the endgame. Nobody lasts that long.",
+  "ja": "土曜日は昼までに棚が空になる。対局の前、みんな試験前みたいに序盤の本をめくるのだ。残っているのは終盤の本が一冊だけ。そこまで生き残る人はいない。"
+ },
+ "city.rassvet.shchess.2": {
+  "ru": "Вечером из-за стены слышно, как в зале стучат шахматные часы. Читаю задачу и невольно считаю ходы под этот стук.",
+  "en": "In the evening you can hear the chess clocks ticking in the hall through the wall. I read a problem and can't help counting the moves to that tick.",
+  "ja": "夕方、壁の向こうのホールから対局時計の音が聞こえる。問題を読みながら、つい、その音に合わせて手を数えてしまう。"
+ },
+ "city.rassvet.shchess.3": {
+  "ru": "Из сборника выпала закладка: счастливый автобусный билет. На обороте карандашом записан ход «Кf3». Видно, на удачу.",
+  "en": "A bookmark fell out of the book: a lucky bus ticket. On the back, in pencil, a move: \"Nf3\". For luck, evidently.",
+  "ja": "本からしおりが落ちた。数字のそろった、幸運のバスの切符だ。裏に鉛筆で一手「Nf3」と書いてある。どうやら験かつぎらしい。"
+ },
+ "city.rassvet.radiobench.1": {
+  "ru": "Паяльник лежит на подставке из консервной банки. Канифоль пахнет сосной и немного аптекой. Я спаял два проводка, и они держатся.",
+  "en": "The soldering iron rests on a stand made from a tin can. The rosin smells of pine and a little of the chemist's. I soldered two wires together, and they hold.",
+  "ja": "はんだごては缶詰の缶で作ったスタンドに置いてある。松やにのにおいと、少し薬局のにおい。導線を二本つないだら、ちゃんとくっついた。"
+ },
+ "city.rassvet.radiobench.2": {
+  "ru": "На столе раскрыта схема приёмника, вся в карандашных стрелках. Одна подписана: «Здесь Вадим сжёг транзистор. Не повторять».",
+  "en": "A receiver diagram lies open on the table, covered in pencil arrows. One is labelled: \"Vadim burnt out a transistor here. Don't repeat.\"",
+  "ja": "机には受信機の回路図が広げてあって、鉛筆の矢印だらけだ。ひとつにはこう書いてある。「ここでワジムがトランジスタを焼いた。まねしないこと」"
+ },
+ "city.rassvet.radiobench.3": {
+  "ru": "Вторник и четверг — дни кружка. За столом трое мальчишек и руководитель в нарукавниках. Мне дали подержать плату, и я держал её, как хрусталь.",
+  "en": "Tuesday and Thursday are club days. Three boys at the table and the leader in sleeve protectors. They let me hold the circuit board, and I held it like crystal.",
+  "ja": "火曜と木曜はクラブの日。机には男の子が三人と、腕カバーをした先生。基板を持たせてもらい、僕はガラス細工みたいに持っていた。"
+ },
+ "city.rassvet.radiobench.4": {
+  "ru": "В сырую погоду приёмник на полке трещит громче. В журнале кружка запись: «Помехи. Похоже на прибой».",
+  "en": "In damp weather the receiver on the shelf crackles louder. In the club's log: \"Interference. Sounds like surf.\"",
+  "ja": "湿った日は、棚の受信機の雑音が大きくなる。クラブの記録帳には「雑音。波の音に似ている」とある。"
+ },
+ "city.rassvet.radiobench.5": {
+  "ru": "В ящике стола нашёлся старый значок «Юный радиолюбитель», весь в канифоли. Я протёр его и положил обратно: пусть найдёт следующий.",
+  "en": "In the table drawer I found an old \"Young Radio Amateur\" badge, all over rosin. I wiped it and put it back: let the next one find it.",
+  "ja": "引き出しから、松やにまみれの古いバッジ「少年無線家」が出てきた。拭いて元に戻した。次の誰かが見つけるように。"
+ },
+ "city.rassvet.radiobench.prompt": {
+  "ru": "E — повозиться с паяльником",
+  "en": "E — tinker with the soldering iron",
+  "ja": "E：はんだごてをいじる"
+ }
+}

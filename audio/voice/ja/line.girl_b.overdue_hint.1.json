@@ -1,0 +1,20 @@
+{
+ "key": "line.girl_b.overdue_hint.1",
+ "lang": "ja",
+ "text": "新しいのを買うの？振り子のある駅の自販機に置いてあるけど。でも四十ルーブルもするし、なんだか申し訳ないな。",
+ "speaker": "girl_b",
+ "voice": "Sarah",
+ "voice_id": "EXAVITQu4vr4xnSDxMaL",
+ "voice_design": null,
+ "direction": "[curious, slightly uneasy, conspiratorial]",
+ "model": "fal-ai/elevenlabs/tts/eleven-v3",
+ "request": {
+  "stability": 0.5,
+  "apply_text_normalization": "auto",
+  "text": "[curious, slightly uneasy, conspiratorial] 新しいのを買うの？振り子のある駅の自販機に置いてあるけど。でも四十ルーブルもするし、なんだか申し訳ないな。",
+  "voice": "Sarah",
+  "language_code": "ja"
+ },
+ "fal_request_id": "01a1d66c-6030-7041-b9ca-9ec295ab6720",
+ "hash": "3d9bd98ea8fa"
+}

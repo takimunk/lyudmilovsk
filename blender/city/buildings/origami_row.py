@@ -16,7 +16,9 @@ Material requests: none.
 """
 import math
 
+import interior_kit as kit
 from citykit import box, prism, triangulate, DOOR_H
+import _homekit as hk
 from _cons_util import wall, win
 from _sheet import thick_sheet
 from _surrounds import add_surrounds
@@ -44,6 +46,8 @@ COL = ["CT_PlasterPink", "CT_PlasterYellow", "CT_PlasterBlue", "CT_PlasterGreen"
 SLOPE = (YF - YC) / (W / 2)
 FL = math.hypot(W / 2, YF - YC)      # facet length
 YS = 7.25                            # front edge of the stairwell void
+FAMILY = 2                           # the furnished house (index; flat 0-03, the blue one)
+CEIL0, CEIL1 = 2.75, 5.75            # ceilings (floor slab undersides) of the ground and first floor
 
 
 def roof_z(x):
@@ -147,7 +151,8 @@ def build(B):
     B.footprint = [(X0, 0.3), (-X0, 0.3), (-X0, 12.95), (X0, 12.95)]
     B.height = max(ZR)
     add_surrounds(B, bounds=(X0, -X0, 0.7, 6.0), seed=7, max_lamps=3, hedges=False, bikes=True)
-    B.note("7 flats over 3 storeys, one folded concrete plate roof, rear stairs")
+    _family(B, FAMILY)
+    B.note("7 flats over 3 storeys, one folded concrete plate roof, rear stairs; house %d furnished (a family with three children)" % (FAMILY + 1))
 
 
 def _door_x(i):
@@ -260,3 +265,162 @@ def _house(B, i):
     B.flat(fid, storey=0, beds=3, door=(gx, 4.0, 0.0), entrance="door_%d" % (i + 1))
     B.lamp((gx, 4.6, 2.55), lumens=450, colour="#FFD9A8", kind="lobby", radius=5.5)
     B.lamp((X(1.15), 9.2, 5.3), lumens=380, colour="#FFE2B8", kind="stair", radius=5.5)
+
+
+# ================================================================================================ interiors
+def _family(B, i):
+    """House i as the home of a family of five (parents, two school children, a baby): ground floor hall, living room,
+    dining kitchen; first floor parents' room with the cot and the children's bunks; the loft: father's chess and
+    telescope corner, mother's sewing machine, a playroom under the folded roof."""
+    xe, xr = XE[i], XE[i + 1]
+    xm = xe + W / 2
+    IL = xe + 0.15 if i > 0 else xe + TH
+    IR = xr - 0.15 if i < N - 1 else xr - TH
+    assert i % 2 == 0, "the layout is for a house whose stair runs along the west wall"
+    XS = IL + 2.15                                   # east edge of the stair block / the stairwell void
+    f = lambda fn, x, y, yaw=0.0, z=0.0, **kw: fn(B, x, y, z, yaw, **kw)
+    EW, WW, RW, FW = IR - 0.02, IL + 0.02, 12.28, YF + TH + 0.02          # wall lines for [wall] pieces
+
+    def floor_poly(front_off):
+        pts = [(IL, chev(i, IL) + 0.38 + front_off), (xm, chev(i, xm) + 0.38 + front_off),
+               (IR, chev(i, IR) + 0.38 + front_off)]
+        return pts + [(IR, 12.3), (XS + 0.1, 12.3), (XS + 0.1, YS - 0.05), (IL, YS - 0.05)]
+
+    ground = [(IL, YF + TH), (IR, YF + TH), (IR, 12.3), (XS, 12.3), (XS, 7.3), (IL, 7.3)]
+    FALLS = {0: ground, 1: floor_poly(0.0), 2: floor_poly(0.164)}
+    tests = {k: hk.poly_test(v) for k, v in FALLS.items()}
+    yaw_e, yaw_w, yaw_n, yaw_s = 270.0, 90.0, 180.0, 0.0     # facing -x / +x / +y / -y
+
+    def run(level, fn):
+        H = hk.Home(B, lambda x, y: tests[level](x, y, 0.02))
+        H.n0 = len(getattr(B, "kit_items", []))
+        fn(H)
+        H.check("origami-%d" % level, overlaps=False)
+        return H
+
+    # ------------------------------------------------------------------------------------ ground floor
+    def ground_floor(H):
+        z = 0.0
+        gx = _door_x(i)
+        # hall: a rug at the door, shoes, coats, the bike and the pram along the west wall
+        f(kit.rug, gx, 3.65, 0.0, w=1.2, d=0.8, name="rug_5")
+        f(kit.shoe_rack, WW, 3.45, 90.0, w=0.9)
+        f(kit.hat_stand, -5.85, 3.35, 0.0)
+        hk.bike(B, -7.45, 6.2, 0.0, mat="CT_PlasterYellow")
+        hk.pram(B, -7.55, 4.45, 0.0, mat="CT_PlasterBlue")
+        f(kit.picture, WW, 4.3, 90.0, name="painting_still_life", w=0.5, zc=1.75)
+        # living room: sofa facing the TV on the east wall, armchair under the window, coffee table, rug, shelf
+        f(kit.rug, -4.3, 5.0, 90.0, w=2.2, d=2.6, name="rug_1")
+        sofa = f(kit.sofa, -5.35, 5.2, 90.0, seats=3, mat="CT_PlasterRed")
+        ct = f(kit.coffee_table, -4.25, 5.2, 90.0, w=0.9, d=0.5)
+        f(kit.books_stack, -4.25, 4.95, 0.0, z=0.42, n=3, seed=2)
+        f(kit.cup, -4.3, 5.5, 0.0, z=0.42)
+        tv = f(kit.tv_set, EW - 0.25, 4.7, 270.0, screen="screen_tv_sea")
+        arm = f(kit.armchair, -3.8, 3.5, 180.0, mat="CT_PlasterGreen")
+        f(kit.floor_lamp, -3.12, 3.4, 0.0)
+        sh = f(kit.bookshelf, EW, 6.45, 270.0, w=0.9, h=1.7, levels=4, topic="kids", seed=4)
+        cr = f(kit.crate, -3.6, 6.9, 20.0, w=0.5, d=0.35, h=0.3, fill="CT_PlasterBlue", seed=1)
+        f(kit.poster, FW, -5.9, 180.0, name="kids_2", w=0.5, zc=1.6)
+        f(kit.plant, -4.9, 3.55, 0.0, kind="monstera", pot="CT_PlasterRed", h=0.8, seed=3)
+        # dining kitchen: table with five chairs, kitchen run on the rear wall
+        dt = f(kit.table, -4.3, 9.4, 90.0, w=1.5, d=0.85)
+        f(kit.plates, -4.55, 9.2, 0.0, z=0.75, n=3)
+        f(kit.vase, -4.3, 9.6, 0.0, z=0.75)
+        f(kit.teapot, -4.1, 9.2, 0.0, z=0.75)
+        c1 = f(kit.chair, -5.05, 8.95, 90.0, kind="wood", mat="CT_PlasterBlue")
+        c2 = f(kit.chair, -5.05, 9.85, 90.0, kind="wood", mat="CT_PlasterYellow")
+        c3 = f(kit.chair, -3.55, 8.95, 270.0, kind="wood", mat="CT_PlasterGreen")
+        c4 = f(kit.chair, -3.55, 9.85, 270.0, kind="wood", mat="CT_PlasterRed")
+        c5 = f(kit.chair, -4.3, 10.55, 0.0, kind="wood", mat="CT_PlasterPink")
+        ku = f(kit.kitchen_unit, -4.3, RW, 0.0, modules="fridge,cupboard,sink,stove", wall_cupboards=False)
+        f(kit.samovar, -4.05, 12.0, 0.0, z=0.9)
+        sb = f(kit.table, EW - 0.2, 11.2, 270.0, w=0.9, d=0.4, h=0.8)
+        f(kit.radio, EW - 0.2, 11.2, 270.0, z=0.8)
+        f(kit.wall_clock, EW, 8.2, 270.0, zc=2.3, face="clock_2")
+        f(kit.picture, EW, 9.4, 270.0, name="painting_sea_calm", w=0.6, zc=1.7)
+        f(kit.notice_board, EW, 10.4, 270.0, w=0.7, zc=1.55, seed=31)
+        kit.pendant(B, -4.3, 9.4, CEIL0, drop=0.5, light=True, lumens=500, colour="#FFE2B8")
+        kit.pendant(B, -4.4, 5.0, CEIL0, drop=0.4, light=True, lumens=450, colour="#FFE2B8")
+        B.thing("home_sofa", "seat", sofa["seats"][1][:3], sofa["seats"][1][3], height=round(sofa["seats"][1][2], 2))
+        H.seat("home_armchair", arm)
+        H.seat("home_dining_chair", c2)
+        H.seat("home_dining_chair_head", c5)
+        B.thing("home_tv", "screen", tv["pos"][:2] + (1.0,), tv["yaw"], what="tv")
+        B.thing("home_kids_shelf", "shelf", sh["pos"][:2] + (1.2,), sh["yaw"], topic="kids")
+        B.thing("home_board_kitchen", "board", (EW, 10.4, 1.55), 270.0, topic="club")
+        B.thing("home_radio", "machine", (EW - 0.2, 11.2, 0.95), 270.0, what="jukebox")
+        B.thing("home_picture_still", "board", (WW, 4.3, 1.75), 90.0, topic="painting")
+        B.thing("home_picture_sea", "board", (EW, 8.2, 1.7), 270.0, topic="painting")
+        B.thing("home_paper", "take", (-4.25, 5.0, 0.45), 0.0, item="daily_paper")
+    run(0, ground_floor)
+
+    # ------------------------------------------------------------------------------------ first floor
+    def first_floor(H):
+        z = 3.0
+        zz = lambda a: a + z
+        # parents' room (front): double bed with the head to the east wall, bedside tables, wardrobe, cot, rug
+        f(kit.rug, -4.6, 5.3, 90.0, z=z, w=2.2, d=2.8, name="rug_4")
+        bed = f(kit.bed, EW - 1.1, 5.3, 270.0, z=z, size="double", blanket="CT_PlasterRed")
+        b1 = f(kit.bedside_table, EW - 0.25, 4.15, 270.0, z=z, lamp=True)
+        b2 = f(kit.bedside_table, EW - 0.25, 6.45, 270.0, z=z, lamp=True)
+        wr = f(kit.wardrobe, WW, 4.5, 90.0, z=z, w=1.1)
+        cot = f(hk.cot, -6.5, 3.55, 0.0, z=z)
+        f(kit.floor_lamp, -3.3, 3.65, 0.0, z=z)
+        # children's room (back east): bunk beds, school desk by the window, toys, shelf, rug
+        f(kit.rug, -4.4, 10.1, 0.0, z=z, w=1.6, d=2.0, name="rug_7")
+        bk = f(kit.bunk_bed, EW - 0.58, 10.9, 0.0, z=z, blanket="CT_PlasterBlue")
+        sd = f(kit.school_desk, -4.9, RW - 0.45, 180.0, z=z)
+        ch = f(kit.chair, -5.17, RW - 1.15, 180.0, z=z, kind="school")
+        ch2 = f(kit.chair, -4.63, RW - 1.15, 180.0, z=z, kind="school")
+        sh = f(kit.bookshelf, EW, 8.5, 270.0, z=z, w=0.9, h=1.6, levels=4, topic="kids", seed=8)
+        f(kit.bean_bag, -5.1, 8.5, 0.0, z=z, mat="CT_PlasterGreen")
+        f(kit.poster, EW, 9.6, 270.0, z=z, name="kids_0", w=0.55, zc=1.6)
+        kit.pendant(B, -4.2, 5.3, CEIL1, drop=0.4, light=True, lumens=500, colour="#FFE2B8")
+        kit.pendant(B, -4.3, 10.0, CEIL1, drop=0.4, light=True, lumens=500, colour="#FFE2B8")
+        B.thing("home_parents_bed", "bed", bed["pos"][:2] + (z + 0.5,), bed["yaw"], height=0.5, rest="private")
+        B.thing("home_bunk_bed", "bed", bk["pos"][:2] + (z + 0.5,), bk["yaw"], height=0.46, rest="private")
+        B.thing("home_cot", "bed", cot["pos"][:2] + (z + 0.45,), cot["yaw"], height=0.45, rest="private")
+        B.thing("home_school_desk", "craft", sd["pos"][:2] + (z + 0.8,), (sd["yaw"] + 180.0) % 360.0, what="school_desk")
+        for j, c_ in enumerate((ch, ch2)):
+            B.thing("home_school_chair_%d" % j, "seat", c_["seats"][0][:2] + (z + 0.45,), c_["seats"][0][3], height=0.45)
+        B.thing("home_children_shelf", "shelf", sh["pos"][:2] + (z + 1.2,), sh["yaw"], topic="kids")
+        B.thing("home_wardrobe_poster", "board", (EW, 9.6, z + 1.6), 270.0, topic="wallpaper")
+    run(1, first_floor)
+
+    # ------------------------------------------------------------------------------------ the loft
+    def loft(H):
+        z = 6.0
+        # front under the glazed gable: telescope; father's chess table; mother's sewing table; playroom
+        tel = f(kit.telescope, xm, 3.6, 180.0, z=z)
+        f(kit.rug, -4.4, 5.6, 0.0, z=z, w=2.4, d=2.4, name="rug_round_1", round=True)
+        cht = f(kit.chess_table, -4.4, 5.6, 0.0, z=z)
+        c1 = f(kit.chair, -4.4, 6.25, 0.0, z=z, kind="wood", mat="CT_PlasterBlue")
+        c2 = f(kit.chair, -4.4, 4.95, 180.0, z=z, kind="wood", mat="CT_PlasterRed")
+        sw = f(kit.sewing_table, EW - 0.5, 9.0, 270.0, z=z)
+        sh = f(kit.bookshelf, EW, 7.3, 270.0, z=z, w=1.0, h=1.9, levels=5, topic="science", seed=12)
+        f(kit.bean_bag, -5.1, 8.3, 0.0, z=z, mat="CT_PlasterRed")
+        f(kit.bean_bag, -4.0, 8.9, 0.0, z=z, mat="CT_PlasterBlue")
+        mt = f(kit.mats, -4.5, 10.6, 0.0, z=z, w=1.5, d=1.3, n=1, mat="CT_PlasterGreen")
+        f(kit.crate, -3.6, 11.5, 15.0, z=z, w=0.55, d=0.38, h=0.3, fill="CT_PlasterYellow", seed=3)
+        f(kit.crate, -5.0, 11.7, 80.0, z=z, w=0.5, d=0.35, h=0.3, fill="CT_PlasterRed", seed=4)
+        f(kit.wall_map, -4.3, RW, 0.0, z=z, w=1.4, h=1.0, zc=2.2, name="map_world")   # clear of the rear window
+        f(kit.poster, EW, 10.4, 270.0, z=z, name="poster_birds_1", w=0.6, zc=1.7)
+        f(kit.floor_lamp, -3.2, 4.0, 0.0, z=z, shade="CT_PlasterYellow")
+        kit.pendant(B, -4.4, 5.6, roof_z(-4.4) - 0.3, drop=1.6, light=True, lumens=900, colour="#FFE2B8")
+        kit.pendant(B, -4.4, 10.0, roof_z(-4.4) - 0.3, drop=1.6, light=True, lumens=700, colour="#FFE2B8")
+        H.seat("loft_chess_chair", c1)
+        B.thing("loft_chess_table", "play", cht["pos"][:2] + (z + 0.78,), cht["yaw"], what="chess")
+        B.thing("loft_telescope", "machine", tel["pos"][:2] + (z + 1.3,), tel["yaw"], what="telescope")
+        B.thing("loft_sewing_machine", "craft", sw["pos"][:2] + (z + 0.85,), sw["yaw"], what="sewing_machine")
+        B.thing("loft_shelf_science", "shelf", sh["pos"][:2] + (z + 1.3,), sh["yaw"], topic="science")
+        B.thing("loft_map", "board", (-4.3, RW, z + 1.8), 0.0, topic="view")
+        B.thing("loft_bird_poster", "board", (EW, 10.4, z + 1.7), 270.0, topic="view")
+        B.thing("loft_mats", "bed", mt["pos"][:2] + (z + 0.1,), 0.0, height=0.1, rest="nap")
+        B.thing("loft_beanbag", "seat", (-5.1, 8.3, z + 0.4), 0.0, height=0.4)
+    run(2, loft)
+    for w_ in kit.check(B):
+        print("KIT origami", w_)
+
+
+from _wallhang import hung  # noqa: E402  (QA r9: nothing hangs over the glass)
+build = hung(build)

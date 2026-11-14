@@ -22,6 +22,7 @@
 #include "LyudInventory.h"
 #include "LyudText.h"
 #include "Materials/MaterialInstanceDynamic.h"
+#include "NpcDialogue.h"
 
 namespace
 {
@@ -509,7 +510,7 @@ void AVendingMachine::Tick(float DeltaSeconds)
 		}
 		UI->SetPrompt(this, PromptCache);
 		bPromptShown = true;
-		if (PC->WasInputKeyJustPressed(EKeys::E) && Inv && Inv->Rubles >= PriceOf(Flavor))
+		if (ANpcTalkDirector::UsePressed(PC) && Inv && Inv->Rubles >= PriceOf(Flavor))
 		{
 			Buy();
 		}

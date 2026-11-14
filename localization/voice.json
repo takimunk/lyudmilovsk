@@ -305,6 +305,39 @@
   "line.hero.sun_ow.3": {
    "note": "the hero blinded by the sun (ULyudSunGlare, docs/sun.md): a short involuntary 'ow' as he squints and blinks; never subtitled; (gasps) is acted out by MiniMax speech-2.6-hd"
   },
+  "line.hero.topi.see.1": {
+   "direction": "quiet awe with unease under it, to himself, slow; he has just walked in among the dunes of Topi and the silence is total"
+  },
+  "line.hero.topi.glow.1": {
+   "direction": "hushed, curious, a little breathless from the climb; at night he sees a glow beyond the dunes"
+  },
+  "line.hero.topi.river.1": {
+   "direction": "a whisper of wonder, the first word almost lost; he sees the river Ural, a stream of light"
+  },
+  "line.hero.topi.towels.1": {
+   "direction": "low, puzzled, then a small relieved half-smile; towels lie on the river's bank"
+  },
+  "line.hero.topi.turn.1": {
+   "direction": "strained, short of breath, refusing, low; the dunes are too much for his mind (ULyudTopiMind turns him back)"
+  },
+  "line.hero.topi.turn.2": {
+   "direction": "dazed, wincing, a hand to his head, then deciding quietly to go back"
+  },
+  "line.hero.topi.turn.3": {
+   "direction": "unnerved whisper, uncanny dread, as if something vast is watching him",
+   "voice_setting": {
+    "speed": 0.88
+   }
+  },
+  "line.hero.topi.turn.4": {
+   "direction": "tense, clipped, backing away, trying to stay calm"
+  },
+  "line.hero.topi.wake.1": {
+   "direction": "just woken, drowsy and puzzled, quiet; then a slow wondering note as he notices sand on his hands",
+   "voice_setting": {
+    "speed": 0.9
+   }
+  },
   "line.ranger.first.1": {
    "direction": "",
    "voice_setting": {

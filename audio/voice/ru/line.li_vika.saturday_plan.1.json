@@ -1,0 +1,20 @@
+{
+ "key": "line.li_vika.saturday_plan.1",
+ "lang": "ru",
+ "text": "Я вписала уху в план на субботу. В графе «цель эксперимента» написала: пообедать.",
+ "speaker": "li_vika",
+ "voice": "Laura",
+ "voice_id": "FGY2WhTYpPnrIDTdsKH5",
+ "voice_design": null,
+ "direction": "[playful, quick, a lab assistant joking about her work]",
+ "model": "fal-ai/elevenlabs/tts/eleven-v3",
+ "request": {
+  "stability": 0.5,
+  "apply_text_normalization": "auto",
+  "text": "[playful, quick, a lab assistant joking about her work] Я вписала уху в план на субботу. В графе «цель эксперимента» написала: пообедать.",
+  "voice": "Laura",
+  "language_code": "ru"
+ },
+ "fal_request_id": "01a1d6e8-1470-7961-8255-6a07e0145a7c",
+ "hash": "831db9bf20f9"
+}

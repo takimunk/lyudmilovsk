@@ -1,0 +1,20 @@
+{
+ "key": "line.li_vika.hungry_together.1",
+ "lang": "ru",
+ "text": "Ты тоже без обеда? Садись, поголодаем вместе, пока эксперт доедает уху.",
+ "speaker": "li_vika",
+ "voice": "Laura",
+ "voice_id": "FGY2WhTYpPnrIDTdsKH5",
+ "voice_design": null,
+ "direction": "[playful, quick, a lab assistant joking about her work]",
+ "model": "fal-ai/elevenlabs/tts/eleven-v3",
+ "request": {
+  "stability": 0.5,
+  "apply_text_normalization": "auto",
+  "text": "[playful, quick, a lab assistant joking about her work] Ты тоже без обеда? Садись, поголодаем вместе, пока эксперт доедает уху.",
+  "voice": "Laura",
+  "language_code": "ru"
+ },
+ "fal_request_id": "01a1d7b7-1a66-7241-923c-42c89a329857",
+ "hash": "a94592e101f5"
+}

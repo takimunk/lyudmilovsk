@@ -1,0 +1,20 @@
+{
+ "key": "line.girl_a.again5.1",
+ "lang": "ru",
+ "text": "Соня сказала, что ей нравится ждать. Не знаю, хвалить её за это или беспокоиться.",
+ "speaker": "girl_a",
+ "voice": "Matilda",
+ "voice_id": "XrExE9yKIg1WjnnlVkGX",
+ "voice_design": null,
+ "direction": "[whispering, concentrated]",
+ "model": "fal-ai/elevenlabs/tts/eleven-v3",
+ "request": {
+  "stability": 0.5,
+  "apply_text_normalization": "auto",
+  "text": "[whispering, concentrated] Соня сказала, что ей нравится ждать. Не знаю, хвалить её за это или беспокоиться.",
+  "voice": "Matilda",
+  "language_code": "ru"
+ },
+ "fal_request_id": "01a1d781-432c-7501-83be-bd06b140090d",
+ "hash": "66b55ae80e4e"
+}

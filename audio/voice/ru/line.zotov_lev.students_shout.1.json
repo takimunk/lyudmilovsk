@@ -1,0 +1,20 @@
+{
+ "key": "line.zotov_lev.students_shout.1",
+ "lang": "ru",
+ "text": "Кричите сверху. Студенты тоже так делают, и тоже без толку.",
+ "speaker": "zotov_lev",
+ "voice": "George",
+ "voice_id": "JBFqnCBsd6RMkjVDRZzb",
+ "voice_design": null,
+ "direction": "[dry, thoughtful, unhurried, a physicist's quiet irony]",
+ "model": "fal-ai/elevenlabs/tts/eleven-v3",
+ "request": {
+  "stability": 0.5,
+  "apply_text_normalization": "auto",
+  "text": "[dry, thoughtful, unhurried, a physicist's quiet irony] Кричите сверху. Студенты тоже так делают, и тоже без толку.",
+  "voice": "George",
+  "language_code": "ru"
+ },
+ "fal_request_id": "01a1d6eb-76cc-7621-bbcb-94b5b14a3494",
+ "hash": "912d96eb3041"
+}

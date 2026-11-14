@@ -1,0 +1,20 @@
+{
+ "key": "line.sorokin_oleg.autumn_brief.3",
+ "lang": "ja",
+ "text": "秋の調査という名前だ。実際には、歩いてくれる者がいるときにやる。",
+ "speaker": "sorokin_oleg",
+ "voice": "River",
+ "voice_id": "SAz9YHcvj6GT2YYXdXww",
+ "voice_design": null,
+ "direction": "[a retired scholar, calm, dry humour, slower, gentle]",
+ "model": "fal-ai/elevenlabs/tts/eleven-v3",
+ "request": {
+  "stability": 0.5,
+  "apply_text_normalization": "auto",
+  "text": "[a retired scholar, calm, dry humour, slower, gentle] 秋の調査という名前だ。実際には、歩いてくれる者がいるときにやる。",
+  "voice": "River",
+  "language_code": "ja"
+ },
+ "fal_request_id": "01a1d675-1bf8-7f41-b9ac-fe1558528ba1",
+ "hash": "6459f278699e"
+}

@@ -1,0 +1,20 @@
+{
+ "key": "line.kimura_dasha.again4.1",
+ "lang": "ja",
+ "text": "ヴィーカがまた冷蔵庫にメモを貼ってた。「パンは買う、ビスケットは買わない」。後半はいつも読み間違えるんだよね。",
+ "speaker": "kimura_dasha",
+ "voice": "Charlotte",
+ "voice_id": "XB0fDUnXU5powFXDhCwa",
+ "voice_design": null,
+ "direction": "[a tired physics student, wry, self-ironic]",
+ "model": "fal-ai/elevenlabs/tts/eleven-v3",
+ "request": {
+  "stability": 0.5,
+  "apply_text_normalization": "auto",
+  "text": "[a tired physics student, wry, self-ironic] ヴィーカがまた冷蔵庫にメモを貼ってた。「パンは買う、ビスケットは買わない」。後半はいつも読み間違えるんだよね。",
+  "voice": "Charlotte",
+  "language_code": "ja"
+ },
+ "fal_request_id": "01a1d743-d4c1-76a1-81af-0c286861d614",
+ "hash": "f107d925f4f1"
+}

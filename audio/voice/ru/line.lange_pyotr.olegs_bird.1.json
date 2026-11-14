@@ -1,0 +1,20 @@
+{
+ "key": "line.lange_pyotr.olegs_bird.1",
+ "lang": "ru",
+ "text": "В море такого не видал. Ты, видно, Олегов. Лети в Академгородок, он ждёт.",
+ "speaker": "lange_pyotr",
+ "voice": "Brian",
+ "voice_id": "nPczCjzI2devNBz1zQrb",
+ "voice_design": null,
+ "direction": "[gruff, unhurried, a weathered fisherman of few words]",
+ "model": "fal-ai/elevenlabs/tts/eleven-v3",
+ "request": {
+  "stability": 0.5,
+  "apply_text_normalization": "auto",
+  "text": "[gruff, unhurried, a weathered fisherman of few words] В море такого не видал. Ты, видно, Олегов. Лети в Академгородок, он ждёт.",
+  "voice": "Brian",
+  "language_code": "ru"
+ },
+ "fal_request_id": "01a1d75e-9cf8-7420-bcb4-e44cf282576a",
+ "hash": "de0a58092f2c"
+}

@@ -21,6 +21,7 @@ import math
 from citykit import box, prism, ring, DOOR_H  # noqa: F401
 import geom
 from furn_int2 import Furn
+import interior_kit as kit
 
 INFO = {
     "name_ru": "Школа", "name_en": "School",
@@ -58,7 +59,7 @@ def _spandrels(B, F, L, step, mat):
     B.m.extend(F.apply(wm))
 
 
-def _ribbon(B, p0, p1, mat, ground=True, skip_ground=(), extra=(), step=GRID, kind="public", acc=None):
+def _ribbon(B, p0, p1, mat, ground=True, skip_ground=(), extra=(), step=GRID, kind="public", acc=None, doors=()):
     """Facade p0->p1 with ground and upper ribbon bays; returns F."""
     L = math.hypot(p1[0] - p0[0], p1[1] - p0[1])
     n = max(1, round(L / step))
@@ -70,8 +71,10 @@ def _ribbon(B, p0, p1, mat, ground=True, skip_ground=(), extra=(), step=GRID, ki
             holes.append((u0, u1, 0.9, 3.0))
         holes.append((u0, u1, 4.5, 6.6))
     holes += list(extra)
+    wins = list(holes)
+    holes = holes + list(doors)
     F = B.facade(p0, p1, 0.0, H2, mat, holes=holes, depth=0.3, reveal_mat="CT_ConcreteWhite", back=False)
-    for h in holes:
+    for h in wins:
         B.facade_window(F, h[0], h[1], h[2], h[3], kind=kind, cols=2, inset=0.12)
     if acc:
         _spandrels(B, F, L, step, acc)
@@ -141,11 +144,11 @@ def _furnish(B, IY0, IY1):
         for r in range(3):
             y = 7.85 + 0.45 * k + 0.1
             box(d, "CT_Copper" if (k + r) % 2 else "CT_Steel", 6.95 - 0.04, 6.95 + 0.04, y - 0.04, y + 0.04, 0.45 + r * 0.45, 0.45 + r * 0.45 + 0.14)
-    f.panel(7.35, 10.9, 1.65, 1.4, 1.0, 270.0, mat="CT_PlasterGreen", frame="CT_Wood")        # notice boards
     f.panel(7.35, 7.0, 1.7, 0.9, 1.2, 270.0, mat="CT_PlasterYellow", frame="CT_Wood")
     for i, (cx, mat) in enumerate(((-5.5, "CT_PlasterBlue"), (5.5, "CT_PlasterRed"))):
         f.panel(cx, 15.7, 1.9, 1.7, 1.1, 0.0, mat=mat, frame="CT_Frame")                # murals above the back benches
         f.panel(cx + (1.3 if cx > 0 else -1.3) * 0.0, 15.7, 2.8, 0.7, 0.45, 0.0, mat="CT_PlasterYellow", frame=None)
+    kit.rug(B, 0.0, 11.0, 0.02, 0.0, w=2.6, d=6.0, seed=3)                          # QA: the hall floor was bare
     f.plant(-4.4, 7.0, h=1.5)
     f.plant(4.4, 7.0, h=1.5)
     f.plant(-6.7, 14.7, h=1.1, pot="CT_TileWhite")
@@ -164,36 +167,810 @@ def _furnish(B, IY0, IY1):
         for y in (8.8, 13.2):
             B.lamp((x, y, 3.1), lumens=800, colour=C, kind="public", radius=7)
     # ------------------------------------------------------------ classroom  x -18.6..-7.65, y 6.3..14.3
-    for i, y in enumerate((7.9, 10.4)):
-        f.shelf(-18.4, y, w=2.0, d=0.4, h=1.9, yaw=90.0, rows=4, seed=i * 3)                  # bookshelves on the west wall
-    f.panel(-18.6, 12.7, 1.7, 1.7, 1.15, 90.0, mat="CT_PlasterGreen", frame="CT_Wood")        # wall map
-    f.panel(-18.6, 12.7, 1.7, 1.2, 0.7, 90.0, mat="CT_TileWhite", frame=None, off=0.02)
-    for i, x in enumerate((-16.2, -14.7, -13.2, -11.7)):                                        # portraits over the board
-        f.panel(x, IY1, 2.75, 0.42, 0.55, 0.0, mat=("CT_Wood", "CT_Frame", "CT_PlasterGrey", "CT_Wood")[i], frame="CT_Steel")
-    _globe(f, -16.6, 12.8, 0.76)
-    box(d, "CT_PlasterGrey", -16.0, -11.0, IY1 - 0.1, IY1, 0.92, 0.96)                          # chalk ledge
-    f.plant(-8.1, 6.9, h=1.2)
     f.border(-18.6, -7.65, 6.3, 14.3, w=0.3, mat="CT_ConcreteDark")
     for x in (-15.5, -11.5):
         for y in (8.4, 12.0):
             B.lamp((x, y, 3.1), lumens=900, colour=C, kind="public", radius=7)
     # ------------------------------------------------------------ staff room  x 7.65..14.85, y 6.3..14.3
-    f.sofa(14.45, 7.9, yaw=270.0, w=2.0, mat="CT_PlasterBlue")
-    f.round_table(14.0, 6.9, r=0.35, h=0.5, top="CT_Wood")
-    f.counter(13.7, 13.5, 2.2, d=0.5, h=0.9, yaw=0.0)                                           # kitchenette
-    _kettle(B, 13.1, 13.5, 0.9)
-    f.cup(13.5, 13.4, 0.9)
-    f.cup(13.65, 13.55, 0.9, mat="CT_PlasterRed")
-    f.cup(11.2, 10.5, 0.77, mat="CT_PlasterYellow")
-    f.cup(10.8, 10.3, 0.77)
-    f.cup(11.6, 10.7, 0.77, mat="CT_PlasterBlue")
-    f.panel(7.65, 8.0, 1.7, 1.4, 1.0, 90.0, mat="CT_PlasterGreen", frame="CT_Wood")             # timetable on the partition
-    f.plant(8.3, 7.0, h=1.4)
-    f.plant(14.35, 12.2, h=1.0, pot="CT_TileWhite")
-    f.rug(9.6, 12.8, 9.2, 11.8, mat="CT_PlasterRed")
     f.border(7.65, 14.85, 6.3, 14.3, w=0.3, mat="CT_ConcreteDark")
     for x, y in ((9.6, 8.6), (13.0, 8.6), (11.2, 12.2)):
         B.lamp((x, y, 3.1), lumens=800, colour=C, kind="public", radius=7)
+
+
+# ---------------------------------------------------------------- hollow rooms in the wings and the gym
+def _skin_x(B, x, ya, yb, holes, up, mat="CT_Interior", z1=H1):
+    """Interior skin on the wall plane x between y = ya..yb; the room is on +x when up (heading +y), else on -x.
+    holes: [(ylo, yhi, h0, h1)] in building y."""
+    hs = []
+    for lo, hi, h0, h1 in holes:
+        lo, hi = max(lo, ya), min(hi, yb)
+        if hi - lo < 0.25:
+            continue
+        hs.append((lo - ya, hi - ya, h0, h1) if up else (yb - hi, yb - lo, h0, h1))
+    p0, p1 = ((x, ya), (x, yb)) if up else ((x, yb), (x, ya))
+    B.facade(p0, p1, 0.0, z1, mat, holes=hs, depth=0.02, reveal_mat=mat, back=False)
+
+
+def _skin_y(B, y, xa, xb, holes, right, mat="CT_Brick", z1=H1):
+    """Interior skin on the wall plane y between x = xa..xb; the room is on +y when `right` is False (heading -x)."""
+    hs = []
+    for lo, hi, h0, h1 in holes:
+        lo, hi = max(lo, xa), min(hi, xb)
+        if hi - lo < 0.25:
+            continue
+        hs.append((xb - hi, xb - lo, h0, h1) if not right else (lo - xa, hi - xa, h0, h1))
+    p0, p1 = ((xb, y), (xa, y)) if not right else ((xa, y), (xb, y))
+    B.facade(p0, p1, 0.0, z1, mat, holes=hs, depth=0.02, reveal_mat=mat, back=False)
+
+
+def _ribbon_bays_y(y_from, y_to, step, ground_skip=()):
+    """Ground window bays [(ylo, yhi)] of a ribbon facade running between two y values (any direction)."""
+    L = abs(y_to - y_from)
+    n = max(1, round(L / step))
+    w = L / n
+    s = 1 if y_to > y_from else -1
+    out = []
+    for i in range(n):
+        a, b = y_from + s * (i * w + 0.3), y_from + s * ((i + 1) * w - 0.3)
+        out.append((min(a, b), max(a, b)))
+    return out
+
+
+def _wing_rooms(B, sgn, doors):
+    """Hollow the ground floor of a side wing between y 15.7 and 40: skins, floor, ceiling. doors: [door centre y].
+    Returns (x0, x1) of the interior."""
+    m = B.m
+    x0, x1 = (-29.7, -20.3) if sgn < 0 else (20.3, 29.7)
+    Y0, Y1 = 15.7, 40.0
+    box(m, "CT_Plaster", x0, x1, Y0, Y1, H1 + SLAB, H2)
+    box(m, "CT_Interior", x0, x1, Y0, Y1, H1, H1 + SLAB, faces="all")
+    box(m, "CT_Floor", x0, x1, Y0, Y1, 0.0, 0.02, faces="Z")
+    box(m, "CT_Interior", x0, x1, Y0, Y0 + 0.06, 0.0, H1)
+    box(m, "CT_Interior", x0, x1, Y1 - 0.06, Y1, 0.0, H1)
+    win = [(lo, hi, 0.9, 3.0) for lo, hi in _ribbon_bays_y(50.0 if sgn < 0 else 6.0, 6.0 if sgn < 0 else 50.0, 3.7)]
+    cy = [(lo, hi, 0.9, 3.0) for lo, hi in _ribbon_bays_y(Y0 + 0.3 if False else 16.0, 40.0, GRID)]
+    cy = [h for h in cy if not any(abs((h[0] + h[1]) / 2 - d) < 2.0 for d in doors)]
+    cy += [(d - 1.0, d + 1.0, 0.0, 2.4) for d in doors]
+    if sgn < 0:
+        _skin_x(B, x0, Y0, Y1, win, True)          # outer wall, room on +x
+        _skin_x(B, x1, Y0, Y1, cy, False)          # courtyard wall, room on -x
+    else:
+        _skin_x(B, x1, Y0, Y1, win, False)
+        _skin_x(B, x0, Y0, Y1, cy, True)
+    return x0, x1
+
+
+def _th(B, tid, kind, r, yaw, h=None, **props):
+    """Declare a thing at the middle of a kit result r (or a point)."""
+    pos = r["pos"] if isinstance(r, dict) else r
+    if h is not None:
+        pos = (pos[0], pos[1], h)
+    B.thing(tid, kind, pos, yaw, **props)
+
+
+def _seat_thing(B, tid, r, i=0):
+    s = r["seats"][i]
+    B.thing(tid, "seat", (s[0], s[1], s[2]), s[3], height=round(s[2], 2))
+
+
+def _classroom(B, IY1):
+    K = kit
+    for r, y in enumerate((7.6, 8.9, 10.2, 11.5)):
+        for cc, cx in enumerate((-16.0, -13.1, -10.2)):
+            K.school_desk(B, cx, y, 0.0, 180.0, seed=r * 3 + cc)
+            for j, s in enumerate((-0.28, 0.28)):
+                K.chair(B, cx + s, y - 0.55, 0.0, 180.0, kind="school")
+                B.spot("seat_%d_%d" % (r, 2 * cc + j), "seat", (cx + s, y - 0.55, 0.0), 180.0)
+            if cc != 1:
+                B.thing("seat_%d_%d" % (r, 2 * cc), "craft", (cx, y, 0.76), 180.0, what="school_desk")
+    K.blackboard(B, -13.3, IY1, 0.0, 0.0, w=3.6, h=1.15, zb=0.9)
+    td = K.teacher_desk(B, -13.3, 12.9, 0.0, 0.0)
+    K.globe(B, -12.8, 12.9, td["top"], 0.0)
+    B.spot("teacher", "work", (-13.3, 13.7, 0.0), 0.0)
+    B.thing("teacher", "craft", (-13.3, IY1 - 0.1, 1.5), 0.0, what="blackboard")
+    for x in (-15.6, -11.0):
+        K.picture(B, x, IY1, 0.0, 0.0, name="painting_portrait", w=0.4, zc=2.65) if x < -13 else K.picture(B, x, IY1, 0.0, 0.0, name="painting_abstract", w=0.5, zc=2.65)
+    K.wall_map(B, -18.6, 11.4, 0.0, 90.0, w=1.2, h=0.9, zc=1.65, name="map_coast")
+    K.wall_map(B, -18.6, 12.8, 0.0, 90.0, w=1.0, h=0.5, zc=1.65, name="map_world")
+    for i in range(2):
+        K.bookshelf(B, -18.6, 8.2 + i * 1.0, 0.0, 90.0, w=1.0, h=1.9, levels=4, topic="encyclopaedia", seed=70 + i)
+    B.thing("class_shelf", "shelf", (-18.4, 8.7, 1.2), 90.0, topic="science")
+    K.wall_clock(B, -7.65, 10.0, 0.0, 270.0, zc=2.6, r=0.2)
+    K.poster(B, -7.65, 8.4, 0.0, 270.0, name="poster_health", w=0.7, zc=1.6)
+    for x in (-16.9, -13.1, -9.4):
+        K.radiator(B, x, 6.32, 0.0, 180.0, w=1.2)
+    K.plant(B, -18.0, 13.6, 0.0, 0.0, kind="ficus", pot="CT_PlasterGreen", h=1.1)
+    K.plant(B, -8.3, 6.9, 0.0, 0.0, kind="fern", pot="CT_PlasterYellow", h=0.8)
+
+
+def _staff_room(B):
+    K = kit
+    K.rug(B, 11.2, 10.4, 0.0, 0.0, w=3.4, d=2.6, name="rug_3")
+    K.table(B, 11.2, 10.4, 0.0, 0.0, w=2.8, d=1.1)
+    chs = K.around_table(B, 11.2, 10.4, 2.8, 1.1, 0.0, per_side=(3, 3, 0, 0), kind="wood", mat="CT_PlasterBlue")
+    for j, (px, cmat) in enumerate(((10.4, "CT_PlasterYellow"), (11.3, "CT_PlasterBlue"), (12.0, "CT_PlasterRed"))):
+        K.cup(B, px, 10.3 + 0.12 * (j % 2), 0.75, 0.0, mat=cmat)
+    K.teapot(B, 11.8, 10.55, 0.75, 0.0)
+    K.newspaper(B, 10.5, 10.6, 0.75, 15.0, seed=3)
+    B.spot("staff_table", "table", (11.2, 9.15, 0.0), 0.0)
+    _seat_thing(B, "staff_seat_1", chs[0])
+    ku = K.kitchen_unit(B, 12.6, 13.95, 0.0, 0.0, modules="fridge,cupboard,sink,stove,cupboard")
+    K.samovar(B, 13.9, 14.0, 0.9, 0.0)
+    K.cup(B, 12.0, 13.9, 0.9, 0.0)
+    K.sofa(B, 14.4, 7.9, 0.0, 270.0, seats=2, mat="CT_PlasterBlue", solid=False)
+    K.coffee_table(B, 13.3, 7.9, 0.0, 90.0, w=0.9, d=0.5)
+    K.floor_lamp(B, 14.4, 6.8, 0.0, 0.0)
+    B.thing("staff_sofa", "seat", (14.45, 7.9, 0.45), 270.0, height=0.45)
+    for i in range(2):
+        K.bookshelf(B, 7.65, 8.4 + i * 1.0, 0.0, 90.0, w=1.0, h=1.9, levels=4, topic="library", seed=80 + i)
+    B.thing("staff_shelf", "shelf", (7.85, 8.9, 1.2), 90.0, topic="local")
+    K.notice_board(B, 7.65, 10.6, 0.0, 90.0, w=0.8, zc=1.6)
+    B.thing("staff_board", "board", (7.7, 10.6, 1.6), 90.0, topic="timetable")
+    K.filing_cabinet(B, 14.8, 12.3, 0.0, 270.0, drawers=4)
+    K.plant(B, 8.4, 6.9, 0.0, 0.0, kind="ficus", pot="CT_PlasterRed", h=1.2)
+    K.wall_clock(B, 14.85, 10.4, 0.0, 270.0, zc=2.5, r=0.18)
+
+
+def _hall_things(B):
+    K = kit
+    K.poster(B, 7.35, 10.9, 0.0, 270.0, name="news_0", w=1.5, zc=1.55)
+    B.thing("wall_newspaper", "board", (7.3, 10.9, 1.55), 270.0, topic="wallpaper")
+    B.thing("hall_timetable", "board", (7.3, 7.0, 1.7), 270.0, topic="timetable")
+    B.thing("trophy_case", "board", (6.9, 8.4, 1.3), 270.0, topic="exhibit")
+    B.thing("hall_mural_a", "board", (-5.5, 15.65, 1.9), 180.0, topic="painting")
+    B.thing("hall_mural_b", "board", (5.5, 15.65, 1.9), 180.0, topic="painting")
+    B.thing("hall_wardrobe_bench", "seat", (-6.85, 9.15, 0.45), 90.0, height=0.45)
+    B.thing("hall_back_bench_1", "seat", (-5.5, 14.8, 0.45), 180.0, height=0.45)
+    B.thing("hall_back_bench_2", "seat", (5.5, 14.8, 0.45), 180.0, height=0.45)
+
+
+def _bio_room(B, x0, x1):
+    K = kit
+    Y0, Y1 = 15.76, 27.85
+    box(B.m, "CT_Interior", x0, x1, Y1, Y1 + 0.3, 0.0, H1)                      # partition to the music room
+    K.blackboard(B, -25.0, 15.76, 0.0, 180.0, w=3.6, h=1.15, zb=0.9, writing="board_0")
+    td = K.teacher_desk(B, -25.0, 17.1, 0.0, 180.0)
+    B.spot("bio_teacher", "work", (-25.0, 16.3, 0.0), 180.0)
+    B.thing("bio_blackboard", "craft", (-24.5, 15.9, 1.5), 180.0, what="blackboard")
+    sk = K.skeleton(B, -28.9, 16.5, 0.0, 180.0)
+    B.thing("bio_skeleton", "board", (-28.9, 16.5, 1.3), 180.0, topic="exhibit")
+    K.poster(B, -27.6, 15.76, 0.0, 180.0, name="chart_anatomy", w=0.9, zc=1.6)
+    B.thing("bio_chart", "board", (-27.6, 15.9, 1.6), 180.0, topic="health")
+    K.poster(B, -22.6, 15.76, 0.0, 180.0, name="chart_birds", w=0.6, zc=1.6)
+    aq = K.aquarium(B, -21.2, 16.2, 0.0, 180.0, w=1.0)
+    B.thing("bio_aquarium", "screen", (-21.2, 16.2, 1.0), 180.0, what="aquarium")
+    for j, cx in enumerate((-27.3, -23.1)):
+        for i, y in enumerate((19.2, 21.8, 24.4)):
+            lb = K.lab_bench(B, cx, y, 0.0, 180.0, w=2.0, seed=j * 3 + i)
+            for s in (-0.5, 0.5):
+                st = K.stool(B, cx + s, y + 0.75, 0.0, 0.0)
+                if i == 0 and j == 0 and s < 0:
+                    _seat_thing(B, "bio_seat_1", st)
+            if i == 0:
+                B.thing("bio_bench_%d" % j, "craft", (cx, y, 0.9), 180.0, what="workbench")
+    for i in range(2):
+        K.shop_shelf(B, -28.6 + i * 1.9, Y1, 0.0, 0.0, w=1.8, goods="jars", seed=i)
+    K.display_case(B, -24.6, Y1 - 0.35, 0.0, 0.0, w=1.2, d=0.6, goods="bottles")
+    B.thing("bio_shelf", "shelf", (-28.0, Y1 - 0.2, 1.2), 0.0, topic="medicine")
+    K.plant(B, -22.0, 27.3, 0.0, 0.0, kind="ficus", pot="CT_PlasterGreen", h=1.1)
+    K.plant(B, -20.9, 27.2, 0.0, 0.0, kind="fern", pot="CT_PlasterYellow", h=0.8)
+    K.wall_clock(B, -22.0, 15.76, 0.0, 180.0, zc=2.7, r=0.2)
+    K.pendant(B, -25.0, 19.0, H1, drop=0.5, kind="cone")
+    B.lamp((-25.0, 19.0, 3.0), lumens=1400, colour="#FFF0DC", kind="public", radius=11.0, fixture=False)
+
+
+def _music_room(B, x0, x1):
+    K = kit
+    Y0, Y1 = 28.15, 39.94
+    pn = K.piano(B, -26.0, Y1 - 0.34, 0.0, 0.0)
+    st = K.stool(B, pn["seat"][0], pn["seat"][1], 0.0, 180.0)
+    B.thing("music_piano", "play", (-26.0, Y1 - 0.34, 1.0), 0.0, what="piano")
+    _seat_thing(B, "music_stool", st)
+    K.blackboard(B, -22.8, Y1, 0.0, 0.0, w=2.2, h=1.15, zb=0.9, writing="chart_calendar")
+    B.spot("music_teacher", "work", (-23.0, 38.6, 0.0), 0.0)
+    cs = []
+    for r_, y in enumerate((31.6, 32.9, 34.2)):
+        for c_, x in enumerate((-28.0, -26.9, -25.8, -24.7, -23.6)):
+            cs.append(K.chair(B, x, y, 0.0, 180.0, kind="school"))
+    _seat_thing(B, "music_chair_1", cs[7])
+    _seat_thing(B, "music_chair_2", cs[2])
+    for i in range(2):
+        K.bookshelf(B, -29.2 + i * 1.0, Y0, 0.0, 180.0, w=1.0, h=1.9, levels=4, topic="modern", seed=90 + i)
+    B.thing("music_shelf", "shelf", (-28.7, Y0 + 0.2, 1.2), 180.0, topic="music")
+    for i, nm in enumerate(("sleeve_0", "sleeve_2", "sleeve_5")):
+        K.poster(B, -26.8 + i * 0.75, Y0, 0.0, 180.0, name=nm, w=0.5, zc=1.7)
+    t = K.table(B, -22.2, Y0 + 0.4, 0.0, 180.0, w=1.0, d=0.5)
+    K.record_player(B, -22.4, Y0 + 0.4, 0.75, 180.0)
+    K.radio(B, -21.9, Y0 + 0.4, 0.75, 180.0)
+    B.thing("music_player", "machine", (-22.4, Y0 + 0.4, 0.85), 180.0, what="record_player")
+    K.plant(B, -29.0, 38.9, 0.0, 0.0, kind="palm", pot="CT_PlasterRed", h=1.0)
+    K.wall_clock(B, -26.0, Y1, 0.0, 0.0, zc=2.7, r=0.2)
+    K.pendant(B, -25.0, 34.0, H1, drop=0.5, kind="cone")
+    B.lamp((-25.0, 34.0, 3.0), lumens=900, colour="#FFF0DC", kind="public", radius=9.0, fixture=False)
+
+
+def _canteen(B, x0, x1):
+    K = kit
+    Y0, Y1 = 15.76, 39.94
+    n = 0
+    for ci, cx in enumerate((22.9, 26.7)):
+        for y in (17.8, 20.8, 29.0, 32.0):
+            K.table(B, cx, y, 0.0, 90.0, w=2.4, d=0.8, kind="steel")
+            K.plates(B, cx, y - 0.4, 0.75, 0.0, n=2)
+            K.plates(B, cx, y + 0.4, 0.75, 0.0, n=2)
+            b1 = K.bench(B, cx - 0.65, y, 0.0, 90.0, w=2.4, kind="gym")
+            b2 = K.bench(B, cx + 0.65, y, 0.0, 270.0, w=2.4, kind="gym")
+            if n < 4:
+                B.thing("canteen_seat_%d" % (n + 1), "seat", (cx - 0.65, y, 0.45), 90.0, height=0.45)
+            n += 1
+            B.spot("canteen_bench_%d" % n, "bench", (cx - 0.65, y, 0.0), 90.0)
+    cn = K.serving_line(B, 25.0, 36.4, 0.0, 0.0, w=4.4)
+    ct = K.table(B, 28.4, 36.4, 0.0, 0.0, w=0.8, d=0.6, kind="steel")           # the cashier's table at the end of the line
+    K.cash_register(B, 28.4, 36.4, ct["top"], 0.0)
+    B.thing("canteen_counter", "counter", (25.0, 36.2, 1.0), 0.0, shop="school_canteen", role="teacher")
+    K.sign_plate(B, 25.0, 36.2, 0.0, 0.0, name="sign_canteen", w=1.6, zc=2.9, hang=True)
+    K.kitchen_unit(B, 24.0, Y1 - 0.34, 0.0, 0.0, modules="fridge,cupboard,sink,stove,cupboard")
+    K.samovar(B, 22.6, Y1 - 0.4, 0.0 + 0.9, 0.0)
+    K.menu_board(B, 27.6, Y1, 0.0, 0.0, name="menu_0", w=0.9, zc=2.0)
+    K.menu_board(B, 28.7, Y1, 0.0, 0.0, name="menu_1", w=0.8, zc=2.0)
+    B.thing("canteen_menu", "board", (27.6, Y1 - 0.05, 2.0), 0.0, topic="prices")
+    K.mosaic_panel(B, 24.0, Y0, 0.0, 180.0, name="tile_3", w=2.0, h=1.2, zc=1.7)       # QA: was over a window
+    K.wall_clock(B, 29.7, 28.0, 0.0, 270.0, zc=2.6, r=0.2)
+    K.plant(B, 21.0, 38.9, 0.0, 0.0, kind="ficus", pot="CT_PlasterYellow", h=1.2)
+    K.plant(B, 29.0, 17.0, 0.0, 0.0, kind="palm", pot="CT_PlasterBlue", h=1.0)
+    for y in (20.0, 31.0):
+        K.pendant(B, 24.8, y, H1, drop=0.5, kind="cone")
+    B.lamp((24.8, 20.0, 3.0), lumens=1000, colour="#FFF0DC", kind="public", radius=10.0, fixture=False)
+    B.lamp((24.8, 31.0, 3.0), lumens=1000, colour="#FFF0DC", kind="public", radius=10.0, fixture=False)
+
+
+def _gym(B):
+    K = kit
+    X0, X1, Y0, Y1 = -13.7, 13.7, 40.3, 55.7
+    box(B.m, "CT_Floor", X0, X1, Y0, Y1, 0.0, 0.02, faces="Z")
+    lines = "CT_TileWhite"
+    for (a, b, c, d_) in ((-11.0, 11.0, 42.5, 42.6), (-11.0, 11.0, 53.4, 53.5), (-11.0, -10.9, 42.5, 53.5),
+                          (10.9, 11.0, 42.5, 53.5), (-0.05, 0.05, 42.5, 53.5)):
+        box(B.detail, lines, a, b, c, d_, 0.02, 0.025, faces="Z")
+    for (a, b, c, d_) in ((-11.0, -8.0, 45.0, 45.08), (-11.0, -8.0, 50.9, 50.98), (-8.08, -8.0, 45.0, 51.0),
+                          (8.0, 11.0, 45.0, 45.08), (8.0, 11.0, 50.9, 50.98), (8.0, 8.08, 45.0, 51.0)):
+        box(B.detail, lines, a, b, c, d_, 0.02, 0.025, faces="Z")
+    K.basketball_hoop(B, X0, 48.0, 0.0, 90.0)
+    K.basketball_hoop(B, X1, 48.0, 0.0, 270.0)
+    B.thing("gym_hoop_w", "sport", (X0 + 0.5, 48.0, 3.0), 90.0, what="basketball")
+    B.thing("gym_hoop_e", "sport", (X1 - 0.5, 48.0, 3.0), 270.0, what="basketball")
+    B.thing("gym_court", "sport", (0.0, 47.0, 0.3), 180.0, what="track")
+    st = K.stage(B, 0.0, Y1 - 1.0, 0.0, 0.0, w=6.0, d=2.0, h=0.5)
+    B.thing("gym_stage", "screen", (0.0, Y1 - 1.2, 1.0), 0.0, what="stage")
+    for i, x in enumerate((-9.2, -8.2, -7.2, 7.2, 8.2, 9.2)):
+        K.wall_bars(B, x, Y1, 0.0, 0.0, w=0.9)
+    B.thing("gym_wall_bars_w", "sport", (-8.2, Y1 - 0.1, 1.3), 0.0, what="wall_bars")
+    B.thing("gym_wall_bars_e", "sport", (8.2, Y1 - 0.1, 1.3), 0.0, what="wall_bars")
+    K.wall_clock(B, 0.0, Y1, 0.0, 0.0, zc=5.2, r=0.45)
+    for x in (-6.0, 6.0):
+        K.vaulting_horse(B, x, 44.0, 0.0, 0.0)
+        K.mats(B, x, 45.6, 0.0, 0.0, w=2.0, d=1.2, n=2, mat="CT_PlasterBlue")
+    K.mats(B, X0 + 1.0, 53.2, 0.0, 90.0, w=1.2, d=2.0, n=3, mat="CT_PlasterRed")
+    for x in (-4.2, 4.2):
+        b = K.bench(B, x, Y0 + 0.4, 0.0, 180.0, w=2.2, kind="gym")
+    B.thing("gym_bench_w", "seat", (-4.2, Y0 + 0.4, 0.45), 180.0, height=0.45)
+    B.thing("gym_bench_e", "seat", (4.2, Y0 + 0.4, 0.45), 180.0, height=0.45)
+    K.lockers(B, 9.6, Y0, 0.0, 180.0, n=4, mat="CT_PlasterBlue")
+    K.barbell_rack(B, 12.2, 51.5, 0.0, 270.0)
+    B.thing("gym_barbell", "sport", (12.2, 51.5, 1.0), 270.0, what="barbell")
+    K.exercise_bike(B, -12.2, 41.8, 0.0, 90.0)
+    K.exercise_bike(B, -12.2, 43.0, 0.0, 90.0)
+    B.thing("gym_bike", "sport", (-12.2, 42.4, 0.9), 90.0, what="exercise_bike")
+    K.fire_extinguisher(B, 13.7, 41.2, 0.0, 270.0)
+    # round 3: the two lamps used to sit at 7.4 m under the roof (a dark floor); four hanging cage lamps now (_depth2)
+
+
+# ---------------------------------------------------------------- second pass: depth (props, new things, spots)
+def _bell_piece(m):
+    for r, a, b in ((0.055, 0.0, 0.022), (0.047, 0.022, 0.05), (0.034, 0.05, 0.074), (0.02, 0.074, 0.09)):
+        prism(m, "CT_Brass", ring(0, 0, r, 10), a, b, top=(r < 0.03), bottom=False)
+    prism(m, "CT_Wood", ring(0, 0, 0.011, 6), 0.09, 0.17, top=True, bottom=False)
+
+
+def _microscope_piece(m):
+    box(m, "CT_Frame", -0.07, 0.07, -0.09, 0.09, 0.0, 0.02)
+    box(m, "CT_Steel", -0.012, 0.012, 0.05, 0.075, 0.02, 0.29)
+    box(m, "CT_Steel", -0.012, 0.012, -0.005, 0.075, 0.26, 0.29)
+    prism(m, "CT_Frame", ring(0, -0.005, 0.021, 8), 0.14, 0.3, top=True, bottom=False)
+    prism(m, "CT_Steel", ring(0, -0.005, 0.012, 6), 0.3, 0.35, top=True, bottom=False)
+    prism(m, "CT_Steel", ring(0, -0.005, 0.01, 6), 0.1, 0.14, top=False, bottom=True)
+    box(m, "CT_Steel", -0.05, 0.05, -0.06, 0.04, 0.085, 0.095)
+    prism(m, "CT_Glass", ring(0, -0.005, 0.026, 8), 0.04, 0.05, top=True, bottom=False)
+
+
+def _metronome_piece(m):
+    box(m, "CT_Wood", -0.055, 0.055, -0.045, 0.045, 0.0, 0.04)
+    box(m, "CT_Wood", -0.044, 0.044, -0.035, 0.035, 0.04, 0.1)
+    box(m, "CT_Wood", -0.031, 0.031, -0.024, 0.024, 0.1, 0.18)
+    box(m, "CT_Steel", -0.004, 0.004, -0.03, -0.026, 0.06, 0.24)
+    box(m, "CT_Brass", -0.012, 0.012, -0.034, -0.026, 0.15, 0.17)
+
+
+def _scoreboard_piece(m):
+    box(m, "CT_Frame", -0.95, 0.95, -0.09, 0.0, 0.0, 0.85)
+    box(m, "CT_PlasterGreen", -0.9, 0.9, -0.1, -0.09, 0.05, 0.8)
+    for cx in (-0.6, -0.28, 0.28, 0.6):
+        for (a, b, c, e) in ((-0.07, -0.04, 0.22, 0.58), (0.04, 0.07, 0.22, 0.58), (-0.07, 0.07, 0.55, 0.58),
+                             (-0.07, 0.07, 0.38, 0.41), (-0.07, 0.07, 0.22, 0.25)):
+            box(m, "CT_TileWhite", cx + a, cx + b, -0.11, -0.1, c, e)
+    box(m, "CT_PlasterYellow", -0.03, 0.03, -0.11, -0.1, 0.52, 0.56)
+    box(m, "CT_PlasterYellow", -0.03, 0.03, -0.11, -0.1, 0.3, 0.34)
+    box(m, "CT_Steel", -0.5, 0.5, -0.11, -0.095, 0.06, 0.1)
+
+
+def _duffel_piece(m):
+    box(m, "CT_PlasterBlue", -0.3, 0.3, -0.13, 0.13, 0.0, 0.25)
+    box(m, "CT_PlasterBlue", -0.26, 0.26, -0.11, 0.11, 0.25, 0.29)
+    box(m, "CT_Leather", -0.3, 0.3, -0.135, -0.125, 0.12, 0.17)
+    box(m, "CT_Leather", -0.31, -0.28, -0.14, 0.14, 0.0, 0.26)
+    box(m, "CT_Leather", 0.28, 0.31, -0.14, 0.14, 0.0, 0.26)
+    box(m, "CT_Leather", -0.14, 0.14, -0.04, 0.04, 0.29, 0.31)
+    box(m, "CT_TileWhite", -0.12, 0.12, -0.145, -0.135, 0.19, 0.23)
+    box(m, "CT_PlasterRed", 0.18, 0.28, 0.05, 0.12, 0.25, 0.3)           # the sole of a sneaker sticks out
+
+
+def _trolley_piece(m):
+    for z in (0.22, 0.78):
+        box(m, "CT_Steel", -0.4, 0.4, -0.25, 0.25, z, z + 0.025)
+        box(m, "CT_Steel", -0.4, 0.4, -0.25, -0.235, z + 0.025, z + 0.06)
+    for sx in (-0.37, 0.37):
+        for sy in (-0.22, 0.22):
+            box(m, "CT_Steel", sx - 0.012, sx + 0.012, sy - 0.012, sy + 0.012, 0.05, 0.8)
+            prism(m, "CT_Rubber", ring(sx, sy, 0.04, 8), 0.0, 0.05, top=True, bottom=False)
+    box(m, "CT_Steel", -0.37, 0.37, 0.24, 0.26, 0.98, 1.0)
+    box(m, "CT_Steel", -0.38, -0.36, 0.22, 0.26, 0.8, 1.0)
+    box(m, "CT_Steel", 0.36, 0.38, 0.22, 0.26, 0.8, 1.0)
+
+
+def _herbarium_piece(m, k=0):
+    leaf = ("CT_PlasterGreen", "CT_PlasterYellow", "CT_Leaf", "CT_PlasterRed")[k % 4]
+    box(m, "CT_Wood", -0.2, 0.2, -0.03, 0.0, 2.44, 2.96)
+    box(m, "CT_Paper", -0.17, 0.17, -0.034, -0.03, 2.47, 2.93)
+    box(m, leaf, -0.006, 0.006, -0.038, -0.034, 2.5, 2.88)
+    for i in range(3):
+        box(m, leaf, 0.0, 0.1 - 0.02 * i, -0.038, -0.034, 2.6 + i * 0.1, 2.625 + i * 0.1)
+        box(m, leaf, -0.1 + 0.02 * i, 0.0, -0.038, -0.034, 2.65 + i * 0.1, 2.675 + i * 0.1)
+
+
+def _stand_piece(m):
+    box(m, "CT_Steel", -0.22, 0.22, -0.02, 0.02, 0.0, 0.02)
+    box(m, "CT_Steel", -0.02, 0.02, -0.22, 0.22, 0.0, 0.02)
+    box(m, "CT_Steel", -0.01, 0.01, -0.01, 0.01, 0.02, 1.05)
+    box(m, "CT_Steel", -0.24, 0.24, -0.05, -0.02, 1.0, 1.04)
+    box(m, "CT_Steel", -0.24, 0.24, 0.0, 0.015, 1.0, 1.3)
+    box(m, "CT_Paper", -0.2, 0.2, -0.004, 0.0, 1.03, 1.27)
+
+
+def _bag_piece(m, mat="CT_PlasterRed"):
+    box(m, mat, -0.14, 0.14, -0.05, 0.05, 0.0, 0.22)
+    box(m, "CT_Leather", -0.15, 0.15, -0.056, -0.04, 0.12, 0.24)
+    box(m, "CT_Leather", -0.1, -0.08, -0.06, 0.06, 0.2, 0.22)
+
+
+def _depth(B):
+    """Second pass: the canteen line, the duty desk and the bell, the lost box, the microscope, herbarium, scoreboard and
+    the lost bag; new things (rules and acts in tools/city/content/x_p_school.json) and spots for the townsfolk."""
+    K = kit
+    f = Furn(B)
+    # ---------------------------------------------------------------- canteen
+    tt = K.table(B, 21.5, 36.2, 0.0, 0.0, w=0.8, d=0.5, kind="steel")           # trays and the tea urn before the line
+    K.tray_stack(B, 21.25, 36.2, tt["top"], 0.0, n=6, mat="CT_PlasterRed")
+    K.samovar(B, 21.8, 36.2, tt["top"], 0.0)
+    B.thing("canteen_tea", "take", (21.8, 36.2, 1.2), 0.0, item="tea")
+    f.put(_trolley_piece, 29.2, 23.0, 270.0)
+    K.plates(B, 29.2, 22.8, 0.82, 0.0, n=5)
+    K.plates(B, 29.2, 23.2, 0.82, 0.0, n=3, mat="CT_PlasterBlue")
+    K.plates(B, 29.2, 23.0, 0.27, 0.0, n=6)
+    B.thing("canteen_return", "machine", (29.1, 23.0, 0.95), 270.0, what="trolley")
+    K.blackboard(B, 27.6, 15.76, 0.0, 180.0, w=1.4, h=0.8, zb=1.0, writing="board_3")
+    B.thing("canteen_dayboard", "board", (27.6, 15.9, 1.4), 180.0, topic="menu_day")
+    K.poster(B, 21.8, 15.76, 0.0, 180.0, name="poster_health", w=0.6, zc=1.7)
+    K.fire_extinguisher(B, 29.6, 16.6, 0.0, 270.0)
+    K.pendant(B, 25.0, 35.2, H1, drop=0.5, kind="cone")
+    B.lamp((25.0, 35.2, 3.0), lumens=900, colour="#FFE8C8", kind="public", radius=8.0, fixture=False)
+    B.spot("canteen_duty", "work", (25.0, 37.6, 0.0), 0.0)
+    B.spot("canteen_queue_0", "stand", (23.6, 35.2, 0.0), 180.0)
+    B.spot("canteen_queue_1", "stand", (25.4, 35.2, 0.0), 180.0)
+    B.spot("canteen_tea_stand", "stand", (21.8, 35.4, 0.0), 180.0)
+    B.spot("canteen_return_stand", "stand", (28.4, 23.0, 0.0), 270.0)
+    # ---------------------------------------------------------------- entrance hall: duty desk, bell, lost box, concert poster
+    dk = K.table(B, 2.9, 7.5, 0.0, 0.0, w=1.0, d=0.5)
+    K.chair(B, 2.9, 8.2, 0.0, 0.0, kind="school")
+    f.z0 = dk["top"]
+    f.put(_bell_piece, 2.55, 7.5, 0.0)
+    f.z0 = 0.0
+    K.books_stack(B, 3.15, 7.52, dk["top"], 8.0, n=2)
+    K.table_lamp(B, 3.4, 7.42, dk["top"], 0.0, light=True)
+    B.thing("hall_handbell", "machine", (2.55, 7.5, dk["top"] + 0.1), 0.0, what="handbell")
+    B.thing("hall_duty_desk", "board", (3.15, 7.5, dk["top"] + 0.1), 0.0, topic="duty")
+    B.spot("hall_duty", "work", (2.9, 8.2, 0.0), 0.0)
+    K.shoe_rack(B, -3.0, 15.7, 0.0, 0.0, w=1.0, rows=3, seed=4)
+    K.crate(B, -3.0, 15.45, 1.1, 0.0, w=0.5, d=0.3, h=0.25, fill="CT_PlasterBlue", seed=6)
+    B.thing("hall_lost_box", "board", (-3.0, 15.4, 0.9), 0.0, topic="lostbox")
+    B.spot("hall_lost_stand", "stand", (-3.0, 14.4, 0.0), 180.0)
+    K.poster(B, 7.35, 14.5, 0.0, 270.0, name="kids_1", w=0.8, zc=1.6)
+    B.thing("hall_concert_poster", "board", (7.3, 14.5, 1.6), 270.0, topic="concert")
+    B.thing("hall_coats", "board", (-7.3, 9.1, 1.2), 90.0, topic="coats")
+    # ---------------------------------------------------------------- classroom: timetable, globe, satchels
+    K.notice_board(B, -18.6, 7.1, 0.0, 90.0, w=0.8, zc=1.55, seed=2)
+    B.thing("class_timetable", "board", (-18.5, 7.1, 1.55), 90.0, topic="lessons")
+    B.thing("class_globe", "machine", (-12.8, 12.9, 1.15), 0.0, what="globe")
+    for i, (bx, by, bm) in enumerate(((-14.55, 7.15, "CT_PlasterRed"), (-11.65, 8.6, "CT_PlasterBlue"), (-17.2, 10.0, "CT_PlasterGreen"),
+                                      (-9.0, 11.4, "CT_Leather"), (-14.5, 11.1, "CT_PlasterYellow"))):
+        f.put(lambda m, mat=bm: _bag_piece(m, mat), bx, by, 90.0 * (i % 3))
+    # ---------------------------------------------------------------- biology room: microscope, herbarium, second lamp
+    f.z0 = 0.91
+    f.put(_microscope_piece, -24.3, 17.15, 180.0)
+    f.z0 = 0.0
+    B.thing("bio_microscope", "machine", (-24.3, 17.15, 1.15), 180.0, what="microscope")
+    for k, hx in enumerate((-28.2, -27.2, -26.2, -25.2)):
+        f.put(lambda m, kk=k: _herbarium_piece(m, kk), hx, 27.85, 0.0)
+    B.thing("bio_herbarium", "board", (-26.7, 27.78, 2.7), 0.0, topic="herbarium")
+    K.pendant(B, -25.0, 24.6, H1, drop=0.5, kind="cone")
+    B.lamp((-25.0, 24.6, 3.0), lumens=1400, colour="#FFF0DC", kind="public", radius=11.0, fixture=False)
+    B.spot("bio_scope_stand", "stand", (-24.3, 18.2, 0.0), 0.0)
+    # ---------------------------------------------------------------- music room: stands, metronome, lamp
+    f.z0 = 1.25
+    f.put(_metronome_piece, -26.55, 39.7, 0.0)
+    f.z0 = 0.0
+    K.table_lamp(B, -25.5, 39.7, 1.25, 0.0, light=True)
+    B.thing("music_metronome", "machine", (-26.55, 39.7, 1.4), 0.0, what="metronome")
+    for x in (-27.4, -25.8, -24.2):
+        f.put(_stand_piece, x, 35.0, 180.0)
+    B.thing("music_blackboard", "craft", (-22.8, 39.85, 1.5), 0.0, what="blackboard")
+    B.spot("music_stand_spot", "stand", (-26.55, 38.6, 0.0), 0.0)
+    # ---------------------------------------------------------------- gym: scoreboard, the lost bag
+    f.z0 = 3.6
+    f.put(_scoreboard_piece, -13.7, 44.5, 90.0)
+    f.z0 = 0.0
+    B.thing("gym_scoreboard", "machine", (-13.5, 44.5, 4.0), 90.0, what="scoreboard")
+    f.put(_duffel_piece, -13.0, 55.2, 20.0)
+    B.thing("gym_bag", "craft", (-13.0, 55.2, 0.2), 20.0, what="bag")
+    B.spot("gym_whistle", "work", (0.0, 41.6, 0.0), 180.0)
+    B.spot("gym_bag_stand", "stand", (-12.2, 53.9, 0.0), 270.0)
+
+
+# ---------------------------------------------------------------- third pass: rooms with a mood of their own, games, switches
+def _switch_piece(m):
+    box(m, "CT_TileWhite", -0.04, 0.04, -0.016, 0.0, -0.06, 0.06)
+    box(m, "CT_Frame", -0.012, 0.012, -0.022, -0.016, -0.02, 0.02)
+
+
+def _hamster_cage(m):
+    box(m, "CT_PlasterBlue", -0.27, 0.27, -0.19, 0.19, 0.0, 0.05)
+    box(m, "CT_Paper", -0.25, 0.25, -0.17, 0.17, 0.05, 0.07)
+    for i in range(7):
+        u = -0.25 + i * 0.0833
+        box(m, "CT_Steel", u - 0.004, u + 0.004, -0.19, -0.185, 0.05, 0.34)
+        box(m, "CT_Steel", u - 0.004, u + 0.004, 0.185, 0.19, 0.05, 0.34)
+    for i in range(4):
+        v = -0.15 + i * 0.1
+        box(m, "CT_Steel", -0.27, -0.265, v - 0.004, v + 0.004, 0.05, 0.34)
+        box(m, "CT_Steel", 0.265, 0.27, v - 0.004, v + 0.004, 0.05, 0.34)
+    box(m, "CT_Steel", -0.27, 0.27, -0.195, -0.185, 0.33, 0.35)
+    box(m, "CT_Steel", -0.27, 0.27, 0.185, 0.195, 0.33, 0.35)
+    box(m, "CT_Steel", -0.27, -0.26, -0.19, 0.19, 0.33, 0.35)
+    box(m, "CT_Steel", 0.26, 0.27, -0.19, 0.19, 0.33, 0.35)
+    box(m, "CT_Wood", -0.23, -0.05, 0.02, 0.16, 0.07, 0.2)                    # the little house
+    box(m, "CT_Frame", -0.17, -0.11, 0.015, 0.025, 0.07, 0.15)
+    prism(m, "CT_PlasterRed", ring(0.14, 0.0, 0.1, 10), 0.09, 0.1, top=True, bottom=False)       # the wheel (lying: a disc)
+    box(m, "CT_Steel", 0.135, 0.145, -0.1, 0.1, 0.05, 0.19)
+    prism(m, "CT_Wood", ring(0.0, -0.1, 0.035, 6), 0.07, 0.09, top=True, bottom=False)           # the food bowl
+
+
+def _pendulum_stand(m):
+    box(m, "CT_Steel", -0.2, 0.2, -0.15, 0.15, 0.0, 0.04)
+    box(m, "CT_Steel", -0.018, 0.018, 0.1, 0.14, 0.04, 1.5)
+    box(m, "CT_Steel", -0.018, 0.018, -0.3, 0.14, 1.46, 1.5)
+    box(m, "CT_Frame", -0.003, 0.003, -0.302, -0.296, 0.62, 1.46)
+    prism(m, "CT_Brass", ring(0.0, -0.299, 0.055, 8), 0.5, 0.62, top=True, bottom=True)
+
+
+def _glass_flask(m, x, y, r=0.05, h=0.14, mat="CT_Glass"):
+    prism(m, mat, ring(x, y, r, 8), 0.0, h * 0.35, top=False, bottom=True)
+    prism(m, mat, ring(x, y, r * 0.55, 8), h * 0.35, h * 0.75, top=False, bottom=False)
+    prism(m, mat, ring(x, y, r * 0.3, 8), h * 0.75, h, top=True, bottom=False)
+
+
+def _test_tube_rack(m):
+    box(m, "CT_Wood", -0.17, 0.17, -0.05, 0.05, 0.1, 0.12)
+    box(m, "CT_Wood", -0.17, 0.17, -0.05, 0.05, 0.0, 0.02)
+    for sx in (-0.16, 0.16):
+        box(m, "CT_Wood", sx - 0.01, sx + 0.01, -0.05, 0.05, 0.0, 0.12)
+    for i in range(6):
+        u = -0.125 + i * 0.05
+        prism(m, "CT_Glass", ring(u, 0.0, 0.012, 6), 0.02, 0.2, top=True, bottom=False)
+        prism(m, ("CT_PlasterRed", "CT_PlasterBlue", "CT_PlasterGreen")[i % 3], ring(u, 0.0, 0.0105, 6), 0.03, 0.03 + 0.03 * (i % 3 + 1), top=True, bottom=False)
+    _glass_flask(m, 0.28, 0.02, 0.055, 0.17)
+    _glass_flask(m, -0.3, -0.02, 0.045, 0.14)
+
+
+def _watering_can(m):
+    prism(m, "CT_PlasterGreen", ring(0, 0, 0.075, 8), 0.0, 0.17, top=False, bottom=True)
+    box(m, "CT_PlasterGreen", 0.06, 0.2, -0.012, 0.012, 0.06, 0.07)
+    box(m, "CT_PlasterGreen", 0.18, 0.2, -0.02, 0.02, 0.1, 0.16)
+    box(m, "CT_PlasterGreen", -0.085, -0.075, -0.012, 0.012, 0.03, 0.2)
+    box(m, "CT_PlasterGreen", -0.085, 0.0, -0.012, 0.012, 0.19, 0.2)
+
+
+def _glock_piece(m):
+    box(m, "CT_Wood", -0.2, 0.2, -0.1, -0.08, 0.0, 0.06)
+    box(m, "CT_Wood", -0.2, 0.2, 0.08, 0.1, 0.0, 0.06)
+    for i in range(8):
+        u = -0.17 + i * 0.049
+        ln = 0.17 - i * 0.012
+        box(m, "CT_Brass" if i % 2 == 0 else "CT_Steel", u - 0.02, u + 0.02, -ln / 2, ln / 2, 0.06, 0.07)
+    box(m, "CT_Steel", 0.22, 0.24, -0.12, -0.1, 0.0, 0.01)
+    box(m, "CT_Wood", 0.2, 0.34, -0.012, 0.012, 0.0, 0.012)
+    prism(m, "CT_PlasterRed", ring(0.34, 0.0, 0.016, 6), 0.0, 0.032, top=True, bottom=False)
+
+
+def _recorder_rack(m):
+    box(m, "CT_Wood", -0.4, 0.4, -0.03, 0.0, 1.25, 1.4)
+    for i in range(5):
+        u = -0.3 + i * 0.15
+        box(m, "CT_Steel", u - 0.01, u + 0.01, -0.06, -0.03, 1.31, 1.34)
+        prism(m, "CT_Wood" if i % 2 else "CT_Frame", ring(u, -0.05, 0.011, 6), 0.7 + (i % 2) * 0.04, 1.32, top=True, bottom=False)
+        box(m, "CT_TileWhite", u - 0.012, u + 0.012, -0.062, -0.038, 0.72, 0.78)
+    box(m, "CT_Wood", -0.4, 0.4, -0.05, -0.02, 0.66, 0.69)
+
+
+def _ball_cart(m):
+    for sx in (-0.3, 0.3):
+        for sy in (-0.2, 0.2):
+            box(m, "CT_Steel", sx - 0.015, sx + 0.015, sy - 0.015, sy + 0.015, 0.06, 0.8)
+            prism(m, "CT_Rubber", ring(sx, sy, 0.04, 8), 0.0, 0.06, top=True, bottom=False)
+    box(m, "CT_Steel", -0.32, 0.32, -0.22, 0.22, 0.4, 0.43)
+    box(m, "CT_Steel", -0.32, 0.32, -0.22, -0.2, 0.43, 0.58)
+    box(m, "CT_Steel", -0.32, 0.32, 0.2, 0.22, 0.43, 0.58)
+    box(m, "CT_Steel", -0.32, -0.3, -0.22, 0.22, 0.43, 0.58)
+    box(m, "CT_Steel", 0.3, 0.32, -0.22, 0.22, 0.43, 0.58)
+    for i, (bx, by, mat) in enumerate(((-0.17, -0.08, "CT_PlasterRed"), (0.05, 0.08, "CT_PlasterYellow"), (0.2, -0.07, "CT_PlasterRed"),
+                                      (-0.08, 0.1, "CT_TileWhite"), (0.14, 0.12, "CT_PlasterBlue"))):
+        for r_, a, b in ((0.07, 0.43, 0.5), (0.115, 0.5, 0.58), (0.125, 0.58, 0.67), (0.11, 0.67, 0.75), (0.07, 0.75, 0.8)):
+            prism(m, mat, ring(bx, by, r_ * 0.95, 8), a, b, top=(r_ < 0.08 and a > 0.7), bottom=False)
+
+
+def _abacus_piece(m):
+    box(m, "CT_Wood", -0.17, 0.17, -0.05, 0.05, 0.0, 0.015)
+    box(m, "CT_Wood", -0.17, -0.155, -0.05, 0.05, 0.0, 0.26)
+    box(m, "CT_Wood", 0.155, 0.17, -0.05, 0.05, 0.0, 0.26)
+    box(m, "CT_Wood", -0.17, 0.17, -0.05, 0.05, 0.245, 0.26)
+    for k in range(4):
+        z = 0.05 + 0.05 * k
+        box(m, "CT_Steel", -0.155, 0.155, -0.004, 0.004, z - 0.002, z + 0.002)
+        for j in range(4):
+            u = -0.13 + j * 0.03 + (0.1 if j > 1 and k % 2 else 0)
+            box(m, "CT_PlasterRed" if (k + j) % 2 else "CT_Wood", u - 0.012, u + 0.012, -0.012, 0.012, z - 0.012, z + 0.012)
+
+
+def _ink_piece(m):
+    prism(m, "CT_Glass", ring(0, 0, 0.035, 8), 0.0, 0.05, top=True, bottom=True)
+    prism(m, "CT_Frame", ring(0, 0, 0.012, 6), 0.05, 0.06, top=True, bottom=False)
+    box(m, "CT_Wood", 0.06, 0.2, -0.004, 0.004, 0.0, 0.01)
+
+
+def _depth2(B):
+    """Third pass: a lit gym (four hanging cage lamps), a switch per room, games (checkers in the hall, chess club, table
+    tennis), the nature corner (hamster, plants to water), lab glassware, the pendulum, the school museum shelf, the
+    cloakroom counter, the watchman's desk, staff talk, the after-school clubs. Rules and acts: x_p_school.json."""
+    K = kit
+    f = Furn(B)
+
+    def sw(tid, x, y, yaw, metres):
+        f.z0 = 1.24
+        f.put(_switch_piece, x, y, yaw)
+        f.z0 = 0.0
+        B.thing(tid, "machine", (x, y, 1.3), yaw, what="switch", switch=str(metres))
+
+    # ---------------------------------------------------------------- gym: light first
+    for (lx, ly) in ((-5.5, 44.5), (5.5, 44.5), (-5.5, 51.0), (5.5, 51.0)):
+        K.pendant(B, lx, ly, 8.6, drop=3.6, kind="cone", light=True, lumens=2400, colour="#FFF0DC", radius=14.0)
+    sw("gym_switch", 1.9, 40.34, 180.0, 12)
+    K.sign_plate(B, 0.0, 40.3, 0.0, 180.0, name="sign_gym", w=1.3, zc=2.85)
+    # table tennis in the corner by the east wall bars
+    K.pingpong_table(B, 6.0, 51.6, 0.0, 0.0)
+    B.thing("gym_pingpong", "play", (6.0, 51.6, 0.82), 0.0, what="table_tennis")
+    B.spot("gym_pingpong_a", "stand", (6.0, 50.5, 0.0), 0.0)
+    B.spot("gym_pingpong_b", "stand", (6.0, 52.7, 0.0), 180.0)
+    # the ball cart by the west mats
+    f.put(_ball_cart, -12.2, 46.4, 90.0)
+    B.thing("gym_balls", "machine", (-12.2, 46.4, 0.9), 90.0, what="ball_cart")
+    B.spot("gym_balls_stand", "stand", (-11.4, 46.4, 0.0), 270.0)
+    # honours board and banners
+    K.notice_board(B, 13.7, 44.0, 0.0, 270.0, w=1.5, h=0.9, zc=1.7, seed=7)
+    B.thing("gym_honours", "board", (13.6, 44.0, 1.7), 270.0, topic="honours")
+    K.banner(B, -13.7, 51.0, 0.0, 90.0, name="poster_sun_1", w=1.5, zc=2.4)
+    K.banner(B, 13.7, 53.8, 0.0, 270.0, name="poster_sun_2", w=1.5, zc=2.5)
+
+    # ---------------------------------------------------------------- hall: clock, switch, checkers, clubs stand, cloakroom, watch
+    K.wall_clock(B, 0.0, 15.7, 0.0, 0.0, zc=3.0, r=0.25)
+    B.thing("hall_clock", "board", (0.0, 15.65, 3.0), 0.0, topic="clock")
+    sw("hall_switch", 2.3, 15.66, 0.0, 9.6)
+    K.chess_table(B, -4.4, 11.6, 0.0, 0.0, seed=4)
+    K.chair(B, -4.4, 12.3, 0.0, 0.0, kind="school")
+    K.chair(B, -4.4, 10.9, 0.0, 180.0, kind="school")
+    B.thing("hall_checkers", "play", (-4.4, 11.6, 0.8), 0.0, what="checkers")
+    B.spot("hall_chess_a", "seat", (-4.4, 12.3, 0.0), 0.0)
+    B.spot("hall_chess_b", "seat", (-4.4, 10.9, 0.0), 180.0)
+    K.notice_stand(B, 5.0, 11.0, 0.0, 270.0, w=1.2, h=0.85, front="notice", back="kids", seed=3)
+    B.thing("hall_clubs", "board", (5.0, 11.0, 1.5), 270.0, topic="clubs")
+    cl = K.table(B, -5.2, 13.3, 0.0, 90.0, w=1.2, d=0.5, h=0.95)
+    K.sign_plate(B, -5.2, 13.3, 0.0, 90.0, name="sign_cloakroom", w=0.9, zc=2.5, hang=True)
+    B.thing("hall_cloak", "counter", (-5.2, 13.3, 1.0), 90.0, service="cloakroom", role="janitor")
+    B.spot("hall_cloak_work", "work", (-5.9, 13.3, 0.0), 270.0)
+    B.thing("hall_duty_talk", "counter", (2.85, 7.9, 1.05), 0.0, service="duty", role="teacher")
+    B.thing("hall_watch", "counter", (3.4, 7.9, 1.05), 0.0, service="watch")
+    B.thing("hall_watch_we", "counter", (3.4, 8.35, 1.05), 0.0, service="watch")
+    B.spot("hall_watch_spot", "work", (2.9, 8.5, 0.0), 0.0)
+
+    # ---------------------------------------------------------------- classroom (geography and physics)
+    sw("class_switch", -18.55, 10.2, 90.0, 8)
+    f.put(_pendulum_stand, -16.8, 13.5, 0.0)
+    B.thing("class_pendulum", "machine", (-16.8, 13.2, 1.0), 0.0, what="pendulum")
+    B.spot("class_pendulum_stand", "stand", (-16.8, 12.5, 0.0), 180.0)
+    B.thing("class_desk_drawers", "craft", (-13.85, 12.95, 0.8), 0.0, what="drawers")
+    B.thing("class_teacher_talk", "counter", (-13.3, 12.55, 1.0), 0.0, service="teacher", role="teacher")
+    ws = K.wall_shelf(B, -7.65, 11.4, 0.0, 270.0, w=1.0, zt=1.3, props=False)
+    f.z0 = 1.3
+    f.put(_abacus_piece, -7.9, 11.1, 270.0)
+    f.put(_bell_piece, -7.9, 11.45, 270.0)
+    f.put(_ink_piece, -7.9, 11.75, 270.0)
+    f.z0 = 0.0
+    B.thing("class_museum", "shelf", (-7.75, 11.4, 1.35), 270.0, topic="museum")
+    K.chess_table(B, -8.75, 10.8, 0.0, 90.0, seed=9)
+    K.chair(B, -8.75, 10.1, 0.0, 180.0, kind="school")
+    K.chair(B, -8.75, 11.5, 0.0, 0.0, kind="school")
+    B.thing("class_chess_club", "play", (-8.75, 10.8, 0.8), 90.0, what="chess")
+    B.spot("class_chess_a", "seat", (-8.75, 10.1, 0.0), 180.0)
+    B.spot("class_chess_b", "seat", (-8.75, 11.5, 0.0), 0.0)
+
+    # ---------------------------------------------------------------- staff room
+    sw("staff_switch", 14.8, 9.3, 270.0, 6)
+    K.chess_set(B, 12.55, 10.4, 0.75, 0.0, seed=2)
+    B.thing("staff_chess", "play", (12.55, 10.4, 0.8), 0.0, what="chess")
+    B.spot("staff_chess_a", "seat", (12.5, 9.5, 0.0), 180.0)
+
+    # ---------------------------------------------------------------- biology: nature corner, glassware, periodic table
+    sw("bio_switch", -20.35, 20.4, 270.0, 8.5)
+    tb = K.table(B, -29.35, 18.3, 0.0, 90.0, w=0.9, d=0.55)
+    f.z0 = tb["top"]
+    f.put(_hamster_cage, -29.35, 18.3, 90.0)
+    f.z0 = 0.0
+    B.thing("bio_hamster", "machine", (-29.35, 18.3, 1.0), 90.0, what="hamster")
+    B.spot("bio_hamster_stand", "stand", (-28.6, 18.3, 0.0), 270.0)
+    tp = K.table(B, -29.35, 22.3, 0.0, 90.0, w=2.2, d=0.5)
+    for i, (py, kd, pot) in enumerate(((21.65, "cactus", "CT_PlasterYellow"), (22.3, "fern", "CT_PlasterGreen"), (22.95, "ficus", "CT_PlasterRed"))):
+        K.plant(B, -29.35, py, tp["top"], 0.0, kind=kd, pot=pot, h=0.5)
+    f.z0 = tp["top"]
+    f.put(_watering_can, -29.3, 23.15, 90.0)
+    f.z0 = 0.0
+    B.thing("bio_plants", "craft", (-29.35, 22.2, 1.05), 90.0, what="watering")
+    B.spot("bio_plants_stand", "stand", (-28.6, 22.2, 0.0), 270.0)
+    f.z0 = 0.9
+    f.put(_test_tube_rack, -27.3, 24.4, 180.0)
+    f.z0 = 0.0
+    B.thing("bio_chem", "craft", (-27.3, 24.4, 1.0), 180.0, what="glassware")
+    K.poster(B, -23.2, 27.85, 0.0, 0.0, name="chart_periodic", w=0.9, zc=1.85)
+    B.thing("bio_periodic", "board", (-23.2, 27.8, 1.85), 0.0, topic="periodic")
+    B.lamp((-28.0, 21.0, 3.0), lumens=1100, colour="#FFF0DC", kind="public", radius=7.5, fixture=True)
+
+    # ---------------------------------------------------------------- music: choir, glockenspiel, recorders, a second lamp
+    sw("music_switch", -20.35, 31.9, 270.0, 6.5)
+    gt = K.table(B, -28.9, 36.5, 0.0, 90.0, w=0.9, d=0.5)
+    f.z0 = gt["top"]
+    f.put(_glock_piece, -28.9, 36.5, 90.0)
+    f.z0 = 0.0
+    B.thing("music_glock", "machine", (-28.9, 36.5, 0.9), 90.0, what="glockenspiel")
+    B.spot("music_glock_stand", "stand", (-28.2, 36.5, 0.0), 270.0)
+    f.put(_recorder_rack, -29.7, 33.0, 90.0)
+    B.thing("music_choir", "play", (-25.0, 36.4, 0.9), 0.0, what="choir_hall")
+    B.spot("music_choir_a", "stand", (-26.0, 36.9, 0.0), 0.0)
+    B.spot("music_choir_b", "stand", (-24.0, 36.9, 0.0), 0.0)
+    B.lamp((-25.0, 30.0, 3.0), lumens=1000, colour="#FFE8C8", kind="public", radius=8.0, fixture=True)
+
+    # ---------------------------------------------------------------- canteen: switch, apples
+    sw("canteen_switch", 20.35, 24.2, 90.0, 12.5)
+    at = K.table(B, 29.3, 33.6, 0.0, 270.0, w=0.8, d=0.5, kind="steel")
+    K.crate(B, 29.3, 33.6, at["top"], 0.0, w=0.5, d=0.34, h=0.2, fill="CT_PlasterRed", seed=11)
+    B.thing("canteen_apples", "take", (29.3, 33.6, 1.0), 270.0, item="apple")
+    B.spot("canteen_apples_stand", "stand", (28.5, 33.6, 0.0), 90.0)
+    B.spot("canteen_kitchen_work", "work", (23.2, 38.6, 0.0), 0.0)
+
+
+# ---------------------------------------------------------------- fourth pass: the yard, the staff room, the gym walls, the canteen walls
+def _hopscotch_piece(m):
+    rows = ((0.0,), (0.0,), (-0.31, 0.31), (0.0,), (-0.31, 0.31), (0.0,), (-0.31, 0.31))
+    for r, xs in enumerate(rows):
+        for u in xs:
+            box(m, "CT_TileWhite" if (r + (u > 0)) % 2 else "CT_PlasterBlue", u - 0.27, u + 0.27, r * 0.6 - 0.27, r * 0.6 + 0.27, 0.0, 0.012)
+    box(m, "CT_PlasterYellow", -0.45, 0.45, 7 * 0.6 - 0.27, 7 * 0.6 + 0.3, 0.0, 0.012)
+
+
+def _bike_rack_piece(m):
+    for y in (-0.42, 0.42):
+        box(m, "CT_Steel", -1.35, 1.35, y - 0.025, y + 0.025, 0.1, 0.14)
+        for x in (-1.3, -0.4, 0.4, 1.3):
+            box(m, "CT_Steel", x - 0.025, x + 0.025, y - 0.025, y + 0.025, 0.0, 0.14)
+    for x in (-0.4, 0.4):
+        box(m, "CT_Steel", x - 0.02, x + 0.02, -0.42, 0.42, 0.1, 0.13)
+
+
+def _weather_post_piece(m):
+    box(m, "CT_Steel", -0.03, 0.03, -0.03, 0.03, 0.0, 2.3)
+    box(m, "CT_Wood", -0.17, 0.17, -0.09, -0.03, 1.45, 2.05)
+    box(m, "CT_TileWhite", -0.15, 0.15, -0.095, -0.09, 1.5, 2.0)
+    box(m, "CT_Steel", -0.012, 0.012, -0.1, -0.095, 1.58, 1.95)
+    box(m, "CT_PlasterRed", -0.008, 0.008, -0.103, -0.1, 1.58, 1.82)
+    for k in range(6):
+        box(m, "CT_Frame", 0.02, 0.06 + 0.02 * (k % 2), -0.1, -0.097, 1.6 + 0.06 * k, 1.612 + 0.06 * k)
+    box(m, "CT_Steel", -0.35, 0.35, -0.01, 0.01, 2.3, 2.32)
+    box(m, "CT_PlasterRed", 0.28, 0.45, -0.02, 0.02, 2.29, 2.33)
+    box(m, "CT_Steel", -0.45, -0.28, -0.07, 0.07, 2.28, 2.34)
+
+
+def _springboard_piece(m):
+    for k in range(3):
+        box(m, "CT_Wood", -0.4, 0.4, -0.3 + 0.2 * k, -0.1 + 0.2 * k, 0.0, 0.07 + 0.06 * k)
+    box(m, "CT_PlasterRed", -0.4, 0.4, 0.3, 0.38, 0.0, 0.26)
+
+
+def _depth4(B):
+    """Fourth pass: the yard (hopscotch, bike rack, weather post, bird feeder, garden board), the staff room (journal, duty
+    rota, pigeonholes), the gym (lockers with notes, vaulting horse, records board), the canteen (drawings, dish board)."""
+    K = kit
+    f = Furn(B)
+    # ---------------------------------------------------------------- yard
+    f.put(_hopscotch_piece, -3.0, 21.0, 0.0)
+    B.thing("yard_hopscotch", "sport", (-3.0, 22.2, 0.02), 0.0, what="hopscotch")
+    B.spot("yard_hop_stand", "stand", (-3.0, 20.2, 0.0), 180.0)
+    f.put(_bike_rack_piece, 14.5, 19.0, 0.0)
+    for bx, bm in ((13.7, "CT_SteelRed"), (14.5, "CT_PlasterBlue"), (15.3, "CT_PlasterGreen")):
+        K.bicycle(B, bx, 19.0, 0.0, 0.0, kind="stand", mat=bm)
+    B.thing("yard_bikes", "machine", (14.5, 19.0, 0.9), 0.0, what="bike_rack")
+    B.spot("yard_bikes_stand", "stand", (14.5, 17.4, 0.0), 180.0)
+    f.put(_weather_post_piece, -15.5, 20.0, 0.0)
+    B.thing("yard_weather", "board", (-15.5, 19.9, 1.75), 0.0, topic="weather")
+    B.spot("yard_weather_stand", "stand", (-15.5, 18.6, 0.0), 180.0)
+    K.bird_feeder(B, 9.5, 33.5, 0.0, 0.0, kind="post")
+    B.thing("yard_feeder", "machine", (9.5, 33.5, 1.5), 0.0, what="bird_feeder")
+    B.spot("yard_feeder_stand", "stand", (9.5, 32.2, 0.0), 180.0)
+    K.notice_stand(B, 9.4, 25.2, 0.0, 0.0, w=1.2, front="notice_1", back="kids_2")
+    B.thing("yard_garden_board", "board", (9.4, 25.0, 1.4), 0.0, topic="garden")
+    B.spot("yard_garden_stand", "stand", (9.4, 23.6, 0.0), 180.0)
+    # ---------------------------------------------------------------- staff room: journal, duty rota, pigeonholes
+    K.books_stack(B, 11.1, 10.72, 0.75, 340.0, n=2, seed=5)
+    B.thing("staff_journal", "board", (11.1, 10.72, 0.85), 0.0, topic="journal")
+    B.spot("staff_journal_stand", "stand", (11.1, 11.6, 0.0), 0.0)
+    K.notice_board(B, 8.7, 14.3, 0.0, 0.0, w=0.8, zc=1.6, seed=9)
+    B.thing("staff_rota", "board", (8.7, 14.25, 1.6), 0.0, topic="rota")
+    K.mailboxes(B, 10.4, 14.3, 0.0, 0.0, cols=4, rows=3, zc=1.3, seed=3)
+    B.thing("staff_pigeonholes", "board", (10.4, 14.2, 1.3), 0.0, topic="pigeonholes")
+    B.spot("staff_rota_stand", "stand", (9.6, 13.2, 0.0), 180.0)
+    # ---------------------------------------------------------------- gym: lockers with notes, vaulting horse, records
+    K.lockers(B, 13.7, 41.9, 0.0, 270.0, n=4, mat="CT_PlasterGreen")
+    B.thing("gym_lockers", "board", (13.2, 41.9, 1.2), 270.0, topic="lockers")
+    B.spot("gym_lockers_stand", "stand", (12.2, 41.9, 0.0), 90.0)
+    K.vaulting_horse(B, -3.5, 52.5, 0.0, 0.0)
+    f.put(_springboard_piece, -3.5, 51.3, 0.0)
+    B.thing("gym_vault", "sport", (-3.5, 52.5, 1.1), 0.0, what="vault")
+    B.spot("gym_vault_run", "stand", (-3.5, 49.8, 0.0), 180.0)
+    K.notice_board(B, -13.7, 49.3, 0.0, 90.0, w=1.2, zc=1.7, seed=11)
+    B.thing("gym_records", "board", (-13.6, 49.3, 1.7), 90.0, topic="records")
+    B.spot("gym_records_stand", "stand", (-12.4, 49.3, 0.0), 270.0)
+    # ---------------------------------------------------------------- canteen: pupils' drawings, dish board
+    for k, xx in enumerate((25.4, 25.85, 26.3)):
+        K.picture(B, xx, 15.76, 0.0, 180.0, name="paper_drawing", w=0.34, zc=1.5, seed=20 + k)
+    B.thing("canteen_drawings", "board", (25.85, 15.9, 1.5), 180.0, topic="drawings")
+    B.spot("canteen_drawings_stand", "stand", (25.85, 17.0, 0.0), 0.0)
+    K.menu_board(B, 29.4, 39.94, 0.0, 0.0, name="price_1", w=0.5, zc=1.9)
+    B.thing("canteen_dishes", "board", (29.4, 39.85, 1.9), 0.0, topic="dishes")
+    B.spot("canteen_dishes_stand", "stand", (29.2, 38.6, 0.0), 180.0)
 
 
 def build(B):
@@ -293,29 +1070,6 @@ def build(B):
     _spandrels(B, FB, 40.0, GRID, "CT_PlasterYellow")
     B.entrance("court", (0.0, SY1, 0.0), 180.0, width=2.4, height=2.4, kind="street", leaves=2)
     # hall rear wall pieces inside: the hall interior is y 6.3..15.7, its end is the back facade (inner face hidden)
-    # ---- classroom: desks, board, teacher
-    for r, y in enumerate((7.6, 8.9, 10.2, 11.5)):
-        for c, x in enumerate((-16.4, -14.0, -11.6, -9.2)):
-            _desk(d, x, y)
-            B.spot("seat_%d_%d" % (r, c), "seat", (x, y - 0.1, 0.0), 180.0)
-    box(d, "CT_Steel", -16.0, -11.0, IY1 - 0.04, IY1, 1.0, 2.2)
-    box(d, "CT_Wood", -17.0, -14.5, 12.5, 13.1, 0.72, 0.76)
-    box(d, "CT_Steel", -16.98, -16.94, 12.52, 12.58, 0.0, 0.72)
-    box(d, "CT_Steel", -14.56, -14.52, 12.52, 12.58, 0.0, 0.72)
-    B.spot("teacher", "work", (-15.7, 13.6, 0.0), 0.0)
-    # ---- staff room
-    tx, ty = 11.2, 10.5
-    box(d, "CT_Wood", tx - 1.4, tx + 1.4, ty - 0.55, ty + 0.55, 0.72, 0.77)
-    for dx in (-1.3, 1.3):
-        for dy in (-0.45, 0.45):
-            box(d, "CT_Steel", tx + dx - 0.03, tx + dx + 0.03, ty + dy - 0.03, ty + dy + 0.03, 0.0, 0.72)
-    for dx in (-0.8, 0.0, 0.8):
-        for sy in (-1, 1):
-            cy_ = ty + sy * 0.95
-            box(d, "CT_Wood", tx + dx - 0.22, tx + dx + 0.22, cy_ - 0.22, cy_ + 0.22, 0.44, 0.48)
-            box(d, "CT_Steel", tx + dx - 0.22, tx + dx + 0.22, cy_ + sy * 0.2 - 0.015, cy_ + sy * 0.2 + 0.015, 0.48, 0.88)
-    box(d, "CT_Wood", 8.0, 14.6, IY1 - 0.5, IY1, 0.0, 1.9)                  # cupboards along the back wall
-    B.spot("staff_table", "table", (tx, ty, 0.0), 0.0)
     # ---- hall benches
     for x in (-5.5, 5.5):
         box(d, "CT_Wood", x - 1.0, x + 1.0, 14.6, 15.05, 0.42, 0.47)
@@ -323,20 +1077,33 @@ def build(B):
             box(d, "CT_Steel", u, u + 0.1, 14.65, 15.0, 0.0, 0.42)
         B.spot("hall_bench_%d" % (x > 0), "bench", (x, 14.8, 0.0), 180.0)
     _furnish(B, IY0, IY1)
+    _classroom(B, IY1)
+    _staff_room(B)
+    _hall_things(B)
     _roof(m, -30, 30, SY0, SY1)
     # ================================================================== west and east wings
     for sgn in (-1, 1):
         xo, xi = 30 * sgn, 20 * sgn
         mx0, mx1 = sorted((xo - sgn * 0.3, xi + sgn * 0.3))
-        box(m, "CT_Plaster", mx0, mx1, SY1 - 0.3, 40.0, 0.0, H2)
         box(m, "CT_Plaster", mx0, mx1, 40.0, 49.7, 0.0, H2)
         mat = "CT_Plaster"
+        door_y = [22.0, 34.0] if sgn < 0 else [26.0]
+        x0, x1 = _wing_rooms(B, sgn, door_y)                  # ground floor hollow: biology + music (W), canteen (E)
+        du = [(y - 16.0) if sgn < 0 else (40.0 - y) for y in door_y]
+        dskip = tuple(int(u // 4) for u in du)
+        dh = [(u - 1.0, u + 1.0, 0.0, 2.4) for u in du]
         if sgn < 0:
             _ribbon(B, (xo, 50.0), (xo, SY0), mat, step=3.7, acc="CT_PlasterBlue")          # outer, faces -x
-            _ribbon(B, (xi, SY1), (xi, 40.0), mat, acc="CT_PlasterYellow")                    # courtyard side, faces +x
+            _ribbon(B, (xi, SY1), (xi, 40.0), mat, acc="CT_PlasterYellow", skip_ground=dskip, doors=dh)   # courtyard side
+            B.entrance("bio", (xi, 22.0, 0.0), 90.0, width=2.0, height=2.4, kind="street", leaves=1)
+            B.entrance("music", (xi, 34.0, 0.0), 90.0, width=2.0, height=2.4, kind="street", leaves=1)
+            _bio_room(B, x0, x1)
+            _music_room(B, x0, x1)
         else:
             _ribbon(B, (xo, SY0), (xo, 50.0), mat, step=3.7, acc="CT_PlasterBlue")
-            _ribbon(B, (xi, 40.0), (xi, SY1), mat, acc="CT_PlasterYellow")
+            _ribbon(B, (xi, 40.0), (xi, SY1), mat, acc="CT_PlasterYellow", skip_ground=dskip, doors=dh)
+            B.entrance("canteen", (xi, 26.0, 0.0), 270.0, width=2.0, height=2.4, kind="street", leaves=1)
+            _canteen(B, x0, x1)
         _roof(m, min(xo, xi), max(xo, xi), SY1 - 0.3, 49.7)
     # ================================================================== north wing and hall
     for sgn in (-1, 1):
@@ -354,27 +1121,38 @@ def build(B):
     _roof(m, 14, 30, 40.0, 49.7)
     # hall block 28 x 16, walls to 8.7, saw-tooth roof to 10.8
     HZ = 8.7
-    box(m, "CT_Brick", -13.7, 13.7, 40.3, 55.7, 0.0, HZ)
+    box(m, "CT_Brick", -14.0, -13.7, 40.3, 50.0, 0.0, HZ)                   # gym side walls shared with the wings
+    box(m, "CT_Brick", 13.7, 14.0, 40.3, 50.0, 0.0, HZ)
     hh = []
     n = 7
     w = 28 / n
     for i in range(n):
         hh.append((i * w + 0.5, (i + 1) * w - 0.5, 4.5, 7.5))
     # courtyard front (faces -y), from x -14 to 14; a tall door-less glazed foyer strip + high windows
-    FHf = B.facade((-14.0, 40.0), (14.0, 40.0), 0.0, HZ, "CT_Brick", holes=hh, depth=0.3, reveal_mat="CT_ConcreteWhite", back=False)
+    FHf = B.facade((-14.0, 40.0), (14.0, 40.0), 0.0, HZ, "CT_Brick", holes=hh + [(12.8, 15.2, 0.0, 2.4)], depth=0.3, reveal_mat="CT_ConcreteWhite", back=False)
     for h in hh:
         B.facade_window(FHf, *h, kind="public", cols=3, inset=0.12)
+    B.entrance("gym", (0.0, 40.0, 0.0), 0.0, width=2.4, height=2.4, kind="street", leaves=2)
     # hall sides y 50..56 and back y=56
-    F = B.facade((-14.0, 56.0), (-14.0, 50.0), 0.0, HZ, "CT_Brick", holes=[(1.4, 3.4, 4.5, 7.5), (4.6, 6.6, 4.5, 7.5)], depth=0.3, reveal_mat="CT_ConcreteWhite", back=False)
-    for h in [(1.4, 3.4, 4.5, 7.5), (4.6, 6.6, 4.5, 7.5)]:
+    F = B.facade((-14.0, 56.0), (-14.0, 50.0), 0.0, HZ, "CT_Brick", holes=[(1.0, 2.8, 4.5, 7.5), (3.6, 5.4, 4.5, 7.5)], depth=0.3, reveal_mat="CT_ConcreteWhite", back=False)
+    for h in [(1.0, 2.8, 4.5, 7.5), (3.6, 5.4, 4.5, 7.5)]:
         B.facade_window(F, *h, kind="public", cols=2, inset=0.12)
-    F = B.facade((14.0, 50.0), (14.0, 56.0), 0.0, HZ, "CT_Brick", holes=[(1.4, 3.4, 4.5, 7.5), (4.6, 6.6, 4.5, 7.5)], depth=0.3, reveal_mat="CT_ConcreteWhite", back=False)
-    for h in [(1.4, 3.4, 4.5, 7.5), (4.6, 6.6, 4.5, 7.5)]:
+    F = B.facade((14.0, 50.0), (14.0, 56.0), 0.0, HZ, "CT_Brick", holes=[(0.6, 2.4, 4.5, 7.5), (3.2, 5.0, 4.5, 7.5)], depth=0.3, reveal_mat="CT_ConcreteWhite", back=False)
+    for h in [(0.6, 2.4, 4.5, 7.5), (3.2, 5.0, 4.5, 7.5)]:
         B.facade_window(F, *h, kind="public", cols=2, inset=0.12)
     bk = [(i * 4.0 + 0.5, (i + 1) * 4.0 - 0.5, 4.5, 7.5) for i in range(7)]
     F = B.facade((14.0, 56.0), (-14.0, 56.0), 0.0, HZ, "CT_Brick", holes=bk, depth=0.3, reveal_mat="CT_ConcreteWhite", back=False)
     for h in bk:
         B.facade_window(F, *h, kind="public", cols=2, inset=0.12)
+    # gym interior skins (brick), then the furniture
+    _skin_y(B, 40.3, -13.7, 13.7, [(-14 + i * 4 + 0.5, -14 + (i + 1) * 4 - 0.5, 4.5, 7.5) for i in range(7)] + [(-1.2, 1.2, 0.0, 2.4)], False, z1=HZ)
+    _skin_y(B, 55.7, -13.7, 13.7, [(14 - (i + 1) * 4 + 0.5, 14 - i * 4 - 0.5, 4.5, 7.5) for i in range(7)], True, z1=HZ)
+    _skin_x(B, -13.7, 40.3, 55.7, [(56 - 5.4, 56 - 3.6, 4.5, 7.5), (56 - 2.8, 56 - 1.0, 4.5, 7.5)], True, mat="CT_Brick", z1=HZ)
+    _skin_x(B, 13.7, 40.3, 55.7, [(50 + 0.6, 50 + 2.4, 4.5, 7.5), (50 + 3.2, 50 + 5.0, 4.5, 7.5)], False, mat="CT_Brick", z1=HZ)
+    _gym(B)
+    _depth(B)
+    _depth2(B)
+    _depth4(B)
     # saw-tooth roof: 4 teeth along y (each 4 m), ramps rise to +y, vertical faces glazed facing +y
     # build CCW polygon: bottom left->right (y 40->56), then back along the top from y=56 to 40
     top = [(56.0, HZ)]

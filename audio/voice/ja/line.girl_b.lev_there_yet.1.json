@@ -1,0 +1,20 @@
+{
+ "key": "line.girl_b.lev_there_yet.1",
+ "lang": "ja",
+ "text": "中庭から来たの？レフさん、もうベンチにいる？答えなくていいよ。どうせ私は行かないから。",
+ "speaker": "girl_b",
+ "voice": "Sarah",
+ "voice_id": "EXAVITQu4vr4xnSDxMaL",
+ "voice_design": null,
+ "direction": "[curious, slightly uneasy, conspiratorial]",
+ "model": "fal-ai/elevenlabs/tts/eleven-v3",
+ "request": {
+  "stability": 0.5,
+  "apply_text_normalization": "auto",
+  "text": "[curious, slightly uneasy, conspiratorial] 中庭から来たの？レフさん、もうベンチにいる？答えなくていいよ。どうせ私は行かないから。",
+  "voice": "Sarah",
+  "language_code": "ja"
+ },
+ "fal_request_id": "01a1d7b6-435d-7e52-bd36-0094a9f9665a",
+ "hash": "a1c8b38031fe"
+}

@@ -1,0 +1,20 @@
+{
+ "key": "line.owner.news_like_draught.1",
+ "lang": "ru",
+ "text": "Ходил на север, за птицей. Я слышал. Новости здесь проходят мимо будки, как сквозняк.",
+ "speaker": "owner",
+ "voice": "Daniel",
+ "voice_id": "onwK4e9ZLuTAKqWW03F9",
+ "voice_design": null,
+ "direction": "[calm, tired, slow, a little ironic]",
+ "model": "fal-ai/elevenlabs/tts/eleven-v3",
+ "request": {
+  "stability": 0.5,
+  "apply_text_normalization": "auto",
+  "text": "[calm, tired, slow, a little ironic] Ходил на север, за птицей. Я слышал. Новости здесь проходят мимо будки, как сквозняк.",
+  "voice": "Daniel",
+  "language_code": "ru"
+ },
+ "fal_request_id": "01a1d73d-66c5-7120-8b90-1d55243bb89b",
+ "hash": "ff82d4a96b9a"
+}

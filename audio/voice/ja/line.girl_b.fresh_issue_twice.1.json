@@ -1,0 +1,20 @@
+{
+ "key": "line.girl_b.fresh_issue_twice.1",
+ "lang": "ja",
+ "text": "新しい『宇宙とわたしたち』、もう二回貸し出したの。二回とも期限どおりに返ってきて、なんだか戸惑っちゃった。",
+ "speaker": "girl_b",
+ "voice": "Sarah",
+ "voice_id": "EXAVITQu4vr4xnSDxMaL",
+ "voice_design": null,
+ "direction": "[curious, slightly uneasy, conspiratorial]",
+ "model": "fal-ai/elevenlabs/tts/eleven-v3",
+ "request": {
+  "stability": 0.5,
+  "apply_text_normalization": "auto",
+  "text": "[curious, slightly uneasy, conspiratorial] 新しい『宇宙とわたしたち』、もう二回貸し出したの。二回とも期限どおりに返ってきて、なんだか戸惑っちゃった。",
+  "voice": "Sarah",
+  "language_code": "ja"
+ },
+ "fal_request_id": "01a1d6e2-a3dd-7fd3-8e2a-e3e35e220e2f",
+ "hash": "e4f8e0af6bd2"
+}

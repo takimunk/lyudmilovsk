@@ -1,0 +1,20 @@
+{
+ "key": "line.khuazhev_aslan.tent_wait.1",
+ "lang": "ru",
+ "text": "Ещё не всё попробовал? Не спеши. Кукуруза на площади, пирожок на станции, блины внизу у канатки. Голодный гость плохой рассказчик.",
+ "speaker": "khuazhev_aslan",
+ "voice": "Brian",
+ "voice_id": "nPczCjzI2devNBz1zQrb",
+ "voice_design": null,
+ "direction": "[hearty, generous, a cheese seller from the Caucasus, proud of his family's cheese]",
+ "model": "fal-ai/elevenlabs/tts/eleven-v3",
+ "request": {
+  "stability": 0.5,
+  "apply_text_normalization": "auto",
+  "text": "[hearty, generous, a cheese seller from the Caucasus, proud of his family's cheese] Ещё не всё попробовал? Не спеши. Кукуруза на площади, пирожок на станции, блины внизу у канатки. Голодный гость плохой рассказчик.",
+  "voice": "Brian",
+  "language_code": "ru"
+ },
+ "fal_request_id": "01a1d66f-f341-73c1-af07-857622a32ad3",
+ "hash": "d139b4b60e6c"
+}

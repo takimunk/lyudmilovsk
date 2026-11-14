@@ -1,0 +1,1088 @@
+{
+ "_doc": "Stacked boxes (P-T3H2) second pass. Russian is the source.",
+ "city.t3.p.tap": {
+  "ru": "E — набрать воды",
+  "en": "E — fill a bottle at the tap",
+  "ja": "E：水栓で水をくむ"
+ },
+ "city.t3.p.post": {
+  "ru": "E — прочитать часы выемки",
+  "en": "E — read the collection times",
+  "ja": "E：集配時刻を読む"
+ },
+ "city.t3.p.news": {
+  "ru": "E — прочесть объявления",
+  "en": "E — read the notices",
+  "ja": "E：お知らせを読む"
+ },
+ "city.t3.p.bench": {
+  "ru": "E — присесть на лавочку",
+  "en": "E — sit on the bench",
+  "ja": "E：ベンチに腰かける"
+ },
+ "city.t3.p.pots": {
+  "ru": "E — потрогать землю в горшках",
+  "en": "E — feel the soil in the pots",
+  "ja": "E：鉢の土にさわる"
+ },
+ "city.t3.p.cat": {
+  "ru": "E — погладить кошку",
+  "en": "E — stroke the cat",
+  "ja": "E：猫をなでる"
+ },
+ "city.t3.p.laundry": {
+  "ru": "E — взглянуть на бельё",
+  "en": "E — look up at the washing",
+  "ja": "E：洗濯物を見上げる"
+ },
+ "city.t3.p.view": {
+  "ru": "E — посмотреть в бинокль",
+  "en": "E — look through the binoculars",
+  "ja": "E：双眼鏡をのぞく"
+ },
+ "city.t3.p.hop": {
+  "ru": "E — попрыгать по классикам",
+  "en": "E — hop the hopscotch",
+  "ja": "E：けんけんぱをする"
+ },
+ "city.t3.p.pigeons": {
+  "ru": "E — посмотреть на голубей",
+  "en": "E — watch the pigeons",
+  "ja": "E：ハトを眺める"
+ },
+ "city.t3.p.swap": {
+  "ru": "E — взять журнал с полки обмена",
+  "en": "E — take a magazine from the swap shelf",
+  "ja": "E：交換棚から雑誌を一冊もらう"
+ },
+ "city.t3.p.bike": {
+  "ru": "E — осмотреть велосипед",
+  "en": "E — look the bicycle over",
+  "ja": "E：自転車をよく見る"
+ },
+ "city.t3.p.tomatoes": {
+  "ru": "E — полить помидоры",
+  "en": "E — water the tomatoes",
+  "ja": "E：トマトに水をやる"
+ },
+ "city.t3.p.herbs": {
+  "ru": "E — полить травы",
+  "en": "E — water the herbs",
+  "ja": "E：ハーブに水をやる"
+ },
+ "city.t3.p.sunflowers": {
+  "ru": "E — полить подсолнухи",
+  "en": "E — water the sunflowers",
+  "ja": "E：ヒマワリに水をやる"
+ },
+ "city.t3.p.barrel": {
+  "ru": "E — зачерпнуть из бочки",
+  "en": "E — scoop water from the barrel",
+  "ja": "E：樽の水をすくう"
+ },
+ "city.t3.p.frame": {
+  "ru": "E — приподнять стекло парника",
+  "en": "E — lift the cold frame's glass",
+  "ja": "E：温床のガラスを持ち上げる"
+ },
+ "city.t3.p.apple": {
+  "ru": "E — подобрать яблоко",
+  "en": "E — pick up an apple",
+  "ja": "E：リンゴを拾う"
+ },
+ "city.t3.p.feeder": {
+  "ru": "E — заглянуть в кормушку",
+  "en": "E — look into the feeder",
+  "ja": "E：餌台をのぞく"
+ },
+ "city.t3.p.sign": {
+  "ru": "E — прочесть табличку",
+  "en": "E — read the sign",
+  "ja": "E：看板を読む"
+ },
+ "city.t3.p.rview": {
+  "ru": "E — выглянуть за перила",
+  "en": "E — look over the rail",
+  "ja": "E：手すりから見下ろす"
+ },
+ "city.t3.p.door": {
+  "ru": "E — постучать в открытую дверь",
+  "en": "E — knock at the open door",
+  "ja": "E：開いたドアをノックする"
+ },
+ "city.t3.p.armchair": {
+  "ru": "E — сесть в кресло у окна",
+  "en": "E — sit in the window armchair",
+  "ja": "E：窓辺の肘掛け椅子に座る"
+ },
+ "city.t3.p.chair": {
+  "ru": "E — присесть к столу",
+  "en": "E — sit down at the table",
+  "ja": "E：テーブルにつく"
+ },
+ "city.t3.p.desk": {
+  "ru": "E — присесть за письменный стол",
+  "en": "E — sit at the desk",
+  "ja": "E：机につく"
+ },
+ "city.t3.p.notebook": {
+  "ru": "E — открыть тетрадь семян",
+  "en": "E — open the seed notebook",
+  "ja": "E：種のノートを開く"
+ },
+ "city.t3.p.letters": {
+  "ru": "E — разобрать письма",
+  "en": "E — go through the letters",
+  "ja": "E：手紙を読む"
+ },
+ "city.t3.p.packets": {
+  "ru": "E — рассмотреть пакетики семян",
+  "en": "E — look over the seed packets",
+  "ja": "E：種の袋を見る"
+ },
+ "city.t3.p.books": {
+  "ru": "E — снять книгу с полки",
+  "en": "E — take a book from the shelf",
+  "ja": "E：棚から本を取る"
+ },
+ "city.t3.p.kettle": {
+  "ru": "E — поставить чайник",
+  "en": "E — put the kettle on",
+  "ja": "E：やかんを火にかける"
+ },
+ "city.t3.p.radio": {
+  "ru": "E — включить приёмник",
+  "en": "E — switch the radio on",
+  "ja": "E：ラジオをつける"
+ },
+ "city.t3.p.jar": {
+  "ru": "E — открыть банку с семенами",
+  "en": "E — open the jar of seeds",
+  "ja": "E：種の瓶を開ける"
+ },
+ "city.t3.p.sill_e": {
+  "ru": "E — осмотреть рассаду",
+  "en": "E — look over the seedlings",
+  "ja": "E：苗を見る"
+ },
+ "city.t3.p.sill_w": {
+  "ru": "E — осмотреть горшки на окне",
+  "en": "E — look over the pots on the sill",
+  "ja": "E：窓辺の鉢を見る"
+ },
+ "city.t3.p.window": {
+  "ru": "E — выглянуть в окно",
+  "en": "E — look out of the window",
+  "ja": "E：窓の外を見る"
+ },
+ "city.t3.p.photo": {
+  "ru": "E — рассмотреть фотографию",
+  "en": "E — look at the photograph",
+  "ja": "E：写真を見る"
+ },
+ "city.t3.p.bed": {
+  "ru": "E — присмотреться к кровати",
+  "en": "E — look at the bed",
+  "ja": "E：ベッドを見る"
+ },
+ "city.t3.p.sofa": {
+  "ru": "E — лечь на диван",
+  "en": "E — lie down on the sofa",
+  "ja": "E：ソファに横になる"
+ },
+ "city.t3.p.note": {
+  "ru": "E — прочесть записку",
+  "en": "E — read the note",
+  "ja": "E：書き置きを読む"
+ },
+ "city.t3.tap.1": {
+  "ru": "Чугунная колонка с красной ручкой. Вода ледяная и пахнет камнем; на донышке ведра звенит последняя вчерашняя капля.",
+  "en": "A cast-iron standpipe with a red handle. The water is icy and smells of stone; at the bottom of the bucket yesterday's last drop rings.",
+  "ja": "赤いハンドルの鋳鉄の水栓。水は氷のように冷たく、石の匂いがする。バケツの底で昨日の最後の一滴が鳴る。"
+ },
+ "city.t3.tap.2": {
+  "ru": "Над колонкой приколота записка кнопкой: «Воду для крыши брать здесь. Не лейте на лестницу — мёрзнет. А. Б.»",
+  "en": "A note is pinned over the tap: \"Take roof water here. Don't spill on the stairs, it freezes. A. B.\"",
+  "ja": "水栓の上に画びょうで書き置き。「屋根の水はここで。階段にこぼさないで、凍ります。A・B」"
+ },
+ "city.t3.tap.3": {
+  "ru": "Решётка под колонкой чисто промыта: кто-то метёт здесь по утрам. Ведро новое, голубое, с выбитой цифрой «3».",
+  "en": "The grating under the tap is rinsed clean: somebody sweeps here in the mornings. The bucket is new and blue, with a \"3\" stamped on it.",
+  "ja": "水栓の下の格子はきれいに洗ってある。誰かが毎朝掃いているのだ。青い新品のバケツには「3」と刻印がある。"
+ },
+ "city.t3.tap.n": {
+  "ru": "Ночью колонка капает в ведро, раз в три секунды. По всей лестнице слышно, как считают эти капли.",
+  "en": "At night the tap drips into the bucket, once every three seconds. All the way up the stairs you can hear the drops being counted.",
+  "ja": "夜、水栓は三秒に一度バケツに滴を落とす。階段じゅうにその数える音が響く。"
+ },
+ "city.t3.tap.cold": {
+  "ru": "Колонка обмотана тряпкой и перевязана бечёвкой. Вода идёт тонкой жилкой: ещё ночь, и замёрзнет совсем.",
+  "en": "The tap is wrapped in rags and tied with string. The water comes in a thin thread: one more night and it will freeze solid.",
+  "ja": "水栓はぼろ布で巻かれ、麻ひもで縛られている。水は細い糸のように出る。あと一晩で凍りつきそうだ。"
+ },
+ "city.t3.tap.rain": {
+  "ru": "В дождь вода из колонки рядом с дождевой почти не отличается. Ведро наполняется само, пока ты стоишь.",
+  "en": "In the rain the tap water is hard to tell from the rain itself. The bucket fills by itself while you stand there.",
+  "ja": "雨の日は水栓の水と雨水の区別がほとんどつかない。立っているうちにバケツがひとりでに満ちる。"
+ },
+ "city.t3.post.m": {
+  "ru": "Жёлтый ящик с рожком. Табличка: «Выемка: 10, 16, 20. По воскресеньям не вынимают». Щель чуть шире, чем нужно: кто-то опускал открытки.",
+  "en": "A yellow postbox with a post-horn. The plate: \"Collections: 10, 16, 20. None on Sundays.\" The slot is a little wider than it should be: someone has been posting postcards.",
+  "ja": "角笛の印がついた黄色い郵便箱。札には「集配 10時・16時・20時。日曜は集配なし」。投入口は少し広い。誰かが絵はがきを入れたのだ。"
+ },
+ "city.t3.post.d": {
+  "ru": "Утреннюю выемку уже сделали: в щели никакого шороха. Следующая в шестнадцать. На жестяной дверце наклейка: «Почта — друг пешехода».",
+  "en": "The morning collection has gone: nothing rustles in the slot. The next is at 16:00. A sticker on the tin flap: \"The post is a pedestrian's friend.\"",
+  "ja": "朝の集配はもう済んでいる。投入口には音もない。次は16時。ブリキの扉に「郵便は歩く人の友」のシール。"
+ },
+ "city.t3.post.e": {
+  "ru": "К вечерней выемке в ящике лежит стопка: кто-то написал полдюжины открыток сразу. На верхней адрес в Ниигате.",
+  "en": "By the evening collection there is a stack inside: somebody wrote half a dozen postcards at once. The top one is addressed to Niigata.",
+  "ja": "夕方の集配前、箱の中には束がある。誰かが一度に半ダースも絵はがきを書いたのだ。いちばん上の宛先は新潟。"
+ },
+ "city.t3.post.n": {
+  "ru": "Ночью ящик холодный и тёмный. Ключ от него у почтальона, а у ящика на двери нацарапано чьё-то «спасибо» гвоздём.",
+  "en": "At night the box is cold and dark. The postman has the key, and on the door someone has scratched a \"thank you\" with a nail.",
+  "ja": "夜の箱は冷たく暗い。鍵は郵便配達人が持ち、扉には誰かが釘で「ありがとう」と引っかいている。"
+ },
+ "city.t3.post.sun": {
+  "ru": "Сегодня воскресенье: выемки не будет. Но ящик всё равно принимает, письма просто полежат до понедельника.",
+  "en": "It is Sunday: there will be no collection. The box takes letters anyway; they will just wait until Monday.",
+  "ja": "今日は日曜日で集配はない。それでも箱は手紙を受け取る。月曜日まで待つだけだ。"
+ },
+ "city.t3.news.1": {
+  "ru": "Соседи! У А. Брандт (3-03, дверь на третьем уровне всегда приоткрыта) сломано запястье. Воду для грядок на крыше носить некому. Колонка на втором уровне, лейка в бочке на крыше. Спасибо. Агата.",
+  "en": "Neighbours! A. Brandt (3-03, the door on level three is always ajar) has broken her wrist. Nobody can carry water to the beds on the roof. The tap is on level two, the can is in the barrel on the roof. Thank you. Agata.",
+  "ja": "ご近所のみなさんへ。A・ブラント（3-03、3階層のドアはいつも開いています）が手首を骨折しました。屋根の畑に水を運ぶ人がいません。水栓は2階層、じょうろは屋根の樽の中です。よろしく。アガタ。"
+ },
+ "city.t3.news.2": {
+  "ru": "Стирка на канатах над каньоном общая. Чужое не снимать, свои прищепки метить краской. Совет дома.",
+  "en": "The washing lines over the canyon are shared. Don't take down other people's things, mark your pegs with paint. The house committee.",
+  "ja": "谷の上の洗濯ロープは共用です。他人の物を外さないこと。洗濯ばさみには自分の印を。住民委員会。"
+ },
+ "city.t3.news.3": {
+  "ru": "Ящик на втором уровне выдувает письма ветром. Закрывайте щеколду. Выемка в десять, шестнадцать и двадцать.",
+  "en": "The box on level two lets the wind take the letters. Latch the flap. Collections at ten, sixteen and twenty.",
+  "ja": "2階層の投函箱は風で手紙が飛びます。掛け金をかけてください。集配は10時・16時・20時。"
+ },
+ "city.t3.news.4": {
+  "ru": "Серая кошка с белыми лапками нашлась: сидит на третьем уровне у миски. Колбасой не кормить. Кто хочет, оставляйте ей рыбные головы, лучше мелкие.",
+  "en": "The grey cat with white paws has been found: she sits on level three by her bowl. No sausage, please. Anyone who likes may leave her fish heads, small ones for preference.",
+  "ja": "白い足先の灰色の猫が見つかりました。3階層の皿のそばにいます。ソーセージは禁止。魚の頭なら、小さめのものを置いてあげてください。"
+ },
+ "city.t3.news.5": {
+  "ru": "Помидоры «Розовое сердце» на крыше 3-03 начинают краснеть. Первые плоды первым поливальщикам. Агата просит: подсолнухи в дождь не поливать, они обидятся. А вообще спасибо.",
+  "en": "The \"Pink Heart\" tomatoes on the roof of 3-03 are starting to blush. The first fruit goes to the first waterers. Agata asks: don't water the sunflowers in the rain, they will take offence. And thank you, generally.",
+  "ja": "3-03の屋根の「ピンクのハート」トマトが色づき始めました。最初の実は最初に水をくれた人に。アガタより。雨の日にヒマワリへ水をやらないで、すねるので。それと、ありがとう。"
+ },
+ "city.t3.news.6": {
+  "ru": "Лампа на площадке четвёртого уровня перегорела. Заменю в субботу. Кому не лень, несите лампочку на сорок ватт.",
+  "en": "The lamp on the landing of level four has burned out. I'll change it on Saturday. Whoever can be bothered, bring a forty-watt bulb.",
+  "ja": "4階層の踊り場の電球が切れました。土曜に替えます。気が向いた方は40ワットの電球を持ってきてください。"
+ },
+ "city.t3.news.7": {
+  "ru": "В воскресенье на крыше 3-03 чай в четыре. Пирога нет, чай есть. Ноги вытирать. Агата.",
+  "en": "On Sunday there is tea on the roof of 3-03 at four. No pie, but there is tea. Wipe your feet. Agata.",
+  "ja": "日曜の4時、3-03の屋根でお茶会。パイはありませんが、お茶はあります。足は拭いてください。アガタ。"
+ },
+ "city.t3.news.8": {
+  "ru": "Агата благодарит всех, кто поливал: яблоня дала девять яблок. Берите по одному, остальное на пастилу.",
+  "en": "Agata thanks everyone who watered: the apple tree has given nine apples. Take one each, the rest is for fruit leather.",
+  "ja": "水やりをしてくれた皆さんへ、アガタより。リンゴの木が九つ実をつけました。ひとり一つずつどうぞ。残りは果物の干し菓子にします。"
+ },
+ "city.t3.news.9": {
+  "ru": "В субботу красим перила в синий. Кисти приносить свои, краска общая, пол не лить. Совет дома.",
+  "en": "On Saturday we paint the handrails blue. Bring your own brushes, the paint is shared, don't spill it on the floor. The house committee.",
+  "ja": "土曜に手すりを青く塗ります。刷毛は各自持参、ペンキは共用、床にこぼさないこと。住民委員会。"
+ },
+ "city.t3.news.r": {
+  "ru": "В дождь на лестнице скользко. Держитесь за перила и не торопитесь, здесь не гонки. Совет дома.",
+  "en": "The stairs are slippery in the rain. Hold the rail and don't hurry, this is not a race. The house committee.",
+  "ja": "雨の日は階段が滑ります。手すりにつかまって急がないで。ここは競走ではありません。住民委員会。"
+ },
+ "city.t3.news.f": {
+  "ru": "С праздником, дом! Шторы открыть, на крыше зажечь гирлянду. Кто пройдёт мимо двери 3-03, зайдёт на минуту: у Агаты чайник.",
+  "en": "Happy holiday, house! Open the curtains, light the string of bulbs on the roof. Whoever passes the door of 3-03, drop in for a minute: Agata has the kettle on.",
+  "ja": "家のみなさん、お祝いの日です。カーテンを開け、屋根の電飾をつけましょう。3-03の前を通る人は、ちょっと寄ってください。アガタがやかんをかけています。"
+ },
+ "city.t3.bench.1": {
+  "ru": "Под окном 3-03 тёплая стена. Через стекло глухо бормочет приёмник, иногда что-то про погоду на побережье. Хорошо, что окно так низко.",
+  "en": "The wall under the window of 3-03 is warm. Through the glass a radio mutters, now and then something about the weather on the coast. It's good the window is so low.",
+  "ja": "3-03の窓の下の壁は温かい。ガラス越しにラジオのつぶやきが聞こえる。ときどき沿岸の天気の話だ。窓が低くてよかった。"
+ },
+ "city.t3.bench.2": {
+  "ru": "Отсюда видно каньон поперёк: напротив окна, бельё, перила, кусок неба. И никого, кто бы ждал, что ты пойдёшь дальше.",
+  "en": "From here you see across the canyon: windows opposite, washing, rails, a patch of sky. And nobody waiting for you to move on.",
+  "ja": "ここからは谷を横切って見える。向かいの窓、洗濯物、手すり、空の切れはし。先へ進めと急かす人はいない。"
+ },
+ "city.t3.bench.n": {
+  "ru": "Ночью на лавочке прохладно, зато слышно, как внутри Агата переворачивает страницу тетради. Окно светится жёлтым.",
+  "en": "At night the bench is cool, but you can hear Agata inside turning a page of her notebook. The window glows yellow.",
+  "ja": "夜のベンチは冷える。それでも中でアガタがノートをめくる音が聞こえる。窓は黄色く光っている。"
+ },
+ "city.t3.pots.1": {
+  "ru": "В горшках земля сухая сверху и влажная в глубине: Агата поливает из чайника на длинном носу, по чуть-чуть, каждое утро.",
+  "en": "In the pots the soil is dry on top and damp below: Agata waters from a long-spouted kettle, a little at a time, every morning.",
+  "ja": "鉢の土は表面は乾き、深くは湿っている。アガタは細長い口のやかんで、毎朝少しずつ水をやる。"
+ },
+ "city.t3.pots.2": {
+  "ru": "Папоротник у окна выставлен на площадку «подышать». На горшке бирка: «Не пересаживать, он знает, где ему хорошо».",
+  "en": "The fern by the window has been put out on the landing \"to breathe\". A tag on the pot: \"Don't repot, he knows where he is happy.\"",
+  "ja": "窓辺のシダは「息抜き」に踊り場へ出されている。鉢の札には「植え替えないで。居心地のいい場所は知っています」。"
+ },
+ "city.t3.pots.rain": {
+  "ru": "Горшки поставлены под навес, чтобы их не залило. Только кактус стоит под дождём и не возражает.",
+  "en": "The pots have been moved under the overhang so the rain won't drown them. Only the cactus stands out in the rain and doesn't mind.",
+  "ja": "鉢は雨に打たれないよう庇の下に移してある。サボテンだけは雨ざらしで、気にしていない。"
+ },
+ "city.t3.pots.cold": {
+  "ru": "На ночь горшки внесли внутрь: на площадке только пустые блюдца с тонкой ледяной корочкой.",
+  "en": "The pots have been taken in for the night: only empty saucers with a thin crust of ice are left on the landing.",
+  "ja": "鉢は夜のうちに中へ入れられた。踊り場には薄い氷の張った空の受け皿だけが残っている。"
+ },
+ "city.t3.cat.m": {
+  "ru": "Серая кошка ждёт у миски, как будто миска может прийти к ней сама. Ты проводишь по спине: она смотрит мимо тебя на лестницу.",
+  "en": "The grey cat waits by her bowl as if the bowl might come to her by itself. You stroke her back: she looks past you at the stairs.",
+  "ja": "灰色の猫が皿のそばで待っている。皿がひとりでに来るとでもいうように。背をなでても、猫は君の向こうの階段を見ている。"
+ },
+ "city.t3.cat.d": {
+  "ru": "Кошка спит на тёплом бетоне, подобрав белые лапки. На любое прикосновение отвечает одним ухом.",
+  "en": "The cat is asleep on the warm concrete, white paws tucked in. She answers any touch with one ear.",
+  "ja": "猫は温かいコンクリートの上で白い足をそろえて眠っている。触れられると片方の耳だけで答える。"
+ },
+ "city.t3.cat.e": {
+  "ru": "Вечером кошка сидит стороже: смотрит вниз, на дворовые огни. Тихо мурлычет, когда ты рядом, и не оборачивается.",
+  "en": "In the evening the cat sits like a sentry: she watches the yard lights below. She purrs softly when you are near and doesn't turn.",
+  "ja": "夕方の猫は見張りのように座り、下の中庭の灯りを見ている。君がそばにいると小さく喉を鳴らすが、振り向かない。"
+ },
+ "city.t3.cat.n": {
+  "ru": "Миска пуста и вылизана до блеска. Кошки нет: она ушла по своим ночным делам. На краю миски блестит роса.",
+  "en": "The bowl is empty and licked shiny. The cat is gone about her night business. Dew glitters on the rim of the bowl.",
+  "ja": "皿は空で、ぴかぴかになるまでなめてある。猫は夜の用事で出かけている。皿の縁に露が光る。"
+ },
+ "city.t3.cat.rain": {
+  "ru": "В дождь кошка забилась под лавочку и смотрит оттуда тремя глазами: двумя своими и одним зелёным из миски.",
+  "en": "In the rain the cat has squeezed under the bench and watches from there: two of her own eyes and a green one reflected in the bowl.",
+  "ja": "雨の日、猫はベンチの下にもぐりこんで見ている。自分の目二つと、皿に映った緑の目一つで。"
+ },
+ "city.t3.laundry.1": {
+  "ru": "Над каньоном провисает верёвка с бельём: простыня как парус, рубашки, два полотенца, носок без пары. Всё плавно покачивается в сквозняке.",
+  "en": "A line sags across the canyon with washing on it: a sheet like a sail, shirts, two towels, a sock without its pair. All of it sways gently in the draught.",
+  "ja": "谷をまたいでロープがたるみ、洗濯物が下がっている。帆のようなシーツ、シャツ、タオル二枚、片方だけの靴下。すべてが風にゆっくり揺れる。"
+ },
+ "city.t3.laundry.2": {
+  "ru": "На прищепках краской нарисованы значки: рыбка, звезда, цифра «11». У каждой квартиры свои, так проще, чем ссориться.",
+  "en": "The pegs have little marks painted on them: a fish, a star, the number \"11\". Every flat has its own, which is easier than quarrelling.",
+  "ja": "洗濯ばさみには塗料で小さな印がある。魚、星、「11」の数字。各戸が自分の印を持つ。争うよりずっと簡単だ。"
+ },
+ "city.t3.laundry.mon": {
+  "ru": "По понедельникам верёвки заняты целиком: понедельник в этом доме стирают все сразу, а потом полдня говорят о погоде.",
+  "en": "On Mondays the lines are full from end to end: in this house everybody washes on Monday and then talks about the weather for half the day.",
+  "ja": "月曜日はロープが端から端まで埋まる。この家では月曜に皆が一斉に洗濯し、その後、半日お天気の話をする。"
+ },
+ "city.t3.laundry.rain": {
+  "ru": "В дождь бельё сняли заранее. Верёвка висит пустая, только одна забытая прищепка раскачивается на ней, как язычок колокола.",
+  "en": "In the rain the washing was brought in early. The line hangs empty, only one forgotten peg swings on it like a bell's clapper.",
+  "ja": "雨の日、洗濯物は早めに取り込まれた。ロープは空で、忘れられた洗濯ばさみがひとつ、鐘の舌のように揺れている。"
+ },
+ "city.t3.laundry.n": {
+  "ru": "Ночью бельё на верёвке тёмное и тяжёлое; сквозняк играет с краем простыни. Хочется пройти на цыпочках.",
+  "en": "At night the washing on the line is dark and heavy; the draught plays with the edge of the sheet. You feel like tiptoeing past.",
+  "ja": "夜、ロープの洗濯物は暗く重い。風がシーツの端をもてあそぶ。つま先立ちで通りたくなる。"
+ },
+ "city.t3.view.1": {
+  "ru": "Сверху вниз по каньону, как по трубе: ступени, перила, белое бельё. На дне, в конце, узкая полоска двора и улица.",
+  "en": "Down the canyon as down a pipe: steps, rails, white washing. At the very end a narrow strip of yard and the street.",
+  "ja": "谷を筒の中のように見下ろす。階段、手すり、白い洗濯物。いちばん奥に中庭の細い帯と通りが見える。"
+ },
+ "city.t3.view.2": {
+  "ru": "За крышами нижних рядов виден кусок моря: серая лента с белой точкой. Точка — это буксир, он стоит уже второй час.",
+  "en": "Beyond the roofs of the lower rows a piece of sea shows: a grey ribbon with a white dot. The dot is a tug, and it has been standing for two hours.",
+  "ja": "低い列の屋根の向こうに海のかけらが見える。白い点のついた灰色のリボン。点は曳き船で、もう二時間も止まっている。"
+ },
+ "city.t3.view.3": {
+  "ru": "Правее моря торчит тонкая игла маяка. Днём она белая и ничего не делает, зато как будто смотрит на тебя в ответ.",
+  "en": "To the right of the sea a thin needle of the lighthouse stands. By day it is white and does nothing, and yet it seems to look back at you.",
+  "ja": "海の右手に灯台の細い針が立つ。昼は白く何もしないが、こちらを見返しているように思える。"
+ },
+ "city.t3.view.fog": {
+  "ru": "Туман съел море и маяк. Остался каньон, лестница и бинокль, который послушно показывает серую вату.",
+  "en": "The fog has eaten the sea and the lighthouse. What remains is the canyon, the stairs and a pair of binoculars faithfully showing grey wool.",
+  "ja": "霧が海も灯台も飲みこんだ。残るのは谷と階段と、灰色の綿を律儀に映す双眼鏡だけ。"
+ },
+ "city.t3.view.rain": {
+  "ru": "В дождь окуляры запотевают, но видно главное: вода стекает по лестнице тонкими ручейками, как будто дом тоже умывается.",
+  "en": "In the rain the eyepieces mist up, but the main thing shows: water runs down the stairs in thin streams, as if the house were washing its face.",
+  "ja": "雨の日は接眼レンズが曇る。それでも大事なことは見える。水が階段を細い筋になって流れる。家も顔を洗っているようだ。"
+ },
+ "city.t3.view.n": {
+  "ru": "В темноте видно, как у маяка поворачивается луч: раз, два, три, пауза. Внизу двор рассыпан жёлтыми окнами.",
+  "en": "In the dark you can see the lighthouse beam turn: one, two, three, pause. Below, the yard is scattered with yellow windows.",
+  "ja": "暗闇の中で灯台の光が回る。ひとつ、ふたつ、みっつ、間。下の中庭には黄色い窓が散らばる。"
+ },
+ "city.t3.view.n2": {
+  "ru": "Ночью каньон пуст, только лампы на площадках горят цепочкой вниз, как бусины на нитке.",
+  "en": "At night the canyon is empty, only the landing lamps burn in a chain downward like beads on a thread.",
+  "ja": "夜の谷は人気がなく、踊り場の灯りだけが糸に通したビーズのように下へ連なる。"
+ },
+ "city.t3.hop.1": {
+  "ru": "Классики нарисованы мелом по бетону: одна клетка, ещё одна, две рядом, и ломоть луны в конце. Цифры стёрты.",
+  "en": "A hopscotch drawn in chalk on the concrete: one square, another, two side by side, and a slice of moon at the end. The numbers are worn off.",
+  "ja": "コンクリートにチョークで描いたけんけんぱ。四角、もうひとつ、並んだ二つ、そして最後に半月。数字は消えている。"
+ },
+ "city.t3.hop.2": {
+  "ru": "Прыгаешь: левой, правой, обеими. На третьей клетке ловишь равновесие, и перила уже не кажутся такими высокими.",
+  "en": "You hop: left, right, both. On the third square you catch your balance, and the rail no longer seems quite so high.",
+  "ja": "左、右、両足と跳ぶ。三つ目の四角でバランスを取ると、手すりもそれほど高く感じない。"
+ },
+ "city.t3.hop.3": {
+  "ru": "Кто-то подрисовал в последней клетке: «Домой!». Прыгнуть туда с первого раза не получается ни у кого.",
+  "en": "Someone has added in the last square: \"Home!\". Nobody manages to land in it on the first go.",
+  "ja": "最後の四角に誰かが書き足している。「おうち！」。最初の一回でそこに着地できた人はいない。"
+ },
+ "city.t3.hop.n": {
+  "ru": "В темноте мела почти не видно. Прыгаешь на ощупь, по памяти, и один раз ставишь ногу точно в самую середину.",
+  "en": "In the dark the chalk is hardly visible. You hop by feel, from memory, and once you set your foot exactly in the middle.",
+  "ja": "暗くてチョークはほとんど見えない。感覚と記憶で跳び、一度だけ真ん中にぴたりと足が収まる。"
+ },
+ "city.t3.pigeons.1": {
+  "ru": "Три голубя гуляют по площадке с видом домоуправов: один сизый, один с белой манишкой, один просто толстый. На тебя смотрят без интереса.",
+  "en": "Three pigeons stroll the landing like caretakers: one blue-grey, one with a white bib, one simply fat. They look at you without interest.",
+  "ja": "ハトが三羽、管理人のような顔で踊り場を歩く。青灰色のが一羽、白い胸あてのが一羽、ただ太っているのが一羽。君には関心がなさそうだ。"
+ },
+ "city.t3.pigeons.2": {
+  "ru": "Голуби не боятся лестницы: взлетают на перила, потом снова спускаются. Одному нравится ходить по буквам «3» на ящиках.",
+  "en": "The pigeons aren't afraid of the stairs: they fly up onto the rail, then walk down again. One likes to walk on the \"3\" painted on the boxes.",
+  "ja": "ハトは階段を怖がらない。手すりに飛びあがり、また歩いて降りる。一羽は箱に描かれた「3」の字の上を歩くのが好きだ。"
+ },
+ "city.t3.pigeons.rain": {
+  "ru": "В дождь голуби сидят под козырьком в ряд, нахохлившись, и смотрят на воду. Ты понимаешь их.",
+  "en": "In the rain the pigeons sit in a row under the overhang, fluffed up, watching the water. You understand them.",
+  "ja": "雨の日、ハトは庇の下で一列に並び、羽をふくらませて水を眺めている。君にはその気持ちがわかる。"
+ },
+ "city.t3.pigeons.n": {
+  "ru": "Ночью голуби спят на перилах, прижавшись друг к другу. Один открывает глаз и снова закрывает.",
+  "en": "At night the pigeons sleep on the rail, pressed together. One opens an eye and shuts it again.",
+  "ja": "夜、ハトは手すりで寄り添って眠る。一羽が目を開け、また閉じる。"
+ },
+ "city.t3.swap.1": {
+  "ru": "Узкий шкафчик на площадке, табличка: «Возьми одно, оставь одно». На полках журналы про путешествия, один про сады, один про велосипеды.",
+  "en": "A narrow cupboard on the landing with a sign: \"Take one, leave one.\" On the shelves, travel magazines, one about gardens, one about bicycles.",
+  "ja": "踊り場の細い棚に札。「一冊取ったら一冊置いて」。旅の雑誌が並び、庭の雑誌と自転車の雑誌が一冊ずつ。"
+ },
+ "city.t3.swap.2": {
+  "ru": "Ты берёшь журнал, а вместо него по правилам что-то оставляешь: старую открытку, найденную в кармане. Дверца защёлкивается сама.",
+  "en": "You take a magazine and, by the rules, leave something instead: an old postcard you found in your pocket. The door clicks shut by itself.",
+  "ja": "雑誌を一冊取り、決まりどおり代わりに何か置く。ポケットにあった古い絵はがき。扉はひとりでにカチッと閉まる。"
+ },
+ "city.t3.swap.n": {
+  "ru": "Ночью шкафчик закрыт на ржавый крючок, за стеклом видны корешки. Кто-то оставил ему аккуратную записку: «До утра».",
+  "en": "At night the cupboard is shut with a rusty hook; the spines show through the glass. Someone has left it a tidy note: \"Till morning.\"",
+  "ja": "夜、棚は錆びた掛け金で閉じ、ガラスごしに背表紙が見える。誰かがきちんとした張り紙を残している。「朝まで」。"
+ },
+ "city.t3.bike.1": {
+  "ru": "Зелёный велосипед стоит, прислонившись к стене, как человек, у которого устала спина. Цепь смазана, звонок тугой, на раме наклейка «Лиепая».",
+  "en": "A green bicycle stands leaning on the wall like a person with a tired back. The chain is oiled, the bell stiff, and on the frame a sticker says \"Liepaja\".",
+  "ja": "緑の自転車が、疲れた背中のように壁にもたれている。チェーンには油、ベルは固く、フレームに「リエパーヤ」のステッカー。"
+ },
+ "city.t3.bike.2": {
+  "ru": "На багажнике прищеплена клеёнка с надписью «Не мой, но я его люблю». Хозяин, видимо, добродушный человек.",
+  "en": "An oilcloth is clipped to the rack with a note: \"Not mine, but I love it.\" The owner is evidently a good-natured person.",
+  "ja": "荷台にビニールクロスが留めてあり、「私のではないけれど好き」と書いてある。持ち主は人のいい人らしい。"
+ },
+ "city.t3.bike.n": {
+  "ru": "Ночью велосипед пристёгнут тонкой цепочкой к перилам. Замка нет, цепочка скорее вежливая, чем надёжная.",
+  "en": "At night the bicycle is fastened to the rail with a thin chain. There is no lock; the chain is more polite than secure.",
+  "ja": "夜、自転車は細い鎖で手すりにつながれている。鍵はない。鎖は頑丈というより礼儀正しい。"
+ },
+ "city.t3.tomato.1": {
+  "ru": "Двенадцать кустов на колышках, привязаны полосками старой простыни. Земля тёмная, внизу влажная. Вода уходит в неё без следа и без сожаления.",
+  "en": "Twelve bushes on stakes, tied with strips of an old sheet. The soil is dark and damp below. The water goes into it without a trace and without regret.",
+  "ja": "支柱に十二株、古いシーツの細い布で結んである。土は黒く、下は湿っている。水は跡形もなく、未練もなく吸い込まれていく。"
+ },
+ "city.t3.tomato.2": {
+  "ru": "На колышке бирка: «Розовое сердце, Каунас, 1994». Кусты тяжёлые от зелёных плодов; два уже розовеют с одного бока.",
+  "en": "A tag on a stake: \"Pink Heart, Kaunas, 1994\". The bushes are heavy with green fruit; two are already blushing on one side.",
+  "ja": "支柱の札には「ピンクのハート、カウナス、1994」。茂みは青い実で重たく、二つはもう片側が赤らんでいる。"
+ },
+ "city.t3.tomato.3": {
+  "ru": "Ты поливаешь у корня, как велено в записке: не на листья, не днём, не из ведра, а из лейки с ситечком. Пахнет томатной ботвой.",
+  "en": "You water at the root as the note says: not on the leaves, not at midday, not from the bucket but from the can with the rose. It smells of tomato leaf.",
+  "ja": "書き置きのとおり根元に水をやる。葉にかけず、昼を避け、バケツではなく散水口つきのじょうろで。トマトの葉の匂いがする。"
+ },
+ "city.t3.tomato.rain": {
+  "ru": "Дождь поливает томаты за тебя. Ты стоишь рядом с пустой лейкой и ничего не добавляешь, что тоже вид заботы.",
+  "en": "The rain is watering the tomatoes for you. You stand beside an empty can and add nothing, which is also a form of care.",
+  "ja": "雨がトマトの代わりに水をやってくれる。君は空のじょうろを持って何も足さずに立つ。それも世話のうちだ。"
+ },
+ "city.t3.tomato.cold": {
+  "ru": "Утром на листьях иней. Куст у стены накрыт полотном: Агата помнит о заморозках, даже когда рука в гипсе.",
+  "en": "There is frost on the leaves this morning. The bush by the wall is covered with a cloth: Agata remembers the frosts even with her arm in plaster.",
+  "ja": "朝、葉に霜がおりている。壁ぎわの株は布で覆われている。腕にギプスをしていても、アガタは霜のことを忘れない。"
+ },
+ "city.t3.herbs.1": {
+  "ru": "Тимьян, чабрец, мята, шалфей и что-то, что Агата называет «Нино», потому что семена пришли в конверте из Тбилиси с одним этим словом.",
+  "en": "Thyme, wild thyme, mint, sage and something Agata calls \"Nino\", because the seeds came in an envelope from Tbilisi with only that word on it.",
+  "ja": "タイム、ワイルドタイム、ミント、セージ、そしてアガタが「ニノ」と呼ぶもの。トビリシからの封筒に、その一語だけを添えて種が届いたからだ。"
+ },
+ "city.t3.herbs.2": {
+  "ru": "Грядка пахнет, когда по ней проводишь рукой. На палочках грифельные таблички с названиями. «Не рвать без спроса, но и не стесняться».",
+  "en": "The bed smells when you run a hand over it. Slate markers on sticks give the names. \"Don't pick without asking, but don't be shy either.\"",
+  "ja": "手でなでると畝が香る。棒に石盤の名札が立っている。「断りなく摘まないで。でも遠慮もしないで」。"
+ },
+ "city.t3.herbs.3": {
+  "ru": "Ты поливаешь из лейки тонко, чтобы не вымыть землю у корней. Мята сразу блестит, чабрец делает вид, что ему всё равно.",
+  "en": "You water thinly so as not to wash the soil from the roots. The mint shines at once, the wild thyme pretends not to care.",
+  "ja": "根の土を流さないよう、細く水をやる。ミントはすぐに輝き、ワイルドタイムは知らん顔をする。"
+ },
+ "city.t3.herbs.rain": {
+  "ru": "Травы под дождём пахнут так, что хочется зарыться в них носом. Лейка не нужна.",
+  "en": "Herbs in the rain smell so strongly you want to bury your nose in them. No can needed.",
+  "ja": "雨の中のハーブは、鼻を埋めたくなるほど強く香る。じょうろはいらない。"
+ },
+ "city.t3.sun.1": {
+  "ru": "Подсолнухи стоят шеренгой, головами к каньону, на восток. «Они поворачиваются к лестнице, а не к морю. Спорить бесполезно», написано на бирке.",
+  "en": "The sunflowers stand in a rank, heads toward the canyon, to the east. \"They turn toward the stairs, not the sea. Arguing is useless,\" says the tag.",
+  "ja": "ヒマワリは谷の方、東へ顔を向けて一列に立つ。札には「彼らは海でなく階段のほうを向きます。言い争っても無駄」。"
+ },
+ "city.t3.sun.2": {
+  "ru": "Семена от Ёсико из Ниигаты, 2003. Стебли толщиной в запястье. Внизу листья большие, как ладони, и тёплые на ощупь.",
+  "en": "Seeds from Yoshiko of Niigata, 2003. The stems are as thick as a wrist. The lower leaves are big as palms and warm to the touch.",
+  "ja": "新潟のヨシコさんから届いた種、2003年。茎は手首ほども太い。下の葉は手のひらほど大きく、触れると温かい。"
+ },
+ "city.t3.sun.3": {
+  "ru": "Ты поливаешь у самого основания и аккуратно обходишь чужую тень на земле. Подсолнух кивает, как будто что-то понял.",
+  "en": "You water right at the base, carefully stepping around somebody else's shadow on the soil. A sunflower nods, as if it had understood something.",
+  "ja": "根元にたっぷり水をやり、土に落ちた誰かの影をよけて歩く。ヒマワリがうなずく。何かわかったように。"
+ },
+ "city.t3.sun.rain": {
+  "ru": "В дождь подсолнухи опустили головы и ждут. Агата просила не поливать их в дождь: «Обидятся». Ты лишь постоял рядом.",
+  "en": "In the rain the sunflowers have bowed their heads and wait. Agata asked not to water them in the rain: \"They'll take offence.\" You just stood nearby.",
+  "ja": "雨の中、ヒマワリはうなだれて待っている。アガタは雨の日にやらないでと言った。「すねるから」。君はそばに立っていただけだ。"
+ },
+ "city.t3.barrel.1": {
+  "ru": "Синяя бочка под водосточной трубой, с краном внизу и металлической крышкой. Вода тёплая, мягкая и пахнет крышей.",
+  "en": "A blue barrel under the downpipe, with a tap at the bottom and a metal lid. The water is warm, soft, and smells of the roof.",
+  "ja": "雨どいの下の青い樽。下に蛇口、上に金属のふた。水は温かくやわらかく、屋根の匂いがする。"
+ },
+ "city.t3.barrel.2": {
+  "ru": "На крышке стоит лейка с носиком длиной в локоть. Бочка наполовину полна. Дождя за последние дни было немного, но хватает.",
+  "en": "On the lid stands a can with a spout an elbow long. The barrel is half full. There hasn't been much rain these last days, but it is enough.",
+  "ja": "ふたの上に肘ほどの長さの口のじょうろがのっている。樽は半分ほどの水。ここ数日の雨は少なかったが、足りている。"
+ },
+ "city.t3.barrel.rain": {
+  "ru": "В дождь бочка тихо гудит, принимая воду. Ты зачерпываешь горсть: холодная и сладкая.",
+  "en": "In the rain the barrel hums softly as it takes the water. You scoop a handful: cold and sweet.",
+  "ja": "雨の日、樽は水を受けながら低くうなる。一すくいの水は冷たくて甘い。"
+ },
+ "city.t3.barrel.cold": {
+  "ru": "В бочке корка льда. Ты разбиваешь её ладонью, и льдинки звенят о стенки, как тонкая посуда.",
+  "en": "There is a crust of ice in the barrel. You break it with your palm and the shards ring against the sides like fine china.",
+  "ja": "樽には氷が張っている。手のひらで割ると、薄い陶器のように縁で澄んだ音がする。"
+ },
+ "city.t3.rtable.1": {
+  "ru": "Круглый столик под навесом из гирлянды. На столе чашка, чайник и коробка домино, у которой стёрлись углы. Две табуретки, обе тёплые.",
+  "en": "A round table under a canopy of bulbs. On it a cup, a teapot and a box of dominoes with worn corners. Two stools, both warm.",
+  "ja": "電飾の天蓋の下の丸いテーブル。カップ、急須、角のすり減ったドミノの箱。丸椅子が二つ、どちらも温かい。"
+ },
+ "city.t3.rtable.2": {
+  "ru": "Фишки стучат о дерево: звук, который слышно и через двор, и через два этажа. Для соседей он давно как часы.",
+  "en": "The tiles knock on the wood: a sound you can hear across the yard and two floors up. For the neighbours it has long been like a clock.",
+  "ja": "牌が木を叩く。中庭を越え、二階上まで聞こえる音だ。隣人たちにはとうに時計のようなものだ。"
+ },
+ "city.t3.rchair.1": {
+  "ru": "Стул обит старым пледом. Отсюда видно подсолнухи сбоку и полоску неба над двумя стенами. Чай стынет, но торопиться некуда.",
+  "en": "The chair is padded with an old plaid. From here you see the sunflowers from the side and a strip of sky between two walls. The tea cools, but there is no hurry.",
+  "ja": "椅子は古い膝かけで覆われている。ここからはヒマワリが横から見え、二つの壁の間に空の帯がのぞく。お茶は冷めるが、急ぐことはない。"
+ },
+ "city.t3.rchair.2": {
+  "ru": "Из соседних окон в сад иногда выглядывают люди, чтобы убедиться, что всё на месте. Здороваться не принято, кивнуть достаточно.",
+  "en": "People sometimes look into the garden from the neighbouring windows to make sure everything is in place. Saying hello isn't done; a nod is enough.",
+  "ja": "隣の窓から人がときどき庭をのぞき、すべてが無事か確かめる。挨拶はしない決まりで、会釈で十分だ。"
+ },
+ "city.t3.rchair.n": {
+  "ru": "Ночью сад тёмный, только лампа на шесте качается над головой, и нить лампочек мигает, когда по ней проходит ветер.",
+  "en": "At night the garden is dark, only the lamp on its pole sways overhead and the string of bulbs flickers when the wind goes through it.",
+  "ja": "夜の庭は暗く、頭上で柱の灯りが揺れ、風が通るたび電飾が瞬く。"
+ },
+ "city.t3.frame.1": {
+  "ru": "Деревянный ящик со стеклом: парник для рассады. Внутри тёплый воздух с запахом земли и крошечные зелёные ростки с двумя листиками.",
+  "en": "A wooden box with a glass lid: a cold frame for seedlings. Inside warm air smelling of earth and tiny green sprouts with two leaves each.",
+  "ja": "ガラスぶたの木箱、苗のための温床。中は土の匂いのする暖かい空気で、二枚葉の小さな緑の芽が並ぶ。"
+ },
+ "city.t3.frame.2": {
+  "ru": "На стекле конденсат. Подпорка из палки держит створку. На деревянной планке чернилами: «Огурцы? Нет. Базилик. Да».",
+  "en": "Condensation on the glass. A stick props the lid open. On a wooden strip in ink: \"Cucumbers? No. Basil. Yes.\"",
+  "ja": "ガラスには結露。棒がふたを支えている。木の札にインクで「キュウリ？ いいえ。バジル。はい」。"
+ },
+ "city.t3.frame.cold": {
+  "ru": "В холод парник накрыт одеялом и двумя кирпичами. Агата не отдаёт рассаду морозу без боя.",
+  "en": "In the cold the frame is covered with a blanket and two bricks. Agata does not hand her seedlings to the frost without a fight.",
+  "ja": "寒い日、温床は毛布とレンガ二つで覆われている。アガタは苗を霜に戦わずして渡さない。"
+ },
+ "city.t3.apple.1": {
+  "ru": "В кадке маленькая яблоня, привитая от отцовского сада Рубена. Одно яблоко упало и лежит в траве, тёмное с боков. Ты подбираешь его.",
+  "en": "In the tub stands a small apple tree, grafted from Ruben's father's orchard. One apple has fallen and lies in the grass, dark on its sides. You pick it up.",
+  "ja": "樽には小さなリンゴの木。ルーベンの父の果樹園から接ぎ木したものだ。一つ落ちて草の上にあり、脇が黒ずんでいる。君はそれを拾う。"
+ },
+ "city.t3.apple.2": {
+  "ru": "Яблоко кислое и твёрдое, антоновка, как её называют старики. Бирка на ветке: «Берите по одному. Остальные на пастилу».",
+  "en": "The apple is sour and hard, an Antonovka, as old people call it. A tag on the branch: \"Take one each. The rest is for fruit leather.\"",
+  "ja": "リンゴは酸っぱくて固いアントノフカ、と年寄りは呼ぶ。枝の札には「ひとり一つ。残りは干し菓子に」。"
+ },
+ "city.t3.apple.w": {
+  "ru": "Ветка почти пуста. Яблоко достала Агата из подвальной корзины и положила под дерево на салфетку: «К чаю».",
+  "en": "The branch is almost bare. Agata has brought an apple from the cellar basket and laid it under the tree on a napkin: \"For tea.\"",
+  "ja": "枝はほとんど空だ。アガタが地下室のかごからリンゴを出し、木の下のナプキンに置いた。「お茶に」。"
+ },
+ "city.t3.feeder.1": {
+  "ru": "Кормушка в виде домика с красной крышей. На жёрдочке сидят две синицы и ждут, пока ты отойдёшь. Ты отходишь.",
+  "en": "A feeder shaped like a little house with a red roof. Two tits sit on the perch waiting for you to step away. You step away.",
+  "ja": "赤い屋根の家の形の餌台。止まり木にシジュウカラが二羽、君が離れるのを待っている。君は離れる。"
+ },
+ "city.t3.feeder.2": {
+  "ru": "В кормушке подсолнечные семечки и кусок сала на верёвке. «Подсолнухи свои, сало чужое», шутит бирка.",
+  "en": "In the feeder, sunflower seeds and a piece of fat on a string. \"Sunflowers are ours, the fat is somebody else's,\" jokes the tag.",
+  "ja": "餌台にはヒマワリの種と、ひもに吊るした脂身。札が冗談を言う。「ヒマワリは自家製、脂身はよそから」。"
+ },
+ "city.t3.feeder.rain": {
+  "ru": "Домик кормушки мокрый до блеска, но внутри сухо. Птицы сидят на перилах и ждут, когда пройдёт дождь.",
+  "en": "The little house of the feeder is wet and shiny, but dry inside. The birds sit on the rail and wait for the rain to pass.",
+  "ja": "餌台の小さな家は濡れて光っているが、中は乾いている。鳥は手すりで雨がやむのを待つ。"
+ },
+ "city.t3.sign.1": {
+  "ru": "Двусторонняя доска у входа в сад: «СЕМЕНА, КОТОРЫЕ НЕ УЕХАЛИ. Ноги вытирать. Лейку на место. Яблоки по одному. Кошку не звать, она сама».",
+  "en": "A two-sided board at the garden entrance: \"SEEDS THAT DIDN'T LEAVE. Wipe your feet. Put the can back. One apple each. Don't call the cat, she'll come.\"",
+  "ja": "庭の入口の両面看板。「旅立たなかった種たち。足を拭くこと。じょうろは元の場所へ。リンゴはひとり一つ。猫は呼ばないで、自分で来ます」。"
+ },
+ "city.t3.sign.2": {
+  "ru": "На обороте списком: «Выключатель лампы на шесте. Чай по воскресеньям в 4. Спасибо тем, кто носил воду. Агата Брандт, 3-03».",
+  "en": "On the back, as a list: \"The lamp switch is on the pole. Tea on Sundays at 4. Thanks to all who carried water. Agata Brandt, 3-03.\"",
+  "ja": "裏面には箇条書き。「電灯のスイッチは柱に。お茶は日曜の4時。水を運んでくれた皆さんにありがとう。アガタ・ブラント、3-03」。"
+ },
+ "city.t3.rview.d": {
+  "ru": "За перилами два соседних двора и крыша дальнего дома. На ней чёрная точка: это ворона, с видом хозяйки.",
+  "en": "Beyond the rail, two neighbouring yards and the roof of a far house. On it a black dot: a crow, with the air of a landlady.",
+  "ja": "手すりの向こうに隣家の中庭が二つと、遠い家の屋根。そこに黒い点。カラスが大家のような顔でいる。"
+ },
+ "city.t3.rview.d2": {
+  "ru": "Ветер несёт запах моря и мокрой земли с чьей-то грядки. Из окон внизу слышны радио и стук посуды.",
+  "en": "The wind carries a smell of sea and wet earth from somebody's bed. From the windows below come radios and the clatter of dishes.",
+  "ja": "風が海と、誰かの畑の濡れた土の匂いを運ぶ。下の窓からラジオと食器の音。"
+ },
+ "city.t3.rview.n": {
+  "ru": "Ночью двор внизу чёрный, только чьё-то окно светится, и в нём кто-то стоит с кружкой и тоже смотрит вверх.",
+  "en": "At night the yard below is black, only one window glows, and someone stands in it with a mug, looking up too.",
+  "ja": "夜、下の中庭は真っ黒で、窓がひとつ光り、そこでマグカップを持った誰かがやはり上を見ている。"
+ },
+ "city.t3.door.d": {
+  "ru": "Дверь 3-03 открыта настежь и подпёрта табуреткой. На медной табличке: «А. Брандт. Звонить громко, я в саду». Изнутри пахнет чаем и землёй.",
+  "en": "The door of 3-03 stands wide open, propped with a stool. On the brass plate: \"A. Brandt. Ring loudly, I'm in the garden.\" Inside smells of tea and earth.",
+  "ja": "3-03のドアは丸椅子で押さえられ、大きく開いている。真鍮の札に「A・ブラント。大きく鳴らして、庭にいます」。中からお茶と土の匂いがする。"
+ },
+ "city.t3.door.e": {
+  "ru": "Дверь приоткрыта, из щели тянет вечерним чаем. Агата не запирает до десяти. «Кому надо, тот постучит», говорит она.",
+  "en": "The door is ajar and the smell of evening tea comes through the gap. Agata doesn't lock before ten. \"Whoever needs me will knock,\" she says.",
+  "ja": "ドアは少し開き、隙間から夕方のお茶の香りが流れる。アガタは十時まで鍵をかけない。「用のある人は叩くでしょう」と彼女は言う。"
+ },
+ "city.t3.door.n": {
+  "ru": "Дверь притворена, но не заперта. В щель виден жёлтый свет и край кресла. Рядом тапочки, носами к лестнице.",
+  "en": "The door is pulled to but not locked. Through the gap you see yellow light and the edge of an armchair. Beside it slippers, toes pointing to the stairs.",
+  "ja": "ドアは閉まっているが鍵はかかっていない。隙間から黄色い灯りと肘掛け椅子の端が見える。そばにスリッパ。つま先は階段のほうを向いている。"
+ },
+ "city.t3.armchair.d": {
+  "ru": "Кресло стоит лицом к окну. Подлокотник вытерт до блеска, на спинке плед. Из окна видна стена напротив и в ней чужие окна.",
+  "en": "The armchair faces the window. The arm is rubbed shiny, a plaid over the back. Through the window: the opposite wall and, in it, other people's windows.",
+  "ja": "肘掛け椅子は窓のほうを向く。肘は擦れて光り、背に膝かけ。窓からは向かいの壁と、他人の窓が見える。"
+ },
+ "city.t3.armchair.n": {
+  "ru": "Ночью в окне отражается комната: лампа, чашка, ты. За отражением, дальше, горит окно напротив, и в нём тоже кто-то сидит.",
+  "en": "At night the window reflects the room: the lamp, a cup, you. Beyond the reflection a window opposite is lit, and someone sits there too.",
+  "ja": "夜、窓には部屋が映る。灯り、カップ、君。映った像の向こうで向かいの窓が点り、そこにも誰かが座っている。"
+ },
+ "city.t3.chair.1": {
+  "ru": "Стул у круглого стола. На столе вазочка с первоцветами, прихваченными с крыши, и чашка с отбитой ручкой, из которой Агата не пьёт, но не выбрасывает.",
+  "en": "A chair at the round table. On the table a small vase of primulas taken from the roof and a cup with a broken handle that Agata doesn't drink from but won't throw away.",
+  "ja": "丸いテーブルの椅子。卓上には屋根から摘んだサクラソウの小さな花瓶と、取っ手の欠けたカップ。アガタは使わないが捨てもしない。"
+ },
+ "city.t3.chair.2": {
+  "ru": "Из этого места видно сразу всё: дверь, плиту, кресло и кровать. Тётя Агата как капитан на мостике, только мостик сделан из ковра.",
+  "en": "From this spot you see everything at once: the door, the stove, the armchair and the bed. Aunt Agata is like a captain on a bridge, only the bridge is made of rug.",
+  "ja": "ここからはすべてが見渡せる。ドア、コンロ、肘掛け椅子、ベッド。アガタおばさんは艦橋の船長のようだ。ただし艦橋は絨毯でできている。"
+ },
+ "city.t3.desk.1": {
+  "ru": "За столом лампа с зелёным колпаком, стопка тетрадей и конверты с марками разных стран. Бумага чуть пахнет чужими городами.",
+  "en": "At the desk: a lamp with a green shade, a pile of notebooks and envelopes with stamps of different countries. The paper smells faintly of other people's cities.",
+  "ja": "机には緑の笠のランプ、ノートの束、さまざまな国の切手を貼った封筒。紙はかすかに他国の街の匂いがする。"
+ },
+ "city.t3.desk.n": {
+  "ru": "Ночью лампа бросает на тетрадь тёплый круг. Здесь пишут письма: на промокашке отпечатались слова зеркально.",
+  "en": "At night the lamp throws a warm circle on the notebook. This is where letters are written: words are printed in mirror image on the blotter.",
+  "ja": "夜、ランプはノートに温かい輪を落とす。ここで手紙が書かれる。吸い取り紙には言葉が鏡文字で写っている。"
+ },
+ "city.t3.packets.1": {
+  "ru": "Веер пакетиков на столе: розовое сердце, тимьян, подсолнух, мак, укроп, ещё что-то без названия. На каждом дата и чей-то почерк.",
+  "en": "A fan of seed packets on the desk: pink heart, thyme, sunflower, poppy, dill, and something with no name. Each has a date and somebody's handwriting.",
+  "ja": "机の上に種の袋が扇状に。ピンクのハート、タイム、ヒマワリ、ケシ、ディル、名前のないものも。どれにも日付と誰かの筆跡。"
+ },
+ "city.t3.packets.2": {
+  "ru": "Пакетик мака от Мари из Тарту: на нём приписка «Сей в апреле, не раньше, она узнает». Агата не знает, кто «она», но слушается.",
+  "en": "A packet of poppies from Mari of Tartu with a note: \"Sow in April, no earlier, she will know.\" Agata doesn't know who \"she\" is, but obeys.",
+  "ja": "タルトゥのマリからのケシの袋に添え書き。「四月にまくこと。早くはだめ、彼女にはわかるから」。アガタは「彼女」が誰か知らないが、従っている。"
+ },
+ "city.t3.packets.3": {
+  "ru": "Пакетик без подписи: внутри чёрные семена в форме запятых. На обороте детским почерком: «Это тоже цветы. Не смейтесь».",
+  "en": "A packet with no name: black seeds in the shape of commas inside. On the back in a child's hand: \"These are flowers too. Don't laugh.\"",
+  "ja": "名前のない袋。中には読点の形をした黒い種。裏には子どもの字で「これも花です。笑わないで」。"
+ },
+ "city.t3.packets.4": {
+  "ru": "Один пакетик заклеен скотчем, и на нём красным карандашом: «Не открывать до весны. Рубен». Агата хранит его пятнадцатый год.",
+  "en": "One packet is sealed with tape and marked in red pencil: \"Do not open until spring. Ruben.\" Agata has kept it for fifteen years.",
+  "ja": "ひとつの袋にはテープが貼られ、赤鉛筆で「春まで開けないこと。ルーベン」。アガタはそれをもう十五年しまっている。"
+ },
+ "city.t3.books.1": {
+  "ru": "Полка ботаники: атлас сорняков, «Семеноводство в умеренном поясе», справочник цветов и тетрадь рассады. Корешки истёрты тёплыми руками.",
+  "en": "The botany shelf: an atlas of weeds, \"Seed Raising in the Temperate Zone\", a flower directory and a seedling log. The spines are worn by warm hands.",
+  "ja": "植物の棚。雑草図鑑、『温帯の採種』、花の事典、育苗帳。背表紙は温かい手で擦り切れている。"
+ },
+ "city.t3.books.2": {
+  "ru": "Закладка в книге о семенах: засушенный мак и записка «Всхожесть 94 процента, это хорошо, но ты могла бы лучше». Почерк Агаты.",
+  "en": "A bookmark in the book on seeds: a pressed poppy and a note, \"Germination 94 per cent, that's good, but you could do better.\" In Agata's hand.",
+  "ja": "種の本のしおりは押し花のケシと書き付け。「発芽率94パーセント。悪くないけれど、あなたならもっとできる」。アガタの字だ。"
+ },
+ "city.t3.books.3": {
+  "ru": "На нижней полке стопка каталогов семян за тридцать лет. По ним можно проследить, как менялись названия и цены, но не вкус помидоров.",
+  "en": "On the bottom shelf a pile of seed catalogues covering thirty years. You can follow how names and prices changed, but not the taste of tomatoes.",
+  "ja": "下の段には三十年分の種のカタログ。名前や値段の移り変わりはわかるが、トマトの味は追えない。"
+ },
+ "city.t3.kettle.d": {
+  "ru": "Чайник на плите быстро закипает. Агата оставила на столе жестяную коробку: «Чай чёрный, лист смородины, мята с крыши». Ты берёшь чашку.",
+  "en": "The kettle boils quickly on the stove. Agata has left a tin on the table: \"Black tea, blackcurrant leaf, mint from the roof.\" You take a cup.",
+  "ja": "やかんはコンロですぐに沸く。アガタが机にブリキ缶を置いている。「紅茶、カシスの葉、屋根のミント」。君はカップを取る。"
+ },
+ "city.t3.kettle.n": {
+  "ru": "Ночью ставишь чайник тихо, чтобы не разбудить дом. Мята с крыши в чашке пахнет так, что снова хочется на крышу.",
+  "en": "At night you put the kettle on quietly so as not to wake the house. The roof mint in the cup smells so good you want to go up again.",
+  "ja": "夜は家を起こさないよう静かにやかんをかける。カップの屋根のミントは、もう一度屋根に上がりたくなる香りだ。"
+ },
+ "city.t3.radio.m": {
+  "ru": "Утренний выпуск «Для тех, кто в поле»: прогноз заморозков, цены на картошку, потом песня про рыбацкую жену. Агата подпевает с кухни.",
+  "en": "The morning edition of \"For Those in the Field\": frost forecast, potato prices, then a song about a fisherman's wife. Agata sings along from the kitchen.",
+  "ja": "朝の「畑に立つ人へ」。霜の予報、ジャガイモの値段、それから漁師の妻の歌。アガタは台所で口ずさむ。"
+ },
+ "city.t3.radio.d": {
+  "ru": "Днём диктор читает письма слушателей: кто-то из Елгавы вывел сорт редиса, который не горчит. Агата записывает название в блокнот.",
+  "en": "By day the announcer reads listeners' letters: somebody in Jelgava has bred a radish that isn't bitter. Agata writes the name in her notebook.",
+  "ja": "昼はアナウンサーが聴取者の手紙を読む。イェルガヴァの誰かが苦くないダイコンを育てたという。アガタは名前をメモする。"
+ },
+ "city.t3.radio.e": {
+  "ru": "Вечером передача про звёзды и посевной календарь: «Растущая луна, сейте то, что растёт вверх». Звучит как заклинание.",
+  "en": "In the evening, a programme about the stars and the sowing calendar: \"Waxing moon, sow what grows upward.\" It sounds like a spell.",
+  "ja": "夕方は星と種まきの暦の番組。「満ちる月には上へ育つものを」。まじないのように聞こえる。"
+ },
+ "city.t3.radio.n": {
+  "ru": "Ночью приёмник тихонько шипит и ловит дальнюю станцию с танго. Громкость выставлена так, чтобы не слышали соседи.",
+  "en": "At night the radio hisses softly and picks up a distant tango station. The volume is set so that the neighbours can't hear.",
+  "ja": "夜、ラジオは小さくノイズを立て、遠くのタンゴ局を拾う。音量は隣人に聞こえないよう絞ってある。"
+ },
+ "city.t3.radio.sat": {
+  "ru": "Суббота: передача «Огород и дом». Диктор спрашивает, у кого уже сеют лук-севок. Агата отвечает приёмнику вслух, он не обижается.",
+  "en": "Saturday: the \"Garden and Home\" programme. The announcer asks who has already sown onion sets. Agata answers the radio aloud; it doesn't take offence.",
+  "ja": "土曜は「畑と家」の番組。アナウンサーが、もうタマネギの種球を植えた人はと尋ねる。アガタはラジオに声を出して答え、ラジオはすねない。"
+ },
+ "city.t3.jar.1": {
+  "ru": "Стеклянная банка с бумажной этикеткой: «Семена, которые не уехали. Берите, сажайте, пишите, что выросло». Ты высыпаешь горсть в ладонь.",
+  "en": "A glass jar with a paper label: \"Seeds that didn't leave. Take them, plant them, write what grew.\" You tip a handful into your palm.",
+  "ja": "紙のラベルのついたガラス瓶。「旅立たなかった種たち。持っていって、まいて、何が育ったか書いて」。君は一握りを手に出す。"
+ },
+ "city.t3.jar.2": {
+  "ru": "Семена мелкие, разноцветные: в них есть и подсолнух, и мак, и укроп, и ещё что-то круглое. Пересыпаешь в карман, как галечку.",
+  "en": "The seeds are small and many-coloured: sunflower, poppy, dill and something round. You pour them into your pocket like pebbles.",
+  "ja": "種は小さく色とりどりだ。ヒマワリ、ケシ、ディル、そして丸いもの。小石のようにポケットへ入れる。"
+ },
+ "city.t3.sill.e1": {
+  "ru": "На восточном подоконнике три ящика с рассадой: перцы, астры и ещё один, подписанный просто «посмотрим». Всходы с двумя листьями.",
+  "en": "On the east sill, three trays of seedlings: peppers, asters and one labelled simply \"we'll see\". Shoots with two leaves each.",
+  "ja": "東の窓台には苗の箱が三つ。トウガラシ、アスター、そして「様子見」とだけ書かれたもの。どれも二枚葉の芽。"
+ },
+ "city.t3.sill.e2": {
+  "ru": "Рассаду поворачивают к свету каждое утро на четверть оборота. Бумажка у стекла: «Не трогать листья. Не дышать. Шучу, дышать можно».",
+  "en": "The seedlings are turned a quarter-turn toward the light every morning. A slip by the glass: \"Don't touch the leaves. Don't breathe. Joking, you can breathe.\"",
+  "ja": "苗は毎朝四分の一回転、光のほうへ向けられる。ガラスの脇の紙切れ。「葉にさわらないで。息もしないで。冗談です、息はして大丈夫」。"
+ },
+ "city.t3.sill.w1": {
+  "ru": "На западном подоконнике кактусы и два папоротника в горшках, расписанных чьими-то детьми: звёзды, домики, кривая корова.",
+  "en": "On the west sill, cacti and two ferns in pots painted by somebody's children: stars, houses, a crooked cow.",
+  "ja": "西の窓台にはサボテンと、誰かの子どもたちが絵を描いた鉢のシダが二つ。星、家、ゆがんだ牛。"
+ },
+ "city.t3.sill.w2": {
+  "ru": "Кактус у стекла цвёл в сентябре. «Один раз в год, — говорит бирка, — и всегда при гостях. Вежливый».",
+  "en": "The cactus by the glass bloomed in September. \"Once a year,\" says the tag, \"and always when there are guests. Polite.\"",
+  "ja": "ガラス際のサボテンは九月に咲いた。札には「年に一度、いつも客のいるとき。礼儀正しい」。"
+ },
+ "city.t3.window.m": {
+  "ru": "Из окна утром видно стену напротив и на ней полосу света, которая каждый час сдвигается вниз на пол-этажа.",
+  "en": "In the morning from the window you see the opposite wall and a stripe of light on it that moves half a floor lower every hour.",
+  "ja": "朝、窓から向かいの壁が見え、そこに光の帯がある。一時間ごとに半階分ずつ下がる。"
+ },
+ "city.t3.window.d": {
+  "ru": "Днём в каньоне тихо. Напротив кто-то поливает герань, а ты стоишь у окна и угадываешь, кто именно, по цвету лейки.",
+  "en": "In the daytime the canyon is quiet. Opposite, somebody is watering a geranium, and you stand at the window guessing who by the colour of the can.",
+  "ja": "昼の谷は静かだ。向かいで誰かがゼラニウムに水をやり、君は窓辺でじょうろの色から誰か当てている。"
+ },
+ "city.t3.window.n": {
+  "ru": "Ночью окно чёрное, лестница внизу горит отдельными лампами, как нитка бус, и над ней, ровно над крышей, висит маяк.",
+  "en": "At night the window is black, the stairs below burn with separate lamps like a string of beads, and above them, right over the roof, hangs the lighthouse.",
+  "ja": "夜、窓は黒く、下の階段は玉をつないだように灯りが並び、その上、屋根のすぐ上に灯台が浮かぶ。"
+ },
+ "city.t3.photo.a": {
+  "ru": "Фотография в рамке: люди в белых халатах у длинных столов с мешочками семян. Табличка: «Ботаническая станция порта, 1989». Агата вторая справа.",
+  "en": "A framed photograph: people in white coats at long tables with bags of seeds. A plate: \"Harbour Botanic Station, 1989.\" Agata is second from the right.",
+  "ja": "額入りの写真。白衣の人々が種の袋を並べた長い机の前に立つ。札には「港の植物試験場、1989」。アガタは右から二人目。"
+ },
+ "city.t3.photo.a2": {
+  "ru": "Подпись карандашом на обороте: «Сорок тысяч пакетиков за зиму. Руки пахли укропом до июня». Ничего себе работа.",
+  "en": "A pencil note on the back: \"Forty thousand packets in one winter. Our hands smelled of dill until June.\" Quite a job.",
+  "ja": "裏には鉛筆書き。「冬のあいだに四万袋。手は六月までディルの匂いがした」。たいした仕事だ。"
+ },
+ "city.t3.photo.b": {
+  "ru": "Фотография: мужчина в форме лоцмана стоит на молу с кошкой на плече. Подпись: «Рубен, 1997». Кошка смотрит в сторону, как он.",
+  "en": "A photograph: a man in a pilot's uniform on the mole with a cat on his shoulder. A caption: \"Ruben, 1997.\" The cat looks away, like him.",
+  "ja": "写真。水先案内人の制服の男が防波堤に立ち、肩に猫をのせている。「ルーベン、1997」。猫は彼と同じように横を向いている。"
+ },
+ "city.t3.photo.b2": {
+  "ru": "У рамки засохший колосок. Агата говорит о Рубене в настоящем времени, и никому в голову не приходит её поправить.",
+  "en": "By the frame a dried ear of grain. Agata speaks of Ruben in the present tense, and it occurs to nobody to correct her.",
+  "ja": "額の脇に乾いた麦の穂。アガタはルーベンのことを現在形で話し、誰も直そうとは思わない。"
+ },
+ "city.t3.bed.1": {
+  "ru": "Узкая кровать, застелена вафельным одеялом так ровно, как будто на нём никогда не спали. На тумбочке очки, будильник и баночка крема.",
+  "en": "A narrow bed made up with a waffle blanket so neatly it seems nobody has ever slept on it. On the bedside table glasses, an alarm clock and a pot of hand cream.",
+  "ja": "ワッフル織りの毛布できちんと整えた細いベッド。誰も寝たことがないほどだ。ナイトテーブルには眼鏡、目覚まし時計、ハンドクリーム。"
+ },
+ "city.t3.bed.2": {
+  "ru": "Под кроватью аккуратно стоят домашние туфли. Хозяйка вернётся, а чужим ложиться нельзя. Для гостей есть диван.",
+  "en": "Under the bed the house slippers stand neatly. The owner will be back, and visitors may not lie on this one. For guests there is the sofa.",
+  "ja": "ベッドの下に室内履きがそろえてある。主は戻るので、客は使えない。客用にはソファがある。"
+ },
+ "city.t3.sofa.d": {
+  "ru": "Диван для гостей с вышитой подушкой. «Приезжает подруга из Риги, ложится сюда. Ты тоже можешь, если очень устал», сказано в записке.",
+  "en": "The guest sofa with an embroidered cushion. \"A friend comes from Riga and sleeps here. You may too, if you are very tired,\" says a note.",
+  "ja": "刺繍のクッションつきの客用ソファ。書き置きには「リガから友人が来て、ここで寝ます。とても疲れたなら、あなたも使っていい」。"
+ },
+ "city.t3.sofa.n": {
+  "ru": "Диван мягкий и пахнет сухой лавандой. Агата накинула сверху шерстяной плед и положила на подушку записку: «Лампа по правую руку».",
+  "en": "The sofa is soft and smells of dry lavender. Agata has thrown a wool plaid over it and left a note on the cushion: \"The lamp is on your right.\"",
+  "ja": "ソファはやわらかく乾いたラベンダーの香りがする。アガタが毛織の膝かけをかけ、クッションに書き置き。「灯りは右手に」。"
+ },
+ "city.t3.sofa.bed": {
+  "ru": "Ты проснулся под тихий звук воды: Агата на кухне наполняет чайник. На стуле у дивана сложено сухое полотенце. Дом уже на ногах.",
+  "en": "You woke to the quiet sound of water: Agata is filling the kettle in the kitchen. A dry towel is folded on the chair by the sofa. The house is already on its feet.",
+  "ja": "静かな水音で目が覚めた。アガタが台所でやかんに水を入れている。ソファのそばの椅子には乾いたタオルが畳んである。家はもう起きている。"
+ },
+ "city.t3.note.title": {
+  "ru": "Записка для тех, кто поливает",
+  "en": "A note for whoever is watering",
+  "ja": "水やりをしてくれる人へのメモ"
+ },
+ "city.t3.note.1": {
+  "ru": "Колонка на втором уровне, лейка в бочке на крыше. Утром и вечером, не в жару и не в дождь. Помидоры у корня, не на лист. Подсолнухи побольше, травы по чуть-чуть.",
+  "en": "The tap is on level two, the can is in the barrel on the roof. Morning and evening, not in the heat or the rain. Tomatoes at the root, not on the leaf. Sunflowers a lot, herbs a little.",
+  "ja": "水栓は2階層、じょうろは屋根の樽の中。朝と夕方、暑さや雨の日は避けて。トマトは葉でなく根元に。ヒマワリはたっぷり、ハーブは少しずつ。"
+ },
+ "city.t3.note.2": {
+  "ru": "Если вдруг я сплю, проходите на цыпочках, чайник на плите. Кошку на крыше не гладить: она моя. Кошку на лестнице гладить можно: она общая.",
+  "en": "If I happen to be asleep, tiptoe through; the kettle is on the stove. Don't stroke the cat on the roof: she is mine. You may stroke the cat on the stairs: she is everyone's.",
+  "ja": "もし私が寝ていたら、つま先立ちで通って。やかんはコンロの上。屋根の猫はなでないで、私の猫。階段の猫はなでていい、みんなの猫。"
+ },
+ "city.t3.note.3": {
+  "ru": "Выключатель лампы на шесте справа от входа в сад. Банка на полке у радио — для тех, кто хочет посадить что-нибудь у себя. Спасибо. А.Б.",
+  "en": "The switch for the lamp on the pole is to the right of the garden entrance. The jar on the shelf by the radio is for anyone who wants to plant something at home. Thank you. A.B.",
+  "ja": "柱の電灯のスイッチは庭の入口の右手。ラジオの脇の棚の瓶は、家で何か育てたい人のために。ありがとう。A.B."
+ },
+ "city.t3.tx.nb.title": {
+  "ru": "Тетрадь семян Агаты Брандт",
+  "en": "Agata Brandt's seed notebook",
+  "ja": "アガタ・ブラントの種のノート"
+ },
+ "city.t3.tx.nb.1": {
+  "ru": "Обложка из клеёнки в клетку. На первой странице печатными буквами: «СЕМЕНА, КОТОРЫЕ НЕ УЕХАЛИ». Ниже мелко: «Каждый пакетик, который мне прислали. Каждый посеян. Каждый записан».",
+  "en": "An oilcloth cover with a check pattern. On the first page in block letters: \"SEEDS THAT DIDN'T LEAVE.\" Below in small writing: \"Every packet anyone sent me. Every one sown. Every one written down.\"",
+  "ja": "格子柄のビニールクロスの表紙。最初のページに大文字で「旅立たなかった種たち」。その下に小さく「私に送られた袋はすべて。すべてまいた。すべて記録した」。"
+ },
+ "city.t3.tx.nb.2": {
+  "ru": "«Помидоры „Розовое сердце“. Вилма, Каунас, 1994. Пишет, что поливать только вечером и не жалеть. Я пожалела один раз, и она узнала по письму. Как, не понимаю».",
+  "en": "\"Tomatoes 'Pink Heart'. Vilma, Kaunas, 1994. She writes: water only in the evening and don't spare it. I spared it once and she knew from my letter. How, I don't understand.\"",
+  "ja": "「トマト『ピンクのハート』。ヴィルマ、カウナス、1994年。水は夕方だけ、惜しまずに、と書いてある。一度惜しんだら、手紙でばれた。どうしてなのかしら」。"
+ },
+ "city.t3.tx.nb.3": {
+  "ru": "«Травы. Нино, Тбилиси, 2001. В конверте только слово «Нино» и семь пакетиков без названий. Я назвала всё по запаху. Тимьян узнала сразу, остальное подождёт».",
+  "en": "\"Herbs. Nino, Tbilisi, 2001. The envelope held only the word 'Nino' and seven unnamed packets. I named everything by smell. Thyme I knew at once, the rest can wait.\"",
+  "ja": "「ハーブ。ニノ、トビリシ、2001年。封筒には『ニノ』の一語と、名前のない七つの袋だけ。匂いで全部に名前をつけた。タイムはすぐわかった、残りは待てる」。"
+ },
+ "city.t3.tx.nb.4": {
+  "ru": "«Подсолнухи. Ёсико, Ниигата, 2003. Она пишет: они смотрят на восток. У меня восток это каньон, и подсолнухи смотрят на лестницу. Соседи довольны, мне кажется, что и подсолнухам нравится».",
+  "en": "\"Sunflowers. Yoshiko, Niigata, 2003. She writes: they look east. For me east is the canyon, so the sunflowers look at the stairs. The neighbours are pleased; I think the sunflowers like it too.\"",
+  "ja": "「ヒマワリ。ヨシコ、新潟、2003年。東を向くと彼女は書いている。私の東は谷だから、ヒマワリは階段を見る。隣人たちは喜んでいる。ヒマワリも気に入っていると思う」。"
+ },
+ "city.t3.tx.nb.5": {
+  "ru": "«Октябрь. Упала на лестнице с лейкой и сломала запястье. Хуже всего: с четвёртого уровня воду носить не могу. Написала записку на доску. Если никто не придёт, помидоры потерпят, а я нет».",
+  "en": "\"October. Fell on the stairs with the can and broke my wrist. The worst of it: I can't carry water up from level four. I wrote a note for the board. If nobody comes the tomatoes will manage, and I won't.\"",
+  "ja": "「十月。じょうろを持って階段で転び、手首を折った。いちばん困るのは、4階層から水を運べないこと。掲示板にメモを書いた。誰も来なくてもトマトは我慢するだろうが、私はできない」。"
+ },
+ "city.t3.tx.nb.6": {
+  "ru": "«Кто-то полил грядки, пока я спала. Следов нет, только мокрая земля и колея от лейки по пыли. Не узнала, кто, и не стану. Оставила банку с семенами на полке, пусть берёт, кому надо».",
+  "en": "\"Someone has watered the beds while I slept. No trace but wet soil and the track of the can in the dust. I didn't find out who and I won't. I left the jar of seeds on the shelf; whoever needs it may take it.\"",
+  "ja": "「私の寝ているあいだに誰かが畑に水をやってくれた。跡は濡れた土と、ほこりに残るじょうろの跡だけ。誰かは知らないし、知らなくていい。種の瓶を棚に置いた。必要な人は持っていって」。"
+ },
+ "city.t3.tx.nb.7": {
+  "ru": "«Весной посею всё заново. Из этого года оставлю по десять семян каждого сорта на подоконнике, и пусть едут куда хотят. Только писать пусть не забывают. Агата».",
+  "en": "\"In spring I'll sow everything again. From this year I'll leave ten seeds of each kind on the sill and let them go wherever they like. Only let them remember to write. Agata.\"",
+  "ja": "「春にはすべてをまた最初からまく。今年の分から各種十粒ずつ窓台に残して、好きなところへ旅立たせよう。ただ、手紙を書くのだけは忘れないでほしい。アガタ」。"
+ },
+ "city.t3.tx.let.title": {
+  "ru": "Письма с семенами",
+  "en": "Letters with seeds",
+  "ja": "種の入った手紙"
+ },
+ "city.t3.tx.let.1": {
+  "ru": "Письмо на тонкой бумаге, почерк круглый: «Дорогая Агата! Посылаю «Розовое сердце». Сей в марте, высаживай в мае, а когда они покраснеют, позвони мне. Вилма».",
+  "en": "A letter on thin paper in a round hand: \"Dear Agata, I'm sending 'Pink Heart'. Sow in March, plant out in May, and when they blush, call me. Vilma.\"",
+  "ja": "薄い紙に丸い字の手紙。「親愛なるアガタへ。『ピンクのハート』を送ります。三月にまいて五月に植え、赤くなったら電話をください。ヴィルマ」。"
+ },
+ "city.t3.tx.let.2": {
+  "ru": "Открытка с видом гор: «Агата, сорок лет мы друг другу пишем, а вы всё не приезжаете. Семена прилагаются, чай тоже. Нино». В конверте на дне лёгкая сухая мята.",
+  "en": "A postcard of mountains: \"Agata, for forty years we've written to each other and you still haven't come. Seeds enclosed, tea too. Nino.\" At the bottom of the envelope, light dry mint.",
+  "ja": "山の絵はがき。「アガタ、四十年も文通しているのに、あなたはまだ来てくれない。種を同封します。お茶もね。ニノ」。封筒の底には軽く乾いたミント。"
+ },
+ "city.t3.tx.let.3": {
+  "ru": "Письмо с японскими марками, внизу рисунок подсолнуха пером. «Дорогая Агата-сан, мои дочери выросли. Сорт остался. Они не знают, откуда он, но любят. Ёсико».",
+  "en": "A letter with Japanese stamps, a pen drawing of a sunflower at the bottom. \"Dear Agata-san, my daughters have grown up. The variety stayed. They don't know where it comes from, but they love it. Yoshiko.\"",
+  "ja": "日本の切手の手紙、下にペンで描いたヒマワリ。「アガタさんへ。娘たちは大きくなりました。品種は残りました。どこから来たのか知らないけれど、娘たちは大好きです。ヨシコ」。"
+ },
+ "city.t3.tx.let.4": {
+  "ru": "Короткая записка уже не от семян: «Агата, я приеду в апреле. Привезу рассаду из Риги и Руперта в корзине. Он вырос и ничего не боится. Твоя Ильза».",
+  "en": "A short note no longer about seeds: \"Agata, I'm coming in April. I'll bring seedlings from Riga and Rupert in a basket. He has grown up and fears nothing. Your Ilze.\"",
+  "ja": "種のことではない短い手紙。「アガタ、四月に行きます。リガの苗と、かごに入れたルパートを連れて。彼は大きくなって、何も怖がりません。あなたのイルゼ」。"
+ },
+ "city.coll.t3_garden.title": {
+  "ru": "Огород на крыше",
+  "en": "The roof garden",
+  "ja": "屋根の畑"
+ },
+ "city.coll.t3_canyon.title": {
+  "ru": "Лестничные улицы",
+  "en": "The stair-streets",
+  "ja": "階段の通り"
+ },
+ "quest.home_brandt.title": {
+  "ru": "Вода для Агаты",
+  "en": "Water for Agata",
+  "ja": "アガタの水やり"
+ },
+ "quest.home_brandt.desc": {
+  "ru": "На доске у лестницы просьба из 3-03: у Агаты Брандт сломано запястье, а на крыше над её квартирой растут помидоры, травы и подсолнухи. Колонка на втором уровне, лейка в бочке на крыше, дверь у Агаты открыта.",
+  "en": "On the board by the stairs hangs a request from 3-03: Agata Brandt has a broken wrist, and on the roof above her flat grow tomatoes, herbs and sunflowers. The tap is on level two, the can is in the barrel on the roof, and Agata's door is open.",
+  "ja": "階段の掲示板に3-03からのお願いが貼ってある。アガタ・ブラントは手首を折り、彼女の部屋の上の屋根ではトマトとハーブとヒマワリが育っている。水栓は2階層、じょうろは屋根の樽の中。アガタの部屋のドアは開いている。"
+ },
+ "quest.home_brandt.done": {
+  "ru": "Агата не поблагодарила. Она долго смотрела на мокрую землю, потом на меня и сказала: «Вот. А я думала, что некому». Налила чаю и пододвинула яблоко: «Возьми. Оно с той самой яблони».",
+  "en": "Agata did not say thank you. She looked a long time at the wet soil, then at me, and said: \"There. And I thought there was nobody.\" She poured tea and pushed an apple across: \"Take it. It's from that very tree.\"",
+  "ja": "アガタはお礼を言わなかった。濡れた土をしばらく見つめ、それから僕を見て言った。「ほら。誰もいないと思っていたのに」。お茶を注ぎ、リンゴを押してよこす。「お取り。あの木のよ」。"
+ },
+ "quest.home_brandt.tap.log": {
+  "ru": "Первое дело: набрать воды. Колонка стоит у окна на втором уровне, ведро рядом. Лестница от парадной А ведёт прямо к ней.",
+  "en": "First job: get some water. The tap stands by a window on level two, the bucket beside it. The stairs from entrance A lead right to it.",
+  "ja": "最初の仕事は水くみ。水栓は2階層の窓のそば、バケツはその隣。入口Aからの階段が真っすぐそこへ続く。"
+ },
+ "quest.home_brandt.tap.obj": {
+  "ru": "Набрать воды у колонки на втором уровне",
+  "en": "Get water at the tap on level two",
+  "ja": "2階層の水栓で水をくむ"
+ },
+ "quest.home_brandt.beds.log": {
+  "ru": "Теперь на крышу: подняться до четвёртого уровня, пройти на крышу над квартирой 3-03 и полить помидоры, травы и подсолнухи, у каждого по-своему.",
+  "en": "Now to the roof: climb to level four, step onto the roof above flat 3-03 and water the tomatoes, the herbs and the sunflowers, each in its own way.",
+  "ja": "次は屋根へ。4階層まで上がり、3-03の上の屋根に出て、トマト、ハーブ、ヒマワリにそれぞれのやり方で水をやる。"
+ },
+ "quest.home_brandt.notebook.log": {
+  "ru": "Агата оставила тетрадь семян на письменном столе в квартире. Хочется понять, откуда эти растения.",
+  "en": "Agata has left her seed notebook on the desk in her flat. You'd like to understand where these plants came from.",
+  "ja": "アガタは種のノートを部屋の机に置いている。この植物たちがどこから来たのか知りたい。"
+ },
+ "quest.home_brandt.notebook.obj": {
+  "ru": "Прочесть тетрадь семян в квартире 3-03",
+  "en": "Read the seed notebook in flat 3-03",
+  "ja": "3-03号室で種のノートを読む"
+ },
+ "quest.home_brandt.jar.log": {
+  "ru": "На полке рядом с радио стоит банка «Семена, которые не уехали». Её оставили для тех, кто захочет посадить что-нибудь у себя.",
+  "en": "On the shelf by the radio stands a jar labelled \"Seeds that didn't leave\". It was left for anyone who wants to plant something at home.",
+  "ja": "ラジオの隣の棚に「旅立たなかった種たち」の瓶がある。家で何か育てたい人のために置かれたものだ。"
+ },
+ "quest.home_brandt.jar.obj": {
+  "ru": "Взять семена из банки в квартире 3-03",
+  "en": "Take seeds from the jar in flat 3-03",
+  "ja": "3-03号室の瓶から種をもらう"
+ },
+ "quest.home_brandt.tomatoes.obj": {
+  "ru": "Полить помидоры на крыше",
+  "en": "Water the tomatoes on the roof",
+  "ja": "屋根のトマトに水をやる"
+ },
+ "quest.home_brandt.herbs.obj": {
+  "ru": "Полить травы на крыше",
+  "en": "Water the herbs on the roof",
+  "ja": "屋根のハーブに水をやる"
+ },
+ "quest.home_brandt.sunflowers.obj": {
+  "ru": "Полить подсолнухи на крыше",
+  "en": "Water the sunflowers on the roof",
+  "ja": "屋根のヒマワリに水をやる"
+ },
+ "quest.t3_canyon.title": {
+  "ru": "Лестничные улицы",
+  "en": "The stair-streets",
+  "ja": "階段の通り"
+ },
+ "quest.t3_canyon.desc": {
+  "ru": "Дома-кубики — не только лифты и двери: это лестничные улицы, на которых живут кошка, почтовый ящик, бельё и полка обмена. Стоит пройтись по всем трём.",
+  "en": "The Stacked Boxes are not just lifts and doors: they are stair-streets where a cat, a post box, washing and a swap shelf live. It's worth walking all three.",
+  "ja": "ボックス集合住宅はエレベーターとドアだけではない。猫、投函箱、洗濯物、交換棚の住む階段の通りがある。三本とも歩いてみる価値がある。"
+ },
+ "quest.t3_canyon.done": {
+  "ru": "Я прошёл каньоны сверху донизу, видел кошку, море и полку обмена. Теперь дом для меня не стена, а улица. Конфета, найденная в журнале, лежала там для меня.",
+  "en": "I've walked the canyons top to bottom, seen the cat, the sea and the swap shelf. The house is no longer a wall for me but a street. The sweet I found in the magazine had been left there for me.",
+  "ja": "谷を上から下まで歩き、猫と海と交換棚を見た。この家はもう僕にとって壁ではなく通りだ。雑誌の間から見つけた飴は、僕のために置かれていた。"
+ },
+ "quest.t3_canyon.cat.log": {
+  "ru": "На третьем уровне первого каньона у стены лежит миска. Рядом должна быть серая кошка.",
+  "en": "On level three of the first canyon a bowl lies by the wall. A grey cat should be nearby.",
+  "ja": "最初の谷の3階層、壁ぎわに皿がある。そばに灰色の猫がいるはずだ。"
+ },
+ "quest.t3_canyon.cat.obj": {
+  "ru": "Погладить кошку на третьем уровне",
+  "en": "Stroke the cat on level three",
+  "ja": "3階層の猫をなでる"
+ },
+ "quest.t3_canyon.view.log": {
+  "ru": "На четвёртом уровне, на конце площадки, стоит бинокль на столбе: смотреть вниз по каньону.",
+  "en": "On level four, at the end of the landing, binoculars stand on a post: they look down the canyon.",
+  "ja": "4階層の踊り場の端、柱の上に双眼鏡がある。谷を見下ろすためのものだ。"
+ },
+ "quest.t3_canyon.view.obj": {
+  "ru": "Посмотреть в бинокль на четвёртом уровне",
+  "en": "Look through the binoculars on level four",
+  "ja": "4階層の双眼鏡をのぞく"
+ },
+ "quest.t3_canyon.swap.log": {
+  "ru": "В третьем каньоне, на втором уровне, висит шкафчик: «Возьми одно, оставь одно».",
+  "en": "In the third canyon, on level two, hangs a cupboard: \"Take one, leave one.\"",
+  "ja": "三つ目の谷の2階層に、「一冊取ったら一冊置いて」の棚がある。"
+ },
+ "quest.t3_canyon.swap.obj": {
+  "ru": "Взять журнал с полки обмена",
+  "en": "Take a magazine from the swap shelf",
+  "ja": "交換棚から雑誌を一冊もらう"
+ }
+}

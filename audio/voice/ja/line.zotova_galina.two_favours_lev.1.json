@@ -1,0 +1,20 @@
+{
+ "key": "line.zotova_galina.two_favours_lev.1",
+ "lang": "ja",
+ "text": "オーリャさんの雑誌の件を片づけて、私の仮説まで否定してくれましたね。うちはあなたに借りがあります。特にレフが。",
+ "speaker": "zotova_galina",
+ "voice": "Alice",
+ "voice_id": "Xb7hH8MSUJpSbSDYk0k2",
+ "voice_design": null,
+ "direction": "[warm, chatty, fondly exasperated with her husband]",
+ "model": "fal-ai/elevenlabs/tts/eleven-v3",
+ "request": {
+  "stability": 0.5,
+  "apply_text_normalization": "auto",
+  "text": "[warm, chatty, fondly exasperated with her husband] オーリャさんの雑誌の件を片づけて、私の仮説まで否定してくれましたね。うちはあなたに借りがあります。特にレフが。",
+  "voice": "Alice",
+  "language_code": "ja"
+ },
+ "fal_request_id": "01a1d6ec-6b5b-7461-98a1-ccc3e8c47bf2",
+ "hash": "be8a8039df2e"
+}

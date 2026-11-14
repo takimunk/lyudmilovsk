@@ -1,0 +1,20 @@
+{
+ "key": "line.khuazhev_aslan.taste_hours.1",
+ "lang": "ru",
+ "text": "Валентина у тележки до шести, «Чайка» внизу до вечера. А пирожок в автомате на станции ждёт всегда.",
+ "speaker": "khuazhev_aslan",
+ "voice": "Brian",
+ "voice_id": "nPczCjzI2devNBz1zQrb",
+ "voice_design": null,
+ "direction": "[hearty, generous, a cheese seller from the Caucasus, proud of his family's cheese]",
+ "model": "fal-ai/elevenlabs/tts/eleven-v3",
+ "request": {
+  "stability": 0.5,
+  "apply_text_normalization": "auto",
+  "text": "[hearty, generous, a cheese seller from the Caucasus, proud of his family's cheese] Валентина у тележки до шести, «Чайка» внизу до вечера. А пирожок в автомате на станции ждёт всегда.",
+  "voice": "Brian",
+  "language_code": "ru"
+ },
+ "fal_request_id": "01a1d6e4-25f6-78c3-95fa-1441d16d6f37",
+ "hash": "8cd04792ce56"
+}

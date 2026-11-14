@@ -1,0 +1,20 @@
+{
+ "key": "line.streamer.olya_debt_closed.1",
+ "lang": "en",
+ "text": "Chat, we have news: Olya closed a reader's debt. It had been hanging for half a year. She's told me everything already, in detail.",
+ "speaker": "streamer",
+ "voice": "Jessica",
+ "voice_id": "cgSgspJ2msm6clMCkdW9",
+ "voice_design": null,
+ "direction": "[bright, fast, half talking to her chat]",
+ "model": "fal-ai/elevenlabs/tts/eleven-v3",
+ "request": {
+  "stability": 0.5,
+  "apply_text_normalization": "auto",
+  "text": "[bright, fast, half talking to her chat] Chat, we have news: Olya closed a reader's debt. It had been hanging for half a year. She's told me everything already, in detail.",
+  "voice": "Jessica",
+  "language_code": "en"
+ },
+ "fal_request_id": "01a1d7ab-d685-7613-acb1-12800dd6286a",
+ "hash": "27db83261e9e"
+}

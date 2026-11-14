@@ -1,0 +1,20 @@
+{
+ "key": "line.streamer.again7.1",
+ "lang": "ja",
+ "text": "チャットが秋を見せてって。ガーランドにカメラを向けたら、まあいいかって。",
+ "speaker": "streamer",
+ "voice": "Jessica",
+ "voice_id": "cgSgspJ2msm6clMCkdW9",
+ "voice_design": null,
+ "direction": "[bright, fast, half talking to her chat]",
+ "model": "fal-ai/elevenlabs/tts/eleven-v3",
+ "request": {
+  "stability": 0.5,
+  "apply_text_normalization": "auto",
+  "text": "[bright, fast, half talking to her chat] チャットが秋を見せてって。ガーランドにカメラを向けたら、まあいいかって。",
+  "voice": "Jessica",
+  "language_code": "ja"
+ },
+ "fal_request_id": "01a1d786-9406-77d1-9178-e2d7811d4d78",
+ "hash": "ace37aaab966"
+}

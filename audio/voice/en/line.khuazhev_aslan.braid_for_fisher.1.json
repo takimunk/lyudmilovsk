@@ -1,0 +1,20 @@
+{
+ "key": "line.khuazhev_aslan.braid_for_fisher.1",
+ "lang": "en",
+ "text": "A braid for a fisherman? Guessed right, didn't I? Fishermen always take the smoked one, so that something in life isn't fish.",
+ "speaker": "khuazhev_aslan",
+ "voice": "Brian",
+ "voice_id": "nPczCjzI2devNBz1zQrb",
+ "voice_design": null,
+ "direction": "[hearty, generous, a cheese seller from the Caucasus, proud of his family's cheese]",
+ "model": "fal-ai/elevenlabs/tts/eleven-v3",
+ "request": {
+  "stability": 0.5,
+  "apply_text_normalization": "auto",
+  "text": "[hearty, generous, a cheese seller from the Caucasus, proud of his family's cheese] A braid for a fisherman? Guessed right, didn't I? Fishermen always take the smoked one, so that something in life isn't fish.",
+  "voice": "Brian",
+  "language_code": "en"
+ },
+ "fal_request_id": "01a1d6d4-7b8a-7500-a8e4-8784f990c57a",
+ "hash": "2a50ca2c5909"
+}

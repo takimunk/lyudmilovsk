@@ -1,0 +1,20 @@
+{
+ "key": "line.valiev_rustam.signal_wait_window.1",
+ "lang": "ja",
+ "text": "昨日はひと晩じゅう窓の外を見ていた。星が三つ、人工衛星が一つ、たばこを吸う隣人が一人。君は見えなかった。",
+ "speaker": "valiev_rustam",
+ "voice": "Roger",
+ "voice_id": "CwhRBWXzGAHq8TQ4Fs17",
+ "voice_design": null,
+ "direction": "[confident, dry, matter-of-fact engineer]",
+ "model": "fal-ai/elevenlabs/tts/eleven-v3",
+ "request": {
+  "stability": 0.5,
+  "apply_text_normalization": "auto",
+  "text": "[confident, dry, matter-of-fact engineer] 昨日はひと晩じゅう窓の外を見ていた。星が三つ、人工衛星が一つ、たばこを吸う隣人が一人。君は見えなかった。",
+  "voice": "Roger",
+  "language_code": "ja"
+ },
+ "fal_request_id": "01a1d6d9-ae61-7e80-be51-60516e10f0b3",
+ "hash": "25d4dc21f756"
+}

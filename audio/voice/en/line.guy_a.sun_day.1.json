@@ -1,0 +1,20 @@
+{
+ "key": "line.guy_a.sun_day.1",
+ "lang": "en",
+ "text": "No glare on my monitors in the daytime, there aren't any windows. But I still squint sometimes. Habit, I suppose.",
+ "speaker": "guy_a",
+ "voice": "Will",
+ "voice_id": "bIHbv24MWmeRgasZH58o",
+ "voice_design": null,
+ "direction": "[a young gamer in a hurry, mid-match]",
+ "model": "fal-ai/elevenlabs/tts/eleven-v3",
+ "request": {
+  "stability": 0.5,
+  "apply_text_normalization": "auto",
+  "text": "[a young gamer in a hurry, mid-match] No glare on my monitors in the daytime, there aren't any windows. But I still squint sometimes. Habit, I suppose.",
+  "voice": "Will",
+  "language_code": "en"
+ },
+ "fal_request_id": "01a1d782-ba63-7b01-b61a-725f8bf455a9",
+ "hash": "90b81961df3b"
+}

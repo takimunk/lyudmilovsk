@@ -1,0 +1,20 @@
+{
+ "key": "line.belov_misha.magpie_tell.1",
+ "lang": "ja",
+ "text": "さあ、証拠を見せてくれ。",
+ "speaker": "belov_misha",
+ "voice": "Liam",
+ "voice_id": "TX3LPaxmHKxFdv7VOQHJ",
+ "voice_design": null,
+ "direction": "[easygoing, amused, a young technician, a little self-ironic]",
+ "model": "fal-ai/elevenlabs/tts/eleven-v3",
+ "request": {
+  "stability": 0.5,
+  "apply_text_normalization": "auto",
+  "text": "[easygoing, amused, a young technician, a little self-ironic] さあ、証拠を見せてくれ。",
+  "voice": "Liam",
+  "language_code": "ja"
+ },
+ "fal_request_id": "01a1d666-f8e4-7183-88ef-555e32f19d7e",
+ "hash": "2d3788361f25"
+}

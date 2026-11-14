@@ -1,0 +1,20 @@
+{
+ "key": "line.sorokin_oleg.waxwing_meet.4",
+ "lang": "ru",
+ "text": "И купите нормальный корм. В Гастрономе есть всё, от зерна до сушёной рябины. Семечки из автомата годятся только голубям.",
+ "speaker": "sorokin_oleg",
+ "voice": "River",
+ "voice_id": "SAz9YHcvj6GT2YYXdXww",
+ "voice_design": null,
+ "direction": "[a retired scholar, calm, dry humour, slower, gentle]",
+ "model": "fal-ai/elevenlabs/tts/eleven-v3",
+ "request": {
+  "stability": 0.5,
+  "apply_text_normalization": "auto",
+  "text": "[a retired scholar, calm, dry humour, slower, gentle] И купите нормальный корм. В Гастрономе есть всё, от зерна до сушёной рябины. Семечки из автомата годятся только голубям.",
+  "voice": "River",
+  "language_code": "ru"
+ },
+ "fal_request_id": "01a1d588-3bd4-7c31-b472-07105867a695",
+ "hash": "5d46b0008f9a"
+}

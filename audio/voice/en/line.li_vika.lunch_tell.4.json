@@ -1,0 +1,20 @@
+{
+ "key": "line.li_vika.lunch_tell.4",
+ "lang": "en",
+ "text": "Here, that is for the soup. And take the chocolate, it is my usual lunch. On Saturday I'll go myself. With a spoon and without the lab coat.",
+ "speaker": "li_vika",
+ "voice": "Laura",
+ "voice_id": "FGY2WhTYpPnrIDTdsKH5",
+ "voice_design": null,
+ "direction": "[playful, quick, a lab assistant joking about her work]",
+ "model": "fal-ai/elevenlabs/tts/eleven-v3",
+ "request": {
+  "stability": 0.5,
+  "apply_text_normalization": "auto",
+  "text": "[playful, quick, a lab assistant joking about her work] Here, that is for the soup. And take the chocolate, it is my usual lunch. On Saturday I'll go myself. With a spoon and without the lab coat.",
+  "voice": "Laura",
+  "language_code": "en"
+ },
+ "fal_request_id": "01a1d671-84c5-7d42-8f5e-0d929b61a4e1",
+ "hash": "43014ee2d797"
+}

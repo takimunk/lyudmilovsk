@@ -1,0 +1,20 @@
+{
+ "key": "line.girl_a.lab_route.1",
+ "lang": "en",
+ "text": "If you go down, look in at the Academgorodok. I work there, at Laboratory No. 2, but don't go in, it's boring.",
+ "speaker": "girl_a",
+ "voice": "Matilda",
+ "voice_id": "XrExE9yKIg1WjnnlVkGX",
+ "voice_design": null,
+ "direction": "[whispering, concentrated]",
+ "model": "fal-ai/elevenlabs/tts/eleven-v3",
+ "request": {
+  "stability": 0.5,
+  "apply_text_normalization": "auto",
+  "text": "[whispering, concentrated] If you go down, look in at the Academgorodok. I work there, at Laboratory No. 2, but don't go in, it's boring.",
+  "voice": "Matilda",
+  "language_code": "en"
+ },
+ "fal_request_id": "01a1d738-2471-7a23-9dfd-c37fe2cb84c7",
+ "hash": "dace42021a11"
+}

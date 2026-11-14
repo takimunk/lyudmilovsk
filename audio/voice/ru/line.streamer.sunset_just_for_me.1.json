@@ -1,0 +1,20 @@
+{
+ "key": "line.streamer.sunset_just_for_me.1",
+ "lang": "ru",
+ "text": "Ты был снаружи, а там закат. Опиши мне его. Не для чата, для меня.",
+ "speaker": "streamer",
+ "voice": "Jessica",
+ "voice_id": "cgSgspJ2msm6clMCkdW9",
+ "voice_design": null,
+ "direction": "[bright, fast, half talking to her chat]",
+ "model": "fal-ai/elevenlabs/tts/eleven-v3",
+ "request": {
+  "stability": 0.5,
+  "apply_text_normalization": "auto",
+  "text": "[bright, fast, half talking to her chat] Ты был снаружи, а там закат. Опиши мне его. Не для чата, для меня.",
+  "voice": "Jessica",
+  "language_code": "ru"
+ },
+ "fal_request_id": "01a1d73e-6ac6-7dc2-a2f5-5318532e6293",
+ "hash": "60da644ef7d9"
+}

@@ -1,5 +1,6 @@
 #include "World/LyudLadder.h"
 
+#include "NpcDialogue.h"
 #include "Audio/LyudSoundscape.h"
 #include "Components/CapsuleComponent.h"
 #include "Components/InstancedStaticMeshComponent.h"
@@ -286,9 +287,28 @@ void ULyudLadderClimber::TickComponent(float DeltaTime, ELevelTick TickType, FAc
 	Super::TickComponent(DeltaTime, TickType, ThisTickFunction);
 	if (!Ladder.IsValid())
 	{
+		// the ladder went away under the climber (its actor destroyed or streamed out): what the climb took is given back
+		ACharacter* Who = Cast<ACharacter>(GetOwner());
+		if (!bReleasing)
+		{
+			if (AHeroCharacter* Hero = Cast<AHeroCharacter>(Who))
+			{
+				Hero->HoldBodyYaw(false);
+			}
+		}
+		if (bPlayerDriven)
+		{
+			// the player's own climb took the movement away (a scripted climb's caller looks after its own)
+			bPlayerDriven = false;
+			if (Who && Who->GetCharacterMovement() && Who->GetCharacterMovement()->MovementMode == MOVE_None)
+			{
+				Who->GetCharacterMovement()->SetMovementMode(MOVE_Falling);
+			}
+		}
+		bStepping = false;
 		bReleasing = false;
 		Weight = 0.f;
-		if (UHeroAnimInstance* Anim = HeroAnim(Cast<ACharacter>(GetOwner())))
+		if (UHeroAnimInstance* Anim = HeroAnim(Who))
 		{
 			Anim->Ladder = FBikeRiderPose();
 		}
@@ -304,7 +324,9 @@ void ULyudLadderClimber::TickComponent(float DeltaTime, ELevelTick TickType, FAc
 	{
 		return;
 	}
-	if (bReleasing && Weight <= 0.f)
+	// (a step off the top takes a little longer than the body's blend off the ladder: the climber stays until the step
+	// has put the hero down and given him his movement back, or he would be left hanging in MOVE_None)
+	if (bReleasing && Weight <= 0.f && !bStepping)
 	{
 		Ladder = nullptr;
 		bReleasing = false;
@@ -393,6 +415,11 @@ void ULyudLadderClimber::GrabByPlayer(ULyudLadderComponent* InLadder)
 {
 	ACharacter* C = Cast<ACharacter>(GetOwner());
 	if (!C || !InLadder)
+	{
+		return;
+	}
+	// not from a seat or a saddle: both hold his movement and collision and would hand them back in the middle of the climb
+	if (const AHeroCharacter* Hero = Cast<AHeroCharacter>(C); Hero && (Hero->IsSeated() || Hero->IsOnBike()))
 	{
 		return;
 	}
@@ -532,6 +559,15 @@ void ULyudLadderSubsystem::Tick(float DeltaTime)
 	ACharacter* Hero = PC ? Cast<ACharacter>(PC->GetPawn()) : nullptr;
 	if (!Hero || Ladders.Num() == 0)
 	{
+		// not the hero any more (a bird's flight, a seat that takes the pawn): the prompt does not stay on the screen
+		if (bPrompt)
+		{
+			bPrompt = false;
+			if (ULyudInventoryUI* UI = ULyudInventoryUI::Get(this))
+			{
+				UI->SetPrompt(this, FText::GetEmpty());
+			}
+		}
 		return;
 	}
 	ULyudLadderClimber* Climber = ULyudLadderClimber::Get(Hero, false);
@@ -592,7 +628,7 @@ void ULyudLadderSubsystem::Tick(float DeltaTime)
 			UI->SetPrompt(this, bShow ? LyudText::Get(TEXT("ui.ladder.climb")) : FText::GetEmpty());
 		}
 	}
-	if (Best && PC->WasInputKeyJustPressed(EKeys::E))
+	if (Best && ANpcTalkDirector::UsePressed(PC))
 	{
 		ULyudLadderClimber::Get(Hero)->GrabByPlayer(Best);
 	}

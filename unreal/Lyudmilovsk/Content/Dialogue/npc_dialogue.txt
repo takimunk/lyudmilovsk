@@ -8,6 +8,14 @@
 # sun.<state> = now and then (every third later talk) a line about what the sun is doing now: day, low (sunrise or
 #             sunset), night, cloudy. The motif: docs/story/motifs.md. Quiet hints, not every character has them.
 # Keys are separated by ' | '; a key whose speaker is 'hero' is said by the player.
+# quest.<quest>.<stage>[,<stage>...] = what they say while that quest (Content/UI/quests.json) is on one of these stages,
+#             instead of everything above; 'done' is the stage of a finished quest. A quest this very talk begins
+#             (start_on talk) counts as on its first stage. quest.<quest>.<stage>.again = every later talk there
+#             (without it the same lines again; a 'done' talk without it is said once, then the everyday talks go on).
+#             .again may be written several times (said in turn). quest.<quest>.<stage>.if.<cond>[+<cond>] = a variant said
+#             instead while the conditions hold: night, low, day, cloudy, have:<item>, no:<item>, done:<quest>, on:<quest>,
+#             flag:<flag>. aside.<quest>.<stage>... (same shape) = a bystander's word about a quest that is not theirs:
+#             after their first conversation, said through once (the lines, then each .again). docs/quests.md "Branching talk"; tools/check_quest_talk.py checks these lines.
 
 [Owner]
 first = owner.first.1 | hero.owner_first.2 | owner.first.3 | hero.owner_first.4 | owner.first.5
@@ -15,10 +23,25 @@ again = owner.again1.1
 again = hero.owner_again2.1 | owner.again2.2
 again = owner.again3.1
 again = owner.again4.1
+again = owner.again5.1
+again = hero.owner_again6.1 | owner.again6.2
+again = owner.again7.1
 sun.day = owner.sun_day.1
 sun.low = owner.sun_low.1
 sun.night = owner.sun_night.1
 sun.cloudy = owner.sun_cloudy.1
+quest.awakening.outside = owner.door_never_locked.1
+quest.awakening.outside.if.low = owner.door_at_sunset.1 | owner.door_at_sunset.2
+quest.awakening.outside.if.night = owner.door_sea_at_night.1
+quest.owner_supper.ask = owner.supper_ask.1 | hero.supper_ask.2 | owner.supper_ask.3 | owner.supper_ask.4 | hero.supper_ask.5 | owner.supper_ask.6
+quest.owner_supper.buy,bring_empty = owner.supper_wait.1
+quest.owner_supper.bring = owner.supper_thanks.1 | owner.supper_thanks.2 | hero.supper_thanks.3 | owner.supper_thanks.4
+quest.owner_supper.buy,bring_empty.again = owner.supper_where.1
+quest.owner_supper.buy,bring_empty.again = owner.supper_slow_time.1
+quest.owner_supper.done = owner.supper_after.1
+quest.owner_supper.buy.if.night+no:cheese_braid+no:drink_baikal = owner.supper_night_hurry.1
+quest.owner_supper.buy.if.have:drink_baikal+no:cheese_braid = owner.supper_soda_first.1
+quest.owner_supper.buy.if.have:cheese_braid+no:drink_baikal = owner.supper_braid_first.1
 
 [Clerk]
 first = clerk.first.1 | hero.clerk_first.2 | clerk.first.3 | hero.clerk_first.4 | clerk.first.5
@@ -26,8 +49,16 @@ again = clerk.again1.1
 again = hero.clerk_again2.1 | clerk.again2.2
 again = clerk.again3.1
 again = clerk.again4.1
+again = clerk.again5.1
+again = clerk.again6.1
+again = clerk.again7.1
 sun.day = clerk.sun_day.1
 sun.cloudy = clerk.sun_cloudy.1
+sun.low = clerk.sun_low.1
+sun.night = clerk.sun_night.1
+aside.awakening.owner = clerk.booth_aisle.1
+aside.awakening.done = clerk.town_in_grey.1 | clerk.town_in_grey.2
+aside.awakening.done.if.night = clerk.night_sheet_lights.1
 
 [Streamer]
 first = streamer.first.1 | hero.streamer_first.2 | streamer.first.3 | streamer.first.4
@@ -35,7 +66,16 @@ again = streamer.again1.1
 again = hero.streamer_again2.1 | streamer.again2.2
 again = streamer.again3.1
 again = streamer.again4.1
+again = streamer.again5.1
+again = hero.streamer_again6.1 | streamer.again6.2
+again = streamer.again7.1
 sun.low = streamer.sun_low.1
+sun.day = streamer.sun_day.1
+sun.night = streamer.sun_night.1
+sun.cloudy = streamer.sun_cloudy.1
+aside.awakening.outside = streamer.wave_for_chat.1 | streamer.wave_for_chat.2
+aside.awakening.done = streamer.bet_on_you.1
+aside.awakening.done.if.low = streamer.sunset_just_for_me.1
 
 [Kid_boy]
 first = kid_boy.first.1 | hero.kid_boy_first.2 | kid_boy.first.3 | kid_boy.first.4
@@ -43,6 +83,15 @@ again = kid_boy.again1.1
 again = hero.kid_boy_again2.1 | kid_boy.again2.2
 again = kid_boy.again3.1
 again = kid_boy.again4.1
+again = kid_boy.again5.1
+again = hero.kid_boy_again6.1 | kid_boy.again6.2
+again = kid_boy.again7.1
+sun.day = kid_boy.sun_day.1
+sun.low = kid_boy.sun_low.1
+sun.night = kid_boy.sun_night.1
+sun.cloudy = kid_boy.sun_cloudy.1
+aside.awakening.outside = kid_boy.went_out_once.1 | kid_boy.went_out_once.2
+aside.awakening.outside.if.night = kid_boy.pines_rustle_night.1
 
 [Kid_girl]
 first = kid_girl.first.1 | hero.kid_girl_first.2 | kid_girl.first.3 | kid_girl.first.4
@@ -50,8 +99,24 @@ again = kid_girl.again1.1
 again = hero.kid_girl_again2.1 | kid_girl.again2.2
 again = kid_girl.again3.1
 again = kid_girl.again4.1
+again = kid_girl.again5.1
+again = hero.kid_girl_again6.1 | kid_girl.again6.2
+again = kid_girl.again7.1
 sun.day = kid_girl.sun_day.1
 sun.night = kid_girl.sun_night.1
+sun.low = kid_girl.sun_low.1
+sun.cloudy = kid_girl.sun_cloudy.1
+quest.sparrow_hello.ask = kid_girl.sparrow_ask.1 | hero.sparrow_ask.2 | kid_girl.sparrow_ask.3 | kid_girl.sparrow_ask.4 | hero.sparrow_ask.5
+quest.sparrow_hello.tame = kid_girl.sparrow_wait.1
+quest.sparrow_hello.call = kid_girl.sparrow_wait.1
+quest.sparrow_hello.tell = kid_girl.sparrow_tell.1 | hero.sparrow_tell.2 | kid_girl.sparrow_tell.3 | kid_girl.sparrow_tell.4
+quest.sparrow_hello.tame.if.night = kid_girl.sparrow_bedtime.1
+quest.sparrow_hello.call.if.night = kid_girl.sparrow_bedtime.1
+quest.sparrow_hello.tame.again = kid_girl.sparrow_palm_hint.1
+quest.sparrow_hello.tame.again = kid_girl.sparrow_count_four.1
+quest.sparrow_hello.call.again = kid_girl.sparrow_count_four.1
+quest.sparrow_hello.done = kid_girl.sparrow_named_kuzya.1 | hero.sparrow_named_kuzya.2 | kid_girl.sparrow_named_kuzya.3
+quest.sparrow_hello.done.if.have:bird_feed = kid_girl.sparrow_crumbs_door.1
 
 [Guy_a]
 first = guy_a.first.1 | hero.guy_a_first.2 | guy_a.first.3 | guy_a.first.4
@@ -59,6 +124,14 @@ again = guy_a.again1.1
 again = hero.guy_a_again2.1 | guy_a.again2.2
 again = guy_a.again3.1
 again = guy_a.again4.1
+again = guy_a.again5.1
+again = guy_a.again6.1
+again = hero.guy_a_again7.1 | guy_a.again7.2
+sun.day = guy_a.sun_day.1
+sun.low = guy_a.sun_low.1
+sun.night = guy_a.sun_night.1
+sun.cloudy = guy_a.sun_cloudy.1
+aside.awakening.outside = guy_a.better_signal_outside.1
 
 [Guy_b]
 first = guy_b.first.1 | hero.guy_b_first.2 | guy_b.first.3 | guy_b.first.4
@@ -66,8 +139,19 @@ again = guy_b.again1.1
 again = hero.guy_b_again2.1 | guy_b.again2.2
 again = guy_b.again3.1
 again = guy_b.again4.1
+again = guy_b.again5.1
+again = guy_b.again6.1
+again = hero.guy_b_again7.1 | guy_b.again7.2
 sun.day = guy_b.sun_day.1
 sun.cloudy = guy_b.sun_cloudy.1
+sun.low = guy_b.sun_low.1
+sun.night = guy_b.sun_night.1
+aside.awakening.owner = guy_b.owner_says_odd.1
+aside.explore.walk = guy_b.valley_way.1 | hero.valley_way.2 | guy_b.valley_way.3
+aside.explore.walk.again = guy_b.four_places_two_by_cable.1
+aside.explore.walk.again = guy_b.never_got_swift.1
+aside.explore.walk.if.low = guy_b.sunset_promenade_now.1 | guy_b.sunset_promenade_now.2
+aside.explore.done = guy_b.never_been_beach.1 | guy_b.never_been_beach.2
 
 [Girl_a]
 first = girl_a.first.1 | hero.girl_a_first.2 | girl_a.first.3 | girl_a.first.4
@@ -75,6 +159,19 @@ again = girl_a.again1.1
 again = hero.girl_a_again2.1 | girl_a.again2.2
 again = girl_a.again3.1
 again = girl_a.again4.1
+again = girl_a.again5.1
+again = girl_a.again6.1
+again = hero.girl_a_again7.1 | girl_a.again7.2
+sun.day = girl_a.sun_day.1
+sun.low = girl_a.sun_low.1
+sun.night = girl_a.sun_night.1
+sun.cloudy = girl_a.sun_cloudy.1
+aside.explore.walk = girl_a.lab_route.1 | girl_a.lab_route.2
+aside.explore.walk.again = girl_a.close_but_beach.1
+aside.explore.walk.again = girl_a.promised_sonya_sea.1
+aside.explore.walk.if.night = girl_a.lights_of_academ.1
+aside.explore.walk.if.cloudy = girl_a.grey_sea_still.1 | girl_a.grey_sea_still.2
+aside.explore.done = girl_a.less_new_now.1
 
 [Girl_b]
 first = girl_b.first.1 | hero.girl_b_first.2 | girl_b.first.3 | girl_b.first.4
@@ -82,8 +179,25 @@ again = girl_b.again1.1
 again = hero.girl_b_again2.1 | girl_b.again2.2
 again = girl_b.again3.1
 again = girl_b.again4.1
+again = girl_b.again5.1
+again = hero.girl_b_again6.1 | girl_b.again6.2
+again = girl_b.again7.1
+quest.waxwing.prepare = girl_b.waxwing_guide.1 | girl_b.waxwing_guide.2
 
 sun.day = girl_b.sun_day.1
+sun.low = girl_b.sun_low.1
+sun.night = girl_b.sun_night.1
+sun.cloudy = girl_b.sun_cloudy.1
+quest.overdue_journal.ask = girl_b.overdue_ask.1 | girl_b.overdue_ask.2 | hero.overdue_ask.3 | girl_b.overdue_ask.4
+quest.overdue_journal.visit = girl_b.overdue_wait.1
+quest.overdue_journal.buy = girl_b.overdue_hint.1
+quest.overdue_journal.return_empty = girl_b.overdue_empty.1
+quest.overdue_journal.return = girl_b.overdue_back.1 | hero.overdue_back.2 | girl_b.overdue_back.3 | girl_b.overdue_back.4
+quest.overdue_journal.visit.again = girl_b.lev_bench_hint.1
+quest.overdue_journal.visit.again = girl_b.ficus_instead.1
+quest.overdue_journal.done = girl_b.fresh_issue_twice.1 | girl_b.fresh_issue_twice.2
+quest.overdue_journal.visit.if.night = girl_b.overdue_dark_bench.1
+quest.overdue_journal.buy.if.cloudy = girl_b.overdue_cloudy_quiet.1
 
 [Nao]
 first = nao.first.1 | hero.nao_first.2 | nao.first.3 | nao.first.4
@@ -91,6 +205,9 @@ again = nao.again1.1
 again = hero.nao_again2.1 | nao.again2.2
 again = nao.again3.1
 again = nao.again4.1
+again = nao.again5.1
+again = hero.nao_again6.1 | nao.again6.2
+again = nao.again7.1
 sun.day = nao.sun_day.1
 sun.low = nao.sun_low.1
 sun.night = nao.sun_night.1
@@ -101,70 +218,287 @@ sun.cloudy = nao.sun_cloudy.1
 [Zotov_lev]
 first = zotov_lev.first.1
 again = zotov_lev.again1.1
+again = zotov_lev.again2.1
+again = hero.zotov_lev_again3.1 | zotov_lev.again3.2
+again = zotov_lev.again4.1
+sun.low = zotov_lev.sun_low.1
+sun.night = zotov_lev.sun_night.1
+quest.overdue_journal.visit = zotov_lev.overdue_admit.1 | zotov_lev.overdue_admit.2 | hero.overdue_admit.3 | zotov_lev.overdue_admit.4 | zotov_lev.overdue_admit.5
+quest.overdue_journal.done = zotov_lev.load_bearing_reading.1 | zotov_lev.load_bearing_reading.2
+quest.overdue_journal.done.if.have:magazine_travel = zotov_lev.shores_too_thin.1
 
 [Zotova_galina]
 first = zotova_galina.first.1
 again = zotova_galina.again1.1
+again = zotova_galina.again2.1
+again = hero.zotova_galina_again3.1 | zotova_galina.again3.2
+again = zotova_galina.again4.1
+sun.low = zotova_galina.sun_low.1
+sun.night = zotova_galina.sun_night.1
+quest.soda_science.ask = zotova_galina.sodalab_ask.1 | zotova_galina.sodalab_ask.2 | hero.sodalab_ask.3 | zotova_galina.sodalab_ask.4 | zotova_galina.sodalab_ask.5
+quest.soda_science.taste = zotova_galina.sodalab_wait.1
+quest.soda_science.tell = zotova_galina.sodalab_tell.1 | hero.sodalab_tell.2 | zotova_galina.sodalab_tell.3 | zotova_galina.sodalab_tell.4 | zotova_galina.sodalab_tell.5
+quest.soda_science.taste.if.have:drink_baikal = zotova_galina.sodalab_pocket.1
+quest.soda_science.taste.again = zotova_galina.sodalab_where.1
+quest.soda_science.taste.again = zotova_galina.sodalab_empty_rows.1
+quest.soda_science.done = zotova_galina.green_confirmed.1 | zotova_galina.green_confirmed.2
+quest.soda_science.done.if.done:overdue_journal = zotova_galina.two_favours_lev.1
 
 [Sato_kei]
 first = sato_kei.first.1
 again = sato_kei.again1.1
+again = sato_kei.again2.1
+again = hero.sato_kei_again3.1 | sato_kei.again3.2
+again = sato_kei.again4.1
+sun.low = sato_kei.sun_low.1
+sun.night = sato_kei.sun_night.1
 
 [Sato_mila]
 first = sato_mila.first.1
 again = sato_mila.again1.1
+again = sato_mila.again2.1
+again = hero.sato_mila_again3.1 | sato_mila.again3.2
+again = sato_mila.again4.1
+sun.day = sato_mila.sun_day.1
+sun.low = sato_mila.sun_low.1
 
 [Sato_yuki]
 first = sato_yuki.first.1
 again = sato_yuki.again1.1
+again = sato_yuki.again2.1
+again = sato_yuki.again3.1 | hero.sato_yuki_again3.2 | sato_yuki.again3.3
+again = sato_yuki.again4.1
+sun.day = sato_yuki.sun_day.1
+sun.low = sato_yuki.sun_low.1
+quest.crow_gift.ask = sato_yuki.crow_ask.1 | hero.crow_ask.2 | sato_yuki.crow_ask.3 | sato_yuki.crow_ask.4
+quest.crow_gift.feed,gift = sato_yuki.crow_wait.1
+quest.crow_gift.tell = sato_yuki.crow_tell.1 | hero.crow_tell.2 | sato_yuki.crow_tell.3
+quest.crow_gift.feed,gift.if.low = sato_yuki.crows_roost_night.1 | sato_yuki.crows_roost_night.2
+quest.crow_gift.feed,gift.again = sato_yuki.crow_wait_hint.1
+quest.crow_gift.feed,gift.again = sato_yuki.crow_wait_drawing.1
+quest.crow_gift.done = sato_yuki.crow_swap_feather.1 | sato_yuki.crow_swap_feather.2
+quest.crow_gift.done.if.done:magpie_key = sato_yuki.crow_magpie_uncle.1
 
 [Korneev_ivan]
 first = korneev_ivan.first.1
 again = korneev_ivan.again1.1
+again = korneev_ivan.again2.1
+again = hero.korneev_ivan_again3.1 | korneev_ivan.again3.2
+again = korneev_ivan.again4.1
+sun.low = korneev_ivan.sun_low.1
+sun.day = korneev_ivan.sun_day.1
+quest.hot_corn.carry = korneev_ivan.corn_handover.1 | korneev_ivan.corn_handover.2 | korneev_ivan.corn_handover.3
+quest.hot_corn.carry_empty = korneev_ivan.corn_nocob.1
+quest.hot_corn.tell = korneev_ivan.corn_eaten.1
+quest.hot_corn.carry.if.done:evening_paper = korneev_ivan.corn_paper_boy.1 | korneev_ivan.corn_paper_boy.2
+quest.hot_corn.done = korneev_ivan.cart_visit_secret.1 | korneev_ivan.cart_visit_secret.2
+quest.hot_corn.tell.if.done:first_catch = korneev_ivan.corn_angler_news.1 | korneev_ivan.corn_angler_news.2
 
 [Korneeva_nina]
 first = korneeva_nina.first.1
 again = korneeva_nina.again1.1
+again = korneeva_nina.again2.1 | korneeva_nina.again2.2
+again = hero.korneeva_nina_again3.1 | korneeva_nina.again3.2
+again = korneeva_nina.again4.1
+sun.day = korneeva_nina.sun_day.1
+sun.low = korneeva_nina.sun_low.1
+quest.evening_paper.ask = korneeva_nina.paper_ask.1 | korneeva_nina.paper_ask.2 | korneeva_nina.paper_ask.3 | hero.paper_ask.4
+quest.evening_paper.buy,bring_empty = korneeva_nina.paper_wait.1
+quest.evening_paper.bring = korneeva_nina.paper_thanks.1 | korneeva_nina.paper_thanks.2 | korneeva_nina.paper_thanks.3
+quest.evening_paper.buy,bring_empty.if.low = korneeva_nina.paper_after_dark.1
+quest.evening_paper.buy,bring_empty.again = korneeva_nina.paper_wait_hint.1
+quest.evening_paper.buy,bring_empty.again = korneeva_nina.paper_wait_vanya.1
+quest.evening_paper.done = korneeva_nina.paper_rook.1 | korneeva_nina.paper_rook.2
+quest.evening_paper.done.if.done:hot_corn = korneeva_nina.paper_postman.1 | korneeva_nina.paper_postman.2
 
 [Belov_misha]
 first = belov_misha.first.1
 again = belov_misha.again1.1
+again = belov_misha.again2.1
+again = belov_misha.again3.1
+again = belov_misha.again4.1
+sun.low = belov_misha.sun_low.1
+sun.night = belov_misha.sun_night.1
+quest.magpie_key.ask = belov_misha.magpie_ask.1 | hero.magpie_ask.2 | belov_misha.magpie_ask.3 | belov_misha.magpie_ask.4
+quest.magpie_key.search = belov_misha.magpie_wait.1
+quest.magpie_key.tell = belov_misha.magpie_tell.1 | hero.magpie_tell.2 | belov_misha.magpie_tell.3 | belov_misha.magpie_tell.4 | hero.magpie_tell.5 | belov_misha.magpie_tell.6
+quest.magpie_key.search.if.done:crow_gift = belov_misha.magpie_crow_friend.1 | belov_misha.magpie_crow_friend.2
+quest.magpie_key.search.if.done:crow_gift.again = belov_misha.magpie_wait_hint.1
+quest.magpie_key.search.if.done:crow_gift.again = belov_misha.magpie_wait_nuts.1
+quest.magpie_key.search.again = belov_misha.magpie_wait_hint.1
+quest.magpie_key.search.again = belov_misha.magpie_wait_nuts.1
+quest.magpie_key.done = belov_misha.key_on_string.1 | belov_misha.key_on_string.2
 
 [Orlova_tanya]
 first = orlova_tanya.first.1
 again = orlova_tanya.again1.1
+again = orlova_tanya.again2.1
+again = orlova_tanya.again3.1
+again = orlova_tanya.again4.1
+sun.day = orlova_tanya.sun_day.1
+sun.cloudy = orlova_tanya.sun_cloudy.1
+quest.waxwing.prepare = orlova_tanya.waxwing_rowan.1 | orlova_tanya.waxwing_rowan.2
+quest.waxwing.prepare.if.have:feed_rowan+have:feeder = orlova_tanya.rowan_guide_left.1 | orlova_tanya.rowan_guide_left.2
 
 [Lange_pyotr]
 first = lange_pyotr.first.1
 again = lange_pyotr.again1.1
+again = lange_pyotr.again2.1
+again = hero.lange_pyotr_again3.1 | lange_pyotr.again3.2
+again = lange_pyotr.again4.1
+sun.day = lange_pyotr.sun_day.1
+sun.low = lange_pyotr.sun_low.1
+quest.fisherman_cheese.ask = lange_pyotr.cheese_ask.1 | lange_pyotr.cheese_ask.2 | hero.cheese_ask.3 | lange_pyotr.cheese_ask.4
+quest.fisherman_cheese.buy,bring_empty = lange_pyotr.cheese_wait.1
+quest.fisherman_cheese.bring = lange_pyotr.cheese_thanks.1 | lange_pyotr.cheese_thanks.2
+quest.fisherman_cheese.buy,bring_empty.again = lange_pyotr.cheese_wait_hint.1
+quest.fisherman_cheese.buy,bring_empty.again = lange_pyotr.cheese_wait_gull.1
+quest.first_catch.rod = lange_pyotr.catch_norod.1
+quest.first_catch.learn = lange_pyotr.catch_learn.1 | lange_pyotr.catch_learn.2 | hero.catch_learn.3 | lange_pyotr.catch_learn.4 | lange_pyotr.catch_learn.5
+quest.first_catch.catch = lange_pyotr.catch_wait.1
+quest.first_catch.tell = hero.catch_tell.1 | lange_pyotr.catch_tell.2 | lange_pyotr.catch_tell.3 | lange_pyotr.catch_tell.4
+quest.first_catch.catch.if.no:bait_worm = lange_pyotr.pier_no_worms.1 | lange_pyotr.pier_no_worms.2
+quest.first_catch.catch.if.low = lange_pyotr.pier_dawn_dusk.1 | lange_pyotr.pier_dawn_dusk.2
+quest.first_catch.catch.again = lange_pyotr.catch_wait_hint.1
+quest.first_catch.catch.again = lange_pyotr.catch_wait_nets.1
+quest.first_catch.catch.again = lange_pyotr.braid_three_days.1 | lange_pyotr.braid_three_days.2
+quest.first_catch.done = lange_pyotr.angler_spoon_dawn.1 | lange_pyotr.angler_spoon_dawn.2
+quest.first_catch.done.if.low = lange_pyotr.angler_dusk_now.1
+quest.fisherman_cheese.ask.if.have:cheese_braid = lange_pyotr.cheese_smoked_pocket.1 | lange_pyotr.cheese_smoked_pocket.2
+quest.fisherman_cheese.buy.if.low = lange_pyotr.cheese_low_sun.1
+quest.fisherman_cheese.buy.if.cloudy = lange_pyotr.cheese_clouds.1
 
 [Kimura_dasha]
 first = kimura_dasha.first.1
 again = kimura_dasha.again1.1
+again = kimura_dasha.again2.1
+again = hero.kimura_dasha_again3.1 | kimura_dasha.again3.2
+again = kimura_dasha.again4.1
+sun.low = kimura_dasha.sun_low.1
+sun.night = kimura_dasha.sun_night.1
+quest.window_feeder.ask = kimura_dasha.feeder_ask.1 | kimura_dasha.feeder_ask.2 | hero.feeder_ask.3 | kimura_dasha.feeder_ask.4
+quest.window_feeder.fill,watch = kimura_dasha.feeder_wait.1
+quest.window_feeder.tell = kimura_dasha.feeder_tell.1 | hero.feeder_tell.2 | kimura_dasha.feeder_tell.3
+quest.window_feeder.fill,watch.if.night = kimura_dasha.feeder_no_data_night.1
+quest.window_feeder.fill,watch.again = kimura_dasha.feeder_wait_hint.1
+quest.window_feeder.fill,watch.again = kimura_dasha.feeder_wait_dishes.1
+quest.window_feeder.done = kimura_dasha.feeder_table_rows.1 | kimura_dasha.feeder_table_rows.2
+quest.window_feeder.done.if.done:autumn_count = kimura_dasha.feeder_two_counts.1
 
 [Li_vika]
 first = li_vika.first.1
 again = li_vika.again1.1
+again = li_vika.again2.1
+again = li_vika.again3.1
+again = li_vika.again4.1
+sun.night = li_vika.sun_night.1
+sun.cloudy = li_vika.sun_cloudy.1
+quest.lab_lunch.ask = li_vika.lunch_ask.1 | li_vika.lunch_ask.2 | li_vika.lunch_ask.3 | hero.lunch_ask.4 | li_vika.lunch_ask.5
+quest.lab_lunch.eat = li_vika.lunch_wait.1
+quest.lab_lunch.tell = li_vika.lunch_tell.1 | hero.lunch_tell.2 | li_vika.lunch_tell.3 | li_vika.lunch_tell.4
+quest.lab_lunch.eat.again = li_vika.lunch_where.1
+quest.lab_lunch.eat.again = li_vika.lunch_borscht_debate.1
+quest.lab_lunch.done = li_vika.saturday_plan.1 | li_vika.saturday_plan.2
+quest.lab_lunch.eat.if.night = li_vika.lunch_after_dark.1
+quest.lab_lunch.eat.if.have:fish_herring = li_vika.lunch_raw_herring.1
+quest.lab_lunch.done.if.done:hot_corn = li_vika.lunch_corn_courier.1
 
 [Valiev_rustam]
 first = valiev_rustam.first.1
 again = valiev_rustam.again1.1
+again = valiev_rustam.again2.1
+again = hero.valiev_rustam_again3.1 | valiev_rustam.again3.2
+again = valiev_rustam.again4.1
+sun.low = valiev_rustam.sun_low.1
+sun.night = valiev_rustam.sun_night.1
+quest.night_signal.ask = valiev_rustam.signal_ask.1 | hero.signal_ask.2 | valiev_rustam.signal_ask.3 | valiev_rustam.signal_ask.4 | valiev_rustam.signal_ask.5
+quest.night_signal.signal = valiev_rustam.signal_wait.1
+quest.night_signal.tell = valiev_rustam.signal_tell.1 | hero.signal_tell.2 | valiev_rustam.signal_tell.3 | hero.signal_tell.4 | valiev_rustam.signal_tell.5 | valiev_rustam.signal_tell.6
+quest.night_signal.signal.if.have:head_lamp = valiev_rustam.signal_lamp_ready.1 | valiev_rustam.signal_lamp_ready.2
+quest.night_signal.signal.if.have:head_lamp.again = valiev_rustam.signal_wait_window.1
+quest.night_signal.signal.again = valiev_rustam.signal_wait_hint.1
+quest.night_signal.signal.again = valiev_rustam.signal_wait_window.1
+quest.night_signal.done = valiev_rustam.brighter_lamp_calc.1 | valiev_rustam.brighter_lamp_calc.2
+quest.night_signal.done.if.night = valiev_rustam.second_dot.1
 
 [Nishimura_aya]
 first = nishimura_aya.first.1
 again = nishimura_aya.again1.1
+again = nishimura_aya.again2.1
+again = hero.nishimura_aya_again3.1 | nishimura_aya.again3.2
+again = nishimura_aya.again4.1
+sun.low = nishimura_aya.sun_low.1
+sun.day = nishimura_aya.sun_day.1
+quest.painter_views.ask = nishimura_aya.views_ask.1 | nishimura_aya.views_ask.2 | hero.views_ask.3 | nishimura_aya.views_ask.4
+quest.painter_views.look = nishimura_aya.views_wait.1
+quest.painter_views.tell = nishimura_aya.views_tell.1 | hero.views_tell.2 | nishimura_aya.views_tell.3 | nishimura_aya.views_tell.4 | nishimura_aya.views_tell.5
+quest.painter_views.look.if.low = nishimura_aya.views_low_light.1
+quest.painter_views.look.again = nishimura_aya.views_wait_hint.1
+quest.painter_views.look.again = nishimura_aya.views_wait_gull.1
+quest.painter_views.done = nishimura_aya.new_sketchbook.1 | nishimura_aya.new_sketchbook.2
 
 [Sorokin_oleg]
 first = sorokin_oleg.first.1
 again = sorokin_oleg.again1.1
+again = sorokin_oleg.again2.1
+again = hero.sorokin_oleg_again3.1 | sorokin_oleg.again3.2
+again = sorokin_oleg.again4.1
+sun.day = sorokin_oleg.sun_day.1
+sun.cloudy = sorokin_oleg.sun_cloudy.1
+quest.waxwing.find = sorokin_oleg.waxwing_meet.1 | hero.waxwing_meet.2 | sorokin_oleg.waxwing_meet.3 | sorokin_oleg.waxwing_meet.4 | hero.waxwing_meet.5 | sorokin_oleg.waxwing_meet.6 | sorokin_oleg.waxwing_meet.7 | hero.waxwing_meet.8 | sorokin_oleg.waxwing_meet.9
+quest.waxwing.prepare,journey = sorokin_oleg.waxwing_tips.1
+quest.waxwing.lure,wait,tame = sorokin_oleg.waxwing_wait.1
+quest.waxwing.return = sorokin_oleg.waxwing_back.1
+quest.waxwing.prepare.if.have:feeder = sorokin_oleg.tips_feeder_in_hand.1
+quest.waxwing.journey.if.night = sorokin_oleg.grove_after_dark.1 | sorokin_oleg.grove_after_dark.2
+quest.waxwing.lure,wait,tame.if.night = sorokin_oleg.rowan_till_dawn.1 | sorokin_oleg.rowan_till_dawn.2
+quest.waxwing.lure,wait,tame.again = sorokin_oleg.waxwing_wait_hint.1
+quest.waxwing.lure,wait,tame.again = sorokin_oleg.waxwing_wait_snow.1
+quest.waxwing_after.visit = sorokin_oleg.waxwing_after.1 | hero.waxwing_after.2 | sorokin_oleg.waxwing_after.3 | sorokin_oleg.waxwing_after.4
+quest.autumn_count.kit = sorokin_oleg.autumn_kit.1
+quest.autumn_count.brief = sorokin_oleg.autumn_brief.1 | sorokin_oleg.autumn_brief.2 | sorokin_oleg.autumn_brief.3 | hero.autumn_brief.4 | sorokin_oleg.autumn_brief.5 | sorokin_oleg.autumn_brief.6 | sorokin_oleg.autumn_brief.7 | hero.autumn_brief.8 | sorokin_oleg.autumn_brief.9
+quest.autumn_count.post,tally = sorokin_oleg.autumn_wait.1
+quest.autumn_count.report = hero.autumn_report.1 | sorokin_oleg.autumn_report.2 | sorokin_oleg.autumn_report.3 | sorokin_oleg.autumn_report.4 | sorokin_oleg.autumn_report.5
+quest.autumn_count.kit.if.done:window_feeder = sorokin_oleg.kit_from_dasha.1 | sorokin_oleg.kit_from_dasha.2
+quest.autumn_count.post,tally.if.night = sorokin_oleg.count_by_lantern.1 | sorokin_oleg.count_by_lantern.2
+quest.autumn_count.post,tally.again = sorokin_oleg.autumn_wait_hint.1
+quest.autumn_count.post,tally.again = sorokin_oleg.autumn_wait_sandwich.1
+quest.autumn_count.post,tally.again = sorokin_oleg.waxwing_journal.1
+quest.autumn_count.done = sorokin_oleg.bluetit_at_dawn.1 | sorokin_oleg.bluetit_at_dawn.2
 
 [Khuazhev_aslan]
 first = khuazhev_aslan.first.1
 again = khuazhev_aslan.again1.1
+again = khuazhev_aslan.again2.1
+again = hero.khuazhev_aslan_again3.1 | khuazhev_aslan.again3.2
+again = khuazhev_aslan.again4.1
+sun.day = khuazhev_aslan.sun_day.1
+sun.night = khuazhev_aslan.sun_night.1
+quest.tent_neighbours.ask = khuazhev_aslan.tent_ask.1 | khuazhev_aslan.tent_ask.2 | khuazhev_aslan.tent_ask.3 | hero.tent_ask.4 | khuazhev_aslan.tent_ask.5
+quest.tent_neighbours.taste = khuazhev_aslan.tent_wait.1
+quest.tent_neighbours.tell = khuazhev_aslan.tent_report.1 | hero.tent_report.2 | khuazhev_aslan.tent_report.3 | khuazhev_aslan.tent_report.4 | khuazhev_aslan.tent_report.5
+quest.tent_neighbours.taste.if.done:hot_corn = khuazhev_aslan.taste_corn_courier.1 | khuazhev_aslan.taste_corn_courier.2
+quest.tent_neighbours.taste.if.done:hot_corn.again = khuazhev_aslan.taste_hours.1
+quest.tent_neighbours.taste.if.done:hot_corn.again = khuazhev_aslan.taste_imagined.1
+quest.tent_neighbours.taste.again = khuazhev_aslan.taste_hours.1
+quest.tent_neighbours.taste.again = khuazhev_aslan.taste_imagined.1
+quest.tent_neighbours.done = khuazhev_aslan.letter_to_brother.1 | khuazhev_aslan.letter_to_brother.2
 
 [Guseva_valentina]
 first = guseva_valentina.first.1
 again = guseva_valentina.again1.1
+again = guseva_valentina.again2.1
+again = hero.guseva_valentina_again3.1 | guseva_valentina.again3.2
+again = guseva_valentina.again4.1
+sun.day = guseva_valentina.sun_day.1
+sun.cloudy = guseva_valentina.sun_cloudy.1
+quest.hot_corn.ask = guseva_valentina.corn_errand.1 | guseva_valentina.corn_errand.2 | hero.corn_errand.3 | guseva_valentina.corn_errand.4
+quest.hot_corn.buy = guseva_valentina.corn_till.1
+quest.hot_corn.carry = guseva_valentina.corn_hurry.1
+quest.hot_corn.tell = guseva_valentina.corn_report.1 | hero.corn_report.2 | guseva_valentina.corn_report.3 | guseva_valentina.corn_report.4
+quest.hot_corn.done = guseva_valentina.wheel_oiled.1 | guseva_valentina.wheel_oiled.2
+quest.hot_corn.carry.if.low = guseva_valentina.corn_low_sun.1
+quest.hot_corn.ask.if.done:evening_paper = guseva_valentina.corn_paper_known.1 | guseva_valentina.corn_paper_known.2
 
 # The North (docs/north.md "People"): the ranger at the reserve's gate and the campers. [Id] is their body id (people.json
 # body); proposals, not canon. The ranger's topical lines (the fumaroles, bears and the food pole, the spring, the

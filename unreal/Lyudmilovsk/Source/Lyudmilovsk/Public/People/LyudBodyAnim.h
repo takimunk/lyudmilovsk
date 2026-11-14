@@ -20,6 +20,49 @@ struct FLyudBodyClip
 	bool bLoop = true;
 };
 
+/** Where a gesture wants a hand (Private/People/BodyGestures.h, docs/town_manners.md). Everything is in the mesh's own
+ *  space (it faces +Y, its left is +X, up +Z), cm of a grown-up's body (Scale brings it to this one's). */
+struct FLyudArmGoal
+{
+	/** 0: the clip's arm as it is .. 1: the hand at the goal. */
+	float Weight = 0.f;
+	/** What Offset is from: 0 the pelvis, 1 the chest (spine_03), 2 the head. */
+	uint8 Anchor = 1;
+	FVector Offset = FVector::ZeroVector;
+	/** Which way the fingers point and the palm faces. */
+	FVector Fingers = FVector::YAxisVector;
+	FVector Palm = FVector(0.f, 0.f, -1.f);
+	/** How far the fingers close, 0 open .. 1 a fist. */
+	float Curl = 0.f;
+};
+
+/** A manner's pose on top of the clip: the arms (0 left, 1 right), the head and the back. */
+struct FLyudGesturePose
+{
+	FLyudArmGoal Arm[2];
+	float HeadPitch = 0.f, HeadYaw = 0.f, HeadRoll = 0.f;     // deg: up, toward the left, toward the left shoulder
+	float SpinePitch = 0.f, SpineRoll = 0.f;                    // deg: bent forward, toward the left
+	float Jaw = 0.f;                                            // a yawn
+	bool bEyesShut = false;
+	float Scale = 1.f;
+	bool IsActive() const
+	{
+		return Arm[0].Weight > 0.002f || Arm[1].Weight > 0.002f || FMath::Abs(HeadPitch) + FMath::Abs(HeadYaw) + FMath::Abs(HeadRoll)
+			+ FMath::Abs(SpinePitch) + FMath::Abs(SpineRoll) > 0.05f;
+	}
+};
+
+/** The gesture layer's bones as compact pose indices (BodyGestures.cpp), looked up once per bone container. */
+struct FLyudGestureBones
+{
+	const FBoneContainer* For = nullptr;
+	uint16 Serial = 0;
+	int32 Pelvis = INDEX_NONE, Spine[3] = { INDEX_NONE, INDEX_NONE, INDEX_NONE }, Neck = INDEX_NONE, Head = INDEX_NONE;
+	/** Per side (0 left, 1 right): upper arm, lower arm, hand; the middle knuckle, the thumb's and little finger's bases, the
+	 *  thumb's tip; the fingers' bones (index, middle, ring, little: three each), the thumb's three. */
+	int32 Arm[2][3], Knuckle[2], ThumbBase[2], PinkyBase[2], ThumbTip[2], Finger[2][12], Thumb[2][3];
+};
+
 /** Worker-side state of ULyudBodyAnimInstance: the clip now, the one it is blending from, the head's turn. */
 struct FLyudBodyAnimProxy : public FAnimInstanceProxy
 {
@@ -56,6 +99,9 @@ struct FLyudBodyAnimProxy : public FAnimInstanceProxy
 	FVector ClipHand[2] = { FVector::ZeroVector, FVector::ZeroVector };
 	/** On a bicycle or leading one by the bars (ALyudBike::RiderPose): the body bent onto its saddle, pedals and bars. */
 	FBikeRiderPose Bike;
+	/** A manner's gesture on top of everything (ULyudBodyAnimInstance::SetGesture eases it in and out). */
+	FLyudGesturePose Gesture;
+	FLyudGestureBones GestureBones;
 
 	virtual void Update(float DeltaSeconds) override;
 	virtual bool Evaluate(FPoseContext& Output) override;
@@ -108,6 +154,8 @@ public:
 	/** Something worth a look (world cm), instead of the player's eyes when within 6 m (the default). Call every frame;
 	 *  bValid false = nothing. */
 	void SetLookCandidate(const FVector& Where, bool bValid);
+	/** Back to looking at the player now and then by itself. */
+	void ClearLookCandidate() { bCandidateGiven = false; }
 	/** Asleep or lying with closed eyes. */
 	void SetEyesShut(bool bShut) { bEyesShut = bShut; }
 	/** Talking with someone without a voice line: the mouth moves on its own. */
@@ -133,6 +181,11 @@ public:
 	 *  pedals and the bars in this mesh's component space. */
 	void SetBikeRider(const FBikeRiderPose& Pose) { BikePose = Pose; }
 
+	/** A manner's gesture (ANpcBody every frame; a default pose = none): eased toward, so one gesture melts into the next. */
+	void SetGesture(const FLyudGesturePose& Pose) { GestureWant = Pose; }
+	/** Looks at the look candidate for Seconds from now (somebody noticed something), not when it happens to. */
+	void Attend(float Seconds) { bAttending = true; AttendUntil = Clock + Seconds; }
+
 protected:
 	virtual FAnimInstanceProxy* CreateAnimInstanceProxy() override { return new FLyudBodyAnimProxy(this); }
 	virtual void DestroyAnimInstanceProxy(FAnimInstanceProxy* InProxy) override { delete InProxy; }
@@ -141,6 +194,8 @@ protected:
 
 private:
 	FBikeRiderPose BikePose;
+	FLyudGesturePose GestureWant, GestureNow;
+	void UpdateGesture(float Dt);
 	bool bFace = false;
 	bool bEyesShut = false;
 	bool bChatter = false;

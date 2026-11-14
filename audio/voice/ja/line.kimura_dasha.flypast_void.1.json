@@ -1,0 +1,20 @@
+{
+ "key": "line.kimura_dasha.flypast_void.1",
+ "lang": "ja",
+ "text": "通過はノーカウント。降りてきたら、話はそれから。",
+ "speaker": "kimura_dasha",
+ "voice": "Charlotte",
+ "voice_id": "XB0fDUnXU5powFXDhCwa",
+ "voice_design": null,
+ "direction": "[a tired physics student, wry, self-ironic]",
+ "model": "fal-ai/elevenlabs/tts/eleven-v3",
+ "request": {
+  "stability": 0.5,
+  "apply_text_normalization": "auto",
+  "text": "[a tired physics student, wry, self-ironic] 通過はノーカウント。降りてきたら、話はそれから。",
+  "voice": "Charlotte",
+  "language_code": "ja"
+ },
+ "fal_request_id": "01a1d6e5-6e98-74f1-b524-18364e6bf2ca",
+ "hash": "339229100332"
+}

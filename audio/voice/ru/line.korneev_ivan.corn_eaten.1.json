@@ -1,0 +1,20 @@
+{
+ "key": "line.korneev_ivan.corn_eaten.1",
+ "lang": "ru",
+ "text": "Початка уже нет, одна кочерыжка. Вале скажи, не забудь.",
+ "speaker": "korneev_ivan",
+ "voice": "Bill",
+ "voice_id": "pqHfZKP75CvOlQylNhV4",
+ "voice_design": null,
+ "direction": "[an old man, slow, a little gravelly, contented, a quiet joke at the end]",
+ "model": "fal-ai/elevenlabs/tts/eleven-v3",
+ "request": {
+  "stability": 0.5,
+  "apply_text_normalization": "auto",
+  "text": "[an old man, slow, a little gravelly, contented, a quiet joke at the end] Початка уже нет, одна кочерыжка. Вале скажи, не забудь.",
+  "voice": "Bill",
+  "language_code": "ru"
+ },
+ "fal_request_id": "01a1d670-0ee7-7560-ade2-406898a3d194",
+ "hash": "732db891278e"
+}

@@ -1,0 +1,20 @@
+{
+ "key": "line.girl_b.ficus_instead.1",
+ "lang": "en",
+ "text": "I set out myself again. Got as far as the door and remembered the ficus needed watering.",
+ "speaker": "girl_b",
+ "voice": "Sarah",
+ "voice_id": "EXAVITQu4vr4xnSDxMaL",
+ "voice_design": null,
+ "direction": "[curious, slightly uneasy, conspiratorial]",
+ "model": "fal-ai/elevenlabs/tts/eleven-v3",
+ "request": {
+  "stability": 0.5,
+  "apply_text_normalization": "auto",
+  "text": "[curious, slightly uneasy, conspiratorial] I set out myself again. Got as far as the door and remembered the ficus needed watering.",
+  "voice": "Sarah",
+  "language_code": "en"
+ },
+ "fal_request_id": "01a1d6e2-5f3b-7943-83b1-7216ae21498b",
+ "hash": "da90c4c19403"
+}

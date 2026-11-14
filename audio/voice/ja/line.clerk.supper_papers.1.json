@@ -1,0 +1,20 @@
+{
+ "key": "line.clerk.supper_papers.1",
+ "lang": "ja",
+ "text": "オーナーに夕ごはんを持っていくんですか。私が持っていくのは書類だけです。夕ごはんのほうが、たぶん喜ばれます。",
+ "speaker": "clerk",
+ "voice": "Callum",
+ "voice_id": "N2lVS1w4EtoT3dr4eOWO",
+ "voice_design": null,
+ "direction": "[polite, quiet, precise, absorbed in his work]",
+ "model": "fal-ai/elevenlabs/tts/eleven-v3",
+ "request": {
+  "stability": 0.5,
+  "apply_text_normalization": "auto",
+  "text": "[polite, quiet, precise, absorbed in his work] オーナーに夕ごはんを持っていくんですか。私が持っていくのは書類だけです。夕ごはんのほうが、たぶん喜ばれます。",
+  "voice": "Callum",
+  "language_code": "ja"
+ },
+ "fal_request_id": "01a1d7a9-1c2c-7b91-9a8f-3f752b0f7687",
+ "hash": "25a527fc7a68"
+}

@@ -1,0 +1,20 @@
+{
+ "key": "line.li_vika.tit_not_seen.1",
+ "lang": "ru",
+ "text": "Синица. Даша бы тебя записала. А я сделаю вид, что не заметила.",
+ "speaker": "li_vika",
+ "voice": "Laura",
+ "voice_id": "FGY2WhTYpPnrIDTdsKH5",
+ "voice_design": null,
+ "direction": "[playful, quick, a lab assistant joking about her work]",
+ "model": "fal-ai/elevenlabs/tts/eleven-v3",
+ "request": {
+  "stability": 0.5,
+  "apply_text_normalization": "auto",
+  "text": "[playful, quick, a lab assistant joking about her work] Синица. Даша бы тебя записала. А я сделаю вид, что не заметила.",
+  "voice": "Laura",
+  "language_code": "ru"
+ },
+ "fal_request_id": "01a1d7b7-5d55-7c82-ace1-6a3729f74095",
+ "hash": "ab75bc32b066"
+}

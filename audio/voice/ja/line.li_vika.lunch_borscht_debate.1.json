@@ -1,0 +1,20 @@
+{
+ "key": "line.li_vika.lunch_borscht_debate.1",
+ "lang": "ja",
+ "text": "ケイとミーシャ、今日は朝からずっと言い合ってた。二人がボルシチに移る前に、結論がほしいの。",
+ "speaker": "li_vika",
+ "voice": "Laura",
+ "voice_id": "FGY2WhTYpPnrIDTdsKH5",
+ "voice_design": null,
+ "direction": "[playful, quick, a lab assistant joking about her work]",
+ "model": "fal-ai/elevenlabs/tts/eleven-v3",
+ "request": {
+  "stability": 0.5,
+  "apply_text_normalization": "auto",
+  "text": "[playful, quick, a lab assistant joking about her work] ケイとミーシャ、今日は朝からずっと言い合ってた。二人がボルシチに移る前に、結論がほしいの。",
+  "voice": "Laura",
+  "language_code": "ja"
+ },
+ "fal_request_id": "01a1d6e7-f9b5-7111-b10a-51aa1ef128a6",
+ "hash": "461b8fba0fd9"
+}

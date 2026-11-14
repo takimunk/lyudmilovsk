@@ -1,0 +1,20 @@
+{
+ "key": "line.owner.door_never_locked.1",
+ "lang": "ru",
+ "text": "Дверь сразу за будкой. Тяжёлая, но не заперта. Её здесь никто не запирает.",
+ "speaker": "owner",
+ "voice": "Daniel",
+ "voice_id": "onwK4e9ZLuTAKqWW03F9",
+ "voice_design": null,
+ "direction": "[calm, tired, slow, a little ironic]",
+ "model": "fal-ai/elevenlabs/tts/eleven-v3",
+ "request": {
+  "stability": 0.5,
+  "apply_text_normalization": "auto",
+  "text": "[calm, tired, slow, a little ironic] Дверь сразу за будкой. Тяжёлая, но не заперта. Её здесь никто не запирает.",
+  "voice": "Daniel",
+  "language_code": "ru"
+ },
+ "fal_request_id": "01a1d73d-3704-7c90-9608-60541d778527",
+ "hash": "85504352c110"
+}

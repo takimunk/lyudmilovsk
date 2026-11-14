@@ -1,0 +1,20 @@
+{
+ "key": "line.zotov_lev.load_bearing_reading.1",
+ "lang": "en",
+ "text": "The interferometer stands level, the magazine holds. Galina says it's the most useful thing I've read all year.",
+ "speaker": "zotov_lev",
+ "voice": "George",
+ "voice_id": "JBFqnCBsd6RMkjVDRZzb",
+ "voice_design": null,
+ "direction": "[dry, thoughtful, unhurried, a physicist's quiet irony]",
+ "model": "fal-ai/elevenlabs/tts/eleven-v3",
+ "request": {
+  "stability": 0.5,
+  "apply_text_normalization": "auto",
+  "text": "[dry, thoughtful, unhurried, a physicist's quiet irony] The interferometer stands level, the magazine holds. Galina says it's the most useful thing I've read all year.",
+  "voice": "George",
+  "language_code": "en"
+ },
+ "fal_request_id": "01a1d6ea-aa7c-7731-9ad3-1d6ab76ebc40",
+ "hash": "a1cd6d611524"
+}

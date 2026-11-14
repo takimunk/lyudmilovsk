@@ -1,0 +1,20 @@
+{
+ "key": "line.owner.again7.1",
+ "lang": "ru",
+ "text": "Тимур опять уснул в кресле. Не буди. Ему к половине восьмого на склад.",
+ "speaker": "owner",
+ "voice": "Daniel",
+ "voice_id": "onwK4e9ZLuTAKqWW03F9",
+ "voice_design": null,
+ "direction": "[calm, tired, slow, a little ironic]",
+ "model": "fal-ai/elevenlabs/tts/eleven-v3",
+ "request": {
+  "stability": 0.5,
+  "apply_text_normalization": "auto",
+  "text": "[calm, tired, slow, a little ironic] Тимур опять уснул в кресле. Не буди. Ему к половине восьмого на склад.",
+  "voice": "Daniel",
+  "language_code": "ru"
+ },
+ "fal_request_id": "01a1d786-0942-7c42-ac4b-aeddeb54851e",
+ "hash": "fe75bd5d55ce"
+}

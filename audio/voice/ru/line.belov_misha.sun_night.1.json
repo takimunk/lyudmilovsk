@@ -1,0 +1,20 @@
+{
+ "key": "line.belov_misha.sun_night.1",
+ "lang": "ru",
+ "text": "Ночью я паяю дольше, а выходит хуже. Видно, руки тоже ждут утра.",
+ "speaker": "belov_misha",
+ "voice": "Liam",
+ "voice_id": "TX3LPaxmHKxFdv7VOQHJ",
+ "voice_design": null,
+ "direction": "[easygoing, amused, a young technician, a little self-ironic]",
+ "model": "fal-ai/elevenlabs/tts/eleven-v3",
+ "request": {
+  "stability": 0.5,
+  "apply_text_normalization": "auto",
+  "text": "[easygoing, amused, a young technician, a little self-ironic] Ночью я паяю дольше, а выходит хуже. Видно, руки тоже ждут утра.",
+  "voice": "Liam",
+  "language_code": "ru"
+ },
+ "fal_request_id": "01a1d740-4702-7070-862e-69f1ba512c3d",
+ "hash": "fd3e9d97907f"
+}

@@ -1,0 +1,20 @@
+{
+ "key": "line.valiev_rustam.signal_lamp_ready.1",
+ "lang": "en",
+ "text": "You've got the lamp already, I see. Once it's dark, go up to the upper station and put it on there.",
+ "speaker": "valiev_rustam",
+ "voice": "Roger",
+ "voice_id": "CwhRBWXzGAHq8TQ4Fs17",
+ "voice_design": null,
+ "direction": "[confident, dry, matter-of-fact engineer]",
+ "model": "fal-ai/elevenlabs/tts/eleven-v3",
+ "request": {
+  "stability": 0.5,
+  "apply_text_normalization": "auto",
+  "text": "[confident, dry, matter-of-fact engineer] You've got the lamp already, I see. Once it's dark, go up to the upper station and put it on there.",
+  "voice": "Roger",
+  "language_code": "en"
+ },
+ "fal_request_id": "01a1d6df-bb9b-75c0-8822-9bafd8c663af",
+ "hash": "730f555990af"
+}

@@ -1,0 +1,20 @@
+{
+ "key": "line.nishimura_aya.views_tell.5",
+ "lang": "en",
+ "text": "Take a postcard, and a little for the road. It is the island, of course. But now you know what is missing from it.",
+ "speaker": "nishimura_aya",
+ "voice": "Matilda",
+ "voice_id": "XrExE9yKIg1WjnnlVkGX",
+ "voice_design": null,
+ "direction": "[calm, soft, contemplative, a painter talking about the light]",
+ "model": "fal-ai/elevenlabs/tts/eleven-v3",
+ "request": {
+  "stability": 0.5,
+  "apply_text_normalization": "auto",
+  "text": "[calm, soft, contemplative, a painter talking about the light] Take a postcard, and a little for the road. It is the island, of course. But now you know what is missing from it.",
+  "voice": "Matilda",
+  "language_code": "en"
+ },
+ "fal_request_id": "01a1d671-b545-7a20-8b82-8157da970fd9",
+ "hash": "5ca479f55b2d"
+}

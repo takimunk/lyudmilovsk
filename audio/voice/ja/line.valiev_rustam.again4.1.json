@@ -1,0 +1,20 @@
+{
+ "key": "line.valiev_rustam.again4.1",
+ "lang": "ja",
+ "text": "ゾートフさんに通信チェスを申し込まれた。壁越しにだ。研究室が隣同士なんでね。",
+ "speaker": "valiev_rustam",
+ "voice": "Roger",
+ "voice_id": "CwhRBWXzGAHq8TQ4Fs17",
+ "voice_design": null,
+ "direction": "[confident, dry, matter-of-fact engineer]",
+ "model": "fal-ai/elevenlabs/tts/eleven-v3",
+ "request": {
+  "stability": 0.5,
+  "apply_text_normalization": "auto",
+  "text": "[confident, dry, matter-of-fact engineer] ゾートフさんに通信チェスを申し込まれた。壁越しにだ。研究室が隣同士なんでね。",
+  "voice": "Roger",
+  "language_code": "ja"
+ },
+ "fal_request_id": "01a1d74a-197c-7030-9ce5-cb430240e6d4",
+ "hash": "0fdbe86d8353"
+}

@@ -1,0 +1,20 @@
+{
+ "key": "line.khuazhev_aslan.sun_day.1",
+ "lang": "ru",
+ "text": "Солнце на палатке, и сыр под ним золотой. Покупатели думают, это я так красиво разложил.",
+ "speaker": "khuazhev_aslan",
+ "voice": "Brian",
+ "voice_id": "nPczCjzI2devNBz1zQrb",
+ "voice_design": null,
+ "direction": "[hearty, generous, a cheese seller from the Caucasus, proud of his family's cheese]",
+ "model": "fal-ai/elevenlabs/tts/eleven-v3",
+ "request": {
+  "stability": 0.5,
+  "apply_text_normalization": "auto",
+  "text": "[hearty, generous, a cheese seller from the Caucasus, proud of his family's cheese] Солнце на палатке, и сыр под ним золотой. Покупатели думают, это я так красиво разложил.",
+  "voice": "Brian",
+  "language_code": "ru"
+ },
+ "fal_request_id": "01a1d742-fe8d-7b70-8533-23856840edb7",
+ "hash": "111034b7b912"
+}

@@ -1,0 +1,20 @@
+{
+ "key": "line.kimura_dasha.tally_stump.1",
+ "lang": "en",
+ "text": "So you're the one counting great tits for Sorokin? He makes you sit like a stump and move your lips. Respect, I can't do that even in an exam.",
+ "speaker": "kimura_dasha",
+ "voice": "Charlotte",
+ "voice_id": "XB0fDUnXU5powFXDhCwa",
+ "voice_design": null,
+ "direction": "[a tired physics student, wry, self-ironic]",
+ "model": "fal-ai/elevenlabs/tts/eleven-v3",
+ "request": {
+  "stability": 0.5,
+  "apply_text_normalization": "auto",
+  "text": "[a tired physics student, wry, self-ironic] So you're the one counting great tits for Sorokin? He makes you sit like a stump and move your lips. Respect, I can't do that even in an exam.",
+  "voice": "Charlotte",
+  "language_code": "en"
+ },
+ "fal_request_id": "01a1d754-bd2d-73f2-a110-f68bca2e9b7c",
+ "hash": "4a39ee375bf5"
+}

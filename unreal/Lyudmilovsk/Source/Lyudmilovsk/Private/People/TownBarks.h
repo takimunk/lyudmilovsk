@@ -54,6 +54,9 @@ namespace LyudBarks
 	struct FWhoCond
 	{
 		FValues Job, Sex, Doing, At, Pose, Gather, Chrono, Need;
+		FValues Met;                // how well they know the player: new, seen, known
+		FValues Manner;             // what their hands are doing (manners.json: smoke, phone_call, umbrella, ...)
+		FValues Temper;             // who they are in manner: warm, reserved, nervy, calm, curious, tidy, careless
 		FValues AgeGroup;           // kid, teen, adult, elder
 		FRanges AgeYears;           // 50-120
 		bool bNearHero = false;
@@ -70,7 +73,12 @@ namespace LyudBarks
 		std::string Pose;                   // stand, walk, talk, look, sit, computer, eat, read, work, shovel
 		std::string Gather;                 // the holiday gathering's mode they are at (mingle, watch, sit, fair), "" none
 		std::string Chrono;                 // lark, owl, night, usual
+		std::string Met;                    // new (never greeted him), seen (a few days), known (five days and more); the caller sets it
+		std::string Manner;                 // their manner now (PeopleManners.h), "" none or not drawn; the caller sets it after FillWho
 		std::vector<std::string> Needs;     // the needs over 0.75: hunger, tired, social, fun, nature, mind, sun
+		// their persona's strong sides (PeopleManners.h FPersona: a trait over 0.66 or under 0.34): warm / reserved, nervy /
+		// calm, curious, tidy / careless; the caller sets it after FillWho
+		std::vector<std::string> Temper;
 		bool bHeroNear = false;             // the player is within 10 m
 		/** Empties it, keeping the memory (filled again every scan without allocating). */
 		void Reset();
@@ -163,6 +171,12 @@ namespace LyudBarks
 	/** Whether someone can say anything now: up and about where they can be seen (not asleep, away, riding, in a building's
 	 *  shell, between activities). Somebody else's actor drawing them (the restaurant's waiter) is the caller's to allow. */
 	bool CanSpeak(const LyudPeople::FWorld& W, const LyudPeople::FPerson& P);
+	/** A customer on their feet and somebody at work at the same place within 4 m (a shop, a market stall, a kiosk): the
+	 *  two may have an exchange (talk sets with doing = shop ..., doing2 = work). Either order. */
+	bool AtCounter(const LyudPeople::FWorld& W, const LyudPeople::FPerson& A, const LyudPeople::FPerson& B);
+	/** Two of a household at their outing, two friends at their date, or a grown-up minding their child at
+	 *  play, within 4 m of each other: they may have an exchange too (talk sets with doing = outing / date / mind_child). */
+	bool WithTheirOwn(const LyudPeople::FWorld& W, const LyudPeople::FPerson& A, const LyudPeople::FPerson& B);
 	/** Fills Who from someone of the people's life; bHeroNear is left to the caller. */
 	void FillWho(const LyudPeople::FWorld& W, const LyudPeople::FPerson& P, FWho& Who);
 	/** Someone's who doesn't depend on the moment (job, age, sex, temper): FillWho's part for a speaker the life doesn't

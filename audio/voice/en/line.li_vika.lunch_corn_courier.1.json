@@ -1,0 +1,20 @@
+{
+ "key": "line.li_vika.lunch_corn_courier.1",
+ "lang": "en",
+ "text": "They say you took Korneev his corn too. Everyone in this yard eats lunch now, except me.",
+ "speaker": "li_vika",
+ "voice": "Laura",
+ "voice_id": "FGY2WhTYpPnrIDTdsKH5",
+ "voice_design": null,
+ "direction": "[playful, quick, a lab assistant joking about her work]",
+ "model": "fal-ai/elevenlabs/tts/eleven-v3",
+ "request": {
+  "stability": 0.5,
+  "apply_text_normalization": "auto",
+  "text": "[playful, quick, a lab assistant joking about her work] They say you took Korneev his corn too. Everyone in this yard eats lunch now, except me.",
+  "voice": "Laura",
+  "language_code": "en"
+ },
+ "fal_request_id": "01a1d7ab-07eb-7a70-be3c-d71ca9338eb2",
+ "hash": "bc1193e45b5d"
+}

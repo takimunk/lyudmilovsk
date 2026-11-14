@@ -1,0 +1,20 @@
+{
+ "key": "line.belov_misha.magpie_ask.3",
+ "lang": "ja",
+ "text": "窓枠に置いてあって、光ってた。ちょっと目を離したら、もうない。で、あいつは軒先にとまって、満足そうな顔をしてたんだ。",
+ "speaker": "belov_misha",
+ "voice": "Liam",
+ "voice_id": "TX3LPaxmHKxFdv7VOQHJ",
+ "voice_design": null,
+ "direction": "[easygoing, amused, a young technician, a little self-ironic]",
+ "model": "fal-ai/elevenlabs/tts/eleven-v3",
+ "request": {
+  "stability": 0.5,
+  "apply_text_normalization": "auto",
+  "text": "[easygoing, amused, a young technician, a little self-ironic] 窓枠に置いてあって、光ってた。ちょっと目を離したら、もうない。で、あいつは軒先にとまって、満足そうな顔をしてたんだ。",
+  "voice": "Liam",
+  "language_code": "ja"
+ },
+ "fal_request_id": "01a1d666-98a7-7631-b5af-db3ef0dfbf66",
+ "hash": "38cb29ccc381"
+}

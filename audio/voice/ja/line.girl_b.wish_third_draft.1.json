@@ -1,0 +1,20 @@
+{
+ "key": "line.girl_b.wish_third_draft.1",
+ "lang": "ja",
+ "text": "笹に願いごと、結んだ？わたしはまだ書いてる。もう三回目の下書き。",
+ "speaker": "girl_b",
+ "voice": "Sarah",
+ "voice_id": "EXAVITQu4vr4xnSDxMaL",
+ "voice_design": null,
+ "direction": "[curious, slightly uneasy, conspiratorial]",
+ "model": "fal-ai/elevenlabs/tts/eleven-v3",
+ "request": {
+  "stability": 0.5,
+  "apply_text_normalization": "auto",
+  "text": "[curious, slightly uneasy, conspiratorial] 笹に願いごと、結んだ？わたしはまだ書いてる。もう三回目の下書き。",
+  "voice": "Sarah",
+  "language_code": "ja"
+ },
+ "fal_request_id": "01a1d738-cfbf-77c2-95ce-2e14e53e0de2",
+ "hash": "3f6111ba99e0"
+}

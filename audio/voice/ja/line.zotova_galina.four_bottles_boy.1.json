@@ -1,0 +1,20 @@
+{
+ "key": "line.zotova_galina.four_bottles_boy.1",
+ "lang": "ja",
+ "text": "鳥さん、クラブでソーダを四本持った若い人を見かけても、邪魔しないでくださいね。科学のために働いているんです。",
+ "speaker": "zotova_galina",
+ "voice": "Alice",
+ "voice_id": "Xb7hH8MSUJpSbSDYk0k2",
+ "voice_design": null,
+ "direction": "[warm, chatty, fondly exasperated with her husband]",
+ "model": "fal-ai/elevenlabs/tts/eleven-v3",
+ "request": {
+  "stability": 0.5,
+  "apply_text_normalization": "auto",
+  "text": "[warm, chatty, fondly exasperated with her husband] 鳥さん、クラブでソーダを四本持った若い人を見かけても、邪魔しないでくださいね。科学のために働いているんです。",
+  "voice": "Alice",
+  "language_code": "ja"
+ },
+ "fal_request_id": "01a1d6eb-cff7-74c1-bed8-0b7322247635",
+ "hash": "18bfa7d44a90"
+}

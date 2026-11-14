@@ -104,7 +104,8 @@ namespace
 
 	/** Down through everything at a point: the ground (the landscape or a LyudSeaBed) and the highest thing over it. */
 	/** The railway's bank (LyudSeaBed pieces kilometres long): not a shore for the ice, not ground for the snow field. */
-	TSet<const UPrimitiveComponent*> GWinterBank;
+	/** Weak: the set outlives a level, and a freed component's address may be given to a new sea-bed piece. */
+	TSet<TWeakObjectPtr<const UPrimitiveComponent>> GWinterBank;
 
 	void WinterTraceColumn(const UWorld* World, double X, double Y, double ZTop, double ZBottom, float& OutGround, float& OutTop)
 	{
@@ -122,7 +123,7 @@ namespace
 			{
 				continue;
 			}
-			const bool bGround = A->IsA<ALandscapeProxy>() || (C->ComponentHasTag(TEXT("LyudSeaBed")) && !GWinterBank.Contains(C));
+			const bool bGround = A->IsA<ALandscapeProxy>() || (C->ComponentHasTag(TEXT("LyudSeaBed")) && !GWinterBank.Contains(TWeakObjectPtr<const UPrimitiveComponent>(C)));
 			if (OutTop == LyudWinter::FCover::NoGround && C->IsVisible() && !WinterIsPlant(A))
 			{
 				OutTop = float(H.ImpactPoint.Z);
@@ -536,7 +537,7 @@ void ULyudWinterSubsystem::StartBuild()
 			}
 			else
 			{
-				GWinterBank.Add(*It);
+				GWinterBank.Add(TWeakObjectPtr<const UPrimitiveComponent>(*It));
 			}
 		}
 	}
@@ -652,31 +653,36 @@ void ULyudWinterSubsystem::StepCover()
 	// the rest on a worker: the shelter of every cell, the paths, the ice's distances
 	S.Phase = LyudWinter::EPhase::Building;
 	S.bJobDone = false;
-	TArray<uint8> AnimalGrid;
-	FFileHelper::LoadFileToArray(AnimalGrid, *(FPaths::ProjectContentDir() / TEXT("AnimalsData/animal_world.bin")));
-	FString PlacesJson;
-	FFileHelper::LoadFileToString(PlacesJson, *(FPaths::ProjectContentDir() / TEXT("AnimalsData/animal_places.json")));
-	// the doorsteps (the walk grid's places of kind 0) get a path to the nearest paved cell
-	TArray<FVector2D> Doorsteps;
-	TSharedPtr<FJsonObject> Doc;
-	if (FJsonSerializer::Deserialize(TJsonReaderFactory<>::Create(PlacesJson), Doc) && Doc.IsValid())
+	// (the walk grid, 1.8 MB, and the places are read on the worker too: not on the game thread in the middle of play)
+	const FString GridPath = FPaths::ProjectContentDir() / TEXT("AnimalsData/animal_world.bin");
+	const FString PlacesPath = FPaths::ProjectContentDir() / TEXT("AnimalsData/animal_places.json");
+	LyudWinter::FWinterState* SP = &S;
+	S.Job = Async(EAsyncExecution::ThreadPool, [SP, GridPath, PlacesPath]()
 	{
-		const TArray<TSharedPtr<FJsonValue>>* Places;
-		if (Doc->TryGetArrayField(TEXT("places"), Places))
+		TArray<uint8> AnimalGrid;
+		FFileHelper::LoadFileToArray(AnimalGrid, *GridPath);
+		// the doorsteps (the walk grid's places of kind 0) get a path to the nearest paved cell
+		TArray<FVector2D> Doorsteps;
 		{
-			for (const TSharedPtr<FJsonValue>& V : *Places)
+			FString PlacesJson;
+			FFileHelper::LoadFileToString(PlacesJson, *PlacesPath);
+			TSharedPtr<FJsonObject> Doc;
+			if (FJsonSerializer::Deserialize(TJsonReaderFactory<>::Create(PlacesJson), Doc) && Doc.IsValid())
 			{
-				const TArray<TSharedPtr<FJsonValue>>& P = V->AsArray();
-				if (P.Num() >= 3 && int32(P[0]->AsNumber()) == 0)
+				const TArray<TSharedPtr<FJsonValue>>* Places;
+				if (Doc->TryGetArrayField(TEXT("places"), Places))
 				{
-					Doorsteps.Add(FVector2D(P[1]->AsNumber() * 100.0, P[2]->AsNumber() * 100.0));
+					for (const TSharedPtr<FJsonValue>& V : *Places)
+					{
+						const TArray<TSharedPtr<FJsonValue>>& P = V->AsArray();
+						if (P.Num() >= 3 && int32(P[0]->AsNumber()) == 0)
+						{
+							Doorsteps.Add(FVector2D(P[1]->AsNumber() * 100.0, P[2]->AsNumber() * 100.0));
+						}
+					}
 				}
 			}
 		}
-	}
-	LyudWinter::FWinterState* SP = &S;
-	S.Job = Async(EAsyncExecution::ThreadPool, [SP, AnimalGrid = MoveTemp(AnimalGrid), Doorsteps = MoveTemp(Doorsteps)]()
-	{
 		LyudWinter::FWinterState& S = *SP;
 		const double T0 = FPlatformTime::Seconds();
 		S.Field.Open = S.OpenFine;

@@ -1,0 +1,20 @@
+{
+ "key": "line.owner.supper_thanks.1",
+ "lang": "ja",
+ "text": "三つ編みか。ちゃんと煙の匂いがする。",
+ "speaker": "owner",
+ "voice": "Daniel",
+ "voice_id": "onwK4e9ZLuTAKqWW03F9",
+ "voice_design": null,
+ "direction": "[calm, tired, slow, a little ironic]",
+ "model": "fal-ai/elevenlabs/tts/eleven-v3",
+ "request": {
+  "stability": 0.5,
+  "apply_text_normalization": "auto",
+  "text": "[calm, tired, slow, a little ironic] 三つ編みか。ちゃんと煙の匂いがする。",
+  "voice": "Daniel",
+  "language_code": "ja"
+ },
+ "fal_request_id": "01a1d674-6016-78b2-8b76-086e69fc9eb5",
+ "hash": "f77fd273f8b4"
+}

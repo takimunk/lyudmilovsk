@@ -1,0 +1,20 @@
+{
+ "key": "line.kimura_dasha.bird_by_the_book.1",
+ "lang": "ja",
+ "text": "こんにちは、鳥さん。図鑑だと何て名前？まあいいや、「かわいい」で記録しとく。",
+ "speaker": "kimura_dasha",
+ "voice": "Charlotte",
+ "voice_id": "XB0fDUnXU5powFXDhCwa",
+ "voice_design": null,
+ "direction": "[a tired physics student, wry, self-ironic]",
+ "model": "fal-ai/elevenlabs/tts/eleven-v3",
+ "request": {
+  "stability": 0.5,
+  "apply_text_normalization": "auto",
+  "text": "[a tired physics student, wry, self-ironic] こんにちは、鳥さん。図鑑だと何て名前？まあいいや、「かわいい」で記録しとく。",
+  "voice": "Charlotte",
+  "language_code": "ja"
+ },
+ "fal_request_id": "01a1d6e5-0f3d-7810-bfa6-94df8b938f7d",
+ "hash": "38810774dd0b"
+}

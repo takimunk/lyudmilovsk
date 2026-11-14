@@ -1,0 +1,20 @@
+{
+ "key": "line.khuazhev_aslan.braids_counted.1",
+ "lang": "ru",
+ "text": "Ворона, на сыр так не смотри. Косички пересчитаны, мама считала.",
+ "speaker": "khuazhev_aslan",
+ "voice": "Brian",
+ "voice_id": "nPczCjzI2devNBz1zQrb",
+ "voice_design": null,
+ "direction": "[hearty, generous, a cheese seller from the Caucasus, proud of his family's cheese]",
+ "model": "fal-ai/elevenlabs/tts/eleven-v3",
+ "request": {
+  "stability": 0.5,
+  "apply_text_normalization": "auto",
+  "text": "[hearty, generous, a cheese seller from the Caucasus, proud of his family's cheese] Ворона, на сыр так не смотри. Косички пересчитаны, мама считала.",
+  "voice": "Brian",
+  "language_code": "ru"
+ },
+ "fal_request_id": "01a1d6e3-8003-7202-aaa2-0eaf75d62949",
+ "hash": "de6b66a3ba85"
+}

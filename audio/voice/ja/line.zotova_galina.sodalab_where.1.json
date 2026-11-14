@@ -1,0 +1,20 @@
+{
+ "key": "line.zotova_galina.sodalab_where.1",
+ "lang": "ja",
+ "text": "自販機はクラブにあります。一本二十五ルーブル。バイカル、ドゥシェス、ブラチーノ、タルフン、どれも最後まで。",
+ "speaker": "zotova_galina",
+ "voice": "Alice",
+ "voice_id": "Xb7hH8MSUJpSbSDYk0k2",
+ "voice_design": null,
+ "direction": "[warm, chatty, fondly exasperated with her husband]",
+ "model": "fal-ai/elevenlabs/tts/eleven-v3",
+ "request": {
+  "stability": 0.5,
+  "apply_text_normalization": "auto",
+  "text": "[warm, chatty, fondly exasperated with her husband] 自販機はクラブにあります。一本二十五ルーブル。バイカル、ドゥシェス、ブラチーノ、タルフン、どれも最後まで。",
+  "voice": "Alice",
+  "language_code": "ja"
+ },
+ "fal_request_id": "01a1d6ec-5010-7642-81d7-a576be6a0d25",
+ "hash": "60fcd7beadc7"
+}

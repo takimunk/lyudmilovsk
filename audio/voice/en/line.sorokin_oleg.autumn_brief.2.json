@@ -1,0 +1,20 @@
+{
+ "key": "line.sorokin_oleg.autumn_brief.2",
+ "lang": "en",
+ "text": "Thirty autumns I kept a bird count, and then I dropped it. After the waxwing, dropping things became awkward.",
+ "speaker": "sorokin_oleg",
+ "voice": "River",
+ "voice_id": "SAz9YHcvj6GT2YYXdXww",
+ "voice_design": null,
+ "direction": "[a retired scholar, calm, dry humour, slower, gentle]",
+ "model": "fal-ai/elevenlabs/tts/eleven-v3",
+ "request": {
+  "stability": 0.5,
+  "apply_text_normalization": "auto",
+  "text": "[a retired scholar, calm, dry humour, slower, gentle] Thirty autumns I kept a bird count, and then I dropped it. After the waxwing, dropping things became awkward.",
+  "voice": "River",
+  "language_code": "en"
+ },
+ "fal_request_id": "01a1d672-c51e-7802-be6c-b68321090800",
+ "hash": "5f19103aadcd"
+}

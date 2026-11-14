@@ -1,11 +1,12 @@
 """Builds the town buildings of Lyudmilovsk (blender/city/buildings/<type>.py) into game meshes.
 
-    blender -b -P blender/city/build_city.py -- [types,comma,separated | all] [--no-render] [--samples N] [--res WxH]
+    blender -b -P blender/city/build_city.py -- [types,comma,separated | all] [--no-render] [--samples N] [--res WxH] [--gpu]
     (or with pip's bpy:  python3 blender/city/build_city.py -- capsule_tower)
 
 Writes per type:
     blender/export/city/<type>.glb    SM_<type> (shell, collision), SM_<type>_Detail (no collision), SM_<type>_Windows
-                                      (window cards: UV0 over the pane, UV1 = the light texel)
+                                      (window cards: UV0 over the pane, UV1 = the light texel; CT_Window outside,
+                                      CT_WindowIn the room side)
     blender/export/city/<type>.json   footprint, entrances, spots, flats, windows (the life thread's contract), tris
     renders/city/<type>_day.jpg, <type>_night.jpg   preview renders (unless --no-render)
 and prints a lint (triangles, UV stretch, degenerate faces, coplanar fights fixed).
@@ -43,7 +44,7 @@ def opt(name, default):
 DO_RENDER = "--no-render" not in ARGS
 SAMPLES = int(opt("--samples", 48))
 RES = tuple(int(v) for v in opt("--res", "1280x800").split("x"))
-TEXTURED = {k for k, v in citymats.MATERIALS.items() if v[2]}
+TEXTURED = {k for k, v in citymats.MATERIALS.items() if v[2] and k not in getattr(citymats, "ATLAS_SLOTS", ())}
 
 
 def all_types():
@@ -100,6 +101,39 @@ def _tex(name, suffix):
     return None
 
 
+# CT_WindowIn (the room side of a window): emission ramps over the pane's height (v 0..1), linear colours; strength
+# by day / by night. The game's M_City_WindowIn (unreal/scripts/make_city_materials.py) has the same stops.
+WINDOW_IN_DAY = [(0.0, (0.50, 0.66, 0.78)), (0.30, (0.93, 0.96, 0.98)), (0.42, (1.0, 1.0, 0.98)), (1.0, (0.58, 0.76, 0.98))]
+WINDOW_IN_NIGHT = [(0.0, (0.008, 0.012, 0.03)), (0.35, (0.03, 0.045, 0.10)), (1.0, (0.012, 0.02, 0.055))]
+WINDOW_IN_STRENGTH = (1.8, 1.0)
+WINDOW_IN_FRAME = 0.018           # a thin dark frame line round the pane, as a fraction of its width / height
+
+
+def _round_alpha(nt):
+    """Round windows (UV0 x in 2..3): 1 inside the circle, 0 outside; rectangular ones (x in 0..1): 1. As the game
+    shader cuts it. Returns the output socket."""
+    uvn = nt.nodes.new("ShaderNodeUVMap")
+    uvn.uv_map = "UV0"
+    sep = nt.nodes.new("ShaderNodeSeparateXYZ")
+    nt.links.new(uvn.outputs["UV"], sep.inputs[0])
+    fx = nt.nodes.new("ShaderNodeMath"); fx.operation = "FRACT"
+    nt.links.new(sep.outputs[0], fx.inputs[0])
+    cmb = nt.nodes.new("ShaderNodeCombineXYZ")
+    nt.links.new(fx.outputs[0], cmb.inputs[0]); nt.links.new(sep.outputs[1], cmb.inputs[1])
+    dist = nt.nodes.new("ShaderNodeVectorMath"); dist.operation = "DISTANCE"
+    dist.inputs[1].default_value = (0.5, 0.5, 0.0)
+    nt.links.new(cmb.outputs[0], dist.inputs[0])
+    inside = nt.nodes.new("ShaderNodeMath"); inside.operation = "LESS_THAN"; inside.inputs[1].default_value = 0.5
+    nt.links.new(dist.outputs["Value"], inside.inputs[0])
+    isround = nt.nodes.new("ShaderNodeMath"); isround.operation = "GREATER_THAN"; isround.inputs[1].default_value = 1.5
+    nt.links.new(sep.outputs[0], isround.inputs[0])
+    notr = nt.nodes.new("ShaderNodeMath"); notr.operation = "SUBTRACT"; notr.inputs[0].default_value = 1.0
+    nt.links.new(isround.outputs[0], notr.inputs[1])
+    alpha = nt.nodes.new("ShaderNodeMath"); alpha.operation = "MAXIMUM"
+    nt.links.new(inside.outputs[0], alpha.inputs[0]); nt.links.new(notr.outputs[0], alpha.inputs[1])
+    return alpha.outputs[0]
+
+
 def material(slot, night=False):
     key = (slot, night)
     if key in _MATS:
@@ -113,10 +147,21 @@ def material(slot, night=False):
     lin = tuple(c / 12.92 if c <= 0.04045 else ((c + 0.055) / 1.055) ** 2.4 for c in col) + (1.0,)
     bsdf.inputs["Base Color"].default_value = lin
     bsdf.inputs["Roughness"].default_value = rough
-    if "Steel" in slot or slot == "CT_Aluminium":
-        bsdf.inputs["Metallic"].default_value = 0.6 if slot == "CT_Aluminium" else 0.2
+    if "Steel" in slot or slot in getattr(citymats, "METALLIC", {}) or slot == "CT_Aluminium":
+        bsdf.inputs["Metallic"].default_value = getattr(citymats, "METALLIC", {}).get(slot, 0.6 if slot == "CT_Aluminium" else 0.2)
     d = _tex(tex, "D") if tex else None
-    if d:
+    if d and slot in getattr(citymats, "ATLAS_SLOTS", ()):
+        # the picture atlas: UV0 straight into the image (0..1), untinted, untiled. Blender samples v up from the
+        # bottom row, the glTF export writes 1 - v and Unreal samples v down from the top row: the same texel.
+        uv = nt.nodes.new("ShaderNodeUVMap")
+        uv.uv_map = "UV0"
+        img = nt.nodes.new("ShaderNodeTexImage")
+        img.image = bpy.data.images.load(d, check_existing=True)
+        img.interpolation = "Linear"
+        img.extension = "EXTEND"
+        nt.links.new(uv.outputs["UV"], img.inputs["Vector"])
+        nt.links.new(img.outputs["Color"], bsdf.inputs["Base Color"])
+    elif d:
         uv = nt.nodes.new("ShaderNodeUVMap")
         uv.uv_map = "UV0"
         mp = nt.nodes.new("ShaderNodeMapping")
@@ -147,27 +192,65 @@ def material(slot, night=False):
         nt.links.new(attr.outputs["Fac"], em.inputs[0])
         bsdf.inputs["Emission Color"].default_value = (1.0, 0.62, 0.30, 1)
         nt.links.new(em.outputs[0], bsdf.inputs["Emission Strength"])
-        # round windows (UV0 x in 2..3): cut the circle, as the game shader does
+        nt.links.new(_round_alpha(nt), bsdf.inputs["Alpha"])
+    if slot == "CT_WindowIn":
+        # the window seen from its room (M_City_WindowIn in the game): no light through it, only a bright pane by day
+        # (paler toward the horizon a third of the way up, a hint of sea blue under it), dark blue at night
+        bsdf.inputs["Base Color"].default_value = (0, 0, 0, 1)
+        bsdf.inputs["Roughness"].default_value = 1.0
+        for k in ("Specular IOR Level", "Specular"):
+            if k in bsdf.inputs:
+                bsdf.inputs[k].default_value = 0.0
+                break
         uvn = nt.nodes.new("ShaderNodeUVMap")
         uvn.uv_map = "UV0"
         sep = nt.nodes.new("ShaderNodeSeparateXYZ")
         nt.links.new(uvn.outputs["UV"], sep.inputs[0])
+        ramp = nt.nodes.new("ShaderNodeValToRGB")
+        stops = WINDOW_IN_NIGHT if night else WINDOW_IN_DAY
+        els = ramp.color_ramp.elements
+        els[0].position, els[0].color = stops[0][0], stops[0][1] + (1,)
+        els[1].position, els[1].color = stops[-1][0], stops[-1][1] + (1,)
+        for pos, col in stops[1:-1]:
+            e = els.new(pos)
+            e.color = col + (1,)
+        nt.links.new(sep.outputs[1], ramp.inputs["Fac"])
+        # frame line: darker where min(x, 1-x, y, 1-y) of the pane < WINDOW_IN_FRAME
         fx = nt.nodes.new("ShaderNodeMath"); fx.operation = "FRACT"
         nt.links.new(sep.outputs[0], fx.inputs[0])
-        cmb = nt.nodes.new("ShaderNodeCombineXYZ")
-        nt.links.new(fx.outputs[0], cmb.inputs[0]); nt.links.new(sep.outputs[1], cmb.inputs[1])
-        dist = nt.nodes.new("ShaderNodeVectorMath"); dist.operation = "DISTANCE"
-        dist.inputs[1].default_value = (0.5, 0.5, 0.0)
-        nt.links.new(cmb.outputs[0], dist.inputs[0])
-        inside = nt.nodes.new("ShaderNodeMath"); inside.operation = "LESS_THAN"; inside.inputs[1].default_value = 0.5
-        nt.links.new(dist.outputs["Value"], inside.inputs[0])
-        isround = nt.nodes.new("ShaderNodeMath"); isround.operation = "GREATER_THAN"; isround.inputs[1].default_value = 1.5
-        nt.links.new(sep.outputs[0], isround.inputs[0])
-        notr = nt.nodes.new("ShaderNodeMath"); notr.operation = "SUBTRACT"; notr.inputs[0].default_value = 1.0
-        nt.links.new(isround.outputs[0], notr.inputs[1])
-        alpha = nt.nodes.new("ShaderNodeMath"); alpha.operation = "MAXIMUM"
-        nt.links.new(inside.outputs[0], alpha.inputs[0]); nt.links.new(notr.outputs[0], alpha.inputs[1])
-        nt.links.new(alpha.outputs[0], bsdf.inputs["Alpha"])
+        edge = None
+        for src, flip in ((fx, False), (fx, True), (sep, False), (sep, True)):
+            out = src.outputs[0] if src is fx else src.outputs[1]
+            if flip:
+                f = nt.nodes.new("ShaderNodeMath"); f.operation = "SUBTRACT"; f.inputs[0].default_value = 1.0
+                nt.links.new(out, f.inputs[1])
+                out = f.outputs[0]
+            if edge is None:
+                edge = out
+            else:
+                mn = nt.nodes.new("ShaderNodeMath"); mn.operation = "MINIMUM"
+                nt.links.new(edge, mn.inputs[0]); nt.links.new(out, mn.inputs[1])
+                edge = mn.outputs[0]
+        fr = nt.nodes.new("ShaderNodeMapRange")
+        fr.inputs["From Min"].default_value = WINDOW_IN_FRAME * 0.6
+        fr.inputs["From Max"].default_value = WINDOW_IN_FRAME
+        fr.inputs["To Min"].default_value = 0.12
+        fr.inputs["To Max"].default_value = 1.0
+        nt.links.new(edge, fr.inputs["Value"])
+        mixf = nt.nodes.new("ShaderNodeMix")
+        mixf.data_type = "RGBA"
+        mixf.blend_type = "MULTIPLY"
+        mixf.inputs["Factor"].default_value = 1.0
+        nt.links.new(ramp.outputs["Color"], mixf.inputs[6])
+        nt.links.new(fr.outputs["Result"], mixf.inputs[7])
+        nt.links.new(mixf.outputs[2], bsdf.inputs["Emission Color"])
+        # seen by the camera only: in the game it lights nothing (out of Lumen), so it lights nothing here either
+        lp = nt.nodes.new("ShaderNodeLightPath")
+        st = nt.nodes.new("ShaderNodeMath"); st.operation = "MULTIPLY"
+        st.inputs[1].default_value = WINDOW_IN_STRENGTH[1 if night else 0]
+        nt.links.new(lp.outputs["Is Camera Ray"], st.inputs[0])
+        nt.links.new(st.outputs[0], bsdf.inputs["Emission Strength"])
+        nt.links.new(_round_alpha(nt), bsdf.inputs["Alpha"])
     if slot == "CT_Opal":
         bsdf.inputs["Emission Color"].default_value = lin
         bsdf.inputs["Emission Strength"].default_value = 3.0
@@ -224,10 +307,33 @@ def export(type_id, obs):
 
 
 # ------------------------------------------------------------------------------------------------ render
+def cycles_device(scn):
+    """CPU by default; with --gpu on the command line (read at call time, so shoot_interior.py passes it too) Cycles
+    renders on the GPU (Metal on the Mac), falling back to the CPU when no GPU device is found."""
+    scn.cycles.device = "CPU"
+    if "--gpu" not in sys.argv:
+        return
+    prefs = bpy.context.preferences.addons["cycles"].preferences
+    for kind in ("METAL", "OPTIX", "CUDA", "HIP", "ONEAPI"):
+        try:
+            prefs.compute_device_type = kind
+        except TypeError:
+            continue
+        prefs.get_devices()
+        gpus = [d for d in prefs.devices if d.type == kind]
+        if gpus:
+            for d in prefs.devices:
+                d.use = d.type == kind
+            scn.cycles.device = "GPU"
+            print("CYCLES GPU %s: %s" % (kind, ", ".join(d.name for d in gpus)))
+            return
+    print("CYCLES --gpu: no GPU device, rendering on the CPU")
+
+
 def render(type_id, B, night):
     scn = bpy.context.scene
     scn.render.engine = "CYCLES"
-    scn.cycles.device = "CPU"
+    cycles_device(scn)
     scn.cycles.samples = SAMPLES
     scn.cycles.use_denoising = True
     scn.render.resolution_x, scn.render.resolution_y = RES

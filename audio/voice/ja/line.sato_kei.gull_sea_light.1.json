@@ -1,0 +1,20 @@
+{
+ "key": "line.sato_kei.gull_sea_light.1",
+ "lang": "ja",
+ "text": "セグロカモメか。海のそばに住んでるから、ここの光がなぜ違うか知ってるんだろう。言えないのが残念だ。",
+ "speaker": "sato_kei",
+ "voice": "Eric",
+ "voice_id": "cjVigY5qzO86Huf0OWal",
+ "voice_design": null,
+ "direction": "[quiet, precise, softly puzzled, a scientist thinking aloud]",
+ "model": "fal-ai/elevenlabs/tts/eleven-v3",
+ "request": {
+  "stability": 0.5,
+  "apply_text_normalization": "auto",
+  "text": "[quiet, precise, softly puzzled, a scientist thinking aloud] セグロカモメか。海のそばに住んでるから、ここの光がなぜ違うか知ってるんだろう。言えないのが残念だ。",
+  "voice": "Eric",
+  "language_code": "ja"
+ },
+ "fal_request_id": "01a1d7b8-8e68-70e2-abaa-baa42c0dfa64",
+ "hash": "4efe7d7aaa0a"
+}

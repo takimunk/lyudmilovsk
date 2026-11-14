@@ -880,14 +880,27 @@ void AAnimalLifeRenderer::Draw(const FWorld& World, const FVector& Camera)
 		if (!Body)
 		{
 			// a spare body of the same breed if there is one (its mesh stays loaded), else a new one
+			int32 Pick = INDEX_NONE;
 			for (int32 I = Spare.Num() - 1; I >= 0; --I)
 			{
 				if (Spare[I] && Spare[I]->Breed == Breed)
 				{
-					Body = Spare[I];
-					Spare.RemoveAt(I);
-					break;
+					// in the same coat if there is one: nothing to change on it
+					if (Spare[I]->Coat == A.Coat)
+					{
+						Pick = I;
+						break;
+					}
+					if (Pick == INDEX_NONE)
+					{
+						Pick = I;
+					}
 				}
+			}
+			if (Pick != INDEX_NONE)
+			{
+				Body = Spare[Pick];
+				Spare.RemoveAt(Pick);
 			}
 			const FTransform At(FRotator(0.f, FMath::RadiansToDegrees(A.Yaw), 0.f), ToUE(World.RenderPos(A)));
 			if (!Body)

@@ -78,7 +78,7 @@ names, ages, jobs, households, hours and their two lines each. Vera (girl_a) wor
 | li_vika | Вика Ли | 27 | lab assistant, Laboratory No. 2 | with Даша | the Laboratory 9–17:30 on weekdays | Crowd_12 |
 | valiev_rustam | Рустам Валиев | 45 | engineer, Laboratory No. 2 | alone | the Laboratory 8:30–17:30 on weekdays | Guy_a |
 | nishimura_aya | Ая Нисимура | 39 | painter | alone | paints on the island (`paint_island`), by the morning train | Girl_a |
-| sorokin_oleg | Олег Сорокин | 63 | retired ornithologist | alone | up at 5:30, watches birds on the island (`birdwatch`) | Owner |
+| sorokin_oleg | Олег Сорокин | 63 | retired ornithologist | alone | up at 5:30, watches birds from a bench of the Academgorodok's square 8–12:30 and 14:30–18:30 (`birdwatch_yard`, where the waxwing quest finds him) | Owner |
 
 **Bodies.** No new models are made for them here (people are moving to MetaHuman in their own branch). Each names its
 own body in `people.json` `body` (`Zotov_lev`, ...; the club's people have none: theirs is `mesh`), and `mesh` is an
@@ -227,7 +227,8 @@ station empty rather than seat a club regular's copy there.
 Why: residents without a body of their own used to borrow a club regular's model, so Nika (the streamer, `SK_Streamer`)
 also stood behind the diner's counter as Masha Frolova and walked about as Tanya Orlova on a checkout without her body;
 Girl_a, Girl_b and Crowd_12 had up to four look-alikes each. The diner's three waitresses (docs/diner.md) and Valentina
-Guseva (corn) got bodies of their own the same day; still to make: `khuazheva_susanna` (cheese), unseen till then.
+Guseva (corn) got bodies of their own the same day; the cheese seller (now Аслан Хуажев, `khuazhev_aslan`) gets his
+from the residents generator (docs/residents.md, "Named people"), unseen till it is imported.
 
 `lyud.People.Unique` (`InstanceReport`) counts every visible human model in the world by whose model it is, whatever
 actor shows it. `unreal/scripts/test_unique_people.sh` runs it offscreen at 03:00, 10:00, 15:00, 21:00 and after a

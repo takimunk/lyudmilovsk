@@ -302,6 +302,8 @@ void ULyudSoundscapeSubsystem::LoadSounds()
 		// the North (ALyudFumarole, ALyudCampfire: tools/north_sounds.py): a vent's hiss, mud plopping, a spring simmering, the camp's fire
 		{ TEXT("North"), TEXT("north_vent") }, { TEXT("North"), TEXT("north_mudpot") }, { TEXT("North"), TEXT("north_spring") },
 		{ TEXT("North"), TEXT("north_campfire") },
+		// Topi (ULyudTopiMind: the heartbeat as the place presses on him, the river Ural's hum at night)
+		{ TEXT("Topi"), TEXT("topi_heart") }, { TEXT("Topi"), TEXT("ural_hum") },
 	};
 	for (const auto& G : Groups)
 	{
@@ -389,6 +391,25 @@ UAudioComponent* ULyudSoundscapeSubsystem::AttachLoop(FName Pool, USceneComponen
 	UAudioComponent* A = UGameplayStatics::SpawnSoundAttached(S, Parent, NAME_None, FVector::ZeroVector, EAttachLocation::KeepRelativeOffset,
 		true, Volume * MasterVolume * EffectsVolume, 1.f, 0.f, NearAttenuation, nullptr, false);
 	return A;
+}
+
+void ULyudSoundscapeSubsystem::ReleaseLoop(UAudioComponent* Loop, float FadeSeconds)
+{
+	if (!IsValid(Loop))
+	{
+		return;
+	}
+	if (FadeSeconds > 0.f && Loop->IsPlaying())
+	{
+		// AttachLoop spawns without auto-destroy: turned on here, the component goes when the fade ends
+		Loop->bAutoDestroy = true;
+		Loop->FadeOut(FadeSeconds, 0.f);
+	}
+	else
+	{
+		Loop->Stop();
+		Loop->DestroyComponent();
+	}
 }
 
 void ULyudSoundscapeSubsystem::PlayVoiceAt(USoundBase* Voice, const FVector& Where, float Volume)
@@ -995,25 +1016,39 @@ void ULyudSoundscapeSubsystem::UpdateClub()
 			A->SetWorldLocation(It->GetActorLocation() + It->GetActorForwardVector() * 40.f + FVector(0, 0, 80.f));
 			A->RegisterComponent();
 			ClubLoops.Add(A);
+			ClubPeople.Add(*It);
 		}
 		if (ClubLoops.Num() == 0)
 		{
 			// nobody in this level: don't look again
 			ClubLoops.Add(nullptr);
+			ClubPeople.Add(nullptr);
 		}
 	}
 	const float Inside = 1.f - Outdoors;
 	const bool bOn = CVarSound.GetValueOnGameThread() > 0;
 	// people's sounds are short takes played now and then, not loops: one starts when its last one ended
 	float Nearest = 1e9f;
-	for (UAudioComponent* A : ClubLoops)
+	for (int32 I = 0; I < ClubLoops.Num(); I++)
 	{
+		UAudioComponent* A = ClubLoops[I];
 		if (!A)
 		{
 			continue;
 		}
 		const float D = float(FVector::Dist(A->GetComponentLocation(), Listener)) / 100.f;
 		Nearest = FMath::Min(Nearest, D);
+		// only somebody who is at their station types: not an empty chair (its person went out: the placed body is
+		// hidden), nor a stand-in the level keeps hidden
+		const AActor* Who = ClubPeople.IsValidIndex(I) ? ClubPeople[I].Get() : nullptr;
+		if (!Who || Who->IsHidden())
+		{
+			if (A->IsPlaying())
+			{
+				A->FadeOut(0.3f, 0.f);
+			}
+			continue;
+		}
 		if (bOn && D < 25.f && !A->IsPlaying() && FMath::FRand() < 0.15f)
 		{
 			A->SetVolumeMultiplier(0.5f * MasterVolume * EffectsVolume);
@@ -1098,13 +1133,30 @@ void ULyudSoundscapeSubsystem::PlayNextCue()
 	UpdateMusic();
 }
 
+void ULyudSoundscapeSubsystem::SetMusicHold(const UObject* Owner, bool bHold)
+{
+	if (!Owner)
+	{
+		return;
+	}
+	if (bHold)
+	{
+		MusicHolds.AddUnique(TWeakObjectPtr<const UObject>(Owner));
+	}
+	else
+	{
+		MusicHolds.Remove(TWeakObjectPtr<const UObject>(Owner));
+	}
+}
+
 void ULyudSoundscapeSubsystem::UpdateMusic()
 {
 	if (!MusicA || !MusicB)
 	{
 		return;
 	}
-	const bool bOn = CVarSound.GetValueOnGameThread() > 0 && CVarMusic.GetValueOnGameThread() > 0 && Cues.Num() > 0 && !bVacuum;
+	MusicHolds.RemoveAllSwap([](const TWeakObjectPtr<const UObject>& H) { return !H.IsValid(); });
+	const bool bOn = CVarSound.GetValueOnGameThread() > 0 && CVarMusic.GetValueOnGameThread() > 0 && Cues.Num() > 0 && !bVacuum && MusicHolds.Num() == 0;
 	UAudioComponent* Cur = bMusicOnA ? MusicA : MusicB;
 	const FName NewMood = ComputeMood();
 	const bool bMoodChanged = NewMood != Mood;

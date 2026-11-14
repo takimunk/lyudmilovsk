@@ -1,0 +1,20 @@
+{
+ "key": "line.guy_b.four_places_two_by_cable.1",
+ "lang": "ru",
+ "text": "Четыре места: пляж под обрывом, нижняя станция, Академгородок, набережная. До двух довезёт канатка, остальное ногами.",
+ "speaker": "guy_b",
+ "voice": "Chris",
+ "voice_id": "iP95p4xoKVk53GoZ742B",
+ "voice_design": null,
+ "direction": "[relaxed, lazy, friendly]",
+ "model": "fal-ai/elevenlabs/tts/eleven-v3",
+ "request": {
+  "stability": 0.5,
+  "apply_text_normalization": "auto",
+  "text": "[relaxed, lazy, friendly] Четыре места: пляж под обрывом, нижняя станция, Академгородок, набережная. До двух довезёт канатка, остальное ногами.",
+  "voice": "Chris",
+  "language_code": "ru"
+ },
+ "fal_request_id": "01a1d738-e0d4-7dd1-b626-cbb2f2fe8d25",
+ "hash": "27b86d9a3e76"
+}

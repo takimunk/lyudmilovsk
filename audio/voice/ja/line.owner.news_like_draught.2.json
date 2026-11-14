@@ -1,0 +1,20 @@
+{
+ "key": "line.owner.news_like_draught.2",
+ "lang": "ja",
+ "text": "戻ってきてよかった。",
+ "speaker": "owner",
+ "voice": "Daniel",
+ "voice_id": "onwK4e9ZLuTAKqWW03F9",
+ "voice_design": null,
+ "direction": "[calm, tired, slow, a little ironic]",
+ "model": "fal-ai/elevenlabs/tts/eleven-v3",
+ "request": {
+  "stability": 0.5,
+  "apply_text_normalization": "auto",
+  "text": "[calm, tired, slow, a little ironic] 戻ってきてよかった。",
+  "voice": "Daniel",
+  "language_code": "ja"
+ },
+ "fal_request_id": "01a1d73d-b79a-7513-89fa-8c1269b8c57c",
+ "hash": "48ed26070676"
+}

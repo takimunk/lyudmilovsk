@@ -1,0 +1,29 @@
+{
+ "key": "line.sato_yuki.grandpa_bench.1",
+ "lang": "en",
+ "text": "Birdie, you want Grandpa Sorokin. That's his bench, the next one. He's been looking for birds like you his whole life.",
+ "speaker": "sato_yuki",
+ "voice": "Lovely_Girl",
+ "voice_id": "Lovely_Girl",
+ "voice_design": null,
+ "direction": "",
+ "model": "fal-ai/minimax/speech-2.6-hd",
+ "request": {
+  "prompt": "Birdie, you want Grandpa Sorokin. That's his bench, the next one. He's been looking for birds like you his whole life.",
+  "voice_setting": {
+   "speed": 1,
+   "pitch": 0,
+   "vol": 1,
+   "voice_id": "Lovely_Girl"
+  },
+  "language_boost": "English",
+  "audio_setting": {
+   "sample_rate": 24000,
+   "format": "mp3",
+   "channel": 1
+  },
+  "output_format": "url"
+ },
+ "fal_request_id": "01a1d75f-04b1-7e20-bfd9-4c5f99eb8cf2",
+ "hash": "1e1cfb66c6b3"
+}

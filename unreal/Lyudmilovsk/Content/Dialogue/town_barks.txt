@@ -10,15 +10,20 @@
 # age =       kid (under 12), teen (12-17), adult (18-59), elder (60 and over), or years: 50-120
 # sex =       female, male (for the Russian forms of the past tense: one form per key, never both in one string)
 # doing =     activities.json ids (sit_bench, play_club, eat_out, gather_mingle, ...); work: on their duty at its place;
-#             free: not on a duty
+#             free: not on a duty; outing: at their household's weekend outing; date: at their
+#             weekly date with a friend (docs/town_manners.md)
 # at =        place kinds or place ids (bench, promenade, beach, club, restaurant, market, fair_stall, P-MARKET, ...);
 #             outdoors, indoors: under the sky or a roof (alone it doesn't make a set more particular)
 # pose =      stand, walk, talk, look, sit, computer, eat, read, work
+# manner =    what their hands are doing now (manners.json: smoke, phone_call, umbrella, feed_birds, yawn, ...)
+# temper =    who they are in manner (their persona's strong sides): warm, reserved, nervy, calm, curious, tidy, careless
+# met =       how well the speaker knows the player: new (never greeted him), seen (on 1-4 days), known (5 and more)
 # gather =    at a holiday's gathering of this mode now: mingle, watch, sit, fair
 # chrono =    lark, owl, night, usual                 need =  hunger, tired, social, fun, nature, mind, sun (over 0.75)
 # hours =     5-9 (from-to; over midnight 22-4; several ranges: 6-9 17-20)    months = 10-4    weekday = mon ... sun
 # sun =       day, low (sunrise or sunset), night, cloudy (overcast by day)
 # weather =   rain, snow, fog, cold (under 2 C), warm (over 22 C), clear (few clouds), wet (ULyudWeatherSubsystem)
+#             aurora, rainbow, fireworks: while people look up at one (UPeopleLifeSubsystem::GetSkyShow)
 # festival =  festivals.json ids, or any: the festival on now (ULyudFestivalSubsystem::ActiveFestival); phase = its phase ids
 # near = hero the player is within 10 m of the speaker (remarks about him)
 # to = hero   a greeting: said to the player when he walks past close, once a day per person
@@ -566,7 +571,7 @@ job = director
 say = town.director.1..2
 
 [master]
-job = master
+job = repairman
 say = town.master.1..2
 
 [cook_off]
@@ -1285,6 +1290,31 @@ talk = town.chat_kids1.1 | town.chat_kids1.2 | town.chat_kids1.3
 talk = town.chat_kids2.1 | town.chat_kids2.2 | town.chat_kids2.3
 talk = town.chat_kids3.1 | town.chat_kids3.2 | town.chat_kids3.3
 
+# Counters of the town's buildings (docs/city_interiors.md): the person on shift says hello once a visit, when the
+# hero steps up to the counter. Event (on = ...): counter_hello, sent by ULyudCityThings.
+
+[counter_hello]
+on = counter_hello
+say = town.counter_hello.1..4
+
+[counter_hello_early]
+on = counter_hello
+hours = 4-9
+weight = 2
+say = town.counter_hello_early.1..2
+
+[counter_hello_evening]
+on = counter_hello
+hours = 18-4
+weight = 2
+say = town.counter_hello_evening.1..2
+
+[counter_hello_festival]
+on = counter_hello
+festival = any
+weight = 2
+say = town.counter_hello_festival.1
+
 # The North (docs/north.md "People"): the ranger at the river, the footbridges and the brow; the campers in the hot
 # spring and at the overlook. The North's people are not townsfolk: they speak only with lyud.Barks.Residents 1 until
 # ULyudTownTalkSubsystem lets the North's island speak (docs/north.md). The river has no name: people call it "река";
@@ -1340,3 +1370,484 @@ talk = town.north_soak_talk1.1 | town.north_soak_talk1.2 | town.north_soak_talk1
 doing = river_view
 weight = 2
 say = town.north_overlook.1..3
+
+# Manners (docs/town_manners.md): what people say about the small thing their hands are doing now (manner = ...),
+# and what they say when they notice the player: he runs past (on = hero_runs), stands too close (on = hero_close),
+# shines the head lamp in their eyes (on = hero_lamp)
+# --- the player noticed ---
+# --- people who have come to know the player (met = seen: greeted him on a few days; known: on five and more) ---
+# The sky's shows (UPeopleLifeSubsystem::GetSkyShow adds aurora / rainbow / fireworks to the weather's words while
+# people are looking up at one)
+# The household's weekend outing (doing = outing: at it now, with their own)
+# A grown-up standing by while their child plays (doing = mind_child)
+# What the player is up to: his line is out near them (on = hero_fishes), he is in the water (hero_swims), he sat
+# down beside them on a bench (hero_sits)
+# The weekly date with a friend (doing = date: at it now)
+# Thunder (on = thunder: a strike's thunder reached them out of doors and they started)
+# With their own (LyudBarks::WithTheirOwn): two of a household out together, a grown-up and the child they mind
+
+[manner_smoke]
+manner = smoke
+say = town.manner_smoke.1..4
+
+[manner_phone_call]
+manner = phone_call
+say = town.manner_call.1..5
+
+[manner_phone_scroll]
+manner = phone_scroll
+say = town.manner_scroll.1..3
+
+[manner_feed_birds]
+manner = feed_birds
+say = town.manner_feed.1..4
+
+[manner_umbrella]
+manner = umbrella
+say = town.manner_umbrella.1..3
+
+[manner_cover_head]
+manner = cover_head hug_self
+weather = rain
+say = town.manner_wet.1..3
+
+[manner_cold]
+manner = rub_hands hug_self
+weather = !rain
+say = town.manner_cold.1..3
+
+[manner_yawn]
+manner = yawn stretch
+say = town.manner_yawn.1..3
+
+[manner_watch]
+manner = check_watch
+say = town.manner_watch.1..3
+
+[manner_photo]
+manner = photo
+say = town.manner_photo.1..3
+
+[manner_knit]
+manner = knit
+say = town.manner_knit.1..3
+
+[manner_newspaper]
+manner = newspaper
+say = town.manner_paper.1..3
+
+[manner_ice_cream]
+manner = ice_cream
+say = town.manner_ice.1..3
+
+[manner_drink]
+manner = drink
+say = town.manner_drink.1..2
+
+[manner_look_sky]
+manner = look_sky
+say = town.manner_sky.1..3
+
+[manner_shade_eyes]
+manner = shade_eyes
+say = town.manner_shade.1..2
+
+[manner_carry_bag]
+manner = carry_bag
+say = town.manner_bag.1..3
+
+[manner_doze]
+manner = doze
+say = town.manner_doze.1
+
+[notice_runs]
+on = hero_runs
+age = adult elder
+say = town.notice_runs.1..5
+
+[notice_runs_kid]
+on = hero_runs
+age = kid teen
+say = town.notice_runs_kid.1..3
+
+[notice_close]
+on = hero_close
+age = adult elder
+say = town.notice_close.1..4
+
+[notice_close_kid]
+on = hero_close
+age = kid teen
+say = town.notice_close_kid.1..3
+
+[notice_lamp]
+on = hero_lamp
+say = town.notice_lamp.1..4
+
+[notice_sneaks]
+on = hero_sneaks
+age = adult elder
+say = town.notice_sneaks.1..4
+
+[notice_sneaks_kid]
+on = hero_sneaks
+age = kid teen
+say = town.notice_sneaks_kid.1..2
+
+[notice_rides]
+on = hero_rides
+age = adult elder
+say = town.notice_rides.1..4
+
+[notice_rides_kid]
+on = hero_rides
+age = kid teen
+say = town.notice_rides_kid.1..2
+
+[greet_seen]
+to = hero
+met = seen
+age = adult elder
+say = town.greet_seen.1..4
+
+[greet_known]
+to = hero
+met = known
+age = adult elder
+weight = 2
+say = town.greet_known.1..6
+
+[greet_known_kid]
+to = hero
+met = seen known
+age = kid teen
+weight = 2
+say = town.greet_known_kid.1..3
+
+[sky_aurora]
+at = outdoors
+weather = aurora
+weight = 4
+say = town.sky_aurora.1..6
+
+[sky_aurora_kid]
+at = outdoors
+weather = aurora
+age = kid teen
+weight = 5
+say = town.sky_aurora_kid.1..3
+
+[sky_rainbow]
+at = outdoors
+weather = rainbow
+weight = 4
+say = town.sky_rainbow.1..4
+
+[sky_rainbow_kid]
+at = outdoors
+weather = rainbow
+age = kid
+weight = 5
+say = town.sky_rainbow_kid.1..2
+
+[sky_fireworks]
+at = outdoors
+weather = fireworks
+weight = 4
+say = town.sky_fireworks.1..5
+
+[sky_fireworks_kid]
+at = outdoors
+weather = fireworks
+age = kid teen
+weight = 5
+say = town.sky_fireworks_kid.1..2
+
+[outing]
+doing = outing
+age = adult elder
+weight = 4
+say = town.outing.1..6
+
+[outing_kid]
+doing = outing
+age = kid teen
+weight = 5
+say = town.outing_kid.1..3
+
+[mind_child]
+doing = mind_child
+weight = 5
+say = town.mind_child.1..6
+
+[mind_child_hero]
+doing = mind_child
+near = hero
+weight = 5
+say = town.mind_child_hero.1
+
+[notice_fishes]
+on = hero_fishes
+say = town.notice_fishes.1..5
+
+[notice_fishes_kid]
+on = hero_fishes
+age = kid
+weight = 3
+say = town.notice_fishes_kid.1..2
+
+[notice_swims]
+on = hero_swims
+say = town.notice_swims.1..3
+
+[notice_swims_cold]
+on = hero_swims
+weather = cold snow
+weight = 4
+say = town.notice_swims_cold.1..2
+
+[notice_swims_warm]
+on = hero_swims
+weather = warm
+weight = 4
+say = town.notice_swims_warm.1
+
+[notice_sits]
+on = hero_sits
+say = town.notice_sits.1..4
+
+[notice_sits_known]
+on = hero_sits
+met = known
+weight = 4
+say = town.notice_sits_known.1..2
+
+[date]
+doing = date
+age = teen adult elder
+weight = 4
+say = town.date.1..4
+
+[date_talk]
+doing = date
+doing2 = date
+age = teen adult elder
+age2 = teen adult elder
+weight = 6
+talk = town.date_talk1.1 | town.date_talk1.2 | town.date_talk1.3
+talk = town.date_talk2.1 | town.date_talk2.2
+talk = town.date_talk3.1 | town.date_talk3.2 | town.date_talk3.3
+talk = town.date_talk4.1 | town.date_talk4.2
+talk = town.date_talk5.1 | town.date_talk5.2 | town.date_talk5.3
+
+[date_kid]
+doing = date
+age = kid
+weight = 4
+say = town.date_kid.1
+
+[thunder]
+on = thunder
+age = teen adult elder
+say = town.thunder.1..4
+
+[thunder_kid]
+on = thunder
+age = kid
+weight = 3
+say = town.thunder_kid.1..2
+
+[own_talk]
+doing = outing
+doing2 = outing
+age = adult elder
+age2 = adult elder
+weight = 6
+talk = town.own_talk1.1 | town.own_talk1.2 | town.own_talk1.3
+talk = town.own_talk2.1 | town.own_talk2.2 | town.own_talk2.3
+talk = town.own_talk3.1 | town.own_talk3.2 | town.own_talk3.3
+talk = town.own_talk4.1 | town.own_talk4.2
+talk = town.own_talk5.1 | town.own_talk5.2 | town.own_talk5.3
+
+[own_talk_child]
+doing = outing
+doing2 = outing
+age = adult elder
+age2 = kid
+weight = 7
+talk = town.own_child1.1 | town.own_child1.2
+talk = town.own_child2.1 | town.own_child2.2
+talk = town.own_child3.1 | town.own_child3.2 | town.own_child3.3 | town.own_child3.4
+
+[mind_talk_child]
+doing = playground play_run
+doing2 = mind_child
+weight = 6
+talk = town.mind_talk1.1 | town.mind_talk1.2
+
+[mind_talk]
+doing = mind_child
+doing2 = playground play_run
+weight = 6
+talk = town.mind_talk2.1 | town.mind_talk2.2 | town.mind_talk2.3
+talk = town.mind_talk3.1 | town.mind_talk3.2
+
+# At the counter: a customer on their feet and whoever serves them (LyudBarks::AtCounter: the same shop, market
+# stall or kiosk, within 4 m). A is the customer unless the set says doing = work first.
+
+[counter]
+doing = shop shop_town
+doing2 = work
+age = teen adult elder
+weight = 3
+talk = town.counter1.1 | town.counter1.2 | town.counter1.3
+talk = town.counter2.1 | town.counter2.2 | town.counter2.3
+talk = town.counter3.1 | town.counter3.2 | town.counter3.3 | town.counter3.4
+talk = town.counter4.1 | town.counter4.2
+talk = town.counter5.1 | town.counter5.2
+talk = town.counter6.1 | town.counter6.2 | town.counter6.3
+
+[counter_seller]
+doing = work
+doing2 = shop shop_town
+age2 = teen adult elder
+weight = 3
+talk = town.counter_seller1.1 | town.counter_seller1.2
+talk = town.counter_seller2.1 | town.counter_seller2.2 | town.counter_seller2.3
+talk = town.counter_seller3.1 | town.counter_seller3.2 | town.counter_seller3.3
+talk = town.counter_seller4.1 | town.counter_seller4.2 | town.counter_seller4.3
+
+[counter_market]
+doing = shop_town
+doing2 = work
+at = market
+age = adult elder
+weight = 4
+talk = town.counter_market1.1 | town.counter_market1.2 | town.counter_market1.3 | town.counter_market1.4
+talk = town.counter_market2.1 | town.counter_market2.2 | town.counter_market2.3
+talk = town.counter_market3.1 | town.counter_market3.2 | town.counter_market3.3 | town.counter_market3.4
+talk = town.counter_market4.1 | town.counter_market4.2
+
+[counter_kiosk]
+doing = shop_town
+doing2 = work
+at = kiosk
+age = teen adult elder
+weight = 4
+talk = town.counter_kiosk1.1 | town.counter_kiosk1.2
+talk = town.counter_kiosk2.1 | town.counter_kiosk2.2 | town.counter_kiosk2.3 | town.counter_kiosk2.4
+talk = town.counter_kiosk3.1 | town.counter_kiosk3.2
+
+[counter_kid]
+doing = shop shop_town
+doing2 = work
+age = kid
+weight = 5
+talk = town.counter_kid1.1 | town.counter_kid1.2 | town.counter_kid1.3
+talk = town.counter_kid2.1 | town.counter_kid2.2
+
+[counter_elder]
+doing = shop shop_town
+doing2 = work
+age = elder
+weight = 4
+talk = town.counter_elder1.1 | town.counter_elder1.2
+talk = town.counter_elder2.1 | town.counter_elder2.2
+
+[counter_rain]
+doing = shop shop_town
+doing2 = work
+weather = rain
+age = teen adult elder
+weight = 5
+talk = town.counter_rain1.1 | town.counter_rain1.2
+
+[counter_evening]
+doing = shop shop_town
+doing2 = work
+hours = 18-23
+age = teen adult elder
+weight = 4
+talk = town.counter_evening1.1 | town.counter_evening1.2
+talk = town.counter_evening2.1 | town.counter_evening2.2
+
+# Who they are in manner (docs/town_manners.md personas; temper = warm reserved nervy calm curious tidy careless):
+# the same bench, the same weather, said differently by different people
+# A fine evening on the sea front (the town comes out to walk: docs/town_manners.md, the weather in the choices)
+
+[temper_warm]
+temper = warm
+at = outdoors
+age = adult elder
+say = town.temper_warm.1..3
+
+[temper_warm_hello]
+temper = warm
+to = hero
+weight = 2
+say = town.temper_warm_hello.1..2
+
+[temper_reserved]
+temper = reserved
+at = outdoors
+age = adult elder
+say = town.temper_reserved.1..3
+
+[temper_reserved_hello]
+temper = reserved
+to = hero
+weight = 2
+say = town.temper_reserved_hello.1..2
+
+[temper_nervy]
+temper = nervy
+at = outdoors
+age = teen adult elder
+say = town.temper_nervy.1..3
+
+[temper_calm]
+temper = calm
+at = outdoors
+age = adult elder
+say = town.temper_calm.1..3
+
+[temper_curious]
+temper = curious
+at = outdoors
+age = teen adult elder
+say = town.temper_curious.1..3
+
+[temper_curious_hero]
+temper = curious
+near = hero
+weight = 2
+say = town.temper_curious_hero.1
+
+[temper_tidy]
+temper = tidy
+at = outdoors
+age = adult elder
+say = town.temper_tidy.1..2
+
+[temper_careless]
+temper = careless
+at = outdoors
+age = teen adult elder
+say = town.temper_careless.1..2
+
+[evening_front]
+at = promenade pier fountain square
+hours = 18-22
+weather = !rain !snow !cold
+doing = stroll walk sea_air sun_watch night_walk
+age = teen adult elder
+weight = 2
+say = town.evening_front.1..6
+
+[evening_front_warm]
+at = promenade pier fountain square
+hours = 18-22
+weather = warm
+age = teen adult elder
+weight = 3
+say = town.evening_front_warm.1..2

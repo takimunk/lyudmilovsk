@@ -1,0 +1,20 @@
+{
+ "key": "line.girl_b.sun_low.1",
+ "lang": "ru",
+ "text": "На форуме есть ветка: кто где видел солнце у самой земли. Туда пишут каждый день. Я читаю всё.",
+ "speaker": "girl_b",
+ "voice": "Sarah",
+ "voice_id": "EXAVITQu4vr4xnSDxMaL",
+ "voice_design": null,
+ "direction": "[curious, slightly uneasy, conspiratorial]",
+ "model": "fal-ai/elevenlabs/tts/eleven-v3",
+ "request": {
+  "stability": 0.5,
+  "apply_text_normalization": "auto",
+  "text": "[curious, slightly uneasy, conspiratorial] На форуме есть ветка: кто где видел солнце у самой земли. Туда пишут каждый день. Я читаю всё.",
+  "voice": "Sarah",
+  "language_code": "ru"
+ },
+ "fal_request_id": "01a1d782-2535-7490-b5f0-ceb0fd8822cc",
+ "hash": "000ff55244db"
+}

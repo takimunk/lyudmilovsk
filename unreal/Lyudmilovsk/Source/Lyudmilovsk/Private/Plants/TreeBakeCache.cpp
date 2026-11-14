@@ -5,6 +5,7 @@
 #include "Materials/MaterialInstanceDynamic.h"
 #include "Plants/PlantMeshes.h"
 #include "Plants/PlantModel.h"
+#include "Plants/PlantSpecies.h"
 #include "Tasks/Task.h"
 
 struct UTreeBakeCache::FJob
@@ -19,9 +20,9 @@ struct UTreeBakeCache::FJob
 	bool bUrgent = false;
 };
 
-const FTreeBaked* UTreeBakeCache::Request(FName Species, uint32 Seed, float Age, float Day, float RebakeDays, const FVector& LodDistances)
+const FTreeBaked* UTreeBakeCache::Request(FName Species, uint32 Seed, float Age, float Day, float RebakeDays, const FVector& LodDistances, int32 FirstLod)
 {
-	const FTreeBakeKey Key{ Species, Seed, FMath::RoundToInt(Age * 10.f) };
+	const FTreeBakeKey Key{ Species, Seed, FMath::RoundToInt(Age * 10.f), FMath::Clamp(FirstLod, 0, 3) };
 	FTreeBaked* Have = Baked.Find(Key);
 	const bool bStale = Have && FMath::Abs(Day - Have->Day) > RebakeDays;
 	if ((!Have || bStale) && !Queued.Contains(Key))
@@ -56,7 +57,7 @@ void UTreeBakeCache::Launch(const TSharedPtr<FJob>& Job)
 	RunningAtomic++;
 	UE::Tasks::Launch(UE_SOURCE_LOCATION, [this, Job]()
 	{
-		Job->Prep = PlantMeshes::PrepareTreeBake(Job->Species, Job->Key.Seed, Job->Age, Job->Day);
+		Job->Prep = PlantMeshes::PrepareTreeBake(Job->Species, Job->Key.Seed, Job->Age, Job->Day, Job->Key.FirstLod);
 		{
 			FScopeLock Lock(&FinishedLock);
 			Finished.Add(Job);
@@ -65,22 +66,9 @@ void UTreeBakeCache::Launch(const TSharedPtr<FJob>& Job)
 	});
 }
 
-void UTreeBakeCache::Finish(FJob& Job)
+UTreeBakeCache::FSpeciesAssets& UTreeBakeCache::AssetsFor(const FPlantSpecies& S)
 {
-	const double T0 = FPlatformTime::Seconds();
-	const FPlantSpecies& S = Job.Species;
-	if (!BarkMaterial)
-	{
-		BarkMaterial = LoadObject<UMaterialInterface>(nullptr, TEXT("/Game/Plants/M_PlantBark.M_PlantBark"));
-		LeafMaterial = LoadObject<UMaterialInterface>(nullptr, TEXT("/Game/Plants/M_PlantLeaf.M_PlantLeaf"));
-		NeedleMaterial = LoadObject<UMaterialInterface>(nullptr, TEXT("/Game/Plants/M_PlantNeedle.M_PlantNeedle"));
-		UMaterialInterface* Basic = LoadObject<UMaterialInterface>(nullptr, TEXT("/Engine/BasicShapes/BasicShapeMaterial.BasicShapeMaterial"));
-		if (!BarkMaterial) BarkMaterial = Basic;
-		if (!LeafMaterial) LeafMaterial = Basic;
-		if (!NeedleMaterial) NeedleMaterial = LeafMaterial;
-	}
 	FSpeciesAssets& A = Assets.FindOrAdd(S.Name);
-	const double TexStart = FPlatformTime::Seconds();
 	if (!A.Albedo)
 	{
 		// one bark and one leaf texture per species, whatever the seed
@@ -101,6 +89,35 @@ void UTreeBakeCache::Finish(FJob& Job)
 			KeepAlive.Add(A.Bloom);
 		}
 	}
+	return A;
+}
+
+bool UTreeBakeCache::EnsureSpeciesTextures(const FPlantSpecies& Species, UTexture2D*& Albedo, UTexture2D*& Normal, UTexture2D*& LeafDetail)
+{
+	const FSpeciesAssets& A = AssetsFor(Species);
+	if (!A.Albedo || !A.Normal || !A.Detail) return false;
+	Albedo = A.Albedo;
+	Normal = A.Normal;
+	LeafDetail = A.Detail;
+	return true;
+}
+
+void UTreeBakeCache::Finish(FJob& Job)
+{
+	const double T0 = FPlatformTime::Seconds();
+	const FPlantSpecies& S = Job.Species;
+	if (!BarkMaterial)
+	{
+		BarkMaterial = LoadObject<UMaterialInterface>(nullptr, TEXT("/Game/Plants/M_PlantBark.M_PlantBark"));
+		LeafMaterial = LoadObject<UMaterialInterface>(nullptr, TEXT("/Game/Plants/M_PlantLeaf.M_PlantLeaf"));
+		NeedleMaterial = LoadObject<UMaterialInterface>(nullptr, TEXT("/Game/Plants/M_PlantNeedle.M_PlantNeedle"));
+		UMaterialInterface* Basic = LoadObject<UMaterialInterface>(nullptr, TEXT("/Engine/BasicShapes/BasicShapeMaterial.BasicShapeMaterial"));
+		if (!BarkMaterial) BarkMaterial = Basic;
+		if (!LeafMaterial) LeafMaterial = Basic;
+		if (!NeedleMaterial) NeedleMaterial = LeafMaterial;
+	}
+	const double TexStart = FPlatformTime::Seconds();
+	FSpeciesAssets& A = AssetsFor(S);
 	const double MeshStart = FPlatformTime::Seconds();
 	const FVector* L = LodsOf.Find(Job.Key);
 	const FVector Lods = L ? *L : FVector(45.0, 120.0, 300.0);
@@ -193,7 +210,15 @@ void UTreeBakeCache::Tick(float DeltaTime)
 	Super::Tick(DeltaTime);
 	Running = RunningAtomic.Load();
 	const int32 Workers = UrgentJobs > 0 ? MaxWorkers * 2 : MaxWorkers;
-	while (Running < Workers && !Wanted.IsEmpty())
+	// a prepared kind holds its four mesh descriptions (hundreds of MB for a grown tree) until the game thread takes it,
+	// one a frame at most and with pauses between: the workers outran it at the start of a game and after a jump of the
+	// calendar, and every kind of the world waited prepared at once. No more are prepared than a few can wait.
+	int32 Waiting = 0;
+	{
+		FScopeLock Lock(&FinishedLock);
+		Waiting = Finished.Num();
+	}
+	while (Running < Workers && Running + Waiting < Workers * 2 && !Wanted.IsEmpty())
 	{
 		TSharedPtr<FJob> Job = Wanted[0];
 		Wanted.RemoveAt(0);
@@ -228,7 +253,7 @@ void UTreeBakeCache::BakeAllNow()
 	{
 		TSharedPtr<FJob> Job = Wanted[0];
 		Wanted.RemoveAt(0);
-		Job->Prep = PlantMeshes::PrepareTreeBake(Job->Species, Job->Key.Seed, Job->Age, Job->Day);
+		Job->Prep = PlantMeshes::PrepareTreeBake(Job->Species, Job->Key.Seed, Job->Age, Job->Day, Job->Key.FirstLod);
 		Finish(*Job);
 	}
 	for (;;)

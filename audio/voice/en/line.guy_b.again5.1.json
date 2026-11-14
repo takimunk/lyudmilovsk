@@ -1,0 +1,20 @@
+{
+ "key": "line.guy_b.again5.1",
+ "lang": "en",
+ "text": "Today at the warehouse we unloaded pumpkins. A whole lorry. Now I know how much autumn weighs.",
+ "speaker": "guy_b",
+ "voice": "Chris",
+ "voice_id": "iP95p4xoKVk53GoZ742B",
+ "voice_design": null,
+ "direction": "[relaxed, lazy, friendly]",
+ "model": "fal-ai/elevenlabs/tts/eleven-v3",
+ "request": {
+  "stability": 0.5,
+  "apply_text_normalization": "auto",
+  "text": "[relaxed, lazy, friendly] Today at the warehouse we unloaded pumpkins. A whole lorry. Now I know how much autumn weighs.",
+  "voice": "Chris",
+  "language_code": "en"
+ },
+ "fal_request_id": "01a1d782-ff3d-78d1-8867-6ff138a2160f",
+ "hash": "7703a3b453b8"
+}

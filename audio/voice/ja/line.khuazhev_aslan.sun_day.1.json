@@ -1,0 +1,20 @@
+{
+ "key": "line.khuazhev_aslan.sun_day.1",
+ "lang": "ja",
+ "text": "日がテントに当たって、チーズが金色になる。客は、俺が上手に並べたからだと思ってる。",
+ "speaker": "khuazhev_aslan",
+ "voice": "Brian",
+ "voice_id": "nPczCjzI2devNBz1zQrb",
+ "voice_design": null,
+ "direction": "[hearty, generous, a cheese seller from the Caucasus, proud of his family's cheese]",
+ "model": "fal-ai/elevenlabs/tts/eleven-v3",
+ "request": {
+  "stability": 0.5,
+  "apply_text_normalization": "auto",
+  "text": "[hearty, generous, a cheese seller from the Caucasus, proud of his family's cheese] 日がテントに当たって、チーズが金色になる。客は、俺が上手に並べたからだと思ってる。",
+  "voice": "Brian",
+  "language_code": "ja"
+ },
+ "fal_request_id": "01a1d743-6f4c-7a62-87c0-afa8ef7b5a93",
+ "hash": "b2a6e29b21da"
+}

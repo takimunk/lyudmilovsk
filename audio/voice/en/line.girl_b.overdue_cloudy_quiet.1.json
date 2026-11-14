@@ -1,0 +1,20 @@
+{
+ "key": "line.girl_b.overdue_cloudy_quiet.1",
+ "lang": "en",
+ "text": "On a grey day the library goes completely quiet. The magazine is in the machine at the station, by the pendulum. Forty rubles, Lev gave you that, didn't he?",
+ "speaker": "girl_b",
+ "voice": "Sarah",
+ "voice_id": "EXAVITQu4vr4xnSDxMaL",
+ "voice_design": null,
+ "direction": "[curious, slightly uneasy, conspiratorial]",
+ "model": "fal-ai/elevenlabs/tts/eleven-v3",
+ "request": {
+  "stability": 0.5,
+  "apply_text_normalization": "auto",
+  "text": "[curious, slightly uneasy, conspiratorial] On a grey day the library goes completely quiet. The magazine is in the machine at the station, by the pendulum. Forty rubles, Lev gave you that, didn't he?",
+  "voice": "Sarah",
+  "language_code": "en"
+ },
+ "fal_request_id": "01a1d7a9-429c-7ae1-8c45-9f745e32aaf2",
+ "hash": "4de619a1f3a5"
+}

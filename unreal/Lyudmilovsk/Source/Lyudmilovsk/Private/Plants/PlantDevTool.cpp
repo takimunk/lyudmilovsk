@@ -1,6 +1,8 @@
 #include "Plants/PlantDevTool.h"
 
 #include "Camera/PlayerCameraManager.h"
+#include "Dev/LyudDev.h"
+#include "Dev/LyudDevPanel.h"
 #include "DrawDebugHelpers.h"
 #include "Engine/Engine.h"
 #include "Engine/GameViewportClient.h"
@@ -10,6 +12,7 @@
 #include "HAL/IConsoleManager.h"
 #include "GameFramework/PlayerController.h"
 #include "Kismet/GameplayStatics.h"
+#include "LyudInventory.h"
 #include "LyudText.h"
 #include "Plants/GameCalendar.h"
 #include "Plants/PlantSpecies.h"
@@ -132,6 +135,10 @@ void APlantDevTool::Step(int32 Delta)
 
 void APlantDevTool::Toggle()
 {
+	if (!LyudDev::Enabled())
+	{
+		return;
+	}
 	if (Panel.IsValid())
 	{
 		Close();
@@ -188,6 +195,11 @@ void APlantDevTool::Open()
 		return;
 	}
 	SelectInView();
+	// the inventory screen would lie under the panel and take the same clicks
+	if (ULyudInventoryUI* Inv = ULyudInventoryUI::Get(this); Inv && Inv->IsOpen())
+	{
+		Inv->Close();
+	}
 	TWeakObjectPtr<APlantDevTool> Self(this);
 	auto P = [Self]() -> AProceduralPlant* { return Self.IsValid() ? Self->Selected() : nullptr; };
 	auto Cal = [Self]() -> UGameCalendar* { return Self.IsValid() && Self->GetWorld() ? Self->GetWorld()->GetSubsystem<UGameCalendar>() : nullptr; };
@@ -212,7 +224,7 @@ void APlantDevTool::Open()
 	[
 		SNew(SBox).WidthOverride(620.f).MaxDesiredHeight_Lambda(MaxHeight)
 		[
-			SNew(SBorder).BorderImage(FCoreStyle::Get().GetBrush("WhiteBrush")).BorderBackgroundColor(FLinearColor(0.f, 0.f, 0.f, 0.7f)).Padding(14.f)
+			SNew(SBorder).BorderImage(FCoreStyle::Get().GetBrush("WhiteBrush")).BorderBackgroundColor(FLinearColor(0.f, 0.f, 0.f, 0.88f)).Padding(14.f)
 			[
 				SNew(SScrollBox).ScrollBarThickness(FVector2D(6.f, 6.f))
 				+ SScrollBox::Slot()
@@ -227,6 +239,12 @@ void APlantDevTool::Open()
 				]
 				+ SVerticalBox::Slot().AutoHeight().Padding(0, 0, 0, 6)
 				[SNew(STextBlock).AutoWrapText(true).Text(LyudText::Get(TEXT("ui.dev.keys_hint"))).Font(Font(10)).ColorAndOpacity(FLinearColor(0.75f, 0.8f, 0.9f))]
+				// the tabs: World (below), Teleport, Quests, Pocket, Birds, Actions (LyudDevPanel.cpp)
+				+ SVerticalBox::Slot().AutoHeight().Padding(0, 0, 0, 8)[LyudDevPanel::TabBar(this)]
+				+ SVerticalBox::Slot().AutoHeight()[LyudDevPanel::Tabs(this)]
+				+ SVerticalBox::Slot().AutoHeight()
+				[
+				SNew(SVerticalBox).Visibility_Lambda([Self]() { return Self.IsValid() && Self->Tab == 0 ? EVisibility::Visible : EVisibility::Collapsed; })
 				// the world's date, time of day and how fast time runs: everything that reads the calendar follows
 				+ SVerticalBox::Slot().AutoHeight().HAlign(HAlign_Left)[SectionHeader(TEXT("ui.dev.world"), &bWorldOpen, this)]
 				+ SVerticalBox::Slot().AutoHeight()
@@ -356,11 +374,13 @@ void APlantDevTool::Open()
 				[SNew(STextBlock).AutoWrapText(true).Font(Font(9)).ColorAndOpacity(FLinearColor(0.7f, 0.7f, 0.7f))
 					.Text(LyudText::Get(TEXT("ui.plants.hint")))]
 				]
+				]
 			]
 		]
 	];
 	// over the HUD, the diary and the transit screen (85, 86), under the game menu (100)
 	Viewport->AddViewportWidgetContent(Panel.ToSharedRef(), 95);
+	SetActorTickEnabled(true);
 	PC->SetShowMouseCursor(true);
 	FInputModeGameAndUI Mode;
 	Mode.SetHideCursorDuringCapture(true);
@@ -392,6 +412,27 @@ void APlantDevTool::Tick(float DeltaSeconds)
 	if (!bBound)
 	{
 		TryBindInput();
+	}
+	if (bRebuild)
+	{
+		bRebuild = false;
+		if (Panel.IsValid())
+		{
+			// the rebuilt panel picks the tree in view: keep the one being worked on (its time-lapse goes on)
+			const TWeakObjectPtr<AProceduralPlant> Keep = Plant;
+			Close();
+			Open();
+			if (Keep.IsValid())
+			{
+				Plant = Keep;
+			}
+		}
+	}
+	// nothing to do with the panel shut and no time-lapse running: no tick until the panel opens again
+	if (bBound && !bRebuild && !Panel.IsValid() && AgeSpeed <= 0.f && DaySpeed <= 0.f)
+	{
+		SetActorTickEnabled(false);
+		return;
 	}
 	AProceduralPlant* P = Plant.Get();
 	if (!P)

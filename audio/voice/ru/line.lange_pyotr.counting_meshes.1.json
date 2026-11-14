@@ -1,0 +1,20 @@
+{
+ "key": "line.lange_pyotr.counting_meshes.1",
+ "lang": "ru",
+ "text": "Сиди. Только молча, я ячейки считаю.",
+ "speaker": "lange_pyotr",
+ "voice": "Brian",
+ "voice_id": "nPczCjzI2devNBz1zQrb",
+ "voice_design": null,
+ "direction": "[gruff, unhurried, a weathered fisherman of few words]",
+ "model": "fal-ai/elevenlabs/tts/eleven-v3",
+ "request": {
+  "stability": 0.5,
+  "apply_text_normalization": "auto",
+  "text": "[gruff, unhurried, a weathered fisherman of few words] Сиди. Только молча, я ячейки считаю.",
+  "voice": "Brian",
+  "language_code": "ru"
+ },
+ "fal_request_id": "01a1d6e7-9174-72c0-8a15-b91110f2f97f",
+ "hash": "e8fe4bc86d49"
+}

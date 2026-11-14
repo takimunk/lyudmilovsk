@@ -1,0 +1,20 @@
+{
+ "key": "line.lange_pyotr.cheese_wait_hint.1",
+ "lang": "en",
+ "text": "Up to the club, by cable car. Cheese tent by the door. One smoked braid.",
+ "speaker": "lange_pyotr",
+ "voice": "Brian",
+ "voice_id": "nPczCjzI2devNBz1zQrb",
+ "voice_design": null,
+ "direction": "[gruff, unhurried, a weathered fisherman of few words]",
+ "model": "fal-ai/elevenlabs/tts/eleven-v3",
+ "request": {
+  "stability": 0.5,
+  "apply_text_normalization": "auto",
+  "text": "[gruff, unhurried, a weathered fisherman of few words] Up to the club, by cable car. Cheese tent by the door. One smoked braid.",
+  "voice": "Brian",
+  "language_code": "en"
+ },
+ "fal_request_id": "01a1d6db-f2c6-7ac3-b25c-a6d2d7342408",
+ "hash": "b44ca4e1e208"
+}

@@ -1,0 +1,20 @@
+{
+ "key": "line.zotova_galina.sodalab_ask.1",
+ "lang": "ja",
+ "text": "あなた、クラブに通っていますね。あそこの自販機にはソーダが四種類あります。独立した試飲係が必要なんです。",
+ "speaker": "zotova_galina",
+ "voice": "Alice",
+ "voice_id": "Xb7hH8MSUJpSbSDYk0k2",
+ "voice_design": null,
+ "direction": "[warm, chatty, fondly exasperated with her husband]",
+ "model": "fal-ai/elevenlabs/tts/eleven-v3",
+ "request": {
+  "stability": 0.5,
+  "apply_text_normalization": "auto",
+  "text": "[warm, chatty, fondly exasperated with her husband] あなた、クラブに通っていますね。あそこの自販機にはソーダが四種類あります。独立した試飲係が必要なんです。",
+  "voice": "Alice",
+  "language_code": "ja"
+ },
+ "fal_request_id": "01a1d677-fa06-77e2-a7b2-97c4d963c0f9",
+ "hash": "f07b3edcd9a5"
+}

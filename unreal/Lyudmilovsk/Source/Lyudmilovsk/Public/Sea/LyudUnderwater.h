@@ -35,7 +35,7 @@ class LYUDMILOVSK_API ALyudSeaLife : public AActor
 public:
 	ALyudSeaLife();
 
-	/** The species' instanced mesh, made on first use (null when the species has no mesh and no stand-in). */
+	/** The species' instanced mesh, made on first use once its look is in memory (null until then: it loads in the background). */
 	UInstancedStaticMeshComponent* SpeciesMesh(int32 Species);
 	UPROPERTY(Transient) TArray<TObjectPtr<UInstancedStaticMeshComponent>> Fish;
 	UPROPERTY(Transient) TObjectPtr<UStaticMeshComponent> Motes;
@@ -89,8 +89,9 @@ public:
 	UPROPERTY(BlueprintAssignable, Category = "Underwater") FLyudFishEaten OnFishEaten;
 	/** Every strike seen, caught or missed (OnFishEaten has only the catches). */
 	UPROPERTY(BlueprintAssignable, Category = "Underwater") FLyudFishHunt OnFishHunt;
-	/** Meals seen since play began, "Predator<-Prey" -> count (lyud.SeaLife.Debug prints them). */
-	TMap<FString, int32> MealsSeen;
+	/** Meals seen since play began -> count, by (predator's species << 16) | (prey's species << 1) | caught (GetDebugReport
+	 *  writes them out as "Predator<-Prey": no strings are made at a meal). */
+	TMap<uint32, int32> MealsSeen;
 
 	virtual void Tick(float DeltaTime) override;
 	virtual TStatId GetStatId() const override;
@@ -129,6 +130,14 @@ private:
 	float EcoSyncTimer = 0.f;
 	bool bDietSet = false;
 	/** Per species: the transforms and the shader's data written last (reused, no allocations per frame). */
+	/** The species' names, made once (a meal's event names two). */
+	TArray<FName> SpeciesNames;
 	TArray<TArray<FTransform>> Xf;
 	TArray<TArray<float>> Data;
+	/** Per species: how many instances showed a fish last frame, and how long most of its instances have been spare
+	 *  (a species keeps spare instances parked at FishPark, so a fish coming or going never rebuilds them). */
+	TArray<int32> FishShown;
+	TArray<float> FishSpareTime;
+	TArray<FTransform> FishAdd;
+	FVector FishPark = FVector::ZeroVector;
 };

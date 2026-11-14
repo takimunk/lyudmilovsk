@@ -1,0 +1,20 @@
+{
+ "key": "line.girl_b.overdue_back.4",
+ "lang": "ja",
+ "text": "ありがとう。私ひとりだったら定年まで迷っていたと思う。これ、もらって。除籍になった『海岸』と、引き出しの板チョコ。",
+ "speaker": "girl_b",
+ "voice": "Sarah",
+ "voice_id": "EXAVITQu4vr4xnSDxMaL",
+ "voice_design": null,
+ "direction": "[curious, slightly uneasy, conspiratorial]",
+ "model": "fal-ai/elevenlabs/tts/eleven-v3",
+ "request": {
+  "stability": 0.5,
+  "apply_text_normalization": "auto",
+  "text": "[curious, slightly uneasy, conspiratorial] ありがとう。私ひとりだったら定年まで迷っていたと思う。これ、もらって。除籍になった『海岸』と、引き出しの板チョコ。",
+  "voice": "Sarah",
+  "language_code": "ja"
+ },
+ "fal_request_id": "01a1d66c-2dae-7d01-b215-cb2b7650ce0c",
+ "hash": "00a25f90a823"
+}

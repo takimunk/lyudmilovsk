@@ -26,6 +26,7 @@
 #include "Engine/World.h"
 #include "LandscapeHeightfieldCollisionComponent.h"
 #include "PhysicsEngine/BodySetup.h"
+#include "GameFramework/Character.h"
 #include "GameFramework/Pawn.h"
 #include "GameFramework/PlayerController.h"
 #include "Plants/ProceduralPlant.h"
@@ -414,8 +415,13 @@ void ALyudCableway::BuildStation(const LyudTransport::FNetwork& Net, int32 S)
 			}
 		}
 		const FTransform DoorT(FRotator(0.f, Yaw0 + GroundSide * 90.f, 0.f), B.Core.TransformPosition(SideOut(GroundSide) * DoorR));
-		if (ALyudDoor* Door = GetWorld()->SpawnActorDeferred<ALyudDoor>(ALyudDoor::StaticClass(), DoorT, nullptr, nullptr,
-			ESpawnActorCollisionHandlingMethod::AlwaysSpawn))
+		// a stable name: the save keys actors by it (an auto-generated one differs from run to run in a packaged game)
+		FActorSpawnParameters DoorSP;
+		DoorSP.Name = FName(*FString::Printf(TEXT("LyudStationDoor_%d"), S));
+		DoorSP.NameMode = FActorSpawnParameters::ESpawnActorNameMode::Requested;
+		DoorSP.SpawnCollisionHandlingOverride = ESpawnActorCollisionHandlingMethod::AlwaysSpawn;
+		DoorSP.bDeferConstruction = true;
+		if (ALyudDoor* Door = GetWorld()->SpawnActor<ALyudDoor>(ALyudDoor::StaticClass(), DoorT, DoorSP))
 		{
 			Door->Size = ELyudDoorSize::FitHole;
 			Door->HoleWidth = FMath::Min(Hole.X, 200.f);
@@ -1125,6 +1131,7 @@ void ALyudCableway::PlaceVestibule(const LyudTransport::FNetwork& Net, int32 S)
 		{
 			DoorList.Add(*D1);
 		}
+		int32 DoorIx = 0;
 		for (const TSharedPtr<FJsonObject>& Dd : DoorList)
 		{
 			const TSharedPtr<FJsonObject>* D = &Dd;
@@ -1132,7 +1139,13 @@ void ALyudCableway::PlaceVestibule(const LyudTransport::FNetwork& Net, int32 S)
 			const FVector Hole = JsonXY(*D, TEXT("hole"));
 			const float DYaw = (*D)->GetNumberField(TEXT("yaw"));
 			const FTransform DoorT = FTransform(FRotator(0.f, DYaw, 0.f), At) * C;
-			if (ALyudDoor* Door = GetWorld()->SpawnActorDeferred<ALyudDoor>(ALyudDoor::StaticClass(), DoorT, nullptr, nullptr, ESpawnActorCollisionHandlingMethod::AlwaysSpawn))
+			// a stable name: the save keys actors by it
+			FActorSpawnParameters DoorSP;
+			DoorSP.Name = FName(*FString::Printf(TEXT("LyudVestibuleDoor_%d_%d"), S, DoorIx++));
+			DoorSP.NameMode = FActorSpawnParameters::ESpawnActorNameMode::Requested;
+			DoorSP.SpawnCollisionHandlingOverride = ESpawnActorCollisionHandlingMethod::AlwaysSpawn;
+			DoorSP.bDeferConstruction = true;
+			if (ALyudDoor* Door = GetWorld()->SpawnActor<ALyudDoor>(ALyudDoor::StaticClass(), DoorT, DoorSP))
 			{
 				Door->Size = ELyudDoorSize::FitHole;
 				Door->HoleWidth = Hole.X > 1.f ? Hole.X : 164.f;
@@ -1837,7 +1850,9 @@ void ALyudStationLift::Tick(float DeltaTime)
 		return;
 	}
 	const APlayerController* PC = GetWorld()->GetFirstPlayerController();
-	const APawn* Pawn = PC ? PC->GetPawn() : nullptr;
+	// somebody on their feet only: a bird flying through the tower neither rides the cab nor calls it away from where
+	// the player's own body stands
+	const APawn* Pawn = PC ? Cast<ACharacter>(PC->GetPawn()) : nullptr;
 	const FVector Local = Pawn ? GetActorTransform().InverseTransformPosition(Pawn->GetActorLocation()) : FVector(1e6f);
 	const float HalfIn = ShaftHalf - 15.f;
 	const bool bIn = FMath::Abs(Local.X) < HalfIn && FMath::Abs(Local.Y) < HalfIn && Local.Z > Z - 20.f && Local.Z < Z + 260.f;

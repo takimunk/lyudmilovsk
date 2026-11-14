@@ -1,0 +1,20 @@
+{
+ "key": "line.girl_b.north_send_off.1",
+ "lang": "en",
+ "text": "Off north already? That's a long way. If you see a waxwing, tell Sorokin first, and then me.",
+ "speaker": "girl_b",
+ "voice": "Sarah",
+ "voice_id": "EXAVITQu4vr4xnSDxMaL",
+ "voice_design": null,
+ "direction": "[curious, slightly uneasy, conspiratorial]",
+ "model": "fal-ai/elevenlabs/tts/eleven-v3",
+ "request": {
+  "stability": 0.5,
+  "apply_text_normalization": "auto",
+  "text": "[curious, slightly uneasy, conspiratorial] Off north already? That's a long way. If you see a waxwing, tell Sorokin first, and then me.",
+  "voice": "Sarah",
+  "language_code": "en"
+ },
+ "fal_request_id": "01a1d6d3-b1bd-7561-9518-258692b89908",
+ "hash": "356a017a78f4"
+}

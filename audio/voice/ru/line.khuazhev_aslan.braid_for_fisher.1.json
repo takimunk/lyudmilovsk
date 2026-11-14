@@ -1,0 +1,20 @@
+{
+ "key": "line.khuazhev_aslan.braid_for_fisher.1",
+ "lang": "ru",
+ "text": "Косичку для рыбака? Угадал, да? Рыбаки всегда берут копчёную, чтобы хоть что-то в жизни было не рыбой.",
+ "speaker": "khuazhev_aslan",
+ "voice": "Brian",
+ "voice_id": "nPczCjzI2devNBz1zQrb",
+ "voice_design": null,
+ "direction": "[hearty, generous, a cheese seller from the Caucasus, proud of his family's cheese]",
+ "model": "fal-ai/elevenlabs/tts/eleven-v3",
+ "request": {
+  "stability": 0.5,
+  "apply_text_normalization": "auto",
+  "text": "[hearty, generous, a cheese seller from the Caucasus, proud of his family's cheese] Косичку для рыбака? Угадал, да? Рыбаки всегда берут копчёную, чтобы хоть что-то в жизни было не рыбой.",
+  "voice": "Brian",
+  "language_code": "ru"
+ },
+ "fal_request_id": "01a1d6d4-7b8b-7961-927e-f08cde2ff859",
+ "hash": "3af0692a5777"
+}

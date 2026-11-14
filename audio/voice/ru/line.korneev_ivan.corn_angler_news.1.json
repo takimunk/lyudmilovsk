@@ -1,0 +1,20 @@
+{
+ "key": "line.korneev_ivan.corn_angler_news.1",
+ "lang": "ru",
+ "text": "Початка уже нет, одна кочерыжка. А ты, Петя говорит, рыбу у него на пирсе вытащил?",
+ "speaker": "korneev_ivan",
+ "voice": "Bill",
+ "voice_id": "pqHfZKP75CvOlQylNhV4",
+ "voice_design": null,
+ "direction": "[an old man, slow, a little gravelly, contented, a quiet joke at the end]",
+ "model": "fal-ai/elevenlabs/tts/eleven-v3",
+ "request": {
+  "stability": 0.5,
+  "apply_text_normalization": "auto",
+  "text": "[an old man, slow, a little gravelly, contented, a quiet joke at the end] Початка уже нет, одна кочерыжка. А ты, Петя говорит, рыбу у него на пирсе вытащил?",
+  "voice": "Bill",
+  "language_code": "ru"
+ },
+ "fal_request_id": "01a1d7aa-077b-7721-b83b-f3f497582363",
+ "hash": "57bfac77fcc2"
+}

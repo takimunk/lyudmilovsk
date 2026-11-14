@@ -1,0 +1,20 @@
+{
+ "key": "line.girl_b.overdue_ask.1",
+ "lang": "ja",
+ "text": "ねえ、変なお願いをしてもいい？図書館に未返却が一件あるの。私のじゃなくて、利用者の。",
+ "speaker": "girl_b",
+ "voice": "Sarah",
+ "voice_id": "EXAVITQu4vr4xnSDxMaL",
+ "voice_design": null,
+ "direction": "[curious, slightly uneasy, conspiratorial]",
+ "model": "fal-ai/elevenlabs/tts/eleven-v3",
+ "request": {
+  "stability": 0.5,
+  "apply_text_normalization": "auto",
+  "text": "[curious, slightly uneasy, conspiratorial] ねえ、変なお願いをしてもいい？図書館に未返却が一件あるの。私のじゃなくて、利用者の。",
+  "voice": "Sarah",
+  "language_code": "ja"
+ },
+ "fal_request_id": "01a1d66b-ad12-7633-a84a-e164d572456e",
+ "hash": "bd23fb41f0c6"
+}

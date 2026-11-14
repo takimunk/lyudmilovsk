@@ -1,0 +1,20 @@
+{
+ "key": "line.khuazhev_aslan.tent_report.1",
+ "lang": "en",
+ "text": "I see it in your eyes: here is a man well fed. Tell me, what do my neighbours serve?",
+ "speaker": "khuazhev_aslan",
+ "voice": "Brian",
+ "voice_id": "nPczCjzI2devNBz1zQrb",
+ "voice_design": null,
+ "direction": "[hearty, generous, a cheese seller from the Caucasus, proud of his family's cheese]",
+ "model": "fal-ai/elevenlabs/tts/eleven-v3",
+ "request": {
+  "stability": 0.5,
+  "apply_text_normalization": "auto",
+  "text": "[hearty, generous, a cheese seller from the Caucasus, proud of his family's cheese] I see it in your eyes: here is a man well fed. Tell me, what do my neighbours serve?",
+  "voice": "Brian",
+  "language_code": "en"
+ },
+ "fal_request_id": "01a1d66f-541b-7aa1-83c4-257f0f4164de",
+ "hash": "301766282d0a"
+}

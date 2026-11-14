@@ -1,0 +1,20 @@
+{
+ "key": "line.girl_a.to_the_sea_first.1",
+ "lang": "ja",
+ "text": "海へ行くの？ソーニャとわたしも行くつもり。プログラムが動いたらすぐに。",
+ "speaker": "girl_a",
+ "voice": "Matilda",
+ "voice_id": "XrExE9yKIg1WjnnlVkGX",
+ "voice_design": null,
+ "direction": "[whispering, concentrated]",
+ "model": "fal-ai/elevenlabs/tts/eleven-v3",
+ "request": {
+  "stability": 0.5,
+  "apply_text_normalization": "auto",
+  "text": "[whispering, concentrated] 海へ行くの？ソーニャとわたしも行くつもり。プログラムが動いたらすぐに。",
+  "voice": "Matilda",
+  "language_code": "ja"
+ },
+ "fal_request_id": "01a1d7b5-f787-74f3-b706-1c16ac936dd9",
+ "hash": "3a28c6b6f0ca"
+}

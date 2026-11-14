@@ -1,0 +1,20 @@
+{
+ "key": "line.khuazhev_aslan.sonya_kuzya.1",
+ "lang": "ru",
+ "text": "Воробей! Ты Сонин, я знаю. Она тебя Кузей зовёт, всем рассказала.",
+ "speaker": "khuazhev_aslan",
+ "voice": "Brian",
+ "voice_id": "nPczCjzI2devNBz1zQrb",
+ "voice_design": null,
+ "direction": "[hearty, generous, a cheese seller from the Caucasus, proud of his family's cheese]",
+ "model": "fal-ai/elevenlabs/tts/eleven-v3",
+ "request": {
+  "stability": 0.5,
+  "apply_text_normalization": "auto",
+  "text": "[hearty, generous, a cheese seller from the Caucasus, proud of his family's cheese] Воробей! Ты Сонин, я знаю. Она тебя Кузей зовёт, всем рассказала.",
+  "voice": "Brian",
+  "language_code": "ru"
+ },
+ "fal_request_id": "01a1d6e4-0f33-71c2-bdb5-7528d8e619d9",
+ "hash": "9741420290cd"
+}

@@ -427,10 +427,22 @@ void AProceduralGrass::Scatter()
 				continue;
 			}
 			// a patchy sward: clumps and thin places on a scale of tens of metres
-			const float Clump = 0.5f + 0.25f * FMath::Sin(X * 0.0041f + Seed * 1.7f) + 0.25f * FMath::Sin(Y * 0.0033f + X * 0.0017f + Seed * 0.7f);
-			if (Hash01(U, (uint32)Cx, (uint32)Cy, 3) > 0.55f + 0.45f * Clump)
+			float Lush = 1.f;
+			if (DensityAt)
 			{
-				continue;
+				Lush = FMath::Clamp(DensityAt(FVector2D(X, Y)), 0.f, 1.f);
+				if (Hash01(U, (uint32)Cx, (uint32)Cy, 3) >= Lush)
+				{
+					continue;
+				}
+			}
+			else
+			{
+				const float Clump = 0.5f + 0.25f * FMath::Sin(X * 0.0041f + Seed * 1.7f) + 0.25f * FMath::Sin(Y * 0.0033f + X * 0.0017f + Seed * 0.7f);
+				if (Hash01(U, (uint32)Cx, (uint32)Cy, 3) > 0.55f + 0.45f * Clump)
+				{
+					continue;
+				}
 			}
 			float Z = (float)Xf.GetLocation().Z;
 			if (bSnapToGround)
@@ -480,8 +492,9 @@ void AProceduralGrass::Scatter()
 				}
 			}
 			const float Yaw = Hash01(U, (uint32)Cx, (uint32)Cy, 4) * 360.f;
-			const float Wide = 0.8f + 0.45f * Hash01(U, (uint32)Cx, (uint32)Cy, 5);
-			const float Tall = 1.f + HeightVariation * (Hash01(U, (uint32)Cx, (uint32)Cy, 6) * 2.f - 1.f);
+			const float Size = DensityAt ? 0.7f + 0.6f * Lush : 1.f;
+			const float Wide = (0.8f + 0.45f * Hash01(U, (uint32)Cx, (uint32)Cy, 5)) * Size;
+			const float Tall = (1.f + HeightVariation * (Hash01(U, (uint32)Cx, (uint32)Cy, 6) * 2.f - 1.f)) * Size;
 			if (Herb)
 			{
 				const float Girth = 0.85f + 0.3f * Hash01(U, (uint32)Cx, (uint32)Cy, 5);

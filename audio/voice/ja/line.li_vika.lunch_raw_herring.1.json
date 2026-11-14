@@ -1,0 +1,20 @@
+{
+ "key": "line.li_vika.lunch_raw_herring.1",
+ "lang": "ja",
+ "text": "魚の匂いがする。それはウハーじゃなくて、原料。ウハーは山麓駅の向かいのダイナーで作ってるの。",
+ "speaker": "li_vika",
+ "voice": "Laura",
+ "voice_id": "FGY2WhTYpPnrIDTdsKH5",
+ "voice_design": null,
+ "direction": "[playful, quick, a lab assistant joking about her work]",
+ "model": "fal-ai/elevenlabs/tts/eleven-v3",
+ "request": {
+  "stability": 0.5,
+  "apply_text_normalization": "auto",
+  "text": "[playful, quick, a lab assistant joking about her work] 魚の匂いがする。それはウハーじゃなくて、原料。ウハーは山麓駅の向かいのダイナーで作ってるの。",
+  "voice": "Laura",
+  "language_code": "ja"
+ },
+ "fal_request_id": "01a1d7ab-3fe8-7c61-8674-6e7b25ab7540",
+ "hash": "ad90ad69019c"
+}

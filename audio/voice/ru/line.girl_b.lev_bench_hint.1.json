@@ -1,0 +1,20 @@
+{
+ "key": "line.girl_b.lev_bench_hint.1",
+ "lang": "ru",
+ "text": "Лев по вечерам сидит на скамейке во дворе, с половины шестого до семи. В выходные тоже.",
+ "speaker": "girl_b",
+ "voice": "Sarah",
+ "voice_id": "EXAVITQu4vr4xnSDxMaL",
+ "voice_design": null,
+ "direction": "[curious, slightly uneasy, conspiratorial]",
+ "model": "fal-ai/elevenlabs/tts/eleven-v3",
+ "request": {
+  "stability": 0.5,
+  "apply_text_normalization": "auto",
+  "text": "[curious, slightly uneasy, conspiratorial] Лев по вечерам сидит на скамейке во дворе, с половины шестого до семи. В выходные тоже.",
+  "voice": "Sarah",
+  "language_code": "ru"
+ },
+ "fal_request_id": "01a1d6e2-c5a0-77f2-891e-a7c4d510c4d4",
+ "hash": "8f5b43b66fec"
+}

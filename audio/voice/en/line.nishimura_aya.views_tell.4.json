@@ -1,0 +1,20 @@
+{
+ "key": "line.nishimura_aya.views_tell.4",
+ "lang": "en",
+ "text": "Three paintings, and not one of them mine. It stings. And it is very good.",
+ "speaker": "nishimura_aya",
+ "voice": "Matilda",
+ "voice_id": "XrExE9yKIg1WjnnlVkGX",
+ "voice_design": null,
+ "direction": "[calm, soft, contemplative, a painter talking about the light]",
+ "model": "fal-ai/elevenlabs/tts/eleven-v3",
+ "request": {
+  "stability": 0.5,
+  "apply_text_normalization": "auto",
+  "text": "[calm, soft, contemplative, a painter talking about the light] Three paintings, and not one of them mine. It stings. And it is very good.",
+  "voice": "Matilda",
+  "language_code": "en"
+ },
+ "fal_request_id": "01a1d666-33e9-7153-89a1-f771534f4f67",
+ "hash": "80ee98b1894b"
+}

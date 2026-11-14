@@ -1,0 +1,20 @@
+{
+ "key": "line.lange_pyotr.braid_three_days.2",
+ "lang": "ja",
+ "text": "これで誰に頼めばいいかわかった。だが、たまにだ。癖になる。",
+ "speaker": "lange_pyotr",
+ "voice": "Brian",
+ "voice_id": "nPczCjzI2devNBz1zQrb",
+ "voice_design": null,
+ "direction": "[gruff, unhurried, a weathered fisherman of few words]",
+ "model": "fal-ai/elevenlabs/tts/eleven-v3",
+ "request": {
+  "stability": 0.5,
+  "apply_text_normalization": "auto",
+  "text": "[gruff, unhurried, a weathered fisherman of few words] これで誰に頼めばいいかわかった。だが、たまにだ。癖になる。",
+  "voice": "Brian",
+  "language_code": "ja"
+ },
+ "fal_request_id": "01a1d6e7-6874-77f3-91cd-703637fa1677",
+ "hash": "5a9376a41693"
+}

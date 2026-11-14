@@ -842,8 +842,8 @@ namespace LyudBirds
 		for (int I = 0; I < (int)W.Sites.size(); I++)
 		{
 			const FSite& S = W.Sites[I];
-			if (S.Kind != EHabitat::Roof && S.Kind != EHabitat::Tower && S.Kind != EHabitat::Broadleaf && S.Kind != EHabitat::Conifer
-				&& S.Kind != EHabitat::Wire && S.Kind != EHabitat::Garden)
+			if ((S.Kind != EHabitat::Roof && S.Kind != EHabitat::Tower && S.Kind != EHabitat::Broadleaf && S.Kind != EHabitat::Conifer
+				&& S.Kind != EHabitat::Wire && S.Kind != EHabitat::Garden) || (S.Flags & SiteFeeder))
 			{
 				continue;
 			}

@@ -1,0 +1,20 @@
+{
+ "key": "line.khuazhev_aslan.sonya_kuzya.1",
+ "lang": "en",
+ "text": "A sparrow! You're Sonya's, I know. She calls you Kuzya, she's told everyone.",
+ "speaker": "khuazhev_aslan",
+ "voice": "Brian",
+ "voice_id": "nPczCjzI2devNBz1zQrb",
+ "voice_design": null,
+ "direction": "[hearty, generous, a cheese seller from the Caucasus, proud of his family's cheese]",
+ "model": "fal-ai/elevenlabs/tts/eleven-v3",
+ "request": {
+  "stability": 0.5,
+  "apply_text_normalization": "auto",
+  "text": "[hearty, generous, a cheese seller from the Caucasus, proud of his family's cheese] A sparrow! You're Sonya's, I know. She calls you Kuzya, she's told everyone.",
+  "voice": "Brian",
+  "language_code": "en"
+ },
+ "fal_request_id": "01a1d6e3-e4e5-7713-8f0e-6c01057cde4d",
+ "hash": "562069608ce5"
+}

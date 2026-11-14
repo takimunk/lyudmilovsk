@@ -1,0 +1,20 @@
+{
+ "key": "line.lange_pyotr.crows_herring_crate.1",
+ "lang": "en",
+ "text": "Feeding the crows? They pinch herring out of my crate. Tell them I see everything.",
+ "speaker": "lange_pyotr",
+ "voice": "Brian",
+ "voice_id": "nPczCjzI2devNBz1zQrb",
+ "voice_design": null,
+ "direction": "[gruff, unhurried, a weathered fisherman of few words]",
+ "model": "fal-ai/elevenlabs/tts/eleven-v3",
+ "request": {
+  "stability": 0.5,
+  "apply_text_normalization": "auto",
+  "text": "[gruff, unhurried, a weathered fisherman of few words] Feeding the crows? They pinch herring out of my crate. Tell them I see everything.",
+  "voice": "Brian",
+  "language_code": "en"
+ },
+ "fal_request_id": "01a1d6dc-0a62-7600-a12f-81107999d096",
+ "hash": "350bbb4b2bf1"
+}

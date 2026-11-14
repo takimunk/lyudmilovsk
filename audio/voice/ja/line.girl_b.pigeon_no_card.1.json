@@ -1,0 +1,20 @@
+{
+ "key": "line.girl_b.pigeon_no_card.1",
+ "lang": "ja",
+ "text": "ドバトさん、利用者カードがないと図書館には入れないの。でも、あなたならきっと期限どおりに返すね。",
+ "speaker": "girl_b",
+ "voice": "Sarah",
+ "voice_id": "EXAVITQu4vr4xnSDxMaL",
+ "voice_design": null,
+ "direction": "[curious, slightly uneasy, conspiratorial]",
+ "model": "fal-ai/elevenlabs/tts/eleven-v3",
+ "request": {
+  "stability": 0.5,
+  "apply_text_normalization": "auto",
+  "text": "[curious, slightly uneasy, conspiratorial] ドバトさん、利用者カードがないと図書館には入れないの。でも、あなたならきっと期限どおりに返すね。",
+  "voice": "Sarah",
+  "language_code": "ja"
+ },
+ "fal_request_id": "01a1d7b6-584f-71a2-87de-117bacc3490f",
+ "hash": "f4a1866b3ff2"
+}

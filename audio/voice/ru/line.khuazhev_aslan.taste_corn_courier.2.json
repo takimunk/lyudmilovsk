@@ -1,0 +1,20 @@
+{
+ "key": "line.khuazhev_aslan.taste_corn_courier.2",
+ "lang": "ru",
+ "text": "Значит, дорогу знаешь. Початок на площади, пирожок на станции, блины внизу у канатки, и всё до конца.",
+ "speaker": "khuazhev_aslan",
+ "voice": "Brian",
+ "voice_id": "nPczCjzI2devNBz1zQrb",
+ "voice_design": null,
+ "direction": "[hearty, generous, a cheese seller from the Caucasus, proud of his family's cheese]",
+ "model": "fal-ai/elevenlabs/tts/eleven-v3",
+ "request": {
+  "stability": 0.5,
+  "apply_text_normalization": "auto",
+  "text": "[hearty, generous, a cheese seller from the Caucasus, proud of his family's cheese] Значит, дорогу знаешь. Початок на площади, пирожок на станции, блины внизу у канатки, и всё до конца.",
+  "voice": "Brian",
+  "language_code": "ru"
+ },
+ "fal_request_id": "01a1d6d4-a9af-7193-980f-9d6e49c7495f",
+ "hash": "248cc8208e48"
+}

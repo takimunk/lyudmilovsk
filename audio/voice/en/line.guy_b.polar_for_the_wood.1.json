@@ -1,0 +1,20 @@
+{
+ "key": "line.guy_b.polar_for_the_wood.1",
+ "lang": "en",
+ "text": "Going north after a bird? The cable car runs to Polar Star, the end of the line. The old wood is a stone's throw from there.",
+ "speaker": "guy_b",
+ "voice": "Chris",
+ "voice_id": "iP95p4xoKVk53GoZ742B",
+ "voice_design": null,
+ "direction": "[relaxed, lazy, friendly]",
+ "model": "fal-ai/elevenlabs/tts/eleven-v3",
+ "request": {
+  "stability": 0.5,
+  "apply_text_normalization": "auto",
+  "text": "[relaxed, lazy, friendly] Going north after a bird? The cable car runs to Polar Star, the end of the line. The old wood is a stone's throw from there.",
+  "voice": "Chris",
+  "language_code": "en"
+ },
+ "fal_request_id": "01a1d739-8734-75c1-b129-e73904196cf8",
+ "hash": "48ce1a01d842"
+}

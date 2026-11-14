@@ -1345,10 +1345,12 @@ namespace
 	}
 }
 
-PlantMeshes::FTreePrep PlantMeshes::PrepareTreeBake(const FPlantSpecies& S, uint32 Seed, float Age, float Day)
+PlantMeshes::FTreePrep PlantMeshes::PrepareTreeBake(const FPlantSpecies& S, uint32 Seed, float Age, float Day, int32 FirstLod)
 {
 	const double T0 = FPlatformTime::Seconds();
 	FTreePrep Result;
+	const int32 First = FMath::Clamp(FirstLod, 0, 3);
+	Result.FirstLod = First;
 	FPlantSkeleton Skeleton;
 	Skeleton.Build(S, Seed);
 	FPlantSkeleton::FInstances Out;
@@ -1372,8 +1374,8 @@ PlantMeshes::FTreePrep PlantMeshes::PrepareTreeBake(const FPlantSpecies& S, uint
 	const bool bNeedle = S.Leaf.Form == EPlantLeafForm::Needle;
 	const FLod Lods[4] = { { 3, bNeedle ? 1 : 2, bNeedle ? 1.f : 1.25f }, { 1, bNeedle ? 3 : 6, bNeedle ? 1.7f : 2.2f }, { 1, 6, 2.f }, { 1, 20, 3.6f } };
 	TArray<FMeshDescription>& Descriptions = Result.Lods;
-	Descriptions.SetNum(4);
-	for (int32 L = 0; L < 4; L++)
+	Descriptions.SetNum(4 - First);
+	for (int32 L = First; L < 4; L++)
 	{
 		TArray<FPlantSkeleton::FTube> Tubes;
 		for (const FPlantSkeleton::FTube& T : Out.Tubes)
@@ -1427,7 +1429,7 @@ PlantMeshes::FTreePrep PlantMeshes::PrepareTreeBake(const FPlantSpecies& S, uint
 			Wood.Tris.Add(FIntVector3(0, 1, 2));
 		}
 		Result.Triangles[L] = Wood.Tris.Num() + Leaf.Tris.Num() + Card.Tris.Num() + Bloom.Tris.Num();
-		FillTreeLod(Descriptions[L], Wood, Leaf, Card, Bloom);
+		FillTreeLod(Descriptions[L - First], Wood, Leaf, Card, Bloom);
 	}
 	Result.Radius = FMath::Sqrt(FMath::Square(0.5f * Out.Height) + FMath::Square(Out.Reach));
 	Result.Ms = (FPlatformTime::Seconds() - T0) * 1000.0;
@@ -1449,7 +1451,11 @@ PlantMeshes::FTreeBake PlantMeshes::FinishTreeBake(UObject* Outer, const FPlantS
 	Params.bBuildSimpleCollision = false;
 	Params.bCommitMeshDescription = false;
 	Params.bFastBuild = true;
-	Mesh->BuildFromMeshDescriptions({ &Prep.Lods[0], &Prep.Lods[1], &Prep.Lods[2], &Prep.Lods[3] }, Params);
+	// all four LODs, or the far ones only (Prep.FirstLod): the mesh's LOD L is LOD L + First of the four
+	const int32 First = FMath::Clamp(Prep.FirstLod, 0, 3);
+	TArray<const FMeshDescription*> Descriptions;
+	for (const FMeshDescription& Description : Prep.Lods) Descriptions.Add(&Description);
+	Mesh->BuildFromMeshDescriptions(Descriptions, Params);
 	Result.Mesh = Mesh;
 	Result.Radius = Prep.Radius;
 	// the two farthest LODs cast no shadow (the shadow of a tree 60 m away is a few pixels of a shadow map page); flowers never do
@@ -1462,7 +1468,7 @@ PlantMeshes::FTreeBake PlantMeshes::FinishTreeBake(UObject* Outer, const FPlantS
 				if (Section.MaterialIndex == 3) Section.bCastShadow = false;
 			}
 		}
-		for (int32 L = 2; L < Data->LODResources.Num(); L++)
+		for (int32 L = FMath::Max(2 - First, 0); L < Data->LODResources.Num(); L++)
 		{
 			for (FStaticMeshSection& Section : Data->LODResources[L].Sections) Section.bCastShadow = false;
 		}
@@ -1471,10 +1477,12 @@ PlantMeshes::FTreeBake PlantMeshes::FinishTreeBake(UObject* Outer, const FPlantS
 	if (FStaticMeshRenderData* RD = Mesh->GetRenderData())
 	{
 		const float R = FMath::Max(Result.Radius, 0.3f);
+		const float Sizes[4] = { 1.f, FMath::Min(R / LodDistances.X, 0.9f), FMath::Min(R / LodDistances.Y, 0.5f), FMath::Min(R / LodDistances.Z, 0.25f) };
 		RD->ScreenSize[0] = 1.f;
-		RD->ScreenSize[1] = FMath::Min(R / LodDistances.X, 0.9f);
-		RD->ScreenSize[2] = FMath::Min(R / LodDistances.Y, 0.5f);
-		RD->ScreenSize[3] = FMath::Min(R / LodDistances.Z, 0.25f);
+		for (int32 L = 1; L + First < 4; L++)
+		{
+			RD->ScreenSize[L] = Sizes[L + First];
+		}
 	}
 	return Result;
 }

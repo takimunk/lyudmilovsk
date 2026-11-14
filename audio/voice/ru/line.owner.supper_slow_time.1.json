@@ -1,0 +1,20 @@
+{
+ "key": "line.owner.supper_slow_time.1",
+ "lang": "ru",
+ "text": "Без ужина время идёт медленнее. Не спеши, но и не забудь: сыр и «Байкал».",
+ "speaker": "owner",
+ "voice": "Daniel",
+ "voice_id": "onwK4e9ZLuTAKqWW03F9",
+ "voice_design": null,
+ "direction": "[calm, tired, slow, a little ironic]",
+ "model": "fal-ai/elevenlabs/tts/eleven-v3",
+ "request": {
+  "stability": 0.5,
+  "apply_text_normalization": "auto",
+  "text": "[calm, tired, slow, a little ironic] Без ужина время идёт медленнее. Не спеши, но и не забудь: сыр и «Байкал».",
+  "voice": "Daniel",
+  "language_code": "ru"
+ },
+ "fal_request_id": "01a1d6e9-01ac-71d3-8ebf-dc747956bec0",
+ "hash": "cddce8eaa307"
+}

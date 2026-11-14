@@ -180,8 +180,8 @@
    "id": "cloak",
    "kind": "counter",
    "pos": [
-    -3.471,
-    20.628,
+    -3.519,
+    20.643,
     0.0
    ],
    "yaw": 252.0
@@ -190,8 +190,8 @@
    "id": "cloak_staff",
    "kind": "work",
    "pos": [
-    -5.231,
-    21.2,
+    -5.088,
+    21.153,
     0.0
    ],
    "yaw": 72.0
@@ -430,8 +430,8 @@
    "id": "librarian",
    "kind": "work",
    "pos": [
-    -15.74,
-    14.386,
+    -15.597,
+    14.432,
     0.0
    ],
    "yaw": 108.0
@@ -447,11 +447,41 @@
    "yaw": 288.0
   },
   {
+   "id": "lend_stand",
+   "kind": "stand",
+   "pos": [
+    -14.04,
+    15.464,
+    0.0
+   ],
+   "yaw": 288.0
+  },
+  {
+   "id": "cart_stand",
+   "kind": "stand",
+   "pos": [
+    -14.002,
+    16.317,
+    0.0
+   ],
+   "yaw": 197.99999999999997
+  },
+  {
+   "id": "swap_stand",
+   "kind": "stand",
+   "pos": [
+    -15.49,
+    16.044,
+    0.0
+   ],
+   "yaw": 288.0
+  },
+  {
    "id": "buffet_t0",
    "kind": "table",
    "pos": [
-    8.127,
-    15.387,
+    7.937,
+    15.449,
     0.0
    ],
    "yaw": 0.0
@@ -460,8 +490,8 @@
    "id": "buffet_s0_0",
    "kind": "seat",
    "pos": [
-    8.127,
-    16.337,
+    7.937,
+    16.399,
     0.0
    ],
    "yaw": 0.0
@@ -470,8 +500,8 @@
    "id": "buffet_s0_1",
    "kind": "seat",
    "pos": [
-    7.304,
-    14.912,
+    7.114,
+    14.974,
     0.0
    ],
    "yaw": 119.99999999999999
@@ -480,8 +510,8 @@
    "id": "buffet_s0_2",
    "kind": "seat",
    "pos": [
-    8.95,
-    14.912,
+    8.759,
+    14.974,
     0.0
    ],
    "yaw": 240.0
@@ -490,8 +520,8 @@
    "id": "buffet_t1",
    "kind": "table",
    "pos": [
-    8.992,
-    18.05,
+    8.802,
+    18.112,
     0.0
    ],
    "yaw": 0.0
@@ -500,8 +530,8 @@
    "id": "buffet_s1_0",
    "kind": "seat",
    "pos": [
-    8.992,
-    19.0,
+    8.802,
+    19.062,
     0.0
    ],
    "yaw": 0.0
@@ -510,18 +540,18 @@
    "id": "buffet_s1_1",
    "kind": "seat",
    "pos": [
-    8.169,
-    17.575,
+    7.979,
+    17.637,
     0.0
    ],
-   "yaw": 120.00000000000011
+   "yaw": 120.00000000000007
   },
   {
    "id": "buffet_s1_2",
    "kind": "seat",
    "pos": [
-    9.815,
-    17.575,
+    9.625,
+    17.637,
     0.0
    ],
    "yaw": 239.9999999999999
@@ -530,8 +560,8 @@
    "id": "buffet_t2",
    "kind": "table",
    "pos": [
-    10.98,
-    14.46,
+    10.409,
+    14.646,
     0.0
    ],
    "yaw": 0.0
@@ -540,8 +570,8 @@
    "id": "buffet_s2_0",
    "kind": "seat",
    "pos": [
-    10.98,
-    15.41,
+    10.409,
+    15.596,
     0.0
    ],
    "yaw": 0.0
@@ -550,18 +580,18 @@
    "id": "buffet_s2_1",
    "kind": "seat",
    "pos": [
-    10.157,
-    13.985,
+    9.587,
+    14.171,
     0.0
    ],
-   "yaw": 120.00000000000001
+   "yaw": 119.99999999999997
   },
   {
    "id": "buffet_s2_2",
    "kind": "seat",
    "pos": [
-    11.803,
-    13.985,
+    11.232,
+    14.171,
     0.0
    ],
    "yaw": 240.0
@@ -570,8 +600,8 @@
    "id": "buffet_t3",
    "kind": "table",
    "pos": [
-    11.845,
-    17.123,
+    11.275,
+    17.309,
     0.0
    ],
    "yaw": 0.0
@@ -580,8 +610,8 @@
    "id": "buffet_s3_0",
    "kind": "seat",
    "pos": [
-    11.845,
-    18.073,
+    11.275,
+    18.259,
     0.0
    ],
    "yaw": 0.0
@@ -590,18 +620,18 @@
    "id": "buffet_s3_1",
    "kind": "seat",
    "pos": [
-    11.023,
-    16.648,
+    10.452,
+    16.834,
     0.0
    ],
-   "yaw": 120.00000000000011
+   "yaw": 120.00000000000004
   },
   {
    "id": "buffet_s3_2",
    "kind": "seat",
    "pos": [
-    12.668,
-    16.648,
+    12.097,
+    16.834,
     0.0
    ],
    "yaw": 239.9999999999999
@@ -610,8 +640,8 @@
    "id": "buffet_counter",
    "kind": "counter",
    "pos": [
-    13.885,
-    14.988,
+    12.839,
+    15.328,
     0.0
    ],
    "yaw": 71.99999999999999
@@ -620,11 +650,231 @@
    "id": "buffet_staff",
    "kind": "work",
    "pos": [
-    15.407,
-    14.494,
+    14.361,
+    14.834,
     0.0
    ],
    "yaw": 252.0
+  },
+  {
+   "id": "games_stand_1",
+   "kind": "stand",
+   "pos": [
+    6.309,
+    25.546,
+    0.0
+   ],
+   "yaw": 234.0
+  },
+  {
+   "id": "games_stand_2",
+   "kind": "stand",
+   "pos": [
+    3.801,
+    27.369,
+    0.0
+   ],
+   "yaw": 54.0
+  },
+  {
+   "id": "games_stand_3",
+   "kind": "stand",
+   "pos": [
+    8.381,
+    28.738,
+    0.0
+   ],
+   "yaw": 234.0
+  },
+  {
+   "id": "games_stand_4",
+   "kind": "stand",
+   "pos": [
+    6.196,
+    30.325,
+    0.0
+   ],
+   "yaw": 54.0
+  },
+  {
+   "id": "bench_seat_1_0",
+   "kind": "seat",
+   "pos": [
+    5.89,
+    26.16,
+    4.4
+   ],
+   "yaw": 234.0
+  },
+  {
+   "id": "bench_seat_1_2",
+   "kind": "seat",
+   "pos": [
+    4.514,
+    27.159,
+    4.4
+   ],
+   "yaw": 54.0
+  },
+  {
+   "id": "bench_seat_2_0",
+   "kind": "seat",
+   "pos": [
+    7.77,
+    28.749,
+    4.4
+   ],
+   "yaw": 234.0
+  },
+  {
+   "id": "bench_seat_2_2",
+   "kind": "seat",
+   "pos": [
+    6.395,
+    29.748,
+    4.4
+   ],
+   "yaw": 54.0
+  },
+  {
+   "id": "bench_stand",
+   "kind": "stand",
+   "pos": [
+    7.156,
+    30.37,
+    4.4
+   ],
+   "yaw": 144.0
+  },
+  {
+   "id": "photo_seat_1",
+   "kind": "seat",
+   "pos": [
+    5.441,
+    26.053,
+    8.8
+   ],
+   "yaw": 54.0
+  },
+  {
+   "id": "photo_seat_2",
+   "kind": "seat",
+   "pos": [
+    6.029,
+    26.862,
+    8.8
+   ],
+   "yaw": 54.0
+  },
+  {
+   "id": "photo_stand",
+   "kind": "stand",
+   "pos": [
+    6.707,
+    30.943,
+    8.8
+   ],
+   "yaw": 144.0
+  },
+  {
+   "id": "hall_seat_1",
+   "kind": "seat",
+   "pos": [
+    -3.257,
+    26.28,
+    0.0
+   ],
+   "yaw": 216.0
+  },
+  {
+   "id": "hall_seat_2",
+   "kind": "seat",
+   "pos": [
+    -4.433,
+    27.898,
+    0.0
+   ],
+   "yaw": 216.0
+  },
+  {
+   "id": "hall_seat_3",
+   "kind": "seat",
+   "pos": [
+    -5.442,
+    24.693,
+    0.0
+   ],
+   "yaw": 216.0
+  },
+  {
+   "id": "hall_seat_4",
+   "kind": "seat",
+   "pos": [
+    -6.617,
+    26.311,
+    0.0
+   ],
+   "yaw": 216.0
+  },
+  {
+   "id": "stage_wing",
+   "kind": "stand",
+   "pos": [
+    -5.179,
+    28.84,
+    0.0
+   ],
+   "yaw": 216.0
+  },
+  {
+   "id": "lounge_sofa_1",
+   "kind": "seat",
+   "pos": [
+    -6.797,
+    26.304,
+    4.4
+   ],
+   "yaw": 126.0
+  },
+  {
+   "id": "lounge_sofa_2",
+   "kind": "seat",
+   "pos": [
+    -6.327,
+    25.657,
+    4.4
+   ],
+   "yaw": 126.0
+  },
+  {
+   "id": "football_stand_1",
+   "kind": "stand",
+   "pos": [
+    -6.788,
+    30.884,
+    4.4
+   ],
+   "yaw": 306.0
+  },
+  {
+   "id": "football_stand_2",
+   "kind": "stand",
+   "pos": [
+    -8.73,
+    29.474,
+    4.4
+   ],
+   "yaw": 126.0
+  },
+  {
+   "id": "arcade_stand",
+   "kind": "stand",
+   "pos": [
+    -9.634,
+    29.187,
+    4.4
+   ],
+   "yaw": 81.0
   }
  ],
  "lamps": [
@@ -762,17 +1012,6 @@
   },
   {
    "pos": [
-    -14.953,
-    16.008,
-    3.3
-   ],
-   "lumens": 500,
-   "colour": "#FFE2B5",
-   "kind": "public",
-   "radius": 5.0
-  },
-  {
-   "pos": [
     -7.989,
     16.904,
     3.6
@@ -828,6 +1067,17 @@
   },
   {
    "pos": [
+    -14.953,
+    16.008,
+    3.3
+   ],
+   "lumens": 500,
+   "colour": "#FFE2B5",
+   "kind": "public",
+   "radius": 5.0
+  },
+  {
+   "pos": [
     9.035,
     16.564,
     3.3
@@ -847,6 +1097,1278 @@
    "colour": "#FFD9A8",
    "kind": "public",
    "radius": 7.0
+  },
+  {
+   "pos": [
+    5.055,
+    26.458,
+    3.3
+   ],
+   "lumens": 650,
+   "colour": "#FFD9A8",
+   "kind": "public",
+   "radius": 6.0
+  },
+  {
+   "pos": [
+    7.289,
+    29.532,
+    3.3
+   ],
+   "lumens": 520,
+   "colour": "#FFD9A8",
+   "kind": "public",
+   "radius": 6.0
+  },
+  {
+   "pos": [
+    6.172,
+    27.995,
+    7.9
+   ],
+   "lumens": 700,
+   "colour": "#FFD9A8",
+   "kind": "public",
+   "radius": 7.0
+  },
+  {
+   "pos": [
+    5.159,
+    30.09,
+    11.0
+   ],
+   "lumens": 260,
+   "colour": "#FF3320",
+   "kind": "public",
+   "radius": 4.0
+  },
+  {
+   "pos": [
+    6.466,
+    28.399,
+    11.5
+   ],
+   "lumens": 500,
+   "colour": "#FFB090",
+   "kind": "public",
+   "radius": 6.0
+  },
+  {
+   "pos": [
+    -6.701,
+    28.723,
+    3.4
+   ],
+   "lumens": 700,
+   "colour": "#FFE2B5",
+   "kind": "public",
+   "radius": 6.5
+  },
+  {
+   "pos": [
+    -5.878,
+    27.59,
+    7.8
+   ],
+   "lumens": 700,
+   "colour": "#FFD9A8",
+   "kind": "public",
+   "radius": 7.0
+  },
+  {
+   "pos": [
+    -0.0,
+    8.5,
+    12.1
+   ],
+   "lumens": 700,
+   "colour": "#FFD9A8",
+   "kind": "public",
+   "radius": 7.0
+  }
+ ],
+ "things": [
+  {
+   "id": "foyer_seat_1",
+   "kind": "seat",
+   "pos": [
+    -3.115,
+    15.212,
+    0.45
+   ],
+   "yaw": 144.0,
+   "props": {
+    "height": 0.45
+   }
+  },
+  {
+   "id": "foyer_seat_2",
+   "kind": "seat",
+   "pos": [
+    3.115,
+    15.212,
+    0.45
+   ],
+   "yaw": 216.0,
+   "props": {
+    "height": 0.45
+   }
+  },
+  {
+   "id": "foyer_seat_3",
+   "kind": "seat",
+   "pos": [
+    5.041,
+    21.138,
+    0.45
+   ],
+   "yaw": 288.0,
+   "props": {
+    "height": 0.45
+   }
+  },
+  {
+   "id": "cloak",
+   "kind": "counter",
+   "pos": [
+    -4.375,
+    20.921,
+    1.05
+   ],
+   "yaw": 72.0,
+   "props": {
+    "role": "clerk",
+    "service": "cloakroom"
+   }
+  },
+  {
+   "id": "foyer_lost",
+   "kind": "board",
+   "pos": [
+    -4.895,
+    23.056,
+    1.6
+   ],
+   "yaw": 54.0,
+   "props": {
+    "topic": "lost"
+   }
+  },
+  {
+   "id": "kit_clock_1",
+   "kind": "board",
+   "pos": [
+    6.217,
+    19.943,
+    2.6
+   ],
+   "yaw": 288.0,
+   "props": {
+    "what": "clock"
+   }
+  },
+  {
+   "id": "ring1_seat_234",
+   "kind": "seat",
+   "pos": [
+    -3.115,
+    15.212,
+    4.85
+   ],
+   "yaw": 144.0,
+   "props": {
+    "height": 0.45
+   }
+  },
+  {
+   "id": "ring1_seat_306",
+   "kind": "seat",
+   "pos": [
+    3.115,
+    15.212,
+    4.85
+   ],
+   "yaw": 216.0,
+   "props": {
+    "height": 0.45
+   }
+  },
+  {
+   "id": "ring2_seat_234",
+   "kind": "seat",
+   "pos": [
+    -3.115,
+    15.212,
+    9.25
+   ],
+   "yaw": 144.0,
+   "props": {
+    "height": 0.45
+   }
+  },
+  {
+   "id": "ring2_seat_306",
+   "kind": "seat",
+   "pos": [
+    3.115,
+    15.212,
+    9.25
+   ],
+   "yaw": 216.0,
+   "props": {
+    "height": 0.45
+   }
+  },
+  {
+   "id": "read_table_1_a",
+   "kind": "seat",
+   "pos": [
+    -7.907,
+    16.006,
+    0.45
+   ],
+   "yaw": 198.0,
+   "props": {
+    "height": 0.45
+   }
+  },
+  {
+   "id": "read_table_1_b",
+   "kind": "seat",
+   "pos": [
+    -8.451,
+    17.679,
+    0.45
+   ],
+   "yaw": 18.0,
+   "props": {
+    "height": 0.45
+   }
+  },
+  {
+   "id": "read_table_2_a",
+   "kind": "seat",
+   "pos": [
+    -11.046,
+    14.986,
+    0.45
+   ],
+   "yaw": 198.0,
+   "props": {
+    "height": 0.45
+   }
+  },
+  {
+   "id": "read_table_2_b",
+   "kind": "seat",
+   "pos": [
+    -11.59,
+    16.66,
+    0.45
+   ],
+   "yaw": 18.0,
+   "props": {
+    "height": 0.45
+   }
+  },
+  {
+   "id": "chess_0",
+   "kind": "play",
+   "pos": [
+    -14.953,
+    16.008,
+    0.72
+   ],
+   "yaw": 108.0,
+   "props": {
+    "what": "chess"
+   }
+  },
+  {
+   "id": "chess_1",
+   "kind": "play",
+   "pos": [
+    -14.149,
+    13.536,
+    0.72
+   ],
+   "yaw": 108.0,
+   "props": {
+    "what": "chess"
+   }
+  },
+  {
+   "id": "clock_place",
+   "kind": "machine",
+   "pos": [
+    -14.463,
+    13.434,
+    0.76
+   ],
+   "yaw": 108.0,
+   "props": {
+    "what": "clock_place"
+   }
+  },
+  {
+   "id": "stack_r_1",
+   "kind": "shelf",
+   "pos": [
+    -8.366,
+    19.359,
+    1.3
+   ],
+   "yaw": 18.0,
+   "props": {
+    "topic": "poetry"
+   }
+  },
+  {
+   "id": "stack_r_2",
+   "kind": "shelf",
+   "pos": [
+    -9.983,
+    18.834,
+    1.3
+   ],
+   "yaw": 18.0,
+   "props": {
+    "topic": "art"
+   }
+  },
+  {
+   "id": "stack_r_3",
+   "kind": "shelf",
+   "pos": [
+    -11.599,
+    18.308,
+    1.3
+   ],
+   "yaw": 18.0,
+   "props": {
+    "topic": "chess"
+   }
+  },
+  {
+   "id": "stack_r_4",
+   "kind": "shelf",
+   "pos": [
+    -13.216,
+    17.783,
+    1.3
+   ],
+   "yaw": 18.0,
+   "props": {
+    "topic": "engineering"
+   }
+  },
+  {
+   "id": "stack_l_1",
+   "kind": "shelf",
+   "pos": [
+    -6.851,
+    14.697,
+    1.3
+   ],
+   "yaw": 198.0,
+   "props": {
+    "topic": "local"
+   }
+  },
+  {
+   "id": "stack_l_2",
+   "kind": "shelf",
+   "pos": [
+    -8.468,
+    14.172,
+    1.3
+   ],
+   "yaw": 198.0,
+   "props": {
+    "topic": "birds"
+   }
+  },
+  {
+   "id": "stack_l_3",
+   "kind": "shelf",
+   "pos": [
+    -10.085,
+    13.646,
+    1.3
+   ],
+   "yaw": 198.0,
+   "props": {
+    "topic": "sea"
+   }
+  },
+  {
+   "id": "stack_l_4",
+   "kind": "shelf",
+   "pos": [
+    -11.701,
+    13.121,
+    1.3
+   ],
+   "yaw": 198.0,
+   "props": {
+    "topic": "science"
+   }
+  },
+  {
+   "id": "library_desk",
+   "kind": "counter",
+   "pos": [
+    -14.932,
+    14.648,
+    1.0
+   ],
+   "yaw": 108.0,
+   "props": {
+    "role": "clerk",
+    "service": "lending"
+   }
+  },
+  {
+   "id": "lend_hatch",
+   "kind": "counter",
+   "pos": [
+    -14.848,
+    15.201,
+    1.0
+   ],
+   "yaw": 108.0,
+   "props": {
+    "role": "clerk",
+    "service": "lending",
+    "shop": "cog_lending"
+   }
+  },
+  {
+   "id": "book_cart",
+   "kind": "shelf",
+   "pos": [
+    -14.203,
+    16.936,
+    0.9
+   ],
+   "yaw": 18.0,
+   "props": {
+    "topic": "local"
+   }
+  },
+  {
+   "id": "swap_shelf",
+   "kind": "take",
+   "pos": [
+    -16.3,
+    15.623,
+    0.9
+   ],
+   "yaw": 108.0,
+   "props": {
+    "item": "magazine_science"
+   }
+  },
+  {
+   "id": "card_catalogue",
+   "kind": "shelf",
+   "pos": [
+    -6.484,
+    15.185,
+    1.1
+   ],
+   "yaw": 198.0,
+   "props": {
+    "topic": "local"
+   }
+  },
+  {
+   "id": "kit_clock_2",
+   "kind": "board",
+   "pos": [
+    -5.283,
+    15.049,
+    3.2
+   ],
+   "yaw": 198.0,
+   "props": {
+    "what": "clock"
+   }
+  },
+  {
+   "id": "light_switch_reading",
+   "kind": "machine",
+   "pos": [
+    -5.182,
+    15.061,
+    1.3
+   ],
+   "yaw": 198.0,
+   "props": {
+    "what": "switch",
+    "switch": "hall"
+   }
+  },
+  {
+   "id": "club_notices",
+   "kind": "board",
+   "pos": [
+    -15.574,
+    13.388,
+    1.7
+   ],
+   "yaw": 108.0,
+   "props": {
+    "topic": "club"
+   }
+  },
+  {
+   "id": "light_switch_buffet",
+   "kind": "machine",
+   "pos": [
+    5.182,
+    15.061,
+    1.3
+   ],
+   "yaw": 162.0,
+   "props": {
+    "what": "switch",
+    "switch": "room"
+   }
+  },
+  {
+   "id": "buffet_seat_1",
+   "kind": "seat",
+   "pos": [
+    7.937,
+    16.399,
+    0.45
+   ],
+   "yaw": 0.0,
+   "props": {
+    "height": 0.45
+   }
+  },
+  {
+   "id": "buffet_seat_2",
+   "kind": "seat",
+   "pos": [
+    8.802,
+    19.062,
+    0.45
+   ],
+   "yaw": 0.0,
+   "props": {
+    "height": 0.45
+   }
+  },
+  {
+   "id": "buffet_seat_3",
+   "kind": "seat",
+   "pos": [
+    10.409,
+    15.596,
+    0.45
+   ],
+   "yaw": 0.0,
+   "props": {
+    "height": 0.45
+   }
+  },
+  {
+   "id": "buffet_seat_4",
+   "kind": "seat",
+   "pos": [
+    11.275,
+    18.259,
+    0.45
+   ],
+   "yaw": 0.0,
+   "props": {
+    "height": 0.45
+   }
+  },
+  {
+   "id": "buffet_counter",
+   "kind": "counter",
+   "pos": [
+    13.6,
+    15.081,
+    1.05
+   ],
+   "yaw": 252.0,
+   "props": {
+    "role": "clerk",
+    "service": "bar",
+    "shop": "club_buffet"
+   }
+  },
+  {
+   "id": "light_switch_games",
+   "kind": "machine",
+   "pos": [
+    5.823,
+    23.056,
+    1.3
+   ],
+   "yaw": 234.0,
+   "props": {
+    "what": "switch",
+    "switch": "room"
+   }
+  },
+  {
+   "id": "billiards_1",
+   "kind": "play",
+   "pos": [
+    5.055,
+    26.458,
+    0.82
+   ],
+   "yaw": 54,
+   "props": {
+    "what": "billiards"
+   }
+  },
+  {
+   "id": "table_tennis_1",
+   "kind": "play",
+   "pos": [
+    7.289,
+    29.532,
+    0.76
+   ],
+   "yaw": 54,
+   "props": {
+    "what": "table_tennis"
+   }
+  },
+  {
+   "id": "games_seat_1",
+   "kind": "seat",
+   "pos": [
+    2.29,
+    26.736,
+    0.45
+   ],
+   "yaw": 54.0,
+   "props": {
+    "height": 0.45
+   }
+  },
+  {
+   "id": "games_seat_2",
+   "kind": "seat",
+   "pos": [
+    4.229,
+    29.406,
+    0.45
+   ],
+   "yaw": 54.0,
+   "props": {
+    "height": 0.45
+   }
+  },
+  {
+   "id": "games_seat_3",
+   "kind": "seat",
+   "pos": [
+    8.114,
+    26.583,
+    0.45
+   ],
+   "yaw": 234.0,
+   "props": {
+    "height": 0.45
+   }
+  },
+  {
+   "id": "games_seat_4",
+   "kind": "seat",
+   "pos": [
+    10.171,
+    29.415,
+    0.45
+   ],
+   "yaw": 234.0,
+   "props": {
+    "height": 0.45
+   }
+  },
+  {
+   "id": "kit_clock_3",
+   "kind": "board",
+   "pos": [
+    5.866,
+    23.149,
+    3.0
+   ],
+   "yaw": 234.0,
+   "props": {
+    "what": "clock"
+   }
+  },
+  {
+   "id": "games_board",
+   "kind": "board",
+   "pos": [
+    7.552,
+    25.385,
+    1.7
+   ],
+   "yaw": 234.0,
+   "props": {
+    "topic": "club"
+   }
+  },
+  {
+   "id": "league_board",
+   "kind": "board",
+   "pos": [
+    2.969,
+    28.097,
+    1.6
+   ],
+   "yaw": 54.0,
+   "props": {
+    "topic": "club"
+   }
+  },
+  {
+   "id": "cue_rack",
+   "kind": "machine",
+   "pos": [
+    4.879,
+    30.726,
+    1.1
+   ],
+   "yaw": 54.0,
+   "props": {
+    "what": "cue_rack"
+   }
+  },
+  {
+   "id": "light_switch_workshop",
+   "kind": "machine",
+   "pos": [
+    5.823,
+    23.056,
+    5.7
+   ],
+   "yaw": 234.0,
+   "props": {
+    "what": "switch",
+    "switch": "room"
+   }
+  },
+  {
+   "id": "workbench_1",
+   "kind": "craft",
+   "pos": [
+    4.937,
+    26.296,
+    5.2
+   ],
+   "yaw": 54,
+   "props": {
+    "what": "workbench"
+   }
+  },
+  {
+   "id": "workbench_2",
+   "kind": "craft",
+   "pos": [
+    6.818,
+    28.885,
+    5.2
+   ],
+   "yaw": 54,
+   "props": {
+    "what": "workbench"
+   }
+  },
+  {
+   "id": "drafting_board",
+   "kind": "craft",
+   "pos": [
+    8.008,
+    30.863,
+    5.3
+   ],
+   "yaw": 324.0,
+   "props": {
+    "what": "workbench"
+   }
+  },
+  {
+   "id": "model_shelf",
+   "kind": "shelf",
+   "pos": [
+    4.462,
+    29.607,
+    5.4
+   ],
+   "yaw": 54.0,
+   "props": {
+    "topic": "engineering"
+   }
+  },
+  {
+   "id": "kit_clock_4",
+   "kind": "board",
+   "pos": [
+    2.01,
+    26.692,
+    11.8
+   ],
+   "yaw": 54.0,
+   "props": {
+    "what": "clock"
+   }
+  },
+  {
+   "id": "workshop_board",
+   "kind": "board",
+   "pos": [
+    7.905,
+    25.87,
+    6.1
+   ],
+   "yaw": 234.0,
+   "props": {
+    "topic": "club"
+   }
+  },
+  {
+   "id": "drying_shelf",
+   "kind": "board",
+   "pos": [
+    7.048,
+    32.178,
+    5.35
+   ],
+   "yaw": 324.0,
+   "props": {
+    "topic": "exhibit"
+   }
+  },
+  {
+   "id": "light_switch_photo",
+   "kind": "machine",
+   "pos": [
+    5.823,
+    23.056,
+    10.1
+   ],
+   "yaw": 234.0,
+   "props": {
+    "what": "switch",
+    "switch": "room"
+   }
+  },
+  {
+   "id": "darkroom_bench",
+   "kind": "craft",
+   "pos": [
+    3.058,
+    27.538,
+    9.7
+   ],
+   "yaw": 54.0,
+   "props": {
+    "what": "darkroom"
+   }
+  },
+  {
+   "id": "photo_booth",
+   "kind": "machine",
+   "pos": [
+    9.523,
+    29.886,
+    9.8
+   ],
+   "yaw": 324.0,
+   "props": {
+    "what": "photo_booth"
+   }
+  },
+  {
+   "id": "exposure_clock",
+   "kind": "machine",
+   "pos": [
+    4.233,
+    29.156,
+    9.76
+   ],
+   "yaw": 54.0,
+   "props": {
+    "what": "exposure_clock"
+   }
+  },
+  {
+   "id": "developing_tray",
+   "kind": "craft",
+   "pos": [
+    5.056,
+    30.289,
+    9.75
+   ],
+   "yaw": 54.0,
+   "props": {
+    "what": "developing"
+   }
+  },
+  {
+   "id": "photo_board",
+   "kind": "board",
+   "pos": [
+    8.64,
+    31.393,
+    10.4
+   ],
+   "yaw": 324.0,
+   "props": {
+    "topic": "exhibit"
+   }
+  },
+  {
+   "id": "drying_line",
+   "kind": "board",
+   "pos": [
+    7.538,
+    31.576,
+    10.7
+   ],
+   "yaw": 324.0,
+   "props": {
+    "topic": "exhibit"
+   }
+  },
+  {
+   "id": "stage",
+   "kind": "screen",
+   "pos": [
+    -7.876,
+    30.341,
+    0.7
+   ],
+   "yaw": 36.0,
+   "props": {
+    "what": "stage"
+   }
+  },
+  {
+   "id": "stage_dance",
+   "kind": "sport",
+   "pos": [
+    -6.877,
+    28.965,
+    0.0
+   ],
+   "yaw": 36.0,
+   "props": {
+    "what": "dance"
+   }
+  },
+  {
+   "id": "stage_piano",
+   "kind": "play",
+   "pos": [
+    -7.937,
+    26.341,
+    1.0
+   ],
+   "yaw": 126.0,
+   "props": {
+    "what": "piano"
+   }
+  },
+  {
+   "id": "hall_seats_1_1",
+   "kind": "seat",
+   "pos": [
+    -3.257,
+    26.28,
+    0.45
+   ],
+   "yaw": 216.0,
+   "props": {
+    "height": 0.45
+   }
+  },
+  {
+   "id": "hall_seats_1_2",
+   "kind": "seat",
+   "pos": [
+    -5.442,
+    24.693,
+    0.45
+   ],
+   "yaw": 216.0,
+   "props": {
+    "height": 0.45
+   }
+  },
+  {
+   "id": "hall_seats_3_1",
+   "kind": "seat",
+   "pos": [
+    -4.433,
+    27.898,
+    0.45
+   ],
+   "yaw": 216.0,
+   "props": {
+    "height": 0.45
+   }
+  },
+  {
+   "id": "hall_seats_3_2",
+   "kind": "seat",
+   "pos": [
+    -6.617,
+    26.311,
+    0.45
+   ],
+   "yaw": 216.0,
+   "props": {
+    "height": 0.45
+   }
+  },
+  {
+   "id": "stage_board",
+   "kind": "board",
+   "pos": [
+    -3.145,
+    28.339,
+    1.7
+   ],
+   "yaw": 306.0,
+   "props": {
+    "topic": "club"
+   }
+  },
+  {
+   "id": "rehearsal_board",
+   "kind": "board",
+   "pos": [
+    -4.674,
+    30.443,
+    1.7
+   ],
+   "yaw": 306.0,
+   "props": {
+    "topic": "club"
+   }
+  },
+  {
+   "id": "light_switch_lounge",
+   "kind": "machine",
+   "pos": [
+    -1.583,
+    26.137,
+    5.7
+   ],
+   "yaw": 306.0,
+   "props": {
+    "what": "switch",
+    "switch": "room"
+   }
+  },
+  {
+   "id": "lounge_sofa",
+   "kind": "seat",
+   "pos": [
+    -7.202,
+    26.01,
+    4.85
+   ],
+   "yaw": 126.0,
+   "props": {
+    "height": 0.45
+   }
+  },
+  {
+   "id": "lounge_armchair",
+   "kind": "seat",
+   "pos": [
+    -5.164,
+    29.84,
+    4.85
+   ],
+   "yaw": 351.0,
+   "props": {
+    "height": 0.45
+   }
+  },
+  {
+   "id": "lounge_checkers",
+   "kind": "play",
+   "pos": [
+    -5.952,
+    26.671,
+    4.85
+   ],
+   "yaw": 126,
+   "props": {
+    "what": "checkers"
+   }
+  },
+  {
+   "id": "table_football",
+   "kind": "play",
+   "pos": [
+    -7.759,
+    30.179,
+    5.3
+   ],
+   "yaw": 126,
+   "props": {
+    "what": "table_football"
+   }
+  },
+  {
+   "id": "arcade_1",
+   "kind": "machine",
+   "pos": [
+    -10.163,
+    29.915,
+    5.6
+   ],
+   "yaw": 81.0,
+   "props": {
+    "what": "arcade"
+   }
+  },
+  {
+   "id": "jukebox",
+   "kind": "machine",
+   "pos": [
+    -6.765,
+    32.384,
+    5.6
+   ],
+   "yaw": 351.0,
+   "props": {
+    "what": "jukebox"
+   }
+  },
+  {
+   "id": "lounge_tv",
+   "kind": "screen",
+   "pos": [
+    -5.387,
+    24.362,
+    5.3
+   ],
+   "yaw": 204.7,
+   "props": {
+    "what": "tv"
+   }
+  },
+  {
+   "id": "kit_clock_5",
+   "kind": "board",
+   "pos": [
+    -5.243,
+    31.142,
+    7.4
+   ],
+   "yaw": 306.0,
+   "props": {
+    "what": "clock"
+   }
+  },
+  {
+   "id": "lounge_board",
+   "kind": "board",
+   "pos": [
+    -8.64,
+    31.393,
+    6.2
+   ],
+   "yaw": 36.0,
+   "props": {
+    "topic": "club"
+   }
+  },
+  {
+   "id": "meeting_seat_1",
+   "kind": "seat",
+   "pos": [
+    0.9,
+    8.5,
+    9.25
+   ],
+   "yaw": 270.0,
+   "props": {
+    "height": 0.45
+   }
+  },
+  {
+   "id": "meeting_seat_2",
+   "kind": "seat",
+   "pos": [
+    -0.9,
+    8.5,
+    9.25
+   ],
+   "yaw": 90.0,
+   "props": {
+    "height": 0.45
+   }
+  },
+  {
+   "id": "club_blackboard",
+   "kind": "craft",
+   "pos": [
+    -0.0,
+    2.0,
+    10.3
+   ],
+   "yaw": 180.0,
+   "props": {
+    "what": "blackboard"
+   }
+  },
+  {
+   "id": "meeting_shelf",
+   "kind": "shelf",
+   "pos": [
+    2.651,
+    11.3,
+    10.1
+   ],
+   "yaw": 270.0,
+   "props": {
+    "topic": "local"
+   }
+  },
+  {
+   "id": "kit_clock_6",
+   "kind": "board",
+   "pos": [
+    -2.601,
+    10.5,
+    11.8
+   ],
+   "yaw": 90.0,
+   "props": {
+    "what": "clock"
+   }
+  },
+  {
+   "id": "meeting_board",
+   "kind": "board",
+   "pos": [
+    -2.651,
+    5.9,
+    10.5
+   ],
+   "yaw": 90.0,
+   "props": {
+    "topic": "club"
+   }
   }
  ],
  "flats": [],
@@ -962,69 +2484,6 @@
    "flat": null,
    "kind": "public",
    "centre": [
-    0.0,
-    25.92,
-    2.25
-   ],
-   "normal": [
-    0.0,
-    1.0,
-    -0.0
-   ],
-   "size": [
-    1.754,
-    3.3
-   ],
-   "shape": "rect"
-  },
-  {
-   "slot": 6,
-   "id": "pub/w7",
-   "flat": null,
-   "kind": "public",
-   "centre": [
-    0.0,
-    25.92,
-    6.65
-   ],
-   "normal": [
-    0.0,
-    1.0,
-    -0.0
-   ],
-   "size": [
-    1.754,
-    3.3
-   ],
-   "shape": "rect"
-  },
-  {
-   "slot": 7,
-   "id": "pub/w8",
-   "flat": null,
-   "kind": "public",
-   "centre": [
-    0.0,
-    25.92,
-    11.05
-   ],
-   "normal": [
-    0.0,
-    1.0,
-    -0.0
-   ],
-   "size": [
-    1.754,
-    3.3
-   ],
-   "shape": "rect"
-  },
-  {
-   "slot": 8,
-   "id": "pub/w9",
-   "flat": null,
-   "kind": "public",
-   "centre": [
     -1.984,
     25.606,
     11.05
@@ -1041,8 +2500,8 @@
    "shape": "rect"
   },
   {
-   "slot": 9,
-   "id": "pub/w10",
+   "slot": 6,
+   "id": "pub/w7",
    "flat": null,
    "kind": "public",
    "centre": [
@@ -1062,8 +2521,8 @@
    "shape": "rect"
   },
   {
-   "slot": 10,
-   "id": "pub/w11",
+   "slot": 7,
+   "id": "pub/w8",
    "flat": null,
    "kind": "public",
    "centre": [
@@ -1083,8 +2542,8 @@
    "shape": "rect"
   },
   {
-   "slot": 11,
-   "id": "pub/w12",
+   "slot": 8,
+   "id": "pub/w9",
    "flat": null,
    "kind": "public",
    "centre": [
@@ -1104,8 +2563,8 @@
    "shape": "rect"
   },
   {
-   "slot": 12,
-   "id": "pub/w13",
+   "slot": 9,
+   "id": "pub/w10",
    "flat": null,
    "kind": "public",
    "centre": [
@@ -1125,8 +2584,8 @@
    "shape": "rect"
   },
   {
-   "slot": 13,
-   "id": "pub/w14",
+   "slot": 10,
+   "id": "pub/w11",
    "flat": null,
    "kind": "public",
    "centre": [
@@ -1146,8 +2605,8 @@
    "shape": "rect"
   },
   {
-   "slot": 14,
-   "id": "pub/w15",
+   "slot": 11,
+   "id": "pub/w12",
    "flat": null,
    "kind": "public",
    "centre": [
@@ -1167,8 +2626,8 @@
    "shape": "rect"
   },
   {
-   "slot": 15,
-   "id": "pub/w16",
+   "slot": 12,
+   "id": "pub/w13",
    "flat": null,
    "kind": "public",
    "centre": [
@@ -1188,8 +2647,8 @@
    "shape": "rect"
   },
   {
-   "slot": 16,
-   "id": "pub/w17",
+   "slot": 13,
+   "id": "pub/w14",
    "flat": null,
    "kind": "public",
    "centre": [
@@ -1209,8 +2668,8 @@
    "shape": "rect"
   },
   {
-   "slot": 17,
-   "id": "pub/w18",
+   "slot": 14,
+   "id": "pub/w15",
    "flat": null,
    "kind": "public",
    "centre": [
@@ -1230,8 +2689,8 @@
    "shape": "rect"
   },
   {
-   "slot": 18,
-   "id": "pub/w19",
+   "slot": 15,
+   "id": "pub/w16",
    "flat": null,
    "kind": "public",
    "centre": [
@@ -1251,8 +2710,8 @@
    "shape": "rect"
   },
   {
-   "slot": 19,
-   "id": "pub/w20",
+   "slot": 16,
+   "id": "pub/w17",
    "flat": null,
    "kind": "public",
    "centre": [
@@ -1272,8 +2731,8 @@
    "shape": "rect"
   },
   {
-   "slot": 20,
-   "id": "pub/w21",
+   "slot": 17,
+   "id": "pub/w18",
    "flat": null,
    "kind": "public",
    "centre": [
@@ -1293,8 +2752,8 @@
    "shape": "rect"
   },
   {
-   "slot": 21,
-   "id": "pub/w22",
+   "slot": 18,
+   "id": "pub/w19",
    "flat": null,
    "kind": "public",
    "centre": [
@@ -1314,8 +2773,8 @@
    "shape": "rect"
   },
   {
-   "slot": 22,
-   "id": "pub/w23",
+   "slot": 19,
+   "id": "pub/w20",
    "flat": null,
    "kind": "public",
    "centre": [
@@ -1335,8 +2794,8 @@
    "shape": "rect"
   },
   {
-   "slot": 23,
-   "id": "pub/w24",
+   "slot": 20,
+   "id": "pub/w21",
    "flat": null,
    "kind": "public",
    "centre": [
@@ -1356,8 +2815,8 @@
    "shape": "rect"
   },
   {
-   "slot": 24,
-   "id": "pub/w25",
+   "slot": 21,
+   "id": "pub/w22",
    "flat": null,
    "kind": "public",
    "centre": [
@@ -1368,6 +2827,69 @@
    "normal": [
     0.309,
     -0.951,
+    0.0
+   ],
+   "size": [
+    1.754,
+    3.3
+   ],
+   "shape": "rect"
+  },
+  {
+   "slot": 22,
+   "id": "pub/w23",
+   "flat": null,
+   "kind": "public",
+   "centre": [
+    1.984,
+    13.394,
+    6.65
+   ],
+   "normal": [
+    0.309,
+    -0.951,
+    0.0
+   ],
+   "size": [
+    1.754,
+    3.3
+   ],
+   "shape": "rect"
+  },
+  {
+   "slot": 23,
+   "id": "pub/w24",
+   "flat": null,
+   "kind": "public",
+   "centre": [
+    3.774,
+    14.306,
+    2.25
+   ],
+   "normal": [
+    0.588,
+    -0.809,
+    0.0
+   ],
+   "size": [
+    1.754,
+    3.3
+   ],
+   "shape": "rect"
+  },
+  {
+   "slot": 24,
+   "id": "pub/w25",
+   "flat": null,
+   "kind": "public",
+   "centre": [
+    3.774,
+    14.306,
+    6.65
+   ],
+   "normal": [
+    0.588,
+    -0.809,
     0.0
    ],
    "size": [
@@ -1382,13 +2904,13 @@
    "flat": null,
    "kind": "public",
    "centre": [
-    1.984,
-    13.394,
-    6.65
+    3.774,
+    14.306,
+    11.05
    ],
    "normal": [
-    0.309,
-    -0.951,
+    0.588,
+    -0.809,
     0.0
    ],
    "size": [
@@ -1403,13 +2925,13 @@
    "flat": null,
    "kind": "public",
    "centre": [
-    3.774,
-    14.306,
-    2.25
+    5.194,
+    15.726,
+    6.65
    ],
    "normal": [
-    0.588,
-    -0.809,
+    0.809,
+    -0.588,
     0.0
    ],
    "size": [
@@ -1424,13 +2946,13 @@
    "flat": null,
    "kind": "public",
    "centre": [
-    3.774,
-    14.306,
-    6.65
+    5.194,
+    15.726,
+    11.05
    ],
    "normal": [
-    0.588,
-    -0.809,
+    0.809,
+    -0.588,
     0.0
    ],
    "size": [
@@ -1445,13 +2967,13 @@
    "flat": null,
    "kind": "public",
    "centre": [
-    3.774,
-    14.306,
-    11.05
+    6.106,
+    17.516,
+    6.65
    ],
    "normal": [
-    0.588,
-    -0.809,
+    0.951,
+    -0.309,
     0.0
    ],
    "size": [
@@ -1466,13 +2988,13 @@
    "flat": null,
    "kind": "public",
    "centre": [
-    5.194,
-    15.726,
-    6.65
+    6.106,
+    17.516,
+    11.05
    ],
    "normal": [
-    0.809,
-    -0.588,
+    0.951,
+    -0.309,
     0.0
    ],
    "size": [
@@ -1487,18 +3009,18 @@
    "flat": null,
    "kind": "public",
    "centre": [
-    5.194,
-    15.726,
-    11.05
+    -2.951,
+    11.19,
+    10.8
    ],
    "normal": [
-    0.809,
-    -0.588,
+    -1.0,
+    0.0,
     0.0
    ],
    "size": [
-    1.754,
-    3.3
+    3.236,
+    2.2
    ],
    "shape": "rect"
   },
@@ -1508,18 +3030,18 @@
    "flat": null,
    "kind": "public",
    "centre": [
-    6.106,
-    17.516,
-    6.65
+    -2.951,
+    7.504,
+    10.8
    ],
    "normal": [
-    0.951,
-    -0.309,
+    -1.0,
+    0.0,
     0.0
    ],
    "size": [
-    1.754,
-    3.3
+    3.236,
+    2.2
    ],
    "shape": "rect"
   },
@@ -1529,18 +3051,18 @@
    "flat": null,
    "kind": "public",
    "centre": [
-    6.106,
-    17.516,
-    11.05
+    -2.951,
+    3.818,
+    10.8
    ],
    "normal": [
-    0.951,
-    -0.309,
+    -1.0,
+    0.0,
     0.0
    ],
    "size": [
-    1.754,
-    3.3
+    3.236,
+    2.2
    ],
    "shape": "rect"
   },
@@ -1550,13 +3072,13 @@
    "flat": null,
    "kind": "public",
    "centre": [
-    -2.951,
-    11.19,
+    2.951,
+    3.818,
     10.8
    ],
    "normal": [
-    -1.0,
-    0.0,
+    1.0,
+    -0.0,
     0.0
    ],
    "size": [
@@ -1571,13 +3093,13 @@
    "flat": null,
    "kind": "public",
    "centre": [
-    -2.951,
+    2.951,
     7.504,
     10.8
    ],
    "normal": [
-    -1.0,
-    0.0,
+    1.0,
+    -0.0,
     0.0
    ],
    "size": [
@@ -1589,69 +3111,6 @@
   {
    "slot": 35,
    "id": "pub/w36",
-   "flat": null,
-   "kind": "public",
-   "centre": [
-    -2.951,
-    3.818,
-    10.8
-   ],
-   "normal": [
-    -1.0,
-    0.0,
-    0.0
-   ],
-   "size": [
-    3.236,
-    2.2
-   ],
-   "shape": "rect"
-  },
-  {
-   "slot": 36,
-   "id": "pub/w37",
-   "flat": null,
-   "kind": "public",
-   "centre": [
-    2.951,
-    3.818,
-    10.8
-   ],
-   "normal": [
-    1.0,
-    -0.0,
-    0.0
-   ],
-   "size": [
-    3.236,
-    2.2
-   ],
-   "shape": "rect"
-  },
-  {
-   "slot": 37,
-   "id": "pub/w38",
-   "flat": null,
-   "kind": "public",
-   "centre": [
-    2.951,
-    7.504,
-    10.8
-   ],
-   "normal": [
-    1.0,
-    -0.0,
-    0.0
-   ],
-   "size": [
-    3.236,
-    2.2
-   ],
-   "shape": "rect"
-  },
-  {
-   "slot": 38,
-   "id": "pub/w39",
    "flat": null,
    "kind": "public",
    "centre": [
@@ -1671,8 +3130,8 @@
    "shape": "rect"
   },
   {
-   "slot": 39,
-   "id": "pub/w40",
+   "slot": 36,
+   "id": "pub/w37",
    "flat": null,
    "kind": "public",
    "centre": [
@@ -1692,8 +3151,8 @@
    "shape": "rect"
   },
   {
-   "slot": 40,
-   "id": "pub/w41",
+   "slot": 37,
+   "id": "pub/w38",
    "flat": null,
    "kind": "public",
    "centre": [
@@ -1713,8 +3172,8 @@
    "shape": "rect"
   },
   {
-   "slot": 41,
-   "id": "pub/w42",
+   "slot": 38,
+   "id": "pub/w39",
    "flat": null,
    "kind": "public",
    "centre": [
@@ -1734,8 +3193,8 @@
    "shape": "rect"
   },
   {
-   "slot": 42,
-   "id": "pub/w43",
+   "slot": 39,
+   "id": "pub/w40",
    "flat": null,
    "kind": "public",
    "centre": [
@@ -1755,8 +3214,8 @@
    "shape": "rect"
   },
   {
-   "slot": 43,
-   "id": "pub/w44",
+   "slot": 40,
+   "id": "pub/w41",
    "flat": null,
    "kind": "public",
    "centre": [
@@ -1776,8 +3235,8 @@
    "shape": "rect"
   },
   {
-   "slot": 44,
-   "id": "pub/w45",
+   "slot": 41,
+   "id": "pub/w42",
    "flat": null,
    "kind": "public",
    "centre": [
@@ -1797,8 +3256,8 @@
    "shape": "rect"
   },
   {
-   "slot": 45,
-   "id": "pub/w46",
+   "slot": 42,
+   "id": "pub/w43",
    "flat": null,
    "kind": "public",
    "centre": [
@@ -1818,8 +3277,8 @@
    "shape": "rect"
   },
   {
-   "slot": 46,
-   "id": "pub/w47",
+   "slot": 43,
+   "id": "pub/w44",
    "flat": null,
    "kind": "public",
    "centre": [
@@ -1839,14 +3298,77 @@
    "shape": "rect"
   },
   {
-   "slot": 47,
-   "id": "pub/w48",
+   "slot": 44,
+   "id": "pub/w45",
    "flat": null,
    "kind": "public",
    "centre": [
     7.402,
     24.667,
     2.0
+   ],
+   "normal": [
+    0.809,
+    -0.588,
+    0.0
+   ],
+   "size": [
+    3.679,
+    2.2
+   ],
+   "shape": "rect"
+  },
+  {
+   "slot": 45,
+   "id": "pub/w46",
+   "flat": null,
+   "kind": "public",
+   "centre": [
+    9.829,
+    28.008,
+    2.0
+   ],
+   "normal": [
+    0.809,
+    -0.588,
+    0.0
+   ],
+   "size": [
+    3.679,
+    2.2
+   ],
+   "shape": "rect"
+  },
+  {
+   "slot": 46,
+   "id": "pub/w47",
+   "flat": null,
+   "kind": "public",
+   "centre": [
+    7.402,
+    24.667,
+    6.4
+   ],
+   "normal": [
+    0.809,
+    -0.588,
+    0.0
+   ],
+   "size": [
+    3.679,
+    2.2
+   ],
+   "shape": "rect"
+  },
+  {
+   "slot": 47,
+   "id": "pub/w48",
+   "flat": null,
+   "kind": "public",
+   "centre": [
+    9.829,
+    28.008,
+    6.4
    ],
    "normal": [
     0.809,
@@ -1865,9 +3387,9 @@
    "flat": null,
    "kind": "public",
    "centre": [
-    9.829,
-    28.008,
-    2.0
+    7.402,
+    24.667,
+    10.625
    ],
    "normal": [
     0.809,
@@ -1876,7 +3398,7 @@
    ],
    "size": [
     3.679,
-    2.2
+    1.85
    ],
    "shape": "rect"
   },
@@ -1886,9 +3408,9 @@
    "flat": null,
    "kind": "public",
    "centre": [
-    7.402,
-    24.667,
-    6.4
+    9.829,
+    28.008,
+    10.625
    ],
    "normal": [
     0.809,
@@ -1897,7 +3419,7 @@
    ],
    "size": [
     3.679,
-    2.2
+    1.85
    ],
    "shape": "rect"
   },
@@ -1907,13 +3429,13 @@
    "flat": null,
    "kind": "public",
    "centre": [
-    9.829,
-    28.008,
-    6.4
+    5.054,
+    31.477,
+    2.0
    ],
    "normal": [
-    0.809,
-    -0.588,
+    -0.809,
+    0.588,
     0.0
    ],
    "size": [
@@ -1928,18 +3450,18 @@
    "flat": null,
    "kind": "public",
    "centre": [
-    7.402,
-    24.667,
-    10.625
+    2.627,
+    28.136,
+    2.0
    ],
    "normal": [
-    0.809,
-    -0.588,
+    -0.809,
+    0.588,
     0.0
    ],
    "size": [
     3.679,
-    1.85
+    2.2
    ],
    "shape": "rect"
   },
@@ -1949,18 +3471,18 @@
    "flat": null,
    "kind": "public",
    "centre": [
-    9.829,
-    28.008,
-    10.625
+    5.054,
+    31.477,
+    6.4
    ],
    "normal": [
-    0.809,
-    -0.588,
+    -0.809,
+    0.588,
     0.0
    ],
    "size": [
     3.679,
-    1.85
+    2.2
    ],
    "shape": "rect"
   },
@@ -1970,9 +3492,9 @@
    "flat": null,
    "kind": "public",
    "centre": [
-    5.054,
-    31.477,
-    2.0
+    2.627,
+    28.136,
+    6.4
    ],
    "normal": [
     -0.809,
@@ -1991,9 +3513,9 @@
    "flat": null,
    "kind": "public",
    "centre": [
-    2.627,
-    28.136,
-    2.0
+    5.054,
+    31.477,
+    10.625
    ],
    "normal": [
     -0.809,
@@ -2002,7 +3524,7 @@
    ],
    "size": [
     3.679,
-    2.2
+    1.85
    ],
    "shape": "rect"
   },
@@ -2012,9 +3534,9 @@
    "flat": null,
    "kind": "public",
    "centre": [
-    5.054,
-    31.477,
-    6.4
+    2.627,
+    28.136,
+    10.625
    ],
    "normal": [
     -0.809,
@@ -2023,7 +3545,7 @@
    ],
    "size": [
     3.679,
-    2.2
+    1.85
    ],
    "shape": "rect"
   },
@@ -2033,17 +3555,17 @@
    "flat": null,
    "kind": "public",
    "centre": [
-    2.627,
-    28.136,
-    6.4
+    8.817,
+    31.635,
+    2.0
    ],
    "normal": [
-    -0.809,
     0.588,
-    0.0
+    0.809,
+    -0.0
    ],
    "size": [
-    3.679,
+    4.102,
     2.2
    ],
    "shape": "rect"
@@ -2054,69 +3576,6 @@
    "flat": null,
    "kind": "public",
    "centre": [
-    5.054,
-    31.477,
-    10.625
-   ],
-   "normal": [
-    -0.809,
-    0.588,
-    0.0
-   ],
-   "size": [
-    3.679,
-    1.85
-   ],
-   "shape": "rect"
-  },
-  {
-   "slot": 58,
-   "id": "pub/w59",
-   "flat": null,
-   "kind": "public",
-   "centre": [
-    2.627,
-    28.136,
-    10.625
-   ],
-   "normal": [
-    -0.809,
-    0.588,
-    0.0
-   ],
-   "size": [
-    3.679,
-    1.85
-   ],
-   "shape": "rect"
-  },
-  {
-   "slot": 59,
-   "id": "pub/w60",
-   "flat": null,
-   "kind": "public",
-   "centre": [
-    8.817,
-    31.635,
-    2.0
-   ],
-   "normal": [
-    0.588,
-    0.809,
-    -0.0
-   ],
-   "size": [
-    4.102,
-    2.2
-   ],
-   "shape": "rect"
-  },
-  {
-   "slot": 60,
-   "id": "pub/w61",
-   "flat": null,
-   "kind": "public",
-   "centre": [
     8.817,
     31.635,
     6.4
@@ -2133,8 +3592,8 @@
    "shape": "rect"
   },
   {
-   "slot": 61,
-   "id": "pub/w62",
+   "slot": 58,
+   "id": "pub/w59",
    "flat": null,
    "kind": "public",
    "centre": [
@@ -2154,14 +3613,77 @@
    "shape": "rect"
   },
   {
-   "slot": 62,
-   "id": "pub/w63",
+   "slot": 59,
+   "id": "pub/w60",
    "flat": null,
    "kind": "public",
    "centre": [
     -2.627,
     28.136,
     2.0
+   ],
+   "normal": [
+    0.809,
+    0.588,
+    -0.0
+   ],
+   "size": [
+    3.679,
+    2.2
+   ],
+   "shape": "rect"
+  },
+  {
+   "slot": 60,
+   "id": "pub/w61",
+   "flat": null,
+   "kind": "public",
+   "centre": [
+    -5.054,
+    31.477,
+    2.0
+   ],
+   "normal": [
+    0.809,
+    0.588,
+    -0.0
+   ],
+   "size": [
+    3.679,
+    2.2
+   ],
+   "shape": "rect"
+  },
+  {
+   "slot": 61,
+   "id": "pub/w62",
+   "flat": null,
+   "kind": "public",
+   "centre": [
+    -2.627,
+    28.136,
+    6.4
+   ],
+   "normal": [
+    0.809,
+    0.588,
+    -0.0
+   ],
+   "size": [
+    3.679,
+    2.2
+   ],
+   "shape": "rect"
+  },
+  {
+   "slot": 62,
+   "id": "pub/w63",
+   "flat": null,
+   "kind": "public",
+   "centre": [
+    -5.054,
+    31.477,
+    6.4
    ],
    "normal": [
     0.809,
@@ -2180,14 +3702,14 @@
    "flat": null,
    "kind": "public",
    "centre": [
-    -5.054,
-    31.477,
+    -9.829,
+    28.008,
     2.0
    ],
    "normal": [
-    0.809,
-    0.588,
-    -0.0
+    -0.809,
+    -0.588,
+    0.0
    ],
    "size": [
     3.679,
@@ -2201,14 +3723,14 @@
    "flat": null,
    "kind": "public",
    "centre": [
-    -2.627,
-    28.136,
-    6.4
+    -7.402,
+    24.667,
+    2.0
    ],
    "normal": [
-    0.809,
-    0.588,
-    -0.0
+    -0.809,
+    -0.588,
+    0.0
    ],
    "size": [
     3.679,
@@ -2222,14 +3744,14 @@
    "flat": null,
    "kind": "public",
    "centre": [
-    -5.054,
-    31.477,
+    -9.829,
+    28.008,
     6.4
    ],
    "normal": [
-    0.809,
-    0.588,
-    -0.0
+    -0.809,
+    -0.588,
+    0.0
    ],
    "size": [
     3.679,
@@ -2243,9 +3765,9 @@
    "flat": null,
    "kind": "public",
    "centre": [
-    -9.829,
-    28.008,
-    2.0
+    -7.402,
+    24.667,
+    6.4
    ],
    "normal": [
     -0.809,
@@ -2264,17 +3786,17 @@
    "flat": null,
    "kind": "public",
    "centre": [
-    -7.402,
-    24.667,
+    -8.817,
+    31.635,
     2.0
    ],
    "normal": [
-    -0.809,
     -0.588,
+    0.809,
     0.0
    ],
    "size": [
-    3.679,
+    4.102,
     2.2
    ],
    "shape": "rect"
@@ -2285,17 +3807,17 @@
    "flat": null,
    "kind": "public",
    "centre": [
-    -9.829,
-    28.008,
+    -8.817,
+    31.635,
     6.4
    ],
    "normal": [
-    -0.809,
     -0.588,
+    0.809,
     0.0
    ],
    "size": [
-    3.679,
+    4.102,
     2.2
    ],
    "shape": "rect"
@@ -2306,18 +3828,18 @@
    "flat": null,
    "kind": "public",
    "centre": [
-    -7.402,
-    24.667,
-    6.4
+    -8.688,
+    19.78,
+    2.2
    ],
    "normal": [
-    -0.809,
-    -0.588,
+    -0.309,
+    0.951,
     0.0
    ],
    "size": [
-    3.679,
-    2.2
+    2.969,
+    2.6
    ],
    "shape": "rect"
   },
@@ -2327,18 +3849,18 @@
    "flat": null,
    "kind": "public",
    "centre": [
-    -8.817,
-    31.635,
-    2.0
+    -11.94,
+    18.723,
+    2.2
    ],
    "normal": [
-    -0.588,
-    0.809,
+    -0.309,
+    0.951,
     0.0
    ],
    "size": [
-    4.102,
-    2.2
+    2.969,
+    2.6
    ],
    "shape": "rect"
   },
@@ -2348,18 +3870,18 @@
    "flat": null,
    "kind": "public",
    "centre": [
-    -8.817,
-    31.635,
-    6.4
+    -15.192,
+    17.667,
+    2.2
    ],
    "normal": [
-    -0.588,
-    0.809,
+    -0.309,
+    0.951,
     0.0
    ],
    "size": [
-    4.102,
-    2.2
+    2.969,
+    2.6
    ],
    "shape": "rect"
   },
@@ -2371,7 +3893,7 @@
    "centre": [
     -8.688,
     19.78,
-    2.2
+    6.5
    ],
    "normal": [
     -0.309,
@@ -2380,7 +3902,7 @@
    ],
    "size": [
     2.969,
-    2.6
+    2.2
    ],
    "shape": "rect"
   },
@@ -2392,7 +3914,7 @@
    "centre": [
     -11.94,
     18.723,
-    2.2
+    6.5
    ],
    "normal": [
     -0.309,
@@ -2401,7 +3923,7 @@
    ],
    "size": [
     2.969,
-    2.6
+    2.2
    ],
    "shape": "rect"
   },
@@ -2413,7 +3935,7 @@
    "centre": [
     -15.192,
     17.667,
-    2.2
+    6.5
    ],
    "normal": [
     -0.309,
@@ -2422,7 +3944,7 @@
    ],
    "size": [
     2.969,
-    2.6
+    2.2
    ],
    "shape": "rect"
   },
@@ -2432,18 +3954,18 @@
    "flat": null,
    "kind": "public",
    "centre": [
-    -8.688,
-    19.78,
-    6.5
+    -13.368,
+    12.054,
+    2.2
    ],
    "normal": [
-    -0.309,
-    0.951,
+    0.309,
+    -0.951,
     0.0
    ],
    "size": [
     2.969,
-    2.2
+    2.6
    ],
    "shape": "rect"
   },
@@ -2453,18 +3975,18 @@
    "flat": null,
    "kind": "public",
    "centre": [
-    -11.94,
-    18.723,
-    6.5
+    -10.116,
+    13.11,
+    2.2
    ],
    "normal": [
-    -0.309,
-    0.951,
+    0.309,
+    -0.951,
     0.0
    ],
    "size": [
     2.969,
-    2.2
+    2.6
    ],
    "shape": "rect"
   },
@@ -2474,18 +3996,18 @@
    "flat": null,
    "kind": "public",
    "centre": [
-    -15.192,
-    17.667,
-    6.5
+    -6.864,
+    14.167,
+    2.2
    ],
    "normal": [
-    -0.309,
-    0.951,
+    0.309,
+    -0.951,
     0.0
    ],
    "size": [
     2.969,
-    2.2
+    2.6
    ],
    "shape": "rect"
   },
@@ -2497,7 +4019,7 @@
    "centre": [
     -13.368,
     12.054,
-    2.2
+    6.5
    ],
    "normal": [
     0.309,
@@ -2506,7 +4028,7 @@
    ],
    "size": [
     2.969,
-    2.6
+    2.2
    ],
    "shape": "rect"
   },
@@ -2518,7 +4040,7 @@
    "centre": [
     -10.116,
     13.11,
-    2.2
+    6.5
    ],
    "normal": [
     0.309,
@@ -2527,7 +4049,7 @@
    ],
    "size": [
     2.969,
-    2.6
+    2.2
    ],
    "shape": "rect"
   },
@@ -2539,7 +4061,7 @@
    "centre": [
     -6.864,
     14.167,
-    2.2
+    6.5
    ],
    "normal": [
     0.309,
@@ -2548,76 +4070,13 @@
    ],
    "size": [
     2.969,
-    2.6
+    2.2
    ],
    "shape": "rect"
   },
   {
    "slot": 81,
    "id": "pub/w82",
-   "flat": null,
-   "kind": "public",
-   "centre": [
-    -13.368,
-    12.054,
-    6.5
-   ],
-   "normal": [
-    0.309,
-    -0.951,
-    0.0
-   ],
-   "size": [
-    2.969,
-    2.2
-   ],
-   "shape": "rect"
-  },
-  {
-   "slot": 82,
-   "id": "pub/w83",
-   "flat": null,
-   "kind": "public",
-   "centre": [
-    -10.116,
-    13.11,
-    6.5
-   ],
-   "normal": [
-    0.309,
-    -0.951,
-    0.0
-   ],
-   "size": [
-    2.969,
-    2.2
-   ],
-   "shape": "rect"
-  },
-  {
-   "slot": 83,
-   "id": "pub/w84",
-   "flat": null,
-   "kind": "public",
-   "centre": [
-    -6.864,
-    14.167,
-    6.5
-   ],
-   "normal": [
-    0.309,
-    -0.951,
-    0.0
-   ],
-   "size": [
-    2.969,
-    2.2
-   ],
-   "shape": "rect"
-  },
-  {
-   "slot": 84,
-   "id": "pub/w85",
    "flat": null,
    "kind": "public",
    "centre": [
@@ -2637,7 +4096,7 @@
    "shape": "rect"
   },
   {
-   "slot": 85,
+   "slot": 82,
    "id": "stair/w1",
    "flat": null,
    "kind": "stair",
@@ -2658,7 +4117,7 @@
    "shape": "rect"
   },
   {
-   "slot": 86,
+   "slot": 83,
    "id": "stair/w2",
    "flat": null,
    "kind": "stair",
@@ -2679,7 +4138,7 @@
    "shape": "rect"
   },
   {
-   "slot": 87,
+   "slot": 84,
    "id": "stair/w3",
    "flat": null,
    "kind": "stair",
@@ -2700,7 +4159,7 @@
    "shape": "rect"
   },
   {
-   "slot": 88,
+   "slot": 85,
    "id": "stair/w4",
    "flat": null,
    "kind": "stair",
@@ -2721,7 +4180,7 @@
    "shape": "rect"
   },
   {
-   "slot": 89,
+   "slot": 86,
    "id": "stair/w5",
    "flat": null,
    "kind": "stair",
@@ -2742,7 +4201,7 @@
    "shape": "rect"
   },
   {
-   "slot": 90,
+   "slot": 87,
    "id": "stair/w6",
    "flat": null,
    "kind": "stair",
@@ -2763,7 +4222,7 @@
    "shape": "rect"
   },
   {
-   "slot": 91,
+   "slot": 88,
    "id": "stair/w7",
    "flat": null,
    "kind": "stair",
@@ -2784,7 +4243,7 @@
    "shape": "rect"
   },
   {
-   "slot": 92,
+   "slot": 89,
    "id": "stair/w8",
    "flat": null,
    "kind": "stair",
@@ -2805,7 +4264,7 @@
    "shape": "rect"
   },
   {
-   "slot": 93,
+   "slot": 90,
    "id": "stair/w9",
    "flat": null,
    "kind": "stair",
@@ -2826,7 +4285,7 @@
    "shape": "rect"
   },
   {
-   "slot": 94,
+   "slot": 91,
    "id": "stair/w10",
    "flat": null,
    "kind": "stair",
@@ -2847,7 +4306,7 @@
    "shape": "rect"
   },
   {
-   "slot": 95,
+   "slot": 92,
    "id": "stair/w11",
    "flat": null,
    "kind": "stair",
@@ -2868,7 +4327,7 @@
    "shape": "rect"
   },
   {
-   "slot": 96,
+   "slot": 93,
    "id": "stair/w12",
    "flat": null,
    "kind": "stair",
@@ -2889,7 +4348,7 @@
    "shape": "rect"
   },
   {
-   "slot": 97,
+   "slot": 94,
    "id": "stair/w13",
    "flat": null,
    "kind": "stair",
@@ -2915,8 +4374,8 @@
   "drum with spiral stair, 5 wings at different heights, front wing cantilevered over the entrance"
  ],
  "tris": {
-  "shell": 7908,
-  "detail": 11980,
-  "windows": 196
+  "shell": 6692,
+  "detail": 40698,
+  "windows": 380
  }
 }

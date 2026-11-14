@@ -49,6 +49,7 @@ UNIT_STAFF = {
     "workshop": [["repairman", 1, [9, 18], "mon-sat"]],
 }
 # a promenade unit's staff by what it is (its name in the plan), over the plan's hints by kind
+# (tools/city_plan.py UNIT_STAFF_BY_NAME writes the same table into the plan: keep the two equal)
 UNIT_STAFF_BY_NAME = {
     "Прокат": [["renter", 1, [9, 20], "mon-sun"]],
     "Мастерская": [["repairman", 1, [9, 18], "mon-sat"]],
@@ -261,6 +262,37 @@ def local_to_world(front, yaw, local):
     return [round(front[0] + x * math.sin(a) - y * math.cos(a), 2), round(front[1] - x * math.cos(a) - y * math.sin(a), 2), round(front[2] + z, 2)]
 
 
+def unit_room(w, room, places):
+    """A promenade unit with its room built (blender/city/buildings/promenade_unit.py, promenade_unit__<variant>.json): a
+    walked interior like the restaurant's. In by the doorway (w["door"], 0.6 m in front of it) and 1.2 m inside; each role
+    at its work spot behind the counter (spots "staff_<role>[_n]", else any work spot), visitors at the counter and the
+    standing places, diners on the seats."""
+    front, yaw = w["front"], w["yaw"]
+    sp = [dict(s, world=local_to_world(front, yaw, s["pos"]), wyaw=round((yaw - s.get("yaw", 0.0)) % 360, 1))
+          for s in room.get("spots", [])]
+    ent = next((e for e in room.get("entrances", []) if e.get("kind") == "street"), None)
+    inside = local_to_world(front, yaw, [ent["pos"][0], ent["pos"][1] + 1.2, ent["pos"][2]] if ent else [0.0, 1.5, 0.0])
+    work = [s for s in sp if s["kind"] == "work"]
+    slots = []
+    for role, count, _hours, _days in w["staff"]:
+        mine = [s for s in work if s["id"] == "staff_" + role or s["id"].startswith("staff_%s_" % role)] or work
+        for i in range(count):
+            if mine:
+                s = mine[i % len(mine)]
+                slots.append({"kind": "staff", "tag": role, "pos": s["world"], "yaw": s["wyaw"]})
+            else:
+                slots.append({"kind": "staff", "tag": role, "pos": inside, "yaw": (yaw + 180) % 360})
+    for s in sp:
+        if s["kind"] in ("counter", "stand"):
+            slots.append({"kind": "visit", "pos": s["world"], "yaw": s["wyaw"]})
+        elif s["kind"] == "seat":
+            slots.append({"kind": "seat", "pos": s["world"], "yaw": s["wyaw"], "height": 0.45})
+    if not any(s["kind"] == "visit" for s in slots):
+        slots.append({"kind": "visit", "pos": inside, "yaw": (yaw + 180) % 360, "capacity": 3})
+    places.append({"id": w["id"], "kind": w["kind"], "door": w["door"], "yaw": yaw, "island": 0, "slots": slots,
+                   "roles": sorted({r[0] for r in w["staff"]}), "building": w["plot"], "path": [inside]})
+
+
 def flat_slots(beds, sleepers_max):
     """A flat's slots for the simulation (all at its door: the flat is a shell)."""
     out = []
@@ -331,7 +363,8 @@ def build_places(plan, extra, args):
                      "centre": from_ue_cm(p["ue"])})
     for u in plan.get("promenade_units", []):
         work.append({"id": u["id"], "plot": u["id"], "kind": u["kind"], "door": from_ue_cm(u["door_ue"]), "yaw": u["yaw"],
-                     "staff": UNIT_STAFF_BY_NAME.get(u.get("name_ru")) or u.get("staff") or UNIT_STAFF.get(u["kind"], []), "w": u.get("w", 10.0), "d": 6.0, "centre": from_ue_cm(u["door_ue"])})
+                     "staff": UNIT_STAFF_BY_NAME.get(u.get("name_ru")) or u.get("staff") or UNIT_STAFF.get(u["kind"], []), "w": u.get("w", 10.0), "d": 6.0, "centre": from_ue_cm(u["door_ue"]),
+                     "variant": u.get("variant"), "front": from_ue_cm(u["front_ue"]) if u.get("front_ue") else None})
     rest = read_input("unreal/Lyudmilovsk/Content/Restaurant/seats.json")
     if rest and "restaurant" not in extra_work:
         extra_work["restaurant"] = {"seats": rest.get("seats", rest if isinstance(rest, list) else []),
@@ -353,6 +386,11 @@ def build_places(plan, extra, args):
             ent = next((e for e in bdata.get("entrances", []) if e.get("kind") == "street"), None)
             if ent and shell:
                 w["door"] = local_to_world(front, w["yaw"], ent["pos"])
+        room = flats_of_type("promenade_unit", w["variant"]) if w.get("variant") and w.get("front") else None
+        if room:
+            unit_room(w, room, places)
+            workplaces.append(w)
+            continue
         if w["kind"] == "kiosk" and bspots.get("counter"):
             # the seller behind the kiosk's counter, a customer at its window, the stop's bench
             c = bspots["counter"][0]
@@ -595,6 +633,66 @@ def shifts(role, count, hours, days):
     return out
 
 
+MIN_SLEEP = 7.0     # hours a night at the least (the life sleeps once a day: wake - bed)
+MAX_SLEEP = 10.5    # and at the most, a grown-up's
+
+
+def _within(h, a, b):
+    """h is in the span of hours from a to b (over midnight when b < a)."""
+    return (h - a) % 24 < (b - a) % 24
+
+
+def fit_day(p):
+    """Their day fits their duties and leaves a night's sleep, with no random numbers (it's also run on a town already
+    made: --refit-days): a duty that starts while they'd sleep gets them up three quarters of an hour before it (an owl
+    at school at 8:15, a student at a 9:00 lecture), one that ends while they'd sleep sends them to bed an hour after it
+    (the bar till midnight), and a night shorter than MIN_SLEEP is made longer at whichever end no duty is in the way
+    (an owl up at 6 for the train to work goes to bed before midnight; a waiter home at 23:00 sleeps in). Only wake and
+    bed change."""
+    works = [(d["hours"][0] % 24, d["hours"][1] % 24) for d in p["duties"]]
+    wake, bed = p["wake"] % 24, p["bed"] % 24
+
+    def busy(a, b):
+        # any duty (with half an hour's way each side) in the span a..b
+        n = int(((b - a) % 24) / 0.25) + 1
+        return any(_within((a + i * 0.25) % 24, (h0 - 0.5) % 24, (h1 + 0.5) % 24) for i in range(n) for h0, h1 in works)
+
+    for h0, h1 in works:
+        if _within(h0, bed, wake):
+            wake = (h0 - 0.75) % 24
+        if _within(h1, bed, wake) and not _within(h0, bed, wake):
+            bed = (h1 + 1.0) % 24
+    if (wake - bed) % 24 < MIN_SLEEP:
+        earlier = (wake - MIN_SLEEP - 0.5) % 24
+        later = (bed + MIN_SLEEP + 0.5) % 24
+        if not busy(earlier, wake):
+            bed = earlier
+        elif not busy(bed, later):
+            wake = later
+    # nor a grown-up's night over MAX_SLEEP (a shift's "to bed after it" read a night owl's 4:00 bedtime as before the
+    # shift's end and put them to bed at 17:00): to bed eight and a half hours before they get up
+    if p["age"] >= 16 and (wake - bed) % 24 > MAX_SLEEP:
+        if not busy((wake - 8.5) % 24, wake):
+            bed = (wake - 8.5) % 24
+        elif not busy(bed, (bed + 8.5) % 24):
+            wake = (bed + 8.5) % 24
+    p["wake"], p["bed"] = round(wake, 2), round(bed, 2)
+
+
+def refit_days():
+    """--refit-days: fit_day over the townsfolk already made (townsfolk.json), keeping everything else of theirs: their
+    keys are their models' (town_looks.json) and their names the strings', so the town isn't made again for this."""
+    with open(OUT_FOLK, encoding="utf-8") as f:
+        folk = json.load(f)
+    changed = 0
+    for p in folk["people"]:
+        was = (p["wake"], p["bed"])
+        fit_day(p)
+        changed += (p["wake"], p["bed"]) != was
+    write(OUT_FOLK, folk)
+    print("town_life: refitted the days of %d of %d townsfolk" % (changed, len(folk["people"])))
+
+
 def temper(rnd, age, ctype):
     t = {k: round(min(1.0, max(0.0, rnd.gauss(0.5, 0.22))), 2) for k in ("social", "active", "studious", "gamer", "nature", "sun")}
     if age >= 60:
@@ -824,6 +922,7 @@ def build_people(plan, places, flats, workplaces, args, rnd):
                 p["chronotype"] = "lark"
             else:
                 p["occupation"] = rnd.choice(["artist", "writer", "musician", "programmer", "homemaker", "unemployed"])
+        fit_day(p)      # (no random numbers: the town made from a seed is the same as before but for these hours)
         p["likes"] = likes_for(rnd, p["age"], female, p["chronotype"], p["occupation"])
         p["mesh"] = pick_model(rnd, pool, p["age"], female, used)
         # their own model from the residents generator (blender/residents/looks.py), the pool's look as the fallback
@@ -894,7 +993,11 @@ def main():
     ap.add_argument("--summary", action="store_true")
     ap.add_argument("--ref", action="append", default=[], help="a branch to read inputs from that aren't in the working tree yet")
     ap.add_argument("--refs-first", action="store_true", help="the --ref branches win over the working tree (their inputs are newer)")
+    ap.add_argument("--refit-days", action="store_true", help="only fit the wake and bed hours of the townsfolk already made (fit_day)")
     args = ap.parse_args()
+    if args.refit_days:
+        refit_days()
+        return
     GIT_REFS.extend(args.ref)
     REFS_FIRST = args.refs_first
     rnd = random.Random(args.seed)

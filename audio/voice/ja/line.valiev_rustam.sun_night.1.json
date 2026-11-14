@@ -1,0 +1,20 @@
+{
+ "key": "line.valiev_rustam.sun_night.1",
+ "lang": "ja",
+ "text": "暗くなった。窓が鏡になって、映っているのは私だけだ。昼間は、もっと世界が映っていたのに。",
+ "speaker": "valiev_rustam",
+ "voice": "Roger",
+ "voice_id": "CwhRBWXzGAHq8TQ4Fs17",
+ "voice_design": null,
+ "direction": "[confident, dry, matter-of-fact engineer]",
+ "model": "fal-ai/elevenlabs/tts/eleven-v3",
+ "request": {
+  "stability": 0.5,
+  "apply_text_normalization": "auto",
+  "text": "[confident, dry, matter-of-fact engineer] 暗くなった。窓が鏡になって、映っているのは私だけだ。昼間は、もっと世界が映っていたのに。",
+  "voice": "Roger",
+  "language_code": "ja"
+ },
+ "fal_request_id": "01a1d74a-4a73-7e52-974c-5d6139880e92",
+ "hash": "328dd7fc0630"
+}

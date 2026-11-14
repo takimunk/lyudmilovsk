@@ -1,0 +1,20 @@
+{
+ "key": "line.khuazhev_aslan.wedding_guest.1",
+ "lang": "ru",
+ "text": "Вот это гость. Хохолок, на крыльях красные пуговки, будто на свадьбу оделся. У нас в горах такого не видели.",
+ "speaker": "khuazhev_aslan",
+ "voice": "Brian",
+ "voice_id": "nPczCjzI2devNBz1zQrb",
+ "voice_design": null,
+ "direction": "[hearty, generous, a cheese seller from the Caucasus, proud of his family's cheese]",
+ "model": "fal-ai/elevenlabs/tts/eleven-v3",
+ "request": {
+  "stability": 0.5,
+  "apply_text_normalization": "auto",
+  "text": "[hearty, generous, a cheese seller from the Caucasus, proud of his family's cheese] Вот это гость. Хохолок, на крыльях красные пуговки, будто на свадьбу оделся. У нас в горах такого не видели.",
+  "voice": "Brian",
+  "language_code": "ru"
+ },
+ "fal_request_id": "01a1d75d-d37e-7dd1-a7c8-7470c8173cc8",
+ "hash": "cb7b89c42959"
+}

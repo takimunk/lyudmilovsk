@@ -56,6 +56,8 @@ private:
 	UPROPERTY() TObjectPtr<UInstancedStaticMeshComponent> Heap;
 	FName Shown;
 	int32 ShownGrains = -1;
+	/** The handfuls ShowFeed was last asked to show (it is asked every frame). */
+	float ShownHandfuls = -1.f;
 	/** The heap's material, made once and recoloured when the feed changes (not a new one per grain eaten). */
 	UPROPERTY(Transient) TObjectPtr<UMaterialInstanceDynamic> HeapMat;
 	FName HeapFeed;
@@ -123,6 +125,8 @@ public:
 	TArray<int32> BirdsOn(int32 Index) const;
 	/** Dev/test: as if the feed went into feeder Index Hours ago. */
 	void Age(int32 Index, float Hours);
+	/** The feed has lain Seconds longer than the calendar says (a quest's wait by the feeder: ULyudQuestDirector). */
+	void Hurry(int32 Index, float Seconds) { if (States.IsValidIndex(Index)) { States[Index].FilledAt -= FTimespan::FromSeconds(Seconds); } }
 	/** Dev/test: a feeder at Location (ground under it), facing Yaw. */
 	int32 PlaceAt(const FVector& Location, float Yaw);
 

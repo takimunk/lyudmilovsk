@@ -1,0 +1,29 @@
+{
+ "key": "line.guseva_valentina.corn_low_sun.1",
+ "lang": "en",
+ "text": "The sun's low already. Vanya leaves his bench at half past five, so off you go while it's hot.",
+ "speaker": "guseva_valentina",
+ "voice": "Abbess",
+ "voice_id": "Abbess",
+ "voice_design": null,
+ "direction": "",
+ "model": "fal-ai/minimax/speech-2.6-hd",
+ "request": {
+  "prompt": "The sun's low already. Vanya leaves his bench at half past five, so off you go while it's hot.",
+  "voice_setting": {
+   "speed": 1,
+   "pitch": 0,
+   "vol": 1,
+   "voice_id": "Abbess"
+  },
+  "language_boost": "English",
+  "audio_setting": {
+   "sample_rate": 24000,
+   "format": "mp3",
+   "channel": 1
+  },
+  "output_format": "url"
+ },
+ "fal_request_id": "01a1d7a9-7386-7dd0-8271-62989cc625e6",
+ "hash": "6ba4a6e4f4b1"
+}

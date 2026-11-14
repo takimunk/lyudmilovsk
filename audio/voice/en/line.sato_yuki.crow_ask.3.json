@@ -1,0 +1,29 @@
+{
+ "key": "line.sato_yuki.crow_ask.3",
+ "lang": "en",
+ "text": "Papa says crows are clever. If you feed them they bring presents. Maybe they'll bring the button too.",
+ "speaker": "sato_yuki",
+ "voice": "Lovely_Girl",
+ "voice_id": "Lovely_Girl",
+ "voice_design": null,
+ "direction": "",
+ "model": "fal-ai/minimax/speech-2.6-hd",
+ "request": {
+  "prompt": "Papa says crows are clever. If you feed them they bring presents. Maybe they'll bring the button too.",
+  "voice_setting": {
+   "speed": 1,
+   "pitch": 0,
+   "vol": 1,
+   "voice_id": "Lovely_Girl"
+  },
+  "language_boost": "English",
+  "audio_setting": {
+   "sample_rate": 24000,
+   "format": "mp3",
+   "channel": 1
+  },
+  "output_format": "url"
+ },
+ "fal_request_id": "01a1d591-cea4-7983-8531-cdd466eadcc7",
+ "hash": "2ab09ea8e623"
+}

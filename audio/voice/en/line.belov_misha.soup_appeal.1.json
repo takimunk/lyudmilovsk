@@ -1,0 +1,20 @@
+{
+ "key": "line.belov_misha.soup_appeal.1",
+ "lang": "en",
+ "text": "Vika says the independent expert sides with the soup. The expert just likes dill. I'm filing an appeal.",
+ "speaker": "belov_misha",
+ "voice": "Liam",
+ "voice_id": "TX3LPaxmHKxFdv7VOQHJ",
+ "voice_design": null,
+ "direction": "[easygoing, amused, a young technician, a little self-ironic]",
+ "model": "fal-ai/elevenlabs/tts/eleven-v3",
+ "request": {
+  "stability": 0.5,
+  "apply_text_normalization": "auto",
+  "text": "[easygoing, amused, a young technician, a little self-ironic] Vika says the independent expert sides with the soup. The expert just likes dill. I'm filing an appeal.",
+  "voice": "Liam",
+  "language_code": "en"
+ },
+ "fal_request_id": "01a1d7a8-f74d-7c62-ac28-dae9d019dec8",
+ "hash": "1ada4ec0a940"
+}

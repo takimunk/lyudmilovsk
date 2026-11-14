@@ -70,6 +70,7 @@ bool ULyudBiteSubsystem::BeginMeal(const FLyudMeal& InMeal)
 		Hand->PutAway();
 	}
 	Meal = InMeal;
+	MealHero = Hero;
 	MealAssets.Reset();
 	for (UObject* O : { (UObject*)Meal.LoadMesh, (UObject*)Meal.LoadMeshBig, (UObject*)Meal.LoadMaterial, (UObject*)Meal.UtensilMesh })
 	{
@@ -341,6 +342,8 @@ void ULyudBiteSubsystem::ReachMouth()
 	if (Meal.Amount <= 0.f)
 	{
 		ULyudQuests::Notify(this, TEXT("use"), Meal.Item.ToString());
+		// "use" is also sent when a dish is ordered (it leaves the pocket for the table): "eat" is the plate emptied
+		ULyudQuests::Notify(this, TEXT("eat"), Meal.Item.ToString());
 	}
 }
 
@@ -494,13 +497,16 @@ void ULyudBiteSubsystem::Finish(bool bEaten)
 		return;
 	}
 	bActive = false;
-	if (AHeroCharacter* Hero = LyudBite::Hero(GetWorld()))
+	// the hero who was eating, not the player's pawn of this moment (a bird, when the player has just become one: the hand's
+	// hold would stay on the hero for good)
+	if (AHeroCharacter* Hero = MealHero.Get())
 	{
-		if (UHeroReachComponent* Reach = UHeroReachComponent::Get(Hero))
+		if (UHeroReachComponent* Reach = Hero->FindReach())
 		{
 			Reach->ClearOverrideHold();
 		}
 	}
+	MealHero.Reset();
 	if (Utensil)
 	{
 		Utensil->Destroy();

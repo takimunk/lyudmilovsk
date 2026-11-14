@@ -1,0 +1,8 @@
+{
+ "_doc": "Lifts and storey links (docs/city_interiors.md \"Lifts and storey links\"): the chooser's words. Floor captions are the building's own keys.",
+ "city.lift.title": {"ru": "Куда?", "en": "Which floor?", "ja": "どの階へ？"},
+ "city.lift.entry": {"ru": "{0}. {1}", "en": "{0}. {1}", "ja": "{0}. {1}"},
+ "city.lift.keys": {"ru": "A, D — выбрать · E — ехать · Esc, W, S — остаться", "en": "A, D choose · E go · Esc, W, S stay", "ja": "A・D 選ぶ　E 行く　Esc・W・S やめる"},
+ "city.lift.blocked": {"ru": "Там сейчас не пройти.", "en": "There's no way through there right now.", "ja": "いまはそこへ行けない。"},
+ "dev.action.interiors.lift_nearest": {"ru": "Лифты: ближайший лифт или лестница", "en": "Lifts: the nearest lift or stair", "ja": "エレベーター：いちばん近いエレベーターか階段"}
+}

@@ -23,13 +23,22 @@ the plot's `front` point in `city_plan.json`; Unreal yaw = plot yaw − 90.
 
 ## Windows and lights
 
-Every window is one opaque card (`M_City_Window`): dark glass by day, a lit room with a curtain at night. UV 1 of the
+Every window is one opaque card seen from outside (`M_City_Window`): dark glass by day, a lit room with a curtain at night. UV 1 of the
 card points at one texel of a 64 × 64 texture per building (R light, G lamp warmth, B curtain). `ALyudCityBuilding`
 holds the meshes and the window table (`WindowIds`, `WindowKinds`, `WindowFlats`, filled by the import);
 `ULyudWindowLights` writes a texel only when a light changes and uploads changed buildings in batches (at most four
 times a second), never once per call. Slot row r sits at Blender v = (r + 0.5) / 64; glTF flips v, so the C++ writes
 it into texture row 63 - r (`TexelOf`).
 
+* From inside: every window also has a room-side card 1.2 cm behind it, facing in (slot `CT_WindowIn`,
+  `M_City_WindowIn`, `make_city_materials.window_in`): unlit, emissive only, a bright sky pane by day (paler toward the
+  horizon a third of the way up, a hint of sea blue below) and dark blue at night, after the sun's height read in the
+  material (`SkyAtmosphereLightDirection` 0 = ALyudSky's sun): nothing is set per frame or per building. It lets no
+  light in (rooms are lit by `B.lamp`); the `Windows` component stays out of Lumen and the distance fields, so neither
+  card's glow costs GI. Parameters: `DayIntensity` (80), `NightIntensity` (4), `Daylight` (-1 = the sun; 0..1 forces
+  it), `SunLo`/`SunHi` (sin of the sun's altitude, -0.05..0.10), `Frame` (the dark frame line, 0.018 of the pane).
+  `B.inside_windows` = `"all"` (default) | `"public"` (public, shop, stair) | `None` | a set of window ids, or
+  `B.window(..., inside=False)` per window. Cost: 2 triangles a window (+11.5 k over all types).
 * Flats: the town life (`UPeopleLifeSubsystem`, branch town-life) calls `SetDriven(true)` and then
   `SetFlatLit("<plot>/<flat>", bOn)` (by reflection). Only windows it has set are its own; every other flat keeps
   the seeded evening (lights on at dusk when the household is home, off between 21:30 and 01:30, some early risers).

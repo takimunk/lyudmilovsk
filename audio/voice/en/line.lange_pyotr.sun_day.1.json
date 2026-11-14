@@ -1,0 +1,20 @@
+{
+ "key": "line.lange_pyotr.sun_day.1",
+ "lang": "en",
+ "text": "By day the sun goes right down to the bottom. The fish go deeper, and I sit and warm my hands.",
+ "speaker": "lange_pyotr",
+ "voice": "Brian",
+ "voice_id": "nPczCjzI2devNBz1zQrb",
+ "voice_design": null,
+ "direction": "[gruff, unhurried, a weathered fisherman of few words]",
+ "model": "fal-ai/elevenlabs/tts/eleven-v3",
+ "request": {
+  "stability": 0.5,
+  "apply_text_normalization": "auto",
+  "text": "[gruff, unhurried, a weathered fisherman of few words] By day the sun goes right down to the bottom. The fish go deeper, and I sit and warm my hands.",
+  "voice": "Brian",
+  "language_code": "en"
+ },
+ "fal_request_id": "01a1d745-8675-7252-b153-958441dc3626",
+ "hash": "b05a7566e8f8"
+}

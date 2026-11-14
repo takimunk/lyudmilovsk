@@ -1,0 +1,20 @@
+{
+ "key": "line.zotova_galina.sodalab_tell.4",
+ "lang": "ja",
+ "text": "レフは目をつぶっても区別できると言い張っています。次はレフを検証しましょう。",
+ "speaker": "zotova_galina",
+ "voice": "Alice",
+ "voice_id": "Xb7hH8MSUJpSbSDYk0k2",
+ "voice_design": null,
+ "direction": "[warm, chatty, fondly exasperated with her husband]",
+ "model": "fal-ai/elevenlabs/tts/eleven-v3",
+ "request": {
+  "stability": 0.5,
+  "apply_text_normalization": "auto",
+  "text": "[warm, chatty, fondly exasperated with her husband] レフは目をつぶっても区別できると言い張っています。次はレフを検証しましょう。",
+  "voice": "Alice",
+  "language_code": "ja"
+ },
+ "fal_request_id": "01a1d678-ac7c-7401-9aca-d3991d0b087e",
+ "hash": "c53bfa77e3d0"
+}

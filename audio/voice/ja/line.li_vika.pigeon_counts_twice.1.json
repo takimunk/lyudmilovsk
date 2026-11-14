@@ -1,0 +1,20 @@
+{
+ "key": "line.li_vika.pigeon_counts_twice.1",
+ "lang": "ja",
+ "text": "ダーシャの鳥を数えてるの？ハトだって鳥だよ。お願い、二回数えて。",
+ "speaker": "li_vika",
+ "voice": "Laura",
+ "voice_id": "FGY2WhTYpPnrIDTdsKH5",
+ "voice_design": null,
+ "direction": "[playful, quick, a lab assistant joking about her work]",
+ "model": "fal-ai/elevenlabs/tts/eleven-v3",
+ "request": {
+  "stability": 0.5,
+  "apply_text_normalization": "auto",
+  "text": "[playful, quick, a lab assistant joking about her work] ダーシャの鳥を数えてるの？ハトだって鳥だよ。お願い、二回数えて。",
+  "voice": "Laura",
+  "language_code": "ja"
+ },
+ "fal_request_id": "01a1d6d6-c476-7e13-a595-6f7b5f31516d",
+ "hash": "23f0dc3a7b38"
+}

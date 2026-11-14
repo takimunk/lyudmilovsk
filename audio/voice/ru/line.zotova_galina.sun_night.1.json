@@ -1,0 +1,20 @@
+{
+ "key": "line.zotova_galina.sun_night.1",
+ "lang": "ru",
+ "text": "Уже темно. Днём я солнца не замечаю, а вечером по нему скучаю. Нелогично, я знаю.",
+ "speaker": "zotova_galina",
+ "voice": "Alice",
+ "voice_id": "Xb7hH8MSUJpSbSDYk0k2",
+ "voice_design": null,
+ "direction": "[warm, chatty, fondly exasperated with her husband]",
+ "model": "fal-ai/elevenlabs/tts/eleven-v3",
+ "request": {
+  "stability": 0.5,
+  "apply_text_normalization": "auto",
+  "text": "[warm, chatty, fondly exasperated with her husband] Уже темно. Днём я солнца не замечаю, а вечером по нему скучаю. Нелогично, я знаю.",
+  "voice": "Alice",
+  "language_code": "ru"
+ },
+ "fal_request_id": "01a1d74a-fe57-7f50-8f4c-89a3a8e608a2",
+ "hash": "52e56a1e96e2"
+}

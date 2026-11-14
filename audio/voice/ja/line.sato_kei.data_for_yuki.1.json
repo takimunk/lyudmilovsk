@@ -1,0 +1,20 @@
+{
+ "key": "line.sato_kei.data_for_yuki.1",
+ "lang": "ja",
+ "text": "じっとしてて。夜にユキが誰が来たか聞くから、正確なデータがいるんだ。",
+ "speaker": "sato_kei",
+ "voice": "Eric",
+ "voice_id": "cjVigY5qzO86Huf0OWal",
+ "voice_design": null,
+ "direction": "[quiet, precise, softly puzzled, a scientist thinking aloud]",
+ "model": "fal-ai/elevenlabs/tts/eleven-v3",
+ "request": {
+  "stability": 0.5,
+  "apply_text_normalization": "auto",
+  "text": "[quiet, precise, softly puzzled, a scientist thinking aloud] じっとしてて。夜にユキが誰が来たか聞くから、正確なデータがいるんだ。",
+  "voice": "Eric",
+  "language_code": "ja"
+ },
+ "fal_request_id": "01a1d7b8-4ebe-7763-9881-96f3b019e6d0",
+ "hash": "dfeee8088623"
+}

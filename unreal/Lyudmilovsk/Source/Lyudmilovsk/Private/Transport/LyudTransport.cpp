@@ -2,6 +2,7 @@
 // player's calls, rides and announcements.
 #include "Transport/LyudTransport.h"
 
+#include "NpcDialogue.h"
 #include "HeroCharacter.h"
 
 #include "Audio/LyudSoundscape.h"
@@ -736,7 +737,8 @@ void ULyudTransportSubsystem::SitDown(int32 Cabin, int32 K)
 	// the hero's own seat (AHeroCharacter::SitOn, as on the train): carried with the cabin, its swing included
 	const APlayerController* PC = GetWorld() ? GetWorld()->GetFirstPlayerController() : nullptr;
 	AHeroCharacter* Hero = PC ? Cast<AHeroCharacter>(PC->GetPawn()) : nullptr;
-	if (!Hero || !Cabins.IsValidIndex(Cabin) || !Cabins[Cabin])
+	// not from a bike's saddle: the seat would keep the collision the bike took off (none) and hand it back on standing up
+	if (!Hero || Hero->IsOnBike() || !Cabins.IsValidIndex(Cabin) || !Cabins[Cabin])
 	{
 		return;
 	}
@@ -760,9 +762,9 @@ void ULyudTransportSubsystem::StandUp()
 
 void ULyudTransportSubsystem::KeepSeated()
 {
-	// the hero stands up by itself too (a step, Space): follow it
-	const APlayerController* PC = GetWorld() ? GetWorld()->GetFirstPlayerController() : nullptr;
-	const AHeroCharacter* Hero = PC ? Cast<AHeroCharacter>(PC->GetPawn()) : nullptr;
+	// the hero stands up by itself too (a step, Space): follow it (the body the player left to fly as a bird sits on)
+	bool bAway = false;
+	const AHeroCharacter* Hero = Cast<AHeroCharacter>(PlayerBody(bAway));
 	if (SeatedCabin >= 0 && (!Hero || !Hero->IsSeated()))
 	{
 		SeatedCabin = SeatedK = -1;
@@ -771,8 +773,8 @@ void ULyudTransportSubsystem::KeepSeated()
 
 void ULyudTransportSubsystem::RiderIgnoresWay(bool bIgnore)
 {
-	const APlayerController* PC = GetWorld() ? GetWorld()->GetFirstPlayerController() : nullptr;
-	ACharacter* Char = PC ? Cast<ACharacter>(PC->GetPawn()) : nullptr;
+	bool bAway = false;
+	ACharacter* Char = PlayerBody(bAway);
 	if (!Char || !Cableway || bIgnore == bRiderIgnoresWay)
 	{
 		return;
@@ -781,17 +783,35 @@ void ULyudTransportSubsystem::RiderIgnoresWay(bool bIgnore)
 	Char->GetCapsuleComponent()->IgnoreActorWhenMoving(Cableway, bIgnore);
 }
 
+ACharacter* ULyudTransportSubsystem::PlayerBody(bool& bAway)
+{
+	bAway = false;
+	const APlayerController* PC = GetWorld() ? GetWorld()->GetFirstPlayerController() : nullptr;
+	APawn* Pawn = PC ? PC->GetPawn() : nullptr;
+	if (ACharacter* Char = Cast<ACharacter>(Pawn))
+	{
+		RiderBody = Char;
+		return Char;
+	}
+	// another pawn (the player flies as a bird): the hero stands where they left him, and rides on if that is a cabin
+	ACharacter* Left = Pawn ? RiderBody.Get() : nullptr;
+	bAway = Left != nullptr;
+	return Left;
+}
+
 void ULyudTransportSubsystem::Carry(const FTransform& Before, const FTransform& After, AActor* Cabin)
 {
 	APlayerController* PC = GetWorld() ? GetWorld()->GetFirstPlayerController() : nullptr;
-	ACharacter* Char = PC ? Cast<ACharacter>(PC->GetPawn()) : nullptr;
+	bool bAway = false;
+	ACharacter* Char = PlayerBody(bAway);
 	if (!Char || Before.Equals(After, 0.01f))
 	{
 		return;
 	}
 	const UPrimitiveComponent* Base = Char->GetMovementBase();
 	const AHeroCharacter* Hero = Cast<AHeroCharacter>(Char);
-	if ((Base && Base->GetOwner() == Cabin) || (Hero && Hero->IsSeated()))
+	// a body nobody plays (the player flies as a bird) has no movement of its own, so no base carries it: by hand
+	if ((!bAway && Base && Base->GetOwner() == Cabin) || (Hero && Hero->IsSeated()))
 	{
 		return;     // its own base carries it, or it sits (the seat carries it)
 	}
@@ -801,7 +821,10 @@ void ULyudTransportSubsystem::Carry(const FTransform& Before, const FTransform& 
 	if (FMath::Abs(Turn) > 0.001f)
 	{
 		Char->AddActorWorldRotation(FRotator(0.f, Turn, 0.f));
-		PC->SetControlRotation(PC->GetControlRotation() + FRotator(0.f, Turn, 0.f));
+		if (PC && !bAway)
+		{
+			PC->SetControlRotation(PC->GetControlRotation() + FRotator(0.f, Turn, 0.f));
+		}
 	}
 }
 
@@ -889,7 +912,11 @@ void ULyudTransportSubsystem::UpdatePlayer(float DeltaTime)
 	{
 		return;
 	}
-	const FVector P = Pawn->GetActorLocation();
+	// flying as a bird the player rides nothing: the rider is the body they left (it stays aboard and is carried on;
+	// taken as "got out", it hung in the air where the cabin had been and fell from there on the way back)
+	bool bAway = false;
+	const ACharacter* Body = PlayerBody(bAway);
+	const FVector P = bAway && Body ? Body->GetActorLocation() : Pawn->GetActorLocation();
 	// in a cabin?
 	int32 In = -1;
 	for (int32 I = 0; I < Cabins.Num(); I++)
@@ -927,10 +954,11 @@ void ULyudTransportSubsystem::UpdatePlayer(float DeltaTime)
 		}
 		RidingCabin = In;
 	}
-	else if (In >= 0 && Net->FindRider(LT::PlayerId) < 0 && Net->Cabins[In].AtStop >= 0 && Net->Cabins[In].State != LT::ECabinState::Moving
+	else if (!bAway && In >= 0 && Net->FindRider(LT::PlayerId) < 0 && Net->Cabins[In].AtStop >= 0 && Net->Cabins[In].State != LT::ECabinState::Moving
 		&& Net->Time > Net->Cabins[In].DwellUntil - 1.0)
 	{
-		// still aboard after their stop: they ride on to the next
+		// still aboard after their stop: they ride on to the next (a body left by a bird asks for nothing: it waits in
+		// the cabin where its trip ended)
 		Net->PlayerBoard(In, -1);
 	}
 
@@ -942,6 +970,17 @@ void ULyudTransportSubsystem::UpdatePlayer(float DeltaTime)
 	}
 	// what the prompt says, as a key (kind, a, b); its text is made below only when the key changes
 	enum : int32 { PNone, PDoor, PSeatUp, PSeatSit, PWhere, PCall, PBoard, PRide };
+	if (bAway)
+	{
+		// nobody at the doors, the seats or the panels: no prompt, and E is the bird's
+		if (PromptShown.X != PNone)
+		{
+			PromptShown = FIntVector(PNone, 0, 0);
+			PromptText = FText::GetEmpty();
+			UI->SetPrompt(this, PromptText);
+		}
+		return;
+	}
 	FIntVector Want(PNone, 0, 0);
 	int32 PanelStation = -1;
 	bool bClubBoard = false;
@@ -1047,7 +1086,7 @@ void ULyudTransportSubsystem::UpdatePlayer(float DeltaTime)
 		UI->SetPrompt(this, PromptText);
 		PromptRefresh = 0.25f;
 	}
-	const bool bE = PromptCooldown <= 0.f && PC->WasInputKeyJustPressed(EKeys::E) && !UI->IsOpen();
+	const bool bE = PromptCooldown <= 0.f && ANpcTalkDirector::UsePressed(PC, true) && !UI->IsOpen();
 	if (bE && DoorCabin >= 0)
 	{
 		LT::FCabin& C = Net->Cabins[DoorCabin];

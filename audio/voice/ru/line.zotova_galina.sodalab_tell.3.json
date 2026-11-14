@@ -1,0 +1,20 @@
+{
+ "key": "line.zotova_galina.sodalab_tell.3",
+ "lang": "ru",
+ "text": "«Зелёный» это не вкус, но в протокол я занесу. Гипотеза опровергнута: сиропов четыре.",
+ "speaker": "zotova_galina",
+ "voice": "Alice",
+ "voice_id": "Xb7hH8MSUJpSbSDYk0k2",
+ "voice_design": null,
+ "direction": "[warm, chatty, fondly exasperated with her husband]",
+ "model": "fal-ai/elevenlabs/tts/eleven-v3",
+ "request": {
+  "stability": 0.5,
+  "apply_text_normalization": "auto",
+  "text": "[warm, chatty, fondly exasperated with her husband] «Зелёный» это не вкус, но в протокол я занесу. Гипотеза опровергнута: сиропов четыре.",
+  "voice": "Alice",
+  "language_code": "ru"
+ },
+ "fal_request_id": "01a1d675-389a-7f72-aeaf-ac0edb9e9479",
+ "hash": "b5ef95facee1"
+}

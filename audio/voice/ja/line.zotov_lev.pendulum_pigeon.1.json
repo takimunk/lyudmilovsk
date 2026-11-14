@@ -1,0 +1,20 @@
+{
+ "key": "line.zotov_lev.pendulum_pigeon.1",
+ "lang": "ja",
+ "text": "ハトか。振り子みたいにうなずく。周期は、目分量で〇・五秒。",
+ "speaker": "zotov_lev",
+ "voice": "George",
+ "voice_id": "JBFqnCBsd6RMkjVDRZzb",
+ "voice_design": null,
+ "direction": "[dry, thoughtful, unhurried, a physicist's quiet irony]",
+ "model": "fal-ai/elevenlabs/tts/eleven-v3",
+ "request": {
+  "stability": 0.5,
+  "apply_text_normalization": "auto",
+  "text": "[dry, thoughtful, unhurried, a physicist's quiet irony] ハトか。振り子みたいにうなずく。周期は、目分量で〇・五秒。",
+  "voice": "George",
+  "language_code": "ja"
+ },
+ "fal_request_id": "01a1d6eb-6710-75e0-bda4-f7fa78eec4bc",
+ "hash": "9bd8070e55f8"
+}

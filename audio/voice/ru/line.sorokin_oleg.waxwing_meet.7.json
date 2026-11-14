@@ -1,0 +1,20 @@
+{
+ "key": "line.sorokin_oleg.waxwing_meet.7",
+ "lang": "ru",
+ "text": "А здесь не видел ни одного. Они держатся в старом лесу за северными холмами, где рябина. Мне туда уже не дойти: колени.",
+ "speaker": "sorokin_oleg",
+ "voice": "River",
+ "voice_id": "SAz9YHcvj6GT2YYXdXww",
+ "voice_design": null,
+ "direction": "[a retired scholar, calm, dry humour, slower, gentle]",
+ "model": "fal-ai/elevenlabs/tts/eleven-v3",
+ "request": {
+  "stability": 0.5,
+  "apply_text_normalization": "auto",
+  "text": "[a retired scholar, calm, dry humour, slower, gentle] А здесь не видел ни одного. Они держатся в старом лесу за северными холмами, где рябина. Мне туда уже не дойти: колени.",
+  "voice": "River",
+  "language_code": "ru"
+ },
+ "fal_request_id": "01a1d588-7ebd-77f1-a6b6-7f72b147bc92",
+ "hash": "451610b254f4"
+}

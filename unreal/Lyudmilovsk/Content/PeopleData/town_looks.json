@@ -1,6 +1,30 @@
 {
- "_doc": "Each townsperson's own model, made by blender/residents (docs/residents.md). tools/town/town_life.py copies it into townsfolk.json 'body'; the pool model stays as 'mesh' until the model is imported.",
+ "_doc": "Each townsperson's own model, made by blender/residents (docs/residents.md). tools/town/town_life.py copies it into townsfolk.json 'body'; the pool model stays as 'mesh' until the model is imported. Keys without t_ are named people of people.json (looks.py CAST): their model is their 'body'.",
  "people": {
+  "ito_ren": {
+   "hash": "4092176824bc",
+   "model": "Town/R_ito_ren"
+  },
+  "khuazhev_aslan": {
+   "hash": "b77d14306d29",
+   "model": "Khuazhev_aslan"
+  },
+  "melnikova_anya": {
+   "hash": "986d2f57b33f",
+   "model": "Town/R_melnikova_anya"
+  },
+  "okada_kiyo": {
+   "hash": "e874d7c08072",
+   "model": "Town/R_okada_kiyo"
+  },
+  "ranger": {
+   "hash": "7ec51db9c6b8",
+   "model": "Town/R_ranger"
+  },
+  "savin_gleb": {
+   "hash": "e74d93e898ef",
+   "model": "Town/R_savin_gleb"
+  },
   "t_abenov_caio": {
    "hash": "9e5492e8ad0c",
    "model": "Town/R_abenov_caio"
@@ -650,7 +674,7 @@
    "model": "Town/R_dvorak_kwame"
   },
   "t_dvorak_milagros": {
-   "hash": "4e643ac8890c",
+   "hash": "4ac425417b3b",
    "model": "Town/R_dvorak_milagros"
   },
   "t_ek_yael": {
@@ -1398,7 +1422,7 @@
    "model": "Town/R_kavanagh_freja"
   },
   "t_kavanagh_mads": {
-   "hash": "f8687c99690f",
+   "hash": "829abc518988",
    "model": "Town/R_kavanagh_mads"
   },
   "t_kavanagh_siobhan": {
@@ -2378,7 +2402,7 @@
    "model": "Town/R_owusu_subin"
   },
   "t_owusu_taras": {
-   "hash": "11d976a7bf2e",
+   "hash": "3b5d149337da",
    "model": "Town/R_owusu_taras"
   },
   "t_ozols_agnieszka": {

@@ -1,0 +1,20 @@
+{
+ "key": "line.owner.supper_thanks.2",
+ "lang": "ru",
+ "text": "Солнце я чувствую затылком. А голод не замечаю, пока кто-нибудь не напомнит.",
+ "speaker": "owner",
+ "voice": "Daniel",
+ "voice_id": "onwK4e9ZLuTAKqWW03F9",
+ "voice_design": null,
+ "direction": "[calm, tired, slow, a little ironic]",
+ "model": "fal-ai/elevenlabs/tts/eleven-v3",
+ "request": {
+  "stability": 0.5,
+  "apply_text_normalization": "auto",
+  "text": "[calm, tired, slow, a little ironic] Солнце я чувствую затылком. А голод не замечаю, пока кто-нибудь не напомнит.",
+  "voice": "Daniel",
+  "language_code": "ru"
+ },
+ "fal_request_id": "01a1d671-ea21-7481-88dd-5d062c1350c8",
+ "hash": "828b5dfde676"
+}

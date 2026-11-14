@@ -1,0 +1,20 @@
+{
+ "key": "line.zotova_galina.four_bottles_boy.1",
+ "lang": "en",
+ "text": "Bird, if you see a young man at the club with four bottles, do not distract him. He is working for science.",
+ "speaker": "zotova_galina",
+ "voice": "Alice",
+ "voice_id": "Xb7hH8MSUJpSbSDYk0k2",
+ "voice_design": null,
+ "direction": "[warm, chatty, fondly exasperated with her husband]",
+ "model": "fal-ai/elevenlabs/tts/eleven-v3",
+ "request": {
+  "stability": 0.5,
+  "apply_text_normalization": "auto",
+  "text": "[warm, chatty, fondly exasperated with her husband] Bird, if you see a young man at the club with four bottles, do not distract him. He is working for science.",
+  "voice": "Alice",
+  "language_code": "en"
+ },
+ "fal_request_id": "01a1d6eb-5dad-75b3-9acc-10ef5a1e330d",
+ "hash": "4c8b8298e32a"
+}

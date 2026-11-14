@@ -1,0 +1,20 @@
+{
+ "key": "line.sorokin_oleg.bird_over.1",
+ "lang": "ru",
+ "text": "Кто там кричит? Сядь, покажись. Я без бинокля.",
+ "speaker": "sorokin_oleg",
+ "voice": "River",
+ "voice_id": "SAz9YHcvj6GT2YYXdXww",
+ "voice_design": null,
+ "direction": "[a retired scholar, calm, dry humour, slower, gentle]",
+ "model": "fal-ai/elevenlabs/tts/eleven-v3",
+ "request": {
+  "stability": 0.5,
+  "apply_text_normalization": "auto",
+  "text": "[a retired scholar, calm, dry humour, slower, gentle] Кто там кричит? Сядь, покажись. Я без бинокля.",
+  "voice": "River",
+  "language_code": "ru"
+ },
+ "fal_request_id": "01a1d586-7096-7501-86e9-b4ad8c1436d6",
+ "hash": "3c7b8fc09400"
+}

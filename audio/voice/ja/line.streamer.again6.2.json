@@ -1,0 +1,20 @@
+{
+ "key": "line.streamer.again6.2",
+ "lang": "ja",
+ "text": "お昼から、チャットが寝るまで。チャットのほうがわたしより遅く寝るの。",
+ "speaker": "streamer",
+ "voice": "Jessica",
+ "voice_id": "cgSgspJ2msm6clMCkdW9",
+ "voice_design": null,
+ "direction": "[bright, fast, half talking to her chat]",
+ "model": "fal-ai/elevenlabs/tts/eleven-v3",
+ "request": {
+  "stability": 0.5,
+  "apply_text_normalization": "auto",
+  "text": "[bright, fast, half talking to her chat] お昼から、チャットが寝るまで。チャットのほうがわたしより遅く寝るの。",
+  "voice": "Jessica",
+  "language_code": "ja"
+ },
+ "fal_request_id": "01a1d786-8167-7771-ac45-cb5c46c1a9ae",
+ "hash": "fcbb7293cb0e"
+}

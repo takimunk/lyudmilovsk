@@ -6,6 +6,14 @@
 #include "Bikes/LyudBikeSubsystem.h"
 
 #include "PeopleSim.h"
+#include "PeopleManners.h"
+#include "BodyGestures.h"
+#include "UI/LyudGameScreen.h"
+#include "Bikes/HeroBike.h"
+#include "Engine/AssetManager.h"
+#include "Engine/StreamableManager.h"
+#include "GameFramework/Character.h"
+#include "Misc/FileHelper.h"
 #include "Animation/AnimSequence.h"
 #include "Animation/SkeletalMeshActor.h"
 #include "BoothOwner.h"
@@ -31,6 +39,10 @@
 #include "AssetRegistry/IAssetRegistry.h"
 #include "Plants/GameCalendar.h"
 #include "Sky/Ephemeris.h"
+#include "Sky/LyudRareSky.h"
+#include "Fishing/LyudFishing.h"
+#include "Sea/LyudSwim.h"
+#include "HeroCharacter.h"
 #include "Weather/LyudWeather.h"
 #include "Winter/LyudWinter.h"
 #include "Camera/PlayerCameraManager.h"
@@ -188,7 +200,7 @@ void UPeopleLifeSubsystem::Deinitialize()
 bool UPeopleLifeSubsystem::Start()
 {
 	TPimplPtr<LP::FWorld> W = MakePimpl<LP::FWorld>();
-	W->Opt.SettleBatch = 120;      // the townsfolk placed over a few frames after a load or a clock jump
+	W->Opt.SettleBatch = 24;       // the townsfolk placed over some forty frames after a load or a clock jump (a decision each: 120 a frame was a 24 ms frame)
 	const FString Dir = FPaths::ConvertRelativePathToFull(FPaths::ProjectContentDir() / TEXT("PeopleData"));
 	const FString Animals = FPaths::ConvertRelativePathToFull(FPaths::ProjectContentDir() / TEXT("AnimalsData"));
 	if (!W->Load(TCHAR_TO_UTF8(*Dir), TCHAR_TO_UTF8(*Animals)))
@@ -211,11 +223,18 @@ bool UPeopleLifeSubsystem::Start()
 			}
 		}
 	}
+	LoadManners();
+	if (ULyudWeatherSubsystem* Storms = ULyudWeatherSubsystem::Get(GetWorld()))
+	{
+		Storms->OnLightning.AddUniqueDynamic(this, &UPeopleLifeSubsystem::OnThunder);
+	}
 	TownAllowed.Init(false, (int32)Sim->People.size());
 	bLightSinksBound = false;
 	LightSinks.Reset();
 	LightTimer = 0.f;
+	bLightsAll = false;
 	UpdateClock(true);
+	ApplyWanted();      // (before the townsfolk are placed: a holiday's morning has no school, a festival night keeps them up)
 	ResolveModels();
 	BindClub();
 	BindRailway();
@@ -270,7 +289,16 @@ void UPeopleLifeSubsystem::Stop()
 	}
 	TownBodies.Reset();
 	TownPool.Reset();
+	OwnParked.Reset();
 	TownNear.Reset();
+	Manners.Reset();
+	if (PropLoad.IsValid())
+	{
+		PropLoad->CancelHandle();
+		PropLoad.Reset();
+	}
+	PropMeshes.Reset();
+	EaselMesh = nullptr;
 	SetLightsDriven(false);     // the buildings light themselves again (a seeded evening)
 	LightSinks.Reset();
 	bLightSinksBound = false;
@@ -297,6 +325,14 @@ void UPeopleLifeSubsystem::Stop()
 	Talkable.Reset();
 	TrainSeats.Reset();
 	bRailSynced = false;
+	if (Sim)
+	{
+		// whoever was clearing snow gives the stretch back to the winter (it outlives this life: lyud.People 0)
+		for (LP::FPerson& P : Sim->People)
+		{
+			Sim->DropSweep(P);
+		}
+	}
 	Sim.Reset();
 	bStarted = false;
 }
@@ -515,7 +551,12 @@ void UPeopleLifeSubsystem::SyncMemory(bool bToSave)
 		{
 			for (int32 N = 0; N < LP::NumNeeds && N < M->Needs.Num(); N++)
 			{
-				P.N[N] = M->Needs[N];
+				// a damaged save: a need that isn't a number keeps Resettle's guess, one out of range is brought back in
+				const float Need = M->Needs[N];
+				if (FMath::IsFinite(Need))
+				{
+					P.N[N] = FMath::Clamp(Need, 0.f, 1.f);
+				}
 			}
 		}
 	}
@@ -591,6 +632,9 @@ bool UPeopleLifeSubsystem::UpdateClock(bool bFirst)
 	// in the rain people hurry along outdoors
 	const ULyudWeatherSubsystem* Weather = ULyudWeatherSubsystem::Get(GetWorld());
 	S.bRain = Weather && Weather->GetSky().Rain > 0.25f;
+	// and choose what to do by the weather (a bench in the drizzle, the beach in the frost: PeopleSim's Score)
+	S.Rain = Weather ? Weather->GetSky().Rain : 0.f;
+	S.TempC = Weather ? Weather->GetSky().TempC : 12.f;
 	if (!bFirst && bClockSeen && FMath::Abs(Seconds - LastSeconds) > 900.0)
 	{
 		UE_LOG(LogTemp, Display, TEXT("PeopleLife: the clock jumped %.2f h; people resettled"), (Seconds - LastSeconds) / 3600.0);
@@ -955,6 +999,28 @@ void UPeopleLifeSubsystem::Present(float DeltaTime)
 		PickTownBodies(Cam, FMath::Min(Draw, CVarPeopleTownDraw.GetValueOnGameThread() * 100.f));
 	}
 	PlacedShown.Reset();
+	// manners (docs/town_manners.md): whoever is drawn by Drive below keeps or picks theirs
+	LP::FManners* Mn = Manners.Get();
+	LP::FMannerNow MNow;
+	ShownIds.Reset();
+	if (Mn)
+	{
+		MannerClock += DeltaTime;
+		MNow.Clock = MannerClock;
+		MNow.Rain = S.Rain;
+		MNow.TempC = S.TempC;
+		const ULyudWeatherSubsystem* Weather = ULyudWeatherSubsystem::Get(World);
+		MNow.Cloud = Weather ? Weather->GetSky().Cloud : 0.3f;
+		// the sun's height near enough for a hand over the eyes: an arc from sunrise to sunset
+		MNow.SunAlt = S.bSunUp && S.Sunset > S.Sunrise ? 38.f * FMath::Sin(UE_PI * (S.Hour - S.Sunrise) / (S.Sunset - S.Sunrise)) : -10.f;
+		SkyShowTimer -= DeltaTime;
+		if (SkyShowTimer <= 0.f)
+		{
+			SkyShowTimer = 1.f;
+			RefreshSkyShow(MNow.Cloud, S.bSunUp);
+		}
+		MNow.SkyShow = SkyShow;
+	}
 	bool bOwnerHere = false;
 	for (const LP::FPerson& P : S.People)
 	{
@@ -1075,9 +1141,50 @@ void UPeopleLifeSubsystem::Present(float DeltaTime)
 		}
 		else
 		{
-			Body->Drive(At, P.Yaw, (EPersonPose)(uint8)P.Pose, Transit, P.Speed * 100.f, SeatH, DeltaTime, bWasHidden);
+			float Yaw = P.Yaw;
+			if (Mn)
+			{
+				ShownIds.Add(P.Id);
+				Mn->Update(S, P.Id, MNow);
+				const LP::FMannerState& St = Mn->States[P.Id];
+				const LP::FMannerDef* Def = Mn->DefOf(St);
+				const int32 Prop = Def ? (int32)Def->Prop : 0;
+				const bool bNoEnd = (Def && Def->bForce) || Mn->Forced != LP::EManner::Num;
+				Body->SetManner((uint8)St.Cur, (uint8)Prop, MNow.Clock - St.Start, bNoEnd ? -1.f : St.Until - MNow.Clock, Mn->Personas[P.Id].bLeftHanded,
+					PropMeshes.IsValidIndex(Prop) ? PropMeshes[Prop].Get() : nullptr, St.Cur == LP::EManner::Paint ? EaselMesh.Get() : nullptr);
+				// what they noticed: the head goes there; a child (or anybody run at) turns round to look
+				if (St.LookAt >= -1 && MNow.Clock < St.LookUntil)
+				{
+					FVector Target = FVector::ZeroVector;
+					bool bTarget = false;
+					if (St.LookAt >= 0 && St.LookAt < (int32)S.People.size())
+					{
+						Target = PeopleToUE(S.People[St.LookAt].Pos) + FVector(0.f, 0.f, 150.f);
+						bTarget = true;
+					}
+					else if (const APawn* Pawn = UGameplayStatics::GetPlayerPawn(World, 0))
+					{
+						Target = Pawn->GetPawnViewLocation();
+						bTarget = true;
+					}
+					if (bTarget)
+					{
+						Body->LookAtPoint(Target, St.LookUntil - MNow.Clock);
+						if (St.bTurn)
+						{
+							Yaw = (float)(Target - At).Rotation().Yaw;
+						}
+					}
+				}
+				else
+				{
+					Body->LookAtNothing();
+				}
+			}
+			Body->Drive(At, Yaw, (EPersonPose)(uint8)P.Pose, Transit, P.Speed * 100.f, SeatH, DeltaTime, bWasHidden);
 		}
 	}
+	UpdateManners(DeltaTime);
 	for (const TPair<FString, TObjectPtr<AActor>>& Pair : ClubActors)
 	{
 		ShowPlaced(Pair.Value, PlacedShown.Contains(Pair.Value.Get()));
@@ -1167,26 +1274,41 @@ void UPeopleLifeSubsystem::Tick(float DeltaTime)
 	}
 	if (bJumped)
 	{
-		UpdateLights(true);
+		// every flat is told again, but only once the townsfolk are placed: till then every flat of theirs reads dark
+		bLightsAll = true;
+		LightTimer = 0.f;
 		Present(DeltaTime);
 		return;
 	}
 	LightTimer -= DeltaTime;
-	if (LightTimer <= 0.f)
+	// (no waiting for the placing past a few seconds: with the game's clock stopped it doesn't go on)
+	if (LightTimer <= 0.f && (!S.Settling() || LightTimer < -5.f))
 	{
 		LightTimer = 2.f;
-		UpdateLights(false);
+		UpdateLights(bLightsAll);
+		bLightsAll = false;
 	}
-	// the life runs on the game's calendar (its time scale), in steps of at most a second
-	double Dt = S.Time - Was;
+	// the life runs on the game's calendar (its time scale), in steps of at most a second; at a high time scale (the
+	// developer's slider) in at most eight longer steps a frame, and no more than a few milliseconds of them: what isn't
+	// stepped stays behind in the life's own clock (Was) and is taken up in the next frames
+	const double Target = S.Time;
+	double Dt = Target - Was;
 	S.Time = Was;
 	Dt = FMath::Clamp(Dt, 0.0, 900.0);
+	const double StepLen = FMath::Max(1.0, Dt / 8.0);
+	const double Deadline = FPlatformTime::Seconds() + 0.004;
 	while (Dt > 0.0)
 	{
-		const float Step = (float)FMath::Min(Dt, 1.0);
+		const float Step = (float)FMath::Min(Dt, StepLen);
 		S.Step(Step);
 		Dt -= Step;
+		if (FPlatformTime::Seconds() > Deadline)
+		{
+			break;
+		}
 	}
+	// never more than the quarter of an hour a clock jump is counted from behind the calendar
+	S.Time = FMath::Max(S.Time, Target - 900.0);
 	DispatchEvents();
 	Present(DeltaTime);
 	SaveTimer -= DeltaTime;
@@ -1263,15 +1385,42 @@ void UPeopleLifeSubsystem::ReleaseBody(int32 Id)
 		return;
 	}
 	Bodies[Id] = nullptr;
-	// a look of their own nobody else wears: no pool, the body goes (it's loaded again, async, when they come near)
-	if (ShownModels.IsValidIndex(Id) && Sim && Id < (int32)Sim->People.size() && ShownModels[Id] != UTF8_TO_TCHAR(Sim->People[Id].Mesh.c_str()))
+	if (Manners)
 	{
-		TownBodies.RemoveSwap(Body, EAllowShrinking::No);
-		Body->Destroy();
-		return;
+		Manners->Release(Id, MannerClock);
 	}
+	const bool bOwnLook = ShownModels.IsValidIndex(Id) && Sim && Id < (int32)Sim->People.size() && ShownModels[Id] != UTF8_TO_TCHAR(Sim->People[Id].Mesh.c_str());
 	Body->SetActorHiddenInGame(true);
 	TownPool.FindOrAdd(Body->MeshName).Add(Body);
+	if (!bOwnLook)
+	{
+		return;
+	}
+	// a look of their own nobody else wears: only they can take the body back, so just the last few of these are kept
+	// (in a crowd the nearest ones change all the time: no spawning and destroying a body on each change), the oldest goes
+	const int32 MaxOwnParked = 32;
+	OwnParked.Remove(TWeakObjectPtr<ANpcBody>(Body));
+	OwnParked.Add(TWeakObjectPtr<ANpcBody>(Body));
+	while (OwnParked.Num() > MaxOwnParked)
+	{
+		ANpcBody* Old = OwnParked[0].Get();
+		OwnParked.RemoveAt(0);
+		if (!Old)
+		{
+			continue;
+		}
+		const FString OldModel = Old->MeshName;
+		TArray<TObjectPtr<ANpcBody>>* Free = TownPool.Find(OldModel);
+		if (Free && Free->Remove(Old) > 0)      // still parked: not taken back since
+		{
+			if (Free->Num() == 0)
+			{
+				TownPool.Remove(OldModel);
+			}
+			TownBodies.RemoveSwap(Old, EAllowShrinking::No);
+			Old->Destroy();
+		}
+	}
 }
 
 void UPeopleLifeSubsystem::BindLights()
@@ -1399,6 +1548,14 @@ bool UPeopleLifeSubsystem::IsTownsperson(int32 Id) const
 
 void UPeopleLifeSubsystem::SetGathering(FName Id, FName PlaceOrKind, float FromHour, float ToHour, float Pull, EPeopleGatherMode Mode, FVector FacePoint)
 {
+	// kept for a life that starts later (the festival asks once, maybe before ours has started: ApplyWanted)
+	FWantedGathering& G = WantedGatherings.FindOrAdd(Id);
+	G.PlaceOrKind = PlaceOrKind;
+	G.From = FromHour;
+	G.To = ToHour;
+	G.Pull = Pull;
+	G.Mode = Mode;
+	G.Face = FacePoint;
 	if (!Sim)
 	{
 		return;
@@ -1411,6 +1568,7 @@ void UPeopleLifeSubsystem::SetGathering(FName Id, FName PlaceOrKind, float FromH
 
 void UPeopleLifeSubsystem::ClearGathering(FName Id)
 {
+	WantedGatherings.Remove(Id);
 	if (Sim)
 	{
 		Sim->ClearGathering(TCHAR_TO_UTF8(*Id.ToString()));
@@ -1419,6 +1577,7 @@ void UPeopleLifeSubsystem::ClearGathering(FName Id)
 
 void UPeopleLifeSubsystem::SetDayOff(bool bOff)
 {
+	bWantedDayOff = bOff;
 	if (Sim)
 	{
 		Sim->bDayOff = bOff;
@@ -1427,15 +1586,36 @@ void UPeopleLifeSubsystem::SetDayOff(bool bOff)
 
 void UPeopleLifeSubsystem::SetStayUpUntil(float Hour)
 {
+	// the night's end on the calendar (Hour counts from today's 00:00), for a life that starts before it
+	const FDateTime Now = UGameCalendar::NowIn(GetWorld());
+	WantedStayUpUntil = Hour > 0.f ? (Now.GetDate() + FTimespan::FromHours(Hour)).GetTicks() : 0;
 	if (Sim)
 	{
 		Sim->SetStayUp(Hour);
 	}
 }
 
+void UPeopleLifeSubsystem::ApplyWanted()
+{
+	// what the festivals asked while there was no life (or of the one before): a new life starts with it
+	LP::FWorld& S = *Sim;
+	S.bDayOff = bWantedDayOff;
+	for (const TPair<FName, FWantedGathering>& G : WantedGatherings)
+	{
+		const FWantedGathering& W = G.Value;
+		S.SetGathering(TCHAR_TO_UTF8(*G.Key.ToString()), TCHAR_TO_UTF8(*W.PlaceOrKind.ToString()), W.From, W.To, W.Pull, (LP::EGatherMode)(uint8)W.Mode,
+			!W.Face.IsNearlyZero(), PeopleFromUE(W.Face));
+	}
+	const FDateTime Now = UGameCalendar::NowIn(GetWorld());
+	if (WantedStayUpUntil > Now.GetTicks())
+	{
+		S.SetStayUp((float)(FDateTime(WantedStayUpUntil) - Now.GetDate()).GetTotalHours());
+	}
+}
+
 bool UPeopleLifeSubsystem::IsDayOff() const
 {
-	return Sim && Sim->bDayOff;
+	return bWantedDayOff;
 }
 
 TArray<int32> UPeopleLifeSubsystem::StaffOnShift(FName PlaceId, FName Role) const
@@ -1614,6 +1794,281 @@ FString UPeopleLifeSubsystem::Describe(int32 Id) const
 	return Sim ? FString(UTF8_TO_TCHAR(Sim->Describe(Id).c_str())) + TEXT(" || ") + UTF8_TO_TCHAR(Sim->Scores(Id).c_str()) : FString();
 }
 
+// --- manners ------------------------------------------------------------------------------------------
+
+void UPeopleLifeSubsystem::LoadManners()
+{
+	Manners.Reset();
+	FString Text;
+	const FString Path = FPaths::ProjectContentDir() / TEXT("PeopleData/manners.json");
+	if (!FFileHelper::LoadFileToString(Text, *Path))
+	{
+		UE_LOG(LogTemp, Warning, TEXT("PeopleLife: no %s: people without manners"), *Path);
+		return;
+	}
+	TPimplPtr<LP::FManners> M = MakePimpl<LP::FManners>();
+	const FTCHARToUTF8 Utf8(*Text);
+	if (!M->Load(std::string(Utf8.Get(), Utf8.Length())))
+	{
+		UE_LOG(LogTemp, Warning, TEXT("PeopleLife: manners.json: %s"), UTF8_TO_TCHAR(M->LastError.c_str()));
+		return;
+	}
+	for (const std::string& Warn : M->Warnings)
+	{
+		UE_LOG(LogTemp, Warning, TEXT("PeopleLife: manners.json: %s"), UTF8_TO_TCHAR(Warn.c_str()));
+	}
+	M->Bind(*Sim);
+	M->ApplyLikes(*Sim);
+	// a manner with something in the hands waits for that thing's mesh (/Game/Characters/Humans/Props/SM_Prop_<name>,
+	// blender/humans/props.py): loaded in the background, missing ones are simply never picked
+	M->PropsReady = 1u;
+	Manners = MoveTemp(M);
+	MannerClock = 0.f;
+	NoticeTimer = PassingTimer = 0.f;
+	PropMeshes.Reset();
+	PropMeshes.SetNum((int32)LP::EProp::Num);
+	TArray<FSoftObjectPath> Paths;
+	auto Want = [&Paths](const FString& Name)
+	{
+		const FString Package = TEXT("/Game/Characters/Humans/Props/SM_Prop_") + Name;
+		if (FPackageName::DoesPackageExist(Package))
+		{
+			Paths.Add(FSoftObjectPath(Package + TEXT(".SM_Prop_") + Name));
+		}
+	};
+	for (int32 I = 1; I < (int32)LP::EProp::Num; I++)
+	{
+		Want(UTF8_TO_TCHAR(LP::PropName((LP::EProp)I)));
+	}
+	Want(TEXT("easel"));
+	if (Paths.Num() == 0)
+	{
+		return;
+	}
+	PropLoad = UAssetManager::GetStreamableManager().RequestAsyncLoad(Paths, FStreamableDelegate::CreateWeakLambda(this, [this]()
+	{
+		if (!Manners)
+		{
+			return;
+		}
+		int32 Got = 0;
+		for (int32 I = 1; I < (int32)LP::EProp::Num && I < PropMeshes.Num(); I++)
+		{
+			const FString Name = UTF8_TO_TCHAR(LP::PropName((LP::EProp)I));
+			PropMeshes[I] = FindObject<UStaticMesh>(nullptr, *(TEXT("/Game/Characters/Humans/Props/SM_Prop_") + Name + TEXT(".SM_Prop_") + Name));
+			if (PropMeshes[I])
+			{
+				Manners->PropsReady |= 1u << I;
+				Got++;
+			}
+		}
+		EaselMesh = FindObject<UStaticMesh>(nullptr, TEXT("/Game/Characters/Humans/Props/SM_Prop_easel.SM_Prop_easel"));
+		UE_LOG(LogTemp, Display, TEXT("PeopleLife: %d of %d manner props"), Got, (int32)LP::EProp::Num - 1);
+	}));
+}
+
+void UPeopleLifeSubsystem::UpdateManners(float DeltaTime)
+{
+	LP::FManners* Mn = Manners.Get();
+	if (!Mn || ShownIds.Num() == 0)
+	{
+		return;
+	}
+	LP::FMannerNow MNow;
+	MNow.Clock = MannerClock;
+	MNow.Rain = Sim->Rain;
+	MNow.TempC = Sim->TempC;
+	// a few times a second: what each of them notices of the player (a glance; now and then a word: ULyudTownTalkSubsystem
+	// hears hero_runs, hero_close, hero_lamp through OnPersonEvent)
+	NoticeTimer -= DeltaTime;
+	if (NoticeTimer <= 0.f)
+	{
+		NoticeTimer = 0.25f;
+		UWorld* World = GetWorld();
+		LP::FHeroNow Hero;
+		if (const APawn* Pawn = UGameplayStatics::GetPlayerPawn(World, 0))
+		{
+			Hero.bThere = !Pawn->IsHidden();
+			FVector Feet = Pawn->GetActorLocation();
+			if (const ACharacter* Ch = Cast<ACharacter>(Pawn))
+			{
+				Feet.Z -= Ch->GetSimpleCollisionHalfHeight();
+				Hero.bCrouch = Ch->bIsCrouched;
+			}
+			Hero.Pos = PeopleFromUE(Feet);
+			Hero.Vel = PeopleFromUE(Pawn->GetVelocity());
+			const ULyudGameScreen* Screen = ULyudGameScreen::Get(World);
+			Hero.bLamp = Screen && Screen->IsHeadLampOn();
+			const UHeroBikeComponent* HeroBike = Pawn->FindComponentByClass<UHeroBikeComponent>();
+			Hero.bBike = HeroBike && HeroBike->IsOnBike();
+			const ULyudFishing* Fishing = ULyudFishing::Get(World);
+			Hero.bFishing = Fishing && Fishing->IsLineOut();
+			const ULyudSwimComponent* Swim = ULyudSwimComponent::Get(World);
+			Hero.bSwim = Swim && Swim->IsSwimming();
+			const AHeroCharacter* HeroCh = Cast<AHeroCharacter>(Pawn);
+			Hero.bSeated = HeroCh && HeroCh->IsSeated();
+		}
+		for (const int32 Id : ShownIds)
+		{
+			Mn->Notice(*Sim, Id, MNow, Hero);
+			const LP::ENoticeEvent E = Mn->TakeEvent(Id);
+			if (E != LP::ENoticeEvent::None)
+			{
+				OnPersonEvent.Broadcast(Id, FName(LP::NoticeEventName(E)), -1);
+			}
+		}
+	}
+	// the thunder of a strike has come: a start, shoulders up
+	if (ThunderAt >= 0.f && MannerClock >= ThunderAt)
+	{
+		ThunderAt = -1.f;
+		bool bSaid = false;
+		for (const int32 Id : ShownIds)
+		{
+			const LP::FPerson& P = Sim->People[Id];
+			if (P.bIndoors || Id < 0 || Id >= (int32)Mn->Personas.size())
+			{
+				continue;
+			}
+			const float Chance = (0.2f + 0.6f * ThunderNear) * (0.5f + Mn->Personas[Id].Nerve) * (P.Age < 12 ? 1.5f : 1.f);
+			if (FMath::FRand() < Chance && Mn->React(Id, LP::EManner::HugSelf, MannerClock, FMath::FRandRange(1.2f, 2.4f)) && !bSaid)
+			{
+				bSaid = true;
+				static const FName ThunderName(TEXT("thunder"));
+				OnPersonEvent.Broadcast(Id, ThunderName, -1);
+			}
+		}
+	}
+	// and each other as they pass: a glance, a wave between friends
+	PassingTimer -= DeltaTime;
+	if (PassingTimer <= 0.f)
+	{
+		PassingTimer = 0.5f;
+		Mn->Passing(*Sim, ShownIds.GetData(), ShownIds.Num(), MNow);
+	}
+}
+
+FName UPeopleLifeSubsystem::GetManner(int32 Id) const
+{
+	const LP::FMannerState* St = Manners ? Manners->StateOf(Id) : nullptr;
+	return St && St->Cur != LP::EManner::None ? FName(LP::MannerName(St->Cur)) : NAME_None;
+}
+
+float UPeopleLifeSubsystem::GetTrait(int32 Id, FName Trait) const
+{
+	const LP::FPersona* Who = Manners ? Manners->PersonaOf(Id) : nullptr;
+	return Who ? LP::PersonaTrait(*Who, TCHAR_TO_UTF8(*Trait.ToString())) : 0.5f;
+}
+
+void UPeopleLifeSubsystem::OnThunder(FVector Location, float DistanceFromViewM)
+{
+	// (one clap at a time: a nearer strike before the first is heard takes its place)
+	if (DistanceFromViewM < 4000.f && (ThunderAt < 0.f || 1.f - DistanceFromViewM / 4000.f > ThunderNear))
+	{
+		ThunderNear = 1.f - DistanceFromViewM / 4000.f;
+		ThunderAt = MannerClock + FMath::Min(DistanceFromViewM / 340.f, 12.f);
+	}
+}
+
+void UPeopleLifeSubsystem::SetSkyShow(FName What, float Strength, float Seconds)
+{
+	TimedShowWhat = What;
+	TimedShow = FMath::Clamp(Strength, 0.f, 1.f);
+	TimedShowUntil = MannerClock + Seconds;
+	SkyShowTimer = 0.f;
+}
+
+void UPeopleLifeSubsystem::RefreshSkyShow(float Cloud, bool bSunUp)
+{
+	static const FName Aurora(TEXT("aurora")), Rainbow(TEXT("rainbow"));
+	FName What;
+	float Much = 0.f;
+	if (!RareSky.IsValid() && --RareSkySeek < 0)
+	{
+		RareSkySeek = 5;
+		TActorIterator<ALyudRareSky> It(GetWorld());
+		RareSky = It ? *It : nullptr;
+	}
+	if (const ALyudRareSky* Rare = RareSky.Get())
+	{
+		const FLyudRareSkyNow Now = Rare->GetNow();
+		// the northern lights through the gaps in the clouds, by night
+		const float Lights = bSunUp ? 0.f : Now.Aurora * FMath::Clamp(1.5f - 2.f * Cloud, 0.f, 1.f);
+		if (Lights > 0.2f)
+		{
+			What = Aurora;
+			Much = FMath::Min(1.f, 0.4f + Lights);
+		}
+		else if (bSunUp && Now.Rainbow > 0.3f)
+		{
+			What = Rainbow;
+			Much = FMath::Min(1.f, 0.3f + Now.Rainbow);
+		}
+	}
+	if (What != SkyShowWhat || What.IsNone())
+	{
+		SkyShowSince = MannerClock;
+	}
+	if (!What.IsNone())
+	{
+		// a wonder for the first minutes; then people go back to what they were doing and only look up now and then
+		Much *= FMath::GetMappedRangeValueClamped(FVector2f(150.f, 420.f), FVector2f(1.f, 0.3f), MannerClock - SkyShowSince);
+	}
+	// what somebody set (the fireworks) is the louder of the two while it lasts
+	if (MannerClock < TimedShowUntil && TimedShow >= Much)
+	{
+		// (SkyShowSince is left alone: the lights are no newer for a rocket going up)
+		SkyShowWhat = TimedShowWhat;
+		SkyShow = TimedShow;
+		return;
+	}
+	SkyShowWhat = What;
+	SkyShow = Much;
+}
+
+bool UPeopleLifeSubsystem::ReactManner(int32 Id, FName Manner, float Seconds)
+{
+	if (!Manners || !Bodies.IsValidIndex(Id) || !Bodies[Id] || Bodies[Id]->IsHidden())
+	{
+		return false;
+	}
+	const LP::EManner M = LP::MannerFromName(TCHAR_TO_UTF8(*Manner.ToString()));
+	return M != LP::EManner::Num && Manners->React(Id, M, MannerClock, Seconds);
+}
+
+int32 UPeopleLifeSubsystem::GetMet(int32 Id) const
+{
+	if (!Sim || Id < 0 || Id >= (int32)Sim->People.size())
+	{
+		return 0;
+	}
+	const int32* N = MetHero.Find(UTF8_TO_TCHAR(Sim->People[Id].Key.c_str()));
+	return N ? *N : 0;
+}
+
+void UPeopleLifeSubsystem::NoteMet(int32 Id)
+{
+	if (!Sim || Id < 0 || Id >= (int32)Sim->People.size())
+	{
+		return;
+	}
+	const int32 Day = (int32)FMath::FloorToDouble(Sim->Time / 86400.0);
+	int32& Last = MetDay.FindOrAdd(Id, MIN_int32);
+	if (Last != Day)
+	{
+		Last = Day;
+		MetHero.FindOrAdd(UTF8_TO_TCHAR(Sim->People[Id].Key.c_str()))++;
+	}
+}
+
+void UPeopleLifeSubsystem::ForceManner(FName Manner)
+{
+	if (Manners)
+	{
+		Manners->Forced = Manner.IsNone() ? LP::EManner::Num : LP::MannerFromName(TCHAR_TO_UTF8(*Manner.ToString()));
+	}
+}
+
 // --- a body -------------------------------------------------------------------------------------------
 
 ANpcBody::ANpcBody()
@@ -1668,6 +2123,161 @@ ANpcBody::ANpcBody()
 	PusherPole = C;
 	Part(C, TEXT("PusherBar"), CylMesh.Object);
 	PusherBar = C;
+	Part(C, TEXT("MannerProp"), nullptr);
+	MannerProp = C;
+	Part(C, TEXT("MannerStand"), nullptr);
+	MannerStand = C;
+}
+
+void ANpcBody::SetManner(uint8 InManner, uint8 InProp, float Since, float Left, bool bLeftHanded, UStaticMesh* PropMesh, UStaticMesh* StandMesh)
+{
+	Manner = InManner;
+	MannerPropKind = InProp;
+	MannerSince = Since;
+	MannerLeft = Left;
+	bMannerLeft = bLeftHanded;
+	if (MannerProp->GetStaticMesh() != PropMesh)
+	{
+		MannerProp->SetStaticMesh(PropMesh);
+	}
+	if (MannerStand->GetStaticMesh() != StandMesh)
+	{
+		MannerStand->SetStaticMesh(StandMesh);
+		bStandPlaced = false;
+	}
+}
+
+void ANpcBody::LookAtPoint(const FVector& Where, float Seconds)
+{
+	if (ULyudBodyAnimInstance* Anim = Cast<ULyudBodyAnimInstance>(Mesh->GetAnimInstance()))
+	{
+		Anim->SetLookCandidate(Where, true);
+		Anim->Attend(Seconds);
+		bLookGiven = true;
+	}
+}
+
+void ANpcBody::LookAtNothing()
+{
+	if (bLookGiven)
+	{
+		bLookGiven = false;
+		if (ULyudBodyAnimInstance* Anim = Cast<ULyudBodyAnimInstance>(Mesh->GetAnimInstance()))
+		{
+			Anim->ClearLookCandidate();
+		}
+	}
+}
+
+bool ANpcBody::DriveManner(EPersonPose Pose, int32 Transit, float Speed)
+{
+	using LyudPeople::EManner;
+	const EManner M = Manner < (uint8)EManner::Num ? (EManner)Manner : EManner::None;
+	const bool bCan = M != EManner::None && Transit == 0 && Pose != EPersonPose::Hidden && Pose != EPersonPose::Sleep && Pose != EPersonPose::Computer
+		&& Pose != EPersonPose::Work && Pose != EPersonPose::Shovel;
+	FLyudGesturePose G;
+	if (bCan)
+	{
+		LyudGesture::FBody B;
+		B.bSeated = Pose == EPersonPose::Sit || Pose == EPersonPose::Eat || Pose == EPersonPose::Read;
+		B.bWalking = Pose == EPersonPose::Walk && Speed > 10.f;
+		B.bLeftHanded = bMannerLeft;
+		B.Scale = BodyScale;
+		B.Seed = Seed;
+		LyudGesture::Eval(M, MannerSince, MannerLeft, B, G);
+	}
+	if (ULyudBodyAnimInstance* Anim = Cast<ULyudBodyAnimInstance>(Mesh->GetAnimInstance()))
+	{
+		Anim->SetGesture(G);
+	}
+	PlaceMannerProp(bCan);
+	if (bCan && (Pose == EPersonPose::Stand || Pose == EPersonPose::Look))
+	{
+		const FName Own = LyudGesture::ClipFor(M);
+		if (!Own.IsNone() && Clip(Own))
+		{
+			Play(Own, true);
+			return true;
+		}
+	}
+	return false;
+}
+
+void ANpcBody::PlaceMannerProp(bool bShow)
+{
+	using LyudGesture::EHold;
+	const bool bStand = bShow && MannerStand->GetStaticMesh() != nullptr;
+	if (bStand && !bStandPlaced)
+	{
+		// the easel a step ahead of the painter, its face to them (it stays where it was put while they paint)
+		const FQuat Q = GetActorQuat();
+		MannerStand->SetWorldLocationAndRotation(GetActorLocation() + Q.GetAxisY() * (62.f * BodyScale),
+			FRotationMatrix::MakeFromXZ(-Q.GetAxisY(), FVector::UpVector).Rotator());
+		bStandPlaced = true;
+	}
+	bStandPlaced &= bStand;
+	if (MannerStand->IsVisible() != bStand)
+	{
+		MannerStand->SetVisibility(bStand);
+	}
+	const bool bProp = bShow && MannerProp->GetStaticMesh() != nullptr && Mesh->GetBoneIndex(TEXT("hand_r")) != INDEX_NONE;
+	if (MannerProp->IsVisible() != bProp)
+	{
+		MannerProp->SetVisibility(bProp);
+	}
+	if (!bProp)
+	{
+		return;
+	}
+	// the hands as the last pose left them: where each grips (the middle of the palm), which way its fingers run, where
+	// its thumb is and what its palm faces
+	static const FName HandN[2] = { TEXT("hand_l"), TEXT("hand_r") }, KnuckleN[2] = { TEXT("middle_01_l"), TEXT("middle_01_r") },
+		ThumbN[2] = { TEXT("thumb_01_l"), TEXT("thumb_01_r") }, PinkyN[2] = { TEXT("pinky_01_l"), TEXT("pinky_01_r") };
+	const float S = BodyScale;
+	FVector At[2], Fingers[2], ThumbWay[2], Palm[2];
+	for (int32 I = 0; I < 2; I++)
+	{
+		const FVector H = Mesh->GetBoneLocation(HandN[I]);
+		Fingers[I] = (Mesh->GetBoneLocation(KnuckleN[I]) - H).GetSafeNormal();
+		ThumbWay[I] = (Mesh->GetBoneLocation(ThumbN[I]) - Mesh->GetBoneLocation(PinkyN[I])).GetSafeNormal();
+		Palm[I] = FVector::CrossProduct(Fingers[I], ThumbWay[I]).GetSafeNormal() * (I == 1 ? 1.f : -1.f);
+		At[I] = H + Fingers[I] * (7.f * S) + Palm[I] * (2.5f * S);
+	}
+	const int32 M = bMannerLeft ? 0 : 1;
+	const FQuat Q = GetActorQuat();
+	const FVector Fwd = Q.GetAxisY(), Up = FVector::UpVector;
+	FVector Loc = At[M];
+	FRotator Rot = FRotationMatrix::MakeFromXZ(Fwd, Up).Rotator();
+	switch (LyudGesture::HoldOf((LyudPeople::EProp)MannerPropKind))
+	{
+	case EHold::Palm:
+		Loc = At[M] + Palm[M] * 0.8f;
+		Rot = FRotationMatrix::MakeFromXZ(Fingers[M], Palm[M]).Rotator();
+		break;
+	case EHold::Fingers:
+		Loc = At[M] + Fingers[M] * (4.f * S) + ThumbWay[M] * (1.5f * S);
+		Rot = FRotationMatrix::MakeFromXZ((ThumbWay[M] * 0.8f + Fingers[M] * 0.6f).GetSafeNormal(), Up).Rotator();
+		break;
+	case EHold::TwoHands:
+	{
+		Loc = (At[0] + At[1]) * 0.5;
+		const FVector Across = (At[0] - At[1]).GetSafeNormal(UE_SMALL_NUMBER, Q.GetAxisX());
+		FVector Face = Mesh->GetBoneLocation(TEXT("head")) + Up * 8.f - Loc;
+		if ((LyudPeople::EProp)MannerPropKind == LyudPeople::EProp::Newspaper)
+		{
+			// a newspaper stands up before the eyes (only tipped back a little), not lying in the hands like a tray
+			Face.Z *= 0.3f;
+		}
+		Rot = FRotationMatrix::MakeFromXZ(Across, Face).Rotator();
+		break;
+	}
+	case EHold::Pointing:
+		Rot = FRotationMatrix::MakeFromXZ((Fwd * 0.85f + Up * 0.5f).GetSafeNormal(), Up).Rotator();
+		break;
+	default:
+		break;
+	}
+	MannerProp->SetWorldLocationAndRotation(Loc, Rot);
 }
 
 void ANpcBody::PlacePusher(bool bShow)
@@ -1723,6 +2333,9 @@ bool ANpcBody::Setup(const FString& InMesh, const FString& InComputerClip)
 {
 	MeshName = InMesh;
 	ComputerClip = InComputerClip;
+	// worked out once (Drive asked for them every frame at a computer: string searches, and a string made for the office one)
+	ComputerStyle = ULyudBodyAnimInstance::StyleOfClip(ComputerClip);
+	WorkStyle = ULyudBodyAnimInstance::StyleOfClip(ComputerClip.IsEmpty() ? FString(TEXT("Excel")) : ComputerClip);
 	const FString Path = PeopleModelPath(InMesh);
 	USkeletalMesh* Asset = LoadObject<USkeletalMesh>(nullptr, *Path);
 	if (!Asset)
@@ -1943,6 +2556,7 @@ void ANpcBody::Drive(const FVector& Location, float Yaw, EPersonPose Pose, int32
 			|| Pose == EPersonPose::Talk || Pose == EPersonPose::Shovel));
 	}
 	PlacePusher(Transit == 0 && Pose == EPersonPose::Shovel && Clip(TEXT("Push")) != nullptr);
+	const bool bMannerClip = DriveManner(Pose, Transit, Speed);
 	switch (Transit)
 	{
 	case 1: Play(TEXT("SitDown"), false); return;
@@ -1950,6 +2564,10 @@ void ANpcBody::Drive(const FVector& Location, float Yaw, EPersonPose Pose, int32
 	case 3: Play(TEXT("LieDown"), false); return;
 	case 4: Play(TEXT("GetUp"), false); return;
 	default: break;
+	}
+	if (bMannerClip)
+	{
+		return;
 	}
 	switch (Pose)
 	{
@@ -1981,7 +2599,7 @@ void ANpcBody::Drive(const FVector& Location, float Yaw, EPersonPose Pose, int32
 	case EPersonPose::Computer:
 		if (ULyudBodyAnimInstance* Anim = Cast<ULyudBodyAnimInstance>(Mesh->GetAnimInstance()))
 		{
-			Anim->SetComputer(ULyudBodyAnimInstance::StyleOfClip(ComputerClip));
+			Anim->SetComputer(ComputerStyle);
 			Playing = TEXT("Computer");
 			break;
 		}
@@ -2004,7 +2622,7 @@ void ANpcBody::Drive(const FVector& Location, float Yaw, EPersonPose Pose, int32
 	case EPersonPose::Work:
 		if (ULyudBodyAnimInstance* Anim = Cast<ULyudBodyAnimInstance>(Mesh->GetAnimInstance()))
 		{
-			Anim->SetComputer(ULyudBodyAnimInstance::StyleOfClip(ComputerClip.IsEmpty() ? FString(TEXT("Excel")) : ComputerClip));
+			Anim->SetComputer(WorkStyle);
 			Playing = TEXT("Computer");
 			break;
 		}
@@ -2161,6 +2779,45 @@ static FAutoConsoleCommandWithWorldAndArgs GPeopleReport(TEXT("lyud.People.Repor
 				return;
 			}
 			UE_LOG(LogTemp, Warning, TEXT("People: %s"), *People->Report());
+		}
+	}));
+
+static FAutoConsoleCommandWithWorldAndArgs GPeopleManner(TEXT("lyud.People.Manner"),
+	TEXT("lyud.People.Manner <manner|next|auto>: everybody drawn does this one (fold_arms, phone_call, smoke, umbrella, ...; docs/town_manners.md)."),
+	FConsoleCommandWithWorldAndArgsDelegate::CreateLambda([](const TArray<FString>& Args, UWorld* World)
+	{
+		if (UPeopleLifeSubsystem* People = UPeopleLifeSubsystem::Get(World))
+		{
+			if (Args.Num() > 0 && Args[0] == TEXT("next") && People->GetManners())
+			{
+				// the next one in turn (developer mode: a look at each)
+				LyudPeople::FManners& M = *People->GetManners();
+				const int32 Next = M.Forced == LyudPeople::EManner::Num ? 1 : (int32)M.Forced + 1;
+				M.Forced = Next >= LyudPeople::NumManners ? LyudPeople::EManner::Num : (LyudPeople::EManner)Next;
+				UE_LOG(LogTemp, Warning, TEXT("People: manner %hs"), M.Forced == LyudPeople::EManner::Num ? "auto" : LyudPeople::MannerName(M.Forced));
+				return;
+			}
+			People->ForceManner(Args.Num() > 0 && Args[0] != TEXT("auto") ? FName(*Args[0]) : NAME_None);
+		}
+	}));
+
+static FAutoConsoleCommandWithWorldAndArgs GPeopleSkyShow(TEXT("lyud.People.SkyShow"),
+	TEXT("lyud.People.SkyShow [seconds] [aurora|rainbow|fireworks]: people out of doors take it that there is something to see in the sky (60 s of fireworks)."),
+	FConsoleCommandWithWorldAndArgsDelegate::CreateLambda([](const TArray<FString>& Args, UWorld* World)
+	{
+		if (UPeopleLifeSubsystem* People = UPeopleLifeSubsystem::Get(World))
+		{
+			People->SetSkyShow(Args.Num() > 1 ? FName(*Args[1]) : FName(TEXT("fireworks")), 1.f, Args.Num() > 0 ? FCString::Atof(*Args[0]) : 60.f);
+		}
+	}));
+
+static FAutoConsoleCommandWithWorldAndArgs GPeopleWho(TEXT("lyud.People.Who"), TEXT("lyud.People.Who <key>: somebody's character, habits and manner now."),
+	FConsoleCommandWithWorldAndArgsDelegate::CreateLambda([](const TArray<FString>& Args, UWorld* World)
+	{
+		const UPeopleLifeSubsystem* People = UPeopleLifeSubsystem::Get(World);
+		if (People && People->GetManners() && People->GetSim() && Args.Num() > 0)
+		{
+			UE_LOG(LogTemp, Warning, TEXT("People: %s"), UTF8_TO_TCHAR(People->GetManners()->Describe(*People->GetSim(), People->FindPerson(Args[0])).c_str()));
 		}
 	}));
 

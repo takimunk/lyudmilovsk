@@ -1,0 +1,20 @@
+{
+ "key": "line.khuazhev_aslan.again3.2",
+ "lang": "ja",
+ "text": "恋しいさ。だからチーズを売っている。どの一玉も、うちの庭の匂いがするからな。",
+ "speaker": "khuazhev_aslan",
+ "voice": "Brian",
+ "voice_id": "nPczCjzI2devNBz1zQrb",
+ "voice_design": null,
+ "direction": "[hearty, generous, a cheese seller from the Caucasus, proud of his family's cheese]",
+ "model": "fal-ai/elevenlabs/tts/eleven-v3",
+ "request": {
+  "stability": 0.5,
+  "apply_text_normalization": "auto",
+  "text": "[hearty, generous, a cheese seller from the Caucasus, proud of his family's cheese] 恋しいさ。だからチーズを売っている。どの一玉も、うちの庭の匂いがするからな。",
+  "voice": "Brian",
+  "language_code": "ja"
+ },
+ "fal_request_id": "01a1d743-3195-76c1-9f15-d6c0ab4ce4fe",
+ "hash": "19a23fdb445c"
+}

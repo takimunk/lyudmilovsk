@@ -1,0 +1,20 @@
+{
+ "key": "line.sato_kei.again4.1",
+ "lang": "ru",
+ "text": "По вечерам мы с Мишей чиним старый приёмник. Ловит пока одну станцию, и та про погоду.",
+ "speaker": "sato_kei",
+ "voice": "Eric",
+ "voice_id": "cjVigY5qzO86Huf0OWal",
+ "voice_design": null,
+ "direction": "[quiet, precise, softly puzzled, a scientist thinking aloud]",
+ "model": "fal-ai/elevenlabs/tts/eleven-v3",
+ "request": {
+  "stability": 0.5,
+  "apply_text_normalization": "auto",
+  "text": "[quiet, precise, softly puzzled, a scientist thinking aloud] По вечерам мы с Мишей чиним старый приёмник. Ловит пока одну станцию, и та про погоду.",
+  "voice": "Eric",
+  "language_code": "ru"
+ },
+ "fal_request_id": "01a1d747-15e3-7560-a3be-6e2574fd4053",
+ "hash": "397a248eced3"
+}

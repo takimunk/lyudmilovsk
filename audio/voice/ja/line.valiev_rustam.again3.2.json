@@ -1,0 +1,20 @@
+{
+ "key": "line.valiev_rustam.again3.2",
+ "lang": "ja",
+ "text": "試験台だ。最初は無理だと言った。いまは「様子を見よう」の段階だ。",
+ "speaker": "valiev_rustam",
+ "voice": "Roger",
+ "voice_id": "CwhRBWXzGAHq8TQ4Fs17",
+ "voice_design": null,
+ "direction": "[confident, dry, matter-of-fact engineer]",
+ "model": "fal-ai/elevenlabs/tts/eleven-v3",
+ "request": {
+  "stability": 0.5,
+  "apply_text_normalization": "auto",
+  "text": "[confident, dry, matter-of-fact engineer] 試験台だ。最初は無理だと言った。いまは「様子を見よう」の段階だ。",
+  "voice": "Roger",
+  "language_code": "ja"
+ },
+ "fal_request_id": "01a1d74a-034f-7f30-8862-1de027c2d460",
+ "hash": "5626d0f4b09f"
+}

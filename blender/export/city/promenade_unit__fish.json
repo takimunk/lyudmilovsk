@@ -1,0 +1,409 @@
+{
+ "type": "promenade_unit",
+ "info": {
+  "name_ru": "Лавка в подпорной стене",
+  "name_en": "Promenade unit",
+  "style": "1960s seaside shop fit-out",
+  "use": "public",
+  "inspired_by": "the small shops and cafés in the arcades of Soviet Black Sea and Baltic embankments"
+ },
+ "frame": "x along the street front, y into the plot, z up; origin on the front line, mid-frontage, z 0 = ground at the main entrance",
+ "footprint": [
+  [
+   -4.95,
+   0.0
+  ],
+  [
+   4.95,
+   0.0
+  ],
+  [
+   4.95,
+   6.55
+  ],
+  [
+   -4.95,
+   6.55
+  ]
+ ],
+ "height": 3.25,
+ "entrances": [
+  {
+   "id": "door",
+   "pos": [
+    3.4,
+    0.0,
+    0.0
+   ],
+   "yaw": 0.0,
+   "width": 1.2000000000000002,
+   "height": 2.3,
+   "kind": "street",
+   "leaves": 0,
+   "to": null
+  }
+ ],
+ "spots": [
+  {
+   "id": "counter",
+   "kind": "counter",
+   "pos": [
+    1.0,
+    3.55,
+    0.0
+   ],
+   "yaw": 180.0
+  },
+  {
+   "id": "staff_fishmonger_1",
+   "kind": "work",
+   "pos": [
+    0.3,
+    5.2,
+    0.0
+   ],
+   "yaw": 0.0
+  },
+  {
+   "id": "staff_fishmonger_2",
+   "kind": "work",
+   "pos": [
+    1.8,
+    5.2,
+    0.0
+   ],
+   "yaw": 0.0
+  },
+  {
+   "id": "tide_board",
+   "kind": "stand",
+   "pos": [
+    4.0,
+    2.45,
+    0.0
+   ],
+   "yaw": 90.0
+  },
+  {
+   "id": "log",
+   "kind": "stand",
+   "pos": [
+    -4.0,
+    1.2,
+    0.0
+   ],
+   "yaw": 90.0
+  },
+  {
+   "id": "net",
+   "kind": "stand",
+   "pos": [
+    -2.4,
+    2.8,
+    0.0
+   ],
+   "yaw": 180.0
+  },
+  {
+   "id": "tub",
+   "kind": "stand",
+   "pos": [
+    -2.9,
+    1.6,
+    0.0
+   ],
+   "yaw": 0.0
+  },
+  {
+   "id": "smoked",
+   "kind": "stand",
+   "pos": [
+    -0.3,
+    1.6,
+    0.0
+   ],
+   "yaw": 180.0
+  },
+  {
+   "id": "catch",
+   "kind": "stand",
+   "pos": [
+    -2.6,
+    5.6,
+    0.0
+   ],
+   "yaw": 180.0
+  },
+  {
+   "id": "mender",
+   "kind": "seat",
+   "pos": [
+    -3.35,
+    4.3,
+    0.0
+   ],
+   "yaw": 90.0
+  },
+  {
+   "id": "cat",
+   "kind": "stand",
+   "pos": [
+    -0.4,
+    5.0,
+    0.0
+   ],
+   "yaw": 180.0
+  }
+ ],
+ "lamps": [
+  {
+   "pos": [
+    0.5,
+    3.4,
+    2.45
+   ],
+   "lumens": 1500,
+   "colour": "#FFD9A8",
+   "kind": "public",
+   "radius": 8.0
+  }
+ ],
+ "things": [
+  {
+   "id": "fish_counter",
+   "kind": "counter",
+   "pos": [
+    1.0,
+    4.4,
+    1.1
+   ],
+   "yaw": 0.0,
+   "props": {
+    "shop": "fish_shop",
+    "service": "fishmonger",
+    "role": "fishmonger"
+   }
+  },
+  {
+   "id": "fish_tins",
+   "kind": "shelf",
+   "pos": [
+    1.0,
+    6.15,
+    1.3
+   ],
+   "yaw": 0.0,
+   "props": {
+    "topic": "sea"
+   }
+  },
+  {
+   "id": "fish_picture",
+   "kind": "board",
+   "pos": [
+    -4.81,
+    4.5,
+    1.8
+   ],
+   "yaw": 90.0,
+   "props": {
+    "topic": "painting"
+   }
+  },
+  {
+   "id": "fish_map",
+   "kind": "board",
+   "pos": [
+    4.81,
+    3.6,
+    1.75
+   ],
+   "yaw": 270.0,
+   "props": {
+    "topic": "view"
+   }
+  },
+  {
+   "id": "fish_rods",
+   "kind": "board",
+   "pos": [
+    4.73,
+    1.35,
+    1.3
+   ],
+   "yaw": 270.0,
+   "props": {
+    "topic": "store"
+   }
+  },
+  {
+   "id": "fish_tides",
+   "kind": "board",
+   "pos": [
+    4.81,
+    2.45,
+    1.6
+   ],
+   "yaw": 270.0,
+   "props": {
+    "topic": "view"
+   }
+  },
+  {
+   "id": "fish_knots",
+   "kind": "board",
+   "pos": [
+    -4.81,
+    3.35,
+    1.6
+   ],
+   "yaw": 90.0,
+   "props": {
+    "topic": "rules"
+   }
+  },
+  {
+   "id": "fish_scale",
+   "kind": "machine",
+   "pos": [
+    1.75,
+    4.35,
+    1.15
+   ],
+   "yaw": 0.0,
+   "props": {
+    "what": "steelyard"
+   }
+  },
+  {
+   "id": "fish_chat",
+   "kind": "counter",
+   "pos": [
+    -0.3,
+    4.4,
+    1.1
+   ],
+   "yaw": 0.0,
+   "props": {
+    "service": "chat",
+    "role": "fishmonger"
+   }
+  },
+  {
+   "id": "fish_stamp",
+   "kind": "machine",
+   "pos": [
+    2.3,
+    4.3,
+    1.11
+   ],
+   "yaw": 0.0,
+   "props": {
+    "what": "stamp"
+   }
+  },
+  {
+   "id": "fish_switch",
+   "kind": "machine",
+   "pos": [
+    4.4,
+    0.46,
+    1.3
+   ],
+   "yaw": 180.0,
+   "props": {
+    "what": "switch",
+    "switch": "room"
+   }
+  },
+  {
+   "id": "fish_log",
+   "kind": "board",
+   "pos": [
+    -4.81,
+    1.2,
+    1.6
+   ],
+   "yaw": 90.0,
+   "props": {
+    "topic": "log"
+   }
+  },
+  {
+   "id": "fish_net",
+   "kind": "board",
+   "pos": [
+    -2.4,
+    3.4,
+    2.25
+   ],
+   "yaw": 0.0,
+   "props": {
+    "topic": "net"
+   }
+  },
+  {
+   "id": "fish_smoked",
+   "kind": "board",
+   "pos": [
+    -0.3,
+    2.3,
+    1.95
+   ],
+   "yaw": 0.0,
+   "props": {
+    "topic": "sea"
+   }
+  },
+  {
+   "id": "fish_catch",
+   "kind": "board",
+   "pos": [
+    -2.6,
+    6.36,
+    1.7
+   ],
+   "yaw": 0.0,
+   "props": {
+    "topic": "prices"
+   }
+  },
+  {
+   "id": "fish_stool",
+   "kind": "seat",
+   "pos": [
+    -3.35,
+    4.3,
+    0.45
+   ],
+   "yaw": 90.0,
+   "props": {
+    "height": 0.45
+   }
+  },
+  {
+   "id": "fish_cat",
+   "kind": "board",
+   "pos": [
+    -0.4,
+    5.6,
+    0.3
+   ],
+   "yaw": 0.0,
+   "props": {
+    "topic": "sea"
+   }
+  }
+ ],
+ "flats": [],
+ "windows": [],
+ "light_tex": 64,
+ "notes": [
+  "promenade unit room, variant fish: placed at each W1 unit whose plan variant is fish"
+ ],
+ "tris": {
+  "shell": 190,
+  "detail": 7806,
+  "windows": 0
+ }
+}

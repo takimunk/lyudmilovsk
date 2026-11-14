@@ -1,0 +1,20 @@
+{
+ "key": "line.zotova_galina.green_confirmed.1",
+ "lang": "ru",
+ "text": "После вашего протокола я купила «Тархун». Он действительно просто зелёный.",
+ "speaker": "zotova_galina",
+ "voice": "Alice",
+ "voice_id": "Xb7hH8MSUJpSbSDYk0k2",
+ "voice_design": null,
+ "direction": "[warm, chatty, fondly exasperated with her husband]",
+ "model": "fal-ai/elevenlabs/tts/eleven-v3",
+ "request": {
+  "stability": 0.5,
+  "apply_text_normalization": "auto",
+  "text": "[warm, chatty, fondly exasperated with her husband] После вашего протокола я купила «Тархун». Он действительно просто зелёный.",
+  "voice": "Alice",
+  "language_code": "ru"
+ },
+ "fal_request_id": "01a1d6eb-b19d-74a3-b933-789c259d65e8",
+ "hash": "7669272e4566"
+}

@@ -1,0 +1,20 @@
+{
+ "key": "line.khuazhev_aslan.again1.1",
+ "lang": "ja",
+ "text": "長く持たせたいなら大きいのを。小さいのはひと晩分だ。",
+ "speaker": "khuazhev_aslan",
+ "voice": "Brian",
+ "voice_id": "nPczCjzI2devNBz1zQrb",
+ "voice_design": null,
+ "direction": "[hearty, generous, a cheese seller from the Caucasus, proud of his family's cheese]",
+ "model": "fal-ai/elevenlabs/tts/eleven-v3",
+ "request": {
+  "stability": 0.5,
+  "apply_text_normalization": "auto",
+  "text": "[hearty, generous, a cheese seller from the Caucasus, proud of his family's cheese] 長く持たせたいなら大きいのを。小さいのはひと晩分だ。",
+  "voice": "Brian",
+  "language_code": "ja"
+ },
+ "fal_request_id": "01a1d5fc-de0a-7e23-8a08-de6064db7bcd",
+ "hash": "a07978db6c7f"
+}

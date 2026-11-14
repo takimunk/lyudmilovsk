@@ -1,0 +1,20 @@
+{
+ "key": "line.valiev_rustam.second_dot.1",
+ "lang": "ru",
+ "text": "Вчера над обрывом опять мелькнула точка. Не ты? Тогда у меня наконец есть контрольное наблюдение.",
+ "speaker": "valiev_rustam",
+ "voice": "Roger",
+ "voice_id": "CwhRBWXzGAHq8TQ4Fs17",
+ "voice_design": null,
+ "direction": "[confident, dry, matter-of-fact engineer]",
+ "model": "fal-ai/elevenlabs/tts/eleven-v3",
+ "request": {
+  "stability": 0.5,
+  "apply_text_normalization": "auto",
+  "text": "[confident, dry, matter-of-fact engineer] Вчера над обрывом опять мелькнула точка. Не ты? Тогда у меня наконец есть контрольное наблюдение.",
+  "voice": "Roger",
+  "language_code": "ru"
+ },
+ "fal_request_id": "01a1d6ea-b344-71e2-941f-6b39a21b20f6",
+ "hash": "1cb3682e630e"
+}

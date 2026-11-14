@@ -1,0 +1,20 @@
+{
+ "key": "line.streamer.sunset_just_for_me.1",
+ "lang": "en",
+ "text": "You were outside, and the sun's going down. Describe it to me. Not for chat, for me.",
+ "speaker": "streamer",
+ "voice": "Jessica",
+ "voice_id": "cgSgspJ2msm6clMCkdW9",
+ "voice_design": null,
+ "direction": "[bright, fast, half talking to her chat]",
+ "model": "fal-ai/elevenlabs/tts/eleven-v3",
+ "request": {
+  "stability": 0.5,
+  "apply_text_normalization": "auto",
+  "text": "[bright, fast, half talking to her chat] You were outside, and the sun's going down. Describe it to me. Not for chat, for me.",
+  "voice": "Jessica",
+  "language_code": "en"
+ },
+ "fal_request_id": "01a1d73e-3e51-7df2-86fe-09b734a6ccd3",
+ "hash": "4f946525fe1e"
+}

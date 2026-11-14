@@ -1,0 +1,20 @@
+{
+ "key": "line.guy_b.again7.2",
+ "lang": "ru",
+ "text": "Сосед. И друг. Он платит за свет, я за интернет. Интернетом он пользуется больше.",
+ "speaker": "guy_b",
+ "voice": "Chris",
+ "voice_id": "iP95p4xoKVk53GoZ742B",
+ "voice_design": null,
+ "direction": "[relaxed, lazy, friendly]",
+ "model": "fal-ai/elevenlabs/tts/eleven-v3",
+ "request": {
+  "stability": 0.5,
+  "apply_text_normalization": "auto",
+  "text": "[relaxed, lazy, friendly] Сосед. И друг. Он платит за свет, я за интернет. Интернетом он пользуется больше.",
+  "voice": "Chris",
+  "language_code": "ru"
+ },
+ "fal_request_id": "01a1d783-243f-71c3-898f-00ba0ff03408",
+ "hash": "69490b25d88c"
+}

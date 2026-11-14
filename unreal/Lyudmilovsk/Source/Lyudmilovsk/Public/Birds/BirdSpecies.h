@@ -99,6 +99,18 @@ struct LYUDMILOVSK_API FBirdSpecies
 	UPROPERTY(BlueprintReadOnly) int32 StragglersFrom = 0;
 	UPROPERTY(BlueprintReadOnly) int32 StragglersUntil = 0;
 
+	/**
+	 * A rare species kept to one corner of the map (species.json "range": {"x", "y", "r"} in map metres as map.json, and
+	 * optionally "population", "flock": [min, max], "homeRange" m): the bird life settles its few birds there and nowhere
+	 * else (FSpecies::bRanged; the waxwings of the quest, docs/quests.md). RangeR 0: lives all over the map.
+	 */
+	UPROPERTY(BlueprintReadOnly) FVector2D RangeAt = FVector2D::ZeroVector;
+	UPROPERTY(BlueprintReadOnly) float RangeR = 0.f;
+	UPROPERTY(BlueprintReadOnly) int32 RangePopulation = 0;
+	UPROPERTY(BlueprintReadOnly) int32 RangeFlockMin = 0;
+	UPROPERTY(BlueprintReadOnly) int32 RangeFlockMax = 0;
+	UPROPERTY(BlueprintReadOnly) float RangeHomeM = 0.f;
+
 	bool IsPresentIn(int32 Month) const { return Months.Num() == 0 || Months.Contains(Month); }
 	bool InWinterPlumage(int32 Month) const { return WinterMonths.Contains(Month); }
 

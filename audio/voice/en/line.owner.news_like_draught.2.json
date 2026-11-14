@@ -1,0 +1,20 @@
+{
+ "key": "line.owner.news_like_draught.2",
+ "lang": "en",
+ "text": "Good that you came back.",
+ "speaker": "owner",
+ "voice": "Daniel",
+ "voice_id": "onwK4e9ZLuTAKqWW03F9",
+ "voice_design": null,
+ "direction": "[calm, tired, slow, a little ironic]",
+ "model": "fal-ai/elevenlabs/tts/eleven-v3",
+ "request": {
+  "stability": 0.5,
+  "apply_text_normalization": "auto",
+  "text": "[calm, tired, slow, a little ironic] Good that you came back.",
+  "voice": "Daniel",
+  "language_code": "en"
+ },
+ "fal_request_id": "01a1d73d-54e4-7362-8eb9-a0cb922b6b03",
+ "hash": "88f3c56b033f"
+}

@@ -1,0 +1,20 @@
+{
+ "key": "line.li_vika.pigeon_counts_twice.1",
+ "lang": "en",
+ "text": "Counting Dasha's birds? A pigeon is a bird too. Please write it down twice.",
+ "speaker": "li_vika",
+ "voice": "Laura",
+ "voice_id": "FGY2WhTYpPnrIDTdsKH5",
+ "voice_design": null,
+ "direction": "[playful, quick, a lab assistant joking about her work]",
+ "model": "fal-ai/elevenlabs/tts/eleven-v3",
+ "request": {
+  "stability": 0.5,
+  "apply_text_normalization": "auto",
+  "text": "[playful, quick, a lab assistant joking about her work] Counting Dasha's birds? A pigeon is a bird too. Please write it down twice.",
+  "voice": "Laura",
+  "language_code": "en"
+ },
+ "fal_request_id": "01a1d6dc-7535-7993-b828-378ce3e6f139",
+ "hash": "1e3339c1d5a6"
+}

@@ -1,0 +1,20 @@
+{
+ "key": "line.sato_mila.fly_good_for_you.1",
+ "lang": "en",
+ "text": "Fly, fly. Fresh air and sunshine, there's no better prescription.",
+ "speaker": "sato_mila",
+ "voice": "Lily",
+ "voice_id": "pFZP5JQG7iQjIQuC4Bku",
+ "voice_design": null,
+ "direction": "[brisk, caring, a doctor's matter-of-fact warmth]",
+ "model": "fal-ai/elevenlabs/tts/eleven-v3",
+ "request": {
+  "stability": 0.5,
+  "apply_text_normalization": "auto",
+  "text": "[brisk, caring, a doctor's matter-of-fact warmth] Fly, fly. Fresh air and sunshine, there's no better prescription.",
+  "voice": "Lily",
+  "language_code": "en"
+ },
+ "fal_request_id": "01a1d7b8-be95-7212-bd3d-5034f845c834",
+ "hash": "a8e89f8fc8a8"
+}

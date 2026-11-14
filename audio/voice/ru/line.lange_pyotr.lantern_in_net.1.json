@@ -1,0 +1,20 @@
+{
+ "key": "line.lange_pyotr.lantern_in_net.1",
+ "lang": "ru",
+ "text": "После праздника в сеть бумажный фонарик попался. Со свечкой. Я его обратно отпустил, пусть плывёт.",
+ "speaker": "lange_pyotr",
+ "voice": "Brian",
+ "voice_id": "nPczCjzI2devNBz1zQrb",
+ "voice_design": null,
+ "direction": "[gruff, unhurried, a weathered fisherman of few words]",
+ "model": "fal-ai/elevenlabs/tts/eleven-v3",
+ "request": {
+  "stability": 0.5,
+  "apply_text_normalization": "auto",
+  "text": "[gruff, unhurried, a weathered fisherman of few words] После праздника в сеть бумажный фонарик попался. Со свечкой. Я его обратно отпустил, пусть плывёт.",
+  "voice": "Brian",
+  "language_code": "ru"
+ },
+ "fal_request_id": "01a1d7aa-ecf9-7ec1-89a3-5f185e4dbfcb",
+ "hash": "d5a26b981849"
+}

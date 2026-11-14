@@ -1,0 +1,20 @@
+{
+ "key": "line.guy_b.alarm_to_the_end.1",
+ "lang": "ja",
+ "text": "ここで鳴ってるの誰だ？とさかのある鳥が、クラブに。最後まで聞きたくなる目覚ましみたいな声だな。",
+ "speaker": "guy_b",
+ "voice": "Chris",
+ "voice_id": "iP95p4xoKVk53GoZ742B",
+ "voice_design": null,
+ "direction": "[relaxed, lazy, friendly]",
+ "model": "fal-ai/elevenlabs/tts/eleven-v3",
+ "request": {
+  "stability": 0.5,
+  "apply_text_normalization": "auto",
+  "text": "[relaxed, lazy, friendly] ここで鳴ってるの誰だ？とさかのある鳥が、クラブに。最後まで聞きたくなる目覚ましみたいな声だな。",
+  "voice": "Chris",
+  "language_code": "ja"
+ },
+ "fal_request_id": "01a1d75d-b5d4-7c93-be71-e2a131568df2",
+ "hash": "fcdff815433e"
+}

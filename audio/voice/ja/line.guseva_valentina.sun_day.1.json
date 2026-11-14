@@ -1,0 +1,29 @@
+{
+ "key": "line.guseva_valentina.sun_day.1",
+ "lang": "ja",
+ "text": "日なたじゃ、鍋の湯気がぜんぶ光ってるよ。みんなそれに寄ってくるんだ、トウモロコシのせいだと思ってさ。",
+ "speaker": "guseva_valentina",
+ "voice": "Abbess",
+ "voice_id": "Abbess",
+ "voice_design": null,
+ "direction": "",
+ "model": "fal-ai/minimax/speech-2.6-hd",
+ "request": {
+  "prompt": "日なたじゃ、鍋の湯気がぜんぶ光ってるよ。みんなそれに寄ってくるんだ、トウモロコシのせいだと思ってさ。",
+  "voice_setting": {
+   "speed": 1,
+   "pitch": 0,
+   "vol": 1,
+   "voice_id": "Abbess"
+  },
+  "language_boost": "Japanese",
+  "audio_setting": {
+   "sample_rate": 24000,
+   "format": "mp3",
+   "channel": 1
+  },
+  "output_format": "url"
+ },
+ "fal_request_id": "01a1d742-0173-74d1-a3a3-c1cf91314560",
+ "hash": "dcdc2678ae0a"
+}

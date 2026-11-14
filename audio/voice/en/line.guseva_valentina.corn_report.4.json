@@ -1,0 +1,29 @@
+{
+ "key": "line.guseva_valentina.corn_report.4",
+ "lang": "en",
+ "text": "Here's your fifteen back, and five on top for the legwork. And take a cob, this one is for you.",
+ "speaker": "guseva_valentina",
+ "voice": "Abbess",
+ "voice_id": "Abbess",
+ "voice_design": null,
+ "direction": "",
+ "model": "fal-ai/minimax/speech-2.6-hd",
+ "request": {
+  "prompt": "Here's your fifteen back, and five on top for the legwork. And take a cob, this one is for you.",
+  "voice_setting": {
+   "speed": 1,
+   "pitch": 0,
+   "vol": 1,
+   "voice_id": "Abbess"
+  },
+  "language_boost": "English",
+  "audio_setting": {
+   "sample_rate": 24000,
+   "format": "mp3",
+   "channel": 1
+  },
+  "output_format": "url"
+ },
+ "fal_request_id": "01a1d66d-267b-7c53-b85c-c1b2efab0524",
+ "hash": "e8cf5a846200"
+}

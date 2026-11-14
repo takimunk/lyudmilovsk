@@ -1,0 +1,20 @@
+{
+ "key": "line.owner.door_at_sunset.1",
+ "lang": "ru",
+ "text": "Иди. Солнце уже низко, я чувствую. Дверь сразу за будкой.",
+ "speaker": "owner",
+ "voice": "Daniel",
+ "voice_id": "onwK4e9ZLuTAKqWW03F9",
+ "voice_design": null,
+ "direction": "[calm, tired, slow, a little ironic]",
+ "model": "fal-ai/elevenlabs/tts/eleven-v3",
+ "request": {
+  "stability": 0.5,
+  "apply_text_normalization": "auto",
+  "text": "[calm, tired, slow, a little ironic] Иди. Солнце уже низко, я чувствую. Дверь сразу за будкой.",
+  "voice": "Daniel",
+  "language_code": "ru"
+ },
+ "fal_request_id": "01a1d755-655a-7a70-9e7e-00b81dbb2f90",
+ "hash": "793cecc2344b"
+}

@@ -1,0 +1,20 @@
+{
+ "key": "line.girl_a.less_new_now.1",
+ "lang": "ja",
+ "text": "全部回ったんだね。不思議、もうそんなに新しく見えない。",
+ "speaker": "girl_a",
+ "voice": "Matilda",
+ "voice_id": "XrExE9yKIg1WjnnlVkGX",
+ "voice_design": null,
+ "direction": "[whispering, concentrated]",
+ "model": "fal-ai/elevenlabs/tts/eleven-v3",
+ "request": {
+  "stability": 0.5,
+  "apply_text_normalization": "auto",
+  "text": "[whispering, concentrated] 全部回ったんだね。不思議、もうそんなに新しく見えない。",
+  "voice": "Matilda",
+  "language_code": "ja"
+ },
+ "fal_request_id": "01a1d738-7007-7703-b830-f223364af121",
+ "hash": "da142c58e027"
+}

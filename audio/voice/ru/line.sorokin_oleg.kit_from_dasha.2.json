@@ -1,0 +1,20 @@
+{
+ "key": "line.sorokin_oleg.kit_from_dasha.2",
+ "lang": "ru",
+ "text": "Теперь она нужна при вас. Заберите ту, что ставили, или купите новую у Тани в Гастрономе.",
+ "speaker": "sorokin_oleg",
+ "voice": "River",
+ "voice_id": "SAz9YHcvj6GT2YYXdXww",
+ "voice_design": null,
+ "direction": "[a retired scholar, calm, dry humour, slower, gentle]",
+ "model": "fal-ai/elevenlabs/tts/eleven-v3",
+ "request": {
+  "stability": 0.5,
+  "apply_text_normalization": "auto",
+  "text": "[a retired scholar, calm, dry humour, slower, gentle] Теперь она нужна при вас. Заберите ту, что ставили, или купите новую у Тани в Гастрономе.",
+  "voice": "River",
+  "language_code": "ru"
+ },
+ "fal_request_id": "01a1d6d8-8197-74c2-80e0-81d8b170d83e",
+ "hash": "bc2a5d129315"
+}

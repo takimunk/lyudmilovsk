@@ -1,0 +1,20 @@
+{
+ "key": "line.valiev_rustam.signal_tell.5",
+ "lang": "ru",
+ "text": "Удался. Расчёт говорил, что должно быть видно. Глаз говорит, что что-то видно. Для первого раза сходимость приличная.",
+ "speaker": "valiev_rustam",
+ "voice": "Roger",
+ "voice_id": "CwhRBWXzGAHq8TQ4Fs17",
+ "voice_design": null,
+ "direction": "[confident, dry, matter-of-fact engineer]",
+ "model": "fal-ai/elevenlabs/tts/eleven-v3",
+ "request": {
+  "stability": 0.5,
+  "apply_text_normalization": "auto",
+  "text": "[confident, dry, matter-of-fact engineer] Удался. Расчёт говорил, что должно быть видно. Глаз говорит, что что-то видно. Для первого раза сходимость приличная.",
+  "voice": "Roger",
+  "language_code": "ru"
+ },
+ "fal_request_id": "01a1d674-14ee-7022-b2b3-70ca8cea37fe",
+ "hash": "f2fb2a5a8771"
+}

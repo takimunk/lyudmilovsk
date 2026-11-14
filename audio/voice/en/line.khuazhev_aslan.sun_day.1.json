@@ -1,0 +1,20 @@
+{
+ "key": "line.khuazhev_aslan.sun_day.1",
+ "lang": "en",
+ "text": "Sun on the tent, and the cheese turns golden under it. Customers think I laid it out that nicely myself.",
+ "speaker": "khuazhev_aslan",
+ "voice": "Brian",
+ "voice_id": "nPczCjzI2devNBz1zQrb",
+ "voice_design": null,
+ "direction": "[hearty, generous, a cheese seller from the Caucasus, proud of his family's cheese]",
+ "model": "fal-ai/elevenlabs/tts/eleven-v3",
+ "request": {
+  "stability": 0.5,
+  "apply_text_normalization": "auto",
+  "text": "[hearty, generous, a cheese seller from the Caucasus, proud of his family's cheese] Sun on the tent, and the cheese turns golden under it. Customers think I laid it out that nicely myself.",
+  "voice": "Brian",
+  "language_code": "en"
+ },
+ "fal_request_id": "01a1d743-56d8-7532-b829-f2ac6bcfe37e",
+ "hash": "03c87fd6ac89"
+}

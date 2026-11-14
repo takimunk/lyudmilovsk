@@ -1,0 +1,29 @@
+{
+ "key": "line.korneeva_nina.blini_thin.1",
+ "lang": "ja",
+ "text": "マースレニツァのブリヌイは自分で焼くの。うちのワーニャは市のは食べないのよ。薄すぎるって。チェスの問題のない新聞みたいだって。",
+ "speaker": "korneeva_nina",
+ "voice": "Wise_Woman",
+ "voice_id": "Wise_Woman",
+ "voice_design": null,
+ "direction": "",
+ "model": "fal-ai/minimax/speech-2.6-hd",
+ "request": {
+  "prompt": "マースレニツァのブリヌイは自分で焼くの。うちのワーニャは市のは食べないのよ。薄すぎるって。チェスの問題のない新聞みたいだって。",
+  "voice_setting": {
+   "speed": 0.95,
+   "pitch": 0,
+   "vol": 1,
+   "voice_id": "Wise_Woman"
+  },
+  "language_boost": "Japanese",
+  "audio_setting": {
+   "sample_rate": 24000,
+   "format": "mp3",
+   "channel": 1
+  },
+  "output_format": "url"
+ },
+ "fal_request_id": "01a1d7aa-4a0e-7e13-9da4-6d93d729b696",
+ "hash": "8edbf83b4431"
+}

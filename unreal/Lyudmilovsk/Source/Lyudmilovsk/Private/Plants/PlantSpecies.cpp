@@ -1275,7 +1275,20 @@ const TArray<FPlantSpecies>& PlantSpeciesLibrary::All()
 
 const FPlantSpecies* PlantSpeciesLibrary::Find(FName Name)
 {
-	return All().FindByPredicate([Name](const FPlantSpecies& S) { return S.Name == Name; });
+	// asked several times per plant per tick, per forest tree near the camera, per floor kind: a map from the name, not a
+	// walk over ~100 large structs. The library never changes once made; the first of a name wins, as the walk had it.
+	static const TMap<FName, int32> Index = []
+	{
+		TMap<FName, int32> Map;
+		const TArray<FPlantSpecies>& Species = All();
+		for (int32 I = Species.Num() - 1; I >= 0; I--)
+		{
+			Map.Add(Species[I].Name, I);
+		}
+		return Map;
+	}();
+	const int32* Found = Index.Find(Name);
+	return Found ? &All()[*Found] : nullptr;
 }
 
 FText PlantSpeciesLibrary::DisplayName(const FPlantSpecies& S)

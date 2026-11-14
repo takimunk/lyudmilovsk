@@ -1,0 +1,20 @@
+{
+ "key": "line.sorokin_oleg.albatross_pencil.1",
+ "lang": "en",
+ "text": "A black-browed albatross. In the Academgorodok's yard. This one I'll write in pencil, so I can rub it out later.",
+ "speaker": "sorokin_oleg",
+ "voice": "River",
+ "voice_id": "SAz9YHcvj6GT2YYXdXww",
+ "voice_design": null,
+ "direction": "[a retired scholar, calm, dry humour, slower, gentle]",
+ "model": "fal-ai/elevenlabs/tts/eleven-v3",
+ "request": {
+  "stability": 0.5,
+  "apply_text_normalization": "auto",
+  "text": "[a retired scholar, calm, dry humour, slower, gentle] A black-browed albatross. In the Academgorodok's yard. This one I'll write in pencil, so I can rub it out later.",
+  "voice": "River",
+  "language_code": "en"
+ },
+ "fal_request_id": "01a1d6e9-8086-74b1-9aca-235ad2e4f5b9",
+ "hash": "0f92e172b792"
+}

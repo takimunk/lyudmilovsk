@@ -45,41 +45,61 @@
  ],
  "spots": [
   {
-   "id": "lobby_counter",
-   "kind": "counter",
+   "id": "lobby_clerk_post",
+   "kind": "work",
    "pos": [
     4.8,
-    11.8,
+    13.45,
+    0.0
+   ],
+   "yaw": 0.0
+  },
+  {
+   "id": "lobby_chess_n",
+   "kind": "seat",
+   "pos": [
+    -4.4,
+    12.95,
+    0.0
+   ],
+   "yaw": 0.0
+  },
+  {
+   "id": "lobby_mail_stand",
+   "kind": "stand",
+   "pos": [
+    5.9,
+    9.0,
+    0.0
+   ],
+   "yaw": 90.0
+  },
+  {
+   "id": "lobby_board_stand",
+   "kind": "stand",
+   "pos": [
+    1.7,
+    10.7,
+    0.0
+   ],
+   "yaw": 0.0
+  },
+  {
+   "id": "lobby_plants_stand",
+   "kind": "stand",
+   "pos": [
+    3.0,
+    4.7,
     0.0
    ],
    "yaw": 180.0
   },
   {
-   "id": "lobby_bench_w",
-   "kind": "bench",
-   "pos": [
-    -5.0,
-    4.5,
-    0.0
-   ],
-   "yaw": 0.0
-  },
-  {
-   "id": "lobby_bench_e",
-   "kind": "bench",
-   "pos": [
-    5.0,
-    4.5,
-    0.0
-   ],
-   "yaw": 0.0
-  },
-  {
    "id": "lobby_bench_n",
    "kind": "bench",
    "pos": [
-    -6.2,
-    9.0,
+    -6.32,
+    8.625,
     0.0
    ],
    "yaw": 90.0
@@ -88,9 +108,179 @@
    "id": "lobby_bench_nw",
    "kind": "bench",
    "pos": [
-    -6.2,
-    13.6,
+    -6.32,
+    13.25,
     0.0
+   ],
+   "yaw": 90.0
+  },
+  {
+   "id": "lobby_bench_w",
+   "kind": "bench",
+   "pos": [
+    -5.5,
+    4.47,
+    0.0
+   ],
+   "yaw": 0.0
+  },
+  {
+   "id": "lobby_bench_e",
+   "kind": "bench",
+   "pos": [
+    4.5,
+    4.47,
+    0.0
+   ],
+   "yaw": 0.0
+  },
+  {
+   "id": "lobby_counter",
+   "kind": "counter",
+   "pos": [
+    4.8,
+    11.775,
+    0.0
+   ],
+   "yaw": 180.0
+  },
+  {
+   "id": "gallery_chess_n",
+   "kind": "seat",
+   "pos": [
+    0.0,
+    26.75,
+    32.4
+   ],
+   "yaw": 0.0
+  },
+  {
+   "id": "gallery_scope_a",
+   "kind": "view",
+   "pos": [
+    -1.5,
+    5.4,
+    32.4
+   ],
+   "yaw": 0.0
+  },
+  {
+   "id": "gallery_scope_b",
+   "kind": "view",
+   "pos": [
+    1.5,
+    5.4,
+    32.4
+   ],
+   "yaw": 0.0
+  },
+  {
+   "id": "gallery_glasses",
+   "kind": "view",
+   "pos": [
+    0.0,
+    28.2,
+    32.4
+   ],
+   "yaw": 180.0
+  },
+  {
+   "id": "gallery_book_stand",
+   "kind": "stand",
+   "pos": [
+    2.2,
+    5.7,
+    32.4
+   ],
+   "yaw": 90.0
+  },
+  {
+   "id": "gallery_garden_stand",
+   "kind": "stand",
+   "pos": [
+    2.9,
+    16.0,
+    32.4
+   ],
+   "yaw": 90.0
+  },
+  {
+   "id": "gallery_gauge_stand",
+   "kind": "stand",
+   "pos": [
+    3.85,
+    28.8,
+    32.4
+   ],
+   "yaw": 180.0
+  },
+  {
+   "id": "gallery_window_stand",
+   "kind": "stand",
+   "pos": [
+    0.0,
+    4.2,
+    32.4
+   ],
+   "yaw": 0.0
+  },
+  {
+   "id": "gallery_tea_s",
+   "kind": "seat",
+   "pos": [
+    -3.2,
+    15.2,
+    32.4
+   ],
+   "yaw": 180.0
+  },
+  {
+   "id": "gallery_tea_n",
+   "kind": "seat",
+   "pos": [
+    -3.2,
+    16.8,
+    32.4
+   ],
+   "yaw": 0.0
+  },
+  {
+   "id": "hargreaves_chair",
+   "kind": "seat",
+   "pos": [
+    3.55,
+    25.2,
+    17.2
+   ],
+   "yaw": 90.0
+  },
+  {
+   "id": "hargreaves_desk",
+   "kind": "seat",
+   "pos": [
+    2.15,
+    25.7,
+    17.2
+   ],
+   "yaw": 270.0
+  },
+  {
+   "id": "hargreaves_kitchen",
+   "kind": "stand",
+   "pos": [
+    3.25,
+    27.4,
+    17.2
+   ],
+   "yaw": 180.0
+  },
+  {
+   "id": "hargreaves_window",
+   "kind": "view",
+   "pos": [
+    3.3,
+    26.7,
+    17.2
    ],
    "yaw": 90.0
   },
@@ -115,7 +305,7 @@
    "lumens": 800,
    "colour": "#FFE0B8",
    "kind": "public",
-   "radius": 7
+   "radius": 7.0
   },
   {
    "pos": [
@@ -126,7 +316,7 @@
    "lumens": 800,
    "colour": "#FFE0B8",
    "kind": "public",
-   "radius": 7
+   "radius": 7.0
   },
   {
    "pos": [
@@ -137,7 +327,7 @@
    "lumens": 800,
    "colour": "#FFE0B8",
    "kind": "public",
-   "radius": 7
+   "radius": 7.0
   },
   {
    "pos": [
@@ -148,7 +338,7 @@
    "lumens": 800,
    "colour": "#FFE0B8",
    "kind": "public",
-   "radius": 7
+   "radius": 7.0
   },
   {
    "pos": [
@@ -159,7 +349,7 @@
    "lumens": 800,
    "colour": "#FFE0B8",
    "kind": "public",
-   "radius": 7
+   "radius": 7.0
   },
   {
    "pos": [
@@ -170,7 +360,1143 @@
    "lumens": 800,
    "colour": "#FFE0B8",
    "kind": "public",
-   "radius": 7
+   "radius": 7.0
+  },
+  {
+   "pos": [
+    0.0,
+    6.0,
+    35.2
+   ],
+   "lumens": 700,
+   "colour": "#FFE8C8",
+   "kind": "public",
+   "radius": 8.0
+  },
+  {
+   "pos": [
+    0.0,
+    11.0,
+    35.2
+   ],
+   "lumens": 700,
+   "colour": "#FFE8C8",
+   "kind": "public",
+   "radius": 8.0
+  },
+  {
+   "pos": [
+    0.0,
+    16.0,
+    35.2
+   ],
+   "lumens": 700,
+   "colour": "#FFE8C8",
+   "kind": "public",
+   "radius": 8.0
+  },
+  {
+   "pos": [
+    0.0,
+    21.0,
+    35.2
+   ],
+   "lumens": 700,
+   "colour": "#FFE8C8",
+   "kind": "public",
+   "radius": 8.0
+  },
+  {
+   "pos": [
+    0.0,
+    26.0,
+    35.2
+   ],
+   "lumens": 700,
+   "colour": "#FFE8C8",
+   "kind": "public",
+   "radius": 8.0
+  },
+  {
+   "pos": [
+    0.0,
+    29.0,
+    35.2
+   ],
+   "lumens": 700,
+   "colour": "#FFE8C8",
+   "kind": "public",
+   "radius": 8.0
+  },
+  {
+   "pos": [
+    0.0,
+    16.5,
+    19.3
+   ],
+   "lumens": 520,
+   "colour": "#FFE0B8",
+   "kind": "public",
+   "radius": 8.0
+  },
+  {
+   "pos": [
+    0.0,
+    26.5,
+    19.3
+   ],
+   "lumens": 520,
+   "colour": "#FFE0B8",
+   "kind": "public",
+   "radius": 8.0
+  },
+  {
+   "pos": [
+    2.4,
+    26.0,
+    19.3
+   ],
+   "lumens": 480,
+   "colour": "#FFD9A8",
+   "kind": "lobby",
+   "radius": 6.0
+  }
+ ],
+ "things": [
+  {
+   "id": "kit_clock_1",
+   "kind": "board",
+   "pos": [
+    1.6,
+    6.09,
+    2.6
+   ],
+   "yaw": 0.0,
+   "props": {
+    "what": "clock"
+   }
+  },
+  {
+   "id": "kit_clock_2",
+   "kind": "board",
+   "pos": [
+    -6.63,
+    9.0,
+    2.75
+   ],
+   "yaw": 90.0,
+   "props": {
+    "what": "clock"
+   }
+  },
+  {
+   "id": "lift_g",
+   "kind": "door",
+   "pos": [
+    -1.35,
+    6.11,
+    1.1
+   ],
+   "yaw": 0.0,
+   "props": {
+    "to": "lift"
+   }
+  },
+  {
+   "id": "lobby_switch",
+   "kind": "machine",
+   "pos": [
+    -1.0,
+    3.34,
+    1.3
+   ],
+   "yaw": 180.0,
+   "props": {
+    "what": "switch",
+    "switch": "hall"
+   }
+  },
+  {
+   "id": "lobby_board_story",
+   "kind": "board",
+   "pos": [
+    1.7,
+    11.5,
+    1.6
+   ],
+   "yaw": 180.0,
+   "props": {
+    "topic": "house"
+   }
+  },
+  {
+   "id": "lobby_mail",
+   "kind": "board",
+   "pos": [
+    6.66,
+    9.0,
+    1.2
+   ],
+   "yaw": 270.0,
+   "props": {
+    "topic": "mail"
+   }
+  },
+  {
+   "id": "lobby_pram",
+   "kind": "board",
+   "pos": [
+    6.0,
+    5.6,
+    0.6
+   ],
+   "yaw": 260.0,
+   "props": {
+    "topic": "pram"
+   }
+  },
+  {
+   "id": "lobby_bike",
+   "kind": "board",
+   "pos": [
+    6.3,
+    7.0,
+    0.8
+   ],
+   "yaw": 0.0,
+   "props": {
+    "topic": "bike"
+   }
+  },
+  {
+   "id": "lobby_hats",
+   "kind": "board",
+   "pos": [
+    3.6,
+    5.4,
+    1.2
+   ],
+   "yaw": 0.0,
+   "props": {
+    "topic": "hats"
+   }
+  },
+  {
+   "id": "lobby_plants",
+   "kind": "board",
+   "pos": [
+    3.0,
+    3.9,
+    0.9
+   ],
+   "yaw": 0.0,
+   "props": {
+    "topic": "plants"
+   }
+  },
+  {
+   "id": "lobby_desk_clerk",
+   "kind": "counter",
+   "pos": [
+    3.15,
+    12.325,
+    1.1
+   ],
+   "yaw": 180.0,
+   "props": {
+    "role": "clerk",
+    "service": "reception"
+   }
+  },
+  {
+   "id": "lobby_desk_guard",
+   "kind": "counter",
+   "pos": [
+    4.95,
+    12.325,
+    1.1
+   ],
+   "yaw": 180.0,
+   "props": {
+    "role": "guard",
+    "service": "reception"
+   }
+  },
+  {
+   "id": "lobby_chess_chair2",
+   "kind": "seat",
+   "pos": [
+    -4.4,
+    12.95,
+    0.45
+   ],
+   "yaw": 0.0,
+   "props": {
+    "height": 0.45
+   }
+  },
+  {
+   "id": "lobby_bench_west",
+   "kind": "seat",
+   "pos": [
+    -5.5,
+    4.47,
+    0.45
+   ],
+   "yaw": 0.0,
+   "props": {
+    "height": 0.45
+   }
+  },
+  {
+   "id": "lobby_bench_east",
+   "kind": "seat",
+   "pos": [
+    4.5,
+    4.47,
+    0.45
+   ],
+   "yaw": 0.0,
+   "props": {
+    "height": 0.45
+   }
+  },
+  {
+   "id": "lobby_bench_wall",
+   "kind": "seat",
+   "pos": [
+    -6.32,
+    8.625,
+    0.45
+   ],
+   "yaw": 90.0,
+   "props": {
+    "height": 0.45
+   }
+  },
+  {
+   "id": "lobby_bench_corner",
+   "kind": "seat",
+   "pos": [
+    -6.32,
+    13.25,
+    0.45
+   ],
+   "yaw": 90.0,
+   "props": {
+    "height": 0.45
+   }
+  },
+  {
+   "id": "lobby_armchair_green",
+   "kind": "seat",
+   "pos": [
+    -5.35,
+    7.4,
+    0.44
+   ],
+   "yaw": 90.0,
+   "props": {
+    "height": 0.44
+   }
+  },
+  {
+   "id": "lobby_armchair_red",
+   "kind": "seat",
+   "pos": [
+    -3.45,
+    7.4,
+    0.44
+   ],
+   "yaw": 270.0,
+   "props": {
+    "height": 0.44
+   }
+  },
+  {
+   "id": "lobby_chess_chair",
+   "kind": "seat",
+   "pos": [
+    -4.4,
+    11.45,
+    0.45
+   ],
+   "yaw": 180.0,
+   "props": {
+    "height": 0.45
+   }
+  },
+  {
+   "id": "lobby_clerk_chair",
+   "kind": "seat",
+   "pos": [
+    4.8,
+    13.45,
+    0.45
+   ],
+   "yaw": 0.0,
+   "props": {
+    "height": 0.45
+   }
+  },
+  {
+   "id": "lobby_reception",
+   "kind": "counter",
+   "pos": [
+    4.05,
+    12.325,
+    1.1
+   ],
+   "yaw": 180.0,
+   "props": {
+    "role": "concierge",
+    "service": "reception"
+   }
+  },
+  {
+   "id": "lobby_chess",
+   "kind": "play",
+   "pos": [
+    -4.4,
+    12.2,
+    0.78
+   ],
+   "yaw": 0.0,
+   "props": {
+    "what": "chess"
+   }
+  },
+  {
+   "id": "lobby_board_lost",
+   "kind": "board",
+   "pos": [
+    -6.68,
+    9.0,
+    1.75
+   ],
+   "yaw": 90.0,
+   "props": {
+    "topic": "lost"
+   }
+  },
+  {
+   "id": "lobby_board_club",
+   "kind": "board",
+   "pos": [
+    -5.95,
+    14.65,
+    1.7
+   ],
+   "yaw": 0.0,
+   "props": {
+    "topic": "club"
+   }
+  },
+  {
+   "id": "lobby_board_rules",
+   "kind": "board",
+   "pos": [
+    -2.5,
+    9.0,
+    1.6
+   ],
+   "yaw": 270.0,
+   "props": {
+    "topic": "rules"
+   }
+  },
+  {
+   "id": "lobby_board_map",
+   "kind": "board",
+   "pos": [
+    2.5,
+    9.0,
+    1.7
+   ],
+   "yaw": 90.0,
+   "props": {
+    "topic": "view"
+   }
+  },
+  {
+   "id": "lobby_picture_storm",
+   "kind": "board",
+   "pos": [
+    -6.66,
+    4.1,
+    1.8
+   ],
+   "yaw": 90.0,
+   "props": {
+    "topic": "painting"
+   }
+  },
+  {
+   "id": "lobby_swap_shelf",
+   "kind": "shelf",
+   "pos": [
+    0.0,
+    11.685,
+    1.3
+   ],
+   "yaw": 180.0,
+   "props": {
+    "topic": "local"
+   }
+  },
+  {
+   "id": "lobby_magazines",
+   "kind": "shelf",
+   "pos": [
+    0.0,
+    14.5,
+    1.0
+   ],
+   "yaw": 0.0,
+   "props": {
+    "topic": "travel"
+   }
+  },
+  {
+   "id": "lobby_payphone",
+   "kind": "machine",
+   "pos": [
+    -1.5,
+    11.625,
+    1.4
+   ],
+   "yaw": 180.0,
+   "props": {
+    "what": "payphone"
+   }
+  },
+  {
+   "id": "lobby_radio",
+   "kind": "machine",
+   "pos": [
+    5.9,
+    12.95,
+    1.25
+   ],
+   "yaw": 180.0,
+   "props": {
+    "what": "jukebox"
+   }
+  },
+  {
+   "id": "lobby_paper",
+   "kind": "take",
+   "pos": [
+    -4.4,
+    7.3,
+    0.45
+   ],
+   "yaw": 0.0,
+   "props": {
+    "item": "daily_paper"
+   }
+  },
+  {
+   "id": "lobby_lift",
+   "kind": "door",
+   "pos": [
+    0.0,
+    6.14,
+    1.2
+   ],
+   "yaw": 0.0,
+   "props": {
+    "to": "roof"
+   }
+  },
+  {
+   "id": "gallery_bench_e1",
+   "kind": "seat",
+   "pos": [
+    3.58,
+    7.5,
+    32.85
+   ],
+   "yaw": 90.0,
+   "props": {
+    "height": 0.45
+   }
+  },
+  {
+   "id": "gallery_bench_w1",
+   "kind": "seat",
+   "pos": [
+    -3.58,
+    8.5,
+    32.85
+   ],
+   "yaw": 270.0,
+   "props": {
+    "height": 0.45
+   }
+  },
+  {
+   "id": "gallery_bench_e2",
+   "kind": "seat",
+   "pos": [
+    3.58,
+    11.5,
+    32.85
+   ],
+   "yaw": 90.0,
+   "props": {
+    "height": 0.45
+   }
+  },
+  {
+   "id": "gallery_bench_w2",
+   "kind": "seat",
+   "pos": [
+    -3.58,
+    12.5,
+    32.85
+   ],
+   "yaw": 270.0,
+   "props": {
+    "height": 0.45
+   }
+  },
+  {
+   "id": "gallery_bench_e3",
+   "kind": "seat",
+   "pos": [
+    3.58,
+    23.5,
+    32.85
+   ],
+   "yaw": 90.0,
+   "props": {
+    "height": 0.45
+   }
+  },
+  {
+   "id": "gallery_bench_w3",
+   "kind": "seat",
+   "pos": [
+    -3.58,
+    24.5,
+    32.85
+   ],
+   "yaw": 270.0,
+   "props": {
+    "height": 0.45
+   }
+  },
+  {
+   "id": "gallery_chess_chair",
+   "kind": "seat",
+   "pos": [
+    0.0,
+    25.25,
+    32.85
+   ],
+   "yaw": 180.0,
+   "props": {
+    "height": 0.45
+   }
+  },
+  {
+   "id": "gallery_telescope_1",
+   "kind": "machine",
+   "pos": [
+    -1.504,
+    4.374,
+    33.6
+   ],
+   "yaw": 0.0,
+   "props": {
+    "what": "telescope"
+   }
+  },
+  {
+   "id": "gallery_telescope_2",
+   "kind": "machine",
+   "pos": [
+    1.496,
+    4.374,
+    33.6
+   ],
+   "yaw": 0.0,
+   "props": {
+    "what": "telescope"
+   }
+  },
+  {
+   "id": "gallery_binoculars",
+   "kind": "machine",
+   "pos": [
+    0.004,
+    29.126,
+    33.6
+   ],
+   "yaw": 0.0,
+   "props": {
+    "what": "binoculars"
+   }
+  },
+  {
+   "id": "gallery_chess",
+   "kind": "play",
+   "pos": [
+    0.0,
+    26.0,
+    33.18
+   ],
+   "yaw": 0.0,
+   "props": {
+    "what": "chess"
+   }
+  },
+  {
+   "id": "gallery_board_coast",
+   "kind": "board",
+   "pos": [
+    4.17,
+    6.0,
+    34.0
+   ],
+   "yaw": 270.0,
+   "props": {
+    "topic": "view"
+   }
+  },
+  {
+   "id": "gallery_board_birds",
+   "kind": "board",
+   "pos": [
+    4.17,
+    9.0,
+    34.0
+   ],
+   "yaw": 270.0,
+   "props": {
+    "topic": "view"
+   }
+  },
+  {
+   "id": "gallery_board_town",
+   "kind": "board",
+   "pos": [
+    -4.17,
+    15.0,
+    34.0
+   ],
+   "yaw": 90.0,
+   "props": {
+    "topic": "view"
+   }
+  },
+  {
+   "id": "gallery_picture_sea",
+   "kind": "board",
+   "pos": [
+    4.17,
+    12.0,
+    34.0
+   ],
+   "yaw": 270.0,
+   "props": {
+    "topic": "painting"
+   }
+  },
+  {
+   "id": "gallery_picture_night",
+   "kind": "board",
+   "pos": [
+    -4.17,
+    21.0,
+    34.0
+   ],
+   "yaw": 90.0,
+   "props": {
+    "topic": "painting"
+   }
+  },
+  {
+   "id": "gallery_picture_lighthouse",
+   "kind": "board",
+   "pos": [
+    4.17,
+    27.0,
+    34.0
+   ],
+   "yaw": 270.0,
+   "props": {
+    "topic": "painting"
+   }
+  },
+  {
+   "id": "lift_gallery",
+   "kind": "door",
+   "pos": [
+    0.0,
+    6.46,
+    33.5
+   ],
+   "yaw": 0.0,
+   "props": {
+    "to": "lift"
+   }
+  },
+  {
+   "id": "gallery_switch_s",
+   "kind": "machine",
+   "pos": [
+    3.85,
+    3.38,
+    33.7
+   ],
+   "yaw": 180.0,
+   "props": {
+    "what": "switch",
+    "switch": 15
+   }
+  },
+  {
+   "id": "gallery_switch_n",
+   "kind": "machine",
+   "pos": [
+    -3.85,
+    29.6,
+    33.7
+   ],
+   "yaw": 0.0,
+   "props": {
+    "what": "switch",
+    "switch": 15
+   }
+  },
+  {
+   "id": "kit_clock_3",
+   "kind": "board",
+   "pos": [
+    -3.85,
+    29.59,
+    34.75
+   ],
+   "yaw": 0.0,
+   "props": {
+    "what": "clock"
+   }
+  },
+  {
+   "id": "gallery_wind_gauge",
+   "kind": "board",
+   "pos": [
+    3.85,
+    29.58,
+    33.9
+   ],
+   "yaw": 0.0,
+   "props": {
+    "topic": "wind"
+   }
+  },
+  {
+   "id": "gallery_guestbook",
+   "kind": "shelf",
+   "pos": [
+    2.85,
+    5.7,
+    33.52
+   ],
+   "yaw": 270.0,
+   "props": {
+    "topic": "guestbook"
+   }
+  },
+  {
+   "id": "gallery_garden",
+   "kind": "board",
+   "pos": [
+    3.62,
+    16.0,
+    33.2
+   ],
+   "yaw": 270.0,
+   "props": {
+    "topic": "garden"
+   }
+  },
+  {
+   "id": "gallery_tea",
+   "kind": "machine",
+   "pos": [
+    -3.2,
+    16.0,
+    33.35
+   ],
+   "yaw": 90.0,
+   "props": {
+    "what": "samovar"
+   }
+  },
+  {
+   "id": "gallery_tea_chair_s",
+   "kind": "seat",
+   "pos": [
+    -3.2,
+    15.2,
+    32.85
+   ],
+   "yaw": 180.0,
+   "props": {
+    "height": 0.45
+   }
+  },
+  {
+   "id": "gallery_tea_chair_n",
+   "kind": "seat",
+   "pos": [
+    -3.2,
+    16.8,
+    32.85
+   ],
+   "yaw": 0.0,
+   "props": {
+    "height": 0.45
+   }
+  },
+  {
+   "id": "gallery_map_view",
+   "kind": "board",
+   "pos": [
+    2.5,
+    9.4,
+    34.1
+   ],
+   "yaw": 90.0,
+   "props": {
+    "topic": "view"
+   }
+  },
+  {
+   "id": "gallery_window_sea",
+   "kind": "board",
+   "pos": [
+    0.0,
+    3.36,
+    34.0
+   ],
+   "yaw": 180.0,
+   "props": {
+    "topic": "view"
+   }
+  },
+  {
+   "id": "gallery_chess_chair2",
+   "kind": "seat",
+   "pos": [
+    0.0,
+    26.75,
+    32.85
+   ],
+   "yaw": 0.0,
+   "props": {
+    "height": 0.45
+   }
+  },
+  {
+   "id": "lift_s4",
+   "kind": "door",
+   "pos": [
+    0.0,
+    11.54,
+    18.3
+   ],
+   "yaw": 180.0,
+   "props": {
+    "to": "lift"
+   }
+  },
+  {
+   "id": "kit_clock_4",
+   "kind": "board",
+   "pos": [
+    2.2,
+    28.35,
+    19.2
+   ],
+   "yaw": 0.0,
+   "props": {
+    "what": "clock"
+   }
+  },
+  {
+   "id": "hg_armchair",
+   "kind": "seat",
+   "pos": [
+    3.55,
+    25.2,
+    17.65
+   ],
+   "yaw": 90.0,
+   "props": {
+    "height": 0.45
+   }
+  },
+  {
+   "id": "hg_diary",
+   "kind": "shelf",
+   "pos": [
+    1.25,
+    25.4,
+    18.15
+   ],
+   "yaw": 90.0,
+   "props": {
+    "topic": "diary"
+   }
+  },
+  {
+   "id": "hg_log",
+   "kind": "shelf",
+   "pos": [
+    1.2,
+    26.25,
+    18.15
+   ],
+   "yaw": 90.0,
+   "props": {
+    "topic": "windlog"
+   }
+  },
+  {
+   "id": "hg_letters",
+   "kind": "shelf",
+   "pos": [
+    3.5,
+    26.3,
+    17.7
+   ],
+   "yaw": 270.0,
+   "props": {
+    "topic": "letters"
+   }
+  },
+  {
+   "id": "hg_roadmap",
+   "kind": "board",
+   "pos": [
+    0.66,
+    25.7,
+    19.0
+   ],
+   "yaw": 90.0,
+   "props": {
+    "topic": "roads"
+   }
+  },
+  {
+   "id": "hg_photo",
+   "kind": "board",
+   "pos": [
+    0.66,
+    27.4,
+    18.95
+   ],
+   "yaw": 90.0,
+   "props": {
+    "topic": "photos"
+   }
+  },
+  {
+   "id": "hg_globe",
+   "kind": "board",
+   "pos": [
+    3.75,
+    27.0,
+    18.2
+   ],
+   "yaw": 0.0,
+   "props": {
+    "topic": "globe"
+   }
+  },
+  {
+   "id": "hg_books",
+   "kind": "shelf",
+   "pos": [
+    3.55,
+    23.6,
+    18.5
+   ],
+   "yaw": 180.0,
+   "props": {
+    "topic": "engineering"
+   }
+  },
+  {
+   "id": "hg_kettle",
+   "kind": "machine",
+   "pos": [
+    3.25,
+    28.1,
+    18.2
+   ],
+   "yaw": 0.0,
+   "props": {
+    "what": "stove"
+   }
+  },
+  {
+   "id": "hg_radio",
+   "kind": "machine",
+   "pos": [
+    1.95,
+    28.15,
+    17.9
+   ],
+   "yaw": 0.0,
+   "props": {
+    "what": "radio"
+   }
+  },
+  {
+   "id": "hg_bed",
+   "kind": "bed",
+   "pos": [
+    1.22,
+    27.35,
+    17.7
+   ],
+   "yaw": 0.0,
+   "props": {
+    "rest": "private",
+    "height": 0.5
+   }
+  },
+  {
+   "id": "hg_door",
+   "kind": "door",
+   "pos": [
+    0.62,
+    24.5,
+    18.3
+   ],
+   "yaw": 90.0,
+   "props": {
+    "to": "flat"
+   }
+  },
+  {
+   "id": "hg_switch",
+   "kind": "machine",
+   "pos": [
+    0.62,
+    24.1,
+    18.5
+   ],
+   "yaw": 90.0,
+   "props": {
+    "what": "switch",
+    "switch": "room"
+   }
   }
  ],
  "flats": [
@@ -4754,8 +6080,8 @@
   "36 flats on 6 storeys, 4 crossing bars; main lobby + gallery 'view' spot at z=32.4"
  ],
  "tris": {
-  "shell": 6542,
-  "detail": 2930,
-  "windows": 384
+  "shell": 6574,
+  "detail": 20867,
+  "windows": 768
  }
 }

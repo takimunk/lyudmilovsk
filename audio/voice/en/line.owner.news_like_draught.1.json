@@ -1,0 +1,20 @@
+{
+ "key": "line.owner.news_like_draught.1",
+ "lang": "en",
+ "text": "You went north after a bird. I heard. News passes this booth like a draught.",
+ "speaker": "owner",
+ "voice": "Daniel",
+ "voice_id": "onwK4e9ZLuTAKqWW03F9",
+ "voice_design": null,
+ "direction": "[calm, tired, slow, a little ironic]",
+ "model": "fal-ai/elevenlabs/tts/eleven-v3",
+ "request": {
+  "stability": 0.5,
+  "apply_text_normalization": "auto",
+  "text": "[calm, tired, slow, a little ironic] You went north after a bird. I heard. News passes this booth like a draught.",
+  "voice": "Daniel",
+  "language_code": "en"
+ },
+ "fal_request_id": "01a1d73d-3da0-72e2-a075-7fd2a9dd1fa4",
+ "hash": "f0f68e696860"
+}

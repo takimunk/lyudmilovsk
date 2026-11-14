@@ -1,0 +1,20 @@
+{
+ "key": "line.streamer.sun_day.1",
+ "lang": "ja",
+ "text": "昼はチャットが静か。みんな日なたにいるんだと思う。正直、わたしも行きたい。あとでね。",
+ "speaker": "streamer",
+ "voice": "Jessica",
+ "voice_id": "cgSgspJ2msm6clMCkdW9",
+ "voice_design": null,
+ "direction": "[bright, fast, half talking to her chat]",
+ "model": "fal-ai/elevenlabs/tts/eleven-v3",
+ "request": {
+  "stability": 0.5,
+  "apply_text_normalization": "auto",
+  "text": "[bright, fast, half talking to her chat] 昼はチャットが静か。みんな日なたにいるんだと思う。正直、わたしも行きたい。あとでね。",
+  "voice": "Jessica",
+  "language_code": "ja"
+ },
+ "fal_request_id": "01a1d786-c0bf-7042-9903-62107641e755",
+ "hash": "c4e73bad0a0c"
+}

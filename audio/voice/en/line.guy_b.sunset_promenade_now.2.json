@@ -1,0 +1,20 @@
+{
+ "key": "line.guy_b.sunset_promenade_now.2",
+ "lang": "en",
+ "text": "The beach and the rest can wait, the sunset can't. I'd go myself, but I've only just got warm.",
+ "speaker": "guy_b",
+ "voice": "Chris",
+ "voice_id": "iP95p4xoKVk53GoZ742B",
+ "voice_design": null,
+ "direction": "[relaxed, lazy, friendly]",
+ "model": "fal-ai/elevenlabs/tts/eleven-v3",
+ "request": {
+  "stability": 0.5,
+  "apply_text_normalization": "auto",
+  "text": "[relaxed, lazy, friendly] The beach and the rest can wait, the sunset can't. I'd go myself, but I've only just got warm.",
+  "voice": "Chris",
+  "language_code": "en"
+ },
+ "fal_request_id": "01a1d739-e156-74e1-b608-de3fad763cdc",
+ "hash": "2b437d8d8bb6"
+}

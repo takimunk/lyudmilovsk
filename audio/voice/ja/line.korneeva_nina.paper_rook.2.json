@@ -1,0 +1,29 @@
+{
+ "key": "line.korneeva_nina.paper_rook.2",
+ "lang": "ja",
+ "text": "新聞を持ってきてくれた子に見せなさいって言っておいたわ。覚悟してね、ルークを捨てる手があるんですって。",
+ "speaker": "korneeva_nina",
+ "voice": "Wise_Woman",
+ "voice_id": "Wise_Woman",
+ "voice_design": null,
+ "direction": "",
+ "model": "fal-ai/minimax/speech-2.6-hd",
+ "request": {
+  "prompt": "新聞を持ってきてくれた子に見せなさいって言っておいたわ。覚悟してね、ルークを捨てる手があるんですって。",
+  "voice_setting": {
+   "speed": 0.95,
+   "pitch": 0,
+   "vol": 1,
+   "voice_id": "Wise_Woman"
+  },
+  "language_boost": "Japanese",
+  "audio_setting": {
+   "sample_rate": 24000,
+   "format": "mp3",
+   "channel": 1
+  },
+  "output_format": "url"
+ },
+ "fal_request_id": "01a1d6e6-92b3-71a0-9912-17a45419ca1c",
+ "hash": "a46d83b0120f"
+}

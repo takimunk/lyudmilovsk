@@ -1,0 +1,20 @@
+{
+ "key": "line.guy_a.sun_low.1",
+ "lang": "ja",
+ "text": "いま外は全部オレンジ色らしい。俺の二枚目のモニター、ナイトモードが同じ色なんだ。ほぼ同じだろ。",
+ "speaker": "guy_a",
+ "voice": "Will",
+ "voice_id": "bIHbv24MWmeRgasZH58o",
+ "voice_design": null,
+ "direction": "[a young gamer in a hurry, mid-match]",
+ "model": "fal-ai/elevenlabs/tts/eleven-v3",
+ "request": {
+  "stability": 0.5,
+  "apply_text_normalization": "auto",
+  "text": "[a young gamer in a hurry, mid-match] いま外は全部オレンジ色らしい。俺の二枚目のモニター、ナイトモードが同じ色なんだ。ほぼ同じだろ。",
+  "voice": "Will",
+  "language_code": "ja"
+ },
+ "fal_request_id": "01a1d783-0867-7411-8f00-5c91678026ea",
+ "hash": "dc4da2f13585"
+}

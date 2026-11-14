@@ -27,6 +27,9 @@ public:
 	/** In-game seconds per second of play from now on, keeping the current date. */
 	UFUNCTION(BlueprintCallable, Category = "Calendar") void SetTimeScale(float Scale);
 
+	/** After TimeScale and OffsetSeconds came from a save: a corrupt or hand-edited slot must not give a NaN or backward date. */
+	void ClampLoaded();
+
 	virtual void OnWorldBeginPlay(UWorld& InWorld) override;
 
 	UFUNCTION(BlueprintCallable, Category = "Calendar") FDateTime Now() const;

@@ -1,0 +1,20 @@
+{
+ "key": "line.guy_b.never_been_beach.1",
+ "lang": "ru",
+ "text": "Всё обошёл? А я сколько езжу вверх-вниз, на пляже под обрывом так ни разу и не был.",
+ "speaker": "guy_b",
+ "voice": "Chris",
+ "voice_id": "iP95p4xoKVk53GoZ742B",
+ "voice_design": null,
+ "direction": "[relaxed, lazy, friendly]",
+ "model": "fal-ai/elevenlabs/tts/eleven-v3",
+ "request": {
+  "stability": 0.5,
+  "apply_text_normalization": "auto",
+  "text": "[relaxed, lazy, friendly] Всё обошёл? А я сколько езжу вверх-вниз, на пляже под обрывом так ни разу и не был.",
+  "voice": "Chris",
+  "language_code": "ru"
+ },
+ "fal_request_id": "01a1d738-fc85-72f3-baed-96461c57f381",
+ "hash": "78224f4b998e"
+}

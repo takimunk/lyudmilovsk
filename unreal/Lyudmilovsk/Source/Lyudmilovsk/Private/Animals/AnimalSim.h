@@ -313,8 +313,21 @@ namespace LyudAnimals
 			int CNX = 0, CNY = 0;
 			std::vector<uint8_t> CoarseWalk;   // walkable share 0..16 of each coarse cell
 			std::vector<uint8_t> CoarseKind;   // its commonest ground
+			std::vector<int> CoarsePatch;      // which joined-up patch of open cells it is in (-1 closed): no path between two patches
 		} Grid;
 		static constexpr int CoarseK = 4;
+		/** FindPath's working arrays, kept from one search to the next: a cell's cost and step back count only while its
+		 *  stamp is this search's number, so nothing is cleared (three arrays the size of the map were made and zeroed for
+		 *  every route, the short ones too). One search at a time: the life runs on one thread. */
+		struct FPathScratch
+		{
+			std::vector<float> Cost;
+			std::vector<int> Back;
+			std::vector<uint32_t> Set;      // the search that gave the cell its Cost and Back
+			std::vector<uint32_t> Shut;     // the search that closed it
+			uint32_t Search = 0;
+		};
+		mutable FPathScratch PathScratch;
 		std::vector<int> CellHead, CellNext;
 		float HashCell = 12.f;
 		int HashNX = 0, HashNY = 0;

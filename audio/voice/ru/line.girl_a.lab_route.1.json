@@ -1,0 +1,20 @@
+{
+ "key": "line.girl_a.lab_route.1",
+ "lang": "ru",
+ "text": "Пойдёшь вниз, загляни в Академгородок. Я там работаю, во второй лаборатории, но туда не ходи, там скучно.",
+ "speaker": "girl_a",
+ "voice": "Matilda",
+ "voice_id": "XrExE9yKIg1WjnnlVkGX",
+ "voice_design": null,
+ "direction": "[whispering, concentrated]",
+ "model": "fal-ai/elevenlabs/tts/eleven-v3",
+ "request": {
+  "stability": 0.5,
+  "apply_text_normalization": "auto",
+  "text": "[whispering, concentrated] Пойдёшь вниз, загляни в Академгородок. Я там работаю, во второй лаборатории, но туда не ходи, там скучно.",
+  "voice": "Matilda",
+  "language_code": "ru"
+ },
+ "fal_request_id": "01a1d738-2129-78f0-8722-306d2a517f3f",
+ "hash": "4f5e036c2d98"
+}

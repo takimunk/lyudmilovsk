@@ -1,0 +1,20 @@
+{
+ "key": "line.streamer.wave_for_chat.1",
+ "lang": "en",
+ "text": "The way out? Past the machines and the owner's booth, there's an iron door.",
+ "speaker": "streamer",
+ "voice": "Jessica",
+ "voice_id": "cgSgspJ2msm6clMCkdW9",
+ "voice_design": null,
+ "direction": "[bright, fast, half talking to her chat]",
+ "model": "fal-ai/elevenlabs/tts/eleven-v3",
+ "request": {
+  "stability": 0.5,
+  "apply_text_normalization": "auto",
+  "text": "[bright, fast, half talking to her chat] The way out? Past the machines and the owner's booth, there's an iron door.",
+  "voice": "Jessica",
+  "language_code": "en"
+ },
+ "fal_request_id": "01a1d73e-5174-7c02-a894-08f0207ab314",
+ "hash": "307b0ee6f5ea"
+}

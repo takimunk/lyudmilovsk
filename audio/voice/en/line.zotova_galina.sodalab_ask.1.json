@@ -1,0 +1,20 @@
+{
+ "key": "line.zotova_galina.sodalab_ask.1",
+ "lang": "en",
+ "text": "You go to the club, don't you? There is a machine there with four sodas. I need an independent taster.",
+ "speaker": "zotova_galina",
+ "voice": "Alice",
+ "voice_id": "Xb7hH8MSUJpSbSDYk0k2",
+ "voice_design": null,
+ "direction": "[warm, chatty, fondly exasperated with her husband]",
+ "model": "fal-ai/elevenlabs/tts/eleven-v3",
+ "request": {
+  "stability": 0.5,
+  "apply_text_normalization": "auto",
+  "text": "[warm, chatty, fondly exasperated with her husband] You go to the club, don't you? There is a machine there with four sodas. I need an independent taster.",
+  "voice": "Alice",
+  "language_code": "en"
+ },
+ "fal_request_id": "01a1d675-7cf3-7990-aaad-940b9255bcb2",
+ "hash": "cb74623c28fb"
+}

@@ -1,0 +1,20 @@
+{
+ "key": "line.owner.again6.2",
+ "lang": "en",
+ "text": "At two in the morning. There's nobody out there then, only the sea. That's enough for me.",
+ "speaker": "owner",
+ "voice": "Daniel",
+ "voice_id": "onwK4e9ZLuTAKqWW03F9",
+ "voice_design": null,
+ "direction": "[calm, tired, slow, a little ironic]",
+ "model": "fal-ai/elevenlabs/tts/eleven-v3",
+ "request": {
+  "stability": 0.5,
+  "apply_text_normalization": "auto",
+  "text": "[calm, tired, slow, a little ironic] At two in the morning. There's nobody out there then, only the sea. That's enough for me.",
+  "voice": "Daniel",
+  "language_code": "en"
+ },
+ "fal_request_id": "01a1d786-99fc-7a72-b3a4-c9b148947bed",
+ "hash": "edaccbaa6925"
+}

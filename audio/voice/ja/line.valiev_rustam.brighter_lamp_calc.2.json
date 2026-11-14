@@ -1,0 +1,20 @@
+{
+ "key": "line.valiev_rustam.brighter_lamp_calc.2",
+ "lang": "ja",
+ "text": "それから、窓のカーテンはもう閉めていない。夜に台地の端を眺めるのが癖になってね。",
+ "speaker": "valiev_rustam",
+ "voice": "Roger",
+ "voice_id": "CwhRBWXzGAHq8TQ4Fs17",
+ "voice_design": null,
+ "direction": "[confident, dry, matter-of-fact engineer]",
+ "model": "fal-ai/elevenlabs/tts/eleven-v3",
+ "request": {
+  "stability": 0.5,
+  "apply_text_normalization": "auto",
+  "text": "[confident, dry, matter-of-fact engineer] それから、窓のカーテンはもう閉めていない。夜に台地の端を眺めるのが癖になってね。",
+  "voice": "Roger",
+  "language_code": "ja"
+ },
+ "fal_request_id": "01a1d6ea-8bfc-7f02-aaaf-1c17c9de4c07",
+ "hash": "a2997a8314d8"
+}

@@ -1,0 +1,20 @@
+{
+ "key": "line.zotova_galina.again2.1",
+ "lang": "ru",
+ "text": "Кроссворд сегодня трудный. «Благородный газ», шесть букв. Лев сказал «аргон» и ушёл довольный. В аргоне пять букв.",
+ "speaker": "zotova_galina",
+ "voice": "Alice",
+ "voice_id": "Xb7hH8MSUJpSbSDYk0k2",
+ "voice_design": null,
+ "direction": "[warm, chatty, fondly exasperated with her husband]",
+ "model": "fal-ai/elevenlabs/tts/eleven-v3",
+ "request": {
+  "stability": 0.5,
+  "apply_text_normalization": "auto",
+  "text": "[warm, chatty, fondly exasperated with her husband] Кроссворд сегодня трудный. «Благородный газ», шесть букв. Лев сказал «аргон» и ушёл довольный. В аргоне пять букв.",
+  "voice": "Alice",
+  "language_code": "ru"
+ },
+ "fal_request_id": "01a1d74a-992e-7ca2-96a6-606520d7dab6",
+ "hash": "f750cce58126"
+}

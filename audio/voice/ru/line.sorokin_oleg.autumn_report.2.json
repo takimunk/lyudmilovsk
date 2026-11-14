@@ -1,0 +1,20 @@
+{
+ "key": "line.sorokin_oleg.autumn_report.2",
+ "lang": "ru",
+ "text": "Про галстук молчите. Впишите сами, вот в эту графу: данные я люблю читать, а не слушать.",
+ "speaker": "sorokin_oleg",
+ "voice": "River",
+ "voice_id": "SAz9YHcvj6GT2YYXdXww",
+ "voice_design": null,
+ "direction": "[a retired scholar, calm, dry humour, slower, gentle]",
+ "model": "fal-ai/elevenlabs/tts/eleven-v3",
+ "request": {
+  "stability": 0.5,
+  "apply_text_normalization": "auto",
+  "text": "[a retired scholar, calm, dry humour, slower, gentle] Про галстук молчите. Впишите сами, вот в эту графу: данные я люблю читать, а не слушать.",
+  "voice": "River",
+  "language_code": "ru"
+ },
+ "fal_request_id": "01a1d672-faae-72b1-a530-14235a155cf9",
+ "hash": "3c3f183db562"
+}

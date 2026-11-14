@@ -1,0 +1,20 @@
+{
+ "key": "line.khuazhev_aslan.sonya_kuzya.1",
+ "lang": "ja",
+ "text": "イエスズメか！ソーニャのだろう、知ってるぞ。クージャって呼んでるって、みんなに話してたからな。",
+ "speaker": "khuazhev_aslan",
+ "voice": "Brian",
+ "voice_id": "nPczCjzI2devNBz1zQrb",
+ "voice_design": null,
+ "direction": "[hearty, generous, a cheese seller from the Caucasus, proud of his family's cheese]",
+ "model": "fal-ai/elevenlabs/tts/eleven-v3",
+ "request": {
+  "stability": 0.5,
+  "apply_text_normalization": "auto",
+  "text": "[hearty, generous, a cheese seller from the Caucasus, proud of his family's cheese] イエスズメか！ソーニャのだろう、知ってるぞ。クージャって呼んでるって、みんなに話してたからな。",
+  "voice": "Brian",
+  "language_code": "ja"
+ },
+ "fal_request_id": "01a1d6e4-11b0-7271-a690-45bdf6486f22",
+ "hash": "9babf38fa335"
+}

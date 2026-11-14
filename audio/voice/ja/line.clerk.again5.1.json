@@ -1,0 +1,20 @@
+{
+ "key": "line.clerk.again5.1",
+ "lang": "ja",
+ "text": "スタスくんにアバターを頼まれました。四十かける四十セル。一週間かかると言ったら、それでいいそうです。",
+ "speaker": "clerk",
+ "voice": "Callum",
+ "voice_id": "N2lVS1w4EtoT3dr4eOWO",
+ "voice_design": null,
+ "direction": "[polite, quiet, precise, absorbed in his work]",
+ "model": "fal-ai/elevenlabs/tts/eleven-v3",
+ "request": {
+  "stability": 0.5,
+  "apply_text_normalization": "auto",
+  "text": "[polite, quiet, precise, absorbed in his work] スタスくんにアバターを頼まれました。四十かける四十セル。一週間かかると言ったら、それでいいそうです。",
+  "voice": "Callum",
+  "language_code": "ja"
+ },
+ "fal_request_id": "01a1d780-d49d-7b50-9adf-7ec7ced73191",
+ "hash": "f647660fd395"
+}

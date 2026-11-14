@@ -1,0 +1,20 @@
+{
+ "key": "line.sato_kei.soup_measured.1",
+ "lang": "en",
+ "text": "Vika says the independent expert sided with me. I thought so: soup, like light, has to be measured yourself, not by Misha.",
+ "speaker": "sato_kei",
+ "voice": "Eric",
+ "voice_id": "cjVigY5qzO86Huf0OWal",
+ "voice_design": null,
+ "direction": "[quiet, precise, softly puzzled, a scientist thinking aloud]",
+ "model": "fal-ai/elevenlabs/tts/eleven-v3",
+ "request": {
+  "stability": 0.5,
+  "apply_text_normalization": "auto",
+  "text": "[quiet, precise, softly puzzled, a scientist thinking aloud] Vika says the independent expert sided with me. I thought so: soup, like light, has to be measured yourself, not by Misha.",
+  "voice": "Eric",
+  "language_code": "en"
+ },
+ "fal_request_id": "01a1d6e8-cf06-7ca0-a2aa-f347d8eb49ad",
+ "hash": "5ff9c09f391e"
+}

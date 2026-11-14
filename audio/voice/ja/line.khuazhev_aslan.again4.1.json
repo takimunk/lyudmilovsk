@@ -1,0 +1,20 @@
+{
+ "key": "line.khuazhev_aslan.again4.1",
+ "lang": "ja",
+ "text": "夜はクラブのそばに若い連中が集まる。チーズは買わないが、いい笑い声だ。それだけでうれしいもんだ。",
+ "speaker": "khuazhev_aslan",
+ "voice": "Brian",
+ "voice_id": "nPczCjzI2devNBz1zQrb",
+ "voice_design": null,
+ "direction": "[hearty, generous, a cheese seller from the Caucasus, proud of his family's cheese]",
+ "model": "fal-ai/elevenlabs/tts/eleven-v3",
+ "request": {
+  "stability": 0.5,
+  "apply_text_normalization": "auto",
+  "text": "[hearty, generous, a cheese seller from the Caucasus, proud of his family's cheese] 夜はクラブのそばに若い連中が集まる。チーズは買わないが、いい笑い声だ。それだけでうれしいもんだ。",
+  "voice": "Brian",
+  "language_code": "ja"
+ },
+ "fal_request_id": "01a1d743-51af-76f3-8b9d-489bcec84600",
+ "hash": "82ba1df30fcf"
+}

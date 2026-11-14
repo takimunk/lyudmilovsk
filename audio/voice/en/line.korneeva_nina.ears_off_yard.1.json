@@ -1,0 +1,29 @@
+{
+ "key": "line.korneeva_nina.ears_off_yard.1",
+ "lang": "en",
+ "text": "Off you go to Sorokin, to Oleg. That's his bench, the next one. He's talked the whole yard's ears off about you, let him see you for himself for once.",
+ "speaker": "korneeva_nina",
+ "voice": "Wise_Woman",
+ "voice_id": "Wise_Woman",
+ "voice_design": null,
+ "direction": "",
+ "model": "fal-ai/minimax/speech-2.6-hd",
+ "request": {
+  "prompt": "Off you go to Sorokin, to Oleg. That's his bench, the next one. He's talked the whole yard's ears off about you, let him see you for himself for once.",
+  "voice_setting": {
+   "speed": 0.95,
+   "pitch": 0,
+   "vol": 1,
+   "voice_id": "Wise_Woman"
+  },
+  "language_boost": "English",
+  "audio_setting": {
+   "sample_rate": 24000,
+   "format": "mp3",
+   "channel": 1
+  },
+  "output_format": "url"
+ },
+ "fal_request_id": "01a1d75e-6986-7413-a6d4-7dd9391caa6f",
+ "hash": "677f684cf2c6"
+}

@@ -1,0 +1,20 @@
+{
+ "key": "line.valiev_rustam.second_dot.1",
+ "lang": "en",
+ "text": "Last night a dot flickered above the bluff again. Not you? Then at last I have a control observation.",
+ "speaker": "valiev_rustam",
+ "voice": "Roger",
+ "voice_id": "CwhRBWXzGAHq8TQ4Fs17",
+ "voice_design": null,
+ "direction": "[confident, dry, matter-of-fact engineer]",
+ "model": "fal-ai/elevenlabs/tts/eleven-v3",
+ "request": {
+  "stability": 0.5,
+  "apply_text_normalization": "auto",
+  "text": "[confident, dry, matter-of-fact engineer] Last night a dot flickered above the bluff again. Not you? Then at last I have a control observation.",
+  "voice": "Roger",
+  "language_code": "en"
+ },
+ "fal_request_id": "01a1d6ea-6f72-73a3-8d23-67d53a4f0357",
+ "hash": "ac4a45efe624"
+}

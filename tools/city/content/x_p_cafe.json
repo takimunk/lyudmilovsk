@@ -1,0 +1,1115 @@
+{
+ "_doc": "Saucer cafe (P-CAFE), second pass: the regulars' chess table, window ledge by the hour, guest book and Kesha's perch told over days, record crate, cake case by weekday, espresso by the hour.",
+ "acts": {
+  "tarelka_jukebox": {
+   "like": "jukebox",
+   "target": "jukebox",
+   "collect": "records/{line}",
+   "minutes": 3,
+   "lines": [
+    "city.cafe.juke.a1",
+    "city.cafe.juke.a4",
+    "city.cafe.juke.b1",
+    "city.cafe.juke.b5",
+    "city.cafe.juke.c2",
+    "city.cafe.juke.c6",
+    "city.cafe.juke.d3",
+    {
+     "k": "city.cafe.juke.g1",
+     "h": [
+      8,
+      12
+     ]
+    },
+    {
+     "k": "city.cafe.juke.g3",
+     "h": [
+      17,
+      21
+     ]
+    }
+   ],
+   "rotate": "use"
+  },
+  "tarelka_telescope": {
+   "like": "telescope",
+   "target": "telescope",
+   "lines": [
+    {
+     "k": "city.cafe.tel.m1",
+     "h": [
+      6,
+      11
+     ]
+    },
+    {
+     "k": "city.cafe.tel.m2",
+     "h": [
+      6,
+      11
+     ]
+    },
+    {
+     "k": "city.cafe.tel.d1",
+     "h": [
+      11,
+      17
+     ]
+    },
+    {
+     "k": "city.cafe.tel.d2",
+     "h": [
+      11,
+      17
+     ]
+    },
+    {
+     "k": "city.cafe.tel.s1",
+     "h": [
+      17,
+      21
+     ]
+    },
+    {
+     "k": "city.cafe.tel.s2",
+     "h": [
+      17,
+      21
+     ]
+    },
+    {
+     "k": "city.cafe.tel.n1",
+     "h": [
+      21,
+      6
+     ]
+    },
+    {
+     "k": "city.cafe.tel.n2",
+     "h": [
+      21,
+      6
+     ]
+    },
+    {
+     "k": "city.cafe.tel.n3",
+     "h": [
+      21,
+      6
+     ]
+    }
+   ]
+  },
+  "tarelka_espresso": {
+   "prompt": "city.cafe.espresso.prompt",
+   "minutes": 3,
+   "needs_staff": "barista",
+   "sound": "fridge_hum",
+   "lines": [
+    {
+     "k": "city.cafe.esp.m1",
+     "h": [
+      8,
+      11
+     ]
+    },
+    {
+     "k": "city.cafe.esp.m2",
+     "h": [
+      8,
+      11
+     ]
+    },
+    {
+     "k": "city.cafe.esp.m3",
+     "h": [
+      8,
+      11
+     ]
+    },
+    {
+     "k": "city.cafe.esp.d1",
+     "h": [
+      11,
+      17
+     ]
+    },
+    {
+     "k": "city.cafe.esp.d2",
+     "h": [
+      11,
+      17
+     ]
+    },
+    {
+     "k": "city.cafe.esp.e1",
+     "h": [
+      17,
+      21
+     ]
+    },
+    {
+     "k": "city.cafe.esp.e2",
+     "h": [
+      17,
+      21
+     ]
+    },
+    {
+     "k": "city.cafe.esp.n",
+     "h": [
+      21,
+      8
+     ]
+    }
+   ]
+  },
+  "tarelka_ledge": {
+   "prompt": "city.act.look_out.prompt",
+   "minutes": 5,
+   "any_hour": true,
+   "sound": "wind_soft",
+   "lines": [
+    {
+     "k": "city.cafe.ledge.m1",
+     "h": [
+      6,
+      11
+     ]
+    },
+    {
+     "k": "city.cafe.ledge.m2",
+     "h": [
+      6,
+      11
+     ]
+    },
+    {
+     "k": "city.cafe.ledge.d1",
+     "h": [
+      11,
+      17
+     ]
+    },
+    {
+     "k": "city.cafe.ledge.d2",
+     "h": [
+      11,
+      17
+     ]
+    },
+    {
+     "k": "city.cafe.ledge.s1",
+     "h": [
+      17,
+      21
+     ]
+    },
+    {
+     "k": "city.cafe.ledge.s2",
+     "h": [
+      17,
+      21
+     ]
+    },
+    {
+     "k": "city.cafe.ledge.s3",
+     "h": [
+      17,
+      21
+     ]
+    },
+    {
+     "k": "city.cafe.ledge.n1",
+     "h": [
+      21,
+      6
+     ]
+    },
+    {
+     "k": "city.cafe.ledge.n2",
+     "h": [
+      21,
+      6
+     ]
+    }
+   ]
+  },
+  "guest_book_read": {
+   "prompt": "city.cafe.guestbook.prompt",
+   "minutes": 4,
+   "sound": "page_turn",
+   "rotate": "daily",
+   "lines": [
+    {
+     "k": "city.cafe.book.0",
+     "after": 0
+    },
+    {
+     "k": "city.cafe.book.1",
+     "after": 1
+    },
+    {
+     "k": "city.cafe.book.2",
+     "after": 2
+    },
+    {
+     "k": "city.cafe.book.3",
+     "after": 3
+    },
+    {
+     "k": "city.cafe.book.4",
+     "after": 4
+    },
+    {
+     "k": "city.cafe.book.5",
+     "after": 5
+    },
+    {
+     "k": "city.cafe.book.6",
+     "after": 6
+    },
+    {
+     "k": "city.cafe.book.7",
+     "after": 7
+    }
+   ]
+  },
+  "guest_book_sign": {
+   "prompt": "city.cafe.pen.prompt",
+   "minutes": 3,
+   "daily": 1,
+   "sound": "page_turn",
+   "lines": [
+    "city.cafe.pen.1",
+    "city.cafe.pen.2",
+    "city.cafe.pen.3",
+    "city.cafe.pen.4",
+    {
+     "k": "city.cafe.pen.5",
+     "h": [
+      6,
+      11
+     ]
+    },
+    {
+     "k": "city.cafe.pen.6",
+     "weather": "rain"
+    },
+    {
+     "k": "city.cafe.pen.7",
+     "festival": "new_year"
+    },
+    {
+     "k": "city.cafe.pen.8",
+     "after": 7
+    }
+   ]
+  },
+  "kesha_perch": {
+   "prompt": "city.cafe.kesha.prompt",
+   "minutes": 2,
+   "rotate": "daily",
+   "lines": [
+    {
+     "k": "city.cafe.kesha.0",
+     "after": 0
+    },
+    {
+     "k": "city.cafe.kesha.1",
+     "after": 1
+    },
+    {
+     "k": "city.cafe.kesha.2",
+     "after": 2
+    },
+    {
+     "k": "city.cafe.kesha.3",
+     "after": 3
+    },
+    {
+     "k": "city.cafe.kesha.4",
+     "after": 4
+    },
+    {
+     "k": "city.cafe.kesha.5",
+     "after": 5
+    },
+    {
+     "k": "city.cafe.kesha.6",
+     "after": 6
+    }
+   ]
+  },
+  "kesha_feed": {
+   "prompt": "city.cafe.feed.prompt",
+   "minutes": 3,
+   "daily": 1,
+   "needs_item": "seeds",
+   "needs_staff": "barista",
+   "give": [
+    [
+     "pie",
+     1
+    ]
+   ],
+   "lines": [
+    "city.cafe.feed.1",
+    "city.cafe.feed.2",
+    "city.cafe.feed.3",
+    {
+     "k": "city.cafe.feed.4",
+     "h": [
+      7,
+      11
+     ]
+    },
+    {
+     "k": "city.cafe.feed.5",
+     "weather": "rain"
+    },
+    {
+     "k": "city.cafe.feed.6",
+     "festival": "any"
+    },
+    {
+     "k": "city.cafe.feed.7",
+     "once": true
+    }
+   ]
+  },
+  "ask_cook": {
+   "prompt": "city.cafe.cook.prompt",
+   "minutes": 2,
+   "needs_staff": "cook",
+   "lines": [
+    {
+     "k": "city.cafe.cook.mon",
+     "d": "mon"
+    },
+    {
+     "k": "city.cafe.cook.tue",
+     "d": "tue"
+    },
+    {
+     "k": "city.cafe.cook.wed",
+     "d": "wed"
+    },
+    {
+     "k": "city.cafe.cook.thu",
+     "d": "thu"
+    },
+    {
+     "k": "city.cafe.cook.fri",
+     "d": "fri"
+    },
+    {
+     "k": "city.cafe.cook.sat",
+     "d": "sat"
+    },
+    {
+     "k": "city.cafe.cook.sun",
+     "d": "sun"
+    }
+   ]
+  },
+  "tarelka_crate": {
+   "like": "read_misc",
+   "minutes": 6,
+   "lines": [
+    "city.cafe.crate.1",
+    "city.cafe.crate.2",
+    "city.cafe.crate.3",
+    "city.cafe.crate.4",
+    "city.cafe.crate.5",
+    {
+     "k": "city.cafe.crate.6",
+     "h": [
+      18,
+      24
+     ]
+    },
+    {
+     "k": "city.cafe.crate.7",
+     "d": "sat,sun"
+    },
+    {
+     "k": "city.cafe.crate.8",
+     "weather": "rain"
+    }
+   ]
+  },
+  "tarelka_chess": {
+   "like": "chess",
+   "prompt": "city.cafe.chess.prompt",
+   "minutes": 30,
+   "pose": "sit",
+   "sound": "chess_piece",
+   "lines": [
+    {
+     "k": "city.cafe.chess.1",
+     "d": "mon-fri",
+     "h": [
+      8,
+      14
+     ]
+    },
+    {
+     "k": "city.cafe.chess.2",
+     "d": "mon-fri",
+     "h": [
+      14,
+      21
+     ]
+    },
+    {
+     "k": "city.cafe.chess.3",
+     "d": "sat-sun"
+    },
+    "city.cafe.chess.4",
+    "city.cafe.chess.5",
+    "city.cafe.chess.6"
+   ]
+  },
+  "rd_tarelka_guest_book": {
+   "like": "guest_book_read",
+   "target": "guest_book_read",
+   "read": {
+    "texts": [
+     "tarelka_guest_book"
+    ]
+   },
+   "sound": "page_turn"
+  },
+  "rd_tarelka_menu": {
+   "like": "look_misc",
+   "target": "tarelka_cakes",
+   "prompt": "city.act.read.prompt",
+   "read": {
+    "texts": [
+     "tarelka_menu"
+    ]
+   },
+   "sound": "page_turn"
+  },
+  "rd_kesha_phrasebook": {
+   "like": "look_misc",
+   "target": "look_misc",
+   "prompt": "city.act.read.prompt",
+   "read": {
+    "texts": [
+     "kesha_phrasebook"
+    ]
+   },
+   "sound": "page_turn"
+  },
+  "tarelka_mags": {
+   "like": "read_travel",
+   "target": "read_travel",
+   "lines": [
+    "city.read.travel.*",
+    {
+     "k": "city.cafe.mags.1",
+     "h": [
+      7,
+      12
+     ]
+    },
+    {
+     "k": "city.cafe.mags.2",
+     "h": [
+      12,
+      24
+     ]
+    },
+    {
+     "k": "city.cafe.mags.3",
+     "weather": [
+      "cold",
+      "snow"
+     ]
+    },
+    {
+     "k": "city.cafe.mags.4",
+     "d": "mon"
+    }
+   ]
+  },
+  "tarelka_painting": {
+   "like": "look_misc",
+   "prompt": "city.act.watch.prompt",
+   "minutes": 3,
+   "target": "look_painting",
+   "lines": [
+    "city.cafe.painting.1",
+    {
+     "k": "city.cafe.painting.2",
+     "h": [
+      6,
+      12
+     ]
+    },
+    {
+     "k": "city.cafe.painting.3",
+     "h": [
+      17,
+      24
+     ]
+    },
+    {
+     "k": "city.cafe.painting.4",
+     "weather": "fog"
+    },
+    {
+     "k": "city.cafe.painting.5",
+     "once": true
+    }
+   ]
+  }
+ },
+ "rules": {
+  "P-CAFE/bar": {
+   "topics": [
+    "@x_cafe_bar"
+   ]
+  },
+  "P-CAFE/ice_cream": {
+   "topics": [
+    "@x_cafe_ice"
+   ]
+  },
+  "P-CAFE/jukebox": {
+   "act": "tarelka_jukebox"
+  },
+  "P-CAFE/telescope": {
+   "act": "tarelka_telescope"
+  },
+  "P-CAFE/espresso": {
+   "act": "tarelka_espresso"
+  },
+  "P-CAFE/cake_vitrine": {
+   "act": "rd_tarelka_menu"
+  },
+  "P-CAFE/window_ledge": {
+   "act": "tarelka_ledge"
+  },
+  "P-CAFE/guest_book": {
+   "act": "rd_tarelka_guest_book"
+  },
+  "P-CAFE/guest_pen": {
+   "act": "guest_book_sign"
+  },
+  "P-CAFE/kesha_perch": {
+   "act": "kesha_perch"
+  },
+  "P-CAFE/kesha_dish": {
+   "act": "kesha_feed"
+  },
+  "P-CAFE/record_crate": {
+   "act": "tarelka_crate"
+  },
+  "P-CAFE/regulars_chess": {
+   "act": "tarelka_chess"
+  },
+  "P-CAFE/kitchen_hatch": {
+   "act": "ask_cook"
+  },
+  "P-CAFE/kesha_notebook": {
+   "act": "rd_kesha_phrasebook"
+  },
+  "P-CAFE/magazine_rack": {
+   "act": "tarelka_mags"
+  },
+  "P-CAFE/sea_painting": {
+   "act": "tarelka_painting"
+  }
+ },
+ "quests": [
+  {
+   "id": "cafe_kefir",
+   "kind": "side",
+   "start_on": {
+    "event": "ask",
+    "target": "cafe.ck.sour"
+   },
+   "stages": [
+    {
+     "id": "buy",
+     "objectives": [
+      {
+       "id": "kefir",
+       "event": "have",
+       "target": "kefir"
+      }
+     ]
+    },
+    {
+     "id": "bring",
+     "objectives": [
+      {
+       "id": "bring",
+       "event": "ask",
+       "target": "cafe.ck.kefir"
+      },
+      {
+       "id": "kefir",
+       "event": "have",
+       "target": "kefir"
+      }
+     ],
+     "reward": {
+      "items": {
+       "pie": 1
+      }
+     }
+    }
+   ]
+  },
+  {
+   "id": "cafe_kesha",
+   "kind": "side",
+   "start_on": {
+    "event": "visit",
+    "target": "P-CAFE"
+   },
+   "stages": [
+    {
+     "id": "seeds",
+     "objectives": [
+      {
+       "id": "seeds",
+       "event": "have",
+       "target": "seeds"
+      }
+     ]
+    },
+    {
+     "id": "perch",
+     "objectives": [
+      {
+       "id": "perch",
+       "event": "do",
+       "target": "kesha_perch"
+      }
+     ]
+    },
+    {
+     "id": "feed",
+     "objectives": [
+      {
+       "id": "feed",
+       "event": "do",
+       "target": "kesha_feed"
+      }
+     ],
+     "reward": {
+      "items": {
+       "pie": 1
+      },
+      "rubles": 20
+     }
+    }
+   ]
+  },
+  {
+   "id": "cafe_guest",
+   "kind": "side",
+   "start_on": {
+    "event": "do",
+    "target": "guest_book_read"
+   },
+   "stages": [
+    {
+     "id": "sign",
+     "objectives": [
+      {
+       "id": "sign",
+       "event": "do",
+       "target": "guest_book_sign"
+      }
+     ],
+     "reward": {
+      "items": {
+       "postcard": 1
+      }
+     }
+    }
+   ]
+  }
+ ],
+ "texts": {
+  "tarelka_guest_book": {
+   "title": "city.xtx.tarelka_guest_book.title",
+   "kind": "ledger",
+   "minutes": 2,
+   "collect": "reading/tarelka_guest_book",
+   "pages": [
+    "city.cafe.book.0",
+    [
+     {
+      "k": "city.xtx.tarelka_guest_book.p2_1",
+      "d": "mon"
+     },
+     {
+      "k": "city.xtx.tarelka_guest_book.p2_2",
+      "d": "tue"
+     },
+     {
+      "k": "city.xtx.tarelka_guest_book.p2_3",
+      "d": "wed"
+     },
+     {
+      "k": "city.xtx.tarelka_guest_book.p2_4",
+      "d": "thu"
+     },
+     {
+      "k": "city.xtx.tarelka_guest_book.p2_5",
+      "d": "fri"
+     },
+     {
+      "k": "city.xtx.tarelka_guest_book.p2_6",
+      "d": "sat"
+     },
+     {
+      "k": "city.xtx.tarelka_guest_book.p2_7",
+      "d": "sun"
+     }
+    ],
+    [
+     {
+      "k": "city.cafe.book.1",
+      "after": 1
+     },
+     {
+      "k": "city.cafe.book.2",
+      "after": 2
+     },
+     {
+      "k": "city.cafe.book.3",
+      "after": 3
+     },
+     {
+      "k": "city.cafe.book.4",
+      "after": 4
+     },
+     {
+      "k": "city.cafe.book.5",
+      "after": 5
+     },
+     {
+      "k": "city.cafe.book.6",
+      "after": 6
+     },
+     {
+      "k": "city.cafe.book.7",
+      "after": 7
+     }
+    ],
+    [
+     {
+      "k": "city.xtx.tarelka_guest_book.p4_1",
+      "h": [
+       8,
+       16
+      ]
+     },
+     {
+      "k": "city.xtx.tarelka_guest_book.p4_2",
+      "h": [
+       16,
+       8
+      ]
+     }
+    ]
+   ]
+  },
+  "tarelka_menu": {
+   "title": "city.xtx.tarelka_menu.title",
+   "kind": "notice",
+   "minutes": 2,
+   "collect": "reading/tarelka_menu",
+   "pages": [
+    "city.xtx.tarelka_menu.1",
+    [
+     {
+      "k": "city.xtx.tarelka_menu.p2_1",
+      "d": "mon"
+     },
+     {
+      "k": "city.xtx.tarelka_menu.p2_2",
+      "d": "tue"
+     },
+     {
+      "k": "city.xtx.tarelka_menu.p2_3",
+      "d": "wed"
+     },
+     {
+      "k": "city.xtx.tarelka_menu.p2_4",
+      "d": "thu"
+     },
+     {
+      "k": "city.xtx.tarelka_menu.p2_5",
+      "d": "fri"
+     },
+     {
+      "k": "city.xtx.tarelka_menu.p2_6",
+      "d": "sat"
+     },
+     {
+      "k": "city.xtx.tarelka_menu.p2_7",
+      "d": "sun"
+     }
+    ],
+    [
+     {
+      "k": "city.cafe.cake.mon",
+      "d": "mon"
+     },
+     {
+      "k": "city.cafe.cake.tue",
+      "d": "tue"
+     },
+     {
+      "k": "city.cafe.cake.wed",
+      "d": "wed"
+     },
+     {
+      "k": "city.cafe.cake.thu",
+      "d": "thu"
+     },
+     {
+      "k": "city.cafe.cake.fri",
+      "d": "fri"
+     },
+     {
+      "k": "city.cafe.cake.sat",
+      "d": "sat"
+     },
+     {
+      "k": "city.cafe.cake.sun",
+      "d": "sun"
+     }
+    ],
+    "city.xtx.tarelka_menu.4"
+   ]
+  },
+  "kesha_phrasebook": {
+   "title": "city.xtx.kesha_phrasebook.title",
+   "kind": "ledger",
+   "minutes": 2,
+   "collect": "reading/kesha_phrasebook",
+   "pages": [
+    "city.xtx.kesha_phrasebook.1",
+    "city.xtx.kesha_phrasebook.2",
+    [
+     {
+      "k": "city.xtx.kesha_phrasebook.p3_1",
+      "h": [
+       8,
+       14
+      ]
+     },
+     {
+      "k": "city.xtx.kesha_phrasebook.p3_2",
+      "h": [
+       14,
+       8
+      ]
+     }
+    ],
+    "city.xtx.kesha_phrasebook.4"
+   ]
+  }
+ },
+ "topic_sets": {
+  "x_cafe_bar": [
+   {
+    "id": "cafe.espresso",
+    "k": "city.ask.cafe.espresso",
+    "lines": [
+     "city.ask.cafe.espresso.1",
+     {
+      "k": "city.ask.cafe.espresso.2",
+      "h": [
+       8,
+       11
+      ]
+     },
+     {
+      "k": "city.ask.cafe.espresso.3",
+      "h": [
+       17,
+       21
+      ]
+     }
+    ],
+    "gives": {
+     "collect": "staff/tarelka"
+    }
+   },
+   {
+    "id": "cafe.guestbook",
+    "k": "city.ask.cafe.guestbook",
+    "lines": [
+     "city.ask.cafe.guestbook.1",
+     {
+      "k": "city.ask.cafe.guestbook.2",
+      "after": 4
+     },
+     {
+      "k": "city.ask.cafe.guestbook.3",
+      "did": "guest_book_sign"
+     }
+    ],
+    "gives": {
+     "collect": "staff/tarelka"
+    }
+   },
+   {
+    "id": "cafe.chess",
+    "k": "city.ask.cafe.chess",
+    "lines": [
+     "city.ask.cafe.chess.1",
+     {
+      "k": "city.ask.cafe.chess.2",
+      "d": "sat,sun"
+     },
+     {
+      "k": "city.ask.cafe.chess.3",
+      "count": [
+       "chess_wins",
+       1
+      ]
+     },
+     "city.ask.cafe.chess.4"
+    ],
+    "gives": {
+     "collect": "staff/tarelka"
+    }
+   }
+  ],
+  "x_cafe_ice": [
+   {
+    "id": "cafe.ice.flavours",
+    "k": "city.ask.cafe.ice.flavours",
+    "lines": [
+     "city.ask.cafe.ice.flavours.1",
+     {
+      "k": "city.ask.cafe.ice.flavours.2",
+      "weather": [
+       "warm",
+       "clear"
+      ]
+     },
+     {
+      "k": "city.ask.cafe.ice.flavours.3",
+      "d": "sat"
+     }
+    ],
+    "gives": {
+     "collect": "staff/icecream"
+    }
+   },
+   {
+    "id": "cafe.ice.gallery",
+    "k": "city.ask.cafe.ice.gallery",
+    "lines": [
+     "city.ask.cafe.ice.gallery.1",
+     {
+      "k": "city.ask.cafe.ice.gallery.2",
+      "h": [
+       17,
+       21
+      ]
+     },
+     {
+      "k": "city.ask.cafe.ice.gallery.3",
+      "did": "telescope"
+     }
+    ],
+    "gives": {
+     "collect": "staff/icecream"
+    }
+   }
+  ],
+  "x_cafe_cook": [
+   {
+    "id": "cafe.ck.pilaf",
+    "k": "city.ask.cafe.ck.pilaf",
+    "lines": [
+     "city.ask.cafe.ck.pilaf.1",
+     {
+      "k": "city.ask.cafe.ck.pilaf.2",
+      "d": "sat",
+      "h": [
+       9,
+       14
+      ]
+     }
+    ],
+    "gives": {
+     "collect": "staff/tarelka"
+    }
+   },
+   {
+    "id": "cafe.ck.sour",
+    "k": "city.ask.cafe.ck.sour",
+    "lines": [
+     "city.ask.cafe.ck.sour.1",
+     "city.ask.cafe.ck.sour.2",
+     {
+      "k": "city.ask.cafe.ck.sour.3",
+      "d": "fri"
+     }
+    ],
+    "gives": {
+     "collect": "staff/tarelka"
+    }
+   },
+   {
+    "id": "cafe.ck.kefir",
+    "k": "city.ask.cafe.ck.kefir",
+    "lines": [
+     "city.ask.cafe.ck.kefir.1"
+    ],
+    "heard": "cafe.ck.sour",
+    "gives": {
+     "collect": "staff/tarelka"
+    }
+   },
+   {
+    "id": "cafe.ck.kesha",
+    "k": "city.ask.cafe.ck.kesha",
+    "lines": [
+     "city.ask.cafe.ck.kesha.1",
+     {
+      "k": "city.ask.cafe.ck.kesha.2",
+      "did": "kesha_feed"
+     }
+    ],
+    "gives": {
+     "collect": "staff/tarelka"
+    }
+   },
+   {
+    "id": "cafe.ck.after",
+    "k": "city.ask.cafe.ck.after",
+    "lines": [
+     "city.ask.cafe.ck.after.1",
+     {
+      "k": "city.ask.cafe.ck.after.2",
+      "did": "cinema"
+     }
+    ],
+    "gives": {
+     "collect": "staff/tarelka"
+    }
+   }
+  ]
+ },
+ "topics": {
+  "ask_cook": [
+   "@x_cafe_cook"
+  ]
+ }
+}

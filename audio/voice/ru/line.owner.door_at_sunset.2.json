@@ -1,0 +1,20 @@
+{
+ "key": "line.owner.door_at_sunset.2",
+ "lang": "ru",
+ "text": "Посмотри на него и за меня.",
+ "speaker": "owner",
+ "voice": "Daniel",
+ "voice_id": "onwK4e9ZLuTAKqWW03F9",
+ "voice_design": null,
+ "direction": "[calm, tired, slow, a little ironic]",
+ "model": "fal-ai/elevenlabs/tts/eleven-v3",
+ "request": {
+  "stability": 0.5,
+  "apply_text_normalization": "auto",
+  "text": "[calm, tired, slow, a little ironic] Посмотри на него и за меня.",
+  "voice": "Daniel",
+  "language_code": "ru"
+ },
+ "fal_request_id": "01a1d73d-2038-71c0-85b5-ae7b4bc756d7",
+ "hash": "c1518ed3596a"
+}

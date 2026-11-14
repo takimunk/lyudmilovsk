@@ -588,8 +588,15 @@ public:
 								SNew(STextBlock).Font(Body).ColorAndOpacity(FLinearColor(1.f, 0.85f, 0.45f))
 								.Text_Lambda([this]
 								{
+									// asked every frame: formatted only when the sum changes
 									const ULyudInventory* Inv = Inventory.Get();
-									return LyudText::Get(TEXT("ui.inventory.money"), { FStringFormatArg(Inv ? Inv->Rubles : 0) });
+									const int32 Sum = Inv ? Inv->Rubles : 0;
+									if (Sum != MoneyShown)
+									{
+										MoneyShown = Sum;
+										MoneyText = LyudText::Get(TEXT("ui.inventory.money"), { FStringFormatArg(Sum) });
+									}
+									return MoneyText;
 								})
 							]
 						]
@@ -616,6 +623,10 @@ public:
 		];
 		Rebuild();
 	}
+
+	/** The pocket changed: the rows are refilled once at this screen's next tick (a purchase changes it two or three
+	 *  times in a row: the money, the thing, the diner taking the dish back out), not inside the click that bought. */
+	void MarkDirty() { bRowsDirty = true; }
 
 	/** Refills the rows (money or stock changed); the scroll position and selection stay. */
 	void Rebuild()
@@ -700,7 +711,7 @@ public:
 			return;
 		}
 		const FName Item = Goods[Selected].Item;
-		// a purchase fires the pocket's OnChanged, which rebuilds the rows
+		// a purchase fires the pocket's OnChanged, which marks the rows to be refilled (MarkDirty)
 		Status = U->BuyShopGood(Selected) ? LyudText::Get(TEXT("ui.shop.bought"), { FStringFormatArg(ULyudInventory::ItemName(Item).ToString()) })
 		                                  : LyudText::Get(TEXT("ui.shop.nomoney"));
 	}
@@ -752,6 +763,11 @@ public:
 	{
 		SCompoundWidget::Tick(AllottedGeometry, InCurrentTime, InDeltaTime);
 		ViewHeight = AllottedGeometry.GetLocalSize().Y;
+		if (bRowsDirty)
+		{
+			bRowsDirty = false;
+			Rebuild();
+		}
 		// the end moves for a few frames while the rows' wrapped text settles: stay on it
 		if (StickToEnd > 0.f && Scroll)
 		{
@@ -781,6 +797,9 @@ private:
 	int32 Selected = 0;
 	float ViewHeight = 1080.f;
 	float StickToEnd = 0.f;
+	bool bRowsDirty = false;
+	FText MoneyText;
+	int32 MoneyShown = MIN_int32;
 };
 
 ULyudInventoryUI* ULyudInventoryUI::Get(const UObject* WorldContext)
@@ -867,8 +886,10 @@ void ULyudInventoryUI::Tick(float)
 		{
 			CloseShop();
 		}
-		else if (Shop)
+		else if (const TSharedPtr<SLyudShop> ShopNow = Shop)
 		{
+			// held here: a purchase by key tells the pocket's and the shop's listeners, and one closing the screen from
+			// there would free it under Buy()
 			// the screen leaves keyboard focus with the game (GameAndUI), so the keys are read here
 			auto Pressed = [PC](std::initializer_list<FKey> Keys)
 			{
@@ -886,17 +907,17 @@ void ULyudInventoryUI::Tick(float)
 				+ (Pressed({ EKeys::PageDown }) ? 5 : 0) - (Pressed({ EKeys::PageUp }) ? 5 : 0);
 			if (Step != 0)
 			{
-				Shop->Select(Step);
+				ShopNow->Select(Step);
 			}
 			// the wheel outside the window reaches the game, not Slate
 			const float Wheel = (PC->WasInputKeyJustPressed(EKeys::MouseScrollUp) ? 1.f : 0.f) - (PC->WasInputKeyJustPressed(EKeys::MouseScrollDown) ? 1.f : 0.f);
 			if (Wheel != 0.f)
 			{
-				Shop->ScrollBy(Wheel);
+				ShopNow->ScrollBy(Wheel);
 			}
 			if (Pressed({ EKeys::Enter, EKeys::Gamepad_FaceButton_Bottom }))
 			{
-				Shop->Buy();
+				ShopNow->Buy();
 			}
 		}
 	}
@@ -953,7 +974,7 @@ void ULyudInventoryUI::OpenShop(const FText& Title, const TArray<FLyudShopGood>&
 	ShopGoods = Goods;
 	Shop = SNew(SLyudShop).Owner(this).Inventory(Inv).Title(Title).Goods(Goods);
 	Viewport->AddViewportWidgetContent(Shop.ToSharedRef(), 70);
-	Inv->OnChanged.AddWeakLambda(this, [this] { if (Shop) { Shop->Rebuild(); } });
+	Inv->OnChanged.AddWeakLambda(this, [this] { if (Shop) { Shop->MarkDirty(); } });
 	bShop = true;
 	ShopOpenedFrame = GFrameCounter;
 	Lock(true);
@@ -1225,6 +1246,8 @@ void ULyudInventoryUI::Use(FName Id)
 				if (ULyudInventory* I = Self.IsValid() ? ULyudInventory::Get(Self.Get()) : nullptr)
 				{
 					I->Remove(Id);
+					// drunk or eaten to the end ("use" is sent for anything that leaves the pocket, a thing handed over too)
+					ULyudQuests::Notify(I, TEXT("eat"), Id.ToString());
 					if (!Leaves.IsNone())
 					{
 						I->Add(Leaves);
@@ -1297,6 +1320,15 @@ static FAutoConsoleCommandWithWorldAndArgs GInvEquip(TEXT("Inventory.Equip"), TE
 		if (ULyudInventory* Inv = ULyudInventory::Get(World))
 		{
 			Inv->Equip(Args.Num() > 0 && Args[0] != TEXT("none") ? FName(*Args[0]) : FName());
+		}
+	}));
+
+static FAutoConsoleCommandWithWorldAndArgs GInvUse(TEXT("Inventory.Use"), TEXT("Inventory.Use <item id>: uses one from the pocket as the inventory screen's Use does (drinks a bottle, eats, reads; headless checks)"),
+	FConsoleCommandWithWorldAndArgsDelegate::CreateLambda([](const TArray<FString>& Args, UWorld* World)
+	{
+		if (ULyudInventoryUI* UI = Args.Num() > 0 ? ULyudInventoryUI::Get(World) : nullptr)
+		{
+			UI->Use(FName(*Args[0]));
 		}
 	}));
 

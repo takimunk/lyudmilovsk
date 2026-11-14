@@ -1,0 +1,20 @@
+{
+ "key": "line.li_vika.lunch_ask.1",
+ "lang": "en",
+ "text": "Did you have lunch today? Lucky you. I didn't. Third year running.",
+ "speaker": "li_vika",
+ "voice": "Laura",
+ "voice_id": "FGY2WhTYpPnrIDTdsKH5",
+ "voice_design": null,
+ "direction": "[playful, quick, a lab assistant joking about her work]",
+ "model": "fal-ai/elevenlabs/tts/eleven-v3",
+ "request": {
+  "stability": 0.5,
+  "apply_text_normalization": "auto",
+  "text": "[playful, quick, a lab assistant joking about her work] Did you have lunch today? Lucky you. I didn't. Third year running.",
+  "voice": "Laura",
+  "language_code": "en"
+ },
+ "fal_request_id": "01a1d670-c865-70b0-a011-f641a6bd92d8",
+ "hash": "58351872d826"
+}

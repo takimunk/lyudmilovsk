@@ -1,0 +1,29 @@
+{
+ "key": "line.sato_yuki.crow_wait.1",
+ "lang": "ja",
+ "text": "どう、持ってきた？まだ？ちゃんとえさをあげてね。パパはうそつかないもん。ほとんど。",
+ "speaker": "sato_yuki",
+ "voice": "Lovely_Girl",
+ "voice_id": "Lovely_Girl",
+ "voice_design": null,
+ "direction": "",
+ "model": "fal-ai/minimax/speech-2.6-hd",
+ "request": {
+  "prompt": "どう、持ってきた？まだ？ちゃんとえさをあげてね。パパはうそつかないもん。ほとんど。",
+  "voice_setting": {
+   "speed": 1,
+   "pitch": 0,
+   "vol": 1,
+   "voice_id": "Lovely_Girl"
+  },
+  "language_boost": "Japanese",
+  "audio_setting": {
+   "sample_rate": 24000,
+   "format": "mp3",
+   "channel": 1
+  },
+  "output_format": "url"
+ },
+ "fal_request_id": "01a1d674-d786-7173-ac9d-4dc190c246a7",
+ "hash": "d36e4a6f95bc"
+}

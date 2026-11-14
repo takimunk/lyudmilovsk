@@ -1,0 +1,20 @@
+{
+ "key": "line.girl_b.again5.1",
+ "lang": "ru",
+ "text": "По средам в библиотеке никого. Я читаю то, что сдали последним. Так я знаю, о чём думает весь Академгородок.",
+ "speaker": "girl_b",
+ "voice": "Sarah",
+ "voice_id": "EXAVITQu4vr4xnSDxMaL",
+ "voice_design": null,
+ "direction": "[curious, slightly uneasy, conspiratorial]",
+ "model": "fal-ai/elevenlabs/tts/eleven-v3",
+ "request": {
+  "stability": 0.5,
+  "apply_text_normalization": "auto",
+  "text": "[curious, slightly uneasy, conspiratorial] По средам в библиотеке никого. Я читаю то, что сдали последним. Так я знаю, о чём думает весь Академгородок.",
+  "voice": "Sarah",
+  "language_code": "ru"
+ },
+ "fal_request_id": "01a1d781-d39b-7d80-9fa9-5d9e06678b99",
+ "hash": "bd7a2f1b255d"
+}

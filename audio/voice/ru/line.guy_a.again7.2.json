@@ -1,0 +1,20 @@
+{
+ "key": "line.guy_a.again7.2",
+ "lang": "ru",
+ "text": "Сплю. С часу до восьми. Остальное пары и катки, в таком порядке. Иногда в обратном.",
+ "speaker": "guy_a",
+ "voice": "Will",
+ "voice_id": "bIHbv24MWmeRgasZH58o",
+ "voice_design": null,
+ "direction": "[a young gamer in a hurry, mid-match]",
+ "model": "fal-ai/elevenlabs/tts/eleven-v3",
+ "request": {
+  "stability": 0.5,
+  "apply_text_normalization": "auto",
+  "text": "[a young gamer in a hurry, mid-match] Сплю. С часу до восьми. Остальное пары и катки, в таком порядке. Иногда в обратном.",
+  "voice": "Will",
+  "language_code": "ru"
+ },
+ "fal_request_id": "01a1d782-7762-7470-99c4-de13ceba9544",
+ "hash": "36f2f90ff251"
+}

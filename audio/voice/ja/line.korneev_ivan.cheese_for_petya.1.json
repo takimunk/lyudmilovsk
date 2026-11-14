@@ -1,0 +1,20 @@
+{
+ "key": "line.korneev_ivan.cheese_for_petya.1",
+ "lang": "ja",
+ "text": "ペーチャが言っとったよ、あんたが上までチーズを買いに行ってくれたと。あいつに何か持ってきてくれた者は、二十年おらんかった。",
+ "speaker": "korneev_ivan",
+ "voice": "Bill",
+ "voice_id": "pqHfZKP75CvOlQylNhV4",
+ "voice_design": null,
+ "direction": "[an old man, slow, a little gravelly, contented, a quiet joke at the end]",
+ "model": "fal-ai/elevenlabs/tts/eleven-v3",
+ "request": {
+  "stability": 0.5,
+  "apply_text_normalization": "auto",
+  "text": "[an old man, slow, a little gravelly, contented, a quiet joke at the end] ペーチャが言っとったよ、あんたが上までチーズを買いに行ってくれたと。あいつに何か持ってきてくれた者は、二十年おらんかった。",
+  "voice": "Bill",
+  "language_code": "ja"
+ },
+ "fal_request_id": "01a1d6e5-e36d-7140-a169-b718147629b9",
+ "hash": "aba613815f8c"
+}

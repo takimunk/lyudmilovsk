@@ -1,0 +1,20 @@
+{
+ "key": "line.lange_pyotr.catch_learn.4",
+ "lang": "en",
+ "text": "A worm. When the float twitches, leave it. When it goes under, then you strike.",
+ "speaker": "lange_pyotr",
+ "voice": "Brian",
+ "voice_id": "nPczCjzI2devNBz1zQrb",
+ "voice_design": null,
+ "direction": "[gruff, unhurried, a weathered fisherman of few words]",
+ "model": "fal-ai/elevenlabs/tts/eleven-v3",
+ "request": {
+  "stability": 0.5,
+  "apply_text_normalization": "auto",
+  "text": "[gruff, unhurried, a weathered fisherman of few words] A worm. When the float twitches, leave it. When it goes under, then you strike.",
+  "voice": "Brian",
+  "language_code": "en"
+ },
+ "fal_request_id": "01a1d664-fe21-7243-b034-b75a7b167d4d",
+ "hash": "2227c315a67c"
+}

@@ -1,0 +1,20 @@
+{
+ "key": "line.owner.supper_thanks.4",
+ "lang": "ru",
+ "text": "Держи. Это не плата, это сдача. А корм птицам, им тоже пора ужинать.",
+ "speaker": "owner",
+ "voice": "Daniel",
+ "voice_id": "onwK4e9ZLuTAKqWW03F9",
+ "voice_design": null,
+ "direction": "[calm, tired, slow, a little ironic]",
+ "model": "fal-ai/elevenlabs/tts/eleven-v3",
+ "request": {
+  "stability": 0.5,
+  "apply_text_normalization": "auto",
+  "text": "[calm, tired, slow, a little ironic] Держи. Это не плата, это сдача. А корм птицам, им тоже пора ужинать.",
+  "voice": "Daniel",
+  "language_code": "ru"
+ },
+ "fal_request_id": "01a1d671-feed-74f2-841b-6a577f580262",
+ "hash": "4c6713b81d91"
+}

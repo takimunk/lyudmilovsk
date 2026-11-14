@@ -1,0 +1,20 @@
+{
+ "key": "line.belov_misha.magpie_wait_hint.1",
+ "lang": "en",
+ "text": "Magpies in the gardens, crows on the beach, jackdaws on the roofs, and they all hide things. Pick up what's lying about and dig where they've buried.",
+ "speaker": "belov_misha",
+ "voice": "Liam",
+ "voice_id": "TX3LPaxmHKxFdv7VOQHJ",
+ "voice_design": null,
+ "direction": "[easygoing, amused, a young technician, a little self-ironic]",
+ "model": "fal-ai/elevenlabs/tts/eleven-v3",
+ "request": {
+  "stability": 0.5,
+  "apply_text_normalization": "auto",
+  "text": "[easygoing, amused, a young technician, a little self-ironic] Magpies in the gardens, crows on the beach, jackdaws on the roofs, and they all hide things. Pick up what's lying about and dig where they've buried.",
+  "voice": "Liam",
+  "language_code": "en"
+ },
+ "fal_request_id": "01a1d6d3-67f0-75b2-8def-4058ecc8105d",
+ "hash": "c63be35c1c0c"
+}

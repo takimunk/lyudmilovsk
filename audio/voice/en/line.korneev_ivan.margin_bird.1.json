@@ -1,0 +1,20 @@
+{
+ "key": "line.korneev_ivan.margin_bird.1",
+ "lang": "en",
+ "text": "Oleg drew his bird for me in the margin of the paper, next to the chess problem. Nina grumbles, but I'm not rubbing it out.",
+ "speaker": "korneev_ivan",
+ "voice": "Bill",
+ "voice_id": "pqHfZKP75CvOlQylNhV4",
+ "voice_design": null,
+ "direction": "[an old man, slow, a little gravelly, contented, a quiet joke at the end]",
+ "model": "fal-ai/elevenlabs/tts/eleven-v3",
+ "request": {
+  "stability": 0.5,
+  "apply_text_normalization": "auto",
+  "text": "[an old man, slow, a little gravelly, contented, a quiet joke at the end] Oleg drew his bird for me in the margin of the paper, next to the chess problem. Nina grumbles, but I'm not rubbing it out.",
+  "voice": "Bill",
+  "language_code": "en"
+ },
+ "fal_request_id": "01a1d75e-26e4-7032-bce7-e77f56f4610f",
+ "hash": "bcdeaf9161ee"
+}

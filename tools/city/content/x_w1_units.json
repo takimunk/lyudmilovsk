@@ -1,0 +1,3283 @@
+{
+ "_doc": "The promenade units' second pass (x_w1_units.json, see strings/x_w1_units.json): every trade's new things and counter talk. Rules name the things as promenade_unit/<thing id>; ids are the same in every unit of a trade. The running stories (cafe machine -> repair shop -> fish shop's valve, the dumpling/pasty peace, the lost book, the Race to the Buoy) are daily boards.",
+ "acts": {
+  "pu_cafe_chat": {
+   "prompt": "city.act.ask.prompt",
+   "lines": [
+    {
+     "k": "city.pu.pu_cafe_chat.1",
+     "h": [
+      8,
+      11
+     ]
+    },
+    {
+     "k": "city.pu.pu_cafe_chat.2",
+     "h": [
+      11,
+      16
+     ]
+    },
+    {
+     "k": "city.pu.pu_cafe_chat.3",
+     "h": [
+      16,
+      21
+     ]
+    },
+    {
+     "k": "city.pu.pu_cafe_chat.4",
+     "d": "sat-sun"
+    },
+    {
+     "k": "city.pu.pu_cafe_chat.5",
+     "d": "mon"
+    },
+    "city.pu.pu_cafe_chat.6"
+   ],
+   "needs_staff": "barista",
+   "closed": "city.pu.closed.cafe.*"
+  },
+  "pu_cafe_specials": {
+   "prompt": "city.act.look.prompt",
+   "lines": [
+    "city.pu.pu_cafe_specials.1",
+    "city.pu.pu_cafe_specials.2",
+    "city.pu.pu_cafe_specials.3",
+    "city.pu.pu_cafe_specials.4",
+    "city.pu.pu_cafe_specials.5"
+   ],
+   "minutes": 2,
+   "rotate": "daily"
+  },
+  "pu_cafe_window": {
+   "prompt": "city.act.look_out.prompt",
+   "lines": [
+    {
+     "k": "city.pu.pu_cafe_window.1",
+     "h": [
+      6,
+      12
+     ]
+    },
+    {
+     "k": "city.pu.pu_cafe_window.2",
+     "h": [
+      12,
+      18
+     ]
+    },
+    {
+     "k": "city.pu.pu_cafe_window.3",
+     "h": [
+      18,
+      21
+     ]
+    },
+    {
+     "k": "city.pu.pu_cafe_window.4",
+     "h": [
+      21,
+      6
+     ]
+    }
+   ],
+   "minutes": 5,
+   "sound": "wind_soft",
+   "any_hour": true
+  },
+  "pu_cafe_papers": {
+   "prompt": "city.act.read.prompt",
+   "lines": [
+    {
+     "k": "city.pu.pu_cafe_papers.1",
+     "d": "tue"
+    },
+    {
+     "k": "city.pu.pu_cafe_papers.2",
+     "d": "sun"
+    },
+    "city.pu.pu_cafe_papers.3",
+    "city.pu.pu_cafe_papers.4"
+   ],
+   "minutes": 10,
+   "sound": "page_turn"
+  },
+  "pu_cafe_stool": {
+   "prompt": "city.act.sit.prompt",
+   "lines": [
+    {
+     "k": "city.pu.pu_cafe_stool.1",
+     "h": [
+      8,
+      14
+     ]
+    },
+    {
+     "k": "city.pu.pu_cafe_stool.2",
+     "h": [
+      14,
+      21
+     ]
+    },
+    "city.pu.pu_cafe_stool.3"
+   ],
+   "minutes": 15,
+   "pose": "sit",
+   "any_hour": true
+  },
+  "pu_fish_chat": {
+   "prompt": "city.act.ask.prompt",
+   "lines": [
+    {
+     "k": "city.pu.pu_fish_chat.1",
+     "h": [
+      7,
+      10
+     ]
+    },
+    {
+     "k": "city.pu.pu_fish_chat.2",
+     "h": [
+      10,
+      15
+     ]
+    },
+    {
+     "k": "city.pu.pu_fish_chat.3",
+     "d": "sat"
+    },
+    {
+     "k": "city.pu.pu_fish_chat.4",
+     "h": [
+      7,
+      15
+     ]
+    },
+    "city.pu.pu_fish_chat.5"
+   ],
+   "needs_staff": "fishmonger",
+   "closed": "city.pu.closed.fish.*"
+  },
+  "pu_fish_tides": {
+   "prompt": "city.act.look.prompt",
+   "lines": [
+    "city.pu.pu_fish_tides.1",
+    "city.pu.pu_fish_tides.2",
+    "city.pu.pu_fish_tides.3",
+    "city.pu.pu_fish_tides.4",
+    "city.pu.pu_fish_tides.5"
+   ],
+   "minutes": 3,
+   "rotate": "daily"
+  },
+  "pu_fish_knots": {
+   "prompt": "city.act.look.prompt",
+   "lines": [
+    "city.pu.pu_fish_knots.1",
+    "city.pu.pu_fish_knots.2",
+    "city.pu.pu_fish_knots.3"
+   ],
+   "minutes": 5
+  },
+  "pu_fish_rods": {
+   "like": "look_misc",
+   "prompt": "city.act.look.prompt",
+   "lines": [
+    "city.pu.pu_fish_rods.1",
+    "city.pu.pu_fish_rods.2"
+   ],
+   "minutes": 3
+  },
+  "pu_fish_scale": {
+   "like": "use_misc",
+   "prompt": "city.act.use.prompt",
+   "lines": [
+    "city.pu.pu_fish_scale.1",
+    "city.pu.pu_fish_scale.2"
+   ],
+   "minutes": 1,
+   "sound": "scale_clunk"
+  },
+  "pu_rental_chat": {
+   "prompt": "city.act.ask.prompt",
+   "lines": [
+    {
+     "k": "city.pu.pu_rental_chat.1",
+     "h": [
+      9,
+      12
+     ]
+    },
+    {
+     "k": "city.pu.pu_rental_chat.2",
+     "h": [
+      12,
+      17
+     ]
+    },
+    {
+     "k": "city.pu.pu_rental_chat.3",
+     "h": [
+      17,
+      20
+     ]
+    },
+    {
+     "k": "city.pu.pu_rental_chat.4",
+     "d": "mon-fri"
+    },
+    {
+     "k": "city.pu.pu_rental_chat.5",
+     "d": "sat"
+    },
+    "city.pu.pu_rental_chat.6"
+   ],
+   "needs_staff": "renter",
+   "closed": "city.pu.closed.rental.*"
+  },
+  "pu_rental_boats": {
+   "prompt": "city.act.look.prompt",
+   "lines": [
+    "city.pu.pu_rental_boats.1",
+    "city.pu.pu_rental_boats.2",
+    "city.pu.pu_rental_boats.3",
+    "city.pu.pu_rental_boats.4",
+    "city.pu.pu_rental_boats.5"
+   ],
+   "minutes": 3,
+   "rotate": "daily"
+  },
+  "pu_rental_bikes": {
+   "like": "look_misc",
+   "prompt": "city.act.look.prompt",
+   "lines": [
+    {
+     "k": "city.pu.pu_rental_bikes.1",
+     "h": [
+      9,
+      14
+     ]
+    },
+    {
+     "k": "city.pu.pu_rental_bikes.2",
+     "h": [
+      14,
+      20
+     ]
+    },
+    "city.pu.pu_rental_bikes.3"
+   ],
+   "minutes": 3
+  },
+  "pu_rental_keys": {
+   "prompt": "city.act.look.prompt",
+   "lines": [
+    "city.pu.pu_rental_keys.1",
+    "city.pu.pu_rental_keys.2"
+   ],
+   "minutes": 2,
+   "rotate": "daily"
+  },
+  "pu_rental_tariff": {
+   "like": "look_misc",
+   "prompt": "city.act.look.prompt",
+   "lines": [
+    "city.pu.pu_rental_tariff.1",
+    "city.pu.pu_rental_tariff.2"
+   ],
+   "minutes": 2
+  },
+  "pu_deckchair": {
+   "prompt": "city.act.sit.prompt",
+   "lines": [
+    {
+     "k": "city.pu.pu_deckchair.1",
+     "h": [
+      9,
+      15
+     ]
+    },
+    {
+     "k": "city.pu.pu_deckchair.2",
+     "h": [
+      15,
+      20
+     ]
+    },
+    "city.pu.pu_deckchair.3"
+   ],
+   "minutes": 20,
+   "pose": "sit",
+   "any_hour": true
+  },
+  "pu_deckchair_2": {
+   "prompt": "city.act.sit.prompt",
+   "lines": [
+    {
+     "k": "city.pu.pu_deckchair_2.1",
+     "h": [
+      9,
+      14
+     ]
+    },
+    "city.pu.pu_deckchair_2.2"
+   ],
+   "minutes": 15,
+   "pose": "sit",
+   "any_hour": true
+  },
+  "pu_workshop_chat": {
+   "prompt": "city.act.ask.prompt",
+   "lines": [
+    {
+     "k": "city.pu.pu_workshop_chat.1",
+     "h": [
+      9,
+      12
+     ]
+    },
+    {
+     "k": "city.pu.pu_workshop_chat.2",
+     "h": [
+      12,
+      18
+     ]
+    },
+    {
+     "k": "city.pu.pu_workshop_chat.3",
+     "d": "sat"
+    },
+    {
+     "k": "city.pu.pu_workshop_chat.4",
+     "d": "mon-fri"
+    },
+    "city.pu.pu_workshop_chat.5"
+   ],
+   "needs_staff": "repairman",
+   "closed": "city.pu.closed.workshop.*"
+  },
+  "pu_workshop_tags": {
+   "prompt": "city.act.look.prompt",
+   "lines": [
+    "city.pu.pu_workshop_tags.1",
+    "city.pu.pu_workshop_tags.2",
+    "city.pu.pu_workshop_tags.3",
+    "city.pu.pu_workshop_tags.4",
+    "city.pu.pu_workshop_tags.5"
+   ],
+   "minutes": 3,
+   "rotate": "daily"
+  },
+  "pu_workshop_radios": {
+   "like": "look_misc",
+   "prompt": "city.act.look.prompt",
+   "lines": [
+    {
+     "k": "city.pu.pu_workshop_radios.1",
+     "h": [
+      9,
+      14
+     ]
+    },
+    "city.pu.pu_workshop_radios.2"
+   ],
+   "minutes": 4
+  },
+  "pu_workshop_tv": {
+   "like": "use_misc",
+   "prompt": "city.act.watch.prompt",
+   "lines": [
+    {
+     "k": "city.pu.pu_workshop_tv.1",
+     "h": [
+      9,
+      18
+     ]
+    },
+    "city.pu.pu_workshop_tv.2"
+   ],
+   "minutes": 3,
+   "sound": "tv_hiss"
+  },
+  "pu_workshop_bins": {
+   "like": "look_misc",
+   "prompt": "city.act.look.prompt",
+   "lines": [
+    "city.pu.pu_workshop_bins.1",
+    "city.pu.pu_workshop_bins.2"
+   ],
+   "minutes": 3
+  },
+  "pu_dumpling_chat": {
+   "prompt": "city.act.ask.prompt",
+   "lines": [
+    {
+     "k": "city.pu.pu_dumpling_chat.1",
+     "h": [
+      10,
+      12
+     ]
+    },
+    {
+     "k": "city.pu.pu_dumpling_chat.2",
+     "h": [
+      12,
+      15
+     ]
+    },
+    {
+     "k": "city.pu.pu_dumpling_chat.3",
+     "h": [
+      17,
+      21
+     ]
+    },
+    {
+     "k": "city.pu.pu_dumpling_chat.4",
+     "d": "sun"
+    },
+    "city.pu.pu_dumpling_chat.5"
+   ],
+   "needs_staff": "cook",
+   "closed": "city.pu.closed.dumplings.*"
+  },
+  "pu_dumpling_today": {
+   "prompt": "city.act.look.prompt",
+   "lines": [
+    "city.pu.pu_dumpling_today.1",
+    "city.pu.pu_dumpling_today.2",
+    "city.pu.pu_dumpling_today.3",
+    "city.pu.pu_dumpling_today.4"
+   ],
+   "minutes": 3,
+   "rotate": "daily"
+  },
+  "pu_dumpling_pot": {
+   "like": "use_misc",
+   "prompt": "city.act.watch.prompt",
+   "lines": [
+    "city.pu.pu_dumpling_pot.1",
+    "city.pu.pu_dumpling_pot.2"
+   ],
+   "minutes": 3,
+   "sound": "kettle_whistle"
+  },
+  "pu_dumpling_rules": {
+   "like": "look_misc",
+   "prompt": "city.act.look.prompt",
+   "lines": [
+    "city.pu.pu_dumpling_rules.1",
+    "city.pu.pu_dumpling_rules.2"
+   ],
+   "minutes": 2
+  },
+  "pu_souvenir_chat": {
+   "prompt": "city.act.ask.prompt",
+   "lines": [
+    {
+     "k": "city.pu.pu_souvenir_chat.1",
+     "h": [
+      10,
+      14
+     ]
+    },
+    {
+     "k": "city.pu.pu_souvenir_chat.2",
+     "h": [
+      16,
+      20
+     ]
+    },
+    {
+     "k": "city.pu.pu_souvenir_chat.3",
+     "d": "sat-sun"
+    },
+    "city.pu.pu_souvenir_chat.4"
+   ],
+   "needs_staff": "seller",
+   "closed": "city.pu.closed.souvenirs.*"
+  },
+  "pu_souvenir_guestbook": {
+   "prompt": "city.act.look.prompt",
+   "lines": [
+    "city.pu.pu_souvenir_guestbook.1",
+    "city.pu.pu_souvenir_guestbook.2",
+    "city.pu.pu_souvenir_guestbook.3",
+    "city.pu.pu_souvenir_guestbook.4",
+    "city.pu.pu_souvenir_guestbook.5"
+   ],
+   "minutes": 4,
+   "rotate": "daily"
+  },
+  "pu_souvenir_amber": {
+   "like": "look_misc",
+   "prompt": "city.act.look.prompt",
+   "lines": [
+    "city.pu.pu_souvenir_amber.1",
+    "city.pu.pu_souvenir_amber.2"
+   ],
+   "minutes": 5
+  },
+  "pu_souvenir_globe": {
+   "like": "look_misc",
+   "prompt": "city.act.look.prompt",
+   "lines": [
+    "city.pu.pu_souvenir_globe.1",
+    "city.pu.pu_souvenir_globe.2"
+   ],
+   "minutes": 3
+  },
+  "pu_souvenir_boxes": {
+   "prompt": "city.act.read.prompt",
+   "lines": [
+    "city.pu.pu_souvenir_boxes.1",
+    "city.pu.pu_souvenir_boxes.2"
+   ],
+   "minutes": 6,
+   "sound": "page_turn"
+  },
+  "pu_bakery_chat": {
+   "prompt": "city.act.ask.prompt",
+   "lines": [
+    {
+     "k": "city.pu.pu_bakery_chat.1",
+     "h": [
+      7,
+      10
+     ]
+    },
+    {
+     "k": "city.pu.pu_bakery_chat.2",
+     "h": [
+      10,
+      14
+     ]
+    },
+    {
+     "k": "city.pu.pu_bakery_chat.3",
+     "h": [
+      14,
+      19
+     ]
+    },
+    {
+     "k": "city.pu.pu_bakery_chat.4",
+     "d": "sun"
+    },
+    "city.pu.pu_bakery_chat.5"
+   ],
+   "needs_staff": "seller",
+   "closed": "city.pu.closed.bakery.*"
+  },
+  "pu_bakery_today": {
+   "prompt": "city.act.look.prompt",
+   "lines": [
+    "city.pu.pu_bakery_today.1",
+    "city.pu.pu_bakery_today.2",
+    "city.pu.pu_bakery_today.3",
+    "city.pu.pu_bakery_today.4"
+   ],
+   "minutes": 2,
+   "rotate": "daily"
+  },
+  "pu_bakery_oven": {
+   "like": "use_misc",
+   "prompt": "city.act.watch.prompt",
+   "lines": [
+    {
+     "k": "city.pu.pu_bakery_oven.1",
+     "h": [
+      5,
+      11
+     ]
+    },
+    "city.pu.pu_bakery_oven.2"
+   ],
+   "minutes": 3,
+   "sound": "fridge_hum"
+  },
+  "pu_bakery_dough": {
+   "like": "use_misc",
+   "prompt": "city.pu.pu_bakery_dough.prompt",
+   "lines": [
+    "city.pu.pu_bakery_dough.1",
+    "city.pu.pu_bakery_dough.2",
+    "city.pu.pu_bakery_dough.3"
+   ],
+   "minutes": 25,
+   "sound": "sack_rustle"
+  },
+  "pu_photo_samples": {
+   "prompt": "city.act.look.prompt",
+   "lines": [
+    "city.pu.pu_photo_samples.1",
+    "city.pu.pu_photo_samples.2",
+    "city.pu.pu_photo_samples.3",
+    "city.pu.pu_photo_samples.4"
+   ],
+   "rotate": "daily",
+   "minutes": 4
+  },
+  "pu_photo_camera": {
+   "like": "use_misc",
+   "prompt": "city.pu.pu_photo_camera.prompt",
+   "lines": [
+    "city.pu.pu_photo_camera.1",
+    "city.pu.pu_photo_camera.2"
+   ],
+   "minutes": 3,
+   "sound": "camera_flash"
+  },
+  "pu_photo_props": {
+   "like": "look_misc",
+   "prompt": "city.act.look.prompt",
+   "lines": [
+    "city.pu.pu_photo_props.1",
+    "city.pu.pu_photo_props.2"
+   ],
+   "minutes": 4
+  },
+  "pu_photo_negatives": {
+   "prompt": "city.act.read.prompt",
+   "lines": [
+    "city.pu.pu_photo_negatives.1",
+    "city.pu.pu_photo_negatives.2",
+    "city.pu.pu_photo_negatives.3"
+   ],
+   "minutes": 10,
+   "sound": "page_turn"
+  },
+  "pu_barber_radio": {
+   "like": "use_misc",
+   "prompt": "city.pu.pu_barber_radio.prompt",
+   "lines": [
+    {
+     "k": "city.pu.pu_barber_radio.1",
+     "h": [
+      9,
+      12
+     ]
+    },
+    {
+     "k": "city.pu.pu_barber_radio.2",
+     "h": [
+      12,
+      17
+     ]
+    },
+    "city.pu.pu_barber_radio.3"
+   ],
+   "minutes": 4,
+   "sound": "radio_tune"
+  },
+  "pu_barber_strop": {
+   "like": "use_misc",
+   "prompt": "city.pu.pu_barber_strop.prompt",
+   "lines": [
+    "city.pu.pu_barber_strop.1",
+    "city.pu.pu_barber_strop.2"
+   ],
+   "minutes": 3,
+   "sound": "drawer_slide"
+  },
+  "pu_barber_bottles": {
+   "like": "look_misc",
+   "prompt": "city.act.look.prompt",
+   "lines": [
+    "city.pu.pu_barber_bottles.1",
+    "city.pu.pu_barber_bottles.2"
+   ],
+   "minutes": 3
+  },
+  "pu_barber_newspapers": {
+   "prompt": "city.act.read.prompt",
+   "lines": [
+    "city.pu.pu_barber_newspapers.1",
+    "city.pu.pu_barber_newspapers.2",
+    "city.pu.pu_barber_newspapers.3"
+   ],
+   "minutes": 8,
+   "sound": "page_turn",
+   "rotate": "daily"
+  },
+  "pu_barber_sink": {
+   "like": "use_misc",
+   "prompt": "city.pu.pu_barber_sink.prompt",
+   "lines": [
+    "city.pu.pu_barber_sink.1"
+   ],
+   "minutes": 1,
+   "sound": "tap_water"
+  },
+  "pu_books_chat": {
+   "prompt": "city.act.ask.prompt",
+   "lines": [
+    {
+     "k": "city.pu.pu_books_chat.1",
+     "h": [
+      10,
+      13
+     ]
+    },
+    {
+     "k": "city.pu.pu_books_chat.2",
+     "h": [
+      13,
+      17
+     ]
+    },
+    {
+     "k": "city.pu.pu_books_chat.3",
+     "h": [
+      17,
+      19
+     ]
+    },
+    {
+     "k": "city.pu.pu_books_chat.4",
+     "d": "sat"
+    },
+    "city.pu.pu_books_chat.5"
+   ],
+   "needs_staff": "bookseller",
+   "closed": "city.pu.closed.books.*"
+  },
+  "pu_books_board": {
+   "prompt": "city.act.look.prompt",
+   "lines": [
+    "city.pu.pu_books_board.1",
+    "city.pu.pu_books_board.2",
+    "city.pu.pu_books_board.3",
+    "city.pu.pu_books_board.4"
+   ],
+   "minutes": 3,
+   "rotate": "daily"
+  },
+  "pu_books_globe": {
+   "like": "look_misc",
+   "prompt": "city.act.look.prompt",
+   "lines": [
+    "city.pu.pu_books_globe.1",
+    "city.pu.pu_books_globe.2"
+   ],
+   "minutes": 3
+  },
+  "pu_books_mags": {
+   "prompt": "city.act.read.prompt",
+   "lines": [
+    "city.pu.pu_books_mags.1",
+    "city.pu.pu_books_mags.2"
+   ],
+   "minutes": 8,
+   "sound": "page_turn"
+  },
+  "pu_books_chair": {
+   "prompt": "city.act.sit.prompt",
+   "lines": [
+    {
+     "k": "city.pu.pu_books_chair.1",
+     "h": [
+      10,
+      17
+     ]
+    },
+    "city.pu.pu_books_chair.2"
+   ],
+   "minutes": 20,
+   "pose": "sit",
+   "any_hour": true
+  },
+  "pu_beer_chat": {
+   "prompt": "city.act.ask.prompt",
+   "lines": [
+    {
+     "k": "city.pu.pu_beer_chat.1",
+     "h": [
+      14,
+      17
+     ]
+    },
+    {
+     "k": "city.pu.pu_beer_chat.2",
+     "h": [
+      17,
+      22
+     ]
+    },
+    {
+     "k": "city.pu.pu_beer_chat.3",
+     "h": [
+      22,
+      24
+     ]
+    },
+    {
+     "k": "city.pu.pu_beer_chat.4",
+     "d": "fri"
+    },
+    "city.pu.pu_beer_chat.5"
+   ],
+   "needs_staff": "bartender",
+   "closed": "city.pu.closed.beer.*"
+  },
+  "pu_beer_taps": {
+   "like": "use_misc",
+   "prompt": "city.pu.pu_beer_taps.prompt",
+   "lines": [
+    {
+     "k": "city.pu.pu_beer_taps.1",
+     "d": "mon-thu"
+    },
+    {
+     "k": "city.pu.pu_beer_taps.2",
+     "d": "fri"
+    },
+    {
+     "k": "city.pu.pu_beer_taps.3",
+     "d": "sat-sun"
+    }
+   ],
+   "minutes": 2,
+   "sound": "drawer_slide"
+  },
+  "pu_beer_radio": {
+   "like": "use_misc",
+   "prompt": "city.pu.pu_beer_radio.prompt",
+   "lines": [
+    {
+     "k": "city.pu.pu_beer_radio.1",
+     "h": [
+      14,
+      20
+     ]
+    },
+    {
+     "k": "city.pu.pu_beer_radio.2",
+     "d": "sat-sun"
+    },
+    "city.pu.pu_beer_radio.3"
+   ],
+   "minutes": 3,
+   "sound": "radio_tune"
+  },
+  "pu_beer_league": {
+   "prompt": "city.act.look.prompt",
+   "lines": [
+    "city.pu.pu_beer_league.1",
+    "city.pu.pu_beer_league.2",
+    "city.pu.pu_beer_league.3",
+    "city.pu.pu_beer_league.4"
+   ],
+   "minutes": 3,
+   "rotate": "daily"
+  },
+  "pu_pasty_chat": {
+   "prompt": "city.act.ask.prompt",
+   "lines": [
+    {
+     "k": "city.pu.pu_pasty_chat.1",
+     "h": [
+      10,
+      13
+     ]
+    },
+    {
+     "k": "city.pu.pu_pasty_chat.2",
+     "h": [
+      13,
+      16
+     ]
+    },
+    {
+     "k": "city.pu.pu_pasty_chat.3",
+     "h": [
+      16,
+      21
+     ]
+    },
+    {
+     "k": "city.pu.pu_pasty_chat.4",
+     "d": "sun"
+    },
+    "city.pu.pu_pasty_chat.5"
+   ],
+   "needs_staff": "seller",
+   "closed": "city.pu.closed.pasty.*"
+  },
+  "pu_pasty_today": {
+   "prompt": "city.act.look.prompt",
+   "lines": [
+    "city.pu.pu_pasty_today.1",
+    "city.pu.pu_pasty_today.2",
+    "city.pu.pu_pasty_today.3",
+    "city.pu.pu_pasty_today.4"
+   ],
+   "minutes": 2,
+   "rotate": "daily"
+  },
+  "pu_pasty_fryer": {
+   "like": "use_misc",
+   "prompt": "city.act.watch.prompt",
+   "lines": [
+    "city.pu.pu_pasty_fryer.1",
+    "city.pu.pu_pasty_fryer.2"
+   ],
+   "minutes": 3,
+   "sound": "pan_sizzle"
+  },
+  "pu_pasty_table": {
+   "like": "look_misc",
+   "prompt": "city.act.look.prompt",
+   "lines": [
+    "city.pu.pu_pasty_table.1",
+    "city.pu.pu_pasty_table.2"
+   ],
+   "minutes": 2
+  },
+  "pu_cafe_stamp": {
+   "like": "use_misc",
+   "prompt": "city.pu.stamp.prompt",
+   "any_hour": true,
+   "minutes": 1,
+   "sound": "stamp_thump",
+   "collect": "wall_stamps/cafe",
+   "closed": "city.pu.closed.cafe.*",
+   "lines": [
+    "city.pu.pu_cafe_stamp.1",
+    {
+     "k": "city.pu.pu_cafe_stamp.2",
+     "h": [
+      6,
+      12
+     ]
+    },
+    {
+     "k": "city.pu.stamp.rain",
+     "weather": "rain"
+    },
+    {
+     "k": "city.pu.stamp.fest",
+     "festival": "any"
+    }
+   ]
+  },
+  "pu_fish_stamp": {
+   "like": "use_misc",
+   "prompt": "city.pu.stamp.prompt",
+   "any_hour": true,
+   "minutes": 1,
+   "sound": "stamp_thump",
+   "collect": "wall_stamps/fish",
+   "closed": "city.pu.closed.fish.*",
+   "lines": [
+    "city.pu.pu_fish_stamp.1",
+    {
+     "k": "city.pu.pu_fish_stamp.2",
+     "h": [
+      6,
+      11
+     ]
+    },
+    {
+     "k": "city.pu.stamp.rain",
+     "weather": "rain"
+    },
+    {
+     "k": "city.pu.stamp.fest",
+     "festival": "any"
+    }
+   ]
+  },
+  "pu_rental_stamp": {
+   "like": "use_misc",
+   "prompt": "city.pu.stamp.prompt",
+   "any_hour": true,
+   "minutes": 1,
+   "sound": "stamp_thump",
+   "collect": "wall_stamps/rental",
+   "closed": "city.pu.closed.rental.*",
+   "lines": [
+    "city.pu.pu_rental_stamp.1",
+    {
+     "k": "city.pu.pu_rental_stamp.2",
+     "h": [
+      9,
+      12
+     ]
+    },
+    {
+     "k": "city.pu.stamp.rain",
+     "weather": "rain"
+    },
+    {
+     "k": "city.pu.stamp.fest",
+     "festival": "any"
+    }
+   ]
+  },
+  "pu_workshop_stamp": {
+   "like": "use_misc",
+   "prompt": "city.pu.stamp.prompt",
+   "any_hour": true,
+   "minutes": 1,
+   "sound": "stamp_thump",
+   "collect": "wall_stamps/workshop",
+   "closed": "city.pu.closed.workshop.*",
+   "lines": [
+    "city.pu.pu_workshop_stamp.1",
+    {
+     "k": "city.pu.pu_workshop_stamp.2",
+     "h": [
+      9,
+      12
+     ]
+    },
+    {
+     "k": "city.pu.stamp.rain",
+     "weather": "rain"
+    },
+    {
+     "k": "city.pu.stamp.fest",
+     "festival": "any"
+    }
+   ]
+  },
+  "pu_dumpling_stamp": {
+   "like": "use_misc",
+   "prompt": "city.pu.stamp.prompt",
+   "any_hour": true,
+   "minutes": 1,
+   "sound": "stamp_thump",
+   "collect": "wall_stamps/dumpling",
+   "closed": "city.pu.closed.dumplings.*",
+   "lines": [
+    "city.pu.pu_dumpling_stamp.1",
+    {
+     "k": "city.pu.pu_dumpling_stamp.2",
+     "h": [
+      11,
+      15
+     ]
+    },
+    {
+     "k": "city.pu.stamp.rain",
+     "weather": "rain"
+    },
+    {
+     "k": "city.pu.stamp.fest",
+     "festival": "any"
+    }
+   ]
+  },
+  "pu_souvenir_stamp": {
+   "like": "use_misc",
+   "prompt": "city.pu.stamp.prompt",
+   "any_hour": true,
+   "minutes": 1,
+   "sound": "stamp_thump",
+   "collect": "wall_stamps/souvenir",
+   "closed": "city.pu.closed.souvenirs.*",
+   "lines": [
+    "city.pu.pu_souvenir_stamp.1",
+    {
+     "k": "city.pu.pu_souvenir_stamp.2",
+     "h": [
+      10,
+      14
+     ]
+    },
+    {
+     "k": "city.pu.stamp.rain",
+     "weather": "rain"
+    },
+    {
+     "k": "city.pu.stamp.fest",
+     "festival": "any"
+    }
+   ]
+  },
+  "pu_bakery_stamp": {
+   "like": "use_misc",
+   "prompt": "city.pu.stamp.prompt",
+   "any_hour": true,
+   "minutes": 1,
+   "sound": "stamp_thump",
+   "collect": "wall_stamps/bakery",
+   "closed": "city.pu.closed.bakery.*",
+   "lines": [
+    "city.pu.pu_bakery_stamp.1",
+    {
+     "k": "city.pu.pu_bakery_stamp.2",
+     "h": [
+      6,
+      10
+     ]
+    },
+    {
+     "k": "city.pu.stamp.rain",
+     "weather": "rain"
+    },
+    {
+     "k": "city.pu.stamp.fest",
+     "festival": "any"
+    }
+   ]
+  },
+  "pu_photo_stamp": {
+   "like": "use_misc",
+   "prompt": "city.pu.stamp.prompt",
+   "any_hour": true,
+   "minutes": 1,
+   "sound": "stamp_thump",
+   "collect": "wall_stamps/photo",
+   "closed": "city.pu.closed.photo.*",
+   "lines": [
+    "city.pu.pu_photo_stamp.1",
+    {
+     "k": "city.pu.pu_photo_stamp.2",
+     "h": [
+      10,
+      13
+     ]
+    },
+    {
+     "k": "city.pu.stamp.rain",
+     "weather": "rain"
+    },
+    {
+     "k": "city.pu.stamp.fest",
+     "festival": "any"
+    }
+   ]
+  },
+  "pu_barber_stamp": {
+   "like": "use_misc",
+   "prompt": "city.pu.stamp.prompt",
+   "any_hour": true,
+   "minutes": 1,
+   "sound": "stamp_thump",
+   "collect": "wall_stamps/barber",
+   "closed": "city.pu.closed.barber.*",
+   "lines": [
+    "city.pu.pu_barber_stamp.1",
+    {
+     "k": "city.pu.pu_barber_stamp.2",
+     "h": [
+      9,
+      12
+     ]
+    },
+    {
+     "k": "city.pu.stamp.rain",
+     "weather": "rain"
+    },
+    {
+     "k": "city.pu.stamp.fest",
+     "festival": "any"
+    }
+   ]
+  },
+  "pu_books_stamp": {
+   "like": "use_misc",
+   "prompt": "city.pu.stamp.prompt",
+   "any_hour": true,
+   "minutes": 1,
+   "sound": "stamp_thump",
+   "collect": "wall_stamps/books",
+   "closed": "city.pu.closed.books.*",
+   "lines": [
+    "city.pu.pu_books_stamp.1",
+    {
+     "k": "city.pu.pu_books_stamp.2",
+     "h": [
+      10,
+      13
+     ]
+    },
+    {
+     "k": "city.pu.stamp.rain",
+     "weather": "rain"
+    },
+    {
+     "k": "city.pu.stamp.fest",
+     "festival": "any"
+    }
+   ]
+  },
+  "pu_beer_stamp": {
+   "like": "use_misc",
+   "prompt": "city.pu.stamp.prompt",
+   "any_hour": true,
+   "minutes": 1,
+   "sound": "stamp_thump",
+   "collect": "wall_stamps/beer",
+   "closed": "city.pu.closed.beer.*",
+   "lines": [
+    "city.pu.pu_beer_stamp.1",
+    {
+     "k": "city.pu.pu_beer_stamp.2",
+     "h": [
+      16,
+      22
+     ]
+    },
+    {
+     "k": "city.pu.stamp.rain",
+     "weather": "rain"
+    },
+    {
+     "k": "city.pu.stamp.fest",
+     "festival": "any"
+    }
+   ]
+  },
+  "pu_pasty_stamp": {
+   "like": "use_misc",
+   "prompt": "city.pu.stamp.prompt",
+   "any_hour": true,
+   "minutes": 1,
+   "sound": "stamp_thump",
+   "collect": "wall_stamps/pasty",
+   "closed": "city.pu.closed.pasty.*",
+   "lines": [
+    "city.pu.pu_pasty_stamp.1",
+    {
+     "k": "city.pu.pu_pasty_stamp.2",
+     "h": [
+      11,
+      15
+     ]
+    },
+    {
+     "k": "city.pu.stamp.rain",
+     "weather": "rain"
+    },
+    {
+     "k": "city.pu.stamp.fest",
+     "festival": "any"
+    }
+   ]
+  },
+  "pu_cafe_cat": {
+   "like": "look_misc",
+   "prompt": "city.pu.pet.prompt",
+   "minutes": 2,
+   "sound": "purr",
+   "any_hour": true,
+   "lines": [
+    {
+     "k": "city.pu.pu_cafe_cat.1",
+     "h": [
+      6,
+      12
+     ]
+    },
+    {
+     "k": "city.pu.pu_cafe_cat.2",
+     "h": [
+      12,
+      20
+     ]
+    },
+    {
+     "k": "city.pu.pu_cafe_cat.3",
+     "weather": "rain"
+    },
+    {
+     "k": "city.pu.pu_cafe_cat.4",
+     "h": [
+      20,
+      6
+     ]
+    }
+   ]
+  },
+  "pu_cafe_mugs": {
+   "like": "look_misc",
+   "prompt": "city.act.read.prompt",
+   "minutes": 3,
+   "sound": "page_turn",
+   "any_hour": true,
+   "lines": [
+    "city.pu.pu_cafe_mugs.1"
+   ],
+   "read": {
+    "texts": [
+     "pu_cafe_mugs"
+    ],
+    "rotate": "use"
+   }
+  },
+  "pu_fish_log": {
+   "like": "look_misc",
+   "prompt": "city.act.read.prompt",
+   "minutes": 3,
+   "sound": "page_turn",
+   "any_hour": true,
+   "lines": [
+    "city.pu.pu_fish_log.1"
+   ],
+   "read": {
+    "texts": [
+     "pu_fish_log"
+    ],
+    "rotate": "use"
+   }
+  },
+  "pu_fish_net": {
+   "like": "look_misc",
+   "prompt": "city.act.look.prompt",
+   "minutes": 2,
+   "any_hour": true,
+   "lines": [
+    {
+     "k": "city.pu.pu_fish_net.1",
+     "h": [
+      6,
+      18
+     ]
+    },
+    {
+     "k": "city.pu.pu_fish_net.2",
+     "h": [
+      18,
+      6
+     ]
+    }
+   ]
+  },
+  "pu_rental_pump": {
+   "like": "use_misc",
+   "prompt": "city.pu.pu_rental_pump.prompt",
+   "minutes": 2,
+   "sound": "bike_whirr",
+   "closed": "city.pu.closed.rental.*",
+   "lines": [
+    "city.pu.pu_rental_pump.1",
+    {
+     "k": "city.pu.pu_rental_pump.2",
+     "h": [
+      9,
+      12
+     ]
+    },
+    {
+     "k": "city.pu.pu_rental_pump.3",
+     "weather": "rain"
+    }
+   ]
+  },
+  "pu_rental_log": {
+   "like": "look_misc",
+   "prompt": "city.act.read.prompt",
+   "minutes": 3,
+   "sound": "page_turn",
+   "any_hour": true,
+   "lines": [
+    "city.pu.pu_rental_log.1"
+   ],
+   "read": {
+    "texts": [
+     "pu_rental_log"
+    ],
+    "rotate": "use"
+   }
+  },
+  "pu_rental_route": {
+   "like": "look_misc",
+   "prompt": "city.act.look.prompt",
+   "minutes": 3,
+   "any_hour": true,
+   "lines": [
+    {
+     "k": "city.pu.pu_rental_route.1",
+     "h": [
+      6,
+      19
+     ]
+    },
+    {
+     "k": "city.pu.pu_rental_route.2",
+     "h": [
+      19,
+      6
+     ]
+    }
+   ]
+  },
+  "pu_workshop_tester": {
+   "like": "use_misc",
+   "prompt": "city.pu.pu_workshop_tester.prompt",
+   "minutes": 2,
+   "sound": "mouse_clicks",
+   "closed": "city.pu.closed.workshop.*",
+   "lines": [
+    "city.pu.pu_workshop_tester.1",
+    {
+     "k": "city.pu.pu_workshop_tester.2",
+     "weather": [
+      "rain",
+      "fog",
+      "wet"
+     ]
+    }
+   ]
+  },
+  "pu_workshop_vise": {
+   "like": "use_misc",
+   "prompt": "city.pu.pu_workshop_vise.prompt",
+   "minutes": 2,
+   "sound": "scale_clunk",
+   "closed": "city.pu.closed.workshop.*",
+   "lines": [
+    "city.pu.pu_workshop_vise.1",
+    "city.pu.pu_workshop_vise.2"
+   ]
+  },
+  "pu_workshop_ledger": {
+   "like": "look_misc",
+   "prompt": "city.act.read.prompt",
+   "minutes": 3,
+   "sound": "page_turn",
+   "any_hour": true,
+   "lines": [
+    "city.pu.pu_workshop_ledger.1"
+   ],
+   "read": {
+    "texts": [
+     "pu_workshop_ledger"
+    ],
+    "rotate": "use"
+   }
+  },
+  "pu_dumpling_rolling": {
+   "like": "use_misc",
+   "prompt": "city.pu.pu_dumpling_rolling.prompt",
+   "minutes": 5,
+   "sound": "sack_rustle",
+   "closed": "city.pu.closed.dumplings.*",
+   "lines": [
+    "city.pu.pu_dumpling_rolling.1",
+    {
+     "k": "city.pu.pu_dumpling_rolling.2",
+     "h": [
+      7,
+      11
+     ]
+    },
+    {
+     "k": "city.pu.pu_dumpling_rolling.3",
+     "d": "sat,sun"
+    }
+   ]
+  },
+  "pu_souvenir_spinner": {
+   "like": "read_misc",
+   "prompt": "city.act.read.prompt",
+   "minutes": 2,
+   "sound": "page_turn",
+   "closed": "city.pu.closed.souvenirs.*",
+   "lines": [
+    "city.pu.pu_souvenir_spinner.1"
+   ],
+   "read": {
+    "texts": [
+     "pu_souvenir_cards"
+    ],
+    "rotate": "use"
+   }
+  },
+  "pu_souvenir_snowglobe": {
+   "like": "use_misc",
+   "prompt": "city.pu.pu_souvenir_snowglobe.prompt",
+   "minutes": 2,
+   "sound": "music_box",
+   "closed": "city.pu.closed.souvenirs.*",
+   "lines": [
+    "city.pu.pu_souvenir_snowglobe.1",
+    {
+     "k": "city.pu.pu_souvenir_snowglobe.2",
+     "weather": "snow"
+    },
+    {
+     "k": "city.pu.pu_souvenir_snowglobe.3",
+     "weather": "rain"
+    },
+    {
+     "k": "city.pu.pu_souvenir_snowglobe.4",
+     "weather": "clear"
+    }
+   ]
+  },
+  "pu_souvenir_suncatcher": {
+   "like": "look_misc",
+   "prompt": "city.act.look.prompt",
+   "minutes": 2,
+   "any_hour": true,
+   "lines": [
+    {
+     "k": "city.pu.pu_souvenir_suncatcher.1",
+     "h": [
+      6,
+      11
+     ]
+    },
+    {
+     "k": "city.pu.pu_souvenir_suncatcher.2",
+     "h": [
+      11,
+      17
+     ]
+    },
+    {
+     "k": "city.pu.pu_souvenir_suncatcher.3",
+     "h": [
+      17,
+      21
+     ]
+    },
+    {
+     "k": "city.pu.pu_souvenir_suncatcher.4",
+     "h": [
+      21,
+      6
+     ]
+    },
+    {
+     "k": "city.pu.pu_souvenir_suncatcher.5",
+     "weather": "rain",
+     "h": [
+      6,
+      21
+     ]
+    }
+   ]
+  },
+  "pu_bakery_starter": {
+   "like": "use_misc",
+   "prompt": "city.pu.pu_bakery_starter.prompt",
+   "minutes": 2,
+   "sound": "sack_rustle",
+   "closed": "city.pu.closed.bakery.*",
+   "lines": [
+    "city.pu.pu_bakery_starter.1",
+    {
+     "k": "city.pu.pu_bakery_starter.2",
+     "h": [
+      5,
+      9
+     ]
+    },
+    {
+     "k": "city.pu.pu_bakery_starter.3",
+     "d": "mon"
+    }
+   ]
+  },
+  "pu_bakery_orders": {
+   "like": "look_misc",
+   "prompt": "city.act.read.prompt",
+   "minutes": 3,
+   "sound": "page_turn",
+   "closed": "city.pu.closed.bakery.*",
+   "lines": [
+    "city.pu.pu_bakery_orders.1"
+   ],
+   "read": {
+    "texts": [
+     "pu_bakery_orders"
+    ],
+    "rotate": "use"
+   }
+  },
+  "pu_bakery_cat": {
+   "like": "look_misc",
+   "prompt": "city.pu.pet.prompt",
+   "minutes": 2,
+   "sound": "purr",
+   "any_hour": true,
+   "lines": [
+    {
+     "k": "city.pu.pu_bakery_cat.1",
+     "h": [
+      6,
+      14
+     ]
+    },
+    {
+     "k": "city.pu.pu_bakery_cat.2",
+     "h": [
+      14,
+      22
+     ]
+    },
+    {
+     "k": "city.pu.pu_bakery_cat.3",
+     "h": [
+      22,
+      6
+     ]
+    }
+   ]
+  },
+  "pu_photo_album": {
+   "like": "read_misc",
+   "prompt": "city.act.read.prompt",
+   "minutes": 2,
+   "sound": "page_turn",
+   "closed": "city.pu.closed.photo.*",
+   "lines": [
+    "city.pu.pu_photo_album.1"
+   ],
+   "read": {
+    "texts": [
+     "pu_photo_album"
+    ],
+    "rotate": "use"
+   }
+  },
+  "pu_photo_cutout": {
+   "like": "look_misc",
+   "prompt": "city.act.look.prompt",
+   "minutes": 2,
+   "closed": "city.pu.closed.photo.*",
+   "lines": [
+    "city.pu.pu_photo_cutout.1",
+    {
+     "k": "city.pu.pu_photo_cutout.2",
+     "h": [
+      17,
+      21
+     ]
+    },
+    {
+     "k": "city.pu.pu_photo_cutout.3",
+     "d": "sat,sun"
+    }
+   ]
+  },
+  "pu_photo_lightbox": {
+   "like": "use_misc",
+   "prompt": "city.pu.pu_photo_lightbox.prompt",
+   "minutes": 3,
+   "sound": "mouse_clicks",
+   "rotate": "daily",
+   "closed": "city.pu.closed.photo.*",
+   "lines": [
+    "city.pu.pu_photo_lightbox.1",
+    "city.pu.pu_photo_lightbox.2",
+    "city.pu.pu_photo_lightbox.3",
+    "city.pu.pu_photo_lightbox.4"
+   ]
+  },
+  "pu_photo_bench": {
+   "prompt": "city.act.sit.prompt",
+   "minutes": 10,
+   "pose": "sit",
+   "any_hour": true,
+   "lines": [
+    {
+     "k": "city.pu.pu_photo_bench.1",
+     "h": [
+      10,
+      18
+     ]
+    },
+    {
+     "k": "city.pu.pu_photo_bench.2",
+     "h": [
+      18,
+      10
+     ]
+    }
+   ]
+  },
+  "pu_barber_chat": {
+   "prompt": "city.act.ask.prompt",
+   "needs_staff": "barber",
+   "closed": "city.pu.closed.barber.*",
+   "lines": [
+    {
+     "k": "city.pu.pu_barber_chat.1",
+     "h": [
+      9,
+      13
+     ]
+    },
+    {
+     "k": "city.pu.pu_barber_chat.2",
+     "h": [
+      13,
+      19
+     ]
+    },
+    "city.pu.pu_barber_chat.3"
+   ]
+  },
+  "pu_barber_book": {
+   "like": "look_misc",
+   "prompt": "city.act.read.prompt",
+   "minutes": 3,
+   "sound": "page_turn",
+   "closed": "city.pu.closed.barber.*",
+   "lines": [
+    "city.pu.pu_barber_book.1"
+   ],
+   "read": {
+    "texts": [
+     "pu_barber_book"
+    ],
+    "rotate": "use"
+   }
+  },
+  "pu_barber_towels": {
+   "like": "use_misc",
+   "prompt": "city.pu.pu_barber_towels.prompt",
+   "minutes": 1,
+   "sound": "steam_hiss",
+   "closed": "city.pu.closed.barber.*",
+   "lines": [
+    "city.pu.pu_barber_towels.1",
+    {
+     "k": "city.pu.pu_barber_towels.2",
+     "weather": "cold"
+    },
+    {
+     "k": "city.pu.pu_barber_towels.3",
+     "h": [
+      9,
+      13
+     ]
+    }
+   ]
+  },
+  "pu_barber_cologne": {
+   "like": "use_misc",
+   "prompt": "city.pu.pu_barber_cologne.prompt",
+   "minutes": 1,
+   "sound": "steam_hiss",
+   "closed": "city.pu.closed.barber.*",
+   "lines": [
+    "city.pu.pu_barber_cologne.1",
+    {
+     "k": "city.pu.pu_barber_cologne.2",
+     "d": "sat,sun"
+    },
+    {
+     "k": "city.pu.pu_barber_cologne.3",
+     "festival": "any"
+    }
+   ]
+  },
+  "pu_books_lectern": {
+   "like": "read_misc",
+   "prompt": "city.act.read.prompt",
+   "minutes": 2,
+   "sound": "page_turn",
+   "closed": "city.pu.closed.books.*",
+   "lines": [
+    "city.pu.pu_books_lectern.1"
+   ],
+   "read": {
+    "texts": [
+     "pu_books_dictionary"
+    ],
+    "rotate": "use"
+   }
+  },
+  "pu_books_ladder": {
+   "like": "use_misc",
+   "prompt": "city.pu.pu_books_ladder.prompt",
+   "minutes": 3,
+   "closed": "city.pu.closed.books.*",
+   "lines": [
+    "city.pu.pu_books_ladder.1",
+    "city.pu.pu_books_ladder.2"
+   ]
+  },
+  "pu_beer_domino_chair": {
+   "prompt": "city.act.sit.prompt",
+   "minutes": 15,
+   "pose": "sit",
+   "any_hour": true,
+   "closed": "city.pu.closed.beer.*",
+   "lines": [
+    {
+     "k": "city.pu.pu_beer_domino_chair.1",
+     "h": [
+      12,
+      18
+     ]
+    },
+    {
+     "k": "city.pu.pu_beer_domino_chair.2",
+     "h": [
+      18,
+      12
+     ]
+    }
+   ]
+  },
+  "pu_beer_kvass": {
+   "like": "use_misc",
+   "prompt": "city.pu.pu_beer_kvass.prompt",
+   "minutes": 2,
+   "sound": "water_pour",
+   "closed": "city.pu.closed.beer.*",
+   "lines": [
+    "city.pu.pu_beer_kvass.1",
+    {
+     "k": "city.pu.pu_beer_kvass.2",
+     "weather": "warm"
+    },
+    {
+     "k": "city.pu.pu_beer_kvass.3",
+     "weather": "cold"
+    }
+   ]
+  },
+  "pu_pasty_mincer": {
+   "like": "use_misc",
+   "prompt": "city.pu.pu_pasty_mincer.prompt",
+   "minutes": 2,
+   "sound": "drawer_slide",
+   "closed": "city.pu.closed.pasty.*",
+   "lines": [
+    "city.pu.pu_pasty_mincer.1",
+    {
+     "k": "city.pu.pu_pasty_mincer.2",
+     "h": [
+      7,
+      11
+     ]
+    }
+   ]
+  },
+  "pu_pasty_treaty": {
+   "like": "look_misc",
+   "prompt": "city.act.read.prompt",
+   "minutes": 3,
+   "sound": "page_turn",
+   "any_hour": true,
+   "lines": [
+    "city.pu.pu_pasty_treaty.1"
+   ],
+   "read": {
+    "texts": [
+     "pu_pasty_treaty"
+    ],
+    "rotate": "use"
+   }
+  },
+  "pu_dumpling_regular": {
+   "prompt": "city.act.sit.prompt",
+   "minutes": 20,
+   "pose": "sit",
+   "any_hour": true,
+   "lines": [
+    {
+     "k": "city.pu.pu_dumpling_regular.1",
+     "h": [
+      10,
+      15
+     ]
+    },
+    {
+     "k": "city.pu.pu_dumpling_regular.2",
+     "h": [
+      15,
+      21
+     ]
+    },
+    {
+     "k": "city.pu.pu_dumpling_regular.3",
+     "d": "sat,sun"
+    },
+    "city.pu.pu_dumpling_regular.4"
+   ]
+  },
+  "pu_dumpling_week": {
+   "prompt": "city.act.look.prompt",
+   "minutes": 3,
+   "lines": [
+    {
+     "k": "city.pu.pu_dumpling_week.1",
+     "d": "mon"
+    },
+    {
+     "k": "city.pu.pu_dumpling_week.2",
+     "d": "tue"
+    },
+    {
+     "k": "city.pu.pu_dumpling_week.3",
+     "d": "wed"
+    },
+    {
+     "k": "city.pu.pu_dumpling_week.4",
+     "d": "thu"
+    },
+    {
+     "k": "city.pu.pu_dumpling_week.5",
+     "d": "fri"
+    },
+    {
+     "k": "city.pu.pu_dumpling_week.6",
+     "d": "sat"
+    },
+    {
+     "k": "city.pu.pu_dumpling_week.7",
+     "d": "sun"
+    }
+   ]
+  },
+  "pu_dumpling_toss": {
+   "like": "use_misc",
+   "prompt": "city.pu.pu_dumpling_toss.prompt",
+   "minutes": 6,
+   "sound": "sack_rustle",
+   "closed": "city.pu.closed.dumplings.*",
+   "lines": [
+    "city.pu.pu_dumpling_toss.1",
+    {
+     "k": "city.pu.pu_dumpling_toss.2",
+     "h": [
+      7,
+      12
+     ]
+    }
+   ],
+   "game": {
+    "type": "aim",
+    "title": "city.pu.pu_dumpling_toss.title",
+    "rounds": 5,
+    "need": 5,
+    "speed": 0.7,
+    "zone": 0.2,
+    "win": [
+     "city.pu.pu_dumpling_toss_win.1"
+    ],
+    "lose": [
+     "city.pu.pu_dumpling_toss_lose.1"
+    ],
+    "draw": [
+     "city.pu.pu_dumpling_toss_draw.1"
+    ]
+   }
+  },
+  "pu_dumpling_jar": {
+   "like": "look_misc",
+   "prompt": "city.act.read.prompt",
+   "minutes": 2,
+   "sound": "coin_drop",
+   "any_hour": true,
+   "lines": [
+    "city.pu.pu_dumpling_jar.1"
+   ],
+   "read": {
+    "texts": [
+     "pu_dumpling_jar"
+    ],
+    "rotate": "use"
+   }
+  },
+  "pu_pasty_oven": {
+   "like": "look_misc",
+   "prompt": "city.act.watch.prompt",
+   "minutes": 3,
+   "sound": "steam_hiss",
+   "any_hour": true,
+   "lines": [
+    {
+     "k": "city.pu.pu_pasty_oven.1",
+     "h": [
+      6,
+      10
+     ]
+    },
+    {
+     "k": "city.pu.pu_pasty_oven.2",
+     "h": [
+      10,
+      14
+     ]
+    },
+    {
+     "k": "city.pu.pu_pasty_oven.3",
+     "h": [
+      14,
+      19
+     ]
+    },
+    "city.pu.pu_pasty_oven.4"
+   ]
+  },
+  "pu_pasty_cooling": {
+   "like": "look_misc",
+   "prompt": "city.act.look.prompt",
+   "minutes": 2,
+   "any_hour": true,
+   "lines": [
+    {
+     "k": "city.pu.pu_pasty_cooling.1",
+     "weather": [
+      "rain",
+      "snow"
+     ]
+    },
+    {
+     "k": "city.pu.pu_pasty_cooling.2",
+     "h": [
+      10,
+      16
+     ]
+    },
+    {
+     "k": "city.pu.pu_pasty_cooling.3",
+     "h": [
+      6,
+      10
+     ]
+    },
+    "city.pu.pu_pasty_cooling.4"
+   ]
+  },
+  "pu_pasty_thanks": {
+   "like": "look_misc",
+   "prompt": "city.act.read.prompt",
+   "minutes": 3,
+   "sound": "page_turn",
+   "any_hour": true,
+   "lines": [
+    "city.pu.pu_pasty_thanks.1"
+   ],
+   "read": {
+    "texts": [
+     "pu_pasty_thanks"
+    ],
+    "rotate": "use"
+   }
+  },
+  "pu_pasty_bench": {
+   "prompt": "city.act.sit.prompt",
+   "minutes": 15,
+   "pose": "sit",
+   "any_hour": true,
+   "lines": [
+    {
+     "k": "city.pu.pu_pasty_bench.1",
+     "h": [
+      10,
+      14
+     ]
+    },
+    {
+     "k": "city.pu.pu_pasty_bench.2",
+     "h": [
+      14,
+      21
+     ]
+    },
+    "city.pu.pu_pasty_bench.3"
+   ]
+  },
+  "pu_fish_smoked": {
+   "like": "look_misc",
+   "prompt": "city.act.look.prompt",
+   "minutes": 2,
+   "any_hour": true,
+   "lines": [
+    {
+     "k": "city.pu.pu_fish_smoked.1",
+     "weather": "fog"
+    },
+    {
+     "k": "city.pu.pu_fish_smoked.2",
+     "h": [
+      7,
+      12
+     ]
+    },
+    {
+     "k": "city.pu.pu_fish_smoked.3",
+     "h": [
+      12,
+      19
+     ]
+    },
+    "city.pu.pu_fish_smoked.4"
+   ]
+  },
+  "pu_fish_catch": {
+   "like": "look_misc",
+   "prompt": "city.act.look.prompt",
+   "minutes": 3,
+   "any_hour": true,
+   "lines": [
+    {
+     "k": "city.pu.pu_fish_catch.1",
+     "weather": "fog"
+    },
+    {
+     "k": "city.pu.pu_fish_catch.2",
+     "weather": [
+      "rain",
+      "snow"
+     ]
+    },
+    {
+     "k": "city.pu.pu_fish_catch.3",
+     "weather": [
+      "clear",
+      "warm"
+     ]
+    },
+    {
+     "k": "city.pu.pu_fish_catch.4",
+     "d": "sat,sun"
+    },
+    "city.pu.pu_fish_catch.5"
+   ]
+  },
+  "pu_fish_stool": {
+   "prompt": "city.act.sit.prompt",
+   "minutes": 15,
+   "pose": "sit",
+   "any_hour": true,
+   "lines": [
+    {
+     "k": "city.pu.pu_fish_stool.1",
+     "h": [
+      7,
+      14
+     ]
+    },
+    {
+     "k": "city.pu.pu_fish_stool.2",
+     "h": [
+      14,
+      21
+     ]
+    },
+    "city.pu.pu_fish_stool.3"
+   ]
+  },
+  "pu_fish_cat": {
+   "like": "look_misc",
+   "prompt": "city.act.look.prompt",
+   "minutes": 2,
+   "any_hour": true,
+   "lines": [
+    {
+     "k": "city.pu.pu_fish_cat.1",
+     "h": [
+      7,
+      12
+     ]
+    },
+    {
+     "k": "city.pu.pu_fish_cat.2",
+     "h": [
+      12,
+      20
+     ]
+    },
+    {
+     "k": "city.pu.pu_fish_cat.3",
+     "festival": "any"
+    },
+    "city.pu.pu_fish_cat.4"
+   ]
+  },
+  "pu_bakery_bench": {
+   "prompt": "city.act.sit.prompt",
+   "minutes": 15,
+   "pose": "sit",
+   "any_hour": true,
+   "lines": [
+    {
+     "k": "city.pu.pu_bakery_bench.1",
+     "h": [
+      6,
+      10
+     ]
+    },
+    {
+     "k": "city.pu.pu_bakery_bench.2",
+     "h": [
+      10,
+      18
+     ]
+    },
+    "city.pu.pu_bakery_bench.3"
+   ]
+  },
+  "pu_bakery_shifts": {
+   "like": "look_misc",
+   "prompt": "city.act.look.prompt",
+   "minutes": 3,
+   "any_hour": true,
+   "lines": [
+    {
+     "k": "city.pu.pu_bakery_shifts.1",
+     "h": [
+      4,
+      9
+     ]
+    },
+    {
+     "k": "city.pu.pu_bakery_shifts.2",
+     "h": [
+      9,
+      16
+     ]
+    },
+    {
+     "k": "city.pu.pu_bakery_shifts.3",
+     "h": [
+      16,
+      22
+     ]
+    },
+    "city.pu.pu_bakery_shifts.4"
+   ]
+  },
+  "pu_bakery_radio": {
+   "like": "use_misc",
+   "prompt": "city.act.use.prompt",
+   "minutes": 3,
+   "sound": "radio_tune",
+   "any_hour": true,
+   "lines": [
+    {
+     "k": "city.pu.pu_bakery_radio.1",
+     "h": [
+      6,
+      8
+     ]
+    },
+    {
+     "k": "city.pu.pu_bakery_radio.2",
+     "h": [
+      8,
+      13
+     ]
+    },
+    {
+     "k": "city.pu.pu_bakery_radio.3",
+     "h": [
+      13,
+      19
+     ]
+    },
+    {
+     "k": "city.pu.pu_bakery_radio.4",
+     "h": [
+      19,
+      23
+     ]
+    },
+    "city.pu.pu_bakery_radio.5"
+   ]
+  }
+ },
+ "rules": {
+  "promenade_unit/cafe_chat": {
+   "act": "pu_cafe_chat"
+  },
+  "promenade_unit/cafe_specials": {
+   "act": "pu_cafe_specials"
+  },
+  "promenade_unit/cafe_window": {
+   "act": "pu_cafe_window"
+  },
+  "promenade_unit/cafe_papers": {
+   "act": "pu_cafe_papers"
+  },
+  "promenade_unit/cafe_stool": {
+   "act": "pu_cafe_stool"
+  },
+  "promenade_unit/fish_chat": {
+   "act": "pu_fish_chat"
+  },
+  "promenade_unit/fish_tides": {
+   "act": "pu_fish_tides"
+  },
+  "promenade_unit/fish_knots": {
+   "act": "pu_fish_knots"
+  },
+  "promenade_unit/fish_rods": {
+   "act": "pu_fish_rods"
+  },
+  "promenade_unit/fish_scale": {
+   "act": "pu_fish_scale"
+  },
+  "promenade_unit/rental_chat": {
+   "act": "pu_rental_chat"
+  },
+  "promenade_unit/rental_boats": {
+   "act": "pu_rental_boats"
+  },
+  "promenade_unit/rental_bikes": {
+   "act": "pu_rental_bikes"
+  },
+  "promenade_unit/rental_keys": {
+   "act": "pu_rental_keys"
+  },
+  "promenade_unit/rental_tariff": {
+   "act": "pu_rental_tariff"
+  },
+  "promenade_unit/rental_deckchair": {
+   "act": "pu_deckchair"
+  },
+  "promenade_unit/rental_deckchair_2": {
+   "act": "pu_deckchair_2"
+  },
+  "promenade_unit/workshop_chat": {
+   "act": "pu_workshop_chat"
+  },
+  "promenade_unit/workshop_tags": {
+   "act": "pu_workshop_tags"
+  },
+  "promenade_unit/workshop_radios": {
+   "act": "pu_workshop_radios"
+  },
+  "promenade_unit/workshop_tv": {
+   "act": "pu_workshop_tv"
+  },
+  "promenade_unit/workshop_bins": {
+   "act": "pu_workshop_bins"
+  },
+  "promenade_unit/dumpling_chat": {
+   "act": "pu_dumpling_chat"
+  },
+  "promenade_unit/dumpling_today": {
+   "act": "pu_dumpling_today"
+  },
+  "promenade_unit/dumpling_pot": {
+   "act": "pu_dumpling_pot"
+  },
+  "promenade_unit/dumpling_rules": {
+   "act": "pu_dumpling_rules"
+  },
+  "promenade_unit/souvenir_chat": {
+   "act": "pu_souvenir_chat"
+  },
+  "promenade_unit/souvenir_guestbook": {
+   "act": "pu_souvenir_guestbook"
+  },
+  "promenade_unit/souvenir_amber": {
+   "act": "pu_souvenir_amber"
+  },
+  "promenade_unit/souvenir_globe": {
+   "act": "pu_souvenir_globe"
+  },
+  "promenade_unit/souvenir_boxes": {
+   "act": "pu_souvenir_boxes"
+  },
+  "promenade_unit/bakery_chat": {
+   "act": "pu_bakery_chat"
+  },
+  "promenade_unit/bakery_today": {
+   "act": "pu_bakery_today"
+  },
+  "promenade_unit/bakery_oven": {
+   "act": "pu_bakery_oven"
+  },
+  "promenade_unit/bakery_dough": {
+   "act": "pu_bakery_dough"
+  },
+  "promenade_unit/photo_samples": {
+   "act": "pu_photo_samples"
+  },
+  "promenade_unit/photo_camera": {
+   "act": "pu_photo_camera"
+  },
+  "promenade_unit/photo_props": {
+   "act": "pu_photo_props"
+  },
+  "promenade_unit/photo_negatives": {
+   "act": "pu_photo_negatives"
+  },
+  "promenade_unit/barber_radio": {
+   "act": "pu_barber_radio"
+  },
+  "promenade_unit/barber_strop": {
+   "act": "pu_barber_strop"
+  },
+  "promenade_unit/barber_bottles": {
+   "act": "pu_barber_bottles"
+  },
+  "promenade_unit/barber_newspapers": {
+   "act": "pu_barber_newspapers"
+  },
+  "promenade_unit/barber_sink": {
+   "act": "pu_barber_sink"
+  },
+  "promenade_unit/books_chat": {
+   "act": "pu_books_chat"
+  },
+  "promenade_unit/books_board": {
+   "act": "pu_books_board"
+  },
+  "promenade_unit/books_globe": {
+   "act": "pu_books_globe"
+  },
+  "promenade_unit/books_mags": {
+   "act": "pu_books_mags"
+  },
+  "promenade_unit/reading_chair": {
+   "act": "pu_books_chair"
+  },
+  "promenade_unit/beer_chat": {
+   "act": "pu_beer_chat"
+  },
+  "promenade_unit/beer_taps": {
+   "act": "pu_beer_taps"
+  },
+  "promenade_unit/beer_radio": {
+   "act": "pu_beer_radio"
+  },
+  "promenade_unit/beer_league": {
+   "act": "pu_beer_league"
+  },
+  "promenade_unit/pasty_chat": {
+   "act": "pu_pasty_chat"
+  },
+  "promenade_unit/pasty_today": {
+   "act": "pu_pasty_today"
+  },
+  "promenade_unit/pasty_fryer": {
+   "act": "pu_pasty_fryer"
+  },
+  "promenade_unit/pasty_table": {
+   "act": "pu_pasty_table"
+  },
+  "promenade_unit/cafe_stamp": {
+   "act": "pu_cafe_stamp"
+  },
+  "promenade_unit/fish_stamp": {
+   "act": "pu_fish_stamp"
+  },
+  "promenade_unit/rental_stamp": {
+   "act": "pu_rental_stamp"
+  },
+  "promenade_unit/workshop_stamp": {
+   "act": "pu_workshop_stamp"
+  },
+  "promenade_unit/dumpling_stamp": {
+   "act": "pu_dumpling_stamp"
+  },
+  "promenade_unit/souvenir_stamp": {
+   "act": "pu_souvenir_stamp"
+  },
+  "promenade_unit/bakery_stamp": {
+   "act": "pu_bakery_stamp"
+  },
+  "promenade_unit/photo_stamp": {
+   "act": "pu_photo_stamp"
+  },
+  "promenade_unit/barber_stamp": {
+   "act": "pu_barber_stamp"
+  },
+  "promenade_unit/books_stamp": {
+   "act": "pu_books_stamp"
+  },
+  "promenade_unit/beer_stamp": {
+   "act": "pu_beer_stamp"
+  },
+  "promenade_unit/pasty_stamp": {
+   "act": "pu_pasty_stamp"
+  },
+  "promenade_unit/cafe_cat": {
+   "act": "pu_cafe_cat"
+  },
+  "promenade_unit/cafe_mugs": {
+   "act": "pu_cafe_mugs"
+  },
+  "promenade_unit/cafe_dominoes": {
+   "closed": "city.pu.closed.cafe.*"
+  },
+  "promenade_unit/fish_log": {
+   "act": "pu_fish_log"
+  },
+  "promenade_unit/fish_net": {
+   "act": "pu_fish_net"
+  },
+  "promenade_unit/rental_pump": {
+   "act": "pu_rental_pump"
+  },
+  "promenade_unit/rental_log": {
+   "act": "pu_rental_log"
+  },
+  "promenade_unit/rental_route": {
+   "act": "pu_rental_route"
+  },
+  "promenade_unit/workshop_tester": {
+   "act": "pu_workshop_tester"
+  },
+  "promenade_unit/workshop_vise": {
+   "act": "pu_workshop_vise"
+  },
+  "promenade_unit/workshop_ledger": {
+   "act": "pu_workshop_ledger"
+  },
+  "promenade_unit/dumpling_rolling": {
+   "act": "pu_dumpling_rolling"
+  },
+  "promenade_unit/souvenir_spinner": {
+   "act": "pu_souvenir_spinner"
+  },
+  "promenade_unit/souvenir_snowglobe": {
+   "act": "pu_souvenir_snowglobe"
+  },
+  "promenade_unit/souvenir_suncatcher": {
+   "act": "pu_souvenir_suncatcher"
+  },
+  "promenade_unit/bakery_starter": {
+   "act": "pu_bakery_starter"
+  },
+  "promenade_unit/bakery_orders": {
+   "act": "pu_bakery_orders"
+  },
+  "promenade_unit/bakery_cat": {
+   "act": "pu_bakery_cat"
+  },
+  "promenade_unit/photo_album": {
+   "act": "pu_photo_album"
+  },
+  "promenade_unit/photo_cutout": {
+   "act": "pu_photo_cutout"
+  },
+  "promenade_unit/photo_lightbox": {
+   "act": "pu_photo_lightbox"
+  },
+  "promenade_unit/photo_bench": {
+   "act": "pu_photo_bench"
+  },
+  "promenade_unit/barber_chat": {
+   "act": "pu_barber_chat"
+  },
+  "promenade_unit/barber_book": {
+   "act": "pu_barber_book"
+  },
+  "promenade_unit/barber_towels": {
+   "act": "pu_barber_towels"
+  },
+  "promenade_unit/barber_cologne": {
+   "act": "pu_barber_cologne"
+  },
+  "promenade_unit/books_lectern": {
+   "act": "pu_books_lectern"
+  },
+  "promenade_unit/books_ladder": {
+   "act": "pu_books_ladder"
+  },
+  "promenade_unit/beer_domino_chair": {
+   "act": "pu_beer_domino_chair"
+  },
+  "promenade_unit/beer_dominoes": {
+   "closed": "city.pu.closed.beer.*"
+  },
+  "promenade_unit/beer_kvass": {
+   "act": "pu_beer_kvass"
+  },
+  "promenade_unit/pasty_mincer": {
+   "act": "pu_pasty_mincer"
+  },
+  "promenade_unit/pasty_treaty": {
+   "act": "pu_pasty_treaty"
+  },
+  "promenade_unit/cafe_bar": {
+   "closed": "city.pu.closed.cafe.*"
+  },
+  "promenade_unit/fish_counter": {
+   "closed": "city.pu.closed.fish.*"
+  },
+  "promenade_unit/rental_counter": {
+   "closed": "city.pu.closed.rental.*"
+  },
+  "promenade_unit/repair_counter": {
+   "closed": "city.pu.closed.workshop.*"
+  },
+  "promenade_unit/dumpling_counter": {
+   "closed": "city.pu.closed.dumplings.*"
+  },
+  "promenade_unit/souvenir_counter": {
+   "closed": "city.pu.closed.souvenirs.*"
+  },
+  "promenade_unit/bakery_counter": {
+   "closed": "city.pu.closed.bakery.*"
+  },
+  "promenade_unit/book_counter": {
+   "closed": "city.pu.closed.books.*"
+  },
+  "promenade_unit/beer_bar": {
+   "closed": "city.pu.closed.beer.*"
+  },
+  "promenade_unit/pasty_counter": {
+   "closed": "city.pu.closed.pasty.*"
+  },
+  "promenade_unit/dumpling_regular": {
+   "act": "pu_dumpling_regular"
+  },
+  "promenade_unit/dumpling_week": {
+   "act": "pu_dumpling_week"
+  },
+  "promenade_unit/dumpling_toss": {
+   "act": "pu_dumpling_toss"
+  },
+  "promenade_unit/dumpling_jar": {
+   "act": "pu_dumpling_jar"
+  },
+  "promenade_unit/pasty_oven": {
+   "act": "pu_pasty_oven"
+  },
+  "promenade_unit/pasty_cooling": {
+   "act": "pu_pasty_cooling"
+  },
+  "promenade_unit/pasty_thanks": {
+   "act": "pu_pasty_thanks"
+  },
+  "promenade_unit/pasty_bench": {
+   "act": "pu_pasty_bench"
+  },
+  "promenade_unit/fish_smoked": {
+   "act": "pu_fish_smoked"
+  },
+  "promenade_unit/fish_catch": {
+   "act": "pu_fish_catch"
+  },
+  "promenade_unit/fish_stool": {
+   "act": "pu_fish_stool"
+  },
+  "promenade_unit/fish_cat": {
+   "act": "pu_fish_cat"
+  },
+  "promenade_unit/bakery_bench": {
+   "act": "pu_bakery_bench"
+  },
+  "promenade_unit/bakery_shifts": {
+   "act": "pu_bakery_shifts"
+  },
+  "promenade_unit/bakery_radio": {
+   "act": "pu_bakery_radio"
+  }
+ },
+ "quests": [
+  {
+   "id": "unit_valve",
+   "kind": "side",
+   "start_on": {
+    "event": "reach",
+    "target": "promenade"
+   },
+   "stages": [
+    {
+     "id": "board",
+     "objectives": [
+      {
+       "id": "cafe_board",
+       "event": "do",
+       "target": "pu_cafe_specials"
+      }
+     ]
+    },
+    {
+     "id": "tags",
+     "objectives": [
+      {
+       "id": "shop_tags",
+       "event": "do",
+       "target": "pu_workshop_tags"
+      }
+     ]
+    },
+    {
+     "id": "cup",
+     "objectives": [
+      {
+       "id": "ask_barista",
+       "event": "do",
+       "target": "pu_cafe_chat"
+      }
+     ],
+     "reward": {
+      "items": {
+       "coffee": 1
+      }
+     }
+    }
+   ]
+  },
+  {
+   "id": "unit_herring",
+   "kind": "side",
+   "start_on": {
+    "event": "reach",
+    "target": "promenade"
+   },
+   "stages": [
+    {
+     "id": "tides",
+     "objectives": [
+      {
+       "id": "read_tides",
+       "event": "do",
+       "target": "pu_fish_tides"
+      }
+     ]
+    },
+    {
+     "id": "bait",
+     "objectives": [
+      {
+       "id": "shrimp",
+       "event": "have",
+       "target": "bait_shrimp"
+      }
+     ]
+    },
+    {
+     "id": "ask",
+     "objectives": [
+      {
+       "id": "ask_fish",
+       "event": "do",
+       "target": "pu_fish_chat"
+      },
+      {
+       "id": "shrimp",
+       "event": "have",
+       "target": "bait_shrimp"
+      }
+     ],
+     "reward": {
+      "rubles": 25
+     }
+    }
+   ]
+  },
+  {
+   "id": "unit_regatta",
+   "kind": "side",
+   "start_on": {
+    "event": "reach",
+    "target": "promenade"
+   },
+   "stages": [
+    {
+     "id": "boats",
+     "objectives": [
+      {
+       "id": "read_boats",
+       "event": "do",
+       "target": "pu_rental_boats"
+      }
+     ]
+    },
+    {
+     "id": "rest",
+     "objectives": [
+      {
+       "id": "sit_chair",
+       "event": "do",
+       "target": "pu_deckchair_2"
+      }
+     ]
+    },
+    {
+     "id": "sign",
+     "objectives": [
+      {
+       "id": "ask_renter",
+       "event": "do",
+       "target": "pu_rental_chat"
+      }
+     ],
+     "reward": {
+      "items": {
+       "postcard": 1
+      }
+     }
+    }
+   ]
+  },
+  {
+   "id": "unit_stamps",
+   "kind": "side",
+   "start_on": {
+    "event": "reach",
+    "target": "promenade"
+   },
+   "stages": [
+    {
+     "id": "bread",
+     "objectives": [
+      {
+       "id": "stamp_bakery",
+       "event": "do",
+       "target": "pu_bakery_stamp"
+      }
+     ]
+    },
+    {
+     "id": "coffee",
+     "objectives": [
+      {
+       "id": "stamp_cafe",
+       "event": "do",
+       "target": "pu_cafe_stamp"
+      }
+     ]
+    },
+    {
+     "id": "page",
+     "objectives": [
+      {
+       "id": "stamp_books",
+       "event": "do",
+       "target": "pu_books_stamp"
+      }
+     ]
+    },
+    {
+     "id": "portrait",
+     "objectives": [
+      {
+       "id": "stamp_photo",
+       "event": "do",
+       "target": "pu_photo_stamp"
+      }
+     ],
+     "reward": {
+      "rubles": 30,
+      "items": {
+       "postcard": 1
+      }
+     }
+    }
+   ]
+  },
+  {
+   "id": "unit_picnic",
+   "kind": "side",
+   "start_on": {
+    "event": "reach",
+    "target": "promenade"
+   },
+   "stages": [
+    {
+     "id": "loaf",
+     "objectives": [
+      {
+       "id": "get_loaf",
+       "event": "have",
+       "target": "bread_loaf"
+      }
+     ]
+    },
+    {
+     "id": "kefir",
+     "objectives": [
+      {
+       "id": "get_kefir",
+       "event": "have",
+       "target": "kefir"
+      }
+     ]
+    },
+    {
+     "id": "chair",
+     "objectives": [
+      {
+       "id": "sit_deck",
+       "event": "do",
+       "target": "pu_deckchair"
+      }
+     ]
+    },
+    {
+     "id": "photo",
+     "objectives": [
+      {
+       "id": "see_cutout",
+       "event": "do",
+       "target": "pu_photo_cutout"
+      },
+      {
+       "id": "get_loaf",
+       "event": "have",
+       "target": "bread_loaf"
+      },
+      {
+       "id": "get_kefir",
+       "event": "have",
+       "target": "kefir"
+      }
+     ],
+     "reward": {
+      "rubles": 40
+     }
+    }
+   ]
+  },
+  {
+   "id": "unit_cats",
+   "kind": "side",
+   "start_on": {
+    "event": "reach",
+    "target": "promenade"
+   },
+   "stages": [
+    {
+     "id": "cafe",
+     "objectives": [
+      {
+       "id": "cat1",
+       "event": "do",
+       "target": "pu_cafe_cat"
+      }
+     ]
+    },
+    {
+     "id": "bakery",
+     "objectives": [
+      {
+       "id": "cat2",
+       "event": "do",
+       "target": "pu_bakery_cat"
+      }
+     ]
+    },
+    {
+     "id": "law",
+     "objectives": [
+      {
+       "id": "treaty",
+       "event": "do",
+       "target": "pu_pasty_treaty"
+      }
+     ],
+     "reward": {
+      "rubles": 20,
+      "items": {
+       "cookies": 1
+      }
+     }
+    }
+   ]
+  }
+ ],
+ "texts": {
+  "pu_cafe_mugs": {
+   "title": "city.pu.txt.pu_cafe_mugs.title",
+   "kind": "notice",
+   "minutes": 2,
+   "collect": "reading/pu_cafe_mugs",
+   "pages": [
+    "city.pu.txt.pu_cafe_mugs.p1",
+    [
+     {
+      "k": "city.pu.txt.pu_cafe_mugs.p2a",
+      "d": "mon-fri"
+     },
+     {
+      "k": "city.pu.txt.pu_cafe_mugs.p2b",
+      "d": "sat,sun"
+     }
+    ],
+    [
+     {
+      "k": "city.pu.txt.pu_cafe_mugs.p3a",
+      "weather": [
+       "rain",
+       "wet"
+      ]
+     },
+     "city.pu.txt.pu_cafe_mugs.p3b"
+    ]
+   ]
+  },
+  "pu_fish_log": {
+   "title": "city.pu.txt.pu_fish_log.title",
+   "kind": "ledger",
+   "minutes": 2,
+   "collect": "reading/pu_fish_log",
+   "pages": [
+    "city.pu.txt.pu_fish_log.p1",
+    [
+     {
+      "k": "city.pu.txt.pu_fish_log.p2a",
+      "d": "mon-fri"
+     },
+     {
+      "k": "city.pu.txt.pu_fish_log.p2b",
+      "d": "sat,sun"
+     }
+    ],
+    [
+     {
+      "k": "city.pu.txt.pu_fish_log.p3a",
+      "weather": "fog"
+     },
+     {
+      "k": "city.pu.txt.pu_fish_log.p3b",
+      "weather": [
+       "rain",
+       "snow"
+      ]
+     },
+     "city.pu.txt.pu_fish_log.p3c"
+    ]
+   ]
+  },
+  "pu_rental_log": {
+   "title": "city.pu.txt.pu_rental_log.title",
+   "kind": "ledger",
+   "minutes": 2,
+   "collect": "reading/pu_rental_log",
+   "pages": [
+    "city.pu.txt.pu_rental_log.p1",
+    [
+     {
+      "k": "city.pu.txt.pu_rental_log.p2a",
+      "d": "mon-fri"
+     },
+     {
+      "k": "city.pu.txt.pu_rental_log.p2b",
+      "d": "sat,sun"
+     }
+    ],
+    "city.pu.txt.pu_rental_log.p3"
+   ]
+  },
+  "pu_workshop_ledger": {
+   "title": "city.pu.txt.pu_workshop_ledger.title",
+   "kind": "ledger",
+   "minutes": 2,
+   "collect": "reading/pu_workshop_ledger",
+   "pages": [
+    "city.pu.txt.pu_workshop_ledger.p1",
+    [
+     {
+      "k": "city.pu.txt.pu_workshop_ledger.p2a",
+      "d": "mon-fri"
+     },
+     {
+      "k": "city.pu.txt.pu_workshop_ledger.p2b",
+      "d": "sat,sun"
+     }
+    ],
+    "city.pu.txt.pu_workshop_ledger.p3"
+   ]
+  },
+  "pu_souvenir_cards": {
+   "title": "city.pu.txt.pu_souvenir_cards.title",
+   "kind": "notice",
+   "minutes": 2,
+   "collect": "reading/pu_souvenir_cards",
+   "pages": [
+    "city.pu.txt.pu_souvenir_cards.p1",
+    "city.pu.txt.pu_souvenir_cards.p2",
+    [
+     {
+      "k": "city.pu.txt.pu_souvenir_cards.p3a",
+      "d": "fri"
+     },
+     "city.pu.txt.pu_souvenir_cards.p3b"
+    ]
+   ]
+  },
+  "pu_bakery_orders": {
+   "title": "city.pu.txt.pu_bakery_orders.title",
+   "kind": "ledger",
+   "minutes": 2,
+   "collect": "reading/pu_bakery_orders",
+   "pages": [
+    "city.pu.txt.pu_bakery_orders.p1",
+    [
+     {
+      "k": "city.pu.txt.pu_bakery_orders.p2a",
+      "d": "mon-fri"
+     },
+     {
+      "k": "city.pu.txt.pu_bakery_orders.p2b",
+      "d": "sat,sun"
+     }
+    ],
+    "city.pu.txt.pu_bakery_orders.p3"
+   ]
+  },
+  "pu_photo_album": {
+   "title": "city.pu.txt.pu_photo_album.title",
+   "kind": "book",
+   "minutes": 2,
+   "collect": "reading/pu_photo_album",
+   "pages": [
+    "city.pu.txt.pu_photo_album.p1",
+    "city.pu.txt.pu_photo_album.p2",
+    "city.pu.txt.pu_photo_album.p3",
+    "city.pu.txt.pu_photo_album.p4"
+   ]
+  },
+  "pu_barber_book": {
+   "title": "city.pu.txt.pu_barber_book.title",
+   "kind": "ledger",
+   "minutes": 2,
+   "collect": "reading/pu_barber_book",
+   "pages": [
+    "city.pu.txt.pu_barber_book.p1",
+    [
+     {
+      "k": "city.pu.txt.pu_barber_book.p2a",
+      "d": "mon-fri"
+     },
+     {
+      "k": "city.pu.txt.pu_barber_book.p2b",
+      "d": "sat,sun"
+     }
+    ],
+    "city.pu.txt.pu_barber_book.p3"
+   ]
+  },
+  "pu_books_dictionary": {
+   "title": "city.pu.txt.pu_books_dictionary.title",
+   "kind": "book",
+   "minutes": 2,
+   "collect": "reading/pu_books_dictionary",
+   "pages": [
+    "city.pu.txt.pu_books_dictionary.p1",
+    "city.pu.txt.pu_books_dictionary.p2",
+    "city.pu.txt.pu_books_dictionary.p3",
+    [
+     {
+      "k": "city.pu.txt.pu_books_dictionary.p4a",
+      "weather": "fog"
+     },
+     {
+      "k": "city.pu.txt.pu_books_dictionary.p4b",
+      "weather": [
+       "rain",
+       "snow"
+      ]
+     },
+     "city.pu.txt.pu_books_dictionary.p4c"
+    ]
+   ]
+  },
+  "pu_pasty_treaty": {
+   "title": "city.pu.txt.pu_pasty_treaty.title",
+   "kind": "notice",
+   "minutes": 2,
+   "collect": "reading/pu_pasty_treaty",
+   "pages": [
+    "city.pu.txt.pu_pasty_treaty.p1",
+    "city.pu.txt.pu_pasty_treaty.p2",
+    "city.pu.txt.pu_pasty_treaty.p3",
+    "city.pu.txt.pu_pasty_treaty.p4"
+   ]
+  },
+  "pu_dumpling_jar": {
+   "title": "city.pu.txt.pu_dumpling_jar.title",
+   "kind": "notice",
+   "minutes": 1,
+   "collect": "reading/pu_dumpling_jar",
+   "pages": [
+    "city.pu.txt.pu_dumpling_jar.p1",
+    {
+     "k": "city.pu.txt.pu_dumpling_jar.p2",
+     "after": 2
+    },
+    {
+     "k": "city.pu.txt.pu_dumpling_jar.p3",
+     "after": 5
+    },
+    {
+     "k": "city.pu.txt.pu_dumpling_jar.p4",
+     "after": 9
+    }
+   ]
+  },
+  "pu_pasty_thanks": {
+   "title": "city.pu.txt.pu_pasty_thanks.title",
+   "kind": "notice",
+   "minutes": 2,
+   "collect": "reading/pu_pasty_thanks",
+   "pages": [
+    "city.pu.txt.pu_pasty_thanks.p1",
+    {
+     "k": "city.pu.txt.pu_pasty_thanks.p2",
+     "after": 1
+    },
+    {
+     "k": "city.pu.txt.pu_pasty_thanks.p3",
+     "after": 3
+    },
+    {
+     "k": "city.pu.txt.pu_pasty_thanks.p4",
+     "after": 6
+    }
+   ]
+  }
+ },
+ "collections": {
+  "wall_stamps": {
+   "title": "city.pu.coll.stamps.title",
+   "pieces": [
+    "cafe",
+    "fish",
+    "rental",
+    "workshop",
+    "dumpling",
+    "souvenir",
+    "bakery",
+    "photo",
+    "barber",
+    "books",
+    "beer",
+    "pasty"
+   ]
+  }
+ },
+ "topics": {
+  "pu_barber_chat": [
+   {
+    "id": "pu_barber.cut",
+    "k": "city.pu.ask.barber.cut",
+    "lines": [
+     "city.pu.ask.barber.cut.1",
+     {
+      "k": "city.pu.ask.barber.cut.2",
+      "festival": "any"
+     }
+    ]
+   },
+   {
+    "id": "pu_barber.towel",
+    "k": "city.pu.ask.barber.towel",
+    "lines": [
+     "city.pu.ask.barber.towel.1",
+     {
+      "k": "city.pu.ask.barber.towel.2",
+      "weather": "cold"
+     }
+    ]
+   },
+   {
+    "id": "pu_barber.radio",
+    "k": "city.pu.ask.barber.radio",
+    "lines": [
+     "city.pu.ask.barber.radio.1",
+     {
+      "k": "city.pu.ask.barber.radio.2",
+      "h": [
+       17,
+       20
+      ]
+     }
+    ]
+   }
+  ]
+ }
+}

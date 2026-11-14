@@ -1,0 +1,20 @@
+{
+ "key": "line.belov_misha.magpie_crow_friend.2",
+ "lang": "ru",
+ "text": "Попроси по знакомству. Мне хватит трёх находок: что обронили, что закопали, что принесли.",
+ "speaker": "belov_misha",
+ "voice": "Liam",
+ "voice_id": "TX3LPaxmHKxFdv7VOQHJ",
+ "voice_design": null,
+ "direction": "[easygoing, amused, a young technician, a little self-ironic]",
+ "model": "fal-ai/elevenlabs/tts/eleven-v3",
+ "request": {
+  "stability": 0.5,
+  "apply_text_normalization": "auto",
+  "text": "[easygoing, amused, a young technician, a little self-ironic] Попроси по знакомству. Мне хватит трёх находок: что обронили, что закопали, что принесли.",
+  "voice": "Liam",
+  "language_code": "ru"
+ },
+ "fal_request_id": "01a1d6d3-55b1-77c0-95a2-24a96faa250d",
+ "hash": "25a28dd6f8a1"
+}

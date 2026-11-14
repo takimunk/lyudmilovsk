@@ -1,0 +1,20 @@
+{
+ "key": "line.nishimura_aya.views_ask.4",
+ "lang": "en",
+ "text": "The morning train does not wait, and the light waits even less. Go for me. No paints needed, just look and remember.",
+ "speaker": "nishimura_aya",
+ "voice": "Matilda",
+ "voice_id": "XrExE9yKIg1WjnnlVkGX",
+ "voice_design": null,
+ "direction": "[calm, soft, contemplative, a painter talking about the light]",
+ "model": "fal-ai/elevenlabs/tts/eleven-v3",
+ "request": {
+  "stability": 0.5,
+  "apply_text_normalization": "auto",
+  "text": "[calm, soft, contemplative, a painter talking about the light] The morning train does not wait, and the light waits even less. Go for me. No paints needed, just look and remember.",
+  "voice": "Matilda",
+  "language_code": "en"
+ },
+ "fal_request_id": "01a1d665-f5dd-7790-8d9b-c9f41412e412",
+ "hash": "3691b5bd16f1"
+}

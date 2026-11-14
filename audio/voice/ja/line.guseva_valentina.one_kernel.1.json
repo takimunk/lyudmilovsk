@@ -1,0 +1,29 @@
+{
+ "key": "line.guseva_valentina.one_kernel.1",
+ "lang": "ja",
+ "text": "イエスズメ、トウモロコシはあんた向けじゃないよ、塩がきいてるからね。まあ、一粒だけだよ。",
+ "speaker": "guseva_valentina",
+ "voice": "Abbess",
+ "voice_id": "Abbess",
+ "voice_design": null,
+ "direction": "",
+ "model": "fal-ai/minimax/speech-2.6-hd",
+ "request": {
+  "prompt": "イエスズメ、トウモロコシはあんた向けじゃないよ、塩がきいてるからね。まあ、一粒だけだよ。",
+  "voice_setting": {
+   "speed": 1,
+   "pitch": 0,
+   "vol": 1,
+   "voice_id": "Abbess"
+  },
+  "language_boost": "Japanese",
+  "audio_setting": {
+   "sample_rate": 24000,
+   "format": "mp3",
+   "channel": 1
+  },
+  "output_format": "url"
+ },
+ "fal_request_id": "01a1d6e3-0936-7361-afe8-7cd18cef39b1",
+ "hash": "2cfedbfe9dfa"
+}

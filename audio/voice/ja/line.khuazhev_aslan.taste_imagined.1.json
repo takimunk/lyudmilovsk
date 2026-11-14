@@ -1,0 +1,20 @@
+{
+ "key": "line.khuazhev_aslan.taste_imagined.1",
+ "lang": "ja",
+ "text": "今日はもう三回、あのブリヌイを思い浮かべた。俺が勝手に想像で済ませる前に、早く食べてきてくれ。",
+ "speaker": "khuazhev_aslan",
+ "voice": "Brian",
+ "voice_id": "nPczCjzI2devNBz1zQrb",
+ "voice_design": null,
+ "direction": "[hearty, generous, a cheese seller from the Caucasus, proud of his family's cheese]",
+ "model": "fal-ai/elevenlabs/tts/eleven-v3",
+ "request": {
+  "stability": 0.5,
+  "apply_text_normalization": "auto",
+  "text": "[hearty, generous, a cheese seller from the Caucasus, proud of his family's cheese] 今日はもう三回、あのブリヌイを思い浮かべた。俺が勝手に想像で済ませる前に、早く食べてきてくれ。",
+  "voice": "Brian",
+  "language_code": "ja"
+ },
+ "fal_request_id": "01a1d6e4-3fb0-7bc2-a6a0-dfb23e2dde8c",
+ "hash": "7fa3098d77b9"
+}

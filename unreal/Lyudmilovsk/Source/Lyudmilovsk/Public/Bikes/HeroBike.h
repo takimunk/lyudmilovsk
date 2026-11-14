@@ -46,6 +46,14 @@ public:
 	/** Tests and the console: get on, off, lead, let go of a bike (the nearest when null). */
 	bool Mount(ALyudBike* Which);
 	void Dismount();
+	/** Off the bike at once, from any state, without the dismount: riding or getting on or off, the hero stands on his
+	 *  feet beside it (walking again, his collision back) and it stands on its stand; led by the bars, it is stood where
+	 *  it is. For whatever is about to put the hero somewhere else or take him over (a teleport, a wake-up elsewhere, a
+	 *  cutscene, the developer mode): call it BEFORE moving him, or the bike puts him back on its saddle on the next
+	 *  frame (PlaceHero). True if he had a bike. */
+	bool DropNow();
+	/** The same for any actor, when the caller has no component at hand: false unless it is a hero with a bike. */
+	static bool DropBike(AActor* OfHero);
 	bool Lead(ALyudBike* Which);
 	void LetGo();
 	/** Tests: ride with this input for a while (throttle -1..1, steer -1..1) as if the keys were held. */
@@ -59,6 +67,9 @@ private:
 	void Follow(float DeltaSeconds);
 	void PlaceHero();
 	void Release(bool bStandBeside);
+	/** Is the ground under At the floor of something that carries its riders away (a cabin, a lift, a train's car)?
+	 *  Which: the bike standing there (not the floor). */
+	bool OnCarryingFloor(const FVector& At, const ALyudBike* Which) const;
 	void FeedBody();
 	/** Ground under a point (cm), whether it is loose (earth, grass) and whether anything is there at all. */
 	bool GroundAt(const FVector& At, float& OutZ, bool& bLoose) const;

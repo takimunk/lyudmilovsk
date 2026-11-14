@@ -1,0 +1,20 @@
+{
+ "key": "line.li_vika.lunch_ask.2",
+ "lang": "ru",
+ "text": "В закусочной у нижней станции варят уху. Кэй говорит, лучшее, что есть в городе. Миша говорит, худшее. Спорят вторую неделю.",
+ "speaker": "li_vika",
+ "voice": "Laura",
+ "voice_id": "FGY2WhTYpPnrIDTdsKH5",
+ "voice_design": null,
+ "direction": "[playful, quick, a lab assistant joking about her work]",
+ "model": "fal-ai/elevenlabs/tts/eleven-v3",
+ "request": {
+  "stability": 0.5,
+  "apply_text_normalization": "auto",
+  "text": "[playful, quick, a lab assistant joking about her work] В закусочной у нижней станции варят уху. Кэй говорит, лучшее, что есть в городе. Миша говорит, худшее. Спорят вторую неделю.",
+  "voice": "Laura",
+  "language_code": "ru"
+ },
+ "fal_request_id": "01a1d670-bae3-7ad1-897e-f166e562b5fb",
+ "hash": "b1e21cd11eb1"
+}

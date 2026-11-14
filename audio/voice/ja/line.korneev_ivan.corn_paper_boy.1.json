@@ -1,0 +1,20 @@
+{
+ "key": "line.korneev_ivan.corn_paper_boy.1",
+ "lang": "ja",
+ "text": "ああ、新聞の子か。あの晩の問題は解いたよ、三手詰めだ。ニーナはいまだに、あんたがわしから救ってくれたと言っとる。",
+ "speaker": "korneev_ivan",
+ "voice": "Bill",
+ "voice_id": "pqHfZKP75CvOlQylNhV4",
+ "voice_design": null,
+ "direction": "[an old man, slow, a little gravelly, contented, a quiet joke at the end]",
+ "model": "fal-ai/elevenlabs/tts/eleven-v3",
+ "request": {
+  "stability": 0.5,
+  "apply_text_normalization": "auto",
+  "text": "[an old man, slow, a little gravelly, contented, a quiet joke at the end] ああ、新聞の子か。あの晩の問題は解いたよ、三手詰めだ。ニーナはいまだに、あんたがわしから救ってくれたと言っとる。",
+  "voice": "Bill",
+  "language_code": "ja"
+ },
+ "fal_request_id": "01a1d6d5-5fa6-7200-8968-46c8cde169bd",
+ "hash": "e0277ab6209e"
+}

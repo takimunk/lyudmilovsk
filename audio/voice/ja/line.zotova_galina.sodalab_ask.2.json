@@ -1,0 +1,20 @@
+{
+ "key": "line.zotova_galina.sodalab_ask.2",
+ "lang": "ja",
+ "text": "作業仮説はこうです。シロップは全部同じで、違うのは着色料だけ。",
+ "speaker": "zotova_galina",
+ "voice": "Alice",
+ "voice_id": "Xb7hH8MSUJpSbSDYk0k2",
+ "voice_design": null,
+ "direction": "[warm, chatty, fondly exasperated with her husband]",
+ "model": "fal-ai/elevenlabs/tts/eleven-v3",
+ "request": {
+  "stability": 0.5,
+  "apply_text_normalization": "auto",
+  "text": "[warm, chatty, fondly exasperated with her husband] 作業仮説はこうです。シロップは全部同じで、違うのは着色料だけ。",
+  "voice": "Alice",
+  "language_code": "ja"
+ },
+ "fal_request_id": "01a1d678-1639-7b20-8b66-2c2862ae5945",
+ "hash": "1760a6c2cec6"
+}

@@ -1,0 +1,33 @@
+{
+ "key": "line.kid_boy.sparrow_no_hello.1",
+ "lang": "ja",
+ "text": "ソーニャが、スズメにあいさつされたって。そんなのありえないって言ったら、今度はおれにあいさつしてくれなくなった。",
+ "speaker": "kid_boy",
+ "voice": "ttv-voice-2026102201382326-dnI61vJ1",
+ "voice_id": "ttv-voice-2026102201382326-dnI61vJ1",
+ "voice_design": {
+  "endpoint": "fal-ai/minimax/voice-design",
+  "prompt": "Small boy, primary school kid: a very high, bright, light child's voice, like a young child actor in a cartoon dub but natural, bored and a little cheeky",
+  "preview_text": "Ну, норм так. С утра. Или со вчера."
+ },
+ "direction": "",
+ "model": "fal-ai/minimax/speech-2.6-hd",
+ "request": {
+  "prompt": "ソーニャが、スズメにあいさつされたって。そんなのありえないって言ったら、今度はおれにあいさつしてくれなくなった。",
+  "voice_setting": {
+   "speed": 1,
+   "pitch": 0,
+   "vol": 1,
+   "voice_id": "ttv-voice-2026102201382326-dnI61vJ1"
+  },
+  "language_boost": "Japanese",
+  "audio_setting": {
+   "sample_rate": 24000,
+   "format": "mp3",
+   "channel": 1
+  },
+  "output_format": "url"
+ },
+ "fal_request_id": "01a1d6e4-5b25-7593-a49d-e3f237d7b143",
+ "hash": "eca7ccc0b7ce"
+}

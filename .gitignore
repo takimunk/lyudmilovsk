@@ -80,3 +80,6 @@ unreal/Lyudmilovsk/Content/Characters/Humans/Town/
 blender/export/north/far*
 # the woods' cover mask: tools/forest_cover.py makes it again (import_world.py runs it)
 unreal/Lyudmilovsk/Content/World/forest_cover.fcv
+# named people the generator makes (blender/residents/looks.py CAST): beside the cast's models, local like Town/
+unreal/Lyudmilovsk/Content/Characters/Humans/Khuazhev_aslan/
+renders/city/interior/

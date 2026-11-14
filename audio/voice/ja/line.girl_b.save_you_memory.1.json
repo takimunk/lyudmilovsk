@@ -1,0 +1,20 @@
+{
+ "key": "line.girl_b.save_you_memory.1",
+ "lang": "ja",
+ "text": "こんにちは。写真を撮るものがないから、このまま覚えておくね。",
+ "speaker": "girl_b",
+ "voice": "Sarah",
+ "voice_id": "EXAVITQu4vr4xnSDxMaL",
+ "voice_design": null,
+ "direction": "[curious, slightly uneasy, conspiratorial]",
+ "model": "fal-ai/elevenlabs/tts/eleven-v3",
+ "request": {
+  "stability": 0.5,
+  "apply_text_normalization": "auto",
+  "text": "[curious, slightly uneasy, conspiratorial] こんにちは。写真を撮るものがないから、このまま覚えておくね。",
+  "voice": "Sarah",
+  "language_code": "ja"
+ },
+ "fal_request_id": "01a1d7b6-71ff-7591-a682-9ae07e4ff662",
+ "hash": "d93d258d13a4"
+}

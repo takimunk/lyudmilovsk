@@ -1,0 +1,20 @@
+{
+ "key": "line.sorokin_oleg.rowan_till_dawn.1",
+ "lang": "ru",
+ "text": "Стемнело, свиристели уже спят. Рябина и кормушка подождут до утра, и вы тоже.",
+ "speaker": "sorokin_oleg",
+ "voice": "River",
+ "voice_id": "SAz9YHcvj6GT2YYXdXww",
+ "voice_design": null,
+ "direction": "[a retired scholar, calm, dry humour, slower, gentle]",
+ "model": "fal-ai/elevenlabs/tts/eleven-v3",
+ "request": {
+  "stability": 0.5,
+  "apply_text_normalization": "auto",
+  "text": "[a retired scholar, calm, dry humour, slower, gentle] Стемнело, свиристели уже спят. Рябина и кормушка подождут до утра, и вы тоже.",
+  "voice": "River",
+  "language_code": "ru"
+ },
+ "fal_request_id": "01a1d6d8-94a2-7193-bbb8-ca951da8b07d",
+ "hash": "d761734ff0f8"
+}

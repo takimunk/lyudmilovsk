@@ -1,0 +1,20 @@
+{
+ "key": "line.nishimura_aya.sun_low.1",
+ "lang": "ru",
+ "text": "Сейчас лучший час. Всё золотое, даже мусорный бак. Я бы писала только в этот час, но он короткий.",
+ "speaker": "nishimura_aya",
+ "voice": "Matilda",
+ "voice_id": "XrExE9yKIg1WjnnlVkGX",
+ "voice_design": null,
+ "direction": "[calm, soft, contemplative, a painter talking about the light]",
+ "model": "fal-ai/elevenlabs/tts/eleven-v3",
+ "request": {
+  "stability": 0.5,
+  "apply_text_normalization": "auto",
+  "text": "[calm, soft, contemplative, a painter talking about the light] Сейчас лучший час. Всё золотое, даже мусорный бак. Я бы писала только в этот час, но он короткий.",
+  "voice": "Matilda",
+  "language_code": "ru"
+ },
+ "fal_request_id": "01a1d746-48ec-7810-8dc9-bc2c8eca87d4",
+ "hash": "bf632aaff00d"
+}

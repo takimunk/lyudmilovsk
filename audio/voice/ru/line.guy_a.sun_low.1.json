@@ -1,0 +1,20 @@
+{
+ "key": "line.guy_a.sun_low.1",
+ "lang": "ru",
+ "text": "Говорят, сейчас снаружи всё оранжевое. У меня на втором монике ночной режим такого же цвета. Почти то же самое.",
+ "speaker": "guy_a",
+ "voice": "Will",
+ "voice_id": "bIHbv24MWmeRgasZH58o",
+ "voice_design": null,
+ "direction": "[a young gamer in a hurry, mid-match]",
+ "model": "fal-ai/elevenlabs/tts/eleven-v3",
+ "request": {
+  "stability": 0.5,
+  "apply_text_normalization": "auto",
+  "text": "[a young gamer in a hurry, mid-match] Говорят, сейчас снаружи всё оранжевое. У меня на втором монике ночной режим такого же цвета. Почти то же самое.",
+  "voice": "Will",
+  "language_code": "ru"
+ },
+ "fal_request_id": "01a1d782-b196-7ab1-a3d7-b74548504162",
+ "hash": "e6fb7edf0a10"
+}

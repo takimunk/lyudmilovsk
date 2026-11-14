@@ -213,6 +213,9 @@ public:
 
 	/** Trust per bird id, kept with the save. */
 	UPROPERTY(SaveGame) TMap<int32, float> SavedTrust;
+	/** The species (index) each of those birds was: the ids are places in the population, which changes with the season,
+	 *  so trust is given back only to a bird of the same species (a save from before this has none: all are taken). */
+	UPROPERTY(SaveGame) TMap<int32, int32> SavedTrustSpecies;
 
 	/** One line: how many birds do what, where (console: lyud.Birds.Report). */
 	UFUNCTION(BlueprintCallable, Category = "Birds")
@@ -240,6 +243,13 @@ private:
 	/** The food in the hand (SetOffer) and how much each species wants it. */
 	FName OfferFood;
 	float StartDelay = 0.f;
+	/** The instanced poses' meshes and plumages are asked from ULyudPrefetch before the start (PrefetchPoses). */
+	bool bPosesReady = false;
+	float PosePoll = 0.f;
+	/** The pose and plumage packages found on the disk, and those looked for and not there (asked once each). */
+	TSet<FString> PlumageThere;
+	TSet<FString> PlumageMissing;
+	bool PrefetchPoses();
 	int32 SunDay = -1;
 	float MigrationTimer = 0.f;
 	TWeakObjectPtr<class ALyudSea> Sea;
@@ -325,6 +335,8 @@ private:
 		TArray<TArray<FTransform>> Xf;
 		/** Per pose, the instances shown at the last sync (0: all already hidden, nothing to send). */
 		TArray<int32> Shown;
+		/** Per pose, the transforms sent at the last sync: a pose whose birds have not moved is not sent again. */
+		TArray<TArray<FTransform>> Sent;
 		/** Size relative to the mesh (placeholder meshes are a 21.5 cm starling). */
 		float Scale = 1.f;
 		/** Origin of the flight poses above the feet, cm. */
@@ -359,6 +371,6 @@ private:
 	TArray<float> NowPx;
 	TArray<int32> PopIds;
 
-	void Sync(UInstancedStaticMeshComponent* ISM, TArray<FTransform>& Arr, int32& Shown);
+	void Sync(UInstancedStaticMeshComponent* ISM, TArray<FTransform>& Arr, int32& Shown, TArray<FTransform>& Sent);
 	void DriveBody(AActor* Body, const LyudBirds::FWorld& World, int32 Id);
 };

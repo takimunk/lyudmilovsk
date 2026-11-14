@@ -1,5 +1,6 @@
 #include "Diner/LyudDiner.h"
 
+#include "NpcDialogue.h"
 #include "Components/PointLightComponent.h"
 #include "Components/StaticMeshComponent.h"
 #include "Doors/LyudDoor.h"
@@ -110,6 +111,11 @@ namespace LyudDiner
 		const FString Pkg = FString::Printf(TEXT("/Game/Audio/Food/%s"), Name);
 		return FPackageName::DoesPackageExist(Pkg) ? LoadObject<USoundBase>(nullptr, *FString::Printf(TEXT("%s.%s"), *Pkg, Name)) : nullptr;
 	}
+
+	/** ALyudDiner::DinerMesh's lookups (weak: the dishes hold their meshes) and the names found to have no mesh (cleared at
+	 *  each play start: a mesh may have been imported since). */
+	TMap<FName, TWeakObjectPtr<UStaticMesh>> MeshCache;
+	TSet<FName> MeshMissing;
 }
 
 // ---- dish definitions (Content/Food/food.json, "plated": true) ------------------------------------------------------------------
@@ -167,9 +173,30 @@ UStaticMesh* ALyudDiner::DinerMesh(FName Name)
 	{
 		return nullptr;
 	}
+	// asked several times for every dish served and every meal begun: the loaded mesh is remembered (weak: the dishes' components
+	// hold it), and so is a name with no mesh; the disk is only asked the first time
+	const TWeakObjectPtr<UStaticMesh>* Known = LyudDiner::MeshCache.Find(Name);
+	if (Known && Known->IsValid())
+	{
+		return Known->Get();
+	}
+	if (LyudDiner::MeshMissing.Contains(Name))
+	{
+		return nullptr;
+	}
+	const bool bSeenBefore = Known != nullptr;     // loaded once, collected since: it exists
 	const FString N = TEXT("SM_Diner_") + Name.ToString();
 	const FString Pkg = TEXT("/Game/Diner/Meshes/") + N;
-	return FPackageName::DoesPackageExist(Pkg) ? LoadObject<UStaticMesh>(nullptr, *(Pkg + TEXT(".") + N)) : nullptr;
+	UStaticMesh* M = (bSeenBefore || FPackageName::DoesPackageExist(Pkg)) ? LoadObject<UStaticMesh>(nullptr, *(Pkg + TEXT(".") + N)) : nullptr;
+	if (M)
+	{
+		LyudDiner::MeshCache.Add(Name, M);
+	}
+	else if (!bSeenBefore)
+	{
+		LyudDiner::MeshMissing.Add(Name);
+	}
+	return M;
 }
 
 // ---- the dish ------------------------------------------------------------------------------------------------------------------
@@ -382,6 +409,27 @@ void ALyudDinerDish::Tick(float DeltaTime)
 	const APlayerController* PC = LyudDiner::Controller(World);
 	const ULyudInventoryUI* UI = ULyudInventoryUI::Get(this);
 	const ULyudBiteSubsystem* Bite = ULyudBiteSubsystem::Get(this);
+	// left unfinished and walked away from: cleared away too after a couple of minutes. Only an empty dish was ever cleared, so
+	// each one left with food on it kept its serving place (and its tick) until the level ended, and with all the places
+	// taken nothing more could be served
+	if (!bEating && bReady && Hero && FVector::DistSquared(Hero->GetActorLocation(), GetActorLocation()) > FMath::Square(2000.f))
+	{
+		LeftAloneFor += DeltaTime;
+		if (LeftAloneFor > 120.f)
+		{
+			ShowPrompt(false);
+			if (ALyudDiner* D = Diner.Get())
+			{
+				D->DishGone(this);
+			}
+			Destroy();
+			return;
+		}
+	}
+	else
+	{
+		LeftAloneFor = 0.f;
+	}
 	if (bEating || !bReady || !Hero || !PC || (UI && UI->IsOpen()) || (Bite && Bite->IsEating()))
 	{
 		ShowPrompt(false);
@@ -439,6 +487,7 @@ FRotator ALyudDiner::YawToWorld(float LocalYawDeg) const
 void ALyudDiner::BeginPlay()
 {
 	Super::BeginPlay();
+	LyudDiner::MeshMissing.Reset();
 	LoadLayout();
 	FindParts();
 	if (ULyudInventoryUI* UI = ULyudInventoryUI::Get(this))
@@ -848,6 +897,12 @@ void ALyudDiner::Tick(float DeltaTime)
 				UE_LOG(LogTemp, Display, TEXT("DINERTEST served %s at spot %d"), *P.Item.ToString(), Spot);
 			}
 		}
+		else if (ULyudInventory* Inv = ULyudInventory::Get(this))
+		{
+			// every place on the counter is taken: back into the pocket it was bought into (OnBought took it out), not lost
+			Inv->Add(P.Item);
+			UE_LOG(LogTemp, Display, TEXT("DINERTEST no free place for %s: into the pocket"), *P.Item.ToString());
+		}
 	}
 	TickCoffee(DeltaTime);
 }
@@ -888,6 +943,8 @@ bool ALyudDiner::PourCoffee()
 	ALyudDinerDish* Mug = SpawnDish(TEXT("diner_coffee"), FTransform(YawToWorld(0.f), ToWorld(CoffeeMugs)), 1.f);
 	if (!Mug)
 	{
+		// no mug to pour into (food.json has no plated diner_coffee): the coffee was paid for above
+		Inv->Earn(CoffeePrice);
 		return false;
 	}
 	Mug->SetPoured(0.f);
@@ -952,7 +1009,7 @@ void ALyudDiner::TickCoffee(float DeltaTime)
 			UI->SetPrompt(this, bAt ? LyudText::Get(TEXT("ui.diner.coffee_prompt"), { FStringFormatArg(CoffeePrice) }) : FText::GetEmpty());
 		}
 		bCoffeePrompt = bAt;
-		if (bAt && PC->WasInputKeyJustPressed(EKeys::E))
+		if (bAt && ANpcTalkDirector::UsePressed(PC))
 		{
 			if (UI)
 			{

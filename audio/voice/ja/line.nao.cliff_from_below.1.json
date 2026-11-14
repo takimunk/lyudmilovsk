@@ -1,0 +1,33 @@
+{
+ "key": "line.nao.cliff_from_below.1",
+ "lang": "ja",
+ "text": "崖下の浜に下りたら、ここが下からどう見えるか見てきて。わたしは上からしか見たことないの。",
+ "speaker": "nao",
+ "voice": "ttv-voice-2026102603333026-QqUMP15a",
+ "voice_id": "ttv-voice-2026102603333026-QqUMP15a",
+ "voice_design": {
+  "endpoint": "fal-ai/minimax/voice-design",
+  "prompt": "Young Japanese woman, about twenty: a soft, light, calm and clear voice, quiet and unhurried, a little dreamy and distant, gentle, natural everyday speech",
+  "preview_text": "Вышел. Я так и думала, что сегодня кто-нибудь выйдет."
+ },
+ "direction": "",
+ "model": "fal-ai/minimax/speech-2.6-hd",
+ "request": {
+  "prompt": "崖下の浜に下りたら、ここが下からどう見えるか見てきて。わたしは上からしか見たことないの。",
+  "voice_setting": {
+   "speed": 0.95,
+   "pitch": 0,
+   "vol": 1,
+   "voice_id": "ttv-voice-2026102603333026-QqUMP15a"
+  },
+  "language_boost": "Japanese",
+  "audio_setting": {
+   "sample_rate": 24000,
+   "format": "mp3",
+   "channel": 1
+  },
+  "output_format": "url"
+ },
+ "fal_request_id": "01a1d73b-4df4-7c33-99a9-9c3ea6c25c19",
+ "hash": "a92710a44812"
+}

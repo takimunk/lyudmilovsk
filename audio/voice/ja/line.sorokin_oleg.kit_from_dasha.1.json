@@ -1,0 +1,20 @@
+{
+ "key": "line.sorokin_oleg.kit_from_dasha.1",
+ "lang": "ja",
+ "text": "木村ダーシャから聞いたよ。餌台で鳥を五回数えてやったそうだね。なら立て方は知っているわけだ。",
+ "speaker": "sorokin_oleg",
+ "voice": "River",
+ "voice_id": "SAz9YHcvj6GT2YYXdXww",
+ "voice_design": null,
+ "direction": "[a retired scholar, calm, dry humour, slower, gentle]",
+ "model": "fal-ai/elevenlabs/tts/eleven-v3",
+ "request": {
+  "stability": 0.5,
+  "apply_text_normalization": "auto",
+  "text": "[a retired scholar, calm, dry humour, slower, gentle] 木村ダーシャから聞いたよ。餌台で鳥を五回数えてやったそうだね。なら立て方は知っているわけだ。",
+  "voice": "River",
+  "language_code": "ja"
+ },
+ "fal_request_id": "01a1d6d8-957f-7340-8523-91ca4b223e51",
+ "hash": "7cc18245de00"
+}

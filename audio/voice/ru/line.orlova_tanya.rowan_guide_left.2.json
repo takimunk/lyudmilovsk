@@ -1,0 +1,20 @@
+{
+ "key": "line.orlova_tanya.rowan_guide_left.2",
+ "lang": "ru",
+ "text": "Сорокин говорит, без справочника в лесу все птицы серые.",
+ "speaker": "orlova_tanya",
+ "voice": "Aria",
+ "voice_id": "9BWtsMINqrJLrRacOk9x",
+ "voice_design": null,
+ "direction": "[a kiosk shop assistant, brisk, deadpan, a bit sassy]",
+ "model": "fal-ai/elevenlabs/tts/eleven-v3",
+ "request": {
+  "stability": 0.5,
+  "apply_text_normalization": "auto",
+  "text": "[a kiosk shop assistant, brisk, deadpan, a bit sassy] Сорокин говорит, без справочника в лесу все птицы серые.",
+  "voice": "Aria",
+  "language_code": "ru"
+ },
+ "fal_request_id": "01a1d6d7-371d-7751-9c41-3bec3000417a",
+ "hash": "5442457f6b7c"
+}

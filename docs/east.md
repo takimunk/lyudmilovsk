@@ -16,7 +16,7 @@ plain under square forest tiles that lay behind the town, and the straight ramp 
   (mixed where they overlap).
 - **Track**: `terrain.TRACKS` has `town_east -> topi`, from the back of the upper terrace (-730, 905) to the start of
   Topi's path (-1170, 905); the router takes the pass by itself.
-- **Topi's side** (branch topi): after any change here rerun `python3 tools/topi.py` and `bash tools/topi/run.sh test`.
+- **Topi's side**: after any change here rerun `python3 tools/topi.py` and `bash tools/topi/run.sh test`. Where the
   path climbs the great dune it has a saddle (TopiModel.cpp), ~8 m over the ground instead of ~20.
 
 Not done yet: the landscape and the forests have to be rebuilt in Unreal (terrain build + `build_scene01.sh`) to see

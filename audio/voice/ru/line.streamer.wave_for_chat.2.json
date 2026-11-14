@@ -1,0 +1,20 @@
+{
+ "key": "line.streamer.wave_for_chat.2",
+ "lang": "ru",
+ "text": "Чат просит помахать на прощание. Помаши, тебе не трудно.",
+ "speaker": "streamer",
+ "voice": "Jessica",
+ "voice_id": "cgSgspJ2msm6clMCkdW9",
+ "voice_design": null,
+ "direction": "[bright, fast, half talking to her chat]",
+ "model": "fal-ai/elevenlabs/tts/eleven-v3",
+ "request": {
+  "stability": 0.5,
+  "apply_text_normalization": "auto",
+  "text": "[bright, fast, half talking to her chat] Чат просит помахать на прощание. Помаши, тебе не трудно.",
+  "voice": "Jessica",
+  "language_code": "ru"
+ },
+ "fal_request_id": "01a1d73e-9e96-7363-8d04-c03311400efd",
+ "hash": "9ee68dab0be5"
+}

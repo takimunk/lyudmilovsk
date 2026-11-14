@@ -138,6 +138,10 @@ namespace LyudBirds
 		float WinterForage[NumHabitats] = {};  // feeding tastes Nov-Feb (when bWinterForage)
 		bool bWinterForage = false;
 		float WinterFlock = 1.f;         // flocks this much bigger Nov-Feb
+		// a rare species kept to one corner of the map (species.json "range"; the game fills it, docs/quests.md): every
+		// group's home lies within RangeR of (RangeX, RangeY), metres in the sim's frame
+		bool bRanged = false;
+		float RangeX = 0.f, RangeY = 0.f, RangeR = 0.f;
 	};
 
 	const std::vector<FSpecies>& SpeciesTable();
@@ -332,6 +336,9 @@ namespace LyudBirds
 		float Gustiness = 0.25f;
 		/** How hard the wind is for a species now: 1 = its WindLimit. */
 		float WindStress(const FSpecies& S) const;
+		/** 1 when a bird that flies on the wind alone (the albatross: dynamic soaring) has none, 0 from a fresh breeze up and for
+		 *  every other species: becalmed, it sits on the sea and goes nowhere far. */
+		float Becalmed(const FSpecies& S) const;
 		/** How much more often a soarer goes up to circle in this wind (0 = never: the albatross in a calm). */
 		float SoarWind(const FSpecies& S) const;
 		/** The nearest place this bird can sit out a wind it can't fly against (rather downwind, in the lee). */

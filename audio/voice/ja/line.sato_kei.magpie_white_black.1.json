@@ -1,0 +1,20 @@
+{
+ "key": "line.sato_kei.magpie_white_black.1",
+ "lang": "ja",
+ "text": "カササギか。白と黒が隣り合ってる、いちばん難しいコントラストだ。計器が疲れるよ。",
+ "speaker": "sato_kei",
+ "voice": "Eric",
+ "voice_id": "cjVigY5qzO86Huf0OWal",
+ "voice_design": null,
+ "direction": "[quiet, precise, softly puzzled, a scientist thinking aloud]",
+ "model": "fal-ai/elevenlabs/tts/eleven-v3",
+ "request": {
+  "stability": 0.5,
+  "apply_text_normalization": "auto",
+  "text": "[quiet, precise, softly puzzled, a scientist thinking aloud] カササギか。白と黒が隣り合ってる、いちばん難しいコントラストだ。計器が疲れるよ。",
+  "voice": "Eric",
+  "language_code": "ja"
+ },
+ "fal_request_id": "01a1d7b8-a70a-7993-8c0b-b1a633e321b1",
+ "hash": "a6e1f3b90759"
+}

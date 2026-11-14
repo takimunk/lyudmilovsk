@@ -1,0 +1,20 @@
+{
+ "key": "line.khuazhev_aslan.wedding_guest.1",
+ "lang": "en",
+ "text": "Now that is a guest. A crest, little red buttons on the wings, dressed as if for a wedding. We never saw one like you back in the mountains.",
+ "speaker": "khuazhev_aslan",
+ "voice": "Brian",
+ "voice_id": "nPczCjzI2devNBz1zQrb",
+ "voice_design": null,
+ "direction": "[hearty, generous, a cheese seller from the Caucasus, proud of his family's cheese]",
+ "model": "fal-ai/elevenlabs/tts/eleven-v3",
+ "request": {
+  "stability": 0.5,
+  "apply_text_normalization": "auto",
+  "text": "[hearty, generous, a cheese seller from the Caucasus, proud of his family's cheese] Now that is a guest. A crest, little red buttons on the wings, dressed as if for a wedding. We never saw one like you back in the mountains.",
+  "voice": "Brian",
+  "language_code": "en"
+ },
+ "fal_request_id": "01a1d75d-c9da-7680-8ed3-677a5c520f8a",
+ "hash": "d188e9faf42c"
+}

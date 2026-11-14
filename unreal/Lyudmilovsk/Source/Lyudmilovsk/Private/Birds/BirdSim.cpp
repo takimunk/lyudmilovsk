@@ -58,7 +58,8 @@ namespace LyudBirds
 		for (int I = 0; I < (int)Sites.size(); I++)
 		{
 			const FSite& Site = Sites[I];
-			if (Taste(S, 0, Site.Kind) <= 0.f || (Site.Occupants >= Site.Capacity && I != B.Site))
+			// (a feeder's tray is no lee: birds come to it only for its feed, by FeederScore)
+			if (Taste(S, 0, Site.Kind) <= 0.f || (Site.Flags & SiteFeeder) || (Site.Occupants >= Site.Capacity && I != B.Site))
 			{
 				continue;
 			}
@@ -72,6 +73,11 @@ namespace LyudBirds
 			}
 		}
 		return Best;
+	}
+
+	float FWorld::Becalmed(const FSpecies& S) const
+	{
+		return S.WindLimit > 28.f ? 1.f - Clamp(SoarWind(S), 0.f, 1.f) : 0.f;
 	}
 
 	float FWorld::WindStress(const FSpecies& S) const
@@ -319,8 +325,9 @@ namespace LyudBirds
 		const V3 From = Plan == 3 && G.Roost >= 0 ? Sites[G.Roost].Center() : G.Home;
 		const float D = (C - From).Len2D();
 		// (in a gale a bird that can't cope with it only goes short hops)
+		// (and with no wind to soar on the albatross only paddles and makes short low hops: not across the bay)
 		const float Range = (Plan == 3 ? 700.f : (Plan == 2 ? S.HomeRange * 2.f : S.HomeRange))
-			/ (Soars(S) ? 1.f : 1.f + 3.f * Smooth((WindStress(S) - 0.7f) / 0.6f));
+			/ (Soars(S) ? 1.f + 9.f * Becalmed(S) : 1.f + 3.f * Smooth((WindStress(S) - 0.7f) / 0.6f));
 		if (D > Range * 1.5f)
 		{
 			return 0.f;
@@ -637,10 +644,12 @@ namespace LyudBirds
 			std::vector<int> Candidates;
 			std::vector<float> Weights;
 			float Total = 0.f;
+			// a ranged species (FSpecies::bRanged) settles only on the sites of its corner of the map
+			const V3 RangeC(S.RangeX, S.RangeY, 0.f);
 			for (int I = 0; I < (int)Sites.size(); I++)
 			{
 				const float W = S.Forage[(int)Sites[I].Kind] + 0.5f * S.Perch[(int)Sites[I].Kind];
-				if (W > 0.f)
+				if (W > 0.f && (!S.bRanged || (Sites[I].Center() - RangeC).Len2D() <= S.RangeR))
 				{
 					Candidates.push_back(I);
 					Weights.push_back(W);
@@ -1197,7 +1206,8 @@ namespace LyudBirds
 			G.Plan = NewPlan;
 			// stay longer when it is good; aerial feeders keep moving over their beat
 			G.StayTimer = (NewPlan == 1 ? 120.f + 300.f * Rand(R) : 200.f + 500.f * Rand(R)) * (IsAerial(S) ? 0.7f : 1.f) * (NewPlan == 5 ? 0.4f : 1.f)
-				* (1.f + 2.f * Smooth(WindStress(S) - 0.7f));         // in a gale they sit tight
+				* (1.f + 2.f * Smooth(WindStress(S) - 0.7f))          // in a gale they sit tight
+				* (1.f + 5.f * Becalmed(S));                          // and the albatross in a calm: it stays on the water
 
 			if (Site >= 0 && (Site != G.Site || bScattered))
 			{
@@ -1463,6 +1473,7 @@ namespace LyudBirds
 			for (int I = 0; I < (int)Sites.size(); I++)
 			{
 				const FSite& C = Sites[I];
+				// (a feeder's tray is a Garden site, but an open board on a post is no cover to dive into)
 				if ((C.Kind != EHabitat::Garden && C.Kind != EHabitat::Broadleaf && C.Kind != EHabitat::Conifer && C.Kind != EHabitat::Reed)
 					|| (C.Flags & SiteFeeder))
 				{
@@ -2006,7 +2017,9 @@ namespace LyudBirds
 		{
 			Plan = 1;
 		}
-		if (Plan == 2)
+		// (bedtime in the middle of an attack: the attack runs out below first, in its few seconds. Returning here left the
+		// hawk in Chase for the whole night, putting its prey up again every time it landed, through the sleeping roost)
+		if (Plan == 2 && H.Act != EAct::Chase)
 		{
 			if (H.Act == EAct::Chase && G.Roost >= 0)
 			{

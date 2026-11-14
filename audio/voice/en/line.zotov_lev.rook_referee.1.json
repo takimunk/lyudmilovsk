@@ -1,0 +1,20 @@
+{
+ "key": "line.zotov_lev.rook_referee.1",
+ "lang": "en",
+ "text": "A rook. You have the look of a referee. I have already sent my letter to the editors, there is no need to stare.",
+ "speaker": "zotov_lev",
+ "voice": "George",
+ "voice_id": "JBFqnCBsd6RMkjVDRZzb",
+ "voice_design": null,
+ "direction": "[dry, thoughtful, unhurried, a physicist's quiet irony]",
+ "model": "fal-ai/elevenlabs/tts/eleven-v3",
+ "request": {
+  "stability": 0.5,
+  "apply_text_normalization": "auto",
+  "text": "[dry, thoughtful, unhurried, a physicist's quiet irony] A rook. You have the look of a referee. I have already sent my letter to the editors, there is no need to stare.",
+  "voice": "George",
+  "language_code": "en"
+ },
+ "fal_request_id": "01a1d6ea-eedc-7520-aed0-c80c11c2a45b",
+ "hash": "734280df2e05"
+}

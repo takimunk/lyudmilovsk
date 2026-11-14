@@ -7,6 +7,7 @@
 #include "Misc/FileHelper.h"
 #include "Misc/Paths.h"
 #include "Misc/ScopeLock.h"
+#include "World/LyudPrefetch.h"
 
 #include <atomic>
 
@@ -218,5 +219,16 @@ namespace LyudText
 	{
 		const FString Name = Key.Replace(TEXT("."), TEXT("_"));
 		return LoadLocalized<USoundBase>([&](const FString& Lang) { return FString::Printf(TEXT("/Game/Voice/%s/V_%s.V_%s"), *Lang, *Name, *Name); });
+	}
+
+	void WarmVoice(const UObject* WorldContext, const FString& Key)
+	{
+		const FString Name = Key.Replace(TEXT("."), TEXT("_"));
+		const FString Lang = Language();
+		ULyudPrefetch::Ready(WorldContext, FString::Printf(TEXT("/Game/Voice/%s/V_%s.V_%s"), *Lang, *Name, *Name));
+		if (Lang != TEXT("ru"))
+		{
+			ULyudPrefetch::Ready(WorldContext, FString::Printf(TEXT("/Game/Voice/ru/V_%s.V_%s"), *Name, *Name));
+		}
 	}
 }

@@ -1,0 +1,20 @@
+{
+ "key": "line.korneev_ivan.sun_low.1",
+ "lang": "ja",
+ "text": "夜明けに浜から見ると、光が水の上をこっちへ渡ってくる。足もとまでな。毎朝見とるのに、いまだに慣れん。",
+ "speaker": "korneev_ivan",
+ "voice": "Bill",
+ "voice_id": "pqHfZKP75CvOlQylNhV4",
+ "voice_design": null,
+ "direction": "[an old man, slow, a little gravelly, contented, a quiet joke at the end]",
+ "model": "fal-ai/elevenlabs/tts/eleven-v3",
+ "request": {
+  "stability": 0.5,
+  "apply_text_normalization": "auto",
+  "text": "[an old man, slow, a little gravelly, contented, a quiet joke at the end] 夜明けに浜から見ると、光が水の上をこっちへ渡ってくる。足もとまでな。毎朝見とるのに、いまだに慣れん。",
+  "voice": "Bill",
+  "language_code": "ja"
+ },
+ "fal_request_id": "01a1d744-9040-7603-8c32-e095b0673a64",
+ "hash": "8aad268d4563"
+}

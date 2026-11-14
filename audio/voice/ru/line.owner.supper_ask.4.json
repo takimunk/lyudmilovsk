@@ -1,0 +1,20 @@
+{
+ "key": "line.owner.supper_ask.4",
+ "lang": "ru",
+ "text": "У двери палатка Аслана. Возьми у него сырную косичку. И «Байкал» из автомата.",
+ "speaker": "owner",
+ "voice": "Daniel",
+ "voice_id": "onwK4e9ZLuTAKqWW03F9",
+ "voice_design": null,
+ "direction": "[calm, tired, slow, a little ironic]",
+ "model": "fal-ai/elevenlabs/tts/eleven-v3",
+ "request": {
+  "stability": 0.5,
+  "apply_text_normalization": "auto",
+  "text": "[calm, tired, slow, a little ironic] У двери палатка Аслана. Возьми у него сырную косичку. И «Байкал» из автомата.",
+  "voice": "Daniel",
+  "language_code": "ru"
+ },
+ "fal_request_id": "01a1d671-97c4-77a0-b186-1b0c21c02b94",
+ "hash": "4fb41a398d7b"
+}

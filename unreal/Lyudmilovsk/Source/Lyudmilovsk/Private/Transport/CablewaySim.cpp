@@ -358,6 +358,44 @@ namespace LyudTransport
 				SpanMotion.push_back(M);
 			}
 		}
+		// each point of a rope's loop: which span it hangs in and its place on it (RopeOffsetAt), found once here: the
+		// game asks for every point near the viewer every frame, and RopeOffset searches the spans each time
+		RopePoints.assign(Lines.size(), std::vector<FRopePoint>());
+		for (int L = 0; L < (int)Lines.size(); L++)
+		{
+			const FLine& Ln = Lines[L];
+			RopePoints[L].resize(Ln.Loop.size());
+			for (int I = 0; I < (int)Ln.Loop.size() && I < (int)Ln.LoopS.size(); I++)
+			{
+				const float S = Ln.LoopS[I];
+				for (int K = 0; K < (int)SpanMotion.size(); K++)
+				{
+					const FSpanMotion& M = SpanMotion[K];
+					if (M.Line != L)
+					{
+						continue;
+					}
+					// as RopeOffset finds it: the first span of the line S lies in
+					const float Len = M.S1 - M.S0;
+					const float X = Ln.Ahead(M.S0, S);
+					if (Len <= 0.f || X < 0.f || X > Len)
+					{
+						continue;
+					}
+					const float U = 3.14159265f * X / Len;
+					V3 Dir;
+					Ln.At(S, &Dir);
+					const float H = std::sqrt(Dir.X * Dir.X + Dir.Y * Dir.Y);
+					FRopePoint& Pt = RopePoints[L][I];
+					Pt.Span = K;
+					Pt.SinU = std::sin(U);
+					Pt.Sin2U = std::sin(2.f * U);
+					Pt.Nx = H > 1e-4f ? -Dir.Y / H : 0.f;
+					Pt.Ny = H > 1e-4f ? Dir.X / H : 0.f;
+					break;
+				}
+			}
+		}
 		Reset();
 		return true;
 	}
@@ -380,6 +418,7 @@ namespace LyudTransport
 			C.Acc = 0.f;
 			C.Door = 0.f;
 			C.bToDepot = C.bHold = C.bPlayerAboard = false;
+			C.PlayerWait = 0.f;
 			C.Odometer = C.EmptyMetres = 0.f;
 			if (!Kept[C.Line])
 			{
@@ -893,6 +932,7 @@ namespace LyudTransport
 		C.State = ECabinState::Dwelling;
 		if (bNew)
 		{
+			C.PlayerWait = 0.f;
 			C.DwellUntil = Time + P.Dwell;
 			Emit(EEvent::Arrive, CI, Stop, -1);
 		}
@@ -1145,12 +1185,28 @@ namespace LyudTransport
 								bPlayerDue = true;
 							}
 						}
-						if (bPlayerDue && Time < C.DwellUntil + 25.0)
+						if (bPlayerDue && C.PlayerWait < 25.f)
 						{
-							// the player asked for it here: give them a little longer, doors open
+							// the player asked for it here: give them a little longer, doors open (each turn moves
+							// DwellUntil on, so the limit is counted apart: measured from DwellUntil it never ran out,
+							// and a cabin called and not boarded stood there for good with the line shut behind it)
 							C.Door = 1.f;
 							C.DwellUntil = Time + 5.0;
+							C.PlayerWait += 5.f + P.DoorTime;
 							break;
+						}
+						if (bPlayerDue)
+						{
+							// they never came: the call lapses (a waiting trip would call this cabin straight back);
+							// walking into a cabin later still starts a ride (PlayerBoard)
+							for (int RI = 0; RI < (int)Riders.size(); RI++)
+							{
+								const FRider& R = Riders[RI];
+								if (R.Who == PlayerId && R.State == ERiderState::Waiting && R.Cabin == CI && R.Legs[R.LegI].BoardStop == C.AtStop)
+								{
+									Cancel(RI);
+								}
+							}
 						}
 						if (C.Targets.empty() && C.Riders.empty() && C.Reserved == 0)
 						{
@@ -1486,6 +1542,29 @@ namespace LyudTransport
 			return V3(N.X * Side, N.Y * Side, -Down);
 		}
 		return V3();
+	}
+
+	int FNetwork::RopeSpanAt(int Li, int LoopI) const
+	{
+		if (Li < 0 || Li >= (int)RopePoints.size() || LoopI < 0 || LoopI >= (int)RopePoints[Li].size())
+		{
+			return -1;
+		}
+		return RopePoints[Li][LoopI].Span;
+	}
+
+	V3 FNetwork::RopeOffsetAt(int Li, int LoopI) const
+	{
+		const int K = RopeSpanAt(Li, LoopI);
+		if (K < 0 || K >= (int)SpanMotion.size())
+		{
+			return V3();
+		}
+		const FRopePoint& Pt = RopePoints[Li][LoopI];
+		const FSpanMotion& M = SpanMotion[K];
+		const float Down = M.Qv[0] * Pt.SinU + M.Qv[1] * Pt.Sin2U;
+		const float Side = M.Qh * Pt.SinU;
+		return V3(Pt.Nx * Side, Pt.Ny * Side, -Down);
 	}
 
 	std::string FNetwork::Report() const

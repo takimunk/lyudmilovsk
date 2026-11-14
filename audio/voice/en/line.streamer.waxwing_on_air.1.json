@@ -1,0 +1,20 @@
+{
+ "key": "line.streamer.waxwing_on_air.1",
+ "lang": "en",
+ "text": "Chat, it's a waxwing! The one everybody's talking about. Don't fly off, I'll turn the camera.",
+ "speaker": "streamer",
+ "voice": "Jessica",
+ "voice_id": "cgSgspJ2msm6clMCkdW9",
+ "voice_design": null,
+ "direction": "[bright, fast, half talking to her chat]",
+ "model": "fal-ai/elevenlabs/tts/eleven-v3",
+ "request": {
+  "stability": 0.5,
+  "apply_text_normalization": "auto",
+  "text": "[bright, fast, half talking to her chat] Chat, it's a waxwing! The one everybody's talking about. Don't fly off, I'll turn the camera.",
+  "voice": "Jessica",
+  "language_code": "en"
+ },
+ "fal_request_id": "01a1d73e-7d11-7211-809f-8fb118fade1f",
+ "hash": "9cde5180dd66"
+}

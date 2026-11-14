@@ -1,0 +1,20 @@
+{
+ "key": "line.zotova_galina.no_bread_crossword.1",
+ "lang": "ru",
+ "text": "Здравствуйте. Хлеба при мне нет, извините. Только кроссворд.",
+ "speaker": "zotova_galina",
+ "voice": "Alice",
+ "voice_id": "Xb7hH8MSUJpSbSDYk0k2",
+ "voice_design": null,
+ "direction": "[warm, chatty, fondly exasperated with her husband]",
+ "model": "fal-ai/elevenlabs/tts/eleven-v3",
+ "request": {
+  "stability": 0.5,
+  "apply_text_normalization": "auto",
+  "text": "[warm, chatty, fondly exasperated with her husband] Здравствуйте. Хлеба при мне нет, извините. Только кроссворд.",
+  "voice": "Alice",
+  "language_code": "ru"
+ },
+ "fal_request_id": "01a1d6eb-e403-7570-8371-e1c03de885ec",
+ "hash": "fcbd59698d09"
+}

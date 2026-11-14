@@ -25,8 +25,10 @@ Kit notes: windows are placed with B.window() and explicit CCW corners (hex hole
 """
 import math
 
+import interior_kit as kit
 from citykit import prism, triangulate, DOOR_W
 from _surrounds import add_surrounds
+import _homekit as hk
 
 INFO = {
     "name_ru": "Дом из двух цилиндров", "name_en": "Twin-Cylinder House",
@@ -52,9 +54,14 @@ NS = 3                            # storeys (3 -> 11.95 m; 4 -> 15.25 m: the mai
 RAIL = "CT_SteelRed"              # balcony railings and door canopy
 CAP = "CT_PlasterRed"             # stair-head cap
 DRUM2 = "CT_Plaster"              # plaster of the back (honeycomb) drum
+CEIL = 3.15                       # ceiling of the ground floor (hex windows end at 3.12)
+ALT = "tank"                      # studio corner: "tank" (aquarium + workbench) | "wheel" (potter's wheel)
+SEED = 1
 VARIANTS = {
-    "P-T1H3": {"NS": 4, "RAIL": "CT_Steel", "CAP": "CT_PlasterBlue", "DRUM2": "CT_PlasterYellow"},    # 40 x 30, max 18 m
-    "P-T3H1": {"RAIL": "CT_SteelWhite", "CAP": "CT_PlasterGreen", "DRUM2": "CT_PlasterPink"},          # 25 x 20, max 12 m
+    "P-T1H3": {"NS": 4, "RAIL": "CT_Steel", "CAP": "CT_PlasterBlue", "DRUM2": "CT_PlasterYellow",
+               "ALT": "tank", "SEED": 1},                                                             # 40 x 30, max 18 m
+    "P-T3H1": {"RAIL": "CT_SteelWhite", "CAP": "CT_PlasterGreen", "DRUM2": "CT_PlasterPink",
+               "ALT": "wheel", "SEED": 5},                                                            # 25 x 20, max 12 m
 }
 
 
@@ -193,6 +200,15 @@ def _panel(B, p0, p1, z0, z1, centres, mat="CT_Plaster", flat_of=None, kind="fla
             a2, b2 = Hi[i], Hi[(i + 1) % 6]
             B.detail.face("CT_FrameWhite", [W.w(a[0], a[1], 0.17), W.w(b[0], b[1], 0.17),
                                             W.w(b2[0], b2[1], 0.17), W.w(a2[0], a2[1], 0.17)])
+        if zc + HC <= CEIL:      # ground floor: the hexagon shines into the room (frame ring + opal pane)
+            Ho, Hg = _hex(uc, zc, 1.12), _hex(uc, zc, 0.97)
+            dd = INNER + 0.006
+            for i in range(6):
+                a, b = Ho[i], Ho[(i + 1) % 6]
+                a2, b2 = Hg[i], Hg[(i + 1) % 6]
+                B.detail.face("CT_FrameWhite", [W.w(b[0], b[1], dd), W.w(a[0], a[1], dd), W.w(a2[0], a2[1], dd),
+                                                W.w(b2[0], b2[1], dd)])
+            B.detail.face("CT_Opal", [W.w(p[0], p[1], dd + 0.002) for p in reversed(Hg)])
         card = [W.w(uc - HA, zc - HC), W.w(uc + HA, zc - HC), W.w(uc + HA, zc + HC), W.w(uc - HA, zc + HC)]
         fid = flat_of(zc) if flat_of else None
         B.window(card, flat=fid, kind=kind, inset=0.20, frame=0)
@@ -316,6 +332,7 @@ def build(B):
                  kind="stair", inset=0.05, frame=0.04)
     B.footprint = _offset_ring(outline_full, 0.15)
     B.height = ZR + 2.05
+    _interior(B, outline_cut)
     B.note("hex honeycomb on the back drum; loggia with curved balconies on the front drum")
     add_surrounds(B, seed=2)
 
@@ -348,3 +365,244 @@ def _chord(B, p0, p1):
     B.flat("0-02", 0, beds=1, door=(cx + 1.0, YC + 1.5, 0.0), entrance="main")
     B.flat("1-01", 1, beds=3, door=(cx, YC + 2.5, ST), entrance="main")
     B.flat("1-02", 1, beds=3, door=(cx - 2.0, YC + 3.5, ST), entrance="main")
+
+
+# ================================================================================================ interiors
+def _clip(poly, p, n):
+    """Part of the polygon on the side of the line (point p, normal n) where (q - p).n >= 0."""
+    out = []
+    for i in range(len(poly)):
+        a, b = poly[i], poly[(i + 1) % len(poly)]
+        da = (a[0] - p[0]) * n[0] + (a[1] - p[1]) * n[1]
+        db = (b[0] - p[0]) * n[0] + (b[1] - p[1]) * n[1]
+        if da >= 0:
+            out.append(a)
+        if (da >= 0) != (db >= 0):
+            t = da / (da - db)
+            out.append((a[0] + (b[0] - a[0]) * t, a[1] + (b[1] - a[1]) * t))
+    return out
+
+
+def _interior(B, outline_cut):
+    """Ground floor: the loggia door leads into a round lobby (mailboxes, boards, concierge, a waiting corner, a pram
+    and a bike); a plaster partition along the waist of the two drums has a doorway into the painter's studio that
+    fills the back drum (easels, a day bed behind a screen, a kitchenette, a record player, a corner for a hobby).
+    The hexagonal windows shine into both rooms. Ceiling 3.15, everything above stays closed."""
+    f = lambda fn, x, y, yaw=0.0, z=0.0, **kw: fn(B, x, y, z, yaw, **kw)
+    ring = _offset_ring(outline_cut, -(INNER + 0.01))
+    inside = hk.poly_test(ring)
+    H = hk.Home(B, lambda x, y: inside(x, y, 0.02))
+    # ---- chord frame: M middle of the waist chord, U along it, V toward the studio (back drum)
+    dx, dy = C2[0] - C1[0], C2[1] - C1[1]
+    d = math.hypot(dx, dy)
+    a = (d * d + R1 * R1 - R2 * R2) / (2 * d)
+    h = math.sqrt(R1 * R1 - a * a)
+    ex, ey = dx / d, dy / d
+    M = (C1[0] + a * ex, C1[1] + a * ey)
+    U = (-ey, ex)                                    # chord direction (west -> east means -U .. +U; sign below)
+    if U[0] < 0:
+        U = (-U[0], -U[1])
+    V = (-U[1], U[0])
+    if (C2[0] - M[0]) * V[0] + (C2[1] - M[1]) * V[1] < 0:
+        V = (-V[0], -V[1])
+
+    def S(u, v):
+        return (M[0] + u * U[0] + v * V[0], M[1] + u * U[1] + v * V[1])
+
+    def Y(fu, fv):                                   # kit yaw of a piece facing the local direction (fu, fv)
+        return hk.yaw_facing(fu * U[0] + fv * V[0], fu * U[1] + fv * V[1])
+
+    def Yphi(phi):
+        return Y(math.cos(math.radians(phi)), math.sin(math.radians(phi)))
+
+    def Yin(phi):                                    # a wall piece at polar angle phi faces the centre
+        return Yphi(phi + 180.0)
+
+    CS = S(0.0, math.hypot(C2[0] - M[0], C2[1] - M[1]))     # studio centre (= C2)
+    cu, cv = 0.0, math.hypot(C2[0] - M[0], C2[1] - M[1])
+    SR = R2 - INNER - 0.015
+
+    def wall_s(phi, back=0.0):                       # (x, y, yaw) on the studio wall at polar angle phi (about C2)
+        p = S(cu + (SR - back) * math.cos(math.radians(phi)), cv + (SR - back) * math.sin(math.radians(phi)))
+        return p[0], p[1], Yin(phi)
+
+    def free_s(phi, rr, face_phi):                   # a free piece at radius rr facing the polar direction face_phi
+        p = S(cu + rr * math.cos(math.radians(phi)), cv + rr * math.sin(math.radians(phi)))
+        return p[0], p[1], Yphi(face_phi)
+
+    LR = R1 - INNER - 0.015
+
+    def wall_l(theta, back=0.0):                     # on the lobby wall at angle theta about C1
+        x = C1[0] + (LR - back) * math.cos(math.radians(theta))
+        y = C1[1] + (LR - back) * math.sin(math.radians(theta))
+        return x, y, hk.yaw_facing(-math.cos(math.radians(theta)), -math.sin(math.radians(theta)))
+
+    # ---- floors, ceiling, partition ------------------------------------------------------------------------------
+    lobby_poly = _clip(ring, M, (-V[0], -V[1]))
+    studio_poly = _clip(ring, M, V)
+    _flat(B.detail, "CT_Stone", lobby_poly, 0.004, True)
+    _flat(B.detail, "CT_Floor", studio_poly, 0.004, True)
+    big = _offset_ring(outline_cut, -0.2)
+    prism(B.m, "CT_Plaster", big, CEIL, CEIL + 0.15, top=True, bottom=False)
+    _flat(B.m, "CT_Interior", big, CEIL, False)
+    L = 2 * h
+    TP = 0.16
+    dw = 0.55                                         # half width of the doorway
+
+    def rect(u0, u1):
+        pts = [S(u0, -TP / 2), S(u1, -TP / 2), S(u1, TP / 2), S(u0, TP / 2)]
+        return pts
+    prism(B.m, "CT_Plaster", rect(-L / 2 + 0.1, -dw), 0.0, CEIL, top=False, bottom=False)
+    prism(B.m, "CT_Plaster", rect(dw, L / 2 - 0.1), 0.0, CEIL, top=False, bottom=False)
+    prism(B.m, "CT_Plaster", rect(-dw, dw), 2.15, CEIL, top=False, bottom=False)
+    for u in (-dw - 0.04, dw + 0.04):                 # door jambs
+        prism(B.detail, "CT_FrameWhite", [S(u - 0.04, -TP / 2 - 0.02), S(u + 0.04, -TP / 2 - 0.02),
+                                         S(u + 0.04, TP / 2 + 0.02), S(u - 0.04, TP / 2 + 0.02)], 0.0, 2.15,
+              top=False, bottom=False)
+    # skirting along the partition on both sides is skipped on purpose: plain plaster
+
+    # ================================================================ LOBBY
+    # waiting corner (west): sofa under the window pocket, coffee table, armchair, lamp, rug
+    f(kit.rug, -0.45, 5.55, 90.0, w=1.9, d=2.5, name="rug_3")
+    f(kit.rug, 2.0, 4.3, 0.0, w=1.3, d=0.9, name="rug_6")
+    sofa = f(kit.sofa, -2.1, 5.7, 90.0, seats=2, mat="CT_PlasterGreen")
+    ct = f(kit.coffee_table, -0.85, 5.55, 90.0, w=0.9, d=0.5)
+    f(kit.newspaper, -0.85, 5.45, 0.0, z=0.42, cellname="news_1")
+    f(kit.cup, -0.8, 5.7, 0.0, z=0.42)
+    arm = f(kit.armchair, 0.0, 4.8, 180.0, mat="CT_PlasterRed")
+    f(kit.floor_lamp, -2.15, 4.35, 0.0)
+    f(kit.plant, -1.3, 3.95, 0.0, kind="monstera", pot="CT_PlasterBlue", h=1.0, seed=3)
+    rt = f(kit.table, -2.25, 7.0, 90.0, w=0.5, d=0.4, h=0.7)
+    f(kit.radio, -2.25, 7.0, 90.0, z=0.7)
+    # concierge's corner by the door (east)
+    dk = f(kit.office_desk, 4.5, 4.55, 0.0, w=1.3, d=0.65, typewriter_on=False, papers=True, phone=True, seed=2)
+    cc = f(kit.chair, 4.5, 5.25, 0.0, kind="wood", mat="CT_PlasterYellow")
+    f(kit.table_lamp, 4.0, 4.55, 0.0, z=0.75, shade="CT_PlasterGreen")
+    f(kit.cup, 4.95, 4.45, 0.0, z=0.75)
+    f(kit.hat_stand, 6.05, 4.1, 0.0)
+    # east wall: mailboxes, the house boards, the clock, a bench
+    x, y, yw = wall_l(-12)
+    f(hk.mailboxes, x, y, yw, cols=5, rows=3)
+    x, y, yw = wall_l(14)
+    f(kit.notice_board, x, y, yw, w=1.0, zc=1.55, seed=21)
+    f(kit.wall_clock, x, y, yw, zc=2.45, face="clock_1")
+    x, y, yw = wall_l(34)
+    bn = f(kit.bench, x - 0.35 * math.cos(math.radians(34)), y - 0.35 * math.sin(math.radians(34)), yw, w=1.2, kind="park")
+    f(kit.picture, x, y, yw, name="painting_sea_night", w=0.8, zc=1.7)
+    x, y, yw = wall_l(54)
+    f(kit.notice_board, x, y, yw, w=0.9, zc=1.55, seed=22)
+    f(kit.sign_plate, x, y, yw, name="sign_quiet", w=0.5, zc=2.3)
+    x, y, yw = wall_l(72)
+    sh = f(kit.bookshelf, x, y, yw, w=0.9, h=1.7, levels=4, topic="local", seed=9)
+    f(kit.fire_extinguisher, *wall_l(-26)[:2], wall_l(-26)[2])
+    # pram and bike by the door, plants
+    pr = hk.pram(B, 6.0, 5.6, 100.0, mat="CT_PlasterRed")
+    hk.bike(B, 6.45, 6.7, 0.0)
+    f(kit.plant, 5.25, 3.65, 0.0, kind="ficus", pot="CT_PlasterYellow", h=1.3, seed=4)
+    f(kit.plant, 1.2, 10.3, 0.0, kind="fern", pot="CT_PlasterRed", h=0.9, seed=6)
+    # west pocket wall: pictures and a poster
+    x, y, yw = wall_l(190)
+    f(kit.picture, x, y, yw, name="painting_lighthouse", w=0.7, zc=1.75)
+    x, y, yw = wall_l(205)
+    f(kit.poster, x, y, yw, name="poster_cons_2", w=0.6, zc=1.6)
+    x, y, yw = wall_l(168)
+    f(kit.radiator, x, y, yw, w=1.0)
+    # lights: two pendants (the building's only lobby lamps)
+    kit.pendant(B, 1.6, 6.0, CEIL, drop=0.5, light=True, lumens=600, colour="#FFE2B8")
+    kit.pendant(B, 4.0, 8.5, CEIL, drop=0.5, light=True, lumens=500, colour="#FFE2B8")
+
+    B.spot("lobby_bench", "bench", bn["seats"][0][:2] + (0.0,), bn["seats"][0][3])
+    B.spot("lobby_desk", "seat", cc["seats"][0][:2] + (0.0,), cc["seats"][0][3])
+    H.seat("lobby_bench_seat", bn)
+    H.seat("lobby_sofa_seat", sofa, 1)
+    H.seat("lobby_armchair", arm)
+    H.seat("lobby_desk_chair", cc)
+    B.thing("lobby_board_lost", "board", wall_l(14)[:2] + (1.55,), wall_l(14)[2], topic="lost")
+    B.thing("lobby_board_club", "board", wall_l(54)[:2] + (1.55,), wall_l(54)[2], topic="club")
+    B.thing("lobby_picture_night_sea", "board", wall_l(34)[:2] + (1.7,), wall_l(34)[2], topic="painting")
+    B.thing("lobby_picture_lighthouse", "board", wall_l(190)[:2] + (1.75,), wall_l(190)[2], topic="painting")
+    B.thing("lobby_swap_shelf", "shelf", wall_l(72)[:2] + (1.3,), wall_l(72)[2], topic="local")
+    B.thing("lobby_radio", "machine", (-2.25, 7.0, 0.95), 90.0, what="jukebox")
+    B.thing("lobby_paper", "take", (-0.85, 5.6, 0.45), 0.0, item="daily_paper")
+
+    # ================================================================ STUDIO
+    # kitchenette on the far wall
+    x, y, yw = wall_s(90, back=0.2)
+    ku = f(kit.kitchen_unit, x, y, yw, modules="cupboard,sink,stove,fridge")
+    f(kit.samovar, *S(cu - 0.9, cv + SR - 0.55)[:2], 0.0, z=0.9)
+    tb = free_s(55, 2.3, 235)
+    kt = f(kit.table, tb[0], tb[1], tb[2], w=0.9, d=0.7)
+    ch1 = f(kit.chair, *free_s(55, 2.3 + 0.7, 235 + 180)[:2], free_s(55, 2.3 + 0.7, 235 + 180)[2], kind="wood", mat="CT_PlasterBlue")
+    f(kit.teapot, tb[0], tb[1], 0.0, z=0.75)
+    f(kit.cup, tb[0] + 0.2, tb[1] + 0.1, 0.0, z=0.75)
+    # easels in the light of the hexagons, a posing chair and a still life
+    e1 = free_s(150, 2.1, -60)
+    ea = f(kit.easel, e1[0], e1[1], Yphi(-60), canvas="painting_dunes")
+    e2 = free_s(205, 2.4, -20)
+    eb = f(kit.easel, e2[0], e2[1], Yphi(-20), canvas="canvas_blank")
+    pj = free_s(190, 3.0, 0)
+    f(kit.paint_jars, pj[0], pj[1], 0.0, z=0.0, n=5, seed=3)
+    st = free_s(130, 1.5, 0)
+    stool = f(kit.stool, st[0], st[1], 0.0, h=0.5)
+    # drafting table and the art shelf
+    dtp = free_s(235, 3.9, 235 + 180)
+    dt = f(kit.drafting_table, dtp[0], dtp[1], Yphi(235 + 180))
+    x, y, yw = wall_s(266)
+    sh2 = f(kit.bookshelf, x, y, yw, w=1.0, h=1.9, levels=5, topic="art", seed=SEED + 3)
+    x, y, yw = wall_s(214)
+    ex = f(kit.notice_board, x, y, yw, w=1.0, zc=1.6, seed=SEED + 30)
+    f(kit.picture, *wall_s(228)[:2], wall_s(228)[2], name="painting_portrait", w=0.7, zc=1.8)
+    x, y, yw = wall_s(180)
+    f(kit.picture, x, y, yw, name="painting_pines", w=0.9, zc=1.7)
+    f(kit.picture, *wall_s(168)[:2], wall_s(168)[2], name="painting_abstract", w=0.7, zc=1.8)
+    # day bed with a screen (east), wardrobe, record corner
+    bx, by, byw = wall_s(18, back=1.15)
+    bed = f(kit.bed, bx, by, byw, size="single", blanket="CT_PlasterYellow")
+    sd = free_s(2, 3.0, 180)
+    f(kit.screen_divider, sd[0], sd[1], Yphi(180 - 90))
+    bt = free_s(34, 3.8, 214)
+    f(kit.bedside_table, bt[0], bt[1], Yphi(214), lamp=True)
+    x, y, yw = wall_s(48)
+    f(kit.wardrobe, x, y, yw, w=1.0)
+    x, y, yw = wall_s(112)
+    rs = f(kit.table, *free_s(116, SR - 0.3, 296)[:2], Yphi(296), w=0.9, d=0.4, h=0.6)
+    rp = f(kit.record_player, rs["pos"][0], rs["pos"][1], Yphi(296), z=0.6)
+    arm2 = f(kit.armchair, *free_s(116, SR - 1.3, 296 + 180)[:2], Yphi(296 + 180), mat="CT_PlasterRed")
+    f(kit.rug, *S(cu, cv)[:2], 0.0, w=2.6, d=2.6, name="rug_round_0", round=True)
+    f(kit.floor_lamp, *free_s(130, SR - 0.6, 0)[:2], 0.0, shade="CT_PlasterYellow")
+    f(kit.plant, *free_s(262, SR - 0.9, 0)[:2], 0.0, kind="ficus", pot="CT_PlasterRed", h=1.1, seed=8)
+    f(kit.wall_clock, *wall_s(100)[:2], wall_s(100)[2], zc=2.55, face="clock_3")
+    # hobby corner by the door (west side): variant
+    if ALT == "wheel":
+        w0 = free_s(-10, 3.6, 90)
+        wh = f(kit.potters_wheel, w0[0], w0[1], Yphi(90))
+    else:
+        w0 = free_s(-10, 3.9, 90)
+        wh = f(kit.aquarium, w0[0], w0[1], Yphi(90), w=1.0)
+    kit.pendant(B, *S(cu, cv)[:2], CEIL, drop=0.6, light=True, lumens=700, colour="#FFE2B8")
+    kit.pendant(B, *free_s(150, 2.6, 0)[:2], CEIL, drop=0.5, light=True, lumens=500, colour="#FFE2B8")
+    kit.pendant(B, *free_s(35, 2.6, 0)[:2], CEIL, drop=0.5, light=True, lumens=400, colour="#FFE2B8")
+    # ---- studio things
+    H.seat("studio_armchair", arm2)
+    H.seat("studio_kitchen_chair", ch1)
+    H.seat("studio_stool", stool)
+    B.thing("studio_daybed", "bed", bed["pos"][:2] + (0.5,), bed["yaw"], height=0.5, rest="private")
+    B.thing("studio_easel_dunes", "craft", ea["pos"][:2] + (1.1,), ea["yaw"], what="easel")
+    B.thing("studio_easel_blank", "craft", eb["pos"][:2] + (1.1,), eb["yaw"], what="easel")
+    B.thing("studio_drafting_table", "craft", dt["pos"][:2] + (0.95,), dt["yaw"], what="easel")
+    B.thing("studio_art_shelf", "shelf", sh2["pos"][:2] + (1.3,), sh2["yaw"], topic="art")
+    B.thing("studio_board_exhibit", "board", ex["pos"][:2] + (1.6,), ex["yaw"], topic="exhibit")
+    B.thing("studio_picture_portrait", "board", wall_s(228)[:2] + (1.8,), wall_s(228)[2], topic="painting")
+    B.thing("studio_picture_pines", "board", wall_s(180)[:2] + (1.7,), wall_s(180)[2], topic="painting")
+    B.thing("studio_picture_abstract", "board", wall_s(168)[:2] + (1.8,), wall_s(168)[2], topic="painting")
+    B.thing("studio_record_player", "machine", rp["pos"][:2] + (0.65,), rp["yaw"], what="record_player")
+    if ALT == "wheel":
+        B.thing("studio_potters_wheel", "craft", wh["pos"][:2] + (0.6,), wh["yaw"], what="potters_wheel")
+    else:
+        B.thing("studio_aquarium", "screen", wh["pos"][:2] + (1.0,), wh["yaw"], what="aquarium")
+    B.spot("studio_easel", "work", ea["front"][:2] + (0.0,), (ea["yaw"] + 0.0) % 360)
+    H.check("twin")
+
+
+from _wallhang import hung  # noqa: E402  (QA r9: nothing hangs over the glass)
+build = hung(build)

@@ -1,0 +1,20 @@
+{
+ "key": "line.streamer.again5.1",
+ "lang": "en",
+ "text": "Stas comes into my chat and writes \"gg\" every time I lose. My only regular viewer.",
+ "speaker": "streamer",
+ "voice": "Jessica",
+ "voice_id": "cgSgspJ2msm6clMCkdW9",
+ "voice_design": null,
+ "direction": "[bright, fast, half talking to her chat]",
+ "model": "fal-ai/elevenlabs/tts/eleven-v3",
+ "request": {
+  "stability": 0.5,
+  "apply_text_normalization": "auto",
+  "text": "[bright, fast, half talking to her chat] Stas comes into my chat and writes \"gg\" every time I lose. My only regular viewer.",
+  "voice": "Jessica",
+  "language_code": "en"
+ },
+ "fal_request_id": "01a1d786-c111-7191-a779-d16d69c4f5aa",
+ "hash": "36f5c836cfdf"
+}

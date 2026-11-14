@@ -1,0 +1,29 @@
+{
+ "key": "line.korneeva_nina.again2.1",
+ "lang": "ja",
+ "text": "ガリーナ・ゾートワさんがね、キャベツの塩漬けを習いに来たのよ。化学者なのに、塩を目分量で入れるのが怖いんですって。",
+ "speaker": "korneeva_nina",
+ "voice": "Wise_Woman",
+ "voice_id": "Wise_Woman",
+ "voice_design": null,
+ "direction": "",
+ "model": "fal-ai/minimax/speech-2.6-hd",
+ "request": {
+  "prompt": "ガリーナ・ゾートワさんがね、キャベツの塩漬けを習いに来たのよ。化学者なのに、塩を目分量で入れるのが怖いんですって。",
+  "voice_setting": {
+   "speed": 0.95,
+   "pitch": 0,
+   "vol": 1,
+   "voice_id": "Wise_Woman"
+  },
+  "language_boost": "Japanese",
+  "audio_setting": {
+   "sample_rate": 24000,
+   "format": "mp3",
+   "channel": 1
+  },
+  "output_format": "url"
+ },
+ "fal_request_id": "01a1d744-a855-74c0-ae58-1501b448b525",
+ "hash": "4396abd8e538"
+}

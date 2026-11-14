@@ -1,0 +1,20 @@
+{
+ "key": "line.li_vika.sun_night.1",
+ "lang": "ru",
+ "text": "Из Лаборатории возвращаюсь уже в темноте. Октябрь каждый день ворует у меня солнце по кусочку.",
+ "speaker": "li_vika",
+ "voice": "Laura",
+ "voice_id": "FGY2WhTYpPnrIDTdsKH5",
+ "voice_design": null,
+ "direction": "[playful, quick, a lab assistant joking about her work]",
+ "model": "fal-ai/elevenlabs/tts/eleven-v3",
+ "request": {
+  "stability": 0.5,
+  "apply_text_normalization": "auto",
+  "text": "[playful, quick, a lab assistant joking about her work] Из Лаборатории возвращаюсь уже в темноте. Октябрь каждый день ворует у меня солнце по кусочку.",
+  "voice": "Laura",
+  "language_code": "ru"
+ },
+ "fal_request_id": "01a1d745-cac8-73f0-9fe5-5f1bf4428a91",
+ "hash": "5cdf869dab23"
+}

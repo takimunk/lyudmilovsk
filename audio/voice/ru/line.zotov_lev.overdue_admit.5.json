@@ -1,0 +1,20 @@
+{
+ "key": "line.zotov_lev.overdue_admit.5",
+ "lang": "ru",
+ "text": "Вот сорок рублей, купите ей свежий номер в автомате на станции. И передайте Оле: прежний служит науке.",
+ "speaker": "zotov_lev",
+ "voice": "George",
+ "voice_id": "JBFqnCBsd6RMkjVDRZzb",
+ "voice_design": null,
+ "direction": "[dry, thoughtful, unhurried, a physicist's quiet irony]",
+ "model": "fal-ai/elevenlabs/tts/eleven-v3",
+ "request": {
+  "stability": 0.5,
+  "apply_text_normalization": "auto",
+  "text": "[dry, thoughtful, unhurried, a physicist's quiet irony] Вот сорок рублей, купите ей свежий номер в автомате на станции. И передайте Оле: прежний служит науке.",
+  "voice": "George",
+  "language_code": "ru"
+ },
+ "fal_request_id": "01a1d674-a87d-7c31-a27c-ba411fa79379",
+ "hash": "c27b2d885ea7"
+}

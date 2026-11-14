@@ -1,0 +1,29 @@
+{
+ "key": "line.sato_yuki.crow_ask.3",
+ "lang": "ru",
+ "text": "Папа говорит, вороны умные. Если их кормить, они приносят подарки. Может, и пуговицу принесут.",
+ "speaker": "sato_yuki",
+ "voice": "Lovely_Girl",
+ "voice_id": "Lovely_Girl",
+ "voice_design": null,
+ "direction": "",
+ "model": "fal-ai/minimax/speech-2.6-hd",
+ "request": {
+  "prompt": "Папа говорит, вороны умные. Если их кормить, они приносят подарки. Может, и пуговицу принесут.",
+  "voice_setting": {
+   "speed": 1,
+   "pitch": 0,
+   "vol": 1,
+   "voice_id": "Lovely_Girl"
+  },
+  "language_boost": "Russian",
+  "audio_setting": {
+   "sample_rate": 24000,
+   "format": "mp3",
+   "channel": 1
+  },
+  "output_format": "url"
+ },
+ "fal_request_id": "01a1d590-4bfa-7252-aa65-e6eb80c4bf7c",
+ "hash": "fbc796ac225c"
+}

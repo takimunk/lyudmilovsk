@@ -1,0 +1,20 @@
+{
+ "key": "line.korneev_ivan.again4.1",
+ "lang": "en",
+ "text": "At the Laboratory it's all computers now. In my day the main instrument was a file. And a head.",
+ "speaker": "korneev_ivan",
+ "voice": "Bill",
+ "voice_id": "pqHfZKP75CvOlQylNhV4",
+ "voice_design": null,
+ "direction": "[an old man, slow, a little gravelly, contented, a quiet joke at the end]",
+ "model": "fal-ai/elevenlabs/tts/eleven-v3",
+ "request": {
+  "stability": 0.5,
+  "apply_text_normalization": "auto",
+  "text": "[an old man, slow, a little gravelly, contented, a quiet joke at the end] At the Laboratory it's all computers now. In my day the main instrument was a file. And a head.",
+  "voice": "Bill",
+  "language_code": "en"
+ },
+ "fal_request_id": "01a1d744-43ea-7440-97f5-d5adbf6d1496",
+ "hash": "547151bccb83"
+}

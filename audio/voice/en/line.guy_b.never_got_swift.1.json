@@ -1,0 +1,20 @@
+{
+ "key": "line.guy_b.never_got_swift.1",
+ "lang": "en",
+ "text": "The cabins here have bird names: Starling, Chaffinch, Oriole. All the time I've been riding, I've never once got Swift.",
+ "speaker": "guy_b",
+ "voice": "Chris",
+ "voice_id": "iP95p4xoKVk53GoZ742B",
+ "voice_design": null,
+ "direction": "[relaxed, lazy, friendly]",
+ "model": "fal-ai/elevenlabs/tts/eleven-v3",
+ "request": {
+  "stability": 0.5,
+  "apply_text_normalization": "auto",
+  "text": "[relaxed, lazy, friendly] The cabins here have bird names: Starling, Chaffinch, Oriole. All the time I've been riding, I've never once got Swift.",
+  "voice": "Chris",
+  "language_code": "en"
+ },
+ "fal_request_id": "01a1d739-180e-7cd0-9f9c-ee32b1e5a53b",
+ "hash": "731ca2862aa6"
+}

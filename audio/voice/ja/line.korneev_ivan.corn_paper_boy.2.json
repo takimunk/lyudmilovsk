@@ -1,0 +1,20 @@
+{
+ "key": "line.korneev_ivan.corn_paper_boy.2",
+ "lang": "ja",
+ "text": "今度はワーリャからトウモロコシか、まだ熱い。伝えてくれ。塩はちょうどいい、魚が食わなくなったら寄る、とな。",
+ "speaker": "korneev_ivan",
+ "voice": "Bill",
+ "voice_id": "pqHfZKP75CvOlQylNhV4",
+ "voice_design": null,
+ "direction": "[an old man, slow, a little gravelly, contented, a quiet joke at the end]",
+ "model": "fal-ai/elevenlabs/tts/eleven-v3",
+ "request": {
+  "stability": 0.5,
+  "apply_text_normalization": "auto",
+  "text": "[an old man, slow, a little gravelly, contented, a quiet joke at the end] 今度はワーリャからトウモロコシか、まだ熱い。伝えてくれ。塩はちょうどいい、魚が食わなくなったら寄る、とな。",
+  "voice": "Bill",
+  "language_code": "ja"
+ },
+ "fal_request_id": "01a1d6d5-76ea-7700-a7e7-5ec0575df6cc",
+ "hash": "b86c2012ca04"
+}

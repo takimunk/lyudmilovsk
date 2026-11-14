@@ -55,189 +55,65 @@
    "kind": "street",
    "leaves": 2,
    "to": null
+  },
+  {
+   "id": "bio",
+   "pos": [
+    -20,
+    22.0,
+    0.0
+   ],
+   "yaw": 90.0,
+   "width": 2.0,
+   "height": 2.4,
+   "kind": "street",
+   "leaves": 1,
+   "to": null
+  },
+  {
+   "id": "music",
+   "pos": [
+    -20,
+    34.0,
+    0.0
+   ],
+   "yaw": 90.0,
+   "width": 2.0,
+   "height": 2.4,
+   "kind": "street",
+   "leaves": 1,
+   "to": null
+  },
+  {
+   "id": "canteen",
+   "pos": [
+    20,
+    26.0,
+    0.0
+   ],
+   "yaw": 270.0,
+   "width": 2.0,
+   "height": 2.4,
+   "kind": "street",
+   "leaves": 1,
+   "to": null
+  },
+  {
+   "id": "gym",
+   "pos": [
+    0.0,
+    40.0,
+    0.0
+   ],
+   "yaw": 0.0,
+   "width": 2.4,
+   "height": 2.4,
+   "kind": "street",
+   "leaves": 2,
+   "to": null
   }
  ],
  "spots": [
-  {
-   "id": "seat_0_0",
-   "kind": "seat",
-   "pos": [
-    -16.4,
-    7.5,
-    0.0
-   ],
-   "yaw": 180.0
-  },
-  {
-   "id": "seat_0_1",
-   "kind": "seat",
-   "pos": [
-    -14.0,
-    7.5,
-    0.0
-   ],
-   "yaw": 180.0
-  },
-  {
-   "id": "seat_0_2",
-   "kind": "seat",
-   "pos": [
-    -11.6,
-    7.5,
-    0.0
-   ],
-   "yaw": 180.0
-  },
-  {
-   "id": "seat_0_3",
-   "kind": "seat",
-   "pos": [
-    -9.2,
-    7.5,
-    0.0
-   ],
-   "yaw": 180.0
-  },
-  {
-   "id": "seat_1_0",
-   "kind": "seat",
-   "pos": [
-    -16.4,
-    8.8,
-    0.0
-   ],
-   "yaw": 180.0
-  },
-  {
-   "id": "seat_1_1",
-   "kind": "seat",
-   "pos": [
-    -14.0,
-    8.8,
-    0.0
-   ],
-   "yaw": 180.0
-  },
-  {
-   "id": "seat_1_2",
-   "kind": "seat",
-   "pos": [
-    -11.6,
-    8.8,
-    0.0
-   ],
-   "yaw": 180.0
-  },
-  {
-   "id": "seat_1_3",
-   "kind": "seat",
-   "pos": [
-    -9.2,
-    8.8,
-    0.0
-   ],
-   "yaw": 180.0
-  },
-  {
-   "id": "seat_2_0",
-   "kind": "seat",
-   "pos": [
-    -16.4,
-    10.1,
-    0.0
-   ],
-   "yaw": 180.0
-  },
-  {
-   "id": "seat_2_1",
-   "kind": "seat",
-   "pos": [
-    -14.0,
-    10.1,
-    0.0
-   ],
-   "yaw": 180.0
-  },
-  {
-   "id": "seat_2_2",
-   "kind": "seat",
-   "pos": [
-    -11.6,
-    10.1,
-    0.0
-   ],
-   "yaw": 180.0
-  },
-  {
-   "id": "seat_2_3",
-   "kind": "seat",
-   "pos": [
-    -9.2,
-    10.1,
-    0.0
-   ],
-   "yaw": 180.0
-  },
-  {
-   "id": "seat_3_0",
-   "kind": "seat",
-   "pos": [
-    -16.4,
-    11.4,
-    0.0
-   ],
-   "yaw": 180.0
-  },
-  {
-   "id": "seat_3_1",
-   "kind": "seat",
-   "pos": [
-    -14.0,
-    11.4,
-    0.0
-   ],
-   "yaw": 180.0
-  },
-  {
-   "id": "seat_3_2",
-   "kind": "seat",
-   "pos": [
-    -11.6,
-    11.4,
-    0.0
-   ],
-   "yaw": 180.0
-  },
-  {
-   "id": "seat_3_3",
-   "kind": "seat",
-   "pos": [
-    -9.2,
-    11.4,
-    0.0
-   ],
-   "yaw": 180.0
-  },
-  {
-   "id": "teacher",
-   "kind": "work",
-   "pos": [
-    -15.7,
-    13.6,
-    0.0
-   ],
-   "yaw": 0.0
-  },
-  {
-   "id": "staff_table",
-   "kind": "table",
-   "pos": [
-    11.2,
-    10.5,
-    0.0
-   ],
-   "yaw": 0.0
-  },
   {
    "id": "hall_bench_0",
    "kind": "bench",
@@ -287,6 +163,776 @@
     0.0
    ],
    "yaw": 90.0
+  },
+  {
+   "id": "seat_0_0",
+   "kind": "seat",
+   "pos": [
+    -16.28,
+    7.05,
+    0.0
+   ],
+   "yaw": 180.0
+  },
+  {
+   "id": "seat_0_1",
+   "kind": "seat",
+   "pos": [
+    -15.72,
+    7.05,
+    0.0
+   ],
+   "yaw": 180.0
+  },
+  {
+   "id": "seat_0_2",
+   "kind": "seat",
+   "pos": [
+    -13.38,
+    7.05,
+    0.0
+   ],
+   "yaw": 180.0
+  },
+  {
+   "id": "seat_0_3",
+   "kind": "seat",
+   "pos": [
+    -12.82,
+    7.05,
+    0.0
+   ],
+   "yaw": 180.0
+  },
+  {
+   "id": "seat_0_4",
+   "kind": "seat",
+   "pos": [
+    -10.48,
+    7.05,
+    0.0
+   ],
+   "yaw": 180.0
+  },
+  {
+   "id": "seat_0_5",
+   "kind": "seat",
+   "pos": [
+    -9.92,
+    7.05,
+    0.0
+   ],
+   "yaw": 180.0
+  },
+  {
+   "id": "seat_1_0",
+   "kind": "seat",
+   "pos": [
+    -16.28,
+    8.35,
+    0.0
+   ],
+   "yaw": 180.0
+  },
+  {
+   "id": "seat_1_1",
+   "kind": "seat",
+   "pos": [
+    -15.72,
+    8.35,
+    0.0
+   ],
+   "yaw": 180.0
+  },
+  {
+   "id": "seat_1_2",
+   "kind": "seat",
+   "pos": [
+    -13.38,
+    8.35,
+    0.0
+   ],
+   "yaw": 180.0
+  },
+  {
+   "id": "seat_1_3",
+   "kind": "seat",
+   "pos": [
+    -12.82,
+    8.35,
+    0.0
+   ],
+   "yaw": 180.0
+  },
+  {
+   "id": "seat_1_4",
+   "kind": "seat",
+   "pos": [
+    -10.48,
+    8.35,
+    0.0
+   ],
+   "yaw": 180.0
+  },
+  {
+   "id": "seat_1_5",
+   "kind": "seat",
+   "pos": [
+    -9.92,
+    8.35,
+    0.0
+   ],
+   "yaw": 180.0
+  },
+  {
+   "id": "seat_2_0",
+   "kind": "seat",
+   "pos": [
+    -16.28,
+    9.65,
+    0.0
+   ],
+   "yaw": 180.0
+  },
+  {
+   "id": "seat_2_1",
+   "kind": "seat",
+   "pos": [
+    -15.72,
+    9.65,
+    0.0
+   ],
+   "yaw": 180.0
+  },
+  {
+   "id": "seat_2_2",
+   "kind": "seat",
+   "pos": [
+    -13.38,
+    9.65,
+    0.0
+   ],
+   "yaw": 180.0
+  },
+  {
+   "id": "seat_2_3",
+   "kind": "seat",
+   "pos": [
+    -12.82,
+    9.65,
+    0.0
+   ],
+   "yaw": 180.0
+  },
+  {
+   "id": "seat_2_4",
+   "kind": "seat",
+   "pos": [
+    -10.48,
+    9.65,
+    0.0
+   ],
+   "yaw": 180.0
+  },
+  {
+   "id": "seat_2_5",
+   "kind": "seat",
+   "pos": [
+    -9.92,
+    9.65,
+    0.0
+   ],
+   "yaw": 180.0
+  },
+  {
+   "id": "seat_3_0",
+   "kind": "seat",
+   "pos": [
+    -16.28,
+    10.95,
+    0.0
+   ],
+   "yaw": 180.0
+  },
+  {
+   "id": "seat_3_1",
+   "kind": "seat",
+   "pos": [
+    -15.72,
+    10.95,
+    0.0
+   ],
+   "yaw": 180.0
+  },
+  {
+   "id": "seat_3_2",
+   "kind": "seat",
+   "pos": [
+    -13.38,
+    10.95,
+    0.0
+   ],
+   "yaw": 180.0
+  },
+  {
+   "id": "seat_3_3",
+   "kind": "seat",
+   "pos": [
+    -12.82,
+    10.95,
+    0.0
+   ],
+   "yaw": 180.0
+  },
+  {
+   "id": "seat_3_4",
+   "kind": "seat",
+   "pos": [
+    -10.48,
+    10.95,
+    0.0
+   ],
+   "yaw": 180.0
+  },
+  {
+   "id": "seat_3_5",
+   "kind": "seat",
+   "pos": [
+    -9.92,
+    10.95,
+    0.0
+   ],
+   "yaw": 180.0
+  },
+  {
+   "id": "teacher",
+   "kind": "work",
+   "pos": [
+    -13.3,
+    13.7,
+    0.0
+   ],
+   "yaw": 0.0
+  },
+  {
+   "id": "staff_table",
+   "kind": "table",
+   "pos": [
+    11.2,
+    9.15,
+    0.0
+   ],
+   "yaw": 0.0
+  },
+  {
+   "id": "bio_teacher",
+   "kind": "work",
+   "pos": [
+    -25.0,
+    16.3,
+    0.0
+   ],
+   "yaw": 180.0
+  },
+  {
+   "id": "music_teacher",
+   "kind": "work",
+   "pos": [
+    -23.0,
+    38.6,
+    0.0
+   ],
+   "yaw": 0.0
+  },
+  {
+   "id": "canteen_bench_1",
+   "kind": "bench",
+   "pos": [
+    22.25,
+    17.8,
+    0.0
+   ],
+   "yaw": 90.0
+  },
+  {
+   "id": "canteen_bench_2",
+   "kind": "bench",
+   "pos": [
+    22.25,
+    20.8,
+    0.0
+   ],
+   "yaw": 90.0
+  },
+  {
+   "id": "canteen_bench_3",
+   "kind": "bench",
+   "pos": [
+    22.25,
+    29.0,
+    0.0
+   ],
+   "yaw": 90.0
+  },
+  {
+   "id": "canteen_bench_4",
+   "kind": "bench",
+   "pos": [
+    22.25,
+    32.0,
+    0.0
+   ],
+   "yaw": 90.0
+  },
+  {
+   "id": "canteen_bench_5",
+   "kind": "bench",
+   "pos": [
+    26.05,
+    17.8,
+    0.0
+   ],
+   "yaw": 90.0
+  },
+  {
+   "id": "canteen_bench_6",
+   "kind": "bench",
+   "pos": [
+    26.05,
+    20.8,
+    0.0
+   ],
+   "yaw": 90.0
+  },
+  {
+   "id": "canteen_bench_7",
+   "kind": "bench",
+   "pos": [
+    26.05,
+    29.0,
+    0.0
+   ],
+   "yaw": 90.0
+  },
+  {
+   "id": "canteen_bench_8",
+   "kind": "bench",
+   "pos": [
+    26.05,
+    32.0,
+    0.0
+   ],
+   "yaw": 90.0
+  },
+  {
+   "id": "canteen_duty",
+   "kind": "work",
+   "pos": [
+    25.0,
+    37.6,
+    0.0
+   ],
+   "yaw": 0.0
+  },
+  {
+   "id": "canteen_queue_0",
+   "kind": "stand",
+   "pos": [
+    23.6,
+    35.2,
+    0.0
+   ],
+   "yaw": 180.0
+  },
+  {
+   "id": "canteen_queue_1",
+   "kind": "stand",
+   "pos": [
+    25.4,
+    35.2,
+    0.0
+   ],
+   "yaw": 180.0
+  },
+  {
+   "id": "canteen_tea_stand",
+   "kind": "stand",
+   "pos": [
+    21.8,
+    35.4,
+    0.0
+   ],
+   "yaw": 180.0
+  },
+  {
+   "id": "canteen_return_stand",
+   "kind": "stand",
+   "pos": [
+    28.4,
+    23.0,
+    0.0
+   ],
+   "yaw": 270.0
+  },
+  {
+   "id": "hall_duty",
+   "kind": "work",
+   "pos": [
+    2.9,
+    8.2,
+    0.0
+   ],
+   "yaw": 0.0
+  },
+  {
+   "id": "hall_lost_stand",
+   "kind": "stand",
+   "pos": [
+    -3.0,
+    14.4,
+    0.0
+   ],
+   "yaw": 180.0
+  },
+  {
+   "id": "bio_scope_stand",
+   "kind": "stand",
+   "pos": [
+    -24.3,
+    18.2,
+    0.0
+   ],
+   "yaw": 0.0
+  },
+  {
+   "id": "music_stand_spot",
+   "kind": "stand",
+   "pos": [
+    -26.55,
+    38.6,
+    0.0
+   ],
+   "yaw": 0.0
+  },
+  {
+   "id": "gym_whistle",
+   "kind": "work",
+   "pos": [
+    0.0,
+    41.6,
+    0.0
+   ],
+   "yaw": 180.0
+  },
+  {
+   "id": "gym_bag_stand",
+   "kind": "stand",
+   "pos": [
+    -12.2,
+    53.9,
+    0.0
+   ],
+   "yaw": 270.0
+  },
+  {
+   "id": "gym_pingpong_a",
+   "kind": "stand",
+   "pos": [
+    6.0,
+    50.5,
+    0.0
+   ],
+   "yaw": 0.0
+  },
+  {
+   "id": "gym_pingpong_b",
+   "kind": "stand",
+   "pos": [
+    6.0,
+    52.7,
+    0.0
+   ],
+   "yaw": 180.0
+  },
+  {
+   "id": "gym_balls_stand",
+   "kind": "stand",
+   "pos": [
+    -11.4,
+    46.4,
+    0.0
+   ],
+   "yaw": 270.0
+  },
+  {
+   "id": "hall_chess_a",
+   "kind": "seat",
+   "pos": [
+    -4.4,
+    12.3,
+    0.0
+   ],
+   "yaw": 0.0
+  },
+  {
+   "id": "hall_chess_b",
+   "kind": "seat",
+   "pos": [
+    -4.4,
+    10.9,
+    0.0
+   ],
+   "yaw": 180.0
+  },
+  {
+   "id": "hall_cloak_work",
+   "kind": "work",
+   "pos": [
+    -5.9,
+    13.3,
+    0.0
+   ],
+   "yaw": 270.0
+  },
+  {
+   "id": "hall_watch_spot",
+   "kind": "work",
+   "pos": [
+    2.9,
+    8.5,
+    0.0
+   ],
+   "yaw": 0.0
+  },
+  {
+   "id": "class_pendulum_stand",
+   "kind": "stand",
+   "pos": [
+    -16.8,
+    12.5,
+    0.0
+   ],
+   "yaw": 180.0
+  },
+  {
+   "id": "class_chess_a",
+   "kind": "seat",
+   "pos": [
+    -8.75,
+    10.1,
+    0.0
+   ],
+   "yaw": 180.0
+  },
+  {
+   "id": "class_chess_b",
+   "kind": "seat",
+   "pos": [
+    -8.75,
+    11.5,
+    0.0
+   ],
+   "yaw": 0.0
+  },
+  {
+   "id": "staff_chess_a",
+   "kind": "seat",
+   "pos": [
+    12.5,
+    9.5,
+    0.0
+   ],
+   "yaw": 180.0
+  },
+  {
+   "id": "bio_hamster_stand",
+   "kind": "stand",
+   "pos": [
+    -28.6,
+    18.3,
+    0.0
+   ],
+   "yaw": 270.0
+  },
+  {
+   "id": "bio_plants_stand",
+   "kind": "stand",
+   "pos": [
+    -28.6,
+    22.2,
+    0.0
+   ],
+   "yaw": 270.0
+  },
+  {
+   "id": "music_glock_stand",
+   "kind": "stand",
+   "pos": [
+    -28.2,
+    36.5,
+    0.0
+   ],
+   "yaw": 270.0
+  },
+  {
+   "id": "music_choir_a",
+   "kind": "stand",
+   "pos": [
+    -26.0,
+    36.9,
+    0.0
+   ],
+   "yaw": 0.0
+  },
+  {
+   "id": "music_choir_b",
+   "kind": "stand",
+   "pos": [
+    -24.0,
+    36.9,
+    0.0
+   ],
+   "yaw": 0.0
+  },
+  {
+   "id": "canteen_apples_stand",
+   "kind": "stand",
+   "pos": [
+    28.5,
+    33.6,
+    0.0
+   ],
+   "yaw": 90.0
+  },
+  {
+   "id": "canteen_kitchen_work",
+   "kind": "work",
+   "pos": [
+    23.2,
+    38.6,
+    0.0
+   ],
+   "yaw": 0.0
+  },
+  {
+   "id": "yard_hop_stand",
+   "kind": "stand",
+   "pos": [
+    -3.0,
+    20.2,
+    0.0
+   ],
+   "yaw": 180.0
+  },
+  {
+   "id": "yard_bikes_stand",
+   "kind": "stand",
+   "pos": [
+    14.5,
+    17.4,
+    0.0
+   ],
+   "yaw": 180.0
+  },
+  {
+   "id": "yard_weather_stand",
+   "kind": "stand",
+   "pos": [
+    -15.5,
+    18.6,
+    0.0
+   ],
+   "yaw": 180.0
+  },
+  {
+   "id": "yard_feeder_stand",
+   "kind": "stand",
+   "pos": [
+    9.5,
+    32.2,
+    0.0
+   ],
+   "yaw": 180.0
+  },
+  {
+   "id": "yard_garden_stand",
+   "kind": "stand",
+   "pos": [
+    9.4,
+    23.6,
+    0.0
+   ],
+   "yaw": 180.0
+  },
+  {
+   "id": "staff_journal_stand",
+   "kind": "stand",
+   "pos": [
+    11.1,
+    11.6,
+    0.0
+   ],
+   "yaw": 0.0
+  },
+  {
+   "id": "staff_rota_stand",
+   "kind": "stand",
+   "pos": [
+    9.6,
+    13.2,
+    0.0
+   ],
+   "yaw": 180.0
+  },
+  {
+   "id": "gym_lockers_stand",
+   "kind": "stand",
+   "pos": [
+    12.2,
+    41.9,
+    0.0
+   ],
+   "yaw": 90.0
+  },
+  {
+   "id": "gym_vault_run",
+   "kind": "stand",
+   "pos": [
+    -3.5,
+    49.8,
+    0.0
+   ],
+   "yaw": 180.0
+  },
+  {
+   "id": "gym_records_stand",
+   "kind": "stand",
+   "pos": [
+    -12.4,
+    49.3,
+    0.0
+   ],
+   "yaw": 270.0
+  },
+  {
+   "id": "canteen_drawings_stand",
+   "kind": "stand",
+   "pos": [
+    25.85,
+    17.0,
+    0.0
+   ],
+   "yaw": 0.0
+  },
+  {
+   "id": "canteen_dishes_stand",
+   "kind": "stand",
+   "pos": [
+    29.2,
+    38.6,
+    0.0
+   ],
+   "yaw": 180.0
   },
   {
    "id": "court_bench_0",
@@ -492,6 +1138,1694 @@
    "colour": "#FFF0DC",
    "kind": "public",
    "radius": 7
+  },
+  {
+   "pos": [
+    -25.0,
+    19.0,
+    3.0
+   ],
+   "lumens": 1400,
+   "colour": "#FFF0DC",
+   "kind": "public",
+   "radius": 11.0
+  },
+  {
+   "pos": [
+    -25.0,
+    34.0,
+    3.0
+   ],
+   "lumens": 900,
+   "colour": "#FFF0DC",
+   "kind": "public",
+   "radius": 9.0
+  },
+  {
+   "pos": [
+    24.8,
+    20.0,
+    3.0
+   ],
+   "lumens": 1000,
+   "colour": "#FFF0DC",
+   "kind": "public",
+   "radius": 10.0
+  },
+  {
+   "pos": [
+    24.8,
+    31.0,
+    3.0
+   ],
+   "lumens": 1000,
+   "colour": "#FFF0DC",
+   "kind": "public",
+   "radius": 10.0
+  },
+  {
+   "pos": [
+    25.0,
+    35.2,
+    3.0
+   ],
+   "lumens": 900,
+   "colour": "#FFE8C8",
+   "kind": "public",
+   "radius": 8.0
+  },
+  {
+   "pos": [
+    3.4,
+    7.42,
+    1.08
+   ],
+   "lumens": 180,
+   "colour": "#FFD9A8",
+   "kind": "public",
+   "radius": 3.0
+  },
+  {
+   "pos": [
+    -25.0,
+    24.6,
+    3.0
+   ],
+   "lumens": 1400,
+   "colour": "#FFF0DC",
+   "kind": "public",
+   "radius": 11.0
+  },
+  {
+   "pos": [
+    -25.5,
+    39.7,
+    1.58
+   ],
+   "lumens": 180,
+   "colour": "#FFD9A8",
+   "kind": "public",
+   "radius": 3.0
+  },
+  {
+   "pos": [
+    -5.5,
+    44.5,
+    5.0
+   ],
+   "lumens": 2400,
+   "colour": "#FFF0DC",
+   "kind": "public",
+   "radius": 14.0
+  },
+  {
+   "pos": [
+    5.5,
+    44.5,
+    5.0
+   ],
+   "lumens": 2400,
+   "colour": "#FFF0DC",
+   "kind": "public",
+   "radius": 14.0
+  },
+  {
+   "pos": [
+    -5.5,
+    51.0,
+    5.0
+   ],
+   "lumens": 2400,
+   "colour": "#FFF0DC",
+   "kind": "public",
+   "radius": 14.0
+  },
+  {
+   "pos": [
+    5.5,
+    51.0,
+    5.0
+   ],
+   "lumens": 2400,
+   "colour": "#FFF0DC",
+   "kind": "public",
+   "radius": 14.0
+  },
+  {
+   "pos": [
+    -28.0,
+    21.0,
+    3.0
+   ],
+   "lumens": 1100,
+   "colour": "#FFF0DC",
+   "kind": "public",
+   "radius": 7.5
+  },
+  {
+   "pos": [
+    -25.0,
+    30.0,
+    3.0
+   ],
+   "lumens": 1000,
+   "colour": "#FFE8C8",
+   "kind": "public",
+   "radius": 8.0
+  }
+ ],
+ "things": [
+  {
+   "id": "seat_0_0",
+   "kind": "craft",
+   "pos": [
+    -16.0,
+    7.6,
+    0.76
+   ],
+   "yaw": 180.0,
+   "props": {
+    "what": "school_desk"
+   }
+  },
+  {
+   "id": "seat_0_4",
+   "kind": "craft",
+   "pos": [
+    -10.2,
+    7.6,
+    0.76
+   ],
+   "yaw": 180.0,
+   "props": {
+    "what": "school_desk"
+   }
+  },
+  {
+   "id": "seat_1_0",
+   "kind": "craft",
+   "pos": [
+    -16.0,
+    8.9,
+    0.76
+   ],
+   "yaw": 180.0,
+   "props": {
+    "what": "school_desk"
+   }
+  },
+  {
+   "id": "seat_1_4",
+   "kind": "craft",
+   "pos": [
+    -10.2,
+    8.9,
+    0.76
+   ],
+   "yaw": 180.0,
+   "props": {
+    "what": "school_desk"
+   }
+  },
+  {
+   "id": "seat_2_0",
+   "kind": "craft",
+   "pos": [
+    -16.0,
+    10.2,
+    0.76
+   ],
+   "yaw": 180.0,
+   "props": {
+    "what": "school_desk"
+   }
+  },
+  {
+   "id": "seat_2_4",
+   "kind": "craft",
+   "pos": [
+    -10.2,
+    10.2,
+    0.76
+   ],
+   "yaw": 180.0,
+   "props": {
+    "what": "school_desk"
+   }
+  },
+  {
+   "id": "seat_3_0",
+   "kind": "craft",
+   "pos": [
+    -16.0,
+    11.5,
+    0.76
+   ],
+   "yaw": 180.0,
+   "props": {
+    "what": "school_desk"
+   }
+  },
+  {
+   "id": "seat_3_4",
+   "kind": "craft",
+   "pos": [
+    -10.2,
+    11.5,
+    0.76
+   ],
+   "yaw": 180.0,
+   "props": {
+    "what": "school_desk"
+   }
+  },
+  {
+   "id": "teacher",
+   "kind": "craft",
+   "pos": [
+    -13.3,
+    14.2,
+    1.5
+   ],
+   "yaw": 0.0,
+   "props": {
+    "what": "blackboard"
+   }
+  },
+  {
+   "id": "class_shelf",
+   "kind": "shelf",
+   "pos": [
+    -18.4,
+    8.7,
+    1.2
+   ],
+   "yaw": 90.0,
+   "props": {
+    "topic": "science"
+   }
+  },
+  {
+   "id": "kit_clock_1",
+   "kind": "board",
+   "pos": [
+    -7.7,
+    10.0,
+    2.6
+   ],
+   "yaw": 270.0,
+   "props": {
+    "what": "clock"
+   }
+  },
+  {
+   "id": "staff_seat_1",
+   "kind": "seat",
+   "pos": [
+    10.267,
+    9.58,
+    0.45
+   ],
+   "yaw": 180.0,
+   "props": {
+    "height": 0.45
+   }
+  },
+  {
+   "id": "staff_sofa",
+   "kind": "seat",
+   "pos": [
+    14.45,
+    7.9,
+    0.45
+   ],
+   "yaw": 270.0,
+   "props": {
+    "height": 0.45
+   }
+  },
+  {
+   "id": "staff_shelf",
+   "kind": "shelf",
+   "pos": [
+    7.85,
+    8.9,
+    1.2
+   ],
+   "yaw": 90.0,
+   "props": {
+    "topic": "local"
+   }
+  },
+  {
+   "id": "staff_board",
+   "kind": "board",
+   "pos": [
+    7.7,
+    10.6,
+    1.6
+   ],
+   "yaw": 90.0,
+   "props": {
+    "topic": "timetable"
+   }
+  },
+  {
+   "id": "kit_clock_2",
+   "kind": "board",
+   "pos": [
+    14.8,
+    10.4,
+    2.5
+   ],
+   "yaw": 270.0,
+   "props": {
+    "what": "clock"
+   }
+  },
+  {
+   "id": "wall_newspaper",
+   "kind": "board",
+   "pos": [
+    7.3,
+    10.9,
+    1.55
+   ],
+   "yaw": 270.0,
+   "props": {
+    "topic": "wallpaper"
+   }
+  },
+  {
+   "id": "hall_timetable",
+   "kind": "board",
+   "pos": [
+    7.3,
+    7.0,
+    1.7
+   ],
+   "yaw": 270.0,
+   "props": {
+    "topic": "timetable"
+   }
+  },
+  {
+   "id": "trophy_case",
+   "kind": "board",
+   "pos": [
+    6.9,
+    8.4,
+    1.3
+   ],
+   "yaw": 270.0,
+   "props": {
+    "topic": "exhibit"
+   }
+  },
+  {
+   "id": "hall_mural_a",
+   "kind": "board",
+   "pos": [
+    -5.5,
+    15.65,
+    1.9
+   ],
+   "yaw": 180.0,
+   "props": {
+    "topic": "painting"
+   }
+  },
+  {
+   "id": "hall_mural_b",
+   "kind": "board",
+   "pos": [
+    5.5,
+    15.65,
+    1.9
+   ],
+   "yaw": 180.0,
+   "props": {
+    "topic": "painting"
+   }
+  },
+  {
+   "id": "hall_wardrobe_bench",
+   "kind": "seat",
+   "pos": [
+    -6.85,
+    9.15,
+    0.45
+   ],
+   "yaw": 90.0,
+   "props": {
+    "height": 0.45
+   }
+  },
+  {
+   "id": "hall_back_bench_1",
+   "kind": "seat",
+   "pos": [
+    -5.5,
+    14.8,
+    0.45
+   ],
+   "yaw": 180.0,
+   "props": {
+    "height": 0.45
+   }
+  },
+  {
+   "id": "hall_back_bench_2",
+   "kind": "seat",
+   "pos": [
+    5.5,
+    14.8,
+    0.45
+   ],
+   "yaw": 180.0,
+   "props": {
+    "height": 0.45
+   }
+  },
+  {
+   "id": "bio_blackboard",
+   "kind": "craft",
+   "pos": [
+    -24.5,
+    15.9,
+    1.5
+   ],
+   "yaw": 180.0,
+   "props": {
+    "what": "blackboard"
+   }
+  },
+  {
+   "id": "bio_skeleton",
+   "kind": "board",
+   "pos": [
+    -28.9,
+    16.5,
+    1.3
+   ],
+   "yaw": 180.0,
+   "props": {
+    "topic": "exhibit"
+   }
+  },
+  {
+   "id": "bio_chart",
+   "kind": "board",
+   "pos": [
+    -27.6,
+    15.9,
+    1.6
+   ],
+   "yaw": 180.0,
+   "props": {
+    "topic": "health"
+   }
+  },
+  {
+   "id": "bio_aquarium",
+   "kind": "screen",
+   "pos": [
+    -21.2,
+    16.2,
+    1.0
+   ],
+   "yaw": 180.0,
+   "props": {
+    "what": "aquarium"
+   }
+  },
+  {
+   "id": "bio_seat_1",
+   "kind": "seat",
+   "pos": [
+    -27.8,
+    19.95,
+    0.45
+   ],
+   "yaw": 0.0,
+   "props": {
+    "height": 0.45
+   }
+  },
+  {
+   "id": "bio_bench_0",
+   "kind": "craft",
+   "pos": [
+    -27.3,
+    19.2,
+    0.9
+   ],
+   "yaw": 180.0,
+   "props": {
+    "what": "workbench"
+   }
+  },
+  {
+   "id": "bio_bench_1",
+   "kind": "craft",
+   "pos": [
+    -23.1,
+    19.2,
+    0.9
+   ],
+   "yaw": 180.0,
+   "props": {
+    "what": "workbench"
+   }
+  },
+  {
+   "id": "bio_shelf",
+   "kind": "shelf",
+   "pos": [
+    -28.0,
+    27.65,
+    1.2
+   ],
+   "yaw": 0.0,
+   "props": {
+    "topic": "medicine"
+   }
+  },
+  {
+   "id": "kit_clock_3",
+   "kind": "board",
+   "pos": [
+    -22.0,
+    15.81,
+    2.7
+   ],
+   "yaw": 180.0,
+   "props": {
+    "what": "clock"
+   }
+  },
+  {
+   "id": "music_piano",
+   "kind": "play",
+   "pos": [
+    -26.0,
+    39.6,
+    1.0
+   ],
+   "yaw": 0.0,
+   "props": {
+    "what": "piano"
+   }
+  },
+  {
+   "id": "music_stool",
+   "kind": "seat",
+   "pos": [
+    -26.0,
+    38.65,
+    0.45
+   ],
+   "yaw": 180.0,
+   "props": {
+    "height": 0.45
+   }
+  },
+  {
+   "id": "music_chair_1",
+   "kind": "seat",
+   "pos": [
+    -25.8,
+    32.9,
+    0.45
+   ],
+   "yaw": 180.0,
+   "props": {
+    "height": 0.45
+   }
+  },
+  {
+   "id": "music_chair_2",
+   "kind": "seat",
+   "pos": [
+    -25.8,
+    31.6,
+    0.45
+   ],
+   "yaw": 180.0,
+   "props": {
+    "height": 0.45
+   }
+  },
+  {
+   "id": "music_shelf",
+   "kind": "shelf",
+   "pos": [
+    -28.7,
+    28.35,
+    1.2
+   ],
+   "yaw": 180.0,
+   "props": {
+    "topic": "music"
+   }
+  },
+  {
+   "id": "music_player",
+   "kind": "machine",
+   "pos": [
+    -22.4,
+    28.55,
+    0.85
+   ],
+   "yaw": 180.0,
+   "props": {
+    "what": "record_player"
+   }
+  },
+  {
+   "id": "kit_clock_4",
+   "kind": "board",
+   "pos": [
+    -26.0,
+    39.89,
+    2.7
+   ],
+   "yaw": 0.0,
+   "props": {
+    "what": "clock"
+   }
+  },
+  {
+   "id": "canteen_seat_1",
+   "kind": "seat",
+   "pos": [
+    22.25,
+    17.8,
+    0.45
+   ],
+   "yaw": 90.0,
+   "props": {
+    "height": 0.45
+   }
+  },
+  {
+   "id": "canteen_seat_2",
+   "kind": "seat",
+   "pos": [
+    22.25,
+    20.8,
+    0.45
+   ],
+   "yaw": 90.0,
+   "props": {
+    "height": 0.45
+   }
+  },
+  {
+   "id": "canteen_seat_3",
+   "kind": "seat",
+   "pos": [
+    22.25,
+    29.0,
+    0.45
+   ],
+   "yaw": 90.0,
+   "props": {
+    "height": 0.45
+   }
+  },
+  {
+   "id": "canteen_seat_4",
+   "kind": "seat",
+   "pos": [
+    22.25,
+    32.0,
+    0.45
+   ],
+   "yaw": 90.0,
+   "props": {
+    "height": 0.45
+   }
+  },
+  {
+   "id": "canteen_counter",
+   "kind": "counter",
+   "pos": [
+    25.0,
+    36.2,
+    1.0
+   ],
+   "yaw": 0.0,
+   "props": {
+    "shop": "school_canteen",
+    "role": "teacher"
+   }
+  },
+  {
+   "id": "canteen_menu",
+   "kind": "board",
+   "pos": [
+    27.6,
+    39.89,
+    2.0
+   ],
+   "yaw": 0.0,
+   "props": {
+    "topic": "prices"
+   }
+  },
+  {
+   "id": "kit_clock_5",
+   "kind": "board",
+   "pos": [
+    29.65,
+    28.0,
+    2.6
+   ],
+   "yaw": 270.0,
+   "props": {
+    "what": "clock"
+   }
+  },
+  {
+   "id": "gym_hoop_w",
+   "kind": "sport",
+   "pos": [
+    -13.2,
+    48.0,
+    3.0
+   ],
+   "yaw": 90.0,
+   "props": {
+    "what": "basketball"
+   }
+  },
+  {
+   "id": "gym_hoop_e",
+   "kind": "sport",
+   "pos": [
+    13.2,
+    48.0,
+    3.0
+   ],
+   "yaw": 270.0,
+   "props": {
+    "what": "basketball"
+   }
+  },
+  {
+   "id": "gym_court",
+   "kind": "sport",
+   "pos": [
+    0.0,
+    47.0,
+    0.3
+   ],
+   "yaw": 180.0,
+   "props": {
+    "what": "track"
+   }
+  },
+  {
+   "id": "gym_stage",
+   "kind": "screen",
+   "pos": [
+    0.0,
+    54.5,
+    1.0
+   ],
+   "yaw": 0.0,
+   "props": {
+    "what": "stage"
+   }
+  },
+  {
+   "id": "gym_wall_bars_w",
+   "kind": "sport",
+   "pos": [
+    -8.2,
+    55.6,
+    1.3
+   ],
+   "yaw": 0.0,
+   "props": {
+    "what": "wall_bars"
+   }
+  },
+  {
+   "id": "gym_wall_bars_e",
+   "kind": "sport",
+   "pos": [
+    8.2,
+    55.6,
+    1.3
+   ],
+   "yaw": 0.0,
+   "props": {
+    "what": "wall_bars"
+   }
+  },
+  {
+   "id": "kit_clock_6",
+   "kind": "board",
+   "pos": [
+    0.0,
+    55.65,
+    5.2
+   ],
+   "yaw": 0.0,
+   "props": {
+    "what": "clock"
+   }
+  },
+  {
+   "id": "gym_bench_w",
+   "kind": "seat",
+   "pos": [
+    -4.2,
+    40.7,
+    0.45
+   ],
+   "yaw": 180.0,
+   "props": {
+    "height": 0.45
+   }
+  },
+  {
+   "id": "gym_bench_e",
+   "kind": "seat",
+   "pos": [
+    4.2,
+    40.7,
+    0.45
+   ],
+   "yaw": 180.0,
+   "props": {
+    "height": 0.45
+   }
+  },
+  {
+   "id": "gym_barbell",
+   "kind": "sport",
+   "pos": [
+    12.2,
+    51.5,
+    1.0
+   ],
+   "yaw": 270.0,
+   "props": {
+    "what": "barbell"
+   }
+  },
+  {
+   "id": "gym_bike",
+   "kind": "sport",
+   "pos": [
+    -12.2,
+    42.4,
+    0.9
+   ],
+   "yaw": 90.0,
+   "props": {
+    "what": "exercise_bike"
+   }
+  },
+  {
+   "id": "canteen_tea",
+   "kind": "take",
+   "pos": [
+    21.8,
+    36.2,
+    1.2
+   ],
+   "yaw": 0.0,
+   "props": {
+    "item": "tea"
+   }
+  },
+  {
+   "id": "canteen_return",
+   "kind": "machine",
+   "pos": [
+    29.1,
+    23.0,
+    0.95
+   ],
+   "yaw": 270.0,
+   "props": {
+    "what": "trolley"
+   }
+  },
+  {
+   "id": "canteen_dayboard",
+   "kind": "board",
+   "pos": [
+    27.6,
+    15.9,
+    1.4
+   ],
+   "yaw": 180.0,
+   "props": {
+    "topic": "menu_day"
+   }
+  },
+  {
+   "id": "hall_handbell",
+   "kind": "machine",
+   "pos": [
+    2.55,
+    7.5,
+    0.85
+   ],
+   "yaw": 0.0,
+   "props": {
+    "what": "handbell"
+   }
+  },
+  {
+   "id": "hall_duty_desk",
+   "kind": "board",
+   "pos": [
+    3.15,
+    7.5,
+    0.85
+   ],
+   "yaw": 0.0,
+   "props": {
+    "topic": "duty"
+   }
+  },
+  {
+   "id": "hall_lost_box",
+   "kind": "board",
+   "pos": [
+    -3.0,
+    15.4,
+    0.9
+   ],
+   "yaw": 0.0,
+   "props": {
+    "topic": "lostbox"
+   }
+  },
+  {
+   "id": "hall_concert_poster",
+   "kind": "board",
+   "pos": [
+    7.3,
+    14.5,
+    1.6
+   ],
+   "yaw": 270.0,
+   "props": {
+    "topic": "concert"
+   }
+  },
+  {
+   "id": "hall_coats",
+   "kind": "board",
+   "pos": [
+    -7.3,
+    9.1,
+    1.2
+   ],
+   "yaw": 90.0,
+   "props": {
+    "topic": "coats"
+   }
+  },
+  {
+   "id": "class_timetable",
+   "kind": "board",
+   "pos": [
+    -18.5,
+    7.1,
+    1.55
+   ],
+   "yaw": 90.0,
+   "props": {
+    "topic": "lessons"
+   }
+  },
+  {
+   "id": "class_globe",
+   "kind": "machine",
+   "pos": [
+    -12.8,
+    12.9,
+    1.15
+   ],
+   "yaw": 0.0,
+   "props": {
+    "what": "globe"
+   }
+  },
+  {
+   "id": "bio_microscope",
+   "kind": "machine",
+   "pos": [
+    -24.3,
+    17.15,
+    1.15
+   ],
+   "yaw": 180.0,
+   "props": {
+    "what": "microscope"
+   }
+  },
+  {
+   "id": "bio_herbarium",
+   "kind": "board",
+   "pos": [
+    -26.7,
+    27.78,
+    2.7
+   ],
+   "yaw": 0.0,
+   "props": {
+    "topic": "herbarium"
+   }
+  },
+  {
+   "id": "music_metronome",
+   "kind": "machine",
+   "pos": [
+    -26.55,
+    39.7,
+    1.4
+   ],
+   "yaw": 0.0,
+   "props": {
+    "what": "metronome"
+   }
+  },
+  {
+   "id": "music_blackboard",
+   "kind": "craft",
+   "pos": [
+    -22.8,
+    39.85,
+    1.5
+   ],
+   "yaw": 0.0,
+   "props": {
+    "what": "blackboard"
+   }
+  },
+  {
+   "id": "gym_scoreboard",
+   "kind": "machine",
+   "pos": [
+    -13.5,
+    44.5,
+    4.0
+   ],
+   "yaw": 90.0,
+   "props": {
+    "what": "scoreboard"
+   }
+  },
+  {
+   "id": "gym_bag",
+   "kind": "craft",
+   "pos": [
+    -13.0,
+    55.2,
+    0.2
+   ],
+   "yaw": 20.0,
+   "props": {
+    "what": "bag"
+   }
+  },
+  {
+   "id": "gym_switch",
+   "kind": "machine",
+   "pos": [
+    1.9,
+    40.34,
+    1.3
+   ],
+   "yaw": 180.0,
+   "props": {
+    "what": "switch",
+    "switch": "12"
+   }
+  },
+  {
+   "id": "gym_pingpong",
+   "kind": "play",
+   "pos": [
+    6.0,
+    51.6,
+    0.82
+   ],
+   "yaw": 0.0,
+   "props": {
+    "what": "table_tennis"
+   }
+  },
+  {
+   "id": "gym_balls",
+   "kind": "machine",
+   "pos": [
+    -12.2,
+    46.4,
+    0.9
+   ],
+   "yaw": 90.0,
+   "props": {
+    "what": "ball_cart"
+   }
+  },
+  {
+   "id": "gym_honours",
+   "kind": "board",
+   "pos": [
+    13.6,
+    44.0,
+    1.7
+   ],
+   "yaw": 270.0,
+   "props": {
+    "topic": "honours"
+   }
+  },
+  {
+   "id": "hall_clock",
+   "kind": "board",
+   "pos": [
+    0.0,
+    15.65,
+    3.0
+   ],
+   "yaw": 0.0,
+   "props": {
+    "topic": "clock"
+   }
+  },
+  {
+   "id": "hall_switch",
+   "kind": "machine",
+   "pos": [
+    2.3,
+    15.66,
+    1.3
+   ],
+   "yaw": 0.0,
+   "props": {
+    "what": "switch",
+    "switch": "9.6"
+   }
+  },
+  {
+   "id": "hall_checkers",
+   "kind": "play",
+   "pos": [
+    -4.4,
+    11.6,
+    0.8
+   ],
+   "yaw": 0.0,
+   "props": {
+    "what": "checkers"
+   }
+  },
+  {
+   "id": "hall_clubs",
+   "kind": "board",
+   "pos": [
+    5.0,
+    11.0,
+    1.5
+   ],
+   "yaw": 270.0,
+   "props": {
+    "topic": "clubs"
+   }
+  },
+  {
+   "id": "hall_cloak",
+   "kind": "counter",
+   "pos": [
+    -5.2,
+    13.3,
+    1.0
+   ],
+   "yaw": 90.0,
+   "props": {
+    "service": "cloakroom",
+    "role": "janitor"
+   }
+  },
+  {
+   "id": "hall_duty_talk",
+   "kind": "counter",
+   "pos": [
+    2.85,
+    7.9,
+    1.05
+   ],
+   "yaw": 0.0,
+   "props": {
+    "service": "duty",
+    "role": "teacher"
+   }
+  },
+  {
+   "id": "hall_watch",
+   "kind": "counter",
+   "pos": [
+    3.4,
+    7.9,
+    1.05
+   ],
+   "yaw": 0.0,
+   "props": {
+    "service": "watch"
+   }
+  },
+  {
+   "id": "hall_watch_we",
+   "kind": "counter",
+   "pos": [
+    3.4,
+    8.35,
+    1.05
+   ],
+   "yaw": 0.0,
+   "props": {
+    "service": "watch"
+   }
+  },
+  {
+   "id": "class_switch",
+   "kind": "machine",
+   "pos": [
+    -18.55,
+    10.2,
+    1.3
+   ],
+   "yaw": 90.0,
+   "props": {
+    "what": "switch",
+    "switch": "8"
+   }
+  },
+  {
+   "id": "class_pendulum",
+   "kind": "machine",
+   "pos": [
+    -16.8,
+    13.2,
+    1.0
+   ],
+   "yaw": 0.0,
+   "props": {
+    "what": "pendulum"
+   }
+  },
+  {
+   "id": "class_desk_drawers",
+   "kind": "craft",
+   "pos": [
+    -13.85,
+    12.95,
+    0.8
+   ],
+   "yaw": 0.0,
+   "props": {
+    "what": "drawers"
+   }
+  },
+  {
+   "id": "class_teacher_talk",
+   "kind": "counter",
+   "pos": [
+    -13.3,
+    12.55,
+    1.0
+   ],
+   "yaw": 0.0,
+   "props": {
+    "service": "teacher",
+    "role": "teacher"
+   }
+  },
+  {
+   "id": "class_museum",
+   "kind": "shelf",
+   "pos": [
+    -7.75,
+    11.4,
+    1.35
+   ],
+   "yaw": 270.0,
+   "props": {
+    "topic": "museum"
+   }
+  },
+  {
+   "id": "class_chess_club",
+   "kind": "play",
+   "pos": [
+    -8.75,
+    10.8,
+    0.8
+   ],
+   "yaw": 90.0,
+   "props": {
+    "what": "chess"
+   }
+  },
+  {
+   "id": "staff_switch",
+   "kind": "machine",
+   "pos": [
+    14.8,
+    9.3,
+    1.3
+   ],
+   "yaw": 270.0,
+   "props": {
+    "what": "switch",
+    "switch": "6"
+   }
+  },
+  {
+   "id": "staff_chess",
+   "kind": "play",
+   "pos": [
+    12.55,
+    10.4,
+    0.8
+   ],
+   "yaw": 0.0,
+   "props": {
+    "what": "chess"
+   }
+  },
+  {
+   "id": "bio_switch",
+   "kind": "machine",
+   "pos": [
+    -20.35,
+    20.4,
+    1.3
+   ],
+   "yaw": 270.0,
+   "props": {
+    "what": "switch",
+    "switch": "8.5"
+   }
+  },
+  {
+   "id": "bio_hamster",
+   "kind": "machine",
+   "pos": [
+    -29.35,
+    18.3,
+    1.0
+   ],
+   "yaw": 90.0,
+   "props": {
+    "what": "hamster"
+   }
+  },
+  {
+   "id": "bio_plants",
+   "kind": "craft",
+   "pos": [
+    -29.35,
+    22.2,
+    1.05
+   ],
+   "yaw": 90.0,
+   "props": {
+    "what": "watering"
+   }
+  },
+  {
+   "id": "bio_chem",
+   "kind": "craft",
+   "pos": [
+    -27.3,
+    24.4,
+    1.0
+   ],
+   "yaw": 180.0,
+   "props": {
+    "what": "glassware"
+   }
+  },
+  {
+   "id": "bio_periodic",
+   "kind": "board",
+   "pos": [
+    -23.2,
+    27.8,
+    1.85
+   ],
+   "yaw": 0.0,
+   "props": {
+    "topic": "periodic"
+   }
+  },
+  {
+   "id": "music_switch",
+   "kind": "machine",
+   "pos": [
+    -20.35,
+    31.9,
+    1.3
+   ],
+   "yaw": 270.0,
+   "props": {
+    "what": "switch",
+    "switch": "6.5"
+   }
+  },
+  {
+   "id": "music_glock",
+   "kind": "machine",
+   "pos": [
+    -28.9,
+    36.5,
+    0.9
+   ],
+   "yaw": 90.0,
+   "props": {
+    "what": "glockenspiel"
+   }
+  },
+  {
+   "id": "music_choir",
+   "kind": "play",
+   "pos": [
+    -25.0,
+    36.4,
+    0.9
+   ],
+   "yaw": 0.0,
+   "props": {
+    "what": "choir_hall"
+   }
+  },
+  {
+   "id": "canteen_switch",
+   "kind": "machine",
+   "pos": [
+    20.35,
+    24.2,
+    1.3
+   ],
+   "yaw": 90.0,
+   "props": {
+    "what": "switch",
+    "switch": "12.5"
+   }
+  },
+  {
+   "id": "canteen_apples",
+   "kind": "take",
+   "pos": [
+    29.3,
+    33.6,
+    1.0
+   ],
+   "yaw": 270.0,
+   "props": {
+    "item": "apple"
+   }
+  },
+  {
+   "id": "yard_hopscotch",
+   "kind": "sport",
+   "pos": [
+    -3.0,
+    22.2,
+    0.02
+   ],
+   "yaw": 0.0,
+   "props": {
+    "what": "hopscotch"
+   }
+  },
+  {
+   "id": "yard_bikes",
+   "kind": "machine",
+   "pos": [
+    14.5,
+    19.0,
+    0.9
+   ],
+   "yaw": 0.0,
+   "props": {
+    "what": "bike_rack"
+   }
+  },
+  {
+   "id": "yard_weather",
+   "kind": "board",
+   "pos": [
+    -15.5,
+    19.9,
+    1.75
+   ],
+   "yaw": 0.0,
+   "props": {
+    "topic": "weather"
+   }
+  },
+  {
+   "id": "yard_feeder",
+   "kind": "machine",
+   "pos": [
+    9.5,
+    33.5,
+    1.5
+   ],
+   "yaw": 0.0,
+   "props": {
+    "what": "bird_feeder"
+   }
+  },
+  {
+   "id": "yard_garden_board",
+   "kind": "board",
+   "pos": [
+    9.4,
+    25.0,
+    1.4
+   ],
+   "yaw": 0.0,
+   "props": {
+    "topic": "garden"
+   }
+  },
+  {
+   "id": "staff_journal",
+   "kind": "board",
+   "pos": [
+    11.1,
+    10.72,
+    0.85
+   ],
+   "yaw": 0.0,
+   "props": {
+    "topic": "journal"
+   }
+  },
+  {
+   "id": "staff_rota",
+   "kind": "board",
+   "pos": [
+    8.7,
+    14.25,
+    1.6
+   ],
+   "yaw": 0.0,
+   "props": {
+    "topic": "rota"
+   }
+  },
+  {
+   "id": "staff_pigeonholes",
+   "kind": "board",
+   "pos": [
+    10.4,
+    14.2,
+    1.3
+   ],
+   "yaw": 0.0,
+   "props": {
+    "topic": "pigeonholes"
+   }
+  },
+  {
+   "id": "gym_lockers",
+   "kind": "board",
+   "pos": [
+    13.2,
+    41.9,
+    1.2
+   ],
+   "yaw": 270.0,
+   "props": {
+    "topic": "lockers"
+   }
+  },
+  {
+   "id": "gym_vault",
+   "kind": "sport",
+   "pos": [
+    -3.5,
+    52.5,
+    1.1
+   ],
+   "yaw": 0.0,
+   "props": {
+    "what": "vault"
+   }
+  },
+  {
+   "id": "gym_records",
+   "kind": "board",
+   "pos": [
+    -13.6,
+    49.3,
+    1.7
+   ],
+   "yaw": 90.0,
+   "props": {
+    "topic": "records"
+   }
+  },
+  {
+   "id": "canteen_drawings",
+   "kind": "board",
+   "pos": [
+    25.85,
+    15.9,
+    1.5
+   ],
+   "yaw": 180.0,
+   "props": {
+    "topic": "drawings"
+   }
+  },
+  {
+   "id": "canteen_dishes",
+   "kind": "board",
+   "pos": [
+    29.4,
+    39.85,
+    1.9
+   ],
+   "yaw": 0.0,
+   "props": {
+    "topic": "dishes"
+   }
   }
  ],
  "flats": [],
@@ -2121,7 +4455,7 @@
    "centre": [
     -20.0,
     22.0,
-    1.95
+    5.55
    ],
    "normal": [
     1.0,
@@ -2141,8 +4475,8 @@
    "kind": "public",
    "centre": [
     -20.0,
-    22.0,
-    5.55
+    26.0,
+    1.95
    ],
    "normal": [
     1.0,
@@ -2163,7 +4497,7 @@
    "centre": [
     -20.0,
     26.0,
-    1.95
+    5.55
    ],
    "normal": [
     1.0,
@@ -2183,8 +4517,8 @@
    "kind": "public",
    "centre": [
     -20.0,
-    26.0,
-    5.55
+    30.0,
+    1.95
    ],
    "normal": [
     1.0,
@@ -2205,7 +4539,7 @@
    "centre": [
     -20.0,
     30.0,
-    1.95
+    5.55
    ],
    "normal": [
     1.0,
@@ -2225,7 +4559,7 @@
    "kind": "public",
    "centre": [
     -20.0,
-    30.0,
+    34.0,
     5.55
    ],
    "normal": [
@@ -2246,7 +4580,7 @@
    "kind": "public",
    "centre": [
     -20.0,
-    34.0,
+    38.0,
     1.95
    ],
    "normal": [
@@ -2267,7 +4601,7 @@
    "kind": "public",
    "centre": [
     -20.0,
-    34.0,
+    38.0,
     5.55
    ],
    "normal": [
@@ -2287,8 +4621,8 @@
    "flat": null,
    "kind": "public",
    "centre": [
-    -20.0,
-    38.0,
+    30.0,
+    7.833,
     1.95
    ],
    "normal": [
@@ -2297,7 +4631,7 @@
     0.0
    ],
    "size": [
-    3.4,
+    3.067,
     2.1
    ],
    "shape": "rect"
@@ -2308,8 +4642,8 @@
    "flat": null,
    "kind": "public",
    "centre": [
-    -20.0,
-    38.0,
+    30.0,
+    7.833,
     5.55
    ],
    "normal": [
@@ -2318,7 +4652,7 @@
     0.0
    ],
    "size": [
-    3.4,
+    3.067,
     2.1
    ],
    "shape": "rect"
@@ -2330,7 +4664,7 @@
    "kind": "public",
    "centre": [
     30.0,
-    7.833,
+    11.5,
     1.95
    ],
    "normal": [
@@ -2351,7 +4685,7 @@
    "kind": "public",
    "centre": [
     30.0,
-    7.833,
+    11.5,
     5.55
    ],
    "normal": [
@@ -2372,7 +4706,7 @@
    "kind": "public",
    "centre": [
     30.0,
-    11.5,
+    15.167,
     1.95
    ],
    "normal": [
@@ -2393,7 +4727,7 @@
    "kind": "public",
    "centre": [
     30.0,
-    11.5,
+    15.167,
     5.55
    ],
    "normal": [
@@ -2414,7 +4748,7 @@
    "kind": "public",
    "centre": [
     30.0,
-    15.167,
+    18.833,
     1.95
    ],
    "normal": [
@@ -2435,7 +4769,7 @@
    "kind": "public",
    "centre": [
     30.0,
-    15.167,
+    18.833,
     5.55
    ],
    "normal": [
@@ -2456,7 +4790,7 @@
    "kind": "public",
    "centre": [
     30.0,
-    18.833,
+    22.5,
     1.95
    ],
    "normal": [
@@ -2477,7 +4811,7 @@
    "kind": "public",
    "centre": [
     30.0,
-    18.833,
+    22.5,
     5.55
    ],
    "normal": [
@@ -2498,7 +4832,7 @@
    "kind": "public",
    "centre": [
     30.0,
-    22.5,
+    26.167,
     1.95
    ],
    "normal": [
@@ -2519,7 +4853,7 @@
    "kind": "public",
    "centre": [
     30.0,
-    22.5,
+    26.167,
     5.55
    ],
    "normal": [
@@ -2540,7 +4874,7 @@
    "kind": "public",
    "centre": [
     30.0,
-    26.167,
+    29.833,
     1.95
    ],
    "normal": [
@@ -2561,7 +4895,7 @@
    "kind": "public",
    "centre": [
     30.0,
-    26.167,
+    29.833,
     5.55
    ],
    "normal": [
@@ -2582,7 +4916,7 @@
    "kind": "public",
    "centre": [
     30.0,
-    29.833,
+    33.5,
     1.95
    ],
    "normal": [
@@ -2603,7 +4937,7 @@
    "kind": "public",
    "centre": [
     30.0,
-    29.833,
+    33.5,
     5.55
    ],
    "normal": [
@@ -2624,7 +4958,7 @@
    "kind": "public",
    "centre": [
     30.0,
-    33.5,
+    37.167,
     1.95
    ],
    "normal": [
@@ -2645,7 +4979,7 @@
    "kind": "public",
    "centre": [
     30.0,
-    33.5,
+    37.167,
     5.55
    ],
    "normal": [
@@ -2666,7 +5000,7 @@
    "kind": "public",
    "centre": [
     30.0,
-    37.167,
+    40.833,
     1.95
    ],
    "normal": [
@@ -2687,7 +5021,7 @@
    "kind": "public",
    "centre": [
     30.0,
-    37.167,
+    40.833,
     5.55
    ],
    "normal": [
@@ -2708,7 +5042,7 @@
    "kind": "public",
    "centre": [
     30.0,
-    40.833,
+    44.5,
     1.95
    ],
    "normal": [
@@ -2729,7 +5063,7 @@
    "kind": "public",
    "centre": [
     30.0,
-    40.833,
+    44.5,
     5.55
    ],
    "normal": [
@@ -2750,7 +5084,7 @@
    "kind": "public",
    "centre": [
     30.0,
-    44.5,
+    48.167,
     1.95
    ],
    "normal": [
@@ -2771,7 +5105,7 @@
    "kind": "public",
    "centre": [
     30.0,
-    44.5,
+    48.167,
     5.55
    ],
    "normal": [
@@ -2791,17 +5125,17 @@
    "flat": null,
    "kind": "public",
    "centre": [
-    30.0,
-    48.167,
+    20.0,
+    38.0,
     1.95
    ],
    "normal": [
-    1.0,
+    -1.0,
     0.0,
     0.0
    ],
    "size": [
-    3.067,
+    3.4,
     2.1
    ],
    "shape": "rect"
@@ -2812,17 +5146,17 @@
    "flat": null,
    "kind": "public",
    "centre": [
-    30.0,
-    48.167,
+    20.0,
+    38.0,
     5.55
    ],
    "normal": [
-    1.0,
+    -1.0,
     0.0,
     0.0
    ],
    "size": [
-    3.067,
+    3.4,
     2.1
    ],
    "shape": "rect"
@@ -2834,7 +5168,7 @@
    "kind": "public",
    "centre": [
     20.0,
-    38.0,
+    34.0,
     1.95
    ],
    "normal": [
@@ -2855,7 +5189,7 @@
    "kind": "public",
    "centre": [
     20.0,
-    38.0,
+    34.0,
     5.55
    ],
    "normal": [
@@ -2876,7 +5210,7 @@
    "kind": "public",
    "centre": [
     20.0,
-    34.0,
+    30.0,
     1.95
    ],
    "normal": [
@@ -2897,7 +5231,7 @@
    "kind": "public",
    "centre": [
     20.0,
-    34.0,
+    30.0,
     5.55
    ],
    "normal": [
@@ -2918,8 +5252,8 @@
    "kind": "public",
    "centre": [
     20.0,
-    30.0,
-    1.95
+    26.0,
+    5.55
    ],
    "normal": [
     -1.0,
@@ -2939,8 +5273,8 @@
    "kind": "public",
    "centre": [
     20.0,
-    30.0,
-    5.55
+    22.0,
+    1.95
    ],
    "normal": [
     -1.0,
@@ -2960,8 +5294,8 @@
    "kind": "public",
    "centre": [
     20.0,
-    26.0,
-    1.95
+    22.0,
+    5.55
    ],
    "normal": [
     -1.0,
@@ -2981,8 +5315,8 @@
    "kind": "public",
    "centre": [
     20.0,
-    26.0,
-    5.55
+    18.0,
+    1.95
    ],
    "normal": [
     -1.0,
@@ -3002,8 +5336,8 @@
    "kind": "public",
    "centre": [
     20.0,
-    22.0,
-    1.95
+    18.0,
+    5.55
    ],
    "normal": [
     -1.0,
@@ -3022,14 +5356,14 @@
    "flat": null,
    "kind": "public",
    "centre": [
-    20.0,
-    22.0,
-    5.55
+    -16.0,
+    50.0,
+    1.95
    ],
    "normal": [
-    -1.0,
     0.0,
-    0.0
+    1.0,
+    -0.0
    ],
    "size": [
     3.4,
@@ -3043,14 +5377,14 @@
    "flat": null,
    "kind": "public",
    "centre": [
-    20.0,
-    18.0,
-    1.95
+    -16.0,
+    50.0,
+    5.55
    ],
    "normal": [
-    -1.0,
     0.0,
-    0.0
+    1.0,
+    -0.0
    ],
    "size": [
     3.4,
@@ -3064,14 +5398,14 @@
    "flat": null,
    "kind": "public",
    "centre": [
-    20.0,
-    18.0,
-    5.55
+    -20.0,
+    50.0,
+    1.95
    ],
    "normal": [
-    -1.0,
     0.0,
-    0.0
+    1.0,
+    -0.0
    ],
    "size": [
     3.4,
@@ -3085,9 +5419,9 @@
    "flat": null,
    "kind": "public",
    "centre": [
-    -16.0,
+    -20.0,
     50.0,
-    1.95
+    5.55
    ],
    "normal": [
     0.0,
@@ -3106,9 +5440,9 @@
    "flat": null,
    "kind": "public",
    "centre": [
-    -16.0,
+    -24.0,
     50.0,
-    5.55
+    1.95
    ],
    "normal": [
     0.0,
@@ -3127,9 +5461,9 @@
    "flat": null,
    "kind": "public",
    "centre": [
-    -20.0,
+    -24.0,
     50.0,
-    1.95
+    5.55
    ],
    "normal": [
     0.0,
@@ -3148,9 +5482,9 @@
    "flat": null,
    "kind": "public",
    "centre": [
-    -20.0,
+    -28.0,
     50.0,
-    5.55
+    1.95
    ],
    "normal": [
     0.0,
@@ -3169,9 +5503,9 @@
    "flat": null,
    "kind": "public",
    "centre": [
-    -24.0,
+    -28.0,
     50.0,
-    1.95
+    5.55
    ],
    "normal": [
     0.0,
@@ -3190,9 +5524,9 @@
    "flat": null,
    "kind": "public",
    "centre": [
-    -24.0,
+    28.0,
     50.0,
-    5.55
+    1.95
    ],
    "normal": [
     0.0,
@@ -3211,9 +5545,9 @@
    "flat": null,
    "kind": "public",
    "centre": [
-    -28.0,
+    28.0,
     50.0,
-    1.95
+    5.55
    ],
    "normal": [
     0.0,
@@ -3232,9 +5566,9 @@
    "flat": null,
    "kind": "public",
    "centre": [
-    -28.0,
+    24.0,
     50.0,
-    5.55
+    1.95
    ],
    "normal": [
     0.0,
@@ -3253,9 +5587,9 @@
    "flat": null,
    "kind": "public",
    "centre": [
-    28.0,
+    24.0,
     50.0,
-    1.95
+    5.55
    ],
    "normal": [
     0.0,
@@ -3274,9 +5608,9 @@
    "flat": null,
    "kind": "public",
    "centre": [
-    28.0,
+    20.0,
     50.0,
-    5.55
+    1.95
    ],
    "normal": [
     0.0,
@@ -3295,9 +5629,9 @@
    "flat": null,
    "kind": "public",
    "centre": [
-    24.0,
+    20.0,
     50.0,
-    1.95
+    5.55
    ],
    "normal": [
     0.0,
@@ -3316,9 +5650,9 @@
    "flat": null,
    "kind": "public",
    "centre": [
-    24.0,
+    16.0,
     50.0,
-    5.55
+    1.95
    ],
    "normal": [
     0.0,
@@ -3337,9 +5671,9 @@
    "flat": null,
    "kind": "public",
    "centre": [
-    20.0,
+    16.0,
     50.0,
-    1.95
+    5.55
    ],
    "normal": [
     0.0,
@@ -3358,17 +5692,17 @@
    "flat": null,
    "kind": "public",
    "centre": [
-    20.0,
-    50.0,
-    5.55
+    -18.5,
+    40.0,
+    1.95
    ],
    "normal": [
     0.0,
-    1.0,
-    -0.0
+    -1.0,
+    0.0
    ],
    "size": [
-    3.4,
+    2.4,
     2.1
    ],
    "shape": "rect"
@@ -3379,17 +5713,17 @@
    "flat": null,
    "kind": "public",
    "centre": [
-    16.0,
-    50.0,
-    1.95
+    -18.5,
+    40.0,
+    5.55
    ],
    "normal": [
     0.0,
-    1.0,
-    -0.0
+    -1.0,
+    0.0
    ],
    "size": [
-    3.4,
+    2.4,
     2.1
    ],
    "shape": "rect"
@@ -3400,17 +5734,17 @@
    "flat": null,
    "kind": "public",
    "centre": [
-    16.0,
-    50.0,
-    5.55
+    -15.5,
+    40.0,
+    1.95
    ],
    "normal": [
     0.0,
-    1.0,
-    -0.0
+    -1.0,
+    0.0
    ],
    "size": [
-    3.4,
+    2.4,
     2.1
    ],
    "shape": "rect"
@@ -3421,9 +5755,9 @@
    "flat": null,
    "kind": "public",
    "centre": [
-    -18.5,
+    -15.5,
     40.0,
-    1.95
+    5.55
    ],
    "normal": [
     0.0,
@@ -3442,9 +5776,9 @@
    "flat": null,
    "kind": "public",
    "centre": [
-    -18.5,
+    15.5,
     40.0,
-    5.55
+    1.95
    ],
    "normal": [
     0.0,
@@ -3463,9 +5797,9 @@
    "flat": null,
    "kind": "public",
    "centre": [
-    -15.5,
+    15.5,
     40.0,
-    1.95
+    5.55
    ],
    "normal": [
     0.0,
@@ -3484,9 +5818,9 @@
    "flat": null,
    "kind": "public",
    "centre": [
-    -15.5,
+    18.5,
     40.0,
-    5.55
+    1.95
    ],
    "normal": [
     0.0,
@@ -3505,9 +5839,9 @@
    "flat": null,
    "kind": "public",
    "centre": [
-    15.5,
+    18.5,
     40.0,
-    1.95
+    5.55
    ],
    "normal": [
     0.0,
@@ -3526,9 +5860,9 @@
    "flat": null,
    "kind": "public",
    "centre": [
-    15.5,
+    -12.0,
     40.0,
-    5.55
+    6.0
    ],
    "normal": [
     0.0,
@@ -3536,8 +5870,8 @@
     0.0
    ],
    "size": [
-    2.4,
-    2.1
+    3.0,
+    3.0
    ],
    "shape": "rect"
   },
@@ -3547,9 +5881,9 @@
    "flat": null,
    "kind": "public",
    "centre": [
-    18.5,
+    -8.0,
     40.0,
-    1.95
+    6.0
    ],
    "normal": [
     0.0,
@@ -3557,8 +5891,8 @@
     0.0
    ],
    "size": [
-    2.4,
-    2.1
+    3.0,
+    3.0
    ],
    "shape": "rect"
   },
@@ -3568,9 +5902,9 @@
    "flat": null,
    "kind": "public",
    "centre": [
-    18.5,
+    -4.0,
     40.0,
-    5.55
+    6.0
    ],
    "normal": [
     0.0,
@@ -3578,8 +5912,8 @@
     0.0
    ],
    "size": [
-    2.4,
-    2.1
+    3.0,
+    3.0
    ],
    "shape": "rect"
   },
@@ -3589,7 +5923,7 @@
    "flat": null,
    "kind": "public",
    "centre": [
-    -12.0,
+    0.0,
     40.0,
     6.0
    ],
@@ -3610,7 +5944,7 @@
    "flat": null,
    "kind": "public",
    "centre": [
-    -8.0,
+    4.0,
     40.0,
     6.0
    ],
@@ -3631,7 +5965,7 @@
    "flat": null,
    "kind": "public",
    "centre": [
-    -4.0,
+    8.0,
     40.0,
     6.0
    ],
@@ -3652,7 +5986,7 @@
    "flat": null,
    "kind": "public",
    "centre": [
-    0.0,
+    12.0,
     40.0,
     6.0
    ],
@@ -3673,17 +6007,17 @@
    "flat": null,
    "kind": "public",
    "centre": [
-    4.0,
-    40.0,
+    -14.0,
+    54.1,
     6.0
    ],
    "normal": [
-    0.0,
     -1.0,
+    0.0,
     0.0
    ],
    "size": [
-    3.0,
+    1.8,
     3.0
    ],
    "shape": "rect"
@@ -3694,17 +6028,17 @@
    "flat": null,
    "kind": "public",
    "centre": [
-    8.0,
-    40.0,
+    -14.0,
+    51.5,
     6.0
    ],
    "normal": [
-    0.0,
     -1.0,
+    0.0,
     0.0
    ],
    "size": [
-    3.0,
+    1.8,
     3.0
    ],
    "shape": "rect"
@@ -3715,17 +6049,17 @@
    "flat": null,
    "kind": "public",
    "centre": [
-    12.0,
-    40.0,
+    14.0,
+    51.5,
     6.0
    ],
    "normal": [
+    1.0,
     0.0,
-    -1.0,
     0.0
    ],
    "size": [
-    3.0,
+    1.8,
     3.0
    ],
    "shape": "rect"
@@ -3736,17 +6070,17 @@
    "flat": null,
    "kind": "public",
    "centre": [
-    -14.0,
-    53.6,
+    14.0,
+    54.1,
     6.0
    ],
    "normal": [
-    -1.0,
+    1.0,
     0.0,
     0.0
    ],
    "size": [
-    2.0,
+    1.8,
     3.0
    ],
    "shape": "rect"
@@ -3757,17 +6091,17 @@
    "flat": null,
    "kind": "public",
    "centre": [
-    -14.0,
-    50.4,
+    12.0,
+    56.0,
     6.0
    ],
    "normal": [
-    -1.0,
     0.0,
-    0.0
+    1.0,
+    -0.0
    ],
    "size": [
-    2.0,
+    3.0,
     3.0
    ],
    "shape": "rect"
@@ -3778,17 +6112,17 @@
    "flat": null,
    "kind": "public",
    "centre": [
-    14.0,
-    52.4,
+    8.0,
+    56.0,
     6.0
    ],
    "normal": [
-    1.0,
     0.0,
-    0.0
+    1.0,
+    -0.0
    ],
    "size": [
-    2.0,
+    3.0,
     3.0
    ],
    "shape": "rect"
@@ -3799,17 +6133,17 @@
    "flat": null,
    "kind": "public",
    "centre": [
-    14.0,
-    55.6,
+    4.0,
+    56.0,
     6.0
    ],
    "normal": [
-    1.0,
     0.0,
-    0.0
+    1.0,
+    -0.0
    ],
    "size": [
-    2.0,
+    3.0,
     3.0
    ],
    "shape": "rect"
@@ -3820,7 +6154,7 @@
    "flat": null,
    "kind": "public",
    "centre": [
-    12.0,
+    0.0,
     56.0,
     6.0
    ],
@@ -3841,7 +6175,7 @@
    "flat": null,
    "kind": "public",
    "centre": [
-    8.0,
+    -4.0,
     56.0,
     6.0
    ],
@@ -3862,7 +6196,7 @@
    "flat": null,
    "kind": "public",
    "centre": [
-    4.0,
+    -8.0,
     56.0,
     6.0
    ],
@@ -3883,7 +6217,7 @@
    "flat": null,
    "kind": "public",
    "centre": [
-    0.0,
+    -12.0,
     56.0,
     6.0
    ],
@@ -3904,9 +6238,9 @@
    "flat": null,
    "kind": "public",
    "centre": [
-    -4.0,
-    56.0,
-    6.0
+    -8.95,
+    44.0,
+    9.8
    ],
    "normal": [
     0.0,
@@ -3914,8 +6248,8 @@
     -0.0
    ],
    "size": [
-    3.0,
-    3.0
+    8.9,
+    1.6
    ],
    "shape": "rect"
   },
@@ -3925,9 +6259,9 @@
    "flat": null,
    "kind": "public",
    "centre": [
-    -8.0,
-    56.0,
-    6.0
+    0.0,
+    44.0,
+    9.8
    ],
    "normal": [
     0.0,
@@ -3935,8 +6269,8 @@
     -0.0
    ],
    "size": [
-    3.0,
-    3.0
+    8.4,
+    1.6
    ],
    "shape": "rect"
   },
@@ -3946,9 +6280,9 @@
    "flat": null,
    "kind": "public",
    "centre": [
-    -12.0,
-    56.0,
-    6.0
+    8.95,
+    44.0,
+    9.8
    ],
    "normal": [
     0.0,
@@ -3956,8 +6290,8 @@
     -0.0
    ],
    "size": [
-    3.0,
-    3.0
+    8.9,
+    1.6
    ],
    "shape": "rect"
   },
@@ -3968,7 +6302,7 @@
    "kind": "public",
    "centre": [
     -8.95,
-    44.0,
+    48.0,
     9.8
    ],
    "normal": [
@@ -3989,7 +6323,7 @@
    "kind": "public",
    "centre": [
     0.0,
-    44.0,
+    48.0,
     9.8
    ],
    "normal": [
@@ -4010,7 +6344,7 @@
    "kind": "public",
    "centre": [
     8.95,
-    44.0,
+    48.0,
     9.8
    ],
    "normal": [
@@ -4031,7 +6365,7 @@
    "kind": "public",
    "centre": [
     -8.95,
-    48.0,
+    52.0,
     9.8
    ],
    "normal": [
@@ -4052,7 +6386,7 @@
    "kind": "public",
    "centre": [
     0.0,
-    48.0,
+    52.0,
     9.8
    ],
    "normal": [
@@ -4073,7 +6407,7 @@
    "kind": "public",
    "centre": [
     8.95,
-    48.0,
+    52.0,
     9.8
    ],
    "normal": [
@@ -4094,7 +6428,7 @@
    "kind": "public",
    "centre": [
     -8.95,
-    52.0,
+    56.0,
     9.8
    ],
    "normal": [
@@ -4115,7 +6449,7 @@
    "kind": "public",
    "centre": [
     0.0,
-    52.0,
+    56.0,
     9.8
    ],
    "normal": [
@@ -4132,69 +6466,6 @@
   {
    "slot": 173,
    "id": "pub/w174",
-   "flat": null,
-   "kind": "public",
-   "centre": [
-    8.95,
-    52.0,
-    9.8
-   ],
-   "normal": [
-    0.0,
-    1.0,
-    -0.0
-   ],
-   "size": [
-    8.9,
-    1.6
-   ],
-   "shape": "rect"
-  },
-  {
-   "slot": 174,
-   "id": "pub/w175",
-   "flat": null,
-   "kind": "public",
-   "centre": [
-    -8.95,
-    56.0,
-    9.8
-   ],
-   "normal": [
-    0.0,
-    1.0,
-    -0.0
-   ],
-   "size": [
-    8.9,
-    1.6
-   ],
-   "shape": "rect"
-  },
-  {
-   "slot": 175,
-   "id": "pub/w176",
-   "flat": null,
-   "kind": "public",
-   "centre": [
-    0.0,
-    56.0,
-    9.8
-   ],
-   "normal": [
-    0.0,
-    1.0,
-    -0.0
-   ],
-   "size": [
-    8.4,
-    1.6
-   ],
-   "shape": "rect"
-  },
-  {
-   "slot": 176,
-   "id": "pub/w177",
    "flat": null,
    "kind": "public",
    "centre": [
@@ -4217,8 +6488,8 @@
  "light_tex": 64,
  "notes": [],
  "tris": {
-  "shell": 5006,
-  "detail": 6126,
-  "windows": 354
+  "shell": 6678,
+  "detail": 43112,
+  "windows": 696
  }
 }

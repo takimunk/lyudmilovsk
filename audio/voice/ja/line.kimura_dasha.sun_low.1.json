@@ -1,0 +1,20 @@
+{
+ "key": "line.kimura_dasha.sun_low.1",
+ "lang": "ja",
+ "text": "夕日が水平線に沈むまで、秒を数えるの。なんでかは知らない。見逃したくないだけ。",
+ "speaker": "kimura_dasha",
+ "voice": "Charlotte",
+ "voice_id": "XB0fDUnXU5powFXDhCwa",
+ "voice_design": null,
+ "direction": "[a tired physics student, wry, self-ironic]",
+ "model": "fal-ai/elevenlabs/tts/eleven-v3",
+ "request": {
+  "stability": 0.5,
+  "apply_text_normalization": "auto",
+  "text": "[a tired physics student, wry, self-ironic] 夕日が水平線に沈むまで、秒を数えるの。なんでかは知らない。見逃したくないだけ。",
+  "voice": "Charlotte",
+  "language_code": "ja"
+ },
+ "fal_request_id": "01a1d743-f06c-79e3-a416-4262cc9435a3",
+ "hash": "5380098f8a54"
+}

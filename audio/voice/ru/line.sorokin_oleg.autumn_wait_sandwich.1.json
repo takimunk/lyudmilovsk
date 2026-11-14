@@ -1,0 +1,20 @@
+{
+ "key": "line.sorokin_oleg.autumn_wait_sandwich.1",
+ "lang": "ru",
+ "text": "Шесть прилётов и одна синица с ладони. Я как-то считал с бутербродом в руке, и синицы решили, что учёт ведут они.",
+ "speaker": "sorokin_oleg",
+ "voice": "River",
+ "voice_id": "SAz9YHcvj6GT2YYXdXww",
+ "voice_design": null,
+ "direction": "[a retired scholar, calm, dry humour, slower, gentle]",
+ "model": "fal-ai/elevenlabs/tts/eleven-v3",
+ "request": {
+  "stability": 0.5,
+  "apply_text_normalization": "auto",
+  "text": "[a retired scholar, calm, dry humour, slower, gentle] Шесть прилётов и одна синица с ладони. Я как-то считал с бутербродом в руке, и синицы решили, что учёт ведут они.",
+  "voice": "River",
+  "language_code": "ru"
+ },
+ "fal_request_id": "01a1d6d7-c4e6-7b52-8bf0-9046c32ed9cc",
+ "hash": "3d2b74238d9e"
+}

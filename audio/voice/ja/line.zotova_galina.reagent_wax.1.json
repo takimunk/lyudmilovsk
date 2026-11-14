@@ -1,0 +1,20 @@
+{
+ "key": "line.zotova_galina.reagent_wax.1",
+ "lang": "ja",
+ "text": "翼の赤は、古い試薬瓶の封蝋にそっくりです。この辺りの方ではありませんね、図鑑がなくてもわかります。",
+ "speaker": "zotova_galina",
+ "voice": "Alice",
+ "voice_id": "Xb7hH8MSUJpSbSDYk0k2",
+ "voice_design": null,
+ "direction": "[warm, chatty, fondly exasperated with her husband]",
+ "model": "fal-ai/elevenlabs/tts/eleven-v3",
+ "request": {
+  "stability": 0.5,
+  "apply_text_normalization": "auto",
+  "text": "[warm, chatty, fondly exasperated with her husband] 翼の赤は、古い試薬瓶の封蝋にそっくりです。この辺りの方ではありませんね、図鑑がなくてもわかります。",
+  "voice": "Alice",
+  "language_code": "ja"
+ },
+ "fal_request_id": "01a1d75f-bf3e-7a73-8a52-61cc8c9b79fc",
+ "hash": "8c3041025182"
+}

@@ -391,6 +391,20 @@ namespace LyudBirds
 		const float Sp = B.Vel.Len() + 1e-3f;
 		const V3 Fw = B.Vel * (1.f / Sp);
 		const int NCount = Knn(W, I, KWide, CosBlind, NIdx, ND2, NVis);
+		// the descent comes in waves: a bird follows descending neighbours (DownShare of those it flies with); late on,
+		// everybody goes
+		const auto Descent = [&](float DownShare)
+		{
+			if (Hm > DescendMinutes)
+			{
+				const float Late = Smooth(DescendMinutes, SpeciesTable()[SpeciesIdx].RoostMinutes - 6.f, Hm);
+				const bool bNear = (B.Pos - RoostC).Len2D() < RoamR + 60.f;
+				if (bNear && HashRnd((uint32_t)F.Id + 7919u, Tick) < Rdt * (0.004f + 0.05f * Late + 2.f * DownShare))
+				{
+					Out[7] = 1.f;
+				}
+			}
+		};
 		if (NCount == 0)
 		{
 			// lost: back to the flock
@@ -398,6 +412,9 @@ namespace LyudBirds
 			Out[0] = To.X;
 			Out[1] = To.Y;
 			Out[2] = To.Z;
+			// (and down to the reed like the rest when the time comes: the last bird in the air has nobody in reach, and
+			// without this it flew round the roost alone all night)
+			Descent(0.f);
 			return;
 		}
 		V3 Sep, Hd, U, Co, All;
@@ -466,16 +483,7 @@ namespace LyudBirds
 			Out[5] = M[EscJ].Esc.Y;
 			Out[6] = M[EscJ].Esc.Z;
 		}
-		// the descent comes in waves: a bird follows descending neighbours; late on, everybody goes
-		if (Hm > DescendMinutes)
-		{
-			const float Late = Smooth(DescendMinutes, SpeciesTable()[SpeciesIdx].RoostMinutes - 6.f, Hm);
-			const bool bNear = (B.Pos - RoostC).Len2D() < RoamR + 60.f;
-			if (bNear && HashRnd((uint32_t)F.Id + 7919u, Tick) < Rdt * (0.004f + 0.05f * Late + 2.f * Down * Inv))
-			{
-				Out[7] = 1.f;
-			}
-		}
+		Descent(Down * Inv);
 	}
 
 	void FMurmuration::GoDown(FWorld& W, FM& F)
@@ -778,11 +786,27 @@ namespace LyudBirds
 			const V3 Yb(-RX * SB + U0.X * CB, -RY * SB + U0.Y * CB, U0.Z * CB);
 			const float LNeed = Lv.Dot(Yb);
 			const float LMax = Grav * (MaxLift * EscRoll + 2.f * Urg) * (Speed / V0) * (Speed / V0);
-			const float L = Clamp(LNeed, 0.f, LMax);
+			float L = Clamp(LNeed, 0.f, LMax);
+			// well over the flock's band a bird carries no more lift than its way down asks for. Banked to its limit (the
+			// flock passing far below pulls it hard sideways) the lift along its tilted back was more than that, and a bird
+			// thrown up over the scarp hung there and crept higher for the rest of the evening, hundreds of metres up.
+			if (B.Pos.Z > Alt + 60.f && Yb.Z > 0.1f)
+			{
+				L = std::min(L, std::max(0.f, Lv.Z) / Yb.Z);
+			}
 			const float Own = V0 * Clamp(1.f + 0.07f * F.SpeedN + 0.05f * F.Mood, 0.6f, 1.5f);
 			const float Vt = F.bEscape ? std::max(Own, V0) * 1.3f : Own;
 			const float Af = (Vt - Speed) / 1.f + Clamp(Fpar, -4.f, 4.f);
 			V3 Nv = B.Vel + (Fw * Af + Yb * L - V3(0.f, 0.f, Grav)) * Hh;
+			// no climb steeper than 60 degrees. Pulled straight up (over the scarp behind the reed) at its lowest speed a bird
+			// had no gravity across its path and nothing to turn with, the speed floor below gave back what gravity took,
+			// and it went on up for good: dozens of starlings kilometres over the flock. Tipped forward, it comes round.
+			if (const float NL = Nv.Len(); Nv.Z > 0.866f * NL)
+			{
+				const float Hl = Nv.Len2D();
+				const V3 Dir = Hl > 1e-3f ? V3(Nv.X / Hl, Nv.Y / Hl, 0.f) : V3(std::cos(B.Yaw), std::sin(B.Yaw), 0.f);
+				Nv = Dir * (0.5f * NL) + V3(0.f, 0.f, 0.866f * NL);
+			}
 			const float NS = Nv.Len();
 			if (NS < 7.5f || NS > 22.f)
 			{

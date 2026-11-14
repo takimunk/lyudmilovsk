@@ -1,0 +1,20 @@
+{
+ "key": "line.kimura_dasha.again3.2",
+ "lang": "ja",
+ "text": "岩とカモメと静けさ。そこでノートを声に出して読むの。だれにも注意されないし。",
+ "speaker": "kimura_dasha",
+ "voice": "Charlotte",
+ "voice_id": "XB0fDUnXU5powFXDhCwa",
+ "voice_design": null,
+ "direction": "[a tired physics student, wry, self-ironic]",
+ "model": "fal-ai/elevenlabs/tts/eleven-v3",
+ "request": {
+  "stability": 0.5,
+  "apply_text_normalization": "auto",
+  "text": "[a tired physics student, wry, self-ironic] 岩とカモメと静けさ。そこでノートを声に出して読むの。だれにも注意されないし。",
+  "voice": "Charlotte",
+  "language_code": "ja"
+ },
+ "fal_request_id": "01a1d743-bde7-7082-84fa-3ea129addf9a",
+ "hash": "7c714de43446"
+}

@@ -1,0 +1,20 @@
+{
+ "key": "line.girl_b.overdue_empty.1",
+ "lang": "en",
+ "text": "And where is the magazine? Never mind, I will wait. I have waited half a year, I can wait a little more.",
+ "speaker": "girl_b",
+ "voice": "Sarah",
+ "voice_id": "EXAVITQu4vr4xnSDxMaL",
+ "voice_design": null,
+ "direction": "[curious, slightly uneasy, conspiratorial]",
+ "model": "fal-ai/elevenlabs/tts/eleven-v3",
+ "request": {
+  "stability": 0.5,
+  "apply_text_normalization": "auto",
+  "text": "[curious, slightly uneasy, conspiratorial] And where is the magazine? Never mind, I will wait. I have waited half a year, I can wait a little more.",
+  "voice": "Sarah",
+  "language_code": "en"
+ },
+ "fal_request_id": "01a1d66c-4bd4-7c90-8d39-61cfc105f3da",
+ "hash": "e8c352b4e649"
+}

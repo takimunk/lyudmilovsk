@@ -171,7 +171,8 @@ bool ALyudRestaurant::EnsureWaiter()
 	{
 		return false;
 	}
-	const FString Mesh = bKeep ? WaiterMesh : (StaffWaiterMesh.IsEmpty() ? WaiterStandinMesh : StaffWaiterMesh);
+	// by reference: this runs every frame while open (all three are members that outlive the call)
+	const FString& Mesh = bKeep ? WaiterMesh : (StaffWaiterMesh.IsEmpty() ? WaiterStandinMesh : StaffWaiterMesh);
 	if (Person != WaiterPerson)
 	{
 		if (WaiterPerson >= 0)
@@ -189,13 +190,25 @@ bool ALyudRestaurant::EnsureWaiter()
 		WaiterBody->Destroy();
 		WaiterBody = nullptr;
 	}
-	if (!WaiterBody)
+	if (Waiter == EWaiter::Off)
 	{
+		// coming on shift: by the bar
+		WaiterPos = ToWorld(WaiterHome);
+		WaiterYaw = YawToWorld(HomeYaw).Yaw;
+	}
+	// the body only when the camera is near enough to see it (bNear, as the cook's): it used to be spawned, and its model
+	// loaded on the game thread, the moment the restaurant opened, wherever the hero was. Far away the waiter is a point that
+	// walks and serves (PoseWaiter and TrayWorld take a missing body); the body appears where that point is.
+	if (!WaiterBody && bNear)
+	{
+		if (GetWorld()->GetTimeSeconds() < WaiterRetryAt)
+		{
+			// the model was missing a moment ago: not a spawn and a failed load every frame
+			return false;
+		}
 		FActorSpawnParameters SP;
 		SP.ObjectFlags |= RF_Transient;
 		SP.SpawnCollisionHandlingOverride = ESpawnActorCollisionHandlingMethod::AlwaysSpawn;
-		WaiterPos = ToWorld(WaiterHome);
-		WaiterYaw = YawToWorld(HomeYaw).Yaw;
 		WaiterBody = GetWorld()->SpawnActor<ANpcBody>(WaiterPos, FRotator(0.f, WaiterYaw, 0.f), SP);
 		if (!WaiterBody || !WaiterBody->Setup(Mesh, FString()))
 		{
@@ -205,6 +218,7 @@ bool ALyudRestaurant::EnsureWaiter()
 				WaiterBody->Destroy();
 			}
 			WaiterBody = nullptr;
+			WaiterRetryAt = GetWorld()->GetTimeSeconds() + 10.f;
 			return false;
 		}
 		WaiterBody->Tags.Add(TEXT("Restaurant"));
@@ -487,6 +501,14 @@ void ALyudRestaurant::TickWaiter(float DeltaTime)
 		WaiterYaw = FMath::FixedTurn(WaiterYaw, YawToWorld(PassYaw).Yaw, 300.f * DeltaTime);
 		if (WaiterT >= LyudRestWaiter::PickSeconds)
 		{
+			if (Job == EJob::Bill && (!bBillAsked || HeroTableIx < 0))
+			{
+				// the bill was withdrawn on the way (a new order) or the table was laid again: nothing to bring
+				Job = EJob::None;
+				Waiter = EWaiter::ToHome;
+				PlanPath(WaiterHome);
+				break;
+			}
 			if (Job == EJob::Bill)
 			{
 				// the bill in its folder on the tray
@@ -569,7 +591,21 @@ void ALyudRestaurant::TickWaiter(float DeltaTime)
 		}
 		if (Job == EJob::Bill)
 		{
-			if (WaiterT >= LyudRestWaiter::SetSeconds && BillFolder && HeroTableIx >= 0)
+			if (!BillFolder || HeroTableIx < 0 || !bBillAsked)
+			{
+				// the folder went while it was carried (a new order withdrew the bill, or the table was laid again): no state
+				// lasts for ever, the waiter goes home and takes the next job
+				if (BillFolder)
+				{
+					BillFolder->Destroy();
+					BillFolder = nullptr;
+				}
+				Job = EJob::None;
+				Waiter = EWaiter::ToHome;
+				PlanPath(WaiterHome);
+				break;
+			}
+			if (WaiterT >= LyudRestWaiter::SetSeconds)
 			{
 				const FTable& Tb = Tables[HeroTableIx];
 				const int32 Seat = HeroSeatIx >= 0 ? HeroSeatIx : Tb.Seats[0];

@@ -1,0 +1,20 @@
+{
+ "key": "line.guy_b.pigeon_comes_back.1",
+ "lang": "ja",
+ "text": "クラブにドバトか。あの新入りに手から餌をもらったんだろ？それでみんな来るようになったんだな。",
+ "speaker": "guy_b",
+ "voice": "Chris",
+ "voice_id": "iP95p4xoKVk53GoZ742B",
+ "voice_design": null,
+ "direction": "[relaxed, lazy, friendly]",
+ "model": "fal-ai/elevenlabs/tts/eleven-v3",
+ "request": {
+  "stability": 0.5,
+  "apply_text_normalization": "auto",
+  "text": "[relaxed, lazy, friendly] クラブにドバトか。あの新入りに手から餌をもらったんだろ？それでみんな来るようになったんだな。",
+  "voice": "Chris",
+  "language_code": "ja"
+ },
+ "fal_request_id": "01a1d739-9e8d-77a3-ae0e-983af19a8baa",
+ "hash": "453b2602b5e3"
+}

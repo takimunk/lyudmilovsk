@@ -1,0 +1,20 @@
+{
+ "key": "line.girl_b.fresh_issue_twice.1",
+ "lang": "en",
+ "text": "The new “Cosmos and Us” has been borrowed twice already. Both times it came back on time, I hardly knew what to do.",
+ "speaker": "girl_b",
+ "voice": "Sarah",
+ "voice_id": "EXAVITQu4vr4xnSDxMaL",
+ "voice_design": null,
+ "direction": "[curious, slightly uneasy, conspiratorial]",
+ "model": "fal-ai/elevenlabs/tts/eleven-v3",
+ "request": {
+  "stability": 0.5,
+  "apply_text_normalization": "auto",
+  "text": "[curious, slightly uneasy, conspiratorial] The new “Cosmos and Us” has been borrowed twice already. Both times it came back on time, I hardly knew what to do.",
+  "voice": "Sarah",
+  "language_code": "en"
+ },
+ "fal_request_id": "01a1d6e2-72ef-79c2-8397-2e0a4addf662",
+ "hash": "8474c78bb759"
+}

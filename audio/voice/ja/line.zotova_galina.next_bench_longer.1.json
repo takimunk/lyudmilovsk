@@ -1,0 +1,20 @@
+{
+ "key": "line.zotova_galina.next_bench_longer.1",
+ "lang": "ja",
+ "text": "私ではなく、隣のベンチのソローキンさんのところへどうぞ。あの方は、私が研究所に勤めているよりも長く、あなたを待っているんです。",
+ "speaker": "zotova_galina",
+ "voice": "Alice",
+ "voice_id": "Xb7hH8MSUJpSbSDYk0k2",
+ "voice_design": null,
+ "direction": "[warm, chatty, fondly exasperated with her husband]",
+ "model": "fal-ai/elevenlabs/tts/eleven-v3",
+ "request": {
+  "stability": 0.5,
+  "apply_text_normalization": "auto",
+  "text": "[warm, chatty, fondly exasperated with her husband] 私ではなく、隣のベンチのソローキンさんのところへどうぞ。あの方は、私が研究所に勤めているよりも長く、あなたを待っているんです。",
+  "voice": "Alice",
+  "language_code": "ja"
+ },
+ "fal_request_id": "01a1d75f-9f48-7b63-925c-2825b0108c8d",
+ "hash": "36e82893223c"
+}

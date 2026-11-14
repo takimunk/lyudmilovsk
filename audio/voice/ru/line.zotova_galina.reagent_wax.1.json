@@ -1,0 +1,20 @@
+{
+ "key": "line.zotova_galina.reagent_wax.1",
+ "lang": "ru",
+ "text": "Красное на крыльях точь-в-точь сургуч на старых склянках с реактивами. Вы не здешний, это видно и без справочника.",
+ "speaker": "zotova_galina",
+ "voice": "Alice",
+ "voice_id": "Xb7hH8MSUJpSbSDYk0k2",
+ "voice_design": null,
+ "direction": "[warm, chatty, fondly exasperated with her husband]",
+ "model": "fal-ai/elevenlabs/tts/eleven-v3",
+ "request": {
+  "stability": 0.5,
+  "apply_text_normalization": "auto",
+  "text": "[warm, chatty, fondly exasperated with her husband] Красное на крыльях точь-в-точь сургуч на старых склянках с реактивами. Вы не здешний, это видно и без справочника.",
+  "voice": "Alice",
+  "language_code": "ru"
+ },
+ "fal_request_id": "01a1d75f-b3d5-7d51-946e-3f16c0f76cb8",
+ "hash": "0ba214b05a20"
+}

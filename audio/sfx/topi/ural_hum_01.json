@@ -1,0 +1,25 @@
+{
+ "id": "ural_hum",
+ "variant": 1,
+ "kind": "sfx",
+ "file": "audio/sfx/topi/ural_hum_01.wav",
+ "endpoint": "fal-ai/elevenlabs/sound-effects/v2",
+ "request": {
+  "output_format": "mp3_44100_192",
+  "prompt_influence": 0.45,
+  "text": "A wide smooth river of light flowing fast and silently: a soft airy shimmering hum with countless tiny glassy sparkles and a gentle rushing whoosh, calm and magical, seamless loop, no water splashes, no music",
+  "duration_seconds": 16.0,
+  "loop": true
+ },
+ "hash": "c02a165c336b",
+ "fal_request_id": "01a1d654-ac21-74e0-8307-fc38f36980ae",
+ "seed": null,
+ "source_url": "https://v3b.fal.media/files/b/0ab2568c/5OwAo7QKaCwPBLkwnQpD6_sound_effect.mp3",
+ "created": "2026-11-13T19:14:01Z",
+ "postprocess": "afconvert -> 48 kHz mono; 0.5 s end-to-start cross-fade (seamless loop); RMS -24 dBFS",
+ "sha256": "cdd1e11ca6b257ed8c7714ea93ddcdfd825a01bdf91341f38d541238e3b22f04",
+ "seconds": 15.5,
+ "license": "Generated with ElevenLabs Sound Effects v2 through fal.ai on a paid account (commercial use granted to the requester); released by the project under CC BY 4.0.",
+ "group": "topi",
+ "loop": true
+}

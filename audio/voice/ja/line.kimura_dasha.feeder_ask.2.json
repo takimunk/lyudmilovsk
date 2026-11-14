@@ -1,0 +1,20 @@
+{
+ "key": "line.kimura_dasha.feeder_ask.2",
+ "lang": "ja",
+ "text": "ヴィーカは、うちの中庭にはハトしかいないって言うの。私はサンプルが少なすぎると思う。一週間の皿洗いを賭けてる。",
+ "speaker": "kimura_dasha",
+ "voice": "Charlotte",
+ "voice_id": "XB0fDUnXU5powFXDhCwa",
+ "voice_design": null,
+ "direction": "[a tired physics student, wry, self-ironic]",
+ "model": "fal-ai/elevenlabs/tts/eleven-v3",
+ "request": {
+  "stability": 0.5,
+  "apply_text_normalization": "auto",
+  "text": "[a tired physics student, wry, self-ironic] ヴィーカは、うちの中庭にはハトしかいないって言うの。私はサンプルが少なすぎると思う。一週間の皿洗いを賭けてる。",
+  "voice": "Charlotte",
+  "language_code": "ja"
+ },
+ "fal_request_id": "01a1d5fd-2a68-71c1-b066-f126c6d4b432",
+ "hash": "c3b752fa71f9"
+}

@@ -1,0 +1,20 @@
+{
+ "key": "line.girl_b.overdue_back.3",
+ "lang": "ja",
+ "text": "貸出カードに書いておくね。「科学のため無期限貸出」。そんな欄はないけど、書き足すから。",
+ "speaker": "girl_b",
+ "voice": "Sarah",
+ "voice_id": "EXAVITQu4vr4xnSDxMaL",
+ "voice_design": null,
+ "direction": "[curious, slightly uneasy, conspiratorial]",
+ "model": "fal-ai/elevenlabs/tts/eleven-v3",
+ "request": {
+  "stability": 0.5,
+  "apply_text_normalization": "auto",
+  "text": "[curious, slightly uneasy, conspiratorial] 貸出カードに書いておくね。「科学のため無期限貸出」。そんな欄はないけど、書き足すから。",
+  "voice": "Sarah",
+  "language_code": "ja"
+ },
+ "fal_request_id": "01a1d66c-14bc-71f1-b83a-3e2a3310db32",
+ "hash": "036af9b06b1b"
+}

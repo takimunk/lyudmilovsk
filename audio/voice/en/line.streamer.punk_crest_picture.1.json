@@ -1,0 +1,20 @@
+{
+ "key": "line.streamer.punk_crest_picture.1",
+ "lang": "en",
+ "text": "Chat heard you found a waxwing. Someone sent me a picture: does it really have a crest like a punk's?",
+ "speaker": "streamer",
+ "voice": "Jessica",
+ "voice_id": "cgSgspJ2msm6clMCkdW9",
+ "voice_design": null,
+ "direction": "[bright, fast, half talking to her chat]",
+ "model": "fal-ai/elevenlabs/tts/eleven-v3",
+ "request": {
+  "stability": 0.5,
+  "apply_text_normalization": "auto",
+  "text": "[bright, fast, half talking to her chat] Chat heard you found a waxwing. Someone sent me a picture: does it really have a crest like a punk's?",
+  "voice": "Jessica",
+  "language_code": "en"
+ },
+ "fal_request_id": "01a1d73e-1474-7f40-a556-f06f6d672723",
+ "hash": "8c78a4c28b21"
+}

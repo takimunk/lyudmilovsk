@@ -98,6 +98,7 @@ namespace
 					const TSharedPtr<FJsonObject> S = SV->AsObject();
 					FLyudQuestStage Stage;
 					Stage.Id = *S->GetStringField(TEXT("id"));
+					S->TryGetBoolField(TEXT("no_skip"), Stage.bNoSkip);
 					for (const TSharedPtr<FJsonValue>& OV : S->GetArrayField(TEXT("objectives")))
 					{
 						Stage.Objectives.Add(ParseObjective(OV->AsObject()));
@@ -180,9 +181,32 @@ namespace
 		}
 		if (Want.EndsWith(TEXT("*")))
 		{
-			return Got.StartsWith(Want.LeftChop(1));
+			// a bare "*" is anything (FString::StartsWith is false for an empty prefix)
+			const FString Prefix = Want.LeftChop(1);
+			return Prefix.IsEmpty() || Got.StartsWith(Prefix);
 		}
 		return Want == Got;
+	}
+
+	/**
+	 * Does the stage the quest is on, or one before it, wait for this same event? Then the event is no step done early, even
+	 * if a later stage waits for it too (go to a place, do something, come back to the place: the first arrival is the first
+	 * stage's, and walking through the place again half-way is not the return). Skipping ahead on it would finish the whole
+	 * quest and pay it out on its first step.
+	 */
+	bool WaitedForBefore(const FLyudQuestDef& Def, int32 Stage, FName Event, const FString& Target)
+	{
+		for (int32 Earlier = 0; Earlier <= Stage && Earlier < Def.Stages.Num(); ++Earlier)
+		{
+			for (const FLyudQuestObjective& O : Def.Stages[Earlier].Objectives)
+			{
+				if (O.Event != TEXT("have") && EventMatches(O.Event, Event) && TargetMatches(O.Target, Target))
+				{
+					return true;
+				}
+			}
+		}
+		return false;
 	}
 }
 
@@ -301,6 +325,7 @@ void ULyudQuests::Reset()
 	Progress.Reset();
 	Entries.Reset();
 	Found.Reset();
+	Flags.Reset();
 	Tracked = NAME_None;
 	Queue.Reset();
 	Inside.Reset();
@@ -369,8 +394,45 @@ bool ULyudQuests::Start(FName Quest)
 	}
 	OnNews.Broadcast(ELyudQuestNews::Started, Quest);
 	BeginStage(P, *Def);
+	// P is not used below: Settle may add progress records (a finished stage's reward begins other quests)
+	Settle(Quest);
 	OnChanged.Broadcast();
+	// started from outside an event (a new game, a dialogue, the dev panel) with its first stage already met: P is not used
+	// from here on
+	if (!bHandling && Queue.Num() > 0)
+	{
+		HandleEvent(TEXT("settle"), FString(), 0);
+	}
 	return true;
+}
+
+void ULyudQuests::Settle(FName Quest)
+{
+	const FLyudQuestDef* Def = FindDef(Quest);
+	if (!Def)
+	{
+		return;
+	}
+	// the record is looked up each time round: FinishStage may add records to Progress
+	for (int32 Guard = 0; Guard <= Def->Stages.Num(); ++Guard)
+	{
+		const int32 QI = Progress.IndexOfByPredicate([Quest](const FLyudQuestProgress& X) { return X.Quest == Quest; });
+		if (QI == INDEX_NONE || Progress[QI].State != ELyudQuestState::Active || !Def->Stages.IsValidIndex(Progress[QI].Stage))
+		{
+			return;
+		}
+		const FLyudQuestStage& Begun = Def->Stages[Progress[QI].Stage];
+		bool bMet = Begun.Objectives.Num() > 0 && Progress[QI].Counts.Num() == Begun.Objectives.Num();
+		for (int32 NI = 0; bMet && NI < Begun.Objectives.Num(); ++NI)
+		{
+			bMet = Progress[QI].Counts[NI] >= Begun.Objectives[NI].Need;
+		}
+		if (!bMet)
+		{
+			return;
+		}
+		FinishStage(Progress[QI], *Def);
+	}
 }
 
 void ULyudQuests::BeginStage(FLyudQuestProgress& P, const FLyudQuestDef& Def)
@@ -401,6 +463,18 @@ void ULyudQuests::BeginStage(FLyudQuestProgress& P, const FLyudQuestDef& Def)
 			P.Counts[I] = O.Need;
 		}
 	}
+	// Everything this stage asks for is there already (the items in the pocket, the hero in the place): stages only finish
+	// while an event is handled, so without one of its own the stage stood "done but open" until some unrelated event came.
+	// "settle" is no game event and no objective waits for it; whoever runs the queue next finishes the stage.
+	bool bAllMet = S.Objectives.Num() > 0;
+	for (int32 I = 0; I < S.Objectives.Num(); ++I)
+	{
+		bAllMet &= P.Counts[I] >= S.Objectives[I].Need;
+	}
+	if (bAllMet)
+	{
+		Queue.Emplace(FName(TEXT("settle")), FString(), 0);
+	}
 }
 
 void ULyudQuests::FinishStage(FLyudQuestProgress& P, const FLyudQuestDef& Def)
@@ -409,6 +483,11 @@ void ULyudQuests::FinishStage(FLyudQuestProgress& P, const FLyudQuestDef& Def)
 	{
 		return;
 	}
+	// Called from outside an event (Quest.Advance, a stage set by hand): the rewards below report "get" events, and handling
+	// them right here could finish this same stage a second time or start a quest (Progress grows and P is left pointing
+	// at freed memory). They wait in the queue instead, as they do when a stage finishes inside HandleEvent.
+	const bool bOutsideEvent = !bHandling;
+	bHandling = true;
 	// a stage out of range (an old save, quests.json edited) finishes the nearest real one, so callers still move on
 	P.Stage = FMath::Clamp(P.Stage, 0, Def.Stages.Num() - 1);
 	const FLyudQuestStage& S = Def.Stages[P.Stage];
@@ -439,8 +518,8 @@ void ULyudQuests::FinishStage(FLyudQuestProgress& P, const FLyudQuestDef& Def)
 		OnNews.Broadcast(ELyudQuestNews::Done, Quest);
 		if (Tracked == Quest)
 		{
+			// the next one is chosen after the quests this stage starts: a main quest begun here is the one to show
 			Tracked = NAME_None;
-			Tracked = ShownQuest();
 		}
 	}
 	// P may move if StartQuests adds progress records: copy the list first
@@ -448,6 +527,19 @@ void ULyudQuests::FinishStage(FLyudQuestProgress& P, const FLyudQuestDef& Def)
 	for (const FName& Q : Starts)
 	{
 		Start(Q);
+	}
+	if (Tracked.IsNone())
+	{
+		Tracked = ShownQuest();
+	}
+	if (bOutsideEvent)
+	{
+		// P is not used from here on. "settle" is no game event and no objective waits for it: it only makes the queue run.
+		bHandling = false;
+		if (Queue.Num() > 0)
+		{
+			HandleEvent(TEXT("settle"), FString(), 0);
+		}
 	}
 }
 
@@ -473,10 +565,20 @@ void ULyudQuests::HandleEvent(FName Event, const FString& Target, int32 N)
 				bChanged |= Start(D.Id);
 			}
 		}
+		// a quest that a reward begins while this event is handled does not hear the event that paid the reward
+		// (the talk that ends one quest is not also the first talk of the next)
+		TSet<FName> Live;
+		for (const FLyudQuestProgress& QP : Progress)
+		{
+			if (QP.State == ELyudQuestState::Active)
+			{
+				Live.Add(QP.Quest);
+			}
+		}
 		// the active ones' objectives (by index: a finished stage may add quests to Progress)
 		for (int32 QI = 0; QI < Progress.Num(); ++QI)
 		{
-			if (Progress[QI].State != ELyudQuestState::Active)
+			if (Progress[QI].State != ELyudQuestState::Active || !Live.Contains(Progress[QI].Quest))
 			{
 				continue;
 			}
@@ -486,13 +588,25 @@ void ULyudQuests::HandleEvent(FName Event, const FString& Target, int32 N)
 				continue;
 			}
 			// an event a later stage waits for (a teleport, a load, a step done out of order): the stages before it count as done
-			for (int32 Later = Progress[QI].Stage + 1; Later < Def->Stages.Num(); ++Later)
+			// (never a talk: a quest may send the hero back to the one who gave it, and that talk is not a step done early)
+			for (int32 Later = Progress[QI].Stage + 1; Later < Def->Stages.Num() && !(E.Get<0>() == TEXT("talk")); ++Later)
 			{
+				// a side quest's conversation is never jumped over: what is said there is the quest (the main quest keeps the
+				// old rule, its talks are steps of a walk that a teleport or a load may pass)
+				if (!Def->bMain && Def->Stages[Later - 1].Objectives.ContainsByPredicate([](const FLyudQuestObjective& O) { return O.Event == TEXT("talk") || O.Event == TEXT("bring"); }))
+				{
+					break;
+				}
+				// "no_skip": a stage that must be done itself (the feeder hung in THIS yard before its visitors are counted)
+				if (Def->Stages[Later - 1].bNoSkip)
+				{
+					break;
+				}
 				const bool bWanted = Def->Stages[Later].Objectives.ContainsByPredicate([&E](const FLyudQuestObjective& O)
 				{
 					return O.Event != TEXT("have") && EventMatches(O.Event, E.Get<0>()) && TargetMatches(O.Target, E.Get<1>());
 				});
-				if (bWanted)
+				if (bWanted && !WaitedForBefore(*Def, Progress[QI].Stage, E.Get<0>(), E.Get<1>()))
 				{
 					UE_LOG(LogTemp, Log, TEXT("LyudQuests: %s skips ahead to stage %d on %s %s"), *Def->Id.ToString(), Later, *E.Get<0>().ToString(), *E.Get<1>());
 					while (Progress[QI].State == ELyudQuestState::Active && Progress[QI].Stage < Later)
@@ -531,6 +645,18 @@ void ULyudQuests::HandleEvent(FName Event, const FString& Target, int32 N)
 					C = FMath::Max(0, C - E.Get<2>());
 					bChanged = true;
 				}
+				// "bring <item>@<Npc>": a talk with that person while the pocket holds Need of the item hands them over
+				if (O.Event == TEXT("bring") && E.Get<0>() == TEXT("talk") && C < O.Need)
+				{
+					FString BringItem, BringTo;
+					ULyudInventory* Pocket = ULyudInventory::Get(GetGameInstance()->GetWorld());
+					if (O.Target.Split(TEXT("@"), &BringItem, &BringTo) && BringTo == E.Get<1>() && Pocket && Pocket->Count(*BringItem) >= O.Need)
+					{
+						Pocket->Remove(*BringItem, O.Need);      // (its "use" event waits in the queue)
+						C = O.Need;
+						bChanged = true;
+					}
+				}
 				if (!bWas && C >= O.Need && S.Objectives.Num() > 1)
 				{
 					OnNews.Broadcast(ELyudQuestNews::Objective, Def->Id);
@@ -541,6 +667,8 @@ void ULyudQuests::HandleEvent(FName Event, const FString& Target, int32 N)
 			{
 				FinishStage(Progress[QI], *Def);
 				bChanged = true;
+				// the stage that begins may be met already by what the hero has: finish it now
+				Settle(Def->Id);
 			}
 		}
 	}
@@ -559,6 +687,129 @@ void ULyudQuests::Advance(FName Quest)
 		FinishStage(*P, *Def);
 		OnChanged.Broadcast();
 	}
+}
+
+bool ULyudQuests::SetStage(FName Quest, const FString& Stage)
+{
+	const FLyudQuestDef* Def = FindDef(Quest);
+	if (!Def || Def->Stages.IsEmpty())
+	{
+		return false;
+	}
+	const bool bDone = Stage == TEXT("done");
+	int32 Index = Def->Stages.Num() - 1;
+	if (!bDone)
+	{
+		Index = Def->Stages.IndexOfByPredicate([&Stage](const FLyudQuestStage& S) { return S.Id.ToString() == Stage; });
+		if (Index == INDEX_NONE && Stage.IsNumeric())
+		{
+			Index = FCString::Atoi(*Stage);
+		}
+		if (!Def->Stages.IsValidIndex(Index))
+		{
+			return false;
+		}
+	}
+	{
+		FLyudQuestProgress& P = ProgressOf(Quest);
+		if (P.State == ELyudQuestState::Inactive)
+		{
+			P.Started = Today();
+		}
+		P.State = ELyudQuestState::Active;
+		P.Stage = Index;
+		P.Finished = FDateTime();
+		Tracked = Quest;
+		if (bDone)
+		{
+			// may begin other quests (the stage's reward): P is not used after it
+			FinishStage(P, *Def);
+		}
+		else
+		{
+			OnNews.Broadcast(ELyudQuestNews::Stage, Quest);
+			BeginStage(P, *Def);
+		}
+	}
+	UE_LOG(LogTemp, Log, TEXT("LyudQuests: %s set to stage %s"), *Quest.ToString(), *Stage);
+	OnChanged.Broadcast();
+	return true;
+}
+
+FName ULyudQuests::StageId(FName Quest) const
+{
+	const FLyudQuestProgress* P = FindProgress(Quest);
+	const FLyudQuestDef* Def = FindDef(Quest);
+	if (!P || !Def || P->State == ELyudQuestState::Inactive)
+	{
+		return NAME_None;
+	}
+	if (P->State == ELyudQuestState::Done)
+	{
+		return TEXT("done");
+	}
+	return Def->Stages.IsValidIndex(P->Stage) ? Def->Stages[P->Stage].Id : NAME_None;
+}
+
+FName ULyudQuests::TalkStage(FName Quest, const FString& Npc) const
+{
+	const FName Now = StageId(Quest);
+	if (!Now.IsNone())
+	{
+		// a stage that waits for something to be brought to this person, and the pocket hasn't got it: "<stage>_empty"
+		for (const TPair<const FLyudQuestObjective*, int32>& O : CurrentObjectives(Quest))
+		{
+			FString BringItem, BringTo;
+			if (O.Key->Event == TEXT("bring") && O.Value < O.Key->Need && O.Key->Target.Split(TEXT("@"), &BringItem, &BringTo) && BringTo == Npc)
+			{
+				const ULyudInventory* Pocket = ULyudInventory::Get(GetGameInstance()->GetWorld());
+				if (!Pocket || Pocket->Count(*BringItem) < O.Key->Need)
+				{
+					return FName(*(Now.ToString() + TEXT("_empty")));
+				}
+			}
+		}
+		return Now;
+	}
+	const FLyudQuestDef* Def = FindDef(Quest);
+	if (Def && Def->Stages.Num() > 0 && Def->StartEvent == TEXT("talk") && TargetMatches(Def->StartTarget, Npc))
+	{
+		return Def->Stages[0].Id;
+	}
+	return NAME_None;
+}
+
+void ULyudQuests::DevJump(FName Quest, int32 Stage)
+{
+	const FLyudQuestDef* Def = FindDef(Quest);
+	if (!Def || !Def->Stages.IsValidIndex(Stage))
+	{
+		return;
+	}
+	FLyudQuestProgress& P = ProgressOf(Quest);
+	const bool bWasActive = P.State == ELyudQuestState::Active;
+	P.State = ELyudQuestState::Active;
+	P.Stage = Stage;
+	P.Finished = FDateTime();
+	if (!bWasActive)
+	{
+		P.Started = Today();
+	}
+	Tracked = Quest;
+	OnNews.Broadcast(bWasActive ? ELyudQuestNews::Stage : ELyudQuestNews::Started, Quest);
+	BeginStage(P, *Def);
+	OnChanged.Broadcast();
+}
+
+void ULyudQuests::DevForget(FName Quest)
+{
+	Progress.RemoveAll([Quest](const FLyudQuestProgress& X) { return X.Quest == Quest; });
+	if (Tracked == Quest)
+	{
+		Tracked = NAME_None;
+		Tracked = ShownQuest();
+	}
+	OnChanged.Broadcast();
 }
 
 void ULyudQuests::UpdatePosition(const UObject* WorldContext, const FVector& P)
@@ -663,6 +914,33 @@ static FAutoConsoleCommandWithWorldAndArgs GQuestAdvance(TEXT("Quest.Advance"), 
 		}
 	}));
 
+static FAutoConsoleCommandWithWorldAndArgs GQuestSetStage(TEXT("Quest.SetStage"), TEXT("Quest.SetStage <quest id> <stage id | index | done>: puts a quest on a stage at once (begins it if it has not begun)"),
+	FConsoleCommandWithWorldAndArgsDelegate::CreateLambda([](const TArray<FString>& Args, UWorld* World)
+	{
+		if (ULyudQuests* Q = ULyudQuests::Get(World); Q && Args.Num() > 1)
+		{
+			const bool bOk = Q->SetStage(*Args[0], Args[1]);
+			UE_LOG(LogTemp, Warning, TEXT("QUESTTEST set %s %s: %s"), *Args[0], *Args[1], bOk ? TEXT("ok") : TEXT("no such quest or stage"));
+		}
+	}));
+
+static FAutoConsoleCommand GQuestList(TEXT("Quest.List"), TEXT("Quest.List: logs every quest with its stages and what each objective waits for (QUESTTEST lines)"),
+	FConsoleCommandDelegate::CreateLambda([]()
+	{
+		for (const FLyudQuestDef& D : ULyudQuests::Defs())
+		{
+			for (int32 I = 0; I < D.Stages.Num(); ++I)
+			{
+				FString Objs;
+				for (const FLyudQuestObjective& O : D.Stages[I].Objectives)
+				{
+					Objs += FString::Printf(TEXT(" [%s: %s %s x%d]"), *O.Id.ToString(), *O.Event.ToString(), *O.Target, O.Need);
+				}
+				UE_LOG(LogTemp, Warning, TEXT("QUESTTEST %s %d %s%s"), *D.Id.ToString(), I, *D.Stages[I].Id.ToString(), *Objs);
+			}
+		}
+	}));
+
 static FAutoConsoleCommandWithWorldAndArgs GQuestReset(TEXT("Quest.Reset"), TEXT("Quest.Reset: the quests as a new game starts them"),
 	FConsoleCommandWithWorldAndArgsDelegate::CreateLambda([](const TArray<FString>&, UWorld* World)
 	{
@@ -672,12 +950,20 @@ static FAutoConsoleCommandWithWorldAndArgs GQuestReset(TEXT("Quest.Reset"), TEXT
 		}
 	}));
 
-static FAutoConsoleCommandWithWorldAndArgs GQuestDump(TEXT("Quest.Dump"), TEXT("Quest.Dump: logs every quest's state (QUESTTEST lines)"),
-	FConsoleCommandWithWorldAndArgsDelegate::CreateLambda([](const TArray<FString>&, UWorld* World)
+static FAutoConsoleCommandWithWorldAndArgs GQuestDump(TEXT("Quest.Dump"), TEXT("Quest.Dump [entries]: logs every quest's state, or every journal entry's key in order (QUESTTEST lines)"),
+	FConsoleCommandWithWorldAndArgsDelegate::CreateLambda([](const TArray<FString>& Args, UWorld* World)
 	{
 		const ULyudQuests* Q = ULyudQuests::Get(World);
 		if (!Q)
 		{
+			return;
+		}
+		if (Args.Num() > 0 && Args[0] == TEXT("entries"))
+		{
+			for (int32 EI = 0; EI < Q->Entries.Num(); ++EI)
+			{
+				UE_LOG(LogTemp, Warning, TEXT("QUESTTEST entry %d %s (%s)"), EI, *Q->Entries[EI].Key, *Q->Entries[EI].Quest.ToString());
+			}
 			return;
 		}
 		for (const FLyudQuestDef& D : ULyudQuests::Defs())

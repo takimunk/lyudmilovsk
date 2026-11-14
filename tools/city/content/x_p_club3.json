@@ -1,0 +1,1430 @@
+{
+ "_doc": "The club «Шестерня» (P-CLUB3), second pass: the club library lends (cog_lending, the swap rack, the returns trolley, topic shelves with the club's own pencilled margins), billiards and table tennis by weekday, the model-makers' three-day boat and four-day glider, a photo print that takes four days and a tray that shows the hours, the small stage's rehearsal week, and the running story of the lost chess clock told by boards and lines by `after` (found at the photo lab's second bench; the quest cog_clock waits for look_club, exposure_clock and cog_clock_set). Ids refer to the cog_club module's things; all words in strings/x_p_club3.json (also the words of the quests cog_clock and cog_reader, whose JSON is in the report, not in quests.json).",
+ "shops": {
+  "cog_lending": {
+   "role": "clerk",
+   "goods": [
+    {
+     "item": "bird_guide",
+     "price": 5,
+     "count": 1
+    },
+    {
+     "item": "fish_book",
+     "price": 5,
+     "count": 1
+    },
+    {
+     "item": "magazine_science",
+     "price": 3,
+     "count": 3
+    },
+    {
+     "item": "magazine_travel",
+     "price": 3,
+     "count": 3
+    }
+   ]
+  }
+ },
+ "acts": {
+  "cog_sh_poetry": {
+   "like": "read_poetry",
+   "lines": [
+    "city.read.poetry.*",
+    "city.cog.sh.poetry.*"
+   ],
+   "target": "read_poetry"
+  },
+  "cog_sh_art": {
+   "like": "read_art",
+   "lines": [
+    "city.read.art.*",
+    "city.cog.sh.art.*"
+   ],
+   "target": "read_art"
+  },
+  "cog_sh_local": {
+   "like": "read_local",
+   "lines": [
+    "city.read.local.*",
+    "city.cog.sh.local.*"
+   ],
+   "target": "read_local"
+  },
+  "cog_sh_birds": {
+   "like": "read_birds",
+   "lines": [
+    "city.read.birds.*",
+    "city.cog.sh.birds.*"
+   ],
+   "target": "read_birds"
+  },
+  "cog_sh_sea": {
+   "like": "read_sea",
+   "lines": [
+    "city.read.sea.*",
+    "city.cog.sh.sea.*"
+   ],
+   "target": "read_sea"
+  },
+  "cog_sh_science": {
+   "like": "read_science",
+   "lines": [
+    "city.read.science.*",
+    "city.cog.sh.science.*"
+   ],
+   "target": "read_science"
+  },
+  "cog_cart": {
+   "like": "read_misc",
+   "prompt": "city.cog.cart.prompt",
+   "minutes": 5,
+   "lines": [
+    {
+     "k": "city.cog.cart.1"
+    },
+    {
+     "k": "city.cog.cart.2",
+     "d": "mon"
+    },
+    {
+     "k": "city.cog.cart.3",
+     "d": "fri-sun"
+    },
+    {
+     "k": "city.cog.cart.4",
+     "after": 5
+    }
+   ]
+  },
+  "cog_swap": {
+   "like": "take_any",
+   "prompt": "city.cog.swap.prompt",
+   "minutes": 2,
+   "give": [
+    [
+     "magazine_science",
+     1
+    ]
+   ],
+   "daily": 1,
+   "sound": "paper_rustle",
+   "lines": [
+    {
+     "k": "city.cog.swap.1"
+    },
+    {
+     "k": "city.cog.swap.2",
+     "d": "mon-wed"
+    },
+    {
+     "k": "city.cog.swap.3",
+     "d": "thu-sat"
+    },
+    {
+     "k": "city.cog.swap.4",
+     "d": "sun"
+    }
+   ]
+  },
+  "cog_billiards": {
+   "like": "billiards",
+   "target": "billiards",
+   "lines": [
+    "city.do.billiards.*",
+    {
+     "k": "city.cog.bil.1",
+     "d": "tue,thu",
+     "h": [
+      17,
+      23
+     ]
+    },
+    {
+     "k": "city.cog.bil.2",
+     "d": "fri",
+     "h": [
+      17,
+      23
+     ]
+    },
+    {
+     "k": "city.cog.bil.3",
+     "d": "sat",
+     "h": [
+      12,
+      23
+     ]
+    },
+    {
+     "k": "city.cog.bil.4",
+     "d": "sun",
+     "h": [
+      10,
+      19
+     ]
+    },
+    {
+     "k": "city.cog.bil.5",
+     "after": 8
+    }
+   ]
+  },
+  "cog_tt": {
+   "like": "table_tennis",
+   "target": "table_tennis",
+   "lines": [
+    "city.do.table_tennis.*",
+    {
+     "k": "city.cog.tt.1",
+     "d": "mon,wed",
+     "h": [
+      16,
+      20
+     ]
+    },
+    {
+     "k": "city.cog.tt.2",
+     "d": "tue,thu",
+     "h": [
+      17,
+      22
+     ]
+    },
+    {
+     "k": "city.cog.tt.3",
+     "d": "fri,sat",
+     "h": [
+      17,
+      23
+     ]
+    },
+    {
+     "k": "city.cog.tt.4",
+     "d": "sun",
+     "h": [
+      8,
+      13
+     ]
+    }
+   ]
+  },
+  "cog_league": {
+   "like": "look_misc",
+   "rotate": "daily",
+   "minutes": 3,
+   "lines": [
+    {
+     "k": "city.cog.league.1"
+    },
+    {
+     "k": "city.cog.league.2",
+     "after": 2
+    },
+    {
+     "k": "city.cog.league.3",
+     "after": 5
+    },
+    {
+     "k": "city.cog.league.4",
+     "after": 8
+    },
+    {
+     "k": "city.cog.league.5",
+     "after": 11
+    }
+   ]
+  },
+  "cog_cues": {
+   "like": "use_misc",
+   "prompt": "city.cog.cues.prompt",
+   "minutes": 2,
+   "sound": "billiard_click",
+   "lines": [
+    {
+     "k": "city.cog.cues.1"
+    },
+    {
+     "k": "city.cog.cues.2"
+    },
+    {
+     "k": "city.cog.cues.3",
+     "d": "sat,sun"
+    }
+   ]
+  },
+  "cog_bench_boat": {
+   "like": "workbench",
+   "target": "workbench",
+   "prompt": "city.cog.bench.boat.prompt",
+   "lines": [
+    {
+     "k": "city.cog.bench.boat.1",
+     "every": [
+      3,
+      0
+     ]
+    },
+    {
+     "k": "city.cog.bench.boat.2",
+     "every": [
+      3,
+      1
+     ]
+    },
+    {
+     "k": "city.cog.bench.boat.3",
+     "every": [
+      3,
+      2
+     ]
+    }
+   ]
+  },
+  "cog_bench_glider": {
+   "like": "workbench",
+   "target": "workbench",
+   "prompt": "city.cog.bench.glider.prompt",
+   "lines": [
+    {
+     "k": "city.cog.bench.glider.1",
+     "every": [
+      4,
+      0
+     ]
+    },
+    {
+     "k": "city.cog.bench.glider.2",
+     "every": [
+      4,
+      1
+     ]
+    },
+    {
+     "k": "city.cog.bench.glider.3",
+     "every": [
+      4,
+      2
+     ]
+    },
+    {
+     "k": "city.cog.bench.glider.4",
+     "every": [
+      4,
+      3
+     ]
+    }
+   ]
+  },
+  "cog_draft": {
+   "like": "look_misc",
+   "prompt": "city.cog.draft.prompt",
+   "minutes": 4,
+   "rotate": "daily",
+   "lines": [
+    {
+     "k": "city.cog.draft.1"
+    },
+    {
+     "k": "city.cog.draft.2",
+     "after": 3
+    },
+    {
+     "k": "city.cog.draft.3",
+     "after": 6
+    }
+   ]
+  },
+  "cog_models": {
+   "like": "read_engineering",
+   "target": "read_engineering",
+   "lines": [
+    "city.read.engineering.*",
+    {
+     "k": "city.cog.models.1",
+     "every": [
+      3,
+      0
+     ]
+    },
+    {
+     "k": "city.cog.models.2",
+     "every": [
+      3,
+      1
+     ]
+    },
+    {
+     "k": "city.cog.models.3",
+     "every": [
+      3,
+      2
+     ]
+    },
+    {
+     "k": "city.cog.models.4",
+     "after": 9
+    }
+   ]
+  },
+  "cog_dry": {
+   "like": "look_exhibit",
+   "prompt": "city.cog.dry.prompt",
+   "lines": [
+    {
+     "k": "city.cog.dry.1",
+     "every": [
+      3,
+      0
+     ]
+    },
+    {
+     "k": "city.cog.dry.2",
+     "every": [
+      3,
+      1
+     ]
+    },
+    {
+     "k": "city.cog.dry.3",
+     "every": [
+      3,
+      2
+     ]
+    }
+   ]
+  },
+  "cog_workshop_board": {
+   "like": "look_club",
+   "target": "look_club",
+   "minutes": 4,
+   "lines": [
+    "city.look.club.*",
+    {
+     "k": "city.cog.wsb.1",
+     "every": [
+      3,
+      0
+     ]
+    },
+    {
+     "k": "city.cog.wsb.2",
+     "every": [
+      3,
+      1
+     ]
+    },
+    {
+     "k": "city.cog.wsb.3",
+     "every": [
+      3,
+      2
+     ]
+    },
+    {
+     "k": "city.cog.wsb.4",
+     "after": 3
+    }
+   ]
+  },
+  "cog_darkroom": {
+   "like": "darkroom",
+   "target": "darkroom",
+   "prompt": "city.cog.dark.prompt",
+   "lines": [
+    {
+     "k": "city.cog.dark.1",
+     "every": [
+      4,
+      0
+     ]
+    },
+    {
+     "k": "city.cog.dark.2",
+     "every": [
+      4,
+      1
+     ]
+    },
+    {
+     "k": "city.cog.dark.3",
+     "every": [
+      4,
+      2
+     ]
+    },
+    {
+     "k": "city.cog.dark.4",
+     "every": [
+      4,
+      3
+     ]
+    }
+   ]
+  },
+  "cog_tray": {
+   "like": "look_misc",
+   "prompt": "city.cog.tray.prompt",
+   "minutes": 3,
+   "lines": [
+    {
+     "k": "city.cog.tray.1",
+     "h": [
+      6,
+      11
+     ]
+    },
+    {
+     "k": "city.cog.tray.2",
+     "h": [
+      11,
+      15
+     ]
+    },
+    {
+     "k": "city.cog.tray.3",
+     "h": [
+      15,
+      19
+     ]
+    },
+    {
+     "k": "city.cog.tray.4",
+     "h": [
+      19,
+      6
+     ]
+    }
+   ]
+  },
+  "cog_clock": {
+   "like": "look_misc",
+   "prompt": "city.cog.clock.prompt",
+   "minutes": 2,
+   "sound": "clock_tick",
+   "lines": [
+    {
+     "k": "city.cog.clock.1"
+    },
+    {
+     "k": "city.cog.clock.2",
+     "after": 4
+    },
+    {
+     "k": "city.cog.clock.3",
+     "after": 7
+    }
+   ]
+  },
+  "cog_prints": {
+   "like": "look_exhibit",
+   "prompt": "city.cog.prints.prompt",
+   "lines": [
+    {
+     "k": "city.cog.prints.1",
+     "every": [
+      4,
+      0
+     ]
+    },
+    {
+     "k": "city.cog.prints.2",
+     "every": [
+      4,
+      1
+     ]
+    },
+    {
+     "k": "city.cog.prints.3",
+     "every": [
+      4,
+      2
+     ]
+    },
+    {
+     "k": "city.cog.prints.4",
+     "every": [
+      4,
+      3
+     ]
+    }
+   ]
+  },
+  "cog_stage": {
+   "like": "stage",
+   "target": "stage",
+   "lines": [
+    "city.do.stage.*",
+    {
+     "k": "city.cog.stage.1",
+     "d": "tue,thu",
+     "h": [
+      17,
+      21
+     ]
+    },
+    {
+     "k": "city.cog.stage.2",
+     "d": "sat",
+     "h": [
+      17,
+      22
+     ]
+    },
+    {
+     "k": "city.cog.stage.3",
+     "d": "wed",
+     "h": [
+      16,
+      19
+     ]
+    }
+   ]
+  },
+  "cog_rehearsals": {
+   "like": "look_misc",
+   "prompt": "city.cog.reh.prompt",
+   "rotate": "daily",
+   "minutes": 3,
+   "lines": [
+    {
+     "k": "city.cog.reh.1"
+    },
+    {
+     "k": "city.cog.reh.2",
+     "d": "tue,thu"
+    },
+    {
+     "k": "city.cog.reh.3",
+     "d": "wed"
+    },
+    {
+     "k": "city.cog.reh.4",
+     "d": "sat"
+    },
+    {
+     "k": "city.cog.reh.5",
+     "d": "mon,fri"
+    },
+    {
+     "k": "city.cog.reh.6",
+     "after": 8
+    }
+   ]
+  },
+  "cog_reading_notice": {
+   "like": "look_club",
+   "target": "look_club",
+   "minutes": 4,
+   "lines": [
+    "city.look.club.*",
+    {
+     "k": "city.cog.rd.1",
+     "after": 2
+    },
+    {
+     "k": "city.cog.rd.2",
+     "after": 3
+    },
+    {
+     "k": "city.cog.rd.3",
+     "after": 7
+    }
+   ]
+  },
+  "cog_lounge_notice": {
+   "like": "look_club",
+   "target": "look_club",
+   "minutes": 4,
+   "lines": [
+    "city.look.club.*",
+    {
+     "k": "city.cog.lounge.1"
+    },
+    {
+     "k": "city.cog.lounge.2"
+    },
+    {
+     "k": "city.cog.lounge.3",
+     "after": 4
+    }
+   ]
+  },
+  "cog_stage_notice": {
+   "like": "look_club",
+   "target": "look_club",
+   "minutes": 4,
+   "lines": [
+    "city.look.club.*",
+    {
+     "k": "city.cog.stagen.1"
+    },
+    {
+     "k": "city.cog.stagen.2",
+     "after": 9
+    }
+   ]
+  },
+  "cog_meeting_notice": {
+   "like": "look_club",
+   "target": "look_club",
+   "minutes": 4,
+   "lines": [
+    "city.look.club.*",
+    {
+     "k": "city.cog.meet.1"
+    },
+    {
+     "k": "city.cog.meet.2",
+     "after": 12
+    }
+   ]
+  },
+  "cog_chess_a": {
+   "like": "chess",
+   "target": "chess",
+   "lines": [
+    "city.do.chess.*",
+    {
+     "k": "city.cog.chess.1"
+    },
+    {
+     "k": "city.cog.chess.2",
+     "d": "thu",
+     "h": [
+      17,
+      22
+     ]
+    },
+    {
+     "k": "city.cog.chess.3",
+     "after": 3
+    }
+   ]
+  },
+  "cog_chess_b": {
+   "like": "chess",
+   "target": "chess",
+   "lines": [
+    "city.do.chess.*",
+    {
+     "k": "city.cog.chess.4",
+     "after": 7
+    },
+    {
+     "k": "city.cog.chess.5",
+     "after": 7
+    }
+   ]
+  },
+  "cog_clock_set": {
+   "like": "look_misc",
+   "prompt": "city.cog.place.prompt",
+   "minutes": 2,
+   "sound": "chess_piece",
+   "lines": [
+    {
+     "k": "city.cog.place.1"
+    },
+    {
+     "k": "city.cog.place.2",
+     "after": 5
+    },
+    {
+     "k": "city.cog.place.3",
+     "after": 7
+    }
+   ]
+  },
+  "rd_cog_model_manual": {
+   "like": "read_engineering",
+   "target": "read_engineering",
+   "read": {
+    "texts": [
+     "cog_model_manual"
+    ]
+   },
+   "sound": "page_turn"
+  },
+  "rd_cog_photo_guide": {
+   "like": "look_exhibit",
+   "target": "look_exhibit",
+   "prompt": "city.act.read.prompt",
+   "read": {
+    "texts": [
+     "cog_photo_guide"
+    ]
+   },
+   "sound": "page_turn"
+  },
+  "rd_cog_chess_ladder": {
+   "like": "read_chess",
+   "target": "read_chess",
+   "read": {
+    "texts": [
+     "cog_chess_ladder"
+    ]
+   },
+   "sound": "page_turn"
+  },
+  "cog_tv": {
+   "like": "tv",
+   "target": "tv",
+   "lines": [
+    "city.do.tv.*",
+    {
+     "k": "city.cog.tv.1",
+     "h": [
+      7,
+      10
+     ]
+    },
+    {
+     "k": "city.cog.tv.2",
+     "h": [
+      19,
+      22
+     ]
+    },
+    {
+     "k": "city.cog.tv.3",
+     "h": [
+      22,
+      7
+     ]
+    },
+    {
+     "k": "city.cog.tv.4",
+     "d": "sun",
+     "h": [
+      10,
+      14
+     ]
+    }
+   ]
+  },
+  "cog_blackboard": {
+   "like": "blackboard",
+   "target": "blackboard",
+   "lines": [
+    "city.do.blackboard.*",
+    {
+     "k": "city.cog.board.1",
+     "d": "thu"
+    },
+    {
+     "k": "city.cog.board.2",
+     "d": "mon"
+    },
+    {
+     "k": "city.cog.board.3",
+     "h": [
+      17,
+      22
+     ]
+    },
+    {
+     "k": "city.cog.board.4",
+     "festival": "any"
+    }
+   ]
+  },
+  "cog_dance": {
+   "like": "dance",
+   "target": "dance",
+   "lines": [
+    "city.do.dance.*",
+    {
+     "k": "city.cog.dance.1",
+     "d": "sat",
+     "h": [
+      18,
+      24
+     ]
+    },
+    {
+     "k": "city.cog.dance.2",
+     "h": [
+      10,
+      16
+     ]
+    },
+    {
+     "k": "city.cog.dance.3",
+     "festival": "new_year"
+    },
+    {
+     "k": "city.cog.dance.4",
+     "once": true
+    }
+   ]
+  },
+  "cog_piano": {
+   "like": "piano",
+   "target": "piano",
+   "lines": [
+    "city.do.piano.*",
+    {
+     "k": "city.cog.piano.1",
+     "h": [
+      9,
+      13
+     ]
+    },
+    {
+     "k": "city.cog.piano.2",
+     "d": "wed",
+     "h": [
+      17,
+      21
+     ]
+    },
+    {
+     "k": "city.cog.piano.3",
+     "weather": "rain"
+    },
+    {
+     "k": "city.cog.piano.4",
+     "once": true
+    }
+   ]
+  },
+  "cog_catalogue": {
+   "like": "read_local",
+   "target": "read_local",
+   "lines": [
+    "city.read.local.*",
+    {
+     "k": "city.cog.catalogue.1",
+     "h": [
+      10,
+      13
+     ]
+    },
+    {
+     "k": "city.cog.catalogue.2",
+     "d": "sat,sun"
+    },
+    {
+     "k": "city.cog.catalogue.3",
+     "once": true
+    }
+   ]
+  }
+ },
+ "rules": {
+  "P-CLUB3/library_desk": {
+   "topics": [
+    "@x_c_lending"
+   ]
+  },
+  "P-CLUB3/buffet_counter": {
+   "topics": [
+    "@x_c_buffet"
+   ]
+  },
+  "P-CLUB3/cloak": {
+   "topics": [
+    "@x_c_cloak"
+   ]
+  },
+  "cog_club/stack_r_1": {
+   "act": "cog_sh_poetry"
+  },
+  "cog_club/stack_r_2": {
+   "act": "cog_sh_art"
+  },
+  "cog_club/stack_r_3": {
+   "act": "rd_cog_chess_ladder"
+  },
+  "cog_club/stack_r_4": {
+   "act": "rd_cog_model_manual"
+  },
+  "cog_club/stack_l_1": {
+   "act": "cog_sh_local"
+  },
+  "cog_club/stack_l_2": {
+   "act": "cog_sh_birds"
+  },
+  "cog_club/stack_l_3": {
+   "act": "cog_sh_sea"
+  },
+  "cog_club/stack_l_4": {
+   "act": "cog_sh_science"
+  },
+  "cog_club/book_cart": {
+   "act": "cog_cart"
+  },
+  "cog_club/swap_shelf": {
+   "act": "cog_swap"
+  },
+  "cog_club/billiards_1": {
+   "act": "cog_billiards"
+  },
+  "cog_club/table_tennis_1": {
+   "act": "cog_tt"
+  },
+  "cog_club/league_board": {
+   "act": "cog_league"
+  },
+  "cog_club/cue_rack": {
+   "act": "cog_cues"
+  },
+  "cog_club/workbench_1": {
+   "act": "cog_bench_boat"
+  },
+  "cog_club/workbench_2": {
+   "act": "cog_bench_glider"
+  },
+  "cog_club/drafting_board": {
+   "act": "cog_draft"
+  },
+  "cog_club/model_shelf": {
+   "act": "cog_models"
+  },
+  "cog_club/drying_shelf": {
+   "act": "cog_dry"
+  },
+  "cog_club/workshop_board": {
+   "act": "cog_workshop_board"
+  },
+  "cog_club/darkroom_bench": {
+   "act": "cog_darkroom"
+  },
+  "cog_club/developing_tray": {
+   "act": "cog_tray"
+  },
+  "cog_club/exposure_clock": {
+   "act": "cog_clock"
+  },
+  "cog_club/drying_line": {
+   "act": "cog_prints"
+  },
+  "cog_club/stage": {
+   "act": "cog_stage"
+  },
+  "cog_club/rehearsal_board": {
+   "act": "cog_rehearsals"
+  },
+  "cog_club/club_notices": {
+   "act": "cog_reading_notice"
+  },
+  "cog_club/lounge_board": {
+   "act": "cog_lounge_notice"
+  },
+  "cog_club/stage_board": {
+   "act": "cog_stage_notice"
+  },
+  "cog_club/meeting_board": {
+   "act": "cog_meeting_notice"
+  },
+  "cog_club/chess_0": {
+   "act": "cog_chess_a"
+  },
+  "cog_club/chess_1": {
+   "act": "cog_chess_b"
+  },
+  "cog_club/clock_place": {
+   "act": "cog_clock_set"
+  },
+  "P-CLUB3/photo_board": {
+   "act": "rd_cog_photo_guide"
+  },
+  "P-CLUB3/lounge_tv": {
+   "act": "cog_tv"
+  },
+  "P-CLUB3/club_blackboard": {
+   "act": "cog_blackboard"
+  },
+  "P-CLUB3/stage_dance": {
+   "act": "cog_dance"
+  },
+  "P-CLUB3/stage_piano": {
+   "act": "cog_piano"
+  },
+  "P-CLUB3/card_catalogue": {
+   "act": "cog_catalogue"
+  },
+  "P-CLUB3/read_table_2_a": {
+   "act": "study_desk"
+  },
+  "P-CLUB3/read_table_2_b": {
+   "act": "study_desk"
+  }
+ },
+ "quests": [
+  {
+   "id": "cog_clock",
+   "kind": "side",
+   "start_on": {
+    "event": "visit",
+    "target": "P-CLUB3"
+   },
+   "stages": [
+    {
+     "id": "look",
+     "objectives": [
+      {
+       "id": "notices",
+       "event": "do",
+       "target": "look_club"
+      }
+     ]
+    },
+    {
+     "id": "find",
+     "objectives": [
+      {
+       "id": "clock",
+       "event": "do",
+       "target": "cog_clock"
+      }
+     ]
+    },
+    {
+     "id": "set",
+     "objectives": [
+      {
+       "id": "place",
+       "event": "do",
+       "target": "cog_clock_set"
+      }
+     ],
+     "reward": {
+      "items": {
+       "tea": 1,
+       "cookies": 1
+      }
+     }
+    }
+   ]
+  },
+  {
+   "id": "cog_reader",
+   "kind": "side",
+   "start_on": {
+    "event": "do",
+    "target": "read_chess"
+   },
+   "stages": [
+    {
+     "id": "read",
+     "objectives": [
+      {
+       "id": "read_chess",
+       "event": "do",
+       "target": "read_chess"
+      },
+      {
+       "id": "read_engineering",
+       "event": "do",
+       "target": "read_engineering"
+      },
+      {
+       "id": "read_sea",
+       "event": "do",
+       "target": "read_sea"
+      }
+     ]
+    },
+    {
+     "id": "swap",
+     "objectives": [
+      {
+       "id": "take",
+       "event": "do",
+       "target": "cog_swap"
+      }
+     ]
+    },
+    {
+     "id": "cart",
+     "objectives": [
+      {
+       "id": "look",
+       "event": "do",
+       "target": "cog_cart"
+      }
+     ],
+     "reward": {
+      "items": {
+       "postcard": 2
+      }
+     }
+    }
+   ]
+  }
+ ],
+ "texts": {
+  "cog_model_manual": {
+   "title": "city.xtx.cog_model_manual.title",
+   "kind": "book",
+   "minutes": 3,
+   "collect": "reading/cog_model_manual",
+   "pages": [
+    "city.xtx.cog_model_manual.1",
+    "city.xtx.cog_model_manual.2",
+    "city.xtx.cog_model_manual.3",
+    [
+     "city.cog.sh.eng.2",
+     "city.cog.sh.eng.1"
+    ]
+   ]
+  },
+  "cog_photo_guide": {
+   "title": "city.xtx.cog_photo_guide.title",
+   "kind": "notice",
+   "minutes": 2,
+   "collect": "reading/cog_photo_guide",
+   "pages": [
+    "city.xtx.cog_photo_guide.1",
+    "city.xtx.cog_photo_guide.2",
+    "city.xtx.cog_photo_guide.3",
+    "city.xtx.cog_photo_guide.4",
+    [
+     {
+      "k": "city.xtx.cog_photo_guide.p5_1",
+      "every": [
+       4,
+       0
+      ]
+     },
+     {
+      "k": "city.xtx.cog_photo_guide.p5_2",
+      "every": [
+       4,
+       1
+      ]
+     },
+     {
+      "k": "city.xtx.cog_photo_guide.p5_3",
+      "every": [
+       4,
+       2
+      ]
+     },
+     {
+      "k": "city.xtx.cog_photo_guide.p5_4",
+      "every": [
+       4,
+       3
+      ]
+     }
+    ]
+   ]
+  },
+  "cog_chess_ladder": {
+   "title": "city.xtx.cog_chess_ladder.title",
+   "kind": "ledger",
+   "minutes": 2,
+   "collect": "reading/cog_chess_ladder",
+   "pages": [
+    "city.xtx.cog_chess_ladder.1",
+    "city.xtx.cog_chess_ladder.2",
+    "city.xtx.cog_chess_ladder.3",
+    [
+     {
+      "k": "city.xtx.cog_chess_ladder.p4_1",
+      "d": "thu"
+     },
+     {
+      "k": "city.cog.sh.chess.1",
+      "d": "mon-wed,fri-sun"
+     },
+     {
+      "k": "city.cog.sh.chess.2",
+      "d": "mon-wed,fri-sun"
+     }
+    ]
+   ]
+  }
+ },
+ "topic_sets": {
+  "x_c_hatch": [
+   {
+    "id": "cog.lh.deposit",
+    "k": "city.ask.cog.lh.deposit",
+    "lines": [
+     "city.ask.cog.lh.deposit.1",
+     {
+      "k": "city.ask.cog.lh.deposit.2",
+      "d": "mon"
+     },
+     {
+      "k": "city.ask.cog.lh.deposit.3",
+      "d": "fri,sat,sun"
+     }
+    ],
+    "gives": {
+     "collect": "staff/cog"
+    }
+   },
+   {
+    "id": "cog.lh.swap",
+    "k": "city.ask.cog.lh.swap",
+    "lines": [
+     "city.ask.cog.lh.swap.1",
+     {
+      "k": "city.ask.cog.lh.swap.2",
+      "d": "mon"
+     },
+     {
+      "k": "city.ask.cog.lh.swap.3",
+      "did": "cog_swap"
+     }
+    ],
+    "gives": {
+     "collect": "staff/cog"
+    }
+   },
+   {
+    "id": "cog.lh.clock",
+    "k": "city.ask.cog.lh.clock",
+    "lines": [
+     "city.ask.cog.lh.clock.1",
+     {
+      "k": "city.ask.cog.lh.clock.2",
+      "did": "cog_clock_set"
+     }
+    ],
+    "gives": {
+     "collect": "staff/cog"
+    }
+   },
+   {
+    "id": "cog.lh.radio",
+    "k": "city.ask.cog.lh.radio",
+    "lines": [
+     "city.ask.cog.lh.radio.1",
+     {
+      "k": "city.ask.cog.lh.radio.2",
+      "d": "thu"
+     }
+    ],
+    "gives": {
+     "collect": "staff/cog"
+    }
+   }
+  ],
+  "x_c_lending": [
+   {
+    "id": "cog.ld.ladder",
+    "k": "city.ask.cog.ld.ladder",
+    "lines": [
+     "city.ask.cog.ld.ladder.1",
+     {
+      "k": "city.ask.cog.ld.ladder.2",
+      "d": "thu"
+     },
+     {
+      "k": "city.ask.cog.ld.ladder.3",
+      "count": [
+       "chess_wins",
+       1
+      ]
+     }
+    ],
+    "gives": {
+     "collect": "staff/cog"
+    }
+   },
+   {
+    "id": "cog.ld.cat",
+    "k": "city.ask.cog.ld.cat",
+    "lines": [
+     "city.ask.cog.ld.cat.1",
+     {
+      "k": "city.ask.cog.ld.cat.2",
+      "h": [
+       12,
+       21
+      ]
+     }
+    ],
+    "gives": {
+     "collect": "staff/cog"
+    }
+   }
+  ],
+  "x_c_buffet": [
+   {
+    "id": "cog.bf.tea",
+    "k": "city.ask.cog.bf.tea",
+    "lines": [
+     "city.ask.cog.bf.tea.1",
+     {
+      "k": "city.ask.cog.bf.tea.2",
+      "d": "sat",
+      "h": [
+       17,
+       21
+      ]
+     }
+    ],
+    "gives": {
+     "collect": "staff/buffet"
+    }
+   },
+   {
+    "id": "cog.bf.cup",
+    "k": "city.ask.cog.bf.cup",
+    "lines": [
+     "city.ask.cog.bf.cup.1"
+    ],
+    "gives": {
+     "collect": "staff/buffet"
+    }
+   },
+   {
+    "id": "cog.bf.pingpong",
+    "k": "city.ask.cog.bf.pingpong",
+    "lines": [
+     "city.ask.cog.bf.pingpong.1",
+     {
+      "k": "city.ask.cog.bf.pingpong.2",
+      "did": "table_tennis"
+     }
+    ],
+    "gives": {
+     "collect": "staff/buffet"
+    }
+   }
+  ],
+  "x_c_cloak": [
+   {
+    "id": "cog.cl.glider",
+    "k": "city.ask.cog.cl.glider",
+    "lines": [
+     "city.ask.cog.cl.glider.1",
+     "city.ask.cog.cl.glider.2"
+    ],
+    "gives": {
+     "collect": "staff/cloak"
+    }
+   },
+   {
+    "id": "cog.cl.where",
+    "k": "city.ask.cog.cl.where",
+    "lines": [
+     "city.ask.cog.cl.where.1",
+     {
+      "k": "city.ask.cog.cl.where.2",
+      "h": [
+       17,
+       21
+      ]
+     }
+    ],
+    "gives": {
+     "collect": "staff/cloak"
+    }
+   }
+  ]
+ },
+ "topics": {
+  "buy_cog_lending": [
+   "@x_c_hatch"
+  ]
+ }
+}

@@ -1,0 +1,20 @@
+{
+ "key": "line.belov_misha.key_on_string.1",
+ "lang": "en",
+ "text": "I wear the key on a string round my neck now. Like in first grade.",
+ "speaker": "belov_misha",
+ "voice": "Liam",
+ "voice_id": "TX3LPaxmHKxFdv7VOQHJ",
+ "voice_design": null,
+ "direction": "[easygoing, amused, a young technician, a little self-ironic]",
+ "model": "fal-ai/elevenlabs/tts/eleven-v3",
+ "request": {
+  "stability": 0.5,
+  "apply_text_normalization": "auto",
+  "text": "[easygoing, amused, a young technician, a little self-ironic] I wear the key on a string round my neck now. Like in first grade.",
+  "voice": "Liam",
+  "language_code": "en"
+ },
+ "fal_request_id": "01a1d6e1-9fde-7773-a4f6-6eb3b2a684c1",
+ "hash": "3b46d7d78572"
+}

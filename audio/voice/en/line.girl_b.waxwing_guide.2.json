@@ -1,0 +1,20 @@
+{
+ "key": "line.girl_b.waxwing_guide.2",
+ "lang": "en",
+ "text": "Just take it. He wrote it himself and told me to give it to anyone who asks about birds.",
+ "speaker": "girl_b",
+ "voice": "Sarah",
+ "voice_id": "EXAVITQu4vr4xnSDxMaL",
+ "voice_design": null,
+ "direction": "[curious, slightly uneasy, conspiratorial]",
+ "model": "fal-ai/elevenlabs/tts/eleven-v3",
+ "request": {
+  "stability": 0.5,
+  "apply_text_normalization": "auto",
+  "text": "[curious, slightly uneasy, conspiratorial] Just take it. He wrote it himself and told me to give it to anyone who asks about birds.",
+  "voice": "Sarah",
+  "language_code": "en"
+ },
+ "fal_request_id": "01a1d589-bd61-71c3-acbb-c5bb8ca501ce",
+ "hash": "8d445b75eb97"
+}

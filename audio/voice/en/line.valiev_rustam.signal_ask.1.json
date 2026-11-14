@@ -1,0 +1,20 @@
+{
+ "key": "line.valiev_rustam.signal_ask.1",
+ "lang": "en",
+ "text": "You get up to the club now and then, don't you? I need someone with a lamp and no unnecessary questions.",
+ "speaker": "valiev_rustam",
+ "voice": "Roger",
+ "voice_id": "CwhRBWXzGAHq8TQ4Fs17",
+ "voice_design": null,
+ "direction": "[confident, dry, matter-of-fact engineer]",
+ "model": "fal-ai/elevenlabs/tts/eleven-v3",
+ "request": {
+  "stability": 0.5,
+  "apply_text_normalization": "auto",
+  "text": "[confident, dry, matter-of-fact engineer] You get up to the club now and then, don't you? I need someone with a lamp and no unnecessary questions.",
+  "voice": "Roger",
+  "language_code": "en"
+ },
+ "fal_request_id": "01a1d674-2663-78a0-af2c-687a664bf4cb",
+ "hash": "71750227157b"
+}

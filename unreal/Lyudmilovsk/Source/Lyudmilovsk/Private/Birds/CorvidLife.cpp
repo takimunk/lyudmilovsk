@@ -1,5 +1,6 @@
 #include "Birds/CorvidLife.h"
 
+#include "NpcDialogue.h"
 #include "BirdCorvid.h"
 #include "BirdSim.h"
 #include "Birds/BirdActor.h"
@@ -269,7 +270,7 @@ void UCorvidLifeSubsystem::UpdatePlayer()
 	if (Hero && PC && UI && !UI->IsOpen() && !W.Player.bClaimedBird)
 	{
 		Best = Pickable();
-		if (Best >= 0 && PC->WasInputKeyJustPressed(EKeys::E))
+		if (Best >= 0 && ANpcTalkDirector::UsePressed(PC))
 		{
 			Take(Best);
 			Best = -1;

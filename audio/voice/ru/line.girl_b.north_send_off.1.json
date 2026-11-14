@@ -1,0 +1,20 @@
+{
+ "key": "line.girl_b.north_send_off.1",
+ "lang": "ru",
+ "text": "Уже на север? Далеко же. Если увидите свиристеля, сначала расскажите Сорокину, а потом мне.",
+ "speaker": "girl_b",
+ "voice": "Sarah",
+ "voice_id": "EXAVITQu4vr4xnSDxMaL",
+ "voice_design": null,
+ "direction": "[curious, slightly uneasy, conspiratorial]",
+ "model": "fal-ai/elevenlabs/tts/eleven-v3",
+ "request": {
+  "stability": 0.5,
+  "apply_text_normalization": "auto",
+  "text": "[curious, slightly uneasy, conspiratorial] Уже на север? Далеко же. Если увидите свиристеля, сначала расскажите Сорокину, а потом мне.",
+  "voice": "Sarah",
+  "language_code": "ru"
+ },
+ "fal_request_id": "01a1d6d3-ae14-7543-81bf-5c1d2caf5db2",
+ "hash": "6efc731e2ff2"
+}

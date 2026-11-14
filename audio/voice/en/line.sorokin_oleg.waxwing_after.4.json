@@ -1,0 +1,20 @@
+{
+ "key": "line.sorokin_oleg.waxwing_after.4",
+ "lang": "en",
+ "text": "Take these. Mealworms and peanuts, from my own stock. You need them more than I do.",
+ "speaker": "sorokin_oleg",
+ "voice": "River",
+ "voice_id": "SAz9YHcvj6GT2YYXdXww",
+ "voice_design": null,
+ "direction": "[a retired scholar, calm, dry humour, slower, gentle]",
+ "model": "fal-ai/elevenlabs/tts/eleven-v3",
+ "request": {
+  "stability": 0.5,
+  "apply_text_normalization": "auto",
+  "text": "[a retired scholar, calm, dry humour, slower, gentle] Take these. Mealworms and peanuts, from my own stock. You need them more than I do.",
+  "voice": "River",
+  "language_code": "en"
+ },
+ "fal_request_id": "01a1d58b-14c7-77c2-b3e4-9281ac405979",
+ "hash": "c1e089fd2c46"
+}

@@ -1,0 +1,20 @@
+{
+ "key": "line.korneev_ivan.margin_bird.1",
+ "lang": "ja",
+ "text": "オレグのやつ、新聞の余白に、チェスの問題の隣に鳥を描きおった。ニーナは文句を言うが、わしは消さん。",
+ "speaker": "korneev_ivan",
+ "voice": "Bill",
+ "voice_id": "pqHfZKP75CvOlQylNhV4",
+ "voice_design": null,
+ "direction": "[an old man, slow, a little gravelly, contented, a quiet joke at the end]",
+ "model": "fal-ai/elevenlabs/tts/eleven-v3",
+ "request": {
+  "stability": 0.5,
+  "apply_text_normalization": "auto",
+  "text": "[an old man, slow, a little gravelly, contented, a quiet joke at the end] オレグのやつ、新聞の余白に、チェスの問題の隣に鳥を描きおった。ニーナは文句を言うが、わしは消さん。",
+  "voice": "Bill",
+  "language_code": "ja"
+ },
+ "fal_request_id": "01a1d75e-2971-7a63-9bd2-5c9eab79da5b",
+ "hash": "3bfce3d62193"
+}

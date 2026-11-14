@@ -1,0 +1,20 @@
+{
+ "key": "line.clerk.goldfinch_five_fills.1",
+ "lang": "ja",
+ "text": "ゴシキヒワですね。赤、白、黒、黄、ベージュ。塗りつぶし五色、無駄が一つもない。",
+ "speaker": "clerk",
+ "voice": "Callum",
+ "voice_id": "N2lVS1w4EtoT3dr4eOWO",
+ "voice_design": null,
+ "direction": "[polite, quiet, precise, absorbed in his work]",
+ "model": "fal-ai/elevenlabs/tts/eleven-v3",
+ "request": {
+  "stability": 0.5,
+  "apply_text_normalization": "auto",
+  "text": "[polite, quiet, precise, absorbed in his work] ゴシキヒワですね。赤、白、黒、黄、ベージュ。塗りつぶし五色、無駄が一つもない。",
+  "voice": "Callum",
+  "language_code": "ja"
+ },
+ "fal_request_id": "01a1d737-4663-76b3-99dc-7ae47d339616",
+ "hash": "99c1c99e9b20"
+}

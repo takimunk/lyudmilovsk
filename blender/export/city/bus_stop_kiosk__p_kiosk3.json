@@ -1,0 +1,408 @@
+{
+ "type": "bus_stop_kiosk",
+ "info": {
+  "name_ru": "Остановка-киоск",
+  "name_en": "Bus-stop Kiosk",
+  "style": "late-soviet expressionism",
+  "use": "public",
+  "inspired_by": "Soviet concrete bus stops of the 1960s-80s (folded-plate roofs, mosaic panels, wave walls)"
+ },
+ "frame": "x along the street front, y into the plot, z up; origin on the front line, mid-frontage, z 0 = ground at the main entrance",
+ "footprint": [
+  [
+   -3.0,
+   0.0
+  ],
+  [
+   3.0,
+   0.0
+  ],
+  [
+   3.0,
+   5.0
+  ],
+  [
+   -3.0,
+   5.0
+  ]
+ ],
+ "height": 4.95,
+ "entrances": [
+  {
+   "id": "staff",
+   "pos": [
+    2.8,
+    3.55,
+    0.0
+   ],
+   "yaw": 90.0,
+   "width": 0.9,
+   "height": 2.0,
+   "kind": "service",
+   "leaves": 1,
+   "to": null
+  }
+ ],
+ "spots": [
+  {
+   "id": "bench",
+   "kind": "bench",
+   "pos": [
+    -1.25,
+    3.7,
+    0.0
+   ],
+   "yaw": 0.0
+  },
+  {
+   "id": "counter",
+   "kind": "counter",
+   "pos": [
+    1.5,
+    3.2,
+    0.0
+   ],
+   "yaw": 0.0
+  },
+  {
+   "id": "stand",
+   "kind": "stand",
+   "pos": [
+    1.4,
+    1.3,
+    0.0
+   ],
+   "yaw": 180.0
+  },
+  {
+   "id": "wait",
+   "kind": "stand",
+   "pos": [
+    -1.9,
+    2.4,
+    0.0
+   ],
+   "yaw": 0.0
+  },
+  {
+   "id": "weigh",
+   "kind": "stand",
+   "pos": [
+    -1.9,
+    1.9,
+    0.0
+   ],
+   "yaw": 0.0
+  },
+  {
+   "id": "staff_seller",
+   "kind": "work",
+   "pos": [
+    1.9,
+    3.25,
+    0.0
+   ],
+   "yaw": 0.0
+  },
+  {
+   "id": "seat_k3",
+   "kind": "seat",
+   "pos": [
+    -2.6,
+    3.2,
+    0.0
+   ],
+   "yaw": 90.0
+  }
+ ],
+ "lamps": [
+  {
+   "pos": [
+    1.7,
+    3.3,
+    2.2
+   ],
+   "lumens": 480,
+   "colour": "#FFD2A0",
+   "kind": "public",
+   "radius": 4.5
+  },
+  {
+   "pos": [
+    -1.5,
+    2.6,
+    2.75
+   ],
+   "lumens": 420,
+   "colour": "#FFE2B8",
+   "kind": "public",
+   "radius": 4.0
+  }
+ ],
+ "things": [
+  {
+   "id": "shelter_bench",
+   "kind": "seat",
+   "pos": [
+    -1.25,
+    3.95,
+    0.45
+   ],
+   "yaw": 0.0,
+   "props": {
+    "height": 0.45
+   }
+  },
+  {
+   "id": "stop_notices",
+   "kind": "board",
+   "pos": [
+    -2.6,
+    4.15,
+    1.45
+   ],
+   "yaw": 0.0,
+   "props": {
+    "topic": "lost"
+   }
+  },
+  {
+   "id": "timetable",
+   "kind": "board",
+   "pos": [
+    -2.15,
+    1.7,
+    1.5
+   ],
+   "yaw": 0.0,
+   "props": {
+    "topic": "timetable"
+   }
+  },
+  {
+   "id": "counter",
+   "kind": "counter",
+   "pos": [
+    1.75,
+    2.08,
+    1.02
+   ],
+   "yaw": 0.0,
+   "props": {
+    "role": "seller",
+    "service": "newspapers",
+    "shop": "kiosk_news"
+   }
+  },
+  {
+   "id": "postcards",
+   "kind": "take",
+   "pos": [
+    2.15,
+    2.08,
+    1.05
+   ],
+   "yaw": 0.0,
+   "props": {
+    "item": "postcard"
+   }
+  },
+  {
+   "id": "price_board",
+   "kind": "board",
+   "pos": [
+    0.57,
+    2.55,
+    1.45
+   ],
+   "yaw": 270.0,
+   "props": {
+    "topic": "prices"
+   }
+  },
+  {
+   "id": "paper_rack",
+   "kind": "take",
+   "pos": [
+    0.36,
+    3.9,
+    1.0
+   ],
+   "yaw": 270.0,
+   "props": {
+    "item": "daily_paper"
+   }
+  },
+  {
+   "id": "stop_bin",
+   "kind": "board",
+   "pos": [
+    -0.42,
+    2.5,
+    0.8
+   ],
+   "yaw": 0.0,
+   "props": {
+    "topic": "bin"
+   }
+  },
+  {
+   "id": "k3_pipes",
+   "kind": "board",
+   "pos": [
+    2.84,
+    2.7,
+    1.3
+   ],
+   "yaw": 90.0,
+   "props": {
+    "topic": "pipes"
+   }
+  },
+  {
+   "id": "k3_jar",
+   "kind": "board",
+   "pos": [
+    0.93,
+    2.06,
+    1.12
+   ],
+   "yaw": 0.0,
+   "props": {
+    "topic": "matches"
+   }
+  },
+  {
+   "id": "k3_scales",
+   "kind": "machine",
+   "pos": [
+    -1.9,
+    2.45,
+    1.2
+   ],
+   "yaw": 0.0,
+   "props": {
+    "what": "scales"
+   }
+  },
+  {
+   "id": "stop_clock",
+   "kind": "board",
+   "pos": [
+    0.52,
+    3.2,
+    2.22
+   ],
+   "yaw": 270.0,
+   "props": {
+    "topic": "clock"
+   }
+  },
+  {
+   "id": "stop_switch",
+   "kind": "machine",
+   "pos": [
+    2.68,
+    2.16,
+    1.33
+   ],
+   "yaw": 0.0,
+   "props": {
+    "what": "switch",
+    "switch": "room"
+   }
+  },
+  {
+   "id": "stop_stamp",
+   "kind": "machine",
+   "pos": [
+    2.68,
+    2.14,
+    0.98
+   ],
+   "yaw": 0.0,
+   "props": {
+    "what": "stamp"
+   }
+  },
+  {
+   "id": "k3_chair",
+   "kind": "seat",
+   "pos": [
+    -2.6,
+    3.2,
+    0.45
+   ],
+   "yaw": 90.0,
+   "props": {
+    "height": 0.45,
+    "cone": 90
+   }
+  },
+  {
+   "id": "k3_lotto",
+   "kind": "board",
+   "pos": [
+    0.78,
+    2.17,
+    1.5
+   ],
+   "yaw": 0.0,
+   "props": {
+    "topic": "lotto"
+   }
+  }
+ ],
+ "flats": [],
+ "windows": [
+  {
+   "slot": 0,
+   "id": "pub/w1",
+   "flat": null,
+   "kind": "public",
+   "centre": [
+    1.75,
+    2.2,
+    1.575
+   ],
+   "normal": [
+    0.0,
+    -1.0,
+    0.0
+   ],
+   "size": [
+    1.6,
+    1.15
+   ],
+   "shape": "rect"
+  },
+  {
+   "slot": 1,
+   "id": "pub/w2",
+   "flat": null,
+   "kind": "public",
+   "centre": [
+    0.6,
+    3.2,
+    1.525
+   ],
+   "normal": [
+    -1.0,
+    0.0,
+    0.0
+   ],
+   "size": [
+    0.9,
+    1.05
+   ],
+   "shape": "rect"
+  }
+ ],
+ "light_tex": 64,
+ "notes": [],
+ "tris": {
+  "shell": 636,
+  "detail": 2969,
+  "windows": 8
+ }
+}

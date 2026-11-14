@@ -1,0 +1,27 @@
+{
+ "id": "topi_1",
+ "variant": 1,
+ "kind": "music",
+ "file": "audio/music/topi_1.wav",
+ "endpoint": "fal-ai/stable-audio-25/text-to-audio",
+ "request": {
+  "num_inference_steps": 8,
+  "guidance_scale": 1,
+  "sync_mode": false,
+  "prompt": "Dark mysterious ambient drone, slow shifting detuned analog synth pads, very low sub bass swells, distant bowed metal and a faint wordless choir far away like wind over endless sand dunes, sparse high glassy tones that never resolve, uneasy and hypnotic, vast empty space, D minor, no melody, no drums, no vocals",
+  "seconds_total": 150,
+  "seed": 40101
+ },
+ "hash": "ff71eb72a5a1",
+ "fal_request_id": "01a1d654-cb5e-71f0-b7a3-5ef18230d851",
+ "seed": 40101,
+ "source_url": "https://v3b.fal.media/files/b/0ab2568c/ARfmwlevfXLtPH5Xi76YC_1P5yalNx.wav",
+ "created": "2026-11-13T19:14:15Z",
+ "postprocess": "afconvert -> 48 kHz stereo; 3 s fade-out; RMS -21 dBFS, peak <= -1 dBFS",
+ "sha256": "a58adb734c6f02f5d7b78124c5b0fe590c3813dc1899116be425c128c49ced8e",
+ "seconds": 150.0,
+ "license": "Generated with Stability AI Stable Audio 2.5 through fal.ai (outputs owned by the requester under Stability's API terms); released by the project under CC BY 4.0.",
+ "mood": [
+  "topi"
+ ]
+}

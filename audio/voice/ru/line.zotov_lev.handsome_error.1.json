@@ -1,0 +1,20 @@
+{
+ "key": "line.zotov_lev.handsome_error.1",
+ "lang": "ru",
+ "text": "Таких в нашем дворе не числится. Если вы ошибка наблюдения, то очень красивая.",
+ "speaker": "zotov_lev",
+ "voice": "George",
+ "voice_id": "JBFqnCBsd6RMkjVDRZzb",
+ "voice_design": null,
+ "direction": "[dry, thoughtful, unhurried, a physicist's quiet irony]",
+ "model": "fal-ai/elevenlabs/tts/eleven-v3",
+ "request": {
+  "stability": 0.5,
+  "apply_text_normalization": "auto",
+  "text": "[dry, thoughtful, unhurried, a physicist's quiet irony] Таких в нашем дворе не числится. Если вы ошибка наблюдения, то очень красивая.",
+  "voice": "George",
+  "language_code": "ru"
+ },
+ "fal_request_id": "01a1d75f-51cf-70d3-b23c-66966ed2cc45",
+ "hash": "730ff9f29494"
+}

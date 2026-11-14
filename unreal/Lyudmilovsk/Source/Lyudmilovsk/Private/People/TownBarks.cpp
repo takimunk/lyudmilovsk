@@ -190,6 +190,9 @@ namespace LyudBarks
 		Pose.clear();
 		Gather.clear();
 		Chrono.clear();
+		Manner.clear();
+		Met.clear();
+		Temper.clear();
 		Needs.clear();
 		bHeroNear = false;
 	}
@@ -374,6 +377,9 @@ namespace LyudBarks
 		else if (!bSecond && Key == "pose") { SplitValues(Value, S.A.Pose); }
 		else if (!bSecond && Key == "gather") { SplitValues(Value, S.A.Gather); }
 		else if (!bSecond && Key == "chrono") { SplitValues(Value, S.A.Chrono); }
+		else if (!bSecond && Key == "manner") { SplitValues(Value, S.A.Manner); }
+		else if (!bSecond && Key == "met") { SplitValues(Value, S.A.Met); }
+		else if (!bSecond && Key == "temper") { SplitValues(Value, S.A.Temper); }
 		else if (!bSecond && Key == "need") { SplitValues(Value, S.A.Need); }
 		else if (Key == "hours" || Key == "months")
 		{
@@ -538,6 +544,9 @@ namespace LyudBarks
 			&& C.Pose.Match(W.Pose)
 			&& C.Gather.Match(W.Gather)
 			&& C.Chrono.Match(W.Chrono)
+			&& C.Manner.Match(W.Manner)
+			&& C.Met.Match(W.Met)
+			&& C.Temper.Match(W.Temper)
 			&& C.Need.Match(W.Needs);
 	}
 
@@ -766,6 +775,45 @@ namespace LyudBarks
 		return !W.InsideShell(P);
 	}
 
+	bool AtCounter(const LyudPeople::FWorld& W, const LyudPeople::FPerson& A, const LyudPeople::FPerson& B)
+	{
+		using namespace LyudPeople;
+		if (A.Place < 0 || A.Place != B.Place || A.State != EState::Doing || B.State != EState::Doing || A.Activity < 0 || B.Activity < 0
+			|| A.Activity >= (int)W.Activities.size() || B.Activity >= (int)W.Activities.size())
+		{
+			return false;
+		}
+		const bool bFreeA = W.Activities[(size_t)A.Activity].bFree;
+		if (bFreeA == W.Activities[(size_t)B.Activity].bFree)
+		{
+			return false;
+		}
+		// (seated guests have the restaurant's own lines)
+		const FPerson& Customer = bFreeA ? A : B;
+		return !IsSeated(Customer.Pose) && (A.Pos - B.Pos).Len2D() < 4.f;
+	}
+
+	bool WithTheirOwn(const LyudPeople::FWorld& W, const LyudPeople::FPerson& A, const LyudPeople::FPerson& B)
+	{
+		using namespace LyudPeople;
+		if (A.Id == B.Id || A.State != EState::Doing || B.State != EState::Doing || A.Activity < 0 || B.Activity < 0 || A.bIndoors || B.bIndoors
+			|| (A.Pos - B.Pos).Len2D() > 4.f)
+		{
+			return false;
+		}
+		const bool bHouse = !A.Household.empty() && A.Household == B.Household;
+		if (A.Activity == B.Activity)
+		{
+			const int Meet = W.MeetNow(A, W.Activities[(size_t)A.Activity]);
+			return (bHouse && Meet == 1) || (A.DateWith == B.Id && Meet == 2);
+		}
+		// a grown-up standing by and the child at play
+		const FPerson& Minder = A.Activity == W.MindAct ? A : B;
+		const FPerson& Child = A.Activity == W.MindAct ? B : A;
+		return bHouse && W.MindAct >= 0 && Minder.Activity == W.MindAct && Child.Age < 12
+			&& (Child.Activity == W.PlayActs[0] || Child.Activity == W.PlayActs[1]);
+	}
+
 	void FillWhoRole(FWho& Who, const char* Role)
 	{
 		if (Role != nullptr && *Role != '\0' && std::find(Who.Jobs.begin(), Who.Jobs.end(), Role) == Who.Jobs.end())
@@ -792,6 +840,11 @@ namespace LyudBarks
 		{
 			const FActivity& A = W.Activities[(size_t)P.Activity];
 			Who.Doing.push_back(A.Id);
+			if (const int Meet = bThere ? W.MeetNow(P, A) : 0)
+			{
+				// the household's weekend outing, the weekly date with a friend (docs/town_manners.md)
+				Who.Doing.push_back(Meet == 1 ? "outing" : "date");
+			}
 			for (const FDuty& D : P.Duties)
 			{
 				if (bThere && W.ActOf(D) == P.Activity && P.Activity != W.SleepAct && (D.Place < 0 || D.Place == P.Place))

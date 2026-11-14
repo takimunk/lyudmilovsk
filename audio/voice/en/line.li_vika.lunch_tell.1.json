@@ -1,0 +1,20 @@
+{
+ "key": "line.li_vika.lunch_tell.1",
+ "lang": "en",
+ "text": "I can see by your face that you ate. Well? Best or worst?",
+ "speaker": "li_vika",
+ "voice": "Laura",
+ "voice_id": "FGY2WhTYpPnrIDTdsKH5",
+ "voice_design": null,
+ "direction": "[playful, quick, a lab assistant joking about her work]",
+ "model": "fal-ai/elevenlabs/tts/eleven-v3",
+ "request": {
+  "stability": 0.5,
+  "apply_text_normalization": "auto",
+  "text": "[playful, quick, a lab assistant joking about her work] I can see by your face that you ate. Well? Best or worst?",
+  "voice": "Laura",
+  "language_code": "en"
+ },
+ "fal_request_id": "01a1d671-5d91-7021-9a1b-1893b2fe4602",
+ "hash": "e094b8eb3b9f"
+}

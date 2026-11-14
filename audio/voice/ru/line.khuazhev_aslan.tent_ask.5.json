@@ -1,0 +1,20 @@
+{
+ "key": "line.khuazhev_aslan.tent_ask.5",
+ "lang": "ru",
+ "text": "Только ешь до конца, как за столом у друга. Кто откусил и убежал, тот ничего не понял.",
+ "speaker": "khuazhev_aslan",
+ "voice": "Brian",
+ "voice_id": "nPczCjzI2devNBz1zQrb",
+ "voice_design": null,
+ "direction": "[hearty, generous, a cheese seller from the Caucasus, proud of his family's cheese]",
+ "model": "fal-ai/elevenlabs/tts/eleven-v3",
+ "request": {
+  "stability": 0.5,
+  "apply_text_normalization": "auto",
+  "text": "[hearty, generous, a cheese seller from the Caucasus, proud of his family's cheese] Только ешь до конца, как за столом у друга. Кто откусил и убежал, тот ничего не понял.",
+  "voice": "Brian",
+  "language_code": "ru"
+ },
+ "fal_request_id": "01a1d66f-48fa-79a1-b804-e5d18caeca0c",
+ "hash": "2ef19189431f"
+}

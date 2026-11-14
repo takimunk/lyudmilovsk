@@ -7,12 +7,23 @@
 #include "GameFramework/PlayerController.h"
 #include "HAL/IConsoleManager.h"
 #include "Kismet/GameplayStatics.h"
+#include "Plants/GameCalendar.h"
+#include "Plants/ProceduralForest.h"
 #include "Serialization/MemoryReader.h"
 #include "Serialization/MemoryWriter.h"
 #include "Serialization/ObjectAndNameAsStringProxyArchive.h"
 #include "TimerManager.h"
 
 static const TCHAR* IndexSlot = TEXT("lyud_index");
+
+/**
+ * A forest's live plants come and go with the camera under auto-generated names: a record of one would land on another
+ * tree after a load (or on none), so they are neither saved nor restored.
+ */
+static bool LyudIsTransientSaveable(const AActor* Actor)
+{
+	return Actor->GetOwner() && Actor->GetOwner()->IsA<AProceduralForest>();
+}
 
 void ULyudSaveGame::Store(UObject* Object, FLyudSaveRecord& Out)
 {
@@ -97,6 +108,8 @@ FString ULyudSaveSubsystem::SaveToSlot(const FString& Title, const FString& InSl
 	{
 		return FString();
 	}
+	// The whole save runs here, on the game thread, in one frame: the log line at the end says how long each part took.
+	const double SaveBegan = FPlatformTime::Seconds();
 	ULyudSlotIndex* Index = LoadIndex();
 	FString Slot = InSlot;
 	if (Slot.IsEmpty())
@@ -123,14 +136,17 @@ FString ULyudSaveSubsystem::SaveToSlot(const FString& Title, const FString& InSl
 			Save->PlayerTransform = Pawn->GetActorTransform();
 		}
 	}
+	int32 ActorsSeen = 0;
 	for (TActorIterator<AActor> It(World); It; ++It)
 	{
-		if (It->Implements<ULyudSaveable>())
+		++ActorsSeen;
+		if (It->Implements<ULyudSaveable>() && !LyudIsTransientSaveable(*It))
 		{
 			ILyudSaveable::Execute_OnGameSaving(*It);
 			ULyudSaveGame::Store(*It, Save->Actors.FindOrAdd(It->GetFName()));
 		}
 	}
+	const double ActorsDone = FPlatformTime::Seconds();
 	// before the objects are written: listeners copy their live state into SaveGame fields here
 	OnBeforeSave.Broadcast(Save);
 	for (const TPair<FName, TWeakObjectPtr<UObject>>& Pair : SaveObjects)
@@ -145,11 +161,16 @@ FString ULyudSaveSubsystem::SaveToSlot(const FString& Title, const FString& InSl
 		}
 	}
 
+	const double ObjectsDone = FPlatformTime::Seconds();
 	if (!UGameplayStatics::SaveGameToSlot(Save, Slot, 0))
 	{
 		UE_LOG(LogTemp, Warning, TEXT("Save: could not write slot %s"), *Slot);
 		return FString();
 	}
+	const double FileDone = FPlatformTime::Seconds();
+	UE_LOG(LogTemp, Display, TEXT("Save: \"%s\" to %s took %.1f ms on the game thread (%d actors walked, %d kept: %.1f ms; %d objects and listeners: %.1f ms; file: %.1f ms)"),
+		*Title, *Slot, (FileDone - SaveBegan) * 1000.0, ActorsSeen, Save->Actors.Num(), (ActorsDone - SaveBegan) * 1000.0,
+		SaveObjects.Num(), (ObjectsDone - ActorsDone) * 1000.0, (FileDone - ObjectsDone) * 1000.0);
 	FLyudSlotInfo* Info = Index->Slots.FindByPredicate([&](const FLyudSlotInfo& S) { return S.Slot == Slot; });
 	if (!Info)
 	{
@@ -223,6 +244,23 @@ void ULyudSaveSubsystem::NotifyWorldBeginPlay(UWorld& World)
 		ClockBase = -World.GetTimeSeconds();
 		OnNewGame.Broadcast();
 	}
+	if (Pending && MapOf(&World) == Pending->Map)
+	{
+		// the clock and the date at once: what is built in BeginPlay (plants, the sky, the weather) is built for the save's
+		// day, not for the session's that was left and then again a tick later. ApplyPending sets both again with the rest.
+		if (!FMath::IsFinite(Pending->GameTimeSeconds) || Pending->GameTimeSeconds < 0.0)
+		{
+			Pending->GameTimeSeconds = 0.0;
+		}
+		ClockBase = Pending->GameTimeSeconds - World.GetTimeSeconds();
+		if (UGameCalendar* Calendar = World.GetSubsystem<UGameCalendar>())
+		{
+			if (Pending->ReadObject(TEXT("Calendar"), Calendar))
+			{
+				Calendar->ClampLoaded();
+			}
+		}
+	}
 	if (Pending)
 	{
 		// After every actor's BeginPlay, so loaded state is not overwritten by start-up defaults.
@@ -237,6 +275,12 @@ void ULyudSaveSubsystem::ApplyPending(TWeakObjectPtr<UWorld> WeakWorld)
 	Pending = nullptr;
 	if (!World || !Save)
 	{
+		return;
+	}
+	// the save's level is gone or renamed and the engine opened another one: nothing of the save belongs here
+	if (MapOf(World) != Save->Map)
+	{
+		UE_LOG(LogTemp, Warning, TEXT("Save: \"%s\" is for %s, not for %s: not applied"), *Save->Title, *Save->Map, *MapOf(World));
 		return;
 	}
 	// a corrupt or hand-edited slot must not feed NaN into the clock or the player
@@ -260,7 +304,7 @@ void ULyudSaveSubsystem::ApplyPending(TWeakObjectPtr<UWorld> WeakWorld)
 	int32 Restored = 0;
 	for (TActorIterator<AActor> It(World); It; ++It)
 	{
-		if (!It->Implements<ULyudSaveable>())
+		if (!It->Implements<ULyudSaveable>() || LyudIsTransientSaveable(*It))
 		{
 			continue;
 		}

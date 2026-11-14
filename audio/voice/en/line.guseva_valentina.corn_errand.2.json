@@ -1,0 +1,29 @@
+{
+ "key": "line.guseva_valentina.corn_errand.2",
+ "lang": "en",
+ "text": "He used to come every day. Now it's the fishing rod from dawn, and his legs won't carry him as far as the square.",
+ "speaker": "guseva_valentina",
+ "voice": "Abbess",
+ "voice_id": "Abbess",
+ "voice_design": null,
+ "direction": "",
+ "model": "fal-ai/minimax/speech-2.6-hd",
+ "request": {
+  "prompt": "He used to come every day. Now it's the fishing rod from dawn, and his legs won't carry him as far as the square.",
+  "voice_setting": {
+   "speed": 1,
+   "pitch": 0,
+   "vol": 1,
+   "voice_id": "Abbess"
+  },
+  "language_boost": "English",
+  "audio_setting": {
+   "sample_rate": 24000,
+   "format": "mp3",
+   "channel": 1
+  },
+  "output_format": "url"
+ },
+ "fal_request_id": "01a1d66c-a74b-76b0-bf3c-0e42c7b6598c",
+ "hash": "58a0e9e28ecd"
+}

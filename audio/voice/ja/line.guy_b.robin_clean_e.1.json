@@ -1,0 +1,20 @@
+{
+ "key": "line.guy_b.robin_clean_e.1",
+ "lang": "ja",
+ "text": "ヨーロッパコマドリか。換気扇より音程が正確だ。ほとんどきれいなミだな。",
+ "speaker": "guy_b",
+ "voice": "Chris",
+ "voice_id": "iP95p4xoKVk53GoZ742B",
+ "voice_design": null,
+ "direction": "[relaxed, lazy, friendly]",
+ "model": "fal-ai/elevenlabs/tts/eleven-v3",
+ "request": {
+  "stability": 0.5,
+  "apply_text_normalization": "auto",
+  "text": "[relaxed, lazy, friendly] ヨーロッパコマドリか。換気扇より音程が正確だ。ほとんどきれいなミだな。",
+  "voice": "Chris",
+  "language_code": "ja"
+ },
+ "fal_request_id": "01a1d739-ce5e-78b1-bfd0-99810526e2bb",
+ "hash": "7a5dc77e6351"
+}

@@ -1,0 +1,20 @@
+{
+ "key": "line.sato_kei.again2.1",
+ "lang": "en",
+ "text": "Yuki has laid out bits of beach glass on the windowsill. She says it's her spectrometer. I think it works.",
+ "speaker": "sato_kei",
+ "voice": "Eric",
+ "voice_id": "cjVigY5qzO86Huf0OWal",
+ "voice_design": null,
+ "direction": "[quiet, precise, softly puzzled, a scientist thinking aloud]",
+ "model": "fal-ai/elevenlabs/tts/eleven-v3",
+ "request": {
+  "stability": 0.5,
+  "apply_text_normalization": "auto",
+  "text": "[quiet, precise, softly puzzled, a scientist thinking aloud] Yuki has laid out bits of beach glass on the windowsill. She says it's her spectrometer. I think it works.",
+  "voice": "Eric",
+  "language_code": "en"
+ },
+ "fal_request_id": "01a1d747-107e-7350-9e07-429fd6666638",
+ "hash": "b7b997a5fe13"
+}

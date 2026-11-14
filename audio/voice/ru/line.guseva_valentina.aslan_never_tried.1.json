@@ -1,0 +1,29 @@
+{
+ "key": "line.guseva_valentina.aslan_never_tried.1",
+ "lang": "ru",
+ "text": "От Аслана пришёл? Он мою кукурузу хвалит, а сам ни разу не пробовал. Ешь за двоих.",
+ "speaker": "guseva_valentina",
+ "voice": "Abbess",
+ "voice_id": "Abbess",
+ "voice_design": null,
+ "direction": "",
+ "model": "fal-ai/minimax/speech-2.6-hd",
+ "request": {
+  "prompt": "От Аслана пришёл? Он мою кукурузу хвалит, а сам ни разу не пробовал. Ешь за двоих.",
+  "voice_setting": {
+   "speed": 1,
+   "pitch": 0,
+   "vol": 1,
+   "voice_id": "Abbess"
+  },
+  "language_boost": "Russian",
+  "audio_setting": {
+   "sample_rate": 24000,
+   "format": "mp3",
+   "channel": 1
+  },
+  "output_format": "url"
+ },
+ "fal_request_id": "01a1d6d3-c215-72a3-becb-f0c4ce34593e",
+ "hash": "ffe2c2f7ef53"
+}

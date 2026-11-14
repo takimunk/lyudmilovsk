@@ -1,0 +1,20 @@
+{
+ "key": "line.valiev_rustam.signal_wait.1",
+ "lang": "ja",
+ "text": "灯はまだ見えていない。ちゃんと見ているよ。ランプは小川さんのところ、場所は山上駅、時間は暗くなってから。",
+ "speaker": "valiev_rustam",
+ "voice": "Roger",
+ "voice_id": "CwhRBWXzGAHq8TQ4Fs17",
+ "voice_design": null,
+ "direction": "[confident, dry, matter-of-fact engineer]",
+ "model": "fal-ai/elevenlabs/tts/eleven-v3",
+ "request": {
+  "stability": 0.5,
+  "apply_text_normalization": "auto",
+  "text": "[confident, dry, matter-of-fact engineer] 灯はまだ見えていない。ちゃんと見ているよ。ランプは小川さんのところ、場所は山上駅、時間は暗くなってから。",
+  "voice": "Roger",
+  "language_code": "ja"
+ },
+ "fal_request_id": "01a1d677-64d2-7e93-a066-28c5dbc65090",
+ "hash": "580203561a60"
+}

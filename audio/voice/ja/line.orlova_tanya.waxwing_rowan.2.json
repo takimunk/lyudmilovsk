@@ -1,0 +1,20 @@
+{
+ "key": "line.orlova_tanya.waxwing_rowan.2",
+ "lang": "ja",
+ "text": "餌台もあるわよ。それがないと、まばたきする間にツグミが全部持っていっちゃうわ。",
+ "speaker": "orlova_tanya",
+ "voice": "Aria",
+ "voice_id": "9BWtsMINqrJLrRacOk9x",
+ "voice_design": null,
+ "direction": "[a kiosk shop assistant, brisk, deadpan, a bit sassy]",
+ "model": "fal-ai/elevenlabs/tts/eleven-v3",
+ "request": {
+  "stability": 0.5,
+  "apply_text_normalization": "auto",
+  "text": "[a kiosk shop assistant, brisk, deadpan, a bit sassy] 餌台もあるわよ。それがないと、まばたきする間にツグミが全部持っていっちゃうわ。",
+  "voice": "Aria",
+  "language_code": "ja"
+ },
+ "fal_request_id": "01a1d673-ca89-7af0-8634-880fbc34b306",
+ "hash": "3f63b0a52799"
+}

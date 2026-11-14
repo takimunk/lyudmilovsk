@@ -1,0 +1,20 @@
+{
+ "key": "line.khuazhev_aslan.first.1",
+ "lang": "ru",
+ "text": "Сыр мать с сёстрами варит, я из Адыгеи вожу. Попробуй косичку: она копчёная, с дымком.",
+ "speaker": "khuazhev_aslan",
+ "voice": "Brian",
+ "voice_id": "nPczCjzI2devNBz1zQrb",
+ "voice_design": null,
+ "direction": "[hearty, generous, a cheese seller from the Caucasus, proud of his family's cheese]",
+ "model": "fal-ai/elevenlabs/tts/eleven-v3",
+ "request": {
+  "stability": 0.5,
+  "apply_text_normalization": "auto",
+  "text": "[hearty, generous, a cheese seller from the Caucasus, proud of his family's cheese] Сыр мать с сёстрами варит, я из Адыгеи вожу. Попробуй косичку: она копчёная, с дымком.",
+  "voice": "Brian",
+  "language_code": "ru"
+ },
+ "fal_request_id": "01a1d5f9-1f89-7610-b466-e771f6284f2a",
+ "hash": "19c0480769bb"
+}

@@ -1,0 +1,20 @@
+{
+ "key": "line.valiev_rustam.sun_low.1",
+ "lang": "ja",
+ "text": "夕方の光はほとんど水平に差して、壁の凹凸をひとつ残らず見せる。どんな水準器にもできない芸当だ。",
+ "speaker": "valiev_rustam",
+ "voice": "Roger",
+ "voice_id": "CwhRBWXzGAHq8TQ4Fs17",
+ "voice_design": null,
+ "direction": "[confident, dry, matter-of-fact engineer]",
+ "model": "fal-ai/elevenlabs/tts/eleven-v3",
+ "request": {
+  "stability": 0.5,
+  "apply_text_normalization": "auto",
+  "text": "[confident, dry, matter-of-fact engineer] 夕方の光はほとんど水平に差して、壁の凹凸をひとつ残らず見せる。どんな水準器にもできない芸当だ。",
+  "voice": "Roger",
+  "language_code": "ja"
+ },
+ "fal_request_id": "01a1d74a-33c4-7190-90a4-a21b9e23a65c",
+ "hash": "b23299afc712"
+}

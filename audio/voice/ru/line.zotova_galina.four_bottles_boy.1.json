@@ -1,0 +1,20 @@
+{
+ "key": "line.zotova_galina.four_bottles_boy.1",
+ "lang": "ru",
+ "text": "Птица, если увидите в клубе молодого человека с четырьмя бутылками, не отвлекайте его. Он работает на науку.",
+ "speaker": "zotova_galina",
+ "voice": "Alice",
+ "voice_id": "Xb7hH8MSUJpSbSDYk0k2",
+ "voice_design": null,
+ "direction": "[warm, chatty, fondly exasperated with her husband]",
+ "model": "fal-ai/elevenlabs/tts/eleven-v3",
+ "request": {
+  "stability": 0.5,
+  "apply_text_normalization": "auto",
+  "text": "[warm, chatty, fondly exasperated with her husband] Птица, если увидите в клубе молодого человека с четырьмя бутылками, не отвлекайте его. Он работает на науку.",
+  "voice": "Alice",
+  "language_code": "ru"
+ },
+ "fal_request_id": "01a1d6eb-9ba9-7042-98b2-a11e23f71a3a",
+ "hash": "8233ce145482"
+}

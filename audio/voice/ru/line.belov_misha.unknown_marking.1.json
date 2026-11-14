@@ -1,0 +1,20 @@
+{
+ "key": "line.belov_misha.unknown_marking.1",
+ "lang": "ru",
+ "text": "Красные метки на крыльях, жёлтая на хвосте. Маркировка незнакомая. Покажись Сорокину, он такие схемы читает.",
+ "speaker": "belov_misha",
+ "voice": "Liam",
+ "voice_id": "TX3LPaxmHKxFdv7VOQHJ",
+ "voice_design": null,
+ "direction": "[easygoing, amused, a young technician, a little self-ironic]",
+ "model": "fal-ai/elevenlabs/tts/eleven-v3",
+ "request": {
+  "stability": 0.5,
+  "apply_text_normalization": "auto",
+  "text": "[easygoing, amused, a young technician, a little self-ironic] Красные метки на крыльях, жёлтая на хвосте. Маркировка незнакомая. Покажись Сорокину, он такие схемы читает.",
+  "voice": "Liam",
+  "language_code": "ru"
+ },
+ "fal_request_id": "01a1d75d-451a-7970-83ec-fc8ada6aabd3",
+ "hash": "d3ae536dd3c2"
+}

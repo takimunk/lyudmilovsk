@@ -1,0 +1,29 @@
+{
+ "key": "line.korneeva_nina.postcard_bird.1",
+ "lang": "ru",
+ "text": "Батюшки, хохолок. Я такую птицу только на открытке видела. Таня не поверит.",
+ "speaker": "korneeva_nina",
+ "voice": "Wise_Woman",
+ "voice_id": "Wise_Woman",
+ "voice_design": null,
+ "direction": "",
+ "model": "fal-ai/minimax/speech-2.6-hd",
+ "request": {
+  "prompt": "Батюшки, хохолок. Я такую птицу только на открытке видела. Таня не поверит.",
+  "voice_setting": {
+   "speed": 0.95,
+   "pitch": 0,
+   "vol": 1,
+   "voice_id": "Wise_Woman"
+  },
+  "language_boost": "Russian",
+  "audio_setting": {
+   "sample_rate": 24000,
+   "format": "mp3",
+   "channel": 1
+  },
+  "output_format": "url"
+ },
+ "fal_request_id": "01a1d75e-87c2-75c0-850d-0384f8f7418e",
+ "hash": "b505a3549fce"
+}

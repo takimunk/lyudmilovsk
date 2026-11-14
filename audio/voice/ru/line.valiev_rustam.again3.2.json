@@ -1,0 +1,20 @@
+{
+ "key": "line.valiev_rustam.again3.2",
+ "lang": "ru",
+ "text": "Испытательный стенд. Сначала я сказал, что это невозможно. Сейчас мы на этапе «посмотрим».",
+ "speaker": "valiev_rustam",
+ "voice": "Roger",
+ "voice_id": "CwhRBWXzGAHq8TQ4Fs17",
+ "voice_design": null,
+ "direction": "[confident, dry, matter-of-fact engineer]",
+ "model": "fal-ai/elevenlabs/tts/eleven-v3",
+ "request": {
+  "stability": 0.5,
+  "apply_text_normalization": "auto",
+  "text": "[confident, dry, matter-of-fact engineer] Испытательный стенд. Сначала я сказал, что это невозможно. Сейчас мы на этапе «посмотрим».",
+  "voice": "Roger",
+  "language_code": "ru"
+ },
+ "fal_request_id": "01a1d749-c32a-7760-968c-72ac142fd13c",
+ "hash": "a64a9723e19e"
+}

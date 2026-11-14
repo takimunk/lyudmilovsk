@@ -1,0 +1,20 @@
+{
+ "key": "line.zotova_galina.sodalab_ask.1",
+ "lang": "ru",
+ "text": "Вы ведь бываете в клубе? Там стоит автомат с четырьмя газировками. Мне нужен независимый дегустатор.",
+ "speaker": "zotova_galina",
+ "voice": "Alice",
+ "voice_id": "Xb7hH8MSUJpSbSDYk0k2",
+ "voice_design": null,
+ "direction": "[warm, chatty, fondly exasperated with her husband]",
+ "model": "fal-ai/elevenlabs/tts/eleven-v3",
+ "request": {
+  "stability": 0.5,
+  "apply_text_normalization": "auto",
+  "text": "[warm, chatty, fondly exasperated with her husband] Вы ведь бываете в клубе? Там стоит автомат с четырьмя газировками. Мне нужен независимый дегустатор.",
+  "voice": "Alice",
+  "language_code": "ru"
+ },
+ "fal_request_id": "01a1d674-c5eb-7010-9c58-629a8a2aa429",
+ "hash": "1c5518b39f01"
+}

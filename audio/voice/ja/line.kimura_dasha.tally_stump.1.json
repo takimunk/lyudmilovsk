@@ -1,0 +1,20 @@
+{
+ "key": "line.kimura_dasha.tally_stump.1",
+ "lang": "ja",
+ "text": "ソローキンさんのためにシジュウカラを数えてるの、あなた？切り株みたいに座って、口だけ動かせって言うんでしょ。尊敬する、私なんて試験でもそこまでできない。",
+ "speaker": "kimura_dasha",
+ "voice": "Charlotte",
+ "voice_id": "XB0fDUnXU5powFXDhCwa",
+ "voice_design": null,
+ "direction": "[a tired physics student, wry, self-ironic]",
+ "model": "fal-ai/elevenlabs/tts/eleven-v3",
+ "request": {
+  "stability": 0.5,
+  "apply_text_normalization": "auto",
+  "text": "[a tired physics student, wry, self-ironic] ソローキンさんのためにシジュウカラを数えてるの、あなた？切り株みたいに座って、口だけ動かせって言うんでしょ。尊敬する、私なんて試験でもそこまでできない。",
+  "voice": "Charlotte",
+  "language_code": "ja"
+ },
+ "fal_request_id": "01a1d754-c71e-7790-a928-9ae1e5a7411a",
+ "hash": "5a8bcb7fc08a"
+}

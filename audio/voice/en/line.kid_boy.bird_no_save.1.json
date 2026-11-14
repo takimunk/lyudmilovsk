@@ -1,0 +1,33 @@
+{
+ "key": "line.kid_boy.bird_no_save.1",
+ "lang": "en",
+ "text": "Where did you come from? Okay, I'm off. Seats don't save in the club, and out here even less.",
+ "speaker": "kid_boy",
+ "voice": "ttv-voice-2026102201382326-dnI61vJ1",
+ "voice_id": "ttv-voice-2026102201382326-dnI61vJ1",
+ "voice_design": {
+  "endpoint": "fal-ai/minimax/voice-design",
+  "prompt": "Small boy, primary school kid: a very high, bright, light child's voice, like a young child actor in a cartoon dub but natural, bored and a little cheeky",
+  "preview_text": "Ну, норм так. С утра. Или со вчера."
+ },
+ "direction": "",
+ "model": "fal-ai/minimax/speech-2.6-hd",
+ "request": {
+  "prompt": "Where did you come from? Okay, I'm off. Seats don't save in the club, and out here even less.",
+  "voice_setting": {
+   "speed": 1,
+   "pitch": 0,
+   "vol": 1,
+   "voice_id": "ttv-voice-2026102201382326-dnI61vJ1"
+  },
+  "language_boost": "English",
+  "audio_setting": {
+   "sample_rate": 24000,
+   "format": "mp3",
+   "channel": 1
+  },
+  "output_format": "url"
+ },
+ "fal_request_id": "01a1d7e0-0a44-7101-a674-2ed9ca6f0b04",
+ "hash": "ad555e8b5c23"
+}

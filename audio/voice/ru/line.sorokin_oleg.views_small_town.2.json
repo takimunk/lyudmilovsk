@@ -1,0 +1,20 @@
+{
+ "key": "line.sorokin_oleg.views_small_town.2",
+ "lang": "ru",
+ "text": "С птичьей высоты все города такие. Птицы, по-моему, поэтому их и терпят.",
+ "speaker": "sorokin_oleg",
+ "voice": "River",
+ "voice_id": "SAz9YHcvj6GT2YYXdXww",
+ "voice_design": null,
+ "direction": "[a retired scholar, calm, dry humour, slower, gentle]",
+ "model": "fal-ai/elevenlabs/tts/eleven-v3",
+ "request": {
+  "stability": 0.5,
+  "apply_text_normalization": "auto",
+  "text": "[a retired scholar, calm, dry humour, slower, gentle] С птичьей высоты все города такие. Птицы, по-моему, поэтому их и терпят.",
+  "voice": "River",
+  "language_code": "ru"
+ },
+ "fal_request_id": "01a1d6d9-2315-7450-873d-45895097126a",
+ "hash": "820c04cc008a"
+}

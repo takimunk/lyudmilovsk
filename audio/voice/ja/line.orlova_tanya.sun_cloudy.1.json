@@ -1,0 +1,20 @@
+{
+ "key": "line.orlova_tanya.sun_cloudy.1",
+ "lang": "ja",
+ "text": "曇りね。こういう日は、みんな必要以上に買っていくの。何かのすき間を埋めてるのかしらね。",
+ "speaker": "orlova_tanya",
+ "voice": "Aria",
+ "voice_id": "9BWtsMINqrJLrRacOk9x",
+ "voice_design": null,
+ "direction": "[a kiosk shop assistant, brisk, deadpan, a bit sassy]",
+ "model": "fal-ai/elevenlabs/tts/eleven-v3",
+ "request": {
+  "stability": 0.5,
+  "apply_text_normalization": "auto",
+  "text": "[a kiosk shop assistant, brisk, deadpan, a bit sassy] 曇りね。こういう日は、みんな必要以上に買っていくの。何かのすき間を埋めてるのかしらね。",
+  "voice": "Aria",
+  "language_code": "ja"
+ },
+ "fal_request_id": "01a1d747-4f0c-7371-9211-2b761f86dea7",
+ "hash": "09a4314c0cdc"
+}

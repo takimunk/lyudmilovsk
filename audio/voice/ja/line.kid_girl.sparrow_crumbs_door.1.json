@@ -1,0 +1,33 @@
+{
+ "key": "line.kid_girl.sparrow_crumbs_door.1",
+ "lang": "ja",
+ "text": "鳥のえさ、持ってる？ドアのところに、わたしのスズメのぶん、ちょっとまいて。ママが自販機のお金くれないの。",
+ "speaker": "kid_girl",
+ "voice": "ttv-voice-2026102201385926-gffZZl03",
+ "voice_id": "ttv-voice-2026102201385926-gffZZl03",
+ "voice_design": {
+  "endpoint": "fal-ai/minimax/voice-design",
+  "prompt": "Small girl, primary school kid: a very high, bright, light child's voice, soft and earnest, a bit lonely, natural everyday speech",
+  "preview_text": "Привет. Мама сказала, посиди тут часик."
+ },
+ "direction": "",
+ "model": "fal-ai/minimax/speech-2.6-hd",
+ "request": {
+  "prompt": "鳥のえさ、持ってる？ドアのところに、わたしのスズメのぶん、ちょっとまいて。ママが自販機のお金くれないの。",
+  "voice_setting": {
+   "speed": 1,
+   "pitch": 0,
+   "vol": 1,
+   "voice_id": "ttv-voice-2026102201385926-gffZZl03"
+  },
+  "language_boost": "Japanese",
+  "audio_setting": {
+   "sample_rate": 24000,
+   "format": "mp3",
+   "channel": 1
+  },
+  "output_format": "url"
+ },
+ "fal_request_id": "01a1d6e4-c9ec-7823-bbab-1a529583a9ca",
+ "hash": "abb5c7043708"
+}

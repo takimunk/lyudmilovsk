@@ -1,0 +1,20 @@
+{
+ "key": "line.zotov_lev.again3.2",
+ "lang": "en",
+ "text": "Noise. Everyone wants to be rid of it, and I want to understand where it comes from.",
+ "speaker": "zotov_lev",
+ "voice": "George",
+ "voice_id": "JBFqnCBsd6RMkjVDRZzb",
+ "voice_design": null,
+ "direction": "[dry, thoughtful, unhurried, a physicist's quiet irony]",
+ "model": "fal-ai/elevenlabs/tts/eleven-v3",
+ "request": {
+  "stability": 0.5,
+  "apply_text_normalization": "auto",
+  "text": "[dry, thoughtful, unhurried, a physicist's quiet irony] Noise. Everyone wants to be rid of it, and I want to understand where it comes from.",
+  "voice": "George",
+  "language_code": "en"
+ },
+ "fal_request_id": "01a1d74a-4b6f-7b13-8cfb-1cc63dea390d",
+ "hash": "6aaf4ecd8a6b"
+}

@@ -1,5 +1,6 @@
 #include "Europa/LyudEuropa.h"
 
+#include "NpcDialogue.h"
 #include "Audio/LyudSoundscape.h"
 #include "Components/AudioComponent.h"
 #include "Components/CapsuleComponent.h"
@@ -24,6 +25,7 @@
 #include "Landscape.h"
 #include "LyudInventory.h"
 #include "LyudText.h"
+#include "Misc/PackageName.h"
 #include "Materials/MaterialInstanceDynamic.h"
 #include "Misc/FileHelper.h"
 #include "Misc/Paths.h"
@@ -440,7 +442,7 @@ void ALyudAirlock::OnGameLoaded_Implementation()
 	InnerLid.Snap(false);
 	if (CycleLoop)
 	{
-		CycleLoop->Stop();
+		ULyudSoundscapeSubsystem::ReleaseLoop(CycleLoop);
 		CycleLoop = nullptr;
 	}
 	ShownLevel = -1.f;
@@ -577,7 +579,7 @@ void ALyudAirlock::Tick(float DeltaSeconds)
 			State = bDrain ? ELyudAirlockState::Dry : ELyudAirlockState::Flooded;
 			if (CycleLoop)
 			{
-				CycleLoop->FadeOut(0.8f, 0.f);
+				ULyudSoundscapeSubsystem::ReleaseLoop(CycleLoop, 0.8f);
 				CycleLoop = nullptr;
 			}
 			Sound(TEXT("airlock_beep"), ScreenLocation(), 1.f);
@@ -1272,6 +1274,16 @@ void ULyudEuropaSubsystem::Tick(float DeltaTime)
 	ACharacter* Hero = PlayerHero(GetWorld(), &PC);
 	if (!Airlock || !Site || !Hero || !PC)
 	{
+		// not the hero any more (a bird's flight): the hatch's prompt does not stay on the screen
+		if (!ShownPrompt.IsEmpty())
+		{
+			Action.Reset();
+			ShownPrompt.Reset();
+			if (ULyudInventoryUI* UI = ULyudInventoryUI::Get(this))
+			{
+				UI->SetPrompt(this, FText::GetEmpty());
+			}
+		}
 		return;
 	}
 	if (Climb.Num() > 0)
@@ -1285,6 +1297,19 @@ void ULyudEuropaSubsystem::Tick(float DeltaTime)
 	}
 	// on Europa: anywhere near the far site (a climb jumps there and back; a load may land there too)
 	const bool bThere = FVector::Dist(Hero->GetActorLocation(), SiteOrigin) < SpaceRadius;
+	// the music and the line said at the first look at the planet load in the background from the airlock on (asked
+	// once: ULyudPrefetch holds them), not on the spot at that moment
+	if (!bPlanetSoundsAsked && !Airlock->bPlanetSeen && (bThere || Airlock->IsInside(Hero->GetActorLocation())))
+	{
+		bPlanetSoundsAsked = true;
+		ULyudPrefetch::Ready(this, MusicPath);
+		const FString VoiceName = FString(PlanetLine).Replace(TEXT("."), TEXT("_"));
+		const FString VoicePackage = FString::Printf(TEXT("/Game/Voice/%s/V_%s"), *LyudText::Language(), *VoiceName);
+		if (FPackageName::DoesPackageExist(VoicePackage))
+		{
+			ULyudPrefetch::Ready(this, VoicePackage + TEXT(".V_") + VoiceName);
+		}
+	}
 	if (bThere != bOnEuropa)
 	{
 		SetOnEuropa(bThere);
@@ -1295,7 +1320,7 @@ void ULyudEuropaSubsystem::Tick(float DeltaTime)
 	}
 	UpdateAction(*Hero, *PC);
 	const ULyudInventoryUI* ScreenUI = ULyudInventoryUI::Get(this);
-	if (PC->WasInputKeyJustPressed(EKeys::E) && !Action.IsEmpty() && !(ScreenUI && ScreenUI->IsOpen()))
+	if (ANpcTalkDirector::UsePressed(PC) && !Action.IsEmpty() && !(ScreenUI && ScreenUI->IsOpen()))
 	{
 		// polled, never consumed: E belongs to several things at once
 		Use();
@@ -1329,7 +1354,14 @@ void ULyudEuropaSubsystem::UpdateAction(ACharacter& Hero, APlayerController& PC)
 		if (bOnEuropa)
 		{
 			const FVector LidAt = Site->Kit(FVector(0, 0, 10));
-			if (Eye.Z > LidAt.Z - 30.f && Looks(LidAt, 280.f, 0.55f))
+			// down in the shaft under Europa's hatch with no climb running (a game saved halfway up it and loaded, a fall
+			// through the open hatch): the only way on is the climb down, from wherever he stands
+			const FVector InSite = Site->GetActorTransform().InverseTransformPosition(Hero.GetActorLocation());
+			if (InSite.Z < -40.f && FVector2D(InSite).Size() < K.OpenRadius + 10.f)
+			{
+				Now = TEXT("enter_europa");
+			}
+			else if (Eye.Z > LidAt.Z - 30.f && Looks(LidAt, 280.f, 0.55f))
 			{
 				Now = Site->Lid.IsShut() ? TEXT("open_europa") : Site->Lid.IsFullyOpen() ? TEXT("enter_europa") : TEXT("");
 			}
@@ -1722,6 +1754,17 @@ void ULyudEuropaSubsystem::ClimbDownFromEuropa()
 	FKey& K0 = Keys.AddDefaulted_GetRef();
 	K0.Feet = S->Kit(FVector(0, 0, 30));
 	K0.Seconds = 1.0f;
+	if (const ACharacter* Hero = PlayerHero(GetWorld()))
+	{
+		// already down in the shaft (UpdateAction): onto the ladder at his own height, not up through the lid first
+		// (the same test as there: the body's middle well under the rim, inside the shaft's bore)
+		const FVector InSite = S->GetActorTransform().InverseTransformPosition(Hero->GetActorLocation());
+		if (InSite.Z < -40.f && FVector2D(InSite).Size() < K.OpenRadius + 10.f)
+		{
+			K0.Feet = S->Kit(FVector(0, 0, S->GetActorTransform().InverseTransformPosition(FeetOf(*Hero)).Z));
+			K0.Seconds = 0.6f;
+		}
+	}
 	const FVector Shut = S->Kit(FVector(0, 0, -230));
 	Rungs(Keys, S->ShaftLadder, K0.Feet, Shut);
 	Keys.Last().OnReach = [S]() { S->Lid.bOpen = false; };
@@ -1812,14 +1855,16 @@ void ULyudEuropaSubsystem::SetOnEuropa(bool bOn)
 			}
 			else if (!bOn && Breath)
 			{
-				Breath->FadeOut(1.f, 0.f);
+				ULyudSoundscapeSubsystem::ReleaseLoop(Breath, 1.f);
 				Breath = nullptr;
 			}
 		}
 	}
 	if (!bOn && Music)
 	{
-		Music->FadeOut(3.f, 0.f);
+		// made without auto-destroy (SayPlanetLine): only faded, the component stayed on the world settings to the
+		// level's end; ReleaseLoop lets it go when the fade is over
+		ULyudSoundscapeSubsystem::ReleaseLoop(Music, 3.f);
 		Music = nullptr;
 	}
 	UE_LOG(LogTemp, Display, TEXT("EUROPA %s"), bOn ? TEXT("arrived on Europa") : TEXT("left Europa"));

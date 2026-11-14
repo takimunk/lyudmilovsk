@@ -1,0 +1,20 @@
+{
+ "key": "line.valiev_rustam.brighter_lamp_calc.1",
+ "lang": "ja",
+ "text": "計算し直したよ。もっと明るいランプなら、霧雨でも点が見えるはずだ。だが、それはまた別の実験だ。",
+ "speaker": "valiev_rustam",
+ "voice": "Roger",
+ "voice_id": "CwhRBWXzGAHq8TQ4Fs17",
+ "voice_design": null,
+ "direction": "[confident, dry, matter-of-fact engineer]",
+ "model": "fal-ai/elevenlabs/tts/eleven-v3",
+ "request": {
+  "stability": 0.5,
+  "apply_text_normalization": "auto",
+  "text": "[confident, dry, matter-of-fact engineer] 計算し直したよ。もっと明るいランプなら、霧雨でも点が見えるはずだ。だが、それはまた別の実験だ。",
+  "voice": "Roger",
+  "language_code": "ja"
+ },
+ "fal_request_id": "01a1d6ea-77f7-7081-998b-144b7435ed5c",
+ "hash": "e2a66699a8a3"
+}

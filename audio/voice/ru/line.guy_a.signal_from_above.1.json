@@ -1,0 +1,20 @@
+{
+ "key": "line.guy_a.signal_from_above.1",
+ "lang": "ru",
+ "text": "Сверху, наверно, сеть лучше ловит. Найдёшь, где, скажи, брат.",
+ "speaker": "guy_a",
+ "voice": "Will",
+ "voice_id": "bIHbv24MWmeRgasZH58o",
+ "voice_design": null,
+ "direction": "[a young gamer in a hurry, mid-match]",
+ "model": "fal-ai/elevenlabs/tts/eleven-v3",
+ "request": {
+  "stability": 0.5,
+  "apply_text_normalization": "auto",
+  "text": "[a young gamer in a hurry, mid-match] Сверху, наверно, сеть лучше ловит. Найдёшь, где, скажи, брат.",
+  "voice": "Will",
+  "language_code": "ru"
+ },
+ "fal_request_id": "01a1d7b6-8bd8-79f0-9dbe-428a4971926a",
+ "hash": "d71f68e2168f"
+}

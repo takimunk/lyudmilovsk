@@ -1,0 +1,20 @@
+{
+ "key": "line.belov_misha.again3.1",
+ "lang": "ru",
+ "text": "Чиню Рустаму чайник. Инженер, а чайники ему не даются. Говорит, не его масштаб.",
+ "speaker": "belov_misha",
+ "voice": "Liam",
+ "voice_id": "TX3LPaxmHKxFdv7VOQHJ",
+ "voice_design": null,
+ "direction": "[easygoing, amused, a young technician, a little self-ironic]",
+ "model": "fal-ai/elevenlabs/tts/eleven-v3",
+ "request": {
+  "stability": 0.5,
+  "apply_text_normalization": "auto",
+  "text": "[easygoing, amused, a young technician, a little self-ironic] Чиню Рустаму чайник. Инженер, а чайники ему не даются. Говорит, не его масштаб.",
+  "voice": "Liam",
+  "language_code": "ru"
+ },
+ "fal_request_id": "01a1d73f-edac-74b0-844b-b0254c9b6094",
+ "hash": "73372c30989f"
+}

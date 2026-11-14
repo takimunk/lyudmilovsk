@@ -1,0 +1,20 @@
+{
+ "key": "line.guy_a.pigeon_in_lobby.1",
+ "lang": "ja",
+ "text": "ドバト、ロビーの俺みたいに突っ立ってるな。試合が始まるのを待ってるんだろ。",
+ "speaker": "guy_a",
+ "voice": "Will",
+ "voice_id": "bIHbv24MWmeRgasZH58o",
+ "voice_design": null,
+ "direction": "[a young gamer in a hurry, mid-match]",
+ "model": "fal-ai/elevenlabs/tts/eleven-v3",
+ "request": {
+  "stability": 0.5,
+  "apply_text_normalization": "auto",
+  "text": "[a young gamer in a hurry, mid-match] ドバト、ロビーの俺みたいに突っ立ってるな。試合が始まるのを待ってるんだろ。",
+  "voice": "Will",
+  "language_code": "ja"
+ },
+ "fal_request_id": "01a1d7b6-9a2f-71c2-a2d9-e9490215873f",
+ "hash": "f0db721b18c7"
+}

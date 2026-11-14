@@ -91,7 +91,7 @@ struct FClock
 };
 
 /** The skies the test goes through: what ULyudWeatherSubsystem would give (cloud, rain mm/h, snow part, fog, C, wet). */
-struct FSky { const char* Name; float Cloud, Rain, Snow, Fog, TempC, Wet; };
+struct FSky { const char* Name; float Cloud, Rain, Snow, Fog, TempC, Wet; const char* Show = nullptr; };
 static const FSky Skies[] = {
 	{ "clear", 0.15f, 0.f, 0.f, 0.f, 9.f, 0.f },
 	{ "overcast", 0.9f, 0.f, 0.f, 0.1f, 7.f, 0.1f },
@@ -99,6 +99,10 @@ static const FSky Skies[] = {
 	{ "fog", 0.5f, 0.f, 0.f, 0.8f, 6.f, 0.3f },
 	{ "snow", 0.9f, 0.8f, 1.f, 0.2f, -3.f, 0.5f },
 	{ "warm", 0.1f, 0.f, 0.f, 0.f, 25.f, 0.f },
+	// the sky's shows (UPeopleLifeSubsystem::GetSkyShow adds the word)
+	{ "aurora", 0.15f, 0.f, 0.f, 0.f, 4.f, 0.f, "aurora" },
+	{ "rainbow", 0.5f, 0.1f, 0.f, 0.f, 12.f, 0.6f, "rainbow" },
+	{ "fireworks", 0.2f, 0.f, 0.f, 0.f, 10.f, 0.f, "fireworks" },
 };
 
 static void SetNow(const FWorld& W, const FClock& C, const FSky& Sky, int Month, FNow& Now)
@@ -108,6 +112,10 @@ static void SetNow(const FWorld& W, const FClock& C, const FSky& Sky, int Month,
 	Now.Weekday = W.Weekday;
 	Now.Sun = LyudBarks::SunState(C.SunAltitude(W), Sky.Cloud);
 	LyudBarks::WeatherWords(Sky.Cloud, Sky.Rain, Sky.Snow, Sky.Fog, Sky.TempC, Sky.Wet, Now.Weather);
+	if (Sky.Show)
+	{
+		Now.Weather.push_back(Sky.Show);
+	}
 }
 
 /** Two people side by side: seated at the same place within 2 m (a bench, a table, the club's row of computers). */
@@ -233,7 +241,7 @@ static int Run(bool bDay, const std::string& Lang)
 	FWho Who, Other;
 	FNow Now;
 	std::vector<int> Staff;
-	int Samples = 0, WithLine = 0, Greeted = 0, GreetSamples = 0, Pairs = 0, PairsTalk = 0, EventLines = 0, EventAsks = 0;
+	int Samples = 0, WithLine = 0, Greeted = 0, GreetSamples = 0, Pairs = 0, PairsTalk = 0, Counters = 0, CountersTalk = 0, Owns = 0, OwnsTalk = 0, EventLines = 0, EventAsks = 0;
 	int SampleI = 0;
 	std::map<int, int> PrintedHour;
 	const float Dt = 1.f;
@@ -270,9 +278,20 @@ static int Run(bool bDay, const std::string& Lang)
 			for (size_t I = 0; I < Book.Sets.size(); I++)
 			{
 				const FSet& S = Book.Sets[I];
-				if (S.Kind != EKind::Talk && S.Kind != EKind::Event && !FitA[I] && HoursFit(S, H) && Book.MatchWho(S.A, Who))
+				// (a set that asks for a manner: as if their hands were doing it; what the player is noticed by: anybody may)
+				const bool bNotice = S.Kind == EKind::Event && S.On.compare(0, 5, "hero_") == 0;
+				if (!FitA[I] && S.Kind != EKind::Talk && (S.Kind != EKind::Event || bNotice) && HoursFit(S, H))
 				{
-					FitA[I] = 1;
+					Who.Manner = S.A.Manner.Yes.empty() ? std::string() : S.A.Manner.Yes[0];
+					Who.Met = S.A.Met.Yes.empty() ? std::string("new") : S.A.Met.Yes[0];
+					Who.Temper = S.A.Temper.Yes;
+					if (Book.MatchWho(S.A, Who))
+					{
+						FitA[I] = 1;
+					}
+					Who.Manner.clear();
+					Who.Met = "new";
+					Who.Temper.clear();
 				}
 			}
 			// what they would say now, under one of the skies; on the holiday evening, the holiday's
@@ -324,11 +343,15 @@ static int Run(bool bDay, const std::string& Lang)
 			}
 			for (const FPerson& Q : W.People)
 			{
-				if (Q.Id <= P.Id || !Q.bTown || !LyudBarks::CanSpeak(W, Q) || !((P.Partner == Q.Id && Q.Partner == P.Id) || Together(P, Q)))
+				if (Q.Id <= P.Id || !Q.bTown || !LyudBarks::CanSpeak(W, Q) || !((P.Partner == Q.Id && Q.Partner == P.Id) || Together(P, Q) || LyudBarks::AtCounter(W, P, Q) || LyudBarks::WithTheirOwn(W, P, Q)))
 				{
 					continue;
 				}
 				Pairs++;
+				const bool bCounter = LyudBarks::AtCounter(W, P, Q);
+				Counters += bCounter ? 1 : 0;
+				const bool bOwn = LyudBarks::WithTheirOwn(W, P, Q);
+				Owns += bOwn ? 1 : 0;
 				LyudBarks::FillWho(W, P, Who);
 				LyudBarks::FillWho(W, Q, Other);
 				Who.bHeroNear = Other.bHeroNear = true;
@@ -347,6 +370,8 @@ static int Run(bool bDay, const std::string& Lang)
 				if (const std::vector<std::string>* Talk = Book.PickTalk(Who, Other, Now, bSwap, &SetIx))
 				{
 					PairsTalk++;
+					CountersTalk += bCounter ? 1 : 0;
+					OwnsTalk += bOwn ? 1 : 0;
 					Wins[(size_t)SetIx]++;
 					Picked[(size_t)SetIx] = 1;
 					const int Hr = (int)H;
@@ -408,6 +433,9 @@ static int Run(bool bDay, const std::string& Lang)
 		"%d greetings of %d; %d event lines of %d\n", Samples, WithLine, Pairs, PairsTalk, Greeted, GreetSamples, EventLines, EventAsks);
 	CHECK(Samples > 0 && WithLine > Samples * 0.75, "most people up and about have something to say (%.0f%%)", Samples ? 100.0 * WithLine / Samples : 0.0);
 	CHECK(GreetSamples > 0 && Greeted > GreetSamples * 0.9, "nearly everyone greets the player walking past (%.0f%%)", GreetSamples ? 100.0 * Greeted / GreetSamples : 0.0);
+	CHECK(Counters > 50 && CountersTalk > Counters * 0.8, "a customer and whoever serves them have a word at the counter (%d of %d)", CountersTalk, Counters);
+	// (outings and dates are set by the manners' ApplyLikes, which this test doesn't run: here only grown-ups minding children)
+	CHECK(OwnsTalk * 2 >= Owns, "a grown-up and the child they mind have a word (%d of %d)", OwnsTalk, Owns);
 	CHECK(Pairs > 0 && PairsTalk > Pairs * 0.3, "pairs side by side or talking find an exchange (%.0f%% of %d)", Pairs ? 100.0 * PairsTalk / Pairs : 0.0, Pairs);
 	CHECK(EventAsks > 0 && EventLines == EventAsks, "the restaurant's waiter and cook have a line at every moment (%d of %d)", EventLines, EventAsks);
 	int Never = 0;

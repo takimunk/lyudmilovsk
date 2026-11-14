@@ -1,0 +1,20 @@
+{
+ "key": "line.valiev_rustam.signal_wait_hint.1",
+ "lang": "ja",
+ "text": "ヘッドランプはクラブで小川さんが売っている。山上駅はクラブのすぐそばだ。暗くなったら、そこでつけてくれ。",
+ "speaker": "valiev_rustam",
+ "voice": "Roger",
+ "voice_id": "CwhRBWXzGAHq8TQ4Fs17",
+ "voice_design": null,
+ "direction": "[confident, dry, matter-of-fact engineer]",
+ "model": "fal-ai/elevenlabs/tts/eleven-v3",
+ "request": {
+  "stability": 0.5,
+  "apply_text_normalization": "auto",
+  "text": "[confident, dry, matter-of-fact engineer] ヘッドランプはクラブで小川さんが売っている。山上駅はクラブのすぐそばだ。暗くなったら、そこでつけてくれ。",
+  "voice": "Roger",
+  "language_code": "ja"
+ },
+ "fal_request_id": "01a1d6d9-95f1-7361-8910-3d3cf0c32bfe",
+ "hash": "35c654b76c6c"
+}

@@ -1,0 +1,20 @@
+{
+ "key": "line.owner.machine_honest.1",
+ "lang": "ja",
+ "text": "飲んだか。うちの自販機は古いが正直だ。押したものが出てくる。人間とは違う。",
+ "speaker": "owner",
+ "voice": "Daniel",
+ "voice_id": "onwK4e9ZLuTAKqWW03F9",
+ "voice_design": null,
+ "direction": "[calm, tired, slow, a little ironic]",
+ "model": "fal-ai/elevenlabs/tts/eleven-v3",
+ "request": {
+  "stability": 0.5,
+  "apply_text_normalization": "auto",
+  "text": "[calm, tired, slow, a little ironic] 飲んだか。うちの自販機は古いが正直だ。押したものが出てくる。人間とは違う。",
+  "voice": "Daniel",
+  "language_code": "ja"
+ },
+ "fal_request_id": "01a1d7ab-849d-7ac0-90fa-8a6980986c9a",
+ "hash": "1d79b47ca507"
+}

@@ -1,5 +1,6 @@
 #include "Doors/LyudDoor.h"
 
+#include "NpcDialogue.h"
 #include "CharacterStandard.h"
 #include "Components/CapsuleComponent.h"
 #include "Components/InstancedStaticMeshComponent.h"
@@ -780,7 +781,8 @@ void ULyudDoorSubsystem::GetBodies(TArray<TPair<FVector, float>>& Out) const
 	}
 	for (const FAgent& A : Agents)
 	{
-		if (A.Actor.IsValid())
+		// a hidden body (a pooled townsperson, somebody not drawn now) is in nobody's way
+		if (A.Actor.IsValid() && !A.Actor->IsHidden())
 		{
 			Out.Add({ A.Actor->GetActorLocation(), A.Radius });
 		}
@@ -798,7 +800,8 @@ bool ULyudDoorSubsystem::AnyBody(TFunctionRef<bool(const FVector& At, float Radi
 	}
 	for (const FAgent& A : Agents)
 	{
-		if (const AActor* Actor = A.Actor.Get())
+		// a hidden body stays where it was last drawn: it must not keep a door from closing till it is shown again
+		if (const AActor* Actor = A.Actor.Get(); Actor && !Actor->IsHidden())
 		{
 			if (Visit(Actor->GetActorLocation(), A.Radius))
 			{
@@ -815,7 +818,7 @@ void ULyudDoorSubsystem::Tick(float DeltaTime)
 	{
 		// polled, never consumed: E belongs to several things at once; not while a trade or game screen is up
 		const ULyudInventoryUI* UI = ULyudInventoryUI::Get(this);
-		if (PC->WasInputKeyJustPressed(EKeys::E) && !(UI && UI->IsOpen()))
+		if (ANpcTalkDirector::UsePressed(PC) && !(UI && UI->IsOpen()))
 		{
 			PlayerInteract();
 		}
@@ -916,9 +919,9 @@ void ULyudDoorSubsystem::UpdateAgents(float DeltaTime)
 				continue;
 			}
 			const bool bHolding = A.Holding.Contains(Door);
-			// a body hidden while still in the leaf's sweep keeps its door until it is out of it (released earlier the door
-			// would wait to close every frame with the body in the way)
-			bool bWants = bHidden && bHolding && Door->IsInSweep(Pos, A.Radius);
+			// a hidden body lets go of its door at once: it doesn't move while hidden, and the door's own check of who
+			// stands in its sweep (AnyBody) no longer counts it, so the door closes
+			bool bWants = false;
 			if (bNear)
 			{
 				const FTransform& T = Door->GetActorTransform();

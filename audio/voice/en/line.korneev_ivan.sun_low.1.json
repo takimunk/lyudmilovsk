@@ -1,0 +1,20 @@
+{
+ "key": "line.korneev_ivan.sun_low.1",
+ "lang": "en",
+ "text": "At dawn from the shore you can see the light coming to you across the water. Right to your feet. Every morning, and I still can't get used to it.",
+ "speaker": "korneev_ivan",
+ "voice": "Bill",
+ "voice_id": "pqHfZKP75CvOlQylNhV4",
+ "voice_design": null,
+ "direction": "[an old man, slow, a little gravelly, contented, a quiet joke at the end]",
+ "model": "fal-ai/elevenlabs/tts/eleven-v3",
+ "request": {
+  "stability": 0.5,
+  "apply_text_normalization": "auto",
+  "text": "[an old man, slow, a little gravelly, contented, a quiet joke at the end] At dawn from the shore you can see the light coming to you across the water. Right to your feet. Every morning, and I still can't get used to it.",
+  "voice": "Bill",
+  "language_code": "en"
+ },
+ "fal_request_id": "01a1d744-738b-7d90-b21c-afc98d6e9251",
+ "hash": "b655698dc88b"
+}

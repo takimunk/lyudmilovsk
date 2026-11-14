@@ -1,0 +1,20 @@
+{
+ "key": "line.owner.supper_night_hurry.1",
+ "lang": "ru",
+ "text": "Солнце село, я чувствую. Аслан у двери торгует до восьми, а «Байкал» в автомате не спит.",
+ "speaker": "owner",
+ "voice": "Daniel",
+ "voice_id": "onwK4e9ZLuTAKqWW03F9",
+ "voice_design": null,
+ "direction": "[calm, tired, slow, a little ironic]",
+ "model": "fal-ai/elevenlabs/tts/eleven-v3",
+ "request": {
+  "stability": 0.5,
+  "apply_text_normalization": "auto",
+  "text": "[calm, tired, slow, a little ironic] Солнце село, я чувствую. Аслан у двери торгует до восьми, а «Байкал» в автомате не спит.",
+  "voice": "Daniel",
+  "language_code": "ru"
+ },
+ "fal_request_id": "01a1d7ab-a19b-71c1-86aa-0dfedd81c34e",
+ "hash": "fce45c96a971"
+}

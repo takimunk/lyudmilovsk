@@ -1,0 +1,20 @@
+{
+ "key": "line.kimura_dasha.feeder_table_rows.1",
+ "lang": "ja",
+ "text": "今は自分で毎朝表をつけてるの。シジュウカラ、スズメ、それから見るだけ見て帰ったカササギが一羽。",
+ "speaker": "kimura_dasha",
+ "voice": "Charlotte",
+ "voice_id": "XB0fDUnXU5powFXDhCwa",
+ "voice_design": null,
+ "direction": "[a tired physics student, wry, self-ironic]",
+ "model": "fal-ai/elevenlabs/tts/eleven-v3",
+ "request": {
+  "stability": 0.5,
+  "apply_text_normalization": "auto",
+  "text": "[a tired physics student, wry, self-ironic] 今は自分で毎朝表をつけてるの。シジュウカラ、スズメ、それから見るだけ見て帰ったカササギが一羽。",
+  "voice": "Charlotte",
+  "language_code": "ja"
+ },
+ "fal_request_id": "01a1d754-ab1e-7163-a7e6-854a5f30e8ec",
+ "hash": "03ed0aaaa898"
+}

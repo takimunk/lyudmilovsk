@@ -1,0 +1,20 @@
+{
+ "key": "line.girl_b.high_up_longer.1",
+ "lang": "ru",
+ "text": "Как ты высоко. Оттуда, наверно, всё видно чуть дольше.",
+ "speaker": "girl_b",
+ "voice": "Sarah",
+ "voice_id": "EXAVITQu4vr4xnSDxMaL",
+ "voice_design": null,
+ "direction": "[curious, slightly uneasy, conspiratorial]",
+ "model": "fal-ai/elevenlabs/tts/eleven-v3",
+ "request": {
+  "stability": 0.5,
+  "apply_text_normalization": "auto",
+  "text": "[curious, slightly uneasy, conspiratorial] Как ты высоко. Оттуда, наверно, всё видно чуть дольше.",
+  "voice": "Sarah",
+  "language_code": "ru"
+ },
+ "fal_request_id": "01a1d7b6-000c-7ff2-9825-4a00dba34de5",
+ "hash": "3035c974e504"
+}

@@ -1,0 +1,613 @@
+{
+ "_doc": "Capsule towers (P-CAPSULE, P-T5H1) second pass: lobby things, the three lift stops, the caretaker's capsule and Nora's, notices, texts, quests. Keys city.cap.*, city.t5.*, quest.capsule_*, city.lift.capsule.*.",
+ "city.cap.p.lift": {
+  "ru": "E — вызвать лифт",
+  "en": "E — call the lift",
+  "ja": "E：エレベーターを呼ぶ"
+ },
+ "city.cap.p.street": {
+  "ru": "E — выглянуть на улицу",
+  "en": "E — look out at the street",
+  "ja": "E：通りを眺める"
+ },
+ "city.cap.p.mail": {
+  "ru": "E — заглянуть в почтовые ящики",
+  "en": "E — look at the letter boxes",
+  "ja": "E：郵便受けをのぞく"
+ },
+ "city.cap.p.keys": {
+  "ru": "E — посмотреть на доску с ключами",
+  "en": "E — look at the key board",
+  "ja": "E：鍵の掛け板を見る"
+ },
+ "city.cap.p.umb": {
+  "ru": "E — посмотреть на зонты",
+  "en": "E — look at the umbrellas",
+  "ja": "E：傘を見る"
+ },
+ "city.cap.p.bike": {
+  "ru": "E — осмотреть велосипед",
+  "en": "E — look the bicycle over",
+  "ja": "E：自転車を眺める"
+ },
+ "city.cap.p.pram": {
+  "ru": "E — заглянуть в коляску",
+  "en": "E — peek into the pram",
+  "ja": "E：乳母車をのぞく"
+ },
+ "city.cap.p.plant": {
+  "ru": "E — потрогать листья",
+  "en": "E — touch the leaves",
+  "ja": "E：葉にさわる"
+ },
+ "city.cap.p.hats": {
+  "ru": "E — посмотреть на вешалку",
+  "en": "E — look at the coat stand",
+  "ja": "E：ハンガースタンドを見る"
+ },
+ "city.cap.p.ext": {
+  "ru": "E — прочитать бирку",
+  "en": "E — read the tag",
+  "ja": "E：札を読む"
+ },
+ "city.cap.p.log": {
+  "ru": "E — полистать дежурную тетрадь",
+  "en": "E — leaf through the duty book",
+  "ja": "E：当番ノートをめくる"
+ },
+ "city.cap.p.bell": {
+  "ru": "E — позвонить в звонок",
+  "en": "E — ring the bell",
+  "ja": "E：ベルを鳴らす"
+ },
+ "city.cap.p.news": {
+  "ru": "E — прочитать объявления",
+  "en": "E — read the notices",
+  "ja": "E：お知らせを読む"
+ },
+ "city.cap.p.tapes": {
+  "ru": "E — послушать ленты",
+  "en": "E — listen to the tapes",
+  "ja": "E：テープを聞く"
+ },
+ "city.cap.p.table": {
+  "ru": "E — налить чаю за откидным столиком",
+  "en": "E — pour tea at the fold-down table",
+  "ja": "E：折りたたみ机でお茶をいれる"
+ },
+ "city.cap.p.hooks": {
+  "ru": "E — посмотреть на крючки",
+  "en": "E — look at the hooks",
+  "ja": "E：フックを見る"
+ },
+ "city.cap.p.sill": {
+  "ru": "E — рассмотреть подоконник",
+  "en": "E — look at the sill",
+  "ja": "E：窓台を眺める"
+ },
+ "city.cap.p.phone": {
+  "ru": "E — снять трубку",
+  "en": "E — pick up the receiver",
+  "ja": "E：受話器を取る"
+ },
+ "city.cap.p.box": {
+  "ru": "E — осмотреть находку",
+  "en": "E — look at the find",
+  "ja": "E：忘れ物を調べる"
+ },
+ "city.cap.p.view": {
+  "ru": "E — посмотреть вниз",
+  "en": "E — look down",
+  "ja": "E：下をのぞく"
+ },
+ "city.cap.lift.1": {
+  "ru": "Кнопка вызова светится красным. Где-то наверху гудит лебёдка: лифт идёт.",
+  "en": "The call button glows red. Somewhere above a winch hums: the lift is coming.",
+  "ja": "呼び出しボタンが赤く光る。上のほうで巻上機がうなり、エレベーターが降りてくる。"
+ },
+ "city.cap.lift.2": {
+  "ru": "На табличке три остановки: холл, седьмой мост, верхний мост. Четвёртой дом не обещает.",
+  "en": "The plate lists three stops: the lobby, the seventh-floor bridge, the top bridge. The house promises no fourth.",
+  "ja": "プレートには三つの停止階。ロビー、七階の連絡橋、最上階の連絡橋。四つ目は建物も約束していない。"
+ },
+ "city.cap.lift.night": {
+  "ru": "Ночью лифт едет тихо, как на цыпочках: вахта смазывает его по субботам.",
+  "en": "At night the lift rides quietly, as if on tiptoe: the front desk oils it on Saturdays.",
+  "ja": "夜のエレベーターは爪先立ちみたいに静かに動く。受付が毎週土曜に油を差している。"
+ },
+ "city.cap.street.d1": {
+  "ru": "За стеклом лобби улица в обе стороны: прохожие идут вдоль башни, будто её не замечают.",
+  "en": "Through the lobby glass the street runs both ways; people walk past the tower as if they hadn't noticed it.",
+  "ja": "ロビーのガラス越しに通りが左右へ伸びる。人々は塔など目に入らないように通り過ぎる。"
+ },
+ "city.cap.street.d2": {
+  "ru": "Капсулы нависают над улицей. Посмотришь вверх, и кажется, что дом сейчас качнётся.",
+  "en": "The capsules hang over the street. Look up and the house seems about to sway.",
+  "ja": "カプセルが通りの上に張り出している。見上げると、建物がいまにも揺れそうだ。"
+ },
+ "city.cap.street.n": {
+  "ru": "Ночью стекло превращается в зеркало: в нём лампа, кресло и немного тебя.",
+  "en": "At night the glass turns into a mirror: a lamp, an armchair and a bit of you.",
+  "ja": "夜、ガラスは鏡になる。ランプと肘掛け椅子、それから少しだけ僕が映っている。"
+ },
+ "city.cap.street.rain": {
+  "ru": "По козырьку стучит дождь, а в лобби сухо и пахнет мокрыми зонтами.",
+  "en": "Rain drums on the canopy; the lobby is dry and smells of wet umbrellas.",
+  "ja": "ひさしを雨が叩く。ロビーは乾いていて、濡れた傘の匂いがする。"
+ },
+ "city.cap.street.snow": {
+  "ru": "Снег ложится на козырёк и сползает пластами. Из лобби похоже на медленное кино.",
+  "en": "Snow settles on the canopy and slides off in sheets. From the lobby it looks like a slow film.",
+  "ja": "雪がひさしに積もり、板のように滑り落ちる。ロビーから見るとゆっくりした映画のようだ。"
+ },
+ "city.cap.street.fog": {
+  "ru": "Туман съел улицу. Видны только фонарь у входа и край козырька.",
+  "en": "Fog has eaten the street. Only the lamp by the entrance and the edge of the canopy are left.",
+  "ja": "霧が通りを呑み込んだ。入口の街灯とひさしの端だけが見える。"
+ },
+ "city.cap.street.fest": {
+  "ru": "На улице праздник: мимо идут люди с флажками. Кто-то машет капсулам рукой.",
+  "en": "There is a festival outside: people pass with little flags. Someone waves up at the capsules.",
+  "ja": "外では祭りだ。小さな旗を持った人たちが通る。誰かがカプセルに向かって手を振っている。"
+ },
+ "city.cap.mail.1": {
+  "ru": "Ящики с бумажными фамилиями. На одном вместо фамилии нарисована лампа.",
+  "en": "Letter boxes with paper names. On one, a lamp is drawn instead of a name.",
+  "ja": "紙の名札のついた郵便受け。一つだけ、名前の代わりにランプの絵が描かれている。"
+ },
+ "city.cap.mail.m": {
+  "ru": "Утро, ящики ещё пусты: почтальон приходит к десяти.",
+  "en": "Morning, and the boxes are still empty: the postman comes at ten.",
+  "ja": "朝。郵便受けはまだ空だ。配達は十時に来る。"
+ },
+ "city.cap.mail.d": {
+  "ru": "Почтальон уже прошёл: из ящиков торчат уголки конвертов и свёрнутые газеты.",
+  "en": "The postman has been: corners of envelopes and rolled newspapers stick out of the boxes.",
+  "ja": "配達はもう済んだ。郵便受けから封筒の角や丸めた新聞がのぞいている。"
+ },
+ "city.cap.mail.e": {
+  "ru": "К вечеру почту разобрали: ящики пусты, кроме одного. В нём письмо с заграничной маркой.",
+  "en": "By evening the post is gone: every box is empty but one. In it, a letter with a foreign stamp.",
+  "ja": "夕方には郵便は持っていかれた。一つを除いて空っぽ。その一つに外国の切手の手紙が入っている。"
+ },
+ "city.cap.mail.n": {
+  "ru": "Ночью ящики молчат. Только у одного от сквозняка щёлкает крышка.",
+  "en": "At night the boxes are quiet. Only one lid clicks in the draught.",
+  "ja": "夜の郵便受けは静かだ。一つだけ、すきま風でふたがカチリと鳴る。"
+ },
+ "city.cap.mail.sun": {
+  "ru": "Воскресенье: почты нет, ящики закрыты и аккуратны, как зубы.",
+  "en": "Sunday: no post, the boxes shut and tidy as teeth.",
+  "ja": "日曜日。配達はなく、郵便受けは歯並びのようにきちんと閉まっている。"
+ },
+ "city.cap.keys.1": {
+  "ru": "Доска для запасных ключей. На бирках номера, а у одного вместо номера слово «МОСТ».",
+  "en": "A board for spare keys. The tags carry numbers; one has the word BRIDGE instead.",
+  "ja": "予備鍵の掛け板。札には番号があり、一つだけ番号の代わりに「橋」と書かれている。"
+ },
+ "city.cap.keys.m": {
+  "ru": "Утром крючки почти пусты: тем, кто забыл свои ключи, их уже выдали.",
+  "en": "In the morning the hooks are nearly bare: those who forgot their keys have been given them.",
+  "ja": "朝はフックがほとんど空だ。鍵を忘れた人には、もう渡されたのだろう。"
+ },
+ "city.cap.keys.d": {
+  "ru": "Днём пустует половина крючков: кому-то выдали запасной, кто-то так и не вернул.",
+  "en": "By day half the hooks are empty: some were lent, some never came back.",
+  "ja": "昼はフックの半分が空いている。貸し出されたか、返されないままか。"
+ },
+ "city.cap.keys.e": {
+  "ru": "Вечером все крючки заняты. Пустует только «МОСТ»: кто-то там задержался.",
+  "en": "In the evening every hook is taken. Only BRIDGE is empty: someone is lingering up there.",
+  "ja": "夕方はどのフックも埋まっている。「橋」だけが空。誰かがそこで長居しているらしい。"
+ },
+ "city.cap.umb.1": {
+  "ru": "В подставке три зонта: чёрный, клетчатый и совсем детский, с утёнком.",
+  "en": "Three umbrellas in the stand: a black one, a checked one and a tiny one with a duckling.",
+  "ja": "傘立てには三本。黒いの、チェックの、アヒルの子のついた子ども用。"
+ },
+ "city.cap.umb.2": {
+  "ru": "Чей-то зонт стоит здесь так давно, что к нему приколота записка: «Берите, если дождь».",
+  "en": "Someone's umbrella has stood here so long that a note is pinned to it: Take it if it rains.",
+  "ja": "誰かの傘はずいぶん前からここにあって、メモが留めてある。「雨なら持っていって」。"
+ },
+ "city.cap.umb.rain": {
+  "ru": "Зонты мокрые, с них капает в жестяной поддон. Один раскрыт и сушится ручкой кверху.",
+  "en": "The umbrellas are wet and drip into a tin tray. One stands open, drying with its handle up.",
+  "ja": "傘は濡れて、ブリキの受け皿にしずくが落ちる。一本は柄を上にして開いたまま乾かしてある。"
+ },
+ "city.cap.umb.snow": {
+  "ru": "С зонтов на пол стекает талый снег. Хорошо, что под ними поддон.",
+  "en": "Melted snow runs off the umbrellas. Good that there is a tray under them.",
+  "ja": "傘から溶けた雪が流れ落ちる。下に受け皿があってよかった。"
+ },
+ "city.cap.bike.1": {
+  "ru": "Городской велосипед, звонок обмотан синей изолентой. К раме привязана бирка: «Не мой, но не трогать».",
+  "en": "A city bike, its bell wrapped in blue tape. A tag on the frame reads: Not mine, but hands off.",
+  "ja": "街乗りの自転車。ベルには青いテープが巻いてある。フレームの札に「僕のじゃないけど触るな」。"
+ },
+ "city.cap.bike.2": {
+  "ru": "Шины подкачаны совсем недавно: на ниппеле свежий колпачок. Кто-то катается по утрам.",
+  "en": "The tyres were pumped up recently: a fresh cap on the valve. Somebody rides in the mornings.",
+  "ja": "タイヤはつい最近空気を入れたばかりで、バルブのキャップも新しい。誰かが朝に乗っているのだ。"
+ },
+ "city.cap.bike.rain": {
+  "ru": "С рамы капает: на велосипеде ездили под дождём, а потом поставили сушиться у стены.",
+  "en": "The frame drips: it was ridden in the rain and then left to dry against the wall.",
+  "ja": "フレームからしずくが落ちる。雨の中を走って、壁際で乾かしているところだ。"
+ },
+ "city.cap.bike.snow": {
+  "ru": "Велосипед стоит как на зимовке: седло прикрыто пакетом, на руле вязаная варежка.",
+  "en": "The bike stands as if wintering: a bag over the saddle, a knitted mitten on the handlebar.",
+  "ja": "自転車は冬ごもりの格好だ。サドルに袋をかぶせ、ハンドルに毛糸の手袋が掛けてある。"
+ },
+ "city.cap.pram.1": {
+  "ru": "Коляска пустая и сухая, одеяльце сложено треугольником. Хозяйка живёт, кажется, на девятом.",
+  "en": "The pram is empty and dry, the blanket folded into a triangle. Its owner lives on the ninth floor, it seems.",
+  "ja": "乳母車は空で乾いていて、ブランケットが三角に畳んである。持ち主は九階らしい。"
+ },
+ "city.cap.pram.2": {
+  "ru": "В коляске погремушка и маленький вязаный лев. Кто-то заботливо поставил её под лампу.",
+  "en": "A rattle and a little knitted lion lie in the pram. Someone has carefully parked it under the lamp.",
+  "ja": "乳母車の中にガラガラと小さな編みぐるみのライオン。誰かがランプの下に大事そうに停めたのだ。"
+ },
+ "city.cap.pram.n": {
+  "ru": "Ночью коляска стоит сама, как сторож. Малыш давно спит наверху.",
+  "en": "At night the pram stands by itself like a watchman. The baby has long been asleep upstairs.",
+  "ja": "夜の乳母車は番人のようにひとりで立っている。赤ちゃんはとっくに上で眠っている。"
+ },
+ "city.cap.plant.1": {
+  "ru": "Листья блестят: кто-то протирает их тряпкой по четвергам.",
+  "en": "The leaves shine: someone wipes them with a cloth on Thursdays.",
+  "ja": "葉はつやつやしている。誰かが木曜日ごとに布で拭いているのだ。"
+ },
+ "city.cap.plant.2": {
+  "ru": "В горшок воткнута палочка с табличкой: «Поливать по вторникам. Окурки не ронять».",
+  "en": "A stick in the pot carries a sign: Water on Tuesdays. No cigarette ends.",
+  "ja": "鉢に挿した棒の札に「水やりは火曜日。吸い殻は捨てないこと」。"
+ },
+ "city.cap.plant.3": {
+  "ru": "На листе кто-то карандашом написал «Миша». Лист вырос, и подпись растянулась.",
+  "en": "Someone wrote Misha on a leaf in pencil. The leaf has grown and the name has stretched.",
+  "ja": "葉に誰かが鉛筆で「ミーシャ」と書いた。葉が育って、名前も引き伸ばされている。"
+ },
+ "city.cap.plant.rain": {
+  "ru": "Из-за дождя в лобби душновато, и растения выглядят довольными.",
+  "en": "With the rain it is a little close in the lobby, and the plants look content.",
+  "ja": "雨のせいでロビーはむっとしていて、植物は満足そうに見える。"
+ },
+ "city.cap.plant.snow": {
+  "ru": "Растения смотрят на снег за стеклом так, будто сами не прочь выйти.",
+  "en": "The plants watch the snow behind the glass as if they'd like to go out themselves.",
+  "ja": "植物はガラスの向こうの雪を、自分も出てみたそうに眺めている。"
+ },
+ "city.cap.plant.warm": {
+  "ru": "В жару листья слегка поникли. Рядом поставили лейку: для тех, кто заметит.",
+  "en": "In the heat the leaves droop a little. A watering can stands beside it for anyone who notices.",
+  "ja": "暑さで葉が少しうなだれている。気づいた人のために、そばにジョウロが置いてある。"
+ },
+ "city.cap.hats.1": {
+  "ru": "На вешалке шляпа, берет и шарф, завязанный узлом. Шарф висит так давно, что его считают местным.",
+  "en": "On the stand: a hat, a beret and a scarf tied in a knot. The scarf has hung there so long it counts as a local.",
+  "ja": "スタンドには帽子とベレー帽、結び目のあるマフラー。マフラーは長いことそこにあって、もう地元の住人扱いだ。"
+ },
+ "city.cap.hats.rain": {
+  "ru": "На вешалке мокрые плащи, под ними лужицы. Один плащ кто-то повесил вывернутым.",
+  "en": "Wet raincoats hang on the stand, puddles under them. Someone hung one inside out.",
+  "ja": "スタンドには濡れたレインコートが掛かり、下に水たまりができている。一枚は裏返しだ。"
+ },
+ "city.cap.hats.cold": {
+  "ru": "Зимние шапки с ушами висят рядами. Пахнет тёплой шерстью.",
+  "en": "Winter hats with ear flaps hang in rows. It smells of warm wool.",
+  "ja": "耳当て付きの冬帽子が並んで掛かっている。あたたかい毛糸の匂いがする。"
+ },
+ "city.cap.hats.warm": {
+  "ru": "В тёплую погоду вешалка почти пуста. Остаётся только соломенная шляпа с лентой.",
+  "en": "In warm weather the stand is nearly bare. Only a straw hat with a ribbon is left.",
+  "ja": "暖かい日はスタンドがほぼ空だ。リボンのついた麦わら帽子だけが残っている。"
+ },
+ "city.cap.ext.1": {
+  "ru": "Огнетушитель с несколькими бирками: «Проверен». Подпись размашистая, как росчерк на открытке.",
+  "en": "A fire extinguisher with several tags: Checked. The signature is sweeping, like a flourish on a postcard.",
+  "ja": "消火器には何枚もの札。「点検済み」。署名はハガキの飾り書きみたいに大きく流れている。"
+ },
+ "city.cap.ext.2": {
+  "ru": "Рядом на стене стрелка и надпись: «Лестница — слева. Лифт при пожаре не вызывать».",
+  "en": "On the wall beside it an arrow and a line: Stairs are on the left. Do not call the lift in a fire.",
+  "ja": "そばの壁に矢印と注意書き。「階段は左。火事のときはエレベーターを呼ばないこと」。"
+ },
+ "city.cap.log.1": {
+  "ru": "Дежурная тетрадь вахты: время слева, происшествия справа. Лежит раскрытой, будто её только что оставили.",
+  "en": "The front desk's duty book: the time on the left, what happened on the right. It lies open as if just put down.",
+  "ja": "受付の当番ノート。時刻は左、出来事は右。いま置いたばかりのように開いたままだ。"
+ },
+ "city.cap.bell.d": {
+  "ru": "Дзинь. Никто не выходит: вахта, видно, ушла пить чай. Звон растворяется в коридоре.",
+  "en": "Ding. Nobody comes: the front desk must have gone for tea. The sound dissolves in the passage.",
+  "ja": "チーン。誰も出てこない。受付はお茶にでも行ったのだろう。音が廊下に溶けていく。"
+ },
+ "city.cap.bell.n": {
+  "ru": "Дзинь, слишком громко для ночи. Эхо бежит к лифту и возвращается тише.",
+  "en": "Ding: too loud for the night. The echo runs to the lift and comes back softer.",
+  "ja": "チーン。夜にしては大きすぎる音。こだまはエレベーターまで走って、小さくなって戻ってくる。"
+ },
+ "city.cap.news.base": {
+  "ru": "Объявления дома: «Лифт чинят только по субботам», «Мост не место для сушки белья», «Тихие часы: с 23 до 1». Остальное на других листках.",
+  "en": "House notices: The lift is mended on Saturdays only; the bridge is no place to dry laundry; quiet hours 11 pm to 1 am. The rest is on other slips.",
+  "ja": "お知らせ。「エレベーターの修理は土曜日のみ」「橋は洗濯物を干す場所ではありません」「静かな時間は二十三時から一時」。ほかは別の紙に。"
+ },
+ "city.cap.news.1": {
+  "ru": "«Жильцам: с 23:00 до 01:00 просьба не греметь дверями и трубами. В капсуле у входа идёт связь с дальними станциями. Спасибо. Комендант И. Сингх».",
+  "en": "To residents: from 11 pm to 1 am please do not bang doors or pipes. In the capsule by the entrance contact is being made with far stations. Thank you. Caretaker I. Singh.",
+  "ja": "住人のみなさまへ。二十三時から一時まで、ドアや配管を鳴らさないでください。入口のカプセルで遠くの局と交信中です。管理人 I・シン。"
+ },
+ "city.cap.news.2": {
+  "ru": "«Найдено на скамейке седьмого моста: коробка с катушкой магнитной ленты. Хозяина прошу забрать её у меня, в капсуле у входа. Нет хозяина, послушаем вместе».",
+  "en": "Found on the bench of the seventh-floor bridge: a box with a reel of magnetic tape. The owner is asked to collect it from me, in the capsule by the entrance. No owner? We'll listen to it together.",
+  "ja": "七階の連絡橋のベンチで見つかりました。磁気テープのリールの入った箱です。持ち主は入口のカプセルの私のところまで。持ち主がいなければ、一緒に聞きましょう。"
+ },
+ "city.cap.news.3": {
+  "ru": "«Кто принесёт коробку с седьмого моста коменданту, получит чаю. Чай настоящий, по четвергам и когда угодно. И. С.»",
+  "en": "Whoever brings the box from the seventh-floor bridge to the caretaker gets tea. Real tea, on Thursdays and whenever. I. S.",
+  "ja": "七階の橋の箱を管理人まで届けてくれた人にはお茶を出します。本物のお茶です。木曜日でも、いつでも。I・S"
+ },
+ "city.cap.news.4": {
+  "ru": "«Спасибо всем. Лента оказалась записью эфира: чей-то голос из ночи, которого никто сорок лет не искал. Слушаю по вечерам, заходите. И. Сингх».",
+  "en": "Thank you all. The tape turned out to be a recording of the air: a voice out of the night that nobody had looked for in forty years. I listen in the evenings; do come in. I. Singh.",
+  "ja": "みなさんありがとう。テープは電波の録音でした。四十年だれも探さなかった、夜の向こうの声です。夕方に聞いています。どうぞ寄ってください。I・シン"
+ },
+ "city.cap.news.thu": {
+  "ru": "«По четвергам комендант заваривает чай на откидном столике. Приносить свою чашку».",
+  "en": "On Thursdays the caretaker brews tea at the fold-down table. Bring your own cup.",
+  "ja": "木曜日は管理人が折りたたみ机でお茶をいれます。カップは持参してください。"
+ },
+ "city.cap.reel.1": {
+  "ru": "Картонная коробка, перевязанная шнурком. На катушке красная изолента и надпись карандашом: «Ночной эфир. Не стирать». Заберу, отнесу тому, кто ждёт.",
+  "en": "A cardboard box tied with string. On the reel, red tape and a pencilled line: Night air. Do not erase. I'll take it to the one who is waiting.",
+  "ja": "ひもで結んだ厚紙の箱。リールには赤いテープと鉛筆書き。「夜の電波。消さないこと」。待っている人に届けよう。"
+ },
+ "city.cap.reel.2": {
+  "ru": "Скамейка тёплая: на ней сидели совсем недавно. Лента лежит рядом, будто её просто забыли встать и взять.",
+  "en": "The bench is warm: someone sat here not long ago. The tape lies beside it as if its owner forgot to stand up and take it.",
+  "ja": "ベンチはまだ温かい。ついさっきまで誰かが座っていたのだ。テープは、立ち上がるとき持っていくのを忘れたように隣にある。"
+ },
+ "city.cap.s7.d": {
+  "ru": "С седьмого моста улица как на ладони, прохожие размером со спичку. Крыша лобби внизу в голубином пуху.",
+  "en": "From the seventh-floor bridge the street lies on the palm of your hand, people the size of matchsticks. The lobby roof below is downy with pigeon feathers.",
+  "ja": "七階の橋から通りは手のひらのようだ。通行人はマッチ棒の大きさ。下のロビーの屋根にはハトの羽毛が散っている。"
+ },
+ "city.cap.s7.n": {
+  "ru": "Ночью улица внизу цепочка фонарей. Сверху видно, как кто-то идёт домой.",
+  "en": "At night the street below is a chain of lamps. From up here you can see someone walking home.",
+  "ja": "夜の通りは街灯の鎖だ。ここからなら、誰かが家へ帰っていくのが見える。"
+ },
+ "city.cap.s7.rain": {
+  "ru": "Дождь здесь шумит иначе: по перилам, по бетону, по соседним капсулам, как по барабанам.",
+  "en": "Rain sounds different here: on the rails, on the concrete, on the next capsules like drums.",
+  "ja": "ここでは雨の音が違う。手すりに、コンクリートに、隣のカプセルにと、太鼓のように響く。"
+ },
+ "city.cap.top.d": {
+  "ru": "С верхнего моста видна полгорода: крыши, трубы, серая полоска на краю, наверное, море. Ветер гуляет между ядрами башни.",
+  "en": "From the top bridge half the town shows: roofs, chimneys, a grey strip at the edge, probably the sea. The wind roams between the tower's cores.",
+  "ja": "最上階の橋からは町の半分が見える。屋根、煙突、端のほうの灰色の帯は、たぶん海。風が塔の二本の芯のあいだを歩き回る。"
+ },
+ "city.cap.top.n": {
+  "ru": "Ночью город внизу россыпь окон. Далёкое тёмное это море: оно не светится.",
+  "en": "At night the town below is a scatter of windows. The dark far off is the sea: it doesn't glow.",
+  "ja": "夜の町は窓の散らばりだ。遠くの暗がりは海。海は光らない。"
+ },
+ "city.cap.top.rain": {
+  "ru": "Наверху дождь бьёт сбоку. Перила холодные и мокрые, шапка сразу тяжелеет.",
+  "en": "Up here the rain comes sideways. The rails are cold and wet, and my cap grows heavy at once.",
+  "ja": "上では雨が横から吹きつける。手すりは冷たく濡れて、帽子がすぐ重くなる。"
+ },
+ "city.cap.top.fog": {
+  "ru": "Туман лежит ниже моста: башня торчит из него, как мачта из молока.",
+  "en": "Fog lies below the bridge: the tower sticks out of it like a mast out of milk.",
+  "ja": "霧は橋より下に溜まっている。塔はミルクから突き出たマストのようだ。"
+ },
+ "city.cap.top.snow": {
+  "ru": "Снег летит мимо горизонтально. На перилах он не тает, на ладони тает сразу.",
+  "en": "Snow flies past sideways. On the rail it stays; on my palm it melts at once.",
+  "ja": "雪が真横に飛んでいく。手すりには積もるのに、手のひらではすぐ溶ける。"
+ },
+ "city.cap.back.d": {
+  "ru": "С другой стороны моста склон и ступени соседней террасы, огородики, антенны на крышах.",
+  "en": "On the other side of the bridge: the slope and the steps of the next terrace, little gardens, aerials on the roofs.",
+  "ja": "橋の反対側には斜面と隣の段丘の階段、小さな菜園、屋根のアンテナが見える。"
+ },
+ "city.cap.back.n": {
+  "ru": "Сзади темнота склона и несколько окон. Кто-то не спит. Вон тот огонёк, наверное, чьё-то радио.",
+  "en": "Behind: the dark of the slope and a few windows. Someone is awake. That glow is probably somebody's radio.",
+  "ja": "後ろは斜面の暗がりと、いくつかの窓。誰かが起きている。あの明かりは誰かのラジオだろう。"
+ },
+ "city.cap.back.rain": {
+  "ru": "Склон за мостом тонет в мокрой дымке. Антенны на крышах блестят, как тонкие иглы.",
+  "en": "The slope behind the bridge drowns in a wet haze. The rooftop aerials gleam like thin needles.",
+  "ja": "橋の向こうの斜面は濡れた靄に沈んでいる。屋根のアンテナが細い針のように光る。"
+ },
+ "city.cap.tapes.1": {
+  "ru": "Катушечный магнитофон с двумя бобинами, рядом четыре коробки с лентами. На корешках номера частот.",
+  "en": "A reel-to-reel recorder with two reels, four tape boxes beside it. The spines carry frequencies.",
+  "ja": "リール式のテープレコーダー、そばに四つのテープ箱。背には周波数が書いてある。"
+ },
+ "city.cap.table.1": {
+  "ru": "Откидной столик опущен: на нём термос, две чашки и сахарница с отбитым краем. Чашки разные: сюда ждут гостей.",
+  "en": "The fold-down table is lowered: a flask, two cups and a sugar bowl with a chipped rim. The cups don't match: guests are expected here.",
+  "ja": "折りたたみ机は下ろされ、魔法瓶と二つのカップ、縁の欠けた砂糖入れが載っている。カップは揃っていない。ここでは客を待っているのだ。"
+ },
+ "city.cap.table.2": {
+  "ru": "Чай крепкий, как ночной эфир. «Пей», — сказал бы Ильмар, если бы был дома.",
+  "en": "The tea is strong as the night air. \"Drink,\" Ilmar would say if he were home.",
+  "ja": "お茶は夜の電波のように濃い。イルマルがいたら「飲め」と言うだろう。"
+ },
+ "city.cap.table.thu": {
+  "ru": "Четверг: чашки уже расставлены, а на блюдце записка: «Тому, кто принесёт ленту».",
+  "en": "Thursday: the cups are already laid out, and on the saucer a note: For whoever brings the tape.",
+  "ja": "木曜日。カップはもう並べてあり、受け皿にメモ。「テープを届けてくれた人へ」。"
+ },
+ "city.cap.hooks.1": {
+  "ru": "На крючках дождевик и наушники с проводом, завязанным бантиком. Ильмар вешает их так, чтобы с кровати можно было дотянуться.",
+  "en": "On the hooks: a raincoat and headphones with the cord tied in a bow. Ilmar hangs them where he can reach from the bed.",
+  "ja": "フックにはレインコートと、コードをちょうちょ結びにしたヘッドホン。イルマルはベッドから手の届く位置に掛けている。"
+ },
+ "city.cap.hooks.2": {
+  "ru": "В кармане дождевика сложенная карточка-«куэсэлка» и огрызок карандаша.",
+  "en": "In the raincoat pocket: a folded QSL card and a pencil stub.",
+  "ja": "レインコートのポケットには、折りたたんだQSLカードとちびた鉛筆。"
+ },
+ "city.cap.hooks.rain": {
+  "ru": "Дождевик ещё мокрый: комендант только что с обхода.",
+  "en": "The raincoat is still wet: the caretaker has just come back from his rounds.",
+  "ja": "レインコートはまだ濡れている。管理人は見回りから戻ったばかりだ。"
+ },
+ "city.cap.sill.1": {
+  "ru": "На подоконнике три радиолампы в ряд, как гномики. Самую маленькую Ильмар зовёт «ребёнком».",
+  "en": "Three radio valves stand in a row on the sill like gnomes. Ilmar calls the smallest one \"the baby\".",
+  "ja": "窓台に真空管が三本、小人のように並んでいる。いちばん小さいのを、イルマルは「赤ちゃん」と呼ぶ。"
+ },
+ "city.cap.sill.n": {
+  "ru": "Ночью лампы чуть светятся отражённым фонарём, будто станция включена и без тока.",
+  "en": "At night the valves glow faintly with a reflected streetlamp, as if the set were on without power.",
+  "ja": "夜、真空管は街灯の反射でうっすら光り、電気が来ていないのに無線機がついているみたいだ。"
+ },
+ "city.cap.sill.rain": {
+  "ru": "Дождь стучит по стеклу, и если вслушаться, выходит почти морзянка.",
+  "en": "Rain taps the glass and, if you listen, it comes out almost as Morse.",
+  "ja": "雨が窓ガラスを叩く。耳をすますと、ほとんどモールス信号だ。"
+ },
+ "city.cap.phone.1": {
+  "ru": "Телефон чёрный, провод длинный, как удочка. Рядом листок: «Если звонит Гуннар, скажи: я на обходе».",
+  "en": "A black telephone with a cord as long as a fishing line. A slip beside it: If Gunnar calls, say I'm on my rounds.",
+  "ja": "黒い電話、コードは釣り糸のように長い。そばのメモ。「グンナルから電話が来たら、見回り中だと言って」。"
+ },
+ "city.cap.phone.m": {
+  "ru": "Утром телефон молчит: все спят, а комендант разбирает почту.",
+  "en": "In the morning the telephone is silent: everyone sleeps, and the caretaker sorts the post.",
+  "ja": "朝の電話は静かだ。みんな眠っていて、管理人は郵便を仕分けている。"
+ },
+ "city.cap.phone.n": {
+  "ru": "Ночью звонок выключен: остался один эфир. Трубка холодная, будто её давно не трогали.",
+  "en": "At night the bell is switched off: only the air is left. The receiver is cold as if nobody has touched it for ages.",
+  "ja": "夜はベルが切ってある。残っているのは電波だけ。受話器は長く誰も触れていないように冷たい。"
+ },
+ "city.cap.logp.title": {
+  "ru": "Дежурная тетрадь вахты",
+  "en": "The front desk's duty book",
+  "ja": "受付の当番ノート"
+ },
+ "city.cap.logp.1": {
+  "ru": "06:10: лифт гудит громче обычного, смазали. 07:30: молочница оставила ящик у двери и расписалась в тетради красным. 09:00: с девятого просят сменить лампу на мосту.",
+  "en": "06:10: the lift hums louder than usual, oiled it. 07:30: the milkwoman left a crate by the door and signed the book in red. 09:00: the ninth floor asks for a new bulb on the bridge.",
+  "ja": "06:10 エレベーターがいつもより大きくうなる。油を差した。07:30 牛乳売りが箱を戸口に置き、赤字でノートに署名。09:00 九階から橋の電球交換の依頼。"
+ },
+ "city.cap.logp.2": {
+  "ru": "13:20: мальчик с третьего потерял варежку, нашлась на ролике лифта. Объявление написал. 16:00: из управления считали капсулы, насчитали на одну больше. Пересчитали: это была луна в круглом окне.",
+  "en": "13:20: the boy from the third floor lost a mitten; it turned up on the lift roller. Wrote a notice. 16:00: the office came to count the capsules and counted one too many. Counted again: it was the moon in a round window.",
+  "ja": "13:20 三階の男の子が手袋をなくした。エレベーターのローラーに引っかかっていた。お知らせを書いた。16:00 役所が来てカプセルを数え、一つ多かった。数え直したら、丸窓に映った月だった。"
+ },
+ "city.cap.logp.3": {
+  "ru": "22:40: на скамейке седьмого моста кто-то оставил коробочку с плёнкой. Не трогал, пусть хозяин сам придёт. 23:05: тихо. Слушаю лифт, он слушает дом.",
+  "en": "22:40: someone left a little box of tape on the bench of the seventh-floor bridge. Didn't touch it; the owner will come himself. 23:05: quiet. I listen to the lift, it listens to the house.",
+  "ja": "22:40 七階の橋のベンチに、誰かがテープの小箱を置いていった。触らない。持ち主が自分で来るだろう。23:05 静か。僕はエレベーターを聞き、エレベーターは建物を聞いている。"
+ },
+ "city.cap.logp.4": {
+  "ru": "07:00: коробочку на мосту так и не забрали, повесил объявление у ящиков. 12:00: мальчик с третьего принёс вторую варежку: «Чтобы первая не скучала».",
+  "en": "07:00: nobody has collected the box on the bridge; hung a notice by the letter boxes. 12:00: the boy from the third floor brought a second mitten: \"So the first one won't be lonely.\"",
+  "ja": "07:00 橋の小箱はまだ誰も取りに来ない。郵便受けのそばにお知らせを貼った。12:00 三階の男の子が二枚目の手袋を持ってきた。「一つ目がさびしくないように」。"
+ },
+ "city.cap.logp.5": {
+  "ru": "Если ты читаешь это, значит, пришёл не за почтой. Лифт ходит, лампы горят, на мосту тепло. Заходи, когда захочешь.",
+  "en": "If you are reading this, you didn't come for the post. The lift runs, the lamps are lit, the bridge is warm. Come in whenever you like.",
+  "ja": "これを読んでいるなら、郵便を取りに来たのではないのだろう。エレベーターは動き、明かりはともり、橋はあたたかい。いつでも寄って。"
+ },
+ "city.cap.tapesp.title": {
+  "ru": "Ленты Ильмара",
+  "en": "Ilmar's tapes",
+  "ja": "イルマルのテープ"
+ },
+ "city.cap.tapesp.1": {
+  "ru": "Лента 1. Первые связи. Молодой сорванный голос: «Алло, алло, кто слышит? Капсула, высота двадцать метров, сигнал хороший». Из помех: «Слышу вас, капсула…» Потом смех, и обрыв.",
+  "en": "Tape 1. First contacts. A young hoarse voice: \"Hello, hello, who hears me? Capsule, twenty metres up, signal good.\" Out of the static: \"I hear you, capsule...\" Then laughter, and a cut.",
+  "ja": "テープ1。最初の交信。若いかすれ声。「もしもし、聞こえますか。こちらカプセル、高さ二十メートル、感度良好」。雑音の向こう。「聞こえますよ、カプセル……」。そして笑い声、ぷつりと切れる。"
+ },
+ "city.cap.tapesp.2": {
+  "ru": "Лента 7. Ночь грозы. Треск, шипение, и вдруг ровный далёкий голос читает прогноз для моряков на трёх языках. Ильмар поверх бормочет: «Вот это дальность».",
+  "en": "Tape 7. The night of the thunderstorm. Crackle, hiss, and suddenly an even, distant voice reads a forecast for sailors in three languages. Ilmar mutters over it: \"Now that is range.\"",
+  "ja": "テープ7。雷雨の夜。ぱちぱち、ざあざあ、そして突然、遠くの落ち着いた声が三つの言語で船乗り向けの予報を読む。上にイルマルのつぶやき。「これぞ飛距離だ」。"
+ },
+ "city.cap.tapesp.3": {
+  "ru": "Лента 12. Голос Гуннара: «UA-Людмиловск-11 вызывает капсулу. Ильмар, ты там?» Пауза в семь секунд. Потом тихо: «Я здесь. Всегда был». Дальше только шипение.",
+  "en": "Tape 12. Gunnar's voice: \"Lyudmilovsk-11 calling the capsule. Ilmar, are you there?\" A pause of seven seconds. Then, quietly: \"I'm here. I always was.\" After that only hiss.",
+  "ja": "テープ12。グンナルの声。「リュドミロフスク11よりカプセルへ。イルマル、そこにいるか」。七秒の沈黙。それから小さく。「ここにいる。ずっといた」。そのあとはノイズだけ。"
+ },
+ "city.cap.tapesp.4": {
+  "ru": "Лента без номера. Одна запись: тишина комнаты. Слышно, как за стеной гудит лифт, скрипит кровать, кто-то вздыхает. На коробке: «Дом, как он есть. Чтобы потом вспомнить».",
+  "en": "An unnumbered tape. One recording: the silence of the room. You can hear the lift hum behind the wall, a bed creak, someone sigh. On the box: The house as it is. To remember later.",
+  "ja": "番号のないテープ。録音は一つだけ、部屋の静けさ。壁の向こうのエレベーターのうなり、ベッドのきしみ、誰かのため息が聞こえる。箱には「建物のありのまま。あとで思い出すために」。"
+ },
+ "quest.capsule_reel.title": {
+  "ru": "Лента на мосту",
+  "en": "The tape on the bridge",
+  "ja": "橋のテープ"
+ },
+ "quest.capsule_reel.desc": {
+  "ru": "На доске у почтовых ящиков висит объявление: на седьмом мосту нашли коробку с магнитной лентой. К мосту ходит лифт в конце прохода.",
+  "en": "A notice by the letter boxes says a box with a reel of magnetic tape was found on the seventh-floor bridge. A lift at the end of the passage goes up there.",
+  "ja": "郵便受けのそばの掲示に、七階の橋で磁気テープの箱が見つかったとある。通路の奥のエレベーターで行ける。"
+ },
+ "quest.capsule_reel.notice.log": {
+  "ru": "Хозяина ленты ищут. Объявление висит у ящиков.",
+  "en": "They're looking for the tape's owner. The notice hangs by the boxes.",
+  "ja": "テープの持ち主を探している。お知らせは郵便受けのそばにある。"
+ },
+ "quest.capsule_reel.notice.obj": {
+  "ru": "Прочитать объявления на доске у ящиков",
+  "en": "Read the notices on the board by the letter boxes",
+  "ja": "郵便受けのそばの掲示板のお知らせを読む"
+ },
+ "quest.capsule_reel.reel.log": {
+  "ru": "Коробка лежит на скамейке седьмого моста. Туда идёт лифт.",
+  "en": "The box lies on the bench of the seventh-floor bridge. The lift goes there.",
+  "ja": "箱は七階の橋のベンチにある。エレベーターで行ける。"
+ },
+ "quest.capsule_reel.reel.obj": {
+  "ru": "Найти коробку с лентой на седьмом мосту",
+  "en": "Find the box of tape on the seventh-floor bridge",
+  "ja": "七階の橋でテープの箱を見つける"
+ },
+ "quest.capsule_reel.back.log": {
+  "ru": "Коробка у меня. Ильмар сидит над магнитофоном, пусть услышит, что в ней.",
+  "en": "I have the box. Ilmar sits over his recorder; let him hear what is on it.",
+  "ja": "箱は手元にある。イルマルはテープレコーダーの前にいる。中身を聞かせてあげよう。"
+ },
+ "quest.capsule_reel.back.obj": {
+  "ru": "Послушать ленты у магнитофона Ильмара",
+  "en": "Listen to the tapes at Ilmar's recorder",
+  "ja": "イルマルのテープレコーダーでテープを聞く"
+ },
+ "quest.capsule_reel.done": {
+  "ru": "Ильмар поставил катушку на магнитофон, и из комнаты ушли стены: чей-то далёкий ночной голос читал прогноз, а потом назвал позывной, которого никто не слышал сорок лет. «Это был я, — сказал Ильмар. — В первый год». Он налил мне чаю и два раза поправил кружку на блюдце.",
+  "en": "Ilmar put the reel on his recorder and the walls of the room went away: a far night voice read a forecast and then gave a call sign nobody had heard in forty years. \"That was me,\" said Ilmar. \"In my first year.\" He poured me tea and straightened the cup on its saucer twice.",
+  "ja": "イルマルがリールをテープレコーダーに掛けると、部屋の壁が消えた。遠い夜の声が予報を読み、それから四十年だれも聞かなかった呼出符号を告げた。「僕だよ」とイルマルは言った。「最初の年の」。彼はお茶をいれ、カップを受け皿の上で二度なおした。"
+ },
+ "city.lift.capsule.ground": {
+  "ru": "Холл",
+  "en": "Lobby",
+  "ja": "ロビー"
+ },
+ "city.lift.capsule.s7": {
+  "ru": "Седьмой мост",
+  "en": "Seventh-floor bridge",
+  "ja": "七階の橋"
+ },
+ "city.lift.capsule.top": {
+  "ru": "Верхний мост",
+  "en": "Top bridge",
+  "ja": "最上階の橋"
+ },
+ "city.coll.capsule_towers.title": {
+  "ru": "Дома-капсулы: уголки и мосты",
+  "en": "Capsule towers: corners and bridges",
+  "ja": "カプセルタワー：片隅と橋"
+ }
+}

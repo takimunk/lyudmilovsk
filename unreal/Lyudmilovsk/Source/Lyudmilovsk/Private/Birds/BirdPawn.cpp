@@ -140,6 +140,9 @@ void ABirdPawn::Setup(FName InSpecies, const FVector& Location, float Yaw, const
 		OutsideBody->SetActorEnableCollision(false);
 	}
 	Species = InSpecies;
+	// asked once: the answer loads the species' detailed body (or looks for one that was never made), and the camera
+	// asked for it every frame
+	bHasFirstPersonMesh = UBirdSpeciesLibrary::HasFirstPersonBody(InSpecies);
 	FBirdSpecies Row;
 	if (const FBirdSpecies* Found = UBirdSpeciesLibrary::Find(InSpecies))
 	{
@@ -1207,7 +1210,7 @@ void ABirdPawn::CalcCamera(float DeltaTime, FMinimalViewInfo& OutResult)
 	// from inside, the close-up body (beak, wings, breast); from outside, the species' own bird. A species with a
 	// first-person body (the detailed pigeon) is that body inside too: skull hidden, bill kept, wings swept into view.
 	bInsideView = Inside > 0.5f;
-	const bool bOwnBody = OutsideBody && UBirdSpeciesLibrary::HasFirstPersonBody(Species);
+	const bool bOwnBody = OutsideBody && bHasFirstPersonMesh;
 	if (bOwnBody)
 	{
 		Body->SetShown(false, false);
@@ -1513,4 +1516,19 @@ FString ABirdPawn::DebugLine() const
 	return FString::Printf(TEXT("%s %s  energy %.2f  air %.1f m/s  ground %.1f m/s  climb %+.1f  updraft %+.2f  wind %.1f  load %.1fg  wings %.2f/%.2f  flare %.2f  head %s %s %s"),
 		*Species.ToString(), ModeName, (float)Flight->Energy, GetAirspeed(), GetVelocityCm().Size() / 100.f, GetVelocityCm().Z / 100.f, LastUpdraft, LastAir.Size(),
 		Flight->Load, Flight->SpreadL, Flight->SpreadR, Flare, Tracker->IsTracking() ? TEXT("tracked") : TEXT("mouse"), *Tracker->State(), *Head->GetComponentRotation().ToCompactString());
+}
+
+void ABirdPawn::DevTeleport(const FVector& At)
+{
+	if (Mode == EBirdMode::Ground || Mode == EBirdMode::Swimming)
+	{
+		Mode = EBirdMode::Air;
+		bAnchored = false;
+		bGripping = false;
+		bHopping = false;
+		HopVel = FVector::ZeroVector;
+	}
+	Flight->Vel = BirdFlight::V3();
+	SetActorLocation(At, false, nullptr, ETeleportType::TeleportPhysics);
+	Flight->Pos = ToM(GetActorLocation());
 }

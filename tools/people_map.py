@@ -874,23 +874,50 @@ def face_to(a, b):
     return math.degrees(math.atan2(b[1] - a[1], b[0] - a[0]))
 
 
+ACADEM_LAYOUT = os.path.join(ROOT, "blender", "export", "academgorodok", "layout.json")
+# the fountain ring's benches in layout.json's order (50, 90, 130, 230, 270, 310 deg round the fountain) -> the ids the
+# life and the quests already know (academ_bench_0..3 the diagonal ones counter-clockwise from the north-east, 4 and 5
+# the two on the axis)
+ACADEM_BENCH_IDS = (0, 4, 1, 2, 5, 3)
+
+
+def academ_benches(grid=None, old=None):
+    """The square's benches from the built layout: the seat's centre and the sitters' facing are the mesh's own.
+    grid None: the ground's height kept from old (id -> the place as it was)."""
+    with open(ACADEM_LAYOUT, encoding="utf-8") as f:
+        built = json.load(f)["benches"]
+
+    class Flat:
+        def __init__(self, z):
+            self.z = z
+
+        def ground(self, x, y):
+            return self.z
+
+    out = []
+    for i, k in enumerate(ACADEM_BENCH_IDS):
+        b = built[i]
+        pid = "academ_bench_%d" % k
+        c = ens_to_ue((b["at"][0], b["at"][1], 0.0))[:2]
+        a = math.radians(b["yaw"])
+        ahead = ens_to_ue((b["at"][0] + math.cos(a), b["at"][1] + math.sin(a), 0.0))[:2]
+        g = grid if grid is not None else Flat(old[pid]["pos"][2])
+        out.append(bench(pid, "bench", c, face_to(c, ahead), g, n=b.get("seats", 3), tag="academ_square"))
+    out.sort(key=lambda pl: pl["id"])
+    return out
+
+
 def build_outdoor(grid):
     import plan
     places = []
     fy = FACE_Y / 100.0
     E = lambda x, y: ens_to_ue((x, y, 0.0))[:2]
-    # the Academgorodok's square: benches round the fountain's ring facing it, standing spots on the ring
+    # the Academgorodok's square: its benches as built (plan.benches() -> layout.json "benches": the fountain ring's six
+    # come first), so whoever sits down sits on the bench's own seat; standing spots on the ring
     fxe, fye = plan.SQUARE["fountain"]
     fc = E(fxe, fye)
     ring = plan.SQUARE["bed_r"] + 2.2
-    for k, deg in enumerate((45, 135, 225, 315)):
-        t = math.radians(deg)
-        c = E(fxe + (ring + 0.9) * math.cos(t), fye + (ring + 0.9) * math.sin(t))
-        places.append(bench("academ_bench_%d" % k, "bench", c, face_to(c, fc), grid, tag="academ_square"))
-    for k, deg in enumerate((90, 270)):
-        t = math.radians(deg)
-        c = E(fxe + (ring + 0.9) * math.cos(t), fye + (ring + 0.9) * math.sin(t))
-        places.append(bench("academ_bench_%d" % (k + 4), "bench", c, face_to(c, fc), grid, tag="academ_square"))
+    places.extend(academ_benches(grid))
     sq = stand("academ_square", "square", E(fxe + ring - 0.9, fye), 0.0, grid, n=0, tag="academ")
     for k in range(8):
         t = 2 * math.pi * k / 8 + math.pi / 8
@@ -940,20 +967,16 @@ def build_outdoor(grid):
     for k, y in enumerate(range(int(W.PROMENADE_Y[0]) + 30, int(W.PROMENADE_Y[1]), 60)):
         x = W.shore_x(y) - 10.0
         places.append(stand("beach_%d" % k, "beach", map_to_ue(x, y, 0.0)[:2], 0.0, grid, n=4, spread=1.5, tag="beach"))
-        xb = W.shore_x(y) - 62.0                          # on the promenade (T0), backs to W1 (docs/city_plan.md)
-        places.append(bench("promenade_bench_%d" % k, "promenade_bench", map_to_ue(xb, y, 0.0)[:2], 0.0, grid,
-                            tag="promenade"))
+        # (the promenade's benches are the public spaces' own, S-BENCH-P.. in town_places.json, each on its bench's mesh:
+        # the seats this used to put every 60 m sat people in the air, or twice on the same bench)
     # the town square (Sun Square, city_plan P-SQUARE): benches round its two halves, facing their middles
     import city_plan
     cx, cy = city_plan.to_map(150.0, 905.0)
     for k, (ox, oy) in enumerate(((-30.0, -25.0), (35.0, 30.0))):
         c0 = map_to_ue(cx + ox, cy + oy, 0.0)
         places.append(stand("town_square_%d" % k, "town_square", c0[:2], 0.0, grid, n=0, tag="town"))
-        for j in range(4):
-            t = W.TOWN_ROT + math.pi / 4 + j * math.pi / 2
-            c = map_to_ue(cx + ox + 16.0 * math.cos(t), cy + oy + 16.0 * math.sin(t), 0.0)
-            places.append(bench("town_bench_%d_%d" % (k, j), "town_bench", c[:2], face_to(c, c0), grid, tag="town_square"))
-        sq = places[-5]
+        # (its benches too are the public spaces': S-BENCH-SQ..)
+        sq = places[-1]
         for j in range(6):
             t = 2 * math.pi * j / 6
             x, y = c0[0] + 6.0 * math.cos(t), c0[1] + 6.0 * math.sin(t)

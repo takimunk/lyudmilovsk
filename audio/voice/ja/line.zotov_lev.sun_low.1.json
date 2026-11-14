@@ -1,0 +1,20 @@
+{
+ "key": "line.zotov_lev.sun_low.1",
+ "lang": "ja",
+ "text": "日が沈む前には、いつも五分だけ外に出る。ガリーナはたばこだと思っている。私は吸わない。",
+ "speaker": "zotov_lev",
+ "voice": "George",
+ "voice_id": "JBFqnCBsd6RMkjVDRZzb",
+ "voice_design": null,
+ "direction": "[dry, thoughtful, unhurried, a physicist's quiet irony]",
+ "model": "fal-ai/elevenlabs/tts/eleven-v3",
+ "request": {
+  "stability": 0.5,
+  "apply_text_normalization": "auto",
+  "text": "[dry, thoughtful, unhurried, a physicist's quiet irony] 日が沈む前には、いつも五分だけ外に出る。ガリーナはたばこだと思っている。私は吸わない。",
+  "voice": "George",
+  "language_code": "ja"
+ },
+ "fal_request_id": "01a1d74a-aee7-7d90-99e0-ed7aed6e77e5",
+ "hash": "5183adb05c04"
+}

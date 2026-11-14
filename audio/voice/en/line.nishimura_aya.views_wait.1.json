@@ -1,0 +1,20 @@
+{
+ "key": "line.nishimura_aya.views_wait.1",
+ "lang": "en",
+ "text": "The promenade, the starlings, the rowan wood. Take your time. Look too fast and all you get is a postcard.",
+ "speaker": "nishimura_aya",
+ "voice": "Matilda",
+ "voice_id": "XrExE9yKIg1WjnnlVkGX",
+ "voice_design": null,
+ "direction": "[calm, soft, contemplative, a painter talking about the light]",
+ "model": "fal-ai/elevenlabs/tts/eleven-v3",
+ "request": {
+  "stability": 0.5,
+  "apply_text_normalization": "auto",
+  "text": "[calm, soft, contemplative, a painter talking about the light] The promenade, the starlings, the rowan wood. Take your time. Look too fast and all you get is a postcard.",
+  "voice": "Matilda",
+  "language_code": "en"
+ },
+ "fal_request_id": "01a1d671-e100-7f82-9976-2a0693809f96",
+ "hash": "36b5600258f6"
+}

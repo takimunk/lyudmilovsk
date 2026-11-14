@@ -1,0 +1,20 @@
+{
+ "key": "line.lange_pyotr.sun_low.1",
+ "lang": "ja",
+ "text": "夜明けの海では、まず東を見る。天気のためじゃない。ただ見るんだ。",
+ "speaker": "lange_pyotr",
+ "voice": "Brian",
+ "voice_id": "nPczCjzI2devNBz1zQrb",
+ "voice_design": null,
+ "direction": "[gruff, unhurried, a weathered fisherman of few words]",
+ "model": "fal-ai/elevenlabs/tts/eleven-v3",
+ "request": {
+  "stability": 0.5,
+  "apply_text_normalization": "auto",
+  "text": "[gruff, unhurried, a weathered fisherman of few words] 夜明けの海では、まず東を見る。天気のためじゃない。ただ見るんだ。",
+  "voice": "Brian",
+  "language_code": "ja"
+ },
+ "fal_request_id": "01a1d745-e149-7423-bda5-b5b45be664fc",
+ "hash": "eb766d51e8df"
+}

@@ -1,0 +1,20 @@
+{
+ "key": "line.girl_a.sun_day.1",
+ "lang": "en",
+ "text": "At the lab I sit by the window. The sun creeps across my desk, and I can tell the time by it better than by the clock.",
+ "speaker": "girl_a",
+ "voice": "Matilda",
+ "voice_id": "XrExE9yKIg1WjnnlVkGX",
+ "voice_design": null,
+ "direction": "[whispering, concentrated]",
+ "model": "fal-ai/elevenlabs/tts/eleven-v3",
+ "request": {
+  "stability": 0.5,
+  "apply_text_normalization": "auto",
+  "text": "[whispering, concentrated] At the lab I sit by the window. The sun creeps across my desk, and I can tell the time by it better than by the clock.",
+  "voice": "Matilda",
+  "language_code": "en"
+ },
+ "fal_request_id": "01a1d781-a53f-79d3-9dee-40df1b6b8244",
+ "hash": "8a9568a8ad82"
+}

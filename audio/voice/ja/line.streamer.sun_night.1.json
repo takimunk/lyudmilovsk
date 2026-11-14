@@ -1,0 +1,20 @@
+{
+ "key": "line.streamer.sun_night.1",
+ "lang": "ja",
+ "text": "夜がいちばん視聴者が多いの。太陽がいなくなって、みんなこっちに来たみたいに。",
+ "speaker": "streamer",
+ "voice": "Jessica",
+ "voice_id": "cgSgspJ2msm6clMCkdW9",
+ "voice_design": null,
+ "direction": "[bright, fast, half talking to her chat]",
+ "model": "fal-ai/elevenlabs/tts/eleven-v3",
+ "request": {
+  "stability": 0.5,
+  "apply_text_normalization": "auto",
+  "text": "[bright, fast, half talking to her chat] 夜がいちばん視聴者が多いの。太陽がいなくなって、みんなこっちに来たみたいに。",
+  "voice": "Jessica",
+  "language_code": "ja"
+ },
+ "fal_request_id": "01a1d786-d384-7a90-a2be-b72d92316e12",
+ "hash": "501e5baa81bc"
+}

@@ -365,6 +365,455 @@
    "colour": "#FFD9A8",
    "kind": "lobby",
    "radius": 10
+  },
+  {
+   "pos": [
+    -4.3,
+    9.4,
+    2.25
+   ],
+   "lumens": 500,
+   "colour": "#FFE2B8",
+   "kind": "public",
+   "radius": 6.0
+  },
+  {
+   "pos": [
+    -4.4,
+    5.0,
+    2.35
+   ],
+   "lumens": 450,
+   "colour": "#FFE2B8",
+   "kind": "public",
+   "radius": 6.0
+  },
+  {
+   "pos": [
+    -4.2,
+    5.3,
+    5.35
+   ],
+   "lumens": 500,
+   "colour": "#FFE2B8",
+   "kind": "public",
+   "radius": 6.0
+  },
+  {
+   "pos": [
+    -4.3,
+    10.0,
+    5.35
+   ],
+   "lumens": 500,
+   "colour": "#FFE2B8",
+   "kind": "public",
+   "radius": 6.0
+  },
+  {
+   "pos": [
+    -4.4,
+    5.6,
+    8.967
+   ],
+   "lumens": 900,
+   "colour": "#FFE2B8",
+   "kind": "public",
+   "radius": 6.0
+  },
+  {
+   "pos": [
+    -4.4,
+    10.0,
+    8.967
+   ],
+   "lumens": 700,
+   "colour": "#FFE2B8",
+   "kind": "public",
+   "radius": 6.0
+  }
+ ],
+ "things": [
+  {
+   "id": "kit_clock_1",
+   "kind": "board",
+   "pos": [
+    -2.92,
+    8.2,
+    2.3
+   ],
+   "yaw": 270.0,
+   "props": {
+    "what": "clock"
+   }
+  },
+  {
+   "id": "home_sofa",
+   "kind": "seat",
+   "pos": [
+    -5.27,
+    5.2,
+    0.43
+   ],
+   "yaw": 90.0,
+   "props": {
+    "height": 0.43
+   }
+  },
+  {
+   "id": "home_armchair",
+   "kind": "seat",
+   "pos": [
+    -3.8,
+    3.55,
+    0.44
+   ],
+   "yaw": 180.0,
+   "props": {
+    "height": 0.44
+   }
+  },
+  {
+   "id": "home_dining_chair",
+   "kind": "seat",
+   "pos": [
+    -5.05,
+    9.85,
+    0.45
+   ],
+   "yaw": 90.0,
+   "props": {
+    "height": 0.45
+   }
+  },
+  {
+   "id": "home_dining_chair_head",
+   "kind": "seat",
+   "pos": [
+    -4.3,
+    10.55,
+    0.45
+   ],
+   "yaw": 0.0,
+   "props": {
+    "height": 0.45
+   }
+  },
+  {
+   "id": "home_tv",
+   "kind": "screen",
+   "pos": [
+    -3.115,
+    4.7,
+    1.0
+   ],
+   "yaw": 270.0,
+   "props": {
+    "what": "tv"
+   }
+  },
+  {
+   "id": "home_kids_shelf",
+   "kind": "shelf",
+   "pos": [
+    -3.035,
+    6.45,
+    1.2
+   ],
+   "yaw": 270.0,
+   "props": {
+    "topic": "kids"
+   }
+  },
+  {
+   "id": "home_board_kitchen",
+   "kind": "board",
+   "pos": [
+    -2.87,
+    10.4,
+    1.55
+   ],
+   "yaw": 270.0,
+   "props": {
+    "topic": "club"
+   }
+  },
+  {
+   "id": "home_radio",
+   "kind": "machine",
+   "pos": [
+    -3.07,
+    11.2,
+    0.95
+   ],
+   "yaw": 270.0,
+   "props": {
+    "what": "jukebox"
+   }
+  },
+  {
+   "id": "home_picture_still",
+   "kind": "board",
+   "pos": [
+    -7.93,
+    4.3,
+    1.75
+   ],
+   "yaw": 90.0,
+   "props": {
+    "topic": "painting"
+   }
+  },
+  {
+   "id": "home_picture_sea",
+   "kind": "board",
+   "pos": [
+    -2.87,
+    8.2,
+    1.7
+   ],
+   "yaw": 270.0,
+   "props": {
+    "topic": "painting"
+   }
+  },
+  {
+   "id": "home_paper",
+   "kind": "take",
+   "pos": [
+    -4.25,
+    5.0,
+    0.45
+   ],
+   "yaw": 0.0,
+   "props": {
+    "item": "daily_paper"
+   }
+  },
+  {
+   "id": "home_parents_bed",
+   "kind": "bed",
+   "pos": [
+    -3.97,
+    5.3,
+    3.5
+   ],
+   "yaw": 270.0,
+   "props": {
+    "height": 0.5,
+    "rest": "private"
+   }
+  },
+  {
+   "id": "home_bunk_bed",
+   "kind": "bed",
+   "pos": [
+    -3.45,
+    10.9,
+    3.5
+   ],
+   "yaw": 0.0,
+   "props": {
+    "height": 0.46,
+    "rest": "private"
+   }
+  },
+  {
+   "id": "home_cot",
+   "kind": "bed",
+   "pos": [
+    -6.5,
+    3.55,
+    3.45
+   ],
+   "yaw": 0.0,
+   "props": {
+    "height": 0.45,
+    "rest": "private"
+   }
+  },
+  {
+   "id": "home_school_desk",
+   "kind": "craft",
+   "pos": [
+    -4.9,
+    11.83,
+    3.8
+   ],
+   "yaw": 0.0,
+   "props": {
+    "what": "school_desk"
+   }
+  },
+  {
+   "id": "home_school_chair_0",
+   "kind": "seat",
+   "pos": [
+    -5.17,
+    11.13,
+    3.45
+   ],
+   "yaw": 180.0,
+   "props": {
+    "height": 0.45
+   }
+  },
+  {
+   "id": "home_school_chair_1",
+   "kind": "seat",
+   "pos": [
+    -4.63,
+    11.13,
+    3.45
+   ],
+   "yaw": 180.0,
+   "props": {
+    "height": 0.45
+   }
+  },
+  {
+   "id": "home_children_shelf",
+   "kind": "shelf",
+   "pos": [
+    -3.035,
+    8.5,
+    4.2
+   ],
+   "yaw": 270.0,
+   "props": {
+    "topic": "kids"
+   }
+  },
+  {
+   "id": "home_wardrobe_poster",
+   "kind": "board",
+   "pos": [
+    -2.87,
+    9.6,
+    4.6
+   ],
+   "yaw": 270.0,
+   "props": {
+    "topic": "wallpaper"
+   }
+  },
+  {
+   "id": "loft_chess_chair",
+   "kind": "seat",
+   "pos": [
+    -4.4,
+    6.25,
+    6.45
+   ],
+   "yaw": 0.0,
+   "props": {
+    "height": 0.45
+   }
+  },
+  {
+   "id": "loft_chess_table",
+   "kind": "play",
+   "pos": [
+    -4.4,
+    5.6,
+    6.78
+   ],
+   "yaw": 0.0,
+   "props": {
+    "what": "chess"
+   }
+  },
+  {
+   "id": "loft_telescope",
+   "kind": "machine",
+   "pos": [
+    -5.396,
+    3.726,
+    7.3
+   ],
+   "yaw": 180.0,
+   "props": {
+    "what": "telescope"
+   }
+  },
+  {
+   "id": "loft_sewing_machine",
+   "kind": "craft",
+   "pos": [
+    -3.37,
+    9.0,
+    6.85
+   ],
+   "yaw": 270.0,
+   "props": {
+    "what": "sewing_machine"
+   }
+  },
+  {
+   "id": "loft_shelf_science",
+   "kind": "shelf",
+   "pos": [
+    -3.035,
+    7.3,
+    7.3
+   ],
+   "yaw": 270.0,
+   "props": {
+    "topic": "science"
+   }
+  },
+  {
+   "id": "loft_map",
+   "kind": "board",
+   "pos": [
+    -5.7,
+    12.28,
+    7.8
+   ],
+   "yaw": 0.0,
+   "props": {
+    "topic": "view"
+   }
+  },
+  {
+   "id": "loft_bird_poster",
+   "kind": "board",
+   "pos": [
+    -2.87,
+    10.4,
+    7.7
+   ],
+   "yaw": 270.0,
+   "props": {
+    "topic": "view"
+   }
+  },
+  {
+   "id": "loft_mats",
+   "kind": "bed",
+   "pos": [
+    -4.5,
+    10.6,
+    6.1
+   ],
+   "yaw": 0.0,
+   "props": {
+    "height": 0.1,
+    "rest": "nap"
+   }
+  },
+  {
+   "id": "loft_beanbag",
+   "kind": "seat",
+   "pos": [
+    -5.1,
+    8.3,
+    6.4
+   ],
+   "yaw": 0.0,
+   "props": {
+    "height": 0.4
+   }
   }
  ],
  "flats": [
@@ -1990,11 +2439,11 @@
  ],
  "light_tex": 64,
  "notes": [
-  "7 flats over 3 storeys, one folded concrete plate roof, rear stairs"
+  "7 flats over 3 storeys, one folded concrete plate roof, rear stairs; house 3 furnished (a family with three children)"
  ],
  "tris": {
-  "shell": 6988,
-  "detail": 3818,
-  "windows": 140
+  "shell": 7168,
+  "detail": 14278,
+  "windows": 280
  }
 }

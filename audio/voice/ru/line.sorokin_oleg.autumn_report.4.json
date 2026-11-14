@@ -1,0 +1,20 @@
+{
+ "key": "line.sorokin_oleg.autumn_report.4",
+ "lang": "ru",
+ "text": "Тридцать осеней я считал один. Вдвоём, оказывается, цифры честнее.",
+ "speaker": "sorokin_oleg",
+ "voice": "River",
+ "voice_id": "SAz9YHcvj6GT2YYXdXww",
+ "voice_design": null,
+ "direction": "[a retired scholar, calm, dry humour, slower, gentle]",
+ "model": "fal-ai/elevenlabs/tts/eleven-v3",
+ "request": {
+  "stability": 0.5,
+  "apply_text_normalization": "auto",
+  "text": "[a retired scholar, calm, dry humour, slower, gentle] Тридцать осеней я считал один. Вдвоём, оказывается, цифры честнее.",
+  "voice": "River",
+  "language_code": "ru"
+ },
+ "fal_request_id": "01a1d673-28ae-7371-9e83-c699331598e3",
+ "hash": "81c2b25bbe61"
+}

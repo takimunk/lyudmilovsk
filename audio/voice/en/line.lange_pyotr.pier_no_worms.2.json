@@ -1,0 +1,20 @@
+{
+ "key": "line.lange_pyotr.pier_no_worms.2",
+ "lang": "en",
+ "text": "Then back to the pier, by the piles.",
+ "speaker": "lange_pyotr",
+ "voice": "Brian",
+ "voice_id": "nPczCjzI2devNBz1zQrb",
+ "voice_design": null,
+ "direction": "[gruff, unhurried, a weathered fisherman of few words]",
+ "model": "fal-ai/elevenlabs/tts/eleven-v3",
+ "request": {
+  "stability": 0.5,
+  "apply_text_normalization": "auto",
+  "text": "[gruff, unhurried, a weathered fisherman of few words] Then back to the pier, by the piles.",
+  "voice": "Brian",
+  "language_code": "en"
+ },
+ "fal_request_id": "01a1d6dc-62c8-72e2-8b54-c69877b22500",
+ "hash": "c336b9a65d1b"
+}

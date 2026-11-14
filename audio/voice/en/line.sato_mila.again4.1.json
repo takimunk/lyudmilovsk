@@ -1,0 +1,20 @@
+{
+ "key": "line.sato_mila.again4.1",
+ "lang": "en",
+ "text": "Yuki wants to be a doctor. Yesterday she cured a toy rabbit and prescribed me an ice cream.",
+ "speaker": "sato_mila",
+ "voice": "Lily",
+ "voice_id": "pFZP5JQG7iQjIQuC4Bku",
+ "voice_design": null,
+ "direction": "[brisk, caring, a doctor's matter-of-fact warmth]",
+ "model": "fal-ai/elevenlabs/tts/eleven-v3",
+ "request": {
+  "stability": 0.5,
+  "apply_text_normalization": "auto",
+  "text": "[brisk, caring, a doctor's matter-of-fact warmth] Yuki wants to be a doctor. Yesterday she cured a toy rabbit and prescribed me an ice cream.",
+  "voice": "Lily",
+  "language_code": "en"
+ },
+ "fal_request_id": "01a1d747-c163-7321-90cb-dbc99e8f95e5",
+ "hash": "4bfd989fb203"
+}

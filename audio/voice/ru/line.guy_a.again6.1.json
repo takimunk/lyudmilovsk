@@ -1,0 +1,20 @@
+{
+ "key": "line.guy_a.again6.1",
+ "lang": "ru",
+ "text": "Ямада делает мне аватар, сорок на сорок клеток. Пока сижу с серым квадратом и всем говорю: жду мастера.",
+ "speaker": "guy_a",
+ "voice": "Will",
+ "voice_id": "bIHbv24MWmeRgasZH58o",
+ "voice_design": null,
+ "direction": "[a young gamer in a hurry, mid-match]",
+ "model": "fal-ai/elevenlabs/tts/eleven-v3",
+ "request": {
+  "stability": 0.5,
+  "apply_text_normalization": "auto",
+  "text": "[a young gamer in a hurry, mid-match] Ямада делает мне аватар, сорок на сорок клеток. Пока сижу с серым квадратом и всем говорю: жду мастера.",
+  "voice": "Will",
+  "language_code": "ru"
+ },
+ "fal_request_id": "01a1d782-63d3-7b10-becc-dcd3b9549912",
+ "hash": "73d95d48ac08"
+}

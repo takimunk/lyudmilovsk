@@ -1,0 +1,20 @@
+{
+ "key": "line.belov_misha.magpie_ask.4",
+ "lang": "ru",
+ "text": "Они всё таскают и прячут. Подбери, что у них валяется и что они зарывают. Наберёшь три вещицы, неси мне, я посмотрю.",
+ "speaker": "belov_misha",
+ "voice": "Liam",
+ "voice_id": "TX3LPaxmHKxFdv7VOQHJ",
+ "voice_design": null,
+ "direction": "[easygoing, amused, a young technician, a little self-ironic]",
+ "model": "fal-ai/elevenlabs/tts/eleven-v3",
+ "request": {
+  "stability": 0.5,
+  "apply_text_normalization": "auto",
+  "text": "[easygoing, amused, a young technician, a little self-ironic] Они всё таскают и прячут. Подбери, что у них валяется и что они зарывают. Наберёшь три вещицы, неси мне, я посмотрю.",
+  "voice": "Liam",
+  "language_code": "ru"
+ },
+ "fal_request_id": "01a1d65d-37f3-7471-9da1-687e5295b2b0",
+ "hash": "ddd239d008ff"
+}

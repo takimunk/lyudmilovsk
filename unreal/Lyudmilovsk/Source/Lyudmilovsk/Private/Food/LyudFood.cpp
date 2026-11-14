@@ -1,5 +1,6 @@
 #include "Food/LyudFood.h"
 
+#include "UI/LyudQuests.h"
 #include "Audio/LyudSoundscape.h"
 #include "Components/StaticMeshComponent.h"
 #include "Dom/JsonObject.h"
@@ -348,6 +349,8 @@ bool ULyudFoodSubsystem::HoldFromPocket(FName Id)
 		const FLyudItemDef* D = ULyudInventory::FindDef(Id);
 		I->Equip(FName());
 		I->Remove(Id);
+		// eaten to the end from the hand ("use" is sent for anything that leaves the pocket)
+		ULyudQuests::Notify(S, TEXT("eat"), Id.ToString());
 		if (D && !D->Leaves.IsNone())
 		{
 			I->Add(D->Leaves);

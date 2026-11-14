@@ -1,0 +1,399 @@
+{
+ "type": "promenade_unit",
+ "info": {
+  "name_ru": "Лавка в подпорной стене",
+  "name_en": "Promenade unit",
+  "style": "1960s seaside shop fit-out",
+  "use": "public",
+  "inspired_by": "the small shops and cafés in the arcades of Soviet Black Sea and Baltic embankments"
+ },
+ "frame": "x along the street front, y into the plot, z up; origin on the front line, mid-frontage, z 0 = ground at the main entrance",
+ "footprint": [
+  [
+   -4.95,
+   0.0
+  ],
+  [
+   4.95,
+   0.0
+  ],
+  [
+   4.95,
+   6.55
+  ],
+  [
+   -4.95,
+   6.55
+  ]
+ ],
+ "height": 3.25,
+ "entrances": [
+  {
+   "id": "door",
+   "pos": [
+    3.4,
+    0.0,
+    0.0
+   ],
+   "yaw": 0.0,
+   "width": 1.2000000000000002,
+   "height": 2.3,
+   "kind": "street",
+   "leaves": 0,
+   "to": null
+  }
+ ],
+ "spots": [
+  {
+   "id": "counter",
+   "kind": "counter",
+   "pos": [
+    0.8,
+    3.05,
+    0.0
+   ],
+   "yaw": 180.0
+  },
+  {
+   "id": "staff_seller",
+   "kind": "work",
+   "pos": [
+    0.8,
+    4.7,
+    0.0
+   ],
+   "yaw": 0.0
+  },
+  {
+   "id": "staff_baker",
+   "kind": "work",
+   "pos": [
+    3.2,
+    5.7,
+    0.0
+   ],
+   "yaw": 90.0
+  },
+  {
+   "id": "table1_seat0",
+   "kind": "seat",
+   "pos": [
+    -3.87,
+    1.5,
+    0.0
+   ],
+   "yaw": 90.0
+  },
+  {
+   "id": "table1_seat1",
+   "kind": "seat",
+   "pos": [
+    -2.53,
+    1.5,
+    0.0
+   ],
+   "yaw": 270.0
+  },
+  {
+   "id": "oven",
+   "kind": "stand",
+   "pos": [
+    -3.2,
+    4.65,
+    0.0
+   ],
+   "yaw": 180.0
+  },
+  {
+   "id": "cat",
+   "kind": "stand",
+   "pos": [
+    -1.6,
+    5.25,
+    0.0
+   ],
+   "yaw": 180.0
+  },
+  {
+   "id": "bench",
+   "kind": "seat",
+   "pos": [
+    4.52,
+    3.3,
+    0.0
+   ],
+   "yaw": 270.0
+  },
+  {
+   "id": "shifts",
+   "kind": "stand",
+   "pos": [
+    -4.2,
+    0.95,
+    0.0
+   ],
+   "yaw": 90.0
+  },
+  {
+   "id": "radio",
+   "kind": "stand",
+   "pos": [
+    -4.2,
+    5.4,
+    0.0
+   ],
+   "yaw": 90.0
+  }
+ ],
+ "lamps": [
+  {
+   "pos": [
+    -0.4,
+    3.0,
+    2.45
+   ],
+   "lumens": 1500,
+   "colour": "#FFD9A8",
+   "kind": "public",
+   "radius": 8.0
+  }
+ ],
+ "things": [
+  {
+   "id": "bakery_counter",
+   "kind": "counter",
+   "pos": [
+    0.8,
+    3.9,
+    1.1
+   ],
+   "yaw": 0.0,
+   "props": {
+    "shop": "bakery",
+    "service": "shop",
+    "role": "seller"
+   }
+  },
+  {
+   "id": "bread_rack",
+   "kind": "board",
+   "pos": [
+    0.6,
+    6.15,
+    1.2
+   ],
+   "yaw": 0.0,
+   "props": {
+    "topic": "store"
+   }
+  },
+  {
+   "id": "bread_prices",
+   "kind": "board",
+   "pos": [
+    3.2,
+    6.36,
+    1.7
+   ],
+   "yaw": 0.0,
+   "props": {
+    "topic": "prices"
+   }
+  },
+  {
+   "id": "table1_chair1",
+   "kind": "seat",
+   "pos": [
+    -3.87,
+    1.5,
+    0.45
+   ],
+   "yaw": 90.0,
+   "props": {
+    "height": 0.45
+   }
+  },
+  {
+   "id": "bakery_oven",
+   "kind": "machine",
+   "pos": [
+    -3.2,
+    5.2,
+    1.0
+   ],
+   "yaw": 0.0,
+   "props": {
+    "what": "oven"
+   }
+  },
+  {
+   "id": "bakery_dough",
+   "kind": "craft",
+   "pos": [
+    2.4,
+    5.25,
+    0.85
+   ],
+   "yaw": 0.0,
+   "props": {
+    "what": "dough"
+   }
+  },
+  {
+   "id": "bakery_today",
+   "kind": "board",
+   "pos": [
+    2.2,
+    1.15,
+    0.6
+   ],
+   "yaw": 195.0,
+   "props": {
+    "topic": "store"
+   }
+  },
+  {
+   "id": "bakery_chat",
+   "kind": "counter",
+   "pos": [
+    -0.2,
+    3.9,
+    1.1
+   ],
+   "yaw": 0.0,
+   "props": {
+    "service": "chat",
+    "role": "seller"
+   }
+  },
+  {
+   "id": "bakery_stamp",
+   "kind": "machine",
+   "pos": [
+    2.2,
+    3.85,
+    1.11
+   ],
+   "yaw": 0.0,
+   "props": {
+    "what": "stamp"
+   }
+  },
+  {
+   "id": "bakery_switch",
+   "kind": "machine",
+   "pos": [
+    4.4,
+    0.46,
+    1.3
+   ],
+   "yaw": 180.0,
+   "props": {
+    "what": "switch",
+    "switch": "room"
+   }
+  },
+  {
+   "id": "bakery_clock",
+   "kind": "machine",
+   "pos": [
+    4.8,
+    4.6,
+    2.3
+   ],
+   "yaw": 270.0,
+   "props": {
+    "what": "clock"
+   }
+  },
+  {
+   "id": "bakery_starter",
+   "kind": "machine",
+   "pos": [
+    -0.5,
+    3.85,
+    1.2
+   ],
+   "yaw": 0.0,
+   "props": {
+    "what": "starter"
+   }
+  },
+  {
+   "id": "bakery_orders",
+   "kind": "board",
+   "pos": [
+    1.85,
+    3.85,
+    1.1
+   ],
+   "yaw": 0.0,
+   "props": {
+    "topic": "orders"
+   }
+  },
+  {
+   "id": "bakery_cat",
+   "kind": "board",
+   "pos": [
+    -1.5,
+    5.95,
+    0.6
+   ],
+   "yaw": 0.0,
+   "props": {
+    "topic": "cat"
+   }
+  },
+  {
+   "id": "bakery_bench",
+   "kind": "seat",
+   "pos": [
+    4.52,
+    3.3,
+    0.45
+   ],
+   "yaw": 270.0,
+   "props": {
+    "height": 0.45
+   }
+  },
+  {
+   "id": "bakery_shifts",
+   "kind": "board",
+   "pos": [
+    -4.81,
+    0.95,
+    1.65
+   ],
+   "yaw": 90.0,
+   "props": {
+    "topic": "orders"
+   }
+  },
+  {
+   "id": "bakery_radio",
+   "kind": "machine",
+   "pos": [
+    -4.72,
+    5.75,
+    1.65
+   ],
+   "yaw": 90.0,
+   "props": {
+    "what": "tube_radio"
+   }
+  }
+ ],
+ "flats": [],
+ "windows": [],
+ "light_tex": 64,
+ "notes": [
+  "promenade unit room, variant bakery: placed at each W1 unit whose plan variant is bakery"
+ ],
+ "tris": {
+  "shell": 214,
+  "detail": 6336,
+  "windows": 0
+ }
+}

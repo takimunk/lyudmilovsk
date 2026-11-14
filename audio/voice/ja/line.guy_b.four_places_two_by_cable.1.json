@@ -1,0 +1,20 @@
+{
+ "key": "line.guy_b.four_places_two_by_cable.1",
+ "lang": "ja",
+ "text": "四か所だ。崖下の浜、山麓駅、アカデムゴロドク、遊歩道。二つはロープウェイで行ける。あとは歩きだ。",
+ "speaker": "guy_b",
+ "voice": "Chris",
+ "voice_id": "iP95p4xoKVk53GoZ742B",
+ "voice_design": null,
+ "direction": "[relaxed, lazy, friendly]",
+ "model": "fal-ai/elevenlabs/tts/eleven-v3",
+ "request": {
+  "stability": 0.5,
+  "apply_text_normalization": "auto",
+  "text": "[relaxed, lazy, friendly] 四か所だ。崖下の浜、山麓駅、アカデムゴロドク、遊歩道。二つはロープウェイで行ける。あとは歩きだ。",
+  "voice": "Chris",
+  "language_code": "ja"
+ },
+ "fal_request_id": "01a1d738-f751-70e3-ba5b-a87e3bd4ef34",
+ "hash": "1492680722f0"
+}

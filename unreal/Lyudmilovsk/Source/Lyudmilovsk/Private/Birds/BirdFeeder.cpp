@@ -1,5 +1,7 @@
 #include "Birds/BirdFeeder.h"
+#include "UI/LyudQuests.h"
 
+#include "NpcDialogue.h"
 #include "BirdSim.h"
 #include "Birds/BirdLife.h"
 #include "Camera/CameraActor.h"
@@ -302,6 +304,13 @@ void ABirdFeeder::BeginPlay()
 
 void ABirdFeeder::ShowFeed(FName Feed, float Handfuls)
 {
+	// asked every frame for every feeder: the same feed and handfuls as the last time is the same heap (and no feed
+	// name made into a string to size its grains)
+	if (Feed == Shown && Handfuls == ShownHandfuls)
+	{
+		return;
+	}
+	ShownHandfuls = Handfuls;
 	// a heap that grows with the handfuls: 40 grains a handful (bigger lumps fewer), the newest on top
 	const FVector Size = GrainSize(Feed);
 	const float PerHandful = FMath::Clamp(40.f / FMath::Max(Size.X * Size.Y, 0.3f), 2.f, 60.f);
@@ -379,6 +388,13 @@ void UBirdFeederSubsystem::OnGameSaving_Implementation()
 
 void UBirdFeederSubsystem::OnGameLoaded_Implementation()
 {
+	// a corrupt or hand-edited slot must not put a feeder at a NaN place or feed NaN handfuls to the bird life
+	States.RemoveAll([](const FBirdFeederState& F) { return F.Location.ContainsNaN(); });
+	for (FBirdFeederState& F : States)
+	{
+		F.Yaw = FMath::IsFinite(F.Yaw) ? F.Yaw : 0.f;
+		F.Handfuls = FMath::IsFinite(F.Handfuls) ? FMath::Max(F.Handfuls, 0.f) : 0.f;
+	}
 	SpawnAll();
 }
 
@@ -560,7 +576,7 @@ void UBirdFeederSubsystem::UpdatePrompt(APlayerController* PC)
 	// set every frame all the same: another prompt (a door, the vending machine) may have taken the line meanwhile
 	UI->SetPrompt(this, PromptText);
 	bPrompt = true;
-	if (PC->WasInputKeyJustPressed(EKeys::E))
+	if (ANpcTalkDirector::UsePressed(PC))
 	{
 		if (bFeed)
 		{
@@ -652,6 +668,15 @@ int32 UBirdFeederSubsystem::Fill(int32 Index, FName Feed, int32 Count)
 		Actors[Index]->ShowFeed(S.Feed, S.Handfuls);
 	}
 	UE_LOG(LogTemp, Display, TEXT("Feeder: %d gets %d of %s (%.1f)"), Index, N, *Feed.ToString(), S.Handfuls);
+	if (ULyudQuests* Quests = ULyudQuests::Get(this))
+	{
+		Quests->HandleEvent(TEXT("feeder_fill"), Feed.ToString(), N);
+		// and where: "feed_rowan@rowan_grove" for a quest that wants the feeder in a certain place
+		for (const FName& Place : Quests->InsidePlaces())
+		{
+			Quests->HandleEvent(TEXT("feeder_fill_at"), Feed.ToString() + TEXT("@") + Place.ToString(), N);
+		}
+	}
 	return N;
 }
 

@@ -493,6 +493,22 @@
    "variants": 2,
    "duration": 1.0,
    "prompt": "A cigarette end flicked away and landing on concrete: a tiny soft tap and a faint hiss, close, outdoors, quiet, no voices"
+  },
+  {
+   "id": "topi_heart",
+   "group": "topi",
+   "variants": 1,
+   "duration": 8.0,
+   "loop": true,
+   "prompt": "A slow heavy human heartbeat heard from inside the head, muffled deep thuds with a faint high ringing in the ears, seamless loop, no other sounds"
+  },
+  {
+   "id": "ural_hum",
+   "group": "topi",
+   "variants": 1,
+   "duration": 16.0,
+   "loop": true,
+   "prompt": "A wide smooth river of light flowing fast and silently: a soft airy shimmering hum with countless tiny glassy sparkles and a gentle rushing whoosh, calm and magical, seamless loop, no water splashes, no music"
   }
  ],
  "music": [
@@ -698,6 +714,24 @@
    "seconds": 120,
    "seed": 41201,
    "prompt": "Joyful folk dance music for a town square celebration, fiddle, accordion, acoustic guitar, hand percussion, a mix of Eastern European and Celtic folk, bright major key, 124 BPM, no vocals"
+  },
+  {
+   "id": "topi_1",
+   "mood": [
+    "topi"
+   ],
+   "seconds": 150,
+   "seed": 40101,
+   "prompt": "Dark mysterious ambient drone, slow shifting detuned analog synth pads, very low sub bass swells, distant bowed metal and a faint wordless choir far away like wind over endless sand dunes, sparse high glassy tones that never resolve, uneasy and hypnotic, vast empty space, D minor, no melody, no drums, no vocals"
+  },
+  {
+   "id": "ural_1",
+   "mood": [
+    "ural"
+   ],
+   "seconds": 140,
+   "seed": 40201,
+   "prompt": "Very gentle luminous ambient, warm soft synth pads and slow shimmering bell-like arpeggios, a tender simple piano motif with long reverb, glowing and weightless like floating in a river of light at night, deeply calm, comforting and bittersweet, F major, 58 BPM, slowly swelling to a bright wash then fading out, no drums, no vocals"
   }
  ]
 }

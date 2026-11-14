@@ -237,6 +237,8 @@ private:
 		int32 Shelf = -1;
 		/** For a townsperson at their table (not the hero's tab). */
 		bool bGuest = false;
+		/** What the hero paid for it (the day's price when ordered): given back on a load before it is served. */
+		int32 Paid = 0;
 	};
 	enum class EWaiter : uint8 { Off, Idle, ToPass, Pick, ToTable, SetDown, Collect, ToPassBack, Drop, ToHome };
 	enum class EJob : uint8 { None, Serve, Clear, Bill };
@@ -293,6 +295,10 @@ private:
 	float AwayFor = 0.f;
 	bool bSitPrompt = false;
 	FString Prompted;
+	/** What the prompt up now was built for (the dish looked at, the bill's sum), so TickHero builds it again only on a change;
+	 *  SetPrompt clears both whenever the line changes. */
+	TWeakObjectPtr<ALyudRestDish> PromptDish;
+	int32 PromptTab = -1;
 	TArray<FOrder> Orders;
 	int32 NextOrderId = 0;
 	FOrder& AddOrder(FName Item, int32 Seat, float Due, bool bGuest);
@@ -353,6 +359,8 @@ private:
 	bool bNear = false;
 	float StateAge = 0.f;
 	EWaiter LastWaiter = EWaiter::Off;
+	/** World seconds before which a body whose model failed to load is not tried again (the waiter's, the cook's). */
+	float WaiterRetryAt = 0.f, CookRetryAt = 0.f;
 	/** Every mesh of /Game/Restaurant/Meshes, loaded in the background at BeginPlay and held here (RestMesh looks them up). */
 	UPROPERTY(Transient) TArray<TObjectPtr<UObject>> MeshRefs;
 	TSharedPtr<FStreamableHandle> Preload;
@@ -379,6 +387,9 @@ private:
 		TWeakObjectPtr<ANpcBody> Body;
 	};
 	TArray<FProp> Props;
+	/** TickProps: the indices of the eating-out activities, looked up once per run of the people's life (EatActsRun: its sim). */
+	TArray<int32> EatActs;
+	const void* EatActsRun = nullptr;
 	/** The table the waiter's job is for. */
 	int32 JobTable = -1;
 	void TickGuests(float DeltaTime);

@@ -228,6 +228,11 @@ void AHeroCharacter::OnJumpPressed()
 	{
 		return;
 	}
+	// held still by a screen or by a reach of the hand (the move input is ignored): Space typed then neither jumps nor gets him up
+	if (const APlayerController* PC = Cast<APlayerController>(GetController()); PC && PC->IsMoveInputIgnored())
+	{
+		return;
+	}
 	if (IsSeated())
 	{
 		if (!SeatLeave || SeatLeave())
@@ -267,8 +272,9 @@ void AHeroCharacter::OnMove(const FInputActionValue& Value)
 	}
 	if (IsSeated())
 	{
-		// a step gets you up
-		if (V.Size() > 0.5f)
+		// a step gets you up (not a key typed into a screen, nor while a reach holds the hero still)
+		const APlayerController* PC = Cast<APlayerController>(GetController());
+		if (V.Size() > 0.5f && !(PC && PC->IsMoveInputIgnored()))
 		{
 			StandUp();
 		}
@@ -296,6 +302,11 @@ void AHeroCharacter::Tick(float DeltaSeconds)
 	Super::Tick(DeltaSeconds);
 	ReadInput(DeltaSeconds);
 	UHeroBikeComponent* Bike = FindBike();
+	if (bSeatHeld && !IsSeated())
+	{
+		// the seat went from under him (its actor was destroyed): on his feet again where he is
+		LeaveLostSeat();
+	}
 	if (IsSeated())
 	{
 		KeepSeated();
@@ -363,8 +374,9 @@ void AHeroCharacter::ReadInput(float DeltaSeconds)
 	// leading a bike by the bars is a walk
 	bWantsWalk = IsLeadingBike() || (!PC->IsMoveInputIgnored() && (PC->IsInputKeyDown(EKeys::LeftShift) || PC->IsInputKeyDown(EKeys::RightShift)));
 	UCharacterMovementComponent* Move = GetCharacterMovement();
-	Move->MaxWalkSpeed = bWantsWalk ? WalkSpeed : RunSpeed;
-	Move->MaxWalkSpeedCrouched = bWantsWalk ? CrouchCreepSpeed : CrouchSpeed;
+	// SpeedScale: SetSpeedScale (ULyudTopiMind slows him in the dunes)
+	Move->MaxWalkSpeed = (bWantsWalk ? WalkSpeed : RunSpeed) * SpeedScale;
+	Move->MaxWalkSpeedCrouched = (bWantsWalk ? CrouchCreepSpeed : CrouchSpeed) * SpeedScale;
 
 	if (IsSeated() || IsOnBike() || IsLeadingBike())
 	{
@@ -461,7 +473,8 @@ void AHeroCharacter::FeedAnimation(float DeltaSeconds)
 
 void AHeroCharacter::SitOn(USceneComponent* Base, const FTransform& InSeatLocal, float InSeatZ)
 {
-	if (!Base)
+	// a body on a bicycle is the bicycle's (it moves the body and holds its collision off): no seat takes it
+	if (!Base || IsOnBike())
 	{
 		return;
 	}
@@ -470,6 +483,9 @@ void AHeroCharacter::SitOn(USceneComponent* Base, const FTransform& InSeatLocal,
 		UnCrouch();
 	}
 	bCrouchToggled = false;
+	// from one seat straight onto another: the first seat's keys do not follow him
+	SeatMove = nullptr;
+	SeatLeave = nullptr;
 	SeatBase = Base;
 	StandOffset = FVector(38.f, 0.f, 0.f);
 	SeatLocal = InSeatLocal;
@@ -478,9 +494,28 @@ void AHeroCharacter::SitOn(USceneComponent* Base, const FTransform& InSeatLocal,
 	Move->StopMovementImmediately();
 	// no walking, no falling: the seat holds the body (KeepSeated each frame, after the seat has moved)
 	Move->SetMovementMode(MOVE_None);
-	SeatedCollision = GetCapsuleComponent()->GetCollisionEnabled();
+	if (!bSeatHeld)
+	{
+		// what StandUp gives back: remembered once (seated already, the capsule's collision is off and would be "given back" off)
+		SeatedCollision = GetCapsuleComponent()->GetCollisionEnabled();
+	}
+	bSeatHeld = true;
 	GetCapsuleComponent()->SetCollisionEnabled(ECollisionEnabled::NoCollision);
 	KeepSeated();
+}
+
+void AHeroCharacter::LeaveLostSeat()
+{
+	bSeatHeld = false;
+	SeatBase.Reset();
+	SeatMove = nullptr;
+	SeatLeave = nullptr;
+	GetCapsuleComponent()->SetCollisionEnabled(SeatedCollision);
+	UCharacterMovementComponent* Move = GetCharacterMovement();
+	if (Move->MovementMode == MOVE_None)
+	{
+		Move->SetMovementMode(MOVE_Falling);
+	}
 }
 
 void AHeroCharacter::StandUp()
@@ -491,6 +526,7 @@ void AHeroCharacter::StandUp()
 	}
 	const FTransform W = SeatWorld();
 	SeatBase.Reset();
+	bSeatHeld = false;
 	SeatMove = nullptr;
 	SeatLeave = nullptr;
 	// a step forward off the cushion, standing on the floor

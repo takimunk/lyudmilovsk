@@ -1,0 +1,3050 @@
+{
+ "_doc": "The staff talk (docs/city_interiors.md \"Staff talk\"): topics keyed by act id, shared lists in topic_sets (\"@<set>\"); the room tones (\"Room tones\"): tones, tone_by (plot id | unit:<variant> | building type | plot kind); sound_alias: a sound id the soundscape lacks -> an existing one of the same kind. Words in strings/talk.json.",
+ "topic_sets": {
+  "rassvet": [
+   {
+    "id": "rassvet.film",
+    "k": "city.ask.rassvet.film",
+    "lines": [
+     "city.ask.rassvet.film.1",
+     {
+      "k": "city.ask.rassvet.film.2",
+      "d": "mon"
+     },
+     {
+      "k": "city.ask.rassvet.film.3",
+      "d": "tue"
+     },
+     {
+      "k": "city.ask.rassvet.film.4",
+      "d": "wed"
+     },
+     {
+      "k": "city.ask.rassvet.film.5",
+      "d": "thu"
+     },
+     {
+      "k": "city.ask.rassvet.film.6",
+      "d": "fri"
+     },
+     {
+      "k": "city.ask.rassvet.film.7",
+      "d": "sat"
+     },
+     {
+      "k": "city.ask.rassvet.film.8",
+      "d": "sun"
+     },
+     {
+      "k": "city.ask.rassvet.film.9",
+      "did": "cinema"
+     }
+    ]
+   }
+  ]
+ },
+ "topics": {
+  "buy_kiosk_news": [
+   "@rassvet",
+   {
+    "id": "news.crossword",
+    "k": "city.ask.news.crossword",
+    "lines": [
+     "city.ask.news.crossword.1",
+     {
+      "k": "city.ask.news.crossword.2",
+      "d": "fri,sat"
+     },
+     {
+      "k": "city.ask.news.crossword.3",
+      "read": "paper_today"
+     }
+    ],
+    "gives": {
+     "collect": "staff/news"
+    }
+   },
+   {
+    "id": "news.weather",
+    "k": "city.ask.news.weather",
+    "lines": [
+     "city.ask.news.weather.1",
+     {
+      "k": "city.ask.news.weather.2",
+      "weather": "rain"
+     },
+     {
+      "k": "city.ask.news.weather.3",
+      "weather": "fog"
+     },
+     {
+      "k": "city.ask.news.weather.4",
+      "weather": [
+       "warm",
+       "clear"
+      ]
+     },
+     {
+      "k": "city.ask.news.weather.5",
+      "weather": "snow"
+     }
+    ],
+    "gives": {
+     "collect": "staff/news"
+    }
+   },
+   {
+    "id": "news.postcards",
+    "k": "city.ask.news.postcards",
+    "lines": [
+     "city.ask.news.postcards.1",
+     "city.ask.news.postcards.2",
+     {
+      "k": "city.ask.news.postcards.3",
+      "count": [
+       "kiosks",
+       6
+      ]
+     }
+    ],
+    "gives": {
+     "collect": "staff/news"
+    }
+   }
+  ],
+  "buy_kiosk_icecream": [
+   {
+    "id": "icecream.which",
+    "k": "city.ask.icecream.which",
+    "lines": [
+     "city.ask.icecream.which.1",
+     {
+      "k": "city.ask.icecream.which.2",
+      "weather": "cold"
+     },
+     {
+      "k": "city.ask.icecream.which.3",
+      "weather": "warm"
+     }
+    ],
+    "gives": {
+     "collect": "staff/icecream"
+    }
+   },
+   {
+    "id": "icecream.eskimo",
+    "k": "city.ask.icecream.eskimo",
+    "lines": [
+     "city.ask.icecream.eskimo.1",
+     {
+      "k": "city.ask.icecream.eskimo.2",
+      "h": [
+       17,
+       24
+      ]
+     },
+     "city.ask.icecream.eskimo.3"
+    ],
+    "gives": {
+     "collect": "staff/icecream"
+    }
+   },
+   {
+    "id": "icecream.beach",
+    "k": "city.ask.icecream.beach",
+    "lines": [
+     "city.ask.icecream.beach.1",
+     {
+      "k": "city.ask.icecream.beach.2",
+      "weather": [
+       "warm",
+       "clear"
+      ]
+     },
+     {
+      "k": "city.ask.icecream.beach.3",
+      "weather": [
+       "rain",
+       "cold",
+       "fog",
+       "snow"
+      ]
+     }
+    ],
+    "gives": {
+     "collect": "staff/icecream"
+    }
+   }
+  ],
+  "buy_cafe_ice_cream": [
+   {
+    "id": "icecream.which",
+    "k": "city.ask.icecream.which",
+    "lines": [
+     "city.ask.icecream.which.1",
+     {
+      "k": "city.ask.icecream.which.2",
+      "weather": "cold"
+     },
+     {
+      "k": "city.ask.icecream.which.3",
+      "weather": "warm"
+     }
+    ],
+    "gives": {
+     "collect": "staff/icecream"
+    }
+   },
+   {
+    "id": "icecream.eskimo",
+    "k": "city.ask.icecream.eskimo",
+    "lines": [
+     "city.ask.icecream.eskimo.1",
+     {
+      "k": "city.ask.icecream.eskimo.2",
+      "h": [
+       17,
+       24
+      ]
+     },
+     "city.ask.icecream.eskimo.3"
+    ],
+    "gives": {
+     "collect": "staff/icecream"
+    }
+   },
+   {
+    "id": "icecream.beach",
+    "k": "city.ask.icecream.beach",
+    "lines": [
+     "city.ask.icecream.beach.1",
+     {
+      "k": "city.ask.icecream.beach.2",
+      "weather": [
+       "warm",
+       "clear"
+      ]
+     },
+     {
+      "k": "city.ask.icecream.beach.3",
+      "weather": [
+       "rain",
+       "cold",
+       "fog",
+       "snow"
+      ]
+     }
+    ],
+    "gives": {
+     "collect": "staff/icecream"
+    }
+   }
+  ],
+  "buy_fair_icecream": [
+   {
+    "id": "icecream.which",
+    "k": "city.ask.icecream.which",
+    "lines": [
+     "city.ask.icecream.which.1",
+     {
+      "k": "city.ask.icecream.which.2",
+      "weather": "cold"
+     },
+     {
+      "k": "city.ask.icecream.which.3",
+      "weather": "warm"
+     }
+    ],
+    "gives": {
+     "collect": "staff/icecream"
+    }
+   },
+   {
+    "id": "icecream.eskimo",
+    "k": "city.ask.icecream.eskimo",
+    "lines": [
+     "city.ask.icecream.eskimo.1",
+     {
+      "k": "city.ask.icecream.eskimo.2",
+      "h": [
+       17,
+       24
+      ]
+     },
+     "city.ask.icecream.eskimo.3"
+    ],
+    "gives": {
+     "collect": "staff/icecream"
+    }
+   },
+   {
+    "id": "icecream.beach",
+    "k": "city.ask.icecream.beach",
+    "lines": [
+     "city.ask.icecream.beach.1",
+     {
+      "k": "city.ask.icecream.beach.2",
+      "weather": [
+       "warm",
+       "clear"
+      ]
+     },
+     {
+      "k": "city.ask.icecream.beach.3",
+      "weather": [
+       "rain",
+       "cold",
+       "fog",
+       "snow"
+      ]
+     }
+    ],
+    "gives": {
+     "collect": "staff/icecream"
+    }
+   }
+  ],
+  "buy_kiosk_tobacco": [
+   {
+    "id": "tobacco.seeds",
+    "k": "city.ask.tobacco.seeds",
+    "lines": [
+     "city.ask.tobacco.seeds.1",
+     "city.ask.tobacco.seeds.2",
+     {
+      "k": "city.ask.tobacco.seeds.3",
+      "heard": "cable.kesha"
+     }
+    ],
+    "gives": {
+     "collect": "staff/tobacco"
+    }
+   },
+   {
+    "id": "tobacco.chess",
+    "k": "city.ask.tobacco.chess",
+    "lines": [
+     "city.ask.tobacco.chess.1",
+     "city.ask.tobacco.chess.2",
+     {
+      "k": "city.ask.tobacco.chess.3",
+      "count": [
+       "chess_wins",
+       1
+      ]
+     }
+    ],
+    "gives": {
+     "collect": "staff/tobacco"
+    }
+   },
+   {
+    "id": "tobacco.fog",
+    "k": "city.ask.tobacco.fog",
+    "lines": [
+     "city.ask.tobacco.fog.1",
+     {
+      "k": "city.ask.tobacco.fog.2",
+      "weather": "fog"
+     }
+    ],
+    "gives": {
+     "collect": "staff/tobacco"
+    }
+   }
+  ],
+  "kiosk_flowers": [
+   {
+    "id": "flowers.when",
+    "k": "city.ask.flowers.when",
+    "lines": [
+     "city.ask.flowers.when.1",
+     {
+      "k": "city.ask.flowers.when.2",
+      "d": "thu,fri"
+     }
+    ],
+    "gives": {
+     "collect": "staff/flowers"
+    }
+   },
+   {
+    "id": "flowers.vases",
+    "k": "city.ask.flowers.vases",
+    "lines": [
+     "city.ask.flowers.vases.1",
+     {
+      "k": "city.ask.flowers.vases.2",
+      "d": "wed"
+     },
+     {
+      "k": "city.ask.flowers.vases.3",
+      "d": "sat"
+     },
+     "city.ask.flowers.vases.4"
+    ],
+    "gives": {
+     "collect": "staff/flowers"
+    }
+   },
+   {
+    "id": "flowers.sunflowers",
+    "k": "city.ask.flowers.sunflowers",
+    "lines": [
+     "city.ask.flowers.sunflowers.1",
+     {
+      "k": "city.ask.flowers.sunflowers.2",
+      "h": [
+       18,
+       24
+      ]
+     }
+    ],
+    "gives": {
+     "collect": "staff/flowers"
+    }
+   }
+  ],
+  "kiosk_cablecar": [
+   {
+    "id": "cable.where",
+    "k": "city.ask.cable.where",
+    "lines": [
+     "city.ask.cable.where.1",
+     "city.ask.cable.where.2",
+     {
+      "k": "city.ask.cable.where.3",
+      "h": [
+       20,
+       24
+      ]
+     }
+    ],
+    "gives": {
+     "collect": "staff/cable"
+    }
+   },
+   {
+    "id": "cable.kesha",
+    "k": "city.ask.cable.kesha",
+    "lines": [
+     "city.ask.cable.kesha.1",
+     "city.ask.cable.kesha.2"
+    ],
+    "gives": {
+     "collect": "staff/cable"
+    }
+   },
+   {
+    "id": "cable.mitten",
+    "k": "city.ask.cable.mitten",
+    "lines": [
+     "city.ask.cable.mitten.1",
+     "city.ask.cable.mitten.2",
+     {
+      "k": "city.ask.cable.mitten.3",
+      "weather": [
+       "cold",
+       "snow"
+      ]
+     }
+    ],
+    "gives": {
+     "collect": "staff/cable"
+    }
+   }
+  ],
+  "kiosk_repair": [
+   {
+    "id": "repair.clock",
+    "k": "city.ask.repair.clock",
+    "lines": [
+     "city.ask.repair.clock.1",
+     "city.ask.repair.clock.2",
+     {
+      "k": "city.ask.repair.clock.3",
+      "did": "chess"
+     }
+    ],
+    "gives": {
+     "collect": "staff/repair"
+    }
+   },
+   {
+    "id": "repair.watch",
+    "k": "city.ask.repair.watch",
+    "lines": [
+     "city.ask.repair.watch.1",
+     "city.ask.repair.watch.2",
+     {
+      "k": "city.ask.repair.watch.3",
+      "h": [
+       0,
+       7
+      ]
+     }
+    ],
+    "gives": {
+     "collect": "staff/repair"
+    }
+   },
+   {
+    "id": "repair.radio",
+    "k": "city.ask.repair.radio",
+    "lines": [
+     "city.ask.repair.radio.1",
+     {
+      "k": "city.ask.repair.radio.2",
+      "d": "thu"
+     }
+    ],
+    "gives": {
+     "collect": "staff/repair"
+    }
+   }
+  ],
+  "repair": [
+   {
+    "id": "repair.clock",
+    "k": "city.ask.repair.clock",
+    "lines": [
+     "city.ask.repair.clock.1",
+     "city.ask.repair.clock.2",
+     {
+      "k": "city.ask.repair.clock.3",
+      "did": "chess"
+     }
+    ],
+    "gives": {
+     "collect": "staff/repair"
+    }
+   },
+   {
+    "id": "repair.watch",
+    "k": "city.ask.repair.watch",
+    "lines": [
+     "city.ask.repair.watch.1",
+     "city.ask.repair.watch.2",
+     {
+      "k": "city.ask.repair.watch.3",
+      "h": [
+       0,
+       7
+      ]
+     }
+    ],
+    "gives": {
+     "collect": "staff/repair"
+    }
+   },
+   {
+    "id": "repair.radio",
+    "k": "city.ask.repair.radio",
+    "lines": [
+     "city.ask.repair.radio.1",
+     {
+      "k": "city.ask.repair.radio.2",
+      "d": "thu"
+     }
+    ],
+    "gives": {
+     "collect": "staff/repair"
+    }
+   }
+  ],
+  "buy_cafe_tarelka": [
+   {
+    "id": "tarelka.kesha",
+    "k": "city.ask.tarelka.kesha",
+    "lines": [
+     "city.ask.tarelka.kesha.1",
+     "city.ask.tarelka.kesha.2",
+     {
+      "k": "city.ask.tarelka.kesha.3",
+      "h": [
+       7,
+       10
+      ]
+     }
+    ],
+    "gives": {
+     "collect": "staff/tarelka"
+    }
+   },
+   {
+    "id": "tarelka.telescope",
+    "k": "city.ask.tarelka.telescope",
+    "lines": [
+     "city.ask.tarelka.telescope.1",
+     {
+      "k": "city.ask.tarelka.telescope.2",
+      "h": [
+       20,
+       6
+      ],
+      "weather": "clear"
+     },
+     {
+      "k": "city.ask.tarelka.telescope.3",
+      "did": "telescope"
+     }
+    ],
+    "gives": {
+     "collect": "staff/tarelka"
+    }
+   },
+   {
+    "id": "tarelka.jukebox",
+    "k": "city.ask.tarelka.jukebox",
+    "lines": [
+     "city.ask.tarelka.jukebox.1",
+     {
+      "k": "city.ask.tarelka.jukebox.2",
+      "count": [
+       "records",
+       3
+      ]
+     }
+    ],
+    "gives": {
+     "collect": "staff/tarelka"
+    }
+   }
+  ],
+  "buy_library_desk": [
+   {
+    "id": "library.diary",
+    "k": "city.ask.library.diary",
+    "lines": [
+     "city.ask.library.diary.1",
+     "city.ask.library.diary.2",
+     {
+      "k": "city.ask.library.diary.3",
+      "count": [
+       "library_diary",
+       4
+      ]
+     },
+     {
+      "k": "city.ask.library.diary.4",
+      "d": "mon"
+     }
+    ],
+    "gives": {
+     "collect": "staff/library"
+    }
+   },
+   {
+    "id": "library.returned",
+    "k": "city.ask.library.returned",
+    "lines": [
+     "city.ask.library.returned.1",
+     "city.ask.library.returned.2",
+     {
+      "k": "city.ask.library.returned.3",
+      "d": "tue"
+     }
+    ],
+    "gives": {
+     "collect": "staff/library"
+    }
+   },
+   {
+    "id": "library.birds",
+    "k": "city.ask.library.birds",
+    "lines": [
+     "city.ask.library.birds.1",
+     {
+      "k": "city.ask.library.birds.2",
+      "read": "birds_starlings"
+     },
+     "city.ask.library.birds.3"
+    ],
+    "gives": {
+     "collect": "staff/library"
+    }
+   }
+  ],
+  "buy_club_buffet": [
+   "@rassvet",
+   {
+    "id": "buffet.clock",
+    "k": "city.ask.buffet.clock",
+    "lines": [
+     "city.ask.buffet.clock.1",
+     "city.ask.buffet.clock.2",
+     {
+      "k": "city.ask.buffet.clock.3",
+      "d": "sat"
+     }
+    ],
+    "gives": {
+     "collect": "staff/buffet"
+    }
+   },
+   {
+    "id": "buffet.pies",
+    "k": "city.ask.buffet.pies",
+    "lines": [
+     "city.ask.buffet.pies.1",
+     {
+      "k": "city.ask.buffet.pies.2",
+      "h": [
+       18,
+       24
+      ]
+     },
+     {
+      "k": "city.ask.buffet.pies.3",
+      "festival": "any"
+     }
+    ],
+    "gives": {
+     "collect": "staff/buffet"
+    }
+   }
+  ],
+  "cloakroom": [
+   {
+    "id": "cloak.tag",
+    "k": "city.ask.cloak.tag",
+    "lines": [
+     "city.ask.cloak.tag.1",
+     "city.ask.cloak.tag.2"
+    ],
+    "gives": {
+     "collect": "staff/cloak"
+    }
+   },
+   {
+    "id": "cloak.weather",
+    "k": "city.ask.cloak.weather",
+    "lines": [
+     "city.ask.cloak.weather.1",
+     {
+      "k": "city.ask.cloak.weather.2",
+      "weather": "rain"
+     },
+     {
+      "k": "city.ask.cloak.weather.3",
+      "weather": "snow"
+     }
+    ],
+    "gives": {
+     "collect": "staff/cloak"
+    }
+   },
+   {
+    "id": "cloak.hat",
+    "k": "city.ask.cloak.hat",
+    "lines": [
+     "city.ask.cloak.hat.1",
+     "city.ask.cloak.hat.2"
+    ],
+    "gives": {
+     "collect": "staff/cloak"
+    }
+   }
+  ],
+  "cashier": [
+   {
+    "id": "store.floors",
+    "k": "city.ask.store.floors",
+    "lines": [
+     "city.ask.store.floors.1",
+     "city.ask.store.floors.2"
+    ],
+    "gives": {
+     "collect": "staff/store"
+    }
+   },
+   {
+    "id": "store.umbrella",
+    "k": "city.ask.store.umbrella",
+    "lines": [
+     "city.ask.store.umbrella.1",
+     {
+      "k": "city.ask.store.umbrella.2",
+      "h": [
+       11,
+       13
+      ]
+     }
+    ],
+    "gives": {
+     "collect": "staff/store"
+    }
+   },
+   {
+    "id": "store.tree",
+    "k": "city.ask.store.tree",
+    "lines": [
+     "city.ask.store.tree.1",
+     {
+      "k": "city.ask.store.tree.2",
+      "festival": [
+       "new_year",
+       "winter_fair",
+       "christmas"
+      ]
+     },
+     {
+      "k": "city.ask.store.tree.3",
+      "weather": "snow"
+     }
+    ],
+    "gives": {
+     "collect": "staff/store"
+    }
+   }
+  ],
+  "buy_store_books": [
+   {
+    "id": "store.floors",
+    "k": "city.ask.store.floors",
+    "lines": [
+     "city.ask.store.floors.1",
+     "city.ask.store.floors.2"
+    ],
+    "gives": {
+     "collect": "staff/store"
+    }
+   },
+   {
+    "id": "store.umbrella",
+    "k": "city.ask.store.umbrella",
+    "lines": [
+     "city.ask.store.umbrella.1",
+     {
+      "k": "city.ask.store.umbrella.2",
+      "h": [
+       11,
+       13
+      ]
+     }
+    ],
+    "gives": {
+     "collect": "staff/store"
+    }
+   },
+   {
+    "id": "store.tree",
+    "k": "city.ask.store.tree",
+    "lines": [
+     "city.ask.store.tree.1",
+     {
+      "k": "city.ask.store.tree.2",
+      "festival": [
+       "new_year",
+       "winter_fair",
+       "christmas"
+      ]
+     },
+     {
+      "k": "city.ask.store.tree.3",
+      "weather": "snow"
+     }
+    ],
+    "gives": {
+     "collect": "staff/store"
+    }
+   }
+  ],
+  "buy_store_drinks": [
+   {
+    "id": "store.floors",
+    "k": "city.ask.store.floors",
+    "lines": [
+     "city.ask.store.floors.1",
+     "city.ask.store.floors.2"
+    ],
+    "gives": {
+     "collect": "staff/store"
+    }
+   },
+   {
+    "id": "store.umbrella",
+    "k": "city.ask.store.umbrella",
+    "lines": [
+     "city.ask.store.umbrella.1",
+     {
+      "k": "city.ask.store.umbrella.2",
+      "h": [
+       11,
+       13
+      ]
+     }
+    ],
+    "gives": {
+     "collect": "staff/store"
+    }
+   },
+   {
+    "id": "store.tree",
+    "k": "city.ask.store.tree",
+    "lines": [
+     "city.ask.store.tree.1",
+     {
+      "k": "city.ask.store.tree.2",
+      "festival": [
+       "new_year",
+       "winter_fair",
+       "christmas"
+      ]
+     },
+     {
+      "k": "city.ask.store.tree.3",
+      "weather": "snow"
+     }
+    ],
+    "gives": {
+     "collect": "staff/store"
+    }
+   }
+  ],
+  "buy_store_garden": [
+   {
+    "id": "store.floors",
+    "k": "city.ask.store.floors",
+    "lines": [
+     "city.ask.store.floors.1",
+     "city.ask.store.floors.2"
+    ],
+    "gives": {
+     "collect": "staff/store"
+    }
+   },
+   {
+    "id": "store.umbrella",
+    "k": "city.ask.store.umbrella",
+    "lines": [
+     "city.ask.store.umbrella.1",
+     {
+      "k": "city.ask.store.umbrella.2",
+      "h": [
+       11,
+       13
+      ]
+     }
+    ],
+    "gives": {
+     "collect": "staff/store"
+    }
+   },
+   {
+    "id": "store.tree",
+    "k": "city.ask.store.tree",
+    "lines": [
+     "city.ask.store.tree.1",
+     {
+      "k": "city.ask.store.tree.2",
+      "festival": [
+       "new_year",
+       "winter_fair",
+       "christmas"
+      ]
+     },
+     {
+      "k": "city.ask.store.tree.3",
+      "weather": "snow"
+     }
+    ],
+    "gives": {
+     "collect": "staff/store"
+    }
+   }
+  ],
+  "buy_store_grocery": [
+   {
+    "id": "store.floors",
+    "k": "city.ask.store.floors",
+    "lines": [
+     "city.ask.store.floors.1",
+     "city.ask.store.floors.2"
+    ],
+    "gives": {
+     "collect": "staff/store"
+    }
+   },
+   {
+    "id": "store.umbrella",
+    "k": "city.ask.store.umbrella",
+    "lines": [
+     "city.ask.store.umbrella.1",
+     {
+      "k": "city.ask.store.umbrella.2",
+      "h": [
+       11,
+       13
+      ]
+     }
+    ],
+    "gives": {
+     "collect": "staff/store"
+    }
+   },
+   {
+    "id": "store.tree",
+    "k": "city.ask.store.tree",
+    "lines": [
+     "city.ask.store.tree.1",
+     {
+      "k": "city.ask.store.tree.2",
+      "festival": [
+       "new_year",
+       "winter_fair",
+       "christmas"
+      ]
+     },
+     {
+      "k": "city.ask.store.tree.3",
+      "weather": "snow"
+     }
+    ],
+    "gives": {
+     "collect": "staff/store"
+    }
+   }
+  ],
+  "buy_store_haberdashery": [
+   {
+    "id": "store.floors",
+    "k": "city.ask.store.floors",
+    "lines": [
+     "city.ask.store.floors.1",
+     "city.ask.store.floors.2"
+    ],
+    "gives": {
+     "collect": "staff/store"
+    }
+   },
+   {
+    "id": "store.umbrella",
+    "k": "city.ask.store.umbrella",
+    "lines": [
+     "city.ask.store.umbrella.1",
+     {
+      "k": "city.ask.store.umbrella.2",
+      "h": [
+       11,
+       13
+      ]
+     }
+    ],
+    "gives": {
+     "collect": "staff/store"
+    }
+   },
+   {
+    "id": "store.tree",
+    "k": "city.ask.store.tree",
+    "lines": [
+     "city.ask.store.tree.1",
+     {
+      "k": "city.ask.store.tree.2",
+      "festival": [
+       "new_year",
+       "winter_fair",
+       "christmas"
+      ]
+     },
+     {
+      "k": "city.ask.store.tree.3",
+      "weather": "snow"
+     }
+    ],
+    "gives": {
+     "collect": "staff/store"
+    }
+   }
+  ],
+  "buy_store_souvenirs": [
+   {
+    "id": "store.floors",
+    "k": "city.ask.store.floors",
+    "lines": [
+     "city.ask.store.floors.1",
+     "city.ask.store.floors.2"
+    ],
+    "gives": {
+     "collect": "staff/store"
+    }
+   },
+   {
+    "id": "store.umbrella",
+    "k": "city.ask.store.umbrella",
+    "lines": [
+     "city.ask.store.umbrella.1",
+     {
+      "k": "city.ask.store.umbrella.2",
+      "h": [
+       11,
+       13
+      ]
+     }
+    ],
+    "gives": {
+     "collect": "staff/store"
+    }
+   },
+   {
+    "id": "store.tree",
+    "k": "city.ask.store.tree",
+    "lines": [
+     "city.ask.store.tree.1",
+     {
+      "k": "city.ask.store.tree.2",
+      "festival": [
+       "new_year",
+       "winter_fair",
+       "christmas"
+      ]
+     },
+     {
+      "k": "city.ask.store.tree.3",
+      "weather": "snow"
+     }
+    ],
+    "gives": {
+     "collect": "staff/store"
+    }
+   }
+  ],
+  "buy_store_sports": [
+   {
+    "id": "store.floors",
+    "k": "city.ask.store.floors",
+    "lines": [
+     "city.ask.store.floors.1",
+     "city.ask.store.floors.2"
+    ],
+    "gives": {
+     "collect": "staff/store"
+    }
+   },
+   {
+    "id": "store.umbrella",
+    "k": "city.ask.store.umbrella",
+    "lines": [
+     "city.ask.store.umbrella.1",
+     {
+      "k": "city.ask.store.umbrella.2",
+      "h": [
+       11,
+       13
+      ]
+     }
+    ],
+    "gives": {
+     "collect": "staff/store"
+    }
+   },
+   {
+    "id": "store.tree",
+    "k": "city.ask.store.tree",
+    "lines": [
+     "city.ask.store.tree.1",
+     {
+      "k": "city.ask.store.tree.2",
+      "festival": [
+       "new_year",
+       "winter_fair",
+       "christmas"
+      ]
+     },
+     {
+      "k": "city.ask.store.tree.3",
+      "weather": "snow"
+     }
+    ],
+    "gives": {
+     "collect": "staff/store"
+    }
+   }
+  ],
+  "buy_store_sweets": [
+   {
+    "id": "store.floors",
+    "k": "city.ask.store.floors",
+    "lines": [
+     "city.ask.store.floors.1",
+     "city.ask.store.floors.2"
+    ],
+    "gives": {
+     "collect": "staff/store"
+    }
+   },
+   {
+    "id": "store.umbrella",
+    "k": "city.ask.store.umbrella",
+    "lines": [
+     "city.ask.store.umbrella.1",
+     {
+      "k": "city.ask.store.umbrella.2",
+      "h": [
+       11,
+       13
+      ]
+     }
+    ],
+    "gives": {
+     "collect": "staff/store"
+    }
+   },
+   {
+    "id": "store.tree",
+    "k": "city.ask.store.tree",
+    "lines": [
+     "city.ask.store.tree.1",
+     {
+      "k": "city.ask.store.tree.2",
+      "festival": [
+       "new_year",
+       "winter_fair",
+       "christmas"
+      ]
+     },
+     {
+      "k": "city.ask.store.tree.3",
+      "weather": "snow"
+     }
+    ],
+    "gives": {
+     "collect": "staff/store"
+    }
+   }
+  ],
+  "buy_store_cafe": [
+   {
+    "id": "store.floors",
+    "k": "city.ask.store.floors",
+    "lines": [
+     "city.ask.store.floors.1",
+     "city.ask.store.floors.2"
+    ],
+    "gives": {
+     "collect": "staff/store"
+    }
+   },
+   {
+    "id": "store.umbrella",
+    "k": "city.ask.store.umbrella",
+    "lines": [
+     "city.ask.store.umbrella.1",
+     {
+      "k": "city.ask.store.umbrella.2",
+      "h": [
+       11,
+       13
+      ]
+     }
+    ],
+    "gives": {
+     "collect": "staff/store"
+    }
+   },
+   {
+    "id": "store.tree",
+    "k": "city.ask.store.tree",
+    "lines": [
+     "city.ask.store.tree.1",
+     {
+      "k": "city.ask.store.tree.2",
+      "festival": [
+       "new_year",
+       "winter_fair",
+       "christmas"
+      ]
+     },
+     {
+      "k": "city.ask.store.tree.3",
+      "weather": "snow"
+     }
+    ],
+    "gives": {
+     "collect": "staff/store"
+    }
+   }
+  ],
+  "buy_market_bait": [
+   {
+    "id": "market.jam",
+    "k": "city.ask.market.jam",
+    "lines": [
+     "city.ask.market.jam.1",
+     "city.ask.market.jam.2"
+    ],
+    "gives": {
+     "collect": "staff/market"
+    }
+   },
+   {
+    "id": "market.days",
+    "k": "city.ask.market.days",
+    "lines": [
+     "city.ask.market.days.1",
+     {
+      "k": "city.ask.market.days.2",
+      "festival": "weekend_market"
+     },
+     {
+      "k": "city.ask.market.days.3",
+      "h": [
+       5,
+       9
+      ]
+     }
+    ],
+    "gives": {
+     "collect": "staff/market"
+    }
+   },
+   {
+    "id": "market.scales",
+    "k": "city.ask.market.scales",
+    "lines": [
+     "city.ask.market.scales.1",
+     "city.ask.market.scales.2"
+    ],
+    "gives": {
+     "collect": "staff/market"
+    }
+   },
+   {
+    "id": "stall.birdseed",
+    "k": "city.ask.stall.birdseed",
+    "lines": [
+     "city.ask.stall.birdseed.1",
+     "city.ask.stall.birdseed.2"
+    ],
+    "gives": {
+     "collect": "staff/stall"
+    }
+   },
+   {
+    "id": "stall.bait",
+    "k": "city.ask.stall.bait",
+    "lines": [
+     "city.ask.stall.bait.1",
+     {
+      "k": "city.ask.stall.bait.2",
+      "weather": "fog"
+     },
+     {
+      "k": "city.ask.stall.bait.3",
+      "festival": "fisherman_day"
+     }
+    ],
+    "gives": {
+     "collect": "staff/stall"
+    }
+   },
+   {
+    "id": "stall.tea",
+    "k": "city.ask.stall.tea",
+    "lines": [
+     "city.ask.stall.tea.1",
+     {
+      "k": "city.ask.stall.tea.2",
+      "weather": [
+       "cold",
+       "snow",
+       "rain"
+      ]
+     }
+    ],
+    "gives": {
+     "collect": "staff/stall"
+    }
+   }
+  ],
+  "buy_market_bakery": [
+   {
+    "id": "market.jam",
+    "k": "city.ask.market.jam",
+    "lines": [
+     "city.ask.market.jam.1",
+     "city.ask.market.jam.2"
+    ],
+    "gives": {
+     "collect": "staff/market"
+    }
+   },
+   {
+    "id": "market.days",
+    "k": "city.ask.market.days",
+    "lines": [
+     "city.ask.market.days.1",
+     {
+      "k": "city.ask.market.days.2",
+      "festival": "weekend_market"
+     },
+     {
+      "k": "city.ask.market.days.3",
+      "h": [
+       5,
+       9
+      ]
+     }
+    ],
+    "gives": {
+     "collect": "staff/market"
+    }
+   },
+   {
+    "id": "market.scales",
+    "k": "city.ask.market.scales",
+    "lines": [
+     "city.ask.market.scales.1",
+     "city.ask.market.scales.2"
+    ],
+    "gives": {
+     "collect": "staff/market"
+    }
+   }
+  ],
+  "buy_market_birds": [
+   {
+    "id": "market.jam",
+    "k": "city.ask.market.jam",
+    "lines": [
+     "city.ask.market.jam.1",
+     "city.ask.market.jam.2"
+    ],
+    "gives": {
+     "collect": "staff/market"
+    }
+   },
+   {
+    "id": "market.days",
+    "k": "city.ask.market.days",
+    "lines": [
+     "city.ask.market.days.1",
+     {
+      "k": "city.ask.market.days.2",
+      "festival": "weekend_market"
+     },
+     {
+      "k": "city.ask.market.days.3",
+      "h": [
+       5,
+       9
+      ]
+     }
+    ],
+    "gives": {
+     "collect": "staff/market"
+    }
+   },
+   {
+    "id": "market.scales",
+    "k": "city.ask.market.scales",
+    "lines": [
+     "city.ask.market.scales.1",
+     "city.ask.market.scales.2"
+    ],
+    "gives": {
+     "collect": "staff/market"
+    }
+   },
+   {
+    "id": "stall.birdseed",
+    "k": "city.ask.stall.birdseed",
+    "lines": [
+     "city.ask.stall.birdseed.1",
+     "city.ask.stall.birdseed.2"
+    ],
+    "gives": {
+     "collect": "staff/stall"
+    }
+   },
+   {
+    "id": "stall.bait",
+    "k": "city.ask.stall.bait",
+    "lines": [
+     "city.ask.stall.bait.1",
+     {
+      "k": "city.ask.stall.bait.2",
+      "weather": "fog"
+     },
+     {
+      "k": "city.ask.stall.bait.3",
+      "festival": "fisherman_day"
+     }
+    ],
+    "gives": {
+     "collect": "staff/stall"
+    }
+   },
+   {
+    "id": "stall.tea",
+    "k": "city.ask.stall.tea",
+    "lines": [
+     "city.ask.stall.tea.1",
+     {
+      "k": "city.ask.stall.tea.2",
+      "weather": [
+       "cold",
+       "snow",
+       "rain"
+      ]
+     }
+    ],
+    "gives": {
+     "collect": "staff/stall"
+    }
+   }
+  ],
+  "buy_market_dairy": [
+   {
+    "id": "market.jam",
+    "k": "city.ask.market.jam",
+    "lines": [
+     "city.ask.market.jam.1",
+     "city.ask.market.jam.2"
+    ],
+    "gives": {
+     "collect": "staff/market"
+    }
+   },
+   {
+    "id": "market.days",
+    "k": "city.ask.market.days",
+    "lines": [
+     "city.ask.market.days.1",
+     {
+      "k": "city.ask.market.days.2",
+      "festival": "weekend_market"
+     },
+     {
+      "k": "city.ask.market.days.3",
+      "h": [
+       5,
+       9
+      ]
+     }
+    ],
+    "gives": {
+     "collect": "staff/market"
+    }
+   },
+   {
+    "id": "market.scales",
+    "k": "city.ask.market.scales",
+    "lines": [
+     "city.ask.market.scales.1",
+     "city.ask.market.scales.2"
+    ],
+    "gives": {
+     "collect": "staff/market"
+    }
+   }
+  ],
+  "buy_market_fruit": [
+   {
+    "id": "market.jam",
+    "k": "city.ask.market.jam",
+    "lines": [
+     "city.ask.market.jam.1",
+     "city.ask.market.jam.2"
+    ],
+    "gives": {
+     "collect": "staff/market"
+    }
+   },
+   {
+    "id": "market.days",
+    "k": "city.ask.market.days",
+    "lines": [
+     "city.ask.market.days.1",
+     {
+      "k": "city.ask.market.days.2",
+      "festival": "weekend_market"
+     },
+     {
+      "k": "city.ask.market.days.3",
+      "h": [
+       5,
+       9
+      ]
+     }
+    ],
+    "gives": {
+     "collect": "staff/market"
+    }
+   },
+   {
+    "id": "market.scales",
+    "k": "city.ask.market.scales",
+    "lines": [
+     "city.ask.market.scales.1",
+     "city.ask.market.scales.2"
+    ],
+    "gives": {
+     "collect": "staff/market"
+    }
+   }
+  ],
+  "buy_market_sweets": [
+   {
+    "id": "market.jam",
+    "k": "city.ask.market.jam",
+    "lines": [
+     "city.ask.market.jam.1",
+     "city.ask.market.jam.2"
+    ],
+    "gives": {
+     "collect": "staff/market"
+    }
+   },
+   {
+    "id": "market.days",
+    "k": "city.ask.market.days",
+    "lines": [
+     "city.ask.market.days.1",
+     {
+      "k": "city.ask.market.days.2",
+      "festival": "weekend_market"
+     },
+     {
+      "k": "city.ask.market.days.3",
+      "h": [
+       5,
+       9
+      ]
+     }
+    ],
+    "gives": {
+     "collect": "staff/market"
+    }
+   },
+   {
+    "id": "market.scales",
+    "k": "city.ask.market.scales",
+    "lines": [
+     "city.ask.market.scales.1",
+     "city.ask.market.scales.2"
+    ],
+    "gives": {
+     "collect": "staff/market"
+    }
+   }
+  ],
+  "buy_market_tea": [
+   {
+    "id": "market.jam",
+    "k": "city.ask.market.jam",
+    "lines": [
+     "city.ask.market.jam.1",
+     "city.ask.market.jam.2"
+    ],
+    "gives": {
+     "collect": "staff/market"
+    }
+   },
+   {
+    "id": "market.days",
+    "k": "city.ask.market.days",
+    "lines": [
+     "city.ask.market.days.1",
+     {
+      "k": "city.ask.market.days.2",
+      "festival": "weekend_market"
+     },
+     {
+      "k": "city.ask.market.days.3",
+      "h": [
+       5,
+       9
+      ]
+     }
+    ],
+    "gives": {
+     "collect": "staff/market"
+    }
+   },
+   {
+    "id": "market.scales",
+    "k": "city.ask.market.scales",
+    "lines": [
+     "city.ask.market.scales.1",
+     "city.ask.market.scales.2"
+    ],
+    "gives": {
+     "collect": "staff/market"
+    }
+   },
+   {
+    "id": "stall.birdseed",
+    "k": "city.ask.stall.birdseed",
+    "lines": [
+     "city.ask.stall.birdseed.1",
+     "city.ask.stall.birdseed.2"
+    ],
+    "gives": {
+     "collect": "staff/stall"
+    }
+   },
+   {
+    "id": "stall.bait",
+    "k": "city.ask.stall.bait",
+    "lines": [
+     "city.ask.stall.bait.1",
+     {
+      "k": "city.ask.stall.bait.2",
+      "weather": "fog"
+     },
+     {
+      "k": "city.ask.stall.bait.3",
+      "festival": "fisherman_day"
+     }
+    ],
+    "gives": {
+     "collect": "staff/stall"
+    }
+   },
+   {
+    "id": "stall.tea",
+    "k": "city.ask.stall.tea",
+    "lines": [
+     "city.ask.stall.tea.1",
+     {
+      "k": "city.ask.stall.tea.2",
+      "weather": [
+       "cold",
+       "snow",
+       "rain"
+      ]
+     }
+    ],
+    "gives": {
+     "collect": "staff/stall"
+    }
+   }
+  ],
+  "market_office": [
+   {
+    "id": "market.jam",
+    "k": "city.ask.market.jam",
+    "lines": [
+     "city.ask.market.jam.1",
+     "city.ask.market.jam.2"
+    ],
+    "gives": {
+     "collect": "staff/market"
+    }
+   },
+   {
+    "id": "market.days",
+    "k": "city.ask.market.days",
+    "lines": [
+     "city.ask.market.days.1",
+     {
+      "k": "city.ask.market.days.2",
+      "festival": "weekend_market"
+     },
+     {
+      "k": "city.ask.market.days.3",
+      "h": [
+       5,
+       9
+      ]
+     }
+    ],
+    "gives": {
+     "collect": "staff/market"
+    }
+   },
+   {
+    "id": "market.scales",
+    "k": "city.ask.market.scales",
+    "lines": [
+     "city.ask.market.scales.1",
+     "city.ask.market.scales.2"
+    ],
+    "gives": {
+     "collect": "staff/market"
+    }
+   }
+  ],
+  "buy_fish_shop": [
+   {
+    "id": "fish.today",
+    "k": "city.ask.fish.today",
+    "lines": [
+     "city.ask.fish.today.1",
+     {
+      "k": "city.ask.fish.today.2",
+      "h": [
+       5,
+       10
+      ]
+     },
+     {
+      "k": "city.ask.fish.today.3",
+      "weather": [
+       "fog",
+       "rain"
+      ]
+     }
+    ],
+    "gives": {
+     "collect": "staff/fish"
+    }
+   },
+   {
+    "id": "fish.golden",
+    "k": "city.ask.fish.golden",
+    "lines": [
+     "city.ask.fish.golden.1",
+     "city.ask.fish.golden.2"
+    ],
+    "gives": {
+     "collect": "staff/fish"
+    }
+   },
+   {
+    "id": "fish.catch",
+    "k": "city.ask.fish.catch",
+    "lines": [
+     "city.ask.fish.catch.1",
+     "city.ask.fish.catch.2"
+    ],
+    "gives": {
+     "collect": "staff/fish"
+    }
+   }
+  ],
+  "buy_bakery": [
+   {
+    "id": "bakery.morning",
+    "k": "city.ask.bakery.morning",
+    "lines": [
+     "city.ask.bakery.morning.1",
+     {
+      "k": "city.ask.bakery.morning.2",
+      "h": [
+       6,
+       9
+      ]
+     }
+    ],
+    "gives": {
+     "collect": "staff/bakery"
+    }
+   },
+   {
+    "id": "bakery.cat",
+    "k": "city.ask.bakery.cat",
+    "lines": [
+     "city.ask.bakery.cat.1",
+     "city.ask.bakery.cat.2"
+    ],
+    "gives": {
+     "collect": "staff/bakery"
+    }
+   },
+   {
+    "id": "bakery.rye",
+    "k": "city.ask.bakery.rye",
+    "lines": [
+     "city.ask.bakery.rye.1",
+     {
+      "k": "city.ask.bakery.rye.2",
+      "festival": "maslenitsa"
+     }
+    ],
+    "gives": {
+     "collect": "staff/bakery"
+    }
+   }
+  ],
+  "buy_seagull_cafe": [
+   {
+    "id": "seagull.window",
+    "k": "city.ask.seagull.window",
+    "lines": [
+     "city.ask.seagull.window.1",
+     {
+      "k": "city.ask.seagull.window.2",
+      "weather": "rain"
+     }
+    ],
+    "gives": {
+     "collect": "staff/seagull"
+    }
+   },
+   {
+    "id": "seagull.fishermen",
+    "k": "city.ask.seagull.fishermen",
+    "lines": [
+     "city.ask.seagull.fishermen.1",
+     {
+      "k": "city.ask.seagull.fishermen.2",
+      "h": [
+       5,
+       10
+      ]
+     }
+    ],
+    "gives": {
+     "collect": "staff/seagull"
+    }
+   },
+   {
+    "id": "seagull.evening",
+    "k": "city.ask.seagull.evening",
+    "lines": [
+     "city.ask.seagull.evening.1",
+     {
+      "k": "city.ask.seagull.evening.2",
+      "festival": "lantern_night"
+     }
+    ],
+    "gives": {
+     "collect": "staff/seagull"
+    }
+   }
+  ],
+  "buy_dumplings": [
+   {
+    "id": "dumplings.portion",
+    "k": "city.ask.dumplings.portion",
+    "lines": [
+     "city.ask.dumplings.portion.1",
+     "city.ask.dumplings.portion.2",
+     {
+      "k": "city.ask.dumplings.portion.3",
+      "weather": [
+       "cold",
+       "snow"
+      ]
+     }
+    ],
+    "gives": {
+     "collect": "staff/dumplings"
+    }
+   },
+   {
+    "id": "dumplings.soup",
+    "k": "city.ask.dumplings.soup",
+    "lines": [
+     "city.ask.dumplings.soup.1",
+     {
+      "k": "city.ask.dumplings.soup.2",
+      "read": "cookbook_soup"
+     }
+    ],
+    "gives": {
+     "collect": "staff/dumplings"
+    }
+   },
+   {
+    "id": "dumplings.cook",
+    "k": "city.ask.dumplings.cook",
+    "lines": [
+     "city.ask.dumplings.cook.1"
+    ],
+    "gives": {
+     "collect": "staff/dumplings"
+    }
+   }
+  ],
+  "buy_pasty_bar": [
+   {
+    "id": "pasty.hot",
+    "k": "city.ask.pasty.hot",
+    "lines": [
+     "city.ask.pasty.hot.1",
+     {
+      "k": "city.ask.pasty.hot.2",
+      "h": [
+       12,
+       15
+      ]
+     }
+    ],
+    "gives": {
+     "collect": "staff/pasty"
+    }
+   },
+   {
+    "id": "pasty.recipe",
+    "k": "city.ask.pasty.recipe",
+    "lines": [
+     "city.ask.pasty.recipe.1"
+    ],
+    "gives": {
+     "collect": "staff/pasty"
+    }
+   },
+   {
+    "id": "pasty.beach",
+    "k": "city.ask.pasty.beach",
+    "lines": [
+     "city.ask.pasty.beach.1",
+     {
+      "k": "city.ask.pasty.beach.2",
+      "weather": [
+       "rain",
+       "snow"
+      ]
+     }
+    ],
+    "gives": {
+     "collect": "staff/pasty"
+    }
+   }
+  ],
+  "buy_beer_bar": [
+   {
+    "id": "beer.kvass",
+    "k": "city.ask.beer.kvass",
+    "lines": [
+     "city.ask.beer.kvass.1"
+    ],
+    "gives": {
+     "collect": "staff/beer"
+    }
+   },
+   {
+    "id": "beer.darts",
+    "k": "city.ask.beer.darts",
+    "lines": [
+     "city.ask.beer.darts.1",
+     {
+      "k": "city.ask.beer.darts.2",
+      "did": "darts"
+     }
+    ],
+    "gives": {
+     "collect": "staff/beer"
+    }
+   },
+   {
+    "id": "beer.fishermen",
+    "k": "city.ask.beer.fishermen",
+    "lines": [
+     "city.ask.beer.fishermen.1",
+     {
+      "k": "city.ask.beer.fishermen.2",
+      "festival": "fisherman_day"
+     }
+    ],
+    "gives": {
+     "collect": "staff/beer"
+    }
+   }
+  ],
+  "buy_book_stall": [
+   {
+    "id": "books.sale",
+    "k": "city.ask.books.sale",
+    "lines": [
+     "city.ask.books.sale.1",
+     {
+      "k": "city.ask.books.sale.2",
+      "weather": "rain"
+     }
+    ],
+    "gives": {
+     "collect": "staff/books"
+    }
+   },
+   {
+    "id": "books.library",
+    "k": "city.ask.books.library",
+    "lines": [
+     "city.ask.books.library.1",
+     "city.ask.books.library.2"
+    ],
+    "gives": {
+     "collect": "staff/books"
+    }
+   },
+   {
+    "id": "books.rare",
+    "k": "city.ask.books.rare",
+    "lines": [
+     "city.ask.books.rare.1"
+    ],
+    "gives": {
+     "collect": "staff/books"
+    }
+   }
+  ],
+  "buy_souvenirs": [
+   {
+    "id": "souvenir.amber",
+    "k": "city.ask.souvenir.amber",
+    "lines": [
+     "city.ask.souvenir.amber.1",
+     {
+      "k": "city.ask.souvenir.amber.2",
+      "weather": [
+       "rain",
+       "fog"
+      ]
+     }
+    ],
+    "gives": {
+     "collect": "staff/souvenir"
+    }
+   },
+   {
+    "id": "souvenir.badge",
+    "k": "city.ask.souvenir.badge",
+    "lines": [
+     "city.ask.souvenir.badge.1"
+    ],
+    "gives": {
+     "collect": "staff/souvenir"
+    }
+   },
+   {
+    "id": "souvenir.best",
+    "k": "city.ask.souvenir.best",
+    "lines": [
+     "city.ask.souvenir.best.1",
+     {
+      "k": "city.ask.souvenir.best.2",
+      "count": [
+       "staff",
+       10
+      ]
+     }
+    ],
+    "gives": {
+     "collect": "staff/souvenir"
+    }
+   }
+  ],
+  "rentals": [
+   {
+    "id": "rental.boats",
+    "k": "city.ask.rental.boats",
+    "lines": [
+     "city.ask.rental.boats.1",
+     {
+      "k": "city.ask.rental.boats.2",
+      "weather": [
+       "fog",
+       "rain",
+       "snow"
+      ]
+     }
+    ],
+    "gives": {
+     "collect": "staff/rental"
+    }
+   },
+   {
+    "id": "rental.flags",
+    "k": "city.ask.rental.flags",
+    "lines": [
+     "city.ask.rental.flags.1",
+     "city.ask.rental.flags.2"
+    ],
+    "gives": {
+     "collect": "staff/rental"
+    }
+   },
+   {
+    "id": "rental.bikes",
+    "k": "city.ask.rental.bikes",
+    "lines": [
+     "city.ask.rental.bikes.1"
+    ],
+    "gives": {
+     "collect": "staff/rental"
+    }
+   }
+  ],
+  "photo_desk": [
+   {
+    "id": "photo.portrait",
+    "k": "city.ask.photo.portrait",
+    "lines": [
+     "city.ask.photo.portrait.1",
+     {
+      "k": "city.ask.photo.portrait.2",
+      "d": "thu"
+     }
+    ],
+    "gives": {
+     "collect": "staff/photo"
+    }
+   },
+   {
+    "id": "photo.booth",
+    "k": "city.ask.photo.booth",
+    "lines": [
+     "city.ask.photo.booth.1",
+     {
+      "k": "city.ask.photo.booth.2",
+      "did": "photo_booth"
+     }
+    ],
+    "gives": {
+     "collect": "staff/photo"
+    }
+   },
+   {
+    "id": "photo.darkroom",
+    "k": "city.ask.photo.darkroom",
+    "lines": [
+     "city.ask.photo.darkroom.1"
+    ],
+    "gives": {
+     "collect": "staff/photo"
+    }
+   }
+  ],
+  "clinic_registry_x": [
+   {
+    "id": "clinic.order",
+    "k": "city.ask.clinic.order",
+    "lines": [
+     "city.ask.clinic.order.1",
+     {
+      "k": "city.ask.clinic.order.2",
+      "h": [
+       8,
+       11
+      ]
+     }
+    ],
+    "gives": {
+     "collect": "staff/clinic"
+    }
+   },
+   {
+    "id": "clinic.aquarium",
+    "k": "city.ask.clinic.aquarium",
+    "lines": [
+     "city.ask.clinic.aquarium.1",
+     "city.ask.clinic.aquarium.2"
+    ],
+    "gives": {
+     "collect": "staff/clinic"
+    }
+   },
+   {
+    "id": "clinic.water",
+    "k": "city.ask.clinic.water",
+    "lines": [
+     "city.ask.clinic.water.1",
+     {
+      "k": "city.ask.clinic.water.2",
+      "did": "pump_room"
+     },
+     {
+      "k": "city.ask.clinic.water.3",
+      "weather": [
+       "cold",
+       "snow"
+      ]
+     }
+    ],
+    "gives": {
+     "collect": "staff/clinic"
+    }
+   }
+  ],
+  "buy_clinic_pharmacy": [
+   {
+    "id": "clinic.order",
+    "k": "city.ask.clinic.order",
+    "lines": [
+     "city.ask.clinic.order.1",
+     {
+      "k": "city.ask.clinic.order.2",
+      "h": [
+       8,
+       11
+      ]
+     }
+    ],
+    "gives": {
+     "collect": "staff/clinic"
+    }
+   },
+   {
+    "id": "clinic.aquarium",
+    "k": "city.ask.clinic.aquarium",
+    "lines": [
+     "city.ask.clinic.aquarium.1",
+     "city.ask.clinic.aquarium.2"
+    ],
+    "gives": {
+     "collect": "staff/clinic"
+    }
+   },
+   {
+    "id": "clinic.water",
+    "k": "city.ask.clinic.water",
+    "lines": [
+     "city.ask.clinic.water.1",
+     {
+      "k": "city.ask.clinic.water.2",
+      "did": "pump_room"
+     },
+     {
+      "k": "city.ask.clinic.water.3",
+      "weather": [
+       "cold",
+       "snow"
+      ]
+     }
+    ],
+    "gives": {
+     "collect": "staff/clinic"
+    }
+   }
+  ],
+  "buy_sanatorium_buffet": [
+   {
+    "id": "sana.pump",
+    "k": "city.ask.sana.pump",
+    "lines": [
+     "city.ask.sana.pump.1",
+     {
+      "k": "city.ask.sana.pump.2",
+      "h": [
+       7,
+       9
+      ]
+     }
+    ],
+    "gives": {
+     "collect": "staff/sana"
+    }
+   },
+   {
+    "id": "sana.evening",
+    "k": "city.ask.sana.evening",
+    "lines": [
+     "city.ask.sana.evening.1",
+     {
+      "k": "city.ask.sana.evening.2",
+      "h": [
+       18,
+       22
+      ]
+     }
+    ],
+    "gives": {
+     "collect": "staff/sana"
+    }
+   },
+   {
+    "id": "sana.kesha",
+    "k": "city.ask.sana.kesha",
+    "lines": [
+     "city.ask.sana.kesha.1",
+     {
+      "k": "city.ask.sana.kesha.2",
+      "weather": "clear"
+     }
+    ],
+    "gives": {
+     "collect": "staff/sana"
+    }
+   }
+  ],
+  "buy_sanatorium_kiosk": [
+   {
+    "id": "sana.pump",
+    "k": "city.ask.sana.pump",
+    "lines": [
+     "city.ask.sana.pump.1",
+     {
+      "k": "city.ask.sana.pump.2",
+      "h": [
+       7,
+       9
+      ]
+     }
+    ],
+    "gives": {
+     "collect": "staff/sana"
+    }
+   },
+   {
+    "id": "sana.evening",
+    "k": "city.ask.sana.evening",
+    "lines": [
+     "city.ask.sana.evening.1",
+     {
+      "k": "city.ask.sana.evening.2",
+      "h": [
+       18,
+       22
+      ]
+     }
+    ],
+    "gives": {
+     "collect": "staff/sana"
+    }
+   },
+   {
+    "id": "sana.kesha",
+    "k": "city.ask.sana.kesha",
+    "lines": [
+     "city.ask.sana.kesha.1",
+     {
+      "k": "city.ask.sana.kesha.2",
+      "weather": "clear"
+     }
+    ],
+    "gives": {
+     "collect": "staff/sana"
+    }
+   }
+  ],
+  "buy_hall_bar": [
+   {
+    "id": "hall.choir",
+    "k": "city.ask.hall.choir",
+    "lines": [
+     "city.ask.hall.choir.1",
+     {
+      "k": "city.ask.hall.choir.2",
+      "h": [
+       18,
+       22
+      ]
+     }
+    ],
+    "gives": {
+     "collect": "staff/hall"
+    }
+   },
+   {
+    "id": "hall.pies",
+    "k": "city.ask.hall.pies",
+    "lines": [
+     "city.ask.hall.pies.1",
+     {
+      "k": "city.ask.hall.pies.2",
+      "h": [
+       19,
+       24
+      ]
+     }
+    ],
+    "gives": {
+     "collect": "staff/hall"
+    }
+   },
+   {
+    "id": "hall.dance",
+    "k": "city.ask.hall.dance",
+    "lines": [
+     "city.ask.hall.dance.1",
+     {
+      "k": "city.ask.hall.dance.2",
+      "d": "sat"
+     }
+    ],
+    "gives": {
+     "collect": "staff/hall"
+    }
+   }
+  ],
+  "buy_fair_coffee": [
+   {
+    "id": "fair.games",
+    "k": "city.ask.fair.games",
+    "lines": [
+     "city.ask.fair.games.1",
+     {
+      "k": "city.ask.fair.games.2",
+      "did": "strongman"
+     }
+    ],
+    "gives": {
+     "collect": "staff/fair"
+    }
+   },
+   {
+    "id": "fair.days",
+    "k": "city.ask.fair.days",
+    "lines": [
+     "city.ask.fair.days.1",
+     {
+      "k": "city.ask.fair.days.2",
+      "festival": [
+       "harvest_fair",
+       "winter_fair"
+      ]
+     }
+    ],
+    "gives": {
+     "collect": "staff/fair"
+    }
+   },
+   {
+    "id": "fair.lanterns",
+    "k": "city.ask.fair.lanterns",
+    "lines": [
+     "city.ask.fair.lanterns.1",
+     {
+      "k": "city.ask.fair.lanterns.2",
+      "festival": "lantern_night"
+     }
+    ],
+    "gives": {
+     "collect": "staff/fair"
+    }
+   }
+  ],
+  "buy_fair_press": [
+   {
+    "id": "fair.games",
+    "k": "city.ask.fair.games",
+    "lines": [
+     "city.ask.fair.games.1",
+     {
+      "k": "city.ask.fair.games.2",
+      "did": "strongman"
+     }
+    ],
+    "gives": {
+     "collect": "staff/fair"
+    }
+   },
+   {
+    "id": "fair.days",
+    "k": "city.ask.fair.days",
+    "lines": [
+     "city.ask.fair.days.1",
+     {
+      "k": "city.ask.fair.days.2",
+      "festival": [
+       "harvest_fair",
+       "winter_fair"
+      ]
+     }
+    ],
+    "gives": {
+     "collect": "staff/fair"
+    }
+   },
+   {
+    "id": "fair.lanterns",
+    "k": "city.ask.fair.lanterns",
+    "lines": [
+     "city.ask.fair.lanterns.1",
+     {
+      "k": "city.ask.fair.lanterns.2",
+      "festival": "lantern_night"
+     }
+    ],
+    "gives": {
+     "collect": "staff/fair"
+    }
+   }
+  ],
+  "buy_fair_snacks": [
+   {
+    "id": "fair.games",
+    "k": "city.ask.fair.games",
+    "lines": [
+     "city.ask.fair.games.1",
+     {
+      "k": "city.ask.fair.games.2",
+      "did": "strongman"
+     }
+    ],
+    "gives": {
+     "collect": "staff/fair"
+    }
+   },
+   {
+    "id": "fair.days",
+    "k": "city.ask.fair.days",
+    "lines": [
+     "city.ask.fair.days.1",
+     {
+      "k": "city.ask.fair.days.2",
+      "festival": [
+       "harvest_fair",
+       "winter_fair"
+      ]
+     }
+    ],
+    "gives": {
+     "collect": "staff/fair"
+    }
+   },
+   {
+    "id": "fair.lanterns",
+    "k": "city.ask.fair.lanterns",
+    "lines": [
+     "city.ask.fair.lanterns.1",
+     {
+      "k": "city.ask.fair.lanterns.2",
+      "festival": "lantern_night"
+     }
+    ],
+    "gives": {
+     "collect": "staff/fair"
+    }
+   }
+  ],
+  "buy_fair_toys": [
+   {
+    "id": "fair.games",
+    "k": "city.ask.fair.games",
+    "lines": [
+     "city.ask.fair.games.1",
+     {
+      "k": "city.ask.fair.games.2",
+      "did": "strongman"
+     }
+    ],
+    "gives": {
+     "collect": "staff/fair"
+    }
+   },
+   {
+    "id": "fair.days",
+    "k": "city.ask.fair.days",
+    "lines": [
+     "city.ask.fair.days.1",
+     {
+      "k": "city.ask.fair.days.2",
+      "festival": [
+       "harvest_fair",
+       "winter_fair"
+      ]
+     }
+    ],
+    "gives": {
+     "collect": "staff/fair"
+    }
+   },
+   {
+    "id": "fair.lanterns",
+    "k": "city.ask.fair.lanterns",
+    "lines": [
+     "city.ask.fair.lanterns.1",
+     {
+      "k": "city.ask.fair.lanterns.2",
+      "festival": "lantern_night"
+     }
+    ],
+    "gives": {
+     "collect": "staff/fair"
+    }
+   }
+  ],
+  "buy_sport_cafe": [
+   {
+    "id": "sport.potter",
+    "k": "city.ask.sport.potter",
+    "lines": [
+     "city.ask.sport.potter.1",
+     {
+      "k": "city.ask.sport.potter.2",
+      "d": "wed"
+     },
+     {
+      "k": "city.ask.sport.potter.3",
+      "d": "sat"
+     },
+     {
+      "k": "city.ask.sport.potter.4",
+      "did": "potters_wheel"
+     }
+    ],
+    "gives": {
+     "collect": "staff/sport"
+    }
+   },
+   {
+    "id": "sport.pingpong",
+    "k": "city.ask.sport.pingpong",
+    "lines": [
+     "city.ask.sport.pingpong.1",
+     {
+      "k": "city.ask.sport.pingpong.2",
+      "d": "fri"
+     }
+    ],
+    "gives": {
+     "collect": "staff/sport"
+    }
+   },
+   {
+    "id": "sport.pool",
+    "k": "city.ask.sport.pool",
+    "lines": [
+     "city.ask.sport.pool.1"
+    ],
+    "gives": {
+     "collect": "staff/sport"
+    }
+   }
+  ],
+  "club_lending": [
+   {
+    "id": "cog.regulars",
+    "k": "city.ask.cog.regulars",
+    "lines": [
+     "city.ask.cog.regulars.1",
+     "city.ask.cog.regulars.2",
+     {
+      "k": "city.ask.cog.regulars.3",
+      "count": [
+       "chess_wins",
+       3
+      ]
+     }
+    ],
+    "gives": {
+     "collect": "staff/cog"
+    }
+   },
+   {
+    "id": "cog.minutes",
+    "k": "city.ask.cog.minutes",
+    "lines": [
+     "city.ask.cog.minutes.1",
+     {
+      "k": "city.ask.cog.minutes.2",
+      "read": "cog_minutes"
+     }
+    ],
+    "gives": {
+     "collect": "staff/cog"
+    }
+   },
+   {
+    "id": "cog.models",
+    "k": "city.ask.cog.models",
+    "lines": [
+     "city.ask.cog.models.1"
+    ],
+    "gives": {
+     "collect": "staff/cog"
+    }
+   }
+  ],
+  "lg1_tea": [
+   {
+    "id": "lifeguard.water",
+    "k": "city.ask.lifeguard.water",
+    "lines": [
+     "city.ask.lifeguard.water.1",
+     {
+      "k": "city.ask.lifeguard.water.2",
+      "weather": "warm"
+     },
+     {
+      "k": "city.ask.lifeguard.water.3",
+      "weather": [
+       "cold",
+       "fog",
+       "rain",
+       "snow"
+      ]
+     }
+    ],
+    "gives": {
+     "collect": "staff/lifeguard"
+    }
+   },
+   {
+    "id": "lifeguard.rules",
+    "k": "city.ask.lifeguard.rules",
+    "lines": [
+     "city.ask.lifeguard.rules.1",
+     "city.ask.lifeguard.rules.2"
+    ],
+    "gives": {
+     "collect": "staff/lifeguard"
+    }
+   },
+   {
+    "id": "lifeguard.lost",
+    "k": "city.ask.lifeguard.lost",
+    "lines": [
+     "city.ask.lifeguard.lost.1"
+    ],
+    "gives": {
+     "collect": "staff/lifeguard"
+    }
+   }
+  ],
+  "lg2_tea": [
+   {
+    "id": "lifeguard.water",
+    "k": "city.ask.lifeguard.water",
+    "lines": [
+     "city.ask.lifeguard.water.1",
+     {
+      "k": "city.ask.lifeguard.water.2",
+      "weather": "warm"
+     },
+     {
+      "k": "city.ask.lifeguard.water.3",
+      "weather": [
+       "cold",
+       "fog",
+       "rain",
+       "snow"
+      ]
+     }
+    ],
+    "gives": {
+     "collect": "staff/lifeguard"
+    }
+   },
+   {
+    "id": "lifeguard.rules",
+    "k": "city.ask.lifeguard.rules",
+    "lines": [
+     "city.ask.lifeguard.rules.1",
+     "city.ask.lifeguard.rules.2"
+    ],
+    "gives": {
+     "collect": "staff/lifeguard"
+    }
+   },
+   {
+    "id": "lifeguard.lost",
+    "k": "city.ask.lifeguard.lost",
+    "lines": [
+     "city.ask.lifeguard.lost.1"
+    ],
+    "gives": {
+     "collect": "staff/lifeguard"
+    }
+   }
+  ],
+  "keeper_cup": [
+   {
+    "id": "keeper.light",
+    "k": "city.ask.keeper.light",
+    "lines": [
+     "city.ask.keeper.light.1",
+     {
+      "k": "city.ask.keeper.light.2",
+      "h": [
+       20,
+       6
+      ]
+     }
+    ],
+    "gives": {
+     "collect": "staff/keeper"
+    }
+   },
+   {
+    "id": "keeper.weather",
+    "k": "city.ask.keeper.weather",
+    "lines": [
+     "city.ask.keeper.weather.1",
+     {
+      "k": "city.ask.keeper.weather.2",
+      "weather": "fog"
+     },
+     {
+      "k": "city.ask.keeper.weather.3",
+      "weather": "clear",
+      "h": [
+       19,
+       6
+      ]
+     }
+    ],
+    "gives": {
+     "collect": "staff/keeper"
+    }
+   },
+   {
+    "id": "keeper.cat",
+    "k": "city.ask.keeper.cat",
+    "lines": [
+     "city.ask.keeper.cat.1"
+    ],
+    "gives": {
+     "collect": "staff/keeper"
+    }
+   }
+  ]
+ },
+ "collections": {
+  "staff": {
+   "title": "city.coll.staff.title"
+  }
+ },
+ "tones": {
+  "hall_quiet": {
+   "about": "a quiet public hall: soft room tone, a far murmur, a slow wall clock (the cable car station's hall loop)",
+   "loop": "station_hall",
+   "volume": 0.22
+  },
+  "reading_room": {
+   "about": "a library or a reading room: the hall's hush quieter, now and then a page (diary_page: the wav is in audio/sfx, plays once imported)",
+   "loop": "station_hall",
+   "volume": 0.12,
+   "shots": [
+    "diary_page"
+   ],
+   "every": [
+    14,
+    40
+   ],
+   "shot_volume": 0.35
+  },
+  "cafe_room": {
+   "about": "a café or a canteen: murmur, cutlery, now and then a cup or a plate",
+   "loop": "rest_room",
+   "volume": 0.3,
+   "shots": [
+    "rest_clink",
+    "rest_plate",
+    "rest_glass"
+   ],
+   "every": [
+    7,
+    18
+   ],
+   "shot_volume": 0.4,
+   "closed": "empty_room"
+  },
+  "bar_room": {
+   "about": "a bar or a dumpling house: the room's murmur over a kitchen through the wall",
+   "loop": "rest_room",
+   "volume": 0.34,
+   "shots": [
+    "rest_glass",
+    "rest_clink",
+    "rest_coins"
+   ],
+   "every": [
+    8,
+    20
+   ],
+   "shot_volume": 0.4,
+   "closed": "empty_room"
+  },
+  "kitchen_shop": {
+   "about": "a bakery or a pasty bar: the kitchen through the wall, the till now and then",
+   "loop": "rest_kitchen",
+   "volume": 0.2,
+   "shots": [
+    "rest_coins"
+   ],
+   "every": [
+    15,
+    40
+   ],
+   "shot_volume": 0.35
+  },
+  "shop_room": {
+   "about": "a shop: quiet, the till's coins now and then",
+   "loop": "station_hall",
+   "volume": 0.12,
+   "shots": [
+    "rest_coins"
+   ],
+   "every": [
+    16,
+    45
+   ],
+   "shot_volume": 0.35
+  },
+  "cold_counter": {
+   "about": "a fish shop or an ice-cream freezer: a compressor's hum",
+   "loop": "vending_hum",
+   "volume": 0.16,
+   "shots": [
+    "rest_coins"
+   ],
+   "every": [
+    18,
+    50
+   ],
+   "shot_volume": 0.3
+  },
+  "empty_room": {
+   "about": "a shut café at night: only the hall's hush, very low",
+   "loop": "station_hall",
+   "volume": 0.06
+  },
+  "sport_hall": {
+   "about": "a sports hall: a ball bouncing, a whistle (ball_bounce, whistle_short do not exist yet: silent until made)",
+   "loop": "station_hall",
+   "volume": 0.14,
+   "shots": [
+    "ball_bounce"
+   ],
+   "every": [
+    5,
+    12
+   ],
+   "shot_volume": 0.4
+  },
+  "clock_room": {
+   "about": "a clockmaker's or a keeper's room: ticking (clock_tick does not exist yet: silent until made)",
+   "loop": "clock_tick",
+   "volume": 0.18
+  }
+ },
+ "tone_by": {
+  "_doc": "first found: the plot id, unit:<variant> (a promenade unit), the building type, the plot kind",
+  "P-LIBRARY": "reading_room",
+  "P-CLINIC": "hall_quiet",
+  "P-SANATORIUM": "hall_quiet",
+  "P-HALL": "hall_quiet",
+  "P-CLUB2": "hall_quiet",
+  "P-CLUB3": "hall_quiet",
+  "P-STORE": "shop_room",
+  "P-MARKET": "shop_room",
+  "P-CAFE": "cafe_room",
+  "P-WAVE": "shop_room",
+  "P-T4H2": "shop_room",
+  "P-T2H2": "cafe_room",
+  "P-T3H3": "cafe_room",
+  "P-T3SPORT": "sport_hall",
+  "P-SCHOOL": "hall_quiet",
+  "P-PIER": "clock_room",
+  "P-KIOSK6": "clock_room",
+  "P-KIOSK2": "cold_counter",
+  "unit:cafe": "cafe_room",
+  "unit:dumplings": "bar_room",
+  "unit:beer": "bar_room",
+  "unit:bakery": "kitchen_shop",
+  "unit:pasty": "kitchen_shop",
+  "unit:fish": "cold_counter",
+  "unit:souvenirs": "shop_room",
+  "unit:books": "reading_room",
+  "unit:photo": "shop_room",
+  "unit:barber": "shop_room",
+  "unit:rental": "shop_room",
+  "unit:workshop": "clock_room"
+ },
+ "sound_alias": {
+  "_doc": "an act's sound the soundscape has no pool for -> an existing pool of the same kind (interiors.py writes the alias)",
+  "page_turn": "diary_page",
+  "paper_rustle": "diary_pages",
+  "coin": "rest_coins",
+  "coin_drop": "rest_coins",
+  "water_pour": "rest_pour",
+  "cup_clink": "rest_clink",
+  "plate_clink": "rest_plate",
+  "purr": "cat_purr",
+  "shop_bell": "rest_bell",
+  "bell_ding": "rest_bell",
+  "bell_ring": "rest_bell",
+  "fridge_hum": "vending_hum",
+  "arcade_blip": "console_game_far",
+  "pan_sizzle": "rest_sizzle",
+  "aquarium_bubbles": "swim_bubbles",
+  "water_bubble": "swim_bubbles"
+ }
+}

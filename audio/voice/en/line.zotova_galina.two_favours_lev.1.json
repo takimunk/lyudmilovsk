@@ -1,0 +1,20 @@
+{
+ "key": "line.zotova_galina.two_favours_lev.1",
+ "lang": "en",
+ "text": "You sorted out Olya's magazine and disproved my hypothesis. Our household is in your debt, Lev especially.",
+ "speaker": "zotova_galina",
+ "voice": "Alice",
+ "voice_id": "Xb7hH8MSUJpSbSDYk0k2",
+ "voice_design": null,
+ "direction": "[warm, chatty, fondly exasperated with her husband]",
+ "model": "fal-ai/elevenlabs/tts/eleven-v3",
+ "request": {
+  "stability": 0.5,
+  "apply_text_normalization": "auto",
+  "text": "[warm, chatty, fondly exasperated with her husband] You sorted out Olya's magazine and disproved my hypothesis. Our household is in your debt, Lev especially.",
+  "voice": "Alice",
+  "language_code": "en"
+ },
+ "fal_request_id": "01a1d6eb-e202-7cb3-8ad6-9c565762f368",
+ "hash": "0ea638be7f07"
+}
