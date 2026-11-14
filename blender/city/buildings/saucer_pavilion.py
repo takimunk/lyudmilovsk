@@ -256,10 +256,7 @@ def build(B):
         if area < 0:
             poly = poly[::-1]
         prism(m, "CT_Interior", poly, zf, zf + 2.9, top=True)
-    # kitchen kit: stove block + prep table, espresso machine on the bar
-    k_c = P(9.4, 90, zf)
-    box(d, "CT_Steel", k_c[0] - 1.6, k_c[0] - 0.4, k_c[1] - 0.4, k_c[1] + 0.4, zf, zf + 0.9)
-    box(d, "CT_Aluminium", k_c[0] + 0.5, k_c[0] + 1.7, k_c[1] - 0.35, k_c[1] + 0.35, zf, zf + 0.9)
+    # (the kitchen's furniture is built from kit pieces in _bar_and_kitchen)
 
     _hall(B, rnd, zf)
     cu = P(5.15, 90, zf)
@@ -396,21 +393,33 @@ def _bar_and_kitchen(B, rnd, zf):
     for a_ in (78, 84, 87, 120, 124):
         c = P(6.2, a_, top)
         cyl(d, "CT_TileWhite", c[0], c[1], top, top + 0.07, 0.04, 6)
-    # kitchen: fridge, sink with tap, worktops along the kitchen walls, hood over the stove
+    # kitchen, from kit pieces: two runs along the partition's kitchen face (fridge/sink on one side of the hatch, hob
+    # under a hood on the other), a steel prep table in the middle, pots and a bin rack
     zk = zf
-    k_c = P(9.4, 90, zk)
-    for a_, w, h_, mat in ((64, 0.4, 1.9, "CT_SteelWhite"), (118, 0.45, 0.9, "CT_Aluminium")):
-        c = P(9.3, a_, zk)
-        rbox(m, mat, c[0], c[1], zk, zk + h_, w, 0.38, math.radians(a_ + 90))
-    c = P(9.3, 118, zk + 0.9)
-    cyl(d, "CT_Steel", c[0], c[1], zk + 0.9, zk + 1.15, 0.015, 4)
-    box(d, "CT_Steel", k_c[0] - 1.6, k_c[0] - 0.4, k_c[1] - 0.4, k_c[1] + 0.4, zk + 0.9, zk + 0.93)
-    for bx in (-1.25, -0.75):
-        cyl(d, "CT_Frame", k_c[0] + bx, k_c[1] - 0.1, zk + 0.93, zk + 0.95, 0.12, 8)
-    box(d, "CT_Steel", k_c[0] - 1.7, k_c[0] - 0.3, k_c[1] + 0.15, k_c[1] + 0.45, zk + 1.7, zk + 2.1)
-    box(d, "CT_Steel", k_c[0] - 1.2, k_c[0] - 0.8, k_c[1] + 0.2, k_c[1] + 0.4, zk + 2.1, zk + 2.9)
-    cyl(d, "CT_Steel", k_c[0] + 1.1, k_c[1] - 0.05, zk + 0.9, zk + 1.05, 0.12, 8)
-    cyl(d, "CT_Aluminium", k_c[0] + 0.8, k_c[1] + 0.05, zk + 0.9, zk + 1.0, 0.09, 8)
+    RK = 8.17
+
+    def run(a_deg, modules, cupboards):
+        c = P(RK, a_deg, zk)
+        return kit.kitchen_unit(B, c[0], c[1], zk, a_deg + 90.0, modules=modules, mat="CT_SteelWhite", top="CT_Aluminium",
+                                wall_cupboards=cupboards)
+    run(112, "fridge,cupboard,sink,cupboard", True)
+    run(69, "fridge,cupboard,stove,cupboard", False)
+    # the extractor hood over the stove (module 3 of the right run, 0.3 m from its centre) and a steel splash-back
+    ua = math.radians(69)
+    ux, uy = math.cos(ua), math.sin(ua)             # outward (away from the partition)
+    tx, ty = -uy, ux                                # along the run
+    hc = (CX + (RK + 0.2) * ux + 0.3 * tx, CY + (RK + 0.2) * uy + 0.3 * ty)
+    ang_ = ua + math.pi / 2
+    rbox(d, "CT_Steel", hc[0], hc[1], zk + 1.75, zk + 1.95, 0.32, 0.22, ang_)
+    rbox(d, "CT_Steel", hc[0] - 0.07 * ux, hc[1] - 0.07 * uy, zk + 1.95, zk + 2.9, 0.13, 0.1, ang_)
+    rbox(d, "CT_Steel", CX + (RK + 0.04) * ux + 0.3 * tx, CY + (RK + 0.04) * uy + 0.3 * ty, zk + 0.9, zk + 1.75, 0.3, 0.012, ang_)
+    pt_ = kit.table(B, CX, CY + 9.6, zk, 0.0, w=1.6, d=0.8, h=0.9, mat="CT_Steel", kind="steel")
+    kit.teapot(B, CX - 0.5, CY + 9.6, pt_["top"], 30.0)
+    kit.tray_stack(B, CX - 0.15, CY + 9.6, pt_["top"], 0.0)
+    kit.kitchen_scales(B, CX + 0.45, CY + 9.6, pt_["top"], 200.0)
+    kit.plates(B, CX + 0.05, CY + 9.55, pt_["top"], 0.0, n=4)
+    kit.cardboard_box(B, *P(10.0, 58, zk)[:2], zk, 58 - 90.0)
+    kit.crate(B, *P(10.0, 100, zk)[:2], zk, 10.0)
 
 
 def _wall_pt(a_w, r, side):

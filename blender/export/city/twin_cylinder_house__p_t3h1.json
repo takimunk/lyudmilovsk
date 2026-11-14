@@ -483,8 +483,8 @@
    "id": "lobby_picture_lighthouse",
    "kind": "board",
    "pos": [
-    -2.86,
-    5.143,
+    -2.808,
+    4.848,
     1.75
    ],
    "yaw": 100.0,
@@ -3668,7 +3668,7 @@
  ],
  "tris": {
   "shell": 4104,
-  "detail": 16945,
+  "detail": 16891,
   "windows": 524
  }
 }

@@ -1049,3 +1049,7 @@ def build(B):
     B.height = max(v["Hr"] for v in VAULTS) + ZW
     add_surrounds(B, bounds=(-16.9, 16.9, 0.35, 3.0), entrances=["main"], kinds=("street",), seed=3, max_lamps=3, hedges=False)
     B.note("4 parabolic vaults; hall B with stage, C dance room + bar, A foyer, D kitchen")
+
+
+from _wallhang import hung  # noqa: E402  (QA r9: nothing hangs over the glass)
+build = hung(build)

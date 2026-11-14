@@ -25,6 +25,7 @@ Spots (yaw = direction the user faces): foyer benches, cloakroom "counter" + "wo
 Ideas for later: a cinema hall in the 342 wing, furnished club rooms upstairs, a flag mast on the tower.
 """
 import math
+import os
 
 from citykit import box, prism, ring, band, band_down, ribbon_wall, quad_bar, DOOR_W
 from _cons_util import wall, win, hface, rect
@@ -215,6 +216,7 @@ def build(B):
     _tower(B)
     _letters(B)
     # ------------------------------------------------------------ furnishing
+    _wh = _WallHang(B)
     _foyer(B)
     _reading(B)
     _buffet(B)
@@ -222,8 +224,8 @@ def build(B):
     _studio(B)
     _front_room(B)
     _lamps_misc(B)
+    _wh.restore()
     _backboards(B)
-    import os
     if os.environ.get("KIT_CHECK"):
         print("KITCHECK", kit.check(B))
     # ------------------------------------------------------------ footprint, height, surrounds
@@ -568,6 +570,103 @@ def _ring_pt(a, r):
 
 
 WALL_HUNG = ("poster", "picture", "notice_board", "wall_map", "menu_board", "sign_plate", "banner", "blackboard", "wall_clock")
+
+
+class _WallHang:
+    """QA r9: wall-hung pieces whose spot has ribbon glazing behind it are moved along the wall (up to 1.5 m) to the
+    nearest stretch of solid wall (a pier or an end of the wall) that is wide enough and free of other pieces; things
+    declared at the old spot follow the piece. What cannot move keeps its backing board (_backboards)."""
+
+    def __init__(self, B):
+        import inspect
+        from mathutils.bvhtree import BVHTree
+        self.B = B
+        self.sig = {n: inspect.signature(getattr(kit, n)) for n in WALL_HUNG}
+        self.orig = {n: getattr(kit, n) for n in WALL_HUNG}
+        self.moves = []                    # (ox, oy, zmid, dx, dy)
+        self.placed = []                   # (x, y, tx, ty, w, z0, z1)
+        def tree(me):
+            tris = []
+            for f in me.faces:
+                for j in range(1, len(f[1]) - 1):
+                    tris.append((f[1][0], f[1][j], f[1][j + 1]))
+            return BVHTree.FromPolygons([tuple(v) for v in me.verts], tris) if tris else None
+        self.glass = tree(B.win)
+        self.shell = tree(B.m)
+        self.thing0 = B.thing
+        B.thing = self._thing
+        for n in WALL_HUNG:
+            setattr(kit, n, self._wrap(n))
+
+    def restore(self):
+        for n, f in self.orig.items():
+            setattr(kit, n, f)
+        self.B.thing = self.thing0
+
+    def _thing(self, tid, kind, pos, yaw=0.0, **props):
+        for (ox, oy, zm, dx, dy) in self.moves:
+            if math.hypot(pos[0] - ox, pos[1] - oy) < 0.4 and abs(pos[2] - zm) < 1.0:
+                pos = (pos[0] + dx, pos[1] + dy, pos[2])
+                break
+        return self.thing0(tid, kind, pos, yaw, **props)
+
+    def _ok(self, x, y, fx, fy, w, zlo, zhi):
+        from mathutils import Vector
+        tx, ty = -fy, fx                      # f = (sin yaw, -cos yaw); t = (cos yaw, sin yaw) = (-fy, fx)
+        for k in range(5):
+            u = -w / 2 - 0.03 + (w + 0.06) * k / 4
+            for q in range(4):
+                z = zlo + (zhi - zlo) * q / 3
+                o = Vector((x + tx * u + fx * 0.04, y + ty * u + fy * 0.04, z))
+                d = Vector((-fx, -fy, 0.0))
+                if self.glass is not None and self.glass.ray_cast(o, d, 0.45)[0] is not None:
+                    return False
+                h = self.shell.ray_cast(o, d, 0.3)
+                if h[0] is None:
+                    return False
+        return True
+
+    def _wrap(self, name):
+        sig = self.sig[name]
+
+        def fn(B, x, y, z=0.0, yaw=0.0, *a, **kw):
+            bound = sig.bind(B, x, y, z, yaw, *a, **kw)
+            bound.apply_defaults()
+            ar = bound.arguments
+            w = ar.get("w") or (2 * ar["r"] if name == "wall_clock" else 1.0)
+            if name == "blackboard":
+                zlo, zhi = z + ar["zb"], z + ar["zb"] + ar["h"]
+            else:
+                h = ar.get("h") or w * 0.7
+                zc = ar.get("zc") or 1.7
+                zlo, zhi = z + zc - h / 2, z + zc + h / 2
+            if name == "sign_plate" and ar.get("hang"):
+                return self.orig[name](B, x, y, z, yaw, *a, **kw)
+            ra = math.radians(yaw)
+            fx, fy = math.sin(ra), -math.cos(ra)
+            tx, ty = -fy, fx
+            nx, ny = x, y
+            if zlo > 0.3 and not self._ok(x, y, fx, fy, w, zlo, zhi):
+                best = None
+                for step in range(1, 16):
+                    for sg in (1, -1):
+                        u = sg * step * 0.1
+                        cx_, cy_ = x + tx * u, y + ty * u
+                        if self._ok(cx_, cy_, fx, fy, w, zlo, zhi) and not any(
+                                abs((cx_ - px) * ptx + (cy_ - py) * pty) < (w + pw) / 2 + 0.1 and
+                                abs((cx_ - px) * (-pty) + (cy_ - py) * ptx) < 0.5 and zlo < pz1 and zhi > pz0
+                                for (px, py, ptx, pty, pw, pz0, pz1) in self.placed):
+                            best = (cx_, cy_, u)
+                            break
+                    if best:
+                        break
+                if best:
+                    nx, ny = best[0], best[1]
+                    self.moves.append((x, y, (zlo + zhi) / 2, nx - x, ny - y))
+            if zlo > 0.3:
+                self.placed.append((nx, ny, tx, ty, w, zlo, zhi))
+            return self.orig[name](B, nx, ny, z, yaw, *a, **kw)
+        return fn
 
 
 def _backboards(B):

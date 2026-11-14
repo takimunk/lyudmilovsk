@@ -417,7 +417,7 @@ def _dress_lobby(B, k, lid, xa, xz):
     B.thing(pre + "notices", "board", (ax(sa, 0.05), 3.0, 1.8), fyw(sa), topic="lost" if k == 0 else "club")
     kit.bench(B, ax(sa, 0.25), 3.0, Z, fyw(sa), w=1.6, kind="park")
     B.thing(pre + "bench_a", "seat", (ax(sa, 0.25), 3.0, 0.47), fyw(sa), height=0.45)
-    d = kit.office_desk(B, ax(sa, 0.95), 6.9, Z, fyw(sa), w=1.4, d=0.7)
+    d = kit.office_desk(B, ax(sa, 0.95), 6.9, Z, fyw(sa), w=1.4, d=0.7, typewriter_on=False)
     kit.chair(B, ax(sa, 0.3), 6.9, Z, fyw(sa), kind="wood")
     kit.radio(B, ax(sa, 0.95), 6.6, d["top"], fyw(sa))
     kit.table_lamp(B, ax(sa, 0.95), 7.35, d["top"], 0.0)
@@ -1033,3 +1033,7 @@ def _lobby2(B):
             kit.planter(B, xm - 1.6, 1.75, Z, 0.0, w=1.2, d=0.45, h=0.5, seed=77)
             B.thing(pre + "plants", "machine", (xm - 1.6, 1.75, 0.75), 0.0, what="watering_can")
 
+
+
+from _wallhang import hung  # noqa: E402  (QA r9: nothing hangs over the glass)
+build = hung(build)

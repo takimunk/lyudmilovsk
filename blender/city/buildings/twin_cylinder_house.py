@@ -602,3 +602,7 @@ def _interior(B, outline_cut):
         B.thing("studio_aquarium", "screen", wh["pos"][:2] + (1.0,), wh["yaw"], what="aquarium")
     B.spot("studio_easel", "work", ea["front"][:2] + (0.0,), (ea["yaw"] + 0.0) % 360)
     H.check("twin")
+
+
+from _wallhang import hung  # noqa: E402  (QA r9: nothing hangs over the glass)
+build = hung(build)

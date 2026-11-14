@@ -613,3 +613,7 @@ def _maisonette(B):
     B.thing("home_picture", "board", (xi1, 15.2, z + 1.5), 270.0, topic="painting")
     B.thing("home_paper", "take", (11.1, 15.6, z + 0.45), 10.0, item="daily_paper")
     H.check("riser-maisonette", overlaps=False)
+
+
+from _wallhang import hung  # noqa: E402  (QA r9: nothing hangs over the glass)
+build = hung(build)

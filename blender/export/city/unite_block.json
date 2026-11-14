@@ -1372,7 +1372,7 @@
    "id": "street_hours",
    "kind": "board",
    "pos": [
-    -0.3,
+    0.0,
     7.95,
     25.6
    ],
@@ -25449,7 +25449,7 @@
  ],
  "tris": {
   "shell": 40634,
-  "detail": 63970,
+  "detail": 63870,
   "windows": 3740
  }
 }

@@ -191,10 +191,10 @@ def _furnish_lobby(B, lx0, lx1, ly0, ly1, lh):
     # ---- reception: desk with the clerk's chair, pigeonholes behind, a till lamp and a radio
     rd = f(kit.reception_desk, 4.8, 12.6, 0.0, w=3.0, front="CT_SteelRed")
     ck = f(kit.chair, 4.8, 13.45, 0.0, kind="wood", mat="CT_PlasterRed")
-    f(kit.telephone, 3.7, 12.9, 200.0, z=0.75)
-    f(kit.radio, 5.9, 12.95, 180.0, z=0.75)
-    f(kit.cup, 5.4, 12.5, 0.0, z=0.75)
-    f(kit.table_lamp, 4.3, 12.85, 0.0, z=0.75, shade="CT_PlasterGreen")
+    f(kit.telephone, 3.7, 12.8, 200.0, z=0.75)
+    f(kit.radio, 5.9, 12.8, 180.0, z=0.75)
+    f(kit.cup, 5.4, 12.65, 0.0, z=0.75)
+    f(kit.table_lamp, 4.3, 12.8, 0.0, z=0.75, shade="CT_PlasterGreen")
     f(kit.lockers, 5.85, 14.68, 0.0, n=3, mat="CT_PlasterGreen", solid=False)
     # ---- east side: mailboxes and the board between the windows, prams and bikes, a visitors' table
     f(hk.mailboxes, 6.68, 9.0, 270.0, cols=6, rows=5)
@@ -499,7 +499,7 @@ def _rohan_flat(B, Z):
     kit.books_stack(B, 1.2, 26.25, Z + 0.92, 0.0, n=2, seed=7)
     f(kit.wall_map, 0.66, 25.7, 90.0, w=1.3, h=0.9, zc=1.8, name="map_town")
     f(kit.bed, 1.22, 27.35, 0.0, size="single", blanket="CT_PlasterBlue")
-    bt = f(kit.bedside_table, 1.95, 28.1, 0.0, lamp=True)
+    bt = f(kit.bedside_table, 1.95, 28.1, 0.0, lamp=False)
     kit.radio(B, 1.95, 28.15, bt["top"], 0.0)
     f(kit.picture, 0.66, 27.4, 90.0, name="painting_sea_calm", w=0.8, zc=1.75)
     # the south wall: shoes and coats by the door, a wardrobe, the bookshelf of engineering
@@ -656,3 +656,7 @@ def _toward(p, q, d, poly, ei, rev=False):
     x = p[0] + (d if p[0] < cx else -d)
     y = p[1] + (d if p[1] < cy else -d)
     return (x, y)
+
+
+from _wallhang import hung  # noqa: E402  (QA r9: nothing hangs over the glass)
+build = hung(build)

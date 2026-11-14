@@ -625,7 +625,7 @@ def _agata_flat(B):
     f(kit.chair, -23.0, 29.05, 180.0, kind="wood")
     f(kit.notice_board, -23.0, IY1, 0.0, w=0.9, zc=1.75, seed=77)
     f(kit.poster, -21.55, IY1, 0.0, name="poster", w=0.34, zc=1.5, seed=3)
-    ws = f(kit.wall_shelf, -20.45, IY1, 0.0, w=0.9, zt=1.3, seed=5)
+    ws = f(kit.wall_shelf, -20.45, IY1, 0.0, w=0.9, zt=1.3, seed=5, props=False)
     kit.radio(B, -20.45, 29.95, ws["top"], 0.0)
     jar = _prop(B, -20.8, 29.95, ws["top"], 0.0, "seed_jar")
     jar.cyl("CT_Glass", 0, 0, 0.0, 0.2, 0.065, 8)
@@ -1123,3 +1123,7 @@ def _binocular_post(B, x, y, z, yaw):
         p.rod("CT_Rubber", (sx, 0.11, 1.32), (sx, 0.15, 1.32), 0.06, 6)
     p.box("CT_Steel", -0.07, 0.07, -0.01, 0.03, 1.3, 1.34, f="xXyYZz")
     p.done()
+
+
+from _wallhang import hung  # noqa: E402  (QA r9: nothing hangs over the glass)
+build = hung(build)

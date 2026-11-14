@@ -306,8 +306,8 @@ def _family(B, i):
         f(kit.rug, gx, 3.65, 0.0, w=1.2, d=0.8, name="rug_5")
         f(kit.shoe_rack, WW, 3.45, 90.0, w=0.9)
         f(kit.hat_stand, -5.85, 3.35, 0.0)
-        hk.bike(B, -7.45, 5.8, 0.0, mat="CT_PlasterYellow")
-        hk.pram(B, -7.55, 4.65, 0.0, mat="CT_PlasterBlue")
+        hk.bike(B, -7.45, 6.2, 0.0, mat="CT_PlasterYellow")
+        hk.pram(B, -7.55, 4.45, 0.0, mat="CT_PlasterBlue")
         f(kit.picture, WW, 4.3, 90.0, name="painting_still_life", w=0.5, zc=1.75)
         # living room: sofa facing the TV on the east wall, armchair under the window, coffee table, rug, shelf
         f(kit.rug, -4.3, 5.0, 90.0, w=2.2, d=2.6, name="rug_1")
@@ -319,7 +319,7 @@ def _family(B, i):
         arm = f(kit.armchair, -3.8, 3.5, 180.0, mat="CT_PlasterGreen")
         f(kit.floor_lamp, -3.12, 3.4, 0.0)
         sh = f(kit.bookshelf, EW, 6.45, 270.0, w=0.9, h=1.7, levels=4, topic="kids", seed=4)
-        cr = f(kit.crate, -3.2, 6.7, 20.0, w=0.5, d=0.35, h=0.3, fill="CT_PlasterBlue", seed=1)
+        cr = f(kit.crate, -3.6, 6.9, 20.0, w=0.5, d=0.35, h=0.3, fill="CT_PlasterBlue", seed=1)
         f(kit.poster, FW, -5.9, 180.0, name="kids_2", w=0.5, zc=1.6)
         f(kit.plant, -4.9, 3.55, 0.0, kind="monstera", pot="CT_PlasterRed", h=0.8, seed=3)
         # dining kitchen: table with five chairs, kitchen run on the rear wall
@@ -420,3 +420,7 @@ def _family(B, i):
     run(2, loft)
     for w_ in kit.check(B):
         print("KIT origami", w_)
+
+
+from _wallhang import hung  # noqa: E402  (QA r9: nothing hangs over the glass)
+build = hung(build)

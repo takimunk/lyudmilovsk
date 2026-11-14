@@ -937,3 +937,7 @@ def _gallery(B, FP, cores, zs):
     x, y = F2.p(4.9, VP)
     B.thing("gallery_view", "board", (x, y, Z + 1.25), F2.yaw(0, -1), topic="view")
     B.spot("gallery_view_spot", "view", (*F2.p(4.9, VP - 0.5), Z), F2.yaw(0, 1))
+
+
+from _wallhang import hung  # noqa: E402  (QA r9: nothing hangs over the glass)
+build = hung(build)

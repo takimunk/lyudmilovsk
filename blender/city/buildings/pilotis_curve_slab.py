@@ -859,3 +859,7 @@ def _flat(B, th):
     B.thing("flat_dining_seat", "seat", (*M.p(0.9, 5.25), ZS[0] + 0.45), into, height=0.45)
     x, y = M.p(3.7, yb - 0.08)
     kit.wall_clock(B, x, y, Z, st, zc=2.1, face="clock_2")
+
+
+from _wallhang import hung  # noqa: E402  (QA r9: nothing hangs over the glass)
+build = hung(build)
