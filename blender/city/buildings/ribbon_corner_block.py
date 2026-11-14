@@ -236,6 +236,7 @@ def build(B):
     _depth_shop(B)
     _depth_laundry(B)
     _depth_roof(B)
+    _depth2(B)
     # ------------------------------------------------------------ footprint, surrounds
     fp = [(-25.0, TY0), (X0, TY0), (X0, 0.4), (X1, 0.4)]
     ch = [DP(11.25 + 22.5 * j + 180 + 22.5, RD) for j in range(ND - 1)]
@@ -325,6 +326,10 @@ def _drop_stray_rack(B, rect):
     B.detail.faces = keep
 
 
+# the back wall's ten shop shelves, west to east: tins, tins, flour and biscuits, dairy, tins, jars, household, drinks, sweets, jars
+SHELF_TRADES = ["grocery", "grocery", "bakery", "dairy", "grocery", "grocery", "hardware", "drinks", "bakery", "grocery"]
+
+
 def _ground_rooms(B):
     m, det = B.m, B.detail
     f = Furn(B)
@@ -334,12 +339,14 @@ def _ground_rooms(B):
         box(m, "CT_Plaster", x - 0.1, x + 0.1, YF + WT, YC0, 0.0, 2.8)
     # ---- shop (x -18.7..-7.1, y 2.2..6.2): grocery with milk and bread
     YBK = YC0 - 0.01
-    goods = ["groceries", "jars", "boxes", "bottles", "groceries", "jars", "boxes", "groceries"]
+    goods = ["groceries", "jars", "boxes", "bottles", "groceries", "jars", "boxes", "bottles", "boxes", "jars"]
+    trades = SHELF_TRADES
     xs = [-18.2 + 1.05 * i for i in range(11)]
     for i, x in enumerate(xs):
         if x > -7.8:
             break
-        kit.shop_shelf(B, x, YBK, 0.0, 0.0, w=1.0, goods=goods[i % len(goods)], h=2.0, levels=4, seed=i)
+        kit.shop_shelf(B, x, YBK, 0.0, 0.0, w=1.0, goods=goods[i % len(goods)], h=2.0, levels=4, seed=i,
+                       trade=trades[i % len(trades)])
     cr = kit.shop_counter(B, -14.0, 4.55, 0.0, 0.0, w=3.4, front="CT_PlasterBlue", top="CT_TileWhite")
     B.spot("shop_counter", "counter", (-14.0, 3.7, 0.0), 180.0)
     B.spot("shop_staff", "work", (-14.0, 5.3, 0.0), 0.0)
@@ -355,10 +362,12 @@ def _ground_rooms(B):
     T("shop_case_west", "board", (-17.0, 3.0, 1.0), 0.0, topic="store")
     T("shop_case_east", "board", (-11.8, 3.0, 1.0), 0.0, topic="prices")
     for i, y in enumerate((2.75, 3.75, 4.75)):
-        r = kit.shop_shelf(B, -18.7 + 0.005, y, 0.0, 90.0, w=0.95, goods=("boxes", "jars", "groceries")[i], h=1.9, levels=4, seed=7 + i)
+        r = kit.shop_shelf(B, -18.7 + 0.005, y, 0.0, 90.0, w=0.95, goods=("boxes", "jars", "groceries")[i], h=1.9, levels=4, seed=7 + i,
+                           trade=("bakery", "grocery", "grocery")[i])
         T("shop_west_%d" % (i + 1), "board", (-18.5, y, 1.3), 90.0, topic="store")
     for i, y in enumerate((2.75, 3.75, 4.75)):
-        kit.shop_shelf(B, -7.1 - 0.005, y, 0.0, 270.0, w=0.95, goods=("bottles", "groceries", "boxes")[i], h=1.9, levels=4, seed=12 + i)
+        kit.shop_shelf(B, -7.1 - 0.005, y, 0.0, 270.0, w=0.95, goods=("bottles", "groceries", "boxes")[i], h=1.9, levels=4, seed=12 + i,
+                       trade=("drinks", "grocery", "hardware")[i])
     T("shop_east_1", "board", (-7.3, 3.8, 1.3), 270.0, topic="store")
     kit.wall_clock(B, -16.0, YBK, 0.0, 0.0, zc=2.55, r=0.2)
     kit.plant(B, -8.0, 2.7, kind="ficus", pot="CT_PlasterRed", h=1.5)
@@ -400,7 +409,7 @@ def _ground_rooms(B):
     f.pendant(3.5, 4.4, 2.8, lumens=500, colour="#FFE2B5", radius=6.0, drop=0.5)
     for x_, m_ in ((0.45, "CT_SteelRed"), (1.35, "CT_PlasterBlue"), (4.7, "CT_PlasterYellow")):
         kit.bicycle(B, x_, 4.6, 0.0, 0.0, kind="stand", mat=m_)
-    kit.shop_shelf(B, 2.9, YBK, 0.0, 0.0, w=1.0, goods="hardware", h=2.0, levels=4, seed=21)
+    kit.shop_shelf(B, 2.9, YBK, 0.0, 0.0, w=1.0, goods="hardware", h=2.0, levels=4, seed=21, trade="hardware")
     kit.poster(B, -0.9 + 0.005, 3.2, 0.0, 90.0, name="poster_cons_1", w=0.6, zc=1.6)
     f.pendant(12.6, 4.4, 2.8, lumens=500, colour="#FFE2B5", radius=6.0, drop=0.5)
     kit.table(B, 14.6, 4.8, 0.0, 0.0, w=1.8, d=0.9)
@@ -932,3 +941,147 @@ def _depth_roof(B):
     B.lamp((0.5, 7.2, ZR + 2.0), lumens=700, colour="#FFD9A8", kind="lobby", radius=8.0)
     box(B.detail, STEEL, -13.43, -13.37, 6.87, 6.93, ZR, ZR + 2.2)
     B.lamp((-13.4, 6.9, ZR + 2.3), lumens=500, colour="#FFD9A8", kind="lobby", radius=8.0)
+
+
+# ------------------------------------------------------------------ third pass (round 5)
+def _switch_plate(B, x, y, z=0.0, yaw=0.0, zc=1.3):
+    """[wall] A two-button light switch plate on a backing block (0.1 x 0.14), buttons toward the room."""
+    p = kit._P(B, x, y, z, yaw, "switch_plate")
+    p.kind = "wall"
+    p.box("CT_FrameWhite", -0.05, 0.05, -0.012, 0.0, zc - 0.07, zc + 0.07)
+    p.box("CT_Steel", -0.022, -0.004, -0.02, -0.012, zc - 0.045, zc - 0.005, f="xXyYZ")
+    p.box("CT_Steel", 0.004, 0.022, -0.02, -0.012, zc + 0.005, zc + 0.045, f="xXyYZ")
+    return p.done(top=zc + 0.07)
+
+
+def _ledger(B, x, y, z=0.0, yaw=0.0):
+    """[prop] The shopkeeper's credit notebook: an oilcloth cover, a ribbon, a pencil on a string (0.2 x 0.28)."""
+    p = kit._P(B, x, y, z, yaw, "ledger")
+    p.kind = "prop"
+    p.box("CT_PlasterBlue", -0.1, 0.1, -0.14, 0.14, 0.0, 0.012)
+    p.box("CT_Paper", -0.092, 0.095, -0.132, 0.135, 0.012, 0.03)
+    p.box("CT_PlasterBlue", -0.1, 0.1, -0.14, 0.14, 0.03, 0.04)
+    p.box("CT_PlasterRed", 0.03, 0.045, -0.15, -0.13, 0.04, 0.043, f="Z")
+    p.box("CT_Wood", 0.07, 0.085, -0.1, 0.12, 0.04, 0.052, f="xXyYZ")
+    return p.done(top=0.05)
+
+
+def _seedling_tray(B, x, y, z=0.0, yaw=0.0):
+    """[prop] A timber seed tray (0.5 x 0.3) with six pots of seedlings in two rows and a name stick."""
+    p = kit._P(B, x, y, z, yaw, "seedling_tray")
+    p.kind = "prop"
+    p.box("CT_Wood", -0.25, 0.25, -0.15, 0.15, 0.0, 0.02)
+    for sx in (-0.25, 0.23):
+        p.box("CT_Wood", sx, sx + 0.02, -0.15, 0.15, 0.02, 0.1)
+    for sy in (-0.15, 0.13):
+        p.box("CT_Wood", -0.25, 0.25, sy, sy + 0.02, 0.02, 0.1)
+    for i in range(3):
+        for j in range(2):
+            cx, cy = -0.15 + i * 0.15, -0.065 + j * 0.13
+            p.box("CT_PlasterRed", cx - 0.045, cx + 0.045, cy - 0.045, cy + 0.045, 0.02, 0.085)
+            p.box("CT_Leaf", cx - 0.012, cx + 0.012, cy - 0.012, cy + 0.012, 0.085, 0.14 + 0.02 * ((i + j) % 3))
+            p.box("CT_Leaf", cx - 0.05, cx + 0.05, cy - 0.01, cy + 0.01, 0.12 + 0.02 * ((i + j) % 3), 0.135 + 0.02 * ((i + j) % 3))
+    p.rod(kit.WOOD, (0.2, -0.17, 0.0), (0.2, -0.17, 0.2), 0.012, 4)
+    p.box("CT_Paper", 0.17, 0.23, -0.185, -0.17, 0.12, 0.2)
+    return p.done(top=0.14)
+
+
+def _watering_can(B, x, y, z=0.0, yaw=0.0):
+    """[prop] A zinc watering can with a long spout and a rose (0.4 x 0.2 x 0.3), the spout toward -y."""
+    p = kit._P(B, x, y, z, yaw, "watering_can")
+    p.kind = "prop"
+    p.cyl("CT_Aluminium", 0.0, 0.0, 0.0, 0.17, 0.085, 9, r1=0.075)
+    p.rod("CT_Aluminium", (0.0, -0.06, 0.06), (0.0, -0.32, 0.24), 0.016, 5)
+    p.cyl("CT_Aluminium", 0.0, -0.33, 0.235, 0.265, 0.04, 6, r1=0.032)
+    p.rod("CT_Aluminium", (0.0, 0.07, 0.05), (0.0, 0.16, 0.12), 0.012, 4)
+    p.rod("CT_Aluminium", (0.0, 0.16, 0.12), (0.0, 0.07, 0.19), 0.012, 4)
+    return p.done(top=0.3)
+
+
+def _weather_post(B, x, y, z=0.0, yaw=0.0):
+    """A timber post 1.9 m with a tin vane, a thermometer board with a red column and a rain gauge made of a tin can
+    on a bracket; the board faces -y."""
+    p = kit._P(B, x, y, z, yaw, "weather_post")
+    p.box(kit.WOOD, -0.04, 0.04, -0.04, 0.04, 0.0, 1.9)
+    p.box(kit.WOODL, -0.09, 0.09, -0.07, -0.04, 1.0, 1.55)
+    p.box("CT_FrameWhite", -0.012, 0.012, -0.075, -0.07, 1.06, 1.5, f="y")
+    p.box("CT_PlasterRed", -0.006, 0.006, -0.08, -0.075, 1.06, 1.33, f="y")
+    for k in range(7):
+        p.box("CT_Steel", 0.02, 0.05, -0.078, -0.074, 1.1 + k * 0.06, 1.11 + k * 0.06, f="y")
+    p.box(kit.WOOD, 0.04, 0.3, -0.03, 0.03, 0.78, 0.82)
+    p.cyl("CT_Aluminium", 0.2, 0.0, 0.82, 1.0, 0.065, 8, r1=0.065, top=False)
+    p.rod(kit.STEEL, (0.0, 0.0, 1.9), (0.0, 0.0, 2.05), 0.01, 4)
+    p.box("CT_SteelRed", -0.25, 0.1, -0.006, 0.006, 1.99, 2.03)
+    p.box("CT_SteelRed", -0.3, -0.25, -0.006, 0.006, 1.96, 2.06)
+    return p.done(top=2.05, footprint=(-0.1, 0.3, -0.1, 0.1))
+
+
+def _checkerboard(B, x, y, z=0.0, yaw=0.0):
+    """[prop] A draughts board 0.4 x 0.4 with ten men a side lost into mid-game (z = the table top)."""
+    p = kit._P(B, x, y, z, yaw, "checkerboard")
+    p.kind = "prop"
+    p.box(kit.WOOD, -0.22, 0.22, -0.22, 0.22, 0.0, 0.02)
+    p.box("CT_PlasterYellow", -0.2, 0.2, -0.2, 0.2, 0.02, 0.026, f="Z")
+    for i in range(8):
+        for j in range(8):
+            if (i + j) % 2:
+                p.box("CT_ConcreteDark", -0.2 + i * 0.05, -0.15 + i * 0.05, -0.2 + j * 0.05, -0.15 + j * 0.05, 0.026, 0.028, f="Z")
+    for k, (i, j, mat) in enumerate(((1, 0, "CT_FrameWhite"), (3, 0, "CT_FrameWhite"), (0, 1, "CT_FrameWhite"), (2, 1, "CT_FrameWhite"),
+                                     (4, 3, "CT_FrameWhite"), (5, 4, "CT_ConcreteDark"), (3, 4, "CT_ConcreteDark"),
+                                     (6, 5, "CT_ConcreteDark"), (1, 6, "CT_ConcreteDark"), (7, 6, "CT_ConcreteDark"))):
+        p.cyl(mat, -0.175 + i * 0.05, -0.175 + j * 0.05, 0.028, 0.048, 0.02, 8)
+    return p.done(top=0.05)
+
+
+def _depth2(B):
+    """Round 5: depth. Trade-correct shop shelving (labels by trade, see SHELF_TRADES) with four shelf things, the
+    credit ledger on the counter, a soap shelf and the dryer's notice in the laundry, switches at the doors, a wall
+    clock in the red corner with a draughts table and a local-history shelf there, the roof's seed table, peg basket,
+    weather post, switch and the north view. Ids: shop_shelf_*, shop_ledger, shop_switch, laundry_soap, laundry_dryer_note,
+    laundry_switch, redcorner_*, roof_seedlings, roof_peg_basket, roof_weather_post, roof_switch, roof_view_n."""
+    T = B.thing
+    zd = ZR + 0.04
+    YBK = YC0 - 0.01
+    # ---- shop: the four trade shelves as things (x of the shelf on the back wall, labels by trade), the ledger on the counter
+    for nm, i in (("dairy", 3), ("bakery", 2), ("hardware", 6), ("drinks", 7)):
+        T("shop_shelf_" + nm, "board", (-18.2 + 1.05 * i, YBK - 0.15, 1.3), 0.0, topic="store")
+    _ledger(B, -13.6, 4.3, 1.05, 0.0)
+    T("shop_ledger", "board", (-13.6, 4.3, 1.12), 0.0, topic="store")
+    _switch_plate(B, -10.95, YF + WT, 0.0, 180.0, zc=1.3)
+    T("shop_switch", "machine", (-10.95, YF + WT + 0.08, 1.3), 180.0, what="switch", switch=6.8)
+    # ---- laundry: soap and powder on a low hardware shelf, the dryer's notice above it, a switch by the door
+    kit.shop_shelf(B, -2.0, YBK, 0.0, 0.0, w=0.8, goods="boxes", h=1.6, levels=3, seed=51, trade="hardware")
+    T("laundry_soap", "board", (-2.0, YBK - 0.2, 1.1), 0.0, topic="store")
+    kit.poster(B, -2.0, YBK, 0.0, 0.0, name="paper_typed", w=0.4, zc=2.05)
+    T("laundry_dryer_note", "board", (-2.0, YBK - 0.1, 2.05), 0.0, topic="rules")
+    _switch_plate(B, -1.6, YF + WT, 0.0, 180.0, zc=1.3)
+    T("laundry_switch", "machine", (-1.6, YF + WT + 0.08, 1.3), 180.0, what="switch", switch=4.5)
+    # ---- red corner: a draughts table, a seat each side, the local-history shelf
+    _checkerboard(B, 14.6, 4.8, 0.75, 0.0)
+    T("redcorner_checkers", "play", (14.6, 4.8, 0.8), 0.0, what="checkers")
+    for k, (cx, cy, fy) in enumerate(((14.15, 4.08, 180.0), (15.05, 4.08, 180.0), (14.15, 5.52, 0.0), (15.05, 5.52, 0.0))):
+        T("redcorner_seat_%d" % (k + 1), "seat", (cx, cy, 0.45), fy, height=0.45)
+    B.spot("redcorner_seat_1", "seat", (14.15, 4.08, 0.0), 180.0)
+    B.spot("redcorner_seat_3", "seat", (14.15, 5.52, 0.0), 0.0)
+    T("redcorner_shelf", "shelf", (15.6, YBK - 0.2, 1.3), 0.0, topic="local")
+    # ---- roof: the seed table between the benches, the peg basket by the first drying line, the weather post, the switch
+    kit.table(B, 6.5, 9.3, zd, 0.0, w=1.4, d=0.6, kind="wood")
+    _seedling_tray(B, 6.2, 9.3, zd + 0.75, 0.0)
+    _seedling_tray(B, 6.85, 9.3, zd + 0.75, 0.0)
+    _watering_can(B, 7.15, 9.45, zd + 0.75, 200.0)
+    T("roof_seedlings", "craft", (6.5, 9.3, zd + 0.95), 0.0, what="seedlings")
+    B.spot("roof_seedlings", "work", (6.5, 8.6, zd), 180.0)
+    kit.crate(B, -11.4, 5.3, ZR, 0.0, w=0.5, d=0.38, h=0.3, fill="CT_FrameWhite", seed=61)
+    for k in range(6):
+        box(B.detail, "CT_Wood", -11.6 + k * 0.07, -11.56 + k * 0.07, 5.2, 5.28, ZR + 0.3, ZR + 0.4)
+    T("roof_peg_basket", "craft", (-11.4, 5.3, ZR + 0.45), 0.0, what="pegs")
+    B.spot("roof_peg_stand", "work", (-11.4, 4.75, ZR), 180.0)
+    _weather_post(B, 12.8, 9.0, ZR, 0.0)
+    T("roof_weather_post", "board", (12.8, 9.0, ZR + 1.3), 0.0, topic="sun")
+    B.spot("roof_weather_stand", "stand", (12.8, 8.3, ZR), 180.0)
+    _switch_plate(B, 3.0, 3.4 - 0.07, ZR, 0.0, zc=1.3)
+    T("roof_switch", "machine", (3.0, 3.3, ZR + 1.3), 0.0, what="switch", switch=8)
+    T("roof_view_n", "board", (2.0, 12.1, ZR + 1.3), 180.0, topic="view")
+    B.spot("roof_view_n_stand", "stand", (2.0, 11.6, ZR), 180.0)
+    # ---- the red corner's wall clock last: new kit clocks take the next kit_clock_<n>
+    kit.wall_clock(B, 14.2, YBK, 0.0, 0.0, zc=2.3, r=0.2)

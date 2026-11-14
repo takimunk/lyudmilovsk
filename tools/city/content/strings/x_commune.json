@@ -558,5 +558,330 @@
   "ru": "Маркиз пришёл на фильм, сел на скамью домкома и досмотрел до конца. Мне досталось место рядом. Домком налил чаю нам обоим, ему в блюдце.",
   "en": "Markiz came to the film, sat on the committee's bench and watched to the end. I got the place beside him. The committee poured tea for us both, his in a saucer.",
   "ja": "マルキは映画に来て、委員会のベンチに座り、最後まで見た。僕はその隣の席。委員会はふたりにお茶をついでくれた。彼のぶんは受け皿に。"
+ },
+ "city.cm.dom.prompt": {
+  "ru": "E — сесть за домино",
+  "en": "E — sit down to dominoes",
+  "ja": "E：ドミノの席に着く"
+ },
+ "city.cm.dom.1": {
+  "ru": "Утром за доминошным столом пусто, только костяшки выстроены в два ряда: партию отложили до вечера. Я перемешал их, как положено, и сел ждать соперника.",
+  "en": "In the morning the dominoes table is empty, the tiles only lined up in two rows: the game was put off until evening. I shuffled them the proper way and sat down to wait for an opponent.",
+  "ja": "朝のドミノ卓は空で、牌が二列に並べてあるだけ。勝負は夜に持ち越されたらしい。僕は作法どおり牌をかき混ぜて、相手を待つことにした。"
+ },
+ "city.cm.dom.2": {
+  "ru": "Днём за столом играют на интерес: проигравший наливает чай всем. Костяшки стучат так, будто кто-то колет орехи.",
+  "en": "In the afternoon they play for a stake: the loser pours tea for everyone. The tiles click as if somebody were cracking nuts.",
+  "ja": "昼はお茶を賭けて打つ。負けた人が全員にお茶をつぐ決まりだ。牌がカチカチと、誰かが木の実を割っているみたいに鳴る。"
+ },
+ "city.cm.dom.3": {
+  "ru": "Вечером вокруг стола стулья в два ряда: болеют. «Дубль-шесть!» — кричит кто-то у стены, и все делают вид, что не вздрогнули.",
+  "en": "In the evening the chairs stand in two rows round the table: the spectators. \"Double six!\" somebody shouts by the wall, and everyone pretends not to have jumped.",
+  "ja": "夜になると卓のまわりに椅子が二重に並ぶ。観戦席だ。壁のそばで誰かが「ダブルシックス！」と叫び、みんなびくっとしなかったふりをする。"
+ },
+ "city.cm.dom.rain": {
+  "ru": "В дождь играют особенно азартно: за окном шумит вода, в зале стучат костяшки, и кажется, что дом плывёт, как корабль, а мы играем в кубрике.",
+  "en": "In the rain they play with extra zeal: water roars outside, tiles click in the hall, and the house seems to be sailing, and we are playing in the crew's quarters.",
+  "ja": "雨の日はみんなことさら熱くなる。窓の外では水が鳴り、ホールでは牌が鳴って、家が船のように進み、僕らは船室で遊んでいるみたいだ。"
+ },
+ "city.cm.diary.prompt": {
+  "ru": "E — открыть тетрадь читателей",
+  "en": "E — open the readers' notebook",
+  "ja": "E：読者ノートを開く"
+ },
+ "city.cm.text.diary.title": {
+  "ru": "Тетрадь читателей",
+  "en": "The readers' notebook",
+  "ja": "読者ノート"
+ },
+ "city.cm.diary.1": {
+  "ru": "Тетрадь читателей уголка. На обложке: «Взял книгу — запиши. Вернул — зачеркни. Не вернул — тебя найдёт Лидия Аркадьевна, и это не угроза, а график». Первая запись: «Взят „Остров сокровищ“. Лёва, кв. 3-07. Верну в пятницу».",
+  "en": "The readers' notebook of the nook. On the cover: \"Took a book, write it down. Returned it, cross it out. Didn't return it, Lidiya Arkadyevna will find you, and that is not a threat but a schedule.\" The first entry: \"Taken: Treasure Island. Lyova, flat 3-07. Will return on Friday.\"",
+  "ja": "読書コーナーの読者ノート。表紙に「本を借りたら書くこと。返したら線を引くこと。返さなければリディヤ・アルカージエヴナが探しに来ます。脅しではなく予定です」。最初の記入。「『宝島』借りました。リョーワ、3-07号室。金曜に返します」。"
+ },
+ "city.cm.diary.2": {
+  "ru": "«Остров сокровищ», Лёва: зачёркнуто. Рядом карандашом: «Вернул вовремя, с закладкой на странице 112. Закладка — выкройка рукава». Тут же новая запись: «Взят „Остров сокровищ“. Дядя Гена, кв. 3-02. Хочу проверить, как там с рыбой».",
+  "en": "Treasure Island, Lyova: crossed out. Beside it in pencil: \"Returned on time, with a bookmark at page 112. The bookmark is a sleeve pattern.\" A new entry right there: \"Taken: Treasure Island. Uncle Gena, flat 3-02. I want to check how they do for fish.\"",
+  "ja": "『宝島』、リョーワ。線で消してある。横に鉛筆で「期限どおりに返却。112ページに栞。栞は袖の型紙」。すぐ下に新しい記入。「『宝島』借ります。ゲーナおじさん、3-02号室。あそこに魚があるか確かめたい」。"
+ },
+ "city.cm.diary.3": {
+  "ru": "Дядя Гена вернул книгу и написал на полях тетради: «Рыбы там нет. Зато есть попугай, и он командует громче нашего домкома». Ниже: «Взят „Остров сокровищ“. Лидия Аркадьевна, кв. 1-03. Проверю, правда ли там всё так страшно».",
+  "en": "Uncle Gena returned the book and wrote in the notebook's margin: \"There is no fish there. But there is a parrot, and he gives orders louder than our house committee.\" Below: \"Taken: Treasure Island. Lidiya Arkadyevna, flat 1-03. I will check whether it is really that frightening.\"",
+  "ja": "ゲーナおじさんは本を返し、ノートの余白に書いた。「あそこに魚はいない。でもオウムがいて、うちの委員会より大きな声で指図する」。その下。「『宝島』借ります。リディヤ・アルカージエヴナ、1-03号室。本当にそんなに怖いのか確かめます」。"
+ },
+ "city.cm.diary.4": {
+  "ru": "Лидия Аркадьевна вернула книгу на второй день: «Читала не отрываясь. Ночью закрывала дверь на цепочку. Рекомендую всем, кто боится только очередей». Под её подписью детской рукой: «А я не боюсь. Л.».",
+  "en": "Lidiya Arkadyevna returned the book on the second day: \"Read it without stopping. Put the door on the chain at night. Recommended to everyone who is afraid only of queues.\" Under her signature in a child's hand: \"I'm not afraid. L.\"",
+  "ja": "リディヤ・アルカージエヴナは二日目に本を返した。「夢中で読みました。夜はドアにチェーンをかけました。行列しか怖くない人におすすめします」。彼女の署名の下に子どもの字で。「ぼくは怖くない。Л.」。"
+ },
+ "city.cm.diary.5": {
+  "ru": "Новая запись, почерк аккуратный, как у отличника: «Взят „Остров сокровищ“. Пётр Семёнович, кв. 1-06. Читаю в четвёртый раз, но каждый раз как впервые. Шахматы подождут до последней главы».",
+  "en": "A new entry in a tidy hand, like a top pupil's: \"Taken: Treasure Island. Pyotr Semyonovich, flat 1-06. Reading it for the fourth time, but every time as if for the first. Chess can wait until the last chapter.\"",
+  "ja": "新しい記入。優等生のようにきちんとした字。「『宝島』借ります。ピョートル・セミョーノヴィチ、1-06号室。四回目ですが、毎回初めてのように読みます。チェスは最終章まで待ってもらいます」。"
+ },
+ "city.cm.diary.6": {
+  "ru": "Приписка на отдельном листке: «Книга истрепалась. Сдана на ремонт в мастерскую штопки, к швейной машине. Лёва клеит обложку и просит не мешать». Подтверждаю: у машины пахнет клеем и морем.",
+  "en": "A note on a loose sheet: \"The book is worn out. Sent for repair to the mending corner, by the sewing machine. Lyova is gluing the cover and asks not to be disturbed.\" I confirm: it smells of glue and sea by the machine.",
+  "ja": "別紙のメモ。「本がぼろぼろになったので、繕いコーナーのミシンのところで修理中。リョーワが表紙を貼っています。邪魔しないでください」。確かに、ミシンのそばは糊と海のにおいがする。"
+ },
+ "city.cm.diary.7": {
+  "ru": "Книга вернулась в новой обложке из синей ткани. На корешке Лёва вывел: «ОСТРОВ СОКРОВИЩ, ремонт 1 раз, читали 5 человек». Тетрадь отмечает: за неделю в доме стало на пятерых мечтателей больше.",
+  "en": "The book is back in a new cover of blue cloth. On the spine Lyova wrote: \"TREASURE ISLAND, repaired once, read by 5 people.\" The notebook records: in a week the house has gained five more dreamers.",
+  "ja": "本は青い布の新しい表紙になって戻ってきた。背にリョーワが書いた。「宝島。修理一回、読んだ人五人」。ノートには、この一週間で家の夢見る人が五人増えたと記されている。"
+ },
+ "city.cm.diary.8": {
+  "ru": "Последняя запись пока без почерка. Только строка: «Взят „Остров сокровищ“. ______________. Верну в пятницу». Карандаш на нитке ждёт.",
+  "en": "The last entry has no handwriting yet. Only a line: \"Taken: Treasure Island. ______________. Will return on Friday.\" The pencil on its string is waiting.",
+  "ja": "最後の記入欄にはまだ字がない。あるのは一行だけ。「『宝島』借ります。______________。金曜に返します」。糸につけた鉛筆が待っている。"
+ },
+ "city.cm.charter.prompt": {
+  "ru": "E — прочесть устав дома",
+  "en": "E — read the house charter",
+  "ja": "E：家の規約を読む"
+ },
+ "city.cm.text.charter.title": {
+  "ru": "Устав дома-коммуны",
+  "en": "Charter of the commune house",
+  "ja": "コミューン住宅の規約"
+ },
+ "city.cm.charter.1": {
+  "ru": "УСТАВ ДОМА-КОММУНЫ. Принят общим собранием, переписан от руки на втором листе. §1. Дом общий, тапочки личные.",
+  "en": "CHARTER OF THE COMMUNE HOUSE. Adopted by the general meeting, copied out by hand on a second sheet. §1. The house is shared, the slippers are personal.",
+  "ja": "コミューン住宅規約。総会で採択、手書きで二枚目に清書。第一条。家は共有、スリッパは個人のもの。"
+ },
+ "city.cm.charter.2": {
+  "ru": "§2. Зал открыт жильцам и гостям. Гости обязаны здороваться, жильцы — не спрашивать «а вы к кому?» дважды.",
+  "en": "§2. The hall is open to residents and guests. Guests must say hello; residents must not ask \"who are you visiting?\" twice.",
+  "ja": "第二条。ホールは住人にも客にも開かれている。客は挨拶すること。住人は「どなたをお訪ねで？」を二度聞かないこと。"
+ },
+ "city.cm.charter.3": {
+  "ru": "§3. Стирка по записи. Очередь не ругают, очередью делятся. Машина № 3 гудит, и это не повод её жалеть.",
+  "en": "§3. Laundry by sign-up. Nobody scolds the queue; the queue is shared. Machine No. 3 hums, and that is no reason to pity it.",
+  "ja": "第三条。洗濯は予約制。行列は叱らず、分け合うこと。三号機がうなるのは、かわいそうがる理由にならない。"
+ },
+ "city.cm.charter.4": {
+  "ru": "§4. Чайник общий. Кто выпил последний кипяток, наливает новый. Кто не знает как, спрашивает у самовара, а самовар отвечает паром.",
+  "en": "§4. The kettle is common. Whoever drinks the last of the hot water fills a new one. Whoever does not know how asks the samovar, and the samovar answers in steam.",
+  "ja": "第四条。やかんは共用。最後のお湯を飲んだ人が新しく沸かす。やり方がわからない人はサモワールに聞くこと。サモワールは湯気で答える。"
+ },
+ "city.cm.charter.5": {
+  "ru": "§5. В зале играют, поют, читают и спорят, но не одновременно. Исключение: суббота, 19:00, телевизор.",
+  "en": "§5. In the hall people play, sing, read and argue, but not all at once. Exception: Saturday, 19:00, the television.",
+  "ja": "第五条。ホールでは遊び、歌い、読み、議論してよいが、同時にはしないこと。例外は土曜十九時のテレビ。"
+ },
+ "city.cm.charter.6": {
+  "ru": "Поправка к §5, внесена в среду: «Шахматной ничьей „по возрасту“ считать только партии старше сорока минут». Принято семнадцатью голосами при одном воздержавшемся (Пётр Семёнович, по возрасту).",
+  "en": "Amendment to §5, brought on Wednesday: \"A chess draw 'on account of age' counts only for games older than forty minutes.\" Passed by seventeen votes with one abstention (Pyotr Semyonovich, on account of age).",
+  "ja": "第五条の修正。水曜に提出。「『年の功』による引き分けは、四十分を超えた対局にのみ認める」。賛成十七、棄権一（ピョートル・セミョーノヴィチ、年の功により）で可決。"
+ },
+ "city.cm.charter.7": {
+  "ru": "Поправка к §1: «Тапочки в зале допускаются, но не на столах». Подпись: Лёва, кв. 3-07, от детской секции. Рядом: «Принято без голосования, потому что смешно».",
+  "en": "Amendment to §1: \"Slippers are permitted in the hall, but not on the tables.\" Signed: Lyova, flat 3-07, for the children's section. Beside it: \"Adopted without a vote, because it's funny.\"",
+  "ja": "第一条の修正。「ホールでのスリッパは認めるが、テーブルの上は不可」。署名。子ども部会、リョーワ、3-07号室。横に「おかしいので採決なしで可決」。"
+ },
+ "city.cm.charter.8": {
+  "ru": "Внизу пустое место и карандаш на нитке: «Жильцы, желающие внести поправку, садятся на эту скамью и думают вслух. Подпись обязательна. Чай после».",
+  "en": "At the bottom an empty space and a pencil on a string: \"Residents wishing to propose an amendment sit on this bench and think aloud. A signature is required. Tea afterwards.\"",
+  "ja": "いちばん下は空白で、糸につけた鉛筆がある。「修正を提案したい住人は、このベンチに座って声に出して考えること。署名は必須。お茶は終わってから」。"
+ },
+ "city.cm.today.prompt": {
+  "ru": "E — прочесть мел на доске",
+  "en": "E — read the chalk on the board",
+  "ja": "E：黒板のチョークを読む"
+ },
+ "city.cm.today.mon": {
+  "ru": "«СЕГОДНЯ В ЗАЛЕ». Понедельник: 18:00 шахматная секция (Пётр Семёнович играет белыми, остальные как получится), 19:30 чай для проигравших.",
+  "en": "\"TODAY IN THE HALL.\" Monday: 18:00 the chess section (Pyotr Semyonovich plays white, the rest as it comes), 19:30 tea for the losers.",
+  "ja": "「本日のホール」。月曜日。十八時チェス部（白はピョートル・セミョーノヴィチ、あとは成り行き）、十九時半に負けた人のためのお茶。"
+ },
+ "city.cm.today.tue": {
+  "ru": "«СЕГОДНЯ В ЗАЛЕ». Вторник: 17:00 детский кружок рисования, стулья низкие, краски общие, фартуки у двери. 19:00 тихий час для взрослых, то есть шахматы без комментариев.",
+  "en": "\"TODAY IN THE HALL.\" Tuesday: 17:00 the children's drawing circle, low chairs, shared paints, aprons by the door. 19:00 quiet hour for adults, that is, chess without comments.",
+  "ja": "「本日のホール」。火曜日。十七時子どもお絵かき教室、低い椅子、絵の具は共用、エプロンはドアのそば。十九時は大人の静かな時間、つまり解説なしのチェス。"
+ },
+ "city.cm.today.wed": {
+  "ru": "«СЕГОДНЯ В ЗАЛЕ». Среда: 19:00 домком, повестка на двери. После собрания стулья считать по головам и по ножкам.",
+  "en": "\"TODAY IN THE HALL.\" Wednesday: 19:00 house committee, the agenda is on the door. After the meeting count the chairs by heads and by legs.",
+  "ja": "「本日のホール」。水曜日。十九時に委員会。議題はドアに貼ってあります。会のあと、椅子は頭数と脚の数で数えること。"
+ },
+ "city.cm.today.thu": {
+  "ru": "«СЕГОДНЯ В ЗАЛЕ». Рыбный день, окна открыты с утра. 18:00 лекция «Что такое хек и почему он не обижается», читает повар. Вход свободный, запах бесплатно.",
+  "en": "\"TODAY IN THE HALL.\" Fish day, the windows have been open since morning. 18:00 a lecture, \"What hake is and why it doesn't take offence\", by the cook. Admission free, the smell too.",
+  "ja": "「本日のホール」。魚の日、窓は朝から開放。十八時に講義「メルルーサとは何か、なぜ気を悪くしないのか」、講師は料理人。入場無料、においも無料。"
+ },
+ "city.cm.today.fri": {
+  "ru": "«СЕГОДНЯ В ЗАЛЕ». Пятница: 16:00 зарядка для тех, кто ещё помнит, как это делается. 19:00 вечер игр: домино, шашки, шахматы, чай. Победители моют чашки.",
+  "en": "\"TODAY IN THE HALL.\" Friday: 16:00 exercises for those who still remember how it is done. 19:00 games evening: dominoes, draughts, chess, tea. Winners wash the cups.",
+  "ja": "「本日のホール」。金曜日。十六時、やり方を覚えている人のための体操。十九時ゲームの夜、ドミノ、チェッカー、チェス、お茶。勝った人がカップを洗う。"
+ },
+ "city.cm.today.sat": {
+  "ru": "«СЕГОДНЯ В ЗАЛЕ». Суббота: 10:00 субботник, вёдра у кухни. 19:00 общий вечер у телевизора. Стулья брать с собой.",
+  "en": "\"TODAY IN THE HALL.\" Saturday: 10:00 the clean-up, buckets by the kitchen. 19:00 the whole house at the television. Bring your own chairs.",
+  "ja": "「本日のホール」。土曜日。十時に大掃除、バケツは台所のそば。十九時、みんなでテレビの夕べ。椅子は各自持参。"
+ },
+ "city.cm.today.sun": {
+  "ru": "«СЕГОДНЯ В ЗАЛЕ». Воскресенье: столовая отдыхает, зато работают самовар, домино и тетрадь читателей. Приходите без дела: это тоже дело.",
+  "en": "\"TODAY IN THE HALL.\" Sunday: the canteen rests, but the samovar, the dominoes and the readers' notebook are at work. Come with nothing to do: that is also something to do.",
+  "ja": "「本日のホール」。日曜日。食堂はお休みですが、サモワールとドミノと読者ノートは営業中。用事がなくても来てください。それもまた用事です。"
+ },
+ "city.cm.today.rain": {
+  "ru": "Мелом внизу, по случаю дождя: «Зонты в углу у двери, не на столах. Лужи вытирает тот, кто их принёс».",
+  "en": "In chalk at the bottom, because of the rain: \"Umbrellas in the corner by the door, not on the tables. Whoever brought the puddles wipes them up.\"",
+  "ja": "雨のため、下にチョークで。「傘はドアのそばの隅へ、テーブルの上は不可。水たまりは持ち込んだ人が拭くこと」。"
+ },
+ "city.cm.today.warm": {
+  "ru": "Мелом внизу: «Жара. Окна открыть, кефир в холодильнике, самовар сегодня только для смелых».",
+  "en": "In chalk at the bottom: \"Hot. Open the windows, the kefir is in the fridge, the samovar is only for the brave today.\"",
+  "ja": "下にチョークで。「暑い。窓を開けること。ケフィアは冷蔵庫に。サモワールは今日は勇者だけ」。"
+ },
+ "city.cm.today.cold": {
+  "ru": "Мелом внизу, дрожащей рукой: «Мороз. Чай у самовара бесплатно, пока не кончится. Греться можно и шахматами».",
+  "en": "In chalk at the bottom, in a shivering hand: \"Frost. Tea at the samovar is free until it runs out. One can warm up with chess too.\"",
+  "ja": "下にチョークで、震える字。「寒い。サモワールのお茶は無くなるまで無料。チェスでも温まれます」。"
+ },
+ "city.cm.bread.prompt": {
+  "ru": "E — взять хлеб с подноса",
+  "en": "E — take bread from the tray",
+  "ja": "E：お盆のパンを取る"
+ },
+ "city.cm.bread.1": {
+  "ru": "Хлеб ещё тёплый, нарезан толстыми ломтями. Над подносом мелом: «Берите. Считаем только крошки». Я взял буханку и ушёл, чувствуя себя богатым.",
+  "en": "The bread is still warm, cut in thick slices. In chalk above the tray: \"Help yourself. We count only the crumbs.\" I took a loaf and left, feeling rich.",
+  "ja": "パンはまだ温かく、厚く切ってある。お盆の上にチョークで「ご自由に。数えるのはパンくずだけ」。僕は一本もらって、豊かな気持ちで立ち去った。"
+ },
+ "city.cm.bread.2": {
+  "ru": "К вечеру на подносе полбуханки и записка: «Хлеб бесплатно, но не вынесете же вы его весь. Выносите по буханке». Я вынес одну, как просили.",
+  "en": "By evening the tray holds half a loaf and a note: \"Bread is free, but you won't carry all of it off. One loaf each.\" I carried off one, as asked.",
+  "ja": "夕方のお盆には半分のパンとメモ。「パンは無料ですが、全部は持ち出せないでしょう。一人一本まで」。頼まれたとおり、僕は一本だけ持って出た。"
+ },
+ "city.cm.bread.3": {
+  "ru": "Поднос накрыт полотенцем: хлеб спит до завтрака.",
+  "en": "The tray is covered with a towel: the bread sleeps until breakfast.",
+  "ja": "お盆にはタオルがかけてある。パンは朝食まで眠っている。"
+ },
+ "city.cm.pull.prompt": {
+  "ru": "E — прочесть доску рекордов",
+  "en": "E — read the record board",
+  "ja": "E：記録ボードを読む"
+ },
+ "city.cm.pull.1": {
+  "ru": "На доске мелом: «Подтягивания. Рекорд дома: Л. А. — 14». Рядом нарисован турник и человечек с очень довольным лицом.",
+  "en": "On the board in chalk: \"Pull-ups. House record: L. A. — 14.\" Beside it a drawn bar and a little man with a very pleased face.",
+  "ja": "黒板にチョークで。「懸垂。家の記録、Л.А.、十四回」。横には鉄棒と、とても満足そうな顔の棒人間の絵。"
+ },
+ "city.cm.pull.2": {
+  "ru": "Новая строка: «Лёва (3-07): 3». Ниже: «Л. А. советует начинать с одного. Л. А. сама начинала с одного. В молодости».",
+  "en": "A new line: \"Lyova (3-07): 3.\" Below: \"L. A. advises starting with one. L. A. started with one herself. In her youth.\"",
+  "ja": "新しい行。「リョーワ（3-07）、三回」。その下。「Л.А.は一回から始めることを勧める。Л.А.自身も一回から始めた。若いころに」。"
+ },
+ "city.cm.pull.3": {
+  "ru": "«Лёва: 5». Кто-то стёр пятёрку и вывел «6», потом стёр шестёрку и написал «5 с половиной». Честность в доме на высоте.",
+  "en": "\"Lyova: 5.\" Somebody rubbed out the five and wrote \"6\", then rubbed out the six and wrote \"5 and a half\". Honesty in this house is at a great height.",
+  "ja": "「リョーワ、五回」。誰かが五を消して「6」と書き、六を消して「5回半」と書いた。この家の正直さは高い水準にある。"
+ },
+ "city.cm.pull.4": {
+  "ru": "«Пётр Семёнович: 1, но торжественно». Приписка: «Присутствовали все шахматисты. Аплодировали сидя».",
+  "en": "\"Pyotr Semyonovich: 1, but solemnly.\" A note: \"All chess players present. They applauded sitting down.\"",
+  "ja": "「ピョートル・セミョーノヴィチ、一回、ただし厳粛に」。添え書き。「チェス部は全員出席。座ったまま拍手」。"
+ },
+ "city.cm.pull.5": {
+  "ru": "Внизу новая строка: «Ваш рекорд?» Рядом мел и тряпка. Турник у стены ждёт.",
+  "en": "At the bottom a new line: \"Your record?\" Chalk and a rag beside it. The bar by the wall is waiting.",
+  "ja": "いちばん下に新しい行。「あなたの記録は？」横にチョークと雑巾。壁際の鉄棒が待っている。"
+ },
+ "city.cm.honour.prompt": {
+  "ru": "E — прочесть рамку на стене",
+  "en": "E — read the framed sheet",
+  "ja": "E：壁の額を読む"
+ },
+ "city.cm.honour.1": {
+  "ru": "Рамка с гвоздиком и тетрадным листом: «Хороший жилец тот, кто знает свой дом: шахматы, телевизор, швейная машина, чай, стирка, домино, тетрадь, хлеб. Придёте, посидите — запишем». Галочек пока нет.",
+  "en": "A frame on a nail with a sheet of exercise-book paper: \"A good resident is one who knows his house: chess, television, sewing machine, tea, laundry, dominoes, notebook, bread. Come, sit a while and we will note it down.\" No ticks yet.",
+  "ja": "釘にかけた額に、ノートの紙が一枚。「よい住人とは、自分の家を知っている人。チェス、テレビ、ミシン、お茶、洗濯、ドミノ、ノート、パン。来て、座っていけば記録します」。まだチェックはない。"
+ },
+ "city.cm.honour.2": {
+  "ru": "На листе три галочки, поставленные чужой рукой, рукой Лидии Аркадьевны, которая всё видит. «Знает дом на троечку, — приписано. — Но уже не гость».",
+  "en": "Three ticks on the sheet, put by another hand, the hand of Lidiya Arkadyevna, who sees everything. \"Knows the house on a C grade,\" is added. \"But no longer a guest.\"",
+  "ja": "紙には三つのチェック。他人の手、何でも見ているリディヤ・アルカージエヴナの手で付けられている。「家のことは可、と書き添え。でももう客ではない」。"
+ },
+ "city.cm.honour.3": {
+  "ru": "Шесть галочек из восьми. Лидия Аркадьевна приписала: «Осталось немного. Если застрянете, ищите, где самовар, где тетрадь, где хлеб». Это не подсказка, а просто адрес.",
+  "en": "Six ticks out of eight. Lidiya Arkadyevna added: \"Not much left. If you get stuck, look for where the samovar is, where the notebook is, where the bread is.\" That is not a hint, only an address.",
+  "ja": "八つのうち六つにチェック。リディヤ・アルカージエヴナの書き添え。「あと少し。迷ったら、サモワールのある場所、ノートのある場所、パンのある場所を探すこと」。ヒントではなく、ただの住所だ。"
+ },
+ "city.cm.honour.4": {
+  "ru": "Все восемь! Внизу красными чернилами: «Жилец на один вечер. Подпись: общее собрание, единогласно, Пётр Семёнович воздержался». У самовара теперь висит и твоя кружка.",
+  "en": "All eight! At the bottom in red ink: \"Resident for one evening. Signed: the general meeting, unanimously, Pyotr Semyonovich abstained.\" Your own mug now hangs by the samovar too.",
+  "ja": "八つ全部だ！下に赤インクで。「一晩だけの住人。署名、総会、全会一致、ピョートル・セミョーノヴィチは棄権」。サモワールのそばに、君のマグカップも掛かっている。"
+ },
+ "city.cm.sam.mug": {
+  "ru": "На цепочке рядом с кружкой «ОБЩАЯ» висит вторая, поменьше, с выжженным словом «ГОСТЬ». Налил в неё. Вкус тот же, а приятнее.",
+  "en": "On a chain beside the mug marked \"COMMON\" hangs a second, smaller one with the word \"GUEST\" burned into it. I poured into that one. The same taste, but nicer.",
+  "ja": "「みんなの」と焼き付けたマグカップの隣に、もう一つ小ぶりのカップが鎖で下がっていて、「お客さん」と焼き付けてある。そちらに注いだ。味は同じなのに、よりおいしい。"
+ },
+ "city.cm.closed.counter": {
+  "ru": "Раздача закрыта: кастрюли накрыты полотенцами, на двери мелом «Завтрак с 8:00, ужин до 19:00. По воскресеньям повар отдыхает».",
+  "en": "The serving line is shut: the pans are covered with towels, and on the door in chalk: \"Breakfast from 8:00, supper until 19:00. On Sundays the cook rests.\"",
+  "ja": "配膳台は閉まっている。鍋にはタオルがかけてあり、ドアにチョークで「朝食は八時から、夕食は十九時まで。日曜は料理人がお休み」。"
+ },
+ "city.cm.closed.machine": {
+  "ru": "Краник самовара перевязан тряпочкой: после десяти кипяток спит, как и весь дом.",
+  "en": "The samovar's tap is tied with a rag: after ten the hot water sleeps, like the whole house.",
+  "ja": "サモワールの蛇口には布が巻いてある。十時を過ぎるとお湯は眠る。家じゅうと同じように。"
+ },
+ "city.cm.closed.bread": {
+  "ru": "Поднос для хлеба пуст и накрыт полотенцем. Хлеб будет к завтраку.",
+  "en": "The bread tray is empty and covered with a towel. There will be bread by breakfast.",
+  "ja": "パンのお盆は空で、タオルがかけてある。パンは朝食に出る。"
+ },
+ "city.cm.coll.title": {
+  "ru": "Уголки дома",
+  "en": "Corners of the house",
+  "ja": "家のコーナー"
+ },
+ "quest.commune_charter.title": {
+  "ru": "Поправка к уставу",
+  "en": "An amendment to the charter",
+  "ja": "規約の修正案"
+ },
+ "quest.commune_charter.desc": {
+  "ru": "На скамье домкома лежит устав дома, а внизу пустое место: поправки вносит тот, кто сидит и думает вслух. Попробую.",
+  "en": "The house charter lies by the committee's bench, with an empty space at the bottom: amendments are brought by whoever sits and thinks aloud. I'll try.",
+  "ja": "委員会のベンチのそばに家の規約が置かれ、下は空白になっている。修正案を出すのは、座って声に出して考える人。やってみよう。"
+ },
+ "quest.commune_charter.bench.log": {
+  "ru": "Скамья у входа, под доской домкома. Сяду и прочту устав до конца.",
+  "en": "The bench by the entrance, under the committee's board. I'll sit and read the charter to the end.",
+  "ja": "入口のそば、委員会の掲示板の下にあるベンチ。座って規約を最後まで読もう。"
+ },
+ "quest.commune_charter.read_charter.obj": {
+  "ru": "Прочесть устав дома, сидя на скамье домкома",
+  "en": "Read the house charter on the committee's bench",
+  "ja": "委員会のベンチに座って家の規約を読む"
+ },
+ "quest.commune_charter.game.log": {
+  "ru": "В уставе сказано: «Спор решается за столом, а не за дверью». Домино стоит у стены с турниками.",
+  "en": "The charter says: \"A dispute is settled at the table, not behind the door.\" The dominoes table is by the wall bars.",
+  "ja": "規約にはこうある。「争いは卓上で解決し、ドアの外には持ち出さないこと」。ドミノの卓は肋木の壁際にある。"
+ },
+ "quest.commune_charter.play_dominoes.obj": {
+  "ru": "Сыграть в домино",
+  "en": "Play dominoes",
+  "ja": "ドミノを一局打つ"
+ },
+ "quest.commune_charter.tea.log": {
+  "ru": "После партии положен чай. Самовар у стены, кружка на цепочке.",
+  "en": "After the game comes tea. The samovar is by the wall, the mug on its chain.",
+  "ja": "一局のあとにはお茶。サモワールは壁際、マグカップは鎖につながれている。"
+ },
+ "quest.commune_charter.pour_tea.obj": {
+  "ru": "Налить чаю из самовара",
+  "en": "Pour tea from the samovar",
+  "ja": "サモワールからお茶をつぐ"
+ },
+ "quest.commune_charter.done": {
+  "ru": "Поправку я так и не придумал, зато понял, на чём держится дом: на скамье, на костяшках, на общей кружке. Лидия Аркадьевна сказала: «Для первого раза достаточно», и дала пирожок.",
+  "en": "I never came up with an amendment, but I understood what the house stands on: the bench, the dominoes, the shared mug. Lidiya Arkadyevna said, \"Enough for a first time,\" and gave me a pie.",
+  "ja": "修正案は結局思いつかなかったが、この家が何で支えられているかはわかった。ベンチと、牌と、みんなのマグカップだ。リディヤ・アルカージエヴナは「初めてならこれで十分」と言って、ピロシキをくれた。"
  }
 }

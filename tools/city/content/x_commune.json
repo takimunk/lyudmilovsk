@@ -1,5 +1,5 @@
 {
- "_doc": "Round 4 of the commune slab's communal hall (both plots P-T2H2 and P-T3H3): menu by weekday, the house committee's running stories (T2H2: a leak and a cloud on the ceiling; T3H3: the cat Markiz), duty rota, wall newspaper, laundry queue, television by the hour, chess with the pensioners, mending corner, samovar. Words in strings/x_commune.json (city.cm.*).",
+ "_doc": "Round 4 of the commune slab's communal hall (both plots P-T2H2 and P-T3H3): menu by weekday, the house committee's running stories (T2H2: a leak and a cloud on the ceiling; T3H3: the cat Markiz), duty rota, wall newspaper, laundry queue, television by the hour, chess with the pensioners, mending corner, samovar. Words in strings/x_commune.json (city.cm.*). Round 5: dominoes table, readers' notebook (text), house charter read from the committee bench (text), 'today in the hall' chalk board, free-bread tray, pull-up record board, honour board with the collection commune_corners (8 stamps), lamp and door switches, closed lines, quest commune_charter. Words city.cm.*.",
  "acts": {
   "cm_menu": {
    "like": "look_misc",
@@ -369,7 +369,8 @@
       6
      ]
     }
-   ]
+   ],
+   "collect": "commune_corners/wash"
   },
   "cm_fold": {
    "like": "use_misc",
@@ -454,7 +455,8 @@
       6
      ]
     }
-   ]
+   ],
+   "collect": "commune_corners/tv"
   },
   "cm_chess": {
    "like": "chess",
@@ -489,7 +491,8 @@
       6
      ]
     }
-   ]
+   ],
+   "collect": "commune_corners/chess"
   },
   "cm_sewing": {
    "like": "sewing_machine",
@@ -499,7 +502,8 @@
     "city.cm.sew.1",
     "city.cm.sew.2",
     "city.cm.sew.3"
-   ]
+   ],
+   "collect": "commune_corners/sewing"
   },
   "cm_samovar": {
    "like": "use_misc",
@@ -533,6 +537,223 @@
      "h": [
       22,
       6
+     ]
+    },
+    {
+     "k": "city.cm.sam.mug",
+     "count": [
+      "commune_corners",
+      8
+     ]
+    }
+   ],
+   "collect": "commune_corners/tea"
+  },
+  "cm_dominoes": {
+   "like": "dominoes",
+   "prompt": "city.cm.dom.prompt",
+   "minutes": 30,
+   "collect": "commune_corners/dominoes",
+   "lines": [
+    {
+     "h": [
+      6,
+      13
+     ],
+     "k": "city.cm.dom.1"
+    },
+    {
+     "h": [
+      13,
+      19
+     ],
+     "k": "city.cm.dom.2"
+    },
+    {
+     "h": [
+      19,
+      6
+     ],
+     "k": "city.cm.dom.3"
+    },
+    {
+     "k": "city.cm.dom.rain",
+     "weather": "rain"
+    }
+   ]
+  },
+  "cm_nook_diary": {
+   "like": "look_misc",
+   "prompt": "city.cm.diary.prompt",
+   "minutes": 3,
+   "any_hour": true,
+   "sound": "page_turn",
+   "lines": "city.cm.diary",
+   "collect": "commune_corners/diary",
+   "read": {
+    "texts": [
+     "cm_diary"
+    ],
+    "rotate": "use"
+   }
+  },
+  "cm_bench_read": {
+   "like": "look_misc",
+   "prompt": "city.cm.charter.prompt",
+   "pose": "sit",
+   "minutes": 3,
+   "any_hour": true,
+   "sound": "page_turn",
+   "lines": "city.cm.charter",
+   "read": {
+    "texts": [
+     "cm_charter"
+    ],
+    "rotate": "use"
+   }
+  },
+  "cm_today": {
+   "like": "look_misc",
+   "prompt": "city.cm.today.prompt",
+   "minutes": 2,
+   "any_hour": true,
+   "sound": "paper_rustle",
+   "lines": [
+    {
+     "k": "city.cm.today.mon",
+     "d": "mon"
+    },
+    {
+     "k": "city.cm.today.tue",
+     "d": "tue"
+    },
+    {
+     "k": "city.cm.today.wed",
+     "d": "wed"
+    },
+    {
+     "k": "city.cm.today.thu",
+     "d": "thu"
+    },
+    {
+     "k": "city.cm.today.fri",
+     "d": "fri"
+    },
+    {
+     "k": "city.cm.today.sat",
+     "d": "sat"
+    },
+    {
+     "k": "city.cm.today.sun",
+     "d": "sun"
+    },
+    {
+     "k": "city.cm.today.rain",
+     "weather": "rain"
+    },
+    {
+     "k": "city.cm.today.warm",
+     "weather": "warm"
+    },
+    {
+     "k": "city.cm.today.cold",
+     "weather": "cold"
+    }
+   ]
+  },
+  "cm_bread": {
+   "like": "take_any",
+   "prompt": "city.cm.bread.prompt",
+   "give": [
+    [
+     "bread_loaf",
+     1
+    ]
+   ],
+   "daily": 1,
+   "minutes": 1,
+   "sound": "plate_clink",
+   "collect": "commune_corners/bread",
+   "lines": [
+    {
+     "h": [
+      6,
+      12
+     ],
+     "k": "city.cm.bread.1"
+    },
+    {
+     "h": [
+      12,
+      19
+     ],
+     "k": "city.cm.bread.2"
+    },
+    {
+     "h": [
+      19,
+      6
+     ],
+     "k": "city.cm.bread.3"
+    }
+   ]
+  },
+  "cm_pullup": {
+   "like": "look_misc",
+   "prompt": "city.cm.pull.prompt",
+   "minutes": 2,
+   "rotate": "daily",
+   "any_hour": true,
+   "lines": [
+    {
+     "k": "city.cm.pull.1"
+    },
+    {
+     "k": "city.cm.pull.2",
+     "after": 2
+    },
+    {
+     "k": "city.cm.pull.3",
+     "after": 4
+    },
+    {
+     "k": "city.cm.pull.4",
+     "after": 6
+    },
+    {
+     "k": "city.cm.pull.5",
+     "after": 8
+    }
+   ]
+  },
+  "cm_honour": {
+   "like": "look_misc",
+   "prompt": "city.cm.honour.prompt",
+   "minutes": 2,
+   "any_hour": true,
+   "lines": [
+    {
+     "k": "city.cm.honour.1"
+    },
+    {
+     "k": "city.cm.honour.2",
+     "count": [
+      "commune_corners",
+      3
+     ]
+    },
+    {
+     "k": "city.cm.honour.3",
+     "count": [
+      "commune_corners",
+      6
+     ]
+    },
+    {
+     "k": "city.cm.honour.4",
+     "count": [
+      "commune_corners",
+      8
      ]
     }
    ]
@@ -596,6 +817,32 @@
   },
   "P-T3H3/hall_lost_box": {
    "act": "cm_lost_b"
+  },
+  "commune_slab/hall_dominoes": {
+   "act": "cm_dominoes"
+  },
+  "commune_slab/hall_nook_diary": {
+   "act": "cm_nook_diary"
+  },
+  "commune_slab/house_committee_bench": {
+   "act": "cm_bench_read"
+  },
+  "commune_slab/hall_today": {
+   "act": "cm_today"
+  },
+  "commune_slab/canteen_bread": {
+   "act": "cm_bread",
+   "hours": [
+    8,
+    19
+   ],
+   "days": "mon-sat"
+  },
+  "commune_slab/hall_pullup_board": {
+   "act": "cm_pullup"
+  },
+  "commune_slab/hall_honour_board": {
+   "act": "cm_honour"
   }
  },
  "quests": [
@@ -698,6 +945,140 @@
      }
     }
    ]
+  },
+  {
+   "id": "commune_charter",
+   "kind": "side",
+   "start_on": {
+    "event": "visit",
+    "target": "P-T2H2"
+   },
+   "stages": [
+    {
+     "id": "bench",
+     "objectives": [
+      {
+       "id": "read_charter",
+       "event": "do",
+       "target": "cm_bench_read"
+      }
+     ]
+    },
+    {
+     "id": "game",
+     "objectives": [
+      {
+       "id": "play_dominoes",
+       "event": "do",
+       "target": "cm_dominoes"
+      }
+     ]
+    },
+    {
+     "id": "tea",
+     "objectives": [
+      {
+       "id": "pour_tea",
+       "event": "do",
+       "target": "cm_samovar"
+      }
+     ],
+     "reward": {
+      "items": {
+       "pie": 1
+      }
+     }
+    }
+   ]
   }
- ]
+ ],
+ "collections": {
+  "commune_corners": {
+   "title": "city.cm.coll.title",
+   "pieces": [
+    "chess",
+    "tv",
+    "sewing",
+    "tea",
+    "wash",
+    "dominoes",
+    "diary",
+    "bread"
+   ]
+  }
+ },
+ "closed_by": {
+  "commune_slab": {
+   "counter": "city.cm.closed.counter",
+   "machine": "city.cm.closed.machine",
+   "take": "city.cm.closed.bread"
+  }
+ },
+ "texts": {
+  "cm_diary": {
+   "title": "city.cm.text.diary.title",
+   "kind": "ledger",
+   "minutes": 2,
+   "collect": "reading/cm_diary",
+   "pages": [
+    "city.cm.diary.1",
+    {
+     "k": "city.cm.diary.2",
+     "after": 1
+    },
+    {
+     "k": "city.cm.diary.3",
+     "after": 2
+    },
+    {
+     "k": "city.cm.diary.4",
+     "after": 3
+    },
+    {
+     "k": "city.cm.diary.5",
+     "after": 5
+    },
+    {
+     "k": "city.cm.diary.6",
+     "after": 6
+    },
+    {
+     "k": "city.cm.diary.7",
+     "after": 8
+    },
+    {
+     "k": "city.cm.diary.8",
+     "after": 10
+    }
+   ]
+  },
+  "cm_charter": {
+   "title": "city.cm.text.charter.title",
+   "kind": "notice",
+   "minutes": 2,
+   "collect": "reading/cm_charter",
+   "pages": [
+    "city.cm.charter.1",
+    "city.cm.charter.2",
+    "city.cm.charter.3",
+    "city.cm.charter.4",
+    {
+     "k": "city.cm.charter.5",
+     "after": 1
+    },
+    {
+     "k": "city.cm.charter.6",
+     "after": 3
+    },
+    {
+     "k": "city.cm.charter.7",
+     "after": 6
+    },
+    {
+     "k": "city.cm.charter.8",
+     "after": 8
+    }
+   ]
+  }
+ }
 }

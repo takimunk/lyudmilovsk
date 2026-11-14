@@ -277,6 +277,26 @@
     0.0
    ],
    "yaw": 270.0
+  },
+  {
+   "id": "dom1",
+   "kind": "seat",
+   "pos": [
+    -23.8,
+    5.95,
+    0.0
+   ],
+   "yaw": 180.0
+  },
+  {
+   "id": "dom2",
+   "kind": "seat",
+   "pos": [
+    -23.8,
+    7.25,
+    0.0
+   ],
+   "yaw": 0.0
   }
  ],
  "lamps": [
@@ -345,6 +365,17 @@
    "colour": "#FFD2A0",
    "kind": "public",
    "radius": 6.5
+  },
+  {
+   "pos": [
+    -30.9,
+    1.85,
+    1.4
+   ],
+   "lumens": 350,
+   "colour": "#FFD9A8",
+   "kind": "public",
+   "radius": 4.0
   },
   {
    "pos": [
@@ -947,6 +978,151 @@
    "yaw": 270.0,
    "props": {
     "topic": "timetable"
+   }
+  },
+  {
+   "id": "hall_dominoes",
+   "kind": "play",
+   "pos": [
+    -23.8,
+    6.6,
+    0.8
+   ],
+   "yaw": 0.0,
+   "props": {
+    "what": "dominoes"
+   }
+  },
+  {
+   "id": "hall_dom_seat_1",
+   "kind": "seat",
+   "pos": [
+    -23.8,
+    5.95,
+    0.45
+   ],
+   "yaw": 180.0,
+   "props": {
+    "height": 0.45
+   }
+  },
+  {
+   "id": "hall_dom_seat_2",
+   "kind": "seat",
+   "pos": [
+    -23.8,
+    7.25,
+    0.45
+   ],
+   "yaw": 0.0,
+   "props": {
+    "height": 0.45
+   }
+  },
+  {
+   "id": "hall_nook_diary",
+   "kind": "board",
+   "pos": [
+    -32.96,
+    2.98,
+    0.46
+   ],
+   "yaw": 0.0,
+   "props": {
+    "topic": "local"
+   }
+  },
+  {
+   "id": "hall_nook_switch",
+   "kind": "machine",
+   "pos": [
+    -30.9,
+    1.85,
+    1.0
+   ],
+   "yaw": 0.0,
+   "props": {
+    "what": "switch",
+    "switch": 2.5
+   }
+  },
+  {
+   "id": "hall_switch_door",
+   "kind": "machine",
+   "pos": [
+    -29.95,
+    1.48,
+    1.3
+   ],
+   "yaw": 180.0,
+   "props": {
+    "what": "switch",
+    "switch": "hall"
+   }
+  },
+  {
+   "id": "canteen_bread",
+   "kind": "take",
+   "pos": [
+    -28.2,
+    10.5,
+    1.18
+   ],
+   "yaw": 0.0,
+   "props": {
+    "item": "bread_loaf"
+   }
+  },
+  {
+   "id": "hall_today",
+   "kind": "board",
+   "pos": [
+    -26.8,
+    3.3,
+    0.7
+   ],
+   "yaw": 0.0,
+   "props": {
+    "topic": "rules"
+   }
+  },
+  {
+   "id": "hall_pullup_board",
+   "kind": "board",
+   "pos": [
+    -22.55,
+    3.75,
+    1.5
+   ],
+   "yaw": 270.0,
+   "props": {
+    "topic": "timetable"
+   }
+  },
+  {
+   "id": "hall_honour_board",
+   "kind": "board",
+   "pos": [
+    -23.9,
+    1.5,
+    1.8
+   ],
+   "yaw": 180.0,
+   "props": {
+    "topic": "rules"
+   }
+  },
+  {
+   "id": "kit_clock_2",
+   "kind": "board",
+   "pos": [
+    -26.85,
+    1.45,
+    2.3
+   ],
+   "yaw": 180.0,
+   "props": {
+    "what": "clock"
    }
   }
  ],
@@ -3357,8 +3533,8 @@
   "16 skip-stop flats, corridors on floors 2 and 4; communal hall enterable at the west end"
  ],
  "tris": {
-  "shell": 2650,
-  "detail": 15390,
+  "shell": 2662,
+  "detail": 16154,
   "windows": 408
  }
 }
