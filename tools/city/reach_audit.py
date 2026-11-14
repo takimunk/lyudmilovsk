@@ -24,7 +24,7 @@ behind, floor under the cushion within 0.6 m of pos.z - height):
   d  every lift stop's arrival spot has a walkable floor
   e  headroom >= 1.8 m over the standing node (shell faces only: B.detail has no collision and is ignored)
   +  line of sight from 1.5 m over the standing node to the thing's point does not cross a wall (last 0.4 m free)
-Precision: 0.2 m in plan, exact in height for shell faces. Doors (ALyudDoor) are open holes here; railings and all
+Precision: 0.2 m in plan, exact in height for shell faces (walls: 0.05 m bins). Doors (ALyudDoor) are open holes here; railings and all
 B.detail are ignored (no collision); the terrain is assumed flat at the building's z 0.
 Exit 1 on errors.
 """
@@ -46,7 +46,7 @@ CLEAR_WALK = 1.6
 HEADROOM = 1.8
 STEP = 0.5
 BAND = (0.45, 1.7)
-ZBIN = 0.1
+ZBIN = 0.05       # wall z bins (0.1 put a stair's riser two steps ahead into the 0.45 m band: steep flights read as walls)
 KIND_RISE = {"seat": 0.45, "bed": 0.5, "shelf": 1.3, "board": 1.5, "counter": 1.0, "machine": 1.1, "play": 0.8,
              "sport": 1.0, "craft": 0.9, "screen": 1.6, "take": 0.8, "door": 1.2}
 

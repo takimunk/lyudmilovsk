@@ -2813,7 +2813,7 @@
   "stepped terrace housing: 24 flats in 4 tiers + upper maisonettes; stair walkable (rise <= 0.17)"
  ],
  "tris": {
-  "shell": 3790,
+  "shell": 3800,
   "detail": 37956,
   "windows": 248
  }

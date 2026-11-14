@@ -2484,69 +2484,6 @@
    "flat": null,
    "kind": "public",
    "centre": [
-    0.0,
-    25.92,
-    2.25
-   ],
-   "normal": [
-    0.0,
-    1.0,
-    -0.0
-   ],
-   "size": [
-    1.754,
-    3.3
-   ],
-   "shape": "rect"
-  },
-  {
-   "slot": 6,
-   "id": "pub/w7",
-   "flat": null,
-   "kind": "public",
-   "centre": [
-    0.0,
-    25.92,
-    6.65
-   ],
-   "normal": [
-    0.0,
-    1.0,
-    -0.0
-   ],
-   "size": [
-    1.754,
-    3.3
-   ],
-   "shape": "rect"
-  },
-  {
-   "slot": 7,
-   "id": "pub/w8",
-   "flat": null,
-   "kind": "public",
-   "centre": [
-    0.0,
-    25.92,
-    11.05
-   ],
-   "normal": [
-    0.0,
-    1.0,
-    -0.0
-   ],
-   "size": [
-    1.754,
-    3.3
-   ],
-   "shape": "rect"
-  },
-  {
-   "slot": 8,
-   "id": "pub/w9",
-   "flat": null,
-   "kind": "public",
-   "centre": [
     -1.984,
     25.606,
     11.05
@@ -2563,8 +2500,8 @@
    "shape": "rect"
   },
   {
-   "slot": 9,
-   "id": "pub/w10",
+   "slot": 6,
+   "id": "pub/w7",
    "flat": null,
    "kind": "public",
    "centre": [
@@ -2584,8 +2521,8 @@
    "shape": "rect"
   },
   {
-   "slot": 10,
-   "id": "pub/w11",
+   "slot": 7,
+   "id": "pub/w8",
    "flat": null,
    "kind": "public",
    "centre": [
@@ -2605,8 +2542,8 @@
    "shape": "rect"
   },
   {
-   "slot": 11,
-   "id": "pub/w12",
+   "slot": 8,
+   "id": "pub/w9",
    "flat": null,
    "kind": "public",
    "centre": [
@@ -2626,8 +2563,8 @@
    "shape": "rect"
   },
   {
-   "slot": 12,
-   "id": "pub/w13",
+   "slot": 9,
+   "id": "pub/w10",
    "flat": null,
    "kind": "public",
    "centre": [
@@ -2647,8 +2584,8 @@
    "shape": "rect"
   },
   {
-   "slot": 13,
-   "id": "pub/w14",
+   "slot": 10,
+   "id": "pub/w11",
    "flat": null,
    "kind": "public",
    "centre": [
@@ -2668,8 +2605,8 @@
    "shape": "rect"
   },
   {
-   "slot": 14,
-   "id": "pub/w15",
+   "slot": 11,
+   "id": "pub/w12",
    "flat": null,
    "kind": "public",
    "centre": [
@@ -2689,8 +2626,8 @@
    "shape": "rect"
   },
   {
-   "slot": 15,
-   "id": "pub/w16",
+   "slot": 12,
+   "id": "pub/w13",
    "flat": null,
    "kind": "public",
    "centre": [
@@ -2710,8 +2647,8 @@
    "shape": "rect"
   },
   {
-   "slot": 16,
-   "id": "pub/w17",
+   "slot": 13,
+   "id": "pub/w14",
    "flat": null,
    "kind": "public",
    "centre": [
@@ -2731,8 +2668,8 @@
    "shape": "rect"
   },
   {
-   "slot": 17,
-   "id": "pub/w18",
+   "slot": 14,
+   "id": "pub/w15",
    "flat": null,
    "kind": "public",
    "centre": [
@@ -2752,8 +2689,8 @@
    "shape": "rect"
   },
   {
-   "slot": 18,
-   "id": "pub/w19",
+   "slot": 15,
+   "id": "pub/w16",
    "flat": null,
    "kind": "public",
    "centre": [
@@ -2773,8 +2710,8 @@
    "shape": "rect"
   },
   {
-   "slot": 19,
-   "id": "pub/w20",
+   "slot": 16,
+   "id": "pub/w17",
    "flat": null,
    "kind": "public",
    "centre": [
@@ -2794,8 +2731,8 @@
    "shape": "rect"
   },
   {
-   "slot": 20,
-   "id": "pub/w21",
+   "slot": 17,
+   "id": "pub/w18",
    "flat": null,
    "kind": "public",
    "centre": [
@@ -2815,8 +2752,8 @@
    "shape": "rect"
   },
   {
-   "slot": 21,
-   "id": "pub/w22",
+   "slot": 18,
+   "id": "pub/w19",
    "flat": null,
    "kind": "public",
    "centre": [
@@ -2836,8 +2773,8 @@
    "shape": "rect"
   },
   {
-   "slot": 22,
-   "id": "pub/w23",
+   "slot": 19,
+   "id": "pub/w20",
    "flat": null,
    "kind": "public",
    "centre": [
@@ -2857,8 +2794,8 @@
    "shape": "rect"
   },
   {
-   "slot": 23,
-   "id": "pub/w24",
+   "slot": 20,
+   "id": "pub/w21",
    "flat": null,
    "kind": "public",
    "centre": [
@@ -2878,8 +2815,8 @@
    "shape": "rect"
   },
   {
-   "slot": 24,
-   "id": "pub/w25",
+   "slot": 21,
+   "id": "pub/w22",
    "flat": null,
    "kind": "public",
    "centre": [
@@ -2890,6 +2827,69 @@
    "normal": [
     0.309,
     -0.951,
+    0.0
+   ],
+   "size": [
+    1.754,
+    3.3
+   ],
+   "shape": "rect"
+  },
+  {
+   "slot": 22,
+   "id": "pub/w23",
+   "flat": null,
+   "kind": "public",
+   "centre": [
+    1.984,
+    13.394,
+    6.65
+   ],
+   "normal": [
+    0.309,
+    -0.951,
+    0.0
+   ],
+   "size": [
+    1.754,
+    3.3
+   ],
+   "shape": "rect"
+  },
+  {
+   "slot": 23,
+   "id": "pub/w24",
+   "flat": null,
+   "kind": "public",
+   "centre": [
+    3.774,
+    14.306,
+    2.25
+   ],
+   "normal": [
+    0.588,
+    -0.809,
+    0.0
+   ],
+   "size": [
+    1.754,
+    3.3
+   ],
+   "shape": "rect"
+  },
+  {
+   "slot": 24,
+   "id": "pub/w25",
+   "flat": null,
+   "kind": "public",
+   "centre": [
+    3.774,
+    14.306,
+    6.65
+   ],
+   "normal": [
+    0.588,
+    -0.809,
     0.0
    ],
    "size": [
@@ -2904,13 +2904,13 @@
    "flat": null,
    "kind": "public",
    "centre": [
-    1.984,
-    13.394,
-    6.65
+    3.774,
+    14.306,
+    11.05
    ],
    "normal": [
-    0.309,
-    -0.951,
+    0.588,
+    -0.809,
     0.0
    ],
    "size": [
@@ -2925,13 +2925,13 @@
    "flat": null,
    "kind": "public",
    "centre": [
-    3.774,
-    14.306,
-    2.25
+    5.194,
+    15.726,
+    6.65
    ],
    "normal": [
-    0.588,
-    -0.809,
+    0.809,
+    -0.588,
     0.0
    ],
    "size": [
@@ -2946,13 +2946,13 @@
    "flat": null,
    "kind": "public",
    "centre": [
-    3.774,
-    14.306,
-    6.65
+    5.194,
+    15.726,
+    11.05
    ],
    "normal": [
-    0.588,
-    -0.809,
+    0.809,
+    -0.588,
     0.0
    ],
    "size": [
@@ -2967,13 +2967,13 @@
    "flat": null,
    "kind": "public",
    "centre": [
-    3.774,
-    14.306,
-    11.05
+    6.106,
+    17.516,
+    6.65
    ],
    "normal": [
-    0.588,
-    -0.809,
+    0.951,
+    -0.309,
     0.0
    ],
    "size": [
@@ -2988,13 +2988,13 @@
    "flat": null,
    "kind": "public",
    "centre": [
-    5.194,
-    15.726,
-    6.65
+    6.106,
+    17.516,
+    11.05
    ],
    "normal": [
-    0.809,
-    -0.588,
+    0.951,
+    -0.309,
     0.0
    ],
    "size": [
@@ -3009,18 +3009,18 @@
    "flat": null,
    "kind": "public",
    "centre": [
-    5.194,
-    15.726,
-    11.05
+    -2.951,
+    11.19,
+    10.8
    ],
    "normal": [
-    0.809,
-    -0.588,
+    -1.0,
+    0.0,
     0.0
    ],
    "size": [
-    1.754,
-    3.3
+    3.236,
+    2.2
    ],
    "shape": "rect"
   },
@@ -3030,18 +3030,18 @@
    "flat": null,
    "kind": "public",
    "centre": [
-    6.106,
-    17.516,
-    6.65
+    -2.951,
+    7.504,
+    10.8
    ],
    "normal": [
-    0.951,
-    -0.309,
+    -1.0,
+    0.0,
     0.0
    ],
    "size": [
-    1.754,
-    3.3
+    3.236,
+    2.2
    ],
    "shape": "rect"
   },
@@ -3051,18 +3051,18 @@
    "flat": null,
    "kind": "public",
    "centre": [
-    6.106,
-    17.516,
-    11.05
+    -2.951,
+    3.818,
+    10.8
    ],
    "normal": [
-    0.951,
-    -0.309,
+    -1.0,
+    0.0,
     0.0
    ],
    "size": [
-    1.754,
-    3.3
+    3.236,
+    2.2
    ],
    "shape": "rect"
   },
@@ -3072,13 +3072,13 @@
    "flat": null,
    "kind": "public",
    "centre": [
-    -2.951,
-    11.19,
+    2.951,
+    3.818,
     10.8
    ],
    "normal": [
-    -1.0,
-    0.0,
+    1.0,
+    -0.0,
     0.0
    ],
    "size": [
@@ -3093,13 +3093,13 @@
    "flat": null,
    "kind": "public",
    "centre": [
-    -2.951,
+    2.951,
     7.504,
     10.8
    ],
    "normal": [
-    -1.0,
-    0.0,
+    1.0,
+    -0.0,
     0.0
    ],
    "size": [
@@ -3111,69 +3111,6 @@
   {
    "slot": 35,
    "id": "pub/w36",
-   "flat": null,
-   "kind": "public",
-   "centre": [
-    -2.951,
-    3.818,
-    10.8
-   ],
-   "normal": [
-    -1.0,
-    0.0,
-    0.0
-   ],
-   "size": [
-    3.236,
-    2.2
-   ],
-   "shape": "rect"
-  },
-  {
-   "slot": 36,
-   "id": "pub/w37",
-   "flat": null,
-   "kind": "public",
-   "centre": [
-    2.951,
-    3.818,
-    10.8
-   ],
-   "normal": [
-    1.0,
-    -0.0,
-    0.0
-   ],
-   "size": [
-    3.236,
-    2.2
-   ],
-   "shape": "rect"
-  },
-  {
-   "slot": 37,
-   "id": "pub/w38",
-   "flat": null,
-   "kind": "public",
-   "centre": [
-    2.951,
-    7.504,
-    10.8
-   ],
-   "normal": [
-    1.0,
-    -0.0,
-    0.0
-   ],
-   "size": [
-    3.236,
-    2.2
-   ],
-   "shape": "rect"
-  },
-  {
-   "slot": 38,
-   "id": "pub/w39",
    "flat": null,
    "kind": "public",
    "centre": [
@@ -3193,8 +3130,8 @@
    "shape": "rect"
   },
   {
-   "slot": 39,
-   "id": "pub/w40",
+   "slot": 36,
+   "id": "pub/w37",
    "flat": null,
    "kind": "public",
    "centre": [
@@ -3214,8 +3151,8 @@
    "shape": "rect"
   },
   {
-   "slot": 40,
-   "id": "pub/w41",
+   "slot": 37,
+   "id": "pub/w38",
    "flat": null,
    "kind": "public",
    "centre": [
@@ -3235,8 +3172,8 @@
    "shape": "rect"
   },
   {
-   "slot": 41,
-   "id": "pub/w42",
+   "slot": 38,
+   "id": "pub/w39",
    "flat": null,
    "kind": "public",
    "centre": [
@@ -3256,8 +3193,8 @@
    "shape": "rect"
   },
   {
-   "slot": 42,
-   "id": "pub/w43",
+   "slot": 39,
+   "id": "pub/w40",
    "flat": null,
    "kind": "public",
    "centre": [
@@ -3277,8 +3214,8 @@
    "shape": "rect"
   },
   {
-   "slot": 43,
-   "id": "pub/w44",
+   "slot": 40,
+   "id": "pub/w41",
    "flat": null,
    "kind": "public",
    "centre": [
@@ -3298,8 +3235,8 @@
    "shape": "rect"
   },
   {
-   "slot": 44,
-   "id": "pub/w45",
+   "slot": 41,
+   "id": "pub/w42",
    "flat": null,
    "kind": "public",
    "centre": [
@@ -3319,8 +3256,8 @@
    "shape": "rect"
   },
   {
-   "slot": 45,
-   "id": "pub/w46",
+   "slot": 42,
+   "id": "pub/w43",
    "flat": null,
    "kind": "public",
    "centre": [
@@ -3340,8 +3277,8 @@
    "shape": "rect"
   },
   {
-   "slot": 46,
-   "id": "pub/w47",
+   "slot": 43,
+   "id": "pub/w44",
    "flat": null,
    "kind": "public",
    "centre": [
@@ -3361,14 +3298,77 @@
    "shape": "rect"
   },
   {
-   "slot": 47,
-   "id": "pub/w48",
+   "slot": 44,
+   "id": "pub/w45",
    "flat": null,
    "kind": "public",
    "centre": [
     7.402,
     24.667,
     2.0
+   ],
+   "normal": [
+    0.809,
+    -0.588,
+    0.0
+   ],
+   "size": [
+    3.679,
+    2.2
+   ],
+   "shape": "rect"
+  },
+  {
+   "slot": 45,
+   "id": "pub/w46",
+   "flat": null,
+   "kind": "public",
+   "centre": [
+    9.829,
+    28.008,
+    2.0
+   ],
+   "normal": [
+    0.809,
+    -0.588,
+    0.0
+   ],
+   "size": [
+    3.679,
+    2.2
+   ],
+   "shape": "rect"
+  },
+  {
+   "slot": 46,
+   "id": "pub/w47",
+   "flat": null,
+   "kind": "public",
+   "centre": [
+    7.402,
+    24.667,
+    6.4
+   ],
+   "normal": [
+    0.809,
+    -0.588,
+    0.0
+   ],
+   "size": [
+    3.679,
+    2.2
+   ],
+   "shape": "rect"
+  },
+  {
+   "slot": 47,
+   "id": "pub/w48",
+   "flat": null,
+   "kind": "public",
+   "centre": [
+    9.829,
+    28.008,
+    6.4
    ],
    "normal": [
     0.809,
@@ -3387,9 +3387,9 @@
    "flat": null,
    "kind": "public",
    "centre": [
-    9.829,
-    28.008,
-    2.0
+    7.402,
+    24.667,
+    10.625
    ],
    "normal": [
     0.809,
@@ -3398,7 +3398,7 @@
    ],
    "size": [
     3.679,
-    2.2
+    1.85
    ],
    "shape": "rect"
   },
@@ -3408,9 +3408,9 @@
    "flat": null,
    "kind": "public",
    "centre": [
-    7.402,
-    24.667,
-    6.4
+    9.829,
+    28.008,
+    10.625
    ],
    "normal": [
     0.809,
@@ -3419,7 +3419,7 @@
    ],
    "size": [
     3.679,
-    2.2
+    1.85
    ],
    "shape": "rect"
   },
@@ -3429,13 +3429,13 @@
    "flat": null,
    "kind": "public",
    "centre": [
-    9.829,
-    28.008,
-    6.4
+    5.054,
+    31.477,
+    2.0
    ],
    "normal": [
-    0.809,
-    -0.588,
+    -0.809,
+    0.588,
     0.0
    ],
    "size": [
@@ -3450,18 +3450,18 @@
    "flat": null,
    "kind": "public",
    "centre": [
-    7.402,
-    24.667,
-    10.625
+    2.627,
+    28.136,
+    2.0
    ],
    "normal": [
-    0.809,
-    -0.588,
+    -0.809,
+    0.588,
     0.0
    ],
    "size": [
     3.679,
-    1.85
+    2.2
    ],
    "shape": "rect"
   },
@@ -3471,18 +3471,18 @@
    "flat": null,
    "kind": "public",
    "centre": [
-    9.829,
-    28.008,
-    10.625
+    5.054,
+    31.477,
+    6.4
    ],
    "normal": [
-    0.809,
-    -0.588,
+    -0.809,
+    0.588,
     0.0
    ],
    "size": [
     3.679,
-    1.85
+    2.2
    ],
    "shape": "rect"
   },
@@ -3492,9 +3492,9 @@
    "flat": null,
    "kind": "public",
    "centre": [
-    5.054,
-    31.477,
-    2.0
+    2.627,
+    28.136,
+    6.4
    ],
    "normal": [
     -0.809,
@@ -3513,9 +3513,9 @@
    "flat": null,
    "kind": "public",
    "centre": [
-    2.627,
-    28.136,
-    2.0
+    5.054,
+    31.477,
+    10.625
    ],
    "normal": [
     -0.809,
@@ -3524,7 +3524,7 @@
    ],
    "size": [
     3.679,
-    2.2
+    1.85
    ],
    "shape": "rect"
   },
@@ -3534,9 +3534,9 @@
    "flat": null,
    "kind": "public",
    "centre": [
-    5.054,
-    31.477,
-    6.4
+    2.627,
+    28.136,
+    10.625
    ],
    "normal": [
     -0.809,
@@ -3545,7 +3545,7 @@
    ],
    "size": [
     3.679,
-    2.2
+    1.85
    ],
    "shape": "rect"
   },
@@ -3555,17 +3555,17 @@
    "flat": null,
    "kind": "public",
    "centre": [
-    2.627,
-    28.136,
-    6.4
+    8.817,
+    31.635,
+    2.0
    ],
    "normal": [
-    -0.809,
     0.588,
-    0.0
+    0.809,
+    -0.0
    ],
    "size": [
-    3.679,
+    4.102,
     2.2
    ],
    "shape": "rect"
@@ -3576,69 +3576,6 @@
    "flat": null,
    "kind": "public",
    "centre": [
-    5.054,
-    31.477,
-    10.625
-   ],
-   "normal": [
-    -0.809,
-    0.588,
-    0.0
-   ],
-   "size": [
-    3.679,
-    1.85
-   ],
-   "shape": "rect"
-  },
-  {
-   "slot": 58,
-   "id": "pub/w59",
-   "flat": null,
-   "kind": "public",
-   "centre": [
-    2.627,
-    28.136,
-    10.625
-   ],
-   "normal": [
-    -0.809,
-    0.588,
-    0.0
-   ],
-   "size": [
-    3.679,
-    1.85
-   ],
-   "shape": "rect"
-  },
-  {
-   "slot": 59,
-   "id": "pub/w60",
-   "flat": null,
-   "kind": "public",
-   "centre": [
-    8.817,
-    31.635,
-    2.0
-   ],
-   "normal": [
-    0.588,
-    0.809,
-    -0.0
-   ],
-   "size": [
-    4.102,
-    2.2
-   ],
-   "shape": "rect"
-  },
-  {
-   "slot": 60,
-   "id": "pub/w61",
-   "flat": null,
-   "kind": "public",
-   "centre": [
     8.817,
     31.635,
     6.4
@@ -3655,8 +3592,8 @@
    "shape": "rect"
   },
   {
-   "slot": 61,
-   "id": "pub/w62",
+   "slot": 58,
+   "id": "pub/w59",
    "flat": null,
    "kind": "public",
    "centre": [
@@ -3676,14 +3613,77 @@
    "shape": "rect"
   },
   {
-   "slot": 62,
-   "id": "pub/w63",
+   "slot": 59,
+   "id": "pub/w60",
    "flat": null,
    "kind": "public",
    "centre": [
     -2.627,
     28.136,
     2.0
+   ],
+   "normal": [
+    0.809,
+    0.588,
+    -0.0
+   ],
+   "size": [
+    3.679,
+    2.2
+   ],
+   "shape": "rect"
+  },
+  {
+   "slot": 60,
+   "id": "pub/w61",
+   "flat": null,
+   "kind": "public",
+   "centre": [
+    -5.054,
+    31.477,
+    2.0
+   ],
+   "normal": [
+    0.809,
+    0.588,
+    -0.0
+   ],
+   "size": [
+    3.679,
+    2.2
+   ],
+   "shape": "rect"
+  },
+  {
+   "slot": 61,
+   "id": "pub/w62",
+   "flat": null,
+   "kind": "public",
+   "centre": [
+    -2.627,
+    28.136,
+    6.4
+   ],
+   "normal": [
+    0.809,
+    0.588,
+    -0.0
+   ],
+   "size": [
+    3.679,
+    2.2
+   ],
+   "shape": "rect"
+  },
+  {
+   "slot": 62,
+   "id": "pub/w63",
+   "flat": null,
+   "kind": "public",
+   "centre": [
+    -5.054,
+    31.477,
+    6.4
    ],
    "normal": [
     0.809,
@@ -3702,14 +3702,14 @@
    "flat": null,
    "kind": "public",
    "centre": [
-    -5.054,
-    31.477,
+    -9.829,
+    28.008,
     2.0
    ],
    "normal": [
-    0.809,
-    0.588,
-    -0.0
+    -0.809,
+    -0.588,
+    0.0
    ],
    "size": [
     3.679,
@@ -3723,14 +3723,14 @@
    "flat": null,
    "kind": "public",
    "centre": [
-    -2.627,
-    28.136,
-    6.4
+    -7.402,
+    24.667,
+    2.0
    ],
    "normal": [
-    0.809,
-    0.588,
-    -0.0
+    -0.809,
+    -0.588,
+    0.0
    ],
    "size": [
     3.679,
@@ -3744,14 +3744,14 @@
    "flat": null,
    "kind": "public",
    "centre": [
-    -5.054,
-    31.477,
+    -9.829,
+    28.008,
     6.4
    ],
    "normal": [
-    0.809,
-    0.588,
-    -0.0
+    -0.809,
+    -0.588,
+    0.0
    ],
    "size": [
     3.679,
@@ -3765,9 +3765,9 @@
    "flat": null,
    "kind": "public",
    "centre": [
-    -9.829,
-    28.008,
-    2.0
+    -7.402,
+    24.667,
+    6.4
    ],
    "normal": [
     -0.809,
@@ -3786,17 +3786,17 @@
    "flat": null,
    "kind": "public",
    "centre": [
-    -7.402,
-    24.667,
+    -8.817,
+    31.635,
     2.0
    ],
    "normal": [
-    -0.809,
     -0.588,
+    0.809,
     0.0
    ],
    "size": [
-    3.679,
+    4.102,
     2.2
    ],
    "shape": "rect"
@@ -3807,17 +3807,17 @@
    "flat": null,
    "kind": "public",
    "centre": [
-    -9.829,
-    28.008,
+    -8.817,
+    31.635,
     6.4
    ],
    "normal": [
-    -0.809,
     -0.588,
+    0.809,
     0.0
    ],
    "size": [
-    3.679,
+    4.102,
     2.2
    ],
    "shape": "rect"
@@ -3828,18 +3828,18 @@
    "flat": null,
    "kind": "public",
    "centre": [
-    -7.402,
-    24.667,
-    6.4
+    -8.688,
+    19.78,
+    2.2
    ],
    "normal": [
-    -0.809,
-    -0.588,
+    -0.309,
+    0.951,
     0.0
    ],
    "size": [
-    3.679,
-    2.2
+    2.969,
+    2.6
    ],
    "shape": "rect"
   },
@@ -3849,18 +3849,18 @@
    "flat": null,
    "kind": "public",
    "centre": [
-    -8.817,
-    31.635,
-    2.0
+    -11.94,
+    18.723,
+    2.2
    ],
    "normal": [
-    -0.588,
-    0.809,
+    -0.309,
+    0.951,
     0.0
    ],
    "size": [
-    4.102,
-    2.2
+    2.969,
+    2.6
    ],
    "shape": "rect"
   },
@@ -3870,18 +3870,18 @@
    "flat": null,
    "kind": "public",
    "centre": [
-    -8.817,
-    31.635,
-    6.4
+    -15.192,
+    17.667,
+    2.2
    ],
    "normal": [
-    -0.588,
-    0.809,
+    -0.309,
+    0.951,
     0.0
    ],
    "size": [
-    4.102,
-    2.2
+    2.969,
+    2.6
    ],
    "shape": "rect"
   },
@@ -3893,7 +3893,7 @@
    "centre": [
     -8.688,
     19.78,
-    2.2
+    6.5
    ],
    "normal": [
     -0.309,
@@ -3902,7 +3902,7 @@
    ],
    "size": [
     2.969,
-    2.6
+    2.2
    ],
    "shape": "rect"
   },
@@ -3914,7 +3914,7 @@
    "centre": [
     -11.94,
     18.723,
-    2.2
+    6.5
    ],
    "normal": [
     -0.309,
@@ -3923,7 +3923,7 @@
    ],
    "size": [
     2.969,
-    2.6
+    2.2
    ],
    "shape": "rect"
   },
@@ -3935,7 +3935,7 @@
    "centre": [
     -15.192,
     17.667,
-    2.2
+    6.5
    ],
    "normal": [
     -0.309,
@@ -3944,7 +3944,7 @@
    ],
    "size": [
     2.969,
-    2.6
+    2.2
    ],
    "shape": "rect"
   },
@@ -3954,18 +3954,18 @@
    "flat": null,
    "kind": "public",
    "centre": [
-    -8.688,
-    19.78,
-    6.5
+    -13.368,
+    12.054,
+    2.2
    ],
    "normal": [
-    -0.309,
-    0.951,
+    0.309,
+    -0.951,
     0.0
    ],
    "size": [
     2.969,
-    2.2
+    2.6
    ],
    "shape": "rect"
   },
@@ -3975,18 +3975,18 @@
    "flat": null,
    "kind": "public",
    "centre": [
-    -11.94,
-    18.723,
-    6.5
+    -10.116,
+    13.11,
+    2.2
    ],
    "normal": [
-    -0.309,
-    0.951,
+    0.309,
+    -0.951,
     0.0
    ],
    "size": [
     2.969,
-    2.2
+    2.6
    ],
    "shape": "rect"
   },
@@ -3996,18 +3996,18 @@
    "flat": null,
    "kind": "public",
    "centre": [
-    -15.192,
-    17.667,
-    6.5
+    -6.864,
+    14.167,
+    2.2
    ],
    "normal": [
-    -0.309,
-    0.951,
+    0.309,
+    -0.951,
     0.0
    ],
    "size": [
     2.969,
-    2.2
+    2.6
    ],
    "shape": "rect"
   },
@@ -4019,7 +4019,7 @@
    "centre": [
     -13.368,
     12.054,
-    2.2
+    6.5
    ],
    "normal": [
     0.309,
@@ -4028,7 +4028,7 @@
    ],
    "size": [
     2.969,
-    2.6
+    2.2
    ],
    "shape": "rect"
   },
@@ -4040,7 +4040,7 @@
    "centre": [
     -10.116,
     13.11,
-    2.2
+    6.5
    ],
    "normal": [
     0.309,
@@ -4049,7 +4049,7 @@
    ],
    "size": [
     2.969,
-    2.6
+    2.2
    ],
    "shape": "rect"
   },
@@ -4061,7 +4061,7 @@
    "centre": [
     -6.864,
     14.167,
-    2.2
+    6.5
    ],
    "normal": [
     0.309,
@@ -4070,76 +4070,13 @@
    ],
    "size": [
     2.969,
-    2.6
+    2.2
    ],
    "shape": "rect"
   },
   {
    "slot": 81,
    "id": "pub/w82",
-   "flat": null,
-   "kind": "public",
-   "centre": [
-    -13.368,
-    12.054,
-    6.5
-   ],
-   "normal": [
-    0.309,
-    -0.951,
-    0.0
-   ],
-   "size": [
-    2.969,
-    2.2
-   ],
-   "shape": "rect"
-  },
-  {
-   "slot": 82,
-   "id": "pub/w83",
-   "flat": null,
-   "kind": "public",
-   "centre": [
-    -10.116,
-    13.11,
-    6.5
-   ],
-   "normal": [
-    0.309,
-    -0.951,
-    0.0
-   ],
-   "size": [
-    2.969,
-    2.2
-   ],
-   "shape": "rect"
-  },
-  {
-   "slot": 83,
-   "id": "pub/w84",
-   "flat": null,
-   "kind": "public",
-   "centre": [
-    -6.864,
-    14.167,
-    6.5
-   ],
-   "normal": [
-    0.309,
-    -0.951,
-    0.0
-   ],
-   "size": [
-    2.969,
-    2.2
-   ],
-   "shape": "rect"
-  },
-  {
-   "slot": 84,
-   "id": "pub/w85",
    "flat": null,
    "kind": "public",
    "centre": [
@@ -4159,7 +4096,7 @@
    "shape": "rect"
   },
   {
-   "slot": 85,
+   "slot": 82,
    "id": "stair/w1",
    "flat": null,
    "kind": "stair",
@@ -4180,7 +4117,7 @@
    "shape": "rect"
   },
   {
-   "slot": 86,
+   "slot": 83,
    "id": "stair/w2",
    "flat": null,
    "kind": "stair",
@@ -4201,7 +4138,7 @@
    "shape": "rect"
   },
   {
-   "slot": 87,
+   "slot": 84,
    "id": "stair/w3",
    "flat": null,
    "kind": "stair",
@@ -4222,7 +4159,7 @@
    "shape": "rect"
   },
   {
-   "slot": 88,
+   "slot": 85,
    "id": "stair/w4",
    "flat": null,
    "kind": "stair",
@@ -4243,7 +4180,7 @@
    "shape": "rect"
   },
   {
-   "slot": 89,
+   "slot": 86,
    "id": "stair/w5",
    "flat": null,
    "kind": "stair",
@@ -4264,7 +4201,7 @@
    "shape": "rect"
   },
   {
-   "slot": 90,
+   "slot": 87,
    "id": "stair/w6",
    "flat": null,
    "kind": "stair",
@@ -4285,7 +4222,7 @@
    "shape": "rect"
   },
   {
-   "slot": 91,
+   "slot": 88,
    "id": "stair/w7",
    "flat": null,
    "kind": "stair",
@@ -4306,7 +4243,7 @@
    "shape": "rect"
   },
   {
-   "slot": 92,
+   "slot": 89,
    "id": "stair/w8",
    "flat": null,
    "kind": "stair",
@@ -4327,7 +4264,7 @@
    "shape": "rect"
   },
   {
-   "slot": 93,
+   "slot": 90,
    "id": "stair/w9",
    "flat": null,
    "kind": "stair",
@@ -4348,7 +4285,7 @@
    "shape": "rect"
   },
   {
-   "slot": 94,
+   "slot": 91,
    "id": "stair/w10",
    "flat": null,
    "kind": "stair",
@@ -4369,7 +4306,7 @@
    "shape": "rect"
   },
   {
-   "slot": 95,
+   "slot": 92,
    "id": "stair/w11",
    "flat": null,
    "kind": "stair",
@@ -4390,7 +4327,7 @@
    "shape": "rect"
   },
   {
-   "slot": 96,
+   "slot": 93,
    "id": "stair/w12",
    "flat": null,
    "kind": "stair",
@@ -4411,7 +4348,7 @@
    "shape": "rect"
   },
   {
-   "slot": 97,
+   "slot": 94,
    "id": "stair/w13",
    "flat": null,
    "kind": "stair",
@@ -4437,8 +4374,8 @@
   "drum with spiral stair, 5 wings at different heights, front wing cantilevered over the entrance"
  ],
  "tris": {
-  "shell": 6704,
-  "detail": 40740,
-  "windows": 392
+  "shell": 6692,
+  "detail": 40698,
+  "windows": 380
  }
 }

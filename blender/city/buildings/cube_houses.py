@@ -774,9 +774,10 @@ def _living(B, fr, th, zb, who):
     p.cushion(fab[1], 0.04, 1.42, -VE + 0.03, -1.96, 0.42, 0.52)
     p.core(-1.4, 1.4, -VE + 0.02, -1.95, 0.0, 0.41)
     p.done(solid=True, top=0.52)
-    h.thing("cu_liv_window_seat", "seat", 0.0, -2.15, F + 0.52, 0.0, height=0.52)
+    # reach audit: the seat thing sits on the right cushion, clear of the low dominoes table in front of the bench middle
+    h.thing("cu_liv_window_seat", "seat", 0.45, -2.15, F + 0.52, 0.0, height=0.52)
     h.thing("cu_liv_view_front", "board", 0.0, -VE + 0.03, F + 1.5, 180.0, topic="view")
-    h.thing("cu_liv_view_back", "board", 0.95, VE - 0.03, F + 1.5, 0.0, topic="view")
+    h.thing("cu_liv_view_back", "board", 0.75, VE - 0.03, F + 1.5, 0.0, topic="view")      # clear of the kitchen unit's end
     # --- the left ledge: a sofa built into the leaning wall, bolsters against the slope
     p = h.piece(F, "sofa_wedge", "floor")
     _wedge(p, -1, -1.8, -0.2, wl, 1.0, 0.42, "CT_Wood", "CT_Wood")

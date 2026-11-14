@@ -611,7 +611,7 @@ def _dress_lobby(B, i, cid, p0, p1, nl, Lb, D):
 # Colette Bauer (74, a pensioner of the town's data, home P-SERPENTINE/1-17) lives in flat 1-17, bay 18 of the first
 # storey. The way up: the middle lobby's stair (left wall, back half) climbs through a hole in the soffit and a small
 # shaft to a door in the core's back wall onto the first gallery; the gallery runs on to her door.
-HOLE = (0.3, 1.5, 9.2, 11.9)       # stairwell hole in the middle core's soffit: u0, u1 (from the bay's p0), v0, v1 (from the front line)
+HOLE = (0.3, 1.5, 8.4, 11.9)       # stairwell hole in the middle core's soffit: u0, u1 (from the bay's p0), v0, v1 (from the front line)
 
 
 def _bil(a, b, c, d, u, v, Lb, D, z):

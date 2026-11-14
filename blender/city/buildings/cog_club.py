@@ -188,6 +188,8 @@ def build(B):
             z1 = ZS[s + 1] - 0.4 if s < 2 else ZROOF - 0.4
             cov = covered.get((k, s))
             dr = doors.get((k, s))
+            if k == 5:                             # the tower passage (x +-1.0) covers this facet: link doors
+                cov = dr = True
             main = (k == 15 and s == 0)
             if main:
                 holes = [(0.165, L - 0.165, 0.03, 2.55), (0.165, L - 0.165, 2.7, 3.9)]

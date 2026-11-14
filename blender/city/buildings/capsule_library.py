@@ -139,7 +139,8 @@ def _core(B, pods_by_level, reserved):
             ya = y0 + GOING * i
             box(B.m, "CT_Concrete", CX - 2.5, CX - 1.3, ya, ya + GOING, z + r * (i + 1) - 0.3, z + r * (i + 1))
         ye = y0 + GOING * nf
-        box(B.m, "CT_Concrete", CX - 2.5, CX + 0.1, ye, CY + 2.6, z + nf * r - 0.3, z + nf * r)
+        # the mid landing is a 0.2 m slab: 1.8 m clear under its edge beside the north-west pod doors (reach audit)
+        box(B.m, "CT_Concrete", CX - 2.5, CX + 0.1, ye, CY + 2.6, z + nf * r - 0.2, z + nf * r)
         for j in range(nf):
             yb = ye - GOING * j
             box(B.m, "CT_Concrete", CX - 1.1, CX + 0.1, yb - GOING, yb, z + (nf + j + 1) * r - 0.3, z + (nf + j + 1) * r)

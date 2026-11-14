@@ -324,6 +324,9 @@ def build(B):
 
     # ---------------------------------------------------------------- retaining wall behind the stair top
     # the back of the stair meets the upper terrace: a little landing paving is the terrace's job
+    # reach audit: a paved walk along the back edge at the upper terrace level joins the stair top to the two side
+    # stairs' feet (y 18) even where the town's terrace ground does not quite meet the plot edge
+    box(m, "CT_Paving", -XE, XE, 18.0, 19.2, F[3] - 0.15, F[3], faces="xXyYZ")
 
     # ---------------------------------------------------------------- stair railings are none (open canyon walls);
     # benches on the landings (concrete + timber), spots for the life simulation
