@@ -2169,7 +2169,10 @@
       }
      ],
      "reward": {
-      "rubles": 30
+      "rubles": 10,
+      "items": {
+       "pie": 1
+      }
      }
     }
    ]
