@@ -270,7 +270,7 @@ static void View(const FModel& M, const char* File, double EX, double EY, double
 				if (M.RiverDepth(X, Y) > 0.0) { CR = 90; CG = 235; CB = 215; Lit = 1.0; }
 				const double Amb = 0.38;
 				R = CR * (Amb * 0.92 + Lit * 0.80); Gc = CG * (Amb * 0.97 + Lit * 0.78); B = CB * (Amb * 1.12 + Lit * 0.72);
-				const double Fog = 1.0 - std::exp(-Hit / 2600.0);
+				const double Fog = 1.0 - std::exp(-Hit / 6000.0);
 				R += (205 - R) * Fog; Gc += (214 - Gc) * Fog; B += (226 - B) * Fog;
 			}
 			uint8_t* P = &Px[(size_t(J) * W + I) * 3];

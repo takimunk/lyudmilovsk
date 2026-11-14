@@ -29,7 +29,9 @@ LY -775, Topi toward -LY): `FModel::ToLocal` / `FromLocal`, map X = LY - 400, ma
   the map's edge, dunes of five sizes under one wind (240 m, 78 m and 19 m near; 1.1 km and 5 km "mega" dunes deep
   inside, which is what the horizon is made of; a 165 m family askew to the big one; 9 m knee-high sand waves),
   marram hummocks (teardrop mounds of caught sand, up to 1.35 m, where the grass is thick, with the grass on them and bare
-  lanes between: never on slip faces or the path), the river's plain and channel, marram density. `Path`,
+  lanes between, in colonies: never on slip faces or the path), star dunes past the river (lone three-armed mountains of
+  sand 70 to 220 m high, one to some 1.3 km cells: the skyline is cut from them and from the mega ranges, which begin
+  right behind the river), the river's plain (old bars, pans, a berm at the water) and channel, marram density. `Path`,
   `RiverPoint`, `RiverDirection`, `RiverFlow`, `RiverDepth`, `Near`. `Pressure(x, y, night)` and `WayOut`: what the place does to
   the hero. Thread-safe, any x and y.
 - `tools/topi.py` writes `Content/Topi/topi_edge.tbl`: the map's own ground (`world_map.height`) in the strip where

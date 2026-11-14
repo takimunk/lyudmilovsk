@@ -102,6 +102,41 @@ namespace LyudTopi
 			return Best;
 		}
 
+		/** Star dunes: lone mountains of sand standing over the ranges of the deep, one to some 1.3 km cells, each its own
+		 *  height (X, Y: Topi's local metres). What the skyline is cut from. Metres. */
+		double StarDunes(double X, double Y, uint32_t Seed)
+		{
+			constexpr double Size = 1300.0;
+			const double GX = X / Size, GY = Y / Size;
+			const int64_t I0 = int64_t(std::floor(GX)), J0 = int64_t(std::floor(GY));
+			double Sum = 0.0;
+			for (int64_t J = J0 - 1; J <= J0 + 1; ++J)
+			{
+				for (int64_t I = I0 - 1; I <= I0 + 1; ++I)
+				{
+					const double Big = Hash01(I, J, Seed + 2);
+					if (Big < 0.35)
+					{
+						continue;
+					}
+					const double CX = (double(I) + 0.1 + 0.8 * Hash01(I, J, Seed)) * Size;
+					const double CY = (double(J) + 0.1 + 0.8 * Hash01(I, J, Seed + 1)) * Size;
+					const double Tall = 70.0 + 150.0 * (Big - 0.35) / 0.65;
+					const double Radius = 380.0 + 2.1 * Tall;
+					// three arms: the star's ridges run out further than its hollows
+					const double DX = X - CX, DY = Y - CY;
+					const double Arms = 1.0 + 0.22 * std::cos(3.0 * std::atan2(DY, DX) + 6.283 * Hash01(I, J, Seed + 3));
+					const double R = std::sqrt(DX * DX + DY * DY) / (Radius * Arms);
+					if (R < 1.0)
+					{
+						const double Q = 1.0 - R;
+						Sum += Tall * Q * Q * (1.6 - 0.6 * Q);
+					}
+				}
+			}
+			return Sum;
+		}
+
 		/** A dune family's mean height (what is left of it where it is too small to draw). */
 		double DuneMean(double Amp) { return Amp * 0.775 * 0.5; }
 
@@ -514,7 +549,7 @@ namespace LyudTopi
 		const double PathD = LocalPathDistance(L.X, L.Y, nullptr);
 		const double Corridor = 1.0 - 0.5 * (1.0 - Smooth((PathD - 6.0) / 16.0));
 		const double Env = K * (0.3 + 0.7 * Smooth(In / 220.0)) * (1.0 - Plain);
-		const double Mega = Smooth((In - 1400.0) / 2500.0);
+		const double Mega = Smooth((In - 1050.0) / 1900.0);      // past the river the land begins to rise in ranges
 
 		double Dunes = 0.0;
 		double BigWind = 1.0, MedWind = 1.0;
@@ -532,8 +567,12 @@ namespace LyudTopi
 			const double C = std::cos(Turn), S = std::sin(Turn);
 			Dunes += Scale * DuneLayer(U * C + V * S + Bend, V * C - U * S, Length, Amp, Lee, Seed, Windward);
 		};
-		Layer(5200.0, 260.0, 0.84, 71, Mega * Smooth((In - 2500.0) / 5000.0), nullptr, 0.21);
+		Layer(5200.0, 260.0, 0.84, 71, Mega * Smooth((In - 1500.0) / 3200.0), nullptr, 0.21);
 		Layer(1150.0, 75.0, 0.82, 61, Mega, nullptr, -0.12);
+		if (Mega > 0.0)
+		{
+			Dunes += Smooth((In - 1250.0) / 900.0) * StarDunes(L.X, L.Y, 73);
+		}
 		// the land is not combed evenly: here the big dunes stand high and close, there they sink into wide bowls
 		const double Knots = 0.45 + 1.0 * Smooth((Noise(L.X / 330.0 + 3.0, L.Y / 410.0, 81) - 0.25) / 0.5);
 		Layer(240.0, 31.0, 0.80, 21, Env * Knots / 1.1, &BigWind, 0.0);
@@ -554,7 +593,8 @@ namespace LyudTopi
 		double Grass = K * std::max(Edgeward, Inner) * (1.0 - Plain) * (0.35 + 0.65 * Noise(L.X / 37.0, L.Y / 37.0, 91));
 		// where the marram stands the sand it catches grows into hummocks, and the grass sits on them: mounds with
 		// bare sand lanes between, the look of a Baltic fore dune
-		const double Tussocky = Smooth((Grass - 0.12) / 0.3) * Corridor * Smooth((PathD - 3.0) / 6.0) * BigWind * MedWind;
+		const double Clump = Smooth((Noise(L.X / 64.0 + 9.0, L.Y / 52.0, 96) - 0.38) / 0.22);     // in colonies, with open sand between
+		const double Tussocky = Smooth((Grass - 0.12) / 0.3) * (0.12 + 0.88 * Clump) * Corridor * Smooth((PathD - 3.0) / 6.0) * BigWind * MedWind;
 		if (Tussocky > 0.0)
 		{
 			if (Cell > 4.5)                       // (drawn down to 4 m cells: the mounds must not pop out 240 m from the eye)
