@@ -280,9 +280,12 @@ class Shop:
         B = self.B
         ys = [(self.y_front(self.xm) + 1.7), (self.y_back(self.xm) - 2.2)]
         xs = [self.xm + (c - (cols - 1) / 2) * self.W / (cols + 0.0) for c in range(cols)]
+        # one real light per shop, in the middle (the game lights the nearest 24 lamps of a building and the whole
+        # colonnade is one storey); every pendant still glows
+        B.lamp((self.xm, (ys[0] + ys[1]) / 2, 2.9), lumens=lumens * 2.4, colour=colour, kind="public", radius=10.0,
+               fixture=False)
         for y in ys:
             for x in xs:
-                B.lamp((x, y, 2.9), lumens=lumens, colour=colour, kind="public", radius=7.0, fixture=False)
                 box(B.detail, "CT_Steel", x - 0.01, x + 0.01, y - 0.01, y + 0.01, 2.98, Z_CEIL)
                 kit.pendant(B, x, y, Z_CEIL, drop=0.3, kind="opal")
 
