@@ -1463,5 +1463,505 @@
   "ru": "Пончик спит в своём домике с бумажным значком «Беглец», цветы политы, а гардеробщица, кажется, слегка улыбается. Школьный уголок природы снова в порядке, а дежурный по цветам отметил меня в журнале: «замену провели, замечаний нет».",
   "en": "Doughnut sleeps in his house with the paper \"Escapee\" badge, the plants are watered and the cloakroom lady seems to be smiling a little. The school nature corner is in order again, and the plant-duty pupil has noted me in the register: \"substitute done, no remarks.\"",
   "ja": "ドーナツは「脱走者」の紙バッジをつけて小屋で眠り、花には水がやられ、クロークの係の人はほんの少し微笑んでいるようだ。学校の自然コーナーはまた整った。花当番は僕を名簿に記してくれた。「代役、問題なし」"
+ },
+ "city.sch.p.hop": {
+  "ru": "E — попрыгать в классики",
+  "en": "E — play hopscotch",
+  "ja": "E：けんけんぱをする"
+ },
+ "city.sch.p.bikes": {
+  "ru": "E — осмотреть велосипеды",
+  "en": "E — look over the bikes",
+  "ja": "E：自転車を見る"
+ },
+ "city.sch.p.weather": {
+  "ru": "E — посмотреть на градусник",
+  "en": "E — check the thermometer",
+  "ja": "E：温度計を見る"
+ },
+ "city.sch.p.feeder": {
+  "ru": "E — посмотреть на кормушку",
+  "en": "E — watch the feeder",
+  "ja": "E：餌台を見る"
+ },
+ "city.sch.p.garden": {
+  "ru": "E — прочитать табличку грядки",
+  "en": "E — read the bed's sign",
+  "ja": "E：花壇の札を読む"
+ },
+ "city.sch.p.journal": {
+  "ru": "E — открыть классный журнал",
+  "en": "E — open the class journal",
+  "ja": "E：クラス日誌を開く"
+ },
+ "city.sch.p.rota": {
+  "ru": "E — посмотреть график дежурств",
+  "en": "E — check the duty rota",
+  "ja": "E：当番表を見る"
+ },
+ "city.sch.p.pigeon": {
+  "ru": "E — заглянуть в ячейки",
+  "en": "E — look in the pigeonholes",
+  "ja": "E：連絡箱をのぞく"
+ },
+ "city.sch.p.lockers": {
+  "ru": "E — осмотреть шкафчики",
+  "en": "E — look over the lockers",
+  "ja": "E：ロッカーを見る"
+ },
+ "city.sch.p.vault": {
+  "ru": "E — разбежаться и прыгнуть через козла",
+  "en": "E — run up and vault the horse",
+  "ja": "E：助走して跳び箱を跳ぶ"
+ },
+ "city.sch.p.records": {
+  "ru": "E — прочитать доску рекордов",
+  "en": "E — read the record board",
+  "ja": "E：記録ボードを読む"
+ },
+ "city.sch.p.drawings": {
+  "ru": "E — посмотреть детские рисунки",
+  "en": "E — look at the pupils' drawings",
+  "ja": "E：児童の絵を見る"
+ },
+ "city.sch.p.dishes": {
+  "ru": "E — посмотреть, что сейчас на раздаче",
+  "en": "E — see what is on the line now",
+  "ja": "E：今の配膳メニューを見る"
+ },
+ "city.sch.y.hop.1": {
+  "ru": "Классики, расчерченные мелом: восемь клеток и «небо». Пятёрка стёрта подошвами, но все знают, где она была.",
+  "en": "Hopscotch in chalk: eight squares and the 'sky'. Square five has been scuffed away by soles, but everybody knows where it was.",
+  "ja": "チョークで描いたけんけんぱ。八つのマスと「空」。五のマスは靴底で消えたけれど、みんなどこだったか知っている。"
+ },
+ "city.sch.y.hop.2": {
+  "ru": "После дождя в шестой клетке стоит лужа. Её тоже придётся прыгать.",
+  "en": "After the rain there is a puddle in square six. It has to be jumped too.",
+  "ja": "雨あがりで六のマスに水たまり。これも跳ばないといけない。"
+ },
+ "city.sch.y.hop.3": {
+  "ru": "Перед звонком вокруг классиков свалены портфели: игра идёт без хозяев.",
+  "en": "Before the bell the bags are dumped around the squares: the game goes on without their owners.",
+  "ja": "始業前、マスのまわりに鞄が山積み。持ち主なしで遊びは続いている。"
+ },
+ "city.sch.y.hop.4": {
+  "ru": "В сумерках мел почти не виден. Классики ждут утра.",
+  "en": "At dusk the chalk is barely visible. The squares wait for morning.",
+  "ja": "夕暮れ、チョークはほとんど見えない。マスは朝を待っている。"
+ },
+ "city.sch.y.hopwin.1": {
+  "ru": "Все восемь клеток без единого касания линии. Где-то в окне второго этажа кто-то хлопнул в ладоши.",
+  "en": "All eight squares without touching a line. Somewhere in a second-floor window someone clapped.",
+  "ja": "八マスすべて、線を踏まずに。二階の窓のどこかで誰かが手を叩いた。"
+ },
+ "city.sch.y.hoplose.1": {
+  "ru": "Наступил на черту. Классики такого не прощают: начинай с первой клетки.",
+  "en": "Stepped on a line. Hopscotch does not forgive that: start again from square one.",
+  "ja": "線を踏んでしまった。けんけんぱは許してくれない。一から出直し。"
+ },
+ "city.sch.y.hopdraw.1": {
+  "ru": "Дошёл до «неба», но в последней клетке пошатнулся. Засчитаем половину.",
+  "en": "Made it to the 'sky' but wobbled on the last square. Half counts.",
+  "ja": "「空」までは行けたが、最後のマスでよろけた。半分だけ認めよう。"
+ },
+ "city.sch.y.bike.1": {
+  "ru": "Велостоянка во дворе. Красный, синий и зелёный велосипеды, замки на тросиках: коды никто не помнит.",
+  "en": "The bike rack in the yard: a red, a blue and a green bicycle, cable locks whose codes nobody remembers.",
+  "ja": "中庭の駐輪ラック。赤、青、緑の自転車。ワイヤー錠の番号は誰も覚えていない。"
+ },
+ "city.sch.y.bike.2": {
+  "ru": "Утро: стойка забита, велосипеды стоят вплотную, руль к рулю, как очередь на уроки.",
+  "en": "Morning: the rack is full, bikes standing handlebar to handlebar like a queue for lessons.",
+  "ja": "朝。ラックは満員で、自転車がハンドルを突き合わせて並ぶ。授業の列みたいだ。"
+ },
+ "city.sch.y.bike.3": {
+  "ru": "После уроков стойка пустеет: остались только те, чьи хозяева на кружках.",
+  "en": "After lessons the rack empties: only bikes whose owners are at their clubs remain.",
+  "ja": "放課後、ラックは空いていく。クラブ活動中の持ち主の自転車だけが残る。"
+ },
+ "city.sch.y.bike.4": {
+  "ru": "Сиденья накрыты пакетами из-под хлеба. Аккуратно.",
+  "en": "The saddles are covered with bread bags. Neat.",
+  "ja": "サドルにパンの袋がかぶせてある。ちゃっかりしている。"
+ },
+ "city.sch.y.bike.5": {
+  "ru": "Выходной: у стойки один велосипед, зато с корзиной и звонком.",
+  "en": "Weekend: one bike at the rack, but with a basket and a bell.",
+  "ja": "休日。ラックには自転車が一台だけ。かごとベルつき。"
+ },
+ "city.sch.y.bike.6": {
+  "ru": "Ночью велосипеды дремлют, повернув рули к стене.",
+  "en": "At night the bikes doze with their handlebars turned to the wall.",
+  "ja": "夜、自転車たちはハンドルを壁に向けてうとうとしている。"
+ },
+ "city.sch.y.wx.1": {
+  "ru": "Школьный градусник на столбе и самодельный жестяной флюгер. По часам над входом сейчас {time}.",
+  "en": "The school thermometer on its post and a homemade tin weathervane. The clock over the entrance says {time}.",
+  "ja": "支柱に付いた学校の温度計と、ブリキの手作り風見。入口の時計は今 {time}。"
+ },
+ "city.sch.y.wx.2": {
+  "ru": "Дождь стучит по жестяной стрелке флюгера. Градусник отсырел, но держится.",
+  "en": "Rain drums on the tin arrow of the vane. The thermometer is damp but holding on.",
+  "ja": "雨がブリキの矢印を叩いている。温度計は湿ったままがんばっている。"
+ },
+ "city.sch.y.wx.3": {
+  "ru": "На флюгере шапка снега, стрелка не крутится. Значит, ветра нет, а снега хватает.",
+  "en": "A cap of snow sits on the vane and the arrow will not turn. So no wind, but plenty of snow.",
+  "ja": "風見に雪の帽子。矢印は回らない。風はないけれど、雪はたっぷり。"
+ },
+ "city.sch.y.wx.4": {
+  "ru": "В тумане градусник ещё виден, а флюгер уже нет. В журнале дежурных: «видимость до скамейки».",
+  "en": "In the fog the thermometer still shows, the vane is gone. The duty log says: 'visibility as far as the bench'.",
+  "ja": "霧の中、温度計はまだ見えるが風見はもう見えない。当番日誌には「視界：ベンチまで」。"
+ },
+ "city.sch.y.wx.5": {
+  "ru": "Столбик спустился почти к нулю. Дежурные вписали в журнал красным: «Холодно. Шапки!»",
+  "en": "The mercury is down near zero. The duty pupils wrote in red: 'Cold. Hats!'",
+  "ja": "水銀は零度近く。当番が赤字で日誌に書いた。「寒い。帽子！」"
+ },
+ "city.sch.y.wx.6": {
+  "ru": "Градусник лезет вверх, а тень флюгера ползёт по плитам. Двор пахнет нагретой пылью.",
+  "en": "The thermometer climbs while the vane's shadow crawls over the paving. The yard smells of warm dust.",
+  "ja": "温度計は上がり、風見の影が敷石の上を這う。中庭は温まったほこりの匂い。"
+ },
+ "city.sch.y.wx.7": {
+  "ru": "Ночью флюгер чуть поскрипывает. Градусник показывает температуру, которую никто не записывает.",
+  "en": "At night the vane creaks a little. The thermometer shows a temperature nobody writes down.",
+  "ja": "夜、風見が小さくきしむ。温度計は、誰も記録しない気温を示している。"
+ },
+ "city.sch.y.feed.1": {
+  "ru": "Кормушка на столбике: скворечник с крышей-козырьком. Семечки насыпаны ровно, как по линейке.",
+  "en": "A feeder on a post, a little house with a peaked roof. The seeds are laid out level, as if with a ruler.",
+  "ja": "支柱の上の餌台。ひさしのついた小さな家。種は定規で測ったようにきれいに入っている。"
+ },
+ "city.sch.y.feed.2": {
+  "ru": "Утром у кормушки синицы: они прилетают за семечками раньше первого звонка.",
+  "en": "In the morning tits visit the feeder, arriving for seeds before the first bell.",
+  "ja": "朝は餌台にシジュウカラ。最初のベルより先に種をつつきに来る。"
+ },
+ "city.sch.y.feed.3": {
+  "ru": "В холода пятый «Б» подсыпает корм каждый день по графику, который висит в кабинете биологии.",
+  "en": "In the cold 5B tops up the feed every day, by a rota hung in the biology room.",
+  "ja": "寒い時期、5年Bは毎日餌を足す。当番表は生物室に貼ってある。"
+ },
+ "city.sch.y.feed.4": {
+  "ru": "В дождь под крышей кормушки сидят сразу два воробья и делают вид, что так и было задумано.",
+  "en": "In the rain two sparrows sit under the feeder's roof, pretending that is exactly the plan.",
+  "ja": "雨の日は餌台の屋根の下にスズメが二羽。これで計画どおり、という顔をしている。"
+ },
+ "city.sch.y.feed.5": {
+  "ru": "К вечеру остаётся один воробей, который подбирает за всеми.",
+  "en": "By evening one sparrow is left, finishing what the others dropped.",
+  "ja": "夕方には、みんなの食べ残しを片づけるスズメが一羽だけ残る。"
+ },
+ "city.sch.y.feed.6": {
+  "ru": "Кормушка пуста и тиха. Скворечник темнеет на фоне окон.",
+  "en": "The feeder is empty and quiet. The little house darkens against the windows.",
+  "ja": "餌台は空っぽで静か。小さな家が窓の明かりの前で黒く見える。"
+ },
+ "city.sch.y.garden.1": {
+  "ru": "«Грядка 5 „Б“. Посажено: редис, укроп, ноготки. Не топтать, не поливать из лужи».",
+  "en": "'5B's bed. Planted: radishes, dill, marigolds. Do not trample, do not water from puddles.'",
+  "ja": "「5年Bの花壇。植えたもの：ラディッシュ、ディル、マリーゴールド。踏まない、水たまりの水をやらない」"
+ },
+ "city.sch.y.garden.2": {
+  "ru": "Приписка карандашом: «Редис взошёл! Показываем всем по очереди, не толкаться».",
+  "en": "A pencilled addition: 'The radishes are up! Showing them to everyone in turn, no pushing.'",
+  "ja": "鉛筆の書き足し。「ラディッシュが芽を出した！ 順番に見せます、押さないで」"
+ },
+ "city.sch.y.garden.3": {
+  "ru": "Новая строчка другим почерком: «Укроп — не сорняк. Кто выдернул, признайтесь».",
+  "en": "A new line in other handwriting: 'Dill is not a weed. Whoever pulled it, own up.'",
+  "ja": "別の筆跡の書き足し。「ディルは雑草ではありません。抜いた人は名乗り出て」"
+ },
+ "city.sch.y.garden.4": {
+  "ru": "Редиску пора рвать. Внизу: «Дежурным: мыть под краном у входа, а не в луже».",
+  "en": "Time to pick the radishes. Below: 'Duty pupils: wash them at the tap by the entrance, not in a puddle.'",
+  "ja": "ラディッシュの収穫時。下に「当番へ：入口の水道で洗うこと。水たまりで洗わない」"
+ },
+ "city.sch.y.garden.5": {
+  "ru": "Грядка пуста, на табличке свежее: «Урожай сдан на кухню. Спасибо, 5 „Б“. В следующем году — морковь».",
+  "en": "The bed is bare; fresh on the sign: 'Harvest handed to the kitchen. Thank you, 5B. Carrots next year.'",
+  "ja": "花壇は空っぽ。札には新しく「収穫は給食室へ。5年Bありがとう。来年はニンジン」"
+ },
+ "city.sch.y.rota.1": {
+  "ru": "Понедельник: двор — 5 «А», холл — 6 «Б», столовая — 7 «В». Ответственный учитель подчёркнут дважды.",
+  "en": "Monday: yard 5A, hall 6B, canteen 7C. The teacher in charge is underlined twice.",
+  "ja": "月曜：中庭は5年A、ホールは6年B、食堂は7年C。担当の先生には二重線。"
+ },
+ "city.sch.y.rota.2": {
+  "ru": "Вторник: двор — 5 «Б», холл — 6 «А», спортзал — 8 «Б». Мячи считать до и после.",
+  "en": "Tuesday: yard 5B, hall 6A, gym 8B. Count the balls before and after.",
+  "ja": "火曜：中庭は5年B、ホールは6年A、体育館は8年B。ボールは前と後に数えること。"
+ },
+ "city.sch.y.rota.3": {
+  "ru": "Среда: двор — 6 «А», холл — 7 «Б», живой уголок — 5 «Б». Хомяку сменить воду.",
+  "en": "Wednesday: yard 6A, hall 7B, nature corner 5B. Change the hamster's water.",
+  "ja": "水曜：中庭は6年A、ホールは7年B、生き物コーナーは5年B。ハムスターの水を替えること。"
+ },
+ "city.sch.y.rota.4": {
+  "ru": "Четверг: двор — 6 «Б», холл — 5 «А», столовая — 8 «А». Столы вытирать насухо.",
+  "en": "Thursday: yard 6B, hall 5A, canteen 8A. Wipe the tables dry.",
+  "ja": "木曜：中庭は6年B、ホールは5年A、食堂は8年A。テーブルは乾拭きすること。"
+ },
+ "city.sch.y.rota.5": {
+  "ru": "Пятница: все дежурные выходят вместе, большая уборка. Кто опоздал, тот моет доску.",
+  "en": "Friday: all duty pupils turn out together for the big clean. Whoever is late washes the board.",
+  "ja": "金曜：当番は全員そろって大掃除。遅刻した人は黒板を洗う。"
+ },
+ "city.sch.y.rota.6": {
+  "ru": "В выходные дежурных нет. Ключ от холла у сторожа.",
+  "en": "No duty pupils at weekends. The key to the hall is with the watchman.",
+  "ja": "週末は当番なし。ホールの鍵は守衛さんが持っている。"
+ },
+ "city.sch.y.pg.1": {
+  "ru": "Ячейки с фамилиями учителей. В одной торчит записка: «Физкультура: шкафчик № 7 снова без замка. Ключ у завхоза? Ключ у вас?»",
+  "en": "Pigeonholes with the teachers' names. A note sticks out of one: 'PE: locker no. 7 has no lock again. Does the caretaker have the key? Do you?'",
+  "ja": "先生たちの名前が付いた連絡箱。一つからメモがはみ出している。「体育：7番ロッカーにまた鍵がない。鍵は用務員さん？ それともそちら？」"
+ },
+ "city.sch.y.pg.2": {
+  "ru": "Поверх прикололи ответ: «У завхоза ключ не числится. Шкафчик № 7 сдан по описи ещё прошлым выпуском. Не вскрывать».",
+  "en": "An answer is pinned over it: 'The caretaker has no key on record. Locker no. 7 was handed over by last year's leavers. Do not force it.'",
+  "ja": "上から返事が留めてある。「用務員の台帳に鍵はない。7番ロッカーは前の卒業生から引き継いだもの。こじ開けないこと」"
+ },
+ "city.sch.y.pg.3": {
+  "ru": "В ячейке завуча конверт: «Шкафчик № 7 приоткрылся сам. Внутри записка. Прочитать и вернуть тому, кто найдётся». Подпись: завхоз.",
+  "en": "In the deputy head's pigeonhole an envelope: 'Locker no. 7 came ajar by itself. There is a note inside. Read it and give it back to whoever turns up.' Signed: the caretaker.",
+  "ja": "教頭の連絡箱に封筒。「7番ロッカーがひとりでに開いた。中にメモあり。読んで、持ち主が現れたら返すこと」署名：用務員。"
+ },
+ "city.sch.y.pg.4": {
+  "ru": "Ячейки почти пусты, кроме одной: «Записку из шкафчика № 7 читает тот, кто пришёл первым. Решение педсовета, единогласно».",
+  "en": "The pigeonholes are almost empty but for one: 'The note in locker no. 7 is read by whoever comes first. Staff meeting decision, unanimous.'",
+  "ja": "連絡箱はほとんど空っぽ。一つだけ。「7番ロッカーのメモは、最初に来た人が読むこと。職員会議の決定、全会一致」"
+ },
+ "city.sch.y.lock.1": {
+  "ru": "Четыре зелёных шкафчика у стены, на дверцах мелом цифры 5, 6, 7, 8. У седьмого нет замка, дверца прихвачена резинкой.",
+  "en": "Four green lockers by the wall, chalk numbers 5, 6, 7, 8 on the doors. The seventh has no lock, its door held by a rubber band.",
+  "ja": "壁ぎわに緑のロッカーが四つ。扉にチョークで5、6、7、8。7番は鍵がなく、輪ゴムで留めてある。"
+ },
+ "city.sch.y.lock.2": {
+  "ru": "На седьмом шкафчике приклеена полоска бумаги: «Не открывать. Внутри кеды 1987 года».",
+  "en": "A strip of paper is stuck to the seventh locker: 'Do not open. Sneakers from 1987 inside.'",
+  "ja": "7番ロッカーに紙の切れ端が貼ってある。「開けないこと。中に1987年のスニーカー」"
+ },
+ "city.sch.y.lock.3": {
+  "ru": "Резинка на седьмом лопнула, дверца приоткрыта на щёлку. Из щели торчит уголок записки.",
+  "en": "The rubber band on the seventh has snapped, the door is open a crack. A corner of a note sticks out.",
+  "ja": "7番の輪ゴムが切れて、扉が少し開いている。隙間からメモの角がのぞく。"
+ },
+ "city.sch.y.lock.4": {
+  "ru": "Записка выглядывает дальше. Читается: «…кто найдёт, положите на скамейку у входа в зал, а я, может, вернусь…»",
+  "en": "The note shows a little more. It reads: '...whoever finds this, put it on the bench by the gym door, and maybe I will be back...'",
+  "ja": "メモがさらにはみ出している。読める。「…見つけた人は、体育館の入口のベンチに置いてください。いつか戻るかもしれないので…」"
+ },
+ "city.sch.y.lock.5": {
+  "ru": "Седьмой шкафчик открыт. Внутри старые кеды без шнурков, мячик-попрыгунчик и записка: «Я забыл сменку. Если ты это читаешь, школа всё ещё держится. Прыгни за меня через козла».",
+  "en": "The seventh locker is open. Inside are old sneakers without laces, a bouncy ball and a note: 'I forgot my gym shoes. If you are reading this, the school still stands. Vault the horse for me.'",
+  "ja": "7番ロッカーが開いている。中には紐のない古いスニーカー、スーパーボール、そしてメモ。「体育館履きを忘れた。これを読んでいるなら、学校はまだ健在だ。僕のかわりに跳び箱を跳んでくれ」"
+ },
+ "city.sch.y.vault.1": {
+  "ru": "Козёл с кожаным верхом и трамплин: девять шагов разбега, и ни шагом меньше. Мел на полу показывает, где отталкиваться.",
+  "en": "A leather vaulting horse and a springboard: nine strides of run-up and not one fewer. Chalk on the floor shows where to take off.",
+  "ja": "革張りの跳び箱とロイター板。助走は九歩、一歩も欠かせない。床のチョークが踏み切りの場所を示している。"
+ },
+ "city.sch.y.vault.2": {
+  "ru": "На уроке очередь к козлу тянется до скамеек: каждый делает вид, что не боится.",
+  "en": "In a lesson the queue for the horse stretches to the benches: everyone pretends not to be afraid.",
+  "ja": "授業中、跳び箱の順番待ちはベンチまで続く。みんな怖くないふりをしている。"
+ },
+ "city.sch.y.vault.3": {
+  "ru": "В выходные козёл стоит один; кожа блестит от сотен ладоней.",
+  "en": "At weekends the horse stands alone; its leather shines from hundreds of palms.",
+  "ja": "週末、跳び箱は一つだけで立っている。革は何百もの手のひらで光っている。"
+ },
+ "city.sch.y.vwin.1": {
+  "ru": "Разбег, толчок, ладони на коже: и мягкое приземление на обе ноги. Кто-то невидимый за матами кивнул.",
+  "en": "Run-up, push-off, palms on the leather, and a soft landing on both feet. Someone unseen behind the mats nodded.",
+  "ja": "助走、踏み切り、革に手をついて、両足でふわりと着地。マットの陰で誰かがうなずいた。"
+ },
+ "city.sch.y.vlose.1": {
+  "ru": "Разбег не рассчитал и встал перед козлом, как перед закрытой дверью. Девять шагов — не десять.",
+  "en": "Misjudged the run-up and stopped in front of the horse like before a shut door. Nine strides, not ten.",
+  "ja": "助走を読み違えて、閉まった扉の前みたいに跳び箱の前で止まった。九歩であって、十歩ではない。"
+ },
+ "city.sch.y.vdraw.1": {
+  "ru": "Перепрыгнул, но приземлился на маты сидя. Засчитано как «смело».",
+  "en": "Cleared it, but landed on the mats sitting. Marked down as 'brave'.",
+  "ja": "跳び越えたが、マットに座った格好で着地。「勇敢」として認められた。"
+ },
+ "city.sch.y.rec.1": {
+  "ru": "Доска рекордов: прыжок в длину — 2 м 41 см, 1979 год. Строчка обведена дважды и дважды исправлена.",
+  "en": "The record board: long jump, 2 m 41 cm, 1979. The line is ringed twice and corrected twice.",
+  "ja": "記録ボード。走り幅跳び、2メートル41センチ、1979年。その行は二重に丸で囲まれ、二度訂正されている。"
+ },
+ "city.sch.y.rec.2": {
+  "ru": "В понедельник мелом нарисован «план недели»: бег — вторник, мяч — четверг, зачёт — пятница.",
+  "en": "On Mondays a 'plan of the week' is chalked up: running Tuesday, ball Thursday, test Friday.",
+  "ja": "月曜はチョークで「今週の予定」。火曜は走る、木曜はボール、金曜はテスト。"
+ },
+ "city.sch.y.rec.3": {
+  "ru": "Пятница: зачёт по прыжкам через козла. Записываться у физрука, а не у доски.",
+  "en": "Friday: the vaulting test. Sign up with the PE teacher, not at the board.",
+  "ja": "金曜：跳び箱のテスト。申し込みは体育の先生に。ボードにではなく。"
+ },
+ "city.sch.y.rec.4": {
+  "ru": "В выходные доску никто не переписывает: рекорды отдыхают.",
+  "en": "At weekends nobody rewrites the board: the records rest.",
+  "ja": "週末はボードを誰も書き換えない。記録も休んでいる。"
+ },
+ "city.sch.y.rec.5": {
+  "ru": "Внизу карандашом чьё-то «новенький неплохо бросает». Кажется, это про тебя.",
+  "en": "At the bottom in pencil: 'the new one throws not badly'. That seems to be about you.",
+  "ja": "一番下に鉛筆で「新入りはなかなか投げる」。どうやら僕のことらしい。"
+ },
+ "city.sch.y.draw.1": {
+  "ru": "«Мой любимый обед», рисунки второго класса. На каждом тарелка, а в центре круг с ногами. Автор уверяет, что это котлета.",
+  "en": "'My favourite lunch', second-grade drawings. Each has a plate and, in the middle, a circle with legs. The artist insists it is a cutlet.",
+  "ja": "「わたしの好きな給食」、二年生の絵。どれにも皿があり、真ん中に足の生えた丸。作者はコロッケだと言い張っている。"
+ },
+ "city.sch.y.draw.2": {
+  "ru": "Рисунки сменились: теперь «Мой двор». Везде классики и огромное солнце, и на всех один и тот же скворечник.",
+  "en": "The drawings have changed: now 'My yard'. Hopscotch everywhere and a huge sun, and the same little feeder house in all of them.",
+  "ja": "絵が替わった。今度は「わたしの中庭」。どれもけんけんぱと巨大な太陽、そして同じ餌台の小さな家。"
+ },
+ "city.sch.y.draw.3": {
+  "ru": "Новая тема: «Моя школа». Здание красное, окон шесть тысяч, часы над входом больше самой школы. Подпись учителя: «Масштаб на совести автора».",
+  "en": "New theme: 'My school'. The building is red, six thousand windows, the clock over the entrance bigger than the school. The teacher's note: 'Scale is the artist's responsibility.'",
+  "ja": "新しいテーマは「わたしの学校」。建物は赤く、窓は六千、入口の時計は学校より大きい。先生のひとこと。「縮尺は作者の責任です」"
+ },
+ "city.sch.y.draw.4": {
+  "ru": "Тема «Что бы ты изменил». Почти все пишут: «Больше перемен». Один добавил: «И чтобы редис рос быстрее».",
+  "en": "Theme 'What would you change'. Almost everyone writes: 'More breaks'. One added: 'And radishes that grow faster.'",
+  "ja": "テーマは「何を変えたい？」。ほとんどの子が「休み時間を増やす」。一人は書き足した。「あと、ラディッシュをもっと早く育てる」"
+ },
+ "city.sch.y.dish.1": {
+  "ru": "Утренняя раздача: каша на молоке, бутерброд с сыром, чай. Кашу разливает половник, который помнит всех по именам.",
+  "en": "The morning line: milk porridge, a cheese sandwich, tea. The porridge goes out by a ladle that knows everyone by name.",
+  "ja": "朝の配膳。ミルク粥、チーズのサンドイッチ、お茶。粥をよそうおたまは、みんなの名前を覚えている。"
+ },
+ "city.sch.y.dish.2": {
+  "ru": "Перед обедом на раздаче только компот и булочки с повидлом. Суп ещё доходит.",
+  "en": "Before lunch only compote and jam buns are out. The soup is still coming along.",
+  "ja": "昼前の配膳台にはコンポートとジャムパンだけ。スープはまだ煮えている。"
+ },
+ "city.sch.y.dish.3": {
+  "ru": "Обед в разгаре: суп, второе, компот. Очередь стоит спокойно: всем хватит.",
+  "en": "Lunch in full swing: soup, a main course, compote. The queue stands calm: there is enough for everyone.",
+  "ja": "昼食の真っ最中。スープ、主菜、コンポート。列は落ち着いている。みんなの分がある。"
+ },
+ "city.sch.y.dish.4": {
+  "ru": "После обеда остаются компот и пара булочек. Повариха уже протирает противни.",
+  "en": "After lunch there is compote and a couple of buns. The cook is already wiping the trays.",
+  "ja": "昼食のあとはコンポートとパンが少し。調理員さんはもう天板を拭いている。"
+ },
+ "city.sch.y.dish.5": {
+  "ru": "Раздача закрыта, термосы стоят вверх дном. Кухня пахнет вчерашним борщом (в хорошем смысле).",
+  "en": "The line is closed, the flasks stand upside down. The kitchen smells of yesterday's borscht (in a good way).",
+  "ja": "配膳は終わり、魔法瓶は逆さまに置かれている。厨房は昨日のボルシチの匂い（いい意味で）。"
+ },
+ "city.sch.y.dish.6": {
+  "ru": "В выходные кухня не работает, и на раздаче только записка: «Бутерброды в холодильнике, не считать».",
+  "en": "At weekends the kitchen is off and the line holds only a note: 'Sandwiches in the fridge, do not count them.'",
+  "ja": "週末は厨房が休みで、配膳台にはメモだけ。「サンドイッチは冷蔵庫に。数えないこと」"
+ },
+ "city.sch.y.j.1": {
+  "ru": "Классный журнал 5 «Б». Классный руководитель — учительница географии. Записи пишем чернилами, не стираем, на полях не рисуем (рисунки — на последней странице).",
+  "en": "Class journal, 5B. Class teacher: the geography teacher. Entries in ink, no erasing, no drawing in the margins (drawings go on the last page).",
+  "ja": "5年Bのクラス日誌。担任は地理の先生。記入はインク、消さない、余白に絵を描かない（絵は最後のページに）。"
+ },
+ "city.sch.y.j.2": {
+  "ru": "Понедельник. Отсутствуют: двое, оба с насморком. Урок географии: широта и долгота. Замечание: глобус вращали во время контрольной.",
+  "en": "Monday. Absent: two, both with colds. Geography: latitude and longitude. Remark: the globe was spun during the test.",
+  "ja": "月曜。欠席：二人、どちらも風邪。地理：緯度と経度。注意：テスト中に地球儀を回した人がいる。"
+ },
+ "city.sch.y.j.3": {
+  "ru": "Четверг. Живой уголок: хомяк за ночь исчез из клетки и нашёлся утром в пенале у задней парты. Решено: клетку закрывать на скрепку.",
+  "en": "Thursday. Nature corner: the hamster vanished from its cage overnight and was found in the morning in a pencil case at the back desk. Decided: the cage is closed with a paperclip.",
+  "ja": "木曜。生き物コーナー：ハムスターが夜のうちにケージから消え、朝、後ろの席の筆箱で見つかった。ケージはクリップで留めることに決定。"
+ },
+ "city.sch.y.j.4": {
+  "ru": "Среда. Грядка у входа: редис взошёл. Дежурным по двору — следить, чтобы никто не поливал его из лужи. Родительский день отложен: у половины родителей смена в порту.",
+  "en": "Wednesday. The bed by the entrance: the radishes are up. Yard duty: see that nobody waters them from a puddle. Parents' day postponed: half the parents are on shift at the port.",
+  "ja": "水曜。入口の花壇：ラディッシュが芽を出した。中庭当番は、水たまりの水をやる人がいないよう見張ること。保護者会は延期。半数の親が港の勤務。"
+ },
+ "city.sch.y.j.5": {
+  "ru": "Пятница. Шкафчик № 7 в спортзале стоит без замка с понедельника. Внутри записка без подписи. Завхоз просил не трогать, но прочитать и положить обратно.",
+  "en": "Friday. Locker no. 7 in the gym has stood without a lock since Monday. A note inside, unsigned. The caretaker asked us not to touch it, but to read it and put it back.",
+  "ja": "金曜。体育館の7番ロッカーは月曜から鍵がないまま。中に署名のないメモ。用務員さんは、触らず、読んで元に戻すようにとのこと。"
+ },
+ "city.sch.y.j.6": {
+  "ru": "Итог четверти: дежурства отработаны, редис сдан на кухню, записка из шкафчика № 7 прочитана вслух. Хомяк получил «хорошо» за поведение. Подпись: класс.",
+  "en": "End of term: duties done, radishes handed to the kitchen, the note from locker no. 7 read aloud. The hamster got a 'good' for conduct. Signed: the class.",
+  "ja": "学期のまとめ：当番は完了、ラディッシュは給食室へ、7番ロッカーのメモは声に出して読んだ。ハムスターは「よくできました」。署名：クラス一同。"
+ },
+ "city.sch.y.j.title": {
+  "ru": "Классный журнал 5 «Б»",
+  "en": "Class journal, 5B",
+  "ja": "5年Bのクラス日誌"
+ },
+ "city.sch.y.hop.title": {
+  "ru": "Классики",
+  "en": "Hopscotch",
+  "ja": "けんけんぱ"
+ },
+ "city.sch.y.vault.title": {
+  "ru": "Прыжок через козла",
+  "en": "Vaulting the horse",
+  "ja": "跳び箱"
+ },
+ "quest.school_rounds.title": {
+  "ru": "Дежурный обход",
+  "en": "The Duty Round",
+  "ja": "当番の見回り"
+ },
+ "quest.school_rounds.desc": {
+  "ru": "Дежурные Школы № 1 просят новенького помочь с обходом: журнал в учительской, градусник во дворе, рисунки в столовой и, раз уж все ждут, прыжок через козла.",
+  "en": "The duty pupils of School No. 1 ask the new kid to help with their round: the journal in the staff room, the thermometer in the yard, the drawings in the canteen and, since everyone is waiting, a vault over the horse.",
+  "ja": "第一学校の当番の子たちが、見回りの手伝いを新入りの僕に頼んできた。職員室の日誌、中庭の温度計、食堂の絵、そして、みんなが待っているので跳び箱も。"
+ },
+ "quest.school_rounds.journal.log": {
+  "ru": "Начну с учительской: там лежит классный журнал 5 «Б».",
+  "en": "I'll start in the staff room, where the 5B class journal lies.",
+  "ja": "まず職員室から。5年Bのクラス日誌が置いてある。"
+ },
+ "quest.school_rounds.journal.obj": {
+  "ru": "Открыть классный журнал в учительской",
+  "en": "Open the class journal in the staff room",
+  "ja": "職員室でクラス日誌を開く"
+ },
+ "quest.school_rounds.yard.log": {
+  "ru": "Теперь во двор: дежурным надо знать, что показывает школьный градусник.",
+  "en": "Now the yard: the duty pupils want to know what the school thermometer says.",
+  "ja": "次は中庭。当番の子たちは学校の温度計の値を知りたがっている。"
+ },
+ "quest.school_rounds.weather.obj": {
+  "ru": "Посмотреть на градусник во дворе",
+  "en": "Check the thermometer in the yard",
+  "ja": "中庭の温度計を見る"
+ },
+ "quest.school_rounds.canteen.log": {
+  "ru": "В столовой просили проверить, висят ли рисунки второго класса.",
+  "en": "In the canteen they asked me to check that the second-graders' drawings are up.",
+  "ja": "食堂で、二年生の絵がちゃんと貼ってあるか見てほしいと頼まれた。"
+ },
+ "quest.school_rounds.drawings.obj": {
+  "ru": "Посмотреть детские рисунки в столовой",
+  "en": "Look at the pupils' drawings in the canteen",
+  "ja": "食堂で児童の絵を見る"
+ },
+ "quest.school_rounds.gym.log": {
+  "ru": "Остался спортзал. Если седьмой шкафчик чего-то и просит, так это прыжка. Попробую козла.",
+  "en": "The gym is left. If locker no. 7 asks for anything, it is a jump. I'll try the horse.",
+  "ja": "残るは体育館。7番ロッカーが何か頼んでいるとすれば、それは跳躍だ。跳び箱に挑戦しよう。"
+ },
+ "quest.school_rounds.vault.obj": {
+  "ru": "Перепрыгнуть козла в спортзале",
+  "en": "Vault the horse in the gym",
+  "ja": "体育館の跳び箱を跳ぶ"
+ },
+ "quest.school_rounds.done": {
+  "ru": "Обход закончен: журнал, градусник, рисунки и козёл. Дежурные говорят, что новенького запишут в график на пятницу. Под «большую уборку».",
+  "en": "The round is done: journal, thermometer, drawings and the horse. The duty pupils say the new kid will be put on Friday's rota, for the big clean.",
+  "ja": "見回りは終わった。日誌、温度計、絵、そして跳び箱。当番の子たちは、新入りを金曜の当番表に入れるそうだ。大掃除の担当で。"
  }
 }

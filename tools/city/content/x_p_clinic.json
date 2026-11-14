@@ -1315,6 +1315,225 @@
    ],
    "minutes": 2,
    "rotate": "daily"
+  },
+  "clinic_lost_look": {
+   "like": "read_misc",
+   "target": "clinic_lost_look",
+   "prompt": "city.xcl3.p.lost",
+   "minutes": 3,
+   "read": {
+    "texts": [
+     "clinic_lost_notes"
+    ],
+    "rotate": "use"
+   }
+  },
+  "clinic_rota_read": {
+   "like": "read_misc",
+   "target": "clinic_rota_read",
+   "prompt": "city.xcl3.p.rota",
+   "minutes": 2,
+   "read": {
+    "texts": [
+     "clinic_rota"
+    ],
+    "rotate": "use"
+   }
+  },
+  "clinic_paper_read": {
+   "like": "read_misc",
+   "target": "clinic_paper_read",
+   "prompt": "city.xcl3.p.paper",
+   "minutes": 3,
+   "read": {
+    "texts": [
+     "clinic_paper"
+    ],
+    "rotate": "use"
+   }
+  },
+  "clinic_hall_scales": {
+   "prompt": "city.xcl3.p.scales",
+   "minutes": 2,
+   "sound": "scale_clunk",
+   "any_hour": true,
+   "lines": [
+    {
+     "k": "city.xcl3.sc.1",
+     "h": [
+      7,
+      12
+     ]
+    },
+    {
+     "k": "city.xcl3.sc.2",
+     "h": [
+      12,
+      18
+     ]
+    },
+    {
+     "k": "city.xcl3.sc.3",
+     "h": [
+      18,
+      7
+     ]
+    },
+    {
+     "k": "city.xcl3.sc.4",
+     "weather": "rain"
+    }
+   ]
+  },
+  "clinic_bagtoss": {
+   "prompt": "city.xcl3.p.toss",
+   "minutes": 5,
+   "sound": "ball_bounce",
+   "pose": "stand",
+   "lines": [
+    {
+     "k": "city.xcl3.toss.1",
+     "h": [
+      6,
+      21
+     ]
+    },
+    {
+     "k": "city.xcl3.toss.2",
+     "h": [
+      6,
+      21
+     ]
+    },
+    {
+     "k": "city.xcl3.toss.3",
+     "h": [
+      21,
+      6
+     ]
+    }
+   ],
+   "game": {
+    "type": "aim",
+    "title": "city.xcl3.toss.t",
+    "keys": "city.xcl3.toss.keys",
+    "rounds": 3,
+    "need": 6,
+    "speed": 0.7,
+    "zone": 0.14,
+    "daily": 3,
+    "collect": "clinic_card/children",
+    "prize": [
+     [
+      "candy",
+      1
+     ]
+    ],
+    "win": [
+     {
+      "k": "city.xcl3.toss.win"
+     }
+    ],
+    "lose": [
+     {
+      "k": "city.xcl3.toss.lose"
+     }
+    ],
+    "draw": [
+     {
+      "k": "city.xcl3.toss.draw"
+     }
+    ]
+   }
+  },
+  "clinic_drawings": {
+   "prompt": "city.act.look.prompt",
+   "minutes": 2,
+   "rotate": "daily",
+   "lines": [
+    {
+     "k": "city.xcl3.dr.1"
+    },
+    {
+     "k": "city.xcl3.dr.2"
+    },
+    {
+     "k": "city.xcl3.dr.3",
+     "d": "sat"
+    }
+   ]
+  },
+  "clinic_bell": {
+   "prompt": "city.xcl3.p.bell",
+   "minutes": 1,
+   "sound": "rest_bell",
+   "any_hour": true,
+   "lines": [
+    {
+     "k": "city.xcl3.bell.1",
+     "h": [
+      9,
+      19
+     ]
+    },
+    {
+     "k": "city.xcl3.bell.2",
+     "h": [
+      9,
+      19
+     ]
+    },
+    {
+     "k": "city.xcl3.bell.3",
+     "h": [
+      9,
+      19
+     ]
+    },
+    {
+     "k": "city.xcl3.bell.n",
+     "h": [
+      19,
+      9
+     ]
+    }
+   ]
+  },
+  "clinic_sterilizer": {
+   "prompt": "city.xcl3.p.steril",
+   "minutes": 1,
+   "sound": "water_bubble",
+   "any_hour": true,
+   "lines": [
+    {
+     "k": "city.xcl3.st.1",
+     "h": [
+      10,
+      15
+     ]
+    },
+    {
+     "k": "city.xcl3.st.2",
+     "h": [
+      7,
+      10
+     ]
+    },
+    {
+     "k": "city.xcl3.st.3",
+     "h": [
+      15,
+      20
+     ]
+    },
+    {
+     "k": "city.xcl3.st.n",
+     "h": [
+      20,
+      7
+     ]
+    }
+   ]
   }
  },
  "rules": {
@@ -1471,6 +1690,30 @@
   },
   "P-CLINIC/vaccine_schedule": {
    "act": "clinic_vaccine_schedule"
+  },
+  "P-CLINIC/lost_found": {
+   "act": "clinic_lost_look"
+  },
+  "P-CLINIC/corridor_rota": {
+   "act": "clinic_rota_read"
+  },
+  "P-CLINIC/corridor_paper": {
+   "act": "clinic_paper_read"
+  },
+  "P-CLINIC/hall_scales": {
+   "act": "clinic_hall_scales"
+  },
+  "P-CLINIC/hall_bagtoss": {
+   "act": "clinic_bagtoss"
+  },
+  "P-CLINIC/kids_drawings": {
+   "act": "clinic_drawings"
+  },
+  "P-CLINIC/pharmacy_bell": {
+   "act": "clinic_bell"
+  },
+  "P-CLINIC/sterilizer_*": {
+   "act": "clinic_sterilizer"
   }
  },
  "quests": [
@@ -1522,7 +1765,7 @@
       }
      ],
      "reward": {
-      "rubles": 25
+      "rubles": 5
      }
     }
    ]
@@ -1668,6 +1911,57 @@
      }
     }
    ]
+  },
+  {
+   "id": "clinic_mitten",
+   "kind": "side",
+   "start_on": {
+    "event": "visit",
+    "target": "P-CLINIC"
+   },
+   "stages": [
+    {
+     "id": "shelf",
+     "objectives": [
+      {
+       "id": "look",
+       "event": "do",
+       "target": "clinic_lost_look"
+      }
+     ]
+    },
+    {
+     "id": "draw",
+     "objectives": [
+      {
+       "id": "drawing",
+       "event": "do",
+       "target": "clinic_drawings"
+      },
+      {
+       "id": "scales",
+       "event": "do",
+       "target": "clinic_hall_scales"
+      }
+     ]
+    },
+    {
+     "id": "toss",
+     "objectives": [
+      {
+       "id": "toss",
+       "event": "win",
+       "target": "clinic_bagtoss"
+      }
+     ],
+     "reward": {
+      "rubles": 20,
+      "items": {
+       "candy": 2
+      }
+     }
+    }
+   ]
   }
  ],
  "collections": {
@@ -1687,6 +1981,92 @@
    "*": "clinic_closed_any",
    "seat": "clinic_closed_seat",
    "counter": "clinic_closed_counter"
+  }
+ },
+ "texts": {
+  "clinic_lost_notes": {
+   "title": "city.xcl3.lost.t",
+   "kind": "notice",
+   "minutes": 1,
+   "pages": [
+    "city.xcl3.lost.0",
+    {
+     "k": "city.xcl3.lost.1",
+     "before": 4
+    },
+    {
+     "k": "city.xcl3.lost.2",
+     "after": 4,
+     "before": 8
+    },
+    {
+     "k": "city.xcl3.lost.3",
+     "after": 8
+    }
+   ]
+  },
+  "clinic_rota": {
+   "title": "city.xcl3.rota.t",
+   "kind": "ledger",
+   "minutes": 1,
+   "pages": [
+    "city.xcl3.rota.0",
+    [
+     {
+      "k": "city.xcl3.rota.1a",
+      "d": "mon-wed"
+     },
+     {
+      "k": "city.xcl3.rota.1b",
+      "d": "thu-sat"
+     },
+     {
+      "k": "city.xcl3.rota.1c",
+      "d": "sun"
+     }
+    ],
+    "city.xcl3.rota.2"
+   ]
+  },
+  "clinic_paper": {
+   "title": "city.xcl3.paper.t",
+   "kind": "newspaper",
+   "minutes": 1,
+   "pages": [
+    "city.xcl3.paper.1",
+    [
+     {
+      "k": "city.xcl3.paper.2a",
+      "d": "mon,tue"
+     },
+     {
+      "k": "city.xcl3.paper.2b",
+      "d": "wed,thu"
+     },
+     {
+      "k": "city.xcl3.paper.2c",
+      "d": "fri"
+     },
+     {
+      "k": "city.xcl3.paper.2d",
+      "d": "sat,sun"
+     }
+    ],
+    [
+     {
+      "k": "city.xcl3.paper.3a",
+      "weather": "rain"
+     },
+     {
+      "k": "city.xcl3.paper.3b",
+      "weather": "cold"
+     },
+     {
+      "k": "city.xcl3.paper.3c",
+      "after": 8
+     }
+    ]
+   ]
   }
  }
 }

@@ -477,6 +477,7 @@ def _furnish_hall(B, hall, t):
     box(d, "CT_PlasterGrey", -1.0, 1.0, 8.5, 9.5, 0.0, 0.014, faces="Z")
     _depth(B, q, desk, th_r, dc)
     _depth2(B, q, desk, th_r, dc)
+    _depth3(B, q)
     msg = kit.check(B)
     for m_ in msg:
         print("KIT:", m_)
@@ -821,6 +822,82 @@ def _depth2(B, q, desk, th_r, dc):
     B.thing("treat_card", "board", (cx_, cy_, 0.96), _yout(tc), topic="card")
     dx_, dy_ = _at(13.1, tc, 1.58)
     B.thing("treat_desk", "counter", (dx_, dy_, 1.0), _yout(tc), role="doctor", service="treatment")
+
+
+# ====================================================================================================== fourth pass
+def _birdcage(B, x, y, z, yaw):
+    """[prop] A round brass cage hung on a chain from the hall ceiling (base at z), a yellow canary on the perch."""
+    p = interior_kit._P(B, x, y, 0.0, yaw, "birdcage")
+    p.kind = "prop"
+    p.rod("CT_Steel", (0, 0, z + 0.5), (0, 0, CEIL), 0.008, 3)
+    p.cyl("CT_Steel", 0, 0, z, z + 0.035, 0.18, 8, bottom=True)
+    for k in range(8):
+        a = math.radians(45 * k)
+        p.rod("CT_Steel", (0.17 * math.cos(a), 0.17 * math.sin(a), z + 0.035),
+              (0.17 * math.cos(a) * 0.35, 0.17 * math.sin(a) * 0.35, z + 0.48), 0.008, 3)
+    p.cyl("CT_Steel", 0, 0, z + 0.46, z + 0.5, 0.07, 8, r1=0.012)
+    p.rod("CT_Wood", (-0.16, 0, z + 0.2), (0.16, 0, z + 0.2), 0.012, 4)
+    p.box("CT_PlasterYellow", -0.04, 0.05, -0.035, 0.035, z + 0.215, z + 0.27)
+    p.box("CT_PlasterYellow", 0.03, 0.08, -0.03, 0.03, z + 0.25, z + 0.3)
+    p.box("CT_PlasterRed", 0.08, 0.1, -0.008, 0.008, z + 0.265, z + 0.275)
+    return p.done(top=z + 0.5)
+
+
+def _watering_can(B, x, y, yaw):
+    """[prop] A green enamel watering can on the floor with a long spout."""
+    p = interior_kit._P(B, x, y, 0.0, yaw, "watering_can")
+    p.kind = "prop"
+    p.cyl("CT_PlasterGreen", 0, 0, 0.0, 0.2, 0.11, 8)
+    p.rod("CT_PlasterGreen", (0.08, 0, 0.05), (0.3, 0, 0.26), 0.03, 5)
+    p.rod("CT_Steel", (-0.09, 0, 0.2), (0.0, 0, 0.3), 0.012, 4)
+    p.rod("CT_Steel", (0.0, 0, 0.3), (0.09, 0, 0.2), 0.012, 4)
+    return p.done(top=0.2)
+
+
+def _mug_rack(B, x, y, yaw):
+    """[wall] A pine rack with two shelves of the regulars' porcelain spout-mugs, each with its own colour band."""
+    p = interior_kit._P(B, x, y, 0.0, yaw, "mug_rack")
+    p.kind = "wall"
+    p.box("CT_WoodLight", -0.3, 0.3, -0.02, 0.0, 1.0, 1.55)
+    for zz in (1.0, 1.28):
+        p.box("CT_Wood", -0.3, 0.3, -0.2, 0.0, zz, zz + 0.025)
+    bands = ("CT_PlasterRed", "CT_PlasterBlue", "CT_PlasterGreen", "CT_PlasterYellow", "CT_PlasterPink")
+    for row, zz in enumerate((1.025, 1.305)):
+        for k in range(3):
+            u = -0.18 + 0.18 * k
+            m = (k + row * 2) % 5
+            p.cyl("CT_TileWhite", u, -0.1, zz, zz + 0.09, 0.04, 6)
+            p.cyl(bands[m], u, -0.1, zz + 0.03, zz + 0.05, 0.042, 6, top=False)
+            p.rod("CT_TileWhite", (u + 0.03, -0.1, zz + 0.07), (u + 0.075, -0.1, zz + 0.07), 0.012, 4)
+    return p.done()
+
+
+def _depth3(B, q):
+    """The fourth pass: the winter garden's canary and watering rota, the pump room's mug rack and water analysis."""
+    kit = interior_kit
+    P = PIERS
+    th_g0, th_g1, th_p0 = P[0], P[1], P[5]
+    g = (th_g0 + th_g1) / 2
+    # ---------------------------------------------------------------- winter garden: a canary, the watering rota
+    cx_, cy_ = _at(15.3, g, -1.15)
+    _birdcage(B, cx_, cy_, 1.75, 20.0)
+    B.thing("garden_canary", "board", (cx_, cy_, 1.95), _yout(g), topic="canary")
+    t1 = _tan(th_g1)
+    ex, ey = pol(13.2, th_g1)
+    kit.notice_board(B, ex - t1[0] * 0.075, ey - t1[1] * 0.075, yaw=th_g1, w=0.5, zc=1.6, seed=14)
+    B.thing("garden_rota", "board", (ex - t1[0] * 0.075, ey - t1[1] * 0.075, 1.6), th_g1, topic="rota")
+    wx, wy = _at(13.35, g, 0.95)
+    _watering_can(B, wx, wy, _yout(g) + 40)
+    B.thing("garden_can", "machine", (wx, wy, 0.2), _yout(g), what="watering")
+    # ---------------------------------------------------------------- pump room: the mug rack, the analysis sheet
+    t0 = _tan(th_p0)
+    mx, my = pol(17.1, th_p0)
+    _mug_rack(B, mx + t0[0] * 0.075, my + t0[1] * 0.075, _ytan(th_p0))
+    B.thing("pump_mugs", "shelf", (mx + t0[0] * 0.075, my + t0[1] * 0.075, 1.2), _ytan(th_p0), topic="mugs")
+    t1 = _tan(P[6])
+    ex, ey = pol(15.4, P[6])
+    kit.poster(B, ex - t1[0] * 0.075, ey - t1[1] * 0.075, yaw=P[6], name="paper_typed", w=0.34, zc=1.55)
+    B.thing("pump_analysis", "board", (ex - t1[0] * 0.075, ey - t1[1] * 0.075, 1.55), P[6], topic="analysis")
 
 
 def L_of(q, e):

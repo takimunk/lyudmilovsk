@@ -2244,5 +2244,360 @@
   "ru": "Теперь договор, на который намекали кошки. Он висит в рамке в чебуречной.",
   "en": "Now the treaty the cats hinted at. It hangs framed in the pasty shop.",
   "ja": "次は猫たちがほのめかしていた条約。チェブレキ屋の額に入っている。"
+ },
+ "city.pu.pu_dumpling_regular.1": {
+  "ru": "Газета на столике сложена на кроссворде, в клетках карандашом: «пять букв, плывёт». Кто-то отлучился и вернётся дописать.",
+  "en": "The newspaper on the little table is folded to the crossword, pencil in the squares: \"five letters, floats\". Somebody stepped out and will be back to finish it.",
+  "ja": "テーブルの新聞はクロスワードの面で折られ、マスには鉛筆書き。「五文字、浮かぶもの」。誰かが席を外していて、戻ってきて続きを書くのだろう。"
+ },
+ "city.pu.pu_dumpling_regular.2": {
+  "ru": "К вечеру пар от пельменей тянется к окну, и за этим столиком так тихо, что слышно, как в кастрюле переворачивается один пельмень.",
+  "en": "By evening the steam from the dumplings drifts to the window, and it is so quiet at this table you can hear a single dumpling turn over in the pot.",
+  "ja": "夕方、ペリメニの湯気は窓のほうへ流れ、このテーブルはとても静かで、鍋の中でペリメニがひとつ寝返りを打つ音まで聞こえる。"
+ },
+ "city.pu.pu_dumpling_regular.3": {
+  "ru": "В выходной сюда приходят вдвоём и молчат вдвоём. Карточка «занято» стоит скорее для порядка, чем для строгости.",
+  "en": "On weekends people come here in twos and are quiet in twos. The \"reserved\" card is there more for order than for sternness.",
+  "ja": "休日は二人で来て、二人で黙って座る。「予約席」のカードは、厳しさというより、きまりのためにある。"
+ },
+ "city.pu.pu_dumpling_regular.4": {
+  "ru": "Столик у стены держат за одним завсегдатаем: на карточке «занято» и вчерашний чай в стакане. Если присесть, никто не прогонит, только спросят, какое у тебя настроение.",
+  "en": "The little table by the wall is kept for one regular: a \"reserved\" card and yesterday's tea in a glass. If you sit, nobody will shoo you away, they will only ask what mood you are in.",
+  "ja": "壁際の小さなテーブルは常連ひとりのために取ってある。「予約席」のカードと、昨日のお茶が入ったグラス。座っても追い払われはしない、ただ今日の気分を聞かれるだけだ。"
+ },
+ "city.pu.pu_dumpling_week.title": {
+  "ru": "Начинки недели",
+  "en": "The week's fillings",
+  "ja": "今週の具"
+ },
+ "city.pu.pu_dumpling_week.1": {
+  "ru": "Понедельник: говядина с луком. «Тяжёлый день берём лёгким фаршем», дописано мелом пониже.",
+  "en": "Monday: beef and onion. Below, in chalk: \"A heavy day gets a light filling.\"",
+  "ja": "月曜日：牛肉と玉ねぎ。下にチョークで「重い日には軽い具を」。"
+ },
+ "city.pu.pu_dumpling_week.2": {
+  "ru": "Вторник: свинина с укропом. Укроп подчёркнут два раза: свежий, с утра.",
+  "en": "Tuesday: pork and dill. The dill is underlined twice: fresh, from this morning.",
+  "ja": "火曜日：豚肉とディル。ディルには二重線。今朝の新鮮なやつ。"
+ },
+ "city.pu.pu_dumpling_week.3": {
+  "ru": "Среда: с грибами и сметаной. Сметана нарисована ложкой, ложка нарисована с усами.",
+  "en": "Wednesday: mushroom, with sour cream. The sour cream is drawn as a spoonful, the spoon drawn with a moustache.",
+  "ja": "水曜日：きのこ入り、サワークリーム添え。サワークリームはスプーンの絵で、スプーンには口ひげが描かれている。"
+ },
+ "city.pu.pu_dumpling_week.4": {
+  "ru": "Четверг: с капустой, «для тех, кто на диете, и для тех, кто делает вид».",
+  "en": "Thursday: cabbage, \"for those on a diet and for those pretending to be\".",
+  "ja": "木曜日：キャベツ入り。「ダイエット中の人と、そのふりをしている人のために」。"
+ },
+ "city.pu.pu_dumpling_week.5": {
+  "ru": "Пятница: с рыбой, от соседней лавки. Рядом приписано: «Не путать с котлетой!»",
+  "en": "Friday: fish, from the shop next door. Beside it: \"Not to be confused with a cutlet!\"",
+  "ja": "金曜日：魚入り、隣の店から。横に「カツレツと間違えないこと！」。"
+ },
+ "city.pu.pu_dumpling_week.6": {
+  "ru": "Суббота: с бараниной и мятой, лепят вдвоём. На полях детский рисунок пельменя с глазами.",
+  "en": "Saturday: lamb and mint, made by two. In the margin a child's drawing of a dumpling with eyes.",
+  "ja": "土曜日：羊肉とミント、二人がかりで包む。余白には目のついたペリメニの子どもの絵。"
+ },
+ "city.pu.pu_dumpling_week.7": {
+  "ru": "Воскресенье: «как у бабушки», без объяснений. Все знают, у чьей, и никто не уточняет.",
+  "en": "Sunday: \"like grandma's\", no explanation. Everybody knows whose, and nobody asks.",
+  "ja": "日曜日：「おばあちゃんの味」、説明なし。誰のおばあちゃんかは皆知っていて、誰も聞かない。"
+ },
+ "city.pu.pu_dumpling_toss.prompt": {
+  "ru": "E — кинуть тесто в таз",
+  "en": "E — toss dough into the basin",
+  "ja": "E：生地を鉢に投げる"
+ },
+ "city.pu.pu_dumpling_toss.title": {
+  "ru": "Тесто в таз",
+  "en": "Dough in the basin",
+  "ja": "生地を鉢へ"
+ },
+ "city.pu.pu_dumpling_toss.1": {
+  "ru": "На высоком столике таз и горка шариков теста, присыпанных мукой. Кто-то из поваров играет, когда нет очереди: пять бросков, и руки должны быть сухими.",
+  "en": "On the tall table sit a basin and a heap of flour-dusted dough balls. The cooks play when there is no queue: five throws, and your hands must be dry.",
+  "ja": "背の高いテーブルに鉢と、粉をまぶした生地の玉の山。客の列が切れるとコックたちが遊ぶ。五回投げる、手は乾いていること。"
+ },
+ "city.pu.pu_dumpling_toss.2": {
+  "ru": "Утром тесто ещё прохладное и не липнет к пальцам, лучшее время для броска.",
+  "en": "In the morning the dough is still cool and does not stick to the fingers, the best time to throw.",
+  "ja": "朝のうちは生地がまだひんやりして指にくっつかない。投げるにはいちばんいい時間だ。"
+ },
+ "city.pu.pu_dumpling_toss_win.1": {
+  "ru": "Пять в таз! Повар кивает: «С такой рукой тебе в лепщики, а не в зрители».",
+  "en": "Into the basin! The cook nods: \"With a hand like that you belong at the board, not in the audience.\"",
+  "ja": "鉢に入った！コックはうなずく。「その腕なら見物じゃなくて包み手だな」。"
+ },
+ "city.pu.pu_dumpling_toss_lose.1": {
+  "ru": "Тесто разлетелось по полу и по твоим ботинкам. Повар молча даёт тряпку, молча, но с уважением.",
+  "en": "The dough scattered over the floor and your shoes. The cook silently hands you a cloth, silent but respectful.",
+  "ja": "生地は床と靴の上に飛び散った。コックは黙って雑巾を渡してくれる。黙って、でも敬意をこめて。"
+ },
+ "city.pu.pu_dumpling_toss_draw.1": {
+  "ru": "Половина в тазу, половина на полу. «Бывает, — говорит повар. — Тесто не обижается».",
+  "en": "Half in the basin, half on the floor. \"It happens,\" says the cook. \"Dough doesn't take offence.\"",
+  "ja": "半分は鉢に、半分は床に。「そういうこともある」とコックが言う。「生地は怒らないさ」。"
+ },
+ "city.pu.txt.pu_dumpling_jar.title": {
+  "ru": "Банка для чаевых",
+  "en": "The tips jar",
+  "ja": "チップの瓶"
+ },
+ "city.pu.txt.pu_dumpling_jar.p1": {
+  "ru": "Банка из-под огурцов, на крышке бумажка: «На новую кастрюлю. Старая помнит ещё Брежнева». Внутри мелочь и одна пуговица.",
+  "en": "A pickle jar with a paper on the lid: \"For a new pot. The old one remembers Brezhnev.\" Inside: small change and one button.",
+  "ja": "ピクルスの瓶で、蓋に紙が貼ってある。「新しい鍋のために。古い鍋はブレジネフを覚えている」。中には小銭とボタンがひとつ。"
+ },
+ "city.pu.txt.pu_dumpling_jar.p2": {
+  "ru": "Бумажка переписана: «На новую кастрюлю (уже почти). Спасибо, что держите нас на плаву, а кастрюлю на огне». Пуговицу не убрали, она теперь талисман.",
+  "en": "The paper is rewritten: \"For a new pot (almost). Thank you for keeping us afloat and the pot on the fire.\" The button was not removed, it is a talisman now.",
+  "ja": "紙は書き直されている。「新しい鍋のために（もうすぐ）。私たちを浮かせて、鍋を火にかけ続けてくれてありがとう」。ボタンはそのまま。今はお守りだ。"
+ },
+ "city.pu.txt.pu_dumpling_jar.p3": {
+  "ru": "Под банкой записка другим почерком: «Кто попадёт тестом в таз пять раз из пяти, тому в субботу двойную сметану». Подпись: «повар, который проиграл».",
+  "en": "Under the jar a note in another hand: \"Whoever lands the dough in the basin five times out of five gets double sour cream on Saturday.\" Signed: \"the cook who lost\".",
+  "ja": "瓶の下に別の筆跡のメモ。「生地を五回続けて鉢に入れた人には、土曜日にサワークリーム二倍」。署名は「負けたコック」。"
+ },
+ "city.pu.txt.pu_dumpling_jar.p4": {
+  "ru": "Банка почти полна. Рядом новая кастрюля, ещё в бумаге. Старую поставили на подоконник вместе с геранью: «Пусть смотрит, как работают молодые». Теперь в банке копят на крышку.",
+  "en": "The jar is nearly full. Next to it a new pot, still in its paper. The old one sits on the windowsill with the geranium: \"Let it watch how the young ones work.\" Now they are saving for a lid.",
+  "ja": "瓶はほとんど満杯。隣には紙に包まれたままの新しい鍋。古い鍋はゼラニウムと一緒に窓辺へ。「若いのの仕事ぶりを見ていてもらおう」。今度は蓋のために貯めている。"
+ },
+ "city.pu.pu_dumpling_jar.1": {
+  "ru": "Банка стоит у кассы, и мелочь в ней звенит, когда проходишь мимо.",
+  "en": "The jar stands by the till, and the coins in it clink when you pass.",
+  "ja": "瓶はレジのそばにあり、通ると中の小銭がちりんと鳴る。"
+ },
+ "city.pu.pu_pasty_oven.1": {
+  "ru": "{time}. Первая закладка: противни с тестом едут в печь с пяти утра, и стекло дверцы уже запотело изнутри.",
+  "en": "{time}. The first batch: trays of dough have been going in since five, and the oven's glass is already misted on the inside.",
+  "ja": "{time}。最初の窯入れ。生地のトレイは朝五時から入っていて、扉のガラスはもう内側から曇っている。"
+ },
+ "city.pu.pu_pasty_oven.2": {
+  "ru": "{time}. Обеденная партия: «пятнадцать минут, не открывать». Дверцу и правда никто не открывает, только смотрят.",
+  "en": "{time}. The lunch batch: \"fifteen minutes, do not open.\" Nobody does open the door, they only look.",
+  "ja": "{time}。昼の窯入れ。「十五分、開けないこと」。実際に開ける人はいなくて、みんなただ眺めている。"
+ },
+ "city.pu.pu_pasty_oven.3": {
+  "ru": "{time}. Вечерняя закладка тоньше и румянее: тесто вымесили, и оно стало добрее. На ручке дверцы висит прихватка с утюгом, вышитым красными нитками.",
+  "en": "{time}. The evening batch is thinner and ruddier: the dough has been kneaded and become kinder. An oven mitt embroidered with a red iron hangs on the door handle.",
+  "ja": "{time}。夕方の窯入れは薄くて赤みが強い。生地はこねられて穏やかになった。扉の取っ手には、赤い糸でアイロンを刺繍したミトンがかかっている。"
+ },
+ "city.pu.pu_pasty_oven.4": {
+  "ru": "{time}. Печь остывает: стрелка термометра ползёт вниз, как ленивый кот с дивана. Завтра с пяти.",
+  "en": "{time}. The oven is cooling: the thermometer needle creeps down like a lazy cat off a sofa. Tomorrow from five.",
+  "ja": "{time}。窯は冷めていく。温度計の針は、ソファから降りるのんびりした猫のようにじわじわ下がる。明日は五時から。"
+ },
+ "city.pu.pu_pasty_cooling.1": {
+  "ru": "Чебуреки остывают у окна, а на стекле с другой стороны стекает дождь. Подносы стоят близко друг к другу, чтобы им было теплее.",
+  "en": "The pasties cool by the window, and rain runs down the other side of the glass. The trays stand close together to keep each other warm.",
+  "ja": "チェブレキは窓辺で冷まされ、ガラスの向こう側では雨が流れている。トレイはお互いを温めるように、ぴったり寄せて置いてある。"
+ },
+ "city.pu.pu_pasty_cooling.2": {
+  "ru": "На решётке два яруса: наверху те, что поспокойнее, внизу ещё шипят. Рядом записка: «Руками не трогать, глазами можно».",
+  "en": "Two tiers on the rack: the calmer ones on top, the ones below still hissing. A note beside them: \"Hands off, eyes allowed.\"",
+  "ja": "網には二段。上は落ち着いたもの、下はまだじゅうじゅう言っている。横にメモ。「手は触れないで、目はどうぞ」。"
+ },
+ "city.pu.pu_pasty_cooling.3": {
+  "ru": "Решётка пока почти пуста, на ней только один пробный чебурек для повара, тот самый, что «просто проверить».",
+  "en": "The rack is nearly empty, with only one test pasty for the cook, the one that is \"just to check\".",
+  "ja": "網はまだほとんど空で、コックのための試食チェブレキがひとつ。「ちょっと確かめるだけ」のやつだ。"
+ },
+ "city.pu.pu_pasty_cooling.4": {
+  "ru": "Решётка пуста, на проволоке остались блёстки жира и мука. Подносы вымыты и сложены стопкой.",
+  "en": "The rack is empty, with glints of fat and flour left on the wire. The trays are washed and stacked.",
+  "ja": "網は空で、針金には脂のきらめきと粉が残っている。トレイは洗って重ねてある。"
+ },
+ "city.pu.txt.pu_pasty_thanks.title": {
+  "ru": "Стена благодарностей",
+  "en": "The wall of thanks",
+  "ja": "ありがとうの壁"
+ },
+ "city.pu.txt.pu_pasty_thanks.p1": {
+  "ru": "Открытки и бумажки, приколотые кнопками: «Спасибо за горячее!», «Лучшие после отпуска», детская картинка с чебуреком и подписью «ЧИБУРЕК». Кто-то исправил её карандашом на «ЧЕБУРЕК» и поставил смайлик.",
+  "en": "Cards and scraps pinned with tacks: \"Thanks for the hot ones!\", \"The best after a holiday\", a child's picture of a pasty captioned \"CHIBUREK\". Somebody corrected it in pencil to \"CHEBUREK\" and drew a smiley.",
+  "ja": "画鋲で留められたカードと紙切れ。「熱々をありがとう！」「休暇のあとでいちばんおいしい」、それに「チブレキ」と書かれた子どもの絵。誰かが鉛筆で「チェブレキ」と直し、笑顔を描き足した。"
+ },
+ "city.pu.txt.pu_pasty_thanks.p2": {
+  "ru": "Появилась новая записка: «Я пришёл за одним, ушёл с четырьмя, жена не заметила. Благодарен». Рядом пришпилена вторая, женским почерком: «Заметила».",
+  "en": "A new note has appeared: \"I came for one, left with four, my wife did not notice. Grateful.\" Pinned beside it a second, in a woman's hand: \"Noticed.\"",
+  "ja": "新しいメモが増えている。「ひとつ買いに来て四つ持って帰りました、妻は気づいていません。感謝」。その隣に女性の字でもう一枚。「気づいてました」。"
+ },
+ "city.pu.txt.pu_pasty_thanks.p3": {
+  "ru": "Рядом с открытками висит рецепт на тетрадном листе, вырванный и пришпиленный: «Тесто на кипятке. Секрет в минеральной воде, а в чём остальное, повар не скажет». Внизу приписка шариковой ручкой: «Он сказал мне. Не скажу».",
+  "en": "Beside the cards hangs a recipe on a sheet torn from an exercise book: \"The dough is made with boiling water. The secret is mineral water, the rest the cook will not say.\" At the bottom in ballpoint: \"He told me. I won't tell.\"",
+  "ja": "カードの横には、ノートから破いたレシピが留めてある。「生地は熱湯で。秘密はミネラルウォーター、あとはコックは教えません」。下にボールペンで「教えてもらった。でも言わない」。"
+ },
+ "city.pu.txt.pu_pasty_thanks.p4": {
+  "ru": "Стена разрослась так, что для новой открытки места нет. Повар повесил сверху чистый лист: «Пишите тут, а если неловко, скажите на кассе. Мы читаем всё, даже то, что вы думали, но не написали».",
+  "en": "The wall has grown so that there is no room for another card. The cook hung a clean sheet on top: \"Write here, and if it feels awkward, say it at the till. We read everything, even what you thought but did not write.\"",
+  "ja": "壁はもう新しいカードを貼る場所がないほど広がった。コックは一番上に白い紙をかけた。「ここに書いてください。気恥ずかしければレジで言ってください。私たちは全部読みます、思ったけれど書かなかったことまで」。"
+ },
+ "city.pu.pu_pasty_thanks.1": {
+  "ru": "Над кассой целая стена бумажных «спасибо», приколотых кнопками вкривь и вкось.",
+  "en": "Above the till a whole wall of paper \"thank-yous\", pinned crooked every which way.",
+  "ja": "レジの上には、画鋲で斜めにあちこち留められた、紙の「ありがとう」の壁がある。"
+ },
+ "city.pu.pu_pasty_bench.1": {
+  "ru": "На скамье у стены сидят с горячим бумажным свёртком на коленях и дуют на него, как на обиду. В обед тут тесно, даже когда никого нет.",
+  "en": "On the bench by the wall people sit with a hot paper parcel on their knees and blow on it as on an insult. At lunch it is crowded here even when nobody is.",
+  "ja": "壁際のベンチでは、熱い紙包みを膝にのせて、ふうふう吹いている。お昼にはここは、誰もいなくても混んでいる気がする。"
+ },
+ "city.pu.pu_pasty_bench.2": {
+  "ru": "Скамья тёплая от печи за стенкой, а за окном вечернее море. Посидеть пять минут и не заметить, как прошёл час.",
+  "en": "The bench is warm from the oven behind the wall, and beyond the window is the evening sea. Sit five minutes and not notice an hour pass.",
+  "ja": "ベンチは壁の向こうの窯であたたかく、窓の外は夕方の海。五分座るつもりが、気づけば一時間たっている。"
+ },
+ "city.pu.pu_pasty_bench.3": {
+  "ru": "Скамья узкая, зато у самой стены: спиной чувствуешь, что печь ещё помнит день.",
+  "en": "The bench is narrow, but right by the wall: with your back you feel the oven still remembering the day.",
+  "ja": "ベンチは細いが壁のすぐそば。背中で、窯がまだ一日を覚えているのを感じる。"
+ },
+ "city.pu.pu_fish_smoked.1": {
+  "ru": "В тумане копчёная рыба на рейке почти невидима, только запах плывёт по лавке золотой дымкой.",
+  "en": "In the fog the smoked fish on the rail is almost invisible, only the smell drifts through the shop like a golden haze.",
+  "ja": "霧の日は、レールの燻製魚はほとんど見えず、匂いだけが金色のもやのように店の中を漂う。"
+ },
+ "city.pu.pu_fish_smoked.2": {
+  "ru": "Утренняя копчёная рыба ещё блестит, как лакированная. Хвосты связаны парами, чтобы не потерять друг друга.",
+  "en": "The morning's smoked fish still shines as if lacquered. The tails are tied in pairs so they do not lose each other.",
+  "ja": "朝の燻製魚はまだ漆を塗ったように光っている。しっぽは対になって結ばれ、お互いを見失わない。"
+ },
+ "city.pu.pu_fish_smoked.3": {
+  "ru": "К вечеру копчёная рыба потемнела, пахнет яблоней и дымом коптильни. Рейка чуть качается от сквозняка из двери.",
+  "en": "By evening the smoked fish has darkened and smells of apple wood and the smokehouse. The rail sways a little in the draught from the door.",
+  "ja": "夕方には燻製魚は色が濃くなり、リンゴの木と燻製小屋の匂いがする。ドアからの風でレールが少し揺れる。"
+ },
+ "city.pu.pu_fish_smoked.4": {
+  "ru": "На рейке под потолком висят семь копчёных рыб, шестая чуть светлее остальных: «ту, что с характером».",
+  "en": "Seven smoked fish hang on the rail under the ceiling, the sixth a little paler than the others: \"the one with character.\"",
+  "ja": "天井の下のレールには七匹の燻製魚。六匹目だけほかより少し色が薄い。「個性のあるやつ」だそうだ。"
+ },
+ "city.pu.pu_fish_catch.prompt": {
+  "ru": "E — прочитать улов",
+  "en": "E — read the catch",
+  "ja": "E：漁獲を読む"
+ },
+ "city.pu.pu_fish_catch.1": {
+  "ru": "Мелом: «Туман. Лодки не вышли. Улова нет, есть вчерашний, он честный». Рядом нарисован маяк с лучом в никуда.",
+  "en": "In chalk: \"Fog. The boats did not go out. No catch, there is yesterday's, and it is honest.\" Beside it a lighthouse with its beam going nowhere.",
+  "ja": "チョークで「霧。船は出ていません。漁はなし、昨日のならあります、正直なやつです」。横には、どこにも届かない光を放つ灯台の絵。"
+ },
+ "city.pu.pu_fish_catch.2": {
+  "ru": "Мелом: «Погода с характером: лодки вышли и вернулись раньше. Салака, немного окуня, ловцы мокрые и довольные».",
+  "en": "In chalk: \"Weather with character: the boats went out and came back early. Baltic herring, a little perch, the fishermen wet and pleased.\"",
+  "ja": "チョークで「気難しい天気。船は出て、早く戻りました。バルトニシン、少しのスズキ、漁師たちはずぶ濡れで満足げ」。"
+ },
+ "city.pu.pu_fish_catch.3": {
+  "ru": "Мелом: «Ясно, штиль, лодки вышли на рассвете. К полудню будет всё: салака, камбала, угорь для понимающих».",
+  "en": "In chalk: \"Clear, calm, the boats went out at dawn. By noon there will be everything: herring, flounder, eel for those who know.\"",
+  "ja": "チョークで「晴れ、凪、船は夜明けに出ました。昼には全部そろいます。ニシン、ヒラメ、わかる人にはウナギ」。"
+ },
+ "city.pu.pu_fish_catch.4": {
+  "ru": "Мелом: «В выходные ловим для себя тоже. Если на доске пусто, значит, всё уже у кого-то на плите».",
+  "en": "In chalk: \"On weekends we fish for ourselves too. If the board is empty, it is already on somebody's stove.\"",
+  "ja": "チョークで「週末は自分たちのためにも釣ります。ボードが空なら、もう誰かのコンロの上です」。"
+ },
+ "city.pu.pu_fish_catch.5": {
+  "ru": "Мелом: «Улов дня» и колонки: салака, камбала, угорь. Цифры стёрты и написаны заново несколько раз, одна из них обведена кружком.",
+  "en": "In chalk: \"Catch of the day\" and columns: herring, flounder, eel. The figures have been wiped and rewritten several times, one of them ringed.",
+  "ja": "チョークで「本日の漁獲」と欄。ニシン、ヒラメ、ウナギ。数字は何度も消して書き直され、そのうちのひとつは丸で囲まれている。"
+ },
+ "city.pu.pu_fish_stool.1": {
+  "ru": "На этом табурете чинят сеть: рядом клубок бечёвки и деревянная игла. Ячейка за ячейкой, и сеть снова держит море.",
+  "en": "On this stool the net is mended: beside it a ball of twine and a wooden needle. Mesh by mesh, and the net holds the sea again.",
+  "ja": "このスツールで網を繕う。横には麻ひもの玉と木の針。目をひとつずつ編んで、網はまた海を受けとめる。"
+ },
+ "city.pu.pu_fish_stool.2": {
+  "ru": "К вечеру табурет принадлежит тому, кто освободился: ноги вытянуты, руки в узлах. Сеть на коленях пахнет водорослями и дальними берегами.",
+  "en": "By evening the stool belongs to whoever is free: legs stretched out, hands in knots. The net on the knees smells of seaweed and far shores.",
+  "ja": "夕方、スツールは手の空いた人のもの。足を伸ばし、手は結び目だらけ。膝の上の網は海藻と遠い岸の匂いがする。"
+ },
+ "city.pu.pu_fish_stool.3": {
+  "ru": "Табурет низкий и крепкий, как всё в этой лавке. Сиденье вытерто локтями и коленями.",
+  "en": "The stool is low and sturdy, like everything in this shop. The seat is worn smooth by elbows and knees.",
+  "ja": "スツールは低くて頑丈、この店のものはみんなそうだ。座面は肘と膝で磨かれてつるつる。"
+ },
+ "city.pu.pu_fish_cat.1": {
+  "ru": "Серая кошка свернулась калачиком возле миски с рыбьими головами и делает вид, что сторожит. Один глаз приоткрыт.",
+  "en": "A grey cat is curled up beside a bowl of fish heads, pretending to keep watch. One eye is half open.",
+  "ja": "灰色の猫が、魚の頭の入った鉢のそばで丸くなり、見張りのふりをしている。片目だけ薄く開いている。"
+ },
+ "city.pu.pu_fish_cat.2": {
+  "ru": "Кошка спит так крепко, что миска рядом уже пуста. Улика налицо, но никто не придирается: у неё свои права.",
+  "en": "The cat sleeps so soundly that the bowl beside her is already empty. The evidence is plain, but nobody objects: she has her rights.",
+  "ja": "猫はぐっすり眠り、横の鉢はもう空だ。証拠は明らかだが、誰も文句を言わない。猫には猫の権利がある。"
+ },
+ "city.pu.pu_fish_cat.3": {
+  "ru": "Даже в праздник кошка не меняет планов: миска, подоконник, миска. Ей повязали на шею красную ленточку, она принимает это как должное.",
+  "en": "Even on a festival the cat does not change her plans: bowl, windowsill, bowl. A red ribbon was tied round her neck, and she accepts it as her due.",
+  "ja": "お祭りの日でも猫は予定を変えない。鉢、窓辺、鉢。首に赤いリボンを結ばれても、当然のことのように受け入れている。"
+ },
+ "city.pu.pu_fish_cat.4": {
+  "ru": "Кошки нет на месте, только тёплая вмятина в мешковине рядом с мисочкой. Она вернётся, как возвращаются все, кто знает, где рыба.",
+  "en": "The cat is not here, only a warm dent in the sacking beside her little bowl. She will come back, as everyone does who knows where the fish is.",
+  "ja": "猫の姿はなく、小さな鉢のそばの麻袋に温かいくぼみだけが残っている。魚のありかを知っている者はみな戻ってくる、猫もそうだ。"
+ },
+ "city.pu.pu_bakery_bench.1": {
+  "ru": "На скамье у двери ждут первую партию: сидят с пустыми сумками и принюхиваются. Булочная пахнет раньше, чем открывается.",
+  "en": "On the bench by the door people wait for the first batch: sitting with empty bags and sniffing. The bakery smells before it opens.",
+  "ja": "ドアのそばのベンチでは、空のバッグを抱えて最初の焼きたてを待つ人たちが、鼻をひくひくさせている。パン屋は開く前から匂う。"
+ },
+ "city.pu.pu_bakery_bench.2": {
+  "ru": "Скамья у стены хороша тем, что с неё видно всё: кассу, полки и того, кто берёт последний батон и делает вид, что так и задумано.",
+  "en": "The bench by the wall is good for seeing everything: the till, the shelves and whoever takes the last loaf and pretends that was the plan.",
+  "ja": "壁際のベンチは何でも見渡せていい。レジも棚も、最後の一本を取って「最初からそのつもり」という顔をする人も。"
+ },
+ "city.pu.pu_bakery_bench.3": {
+  "ru": "Вечером на скамье тихо, на стене тепло от печи, а на полках остаются самые честные булки: вчерашние, но не забытые.",
+  "en": "In the evening the bench is quiet, the wall warm from the oven, and the shelves hold the most honest buns: yesterday's, but not forgotten.",
+  "ja": "夕方のベンチは静かで、壁は窯の熱であたたかい。棚に残るのはいちばん正直なパン。昨日のものだけれど、忘れられてはいない。"
+ },
+ "city.pu.pu_bakery_shifts.1": {
+  "ru": "{time}. В графике на сегодня стоит «04:00 — замес, 05:30 — печь, 06:30 — витрина». Первые две строки уже зачёркнуты.",
+  "en": "{time}. Today's schedule reads \"04:00 mixing, 05:30 oven, 06:30 shop window\". The first two lines are already crossed out.",
+  "ja": "{time}。今日の予定表。「4:00 こね、5:30 窯、6:30 ショーウィンドウ」。最初の二行はもう消してある。"
+ },
+ "city.pu.pu_bakery_shifts.2": {
+  "ru": "{time}. Утренние строки в графике вычеркнуты, дневная смена пишет: «хлеб на вечер, ржаной в первую очередь». Рядом нарисована печь с улыбкой.",
+  "en": "{time}. The morning lines in the schedule are struck out, the day shift writes: \"bread for the evening, rye first.\" Beside it a drawn oven with a smile.",
+  "ja": "{time}。予定表の朝の行は消され、昼の当番が「夕方のパン、まずライ麦」と書いている。横には笑顔の窯の絵。"
+ },
+ "city.pu.pu_bakery_shifts.3": {
+  "ru": "{time}. График закрыт: «Печь вымыта, закваска накормлена, свет оставить в окне». Подпись пекаря, как всегда, с завитушкой.",
+  "en": "{time}. The schedule is closed: \"Oven cleaned, starter fed, leave the light in the window.\" The baker's signature, as always, has a flourish.",
+  "ja": "{time}。予定表は閉じられている。「窯は洗い、種には餌をやり、窓の灯りは残すこと」。パン職人の署名は、いつものように渦巻き付き。"
+ },
+ "city.pu.pu_bakery_shifts.4": {
+  "ru": "{time}. В графике на завтра только одно слово, написанное крупно: «ЗАМЕС». Остальное пока пусто.",
+  "en": "{time}. In tomorrow's schedule there is only one word, written large: \"MIXING\". The rest is blank for now.",
+  "ja": "{time}。明日の予定表には、大きな字でたった一語。「こね」。あとはまだ空白。"
+ },
+ "city.pu.pu_bakery_radio.1": {
+  "ru": "Из приёмника негромко звучит утренняя гимнастика: «Руки на пояс, дышим». В подсобке кто-то выполняет упражнения с тестом.",
+  "en": "The radio plays morning exercises softly: \"Hands on hips, breathe.\" Somebody in the back is doing the exercises with dough.",
+  "ja": "ラジオから朝の体操が小さく流れる。「手を腰に、深呼吸」。奥では誰かが生地を相手に体操している。"
+ },
+ "city.pu.pu_bakery_radio.2": {
+  "ru": "Радио передаёт прогноз погоды для рыбаков: ветер, волна, видимость. Булочница слушает его так внимательно, будто выпекает по нему хлеб.",
+  "en": "The radio gives the weather for fishermen: wind, swell, visibility. The baker listens as closely as if she were baking by it.",
+  "ja": "ラジオは漁師向けの天気予報を流している。風、波、視界。パン屋の女主人は、それでパンを焼くかのように熱心に聞いている。"
+ },
+ "city.pu.pu_bakery_radio.3": {
+  "ru": "Радио ловит что-то вальсовое, и в булочной становится на полтакта медленнее. Булки никуда не торопятся, и покупатели тоже.",
+  "en": "The radio catches something waltzy, and the bakery slows by half a beat. The buns are in no hurry, and neither are the customers.",
+  "ja": "ラジオはワルツ風の曲を拾い、パン屋は半拍だけゆっくりになる。パンは急がず、お客さんも急がない。"
+ },
+ "city.pu.pu_bakery_radio.4": {
+  "ru": "Вечерний концерт по заявкам: «для булочной на набережной, от тех, кто пришёл за последним батоном». Булочница смущённо делает потише.",
+  "en": "The evening request concert: \"for the bakery on the embankment, from those who came for the last loaf.\" The baker turns it down, a little embarrassed.",
+  "ja": "夕べのリクエスト番組。「海岸通りのパン屋さんへ、最後の一本を買いに来た人たちより」。女主人は照れて少し音を下げる。"
+ },
+ "city.pu.pu_bakery_radio.5": {
+  "ru": "Ночью приёмник тихо шуршит эфиром, как закваска пузырьками. Стрелка стоит между двумя станциями.",
+  "en": "At night the radio rustles softly with static, like the starter with bubbles. The needle stands between two stations.",
+  "ja": "夜、ラジオは種が泡を立てるように、静かにさざめいている。針は二つの局の間で止まっている。"
  }
 }

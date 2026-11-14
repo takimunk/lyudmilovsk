@@ -1435,7 +1435,7 @@
   "ja": "あとは「市場の味」カードのスタンプ。事務所の、所長の窓のそばに掛かっている。"
  },
  "quest.market_haggler.card.obj": {
-  "ru": "Посмотреть карточку «Вкусы рынка» у конторы",
+  "ru": "Посмотреть карточку «Вкусы рынка» у конторки",
   "en": "Look at the \"Tastes of the Market\" card by the office",
   "ja": "事務所のそばの「市場の味」カードを見る"
  },
@@ -1443,5 +1443,350 @@
   "ru": "Рыбачка моргнула первой, а директор записал это в протокол. Теперь на рынке меня, кажется, уважают чуть больше. И яблоки кладут крупнее.",
   "en": "The fishwife blinked first, and the director put it in the minutes. Now the market seems to respect me a little more. And they put in bigger apples.",
   "ja": "魚屋さんが先にまばたきして、所長はそれを議事録に書いた。市場での僕の評判は少し上がったようだ。りんごも大きいのを入れてくれる。"
+ },
+ "city.mk.carp.prompt": {
+  "ru": "E — заглянуть в садок",
+  "en": "E — look into the tank",
+  "ja": "E：生けすをのぞく"
+ },
+ "city.mk.carp.1": {
+  "ru": "В стеклянном садке плавают три карпа, толстые, как поленья. Продавщица берёт их живыми из пруда за городом и держит до вечера.",
+  "en": "Three carp as thick as logs swim in the glass tank. The seller gets them live from a pond outside town and keeps them until evening.",
+  "ja": "ガラスの生けすで、丸太のように太いコイが三匹泳いでいる。売り子は町外れの池から生きたまま仕入れ、夕方まで預かっている。"
+ },
+ "city.mk.carp.2": {
+  "ru": "Воду в садке только что сменили: видна каждая чешуйка. Карпы стоят носом к стеклу, будто тоже читают цены.",
+  "en": "The water in the tank has just been changed: every scale shows. The carp hang nose to the glass as if reading the prices too.",
+  "ja": "生けすの水は替えたばかりで、うろこの一枚一枚まで見える。コイたちはガラスに鼻を寄せ、値札を読んでいるみたいだ。"
+ },
+ "city.mk.carp.3": {
+  "ru": "К полудню вода помутнела. Карп всплывает к самой поверхности и хватает воздух. На бортике лежит мокрый сачок.",
+  "en": "By noon the water has clouded. A carp rises to the surface and gulps air. A wet dip net lies on the rim.",
+  "ja": "昼には水が濁っている。コイが水面まで上がって空気をぱくぱくと吸う。縁には濡れた網がのせてある。"
+ },
+ "city.mk.carp.4": {
+  "ru": "Садок накрыт мокрой рогожей. Иногда из-под неё слышно бульканье: карпы не спят, они просто молчат.",
+  "en": "The tank is covered with a wet mat. Now and then something bubbles underneath: the carp aren't asleep, only quiet.",
+  "ja": "生けすは濡れたむしろで覆われている。ときどき下からぼこぼこと音がする。コイは眠っているのではなく、黙っているだけだ。"
+ },
+ "city.mk.carp.5": {
+  "ru": "Туман, лодки не вышли, и карп сегодня в цене: он единственная рыба, которую не надо ждать с моря.",
+  "en": "Fog, no boats out, and the carp is worth more today: the only fish nobody has to wait for from the sea.",
+  "ja": "霧で船が出ず、今日のコイは値打ちが上がっている。海からの便を待たなくていい、ただ一つの魚だからだ。"
+ },
+ "city.mk.carp.6": {
+  "ru": "У одного карпа надорван плавник. Его зовут Бригадир, он не продаётся: так торговка решила во вторник и не передумала.",
+  "en": "One carp has a torn fin. He is called Foreman and he is not for sale: the seller decided so on Tuesday and has not changed her mind.",
+  "ja": "一匹のコイはひれが少し裂けている。名前は「班長」で、売り物ではない。売り子が火曜日にそう決め、まだ気が変わらないのだ。"
+ },
+ "city.mk.ice.1": {
+  "ru": "Понедельник, мелом на доске: «Салака, бычки. Камбалы нет, лодки пришли поздно».",
+  "en": "Monday, in chalk on the board: \"Baltic herring, gobies. No flounder, the boats came in late.\"",
+  "ja": "月曜日、黒板にチョークで。「ニシン、ハゼ。カレイなし、船の帰りが遅かった」"
+ },
+ "city.mk.ice.2": {
+  "ru": "Вторник и среда: «Камбала и салака с ночного улова. Треска по пятницам, не спрашивайте».",
+  "en": "Tuesday and Wednesday: \"Flounder and herring from the night catch. Cod on Fridays, don't ask.\"",
+  "ja": "火曜と水曜。「夜の漁のカレイとニシン。タラは金曜日、聞かないで」"
+ },
+ "city.mk.ice.3": {
+  "ru": "Четверг: «Корюшка! Пока не кончилась. Пахнет огурцом, значит свежая».",
+  "en": "Thursday: \"Smelt! While it lasts. It smells of cucumber, so it's fresh.\"",
+  "ja": "木曜日。「キュウリウオ！ なくなる前に。キュウリの匂いがすれば新鮮」"
+ },
+ "city.mk.ice.4": {
+  "ru": "Пятница: «Треска, вчера в ночь. Рыбный день, очередь до соседней колонны».",
+  "en": "Friday: \"Cod, caught last night. Fish day, the queue reaches the next column.\"",
+  "ja": "金曜日。「昨夜のタラ。魚の日、行列は隣の柱まで」"
+ },
+ "city.mk.ice.5": {
+  "ru": "Суббота: «Копчёного по два куска в руки, на всех не хватит».",
+  "en": "Saturday: \"Smoked fish, two pieces a head, there won't be enough for everyone.\"",
+  "ja": "土曜日。「燻製はお一人二切れまで、全員には行き渡りません」"
+ },
+ "city.mk.ice.6": {
+  "ru": "Воскресенье: «Лодки не выходили. Рыба вчерашняя, цена вчерашняя, честно».",
+  "en": "Sunday: \"The boats stayed in. Yesterday's fish at yesterday's price, honest.\"",
+  "ja": "日曜日。「船は出ていません。昨日の魚を昨日の値段で、正直に」"
+ },
+ "city.mk.ice.fog": {
+  "ru": "Поверх всего размашисто: «ТУМАН. ЛОДКИ НЕ ВЫШЛИ. Свежей рыбы нет, берите солёное и копчёное».",
+  "en": "Across everything in big letters: \"FOG. NO BOATS OUT. No fresh fish, take the salted and smoked.\"",
+  "ja": "他の字の上から大きく。「霧。船は出ていません。生魚はなし、塩漬けと燻製をどうぞ」"
+ },
+ "city.mk.ice.cold": {
+  "ru": "Мороз. Приписка: «Льда сегодня не надо, рыба и так не портится. Цена прежняя».",
+  "en": "Frost. A note: \"No ice needed today, the fish keeps by itself. Same price.\"",
+  "ja": "凍える寒さ。添え書き。「今日は氷がいりません、魚は勝手に傷みません。値段は同じ」"
+ },
+ "city.mk.weigh.prompt": {
+  "ru": "E — взвесить улов на безмене",
+  "en": "E — weigh the catch on the steelyard",
+  "ja": "E：吊り秤で魚を量る"
+ },
+ "city.mk.weigh.title": {
+  "ru": "Безмен",
+  "en": "The steelyard",
+  "ja": "吊り秤"
+ },
+ "city.mk.weigh.keys": {
+  "ru": "E — остановить гирьку",
+  "en": "E — stop the sliding weight",
+  "ja": "E：分銅を止める"
+ },
+ "city.mk.weigh.win.1": {
+  "ru": "Стрелка встала ровно на килограмм. Торговка кивает: «Глаз как у меня. Держи, это к ухе».",
+  "en": "The beam settles exactly at a kilo. The seller nods: \"An eye like mine. Here, that's for your soup.\"",
+  "ja": "竿がぴたりと一キロで止まった。売り子がうなずく。「私と同じ目だね。ほら、スープのおまけだよ」"
+ },
+ "city.mk.weigh.win.2": {
+  "ru": "Рядом кто-то с уважением присвистнул. Безмен покачался и успокоился.",
+  "en": "Somebody nearby whistles in respect. The steelyard sways, then settles.",
+  "ja": "近くで誰かが感心して口笛を吹いた。吊り秤は揺れて、静かになった。"
+ },
+ "city.mk.weigh.lose.1": {
+  "ru": "Гирька проскочила отметку, улов перевесил. «Не торопись, — говорит торговка. — Она сама знает, где встать».",
+  "en": "The weight shot past the mark and the catch won. \"Don't rush,\" says the seller. \"It knows where to stop.\"",
+  "ja": "分銅は目盛りを通り越し、魚のほうが重かった。「急がないで」と売り子。「分銅は止まる場所を知ってるから」"
+ },
+ "city.mk.weigh.lose.2": {
+  "ru": "Рыбина на чаше недовольно блеснула боком. Ты сдвигаешь гирьку обратно к нулю.",
+  "en": "The fish on the pan flashes its side, unimpressed. You slide the weight back to zero.",
+  "ja": "皿の上の魚は不満そうに横腹を光らせた。僕は分銅をゼロまで戻す。"
+ },
+ "city.mk.weigh.draw.1": {
+  "ru": "Почти: на два пальца мимо. Торговка прищурилась: «Для первого раза сойдёт, приходи ещё».",
+  "en": "Nearly: two fingers off. The seller squints: \"Good enough for a first go, come again.\"",
+  "ja": "惜しい、指二本ぶんずれた。売り子は目を細める。「初めてならまあまあ。また来なさい」"
+ },
+ "city.mk.weigh.after.1": {
+  "ru": "Безмен пустой: торговка накрыла чашу салфеткой и вытерла руки о фартук. На сегодня взвесили достаточно.",
+  "en": "The steelyard is empty: the seller has covered the pan with a cloth and wiped her hands on her apron. Enough weighing for today.",
+  "ja": "吊り秤は空だ。売り子は皿に布をかけ、エプロンで手をふいた。今日はもう十分量った。"
+ },
+ "city.mk.weigh.after.2": {
+  "ru": "Безмен чуть покачивается от сквозняка. Гирька стоит на нуле, рядом лежит мел для отметок.",
+  "en": "The steelyard sways a little in the draught. The weight rests at zero, a piece of chalk beside it for the marks.",
+  "ja": "吊り秤が隙間風で少し揺れている。分銅はゼロに戻り、横には印をつけるチョークがある。"
+ },
+ "city.mk.cuts.prompt": {
+  "ru": "E — прочесть таблицу разруба",
+  "en": "E — read the cuts chart",
+  "ja": "E：部位の表を読む"
+ },
+ "city.mk.cuts.1": {
+  "ru": "Таблица разруба: на ней свиная туша расчерчена на части, как карта. Мясник говорит, что помнит её с закрытыми глазами.",
+  "en": "The cuts chart: a pig carcass drawn out in parts like a map. The butcher says he knows it with his eyes shut.",
+  "ja": "部位の表。豚の枝肉が地図のように区切られている。肉屋は目をつぶっても覚えていると言う。"
+ },
+ "city.mk.cuts.2": {
+  "ru": "У таблицы с утра стоят хозяйки: «Это на борщ, это на жаркое». Пальцы идут по линиям, как по расписанию автобуса.",
+  "en": "Housewives stand at the chart from early morning: \"That's for borscht, that's for a roast.\" Fingers follow the lines like a bus timetable.",
+  "ja": "朝から主婦たちが表の前に立つ。「これはボルシチ用、これはローストに」。指がバスの時刻表をなぞるように線を追う。"
+ },
+ "city.mk.cuts.3": {
+  "ru": "К вечеру у таблицы остаётся один покупатель, зато надолго: он выбирает вырезку на праздник и спорит сам с собой.",
+  "en": "By evening only one customer is left at the chart, but for a long time: he is choosing tenderloin for a holiday and arguing with himself.",
+  "ja": "夕方、表の前に残るのはお客一人だけ。でも長い。祝いの席のヒレ肉を選びながら、自分と議論している。"
+ },
+ "city.mk.cuts.4": {
+  "ru": "Таблица под фонарём. Ночью она похожа на карту чужой страны: Шея, Лопатка, Голяшка, Грудинка.",
+  "en": "The chart under the lamp. At night it looks like a map of a foreign country: Neck, Shoulder, Shank, Brisket.",
+  "ja": "ランプの下の表。夜は異国の地図のようだ。ネック、肩、すね、バラ。"
+ },
+ "city.mk.text.cuts.title": {
+  "ru": "Таблица разруба",
+  "en": "The cuts chart",
+  "ja": "部位の表"
+ },
+ "city.mk.text.cuts.1": {
+  "ru": "Свинина. Шея: на жаркое и шашлык. Карбонад: на отбивные. Грудинка, слоями мяса и сала: в борщ или в коптильню. Окорок: на праздник.",
+  "en": "Pork. Neck: for roasts and kebabs. Loin: for chops. Belly, in layers of meat and fat: for borscht or the smokehouse. Ham: for a holiday.",
+  "ja": "豚肉。ネック：ローストや串焼きに。ロース：チョップに。肉と脂が層になったバラ：ボルシチか燻製に。もも：お祝いに。"
+ },
+ "city.mk.text.cuts.2": {
+  "ru": "Говядина. Вырезка: самое нежное, берут по граммам. Лопатка: для тушения. Голяшка: для холодца, сваришь, и назавтра он дрожит на тарелке.",
+  "en": "Beef. Tenderloin: the softest, bought by the gram. Shoulder: for stewing. Shank: for aspic, boil it and next day it quivers on the plate.",
+  "ja": "牛肉。ヒレ：いちばん柔らかく、グラム単位で買う。肩：煮込みに。すね：ゼリー寄せに、煮れば翌日には皿の上で震える。"
+ },
+ "city.mk.text.cuts.3": {
+  "ru": "Кости. Мозговая кость: на навар. Рёбра: в суп. Хвост и ножки: для самых терпеливых. Косточку для собаки мясник отдаёт даром, если попросить.",
+  "en": "Bones. Marrow bone: for broth. Ribs: for soup. Tail and trotters: for the most patient. The butcher gives a bone for a dog free, if you ask.",
+  "ja": "骨。骨髄の骨：だしに。あばら：スープに。尾と足：いちばん辛抱強い人に。犬のための骨は、頼めば肉屋がただでくれる。"
+ },
+ "city.mk.text.cuts.4": {
+  "ru": "Как выбрать. Хорошее мясо упруго возвращает пальцем вмятину. Жир белый, не жёлтый. Запах только мясной. Сомневаешься: спроси мясника, он не обидится.",
+  "en": "How to choose. Good meat springs back when you press it. The fat is white, not yellow. It smells of meat and nothing else. In doubt, ask the butcher: he won't mind.",
+  "ja": "選び方。いい肉は指で押すと弾力で戻る。脂は黄色でなく白。匂いは肉の匂いだけ。迷ったら肉屋に聞くといい、嫌な顔はされない。"
+ },
+ "city.mk.hooks.prompt": {
+  "ru": "E — осмотреть крюки",
+  "en": "E — look over the hooks",
+  "ja": "E：フックを見る"
+ },
+ "city.mk.hooks.1": {
+  "ru": "Свежие туши с утренней машины: на крюках ещё холод. Мясник ходит между ними с точилом и не торопится.",
+  "en": "Fresh carcasses from the morning truck: the hooks are still cold. The butcher walks between them with his steel and takes his time.",
+  "ja": "朝のトラックで着いたばかりの枝肉。フックはまだ冷たい。肉屋は研ぎ棒を持って間を歩き、急がない。"
+ },
+ "city.mk.hooks.2": {
+  "ru": "Крюки позвякивают, когда проходит тележка с ящиками. К полудню на них остаётся половина.",
+  "en": "The hooks clink when a cart of crates goes by. By noon half of what hung there is gone.",
+  "ja": "木箱を積んだ台車が通るとフックがちりんと鳴る。昼までに、掛かっていた半分がなくなる。"
+ },
+ "city.mk.hooks.3": {
+  "ru": "Крюки пусты, рейка накрыта клеёнкой. Под ней в тишине покачивается один, забытый, пустой крючок.",
+  "en": "The hooks are bare, the rail covered with oilcloth. Under it one forgotten empty hook sways in the quiet.",
+  "ja": "フックは空で、レールには油布がかけてある。その下で、忘れられた空のフックが一つ静かに揺れている。"
+ },
+ "city.mk.hooks.4": {
+  "ru": "В субботу на крюках лишний окорок, к воскресному столу. На бирке мелом: «Не трогать, заказан».",
+  "en": "On Saturday there is an extra ham on the hooks, for Sunday dinners. A chalk tag: \"Don't touch, ordered.\"",
+  "ja": "土曜日、日曜の食卓用にもも肉が一本多く掛かっている。チョークの札。「触らないで、予約済み」"
+ },
+ "city.mk.bone.prompt": {
+  "ru": "E — посмотреть на миску",
+  "en": "E — look at the bowl",
+  "ja": "E：皿を見る"
+ },
+ "city.mk.bone.1": {
+  "ru": "Эмалированная миска у крюков: пустая, чисто вымытая. На кирпиче мелом: «Для Жука».",
+  "en": "An enamel bowl by the hooks: empty and scrubbed clean. In chalk on the brick: \"For Zhuk.\"",
+  "ja": "フックのそばのほうろうの皿。空っぽで、きれいに洗ってある。レンガにチョークで「ジュークの分」。"
+ },
+ "city.mk.bone.2": {
+  "ru": "В миске мозговая кость, завёрнутая в бумагу. Говорят, к утру её нет, а миска вылизана.",
+  "en": "In the bowl lies a marrow bone wrapped in paper. They say by morning it is gone and the bowl licked clean.",
+  "ja": "皿には紙に包んだ骨髄の骨が入っている。朝にはなくなり、皿はなめたようにきれいだという。"
+ },
+ "city.mk.bone.3": {
+  "ru": "Рядом с миской на пыли следы лап, крупные, с широкой пяткой. Жук приходит, когда ряды закрывают.",
+  "en": "Paw prints in the dust by the bowl, big ones with a broad heel. Zhuk comes when the rows close.",
+  "ja": "皿の横のほこりに大きな足跡、かかとが広い。ジュークは市場が閉まる頃に来る。"
+ },
+ "city.mk.bone.4": {
+  "ru": "Миска пуста. На кирпиче дописано: «Сегодня косточки нет. Спроси у мясника». Может, он что-нибудь отложил.",
+  "en": "The bowl is empty. More chalk on the brick: \"No bone today. Ask the butcher.\" Maybe he has set something aside.",
+  "ja": "皿は空だ。レンガに書き足してある。「今日は骨がない。肉屋に聞いて」。何か取っておいてくれたかもしれない。"
+ },
+ "city.mk.bell.prompt": {
+  "ru": "E — тронуть верёвку колокола",
+  "en": "E — touch the bell rope",
+  "ja": "E：鐘の綱にふれる"
+ },
+ "city.mk.bell.1": {
+  "ru": "Медный колокол на столбе у входа. Сейчас {time}. Им открывают ряды утром и закрывают вечером, а верёвку трогает только дежурный.",
+  "en": "The brass bell on the post by the entrance. It is {time}. It opens the rows in the morning and closes them in the evening, and only the duty man touches the rope.",
+  "ja": "入口の柱に下がる真鍮の鐘。今は{time}。朝に市場を開け、夕方に閉める鐘で、綱にふれるのは当番だけだ。"
+ },
+ "city.mk.bell.2": {
+  "ru": "{time}. Колокол ещё холодный. Скоро дежурный ударит три раза, и ряды зашевелятся.",
+  "en": "{time}. The bell is still cold. Soon the duty man will strike three times and the rows will stir.",
+  "ja": "{time}。鐘はまだ冷たい。もうすぐ当番が三回打ち、市場が動き出す。"
+ },
+ "city.mk.bell.3": {
+  "ru": "{time}. До вечера колокол молчит. Узел на верёвке завязан высоко: так видно, взрослый дёргает или мальчишка.",
+  "en": "{time}. The bell is quiet until evening. The knot on the rope is tied high, so you can tell a grown-up from a boy.",
+  "ja": "{time}。夕方まで鐘は鳴らない。綱の結び目が高いところにあり、大人か子どもかすぐわかる。"
+ },
+ "city.mk.bell.4": {
+  "ru": "{time}. Скоро закрытие, дежурный уже оглядывает ряды. Первый удар: «покупайте», второй: «последний круг», третий: «расходитесь».",
+  "en": "{time}. Closing soon, the duty man is already surveying the rows. First stroke: \"buy now\", second: \"last round\", third: \"off you go\".",
+  "ja": "{time}。もうすぐ閉店で、当番が市場を見回している。一回目は「買うなら今」、二回目は「最後の一回り」、三回目は「お帰りを」。"
+ },
+ "city.mk.bell.5": {
+  "ru": "{time}. Рынок закрыт. Колокол спит, верёвка подвязана к столбу, чтобы ветер её не качал.",
+  "en": "{time}. The market is shut. The bell sleeps, its rope tied to the post so the wind won't swing it.",
+  "ja": "{time}。市場は閉まっている。鐘は眠り、風で揺れないよう綱は柱に結ばれている。"
+ },
+ "city.mk.tickets.prompt": {
+  "ru": "E — прочитать бирки",
+  "en": "E — read the tags",
+  "ja": "E：札を読む"
+ },
+ "city.mk.tickets.1": {
+  "ru": "Бирки на доске у точила: «Нож, 10 копеек. Ножницы, 5. Топор, по уговору». Утром очередь из трёх ножей и топорика.",
+  "en": "Tags on the board by the grindstone: \"Knife, 10 kopecks. Scissors, 5. Axe, by agreement.\" In the morning a queue of three knives and a hatchet.",
+  "ja": "砥石のそばの板に札。「ナイフ10コペイカ、はさみ5、斧は相談」。朝はナイフ三本と手斧の列だ。"
+ },
+ "city.mk.tickets.2": {
+  "ru": "Дневные бирки: «Заберёте до пяти». Сейчас {time}, ножи ещё лежат в очереди на точило.",
+  "en": "Daytime tags: \"Collect before five.\" It is {time}, the knives still wait their turn at the stone.",
+  "ja": "昼の札。「五時までにお引き取りを」。今は{time}、ナイフはまだ砥石の順番を待っている。"
+ },
+ "city.mk.tickets.3": {
+  "ru": "К вечеру бирок меньше. Три с пометкой «Заберу завтра», одна с рисунком ножа вместо имени.",
+  "en": "Fewer tags by evening. Three marked \"Will collect tomorrow\", one with a drawing of a knife instead of a name.",
+  "ja": "夕方には札が減る。「明日取りに来ます」が三枚、名前の代わりにナイフの絵が描かれたのが一枚。"
+ },
+ "city.mk.tickets.4": {
+  "ru": "Доска пуста, точило накрыто мешком, бирки сняты. До утра ножи не точат.",
+  "en": "The board is bare, the grindstone covered with a sack, the tags taken down. No knives are sharpened before morning.",
+  "ja": "板は空で、砥石には袋がかけられ、札も外されている。朝まではナイフは研がれない。"
+ },
+ "city.mk.tickets.5": {
+  "ru": "По субботам на бирках ножницы парикмахерской и два перочинных ножа в синей ленте: очередь небольшая, зато серьёзная.",
+  "en": "On Saturdays the tags carry the barber's scissors and two penknives tied with blue tape: a short queue, but a serious one.",
+  "ja": "土曜日の札には理髪店のはさみと、青いテープを巻いた小刀が二本。行列は短いが本格的だ。"
+ },
+ "city.coll.market_rows.title": {
+  "ru": "Ряды рынка",
+  "en": "Rows of the Market",
+  "ja": "市場の通り"
+ },
+ "quest.rows_walk.title": {
+  "ru": "Обход рядов",
+  "en": "Walking the Rows",
+  "ja": "市場の列を歩く"
+ },
+ "quest.rows_walk.desc": {
+  "ru": "Мясник советует сперва выучить таблицу разруба, рыбница показывает карпов, а потом надо самому взвесить улов. Так учатся покупать.",
+  "en": "The butcher says learn the cuts chart first, the fishwife shows her carp, and then you must weigh a catch yourself. That is how you learn to buy.",
+  "ja": "肉屋はまず部位の表を覚えろと言い、魚屋はコイを見せてくれる。そのあと自分で魚を量ってみる。買い物はそうやって覚えるのだ。"
+ },
+ "quest.rows_walk.cuts.log": {
+  "ru": "У крайнего мясного прилавка стоит таблица разруба.",
+  "en": "The cuts chart stands at the end of the meat row.",
+  "ja": "肉の列の端に部位の表が立っている。"
+ },
+ "quest.rows_walk.cuts_chart.obj": {
+  "ru": "Прочесть таблицу разруба",
+  "en": "Read the cuts chart",
+  "ja": "部位の表を読む"
+ },
+ "quest.rows_walk.carp.log": {
+  "ru": "В рыбном ряду, у садка, живые карпы.",
+  "en": "Live carp in the tank in the fish row.",
+  "ja": "魚の列の生けすに生きたコイがいる。"
+ },
+ "quest.rows_walk.carp_look.obj": {
+  "ru": "Заглянуть в садок с карпами",
+  "en": "Look into the carp tank",
+  "ja": "コイの生けすをのぞく"
+ },
+ "quest.rows_walk.weigh.log": {
+  "ru": "Рядом с садком висит безмен. Торговка разрешает попробовать.",
+  "en": "A steelyard hangs next to the tank. The seller lets you try.",
+  "ja": "生けすの隣に吊り秤が下がっている。売り子が試させてくれる。"
+ },
+ "quest.rows_walk.weigh_win.obj": {
+  "ru": "Взвесить улов на безмене",
+  "en": "Weigh the catch on the steelyard",
+  "ja": "吊り秤で魚を量る"
+ },
+ "quest.rows_walk.bone.log": {
+  "ru": "У мясных крюков стоит миска для Жука.",
+  "en": "By the meat hooks stands a bowl for Zhuk.",
+  "ja": "肉のフックのそばにジュークの皿がある。"
+ },
+ "quest.rows_walk.bone_bowl.obj": {
+  "ru": "Посмотреть на миску у крюков",
+  "en": "Look at the bowl by the hooks",
+  "ja": "フックのそばの皿を見る"
+ },
+ "quest.rows_walk.done": {
+  "ru": "Мясник и рыбница переглянулись: «Теперь не обманут». Мясник сунул тебе тридцать рублей на сдачу от ничего. «Это за науку».",
+  "en": "The butcher and the fishwife exchanged a look: \"Now nobody will cheat you.\" The butcher pressed thirty roubles into your hand for no reason. \"For learning.\"",
+  "ja": "肉屋と魚屋は目を見合わせた。「これでもうごまかされないな」。肉屋は理由もなく三十ルーブルを僕の手に握らせた。「勉強代だ」"
  }
 }

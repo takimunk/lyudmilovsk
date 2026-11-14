@@ -883,6 +883,96 @@ def _depth2(B):
     B.spot("canteen_kitchen_work", "work", (23.2, 38.6, 0.0), 0.0)
 
 
+# ---------------------------------------------------------------- fourth pass: the yard, the staff room, the gym walls, the canteen walls
+def _hopscotch_piece(m):
+    rows = ((0.0,), (0.0,), (-0.31, 0.31), (0.0,), (-0.31, 0.31), (0.0,), (-0.31, 0.31))
+    for r, xs in enumerate(rows):
+        for u in xs:
+            box(m, "CT_TileWhite" if (r + (u > 0)) % 2 else "CT_PlasterBlue", u - 0.27, u + 0.27, r * 0.6 - 0.27, r * 0.6 + 0.27, 0.0, 0.012)
+    box(m, "CT_PlasterYellow", -0.45, 0.45, 7 * 0.6 - 0.27, 7 * 0.6 + 0.3, 0.0, 0.012)
+
+
+def _bike_rack_piece(m):
+    for y in (-0.42, 0.42):
+        box(m, "CT_Steel", -1.35, 1.35, y - 0.025, y + 0.025, 0.1, 0.14)
+        for x in (-1.3, -0.4, 0.4, 1.3):
+            box(m, "CT_Steel", x - 0.025, x + 0.025, y - 0.025, y + 0.025, 0.0, 0.14)
+    for x in (-0.4, 0.4):
+        box(m, "CT_Steel", x - 0.02, x + 0.02, -0.42, 0.42, 0.1, 0.13)
+
+
+def _weather_post_piece(m):
+    box(m, "CT_Steel", -0.03, 0.03, -0.03, 0.03, 0.0, 2.3)
+    box(m, "CT_Wood", -0.17, 0.17, -0.09, -0.03, 1.45, 2.05)
+    box(m, "CT_TileWhite", -0.15, 0.15, -0.095, -0.09, 1.5, 2.0)
+    box(m, "CT_Steel", -0.012, 0.012, -0.1, -0.095, 1.58, 1.95)
+    box(m, "CT_PlasterRed", -0.008, 0.008, -0.103, -0.1, 1.58, 1.82)
+    for k in range(6):
+        box(m, "CT_Frame", 0.02, 0.06 + 0.02 * (k % 2), -0.1, -0.097, 1.6 + 0.06 * k, 1.612 + 0.06 * k)
+    box(m, "CT_Steel", -0.35, 0.35, -0.01, 0.01, 2.3, 2.32)
+    box(m, "CT_PlasterRed", 0.28, 0.45, -0.02, 0.02, 2.29, 2.33)
+    box(m, "CT_Steel", -0.45, -0.28, -0.07, 0.07, 2.28, 2.34)
+
+
+def _springboard_piece(m):
+    for k in range(3):
+        box(m, "CT_Wood", -0.4, 0.4, -0.3 + 0.2 * k, -0.1 + 0.2 * k, 0.0, 0.07 + 0.06 * k)
+    box(m, "CT_PlasterRed", -0.4, 0.4, 0.3, 0.38, 0.0, 0.26)
+
+
+def _depth4(B):
+    """Fourth pass: the yard (hopscotch, bike rack, weather post, bird feeder, garden board), the staff room (journal, duty
+    rota, pigeonholes), the gym (lockers with notes, vaulting horse, records board), the canteen (drawings, dish board)."""
+    K = kit
+    f = Furn(B)
+    # ---------------------------------------------------------------- yard
+    f.put(_hopscotch_piece, -3.0, 21.0, 0.0)
+    B.thing("yard_hopscotch", "sport", (-3.0, 22.2, 0.02), 0.0, what="hopscotch")
+    B.spot("yard_hop_stand", "stand", (-3.0, 20.2, 0.0), 180.0)
+    f.put(_bike_rack_piece, 14.5, 19.0, 0.0)
+    for bx, bm in ((13.7, "CT_SteelRed"), (14.5, "CT_PlasterBlue"), (15.3, "CT_PlasterGreen")):
+        K.bicycle(B, bx, 19.0, 0.0, 0.0, kind="stand", mat=bm)
+    B.thing("yard_bikes", "machine", (14.5, 19.0, 0.9), 0.0, what="bike_rack")
+    B.spot("yard_bikes_stand", "stand", (14.5, 17.4, 0.0), 180.0)
+    f.put(_weather_post_piece, -15.5, 20.0, 0.0)
+    B.thing("yard_weather", "board", (-15.5, 19.9, 1.75), 0.0, topic="weather")
+    B.spot("yard_weather_stand", "stand", (-15.5, 18.6, 0.0), 180.0)
+    K.bird_feeder(B, 9.5, 33.5, 0.0, 0.0, kind="post")
+    B.thing("yard_feeder", "machine", (9.5, 33.5, 1.5), 0.0, what="bird_feeder")
+    B.spot("yard_feeder_stand", "stand", (9.5, 32.2, 0.0), 180.0)
+    K.notice_stand(B, 9.4, 25.2, 0.0, 0.0, w=1.2, front="notice_1", back="kids_2")
+    B.thing("yard_garden_board", "board", (9.4, 25.0, 1.4), 0.0, topic="garden")
+    B.spot("yard_garden_stand", "stand", (9.4, 23.6, 0.0), 180.0)
+    # ---------------------------------------------------------------- staff room: journal, duty rota, pigeonholes
+    K.books_stack(B, 11.1, 10.72, 0.75, 340.0, n=2, seed=5)
+    B.thing("staff_journal", "board", (11.1, 10.72, 0.85), 0.0, topic="journal")
+    B.spot("staff_journal_stand", "stand", (11.1, 11.6, 0.0), 0.0)
+    K.notice_board(B, 8.7, 14.3, 0.0, 0.0, w=0.8, zc=1.6, seed=9)
+    B.thing("staff_rota", "board", (8.7, 14.25, 1.6), 0.0, topic="rota")
+    K.mailboxes(B, 10.4, 14.3, 0.0, 0.0, cols=4, rows=3, zc=1.3, seed=3)
+    B.thing("staff_pigeonholes", "board", (10.4, 14.2, 1.3), 0.0, topic="pigeonholes")
+    B.spot("staff_rota_stand", "stand", (9.6, 13.2, 0.0), 180.0)
+    # ---------------------------------------------------------------- gym: lockers with notes, vaulting horse, records
+    K.lockers(B, 13.7, 41.9, 0.0, 270.0, n=4, mat="CT_PlasterGreen")
+    B.thing("gym_lockers", "board", (13.2, 41.9, 1.2), 270.0, topic="lockers")
+    B.spot("gym_lockers_stand", "stand", (12.2, 41.9, 0.0), 90.0)
+    K.vaulting_horse(B, -3.5, 52.5, 0.0, 0.0)
+    f.put(_springboard_piece, -3.5, 51.3, 0.0)
+    B.thing("gym_vault", "sport", (-3.5, 52.5, 1.1), 0.0, what="vault")
+    B.spot("gym_vault_run", "stand", (-3.5, 49.8, 0.0), 180.0)
+    K.notice_board(B, -13.7, 49.3, 0.0, 90.0, w=1.2, zc=1.7, seed=11)
+    B.thing("gym_records", "board", (-13.6, 49.3, 1.7), 90.0, topic="records")
+    B.spot("gym_records_stand", "stand", (-12.4, 49.3, 0.0), 270.0)
+    # ---------------------------------------------------------------- canteen: pupils' drawings, dish board
+    for k, xx in enumerate((25.4, 25.85, 26.3)):
+        K.picture(B, xx, 15.76, 0.0, 180.0, name="paper_drawing", w=0.34, zc=1.5, seed=20 + k)
+    B.thing("canteen_drawings", "board", (25.85, 15.9, 1.5), 180.0, topic="drawings")
+    B.spot("canteen_drawings_stand", "stand", (25.85, 17.0, 0.0), 0.0)
+    K.menu_board(B, 29.4, 39.94, 0.0, 0.0, name="price_1", w=0.5, zc=1.9)
+    B.thing("canteen_dishes", "board", (29.4, 39.85, 1.9), 0.0, topic="dishes")
+    B.spot("canteen_dishes_stand", "stand", (29.2, 38.6, 0.0), 180.0)
+
+
 def build(B):
     m, d = B.m, B.detail
     # ================================================================== south wing (street)
@@ -1062,6 +1152,7 @@ def build(B):
     _gym(B)
     _depth(B)
     _depth2(B)
+    _depth4(B)
     # saw-tooth roof: 4 teeth along y (each 4 m), ramps rise to +y, vertical faces glazed facing +y
     # build CCW polygon: bottom left->right (y 40->56), then back along the top from y=56 to 40
     top = [(56.0, HZ)]

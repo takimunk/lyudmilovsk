@@ -509,6 +509,16 @@
    "yaw": 166.66693696454166
   },
   {
+   "id": "bakery_bread_stand",
+   "kind": "stand",
+   "pos": [
+    -28.55,
+    6.261,
+    0.0
+   ],
+   "yaw": 90
+  },
+  {
    "id": "core1_porter",
    "kind": "counter",
    "pos": [
@@ -1029,6 +1039,36 @@
    "yaw": 178.0763034400474
   },
   {
+   "id": "bank_coins_stand",
+   "kind": "stand",
+   "pos": [
+    15.05,
+    14.558,
+    0.0
+   ],
+   "yaw": 4.383864688480018
+  },
+  {
+   "id": "salon_styles_stand",
+   "kind": "stand",
+   "pos": [
+    21.45,
+    15.324,
+    0.0
+   ],
+   "yaw": 90
+  },
+  {
+   "id": "salon_trolley_stand",
+   "kind": "stand",
+   "pos": [
+    20.95,
+    15.55,
+    0.0
+   ],
+   "yaw": 87.36284657646276
+  },
+  {
    "id": "core3_porter",
    "kind": "counter",
    "pos": [
@@ -1157,6 +1197,26 @@
     0.0
    ],
    "yaw": -13.774909154858943
+  },
+  {
+   "id": "fabric_cut_stand",
+   "kind": "stand",
+   "pos": [
+    31.15,
+    14.279,
+    0.0
+   ],
+   "yaw": 167.77876989058134
+  },
+  {
+   "id": "fabric_remnants_stand",
+   "kind": "stand",
+   "pos": [
+    31.35,
+    12.285,
+    0.0
+   ],
+   "yaw": -12.336409675862079
   },
   {
    "id": "arcade_board_stand",
@@ -1645,19 +1705,6 @@
    }
   },
   {
-   "id": "kit_clock_1",
-   "kind": "board",
-   "pos": [
-    -33.462,
-    15.07,
-    2.6
-   ],
-   "yaw": -13.3,
-   "props": {
-    "what": "clock"
-   }
-  },
-  {
    "id": "shop_a_counter",
    "kind": "counter",
    "pos": [
@@ -1689,7 +1736,7 @@
    "id": "bakery_right_1",
    "kind": "shelf",
    "pos": [
-    -27.875,
+    -27.882,
     10.475,
     1.3
    ],
@@ -1702,7 +1749,7 @@
    "id": "bakery_right_2",
    "kind": "shelf",
    "pos": [
-    -27.875,
+    -27.882,
     11.525,
     1.3
    ],
@@ -1715,7 +1762,7 @@
    "id": "bakery_right_3",
    "kind": "shelf",
    "pos": [
-    -27.875,
+    -27.882,
     12.575,
     1.3
    ],
@@ -1728,7 +1775,7 @@
    "id": "bakery_left_1",
    "kind": "shelf",
    "pos": [
-    -36.975,
+    -36.968,
     12.484,
     1.3
    ],
@@ -1741,7 +1788,7 @@
    "id": "bakery_left_2",
    "kind": "shelf",
    "pos": [
-    -36.975,
+    -36.968,
     13.584,
     1.3
    ],
@@ -1754,7 +1801,7 @@
    "id": "bakery_left_3",
    "kind": "shelf",
    "pos": [
-    -36.975,
+    -36.968,
     14.684,
     1.3
    ],
@@ -1865,6 +1912,45 @@
    "yaw": -13.3,
    "props": {
     "topic": "prices"
+   }
+  },
+  {
+   "id": "bakery_bread_day",
+   "kind": "board",
+   "pos": [
+    -27.75,
+    5.95,
+    1.75
+   ],
+   "yaw": 270,
+   "props": {
+    "topic": "prices"
+   }
+  },
+  {
+   "id": "bakery_orders",
+   "kind": "board",
+   "pos": [
+    -29.1,
+    11.364,
+    1.15
+   ],
+   "yaw": -11.9,
+   "props": {
+    "topic": "prices"
+   }
+  },
+  {
+   "id": "bakery_clock",
+   "kind": "board",
+   "pos": [
+    -33.45,
+    14.843,
+    2.6
+   ],
+   "yaw": -13.3,
+   "props": {
+    "topic": "clock"
    }
   },
   {
@@ -2134,7 +2220,7 @@
    "id": "records_left_1",
    "kind": "shelf",
    "pos": [
-    -22.125,
+    -22.118,
     9.199,
     1.3
    ],
@@ -2147,8 +2233,8 @@
    "id": "records_left_2",
    "kind": "shelf",
    "pos": [
-    -22.125,
-    10.143,
+    -22.118,
+    10.124,
     1.3
    ],
    "yaw": 90.0,
@@ -2160,7 +2246,7 @@
    "id": "records_left_3",
    "kind": "shelf",
    "pos": [
-    -22.125,
+    -22.118,
     11.049,
     1.3
    ],
@@ -2173,7 +2259,7 @@
    "id": "records_left_4",
    "kind": "shelf",
    "pos": [
-    -22.125,
+    -22.118,
     11.974,
     1.3
    ],
@@ -2186,8 +2272,8 @@
    "id": "records_right_1",
    "kind": "shelf",
    "pos": [
-    -15.375,
-    7.888,
+    -15.382,
+    7.894,
     1.3
    ],
    "yaw": 270.0,
@@ -2199,8 +2285,8 @@
    "id": "records_right_2",
    "kind": "shelf",
    "pos": [
-    -15.375,
-    8.876,
+    -15.382,
+    8.888,
     1.3
    ],
    "yaw": 270.0,
@@ -2212,8 +2298,8 @@
    "id": "records_right_3",
    "kind": "shelf",
    "pos": [
-    -15.375,
-    9.918,
+    -15.382,
+    9.888,
     1.3
    ],
    "yaw": 270.0,
@@ -2225,8 +2311,8 @@
    "id": "records_right_4",
    "kind": "shelf",
    "pos": [
-    -15.375,
-    10.936,
+    -15.382,
+    10.888,
     1.3
    ],
    "yaw": 270.0,
@@ -2238,8 +2324,8 @@
    "id": "records_right_5",
    "kind": "shelf",
    "pos": [
-    -15.375,
-    11.888,
+    -15.382,
+    11.87,
     1.3
    ],
    "yaw": 270.0,
@@ -2368,7 +2454,7 @@
    "id": "books_left_1",
    "kind": "shelf",
    "pos": [
-    -9.69,
+    -9.683,
     9.863,
     1.3
    ],
@@ -2381,7 +2467,7 @@
    "id": "books_left_2",
    "kind": "shelf",
    "pos": [
-    -9.69,
+    -9.683,
     10.788,
     1.3
    ],
@@ -2394,7 +2480,7 @@
    "id": "books_left_3",
    "kind": "shelf",
    "pos": [
-    -9.69,
+    -9.683,
     11.713,
     1.3
    ],
@@ -2407,7 +2493,7 @@
    "id": "books_left_4",
    "kind": "shelf",
    "pos": [
-    -9.69,
+    -9.683,
     12.638,
     1.3
    ],
@@ -2420,7 +2506,7 @@
    "id": "books_right_1",
    "kind": "shelf",
    "pos": [
-    -2.81,
+    -2.817,
     9.607,
     1.3
    ],
@@ -2433,7 +2519,7 @@
    "id": "books_right_2",
    "kind": "shelf",
    "pos": [
-    -2.81,
+    -2.817,
     10.523,
     1.3
    ],
@@ -2446,7 +2532,7 @@
    "id": "books_right_3",
    "kind": "shelf",
    "pos": [
-    -2.81,
+    -2.817,
     11.44,
     1.3
    ],
@@ -2459,7 +2545,7 @@
    "id": "books_right_4",
    "kind": "shelf",
    "pos": [
-    -2.81,
+    -2.817,
     12.357,
     1.3
    ],
@@ -2472,7 +2558,7 @@
    "id": "books_right_5",
    "kind": "shelf",
    "pos": [
-    -2.81,
+    -2.817,
     13.273,
     1.3
    ],
@@ -2485,7 +2571,7 @@
    "id": "books_right_6",
    "kind": "shelf",
    "pos": [
-    -2.81,
+    -2.817,
     14.19,
     1.3
    ],
@@ -2816,7 +2902,7 @@
    "id": "hardware_left_1",
    "kind": "shelf",
    "pos": [
-    2.875,
+    2.882,
     11.919,
     1.3
    ],
@@ -2829,7 +2915,7 @@
    "id": "hardware_left_2",
    "kind": "shelf",
    "pos": [
-    2.875,
+    2.882,
     12.819,
     1.3
    ],
@@ -2842,7 +2928,7 @@
    "id": "hardware_left_3",
    "kind": "shelf",
    "pos": [
-    2.875,
+    2.882,
     13.719,
     1.3
    ],
@@ -2855,7 +2941,7 @@
    "id": "hardware_left_4",
    "kind": "shelf",
    "pos": [
-    2.875,
+    2.882,
     14.619,
     1.3
    ],
@@ -2868,7 +2954,7 @@
    "id": "hardware_left_5",
    "kind": "shelf",
    "pos": [
-    2.875,
+    2.882,
     15.519,
     1.3
    ],
@@ -2881,7 +2967,7 @@
    "id": "hardware_right_1",
    "kind": "shelf",
    "pos": [
-    12.125,
+    12.118,
     12.473,
     1.3
    ],
@@ -2894,7 +2980,7 @@
    "id": "hardware_right_2",
    "kind": "shelf",
    "pos": [
-    12.125,
+    12.118,
     13.456,
     1.3
    ],
@@ -2907,7 +2993,7 @@
    "id": "hardware_right_3",
    "kind": "shelf",
    "pos": [
-    12.125,
+    12.118,
     14.44,
     1.3
    ],
@@ -2920,7 +3006,7 @@
    "id": "hardware_right_4",
    "kind": "shelf",
    "pos": [
-    12.125,
+    12.118,
     15.423,
     1.3
    ],
@@ -2933,7 +3019,7 @@
    "id": "hardware_right_5",
    "kind": "shelf",
    "pos": [
-    12.125,
+    12.118,
     16.406,
     1.3
    ],
@@ -2946,7 +3032,7 @@
    "id": "hardware_right_6",
    "kind": "shelf",
    "pos": [
-    12.125,
+    12.118,
     17.39,
     1.3
    ],
@@ -3166,6 +3252,84 @@
    }
   },
   {
+   "id": "bank_clock",
+   "kind": "board",
+   "pos": [
+    12.75,
+    12.319,
+    2.45
+   ],
+   "yaw": 90,
+   "props": {
+    "topic": "clock"
+   }
+  },
+  {
+   "id": "bank_calendar",
+   "kind": "board",
+   "pos": [
+    12.75,
+    13.119,
+    2.45
+   ],
+   "yaw": 90,
+   "props": {
+    "topic": "prices"
+   }
+  },
+  {
+   "id": "bank_coins",
+   "kind": "machine",
+   "pos": [
+    15.15,
+    13.965,
+    0.85
+   ],
+   "yaw": 4.3,
+   "props": {
+    "what": "coin_count"
+   }
+  },
+  {
+   "id": "salon_styles",
+   "kind": "board",
+   "pos": [
+    22.2,
+    15.265,
+    1.15
+   ],
+   "yaw": 270,
+   "props": {
+    "topic": "prices"
+   }
+  },
+  {
+   "id": "salon_trolley",
+   "kind": "machine",
+   "pos": [
+    21.7,
+    16.109,
+    0.9
+   ],
+   "yaw": 86.5,
+   "props": {
+    "what": "hair_trolley"
+   }
+  },
+  {
+   "id": "salon_radio",
+   "kind": "machine",
+   "pos": [
+    20.2,
+    14.528,
+    1.2
+   ],
+   "yaw": -1.1,
+   "props": {
+    "what": "radio"
+   }
+  },
+  {
    "id": "core3_mailboxes",
    "kind": "board",
    "pos": [
@@ -3219,7 +3383,7 @@
    }
   },
   {
-   "id": "kit_clock_6",
+   "id": "kit_clock_7",
    "kind": "board",
    "pos": [
     27.305,
@@ -3288,7 +3452,7 @@
    "id": "fabric_left_1",
    "kind": "shelf",
    "pos": [
-    27.875,
+    27.882,
     13.468,
     1.3
    ],
@@ -3301,7 +3465,7 @@
    "id": "fabric_left_2",
    "kind": "shelf",
    "pos": [
-    27.875,
+    27.882,
     14.388,
     1.3
    ],
@@ -3314,7 +3478,7 @@
    "id": "fabric_left_3",
    "kind": "shelf",
    "pos": [
-    27.875,
+    27.882,
     15.308,
     1.3
    ],
@@ -3327,7 +3491,7 @@
    "id": "fabric_left_4",
    "kind": "shelf",
    "pos": [
-    27.875,
+    27.882,
     16.228,
     1.3
    ],
@@ -3340,7 +3504,7 @@
    "id": "fabric_left_5",
    "kind": "shelf",
    "pos": [
-    27.875,
+    27.882,
     17.148,
     1.3
    ],
@@ -3459,7 +3623,7 @@
    "id": "toys_right_1",
    "kind": "shelf",
    "pos": [
-    36.975,
+    36.968,
     11.345,
     1.3
    ],
@@ -3472,7 +3636,7 @@
    "id": "toys_right_2",
    "kind": "shelf",
    "pos": [
-    36.975,
+    36.968,
     12.265,
     1.3
    ],
@@ -3485,7 +3649,7 @@
    "id": "toys_right_3",
    "kind": "shelf",
    "pos": [
-    36.975,
+    36.968,
     13.185,
     1.3
    ],
@@ -3498,7 +3662,7 @@
    "id": "toys_right_4",
    "kind": "shelf",
    "pos": [
-    36.975,
+    36.968,
     14.105,
     1.3
    ],
@@ -3511,7 +3675,7 @@
    "id": "toys_right_5",
    "kind": "shelf",
    "pos": [
-    36.975,
+    36.968,
     15.025,
     1.3
    ],
@@ -3598,6 +3762,45 @@
    "yaw": -13.6,
    "props": {
     "topic": "kids"
+   }
+  },
+  {
+   "id": "fabric_cutting",
+   "kind": "machine",
+   "pos": [
+    31.15,
+    15.129,
+    1.0
+   ],
+   "yaw": -12.2,
+   "props": {
+    "what": "cutting"
+   }
+  },
+  {
+   "id": "fabric_remnants",
+   "kind": "machine",
+   "pos": [
+    30.8,
+    13.104,
+    0.45
+   ],
+   "yaw": 78.0,
+   "props": {
+    "what": "remnants"
+   }
+  },
+  {
+   "id": "fabric_clock",
+   "kind": "board",
+   "pos": [
+    27.75,
+    14.408,
+    2.5
+   ],
+   "yaw": 90,
+   "props": {
+    "topic": "clock"
    }
   },
   {
@@ -3705,7 +3908,7 @@
    }
   },
   {
-   "id": "kit_clock_7",
+   "id": "kit_clock_9",
    "kind": "board",
    "pos": [
     -14.795,
@@ -26502,8 +26705,8 @@
   "142 flats on 16 storeys, S-curved slab with undulating brise-soleil bands"
  ],
  "tris": {
-  "shell": 49756,
-  "detail": 79044,
+  "shell": 49792,
+  "detail": 80761,
   "windows": 3804
  }
 }

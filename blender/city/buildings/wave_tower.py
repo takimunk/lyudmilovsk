@@ -216,11 +216,11 @@ class Shop:
 
     def left(self, fn, s, **kw):
         y = self.y_front(self.xl) + s
-        return self.check(fn(self.B, self.xl - 0.005, y, 0.0, 90.0, **kw))
+        return self.check(fn(self.B, self.xl + 0.002, y, 0.0, 90.0, **kw))
 
     def right(self, fn, s, **kw):
         y = self.y_front(self.xr) + s
-        return self.check(fn(self.B, self.xr + 0.005, y, 0.0, 270.0, **kw))
+        return self.check(fn(self.B, self.xr - 0.002, y, 0.0, 270.0, **kw))
 
     def left_f(self, fn, s, off=0.35, **kw):
         """A free-standing piece against the left wall (its centre `off` from the wall), facing +x."""
@@ -1333,6 +1333,157 @@ def _roof2(B, zr):
         B.thing("roof_seat_%d" % int(bx), "seat", (bx, yc(bx) - 1.58, zr + 0.55), 0.0, height=0.55)
 
 
+# ==================================================================================================== round 3 (shops)
+# The thinnest shops get a second look: the savings bank (coin tray, bond-draw calendar, clock), the hairdresser
+# (style album, stylist's trolley, radio), the fabrics (cutting table with a brass rule, remnant basket, clock) and the
+# bakery (bread of the day, order ledger, clock). Acts and words: tools/city/content/x_p_wave.json.
+def _coin_tray(B, x, y, z=0.0, yaw=0.0):
+    """[prop] A wooden coin-sorting tray with stacks of brass and steel coins, a paper roll and a small cloth bag."""
+    p = kit._P(B, x, y, z, yaw, "coin_tray")
+    p.kind = "prop"
+    p.bev(kit.WOOD, -0.26, 0.26, -0.15, 0.15, 0.0, 0.035, 0.006)
+    p.box("CT_Leather", -0.24, 0.24, -0.13, 0.13, 0.035, 0.04, f="Z")
+    for k in range(5):
+        for j, h in enumerate((0.05, 0.035)):
+            m = kit.BRASS if (k + j) % 2 == 0 else "CT_Steel"
+            p.cyl(m, -0.2 + k * 0.09, -0.06 + j * 0.1, 0.04, 0.04 + h * (1 + (k % 3) * 0.5), 0.02, 8)
+    p.cyl("CT_Paper", 0.17, 0.1, 0.04, 0.12, 0.022, 8)
+    p.lathe("CT_PlasterBlue", 0.2, -0.06, [(0.0, 0.04), (0.04, 0.045), (0.05, 0.08), (0.025, 0.13), (0.0, 0.13)], 7)
+    return p.done(top=0.14, footprint=(-0.26, 0.26, -0.15, 0.15))
+
+
+def _stylist_trolley(B, x, y, z=0.0, yaw=0.0):
+    """A three-tier steel trolley on castors: a jar of combs, scissors in a case, bottles, curlers in a bowl, towels."""
+    p = kit._P(B, x, y, z, yaw, "stylist_trolley")
+    for sx in (-0.26, 0.26):
+        for sy in (-0.17, 0.17):
+            p.box("CT_Steel", sx - 0.015, sx + 0.015, sy - 0.015, sy + 0.015, 0.05, 0.84, f="xXyY")
+            p.cyl("CT_Steel", sx, sy, 0.0, 0.05, 0.03, 6)
+    for zb in (0.2, 0.5, 0.82):
+        p.bev(kit.ALU, -0.3, 0.3, -0.21, 0.21, zb, zb + 0.025, 0.006)
+    p.cyl("CT_TileWhite", -0.2, -0.05, 0.845, 0.95, 0.045, 8)
+    for k in range(4):
+        p.rod("CT_Leather", (-0.22 + k * 0.014, -0.06, 0.95), (-0.23 + k * 0.03, -0.05, 1.03), 0.012, 3)
+    p.box("CT_Leather", -0.05, 0.12, -0.1, 0.02, 0.845, 0.875, f="xXyYZ")
+    for k, m in enumerate(("CT_Leaf", "CT_PlasterBlue", "CT_PlasterRed")):
+        p.cyl(m, 0.17 + 0.0 * k, -0.12 + k * 0.1, 0.845, 0.99 - 0.04 * k, 0.03, 7, r1=0.022)
+    p.lathe("CT_PlasterPink", 0.05, 0.12, [(0.0, 0.525), (0.1, 0.55), (0.12, 0.62), (0.0, 0.62)], 8, top=False)
+    p.cushion("CT_Paper", -0.26, 0.05, -0.12, 0.14, 0.525, 0.62, puff=0.015)
+    p.cushion("CT_PlasterBlue", -0.25, 0.04, -0.12, 0.14, 0.62, 0.68, puff=0.015)
+    p.core(-0.28, 0.28, -0.19, 0.19, 0.5, 0.52)
+    return p.done(solid=True, top=0.85, footprint=(-0.3, 0.3, -0.21, 0.21), front=0.7)
+
+
+def _cutting_table(B, x, y, z=0.0, yaw=0.0, w=1.3):
+    """A tall cutting table with a brass rule let into the customer edge, a bolt of cloth, shears and chalk."""
+    p = kit._P(B, x, y, z, yaw, "cutting_table")
+    d = 0.62
+    for sx in (-w / 2 + 0.06, w / 2 - 0.06):
+        for sy in (-d / 2 + 0.06, d / 2 - 0.06):
+            p.box(kit.WOOD, sx - 0.03, sx + 0.03, sy - 0.03, sy + 0.03, 0.0, 0.88, f="xXyY")
+    p.bev(kit.WOODL, -w / 2, w / 2, -d / 2, d / 2, 0.88, 0.93, 0.01)
+    p.box("CT_Leather", -w / 2 + 0.05, w / 2 - 0.05, -d / 2 + 0.05, d / 2 - 0.05, 0.3, 0.32, f="xXyYZ")
+    p.box(kit.BRASS, -w / 2 + 0.04, w / 2 - 0.04, -d / 2 + 0.015, -d / 2 + 0.065, 0.93, 0.935, f="Z")
+    for k in range(int((w - 0.1) / 0.1) + 1):
+        h = 0.03 if k % 5 == 0 else 0.018
+        p.box("CT_Steel", -w / 2 + 0.05 + k * 0.1 - 0.004, -w / 2 + 0.05 + k * 0.1 + 0.004, -d / 2 + 0.065, -d / 2 + 0.065 + h, 0.935, 0.937, f="Z")
+    p.rod("CT_PlasterPink", (-0.5, 0.12, 1.0), (0.05, 0.12, 1.0), 0.17, 8)
+    p.rod("CT_PlasterBlue", (-0.2, 0.12, 1.17), (0.3, 0.12, 1.17), 0.15, 8)
+    p.box("CT_PlasterYellow", 0.18, 0.5, -0.12, 0.12, 0.93, 0.945, f="xXyYZ")
+    p.rod("CT_Steel", (0.28, -0.1, 0.96), (0.46, -0.02, 0.96), 0.014, 3)
+    p.rod("CT_Steel", (0.28, -0.02, 0.96), (0.46, -0.1, 0.96), 0.014, 3)
+    p.box("CT_Paper", -0.55, -0.45, -0.17, -0.13, 0.93, 0.95, f="xXyYZ")
+    p.core(-w / 2 + 0.03, w / 2 - 0.03, -d / 2 + 0.03, d / 2 - 0.03, 0.8, 0.9)
+    return p.done(solid=True, top=0.94, footprint=(-w / 2, w / 2, -d / 2, d / 2), front=0.7)
+
+
+def _remnant_basket(B, x, y, z=0.0, yaw=0.0):
+    """A wicker basket heaped with fabric remnants, one strip of print hanging over the front rim."""
+    p = kit._P(B, x, y, z, yaw, "remnant_basket")
+    p.kind = "prop"
+    p.bev("CT_WoodLight", -0.3, 0.3, -0.24, 0.24, 0.0, 0.34, 0.012, 0.05)
+    for k in range(4):
+        zz = 0.06 + k * 0.07
+        p.box("CT_Wood", -0.305, 0.305, -0.245, -0.238, zz, zz + 0.012, f="xXyYZ")
+        p.box("CT_Wood", -0.305, 0.305, 0.238, 0.245, zz, zz + 0.012, f="xXyYZ")
+    for k, (m, a, b, c, d2) in enumerate((("CT_PlasterRed", -0.26, 0.0, -0.18, 0.1), ("CT_PlasterBlue", -0.05, 0.25, -0.12, 0.16),
+                                          ("CT_PlasterYellow", -0.2, 0.1, 0.02, 0.2), ("CT_PlasterGreen", 0.05, 0.27, 0.0, 0.2))):
+        p.cushion(m, a, b, c, d2, 0.3, 0.38 + 0.03 * (k % 2), puff=0.02)
+    p.card_front("fabric_3", -0.14, 0.1, 0.2, 0.36, -0.252)
+    return p.done(top=0.4, footprint=(-0.3, 0.3, -0.24, 0.24), front=0.7)
+
+
+def _ledger(B, x, y, z=0.0, yaw=0.0):
+    """[prop] A fat order ledger in black oilcloth lying open, a pencil on a string and a paper bookmark."""
+    p = kit._P(B, x, y, z, yaw, "ledger")
+    p.kind = "prop"
+    p.box("CT_Leather", -0.17, 0.17, -0.12, 0.12, 0.0, 0.035, f="xXyYZ")
+    p.box("CT_Paper", -0.15, -0.005, -0.1, 0.1, 0.035, 0.05, f="xXyYZ")
+    p.box("CT_Paper", 0.005, 0.15, -0.1, 0.1, 0.035, 0.045, f="xXyYZ")
+    p.rod("CT_PlasterRed", (0.1, -0.05, 0.05), (0.2, -0.13, 0.055), 0.01, 3)
+    p.rod("CT_Wood", (0.02, 0.06, 0.05), (0.14, 0.02, 0.055), 0.012, 4)
+    return p.done(top=0.055)
+
+
+def _clock_thing(S, side, s, zc, tid, r=0.2):
+    """A wall clock on the left/right wall with its `clock` board thing."""
+    if side == "l":
+        S.left(kit.wall_clock, s, zc=zc, r=r)
+        S.B.thing(tid, "board", (S.xl + 0.1, S.y_front(S.xl) + s, zc), 90, topic="clock")
+    else:
+        S.right(kit.wall_clock, s, zc=zc, r=r)
+        S.B.thing(tid, "board", (S.xr - 0.1, S.y_front(S.xr) + s, zc), 270, topic="clock")
+
+
+def _salon3(S):
+    B = S.B
+    # savings bank: a clock and the bond-draw calendar above the notice board, a coin-sorting table
+    _clock_thing(S, "l", 2.5, 2.45, "bank_clock")
+    kit.poster(B, S.xl + 0.012, S.y_front(S.xl) + 3.3, 0.0, 90.0, name="chart_calendar", w=0.4, zc=2.45)
+    B.thing("bank_calendar", "board", (S.xl + 0.1, S.y_front(S.xl) + 3.3, 2.45), 90, topic="prices")
+    tb = S.f(kit.table, 2.5, 3.9, 0, w=0.6, d=0.5, mat=kit.WOOD)
+    ct = S.on_top(_coin_tray, 2.5, 3.9, 0.0, 0.0, z=0.75)
+    x, y = S.P(2.5, 3.9)
+    B.thing("bank_coins", "machine", (x, y, 0.85), S.yw(2.5), what="coin_count")
+    S.spot("bank_coins_stand", "stand", 2.4, 4.5, 0)
+    # hairdresser: the style album on the right wall (three ink drawings), the stylist's trolley, a radio at the desk
+    ys = S.y_front(S.xr) + 5.2
+    kit.mirror(B, S.xr - 0.012, ys, 0.0, 270.0, zc=1.7, w=0.55, h=0.8)
+    kit.wall_shelf(B, S.xr - 0.012, ys, 0.0, 270.0, w=0.8, zt=1.0, props=False)
+    _ledger(B, S.xr - 0.17, ys, 1.0, 270.0)
+    B.thing("salon_styles", "board", (S.xr - 0.15, S.y_front(S.xr) + 5.2, 1.15), 270, topic="prices")
+    S.spot_w("salon_styles_stand", "stand", "r", 5.2)
+    tr = S.f(_stylist_trolley, 9.05, 6.0, a=-90)
+    B.thing("salon_trolley", "machine", (tr["pos"][0], tr["pos"][1], 0.9), S.yw(9.05) + 90, what="hair_trolley")
+    S.spot("salon_trolley_stand", "stand", 8.3, 5.4, 90)
+    rd = S.on_top(kit.radio, 7.0, 4.3, 0.55, 0.05)
+    x, y = S.P(7.55, 4.35)
+    B.thing("salon_radio", "machine", (x, y, 1.2), S.yw(7.0), what="radio")
+
+
+def _toyfab3(S):
+    B = S.B
+    ct = S.f(_cutting_table, 3.5, 6.4, 0, w=1.3)
+    B.thing("fabric_cutting", "machine", (ct["pos"][0], ct["pos"][1], 1.0), S.yw(3.5), what="cutting")
+    S.spot("fabric_cut_stand", "stand", 3.5, 5.55, 180)
+    rb = S.f(_remnant_basket, 3.15, 4.3, a=90)
+    B.thing("fabric_remnants", "machine", (rb["pos"][0], rb["pos"][1], 0.45), S.yw(3.15) + 90, what="remnants")
+    S.spot("fabric_remnants_stand", "stand", 3.7, 3.6, 0)
+    _clock_thing(S, "l", 5.0, 2.5, "fabric_clock")
+
+
+def _bakery3(S):
+    B = S.B
+    kit.poster(B, S.xr - 0.012, S.y_front(S.xr) + 0.95, 0.0, 270.0, name="paper_typed", w=0.45, zc=1.7)
+    B.thing("bakery_bread_day", "board", (S.xr - 0.1, S.y_front(S.xr) + 0.95, 1.75), 270, topic="prices")
+    S.spot_w("bakery_bread_stand", "stand", "r", 1.1)
+    S.on_top(_ledger, 6.6, 6.0, 1.5, 0.1)
+    x, y = S.P(6.6 + 1.5, 6.1)
+    B.thing("bakery_orders", "board", (x, y, 1.15), S.yw(6.6), topic="prices")
+    xb = S.xl + 3.75
+    B.thing("bakery_clock", "board", (xb, S.y_back(xb) - 0.25, 2.6), S.yw(3.75), topic="clock")
+
+
 def furnish(B, rnd):
     done = []
     for a, b, name in UNITS:
@@ -1343,6 +1494,7 @@ def furnish(B, rnd):
              "salon": _salon, "toyfab": _toyfab}[S.trade](S)
             {"bakery": _bakery2, "records": _records2, "books": _books2, "hardware": _hardware2,
              "salon": _salon2, "toyfab": _toyfab2}[S.trade](S)
+            {"bakery": _bakery3, "salon": _salon3, "toyfab": _toyfab3}.get(S.trade, lambda S: None)(S)
             done.append(S)
         elif name.startswith("core"):
             _lobby(B, rnd, a, b, name)

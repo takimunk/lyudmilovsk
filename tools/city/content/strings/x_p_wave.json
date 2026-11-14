@@ -1254,5 +1254,355 @@
   "ru": "Море с одной стороны, город с другой. Теперь понятно, почему башню назвали Волной.",
   "en": "The sea on one side, the town on the other. Now you see why they called it the Wave.",
   "ja": "片側は海、反対側は町。この塔がなぜウェーブと呼ばれるか、やっと分かった。"
+ },
+ "city.wave3.coins.prompt": {
+  "ru": "Пересчитать монеты",
+  "en": "Count the coins",
+  "ja": "硬貨を数える"
+ },
+ "city.wave3.coins.title": {
+  "ru": "Счёт монет",
+  "en": "Coin count",
+  "ja": "硬貨の数え合わせ"
+ },
+ "city.wave3.coins.win.1": {
+  "ru": "Столбики сошлись копейка в копейку. Кассирша кивает через решётку: «Рука у вас счётная».",
+  "en": "The stacks come out to the kopeck. The teller nods through the grille: \"You have a counting hand.\"",
+  "ja": "硬貨の山は一コペイカもずれずに合った。格子の向こうで窓口の女性がうなずく。「数えるのが上手ね」"
+ },
+ "city.wave3.coins.win.2": {
+  "ru": "Пятаки к пятакам, гривенники к гривенникам. В лоточке порядок, лишней монеты ни одной.",
+  "en": "Fives with fives, tens with tens. The tray is in order and not one coin is left over.",
+  "ja": "五コペイカは五コペイカ、十コペイカは十コペイカ。トレーはきれいに片づき、余った硬貨は一枚もない。"
+ },
+ "city.wave3.coins.lose.1": {
+  "ru": "Не хватило двух копеек. Считаю заново: сберкасса ошибок не прощает.",
+  "en": "Two kopecks short. I start again; a savings bank doesn't forgive a miscount.",
+  "ja": "二コペイカ足りない。数え直しだ。貯金窓口は数え間違いを許してくれない。"
+ },
+ "city.wave3.coins.lose.2": {
+  "ru": "Монета закатилась под стол. Пока искал, сбился со счёта.",
+  "en": "A coin rolled under the table. By the time I found it I had lost count.",
+  "ja": "硬貨が机の下に転がった。拾っているうちに数がわからなくなった。"
+ },
+ "city.wave3.coins.draw.1": {
+  "ru": "Почти сошлось: недостаёт одной монеты. Кассирша говорит, что для первого раза неплохо.",
+  "en": "Nearly right, one coin missing. The teller says that's not bad for a first go.",
+  "ja": "ほぼ合った。足りないのは一枚だけ。窓口の女性は、初めてにしては上出来だと言う。"
+ },
+ "city.wave3.coins.after.1": {
+  "ru": "Лоточек пуст: мелочь на сегодня уже пересчитана. Завтра принесут новую.",
+  "en": "The tray is empty: today's small change has been counted. A new bag comes tomorrow.",
+  "ja": "トレーは空だ。今日の小銭はもう数え終えた。新しい袋は明日届く。"
+ },
+ "city.wave3.coins.after.2": {
+  "ru": "Столбики скручены в бумажные патроны, на каждом карандашом написана сумма.",
+  "en": "The stacks are rolled into paper tubes, the sum pencilled on each.",
+  "ja": "硬貨は紙の筒に巻かれ、それぞれに金額が鉛筆で書いてある。"
+ },
+ "city.wave3.cal.prompt": {
+  "ru": "Посмотреть календарь",
+  "en": "Look at the calendar",
+  "ja": "カレンダーを見る"
+ },
+ "city.wave3.cal.1": {
+  "ru": "Настенный календарь сберкассы. Один день обведён красным: «Тираж займа». До него около недели. Рядом карандашом: «Очки не забыть!»",
+  "en": "The savings bank's wall calendar. One day is ringed in red: \"Bond draw\". It is about a week away. Pencilled beside it: \"Don't forget my glasses!\"",
+  "ja": "貯金窓口の壁掛けカレンダー。一日だけ赤丸がついていて、「債券の抽選日」とある。あと一週間ほどだ。横に鉛筆で「眼鏡を忘れずに！」"
+ },
+ "city.wave3.cal.2": {
+  "ru": "Красный кружок всё ближе: тираж на этой неделе. Под ним выписаны серии, которые спрашивают чаще всего. Чья-то рука добавила «7».",
+  "en": "The red ring is getting close: the draw is this week. Under it are the series people ask about most. Someone has added a \"7\".",
+  "ja": "赤丸が近づいてきた。抽選は今週だ。その下に、よく問い合わせのある番号の系列が書き出してある。誰かが「7」と書き足した。"
+ },
+ "city.wave3.cal.3": {
+  "ru": "Тираж на днях. Кассирша разложила стопку чистых бланков и поставила над окошком вторую лампу.",
+  "en": "The draw is any day now. The teller has laid out a stack of blank forms and put a second lamp over the window.",
+  "ja": "抽選はもうすぐだ。窓口の女性は白紙の用紙をひと山並べ、窓の上にもう一つランプを置いた。"
+ },
+ "city.wave3.cal.4": {
+  "ru": "Красный день. У окошка очередь, талоны уходят пачками, а таблица тиража закрыта газетой до полудня.",
+  "en": "The red day. There is a queue at the window, tickets go by the handful, and the draw table is covered with a newspaper until noon.",
+  "ja": "赤丸の日だ。窓口には行列ができ、番号札は束で出ていく。抽選表は昼まで新聞で隠されている。"
+ },
+ "city.wave3.cal.5": {
+  "ru": "Красный кружок зачёркнут, ниже крупно: «Таблица вывешена. Серия 7, номер 318: выплата в окошке». Кто-то приписал: «Нине из 12-й привет».",
+  "en": "The red ring is crossed out, and below in big letters: \"Table posted. Series 7, number 318: payout at the window.\" Someone has added: \"Say hello to Nina in 12.\"",
+  "ja": "赤丸には斜線が引かれ、その下に大きく「抽選表を掲示しました。系列7、番号318、お支払いは窓口で」とある。誰かが「12号室のニーナさんによろしく」と書き添えた。"
+ },
+ "city.wave3.styles.prompt": {
+  "ru": "Полистать альбом причёсок",
+  "en": "Page through the style album",
+  "ja": "ヘアスタイルのアルバムをめくる"
+ },
+ "city.wave3.styles.1": {
+  "ru": "Альбом мастера: рисунки тушью — «бобрик», «каре», «гарсон», «венок из кос». Внизу приписка: «К школе — аккуратная чёлка, к празднику — локоны на папильотках».",
+  "en": "The stylist's album: ink drawings of the \"crop\", the \"bob\", the \"garçon\" and the \"braided crown\". A note at the bottom: \"For school, a tidy fringe; for a holiday, curls set on papers.\"",
+  "ja": "理容師のアルバム。インクで描かれた「刈り上げ」「ボブ」「ギャルソン」「編み込みの冠」。下に書き添えがある。「学校には整った前髪を、お祝いには紙巻きのカールを」"
+ },
+ "city.wave3.styles.2": {
+  "ru": "Вторник и четверг — дамские дни: на перманент записываются за неделю. Лист записи висит на зеркале, свободных строчек мало.",
+  "en": "Tuesday and Thursday are ladies' days: perms are booked a week ahead. The list hangs on the mirror and there are few free lines.",
+  "ja": "火曜と木曜は婦人の日。パーマは一週間前に予約する。予約表は鏡に掛かっていて、空いている行はわずかだ。"
+ },
+ "city.wave3.styles.3": {
+  "ru": "На последней странице совет на дождливые дни: платок вместо шапки, и укладка доживёт до дома.",
+  "en": "The last page has advice for rainy days: a headscarf instead of a hat, and your set will survive the walk home.",
+  "ja": "最後のページに雨の日の心得。帽子ではなくスカーフをかぶれば、セットは家まで持つ。"
+ },
+ "city.wave3.styles.4": {
+  "ru": "Суббота: перед танцами очередь за локонами. Страница «Вечер» затёрта большим пальцем почти до дыр.",
+  "en": "Saturday: a queue for curls before the dance. The \"Evening\" page is thumbed almost through.",
+  "ja": "土曜は、ダンスの前にカールを巻いてもらう人の列ができる。「夜会」のページは親指でこすられて、穴があきそうだ。"
+ },
+ "city.wave3.styles.5": {
+  "ru": "На праздничных страницах косы с лентами и причёска «башня», как у дикторши по телевизору. Запись на сегодня закрыта с утра.",
+  "en": "The holiday pages show braids with ribbons and the \"tower\" do, like the newsreader on television. Today's bookings closed at breakfast.",
+  "ja": "お祝いのページにはリボンつきの三つ編みと、テレビのアナウンサーのような「塔」の髪型。今日の予約は朝のうちに締め切られた。"
+ },
+ "city.wave3.trolley.prompt": {
+  "ru": "Осмотреть тележку мастера",
+  "en": "Look over the stylist's trolley",
+  "ja": "理容師のワゴンを眺める"
+ },
+ "city.wave3.trolley.1": {
+  "ru": "С утра на тележке всё свежее: расчёски в банке с раствором, ножницы по росту, стопка горячих полотенец под салфеткой.",
+  "en": "Fresh from the morning: combs in a jar of disinfectant, scissors in order of size, a stack of hot towels under a cloth.",
+  "ja": "朝の準備が整っている。消毒液の瓶に入った櫛、大きさ順のはさみ、布をかけた温かいタオルの山。"
+ },
+ "city.wave3.trolley.2": {
+  "ru": "К вечеру тележка в работе: бигуди в миске, мокрые полотенца, флакон «Шипра» открыт и пахнет на весь зал.",
+  "en": "By afternoon the trolley is in use: curlers in a bowl, damp towels, a bottle of cologne left open and scenting the whole room.",
+  "ja": "午後になるとワゴンはフル稼働だ。鉢に入ったカーラー、濡れたタオル、栓の開いたオーデコロンの香りが店中に広がっている。"
+ },
+ "city.wave3.trolley.3": {
+  "ru": "Салон закрыт, тележка прибрана: ножницы в чехле, расчёски обсыхают на полотенце, бутылки стоят этикетками к стене.",
+  "en": "The salon is shut and the trolley tidied: scissors in their case, combs drying on a towel, bottles standing with labels to the wall.",
+  "ja": "店は閉まり、ワゴンは片づけられている。はさみはケースに、櫛はタオルの上で乾かされ、瓶はラベルを壁に向けて並んでいる。"
+ },
+ "city.wave3.wait.prompt": {
+  "ru": "Подождать своей очереди",
+  "en": "Wait for your turn",
+  "ja": "順番を待つ"
+ },
+ "city.wave3.wait.1": {
+  "ru": "Диван тёплый от чужих спин. Журналы на столике свежие, листок «кто за кем» заполнен до середины.",
+  "en": "The sofa is warm from other people's backs. The magazines are fresh, and the \"who's next\" list is half full.",
+  "ja": "ソファは先に座っていた人たちの温もりが残っている。雑誌は新しく、「順番表」は半分ほど埋まっている。"
+ },
+ "city.wave3.wait.2": {
+  "ru": "К вечеру очередь растёт: две дамы шепчутся о рецепте пирога, мастер за зеркалом смеётся в голос.",
+  "en": "The queue grows towards evening: two ladies whisper about a pie recipe, and the stylist laughs aloud behind the mirror.",
+  "ja": "夕方には行列が長くなる。二人の婦人がパイのレシピをひそひそ話し、鏡の向こうで理容師が声を上げて笑う。"
+ },
+ "city.wave3.wait.3": {
+  "ru": "Салон закрыт, диван остался. Сквозь стекло видно, как прибирают рабочие места.",
+  "en": "The salon is shut, but the sofa is still here. Through the glass you can see the chairs being tidied.",
+  "ja": "店は閉まっているが、ソファはそのままだ。ガラス越しに、席が片づけられていくのが見える。"
+ },
+ "city.wave3.cut.prompt": {
+  "ru": "Отмерить метр",
+  "en": "Measure a metre",
+  "ja": "一メートル測る"
+ },
+ "city.wave3.cut.title": {
+  "ru": "Метр ситца",
+  "en": "A metre of print",
+  "ja": "更紗を一メートル"
+ },
+ "city.wave3.cut.win.1": {
+  "ru": "Ровно метр по латунной линейке. Продавщица проводит ногтем по сгибу и рвёт полосу одним движением: «Сойдёт на кухонные занавески».",
+  "en": "Exactly a metre by the brass rule. The assistant runs a nail along the fold and tears the strip in one go: \"That will do for kitchen curtains.\"",
+  "ja": "真鍮の物差しでぴったり一メートル。店員さんは折り目を爪でなぞり、ひと息で布を裂いた。「台所のカーテンにちょうどいいわ」"
+ },
+ "city.wave3.cut.win.2": {
+  "ru": "Ножницы идут по ткани как по маслу. Ни сантиметра лишнего, край ровный, хоть сейчас подрубай.",
+  "en": "The shears glide through the cloth. Not a centimetre too much and the edge is straight enough to hem right away.",
+  "ja": "はさみは布の上を滑るように進む。一センチの無駄もなく、端もまっすぐで、そのまま縫い代にできそうだ。"
+ },
+ "city.wave3.cut.lose.1": {
+  "ru": "Отмерил с запасом, а в запас ушло лишних двадцать сантиметров. Продавщица вздыхает: остаток пойдёт в лоскуты.",
+  "en": "I measured with room to spare and twenty centimetres too many went into the spare. The assistant sighs: the rest will go in the remnant basket.",
+  "ja": "余裕をみて測ったら、余分に二十センチも出てしまった。店員さんはため息をつく。残りは端切れのかごに回すそうだ。"
+ },
+ "city.wave3.cut.lose.2": {
+  "ru": "Ткань повело, линия вышла косой. Пришлось подравнивать, и метра уже не вышло.",
+  "en": "The cloth shifted and the line came out slanted. I had to trim it, and it was no longer a full metre.",
+  "ja": "布がずれて線が斜めになった。切りそろえるうちに、一メートルに満たなくなった。"
+ },
+ "city.wave3.cut.draw.1": {
+  "ru": "Метр без двух сантиметров. Продавщица машет рукой: «На подол хватит».",
+  "en": "A metre minus two centimetres. The assistant waves a hand: \"Enough for a hem.\"",
+  "ja": "一メートルに二センチ足りない。店員さんは手を振る。「裾には足りるわ」"
+ },
+ "city.wave3.cut.after.1": {
+  "ru": "На сегодня отрезов достаточно: рулоны сдвинуты, на столе остались мел и ножницы.",
+  "en": "Enough cuts for today: the bolts are pushed aside, only chalk and shears are left on the table.",
+  "ja": "今日の裁断はもう十分だ。反物は端に寄せられ、机にはチョークとはさみだけが残っている。"
+ },
+ "city.wave3.cut.after.2": {
+  "ru": "На латунной линейке кто-то процарапал «1 м» поверх стёртой старой отметки. Видно, что линейку любят.",
+  "en": "Someone has scratched \"1 m\" over a worn old mark on the brass rule. You can tell it is loved.",
+  "ja": "真鍮の物差しの擦り減った印の上に、誰かが「1m」と引っかき直している。大事にされているのがわかる。"
+ },
+ "city.wave3.rem.prompt": {
+  "ru": "Порыться в лоскутах",
+  "en": "Rummage in the remnants",
+  "ja": "端切れをかき回す"
+ },
+ "city.wave3.rem.1": {
+  "ru": "В корзине лоскуты по двадцать копеек за горсть: ситец в цветочек, синий сатин, обрезок шерсти с чужой клеткой.",
+  "en": "Remnants at twenty kopecks a handful: flowered print, blue satin, a scrap of wool with somebody else's check.",
+  "ja": "かごの中の端切れは一つかみ二十コペイカ。花柄の更紗、青いサテン、誰かの格子柄の毛織物の切れ端。"
+ },
+ "city.wave3.rem.2": {
+  "ru": "Среди лоскутов нашёлся длинный голубой обрезок: хватило бы на ленту для волос, а то и на закладку.",
+  "en": "A long blue strip turns up among the scraps: enough for a hair ribbon, or even a bookmark.",
+  "ja": "端切れの中から青い細長い切れ端が出てきた。髪のリボンにも、しおりにもなりそうだ。"
+ },
+ "city.wave3.rem.3": {
+  "ru": "Понедельник, завоз: корзину только что пополнили, сверху лежат яркие куски с краёв новых рулонов.",
+  "en": "Monday, new stock: the basket has just been refilled and bright pieces from the ends of new bolts lie on top.",
+  "ja": "月曜は入荷日。かごは補充されたばかりで、新しい反物の端の鮮やかな切れ端が上に載っている。"
+ },
+ "city.wave3.rem.4": {
+  "ru": "К субботе корзина почти пуста: всё разобрали на платья для кукол и заплатки на школьные локти.",
+  "en": "By Saturday the basket is nearly empty: it has all gone on doll's dresses and patches for school elbows.",
+  "ja": "土曜にはかごはほとんど空だ。人形の服や、学校の服のひじ当てになってしまった。"
+ },
+ "city.wave3.bread.prompt": {
+  "ru": "Прочитать «хлеб дня»",
+  "en": "Read the bread of the day",
+  "ja": "今日のパンを読む"
+ },
+ "city.wave3.bread.mon": {
+  "ru": "Понедельник: ржаной с тмином, горячий к одиннадцати. Булочки с маком только по заказу.",
+  "en": "Monday: caraway rye, hot by eleven. Poppy-seed rolls to order only.",
+  "ja": "月曜日：キャラウェイ入りライ麦パン、十一時に焼きたて。ケシの実のロールは予約のみ。"
+ },
+ "city.wave3.bread.tue": {
+  "ru": "Вторник: нарезной батон и сушки на ниточке. К чаю советуют ватрушки с творогом.",
+  "en": "Tuesday: sliced loaf and dry rings on a string. Curd tarts are recommended with tea.",
+  "ja": "火曜日：切れ目入りの食パンと、紐に通した乾パン。お茶にはカッテージチーズのタルトがおすすめ。"
+ },
+ "city.wave3.bread.wed": {
+  "ru": "Среда: бородинский. Кто успел до полудня, берёт ещё тёплым; кто нет, берёт всё равно.",
+  "en": "Wednesday: Borodino rye. Those who come before noon get it warm; those who don't buy it anyway.",
+  "ja": "水曜日：ボロジノ風ライ麦パン。昼前に来れば温かいうちに買える。間に合わなくても、結局みんな買っていく。"
+ },
+ "city.wave3.bread.thu": {
+  "ru": "Четверг: круглый белый и плетёнка с маком. Крошки со стола смахивают на подоконник, для воробьёв.",
+  "en": "Thursday: round white loaf and poppy-seed plait. Crumbs from the table are swept onto the sill, for the sparrows.",
+  "ja": "木曜日：丸い白パンとケシの実の編みパン。テーブルのパンくずは、スズメのために窓辺へ払われる。"
+ },
+ "city.wave3.bread.fri": {
+  "ru": "Пятница: пирожки с капустой и яйцом, до трёх часов по штуке в руки, потом по две.",
+  "en": "Friday: cabbage-and-egg pasties, one each until three, two each after.",
+  "ja": "金曜日：キャベツと卵のピロシキ。三時までは一人一個、それ以降は二個まで。"
+ },
+ "city.wave3.bread.sat": {
+  "ru": "Суббота: сдобные булки к воскресному чаю и «Наполеон» по записи в книге заказов.",
+  "en": "Saturday: sweet buns for Sunday tea and a \"Napoleon\" cake if it is in the order ledger.",
+  "ja": "土曜日：日曜のお茶用の甘いパンと、注文帳に名前があれば「ナポレオン」ケーキ。"
+ },
+ "city.wave3.bread.sun": {
+  "ru": "Воскресенье: пекарня закрыта. На доске мелом: «Хлеб понедельника уже подходит. До завтра!»",
+  "en": "Sunday: the bakery is shut. On the board in chalk: \"Monday's bread is already rising. See you tomorrow!\"",
+  "ja": "日曜日：パン屋は休み。黒板にチョークで「月曜のパンはもう発酵中。また明日！」"
+ },
+ "city.wave3.orders.prompt": {
+  "ru": "Заглянуть в книгу заказов",
+  "en": "Look into the order ledger",
+  "ja": "注文帳をのぞく"
+ },
+ "city.wave3.orders.title": {
+  "ru": "Книга заказов пекарни",
+  "en": "The bakery's order ledger",
+  "ja": "パン屋の注文帳"
+ },
+ "city.wave3.orders.1": {
+  "ru": "Книга заказов в чёрной клеёнке. «Торт «Наполеон» на шесть человек, к пяти часам. Воронцовы, 9-я квартира.» Рядом галочка: «Выдан».",
+  "en": "The order ledger in black oilcloth. \"Napoleon cake for six, by five o'clock. Vorontsovs, flat 9.\" A tick beside it: \"Collected\".",
+  "ja": "黒い防水布の注文帳。「ナポレオンケーキ六人分、五時までに。ヴォロンツォフ家、9号室」。横にチェックと「引き渡し済み」。"
+ },
+ "city.wave3.orders.2": {
+  "ru": "«Ватрушки, 20 штук, к школьному вечеру в пятницу. Деньги вперёд.» Дважды подчёркнуто.",
+  "en": "\"Curd tarts, twenty, for the school evening on Friday. Money in advance.\" Underlined twice.",
+  "ja": "「カッテージチーズのタルト二十個、金曜の学校の夕べ用。代金は前払い」。二重線が引かれている。"
+ },
+ "city.wave3.orders.3": {
+  "ru": "«Нина, кв. 12: лимонный кекс на случай счастья. Не выйдет серия — забрать в субботу и съесть без повода.» Пометка кассирши: «Выйдет!»",
+  "en": "\"Nina, flat 12: lemon cake in case of good luck. If her series does not come up, collect on Saturday and eat it for no reason.\" The teller's note: \"It will!\"",
+  "ja": "「12号室のニーナさん：幸運に備えてレモンケーキ。当たらなければ土曜に取りに来て、理由なしで食べること」。窓口の女性の書き込み。「きっと当たるわ！」"
+ },
+ "city.wave3.orders.4": {
+  "ru": "«В день тиража в сберкассу 30 булочек с повидлом: очередь будет длинная. Хозяйка велела повидла не жалеть.»",
+  "en": "\"On draw day, 30 jam buns for the savings bank: the queue will be long. The owner said not to skimp on the jam.\"",
+  "ja": "「抽選の日は貯金窓口にジャムパン三十個。行列が長くなるから。ジャムをけちらないようにと店主」。"
+ },
+ "city.wave3.orders.5": {
+  "ru": "Последняя запись другим почерком: «Кекс выдан Нине из 12-й. Заказ закрыт. Очередь у кассы разошлась довольной.» Ниже, затёртое: «С нас булочка тому, кто напомнил про серию».",
+  "en": "The last entry in another hand: \"Cake collected by Nina of flat 12. Order closed. The queue at the bank went home happy.\" Below, smudged: \"A bun on us for whoever reminded her about the series.\"",
+  "ja": "最後の記入は別の筆跡。「ケーキは12号室のニーナさんにお渡し済み。注文完了。窓口の行列は上機嫌で解散」。その下に、かすれた字で「番号のことを教えてくれた人に、うちからパンを一つ」。"
+ },
+ "city.wave3.coll.title": {
+  "ru": "Лавки арки",
+  "en": "Arcade shops",
+  "ja": "アーケードの店"
+ },
+ "quest.wave_shops.title": {
+  "ru": "Круг по лавкам",
+  "en": "A round of the shops",
+  "ja": "お店めぐり"
+ },
+ "quest.wave_shops.desc": {
+  "ru": "Тётя Нина из 12-й, пока ждёт тиража, составила список мелких поручений по лавкам арки: что нынче к чаю, пересчёт мелочи, метр ситца и цена на причёску к празднику. Ступеньки ей трудны, а список короткий.",
+  "en": "While she waits for the draw, Aunt Nina from flat 12 has written a short list of errands in the arcade shops: what is on for tea, a count of small change, a metre of print and the price of a holiday hairdo. The stairs are hard for her.",
+  "ja": "抽選を待つあいだ、12号室のニーナおばさんがアーケードの店への小さな用事を書き出した。お茶に何があるか、小銭の数え、更紗一メートル、お祝いの髪型の値段。階段は彼女には大変だ。"
+ },
+ "quest.wave_shops.bread.log": {
+  "ru": "Первый пункт: что нынче к чаю. В пекарне это написано на доске.",
+  "en": "First on the list: what is on for tea. The bakery writes it on the board.",
+  "ja": "最初の用事は、今日のお茶に何があるか。パン屋では黒板に書いてある。"
+ },
+ "quest.wave_shops.read.obj": {
+  "ru": "Прочитать «хлеб дня» в пекарне",
+  "en": "Read the bread of the day at the bakery",
+  "ja": "パン屋で「今日のパン」を読む"
+ },
+ "quest.wave_shops.coins.log": {
+  "ru": "Второй: сберкассе нужна лишняя пара рук, чтобы пересчитать мелочь перед тиражом.",
+  "en": "Second: the savings bank wants an extra pair of hands to count the small change before the draw.",
+  "ja": "二つ目は、抽選の前に小銭を数えるため、貯金窓口が手伝いを探している。"
+ },
+ "quest.wave_shops.count.obj": {
+  "ru": "Пересчитать монеты в сберкассе (выиграть)",
+  "en": "Count the coins at the savings bank (win)",
+  "ja": "貯金窓口で硬貨を数える（勝つ）"
+ },
+ "quest.wave_shops.cloth.log": {
+  "ru": "Третий: метр ситца на занавески. Отмерять надо самому по латунной линейке.",
+  "en": "Third: a metre of print for curtains. It has to be measured by hand on the brass rule.",
+  "ja": "三つ目は、カーテン用の更紗を一メートル。真鍮の物差しで自分で測らなければならない。"
+ },
+ "quest.wave_shops.cut.obj": {
+  "ru": "Отмерить метр в магазине тканей (выиграть)",
+  "en": "Measure a metre at the fabric shop (win)",
+  "ja": "布地の店で一メートルを測る（勝つ）"
+ },
+ "quest.wave_shops.styles.log": {
+  "ru": "Последнее: узнать у парикмахерской, какие причёски нынче делают к празднику.",
+  "en": "Last: find out at the hairdresser's what holiday styles are in this year.",
+  "ja": "最後に、お祝いにどんな髪型が流行っているか、理髪店で聞いてくる。"
+ },
+ "quest.wave_shops.album.obj": {
+  "ru": "Полистать альбом причёсок в парикмахерской",
+  "en": "Page through the style album at the hairdresser's",
+  "ja": "理髪店でヘアスタイルのアルバムをめくる"
+ },
+ "quest.wave_shops.done": {
+  "ru": "Нина из 12-й читает список с галочками, прикладывает ладонь к щеке и кладёт мне в руку тёплую булочку и несколько монет. Говорит, что с такой помощью и тираж не страшен.",
+  "en": "Nina from flat 12 reads the ticked list, puts a hand to her cheek and presses a warm bun and a few coins into my palm. She says that with help like this even the draw holds no fears.",
+  "ja": "12号室のニーナさんはチェックのついたリストを読み、頬に手を当て、温かいパンと数枚の硬貨を僕の手に握らせた。こんなに助けてもらえるなら、抽選だって怖くないと言う。"
  }
 }

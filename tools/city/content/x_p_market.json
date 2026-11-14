@@ -1266,6 +1266,298 @@
      ]
     }
    ]
+  },
+  "mk_carp": {
+   "prompt": "city.mk.carp.prompt",
+   "minutes": 2,
+   "pose": "stand",
+   "any_hour": true,
+   "sound": "aquarium_bubbles",
+   "collect": "market_rows/carp",
+   "lines": [
+    "city.mk.carp.1",
+    {
+     "k": "city.mk.carp.2",
+     "h": [
+      6,
+      12
+     ]
+    },
+    {
+     "k": "city.mk.carp.3",
+     "h": [
+      12,
+      20
+     ]
+    },
+    {
+     "k": "city.mk.carp.4",
+     "h": [
+      20,
+      6
+     ]
+    },
+    {
+     "k": "city.mk.carp.5",
+     "weather": "fog"
+    },
+    {
+     "k": "city.mk.carp.6",
+     "after": 6
+    }
+   ]
+  },
+  "mk_ice": {
+   "like": "look_misc",
+   "minutes": 1,
+   "collect": "market_rows/ice",
+   "closed": "city.mk.closed.watch.*",
+   "lines": [
+    {
+     "k": "city.mk.ice.1",
+     "d": "mon"
+    },
+    {
+     "k": "city.mk.ice.2",
+     "d": "tue,wed"
+    },
+    {
+     "k": "city.mk.ice.3",
+     "d": "thu"
+    },
+    {
+     "k": "city.mk.ice.4",
+     "d": "fri"
+    },
+    {
+     "k": "city.mk.ice.5",
+     "d": "sat"
+    },
+    {
+     "k": "city.mk.ice.6",
+     "d": "sun"
+    },
+    {
+     "k": "city.mk.ice.fog",
+     "weather": "fog"
+    },
+    {
+     "k": "city.mk.ice.cold",
+     "weather": "cold"
+    }
+   ]
+  },
+  "mk_fish_weigh": {
+   "prompt": "city.mk.weigh.prompt",
+   "needs_staff": "fishmonger",
+   "minutes": 6,
+   "pose": "stand",
+   "sound": "scale_clunk",
+   "closed": "city.mk.closed.watch.*",
+   "lines": [
+    "city.mk.weigh.after.1",
+    "city.mk.weigh.after.2"
+   ],
+   "game": {
+    "type": "aim",
+    "title": "city.mk.weigh.title",
+    "keys": "city.mk.weigh.keys",
+    "rounds": 4,
+    "need": 5,
+    "speed": 0.6,
+    "zone": 0.2,
+    "win": "city.mk.weigh.win",
+    "lose": "city.mk.weigh.lose",
+    "draw": "city.mk.weigh.draw",
+    "collect": "market_rows/weigh",
+    "prize": [
+     [
+      "bait_worm",
+      1
+     ]
+    ],
+    "daily": 2
+   }
+  },
+  "mk_cuts": {
+   "like": "look_misc",
+   "prompt": "city.mk.cuts.prompt",
+   "minutes": 2,
+   "collect": "market_rows/cuts",
+   "closed": "city.mk.closed.watch.*",
+   "lines": [
+    "city.mk.cuts.1",
+    {
+     "k": "city.mk.cuts.2",
+     "h": [
+      6,
+      12
+     ]
+    },
+    {
+     "k": "city.mk.cuts.3",
+     "h": [
+      12,
+      21
+     ]
+    },
+    {
+     "k": "city.mk.cuts.4",
+     "h": [
+      21,
+      6
+     ]
+    }
+   ],
+   "read": {
+    "texts": [
+     "market_cuts"
+    ],
+    "rotate": "use"
+   }
+  },
+  "mk_hooks": {
+   "like": "look_misc",
+   "minutes": 1,
+   "sound": "hanger_clink",
+   "collect": "market_rows/hooks",
+   "closed": "city.mk.closed.watch.*",
+   "lines": [
+    {
+     "k": "city.mk.hooks.1",
+     "h": [
+      6,
+      10
+     ]
+    },
+    {
+     "k": "city.mk.hooks.2",
+     "h": [
+      10,
+      17
+     ]
+    },
+    {
+     "k": "city.mk.hooks.3",
+     "h": [
+      17,
+      6
+     ]
+    },
+    {
+     "k": "city.mk.hooks.4",
+     "d": "sat"
+    }
+   ]
+  },
+  "mk_bone": {
+   "like": "look_misc",
+   "prompt": "city.mk.bone.prompt",
+   "rotate": "daily",
+   "minutes": 1,
+   "any_hour": true,
+   "collect": "market_rows/bone",
+   "lines": [
+    {
+     "k": "city.mk.bone.1",
+     "before": 3
+    },
+    {
+     "k": "city.mk.bone.2",
+     "after": 3,
+     "before": 6
+    },
+    {
+     "k": "city.mk.bone.3",
+     "after": 6,
+     "before": 9
+    },
+    {
+     "k": "city.mk.bone.4",
+     "after": 9
+    }
+   ]
+  },
+  "mk_bell": {
+   "prompt": "city.mk.bell.prompt",
+   "minutes": 1,
+   "pose": "stand",
+   "any_hour": true,
+   "sound": "bell_ding",
+   "collect": "market_rows/bell",
+   "lines": [
+    "city.mk.bell.1",
+    {
+     "k": "city.mk.bell.2",
+     "h": [
+      6,
+      9
+     ]
+    },
+    {
+     "k": "city.mk.bell.3",
+     "h": [
+      9,
+      17
+     ]
+    },
+    {
+     "k": "city.mk.bell.4",
+     "h": [
+      17,
+      21
+     ]
+    },
+    {
+     "k": "city.mk.bell.5",
+     "h": [
+      21,
+      6
+     ]
+    }
+   ]
+  },
+  "mk_tickets": {
+   "prompt": "city.mk.tickets.prompt",
+   "minutes": 1,
+   "pose": "stand",
+   "any_hour": true,
+   "sound": "paper_rustle",
+   "collect": "market_rows/tickets",
+   "lines": [
+    {
+     "k": "city.mk.tickets.1",
+     "h": [
+      6,
+      10
+     ]
+    },
+    {
+     "k": "city.mk.tickets.2",
+     "h": [
+      10,
+      16
+     ]
+    },
+    {
+     "k": "city.mk.tickets.3",
+     "h": [
+      16,
+      21
+     ]
+    },
+    {
+     "k": "city.mk.tickets.4",
+     "h": [
+      21,
+      6
+     ]
+    },
+    {
+     "k": "city.mk.tickets.5",
+     "d": "sat"
+    }
+   ]
   }
  },
  "rules": {
@@ -1475,6 +1767,30 @@
   },
   "shell_market/tea_notice": {
    "act": "mk_tea_notice"
+  },
+  "shell_market/carp_tank": {
+   "act": "mk_carp"
+  },
+  "shell_market/ice_board": {
+   "act": "mk_ice"
+  },
+  "shell_market/fish_weigh": {
+   "act": "mk_fish_weigh"
+  },
+  "shell_market/cuts_chart": {
+   "act": "mk_cuts"
+  },
+  "shell_market/hook_rack": {
+   "act": "mk_hooks"
+  },
+  "shell_market/bone_bowl": {
+   "act": "mk_bone"
+  },
+  "shell_market/market_bell": {
+   "act": "mk_bell"
+  },
+  "shell_market/grinder_tickets": {
+   "act": "mk_tickets"
   }
  },
  "quests": [
@@ -1613,6 +1929,59 @@
      }
     }
    ]
+  },
+  {
+   "id": "rows_walk",
+   "kind": "side",
+   "start_on": {
+    "event": "visit",
+    "target": "P-MARKET"
+   },
+   "stages": [
+    {
+     "id": "cuts",
+     "objectives": [
+      {
+       "id": "cuts_chart",
+       "event": "do",
+       "target": "mk_cuts"
+      }
+     ]
+    },
+    {
+     "id": "carp",
+     "objectives": [
+      {
+       "id": "carp_look",
+       "event": "do",
+       "target": "mk_carp"
+      }
+     ]
+    },
+    {
+     "id": "weigh",
+     "objectives": [
+      {
+       "id": "weigh_win",
+       "event": "win",
+       "target": "mk_fish_weigh"
+      }
+     ]
+    },
+    {
+     "id": "bone",
+     "objectives": [
+      {
+       "id": "bone_bowl",
+       "event": "do",
+       "target": "mk_bone"
+      }
+     ],
+     "reward": {
+      "rubles": 30
+     }
+    }
+   ]
   }
  ],
  "regulars": {
@@ -1682,6 +2051,19 @@
     "choi",
     "berzins",
     "petrosyan"
+   ]
+  },
+  "market_rows": {
+   "title": "city.coll.market_rows.title",
+   "pieces": [
+    "carp",
+    "ice",
+    "weigh",
+    "cuts",
+    "hooks",
+    "bone",
+    "bell",
+    "tickets"
    ]
   }
  },
@@ -1773,6 +2155,17 @@
      "k": "city.mk.text.jam_protocol.4",
      "after": 10
     }
+   ]
+  },
+  "market_cuts": {
+   "title": "city.mk.text.cuts.title",
+   "kind": "notice",
+   "minutes": 1,
+   "pages": [
+    "city.mk.text.cuts.1",
+    "city.mk.text.cuts.2",
+    "city.mk.text.cuts.3",
+    "city.mk.text.cuts.4"
    ]
   }
  }

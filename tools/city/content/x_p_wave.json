@@ -1,5 +1,5 @@
 {
- "_doc": "Wave Tower arcade, depth pass: a notice board with a running story, a weighing machine, a listening post, bond board, queue tickets, seasonal feeder advice, hood driers, a pattern album and a model railway. Things are declared in blender/city/buildings/wave_tower.py; words in strings/x_p_wave.json. Round 2b: the through passage as an amusement alley (three cabinets with their own games, pinball, change machine, prize counter and shelf, score board, a broken cabinet with a repair note over eight days, closed lines 9-22), a lift pair lift_g / lift_roof to the roof terrace with sea and town views by hour and weather, lobby switches; quests wave_record, wave_roof.",
+ "_doc": "Wave Tower arcade, depth pass: a notice board with a running story, a weighing machine, a listening post, bond board, queue tickets, seasonal feeder advice, hood driers, a pattern album and a model railway. Things are declared in blender/city/buildings/wave_tower.py; words in strings/x_p_wave.json. Round 2b: the through passage as an amusement alley (three cabinets with their own games, pinball, change machine, prize counter and shelf, score board, a broken cabinet with a repair note over eight days, closed lines 9-22), a lift pair lift_g / lift_roof to the roof terrace with sea and town views by hour and weather, lobby switches; quests wave_record, wave_roof. Round 3 (the shops): savings bank (coin-counting game, bond-draw calendar over eight days, clock), hairdresser (style album, stylist's trolley, radio, waiting sofa by the hour), fabrics (cutting table measuring game, remnant basket, clock), bakery (bread of the day by weekday, order ledger text that grows by day, clock); collection wave_shops; quest wave_shops.",
  "acts": {
   "look_arcade_board": {
    "like": "look_misc",
@@ -529,6 +529,7 @@
   },
   "wave_change": {
    "prompt": "city.wave2.change.prompt",
+   "price": 1,
    "lines": [
     "city.wave2.change.1",
     "city.wave2.change.2",
@@ -844,6 +845,252 @@
    ],
    "minutes": 5,
    "any_hour": true
+  },
+  "wave_bank_coins": {
+   "prompt": "city.wave3.coins.prompt",
+   "lines": [
+    "city.wave3.coins.after.1",
+    "city.wave3.coins.after.2"
+   ],
+   "minutes": 10,
+   "price": 0,
+   "sound": "coin",
+   "game": {
+    "type": "aim",
+    "title": "city.wave3.coins.title",
+    "rounds": 5,
+    "need": 6,
+    "speed": 0.9,
+    "zone": 0.2,
+    "win": [
+     "city.wave3.coins.win.1",
+     "city.wave3.coins.win.2"
+    ],
+    "lose": [
+     "city.wave3.coins.lose.1",
+     "city.wave3.coins.lose.2"
+    ],
+    "draw": [
+     "city.wave3.coins.draw.1"
+    ],
+    "collect": "wave_shops/coins",
+    "daily": 5
+   }
+  },
+  "wave_bank_calendar": {
+   "like": "look_misc",
+   "prompt": "city.wave3.cal.prompt",
+   "rotate": "daily",
+   "minutes": 3,
+   "sound": "paper_tear",
+   "lines": [
+    {
+     "k": "city.wave3.cal.1",
+     "before": 2
+    },
+    {
+     "k": "city.wave3.cal.2",
+     "after": 2,
+     "before": 5
+    },
+    {
+     "k": "city.wave3.cal.3",
+     "after": 5,
+     "before": 7
+    },
+    {
+     "k": "city.wave3.cal.4",
+     "after": 7,
+     "before": 8
+    },
+    {
+     "k": "city.wave3.cal.5",
+     "after": 8
+    }
+   ]
+  },
+  "wave_salon_styles": {
+   "like": "look_misc",
+   "prompt": "city.wave3.styles.prompt",
+   "minutes": 3,
+   "sound": "page_turn",
+   "lines": [
+    "city.wave3.styles.1",
+    {
+     "k": "city.wave3.styles.2",
+     "d": "tue,thu"
+    },
+    {
+     "k": "city.wave3.styles.3",
+     "weather": "rain"
+    },
+    {
+     "k": "city.wave3.styles.4",
+     "d": "sat"
+    },
+    {
+     "k": "city.wave3.styles.5",
+     "festival": "any"
+    }
+   ]
+  },
+  "wave_salon_trolley": {
+   "like": "use_misc",
+   "prompt": "city.wave3.trolley.prompt",
+   "minutes": 2,
+   "sound": "scissors",
+   "lines": [
+    {
+     "k": "city.wave3.trolley.1",
+     "h": [
+      9,
+      13
+     ]
+    },
+    {
+     "k": "city.wave3.trolley.2",
+     "h": [
+      13,
+      19
+     ]
+    },
+    {
+     "k": "city.wave3.trolley.3",
+     "h": [
+      19,
+      9
+     ]
+    }
+   ]
+  },
+  "wave_salon_wait": {
+   "prompt": "city.wave3.wait.prompt",
+   "pose": "sit",
+   "minutes": 15,
+   "any_hour": true,
+   "sound": "page_turn",
+   "lines": [
+    {
+     "k": "city.wave3.wait.1",
+     "h": [
+      9,
+      13
+     ]
+    },
+    {
+     "k": "city.wave3.wait.2",
+     "h": [
+      13,
+      19
+     ]
+    },
+    {
+     "k": "city.wave3.wait.3",
+     "h": [
+      19,
+      9
+     ]
+    }
+   ]
+  },
+  "wave_fabric_cut": {
+   "prompt": "city.wave3.cut.prompt",
+   "lines": [
+    "city.wave3.cut.after.1",
+    "city.wave3.cut.after.2"
+   ],
+   "minutes": 10,
+   "price": 0,
+   "sound": "scissors",
+   "game": {
+    "type": "aim",
+    "title": "city.wave3.cut.title",
+    "rounds": 5,
+    "need": 6,
+    "speed": 1.0,
+    "zone": 0.17,
+    "win": [
+     "city.wave3.cut.win.1",
+     "city.wave3.cut.win.2"
+    ],
+    "lose": [
+     "city.wave3.cut.lose.1",
+     "city.wave3.cut.lose.2"
+    ],
+    "draw": [
+     "city.wave3.cut.draw.1"
+    ],
+    "collect": "wave_shops/metre",
+    "daily": 4
+   }
+  },
+  "wave_fabric_remnants": {
+   "like": "use_misc",
+   "prompt": "city.wave3.rem.prompt",
+   "minutes": 4,
+   "sound": "sack_rustle",
+   "collect": "wave_shops/remnants",
+   "lines": [
+    "city.wave3.rem.1",
+    "city.wave3.rem.2",
+    {
+     "k": "city.wave3.rem.3",
+     "d": "mon"
+    },
+    {
+     "k": "city.wave3.rem.4",
+     "d": "sat"
+    }
+   ]
+  },
+  "wave_bakery_bread_day": {
+   "like": "look_misc",
+   "prompt": "city.wave3.bread.prompt",
+   "minutes": 2,
+   "lines": [
+    {
+     "k": "city.wave3.bread.mon",
+     "d": "mon"
+    },
+    {
+     "k": "city.wave3.bread.tue",
+     "d": "tue"
+    },
+    {
+     "k": "city.wave3.bread.wed",
+     "d": "wed"
+    },
+    {
+     "k": "city.wave3.bread.thu",
+     "d": "thu"
+    },
+    {
+     "k": "city.wave3.bread.fri",
+     "d": "fri"
+    },
+    {
+     "k": "city.wave3.bread.sat",
+     "d": "sat"
+    },
+    {
+     "k": "city.wave3.bread.sun",
+     "d": "sun"
+    }
+   ]
+  },
+  "wave_bakery_orders": {
+   "prompt": "city.wave3.orders.prompt",
+   "minutes": 3,
+   "sound": "page_turn",
+   "lines": [
+    "city.wave3.orders.1"
+   ],
+   "read": {
+    "texts": [
+     "wave_orders"
+    ],
+    "rotate": "use"
+   }
   }
  },
  "rules": {
@@ -980,6 +1227,33 @@
   },
   "wave_tower/roof_view_town": {
    "act": "wave_roof_town"
+  },
+  "wave_tower/bank_coins": {
+   "act": "wave_bank_coins"
+  },
+  "wave_tower/bank_calendar": {
+   "act": "wave_bank_calendar"
+  },
+  "wave_tower/salon_styles": {
+   "act": "wave_salon_styles"
+  },
+  "wave_tower/salon_trolley": {
+   "act": "wave_salon_trolley"
+  },
+  "wave_tower/shop_e_waiting_sofa": {
+   "act": "wave_salon_wait"
+  },
+  "wave_tower/fabric_cutting": {
+   "act": "wave_fabric_cut"
+  },
+  "wave_tower/fabric_remnants": {
+   "act": "wave_fabric_remnants"
+  },
+  "wave_tower/bakery_bread_day": {
+   "act": "wave_bakery_bread_day"
+  },
+  "wave_tower/bakery_orders": {
+   "act": "wave_bakery_orders"
   }
  },
  "quests": [
@@ -1164,6 +1438,59 @@
      }
     }
    ]
+  },
+  {
+   "id": "wave_shops",
+   "kind": "side",
+   "start_on": {
+    "event": "visit",
+    "target": "P-WAVE"
+   },
+   "stages": [
+    {
+     "id": "bread",
+     "objectives": [
+      {
+       "id": "read",
+       "event": "do",
+       "target": "wave_bakery_bread_day"
+      }
+     ]
+    },
+    {
+     "id": "coins",
+     "objectives": [
+      {
+       "id": "count",
+       "event": "win",
+       "target": "wave_bank_coins"
+      }
+     ]
+    },
+    {
+     "id": "cloth",
+     "objectives": [
+      {
+       "id": "cut",
+       "event": "win",
+       "target": "wave_fabric_cut"
+      }
+     ]
+    },
+    {
+     "id": "styles",
+     "objectives": [
+      {
+       "id": "album",
+       "event": "do",
+       "target": "wave_salon_styles"
+      }
+     ],
+     "reward": {
+      "rubles": 35
+     }
+    }
+   ]
   }
  ],
  "shops": {
@@ -1199,6 +1526,15 @@
     "note",
     "tokens"
    ]
+  },
+  "wave_shops": {
+   "title": "city.wave3.coll.title",
+   "pieces": [
+    "coins",
+    "metre",
+    "remnants",
+    "ledger"
+   ]
   }
  },
  "regulars": {
@@ -1229,6 +1565,33 @@
    "hello": "city.wave2.reg.dina.hello",
    "win": "city.wave2.reg.dina.win",
    "lose": "city.wave2.reg.dina.lose"
+  }
+ },
+ "texts": {
+  "wave_orders": {
+   "title": "city.wave3.orders.title",
+   "kind": "ledger",
+   "minutes": 3,
+   "collect": "wave_shops/ledger",
+   "pages": [
+    "city.wave3.orders.1",
+    {
+     "k": "city.wave3.orders.2",
+     "after": 1
+    },
+    {
+     "k": "city.wave3.orders.3",
+     "after": 3
+    },
+    {
+     "k": "city.wave3.orders.4",
+     "after": 6
+    },
+    {
+     "k": "city.wave3.orders.5",
+     "after": 8
+    }
+   ]
   }
  }
 }
