@@ -815,6 +815,126 @@
    "yaw": 0.0
   },
   {
+   "id": "yard_hop_stand",
+   "kind": "stand",
+   "pos": [
+    -3.0,
+    20.2,
+    0.0
+   ],
+   "yaw": 180.0
+  },
+  {
+   "id": "yard_bikes_stand",
+   "kind": "stand",
+   "pos": [
+    14.5,
+    17.4,
+    0.0
+   ],
+   "yaw": 180.0
+  },
+  {
+   "id": "yard_weather_stand",
+   "kind": "stand",
+   "pos": [
+    -15.5,
+    18.6,
+    0.0
+   ],
+   "yaw": 180.0
+  },
+  {
+   "id": "yard_feeder_stand",
+   "kind": "stand",
+   "pos": [
+    9.5,
+    32.2,
+    0.0
+   ],
+   "yaw": 180.0
+  },
+  {
+   "id": "yard_garden_stand",
+   "kind": "stand",
+   "pos": [
+    9.4,
+    23.6,
+    0.0
+   ],
+   "yaw": 180.0
+  },
+  {
+   "id": "staff_journal_stand",
+   "kind": "stand",
+   "pos": [
+    11.1,
+    11.6,
+    0.0
+   ],
+   "yaw": 0.0
+  },
+  {
+   "id": "staff_rota_stand",
+   "kind": "stand",
+   "pos": [
+    9.6,
+    13.2,
+    0.0
+   ],
+   "yaw": 180.0
+  },
+  {
+   "id": "gym_lockers_stand",
+   "kind": "stand",
+   "pos": [
+    12.2,
+    41.9,
+    0.0
+   ],
+   "yaw": 90.0
+  },
+  {
+   "id": "gym_vault_run",
+   "kind": "stand",
+   "pos": [
+    -3.5,
+    49.8,
+    0.0
+   ],
+   "yaw": 180.0
+  },
+  {
+   "id": "gym_records_stand",
+   "kind": "stand",
+   "pos": [
+    -12.4,
+    49.3,
+    0.0
+   ],
+   "yaw": 270.0
+  },
+  {
+   "id": "canteen_drawings_stand",
+   "kind": "stand",
+   "pos": [
+    25.85,
+    17.0,
+    0.0
+   ],
+   "yaw": 0.0
+  },
+  {
+   "id": "canteen_dishes_stand",
+   "kind": "stand",
+   "pos": [
+    29.2,
+    38.6,
+    0.0
+   ],
+   "yaw": 180.0
+  },
+  {
    "id": "court_bench_0",
    "kind": "bench",
    "pos": [
@@ -2536,6 +2656,175 @@
    "yaw": 270.0,
    "props": {
     "item": "apple"
+   }
+  },
+  {
+   "id": "yard_hopscotch",
+   "kind": "sport",
+   "pos": [
+    -3.0,
+    22.2,
+    0.02
+   ],
+   "yaw": 0.0,
+   "props": {
+    "what": "hopscotch"
+   }
+  },
+  {
+   "id": "yard_bikes",
+   "kind": "machine",
+   "pos": [
+    14.5,
+    19.0,
+    0.9
+   ],
+   "yaw": 0.0,
+   "props": {
+    "what": "bike_rack"
+   }
+  },
+  {
+   "id": "yard_weather",
+   "kind": "board",
+   "pos": [
+    -15.5,
+    19.9,
+    1.75
+   ],
+   "yaw": 0.0,
+   "props": {
+    "topic": "weather"
+   }
+  },
+  {
+   "id": "yard_feeder",
+   "kind": "machine",
+   "pos": [
+    9.5,
+    33.5,
+    1.5
+   ],
+   "yaw": 0.0,
+   "props": {
+    "what": "bird_feeder"
+   }
+  },
+  {
+   "id": "yard_garden_board",
+   "kind": "board",
+   "pos": [
+    9.4,
+    25.0,
+    1.4
+   ],
+   "yaw": 0.0,
+   "props": {
+    "topic": "garden"
+   }
+  },
+  {
+   "id": "staff_journal",
+   "kind": "board",
+   "pos": [
+    11.1,
+    10.72,
+    0.85
+   ],
+   "yaw": 0.0,
+   "props": {
+    "topic": "journal"
+   }
+  },
+  {
+   "id": "staff_rota",
+   "kind": "board",
+   "pos": [
+    8.7,
+    14.25,
+    1.6
+   ],
+   "yaw": 0.0,
+   "props": {
+    "topic": "rota"
+   }
+  },
+  {
+   "id": "staff_pigeonholes",
+   "kind": "board",
+   "pos": [
+    10.4,
+    14.2,
+    1.3
+   ],
+   "yaw": 0.0,
+   "props": {
+    "topic": "pigeonholes"
+   }
+  },
+  {
+   "id": "gym_lockers",
+   "kind": "board",
+   "pos": [
+    13.2,
+    41.9,
+    1.2
+   ],
+   "yaw": 270.0,
+   "props": {
+    "topic": "lockers"
+   }
+  },
+  {
+   "id": "gym_vault",
+   "kind": "sport",
+   "pos": [
+    -3.5,
+    52.5,
+    1.1
+   ],
+   "yaw": 0.0,
+   "props": {
+    "what": "vault"
+   }
+  },
+  {
+   "id": "gym_records",
+   "kind": "board",
+   "pos": [
+    -13.6,
+    49.3,
+    1.7
+   ],
+   "yaw": 90.0,
+   "props": {
+    "topic": "records"
+   }
+  },
+  {
+   "id": "canteen_drawings",
+   "kind": "board",
+   "pos": [
+    25.85,
+    15.9,
+    1.5
+   ],
+   "yaw": 180.0,
+   "props": {
+    "topic": "drawings"
+   }
+  },
+  {
+   "id": "canteen_dishes",
+   "kind": "board",
+   "pos": [
+    29.4,
+    39.85,
+    1.9
+   ],
+   "yaw": 0.0,
+   "props": {
+    "topic": "dishes"
    }
   }
  ],
@@ -6199,8 +6488,8 @@
  "light_tex": 64,
  "notes": [],
  "tris": {
-  "shell": 6654,
-  "detail": 40338,
+  "shell": 6678,
+  "detail": 43112,
   "windows": 696
  }
 }
