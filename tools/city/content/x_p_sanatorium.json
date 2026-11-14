@@ -719,6 +719,172 @@
      "weather": "snow"
     }
    ]
+  },
+  "sanatorium_canary": {
+   "like": "look_misc",
+   "minutes": 3,
+   "sound": "music_box",
+   "lines": [
+    {
+     "k": "city.san.canary.morning",
+     "h": [
+      6,
+      10
+     ]
+    },
+    {
+     "k": "city.san.canary.day",
+     "h": [
+      10,
+      20
+     ]
+    },
+    {
+     "k": "city.san.canary.night",
+     "h": [
+      20,
+      6
+     ]
+    },
+    {
+     "k": "city.san.canary.rain",
+     "weather": "rain"
+    },
+    {
+     "k": "city.san.canary.fest",
+     "festival": "any"
+    },
+    {
+     "k": "city.san.canary.first",
+     "once": true
+    }
+   ]
+  },
+  "sanatorium_rota": {
+   "like": "look_misc",
+   "minutes": 2,
+   "lines": [
+    {
+     "k": "city.san.rota.mon",
+     "d": "mon"
+    },
+    {
+     "k": "city.san.rota.tue",
+     "d": "tue"
+    },
+    {
+     "k": "city.san.rota.wed",
+     "d": "wed"
+    },
+    {
+     "k": "city.san.rota.thu",
+     "d": "thu"
+    },
+    {
+     "k": "city.san.rota.fri",
+     "d": "fri"
+    },
+    {
+     "k": "city.san.rota.sat",
+     "d": "sat"
+    },
+    {
+     "k": "city.san.rota.sun",
+     "d": "sun"
+    }
+   ]
+  },
+  "sanatorium_watering": {
+   "prompt": "city.san.water.prompt",
+   "minutes": 5,
+   "pose": "stand",
+   "sound": "water_pour",
+   "any_hour": true,
+   "lines": [
+    {
+     "k": "city.san.water.morning",
+     "h": [
+      6,
+      12
+     ]
+    },
+    {
+     "k": "city.san.water.day",
+     "h": [
+      12,
+      20
+     ]
+    },
+    {
+     "k": "city.san.water.night",
+     "h": [
+      20,
+      6
+     ]
+    },
+    {
+     "k": "city.san.water.rain",
+     "weather": "rain"
+    },
+    {
+     "k": "city.san.water.weekend",
+     "d": "sat,sun"
+    }
+   ]
+  },
+  "sanatorium_mugs": {
+   "like": "look_misc",
+   "minutes": 3,
+   "sound": "cup_clink",
+   "lines": [
+    {
+     "k": "city.san.mugs.morning",
+     "h": [
+      6,
+      10
+     ]
+    },
+    {
+     "k": "city.san.mugs.day",
+     "h": [
+      10,
+      19
+     ]
+    },
+    {
+     "k": "city.san.mugs.evening",
+     "h": [
+      19,
+      6
+     ]
+    },
+    {
+     "k": "city.san.mugs.sun",
+     "d": "sun"
+    },
+    {
+     "k": "city.san.mugs.rain",
+     "weather": "rain"
+    },
+    {
+     "k": "city.san.mugs.fest",
+     "festival": "any"
+    }
+   ]
+  },
+  "sanatorium_analysis": {
+   "like": "look_misc",
+   "minutes": 3,
+   "sound": "paper_rustle",
+   "lines": [
+    "city.san.analysis.look"
+   ],
+   "read": {
+    "texts": [
+     "san_analysis"
+    ],
+    "rotate": "use"
+   }
   }
  },
  "rules": {
@@ -820,6 +986,21 @@
   "round_sanatorium/treat_checkup": {
    "collect": "san_cure/checkup",
    "closed": "city.san.checkup.closed"
+  },
+  "round_sanatorium/garden_canary": {
+   "act": "sanatorium_canary"
+  },
+  "round_sanatorium/garden_rota": {
+   "act": "sanatorium_rota"
+  },
+  "round_sanatorium/garden_can": {
+   "act": "sanatorium_watering"
+  },
+  "round_sanatorium/pump_mugs": {
+   "act": "sanatorium_mugs"
+  },
+  "round_sanatorium/pump_analysis": {
+   "act": "sanatorium_analysis"
   }
  },
  "quests": [
@@ -983,6 +1164,59 @@
       "items": {
        "tea": 1
       }
+     }
+    }
+   ]
+  },
+  {
+   "id": "sanatorium_springs",
+   "kind": "side",
+   "start_on": {
+    "event": "visit",
+    "target": "P-SANATORIUM"
+   },
+   "stages": [
+    {
+     "id": "sheet",
+     "objectives": [
+      {
+       "id": "sheet",
+       "event": "do",
+       "target": "sanatorium_analysis"
+      }
+     ]
+    },
+    {
+     "id": "mugs",
+     "objectives": [
+      {
+       "id": "mugs",
+       "event": "do",
+       "target": "sanatorium_mugs"
+      }
+     ]
+    },
+    {
+     "id": "drink",
+     "objectives": [
+      {
+       "id": "drink",
+       "event": "do",
+       "target": "pump_room"
+      }
+     ]
+    },
+    {
+     "id": "water",
+     "objectives": [
+      {
+       "id": "water",
+       "event": "do",
+       "target": "sanatorium_watering"
+      }
+     ],
+     "reward": {
+      "rubles": 30
      }
     }
    ]
@@ -1253,6 +1487,19 @@
       "san_cure",
       6
      ]
+    }
+   ]
+  },
+  "san_analysis": {
+   "title": "city.san.text.analysis.title",
+   "kind": "notice",
+   "minutes": 2,
+   "pages": [
+    "city.san.an.1",
+    "city.san.an.2",
+    {
+     "k": "city.san.an.3",
+     "after": 1
     }
    ]
   }
