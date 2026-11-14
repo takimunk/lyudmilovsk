@@ -143,6 +143,36 @@
     0.0
    ],
    "yaw": 180.0
+  },
+  {
+   "id": "regular",
+   "kind": "seat",
+   "pos": [
+    4.4,
+    2.0,
+    0.0
+   ],
+   "yaw": 0.0
+  },
+  {
+   "id": "week",
+   "kind": "stand",
+   "pos": [
+    -4.2,
+    0.85,
+    0.0
+   ],
+   "yaw": 90.0
+  },
+  {
+   "id": "toss",
+   "kind": "stand",
+   "pos": [
+    0.15,
+    1.2,
+    0.0
+   ],
+   "yaw": 0.0
   }
  ],
  "lamps": [
@@ -292,6 +322,58 @@
    "props": {
     "what": "dough_board"
    }
+  },
+  {
+   "id": "dumpling_regular",
+   "kind": "seat",
+   "pos": [
+    4.4,
+    2.0,
+    0.45
+   ],
+   "yaw": 0.0,
+   "props": {
+    "height": 0.45
+   }
+  },
+  {
+   "id": "dumpling_week",
+   "kind": "board",
+   "pos": [
+    -4.81,
+    0.85,
+    1.65
+   ],
+   "yaw": 90.0,
+   "props": {
+    "topic": "prices"
+   }
+  },
+  {
+   "id": "dumpling_toss",
+   "kind": "craft",
+   "pos": [
+    0.15,
+    1.9,
+    1.1
+   ],
+   "yaw": 0.0,
+   "props": {
+    "what": "dough_toss"
+   }
+  },
+  {
+   "id": "dumpling_jar",
+   "kind": "board",
+   "pos": [
+    -0.15,
+    4.5,
+    1.15
+   ],
+   "yaw": 0.0,
+   "props": {
+    "topic": "log"
+   }
   }
  ],
  "flats": [],
@@ -301,8 +383,8 @@
   "promenade unit room, variant dumplings: placed at each W1 unit whose plan variant is dumplings"
  ],
  "tris": {
-  "shell": 250,
-  "detail": 5523,
+  "shell": 274,
+  "detail": 6319,
   "windows": 0
  }
 }

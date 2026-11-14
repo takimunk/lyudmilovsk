@@ -113,6 +113,46 @@
     0.0
    ],
    "yaw": 0.0
+  },
+  {
+   "id": "smoked",
+   "kind": "stand",
+   "pos": [
+    -0.3,
+    1.6,
+    0.0
+   ],
+   "yaw": 180.0
+  },
+  {
+   "id": "catch",
+   "kind": "stand",
+   "pos": [
+    -2.6,
+    5.6,
+    0.0
+   ],
+   "yaw": 180.0
+  },
+  {
+   "id": "mender",
+   "kind": "seat",
+   "pos": [
+    -3.35,
+    4.3,
+    0.0
+   ],
+   "yaw": 90.0
+  },
+  {
+   "id": "cat",
+   "kind": "stand",
+   "pos": [
+    -0.4,
+    5.0,
+    0.0
+   ],
+   "yaw": 180.0
   }
  ],
  "lamps": [
@@ -301,6 +341,58 @@
    "props": {
     "topic": "net"
    }
+  },
+  {
+   "id": "fish_smoked",
+   "kind": "board",
+   "pos": [
+    -0.3,
+    2.3,
+    1.95
+   ],
+   "yaw": 0.0,
+   "props": {
+    "topic": "sea"
+   }
+  },
+  {
+   "id": "fish_catch",
+   "kind": "board",
+   "pos": [
+    -2.6,
+    6.36,
+    1.7
+   ],
+   "yaw": 0.0,
+   "props": {
+    "topic": "prices"
+   }
+  },
+  {
+   "id": "fish_stool",
+   "kind": "seat",
+   "pos": [
+    -3.35,
+    4.3,
+    0.45
+   ],
+   "yaw": 90.0,
+   "props": {
+    "height": 0.45
+   }
+  },
+  {
+   "id": "fish_cat",
+   "kind": "board",
+   "pos": [
+    -0.4,
+    5.6,
+    0.3
+   ],
+   "yaw": 0.0,
+   "props": {
+    "topic": "sea"
+   }
   }
  ],
  "flats": [],
@@ -311,7 +403,7 @@
  ],
  "tris": {
   "shell": 190,
-  "detail": 6536,
+  "detail": 7806,
   "windows": 0
  }
 }
