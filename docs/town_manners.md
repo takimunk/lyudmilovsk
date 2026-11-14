@@ -76,6 +76,10 @@ look to the promenade, the pier, the fountain and the squares, the more the warm
 New activities: `jog`, `play_run` (children), `feed_birds`, `read_bench`;
 `"pace"` makes an activity's walk a run.
 
+Getting their breath back (`FWorld::Start`, `FPerson::BreathAt/BreathFor`): on a way of more than 250 m on foot those
+of 68 and over stop a little past the middle, out of doors, and stand for 12-40 s before going on (not in the rain, not
+when late, not with a ride on the way). The body gets speed 0 while they stand, as at a stop with the bicycle.
+
 ## The sky's shows
 
 Northern lights, a rainbow, fireworks: `FMannerNow::SkyShow` (0..1) says there is something to see up there, and the

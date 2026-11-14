@@ -2500,6 +2500,23 @@ namespace LyudPeople
 				P.bHurry = true;
 			}
 		}
+		// the old stop to get their breath back on a long way on foot: a little past the middle, out of doors
+		P.BreathAt = -1;
+		if (P.Age >= 68 && !P.bHurry && !bRain && P.Bike < 0 && !bRide && WayM > 250.f)
+		{
+			const float At = (0.4f + 0.25f * Rand(P.Rng)) * WayM;
+			float Gone = 0.f;
+			for (int I = 0; I + 1 < (int)P.Path.size(); I++)
+			{
+				Gone += ((I ? P.Path[I - 1].P : P.Pos) - P.Path[I].P).Len();
+				if (Gone >= At && P.Path[I].Kind == 0 && P.Path[I + 1].Kind == 0)
+				{
+					P.BreathAt = I;
+					P.BreathFor = 12.f + 20.f * Rand(P.Rng) + (P.Age > 78 ? 10.f : 0.f);
+					break;
+				}
+			}
+		}
 		return true;
 	}
 
@@ -2884,6 +2901,17 @@ namespace LyudPeople
 				P.BikeMode = 0;
 			}
 			P.BikeAct = EBikeAct::None;
+		}
+		if (P.BreathAt >= 0 && P.PathI > P.BreathAt)
+		{
+			// getting their breath back (Start): they stand a while, then go on (not in the rain)
+			P.BreathFor -= Dt;
+			if (P.BreathFor > 0.f && !bRain && P.PathI < (int)P.Path.size())
+			{
+				P.Speed = 0.f;
+				return;
+			}
+			P.BreathAt = -1;
 		}
 		const float Speed = Pace(P);
 		float Budget = Speed * Dt;

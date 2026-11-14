@@ -376,7 +376,7 @@ static void Outings(bool bPrint)
 	W.Resettle();
 	std::map<std::string, int> Size, Best, Now;
 	std::map<std::string, int> ByAct, Half, Lead;
-	long WayMinutes = 0, WayNear = 0, HomeMinutes = 0, HomeNear = 0, KidHome = 0, KidHomeWith = 0, KidOut = 0, KidOutWith = 0;
+	long WayMinutes = 0, WayNear = 0, HomeMinutes = 0, HomeNear = 0, KidHome = 0, KidHomeWith = 0, KidOut = 0, KidOutWith = 0, Breaths = 0, OldWalk = 0;
 	long WalkPairs = 0, WalkNear = 0, PlayMinutes = 0, MindedMinutes = 0, MindAlone = 0, MindMinutes = 0;
 	for (const FPerson& P : W.People)
 	{
@@ -469,6 +469,15 @@ static void Outings(bool bPrint)
 			}
 			WayMinutes++;
 			WayNear += bBeside ? 1 : 0;
+		}
+		// the old on their way on foot, and those of them standing to get their breath back
+		for (const FPerson& P : W.People)
+		{
+			if (P.Age >= 68 && P.State == EState::Going && !P.bIndoors && P.Bike < 0)
+			{
+				OldWalk++;
+				Breaths += P.BreathAt >= 0 && P.Speed <= 0.f ? 1 : 0;
+			}
 		}
 		// a child on the way out to play, and those with a grown-up of theirs walking beside
 		for (const FPerson& P : W.People)
@@ -579,6 +588,7 @@ static void Outings(bool bPrint)
 		WayNear, WayMinutes);
 	CHECK(HomeMinutes > 300 && HomeNear * 5 > HomeMinutes, "a household goes home from its outing together (%ld of %ld person-minutes on the way home with one of theirs within 10 m)",
 		HomeNear, HomeMinutes);
+	CHECK(Breaths > 10 && Breaths * 8 < OldWalk, "the old stop for breath on a long way, and not for long (%ld of %ld person-minutes of their walking)", Breaths, OldWalk);
 	CHECK(KidOut > 100 && KidOutWith * 10 > KidOut, "a grown-up goes out with the child who goes out to play (%ld of %ld child-minutes on the way there)", KidOutWith, KidOut);
 	CHECK(KidHome > 100 && KidHomeWith * 10 > KidHome * 3, "the grown-up who stood by walks the child home from play (%ld of %ld child-minutes on the way home)", KidHomeWith, KidHome);
 }

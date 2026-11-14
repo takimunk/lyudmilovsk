@@ -275,6 +275,8 @@ namespace LyudPeople
 		struct FWay { V3 P; uint8_t Kind = 0; float Ride = 0.f; int8_t ToIsland = -1; int RailFrom = -1, RailTo = -1; uint8_t Bike = 0; EBikeAct BikeAct = EBikeAct::None; };
 		std::vector<FWay> Path;
 		int PathI = 0;
+		int BreathAt = -1;          // the old on a long way on foot: past this point of Path they stand to get their breath back
+		float BreathFor = 0.f;      // for so many seconds more
 		float Think = 0.f;
 		float Recheck = 60.f;       // s till they next look up from what they do
 		bool bBreak = false;        // wants a break from a duty (to eat)
