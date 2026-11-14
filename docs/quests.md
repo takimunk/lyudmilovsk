@@ -105,6 +105,8 @@ the voice of a line is found by its key.
   has been held and is said through once, the lines and then each `.again`, then the everyday talks go on.
 - `quest.<quest>.<stages>.again` may be written several times: later talks go through them in turn, round and round
   (a waiting stage: a hint, then an aside).
+- `python3 tools/quest_talk_reach.py` plays every person's talk offline by the engine's own rules (every stage, sun state and
+  condition) and lists lines that can never be said, shadowed entries and orphan keys (`--strict` fails on them).
 - `python3 tools/check_quest_talk.py` checks all of it offline (quests, stages, conditions, line keys in three languages,
   the scenes file).
 
