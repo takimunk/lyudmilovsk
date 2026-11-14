@@ -86,6 +86,12 @@
      ]
     },
     {
+     "species": "Waxwing",
+     "lines": [
+      "kid_girl.book_bird_tail.1"
+     ]
+    },
+    {
      "quest": "sparrow_hello",
      "stage": "call",
      "lines": [
@@ -140,6 +146,12 @@
      ]
     },
     {
+     "species": "Waxwing",
+     "lines": [
+      "kimura_dasha.no_column_yet.1"
+     ]
+    },
+    {
      "air": true,
      "lines": [
       "kimura_dasha.flypast_void.1"
@@ -181,6 +193,20 @@
      ]
     },
     {
+     "species": "Waxwing",
+     "quest": "waxwing",
+     "stage": "return",
+     "lines": [
+      "sato_yuki.grandpa_bench.1"
+     ]
+    },
+    {
+     "species": "Waxwing",
+     "lines": [
+      "sato_yuki.jam_drops.1"
+     ]
+    },
+    {
      "air": true,
      "lines": [
       "sato_yuki.shout_from_above.1"
@@ -217,6 +243,12 @@
      "species": "HerringGull",
      "lines": [
       "lange_pyotr.net_is_work.1"
+     ]
+    },
+    {
+     "species": "Waxwing",
+     "lines": [
+      "lange_pyotr.olegs_bird.1"
      ]
     },
     {
@@ -261,6 +293,12 @@
      ]
     },
     {
+     "species": "Waxwing",
+     "lines": [
+      "belov_misha.unknown_marking.1"
+     ]
+    },
+    {
      "air": true,
      "lines": [
       "belov_misha.approach_no_landing.1"
@@ -300,6 +338,12 @@
      ]
     },
     {
+     "species": "Waxwing",
+     "lines": [
+      "nishimura_aya.cadmium_tail.1"
+     ]
+    },
+    {
      "air": true,
      "lines": [
       "nishimura_aya.wings_already.1"
@@ -322,6 +366,20 @@
      "species": "BlueTit",
      "lines": [
       "zotova_galina.copper_sulphate.1"
+     ]
+    },
+    {
+     "species": "Waxwing",
+     "quest": "waxwing",
+     "stage": "return",
+     "lines": [
+      "zotova_galina.next_bench_longer.1"
+     ]
+    },
+    {
+     "species": "Waxwing",
+     "lines": [
+      "zotova_galina.reagent_wax.1"
      ]
     },
     {
@@ -365,6 +423,20 @@
      ]
     },
     {
+     "species": "Waxwing",
+     "quest": "waxwing",
+     "stage": "return",
+     "lines": [
+      "zotov_lev.not_imagined.1"
+     ]
+    },
+    {
+     "species": "Waxwing",
+     "lines": [
+      "zotov_lev.handsome_error.1"
+     ]
+    },
+    {
      "air": true,
      "lines": [
       "zotov_lev.students_shout.1"
@@ -395,6 +467,20 @@
      "species": "HouseSparrow",
      "lines": [
       "korneeva_nina.sparrow_news.1"
+     ]
+    },
+    {
+     "species": "Waxwing",
+     "quest": "waxwing",
+     "stage": "return",
+     "lines": [
+      "korneeva_nina.ears_off_yard.1"
+     ]
+    },
+    {
+     "species": "Waxwing",
+     "lines": [
+      "korneeva_nina.postcard_bird.1"
      ]
     },
     {
@@ -431,6 +517,12 @@
      ]
     },
     {
+     "species": "Waxwing",
+     "lines": [
+      "korneev_ivan.olegs_department.1"
+     ]
+    },
+    {
      "air": true,
      "lines": [
       "korneev_ivan.see_the_fish.1"
@@ -453,6 +545,12 @@
      "species": "Peregrine",
      "lines": [
       "valiev_rustam.fastest_design.1"
+     ]
+    },
+    {
+     "species": "Waxwing",
+     "lines": [
+      "valiev_rustam.data_sheet.1"
      ]
     },
     {
@@ -497,6 +595,20 @@
      ]
     },
     {
+     "species": "Waxwing",
+     "quest": "waxwing",
+     "stage": "return",
+     "lines": [
+      "guseva_valentina.two_steps_bench.1"
+     ]
+    },
+    {
+     "species": "Waxwing",
+     "lines": [
+      "guseva_valentina.corn_butter_tail.1"
+     ]
+    },
+    {
      "air": true,
      "lines": [
       "guseva_valentina.pot_is_loud.1"
@@ -527,6 +639,12 @@
      "species": "HoodedCrow",
      "lines": [
       "khuazhev_aslan.braids_counted.1"
+     ]
+    },
+    {
+     "species": "Waxwing",
+     "lines": [
+      "khuazhev_aslan.wedding_guest.1"
      ]
     },
     {
@@ -568,6 +686,12 @@
      "species": "Starling",
      "lines": [
       "nao.starling_on_your_own.1"
+     ]
+    },
+    {
+     "species": "Waxwing",
+     "lines": [
+      "nao.ice_in_glass.1"
      ]
     },
     {
@@ -637,6 +761,12 @@
      ]
     },
     {
+     "species": "Waxwing",
+     "lines": [
+      "guy_b.alarm_to_the_end.1"
+     ]
+    },
+    {
      "air": true,
      "lines": [
       "guy_b.phone_finally.1"
@@ -698,6 +828,12 @@
      "species": "Bullfinch",
      "lines": [
       "clerk.bullfinch_mixed_red.1"
+     ]
+    },
+    {
+     "species": "Waxwing",
+     "lines": [
+      "clerk.precious_cells.1"
      ]
     },
     {
@@ -1359,6 +1495,114 @@
     "girl_b.wish_third_draft.1"
    ],
    "note": "Olya at the library's desk (10-15 Wednesday to Saturday) or at station 8 in the club in the evening; she saves every page and writes drafts. After the hero tied his wish (festival_wish tanabata)."
+  },
+  {
+   "id": "valentina_sorokin_words",
+   "person": "guseva_valentina",
+   "quest": "waxwing_after",
+   "stages": [
+    "visit",
+    "done"
+   ],
+   "within_m": 6,
+   "lines": [
+    "guseva_valentina.sorokin_many_words.1"
+   ],
+   "note": "corn cart on the square (work_corn 11-18 every day), 4.6 m from Sorokin's academ_bench_4: he passes her on his way to and from the bench. No 'today', so it holds whenever visit/done is heard."
+  },
+  {
+   "id": "nina_jumped_like_young",
+   "person": "korneeva_nina",
+   "quest": "waxwing_after",
+   "stages": [
+    "visit",
+    "done"
+   ],
+   "within_m": 7,
+   "lines": [
+    "korneeva_nina.jumped_like_young.1"
+   ],
+   "note": "Nina on academ_bench_0 14-16:30 (yard_evening); Valentina is her friend and the nearest to Sorokin's bench (4.6 m). Hearsay on purpose: Nina was not there. Sorokin's knees: his own waxwing_meet.7."
+  },
+  {
+   "id": "ivan_margin_bird",
+   "person": "korneev_ivan",
+   "quest": "waxwing_after",
+   "stages": [
+    "visit",
+    "done"
+   ],
+   "within_m": 7,
+   "lines": [
+    "korneev_ivan.margin_bird.1"
+   ],
+   "note": "Ivan on academ_bench_3 15-17:30, overlapping Sorokin's 14:30-18:30. The evening paper with the chess problem is evening_paper's."
+  },
+  {
+   "id": "yuki_one_long_word",
+   "person": "sato_yuki",
+   "quest": "waxwing_after",
+   "stages": [
+    "done"
+   ],
+   "within_m": 7,
+   "lines": [
+    "sato_yuki.one_long_word.1"
+   ],
+   "note": "Yuki on academ_bench_1 16-17:15, 6.7 m from Sorokin's bench. After waxwing_after: he has entered it in his journal (quest.waxwing_after.done, waxwing_journal.1); she reads only the name, so his own 'поздоровался' stays his to tell."
+  },
+  {
+   "id": "aya_crest_grows",
+   "person": "nishimura_aya",
+   "quest": "waxwing_after",
+   "stages": [
+    "done"
+   ],
+   "within_m": 7,
+   "lines": [
+    "nishimura_aya.crest_grows.1"
+   ],
+   "note": "Aya sketches on academ_bench_2 16:30-19 (sketch_yard); Sorokin is her friend in people.json and the one who 'always notices and sits still' (her again4)."
+  },
+  {
+   "id": "galina_binocular_honour",
+   "person": "zotova_galina",
+   "quest": "waxwing_after",
+   "stages": [
+    "visit",
+    "done"
+   ],
+   "within_m": 7,
+   "lines": [
+    "zotova_galina.binocular_honour.1"
+   ],
+   "note": "Galina on academ_bench_0 17:30-19, Lev on academ_bench_1 at the same hours, both overlapping Sorokin until 18:30. His binoculars: waxwing.find.log, his again3."
+  },
+  {
+   "id": "dasha_rare_column",
+   "person": "kimura_dasha",
+   "quest": "waxwing_after",
+   "stages": [
+    "done"
+   ],
+   "within_m": 7,
+   "lines": [
+    "kimura_dasha.rare_column.1"
+   ],
+   "note": "Dasha on academ_bench_2 17-18:30. Her table: feeder_table_rows, bird_by_the_book; follows her new Waxwing reaction ('no column for you, I'll start a new one')."
+  },
+  {
+   "id": "misha_bigger_feeder",
+   "person": "belov_misha",
+   "quest": "waxwing_after",
+   "stages": [
+    "done"
+   ],
+   "within_m": 7,
+   "lines": [
+    "belov_misha.bigger_feeder.1"
+   ],
+   "note": "Misha on academ_bench_5 17-18:30. Agrees with Tanya's rowan_again ('if one came, the others may find the way')."
   }
  ]
 }
