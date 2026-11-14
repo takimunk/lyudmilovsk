@@ -7,12 +7,23 @@
 #include "GameFramework/PlayerController.h"
 #include "HAL/IConsoleManager.h"
 #include "Kismet/GameplayStatics.h"
+#include "Plants/GameCalendar.h"
+#include "Plants/ProceduralForest.h"
 #include "Serialization/MemoryReader.h"
 #include "Serialization/MemoryWriter.h"
 #include "Serialization/ObjectAndNameAsStringProxyArchive.h"
 #include "TimerManager.h"
 
 static const TCHAR* IndexSlot = TEXT("lyud_index");
+
+/**
+ * A forest's live plants come and go with the camera under auto-generated names: a record of one would land on another
+ * tree after a load (or on none), so they are neither saved nor restored.
+ */
+static bool LyudIsTransientSaveable(const AActor* Actor)
+{
+	return Actor->GetOwner() && Actor->GetOwner()->IsA<AProceduralForest>();
+}
 
 void ULyudSaveGame::Store(UObject* Object, FLyudSaveRecord& Out)
 {
@@ -125,7 +136,7 @@ FString ULyudSaveSubsystem::SaveToSlot(const FString& Title, const FString& InSl
 	}
 	for (TActorIterator<AActor> It(World); It; ++It)
 	{
-		if (It->Implements<ULyudSaveable>())
+		if (It->Implements<ULyudSaveable>() && !LyudIsTransientSaveable(*It))
 		{
 			ILyudSaveable::Execute_OnGameSaving(*It);
 			ULyudSaveGame::Store(*It, Save->Actors.FindOrAdd(It->GetFName()));
@@ -223,6 +234,23 @@ void ULyudSaveSubsystem::NotifyWorldBeginPlay(UWorld& World)
 		ClockBase = -World.GetTimeSeconds();
 		OnNewGame.Broadcast();
 	}
+	if (Pending && MapOf(&World) == Pending->Map)
+	{
+		// the clock and the date at once: what is built in BeginPlay (plants, the sky, the weather) is built for the save's
+		// day, not for the session's that was left and then again a tick later. ApplyPending sets both again with the rest.
+		if (!FMath::IsFinite(Pending->GameTimeSeconds) || Pending->GameTimeSeconds < 0.0)
+		{
+			Pending->GameTimeSeconds = 0.0;
+		}
+		ClockBase = Pending->GameTimeSeconds - World.GetTimeSeconds();
+		if (UGameCalendar* Calendar = World.GetSubsystem<UGameCalendar>())
+		{
+			if (Pending->ReadObject(TEXT("Calendar"), Calendar))
+			{
+				Calendar->ClampLoaded();
+			}
+		}
+	}
 	if (Pending)
 	{
 		// After every actor's BeginPlay, so loaded state is not overwritten by start-up defaults.
@@ -237,6 +265,12 @@ void ULyudSaveSubsystem::ApplyPending(TWeakObjectPtr<UWorld> WeakWorld)
 	Pending = nullptr;
 	if (!World || !Save)
 	{
+		return;
+	}
+	// the save's level is gone or renamed and the engine opened another one: nothing of the save belongs here
+	if (MapOf(World) != Save->Map)
+	{
+		UE_LOG(LogTemp, Warning, TEXT("Save: \"%s\" is for %s, not for %s: not applied"), *Save->Title, *Save->Map, *MapOf(World));
 		return;
 	}
 	// a corrupt or hand-edited slot must not feed NaN into the clock or the player
@@ -260,7 +294,7 @@ void ULyudSaveSubsystem::ApplyPending(TWeakObjectPtr<UWorld> WeakWorld)
 	int32 Restored = 0;
 	for (TActorIterator<AActor> It(World); It; ++It)
 	{
-		if (!It->Implements<ULyudSaveable>())
+		if (!It->Implements<ULyudSaveable>() || LyudIsTransientSaveable(*It))
 		{
 			continue;
 		}

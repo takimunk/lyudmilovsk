@@ -104,8 +104,13 @@ void ALyudCableway::Lamp(const FVector& At, float Intensity, float Radius)
 
 void ALyudCableway::Plant(const FVector& At, FName Species, int32 Seed, float Age)
 {
-	if (AProceduralPlant* P = GetWorld()->SpawnActorDeferred<AProceduralPlant>(AProceduralPlant::StaticClass(), FTransform(At), nullptr, nullptr,
-		ESpawnActorCollisionHandlingMethod::AlwaysSpawn))
+	// a stable name: the save keys actors by it (the seed is the station's and the planter's number)
+	FActorSpawnParameters PlantSP;
+	PlantSP.Name = FName(*FString::Printf(TEXT("LyudStationPlant_%d"), Seed));
+	PlantSP.NameMode = FActorSpawnParameters::ESpawnActorNameMode::Requested;
+	PlantSP.SpawnCollisionHandlingOverride = ESpawnActorCollisionHandlingMethod::AlwaysSpawn;
+	PlantSP.bDeferConstruction = true;
+	if (AProceduralPlant* P = GetWorld()->SpawnActor<AProceduralPlant>(AProceduralPlant::StaticClass(), FTransform(At), PlantSP))
 	{
 		P->Species = Species;
 		P->Seed = Seed;

@@ -20,8 +20,8 @@ class UMaterialInstanceDynamic;
  * from 06:00 before dawn; shops lit while open (9..21) in the dark; the street lamps whenever it is dark.
  *
  * Perf (docs/perf checklist): nothing per frame. The state is checked every CheckSeconds of real time. Every window
- * owns one instance for good (unlit = scaled to nothing); a change updates only the changed instances and marks each
- * touched mesh dirty once. The panes cast no shadows, have no collision and stay out of Lumen's scene and the distance
+ * owns one instance for good (unlit = scaled to nothing); a change updates only the changed instances (no proxy
+ * rebuild). The panes cast no shadows, have no collision and stay out of Lumen's scene and the distance
  * fields.
  */
 UCLASS(NotPlaceable, Transient)
@@ -101,6 +101,9 @@ public:
 	UFUNCTION(BlueprintPure, Category = "City") bool IsWindowLit(FName WindowId) const;
 	/** Every window of a flat ("W3-D017") at once. */
 	UFUNCTION(BlueprintCallable, Category = "City") void SetFlatLit(FName FlatId, bool bLit);
+	/** The town's life calls this by name (as ULyudWindowLights::SetDriven): false = it has stopped, so every window
+	 *  it had set goes back to the built-in schedule instead of keeping its last state. */
+	UFUNCTION(BlueprintCallable, Category = "City") void SetDriven(bool bInDriven);
 
 	ALyudCityWindows* GetActor() const { return Actor.Get(); }
 

@@ -432,11 +432,37 @@ namespace
 	 *  up to ScannedTo (hours since 2000), found at FrostHours (-1: not yet / none by 1 December). */
 	struct FFrostScan { double ScannedTo = 0.0, FrostHours = -1.0; bool bDone = false; };
 	TMap<int32, FFrostScan> GFrostScans;
+	/** The climate the scans above were made in: another climate is another weather, so they start again. */
+	LyudWeather::FClimate GFrostClimate;
+
+	bool SameClimate(const LyudWeather::FClimate& A, const LyudWeather::FClimate& B)
+	{
+		// field by field (the struct has padding, so no memcmp)
+		return A.Seed == B.Seed && A.LatitudeDeg == B.LatitudeDeg && A.LongitudeDeg == B.LongitudeDeg && A.MeanTempC == B.MeanTempC
+			&& A.YearSwingC == B.YearSwingC && A.ColdestDay == B.ColdestDay && A.DaySwingC == B.DaySwingC && A.Wetness == B.Wetness
+			&& A.WinterSeverity == B.WinterSeverity && A.SeaMeanC == B.SeaMeanC && A.SeaSwingC == B.SeaSwingC
+			&& A.SeaColdestDay == B.SeaColdestDay && A.SolarMaxYear == B.SolarMaxYear && A.SolarActivity == B.SolarActivity;
+	}
 	constexpr int32 FrostHoursPerTick = 120;    // ~2200 hours from 1 September to 1 December: ~18 ticks, never one long frame
 }
 
 bool ALyudFountain::ScanFrost(int32 Year, int32 Budget)
 {
+	// the weather engine's air at 2 m, hour by hour from 1 September (no forced values: the season is the clock's)
+	if (const FFrostScan* Known = GFrostScans.Find(Year); !Known || !Known->bDone)
+	{
+		if (ULyudWeatherSubsystem* W = ULyudWeatherSubsystem::Get(this))
+		{
+			W->GetModelState();     // pushes the climate into the shared chain
+		}
+	}
+	LyudWeather::FChain& Chain = LyudWeather::SharedChain();
+	if (!SameClimate(Chain.GetClimate(), GFrostClimate))
+	{
+		// the climate changed since the scans were made (another seed, a harder winter): their dates are another weather's
+		GFrostClimate = Chain.GetClimate();
+		GFrostScans.Reset();
+	}
 	FFrostScan* S = GFrostScans.Find(Year);
 	if (!S)
 	{
@@ -447,12 +473,6 @@ bool ALyudFountain::ScanFrost(int32 Year, int32 Budget)
 	{
 		return true;
 	}
-	// the weather engine's air at 2 m, hour by hour from 1 September (no forced values: the season is the clock's)
-	if (ULyudWeatherSubsystem* W = ULyudWeatherSubsystem::Get(this))
-	{
-		W->GetModelState();     // pushes the climate into the shared chain
-	}
-	LyudWeather::FChain& Chain = LyudWeather::SharedChain();
 	const double End = HoursOf(FDateTime(Year, 12, 1));
 	for (int32 N = 0; S->ScannedTo < End && (Budget <= 0 || N < Budget); S->ScannedTo += 1.0, N++)
 	{

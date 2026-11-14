@@ -32,7 +32,7 @@ talk
 - town.chat6.2 | Лучше не смотреть. | Better not to look. | 見ないほうがいいよ。
 - town.chat6.3 | Я и не смотрю. Я покупаю. | I don't look. I buy. | 見ないで買うの。
 talk
-- town.chat7.1 | Мне сон приснился: будто мы все в чьей-то книжке. | I had a dream: as if we were all in somebody's book. | 夢を見たの。わたしたちみんな、誰かの本の中にいるの。
+- town.chat7.1 | Мне сон приснился: будто мы все в чьей-то книжке. | I had a dream: as if we were all in somebody's book. | 夢を見たんだ。みんなが誰かの本の中にいる夢。
 - town.chat7.2 | И чем кончилось? | And how did it end? | どんな結末？
 - town.chat7.3 | Не знаю. Дальше не дочитали. | I don't know. They didn't read any further. | わからない。そこまで読まれなかった。
 talk

@@ -353,8 +353,9 @@ namespace LyudDev
 			return World ? UGameplayStatics::GetPlayerController(World, 0) : nullptr;
 		}
 
-		/** The top of whatever is solid at X, Y (the sea's surface where that is higher), world cm; false: nothing there. */
-		bool GroundAt(UWorld* World, const FVector2D& XY, double& OutZ)
+		/** The top of whatever is solid at X, Y between Top and Bottom (the sea's surface where that is higher), world cm;
+		 *  false: nothing there. */
+		bool GroundAt(UWorld* World, const FVector2D& XY, double& OutZ, double Top = 200000.0, double Bottom = -100000.0)
 		{
 			FHitResult Hit;
 			FCollisionObjectQueryParams Objects(ECC_WorldStatic);
@@ -372,7 +373,7 @@ namespace LyudDev
 			{
 				Params.AddIgnoredActor(PC->GetPawn());
 			}
-			const bool bHit = World->LineTraceSingleByObjectType(Hit, FVector(XY, 200000.0), FVector(XY, -100000.0), Objects, Params);
+			const bool bHit = World->LineTraceSingleByObjectType(Hit, FVector(XY, Top), FVector(XY, Bottom), Objects, Params);
 			if (!bHit && !Sea)
 			{
 				return false;
@@ -597,7 +598,18 @@ namespace LyudDev
 					M = P->At;
 				}
 			}
-			const FVector W = ULyudQuests::Frame().ToWorld(M, To.Z.Get(0.0));
+			FVector W = ULyudQuests::Frame().ToWorld(M, To.Z.Get(0.0));
+			if (To.Z.IsSet())
+			{
+				// a given floor height may be a little off (the city plan's terraces vs the built ground): stand on the first
+				// solid thing from a metre and a half above it down to 20 m below (a ceiling is higher than that, so indoors
+				// still lands on the floor, not the roof)
+				double Floor = 0.0;
+				if (GroundAt(World, FVector2D(W), Floor, W.Z + 150.0, W.Z - 2000.0) && Floor <= W.Z + 150.0 && Floor >= W.Z - 2000.0)
+				{
+					W.Z = Floor;
+				}
+			}
 			bDone = TeleportWorld(World, W, To.Yaw, !To.Z.IsSet(), To.Pitch);
 		}
 		if (bDone && !To.Time.IsEmpty())

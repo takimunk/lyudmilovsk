@@ -195,6 +195,11 @@ void ALyudRestaurant::TickKitchen(float DeltaTime)
 	}
 	if (!CookBody)
 	{
+		if (World->GetTimeSeconds() < CookRetryAt)
+		{
+			// the model was missing a moment ago: not a spawn and a failed load every frame
+			return;
+		}
 		FActorSpawnParameters SP;
 		SP.ObjectFlags |= RF_Transient;
 		SP.SpawnCollisionHandlingOverride = ESpawnActorCollisionHandlingMethod::AlwaysSpawn;
@@ -206,6 +211,7 @@ void ALyudRestaurant::TickKitchen(float DeltaTime)
 				CookBody->Destroy();
 			}
 			CookBody = nullptr;
+			CookRetryAt = World->GetTimeSeconds() + 10.f;
 			return;
 		}
 		CookBody->Tags.Add(TEXT("Restaurant"));

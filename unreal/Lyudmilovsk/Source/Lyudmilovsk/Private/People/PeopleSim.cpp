@@ -141,11 +141,11 @@ namespace LyudPeople
 		// the town (tools/town/town_life.py): its buildings and spots, and the people who live in them
 		const std::string TownPlaces = bLoadTown ? ReadFile(Dir + "/town_places.json") : std::string();
 		const std::string Townsfolk = bLoadTown ? ReadFile(Dir + "/townsfolk.json") : std::string();
-		if (!TownPlaces.empty() && !LoadTownPlaces(TownPlaces))
-		{
-			return false;
-		}
-		if (!Townsfolk.empty() && !LoadTownsfolk(Townsfolk))
+		// (one Index for all of it, here, not one after each part)
+		bLoading = true;
+		const bool bTownOk = (TownPlaces.empty() || LoadTownPlaces(TownPlaces)) && (Townsfolk.empty() || LoadTownsfolk(Townsfolk));
+		bLoading = false;
+		if (!bTownOk)
 		{
 			return false;
 		}
@@ -270,7 +270,10 @@ namespace LyudPeople
 			return false;
 		}
 		const bool bOk = AddPeople(J, true);
-		Index();
+		if (!bLoading)
+		{
+			Index();
+		}
 		return bOk;
 	}
 
@@ -361,6 +364,8 @@ namespace LyudPeople
 			return false;
 		}
 		Places.clear();
+		PlaceById.clear();
+		PlaceByIdN = 0;
 		Slots.clear();
 		// a slot (or one per sitter of a sofa or a bench: "spots"); indoors its way in is the place's prefix (stairs,
 		// the flat's door; the library's door; the club's entry) and its own path from there (tools/people_map.py)
@@ -1004,14 +1009,19 @@ namespace LyudPeople
 
 	int FWorld::FindPlace(const std::string& Id) const
 	{
-		for (int I = 0; I < (int)Places.size(); I++)
+		// the places by id, kept up as they are added (they are only ever added, or all cleared: LoadPlaces);
+		// the first of two with one id wins, as a search from the start would have it
+		if (PlaceByIdN > Places.size())
 		{
-			if (Places[I].Id == Id)
-			{
-				return I;
-			}
+			PlaceById.clear();
+			PlaceByIdN = 0;
 		}
-		return -1;
+		for (; PlaceByIdN < Places.size(); PlaceByIdN++)
+		{
+			PlaceById.emplace(Places[PlaceByIdN].Id, (int)PlaceByIdN);
+		}
+		const auto It = PlaceById.find(Id);
+		return It == PlaceById.end() ? -1 : It->second;
 	}
 
 	int FWorld::FindActivity(const std::string& Id) const
@@ -1131,7 +1141,10 @@ namespace LyudPeople
 			}
 			Places.push_back(Pl);
 		}
-		Index();
+		if (!bLoading)
+		{
+			Index();
+		}
 		return true;
 	}
 
@@ -2354,7 +2367,7 @@ namespace LyudPeople
 		const FSlot& Sl = Slots[Slot];
 		const int FromSlot = P.Slot;
 		const int FromAct = Time - P.PrevActivityEnd < 180.0 ? P.PrevActivity : -1;      // what they just got up from (Leave)
-		P.SweepT = -1.f;
+		DropSweep(P);       // (an order, a resettle: not through Leave)
 		if (P.Partner >= 0)
 		{
 			FPerson& Q = People[P.Partner];
@@ -3118,15 +3131,8 @@ namespace LyudPeople
 		const EPose Was = P.Pose;
 		P.PrevActivity = P.Activity;
 		P.PrevActivityEnd = Time;
-		if (P.SweepT >= 0.f)
-		{
-			// called away half way along a stretch of snow: somebody else will finish it
-			if (SnowProgress && P.Slot >= 0 && Slots[P.Slot].SnowJob >= 0)
-			{
-				SnowProgress(P.Id, Slots[P.Slot].SnowJob, -1.f);
-			}
-			P.SweepT = -1.f;
-		}
+		// called away half way along a stretch of snow: somebody else will finish it
+		DropSweep(P);
 		if (P.Partner >= 0)
 		{
 			FPerson& Q = People[P.Partner];
@@ -3307,6 +3313,15 @@ namespace LyudPeople
 		P.Pose = EPose::Walk;
 	}
 
+	void FWorld::DropSweep(FPerson& P)
+	{
+		if (P.SweepT >= 0.f && SnowProgress && P.Slot >= 0 && P.Slot < (int)Slots.size() && Slots[P.Slot].SnowJob >= 0)
+		{
+			SnowProgress(P.Id, Slots[P.Slot].SnowJob, -1.f);
+		}
+		P.SweepT = -1.f;
+	}
+
 	void FWorld::Sweep(FPerson& P, float Dt)
 	{
 		if (P.Slot < 0)
@@ -3384,10 +3399,29 @@ namespace LyudPeople
 			{
 				FSlot Sl;
 				Sl.Kind = "shovel";
+				Sl.K = KindId(Sl.Kind);
 				Sl.Place = Pi;
 				Sl.Pos = Sl.Approach = Sl.SnowTo = Near;
 				Places[Pi].Slots.push_back((int)Slots.size());
 				Slots.push_back(Sl);
+			}
+			// the index stays whole (Index ran before this place was there): its kind, the activities that go to it.
+			// Without this every choice of every person looked over all the places by name from here on
+			Places[Pi].K = KindId(Places[Pi].Kind);
+			for (FActivity& A : Activities)
+			{
+				if (Has(A.Places, Places[Pi].Kind))
+				{
+					A.PlaceIdx.push_back(Pi);
+				}
+			}
+			if (FlatLit.size() == Indexed)
+			{
+				FlatLit.resize(Places.size(), -1);
+			}
+			if (Indexed + 1 == Places.size())
+			{
+				Indexed = Places.size();
 			}
 		}
 		FPlace& Pl = Places[Pi];
@@ -3406,7 +3440,25 @@ namespace LyudPeople
 			for (; J < Jobs.size(); J++)
 			{
 				const FSnowJob& Jb = Jobs[J];
-				bool bTaken = IslandOf(Jb.From) != 0;
+				// on the valley's side only; asked once per patch (a path search each), not for every job every few seconds
+				int JobIsland = -2;
+				if (Jb.Job >= 0)
+				{
+					if ((size_t)Jb.Job >= SnowJobIsland.size())
+					{
+						SnowJobIsland.resize((size_t)Jb.Job + 1, -2);
+					}
+					JobIsland = SnowJobIsland[(size_t)Jb.Job];
+				}
+				if (JobIsland == -2)
+				{
+					JobIsland = IslandOf(Jb.From);
+					if (Jb.Job >= 0)
+					{
+						SnowJobIsland[(size_t)Jb.Job] = (int8_t)JobIsland;
+					}
+				}
+				bool bTaken = JobIsland != 0;
 				for (const int H : Held)
 				{
 					bTaken |= Slots[H].SnowJob == Jb.Job;
@@ -3744,6 +3796,7 @@ namespace LyudPeople
 		}
 		for (FPerson& P : People)
 		{
+			DropSweep(P);
 			P.Path.clear();
 			P.PathI = 0;
 			P.Partner = -1;

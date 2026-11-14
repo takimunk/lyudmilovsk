@@ -288,7 +288,7 @@ say town.fest_mid_autumn.2 | Лунный пряник с лотосом. Поп
 [halloween]
 festival = halloween
 weight = 3
-say town.fest_halloween.1 | Это не маска. Шучу. Или нет. | This isn't a mask. Kidding. Or am I. | これ、お面じゃないよ。うそ。…どうかな。
+say town.fest_halloween.1 | Это не маска. Шучу. Или нет. | This isn't a mask. Kidding. Or am I? | これ、お面じゃないよ。うそ。…どうかな。
 
 [halloween_kid]
 festival = halloween
@@ -335,7 +335,7 @@ talk
 - town.fest_talk2.1 | Хороший праздник. | A lovely festival. | いいお祭りだね。
 - town.fest_talk2.2 | Лучший в году. | The best of the year. | 一年でいちばん。
 - town.fest_talk2.3 | Ты так про каждый говоришь. | You say that about every one. | 毎回そう言うよね。
-- town.fest_talk2.4 | И каждый раз правда. | And it's true every time. | 毎回ほんとなんだもの。
+- town.fest_talk2.4 | И каждый раз правда. | And it's true every time. | だって毎回ほんとだから。
 talk
 - town.fest_talk3.1 | Музыка откуда? | Where's the music coming from? | 音楽、どこから？
 - town.fest_talk3.2 | Со сцены. | From the stage. | ステージから。

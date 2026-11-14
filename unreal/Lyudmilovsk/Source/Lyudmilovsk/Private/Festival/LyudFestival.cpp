@@ -40,6 +40,7 @@
 
 /** The plan files' spots by file (PlanSpots), emptied at each play's start. */
 static TMap<FString, TArray<TSharedPtr<FJsonObject>>> GPlanSpotsCache;
+static const TArray<TSharedPtr<FJsonObject>>& PlanSpots(const FString& File);
 
 static TAutoConsoleVariable<int32> CVarFestivalStub(TEXT("lyud.Festival.Stub"), 0,
 	TEXT("1: send the people to the festivals by Order (the stand-in for UPeopleLifeSubsystem::SetGathering) even when the people's life has gatherings."));
@@ -333,6 +334,8 @@ void ULyudFestivalSubsystem::OnWorldBeginPlay(UWorld& InWorld)
 	}
 	bRunning = true;
 	Timer = 1.5f;       // after the people's life has started
+	// the city plan is about 1 MB of JSON: parsed now, behind the loading screen, not when the first festival's hour comes
+	PlanSpots(TEXT("City/city_plan.json"));
 	UE_LOG(LogTemp, Display, TEXT("Festivals: %d in the calendar"), (int32)Calendar->Festivals.size());
 }
 
@@ -449,6 +452,20 @@ void ULyudFestivalSubsystem::Update()
 	const LyudFest::FDate Today = ToDate(Now);
 	const float Hour = (float)Now.GetTimeOfDay().GetTotalHours();
 	UPeopleLifeSubsystem* People = UPeopleLifeSubsystem::Get(World);
+	// what was told to a people's life that has since been stopped or started again (lyud.People 0 / 1) is gone with it:
+	// the new one is told again; while it is off nothing can be told
+	const LyudPeople::FWorld* SimNow = People ? People->GetSim() : nullptr;
+	if (!SimNow)
+	{
+		People = nullptr;
+	}
+	if (SimNow != LastSim || (SimNow && SimNow->Gatherings.size() < (size_t)Gatherings.Num()))
+	{
+		LastSim = SimNow;
+		Gatherings.Reset();
+		bDayOffSent = false;
+		bStayUpSent = false;
+	}
 	const FString DayKeyNow = DateKey(Today);
 	if (DayKeyNow != HeroDay)
 	{
@@ -457,6 +474,8 @@ void ULyudFestivalSubsystem::Update()
 		HeroWatched.Reset();
 		Watched.Reset();
 		HeroWished = false;
+		HeroLanternsTonight = 0;       // three a night, also while a market or a fair of many days keeps a festival on
+		QuestStarted.Reset();
 	}
 
 	// public holiday
@@ -646,6 +665,13 @@ void ULyudFestivalSubsystem::Update()
 		if (bAny)
 		{
 			NewActive.Add(Entry);
+			// its quest is on from its day's morning (07:00, like the "today" note), not from its first phase: the wish bamboo
+			// is up hours before Tanabata's first phase, and a wish tied then must count
+			if (Hour >= 7.f && A.Rel >= 0.f && A.Rel < F.Days * 24.f && !QuestStarted.Contains(Entry.Id))
+			{
+				QuestStarted.Add(Entry.Id);
+				ULyudQuests::Notify(this, TEXT("festival"), FId);
+			}
 			if (Hour >= 7.f && Hour < 22.f && A.Rel >= 0.f)
 			{
 				Announce(DateKey(Today), FId);
@@ -760,18 +786,54 @@ void ULyudFestivalSubsystem::Update()
 	RunningPhases = WantPhases;
 
 	// shows: the self-running ones (fireworks, lanterns, the bonfire) end by their own clock; the music stops with its phase
+	// the calendar was moved (a sleep, a developer's jump): back, or on by more than three hours since the last update
+	const bool bJumped = LastCal > 0.0 && (NowCal < LastCal - 1.0 || NowCal - LastCal > 3.0 * 3600.0);
+	LastCal = NowCal;
 	for (auto It = Shows.CreateIterator(); It; ++It)
 	{
-		if (!IsValid(It.Value()))
+		AActor* ShowActor = It.Value();
+		if (!IsValid(ShowActor))
 		{
 			It.RemoveCurrent();
 		}
 		else if (!WantShows.Contains(It.Key()))
 		{
-			// its phase is over (or the calendar moved): a little while for the last shells, then gone; the sky lanterns
-			// already up fly on (they stop being let go by their own clock and go when the last one is out of sight)
-			It.Value()->SetLifeSpan(It.Value()->IsA<ALyudSkyLanterns>() ? 1200.f : 20.f);
+			if (bJumped)
+			{
+				// the calendar moved: it belongs to another hour or day, gone at once
+				ShowActor->Destroy();
+			}
+			else
+			{
+				// its phase is over: a little while for the last shells, then gone; the sky lanterns already up fly on and go
+				// when the last one is out of sight. Told to stop, so a clock set back before its end starts nothing new
+				if (ALyudSkyLanterns* StoppedLanterns = Cast<ALyudSkyLanterns>(ShowActor))
+				{
+					StoppedLanterns->StopShow();
+				}
+				else if (ALyudFireworks* StoppedFireworks = Cast<ALyudFireworks>(ShowActor))
+				{
+					StoppedFireworks->StopShow();
+				}
+				ShowActor->SetLifeSpan(ShowActor->IsA<ALyudSkyLanterns>() ? 1200.f : 20.f);
+			}
 			It.RemoveCurrent();
+		}
+	}
+	if (bJumped)
+	{
+		// lanterns of a phase that ended before the jump are no longer in Shows and would fly on into another day
+		TSet<const AActor*> KeptShows;
+		for (const auto& Kept : Shows)
+		{
+			KeptShows.Add(Kept.Value.Get());
+		}
+		for (TActorIterator<ALyudSkyLanterns> LanternIt(World); LanternIt; ++LanternIt)
+		{
+			if (!KeptShows.Contains(*LanternIt))
+			{
+				LanternIt->Destroy();
+			}
 		}
 	}
 	for (auto It = Music.CreateIterator(); It; ++It)
@@ -800,7 +862,8 @@ void ULyudFestivalSubsystem::Update()
 			// the tunes are about two minutes and not looped: the next one starts when one ends
 			if (!(*M)->IsPlaying())
 			{
-				(*M)->FadeIn(1.f, (*M)->GetName().Contains(TEXT("crowd")) ? 0.45f : 0.8f);
+				// at the volume it was started with (StartMusic 0.8, StartSound 0.45 the crowd, 0.9 drums and bells)
+				(*M)->FadeIn(1.f, W.Value == TEXT("crowd") ? 0.45f : (W.Value == TEXT("music") ? 0.8f : 0.9f));
 			}
 			continue;
 		}
@@ -1535,14 +1598,18 @@ FLyudVenue ULyudFestivalSubsystem::FindVenue(FName Name)
 		// the plan's own stage and the fair's own stalls (public_spaces.py: S-STAGE, S-FAIR-STALLnn) count only once
 		// something has built them in the level and says so with an actor tag "PlanStage" / "PlanStalls" (the public
 		// spaces' actor). Until then the festival builds its own.
-		bool bStageBuilt = false, bStallsBuilt = false;
-		for (TActorIterator<AActor> It(GetWorld()); It; ++It)
+		// (looked for once: every actor of the level is walked)
+		if (!bPlanTagsLooked)
 		{
-			bStageBuilt |= It->Tags.Contains(TEXT("PlanStage"));
-			bStallsBuilt |= It->Tags.Contains(TEXT("PlanStalls"));
+			bPlanTagsLooked = true;
+			for (TActorIterator<AActor> It(GetWorld()); It; ++It)
+			{
+				bPlanStageBuilt |= It->Tags.Contains(TEXT("PlanStage"));
+				bPlanStallsBuilt |= It->Tags.Contains(TEXT("PlanStalls"));
+			}
 		}
-		V.bPlanStage = V.bPlanStage && bStageBuilt;
-		V.bPlanStalls = bStallsBuilt && (Want == TEXT("fair") || V.SpotId.StartsWith(TEXT("S-FAIR")));
+		V.bPlanStage = V.bPlanStage && bPlanStageBuilt;
+		V.bPlanStalls = bPlanStallsBuilt && (Want == TEXT("fair") || V.SpotId.StartsWith(TEXT("S-FAIR")));
 		V.Center = Ground(V.Center);
 		V.SeaDir = SeaDirAt(V.Center);
 		// a place with no yaw of its own faces the sea (the stage's back to it on the square: watchers look inland
@@ -2690,8 +2757,7 @@ void ALyudFireworks::Tick(float DeltaTime)
 			// the shell climbs, slowing near the top
 			const float U = S.T / S.Rise;
 			const FVector P = FMath::Lerp(S.From, S.Burst, 1.f - (1.f - U) * (1.f - U));
-			Trail->SetWorldLocation(P);
-			Trail->SetWorldRotation(FRotationMatrix::MakeFromZ(S.Burst - S.From).Rotator());
+			Trail->SetWorldLocationAndRotation(P, FRotationMatrix::MakeFromZ(S.Burst - S.From).Rotator());
 			Trail->SetVisibility(true);
 			continue;
 		}
@@ -2905,6 +2971,7 @@ void ALyudSkyLanterns::Tick(float DeltaTime)
 					L.V = FVector(0.f, 0.f, 55.f + Rand() * 45.f) + Sea * (40.f + Rand() * 60.f) + Side * (Rand() - 0.5f) * 30.f;
 				}
 				L.Phase = Rand() * 10.f;
+				Comps[I]->SetVisibility(true);
 				break;
 			}
 		}
@@ -2943,9 +3010,8 @@ void ALyudSkyLanterns::Tick(float DeltaTime)
 				continue;
 			}
 			Alive++;
-			Comps[I]->SetWorldLocation(L.P);
-			Comps[I]->SetWorldRotation(FRotator(FMath::Sin(L.T * 1.1f + L.Phase) * 3.f, L.Phase * 30.f + L.T * 2.f, FMath::Cos(L.T * 0.9f + L.Phase) * 3.f));
-			Comps[I]->SetVisibility(true);
+			// one move a frame (shown when it was let go)
+			Comps[I]->SetWorldLocationAndRotation(L.P, FRotator(FMath::Sin(L.T * 1.1f + L.Phase) * 3.f, L.Phase * 30.f + L.T * 2.f, FMath::Cos(L.T * 0.9f + L.Phase) * 3.f));
 			continue;
 		}
 		// a slow climb that eases off as the air in them cools, a little sway
@@ -2958,9 +3024,7 @@ void ALyudSkyLanterns::Tick(float DeltaTime)
 			continue;
 		}
 		Alive++;
-		Comps[I]->SetWorldLocation(L.P);
-		Comps[I]->SetWorldRotation(FRotator(FMath::Sin(L.T * 0.7f + L.Phase) * 4.f, L.Phase * 30.f, FMath::Cos(L.T * 0.6f + L.Phase) * 4.f));
-		Comps[I]->SetVisibility(true);
+		Comps[I]->SetWorldLocationAndRotation(L.P, FRotator(FMath::Sin(L.T * 0.7f + L.Phase) * 4.f, L.Phase * 30.f, FMath::Cos(L.T * 0.6f + L.Phase) * 4.f));
 	}
 	if (!bOn && Alive == 0)
 	{
@@ -3050,7 +3114,9 @@ void ALyudBonfire::Setup(const FVector& At, bool bEffigy, double InEndsAt)
 	Light->SetRelativeLocation(FVector(0.f, 0.f, 160.f));
 	if (USoundBase* Crackle = LoadObject<USoundBase>(nullptr, TEXT("/Game/Audio/Festival/S_bonfire_loop_01.S_bonfire_loop_01"), nullptr, LOAD_NoWarn | LOAD_Quiet))
 	{
-		UGameplayStatics::SpawnSoundAttached(Crackle, RootComponent);
+		// with an attenuation of its own (the imported sound has none and would be heard all over the map)
+		UGameplayStatics::SpawnSoundAttached(Crackle, RootComponent, NAME_None, FVector::ZeroVector, EAttachLocation::KeepRelativeOffset,
+			true, 1.f, 1.f, 0.f, MakeAttenuation(this, 400.f, 5000.f));
 	}
 }
 

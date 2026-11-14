@@ -127,7 +127,8 @@ namespace
 	// the club's door in Unreal metres (map origin, portal face y 790 cm)
 	const V3 Door(-1.93f, 7.9f + 4.f, 0.f);
 
-	bool Setup(FWorld& W, float StartHour)
+	/** bAsGame: a fifth of the groups live round the club's door, as UBirdLifeSubsystem sets the world up (FOptions::Focus). */
+	bool Setup(FWorld& W, float StartHour, bool bAsGame = false)
 	{
 		if (!W.LoadHabitats(Dir()))
 		{
@@ -138,6 +139,11 @@ namespace
 		SunTimes(W.DayOfYear, W.Sunrise, W.Sunset);
 		W.Hour = StartHour;
 		W.Camera = Door + V3(0.f, 0.f, 1.7f);
+		if (bAsGame)
+		{
+			W.Opt.Focus = V3(0.f, 12.f, 0.f);
+			W.Opt.FocusShare = 0.2f;
+		}
 		W.Populate();
 		std::printf("birdsim: %zu sites, %zu birds in %zu groups; sunrise %.2f sunset %.2f\n", W.Sites.size(), W.Birds.size(), W.Groups.size(), W.Sunrise, W.Sunset);
 		return true;
@@ -392,7 +398,8 @@ namespace
 				Total += B.Species == Star && !B.bGone;
 			}
 			int MaxIn = 0, Asleep = 0, Over = 0;
-			float Spread = 0.f, CostMax = 0.f;
+			float Spread = 0.f, CostMax = 0.f, MaxStray = 0.f;
+			int StraySteps = 0;
 			double Cost = 0.0;
 			long CostN = 0;
 			bool bSpreadSeen = false;
@@ -402,6 +409,18 @@ namespace
 			{
 				const auto A = std::chrono::steady_clock::now();
 				MaxIn = std::max(MaxIn, M->Count());
+				// how far any bird of the flock gets from its centre, up or sideways (a few hundred metres while it forms)
+				if (++StraySteps % 10 == 0 && M->Count() > 0)
+				{
+					const V3 Mid = M->Centre();
+					for (const FBird& B : W.Birds)
+					{
+						if (B.Act == EAct::Murmur)
+						{
+							MaxStray = std::max(MaxStray, (B.Pos - Mid).Len());
+						}
+					}
+				}
 				static int Printed = 0;
 				if (std::getenv("BIRD_TRACE") && Printed < 12)
 				{
@@ -476,12 +495,15 @@ namespace
 			std::printf("murmuration cost: %.3f ms per simulated second (%.3f ms a frame at 60 fps)\n", M->CpuMs / ((Dusk + 1.f - 15.5f) * 3600.f),
 				M->CpuMs / ((Dusk + 1.f - 15.5f) * 3600.f) / 60.f);
 			std::printf("murmuration: up to %d of %d starlings, 90%% within %.0f m of its centre at sunset-10 min; farthest over the sea %.0f m "
-				"(bound %.0f); %.0f m from the roost at most; %d escape rolls; %d asleep in the reed at dusk+1 h\n",
-				MaxIn, Total, Spread, M->MaxOffshore, W.Opt.MurmurOffshore, M->MaxFromRoost, M->Escapes, Asleep);
+				"(bound %.0f); %.0f m from the roost at most, no bird more than %.0f m from the flock's centre; %d escape rolls; %d asleep in the reed at dusk+1 h\n",
+				MaxIn, Total, Spread, M->MaxOffshore, W.Opt.MurmurOffshore, M->MaxFromRoost, MaxStray, M->Escapes, Asleep);
 			Check(R, MaxIn > Total * 0.7f, "most starlings join the evening murmuration");
 			Check(R, Spread > 10.f && Spread < 160.f, "the murmuration is one flock (90% within 160 m of its centre)");
 			Check(R, M->MaxOffshore <= W.Opt.MurmurOffshore, "the murmuration never goes farther out to sea than the coastal strip");
 			Check(R, M->MaxFromRoost < 450.f, "it keeps over its roost and round it");
+			// (birds pulled straight up over the scarp behind the reed used to climb for good, 5 km up by sunset: the hawk
+			// then stooped at them, far from the flock, and the escape waves below depended on how many had gone)
+			Check(R, MaxStray < 1000.f, "no starling leaves the flock for the sky (none more than 1 km from its centre)");
 			Check(R, M->Escapes > 50, "the peregrine's attacks send escape waves through it");
 			Check(R, Asleep == Total, "every starling is asleep in the reed by dusk + 1 h");
 
@@ -490,9 +512,20 @@ namespace
 			std::set<int> Left;
 			float First = -1.f, Last = -1.f;
 			int InTown = 0, Feeding = 0;
+			long FeedSum = 0, FeedSteps = 0;
 			std::map<std::string, int> Where;
+			const float MorningEnd = W.Hour + 3.5f;
 			Advance(W, 3.5f, 0.2f, [&]()
 			{
+				// feeding, over the last hour (flocks feed and rest in turns: at one moment 350 to 800 of the 1200 are at it)
+				if (W.Hour > MorningEnd - 1.f)
+				{
+					FeedSteps++;
+					for (const FBird& B : W.Birds)
+					{
+						FeedSum += B.Species == Star && (B.Act == EAct::Peck || B.Act == EAct::Forage);
+					}
+				}
 				for (const FBird& B : W.Birds)
 				{
 					if (B.Species == Star && !Left.count(B.Group) && IsAirborne(B.Act) && W.Hour < W.Sunrise + 1.f)
@@ -511,7 +544,6 @@ namespace
 				}
 				const EHabitat K = W.Sites[B.Site].Kind;
 				Where[HabitatName(K)]++;
-				Feeding += B.Act == EAct::Peck || B.Act == EAct::Forage;
 				InTown += K == EHabitat::Street;
 			}
 			std::printf("starlings' morning: %zu groups left the reed from %+.0f to %+.0f min of sunrise; at %.1f h on:", Left.size(), (First - W.Sunrise) * 60.f,
@@ -520,7 +552,8 @@ namespace
 			{
 				std::printf(" %s %d", K.c_str(), N);
 			}
-			std::printf("; %d feeding\n", Feeding);
+			Feeding = (int)(FeedSum / std::max(FeedSteps, 1L));
+			std::printf("; %d feeding on average over the last hour\n", Feeding);
 			Check(R, First < W.Sunrise && Last - First > 0.15f, "they leave the roost before sunrise, group after group");
 			Check(R, Where["Reed"] < Total / 10 && Feeding > Total / 4, "by late morning they are out feeding");
 			Check(R, Where["Meadow"] > 0 && InTown > 0, "on the fields and in the town's lawns and streets");
@@ -639,24 +672,34 @@ namespace
 			FWorld W;
 			Setup(W, 12.f);
 			W.Camera = Door;
-			const int Gull = FindSpecies("BlackHeadedGull"), Rook = FindSpecies("Rook"), Swift = FindSpecies("CommonSwift");
+			const int Rook = FindSpecies("Rook"), Swift = FindSpecies("CommonSwift");
+			// (the mean over the hour: one look at half past twelve found anything from 0 to 55 black-headed gulls on the sand
+			// at low water, a flock is there or it has just left, and the check then hung on which)
+			std::vector<char> bGull;
+			for (const FSpecies& S : SpeciesTable())
+			{
+				bGull.push_back(IsGullName(S.Id));
+			}
 			auto OnBeach = [&](float Tide)
 			{
 				W.SeaZ = W.MeanSeaZ + Tide;
 				W.Hour = 12.f;
 				W.Resettle();
-				int N = 0;
-				Advance(W, 0.5f, 0.25f, [] {});
-				for (const FBird& B : W.Birds)
+				long Sum = 0, Steps = 0;
+				Advance(W, 1.f, 0.25f, [&]
 				{
-					N += B.Species == Gull && !IsAirborne(B.Act) && B.Site >= 0 && W.Sites[B.Site].Kind == EHabitat::Beach;
-				}
-				return N;
+					Steps++;
+					for (const FBird& B : W.Birds)
+					{
+						Sum += bGull[B.Species] && !B.bGone && !IsAirborne(B.Act) && B.Site >= 0 && W.Sites[B.Site].Kind == EHabitat::Beach;
+					}
+				});
+				return (float)Sum / (float)Steps;
 			};
-			const int Low = OnBeach(-0.8f), High = OnBeach(0.8f);
+			const float Low = OnBeach(-0.8f), High = OnBeach(0.8f);
 			W.SeaZ = W.MeanSeaZ;
-			std::printf("black-headed gulls on the beach at noon: %d at low tide, %d at high tide\n", Low, High);
-			Check(R, Low > High, "gulls go down to the sand the low tide lays bare");
+			std::printf("gulls on the beach from noon to one, on average: %.1f at low tide, %.1f at high tide\n", Low, High);
+			Check(R, Low > 2.f * High, "gulls go down to the sand the low tide lays bare");
 			W.Hour = W.Sunset - 1.3f;
 			W.Resettle();
 			int Gathering = 0, Rooks = 0;
@@ -770,31 +813,56 @@ namespace
 	{
 		struct FCase { const char* Name; std::vector<std::pair<const char*, float>> Like; V3 Where; bool bExpect; };
 		FWorld W;
-		if (!Setup(W, 9.f))
+		if (!Setup(W, 9.f, true))
 		{
 			Check(R, false, "feeders: world loads");
 			return;
 		}
-		// a garden near the club's door, where the small birds live, and far out on the sea
-		V3 Garden = Door + V3(12.f, 18.f, 0.f);
-		for (const FSite& S : W.Sites)
+		// by the club's door, where the game settles a fifth of the small birds' groups (Setup's bAsGame: without it no tit
+		// lives within reach of the door on the terraced map, and the tray rightly stays empty)
+		const V3 ByDoor = Door + V3(12.f, 18.f, 0.f);
+		// and in the town, for the town's birds (from the door the nearest pigeons are at the very edge of their range): the
+		// garden with the most groups that like the feed living near it, counting those a tray can hold (FeederScore: a
+		// flock of more than 8 never comes to one)
+		typedef std::vector<std::pair<const char*, float>> FLikes;
+		const auto TownGarden = [&](const FLikes& Like)
 		{
-			if (S.Kind == EHabitat::Garden && (S.Center() - Door).Len2D() < 150.f)
+			V3 Best = ByDoor;
+			float BestN = 0.f;
+			for (const FSite& S : W.Sites)
 			{
-				Garden = S.Center() + V3(4.f, 0.f, 0.f);
-				break;
+				float N = 0.f;
+				for (const FGroup& G : W.Groups)
+				{
+					for (const auto& L : Like)
+					{
+						const float Reach = G.Species >= 0 ? SpeciesTable()[G.Species].HomeRange : 0.f, D = (S.Center() - G.Home).Len2D();
+						if (S.Kind == EHabitat::Garden && G.Species == FindSpecies(L.first) && G.Members.size() <= 8 && D < Reach)
+						{
+							N += L.second * (1.f - D / Reach);
+						}
+					}
+				}
+				if (N > BestN)
+				{
+					BestN = N;
+					Best = S.Center() + V3(4.f, 0.f, 0.f);
+				}
 			}
-		}
+			return Best;
+		};
+		const FLikes Suet = { { "GreatTit", 1.f }, { "BlueTit", 1.f }, { "Robin", 0.6f } };
+		const FLikes Grain = { { "FeralPigeon", 1.f }, { "HouseSparrow", 0.6f }, { "TreeSparrow", 0.5f }, { "Chaffinch", 0.4f } };
 		const std::vector<FCase> Cases = {
-			{ "suet in the garden", { { "GreatTit", 1.f }, { "BlueTit", 1.f }, { "Robin", 0.6f } }, Garden, true },
-			{ "grain in the garden", { { "FeralPigeon", 1.f }, { "HouseSparrow", 0.6f }, { "TreeSparrow", 0.5f }, { "Chaffinch", 0.4f } }, Garden, true },
-			{ "a feed nobody eats", {}, Garden, false },
+			{ "suet by the club's door", Suet, ByDoor, true },
+			{ "grain in a town garden", Grain, TownGarden(Grain), true },
+			{ "a feed nobody eats", {}, ByDoor, false },
 		};
 		const std::vector<FSite> Base = W.Sites;
 		for (const FCase& C : Cases)
 		{
 			FWorld X;
-			Setup(X, 9.f);
+			Setup(X, 9.f, true);
 			V3 Tray = C.Where;
 			Tray.Z = X.GroundZ(Tray.X, Tray.Y) + 1.2f;
 			const int F = X.AddFeeder(Tray, 0.2f, X.KindsAround(Tray));

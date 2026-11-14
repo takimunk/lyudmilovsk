@@ -419,10 +419,19 @@ void AProceduralForest::UpdateLive(const FVector& Camera)
 	}
 	int32 Built = 0;
 	UTreeBakeCache* Cache = GetWorld()->GetSubsystem<UTreeBakeCache>();
+	// every forest shares the frame: where two or three meet, each built its own plant in the same frame (tens of ms
+	// each); the others now wait a frame
+	static uint64 LiveFrame = 0;
+	static int32 LiveBuiltInFrame = 0;
+	if (LiveFrame != GFrameCounter)
+	{
+		LiveFrame = GFrameCounter;
+		LiveBuiltInFrame = 0;
+	}
 	for (const TPair<double, int32>& W : Wanted)
 	{
 		// a live plant builds its skeleton, wood and leaves in this tick: a few at most per tick, the nearest first
-		if (Built >= LivePerTick) break;
+		if (Built >= LivePerTick || LiveBuiltInFrame >= LivePerTick) break;
 		if (LiveCount >= MaxNow) break;
 		FTree& T = Trees[W.Value];
 		FActorSpawnParameters Params;
@@ -443,6 +452,7 @@ void AProceduralForest::UpdateLive(const FVector& Camera)
 		}
 		P->FinishSpawning(T.Xf);
 		Built++;
+		LiveBuiltInFrame++;
 		T.Live = P;
 		LiveCount++;
 		SetHidden(T, true);
