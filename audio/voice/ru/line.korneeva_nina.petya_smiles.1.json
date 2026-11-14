@@ -1,0 +1,29 @@
+{
+ "key": "line.korneeva_nina.petya_smiles.1",
+ "lang": "ru",
+ "text": "Петя Ланге сыр получил? Ваня рассказывал. Говорит, Петя теперь над сетями улыбается, рыба в недоумении.",
+ "speaker": "korneeva_nina",
+ "voice": "Wise_Woman",
+ "voice_id": "Wise_Woman",
+ "voice_design": null,
+ "direction": "",
+ "model": "fal-ai/minimax/speech-2.6-hd",
+ "request": {
+  "prompt": "Петя Ланге сыр получил? Ваня рассказывал. Говорит, Петя теперь над сетями улыбается, рыба в недоумении.",
+  "voice_setting": {
+   "speed": 0.95,
+   "pitch": 0,
+   "vol": 1,
+   "voice_id": "Wise_Woman"
+  },
+  "language_boost": "Russian",
+  "audio_setting": {
+   "sample_rate": 24000,
+   "format": "mp3",
+   "channel": 1
+  },
+  "output_format": "url"
+ },
+ "fal_request_id": "01a1d7aa-4e35-7323-9506-4782117d6aff",
+ "hash": "52297b0d822c"
+}

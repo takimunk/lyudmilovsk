@@ -1,0 +1,20 @@
+{
+ "key": "line.orlova_tanya.holi_pink_hands.1",
+ "lang": "ja",
+ "text": "公園で色の粉を投げ合ってたんですって。そのあと、手がピンクのお客さんが来たわ。お金までピンクだった。",
+ "speaker": "orlova_tanya",
+ "voice": "Aria",
+ "voice_id": "9BWtsMINqrJLrRacOk9x",
+ "voice_design": null,
+ "direction": "[a kiosk shop assistant, brisk, deadpan, a bit sassy]",
+ "model": "fal-ai/elevenlabs/tts/eleven-v3",
+ "request": {
+  "stability": 0.5,
+  "apply_text_normalization": "auto",
+  "text": "[a kiosk shop assistant, brisk, deadpan, a bit sassy] 公園で色の粉を投げ合ってたんですって。そのあと、手がピンクのお客さんが来たわ。お金までピンクだった。",
+  "voice": "Aria",
+  "language_code": "ja"
+ },
+ "fal_request_id": "01a1d7ab-6bcd-7ae0-bd1e-6f81d245902e",
+ "hash": "b92183ac5fd4"
+}

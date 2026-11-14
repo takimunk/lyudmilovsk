@@ -1,0 +1,29 @@
+{
+ "key": "line.guseva_valentina.lunar_dumplings.1",
+ "lang": "en",
+ "text": "For the Lunar New Year the whole town ate dumplings. Two people came to me for corn, and even they had dumplings in a bag.",
+ "speaker": "guseva_valentina",
+ "voice": "Abbess",
+ "voice_id": "Abbess",
+ "voice_design": null,
+ "direction": "",
+ "model": "fal-ai/minimax/speech-2.6-hd",
+ "request": {
+  "prompt": "For the Lunar New Year the whole town ate dumplings. Two people came to me for corn, and even they had dumplings in a bag.",
+  "voice_setting": {
+   "speed": 1,
+   "pitch": 0,
+   "vol": 1,
+   "voice_id": "Abbess"
+  },
+  "language_boost": "English",
+  "audio_setting": {
+   "sample_rate": 24000,
+   "format": "mp3",
+   "channel": 1
+  },
+  "output_format": "url"
+ },
+ "fal_request_id": "01a1d7a9-aaa5-7b31-861e-131746c995c5",
+ "hash": "16a90e0f0f61"
+}

@@ -1,0 +1,20 @@
+{
+ "key": "line.lange_pyotr.cheese_low_sun.1",
+ "lang": "ru",
+ "text": "Солнце низко. Палатка у клуба с десяти до восьми, в понедельник закрыта. Косичка, копчёная.",
+ "speaker": "lange_pyotr",
+ "voice": "Brian",
+ "voice_id": "nPczCjzI2devNBz1zQrb",
+ "voice_design": null,
+ "direction": "[gruff, unhurried, a weathered fisherman of few words]",
+ "model": "fal-ai/elevenlabs/tts/eleven-v3",
+ "request": {
+  "stability": 0.5,
+  "apply_text_normalization": "auto",
+  "text": "[gruff, unhurried, a weathered fisherman of few words] Солнце низко. Палатка у клуба с десяти до восьми, в понедельник закрыта. Косичка, копчёная.",
+  "voice": "Brian",
+  "language_code": "ru"
+ },
+ "fal_request_id": "01a1d7aa-77a8-7c73-b69a-58a8b25e68e9",
+ "hash": "3c78d0936a60"
+}

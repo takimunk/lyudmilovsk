@@ -1,0 +1,20 @@
+{
+ "key": "line.lange_pyotr.cheese_smoked_pocket.2",
+ "lang": "en",
+ "text": "That's just what I need. Give it here and I won't forget it.",
+ "speaker": "lange_pyotr",
+ "voice": "Brian",
+ "voice_id": "nPczCjzI2devNBz1zQrb",
+ "voice_design": null,
+ "direction": "[gruff, unhurried, a weathered fisherman of few words]",
+ "model": "fal-ai/elevenlabs/tts/eleven-v3",
+ "request": {
+  "stability": 0.5,
+  "apply_text_normalization": "auto",
+  "text": "[gruff, unhurried, a weathered fisherman of few words] That's just what I need. Give it here and I won't forget it.",
+  "voice": "Brian",
+  "language_code": "en"
+ },
+ "fal_request_id": "01a1d7aa-96f8-70f3-9d05-66b4d3e90201",
+ "hash": "4606716eef10"
+}

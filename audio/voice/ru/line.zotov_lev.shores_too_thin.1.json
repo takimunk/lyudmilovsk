@@ -1,0 +1,20 @@
+{
+ "key": "line.zotov_lev.shores_too_thin.1",
+ "lang": "ru",
+ "text": "У вас «Берега»? Хороший журнал. Только тонкий, под интерферометр не годится.",
+ "speaker": "zotov_lev",
+ "voice": "George",
+ "voice_id": "JBFqnCBsd6RMkjVDRZzb",
+ "voice_design": null,
+ "direction": "[dry, thoughtful, unhurried, a physicist's quiet irony]",
+ "model": "fal-ai/elevenlabs/tts/eleven-v3",
+ "request": {
+  "stability": 0.5,
+  "apply_text_normalization": "auto",
+  "text": "[dry, thoughtful, unhurried, a physicist's quiet irony] У вас «Берега»? Хороший журнал. Только тонкий, под интерферометр не годится.",
+  "voice": "George",
+  "language_code": "ru"
+ },
+ "fal_request_id": "01a1d7ab-ea6d-7113-bfb0-0c39ee707a28",
+ "hash": "52d85bf40dcd"
+}

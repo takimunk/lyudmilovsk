@@ -1,0 +1,29 @@
+{
+ "key": "line.guseva_valentina.corn_paper_known.1",
+ "lang": "ru",
+ "text": "Это ты Нине газету носил? Она всем рассказала. Тогда вот тебе ещё дело: отнеси початок Ване, её мужу.",
+ "speaker": "guseva_valentina",
+ "voice": "Abbess",
+ "voice_id": "Abbess",
+ "voice_design": null,
+ "direction": "",
+ "model": "fal-ai/minimax/speech-2.6-hd",
+ "request": {
+  "prompt": "Это ты Нине газету носил? Она всем рассказала. Тогда вот тебе ещё дело: отнеси початок Ване, её мужу.",
+  "voice_setting": {
+   "speed": 1,
+   "pitch": 0,
+   "vol": 1,
+   "voice_id": "Abbess"
+  },
+  "language_boost": "Russian",
+  "audio_setting": {
+   "sample_rate": 24000,
+   "format": "mp3",
+   "channel": 1
+  },
+  "output_format": "url"
+ },
+ "fal_request_id": "01a1d7a9-815a-7172-8ee7-22656128d0b9",
+ "hash": "18557cc18c1e"
+}

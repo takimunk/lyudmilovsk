@@ -1,0 +1,20 @@
+{
+ "key": "line.lange_pyotr.cheese_smoked_pocket.2",
+ "lang": "ru",
+ "text": "Вот такую мне и надо. Отдашь, в долгу не останусь.",
+ "speaker": "lange_pyotr",
+ "voice": "Brian",
+ "voice_id": "nPczCjzI2devNBz1zQrb",
+ "voice_design": null,
+ "direction": "[gruff, unhurried, a weathered fisherman of few words]",
+ "model": "fal-ai/elevenlabs/tts/eleven-v3",
+ "request": {
+  "stability": 0.5,
+  "apply_text_normalization": "auto",
+  "text": "[gruff, unhurried, a weathered fisherman of few words] Вот такую мне и надо. Отдашь, в долгу не останусь.",
+  "voice": "Brian",
+  "language_code": "ru"
+ },
+ "fal_request_id": "01a1d7aa-a73a-7793-aa55-66b67804be94",
+ "hash": "ac4afc60087a"
+}
