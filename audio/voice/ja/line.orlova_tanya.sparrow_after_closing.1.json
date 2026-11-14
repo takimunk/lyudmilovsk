@@ -1,7 +1,7 @@
 {
  "key": "line.orlova_tanya.sparrow_after_closing.1",
  "lang": "ja",
- "text": "イエスズメちゃん、パンくずは閉店後よ。いまはお客さんがいるの。まあ、ほとんどお客さんみたいな人たちだけど。",
+ "text": "イエスズメちゃん、パンくずは閉店後よ。いまは忙しいの。",
  "speaker": "orlova_tanya",
  "voice": "Aria",
  "voice_id": "9BWtsMINqrJLrRacOk9x",
@@ -11,10 +11,10 @@
  "request": {
   "stability": 0.5,
   "apply_text_normalization": "auto",
-  "text": "[a kiosk shop assistant, brisk, deadpan, a bit sassy] イエスズメちゃん、パンくずは閉店後よ。いまはお客さんがいるの。まあ、ほとんどお客さんみたいな人たちだけど。",
+  "text": "[a kiosk shop assistant, brisk, deadpan, a bit sassy] イエスズメちゃん、パンくずは閉店後よ。いまは忙しいの。",
   "voice": "Aria",
   "language_code": "ja"
  },
- "fal_request_id": "01a1d7b7-e5c3-7d71-9b35-a0b5ed4dfc81",
- "hash": "8ee9ffce8f15"
+ "fal_request_id": "01a1d7e0-d64c-7d60-96a7-4e7663109475",
+ "hash": "19b0216774d3"
 }

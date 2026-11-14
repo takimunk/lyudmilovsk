@@ -1,7 +1,7 @@
 {
  "key": "line.orlova_tanya.tit_to_the_yard.1",
  "lang": "ja",
- "text": "シジュウカラ？中庭に餌台が出たのよ。ダーシャとヴィーカが皿洗いを賭けてるの。行ってらっしゃい、数えてもらえるわよ。",
+ "text": "シジュウカラ？中庭に餌台が出たのよ。ダーシャとヴィーカが皿洗いを賭けてるの。行ってらっしゃい、あなたの仲間を数えてるわよ。",
  "speaker": "orlova_tanya",
  "voice": "Aria",
  "voice_id": "9BWtsMINqrJLrRacOk9x",
@@ -11,10 +11,10 @@
  "request": {
   "stability": 0.5,
   "apply_text_normalization": "auto",
-  "text": "[a kiosk shop assistant, brisk, deadpan, a bit sassy] シジュウカラ？中庭に餌台が出たのよ。ダーシャとヴィーカが皿洗いを賭けてるの。行ってらっしゃい、数えてもらえるわよ。",
+  "text": "[a kiosk shop assistant, brisk, deadpan, a bit sassy] シジュウカラ？中庭に餌台が出たのよ。ダーシャとヴィーカが皿洗いを賭けてるの。行ってらっしゃい、あなたの仲間を数えてるわよ。",
   "voice": "Aria",
   "language_code": "ja"
  },
- "fal_request_id": "01a1d7b8-04cd-7f41-94d3-f11f5a4f229c",
- "hash": "88dadf85dc28"
+ "fal_request_id": "01a1d7e0-ec70-73f0-8fc0-d5fa77009399",
+ "hash": "6aee2a3d5b8e"
 }

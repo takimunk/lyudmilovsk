@@ -1,7 +1,7 @@
 {
  "key": "line.orlova_tanya.come_warm_up.1",
  "lang": "ja",
- "text": "お入り、あったまっていきなさい。みんなそうしてるわ。あなたが初めてじゃないのよ。",
+ "text": "寒いの？あとで店においで。みんなうちで温まっていくのよ。",
  "speaker": "orlova_tanya",
  "voice": "Aria",
  "voice_id": "9BWtsMINqrJLrRacOk9x",
@@ -11,10 +11,10 @@
  "request": {
   "stability": 0.5,
   "apply_text_normalization": "auto",
-  "text": "[a kiosk shop assistant, brisk, deadpan, a bit sassy] お入り、あったまっていきなさい。みんなそうしてるわ。あなたが初めてじゃないのよ。",
+  "text": "[a kiosk shop assistant, brisk, deadpan, a bit sassy] 寒いの？あとで店においで。みんなうちで温まっていくのよ。",
   "voice": "Aria",
   "language_code": "ja"
  },
- "fal_request_id": "01a1d7b7-96b3-7913-a851-8e1d585b5b1c",
- "hash": "335a3236b26f"
+ "fal_request_id": "01a1d7e0-a675-7ae0-aafb-a44de884a803",
+ "hash": "d8aa80d8c307"
 }

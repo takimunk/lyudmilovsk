@@ -1,7 +1,7 @@
 {
  "key": "line.orlova_tanya.tit_to_the_yard.1",
  "lang": "ru",
- "text": "Синица? Во дворе кормушку повесили, Даша с Викой на посуду спорят. Лети туда, там тебя посчитают.",
+ "text": "Синица? Во дворе кормушку повесили, Даша с Викой на посуду спорят. Лети туда, там твоих считают.",
  "speaker": "orlova_tanya",
  "voice": "Aria",
  "voice_id": "9BWtsMINqrJLrRacOk9x",
@@ -11,10 +11,10 @@
  "request": {
   "stability": 0.5,
   "apply_text_normalization": "auto",
-  "text": "[a kiosk shop assistant, brisk, deadpan, a bit sassy] Синица? Во дворе кормушку повесили, Даша с Викой на посуду спорят. Лети туда, там тебя посчитают.",
+  "text": "[a kiosk shop assistant, brisk, deadpan, a bit sassy] Синица? Во дворе кормушку повесили, Даша с Викой на посуду спорят. Лети туда, там твоих считают.",
   "voice": "Aria",
   "language_code": "ru"
  },
- "fal_request_id": "01a1d7b7-c3bd-7532-a18f-9b51ea6b5410",
- "hash": "424ba4fc2e81"
+ "fal_request_id": "01a1d7df-f060-7e13-a65b-9a33fe32629a",
+ "hash": "bd6e82a3e133"
 }

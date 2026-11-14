@@ -1,7 +1,7 @@
 {
  "key": "line.orlova_tanya.fieldfare_no_rowan.1",
  "lang": "en",
- "text": "A fieldfare? No rowan for you, it's put aside for Sorokin. Off to the gardens, there's plenty of your own there.",
+ "text": "A fieldfare? The rowan's for Sorokin's waxwings. Off to the gardens, there's plenty of your own there.",
  "speaker": "orlova_tanya",
  "voice": "Aria",
  "voice_id": "9BWtsMINqrJLrRacOk9x",
@@ -11,10 +11,10 @@
  "request": {
   "stability": 0.5,
   "apply_text_normalization": "auto",
-  "text": "[a kiosk shop assistant, brisk, deadpan, a bit sassy] A fieldfare? No rowan for you, it's put aside for Sorokin. Off to the gardens, there's plenty of your own there.",
+  "text": "[a kiosk shop assistant, brisk, deadpan, a bit sassy] A fieldfare? The rowan's for Sorokin's waxwings. Off to the gardens, there's plenty of your own there.",
   "voice": "Aria",
   "language_code": "en"
  },
- "fal_request_id": "01a1d7b7-8f74-7600-bb46-6d54bfa70a55",
- "hash": "d96863f36971"
+ "fal_request_id": "01a1d7e0-41ce-7482-b6e0-ccfe605d13ca",
+ "hash": "f241c0a1bf3b"
 }

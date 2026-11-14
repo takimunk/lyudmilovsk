@@ -1,7 +1,7 @@
 {
  "key": "line.orlova_tanya.tit_to_the_yard.1",
  "lang": "en",
- "text": "A great tit? Someone's put a feeder up in the yard, Dasha and Vika have a bet on the dishes. Fly over there, they'll count you.",
+ "text": "A great tit? Someone's put a feeder up in the yard, Dasha and Vika have a bet on the dishes. Fly over there, they're counting your lot.",
  "speaker": "orlova_tanya",
  "voice": "Aria",
  "voice_id": "9BWtsMINqrJLrRacOk9x",
@@ -11,10 +11,10 @@
  "request": {
   "stability": 0.5,
   "apply_text_normalization": "auto",
-  "text": "[a kiosk shop assistant, brisk, deadpan, a bit sassy] A great tit? Someone's put a feeder up in the yard, Dasha and Vika have a bet on the dishes. Fly over there, they'll count you.",
+  "text": "[a kiosk shop assistant, brisk, deadpan, a bit sassy] A great tit? Someone's put a feeder up in the yard, Dasha and Vika have a bet on the dishes. Fly over there, they're counting your lot.",
   "voice": "Aria",
   "language_code": "en"
  },
- "fal_request_id": "01a1d7b7-d2c0-7881-8677-c8eedde9f6f6",
- "hash": "09d0046b27e8"
+ "fal_request_id": "01a1d7e0-6b8b-70c0-847c-fc64306fcaa1",
+ "hash": "aa838539e4ca"
 }

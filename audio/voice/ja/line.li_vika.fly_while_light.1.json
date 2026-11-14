@@ -1,7 +1,7 @@
 {
  "key": "line.li_vika.fly_while_light.1",
  "lang": "ja",
- "text": "明るいうちに飛びなよ。私なんて、また暗くなってから研究所を出たんだから。",
+ "text": "明るいうちに飛んで。私はまた暗くなってから研究所を出るんだ。",
  "speaker": "li_vika",
  "voice": "Laura",
  "voice_id": "FGY2WhTYpPnrIDTdsKH5",
@@ -11,10 +11,10 @@
  "request": {
   "stability": 0.5,
   "apply_text_normalization": "auto",
-  "text": "[playful, quick, a lab assistant joking about her work] 明るいうちに飛びなよ。私なんて、また暗くなってから研究所を出たんだから。",
+  "text": "[playful, quick, a lab assistant joking about her work] 明るいうちに飛んで。私はまた暗くなってから研究所を出るんだ。",
   "voice": "Laura",
   "language_code": "ja"
  },
- "fal_request_id": "01a1d7b7-2ac2-7071-acb1-1dca90d34300",
- "hash": "3b5bb3535ecf"
+ "fal_request_id": "01a1d7e0-936c-7073-9708-3513ad850a4b",
+ "hash": "866748553ad8"
 }

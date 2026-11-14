@@ -1,7 +1,7 @@
 {
  "key": "line.kid_boy.bird_no_save.1",
  "lang": "en",
- "text": "Where did you come from? Okay, I have to get to the club. Seats don't save there.",
+ "text": "Where did you come from? Okay, I'm off. Seats don't save in the club, and out here even less.",
  "speaker": "kid_boy",
  "voice": "ttv-voice-2026102201382326-dnI61vJ1",
  "voice_id": "ttv-voice-2026102201382326-dnI61vJ1",
@@ -13,7 +13,7 @@
  "direction": "",
  "model": "fal-ai/minimax/speech-2.6-hd",
  "request": {
-  "prompt": "Where did you come from? Okay, I have to get to the club. Seats don't save there.",
+  "prompt": "Where did you come from? Okay, I'm off. Seats don't save in the club, and out here even less.",
   "voice_setting": {
    "speed": 1,
    "pitch": 0,
@@ -28,6 +28,6 @@
   },
   "output_format": "url"
  },
- "fal_request_id": "01a1d7b6-b041-7f13-b301-6179980d9769",
- "hash": "f795e6c10ad0"
+ "fal_request_id": "01a1d7e0-0a44-7101-a674-2ed9ca6f0b04",
+ "hash": "ad555e8b5c23"
 }

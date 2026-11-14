@@ -1,7 +1,7 @@
 {
  "key": "line.orlova_tanya.come_warm_up.1",
  "lang": "en",
- "text": "Come in and warm up. Everyone warms up in here, you're not the first.",
+ "text": "Cold? Come by the shop later, everyone warms up at mine.",
  "speaker": "orlova_tanya",
  "voice": "Aria",
  "voice_id": "9BWtsMINqrJLrRacOk9x",
@@ -11,10 +11,10 @@
  "request": {
   "stability": 0.5,
   "apply_text_normalization": "auto",
-  "text": "[a kiosk shop assistant, brisk, deadpan, a bit sassy] Come in and warm up. Everyone warms up in here, you're not the first.",
+  "text": "[a kiosk shop assistant, brisk, deadpan, a bit sassy] Cold? Come by the shop later, everyone warms up at mine.",
   "voice": "Aria",
   "language_code": "en"
  },
- "fal_request_id": "01a1d7b7-7850-7e61-b59d-799ad02b0d48",
- "hash": "4270264bbeb5"
+ "fal_request_id": "01a1d7e0-2f4f-78c1-92b6-387206513aeb",
+ "hash": "558bdc61ee8e"
 }

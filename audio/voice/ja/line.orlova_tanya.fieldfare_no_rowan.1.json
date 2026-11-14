@@ -1,7 +1,7 @@
 {
  "key": "line.orlova_tanya.fieldfare_no_rowan.1",
  "lang": "ja",
- "text": "ノハラツグミ？ナナカマドはだめ、ソローキンさんの取り置きなの。庭へお行き、自分のがたくさんあるでしょ。",
+ "text": "ノハラツグミ？ナナカマドはソローキンさんのキレンジャクの分よ。お庭へ行きなさいな、あっちに自分の分がたくさんあるでしょ。",
  "speaker": "orlova_tanya",
  "voice": "Aria",
  "voice_id": "9BWtsMINqrJLrRacOk9x",
@@ -11,10 +11,10 @@
  "request": {
   "stability": 0.5,
   "apply_text_normalization": "auto",
-  "text": "[a kiosk shop assistant, brisk, deadpan, a bit sassy] ノハラツグミ？ナナカマドはだめ、ソローキンさんの取り置きなの。庭へお行き、自分のがたくさんあるでしょ。",
+  "text": "[a kiosk shop assistant, brisk, deadpan, a bit sassy] ノハラツグミ？ナナカマドはソローキンさんのキレンジャクの分よ。お庭へ行きなさいな、あっちに自分の分がたくさんあるでしょ。",
   "voice": "Aria",
   "language_code": "ja"
  },
- "fal_request_id": "01a1d7b7-ad79-7b43-85fe-1959473fb4ec",
- "hash": "2c8889e08e72"
+ "fal_request_id": "01a1d7e0-b94d-7530-8dc0-476e27a90279",
+ "hash": "a0be32347cec"
 }

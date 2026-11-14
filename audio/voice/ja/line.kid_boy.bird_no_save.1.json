@@ -1,7 +1,7 @@
 {
  "key": "line.kid_boy.bird_no_save.1",
  "lang": "ja",
- "text": "どこから来たの？まあいいや、クラブ行かなきゃ。席はセーブできないんだ。",
+ "text": "どこから来たの？じゃあ行くね。クラブも外も、セーブなんてできないんだ。",
  "speaker": "kid_boy",
  "voice": "ttv-voice-2026102201382326-dnI61vJ1",
  "voice_id": "ttv-voice-2026102201382326-dnI61vJ1",
@@ -13,7 +13,7 @@
  "direction": "",
  "model": "fal-ai/minimax/speech-2.6-hd",
  "request": {
-  "prompt": "どこから来たの？まあいいや、クラブ行かなきゃ。席はセーブできないんだ。",
+  "prompt": "どこから来たの？じゃあ行くね。クラブも外も、セーブなんてできないんだ。",
   "voice_setting": {
    "speed": 1,
    "pitch": 0,
@@ -28,6 +28,6 @@
   },
   "output_format": "url"
  },
- "fal_request_id": "01a1d7b6-d4eb-70c2-8ae0-68454bee29e4",
- "hash": "546f87ab5911"
+ "fal_request_id": "01a1d7e0-81da-7cd3-ac1a-9b5d3b7db4aa",
+ "hash": "4ea6526c316d"
 }
