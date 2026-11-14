@@ -642,7 +642,7 @@ def _depth(B, q, desk, th_r, dc):
     p.done(top=0.8)
     rx, ry = _at(16.9, tc, -1.53)
     kit.radio(B, rx, ry, dc["top"], yaw=_yin(tc))
-    B.thing("night_radio", "machine", (rx, ry, dc["top"] + 0.15), _yin(tc), what="night_radio")
+    B.thing("night_radio", "machine", (rx, ry, dc["top"] + 0.15), (_yin(tc) + 270.0) % 360.0, what="night_radio")   # QA: stand on the free floor beside the cabinet
     kit.table_lamp(B, *_at(16.9, tc, -0.9), z=dc["top"], yaw=0, light=True)
 
 
@@ -821,7 +821,7 @@ def _depth2(B, q, desk, th_r, dc):
     _clipboard(B, cx_, cy_, 0.9, yaw=_yout(tc) + 8)
     B.thing("treat_card", "board", (cx_, cy_, 0.96), _yout(tc), topic="card")
     dx_, dy_ = _at(13.1, tc, 1.58)
-    B.thing("treat_desk", "counter", (dx_, dy_, 1.0), _yout(tc), role="doctor", service="treatment")
+    B.thing("treat_desk", "counter", (dx_, dy_ - 0.4, 1.0), (_yout(tc) + 315.0) % 360.0, role="doctor", service="treatment")
 
 
 # ====================================================================================================== fourth pass
@@ -897,7 +897,7 @@ def _depth3(B, q):
     t1 = _tan(P[6])
     ex, ey = pol(15.4, P[6])
     kit.poster(B, ex - t1[0] * 0.075, ey - t1[1] * 0.075, yaw=P[6], name="paper_typed", w=0.34, zc=1.55)
-    B.thing("pump_analysis", "board", (ex - t1[0] * 0.075, ey - t1[1] * 0.075, 1.55), P[6], topic="analysis")
+    B.thing("pump_analysis", "board", (ex - t1[0] * 0.075, ey - t1[1] * 0.075, 1.55), (P[6] + 330.0) % 360.0, topic="analysis")
 
 
 def L_of(q, e):
