@@ -179,3 +179,15 @@ rental, souvenirs, a dumpling house, a cheburek house, a beer bar). Each is now 
 - Check UV overlap and visible artefacts on every asset before showing it.
 - Furniture never blocks a door, a stair or a townsperson's spot; run `interior_kit.check(B)`.
 - Keep ids of things stable: saves and quests refer to them.
+
+## Morning list, 2026-11-14 (seen, not fixed)
+
+- Mac walk tests: bridge house floor 4, stacked_boxes decks, cube house lift-only routing, capsule tower bridge landings, wave tower roof canopy (low near x 20), serpentine stair, cog club rings, terrace riser back strip, lifeguard ladder links.
+- Pictures or gear in front of windows: clinic physio_bars, commune poster_cons_3 and the notice board at w8.
+- fair_programme board shows «КИНО» and has a bench in front of it; capsule_tower lobby_hats_w is a blank white panel, pram handle overlaps lobby_bench_seat; fish unit cork board touches a picture frame; beer_poster reachable only from behind.
+- Not checked closely: kiosks 4 and 5; promenade variants beer, rental, workshop, souvenirs, barber, books, cafe.
+- staff_* work spots and the fair roundabout operator need roles in town_life.py.
+- Reach audit leftovers (3 errors, about 67 warnings): cog_club swap_shelf, cube house fridge nook and tip switch, twin cylinder studio_art_shelf, origami_row kit_clock_1.
+- Quest audit warnings (11): quests that can end early by doing the last step first (library_1968, rcb_roof, honest_weight, clinic_fish); store_errand ends on a bare visit.
+- Dialogue: PlayerBusy() / HandleKey two-line change (see city_interiors.md, open points for other threads).
+- Waits for the owner (paid generation): 56 silent sound ids; icons for new shop items; atlas cells «ЦВЕТЫ», «ТИР», meat labels, a music board.
