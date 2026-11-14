@@ -304,7 +304,7 @@
   {"id": "city.q.wave_record.2", "group": "interiors", "name": "dev.tp.city.q.wave_record.2", "x": -381.19, "y": 1111.31, "z": -2200.0, "yaw": -95.5},
   {"id": "city.q.wave_roof.1", "group": "interiors", "name": "dev.tp.city.q.wave_roof.1", "x": -383.16, "y": 1079.71, "z": 3290.0, "yaw": 174.5},
   {"id": "city.q.wave_roof.2", "group": "interiors", "name": "dev.tp.city.q.wave_roof.2", "x": -383.16, "y": 1072.67, "z": 3300.0, "yaw": 174.5},
-  {"id": "city.q.wave_roof.3", "group": "interiors", "name": "dev.tp.city.q.wave_roof.3", "x": -395.4, "y": 1084.9, "z": 3300.0, "yaw": -5.5},
+  {"id": "city.q.wave_roof.3", "group": "interiors", "name": "dev.tp.city.q.wave_roof.3", "x": -395.4, "y": 1084.9, "z": 3245.0, "yaw": -5.5},
   {"id": "city.q.wave_shops.1", "group": "interiors", "name": "dev.tp.city.q.wave_shops.1", "x": -377.49, "y": 1128.34, "z": -2200.0, "yaw": -95.5},
   {"id": "city.q.wave_shops.4", "group": "interiors", "name": "dev.tp.city.q.wave_shops.4", "x": -391.55, "y": 1079.51, "z": -2200.0, "yaw": -95.5},
   {"id": "city.q.unit_valve.1", "group": "interiors", "name": "dev.tp.city.q.unit_valve.1", "x": 67.26, "y": 390.87, "z": -3950.0, "yaw": -22.9},
