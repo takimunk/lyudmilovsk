@@ -124,8 +124,8 @@ the voice of a line is found by its key.
   the hero has been out of its reach (1.5 × `within_m`) while its stage holds, so nobody comments on a deed the second it is
   done beside them (`"at_once": true` for the one who speaks as the stage begins). Not through a wall, one voice at a
   time, and a talk (E) cuts a remark short.
-- `"note": "<string key>"` on a remark or on a listener's reaction: the hero's diary (J) gets that line when it is heard
-  (a reaction's note once, the first time). Keys `journal.heard.<id>`, the hero's own voice, first person, not voiced.
+- `"diary": "<string key>"` on a remark or on a listener's reaction: the hero's diary (J) gets that line when it is heard
+  (a reaction's once, the first time; `"note"` in this file is only the author's comment). Keys `journal.heard.<id>`, the hero's own voice, first person, not voiced.
 - Anything else a scene needs to say: `ULyudQuestDirector::Say(person, lines)`.
 
 A species that lives in one corner of the map only: `"range": {"x", "y", "r", "population", "flock", "homeRange"}` in

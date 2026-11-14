@@ -184,11 +184,11 @@ def main():
                 check_stage(where, r["quest"], [r.get("stage")])
             check_keys(where, r.get("lines", []))
     def check_note(where, r):
-        note = r.get("note")
+        note = r.get("diary")
         if note:
             for lang, table in strings.items():
                 if not table.get(note):
-                    problems.append("%s: note %s has no words in %s" % (where, note, lang))
+                    problems.append("%s: diary %s has no words in %s" % (where, note, lang))
 
     for listener in scenes.get("listeners", []):
         for r in listener.get("reactions", []):

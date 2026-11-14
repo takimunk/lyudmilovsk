@@ -139,7 +139,7 @@ void ULyudQuestDirector::Load()
 						R.Stage = FName(*Word);
 					}
 					RO->TryGetBoolField(TEXT("air"), R.bAir);
-					RO->TryGetStringField(TEXT("note"), R.Note);
+					RO->TryGetStringField(TEXT("diary"), R.Note);
 					const TArray<TSharedPtr<FJsonValue>>* Lines = nullptr;
 					if (RO->TryGetArrayField(TEXT("lines"), Lines))
 					{
@@ -168,7 +168,7 @@ void ULyudQuestDirector::Load()
 			O->TryGetNumberField(TEXT("within_m"), Within);
 			R.WithinCm = (float)Within * 100.f;
 			O->TryGetBoolField(TEXT("at_once"), R.bAtOnce);
-			O->TryGetStringField(TEXT("note"), R.Note);
+			O->TryGetStringField(TEXT("diary"), R.Note);
 			for (const FName Line : QuestDirectorLocal::Names(O, TEXT("lines")))
 			{
 				R.Lines.Add(Line.ToString());
@@ -642,7 +642,7 @@ void ULyudQuestDirector::HandleBirdCall(FName Species, const FVector& At, bool b
 		// the hero's diary keeps what was said to the bird, the first time
 		if (Say(Best->Person, BestPick->Lines, &At) && !BestPick->Note.IsEmpty())
 		{
-			const FName Heard(*(TEXT("note.") + BestPick->Note));
+			const FName Heard(*(TEXT("diary.") + BestPick->Note));
 			if (ULyudQuests* Diary = ULyudQuests::Get(this); Diary && !Diary->HasFlag(Heard))
 			{
 				Diary->SetFlag(Heard);
