@@ -331,7 +331,7 @@ def _bio_room(B, x0, x1):
     K.blackboard(B, -25.0, 15.76, 0.0, 180.0, w=3.6, h=1.15, zb=0.9, writing="board_0")
     td = K.teacher_desk(B, -25.0, 17.1, 0.0, 180.0)
     B.spot("bio_teacher", "work", (-25.0, 16.3, 0.0), 180.0)
-    B.thing("bio_blackboard", "craft", (-25.0, 15.9, 1.5), 180.0, what="blackboard")
+    B.thing("bio_blackboard", "craft", (-24.5, 15.9, 1.5), 180.0, what="blackboard")
     sk = K.skeleton(B, -28.9, 16.5, 0.0, 180.0)
     B.thing("bio_skeleton", "board", (-28.9, 16.5, 1.3), 180.0, topic="exhibit")
     K.poster(B, -27.6, 15.76, 0.0, 180.0, name="chart_anatomy", w=0.9, zc=1.6)
