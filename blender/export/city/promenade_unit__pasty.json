@@ -123,6 +123,46 @@
     0.0
    ],
    "yaw": 180.0
+  },
+  {
+   "id": "oven",
+   "kind": "stand",
+   "pos": [
+    -3.8,
+    5.0,
+    0.0
+   ],
+   "yaw": 180.0
+  },
+  {
+   "id": "cooling",
+   "kind": "stand",
+   "pos": [
+    0.45,
+    1.6,
+    0.0
+   ],
+   "yaw": 180.0
+  },
+  {
+   "id": "thanks",
+   "kind": "stand",
+   "pos": [
+    4.1,
+    1.45,
+    0.0
+   ],
+   "yaw": 90.0
+  },
+  {
+   "id": "bench",
+   "kind": "seat",
+   "pos": [
+    4.52,
+    3.55,
+    0.0
+   ],
+   "yaw": 270.0
   }
  ],
  "lamps": [
@@ -298,6 +338,58 @@
    "props": {
     "topic": "treaty"
    }
+  },
+  {
+   "id": "pasty_oven",
+   "kind": "machine",
+   "pos": [
+    -3.8,
+    5.95,
+    1.1
+   ],
+   "yaw": 0.0,
+   "props": {
+    "what": "oven"
+   }
+  },
+  {
+   "id": "pasty_cooling",
+   "kind": "craft",
+   "pos": [
+    0.45,
+    0.95,
+    1.0
+   ],
+   "yaw": 0.0,
+   "props": {
+    "what": "cooling_rack"
+   }
+  },
+  {
+   "id": "pasty_thanks",
+   "kind": "board",
+   "pos": [
+    4.81,
+    1.45,
+    1.6
+   ],
+   "yaw": 270.0,
+   "props": {
+    "topic": "log"
+   }
+  },
+  {
+   "id": "pasty_bench",
+   "kind": "seat",
+   "pos": [
+    4.52,
+    3.55,
+    0.45
+   ],
+   "yaw": 270.0,
+   "props": {
+    "height": 0.45
+   }
   }
  ],
  "flats": [],
@@ -308,7 +400,7 @@
  ],
  "tris": {
   "shell": 202,
-  "detail": 4129,
+  "detail": 5921,
   "windows": 0
  }
 }
