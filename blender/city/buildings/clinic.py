@@ -127,7 +127,7 @@ def _hall(B):
     for k, x in enumerate((-9.35, -8.8)):
         kit.filing_cabinet(B, x, 15.7, 0.0, 0.0, mat=("CT_PlasterGreen", "CT_PlasterBlue")[k])
     kit.wall_clock(B, -5.0, 15.7, 0.0, 0.0, zc=2.35, face="clock_2")
-    kit.poster(B, -5.0, 15.7, 0.0, 0.0, name="poster_safety", w=0.6, zc=1.55)
+    kit.poster(B, -5.0, 15.7, 0.0, 0.0, name="poster_health", w=0.6, zc=1.55)
     kit.filing_cabinet(B, -2.0, 15.7, 0.0, 0.0, drawers=3)
     kit.fire_extinguisher(B, -1.4, 15.7, 0.0, 0.0)
     # ---- waiting: rows along the walls and two in front of the desk
@@ -233,7 +233,7 @@ def _rooms(B, cx):
         # couch along the west wall, anatomy / health picture above it
         cu = kit.medical_couch(B, wx + 0.38, 8.2, 0.0, 90.0)
         B.thing("%s_couch" % nm, "bed", (wx + 0.38, 8.2, 0.7), 90.0, height=0.7, rest="nap")
-        kit.poster(B, wx, 8.2, 0.0, 90.0, name=("chart_anatomy", "chart_calendar", "poster_safety")[i], w=0.8, zc=1.7)
+        kit.poster(B, wx, 8.2, 0.0, 90.0, name=("chart_anatomy", "chart_calendar", "poster_health")[i], w=0.8, zc=1.7)
         B.thing("%s_chart" % nm, "board", (wx + 0.05, 8.2, 1.7), 90.0, topic="health")
         # sink and mirror on the east wall, a cabinet
         sy = 9.1 if i == 2 else 7.0                      # room 3 has a window in the east wall at y 6..8
