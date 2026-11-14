@@ -227,12 +227,12 @@
  },
  "city.t3.post.m": {
   "ru": "Жёлтый ящик с рожком. Табличка: «Выемка: 10, 16, 20. По воскресеньям не вынимают». Щель чуть шире, чем нужно: кто-то опускал открытки.",
-  "en": "A small yellow-plated box with a post-horn. The plate: \"Collections: 10, 16, 20. None on Sundays.\" The slot is a little wider than it should be: someone has been posting postcards.",
-  "ja": "角笛の印がついた小さな投函箱。札には「集配 10時・16時・20時。日曜は集配なし」。投入口は少し広い。誰かが絵はがきを入れたのだ。"
+  "en": "A yellow postbox with a post-horn. The plate: \"Collections: 10, 16, 20. None on Sundays.\" The slot is a little wider than it should be: someone has been posting postcards.",
+  "ja": "角笛の印がついた黄色い郵便箱。札には「集配 10時・16時・20時。日曜は集配なし」。投入口は少し広い。誰かが絵はがきを入れたのだ。"
  },
  "city.t3.post.d": {
   "ru": "Утреннюю выемку уже сделали: в щели никакого шороха. Следующая в шестнадцать. На жестяной дверце наклейка: «Почта — друг пешехода».",
-  "en": "The morning collection has gone: nothing rustles in the slot. The next is at sixteen hundred. A sticker on the tin flap: \"The post is a pedestrian's friend.\"",
+  "en": "The morning collection has gone: nothing rustles in the slot. The next is at 16:00. A sticker on the tin flap: \"The post is a pedestrian's friend.\"",
   "ja": "朝の集配はもう済んでいる。投入口には音もない。次は16時。ブリキの扉に「郵便は歩く人の友」のシール。"
  },
  "city.t3.post.e": {
@@ -343,7 +343,7 @@
  "city.t3.cat.m": {
   "ru": "Серая кошка ждёт у миски, как будто миска может прийти к ней сама. Ты проводишь по спине: она смотрит мимо тебя на лестницу.",
   "en": "The grey cat waits by her bowl as if the bowl might come to her by itself. You stroke her back: she looks past you at the stairs.",
-  "ja": "灰色の猫が皿のそばで待っている。皿がひとりでに来るとでもいうように。背をなでても、彼女は君ごしに階段を見ている。"
+  "ja": "灰色の猫が皿のそばで待っている。皿がひとりでに来るとでもいうように。背をなでても、猫は君の向こうの階段を見ている。"
  },
  "city.t3.cat.d": {
   "ru": "Кошка спит на тёплом бетоне, подобрав белые лапки. На любое прикосновение отвечает одним ухом.",
@@ -448,7 +448,7 @@
  "city.t3.pigeons.1": {
   "ru": "Три голубя гуляют по площадке с видом домоуправов: один сизый, один с белой манишкой, один просто толстый. На тебя смотрят без интереса.",
   "en": "Three pigeons stroll the landing like caretakers: one blue-grey, one with a white bib, one simply fat. They look at you without interest.",
-  "ja": "ハトが三羽、管理人のような顔で踊り場を歩く。青灰色、白い胸あて、ただ太っているの。君には関心がなさそうだ。"
+  "ja": "ハトが三羽、管理人のような顔で踊り場を歩く。青灰色のが一羽、白い胸あてのが一羽、ただ太っているのが一羽。君には関心がなさそうだ。"
  },
  "city.t3.pigeons.2": {
   "ru": "Голуби не боятся лестницы: взлетают на перила, потом снова спускаются. Одному нравится ходить по буквам «3» на ящиках.",
@@ -522,8 +522,8 @@
  },
  "city.t3.herbs.1": {
   "ru": "Тимьян, чабрец, мята, шалфей и что-то, что Агата называет «Нино», потому что семена пришли в конверте из Тбилиси с одним этим словом.",
-  "en": "Thyme, savory, mint, sage and something Agata calls \"Nino\", because the seeds came in an envelope from Tbilisi with only that word on it.",
-  "ja": "タイム、セボリー、ミント、セージ、そしてアガタが「ニノ」と呼ぶもの。トビリシからの封筒に、その一語だけを添えて種が届いたからだ。"
+  "en": "Thyme, wild thyme, mint, sage and something Agata calls \"Nino\", because the seeds came in an envelope from Tbilisi with only that word on it.",
+  "ja": "タイム、ワイルドタイム、ミント、セージ、そしてアガタが「ニノ」と呼ぶもの。トビリシからの封筒に、その一語だけを添えて種が届いたからだ。"
  },
  "city.t3.herbs.2": {
   "ru": "Грядка пахнет, когда по ней проводишь рукой. На палочках грифельные таблички с названиями. «Не рвать без спроса, но и не стесняться».",
@@ -532,8 +532,8 @@
  },
  "city.t3.herbs.3": {
   "ru": "Ты поливаешь из лейки тонко, чтобы не вымыть землю у корней. Мята сразу блестит, чабрец делает вид, что ему всё равно.",
-  "en": "You water thinly so as not to wash the soil from the roots. The mint shines at once, the savory pretends not to care.",
-  "ja": "根の土を流さないよう、細く水をやる。ミントはすぐに輝き、セボリーは知らん顔をする。"
+  "en": "You water thinly so as not to wash the soil from the roots. The mint shines at once, the wild thyme pretends not to care.",
+  "ja": "根の土を流さないよう、細く水をやる。ミントはすぐに輝き、ワイルドタイムは知らん顔をする。"
  },
  "city.t3.herbs.rain": {
   "ru": "Травы под дождём пахнут так, что хочется зарыться в них носом. Лейка не нужна.",
@@ -707,8 +707,8 @@
  },
  "city.t3.chair.2": {
   "ru": "Из этого места видно сразу всё: дверь, плиту, кресло и кровать. Тётя Агата как капитан на мостике, только мостик сделан из ковра.",
-  "en": "From this spot you see everything at once: the door, the stove, the armchair and the bed. Agata is like a captain on a bridge, only the bridge is made of rug.",
-  "ja": "ここからはすべてが見渡せる。ドア、コンロ、肘掛け椅子、ベッド。アガタは艦橋の船長のようだ。ただし艦橋は絨毯でできている。"
+  "en": "From this spot you see everything at once: the door, the stove, the armchair and the bed. Aunt Agata is like a captain on a bridge, only the bridge is made of rug.",
+  "ja": "ここからはすべてが見渡せる。ドア、コンロ、肘掛け椅子、ベッド。アガタおばさんは艦橋の船長のようだ。ただし艦橋は絨毯でできている。"
  },
  "city.t3.desk.1": {
   "ru": "За столом лампа с зелёным колпаком, стопка тетрадей и конверты с марками разных стран. Бумага чуть пахнет чужими городами.",

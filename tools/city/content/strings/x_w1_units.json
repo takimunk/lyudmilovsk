@@ -1097,7 +1097,7 @@
  },
  "city.pu.stamp.prompt": {
   "ru": "E — поставить печать в карту набережной",
-  "en": "E — stamp the seawall card",
+  "en": "E — stamp the promenade card",
   "ja": "E：海岸通りカードに判を押す"
  },
  "city.pu.stamp.rain": {
@@ -1112,7 +1112,7 @@
  },
  "city.pu.coll.stamps.title": {
   "ru": "Печати набережной",
-  "en": "Seawall stamps",
+  "en": "Promenade stamps",
   "ja": "海岸通りのスタンプ"
  },
  "city.pu.pet.prompt": {
@@ -1212,8 +1212,8 @@
  },
  "city.pu.txt.pu_fish_log.p2a": {
   "ru": "Вчерашняя запись: «Мол. Салака, сорок кило, на донку. Эйно поймал и двух окуней, но те в журнал не просились».",
-  "en": "Yesterday's entry: \"Mole. Sprat, forty kilos, on a bottom line. Eino also caught two perch, but they did not ask to go in the log.\"",
-  "ja": "昨日の記録。「防波堤。スプラット四十キロ、底釣り。エイノはスズキも二匹釣ったが、日誌には載せなくていいと言った」"
+  "en": "Yesterday's entry: \"Mole. Baltic herring, forty kilos, on a bottom line. Eino also caught two perch, but they did not ask to go in the log.\"",
+  "ja": "昨日の記録。「防波堤。バルトニシン四十キロ、底釣り。エイノはパーチも二匹釣ったが、日誌には載せなくていいと言った」"
  },
  "city.pu.txt.pu_fish_log.p2b": {
   "ru": "Запись выходного дня: «Тихо. Рыбаки на молу, торговля тоже на молу: ловили, продавали и рассказывали, кто сколько не поймал».",
@@ -1518,7 +1518,7 @@
  "city.pu.pu_bakery_starter.prompt": {
   "ru": "E — подкормить закваску",
   "en": "E — feed the starter",
-  "ja": "E：種をやる"
+  "ja": "E：パン種に餌をやる"
  },
  "city.pu.pu_bakery_starter.1": {
   "ru": "Горшок с закваской под полотенцем и бечёвкой. Пахнет хлебом, который ещё не стал хлебом. Подсыпаю ложку муки: пекарь кивает, будто я сдал экзамен.",
@@ -1568,7 +1568,7 @@
  "city.pu.pu_bakery_cat.1": {
   "ru": "Рыжая кошка спит на мешке с мукой и сама стала мучной. Пекарь: «Мышей не ловит. Зато следит, чтобы никто не крал».",
   "en": "A ginger cat sleeps on a flour sack and has gone floury herself. The baker: \"She catches no mice. But she makes sure nobody steals.\"",
-  "ja": "赤毛の猫が小麦粉の袋の上で眠り、自分も粉だらけだ。パン屋は言う。「ネズミは捕らない。でも誰も盗まないよう見張ってる」"
+  "ja": "茶トラの猫が小麦粉の袋の上で眠り、自分も粉だらけだ。パン屋は言う。「ネズミは捕らない。でも誰も盗まないよう見張ってる」"
  },
  "city.pu.pu_bakery_cat.2": {
   "ru": "Кошка проснулась и смотрит на булочку в моей руке. Я прячу булочку за спину. Она не обманывается.",
@@ -2092,7 +2092,7 @@
  },
  "quest.unit_stamps.title": {
   "ru": "Печати набережной",
-  "en": "Seawall stamps",
+  "en": "Promenade stamps",
   "ja": "海岸通りのスタンプ"
  },
  "quest.unit_stamps.desc": {
@@ -2238,7 +2238,7 @@
  "quest.unit_cats.bakery.log": {
   "ru": "Рыжая кошка на мешке муки в булочной, говорят, видела больше, чем пекарь.",
   "en": "The ginger cat on the flour sack at the bakery has, they say, seen more than the baker.",
-  "ja": "パン屋の粉袋の上の赤毛の猫は、パン屋よりたくさん見ているという。"
+  "ja": "パン屋の粉袋の上の茶トラの猫は、パン屋よりたくさん見ているという。"
  },
  "quest.unit_cats.law.log": {
   "ru": "Теперь договор, на который намекали кошки. Он висит в рамке в чебуречной.",
@@ -2327,8 +2327,8 @@
  },
  "city.pu.pu_dumpling_toss_win.1": {
   "ru": "Пять в таз! Повар кивает: «С такой рукой тебе в лепщики, а не в зрители».",
-  "en": "Into the basin! The cook nods: \"With a hand like that you belong at the board, not in the audience.\"",
-  "ja": "鉢に入った！コックはうなずく。「その腕なら見物じゃなくて包み手だな」。"
+  "en": "Five in the basin! The cook nods: \"With a hand like that you belong at the board, not in the audience.\"",
+  "ja": "五つとも鉢に入った！コックはうなずく。「その腕なら見物じゃなくて包み手だな」。"
  },
  "city.pu.pu_dumpling_toss_lose.1": {
   "ru": "Тесто разлетелось по полу и по твоим ботинкам. Повар молча даёт тряпку, молча, но с уважением.",
@@ -2488,12 +2488,12 @@
  "city.pu.pu_fish_catch.2": {
   "ru": "Мелом: «Погода с характером: лодки вышли и вернулись раньше. Салака, немного окуня, ловцы мокрые и довольные».",
   "en": "In chalk: \"Weather with character: the boats went out and came back early. Baltic herring, a little perch, the fishermen wet and pleased.\"",
-  "ja": "チョークで「気難しい天気。船は出て、早く戻りました。バルトニシン、少しのスズキ、漁師たちはずぶ濡れで満足げ」。"
+  "ja": "チョークで「気難しい天気。船は出て、早く戻りました。バルトニシン、パーチが少し、漁師たちはずぶ濡れで満足げ」。"
  },
  "city.pu.pu_fish_catch.3": {
   "ru": "Мелом: «Ясно, штиль, лодки вышли на рассвете. К полудню будет всё: салака, камбала, угорь для понимающих».",
-  "en": "In chalk: \"Clear, calm, the boats went out at dawn. By noon there will be everything: herring, flounder, eel for those who know.\"",
-  "ja": "チョークで「晴れ、凪、船は夜明けに出ました。昼には全部そろいます。ニシン、ヒラメ、わかる人にはウナギ」。"
+  "en": "In chalk: \"Clear, calm, the boats went out at dawn. By noon there will be everything: Baltic herring, flounder, eel for those who know.\"",
+  "ja": "チョークで「晴れ、凪、船は夜明けに出ました。昼には全部そろいます。バルトニシン、カレイ、わかる人にはウナギ」。"
  },
  "city.pu.pu_fish_catch.4": {
   "ru": "Мелом: «В выходные ловим для себя тоже. Если на доске пусто, значит, всё уже у кого-то на плите».",
@@ -2502,8 +2502,8 @@
  },
  "city.pu.pu_fish_catch.5": {
   "ru": "Мелом: «Улов дня» и колонки: салака, камбала, угорь. Цифры стёрты и написаны заново несколько раз, одна из них обведена кружком.",
-  "en": "In chalk: \"Catch of the day\" and columns: herring, flounder, eel. The figures have been wiped and rewritten several times, one of them ringed.",
-  "ja": "チョークで「本日の漁獲」と欄。ニシン、ヒラメ、ウナギ。数字は何度も消して書き直され、そのうちのひとつは丸で囲まれている。"
+  "en": "In chalk: \"Catch of the day\" and columns: Baltic herring, flounder, eel. The figures have been wiped and rewritten several times, one of them ringed.",
+  "ja": "チョークで「本日の漁獲」と欄。バルトニシン、カレイ、ウナギ。数字は何度も消して書き直され、そのうちのひとつは丸で囲まれている。"
  },
  "city.pu.pu_fish_stool.1": {
   "ru": "На этом табурете чинят сеть: рядом клубок бечёвки и деревянная игла. Ячейка за ячейкой, и сеть снова держит море.",
