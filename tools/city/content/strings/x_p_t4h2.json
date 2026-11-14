@@ -747,7 +747,7 @@
  "city.rcb.ledger.1": {
   "ru": "Тетрадь в клетчатой клеёнке. На первой странице правило: «Даю тем, кто вернёт, и тем, кто не вернёт, потому что у них такое лицо. Н. П.»",
   "en": "A notebook in checked oilcloth. On the first page a rule: \"I give credit to those who will pay back and to those who won't, because of the look on their faces. N. P.\"",
-  "ja": "チェック柄の油布の帳面。最初のページに決まりごと。「返す人にも、返さない人にも貸します。そういう顔をしているから。Н.П.」"
+  "ja": "チェック柄の油布の帳面。最初のページに決まりごと。「返す人にも、返さない人にも貸します。そういう顔をしているから。N.P.」"
  },
  "city.rcb.ledger.2": {
   "ru": "«Витя, кв. 3-07: семечки, пакетик, 10 р. Вернёт, когда голуби подрастут». Рядом другим почерком: «Голуби не растут. Они только толстеют. Витя».",
@@ -757,7 +757,7 @@
  "city.rcb.ledger.3": {
   "ru": "«З. И., кв. 2-04: соль, спички. Вернёт помидорами, когда покраснеют». Приписано: «5 помидоров». Строка пока не зачёркнута, но на крыше уже что-то розовеет.",
   "en": "\"Z. I., flat 2-04: salt, matches. Will pay with tomatoes when they turn red.\" Added: \"5 tomatoes.\" The line is not crossed out yet, but something is already turning pink on the roof.",
-  "ja": "「З.И.、2-04号室。塩、マッチ。トマトが赤くなったらトマトで返す」。書き添え。「トマト五個」。まだ線は引かれていないが、屋上ではもう何かがほんのり色づいている。"
+  "ja": "「Z.I.、2-04号室。塩、マッチ。トマトが赤くなったらトマトで返す」。書き添え。「トマト五個」。まだ線は引かれていないが、屋上ではもう何かがほんのり色づいている。"
  },
  "city.rcb.ledger.4": {
   "ru": "«Витя: красные нитки, катушка, для штопки. Носок подождёт, штопка нет». Нина Павловна записала это в долг сразу и без вопросов: штопка, по её мнению, дело срочное.",
@@ -772,12 +772,12 @@
  "city.rcb.ledger.6": {
   "ru": "Подведён итог: «Помидорами — один (З. И.), пирожком — один (Т. Л.), штопкой — один (Витя), остальные честно деньгами». Внизу: «Сальдо: добрый вечер».",
   "en": "A total is drawn: \"Paid in tomatoes: one (Z. I.), in a pie: one (T. L.), in darning: one (Vitya), the rest honestly in money.\" At the bottom: \"Balance: good evening.\"",
-  "ja": "合計が出ている。「トマトで返済、一人（З.И.）。ピロシキで一人（Т.Л.）。繕いで一人（ヴィーチャ）。残りは正直にお金で」。いちばん下に「残高。こんばんは」。"
+  "ja": "合計が出ている。「トマトで返済、一人（Z.I.）。ピロシキで一人（T.L.）。繕いで一人（ヴィーチャ）。残りは正直にお金で」。いちばん下に「残高。こんばんは」。"
  },
  "city.rcb.ledger.7": {
   "ru": "Последняя страница, новая запись пока пустая: «В долг до субботы: ______________. Н. П. запишет, если лицо хорошее». На полях карандашом: «Лицо проверяется на пороге».",
   "en": "The last page, the new entry still empty: \"On credit until Saturday: ______________. N. P. will write it down if the face is good.\" In pencil in the margin: \"The face is checked on the doorstep.\"",
-  "ja": "最後のページ、新しい記入欄はまだ空白。「土曜までのツケ。______________。顔がよければН.П.が書きます」。余白に鉛筆で。「顔は敷居のところで確認します」。"
+  "ja": "最後のページ、新しい記入欄はまだ空白。「土曜までのツケ。______________。顔がよければN.P.が書きます」。余白に鉛筆で。「顔は敷居のところで確認します」。"
  },
  "city.rcb.serial.prompt": {
   "ru": "E — читать журнал на скамье",
@@ -807,7 +807,7 @@
  "city.rcb.serial.4": {
   "ru": "Глава четвёртая. Ночью Анна поднимается к лампе и дважды повторяет сигнал. С моря отвечает фонарь: тот же ритм. Отец спит. Анна решает ничего ему не говорить, пока не узнает, кто это.",
   "en": "Chapter four. At night Anna climbs to the lamp and repeats the signal twice. A lantern answers from the sea: the same rhythm. Her father is asleep. Anna decides to tell him nothing until she knows who it is.",
-  "ja": "第四章。夜、アンナは灯室に上がり、合図を二度繰り返す。海から提灯が同じリズムで答える。父は眠っている。誰なのかわかるまで、父には何も言わないとアンナは決める。"
+  "ja": "第四章。夜、アンナは灯室に上がり、合図を二度繰り返す。海から灯りが同じリズムで答える。父は眠っている。誰なのかわかるまで、父には何も言わないとアンナは決める。"
  },
  "city.rcb.serial.5": {
   "ru": "Глава пятая. На рассвете у причала старик с чемоданом и корзиной яблок. Он говорит: «Тридцать лет я мигал вам с парусника. Наконец-то ответили». Анна смеётся, отец плачет, яблоки раскатываются по доскам.",
@@ -847,7 +847,7 @@
  "city.rcb.dryer.5": {
   "ru": "«Сушилка работает! Включать на треть мощности, а то она свистит, как чайник». И ниже: «Но простыни на крыше пахнут морем, так что многие остались верны верёвке».",
   "en": "\"The dryer works! Turn it on at a third of its power or it whistles like a kettle.\" And below: \"But sheets on the roof smell of the sea, so many have stayed faithful to the line.\"",
-  "ja": "「乾燥機が直りました！ 出力は三分の一で使うこと、やかんのように鳴きます」。その下に。「でも屋上のシーツは海のにおいがするので、ロープに忠実なままの人も多いです」。"
+  "ja": "「乾燥機が直りました！ 出力は三分の一で使うこと、でないとやかんのように鳴ります」。その下に。「でも屋上のシーツは海のにおいがするので、ロープに忠実なままの人も多いです」。"
  },
  "city.rcb.soap.prompt": {
   "ru": "E — посмотреть полку с порошком",
@@ -916,23 +916,23 @@
  },
  "city.rcb.viewn.day": {
   "ru": "На север, к городу: крыши, антенны, жёлтые стены башни, а над холмом ползёт вверх кабинка канатной дороги. Звонка отсюда не слышно, но видно, как на улицах становится людно.",
-  "en": "To the north, toward the town: roofs, aerials, the yellow walls of a tower, and over the hill a cable-car cabin creeping upward. One cannot hear the school bell from here, but one can see the streets fill with people.",
+  "en": "To the north, toward the town: roofs, aerials, the yellow walls of a tower, and over the hill a cable-car cabin creeping upward. One cannot hear the bell from here, but one can see the streets fill with people.",
   "ja": "北の町のほうを見る。屋根、アンテナ、塔の黄色い壁、そして丘の上をゴンドラがゆっくり登っていく。ここからはチャイムは聞こえないが、通りに人が増えていくのが見える。"
  },
  "city.rcb.viewn.night": {
   "ru": "Ночью город лежит ниже крыши россыпью окон. Цепочка огней канатной дороги ползёт вверх по холму, и каждая кабинка похожа на светлячка на нитке.",
   "en": "At night the town lies below the roof in a scatter of windows. The string of lights of the cable car creeps up the hill, and each cabin is like a firefly on a thread.",
-  "ja": "夜、町は屋根の下に窓の灯りを散らして横たわる。ゴンドラの灯りの列が丘を登り、ひとつひとつの客室は糸につながれたホタルのようだ。"
+  "ja": "夜、町は屋根の下に窓の灯りを散らして横たわる。ゴンドラの灯りの列が丘を登り、ひとつひとつのゴンドラは糸につながれたホタルのようだ。"
  },
  "city.rcb.viewn.rain": {
   "ru": "Дождь размывает город: окна светятся пятнами, кабинки канатной дороги идут сквозь пелену, как рыбки в аквариуме.",
   "en": "Rain blurs the town: the windows glow in patches, the cable-car cabins move through the veil like fish in an aquarium.",
-  "ja": "雨が町をにじませる。窓は滲んだ光の染みになり、ゴンドラの客室は水槽の魚のようにもやの中を進んでいく。"
+  "ja": "雨が町をにじませる。窓は滲んだ光の染みになり、ゴンドラは水槽の魚のようにもやの中を進んでいく。"
  },
  "city.rcb.viewn.fog": {
   "ru": "В тумане города нет, остался только гул: где-то лязгает канатная дорога, и кабинки не показываются.",
   "en": "In the fog the town is gone and only a hum is left: somewhere the cable car clanks, and the cabins do not show themselves.",
-  "ja": "霧の中に町はなく、うなりだけが残る。どこかでゴンドラががたんと鳴るが、客室は姿を見せない。"
+  "ja": "霧の中に町はなく、うなりだけが残る。どこかでロープウェイががたんと鳴るが、ゴンドラは姿を見せない。"
  },
  "city.rcb.wpost.prompt": {
   "ru": "E — осмотреть метеостолб",
@@ -942,12 +942,12 @@
  "city.rcb.wpost.day": {
   "ru": "Столб с жестяным флюгером, дождемером из консервной банки и градусником на дощечке. Мелом: «Наблюдения В. П.: ветер западный, облака кучевые, голуби довольны». На гвозде тетрадь, почерк мелкий, как швейная нитка.",
   "en": "A post with a tin vane, a rain gauge made of a tin can and a thermometer on a board. In chalk: \"Observations by V. P.: wind westerly, cumulus clouds, pigeons content.\" A notebook hangs on a nail, the handwriting fine as sewing thread.",
-  "ja": "ブリキの風見、缶で作った雨量計、板に付けた温度計のある柱。チョークで「В.П.の観測。風は西、積雲、鳩は満足」。釘にノートが掛かり、字は縫い糸のように細い。"
+  "ja": "ブリキの風見、缶で作った雨量計、板に付けた温度計のある柱。チョークで「V.P.の観測。風は西、積雲、鳩は満足」。釘にノートが掛かり、字は縫い糸のように細い。"
  },
  "city.rcb.wpost.night": {
   "ru": "Ночью флюгер скрипит, как далёкая дверь. Цифры на градуснике видны, если поднести кружку с горячим чаем. В. П. записал: «Ночью ветер шепчет, но не повторяет».",
   "en": "At night the vane creaks like a faraway door. The figures on the thermometer can be seen if you bring a mug of hot tea close. V. P. noted: \"At night the wind whispers but does not repeat itself.\"",
-  "ja": "夜、風見は遠いドアのようにきしむ。熱いお茶のマグカップを近づけると、温度計の数字が見える。В.П.の記録。「夜の風はささやくが、繰り返さない」。"
+  "ja": "夜、風見は遠いドアのようにきしむ。熱いお茶のマグカップを近づけると、温度計の数字が見える。V.P.の記録。「夜の風はささやくが、繰り返さない」。"
  },
  "city.rcb.wpost.rain": {
   "ru": "Дождемер наполовину полон, мелом приписано: «Двенадцать миллиметров. Для баночки — героически».",
@@ -977,7 +977,7 @@
  "city.rcb.seed.1": {
   "ru": "Ящики с рассадой: помидоры, укроп, мята и три росточка, на табличке которых написано «неопознанное, не трогать». З. И. поливает из лейки с носиком, как у чайника.",
   "en": "Trays of seedlings: tomatoes, dill, mint and three sprouts whose label reads \"unidentified, do not touch\". Z. I. waters them from a can with a spout like a teapot's.",
-  "ja": "苗の箱。トマト、ディル、ミント、そして札に「正体不明、さわるな」と書かれた芽が三つ。З.И.は急須のような注ぎ口のじょうろで水をやる。"
+  "ja": "苗の箱。トマト、ディル、ミント、そして札に「正体不明、さわるな」と書かれた芽が三つ。Z.I.は急須のような注ぎ口のじょうろで水をやる。"
  },
  "city.rcb.seed.2": {
   "ru": "Рассада подросла: помидоры тянутся к свету, мята пахнет через бумагу. Росточки без имени вымахали выше табличек и смотрят на всех свысока.",
@@ -987,7 +987,7 @@
  "city.rcb.seed.3": {
   "ru": "На табличке свежая приписка: «Неопознанное оказалось подсолнухом. Подсолнух извинился. З. И.» Под ним Витя нарисовал голубя с семечком в клюве.",
   "en": "A fresh note on the label: \"The unidentified one turned out to be a sunflower. The sunflower apologised. Z. I.\" Below it Vitya has drawn a pigeon with a seed in its beak.",
-  "ja": "札に新しい書き込み。「正体不明はひまわりでした。ひまわりは謝りました。З.И.」。その下にヴィーチャが、種をくわえた鳩を描いている。"
+  "ja": "札に新しい書き込み。「正体不明はひまわりでした。ひまわりは謝りました。Z.I.」。その下にヴィーチャが、種をくわえた鳩を描いている。"
  },
  "city.rcb.pegs.prompt": {
   "ru": "E — развесить бельё",
@@ -1041,7 +1041,7 @@
  },
  "city.rcb.closed.counter": {
   "ru": "Дверь на засове, на стекле табличка: «Открыто с 9 до 20, кроме воскресенья. Хлеб — с утра». Внутри темно, и только счёты поблёскивают.",
-  "en": "The door is bolted, with a sign on the glass: \"Open 9 to 20, except Sundays. Bread from the morning.\" It is dark inside and only the abacus glints.",
+  "en": "The door is bolted, with a sign on the glass: \"Open 9:00 to 20:00, except Sundays. Bread from the morning.\" It is dark inside and only the abacus glints.",
   "ja": "ドアにはかんぬきがかかり、ガラスに札。「九時から二十時まで営業、日曜休み。パンは朝から」。中は暗く、そろばんだけがきらりと光る。"
  },
  "quest.rcb_sheet.title": {

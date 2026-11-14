@@ -337,7 +337,7 @@
  "city.t1.slate.note": {
   "ru": "Внизу приписано другим почерком: «Ген, ты опять оставил лампу над перцем!» Ниже: «Она там для перца!!»",
   "en": "Below, in another hand: \"Gen, you left the lamp over the peppers on again!\" Under it: \"It is there FOR the peppers!!\"",
-  "ja": "下に別の筆跡で「ゲン、またコショウの上のランプつけっぱなし！」その下に「コショウのためにあるんだ！！」"
+  "ja": "下に別の筆跡で「ゲン、またトウガラシの上のランプつけっぱなし！」その下に「トウガラシのためにあるんだ！！」"
  },
  "city.t1.p.shoes": {
   "ru": "E — глянуть на обувь",
@@ -346,7 +346,7 @@
  },
  "city.t1.shoes.1": {
   "ru": "Кроссовки Гена и ботинки Хокона стоят парами: у Гена подошвы в сосновой хвое, у Хокона — в песке.",
-  "en": "Gennady's trainers and Hokon's boots stand in pairs: Gennady's soles carry pine needles, Hokon's carry sand.",
+  "en": "Gennady's trainers and Håkon's boots stand in pairs: Gennady's soles carry pine needles, Håkon's carry sand.",
   "ja": "ゲンナジーのスニーカーとホーコンのブーツが並んで置いてある。ゲンナジーの靴底には松葉、ホーコンの靴底には砂。"
  },
  "city.t1.shoes.wet": {
@@ -356,7 +356,7 @@
  },
  "city.t1.shoes.snow": {
   "ru": "На подошвах тает снег. Хокон поставил обувь на решётку, Ген — на газету; решётка, кажется, выигрывает.",
-  "en": "Snow melts on the soles. Hokon put his boots on the grate, Gennady his on a newspaper; the grate seems to be winning.",
+  "en": "Snow melts on the soles. Håkon put his boots on the grate, Gennady his on a newspaper; the grate seems to be winning.",
   "ja": "靴底で雪が溶けている。ホーコンは簀の子に、ゲンナジーは新聞紙の上に靴を置いた。簀の子の勝ちらしい。"
  },
  "city.t1.p.hooks": {
@@ -366,13 +366,13 @@
  },
  "city.t1.hooks.day": {
   "ru": "Вешалка почти пустая: куртки Хокона и Гена ушли вместе с хозяевами. Остались шарф и зонт.",
-  "en": "The stand is nearly empty: Hokon's and Gennady's jackets went out with their owners. A scarf and an umbrella remain.",
+  "en": "The stand is nearly empty: Håkon's and Gennady's jackets went out with their owners. A scarf and an umbrella remain.",
   "ja": "コート掛けはほとんど空だ。ホーコンとゲンナジーの上着は持ち主と出かけた。マフラーと傘だけが残っている。"
  },
  "city.t1.hooks.eve": {
   "ru": "Куртки на крючках; из кармана Гена торчат пакетик семян и огрызок карандаша.",
   "en": "The jackets hang on their hooks; a seed packet and a pencil stub stick out of Gennady's pocket.",
-  "ja": "上着は掛け金にかかり、ゲンナジーのポケットから種の袋と鉛筆の芯がのぞいている。"
+  "ja": "上着は掛け金にかかり、ゲンナジーのポケットから種の袋とちびた鉛筆がのぞいている。"
  },
  "city.t1.hooks.night": {
   "ru": "Куртки спят на крючках, шарф свесил рукав до самого пола.",
@@ -381,48 +381,48 @@
  },
  "city.t1.fridge.0": {
   "ru": "На холодильнике записки на магнитах. Хокон: «Ген, у плиты опять твой горшок. Это кухня, не оранжерея». Ген ниже: «Оранжерея наверху. А это гостевой горшок».",
-  "en": "Notes on magnets on the fridge. Hokon: \"Gen, your pot by the stove again. This is a kitchen, not a greenhouse.\" Gennady below: \"The greenhouse is upstairs. This is a guest pot.\"",
+  "en": "Notes on magnets on the fridge. Håkon: \"Gen, your pot by the stove again. This is a kitchen, not a greenhouse.\" Gennady below: \"The greenhouse is upstairs. This is a guest pot.\"",
   "ja": "冷蔵庫にマグネットでメモ。ホーコン「ゲン、またコンロの横にお前の鉢。ここは台所で温室じゃない」。ゲンナジーが下に「温室は上。これはお客さん用の鉢」。"
  },
  "city.t1.fridge.1": {
   "ru": "Ген: «Перец проклюнулся: три из шести! Наверху не топать». Хокон: «Я не топаю, я хожу. Поздравляю».",
-  "en": "Gennady: \"The peppers have sprouted: three out of six! No stamping upstairs.\" Hokon: \"I don't stamp, I walk. Congratulations.\"",
-  "ja": "ゲンナジー「コショウが芽を出した、六つのうち三つ！上では足を踏み鳴らさないこと」。ホーコン「踏み鳴らしてない、歩いてるだけ。おめでとう」。"
+  "en": "Gennady: \"The peppers have sprouted: three out of six! No stamping upstairs.\" Håkon: \"I don't stamp, I walk. Congratulations.\"",
+  "ja": "ゲンナジー「トウガラシが芽を出した、六つのうち三つ！上では足を踏み鳴らさないこと」。ホーコン「踏み鳴らしてない、歩いてるだけ。おめでとう」。"
  },
  "city.t1.fridge.2": {
   "ru": "Хокон: «Молоко кончилось. Я купил, но ты всё равно виноват». Ген: «В чём?» Хокон: «Придумаю».",
-  "en": "Hokon: \"The milk is gone. I bought more, but it is still your fault.\" Gennady: \"What for?\" Hokon: \"I will think of something.\"",
+  "en": "Håkon: \"The milk is gone. I bought more, but it is still your fault.\" Gennady: \"What for?\" Håkon: \"I will think of something.\"",
   "ja": "ホーコン「牛乳が切れてた。買ってきたけど、やっぱりお前のせい」。ゲンナジー「何の？」ホーコン「これから考える」。"
  },
  "city.t1.fridge.3": {
   "ru": "Ген: «В субботу едем с Айлой на озёра. Теплицу поливать утром и вечером, не больше стакана на горшок!» Хокон: «Помню. Лейка у кактуса».",
-  "en": "Gennady: \"Saturday Isla and I go to the lakes. Water the greenhouse morning and evening, no more than a glass per pot!\" Hokon: \"I remember. The can is by the cactus.\"",
+  "en": "Gennady: \"Saturday Isla and I go to the lakes. Water the greenhouse morning and evening, no more than a glass per pot!\" Håkon: \"I remember. The can is by the cactus.\"",
   "ja": "ゲンナジー「土曜はアイラと湖へ。温室には朝と晩に水を、鉢ひとつにコップ一杯まで！」ホーコン「覚えてる。じょうろはサボテンの横」。"
  },
  "city.t1.fridge.4": {
   "ru": "Хокон: «Ген, я забыл полить в четверг. Всё живо, кажется». Ген: «ХОКОН». Хокон: «Я полил в пятницу вдвойне». Ген: «ХОКОН!!»",
-  "en": "Hokon: \"Gen, I forgot to water on Thursday. Everything seems alive.\" Gennady: \"HOKON.\" Hokon: \"I watered double on Friday.\" Gennady: \"HOKON!!\"",
+  "en": "Håkon: \"Gen, I forgot to water on Thursday. Everything seems alive.\" Gennady: \"HOKON.\" Håkon: \"I watered double on Friday.\" Gennady: \"HOKON!!\"",
   "ja": "ホーコン「ゲン、木曜に水やるの忘れた。みんな生きてるみたい」。ゲンナジー「ホーコン」。ホーコン「金曜に倍やった」。ゲンナジー「ホーコン！！」"
  },
  "city.t1.fridge.5": {
   "ru": "Свежий листок почерком Хокона: «Если ты тот, кто сидит на скамейке под нашими кубами и смотрит вверх, — поднимись. Лейка у кактуса, чай в синей жестянке. Х.»",
-  "en": "A fresh sheet in Hokon's hand: \"If you are the one who sits on the bench under our cubes looking up, come up. The can is by the cactus, the tea in the blue tin. H.\"",
+  "en": "A fresh sheet in Håkon's hand: \"If you are the one who sits on the bench under our cubes looking up, come up. The can is by the cactus, the tea in the blue tin. H.\"",
   "ja": "ホーコンの字の新しい紙。「うちのキューブの下のベンチに座って見上げているのが君なら、上がっておいで。じょうろはサボテンの横、お茶は青い缶。H」。"
  },
  "city.t1.fridge.6": {
   "ru": "Ген: «Первый перец покраснел! Один. Хокон не получит, пока не извинится за четверг».",
-  "en": "Gennady: \"The first pepper has turned red! Just one. Hokon does not get it until he apologises for Thursday.\"",
-  "ja": "ゲンナジー「最初のコショウが赤くなった！ひとつだけ。ホーコンは木曜のことを謝るまでもらえない」。"
+  "en": "Gennady: \"The first pepper has turned red! Just one. Håkon does not get it until he apologises for Thursday.\"",
+  "ja": "ゲンナジー「最初のトウガラシが赤くなった！ひとつだけ。ホーコンは木曜のことを謝るまでもらえない」。"
  },
  "city.t1.fridge.7": {
   "ru": "Хокон: «Извиняюсь за четверг. Ген, я принёс тебе семян. Не перца. Но почти». Ген: «Принято. Половина перца твоя».",
-  "en": "Hokon: \"Sorry about Thursday. Gen, I brought you seeds. Not peppers. Almost.\" Gennady: \"Accepted. Half the pepper is yours.\"",
-  "ja": "ホーコン「木曜はごめん。ゲン、種を買ってきた。コショウじゃないけど、ほぼ」。ゲンナジー「了解。コショウは半分やる」。"
+  "en": "Håkon: \"Sorry about Thursday. Gen, I brought you seeds. Not peppers. Almost.\" Gennady: \"Accepted. Half the pepper is yours.\"",
+  "ja": "ホーコン「木曜はごめん。ゲン、種を買ってきた。トウガラシじゃないけど、ほぼ」。ゲンナジー「了解。トウガラシは半分やる」。"
  },
  "city.t1.fridge.f": {
   "ru": "На холодильнике магнит-осьминог держит список: «молоко, молоко, перец (острый), лампочка».",
   "en": "A magnet octopus on the fridge holds a list: \"milk, milk, pepper (hot), lightbulb.\"",
-  "ja": "冷蔵庫のタコのマグネットがリストを押さえている。「牛乳、牛乳、コショウ（辛いの）、電球」。"
+  "ja": "冷蔵庫のタコのマグネットがリストを押さえている。「牛乳、牛乳、トウガラシ（辛いの）、電球」。"
  },
  "city.t1.p.arcade": {
   "ru": "E — сыграть на автомате Гена",
@@ -431,8 +431,8 @@
  },
  "city.t1.arcade.d": {
   "ru": "Автомат Гена стоит в углу гостиной: он вытащил из него монетоприёмник, чтобы играть бесплатно. На табло рекорд «ГЛ — 41 200», ниже карандашом: «ХК — 41 190».",
-  "en": "Gennady's cabinet stands in the corner of the living room; he took the coin slot out so it plays for free. The record reads \"GL 41,200\", and below in pencil: \"HC 41,190\".",
-  "ja": "ゲンナジーのアーケード機はリビングの隅にある。コイン投入口を外して無料で遊べるようにしてある。記録は「GL 41,200」、その下に鉛筆で「HC 41,190」。"
+  "en": "Gennady's cabinet stands in the corner of the living room; he took the coin slot out so it plays for free. The record reads \"GL 41,200\", and below in pencil: \"HK 41,190\".",
+  "ja": "ゲンナジーのアーケード機はリビングの隅にある。コイン投入口を外して無料で遊べるようにしてある。記録は「GL 41,200」、その下に鉛筆で「HK 41,190」。"
  },
  "city.t1.arcade.n": {
   "ru": "Ночью автомат тихо перемигивается в углу. На табло демо-режим, но на кнопках в пыли чьи-то отпечатки пальцев.",
@@ -451,7 +451,7 @@
  },
  "city.t1.games.2": {
   "ru": "Правила игр лежат отдельно, в конверте с надписью «чтобы Хокон не спорил». Конверт заметно потёртый.",
-  "en": "The rules of the games lie apart in an envelope marked \"so Hokon stops arguing\". The envelope is visibly worn.",
+  "en": "The rules of the games lie apart in an envelope marked \"so Håkon stops arguing\". The envelope is visibly worn.",
   "ja": "ゲームのルールは別に封筒に入っていて、「ホーコンが言い争わないように」と書いてある。封筒はだいぶすり切れている。"
  },
  "city.t1.p.photos": {
@@ -461,7 +461,7 @@
  },
  "city.t1.photos.1": {
   "ru": "На полке фотографии: Хокон с сестрой на фоне фьорда; Ген в палатке, красный от мороза; Айла с рюкзаком показывает язык фотографу.",
-  "en": "Photos on the shelf: Hokon with his sister before a fjord; Gennady in a tent, red with frost; Isla with a backpack, sticking her tongue out at the photographer.",
+  "en": "Photos on the shelf: Håkon with his sister before a fjord; Gennady in a tent, red with frost; Isla with a backpack, sticking her tongue out at the photographer.",
   "ja": "棚には写真。フィヨルドを背にしたホーコンと姉、凍えて赤い顔でテントにいるゲンナジー、リュックを背負ってカメラに舌を出すアイラ。"
  },
  "city.t1.photos.2": {
@@ -481,22 +481,22 @@
  },
  "city.t1.post.1": {
   "ru": "Открытка с видом на бергенскую гавань. «Хокон, как твой куб? Мама спрашивает, не страшно ли жить на ребре. Я сказала: ему не страшно, он боится только лифта. Целую, Сири».",
-  "en": "A postcard of Bergen harbour. \"Hokon, how is your cube? Mum asks whether it is scary to live on an edge. I said: he isn't scared, only of the lift. Love, Siri.\"",
+  "en": "A postcard of Bergen harbour. \"Håkon, how is your cube? Mum asks whether it is scary to live on an edge. I said: he isn't scared, only of the lift. Love, Siri.\"",
   "ja": "ベルゲンの港の絵はがき。「ホーコン、キューブはどう？お母さんが、角の上で暮らすのは怖くないかって。怖いのはエレベーターだけって答えといた。シーリ」。"
  },
  "city.t1.post.2": {
   "ru": "Вторая открытка, с рыбным рынком. «Посылаю тебе селёдку (то есть картинку). Приеду в июне, пришли мне фото неба из окошка на крыше. Сири».",
-  "en": "A second one, of the fish market. \"Sending you a herring (that is, a picture). I come in June; send me a photo of the sky from the window in the roof. Siri.\"",
+  "en": "A second one, of the fish market. \"Sending you a herring (that is, a picture). I'm coming in June; send me a photo of the sky from the window in the roof. Siri.\"",
   "ja": "魚市場の二枚目。「ニシンを送ります（絵だけど）。六月に行くから、屋根の窓から見た空の写真を送って。シーリ」。"
  },
  "city.t1.post.3": {
   "ru": "«Хокон, ты так и не написал, как зовут твоего соседа по квартире. Мама боится, что он художник. Я сказала: садовник. Сири».",
-  "en": "\"Hokon, you still haven't written what your flatmate is called. Mum is afraid he is an artist. I said: a gardener. Siri.\"",
+  "en": "\"Håkon, you still haven't written what your flatmate is called. Mum is afraid he is an artist. I said: a gardener. Siri.\"",
   "ja": "「ホーコン、同居人の名前をまだ書いてないよ。お母さんは画家じゃないかと心配してる。庭師だって答えた。シーリ」。"
  },
  "city.t1.post.4": {
   "ru": "«Спасибо за фото. Небо у вас какое-то огромное. Приеду в июне. И не забывай поливать то, что тебе оставили. Сири».",
-  "en": "\"Thanks for the photo. Your sky is somehow huge. I come in June. And do not forget to water what they left you. Siri.\"",
+  "en": "\"Thanks for the photo. Your sky is somehow huge. I'm coming in June. And do not forget to water what they left you. Siri.\"",
   "ja": "「写真ありがとう。そっちの空はやけに大きいね。六月に行く。預かった植物に水をやるのを忘れないで。シーリ」。"
  },
  "city.t1.p.garden": {
@@ -511,12 +511,12 @@
  },
  "city.t1.diary.1": {
   "ru": "День 1. Шесть семян острого перца «Балтийский огонёк» в тёплую землю. Посадил наверху: свет сразу с двух сторон, как в настоящей теплице. Хокон сказал, что перец с пола не растёт. Растёт.",
-  "en": "Day 1. Six seeds of the hot pepper \"Baltic Flame\" into warm soil. Planted upstairs: light from both sides at once, like a real greenhouse. Hokon said peppers do not grow from the floor. They do.",
-  "ja": "一日目。辛いコショウ「バルトの炎」の種を六粒、あたたかい土に。上に植えた。両側から光が入る、本物の温室みたいに。ホーコンは床からコショウは育たないと言ったが、育つ。"
+  "en": "Day 1. Six seeds of the hot pepper \"Baltic Flame\" into warm soil. Planted upstairs: light from both sides at once, like a real greenhouse. Håkon said peppers do not grow from the floor. They do.",
+  "ja": "一日目。辛いトウガラシ「バルトの炎」の種を六粒、あたたかい土に。上に植えた。両側から光が入る、本物の温室みたいに。ホーコンは床からトウガラシは育たないと言ったが、育つ。"
  },
  "city.t1.diary.2": {
   "ru": "День 3. Три из шести проклюнулись. Остальные — дело времени. Самого сильного назвал Генералом. Хокон: «А я?» — «Ты — почва».",
-  "en": "Day 3. Three out of six have sprouted. The rest is a matter of time. I named the strongest the General. Hokon: \"And me?\" \"You are the soil.\"",
+  "en": "Day 3. Three out of six have sprouted. The rest is a matter of time. I named the strongest the General. Håkon: \"And me?\" \"You are the soil.\"",
   "ja": "三日目。六つのうち三つが芽を出した。残りは時間の問題。いちばん強いのを「将軍」と名づけた。ホーコン「じゃあ俺は？」「お前は土だ」。"
  },
  "city.t1.diary.3": {
@@ -531,7 +531,7 @@
  },
  "city.t1.diary.5": {
   "ru": "День 11. Цветки! Белые, пять лепестков. Хокон смотрел сквозь стекло с таким лицом, будто это он их вырастил. Не буду разубеждать.",
-  "en": "Day 11. Flowers! White, five petals. Hokon looked at them through the glass with a face as if he had grown them himself. I will not argue.",
+  "en": "Day 11. Flowers! White, five petals. Håkon looked at them through the glass with a face as if he had grown them himself. I will not argue.",
   "ja": "十一日目。花が咲いた！白くて花びらは五枚。ホーコンはガラス越しに、自分が育てたような顔で眺めていた。否定はしないでおく。"
  },
  "city.t1.diary.6": {
@@ -567,7 +567,7 @@
  "city.t1.water.1": {
   "ru": "Стакан на горшок, как просил Ген: перец, рассада, кактус (ему — полстакана). Земля пахнет дождём и охотно пьёт.",
   "en": "A glass per pot, as Gennady asked: peppers, seedlings, the cactus (half a glass for him). The soil smells of rain and drinks willingly.",
-  "ja": "ゲンナジーに頼まれたとおり、鉢ひとつにコップ一杯。コショウ、苗、サボテン（これは半分）。土は雨のにおいがして、進んで水を飲む。"
+  "ja": "ゲンナジーに頼まれたとおり、鉢ひとつにコップ一杯。トウガラシ、苗、サボテン（これは半分）。土は雨のにおいがして、進んで水を飲む。"
  },
  "city.t1.p.sky": {
   "ru": "E — посмотреть в стекло над кроватью",
@@ -591,7 +591,7 @@
  },
  "city.t1.tipshelf.2": {
   "ru": "Между книг торчит закладка из пакетика семян. На пакетике: «посеять, когда Хокон перестанет спорить».",
-  "en": "A seed packet sticks out between the books as a bookmark. On it: \"sow when Hokon stops arguing\".",
+  "en": "A seed packet sticks out between the books as a bookmark. On it: \"sow when Håkon stops arguing\".",
   "ja": "本のあいだに種の袋がしおり代わりに挟まっている。「ホーコンが言い争わなくなったら蒔くこと」。"
  },
  "city.t1.p.sleep": {
@@ -617,7 +617,7 @@
  "city.t1.p.deckboard": {
   "ru": "E — прочесть объявления на стенде",
   "en": "E — read the notices on the stand",
-  "ja": "E：掲示スタンドを読む"
+  "ja": "E：スタンドのお知らせを読む"
  },
  "city.t1.deckboard.0": {
   "ru": "Объявление: «Шахматный столик свободен каждый день, кроме вторника, когда он занят всегда».",
@@ -631,7 +631,7 @@
  },
  "city.t1.deckboard.2": {
   "ru": "Листок от кружка: «Клуб над палубой принимает любителей домино. Лёгкий вход, тяжёлый выход».",
-  "en": "A note from a circle: \"The club above the deck welcomes dominoes players. Easy to enter, hard to leave.\"",
+  "en": "A note from a circle: \"The club above the deck welcomes domino players. Easy to enter, hard to leave.\"",
   "ja": "サークルの紙。「デッキの上のクラブはドミノ好きを歓迎。入るのは簡単、出るのは難しい」。"
  },
  "city.t1.deckboard.3": {
@@ -641,7 +641,7 @@
  },
  "city.t1.deckboard.4": {
   "ru": "Записка на скотче: «Пирог испёк Ген. Пирог съел Хокон. Это справедливо».",
-  "en": "A note on sticky tape: \"The pie was baked by Gennady. The pie was eaten by Hokon. This is just.\"",
+  "en": "A note on sticky tape: \"The pie was baked by Gennady. The pie was eaten by Håkon. This is just.\"",
   "ja": "テープで貼ったメモ。「パイを焼いたのはゲンナジー。食べたのはホーコン。公平だ」。"
  },
  "quest.home_cube_a.title": {
@@ -652,12 +652,12 @@
  "quest.home_cube_a.desc": {
   "ru": "На стенде палубы висит объявление: второму кубу нужен садовод на выходные. Вход в нише у ножки куба, там маленький лифт; наверху у Гена теплица с перцем.",
   "en": "A notice on the deck's stand says the second cube needs a gardener for the weekend. The way in is the niche at the cube's foot with a tiny lift; upstairs Gennady keeps a greenhouse of peppers.",
-  "ja": "デッキのスタンドに、二番目のキューブが週末の園芸係を探しているというお知らせが貼ってある。入口はキューブの足元のくぼみで、小さなエレベーターがあり、上でゲンナジーがコショウの温室を育てている。"
+  "ja": "デッキのスタンドに、二番目のキューブが週末の園芸係を探しているというお知らせが貼ってある。入口はキューブの足元のくぼみで、小さなエレベーターがあり、上でゲンナジーがトウガラシの温室を育てている。"
  },
  "quest.home_cube_a.done": {
   "ru": "Ген вернулся с озёр загорелый и первым делом поднялся к грядке. Потом спустился и молча поставил перед тобой банку перцового варенья. На крышке: «Осторожно: честно острое».",
   "en": "Gennady came back from the lakes tanned and went straight up to the bed. Then he came down and silently set a jar of pepper jam before you. On the lid: \"Careful: honestly hot.\"",
-  "ja": "ゲンナジーは日焼けして湖から戻り、まず苗床へ上がっていった。それから降りてきて、黙ってコショウジャムの瓶を目の前に置いた。ふたには「注意：本当に辛い」。"
+  "ja": "ゲンナジーは日焼けして湖から戻り、まず苗床へ上がっていった。それから降りてきて、黙ってトウガラシジャムの瓶を目の前に置いた。ふたには「注意：本当に辛い」。"
  },
  "quest.home_cube_a.note.log": {
   "ru": "Записки на холодильнике второго куба объясняют, что надо делать. Лифт — в прихожей у ножки куба.",
