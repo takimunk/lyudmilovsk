@@ -815,7 +815,7 @@
     2.3,
     0.9
    ],
-   "yaw": 0,
+   "yaw": 180,
    "props": {
     "what": "workbench"
    }

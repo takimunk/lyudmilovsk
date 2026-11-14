@@ -1719,7 +1719,7 @@
     13.6,
     24.85
    ],
-   "yaw": 90.0,
+   "yaw": 0.0,
    "props": {
     "what": "table_football"
    }
@@ -2169,7 +2169,7 @@
     5.5,
     18.95
    ],
-   "yaw": 0.0,
+   "yaw": 180.0,
    "props": {
     "what": "sewing_machine"
    }
@@ -2417,7 +2417,7 @@
     1.9,
     1.2
    ],
-   "yaw": 0.0,
+   "yaw": 180.0,
    "props": {
     "what": "hat_stand"
    }
@@ -2483,7 +2483,7 @@
     1.9,
     1.2
    ],
-   "yaw": 0.0,
+   "yaw": 180.0,
    "props": {
     "what": "hat_stand"
    }
@@ -2496,7 +2496,7 @@
     1.75,
     0.75
    ],
-   "yaw": 0.0,
+   "yaw": 180.0,
    "props": {
     "what": "watering_can"
    }

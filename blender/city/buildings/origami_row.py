@@ -380,7 +380,7 @@ def _family(B, i):
         B.thing("home_parents_bed", "bed", bed["pos"][:2] + (z + 0.5,), bed["yaw"], height=0.5, rest="private")
         B.thing("home_bunk_bed", "bed", bk["pos"][:2] + (z + 0.5,), bk["yaw"], height=0.46, rest="private")
         B.thing("home_cot", "bed", cot["pos"][:2] + (z + 0.45,), cot["yaw"], height=0.45, rest="private")
-        B.thing("home_school_desk", "craft", sd["pos"][:2] + (z + 0.8,), sd["yaw"], what="school_desk")
+        B.thing("home_school_desk", "craft", sd["pos"][:2] + (z + 0.8,), (sd["yaw"] + 180.0) % 360.0, what="school_desk")
         for j, c_ in enumerate((ch, ch2)):
             B.thing("home_school_chair_%d" % j, "seat", c_["seats"][0][:2] + (z + 0.45,), c_["seats"][0][3], height=0.45)
         B.thing("home_children_shelf", "shelf", sh["pos"][:2] + (z + 1.2,), sh["yaw"], topic="kids")

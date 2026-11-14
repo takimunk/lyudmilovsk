@@ -298,7 +298,7 @@ class _PodRoom:
         elif t == "chess":
             self.put(kit.chess_table, 0.0, 3.2, 0.0)
             q = self.fr.p(0.0, 3.2)
-            self.B.thing("pod_1_05_chess", "play", (q[0], q[1], self.zf + 0.74), self.Y, what="chess")
+            self.B.thing("pod_1_05_chess", "play", (q[0], q[1], self.zf + 0.74), (self.Y + 90.0) % 360.0, what="chess")
             self.put(kit.chair, -0.7, 3.2, 90.0, kind="wood", mat="CT_PlasterYellow")
             c = self.put(kit.chair, 0.7, 3.2, 270.0, kind="wood", mat="CT_PlasterRed")
             s = self.seat_of(c)
@@ -855,7 +855,7 @@ def _office(B, R):
     K.radio(B, 9.85, 25.5, 1.32, 90.0)
     B.thing("office_radio", "machine", (9.9, 25.5, 1.45), 90.0, what="radio")
     B.thing("office_ledger", "board", (11.0, 24.35, 0.82), 0.0, topic="ledger")
-    B.thing("office_kettle", "take", (12.3, 24.4, 0.9), 270.0, item="tea")
+    B.thing("office_kettle", "take", (12.3, 24.4, 0.9), 0.0, item="tea")
     B.spot("office_tea", "stand", (11.7, 24.4, 0.0), 90.0)
     K.pendant(B, 11.2, 23.5, HALL_H, drop=0.7, kind="cone")
     B.lamp((11.2, 23.5, HALL_H - 0.9), lumens=520, colour="#FFE2B0", kind="public", radius=5.0, fixture=False)

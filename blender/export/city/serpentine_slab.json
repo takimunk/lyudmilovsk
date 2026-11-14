@@ -754,7 +754,7 @@
     9.868,
     1.0
    ],
-   "yaw": 270.8,
+   "yaw": 90.8,
    "props": {
     "role": "concierge",
     "service": "reception"
@@ -951,7 +951,7 @@
     8.93,
     1.0
    ],
-   "yaw": 88.5,
+   "yaw": 268.5,
    "props": {
     "role": "concierge",
     "service": "reception"
@@ -1109,7 +1109,7 @@
     8.064,
     1.0
    ],
-   "yaw": 270.8,
+   "yaw": 90.8,
    "props": {
     "role": "concierge",
     "service": "reception"
@@ -1175,7 +1175,7 @@
     9.639,
     1.0
    ],
-   "yaw": 90.8,
+   "yaw": 270.8,
    "props": {
     "what": "aquarium"
    }

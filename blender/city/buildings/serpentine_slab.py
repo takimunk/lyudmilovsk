@@ -546,7 +546,7 @@ def _dress_lobby(B, i, cid, p0, p1, nl, Lb, D):
     kit.chair(B, cx_, cy_, Z, F.yaw(-sa, 0), kind="wood")
     lx_, ly_ = at(sa, 0.95, 9.45)
     kit.table_lamp(B, lx_, ly_, d["top"] + Z, 0.0)
-    B.thing(pre + "concierge_desk", "counter", (dx, dy, 1.0), F.yaw(-sa, 0), role="concierge", service="reception")
+    B.thing(pre + "concierge_desk", "counter", (dx, dy, 1.0), F.yaw(sa, 0), role="concierge", service="reception")
     px_, py_ = at(sa, 0.6, 10.9)
     kit.plant(B, px_, py_, Z, 0.0, kind=("ficus", "fern", "ficus")[cid % 3], pot=pal[0], h=1.4, seed=cid)
     # --- side B: board over a bench near the front, sofa corner with coffee table, armchair, lamp
@@ -603,7 +603,7 @@ def _dress_lobby(B, i, cid, p0, p1, nl, Lb, D):
     else:
         x, y = at(sb, 0.3, 10.5)
         kit.aquarium(B, x, y, Z, F.yaw(-sb, 0), w=1.0, seed=3)
-        B.thing(pre + "aquarium", "screen", (x, y, 1.0), F.yaw(-sb, 0), what="aquarium")
+        B.thing(pre + "aquarium", "screen", (x, y, 1.0), F.yaw(sb, 0), what="aquarium")
     _lobby_extras(B, cid, F, Lb, D, sa, sb, Z, pre, mid, at)
 
 

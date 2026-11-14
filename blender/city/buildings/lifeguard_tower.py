@@ -301,13 +301,13 @@ def _extras(B, z0):
     B.spot("deck_chair", "seat", (1.6, 2.1, z0), 0.0)
     _cleat(B, 1.8, 0.3, z0 + 1.0)
     fu.rod(d, "CT_PlasterRed", (1.77, 0.29, z0 + 1.2), (1.77, 0.17, 8.92), 0.01)
-    B.thing("flag_halyard", "machine", (1.77, 0.3, z0 + 1.05), 90.0, what="halyard")
+    B.thing("flag_halyard", "machine", (1.77, 0.3, z0 + 1.05), 270.0, what="halyard")
     B.spot("halyard", "stand", (1.55, 0.45, z0), 90.0)
-    B.thing("deck_ring", "board", (0.0, 0.62, 6.05), 0.0, topic="rescue")
+    B.thing("deck_ring", "board", (0.0, 0.62, 6.05), 180.0, topic="rescue")
     kit.notice_board(B, -0.97, 3.3, z0, 180.0, w=0.42, h=0.3, zc=0.72)
-    B.thing("lost_board", "board", (-0.97, 3.34, z0 + 0.72), 180.0, topic="lost")
+    B.thing("lost_board", "board", (-0.97, 3.34, z0 + 0.72), 0.0, topic="lost")
     kit.crate(B, -1.55, 3.6, z0, 0.0, w=0.42, d=0.3, h=0.26, fill="CT_SteelRed")
-    B.thing("lost_box", "machine", (-1.55, 3.6, z0 + 0.22), 180.0, what="lost_box")
+    B.thing("lost_box", "machine", (-1.55, 3.6, z0 + 0.22), 0.0, what="lost_box")
     B.spot("lost_box", "stand", (-1.2, 3.55, z0), 270.0)
     cyl(d, "CT_SteelRed", -1.0, 3.62, z0, z0 + 0.1, 0.06, 7)                 # a child's bucket, still waiting
     # the lantern over the back door

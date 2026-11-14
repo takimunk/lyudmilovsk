@@ -773,7 +773,7 @@ def _u_game(B, u):
     B.thing("game_dominoes", "play", (-2.8, 10.9, tb["top"]), 0.0, what="dominoes")
     _stand(B, "game_dominoes_seat", "table", -3.5, 10.9, Z, 90.0)
     kit.table_football(B, -0.85, 13.6, Z, 90.0)
-    B.thing("game_football", "play", (-0.85, 13.6, Z + 0.85), 90.0, what="table_football")
+    B.thing("game_football", "play", (-0.85, 13.6, Z + 0.85), 0.0, what="table_football")
     kit.blackboard(B, u["x0"] + 0.1, 13.6, Z, 90.0, w=1.6, writing=None, seed=3)
     B.thing("game_scores", "board", (u["x0"] + 0.15, 13.6, Z + 1.5), 90.0, topic="rules")
     kit.notice_board(B, u["x0"] + 0.1, 16.8, Z, 90.0, w=0.9, zc=1.6, seed=57)
@@ -915,7 +915,7 @@ def _flat(B):
     kit.wardrobe(B, FX1 - 0.0, 8.2, Zb, 270.0, w=1.0)
     B.thing("tul_wardrobe", "board", (FX1 - 0.3, 8.2, Zb + 1.2), 270.0, topic="store")
     kit.sewing_table(B, -8.7, 5.5, Zb, 0.0)
-    B.thing("tul_sewing", "craft", (-8.7, 5.5, Zb + 0.95), 0.0, what="sewing_machine")
+    B.thing("tul_sewing", "craft", (-8.7, 5.5, Zb + 0.95), 180.0, what="sewing_machine")
     kit.stool(B, -8.7, 6.25, Zb, 180.0)
     B.thing("tul_sewing_stool", "seat", (-8.7, 6.25, Zb + 0.45), 0.0, height=0.45)
     kit.rug(B, -9.0, 7.0, Zb + 0.01, 0.0, w=1.5, d=2.4, name="rug_5", seed=5)
@@ -1027,13 +1027,13 @@ def _lobby2(B):
         box(B.detail, "CT_Steel", sx - 0.015, sx + 0.015, 1.315, 1.325, 1.28, 1.32, faces="YXxzZ")
         B.thing(pre + "switch", "machine", (sx, 1.33, 1.3), 180.0, what="switch", switch="hall")
         # the hat stand by the door
-        B.thing(pre + "hats", "machine", (xm + 1.7, 1.9, 1.2), 0.0, what="hat_stand")
+        B.thing(pre + "hats", "machine", (xm + 1.7, 1.9, 1.2), 180.0, what="hat_stand")
         if k == 0:
             B.thing(pre + "bike", "machine", (ax(sb, 0.55), 8.1, 0.65), 90.0, what="bike_rack")
             B.thing(pre + "pram", "machine", (ax(sa, 0.55), 1.9, 0.7), 0.0, what="pram")
         else:
             kit.planter(B, xm - 1.6, 1.75, Z, 0.0, w=1.2, d=0.45, h=0.5, seed=77)
-            B.thing(pre + "plants", "machine", (xm - 1.6, 1.75, 0.75), 0.0, what="watering_can")
+            B.thing(pre + "plants", "machine", (xm - 1.6, 1.75, 0.75), 180.0, what="watering_can")
 
 
 

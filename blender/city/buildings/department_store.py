@@ -546,7 +546,7 @@ def _ground(B, rnd):
         kit.stool(B, sx, sy, zf, yw, h=0.3)
     kit.cardboard_box(B, 16.6, 26.0, kt["top"], 0.0, w=0.3, d=0.3, h=0.2, seed=2)
     kit.globe(B, 16.9, 25.9, kt["top"], 0.0)
-    _thing(B, "g_toy_house", "board", (20.5, 25.9, zf + 1.0), 180.0, topic="kids")
+    _thing(B, "g_toy_house", "board", (20.5, 25.9, zf + 1.0), 0.0, topic="kids")
 
     # ---- back wall east: haberdashery and notions shelving, a clock, a painting
     for k in range(3):
@@ -706,16 +706,17 @@ def _first_west(B, zf, rnd):
 def _first_east(B, zf, rnd):
     d = B.detail
     # ---- the café corner (east front, by the street windows)
-    cc = kit.shop_counter(B, 21.2, 5.4, zf, 90.0, w=2.2, d=0.7, mat=kit.WOODL, top="CT_TileWhite", front="CT_PlasterRed", till=True)
+    cc = kit.shop_counter(B, 21.2, 5.4, zf, 270.0, w=2.2, d=0.7, mat=kit.WOODL, top="CT_TileWhite", front="CT_PlasterRed", till=True)
     kit.samovar(B, 21.2, 4.7, zf + 1.05, 270.0)
     kit.cup(B, 21.2, 5.4, zf + 1.05, 0.0)
     kit.cup(B, 21.2, 5.8, zf + 1.05, 0.0)
     kit.plates(B, 21.2, 6.2, zf + 1.05, 0.0, n=3)
     kit.teapot(B, 21.2, 4.5, zf + 1.05, 0.0)
     kit.menu_board(B, 22.1, 5.4, zf, 270.0, name="menu_0", w=1.0, zc=2.3)
+    kit.menu_board(B, 20.86, 4.5, zf, 270.0, name="menu_0", w=0.5, zc=0.62)           # a placard on the counter front, read from the customer side
     B.spot("f1_cafe_counter", "counter", (20.3, 5.4, zf), 90.0)
     B.spot("f1_cafe_work", "work", (22.0, 5.4, zf), 270.0)
-    _thing(B, "f1_cafe_counter", "counter", (21.2, 5.4, zf + 1.05), 90.0, service="bar")
+    _thing(B, "f1_cafe_counter", "counter", (21.2, 5.4, zf + 1.05), 270.0, service="bar")
     kit.sign_plate(B, 21.2, 5.4, zf, 270.0, name="sign_buffet", w=1.5, zc=3.6, hang=True)
     for k, (tx, ty) in enumerate(((16.5, 3.4), (16.5, 6.4), (13.3, 4.9), (13.3, 8.2), (19.0, 8.6))):
         t = kit.table_round(B, tx, ty, zf, 0.0, r=0.4, h=0.74)
@@ -968,7 +969,7 @@ def _extras(B, rnd):
 
     # ---- the tannoy of the upper hall, the café's menu, the stationery island's typewriter, the radios
     _tannoy(B, 9.4, 29.6, zf + 2.45, "f1_tannoy")
-    _thing(B, "f1_cafe_menu", "board", (22.0, 5.4, zf + 2.3), 270.0, topic="cafe_menu")
+    _thing(B, "f1_cafe_menu", "board", (20.86, 4.5, zf + 0.62), 270.0, topic="cafe_menu")
     _thing(B, "f1_typewriter", "craft", (5.6, 15.35, zf + 1.05), 0.0, what="typewriter")
     _thing(B, "f1_island_radio", "machine", (-5.8, 15.3, zf + 1.1), 0.0, what="radio")
 

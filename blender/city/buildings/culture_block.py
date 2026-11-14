@@ -397,7 +397,7 @@ def _furnish_hall(B, hx0, hx1, hy0, hy1):
     sp("work_9", "work", (9.0, 3.1, 0.0), 0)
     sp("work_4", "work", (8.2, 3.1, 0.0), 0)
     sp("work_14", "work", (16.7, 3.9, 0.0), 0)
-    T("work_table", "craft", (8.6, 2.3, 0.9), 0, what="workbench")
+    T("work_table", "craft", (8.6, 2.3, 0.9), 180, what="workbench")
     kit.bookshelf(B, 12.0, fy0, yaw=180, w=0.9, h=2.0, topic="art", seed=3)
     T("art_shelf", "shelf", (12.0, fy0 + 0.3, 1.3), 180, topic="art")
     kit.shop_shelf(B, fx1, 3.0, yaw=270, w=1.8, h=1.9, goods="jars", seed=2)

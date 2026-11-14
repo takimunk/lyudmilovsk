@@ -930,7 +930,7 @@ def _reading(B):
     c.wall_end(kit.sign_plate, 0.0, zc=3.4, name="sign_library", w=2.2)
     c.wall_end(kit.sign_plate, 1.9, zc=2.6, name="sign_quiet", w=0.9)
     sx, sy = c.W(c.L - WT, 1.0)
-    B.thing("club_notices", "board", (sx, sy, 1.7), c.fy(0, -1), topic="club")
+    B.thing("club_notices", "board", (sx, sy, 1.7), c.fy(-1, 0), topic="club")
     for sgn in (-1, 1):
         c.put(kit.plant, 16.4, sgn * 2.4, kind="ficus", pot="CT_PlasterBlue", h=1.7, seed=sgn)
     # pendants on long cords from the 8.1 m ceiling (same five lamps)
@@ -1144,7 +1144,8 @@ def _studio(B):
     c.put(kit.stage, 13.4, 0.0, w=4.9, d=2.5, h=0.6, curtain_h=3.1)
     sx, sy = c.W(13.4, 0.0)
     B.thing("stage", "screen", (sx, sy, 0.7), c.fy(-1, 0), what="stage")
-    B.thing("stage_dance", "sport", (sx, sy, 0.0), c.fy(-1, 0), what="dance")
+    dx0, dy0 = c.W(11.7, 0.0)                         # on the floor in front of the stage (the stage box is 0.6 m high)
+    B.thing("stage_dance", "sport", (dx0, dy0, 0.0), c.fy(-1, 0), what="dance")
     c.put(kit.piano, 10.2, 2.55, face=(0, -1))
     c.thing("stage_piano", "play", 10.2, 2.4, 1.0, (0, -1), what="piano")
     kit.stool(B, *c.W(10.2, 1.7), 0.0, 0.0)
