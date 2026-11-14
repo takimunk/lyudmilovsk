@@ -673,57 +673,57 @@
  "city.wave2.shoot.prompt": {
   "ru": "E — сыграть в «Морской бой»",
   "en": "E — play Sea Battle",
-  "ja": "E — 「海戦」で遊ぶ"
+  "ja": "E：「海戦」で遊ぶ"
  },
  "city.wave2.race.prompt": {
   "ru": "E — сесть за «Гонки»",
   "en": "E — sit down at Racing",
-  "ja": "E — 「レース」の席に座る"
+  "ja": "E：「レース」の席に座る"
  },
  "city.wave2.pin.prompt": {
   "ru": "E — запустить шарик",
   "en": "E — launch the ball",
-  "ja": "E — 玉を弾く"
+  "ja": "E：玉を弾く"
  },
  "city.wave2.change.prompt": {
   "ru": "E — разменять рубль на жетоны",
   "en": "E — change a rouble for tokens",
-  "ja": "E — 1ルーブルをコインに両替する"
+  "ja": "E：1ルーブルをコインに両替する"
  },
  "city.wave2.bin.prompt": {
   "ru": "E — заглянуть в урну",
   "en": "E — look in the bin",
-  "ja": "E — ごみ箱をのぞく"
+  "ja": "E：ごみ箱をのぞく"
  },
  "city.wave2.hisc.prompt": {
   "ru": "E — прочесть таблицу рекордов",
   "en": "E — read the high-score board",
-  "ja": "E — ハイスコア表を読む"
+  "ja": "E：ハイスコア表を読む"
  },
  "city.wave2.note.prompt": {
   "ru": "E — прочесть записку",
   "en": "E — read the note",
-  "ja": "E — 貼り紙を読む"
+  "ja": "E：貼り紙を読む"
  },
  "city.wave2.broken.prompt": {
   "ru": "E — потрогать молчащий автомат",
   "en": "E — poke the silent cabinet",
-  "ja": "E — 沈黙した筐体をつついてみる"
+  "ja": "E：沈黙した筐体をつついてみる"
  },
  "city.wave2.prize.prompt": {
   "ru": "E — посмотреть призы",
   "en": "E — look at the prizes",
-  "ja": "E — 景品を眺める"
+  "ja": "E：景品を眺める"
  },
  "city.wave2.sea.prompt": {
   "ru": "E — посмотреть на море",
   "en": "E — look out to sea",
-  "ja": "E — 海を眺める"
+  "ja": "E：海を眺める"
  },
  "city.wave2.town.prompt": {
   "ru": "E — посмотреть на город",
   "en": "E — look over the town",
-  "ja": "E — 町を見下ろす"
+  "ja": "E：町を見下ろす"
  },
  "city.shop.wave_prizes.title": {
   "ru": "Призы автоматного прохода",
@@ -767,7 +767,7 @@
  },
  "city.wave2.shoot.lose.2": {
   "ru": "На табло «GAME OVER» и твои очки, их стыдно показывать.",
-  "en": "GAME OVER, and your score, which is a bit shy to show.",
+  "en": "GAME OVER, and a score you would rather not show anyone.",
   "ja": "画面には「GAME OVER」と、ちょっと見せにくい点数。"
  },
  "city.wave2.shoot.draw.1": {
@@ -812,7 +812,7 @@
  },
  "city.wave2.shoot.after.2": {
   "ru": "Рядом кто-то ждёт своей очереди и вздыхает за плечом.",
-  "en": "Somebody waits their turn behind you, breathing.",
+  "en": "Somebody waiting their turn sighs over your shoulder.",
   "ja": "後ろで誰かが順番を待ってため息をついている。"
  },
  "city.wave2.shoot.after.sun": {
@@ -992,7 +992,7 @@
  },
  "city.wave2.closed.cab.2": {
   "ru": "Монетоприёмник заперт. Проход работает с девяти до десяти вечера.",
-  "en": "The coin slot is locked. The alley runs nine to ten at night.",
+  "en": "The coin slot is locked. The alley is open from nine in the morning to ten at night.",
   "ja": "投入口は施錠中。通りは朝九時から夜十時まで。"
  },
  "city.wave2.closed.board.1": {
@@ -1157,7 +1157,7 @@
  },
  "city.wave2.reg.dina.lose": {
   "ru": "Не расстраивайся: полчаса тренировки, и мы сравняемся.",
-  "en": "Don't mind: half an hour's practice and we're level.",
+  "en": "Don't be upset: half an hour's practice and we'll be level.",
   "ja": "気にしないで。三十分練習すれば並べるわよ。"
  },
  "city.wave2.coll.title": {
@@ -1167,7 +1167,7 @@
  },
  "quest.wave_record.title": {
   "ru": "Рекорд на табло",
-  "en": "A Name on the Board",
+  "en": "A name on the board",
   "ja": "表に名前を"
  },
  "quest.wave_record.desc": {
@@ -1212,7 +1212,7 @@
  },
  "quest.wave_roof.title": {
   "ru": "Крыша Башни-Волны",
-  "en": "On Top of the Wave",
+  "en": "On top of the Wave",
   "ja": "ウェーブの屋上"
  },
  "quest.wave_roof.desc": {
@@ -1256,9 +1256,9 @@
   "ja": "片側は海、反対側は町。この塔がなぜウェーブと呼ばれるか、やっと分かった。"
  },
  "city.wave3.coins.prompt": {
-  "ru": "Пересчитать монеты",
-  "en": "Count the coins",
-  "ja": "硬貨を数える"
+  "ru": "E — пересчитать монеты",
+  "en": "E — count the coins",
+  "ja": "E：硬貨を数える"
  },
  "city.wave3.coins.title": {
   "ru": "Счёт монет",
@@ -1267,7 +1267,7 @@
  },
  "city.wave3.coins.win.1": {
   "ru": "Столбики сошлись копейка в копейку. Кассирша кивает через решётку: «Рука у вас счётная».",
-  "en": "The stacks come out to the kopeck. The teller nods through the grille: \"You have a counting hand.\"",
+  "en": "The stacks come out to the kopeck. The teller nods through the grille: \"You have a good hand for counting.\"",
   "ja": "硬貨の山は一コペイカもずれずに合った。格子の向こうで窓口の女性がうなずく。「数えるのが上手ね」"
  },
  "city.wave3.coins.win.2": {
@@ -1301,9 +1301,9 @@
   "ja": "硬貨は紙の筒に巻かれ、それぞれに金額が鉛筆で書いてある。"
  },
  "city.wave3.cal.prompt": {
-  "ru": "Посмотреть календарь",
-  "en": "Look at the calendar",
-  "ja": "カレンダーを見る"
+  "ru": "E — посмотреть календарь",
+  "en": "E — look at the calendar",
+  "ja": "E：カレンダーを見る"
  },
  "city.wave3.cal.1": {
   "ru": "Настенный календарь сберкассы. Один день обведён красным: «Тираж займа». До него около недели. Рядом карандашом: «Очки не забыть!»",
@@ -1331,9 +1331,9 @@
   "ja": "赤丸には斜線が引かれ、その下に大きく「抽選表を掲示しました。系列7、番号318、お支払いは窓口で」とある。誰かが「12号室のニーナさんによろしく」と書き添えた。"
  },
  "city.wave3.styles.prompt": {
-  "ru": "Полистать альбом причёсок",
-  "en": "Page through the style album",
-  "ja": "ヘアスタイルのアルバムをめくる"
+  "ru": "E — полистать альбом причёсок",
+  "en": "E — page through the style album",
+  "ja": "E：ヘアスタイルのアルバムをめくる"
  },
  "city.wave3.styles.1": {
   "ru": "Альбом мастера: рисунки тушью — «бобрик», «каре», «гарсон», «венок из кос». Внизу приписка: «К школе — аккуратная чёлка, к празднику — локоны на папильотках».",
@@ -1361,9 +1361,9 @@
   "ja": "お祝いのページにはリボンつきの三つ編みと、テレビのアナウンサーのような「塔」の髪型。今日の予約は朝のうちに締め切られた。"
  },
  "city.wave3.trolley.prompt": {
-  "ru": "Осмотреть тележку мастера",
-  "en": "Look over the stylist's trolley",
-  "ja": "理容師のワゴンを眺める"
+  "ru": "E — осмотреть тележку мастера",
+  "en": "E — look over the stylist's trolley",
+  "ja": "E：理容師のワゴンを眺める"
  },
  "city.wave3.trolley.1": {
   "ru": "С утра на тележке всё свежее: расчёски в банке с раствором, ножницы по росту, стопка горячих полотенец под салфеткой.",
@@ -1372,8 +1372,8 @@
  },
  "city.wave3.trolley.2": {
   "ru": "К вечеру тележка в работе: бигуди в миске, мокрые полотенца, флакон «Шипра» открыт и пахнет на весь зал.",
-  "en": "By afternoon the trolley is in use: curlers in a bowl, damp towels, a bottle of cologne left open and scenting the whole room.",
-  "ja": "午後になるとワゴンはフル稼働だ。鉢に入ったカーラー、濡れたタオル、栓の開いたオーデコロンの香りが店中に広がっている。"
+  "en": "Towards evening the trolley is in use: curlers in a bowl, damp towels, a bottle of cologne left open and scenting the whole room.",
+  "ja": "夕方近くになるとワゴンはフル稼働だ。鉢に入ったカーラー、濡れたタオル、栓の開いたオーデコロンの香りが店中に広がっている。"
  },
  "city.wave3.trolley.3": {
   "ru": "Салон закрыт, тележка прибрана: ножницы в чехле, расчёски обсыхают на полотенце, бутылки стоят этикетками к стене.",
@@ -1381,9 +1381,9 @@
   "ja": "店は閉まり、ワゴンは片づけられている。はさみはケースに、櫛はタオルの上で乾かされ、瓶はラベルを壁に向けて並んでいる。"
  },
  "city.wave3.wait.prompt": {
-  "ru": "Подождать своей очереди",
-  "en": "Wait for your turn",
-  "ja": "順番を待つ"
+  "ru": "E — подождать своей очереди",
+  "en": "E — wait for your turn",
+  "ja": "E：順番を待つ"
  },
  "city.wave3.wait.1": {
   "ru": "Диван тёплый от чужих спин. Журналы на столике свежие, листок «кто за кем» заполнен до середины.",
@@ -1401,9 +1401,9 @@
   "ja": "店は閉まっているが、ソファはそのままだ。ガラス越しに、席が片づけられていくのが見える。"
  },
  "city.wave3.cut.prompt": {
-  "ru": "Отмерить метр",
-  "en": "Measure a metre",
-  "ja": "一メートル測る"
+  "ru": "E — отмерить метр",
+  "en": "E — measure a metre",
+  "ja": "E：一メートル測る"
  },
  "city.wave3.cut.title": {
   "ru": "Метр ситца",
@@ -1418,7 +1418,7 @@
  "city.wave3.cut.win.2": {
   "ru": "Ножницы идут по ткани как по маслу. Ни сантиметра лишнего, край ровный, хоть сейчас подрубай.",
   "en": "The shears glide through the cloth. Not a centimetre too much and the edge is straight enough to hem right away.",
-  "ja": "はさみは布の上を滑るように進む。一センチの無駄もなく、端もまっすぐで、そのまま縫い代にできそうだ。"
+  "ja": "はさみは布の上を滑るように進む。一センチの無駄もなく、端もまっすぐで、すぐにでも縁をかがれそうだ。"
  },
  "city.wave3.cut.lose.1": {
   "ru": "Отмерил с запасом, а в запас ушло лишних двадцать сантиметров. Продавщица вздыхает: остаток пойдёт в лоскуты.",
@@ -1446,9 +1446,9 @@
   "ja": "真鍮の物差しの擦り減った印の上に、誰かが「1m」と引っかき直している。大事にされているのがわかる。"
  },
  "city.wave3.rem.prompt": {
-  "ru": "Порыться в лоскутах",
-  "en": "Rummage in the remnants",
-  "ja": "端切れをかき回す"
+  "ru": "E — порыться в лоскутах",
+  "en": "E — rummage in the remnants",
+  "ja": "E：端切れをかき回す"
  },
  "city.wave3.rem.1": {
   "ru": "В корзине лоскуты по двадцать копеек за горсть: ситец в цветочек, синий сатин, обрезок шерсти с чужой клеткой.",
@@ -1467,13 +1467,13 @@
  },
  "city.wave3.rem.4": {
   "ru": "К субботе корзина почти пуста: всё разобрали на платья для кукол и заплатки на школьные локти.",
-  "en": "By Saturday the basket is nearly empty: it has all gone on doll's dresses and patches for school elbows.",
+  "en": "By Saturday the basket is nearly empty: it has all gone on dolls' dresses and patches for school elbows.",
   "ja": "土曜にはかごはほとんど空だ。人形の服や、学校の服のひじ当てになってしまった。"
  },
  "city.wave3.bread.prompt": {
-  "ru": "Прочитать «хлеб дня»",
-  "en": "Read the bread of the day",
-  "ja": "今日のパンを読む"
+  "ru": "E — прочитать «хлеб дня»",
+  "en": "E — read the bread of the day",
+  "ja": "E：「今日のパン」を読む"
  },
  "city.wave3.bread.mon": {
   "ru": "Понедельник: ржаной с тмином, горячий к одиннадцати. Булочки с маком только по заказу.",
@@ -1482,8 +1482,8 @@
  },
  "city.wave3.bread.tue": {
   "ru": "Вторник: нарезной батон и сушки на ниточке. К чаю советуют ватрушки с творогом.",
-  "en": "Tuesday: sliced loaf and dry rings on a string. Curd tarts are recommended with tea.",
-  "ja": "火曜日：切れ目入りの食パンと、紐に通した乾パン。お茶にはカッテージチーズのタルトがおすすめ。"
+  "en": "Tuesday: sliced loaf and little dry bread rings on a string. Curd tarts are recommended with tea.",
+  "ja": "火曜日：切れ目入りの食パンと、紐に通した輪っかの乾パン。お茶にはカッテージチーズのタルトがおすすめ。"
  },
  "city.wave3.bread.wed": {
   "ru": "Среда: бородинский. Кто успел до полудня, берёт ещё тёплым; кто нет, берёт всё равно.",
@@ -1511,9 +1511,9 @@
   "ja": "日曜日：パン屋は休み。黒板にチョークで「月曜のパンはもう発酵中。また明日！」"
  },
  "city.wave3.orders.prompt": {
-  "ru": "Заглянуть в книгу заказов",
-  "en": "Look into the order ledger",
-  "ja": "注文帳をのぞく"
+  "ru": "E — заглянуть в книгу заказов",
+  "en": "E — look into the order ledger",
+  "ja": "E：注文帳をのぞく"
  },
  "city.wave3.orders.title": {
   "ru": "Книга заказов пекарни",

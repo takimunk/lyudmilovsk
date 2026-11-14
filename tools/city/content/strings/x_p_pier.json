@@ -712,8 +712,8 @@
  },
  "city.px.hist.2": {
   "ru": "Наверху бак для воды, под ним фонарь. Сначала это была водонапорная башня, потом на неё поставили лампу. Теперь она работает на два фронта: поит и светит.",
-  "en": "At the top there is a water tank with the lantern above it. First it was a water tower, then a lamp was set on it. Now it works on two fronts: it gives drink and it gives light.",
-  "ja": "てっぺんには貯水槽があり、その上にランタンがある。最初は給水塔で、のちに灯がのせられた。今は二つの務めを果たしている。水を与え、光を与える。"
+  "en": "At the top there is a water tank with the lantern below it. First it was a water tower, then a lamp was set on it. Now it works on two fronts: it gives drink and it gives light.",
+  "ja": "てっぺんには貯水槽があり、その下にランタンがある。最初は給水塔で、のちに灯がのせられた。今は二つの務めを果たしている。水を与え、光を与える。"
  },
  "city.px.hist.3": {
   "ru": "ПРАВИЛА ДЛЯ ПОСЕТИТЕЛЕЙ. Подниматься, не толкаясь. Вниз ничего не бросать (кроме бутылочной почты: ящик у перил). Чаек не кормить, они кормят себя сами. В туман колокол для всех, но по очереди.",
@@ -723,7 +723,7 @@
  "city.px.hist.4": {
   "ru": "Сто восемнадцать ступеней до галереи, двадцать метров над землёй. Выше, до самой лампы, ещё шестнадцать, но туда пускают только смотрителей. С галереи видно всё, что стоит видеть.",
   "en": "One hundred and eighteen steps to the gallery, twenty metres above the ground. Higher, to the lamp itself, another sixteen, but only the keepers go there. From the gallery you can see all worth seeing.",
-  "ja": "ギャラリーまで百十八段、地上二十メートル。そこからランプまでさらに十六メートルだが、上がれるのは灯台守だけ。ギャラリーからは見る価値のあるものがすべて見える。"
+  "ja": "ギャラリーまで百十八段、地上二十メートル。そこからランプまでさらに十六段あるが、上がれるのは灯台守だけ。ギャラリーからは見る価値のあるものがすべて見える。"
  },
  "city.px.plaque.l1": {
   "ru": "Деревянный стенд у перил: правила, история башни, чуть выцветшая схема. Края объявления прижаты ржавой скрепкой.",
@@ -861,7 +861,7 @@
   "ja": "瓶ガラスのように緑のガラスの浮きと、青いのが一つ。ロープの網の中でネックレスみたいに並ぶ。一つはひびが入っているが、縁起がいいと言って残してある。"
  },
  "city.px.floats.2": {
-  "ru": "Поднёс поплавок к уху: внутри ровный шум. Говорят, это море, которое в нём осталось после последнего лова. Смотрители уверяют, а вру они или нет, не скажут.",
+  "ru": "Поднёс поплавок к уху: внутри ровный шум. Говорят, это море, которое в нём осталось после последнего лова. Смотрители уверяют, а врут они или нет, не скажут.",
   "en": "I held a float to my ear: a steady hum inside. They say it is the sea left in it from the last catch. The keepers swear to it, and whether they are fibbing they won't say.",
   "ja": "浮きを耳に当てると、中で一定の音がする。最後の漁で中に残った海の音だ、という。灯台守は断言するが、嘘かどうかは言わない。"
  },
