@@ -12,6 +12,8 @@ remarks (quest_scenes.json): QUESTDEPTH lines, the dialogue's "NpcDialogue: line
      angler_spoon_dawn, then everyday lines
   p) waxwing on return, soda_science on taste: the waxwing's call beside Sorokin (Galina on a bench near by) is his
   r) waxwing on return, a call by Valentina's cart: at 13:00 she answers (pointing to Sorokin's bench), at 15:00 he does
+  s) the diary (journal entries, Quest.Dump's count): +1 when Tanya's remark is heard, none on the second approach nor
+     after save and load; the waxwing's call heard by Sorokin adds its entry once, a second call none
   q) two remarks in range at once (the Clerk, Sonya): the second begins after the first has finished
   j) a great tit beside Dasha at 17:30 (Aya on the same bench): exactly one person answers
   k) waxwing on return: a call by Valentina's cart and one by Sorokin both get his waxwing_seen lines and finish the quest
@@ -187,6 +189,10 @@ go("guseva_valentina", 4, [15, 15.5, 16])
 at("QUESTDEPTH mark r_call_15h")
 at("Quest.BirdCall Waxwing guseva_valentina", None, 10.0)
 at("Quest.Dump", "r_after_15h")
+at("Quest.SetStage waxwing return", None, 1.0)
+at("Quest.Dump", "s_before_second_call")
+at("Quest.BirdCall Waxwing sorokin_oleg", None, 10.0)
+at("Quest.Dump", "s_after_second_call")
 # q) two remarks in range at once (awakening on owner: the Clerk's at once, Sonya's once the hero came from afar): one voice
 #    at a time, the second after the first has finished
 at("Quest.Reset", None, 1.0)
@@ -220,13 +226,16 @@ at("Quest.Reset", None, 1.0)
 at("Quest.SetStage waxwing prepare", None, 1.0)
 at("lyud.Birds.Time 12", None, 2.5)
 at("Dev.Tp academ", None, 2.5)                  # farther than 1.5 x within_m while on prepare: the remark is armed
+at("Quest.Dump", "s_before_remark")
 at("QUESTDEPTH mark e_remark")
 at("Quest.GoToPerson orlova_tanya 3", None, 3.0)
 at("Quest.Scenes", "e_after_first", 0.5)
+at("Quest.Dump", "s_after_remark")
 at("shot showui", "tanya_remark", 1.0)
 at("Dev.Tp academ", None, 4.0)
 at("Quest.GoToPerson orlova_tanya 3", None, 4.0)
 at("Quest.Scenes", "e_after_second", 0.5)
+at("Quest.Dump", "s_after_second_approach")
 at("lyud.Save questdepth", None, 3.0)
 at("lyud.Load 0", None, 15.0)
 at("lyud.Birds.Time 12", None, 2.5)
