@@ -733,7 +733,7 @@ def _toyfab(S):
     dc = S.f(kit.display_case, 6.9, 3.4, 0, w=1.3, d=0.6, goods="toys", seed=7)
     B.thing("toys_case", "board", (dc["pos"][0], dc["pos"][1], 1.0), S.yw(6.9), topic="catalogue")
     tf = S.f(kit.table_football, 8.3, 1.4, 90)
-    B.thing("toys_table_football", "play", (tf["pos"][0], tf["pos"][1], 0.9), S.yw(8.3) + 90, what="table_football")
+    B.thing("toys_table_football", "play", (tf["pos"][0], tf["pos"][1], 0.9), S.yw(8.3), what="table_football")  # QA: faces a long side (was the table end, 0.1 m from the wall)
     S.right(kit.poster, 1.2, name="kids_0", w=0.55, zc=1.7)
     S.right(kit.poster, 2.4, name="kids_2", w=0.55, zc=1.7)
     S.spot_w("shop_f_browse1", "stand", "l", 6.4)
@@ -1330,7 +1330,7 @@ def _roof2(B, zr):
     _view_table(B, x3, y3, zr, 180)
     B.thing("roof_view_town", "board", (x3, y3, zr + 1.05), 180.0, topic="view")
     for bx in (13.0, 25.0):
-        B.thing("roof_seat_%d" % int(bx), "seat", (bx, yc(bx) - 1.58, zr + 0.55), 0.0, height=0.55)
+        B.thing("roof_seat_%d" % int(bx), "seat", (bx, yc(bx) - 3.45, zr + 0.6), 0.0, height=0.6)
 
 
 # ==================================================================================================== round 3 (shops)
@@ -1712,8 +1712,13 @@ def build(B):
         for dy in (-2.9, 2.9):
             B.column_round(px, yc(px) + dy, zr + 0.1, cz(px) - 0.05, 0.12, mat="CT_Steel", segs=8, m=B.detail)
     for bx in (13.0, 25.0):
-        box(B.detail, "CT_Wood", bx - 1.0, bx + 1.0, yc(bx) - 1.8, yc(bx) - 1.35, zr + 0.5, zr + 0.6)
-        B.spot("roof_bench_%d" % int(bx), "bench", (bx, yc(bx) - 1.0, zr + 0.1), 0.0)
+        # QA: the benches stood inside the core3 plant room (x 25) and under the low canopy (x 13): moved out in
+        # front of the canopy edge (y = yc - 3.45), with legs
+        by = yc(bx) - 3.45
+        box(B.detail, "CT_Wood", bx - 1.0, bx + 1.0, by - 0.225, by + 0.225, zr + 0.5, zr + 0.6)
+        for lx in (bx - 0.9, bx + 0.8):
+            box(B.detail, "CT_Steel", lx, lx + 0.1, by - 0.18, by + 0.18, zr + 0.1, zr + 0.5)
+        B.spot("roof_bench_%d" % int(bx), "bench", (bx, by + 0.3, zr + 0.1), 0.0)
     B.spot("roof_view", "view", (20.0, yf(20.0) + 0.9, zr), 0.0)
     _roof2(B, zr)
 
