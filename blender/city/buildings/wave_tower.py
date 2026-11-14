@@ -1073,7 +1073,7 @@ def _bakery2(S):
     ck = S.f(_cat_basket, 5.2, 0.75, 0)
     B.thing("bakery_cat_basket", "machine", (ck["pos"][0], ck["pos"][1], 0.3), S.yw(5.2), what="cat_basket")
     S.spot("bakery_cat_stand", "stand", 5.2, 1.7, 0)
-    S.back(kit.menu_board, 3.75, name="menu_0", w=0.8, zc=1.75)
+    S.back(kit.menu_board, 3.75, name="sign_bread", w=0.8, zc=1.75)
     x = S.xl + 3.75
     B.thing("bakery_menu", "board", (x, S.y_back(x) - 0.25, 1.75), S.yw(3.75), topic="prices")
     S.spot("bakery_menu_stand", "stand", 3.75, 6.9, 180)
@@ -1136,7 +1136,7 @@ def _salon2(S):
     tp = S.f(_ticket_post, 2.45, 1.5, 0)
     B.thing("bank_ticket", "machine", (tp["pos"][0], tp["pos"][1], 1.15), S.yw(2.45), what="queue_ticket")
     S.spot("bank_ticket_stand", "stand", 2.45, 2.2, 0)
-    ns = S.f(kit.notice_stand, 1.55, 3.2, 0, w=1.0, front="price", back="notice", seed=4)
+    ns = S.f(kit.notice_stand, 1.55, 3.2, 0, w=1.0, front="notice", back="notice", seed=4)
     B.thing("bank_bonds", "board", (ns["pos"][0], ns["pos"][1], 1.45), S.yw(1.55), topic="prices")
     S.spot("bank_bonds_stand", "stand", 1.55, 2.5, 0)
     S.f(kit.coffee_table, 7.7, 2.5, 0, w=0.9, d=0.5)
