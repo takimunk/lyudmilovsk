@@ -1,0 +1,692 @@
+{
+ "city.lift.cube.street": {
+  "ru": "Прихожая",
+  "en": "Entrance hall",
+  "ja": "玄関ホール"
+ },
+ "city.lift.cube.living": {
+  "ru": "Жилой этаж",
+  "en": "Living level",
+  "ja": "リビング階"
+ },
+ "city.lift.cube.tip": {
+  "ru": "Верхушка",
+  "en": "The tip",
+  "ja": "てっぺん"
+ },
+ "city.cu.p.lift": {
+  "ru": "E — вызвать лифт",
+  "en": "E — call the lift",
+  "ja": "E：エレベーターを呼ぶ"
+ },
+ "city.cu.lift.1": {
+  "ru": "Лифт в кубе крошечный: двое и один горшок. Кабина пахнет деревом и землёй.",
+  "en": "The lift in the cube is tiny: two people and one flowerpot. The car smells of wood and soil.",
+  "ja": "キューブのエレベーターはとても小さい。人が二人と植木鉢が一つ。箱の中は木と土のにおいがする。"
+ },
+ "city.cu.lift.2": {
+  "ru": "Кнопок три: прихожая, жильё, верхушка. Верхняя вытерта сильнее остальных.",
+  "en": "Three buttons: hall, living, tip. The top one is worn the most.",
+  "ja": "ボタンは三つ、ホール、リビング、てっぺん。いちばん上のボタンがいちばんすり減っている。"
+ },
+ "city.cu.p.mirror": {
+  "ru": "E — глянуть в зеркало",
+  "en": "E — glance in the mirror",
+  "ja": "E：鏡をのぞく"
+ },
+ "city.cu.mirror.m": {
+  "ru": "Утро. Волосы торчат так, будто ночевали отдельно от тебя.",
+  "en": "Morning. Your hair sticks up as if it had slept somewhere else.",
+  "ja": "朝。髪の毛がまるで別の場所で寝ていたみたいに跳ねている。"
+ },
+ "city.cu.mirror.d": {
+  "ru": "Нормально выглядишь. Для чужой прихожей — даже хорошо.",
+  "en": "You look fine. For somebody else's hall, even good.",
+  "ja": "悪くない顔だ。人の家の玄関にしては、むしろいい。"
+ },
+ "city.cu.mirror.e": {
+  "ru": "Вечером в зеркале усталый, но довольный человек. Зеркало чуть наклонено, чтобы ему было удобнее.",
+  "en": "In the evening the mirror shows a tired but content person. It is tilted a little to make that easier.",
+  "ja": "夕方の鏡には、疲れているけれど満足そうな人が映る。鏡は少し傾けてあって、そのほうが映りやすい。"
+ },
+ "city.cu.mirror.n": {
+  "ru": "В зеркале ночной ты. Лучше не разглядывать, а идти спать.",
+  "en": "The mirror shows the night you. Better not to study him; go to bed.",
+  "ja": "鏡に映るのは夜の僕だ。じっと見ないで、寝たほうがいい。"
+ },
+ "city.cu.p.fern": {
+  "ru": "E — потрогать листья",
+  "en": "E — touch the leaves",
+  "ja": "E：葉にさわる"
+ },
+ "city.cu.fern.1": {
+  "ru": "Папоротник в прихожей: листья влажные. Кто-то опрыскивал его утром.",
+  "en": "The fern in the hall: the leaves are damp. Someone sprayed it this morning.",
+  "ja": "玄関のシダ。葉がしっとりしている。朝、誰かが霧を吹いたらしい。"
+ },
+ "city.cu.fern.2": {
+  "ru": "Папоротник растёт в горшке и тянется к лифту. Хозяева говорят, он ждёт своей очереди подняться наверх.",
+  "en": "The fern grows in its pot and leans toward the lift. The owners say it is waiting its turn to go up.",
+  "ja": "シダは鉢でエレベーターのほうへ伸びている。住人いわく、上へ行く順番を待っているそうだ。"
+ },
+ "city.cu.fern.rain": {
+  "ru": "Дождь снаружи, а листья блестят, как будто папоротник сам выходил под него.",
+  "en": "Rain outside, and the leaves shine as if the fern had stepped out into it.",
+  "ja": "外は雨。シダの葉は、自分で雨の中へ出ていったみたいに光っている。"
+ },
+ "city.cu.p.back": {
+  "ru": "E — выглянуть в узкое окно",
+  "en": "E — look out of the narrow window",
+  "ja": "E：細い窓から外を見る"
+ },
+ "city.cu.vback.d": {
+  "ru": "В узкое окно за лифтом виден склон холма: крыши террас, дымок из чьей-то трубы, дальше сосны.",
+  "en": "The narrow window beside the lift shows the hillside: terrace roofs, smoke from somebody's chimney, pines beyond.",
+  "ja": "エレベーターの脇の細い窓から丘の斜面が見える。テラスの屋根、誰かの煙突の煙、その奥に松。"
+ },
+ "city.cu.vback.n": {
+  "ru": "В узкой щели окна — огоньки на холме и чёрная полоса леса. Один огонёк мигает и никак не решит, гореть ему или нет.",
+  "en": "In the narrow slit of the window: lights on the hill and a black band of forest. One light flickers, undecided.",
+  "ja": "細い窓には丘の灯りと黒い森の帯。灯りがひとつ、点こうか消えようか迷うように瞬いている。"
+ },
+ "city.cu.vback.rain": {
+  "ru": "Из узкого окна видно, как дождь идёт по холму полосами: сначала по соснам, потом по крышам.",
+  "en": "Through the narrow window you watch the rain cross the hill in bands, first the pines, then the roofs.",
+  "ja": "細い窓から、雨が丘を帯になって渡っていくのが見える。まず松、それから屋根。"
+ },
+ "city.cu.vfront.d": {
+  "ru": "Из длинного окна над скамьёй видна вся палуба под кубами: скамейки, шахматный столик, чьи-то зонты. Люди идут цепочкой, как муравьи по перилу.",
+  "en": "The long window over the bench shows the whole deck under the cubes: benches, the chess table, someone's umbrella. People walk in a line like ants along a rail.",
+  "ja": "ベンチの上の長い窓から、キューブの下のデッキ全体が見える。ベンチ、チェス卓、誰かの傘。人々は手すりを行くアリのように一列に歩いていく。"
+ },
+ "city.cu.vfront.m": {
+  "ru": "Утро: по палубе идут на автобус, портфели, шарфы. Кто-то бежит и придерживает шляпу.",
+  "en": "Morning: people cross the deck for the bus, briefcases, scarves. Somebody runs holding on to a hat.",
+  "ja": "朝、バスへ向かう人たちがデッキを渡っていく。かばんにマフラー。帽子を押さえて走る人もいる。"
+ },
+ "city.cu.vfront.w": {
+  "ru": "Выходной: внизу медленнее. У шахматного столика кто-то уже минут десять думает над ходом.",
+  "en": "A day off: things go slower down there. At the chess table somebody has been thinking over a move for ten minutes.",
+  "ja": "休みの日、下の流れはゆっくりだ。チェス卓では誰かがもう十分も次の一手を考えている。"
+ },
+ "city.cu.vfront.e": {
+  "ru": "Закат ложится на соседние крыши. Палуба внизу золотая, скамейки отбрасывают длинные тени.",
+  "en": "The sunset lies on the neighbouring roofs. The deck below is golden, the benches throw long shadows.",
+  "ja": "夕日が隣の屋根に落ちている。下のデッキは金色で、ベンチが長い影を引く。"
+ },
+ "city.cu.vfront.n": {
+  "ru": "Ночью из окна виден помост под кубами: жёлтая полоса фонарей, пустые скамейки, красный огонёк на дальнем конце.",
+  "en": "At night the window shows the deck: a yellow strip of lamps, empty benches, a small red light at the far end.",
+  "ja": "夜、窓からはデッキが見える。街灯の黄色い帯、無人のベンチ、遠い端の小さな赤い灯。"
+ },
+ "city.cu.vfront.rain": {
+  "ru": "Дождь: по палубе плывут зонтики, как цветы на ножках. Скамейки блестят.",
+  "en": "Rain: umbrellas drift along the deck like flowers on stalks. The benches shine.",
+  "ja": "雨。デッキを傘が茎つきの花のように流れていく。ベンチは濡れて光っている。"
+ },
+ "city.cu.vfront.fog": {
+  "ru": "Туман прячет улицу целиком. Видна только верхушка соседнего куба: она плывёт в молоке.",
+  "en": "Fog hides the street completely. Only the tip of the next cube shows, floating in milk.",
+  "ja": "霧が通りをすっかり隠している。隣のキューブの先端だけが、牛乳の中に浮いている。"
+ },
+ "city.cu.vfront.fest": {
+  "ru": "Праздник: внизу флажки и музыка. Отсюда она звучит приглушённо, будто играют в соседней комнате.",
+  "en": "A holiday: flags and music below. From up here it sounds muffled, as if played in the next room.",
+  "ja": "お祭り。下には旗と音楽。ここからは隣の部屋で鳴っているみたいにくぐもって聞こえる。"
+ },
+ "city.cu.vfloor.d": {
+  "ru": "Окно у самого пола. Сидишь на подушке, а внизу как на ладони палуба, скамейки и чьи-то макушки.",
+  "en": "A window right at the floor. You sit on a cushion and below, laid out like a palm, are the deck, the benches and the tops of heads.",
+  "ja": "床すれすれの窓。クッションに座ると、下にデッキとベンチと人の頭のてっぺんが手のひらのように広がる。"
+ },
+ "city.cu.vfloor.n": {
+  "ru": "Ночью из окна у пола видно, как фонари под кубами рисуют на палубе длинные жёлтые полосы.",
+  "en": "At night the window by the floor shows the lamps under the cubes drawing long yellow strips on the deck.",
+  "ja": "夜、床の窓からはキューブの下の街灯がデッキに長い黄色の帯を描くのが見える。"
+ },
+ "city.cu.vfloor.rain": {
+  "ru": "Дождь стучит в стекло у самого лица, а по палубе внизу бегут люди с зонтами.",
+  "en": "Rain taps the glass right by your face, and people with umbrellas run along the deck below.",
+  "ja": "雨がすぐ顔の横のガラスを叩く。下のデッキを傘の人たちが駆けていく。"
+ },
+ "city.cu.p.tea": {
+  "ru": "E — заварить чаю",
+  "en": "E — make tea",
+  "ja": "E：お茶をいれる"
+ },
+ "city.cu.tea.1": {
+  "ru": "Синяя жестянка: чай. На крышке приписка: «Гостям можно». Чайник свистит тонко, словно шёпотом.",
+  "en": "The blue tin: tea. A note on the lid: \"Guests may.\" The kettle whistles thinly, as if whispering.",
+  "ja": "青い缶はお茶。ふたに「お客さんはどうぞ」と書き添えてある。やかんは囁くように細く鳴る。"
+ },
+ "city.cu.tea.2": {
+  "ru": "Чашка горячая, ручка тёплая. В окне отражается лампа, а в чашке — небо.",
+  "en": "The cup is hot, the handle warm. The lamp is reflected in the window and the sky in the cup.",
+  "ja": "カップは熱く、持ち手はあたたかい。窓には灯りが、カップには空が映っている。"
+ },
+ "city.cu.p.seeds": {
+  "ru": "E — взять пакетик семян",
+  "en": "E — take a packet of seeds",
+  "ja": "E：種の袋をもらう"
+ },
+ "city.cu.seeds.1": {
+  "ru": "Жестянка с туго завинчивающейся крышкой: пакетики с подписями карандашом. На крышке: «Один — в карман. Остальные — на потом».",
+  "en": "A tin with a tight screw lid: packets labelled in pencil. On the lid: \"One for your pocket. The rest for later.\"",
+  "ja": "固くねじ込むふたの缶に、鉛筆で名前を書いた種の袋。ふたには「ひとつはポケットへ。残りはあとで」。"
+ },
+ "city.cu.seeds.2": {
+  "ru": "В жестянке шуршат пакетики. Один с подписью «осторожно: растёт быстрее, чем думаешь».",
+  "en": "Packets rustle in the tin. One is labelled \"careful: grows faster than you think\".",
+  "ja": "缶の中で袋がかさかさ鳴る。ひとつには「注意：思うより早く育つ」と書いてある。"
+ },
+ "city.cu.p.post": {
+  "ru": "E — заглянуть в почтовый ящик",
+  "en": "E — look at the post box",
+  "ja": "E：ポストをのぞく"
+ },
+ "city.cu.post.m": {
+  "ru": "Синий ящик на ножке. Табличка: выемка в 9:00 и в 17:00. До девяти ещё есть время бросить письмо.",
+  "en": "A blue box on a post. The plate: collections at 9:00 and 17:00. There is still time before nine to post a letter.",
+  "ja": "脚のついた青いポスト。プレートには、収集は9時と17時。9時までならまだ手紙を出せる。"
+ },
+ "city.cu.post.d": {
+  "ru": "Синий ящик на ножке. Утренняя выемка прошла, следующая в 17:00. Щель блестит от многих рук.",
+  "en": "A blue box on a post. The morning collection has gone, the next is at 17:00. The slot shines from many hands.",
+  "ja": "脚のついた青いポスト。朝の収集は済み、次は17時。投函口は多くの手で光っている。"
+ },
+ "city.cu.post.e": {
+  "ru": "Синий ящик на ножке. Вечерняя выемка прошла; письма, брошенные сейчас, уедут завтра в девять.",
+  "en": "A blue box on a post. The evening collection is over; letters posted now leave at nine tomorrow.",
+  "ja": "脚のついた青いポスト。夕方の収集は終わり、今出した手紙は明日の朝9時に出ていく。"
+ },
+ "city.cu.p.planter": {
+  "ru": "E — осмотреть ящик с цветами",
+  "en": "E — look at the flower trough",
+  "ja": "E：花の箱を見る"
+ },
+ "city.cu.planter.1": {
+  "ru": "Бетонный ящик с настурциями. На бортике карандашом: «Поливают по очереди: чётные дни — второй куб, нечётные — все остальные».",
+  "en": "A concrete trough of nasturtiums. In pencil on the rim: \"Watered in turns: even days the second cube, odd days everyone else.\"",
+  "ja": "ナスタチウムの入ったコンクリートの箱。縁に鉛筆で「当番制：偶数日は二番目のキューブ、奇数日はほかの全員」。"
+ },
+ "city.cu.planter.rain": {
+  "ru": "Дождь поливает настурции сам. Кто-то приписал на бортике: «Сегодня выходной».",
+  "en": "The rain waters the nasturtiums itself. Someone has added on the rim: \"Day off today.\"",
+  "ja": "雨がナスタチウムに水をやっている。縁には誰かが「今日はお休み」と書き足した。"
+ },
+ "city.cu.planter.snow": {
+  "ru": "В ящике под снегом торчат сухие стебли. На бортике: «Не трогать, они спят».",
+  "en": "Dry stems stick out of the snow in the trough. On the rim: \"Do not touch, they are asleep.\"",
+  "ja": "箱の雪から枯れた茎が突き出している。縁には「さわらないで、眠っているから」。"
+ },
+ "city.cu.p.deckview": {
+  "ru": "E — облокотиться на перила",
+  "en": "E — lean on the rail",
+  "ja": "E：手すりにもたれる"
+ },
+ "city.cu.deckview.d": {
+  "ru": "Отсюда видна улица под палубой: остановка, крыши ларьков, прохожие, похожие на фигурки с макета.",
+  "en": "From here you see the street below the deck: the bus stop, kiosk roofs, passers-by like figures from a model.",
+  "ja": "ここからはデッキの下の通りが見える。バス停、売店の屋根、模型の人形のような通行人。"
+ },
+ "city.cu.deckview.n": {
+  "ru": "Внизу улица в фонарях. Перила холодные, а откуда-то сверху, из куба, пахнет чаем.",
+  "en": "The street below is full of lamps. The rail is cold and from somewhere above, from a cube, comes the smell of tea.",
+  "ja": "下の通りは街灯でいっぱい。手すりは冷たく、頭上のキューブのどこかからお茶のにおいがする。"
+ },
+ "city.cu.deckview.rain": {
+  "ru": "Дождь течёт с краёв палубы и висит бахромой над улицей. Внизу под зонтиками тесно.",
+  "en": "Rain runs off the deck's edges and hangs in a fringe above the street. It is crowded under the umbrellas below.",
+  "ja": "雨がデッキの縁から流れ落ち、通りの上に房になって垂れている。下は傘の下で混み合っている。"
+ },
+ "city.cu.p.sky": {
+  "ru": "E — посмотреть в стекло над кроватью",
+  "en": "E — look up through the glass over the bed",
+  "ja": "E：ベッドの上のガラスを見上げる"
+ },
+ "city.cu.sky.d1": {
+  "ru": "Скошенное стекло над кроватью занимает почти весь скат. Облака идут по нему, как по экрану.",
+  "en": "The sloping glass over the bed takes up most of the slope. Clouds cross it as if on a screen.",
+  "ja": "ベッドの上の斜めのガラスは屋根の斜面のほとんどを占めている。雲がスクリーンのように流れていく。"
+ },
+ "city.cu.sky.d2": {
+  "ru": "Днём стекло тёплое от солнца. На нём следы птичьих лап: чайка, наверное. Или голубь, очень уверенный в себе.",
+  "en": "By day the glass is warm from the sun. It has bird footprints: a gull, probably. Or a very confident pigeon.",
+  "ja": "昼、ガラスは日差しで温かい。鳥の足跡がついている。カモメだろう。それとも、ひどく自信たっぷりのハトか。"
+ },
+ "city.cu.sky.n1": {
+  "ru": "Ночью по стеклу идут звёзды. Если лежать неподвижно, видно, как медленно поворачивается небо.",
+  "en": "At night the stars cross the glass. If you lie still you can see the sky slowly turn.",
+  "ja": "夜、ガラスを星が渡っていく。じっと横になっていると、空がゆっくり回るのが分かる。"
+ },
+ "city.cu.sky.n2": {
+  "ru": "В стекле отражается лампа, а за лампой звёзды. Чтобы разглядеть их как следует, лампу надо погасить.",
+  "en": "The lamp is reflected in the glass, and behind it the stars. To see them properly, switch the lamp off.",
+  "ja": "ガラスには灯りが映り、その向こうに星がある。ちゃんと見るには灯りを消さなくてはならない。"
+ },
+ "city.cu.sky.rain": {
+  "ru": "Дождь по стеклу над головой: каждая капля бежит вниз наискосок, сливается с другой, исчезает в раме.",
+  "en": "Rain on the glass overhead: every drop runs down aslant, merges with another, vanishes into the frame.",
+  "ja": "頭の上のガラスに雨。一粒ずつ斜めに流れ、別の粒と合わさって枠の中へ消えていく。"
+ },
+ "city.cu.sky.snow": {
+  "ru": "Снег лёг на стекло: в верхушке куба сине-белый полумрак, тихо, как в палатке.",
+  "en": "Snow has settled on the glass: the tip of the cube is in blue-white half-dark, quiet as a tent.",
+  "ja": "ガラスに雪が積もり、キューブのてっぺんは青白い薄暗がりで、テントの中のように静かだ。"
+ },
+ "city.cu.sky.fog": {
+  "ru": "Туман: за стеклом только белое. Потолок будто из молока.",
+  "en": "Fog: only white behind the glass. The ceiling seems made of milk.",
+  "ja": "霧。ガラスの向こうは真っ白で、天井が牛乳でできているみたいだ。"
+ },
+ "city.cu.sky.stars": {
+  "ru": "Ясная ночь: звёзды по всему стеклу, Млечный Путь прямо над подушкой. Хочется не моргать.",
+  "en": "A clear night: stars across the whole glass, the Milky Way right over the pillow. You want not to blink.",
+  "ja": "晴れた夜。ガラス一面の星、枕の真上に天の川。まばたきしたくなくなる。"
+ },
+ "city.cu.water.rain": {
+  "ru": "За стеклом дождь, а в горшках сухо: крыша сюда воду не пускает. Поливаешь за дождь.",
+  "en": "Rain outside, yet the pots are dry: the roof does not let water in. You water on the rain's behalf.",
+  "ja": "ガラスの外は雨なのに鉢は乾いている。屋根は水を通さない。雨の代わりに水をやる。"
+ },
+ "city.cu.water.clear": {
+  "ru": "Солнце бьёт в стёкла, земля горячая и пьёт мгновенно, только булькает.",
+  "en": "The sun beats on the glass, the soil is hot and drinks at once, just gurgling.",
+  "ja": "日差しがガラスを打ち、土は熱くて、ごぼごぼ言いながらすぐに水を飲む。"
+ },
+ "city.cu.p.fridge": {
+  "ru": "E — прочесть записки на холодильнике",
+  "en": "E — read the notes on the fridge",
+  "ja": "E：冷蔵庫のメモを読む"
+ },
+ "city.coll.cube_homes.title": {
+  "ru": "Дома-кубы",
+  "en": "The cube homes",
+  "ja": "キューブの暮らし"
+ },
+ "city.t1.p.slate": {
+  "ru": "E — прочесть дощечку у лифта",
+  "en": "E — read the slate by the lift",
+  "ja": "E：エレベーター脇の黒板を読む"
+ },
+ "city.t1.slate.work": {
+  "ru": "Грифельная дощечка у лифта: «Х. и Г. на работе до четырёх. Почту — в ящик, посылки — Айле».",
+  "en": "The slate by the lift: \"H. and G. at work until four. Post in the box, parcels to Isla.\"",
+  "ja": "エレベーター脇の黒板。「HとGは四時まで仕事。郵便は箱へ、荷物はアイラへ」。"
+ },
+ "city.t1.slate.eve": {
+  "ru": "Дощечка: «Мы дома. Кому надо — вызывайте лифт один раз, он поймёт. Синяя жестянка — чай».",
+  "en": "The slate: \"We are home. Whoever needs us, call the lift once, it understands. The blue tin is tea.\"",
+  "ja": "黒板。「在宅中。用のある人はエレベーターを一回呼んで、通じるから。青い缶はお茶」。"
+ },
+ "city.t1.slate.night": {
+  "ru": "Дощечка: «Тихо! Х. спит внизу, Г. — наверху, под небом. Лифт скрипит, не пугайтесь».",
+  "en": "The slate: \"Quiet! H. sleeps downstairs, G. upstairs, under the sky. The lift creaks, do not be alarmed.\"",
+  "ja": "黒板。「静かに！Hは下で、Gは上で空の下で寝ています。エレベーターはきしむけれど驚かないで」。"
+ },
+ "city.t1.slate.week": {
+  "ru": "Дощечка: «Выходные. Х. — в клубе, Г. — на озёрах, ключ у Айлы. Теплицу поливать!!»",
+  "en": "The slate: \"Weekend. H. at the club, G. at the lakes, key with Isla. Water the greenhouse!!\"",
+  "ja": "黒板。「週末。Hはクラブ、Gは湖、鍵はアイラに。温室に水を！！」"
+ },
+ "city.t1.slate.cube": {
+  "ru": "На дощечке нарисован кубик, стоящий на углу, и подпись: «Дом, который не падает».",
+  "en": "On the slate a cube is drawn standing on its corner, captioned: \"The house that does not fall.\"",
+  "ja": "黒板には角で立つ立方体の絵と、「倒れない家」の文字。"
+ },
+ "city.t1.slate.note": {
+  "ru": "Внизу приписано другим почерком: «Ген, ты опять оставил лампу над перцем!» Ниже: «Она там для перца!!»",
+  "en": "Below, in another hand: \"Gen, you left the lamp over the peppers on again!\" Under it: \"It is there FOR the peppers!!\"",
+  "ja": "下に別の筆跡で「ゲン、またトウガラシの上のランプつけっぱなし！」その下に「トウガラシのためにあるんだ！！」"
+ },
+ "city.t1.p.shoes": {
+  "ru": "E — глянуть на обувь",
+  "en": "E — look at the shoes",
+  "ja": "E：靴を見る"
+ },
+ "city.t1.shoes.1": {
+  "ru": "Кроссовки Гена и ботинки Хокона стоят парами: у Гена подошвы в сосновой хвое, у Хокона — в песке.",
+  "en": "Gennady's trainers and Håkon's boots stand in pairs: Gennady's soles carry pine needles, Håkon's carry sand.",
+  "ja": "ゲンナジーのスニーカーとホーコンのブーツが並んで置いてある。ゲンナジーの靴底には松葉、ホーコンの靴底には砂。"
+ },
+ "city.t1.shoes.wet": {
+  "ru": "Сегодня у обеих пар подошвы мокрые: под стойкой лужица. Один ботинок поставлен на газету, второй — нет.",
+  "en": "Both pairs have wet soles today, a small puddle under the rack. One boot stands on a newspaper, the other does not.",
+  "ja": "今日はどちらの靴底も濡れていて、棚の下に小さな水たまり。ブーツの片方は新聞紙の上、もう片方は違う。"
+ },
+ "city.t1.shoes.snow": {
+  "ru": "На подошвах тает снег. Хокон поставил обувь на решётку, Ген — на газету; решётка, кажется, выигрывает.",
+  "en": "Snow melts on the soles. Håkon put his boots on the grate, Gennady his on a newspaper; the grate seems to be winning.",
+  "ja": "靴底で雪が溶けている。ホーコンは簀の子に、ゲンナジーは新聞紙の上に靴を置いた。簀の子の勝ちらしい。"
+ },
+ "city.t1.p.hooks": {
+  "ru": "E — глянуть на вешалку",
+  "en": "E — look at the coat stand",
+  "ja": "E：コート掛けを見る"
+ },
+ "city.t1.hooks.day": {
+  "ru": "Вешалка почти пустая: куртки Хокона и Гена ушли вместе с хозяевами. Остались шарф и зонт.",
+  "en": "The stand is nearly empty: Håkon's and Gennady's jackets went out with their owners. A scarf and an umbrella remain.",
+  "ja": "コート掛けはほとんど空だ。ホーコンとゲンナジーの上着は持ち主と出かけた。マフラーと傘だけが残っている。"
+ },
+ "city.t1.hooks.eve": {
+  "ru": "Куртки на крючках; из кармана Гена торчат пакетик семян и огрызок карандаша.",
+  "en": "The jackets hang on their hooks; a seed packet and a pencil stub stick out of Gennady's pocket.",
+  "ja": "上着は掛け金にかかり、ゲンナジーのポケットから種の袋とちびた鉛筆がのぞいている。"
+ },
+ "city.t1.hooks.night": {
+  "ru": "Куртки спят на крючках, шарф свесил рукав до самого пола.",
+  "en": "The jackets sleep on their hooks, the scarf's sleeve hanging to the floor.",
+  "ja": "上着は掛け金で眠り、マフラーの端が床まで垂れている。"
+ },
+ "city.t1.fridge.0": {
+  "ru": "На холодильнике записки на магнитах. Хокон: «Ген, у плиты опять твой горшок. Это кухня, не оранжерея». Ген ниже: «Оранжерея наверху. А это гостевой горшок».",
+  "en": "Notes on magnets on the fridge. Håkon: \"Gen, your pot by the stove again. This is a kitchen, not a greenhouse.\" Gennady below: \"The greenhouse is upstairs. This is a guest pot.\"",
+  "ja": "冷蔵庫にマグネットでメモ。ホーコン「ゲン、またコンロの横にお前の鉢。ここは台所で温室じゃない」。ゲンナジーが下に「温室は上。これはお客さん用の鉢」。"
+ },
+ "city.t1.fridge.1": {
+  "ru": "Ген: «Перец проклюнулся: три из шести! Наверху не топать». Хокон: «Я не топаю, я хожу. Поздравляю».",
+  "en": "Gennady: \"The peppers have sprouted: three out of six! No stamping upstairs.\" Håkon: \"I don't stamp, I walk. Congratulations.\"",
+  "ja": "ゲンナジー「トウガラシが芽を出した、六つのうち三つ！上では足を踏み鳴らさないこと」。ホーコン「踏み鳴らしてない、歩いてるだけ。おめでとう」。"
+ },
+ "city.t1.fridge.2": {
+  "ru": "Хокон: «Молоко кончилось. Я купил, но ты всё равно виноват». Ген: «В чём?» Хокон: «Придумаю».",
+  "en": "Håkon: \"The milk is gone. I bought more, but it is still your fault.\" Gennady: \"What for?\" Håkon: \"I will think of something.\"",
+  "ja": "ホーコン「牛乳が切れてた。買ってきたけど、やっぱりお前のせい」。ゲンナジー「何の？」ホーコン「これから考える」。"
+ },
+ "city.t1.fridge.3": {
+  "ru": "Ген: «В субботу едем с Айлой на озёра. Теплицу поливать утром и вечером, не больше стакана на горшок!» Хокон: «Помню. Лейка у кактуса».",
+  "en": "Gennady: \"Saturday Isla and I go to the lakes. Water the greenhouse morning and evening, no more than a glass per pot!\" Håkon: \"I remember. The can is by the cactus.\"",
+  "ja": "ゲンナジー「土曜はアイラと湖へ。温室には朝と晩に水を、鉢ひとつにコップ一杯まで！」ホーコン「覚えてる。じょうろはサボテンの横」。"
+ },
+ "city.t1.fridge.4": {
+  "ru": "Хокон: «Ген, я забыл полить в четверг. Всё живо, кажется». Ген: «ХОКОН». Хокон: «Я полил в пятницу вдвойне». Ген: «ХОКОН!!»",
+  "en": "Håkon: \"Gen, I forgot to water on Thursday. Everything seems alive.\" Gennady: \"HOKON.\" Håkon: \"I watered double on Friday.\" Gennady: \"HOKON!!\"",
+  "ja": "ホーコン「ゲン、木曜に水やるの忘れた。みんな生きてるみたい」。ゲンナジー「ホーコン」。ホーコン「金曜に倍やった」。ゲンナジー「ホーコン！！」"
+ },
+ "city.t1.fridge.5": {
+  "ru": "Свежий листок почерком Хокона: «Если ты тот, кто сидит на скамейке под нашими кубами и смотрит вверх, — поднимись. Лейка у кактуса, чай в синей жестянке. Х.»",
+  "en": "A fresh sheet in Håkon's hand: \"If you are the one who sits on the bench under our cubes looking up, come up. The can is by the cactus, the tea in the blue tin. H.\"",
+  "ja": "ホーコンの字の新しい紙。「うちのキューブの下のベンチに座って見上げているのが君なら、上がっておいで。じょうろはサボテンの横、お茶は青い缶。H」。"
+ },
+ "city.t1.fridge.6": {
+  "ru": "Ген: «Первый перец покраснел! Один. Хокон не получит, пока не извинится за четверг».",
+  "en": "Gennady: \"The first pepper has turned red! Just one. Håkon does not get it until he apologises for Thursday.\"",
+  "ja": "ゲンナジー「最初のトウガラシが赤くなった！ひとつだけ。ホーコンは木曜のことを謝るまでもらえない」。"
+ },
+ "city.t1.fridge.7": {
+  "ru": "Хокон: «Извиняюсь за четверг. Ген, я принёс тебе семян. Не перца. Но почти». Ген: «Принято. Половина перца твоя».",
+  "en": "Håkon: \"Sorry about Thursday. Gen, I brought you seeds. Not peppers. Almost.\" Gennady: \"Accepted. Half the pepper is yours.\"",
+  "ja": "ホーコン「木曜はごめん。ゲン、種を買ってきた。トウガラシじゃないけど、ほぼ」。ゲンナジー「了解。トウガラシは半分やる」。"
+ },
+ "city.t1.fridge.f": {
+  "ru": "На холодильнике магнит-осьминог держит список: «молоко, молоко, перец (острый), лампочка».",
+  "en": "A magnet octopus on the fridge holds a list: \"milk, milk, pepper (hot), lightbulb.\"",
+  "ja": "冷蔵庫のタコのマグネットがリストを押さえている。「牛乳、牛乳、トウガラシ（辛いの）、電球」。"
+ },
+ "city.t1.p.arcade": {
+  "ru": "E — сыграть на автомате Гена",
+  "en": "E — play Gennady's arcade cabinet",
+  "ja": "E：ゲンナジーのアーケード機で遊ぶ"
+ },
+ "city.t1.arcade.d": {
+  "ru": "Автомат Гена стоит в углу гостиной: он вытащил из него монетоприёмник, чтобы играть бесплатно. На табло рекорд «ГЛ — 41 200», ниже карандашом: «ХК — 41 190».",
+  "en": "Gennady's cabinet stands in the corner of the living room; he took the coin slot out so it plays for free. The record reads \"GL 41,200\", and below in pencil: \"HK 41,190\".",
+  "ja": "ゲンナジーのアーケード機はリビングの隅にある。コイン投入口を外して無料で遊べるようにしてある。記録は「GL 41,200」、その下に鉛筆で「HK 41,190」。"
+ },
+ "city.t1.arcade.n": {
+  "ru": "Ночью автомат тихо перемигивается в углу. На табло демо-режим, но на кнопках в пыли чьи-то отпечатки пальцев.",
+  "en": "At night the cabinet blinks quietly in its corner. The demo runs, but someone has left fingerprints in the dust on the buttons.",
+  "ja": "夜、アーケード機は隅で静かに瞬いている。画面はデモ中だが、ボタンの埃には誰かの指の跡が残っている。"
+ },
+ "city.t1.p.games": {
+  "ru": "E — перебрать коробки с играми",
+  "en": "E — go through the game boxes",
+  "ja": "E：ゲームの箱をあさる"
+ },
+ "city.t1.games.1": {
+  "ru": "Коробки: «Морской бой», шашки, домино, шахматы без одной ладьи. Вместо ладьи — пробка от шампанского с нарисованной башней.",
+  "en": "Boxes: Battleships, draughts, dominoes, chess with one rook missing. In its place a champagne cork with a tower drawn on it.",
+  "ja": "箱の中身は海戦ゲーム、チェッカー、ドミノ、ルークが一つ欠けたチェス。代わりにシャンパンのコルクに塔の絵。"
+ },
+ "city.t1.games.2": {
+  "ru": "Правила игр лежат отдельно, в конверте с надписью «чтобы Хокон не спорил». Конверт заметно потёртый.",
+  "en": "The rules of the games lie apart in an envelope marked \"so Håkon stops arguing\". The envelope is visibly worn.",
+  "ja": "ゲームのルールは別に封筒に入っていて、「ホーコンが言い争わないように」と書いてある。封筒はだいぶすり切れている。"
+ },
+ "city.t1.p.photos": {
+  "ru": "E — рассмотреть фотографии на полке",
+  "en": "E — look at the photos on the shelf",
+  "ja": "E：棚の写真を見る"
+ },
+ "city.t1.photos.1": {
+  "ru": "На полке фотографии: Хокон с сестрой на фоне фьорда; Ген в палатке, красный от мороза; Айла с рюкзаком показывает язык фотографу.",
+  "en": "Photos on the shelf: Håkon with his sister before a fjord; Gennady in a tent, red with frost; Isla with a backpack, sticking her tongue out at the photographer.",
+  "ja": "棚には写真。フィヨルドを背にしたホーコンと姉、凍えて赤い顔でテントにいるゲンナジー、リュックを背負ってカメラに舌を出すアイラ。"
+ },
+ "city.t1.photos.2": {
+  "ru": "Ещё снимок: оба на палубе под кубами в день, когда въехали. Подпись: «Сюда. Навсегда. Наверное».",
+  "en": "Another picture: both on the deck under the cubes on the day they moved in. Caption: \"Here. Forever. Probably.\"",
+  "ja": "もう一枚、引っ越しの日にキューブの下のデッキに立つ二人。キャプション「ここ。ずっと。たぶん」。"
+ },
+ "city.t1.p.postcards": {
+  "ru": "E — полистать открытки на полке",
+  "en": "E — leaf through the postcards on the shelf",
+  "ja": "E：棚の絵はがきをめくる"
+ },
+ "city.t1.post.title": {
+  "ru": "Открытки Сири",
+  "en": "Siri's postcards",
+  "ja": "シーリの絵はがき"
+ },
+ "city.t1.post.1": {
+  "ru": "Открытка с видом на бергенскую гавань. «Хокон, как твой куб? Мама спрашивает, не страшно ли жить на ребре. Я сказала: ему не страшно, он боится только лифта. Целую, Сири».",
+  "en": "A postcard of Bergen harbour. \"Håkon, how is your cube? Mum asks whether it is scary to live on an edge. I said: he isn't scared, only of the lift. Love, Siri.\"",
+  "ja": "ベルゲンの港の絵はがき。「ホーコン、キューブはどう？お母さんが、角の上で暮らすのは怖くないかって。怖いのはエレベーターだけって答えといた。シーリ」。"
+ },
+ "city.t1.post.2": {
+  "ru": "Вторая открытка, с рыбным рынком. «Посылаю тебе селёдку (то есть картинку). Приеду в июне, пришли мне фото неба из окошка на крыше. Сири».",
+  "en": "A second one, of the fish market. \"Sending you a herring (that is, a picture). I'm coming in June; send me a photo of the sky from the window in the roof. Siri.\"",
+  "ja": "魚市場の二枚目。「ニシンを送ります（絵だけど）。六月に行くから、屋根の窓から見た空の写真を送って。シーリ」。"
+ },
+ "city.t1.post.3": {
+  "ru": "«Хокон, ты так и не написал, как зовут твоего соседа по квартире. Мама боится, что он художник. Я сказала: садовник. Сири».",
+  "en": "\"Håkon, you still haven't written what your flatmate is called. Mum is afraid he is an artist. I said: a gardener. Siri.\"",
+  "ja": "「ホーコン、同居人の名前をまだ書いてないよ。お母さんは画家じゃないかと心配してる。庭師だって答えた。シーリ」。"
+ },
+ "city.t1.post.4": {
+  "ru": "«Спасибо за фото. Небо у вас какое-то огромное. Приеду в июне. И не забывай поливать то, что тебе оставили. Сири».",
+  "en": "\"Thanks for the photo. Your sky is somehow huge. I'm coming in June. And do not forget to water what they left you. Siri.\"",
+  "ja": "「写真ありがとう。そっちの空はやけに大きいね。六月に行く。預かった植物に水をやるのを忘れないで。シーリ」。"
+ },
+ "city.t1.p.garden": {
+  "ru": "E — открыть дневник теплицы",
+  "en": "E — open the greenhouse diary",
+  "ja": "E：温室の日記を開く"
+ },
+ "city.t1.diary.title": {
+  "ru": "Дневник теплицы",
+  "en": "The greenhouse diary",
+  "ja": "温室の日記"
+ },
+ "city.t1.diary.1": {
+  "ru": "День 1. Шесть семян острого перца «Балтийский огонёк» в тёплую землю. Посадил наверху: свет сразу с двух сторон, как в настоящей теплице. Хокон сказал, что перец с пола не растёт. Растёт.",
+  "en": "Day 1. Six seeds of the hot pepper \"Baltic Flame\" into warm soil. Planted upstairs: light from both sides at once, like a real greenhouse. Håkon said peppers do not grow from the floor. They do.",
+  "ja": "一日目。辛いトウガラシ「バルトの炎」の種を六粒、あたたかい土に。上に植えた。両側から光が入る、本物の温室みたいに。ホーコンは床からトウガラシは育たないと言ったが、育つ。"
+ },
+ "city.t1.diary.2": {
+  "ru": "День 3. Три из шести проклюнулись. Остальные — дело времени. Самого сильного назвал Генералом. Хокон: «А я?» — «Ты — почва».",
+  "en": "Day 3. Three out of six have sprouted. The rest is a matter of time. I named the strongest the General. Håkon: \"And me?\" \"You are the soil.\"",
+  "ja": "三日目。六つのうち三つが芽を出した。残りは時間の問題。いちばん強いのを「将軍」と名づけた。ホーコン「じゃあ俺は？」「お前は土だ」。"
+ },
+ "city.t1.diary.3": {
+  "ru": "День 5. Лампу над грядкой оставил на ночь: ростки всю ночь тянулись к ней, а утром стояли как по команде. Окно в крыше открывать нельзя: ветер.",
+  "en": "Day 5. Left the lamp over the bed on overnight: the sprouts leaned toward it all night and in the morning stood as if on parade. The roof window must stay shut: wind.",
+  "ja": "五日目。苗床の上のランプをつけたままにした。苗は一晩中ランプのほうへ伸び、朝には号令でもかかったように立っていた。屋根の窓は開けられない。風が入る。"
+ },
+ "city.t1.diary.4": {
+  "ru": "День 8. Пересадил. Первый настоящий лист. Показал Айле, она сказала «ой». Лучшая рецензия на свете.",
+  "en": "Day 8. Repotted. The first true leaf. Showed it to Isla, she said \"oh\". The best review in the world.",
+  "ja": "八日目。植え替えた。最初の本葉。アイラに見せたら「わあ」と言った。世界最高の批評だ。"
+ },
+ "city.t1.diary.5": {
+  "ru": "День 11. Цветки! Белые, пять лепестков. Хокон смотрел сквозь стекло с таким лицом, будто это он их вырастил. Не буду разубеждать.",
+  "en": "Day 11. Flowers! White, five petals. Håkon looked at them through the glass with a face as if he had grown them himself. I will not argue.",
+  "ja": "十一日目。花が咲いた！白くて花びらは五枚。ホーコンはガラス越しに、自分が育てたような顔で眺めていた。否定はしないでおく。"
+ },
+ "city.t1.diary.6": {
+  "ru": "День 15. Первый плод позеленел. Если ты читаешь это, значит, ты поливал, пока нас не было. Спасибо. Возьми семян из жестянки: я выращу ещё. Г.",
+  "en": "Day 15. The first fruit has turned green. If you are reading this, you watered while we were away. Thank you. Take some seeds from the tin; I will grow more. G.",
+  "ja": "十五日目。最初の実が緑になった。これを読んでいるなら、留守のあいだ水をやってくれたということ。ありがとう。缶から種をひとつどうぞ。また育てるから。G。"
+ },
+ "city.t1.p.trays": {
+  "ru": "E — заглянуть в лотки с рассадой",
+  "en": "E — look at the seed trays",
+  "ja": "E：苗の箱をのぞく"
+ },
+ "city.t1.trays.0": {
+  "ru": "Лоток с рассадой: шесть лунок, в трёх зелёные петельки ростков. У самого высокого воткнута табличка «Генерал».",
+  "en": "A seed tray: six hollows, three with green loops of sprouts. The tallest has a stick label reading \"General\".",
+  "ja": "苗の箱。穴は六つ、三つに緑の芽の輪。いちばん高い芽には「将軍」と書いた札が立っている。"
+ },
+ "city.t1.trays.1": {
+  "ru": "Рассада подросла: в каждой лунке настоящие листья, «Генерал» уже выше таблички и смотрит на остальных сверху вниз.",
+  "en": "The seedlings have grown: true leaves in every hollow; the General is already taller than his label and looks down on the rest.",
+  "ja": "苗は大きくなり、どの穴にも本葉がある。「将軍」はもう札より高く、ほかを見下ろしている。"
+ },
+ "city.t1.trays.2": {
+  "ru": "Лотки опустели: рассаду пересадили в горшки у окна. Остались таблички и один забытый росток в углу — безымянный, но живой.",
+  "en": "The trays are empty: the seedlings moved to pots by the window. The labels remain and one forgotten sprout in the corner, unnamed but alive.",
+  "ja": "箱は空になり、苗は窓辺の鉢へ移された。札と、隅に忘れられた名前のない芽がひとつ、元気に残っている。"
+ },
+ "city.t1.p.water": {
+  "ru": "E — полить теплицу",
+  "en": "E — water the greenhouse",
+  "ja": "E：温室に水をやる"
+ },
+ "city.t1.water.1": {
+  "ru": "Стакан на горшок, как просил Ген: перец, рассада, кактус (ему — полстакана). Земля пахнет дождём и охотно пьёт.",
+  "en": "A glass per pot, as Gennady asked: peppers, seedlings, the cactus (half a glass for him). The soil smells of rain and drinks willingly.",
+  "ja": "ゲンナジーに頼まれたとおり、鉢ひとつにコップ一杯。トウガラシ、苗、サボテン（これは半分）。土は雨のにおいがして、進んで水を飲む。"
+ },
+ "city.t1.p.sky": {
+  "ru": "E — посмотреть в стекло над кроватью",
+  "en": "E — look up through the glass over the bed",
+  "ja": "E：ベッドの上のガラスを見上げる"
+ },
+ "city.t1.sky.1": {
+  "ru": "Над подушкой лежит атлас созвездий. Закладка — на Орионе: «чтобы знать, как кого зовут».",
+  "en": "An atlas of constellations lies on the pillow, a bookmark at Orion: \"to know who is who\".",
+  "ja": "枕の上に星座の本。しおりはオリオンのページで、「誰が誰か分かるように」。"
+ },
+ "city.t1.p.tipshelf": {
+  "ru": "E — просмотреть полочку",
+  "en": "E — look over the little shelf",
+  "ja": "E：小さな棚を見る"
+ },
+ "city.t1.tipshelf.1": {
+  "ru": "Полочка: атлас звёзд, книжка про горные цветы и глобус с вмятиной на Африке: «упал, но держался молодцом».",
+  "en": "The little shelf: a star atlas, a book about alpine flowers and a globe with a dent in Africa: \"fell, but held up well\".",
+  "ja": "小さな棚。星の本、高山植物の本、アフリカがへこんだ地球儀。「落ちたけど、よくがんばった」。"
+ },
+ "city.t1.tipshelf.2": {
+  "ru": "Между книг торчит закладка из пакетика семян. На пакетике: «посеять, когда Хокон перестанет спорить».",
+  "en": "A seed packet sticks out between the books as a bookmark. On it: \"sow when Håkon stops arguing\".",
+  "ja": "本のあいだに種の袋がしおり代わりに挟まっている。「ホーコンが言い争わなくなったら蒔くこと」。"
+ },
+ "city.t1.p.sleep": {
+  "ru": "E — лечь под небо",
+  "en": "E — lie down under the sky",
+  "ja": "E：空の下に横になる"
+ },
+ "city.t1.sleep.1": {
+  "ru": "На подушке записка: «Если кто-то из соседей устал — ложись, не стесняйся. Г.» Матрас под самой крышей пахнет тёплым деревом.",
+  "en": "A note on the pillow: \"If a neighbour is tired, lie down, don't be shy. G.\" The mattress under the roof smells of warm wood.",
+  "ja": "枕にメモ。「ご近所さんが疲れていたら、遠慮せずに横になって。G」。屋根の下のマットレスはあたたかい木のにおいがする。"
+ },
+ "city.t1.sleep.2": {
+  "ru": "Над лицом наклонное стекло, по нему идёт небо. Засыпаешь, пока считаешь, сколько облаков помещается в раму.",
+  "en": "Over your face is the sloping glass and the sky moves across it. You fall asleep counting how many clouds fit into the frame.",
+  "ja": "顔の上には斜めのガラスがあり、空が流れていく。枠に雲がいくつ入るか数えるうちに眠ってしまう。"
+ },
+ "city.t1.sleep.3": {
+  "ru": "Лифт внизу скрипит и затихает. Где-то в кубе тикают часы. Ты просыпаешься отдохнувшим, и на стекле лежит пятно утреннего солнца.",
+  "en": "The lift creaks below and goes quiet. Somewhere in the cube a clock ticks. You wake rested, and on the glass lies a patch of morning sun.",
+  "ja": "下でエレベーターがきしんで静かになる。キューブのどこかで時計が鳴る。すっきり目覚めると、ガラスに朝日のしみが落ちている。"
+ },
+ "city.t1.p.deckboard": {
+  "ru": "E — прочесть объявления на стенде",
+  "en": "E — read the notices on the stand",
+  "ja": "E：スタンドのお知らせを読む"
+ },
+ "city.t1.deckboard.0": {
+  "ru": "Объявление: «Шахматный столик свободен каждый день, кроме вторника, когда он занят всегда».",
+  "en": "Notice: \"The chess table is free every day except Tuesday, when it is always taken.\"",
+  "ja": "お知らせ。「チェス卓は毎日空いています。ただし火曜日は、いつも埋まっています」。"
+ },
+ "city.t1.deckboard.1": {
+  "ru": "Объявление от руки: «Второй куб (дом 0-02) ищет садовода на выходные. Заходить через нишу, лифт один. Чай в синей жестянке».",
+  "en": "A handwritten notice: \"The second cube (house 0-02) seeks a gardener for the weekend. Come in by the niche, there is one lift. Tea in the blue tin.\"",
+  "ja": "手書きのお知らせ。「二番目のキューブ（0-02号）では、週末に園芸係を募集中。入口は壁のくぼみ、エレベーターは一基。お茶は青い缶」。"
+ },
+ "city.t1.deckboard.2": {
+  "ru": "Листок от кружка: «Клуб над палубой принимает любителей домино. Лёгкий вход, тяжёлый выход».",
+  "en": "A note from a circle: \"The club above the deck welcomes domino players. Easy to enter, hard to leave.\"",
+  "ja": "サークルの紙。「デッキの上のクラブはドミノ好きを歓迎。入るのは簡単、出るのは難しい」。"
+ },
+ "city.t1.deckboard.3": {
+  "ru": "Объявление: «Нашёлся зонт, синий, с одной погнутой спицей. Хозяин, заберите у Айлы, если застанете её дома».",
+  "en": "Notice: \"A blue umbrella with one bent spoke has been found. Owner, collect it from Isla, if you can catch her in.\"",
+  "ja": "お知らせ。「青い傘、骨が一本曲がっているものが見つかりました。持ち主の方は、アイラが在宅のときに取りに来てください」。"
+ },
+ "city.t1.deckboard.4": {
+  "ru": "Записка на скотче: «Пирог испёк Ген. Пирог съел Хокон. Это справедливо».",
+  "en": "A note on sticky tape: \"The pie was baked by Gennady. The pie was eaten by Håkon. This is just.\"",
+  "ja": "テープで貼ったメモ。「パイを焼いたのはゲンナジー。食べたのはホーコン。公平だ」。"
+ },
+ "quest.home_cube_a.title": {
+  "ru": "Теплица на верхушке",
+  "en": "A greenhouse in the tip",
+  "ja": "てっぺんの温室"
+ },
+ "quest.home_cube_a.desc": {
+  "ru": "На стенде палубы висит объявление: второму кубу нужен садовод на выходные. Вход в нише у ножки куба, там маленький лифт; наверху у Гена теплица с перцем.",
+  "en": "A notice on the deck's stand says the second cube needs a gardener for the weekend. The way in is the niche at the cube's foot with a tiny lift; upstairs Gennady keeps a greenhouse of peppers.",
+  "ja": "デッキのスタンドに、二番目のキューブが週末の園芸係を探しているというお知らせが貼ってある。入口はキューブの足元のくぼみで、小さなエレベーターがあり、上でゲンナジーがトウガラシの温室を育てている。"
+ },
+ "quest.home_cube_a.done": {
+  "ru": "Ген вернулся с озёр загорелый и первым делом поднялся к грядке. Потом спустился, заварил мне чаю и молча положил рядом два пакетика семян. На одном: «Осторожно: честно острое».",
+  "en": "Gennady came back from the lakes tanned and went straight up to the bed. Then he came down, made me some tea and silently put two packets of seeds beside it. On one: \"Careful: honestly hot.\"",
+  "ja": "ゲンナジーは日焼けして湖から戻り、まず苗床へ上がっていった。それから降りてきて、僕にお茶をいれ、黙って種の袋を二つ添えた。一つには「注意：本当に辛い」。"
+ },
+ "quest.home_cube_a.note.log": {
+  "ru": "Записки на холодильнике второго куба объясняют, что надо делать. Лифт — в прихожей у ножки куба.",
+  "en": "The notes on the fridge of the second cube explain what to do. The lift is in the hall at the foot of the cube.",
+  "ja": "二番目のキューブの冷蔵庫のメモに、何をすればいいか書いてある。エレベーターは足元の玄関ホールにある。"
+ },
+ "quest.home_cube_a.note.obj": {
+  "ru": "Прочесть записки на холодильнике в кубе",
+  "en": "Read the notes on the fridge in the cube",
+  "ja": "キューブの冷蔵庫のメモを読む"
+ },
+ "quest.home_cube_a.water.log": {
+  "ru": "Лейка у кактуса, наверху. Стакан на горшок, не больше.",
+  "en": "The can is by the cactus, upstairs. A glass per pot, no more.",
+  "ja": "じょうろは上のサボテンの横。鉢ひとつにコップ一杯まで。"
+ },
+ "quest.home_cube_a.water.obj": {
+  "ru": "Полить теплицу на верхушке",
+  "en": "Water the greenhouse in the tip",
+  "ja": "てっぺんの温室に水をやる"
+ },
+ "quest.home_cube_a.diary.log": {
+  "ru": "Дневник теплицы лежит у грядки: Ген, похоже, ждёт, что его прочтут.",
+  "en": "The greenhouse diary lies by the bed; Gennady seems to expect it to be read.",
+  "ja": "温室の日記は苗床のそばにある。ゲンナジーは読まれるのを待っているようだ。"
+ },
+ "quest.home_cube_a.diary.obj": {
+  "ru": "Прочесть дневник теплицы",
+  "en": "Read the greenhouse diary",
+  "ja": "温室の日記を読む"
+ }
+}

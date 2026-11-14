@@ -1,0 +1,1587 @@
+{
+ "city.xh.prog.prompt": {
+  "ru": "E — прочитать афишу вечеров",
+  "en": "E — read the programme of evenings",
+  "ja": "E：夜の催しの予定を読む"
+ },
+ "city.xh.case.prompt": {
+  "ru": "E — заглянуть в витрину",
+  "en": "E — look into the display case",
+  "ja": "E：ショーケースをのぞく"
+ },
+ "city.xh.guest.prompt": {
+  "ru": "E — полистать книгу отзывов",
+  "en": "E — leaf through the guest book",
+  "ja": "E：感想ノートをめくる"
+ },
+ "city.xh.mixer.prompt": {
+  "ru": "E — подойти к звуковому пульту",
+  "en": "E — go up to the sound desk",
+  "ja": "E：音響卓に近づく"
+ },
+ "city.xh.lights.prompt": {
+  "ru": "E — пощёлкать тумблерами света",
+  "en": "E — flick the light switches",
+  "ja": "E：照明のスイッチを入れてみる"
+ },
+ "city.xh.ghost.prompt": {
+  "ru": "E — посмотреть на дежурную лампу",
+  "en": "E — look at the ghost light",
+  "ja": "E：当番のランプを見る"
+ },
+ "city.xh.costumes.prompt": {
+  "ru": "E — перебрать костюмы на вешалке",
+  "en": "E — sort through the costume rail",
+  "ja": "E：衣装ラックを見てまわる"
+ },
+ "city.xh.props.prompt": {
+  "ru": "E — осмотреть реквизит",
+  "en": "E — look over the props",
+  "ja": "E：小道具を調べる"
+ },
+ "city.xh.makeup.prompt": {
+  "ru": "E — посмотреть в гримёрное зеркало",
+  "en": "E — look in the make-up mirror",
+  "ja": "E：メイク鏡をのぞく"
+ },
+ "city.xh.rehearsal.prompt": {
+  "ru": "E — прочитать объявление театра",
+  "en": "E — read the theatre's notice",
+  "ja": "E：劇団のお知らせを読む"
+ },
+ "city.xh.premiere.prompt": {
+  "ru": "E — смотреть сцену из зала",
+  "en": "E — watch the stage from the house",
+  "ja": "E：客席から舞台を観る"
+ },
+ "city.xh.chalk.prompt": {
+  "ru": "E — прочитать меню на доске",
+  "en": "E — read the chalk menu",
+  "ja": "E：黒板のメニューを読む"
+ },
+ "city.xh.dancenight.prompt": {
+  "ru": "E — выйти на танцпол",
+  "en": "E — step onto the dance floor",
+  "ja": "E：ダンスフロアに出る"
+ },
+ "city.xh.dancemirror.prompt": {
+  "ru": "E — встать к зеркалу у станка",
+  "en": "E — stand at the barre mirror",
+  "ja": "E：バーの前の鏡に立つ"
+ },
+ "city.xh.prog.mon": {
+  "ru": "Афиша «Сводов». Понедельник: вечеров нет. Зал отдыхает, смотритель протирает перила и ругает сквозняк. Буфет открыт, пироги есть.",
+  "en": "The Vaults' programme. Monday: no evenings. The hall rests, the caretaker wipes the banisters and scolds the draught. The buffet is open and there are pies.",
+  "ja": "「ヴォールト」の催し予定。月曜は夜の催しなし。ホールはお休みで、管理人は手すりを拭きながら隙間風に文句を言っている。売店は開いていて、ピローグもある。"
+ },
+ "city.xh.prog.tue": {
+  "ru": "Вторник, 19:00: лекция «Почему в Сводах эхо запаздывает». Читает инженер-акустик, вход свободный. Просим не хлопать до конца: эхо хлопает за вас.",
+  "en": "Tuesday, 19:00: a lecture, \"Why the echo in the Vaults runs late\". Given by an acoustics engineer, free entry. Please do not clap until the end: the echo claps for you.",
+  "ja": "火曜19時、講演「ヴォールトの反響はなぜ遅れるのか」。講師は音響技師、入場無料。最後まで拍手はご遠慮ください。反響が代わりに拍手します。"
+ },
+ "city.xh.prog.wed": {
+  "ru": "Среда, 17:00: хор «Прибой», открытая репетиция. Можно сидеть в зале и молчать. Подпевать разрешено только шёпотом, таково условие руководителя хора.",
+  "en": "Wednesday, 17:00: the Surf choir, open rehearsal. You may sit in the hall and keep quiet. Singing along is allowed in a whisper only: the choir leader's condition.",
+  "ja": "水曜17時、合唱団「寄せ波」の公開リハーサル。客席で黙って聴いていてかまいません。いっしょに歌うのはささやき声だけ、というのが指揮者の条件です。"
+ },
+ "city.xh.prog.thu": {
+  "ru": "Четверг, 18:00: любительский театр «Волна», репетиция пьесы «Время, вперёд!». Зрители допускаются, замечания принимаются письменно и после.",
+  "en": "Thursday, 18:00: the Wave amateur theatre rehearses the play Time, Forward! Spectators welcome; remarks accepted in writing, and afterwards.",
+  "ja": "木曜18時、アマチュア劇団「波」が劇『時よ、進め』を稽古します。見学歓迎。ご意見は書面で、終わってからお願いします。"
+ },
+ "city.xh.prog.fri": {
+  "ru": "Пятница, 19:00: вечер танцев в боковом зале, с буфетом. Играет пластинка, а если повезёт — пианист. Танцы до 23:00, сменная обувь приветствуется.",
+  "en": "Friday, 19:00: a dance night in the side hall, with the buffet. A record plays, and with luck a pianist. Dancing until 23:00; a change of shoes is welcome.",
+  "ja": "金曜19時、横のホールでダンスの夕べ。売店あり。レコードが鳴り、運がよければピアニストも。23時まで。履き替えの靴を歓迎します。"
+ },
+ "city.xh.prog.sat": {
+  "ru": "Суббота, 19:00: ПРЕМЬЕРА «Время, вперёд!», театр «Волна». Вход свободный, места по любви. После спектакля танцы.",
+  "en": "Saturday, 19:00: PREMIERE of Time, Forward!, the Wave theatre. Free entry, seats by affection. Dancing after the show.",
+  "ja": "土曜19時、劇団「波」『時よ、進め』初演。入場無料、席は好きなところへ。終演後はダンスです。"
+ },
+ "city.xh.prog.sun": {
+  "ru": "Воскресенье, 14:00–19:00: чайные танцы для тех, кто любит расходиться пораньше. Дети до двенадцати лет бесплатно и до последнего вальса.",
+  "en": "Sunday, 14:00 to 19:00: tea dances for those who like to be home early. Children under twelve free, and welcome until the last waltz.",
+  "ja": "日曜14時から19時、早く帰りたい人のためのお茶のダンス。十二歳未満は無料、最後のワルツまでいてかまいません。"
+ },
+ "city.xh.case.mon": {
+  "ru": "Табличка на витрине: «Понедельник. Рыбацкие поплавки Людмиловска». Стеклянные, синие и зелёные. На самом большом нацарапано: «Не мой».",
+  "en": "A plaque on the case: \"Monday. Fishing floats of Lyudmilovsk.\" Glass ones, blue and green. On the biggest, scratched: \"Not mine.\"",
+  "ja": "ケースの札。「月曜。リュドミルフスクの漁の浮き」。青や緑のガラスの浮き。いちばん大きいのに「ぼくのじゃない」と引っかき傷。"
+ },
+ "city.xh.case.tue": {
+  "ru": "«Вторник. Школьные тетради с видами города». В одной маяк нарисован трижды, и каждый раз с новой стороны. Внизу оценка: «Для первого раза хорошо».",
+  "en": "\"Tuesday. School exercise books with views of the town.\" In one, the lighthouse is drawn three times, from a new side each time. At the bottom, a mark: \"Good for a first attempt.\"",
+  "ja": "「火曜。町の風景を描いた学校のノート」。ある一冊では灯台が三回、毎回ちがう側から描かれている。下に評価。「初めてにしてはよくできました」。"
+ },
+ "city.xh.case.wed": {
+  "ru": "«Среда. Музыкальные инструменты: губная гармошка, камертон, треснувшая дека гитары». Камертон лежит рядом с гармошкой, будто спорил с ней и проиграл.",
+  "en": "\"Wednesday. Musical instruments: a harmonica, a tuning fork, a cracked guitar top.\" The fork lies by the harmonica as if it had argued with it and lost.",
+  "ja": "「水曜。楽器いろいろ。ハーモニカ、音叉、ひびの入ったギターの表板」。音叉はハーモニカのそばに、言い合いに負けたみたいに横たわっている。"
+ },
+ "city.xh.case.thu": {
+  "ru": "«Четверг. Театральные программки разных лет». Самая старая напечатана на обороте билета на канатную дорогу. Тираж: «по числу друзей».",
+  "en": "\"Thursday. Theatre programmes of different years.\" The oldest is printed on the back of a cable car ticket. Print run: \"as many as friends.\"",
+  "ja": "「木曜。年代ちがいの劇場プログラム」。いちばん古いのはロープウェイの切符の裏に刷ってある。発行部数は「友だちの数だけ」。"
+ },
+ "city.xh.case.fri": {
+  "ru": "«Пятница. Танцевальные туфли за тридцать лет». У одной пары стёрт левый носок. Подпись: «Левая нога вела».",
+  "en": "\"Friday. Dance shoes of thirty years.\" One pair is worn through at the left toe. Caption: \"The left foot led.\"",
+  "ja": "「金曜。三十年分のダンスシューズ」。ある一足は左のつま先がすり減っている。キャプション。「リードしたのは左足」。"
+ },
+ "city.xh.case.sat": {
+  "ru": "«Суббота. Что остаётся после премьеры». Бутафорский ключ, засохшая роза, программка с подписями всей труппы. Рядом пустое место: «Для завтрашних вещей».",
+  "en": "\"Saturday. What is left after a premiere.\" A prop key, a dried rose, a programme signed by the whole company. An empty space beside them: \"For tomorrow's things.\"",
+  "ja": "「土曜。初演のあとに残るもの」。小道具の鍵、ドライフラワーのバラ、全員のサインが入ったプログラム。そばに空いた場所。「あすの品のために」。"
+ },
+ "city.xh.case.sun": {
+  "ru": "Витрина на уборке: на табличке «Воскресенье. Отдыхаем». Стекло блестит, а внутри отражается чей-то нос. Кажется, твой.",
+  "en": "The case is being cleaned; the plaque says \"Sunday. Resting.\" The glass shines, and inside it a nose is reflected. Yours, it seems.",
+  "ja": "ケースは清掃中。札には「日曜。お休み」。ガラスはぴかぴかで、中に誰かの鼻が映っている。どうやら自分のだ。"
+ },
+ "city.xh.guest.1": {
+  "ru": "Книга отзывов лежит раскрытой. Первая запись на странице: «Хорошо. Только эхо повторило мой чих дважды». Подпись: «Любитель тишины».",
+  "en": "The guest book lies open. The first entry on the page: \"Good. Only the echo repeated my sneeze twice.\" Signed: \"A lover of quiet.\"",
+  "ja": "感想ノートが開いてある。ページの最初の書きこみ。「よかったです。ただ、反響がぼくのくしゃみを二回くり返しました」。署名は「静けさを愛する者」。"
+ },
+ "city.xh.guest.2": {
+  "ru": "«Пели в хоре, пели хорошо. Хормейстер сказал: „Почти“. Это высшая похвала». Рядом чужой рукой приписано: «Подтверждаю».",
+  "en": "\"Sang in the choir, sang well. The choir leader said, 'Nearly.' That is the highest praise.\" Beside it, in another hand: \"Confirmed.\"",
+  "ja": "「合唱で歌いました。上手に歌えました。指揮者は『ほぼね』と言いました。最高のほめ言葉です」。そばに別の筆跡で。「確認しました」。"
+ },
+ "city.xh.guest.3": {
+  "ru": "«Танцевали до одиннадцати. Туфли пали смертью храбрых. Прошу возместить». Ниже: «Не возместим, но пирог подарим».",
+  "en": "\"Danced until eleven. My shoes fell like heroes. Please compensate.\" Below: \"We cannot compensate, but we will give you a pie.\"",
+  "ja": "「十一時まで踊りました。靴は勇敢に散りました。弁償をお願いします」。その下に。「弁償はできませんが、ピローグを差し上げます」。"
+ },
+ "city.xh.guest.4": {
+  "ru": "Детским почерком: «Мне нравится потолок. Он как большая белая ладонь. Если бы я был голубем, я бы жил тут».",
+  "en": "In a child's hand: \"I like the ceiling. It is like a big white palm. If I were a pigeon I would live here.\"",
+  "ja": "子どもの字で。「ぼくは天井が好きです。大きな白い手のひらみたいです。ぼくがハトだったら、ここに住みます」。"
+ },
+ "city.xh.guest.5": {
+  "ru": "«Читка пьесы про часы удалась. Режиссёр плакала, потому что смеялась, или наоборот». Подпись: «Завхоз, он же Часовщик».",
+  "en": "\"The reading of the play about clocks went well. The director cried because she was laughing, or the other way round.\" Signed: \"The handyman, a.k.a. the Clockmaker.\"",
+  "ja": "「時計の劇の読み合わせは大成功。演出家は笑いすぎて泣いていました。逆かもしれません」。署名は「用務員、またの名を時計職人」。"
+ },
+ "city.xh.guest.6": {
+  "ru": "«Замечание: в буфете закончились пироги в 19:10. Предложение: печь больше пирогов. Или начинать вечера позже». Подпись неразборчива, но от души.",
+  "en": "\"Remark: the buffet ran out of pies at 19:10. Suggestion: bake more pies. Or start the evenings later.\" The signature is illegible, but heartfelt.",
+  "ja": "「ご指摘。売店は19時10分にピローグが売り切れました。提案。もっと焼く。または夜の催しを遅く始める」。署名は読めないけれど、心はこもっている。"
+ },
+ "city.xh.guest.7": {
+  "ru": "Между страниц записка: «Кто нашёл шахматные часы с трещиной? Они не бутафория, их ищет клуб». Ответ карандашом: «Нашли. На сцене, в реквизите. Скоро вернём».",
+  "en": "A note between the pages: \"Who found the chess clock with the crack? It is not a prop, the club is looking for it.\" A pencilled reply: \"Found. On stage, among the props. Will be returned soon.\"",
+  "ja": "ページのあいだにメモ。「ひびの入ったチェス時計を見つけた方は？ 小道具ではありません、クラブが探しています」。鉛筆の返事。「見つかりました。舞台の小道具の中です。近いうちにお返しします」。"
+ },
+ "city.xh.guest.8": {
+  "ru": "«Премьера! Смеялись, хлопали, эхо хлопало вместе с нами. Аплодисменты длились три минуты, две из них были эхом».",
+  "en": "\"Premiere! We laughed, we clapped, the echo clapped with us. The applause lasted three minutes, two of them echo.\"",
+  "ja": "「初演！ 笑って、拍手して、反響もいっしょに拍手しました。拍手は三分続き、そのうち二分は反響でした」。"
+ },
+ "city.xh.guest.9": {
+  "ru": "Последняя запись на чистой строке: «Приходи завтра. Впиши сюда своё имя, мы оставили место». Место и правда оставлено, и ручка висит на цепочке.",
+  "en": "The last entry, on a clean line: \"Come again tomorrow. Write your name here, we have left room.\" The room is really left, and a pen hangs on its chain.",
+  "ja": "最後の書きこみは、まっさらな行に。「あしたも来てください。ここにお名前をどうぞ、場所を空けておきました」。ほんとうに場所は空いていて、ペンが鎖でぶら下がっている。"
+ },
+ "city.xh.mixer.day.1": {
+  "ru": "Звуковой пульт под чехлом из старой шторы. Рычажки подписаны карандашом: «Хор», «Рояль», «Микрофон», «Не трогать!!!». Последняя надпись самая затёртая.",
+  "en": "The sound desk under a cover made of an old curtain. The faders are labelled in pencil: \"Choir\", \"Piano\", \"Microphone\", \"Do not touch!!!\" The last label is the most worn.",
+  "ja": "古いカーテンの布をかぶせた音響卓。フェーダーには鉛筆で「合唱」「ピアノ」「マイク」「さわるな！！！」。最後の字がいちばんすり切れている。"
+ },
+ "city.xh.mixer.day.2": {
+  "ru": "Катушечный магнитофон. На крышке записка: «Запись репетиции хора, среда. Слушать после девяти вечера, так звучит лучше».",
+  "en": "A reel-to-reel recorder. A note on its lid: \"Recording of Wednesday's choir rehearsal. Listen after nine in the evening, it sounds better.\"",
+  "ja": "オープンリールのテープレコーダー。ふたにメモ。「水曜の合唱リハーサルの録音。夜九時すぎに聴くと、よく響きます」。"
+ },
+ "city.xh.mixer.eve.1": {
+  "ru": "Звукорежиссёр-любитель двигает рычажок, и из колонок на сцене выходит шорох зала. Потом рычажок ползёт назад, и зал становится чуть тише, чуть дальше, чуть добрее.",
+  "en": "The amateur sound man nudges a fader and out of the speakers on stage comes the rustle of the hall. Then the fader creeps back and the hall becomes a little quieter, a little farther, a little kinder.",
+  "ja": "アマチュアの音響係がフェーダーを動かすと、舞台のスピーカーから客席のざわめきが出てくる。フェーダーを戻すと、ざわめきは少し静かに、少し遠く、少しやさしくなる。"
+ },
+ "city.xh.mixer.eve.2": {
+  "ru": "Пауза на ленте щёлкает, и по залу слышно, как кто-то на сцене настраивает рояль. Одна нота, вторая. Нота «ля» оказывается честнее всех.",
+  "en": "The tape clicks into a pause, and the whole hall hears someone tuning the piano on stage. One note, then another. The A turns out to be the most honest of them.",
+  "ja": "テープがカチリと止まり、舞台でだれかがピアノを調律している音がホールじゅうに聞こえる。一音、また一音。「ラ」の音がいちばん正直だ。"
+ },
+ "city.xh.mixer.sat.1": {
+  "ru": "Пульт в субботу вечером: рычажки подняты, лампочка горит, звукорежиссёр сидит прямо, как на экзамене. На бумажке: «Первый звонок 18:55. Второй 19:00. Третий — по обстоятельствам».",
+  "en": "The desk on Saturday evening: the faders are up, the lamp is on, the sound man sits straight as at an exam. On a slip of paper: \"First bell 18:55. Second 19:00. Third: as circumstances allow.\"",
+  "ja": "土曜の夜の音響卓。フェーダーは上がり、ランプがついて、音響係は試験のようにまっすぐ座っている。メモ書き。「一ベル18時55分。二ベル19時。三ベルは状況しだい」。"
+ },
+ "city.xh.mixer.sat.2": {
+  "ru": "Рядом с пультом лежит большой лист: «Эхо — не глушить, оно в труппе. Часы — не забыть. Аплодисменты — не прерывать». Последнее написано крупнее остального.",
+  "en": "A big sheet lies by the desk: \"Echo: do not damp, it is in the company. Clocks: do not forget. Applause: do not interrupt.\" The last is written bigger than the rest.",
+  "ja": "卓のそばに大きな紙。「反響は消さない、劇団の一員なので。時計は忘れない。拍手はさえぎらない」。最後だけ字が大きい。"
+ },
+ "city.xh.mixer.night.1": {
+  "ru": "Пульт под чехлом, лампочка погашена. Только красный огонёк на магнитофоне мигает, будто что-то слушает.",
+  "en": "The desk is under its cover and the lamp is off. Only a red light on the recorder blinks, as if listening to something.",
+  "ja": "卓はカバーの下で、ランプも消えている。テープレコーダーの赤い光だけが、何かに耳をすますように点滅している。"
+ },
+ "city.xh.lights.day.1": {
+  "ru": "Щиток с шестью тумблерами и подписями от руки: «Рабочий», «Рампа», «Софиты слева», «Софиты справа», «Занавес», «Не включать». Днём щёлкать почти нечем, и так светло.",
+  "en": "A panel with six switches and handwritten labels: \"Work light\", \"Footlights\", \"Spots left\", \"Spots right\", \"Curtain\", \"Do not switch on\". By day there is little to click, it is bright anyway.",
+  "ja": "六つのスイッチと手書きのラベルがついた配電盤。「作業灯」「フットライト」「左スポット」「右スポット」「幕」「入れるな」。昼間は入れてもあまり意味がない、もう明るいから。"
+ },
+ "city.xh.lights.day.2": {
+  "ru": "Щёлк, и над сценой зажигается пара прожекторов. Щёлк, и гаснет. Окна высокие, день сильнее, и прожекторы только бледно желтеют, как свечки на именинном пироге в полдень.",
+  "en": "Click, and a pair of spotlights comes on over the stage. Click, and it goes out. The windows are high, the day is stronger, and the spots only turn faintly yellow, like birthday candles at noon.",
+  "ja": "カチッと、舞台の上のスポットが二つともつく。カチッと、消える。窓は高く昼の光のほうが強いので、スポットは真昼の誕生日ケーキのろうそくみたいに、ほんのり黄色くなるだけ。"
+ },
+ "city.xh.lights.eve.1": {
+  "ru": "Вечером щиток оживает: «Рампа», и сцена становится золотой. «Софиты слева», и рояль блестит. «Софиты справа», и на стене проступает мозаика. Не тронут только тумблер «Не включать».",
+  "en": "In the evening the panel comes alive: \"Footlights\", and the stage turns gold. \"Spots left\", and the piano gleams. \"Spots right\", and the mosaic shows on the wall. Only the \"Do not switch on\" stays untouched.",
+  "ja": "夕方、配電盤が生き返る。「フットライト」で舞台が金色になる。「左スポット」でピアノが光る。「右スポット」で壁のモザイクが浮かぶ。「入れるな」だけは、だれも触らない。"
+ },
+ "city.xh.lights.eve.2": {
+  "ru": "Щёлк-щёлк-щёлк: синий, красный, снова белый. Одинокий табурет на сцене в синем свете выглядит так, будто сейчас запоёт.",
+  "en": "Click-click-click: blue, red, white again. A lone stool on stage in the blue light looks as though it is about to sing.",
+  "ja": "カチカチカチ。青、赤、また白。青い光の中の舞台のぽつんとしたスツールは、今にも歌いだしそうに見える。"
+ },
+ "city.xh.lights.sat.1": {
+  "ru": "Свет на премьеру: «Рампа» — наполовину, «Софиты» — по сигналу, синий — для сцены на маяке. Листок на щитке: «Не забыть: в финале дать свет на часы».",
+  "en": "The premiere's lighting: \"Footlights\" at half, \"Spots\" on cue, blue for the lighthouse scene. A slip on the panel: \"Don't forget: in the finale, light on the clock.\"",
+  "ja": "初演の照明。「フットライト」は半分、「スポット」は合図で、灯台の場面には青。配電盤にメモ。「忘れずに。フィナーレでは時計に光を」。"
+ },
+ "city.xh.lights.night.1": {
+  "ru": "Горит только «Дежурный». Остальные тумблеры стоят рядком, как клавиши рояля. Ни один нельзя трогать до утра, так сказал смотритель.",
+  "en": "Only \"Standby\" is on. The other switches stand in a row like piano keys. None may be touched until morning, the caretaker said.",
+  "ja": "ついているのは「当番灯」だけ。ほかのスイッチはピアノの鍵盤みたいに一列に並ぶ。朝まではどれも触らないこと、と管理人が言っていた。"
+ },
+ "city.xh.ghost.day.1": {
+  "ru": "Лампочка без абажура на тонкой стойке у края сцены. Днём она почти не заметна, но рядом табличка: «Не выключать. Это не каприз, а традиция».",
+  "en": "A bare bulb on a thin stand at the edge of the stage. By day it is hardly noticeable, but a small plate beside it says: \"Do not switch off. Not a whim, a tradition.\"",
+  "ja": "舞台のふちの細いスタンドに、傘のない電球。昼間はほとんど目立たないが、横の札に。「消さないこと。気まぐれではなく、しきたりです」。"
+ },
+ "city.xh.ghost.day.2": {
+  "ru": "Смотритель говорит: пока лампа горит, сцена не пустая. Кто именно на ней присутствует, он не уточняет.",
+  "en": "The caretaker says that while the lamp burns, the stage is not empty. Who exactly is on it, he does not say.",
+  "ja": "管理人いわく、ランプがついているかぎり舞台は空っぽではない。では、だれがいるのかは言わない。"
+ },
+ "city.xh.ghost.night.1": {
+  "ru": "Единственный огонь в тёмном зале. Лампочка освещает полметра пола и табличку со своим именем: «Дежурная». Она дежурит всегда, даже когда больше никого нет.",
+  "en": "The only light in the dark hall. The bulb lights half a metre of floor and the plate with its name: \"On duty\". It is on duty always, even when nobody else is.",
+  "ja": "暗いホールのたったひとつの灯り。電球は床を半メートルほど照らし、自分の名前の札も照らす。「当番」。ほかにだれもいなくても、いつも当番だ。"
+ },
+ "city.xh.ghost.night.2": {
+  "ru": "В тёмном зале дежурная лампа отбрасывает на своды тень стойки, огромную, как мачта. Старые актёры говорят: пока она горит, призраки репетируют и не пугают живых.",
+  "en": "In the dark hall the ghost light throws the shadow of its stand up the vaults, huge as a mast. Old actors say: while it burns, the ghosts rehearse and leave the living alone.",
+  "ja": "暗いホールで、当番のランプはスタンドの影を丸天井まで投げる。マストのように大きい。古参の役者いわく、ついているあいだ幽霊は稽古をして、生きた人間を驚かさない。"
+ },
+ "city.xh.costumes.mon": {
+  "ru": "Вешалка за кулисами. На плечиках бирки: «Часовщик», «Мэр», «Почтальон», «Эхо», «Второе эхо». Бирка «Часовщик» приколота к жилетке завхоза. Он возражал, но жилетка сидит как влитая.",
+  "en": "The rail backstage. Tags on the hangers: \"Clockmaker\", \"Mayor\", \"Postwoman\", \"Echo\", \"Second Echo\". The Clockmaker tag is pinned to the handyman's waistcoat. He objected, but it fits like a glove.",
+  "ja": "舞台裏の衣装ラック。ハンガーに札。「時計職人」「市長」「郵便配達」「こだま」「二つめのこだま」。「時計職人」の札は用務員のベストに留めてある。本人は反対したが、ベストはぴったりだ。"
+ },
+ "city.xh.costumes.tue": {
+  "ru": "К жилетке добавилась цепочка от карманных часов. Часов на ней нет. Записка: «Часы принесёт реквизитор. Реквизитор, ты где?»",
+  "en": "A pocket-watch chain has joined the waistcoat. There is no watch on it. A note: \"The prop master will bring the watch. Prop master, where are you?\"",
+  "ja": "ベストに懐中時計の鎖が加わった。時計はついていない。メモ。「時計は小道具係が持ってくる。小道具係、どこにいる？」"
+ },
+ "city.xh.costumes.wed": {
+  "ru": "Пиджак Мэра на два размера больше самого Мэра. Рядом булавки и записка костюмерши: «Мэр, до субботы не ешь пироги. Или ешь, но молча».",
+  "en": "The Mayor's jacket is two sizes too big for the Mayor. Pins beside it and the dresser's note: \"Mayor, no pies until Saturday. Or eat them, but quietly.\"",
+  "ja": "市長の上着は、市長本人より二サイズ大きい。そばに待ち針と衣装係のメモ。「市長、土曜までピローグは禁止。食べるなら静かに」。"
+ },
+ "city.xh.costumes.thu": {
+  "ru": "Платье Почтальонши подшито наспех, нитки торчат. На подоле карандашом: «Подол после генеральной. Не успею — никто не заметит. Заметят — скажу, так задумано».",
+  "en": "The Postwoman's dress is hemmed in a hurry, threads sticking out. Pencilled on the hem: \"Hem after the dress rehearsal. If I'm late, nobody will notice. If they do, I'll say it's deliberate.\"",
+  "ja": "郵便配達の服は大急ぎで裾上げしてあり、糸が出ている。裾に鉛筆で。「裾はゲネプロのあと。間に合わなくても、だれも気づかない。気づかれたら、わざとだと言う」。"
+ },
+ "city.xh.costumes.fri": {
+  "ru": "Генеральная: все костюмы на месте, отглажены, пахнут горячим утюгом. «Эхо» и «Второе эхо» — одинаковые серые плащи; на втором бирка «Это второе».",
+  "en": "Dress rehearsal: every costume in place, ironed, smelling of a hot iron. \"Echo\" and \"Second Echo\" are identical grey cloaks; the second is tagged \"This is the second one.\"",
+  "ja": "ゲネプロ。衣装はすべてそろい、アイロンがかかって、熱いアイロンのにおいがする。「こだま」と「二つめのこだま」は同じ灰色のマント。二つめには札。「これが二つめ」。"
+ },
+ "city.xh.costumes.sat": {
+  "ru": "Вешалка почти пуста: костюмы на актёрах. Остался один плечик с биркой «Запасной». Запасной тоже волнуется.",
+  "en": "The rail is almost empty: the costumes are on the actors. One hanger is left, tagged \"Spare\". The spare is nervous too.",
+  "ja": "ラックはほとんど空っぽ。衣装は役者が着ている。ハンガーがひとつ残り、札は「予備」。予備もどきどきしている。"
+ },
+ "city.xh.costumes.sun": {
+  "ru": "Костюмы снова на вешалке, пахнут сценой и немного пирогами. На плечике «Часовщик» открытка от зрителя: «Вы были лучше всех часов».",
+  "en": "The costumes are back on the rail, smelling of the stage and a little of pies. On the Clockmaker's hanger, a card from someone in the audience: \"You were better than all the clocks.\"",
+  "ja": "衣装はラックに戻り、舞台と、ほんの少しピローグのにおいがする。「時計職人」のハンガーに客席からのカード。「どんな時計よりよかったです」。"
+ },
+ "city.xh.props.1": {
+  "ru": "Реквизитный стол: телефон без шнура, глобус с Тихим океаном поверх Балтики, чернильница с высохшими чернилами. Всё, чтобы пьеса про время выглядела пьесой про время.",
+  "en": "The props table: a telephone with no cord, a globe with the Pacific painted over the Baltic, an inkwell of dried ink. All so that a play about time looks like a play about time.",
+  "ja": "小道具のテーブル。コードのない電話、バルト海の上に太平洋が描かれた地球儀、インクの乾いたインク壺。時間の劇が、ちゃんと時間の劇に見えるように。"
+ },
+ "city.xh.props.2": {
+  "ru": "В коробке шахматные часы с трещиной на левом циферблате. Бирка: «Реквизит, акт первый. Вернуть в клуб, когда спросят. Спросят — отдадим. Не спросят — тоже отдадим».",
+  "en": "In a box, a chess clock with a crack on the left dial. The tag: \"Prop, act one. Return to the club when asked. If asked, we will. If not, we will anyway.\"",
+  "ja": "箱の中に、左の文字盤にひびの入ったチェス時計。札。「小道具、第一幕。聞かれたらクラブに返す。聞かれなくても返す」。"
+ },
+ "city.xh.props.3": {
+  "ru": "Рукописная пьеса «Время, вперёд!» с пометками на полях: «Тут пауза». «Тут пауза длиннее». «Пауза, и свет, пожалуйста».",
+  "en": "A handwritten script of Time, Forward! with notes in the margins: \"Pause here.\" \"A longer pause here.\" \"Pause, and light, please.\"",
+  "ja": "手書きの台本『時よ、進め』。余白に書きこみ。「ここで間」「ここはもっと長い間」「間、それから照明お願いします」。"
+ },
+ "city.xh.props.4": {
+  "ru": "Будильник с одной стрелкой. Режиссёр говорит, что вторая стрелка — это зритель: в нужный момент он сам догадывается, что время вышло.",
+  "en": "An alarm clock with one hand. The director says the second hand is the audience: at the right moment it works out for itself that time is up.",
+  "ja": "針が一本しかない目覚まし時計。演出家いわく、もう一本の針は観客で、ちょうどいい瞬間に自分で時間が来たと気づくのだそうだ。"
+ },
+ "city.xh.props.5": {
+  "ru": "Под столом ящик «Эхо (не греметь)»: внутри листы жести и две ложки. Так в пьесе звучит эхо Сводов, когда настоящее задерживается.",
+  "en": "Under the table a crate marked \"Echo (do not rattle)\": inside, sheets of tin and two spoons. This is how the play sounds the Vaults' echo when the real one is late.",
+  "ja": "テーブルの下に「こだま（ガタガタさせない）」と書いた箱。中にはブリキ板とスプーンが二本。本物の反響が遅れたとき、劇の中で反響を鳴らすための道具だ。"
+ },
+ "city.xh.makeup.day.1": {
+  "ru": "Гримёрное зеркало с лампочками по раме, почти все перегорели. В нём ты без грима: обычный, сосредоточенный, слегка удивлённый. Пока никто не видит, можно скорчить рожу.",
+  "en": "A make-up mirror with bulbs round the frame, most of them blown. In it you are without make-up: ordinary, serious, slightly surprised. While no one is looking, you can pull a face.",
+  "ja": "枠に電球をめぐらせたメイク用の鏡。ほとんど切れている。映っているのはメイクなしの自分。ふつうで、真剣で、ちょっと驚いた顔。だれも見ていないあいだに、変な顔をしてみてもいい。"
+ },
+ "city.xh.makeup.day.2": {
+  "ru": "На столике баночки с гримом, пуховка и коробочки «Борода лёгкая» и «Борода тяжёлая». Есть ещё нос. Один, на резинке.",
+  "en": "On the table, pots of greasepaint, a powder puff, and boxes labelled \"Beard, light\" and \"Beard, heavy\". There is also a nose. Just one, on elastic.",
+  "ja": "テーブルの上には、化粧の缶、パフ、「ひげ・軽め」と「ひげ・重め」の箱。鼻もある。ゴムひもつきの鼻がひとつだけ。"
+ },
+ "city.xh.makeup.eve.1": {
+  "ru": "Гримёрша рисует морщины карандашом. Актёру восемнадцать, а роль у него на семьдесят. «Не дыши, — говорит она, — а то поплывёт возраст».",
+  "en": "The make-up woman draws wrinkles with a pencil. The actor is eighteen and the part is seventy. \"Don't breathe,\" she says, \"or the age will run.\"",
+  "ja": "メイク係が鉛筆でしわを描いている。役者は十八歳で、役は七十歳。「息しないで」と彼女。「年が流れちゃうから」。"
+ },
+ "city.xh.makeup.eve.2": {
+  "ru": "В зеркале уже не ты, а чей-то дедушка. Но глаза твои, и мысли тоже. Хорошо бы, чтобы дедушка тебя не подвёл.",
+  "en": "In the mirror it is no longer you but somebody's grandfather. The eyes are yours, though, and so are the thoughts. Let us hope the grandfather does not let you down.",
+  "ja": "鏡の中はもう自分ではなく、だれかのおじいさん。でも目は自分のもので、考えていることもそうだ。おじいさんが自分を裏切らないといいけれど。"
+ },
+ "city.xh.makeup.sat.1": {
+  "ru": "Перед премьерой в зеркале все похожи: бледные, с яркими губами, шёпотом повторяющие текст. Гримёрша говорит: «Три раза плюнуть через левое плечо и забыть». Кто-то плюёт. Кто-то забывает.",
+  "en": "Before the premiere everyone in the mirror looks alike: pale, bright-lipped, whispering their lines. The make-up woman says: \"Spit three times over the left shoulder and forget.\" Someone spits. Someone forgets.",
+  "ja": "初演の前、鏡の中の人はみんな似ている。青白くて、唇だけ鮮やかで、ささやくようにせりふをくり返す。メイク係が言う。「左の肩ごしに三回つばを吐くまねをして、忘れなさい」。つばを吐くまねをする人。忘れる人。"
+ },
+ "city.xh.makeup.night.1": {
+  "ru": "Ночью зеркало тёмное, тлеет одна лампочка. В ней отражается другая лампочка, дежурная, из зала. Они смотрят друг на друга и не мигают.",
+  "en": "At night the mirror is dark, one bulb smouldering. In it another bulb is reflected, the ghost light from the hall. They look at each other and do not blink.",
+  "ja": "夜の鏡は暗く、電球がひとつだけ弱く光っている。そこにホールの当番のランプが映っている。二つの灯りは、まばたきもせず見つめ合っている。"
+ },
+ "city.xh.rehearsal.mon": {
+  "ru": "Объявление театра «Волна»: «Роли распределены. Часовщик — завхоз (согласился, но только до девяти вечера). Мэр — продавец пирогов. Почтальон — девушка из кассы. Эхо и Второе эхо — братья-близнецы, они всё равно переговариваются».",
+  "en": "A notice from the Wave theatre: \"Parts are cast. Clockmaker: the handyman (he agreed, but only until nine in the evening). Mayor: the pie seller. Postwoman: the girl from the box office. Echo and Second Echo: twin brothers, they talk to each other anyway.\"",
+  "ja": "劇団「波」のお知らせ。「配役が決まりました。時計職人は用務員（ただし夜九時まで、という条件で承諾）。市長はピローグ売り。郵便配達は窓口の女の子。こだまと二つめのこだまは双子の兄弟、どうせ話し合っているので」。"
+ },
+ "city.xh.rehearsal.tue": {
+  "ru": "Читка прошла. Эхо в Сводах возвращало каждую реплику с запозданием, и режиссёр решила: так даже лучше, это третий актёр.",
+  "en": "The read-through is done. The echo in the Vaults sent every line back late, and the director decided it is even better: a third actor.",
+  "ja": "読み合わせが終わった。ヴォールトの反響はせりふを一拍遅れで返してきて、演出家は決めた。かえっていい、三人目の役者だ。"
+ },
+ "city.xh.rehearsal.wed": {
+  "ru": "Просьба актёрам: хор репетирует до 19:00, потом сцена ваша. Умирать на сцене Часовщику в это время нельзя: в зале поют колыбельную.",
+  "en": "A request to the cast: the choir rehearses until 19:00, then the stage is yours. The Clockmaker must not die on stage before then: the hall is singing a lullaby.",
+  "ja": "出演者へのお願い。合唱団は19時まで、そのあと舞台はみなさんの番です。それまで時計職人は舞台で死なないこと。ホールでは子守歌を歌っています。"
+ },
+ "city.xh.rehearsal.thu": {
+  "ru": "Срочно! Нужны большие часы для первого акта, желательно ходячие. Приносить за кулисы. Звонить не надо: эхо услышит.",
+  "en": "Urgent! We need a big clock for act one, preferably a working one. Bring it backstage. No need to phone: the echo will hear.",
+  "ja": "至急！ 第一幕に大きな時計が必要です。できれば動くもの。舞台裏へお持ちください。電話は不要、反響が聞いています。"
+ },
+ "city.xh.rehearsal.fri": {
+  "ru": "Генеральная репетиция: костюмы и свет. Танцы в боковом зале не отменяются, просим не выходить на сцену в танцевальных туфлях и не танцевать в сцене с Мэром.",
+  "en": "Dress rehearsal: costumes and lights. The dance in the side hall goes ahead; please do not come on stage in dancing shoes, and do not dance in the Mayor's scene.",
+  "ja": "ゲネプロ。衣装と照明つき。横のホールのダンスは中止しません。ダンスシューズで舞台に上がらないこと、市長の場面で踊らないこと。"
+ },
+ "city.xh.rehearsal.sat": {
+  "ru": "Сегодня в 19:00 ПРЕМЬЕРА. Вход свободный, места по любви. Волноваться вежливо, кричать «браво» по желанию, аплодировать по обстоятельствам: эхо поддержит.",
+  "en": "Today at 19:00, PREMIERE. Free entry, seats by affection. Please be nervous politely, shout \"bravo\" if you like, applaud as you see fit: the echo will back you up.",
+  "ja": "本日19時、初演。入場無料、席は好きなところへ。緊張は礼儀正しく、「ブラボー」はお好みで、拍手は状況に応じて。反響が応援します。"
+ },
+ "city.xh.rehearsal.sun": {
+  "ru": "Спасибо всем, кто пришёл! Зал аплодировал дольше, чем шла пьеса. Фотографии в фойе, отзывы в книге. Следующая постановка — по заявкам, подавать завхозу: он знает, где лежат часы.",
+  "en": "Thank you to everyone who came! The hall applauded longer than the play ran. Photos in the foyer, comments in the book. The next production is by request; apply to the handyman, he knows where the clock is.",
+  "ja": "ご来場のみなさま、ありがとうございました！ 拍手は劇より長く続きました。写真はロビーに、感想はノートに。次の上演はご希望しだい。用務員へどうぞ、時計のありかを知っています。"
+ },
+ "city.xh.show.sat_show.1": {
+  "ru": "Гаснет свет. Из-за кулис выходит завхоз в жилетке с цепочкой, оглядывает зал строго, как часы, которые показывают точное время, и говорит: «Время, оно... идёт». Зал смеётся, эхо смеётся чуть позже.",
+  "en": "The lights go down. From the wings comes the handyman in a waistcoat with a chain, surveys the hall as sternly as a clock showing the exact time, and says: \"Time... goes on.\" The hall laughs, the echo laughs a little later.",
+  "ja": "照明が落ちる。袖から鎖つきのベストの用務員が出てきて、正確な時刻を示す時計のように厳しく客席を見わたし、言う。「時間とは…進むものだ」。客席が笑い、反響が少し遅れて笑う。"
+ },
+ "city.xh.show.sat_show.2": {
+  "ru": "Второй акт: Мэр пытается остановить часы, и они бьют тринадцать. Мэр в ужасе, зал в восторге. На галёрке кто-то шепчет: «Это не по сценарию». Шепчет, видимо, реквизитор.",
+  "en": "Act two: the Mayor tries to stop the clock and it strikes thirteen. The Mayor is horrified, the hall delighted. Up in the gallery someone whispers, \"That is not in the script.\" The prop master, presumably.",
+  "ja": "第二幕。市長が時計を止めようとすると、時計は十三回鳴る。市長はぞっとし、客席は大喜び。桟敷席のだれかがささやく。「台本にないぞ」。たぶん小道具係だ。"
+ },
+ "city.xh.show.sat_show.3": {
+  "ru": "Финал. Часовщик заводит большие часы, и они идут. Свет медленно теплеет. Кто-то на сцене забывает слова, суфлёр шепчет, и весь зал подхватывает шёпотом. Аплодисменты три минуты, две из них эхо.",
+  "en": "The finale. The Clockmaker winds the big clock and it goes. The light slowly warms. Someone on stage forgets a line, the prompter whispers, and the whole hall takes it up in a whisper. Applause for three minutes, two of them echo.",
+  "ja": "フィナーレ。時計職人が大きな時計のねじを巻くと、時計が動きだす。照明がゆっくり暖かくなる。舞台のだれかがせりふを忘れ、プロンプターがささやき、客席じゅうがささやき声でそれに続く。拍手は三分、そのうち二分は反響。"
+ },
+ "city.xh.show.sat_day.1": {
+  "ru": "Дневной прогон перед премьерой. В зале пусто, а на сцене все в костюмах и страшно серьёзны. Режиссёр сидит в пятом ряду и повторяет: «Просто дышите. Свод всё доскажет».",
+  "en": "The day run before the premiere. The hall is empty, and on stage everyone is in costume and terribly serious. The director sits in row five repeating: \"Just breathe. The vault will say the rest.\"",
+  "ja": "初演前の昼のとおし稽古。客席は空っぽで、舞台では全員が衣装を着てひどくまじめな顔。演出家は五列目に座ってくり返す。「ただ息をして。あとは丸天井が言ってくれる」。"
+ },
+ "city.xh.show.sat_day.2": {
+  "ru": "Актёры выходят на поклон перед пустым залом. Кланяются неловко, на счёт. Потом одна показывает язык эху. Эхо, конечно, отвечает тем же.",
+  "en": "The actors come out for a bow in front of the empty hall. They bow awkwardly, on a count. Then one of them sticks her tongue out at the echo. The echo, of course, does the same.",
+  "ja": "役者たちが空っぽの客席に向かってお辞儀をする。ぎこちなく、数をかぞえながら。それから一人が反響に舌を出す。反響ももちろん、同じことを返す。"
+ },
+ "city.xh.show.sat_late.1": {
+  "ru": "Спектакль давно закончился. На сцене только дежурная лампа, и тихо тикают часы, те самые, большие. Их оставили на сцене. Они идут.",
+  "en": "The play ended long ago. On stage only the ghost light, and the clock ticking quietly, the big one. It was left on stage. It is going.",
+  "ja": "劇はとうに終わった。舞台には当番のランプだけ、そして大きな時計が静かに時を刻んでいる。舞台に置いていかれたのに、動いている。"
+ },
+ "city.xh.show.wk_day.1": {
+  "ru": "Репетиция без костюмов, в чём пришли. Актёр в свитере играет Мэра, актриса в пальто — городские часы. Режиссёр снимает очки: «Очень убедительно. Только громче».",
+  "en": "A rehearsal without costumes, in whatever they came in. An actor in a sweater plays the Mayor, an actress in a coat the town clock. The director takes off her glasses: \"Very convincing. Only louder.\"",
+  "ja": "衣装なしの稽古、みんな普段着のまま。セーターの役者が市長、コートの女優が町の時計。演出家は眼鏡をはずす。「とても説得力がある。ただし、もっと大きな声で」。"
+ },
+ "city.xh.show.wk_day.2": {
+  "ru": "На сцене пробуют свет. Прожектор то зажигается, то гаснет, и каждый раз кто-то говорит: «Ну вот». Это самая выразительная реплика дня.",
+  "en": "They are trying the lights on stage. A spotlight comes on, goes off, and each time someone says, \"There you go.\" It is the most expressive line of the day.",
+  "ja": "舞台で照明を試している。スポットがついては消え、そのたびにだれかが言う。「ほらね」。今日いちばん表現力のあるせりふだ。"
+ },
+ "city.xh.show.wk_eve.1": {
+  "ru": "Вечерняя репетиция: Часовщик вспоминает монолог, получается до середины. Суфлёр шепчет, Часовщик отвечает: «Я знаю, я думаю». Режиссёр пишет в блокнот: «Паузу оставить».",
+  "en": "An evening rehearsal: the Clockmaker recalls his monologue, getting half way. The prompter whispers; the Clockmaker answers, \"I know, I'm thinking.\" The director writes in her notebook: \"Keep the pause.\"",
+  "ja": "夕方の稽古。時計職人が独白を思い出そうとして、半分まで進む。プロンプターがささやくと、時計職人は答える。「わかってる、考えてるんだ」。演出家はノートに書く。「間は残す」。"
+ },
+ "city.xh.show.wk_eve.2": {
+  "ru": "Хор поёт за кулисами что-то тихое, а на сцене идёт сцена про почтальона. Получается странно красиво: письмо, прочитанное под колыбельную.",
+  "en": "The choir sings something quiet behind the scenes while the postwoman's scene plays on stage. It turns out strangely beautiful: a letter read to a lullaby.",
+  "ja": "舞台裏で合唱団が静かな歌を歌い、舞台では郵便配達の場面が進む。不思議と美しい。子守歌にのせて読まれる手紙。"
+ },
+ "city.xh.show.wk_late.1": {
+  "ru": "Ночью на сцене горит одна дежурная лампа. Зал пуст, и пустота под сводами кажется очень внимательным слушателем.",
+  "en": "At night one ghost light burns on stage. The hall is empty, and the emptiness under the vaults seems a very attentive listener.",
+  "ja": "夜、舞台では当番のランプが一つだけついている。ホールは空っぽで、丸天井の下の空っぽは、とても注意深い聞き手のように思える。"
+ },
+ "city.xh.chalk.morning": {
+  "ru": "Мелом на доске: «Чай 15. Кофе 30. Пирог 18. Дюшес 18». Ниже: «Вчерашний пирог — со скидкой и честным признанием». Последняя строчка подчёркнута.",
+  "en": "In chalk on the board: \"Tea 15. Coffee 30. Pie 18. Duchesse 18.\" Below: \"Yesterday's pie: discounted, with an honest confession.\" The last line is underlined.",
+  "ja": "黒板にチョークで。「紅茶15。コーヒー30。ピローグ18。ドゥシェス18」。その下。「きのうのピローグ、値引き、正直な告白つき」。最後の行には下線。"
+ },
+ "city.xh.chalk.day": {
+  "ru": "Мелом: «Днём — суп из кухни, если кухня не передумала. Чай 15, кофе 30, пирог 18». Внизу: «Дюшес 18, холодный и очень сладкий».",
+  "en": "In chalk: \"By day: soup from the kitchen, if the kitchen has not changed its mind. Tea 15, coffee 30, pie 18.\" At the bottom: \"Duchesse 18, cold and very sweet.\"",
+  "ja": "チョークで。「昼はキッチンのスープ、キッチンの気が変わらなければ。紅茶15、コーヒー30、ピローグ18」。いちばん下。「ドゥシェス18、冷たくてとても甘い」。"
+ },
+ "city.xh.chalk.eve": {
+  "ru": "Мелом: «Вечером всё то же, только тише. Чай 15, кофе 30, пирог 18, дюшес 18». Рядом нарисован чайник, который будто бы подмигивает.",
+  "en": "In chalk: \"In the evening, the same, only quieter. Tea 15, coffee 30, pie 18, Duchesse 18.\" Beside it, a drawn teapot that seems to wink.",
+  "ja": "チョークで。「夜も同じ、ただし静かに。紅茶15、コーヒー30、ピローグ18、ドゥシェス18」。そばに、ウインクしているように見えるティーポットの絵。"
+ },
+ "city.xh.chalk.dance": {
+  "ru": "Мелом, крупно: «ТАНЦЫ! Дюшес 18, пирог 18, чай 15, кофе 30. Танцующим салфетка бесплатно». Салфетка тоже нарисована.",
+  "en": "In chalk, big: \"DANCE! Duchesse 18, pie 18, tea 15, coffee 30. Napkin free for dancers.\" The napkin is drawn too.",
+  "ja": "チョークで大きく。「ダンス！ ドゥシェス18、ピローグ18、紅茶15、コーヒー30。踊る人にはナプキン無料」。ナプキンも描いてある。"
+ },
+ "city.xh.dance.band.1": {
+  "ru": "Играет живая музыка: пианист из соседнего дома и барабанщик на табуретке. Вы вальсируете с тем, кто всё время смотрит на ноги. Потом он смотрит на вас, и так лучше.",
+  "en": "Live music: a pianist from the next building and a drummer on a stool. You waltz with someone who keeps looking at their feet. Then they look at you, and that is better.",
+  "ja": "生演奏だ。隣の建物のピアニストと、スツールに座ったドラマー。あなたは、ずっと足もとを見ている相手とワルツを踊る。やがて相手があなたを見る。そのほうがいい。"
+ },
+ "city.xh.dance.band.2": {
+  "ru": "Быстрый танец. Все кружатся, зеркальный шар рассыпает по лицам и стенам пятна света. На секунду зал похож на аквариум со светящимися рыбками.",
+  "en": "A fast dance. Everyone spins, the mirror ball scatters spots of light over faces and walls. For a second the hall is an aquarium of glowing fish.",
+  "ja": "テンポの速いダンス。みんながくるくる回り、ミラーボールが顔や壁に光の粒を散らす。一瞬、ホールは光る魚の水槽になる。"
+ },
+ "city.xh.dance.band.3": {
+  "ru": "Дамский вальс: приглашают девушки. Тебе кланяются, и ты кланяешься в ответ. Партнёрша говорит: «Не смотри на ноги, они сами знают». Ноги правда знают.",
+  "en": "Ladies' choice: the girls do the asking. Someone bows to you and you bow back. Your partner says: \"Don't look at your feet, they know.\" They do.",
+  "ja": "レディースワルツ。女の子が誘う。お辞儀をされて、お辞儀を返す。パートナーが言う。「足を見ないで、足は知ってるから」。ほんとうに知っている。"
+ },
+ "city.xh.dance.fri_idle.1": {
+  "ru": "Пустой танцпол ждёт вечера. Зеркальный шар молчит, флажки колышутся от сквозняка, а в углу пианино помнит вальс. Ты делаешь один шаг на всякий случай.",
+  "en": "The empty floor waits for evening. The mirror ball is silent, the pennants stir in the draught, and in the corner the piano remembers a waltz. You take one step, just in case.",
+  "ja": "からっぽのフロアは夜を待っている。ミラーボールは黙り、旗はすきま風にゆれ、隅のピアノはワルツを覚えている。念のため、一歩だけ踏んでみる。"
+ },
+ "city.xh.dance.sun_tea.1": {
+  "ru": "Чайные танцы: пожилые пары танцуют медленно и очень красиво. Партнёр шепчет: «Раз-два-три, не торопись». Ты не торопишься, и вальс получается.",
+  "en": "Tea dances: elderly couples dance slowly and very beautifully. Your partner whispers: \"One-two-three, don't hurry.\" You don't hurry, and the waltz works.",
+  "ja": "お茶のダンス。年配のカップルがゆっくり、とても美しく踊っている。パートナーがささやく。「いち、に、さん、あわてないで」。あわてないと、ワルツはうまくいく。"
+ },
+ "city.xh.dance.sun_idle.1": {
+  "ru": "Воскресенье вне чайных часов: танцпол блестит, будто его только что вымыли. Так оно и есть.",
+  "en": "Sunday outside the tea hours: the floor gleams as if just washed. It was.",
+  "ja": "お茶の時間ではない日曜。フロアは洗ったばかりのように光っている。実際、洗ったばかりだ。"
+ },
+ "city.xh.dance.wk_class.1": {
+  "ru": "Танцевальный кружок: руководитель хлопает счёт и громко говорит: «И-раз, и-два!» Ты стараешься. Выходит почти как у остальных.",
+  "en": "The dance club: the teacher claps the count and says loudly, \"And one, and two!\" You try. It comes out nearly like everyone else's.",
+  "ja": "ダンス教室。先生が手をたたいて拍をとり、大きな声で言う。「いーち、にー！」。がんばる。ほかの人とほとんど同じようにできた。"
+ },
+ "city.xh.dance.wk_idle.1": {
+  "ru": "Натёртый до блеска пол хорошо отражает свод. Можно двигаться без свидетелей: никто не видит, как ты спотыкаешься о собственную тень.",
+  "en": "The polished floor reflects the vault well. You can move without witnesses: no one sees you trip over your own shadow.",
+  "ja": "磨きこまれた床は丸天井をよく映す。見ている人はいないから、自由に動ける。自分の影につまずくところも、だれにも見られない。"
+ },
+ "city.xh.mirror.1": {
+  "ru": "Зеркало вдоль стены, перед ним станок, отполированный ладонями до золотого блеска. В зеркале ты чуть выше, чем в жизни. Наверное, из-за осанки.",
+  "en": "A mirror along the wall, a barre before it, polished by palms to a golden shine. In the mirror you are a little taller than in life. Posture, probably.",
+  "ja": "壁に沿った鏡と、その前のバー。手のひらに磨かれて金色に光っている。鏡の中の自分は実物より少し背が高い。たぶん姿勢のせいだ。"
+ },
+ "city.xh.mirror.2": {
+  "ru": "Ты пробуешь три шага вальса перед зеркалом. На третьем отражение делает на шаг больше. Видимо, оно тренируется давно.",
+  "en": "You try three waltz steps in front of the mirror. On the third, the reflection takes one step more. It has clearly been practising longer.",
+  "ja": "鏡の前でワルツの三歩を試す。三歩め、映った自分はもう一歩多く進む。ずっと前から練習していたらしい。"
+ },
+ "city.xh.mirror.3": {
+  "ru": "На раме наклейка: «Спину держать. Улыбаться по желанию. Дышать обязательно». Последнее подчёркнуто дважды.",
+  "en": "A sticker on the frame: \"Keep your back straight. Smile if you like. Breathing is compulsory.\" The last is underlined twice.",
+  "ja": "鏡の枠にシール。「背すじをのばす。笑顔はお好みで。呼吸は必須」。最後の一文には二重線。"
+ },
+ "city.xh.mirror.4": {
+  "ru": "В углу зеркала отпечаток маленькой ладони, а на уровне пояса другой, побольше. Похоже, здесь учатся танцевать с самого детства.",
+  "en": "In the corner of the mirror, the print of a small palm, and at waist height a larger one. It looks as if people here learn to dance from childhood.",
+  "ja": "鏡の隅に小さな手のひらの跡、腰の高さにはもう少し大きな跡。ここでは子どものころから踊りを習うらしい。"
+ },
+ "quest.hall_premiere.title": {
+  "ru": "Премьера в «Сводах»",
+  "en": "Premiere at the Vaults",
+  "ja": "「ヴォールト」の初演"
+ },
+ "quest.hall_premiere.desc": {
+  "ru": "В Доме собраний любительский театр готовит спектакль «Время, вперёд!». Говорят, что клубные шахматные часы последний раз видели не в клубе. Загляну: вдруг пригожусь.",
+  "en": "In the Assembly Hall an amateur theatre is preparing the play Time, Forward! They say the club's chess clock was last seen somewhere other than the club. I'll look in; maybe I will be of use.",
+  "ja": "集会所では、アマチュア劇団が『時よ、進め』の準備をしている。クラブのチェス時計が最後に見られたのはクラブではない、という噂だ。のぞいてみよう、役に立てるかもしれない。"
+ },
+ "quest.hall_premiere.board.log": {
+  "ru": "У входа приколото объявление театра «Волна». Прочту, что у них на сегодня.",
+  "en": "A notice from the Wave theatre is pinned by the entrance. I'll read what they have for today.",
+  "ja": "入口に劇団「波」のお知らせが留めてある。きょうの予定を読んでみよう。"
+ },
+ "quest.hall_premiere.board.obj": {
+  "ru": "Прочитать объявление театра в вестибюле",
+  "en": "Read the theatre's notice in the lobby",
+  "ja": "ロビーで劇団のお知らせを読む"
+ },
+ "quest.hall_premiere.props.log": {
+  "ru": "Часы нужны большие, а клуб ищет маленькие. Загляну на реквизитный стол за кулисами: вдруг они там встретятся.",
+  "en": "They need a big clock and the club is looking for a small one. I'll look at the props table backstage: maybe the two will meet.",
+  "ja": "劇団がほしいのは大きな時計で、クラブが探しているのは小さな時計。舞台裏の小道具テーブルを見てみよう、ひょっとして出会えるかもしれない。"
+ },
+ "quest.hall_premiere.props.obj": {
+  "ru": "Осмотреть реквизитный стол за кулисами",
+  "en": "Look over the props table backstage",
+  "ja": "舞台裏の小道具テーブルを調べる"
+ },
+ "quest.hall_premiere.show.log": {
+  "ru": "Всё готово. Займу место в зале и посмотрю, как «Время» идёт вперёд.",
+  "en": "All is ready. I'll take a seat in the hall and watch Time go forward.",
+  "ja": "準備はととのった。客席に座って、「時」が進むのを見届けよう。"
+ },
+ "quest.hall_premiere.show.obj": {
+  "ru": "Посмотреть спектакль со зрительского места",
+  "en": "Watch the play from a seat in the hall",
+  "ja": "客席から舞台を観る"
+ },
+ "quest.hall_premiere.done": {
+  "ru": "Эхо хлопало вместе с залом, а завхоз-Часовщик поклонился так, словно и правда остановил время. На выходе смотритель сунул мне сорок рублей: «За внимательность. Купи пирог в буфете и расскажи шахматистам про часы».",
+  "en": "The echo clapped along with the hall, and the handyman-Clockmaker bowed as if he really had stopped time. At the door the caretaker pressed forty roubles into my hand: \"For paying attention. Buy a pie at the buffet and tell the chess players about the clock.\"",
+  "ja": "反響は客席といっしょに拍手し、用務員の時計職人は、ほんとうに時間を止めたかのようにお辞儀をした。出口で管理人が四十ルーブルを握らせてくれた。「ちゃんと見てくれたお礼です。売店でピローグを買って、チェスの人たちに時計のことを教えてあげて」。"
+ },
+ "quest.hall_dance_night.title": {
+  "ru": "Танцы в «Сводах»",
+  "en": "Dancing at the Vaults",
+  "ja": "「ヴォールト」でダンス"
+ },
+ "quest.hall_dance_night.desc": {
+  "ru": "На афише в вестибюле написано про вечер танцев. Хорошо бы не стоять у стенки, а выйти на паркет. Только сначала надо понять, чего от меня ждут.",
+  "en": "The poster in the lobby announces a dance night. Better not to stand by the wall but to step onto the floor. First, though, I must work out what is expected of me.",
+  "ja": "ロビーの掲示にダンスの夕べの予告がある。壁際に立っているより、フロアに出たほうがいい。でもまず、何を期待されているのか知っておこう。"
+ },
+ "quest.hall_dance_night.mirror.log": {
+  "ru": "Сначала репетиция перед зеркалом: в боковом зале есть станок и зеркало во всю стену.",
+  "en": "First a rehearsal in front of the mirror: the side hall has a barre and a wall-sized mirror.",
+  "ja": "まずは鏡の前で稽古。横のホールにはバーと壁いっぱいの鏡がある。"
+ },
+ "quest.hall_dance_night.mirror.obj": {
+  "ru": "Встать к зеркалу у станка в танцевальном зале",
+  "en": "Stand at the barre mirror in the dance room",
+  "ja": "ダンスルームのバーの前の鏡に立つ"
+ },
+ "quest.hall_dance_night.floor.log": {
+  "ru": "Ноги вроде бы слушаются. Пора выходить на танцпол.",
+  "en": "My feet seem to obey. Time to step onto the dance floor.",
+  "ja": "足はどうやら言うことを聞いてくれる。そろそろフロアに出よう。"
+ },
+ "quest.hall_dance_night.floor.obj": {
+  "ru": "Потанцевать на танцполе",
+  "en": "Dance on the dance floor",
+  "ja": "フロアで踊る"
+ },
+ "quest.hall_dance_night.book.log": {
+  "ru": "После танцев принято записывать впечатления в книгу отзывов в фойе. Почти обязательный номер программы.",
+  "en": "After the dancing it is the custom to write one's impressions in the guest book in the foyer. Almost a compulsory item of the programme.",
+  "ja": "踊ったあとは、ロビーの感想ノートに印象を書くのがならわし。ほとんどプログラムの一部だ。"
+ },
+ "quest.hall_dance_night.book.obj": {
+  "ru": "Оставить запись в книге отзывов в фойе",
+  "en": "Leave an entry in the guest book in the foyer",
+  "ja": "ロビーの感想ノートに書きこむ"
+ },
+ "quest.hall_dance_night.done": {
+  "ru": "Я написал: «Зашёл на минутку, остался на вальс». Смотритель кивнул: именно так пишут все, кто придёт ещё раз. И налил мне чаю.",
+  "en": "I wrote: \"Came in for a minute, stayed for a waltz.\" The caretaker nodded: that is exactly what everyone writes who comes again. And poured me some tea.",
+  "ja": "「ちょっと寄っただけのつもりが、ワルツまでいてしまいました」と書いた。管理人はうなずいた。もう一度来る人は、みんなそう書くのだそうだ。そして紅茶を一杯ついでくれた。"
+ },
+ "city.xh.prompter.prompt": {
+  "ru": "E — открыть пьесу на суфлёрской стойке",
+  "en": "E — open the play on the prompter's stand",
+  "ja": "E：プロンプターの台の台本を開く"
+ },
+ "city.xh.booklet.prompt": {
+  "ru": "E — взять программку",
+  "en": "E — take a programme",
+  "ja": "E：プログラムをもらう"
+ },
+ "city.xh.sheet.prompt": {
+  "ru": "E — взять ноты с пюпитра",
+  "en": "E — pick up the sheet music",
+  "ja": "E：譜面台の楽譜を手に取る"
+ },
+ "city.xh.evenings.prompt": {
+  "ru": "E — посмотреть доску корешков",
+  "en": "E — look at the stub board",
+  "ja": "E：半券ボードを見る"
+ },
+ "city.xh.exh.prompt": {
+  "ru": "E — прочитать табличку выставки",
+  "en": "E — read the exhibition label",
+  "ja": "E：展示の札を読む"
+ },
+ "city.xh.lecture.prompt": {
+  "ru": "E — послушать лекцию с первого ряда",
+  "en": "E — listen to the lecture from the front row",
+  "ja": "E：最前列で講義を聞く"
+ },
+ "city.xh.lecture.title": {
+  "ru": "Лекция",
+  "en": "The lecture",
+  "ja": "講義"
+ },
+ "city.xh.choir.prompt": {
+  "ru": "E — послушать хор «Прибой»",
+  "en": "E — listen to the «Surf» choir",
+  "ja": "E：合唱団「プリボイ」を聴く"
+ },
+ "city.xh.steps.prompt": {
+  "ru": "E — разучить шаги на метках",
+  "en": "E — practise the steps on the marks",
+  "ja": "E：床の印でステップを練習する"
+ },
+ "city.xh.aud.prompt": {
+  "ru": "E — встать на отметку: проба голоса",
+  "en": "E — step onto the mark: a voice trial",
+  "ja": "E：印の上に立つ：声のオーディション"
+ },
+ "city.xh.bread.prompt": {
+  "ru": "E — вынуть хлеб из печи",
+  "en": "E — take the bread out of the oven",
+  "ja": "E：オーブンからパンを取り出す"
+ },
+ "city.xh.soup.prompt": {
+  "ru": "E — попросить тарелку супа",
+  "en": "E — ask for a bowl of soup",
+  "ja": "E：スープを一皿頼む"
+ },
+ "city.xh.tea.prompt": {
+  "ru": "E — налить чаю из самовара",
+  "en": "E — pour tea from the samovar",
+  "ja": "E：サモワールから紅茶を注ぐ"
+ },
+ "city.xh.pies.prompt": {
+  "ru": "E — взять пирожок с решётки",
+  "en": "E — take a pie from the rack",
+  "ja": "E：網から小さなパイを取る"
+ },
+ "city.xh.cloaktalk.prompt": {
+  "ru": "E — поговорить с гардеробщиком",
+  "en": "E — talk to the cloakroom attendant",
+  "ja": "E：クロークの係と話す"
+ },
+ "city.xh.choirtalk.prompt": {
+  "ru": "E — поговорить с хормейстером",
+  "en": "E — talk to the choir leader",
+  "ja": "E：合唱指揮者と話す"
+ },
+ "city.xh.cooktalk.prompt": {
+  "ru": "E — поговорить с поваром",
+  "en": "E — talk to the cook",
+  "ja": "E：料理人と話す"
+ },
+ "city.xh.prompter.line.1": {
+  "ru": "Суфлёрская стойка у левой кулисы. На наклонной доске лежит толстая тетрадь: пьеса «Время, вперёд!», каждая страница исчёркнута карандашом.",
+  "en": "The prompter's stand at the left wing. A thick notebook lies on the slanted board: the play «Time, Forward!», every page scribbled over in pencil.",
+  "ja": "舞台の左袖のプロンプター台。斜めの板の上に分厚いノートが置かれている。劇「時よ、前へ！」の台本で、どのページも鉛筆で書き込まれている。"
+ },
+ "city.xh.prompter.line.2": {
+  "ru": "Суфлёрская лампа с зелёным абажуром. Под ней карандаш на верёвочке и надпись: «Читай тихо. Эхо всё повторяет».",
+  "en": "The prompter's lamp with a green shade. Under it a pencil on a string and a note: \"Read quietly. The echo repeats everything.\"",
+  "ja": "緑のシェードのプロンプター用ランプ。その下にひも付きの鉛筆と注意書き。「小声で読むこと。エコーが全部繰り返します」"
+ },
+ "city.xh.text.script.title": {
+  "ru": "«Время, вперёд!»: суфлёрский экземпляр",
+  "en": "«Time, Forward!»: the prompter's copy",
+  "ja": "「時よ、前へ！」プロンプター用の台本"
+ },
+ "city.xh.script.1": {
+  "ru": "ВРЕМЯ, ВПЕРЁД!\nКомедия в трёх действиях для театра «Волна».\nДействующие лица: Часовщик, хозяин мастерской на площади. Мэр. Почтальонша. Хор часов (за сценой).\nНа полях: «Суфлёр! Читай тихо. Эхо в Сводах повторяет всё, включая тебя».",
+  "en": "TIME, FORWARD!\nA comedy in three acts for the «Wave» theatre.\nCharacters: the Watchmaker, who keeps a workshop on the square. The Mayor. The Postwoman. A Chorus of Clocks (offstage).\nIn the margin: \"Prompter! Read quietly. The echo in the Vaults repeats everything, you included.\"",
+  "ja": "時よ、前へ！\n劇団「ヴォルナ」のための三幕の喜劇。\n登場人物：広場で店を構える時計職人。市長。郵便配達の女性。時計たちの合唱（舞台裏）。\n余白に：「プロンプターへ。小声で読むこと。ヴォールトのエコーはあなたの声まで繰り返します」"
+ },
+ "city.xh.script.2": {
+  "ru": "ДЕЙСТВИЕ ПЕРВОЕ. Площадь маленького города. На башне стоят часы, которые никогда не врут, потому что не ходят вообще. Часовщик сидит под ними и ест бутерброд.\nЧАСОВЩИК. Двадцать лет я чиню чужое время. Своё починить некогда.",
+  "en": "ACT ONE. The square of a small town. A clock on the tower never lies, because it does not run at all. The Watchmaker sits under it eating a sandwich.\nWATCHMAKER. Twenty years I have mended other people's time. I never have time to mend my own.",
+  "ja": "第一幕。小さな町の広場。塔の時計は決して嘘をつかない。そもそも動いていないからだ。時計職人がその下に座ってサンドイッチを食べている。\n時計職人：二十年間、人の時間を直してきた。自分の時間を直す暇はなかったよ。"
+ },
+ "city.xh.script.3": {
+  "ru": "МЭР (входит, не глядя на часы). Я опять опаздываю?\nЧАСОВЩИК. Вы никогда не опаздываете, господин Мэр. У нас просто нечем.\nМЭР. Тогда почему мне кажется, что я всё время бегу?\nНа полях: «Тут пауза. Пусть зал вздохнёт».",
+  "en": "MAYOR (enters without a glance at the clock). Am I late again?\nWATCHMAKER. You are never late, Mr Mayor. We have nothing to be late by.\nMAYOR. Then why do I feel I am running all the time?\nIn the margin: \"Pause here. Let the house sigh.\"",
+  "ja": "市長（時計を見ずに入ってくる）：また遅れたかね。\n時計職人：市長は遅れたことなどありませんよ。ここには遅れる物差しがないんです。\n市長：ではなぜ、いつも走っている気がするんだろう。\n余白に：「ここで間。客席にため息をつかせる」"
+ },
+ "city.xh.script.4": {
+  "ru": "ПОЧТАЛЬОНША (с сумкой). Письмо на башню. Без адреса. Только: «Тому, кто заведёт».\nЧАСОВЩИК. А что внутри?\nПОЧТАЛЬОНША. Не вскрываю. Но оно тикает.\nХОР (за сценой). Тик-так.\nНа полях жирно: «Хор не вступает раньше слова „тикает“!»",
+  "en": "POSTWOMAN (with her bag). A letter for the tower. No address. Only: \"To whoever winds it.\"\nWATCHMAKER. What is inside?\nPOSTWOMAN. I do not open them. But it ticks.\nCHORUS (offstage). Tick-tock.\nIn the margin, heavily: \"The chorus does not come in before the word 'ticks'!\"",
+  "ja": "郵便配達：（かばんを提げて）塔宛ての手紙です。宛名はなし。ただ「巻く人へ」とだけ。\n時計職人：中身は？\n郵便配達：開けません。でも、チクタクいってます。\n合唱（舞台裏）：チク、タク。\n余白に太字で：「合唱は『チクタク』という言葉より前に入らないこと！」"
+ },
+ "city.xh.script.5": {
+  "ru": "ДЕЙСТВИЕ ВТОРОЕ. Мэр хочет остановить часы, чтобы никто больше не торопился: приказ, печать, речь. Часы бьют тринадцать.\nМЭР. Тринадцать? Такого часа нет!\nЧАСОВЩИК. Теперь есть. Один лишний час, и он ваш.\nСвет: медленно в тёплый. Эхо не глушить.",
+  "en": "ACT TWO. The Mayor wants to stop the clock so that nobody hurries any more: an order, a stamp, a speech. The clock strikes thirteen.\nMAYOR. Thirteen? There is no such hour!\nWATCHMAKER. There is now. One extra hour, and it is yours.\nLights: slowly to warm. Do not damp the echo.",
+  "ja": "第二幕。市長は、もう誰も急がないように時計を止めようとする。命令、印、演説。時計は十三時を打つ。\n市長：十三時だと？ そんな時刻はない！\n時計職人：今できました。余分な一時間です。市長のものですよ。\n照明：ゆっくり暖色へ。エコーは消さないこと。"
+ },
+ "city.xh.script.6": {
+  "ru": "ПОЧТАЛЬОНША (читает письмо вслух). «Дорогой Часовщик! Когда ты это прочтёшь, я уже не смогу ждать. Заведи часы сам, а не по приказу. Твоя мама».\nЧасовщик молчит. Мэр снимает шляпу.\nРежиссёр: «Если в зале кашляют, держим паузу, пока не перестанут».",
+  "en": "POSTWOMAN (reads the letter aloud). \"Dear Watchmaker! By the time you read this I will no longer be able to wait. Wind the clock yourself, not by order. Your mother.\"\nThe Watchmaker is silent. The Mayor takes off his hat.\nDirector: \"If someone coughs in the house, we hold the pause until they stop.\"",
+  "ja": "郵便配達：（手紙を読み上げる）「親愛なる時計職人へ。これを読むころ、わたしはもう待てません。命令ではなく、自分の手で時計を巻きなさい。母より」\n時計職人は黙っている。市長が帽子を脱ぐ。\n演出：「客席で咳が出たら、止むまで間を保つこと」"
+ },
+ "city.xh.script.7": {
+  "ru": "ДЕЙСТВИЕ ТРЕТЬЕ. Часовщик поднимается на башню. Внизу все ждут. Он вставляет ключ (бутафорский, из витрины в фойе) и поворачивает. Ничего. Ещё раз.\nЧАСОВЩИК. Это просто. Нужно только захотеть, чтобы время шло вперёд. Остальное оно сделает само.",
+  "en": "ACT THREE. The Watchmaker climbs the tower. Below, everyone waits. He puts in a key (a prop one, from the case in the foyer) and turns it. Nothing. Again.\nWATCHMAKER. It is simple. You only have to want time to move forward. The rest it does itself.",
+  "ja": "第三幕。時計職人が塔にのぼる。下ではみんなが待っている。彼は鍵（ロビーのケースから借りた小道具）を差し込んで回す。何も起きない。もう一度。\n時計職人：簡単なことだ。時間が前へ進んでほしいと願うだけでいい。あとは時間が自分でやってくれる。"
+ },
+ "city.xh.script.8": {
+  "ru": "Часы идут. Сначала тихо, потом громче, потом подхватывает хор. Площадь танцует вальс (если успеем разучить: см. пятницу в боковом зале).\nМЭР. Господи, как же быстро!\nЧАСОВЩИК. Так и надо.\nПоклон. Занавес. Свет в зал.\nНа последней странице карандашом: «Спасибо всем. Эхо тоже кланяется».",
+  "en": "The clock starts. Quietly at first, then louder, then the chorus takes it up. The square dances a waltz (if we manage to learn it: see Friday in the side room).\nMAYOR. Good heavens, how fast it goes!\nWATCHMAKER. As it should.\nBow. Curtain. Lights up in the house.\nOn the last page in pencil: \"Thank you all. The echo bows too.\"",
+  "ja": "時計が動き出す。最初は静かに、やがて大きく、そして合唱が引き継ぐ。広場の人々がワルツを踊る（間に合えば。金曜日の脇ホールを参照）。\n市長：なんと、速いこと！\n時計職人：それでいいんです。\n礼。幕。客席に明かり。\n最後のページに鉛筆で：「みなさんありがとう。エコーもお辞儀しています」"
+ },
+ "city.xh.script.9": {
+  "ru": "На обороте последнего листа заметки режиссёра: «1. Часовщик говорит быстро, а часы идут медленно: поменять местами. 2. Почтальонша не плачет, а сдерживается, это разное. 3. Мэр снимает шляпу на слове „мама“, не раньше. 4. Хору дышать вместе. 5. Эхо не побеждать, а использовать».",
+  "en": "On the back of the last sheet, the director's notes: \"1. The Watchmaker speaks fast and the clock runs slow: swap them. 2. The Postwoman does not cry, she holds it in: that is different. 3. The Mayor takes off his hat on the word 'mother', not before. 4. The chorus breathes together. 5. Do not fight the echo, use it.\"",
+  "ja": "最後の紙の裏に演出家のメモ。「1. 時計職人は早口で、時計はゆっくり進む。逆にすること。2. 郵便配達は泣くのではなく、こらえる。それは違う。3. 市長は『母』という言葉で帽子を脱ぐ。その前はだめ。4. 合唱は息を合わせる。5. エコーとは戦わず、使うこと」"
+ },
+ "city.xh.script.10": {
+  "ru": "Красным карандашом под заметками: «Премьера в субботу. Не забыть ключ. Не забыть Часовщика. Не забыть, что мы любители, а значит любим».",
+  "en": "In red pencil under the notes: \"Premiere on Saturday. Do not forget the key. Do not forget the Watchmaker. Do not forget that we are amateurs, which means we love it.\"",
+  "ja": "メモの下に赤鉛筆で：「初日は土曜日。鍵を忘れないこと。時計職人を忘れないこと。わたしたちはアマチュア、つまり愛する人だということも忘れないこと」"
+ },
+ "city.xh.text.guestbook.title": {
+  "ru": "Книга отзывов «Сводов»",
+  "en": "The Vaults guest book",
+  "ja": "「ヴォールト」の感想ノート"
+ },
+ "city.xh.guest.10": {
+  "ru": "Свежая запись, почерк аккуратный: «Вышла афиша на следующую неделю: хор, лекция, танцы, и театр читает новую пьесу. Билетные корешки вечеров вешаем на доску в фойе. Приходите за корешками». Подпись: «Смотритель».",
+  "en": "A fresh entry in a tidy hand: \"The poster for next week is out: choir, lecture, dancing, and the theatre is reading a new play. We pin the evenings' ticket stubs on the board in the foyer. Come for the stubs.\" Signed: \"The caretaker\".",
+  "ja": "新しい書き込み。きちんとした字で：「来週の告知が出ました。合唱、講義、ダンス、そして劇団が新しい戯曲の読み合わせをします。各夜の半券はロビーのボードに留めます。半券をもらいにいらしてください」署名：「管理人」"
+ },
+ "city.xh.guest.11": {
+  "ru": "Ниже карандашом, торопливо: «Прошу пирогов к семи. Хор голодный, а у хора голос только после пирога». И ещё ниже другим почерком: «Пироги с четырёх. Не торопите повара, он и так торопится».",
+  "en": "Underneath in pencil, in a hurry: \"Please have pies by seven. The choir is hungry, and the choir only has a voice after a pie.\" And lower in another hand: \"Pies from four. Do not rush the cook, he is rushing already.\"",
+  "ja": "その下に鉛筆で急いだ字：「七時までにパイをお願いします。合唱団はお腹をすかせていて、パイのあとでないと声が出ません」さらにその下に別の字で：「パイは四時から。料理人を急かさないで。もう十分急いでいます」"
+ },
+ "city.xh.text.booklet.title": {
+  "ru": "Программка Дома собраний «Своды»",
+  "en": "The Vaults hall programme",
+  "ja": "集会所「ヴォールト」のプログラム"
+ },
+ "city.xh.booklet.1": {
+  "ru": "ДОМ СОБРАНИЙ «СВОДЫ».\nПрограммка на неделю. Над нами четыре белых свода: самый высокий над залом, самый широкий над танцами, самый скромный над кухней, а первый встречает у двери и держит ваше пальто.",
+  "en": "THE VAULTS COMMUNITY HALL.\nThe week's programme. Above us four white vaults: the tallest over the hall, the widest over the dancing, the most modest over the kitchen, and the first meets you at the door and holds your coat.",
+  "ja": "集会所「ヴォールト」。\n今週のプログラム。頭上には四つの白いヴォールトがあります。いちばん高いのがホール、いちばん広いのがダンス、いちばん控えめなのが厨房、そして一つめが入口でお客さまを迎え、コートを預かります。"
+ },
+ "city.xh.booklet.2": {
+  "ru": "Что когда: вторник — лекция, среда — хор «Прибой», четверг — репетиция театра «Волна», пятница — танцы, суббота — премьера и танцы после, воскресенье — чайные танцы. Понедельник отдыхаем. Вход свободный, места по любви.",
+  "en": "What when: Tuesday the lecture, Wednesday the «Surf» choir, Thursday a rehearsal of the «Wave» theatre, Friday dancing, Saturday the premiere and dancing after, Sunday tea dances. Mondays we rest. Admission is free, seats by love.",
+  "ja": "いつ何があるか。火曜は講義、水曜は合唱団「プリボイ」、木曜は劇団「ヴォルナ」の稽古、金曜はダンス、土曜は初日とその後のダンス、日曜はお茶のダンス。月曜は休みです。入場は無料、席は好きなところへ。"
+ },
+ "city.xh.booklet.3": {
+  "ru": "Правила зала: не хлопать на последней паузе, эхо хлопает за вас. На сцену не выходить в танцевальных туфлях. Чай пить в буфете, а не в партере. Если забыли вещь, она ждёт на полке в гардеробе, и её никто не осуждает.",
+  "en": "House rules: do not applaud in the final pause, the echo applauds for you. Do not step on the stage in dancing shoes. Drink tea at the bar, not in the stalls. If you forget something, it waits on the shelf in the cloakroom, and nobody judges it.",
+  "ja": "ホールの決まり。最後の間では拍手しないこと。エコーがかわりに拍手します。ダンスシューズで舞台に上がらないこと。お茶はバーで、客席では飲まないこと。忘れ物はクロークの棚で待っています。誰もそれを責めません。"
+ },
+ "city.xh.booklet.4": {
+  "ru": "Кто есть кто. Смотритель: ключи, гардероб, буфет. Хормейстер Айла Берзиня: «Прибой», со среды по воскресенье с пяти до девяти. Завхоз он же Часовщик: до девяти вечера, по договорённости. Кухня: хлеб с утра, суп днём, пироги к вечеру, чай до закрытия.",
+  "en": "Who is who. The caretaker: keys, cloakroom, bar. The choir leader Isla Bērziņa: «Surf», Wednesday to Sunday, five to nine. The steward, who is also the Watchmaker: until nine in the evening, by agreement. The kitchen: bread in the morning, soup by day, pies towards evening, tea until closing.",
+  "ja": "だれが何をするか。管理人：鍵、クローク、バー。合唱指揮者アイラ・ベールジニャ：「プリボイ」、水曜から日曜の五時から九時。管財係（兼時計職人）：夜九時まで、相談の上で。厨房：朝はパン、昼はスープ、夕方にはパイ、閉館まで紅茶。"
+ },
+ "city.xh.text.sheet_stage.title": {
+  "ru": "Ноты на рояле: «Вальс „Своды“»",
+  "en": "Music on the grand piano: the «Vaults» waltz",
+  "ja": "グランドピアノの楽譜：ワルツ「ヴォールト」"
+ },
+ "city.xh.sheet.stage.1": {
+  "ru": "Ноты для рояля: «Вальс „Своды“», сочинение местного учителя музыки. На полях карандашом: «Левая рука как шаги по пустому залу. Правая как эхо, которое не торопится».",
+  "en": "Sheet music for the piano: the «Vaults» waltz, composed by a local music teacher. In the margin in pencil: \"The left hand like steps across an empty hall. The right like an echo in no hurry.\"",
+  "ja": "ピアノの楽譜：地元の音楽教師が作曲したワルツ「ヴォールト」。余白に鉛筆で：「左手は誰もいないホールを歩く足音のように。右手は急がないエコーのように」"
+ },
+ "city.xh.sheet.stage.2": {
+  "ru": "Последний такт зачёркнут и переписан: вместо точки фермата. Пометка: «Держать, пока смотритель не кашлянет. Если не кашлянет — до утра».",
+  "en": "The last bar is crossed out and rewritten: a fermata instead of a full stop. A note: \"Hold until the caretaker coughs. If he does not cough, until morning.\"",
+  "ja": "最後の小節は消されて書き直されている。終止のかわりにフェルマータ。メモ：「管理人が咳をするまで伸ばすこと。咳をしなければ朝まで」"
+ },
+ "city.xh.text.sheet_dance.title": {
+  "ru": "Ноты на пианино: танцевальная программа",
+  "en": "Music on the upright: the dance programme",
+  "ja": "アップライトの楽譜：ダンスのプログラム"
+ },
+ "city.xh.sheet.dance.1": {
+  "ru": "Листок с программой вечера: вальс, полька, фокстрот, снова вальс (по заявкам), «Дамский» в конце. Карандашом рядом: «Фокстрот — только для тех, кто не боится».",
+  "en": "A leaflet with the evening's programme: a waltz, a polka, a foxtrot, another waltz (by request), the ladies' choice at the end. In pencil beside it: \"Foxtrot only for those who are not afraid.\"",
+  "ja": "夜のプログラムの紙。ワルツ、ポルカ、フォックストロット、もう一度ワルツ（リクエスト）、最後に女性から誘う曲。横に鉛筆で：「フォックストロットは怖くない人だけ」"
+ },
+ "city.xh.sheet.dance.2": {
+  "ru": "Ноты польки «Весёлые ноги». Над третьей строчкой нарисованы туфли с крылышками. Подпись: «Играть быстрее, чем кажется разумным».",
+  "en": "The music of the polka «Merry Feet». Over the third line, a drawing of shoes with little wings. Written: \"Play faster than seems sensible.\"",
+  "ja": "ポルカ「陽気な足」の楽譜。三段目の上に羽の生えた靴の絵。書き込み：「常識で考えるより速く弾くこと」"
+ },
+ "city.xh.exh.east.1": {
+  "ru": "«Море, которое мы знаем». Сегодня на стене работы любителей: рыбацкие лодки, маяк в тумане, песчаная коса. К табличке пришпилен лист: «Голосуем карандашом: какое море лучшее». Лидирует то, которое с чайкой.",
+  "en": "«The Sea We Know». On the wall this week: amateurs' work, fishing boats, a lighthouse in fog, a sand spit. A sheet is pinned to the label: \"We vote in pencil: which sea is best.\" The one with the gull is ahead.",
+  "ja": "「わたしたちの知る海」。今週の壁には素人画家の作品。漁船、霧の中の灯台、砂州。札には紙が留めてある。「鉛筆で投票：いちばんいい海は？」今はカモメのいる海がリード。"
+ },
+ "city.xh.exh.east.2": {
+  "ru": "«Соседи». Новая развеска: портреты жильцов серпантинного дома, написанные маслом, но в манере открытки. Под каждым имя и этаж. Один сосед вышел очень похоже, и теперь прячется от собственного портрета.",
+  "en": "«Neighbours». A new hang: portraits of the residents of the serpentine house, painted in oils but in the manner of a postcard. Under each, a name and a floor. One neighbour came out so true that he now hides from his own portrait.",
+  "ja": "「お隣さん」。展示替え。蛇行する集合住宅の住人の肖像が、油絵でありながら絵はがき風に描かれている。それぞれの下に名前と階。ある住人はそっくりに描かれすぎて、自分の肖像から逃げ回っている。"
+ },
+ "city.xh.exh.east.3": {
+  "ru": "«Вечера в Сводах». Фотографии хора и танцев, отпечатанные в клубе. На одной хор поёт с открытыми ртами, а звука не слышно, и от этого слышнее весь зал.",
+  "en": "«Evenings in the Vaults». Photographs of the choir and the dances, printed at the club. In one the choir sings with open mouths and no sound, and that makes the whole hall louder.",
+  "ja": "「ヴォールトの夜」。クラブで焼いた合唱とダンスの写真。一枚では合唱団が口を開けて歌っているのに音は聞こえない。それがかえってホール全体を賑やかに感じさせる。"
+ },
+ "city.xh.exh.east.4": {
+  "ru": "«Город глазами третьего „Б“». Детские рисунки: башня, чайка, большая белая ладонь потолка. Под одним корявая подпись: «Это мама на кухне». Мама нарисована очень большой и очень тёплой.",
+  "en": "«The Town Through the Eyes of Class 3B». Children's drawings: a tower, a gull, the ceiling like a big white palm. Under one, a crooked caption: \"This is mum in the kitchen.\" Mum is drawn very large and very warm.",
+  "ja": "「3年B組の目で見る町」。子どもの絵。塔、カモメ、大きな白い手のひらのような天井。ある絵の下にはゆがんだ字で「台所のお母さん」。お母さんはとても大きく、とても暖かく描かれている。"
+ },
+ "city.xh.exh.east.5": {
+  "ru": "«Постоянная экспозиция». Сезонные выставки ушли в запасник, остались любимые картины смотрителя. Подписей нет: висят, значит, нужны.",
+  "en": "«The Permanent Collection». The seasonal shows have gone to storage, and the caretaker's favourite pictures remain. No captions: they hang, so they are needed.",
+  "ja": "「常設展示」。季節の展示は倉庫へ戻り、管理人のお気に入りの絵が残った。説明はない。掛かっているのだから、必要なのだ。"
+ },
+ "city.xh.exh.north.1": {
+  "ru": "«Три берега». Маяк, тихое море, дюны. В тихом море нет ни одной волны: художник забыл. Но это самая тёплая картина в ряду.",
+  "en": "«Three Shores». A lighthouse, a calm sea, dunes. There is not one wave in the calm sea: the painter forgot. But it is the warmest picture in the row.",
+  "ja": "「三つの岸辺」。灯台、凪の海、砂丘。凪の海には波が一つもない。画家が描き忘れたのだ。それでも並びの中でいちばん暖かい絵だ。"
+ },
+ "city.xh.exh.north.2": {
+  "ru": "Табличка заменена: «Те же три берега, но взгляд с воды». Картины висят по-прежнему, но смотритель повесил их на два пальца ниже, чтобы смотреть как с лодки.",
+  "en": "The label has been changed: \"The same three shores, seen from the water.\" The pictures hang as before, but the caretaker lowered them two fingers so you look as if from a boat.",
+  "ja": "札が替わった。「同じ三つの岸辺を、水の上から」。絵は前と同じに掛かっているが、管理人が指二本ぶん低く掛け直した。ボートから見るように。"
+ },
+ "city.xh.exh.north.3": {
+  "ru": "Под картинами добавлена полка с ракушками и янтарём: «Что море вернуло». Янтарь настоящий, ракушки тоже, а один камушек с дыркой смотритель называет «глазом».",
+  "en": "A shelf of shells and amber has been added under the pictures: \"What the sea gave back.\" The amber is real, the shells too, and one stone with a hole the caretaker calls \"the eye\".",
+  "ja": "絵の下に貝殻と琥珀の棚が加わった。「海が返してくれたもの」。琥珀は本物、貝殻も本物。穴の開いた石を管理人は「目」と呼んでいる。"
+ },
+ "city.xh.exh.north.4": {
+  "ru": "Неделя детского взгляда: рядом с маяком пришпилен рисунок ребёнка, где маяк улыбается. Взрослые смущаются, но рисунок остаётся.",
+  "en": "Children's-view week: beside the lighthouse a child's drawing is pinned where the lighthouse smiles. Adults are embarrassed, but the drawing stays.",
+  "ja": "子どもの目の週。灯台の絵の横に、灯台が笑っている子どもの絵が留められている。大人たちは照れるが、絵はそのまま残る。"
+ },
+ "city.xh.exh.north.5": {
+  "ru": "Три берега висят давно и никого не торопят. Ковёр под ними чуть вытерт: значит, на них смотрят, и подолгу.",
+  "en": "The three shores have hung for a long time and hurry nobody. The carpet under them is a little worn: so people look at them, and for long.",
+  "ja": "三つの岸辺はずっと前から掛かっていて、誰も急かさない。その下の敷物は少しすり切れている。みんなが長く見つめている証拠だ。"
+ },
+ "city.xh.exh.west.1": {
+  "ru": "«Куда уезжают». Туристические плакаты шестидесятых: поезд, пальма, гора. Рядом приклеена бумажка: «Самое далёкое место в этом зале — вот этот плакат. Остальное рядом».",
+  "en": "«Where People Go». Tourist posters of the sixties: a train, a palm, a mountain. A slip is stuck beside them: \"The farthest place in this hall is this poster. The rest is nearby.\"",
+  "ja": "「みんなが旅立つところ」。六十年代の観光ポスター。列車、ヤシ、山。横に紙が貼ってある。「このホールでいちばん遠い場所はこのポスターです。ほかは近所です」"
+ },
+ "city.xh.exh.west.2": {
+  "ru": "«Шторм». Единственное место, где в зале шумно: на картине волны бьют в пирс. Говорят, в дождь звук к картине действительно добавляется, хотя это, конечно, свод.",
+  "en": "«Storm». The only noisy spot in the hall: in the painting the waves hit a pier. They say that in rain the sound really does join the picture, though it is of course the vault.",
+  "ja": "「嵐」。ホールで唯一にぎやかな場所。絵の中では波が桟橋を打っている。雨の日には本当に音が絵に加わるという。もちろんそれは天井のヴォールトの仕業だ。"
+ },
+ "city.xh.exh.west.3": {
+  "ru": "Плакаты заменили афишами старых спектаклей любительского театра: «Свадьба на маяке», «Чайки не летят домой», «Три сестры и сосед». Вход свободный был всегда.",
+  "en": "The posters have been swapped for bills of the amateur theatre's old plays: \"A Wedding at the Lighthouse\", \"The Gulls Are Not Flying Home\", \"Three Sisters and a Neighbour\". Admission was always free.",
+  "ja": "ポスターが素人劇団の昔の公演のビラに替わった。「灯台の結婚式」「カモメは家へ帰らない」「三人姉妹と隣人」。入場無料は昔からだ。"
+ },
+ "city.xh.exh.west.4": {
+  "ru": "Неделя «Школьных путешествий»: карты с булавками, где побывали классы. Дальше всех забрался шестой «А»: до пирса и обратно, с ночёвкой.",
+  "en": "«School Journeys» week: maps with pins where the classes went. The farthest was class 6A: to the pier and back, overnight.",
+  "ja": "「学校の遠足」の週。クラスが訪れた場所にピンを刺した地図。いちばん遠くへ行ったのは6年A組：桟橋まで往復、一泊付き。"
+ },
+ "city.xh.exh.west.5": {
+  "ru": "На западной стене висят плакаты, которых уже никто не помнит. Смотритель говорит: «Раз никто не помнит, значит, они здесь надёжнее всего».",
+  "en": "On the west wall hang posters nobody remembers any more. The caretaker says: \"If nobody remembers, they are safest right here.\"",
+  "ja": "西の壁には、もう誰も覚えていないポスターが掛かっている。管理人は言う。「誰も覚えていないなら、ここがいちばん安全だ」"
+ },
+ "city.xh.coll.hall_evenings.title": {
+  "ru": "Корешки вечеров в «Сводах»",
+  "en": "Ticket stubs of the evenings in the Vaults",
+  "ja": "「ヴォールト」の夜の半券"
+ },
+ "city.xh.evenings.0": {
+  "ru": "Доска, обтянутая зелёным сукном, с пятью латунными гвоздями. Под каждым подпись: «Хор», «Танцы», «Лекция», «Репетиция», «Премьера». Корешок вешает тот, кто побывал на вечере. Свободные гвозди ждут.",
+  "en": "A board covered in green baize with five brass nails. Under each a label: \"Choir\", \"Dancing\", \"Lecture\", \"Rehearsal\", \"Premiere\". Whoever has been to an evening hangs a stub. The free nails wait.",
+  "ja": "緑のラシャを張ったボードに真鍮の釘が五本。それぞれの下に札。「合唱」「ダンス」「講義」「稽古」「初日」。その夜に来た人が半券を掛ける。空いた釘は待っている。"
+ },
+ "city.xh.evenings.choir": {
+  "ru": "На гвозде «Хор» красный корешок: «Прибой, ряд 3, место по любви». На обороте карандашом: «Подпевал шёпотом. Меня заметили».",
+  "en": "On the \"Choir\" nail a red stub: \"Surf, row 3, seat by love.\" On the back in pencil: \"Sang along in a whisper. They noticed me.\"",
+  "ja": "「合唱」の釘に赤い半券。「プリボイ、三列目、好きな席」。裏に鉛筆で：「小声で一緒に歌った。気づかれた」"
+ },
+ "city.xh.evenings.dance": {
+  "ru": "На гвозде «Танцы» жёлтый корешок с пятном от чая. Под ним мелко: «Вальс. Не наступил. Почти».",
+  "en": "On the \"Dancing\" nail a yellow stub with a tea stain. Under it in small writing: \"Waltz. Did not tread on anyone. Almost.\"",
+  "ja": "「ダンス」の釘に紅茶のしみがついた黄色い半券。下に小さく：「ワルツ。踏まなかった。ほとんど」"
+ },
+ "city.xh.evenings.lecture": {
+  "ru": "На гвозде «Лекция» синий корешок, на нём нарисована парабола. Нарисована хорошо, с лучиками.",
+  "en": "On the \"Lecture\" nail a blue stub with a parabola drawn on it. Drawn well, with little rays.",
+  "ja": "「講義」の釘に青い半券。放物線が描いてある。光線つきで、よく描けている。"
+ },
+ "city.xh.evenings.theatre": {
+  "ru": "На гвозде «Репетиция» зелёный корешок с отпечатком пальца: Часовщик держал его, пока искал забытые слова.",
+  "en": "On the \"Rehearsal\" nail a green stub with a fingerprint: the Watchmaker held it while he looked for the words he had forgotten.",
+  "ja": "「稽古」の釘に指紋のついた緑の半券。時計職人が忘れた台詞を探しながら握っていたものだ。"
+ },
+ "city.xh.evenings.premiere": {
+  "ru": "На гвозде «Премьера» розовый корешок побольше остальных. Приписка: «Эхо хлопало дольше меня».",
+  "en": "On the \"Premiere\" nail a pink stub bigger than the others. A note: \"The echo clapped longer than I did.\"",
+  "ja": "「初日」の釘にほかより大きなピンクの半券。書き添え：「エコーはわたしより長く拍手していた」"
+ },
+ "city.xh.evenings.t1": {
+  "ru": "Один корешок на доске, и она уже выглядит живее. Смотритель говорит: так начинался и весь зал, с одного вечера.",
+  "en": "One stub on the board, and it already looks livelier. The caretaker says the whole hall began like that, with one evening.",
+  "ja": "ボードに半券が一枚あるだけで、もう生き生きして見える。管理人は言う。ホール全体もこうして始まった、ひと晩から。"
+ },
+ "city.xh.evenings.t3": {
+  "ru": "Три корешка из пяти. Смотритель кивает: «Вы уже не гость, вы почти из здешних».",
+  "en": "Three stubs out of five. The caretaker nods: \"You are no longer a guest, you are nearly one of us.\"",
+  "ja": "五枚のうち三枚。管理人がうなずく。「もうお客さんではありませんね。ほとんどここの人です」"
+ },
+ "city.xh.evenings.t5": {
+  "ru": "Все пять гвоздей заняты. Рядом смотритель приколол бумажку: «Свой человек. Ключ пока не даём, но чай наливаем без очереди».",
+  "en": "All five nails are taken. Beside them the caretaker has pinned a slip: \"One of us. We are not giving out a key yet, but he gets his tea without queueing.\"",
+  "ja": "五本の釘がすべて埋まった。横に管理人が紙を留めている。「仲間です。鍵はまだ渡せませんが、お茶は並ばずにお出しします」"
+ },
+ "city.xh.lecture.tue.1": {
+  "ru": "Инженер-акустик хлопает в ладоши, и все ждут. Эхо возвращается через полторы секунды. «Это и есть своды, — говорит он. — Они слушают чуть дольше нас». Зал аплодирует, эхо аплодирует после.",
+  "en": "The acoustic engineer claps his hands and everyone waits. The echo comes back after a second and a half. \"That is the vaults,\" he says. \"They listen a little longer than we do.\" The hall applauds, and the echo applauds afterwards.",
+  "ja": "音響技師が手をたたくと、みんなが待つ。エコーは一秒半後に戻ってくる。「これがヴォールトです」と彼は言う。「わたしたちより少し長く聞いているのです」。客席が拍手し、あとからエコーが拍手する。"
+ },
+ "city.xh.lecture.tue.2": {
+  "ru": "На доске парабола, лучи и стрелочки. Инженер объясняет, почему в левом углу слышен шёпот из правого. Я проверяю: правда слышен. Сосед справа делает вид, что ничего не говорил.",
+  "en": "On the board a parabola, rays and arrows. The engineer explains why a whisper from the right corner can be heard in the left. I check: it can. The neighbour on my right pretends he said nothing.",
+  "ja": "黒板には放物線と光線と矢印。右の隅のささやきが左の隅で聞こえる理由を技師が説明する。確かめてみると、本当に聞こえた。右隣の人は何も言わなかったふりをしている。"
+ },
+ "city.xh.lecture.tue.3": {
+  "ru": "В конце лектор просит всех разом сказать «Своды». Звук возвращается волной, и по спине бегут мурашки. «Вот это, — говорит он, — и есть акустика. Остальное формулы».",
+  "en": "At the end the lecturer asks everyone to say \"Vaults\" together. The sound comes back like a wave and goosebumps run down my back. \"That,\" he says, \"is acoustics. The rest is formulas.\"",
+  "ja": "最後に講師が全員に「ヴォールト」と声をそろえて言わせる。音が波のように戻ってきて、背中に鳥肌が立つ。「これが音響学です」と彼は言う。「あとは公式にすぎません」"
+ },
+ "city.xh.lecture.idle.1": {
+  "ru": "В зале пусто. Лекция по вторникам в семь. На первом ряду забыта тетрадь с чертежами: парабола, лучи, пометка «проверить в левом углу».",
+  "en": "The hall is empty. The lecture is on Tuesdays at seven. A notebook of diagrams is left on the front row: a parabola, rays, a note \"check in the left corner\".",
+  "ja": "ホールは空っぽだ。講義は火曜の七時。最前列に図面のノートが忘れてある。放物線、光線、「左の隅で確認」のメモ。"
+ },
+ "city.xh.lecture.idle.2": {
+  "ru": "Сидишь у самой сцены, и тишина звучит так, будто кто-то только что вышел. По вторникам в семь здесь говорят про эхо. Говорят, лучше всего слушать с первого ряда.",
+  "en": "You sit right by the stage and the silence sounds as if someone has just left. On Tuesdays at seven they talk about the echo here. They say it is best heard from the front row.",
+  "ja": "舞台のすぐ前に座ると、いましがた誰かが出ていったような静けさが響く。火曜の七時にはここでエコーの話をする。最前列がいちばんよく聞こえるそうだ。"
+ },
+ "city.xh.choir.wed": {
+  "ru": "По средам репетиция открытая: можно сидеть в зале и молчать. Подпевать разрешено только шёпотом, такое условие у руководителя.",
+  "en": "On Wednesdays the rehearsal is open: you may sit in the hall and keep quiet. Singing along is allowed only in a whisper, that is the leader's condition.",
+  "ja": "水曜の稽古は公開だ。客席に座って黙っていてよい。一緒に歌ってよいのは小声だけ。指揮者の条件だ。"
+ },
+ "city.xh.choir.fest": {
+  "ru": "Праздничный репертуар: хор поёт старую песню про море, и половина зала вдруг знает слова. Руководитель улыбается и перестаёт дирижировать: дальше они сами.",
+  "en": "A festive repertoire: the choir sings an old song about the sea, and half the hall suddenly knows the words. The leader smiles and stops conducting: from here they manage on their own.",
+  "ja": "祝日のレパートリー。合唱団は海の古い歌を歌い、客席の半分が突然歌詞を知っていることに気づく。指揮者は微笑んで振るのをやめる。あとはみんなに任せる。"
+ },
+ "city.xh.choir.rain": {
+  "ru": "За окнами дождь, и хор поёт про дождь. Вышло случайно, но руководитель оставила в программе: «Погода нас репетирует».",
+  "en": "Rain outside, and the choir sings about rain. It came out by chance, but the leader kept it in the programme: \"The weather rehearses us.\"",
+  "ja": "窓の外は雨で、合唱団は雨の歌を歌う。偶然そうなったのだが、指揮者はそのままプログラムに残した。「天気がわたしたちを稽古してくれている」"
+ },
+ "city.xh.steps.title": {
+  "ru": "Шаги на метках",
+  "en": "Steps on the marks",
+  "ja": "印の上のステップ"
+ },
+ "city.xh.steps.keys": {
+  "ru": "E — шаг, когда метка у твоей ноги",
+  "en": "E — step when the mark reaches your foot",
+  "ja": "E：印が足もとに来たときにステップ"
+ },
+ "city.xh.steps.win.1": {
+  "ru": "Шесть шагов подряд, и ни одного мимо метки. Красная нога, жёлтая нога, красная. Из угла кто-то говорит: «Вот это пол, который тебя помнит». Пол правда будто отвечает.",
+  "en": "Six steps in a row and not one off the mark. Red foot, yellow foot, red. Someone in the corner says, \"That is a floor that remembers you.\" The floor does seem to answer.",
+  "ja": "印を外さず六歩続けた。赤い足、黄色い足、赤い足。隅の誰かが言う。「これは君を覚えている床だ」。床が本当に答えたようだ。"
+ },
+ "city.xh.steps.win.2": {
+  "ru": "Вальсовая коробочка вышла чисто: вперёд, вбок, вместе. Руководитель кружка хлопает: «Счёт сам запомнился. Это самое важное». Ноги ещё чуть-чуть танцуют сами по себе.",
+  "en": "The box step came out clean: forward, side, together. The dance teacher claps: \"The count has stuck by itself. That is the most important thing.\" My feet are still dancing a little on their own.",
+  "ja": "ワルツの基本ステップがきれいに決まった。前、横、そろえる。ダンスの先生が手をたたく。「カウントが自然に身についたね。いちばん大事なことだ」。足はまだ少しひとりでに踊っている。"
+ },
+ "city.xh.steps.lose.1": {
+  "ru": "На четвёртом шаге я наступил на собственную метку и запутался. Красная нога пошла налево, жёлтая направо. Пол промолчал, но было слышно, что он вздохнул.",
+  "en": "On the fourth step I trod on my own mark and got tangled. The red foot went left, the yellow right. The floor said nothing, but you could hear it sigh.",
+  "ja": "四歩目で自分の印を踏んで足がもつれた。赤い足は左へ、黄色い足は右へ。床は何も言わなかったが、ため息が聞こえた気がした。"
+ },
+ "city.xh.steps.lose.2": {
+  "ru": "Промахнулся мимо метки и чуть не сел на пол. Из-за зеркала смеются, но по-доброму: все здесь когда-то промахивались, просто раньше.",
+  "en": "Missed the mark and nearly sat on the floor. Someone laughs behind the mirror, kindly: everyone here has missed once, just earlier.",
+  "ja": "印を外して危うく床に座りかけた。鏡の向こうで誰かが優しく笑う。ここの人はみんな一度は外した。ただ、もっと前に。"
+ },
+ "city.xh.steps.draw.1": {
+  "ru": "Три шага чисто, три шага косо. Руководитель кружка говорит: «Ничья. Половина вальса уже твоя». И показывает, какая половина.",
+  "en": "Three steps clean, three crooked. The dance teacher says: \"A draw. Half a waltz is yours already.\" And shows which half.",
+  "ja": "三歩はきれいに、三歩は斜めに。ダンスの先生は言う。「引き分け。もうワルツの半分は君のものだ」。そしてどちらの半分かを教えてくれた。"
+ },
+ "city.xh.steps.after.1": {
+  "ru": "Метки на полу нарисованы краской, красная — левая, жёлтая — правая. Сегодня шагов хватит: ноги просят чаю и тишины.",
+  "en": "The marks on the floor are painted, red for left and yellow for right. Enough steps for today: my feet ask for tea and quiet.",
+  "ja": "床の印はペンキで描かれている。赤が左、黄色が右。今日はもう十分歩いた。足はお茶と静けさを求めている。"
+ },
+ "city.xh.steps.closed.1": {
+  "ru": "Шаги на полу нарисованы краской: красная метка — левая нога, жёлтая — правая. Репетиция по пятницам и субботам с семи вечера, когда ставят пластинку.",
+  "en": "The steps on the floor are painted: red for the left foot, yellow for the right. Practice on Fridays and Saturdays from seven in the evening, when the record goes on.",
+  "ja": "床のステップはペンキで描かれている。赤が左足、黄色が右足。練習は金曜と土曜の夜七時から、レコードをかけるときだ。"
+ },
+ "city.xh.aud.title": {
+  "ru": "Проба голоса",
+  "en": "A voice trial",
+  "ja": "声のオーディション"
+ },
+ "city.game.vs.hall_audition": {
+  "ru": "прослушивание",
+  "en": "audition",
+  "ja": "オーディション"
+ },
+ "city.xh.aud.move.1": {
+  "ru": "Спеть чисто",
+  "en": "Sing it clean",
+  "ja": "正確に歌う"
+ },
+ "city.xh.aud.move.2": {
+  "ru": "Спеть громко",
+  "en": "Sing it loud",
+  "ja": "大きな声で歌う"
+ },
+ "city.xh.aud.move.3": {
+  "ru": "Спеть с чувством",
+  "en": "Sing it with feeling",
+  "ja": "気持ちを込めて歌う"
+ },
+ "city.xh.aud.tell.1": {
+  "ru": "{0} закрывает глаза и слушает одну ноту, как слушают кран, который капает.",
+  "en": "{0} closes her eyes and listens to a single note, as you listen to a tap that drips.",
+  "ja": "{0}は目を閉じ、一つの音だけを、水滴の落ちる蛇口を聞くように聴いている。"
+ },
+ "city.xh.aud.tell.2": {
+  "ru": "{0} поправляет камертон на ладони и хмурится: громкое она слышит ещё в коридоре.",
+  "en": "{0} turns the tuning fork on her palm and frowns: she hears loud ones from the corridor.",
+  "ja": "{0}は手のひらの音叉を持ち直して眉をひそめる。大きな声は廊下からでも聞こえるのだ。"
+ },
+ "city.xh.aud.tell.3": {
+  "ru": "{0} вдруг улыбается чему-то своему и забывает дирижировать.",
+  "en": "{0} suddenly smiles at something of her own and forgets to conduct.",
+  "ja": "{0}は自分だけの何かにふと微笑み、指揮をするのを忘れている。"
+ },
+ "city.xh.aud.win.1": {
+  "ru": "Я допел до конца, и Айла молчит. Потом говорит: «Вот теперь слышно, что ты слушал». И протягивает чашку кофе: «Это не награда, это профилактика. Горло беречь».",
+  "en": "I sang to the end and Isla is silent. Then she says, \"Now it is clear you were listening.\" And hands me a cup of coffee: \"That is not a prize, that is prevention. Look after your throat.\"",
+  "ja": "最後まで歌い終えると、アイラは黙っている。やがて言う。「今のは、ちゃんと聴いていた声だね」。そしてコーヒーを一杯差し出す。「ご褒美じゃなくて予防よ。喉を大事にして」"
+ },
+ "city.xh.aud.win.2": {
+  "ru": "Последняя нота ушла под своды и вернулась через секунду, чуть ниже. Айла кивает: «Эхо тебя приняло. В хор берут не всех, но с эхом договориться важнее».",
+  "en": "The last note went up into the vaults and came back a second later, a little lower. Isla nods: \"The echo has accepted you. The choir does not take everybody, but coming to terms with the echo matters more.\"",
+  "ja": "最後の音はヴォールトの中へ上っていき、一秒後に少し低くなって戻ってきた。アイラがうなずく。「エコーはあなたを受け入れたね。合唱団は誰でも入れるわけじゃないけれど、エコーと折り合うほうが大事」"
+ },
+ "city.xh.aud.lose.1": {
+  "ru": "На второй строчке голос вильнул, как лодка на волне. Айла ставит камертон на стол: «Не беда. Чистый звук не рождается, а выращивается. Приходи в среду».",
+  "en": "On the second line my voice swerved like a boat on a wave. Isla puts the tuning fork on the table: \"No matter. A clean note is not born, it is grown. Come on Wednesday.\"",
+  "ja": "二行目で声が波に揺れる舟のようにぶれた。アイラは音叉を机に置く。「大丈夫。きれいな音は生まれるものではなく育てるもの。水曜にまたおいで」"
+ },
+ "city.xh.aud.lose.2": {
+  "ru": "Я так старался показать чувство, что забыл слова. Айла ласково говорит: «Чувство у тебя есть, слов нет. Слова выучим, чувство берегут».",
+  "en": "I tried so hard to show feeling that I forgot the words. Isla says kindly: \"You have the feeling, you do not have the words. Words can be learned, feeling must be kept.\"",
+  "ja": "気持ちを込めようと必死で、歌詞を忘れてしまった。アイラは優しく言う。「気持ちはあるけど、歌詞がないね。歌詞は覚えればいい。気持ちは大事にしまっておくもの」"
+ },
+ "city.xh.aud.draw.1": {
+  "ru": "Ничья. Айла говорит: «Странно, но я так и не поняла, чем кончилось». И сама смеётся: в первый раз за вечер.",
+  "en": "A draw. Isla says: \"Odd, but I have not understood how it ended.\" And she laughs herself, for the first time this evening.",
+  "ja": "引き分け。アイラは言う。「不思議だけど、どう終わったのか分からなかった」。そして自分で笑う。今夜はじめてだ。"
+ },
+ "city.xh.aud.after.1": {
+  "ru": "Айла прячет камертон в карман: «На сегодня хватит прослушиваний. Голос тоже устаёт. Завтра приходи, если хочешь».",
+  "en": "Isla puts the tuning fork in her pocket: \"Enough auditions for today. A voice tires too. Come tomorrow if you like.\"",
+  "ja": "アイラは音叉をポケットにしまう。「今日はオーディションはここまで。声も疲れるの。明日また来たければおいで」"
+ },
+ "city.player.isla.hello": {
+  "ru": "Встаньте на крестик. Петь можно чисто, громко или с чувством. Я скажу, что подошло, хор от этого не зависит, а самолюбие очень.",
+  "en": "Stand on the cross. You can sing it clean, loud or with feeling. I will say what suited. The choir does not depend on it, but your pride does.",
+  "ja": "十字の印の上に立って。正確に、大きく、気持ちを込めて、どれでもいい。何が合っていたか言うわ。合唱団には関係ないけれど、自尊心には大いに関係する。"
+ },
+ "city.player.isla.win": {
+  "ru": "Ну вот. Слух у вас есть, только его ещё никто не звал в гости.",
+  "en": "There. You have an ear; it's just that nobody has invited it round yet.",
+  "ja": "ほら。耳はあるのよ。ただ、まだ誰もその耳を呼んでいなかっただけ。"
+ },
+ "city.player.isla.lose": {
+  "ru": "Ничего, до среды всё вернётся на место. Голос, как кошка: сам знает, когда прийти.",
+  "en": "Never mind, by Wednesday it will all fall back into place. A voice is like a cat: it knows when to come.",
+  "ja": "いいのよ、水曜までには元に戻る。声は猫と同じで、いつ来るかは自分で決めるものだから。"
+ },
+ "city.xh.clock.foyer.morning": {
+  "ru": "Часы над картинами показывают {time}. До первого вечера далеко: смотритель обходит зал с тряпкой и разговаривает с рамами.",
+  "en": "The clock above the pictures says {time}. The first evening is far off: the caretaker goes round the hall with a duster, talking to the frames.",
+  "ja": "絵の上の時計は{time}を指している。最初の夜まではまだ遠い。管理人は雑巾を持ってホールを回り、額縁に話しかけている。"
+ },
+ "city.xh.clock.foyer.day": {
+  "ru": "{time}. Часы в фойе идут на три минуты вперёд: приказ завхоза, чтобы актёры не опаздывали. Актёры давно знают и опаздывают ровно на три минуты.",
+  "en": "{time}. The foyer clock runs three minutes fast: the steward's order, so the actors are not late. The actors have long known and are late by exactly three minutes.",
+  "ja": "{time}。ロビーの時計は三分進んでいる。俳優が遅れないようにという管財係の命令だ。俳優たちはとっくに知っていて、きっかり三分遅れてくる。"
+ },
+ "city.xh.clock.foyer.eve": {
+  "ru": "{time}. В фойе пахнет мокрой шерстью и пирогами, афиша вечера уже висит, а часы тикают, будто пересчитывают входящих.",
+  "en": "{time}. The foyer smells of wet wool and pies, the evening's poster is up, and the clock ticks as if counting those who come in.",
+  "ja": "{time}。ロビーは濡れたウールとパイの匂いがする。夜のポスターはもう掛かっていて、時計は入ってくる人を数えるようにチクタクいっている。"
+ },
+ "city.xh.clock.foyer.sat": {
+  "ru": "{time}. Сегодня премьера, и часы в фойе тикают громче обычного. Или это сердце, пока не разберёшь.",
+  "en": "{time}. Tonight is the premiere and the foyer clock ticks louder than usual. Or it is a heart, you cannot tell yet.",
+  "ja": "{time}。今夜は初日で、ロビーの時計はいつもより大きく鳴っている。あるいは心臓の音かもしれない。まだ区別がつかない。"
+ },
+ "city.xh.clock.foyer.rain": {
+  "ru": "{time}. Часы тикают в такт дождю по сводам. Вместе получается что-то вроде медленного вальса.",
+  "en": "{time}. The clock ticks in time with the rain on the vaults. Together it makes something like a slow waltz.",
+  "ja": "{time}。時計はヴォールトを打つ雨と拍をそろえている。合わせると、ゆっくりしたワルツのようだ。"
+ },
+ "city.xh.clock.hall.1": {
+  "ru": "{time}. Часы в зале повешены у самой двери, чтобы опоздавшие видели, насколько. Подпись под ними мелом: «Тише едешь, но вовремя».",
+  "en": "{time}. The hall clock hangs right by the door so latecomers can see by how much. Under it in chalk: \"Slow and steady, but on time.\"",
+  "ja": "{time}。ホールの時計は入口のすぐそばにあり、遅れてきた人が自分の遅れを確かめられる。その下にチョークで：「急がば回れ、ただし時間どおりに」"
+ },
+ "city.xh.clock.hall.sat": {
+  "ru": "{time}. Над дверью часы, под ними спина смотрителя. Он смотрит на стрелки так, будто от них зависит, начнётся ли спектакль. Может, так и есть.",
+  "en": "{time}. The clock above the door, under it the caretaker's back. He watches the hands as if the play starting depends on them. Perhaps it does.",
+  "ja": "{time}。ドアの上の時計と、その下の管理人の背中。彼は針を、まるで開演がそれに懸かっているかのように見つめている。実際そうなのかもしれない。"
+ },
+ "city.xh.clock.dance.1": {
+  "ru": "{time}. На циферблате над танцполом приклеена бумажка: «До последнего вальса ещё есть время». Бумажка старая, и вальс по-прежнему последний.",
+  "en": "{time}. A slip is stuck to the clock face over the dance floor: \"There is still time before the last waltz.\" The slip is old, and the waltz is still the last.",
+  "ja": "{time}。ダンスフロアの上の時計の文字盤に紙が貼ってある。「最後のワルツまでまだ時間はあります」。紙は古いが、ワルツはいまも最後のままだ。"
+ },
+ "city.xh.clock.dance.fri": {
+  "ru": "{time}. Часы над танцполом идут чуть медленнее обычного, как по заказу. По пятницам их никто не поправляет.",
+  "en": "{time}. The clock above the dance floor runs a little slower than usual, as if ordered. On Fridays nobody corrects it.",
+  "ja": "{time}。ダンスフロアの上の時計はいつもより少し遅く進む。注文したかのように。金曜には誰も直さない。"
+ },
+ "city.xh.clock.kitchen.1": {
+  "ru": "{time}. Повар сверяет время по часам, а часы по пирогам. Если пирог поднялся, значит, уже больше, чем показывают стрелки.",
+  "en": "{time}. The cook sets the time by the clock and the clock by the pies. If a pie has risen, it is later than the hands say.",
+  "ja": "{time}。料理人は時計で時間を確かめ、時計はパイで確かめる。パイがふくらんでいれば、針が示すより時間は進んでいる。"
+ },
+ "city.xh.clock.kitchen.eve": {
+  "ru": "{time}. Кухонные часы заляпаны мукой, но стрелки видно. Хлеб вышел давно, пироги на выходе, чай уже бурлит.",
+  "en": "{time}. The kitchen clock is splashed with flour, but the hands can be seen. The bread is long out, the pies are coming, the tea is already bubbling.",
+  "ja": "{time}。厨房の時計は小麦粉で汚れているが、針は見える。パンはとっくに焼き上がり、パイももうすぐ、紅茶はすでに沸いている。"
+ },
+ "city.xh.bread.1": {
+  "ru": "Хлеб достают из печи: корка потрескивает, как костёр. Повар отрезает горбушку: «На, пока горячая. Только никому не говори».",
+  "en": "The bread comes out of the oven: the crust crackles like a campfire. The cook cuts off the heel: \"Here, while it is hot. Just do not tell anyone.\"",
+  "ja": "パンがオーブンから出てくる。皮が焚き火のようにぱちぱち鳴る。料理人は端を切ってくれる。「ほら、熱いうちに。誰にも言うなよ」"
+ },
+ "city.xh.bread.2": {
+  "ru": "Утренний хлеб пахнет так, что сквозь дверь кухни заглядывают двое из хора, которым вообще-то только в пять. Повар делает вид, что не видит.",
+  "en": "The morning bread smells so good that two from the choir, who are really due at five, look in through the kitchen door. The cook pretends not to see.",
+  "ja": "朝のパンは、戸口から合唱団の二人がのぞくほどいい匂いだ。二人は本当は五時からのはずなのに。料理人は見ないふりをしている。"
+ },
+ "city.xh.bread.closed": {
+  "ru": "Печь уже остыла: хлеб здесь выпекают с утра до часу дня. На противне осталась только мучная пыль и записка: «Завтра с девяти».",
+  "en": "The oven has gone cool: bread is baked here from morning until one. On the tray only flour dust and a note: \"Tomorrow from nine.\"",
+  "ja": "オーブンはもう冷めている。ここでパンを焼くのは朝から午後一時まで。天板には小麦粉の粉と書き置きだけ。「明日は九時から」"
+ },
+ "city.xh.soup.1": {
+  "ru": "Суп в большой кастрюле, поварёшка размером с ковш. Повар наливает тарелку «на спасибо» и добавляет ложку сметаны: «Это не по рецепту, это от души».",
+  "en": "Soup in a big pot, a ladle the size of a scoop. The cook pours a bowl \"for thanks\" and adds a spoonful of sour cream: \"That is not in the recipe, that is from the heart.\"",
+  "ja": "大鍋のスープ、おたまは小さなバケツほどある。料理人は「ありがとうの分」と言って一皿よそい、サワークリームをひとさじ足す。「レシピにはないよ、気持ちさ」"
+ },
+ "city.xh.soup.2": {
+  "ru": "Суп сегодня овощной, почти без мяса, зато с укропом. Повар говорит: «Хор поёт лучше на овощном. Мясной тяжёлый, голос тянет вниз».",
+  "en": "The soup today is vegetable, almost without meat, but with dill. The cook says: \"The choir sings better on vegetable. Meat is heavy, it pulls the voice down.\"",
+  "ja": "今日のスープは野菜で、肉はほとんどなく、ディルがたっぷり入っている。料理人は言う。「合唱団は野菜スープのほうがよく歌う。肉は重くて、声が下がるんだ」"
+ },
+ "city.xh.soup.closed": {
+  "ru": "Кастрюля пока пустая и вымытая. На крышке мелом: «Суп с двенадцати до четырёх. Нюхать можно бесплатно и в любое время».",
+  "en": "The pot is empty and washed for now. On the lid in chalk: \"Soup from twelve to four. Sniffing is free at any time.\"",
+  "ja": "鍋はいまは空で洗ってある。ふたにチョークで：「スープは十二時から四時まで。においを嗅ぐのはいつでも無料」"
+ },
+ "city.xh.tea.1": {
+  "ru": "Самовар шумит, как маленький пароход. Кран подставляешь под чашку, пар щекочет нос. Рядом сахар в банке, на банке «Не больше двух».",
+  "en": "The samovar hums like a little steamer. You put the cup under the tap, the steam tickles your nose. Beside it sugar in a jar, and on the jar \"No more than two.\"",
+  "ja": "サモワールは小さな蒸気船のように唸っている。蛇口の下にカップを置くと、湯気が鼻をくすぐる。横には砂糖の瓶、瓶には「二つまで」。"
+ },
+ "city.xh.tea.2": {
+  "ru": "Чай крепкий, с заваркой из жестяной банки со слоном. Слона на этикетке давно стёрли пальцы, остался хобот. Хобот дело знает.",
+  "en": "Strong tea from a tin with an elephant on it. Fingers have long rubbed the elephant away, only the trunk is left. The trunk knows its business.",
+  "ja": "ゾウの絵の缶から淹れた濃い紅茶。ゾウはとっくに指でこすれて消え、鼻だけが残っている。鼻は自分の仕事を心得ている。"
+ },
+ "city.xh.tea.closed": {
+  "ru": "Самовар пока холодный, под ним шишки и щепа на растопку. На стене записка: «Чай с трёх до закрытия. До трёх чаю нет, есть вода из-под крана».",
+  "en": "The samovar is cold for now, with cones and kindling under it. A note on the wall: \"Tea from three until closing. Before three, no tea, only tap water.\"",
+  "ja": "サモワールはまだ冷たく、下には松ぼっくりと焚き付けが入っている。壁に書き置き。「紅茶は三時から閉館まで。三時前は紅茶なし、水道水のみ」"
+ },
+ "city.xh.pies.1": {
+  "ru": "Пирожки остывают на решётке, золотые, с трещинкой. Повар хлопает по руке, когда тянешься: «Сначала дуй, потом ешь. Пирог, как эхо: сразу не берётся».",
+  "en": "Little pies cool on the rack, golden, with a crack. The cook slaps a hand as you reach: \"Blow first, then eat. A pie is like an echo: it does not come at once.\"",
+  "ja": "小さなパイが網の上で冷めている。金色で、ひび割れ入り。手を伸ばすと料理人がぴしゃりと叩く。「まず吹いてから食べな。パイはエコーと同じで、すぐには戻ってこない」"
+ },
+ "city.xh.pies.2": {
+  "ru": "Пирожки с капустой и с яблоком, различить можно только откусив. Повар считает: «Двадцать четыре. Хору шесть, танцующим десять, остальное смотрителю и тебе».",
+  "en": "Pies with cabbage and with apple, you can only tell by biting. The cook counts: \"Twenty-four. Six for the choir, ten for the dancers, the rest for the caretaker and you.\"",
+  "ja": "キャベツとリンゴのパイ。かじってみないと見分けがつかない。料理人が数える。「二十四個。合唱団に六つ、ダンスの人に十、残りは管理人と君の分」"
+ },
+ "city.xh.pies.closed": {
+  "ru": "Решётка пустая, на ней только крошки и записка: «Пироги с четырёх до девяти. Опоздал — ешь воображаемый, он без калорий».",
+  "en": "The rack is empty, only crumbs on it and a note: \"Pies from four to nine. If late, eat an imaginary one, it has no calories.\"",
+  "ja": "網は空っぽで、パンくずと書き置きだけが残っている。「パイは四時から九時まで。遅れたら想像のパイを食べること。カロリーゼロ」"
+ },
+ "city.xh.cloak.hello.1": {
+  "ru": "— Доброе утро, — говорит смотритель, раскладывая номерки по крючкам. — Пока пусто, можно выбрать любой крючок. Вечером за них дерутся.",
+  "en": "\"Good morning,\" says the caretaker, laying out the tags on the hooks. \"Empty for now, you can pick any hook. In the evening they fight over them.\"",
+  "ja": "「おはようございます」と管理人が札をフックに並べながら言う。「いまは空いているので、どのフックでも選べますよ。夜は取り合いになります」"
+ },
+ "city.xh.cloak.hello.2": {
+  "ru": "— Заходите, — кивает смотритель из-за вешалки. — Хотите что-то оставить, оставляйте. Хотите найти, спрашивайте полку с забытым.",
+  "en": "\"Come in,\" nods the caretaker from behind the rail. \"Want to leave something, leave it. Want to find something, ask the lost-property shelf.\"",
+  "ja": "「どうぞ」と管理人がハンガーの向こうからうなずく。「預けたいものがあれば預けて、探しものがあれば忘れ物の棚に聞いてください」"
+ },
+ "city.xh.cloak.hello.3": {
+  "ru": "— Номерок возьмите, — говорит смотритель, не отрываясь от вешалки. — Вечером тут пальто на пальто, и все как одно.",
+  "en": "\"Take a tag,\" says the caretaker without leaving the rail. \"In the evening it is coat on coat here, and all alike.\"",
+  "ja": "「札をお取りください」と管理人はハンガーから目を離さずに言う。「夜はコートの上にコートで、どれもそっくりになります」"
+ },
+ "city.xh.cloak.hello.rain": {
+  "ru": "— Мокрое на крайний крючок, над батареей, — говорит смотритель. — Зонты в ведро у двери. Ведро, между прочим, тоже в программе.",
+  "en": "\"Wet things on the end hook, over the radiator,\" says the caretaker. \"Umbrellas in the bucket by the door. The bucket, by the way, is in the programme too.\"",
+  "ja": "「濡れたものは端のフックへ、暖房の上です」と管理人は言う。「傘はドアのそばのバケツに。ちなみにバケツもプログラムに載っています」"
+ },
+ "city.xh.cloak.t1": {
+  "ru": "Про номерки",
+  "en": "About the tags",
+  "ja": "札のこと"
+ },
+ "city.xh.cloak.t1.1": {
+  "ru": "— Номерков сорок, — объясняет смотритель. — Тридцать девять круглых и один квадратный. Квадратный для директора. Директор его потерял и теперь ходит без пальто.",
+  "en": "\"Forty tags,\" the caretaker explains. \"Thirty-nine round and one square. The square one is for the director. The director lost it and now goes without a coat.\"",
+  "ja": "「札は四十枚です」と管理人が説明する。「丸いのが三十九枚、四角いのが一枚。四角いのは館長用です。館長はそれをなくして、いまはコートなしで歩いています」"
+ },
+ "city.xh.cloak.t1.2": {
+  "ru": "— Если номерок потеряли, описывайте пальто, — добавляет он. — Мы с вешалкой друг друга помним лучше, чем людей.",
+  "en": "\"If you lose your tag, describe the coat,\" he adds. \"The rail and I remember each other better than we remember people.\"",
+  "ja": "「札をなくしたら、コートの特徴を言ってください」と彼は付け加える。「ハンガーとわたしは、人よりもお互いのことをよく覚えているんです」"
+ },
+ "city.xh.cloak.t2": {
+  "ru": "Забытые вещи",
+  "en": "Lost property",
+  "ja": "忘れ物"
+ },
+ "city.xh.cloak.t2.1": {
+  "ru": "— Вот полка, — смотритель показывает под стойку. — Левая перчатка, шарф в клетку, канифоль для скрипки, очки без одного стекла. За ними приходят реже, чем кажется.",
+  "en": "\"Here is the shelf,\" the caretaker shows under the counter. \"A left glove, a checked scarf, violin rosin, spectacles missing a lens. People come for them less often than you would think.\"",
+  "ja": "「これが棚です」と管理人はカウンターの下を示す。「左の手袋、チェックのマフラー、バイオリンの松やに、片方レンズのない眼鏡。取りに来る人は思ったより少ないんです」"
+ },
+ "city.xh.cloak.t2.2": {
+  "ru": "— Самое странное — маленький ключ на верёвочке. Его полгода никто не спрашивает. Лежит, ждёт. Может, он вообще не от двери.",
+  "en": "\"The oddest is a little key on a string. For half a year nobody has asked. It lies and waits. Perhaps it is not for a door at all.\"",
+  "ja": "「いちばん不思議なのは、ひもつきの小さな鍵です。半年間、誰も尋ねに来ません。ただ待っている。ドアの鍵ではないのかもしれませんね」"
+ },
+ "city.xh.cloak.t3": {
+  "ru": "Кто здесь бывает",
+  "en": "Who comes here",
+  "ja": "どんな人が来るか"
+ },
+ "city.xh.cloak.t3.1": {
+  "ru": "— В среду хор, все с нотами, — перечисляет смотритель. — В пятницу танцоры, все со сменной обувью. В субботу все с цветами и без места, куда их поставить.",
+  "en": "\"Wednesday the choir, all with music,\" the caretaker lists. \"Friday the dancers, all with spare shoes. Saturday everyone with flowers and nowhere to put them.\"",
+  "ja": "「水曜は合唱団で、みんな楽譜を持っています」と管理人は数える。「金曜はダンスの人で、みんな履き替えの靴を持っています。土曜はみんな花を持っていて、置く場所がありません」"
+ },
+ "city.xh.cloak.t3.2": {
+  "ru": "— Вы на хоре бывали? Тогда вы знаете Айлу. Она приходит за пять минут до начала и каждый раз извиняется, что опоздала.",
+  "en": "\"Have you been to the choir? Then you know Isla. She arrives five minutes early and every time apologises for being late.\"",
+  "ja": "「合唱団には行かれましたか。ではアイラさんをご存じですね。いつも五分前に来て、そのたびに遅れてすみませんと謝るんです」"
+ },
+ "city.xh.choirtalk.hello.1": {
+  "ru": "Айла поднимает руку, и хор затихает. «Одну минуту, — говорит она залу. — Ко мне пришли». Двадцать два человека делают вид, что не слушают.",
+  "en": "Isla raises a hand and the choir falls silent. \"One minute,\" she tells the hall. \"Someone has come to see me.\" Twenty-two people pretend not to listen.",
+  "ja": "アイラが手を上げると合唱団が静まる。「一分だけ」と彼女はホールに言う。「わたしに会いに来た人がいるの」。二十二人が聞いていないふりをする。"
+ },
+ "city.xh.choirtalk.hello.2": {
+  "ru": "— Альтам на тон выше, басам на ступеньку ниже, мне стакан воды, — говорит Айла, не оборачиваясь. И уже потом поворачивается: — Да? Слушаю.",
+  "en": "\"Altos a tone higher, basses a step lower, me a glass of water,\" says Isla without turning. And only then turns: \"Yes? I am listening.\"",
+  "ja": "「アルトは一音高く、バスは一段低く、わたしには水を一杯」とアイラは振り向かずに言う。そのあとで振り返る。「はい？ 聞いているわ」"
+ },
+ "city.xh.choirtalk.t1": {
+  "ru": "Про хор «Прибой»",
+  "en": "About the «Surf» choir",
+  "ja": "合唱団「プリボイ」のこと"
+ },
+ "city.xh.choirtalk.t1.1": {
+  "ru": "— «Прибой» — это двадцать два человека и ни одного идеального слуха, — улыбается Айла. — Слух мы растим. Первый год поём в унисон, второй в терцию, а на третий кто-нибудь обязательно запоёт соло, и все делают вид, что так и надо.",
+  "en": "\"«Surf» is twenty-two people and not one perfect ear,\" Isla smiles. \"We grow the ear. The first year we sing in unison, the second in thirds, and in the third somebody always starts a solo and everyone acts as if that was the plan.\"",
+  "ja": "「『プリボイ』は二十二人で、完璧な耳の持ち主は一人もいないの」とアイラは微笑む。「耳は育てるもの。一年目は斉唱、二年目は三度、三年目には必ず誰かがソロを歌い出して、みんな最初からそのつもりだったという顔をするの」"
+ },
+ "city.xh.choirtalk.t1.2": {
+  "ru": "— Репетиции по средам открытые. Садитесь на любое место, только не там, где лежат ноты: это места басов, они обидчивые.",
+  "en": "\"Wednesday rehearsals are open. Sit anywhere, only not where the music lies: those are the basses' seats, and they are touchy.\"",
+  "ja": "「水曜の稽古は公開よ。どこに座ってもいいけれど、楽譜が置いてある席だけはだめ。そこはバスの席で、あの人たちは繊細なの」"
+ },
+ "city.xh.choirtalk.t2": {
+  "ru": "Про прослушивание",
+  "en": "About the audition",
+  "ja": "オーディションのこと"
+ },
+ "city.xh.choirtalk.t2.1": {
+  "ru": "— Хотите попробовать? Встаньте на меловой крестик у края сцены, — говорит Айла. — Петь можно чисто, громко или с чувством. Я скажу, что подошло. Хору это без разницы, а самолюбию очень даже.",
+  "en": "\"Want to try? Stand on the chalk cross at the front of the stage,\" says Isla. \"You can sing it clean, loud or with feeling. I will tell you what suited. The choir does not care, but your pride does.\"",
+  "ja": "「やってみる？ 舞台の前の、チョークの十字の上に立って」とアイラは言う。「正確に、大きく、気持ちを込めて、どれでもいいわ。何が合っていたか教えてあげる。合唱団にはどうでもいいことだけれど、自尊心にはとても大事なこと」"
+ },
+ "city.xh.choirtalk.t2.2": {
+  "ru": "— Ничьей вообще-то быть не может, — добавляет она. — Но бывает, что я сама не понимаю, чем кончилось. Тогда считаем, что победило эхо.",
+  "en": "\"A draw is not really possible,\" she adds. \"But sometimes I do not understand myself how it ended. Then we say the echo won.\"",
+  "ja": "「本当は引き分けはありえないの」と彼女は付け加える。「でも、どう終わったのか自分でも分からないことがある。そのときはエコーの勝ちということにしているわ」"
+ },
+ "city.xh.choirtalk.t3": {
+  "ru": "Про пьесу «Время, вперёд!»",
+  "en": "About the play «Time, Forward!»",
+  "ja": "劇「時よ、前へ！」のこと"
+ },
+ "city.xh.choirtalk.t3.1": {
+  "ru": "— В пьесе хор — это часы за кулисами, — объясняет Айла. — Мы тикаем. Сначала «тик», потом «так». Сложнее всего не торопиться: часы, которые торопятся, уже будильник.",
+  "en": "\"In the play the choir is the clocks backstage,\" Isla explains. \"We tick. First 'tick', then 'tock'. The hardest thing is not to hurry: a clock that hurries is an alarm.\"",
+  "ja": "「劇では合唱団は舞台裏の時計なの」とアイラは説明する。「わたしたちはチクタクと鳴る。最初が『チク』、次が『タク』。いちばん難しいのは急がないこと。急ぐ時計は目覚ましになってしまうから」"
+ },
+ "city.xh.choirtalk.t3.2": {
+  "ru": "— Суфлёрский экземпляр лежит у левой кулисы, можно почитать. Только про хор там одна строчка. Остальное мы придумываем сами.",
+  "en": "\"The prompter's copy lies by the left wing, you can read it. Only there is one line about the choir in it. The rest we invent ourselves.\"",
+  "ja": "「プロンプター用の台本は左袖にあるから、読んでもいいわ。ただ、合唱団のことは一行しか書いていない。あとはわたしたちが自分で考えるの」"
+ },
+ "city.xh.cooktalk.hello.1": {
+  "ru": "У плиты кто-то в фартуке, на плите что-то уже булькает. — Чего хотел? — спрашивают, не оборачиваясь. — Хлеб в печи, руками не трогать.",
+  "en": "Somebody in an apron stands at the stove, something already bubbling on it. \"What did you want?\" comes without a turn. \"Bread is in the oven, no hands.\"",
+  "ja": "コンロの前にエプロン姿の人がいて、鍋では何かがもうぐつぐついっている。「何の用だい」と振り返らずに聞かれる。「パンはオーブンの中だ。手で触るなよ」"
+ },
+ "city.xh.cooktalk.hello.2": {
+  "ru": "— Суп будет в час, — сообщает повар, помешивая. — А пока можно просто посидеть и принюхаться. Это бесплатно и тоже считается ужином.",
+  "en": "\"Soup will be at one,\" the cook announces, stirring. \"Meanwhile you can just sit and sniff. It is free and counts as supper too.\"",
+  "ja": "「スープは一時だよ」と料理人はかき混ぜながら告げる。「それまでは座ってにおいを嗅いでいればいい。無料で、それも晩ご飯のうちさ」"
+ },
+ "city.xh.cooktalk.hello.3": {
+  "ru": "Повар вытирает руки о фартук. — Пироги вынимаю. Кто быстрый, тот с пирогом. Кто медленный, тот с чаем, но тоже неплохо.",
+  "en": "The cook wipes his hands on his apron. \"I am taking the pies out. The quick get a pie. The slow get tea, which is not bad either.\"",
+  "ja": "料理人はエプロンで手を拭く。「パイを出しているところだ。早い人はパイ、遅い人は紅茶。それも悪くない」"
+ },
+ "city.xh.cook.t1": {
+  "ru": "Что и когда печётся",
+  "en": "What is cooked when",
+  "ja": "何がいつできるか"
+ },
+ "city.xh.cook.t1.1": {
+  "ru": "— Хлеб до часу, суп с двенадцати до четырёх, чай из самовара с трёх до закрытия, пироги с четырёх до девяти, — перечисляет повар. — Всё по часам, как поезда. Только пироги опаздывают.",
+  "en": "\"Bread until one, soup from twelve to four, samovar tea from three until closing, pies from four to nine,\" the cook lists. \"Everything by the clock, like trains. Only the pies are late.\"",
+  "ja": "「パンは午後一時まで、スープは十二時から四時、サモワールの紅茶は三時から閉館まで、パイは四時から九時」と料理人は数える。「すべて時刻表どおり、列車みたいにね。パイだけが遅れる」"
+ },
+ "city.xh.cook.t1.2": {
+  "ru": "— Хлеба в одни руки одна буханка в день. Тут не пекарня, а дом собраний: на всех не напасёшься, а на хорошего человека как-нибудь найдётся.",
+  "en": "\"One loaf a day per person. This is not a bakery, it is a community hall: you cannot bake for everyone, but for a good person something turns up.\"",
+  "ja": "「パンは一人一日一個。ここはパン屋ではなく集会所だ。全員の分は焼けないが、いい人の分ならなんとかなる」"
+ },
+ "city.xh.cook.t2": {
+  "ru": "Кухня и сцена",
+  "en": "The kitchen and the stage",
+  "ja": "厨房と舞台"
+ },
+ "city.xh.cook.t2.1": {
+  "ru": "— Слышите, как по вытяжке доносится хор? — повар поднимает палец. — Третий год готовлю под «Прибой». Борщ у меня от этого стал ровнее.",
+  "en": "\"Hear how the choir comes through the vent?\" the cook raises a finger. \"This is my third year cooking to «Surf». My borscht has come out steadier for it.\"",
+  "ja": "「換気口から合唱が聞こえるだろう？」料理人は指を立てる。「三年めだよ、『プリボイ』を聴きながら料理しているのは。おかげでボルシチが安定した」"
+ },
+ "city.xh.cook.t2.2": {
+  "ru": "— Реквизиторы иногда берут у меня скалку, чтобы изображать булаву. Скалка возвращается с пафосом и в муке. Я не жалуюсь, я записываю.",
+  "en": "\"The props people sometimes borrow my rolling pin to play a mace. It comes back with pathos and in flour. I do not complain, I take note.\"",
+  "ja": "「小道具係がときどきめん棒を借りて、メイスの役に使う。めん棒は気取った様子で粉まみれになって戻ってくる。文句は言わない。ただ記録しておく」"
+ },
+ "city.xh.cook.t3": {
+  "ru": "Кого кормят",
+  "en": "Who is fed",
+  "ja": "誰に食べさせるか"
+ },
+ "city.xh.cook.t3.1": {
+  "ru": "— Актёрам бутерброды, чтобы не ели за кулисами. Танцующим пироги, чтобы не падали после вальса. Хору тёплое питьё, горло беречь. Смотрителю всё и сразу.",
+  "en": "\"Sandwiches for the actors, so they do not eat backstage. Pies for the dancers, so they do not collapse after the waltz. Warm drinks for the choir, to mind the throat. The caretaker gets everything at once.\"",
+  "ja": "「俳優にはサンドイッチ、舞台裏で食べないように。ダンスの人にはパイ、ワルツのあとで倒れないように。合唱団には温かい飲み物、喉を守るために。管理人には全部いっぺんだ」"
+ },
+ "city.xh.cook.t3.2": {
+  "ru": "— А зрителям ничего не положено, но кто стоит у двери кухни и делает вид, что просто мимо, тому всегда что-нибудь найдётся.",
+  "en": "\"Audiences are not on the list, but whoever stands at the kitchen door pretending to pass by always finds something.\"",
+  "ja": "「観客は献立にないが、台所の戸口に立って、たまたま通りかかっただけという顔をしている人には、いつも何かが見つかる」"
+ },
+ "city.xh.closed.any.1": {
+  "ru": "Дом собраний закрыт. В окне фойе мелькает фонарь: сторож обходит зал и не любит, когда на него смотрят. Стук его шагов по сводам слышен дольше, чем сам сторож.",
+  "en": "The hall is closed. A lantern moves in the foyer window: the night watchman is making his round and does not like being watched. The sound of his steps in the vaults lasts longer than the watchman.",
+  "ja": "集会所は閉まっている。ロビーの窓に角灯が動く。夜警が見回りをしているのだ。見られるのは嫌いらしい。足音はヴォールトに響いて、本人よりも長く残る。"
+ },
+ "city.xh.closed.any.2": {
+  "ru": "За стеклом тёмный зал, на сцене тлеет дежурная лампа. Её оставляют, чтобы сцена не чувствовала себя брошенной. Сторож говорит, что лампа тут главная и что он у неё в помощниках.",
+  "en": "Beyond the glass a dark hall, and on the stage the ghost light glows. It is left so the stage does not feel abandoned. The watchman says the lamp is the one in charge and he is only its helper.",
+  "ja": "ガラスの向こうは暗いホールで、舞台には常夜灯がともっている。舞台が見捨てられたと感じないように残してあるのだ。夜警は、主役はあのランプで、自分はその助手にすぎないと言う。"
+ },
+ "city.xh.closed.any.3": {
+  "ru": "На двери табличка: «Открыто с десяти до одиннадцати вечера. Сторож на месте, но ничего не продаёт и ни с кем не разговаривает после девяти».",
+  "en": "On the door a sign: \"Open from ten until eleven at night. The watchman is on duty but sells nothing and talks to nobody after nine.\"",
+  "ja": "ドアに札。「午前十時から午後十一時まで開館。夜警は勤務中ですが、何も売らず、九時以降は誰とも話しません」"
+ },
+ "city.xh.closed.seat.1": {
+  "ru": "Стулья сдвинуты к стене и накрыты старыми шторами, чтобы не запылились до вечера. Сторож сказал бы, что стулья отдыхают, но сторожа не видно.",
+  "en": "The chairs are pushed to the wall and covered with old curtains against the dust. The watchman would say the chairs are resting, but the watchman is nowhere to be seen.",
+  "ja": "椅子は壁際に寄せられ、ほこりよけに古いカーテンがかけられている。夜警なら椅子は休んでいると言うだろうが、本人の姿は見えない。"
+ },
+ "city.xh.closed.seat.2": {
+  "ru": "Сесть сейчас нельзя: на сиденьях записка «Не греть». Сторож говорит, что стул, на котором посидели ночью, потом весь день думает, что он диван.",
+  "en": "You cannot sit now: on the seats a note \"Do not warm.\" The watchman says a chair that has been sat on at night then spends all day thinking it is a sofa.",
+  "ja": "いまは座れない。座面に「温めないこと」の書き置き。夜警によれば、夜に人が座った椅子は、そのあと一日中自分をソファだと思い込むのだそうだ。"
+ },
+ "city.xh.closed.counter.1": {
+  "ru": "Стойка закрыта решёткой, на решётке записка: «Ушёл греть чайник. Вернусь с чаем или не вернусь». Под запиской нарисована чашка и очень грустный человечек.",
+  "en": "The counter is shut behind a grille with a note: \"Gone to heat the kettle. Back with tea or not back.\" Under it a drawing of a cup and a very sad little man.",
+  "ja": "カウンターには格子がおりていて、書き置きがある。「お湯を沸かしに行きました。紅茶とともに戻るか、戻りません」。下にカップと、とても悲しそうな小さな人の絵。"
+ },
+ "city.xh.closed.counter.2": {
+  "ru": "На закрытой стойке мерцает отражение дежурной лампы со сцены. Она горит, значит, ключ у сторожа, а сторож где-то в зале.",
+  "en": "In the closed counter's glass flickers the reflection of the ghost light from the stage. It burns, so the key is with the watchman, and the watchman is somewhere in the hall.",
+  "ja": "閉まったカウンターのガラスに、舞台の常夜灯の反射が揺れている。灯りがともっているということは、鍵は夜警が持っていて、夜警はホールのどこかにいる。"
+ },
+ "city.xh.closed.screen.1": {
+  "ru": "Занавес закрыт. Из-под него пробивается полоска дежурной лампы, и кажется, что за ним репетирует кто-то очень тихий. Это, конечно, сквозняк.",
+  "en": "The curtain is closed. A strip of the ghost light shows under it, and it seems that someone very quiet is rehearsing behind. That is, of course, a draught.",
+  "ja": "幕は閉まっている。下から常夜灯の細い光がもれていて、中でとても静かな誰かが稽古しているように見える。もちろん、すきま風だ。"
+ },
+ "city.xh.closed.play.1": {
+  "ru": "Крышка закрыта, и на ней записка: «Ноты не трогать, настройщик придёт в понедельник». По понедельникам он приходит и говорит, что струны тоже устали.",
+  "en": "The lid is closed with a note: \"Do not touch the music, the tuner comes on Monday.\" On Mondays he comes and says the strings are tired too.",
+  "ja": "ふたは閉まっていて、書き置きがある。「楽譜に触らないこと。調律師は月曜に来ます」。月曜に来ると、弦も疲れていると言う。"
+ },
+ "city.xh.closed.sport.1": {
+  "ru": "Пол натёрт до зеркала и закрыт верёвочкой: сторож говорит, что по ночам он сам репетирует вальс. Верёвочку он поправляет как раз на нужную сторону.",
+  "en": "The floor is polished like a mirror and roped off: the watchman says that at night he rehearses a waltz himself. He sets the rope straight on the right side.",
+  "ja": "床は鏡のように磨かれてロープが張られている。夜警によれば、夜は自分でワルツの稽古をしているそうだ。ロープは都合のいい側にきちんと渡してある。"
+ },
+ "city.xh.prog.fest": {
+  "ru": "Сегодня праздник: на афишу карандашом дописано «чай всем и танцы до последнего вальса». Смотритель добавил внизу: «И без сменной обуви, ради такого случая».",
+  "en": "It is a holiday: in pencil on the poster is added \"tea for all and dancing until the last waltz\". The caretaker wrote below: \"And no spare shoes needed, for the occasion.\"",
+  "ja": "今日は祝日。ポスターには鉛筆で「全員にお茶、最後のワルツまでダンス」と書き足してある。管理人が下にこうも書いた。「今日に限り、履き替えの靴は不要」"
+ },
+ "city.xh.prog.lantern": {
+  "ru": "Ночь фонариков: на афише нарисован фонарик с лицом. Подпись: «После вечера зал не гасим, лампа ждёт, пока все выйдут с фонариками. Вход с огоньком свободный».",
+  "en": "Lantern Night: the poster has a lantern with a face drawn on it. A caption: \"After the evening we do not put the hall lights out, the lamp waits until everyone has gone out with lanterns. Entry with a light is free.\"",
+  "ja": "天灯の夜。ポスターには顔のついた天灯が描かれている。添え書き。「夜のあとも灯りは消しません。みなさんが灯りを手に出ていくまでランプは待っています。灯りを持つ方は入場無料」"
+ },
+ "city.xh.prog.sea": {
+  "ru": "Праздник моря: афиша в голубых разводах. «Хор поёт про воду, лекция про эхо над водой, танцы под волны. Мокрая обувь не помеха, но ковёр не любит».",
+  "en": "Sea Festival: the poster is in blue washes. \"The choir sings about water, the lecture is about the echo over water, the dancing is to the waves. Wet shoes do not matter, but the carpet does not like them.\"",
+  "ja": "海の祭り。ポスターは青いにじみ模様。「合唱は水の歌、講義は水の上のエコー、ダンスは波に合わせて。濡れた靴は構いませんが、絨毯は好きではありません」"
+ },
+ "city.xh.prog.newyear": {
+  "ru": "Новогодняя афиша: на скрипичном ключе висит гирлянда. «Утром детский утренник, вечером взрослый. Между ними пирог. Пирог, кстати, главнее».",
+  "en": "New Year poster: a garland hangs on a treble clef. \"A children's matinee in the morning, a grown-ups' one in the evening. A pie in between. The pie, by the way, is more important.\"",
+  "ja": "新年のポスター。ト音記号に飾りひもが掛かっている。「午前は子ども会、夜は大人の会。間にパイ。パイのほうが大事です」"
+ },
+ "city.xh.ghost.rain": {
+  "ru": "По сводам барабанит дождь, и дежурная лампа будто слушает: огонёк чуть дрожит в такт. Смотритель говорит, что лампе в дождь веселее.",
+  "en": "Rain drums on the vaults and the ghost light seems to listen: the flame trembles a little in time. The caretaker says the lamp is merrier in the rain.",
+  "ja": "雨がヴォールトを打ち、常夜灯はそれに聞き入っているように見える。灯が拍に合わせて少し震える。管理人は、雨の日のほうがランプは楽しそうだと言う。"
+ },
+ "city.xh.ghost.snow": {
+  "ru": "Снег глушит все звуки зала, и лампа светит как будто в вате. Тихо так, что слышно, как нагревается её нить.",
+  "en": "Snow muffles all the sounds of the hall and the lamp shines as if in wool. It is so quiet you can hear its filament warm up.",
+  "ja": "雪がホールの音をすべて吸い込み、ランプは綿の中で光っているようだ。あまりに静かで、フィラメントが温まる音まで聞こえそうだ。"
+ },
+ "city.xh.mixer.rain": {
+  "ru": "На плёнке дождь идёт тоже: с репетиции хора в среду, когда за окнами лило. Звукорежиссёр говорит, что этот дождь лучше настоящего, потому что его можно перемотать.",
+  "en": "On the tape it rains too: from the choir's Wednesday rehearsal, when it poured outside. The sound man says this rain is better than the real one because you can rewind it.",
+  "ja": "テープの中でも雨が降っている。外が土砂降りだった水曜の合唱の稽古の録音だ。音響係は、この雨のほうが本物より上等だと言う。巻き戻せるから。"
+ },
+ "city.xh.chalk.cold": {
+  "ru": "Мелом по краю доски приписано крупно: «ГОРЯЧИЙ ЧАЙ». Под ним нарисован дымок и три восклицательных знака. Один зачёркнут: перебор.",
+  "en": "Along the edge of the board in big chalk: \"HOT TEA\". Under it a wisp of steam and three exclamation marks. One is crossed out: too many.",
+  "ja": "黒板の端に大きなチョークの字で「熱い紅茶」。その下に湯気と感嘆符が三つ。一つは消されている。多すぎたのだ。"
+ },
+ "city.xh.chalk.warm": {
+  "ru": "Мелом: «Жарко. Дюшес из холодильника, три рубля сверху за охлаждение». Три рубля зачёркнуты, потому что смотритель сам запыхался.",
+  "en": "In chalk: \"Hot. Duchesse from the fridge, three roubles extra for the chill.\" The three roubles are crossed out, because the caretaker is out of breath himself.",
+  "ja": "チョークで：「暑いです。ドゥシェスは冷蔵庫から、冷やし代三ルーブル追加」。三ルーブルは消されている。管理人本人も息を切らしているからだ。"
+ },
+ "city.xh.dance.fest": {
+  "ru": "Праздник, и пластинки ставит смотритель сам: «Все танцуют со всеми, без разбору». Мимо проплывает пара: он в пальто, она с чайником. Никого это не смущает.",
+  "en": "A holiday, and the caretaker puts the records on himself: \"Everyone dances with everyone, no questions.\" A couple glides past: he in a coat, she with a kettle. It bothers nobody.",
+  "ja": "祝日で、管理人が自分でレコードをかける。「みんな誰とでも、遠慮なく踊ってください」。一組が踊りながら通り過ぎる。彼はコート姿、彼女はやかんを持っている。誰も気にしない。"
+ },
+ "quest.hall_audition.title": {
+  "ru": "Проба голоса",
+  "en": "A voice trial",
+  "ja": "声を試す"
+ },
+ "quest.hall_audition.desc": {
+  "ru": "В вестибюле «Сводов» на столике лежат программки. В одной сказано, что хор «Прибой» берёт новых людей, хотя и не всех, и что в пьесе хор изображает часы. Интересно, как.",
+  "en": "On a table in the lobby of the Vaults lie programmes. One says the «Surf» choir takes new people, though not everyone, and that in the play the choir plays the clocks. I wonder how.",
+  "ja": "「ヴォールト」のロビーのテーブルにプログラムが置いてある。それによると、合唱団「プリボイ」は誰でもではないが新しい人を迎えるし、劇の中では合唱団が時計を演じるらしい。どんなふうにだろう。"
+ },
+ "quest.hall_audition.script.log": {
+  "ru": "Хор в пьесе изображает часы за кулисами. Суфлёрский экземпляр лежит на стойке у левой кулисы. Посмотрю, что там написано про хор.",
+  "en": "In the play the choir is the clocks backstage. The prompter's copy lies on the stand by the left wing. I will see what it says about the choir.",
+  "ja": "劇の中で合唱団は舞台裏の時計になる。プロンプター用の台本は左袖の台の上にある。合唱団についてどう書いてあるか見てみよう。"
+ },
+ "quest.hall_audition.script.obj": {
+  "ru": "Прочитать пьесу на суфлёрской стойке за кулисами",
+  "en": "Read the play on the prompter's stand backstage",
+  "ja": "舞台裏のプロンプター台で台本を読む"
+ },
+ "quest.hall_audition.ask.log": {
+  "ru": "В пьесе про хор одна строчка, а хор у Айлы двадцать два человека. Хормейстер репетирует на сцене с пяти до девяти, со среды по воскресенье. Спрошу про прослушивание.",
+  "en": "The play has one line about the choir, and Isla's choir is twenty-two people. The choir leader rehearses on the stage from five to nine, Wednesday to Sunday. I will ask about an audition.",
+  "ja": "劇には合唱団の台詞が一行しかないが、アイラの合唱団は二十二人いる。指揮者は水曜から日曜の五時から九時まで舞台で稽古している。オーディションについて聞いてみよう。"
+ },
+ "quest.hall_audition.ask.obj": {
+  "ru": "Расспросить хормейстера о прослушивании",
+  "en": "Ask the choir leader about the audition",
+  "ja": "合唱指揮者にオーディションのことを尋ねる"
+ },
+ "quest.hall_audition.trial.log": {
+  "ru": "Нужно встать на меловой крестик у края сцены и спеть так, чтобы Айла кивнула. Чисто, громко или с чувством: она слушает по тому, что я выбираю в ответ на её лицо.",
+  "en": "I have to stand on the chalk cross at the front of the stage and sing so that Isla nods. Clean, loud or with feeling: she judges by what I choose in answer to her face.",
+  "ja": "舞台の前のチョークの十字に立ち、アイラがうなずくように歌わなければならない。正確に、大きく、気持ちを込めて。彼女の表情に合わせて選ぶのが判定の基準だ。"
+ },
+ "quest.hall_audition.trial.obj": {
+  "ru": "Пройти пробу голоса у хормейстера (выиграть)",
+  "en": "Win a voice trial with the choir leader",
+  "ja": "合唱指揮者の声のオーディションに勝つ"
+ },
+ "quest.hall_audition.board.log": {
+  "ru": "Смотритель говорил, что корешки вечеров вешают на доску в фойе. Пора повесить свой: посмотрю на гвоздь с надписью «Хор».",
+  "en": "The caretaker said that the stubs of the evenings are hung on the board in the foyer. Time to hang mine: I will look at the nail marked \"Choir\".",
+  "ja": "管理人は、各夜の半券はロビーのボードに掛けると言っていた。今度は自分のを掛ける番だ。「合唱」と書かれた釘を見に行こう。"
+ },
+ "quest.hall_audition.board.obj": {
+  "ru": "Посмотреть доску корешков в фойе",
+  "en": "Look at the stub board in the foyer",
+  "ja": "ロビーの半券ボードを見る"
+ },
+ "quest.hall_audition.done": {
+  "ru": "Корешок «Хор» повис на гвозде, красный, чуть мятый. Эхо в зале подхватило последнюю ноту и вернуло её мне, чуть ниже. Значит, договорились.",
+  "en": "The \"Choir\" stub hangs on its nail, red and a little crumpled. The echo in the hall caught my last note and gave it back to me, a little lower. So we have an understanding.",
+  "ja": "「合唱」の半券が釘に掛かった。赤くて、少ししわがある。ホールのエコーは最後の音を拾い、少し低くして返してくれた。つまり、話はついたということだ。"
+ }
+}

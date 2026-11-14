@@ -76,7 +76,7 @@ def _levels(b, depth):
 
 def _face(prim_c, prims, b, o, a, n, half, z0, z1, openings):
     """The wall's front face at s = 0 from z0 to z1 over u -half..half, with openings [(u0, u1, zb, zt, material)]
-    recessed by REVEAL."""
+    recessed by REVEAL (material None: an open doorway, no panel: a promenade unit's room is behind it)."""
     us = sorted(set([-half, half] + [v for op in openings for v in (op[0], op[1])]))
     zs = sorted(set([z0, z1] + [v for op in openings for v in (op[2], op[3])]))
     N = (n[0], n[1], 0.0)
@@ -92,16 +92,34 @@ def _face(prim_c, prims, b, o, a, n, half, z0, z1, openings):
         _quad(prim_c, o, a, n, [(u0, 0, zb), (u0, r, zb), (u0, r, zt), (u0, 0, zt)], A)        # left reveal faces +a
         _quad(prim_c, o, a, n, [(u1, r, zb), (u1, 0, zb), (u1, 0, zt), (u1, r, zt)], B)
         _quad(prim_c, o, a, n, [(u0, r, zt), (u1, r, zt), (u1, 0, zt), (u0, 0, zt)], (0, 0, -1))  # head
-        if zb > z0 + 0.01:
+        if mat is None:
+            # an open doorway: a concrete threshold 2 cm over the ground (the landscape is level with zb there),
+            # flush with the room's floor behind it
+            _box(prim_c, o, a, n, u0, u1, r, 0.07, zb - 0.06, zb + 0.02)
+        elif zb > z0 + 0.01:
             _quad(prim_c, o, a, n, [(u0, 0, zb), (u1, 0, zb), (u1, r, zb), (u0, r, zb)], (0, 0, 1))  # sill
             # a precast sill sticking out a little
             _box(prim_c, o, a, n, u0 - 0.08, u1 + 0.08, 0.0, 0.07, zb - 0.06, zb)
+        if mat is None:
+            continue
         _quad(prims[mat], o, a, n, [(u0, r, zb), (u1, r, zb), (u1, r, zt), (u0, r, zt)], N, tile=max(u1 - u0, 0.5))
         if mat == GLASS:                          # a mullion and a transom: windows read as windows
             uc = (u0 + u1) / 2
             _box(prims[DOOR], o, a, n, uc - 0.03, uc + 0.03, r, r + 0.05, zb, zt)
             zt3 = zt - (zt - zb) * 0.3
             _box(prims[DOOR], o, a, n, u0, u1, r, r + 0.05, zt3 - 0.03, zt3 + 0.03)
+
+
+def _gaps(u0, u1, holes):
+    """The pieces of u0..u1 left between the holes [(a, b)]."""
+    out, u = [], u0
+    for a, b in sorted(holes):
+        if a > u:
+            out.append((u, a))
+        u = max(u, b)
+    if u < u1:
+        out.append((u, u1))
+    return out
 
 
 def _parapet(prim, o, a, n, u0, u1, up):
@@ -174,8 +192,8 @@ def walls(mesh):
     """The terrace walls W1..W5: bays with flats (W2..W5) or shop units (W1), wall stairs, grand stairs."""
     prim_c = mesh.p(CONC)
     prims = {GLASS: mesh.p(GLASS), DOOR: mesh.p(DOOR), SHOPGLASS: mesh.p(SHOPGLASS), CONC: prim_c}
-    depth = C.WALL_DEPTH
     for i in range(len(C.WALLS)):
+        depth = C.wall_depth(i)
         bays = C.wall_bays(i)
         for k, b in enumerate(bays):
             if hasattr(mesh, "at"):
@@ -205,8 +223,11 @@ def walls(mesh):
                     for su in (-l / 2 + 0.4, l / 2 - 0.55):
                         _box(prim_c, o, a, n, su, su + 0.15, 0.0, 1.0, zb, zb + 1.0)
             elif full and b["kind"] == "unit":
+                # the doorway is open: the unit's room (blender/city/buildings/promenade_unit.py, placed by
+                # import_city.py at the unit's "front") stands in the hollow block behind the face; the shop window
+                # keeps its glass (ALyudCityWindows lights the pane W1-Uxx-w1 in front of it)
                 for kind, u, sill, ww, wh in C.UNIT_OPENINGS:
-                    openings.append((u - ww / 2, u + ww / 2, lower + sill, lower + sill + wh, DOOR if kind == "door" else SHOPGLASS))
+                    openings.append((u - ww / 2, u + ww / 2, lower + sill, lower + sill + wh, None if kind == "door" else SHOPGLASS))
             _face(prim_c, prims, b, o, a, n, half, lower - FOOT, upper + 0.02, openings)
             # the block's top (with the upper terrace) and its ends (seen where the fade steps it down);
             # 2 cm over the terrace: the landscape's ramp behind the face (city_plan.WALL_RAMP) is level with the upper
@@ -218,7 +239,10 @@ def walls(mesh):
             _quad(prim_c, o, a, n, [(half, 0, lower - FOOT), (half, -depth, lower - FOOT), (half, -depth, top), (half, 0, top)],
                   (a[0], a[1], 0.0))
             # a plinth line and a drip course: the face is not a flat sheet
-            _box(prim_c, o, a, n, -half, half, 0.0, 0.06, lower - 0.1, lower + 0.35)
+            # (open at a unit's doorway: nothing to trip over on the way in)
+            for p0, p1 in _gaps(-half, half, [(u - ww / 2, u + ww / 2) for kind, u, _s, ww, _h in C.UNIT_OPENINGS
+                                              if kind == "door"] if full and b["kind"] == "unit" else []):
+                _box(prim_c, o, a, n, p0, p1, 0.0, 0.06, lower - 0.1, lower + 0.35)
             if upper - lower > 4.0:
                 zc = lower + 3.7
                 _box(prim_c, o, a, n, -half, half, 0.0, 0.12, zc - 0.12, zc)

@@ -1,0 +1,11 @@
+{
+ "_doc": "Errand acts: a thing a quest's last stage waits for with `do` (a bare `visit` there would let the quest engine skip the earlier stages and pay out). Same behaviour as the act they are like; only the target is their own. docs/city_interiors.md.",
+ "acts": {
+  "aoki_fitting": {"like": "tickets", "target": "aoki_fitting"},
+  "okonkwo_barber": {"like": "sit", "target": "okonkwo_barber"}
+ },
+ "rules": {
+  "P-CLUB2/ticket_counter": {"act": "aoki_fitting"},
+  "W1-U21/barber_waiting": {"act": "okonkwo_barber"}
+ }
+}

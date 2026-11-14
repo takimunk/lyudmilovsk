@@ -1290,6 +1290,31 @@ talk = town.chat_kids1.1 | town.chat_kids1.2 | town.chat_kids1.3
 talk = town.chat_kids2.1 | town.chat_kids2.2 | town.chat_kids2.3
 talk = town.chat_kids3.1 | town.chat_kids3.2 | town.chat_kids3.3
 
+# Counters of the town's buildings (docs/city_interiors.md): the person on shift says hello once a visit, when the
+# hero steps up to the counter. Event (on = ...): counter_hello, sent by ULyudCityThings.
+
+[counter_hello]
+on = counter_hello
+say = town.counter_hello.1..4
+
+[counter_hello_early]
+on = counter_hello
+hours = 4-9
+weight = 2
+say = town.counter_hello_early.1..2
+
+[counter_hello_evening]
+on = counter_hello
+hours = 18-4
+weight = 2
+say = town.counter_hello_evening.1..2
+
+[counter_hello_festival]
+on = counter_hello
+festival = any
+weight = 2
+say = town.counter_hello_festival.1
+
 # Manners (docs/town_manners.md): what people say about the small thing their hands are doing now (manner = ...),
 # and what they say when they notice the player: he runs past (on = hero_runs), stands too close (on = hero_close),
 # shines the head lamp in their eyes (on = hero_lamp)

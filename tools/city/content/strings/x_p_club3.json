@@ -1,0 +1,1053 @@
+{
+ "_doc": "Words of the club «Шестерня» second pass (tools/city/content/x_p_club3.json): shelf pages, notices, acts, quests cog_clock and cog_reader.",
+ "city.shop.cog_lending.title": {
+  "ru": "Выдача книг (под залог)",
+  "en": "Lending desk (deposit)",
+  "ja": "貸出カウンター（保証金）"
+ },
+ "city.cog.sh.poetry.1": {
+  "ru": "На форзаце сборника штамп «Клуб „Шестерня“. Библиотека» и карандашом: «Читать вслух только шёпотом». Я прочитал шёпотом. Получилось даже лучше.",
+  "en": "On the flyleaf of the collection is the stamp \"Cog Club. Library\" and in pencil: \"Reading aloud: whispers only.\" I read it in a whisper. It came out even better.",
+  "ja": "詩集の見返しに「クラブ『歯車』図書室」のスタンプと、鉛筆で「音読はささやき声のみ」。ささやいて読んでみたら、かえってよかった。"
+ },
+ "city.cog.sh.poetry.2": {
+  "ru": "Между страниц закладка: прошлогодний талон в буфет. Стихотворение на этой странице про зиму, так что талон, наверное, лежит тут не случайно.",
+  "en": "A bookmark between the pages: last year's buffet coupon. The poem on this page is about winter, so the coupon is probably not there by accident.",
+  "ja": "ページの間に栞がわりの、去年の売店の券。このページの詩は冬のことだから、券がここにあるのはたぶん偶然じゃない。"
+ },
+ "city.cog.sh.art.1": {
+  "ru": "Альбом «Живопись Балтики». Под дюнами кто-то подписал: «Были вчера. Один в один, только комаров нет». Видно, что картину сверяли с берегом.",
+  "en": "An album, \"Painting of the Baltic.\" Under the dunes someone has written: \"Went there yesterday. Just the same, only no mosquitoes.\" You can tell the painting was checked against the shore.",
+  "ja": "画集『バルト海の絵画』。砂丘の絵の下に「昨日行ってきた。そっくり、ただし蚊はいない」と書き込みがある。絵を実際の浜と見比べた人がいるらしい。"
+ },
+ "city.cog.sh.art.2": {
+  "ru": "Каталог выставки. На репродукции маяка пятно от чая в форме маленького облака. Тамара Ильинична сказала, что пятно теперь считается частью экспозиции.",
+  "en": "An exhibition catalogue. On the print of the lighthouse there is a tea stain shaped like a small cloud. Tamara Ilyinichna said the stain now counts as part of the display.",
+  "ja": "展覧会の図録。灯台の複製に、小さな雲の形をした紅茶のしみ。タマーラ・イリイニチナは「そのしみも展示のうち」と言った。"
+ },
+ "city.cog.sh.chess.1": {
+  "ru": "На полях учебника чья-то рука отмечает ходы и пишет: «Тут зевнул ферзя, больше не играю. До четверга». Судя по числу таких пометок, четверг наступал не раз.",
+  "en": "In the margins of a textbook a hand marks the moves and writes: \"Blundered the queen here, never playing again. See you Thursday.\" Judging by the number of such notes, Thursday has come round more than once.",
+  "ja": "教本の余白に、誰かが指し手を書き込み、「ここでクイーンを取られた。もう指さない。では木曜に」。同じ書き込みが何度もあるから、木曜は何度も来たらしい。"
+ },
+ "city.cog.sh.chess.2": {
+  "ru": "Из книги выглядывает листок: расписание блица на четверг. Последняя строка: «Часы клубные, берегите». Ниже другим почерком: «(если найдутся)».",
+  "en": "A sheet sticks out of the book: the Thursday blitz schedule. The last line: \"The clock belongs to the club, take care of it.\" Below, in another hand: \"(if it turns up).\"",
+  "ja": "本から紙が一枚のぞいている。木曜の早指しの予定表だ。最後の行は「時計はクラブのもの、大事に」。その下に別の字で「（見つかれば）」。"
+ },
+ "city.cog.sh.eng.1": {
+  "ru": "«Фотография для любителей». На странице про выдержку надпись: «Считать вслух нельзя: врёшь. Нужны часы, которые тикают ровно». Хороший совет.",
+  "en": "\"Photography for Amateurs.\" On the page about exposure someone has written: \"Don't count aloud, you cheat. You need a clock that ticks evenly.\" Good advice.",
+  "ja": "『アマチュアの写真術』。露出の説明のページに「声に出して数えるな、ごまかすから。正確に時を刻む時計が要る」と書き込み。いい助言だ。"
+ },
+ "city.cog.sh.eng.2": {
+  "ru": "«Моделист-конструктор» с чертежом катера. Размеры подписаны карандашом, а на последней странице отпечаток большого пальца в клее.",
+  "en": "A model-maker's magazine with a drawing of a motor launch. The sizes are pencilled in, and on the last page there is a thumbprint in glue.",
+  "ja": "『モデラー』誌に小型船の図面。寸法は鉛筆書きで、最後のページには接着剤の親指の跡がついている。"
+ },
+ "city.cog.sh.local.1": {
+  "ru": "Подшивка городской газеты. В заметке об открытии клуба слово «шестерня» обведено: «Это не колесо, — пояснил архитектор, — это руки, взявшиеся друг за друга».",
+  "en": "A bound run of the town paper. In the piece on the club's opening the word \"cog\" is circled: \"It isn't a wheel,\" the architect explained, \"it's hands taking hold of one another.\"",
+  "ja": "町の新聞の綴じ込み。クラブ開館の記事の「歯車」の字が丸で囲んである。「車輪ではありません」と建築家は説明した。「手と手をつなぎ合っているのです」。"
+ },
+ "city.cog.sh.local.2": {
+  "ru": "Старая карта города, клуб ещё на окраине. Рядом пунктир будущей дороги, которой пока нет. Кто-то аккуратно проложил её карандашом по полям.",
+  "en": "An old map of the town, the club still on the outskirts. Beside it a dotted line, a road to come that does not exist yet. Someone has carefully drawn it in pencil across the margins.",
+  "ja": "古い町の地図。クラブはまだ町はずれにある。そばに点線、まだない未来の道。誰かが余白に鉛筆できちんと道を延ばしている。"
+ },
+ "city.cog.sh.birds.1": {
+  "ru": "«Птицы Балтики», формуляр на последней странице: «Вернул. Чайка оказалась не чайкой». Страница про чаек самая замусоленная.",
+  "en": "\"Birds of the Baltic\", the borrower's slip on the last page: \"Returned. The gull turned out not to be a gull.\" The pages about gulls are the most thumbed.",
+  "ja": "『バルト海の鳥』、最後のページの貸出票に「返却。カモメはカモメではなかった」。いちばん擦り切れているのはカモメのページだ。"
+ },
+ "city.cog.sh.birds.2": {
+  "ru": "На полях рядом с зябликом размашисто: «Видел у нас во дворе! Тамара Ильинична, это вам». Ниже ответ: «Видела. Спасибо».",
+  "en": "In the margin by the chaffinch, in big letters: \"Saw one in our yard! Tamara Ilyinichna, this is for you.\" Below, the reply: \"I saw it. Thank you.\"",
+  "ja": "ズアオアトリの横の余白に大きな字で「うちの庭で見た！タマーラ・イリイニチナ、あなたに」。その下に返事、「見ました。ありがとう」。"
+ },
+ "city.cog.sh.sea.1": {
+  "ru": "Лоция Балтики, углы потрёпаны. Закладка: нитка с кусочком морского стекла. Стёклышко на солнце даёт на страницу зелёное пятно.",
+  "en": "A Baltic pilot book, the corners worn. The bookmark is a thread with a bit of sea glass. In the sun the glass puts a green patch on the page.",
+  "ja": "バルト海の水路誌、角はすり切れている。栞は海ガラスのかけらをつけた糸。日にかざすとページに緑の光が落ちる。"
+ },
+ "city.cog.sh.sea.2": {
+  "ru": "Книга о парусных судах. Рядом с чертежом шхуны детским почерком: «Мы такую сделаем в мастерской». Подпись: «Лев Аркадьевич не против».",
+  "en": "A book on sailing ships. Next to a drawing of a schooner, in a child's hand: \"We'll build one like this in the workshop.\" Signed: \"Lev Arkadyevich doesn't mind.\"",
+  "ja": "帆船の本。スクーナーの図の隣に子どもの字で「これと同じのを工作室で作る」。署名は「レフ・アルカージエヴィチは反対しない」。"
+ },
+ "city.cog.sh.science.1": {
+  "ru": "Журнал «Знание — сила». В статье о маятнике на полях: «Шахматные часы тоже маятник. Проверено». Подпись неразборчива, почерк торопливый.",
+  "en": "A popular-science magazine. In an article on the pendulum, in the margin: \"A chess clock is a pendulum too. Tested.\" The signature is illegible, the handwriting hurried.",
+  "ja": "科学雑誌。振り子の記事の余白に「チェス時計も振り子だ。確認済み」。署名は読めず、字は急いでいる。"
+ },
+ "city.cog.sh.science.2": {
+  "ru": "Справочник физика. На странице про свет и тень вложен проявленный снимок: окно читального зала, на стекле силуэт чайки. На обороте штамп фотокружка.",
+  "en": "A physicist's handbook. On the page about light and shadow a developed print is tucked in: the reading-room window with a gull's silhouette on the glass. On the back, the photo circle's stamp.",
+  "ja": "物理の便覧。光と影のページに現像した写真が挟まっている。閲覧室の窓、ガラスにカモメの影。裏には写真サークルのスタンプ。"
+ },
+ "city.cog.cart.prompt": {
+  "ru": "E — посмотреть, что сдали",
+  "en": "E — see what's been returned",
+  "ja": "E：返却された本を見る"
+ },
+ "city.cog.cart.1": {
+  "ru": "Тележка с возвратом: книги лежат корешками врозь, и по ним видно, кто что читал. Сверху «Шахматы для начинающих» с закладкой на сорок первой странице. Дальше он, видно, не пошёл.",
+  "en": "The returns trolley: the books lie with their spines every which way, and you can tell who read what. On top, \"Chess for Beginners\" with a bookmark at page forty-one. He clearly got no further.",
+  "ja": "返却用のワゴン。本は背をばらばらに向けて積まれ、誰が何を読んだかが見て取れる。いちばん上は『はじめてのチェス』、四十一ページに栞。そこから先へは進まなかったらしい。"
+ },
+ "city.cog.cart.2": {
+  "ru": "В понедельник тележка полна: после выходных все вернули всё сразу. Тамара Ильинична сортирует, не поднимая головы и не сбиваясь со счёта.",
+  "en": "On Monday the trolley is full: after the weekend everyone returned everything at once. Tamara Ilyinichna sorts without lifting her head or losing count.",
+  "ja": "月曜日のワゴンは満杯。週末明けにみんなが一度に返すから。タマーラ・イリイニチナは顔も上げず、数も間違えずに仕分けている。"
+ },
+ "city.cog.cart.3": {
+  "ru": "К выходным тележка почти пуста: читатели уносят книги, а возвращают потом, в понедельник. Закон природы.",
+  "en": "By the weekend the trolley is nearly empty: readers take books away and bring them back later, on Monday. A law of nature.",
+  "ja": "週末になるとワゴンはほとんど空。読者は本を持ち帰り、返すのは月曜日。自然の法則だ。"
+ },
+ "city.cog.cart.4": {
+  "ru": "В стопке чужая записка: «Часы я не брал, брал только „Фотографию для любителей“». На корешке той книги штамп фотокружка.",
+  "en": "In the pile, someone's note: \"I didn't take the clock, I only took 'Photography for Amateurs'.\" On that book's spine, the photo circle's stamp.",
+  "ja": "本の山に誰かのメモ。「時計は取っていません、『アマチュアの写真術』だけです」。その本の背には写真サークルのスタンプ。"
+ },
+ "city.cog.swap.prompt": {
+  "ru": "E — взять журнал с полки обмена",
+  "en": "E — take a magazine from the swap rack",
+  "ja": "E：交換棚から雑誌を取る"
+ },
+ "city.cog.swap.1": {
+  "ru": "Над полкой бумажка: «Принёс — возьми, взял — принеси». Журналы тут ходят по кругу много лет. Я взял тот, что лежал сверху.",
+  "en": "Above the rack a slip: \"Bring one, take one; take one, bring one.\" The magazines have gone round here for years. I took the one on top.",
+  "ja": "棚の上に貼り紙。「持ってきたら持っていって、持っていったら持ってきて」。ここの雑誌は何年も回り続けている。いちばん上のを取った。"
+ },
+ "city.cog.swap.2": {
+  "ru": "По понедельникам на полке свежее: человек из мастерских оставляет стопку «Знания — силы» с чертежами на вкладках. Я взял верхний.",
+  "en": "On Mondays the rack has something new: a man from the workshops leaves a stack of popular-science magazines with drawings on the inserts. I took the top one.",
+  "ja": "月曜の棚は新しい。工房の人が、図面の付録つきの科学雑誌を一山置いていく。いちばん上を取った。"
+ },
+ "city.cog.swap.3": {
+  "ru": "К выходным полка почти пустая: всё разобрали. Остался один журнал, весь в пятнах клея. Видно, читали над верстаком.",
+  "en": "By the weekend the rack is almost bare: everything's gone. One magazine is left, covered in glue stains. It must have been read at the workbench.",
+  "ja": "週末の棚はほとんど空で、みんな持っていった。残った一冊は接着剤のしみだらけ。作業台の上で読まれたらしい。"
+ },
+ "city.cog.swap.4": {
+  "ru": "В воскресенье полку не пополняют. На ней записка: «Журналы кончились, приходите во вторник». Но один всё-таки нашёлся, под запиской.",
+  "en": "On Sundays the rack isn't restocked. A note on it: \"Out of magazines, come on Tuesday.\" But one turned up anyway, under the note.",
+  "ja": "日曜は棚を補充しない。メモがある。「雑誌はなくなりました、火曜にどうぞ」。でも一冊だけ、メモの下にあった。"
+ },
+ "city.cog.bil.1": {
+  "ru": "Во вторник и четверг вечером стол отдан секции юных: пятеро ходят вокруг и считают углы. Меня пустили последним. Я выучил, что угол падения равен углу отражения, даже если шар не хочет.",
+  "en": "On Tuesday and Thursday evenings the table belongs to the juniors' section: five of them walk round it counting angles. I was let in last. I learned that the angle of incidence equals the angle of reflection even when the ball doesn't want it to.",
+  "ja": "火曜と木曜の夕方、台は少年部のもの。五人が台のまわりを回って角度を数えている。僕は最後に入れてもらった。球がその気でなくても、入射角は反射角に等しいと知った。"
+ },
+ "city.cog.bil.2": {
+  "ru": "По пятницам вечером играет лига: люди с судоверфи с закатанными рукавами. Проигравший угощает чаем из буфета. Мне налили чаю просто так: свидетелей, говорят, поят всегда.",
+  "en": "Friday evenings the league plays: men from the shipyard with their sleeves rolled up. The loser buys tea from the buffet. They poured me one for nothing: witnesses, they say, always get tea.",
+  "ja": "金曜の夜はリーグ戦。造船所の人たちが袖をまくっている。負けた側が売店のお茶をおごる。僕にも理由なく注いでくれた。立会人にはいつもお茶を出すのだという。"
+ },
+ "city.cog.bil.3": {
+  "ru": "В субботу играют парами, двое на двое, и все четверо спорят, чей был шар. Я стоял с кием в стороне и чувствовал себя судьёй. Меня ни разу не спросили.",
+  "en": "On Saturday they play in pairs, two against two, and all four argue over whose ball it was. I stood aside with a cue feeling like a referee. Nobody asked me once.",
+  "ja": "土曜は二対二のペア戦で、四人とも誰の球だったかで言い争う。僕はキューを持って脇に立ち、審判の気分だった。一度も意見を聞かれなかったけれど。"
+ },
+ "city.cog.bil.4": {
+  "ru": "В воскресенье днём за столом отцы с детьми. Дети тянутся на цыпочках, отцы делают вид, что промахиваются. Я забил два шара и немного гордился.",
+  "en": "Sunday afternoon at the table: fathers with their children. The children stretch on tiptoe, the fathers pretend to miss. I potted two and was a little proud.",
+  "ja": "日曜の昼、台のまわりは父親と子どもたち。子どもは背伸びして、父親はわざと外す。僕は二つ入れて、ちょっと誇らしかった。"
+ },
+ "city.cog.bil.5": {
+  "ru": "Финал лиги скоро. Борта протёрли до блеска, и стол выглядит торжественно, как перед присягой.",
+  "en": "The league final is near. The cushions have been wiped to a shine and the table looks solemn, as before an oath.",
+  "ja": "リーグ決勝が近い。クッションは艶が出るまで拭かれ、台はまるで宣誓の前のように厳かに見える。"
+ },
+ "city.cog.tt.1": {
+  "ru": "По понедельникам и средам здесь тренируется кружок: тренер ставит на стол жестяную банку и учит попадать в неё подачей. Банка вся в вмятинах и, кажется, этим гордится.",
+  "en": "On Mondays and Wednesdays the circle trains here: the coach puts a tin can on the table and teaches them to hit it with a serve. The can is covered in dents and seems proud of it.",
+  "ja": "月曜と水曜はサークルの練習日。コーチが台にブリキ缶を置き、サーブで当てる練習をさせる。缶はへこみだらけで、それを誇っているように見える。"
+ },
+ "city.cog.tt.2": {
+  "ru": "По вторникам и четвергам вечером играют по кругу: проиграл, уходишь в конец очереди на скамейке. Очередь, говорят старожилы, и есть главная часть игры.",
+  "en": "Tuesday and Thursday evenings they play round-robin: lose, and you go to the end of the queue on the bench. The queue, the old-timers say, is the main part of the game.",
+  "ja": "火曜と木曜の夕方は勝ち抜き戦。負けるとベンチの列の最後へ。常連に言わせれば、その行列こそが試合のいちばん大事なところだ。"
+ },
+ "city.cog.tt.3": {
+  "ru": "В пятницу и субботу сюда приходят старшеклассники и играют на вылет. Шум такой, что слышно в читальном зале, и Тамара Ильинична стучит по трубе. Труба отвечает.",
+  "en": "On Friday and Saturday the older pupils come and play knockout. The noise carries to the reading room, and Tamara Ilyinichna knocks on the pipe. The pipe answers.",
+  "ja": "金曜と土曜は高校生が来てトーナメントをする。騒ぎは閲覧室まで届き、タマーラ・イリイニチナが配管を叩く。配管が返事をする。"
+ },
+ "city.cog.tt.4": {
+  "ru": "В воскресенье утром стол свободен, и мячик никуда не торопится. Я тренировал подачу, пока не получилось два раза подряд, и остановился на этой высокой ноте.",
+  "en": "On Sunday morning the table is free and the ball is in no hurry. I practised my serve until it worked twice in a row, and stopped on that high note.",
+  "ja": "日曜の朝は台が空いていて、球も急がない。サーブを練習して、二回続けてうまくいったところで、その高い調子のままやめた。"
+ },
+ "city.cog.league.1": {
+  "ru": "Лига «Шестерни» по бильярду: таблица мелом. Первые три места за судоверфью, четвёртое за «Неизвестным», на пятом бутылка кефира, которую кто-то поставил для порядка.",
+  "en": "The Cog Club billiards league: a table in chalk. The top three places belong to the shipyard, fourth to \"Unknown\", and fifth is a bottle of kefir someone put there for tidiness.",
+  "ja": "「歯車」ビリヤードリーグの順位表がチョークで書いてある。上位三つは造船所、四位は「名無し」、五位には誰かが体裁のために置いたケフィアの瓶。"
+ },
+ "city.cog.league.2": {
+  "ru": "Под таблицей: «Полуфинал в пятницу вечером. Болельщикам просьба не стоять у лузы: лузы нервничают».",
+  "en": "Under the table: \"Semi-final on Friday evening. Spectators, please don't stand by the pockets: the pockets get nervous.\"",
+  "ja": "順位表の下に「準決勝は金曜の夜。観客の皆さまはポケットのそばに立たないでください。ポケットが緊張します」。"
+ },
+ "city.cog.league.3": {
+  "ru": "Полуфинал сыграли: слесарь с судоверфи выиграл 3:2 на последнем шаре. Проигравший поставил всем чай, а свидетелям два раза.",
+  "en": "The semi-final has been played: a fitter from the shipyard won 3-2 on the last ball. The loser bought tea for everyone, and twice for the witnesses.",
+  "ja": "準決勝が終わった。造船所の組立工が最後の球で3対2の勝ち。負けた側が全員にお茶をおごり、立会人には二杯おごった。"
+ },
+ "city.cog.league.4": {
+  "ru": "«Финал в субботу вечером. Запись зрителей у Тамары Ильиничны. Чем больше народу, тем тише играют».",
+  "en": "\"Final on Saturday evening. Spectators sign up with Tamara Ilyinichna. The more people, the quieter they play.\"",
+  "ja": "「決勝は土曜の夜。観客の申し込みはタマーラ・イリイニチナまで。人が多いほど、静かに打ちます」。"
+ },
+ "city.cog.league.5": {
+  "ru": "Финал сыгран. Кубок, согнутая шестерёнка на подставке, стоит у буфета. Победитель про него забыл и вернулся через час.",
+  "en": "The final has been played. The cup, a bent cog on a stand, sits by the buffet. The winner forgot about it and came back an hour later.",
+  "ja": "決勝は終わった。優勝杯は台座に載った曲がった歯車で、売店のそばに置いてある。優勝者はそれを忘れて、一時間後に取りに戻ってきた。"
+ },
+ "city.cog.cues.prompt": {
+  "ru": "E — выбрать кий",
+  "en": "E — choose a cue",
+  "ja": "E：キューを選ぶ"
+ },
+ "city.cog.cues.1": {
+  "ru": "Кии стоят по росту и по характеру. Первый слишком лёгкий. Второй слишком гордый. Третий, потёртый на конце, как старый друг, оказался мой.",
+  "en": "The cues stand by height and by temper. The first was too light. The second was too proud. The third, worn at the tip like an old friend, turned out to be mine.",
+  "ja": "キューは背の高さと性格の順に並んでいる。一本目は軽すぎ、二本目は気位が高すぎ。先がすり減った古い友だちみたいな三本目が、僕のだった。"
+ },
+ "city.cog.cues.2": {
+  "ru": "На рейке жестяная банка с мелом. Я намелил кий и подул на кончик, как делают старшие. И сразу почувствовал себя частью лиги.",
+  "en": "On the rail there is a tin of chalk. I chalked the cue and blew on the tip the way the older ones do. At once I felt part of the league.",
+  "ja": "ラックにチョークの缶。年上の人たちを真似てキューにチョークを塗り、先に息を吹きかけた。たちまちリーグの一員になった気がした。"
+ },
+ "city.cog.cues.3": {
+  "ru": "В выходные кии выдаёт дежурный: «Один кий — один человек. Не размахивать». Я не размахивал.",
+  "en": "At weekends the duty member hands out the cues: \"One cue, one person. No waving.\" I didn't wave.",
+  "ja": "週末は当番の人がキューを貸し出す。「一人一本。振り回さないこと」。僕は振り回さなかった。"
+ },
+ "city.cog.bench.boat.prompt": {
+  "ru": "E — поработать над моделью катера",
+  "en": "E — work on the model launch",
+  "ja": "E：小型船の模型を作る"
+ },
+ "city.cog.bench.boat.1": {
+  "ru": "Сегодня выпиливаем. Лев Аркадьевич положил на верстак лист фанеры и карандашом нарисовал шпангоуты. Я вырезал лобзиком три. Четвёртый получился с характером. Завтра клеим.",
+  "en": "Today we cut. Lev Arkadyevich laid a sheet of plywood on the bench and pencilled the frames on it. I cut three with the fretsaw. The fourth came out with character. Tomorrow we glue.",
+  "ja": "今日は切り出し。レフ・アルカージエヴィチが作業台にベニヤ板を置き、鉛筆で肋材を描いた。僕は糸のこで三枚切った。四枚目は個性的な形になった。明日は接着だ。"
+ },
+ "city.cog.bench.boat.2": {
+  "ru": "Сегодня клеим. Шпангоуты стоят на киле, как рёбра у рыбы. Я намазал стыки и стянул бельевыми прищепками. Клей пахнет яблоками, что странно. Теперь пусть сохнет до завтра.",
+  "en": "Today we glue. The frames stand on the keel like a fish's ribs. I spread glue on the joints and clamped them with clothes-pegs. The glue smells of apples, which is odd. Now it dries until tomorrow.",
+  "ja": "今日は接着。肋材が竜骨に立っていて、魚の骨みたいだ。継ぎ目に接着剤を塗って、洗濯ばさみで留めた。接着剤はリンゴの匂いがして、変だ。明日まで乾かす。"
+ },
+ "city.cog.bench.boat.3": {
+  "ru": "Сегодня красим. Корпус обтянут шпоном и гладкий, как галька. Красный низ, белая палуба, синяя рубка. Руки в краске по локоть. Лев Аркадьевич сказал, что это первый признак хорошего моделиста.",
+  "en": "Today we paint. The hull is skinned in veneer and smooth as a pebble. Red below, white deck, blue wheelhouse. Paint up to my elbows. Lev Arkadyevich said that is the first sign of a good model-maker.",
+  "ja": "今日は塗装。船体は薄板が貼られて小石みたいにすべすべだ。下は赤、甲板は白、操舵室は青。腕まで絵の具だらけ。レフ・アルカージエヴィチは、それが腕のいいモデラーの第一の印だと言った。"
+ },
+ "city.cog.bench.glider.prompt": {
+  "ru": "E — поработать над крылом планера",
+  "en": "E — work on the glider's wing",
+  "ja": "E：グライダーの翼を作る"
+ },
+ "city.cog.bench.glider.1": {
+  "ru": "Планер: сегодня нервюры. Тонкие, как лучины. Одну я сломал и выпилил новую. Лев Аркадьевич считает, что планер любит терпеливых.",
+  "en": "Glider: today the ribs. Thin as kindling. I broke one and cut a new one. Lev Arkadyevich believes a glider loves the patient.",
+  "ja": "グライダー、今日は小骨。焚きつけみたいに細い。一本折ってしまって、新しく切り出した。レフ・アルカージエヴィチは、グライダーは辛抱強い人が好きだと言う。"
+ },
+ "city.cog.bench.glider.2": {
+  "ru": "Планер: сегодня обтягиваем крыло папиросной бумагой. Клей на каждую нервюру, бумага без единой складки. Складка, говорят, это воздушная яма.",
+  "en": "Glider: today we cover the wing in tissue paper. Glue on every rib, paper without a single wrinkle. A wrinkle, they say, is an air pocket.",
+  "ja": "グライダー、今日は翼に薄紙を張る。小骨ごとに接着剤を塗って、紙にはしわ一本も許されない。しわは空気の落とし穴だという。"
+ },
+ "city.cog.bench.glider.3": {
+  "ru": "Планер: сегодня опрыскиваем бумагу водой, чтобы натянулась. Смотрю, как она сохнет и дышит, и не знаю ничего скучнее и интереснее.",
+  "en": "Glider: today we spray the paper with water so it tightens. I watch it dry and breathe, and I know nothing duller or more fascinating.",
+  "ja": "グライダー、今日は紙に霧を吹いてぴんと張らせる。乾いて息をするのを眺める。これ以上退屈で面白いものを僕は知らない。"
+ },
+ "city.cog.bench.glider.4": {
+  "ru": "Планер: день испытаний. Мы бросили его с лестничной площадки в фойе. Он сделал круг и сел на скамейку. Гардеробщица, не вставая, поставила ему «хорошо».",
+  "en": "Glider: test day. We launched it from the stair landing into the foyer. It made a circle and landed on a bench. The cloakroom attendant, without getting up, gave it a \"good\".",
+  "ja": "グライダー、試験飛行の日。階段の踊り場からロビーへ飛ばした。ぐるっと一周して、ベンチに着地。クロークの人が座ったまま「よくできました」と言った。"
+ },
+ "city.cog.draft.prompt": {
+  "ru": "E — рассмотреть чертёж",
+  "en": "E — look at the drawing",
+  "ja": "E：図面を見る"
+ },
+ "city.cog.draft.1": {
+  "ru": "На кульмане чертёж: подъёмник канатной дороги в масштабе 1:20. Угол троса подписан дважды, второй раз красным и с вопросительным знаком.",
+  "en": "On the drafting board is a drawing: a cable-car lift at 1:20. The angle of the cable is written twice, the second time in red with a question mark.",
+  "ja": "製図台には図面。ロープウェイの昇降機、縮尺二十分の一。ワイヤーの角度が二度書いてあり、二度目は赤で、疑問符つき。"
+ },
+ "city.cog.draft.2": {
+  "ru": "На полях приписка: «Идея Серёжи из фотокружка: в кабину зеркало, чтобы пассажиры видели море с двух сторон». Лев Аркадьевич не согласился и согласился.",
+  "en": "A note in the margin: \"Seryozha from the photo circle's idea: a mirror in the cabin so passengers see the sea from both sides.\" Lev Arkadyevich disagreed and agreed.",
+  "ja": "余白に書き込み。「写真サークルのセリョージャの案。ゴンドラに鏡を付けて、乗客が海を両側から見られるように」。レフ・アルカージエヴィチは反対し、そして賛成した。"
+ },
+ "city.cog.draft.3": {
+  "ru": "Новый лист: «Кабина, модель 1:20». Окно вырезано круглым, как иллюминатор. Спорили, нужно ли ей колесо. Победили те, кто за колесо.",
+  "en": "A new sheet: \"Cabin, model 1:20.\" The window is cut round, like a porthole. They argued whether it needs a wheel. Those for the wheel won.",
+  "ja": "新しい一枚。「ゴンドラ、模型二十分の一」。窓は舷窓みたいに丸く描かれている。車輪をつけるかで揉めて、つける派が勝った。"
+ },
+ "city.cog.models.1": {
+  "ru": "На подставке вчерашний катер: покрашен, блестит, сохнет. Рядом табличка карандашом: «Не трогать, липкий».",
+  "en": "On the stand is yesterday's launch: painted, shining, drying. Next to it a pencilled card: \"Don't touch, sticky.\"",
+  "ja": "台座には昨日の小型船。塗り終えて、つやつやで、乾かしている最中。隣に鉛筆書きの札「さわるな、べたべた」。"
+ },
+ "city.cog.models.2": {
+  "ru": "Полка почти пуста: катер ушёл на верстак, остались его чертёж и пустая подставка.",
+  "en": "The shelf is almost empty: the launch has gone to the bench, leaving its drawing and an empty stand.",
+  "ja": "棚はほとんど空。小型船は作業台へ行って、図面と空の台座だけが残っている。"
+ },
+ "city.cog.models.3": {
+  "ru": "На подставке катер без краски, светлый, пахнет сосной и клеем. Сегодня его красят, и завтра он станет красным.",
+  "en": "On the stand the launch is unpainted, pale, smelling of pine and glue. Today it gets painted, and tomorrow it will be red.",
+  "ja": "台座には塗る前の小型船。明るい木の色で、松と接着剤の匂いがする。今日塗装して、明日には赤くなる。"
+ },
+ "city.cog.models.4": {
+  "ru": "Рядом с катером планер, обтянутый рыжей бумагой. На крыле надпись: «Летал. Вернулся сам».",
+  "en": "Next to the launch stands a glider covered in russet paper. On its wing: \"Flew. Came back by itself.\"",
+  "ja": "小型船の隣に赤茶色の紙を張ったグライダー。翼に「飛んだ。自分で戻ってきた」。"
+ },
+ "city.cog.dry.prompt": {
+  "ru": "E — осмотреть сушилку",
+  "en": "E — inspect the drying shelf",
+  "ja": "E：乾燥棚を見る"
+ },
+ "city.cog.dry.1": {
+  "ru": "Две готовые лодочки сохнут рядом. У одной красный борт до самой кромки, у другой краска чуть ушла на палубу. Подпись: «Краска сохнет сутки. Сутки, а не пять минут». Подчёркнуто дважды.",
+  "en": "Two finished little boats dry side by side. One has its red side to the very edge, on the other the paint has run a little onto the deck. A card: \"Paint takes a day to dry. A day, not five minutes.\" Underlined twice.",
+  "ja": "完成した小さな船が二つ並んで乾いている。一つは赤い舷が縁までぴったり、もう一つは絵の具が甲板に少しはみ出している。札に「塗料が乾くのは一日。五分ではなく一日」。二重線つき。"
+ },
+ "city.cog.dry.2": {
+  "ru": "Лодочки на полке уже сухие и стоят прямо. Записка: «Забрать до воскресенья, иначе пойдут в фонд клуба». Заберёт ли кто, неизвестно.",
+  "en": "The little boats on the shelf are dry now and stand upright. A note: \"Collect by Sunday or they go to the club fund.\" Whether anyone will is unknown.",
+  "ja": "棚の小さな船はもう乾いてまっすぐ立っている。メモに「日曜までに引き取ること。さもなくばクラブの基金行き」。誰か引き取るのかは分からない。"
+ },
+ "city.cog.dry.3": {
+  "ru": "Полку занимают банки с краской: красная, белая, синяя, все открыты и прикрыты марлей. Пахнет как в маленьком порту.",
+  "en": "The shelf is taken up by paint tins: red, white, blue, all open and covered with gauze. It smells like a small harbour.",
+  "ja": "棚は絵の具の缶でいっぱい。赤、白、青、どれも開いていてガーゼがかけてある。小さな港みたいな匂いがする。"
+ },
+ "city.cog.wsb.1": {
+  "ru": "Сегодня в мастерской выпиливаем. Фанера на верстаке, лобзики у Льва Аркадьевича. Кто без лобзика, тот чертит.",
+  "en": "Today in the workshop: cutting. Plywood on the bench, fretsaws with Lev Arkadyevich. Whoever has no fretsaw draws.",
+  "ja": "今日の工作室は切り出し。ベニヤは作業台に、糸のこはレフ・アルカージエヴィチのもとに。糸のこのない人は製図を。"
+ },
+ "city.cog.wsb.2": {
+  "ru": "Сегодня в мастерской клеим. Прищепки выданы под расписку. Просьба: не клеить прищепки к рукавам.",
+  "en": "Today in the workshop: gluing. Clothes-pegs issued against a signature. Please do not glue the pegs to your sleeves.",
+  "ja": "今日の工作室は接着。洗濯ばさみは受取書と引き換えに貸し出します。お願い：洗濯ばさみを袖に貼り付けないこと。"
+ },
+ "city.cog.wsb.3": {
+  "ru": "Сегодня в мастерской красим. Фартуки на гвозде. Кто без фартука, красит в стороне и молча.",
+  "en": "Today in the workshop: painting. Aprons on the nail. Whoever has no apron paints to one side, and quietly.",
+  "ja": "今日の工作室は塗装。エプロンは釘にかけてあります。エプロンなしの人は脇で静かに塗ってください。"
+ },
+ "city.cog.wsb.4": {
+  "ru": "Просьба не приносить в мастерскую шахматные часы: у нас их нет, мы искали. Лев Аркадьевич.",
+  "en": "Please do not bring the chess clock to the workshop: we don't have it, we looked. Lev Arkadyevich.",
+  "ja": "チェス時計を工作室に持ち込まないでください。ここにはありません、探しました。レフ・アルカージエヴィチ。"
+ },
+ "city.cog.dark.prompt": {
+  "ru": "E — поработать в фотолаборатории",
+  "en": "E — work in the photo lab",
+  "ja": "E：写真ラボで作業する"
+ },
+ "city.cog.dark.1": {
+  "ru": "Сегодня негативы. Плёнку сматываем в полной темноте, на ощупь, считая шёпотом. Серёжа говорит, что в темноте у него лучше всего получается быть спокойным.",
+  "en": "Today, negatives. We wind the film in total darkness, by touch, counting in whispers. Seryozha says the dark is where he manages best to stay calm.",
+  "ja": "今日はネガ。真っ暗闇の中、手探りでフィルムを巻き、ささやき声で数える。セリョージャは、暗闇のなかが一番落ち着いていられると言う。"
+ },
+ "city.cog.dark.2": {
+  "ru": "Сегодня контрольки: все кадры на одном листе, мелкие, как марки. Выбираем один. Я выбрал кадр с маяком: единственный не смазан.",
+  "en": "Today, contact sheets: all the frames on one sheet, small as stamps. We choose one. I chose the lighthouse frame; it was the only one not blurred.",
+  "ja": "今日はベタ焼き。全コマが一枚に、切手みたいに小さく並ぶ。一つ選ぶ。僕は灯台のコマにした。ぶれていないのはそれだけだった。"
+ },
+ "city.cog.dark.3": {
+  "ru": "Сегодня печатаем. Лист под увеличителем, красный свет. Выдержку отсчитываем по часам на втором столе: щёлк левой кнопкой, щёлк правой; на двенадцати поднимаем рамку.",
+  "en": "Today, printing. The sheet under the enlarger, red light. We count the exposure on the clock on the second bench: click the left button, click the right; at twelve we lift the frame.",
+  "ja": "今日は焼き付け。引き伸ばし機の下に印画紙、赤い光。露光は二つ目の机の時計で数える。左のボタンをカチッ、右をカチッ。十二で枠を上げる。"
+ },
+ "city.cog.dark.4": {
+  "ru": "Сегодня сушим. Отпечатки висят на леске и капают, пахнет уксусом. Уже кто-то спорит, что лучше, глянец или матовая.",
+  "en": "Today, drying. The prints hang on the line and drip, and it smells of vinegar. Someone is already arguing whether gloss or matt is better.",
+  "ja": "今日は乾燥。印画紙がひもにぶら下がって水を垂らし、酢の匂いがする。もう誰かが、光沢とつや消しのどちらがいいかで言い争っている。"
+ },
+ "city.cog.tray.prompt": {
+  "ru": "E — заглянуть в ванночку",
+  "en": "E — look into the tray",
+  "ja": "E：現像バットをのぞく"
+ },
+ "city.cog.tray.1": {
+  "ru": "Ванночка пуста, на дне блестит последняя капля проявителя. Снимок ещё не печатали.",
+  "en": "The tray is empty, the last drop of developer shining on the bottom. The print hasn't been made yet.",
+  "ja": "バットは空で、底に現像液の最後の一滴が光っている。写真はまだ焼かれていない。"
+ },
+ "city.cog.tray.2": {
+  "ru": "На белом листе в ванночке проступают контуры: две вертикальные полоски и горизонт. Пока непонятно, что это, но скоро станет понятно.",
+  "en": "On the white sheet in the tray outlines are surfacing: two vertical strokes and a horizon. It isn't clear yet what it is, but it will be soon.",
+  "ja": "バットの白い紙に輪郭が浮かびはじめている。縦の線が二本と水平線。まだ何だか分からないが、じきに分かる。"
+ },
+ "city.cog.tray.3": {
+  "ru": "Снимок уже ясный: маяк на фоне вечернего неба и чайка, которая попала в кадр случайно и теперь не хочет уходить. Серёжа клянётся, что не подкармливал её.",
+  "en": "The print is clear now: the lighthouse against the evening sky and a gull that got into the frame by accident and now won't leave. Seryozha swears he didn't feed it.",
+  "ja": "写真はもうはっきりしている。夕空を背にした灯台と、たまたま写り込んで今は出ていこうとしないカモメ。セリョージャは餌をやっていないと誓う。"
+ },
+ "city.cog.tray.4": {
+  "ru": "Ванночки пусты. Снимок ушёл на сушку и висит на леске последним слева. Высох светлее, чем казался в красном свете.",
+  "en": "The trays are empty. The print has gone to dry and hangs last on the left of the line. It dried lighter than it looked in the red light.",
+  "ja": "バットは空。写真は乾燥に回って、ひもの左端にぶら下がっている。赤い光の中で見えたよりも明るく乾いた。"
+ },
+ "city.cog.clock.prompt": {
+  "ru": "E — рассмотреть часы на столе",
+  "en": "E — look at the clock on the bench",
+  "ja": "E：机の上の時計を見る"
+ },
+ "city.cog.clock.1": {
+  "ru": "Шахматные часы с двумя циферблатами. На левом трещина, как молния. Они тикают. Их, оказывается, используют вместо секундомера: нажал, идёт выдержка, нажал ещё раз, стоп.",
+  "en": "A chess clock with two dials. The left one has a crack like a lightning bolt. It is ticking. It turns out they use it as a stopwatch: press, the exposure runs, press again, stop.",
+  "ja": "二つの文字盤のチェス時計。左には稲妻のようなひび。カチカチと動いている。ここではストップウォッチ代わりに使っているらしい。押すと露光が進み、もう一度押すと止まる。"
+ },
+ "city.cog.clock.2": {
+  "ru": "Под часами записка: «Взяли на время, вернём в четверг. С. Г.». «Четверг» зачёркнут, написан другой четверг. Потом ещё один.",
+  "en": "Under the clock a note: \"Borrowed for a while, will return Thursday. S. G.\" \"Thursday\" is crossed out and another Thursday written. Then another.",
+  "ja": "時計の下にメモ。「しばらく借ります。木曜に返します。S.G.」。「木曜」は消されて別の木曜が書かれ、さらにもう一つ。"
+ },
+ "city.cog.clock.3": {
+  "ru": "Часы тикают как раньше, но слегка виновато. Серёжа сказал, что принёс бы их сам, да стыдно, и спросил: «Может, ты отнесёшь? Тебя ругать не будут». Я подумал, что отнесу.",
+  "en": "The clock ticks as before, but a little sheepishly. Seryozha said he would have taken it back himself but was ashamed, and asked: \"Maybe you could carry it? They won't scold you.\" I thought I would.",
+  "ja": "時計は前と同じに、でも少しきまり悪そうに時を刻む。セリョージャが「自分で返したいけど恥ずかしくて。きみが持っていってくれない？きみなら怒られないから」と言った。僕は持っていこうと思った。"
+ },
+ "city.cog.prints.prompt": {
+  "ru": "E — посмотреть на леску с отпечатками",
+  "en": "E — look at the line of prints",
+  "ja": "E：写真を干したひもを見る"
+ },
+ "city.cog.prints.1": {
+  "ru": "На леске висит полоска плёнки с мокрыми кадрами, как маленькое кино. Кадры тёмные, лица светлые: с негативами всегда так.",
+  "en": "A strip of film hangs on the line with wet frames, like a tiny movie. The frames are dark, the faces light: it's always like that with negatives.",
+  "ja": "ひもにフィルムが一本、濡れたコマのまま下がっている。小さな映画みたいだ。コマは暗く、顔は明るい。ネガはいつもそうだ。"
+ },
+ "city.cog.prints.2": {
+  "ru": "На леске лист-контролька: тридцать шесть кадров в рядок. Лучшие обведены красным. Один обведён три раза.",
+  "en": "On the line hangs a contact sheet: thirty-six frames in rows. The best are ringed in red. One is ringed three times.",
+  "ja": "ひもにベタ焼きが一枚。三十六コマが並んでいる。いいものは赤で丸がつき、一つだけ三重丸だ。"
+ },
+ "city.cog.prints.3": {
+  "ru": "На леске большой снимок, ещё мокрый: маяк, дюна, девочка с авоськой. Края загибаются, как страницы в сырой книге.",
+  "en": "A large print on the line, still wet: a lighthouse, a dune, a girl with a string bag. The edges curl like pages in a damp book.",
+  "ja": "ひもに大きな写真、まだ濡れている。灯台、砂丘、網袋を提げた女の子。縁は湿った本のページみたいに反り返っている。"
+ },
+ "city.cog.prints.4": {
+  "ru": "Снимок высох и распрямился. Подпись карандашом: «Дюна, шесть вечера. С. Гусев». Рядом пустое место для следующего.",
+  "en": "The print has dried and flattened. A pencilled caption: \"Dune, six in the evening. S. Gusev.\" Next to it an empty space for the next one.",
+  "ja": "写真は乾いて平らになった。鉛筆の署名「砂丘、夕方六時。S.グーセフ」。隣には次の一枚のための空きがある。"
+ },
+ "city.cog.stage.1": {
+  "ru": "Идёт репетиция: драмкружок разбирает сцену прощания на маяке. Режиссёр хлопает в ладоши после каждой реплики, и реплику приходится повторять. Ни разу она не прозвучала так же.",
+  "en": "A rehearsal is on: the drama circle works through the farewell scene at the lighthouse. The director claps after every line and the line has to be said again. Not once did it sound the same.",
+  "ja": "稽古の最中。演劇サークルが灯台での別れの場面をさらっている。演出家はせりふごとに手を叩き、せりふはやり直しになる。一度として同じ響きにはならなかった。"
+ },
+ "city.cog.stage.2": {
+  "ru": "Субботний вечер: хор из девяти человек, гармонь и девочка, которая читает стихи, глядя в потолок: так не страшно. В зале хлопают дольше, чем она читала.",
+  "en": "Saturday evening: a choir of nine, an accordion and a girl who recites verse looking at the ceiling, so as not to be afraid. The hall claps longer than she recited.",
+  "ja": "土曜の夜。九人の合唱、アコーディオン、そして怖くないように天井を見て詩を暗唱する女の子。拍手は、暗唱よりも長く続いた。"
+ },
+ "city.cog.stage.3": {
+  "ru": "Среда, танцевальный кружок. Под рояль и счёт «раз-два-три» девочки ходят по сцене кругами. Мальчик тащит стул: он декорация. Он очень старается быть стулом.",
+  "en": "Wednesday, the dance circle. To the piano and a count of \"one-two-three\" the girls go round the stage in circles. A boy drags a chair: he is the scenery. He tries very hard to be a chair.",
+  "ja": "水曜、ダンスサークル。ピアノと「イチ、ニ、サン」の掛け声に合わせて、女の子たちがステージを回る。男の子が椅子を引きずっている。彼は舞台装置なのだ。椅子らしくあろうと必死だ。"
+ },
+ "city.cog.reh.prompt": {
+  "ru": "E — прочитать расписание репетиций",
+  "en": "E — read the rehearsal schedule",
+  "ja": "E：稽古の予定を読む"
+ },
+ "city.cog.reh.1": {
+  "ru": "Расписание репетиций на листе в клетку: вторник, четверг, драмкружок, 17:00. Среда, танцы, 16:00. Суббота, вечер самодеятельности, 17:00. Воскресенье: «сцена отдыхает».",
+  "en": "The rehearsal schedule on squared paper: Tuesday, Thursday, drama circle, 5 p.m. Wednesday, dance, 4 p.m. Saturday, amateur evening, 5 p.m. Sunday: \"the stage rests.\"",
+  "ja": "方眼紙の稽古予定。火曜・木曜は演劇サークル、17時。水曜はダンス、16時。土曜は素人演芸の夕べ、17時。日曜は「舞台は休み」。"
+ },
+ "city.cog.reh.2": {
+  "ru": "Сегодня репетиция драмкружка в 17:00. Приписка: «Опоздавшим играть деревья».",
+  "en": "Today the drama circle rehearses at 5 p.m. Added: \"Latecomers play the trees.\"",
+  "ja": "今日は17時から演劇サークルの稽古。書き添え「遅刻した人は木の役」。"
+ },
+ "city.cog.reh.3": {
+  "ru": "Сегодня танцы в 16:00. Приписка: «Сменная обувь обязательна. Носки не обувь».",
+  "en": "Today dance at 4 p.m. Added: \"Indoor shoes required. Socks are not shoes.\"",
+  "ja": "今日は16時からダンス。書き添え「上履き必須。靴下は靴ではありません」。"
+ },
+ "city.cog.reh.4": {
+  "ru": "Сегодня вечер самодеятельности. Афиша от руки: «Хор, гармонь, стихи. Вход свободный, выход тоже».",
+  "en": "Tonight, the amateur evening. A hand-lettered poster: \"Choir, accordion, verse. Entrance free, exit too.\"",
+  "ja": "今夜は素人演芸の夕べ。手書きのポスター「合唱、アコーディオン、詩。入場自由、退場も自由」。"
+ },
+ "city.cog.reh.5": {
+  "ru": "Сегодня сцена свободна. Приписка: «Кто хочет порепетировать, записывайтесь у гардеробщицы».",
+  "en": "Today the stage is free. Added: \"If you want to rehearse, sign up with the cloakroom attendant.\"",
+  "ja": "今日の舞台は空いている。書き添え「稽古したい人はクロークで申し込むこと」。"
+ },
+ "city.cog.reh.6": {
+  "ru": "Объявление: «В четверг после блица награждение на сцене. Драмкружок обещал вручать кубок с выражением».",
+  "en": "A notice: \"On Thursday after the blitz, the prize-giving on stage. The drama circle has promised to present the cup with expression.\"",
+  "ja": "お知らせ「木曜の早指しのあと、舞台で表彰式。演劇サークルが表情たっぷりに優勝杯を渡すと約束しました」。"
+ },
+ "city.cog.rd.1": {
+  "ru": "Тамара Ильинична: в читальном зале шахматных часов нет, под шкафами смотрели. Нашлась пуговица. Пуговица ждёт хозяина у гардероба.",
+  "en": "Tamara Ilyinichna: there is no chess clock in the reading room, we looked under the cupboards. We found a button. The button is waiting for its owner at the cloakroom.",
+  "ja": "タマーラ・イリイニチナより。閲覧室にチェス時計はありません、戸棚の下も探しました。ボタンが一つ出てきました。持ち主をクロークで待っています。"
+ },
+ "city.cog.rd.2": {
+  "ru": "«Часы громкие: тикают, как кузнечик. Кто слышал в клубе кузнечика, сообщите по адресу: гардероб, до 19:00».",
+  "en": "\"The clock is loud: it ticks like a grasshopper. If you've heard a grasshopper in the club, please report to the cloakroom before 7 p.m.\"",
+  "ja": "「時計の音は大きく、バッタのようにカチカチ鳴ります。クラブでバッタの声を聞いた方は、19時までにクロークへ」。"
+ },
+ "city.cog.rd.3": {
+  "ru": "Блиц в четверг возобновляется! Запись у Тамары Ильиничны. Играем на любых часах, лишь бы тикали. Только не на песочных.",
+  "en": "The Thursday blitz is back on! Sign up with Tamara Ilyinichna. We play on any clock that ticks. Not the hourglass, though.",
+  "ja": "木曜の早指しが再開します！申し込みはタマーラ・イリイニチナまで。カチカチ鳴る時計ならなんでも。ただし砂時計はなし。"
+ },
+ "city.cog.lounge.1": {
+  "ru": "«Просим не прикручивать к столу для настольного футбола ни игроков, ни приставку. Игроков в особенности».",
+  "en": "\"Please do not screw either players or attachments to the table football. Players especially.\"",
+  "ja": "「サッカー台にはネジで選手も付属品も固定しないでください。とくに選手は」。"
+ },
+ "city.cog.lounge.2": {
+  "ru": "Автомат принимает только пятёрки и сердито возвращает всё остальное. Кто знает почему, поделитесь.",
+  "en": "The machine takes only five-rouble coins and angrily gives back everything else. If anyone knows why, please share.",
+  "ja": "ゲーム機は五ルーブル硬貨だけを受け付け、それ以外は怒って返してくる。理由を知っている人は教えてください。"
+ },
+ "city.cog.lounge.3": {
+  "ru": "В фотолаборатории по вечерам что-то тикает, словно там играют в шахматы без людей. Кто в курсе, скажите Тамаре Ильиничне.",
+  "en": "In the photo lab in the evenings something ticks, as if a chess game were being played with nobody there. Anyone in the know, tell Tamara Ilyinichna.",
+  "ja": "夕方になると写真ラボで何かがカチカチ鳴る。まるで誰もいないのに対局が行われているようだ。事情を知っている人はタマーラ・イリイニチナまで。"
+ },
+ "city.cog.stagen.1": {
+  "ru": "Уважаемые зрители: стулья не двигать, они стоят по ранжиру. Кто сел не на своё место, тот сидит на чужом.",
+  "en": "Dear audience: please do not move the chairs, they stand by rank. Whoever sits in the wrong seat sits in somebody else's.",
+  "ja": "観客の皆さまへ。椅子は動かさないでください。席順どおりに並んでいます。違う席に座った人は、他人の席に座っています。"
+ },
+ "city.cog.stagen.2": {
+  "ru": "После блица в четверг фотокружок покажет на сцене слайды. Свет не гасить: у нас и так всё видно.",
+  "en": "After the Thursday blitz the photo circle will show slides on stage. Do not turn off the light: we see everything anyway.",
+  "ja": "木曜の早指しのあと、写真サークルが舞台でスライドを上映します。電気は消さないで。もともと全部見えていますから。"
+ },
+ "city.cog.meet.1": {
+  "ru": "Собрание кружков в первую субботу месяца. Повестка: чай. Дополнительно: чайник.",
+  "en": "Circles' meeting on the first Saturday of the month. Agenda: tea. Additionally: the kettle.",
+  "ja": "サークル連絡会は毎月第一土曜日。議題はお茶。追加議題はやかん。"
+ },
+ "city.cog.meet.2": {
+  "ru": "Протокол собрания: часы закрепить за шахматным столом цепочкой, фотографам купить секундомер. Подписано всеми, включая секундомер, которого нет.",
+  "en": "Minutes of the meeting: the clock is to be fixed to the chess table with a chain, and the photographers are to buy a stopwatch. Signed by all, including the stopwatch, which does not exist.",
+  "ja": "連絡会の議事録。時計はチェス台に鎖でつなぐこと。写真サークルはストップウォッチを買うこと。全員が署名。ただしまだ存在しないストップウォッチも署名。"
+ },
+ "city.cog.chess.1": {
+  "ru": "Партию мы играли на песочных часах из медкабинета. Песок идёт как ему вздумается. Сказали, что это старинный способ: кто быстрее, у того и песок.",
+  "en": "We played on the hourglass from the first-aid room. The sand runs as it pleases. They said it's an ancient method: whoever is faster, the sand is theirs.",
+  "ja": "対局には医務室の砂時計を使った。砂は好きなように落ちる。昔ながらのやり方だそうだ。速い人のところへ砂は流れる。"
+ },
+ "city.cog.chess.2": {
+  "ru": "В четверг вечером у столов блиц. За каждым двое играют и один смотрит с мнением. Мнение громче шахмат.",
+  "en": "Thursday evening is blitz at the tables. At each, two play and one watches with an opinion. The opinion is louder than the chess.",
+  "ja": "木曜の夜は早指し。どの台でも二人が指し、一人が意見を持って見ている。意見のほうが対局より声が大きい。"
+ },
+ "city.cog.chess.3": {
+  "ru": "Сегодня играют тише обычного. Кто-то прислушивается: не тикнет ли где-нибудь шахматные часы. Не тикают.",
+  "en": "Today they play more quietly than usual. Someone is listening for a chess clock to tick somewhere. None does.",
+  "ja": "今日はいつもより静かに指している。どこかでチェス時計が鳴らないかと耳を澄ます人がいる。鳴らない。"
+ },
+ "city.cog.chess.4": {
+  "ru": "Партия с часами: левый циферблат с трещиной, правый целый, оба тикают чуть быстрее, чем хочется. Я выиграл по времени, но не по позиции. Говорят, это тоже считается.",
+  "en": "A game with the clock: the left dial cracked, the right whole, both ticking a bit faster than you'd like. I won on time but not on position. They say that counts too.",
+  "ja": "時計つきの対局。左の文字盤にはひび、右は無傷で、どちらも思うより少し速く鳴る。僕は持ち時間では勝ち、盤面では負けた。それも勝ちのうちだそうだ。"
+ },
+ "city.cog.chess.5": {
+  "ru": "Блиц на пять минут: фигуры летают, рука не поспевает за мыслью, мысль за рукой. Проиграл на последней секунде и улыбался. Тамара Ильинична записала в журнал: «Часы на месте».",
+  "en": "A five-minute blitz: the pieces fly, the hand can't keep up with the thought nor the thought with the hand. I lost on the last second and smiled. Tamara Ilyinichna wrote in the log: \"Clock in place.\"",
+  "ja": "五分の早指し。駒が飛び、手は思考に、思考は手に追いつかない。最後の一秒で負けて、笑っていた。タマーラ・イリイニチナが日誌に「時計、元の場所」と書き込んだ。"
+ },
+ "city.cog.place.prompt": {
+  "ru": "E — посмотреть на место для часов",
+  "en": "E — look at the clock's place",
+  "ja": "E：時計の置き場所を見る"
+ },
+ "city.cog.place.1": {
+  "ru": "На сукне у доски светлый прямоугольник от часов и бумажка: «Здесь стояли часы». Пока здесь пусто.",
+  "en": "On the cloth by the board there is a pale rectangle where the clock stood and a slip: \"The clock stood here.\" For now it's empty.",
+  "ja": "盤のそばのラシャに、時計の跡の明るい長方形と紙切れ。「ここに時計があった」。今はまだ空だ。"
+ },
+ "city.cog.place.2": {
+  "ru": "Я представил, как на светлый прямоугольник вернутся часы с трещиной. Пока их единственный дом стол у фотографов, где они считают секунды чужих снимков.",
+  "en": "I pictured the cracked clock coming back to the pale rectangle. For now its only home is the photographers' bench, where it counts the seconds of other people's pictures.",
+  "ja": "ひびの入った時計がこの明るい長方形に戻ってくるところを思い浮かべた。今のところ時計の家は写真サークルの机で、他人の写真の秒数を数えている。"
+ },
+ "city.cog.place.3": {
+  "ru": "Я поставил часы на светлый прямоугольник, и сукно под ними слегка выдохнуло. Тамара Ильинична, не вставая, записала в журнал: «Часы на месте». Блиц в четверг будет.",
+  "en": "I set the clock on the pale rectangle and the cloth under it seemed to sigh. Tamara Ilyinichna, without getting up, wrote in the log: \"Clock in place.\" There will be a blitz on Thursday.",
+  "ja": "時計を明るい長方形の上に置くと、ラシャが小さく息をついたようだった。タマーラ・イリイニチナは座ったまま日誌に「時計、元の場所」と書いた。木曜の早指しはできる。"
+ },
+ "quest.cog_clock.title": {
+  "ru": "Часы с трещиной",
+  "en": "The cracked clock",
+  "ja": "ひびの入った時計"
+ },
+ "quest.cog_clock.desc": {
+  "ru": "В «Шестерне» пропали шахматные часы. Кажется, все знают, что они пропали, и никто не знает где.",
+  "en": "The Cog club's chess clock has gone missing. Everyone seems to know it's gone and nobody knows where.",
+  "ja": "「歯車」からチェス時計が消えた。なくなったことは誰もが知っているのに、どこにあるかは誰も知らない。"
+ },
+ "quest.cog_clock.look.log": {
+  "ru": "Начну с объявлений: на досках в клубе обычно написано больше, чем хотели написать.",
+  "en": "I'll start with the notices: the club's boards usually say more than whoever wrote them meant to.",
+  "ja": "まず掲示板から。クラブの掲示板には、書いた人が思う以上のことが書いてあるものだ。"
+ },
+ "quest.cog_clock.notices.obj": {
+  "ru": "Почитать объявления на досках клуба",
+  "en": "Read the notices on the club's boards",
+  "ja": "クラブの掲示板を読む"
+ },
+ "quest.cog_clock.find.log": {
+  "ru": "Тикает где-то выше этажом. Кузнечики в помещении не водятся, а вот кружки там есть.",
+  "en": "Something ticks upstairs. Grasshoppers don't live indoors, but circles do.",
+  "ja": "上の階のどこかでカチカチ鳴っている。室内にバッタはいないが、サークルならいる。"
+ },
+ "quest.cog_clock.clock.obj": {
+  "ru": "Найти шахматные часы",
+  "en": "Find the chess clock",
+  "ja": "チェス時計を見つける"
+ },
+ "quest.cog_clock.set.log": {
+  "ru": "Серёжа просил отнести часы, чтобы не пришлось объясняться. Отнесу и поставлю на место, объясняться не придётся никому.",
+  "en": "Seryozha asked me to take the clock back so he wouldn't have to explain. I'll put it in its place and nobody will have to explain anything.",
+  "ja": "セリョージャは、説明しなくて済むように時計を返してほしいと頼んだ。元の場所に置いてくれば、誰も説明しなくて済む。"
+ },
+ "quest.cog_clock.place.obj": {
+  "ru": "Поставить часы на шахматный стол",
+  "en": "Put the clock back on the chess table",
+  "ja": "時計をチェス台に戻す"
+ },
+ "quest.cog_clock.done": {
+  "ru": "Буфетчица принесла чай и печенье «за возвращение». Сказала, что часы вернулись самым правильным путём: сами. Я не стал спорить.",
+  "en": "The buffet lady brought tea and a biscuit \"for the return\". She said the clock came back the most proper way: by itself. I didn't argue.",
+  "ja": "売店のおばさんが「お帰りなさい」とお茶とクッキーを持ってきた。時計はいちばん正しい形で、つまり自分から帰ってきたのだそうだ。僕は反論しなかった。"
+ },
+ "quest.cog_reader.title": {
+  "ru": "Читатель клуба",
+  "en": "A reader at the club",
+  "ja": "クラブの読者"
+ },
+ "quest.cog_reader.desc": {
+  "ru": "В клубной библиотеке не выдают книги кому попало, зато журналы по кругу ходят свободно. Начну с полок.",
+  "en": "The club library doesn't lend books to just anyone, but the magazines go round freely. I'll start at the shelves.",
+  "ja": "クラブの図書室は誰にでも本を貸すわけではないが、雑誌は自由に回っている。まず棚から。"
+ },
+ "quest.cog_reader.read.log": {
+  "ru": "Шахматы, техника, море. На полях у каждой книги кто-то уже успел поспорить с автором.",
+  "en": "Chess, engineering, the sea. In the margins of every book someone has already argued with the author.",
+  "ja": "チェス、工学、海。どの本の余白にも、もう誰かが著者と議論している。"
+ },
+ "quest.cog_reader.read_chess.obj": {
+  "ru": "Полистать полку о шахматах",
+  "en": "Leaf through the chess shelf",
+  "ja": "チェスの棚をめくる"
+ },
+ "quest.cog_reader.read_engineering.obj": {
+  "ru": "Полистать полку о технике",
+  "en": "Leaf through the engineering shelf",
+  "ja": "工学の棚をめくる"
+ },
+ "quest.cog_reader.read_sea.obj": {
+  "ru": "Полистать полку о море",
+  "en": "Leaf through the sea shelf",
+  "ja": "海の棚をめくる"
+ },
+ "quest.cog_reader.swap.log": {
+  "ru": "У торцевой стены стойка обмена: принёс одно, унёс другое. У меня пока ничего нет, но журнал взять разрешают и так.",
+  "en": "By the end wall there is a swap rack: bring one, take one. I have nothing yet, but they let you take a magazine anyway.",
+  "ja": "突き当たりの壁に交換ラックがある。一冊持ってきたら一冊持っていく。僕はまだ何もないが、雑誌は取ってもいいらしい。"
+ },
+ "quest.cog_reader.take.obj": {
+  "ru": "Взять журнал с полки обмена",
+  "en": "Take a magazine from the swap rack",
+  "ja": "交換棚から雑誌を取る"
+ },
+ "quest.cog_reader.cart.log": {
+  "ru": "Осталось заглянуть на тележку с возвратом: там видно, кто что читал, а это почти как познакомиться.",
+  "en": "Last, a look at the returns trolley: you can see who read what, which is almost like meeting them.",
+  "ja": "最後に返却ワゴンをのぞく。誰が何を読んだか分かるのは、知り合いになるのに近い。"
+ },
+ "quest.cog_reader.look.obj": {
+  "ru": "Посмотреть, что сдали на тележку",
+  "en": "See what has been returned to the trolley",
+  "ja": "ワゴンに返された本を見る"
+ },
+ "quest.cog_reader.done": {
+  "ru": "Тамара Ильинична поставила мне штамп «Клуб „Шестерня“. Библиотека» на открытку и сказала, что теперь я читатель. Штамп вышел кривой, зато настоящий.",
+  "en": "Tamara Ilyinichna stamped \"Cog Club. Library\" on a postcard and said I was a reader now. The stamp came out crooked, but it's real.",
+  "ja": "タマーラ・イリイニチナが絵はがきに「クラブ『歯車』図書室」のスタンプを押して、これで君も読者だと言った。スタンプは曲がっていたけれど、本物だ。"
+ },
+ "city.xtx.cog_model_manual.title": {
+  "ru": "Памятка моделиста (составил Л. А., переплёт — скотч)",
+  "en": "The Model-Maker's Manual (compiled by L. A., bound in sticky tape)",
+  "ja": "模型づくりの手引き（L・A編、とじ具はテープ）"
+ },
+ "city.xtx.cog_model_manual.1": {
+  "ru": "Раздел первый: «Что нужно на верстаке». Лист фанеры в три миллиметра, лобзик, наждак, клей, прищепки, банка воды и терпение. Терпение кладите в первую очередь, остального при желании можно одолжить, а его нет. Чертёж прикрепляйте кнопками по углам и никогда посередине: середина понадобится глазам. Правило верстака: если сомневаетесь, отложите инструмент и посмотрите на деталь минуту. Часто деталь сама объяснит, чего хочет.",
+  "en": "Section one: \"What You Need at the Bench\". A sheet of three-millimetre plywood, a fretsaw, sandpaper, glue, clothes pegs, a jar of water and patience. Put the patience in first; the rest can be borrowed if need be, but not that. Pin the drawing by the corners and never in the middle: the middle will be needed by the eyes. The bench rule: if in doubt, put the tool down and look at the part for a minute. Often the part will explain what it wants.",
+  "ja": "第一章「作業台に必要なもの」。厚さ三ミリのベニヤ板、糸のこ、紙やすり、接着剤、洗濯ばさみ、水を入れた瓶、そして根気。根気は最初に入れること。ほかのものは必要なら借りられるが、これだけは借りられない。図面は四隅を画びょうで留め、真ん中には絶対に留めない。真ん中は目が使うからだ。作業台の決まり。迷ったら、道具を置いて、部品を一分間眺める。部品がしばしば、自分が何を望んでいるかを教えてくれる。"
+ },
+ "city.xtx.cog_model_manual.2": {
+  "ru": "Катер, в трёх днях. День первый: выпиливаем шпангоуты. Не торопитесь, одна лишняя пилка стоит часа правки. День второй: клеим киль и шпангоуты, стягиваем прищепками. Клей пахнет яблоками, это нормально. День третий: обтягиваем шпоном и красим: красный низ, белая палуба, синяя рубка. Потом краска сохнет сутки, и это правило не обсуждается. Нетерпеливые, которые трогают пальцем, остаются в истории катера отпечатком, но им это не в укор.",
+  "en": "The motor launch, in three days. Day one: cut the frames. Don't hurry; one extra stroke of the saw costs an hour of correction. Day two: glue the keel and frames, hold them with pegs. The glue smells of apples, which is normal. Day three: cover with veneer and paint: red below, white deck, blue wheelhouse. Then the paint dries for a day, and this rule is not up for discussion. The impatient who touch it with a finger remain in the launch's history as a print, but we don't hold it against them.",
+  "ja": "小型船は三日で作る。一日目、肋材を切り出す。急がないこと。余計な一引きは、一時間の修正に値する。二日目、竜骨と肋材を接着し、洗濯ばさみで押さえる。接着剤はりんごのにおいがするが、それは普通だ。三日目、薄板を張って塗る。下は赤、甲板は白、操舵室は青。そのあと塗料は一日乾かす。この決まりは議論しない。待てずに指で触れた人は、指紋として船の歴史に残るが、それを責めることはしない。"
+ },
+ "city.xtx.cog_model_manual.3": {
+  "ru": "Планер. Нервюры тонкие, как лучины; ломайте не стесняясь и выпиливайте новые: планер любит терпеливых, а не безупречных. Крыло обтягивайте папиросной бумагой без единой складки, складка — это воздушная яма. Брызните водой, и бумага натянется, как барабан. Первый полёт делайте внутри, с площадки, против сквозняка, а не по ветру. Хорошо, если после первого круга он сядет на скамейку. Плохо, если на чью-то шляпу. Совсем плохо, если шляпа начнёт его догонять.",
+  "en": "The glider. The ribs are thin as splinters; break them without shame and cut new ones: a glider loves the patient, not the flawless. Cover the wing in tissue without a single wrinkle; a wrinkle is an air pocket. Spray it with water and the paper tightens like a drum. Make the first flight indoors, from a landing, into the draught rather than with it. It is good if after the first circle it settles on a bench. It is bad if on somebody's hat. It is very bad if the hat starts to chase it.",
+  "ja": "グライダー。小骨は細いひごのようだ。遠慮なく折って、新しく切り出すこと。グライダーが好きなのは、完璧な人ではなく、辛抱強い人だ。翼には、しわ一本ない薄紙を張る。しわは空気の落とし穴だ。水を吹きかけると、紙は太鼓の皮のようにぴんと張る。最初の飛行は屋内の踊り場から、追い風ではなく向かい風の中で。一周してベンチに降りれば上出来。だれかの帽子の上なら悪い。帽子が追いかけてきたら、とても悪い。"
+ },
+ "city.xtx.cog_photo_guide.title": {
+  "ru": "Памятка фотокружка: четыре дня одной фотографии",
+  "en": "Photo Circle Sheet: Four Days of One Photograph",
+  "ja": "写真サークルの手引き　一枚の写真の四日間"
+ },
+ "city.xtx.cog_photo_guide.1": {
+  "ru": "День первый — негативы. Плёнку сматываем в полной темноте, на ощупь и шёпотом считая витки. Свет включать нельзя, даже если очень хочется посмотреть, что там получилось: любопытство плёнка не прощает. Проявитель, вода, закрепитель, снова вода, и всё это под счёт. В конце на леске висит полоска маленьких тёмных кадров, на которых светлое тёмное, а тёмное светлое. Привыкнуть к этому можно, но на это нужно время.",
+  "en": "Day one: negatives. We wind the film off in complete darkness, by touch, counting the turns in a whisper. The light must not be switched on, even if you are dying to see how it came out: film doesn't forgive curiosity. Developer, water, fixer, water again, all of it to a count. At the end a strip of small dark frames hangs on the line, in which the light is dark and the dark is light. You can get used to it, but it takes time.",
+  "ja": "一日目、ネガ。フィルムは真っ暗闇の中で、手探りで、小声で巻き数を数えながらほどく。どんなに出来を見たくても、明かりをつけてはいけない。フィルムは好奇心を許さない。現像液、水、定着液、また水。すべて数えながら。最後に、ひもに小さな暗いコマの細長い帯がぶら下がる。明るいものは暗く、暗いものは明るい。慣れることはできるが、時間がかかる。"
+ },
+ "city.xtx.cog_photo_guide.2": {
+  "ru": "День второй — контрольки. Все кадры кладём на один лист, они выходят мелкие, как почтовые марки. Берём лупу и красный карандаш: лучшие обводим. Правило Серёжи Гусева: «Если кадр хороший с первого взгляда, не верь ему, смотри второй раз. Если и со второго хороший, обводи один раз. Если ты обвёл трижды, значит, ты влюбился, а это уже не критерий». Выбор делается тихо, в одиночку, и объясняется потом.",
+  "en": "Day two: contact sheets. All the frames go on one sheet and come out small as postage stamps. Take a loupe and a red pencil: circle the best. Seryozha Gusev's rule: \"If a frame is good at first glance, don't trust it, look a second time. If it's good the second time too, circle it once. If you circled it three times, you've fallen in love, and that's no longer a criterion.\" The choice is made quietly, alone, and explained afterwards.",
+  "ja": "二日目、ベタ焼き。すべてのコマを一枚の紙に並べると、切手のように小さく出る。ルーペと赤鉛筆を手に、よいコマを囲む。セリョージャ・グーセフの決まり。「一目でいいコマは信じるな、もう一度見ろ。二度目もいいなら、一度だけ囲め。三回囲んだなら、恋をしたということで、もう基準ではない」。選ぶのは静かに、ひとりで。説明はあとでする。"
+ },
+ "city.xtx.cog_photo_guide.3": {
+  "ru": "День третий — печать. Лист под увеличителем, красный свет, и все говорят шёпотом, хотя красному свету всё равно. Выдержку отсчитываем по часам на втором столе: щёлк левой кнопкой, щёлк правой; на двенадцати поднимаем рамку. Если не уверены, делайте полоски: лист закрывается картоном и открывается по частям, каждую часть на две секунды дольше. Потом кладём в ванночку и смотрим, как проступает: сначала горизонт, потом всё остальное, и последним то, ради чего снимали.",
+  "en": "Day three: printing. The sheet under the enlarger, red light, and everyone whispers though the red light doesn't care. We count the exposure by the clock on the second bench: click the left button, click the right; at twelve we lift the frame. If you're not sure, make test strips: cover the sheet with card and uncover it in parts, each part two seconds longer. Then into the tray, and watch it emerge: first the horizon, then everything else, and last of all, what you took it for.",
+  "ja": "三日目、焼き付け。引き伸ばし機の下に印画紙、赤い光。赤い光は気にしないのに、みんな小声で話す。露光は二つ目の机の時計で数える。左のボタンをカチッ、右をカチッ。十二で枠を上げる。自信がなければテスト用の帯を作る。紙を厚紙で覆い、少しずつ開けていく。一か所ごとに二秒長く。それから現像皿に入れて、浮かび上がるのを見る。最初は水平線、そのあと残りのすべて、そして最後に、撮った理由そのもの。"
+ },
+ "city.xtx.cog_photo_guide.4": {
+  "ru": "День четвёртый — сушка. Отпечатки висят на леске и капают, и в лаборатории пахнет уксусом. Глянец или матовая бумага, вопрос вечный и неразрешимый; клуб поделён поровну, и обе стороны пьют чай вместе. Высохший снимок светлее, чем казался в красном свете: учитывайте при печати, а то на третий день пересолите. Подписывайте на обороте мягким карандашом: место, час и кто был рядом. Через год это окажется главным в снимке.",
+  "en": "Day four: drying. The prints hang on the line and drip, and the lab smells of vinegar. Gloss or matt paper, an eternal and unresolvable question; the club is split evenly, and both sides drink tea together. A dried print is lighter than it looked in the red light: allow for it when printing, or on day three you will overdo it. Sign on the back in soft pencil: the place, the hour and who was beside you. In a year this will turn out to be the main thing in the picture.",
+  "ja": "四日目、乾燥。印画紙がひもにぶら下がって水を垂らし、暗室には酢のにおいがする。光沢紙かつや消しか。永遠に解けない問いで、クラブはきれいに二つに割れ、両派は一緒にお茶を飲む。乾いた写真は、赤い光の下で見たより明るい。焼くときにそれを見込まないと、三日目にやりすぎることになる。裏には柔らかい鉛筆で、場所、時刻、そばにいた人を書く。一年後には、それが写真のいちばん大事なところになる。"
+ },
+ "city.xtx.cog_photo_guide.p5_1": {
+  "ru": "Сегодня в лаборатории: негативы. Новичкам: сначала посмотреть, потом браться. Свет не включать, пока на двери горит красная лампочка, а когда не горит, на всякий случай спросить. Плёнку мотать на ощупь и шёпотом. Серёжа Гусев дежурит и объяснит всё, если вы не стесняетесь спрашивать, а стесняться тут нечего.",
+  "en": "Today in the lab: negatives. Newcomers: look first, then get started. Don't switch the light on while the red lamp is lit on the door, and when it isn't, ask anyway, just in case. Wind the film by touch and in a whisper. Seryozha Gusev is on duty and will explain everything if you are not shy of asking, and there is nothing to be shy of.",
+  "ja": "今日の暗室：ネガ。新人は、見てから手を出すこと。戸口の赤いランプが点いているあいだは明かりをつけないこと。消えているときも、念のため聞くこと。フィルムは手探りで、小声で巻く。セリョージャ・グーセフが当番で、聞くのを恥ずかしがらなければ何でも教えてくれる。恥ずかしがることなど何もない。"
+ },
+ "city.xtx.cog_photo_guide.p5_2": {
+  "ru": "Сегодня в лаборатории: контрольки. Лупа и красный карандаш лежат у окна, не уносить. Лист-контролька сушить плашмя, а не на леске, иначе кадры закрутятся в трубочку и будут смотреть друг на друга. Выбирая кадры, помните правило: дважды обвёл, значит, уже любишь.",
+  "en": "Today in the lab: contact sheets. The loupe and red pencil are by the window; do not take them away. Dry the contact sheet flat, not on the line, or the frames will curl into a tube and look at each other. When choosing frames, remember the rule: circled twice means you already love it.",
+  "ja": "今日の暗室：ベタ焼き。ルーペと赤鉛筆は窓辺にあります。持ち出さないで。ベタ焼きはひもではなく平らにして乾かすこと。さもないとコマが筒状に丸まって、おたがいを見つめ合ってしまう。コマを選ぶときは、決まりを思い出して。二度囲んだなら、もう好きになっている。"
+ },
+ "city.xtx.cog_photo_guide.p5_3": {
+  "ru": "Сегодня в лаборатории: печать. Часы на втором столе, не толкать, они и так нервные. На двенадцати поднимаем рамку, не на одиннадцати и не на тринадцати: тринадцать у нас считается за характер, а одиннадцать за поспешность. Ванночки не путать, левая проявитель, правая закрепитель, а средняя вода и справедливость.",
+  "en": "Today in the lab: printing. The clock is on the second bench; don't jostle it, it is nervous enough. At twelve we lift the frame, not at eleven and not at thirteen: thirteen counts here as character, eleven as haste. Don't mix up the trays: the left is developer, the right is fixer, and the middle is water and justice.",
+  "ja": "今日の暗室：焼き付け。時計は二つ目の机の上。押さないで、ただでさえ神経質です。枠を上げるのは十二で。十一でも十三でもなく。十三はここでは個性、十一は性急とみなされる。皿を取りちがえないこと。左が現像液、右が定着液、真ん中は水と公平さだ。"
+ },
+ "city.xtx.cog_photo_guide.p5_4": {
+  "ru": "Сегодня в лаборатории: сушка. Отпечатки не трогать мокрыми пальцами, как бы ни хотелось. Висят на леске прищепками за уголок, не за лицо. Уксусом пахнет до вечера, и это нормально: так лаборатория сообщает, что работа идёт. Кто спорит про глянец и матовую, спорит, пожалуйста, шёпотом.",
+  "en": "Today in the lab: drying. Don't touch the prints with wet fingers, however much you want to. They hang on the line by a corner, not by the face. It smells of vinegar until evening, and that is normal: it is how the lab lets you know work is going on. Those arguing about gloss and matt, please argue in whispers.",
+  "ja": "今日の暗室：乾燥。どんなに触りたくても、濡れた指で写真に触れないこと。写真は顔ではなく角を洗濯ばさみで留めて、ひもに下げる。酢のにおいは夕方まで残るが、それは普通のこと。暗室が、作業が進んでいると知らせる方法だ。光沢かつや消しかで言い争う人は、どうぞ小声で。"
+ },
+ "city.xtx.cog_chess_ladder.title": {
+  "ru": "Лесенка шахматного клуба. Тетрадь партий",
+  "en": "The Chess Club Ladder: the Book of Games",
+  "ja": "チェスクラブの階段表　対局帳"
+ },
+ "city.xtx.cog_chess_ladder.1": {
+  "ru": "Правила лесенки. 1. Играть можно с тем, кто выше вас не более чем на две ступеньки. 2. Победитель меняется с проигравшим местами и записывает партию в тетрадь, коротко, без оправданий. 3. Проигравший ставит чай. Чай ставится с сахаром, но без упрёков. 4. По четвергам блиц, любые часы, лишь бы тикали. 5. Если спор не решается, зовите Тамару Ильиничну. Она не разбирается в шахматах, но разбирается в людях, а это в нашем клубе главное.",
+  "en": "The rules of the ladder. 1. You may play only someone no more than two rungs above you. 2. The winner swaps places with the loser and enters the game in the book, briefly, without excuses. 3. The loser stands the tea. Tea is served with sugar but without reproach. 4. Thursdays are blitz, any clock, as long as it ticks. 5. If a dispute cannot be settled, call Tamara Ilyinichna. She doesn't understand chess but she understands people, and in our club that is what matters.",
+  "ja": "階段表の決まり。一、対局できるのは、自分より二段以内の上の人まで。二、勝者は敗者と位置を入れ替え、対局を帳面に書く。短く、言い訳なしで。三、敗者がお茶をおごる。お茶は砂糖入りで、小言なし。四、木曜日は早指し。時計は何でもよい、チクタクいえば。五、争いが収まらなければ、タマーラ・イリイニチナを呼ぶこと。彼女はチェスはわからないが、人はわかる。うちのクラブでは、それがいちばん大事だ。"
+ },
+ "city.xtx.cog_chess_ladder.2": {
+  "ru": "№ 212. Гонсалес — Каск. Итальянская партия, ничья на сороковом ходу. Оба довольны. Каск записал: «Он мне предложил ничью, я хотел отказаться, но он так посмотрел, что отказываться было бы грубо». Гонсалес приписал ниже: «Я хотел выиграть. Но чай вкуснее победы». Чай поставили оба, и никто не возражал. Лесенка осталась как была, что в таком случае считается лучшим результатом.",
+  "en": "No. 212. González vs Kask. Italian Game, drawn on move forty. Both pleased. Kask wrote: \"He offered me a draw, I wanted to decline, but he looked at me in such a way that declining would have been rude.\" González added below: \"I wanted to win. But tea is tastier than victory.\" Both stood the tea and nobody objected. The ladder stayed as it was, which in such cases counts as the best result.",
+  "ja": "第二百十二局。ゴンサレス対カスク。イタリアンゲーム、四十手で引き分け。二人とも満足。カスクの書き込み。「引き分けを申し出られ、断りたかったが、あんな目で見られては、断るのは失礼だった」。ゴンサレスがその下に書き足した。「勝ちたかった。でも、お茶は勝利よりおいしい」。お茶は二人ともおごり、誰も異議を唱えなかった。階段表は元のまま。こういう場合は、それが最良の結果とされる。"
+ },
+ "city.xtx.cog_chess_ladder.3": {
+  "ru": "№ 213. Новак — неизвестный игрок. Неизвестный был в клубной куртке не по размеру и играл чёрными. Новак записал просто: «Проиграл в двадцать восемь ходов. Было красиво. Он ушёл, не назвав имени, но оставил на столе ферзя, чтобы убрали». Под записью чужой почерк: «Это я. Приду в четверг». Тамара Ильинична поставила в конце тетради карандашом пустую строчку и подписала: «Для него».",
+  "en": "No. 213. Nowak vs an unknown player. The stranger wore a club jacket too big for him and played Black. Nowak wrote simply: \"Lost in twenty-eight moves. It was beautiful. He left without giving a name but left the queen on the table to be put away.\" Under the entry, a different hand: \"It was me. I'll come Thursday.\" At the end of the book Tamara Ilyinichna pencilled an empty line and wrote: \"For him.\"",
+  "ja": "第二百十三局。ノヴァク対名無しの選手。名無しは大きすぎるクラブのジャケットを着て、黒を持った。ノヴァクはこう書いただけ。「二十八手で負け。美しかった。名乗らずに帰ったが、片づけてもらえるようにクイーンを盤に残していった」。記入の下に、別の筆跡。「私です。木曜日に行きます」。タマーラ・イリイニチナは、帳面の最後に鉛筆で空の行を一本引き、書き添えた。「あの人のために」"
+ },
+ "city.xtx.cog_chess_ladder.p4_1": {
+  "ru": "Сегодня четверг, блиц. Часы клубные, берегите. Кто найдёт настоящие, получает право первого хода на всю неделю. Играем на любых, лишь бы тикали, но не на песочных: песок, как известно, идёт как ему вздумается. Запись у Тамары Ильиничны до шести вечера, а после шести уже у судьбы.",
+  "en": "Today is Thursday, blitz. The clock belongs to the club, take care of it. Whoever finds the real one gets the right of the first move for the whole week. We play on any clock, as long as it ticks, but not on sand ones: sand, as we know, runs as it pleases. Sign-up with Tamara Ilyinichna until six in the evening, and after six with fate.",
+  "ja": "今日は木曜、早指しの日。時計はクラブのもの、大事に。本物の時計を見つけた人は、一週間ずっと先手の権利をもらえます。時計は何でもよい、チクタクいえば。ただし砂時計は不可。砂は、ご存じのとおり、気の向くままに落ちるので。申し込みは夕方六時までタマーラ・イリイニチナへ。六時を過ぎたら運命のほうへ。"
+ },
+ "city.ask.cog.lh.deposit": {
+  "ru": "Почему книги выдают под залог?",
+  "en": "Why are books lent against a deposit?",
+  "ja": "どうして本は預かり金つきで貸すの？"
+ },
+ "city.ask.cog.lh.deposit.1": {
+  "ru": "— Залог пять рублей, отдаю при возврате и выписываю расписку. Расписки у меня хранятся лучше книг.",
+  "en": "\"The deposit is five roubles; I give it back on return and write a receipt. My receipts keep better than the books.\"",
+  "ja": "「預かり金は五ルーブル。返してもらったときにお返しして、受取証を書くの。受取証のほうが、本よりよく残るのよ。」"
+ },
+ "city.ask.cog.lh.deposit.2": {
+  "ru": "— В понедельник тележка возврата полная: после выходных все вернули всё сразу. Я сортирую и не сбиваюсь со счёта.",
+  "en": "\"On Monday the returns trolley is full: after the weekend everybody returns everything at once. I sort and don't lose count.\"",
+  "ja": "「月曜は返却ワゴンがいっぱい。週末明けにみんな一度に返すから。わたしは仕分けて、数は間違えないわ。」"
+ },
+ "city.ask.cog.lh.deposit.3": {
+  "ru": "— К выходным тележка почти пустая: читатели уносят, возвращают потом, в понедельник. Закон природы.",
+  "en": "\"By the weekend the trolley is almost empty: the readers take books away and return them later, on Monday. A law of nature.\"",
+  "ja": "「週末にはワゴンはほとんど空。読者は持っていって、月曜に返すの。自然の法則ね。」"
+ },
+ "city.ask.cog.lh.swap": {
+  "ru": "Что за полка обмена?",
+  "en": "What's the swap shelf?",
+  "ja": "交換棚って何？"
+ },
+ "city.ask.cog.lh.swap.1": {
+  "ru": "— «Принёс — возьми, взял — принеси». Работает без меня. Я только слежу, чтобы не уносили пустые обложки.",
+  "en": "\"'Bring one, take one; take one, bring one.' It works without me. I only make sure nobody walks off with empty covers.\"",
+  "ja": "「『持ってきたら取っていい、取ったら持ってきて』。わたしがいなくても回るの。空っぽの表紙だけ持ち去られないよう、見てるだけ。」"
+ },
+ "city.ask.cog.lh.swap.2": {
+  "ru": "— По понедельникам привозят свежее из мастерских: «Знание — сила» с чертежами на вкладках. Берите верхний: верхний всегда лучше.",
+  "en": "\"On Mondays fresh stock comes from the workshops: Knowledge Is Power with blueprints on the inserts. Take the top one: the top one is always best.\"",
+  "ja": "「月曜は工房から新しいのが届くの。折り込みの図面つきの『知は力』。上のを取ってね。いつも上のがいちばんいいから。」"
+ },
+ "city.ask.cog.lh.swap.3": {
+  "ru": "— Журнал с полки ты брал, я видела. Принеси что-нибудь взамен, хоть открытку: полка не привередлива.",
+  "en": "\"You took a magazine from the shelf, I saw. Bring something in return, even a postcard: the shelf isn't fussy.\"",
+  "ja": "「棚から雑誌を持っていったでしょう、見てたわ。かわりに何か置いていって、絵はがきでもいいの。棚は好き嫌いしないから。」"
+ },
+ "city.ask.cog.lh.clock": {
+  "ru": "Что с шахматными часами?",
+  "en": "What about the chess clock?",
+  "ja": "チェス時計はどうなった？"
+ },
+ "city.ask.cog.lh.clock.1": {
+  "ru": "— Про часы лучше спросить фотокружок: Серёжа брал «на время, вернём в четверг». Четверг у нас не кончается.",
+  "en": "\"About the clock you'd better ask the photo circle: Seryozha took it 'for a while, back on Thursday'. Our Thursday never ends.\"",
+  "ja": "「時計のことは写真サークルに聞いたほうがいいわ。セリョージャが『ちょっとだけ、木曜に返す』って持っていったの。うちの木曜は終わらないのよ。」"
+ },
+ "city.ask.cog.lh.clock.2": {
+  "ru": "— Часы встали на место. Член клуба номер двадцать четыре, это ты, на всякий случай: записала карандашом, ластиком не пользуюсь.",
+  "en": "\"The clock is back in its place. Club member number twenty-four, that's you, just in case: I wrote it in pencil, I don't use the eraser.\"",
+  "ja": "「時計は元の場所に戻ったわ。会員番号二十四番、あなたよ、念のため。鉛筆で書いたわ、消しゴムは使わないの。」"
+ },
+ "city.ask.cog.lh.radio": {
+  "ru": "Что почитать про радио?",
+  "en": "What can I read about radio?",
+  "ja": "ラジオの本は何がある？"
+ },
+ "city.ask.cog.lh.radio.1": {
+  "ru": "— Журнал «Радио»: схем много, слов мало. Настоящий приёмник стоит в «Рассвете», в радиоуголке.",
+  "en": "\"The magazine Radio: lots of circuits, few words. A real receiver stands at the Rassvet, in the radio corner.\"",
+  "ja": "「雑誌『ラジオ』は回路図がたくさんで、文章は少ないの。本物の受信機は『ラスヴェート』の無線コーナーにあるわ。」"
+ },
+ "city.ask.cog.lh.radio.2": {
+  "ru": "— Сегодня четверг: радиоуголок в «Рассвете» открыт, а вечером «Тишина в эфире». Радиолюбители идут кружком.",
+  "en": "\"It's Thursday: the radio corner at the Rassvet is open, and tonight it's Silence on the Air. The radio amateurs go as a circle.\"",
+  "ja": "「今日は木曜。『ラスヴェート』の無線コーナーが開いてて、夜は『電波の静けさ』よ。無線仲間はみんなで観に行くの。」"
+ },
+ "city.ask.cog.ld.ladder": {
+  "ru": "Как попасть в шахматную лесенку?",
+  "en": "How do I join the chess ladder?",
+  "ja": "チェスの階段表にはどうやって入るの？"
+ },
+ "city.ask.cog.ld.ladder.1": {
+  "ru": "— Запишись у Тамары Ильиничны. Играть можно с тем, кто выше не больше чем на две ступеньки. Проиграл, ставишь чай: с сахаром, без упрёков.",
+  "en": "\"Sign up with Tamara Ilyinichna. You may play someone no more than two rungs above you. If you lose, you stand tea: with sugar, without reproach.\"",
+  "ja": "「タマーラ・イリイニチナに申しこんで。自分より二段までの上の人となら対戦できるわ。負けたらお茶をおごるの。砂糖つきで、文句なしでね。」"
+ },
+ "city.ask.cog.ld.ladder.2": {
+  "ru": "— Сегодня четверг, блиц. Часы клубные, берегите. Кто найдёт настоящие, получает право первого хода на неделю.",
+  "en": "\"It's Thursday, blitz. The clocks are the club's, take care. Whoever finds the real ones gets first move for a week.\"",
+  "ja": "「今日は木曜、早指しの日。時計はクラブのものだから大事にね。本物を見つけた人は、一週間先手の権利がもらえるわ。」"
+ },
+ "city.ask.cog.ld.ladder.3": {
+  "ru": "— Тебя вписали в тетрадь партий, коротко: «Выиграл. Без оправданий». Это комплимент: оправданий у нас обычно больше, чем ходов.",
+  "en": "\"You've been entered in the game book, briefly: 'Won. No excuses.' That's a compliment: here there are usually more excuses than moves.\"",
+  "ja": "「棋譜帳にあなたの名前が入ったわ、短く。『勝ち。言い訳なし』。ほめ言葉よ。うちでは、たいてい手数より言い訳のほうが多いんだから。」"
+ },
+ "city.ask.cog.ld.cat": {
+  "ru": "Кот вахтёра правда член клуба?",
+  "en": "Is the caretaker's cat really a club member?",
+  "ja": "管理人の猫は本当に会員なの？"
+ },
+ "city.ask.cog.ld.cat.1": {
+  "ru": "— Без права голоса: так записано в протоколе. Но он единственный присутствует на всех собраниях и ни разу не заснул.",
+  "en": "\"Without a vote: so it says in the minutes. But he's the only one who attends every meeting and has never fallen asleep.\"",
+  "ja": "「議決権なし、って議事録にはある。でもあの子は、すべての会合に出て、一度も居眠りしたことがない唯一の会員よ。」"
+ },
+ "city.ask.cog.ld.cat.2": {
+  "ru": "— Днём он на подоконнике, вечером у буфета: следит, где пирожки. Это тоже участие в жизни клуба.",
+  "en": "\"By day he's on the windowsill, in the evening by the buffet, keeping track of where the pies are. That counts as taking part in club life too.\"",
+  "ja": "「昼は窓台、夕方は売店のそば。ピロシキがどこにあるか見張ってるの。それも立派なクラブ活動よ。」"
+ },
+ "city.ask.cog.bf.tea": {
+  "ru": "Что значит «чай с сахаром без упрёков»?",
+  "en": "What does \"tea with sugar, no reproach\" mean?",
+  "ja": "『砂糖つきで文句なしのお茶』ってどういう意味？"
+ },
+ "city.ask.cog.bf.tea.1": {
+  "ru": "— Правило лесенки: проигравший ставит чай. С сахаром, без упрёков. Кладу по два куска, а спрашивать не положено.",
+  "en": "\"The ladder's rule: the loser stands the tea. With sugar, no reproach. I put in two lumps, and asking is not allowed.\"",
+  "ja": "「階段表の決まりで、負けた人がお茶をおごるの。砂糖つきで、文句なしで。角砂糖は二つ入れるわ。聞くのはなしよ。」"
+ },
+ "city.ask.cog.bf.tea.2": {
+  "ru": "— Сегодня вечером финал лиги по бильярду: чай ждут вдвое. Победитель потом возвращается за кубком, забыл.",
+  "en": "\"This evening it's the billiards league final: tea is expected double. The winner comes back for the cup afterwards, having forgotten it.\"",
+  "ja": "「今夜はビリヤードリーグの決勝。お茶は倍はいると見てるわ。優勝者は杯を忘れて、あとで取りに戻ってくるの。」"
+ },
+ "city.ask.cog.bf.cup": {
+  "ru": "Что это за кубок с гнутой шестерёнкой?",
+  "en": "What's the cup with the bent cog?",
+  "ja": "曲がった歯車の杯は何？"
+ },
+ "city.ask.cog.bf.cup.1": {
+  "ru": "— Согнутая шестерёнка на подставке: кубок лиги по бильярду. Согнули нарочно, чтобы не приняли за деталь. Протираю сама, победитель всё равно забудет.",
+  "en": "\"A bent cog on a stand: the billiards league cup. It was bent on purpose, so nobody takes it for a part. I dust it myself; the winner will forget it anyway.\"",
+  "ja": "「台座の上の曲がった歯車が、ビリヤードリーグの杯よ。部品と間違えられないよう、わざと曲げたの。わたしが拭いてるわ、どうせ優勝者は忘れるから。」"
+ },
+ "city.ask.cog.bf.pingpong": {
+  "ru": "С кем играть в настольный теннис?",
+  "en": "Who can I play table tennis with?",
+  "ja": "卓球は誰とやればいい？"
+ },
+ "city.ask.cog.bf.pingpong.1": {
+  "ru": "— У нас Кэндзи Каск: смотрит налево, бьёт направо. А в спорткомплексе его ждёт Урсула Оконкво. Договориться сыграть они никак не могут: каждый ждёт, что придёт другой.",
+  "en": "\"Here it's Kenji Kask: looks left, hits right. And at the sports centre Ursula Okonkwo is waiting for him. They can't agree to play: each expects the other to come.\"",
+  "ja": "「ここにはカスク健二がいるわ。左を見て、右に打つの。それからスポーツセンターでは、ウルズラ・オコンクウォが彼を待ってる。二人とも、相手が来ると思って待ってて、勝負が決まらないのよ。」"
+ },
+ "city.ask.cog.bf.pingpong.2": {
+  "ru": "— Играл? С кем? Если с Кэндзи, ты уже знаешь: смотрит налево.",
+  "en": "\"You've played? Against whom? If it was Kenji, you already know: he looks left.\"",
+  "ja": "「もうやったの？ 誰と？ 健二なら、もうわかってるわね。左を見るのよ。」"
+ },
+ "city.ask.cog.cl.glider": {
+  "ru": "Правда, что планер пролетел через фойе?",
+  "en": "Is it true the glider flew through the foyer?",
+  "ja": "グライダーがロビーを飛んだって本当？"
+ },
+ "city.ask.cog.cl.glider.1": {
+  "ru": "— Влетел ко мне через барьер и сел на пальто. Поставила ему «четыре с плюсом»: два раза задел шляпу.",
+  "en": "\"It flew over my counter and landed on a coat. I gave it 'four plus': it clipped a hat twice.\"",
+  "ja": "「カウンターを越えて飛んできて、コートに着陸したの。『四プラス』をつけたわ。帽子に二回ぶつかったから。」"
+ },
+ "city.ask.cog.cl.glider.2": {
+  "ru": "— Испытания в мастерской назначают заранее, но планер об этом не знает и летит когда хочет.",
+  "en": "\"Tests in the workshop are announced in advance, but the glider doesn't know and flies when it likes.\"",
+  "ja": "「工房での試験飛行は前もって決めるんだけど、グライダーはそれを知らないで、飛びたいときに飛ぶの。」"
+ },
+ "city.ask.cog.cl.where": {
+  "ru": "Что где у вас в клубе?",
+  "en": "What's where in the club?",
+  "ja": "クラブの中はどうなってるの？"
+ },
+ "city.ask.cog.cl.where.1": {
+  "ru": "— Библиотека, читальный уголок, мастерская с верстаками, фотолаборатория за красной дверью, сцена. Если за красной дверью горит красная лампа, не входи, пока не погаснет.",
+  "en": "\"The library, the reading corner, the workshop with workbenches, the photo lab behind the red door, the stage. If the red lamp is lit behind the red door, don't go in until it goes out.\"",
+  "ja": "「図書室、読書コーナー、作業台のある工房、赤い扉の奥の写真ラボ、それに舞台。赤い扉の向こうで赤いランプがついていたら、消えるまで入らないで。」"
+ },
+ "city.ask.cog.cl.where.2": {
+  "ru": "— Вечером в зале и на сцене репетиции: идти между рядами можно, но не сквозь актёров.",
+  "en": "\"In the evening there are rehearsals in the hall and on stage: you may walk between the rows, but not through the actors.\"",
+  "ja": "「夕方は客席と舞台でリハーサルがあるの。席のあいだは歩いていいけど、役者さんの中を突っ切るのはだめよ。」"
+ },
+ "city.cog.tv.1": {
+  "ru": "Утренняя гимнастика: пианист играет, ведущий считает до восьми. Вахтёрша в кресле поднимает руки на «раз» и опускает на «пять».",
+  "en": "Morning exercises: a pianist plays, the presenter counts to eight. The attendant in the armchair raises her arms on \"one\" and lowers them on \"five\".",
+  "ja": "朝の体操番組。ピアノが鳴り、司会者が八まで数える。肘掛け椅子の係のおばさんは「いち」で腕を上げ、「ご」で下ろす。"
+ },
+ "city.cog.tv.2": {
+  "ru": "Вечерние новости. Диктор говорит об урожае, и все в комнате кивают, как будто сами его собирали.",
+  "en": "The evening news. The announcer talks about the harvest, and everyone in the room nods as if they'd brought it in themselves.",
+  "ja": "夜のニュース。アナウンサーが収穫の話をすると、部屋のみんながうなずく。自分たちで刈り入れたみたいに。"
+ },
+ "city.cog.tv.3": {
+  "ru": "Передачи кончились. На экране настроечная таблица и тонкий писк. Один из шахматистов всё равно сидит перед ней и думает о своём.",
+  "en": "The programmes are over. The test card on the screen and a thin whine. One of the chess players still sits in front of it, thinking his own thoughts.",
+  "ja": "放送は終わった。画面にはテストパターンと細い音。それでもチェスの常連がひとり、その前に座って考えごとをしている。"
+ },
+ "city.cog.tv.4": {
+  "ru": "Воскресенье, по телевизору мультфильмы. Взрослые делают вид, что ждут футбол, но никто не переключает.",
+  "en": "Sunday, cartoons on the television. The grown-ups pretend to be waiting for the football, but nobody switches over.",
+  "ja": "日曜日、テレビはアニメ。大人たちはサッカーを待っているふりをしているけど、誰もチャンネルを変えない。"
+ },
+ "city.cog.board.1": {
+  "ru": "Четверг: на доске сетка блица, восемь фамилий и пустые клеточки. Я вписал в угол «гость» — мелко, чтобы можно было стереть.",
+  "en": "Thursday: a blitz grid on the board, eight names and empty squares. In the corner I wrote \"guest\", small, so it can be rubbed out.",
+  "ja": "木曜日。黒板には早指し戦の表、名前が八つと空欄。隅に小さく「ゲスト」と書いた。消せるように。"
+ },
+ "city.cog.board.2": {
+  "ru": "В понедельник доска чистая, только в углу след от тряпки в форме облака. Я нарисовал под облаком дождь и отошёл, пока никто не заметил.",
+  "en": "On Monday the board is clean, just a cloud-shaped smear from the rag in the corner. I drew rain under the cloud and stepped away before anyone noticed.",
+  "ja": "月曜の黒板はまっさらで、隅に雑巾のあとが雲の形に残っているだけ。その下に雨を描いて、誰にも気づかれないうちに離れた。"
+ },
+ "city.cog.board.3": {
+  "ru": "Вечером на доске чертёж крыла планера с размерами. Кто-то из кружковцев исправил одну цифру и подписал: «Проверено на сквозняке».",
+  "en": "In the evening there's a glider wing drawn on the board with its dimensions. One of the club members has corrected a figure and written: \"Tested in a draught.\"",
+  "ja": "夕方、黒板にはグライダーの翼の図と寸法。部員の誰かが数字をひとつ直して「すきま風で確認済み」と書いている。"
+ },
+ "city.cog.board.4": {
+  "ru": "К празднику на доске написали цветными мелками: «Всех с праздником! Чай в буфете с шести». Слова «чай» и «шесть» обведены дважды.",
+  "en": "For the holiday someone has written on the board in coloured chalk: \"Happy holiday, everyone! Tea in the buffet from six.\" The words \"tea\" and \"six\" are traced over twice.",
+  "ja": "祝日に合わせて、色チョークで「みなさん、おめでとう！　六時から売店でお茶」。「お茶」と「六時」は二重になぞってある。"
+ },
+ "city.cog.dance.1": {
+  "ru": "Субботний вечер танцев. Баянист в третий раз играет одно и то же танго, потому что пары не расходятся.",
+  "en": "Saturday dance night. The accordion player is on the same tango for the third time, because the couples won't leave the floor.",
+  "ja": "土曜のダンスの夕べ。カップルが離れないので、アコーディオン弾きは同じタンゴを三回目だ。"
+ },
+ "city.cog.dance.2": {
+  "ru": "Днём сцена пустая, пол только что натёрли. Я прошёлся по ней вальсом, считая вслух, и эхо считало со мной.",
+  "en": "In the daytime the stage is empty, the floor freshly waxed. I waltzed across it counting aloud, and the echo counted with me.",
+  "ja": "昼間の舞台はがらんとして、床は磨いたばかり。声に出して数えながらワルツで横切ると、こだまも一緒に数えた。"
+ },
+ "city.cog.dance.3": {
+  "ru": "Новогодний вечер: под потолком серпантин, у сцены ёлка, и все танцуют в бумажных колпаках. Мне тоже надели колпак, не спросив.",
+  "en": "New Year's evening: streamers under the ceiling, a fir tree by the stage, and everyone dancing in paper hats. Someone put a hat on me too without asking.",
+  "ja": "大晦日の夕べ。天井には紙テープ、舞台のそばにはモミの木、みんな紙の帽子で踊っている。僕にも、断りなく帽子がかぶせられた。"
+ },
+ "city.cog.dance.4": {
+  "ru": "Женщина из хора взяла меня за руку: «Не бойся, я поведу». И повела. Я впервые никому не наступил на ногу.",
+  "en": "A woman from the choir took my hand: \"Don't worry, I'll lead.\" And she did. For the first time I didn't tread on anybody's foot.",
+  "ja": "合唱団の女の人が僕の手をとって「大丈夫、リードするから」と言った。そのとおりだった。初めて誰の足も踏まなかった。"
+ },
+ "city.cog.piano.1": {
+  "ru": "Утром пианино в зале холодное, клавиши как льдинки. Первые аккорды звучат осторожно, будто инструмент ещё не проснулся.",
+  "en": "In the morning the piano in the hall is cold, the keys like ice. The first chords come out cautiously, as if the instrument hasn't woken yet.",
+  "ja": "朝のホールのピアノは冷たくて、鍵盤が氷のかけらみたいだ。最初の和音はおそるおそる鳴る。楽器がまだ目覚めていないみたいに。"
+ },
+ "city.cog.piano.2": {
+  "ru": "Среда, репетиция хора. Я успел сыграть гамму, пока руководительница не попросила освободить инструмент. Вежливо, но так, что сразу встаёшь.",
+  "en": "Wednesday, choir practice. I managed one scale before the choir leader asked me to free the instrument. Politely, but in a way that has you up at once.",
+  "ja": "水曜日は合唱の練習。音階をひとつ弾いたところで、指揮の先生に楽器を空けるよう頼まれた。ていねいに、でもすぐ立ち上がりたくなる言い方で。"
+ },
+ "city.cog.piano.3": {
+  "ru": "Под стук дождя по крыше играть легче: ошибки тонут. Я сыграл весь вальс и сбился только раз.",
+  "en": "Playing is easier with rain drumming on the roof: the mistakes drown. I played the whole waltz and only slipped once.",
+  "ja": "屋根を打つ雨の音のなかだと弾きやすい。まちがいが沈むから。ワルツを最後まで弾いて、外したのは一度だけ。"
+ },
+ "city.cog.piano.4": {
+  "ru": "Под крышкой пианино лежит забытая нотная тетрадь. На обложке детским почерком: «Этюды. Не для всех».",
+  "en": "Under the piano lid lies a forgotten music book. On the cover, in a child's hand: \"Studies. Not for everyone.\"",
+  "ja": "ピアノのふたの下に、忘れられた楽譜ノートがあった。表紙に子どもの字で「練習曲。だれにでもではない」。"
+ },
+ "city.cog.catalogue.1": {
+  "ru": "Ящики каталога подписаны от руки: «История клуба», «Город», «Море и порт». Утром они пахнут лаком: вчера их протирали.",
+  "en": "The catalogue drawers are labelled by hand: \"Club History\", \"The Town\", \"Sea and Harbour\". In the morning they smell of varnish: they were polished yesterday.",
+  "ja": "目録の引き出しには手書きの札。「クラブの歴史」「町」「海と港」。朝はニスのにおいがする。きのう磨いたのだ。"
+ },
+ "city.cog.catalogue.2": {
+  "ru": "В выходные к каталогу выстраиваются пенсионеры: каждый ищет фотографию, где он молодой. Находят и спорят, кто это стоит рядом.",
+  "en": "At weekends pensioners queue at the catalogue: each is looking for a photograph of himself young. They find it, and argue about who's standing next to them.",
+  "ja": "週末は目録の前にお年寄りが並ぶ。みんな若いころの自分の写真を探している。見つけると、隣に写っているのは誰か言い争いになる。"
+ },
+ "city.cog.catalogue.3": {
+  "ru": "Одна карточка заполнена детским почерком: «Клуб. Построен. Очень большой». Библиотекарь не стала её выбрасывать и поставила в самое начало.",
+  "en": "One card is filled in a child's hand: \"The club. Built. Very big.\" The librarian didn't throw it away and put it right at the front.",
+  "ja": "一枚のカードは子どもの字だった。「クラブ。たてられた。とても大きい」。司書は捨てずに、いちばん前に入れた。"
+ }
+}

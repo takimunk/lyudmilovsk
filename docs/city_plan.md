@@ -45,12 +45,15 @@ the **Cascade**, a diagonal run of walls with a grand stair and water steps besi
 | Wall | Holds | Height | Face |
 |---|---|---|---|
 | SEA (s 25) | T0 over the beach | 2 m | plain concrete seawall, steps down to the sand every 80 m |
-| W1 (s 70) | T1 over T0 | 3.3 m | an arcade of small shops and cafés opening onto the promenade (`promenade_units`) |
+| W1 (s 70) | T1 over T0 | 3.3 m | an arcade of small shops and cafés opening onto the promenade (`promenade_units`): rooms behind the face, see below |
 | W2..W5 | each terrace over the one below | 7 m | flats in the wall: two storeys, a door and window below, two windows above, per 7.5 m bay (`wall_dwellings`) |
 
 A wall is a concrete block `WALL_DEPTH` = 8 m deep whose face is at `wall_s(i, y)`; behind the face the landscape
 climbs from the lower terrace to the upper over 6 m, hidden inside the block; the block's top is flush with the
-upper terrace. Wall stairs run along the face (two flights and a landing, 2.4 m wide) about every 110 m, offset from
+upper terrace. **Promenade units.** W1's block is 9.5 m deep (`W1_DEPTH`) and its landscape stays at the promenade's level for 7.9 m
+behind the face, then steps up to T1 (`W1_RAMP_START`, `W1_RAMP` 0.4 m), so every unit has a 9.7 x 6 x 3 m room in the
+block (`blender/city/buildings/promenade_unit.py`, placed at the unit's `front`; its trade is `variant`; docs/city_interiors.md).
+Wall stairs run along the face (two flights and a landing, 2.4 m wide) about every 110 m, offset from
 wall to wall so the way up zigzags; grand stairs (8-10 m wide) go straight up on the main axis (Y 905) and on the
 Cascade (Y 760). Windows: warm light at night when the flat is occupied (`UPeopleLifeSubsystem::OnWindowLight`).
 

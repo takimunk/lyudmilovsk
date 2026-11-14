@@ -1,0 +1,733 @@
+{
+ "_doc": "Serpentine slab second pass (x_p_serpentine.json). Russian is the source.",
+ "city.sp.board_0.a": {
+  "ru": "Велосипеды ставить у правой стены, не у почтовых ящиков. Староста подъезда.",
+  "en": "Bicycles go against the right wall, not in front of the letter boxes. The block's warden.",
+  "ja": "自転車は右の壁ぎわに置くこと。郵便受けの前はだめです。棟の世話役より。"
+ },
+ "city.sp.board_0.b": {
+  "ru": "В субботу в четыре красим скамейки во дворе. Кисти приносить свои, краска общая.",
+  "en": "Saturday at four we paint the yard benches. Bring your own brush, the paint is shared.",
+  "ja": "土曜の四時に中庭のベンチを塗ります。刷毛は各自持参、ペンキは共用です。"
+ },
+ "city.sp.board_0.c": {
+  "ru": "Богдан Калниньш, 2-й этаж: Колетт из 17-й ищет морское стёклышко для аквариума. Своё не отдам, оно у жены «на счастье». Ищите на пляже после шторма.",
+  "en": "Bohdan Kalniņš, 2nd floor: Colette in no. 17 wants a piece of sea glass for her aquarium. I won't give mine, my wife keeps it for luck. Try the beach after a storm.",
+  "ja": "二階のボフダン・カルニンシュより。十七号室のコレットが水槽に入れる海のガラス片を探しています。うちのは妻が「お守り」にしているので渡せません。嵐のあとの浜辺をどうぞ。"
+ },
+ "city.sp.board_0.d": {
+  "ru": "Кто видел серую кошку с белой лапкой? Она ночует на галерее первого этажа. Не гоните, она соседская. Колетт Б., кв. 17.",
+  "en": "Has anyone seen a grey cat with a white paw? She sleeps on the first-floor gallery. Please don't shoo her, she belongs to a neighbour. Colette B., flat 17.",
+  "ja": "白い前足の灰色の猫を見かけませんでしたか。一階の通路で寝ています。追い払わないで、お隣の猫です。十七号室コレット・B。"
+ },
+ "city.sp.board1.a": {
+  "ru": "Консьержка принимает письма и ключи с девяти до девяти. В обед стучите громче.",
+  "en": "The concierge takes letters and keys from nine to nine. At lunch, knock louder.",
+  "ja": "管理人は九時から二十一時まで手紙と鍵を預かります。昼食時は強めにノックを。"
+ },
+ "city.sp.board1.b": {
+  "ru": "Лестницу моют по графику. Кто забыл свою очередь, тому ведро само придёт под дверь.",
+  "en": "The stairs are washed by rota. Whoever forgets their turn finds the bucket at their door.",
+  "ja": "階段掃除は当番制です。忘れた人の玄関先には、バケツがひとりでにやって来ます。"
+ },
+ "city.sp.board1.c": {
+  "ru": "Колетт Бауэр, кв. 17 (первый этаж, по галерее налево от лестницы). У аквариума разбилось цветное стекло со дна, рыбки скучают. Нужно морское стёклышко, любое, гладкое. Заходите с десяти утра: я сова, раньше не стучите.",
+  "en": "Colette Bauer, flat 17 (first floor, along the gallery to the left of the stairs). The coloured glass on my aquarium's floor broke and the fish are sulking. I need a piece of sea glass, any kind, smooth. Come after ten in the morning: I am an owl, don't knock earlier.",
+  "ja": "コレット・バウアー、十七号室（一階、階段を出て通路を左）。水槽の底に敷いていた色ガラスが割れて、魚たちがふさぎこんでいます。丸くなった海のガラス片を探しています。朝十時以降にどうぞ。わたしはフクロウ型なので、それより早いノックはご遠慮を。"
+ },
+ "city.sp.board1.d": {
+  "ru": "Колетт Бауэр, 17-я: нашлись два стёклышка, зелёное и синее. Нужно ещё одно, лучше светлое. Дверь на галерее открыта с десяти до полуночи.",
+  "en": "Colette Bauer, no. 17: two pieces turned up, a green and a blue. I need one more, preferably a pale one. My door on the gallery is open from ten till midnight.",
+  "ja": "十七号室コレット・バウアー。緑と青のガラス片が二つ見つかりました。あと一つ、できれば淡い色のものを。通路側のドアは十時から零時まで開けています。"
+ },
+ "city.sp.board1.e": {
+  "ru": "17-я квартира благодарит всех. Дно сверкает, рыбки довольны. По вечерам на галерее чай, приходите без повода.",
+  "en": "Flat 17 thanks everyone. The aquarium floor sparkles and the fish are content. Tea on the gallery in the evenings, come without a reason.",
+  "ja": "十七号室は皆さんに感謝しています。水槽の底はきらめき、魚たちも満足です。夕方は通路でお茶をしています。用がなくても、どうぞ。"
+ },
+ "city.sp.board2.a": {
+  "ru": "Аквариум в холле общий. Корм в ящичке под ним: щепотка, не больше. Рыбы не просят добавки, они притворяются.",
+  "en": "The aquarium in the hall belongs to everyone. The food is in the little box under it: a pinch, no more. The fish aren't asking for more, they are pretending.",
+  "ja": "ホールの水槽はみんなのものです。餌は下の小箱に、ひとつまみだけ。魚は「もっと」とせがんでいるのではなく、そのふりをしているのです。"
+ },
+ "city.sp.board2.b": {
+  "ru": "Найден ключ с красной биркой. Спросить у консьержки.",
+  "en": "A key with a red tag has been found. Ask the concierge.",
+  "ja": "赤いタグのついた鍵が見つかりました。管理人にお尋ねください。"
+ },
+ "city.sp.board2.c": {
+  "ru": "Нам подарили мальков. Имена выберем голосованием: кто «за», ставьте галочку, кто «против», ставьте две.",
+  "en": "We have been given some fry. Names by vote: if you are for, put one tick, if against, put two.",
+  "ja": "稚魚をいただきました。名前は投票で決めます。賛成なら印をひとつ、反対ならふたつ。"
+ },
+ "city.sp.board2.d": {
+  "ru": "Холл благодарит Колетт Б. из 17-й за совет: гуппи у нас теперь не болеют. Совет простой: не перекармливать.",
+  "en": "The hall thanks Colette B. of no. 17 for her advice: our guppies no longer fall ill. The advice is simple: don't overfeed.",
+  "ja": "ホールは十七号室のコレット・Bの助言に感謝します。グッピーはもう病気になりません。助言は簡単、餌のやりすぎはしないこと。"
+ },
+ "city.sp.mail.prompt": {
+  "ru": "E — заглянуть в почтовые ящики",
+  "en": "E — peek at the letter boxes",
+  "ja": "E：郵便受けをのぞく"
+ },
+ "city.sp.mail0.1": {
+  "ru": "Ящики потемнели от времени. Против номера 22 наклейка: «Письма сыну не терять!»",
+  "en": "The boxes have darkened with age. Next to number 22 a sticker: \"Do not lose letters to my son!\"",
+  "ja": "郵便受けは年月で黒ずんでいる。二十二番には「息子への手紙をなくさないで！」のシール。"
+ },
+ "city.sp.mail0.2": {
+  "ru": "На полу лежит листовка про рыбные пирожки. Её никто не поднимает, но и не выбрасывает.",
+  "en": "A flyer for fish pies lies on the floor. Nobody picks it up, but nobody throws it away either.",
+  "ja": "床には魚のパイのチラシ。誰も拾わないが、捨てもしない。"
+ },
+ "city.sp.mail0.3": {
+  "ru": "По понедельникам почтальон приходит раньше всех: газеты торчат из каждой щели.",
+  "en": "On Mondays the postman comes before anyone: newspapers stick out of every slot.",
+  "ja": "月曜は郵便配達がいちばん早い。どの差し込み口からも新聞がはみ出している。"
+ },
+ "city.sp.mail1.1": {
+  "ru": "Ящик 17 набит газетами: хозяйка встаёт поздно.",
+  "en": "Box 17 is stuffed with newspapers: its owner gets up late.",
+  "ja": "十七番の郵便受けは新聞でぱんぱんだ。持ち主は朝がゆっくりらしい。"
+ },
+ "city.sp.mail1.2": {
+  "ru": "Ящик 17 пуст: Колетт уже заходила.",
+  "en": "Box 17 is empty: Colette has already been.",
+  "ja": "十七番の郵便受けは空っぽ。コレットはもう来たらしい。"
+ },
+ "city.sp.mail1.3": {
+  "ru": "Ночью ящики тихо дребезжат: где-то наверху хлопнула дверь.",
+  "en": "At night the boxes rattle softly: somewhere above a door has slammed.",
+  "ja": "夜、郵便受けがかすかに鳴る。上のどこかでドアが閉まったのだ。"
+ },
+ "city.sp.mail2.1": {
+  "ru": "Один ящик заклеен скотчем крест-накрест: хозяева в отъезде, письма складывают в пакет у консьержки.",
+  "en": "One box is taped shut crosswise: the owners are away, their post goes into a bag at the concierge's.",
+  "ja": "ひとつの郵便受けはテープで十字に塞がれている。持ち主は留守で、手紙は管理人の袋に入る。"
+ },
+ "city.sp.mail2.2": {
+  "ru": "На ящике 8 надпись мелом: «Нам не писать, мы звоним».",
+  "en": "Box 8 has chalk on it: \"Don't write to us, we phone.\"",
+  "ja": "八番にはチョークで「手紙は不要、電話します」。"
+ },
+ "city.sp.mail2.3": {
+  "ru": "С ящиков капает: кто-то зашёл с мокрым зонтом.",
+  "en": "The boxes are dripping: someone came in with a wet umbrella.",
+  "ja": "郵便受けから水がしたたる。誰かが濡れた傘を持って入ったのだ。"
+ },
+ "city.sp.bikes.prompt": {
+  "ru": "E — осмотреть велосипеды",
+  "en": "E — look over the bicycles",
+  "ja": "E：自転車を見る"
+ },
+ "city.sp.bikes.1": {
+  "ru": "Утром половины велосипедов нет: хозяева уже на работе и в школе.",
+  "en": "In the morning half the bicycles are gone: their owners are already at work and at school.",
+  "ja": "朝は自転車が半分しかない。持ち主はもう仕事や学校へ出かけた。"
+ },
+ "city.sp.bikes.2": {
+  "ru": "Дневные велосипеды отдыхают. У красного спустило колесо, к рулю привязана записка: «Починю в выходные».",
+  "en": "The daytime bicycles are resting. The red one has a flat, a note on the handlebar: \"Will mend at the weekend.\"",
+  "ja": "昼の自転車は休んでいる。赤いのはタイヤがしぼみ、ハンドルに「週末に直す」のメモ。"
+ },
+ "city.sp.bikes.3": {
+  "ru": "Вечером велосипеды вернулись. На раме синего песок с пляжа.",
+  "en": "By evening the bicycles are back. The blue one's frame has beach sand on it.",
+  "ja": "夕方には自転車が戻っている。青いフレームには浜辺の砂がついている。"
+ },
+ "city.sp.bikes.4": {
+  "ru": "Ночью у велосипедов поблёскивают спицы. Кто-то забыл включённый фонарик на руле.",
+  "en": "At night the spokes glint. Someone left a torch switched on, clamped to a handlebar.",
+  "ja": "夜は自転車のスポークが光る。誰かがハンドルに懐中電灯をつけたまま忘れている。"
+ },
+ "city.sp.bikes.5": {
+  "ru": "С рам капает: кто-то ехал под дождём и поставил велосипед мокрым.",
+  "en": "The frames are dripping: somebody rode in the rain and parked wet.",
+  "ja": "フレームから水がしたたる。誰かが雨の中を走って、濡れたまま置いたのだ。"
+ },
+ "city.sp.pram.prompt": {
+  "ru": "E — заглянуть в коляску",
+  "en": "E — peek into the pram",
+  "ja": "E：乳母車をのぞく"
+ },
+ "city.sp.pram.1": {
+  "ru": "Коляска пуста, в ней забытая погремушка. Мама, наверное, ушла за молоком.",
+  "en": "The pram is empty with a forgotten rattle in it. Mum must have gone for milk.",
+  "ja": "乳母車は空で、忘れられたガラガラが入っている。お母さんは牛乳を買いに行ったのだろう。"
+ },
+ "city.sp.pram.2": {
+  "ru": "В коляске спит кто-то совсем маленький, укрытый до носа. Лучше пройти тихо.",
+  "en": "Someone very small sleeps in the pram, tucked up to the nose. Better walk past quietly.",
+  "ja": "乳母車では、鼻まで毛布にくるまった小さな子が眠っている。静かに通ろう。"
+ },
+ "city.sp.pram.3": {
+  "ru": "Коляска пуста, на ручке висит авоська с яблоками.",
+  "en": "The pram is empty, a string bag of apples hangs on the handle.",
+  "ja": "乳母車は空で、持ち手にりんごの入った網袋がぶら下がっている。"
+ },
+ "city.sp.pram.4": {
+  "ru": "Коляска сложена и стоит у стены: до утра в ней никто не нуждается.",
+  "en": "The pram is folded and stands by the wall: nobody needs it till morning.",
+  "ja": "乳母車はたたまれて壁際にある。朝まで出番はない。"
+ },
+ "city.sp.dom.prompt": {
+  "ru": "E — подсесть к костяшкам",
+  "en": "E — join the domino players",
+  "ja": "E：ドミノの席につく"
+ },
+ "city.sp.dom.1": {
+  "ru": "Стол у входа занят каждый день после обеда: костяшки стучат так, что слышно на втором этаже.",
+  "en": "The table by the door is taken every afternoon: the tiles clack so loud it carries to the second floor.",
+  "ja": "入口のテーブルは毎日昼すぎに埋まる。ドミノを打つ音が二階まで届く。"
+ },
+ "city.sp.dom.2": {
+  "ru": "Карандаш на нитке привязан к столу: счёт ведут на салфетке, салфетки хранят с прошлой весны.",
+  "en": "A pencil on a string is tied to the table: the score goes on a napkin, and napkins are kept since last spring.",
+  "ja": "テーブルには糸付きの鉛筆。点数は紙ナプキンに書き、去年の春のぶんまで取ってある。"
+ },
+ "city.sp.dom.3": {
+  "ru": "Кто проигрывает, ставит чай. Чайник стоит у консьержки и всегда тёплый.",
+  "en": "The loser pays for the tea. The kettle stands at the concierge's and is always warm.",
+  "ja": "負けた人がお茶をおごる。ヤカンは管理人のところにあって、いつも温かい。"
+ },
+ "city.sp.chess.prompt": {
+  "ru": "E — присесть к шахматам у окна",
+  "en": "E — sit at the chessboard by the window",
+  "ja": "E：窓辺のチェス盤につく"
+ },
+ "city.sp.chess.1": {
+  "ru": "Шахматы в холле: фигуры стоят так, будто партия идёт уже неделю.",
+  "en": "Chess in the hall: the pieces stand as if the game has been going on for a week.",
+  "ja": "ホールのチェス盤。駒の並びは、もう一週間も続いている対局のようだ。"
+ },
+ "city.sp.chess.2": {
+  "ru": "Белый король помят: его когда-то уронили на кафель, и он до сих пор об этом помнит.",
+  "en": "The white king is dented: it was dropped on the tiles once and has not forgotten.",
+  "ja": "白のキングはへこんでいる。昔タイルの床に落とされて、まだそれを覚えているようだ。"
+ },
+ "city.sp.chess.3": {
+  "ru": "Чёрная ладья заменена пробкой от лимонада: настоящая пропала ещё до того, как тут поселились самые старые жильцы.",
+  "en": "The black rook is a lemonade bottle cap: the real one went missing before the oldest residents moved in.",
+  "ja": "黒のルークはレモネードの王冠で代用されている。本物は、いちばん古い住人が越してくる前になくなった。"
+ },
+ "city.sp.water.prompt": {
+  "ru": "E — полить растения",
+  "en": "E — water the plants",
+  "ja": "E：植物に水をやる"
+ },
+ "city.sp.water.1": {
+  "ru": "Лейка полна до краёв. Пальме хватит до вечера.",
+  "en": "The watering can is full to the brim. The palm will last till evening.",
+  "ja": "じょうろは縁までいっぱい。ヤシは夕方までもつだろう。"
+ },
+ "city.sp.water.2": {
+  "ru": "Ты поливаешь: земля вздыхает и темнеет, пальма чуть выпрямляется.",
+  "en": "You water: the soil sighs and darkens, the palm straightens a little.",
+  "ja": "水をやると土はため息をついて色を濃くし、ヤシが少しだけ背筋を伸ばす。"
+ },
+ "city.sp.water.3": {
+  "ru": "Листья пахнут сырой землёй. Под горшком записка: «Не заливайте!»",
+  "en": "The leaves smell of damp earth. Under the pot a note: \"Don't drown it!\"",
+  "ja": "葉は湿った土のにおいがする。鉢の下にメモ。「水のやりすぎ注意！」"
+ },
+ "city.sp.fish.1": {
+  "ru": "Гуппи в холле общие: кормят все, кому не лень. Рыбок мало, имён много.",
+  "en": "The hall's guppies belong to everybody: anyone who feels like it feeds them. Few fish, many names.",
+  "ja": "ホールのグッピーはみんなのもの。気が向いた人が餌をやる。魚は少なく、名前は多い。"
+ },
+ "city.sp.fish.2": {
+  "ru": "Самую толстую гуппи прозвали Консьержкой: она всегда на посту у корма.",
+  "en": "The fattest guppy is nicknamed the Concierge: she is always on duty by the food.",
+  "ja": "いちばん太ったグッピーは「管理人さん」と呼ばれている。餌のそばでいつも見張りをしている。"
+ },
+ "city.sp.fish.3": {
+  "ru": "Ночью рыбы спят почти у дна, и аквариум светится тихо, как ночник.",
+  "en": "At night the fish sleep close to the bottom and the aquarium glows softly like a night light.",
+  "ja": "夜、魚は底近くで眠り、水槽は常夜灯のように静かに光っている。"
+ },
+ "city.sp.fish.4": {
+  "ru": "Свет в аквариуме не выключают: говорят, так спокойнее и рыбам, и подъезду.",
+  "en": "The aquarium light is never switched off: they say it keeps both the fish and the entrance calmer.",
+  "ja": "水槽の明かりは消さない。そのほうが魚も入口も落ち着く、と言われている。"
+ },
+ "city.sp.desk.1": {
+  "ru": "Консьержка вяжет носок и не поднимает глаз: «Вам к кому? К Колетт? Первый этаж, лестница в левом углу, дальше по галерее».",
+  "en": "The concierge knits a sock without looking up: \"Who are you here for? Colette? First floor, stairs in the left corner, then along the gallery.\"",
+  "ja": "管理人は靴下を編みながら目も上げない。「どなたに？　コレット？　一階よ、左の隅の階段、そのあと通路をまっすぐ」"
+ },
+ "city.sp.desk.2": {
+  "ru": "За стеклом приколот список дежурств по лестнице. Твоей фамилии там нет, и слава богу.",
+  "en": "A rota for washing the stairs is pinned behind the glass. Your name isn't on it, thank goodness.",
+  "ja": "ガラスの奥に階段掃除の当番表が留めてある。きみの名前はない。ありがたいことに。"
+ },
+ "city.sp.desk.3": {
+  "ru": "Стул пуст. На столе записка: «Вышла проверить двор. Ключи в ящике, письма в ящике, я скоро».",
+  "en": "The chair is empty. A note on the desk: \"Gone to check the yard. Keys in the drawer, letters in the drawer, back soon.\"",
+  "ja": "椅子は空っぽ。机にメモ。「中庭を見に行きました。鍵は引き出し、手紙も引き出し、すぐ戻ります」"
+ },
+ "city.sp.desk.4": {
+  "ru": "Горит одна настольная лампа, как маяк. Рядом остывший чай в гранёном стакане.",
+  "en": "One desk lamp burns like a lighthouse. Beside it, cold tea in a faceted glass.",
+  "ja": "机のランプがひとつ、灯台のように灯っている。そばには冷めたお茶の入った面取りグラス。"
+ },
+ "city.sp.stairs.1": {
+  "ru": "Лестница в левом углу ведёт на галерею первого этажа. Перила тёплые от света из щелевых окон.",
+  "en": "The stairs in the left corner lead up to the first-floor gallery. The handrail is warm from the light of the slit windows.",
+  "ja": "左の隅の階段は一階の通路に続いている。手すりはスリット窓の光で温かい。"
+ },
+ "city.sp.stairs.2": {
+  "ru": "На лестнице горит одна лампочка. Шаги слышно раньше, чем поднимаешься.",
+  "en": "One bulb burns on the stairs. You hear your steps before you climb.",
+  "ja": "階段には電球がひとつだけ灯っている。上る前から足音が聞こえる。"
+ },
+ "city.sp.stairs.prompt": {
+  "ru": "E — оглядеть лестницу",
+  "en": "E — look over the stairs",
+  "ja": "E：階段を見上げる"
+ },
+ "city.sp.cat.prompt": {
+  "ru": "E — погладить кошку",
+  "en": "E — stroke the cat",
+  "ja": "E：猫をなでる"
+ },
+ "city.sp.cat.1": {
+  "ru": "Серая кошка с белой лапкой умывается на лавочке. Разрешает почесать за ухом: за одним.",
+  "en": "The grey cat with a white paw is washing on the bench. She lets you scratch behind an ear: one.",
+  "ja": "白い前足の灰色の猫がベンチで顔を洗っている。耳のうしろをなでさせてくれる。ただし片方だけ。"
+ },
+ "city.sp.cat.2": {
+  "ru": "Кошка спит на тёплом бетоне, свернувшись так, что не поймёшь, где хвост.",
+  "en": "The cat sleeps on the warm concrete, curled so that you can't tell where the tail is.",
+  "ja": "猫は温まったコンクリートの上で丸くなり、しっぽがどこか分からない。"
+ },
+ "city.sp.cat.3": {
+  "ru": "Кошка сидит и смотрит на дверь 17-й. Там скоро ужин.",
+  "en": "The cat sits watching the door of no. 17. Supper is coming.",
+  "ja": "猫は十七号室のドアをじっと見ている。もうすぐ夕食だ。"
+ },
+ "city.sp.cat.4": {
+  "ru": "В темноте блестят только глаза и белая лапка. Кошка пересела ближе к двери Колетт.",
+  "en": "In the dark only her eyes and white paw show. The cat has moved closer to Colette's door.",
+  "ja": "暗がりで光るのは目と白い前足だけ。猫はコレットのドアの近くに移っていた。"
+ },
+ "city.sp.cat.5": {
+  "ru": "Кошка забилась под лавку и делает вид, что дождя нет.",
+  "en": "The cat has squeezed under the bench and pretends there is no rain.",
+  "ja": "猫はベンチの下にもぐって、雨など降っていないふりをしている。"
+ },
+ "city.sp.wash.prompt": {
+  "ru": "E — потрогать бельё",
+  "en": "E — feel the washing",
+  "ja": "E：洗濯物にさわる"
+ },
+ "city.sp.wash.1": {
+  "ru": "Простыни хлопают на ветру, как паруса. Под ними видно, как ходит свет.",
+  "en": "The sheets flap in the wind like sails. Under them you can see the light moving.",
+  "ja": "シーツが帆のように風にはためく。その下で光が揺れている。"
+ },
+ "city.sp.wash.2": {
+  "ru": "Бельё ещё мокрое: на пол падают редкие капли.",
+  "en": "The washing is still wet: slow drops fall on the floor.",
+  "ja": "洗濯物はまだ濡れていて、ときどき床に水が落ちる。"
+ },
+ "city.sp.wash.3": {
+  "ru": "Бельё высохло и пахнет ветром и солью.",
+  "en": "The washing is dry and smells of wind and salt.",
+  "ja": "洗濯物は乾いて、風と塩のにおいがする。"
+ },
+ "city.sp.wash.4": {
+  "ru": "Бельё уже сняли, остались прищепки: они скрипят на верёвке.",
+  "en": "The washing has been taken in; only the pegs are left, creaking on the line.",
+  "ja": "洗濯物はもう取り込まれ、洗濯ばさみだけが紐の上できしんでいる。"
+ },
+ "city.sp.wash.5": {
+  "ru": "Бельё сняли заранее. Хозяйки в этом доме слышат погоду.",
+  "en": "The washing was taken in early. The housewives here can hear the weather coming.",
+  "ja": "洗濯物は早めに取り込まれている。この家の人たちは天気の音が聞こえるらしい。"
+ },
+ "city.sp.flowers.prompt": {
+  "ru": "E — понюхать цветы",
+  "en": "E — smell the flowers",
+  "ja": "E：花のにおいをかぐ"
+ },
+ "city.sp.flowers.1": {
+  "ru": "Ящики с бархатцами и геранью: красные, жёлтые и одна белая «для разнообразия».",
+  "en": "Boxes of marigolds and geraniums: red, yellow and one white \"for variety\".",
+  "ja": "マリーゴールドとゼラニウムの箱。赤、黄色、そして「変化をつけるため」の白がひとつ。"
+ },
+ "city.sp.flowers.2": {
+  "ru": "Цветы мокрые от утренней росы, пахнут землёй и чуть-чуть морем.",
+  "en": "The flowers are wet with morning dew and smell of earth and a little of the sea.",
+  "ja": "花は朝露に濡れ、土と、ほんの少し海のにおいがする。"
+ },
+ "city.sp.flowers.3": {
+  "ru": "Пчела работает над геранью. Ты стоишь тихо, она не возражает.",
+  "en": "A bee is working on the geraniums. You stand still and it doesn't mind.",
+  "ja": "ミツバチがゼラニウムで仕事中。じっと立っていると、気にしないようだ。"
+ },
+ "city.sp.flowers.4": {
+  "ru": "Дождь поливает ящики лучше любой лейки. Хозяйка на этот раз довольна.",
+  "en": "The rain waters the boxes better than any can. For once the owner is pleased.",
+  "ja": "雨は、どんなじょうろよりうまく箱に水をやる。今日は持ち主も満足だろう。"
+ },
+ "city.sp.gview.1": {
+  "ru": "Утро: двор ещё в тени, за крышами белеет полоска моря.",
+  "en": "Morning: the yard is still in shadow, a white strip of sea beyond the roofs.",
+  "ja": "朝。中庭はまだ日陰で、屋根のむこうに海の白い帯が見える。"
+ },
+ "city.sp.gview.2": {
+  "ru": "Внизу кто-то выбивает ковёр. Звук возвращается эхом от соседнего дома, чуть позже и чуть мягче.",
+  "en": "Someone below is beating a carpet. The sound comes back from the next block, a little later and softer.",
+  "ja": "下で誰かが絨毯をたたいている。音は隣の棟から、少し遅れて柔らかく返ってくる。"
+ },
+ "city.sp.gview.3": {
+  "ru": "День: галерея нагрета, внизу дети чертят мелом классики и спорят о правилах.",
+  "en": "Midday: the gallery is warm, below children chalk hopscotch squares and argue about the rules.",
+  "ja": "昼。通路は温まり、下では子どもたちがチョークで石けりを描いて、ルールを言い合っている。"
+ },
+ "city.sp.gview.4": {
+  "ru": "С галереи видно сразу несколько подъездов и столько же чьих-то форточек. Над каждой свой пар.",
+  "en": "From the gallery you see several entrances and as many small windows, each with its own steam.",
+  "ja": "通路からは、いくつもの入口と同じ数の小窓が見える。どの窓からもそれぞれの湯気が立つ。"
+ },
+ "city.sp.gview.5": {
+  "ru": "Вечер: окна загораются по одному, как будто дом пересчитывает жильцов.",
+  "en": "Evening: the windows light up one by one, as if the house were counting its tenants.",
+  "ja": "夕方。窓がひとつずつ灯り、まるで家が住人を数えているようだ。"
+ },
+ "city.sp.gview.6": {
+  "ru": "Пахнет жареной рыбой, перцем и чьим-то свежим бельём. Это и есть вечер в доме-змее.",
+  "en": "It smells of fried fish, pepper and somebody's fresh washing. That is evening in the serpent house.",
+  "ja": "焼き魚と胡椒と、誰かの洗い立ての洗濯物のにおい。これがヘビの家の夕方だ。"
+ },
+ "city.sp.gview.7": {
+  "ru": "Ночь: длинная лента окон изгибается в темноте. Где-то далеко мигает маяк.",
+  "en": "Night: the long ribbon of windows bends in the dark. Far away a lighthouse blinks.",
+  "ja": "夜。長い窓の帯が闇の中でゆるやかに曲がる。遠くで灯台が瞬いている。"
+ },
+ "city.sp.gview.8": {
+  "ru": "Тихо. Слышно, как внизу капает кран, как за стеной кашляет сосед и как море дышит за домами.",
+  "en": "Quiet. You hear a tap dripping below, a neighbour coughing through a wall, and the sea breathing behind the blocks.",
+  "ja": "静かだ。下で蛇口がしたたり、壁のむこうで隣人が咳をし、建物の後ろで海が息をしている。"
+ },
+ "city.sp.bdoor.prompt": {
+  "ru": "E — прочитать записку на двери",
+  "en": "E — read the note on the door",
+  "ja": "E：ドアのメモを読む"
+ },
+ "city.sp.bdoor.1": {
+  "ru": "Записка на двери: «До десяти не стучать. Я сова. К. Б.»",
+  "en": "A note on the door: \"Don't knock before ten. I'm an owl. C. B.\"",
+  "ja": "ドアにメモ。「十時前のノックはご遠慮を。わたしはフクロウ型です。C・B」"
+ },
+ "city.sp.bdoor.2": {
+  "ru": "Дверь приоткрыта: пахнет чаем с бергамотом и чем-то солёным, морским.",
+  "en": "The door is ajar: it smells of bergamot tea and something salty, of the sea.",
+  "ja": "ドアが少し開いている。ベルガモットのお茶と、塩気のある海のにおいがする。"
+ },
+ "city.sp.bdoor.3": {
+  "ru": "За дверью тихо бормочет радио. Под дверью полоска жёлтого света.",
+  "en": "A radio mutters quietly behind the door. A strip of yellow light shows under it.",
+  "ja": "ドアのむこうでラジオが小さくつぶやいている。下からは黄色い光の筋。"
+ },
+ "city.sp.bdoor.4": {
+  "ru": "Тихо. В щели под дверью дрожит синее: это аквариум, он не гаснет никогда.",
+  "en": "Quiet. Blue trembles in the gap under the door: the aquarium, which never goes dark.",
+  "ja": "静かだ。ドアの下の隙間で青い光が揺れている。水槽だ。あの光は決して消えない。"
+ },
+ "city.sp.baq.1": {
+  "ru": "Четыре гуппи, у каждой имя: Лоцман, Штурман, Кок и Юнга. Колетт говорит, что различает их по походке.",
+  "en": "Four guppies, each with a name: Pilot, Navigator, Cook and Deckhand. Colette says she tells them apart by their gait.",
+  "ja": "グッピーが四匹、それぞれ名前がある。水先案内人、航海士、料理人、見習い。コレットは泳ぎ方で見分けるという。"
+ },
+ "city.sp.baq.2": {
+  "ru": "Рыбки собираются у стекла, когда ты подходишь: решили, что с едой.",
+  "en": "The fish gather at the glass as you come: they have decided you bring food.",
+  "ja": "近づくと魚がガラスに集まってくる。餌を持ってきたと思ったらしい。"
+ },
+ "city.sp.baq.3": {
+  "ru": "Вечером аквариум светится, как окно в другую квартиру. Колетт сидит рядом в кресле и молчит вместе с рыбами.",
+  "en": "In the evening the aquarium glows like a window into another flat. Colette sits beside it and keeps quiet along with the fish.",
+  "ja": "夕方、水槽は別の部屋の窓のように光る。コレットは隣の椅子で、魚たちといっしょに黙っている。"
+ },
+ "city.sp.baq.4": {
+  "ru": "Дно наполовину пустое: на месте разбитого стекла ровный круг мелкого песка. Рыбки обходят его стороной.",
+  "en": "The floor is half empty: where the broken glass was, a smooth ring of fine sand. The fish swim around it.",
+  "ja": "底は半分がらんとしている。割れたガラスがあった場所には細かい砂の円。魚は避けて泳ぐ。"
+ },
+ "city.sp.baq.5": {
+  "ru": "На дне теперь четыре стёклышка. Светлое, из-под моря, лежит в центре, и рыбки плавают вокруг него кругами.",
+  "en": "There are four pieces of glass on the floor now. The pale one from the sea lies in the middle and the fish circle round it.",
+  "ja": "底にはガラス片が四つ。海から来た淡い一つが真ん中にあり、魚たちはそのまわりをぐるぐる泳ぐ。"
+ },
+ "city.sp.dish.prompt": {
+  "ru": "E — положить находку на блюдце",
+  "en": "E — put your find on the saucer",
+  "ja": "E：見つけたものを小皿にのせる"
+ },
+ "city.sp.dish.1": {
+  "ru": "Колетт перебирает находки в блюдце: «Вот это на дно, к тёмному камню. А это пусть просто лежит и радуется».",
+  "en": "Colette sorts the finds on the saucer: \"This one for the floor, by the dark stone. And this one can just lie there and enjoy itself.\"",
+  "ja": "コレットは小皿の拾いものを選り分ける。「これは底の黒い石のそばへ。こっちは、ただそこにいて楽しんでいればいい」"
+ },
+ "city.sp.dish.2": {
+  "ru": "На блюдце пуговица, ракушка и два стёклышка. Ты кладёшь своё к остальным, и Колетт кивает: «Хорошее».",
+  "en": "On the saucer: a button, a shell and two bits of glass. You add yours to the rest and Colette nods: \"A good one.\"",
+  "ja": "小皿にはボタン、貝殻、ガラス片が二つ。きみのを並べると、コレットがうなずく。「いいわね」"
+ },
+ "city.sp.dish.3": {
+  "ru": "Она держит твоё стёклышко против окна: «Бутылочное, лет двадцать в море. Вот это настоящее».",
+  "en": "She holds your glass up to the window: \"A bottle's. Twenty years in the sea, I'd say. This is the real thing.\"",
+  "ja": "彼女はきみのガラス片を窓にかざす。「瓶のかけらね。海に二十年はいたかしら。これは本物よ」"
+ },
+ "city.sp.btv.1": {
+  "ru": "Утренняя гимнастика для пенсионеров: Колетт повторяет за диктором ровно половину движений и полным голосом спорит со второй половиной.",
+  "en": "Morning exercises for pensioners: Colette copies exactly half the movements and argues aloud with the other half.",
+  "ja": "年金生活者向けの朝の体操。コレットは動きのちょうど半分を真似して、残り半分には声に出して反論する。"
+ },
+ "city.sp.btv.2": {
+  "ru": "Концерт по заявкам: поёт хор рыбаков. Колетт подпевает без слов, одними губами.",
+  "en": "Requests concert: a fishermen's choir sings. Colette hums along with no words, lips only.",
+  "ja": "リクエスト音楽会。漁師の合唱団が歌っている。コレットは歌詞なしで、唇だけ動かして合わせる。"
+ },
+ "city.sp.btv.3": {
+  "ru": "Вечерние новости города. Колетт убавляет звук на погоде и прибавляет на приливах.",
+  "en": "The evening town news. Colette turns the sound down for the weather and up for the tides.",
+  "ja": "夜の町のニュース。コレットは天気予報では音を下げ、潮の時刻では上げる。"
+ },
+ "city.sp.btv.4": {
+  "ru": "Таблица для настройки и тихое шипение. Колетт говорит, что так лучше слышно море.",
+  "en": "A test card and a soft hiss. Colette says you can hear the sea better like this.",
+  "ja": "テストパターンとかすかなノイズ。このほうが海がよく聞こえる、とコレットは言う。"
+ },
+ "city.sp.bradio.1": {
+  "ru": "Радио на полке бубнит о погоде для рыбаков: ветер северный, три балла, у берега туман.",
+  "en": "The radio on the shelf mutters the fishermen's forecast: north wind, force three, fog near the shore.",
+  "ja": "棚のラジオが漁師向けの予報をつぶやく。北の風、風力三、岸のあたりは霧。"
+ },
+ "city.sp.bradio.2": {
+  "ru": "Играет старая песня про корабли. Колетт вполголоса поправляет певца в третьем куплете.",
+  "en": "An old song about ships is playing. Colette softly corrects the singer in the third verse.",
+  "ja": "船の古い歌が流れている。コレットは三番の歌詞を、小声で歌い手に訂正する。"
+ },
+ "city.sp.bradio.3": {
+  "ru": "Ночной эфир: диктор читает таблицу приливов. Колетт записывает цифры карандашом прямо на обоях.",
+  "en": "The night broadcast: the announcer reads out the tide table. Colette pencils the numbers right onto the wallpaper.",
+  "ja": "夜の放送。アナウンサーが潮汐表を読み上げ、コレットは数字を壁紙に直接鉛筆で書きとめる。"
+ },
+ "city.sp.bradio.4": {
+  "ru": "Радио молчит. Рядом записка: «До десяти не включать».",
+  "en": "The radio is silent. A note beside it: \"Not before ten.\"",
+  "ja": "ラジオは黙っている。そばにメモ。「十時前はつけないこと」"
+ },
+ "city.sp.shelf.prompt": {
+  "ru": "E — рассмотреть полку с корабликами",
+  "en": "E — look over the shelf of little ships",
+  "ja": "E：船の模型の棚を見る"
+ },
+ "city.sp.bshelf.1": {
+  "ru": "Кораблик в бутылке: мачты сложены, парус из лоскута. Бутылка из-под лимонада, горлышко аккуратно запаяно воском.",
+  "en": "A ship in a bottle: masts folded down, sail cut from a rag. A lemonade bottle, the neck neatly sealed with wax.",
+  "ja": "瓶の中の帆船。マストは倒れ、帆は端切れでできている。レモネードの瓶で、口は蠟できれいにふさがれている。"
+ },
+ "city.sp.bshelf.2": {
+  "ru": "Два стеклянных поплавка в сетке: зелёный и голубой, в мелких пузырьках. С такими сети когда-то держали на плаву.",
+  "en": "Two glass floats in a net: one green, one pale blue, both full of tiny bubbles. Nets were once kept afloat with these.",
+  "ja": "網に入ったガラスの浮き玉が二つ。緑と水色、どちらも細かい泡入りだ。昔はこれで漁網を浮かせた。"
+ },
+ "city.sp.bshelf.3": {
+  "ru": "Сетевязальная игла из кости, гладкая, как галька. На рукояти нацарапано: «К. Б. 1968».",
+  "en": "A bone netting needle, smooth as a pebble. Scratched on the handle: \"C. B. 1968\".",
+  "ja": "骨の網針は小石のようになめらかだ。柄に「C・B 1968」と刻んである。"
+ },
+ "city.sp.bshelf.4": {
+  "ru": "Книги о море, о рыбах и один растрёпанный справочник по кулинарии: самый читаный.",
+  "en": "Books about the sea, about fish and one tattered cookery manual: the most read of them all.",
+  "ja": "海の本、魚の本、そしてぼろぼろの料理の手引きが一冊。いちばん読みこまれている。"
+ },
+ "city.sp.photos.prompt": {
+  "ru": "E — рассмотреть фотографии",
+  "en": "E — look at the photographs",
+  "ja": "E：写真を見る"
+ },
+ "city.sp.bphotos.1": {
+  "ru": "Траулер у причала. На палубе молодой моряк в бескозырке, рядом девушка с сетью в руках. На обороте: «Ласточка», 1968.",
+  "en": "A trawler at the quay. On deck a young sailor in a cap, beside him a girl holding a net. On the back: \"Swallow\", 1968.",
+  "ja": "岸壁につないだトロール船。甲板には帽子をかぶった若い水兵と、網を抱えた少女。裏には「ツバメ号 1968」。"
+ },
+ "city.sp.bphotos.2": {
+  "ru": "Сетевязальный цех: длинные столы, сети, как паутина, женщины в косынках. Третья слева Колетт: смотрит в объектив с вызовом.",
+  "en": "The net loft: long tables, nets like cobwebs, women in headscarves. Third from the left is Colette, staring down the lens.",
+  "ja": "網づくりの作業場。長い机、蜘蛛の巣のような網、スカーフの女性たち。左から三人目がコレットで、レンズを挑むように見ている。"
+ },
+ "city.sp.bphotos.3": {
+  "ru": "Первый аквариум Колетт: банка на подоконнике и три гуппи. Подпись: «Юнга, Штурман, Кок. Лоцмана пока нет».",
+  "en": "Colette's first aquarium: a jar on a windowsill and three guppies. Caption: \"Deckhand, Navigator, Cook. No Pilot yet.\"",
+  "ja": "コレットの最初の水槽。窓辺の瓶とグッピー三匹。書き込みは「見習い、航海士、料理人。水先案内人はまだ」。"
+ },
+ "city.sp.bphotos.4": {
+  "ru": "Пустой причал на рассвете. Без подписи, но рамка новее остальных.",
+  "en": "An empty quay at dawn. No caption, but the frame is newer than the others.",
+  "ja": "夜明けの誰もいない岸壁。書き込みはないが、額縁だけは他より新しい。"
+ },
+ "city.sp.net.prompt": {
+  "ru": "E — взять сетевязальную иглу",
+  "en": "E — pick up the netting needle",
+  "ja": "E：網針を手に取る"
+ },
+ "city.sp.bnet.1": {
+  "ru": "Игла идёт по кругу: узел, ещё узел. Ячейки выходят ровные, как соты. Руки помнят то, что голова давно забыла.",
+  "en": "The needle goes round: a knot, another knot. The meshes come out even as honeycomb. Hands remember what the head forgot long ago.",
+  "ja": "針が回る。結び目、また結び目。目は蜂の巣のようにそろう。頭がとうに忘れたことを、手は覚えている。"
+ },
+ "city.sp.bnet.2": {
+  "ru": "Недовязанная сеть натянута на раму. Колетт говорит, что вяжет её для рыбок: ничего не ловит, просто висит у окна.",
+  "en": "An unfinished net is stretched on the frame. Colette says she is making it for the fish: it catches nothing, it just hangs by the window.",
+  "ja": "編みかけの網が枠に張られている。魚のために編んでいるとコレットは言う。何も捕らず、ただ窓辺に掛かっている。"
+ },
+ "city.sp.bnet.3": {
+  "ru": "Узел за узлом, и час прошёл. За окном уже другой свет.",
+  "en": "Knot after knot and an hour has gone. The light outside the window is different now.",
+  "ja": "結び目をひとつずつ作るうちに一時間が過ぎた。窓の外の光はもう違っている。"
+ },
+ "city.sp.tea.prompt": {
+  "ru": "E — выпить чаю с Колетт",
+  "en": "E — have tea with Colette",
+  "ja": "E：コレットとお茶を飲む"
+ },
+ "city.sp.btea.1": {
+  "ru": "Колетт наливает из самовара в гранёный стакан: «Пей, пока горячий. С бергамотом, как в порту».",
+  "en": "Colette pours from the samovar into a faceted glass: \"Drink while it's hot. With bergamot, like at the port.\"",
+  "ja": "コレットがサモワールから面取りグラスに注ぐ。「熱いうちにどうぞ。港みたいにベルガモット入りよ」"
+ },
+ "city.sp.btea.2": {
+  "ru": "Вечерний чай: крепкий, с вареньем из крыжовника. Колетт говорит, что рыбы привыкают к людям быстрее, чем люди к рыбам.",
+  "en": "Evening tea: strong, with gooseberry jam. Colette says fish get used to people faster than people get used to fish.",
+  "ja": "夕方のお茶。濃いめで、スグリのジャムつき。魚は人に慣れるのが、人が魚に慣れるより早い、とコレットは言う。"
+ },
+ "city.sp.btea.3": {
+  "ru": "Самовар холодный. Рядом записка: «До десяти чай не беспокоить».",
+  "en": "The samovar is cold. A note beside it: \"Let the tea sleep until ten.\"",
+  "ja": "サモワールは冷たい。そばにメモ。「十時まではお茶を起こさないこと」"
+ },
+ "city.sp.bwindow.1": {
+  "ru": "Из окна первого этажа видно, как прохожие идут по тротуару под бризом-солеем: ноги, сумки, собачьи хвосты.",
+  "en": "From the first-floor window you see passers-by under the sun-breaker: legs, bags, dogs' tails.",
+  "ja": "一階の窓からは、日よけのルーバー越しに通行人が見える。足、かばん、犬のしっぽ。"
+ },
+ "city.sp.bwindow.2": {
+  "ru": "Через решётку фасада моря не видно, зато слышно: ветер приносит его кусками.",
+  "en": "Through the grille of the facade you can't see the sea, but you can hear it: the wind brings it in pieces.",
+  "ja": "ファサードの格子ごしに海は見えないが、音は聞こえる。風が少しずつ運んでくる。"
+ },
+ "city.sp.bwindow.3": {
+  "ru": "Ночью в стекле отражается комната, и рыбки из аквариума плавают прямо по улице.",
+  "en": "At night the glass reflects the room and the fish swim straight down the street.",
+  "ja": "夜の窓ガラスには部屋が映り、水槽の魚が通りをそのまま泳いでいく。"
+ },
+ "city.sp.closed.flat": {
+  "ru": "В квартире тихо: хозяйка спит. Лучше зайти после десяти.",
+  "en": "The flat is quiet: its owner is asleep. Better come after ten.",
+  "ja": "部屋は静かだ。持ち主は眠っている。十時すぎにまた来よう。"
+ },
+ "city.player.kalnins.hello": {
+  "ru": "Подсаживайся. Только не жди поблажек: в моём возрасте поддаются одни дверные пружины.",
+  "en": "Sit down. Don't expect any favours: at my age only door springs give way.",
+  "ja": "座りなさい。手加減は期待しないことだ。この歳で譲るのはドアのバネくらいのものでね。"
+ },
+ "city.player.kalnins.win": {
+  "ru": "Ха! Колетт, слышишь, меня обыграли! Хороший ход, парень, запомню.",
+  "en": "Ha! Colette, did you hear that, I've been beaten! Good move, lad, I'll remember it.",
+  "ja": "はは！　コレット、聞いたか、やられたぞ。いい手だった、覚えておこう。"
+ },
+ "city.player.kalnins.lose": {
+  "ru": "Не расстраивайся. Первые тридцать лет я тоже проигрывал, потом привык.",
+  "en": "Don't take it hard. I lost for the first thirty years too, then I got used to it.",
+  "ja": "気を落とすな。わしも最初の三十年は負けっぱなしだったが、そのうち慣れた。"
+ },
+ "city.player.beridze.hello": {
+  "ru": "Я не спешу. Спешат только на лестнице, и то зря. Ваш ход.",
+  "en": "I am in no hurry. People only hurry on stairs, and for nothing. Your move.",
+  "ja": "急ぎはしない。急ぐのは階段でだけ、それも無駄にね。さあ、きみの番だ。"
+ },
+ "city.player.beridze.win": {
+  "ru": "Вот как. Значит, и у нас в холле растёт смена. Это приятно.",
+  "en": "Well, well. So our hall is growing a new generation. That's pleasant.",
+  "ja": "ほう。うちのホールにも次の世代が育っているわけだ。うれしいね。"
+ },
+ "city.player.beridze.lose": {
+  "ru": "Ничья бывает в шахматах, а проигрыш бывает у всех. Приходи завтра.",
+  "en": "A draw happens in chess, a loss happens to everyone. Come tomorrow.",
+  "ja": "引き分けはチェスにもある。負けは誰にでもある。また明日おいで。"
+ },
+ "quest.home_bauer.title": {
+  "ru": "Стёклышко для Лоцмана",
+  "en": "A piece of glass for the Pilot",
+  "ja": "水先案内人にガラス片を"
+ },
+ "quest.home_bauer.desc": {
+  "ru": "На доске в среднем холле дома-змея висит объявление: Колетт из 17-й ищет морское стёклышко для аквариума. Дверь на галерее первого этажа у неё открыта с десяти.",
+  "en": "On the board in the middle hall of the serpent house there's a notice: Colette in no. 17 needs a piece of sea glass for her aquarium. Her door on the first-floor gallery is open from ten.",
+  "ja": "ヘビの家の真ん中のホールの掲示板に貼り紙がある。十七号室のコレットが水槽用の海のガラス片を探している。一階の通路側のドアは十時から開いているという。"
+ },
+ "quest.home_bauer.notice.log": {
+  "ru": "Объявление висит на доске у консьержки. Надо прочитать его целиком, там есть про дверь и про время.",
+  "en": "The notice hangs on the board by the concierge. I should read all of it, there's something about the door and the hours.",
+  "ja": "貼り紙は管理人の机のそばの掲示板にある。ドアのことや時間のことが書いてあるから、最後まで読もう。"
+ },
+ "quest.home_bauer.notice.obj": {
+  "ru": "Прочитать объявление на доске в среднем холле",
+  "en": "Read the notice on the board in the middle hall",
+  "ja": "真ん中のホールの掲示板で貼り紙を読む"
+ },
+ "quest.home_bauer.glass.log": {
+  "ru": "Морские стёклышки находят на берегу, особенно после волн. Надо побродить у кромки воды.",
+  "en": "Sea glass turns up on the shore, especially after the waves. I should wander along the water's edge.",
+  "ja": "海のガラス片は、波のあとの浜辺で見つかる。波打ち際を歩いてみよう。"
+ },
+ "quest.home_bauer.glass.obj": {
+  "ru": "Найти морское стёклышко на берегу",
+  "en": "Find a piece of sea glass on the shore",
+  "ja": "浜辺で海のガラス片を見つける"
+ },
+ "quest.home_bauer.dish.log": {
+  "ru": "Стёклышко в кармане. Поднимусь по лестнице в левом углу холла, дальше по галерее налево. Дверь 17.",
+  "en": "Glass in my pocket. Up the stairs in the left corner of the hall, then left along the gallery. Door 17.",
+  "ja": "ガラス片はポケットの中。ホールの左隅の階段を上がって、通路を左へ。十七号室だ。"
+ },
+ "quest.home_bauer.dish.obj": {
+  "ru": "Положить стёклышко на блюдце у Колетт в 17-й",
+  "en": "Put the glass on Colette's saucer in no. 17",
+  "ja": "十七号室のコレットの小皿にガラス片をのせる"
+ },
+ "quest.home_bauer.done": {
+  "ru": "Колетт подняла стёклышко к окну и долго молчала. Потом насыпала мне печенья в ладонь: «Лоцман будет доволен. Он у нас придирчивый».",
+  "en": "Colette held the glass to the window and said nothing for a long time. Then she put some biscuits in my hand: \"The Pilot will be pleased. He is particular.\"",
+  "ja": "コレットはガラス片を窓にかざして、長いこと黙っていた。それからクッキーを手のひらに載せてくれた。「水先案内人も喜ぶわ。気難しい子なの」"
+ },
+ "quest.serp_dominoes.title": {
+  "ru": "Козёл у входа",
+  "en": "The table by the door",
+  "ja": "入口のテーブルで"
+ },
+ "quest.serp_dominoes.desc": {
+  "ru": "В западном холле у входа каждый день после обеда стучат костяшки. Говорят, играют на чай, а чай ставит проигравший.",
+  "en": "In the west hall by the door the tiles clack every afternoon. They say it's played for tea, and the loser pays.",
+  "ja": "西のホールの入口では、毎日昼すぎにドミノの音がする。お茶を賭けていて、負けた人がおごるのだという。"
+ },
+ "quest.serp_dominoes.win.log": {
+  "ru": "Стол у входа, четыре стула, одна неудобная скамья. Сесть и выиграть хотя бы одну партию.",
+  "en": "A table by the door, four chairs, one uncomfortable bench. Sit down and win at least one game.",
+  "ja": "入口のテーブル、椅子が四つ、座りにくいベンチがひとつ。腰を下ろして、せめて一勝してみよう。"
+ },
+ "quest.serp_dominoes.win.obj": {
+  "ru": "Выиграть партию в домино у входа",
+  "en": "Win a game of dominoes by the door",
+  "ja": "入口のテーブルでドミノに勝つ"
+ },
+ "quest.serp_dominoes.done": {
+  "ru": "Проигравший поставил чай, и чай был крепкий. Говорят, обычно такой ставят только тому, кого принимают в игру.",
+  "en": "The loser paid for the tea and the tea was strong. They say that's what you get only when you're taken into the game.",
+  "ja": "負けた人がお茶をおごってくれて、そのお茶は濃かった。仲間として迎えられたときだけ出る濃さだそうだ。"
+ }
+}

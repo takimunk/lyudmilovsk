@@ -1,0 +1,1128 @@
+{
+ "_doc": "Bridge house (P-BRIDGEHOUSE), round 2: lobby, gallery, lifts, Rohan Hargreaves's flat 4-03, regular Hanna Nasser, quest home_hargreaves.",
+ "acts": {
+  "bh_mail": {
+   "prompt": "city.bh.p.mail",
+   "rotate": "daily",
+   "minutes": 1,
+   "lines": [
+    "city.bh.mail.1",
+    "city.bh.mail.2",
+    "city.bh.mail.3",
+    "city.bh.mail.4",
+    "city.bh.mail.5",
+    "city.bh.mail.6"
+   ],
+   "sound": "page_turn",
+   "any_hour": true
+  },
+  "bh_house_board": {
+   "prompt": "city.bh.p.house",
+   "rotate": "daily",
+   "minutes": 2,
+   "sound": "page_turn",
+   "lines": [
+    {
+     "k": "city.bh.house.1",
+     "before": 6
+    },
+    {
+     "k": "city.bh.house.2",
+     "after": 1,
+     "before": 4
+    },
+    {
+     "k": "city.bh.house.3",
+     "after": 2,
+     "before": 6
+    },
+    {
+     "k": "city.bh.house.4",
+     "after": 4,
+     "before": 8
+    },
+    {
+     "k": "city.bh.house.5",
+     "after": 6,
+     "before": 10
+    },
+    {
+     "k": "city.bh.house.6",
+     "after": 5,
+     "before": 12
+    },
+    {
+     "k": "city.bh.house.7",
+     "after": 8
+    },
+    {
+     "k": "city.bh.house.8",
+     "after": 9,
+     "before": 14
+    }
+   ],
+   "any_hour": true
+  },
+  "bh_pram": {
+   "like": "look_misc",
+   "prompt": "city.bh.p.pram",
+   "minutes": 1,
+   "lines": [
+    "city.bh.pram.1",
+    "city.bh.pram.2",
+    "city.bh.pram.3"
+   ],
+   "any_hour": true
+  },
+  "bh_bike": {
+   "like": "look_misc",
+   "prompt": "city.bh.p.bike",
+   "minutes": 1,
+   "lines": [
+    "city.bh.bike.1",
+    "city.bh.bike.2",
+    "city.bh.bike.3"
+   ],
+   "any_hour": true
+  },
+  "bh_hats": {
+   "like": "look_misc",
+   "prompt": "city.bh.p.hats",
+   "minutes": 1,
+   "lines": [
+    "city.bh.hats.1",
+    "city.bh.hats.2"
+   ],
+   "any_hour": true
+  },
+  "bh_plants": {
+   "like": "look_misc",
+   "prompt": "city.bh.p.plants",
+   "minutes": 3,
+   "sound": "rest_pour",
+   "lines": [
+    "city.bh.plants.1",
+    "city.bh.plants.2",
+    "city.bh.plants.3",
+    {
+     "k": "city.bh.plants.rain",
+     "weather": "rain"
+    },
+    {
+     "k": "city.bh.plants.mon",
+     "d": "mon"
+    }
+   ],
+   "any_hour": true
+  },
+  "bh_lchess": {
+   "like": "chess",
+   "target": "bh_lchess",
+   "lines": [
+    "city.bh.lchess.1",
+    "city.bh.lchess.2"
+   ],
+   "any_hour": true
+  },
+  "bh_gchess": {
+   "like": "chess",
+   "target": "bh_gchess",
+   "lines": [
+    "city.bh.gchess.1",
+    "city.bh.gchess.2"
+   ],
+   "any_hour": true
+  },
+  "bh_desk_clerk": {
+   "prompt": "city.act.ask.prompt",
+   "needs_staff": "clerk",
+   "minutes": 1,
+   "lines": [
+    "city.bh.clerk.hi.1",
+    "city.bh.clerk.hi.2",
+    "city.bh.clerk.hi.3"
+   ],
+   "any_hour": true
+  },
+  "bh_desk_guard": {
+   "prompt": "city.act.ask.prompt",
+   "needs_staff": "guard",
+   "minutes": 1,
+   "lines": [
+    "city.bh.guard.hi.1",
+    "city.bh.guard.hi.2",
+    "city.bh.guard.hi.3"
+   ],
+   "any_hour": true
+  },
+  "bh_scope_sea": {
+   "like": "telescope",
+   "prompt": "city.bh.p.scope_sea",
+   "collect": "bridge_sights/sea",
+   "sound": "mouse_clicks",
+   "lines": [
+    {
+     "k": "city.bh.sea.1",
+     "h": [
+      6,
+      21
+     ]
+    },
+    {
+     "k": "city.bh.sea.2",
+     "h": [
+      6,
+      21
+     ],
+     "collect": "bridge_sights/lighthouse"
+    },
+    {
+     "k": "city.bh.sea.3",
+     "h": [
+      6,
+      21
+     ]
+    },
+    {
+     "k": "city.bh.sea.fog",
+     "weather": "fog"
+    },
+    {
+     "k": "city.bh.sea.rain",
+     "weather": "rain"
+    },
+    {
+     "k": "city.bh.sea.snow",
+     "weather": "snow"
+    },
+    {
+     "k": "city.bh.sea.n1",
+     "h": [
+      21,
+      6
+     ],
+     "collect": "bridge_sights/lighthouse"
+    },
+    {
+     "k": "city.bh.sea.n2",
+     "h": [
+      21,
+      6
+     ]
+    }
+   ],
+   "any_hour": true
+  },
+  "bh_scope_town": {
+   "like": "telescope",
+   "prompt": "city.bh.p.scope_town",
+   "sound": "mouse_clicks",
+   "lines": [
+    {
+     "k": "city.bh.town.1",
+     "h": [
+      6,
+      21
+     ],
+     "collect": "bridge_sights/terraces"
+    },
+    {
+     "k": "city.bh.town.2",
+     "h": [
+      6,
+      21
+     ],
+     "collect": "bridge_sights/cable"
+    },
+    {
+     "k": "city.bh.town.3",
+     "h": [
+      6,
+      21
+     ]
+    },
+    {
+     "k": "city.bh.town.rain",
+     "weather": "rain"
+    },
+    {
+     "k": "city.bh.town.n1",
+     "h": [
+      21,
+      6
+     ],
+     "collect": "bridge_sights/cable"
+    },
+    {
+     "k": "city.bh.town.n2",
+     "h": [
+      21,
+      6
+     ]
+    }
+   ],
+   "any_hour": true
+  },
+  "bh_glasses": {
+   "like": "binoculars_post",
+   "prompt": "city.bh.p.glasses",
+   "collect": "bridge_sights/forest",
+   "sound": "mouse_clicks",
+   "lines": [
+    {
+     "k": "city.bh.forest.1",
+     "h": [
+      6,
+      21
+     ]
+    },
+    {
+     "k": "city.bh.forest.2",
+     "h": [
+      6,
+      21
+     ]
+    },
+    {
+     "k": "city.bh.forest.3",
+     "h": [
+      6,
+      21
+     ]
+    },
+    {
+     "k": "city.bh.forest.fog",
+     "weather": "fog"
+    },
+    {
+     "k": "city.bh.forest.n",
+     "h": [
+      21,
+      6
+     ]
+    }
+   ],
+   "any_hour": true
+  },
+  "bh_window": {
+   "prompt": "city.bh.p.window",
+   "minutes": 3,
+   "lines": [
+    {
+     "k": "city.bh.win.m",
+     "h": [
+      6,
+      11
+     ]
+    },
+    {
+     "k": "city.bh.win.d",
+     "h": [
+      11,
+      17
+     ]
+    },
+    {
+     "k": "city.bh.win.e",
+     "h": [
+      17,
+      21
+     ]
+    },
+    {
+     "k": "city.bh.win.n",
+     "h": [
+      21,
+      6
+     ]
+    },
+    {
+     "k": "city.bh.win.sun",
+     "h": [
+      19,
+      23
+     ],
+     "date": [
+      "05-15",
+      "07-31"
+     ]
+    }
+   ],
+   "any_hour": true
+  },
+  "bh_sit_s": {
+   "like": "sit",
+   "prompt": "city.bh.p.sit_s",
+   "minutes": 10,
+   "lines": [
+    {
+     "k": "city.bh.sit.s1",
+     "h": [
+      6,
+      21
+     ]
+    },
+    {
+     "k": "city.bh.sit.s2",
+     "h": [
+      6,
+      21
+     ]
+    },
+    {
+     "k": "city.bh.sit.sn",
+     "h": [
+      21,
+      6
+     ]
+    }
+   ],
+   "any_hour": true
+  },
+  "bh_sit_n": {
+   "like": "sit",
+   "prompt": "city.bh.p.sit_n",
+   "minutes": 10,
+   "lines": [
+    {
+     "k": "city.bh.sit.n1",
+     "h": [
+      6,
+      21
+     ]
+    },
+    {
+     "k": "city.bh.sit.n2",
+     "h": [
+      6,
+      21
+     ]
+    },
+    {
+     "k": "city.bh.sit.nn",
+     "h": [
+      21,
+      6
+     ]
+    }
+   ],
+   "any_hour": true
+  },
+  "bh_guestbook": {
+   "like": "look_misc",
+   "prompt": "city.bh.p.guestbook",
+   "minutes": 1,
+   "lines": [
+    "city.bh.tx.guest.1"
+   ],
+   "read": {
+    "texts": [
+     "bh_guestbook"
+    ]
+   },
+   "sound": "page_turn",
+   "any_hour": true
+  },
+  "bh_wind_gauge": {
+   "prompt": "city.bh.p.gauge",
+   "minutes": 1,
+   "collect": "bridge_sights/wind",
+   "sound": "mouse_clicks",
+   "lines": [
+    "city.bh.gauge.1",
+    "city.bh.gauge.2",
+    "city.bh.gauge.3",
+    {
+     "k": "city.bh.gauge.rain",
+     "weather": "rain"
+    },
+    {
+     "k": "city.bh.gauge.snow",
+     "weather": "snow"
+    },
+    {
+     "k": "city.bh.gauge.fog",
+     "weather": "fog"
+    }
+   ],
+   "any_hour": true
+  },
+  "bh_garden": {
+   "like": "look_misc",
+   "prompt": "city.bh.p.garden",
+   "minutes": 3,
+   "lines": [
+    "city.bh.garden.1",
+    "city.bh.garden.2",
+    {
+     "k": "city.bh.garden.winter",
+     "date": [
+      "12-01",
+      "02-28"
+     ]
+    },
+    {
+     "k": "city.bh.garden.rain",
+     "weather": "rain"
+    },
+    {
+     "k": "city.bh.garden.warm",
+     "weather": "warm"
+    },
+    {
+     "k": "city.bh.garden.night",
+     "h": [
+      21,
+      6
+     ]
+    }
+   ],
+   "any_hour": true
+  },
+  "bh_tea": {
+   "prompt": "city.bh.p.tea",
+   "minutes": 10,
+   "sound": "rest_pour",
+   "give": [
+    [
+     "tea",
+     1
+    ]
+   ],
+   "daily": 1,
+   "lines": [
+    {
+     "k": "city.bh.tea.1",
+     "h": [
+      6,
+      21
+     ]
+    },
+    {
+     "k": "city.bh.tea.2",
+     "h": [
+      6,
+      21
+     ]
+    },
+    {
+     "k": "city.bh.tea.3",
+     "h": [
+      6,
+      21
+     ]
+    },
+    {
+     "k": "city.bh.tea.n",
+     "h": [
+      21,
+      6
+     ]
+    }
+   ],
+   "any_hour": true
+  },
+  "bh_view_map": {
+   "like": "look_misc",
+   "prompt": "city.bh.p.map",
+   "minutes": 2,
+   "lines": [
+    "city.bh.tx.view.1"
+   ],
+   "read": {
+    "texts": [
+     "bh_view_guide"
+    ]
+   },
+   "sound": "page_turn",
+   "any_hour": true
+  },
+  "bh_rohan_chair": {
+   "like": "sit",
+   "prompt": "city.bh.p.chair",
+   "minutes": 15,
+   "lines": [
+    {
+     "k": "city.bh.chair.1",
+     "h": [
+      6,
+      21
+     ]
+    },
+    {
+     "k": "city.bh.chair.n",
+     "h": [
+      21,
+      6
+     ]
+    }
+   ],
+   "any_hour": true
+  },
+  "bh_rohan_diary": {
+   "like": "look_misc",
+   "prompt": "city.bh.p.diary",
+   "minutes": 2,
+   "lines": [
+    "city.bh.tx.diary.1"
+   ],
+   "read": {
+    "texts": [
+     "bh_rohan_diary"
+    ]
+   },
+   "sound": "page_turn",
+   "any_hour": true
+  },
+  "bh_rohan_letters": {
+   "like": "look_misc",
+   "prompt": "city.bh.p.letters",
+   "minutes": 3,
+   "lines": [
+    "city.bh.tx.letters.1"
+   ],
+   "read": {
+    "texts": [
+     "bh_rohan_letters"
+    ]
+   },
+   "sound": "page_turn",
+   "any_hour": true
+  },
+  "bh_rohan_log": {
+   "like": "look_misc",
+   "prompt": "city.bh.p.log",
+   "minutes": 2,
+   "lines": [
+    "city.bh.tx.wind.1"
+   ],
+   "read": {
+    "texts": [
+     "bh_wind_log"
+    ]
+   },
+   "sound": "page_turn",
+   "any_hour": true
+  },
+  "bh_rohan_roads": {
+   "like": "look_misc",
+   "prompt": "city.bh.p.roads",
+   "minutes": 3,
+   "lines": [
+    "city.bh.roads.1",
+    "city.bh.roads.2",
+    "city.bh.roads.3"
+   ],
+   "any_hour": true
+  },
+  "bh_rohan_photos": {
+   "like": "look_misc",
+   "prompt": "city.bh.p.photos",
+   "minutes": 2,
+   "rotate": "daily",
+   "lines": [
+    "city.bh.photos.1",
+    "city.bh.photos.2",
+    "city.bh.photos.3"
+   ],
+   "any_hour": true
+  },
+  "bh_rohan_globe": {
+   "like": "look_misc",
+   "prompt": "city.bh.p.globe",
+   "minutes": 1,
+   "lines": [
+    "city.bh.globe.1",
+    "city.bh.globe.2"
+   ],
+   "any_hour": true
+  },
+  "bh_rohan_books": {
+   "like": "look_misc",
+   "prompt": "city.bh.p.books",
+   "minutes": 5,
+   "lines": [
+    "city.bh.books.1",
+    "city.bh.books.2",
+    "city.bh.books.3"
+   ],
+   "any_hour": true
+  },
+  "bh_rohan_tea": {
+   "prompt": "city.bh.p.kettle",
+   "minutes": 8,
+   "sound": "rest_pour",
+   "give": [
+    [
+     "tea",
+     1
+    ]
+   ],
+   "daily": 1,
+   "lines": [
+    "city.bh.tea.k1",
+    "city.bh.tea.k2"
+   ],
+   "any_hour": true
+  },
+  "bh_rohan_radio": {
+   "prompt": "city.bh.p.radio",
+   "minutes": 4,
+   "lines": [
+    "city.bh.radio.1",
+    "city.bh.radio.2",
+    {
+     "k": "city.bh.radio.n",
+     "h": [
+      21,
+      6
+     ]
+    },
+    {
+     "k": "city.bh.radio.rain",
+     "weather": "rain"
+    }
+   ],
+   "any_hour": true
+  },
+  "bh_rohan_bed": {
+   "like": "bed_private",
+   "prompt": "city.bh.p.bed",
+   "lines": [
+    "city.bh.bed.1",
+    "city.bh.bed.2",
+    "city.bh.bed.3"
+   ],
+   "any_hour": true
+  },
+  "bh_rohan_door": {
+   "prompt": "city.bh.p.door",
+   "minutes": 1,
+   "lines": [
+    "city.bh.door.1",
+    "city.bh.door.2"
+   ],
+   "sound": "rest_door",
+   "any_hour": true
+  }
+ },
+ "rules": {
+  "P-BRIDGEHOUSE/lobby_mail": {
+   "act": "bh_mail"
+  },
+  "P-BRIDGEHOUSE/lobby_board_story": {
+   "act": "bh_house_board"
+  },
+  "P-BRIDGEHOUSE/lobby_pram": {
+   "act": "bh_pram"
+  },
+  "P-BRIDGEHOUSE/lobby_bike": {
+   "act": "bh_bike"
+  },
+  "P-BRIDGEHOUSE/lobby_hats": {
+   "act": "bh_hats"
+  },
+  "P-BRIDGEHOUSE/lobby_plants": {
+   "act": "bh_plants"
+  },
+  "P-BRIDGEHOUSE/lobby_chess": {
+   "act": "bh_lchess"
+  },
+  "P-BRIDGEHOUSE/lobby_desk_clerk": {
+   "act": "bh_desk_clerk"
+  },
+  "P-BRIDGEHOUSE/lobby_desk_guard": {
+   "act": "bh_desk_guard"
+  },
+  "P-BRIDGEHOUSE/gallery_telescope_1": {
+   "act": "bh_scope_sea"
+  },
+  "P-BRIDGEHOUSE/gallery_telescope_2": {
+   "act": "bh_scope_town"
+  },
+  "P-BRIDGEHOUSE/gallery_binoculars": {
+   "act": "bh_glasses"
+  },
+  "P-BRIDGEHOUSE/gallery_window_sea": {
+   "act": "bh_window"
+  },
+  "P-BRIDGEHOUSE/gallery_bench_e*": {
+   "act": "bh_sit_s"
+  },
+  "P-BRIDGEHOUSE/gallery_bench_w*": {
+   "act": "bh_sit_n"
+  },
+  "P-BRIDGEHOUSE/gallery_chess": {
+   "act": "bh_gchess"
+  },
+  "P-BRIDGEHOUSE/gallery_guestbook": {
+   "act": "bh_guestbook"
+  },
+  "P-BRIDGEHOUSE/gallery_wind_gauge": {
+   "act": "bh_wind_gauge"
+  },
+  "P-BRIDGEHOUSE/gallery_garden": {
+   "act": "bh_garden"
+  },
+  "P-BRIDGEHOUSE/gallery_tea": {
+   "act": "bh_tea"
+  },
+  "P-BRIDGEHOUSE/gallery_map_view": {
+   "act": "bh_view_map"
+  },
+  "P-BRIDGEHOUSE/hg_armchair": {
+   "act": "bh_rohan_chair"
+  },
+  "P-BRIDGEHOUSE/hg_diary": {
+   "act": "bh_rohan_diary"
+  },
+  "P-BRIDGEHOUSE/hg_letters": {
+   "act": "bh_rohan_letters"
+  },
+  "P-BRIDGEHOUSE/hg_log": {
+   "act": "bh_rohan_log"
+  },
+  "P-BRIDGEHOUSE/hg_roadmap": {
+   "act": "bh_rohan_roads"
+  },
+  "P-BRIDGEHOUSE/hg_photo": {
+   "act": "bh_rohan_photos"
+  },
+  "P-BRIDGEHOUSE/hg_globe": {
+   "act": "bh_rohan_globe"
+  },
+  "P-BRIDGEHOUSE/hg_books": {
+   "act": "bh_rohan_books"
+  },
+  "P-BRIDGEHOUSE/hg_kettle": {
+   "act": "bh_rohan_tea"
+  },
+  "P-BRIDGEHOUSE/hg_radio": {
+   "act": "bh_rohan_radio"
+  },
+  "P-BRIDGEHOUSE/hg_bed": {
+   "act": "bh_rohan_bed"
+  },
+  "P-BRIDGEHOUSE/hg_door": {
+   "act": "bh_rohan_door"
+  },
+  "P-BRIDGEHOUSE/lobby_lift": {
+   "act": "door_gallery",
+   "props": {
+    "floors": [
+     {
+      "k": "city.lift.bridgehouse.s4",
+      "to": "lift_s4"
+     },
+     {
+      "k": "city.lift.bridgehouse.gallery",
+      "to": "lift_gallery"
+     }
+    ]
+   }
+  },
+  "P-BRIDGEHOUSE/lift_g": {
+   "props": {
+    "floors": [
+     {
+      "k": "city.lift.bridgehouse.s4",
+      "to": "lift_s4"
+     },
+     {
+      "k": "city.lift.bridgehouse.gallery",
+      "to": "lift_gallery"
+     }
+    ]
+   }
+  },
+  "P-BRIDGEHOUSE/lift_s4": {
+   "props": {
+    "floors": [
+     {
+      "k": "city.lift.bridgehouse.ground",
+      "to": "lobby_lift"
+     },
+     {
+      "k": "city.lift.bridgehouse.gallery",
+      "to": "lift_gallery"
+     }
+    ]
+   }
+  },
+  "P-BRIDGEHOUSE/lift_gallery": {
+   "props": {
+    "floors": [
+     {
+      "k": "city.lift.bridgehouse.ground",
+      "to": "lift_g"
+     },
+     {
+      "k": "city.lift.bridgehouse.s4",
+      "to": "lift_s4"
+     }
+    ]
+   }
+  }
+ },
+ "topics": {
+  "bh_desk_clerk": [
+   {
+    "id": "bh.lift",
+    "k": "city.bh.clerk.lift",
+    "lines": [
+     "city.bh.clerk.lift.1",
+     "city.bh.clerk.lift.2",
+     {
+      "k": "city.bh.clerk.lift.3",
+      "h": [
+       18,
+       24
+      ]
+     }
+    ]
+   },
+   {
+    "id": "bh.who",
+    "k": "city.bh.clerk.who",
+    "lines": [
+     "city.bh.clerk.who.1",
+     {
+      "k": "city.bh.clerk.who.2",
+      "after": 1
+     },
+     {
+      "k": "city.bh.clerk.who.3",
+      "after": 2
+     }
+    ]
+   },
+   {
+    "id": "bh.book",
+    "k": "city.bh.clerk.book",
+    "lines": [
+     "city.bh.clerk.book.1",
+     "city.bh.clerk.book.2",
+     {
+      "k": "city.bh.clerk.book.3",
+      "after": 5
+     }
+    ]
+   }
+  ],
+  "bh_desk_guard": [
+   {
+    "id": "bh.night",
+    "k": "city.bh.guard.night",
+    "lines": [
+     "city.bh.guard.night.1",
+     "city.bh.guard.night.2",
+     {
+      "k": "city.bh.guard.night.3",
+      "date": [
+       "11-01",
+       "03-01"
+      ]
+     }
+    ]
+   },
+   {
+    "id": "bh.chess",
+    "k": "city.bh.guard.chess",
+    "lines": [
+     "city.bh.guard.chess.1",
+     "city.bh.guard.chess.2",
+     {
+      "k": "city.bh.guard.chess.3",
+      "have": "chess_wins/nasser"
+     }
+    ]
+   },
+   {
+    "id": "bh.harg",
+    "k": "city.bh.guard.hargreaves",
+    "lines": [
+     "city.bh.guard.hargreaves.1",
+     {
+      "k": "city.bh.guard.hargreaves.2",
+      "after": 2
+     },
+     {
+      "k": "city.bh.guard.hargreaves.3",
+      "after": 4
+     }
+    ]
+   }
+  ]
+ },
+ "texts": {
+  "bh_guestbook": {
+   "title": "city.bh.tx.guest.title",
+   "kind": "ledger",
+   "minutes": 1,
+   "collect": "bridge_sights/book",
+   "pages": [
+    "city.bh.tx.guest.1",
+    "city.bh.tx.guest.2",
+    {
+     "k": "city.bh.tx.guest.3",
+     "after": 1
+    },
+    {
+     "k": "city.bh.tx.guest.4",
+     "after": 2
+    },
+    {
+     "k": "city.bh.tx.guest.5",
+     "after": 4
+    },
+    {
+     "k": "city.bh.tx.guest.6",
+     "after": 6
+    }
+   ]
+  },
+  "bh_wind_log": {
+   "title": "city.bh.tx.wind.title",
+   "kind": "ledger",
+   "minutes": 1,
+   "pages": [
+    "city.bh.tx.wind.1",
+    "city.bh.tx.wind.2",
+    {
+     "k": "city.bh.tx.wind.3",
+     "after": 2
+    },
+    {
+     "k": "city.bh.tx.wind.4",
+     "after": 3
+    },
+    {
+     "k": "city.bh.tx.wind.5",
+     "after": 6
+    },
+    "city.bh.tx.wind.6"
+   ]
+  },
+  "bh_rohan_diary": {
+   "title": "city.bh.tx.diary.title",
+   "kind": "book",
+   "minutes": 2,
+   "pages": [
+    "city.bh.tx.diary.1",
+    "city.bh.tx.diary.2",
+    "city.bh.tx.diary.3",
+    {
+     "k": "city.bh.tx.diary.4",
+     "after": 2
+    },
+    {
+     "k": "city.bh.tx.diary.5",
+     "after": 3
+    },
+    {
+     "k": "city.bh.tx.diary.6",
+     "after": 8
+    }
+   ]
+  },
+  "bh_rohan_letters": {
+   "title": "city.bh.tx.letters.title",
+   "kind": "book",
+   "minutes": 3,
+   "pages": [
+    "city.bh.tx.letters.1",
+    "city.bh.tx.letters.2",
+    "city.bh.tx.letters.3"
+   ]
+  },
+  "bh_view_guide": {
+   "title": "city.bh.tx.view.title",
+   "kind": "notice",
+   "minutes": 1,
+   "pages": [
+    "city.bh.tx.view.1",
+    "city.bh.tx.view.2",
+    "city.bh.tx.view.3"
+   ]
+  }
+ },
+ "collections": {
+  "bridge_sights": {
+   "title": "city.coll.bridge_sights.title",
+   "pieces": [
+    "sea",
+    "lighthouse",
+    "terraces",
+    "cable",
+    "forest",
+    "wind",
+    "book"
+   ]
+  }
+ },
+ "regulars": {
+  "nasser": {
+   "name": "npc.t_nasser_hanna.name",
+   "style": "careful",
+   "skill": 0.58,
+   "plays": [
+    "chess",
+    "dominoes"
+   ],
+   "plots": [
+    "P-BRIDGEHOUSE"
+   ],
+   "hello": "city.player.nasser.hello",
+   "win": "city.player.nasser.win",
+   "lose": "city.player.nasser.lose"
+  }
+ },
+ "quests": [
+  {
+   "id": "home_hargreaves",
+   "kind": "side",
+   "start_on": {
+    "event": "visit",
+    "target": "P-BRIDGEHOUSE"
+   },
+   "stages": [
+    {
+     "id": "diary",
+     "objectives": [
+      {
+       "id": "diary",
+       "event": "do",
+       "target": "bh_rohan_diary"
+      }
+     ]
+    },
+    {
+     "id": "wind",
+     "objectives": [
+      {
+       "id": "wind",
+       "event": "do",
+       "target": "bh_wind_gauge"
+      }
+     ]
+    },
+    {
+     "id": "log",
+     "objectives": [
+      {
+       "id": "log",
+       "event": "do",
+       "target": "bh_rohan_log"
+      }
+     ],
+     "reward": {
+      "items": {
+       "tea": 1,
+       "candy": 1
+      }
+     }
+    }
+   ]
+  }
+ ]
+}

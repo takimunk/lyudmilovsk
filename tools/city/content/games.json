@@ -1,0 +1,56 @@
+{
+ "_doc": "Mini-games and the regulars who play them (docs/city_interiors.md \"Mini-games\"), the wall clocks ({time}) and the light switches. The games of the old acts (chess, darts, billiards...) are their \"game\" fields in activities.json; here the games that had no act yet, the regulars (real residents: npc.<key>.name of the town tables) and the collection of chess players beaten. Words: strings/games.json.",
+ "acts": {
+  "checkers": {"prompt": "city.do.checkers.prompt", "lines": "city.do.checkers", "minutes": 25, "pose": "sit", "sound": "mouse_clicks",
+   "game": {"type": "duel", "vs": "checkers", "title": "city.game.checkers.title",
+    "moves": [{"k": "city.game.checkers.move.1", "power": 2, "tell": "city.game.checkers.tell.1"},
+              {"k": "city.game.checkers.move.2", "power": 1, "tell": "city.game.checkers.tell.2"},
+              {"k": "city.game.checkers.move.3", "power": 2, "tell": "city.game.checkers.tell.3"}],
+    "win": "city.game.checkers.win", "lose": "city.game.checkers.lose", "draw": "city.game.checkers.draw", "daily": 3}},
+  "dominoes": {"prompt": "city.do.dominoes.prompt", "lines": "city.do.dominoes", "minutes": 30, "pose": "sit", "sound": "mouse_clicks",
+   "game": {"type": "duel", "vs": "dominoes", "title": "city.game.dominoes.title",
+    "moves": [{"k": "city.game.dominoes.move.1", "power": 2, "tell": "city.game.dominoes.tell.1"},
+              {"k": "city.game.dominoes.move.2", "power": 1, "tell": "city.game.dominoes.tell.2"},
+              {"k": "city.game.dominoes.move.3", "power": 2, "tell": "city.game.dominoes.tell.3"}],
+    "win": "city.game.dominoes.win", "lose": "city.game.dominoes.lose", "draw": "city.game.dominoes.draw", "daily": 3}},
+  "badminton": {"prompt": "city.do.badminton.prompt", "lines": "city.do.badminton", "minutes": 20,
+   "game": {"type": "rally", "vs": "badminton", "title": "city.game.badminton.title", "need": 3, "speed": 0.7, "zone": 0.55, "shrink": 0.88, "pace": 1.04,
+    "win": "city.game.badminton.win", "lose": "city.game.badminton.lose", "draw": "city.game.badminton.draw"}},
+  "look_clock": {"prompt": "city.act.clock.prompt", "lines": "city.clock", "any_hour": true},
+  "light_switch": {"prompt": "city.act.switch.prompt", "sound": "mouse_clicks", "any_hour": true}
+ },
+ "rules": {
+  "*:what=checkers": {"act": "checkers"},
+  "*:what=dominoes": {"act": "dominoes"},
+  "*:what=badminton": {"act": "badminton"},
+  "*:what=clock": {"act": "look_clock"},
+  "*:what=wall_clock": {"act": "look_clock"},
+  "board:topic=clock": {"act": "look_clock"},
+  "*:what=switch": {"act": "light_switch"}
+ },
+ "collections": {
+  "chess_wins": {"title": "city.coll.chess_wins.title"}
+ },
+ "regulars": {
+  "giuseppe": {"name": "npc.t_gonzalez_giuseppe.name", "style": "careful", "skill": 0.6, "plays": ["chess", "checkers"], "plots": ["P-CLUB3", "P-CLUB2", "P-CAFE"],
+   "hello": "city.player.giuseppe.hello", "win": "city.player.giuseppe.win", "lose": "city.player.giuseppe.lose"},
+  "noam": {"name": "npc.t_saar_noam.name", "style": "tricky", "skill": 0.7, "plays": ["chess", "dominoes"], "plots": ["P-CLUB2", "P-BRIDGEHOUSE", "P-SANATORIUM"],
+   "hello": "city.player.noam.hello", "win": "city.player.noam.win", "lose": "city.player.noam.lose"},
+  "anahit": {"name": "npc.t_tran_anahit.name", "style": "steady", "skill": 0.5, "plays": ["chess", "checkers", "dominoes"], "plots": ["P-T2H2", "P-T3H3", "P-UNITE", "P-SANATORIUM"],
+   "hello": "city.player.anahit.hello", "win": "city.player.anahit.win", "lose": "city.player.anahit.lose"},
+  "nils": {"name": "npc.t_mendoza_nils.name", "style": "bold", "skill": 0.45, "plays": ["dominoes", "checkers", "chess"], "plots": ["P-T3H2", "P-T4H1", "P-RISER1", "P-RISER2"],
+   "hello": "city.player.nils.hello", "win": "city.player.nils.win", "lose": "city.player.nils.lose"},
+  "lars": {"name": "npc.t_nowak_lars.name", "style": "steady", "skill": 0.55, "plays": ["dominoes", "billiards", "chess"], "plots": ["P-T1H1", "P-T1H2", "P-T2H1", "P-CLUB3"],
+   "hello": "city.player.lars.hello", "win": "city.player.lars.win", "lose": "city.player.lars.lose"},
+  "ursula": {"name": "npc.t_okonkwo_ursula.name", "style": "bold", "skill": 0.8, "plays": ["table_tennis", "badminton"], "plots": ["P-T3SPORT"],
+   "hello": "city.player.ursula.hello", "win": "city.player.ursula.win", "lose": "city.player.ursula.lose"},
+  "kenji": {"name": "npc.t_kask_kenji.name", "style": "tricky", "skill": 0.6, "plays": ["table_tennis", "badminton", "table_football"], "plots": ["P-CLUB3", "P-T1H2", "P-T4H1", "P-FAIR"],
+   "hello": "city.player.kenji.hello", "win": "city.player.kenji.win", "lose": "city.player.kenji.lose"},
+  "joost": {"name": "npc.t_zhaksybekov_joost.name", "style": "careful", "skill": 0.7, "plays": ["billiards", "darts"], "plots": ["P-CLUB3"],
+   "hello": "city.player.joost.hello", "win": "city.player.joost.win", "lose": "city.player.joost.lose"},
+  "freja": {"name": "npc.t_bondarenko_freja.name", "style": "steady", "skill": 0.6, "plays": ["darts", "billiards", "dominoes"],
+   "hello": "city.player.freja.hello", "win": "city.player.freja.win", "lose": "city.player.freja.lose"},
+  "hiroshi": {"name": "npc.t_novotny_hiroshi.name", "style": "tricky", "skill": 0.4, "plays": ["table_football", "table_tennis", "chess"], "plots": ["P-WAVE", "P-UNITE"],
+   "hello": "city.player.hiroshi.hello", "win": "city.player.hiroshi.win", "lose": "city.player.hiroshi.lose"}
+ }
+}

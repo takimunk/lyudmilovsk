@@ -96,8 +96,8 @@
    "id": "keeper_seat",
    "kind": "seat",
    "pos": [
-    -0.4,
-    10.3,
+    0.0,
+    10.646,
     0.03
    ],
    "yaw": 180.0
@@ -106,11 +106,71 @@
    "id": "keeper_cot",
    "kind": "bench",
    "pos": [
-    -3.6,
-    8.1,
+    -3.851,
+    7.0,
     0.03
    ],
    "yaw": 90.0
+  },
+  {
+   "id": "stove_warm",
+   "kind": "stand",
+   "pos": [
+    -2.006,
+    3.776,
+    0.03
+   ],
+   "yaw": 157.5
+  },
+  {
+   "id": "clockwork_watch",
+   "kind": "stand",
+   "pos": [
+    -0.3,
+    7.383,
+    0.03
+   ],
+   "yaw": 0.0
+  },
+  {
+   "id": "guestbook_stand",
+   "kind": "stand",
+   "pos": [
+    2.217,
+    3.616,
+    0.03
+   ],
+   "yaw": 487.21089422831994
+  },
+  {
+   "id": "desk_keeper",
+   "kind": "stand",
+   "pos": [
+    -1.782,
+    4.91,
+    0.03
+   ],
+   "yaw": 37.6474575081746
+  },
+  {
+   "id": "chess_seat_a",
+   "kind": "seat",
+   "pos": [
+    -1.747,
+    9.708,
+    0.03
+   ],
+   "yaw": 314.99999999999994
+  },
+  {
+   "id": "chess_seat_b",
+   "kind": "seat",
+   "pos": [
+    -2.708,
+    8.747,
+    0.03
+   ],
+   "yaw": 134.99999999999997
   },
   {
    "id": "door_bench",
@@ -161,6 +221,42 @@
     20.0
    ],
    "yaw": 30.00000000000001
+  },
+  {
+   "id": "bell_stand",
+   "kind": "stand",
+   "pos": [
+    2.719,
+    5.732
+   ],
+   "yaw": 65.0
+  },
+  {
+   "id": "ships_watch",
+   "kind": "view",
+   "pos": [
+    -0.547,
+    10.102
+   ],
+   "yaw": 190.0
+  },
+  {
+   "id": "morse_stand",
+   "kind": "stand",
+   "pos": [
+    3.013,
+    8.217
+   ],
+   "yaw": 112.0
+  },
+  {
+   "id": "bottle_stand",
+   "kind": "stand",
+   "pos": [
+    0.655,
+    3.919
+   ],
+   "yaw": 12.0
   }
  ],
  "lamps": [
@@ -199,6 +295,28 @@
   },
   {
    "pos": [
+    -1.225,
+    4.044,
+    2.3
+   ],
+   "lumens": 520,
+   "colour": "#FFC890",
+   "kind": "public",
+   "radius": 6.0
+  },
+  {
+   "pos": [
+    -2.227,
+    9.227,
+    2.3
+   ],
+   "lumens": 520,
+   "colour": "#FFD8A8",
+   "kind": "public",
+   "radius": 6.0
+  },
+  {
+   "pos": [
     1.074,
     11.009,
     22.3
@@ -218,6 +336,632 @@
    "colour": "#FFE2B8",
    "kind": "lobby",
    "radius": 9.0
+  },
+  {
+   "pos": [
+    -4.087,
+    6.279,
+    22.3
+   ],
+   "lumens": 600,
+   "colour": "#FFE2B8",
+   "kind": "lobby",
+   "radius": 8.0
+  },
+  {
+   "pos": [
+    2.38,
+    3.601,
+    22.3
+   ],
+   "lumens": 600,
+   "colour": "#FFE2B8",
+   "kind": "lobby",
+   "radius": 8.0
+  }
+ ],
+ "things": [
+  {
+   "id": "keeper_chair",
+   "kind": "seat",
+   "pos": [
+    0.0,
+    10.646,
+    0.48
+   ],
+   "yaw": 180.0,
+   "props": {
+    "height": 0.45
+   }
+  },
+  {
+   "id": "keeper_log",
+   "kind": "board",
+   "pos": [
+    -0.1,
+    11.476,
+    0.78
+   ],
+   "yaw": 0.0,
+   "props": {
+    "topic": "logbook"
+   }
+  },
+  {
+   "id": "keeper_chart",
+   "kind": "board",
+   "pos": [
+    0.0,
+    11.896,
+    1.88
+   ],
+   "yaw": 0.0,
+   "props": {
+    "topic": "view"
+   }
+  },
+  {
+   "id": "kit_clock_1",
+   "kind": "board",
+   "pos": [
+    -0.85,
+    11.846,
+    2.08
+   ],
+   "yaw": 0.0,
+   "props": {
+    "what": "clock"
+   }
+  },
+  {
+   "id": "tower_radio",
+   "kind": "machine",
+   "pos": [
+    1.77,
+    11.274,
+    0.93
+   ],
+   "yaw": 337.5,
+   "props": {
+    "what": "radio"
+   }
+  },
+  {
+   "id": "keeper_shelf",
+   "kind": "shelf",
+   "pos": [
+    -1.816,
+    11.385,
+    1.33
+   ],
+   "yaw": 22.5,
+   "props": {
+    "topic": "sea"
+   }
+  },
+  {
+   "id": "keeper_bed",
+   "kind": "bed",
+   "pos": [
+    -3.851,
+    7.0,
+    0.53
+   ],
+   "yaw": 90.0,
+   "props": {
+    "height": 0.5,
+    "rest": "nap"
+   }
+  },
+  {
+   "id": "keeper_stool",
+   "kind": "seat",
+   "pos": [
+    3.982,
+    6.284,
+    0.48
+   ],
+   "yaw": 360.0,
+   "props": {
+    "height": 0.45
+   }
+  },
+  {
+   "id": "keeper_bench",
+   "kind": "seat",
+   "pos": [
+    3.831,
+    5.413,
+    0.48
+   ],
+   "yaw": 247.5,
+   "props": {
+    "height": 0.45
+   }
+  },
+  {
+   "id": "tower_stair",
+   "kind": "door",
+   "pos": [
+    0.448,
+    5.941,
+    1.03
+   ],
+   "yaw": 0.0,
+   "props": {
+    "to": "roof"
+   }
+  },
+  {
+   "id": "keeper_stove",
+   "kind": "machine",
+   "pos": [
+    -2.286,
+    3.102,
+    0.93
+   ],
+   "yaw": 157.5,
+   "props": {
+    "what": "stove"
+   }
+  },
+  {
+   "id": "keeper_stove_stool",
+   "kind": "seat",
+   "pos": [
+    -2.006,
+    3.776,
+    0.43
+   ],
+   "yaw": 177.5,
+   "props": {
+    "height": 0.4
+   }
+  },
+  {
+   "id": "keeper_cat",
+   "kind": "board",
+   "pos": [
+    -1.424,
+    2.777,
+    0.33
+   ],
+   "yaw": 157.5,
+   "props": {
+    "topic": "cat"
+   }
+  },
+  {
+   "id": "keeper_oilskins",
+   "kind": "board",
+   "pos": [
+    2.336,
+    2.668,
+    1.23
+   ],
+   "yaw": 202.5,
+   "props": {
+    "topic": "oilskins"
+   }
+  },
+  {
+   "id": "keeper_weather",
+   "kind": "board",
+   "pos": [
+    4.524,
+    8.874,
+    1.98
+   ],
+   "yaw": 292.5,
+   "props": {
+    "topic": "weather"
+   }
+  },
+  {
+   "id": "keeper_tides",
+   "kind": "board",
+   "pos": [
+    3.462,
+    10.462,
+    1.78
+   ],
+   "yaw": 315.0,
+   "props": {
+    "topic": "tides"
+   }
+  },
+  {
+   "id": "keeper_flags",
+   "kind": "board",
+   "pos": [
+    3.462,
+    3.538,
+    1.78
+   ],
+   "yaw": 225.0,
+   "props": {
+    "topic": "flags"
+   }
+  },
+  {
+   "id": "keeper_bottle",
+   "kind": "board",
+   "pos": [
+    4.358,
+    5.065,
+    1.73
+   ],
+   "yaw": 247.5,
+   "props": {
+    "topic": "bottle"
+   }
+  },
+  {
+   "id": "keeper_storm",
+   "kind": "board",
+   "pos": [
+    -4.524,
+    8.874,
+    1.58
+   ],
+   "yaw": 67.5,
+   "props": {
+    "topic": "storm"
+   }
+  },
+  {
+   "id": "keeper_clockwork",
+   "kind": "machine",
+   "pos": [
+    -0.24,
+    7.883,
+    0.88
+   ],
+   "yaw": 10.0,
+   "props": {
+    "what": "clockwork"
+   }
+  },
+  {
+   "id": "keeper_watch",
+   "kind": "board",
+   "pos": [
+    0.066,
+    8.179,
+    0.81
+   ],
+   "yaw": 100.0,
+   "props": {
+    "topic": "watch"
+   }
+  },
+  {
+   "id": "keeper_cup",
+   "kind": "board",
+   "pos": [
+    0.2,
+    11.346,
+    0.83
+   ],
+   "yaw": 0.0,
+   "props": {
+    "topic": "cup"
+   }
+  },
+  {
+   "id": "tower_switch",
+   "kind": "machine",
+   "pos": [
+    0.8,
+    2.154,
+    1.33
+   ],
+   "yaw": 180.0,
+   "props": {
+    "what": "switch",
+    "switch": "room"
+   }
+  },
+  {
+   "id": "tower_guestbook",
+   "kind": "board",
+   "pos": [
+    1.667,
+    3.866,
+    1.13
+   ],
+   "yaw": 307.2,
+   "props": {
+    "topic": "guestbook"
+   }
+  },
+  {
+   "id": "tower_desk",
+   "kind": "counter",
+   "pos": [
+    -1.385,
+    4.395,
+    0.98
+   ],
+   "yaw": 37.6,
+   "props": {
+    "role": "lighthouse_keeper",
+    "service": "visits"
+   }
+  },
+  {
+   "id": "keeper_wheel",
+   "kind": "board",
+   "pos": [
+    -4.896,
+    7.0,
+    1.65
+   ],
+   "yaw": 90.0,
+   "props": {
+    "topic": "wheel"
+   }
+  },
+  {
+   "id": "keeper_floats",
+   "kind": "board",
+   "pos": [
+    -3.377,
+    3.623,
+    1.13
+   ],
+   "yaw": 135.0,
+   "props": {
+    "topic": "floats"
+   }
+  },
+  {
+   "id": "keeper_chess",
+   "kind": "play",
+   "pos": [
+    -2.227,
+    9.227,
+    0.81
+   ],
+   "yaw": 0.0,
+   "props": {
+    "what": "chess"
+   }
+  },
+  {
+   "id": "keeper_chess_stool_a",
+   "kind": "seat",
+   "pos": [
+    -1.747,
+    9.708,
+    0.48
+   ],
+   "yaw": 315.0,
+   "props": {
+    "height": 0.45
+   }
+  },
+  {
+   "id": "keeper_chess_stool_b",
+   "kind": "seat",
+   "pos": [
+    -2.708,
+    8.747,
+    0.48
+   ],
+   "yaw": 135.0,
+   "props": {
+    "height": 0.45
+   }
+  },
+  {
+   "id": "tower_telescope",
+   "kind": "machine",
+   "pos": [
+    1.035,
+    10.864,
+    21.2
+   ],
+   "yaw": 165.0,
+   "props": {
+    "what": "telescope"
+   }
+  },
+  {
+   "id": "gallery_bench_w",
+   "kind": "seat",
+   "pos": [
+    -3.815,
+    8.022,
+    20.45
+   ],
+   "yaw": 255.0,
+   "props": {
+    "height": 0.45
+   }
+  },
+  {
+   "id": "gallery_bench_s",
+   "kind": "seat",
+   "pos": [
+    -1.022,
+    3.185,
+    20.45
+   ],
+   "yaw": 345.0,
+   "props": {
+    "height": 0.45
+   }
+  },
+  {
+   "id": "gallery_view_1",
+   "kind": "board",
+   "pos": [
+    3.377,
+    8.95,
+    21.3
+   ],
+   "yaw": 120.0,
+   "props": {
+    "topic": "view"
+   }
+  },
+  {
+   "id": "gallery_view_2",
+   "kind": "board",
+   "pos": [
+    -1.95,
+    10.377,
+    21.3
+   ],
+   "yaw": 210.0,
+   "props": {
+    "topic": "view"
+   }
+  },
+  {
+   "id": "gallery_view_3",
+   "kind": "board",
+   "pos": [
+    -3.377,
+    5.05,
+    21.3
+   ],
+   "yaw": 300.0,
+   "props": {
+    "topic": "view"
+   }
+  },
+  {
+   "id": "gallery_view_4",
+   "kind": "board",
+   "pos": [
+    1.95,
+    3.623,
+    21.3
+   ],
+   "yaw": 30.0,
+   "props": {
+    "topic": "view"
+   }
+  },
+  {
+   "id": "gallery_bell",
+   "kind": "machine",
+   "pos": [
+    3.263,
+    5.479,
+    21.2
+   ],
+   "yaw": 65.0,
+   "props": {
+    "what": "fog_bell"
+   }
+  },
+  {
+   "id": "gallery_signal",
+   "kind": "machine",
+   "pos": [
+    3.813,
+    7.536,
+    21.2
+   ],
+   "yaw": 98.0,
+   "props": {
+    "what": "signal_lamp"
+   }
+  },
+  {
+   "id": "gallery_weather",
+   "kind": "board",
+   "pos": [
+    2.34,
+    9.994,
+    21.1
+   ],
+   "yaw": 142.0,
+   "props": {
+    "topic": "gallery_weather"
+   }
+  },
+  {
+   "id": "gallery_ships",
+   "kind": "board",
+   "pos": [
+    -0.66,
+    10.742,
+    21.12
+   ],
+   "yaw": 190.0,
+   "props": {
+    "topic": "ships"
+   }
+  },
+  {
+   "id": "gallery_morse",
+   "kind": "machine",
+   "pos": [
+    3.616,
+    8.461,
+    21.1
+   ],
+   "yaw": 292.0,
+   "props": {
+    "what": "morse"
+   }
+  },
+  {
+   "id": "gallery_gauge",
+   "kind": "board",
+   "pos": [
+    -3.011,
+    9.526,
+    21.2
+   ],
+   "yaw": 50.0,
+   "props": {
+    "topic": "gauge"
+   }
+  },
+  {
+   "id": "gallery_bottlepost",
+   "kind": "machine",
+   "pos": [
+    0.8,
+    3.234,
+    20.6
+   ],
+   "yaw": 192.0,
+   "props": {
+    "what": "bottle_post"
+   }
+  },
+  {
+   "id": "gallery_plaque",
+   "kind": "board",
+   "pos": [
+    -2.37,
+    3.966,
+    20.9
+   ],
+   "yaw": 142.0,
+   "props": {
+    "topic": "plaque"
+   }
+  },
+  {
+   "id": "gallery_switch",
+   "kind": "machine",
+   "pos": [
+    -4.048,
+    6.286,
+    21.4
+   ],
+   "yaw": 100.0,
+   "props": {
+    "what": "switch",
+    "switch": "room"
+   }
   }
  ],
  "flats": [],
@@ -396,8 +1140,8 @@
   "118 stair treads up to 20.0 m; lattice 20 bars x2 x3 sections"
  ],
  "tris": {
-  "shell": 4088,
-  "detail": 6988,
-  "windows": 16
+  "shell": 4320,
+  "detail": 17227,
+  "windows": 32
  }
 }

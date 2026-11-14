@@ -1,0 +1,1964 @@
+"""Promenade unit: a small shop or café room behind the promenade's seawall W1 (docs/city_plan.md, city_interiors.md).
+
+The 32 units of W1 (city_plan.json promenade_units, ids W1-U01..) are bays of the wall's face 10 m wide with a door and a
+shop window (tools/city_mesh.py draws the face; the doorway is open, the window keeps its glass card). This type is ONLY
+the room behind that face, placed by unreal/scripts/import_city.py at each unit's "front" (the bay's middle on the face,
+promenade level) with the unit's yaw, as a building on a plot:
+
+  * the frame: x along the face (to the right of someone on the promenade looking at it), y into the wall, z 0 = the
+    promenade (-39.5). The wall's face is y 0, its reveals 0.28 deep: the room's front wall stands behind them (y 0.28..0.40)
+    with the same two holes, door x 2.8..4.0 (2.3 high), window x -4.0..2.0 (sill 0.45, head 2.65).
+  * the room: 9.7 x 6.0 m inside (x -4.85..4.85, y 0.40..6.40), 2.98 m clear (floor top 0.02, ceiling 3.0, slab to 3.25
+    under the block's top at 3.32; T1 is only 3.3 m over the promenade). The landscape under it stays at the promenade's
+    level and steps up to T1 behind it (city_plan W1_RAMP_START, the block is 9.5 m deep: W1_DEPTH).
+  * a signboard over the shop window outside (y -0.02, in front of the wall's face) where the atlas has the trade's word.
+
+VARIANTS: one dressing per trade (the unit's "variant" in the plan, city_plan.UNIT_VARIANTS): cafe, fish, rental, workshop,
+dumplings, souvenirs, bakery, photo, barber, books, beer, pasty -> promenade_unit__<variant>.json/.glb.
+Each: things for the hero (B.thing: the counter with its shop or service and the staff role who serves, seats, shelves,
+boards, the trade's machine), spots for the life sim (work spots "staff_<role>[_n]" where each role stands, "counter"
+where a customer is served, "stand"/"seat" for visitors), one real lamp (a lit pendant) and unlit fixtures.
+Collision: the shell (floor, walls, ceiling) and the kit's hidden cores of counters, shelves and tables.
+"""
+import math
+import os
+
+from citykit import box
+import interior_kit as kit
+from interior_kit import _P, WOOD, WOODL, STEEL, ALU, BRASS, LAQ
+
+INFO = {
+    "name_ru": "Лавка в подпорной стене", "name_en": "Promenade unit",
+    "style": "1960s seaside shop fit-out", "use": "public",
+    "inspired_by": "the small shops and cafés in the arcades of Soviet Black Sea and Baltic embankments",
+}
+
+VARIANT = "cafe"
+VARIANTS = {v: {"VARIANT": v} for v in ("cafe", "fish", "rental", "workshop", "dumplings", "souvenirs", "bakery", "photo",
+                                        "barber", "books", "beer", "pasty")}
+
+XL, XR = -4.85, 4.85          # inside faces of the side walls
+YF, YB = 0.40, 6.40           # inside faces of the front and back walls
+REVEAL = 0.28                 # the wall's reveals (tools/city_mesh.py REVEAL): the room starts behind them
+CEIL = 3.0
+FLOOR = 0.02
+DOOR = (2.8, 4.0, 2.3)        # x0, x1, head (city_plan.UNIT_OPENINGS door: u -3.4, 1.2 wide; x = -u)
+WIN = (-4.0, 2.0, 0.45, 2.65)
+DOOR_X = 3.4
+
+# per variant: walls, dado (lower 1.3 m of the walls), floor
+STYLE = {
+    "cafe": ("CT_PlasterBlue", "CT_TileWhite", "CT_Floor"),
+    "fish": ("CT_Plaster", "CT_Tile", "CT_Floor"),
+    "rental": ("CT_PlasterYellow", "CT_WoodLight", "CT_Floor"),
+    "workshop": ("CT_PlasterGrey", "CT_PlasterGreen", "CT_ConcreteDark"),
+    "dumplings": ("CT_Plaster", "CT_TileWhite", "CT_Floor"),
+    "souvenirs": ("CT_PlasterPink", "CT_WoodLight", "CT_Floor"),
+    "bakery": ("CT_PlasterYellow", "CT_TileWhite", "CT_Floor"),
+    "photo": ("CT_Plaster", "CT_PlasterGrey", "CT_Floor"),
+    "barber": ("CT_PlasterGreen", "CT_TileWhite", "CT_Floor"),
+    "books": ("CT_PlasterGreen", "CT_Wood", "CT_Floor"),
+    "beer": ("CT_Brick", "CT_Wood", "CT_Floor"),
+    "pasty": ("CT_PlasterPink", "CT_TileWhite", "CT_Floor"),
+}
+# the signboard over the shop window (atlas sign_* cells; none for trades the atlas has no word for)
+SIGN = {"cafe": "sign_buffet", "beer": "sign_buffet", "dumplings": "sign_canteen", "pasty": "sign_canteen",
+        "bakery": "sign_bread", "books": "sign_books", "barber": "sign_barber", "photo": "sign_photo"}
+
+
+# ------------------------------------------------------------------------------------------------ the room
+def _shell(B, wall, dado, floor):
+    m, d = B.m, B.detail
+    x0, x1 = XL - 0.1, XR + 0.1
+    box(m, floor, x0, x1, REVEAL, YB + 0.15, -0.2, FLOOR, faces="Z")
+    box(m, "CT_Plaster", x0, x1, REVEAL, YB + 0.15, CEIL, CEIL + 0.25)
+    box(m, wall, x0, XL, REVEAL, YB + 0.15, FLOOR, CEIL)
+    box(m, wall, XR, x1, REVEAL, YB + 0.15, FLOOR, CEIL)
+    box(m, wall, XL, XR, YB, YB + 0.15, FLOOR, CEIL)
+    # the front wall behind the face's reveals, with the door and the window
+    holes = [(DOOR[0] - x0, DOOR[1] - x0, 0.0, DOOR[2]), (WIN[0] - x0, WIN[1] - x0, WIN[2], WIN[3])]
+    B.facade((x0, REVEAL), (x1, REVEAL), 0.0, CEIL, wall, holes=holes, depth=YF - REVEAL, reveal_mat=wall, back=True)
+    # the dado and a skirting (1 cm proud of the walls) and the window's inner sill
+    zt = 1.3
+    box(d, dado, XL, XL + 0.01, YF, YB, FLOOR, zt, faces="X")
+    box(d, dado, XR - 0.01, XR, YF, YB, FLOOR, zt, faces="x")
+    box(d, dado, XL, XR, YB - 0.01, YB, FLOOR, zt, faces="y")
+    for a, b in ((XL, WIN[0]), (WIN[1], DOOR[0]), (DOOR[1], XR)):
+        box(d, dado, a, b, YF, YF + 0.01, FLOOR, zt, faces="Y")
+    box(d, dado, WIN[0], WIN[1], YF, YF + 0.01, FLOOR, WIN[2], faces="Y")
+    box(d, WOOD, WIN[0] - 0.05, WIN[1] + 0.05, REVEAL, YF + 0.08, WIN[2] - 0.04, WIN[2] + 0.005, faces="yYxXZ")
+    box(d, "CT_ConcreteDark", DOOR[0], DOOR[1], REVEAL, YF, -0.04, FLOOR + 0.002, faces="Z")   # the threshold strip
+    B.entrance("door", (DOOR_X, 0.0, 0.0), 0.0, width=DOOR[1] - DOOR[0], height=DOOR[2], kind="street", leaves=0)
+    B.footprint = [(x0, 0.0), (x1, 0.0), (x1, YB + 0.15), (x0, YB + 0.15)]
+    B.height = CEIL + 0.25
+
+
+def _sign(B, variant):
+    name = SIGN.get(variant)
+    if name:
+        kit.sign_plate(B, (WIN[0] + WIN[1]) / 2, -0.004, 0.0, 0.0, name=name, w=2.2, zc=2.97)
+
+
+def _lamp(B, x, y, lumens=1500, kind="opal"):
+    kit.pendant(B, x, y, CEIL, drop=0.55, kind=kind, light=True, lumens=lumens, radius=8.0)
+
+
+def _seat(B, tid, r, h=None, **props):
+    x, y, z, yw = r["seats"][0]
+    B.thing(tid, "seat", (x, y, z), yw, height=round(h if h is not None else z, 2), **props)
+
+
+def _chairs(B, x, y, w, d, per_side, prefix, n_things=1, **kw):
+    """Chairs round a table with a seat spot each and n_things seat things."""
+    cs = kit.around_table(B, x, y, w, d, 0.0, per_side=per_side, **kw)
+    for k, c in enumerate(cs):
+        sx, sy, sz, syw = c["seats"][0]
+        B.spot("%s_seat%d" % (prefix, k), "seat", (sx, sy, 0.0), syw)
+        if k < n_things:
+            _seat(B, "%s_chair%d" % (prefix, k + 1), c)
+    return cs
+
+
+# ------------------------------------------------------------------------------------------------ own pieces
+def _loaf_row(p, x0, x1, y0, y1, z, mats, step=0.15, round_=False):
+    x = x0 + 0.02
+    k = 0
+    while x + step <= x1 + 1e-6:
+        mt = mats[k % len(mats)]
+        if round_:
+            r = step * 0.42
+            p.lathe(mt, x + step / 2, (y0 + y1) / 2, [(r, z), (r * 0.95, z + 0.04), (r * 0.5, z + 0.08), (0.0, z + 0.09)], 6)
+        else:
+            p.bev(mt, x + 0.008, x + step - 0.008, y0, y1, z, z + 0.11 + 0.02 * (k % 2), 0.04)
+        x += step
+        k += 1
+
+
+def bread_rack(B, x, y, z=0.0, yaw=0.0, w=2.4, levels=4):
+    """[wall] Open wooden bread racks with loaves (batons, rye bricks) and round loaves on top."""
+    p = _P(B, x, y, z, yaw, "bread_rack")
+    p.kind = "wall"
+    d, h = 0.42, 1.9
+    p.box(WOODL, -w / 2, w / 2, -0.015, 0.0, 0.0, h, f="y")
+    for s in (-1, 1):
+        xa = s * (w / 2 - 0.015)
+        p.box(WOODL, xa - 0.015, xa + 0.015, -d, 0.0, 0.0, h, f="xXyZ")
+    for k in range(levels):
+        zb = 0.35 + k * (h - 0.35) / levels
+        p.box(WOODL, -w / 2 + 0.03, w / 2 - 0.03, -d, -0.015, zb - 0.025, zb, f="yZz")
+        p.box(WOODL, -w / 2 + 0.03, w / 2 - 0.03, -d - 0.015, -d, zb - 0.025, zb + 0.06, f="xXyYZ")     # a front lip
+        mats = (["CT_WoodLight", "CT_PlasterYellow"], ["CT_WoodLight"], ["CT_Wood", "CT_WoodLight"], ["CT_PlasterYellow", "CT_WoodLight"])[k % 4]
+        _loaf_row(p, -w / 2 + 0.03, w / 2 - 0.03, -d + 0.06, -0.06, zb, mats, round_=(k == levels - 1))
+    p.box(WOODL, -w / 2 + 0.03, w / 2 - 0.03, -d, -0.015, 0.08, 0.1, f="yZ")
+    mid = 0.35 + (h - 0.35) / 2
+    p.core(-w / 2 + 0.03, w / 2 - 0.03, -d + 0.01, -0.02, mid - 0.02, mid - 0.006)
+    return p.done(solid=True, top=h)
+
+
+def tray_trolley(B, x, y, z=0.0, yaw=0.0, trays=5):
+    """A baker's aluminium trolley with trays of buns."""
+    p = _P(B, x, y, z, yaw, "tray_trolley")
+    w, d, h = 0.6, 0.45, 1.5
+    for sx in (-w / 2, w / 2):
+        for sy in (-d / 2, d / 2):
+            p.box(ALU, sx - 0.015, sx + 0.015, sy - 0.015, sy + 0.015, 0.06, h)
+            p.cyl("CT_Rubber", sx, sy, 0.0, 0.06, 0.03, 5)
+    for k in range(trays):
+        zb = 0.3 + k * 0.26
+        p.box(ALU, -w / 2 + 0.02, w / 2 - 0.02, -d / 2 + 0.01, d / 2 - 0.01, zb - 0.012, zb, f="xXyYZz")
+        for i in range(3):
+            for j in range(2):
+                bx, by = -0.18 + i * 0.18, -0.09 + j * 0.18
+                p.lathe("CT_PlasterYellow" if (i + j + k) % 3 else "CT_WoodLight", bx, by,
+                        [(0.06, zb), (0.055, zb + 0.03), (0.03, zb + 0.05), (0.0, zb + 0.055)], 6)
+    p.core(-w / 2 + 0.02, w / 2 - 0.02, -d / 2 + 0.02, d / 2 - 0.02, 0.3, 0.32)
+    return p.done(solid=True, top=h)
+
+
+def ice_bed(B, x, y, z=0.0, yaw=0.0, w=1.8, d=0.5, seed=0):
+    """[prop] A sloping bed of crushed ice with fish on it (on a counter top)."""
+    p = _P(B, x, y, z, yaw, "ice_bed")
+    p.kind = "prop"
+    p.hexa("CT_TileWhite", [(-w / 2, -d / 2, 0.0), (w / 2, -d / 2, 0.0), (w / 2, d / 2, 0.0), (-w / 2, d / 2, 0.0)],
+           [(-w / 2, -d / 2, 0.03), (w / 2, -d / 2, 0.03), (w / 2, d / 2, 0.12), (-w / 2, d / 2, 0.12)], f="xXyYZ")
+    rnd = kit._rng(seed, x, y, "fish")
+    k = 0
+    u = -w / 2 + 0.12
+    while u < w / 2 - 0.12:
+        for row in (-0.12, 0.1):
+            L = rnd.uniform(0.28, 0.4)
+            ht = 0.03 + (row + d / 2) / d * 0.09 + 0.004
+            mat = ("CT_Aluminium", "CT_Aluminium", "CT_PlasterPink", "CT_Steel")[k % 4]
+            out = [(u + L * 0.5 * math.cos(a), row + 0.055 * math.sin(a) * (1.0 if abs(math.cos(a)) < 0.9 else 0.4), 0)
+                   for a in [k2 * math.pi / 3 for k2 in range(6)]]
+            p.loft(mat, [[(a, b, ht) for a, b, _ in out], [(a, b, ht + 0.035) for a, b, _ in out]])
+            p.face(mat, [(u - L * 0.5, row, ht + 0.02), (u - L * 0.5 - 0.08, row - 0.05, ht + 0.02), (u - L * 0.5 - 0.08, row + 0.05, ht + 0.02)])
+            k += 1
+        u += 0.22
+    return p.done(top=0.12)
+
+
+def chest_freezer(B, x, y, z=0.0, yaw=0.0, w=1.4):
+    p = _P(B, x, y, z, yaw, "chest_freezer")
+    d, h = 0.7, 0.85
+    p.bev("CT_TileWhite", -w / 2, w / 2, -d / 2, d / 2, 0.08, h, 0.02)
+    p.box("CT_Rubber", -w / 2 + 0.03, w / 2 - 0.03, -d / 2 + 0.03, d / 2 - 0.03, 0.0, 0.08, f="xXyY")
+    p.box("CT_Steel", -w / 2 + 0.05, w / 2 - 0.05, -d / 2 - 0.01, -d / 2, h - 0.12, h - 0.09, f="y")
+    p.box("CT_SteelRed", -0.1, 0.1, -d / 2 - 0.02, -d / 2, h - 0.2, h - 0.12, f="xXyZ")
+    p.core(-w / 2 + 0.03, w / 2 - 0.03, -d / 2 + 0.03, d / 2 - 0.03, 0.1, h - 0.05)
+    return p.done(solid=True, top=h)
+
+
+def barrel(B, x, y, z=0.0, yaw=0.0, h=1.0, table=True):
+    """An oak barrel; table=True: a round top on it (a beer bar's standing table)."""
+    p = _P(B, x, y, z, yaw, "barrel")
+    r = 0.3
+    p.lathe(WOOD, 0, 0, [(r * 0.85, 0.0), (r * 0.97, h * 0.25), (r, h * 0.5), (r * 0.97, h * 0.75), (r * 0.85, h)], 10)
+    for zz, rr in ((0.12, 0.91), (h - 0.12, 0.91)):
+        p.lathe(STEEL, 0, 0, [(r * rr + 0.008, zz - 0.03), (r * rr + 0.008, zz + 0.03)], 10, top=False)
+    top = h
+    if table:
+        p.cyl(WOODL, 0, 0, h, h + 0.04, 0.42, 10)
+        top = h + 0.04
+    p.core(-r * 0.6, r * 0.6, -r * 0.6, r * 0.6, 0.1, h - 0.1)
+    return p.done(solid=True, top=top)
+
+
+def barber_chair(B, x, y, z=0.0, yaw=0.0, mat="CT_Leather"):
+    """A barber's chair on a chrome pedestal: seat, tilted back with a headrest, arms, footrest. The sitter faces yaw."""
+    p = _P(B, x, y, z, yaw, "barber_chair")
+    p.cyl(ALU, 0, 0.0, 0.0, 0.04, 0.28, 10)
+    p.cyl(ALU, 0, 0.0, 0.04, 0.42, 0.055, 6)
+    p.box(ALU, -0.22, 0.22, -0.2, 0.2, 0.42, 0.46)
+    p.cushion(mat, -0.25, 0.25, -0.25, 0.22, 0.46, 0.58)
+    p.hexa(mat, [(-0.25, 0.18, 0.58), (0.25, 0.18, 0.58), (0.25, 0.3, 0.58), (-0.25, 0.3, 0.58)],
+           [(-0.24, 0.3, 1.12), (0.24, 0.3, 1.12), (0.24, 0.4, 1.12), (-0.24, 0.4, 1.12)])
+    p.bev(mat, -0.12, 0.12, 0.31, 0.41, 1.14, 1.3, 0.02)
+    p.rod(ALU, (0, 0.36, 1.12), (0, 0.36, 1.15), 0.03, 4)
+    for s in (-1, 1):
+        p.box(ALU, s * 0.27 - 0.015, s * 0.27 + 0.015, -0.12, -0.08, 0.46, 0.68)
+        p.bev(mat, s * 0.27 - 0.04, s * 0.27 + 0.04, -0.22, 0.2, 0.68, 0.74, 0.015)
+    p.rod(ALU, (0, -0.2, 0.42), (0, -0.42, 0.16), 0.03, 4)
+    p.box(ALU, -0.2, 0.2, -0.5, -0.36, 0.13, 0.16)
+    return p.done(seats=[(0.0, -0.02, 0.58, 0.0)])
+
+
+def mirror_console(B, x, y, z=0.0, yaw=0.0, w=1.0, seed=0):
+    """[wall] A barber's place: a big mirror over a shelf with bottles, a comb glass and a towel."""
+    r = kit.mirror(B, x, y, z, yaw, zc=1.55, w=w, h=1.05)
+    kit.wall_shelf(B, x, y, z, yaw, w=w + 0.1, zt=0.95, props=False)
+    c, s = math.cos(math.radians(yaw)), math.sin(math.radians(yaw))
+    at = lambda u, v: (x + u * c - v * s, y + u * s + v * c)
+    a = at(-w / 4, -0.11)
+    kit.bottles(B, a[0], a[1], z + 0.95, yaw, n=3, seed=seed)
+    b = at(w / 4, -0.11)
+    kit.glass(B, b[0], b[1], z + 0.95, yaw)
+    return r
+
+
+def backdrop(B, x, y, z=0.0, yaw=0.0, w=2.8, mat="CT_PlasterBlue"):
+    """[wall] A photographer's paper backdrop: two stands, a roll, the paper sweeping onto the floor."""
+    p = _P(B, x, y, z, yaw, "backdrop")
+    p.kind = "prop"            # the posing stool stands on its paper: not a floor piece for kit.check
+    for s in (-1, 1):
+        p.rod(STEEL, (s * w / 2, -0.25, 0.0), (s * w / 2, -0.25, 2.65), 0.035, 4)
+        p.rod(STEEL, (s * w / 2 - 0.25, -0.25, 0.01), (s * w / 2 + 0.25, -0.25, 0.01), 0.03, 4)
+    p.rod(mat, (-w / 2 + 0.05, -0.25, 2.55), (w / 2 - 0.05, -0.25, 2.55), 0.12, 8)
+    a, b = -w / 2 + 0.12, w / 2 - 0.12
+    sheet = [(-0.31, 2.5), (-0.31, 0.5), (-0.38, 0.25), (-0.6, 0.06), (-1.4, 0.004)]
+    for (y0, z0), (y1, z1) in zip(sheet, sheet[1:]):
+        p.face(mat, [(a, y0, z0), (b, y0, z0), (b, y1, z1), (a, y1, z1)][::-1])
+    return p.done()
+
+
+def camera_tripod(B, x, y, z=0.0, yaw=0.0):
+    """A big studio camera on a wooden tripod; its lens looks toward yaw."""
+    p = _P(B, x, y, z, yaw, "camera_tripod")
+    top = 1.25
+    for k in range(3):
+        a = math.radians(90 + k * 120)
+        p.rod(WOODL, (0.0, 0.0, top), (0.38 * math.cos(a), 0.38 * math.sin(a), 0.0), 0.03, 4)
+    p.box(STEEL, -0.08, 0.08, -0.08, 0.08, top, top + 0.06)
+    p.bev(WOOD, -0.13, 0.13, -0.05, 0.22, top + 0.06, top + 0.34, 0.01)
+    p.box(LAQ, -0.09, 0.09, -0.22, -0.05, top + 0.1, top + 0.3, f="xXyZz")      # the bellows
+    p.rod(BRASS, (0, -0.22, top + 0.2), (0, -0.3, top + 0.2), 0.09, 8, caps=True)
+    p.rod(LAQ, (0, -0.3, top + 0.2), (0, -0.31, top + 0.2), 0.07, 8, caps=True)
+    p.box(WOOD, -0.11, 0.11, 0.22, 0.24, top + 0.08, top + 0.32)
+    return p.done(lens=(0.0, -0.3, top + 0.2))
+
+
+def softbox(B, x, y, z=0.0, yaw=0.0):
+    p = _P(B, x, y, z, yaw, "softbox")
+    for k in range(3):
+        a = math.radians(90 + k * 120)
+        p.rod(STEEL, (0.0, 0.0, 0.6), (0.3 * math.cos(a), 0.3 * math.sin(a), 0.0), 0.02, 4)
+    p.rod(STEEL, (0, 0, 0.6), (0, 0, 1.75), 0.025, 4)
+    p.hexa("CT_Steel", [(-0.3, 0.05, 1.5), (0.3, 0.05, 1.5), (0.1, 0.3, 1.7), (-0.1, 0.3, 1.7)],
+           [(-0.3, 0.05, 2.1), (0.3, 0.05, 2.1), (0.1, 0.3, 1.9), (-0.1, 0.3, 1.9)], f="xXYZz")
+    p.face("CT_Opal", [(-0.3, 0.05, 1.5), (0.3, 0.05, 1.5), (0.3, 0.05, 2.1), (-0.3, 0.05, 2.1)][::-1])
+    p.face("CT_Opal", [(-0.29, 0.049, 1.51), (0.29, 0.049, 1.51), (0.29, 0.049, 2.09), (-0.29, 0.049, 2.09)])
+    return p.done()
+
+
+def workbench(B, x, y, z=0.0, yaw=0.0, w=2.2):
+    """[wall] A heavy workbench against the wall: a vice, a lower shelf with boxes, a pegboard of tools above."""
+    p = _P(B, x, y, z, yaw, "workbench")
+    p.kind = "wall"
+    d, h = 0.7, 0.9
+    p.bev(WOOD, -w / 2, w / 2, -d, -0.02, h - 0.07, h, 0.01)
+    for sx in (-w / 2 + 0.06, w / 2 - 0.06):
+        for sy in (-d + 0.06, -0.08):
+            p.box(STEEL, sx - 0.03, sx + 0.03, sy - 0.03, sy + 0.03, 0.0, h - 0.07)
+    p.box(WOODL, -w / 2 + 0.03, w / 2 - 0.03, -d + 0.04, -0.05, 0.2, 0.23)
+    for k in range(4):
+        p.box(("CT_SteelRed", "CT_PlasterBlue", "CT_PlasterYellow", "CT_Steel")[k], -w / 2 + 0.15 + k * 0.45,
+              -w / 2 + 0.5 + k * 0.45, -d + 0.1, -0.12, 0.23, 0.4)
+    # the vice on the front right corner
+    xv = w / 2 - 0.3
+    p.box("CT_PlasterBlue", xv - 0.1, xv + 0.1, -d - 0.12, -d + 0.1, h, h + 0.14)
+    p.rod(STEEL, (xv, -d - 0.2, h + 0.07), (xv, -d - 0.12, h + 0.07), 0.025, 4)
+    p.rod(STEEL, (xv - 0.12, -d - 0.2, h + 0.07), (xv + 0.12, -d - 0.2, h + 0.07), 0.015, 4)
+    # pegboard with tools
+    zb, zt = 1.05, 1.95
+    p.box(WOODL, -w / 2 + 0.1, w / 2 - 0.1, -0.03, 0.0, zb, zt, f="yxXzZ")
+    k = 0
+    u = -w / 2 + 0.25
+    while u < w / 2 - 0.25:
+        kind = k % 4
+        if kind == 0:      # a hammer
+            p.box(WOOD, u - 0.012, u + 0.012, -0.06, -0.035, zb + 0.25, zb + 0.6)
+            p.box(STEEL, u - 0.07, u + 0.07, -0.07, -0.035, zb + 0.6, zb + 0.65)
+        elif kind == 1:    # a saw
+            p.slab(ALU, (u - 0.1, -0.035, zb + 0.15), (u + 0.1, -0.035, zb + 0.15), (u + 0.1, -0.035, zb + 0.7),
+                   (u - 0.1, -0.035, zb + 0.55), 0.002)
+            p.box(WOOD, u - 0.06, u + 0.06, -0.05, -0.035, zb + 0.7, zb + 0.82)
+        elif kind == 2:    # spanners
+            for j in range(4):
+                p.box(STEEL, u - 0.09 + j * 0.06, u - 0.07 + j * 0.06, -0.05, -0.035, zb + 0.3 - j * 0.03, zb + 0.7)
+        else:              # pliers and screwdrivers
+            for j in range(3):
+                p.box(("CT_SteelRed", "CT_PlasterYellow", "CT_PlasterBlue")[j], u - 0.07 + j * 0.07, u - 0.05 + j * 0.07,
+                      -0.05, -0.035, zb + 0.45, zb + 0.6)
+                p.box(STEEL, u - 0.065 + j * 0.07, u - 0.055 + j * 0.07, -0.05, -0.04, zb + 0.3, zb + 0.45)
+        u += 0.42
+        k += 1
+    p.core(-w / 2 + 0.02, w / 2 - 0.02, -d + 0.02, -0.04, h - 0.065, h - 0.01)
+    return p.done(solid=True, top=h, staff=(0.0, -d - 0.45, 0.0))
+
+
+def deck_chair(B, x, y, z=0.0, yaw=0.0, canvas="CT_PlasterRed"):
+    """An open beach deck chair (wooden frame, a canvas sling); the sitter faces yaw."""
+    p = _P(B, x, y, z, yaw, "deck_chair")
+    for s in (-0.28, 0.28):
+        p.rod(WOODL, (s, -0.55, 0.0), (s, 0.35, 0.95), 0.035, 4)
+        p.rod(WOODL, (s * 0.92, -0.25, 0.38), (s * 0.92, 0.45, 0.0), 0.03, 4)
+        p.rod(WOODL, (s * 1.05, -0.55, 0.38), (s * 1.05, -0.05, 0.38), 0.03, 4)
+    p.rod(WOODL, (-0.28, -0.5, 0.06), (0.28, -0.5, 0.06), 0.03, 4)
+    p.rod(WOODL, (-0.28, 0.3, 0.9), (0.28, 0.3, 0.9), 0.03, 4)
+    p.rod(WOODL, (-0.27, -0.42, 0.36), (0.27, -0.42, 0.36), 0.03, 4)
+    sling = [(-0.42, 0.36), (-0.12, 0.2), (0.08, 0.36), (0.3, 0.88)]
+    for (y0, z0), (y1, z1) in zip(sling, sling[1:]):
+        q = [(-0.25, y0, z0), (0.25, y0, z0), (0.25, y1, z1), (-0.25, y1, z1)]
+        p.face(canvas, q)
+        p.face(canvas, [(a, b, c - 0.004) for a, b, c in q][::-1])
+    return p.done(seats=[(0.0, -0.08, 0.3, 0.0)])
+
+
+def bicycle(B, x, y, z=0.0, yaw=0.0, mat="CT_SteelRed"):
+    """A rental bicycle standing on its wheels, pointing toward yaw."""
+    p = _P(B, x, y, z, yaw, "bicycle")
+    r, zc = 0.33, 0.34
+    for yc in (-0.53, 0.53):
+        pts = [(0.0, yc + r * math.cos(2 * math.pi * k / 12), zc + r * math.sin(2 * math.pi * k / 12)) for k in range(13)]
+        p.tube("CT_Rubber", pts, 0.035, 3)
+        p.rod(ALU, (0.0, yc - r, zc), (0.0, yc + r, zc), 0.008, 3)
+        p.rod(ALU, (0.0, yc, zc - r), (0.0, yc, zc + r), 0.008, 3)
+    rear, crank, seat, head0, head1, front = ((0, 0.53, zc), (0, 0.02, 0.3), (0, 0.17, 0.82), (0, -0.4, 0.62), (0, -0.43, 0.82),
+                                              (0, -0.53, zc))
+    for a, b in ((rear, crank), (crank, seat), (seat, rear), (seat, head1), (crank, head0), (head0, head1), (head0, front)):
+        p.rod(mat, a, b, 0.03, 4)
+    p.rod(STEEL, (0, 0.17, 0.82), (0, 0.2, 0.92), 0.022, 4)
+    p.bev("CT_Leather", -0.07, 0.07, 0.12, 0.33, 0.92, 0.96, 0.01)
+    p.rod(STEEL, (0, -0.43, 0.82), (0, -0.4, 0.95), 0.022, 4)
+    p.rod(STEEL, (-0.27, -0.36, 0.97), (0.27, -0.36, 0.97), 0.022, 4)
+    p.rod(ALU, (0.0, 0.08, 0.3), (0.0, -0.06, 0.3), 0.06, 6)
+    p.box(ALU, -0.11, 0.11, 0.38, 0.72, 0.7, 0.72)          # the carrier
+    return p.done()
+
+
+def oars(B, x, y, z=0.0, yaw=0.0, n=4, w=1.2):
+    """[wall] Oars (and a boat hook) leaning on the wall, blades up."""
+    p = _P(B, x, y, z, yaw, "oars")
+    p.kind = "wall"
+    for k in range(n):
+        u = -w / 2 + (k + 0.5) * w / n
+        p.rod(WOODL, (u, -0.32, 0.0), (u + 0.06, -0.05, 2.35), 0.045, 6)
+        bu, bv = u + 0.06, -0.05
+        p.slab("CT_PlasterRed" if k % 2 else WOODL, (bu - 0.08, bv - 0.006, 1.75), (bu + 0.08, bv - 0.006, 1.75),
+               (bu + 0.075, bv - 0.006, 2.4), (bu - 0.075, bv - 0.006, 2.4), 0.012)
+    return p.done()
+
+
+def life_ring(B, x, y, z=0.0, yaw=0.0, zc=1.8, r=0.3):
+    """[wall] A red and white life ring on the wall."""
+    p = _P(B, x, y, z, yaw, "life_ring")
+    p.kind = "wall"
+    for k in range(12):
+        a0, a1 = 2 * math.pi * k / 12, 2 * math.pi * (k + 1) / 12
+        p.rod("CT_PlasterRed" if (k // 3) % 2 else "CT_TileWhite", (r * math.cos(a0), -0.06, zc + r * math.sin(a0)),
+              (r * math.cos(a1), -0.06, zc + r * math.sin(a1)), 0.1, 4)
+    return p.done()
+
+
+def pots(B, x, y, z=0.0, yaw=0.0, n=2):
+    """[prop] Big aluminium pots on a stove."""
+    p = _P(B, x, y, z, yaw, "pots")
+    p.kind = "prop"
+    for k in range(n):
+        u = -0.15 * (n - 1) + k * 0.3
+        h = 0.3 if k % 2 == 0 else 0.22
+        p.cyl(ALU, u, 0.0, 0.0, h, 0.13, 8)
+        p.cyl(ALU, u, 0.0, h, h + 0.02, 0.135, 8)
+        p.rod(STEEL, (u, 0.0, h + 0.02), (u, 0.0, h + 0.05), 0.03, 4)
+    return p.done(top=0.3)
+
+
+def pastries(B, x, y, z=0.0, yaw=0.0, n=5, mat="CT_PlasterYellow", seed=0):
+    """[prop] A dish of half-moon pastries (chebureki, pirozhki) or dumplings."""
+    p = _P(B, x, y, z, yaw, "pastries")
+    p.kind = "prop"
+    p.cyl("CT_TileWhite", 0.0, 0.0, 0.0, 0.015, 0.2, 10)
+    for k in range(n):
+        a = 2 * math.pi * k / n
+        cx, cy = 0.09 * math.cos(a), 0.09 * math.sin(a)
+        half = [(cx + 0.08 * math.cos(a + math.pi / 2 + t * math.pi / 4), cy + 0.08 * math.sin(a + math.pi / 2 + t * math.pi / 4))
+                for t in range(5)]
+        p.loft(mat, [[(u, v, 0.015) for u, v in half], [(u, v, 0.04) for u, v in half]])
+    return p.done(top=0.04)
+
+
+def tall_table(B, x, y, z=0.0, yaw=0.0, r=0.38):
+    """A stand-up table (canteens, beer bars)."""
+    return kit.table_round(B, x, y, z, yaw, r=r, h=1.08, mat="CT_TileWhite", base=STEEL)
+
+
+# ------------------------------------------------------------------------------------------------ the twelve trades
+def cafe(B):
+    """Кафе «Чайка»: a bar with a coffee machine and a back bar, four tables by the window, the café's menu."""
+    bar = kit.bar_counter(B, 2.3, 4.55, 0.0, 0.0, w=3.2, taps=2, front="CT_PlasterBlue", back=False, seed=1)
+    kit.shop_shelf(B, 2.3, YB, 0.0, 0.0, w=2.8, goods="bottles", levels=4, mat=WOOD, seed=1, trade="drinks")
+    kit.cup(B, 1.4, 4.5, bar["top"], 0.0)
+    kit.cup(B, 1.6, 4.5, bar["top"], 20.0)
+    kit.teapot(B, 3.4, 4.6, bar["top"], 0.0)
+    B.thing("cafe_bar", "counter", (2.3, 4.55, 1.05), 0.0, shop="seagull_cafe", service="bar", role="barista")
+    B.spot("counter", "counter", (3.3, 3.75, 0.0), 180.0)
+    B.spot("staff_barista_1", "work", (1.7, 5.35, 0.0), 0.0)
+    B.spot("staff_barista_2", "work", (2.9, 5.35, 0.0), 0.0)
+    for k, sx in enumerate((1.0, 1.8)):
+        st = kit.bar_stool(B, sx, 3.8, 0.0, 180.0, mat="CT_PlasterBlue")
+        if k == 0:
+            _seat(B, "cafe_stool", st, 0.75)
+    # the kitchen corner (the cook) and the café's tables
+    kit.kitchen_unit(B, -3.3, YB, 0.0, 0.0, modules="cupboard,stove,sink", wall_cupboards=True)
+    pots(B, -3.3, 6.1, 0.9, 0.0, n=1)
+    B.spot("staff_cook", "work", (-3.3, 5.45, 0.0), 180.0)
+    for i, (tx, ty) in enumerate(((-3.6, 1.55), (-1.4, 1.55), (-3.6, 3.65), (-1.4, 3.65))):
+        t = kit.table_round(B, tx, ty, 0.0, 0.0, r=0.4)
+        _chairs(B, tx, ty, 0.8, 0.8, (1, 1, 0, 0), "table%d" % (i + 1), kind="tube", mat="CT_PlasterBlue")
+        kit.vase(B, tx, ty, t["top"], 0.0, seed=i) if i % 2 == 0 else kit.cup(B, tx + 0.1, ty, t["top"], 0.0)
+    kit.menu_board(B, -0.6, YB, 0.0, 0.0, name="menu_1", w=0.8, zc=1.65)
+    B.thing("cafe_menu", "board", (-0.6, YB - 0.04, 1.65), 0.0, topic="prices")
+    kit.picture(B, XL, 2.6, 0.0, 90.0, name="painting_sea_calm", w=1.0, zc=1.75)
+    B.thing("cafe_picture", "board", (XL + 0.04, 2.6, 1.75), 90.0, topic="painting")
+    kit.poster(B, XR, 3.3, 0.0, 270.0, name="poster_sun_1", w=0.6, zc=1.7)
+    kit.plant(B, -4.45, 4.95, 0.0, 0.0, h=1.3, kind="palm")
+    kit.plant(B, 0.0, 5.95, 0.0, 0.0, h=1.1, kind="ficus", pot="CT_TileWhite")
+    kit.wall_clock(B, XR, 4.6, 0.0, 270.0, zc=2.35, face="clock_1")
+    _lamp(B, 0.0, 3.0)
+    kit.pendant(B, 2.3, 4.3, CEIL, drop=0.7, kind="cone")
+
+
+def fish(B):
+    """Рыбная лавка: a counter with fish on crushed ice and scales, tinned fish behind, crates and a freezer."""
+    c = kit.shop_counter(B, 1.0, 4.4, 0.0, 0.0, w=3.0, front="CT_PlasterBlue", top="CT_TileWhite")
+    ice_bed(B, 0.35, 4.38, c["top"], 0.0, w=1.6, d=0.5, seed=2)
+    kit.kitchen_scales(B, 1.75, 4.35, c["top"], 0.0)
+    B.thing("fish_counter", "counter", (1.0, 4.4, 1.1), 0.0, shop="fish_shop", service="fishmonger", role="fishmonger")
+    B.spot("counter", "counter", (1.0, 3.55, 0.0), 180.0)
+    B.spot("staff_fishmonger_1", "work", (0.3, 5.2, 0.0), 0.0)
+    B.spot("staff_fishmonger_2", "work", (1.8, 5.2, 0.0), 0.0)
+    kit.shop_shelf(B, 1.0, YB, 0.0, 0.0, w=2.2, goods="groceries", seed=3, trade="fish")
+    B.thing("fish_tins", "shelf", (1.0, YB - 0.25, 1.3), 0.0, topic="sea")
+    chest_freezer(B, XL + 0.36, 2.6, 0.0, 90.0, w=1.4)
+    for k, (cx, cy, cz) in enumerate(((-4.3, 5.85, 0.0), (-3.7, 5.85, 0.0), (-4.3, 5.85, 0.3), (-3.0, 5.9, 0.0))):
+        kit.crate(B, cx, cy, cz, 0.0, fill=("CT_Aluminium", "CT_Steel", "CT_Aluminium", "CT_PlasterPink")[k], seed=k)
+    barrel(B, -1.6, 5.85, 0.0, 0.0, h=0.8, table=False)
+    # crates of the morning's catch on ice by the window, a hanging steelyard over the counter's end
+    for k, cx in enumerate((-3.6, -2.9, -2.2)):
+        kit.crate(B, cx, 1.05, 0.0, 0.0, fill="CT_TileWhite", seed=10 + k)
+        ice_bed(B, cx, 1.05, 0.3, 0.0, w=0.5, d=0.34, seed=20 + k)
+    kit.shop_shelf(B, XR, 5.4, 0.0, 270.0, w=1.2, goods="jars", levels=4, seed=12, trade="grocery")
+    kit.picture(B, XL, 4.5, 0.0, 90.0, name="painting_sea_storm", w=1.0, zc=1.8)
+    B.thing("fish_picture", "board", (XL + 0.04, 4.5, 1.8), 90.0, topic="painting")
+    kit.wall_map(B, XR, 3.6, 0.0, 270.0, name="map_coast", w=1.4, h=1.0, zc=1.75)
+    B.thing("fish_map", "board", (XR - 0.04, 3.6, 1.75), 270.0, topic="view")
+    life_ring(B, -0.75, YB, 0.0, 0.0, zc=1.9)
+    kit.sign_plate(B, 1.0, 4.4, 0.0, 0.0, name="sign_till", w=0.8, zc=2.55, hang=True)
+    _lamp(B, 0.5, 3.4, kind="cone")
+    kit.pendant(B, -3.0, 2.6, CEIL, drop=0.55, kind="cone")
+
+
+def rental(B):
+    """Прокат: bicycles, deck chairs and oars to hire, a counter with the keys, the hire rules on the wall."""
+    c = kit.shop_counter(B, 2.9, 4.65, 0.0, 0.0, w=2.0, front="CT_PlasterYellow", till=False)
+    kit.newspaper(B, 2.6, 4.6, c["top"], 10.0, seed=4)
+    kit.telephone(B, 3.5, 4.7, c["top"], 0.0)
+    B.thing("rental_counter", "counter", (2.9, 4.65, 1.1), 0.0, service="rentals", role="renter")
+    B.spot("counter", "counter", (2.9, 3.85, 0.0), 180.0)
+    B.spot("staff_renter", "work", (2.9, 5.45, 0.0), 0.0)
+    for k, bx in enumerate((-4.4, -3.8, -3.2)):
+        bicycle(B, bx, 4.6, 0.0, 0.0, mat=("CT_SteelRed", "CT_PlasterBlue", "CT_PlasterGreen")[k])
+    for k, dx in enumerate((-3.3, -2.1, -0.9)):
+        dc = deck_chair(B, dx, 1.55, 0.0, 0.0, canvas=("CT_PlasterRed", "CT_PlasterBlue", "CT_PlasterYellow")[k])
+        if k == 1:
+            _seat(B, "rental_deckchair", dc, 0.3)
+    oars(B, -1.4, YB, 0.0, 0.0, n=4, w=1.3)
+    life_ring(B, 0.3, YB, 0.0, 0.0, zc=1.85)
+    kit.mats(B, -1.4, 4.4, 0.0, 0.0, w=0.9, d=0.6, n=4, mat="CT_PlasterBlue")
+    kit.notice_board(B, XR, 3.0, 0.0, 270.0, w=1.2, zc=1.6)
+    B.thing("rental_rules", "board", (XR - 0.04, 3.0, 1.6), 270.0, topic="rules")
+    kit.poster(B, XL, 2.4, 0.0, 90.0, name="travel_2", w=0.6, zc=1.7)
+    kit.wall_clock(B, 2.9, YB, 0.0, 0.0, zc=2.3, face="clock_0")
+    # QA: the back-right corner and the right wall were bare
+    kit.plant(B, 4.45, 5.9, 0.0, 0.0, h=1.3, kind="ficus")
+    kit.picture(B, XR, 5.0, 0.0, 270.0, name="painting_sea_calm", w=0.8, zc=1.7)
+    kit.rug(B, 1.0, 2.9, FLOOR, 0.0, w=2.2, d=1.3, name="rug_1", seed=3)
+    _lamp(B, -0.8, 3.3, kind="cone")
+
+
+def workshop(B):
+    """Мастерская: a repair counter, a workbench with a pegboard of tools, radios and a TV waiting, hardware shelves."""
+    c = kit.shop_counter(B, 2.7, 3.35, 0.0, 0.0, w=2.0, front="CT_PlasterGreen", top="CT_WoodLight", till=False)
+    kit.radio(B, 2.4, 3.35, c["top"], 0.0)
+    kit.wall_clock(B, 3.6, YB, 0.0, 0.0, zc=2.2, face="clock_3")
+    B.thing("repair_counter", "counter", (2.7, 3.35, 1.1), 0.0, service="repair", role="repairman")
+    B.spot("counter", "counter", (2.7, 2.55, 0.0), 180.0)
+    B.spot("staff_repairman", "work", (2.7, 4.15, 0.0), 0.0)
+    wb = workbench(B, -0.4, YB, 0.0, 0.0, w=2.4)
+    kit.tools(B, -1.1, 6.0, wb["top"], 0.0)
+    kit.radio(B, 0.2, 6.05, wb["top"], 15.0)
+    B.thing("workbench", "craft", (-0.4, 6.05, 0.95), 0.0, what="workbench")
+    B.spot("bench", "work", (-0.4, 5.25, 0.0), 180.0)
+    kit.stool(B, 0.4, 5.3, 0.0, 180.0)
+    kit.shop_shelf(B, XL, 2.4, 0.0, 90.0, w=1.8, goods="hardware", seed=5, trade="hardware")
+    kit.shop_shelf(B, XL, 4.5, 0.0, 90.0, w=1.8, goods="boxes", seed=6, trade="hardware")
+    B.thing("workshop_manuals", "shelf", (XL + 0.25, 4.5, 1.3), 90.0, topic="engineering")
+    kit.tv_set(B, 3.9, 5.85, 0.0, 0.0)
+    kit.cardboard_box(B, 3.0, 6.05, 0.0, 0.0, seed=7)
+    kit.cardboard_box(B, 3.0, 6.05, 0.35, 10.0, seed=8)
+    kit.poster(B, XR, 2.4, 0.0, 270.0, name="poster_safety", w=0.6, zc=1.7)
+    B.thing("workshop_poster", "board", (XR - 0.04, 2.4, 1.7), 270.0, topic="rules")
+    kit.fire_extinguisher(B, XR, 1.2, 0.0, 270.0)
+    # QA: the front-left of the room was an empty floor
+    kit.plant(B, -4.45, 0.95, 0.0, 0.0, h=1.1, kind="fern")
+    kit.rug(B, -1.6, 2.4, FLOOR, 0.0, w=2.0, d=1.2, name="rug_2", seed=5)
+    _lamp(B, 0.6, 3.6, kind="cone")
+    kit.pendant(B, -0.4, 5.6, CEIL, drop=0.8, kind="cone")
+
+
+def dumplings(B):
+    """Пельменная: a self-service counter with a tray rail, the stoves and pots behind, stand-up tables, the menu."""
+    c = kit.shop_counter(B, 1.4, 4.3, 0.0, 0.0, w=3.4, front="CT_TileWhite", top="CT_Aluminium", till=True)
+    p = _P(B, 1.4, 4.3, 0.0, 0.0, "tray_rail")
+    p.kind = "prop"
+    for zz in (0.85, 0.9):
+        p.rod(ALU, (-1.7, -0.62, zz), (1.7, -0.62, zz), 0.025, 6)
+    for xx in (-1.5, 0.0, 1.5):
+        p.rod(ALU, (xx, -0.36, 0.86), (xx, -0.62, 0.86), 0.02, 4)
+    p.done()
+    pastries(B, 0.6, 4.3, c["top"], 0.0, n=6, mat="CT_TileWhite")
+    kit.plates(B, 0.0, 4.3, c["top"], 0.0, n=5)
+    B.thing("dumpling_counter", "counter", (1.4, 4.3, 1.1), 0.0, shop="dumplings", service="bar", role="cook")
+    B.spot("counter", "counter", (1.4, 3.3, 0.0), 180.0)
+    B.spot("staff_cook", "work", (0.8, 5.1, 0.0), 0.0)
+    B.spot("staff_waiter", "work", (2.3, 5.1, 0.0), 0.0)
+    kit.kitchen_unit(B, 1.4, YB, 0.0, 0.0, modules="stove,cupboard,sink,stove", wall_cupboards=False)
+    pots(B, 0.5, 6.1, 0.9, 0.0, n=2)
+    pots(B, 2.3, 6.1, 0.9, 0.0, n=1)
+    for i, (tx, ty) in enumerate(((-3.8, 1.5), (-1.7, 1.5), (-3.8, 3.4), (-1.7, 3.4))):
+        t = tall_table(B, tx, ty, 0.0, 0.0)
+        pastries(B, tx, ty, t["top"], 0.0, n=5, mat="CT_TileWhite") if i % 2 == 0 else kit.glass(B, tx, ty, t["top"], 0.0)
+        B.spot("table%d" % (i + 1), "stand", (tx, ty - 0.6, 0.0), 180.0)
+    kit.menu_board(B, -2.6, YB, 0.0, 0.0, name="menu_0", w=0.8, zc=1.7)
+    B.thing("dumpling_menu", "board", (-2.6, YB - 0.04, 1.7), 0.0, topic="prices")
+    kit.poster(B, XL, 3.4, 0.0, 90.0, name="poster_cons_1", w=0.6, zc=1.7)
+    kit.wall_shelf(B, XL, 2.4, 0.0, 90.0, w=1.0, zt=1.45)
+    kit.coat_rack(B, XR - 0.35, 3.0, 0.0, 270.0, w=1.2)
+    kit.shop_shelf(B, XL, 4.6, 0.0, 90.0, w=1.2, goods="bottles", levels=4, seed=14, trade="drinks")
+    kit.radiator(B, -1.2, YB, 0.0, 0.0, w=1.0)
+    kit.plant(B, -4.4, 5.85, 0.0, 0.0, h=1.1, kind="fern")
+    kit.plant(B, 4.45, 5.9, 0.0, 0.0, h=1.2, kind="ficus")      # QA: back-right corner was empty
+    kit.sign_plate(B, 1.4, 4.3, 0.0, 0.0, name="sign_till", w=0.8, zc=2.55, hang=True)
+    _lamp(B, -0.3, 3.2)
+
+
+def souvenirs(B):
+    """Сувениры: glass display cases of trinkets, shelves of boxes and dolls, a postcard rack, sea paintings."""
+    c = kit.shop_counter(B, 2.8, 4.5, 0.0, 0.0, w=2.0, front="CT_PlasterPink")
+    B.thing("souvenir_counter", "counter", (2.8, 4.5, 1.1), 0.0, shop="souvenirs", service="shop", role="seller")
+    B.spot("counter", "counter", (2.8, 3.65, 0.0), 180.0)
+    B.spot("staff_seller", "work", (2.8, 5.3, 0.0), 0.0)
+    for k, cx in enumerate((-3.4, -1.6)):
+        kit.display_case(B, cx, 2.8, 0.0, 0.0, w=1.2, goods="toys", seed=k)
+        B.spot("case%d" % (k + 1), "stand", (cx, 2.1, 0.0), 180.0)
+    B.thing("souvenir_case", "board", (-3.4, 2.8, 1.0), 0.0, topic="store")
+    kit.shop_shelf(B, -3.2, YB, 0.0, 0.0, w=1.6, goods="boxes", seed=9, trade="toys")
+    kit.shop_shelf(B, -1.4, YB, 0.0, 0.0, w=1.4, goods="toys", seed=10, trade="toys")
+    kit.magazine_rack(B, XL, 4.6, 0.0, 90.0, w=0.9)
+    B.thing("postcards", "shelf", (XL + 0.2, 4.6, 1.0), 90.0, topic="travel")
+    kit.picture(B, XR, 2.5, 0.0, 270.0, name="painting_lighthouse", w=0.9, zc=1.7)
+    B.thing("souvenir_picture", "board", (XR - 0.04, 2.5, 1.7), 270.0, topic="painting")
+    kit.picture(B, XR, 3.7, 0.0, 270.0, name="painting_dunes", w=0.7, zc=1.7)
+    kit.picture(B, 1.2, YB, 0.0, 0.0, name="painting_sea_night", w=0.8, zc=1.8)
+    kit.shop_shelf(B, 3.3, YB, 0.0, 0.0, w=1.2, goods="boxes", seed=11, levels=4, trade="toys")
+    kit.plant(B, 0.2, 5.9, 0.0, 0.0, h=1.0, kind="cactus")
+    _lamp(B, -0.8, 3.2)
+
+
+def bakery(B):
+    """Булочная: a counter with the till, bread racks behind and along the wall, a baker's trolley, a table by the window."""
+    c = kit.shop_counter(B, 0.8, 3.9, 0.0, 0.0, w=3.0, front="CT_PlasterYellow", top="CT_TileWhite")
+    p = _P(B, 0.3, 3.9, c["top"], 0.0, "bun_tray")
+    p.kind = "prop"
+    p.box(ALU, -0.45, 0.45, -0.2, 0.2, 0.0, 0.012)
+    _loaf_row(p, -0.43, 0.43, -0.15, 0.15, 0.012, ["CT_PlasterYellow", "CT_WoodLight"], step=0.14, round_=True)
+    p.done()
+    B.thing("bakery_counter", "counter", (0.8, 3.9, 1.1), 0.0, shop="bakery", service="shop", role="seller")
+    B.spot("counter", "counter", (0.8, 3.05, 0.0), 180.0)
+    B.spot("staff_seller", "work", (0.8, 4.7, 0.0), 0.0)
+    bread_rack(B, 0.6, YB, 0.0, 0.0, w=2.8)
+    B.thing("bread_rack", "board", (0.6, YB - 0.25, 1.2), 0.0, topic="store")
+    bread_rack(B, XL, 4.4, 0.0, 90.0, w=1.6, levels=3)
+    tray_trolley(B, 3.9, 5.7, 0.0, 270.0)
+    B.spot("staff_baker", "work", (3.2, 5.7, 0.0), 90.0)
+    kit.menu_board(B, 3.2, YB, 0.0, 0.0, name="price_1", w=0.7, zc=1.7)
+    B.thing("bread_prices", "board", (3.2, YB - 0.04, 1.7), 0.0, topic="prices")
+    kit.table(B, -3.2, 1.5, 0.0, 0.0, w=0.8, d=0.6, mat="CT_WoodLight")
+    _chairs(B, -3.2, 1.5, 0.8, 0.6, (0, 0, 1, 1), "table1", kind="wood")
+    kit.cup(B, -3.3, 1.5, 0.75, 0.0)
+    kit.sack(B, -1.5, 5.95, 0.0, 0.0)
+    kit.sack(B, -2.0, 6.0, 0.0, 30.0)
+    # QA: the left wall by the window table was bare
+    kit.plant(B, -4.5, 2.9, 0.0, 0.0, h=1.1, kind="fern")
+    kit.poster(B, XL, 2.2, 0.0, 90.0, name="travel_1", w=0.6, zc=1.7)
+    kit.picture(B, XR, 3.0, 0.0, 270.0, name="painting_still_life", w=0.8, zc=1.7)
+    kit.wall_clock(B, XR, 4.6, 0.0, 270.0, zc=2.3, face="clock_2")
+    _lamp(B, -0.4, 3.0)
+
+
+def photo(B):
+    """Фотоателье: a studio corner (backdrop, posing stool, the camera on its tripod, a softbox), sample portraits, the
+    photographer's desk and a photo booth."""
+    backdrop(B, -3.0, YB, 0.0, 0.0, w=2.9)
+    st = kit.stool(B, -3.0, 5.0, 0.0, 0.0, h=0.5, mat=WOOD)
+    B.thing("photo_stool", "seat", (-3.0, 5.0, 0.5), 0.0, height=0.5, what="portrait")
+    camera_tripod(B, -3.0, 2.5, 0.0, 180.0)
+    B.spot("staff_photographer_camera", "work", (-3.0, 2.0, 0.0), 180.0)
+    softbox(B, -1.1, 4.2, 0.0, 293.0)
+    softbox(B, -4.5, 3.4, 0.0, 137.0)
+    d = kit.reception_desk(B, 1.6, 3.5, 0.0, 0.0, w=1.8, front="CT_PlasterGrey")
+    kit.telephone(B, 1.2, 3.65, 0.75, 0.0)
+    kit.books_stack(B, 2.0, 3.7, 0.75, 0.0, n=2, seed=3)
+    B.thing("photo_desk", "counter", (1.6, 3.5, 1.1), 0.0, service="reception", role="photographer")
+    B.spot("counter", "counter", (1.6, 2.65, 0.0), 180.0)
+    B.spot("staff_photographer", "work", (1.6, 4.35, 0.0), 0.0)
+    pb = kit.photo_booth(B, 4.15, 5.35, 0.0, 270.0)
+    B.thing("photo_booth", "machine", (4.15, 5.35, 1.2), 270.0, what="photo_booth")
+    for k, (py, pz) in enumerate(((2.2, 1.95), (3.1, 1.95), (2.2, 1.2), (3.1, 1.2))):
+        kit.picture(B, XR, py, 0.0, 270.0, name="painting_portrait", w=0.5, zc=pz, frame=("CT_Wood", "CT_Lacquer")[k % 2])
+    B.thing("photo_samples", "board", (XR - 0.04, 2.65, 1.6), 270.0, topic="exhibit")
+    kit.picture(B, 1.4, YB, 0.0, 0.0, name="painting_portrait", w=0.7, zc=1.75, frame="CT_Brass")
+    kit.picture(B, 2.4, YB, 0.0, 0.0, name="painting_sea_calm", w=0.6, zc=1.75)
+    kit.plant(B, 0.2, 5.95, 0.0, 0.0, h=1.2, kind="monstera")
+    kit.hat_stand(B, 4.4, 1.55, 0.0, 0.0)
+    # QA: the middle and the left wall were bare
+    kit.wall_clock(B, -0.6, YB, 0.0, 0.0, zc=2.3, face="clock_2")
+    kit.picture(B, XL, 1.4, 0.0, 90.0, name="painting_dunes", w=0.7, zc=1.7, frame="CT_Brass")
+    kit.picture(B, XL, 5.4, 0.0, 90.0, name="painting_lighthouse", w=0.8, zc=1.7)
+    kit.rug(B, 0.6, 2.0, FLOOR, 0.0, w=2.0, d=1.2, name="rug_4", seed=8)
+    kit.plant(B, 4.45, 0.95, 0.0, 0.0, h=1.0, kind="fern")
+    _lamp(B, 0.6, 3.0)
+    kit.pendant(B, -3.0, 4.2, CEIL, drop=0.5, kind="cone")
+
+
+def barber(B):
+    """Парикмахерская: two barber's chairs before mirrors, a wash basin, a waiting bench with magazines, a coat stand."""
+    for k, cy in enumerate((2.2, 4.3)):
+        mirror_console(B, XL, cy, 0.0, 90.0, w=1.0, seed=k)
+        bc = barber_chair(B, XL + 1.0, cy, 0.0, 270.0, mat=("CT_Leather", "CT_PlasterRed")[k])
+        _seat(B, "barber_chair_%d" % (k + 1), bc, 0.58, what="haircut")
+        B.spot("staff_barber_%d" % (k + 1), "work", (XL + 1.75, cy - 0.25, 0.0), 270.0)
+    kit.kitchen_unit(B, -3.6, YB, 0.0, 0.0, modules="sink,cupboard", wall_cupboards=False)
+    kit.mirror(B, -3.9, YB, 0.0, 0.0, zc=1.6, w=0.5, h=0.7)
+    wr = kit.waiting_row(B, 1.4, 6.05, 0.0, 0.0, n=3, mat="CT_PlasterRed")
+    m = wr["seats"][1]
+    B.thing("barber_waiting", "seat", (m[0], m[1], m[2]), m[3], height=0.45)
+    for k, s in enumerate(wr["seats"]):
+        B.spot("wait%d" % k, "seat", (s[0], s[1], 0.0), s[3])
+    ct = kit.coffee_table(B, 1.4, 5.05, 0.0, 0.0, w=1.0)
+    kit.newspaper(B, 1.2, 5.05, ct["top"], 15.0, seed=6)
+    kit.newspaper(B, 1.6, 5.05, ct["top"], -25.0, seed=7)
+    kit.magazine_rack(B, 3.3, YB, 0.0, 0.0, w=0.8)
+    B.thing("barber_magazines", "shelf", (3.3, YB - 0.2, 1.0), 0.0, topic="local")
+    kit.poster(B, XR, 3.2, 0.0, 270.0, name="painting_portrait", w=0.5, zc=1.7)
+    kit.notice_board(B, XR, 4.5, 0.0, 270.0, w=0.9, zc=1.6)
+    B.thing("barber_prices", "board", (XR - 0.04, 4.5, 1.6), 270.0, topic="prices")
+    kit.hat_stand(B, 4.4, 2.4, 0.0, 0.0)
+    kit.plant(B, -0.4, 0.85, 0.0, 0.0, h=1.0, kind="fern", pot="CT_TileWhite")
+    # QA: the room's middle and the back wall were bare
+    kit.rug(B, 1.4, 5.0, FLOOR, 0.0, w=2.0, d=1.3, name="rug_1", seed=9)
+    kit.picture(B, -1.2, YB, 0.0, 0.0, name="painting_sea_calm", w=0.7, zc=1.7)
+    kit.wall_clock(B, XR, 5.6, 0.0, 270.0, zc=2.3, face="clock_1")
+    kit.plant(B, 4.45, 5.9, 0.0, 0.0, h=1.2, kind="palm")
+    _lamp(B, -2.6, 3.2)
+    kit.pendant(B, 1.4, 4.4, CEIL, drop=0.5)
+
+
+BOOK_TOPICS = (("sea", "old"), ("birds", "library"), ("local", "encyclopaedia"), ("travel", "modern"))
+
+
+def books(B):
+    """Книжный развал: shelves by topic round the walls, a sale table piled with books, a reading armchair, the counter."""
+    for k, (topic, spines) in enumerate(BOOK_TOPICS):
+        x = -4.3 + k * 0.95
+        kit.bookshelf(B, x, YB, 0.0, 0.0, w=0.9, h=2.1, topic=spines, seed=k)
+        B.thing("shelf_%s" % topic, "shelf", (x, YB - 0.16, 1.3), 0.0, topic=topic)
+    for k, (topic, spines, y) in enumerate((("poetry", "collected", 2.0), ("kids", "kids", 2.95), ("cooking", "paperback", 3.9),
+                                             ("science", "library", 4.85))):
+        kit.bookshelf(B, XL, y, 0.0, 90.0, w=0.9, h=2.1, topic=spines, seed=10 + k)
+        B.thing("shelf_%s" % topic, "shelf", (XL + 0.16, y, 1.3), 90.0, topic=topic)
+    t = kit.table(B, -1.6, 2.4, 0.0, 0.0, w=1.6, d=0.8, mat="CT_Wood")
+    for k, (dx, dy) in enumerate(((-0.55, -0.15), (-0.2, 0.15), (0.2, -0.1), (0.55, 0.15))):
+        kit.books_stack(B, -1.6 + dx, 2.4 + dy, t["top"], 20.0 * k, n=3 + k % 3, seed=20 + k)
+    B.thing("sale_table", "shelf", (-1.6, 2.4, 0.9), 0.0, topic="poetry_sale")
+    B.spot("sale_table", "stand", (-1.6, 1.75, 0.0), 180.0)
+    ac = kit.armchair(B, 0.4, 5.6, 0.0, 0.0, mat="CT_PlasterGreen")
+    _seat(B, "reading_chair", ac, 0.45)
+    kit.floor_lamp(B, 1.05, 5.95, 0.0, 0.0)
+    kit.rug(B, 0.4, 5.0, 0.0, 0.0, w=1.6, d=1.2, name="rug_3", seed=2)
+    c = kit.shop_counter(B, 3.1, 4.3, 0.0, 0.0, w=1.6, front="CT_PlasterGreen", top="CT_WoodLight")
+    kit.books_stack(B, 2.7, 4.3, c["top"], 10.0, n=3, seed=31)
+    B.thing("book_counter", "counter", (3.1, 4.3, 1.1), 0.0, shop="book_stall", service="shop", role="bookseller")
+    B.spot("counter", "counter", (3.1, 3.45, 0.0), 180.0)
+    B.spot("staff_bookseller", "work", (3.1, 5.1, 0.0), 0.0)
+    kit.bookshelf(B, 3.3, YB, 0.0, 0.0, w=1.6, h=2.1, topic="old", seed=40)
+    kit.poster(B, XR, 3.0, 0.0, 270.0, name="poster_birds_1", w=0.6, zc=1.7)
+    B.thing("bird_poster", "board", (XR - 0.04, 3.0, 1.7), 270.0, topic="exhibit")
+    _lamp(B, -1.0, 3.6, kind="green")
+
+
+def beer(B):
+    """Пивной бар: a long bar with taps and a back bar, bar stools, barrels as standing tables, a dart board."""
+    bar = kit.bar_counter(B, 1.7, 4.55, 0.0, 0.0, w=3.6, taps=4, front="CT_Leather", back=False, seed=5)
+    kit.shop_shelf(B, 1.7, YB, 0.0, 0.0, w=3.2, goods="bottles", levels=4, mat=WOOD, seed=5, trade="drinks")
+    for k in range(3):
+        kit.glass(B, 0.6 + k * 0.25, 4.45, bar["top"], 0.0)
+    B.thing("beer_bar", "counter", (1.7, 4.55, 1.05), 0.0, shop="beer_bar", service="bar", role="bartender")
+    B.spot("counter", "counter", (3.2, 3.75, 0.0), 180.0)
+    B.spot("staff_bartender_1", "work", (1.1, 5.35, 0.0), 0.0)
+    B.spot("staff_bartender_2", "work", (2.4, 5.35, 0.0), 0.0)
+    for k, sx in enumerate((0.3, 1.1, 1.9)):
+        st = kit.bar_stool(B, sx, 3.8, 0.0, 180.0, mat="CT_Leather")
+        B.spot("stool%d" % k, "seat", (sx, 3.8, 0.0), 180.0)
+        if k == 1:
+            _seat(B, "beer_stool", st, 0.75)
+    for k, (bx, by) in enumerate(((-3.6, 1.5), (-1.5, 1.5), (-3.6, 3.3))):
+        b = barrel(B, bx, by, 0.0, 0.0, h=1.0)
+        kit.glass(B, bx + 0.12, by, b["top"], 0.0)
+        B.spot("barrel%d" % (k + 1), "stand", (bx, by - 0.65, 0.0), 180.0)
+    kit.dart_board(B, XL, 5.3, 0.0, 90.0)
+    B.thing("darts", "play", (XL + 0.08, 5.3, 1.73), 90.0, what="darts")
+    kit.picture(B, XR, 3.0, 0.0, 270.0, name="painting_sea_night", w=0.8, zc=1.75)
+    kit.poster(B, -2.6, YB, 0.0, 0.0, name="poster_cons_3", w=0.6, zc=1.7)
+    B.thing("beer_poster", "board", (-2.6, YB - 0.04, 1.7), 0.0, topic="rules")
+    kit.coat_rack(B, XR - 0.35, 4.9, 0.0, 270.0, w=1.2)
+    _lamp(B, -0.8, 3.2, lumens=1200, kind="green")
+    kit.pendant(B, 1.7, 4.3, CEIL, drop=0.7, kind="green")
+
+
+def pasty(B):
+    """Чебуречная: a counter with a fryer and a dish of chebureki, the stoves behind, stand-up tables, the menu."""
+    c = kit.shop_counter(B, 1.4, 4.3, 0.0, 0.0, w=3.0, front="CT_PlasterYellow", top="CT_Aluminium")
+    pastries(B, 0.7, 4.3, c["top"], 0.0, n=6, mat="CT_WoodLight")
+    kit.glass(B, 1.2, 4.2, c["top"], 0.0)
+    B.thing("pasty_counter", "counter", (1.4, 4.3, 1.1), 0.0, shop="pasty_bar", service="shop", role="seller")
+    B.spot("counter", "counter", (1.4, 3.45, 0.0), 180.0)
+    B.spot("staff_seller", "work", (2.1, 5.1, 0.0), 0.0)
+    B.spot("staff_cook", "work", (0.5, 5.1, 0.0), 0.0)
+    kit.kitchen_unit(B, 1.4, YB, 0.0, 0.0, modules="stove,stove,cupboard,sink", wall_cupboards=True)
+    # the deep fryer: a steel box with a dark pan of oil and a basket
+    p = _P(B, 0.8, 6.1, 0.9, 0.0, "fryer")
+    p.kind = "prop"
+    p.box(ALU, -0.25, 0.25, -0.22, 0.22, 0.0, 0.18, f="xXyY")
+    p.box("CT_Lacquer", -0.22, 0.22, -0.19, 0.19, 0.0, 0.15, f="Z")
+    p.box(STEEL, -0.12, 0.12, -0.1, 0.1, 0.12, 0.2, f="xXyYz")
+    p.rod(LAQ, (0.0, -0.1, 0.2), (0.0, -0.3, 0.3), 0.025, 4)
+    p.done()
+    for i, (tx, ty) in enumerate(((-3.8, 1.5), (-1.7, 1.5), (-2.8, 3.4))):
+        t = tall_table(B, tx, ty, 0.0, 0.0)
+        pastries(B, tx, ty, t["top"], 0.0, n=3, mat="CT_WoodLight")
+        B.spot("table%d" % (i + 1), "stand", (tx, ty - 0.6, 0.0), 180.0)
+    kit.menu_board(B, -2.6, YB, 0.0, 0.0, name="menu_0", w=0.8, zc=1.7)
+    B.thing("pasty_menu", "board", (-2.6, YB - 0.04, 1.7), 0.0, topic="prices")
+    kit.wall_shelf(B, XL, 4.8, 0.0, 90.0, w=1.0, zt=1.5, props=False)
+    kit.bottles(B, XL + 0.11, 4.8, 1.5, 90.0, n=4, seed=3)
+    kit.poster(B, XR, 3.2, 0.0, 270.0, name="poster_sun_2", w=0.6, zc=1.7)
+    kit.wall_phone(B, XR, 4.6, 0.0, 270.0)
+    kit.shop_shelf(B, XL, 2.6, 0.0, 90.0, w=1.4, goods="bottles", levels=4, seed=13, trade="drinks")
+    kit.poster(B, XL, 3.9, 0.0, 90.0, name="poster_cons_2", w=0.55, zc=1.7)
+    kit.sign_plate(B, 1.4, 4.3, 0.0, 0.0, name="sign_till", w=0.8, zc=2.55, hang=True)
+    kit.radiator(B, -1.0, YB, 0.0, 0.0, w=1.0)
+    kit.plant(B, 4.45, 2.4, 0.0, 0.0, h=1.2, kind="ficus")
+    B.thing("payphone", "machine", (XR - 0.1, 4.6, 1.45), 270.0, what="payphone")
+    _lamp(B, -0.4, 3.2, kind="cone")
+
+
+# ------------------------------------------------------------------------------------------------ the second pass
+# Depth pass: per trade a few more things to do or read (ids are the same in every unit of the trade; their acts are in
+# tools/city/content/x_w1_units.json), a few props that make the room that trade's room, spots for the townsfolk.
+# No new lamps, at most ~2k triangles per variant.
+def strop(B, x, y, z=0.0, yaw=0.0):
+    """[wall] A barber's razor strop: a hook, a wooden handle and a long leather band hanging down."""
+    p = _P(B, x, y, z, yaw, "strop")
+    p.kind = "wall"
+    p.rod(BRASS, (0.0, -0.01, 1.45), (0.0, -0.06, 1.45), 0.02, 5)
+    p.box(WOOD, -0.03, 0.03, -0.09, -0.05, 1.3, 1.44)
+    p.box("CT_Leather", -0.025, 0.025, -0.07, -0.062, 0.75, 1.3, f="yYxX")
+    p.box(STEEL, -0.035, 0.035, -0.075, -0.06, 0.68, 0.76)
+    return p.done()
+
+
+def _stand_spot(B, sid, x, y, yaw, kind="stand"):
+    B.spot(sid, kind, (x, y, 0.0), yaw)
+
+
+def cafe_more(B):
+    j = kit.jukebox(B, XR - 0.4, 2.35, 0.0, 270.0)
+    B.thing("cafe_jukebox", "machine", (XR - 0.4, 2.35, 1.0), 270.0, what="jukebox")
+    _stand_spot(B, "jukebox", 3.6, 2.4, 90.0)
+    kit.magazine_rack(B, -1.65, YB, 0.0, 0.0, w=0.9, seed=3)
+    B.thing("cafe_papers", "shelf", (-1.65, YB - 0.2, 1.0), 0.0, topic="local")
+    _stand_spot(B, "papers", -1.65, 5.55, 180.0)
+    kit.sandwich_board(B, 2.2, 1.15, 0.0, 200.0, w=0.55, name="menu")
+    B.thing("cafe_specials", "board", (2.2, 1.15, 0.6), 200.0, topic="prices")
+    B.thing("cafe_window", "board", (-2.5, 0.46, 1.5), 0.0, topic="view")
+    _stand_spot(B, "window_stand", -2.5, 1.0, 0.0)
+    B.thing("cafe_chat", "counter", (0.95, 4.55, 1.05), 0.0, service="chat", role="barista")
+    kit.ceiling_fan(B, -2.5, 2.6, CEIL)
+
+
+def fish_more(B):
+    kit.rod_rack(B, XR, 1.35, 0.0, 270.0, w=1.0, n=5)
+    B.thing("fish_rods", "board", (XR - 0.12, 1.35, 1.3), 270.0, topic="store")
+    kit.poster(B, XR, 2.45, 0.0, 270.0, name="chart_calendar", w=0.55, zc=1.6)
+    B.thing("fish_tides", "board", (XR - 0.04, 2.45, 1.6), 270.0, topic="view")
+    _stand_spot(B, "tide_board", 4.0, 2.45, 90.0)
+    kit.notice_board(B, XL, 3.35, 0.0, 90.0, w=0.55, zc=1.6, seed=3)
+    B.thing("fish_knots", "board", (XL + 0.04, 3.35, 1.6), 90.0, topic="rules")
+    kit.rope_coil(B, -4.3, 4.95, 0.0, 0.0)
+    B.thing("fish_scale", "machine", (1.75, 4.35, 1.15), 0.0, what="steelyard")
+    B.thing("fish_chat", "counter", (-0.3, 4.4, 1.1), 0.0, service="chat", role="fishmonger")
+
+
+def rental_more(B):
+    for k, bx in enumerate((-2.6, -2.0)):
+        bicycle(B, bx, 5.15, 0.0, 0.0, mat=("CT_PlasterYellow", "CT_SteelRed")[k])
+    B.thing("rental_bikes", "board", (-3.8, 4.6, 0.95), 0.0, topic="store")
+    _stand_spot(B, "bikes", -3.4, 3.7, 0.0)
+    kit.blackboard(B, XL, 3.45, 0.0, 90.0, w=1.4, h=1.1, zb=0.95, seed=4, writing="chart_timetable_cable")
+    B.thing("rental_boats", "board", (XL + 0.05, 3.45, 1.5), 90.0, topic="timetable")
+    _stand_spot(B, "boats", -3.9, 3.45, 90.0)
+    kit.notice_board(B, XR, 1.55, 0.0, 270.0, w=0.7, zc=1.6, seed=5)
+    B.thing("rental_keys", "board", (XR - 0.04, 1.55, 1.6), 270.0, topic="store")
+    kit.sandwich_board(B, 2.1, 1.15, 0.0, 165.0, w=0.55, name="price")
+    B.thing("rental_tariff", "board", (2.1, 1.15, 0.6), 165.0, topic="prices")
+    B.thing("rental_chat", "counter", (2.15, 4.65, 1.1), 0.0, service="chat", role="renter")
+    B.thing("rental_deckchair_2", "seat", (-3.3, 1.47, 0.3), 0.0, height=0.3)
+    kit.rope_coil(B, 0.6, 5.7, 0.0, 0.0)
+
+
+def workshop_more(B):
+    kit.bin_rack(B, -2.9, YB, 0.0, 0.0, cols=5, rows=7, seed=2)
+    B.thing("workshop_bins", "board", (-2.9, YB - 0.2, 1.1), 0.0, topic="store")
+    _stand_spot(B, "bins", -2.9, 5.6, 180.0)
+    kit.notice_board(B, XR, 3.75, 0.0, 270.0, w=1.0, zc=1.6, seed=6)
+    B.thing("workshop_tags", "board", (XR - 0.04, 3.75, 1.6), 270.0, topic="lost")
+    _stand_spot(B, "tags", 4.1, 3.75, 90.0)
+    kit.wall_shelf(B, 1.9, YB, 0.0, 0.0, w=1.5, zt=1.5, props=False)
+    for k, rx in enumerate((1.4, 1.9, 2.4)):
+        kit.radio(B, rx, YB - 0.14, 1.5, 0.0 if k != 1 else 8.0, mat=(WOOD, WOODL, WOOD)[k])
+    B.thing("workshop_radios", "board", (1.9, YB - 0.2, 1.7), 0.0, topic="catalogue")
+    B.thing("workshop_tv", "machine", (3.9, 5.85, 0.9), 0.0, what="test_card")
+    B.thing("workshop_chat", "counter", (2.1, 3.35, 1.1), 0.0, service="chat", role="repairman")
+    kit.lamp_green(B, 0.4, 6.08, 0.9, 0.0)
+
+
+def dumplings_more(B):
+    dp = kit.dumpling_pot(B, -3.2, 5.8, 0.0, 0.0, steamers=2, lid=False)
+    B.thing("dumpling_pot", "machine", (-3.2, 5.8, 1.0), 0.0, what="dumpling_pot")
+    _stand_spot(B, "pot", -3.2, 4.95, 180.0)
+    kit.tray_stack(B, 2.9, 4.3, 1.05, 0.0, n=6)
+    kit.notice_board(B, XR, 4.6, 0.0, 270.0, w=0.9, zc=1.6, seed=8)
+    B.thing("dumpling_rules", "board", (XR - 0.04, 4.6, 1.6), 270.0, topic="rules")
+    kit.sandwich_board(B, 2.2, 1.15, 0.0, 195.0, w=0.55, name="menu")
+    B.thing("dumpling_today", "board", (2.2, 1.15, 0.6), 195.0, topic="prices")
+    B.thing("dumpling_chat", "counter", (0.1, 4.3, 1.1), 0.0, service="chat", role="cook")
+
+
+def souvenirs_more(B):
+    kit.globe(B, -0.4, 5.6, 0.0, 0.0, floor=True)
+    B.thing("souvenir_globe", "board", (-0.4, 5.6, 1.1), 0.0, topic="travel")
+    t = kit.table(B, -0.9, 1.5, 0.0, 0.0, w=0.8, d=0.5, mat="CT_WoodLight")
+    kit.books_stack(B, -0.9, 1.5, t["top"], 5.0, n=2, seed=15)
+    kit.vase(B, -0.6, 1.45, t["top"], 0.0, seed=2)
+    B.thing("souvenir_guestbook", "board", (-0.9, 1.5, 0.82), 0.0, topic="logbook")
+    _stand_spot(B, "guestbook", -0.9, 0.95, 0.0)
+    kit.display_case(B, 0.6, 2.9, 0.0, 0.0, w=0.9, goods="boxes", seed=7)
+    B.thing("souvenir_amber", "board", (0.6, 2.9, 1.0), 0.0, topic="exhibit")
+    B.thing("souvenir_boxes", "shelf", (-3.2, YB - 0.25, 1.2), 0.0, topic="art")
+    B.thing("souvenir_chat", "counter", (2.1, 4.5, 1.1), 0.0, service="chat", role="seller")
+
+
+def bakery_more(B):
+    kit.kiln(B, -3.2, 5.7, 0.0, 0.0)
+    B.thing("bakery_oven", "machine", (-3.2, 5.2, 1.0), 0.0, what="oven")
+    _stand_spot(B, "oven", -3.2, 4.65, 180.0)
+    t = kit.table(B, 2.4, 5.25, 0.0, 0.0, w=1.0, d=0.6, mat="CT_WoodLight")
+    kit.sack(B, 2.05, 5.25, t["top"], 20.0)
+    kit.plates(B, 2.7, 5.25, t["top"], 0.0, n=2, mat="CT_WoodLight")
+    B.thing("bakery_dough", "craft", (2.4, 5.25, 0.85), 0.0, what="dough")
+    kit.sandwich_board(B, 2.2, 1.15, 0.0, 195.0, w=0.55, name="price")
+    B.thing("bakery_today", "board", (2.2, 1.15, 0.6), 195.0, topic="store")
+    B.thing("bakery_chat", "counter", (-0.2, 3.9, 1.1), 0.0, service="chat", role="seller")
+
+
+def photo_more(B):
+    kit.screen_divider(B, 1.9, 5.9, 0.0, 0.0)
+    B.thing("photo_darkroom", "craft", (1.9, 5.7, 1.0), 0.0, what="darkroom")
+    _stand_spot(B, "darkroom", 1.9, 5.0, 180.0)
+    B.thing("photo_camera", "machine", (-3.0, 2.3, 1.5), 180.0, what="camera")
+    B.thing("photo_props", "board", (4.4, 1.55, 1.3), 0.0, topic="store")
+    kit.filing_cabinet(B, XL, 4.3, 0.0, 90.0)
+    B.thing("photo_negatives", "shelf", (XL + 0.25, 4.3, 1.0), 90.0, topic="local")
+    _stand_spot(B, "negatives", -4.1, 4.3, 90.0)
+
+
+def barber_more(B):
+    kit.wall_shelf(B, 0.2, YB, 0.0, 0.0, w=1.0, zt=1.5, props=False)
+    kit.radio(B, 0.0, YB - 0.14, 1.5, 0.0)
+    kit.bottles(B, 0.4, YB - 0.12, 1.5, 0.0, n=2, seed=9)
+    B.thing("barber_radio", "machine", (0.1, YB - 0.2, 1.65), 0.0, what="radio")
+    strop(B, XL, 3.25, 0.0, 90.0)
+    B.thing("barber_strop", "craft", (XL + 0.1, 3.25, 1.1), 90.0, what="strop")
+    B.thing("barber_bottles", "board", (XL + 0.15, 2.2, 1.0), 90.0, topic="store")
+    B.thing("barber_newspapers", "shelf", (1.4, 5.05, 0.5), 0.0, topic="local")
+    B.thing("barber_sink", "machine", (-3.6, YB - 0.3, 1.0), 0.0, what="sink")
+    _stand_spot(B, "sink", -3.6, 5.6, 180.0)
+    _stand_spot(B, "radio", 0.1, 5.5, 180.0)
+
+
+def books_more(B):
+    kit.globe(B, -0.9, 5.9, 0.0, 0.0, floor=True)
+    B.thing("books_globe", "board", (-0.9, 5.9, 1.1), 0.0, topic="travel")
+    kit.magazine_rack(B, XR, 5.4, 0.0, 270.0, w=0.9, seed=11)
+    B.thing("books_mags", "shelf", (XR - 0.2, 5.4, 1.0), 270.0, topic="science")
+    t = kit.table(B, -3.4, 1.35, 0.0, 0.0, w=0.7, d=0.5, mat="CT_Wood")
+    kit.newspaper(B, -3.5, 1.35, t["top"], 10.0, seed=3)
+    kit.newspaper(B, -3.25, 1.4, t["top"], -15.0, seed=4)
+    B.thing("books_free_papers", "take", (-3.4, 1.35, 0.8), 0.0, item="daily_paper")
+    _stand_spot(B, "papers", -3.4, 0.9, 0.0)
+    kit.notice_board(B, XR, 1.8, 0.0, 270.0, w=0.8, zc=1.6, seed=12)
+    B.thing("books_board", "board", (XR - 0.04, 1.8, 1.6), 270.0, topic="lost")
+    B.thing("books_chat", "counter", (2.5, 4.3, 1.1), 0.0, service="chat", role="bookseller")
+
+
+def beer_more(B):
+    kit.table_football(B, -1.0, 5.35, 0.0, 0.0)
+    B.thing("beer_foosball", "play", (-1.0, 5.35, 0.95), 0.0, what="table_football")
+    _stand_spot(B, "foosball", -1.0, 4.65, 180.0)
+    B.thing("beer_taps", "machine", (0.7, 4.55, 1.35), 0.0, what="tap_list")
+    kit.radio(B, 3.2, 4.5, 1.05, 10.0)
+    B.thing("beer_radio", "machine", (3.2, 4.5, 1.2), 10.0, what="radio")
+    kit.blackboard(B, XR, 1.9, 0.0, 270.0, w=1.2, h=1.0, zb=0.95, seed=6, writing="chart_calendar")
+    B.thing("beer_league", "board", (XR - 0.05, 1.9, 1.5), 270.0, topic="club")
+    B.thing("beer_chat", "counter", (2.75, 4.55, 1.05), 0.0, service="chat", role="bartender")
+
+
+def pasty_more(B):
+    B.thing("pasty_fryer", "machine", (0.8, 6.1, 1.05), 0.0, what="fryer")
+    kit.sandwich_board(B, 2.2, 1.15, 0.0, 165.0, w=0.55, name="menu")
+    B.thing("pasty_today", "board", (2.2, 1.15, 0.6), 165.0, topic="prices")
+    kit.bottles(B, -1.9, 1.5, 1.08, 0.0, n=2, seed=21)
+    B.thing("pasty_table", "board", (-1.7, 1.5, 1.1), 0.0, topic="store")
+    kit.tray_stack(B, 2.6, 4.3, 1.05, 0.0, n=4, mat="CT_PlasterYellow")
+    B.thing("pasty_chat", "counter", (0.2, 4.3, 1.1), 0.0, service="chat", role="seller")
+
+
+# ------------------------------------------------------------------------------------------------ the third pass
+# Depth pass 2 (BRIEF2): per trade a few pieces drawn here (the kit stays untouched), things with their own acts
+# (x_w1_units.json), a stamp pad and a light switch in every unit, and spots for the townsfolk.
+def wall_switch(B, x, y, z=0.0, yaw=0.0, zc=1.3):
+    """[wall] A bakelite light switch: a plate and a brass toggle."""
+    p = _P(B, x, y, z, yaw, "wall_switch")
+    p.kind = "wall"
+    p.box("CT_Lacquer", -0.045, 0.045, -0.012, 0.0, zc - 0.06, zc + 0.06, f="xXyZz")
+    p.box(BRASS, -0.008, 0.008, -0.03, -0.012, zc - 0.012, zc + 0.03, f="xXyYZz")
+    return p.done()
+
+
+def stamp_pad(B, x, y, z=0.0, yaw=0.0):
+    """[prop] A wooden tray with a red ink pad and a rubber stamp with a turned handle."""
+    p = _P(B, x, y, z, yaw, "stamp_pad")
+    p.kind = "prop"
+    p.box(WOOD, -0.07, 0.04, -0.05, 0.05, 0.0, 0.03, f="xXyYZ")
+    p.box("CT_PlasterRed", -0.055, 0.025, -0.036, 0.036, 0.03, 0.036, f="xXyYZ")
+    p.lathe(WOODL, 0.095, 0.0, [(0.03, 0.0), (0.03, 0.02), (0.014, 0.03), (0.014, 0.085), (0.024, 0.098), (0.0, 0.104)], 6)
+    return p.done()
+
+
+def cat(B, x, y, z=0.0, yaw=0.0, mat="CT_PlasterGrey"):
+    """[prop] A cat curled up as a loaf, head toward -y, tail round the side."""
+    p = _P(B, x, y, z, yaw, "cat")
+    p.kind = "prop"
+    p.cushion(mat, -0.1, 0.1, -0.06, 0.2, 0.0, 0.15, puff=0.02)
+    p.lathe(mat, 0.0, -0.1, [(0.0, 0.1), (0.055, 0.115), (0.07, 0.16), (0.05, 0.21), (0.0, 0.22)], 6)
+    for s in (-1, 1):
+        p.rod(mat, (s * 0.04, -0.1, 0.19), (s * 0.05, -0.1, 0.26), 0.035, 3)
+    p.rod(mat, (0.09, 0.17, 0.05), (0.14, 0.04, 0.03), 0.035, 4)
+    p.box("CT_Lacquer", -0.012, 0.012, -0.172, -0.166, 0.14, 0.15, f="y")
+    return p.done()
+
+
+def dominoes(B, x, y, z=0.0, yaw=0.0):
+    """[prop] A few dominoes: a row on the table and a couple lying across."""
+    p = _P(B, x, y, z, yaw, "dominoes")
+    p.kind = "prop"
+    for k in range(6):
+        x0 = -0.11 + k * 0.045
+        p.box("CT_Paper", x0, x0 + 0.04, -0.03, 0.03, 0.0, 0.012, f="xXyYZ")
+        p.box("CT_Lacquer", x0 + 0.004, x0 + 0.036, -0.002, 0.002, 0.012, 0.0125, f="Z")
+    for k in range(2):
+        p.box("CT_Paper", -0.06 + k * 0.1, -0.02 + k * 0.1, 0.06, 0.12, 0.0, 0.012, f="xXyYZ")
+        p.box("CT_Lacquer", -0.06 + k * 0.1, -0.02 + k * 0.1, 0.088, 0.092, 0.012, 0.0125, f="Z")
+    return p.done()
+
+
+def ledger_book(B, x, y, z=0.0, yaw=0.0, cover="CT_PlasterGreen"):
+    """[prop] A big ledger lying open: cover, two blocks of pages, a ribbon and a pencil."""
+    p = _P(B, x, y, z, yaw, "ledger_book")
+    p.kind = "prop"
+    p.box(cover, -0.17, 0.17, -0.12, 0.12, 0.0, 0.012, f="xXyYZ")
+    for s in (-1, 1):
+        a, b = (0.006, 0.16) if s > 0 else (-0.16, -0.006)
+        p.box("CT_Paper", a, b, -0.108, 0.108, 0.012, 0.03, f="xXyYZ")
+    p.box("CT_PlasterRed", 0.07, 0.078, 0.06, 0.15, 0.03, 0.0315, f="Z")
+    p.rod("CT_Lacquer", (-0.1, 0.0, 0.034), (-0.04, -0.1, 0.034), 0.01, 4)
+    return p.done()
+
+
+def lectern(B, x, y, z=0.0, yaw=0.0, mat=WOOD, cover="CT_PlasterRed"):
+    """A reading stand: a post on a cross foot, a slanted top with a big open book (front -y)."""
+    p = _P(B, x, y, z, yaw, "lectern")
+    p.box(mat, -0.25, 0.25, -0.04, 0.04, 0.0, 0.04, f="xXyYZ")
+    p.box(mat, -0.04, 0.04, -0.25, 0.25, 0.0, 0.04, f="xXyYZ")
+    p.cyl(mat, 0.0, 0.0, 0.04, 0.95, 0.035, 6)
+    p.slab(mat, (-0.3, -0.2, 0.92), (0.3, -0.2, 0.92), (0.3, 0.2, 1.1), (-0.3, 0.2, 1.1), 0.03, f="all")
+    p.slab(cover, (-0.26, -0.15, 0.955), (0.26, -0.15, 0.955), (0.26, 0.15, 1.1), (-0.26, 0.15, 1.1), 0.02, f="all")
+    p.box(mat, -0.3, 0.3, -0.24, -0.2, 0.9, 0.96, f="xXyYZ")
+    p.core(-0.025, 0.025, -0.025, 0.025, 0.04, 0.95)
+    return p.done(solid=True, top=1.1)
+
+
+def snow_globe(B, x, y, z=0.0, yaw=0.0):
+    """[prop] A snow globe: a round base, a glass dome with a little lighthouse inside."""
+    p = _P(B, x, y, z, yaw, "snow_globe")
+    p.kind = "prop"
+    p.lathe(WOOD, 0, 0, [(0.07, 0.0), (0.07, 0.03), (0.05, 0.04)], 8)
+    p.lathe("CT_Glass", 0, 0, [(0.05, 0.04), (0.075, 0.08), (0.08, 0.12), (0.06, 0.17), (0.02, 0.195), (0.0, 0.2)], 8)
+    p.lathe("CT_Plaster", 0, 0, [(0.022, 0.04), (0.012, 0.11)], 6)
+    p.lathe("CT_PlasterRed", 0, 0, [(0.014, 0.11), (0.014, 0.125), (0.0, 0.135)], 6)
+    return p.done()
+
+
+def postcard_spinner(B, x, y, z=0.0, yaw=0.0, h=1.55):
+    """A revolving postcard rack: a pole on a round foot, three tiers of card pockets with picture postcards."""
+    p = _P(B, x, y, z, yaw, "postcard_spinner")
+    p.cyl(WOOD, 0, 0, 0.0, 0.05, 0.22, 8, top=True)
+    p.cyl(STEEL, 0, 0, 0.05, h, 0.022, 6)
+    cells = ["painting_lighthouse", "painting_dunes", "painting_sea_calm", "painting_sea_night", "painting_still_life",
+             "painting_sea_storm"]
+    for t, zz in enumerate((0.55, 0.95, 1.3)):
+        for k in range(4):
+            a = math.radians(45 + 90 * k + 22 * t)
+            u, v = math.cos(a), math.sin(a)
+            tx, ty = -v, u
+            cn = kit.cell(cells[(t * 2 + k) % len(cells)])
+            p.rod(STEEL, (0.0, 0.0, zz), (u * 0.1, v * 0.1, zz), 0.012, 3)
+            c = (u * 0.15, v * 0.15)
+            hw = 0.075
+            p.box(WOODL, c[0] - 0.04, c[0] + 0.04, c[1] - 0.04, c[1] + 0.04, zz, zz + 0.012, f="xXyYZ")
+            p.card(cn, (c[0] - tx * hw, c[1] - ty * hw, zz + 0.02), (c[0] + tx * hw, c[1] + ty * hw, zz + 0.02),
+                   (c[0] + tx * hw, c[1] + ty * hw, zz + 0.02 + 0.2), (c[0] - tx * hw, c[1] - ty * hw, zz + 0.02 + 0.2))
+    p.cyl(BRASS, 0, 0, h, h + 0.03, 0.03, 6)
+    p.core(-0.015, 0.015, -0.015, 0.015, 0.05, 1.5)
+    return p.done(solid=True)
+
+
+def suncatcher(B, x, y, z=0.0, yaw=0.0, zt=2.4, n=5):
+    """[wall] A row of amber drops on strings hanging from a rod in a window: front -y."""
+    p = _P(B, x, y, z, yaw, "suncatcher")
+    p.kind = "wall"
+    p.rod(WOOD, (-0.4, 0.0, zt), (0.4, 0.0, zt), 0.02, 5)
+    for k in range(n):
+        xx = -0.32 + k * 0.16
+        ln = 0.35 + 0.12 * ((k * 3) % 4)
+        p.rod(WOODL, (xx, 0.0, zt), (xx, 0.0, zt - ln), 0.006, 3)
+        p.lathe("CT_PlasterYellow", xx, 0.0, [(0.0, zt - ln - 0.09), (0.03, zt - ln - 0.045), (0.036, zt - ln), (0.02, zt - ln + 0.03)], 5)
+    return p.done()
+
+
+def float_net(B, x, y, ztop, yaw=0.0, w=1.7, d=0.9):
+    """[ceiling] A fishing net slung under the ceiling between two poles, sagging in a mesh of ropes, glass floats along
+    the front pole."""
+    p = _P(B, x, y, 0.0, yaw, "float_net")
+    p.kind = "wall"
+    zl = ztop - 0.12
+    for s in (-1, 1):
+        p.rod(WOOD, (-w / 2, s * d / 2, zl), (w / 2, s * d / 2, zl), 0.04, 5)
+        for e in (-1, 1):
+            p.rod(WOODL, (e * w / 2, s * d / 2, ztop), (e * w / 2, s * d / 2, zl), 0.01, 3)
+    sag = lambda t: 0.3 * (1 - (2 * t) ** 2)          # t -1..1 across the net
+    for k in range(7):                                  # ropes across (along y)
+        xx = -w / 2 + 0.1 + k * (w - 0.2) / 6
+        pts = [(xx, d * t / 2, zl - 0.04 - sag(t)) for t in (-1, -0.5, 0, 0.5, 1)]
+        p.tube(WOODL, pts, 0.008, 3)
+    for r in range(4):                                  # ropes along (x)
+        yy = -d / 2 + 0.1 + r * (d - 0.2) / 3
+        pts = [(w * t / 2, yy, zl - 0.04 - sag(t) * (1 - abs(2 * yy / d) * 0.4)) for t in (-1, -0.5, 0, 0.5, 1)]
+        p.tube(WOODL, pts, 0.008, 3)
+    for k in range(5):
+        xx = -w / 2 + 0.2 + k * (w - 0.4) / 4
+        zz = zl - 0.17
+        p.rod(WOODL, (xx, -d / 2, zl - 0.02), (xx, -d / 2, zz + 0.05), 0.006, 3)
+        p.lathe("CT_PlasterGreen", xx, -d / 2, [(0.0, zz - 0.07), (0.05, zz - 0.045), (0.065, zz), (0.045, zz + 0.05), (0.0, zz + 0.07)], 6)
+    return p.done()
+
+
+def foot_pump(B, x, y, z=0.0, yaw=0.0):
+    """[prop] A bicycle foot pump: a flat base with a step, a steel barrel, a T handle and a hose."""
+    p = _P(B, x, y, z, yaw, "foot_pump")
+    p.kind = "prop"
+    p.box(STEEL, -0.1, 0.1, -0.12, 0.12, 0.0, 0.025, f="xXyYZ")
+    p.box("CT_PlasterRed", -0.07, 0.07, -0.1, 0.06, 0.025, 0.04, f="xXyYZ")
+    p.cyl(ALU, 0.0, 0.07, 0.025, 0.62, 0.028, 6)
+    p.rod(STEEL, (0.0, 0.07, 0.62), (0.0, 0.07, 0.78), 0.012, 4)
+    p.rod("CT_Rubber", (-0.13, 0.07, 0.78), (0.13, 0.07, 0.78), 0.026, 5)
+    p.tube("CT_Rubber", [(0.03, 0.07, 0.1), (0.14, 0.0, 0.06), (0.2, -0.1, 0.03)], 0.014, 4)
+    return p.done()
+
+
+def tube_tester(B, x, y, z=0.0, yaw=0.0):
+    """[prop] A valve tester: a leather-look case with a sloped panel, two round dials, a row of valve sockets and a lamp."""
+    p = _P(B, x, y, z, yaw, "tube_tester")
+    p.kind = "prop"
+    p.box("CT_PlasterGreen", -0.17, 0.17, -0.11, 0.11, 0.0, 0.09, f="xXyYZ")
+    p.slab("CT_PlasterGrey", (-0.16, -0.1, 0.09), (0.16, -0.1, 0.09), (0.16, 0.08, 0.17), (-0.16, 0.08, 0.17), 0.012, f="all")
+    for s in (-1, 1):
+        p.lathe(BRASS, s * 0.08, -0.02, [(0.034, 0.11), (0.034, 0.125), (0.026, 0.13)], 8)
+    for k in range(5):
+        p.lathe("CT_Lacquer", -0.11 + k * 0.055, 0.045, [(0.017, 0.14), (0.017, 0.15), (0.0, 0.153)], 6)
+    p.lathe("CT_Opal", 0.0, -0.065, [(0.012, 0.112), (0.012, 0.12), (0.0, 0.125)], 6)
+    return p.done()
+
+
+def vise(B, x, y, z=0.0, yaw=0.0):
+    """[prop] A bench vise: a steel jaw block on a base, a screw with a cross handle."""
+    p = _P(B, x, y, z, yaw, "vise")
+    p.kind = "prop"
+    p.box("CT_SteelRed", -0.07, 0.07, -0.06, 0.06, 0.0, 0.06, f="xXyYZ")
+    p.box(STEEL, -0.09, 0.09, -0.11, -0.06, 0.06, 0.15, f="xXyYZz")
+    p.box(STEEL, -0.09, 0.09, 0.05, 0.1, 0.06, 0.15, f="xXyYZz")
+    p.rod(STEEL, (0.0, 0.1, 0.1), (0.0, 0.26, 0.1), 0.02, 5)
+    p.rod(STEEL, (-0.07, 0.26, 0.1), (0.07, 0.26, 0.1), 0.014, 4)
+    return p.done()
+
+
+def rolling_board(B, x, y, z=0.0, yaw=0.0, w=0.95, d=0.6):
+    """A kitchen table for dumplings: a floured board, a rolling pin, discs of dough and a row of pinched dumplings."""
+    p = _P(B, x, y, z, yaw, "rolling_board")
+    p.box(WOODL, -w / 2, w / 2, -d / 2, d / 2, 0.82, 0.86, f="xXyYZz")
+    for sx in (-1, 1):
+        for sy in (-1, 1):
+            p.box(WOODL, sx * (w / 2 - 0.05) - 0.025, sx * (w / 2 - 0.05) + 0.025, sy * (d / 2 - 0.05) - 0.025,
+                  sy * (d / 2 - 0.05) + 0.025, 0.0, 0.82, f="xXyY")
+    p.box("CT_Paper", -w / 2 + 0.05, w / 2 - 0.05, -d / 2 + 0.05, d / 2 - 0.05, 0.86, 0.862, f="Z")
+    p.rod(WOOD, (-0.3, -0.05, 0.89), (0.05, -0.05, 0.89), 0.04, 6)
+    for k in range(3):
+        p.lathe("CT_Paper", 0.2 + (k % 2) * 0.17, -0.12 + k * 0.1, [(0.06, 0.862), (0.06, 0.868), (0.0, 0.869)], 8)
+    for k in range(6):
+        p.lathe("CT_PlasterYellow", -0.33 + k * 0.1, 0.18, [(0.035, 0.862), (0.04, 0.885), (0.02, 0.91), (0.0, 0.915)], 5)
+    p.core(-w / 2 + 0.02, w / 2 - 0.02, -d / 2 + 0.02, d / 2 - 0.02, 0.83, 0.85)
+    return p.done(solid=True, top=0.86)
+
+
+def starter_crock(B, x, y, z=0.0, yaw=0.0):
+    """[prop] A brown crock of sourdough starter under a cloth tied with string, a wooden spoon beside it."""
+    p = _P(B, x, y, z, yaw, "starter_crock")
+    p.kind = "prop"
+    p.lathe("CT_WoodLight", 0, 0, [(0.07, 0.0), (0.09, 0.06), (0.095, 0.14), (0.085, 0.2), (0.08, 0.2)], 8, bottom=True)
+    p.lathe("CT_Paper", 0, 0, [(0.085, 0.2), (0.1, 0.19), (0.098, 0.17), (0.075, 0.2), (0.0, 0.215)], 8)
+    p.rod("CT_Lacquer", (0.0, -0.1, 0.17), (0.0, 0.1, 0.17), 0.006, 3)
+    p.rod(WOOD, (0.13, -0.05, 0.0), (0.16, 0.05, 0.24), 0.015, 4)
+    return p.done()
+
+
+def album_stand(B, x, y, z=0.0, yaw=0.0):
+    return lectern(B, x, y, z, yaw, mat=WOOD, cover="CT_Leather")
+
+
+def cutout_board(B, x, y, z=0.0, yaw=0.0, w=1.05, h=1.7):
+    """A painted photo cut-out board (a steamer, a sea and a sun) with a square hole for a face, on two feet."""
+    p = _P(B, x, y, z, yaw, "cutout_board")
+    hw = 0.16
+    z0, z1 = 1.3, 1.62
+    for a, b, c, d_ in ((-w / 2, -hw, 0.1, h), (hw, w / 2, 0.1, h), (-hw, hw, 0.1, z0), (-hw, hw, z1, h)):
+        p.box(WOODL, a, b, -0.015, 0.015, c, d_, f="xXyYZz")
+    # the painting on the front (all a few mm proud of the board)
+    p.box("CT_PlasterBlue", -w / 2, w / 2, -0.019, -0.0155, 0.1, 0.55, f="y")
+    p.box("CT_Plaster", -w / 2, w / 2, -0.019, -0.0155, 0.55, 0.8, f="y")
+    p.box("CT_PlasterRed", -0.4, -0.24, -0.019, -0.0155, 0.8, 1.2, f="y")
+    p.box("CT_PlasterYellow", 0.26, 0.42, -0.019, -0.0155, 1.5, 1.66, f="y")
+    p.box("CT_PlasterBlue", -w / 2, -hw, -0.019, -0.0155, 1.62, h, f="y")
+    for sx in (-1, 1):
+        p.box(WOOD, sx * (w / 2 - 0.12) - 0.04, sx * (w / 2 - 0.12) + 0.04, -0.2, 0.2, 0.0, 0.05, f="xXyYZ")
+        p.rod(WOOD, (sx * (w / 2 - 0.12), 0.15, 0.05), (sx * (w / 2 - 0.12), 0.01, 1.0), 0.03, 4)
+    return p.done()
+
+
+def light_box(B, x, y, z=0.0, yaw=0.0, w=0.55, h=0.4, zc=1.4):
+    """[wall] A retoucher's light box: a frosted glowing panel in a steel frame with negatives clipped on it."""
+    p = _P(B, x, y, z, yaw, "light_box")
+    p.kind = "wall"
+    p.box(STEEL, -w / 2, w / 2, -0.06, 0.0, zc - h / 2, zc + h / 2, f="xXyZzY")
+    p.box("CT_Opal", -w / 2 + 0.03, w / 2 - 0.03, -0.064, -0.06, zc - h / 2 + 0.03, zc + h / 2 - 0.03, f="y")
+    for k in range(4):
+        xx = -w / 2 + 0.07 + k * 0.12
+        p.box("CT_Lacquer", xx, xx + 0.1, -0.067, -0.064, zc - 0.1, zc + 0.08, f="y")
+        p.box("CT_Paper", xx + 0.01, xx + 0.09, -0.0675, -0.067, zc - 0.07, zc + 0.04, f="y")
+    return p.done()
+
+
+def print_line(B, x, y, ztop, yaw=0.0, w=1.2, n=6):
+    """[wall] A darkroom line of wet prints on pegs between two hooks (a rope and small paper cards)."""
+    p = _P(B, x, y, 0.0, yaw, "print_line")
+    p.kind = "wall"
+    p.rod(WOODL, (-w / 2, 0.0, ztop), (w / 2, 0.0, ztop - 0.04), 0.008, 3)
+    for k in range(n):
+        xx = -w / 2 + 0.12 + k * (w - 0.24) / (n - 1)
+        p.box("CT_Paper", xx - 0.05, xx + 0.05, -0.006, 0.006, ztop - 0.17 - 0.007 * k, ztop - 0.03 - 0.007 * k, f="xXyYz")
+    return p.done()
+
+
+def towel_steamer(B, x, y, z=0.0, yaw=0.0):
+    """[prop] A steel hot-towel steamer: a drum with a hinged lid and rolled white towels, a spout and a knob."""
+    p = _P(B, x, y, z, yaw, "towel_steamer")
+    p.kind = "prop"
+    p.lathe(STEEL, 0, 0, [(0.12, 0.0), (0.14, 0.02), (0.14, 0.2), (0.12, 0.22)], 8, bottom=True)
+    p.lathe(ALU, 0, 0, [(0.125, 0.22), (0.13, 0.235), (0.07, 0.25), (0.0, 0.255)], 8)
+    p.rod(BRASS, (0.0, -0.13, 0.12), (0.0, -0.2, 0.12), 0.02, 5)
+    p.lathe("CT_Lacquer", 0.0, -0.2, [(0.02, 0.12), (0.02, 0.16), (0.0, 0.165)], 5)
+    p.lathe("CT_Plaster", 0.0, 0.0, [(0.0, 0.255), (0.04, 0.26), (0.05, 0.3), (0.0, 0.31)], 6)
+    return p.done()
+
+
+def rolling_ladder(B, x, y, z=0.0, yaw=0.0, h=2.2):
+    """[wall] A library ladder leaning on the shelves: two rails, steps, two hooks at the top, a brass rail."""
+    p = _P(B, x, y, z, yaw, "rolling_ladder")
+    p.kind = "wall"
+    tilt = 0.28
+    for s in (-1, 1):
+        p.rod(WOOD, (s * 0.21, -tilt, 0.0), (s * 0.21, -0.01, h), 0.045, 4)
+    for k in range(7):
+        zz = 0.25 + k * 0.28
+        yy = -tilt * (1 - zz / h)
+        p.box(WOODL, -0.21, 0.21, yy - 0.075, yy + 0.075, zz - 0.015, zz + 0.015, f="xXyYZz")
+    p.rod(BRASS, (-0.24, -0.02, h + 0.02), (0.24, -0.02, h + 0.02), 0.025, 5)
+    return p.done()
+
+
+def kvass_tank(B, x, y, z=0.0, yaw=0.0):
+    """A yellow kvass tank on a steel frame with wheels: a horizontal barrel, a tap, a glass and a price plate (long axis x)."""
+    p = _P(B, x, y, z, yaw, "kvass_tank")
+    for sx in (-1, 1):
+        p.box(STEEL, sx * 0.32 - 0.02, sx * 0.32 + 0.02, -0.25, 0.25, 0.12, 0.2, f="xXyYZ")
+        for sy in (-1, 1):
+            p.rod(STEEL, (sx * 0.32, sy * 0.22, 0.0), (sx * 0.32, sy * 0.22, 0.13), 0.04, 4)
+    p.rod("CT_PlasterYellow", (-0.45, 0.0, 0.5), (0.45, 0.0, 0.5), 0.52, 8, caps=True)
+    p.box(STEEL, -0.45, 0.45, -0.02, 0.02, 0.2, 0.24, f="xXyYZ")
+    p.rod(BRASS, (0.1, -0.25, 0.42), (0.1, -0.4, 0.42), 0.04, 5)
+    p.rod("CT_Lacquer", (0.1, -0.4, 0.42), (0.1, -0.4, 0.5), 0.025, 4)
+    p.box("CT_Plaster", -0.2, 0.0, -0.255, -0.25, 0.46, 0.6, f="y")
+    p.core(-0.4, 0.4, -0.15, 0.15, 0.35, 0.65)
+    return p.done(solid=True, top=0.76)
+
+
+def mincer(B, x, y, z=0.0, yaw=0.0):
+    """[prop] A hand meat grinder clamped to the counter: a cast body, a hopper, a spout and a crank with a wooden knob."""
+    p = _P(B, x, y, z, yaw, "mincer")
+    p.kind = "prop"
+    p.box(STEEL, -0.04, 0.04, -0.03, 0.03, 0.0, 0.03, f="xXyYZ")
+    p.cyl(ALU, 0.0, 0.0, 0.03, 0.2, 0.04, 8)
+    p.lathe(ALU, 0.0, 0.0, [(0.04, 0.2), (0.07, 0.24), (0.075, 0.28)], 8, top=False)
+    p.rod(ALU, (0.0, 0.0, 0.12), (0.13, 0.0, 0.12), 0.05, 6)
+    p.rod(STEEL, (-0.04, 0.0, 0.12), (-0.13, 0.0, 0.12), 0.015, 4)
+    p.rod(STEEL, (-0.13, 0.0, 0.12), (-0.13, 0.0, 0.03), 0.012, 4)
+    p.lathe(WOOD, -0.13, 0.0, [(0.014, 0.01), (0.016, 0.05), (0.0, 0.065)], 6)
+    return p.done()
+
+
+def _stamp(B, trade, x, y, z, yaw=0.0):
+    stamp_pad(B, x, y, z, yaw)
+    B.thing("%s_stamp" % trade, "machine", (x, y, z + 0.06), yaw, what="stamp")
+
+
+def _switch(B, trade):
+    wall_switch(B, 4.4, YF, 0.0, 180.0)
+    B.thing("%s_switch" % trade, "machine", (4.4, YF + 0.06, 1.3), 180.0, what="switch", switch="room")
+
+
+def _clock_thing(B, trade, x, y, yaw, zc):
+    B.thing("%s_clock" % trade, "machine", (x, y, zc), yaw, what="clock")
+
+
+def cafe_deep(B):
+    _stamp(B, "cafe", 3.05, 4.42, 1.05)
+    _switch(B, "cafe")
+    _clock_thing(B, "cafe", XR - 0.05, 4.6, 270.0, 2.35)
+    dominoes(B, -1.5, 1.6, 0.75, 20.0)
+    B.thing("cafe_dominoes", "play", (-1.5, 1.55, 0.8), 0.0, what="dominoes")
+    cat(B, -3.3, 0.38, 0.455, 90.0, mat="CT_PlasterGrey")
+    B.thing("cafe_cat", "board", (-3.3, 0.42, 0.62), 0.0, topic="cat")
+    _stand_spot(B, "cat", -3.3, 1.0, 0.0)
+    kit.wall_shelf(B, XL, 1.3, 0.0, 90.0, w=1.0, zt=1.5, props=False)
+    for k, (dy, m) in enumerate(((-0.3, "CT_TileWhite"), (-0.1, "CT_PlasterBlue"), (0.1, "CT_PlasterYellow"), (0.3, "CT_PlasterRed"))):
+        kit.cup(B, XL + 0.12, 1.3 + dy, 1.5, 90.0, mat=m, saucer=False)
+    B.thing("cafe_mugs", "board", (XL + 0.1, 1.3, 1.62), 90.0, topic="regulars")
+    _stand_spot(B, "mugs", -4.1, 1.3, 270.0)
+    B.spot("regular", "seat", (-1.4, 2.2, 0.0), 0.0)
+
+
+def fish_deep(B):
+    _stamp(B, "fish", 2.3, 4.3, 1.05)
+    _switch(B, "fish")
+    kit.notice_board(B, XL, 1.2, 0.0, 90.0, w=0.7, zc=1.6, seed=9)
+    B.thing("fish_log", "board", (XL + 0.04, 1.2, 1.6), 90.0, topic="log")
+    _stand_spot(B, "log", -4.0, 1.2, 90.0)
+    float_net(B, -2.4, 3.4, CEIL, 0.0)
+    B.thing("fish_net", "board", (-2.4, 3.4, 2.25), 0.0, topic="net")
+    _stand_spot(B, "net", -2.4, 2.8, 180.0)
+    B.spot("tub", "stand", (-2.9, 1.6, 0.0), 0.0)
+
+
+def rental_deep(B):
+    _stamp(B, "rental", 3.75, 4.6, 1.05)
+    _switch(B, "rental")
+    _clock_thing(B, "rental", 2.9, YB - 0.04, 0.0, 2.3)
+    foot_pump(B, -0.4, 4.9, 0.0, 0.0)
+    B.thing("rental_pump", "machine", (-0.4, 4.9, 0.5), 0.0, what="pump")
+    _stand_spot(B, "pump", -0.4, 4.2, 180.0)
+    kit.notice_board(B, XL, 1.2, 0.0, 90.0, w=0.7, zc=1.6, seed=14)
+    B.thing("rental_log", "board", (XL + 0.04, 1.2, 1.6), 90.0, topic="log")
+    kit.wall_map(B, XL, 5.3, 0.0, 90.0, name="map_coast", w=1.2, h=0.9, zc=1.7)
+    B.thing("rental_route", "board", (XL + 0.04, 5.3, 1.7), 90.0, topic="view")
+    _stand_spot(B, "route", -4.1, 5.3, 90.0)
+
+
+def workshop_deep(B):
+    _stamp(B, "workshop", 3.62, 3.2, 1.05)
+    _switch(B, "workshop")
+    _clock_thing(B, "workshop", 3.6, YB - 0.04, 0.0, 2.2)
+    tube_tester(B, 3.1, 3.2, 1.05, 0.0)
+    B.thing("workshop_tester", "machine", (3.1, 3.2, 1.18), 0.0, what="tester")
+    vise(B, -1.4, 5.72, 0.95, 0.0)
+    B.thing("workshop_vise", "craft", (-1.4, 5.72, 1.05), 0.0, what="vise")
+    ledger_book(B, 3.3, 3.58, 1.05, 8.0, cover="CT_PlasterGreen")
+    B.thing("workshop_ledger", "board", (3.3, 3.58, 1.1), 0.0, topic="ledger")
+    _stand_spot(B, "tester", 3.0, 2.55, 180.0)
+
+
+def dumplings_deep(B):
+    _stamp(B, "dumpling", 2.35, 4.2, 1.05)
+    _switch(B, "dumpling")
+    kit.wall_clock(B, 3.4, YB, 0.0, 0.0, zc=2.3, face="clock_3")
+    _clock_thing(B, "dumpling", 3.4, YB - 0.04, 0.0, 2.3)
+    rolling_board(B, 3.85, 5.1, 0.0, 0.0)
+    B.thing("dumpling_rolling", "craft", (3.85, 5.1, 0.95), 0.0, what="dough_board")
+    B.spot("staff_cook_2", "work", (3.85, 5.8, 0.0), 0.0)
+    _stand_spot(B, "rolling", 3.85, 4.4, 180.0)
+
+
+def souvenirs_deep(B):
+    _stamp(B, "souvenir", 3.65, 4.4, 1.05)
+    _switch(B, "souvenir")
+    snow_globe(B, XL + 0.14, 1.9, 1.6, 0.0)
+    B.thing("souvenir_snowglobe", "machine", (XL + 0.14, 1.9, 1.72), 90.0, what="snowglobe")
+    _stand_spot(B, "snowglobe", -4.1, 1.9, 90.0)
+    postcard_spinner(B, 1.4, 5.1, 0.0, 0.0)
+    B.thing("souvenir_spinner", "shelf", (1.4, 5.1, 1.0), 0.0, topic="postcards")
+    _stand_spot(B, "spinner", 1.4, 4.4, 180.0)
+    suncatcher(B, -0.5, 0.5, 0.0, 0.0, zt=2.45)
+    B.thing("souvenir_suncatcher", "board", (-0.5, 0.52, 2.0), 0.0, topic="light")
+    _stand_spot(B, "suncatcher", -0.5, 1.2, 0.0)
+
+
+def bakery_deep(B):
+    _stamp(B, "bakery", 2.2, 3.85, 1.05)
+    _switch(B, "bakery")
+    _clock_thing(B, "bakery", XR - 0.05, 4.6, 270.0, 2.3)
+    starter_crock(B, -0.5, 3.85, 1.05, 0.0)
+    B.thing("bakery_starter", "machine", (-0.5, 3.85, 1.2), 0.0, what="starter")
+    ledger_book(B, 1.85, 3.85, 1.05, -6.0, cover="CT_PlasterYellow")
+    B.thing("bakery_orders", "board", (1.85, 3.85, 1.1), 0.0, topic="orders")
+    cat(B, -1.5, 5.95, 0.4, 200.0, mat="CT_WoodLight")
+    B.thing("bakery_cat", "board", (-1.5, 5.95, 0.6), 0.0, topic="cat")
+    _stand_spot(B, "cat", -1.6, 5.25, 180.0)
+
+
+def photo_deep(B):
+    _stamp(B, "photo", 2.35, 3.65, 0.75)
+    _switch(B, "photo")
+    _clock_thing(B, "photo", -0.6, YB - 0.04, 0.0, 2.3)
+    album_stand(B, 3.2, 3.0, 0.0, 0.0)
+    B.thing("photo_album", "shelf", (3.2, 3.0, 1.1), 0.0, topic="album")
+    _stand_spot(B, "album", 3.2, 2.35, 180.0)
+    cutout_board(B, -1.9, 1.55, 0.0, 180.0)
+    B.thing("photo_cutout", "board", (-1.9, 1.62, 1.45), 180.0, topic="cutout")
+    light_box(B, -0.95, YB, 0.0, 0.0, zc=1.35)
+    B.thing("photo_lightbox", "machine", (-0.95, YB - 0.06, 1.35), 0.0, what="lightbox")
+    _stand_spot(B, "lightbox", -0.95, 5.6, 180.0)
+    print_line(B, 0.6, 5.6, 2.05, 0.0, w=1.0)
+    wr = kit.waiting_row(B, 4.55, 3.7, 0.0, 270.0, n=2, mat="CT_PlasterBlue")
+    m = wr["seats"][0]
+    B.thing("photo_bench", "seat", (m[0], m[1], m[2]), m[3], height=0.45)
+    for k, s in enumerate(wr["seats"]):
+        B.spot("wait%d" % k, "seat", (s[0], s[1], 0.0), s[3])
+
+
+def barber_deep(B):
+    c = kit.shop_counter(B, 3.7, 4.9, 0.0, 0.0, w=1.1, front="CT_PlasterGreen", top="CT_WoodLight", till=False)
+    B.thing("barber_chat", "counter", (3.7, 4.9, 1.1), 0.0, service="chat", role="barber")
+    B.spot("counter", "counter", (3.7, 4.0, 0.0), 180.0)
+    B.spot("staff_barber_3", "work", (3.7, 5.75, 0.0), 0.0)
+    _stamp(B, "barber", 3.35, 4.8, c["top"])
+    ledger_book(B, 4.05, 4.75, c["top"], 5.0, cover="CT_PlasterRed")
+    B.thing("barber_book", "board", (4.05, 4.75, c["top"] + 0.05), 0.0, topic="ledger")
+    _switch(B, "barber")
+    _clock_thing(B, "barber", XR - 0.05, 5.6, 270.0, 2.3)
+    towel_steamer(B, -3.2, 6.1, 0.9, 0.0)
+    B.thing("barber_towels", "machine", (-3.2, 6.1, 1.05), 0.0, what="steamer")
+    kit.bottles(B, XL + 0.18, 4.55, 0.95, 90.0, n=3, seed=12)
+    B.thing("barber_cologne", "machine", (XL + 0.15, 4.55, 1.05), 90.0, what="cologne")
+    _stand_spot(B, "cologne", -3.9, 4.55, 90.0)
+
+
+def books_deep(B):
+    _stamp(B, "books", 3.6, 4.25, 1.05)
+    _switch(B, "books")
+    kit.wall_clock(B, XR, 4.2, 0.0, 270.0, zc=2.3, face="clock_0")
+    _clock_thing(B, "books", XR - 0.05, 4.2, 270.0, 2.3)
+    lectern(B, -3.7, 3.5, 0.0, 90.0, mat=WOOD, cover="CT_PlasterRed")
+    B.thing("books_lectern", "shelf", (-3.7, 3.5, 1.1), 90.0, topic="dictionary")
+    _stand_spot(B, "lectern", -3.1, 3.5, 270.0)
+    rolling_ladder(B, -2.9, YB - 0.33, 0.0, 0.0)
+    B.thing("books_ladder", "craft", (-2.9, 6.0, 1.1), 0.0, what="ladder")
+    _stand_spot(B, "ladder", -2.9, 5.2, 180.0)
+
+
+def beer_deep(B):
+    _stamp(B, "beer", 2.2, 4.45, 1.05)
+    _switch(B, "beer")
+    kit.wall_clock(B, XL, 3.9, 0.0, 90.0, zc=2.3, face="clock_1")
+    _clock_thing(B, "beer", XL + 0.05, 3.9, 90.0, 2.3)
+    kvass_tank(B, 3.8, 5.95, 0.0, 0.0)
+    B.thing("beer_kvass", "machine", (3.8, 5.95, 0.95), 0.0, what="kvass")
+    t = kit.table(B, -3.2, 4.5, 0.0, 0.0, w=0.8, d=0.8, mat="CT_Wood")
+    dominoes(B, -3.2, 4.5, t["top"], 35.0)
+    B.thing("beer_dominoes", "play", (-3.2, 4.5, 0.82), 0.0, what="dominoes")
+    cs = kit.around_table(B, -3.2, 4.5, 0.8, 0.8, 0.0, per_side=(0, 0, 1, 1), kind="wood")
+    for k, c in enumerate(cs):
+        sx, sy, sz, syw = c["seats"][0]
+        B.spot("domino_seat%d" % k, "seat", (sx, sy, 0.0), syw)
+    _seat(B, "beer_domino_chair", cs[0])
+
+
+def pasty_deep(B):
+    _stamp(B, "pasty", 2.15, 4.2, 1.05)
+    _switch(B, "pasty")
+    kit.wall_clock(B, XL, 3.55, 0.0, 90.0, zc=2.35, face="clock_2")
+    _clock_thing(B, "pasty", XL + 0.05, 3.55, 90.0, 2.35)
+    mincer(B, 1.7, 6.1, 0.9, 0.0)
+    B.thing("pasty_mincer", "machine", (1.7, 6.1, 1.05), 0.0, what="mincer")
+    _stand_spot(B, "mincer", 1.7, 5.4, 180.0)
+    kit.notice_board(B, 3.5, YB, 0.0, 0.0, w=0.6, zc=1.7, seed=21)
+    B.thing("pasty_treaty", "board", (3.5, YB - 0.04, 1.7), 0.0, topic="treaty")
+    _stand_spot(B, "treaty", 3.5, 5.6, 180.0)
+
+
+DEEP = {"cafe": cafe_deep, "fish": fish_deep, "rental": rental_deep, "workshop": workshop_deep, "dumplings": dumplings_deep,
+        "souvenirs": souvenirs_deep, "bakery": bakery_deep, "photo": photo_deep, "barber": barber_deep, "books": books_deep,
+        "beer": beer_deep, "pasty": pasty_deep}
+
+
+def trunk(B, x, y, z=0.0, yaw=0.0, w=0.75, d=0.42):
+    """A travelling trunk with a domed lid, brass corners and a strap; a scarf hangs out of it."""
+    p = _P(B, x, y, z, yaw, "trunk")
+    p.box(WOOD, -w / 2, w / 2, -d / 2, d / 2, 0.0, 0.3, f="xXyYZ")
+    p.bev("CT_Leather", -w / 2 - 0.01, w / 2 + 0.01, -d / 2 - 0.01, d / 2 + 0.01, 0.3, 0.42, 0.04)
+    for sx in (-1, 1):
+        p.box(BRASS, sx * (w / 2 - 0.05) - 0.025, sx * (w / 2 - 0.05) + 0.025, -d / 2 - 0.016, -d / 2 - 0.008, 0.05, 0.38, f="y")
+        for sy in (-1, 1):
+            p.box(BRASS, sx * (w / 2) - 0.01, sx * (w / 2) + 0.01, sy * (d / 2) - 0.03, sy * (d / 2) + 0.03, 0.0, 0.04, f="xXyYZ")
+    p.box("CT_PlasterRed", 0.1, 0.2, -d / 2 - 0.012, -d / 2 + 0.01, 0.12, 0.3, f="yY")
+    p.core(-w / 2 + 0.02, w / 2 - 0.02, -d / 2 + 0.02, d / 2 - 0.02, 0.1, 0.28)
+    return p.done(solid=True, top=0.42)
+
+
+def umbrella_light(B, x, y, z=0.0, yaw=0.0):
+    """A studio reflector umbrella on a stand with a flash head: tripod legs, a pole, a white dish."""
+    p = _P(B, x, y, z, yaw, "umbrella_light")
+    for k in range(3):
+        a = math.radians(90 + 120 * k)
+        p.rod(STEEL, (0.0, 0.0, 1.2), (0.35 * math.cos(a), 0.35 * math.sin(a), 0.0), 0.025, 4)
+    p.rod(STEEL, (0.0, 0.0, 1.2), (0.0, 0.0, 1.85), 0.03, 5)
+    p.lathe("CT_Lacquer", 0.0, 0.0, [(0.0, 1.8), (0.04, 1.8), (0.04, 1.9), (0.0, 1.9)], 6)
+    p.lathe("CT_Plaster", 0.0, 0.0, [(0.0, 1.9), (0.3, 2.02), (0.45, 2.2), (0.0, 2.22)], 10, top=False)
+    p.rod(STEEL, (0.0, 0.0, 1.9), (0.0, 0.0, 2.26), 0.012, 4)
+    return p.done()
+
+
+def film_boxes(B, x, y, z=0.0, yaw=0.0, n=9):
+    """[prop] Rows of small film boxes (yellow and red) on a shelf."""
+    p = _P(B, x, y, z, yaw, "film_boxes")
+    p.kind = "prop"
+    for k in range(n):
+        xx = -0.04 * n + k * 0.08
+        for r in range(2):
+            p.box(("CT_PlasterYellow", "CT_PlasterRed")[(k + r) % 2], xx, xx + 0.07, -0.06 + r * 0.0, 0.0, r * 0.06, r * 0.06 + 0.055, f="xXyYZ")
+    return p.done()
+
+
+def barber_pole(B, x, y, z=0.0, yaw=0.0, h=1.15):
+    """A barber's pole on a round foot: a glass cylinder with red, white and blue bands, brass caps."""
+    p = _P(B, x, y, z, yaw, "barber_pole")
+    p.lathe(BRASS, 0, 0, [(0.16, 0.0), (0.16, 0.05), (0.07, 0.09)], 10, bottom=True)
+    cols = ("CT_PlasterRed", "CT_Plaster", "CT_PlasterBlue")
+    n = 9
+    for k in range(n):
+        z0 = 0.09 + (h - 0.2) * k / n
+        z1 = 0.09 + (h - 0.2) * (k + 1) / n
+        p.cyl(cols[k % 3], 0, 0, z0, z1, 0.07, 8)
+    p.lathe(BRASS, 0, 0, [(0.075, h - 0.11), (0.09, h - 0.1), (0.09, h - 0.06), (0.04, h - 0.03), (0.0, h)], 10)
+    p.core(-0.05, 0.05, -0.05, 0.05, 0.1, h - 0.15)
+    return p.done(solid=True)
+
+
+def comb_jar(B, x, y, z=0.0, yaw=0.0):
+    """[prop] A glass disinfectant jar with combs standing in blue liquid."""
+    p = _P(B, x, y, z, yaw, "comb_jar")
+    p.kind = "prop"
+    p.lathe("CT_Glass", 0, 0, [(0.05, 0.0), (0.06, 0.04), (0.06, 0.16), (0.05, 0.18)], 8, top=False)
+    p.cyl("CT_PlasterBlue", 0, 0, 0.02, 0.12, 0.055, 8)
+    for k in range(3):
+        xx = -0.03 + 0.03 * k
+        p.box("CT_Lacquer", xx, xx + 0.012, -0.03, 0.03, 0.04, 0.24, f="xXyYZ")
+    return p.done()
+
+
+def clipper_rack(B, x, y, z=0.0, yaw=0.0, zc=1.5, w=0.7):
+    """[wall] A board of hair clippers and scissors on hooks."""
+    p = _P(B, x, y, z, yaw, "clipper_rack")
+    p.kind = "wall"
+    p.box(WOOD, -w / 2, w / 2, -0.03, 0.0, zc - 0.2, zc + 0.2, f="xXyZz")
+    for k in range(4):
+        xx = -w / 2 + 0.1 + k * (w - 0.2) / 3
+        p.rod(BRASS, (xx, -0.03, zc + 0.12), (xx, -0.06, zc + 0.12), 0.012, 4)
+        p.box("CT_Lacquer", xx - 0.03, xx + 0.03, -0.07, -0.04, zc - 0.1, zc + 0.1, f="xXyZz")
+        p.box(STEEL, xx - 0.02, xx + 0.02, -0.075, -0.07, zc - 0.17, zc - 0.1, f="y")
+    return p.done()
+
+
+def life_vests(B, x, y, z=0.0, yaw=0.0, w=1.2):
+    """A rack of orange life vests on hooks: a rail on two posts with five stuffed vests (front -y)."""
+    p = _P(B, x, y, z, yaw, "life_vests")
+    for sx in (-1, 1):
+        p.box(WOOD, sx * (w / 2) - 0.025, sx * (w / 2) + 0.025, -0.03, 0.03, 0.0, 1.7, f="xXyY")
+        p.box(WOOD, sx * (w / 2) - 0.2, sx * (w / 2) + 0.2, -0.17, 0.17, 0.0, 0.04, f="xXyYZ")
+    p.rod(WOOD, (-w / 2, 0.0, 1.62), (w / 2, 0.0, 1.62), 0.04, 5)
+    for k in range(5):
+        xx = -w / 2 + 0.15 + k * (w - 0.3) / 4
+        p.cushion("CT_PlasterRed", xx - 0.1, xx + 0.1, -0.07, 0.07, 0.95, 1.6, puff=0.02)
+        p.box("CT_Plaster", xx - 0.1, xx + 0.1, -0.072, -0.07, 1.2, 1.26, f="y")
+    p.core(-w / 2, w / 2, -0.01, 0.01, 1.605, 1.635)
+    return p.done(solid=True)
+
+
+def wire_spools(B, x, y, z=0.0, yaw=0.0, zc=1.5, n=3):
+    """[wall] A peg rail with spools of copper and coloured wire."""
+    p = _P(B, x, y, z, yaw, "wire_spools")
+    p.kind = "wall"
+    p.box(WOOD, -0.45, 0.45, -0.025, 0.0, zc - 0.03, zc + 0.03, f="xXyZz")
+    mats = ("CT_Brass", "CT_PlasterRed", "CT_PlasterGreen", "CT_PlasterBlue")
+    for k in range(n):
+        xx = -0.3 + k * 0.3
+        p.rod(WOODL, (xx, -0.025, zc), (xx, -0.14, zc), 0.015, 4)
+        for yy in (-0.045, -0.115):
+            p.rod(WOODL, (xx, yy, zc), (xx, yy - 0.005, zc), 0.12, 8)
+        p.rod(mats[k % len(mats)], (xx, -0.05, zc), (xx, -0.11, zc), 0.07, 8)
+    return p.done()
+
+
+def solder_stand(B, x, y, z=0.0, yaw=0.0):
+    """[prop] A soldering iron in a coil holder on a small heavy base with a tin of rosin."""
+    p = _P(B, x, y, z, yaw, "solder_stand")
+    p.kind = "prop"
+    p.box(STEEL, -0.07, 0.07, -0.06, 0.06, 0.0, 0.03, f="xXyYZ")
+    for k in range(4):
+        p.rod(STEEL, (-0.04, 0.0, 0.03 + k * 0.025), (0.04, 0.0, 0.04 + k * 0.025), 0.012, 4)
+    p.rod(STEEL, (-0.05, 0.0, 0.09), (0.1, -0.02, 0.2), 0.016, 5)
+    p.rod("CT_Lacquer", (0.1, -0.02, 0.2), (0.2, -0.03, 0.1), 0.026, 5)
+    p.lathe(ALU, 0.15, 0.1, [(0.04, 0.0), (0.04, 0.025)], 8)
+    return p.done()
+
+
+def ship_model(B, x, y, z=0.0, yaw=0.0):
+    """[prop] A model sailing ship on a little stand: hull, two masts, three sails."""
+    p = _P(B, x, y, z, yaw, "ship_model")
+    p.kind = "prop"
+    p.box(WOOD, -0.12, 0.12, -0.04, 0.04, 0.0, 0.02, f="xXyYZ")
+    p.hexa("CT_Lacquer", [(-0.1, -0.03, 0.02), (0.1, -0.03, 0.02), (0.1, 0.03, 0.02), (-0.1, 0.03, 0.02)],
+           [(-0.17, -0.06, 0.09), (0.17, -0.06, 0.09), (0.17, 0.06, 0.09), (-0.17, 0.06, 0.09)])
+    for xx, hh in ((-0.05, 0.3), (0.06, 0.26)):
+        p.rod(WOOD, (xx, 0.0, 0.09), (xx, 0.0, hh), 0.012, 4)
+        p.box("CT_Plaster", xx - 0.05, xx + 0.05, -0.004, 0.004, 0.14, hh - 0.02, f="yY")
+    return p.done()
+
+
+def shell_bowl(B, x, y, z=0.0, yaw=0.0):
+    """[prop] A wooden bowl heaped with seashells and a pair of amber pebbles."""
+    p = _P(B, x, y, z, yaw, "shell_bowl")
+    p.kind = "prop"
+    p.lathe(WOOD, 0, 0, [(0.05, 0.0), (0.11, 0.05), (0.13, 0.08), (0.12, 0.08)], 10, top=False, bottom=True)
+    for k in range(6):
+        a = k * 1.05
+        p.lathe("CT_Plaster", 0.05 * math.cos(a), 0.05 * math.sin(a), [(0.0, 0.06), (0.03, 0.075), (0.025, 0.1), (0.0, 0.105)], 5)
+    p.lathe("CT_PlasterYellow", 0.0, 0.0, [(0.0, 0.07), (0.025, 0.085), (0.02, 0.11), (0.0, 0.115)], 5)
+    return p.done()
+
+
+def photo_more2(B):
+    trunk(B, XL + 0.25, 1.9, 0.0, 90.0)
+    umbrella_light(B, -0.4, 3.1, 0.0, 0.0)
+    kit.wall_shelf(B, XL, 2.3, 0.0, 90.0, w=1.0, zt=1.5, props=False)
+    film_boxes(B, XL + 0.12, 2.3, 1.5, 90.0)
+
+
+def barber_more2(B):
+    barber_pole(B, -4.4, 1.0, 0.0, 0.0)
+    comb_jar(B, XL + 0.13, 2.2, 0.95, 90.0)
+    clipper_rack(B, XL, 5.4, 0.0, 90.0, zc=1.5)
+
+
+def rental_more2(B):
+    life_vests(B, XR - 0.3, 4.05, 0.0, 270.0, w=1.0)
+
+
+def workshop_more2(B):
+    wire_spools(B, XR, 5.0, 0.0, 270.0, zc=1.55)
+    solder_stand(B, -0.55, 5.95, 0.95, 20.0)
+
+
+def souvenirs_more2(B):
+    kit.wall_shelf(B, XL, 2.2, 0.0, 90.0, w=1.0, zt=1.6, props=False)
+    ship_model(B, XL + 0.12, 2.2, 1.6, 90.0)
+    shell_bowl(B, -1.1, 1.55, 0.75, 0.0)
+
+
+def books_more2(B):
+    t = kit.table(B, 0.9, 1.1, 0.0, 0.0, w=1.5, d=0.6, mat="CT_Wood")
+    for k, dx in enumerate((-0.5, -0.17, 0.17, 0.5)):
+        kit.books_stack(B, 0.9 + dx, 1.1 + (0.08 if k % 2 else -0.08), t["top"], 25.0 * k - 20, n=3 + k % 2, seed=50 + k)
+
+
+def _noop(B):
+    pass
+
+
+DEEP2 = {"photo": photo_more2, "barber": barber_more2, "rental": rental_more2, "workshop": workshop_more2,
+         "souvenirs": souvenirs_more2, "books": books_more2}
+
+
+MORE = {"cafe": cafe_more, "fish": fish_more, "rental": rental_more, "workshop": workshop_more, "dumplings": dumplings_more,
+        "souvenirs": souvenirs_more, "bakery": bakery_more, "photo": photo_more, "barber": barber_more, "books": books_more,
+        "beer": beer_more, "pasty": pasty_more}
+
+
+DRESS = {"cafe": cafe, "fish": fish, "rental": rental, "workshop": workshop, "dumplings": dumplings, "souvenirs": souvenirs,
+         "bakery": bakery, "photo": photo, "barber": barber, "books": books, "beer": beer, "pasty": pasty}
+
+
+# ------------------------------------------------------------------------------------------------ the fourth pass
+# Depth pass 3: the thinnest rooms get five more pieces each (dumplings, pasty, fish); acts in x_w1_units.json.
+def flour_sack(B, x, y, z=0.0, yaw=0.0, label="label_07"):
+    """[prop] A flour sack, slumped, with its printed label (МУКА)."""
+    p = _P(B, x, y, z, yaw, "flour_sack")
+    p.kind = "prop"
+    p.cushion("CT_Paper", -0.2, 0.2, -0.13, 0.13, 0.0, 0.5, puff=0.04)
+    p.box("CT_Paper", -0.12, 0.12, -0.03, 0.03, 0.5, 0.56, f="xXyYZ")
+    p.label(label, 0.0, 0.27, -0.172, 0.28, 0.24)
+    return p.done()
+
+
+def toss_basin(B, x, y, z=0.0, yaw=0.0):
+    """[prop] A tall flour-dusted table with a wide enamel basin and a heap of dough balls beside it."""
+    t = tall_table(B, x, y, z, yaw, r=0.4)
+    p = _P(B, x, y, z + t["top"], yaw, "toss_basin")
+    p.kind = "prop"
+    p.lathe("CT_TileWhite", 0.0, 0.0, [(0.1, 0.0), (0.2, 0.05), (0.23, 0.11), (0.215, 0.11), (0.17, 0.06), (0.09, 0.012)], 12, top=False, bottom=True)
+    p.cyl("CT_Plaster", 0.0, 0.0, 0.0, 0.016, 0.1, 10)
+    for k in range(4):
+        u, v = -0.3 + 0.07 * k, 0.17 - 0.05 * (k % 2)
+        p.lathe("CT_Plaster", u, v, [(0.0, 0.0), (0.032, 0.012), (0.03, 0.034), (0.0, 0.05)], 6)
+    return p.done()
+
+
+def tip_jar(B, x, y, z=0.0, yaw=0.0):
+    """[prop] A glass jar of coins with a paper lid and a folded note under it."""
+    p = _P(B, x, y, z, yaw, "tip_jar")
+    p.kind = "prop"
+    p.lathe("CT_Glass", 0.0, 0.0, [(0.0, 0.0), (0.075, 0.0), (0.08, 0.02), (0.08, 0.17), (0.055, 0.19), (0.055, 0.205)], 10, top=False)
+    p.lathe(BRASS, 0.0, 0.0, [(0.0, 0.0), (0.07, 0.0), (0.075, 0.012), (0.0, 0.05)], 8)
+    p.box("CT_Paper", 0.1, 0.18, -0.05, 0.05, 0.0, 0.004, f="xXyYZ")
+    return p.done()
+
+
+def smoked_fish_rail(B, x0, x1, y, zr, n=7):
+    """[prop] A ceiling-hung steel rail with smoked fish tied by the tails, golden-brown."""
+    p = _P(B, (x0 + x1) / 2, y, 0.0, 0.0, "fish_rail")
+    p.kind = "prop"
+    hw = (x1 - x0) / 2
+    p.rod(STEEL, (-hw, 0.0, zr), (hw, 0.0, zr), 0.014, 4)
+    for sx in (-hw + 0.05, hw - 0.05):
+        p.rod(STEEL, (sx, 0.0, zr), (sx, 0.0, CEIL), 0.008, 3)
+    for k in range(n):
+        u = -hw + 0.18 + k * (2 * hw - 0.36) / (n - 1)
+        mt = "CT_Wood" if k % 3 else "CT_WoodLight"
+        p.rod("CT_Paper", (u, 0.0, zr), (u, 0.0, zr - 0.05), 0.006, 3)
+        p.lathe(mt, u, 0.0, [(0.0, zr - 0.33), (0.022, zr - 0.29), (0.04, zr - 0.2), (0.036, zr - 0.12), (0.012, zr - 0.06), (0.0, zr - 0.05)], 6)
+        p.box(mt, u - 0.004, u + 0.004, -0.04, 0.04, zr - 0.42, zr - 0.34, f="xXz")
+        p.box("CT_Lacquer", u - 0.032, u - 0.03, -0.008, 0.008, zr - 0.13, zr - 0.12, f="x")
+    return p.done()
+
+
+def net_heap(B, x, y, z=0.0, yaw=0.0):
+    """[prop] A heap of grey netting with floats and a wooden netting needle."""
+    p = _P(B, x, y, z, yaw, "net_heap")
+    p.kind = "prop"
+    p.cushion("CT_PlasterGrey", -0.28, 0.28, -0.2, 0.2, 0.0, 0.2, puff=0.05)
+    for k in range(4):
+        p.lathe("CT_PlasterRed", -0.2 + 0.13 * k, 0.21, [(0.0, 0.04), (0.04, 0.07), (0.035, 0.12), (0.0, 0.14)], 6)
+    p.rod(WOODL, (0.0, -0.22, 0.2), (0.22, -0.1, 0.24), 0.012, 4)
+    return p.done()
+
+
+def bowl_floor(B, x, y, z=0.0, yaw=0.0):
+    """[prop] A cat's enamel bowl with fish heads in it."""
+    p = _P(B, x, y, z, yaw, "bowl_floor")
+    p.kind = "prop"
+    p.lathe("CT_PlasterBlue", 0.0, 0.0, [(0.0, 0.0), (0.07, 0.0), (0.095, 0.05), (0.085, 0.05), (0.06, 0.012)], 10, top=False)
+    p.cyl("CT_Paper", 0.0, 0.0, 0.01, 0.02, 0.06, 8)
+    return p.done()
+
+
+def tin_pyramid(B, x, y, z=0.0, yaw=0.0, label="label_00"):
+    """[prop] Sprat tins stacked three and two with their printed labels (ШПРОТЫ)."""
+    p = _P(B, x, y, z, yaw, "tin_pyramid")
+    p.kind = "prop"
+    for row, n in ((0, 3), (1, 2)):
+        for k in range(n):
+            u = (k - (n - 1) / 2) * 0.125
+            z0 = row * 0.045
+            p.box(ALU, u - 0.06, u + 0.06, -0.045, 0.045, z0, z0 + 0.043, f="xXyYZz")
+            p.label(label, u, z0 + 0.022, -0.046, 0.11, 0.04)
+    return p.done()
+
+
+def baking_oven(B, x, y, z=0.0, yaw=0.0):
+    """[machine] A steel baking oven on a plinth: a window in the door, a thermometer and a rack of trays beside it."""
+    p = _P(B, x, y, z, yaw, "baking_oven")
+    p.kind = "prop"
+    p.box(STEEL, -0.55, 0.55, -0.35, 0.35, 0.0, 0.12, f="xXyY")
+    p.box(ALU, -0.55, 0.55, -0.35, 0.35, 0.12, 1.15, f="xXyYZ")
+    p.box("CT_Lacquer", -0.4, 0.2, -0.355, -0.35, 0.3, 0.85, f="y")
+    p.box("CT_Glass", -0.3, 0.1, -0.358, -0.355, 0.45, 0.72, f="y")
+    p.rod(BRASS, (-0.42, -0.4, 0.82), (0.22, -0.4, 0.82), 0.014, 4)
+    p.cyl("CT_Opal", 0.36, -0.36, 0.9, 0.904, 0.05, 10)
+    p.rod("CT_Lacquer", (0.36, -0.358, 0.9), (0.38, -0.358, 0.94), 0.005, 3)
+    for s in (0.3, 0.42, 0.54, 0.66):
+        p.rod(STEEL, (0.28, -0.352, s), (0.5, -0.352, s), 0.01, 3)
+    p.box(STEEL, -0.6, 0.6, -0.4, 0.4, 1.15, 1.18, f="xXyYZz")
+    p.cyl(STEEL, 0.4, 0.2, 1.18, 1.7, 0.07, 6)
+    return p.done()
+
+
+def cooling_rack(B, x, y, z=0.0, yaw=0.0, mat="CT_WoodLight"):
+    """[prop] A two-tier wire cooling rack on a trestle, trays of chebureki on it."""
+    p = _P(B, x, y, z, yaw, "cooling_rack")
+    p.kind = "prop"
+    for sx in (-0.45, 0.45):
+        for sy in (-0.2, 0.2):
+            p.rod(STEEL, (sx, sy, 0.0), (sx, sy, 1.0), 0.015, 4)
+    for zz in (0.5, 0.95):
+        p.box(STEEL, -0.48, 0.48, -0.23, 0.23, zz, zz + 0.015, f="xXyYZz")
+        for k in range(8):
+            u = -0.4 + k * 0.115
+            p.rod(STEEL, (u, -0.22, zz + 0.015), (u, 0.22, zz + 0.015), 0.004, 3)
+        for k in range(5):
+            u = -0.34 + 0.17 * k
+            for v in (-0.08, 0.09):
+                p.cushion(mat, u - 0.06, u + 0.06, v - 0.045, v + 0.045, zz + 0.016, zz + 0.07, puff=0.02)
+    return p.done()
+
+
+def thanks_wall(B, x, y, yaw, z=1.55):
+    """[wall] A cork board dense with customers' thank-you notes: paper cards pinned at angles."""
+    p = _P(B, x, y, 0.0, yaw, "thanks_wall")
+    p.kind = "wall"
+    p.box("CT_WoodLight", -0.5, 0.5, -0.03, 0.0, z - 0.4, z + 0.4, f="xXyZz")
+    p.box("CT_Wood", -0.46, 0.46, -0.032, -0.03, z - 0.36, z + 0.36, f="y")
+    names = ("paper_typed", "paper_letter", "paper_drawing")
+    for k in range(9):
+        cx = -0.32 + 0.16 * (k % 5) * 1.0 + (0.0 if k < 5 else 0.08) - (0.0 if k < 5 else 0.0)
+        cz = z + (0.17 if k < 5 else -0.17)
+        p.card_front(names[k % 3], cx - 0.07, cx + 0.07, cz - 0.09, cz + 0.09, -0.036 - 0.001 * k)
+        p.box("CT_PlasterRed", cx - 0.01, cx + 0.01, -0.04 - 0.001 * k, -0.036 - 0.001 * k, cz + 0.07, cz + 0.09, f="y")
+    return p.done()
+
+
+def _dumplings3(B):
+    # the regular's reserved table by the right wall: a card "reserved", a newspaper, a chair facing it
+    t = kit.table(B, 4.4, 1.4, 0.0, 0.0, w=0.7, d=0.7, mat="CT_Wood")
+    kit.newspaper(B, 4.4, 1.4, t["top"], 20.0, seed=5)
+    p = _P(B, 4.6, 1.2, t["top"], 0.0, "reserved_card")
+    p.kind = "prop"
+    p.box("CT_Paper", -0.05, 0.05, -0.012, 0.012, 0.0, 0.07, f="xXyYZ")
+    p.box("CT_PlasterRed", -0.05, 0.05, -0.0125, -0.012, 0.045, 0.07, f="y")
+    p.done()
+    c = kit.chair(B, 4.4, 2.0, 0.0, 0.0, kind="wood")
+    _seat(B, "dumpling_regular", c)
+    B.spot("regular", "seat", (c["seats"][0][0], c["seats"][0][1], 0.0), 0.0)
+    # the chalk board of the week's fillings
+    kit.menu_board(B, XL, 0.85, 0.0, 90.0, name="menu_0", w=0.7, zc=1.65)
+    B.thing("dumpling_week", "board", (XL + 0.04, 0.85, 1.65), 90.0, topic="prices")
+    _stand_spot(B, "week", -4.2, 0.85, 90.0)
+    # the dough-ball toss: a floured table with a basin, a sack of flour beside it
+    toss_basin(B, 0.15, 1.9, 0.0, 0.0)
+    flour_sack(B, 0.85, 1.9, 0.0, 20.0)
+    B.thing("dumpling_toss", "craft", (0.15, 1.9, 1.1), 0.0, what="dough_toss")
+    _stand_spot(B, "toss", 0.15, 1.2, 0.0)
+    # the tips jar at the till's end
+    tip_jar(B, -0.15, 4.5, 1.05, 0.0)
+    B.thing("dumpling_jar", "board", (-0.15, 4.5, 1.15), 0.0, topic="log")
+
+
+def _pasty3(B):
+    baking_oven(B, -3.8, 5.95, 0.0, 0.0)
+    B.thing("pasty_oven", "machine", (-3.8, 5.95, 1.1), 0.0, what="oven")
+    _stand_spot(B, "oven", -3.8, 5.0, 180.0)
+    cooling_rack(B, 0.45, 0.95, 0.0, 0.0)
+    B.thing("pasty_cooling", "craft", (0.45, 0.95, 1.0), 0.0, what="cooling_rack")
+    _stand_spot(B, "cooling", 0.45, 1.6, 180.0)
+    thanks_wall(B, XR, 1.45, 270.0, z=1.6)
+    B.thing("pasty_thanks", "board", (XR - 0.04, 1.45, 1.6), 270.0, topic="log")
+    _stand_spot(B, "thanks", 4.1, 1.45, 90.0)
+    b = kit.bench(B, XR - 0.3, 3.3, 0.0, 270.0, w=1.0, kind="park")
+    _seat(B, "pasty_bench", b)
+    B.spot("bench", "seat", (b["seats"][0][0], b["seats"][0][1], 0.0), 270.0)
+    flour_sack(B, -4.4, 5.3, 0.0, 70.0, label="label_07")
+    flour_sack(B, -4.45, 4.7, 0.0, 100.0, label="label_37")
+
+
+def _fish3(B):
+    smoked_fish_rail(B, -1.3, 0.7, 2.3, 2.3, n=7)
+    B.thing("fish_smoked", "board", (-0.3, 2.3, 1.95), 0.0, topic="sea")
+    _stand_spot(B, "smoked", -0.3, 1.6, 180.0)
+    kit.notice_board(B, -2.6, YB, 0.0, 0.0, w=0.9, zc=1.7, seed=33)
+    B.thing("fish_catch", "board", (-2.6, YB - 0.04, 1.7), 0.0, topic="prices")
+    _stand_spot(B, "catch", -2.6, 5.6, 180.0)
+    st = kit.stool(B, -3.35, 4.3, 0.0, 90.0, h=0.45)
+    _seat(B, "fish_stool", st, 0.45)
+    B.spot("mender", "seat", (-3.35, 4.3, 0.0), 90.0)
+    net_heap(B, -3.95, 4.3, 0.0, 0.0)
+    cat(B, -0.55, 5.65, 0.0, 200.0, mat="CT_PlasterGrey")
+    bowl_floor(B, -0.1, 5.5, 0.0, 0.0)
+    B.thing("fish_cat", "board", (-0.4, 5.6, 0.3), 0.0, topic="sea")
+    _stand_spot(B, "cat", -0.4, 5.0, 180.0)
+    kit.crate(B, -0.9, 1.05, 0.0, 0.0, fill="CT_Aluminium", seed=31)
+    tin_pyramid(B, -0.9, 1.05, 0.3, 0.0, label="label_00")
+
+
+def radio_set(B, x, y, z=0.0, yaw=0.0):
+    """[prop] A tube radio on a shelf: wooden cabinet, a lit dial card, two knobs and a cloth speaker."""
+    p = _P(B, x, y, z, yaw, "radio_set")
+    p.kind = "prop"
+    p.bev(WOOD, -0.18, 0.18, -0.09, 0.09, 0.0, 0.2, 0.012)
+    p.box("CT_PlasterYellow", -0.15, 0.02, -0.093, -0.09, 0.11, 0.17, f="y")
+    p.box("CT_Plaster", -0.15, -0.0, -0.0935, -0.0925, 0.14, 0.145, f="y")
+    p.box("CT_PlasterGrey", 0.05, 0.16, -0.093, -0.09, 0.03, 0.19, f="y")
+    for k, u in enumerate((-0.1, -0.02)):
+        p.cyl(BRASS, u, -0.1, 0.045, 0.049, 0.022, 8)
+    p.rod(BRASS, (0.12, 0.0, 0.2), (0.17, 0.0, 0.36), 0.004, 3)
+    return p.done()
+
+
+def _bakery3(B):
+    b = kit.bench(B, XR - 0.3, 3.0, 0.0, 270.0, w=1.2, kind="park")
+    _seat(B, "bakery_bench", b)
+    B.spot("bench", "seat", (b["seats"][0][0], b["seats"][0][1], 0.0), 270.0)
+    kit.notice_board(B, XL, 0.95, 0.0, 90.0, w=0.7, zc=1.65, seed=17)
+    B.thing("bakery_shifts", "board", (XL + 0.04, 0.95, 1.65), 90.0, topic="orders")
+    _stand_spot(B, "shifts", -4.2, 0.95, 90.0)
+    kit.wall_shelf(B, XL, 5.75, 0.0, 90.0, w=0.7, zt=1.5, props=False)
+    radio_set(B, XL + 0.13, 5.75, 1.5, 90.0)
+    B.thing("bakery_radio", "machine", (XL + 0.13, 5.75, 1.65), 90.0, what="tube_radio")
+    _stand_spot(B, "radio", -4.2, 5.4, 90.0)
+    flour_sack(B, 4.5, 5.0, 0.0, 100.0, label="label_07")
+    flour_sack(B, 4.5, 4.45, 0.0, 80.0, label="label_37")
+
+
+DEEP3 = {"bakery": _bakery3, "dumplings": _dumplings3, "pasty": _pasty3, "fish": _fish3}
+
+
+def build(B):
+    wall, dado, floor = STYLE[VARIANT]
+    _shell(B, wall, dado, floor)
+    _sign(B, VARIANT)
+    DRESS[VARIANT](B)
+    MORE[VARIANT](B)
+    DEEP[VARIANT](B)
+    if VARIANT in DEEP2:
+        DEEP2[VARIANT](B)
+    if VARIANT in DEEP3:
+        DEEP3[VARIANT](B)
+    B.note("promenade unit room, variant %s: placed at each W1 unit whose plan variant is %s" % (VARIANT, VARIANT))
+    if os.environ.get("KIT_CHECK"):
+        print("KITCHECK", VARIANT, kit.check(B))

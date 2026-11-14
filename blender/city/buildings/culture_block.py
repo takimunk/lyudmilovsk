@@ -18,11 +18,13 @@ Ideas for later: enterable towers (stairs inside), a pool deck between the tower
 Material requests: none (a painted-timber material for the door surround would be nice: CT_Door is used).
 """
 import math
+import os
 import random
 
 from citykit import box, prism, ring, DOOR_W, DOOR_H, Facade, Mesh, wall_with_holes, triangulate
 import geom
-from furn_int2 import Furn
+import furn_int3 as fu
+import interior_kit as kit
 
 INFO = {
     "name_ru": "Дом культуры и спорта", "name_en": "Culture Block",
@@ -232,96 +234,414 @@ def inner_skin(B, x0, x1, y0, y1, t, z0, z1, hole_sets, mat="CT_Interior"):
         B.m.extend(Fi.apply(mi))
 
 
+def _line(d, mat, pts, w=0.07, z=0.012, closed=False):
+    """A painted line (court markings): a flat strip along the polyline, just above the floor."""
+    pts = list(pts) + ([pts[0]] if closed else [])
+    for (ax, ay), (bx, by) in zip(pts, pts[1:]):
+        L = math.hypot(bx - ax, by - ay)
+        if L < 1e-6:
+            continue
+        nx, ny = -(by - ay) / L * w / 2, (bx - ax) / L * w / 2
+        d.face(mat, [(ax - nx, ay - ny, z), (bx - nx, by - ny, z), (bx + nx, by + ny, z), (ax + nx, ay + ny, z)])
+
+
+def _arc(cx, cy, r, a0, a1, n=16):
+    return [(cx + r * math.cos(math.radians(a0 + (a1 - a0) * k / n)), cy + r * math.sin(math.radians(a0 + (a1 - a0) * k / n)))
+            for k in range(n + 1)]
+
+
+def _switch(B, x, y, yaw, z, tid, scope="room"):
+    """A wall light switch: a small white plate with a rocker at height z on the wall at (x, y), facing yaw."""
+    fr = fu.Fr(x, y, yaw)
+    fu.lbox(B.detail, "CT_SteelWhite", fr, -0.04, 0.04, 0.0, 0.012, z - 0.06, z + 0.06)
+    fu.lbox(B.detail, "CT_Steel", fr, -0.012, 0.012, 0.012, 0.02, z - 0.025, z + 0.03)
+    B.thing(tid, "machine", fr.p(0.0, 0.03, z), yaw, what="switch", switch=scope)
+
+
+def _checkers(B, x, y, z, yaw=0.0):
+    """[prop] A draughts board (0.34 m, green with white squares) with a few men mid-game, lying on a table top at z."""
+    fr = fu.Fr(x, y, yaw)
+    s = 0.04
+    fu.lbox(B.detail, "CT_PlasterGreen", fr, -4 * s - 0.01, 4 * s + 0.01, -4 * s - 0.01, 4 * s + 0.01, z, z + 0.012)
+    for i in range(8):
+        for j in range(8):
+            if (i + j) % 2 == 0:
+                fu.lbox(B.detail, "CT_SteelWhite", fr, -4 * s + i * s, -3 * s + i * s, -4 * s + j * s, -3 * s + j * s, z + 0.012, z + 0.014)
+    for k, (i, j, red) in enumerate(((1, 1, 1), (3, 1, 1), (2, 2, 1), (5, 3, 1), (4, 4, 0), (6, 6, 0), (1, 5, 0), (3, 5, 0))):
+        px, py = fr.p(-4 * s + (i + 0.5) * s, -4 * s + (j + 0.5) * s)[:2]
+        fu.cyl(B.detail, "CT_PlasterRed" if red else "CT_Steel", px, py, z + 0.014, z + 0.03, 0.016, segs=8, top=True)
+
+
+def _dominoes(B, x, y, z, yaw=0.0):
+    """[prop] A short snake of dominoes laid out on a table top at z (white tiles with a dark centre line, 0.04 x 0.08)."""
+    fr = fu.Fr(x, y, yaw)
+    for u, w, rot in ((-0.16, 0.0, 0), (-0.08, 0.0, 0), (0.0, 0.0, 0), (0.06, 0.05, 90), (0.1, 0.12, 0), (0.1, 0.2, 0), (0.05, 0.27, 90)):
+        f = fu.Fr(*fr.p(u, w)[:2], yaw + rot)
+        fu.lbox(B.detail, "CT_SteelWhite", f, -0.02, 0.02, -0.04, 0.04, z, z + 0.01)
+        fu.lbox(B.detail, "CT_Steel", f, -0.019, 0.019, -0.002, 0.002, z + 0.0095, z + 0.0105)
+
+
 def _furnish_hall(B, hx0, hx1, hy0, hy1):
-    """Round 2: the brick hall (inner x -18.6..18.6, y 1.4..12.6): workshop, ping-pong, exhibition, cafe, lamps."""
-    f = Furn(B)
+    """Round 3: the brick hall (inner x -18.6..18.6, y 1.4..12.6) as the sports hall: basketball at the west end, gym
+    in the middle, art corner and weights at the east, buffet in the east back corner, reception by the door."""
     d = B.detail
+    T = B.thing
+    fy0, fy1 = hy0 + 0.4, hy1 - 0.4              # inner faces of the front and back walls
+    fx0, fx1 = hx0 + 0.4, hx1 - 0.4              # of the end walls
+    sp = B.spot
+
+    # ---- floor: court markings (basketball under the back-wall hoop), a rubber mat for the weights
+    kx = -9.0
+    box(d, "CT_PlasterRed", kx - 1.8, kx + 1.8, 7.0, fy1, 0.010, 0.014, faces="Z")                  # the key
+    _line(d, "CT_TileWhite", [(kx - 1.8, fy1), (kx - 1.8, 7.0), (kx + 1.8, 7.0), (kx + 1.8, fy1)], 0.07, 0.016)
+    _line(d, "CT_TileWhite", _arc(kx, 7.0, 1.8, 180, 360), 0.07, 0.016)
+    _line(d, "CT_TileWhite", [(kx - 5.4, fy1)] + _arc(kx, 11.0, 5.4, 180, 360) + [(kx + 5.4, fy1)], 0.07, 0.016)
+    box(d, "CT_Rubber", 8.0, 15.6, 9.1, fy1 - 0.1, 0.010, 0.022, faces="xXyYZ")
+
+    # ---- reception by the door (east of it) and a waiting row (west of it)
+    r = kit.reception_desk(B, 4.1, 3.9, yaw=270, w=2.2)
+    kit.telephone(B, 4.0, 3.5, 1.1, 270)
+    kit.cash_register(B, 4.0, 4.4, 1.1, 270)
+    kit.books_stack(B, 3.95, 3.0, 1.1, 0, n=3, seed=3)
+    kit.chair(B, 5.0, 4.0, yaw=270, kind="tube", mat="CT_PlasterBlue")
+    T("reception", "counter", (4.1, 3.9, 1.1), 270, role="cashier", service="reception")
+    sp("reception_spot", "counter", (3.0, 3.9, 0.0), 270)
+    kit.sign_plate(B, 5.0, fy0, yaw=180, name="sign_gym", w=1.5, zc=3.9)
+    wr = kit.waiting_row(B, -5.4, 2.0, yaw=180, n=4)
+    T("waiting_row", "seat", (-5.4, 2.0, 0.45), 180, height=0.45)
+    kit.notice_board(B, -5.4, fy0, yaw=180, w=1.5, zc=1.9, seed=2)
+    T("bench_-16", "board", (-5.4, fy0 + 0.1, 1.9), 180, topic="club")
+    kit.row(kit.poster, B, -7.0, fy0, -3.9, fy0, 2, yaw=180, name="poster_cons", w=0.55, zc=3.0, seed=4)
+    kit.wall_clock(B, 2.4, fy0, yaw=180, zc=3.6, r=0.3)
+    kit.fire_extinguisher(B, -3.7, fy0, yaw=180)
+    kit.plant(B, -3.0, 2.6, kind="palm", pot="CT_PlasterYellow", h=1.8)
+    kit.plant(B, 3.3, 2.1, kind="ficus", pot="CT_PlasterRed", h=1.6)
+    kit.rug(B, 0.0, 2.9, yaw=0, w=2.4, d=1.5, name="rug", seed=1)
+    for k, nm in enumerate(("painting_sea_calm", "painting_dunes", "painting_lighthouse")):
+        x = 4.5 + 1.15 * k
+        kit.picture(B, x, fy0, yaw=180, name=nm, w=0.8, zc=2.1)
+    T("exhibit_0", "board", (4.5, fy0 + 0.2, 2.1), 180, topic="exhibit")
+    T("exhibit_1", "board", (5.65, fy0 + 0.2, 2.1), 180, topic="painting")
+    T("exhibit_2", "board", (6.8, fy0 + 0.2, 2.1), 180, topic="exhibit")
+    sp("exhibit_0", "view", (4.5, 2.4, 0.0), 180)
+    sp("exhibit_1", "view", (5.65, 2.4, 0.0), 180)
+    sp("exhibit_2", "view", (6.8, 2.4, 0.0), 180)
+
+    # ---- west end: basketball
+    kit.basketball_hoop(B, kx, fy1, yaw=0)
+    kit.basketball_hoop(B, fx0, 11.0, yaw=90)
+    T("hoop_back", "sport", (kx, fy1 - 0.8, 2.3), 0, what="basketball")
+    T("hoop_west", "sport", (fx0 + 0.8, 11.0, 2.3), 90, what="basketball")
+    kit.banner(B, -17.4, fy1, yaw=0, name="poster_sun_2", w=1.6, zc=3.4)
+    kit.poster(B, kx - 2.9, fy1, yaw=0, name="poster_health", w=0.7, zc=4.2)
+    kit.poster(B, kx + 2.9, fy1, yaw=0, name="poster_safety", w=0.7, zc=4.2)
+    kit.lockers(B, fx0, 3.0, yaw=90, n=7, mat="CT_PlasterBlue")
+    kit.bench(B, fx0 + 1.0, 3.0, yaw=90, w=2.4, kind="gym")
+    sp("bench_-16", "bench", (fx0 + 1.0, 3.0, 0.0), 90)
+    T("changing_bench_w", "seat", (fx0 + 1.0, 3.0, 0.45), 90, height=0.45)
+    T("lockers_west", "board", (fx0 + 0.3, 3.0, 1.3), 90, topic="rules")
+    kit.mats(B, fx0 + 0.6, 6.9, yaw=0, w=1.0, d=2.0, n=4)
+    for k, bx in enumerate((-14.4, -10.4)):
+        kit.bench(B, bx, fy0 + 0.35, yaw=180, w=2.0, kind="gym")
+        T("sideline_bench_%d" % (k + 1), "seat", (bx, fy0 + 0.35, 0.45), 180, height=0.45)
+    kit.plant(B, -17.7, 12.0, kind="monstera", pot="CT_PlasterGreen", h=1.6)
+    kit.fire_extinguisher(B, -7.55, fy1, yaw=0)         # QA r8: at -2.4 it stood across the window's lower corner
+    kit.sack(B, -16.6, 11.6, yaw=20)
+    kit.sack(B, -16.0, 12.0, yaw=75)
+    kit.sack(B, -16.9, 10.9, yaw=140)
+    kit.crate(B, 17.2, 5.7, yaw=10, fill="CT_PlasterRed", seed=1)
+
+    # ---- middle: gymnastics (wall bars, vaulting horse, landing mats, ping-pong)
+    for k, wx in enumerate((-1.2, 0.0, 1.2)):
+        kit.wall_bars(B, wx, fy1, yaw=0, w=0.9, h=2.6)
+        T("wall_bars_%d" % (k + 1), "sport", (wx, fy1 - 0.2, 1.4), 0, what="wall_bars")
+    kit.mats(B, -0.6, 11.3, yaw=0, w=2.0, d=1.4, n=2, mat="CT_PlasterRed")
+    kit.mats(B, 1.5, 11.3, yaw=0, w=1.8, d=1.4, n=2)
+    hz = kit.vaulting_horse(B, 0.4, 7.3, yaw=0)
+    T("vault_horse", "sport", (0.4, 7.3, 1.12), 0, what="vaulting_horse")
+    box(d, "CT_Wood", -0.2, 0.9, 5.9, 6.7, 0.0, 0.1, faces="xXyYZ")
+    box(d, "CT_PlasterRed", -0.15, 0.85, 5.95, 6.65, 0.1, 0.13, faces="xXyYZ")
+    kit.mats(B, 0.4, 9.0, yaw=0, w=2.6, d=1.8, n=2, mat="CT_PlasterBlue")
+    T("landing_mats", "sport", (0.4, 9.0, 0.2), 0, what="mats")
+    pp = kit.pingpong_table(B, 5.8, 8.3, yaw=0)
+    T("pingpong_a", "play", (3.3, 8.3, 0.9), 90, what="table_tennis")
+    T("pingpong_b", "play", (8.3, 8.3, 0.9), 270, what="table_tennis")
+    sp("pingpong_a", "stand", (3.0, 8.3, 0.0), 90)
+    sp("pingpong_b", "stand", (8.6, 8.3, 0.0), 270)
+    kit.wall_clock(B, 0.0, fy1, yaw=0, zc=3.6, r=0.3)
+    kit.banner(B, 9.0, fy1, yaw=0, name="poster_sun_1", w=1.5, zc=3.6)
+
+    # ---- east: art corner (easels around a still life, two potter's wheels, a work table), shelves of materials
+    st = kit.table(B, 11.6, 5.6, w=1.3, d=0.8, h=0.75, mat=kit.WOODL)
+    kit.vase(B, 11.4, 5.6, st["top"], 0, seed=2)
+    kit.bottles(B, 11.9, 5.7, st["top"], 20, n=2, seed=3)
+    kit.books_stack(B, 11.8, 5.45, st["top"], 10, n=2, seed=5)
+    for i, (ex, ey, eyaw) in enumerate(((11.6, 3.9, 0), (9.0, 5.6, 270), (14.2, 5.6, 90))):
+        e = kit.easel(B, ex, ey, yaw=eyaw, seed=i + 7)
+    T("table_-12", "craft", (11.6, 3.9, 1.1), 0, what="easel")
+    T("easel_2", "craft", (9.0, 5.6, 1.1), 270, what="easel")
+    T("easel_3", "craft", (14.2, 5.6, 1.1), 90, what="easel")
+    sp("table_-12", "work", (11.6, 3.0, 0.0), 180)
+    for k, wx in enumerate((15.3, 16.7)):
+        kit.potters_wheel(B, wx, 3.2, yaw=0)
+        kit.stool(B, wx, 3.85, yaw=180, h=0.42)
+        T("wheel_stool_%d" % k, "seat", (wx, 3.85, 0.42), 0, height=0.42)
+    T("table_-6", "craft", (15.3, 3.2, 0.55), 0, what="potters_wheel")
+    T("wheel_2", "craft", (16.7, 3.2, 0.55), 0, what="potters_wheel")
+    sp("table_-6", "work", (15.3, 3.9, 0.0), 0)
+    wt = kit.table(B, 8.6, 2.3, yaw=0, w=1.8, d=0.8, h=0.75, mat=kit.WOODL)
+    kit.paint_jars(B, 8.2, 2.3, wt["top"], 0, n=5, seed=4)
+    kit.tools(B, 9.1, 2.3, wt["top"], 15)
+    kit.stool(B, 8.2, 3.1, yaw=0)
+    kit.stool(B, 9.0, 3.1, yaw=0)
+    sp("work_9", "work", (9.0, 3.1, 0.0), 0)
+    sp("work_4", "work", (8.2, 3.1, 0.0), 0)
+    sp("work_14", "work", (16.7, 3.9, 0.0), 0)
+    T("work_table", "craft", (8.6, 2.3, 0.9), 180, what="workbench")
+    kit.bookshelf(B, 12.0, fy0, yaw=180, w=0.9, h=2.0, topic="art", seed=3)
+    T("art_shelf", "shelf", (12.0, fy0 + 0.3, 1.3), 180, topic="art")
+    kit.shop_shelf(B, fx1, 3.0, yaw=270, w=1.8, h=1.9, goods="jars", seed=2)
+    T("clay_shelf", "board", (fx1 - 0.3, 3.0, 1.3), 270, topic="store")
+    kit.bench(B, fx1 - 0.35, 6.9, yaw=270, w=2.4, kind="park")
+    sp("bench_16", "bench", (fx1 - 0.5, 6.9, 0.0), 270)
+    T("bench_east", "seat", (fx1 - 0.35, 6.9, 0.45), 270, height=0.45)
+    kit.plant(B, 17.8, 2.1, kind="fern", pot="CT_PlasterYellow", h=1.2)
+    kit.plant(B, 7.3, 2.0, kind="cactus", pot="CT_PlasterRed", h=1.0)
+
+    # ---- east back: weights corner
+    for k, rx in enumerate((9.4, 11.6)):
+        kit.barbell_rack(B, rx, fy1 - 0.4, yaw=0)
+        T("barbell_rack_%d" % (k + 1), "sport", (rx, fy1 - 0.45, 1.06), 0, what="barbell")
+    for k, (bx_, by_) in enumerate(((10.3, 10.6), (13.3, 10.6))):
+        kit.bench_press(B, bx_, by_, yaw=0)
+        T("bench_press_%d" % (k + 1), "sport", (bx_, by_, 0.9), 0, what="barbell")
+    for k, bx_ in enumerate((14.9, 15.1)):
+        kit.exercise_bike(B, bx_ + 0.0 * k, 11.8 - 1.0 * k, yaw=0)
+        T("bike_%d" % (k + 1), "sport", (bx_, 11.8 - 1.0 * k, 0.9), 0, what="exercise_bike")
+    kit.mirror(B, 8.2, fy1, yaw=0, zc=1.9, w=1.4, h=1.3)
+
+    # ---- east back corner: the buffet (a counter with the cashier behind, stools, little round tables)
+    bc = kit.bar_counter(B, 16.6, 11.0, yaw=270, w=2.6, d=0.65, taps=0, seed=2)
+    kit.cup(B, 16.5, 10.4, 1.05, 0)
+    kit.teapot(B, 16.6, 11.4, 1.05, 0)
+    kit.glass(B, 16.5, 11.9, 1.05, 0)
+    kit.sign_plate(B, fx1, 11.0, yaw=270, name="sign_buffet", w=1.4, zc=2.7)
+    kit.row(kit.bar_stool, B, 15.7, 10.3, 15.7, 11.7, 2, yaw=90)
+    T("cafe_counter", "counter", (16.6, 11.0, 1.05), 270, role="cashier", service="bar", shop="sport_cafe")
+    sp("cafe_counter", "counter", (15.3, 11.0, 0.0), 90)
+    for i, (tx, ty) in enumerate(((13.2, 8.2), (15.2, 8.3), (17.0, 8.6))):
+        kit.table_round(B, tx, ty, r=0.42, mat=kit.WOODL)
+        if i == 1:                                       # a game of draughts, and dominoes at the next table
+            _checkers(B, tx, ty, 0.75, 0.0)
+            T("cafe_checkers", "play", (tx, ty, 0.78), 0, what="checkers")
+        elif i == 2:
+            _dominoes(B, tx - 0.15, ty - 0.12, 0.75, 0.0)
+            T("cafe_dominoes", "play", (tx, ty, 0.78), 0, what="dominoes")
+        else:
+            kit.cup(B, tx, ty, 0.75, 0)
+        kit.chair(B, tx - 0.6, ty, yaw=90)
+        kit.chair(B, tx + 0.6, ty, yaw=270)
+        T("cafe_table_%d" % (i + 1), "seat", (tx - 0.6, ty, 0.45), 90, height=0.45)
+        sp("cafe_table_%d" % (i + 1), "table", (tx - 0.6, ty, 0.0), 90.0)
+    # ---- Round 4: deeper pass. changing screen, sauna and shower cabin (west front), the kiln, the coach's corner,
+    # the timetable, the studio's wall
+    cx0, cx1, cy0, cy1, cp, WH, ct = -16.0, -13.0, 3.6, 5.9, -14.3, 2.3, 0.1
+    mm = B.m
+    for a, b in ((cx0, -15.5), (-14.6, -14.05), (-13.25, cx1)):
+        box(mm, "CT_Wood", a, b, cy0, cy0 + ct, 0.0, WH)
+    for a, b in ((-15.5, -14.6), (-14.05, -13.25)):
+        box(mm, "CT_Wood", a, b, cy0, cy0 + ct, 2.0, WH)
+    box(mm, "CT_Wood", cx0, cx0 + ct, cy0, cy1, 0.0, WH)
+    box(mm, "CT_Wood", cx1 - ct, cx1, cy0, cy1, 0.0, WH)
+    box(mm, "CT_Wood", cx0, cx1, cy1 - ct, cy1, 0.0, WH)
+    box(mm, "CT_Wood", cp - ct / 2, cp + ct / 2, cy0 + ct, cy1 - ct, 0.0, WH)
+    box(mm, "CT_WoodLight", cx0 - 0.05, cx1 + 0.05, cy0 - 0.05, cy1 + 0.05, WH, WH + 0.08)
+    # sauna: duckboards, stove with stones and a flue, a two-level bench, a bucket of water
+    box(d, "CT_WoodLight", cx0 + ct, cp - ct / 2, cy0 + ct, cy1 - ct, 0.0, 0.03, faces="Z")
+    box(mm, "CT_Steel", -15.88, -15.52, 3.77, 4.13, 0.0, 0.68)
+    box(d, "CT_Stone", -15.86, -15.54, 3.79, 4.11, 0.68, 0.8)
+    box(d, "CT_Steel", -15.74, -15.66, 3.91, 3.99, 0.8, WH)
+    box(mm, "CT_WoodLight", -15.85, -14.37, 5.4, 5.78, 0.0, 0.86)
+    box(d, "CT_Wood", -15.88, -14.34, 5.38, 5.8, 0.86, 0.9, faces="xXyYZ")
+    kit.bench(B, -15.1, 5.17, yaw=0, w=1.5, kind="sauna")
+    box(d, "CT_Wood", -14.7, -14.46, 4.5, 4.7, 0.0, 0.26)
+    box(d, "CT_Steel", -14.7, -14.46, 4.5, 4.7, 0.26, 0.27, faces="Z")
+    # shower: white tile on the walls and floor, a head on a pipe, a drain
+    box(d, "CT_TileWhite", cp + ct / 2 + 0.02, cx1 - ct, cy0 + ct, cy1 - ct, 0.0, 0.02, faces="Z")
+    box(d, "CT_TileWhite", cp + ct / 2, cx1 - ct, cy1 - ct - 0.02, cy1 - ct, 0.0, 2.1, faces="xXy")
+    box(d, "CT_TileWhite", cx1 - ct - 0.02, cx1 - ct, cy0 + ct, cy1 - ct - 0.02, 0.0, 2.1, faces="xYy")
+    box(d, "CT_TileWhite", cp + ct / 2, cp + ct / 2 + 0.02, cy0 + ct, cy1 - ct, 0.0, 2.1, faces="XyY")
+    box(d, "CT_Aluminium", -13.72, -13.68, 5.72, 5.76, 1.1, 2.04)
+    box(d, "CT_Aluminium", -13.8, -13.6, 5.52, 5.76, 2.0, 2.06)
+    box(d, "CT_Aluminium", -13.76, -13.64, 5.66, 5.76, 1.1, 1.16)
+    box(d, "CT_ConcreteDark", -13.8, -13.6, 4.9, 5.1, 0.02, 0.03, faces="Z")
+    B.lamp((cp, 4.7, 2.15), lumens=380, colour="#FFC890", kind="public", radius=3.5)
+    # outside of the cabin: results board (court side), pool notice and a lifebuoy (aisle side)
+    kit.notice_board(B, cx1, 4.75, yaw=90, w=1.3, zc=1.6, seed=5)
+    kit.notice_board(B, cx0, 5.15, yaw=270, w=0.7, zc=1.5, seed=9)
+    kit.lifebuoy(B, cx0, 4.15, yaw=270, zc=1.55)
+    kit.mosaic_panel(B, -14.5, cy1, yaw=180, name="tile_4", w=1.1, h=0.9, zc=1.5, seed=3)
+    kit.sign_plate(B, -15.05, cy0, yaw=0, name="sign_quiet", w=0.7, zc=2.15)
+    _switch(B, -14.33, cy0, 0.0, 1.3, "light_switch_cabin", 3)          # between the two cabin doors
+    _switch(B, 1.75, fy0, 180.0, 1.3, "light_switch_hall", "hall")       # inside the front door
+    # changing screen by the lockers
+    kit.screen_divider(B, -17.2, 5.0, yaw=90)
+    # kiln in the art corner (east wall), its drying shelf is the clay shelf
+    kit.kiln(B, 17.95, 4.5, yaw=270)
+    # coach's corner between the sideline benches: a table, a tactics board, a whistle on a cord
+    ct_ = kit.table(B, -12.0, 2.0, yaw=0, w=0.9, d=0.5, h=0.75, mat=kit.WOODL)
+    kit.books_stack(B, -12.2, 2.0, ct_["top"], 20, n=2, seed=8)
+    kit.cup(B, -11.8, 2.05, ct_["top"], 0)
+    kit.picture(B, -12.0, fy0, yaw=180, name="board_1", w=0.8, zc=1.9, frame=kit.WOODL)
+    T("coach_table", "counter", (-12.0, 2.0, 0.9), 180, role="coach", service="coach")
+    T("tactics_board", "board", (-12.0, fy0 + 0.1, 1.9), 180, topic="tactics")
+    sp("coach_table", "stand", (-12.0, 2.8, 0.0), 0)
+    # the timetable by the door
+    kit.notice_board(B, -2.4, fy0, yaw=180, w=1.1, zc=1.8, seed=7)
+    T("training_board", "board", (-2.4, fy0 + 0.1, 1.8), 180, topic="timetable")
+    sp("schedule_view", "view", (-2.4, 2.4, 0.0), 180)
+    # the studio's wall
+    kit.picture(B, 17.2, fy0, yaw=180, name="painting_still_life", w=0.7, zc=2.2)
+    kit.picture(B, 18.05, fy0, yaw=180, name="painting_sea_storm", w=0.7, zc=2.2)
+    # things
+    T("sauna_bench", "seat", (-15.1, 5.17, 0.45), 0, height=0.45)
+    T("sauna_stove", "machine", (-15.7, 3.95, 0.6), 90, what="sauna_stove")
+    T("shower_stall", "machine", (-13.7, 5.7, 1.4), 0, what="shower")
+    T("cabin_results", "board", (cx1 + 0.05, 4.75, 1.6), 90, topic="results")
+    T("pool_sign", "board", (cx0 - 0.05, 5.15, 1.5), 270, topic="pool")
+    T("changing_screen", "door", (-17.2, 5.0, 0.9), 90, to="staff")
+    T("kiln", "craft", (17.55, 4.5, 0.8), 270, what="kiln")
+    T("court_game", "sport", (-9.0, 6.6, 0.9), 180, what="basketball")
+    sp("sauna_bench", "bench", (-15.1, 4.6, 0.0), 0)
+    sp("kiln_spot", "work", (17.0, 4.5, 0.0), 90)
+    sp("results_view", "view", (-12.2, 4.75, 0.0), 270)
+    sp("court_free", "stand", (-9.0, 6.0, 0.0), 180)
+    # ---- Round 5: third layer. lockers area, gym corner, court gear, studio, buffet
+    P = kit._P
+
+    def ball(x, y, z):
+        q = P(B, x, y, z, 0, "ball")
+        q.kind = "prop"
+        q.lathe("CT_PlasterYellow", 0, 0, [(0.0, 0.0), (0.06, 0.015), (0.105, 0.07), (0.12, 0.12), (0.105, 0.17), (0.06, 0.225), (0.0, 0.24)], 8)
+        q.done()
+
+    def bowl(x, y, z, mat, r=0.09):
+        q = P(B, x, y, z, 0, "bowl")
+        q.kind = "prop"
+        q.lathe(mat, 0, 0, [(r * 0.5, 0.0), (r, 0.05), (r * 1.1, 0.09)], 8, top=False, bottom=True)
+        q.done()
+
+    # lockers: a mirror, hooks with a jacket and a scarf, a forgotten towel and trainers
+    kit.mirror(B, -18.1, fy0, yaw=180, zc=1.5, w=0.6, h=1.1)
+    for k, hx in enumerate((-17.6, -17.3, -17.0, -16.7)):
+        box(d, "CT_Steel", hx - 0.02, hx + 0.02, fy0, fy0 + 0.07, 1.68, 1.72)
+    box(d, "CT_PlasterGreen", -17.34, -17.26, fy0 + 0.04, fy0 + 0.1, 0.95, 1.7)
+    box(d, "CT_PlasterGreen", -17.42, -17.18, fy0 + 0.05, fy0 + 0.12, 0.95, 1.4)
+    box(d, "CT_PlasterRed", -17.04, -16.96, fy0 + 0.04, fy0 + 0.08, 1.1, 1.7)
+    box(d, "CT_TileWhite", -17.78, -17.42, 3.5, 3.8, 0.45, 0.475)
+    box(d, "CT_SteelRed", -17.78, -17.42, 3.62, 3.68, 0.475, 0.478, faces="Z")
+    for sy_, yy in ((1, 2.35), (-1, 2.6)):
+        box(d, "CT_Rubber", -17.12, -16.88, yy - 0.05, yy + 0.05, 0.0, 0.03)
+        box(d, "CT_PlasterBlue", -17.1, -16.9, yy - 0.04, yy + 0.04, 0.03, 0.1)
+        box(d, "CT_TileWhite", -17.1, -16.9, yy - 0.04, yy - 0.0, 0.1, 0.12)
+
+    # gym corner: chalk bowl on a stand, a plate tree, a wall chart of exercises
+    q = P(B, 12.75, 11.65, 0, 0, "chalk_stand")
+    q.cyl("CT_Steel", 0, 0, 0.0, 0.9, 0.025, 6)
+    q.lathe("CT_TileWhite", 0, 0, [(0.05, 0.9), (0.15, 0.95), (0.17, 1.02)], 8, top=False, bottom=True)
+    q.done()
+    q = P(B, 13.6, 12.05, 0, 0, "plate_tree")
+    q.cyl("CT_Steel", 0, 0, 0.0, 1.15, 0.025, 6)
+    q.cyl("CT_Steel", 0, 0, 0.0, 0.03, 0.2, 8)
+    for k, (zz, rr) in enumerate(((0.05, 0.2), (0.11, 0.2), (0.17, 0.17), (0.23, 0.17), (0.29, 0.14), (0.35, 0.14), (0.41, 0.11))):
+        q.cyl("CT_ConcreteDark" if k % 2 == 0 else "CT_Steel", 0, 0, zz, zz + 0.05, rr, 10, bottom=True)
+    q.done()
+    kit.poster(B, 10.35, fy1, yaw=0, name="chart_anatomy", w=0.9, zc=2.1)
+
+    # court: a flip scoreboard high on the back wall, a ball cart, a referee's chair
+    box(d, "CT_ConcreteDark", -5.3, -3.7, fy1 - 0.12, fy1, 4.3, 5.1)
+    for k, cx_ in enumerate((-5.05, -4.75, -4.25, -3.95)):
+        box(d, "CT_TileWhite", cx_ - 0.1, cx_ + 0.1, fy1 - 0.135, fy1 - 0.12, 4.45, 4.95, faces="y")
+        box(d, "CT_SteelRed", cx_ - 0.1, cx_ + 0.1, fy1 - 0.14, fy1 - 0.135, 4.69, 4.71, faces="y")
+    box(d, "CT_SteelRed", -4.54, -4.46, fy1 - 0.135, fy1 - 0.12, 4.55, 4.85, faces="y")
+    box(d, "CT_Steel", -5.35, -3.65, fy1 - 0.14, fy1, 5.1, 5.14)
+    T("scoreboard", "board", (-4.5, fy1 - 0.2, 4.7), 0, topic="scores")
+    q = P(B, -12.6, 11.9, 0, 0, "ball_cart")
+    for sx in (-0.4, 0.4):
+        for sy in (-0.25, 0.25):
+            q.rod("CT_Steel", (sx, sy, 0.08), (sx, sy, 0.95), 0.03, 4)
+            q.cyl("CT_Rubber", sx, sy, 0.0, 0.07, 0.06, 6)
+    q.box("CT_Steel", -0.42, 0.42, -0.27, 0.27, 0.3, 0.33, f="xXyYZz")
+    for sy in (-0.25, 0.25):
+        q.rod("CT_Steel", (-0.4, sy, 0.95), (0.4, sy, 0.95), 0.03, 4)
+        q.rod("CT_Steel", (-0.4, sy, 0.6), (0.4, sy, 0.6), 0.02, 4)
+    for sx in (-0.4, 0.4):
+        q.rod("CT_Steel", (sx, -0.25, 0.6), (sx, 0.25, 0.6), 0.02, 4)
+        q.rod("CT_Steel", (sx, -0.25, 0.95), (sx, 0.25, 0.95), 0.02, 4)
+    q.done()
+    for k, (bx_, by_) in enumerate(((-0.25, -0.1), (0.0, 0.12), (0.25, -0.08), (-0.1, 0.1), (0.15, 0.0))):
+        ball(-12.6 + bx_, 11.9 + by_, 0.33)
+    ball(-12.5, 11.9, 0.57)
+    box(mm, "CT_Steel", -13.0, -12.2, 11.65, 12.15, 0.305, 0.325)
+    T("ball_cart", "sport", (-12.6, 11.9, 0.7), 0, what="basketball")
+    q = P(B, -7.6, 3.4, 0, 180, "ref_chair")
+    for sx in (-0.28, 0.28):
+        q.rod("CT_Steel", (sx, 0.22, 0.0), (sx, 0.12, 1.2), 0.04, 4)
+        q.rod("CT_Steel", (sx, -0.22, 0.0), (sx, -0.1, 1.2), 0.04, 4)
+        q.rod("CT_Steel", (sx, 0.12, 1.2), (sx, 0.12, 1.75), 0.04, 4)
+    q.box("CT_Wood", -0.32, 0.32, -0.18, 0.2, 1.2, 1.25, f="xXyYZz")
+    q.box("CT_Wood", -0.32, 0.32, 0.1, 0.16, 1.4, 1.75, f="xXyYZz")
+    for k in range(3):
+        zz = 0.3 + 0.3 * k
+        q.box("CT_Steel", -0.3, 0.3, -0.34 + 0.0 * k, -0.2 - 0.0, zz, zz + 0.03, f="xXyYZz")
+    q.done(solid=False)
+    T("ref_chair", "seat", (-7.6, 3.4, 1.2), 180, height=1.2)
+    sp("ref_chair", "stand", (-7.6, 2.7, 0.0), 180)
+
+    # studio: brush jars, drying shelf with the bowls of the week, an apron on a coat stand
+    for k, (bx_, by_) in enumerate(((8.45, 2.5), (8.7, 2.55))):
+        q = P(B, bx_, by_, wt["top"], 0, "brush_jar")
+        q.cyl("CT_TileWhite", 0, 0, 0.0, 0.11, 0.04, 8, bottom=True)
+        for j in range(5):
+            a_ = 2 * math.pi * j / 5 + k
+            q.rod("CT_Wood", (0.015 * math.cos(a_), 0.015 * math.sin(a_), 0.04), (0.04 * math.cos(a_), 0.04 * math.sin(a_), 0.24), 0.01, 3)
+            q.rod("CT_PlasterRed" if j % 2 else "CT_PlasterBlue", (0.04 * math.cos(a_), 0.04 * math.sin(a_), 0.24), (0.045 * math.cos(a_), 0.045 * math.sin(a_), 0.29), 0.014, 3)
+        q.done()
+    kit.wall_shelf(B, 17.4, fy0, yaw=180, w=1.3, zt=1.35, props=False)
+    kit.wall_shelf(B, 17.4, fy0, yaw=180, w=1.3, zt=0.95, props=False)
+    for k, mt in enumerate(("CT_ConcreteWhite", "CT_PlasterPink", "CT_ConcreteWhite", "CT_PlasterGreen", "CT_PlasterYellow", "CT_ConcreteWhite")):
+        bowl(16.9 + 0.2 * k, fy0 + 0.12, 1.35 if k < 4 else 0.95, mt)
+    T("drying_shelf", "board", (17.45, fy0 + 0.2, 1.4), 180, topic="store")
+    kit.hat_stand(B, 13.4, 2.3)
+    box(d, "CT_PlasterBlue", 13.3, 13.5, 2.3 - 0.16, 2.3 - 0.1, 0.95, 1.55)
+    box(d, "CT_PlasterBlue", 13.32, 13.48, 2.3 - 0.21, 2.3 - 0.16, 0.95, 1.25)
+    box(d, "CT_TileWhite", 13.28, 13.52, 2.3 - 0.215, 2.3 - 0.21, 1.2, 1.5, faces="y")
+
+    # buffet: compote glasses and a tray of buns on the counter
+    for gy in (9.85, 10.0, 12.1):                        # compote in tumblers: red, so that they read (clear glass renders dark)
+        q = P(B, 16.45, gy, 1.05, 0, "compote")
+        q.kind = "prop"
+        q.lathe("CT_PlasterRed", 0, 0, [(0.03, 0.0), (0.037, 0.06), (0.04, 0.1)], 8, top=True)
+        q.done()
+        box(d, "CT_PlasterRed", 16.42, 16.48, gy - 0.003, gy + 0.003, 1.05, 1.1, faces="xXyY") if False else None
+    q = P(B, 16.7, 10.9, 1.05, 270, "bun_tray")
+    q.kind = "prop"
+    q.box("CT_Steel", -0.2, 0.2, -0.15, 0.15, 0.0, 0.015, f="xXyYZz")
+    for k in range(6):
+        q.lathe("CT_Leather", -0.14 + 0.1 * (k % 3), -0.07 + 0.14 * (k // 3), [(0.0, 0.015), (0.04, 0.02), (0.045, 0.045), (0.02, 0.07), (0.0, 0.075)], 6)
+    q.done()
+    # ---- the old lamps (pendants under the saw-tooth soffit)
     WARM = "#FFD2A0"
 
     def soffit(y):
         return 6.0 + 0.6 * ((y - hy0) % 4.0)
-    # ---- workshop benches: tools, stools, clamps
-    for i, wx in enumerate((4.0, 9.0, 14.0)):
-        f.stool(wx - 0.9, 5.9, seat=("CT_PlasterRed", "CT_PlasterYellow", "CT_PlasterBlue")[i])
-        f.stool(wx + 0.9, 5.9, seat=("CT_PlasterBlue", "CT_PlasterRed", "CT_PlasterYellow")[i])
-        box(d, "CT_Steel", wx - 1.2, wx - 0.9, 4.3, 4.6, 0.94, 1.04)                       # vice
-        box(d, "CT_Wood", wx - 0.6, wx + 0.3, 4.45, 4.75, 0.94, 0.99)                      # a plank
-        box(d, "CT_Wood", wx - 0.5, wx + 0.5, 4.8, 5.05, 0.94, 0.97)
-        for k, mat in enumerate(("CT_PlasterRed", "CT_PlasterYellow", "CT_PlasterGreen")):
-            prism(d, mat, ring(wx + 0.55 + 0.17 * k, 4.6, 0.065, 6), 0.94, 1.06, top=True, bottom=False)    # paint pots
-        box(d, "CT_Frame", wx + 0.95, wx + 1.3, 4.35, 4.6, 0.94, 0.99)
-    f.shelf(-9.0, 12.4, w=3.4, d=0.4, h=2.3, yaw=0.0, rows=5, seed=1)                      # materials on the back wall
-    f.shelf(0.0, 12.4, w=3.4, d=0.4, h=2.3, yaw=0.0, rows=5, seed=5)
-    # ---- the two long tables: chairs on both sides, a bowl of fruit and sketchbooks
-    for tx in (-12.0, -6.0):
-        for dx in (-1.0, 0.0, 1.0):
-            f.chair(tx + dx, 7.1 - 0.95, yaw=180.0, seat="CT_PlasterYellow" if tx < -9 else "CT_PlasterBlue")
-            f.chair(tx + dx, 7.1 + 0.95, yaw=0.0, seat="CT_PlasterYellow" if tx < -9 else "CT_PlasterBlue")
-        for k, mat in enumerate(("CT_TileWhite", "CT_PlasterRed", "CT_PlasterGreen", "CT_TileWhite")):
-            box(d, mat, tx - 1.2 + k * 0.6, tx - 0.8 + k * 0.6, 6.8, 7.1 + 0.15 * (k % 2), 0.78, 0.8)
-    # ---- ping-pong
-    px, py = -1.0, 9.5
-    box(B.m, "CT_PlasterBlue", px - 1.37, px + 1.37, py - 0.76, py + 0.76, 0.7, 0.76)
-    for sx in (-1, 1):
-        for sy in (-1, 1):
-            box(B.m, "CT_Steel", px + sx * 1.2 - 0.04, px + sx * 1.2 + 0.04, py + sy * 0.65 - 0.04, py + sy * 0.65 + 0.04, 0.0, 0.7)
-    box(d, "CT_TileWhite", px - 0.01, px + 0.01, py - 0.76, py + 0.76, 0.76, 0.76 + 0.15)               # net
-    box(d, "CT_TileWhite", px - 1.37, px + 1.37, py - 0.01, py + 0.01, 0.761, 0.763, faces="Z")
-    box(d, "CT_TileWhite", px - 1.37, px + 1.37, py - 0.74, py - 0.72, 0.761, 0.763, faces="Z")
-    box(d, "CT_TileWhite", px - 1.37, px + 1.37, py + 0.72, py + 0.74, 0.761, 0.763, faces="Z")
-    B.spot("pingpong_a", "stand", (px - 2.1, py, 0.0), 90.0)
-    B.spot("pingpong_b", "stand", (px + 2.1, py, 0.0), 270.0)
-    f.bench(-4.6, 11.9, yaw=0.0, w=1.6, back=True)
-    # ---- cafe: bar stools, espresso machine, cups, hanging menu, round tables
-    for sx in (11.2, 12.2, 14.8, 15.8):
-        f.stool(sx, 10.6, seat="CT_PlasterRed")
-    box(d, "CT_Steel", 10.4, 11.2, 11.45, 11.9, 1.14, 1.5)
-    box(d, "CT_SteelRed", 10.4, 11.2, 11.45, 11.9, 1.5, 1.56)
-    for k in range(5):
-        f.cup(12.3 + k * 0.35, 11.6, 1.14, mat=("CT_TileWhite", "CT_PlasterYellow")[k % 2])
-    f.tray(15.6, 11.7, 1.14)
-    box(d, "CT_PlasterRed", 10.05, 16.95, 11.17, 11.2, 0.15, 0.95, faces="y")
-    f.panel(13.5, 11.35, 3.0, 4.2, 0.7, 0.0, mat="CT_Frame", frame="CT_Wood")
-    for k in range(4):
-        box(d, "CT_TileWhite", 11.6 + k * 1.0, 12.4 + k * 1.0, 11.28, 11.30, 2.85, 3.2, faces="y")
-    for sx in (11.5, 15.5):
-        box(d, "CT_Steel", sx - 0.01, sx + 0.01, 11.34, 11.36, 3.3, soffit(11.35))
-    for i, (tx, ty) in enumerate(((9.0, 9.3), (12.5, 8.0), (16.0, 8.6))):
-        f.round_table(tx, ty, r=0.45, h=0.75, top="CT_TileWhite")
-        f.chair(tx - 0.75, ty, yaw=90.0, seat="CT_PlasterRed")
-        f.chair(tx + 0.75, ty, yaw=270.0, seat="CT_PlasterRed")
-        f.cup(tx, ty, 0.75, mat="CT_PlasterYellow")
-        B.spot("cafe_table_%d" % (i + 1), "table", (tx, ty, 0.0), 0.0)
-    # ---- exhibition: free-standing double-sided panels along the west bay + wall panels
-    for i, y in enumerate((4.6, 7.8, 11.0)):
-        box(B.m, "CT_Wood", -16.6, -16.54, y - 1.1, y + 1.1, 0.25, 2.3)
-        for sx in (-1, 1):
-            box(B.m, "CT_Steel", -16.75, -16.4, y + sx * 0.95 - 0.04, y + sx * 0.95 + 0.04, 0.0, 0.25)
-        for j, (mat, ox) in enumerate((("CT_PlasterRed", -0.55), ("CT_PlasterYellow", 0.45), ("CT_PlasterBlue", -0.1))):
-            w = 0.7 if j < 2 else 0.5
-            box(d, mat, -16.5, -16.46, y + ox - w / 2, y + ox + w / 2, 0.9 + 0.5 * (j % 2), 1.6 + 0.4 * (j % 2), faces="X")
-            box(d, mat, -16.68, -16.64, y + ox - w / 2 + 0.1, y + ox + w / 2 + 0.1, 1.0 + 0.3 * (j % 2), 1.6 + 0.3 * (j % 2), faces="x")
-        B.spot("exhibit_%d" % i, "view", (-15.4, y, 0.0), 90.0)
-    f.panel(9.0, 12.6, 1.9, 3.2, 1.7, 0.0, mat="CT_PlasterPink", frame="CT_Frame")
-    f.panel(-4.6, 1.4, 1.9, 2.6, 1.5, 180.0, mat="CT_PlasterGreen", frame="CT_Frame")
-    f.panel(4.5, 1.4, 1.9, 2.6, 1.5, 180.0, mat="CT_PlasterYellow", frame="CT_Frame")
-    f.panel(-18.6, 11.0, 1.9, 2.2, 1.4, 90.0, mat="CT_PlasterBlue", frame="CT_Frame")
-    f.panel(18.6, 11.0, 1.9, 2.2, 1.4, 270.0, mat="CT_PlasterRed", frame="CT_Frame")
-    for px_, py_, mat in ((-18.0, 12.0, "CT_PlasterRed"), (18.1, 12.1, "CT_TileWhite"), (-3.4, 2.2, "CT_PlasterRed"), (3.4, 2.2, "CT_TileWhite"),
-                          (18.1, 2.2, "CT_PlasterRed")):
-        f.plant(px_, py_, h=2.1, pot=mat)
-    f.border(hx0 + 0.4, hx1 - 0.4, hy0 + 0.4, hy1 - 0.4, w=0.45, mat="CT_ConcreteDark")
-    box(d, "CT_PlasterGrey", -1.3, 1.3, 1.4, 2.6, 0.0, 0.014, faces="Z")
-    ix0, ix1, iy0, iy1 = hx0 + 0.4, hx1 - 0.4, hy0 + 0.4, hy1 - 0.4
-    for seg in (((ix0, iy1), (ix0, iy0)), ((ix0, iy0), (-1.2, iy0)), ((1.2, iy0), (ix1, iy0)), ((ix1, iy0), (ix1, iy1)),
-                ((ix1, iy1), (ix0, iy1))):
-        f.skirting(list(seg), h=0.15, mat="CT_ConcreteDark")
-    # ---- lamps (pendants under the saw-tooth soffit)
     for x in (-15.0, -9.0, -3.0, 3.0, 9.0, 15.0):
         for y in (4.0, 9.0):
             B.lamp((x, y, soffit(y) - 1.3), lumens=900, colour=WARM, kind="public", radius=8)
             box(d, "CT_Steel", x - 0.008, x + 0.008, y - 0.008, y + 0.008, soffit(y) - 1.3 + 0.08, soffit(y))
     B.lamp((13.5, 10.5, 4.2), lumens=700, colour=WARM, kind="public", radius=6)
+    if os.environ.get("KITCHECK"):
+        print("KITCHECK", kit.check(B))
 
 
 def build(B):
@@ -417,21 +737,6 @@ def build(B):
         for h in holes:
             B.facade_window(F, h[0], h[1], h[2], h[3], kind="public", inset=0.15)
     # interior of the end faces' slab edge and the far side: the first tooth's low edge meets the front wall top
-    # furniture and spots
-    for tx in (-12.0, -6.0):
-        box(B.m, "CT_Wood", tx - 1.6, tx + 1.6, 6.5, 7.7, 0.0, 0.78)
-        B.spot("table_%d" % int(tx), "table", (tx, 7.1, 0.0), 0.0)
-    for wx in (4.0, 9.0, 14.0):
-        box(B.m, "CT_Wood", wx - 1.4, wx + 1.4, 4.2, 5.2, 0.0, 0.9)
-        box(B.m, "CT_Steel", wx - 1.4, wx + 1.4, 4.2, 5.2, 0.9, 0.94)
-        B.spot("work_%d" % int(wx), "work", (wx, 6.0, 0.0), 0.0)
-    for bx in (-16.0, 16.0):
-        box(B.m, "CT_Wood", bx - 1.0, bx + 1.0, 1.6, 2.1, 0.0, 0.45)
-        B.spot("bench_%d" % int(bx), "bench", (bx, 2.9, 0.0), 0.0)
-    # cafe counter in the back-right corner
-    box(B.m, "CT_Wood", 10.0, 17.0, 11.2, 12.1, 0.0, 1.1)
-    box(B.detail, "CT_Steel", 10.0, 17.0, 11.2, 12.1, 1.1, 1.14)
-    B.spot("cafe_counter", "counter", (13.5, 10.4, 0.0), 180.0)
     # big painted wooden door surround on the front wall (the door leaves are the game's actor)
     for (a, b, z0, z1, mat) in ((-3.4, -1.2, 0.0, 4.9, "CT_Door"), (1.2, 3.4, 0.0, 4.9, "CT_Door"),
                                 (-3.4, 3.4, 3.2, 4.9, "CT_Door"), (-3.6, 3.6, 4.9, 5.25, "CT_SteelRed")):

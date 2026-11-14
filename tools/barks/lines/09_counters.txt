@@ -1,0 +1,31 @@
+## ---------------------------------------------------------------------------------------------------------------
+## Counters of the town's buildings (docs/city_interiors.md): the person on shift says hello once a visit, when the
+## hero steps up to the counter. Event (on = ...): counter_hello, sent by ULyudCityThings.
+## ---------------------------------------------------------------------------------------------------------------
+
+[counter_hello]
+on = counter_hello
+say town.counter_hello.1 | Здравствуйте. Что вам показать? | Hello. What can I show you? | いらっしゃいませ。何をお見せしましょう？
+say town.counter_hello.2 | Проходите, смотрите, не стесняйтесь. | Come in, have a look, don't be shy. | どうぞ、ごゆっくりご覧ください。
+say town.counter_hello.3 | Слушаю вас. | Yes, what will it be? | はい、ご用件をどうぞ。
+say town.counter_hello.4 | Здравствуй! Давно тебя не видно было. | Hello! Haven't seen you in a while. | こんにちは！久しぶりだね。
+
+[counter_hello_early]
+on = counter_hello
+hours = 4-9
+weight = 2
+say town.counter_hello_early.1 | Доброе утро! Вы сегодня первый. | Good morning! You're the first one today. | おはようございます！今日一番のお客さんですよ。
+say town.counter_hello_early.2 | Утро доброе. Только открылись, всё свежее. | Morning. We've only just opened, everything's fresh. | おはよう。開けたばかりだから、どれも新鮮だよ。
+
+[counter_hello_evening]
+on = counter_hello
+hours = 18-4
+weight = 2
+say town.counter_hello_evening.1 | Добрый вечер. Успели, скоро закрываемся. | Good evening. Just in time, we're closing soon. | こんばんは。間に合いましたね、もうすぐ閉めますよ。
+say town.counter_hello_evening.2 | Вечер добрый. Что-нибудь на завтра? | Evening. Something for tomorrow? | こんばんは。明日の分を何か？
+
+[counter_hello_festival]
+on = counter_hello
+festival = any
+weight = 2
+say town.counter_hello_festival.1 | С праздником! Сегодня у нас людно. | Happy holiday! It's busy here today. | おめでとうございます！今日はにぎやかですよ。

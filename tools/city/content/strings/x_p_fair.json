@@ -1,0 +1,1413 @@
+{
+ "_doc": "Words of the fair's second pass (tools/city/content/x_p_fair.json): the games' own acts by weekday, the record plaque's and the board's running story (the strongman record, the travelling photographer, the lost sandal), the two fair quests. Russian is the source.",
+ "city.fx.prompt.record": {
+  "ru": "E — прочитать табличку рекордов",
+  "en": "E — read the record plaque",
+  "ja": "E：記録の銘板を読む"
+ },
+ "city.fx.prompt.photo": {
+  "ru": "E — сфотографироваться",
+  "en": "E — have my photo taken",
+  "ja": "E：写真を撮ってもらう"
+ },
+ "city.fx.prompt.weigh": {
+  "ru": "E — сесть на весы-кресло",
+  "en": "E — sit on the chair scales",
+  "ja": "E：椅子はかりに座る"
+ },
+ "city.fx.prompt.sandal": {
+  "ru": "E — рассмотреть сандалик",
+  "en": "E — look at the sandal",
+  "ja": "E：サンダルをよく見る"
+ },
+ "city.fx.prompt.basket": {
+  "ru": "E — заглянуть в корзину «Найдено»",
+  "en": "E — look in the Lost and Found basket",
+  "ja": "E：「落とし物」のかごをのぞく"
+ },
+ "city.fx.prompt.prizes": {
+  "ru": "E — посмотреть на призы",
+  "en": "E — look at the prizes",
+  "ja": "E：景品を見る"
+ },
+ "city.fx.prompt.chalk": {
+  "ru": "E — прочитать, что написано мелом",
+  "en": "E — read the chalk board",
+  "ja": "E：チョークの黒板を読む"
+ },
+ "city.fx.hit.fri.1": {
+  "ru": "Пятница, народу мало, молот кажется тяжелее. Шайба доползла до «Школьник» и села отдохнуть.",
+  "en": "Friday, few people about, and the mallet feels heavier. The puck crawled up to \"Schoolboy\" and sat down to rest.",
+  "ja": "金曜日、人はまばらで、木槌がやけに重い。パックは「小学生」まで這い上がって、そこで一休みした。"
+ },
+ "city.fx.hit.fri.2": {
+  "ru": "Ударил, как по гвоздю. Колокол звякнул один раз, вежливо, будто попросил не шуметь.",
+  "en": "I hit it like a nail. The bell gave one polite ring, as if asking me to keep it down.",
+  "ja": "釘を打つように叩いた。鐘は一度だけ礼儀正しく鳴った。静かにしてね、と言うみたいに。"
+ },
+ "city.fx.hit.sat.1": {
+  "ru": "Суббота: за спиной очередь и советы. Ударил сразу под три совета, шайба дошла почти до колокола, но передумала.",
+  "en": "Saturday: a queue behind me and plenty of advice. I swung under three pieces of advice at once, and the puck almost reached the bell, then changed its mind.",
+  "ja": "土曜日、後ろには行列とたくさんの助言。三つの助言を一度に聞きながら振ったら、パックは鐘の手前まで行って、気が変わって戻った。"
+ },
+ "city.fx.hit.sat.2": {
+  "ru": "Шайба долетела до «Богатыря». За спиной хором сказали: «О!» Хор был небольшой, но искренний.",
+  "en": "The puck flew up to \"Hero\". Behind me a chorus said \"Oh!\" A small chorus, but a sincere one.",
+  "ja": "パックは「勇者」まで飛んだ。後ろで「おおっ」と声が揃った。小さな合唱だけど、本気の声だった。"
+ },
+ "city.fx.hit.sun.1": {
+  "ru": "Воскресенье: рядом стоят двое, делают вид, что не смотрят. Звон вышел громкий, они сделали вид, что не слышали.",
+  "en": "Sunday: two people stand nearby pretending not to look. The ring came out loud, and they pretended not to have heard.",
+  "ja": "日曜日、すぐ横で二人が見ていないふりをしている。鐘は大きく鳴ったが、二人は聞こえなかったふりをした。"
+ },
+ "city.fx.hit.sun.2": {
+  "ru": "Воскресным молотом бить легче: его весь день греют ладонями. Шайба встала на «Силач».",
+  "en": "A Sunday mallet is easier to swing: hands have been warming it all day. The puck stopped on \"Strongman\".",
+  "ja": "日曜の木槌は振りやすい。一日中、誰かの手のぬくもりで温まっているから。パックは「力持ち」で止まった。"
+ },
+ "city.fx.hit.any.1": {
+  "ru": "Молот соскользнул, шайба подпрыгнула на один палец и села обратно. Продавец сказал: «Разминка засчитана».",
+  "en": "The mallet slipped, the puck hopped a finger's width and sat back down. The vendor said, \"Warm-up counted.\"",
+  "ja": "木槌が滑って、パックは指一本ぶんだけ跳ねて戻った。売り子は言った。「準備運動として数えておくよ」"
+ },
+ "city.fx.hit.any.2": {
+  "ru": "Звякнул колокольчик внизу, не тот, что наверху. Внизу — это мой велосипедный звонок, он у меня в кармане.",
+  "en": "The little bell at the bottom rang, not the one at the top. The bottom one is my bicycle bell, in my pocket.",
+  "ja": "上の鐘ではなく、足もとで小さな音がした。ポケットの自転車のベルだった。"
+ },
+ "city.fx.hit.rec": {
+  "ru": "Табличка рекорда блестит на подставке. Бить по ней нельзя, по силомеру можно. Бью по силомеру.",
+  "en": "The record plaque shines on the plinth. You can't hit that, only the strongman gauge. I hit the gauge.",
+  "ja": "台座の記録板が光っている。あれは叩けない、叩いていいのは力試しのほう。僕は力試しを叩いた。"
+ },
+ "city.fx.rec.1": {
+  "ru": "Латунная табличка: «Рекорд ярмарки — 71. Береснев Н., судомеханик». Ниже место для следующей фамилии, пока пустое.",
+  "en": "A brass plaque: \"Fair record: 71. N. Beresnev, ship's mechanic.\" Below it, room for the next name, empty so far.",
+  "ja": "真鍮の銘板。「市場広場の記録71、機関士ベレスネフ・N」。その下に次の名前を入れる余白があるが、まだ空いている。"
+ },
+ "city.fx.rec.2": {
+  "ru": "Под табличкой мелом: «Береснев на рейсе, вернётся в субботу. Рекорд никому не отдавать». Продавец охраняет надпись, как кассу.",
+  "en": "Under the plaque in chalk: \"Beresnev is at sea, back Saturday. Do not give the record to anyone.\" The vendor guards the note like the till.",
+  "ja": "銘板の下にチョークで。「ベレスネフは航海中、土曜に戻る。記録は誰にも渡さないこと」。売り子はレジを守るようにその文字を守っている。"
+ },
+ "city.fx.rec.3": {
+  "ru": "Мелом поверх: «Береснев вернулся раньше. Бил по рекорду: 74». Цифра написана двумя мелками, один из них детский.",
+  "en": "In chalk on top: \"Beresnev came back early. Hit the record: 74.\" The number is written in two chalks, one of them a child's.",
+  "ja": "その上にチョークで。「ベレスネフが早く帰港。記録を更新、74」。数字は二本のチョークで書かれていて、片方は子どものものだ。"
+ },
+ "city.fx.rec.4": {
+  "ru": "На табличке новая строчка: «77 — Мельникова Л., штангистка». Береснев приписал снизу: «Поздравляю. Реванш в воскресенье, молоток чтобы был честный».",
+  "en": "A new line on the plaque: \"77 — L. Melnikova, weightlifter.\" Beresnev added below: \"Congratulations. Rematch on Sunday, and let the mallet be fair.\"",
+  "ja": "銘板に新しい一行。「77、重量挙げのメリニコワ・L」。その下にベレスネフが書き足している。「おめでとう。日曜に再戦、木槌は公平に頼む」"
+ },
+ "city.fx.rec.5": {
+  "ru": "У силомера прислонён штатив: приехал фотограф-путешественник. Обещал снять того, кто побьёт рекорд, и повесить карточку рядом с табличкой.",
+  "en": "A tripod leans against the gauge: the travelling photographer has arrived. He promised to photograph whoever breaks the record and hang the picture beside the plaque.",
+  "ja": "力試しの横に三脚が立てかけてある。旅の写真家がやってきたのだ。記録を破った人を撮って、銘板の隣に写真を飾ると約束したらしい。"
+ },
+ "city.fx.rec.6": {
+  "ru": "Воскресный реванш: у силомера толпа. Береснев и Мельникова пожали друг другу руки до удара, а не после. Говорят, колокол было слышно у маяка.",
+  "en": "The Sunday rematch: a crowd at the gauge. Beresnev and Melnikova shook hands before the swing, not after. They say the bell could be heard at the lighthouse.",
+  "ja": "日曜の再戦、力試しの前は人だかり。ベレスネフとメリニコワは、打つ前に握手をした。後ではなく。鐘の音は灯台まで届いたそうだ。"
+ },
+ "city.fx.rec.7": {
+  "ru": "Новая цифра: «80 — Береснев Н.». Мельникова сказала фотографу: «Снимайте обоих, фамилии рядом смотрятся лучше». Под табличкой теперь место для третьего.",
+  "en": "A new figure: \"80 — N. Beresnev.\" Melnikova told the photographer, \"Take both of us, the names look better side by side.\" Under the plaque there is now room for a third.",
+  "ja": "新しい数字。「80、ベレスネフ・N」。メリニコワは写真家に言った。「二人とも撮って。名前は並んでいたほうがいい」。銘板の下には三人目の余白ができた。"
+ },
+ "city.fx.rec.8": {
+  "ru": "Фотограф снял обоих и приколол карточку рядом с табличкой. Внизу его рукой: «Третье место свободно. Школьникам скидка».",
+  "en": "The photographer shot them both and pinned the print beside the plaque. At the bottom in his hand: \"Third place is free. Discount for schoolchildren.\"",
+  "ja": "写真家は二人を撮り、写真を銘板の隣に留めた。その下に彼の字で。「三番目はまだ空いている。学生は割引」"
+ },
+ "city.fx.gal.fri.1": {
+  "ru": "Пятница: тирщик ещё не разошёлся и подсказывает: «Целься в утку, а не в тень утки». Тень побеждает.",
+  "en": "Friday: the gallery keeper hasn't warmed up and advises, \"Aim at the duck, not at the duck's shadow.\" The shadow wins.",
+  "ja": "金曜日、射的のおじさんはまだ本調子ではなく、助言する。「アヒルを狙え、アヒルの影じゃなくて」。勝つのは影のほう。"
+ },
+ "city.fx.gal.fri.2": {
+  "ru": "Попал в бубенчик. Он звякнул, тирщик кивнул: «Пятничное везение. К воскресенью выветривается».",
+  "en": "I hit the little bell. It jingled, the keeper nodded: \"Friday luck. It wears off by Sunday.\"",
+  "ja": "小さな鈴に当たった。ちりんと鳴って、おじさんがうなずく。「金曜の運だな。日曜には抜けちまう」"
+ },
+ "city.fx.gal.sat.1": {
+  "ru": "Суббота: цепочка с утками бежит быстрее, а ружьё, наоборот, ленится. Утка прошла, я не успел. Утка вернулась, я опять не успел.",
+  "en": "Saturday: the chain of ducks runs faster and the rifle is lazier. The duck went by, I missed it. It came back, I missed it again.",
+  "ja": "土曜日、アヒルの鎖は速く回るのに、銃は怠け者だ。アヒルが通り過ぎて間に合わず、戻ってきてもまた間に合わなかった。"
+ },
+ "city.fx.gal.sat.2": {
+  "ru": "Попал в мельницу, крылья вертелись, пока я рассказывал об этом тирщику. Он слушал, пока не остановились.",
+  "en": "I hit the windmill, and its vanes kept spinning while I told the keeper about it. He listened until they stopped.",
+  "ja": "風車に当たった。羽根が回っているあいだ、おじさんに自慢していた。回り終わるまで、おじさんは聞いてくれた。"
+ },
+ "city.fx.gal.sun.1": {
+  "ru": "Воскресенье: утки уже устали и идут медленно. Сбил три подряд. Тирщик налил мне воды: «Вы нам нужны живым».",
+  "en": "Sunday: the ducks are tired and move slowly. I knocked down three in a row. The keeper poured me some water: \"We need you in one piece.\"",
+  "ja": "日曜日、アヒルたちは疲れてゆっくり進む。三羽続けて倒した。おじさんが水をついでくれた。「無事に帰ってもらわなきゃ」"
+ },
+ "city.fx.gal.sun.2": {
+  "ru": "Пять из пяти в круги. Тирщик сказал, что ружьё косит влево, а я косой, так что вышло честно.",
+  "en": "Five out of five in the rings. The keeper said the rifle pulls left and I'm cross-eyed, so it came out fair.",
+  "ja": "五発とも的の円に入った。おじさんいわく、銃は左にそれるし、僕は斜視ぎみだから、結局つり合ったそうだ。"
+ },
+ "city.fx.gal.any": {
+  "ru": "Пять выстрелов — мимо. Тирщик показал на мишени: «Видите, как они вас боятся».",
+  "en": "Five shots, five misses. The keeper pointed at the targets: \"See how afraid of you they are.\"",
+  "ja": "五発とも外れ。おじさんは的を指した。「見なよ、君をこわがってるだろう」"
+ },
+ "city.fx.ring.fri.1": {
+  "ru": "Пять колец: три в воздух, одно в чью-то шляпу, одно на подставку. Шляпа не в счёт, хозяин не против.",
+  "en": "Five rings: three into the air, one into somebody's hat, one onto a stand. The hat doesn't count, and its owner doesn't mind.",
+  "ja": "輪は五つ。三つは空へ、一つは誰かの帽子へ、一つは台に。帽子はカウントされないが、持ち主は気にしていない。"
+ },
+ "city.fx.ring.sat.1": {
+  "ru": "Субботнее кольцо попало на петушка. «Приз — петушок», — решил я. «Приз — кольцо», — решил продавец. Сошлись на улыбке.",
+  "en": "My Saturday ring landed on the little rooster. \"The prize is the rooster,\" I decided. \"The prize is the ring,\" decided the vendor. We settled on a smile.",
+  "ja": "土曜の輪は小さなニワトリの台にはまった。僕は「景品はニワトリ」と思い、売り子は「景品は輪」と思った。結局、笑顔で折り合った。"
+ },
+ "city.fx.ring.sun.1": {
+  "ru": "Воскресенье: призов на подставках меньше, самые весёлые уже разобрали. Кольцо легло ровно, но рядом. Красивый бросок, жалко, что не меткий.",
+  "en": "Sunday: fewer prizes on the stands, the cheeriest were taken already. The ring landed neatly, but beside the target. A beautiful throw, a pity it was not an accurate one.",
+  "ja": "日曜日、台の景品は減っている。陽気なものから先になくなった。輪はきれいに落ちたが、的の隣だった。きれいな投げだ。惜しいのは、的に当たっていないこと。"
+ },
+ "city.fx.ring.any": {
+  "ru": "Кольцо покрутилось на горлышке, подумало и спрыгнуло. «Почти», — сказал продавец. Почти — тоже слово.",
+  "en": "The ring spun on the neck of the bottle, thought it over and jumped off. \"Almost,\" said the vendor. Almost is a word too.",
+  "ja": "輪は瓶の口でくるくる回り、考えてから飛び降りた。売り子は言った。「惜しい」。惜しいも、立派な言葉だ。"
+ },
+ "city.fx.lot.fri.1": {
+  "ru": "Барабан вертится плавно, как в первый день. Билет: «Открытка». Продавщица: «В пятницу выигрывают открыткой, в субботу открыткой, в воскресенье тоже, но с чувством».",
+  "en": "The drum turns smoothly, as on its first day. Ticket: \"Postcard.\" The seller: \"On Friday you win a postcard, on Saturday a postcard, on Sunday also a postcard, but with feeling.\"",
+  "ja": "ドラムは初日のようになめらかに回る。くじは「絵葉書」。売り子さんは言った。「金曜は絵葉書、土曜も絵葉書、日曜も絵葉書、ただし気持ちを込めて」"
+ },
+ "city.fx.lot.sat.1": {
+  "ru": "Билет номер 47: «Открытка». Продавщица зачёркивает его карандашом: «Чтобы один и тот же не выиграл дважды». Я бы и не пытался, но приятно, что учитывают.",
+  "en": "Ticket number 47: \"Postcard.\" The seller crosses it out in pencil: \"So that nobody wins the same one twice.\" I wouldn't have tried, but it's nice they allow for it.",
+  "ja": "47番のくじは「絵葉書」。売り子さんは鉛筆でそれを消す。「同じくじで二回当たらないようにね」。そんなことはしないけれど、気にかけてくれるのは嬉しい。"
+ },
+ "city.fx.lot.sun.1": {
+  "ru": "В воскресенье продавщица сама крутит ручку и придерживает барабан, чтобы билет нашёлся поближе. «Для хороших людей», — объяснила. Открытка с маяком.",
+  "en": "On Sunday the seller turns the crank herself and steadies the drum so the ticket turns up nearer the edge. \"For good people,\" she explained. A postcard with the lighthouse.",
+  "ja": "日曜は売り子さんが自分でハンドルを回し、くじが手前に来るようドラムを軽く押さえる。「いい人のためにね」と彼女は言った。灯台の絵葉書だった。"
+ },
+ "city.fx.lot.any": {
+  "ru": "Барабан крутили вдвоём: я за ручку, ветер за билеты. Выпала открытка с набережной.",
+  "en": "Two of us turned the drum: me the crank, the wind the tickets. A postcard of the promenade came out.",
+  "ja": "ドラムは二人で回した。僕はハンドル、風はくじ。出てきたのは遊歩道の絵葉書だった。"
+ },
+ "city.fx.for.1": {
+  "ru": "Фигурка кивнула, на заднике звякнули звёзды. Карточка: «До обеда ты узнаешь, что тебя ждёт. После обеда — тоже». Подпись: звезда.",
+  "en": "The figure nodded and the stars tinkled on the backdrop. The card: \"Before lunch you will learn what awaits you. After lunch too.\" Signed: a star.",
+  "ja": "人形がうなずき、背景の星がちりんと鳴った。カードには。「昼までに、君を待つものがわかる。昼からもわかる」。署名は星のマーク。"
+ },
+ "city.fx.for.2": {
+  "ru": "Хрустальный шар засветился, рука двинулась над картами. «Тебе предстоит выбор между двумя мороженщицами. Выбирай ту, у которой очередь короче».",
+  "en": "The crystal ball glowed and the hand moved over the cards. \"You will have to choose between two ice-cream sellers. Choose the one with the shorter queue.\"",
+  "ja": "水晶玉が光り、手がカードの上を動いた。「君はアイス屋さんを二人から選ぶことになる。行列の短いほうを選びなさい」"
+ },
+ "city.fx.for.3": {
+  "ru": "К вечеру шар светит ярче, как всегда. «Сегодня встретишь человека, который ещё не знает, что ты ему нужен». Оглянулся: никого. Значит, он ещё идёт.",
+  "en": "By evening the ball shines brighter, as always. \"Today you will meet someone who doesn't yet know they need you.\" I looked round: nobody. So they are still on their way.",
+  "ja": "夕方になると玉はいつも明るくなる。「今日、君が必要だとまだ知らない人に会うだろう」。振り返ったが誰もいない。まだ向かっている途中なのだろう。"
+ },
+ "city.fx.for.fri": {
+  "ru": "Карточка с пятницей: «Выходные не заставят себя ждать. Они уже стоят в очереди».",
+  "en": "Friday's card: \"The weekend will not keep you waiting. It's already in the queue.\"",
+  "ja": "金曜のカード。「週末はすぐやってくる。もう行列に並んでいる」"
+ },
+ "city.fx.for.sat": {
+  "ru": "Карточка на субботу: «Ты найдёшь потерянное. Смотри под лавкой, не над ней».",
+  "en": "Saturday's card: \"You will find what was lost. Look under the bench, not over it.\"",
+  "ja": "土曜のカード。「なくしものが見つかる。ベンチの上ではなく、下を探しなさい」"
+ },
+ "city.fx.for.sun": {
+  "ru": "Воскресная карточка: «Хорошее придёт не оттуда, откуда ждёшь, а из соседнего киоска».",
+  "en": "Sunday's card: \"Good will come not from where you expect, but from the next kiosk.\"",
+  "ja": "日曜のカード。「いいことは、思ったところではなく、隣の屋台からやってくる」"
+ },
+ "city.fx.for.sandal": {
+  "ru": "Карточка с загнутым уголком: «Правый сандалик вернётся к тому, кто сядет на лавочку и посмотрит вниз». Автоматон при этом смотрит прямо перед собой.",
+  "en": "A card with a bent corner: \"The right sandal will return to the one who sits on a bench and looks down.\" The automaton itself looks straight ahead.",
+  "ja": "角の折れたカード。「右のサンダルは、ベンチに座って下を見る人のもとへ戻る」。人形自身は、まっすぐ前を見ている。"
+ },
+ "city.fx.wei.1": {
+  "ru": "Стрелка качнулась и замерла на цифре, которую я предпочёл бы не сообщать. Табличка рядом: «Вес на ярмарке не считается».",
+  "en": "The needle swung and stopped at a number I'd rather not announce. A plate nearby says, \"Weight does not count at the fair.\"",
+  "ja": "針が揺れて、言いたくない数字で止まった。横の札にはこうある。「市場広場では体重はカウントしません」"
+ },
+ "city.fx.wei.2": {
+  "ru": "Кресло скрипнуло. «Выходной вес», — объяснила табличка. Он больше будничного, но всего на полкило.",
+  "en": "The chair creaked. \"Weekend weight,\" the plate explained. It is more than the weekday one, but only by half a kilo.",
+  "ja": "椅子がきしんだ。「休日の体重です」と札が説明する。平日より重いけれど、半キロだけだ。"
+ },
+ "city.fx.wei.3": {
+  "ru": "Вечером стрелка показывает на кило больше. Это не жир, это кукуруза и впечатления.",
+  "en": "In the evening the needle shows a kilo more. That's not fat, that's corn and impressions.",
+  "ja": "夕方は針が一キロ多く指す。脂肪ではなく、トウモロコシと思い出の重さだ。"
+ },
+ "city.fx.pri.1": {
+  "ru": "Полка призов: заводная утка, жестяной маяк, гипсовый ёж, детская губная гармошка. Всё раскрашено одной рукой: у всех одинаковые удивлённые брови.",
+  "en": "The prize shelf: a clockwork duck, a tin lighthouse, a plaster hedgehog, a child's harmonica. All painted by one hand: they have the same surprised eyebrows.",
+  "ja": "景品の棚。ぜんまいのアヒル、ブリキの灯台、石こうのハリネズミ、子ども用のハーモニカ。どれも同じ人が塗ったらしく、みんな同じ驚き顔の眉をしている。"
+ },
+ "city.fx.pri.2": {
+  "ru": "На средней полке плюшевый медведь с одним глазом. Бирка: «Не продаётся, выигрывается. Второй глаз пришлю».",
+  "en": "On the middle shelf, a one-eyed teddy bear. The tag: \"Not for sale, to be won. The second eye is in the post.\"",
+  "ja": "真ん中の段には片目のクマのぬいぐるみ。札にはこうある。「非売品、当てて取ってください。もう片方の目は郵送中」"
+ },
+ "city.fx.pri.3": {
+  "ru": "Медведя нет, на его месте бирка: «Выиграл мальчик в синей шапке. Глаз досылаем по адресу». Мальчик обещал присылать открытки.",
+  "en": "The bear is gone. In its place a tag: \"Won by a boy in a blue hat. The eye will be sent to his address.\" The boy promised to send postcards.",
+  "ja": "クマがいない。かわりに札が一枚。「青い帽子の男の子が当てました。目は住所あてに送ります」。男の子は絵葉書を送ると約束したそうだ。"
+ },
+ "city.fx.pri.4": {
+  "ru": "На медвежьем месте теперь жестяная чайка с заводным ключиком. Продавец говорит: «Чтобы полка не скучала».",
+  "en": "A tin seagull with a winding key now sits where the bear was. The vendor says, \"So the shelf doesn't get bored.\"",
+  "ja": "クマのいた場所には、ぜんまい付きのブリキのカモメ。売り子は言う。「棚がさみしくならないようにね」"
+ },
+ "city.fx.pri.5": {
+  "ru": "На верхней полке картонный велосипед с запиской: «Главный приз, уменьшенный до реальных размеров». Рядом вишнёвая косточка «на счастье».",
+  "en": "On the top shelf, a cardboard bicycle with a note: \"The grand prize, reduced to realistic size.\" Beside it, a cherry stone \"for luck\".",
+  "ja": "一番上の棚には段ボールの自転車。メモつき。「大賞、現実的なサイズに縮小しました」。隣にはお守りのサクランボの種。"
+ },
+ "city.fx.cha.fri": {
+  "ru": "Мелом: «ПТ. За 3 кольца из 5 — леденец. За 5 из 5 — не знаем, никто не пробовал».",
+  "en": "In chalk: \"FRI. 3 rings out of 5: a lollipop. 5 out of 5: we don't know, nobody has tried.\"",
+  "ja": "チョークで。「金。輪を5つ中3つ入れたらキャンディー。5つ全部は……誰も挑戦していないのでわからない」"
+ },
+ "city.fx.cha.sat": {
+  "ru": "Мелом: «СБ. Силомер: 50 очков — значок, 60 — значок с ленточкой. Тир: пять из пяти — шоколадка. Ёж не разыгрывается, он старый».",
+  "en": "In chalk: \"SAT. Strongman: 50 points, a badge; 60, a badge with a ribbon. Gallery: five out of five, a chocolate. The hedgehog is not a prize, he's old.\"",
+  "ja": "チョークで。「土。力試し、50点でバッジ、60点でリボン付きバッジ。射的、五発全部でチョコレート。ハリネズミは古株なので景品ではありません」"
+ },
+ "city.fx.cha.sun": {
+  "ru": "Мелом: «ВС. Лотерея без проигрыша, силомер без жалости, тир без претензий. Фотограф — до заката».",
+  "en": "In chalk: \"SUN. Lottery without losers, strongman without mercy, gallery without complaints. Photographer until sunset.\"",
+  "ja": "チョークで。「日。負けなしの福引、容赦なしの力試し、文句なしの射的。写真屋は日没まで」"
+ },
+ "city.fx.cha.any": {
+  "ru": "Доска стёрта, мелок лежит рядом. Внизу написано: «Вернусь и допишу».",
+  "en": "The board is wiped, the chalk lies beside it. At the bottom: \"Back soon, will finish writing.\"",
+  "ja": "黒板は消されていて、チョークが横に置いてある。いちばん下には。「戻ったら書き足します」"
+ },
+ "city.fx.cha.late": {
+  "ru": "В нижнем углу рамка из мела: «Здесь могла быть ваша фамилия». Внутри — пока пусто.",
+  "en": "In the bottom corner a chalk frame: \"Your name could be here.\" Empty inside, so far.",
+  "ja": "下の隅にチョークの枠。「ここにあなたの名前が入るかも」。中身は、まだ空っぽだ。"
+ },
+ "city.fx.pho.1": {
+  "ru": "«Не моргайте, сейчас вылетит птичка». Птичка не вылетела, вылетел фотограф — поправить мне воротник. Щёлк.",
+  "en": "\"Don't blink, a little bird will fly out.\" The bird didn't, the photographer did, to straighten my collar. Click.",
+  "ja": "「まばたきしないで、いまに小鳥が出ますよ」。小鳥は出ず、写真家が出てきて僕の襟を直した。カシャッ。"
+ },
+ "city.fx.pho.2": {
+  "ru": "— Это вы бьёте по силомеру? — спросил фотограф. — Бью по многим вещам. — Тогда встаньте ближе к колоколу. Щёлк.",
+  "en": "\"Are you the one who hits the strongman?\" the photographer asked. \"I hit many things.\" \"Then stand closer to the bell.\" Click.",
+  "ja": "「力試しを叩いていたのは君かい？」と写真家。「いろんなものを叩きますけど」「じゃあ、鐘に近いほうへ」カシャッ。"
+ },
+ "city.fx.pho.we": {
+  "ru": "В выходной у фотографа очередь: семья в одинаковых кепках, жених без невесты (она подойдёт позже) и я. Мне досталась скамейка и тёплое «Хорошо!».",
+  "en": "On weekends the photographer has a queue: a family in matching caps, a groom without a bride (she will come later), and me. I got the bench and a warm \"Good!\"",
+  "ja": "休日の写真家には行列ができる。おそろいの帽子の家族、花嫁のいない花婿（あとで来るらしい）、そして僕。僕はベンチに座って、あたたかい「いいね！」をもらった。"
+ },
+ "city.fx.pho.eve": {
+  "ru": "Вечером свет косой и медовый. «Ваше время», — сказал фотограф. На карточке я выше, чем на самом деле, и это правда.",
+  "en": "In the evening the light is slanted and honey-coloured. \"Your hour,\" said the photographer. In the print I'm taller than I am, and that's true.",
+  "ja": "夕方の光は斜めで、はちみつ色だ。「君の時間だね」と写真家は言った。写真の僕は実際より背が高い。それは本当のことだ。"
+ },
+ "city.fx.san.1": {
+  "ru": "Под лавкой лежит правый сандалик, жёлтый, с обломанной пряжкой. Левый, судя по объявлению, ищет его с пятницы.",
+  "en": "A right sandal lies under the bench, yellow, with a broken buckle. The left one, by the notice, has been looking for it since Friday.",
+  "ja": "ベンチの下に右のサンダルが落ちている。黄色くて、留め具が欠けている。貼り紙によれば、左はもう金曜から探しているらしい。"
+ },
+ "city.fx.san.2": {
+  "ru": "Сандалик на месте. Мне показалось, он слегка развернулся пяткой ко мне: мол, ну что же вы.",
+  "en": "The sandal is still there. It seems to have turned its heel slightly toward me, as if to say, well, then?",
+  "ja": "サンダルはそのままそこにある。かかとが少しこちらを向いた気がした。「ほら、早く」と言うみたいに。"
+ },
+ "city.fx.san.3": {
+  "ru": "Я подержал сандалик. Тёплый, как будто его только что сняли. Размер — такой, что хозяйке лет шесть, не больше.",
+  "en": "I held the sandal. It's warm, as if just taken off. The size says its owner is about six years old, no more.",
+  "ja": "サンダルを手に取った。脱いだばかりのようにあたたかい。サイズからすると、持ち主は六歳くらいだ。"
+ },
+ "city.fx.bas.1": {
+  "ru": "Корзина «Найдено» у весов: зонтик, варежка, пуговица. Положил жёлтый сандалик, а там, на дне, лежит левый, тоже с обломанной пряжкой. Пара встретилась, и корзина стала самой счастливой на ярмарке.",
+  "en": "The Lost and Found basket by the scales holds an umbrella, a mitten, a button. I put in the yellow sandal, and on the bottom lay the left one, with a broken buckle too. The pair met, and the basket became the happiest place at the fair.",
+  "ja": "体重計のそばの「落とし物」のかごには、傘、ミトン、ボタンが入っている。黄色いサンダルを入れると、底に左も入っていた。留め具が欠けている。ぴったりの一組が出会って、かごは縁日でいちばん幸せな場所になった。"
+ },
+ "city.fx.bas.2": {
+  "ru": "В корзине «Найдено» пара жёлтых сандалий и бумажка: «Спасибо тому, кто смотрел под лавки». Подписи нет, зато нарисован смайлик.",
+  "en": "In the Lost and Found basket: a pair of yellow sandals and a slip of paper: \"Thanks to whoever looked under the benches.\" No signature, but there is a smiley.",
+  "ja": "「落とし物」のかごに黄色いサンダルが一足と、メモが一枚。「ベンチの下を探してくれた人へ、ありがとう」。署名はなく、かわりに笑顔の絵が描いてある。"
+ },
+ "city.reg.fair.1": {
+  "ru": "Афиша мелом: «В субботу к шести — открытое состязание у силомера. Береснев против всех. Тир и лотерея до заката».",
+  "en": "A chalk poster: \"Saturday at six: open contest at the strongman. Beresnev against all comers. Gallery and lottery until sunset.\"",
+  "ja": "チョークの告知。「土曜六時、力試しのオープン大会。ベレスネフ対全員。射的と福引は日没まで」"
+ },
+ "city.reg.fair.2": {
+  "ru": "Приписка красным: «Фотограф-путешественник приедет к концу недели. Просьба не пугать его деревянными лошадками».",
+  "en": "A note in red: \"The travelling photographer arrives by the end of the week. Please don't frighten him with the wooden horses.\"",
+  "ja": "赤い字の書き込み。「旅の写真家が週末までに到着します。木馬で驚かさないでください」"
+ },
+ "city.reg.fair.3": {
+  "ru": "Объявление про сандалик уже мятое: его читали всё утро. Под ним никто не расписался. «Кто видел левый — скажите на лотерее».",
+  "en": "The notice about the sandal is already crumpled, read all morning. Nobody has signed under it. \"Whoever has seen the left one, tell the lottery stand.\"",
+  "ja": "サンダルの貼り紙はもうしわくちゃだ。朝からみんなが読んだせいだろう。署名はまだない。「左を見た人は福引の屋台へ」"
+ },
+ "city.reg.fair.4": {
+  "ru": "«Фотограф приехал. Снимает рекордсменов бесплатно, остальных за десять рублей. Левый сандалик, говорят, вчера фотографировался один, без пары».",
+  "en": "\"The photographer has arrived. Record-holders free, everyone else ten roubles. The left sandal, they say, had its picture taken yesterday, alone, without its pair.\"",
+  "ja": "「写真家が到着。記録保持者は無料、ほかの方は十ルーブル。左のサンダルは昨日ひとりで、相手なしで撮ってもらったそうです」"
+ },
+ "city.reg.fair.5": {
+  "ru": "Свежая приписка: «Левый сандалик найден! Пара воссоединилась в корзине „Найдено“ у весов. Спасибо всем, кто смотрел под лавки».",
+  "en": "A fresh note: \"The left sandal is found! The pair is reunited in the Lost and Found basket by the scales. Thank you to everyone who looked under the benches.\"",
+  "ja": "新しい書き込み。「左のサンダルが見つかりました！ 体重計のそばの『落とし物』のかごで、一足がそろいました。ベンチの下を探してくださった皆さん、ありがとう」"
+ },
+ "quest.fair_record.title": {
+  "ru": "Рекорд у колокола",
+  "en": "A record at the bell",
+  "ja": "鐘のそばの記録"
+ },
+ "quest.fair_record.desc": {
+  "ru": "У силомера на ярмарке висит табличка с чьим-то рекордом. Рядом стоит штатив. Мне тоже хочется оставить след.",
+  "en": "At the fair's strongman gauge hangs a plaque with somebody's record. A tripod stands next to it. I want to leave a mark too.",
+  "ja": "市場広場の力試しのそばに、誰かの記録の銘板がある。隣には三脚。僕も何か、跡を残してみたい。"
+ },
+ "quest.fair_record.record.log": {
+  "ru": "Сначала прочитаю табличку: надо знать, до какой цифры тянуться.",
+  "en": "First I'll read the plaque: I need to know which number to reach for.",
+  "ja": "まず銘板を読もう。どの数字を目指せばいいか知りたい。"
+ },
+ "quest.fair_record.read.obj": {
+  "ru": "Прочитать табличку рекордов у силомера",
+  "en": "Read the record plaque by the strongman gauge",
+  "ja": "力試しの記録の銘板を読む"
+ },
+ "quest.fair_record.hit.log": {
+  "ru": "Теперь молоток. Два рубля — недорого за право звякнуть колоколом.",
+  "en": "Now the mallet. Two roubles is cheap for the right to ring the bell.",
+  "ja": "次は木槌。鐘を鳴らす権利が二ルーブルなら安いものだ。"
+ },
+ "quest.fair_record.swing.obj": {
+  "ru": "Ударить по силомеру",
+  "en": "Hit the strongman gauge",
+  "ja": "力試しを叩く"
+ },
+ "quest.fair_record.photo.log": {
+  "ru": "Фотограф обещал снимать тех, кто бил по силомеру. Пойду к штативу.",
+  "en": "The photographer promised to shoot those who hit the gauge. I'll go to the tripod.",
+  "ja": "写真家は、力試しを叩いた人を撮ると言っていた。三脚のところへ行こう。"
+ },
+ "quest.fair_record.pose.obj": {
+  "ru": "Сфотографироваться у штатива",
+  "en": "Have my photo taken at the tripod",
+  "ja": "三脚のところで写真を撮ってもらう"
+ },
+ "quest.fair_record.done": {
+  "ru": "В дневнике новая карточка: я у силомера, колокол над головой, взгляд чуть выше цифры рекорда. Фотограф расписался на обороте и приписал: «Третье место ждёт».",
+  "en": "A new print in my diary: me at the gauge, the bell overhead, my eyes just above the record number. The photographer signed the back and added, \"Third place is waiting.\"",
+  "ja": "日記に新しい写真が増えた。力試しの前の僕、頭上には鐘、視線は記録の数字のちょっと上。写真家は裏にサインして書き添えた。「三番目が待っている」"
+ },
+ "quest.fair_sandal.title": {
+  "ru": "Сандалик под лавкой",
+  "en": "A sandal under the bench",
+  "ja": "ベンチの下のサンダル"
+ },
+ "quest.fair_sandal.desc": {
+  "ru": "На доске объявлений на ярмарке висит записка про детский сандалик. Левый ищет правый. Или наоборот.",
+  "en": "On the fair's notice board hangs a note about a child's sandal. The left one is looking for the right one. Or the other way round.",
+  "ja": "市場広場の掲示板に、子どものサンダルの貼り紙がある。左が右を探している。あるいは、その逆かもしれない。"
+ },
+ "quest.fair_sandal.notice.log": {
+  "ru": "Сначала прочту объявление на доске: вдруг там подробности.",
+  "en": "First I'll read the notice on the board, in case there are details.",
+  "ja": "まず掲示板の貼り紙を読もう。詳しいことが書いてあるかもしれない。"
+ },
+ "quest.fair_sandal.read.obj": {
+  "ru": "Прочитать объявления на ярмарочной доске",
+  "en": "Read the notices on the fair's board",
+  "ja": "市場広場の掲示板の貼り紙を読む"
+ },
+ "quest.fair_sandal.fortune.log": {
+  "ru": "Гадающий автомат говорит о потерянном. Спрошу у него, на всякий случай.",
+  "en": "The fortune-telling automaton talks about lost things. I'll ask it, just in case.",
+  "ja": "占いの人形は、なくしものの話をするらしい。念のため聞いてみよう。"
+ },
+ "quest.fair_sandal.ask.obj": {
+  "ru": "Спросить у гадающего автомата",
+  "en": "Ask the fortune-telling automaton",
+  "ja": "占いの人形に尋ねる"
+ },
+ "quest.fair_sandal.find.log": {
+  "ru": "Смотреть надо под лавкой. Ладно, посмотрю под лавкой.",
+  "en": "The thing to do is look under a bench. Fine, I'll look under a bench.",
+  "ja": "ベンチの下を見ろ、とのことだ。よし、下を見てみよう。"
+ },
+ "quest.fair_sandal.look.obj": {
+  "ru": "Найти сандалик под лавкой у киосков",
+  "en": "Find the sandal under a bench among the kiosks",
+  "ja": "屋台の近くのベンチの下でサンダルを探す"
+ },
+ "quest.fair_sandal.basket.log": {
+  "ru": "Корзина «Найдено» стоит у весов-кресла. Отнесу туда.",
+  "en": "The Lost and Found basket stands by the chair scales. I'll take it there.",
+  "ja": "「落とし物」のかごは椅子はかりのそばにある。そこへ持っていこう。"
+ },
+ "quest.fair_sandal.put.obj": {
+  "ru": "Положить сандалик в корзину «Найдено» у весов",
+  "en": "Put the sandal in the Lost and Found basket by the scales",
+  "ja": "体重計のそばの「落とし物」のかごにサンダルを入れる"
+ },
+ "quest.fair_sandal.done": {
+  "ru": "Пара встретилась. Говорят, в этот момент где-то на ярмарке девочка в одном сандалике перестала хромать.",
+  "en": "The pair met. They say that at that moment somewhere at the fair a girl in one sandal stopped limping.",
+  "ja": "一足がそろった。その瞬間、縁日のどこかで、片方だけサンダルの女の子が、ちゃんと歩けるようになったそうだ。"
+ },
+ "city.xf.talk.prompt": {
+  "ru": "E — поговорить с продавцом",
+  "en": "E — talk to the stallholder",
+  "ja": "E：店の人に話しかける"
+ },
+ "city.xf.talk.car.prompt": {
+  "ru": "E — поговорить с вожатым карусели",
+  "en": "E — talk to the roundabout's keeper",
+  "ja": "E：メリーゴーラウンドの係と話す"
+ },
+ "city.xf.prog.prompt": {
+  "ru": "E — прочитать программу ярмарки",
+  "en": "E — read the fair's programme",
+  "ja": "E：縁日の催しを読む"
+ },
+ "city.xf.led.prompt": {
+  "ru": "E — открыть журнал силомера",
+  "en": "E — open the strongman's ledger",
+  "ja": "E：力試しの記録帳を開く"
+ },
+ "city.xf.alb.prompt": {
+  "ru": "E — полистать альбом фотографа",
+  "en": "E — leaf through the photographer's album",
+  "ja": "E：写真家のアルバムをめくる"
+ },
+ "city.xf.lotn.prompt": {
+  "ru": "E — посмотреть таблицу номеров",
+  "en": "E — look at the winning numbers",
+  "ja": "E：当たり番号の表を見る"
+ },
+ "city.xf.galp.prompt": {
+  "ru": "E — прочитать цены в тире",
+  "en": "E — read the gallery's prices",
+  "ja": "E：射的の値段を読む"
+ },
+ "city.xf.radio.prompt": {
+  "ru": "E — покрутить радио",
+  "en": "E — tune the radio",
+  "ja": "E：ラジオのつまみを回す"
+ },
+ "city.xf.weights.prompt": {
+  "ru": "E — поднять гирю",
+  "en": "E — lift a kettlebell",
+  "ja": "E：ケトルベルを持ち上げる"
+ },
+ "city.xf.height.prompt": {
+  "ru": "E — встать к ростомеру",
+  "en": "E — stand by the height post",
+  "ja": "E：身長計の前に立つ"
+ },
+ "city.xf.pp.prompt": {
+  "ru": "E — сыграть в настольный теннис",
+  "en": "E — play table tennis",
+  "ja": "E：卓球をする"
+ },
+ "city.xf.dom.prompt": {
+  "ru": "E — сыграть в домино",
+  "en": "E — play dominoes",
+  "ja": "E：ドミノで遊ぶ"
+ },
+ "city.xf.shell.prompt": {
+  "ru": "E — угадать, где горошина",
+  "en": "E — guess where the pea is",
+  "ja": "E：豆がどこにあるか当てる"
+ },
+ "city.xf.car.prompt": {
+  "ru": "E — прокатиться на карусели",
+  "en": "E — ride the roundabout",
+  "ja": "E：メリーゴーラウンドに乗る"
+ },
+ "city.xf.stand.prompt": {
+  "ru": "E — посмотреть на полку призов",
+  "en": "E — look at the prize stand",
+  "ja": "E：景品棚を眺める"
+ },
+ "city.xf.text.prog.title": {
+  "ru": "Программа ярмарки",
+  "en": "The fair's programme",
+  "ja": "縁日のプログラム"
+ },
+ "city.xf.prog.1": {
+  "ru": "ЯРМАРКА ПОД ВОЛНИСТЫМ НАВЕСОМ.\nОткрыто в пятницу, субботу и воскресенье, с 11 утра до 10 вечера. В будни навес гуляет сам по себе: под ним сухо, чисто и тихо.\nБилеты на карусель у вожатого, всё остальное у тех, кто стоит за прилавком.",
+  "en": "THE FAIR UNDER THE WAVE CANOPY.\nOpen Friday, Saturday and Sunday, 11 a.m. to 10 p.m. On weekdays the canopy keeps itself company: dry, clean and quiet underneath.\nRoundabout tickets from the keeper, everything else from whoever stands behind a counter.",
+  "ja": "うねる屋根の下の縁日。\n開催は金・土・日、午前11時から夜10時まで。平日は屋根が一人で留守番をします。下は乾いていて、きれいで、静かです。\nメリーゴーラウンドの切符は係から、ほかは店の人から。"
+ },
+ "city.xf.prog.fri": {
+  "ru": "ПЯТНИЦА.\n11:00 открытие, тир для школьников.\n16:30 смена продавцов, зажигаем первые гирлянды.\n20:00 лотерея «для своих».\nПриз дня: заводная утка.",
+  "en": "FRIDAY.\n11:00 opening, the gallery for schoolchildren.\n16:30 the stallholders change shift, the first strings of lights go on.\n20:00 the lottery \"for locals\".\nPrize of the day: the clockwork duck.",
+  "ja": "金曜日。\n11:00 開会、学生向けの射的。\n16:30 店の人が交代、最初の電飾が灯る。\n20:00 「地元の人のための」くじ引き。\n今日の景品：ぜんまいのアヒル。"
+ },
+ "city.xf.prog.sat": {
+  "ru": "СУББОТА.\n12:00 карусель для малышей.\n18:00 открытое состязание у силомера: Береснев против всех.\n20:30 фотограф работает до сумерек.\nПриз дня: жестяной маяк.",
+  "en": "SATURDAY.\n12:00 the roundabout for little ones.\n18:00 the open contest at the strongman: Beresnev against all comers.\n20:30 the photographer works until dusk.\nPrize of the day: the tin lighthouse.",
+  "ja": "土曜日。\n12:00 小さな子のためのメリーゴーラウンド。\n18:00 力試しの公開試合：ベレスネフ対全員。\n20:30 写真家は日暮れまで撮影。\n今日の景品：ブリキの灯台。"
+ },
+ "city.xf.prog.sun": {
+  "ru": "ВОСКРЕСЕНЬЕ.\n12:00 домино под навесом.\n15:00 настольный теннис, играет кто пришёл.\n19:00 реванш у силомера.\n21:30 гасим гирлянды по одной.\nПриз дня: гипсовый ёж.",
+  "en": "SUNDAY.\n12:00 dominoes under the canopy.\n15:00 table tennis, whoever turns up plays.\n19:00 the rematch at the strongman.\n21:30 the lights go out one by one.\nPrize of the day: the plaster hedgehog.",
+  "ja": "日曜日。\n12:00 屋根の下でドミノ。\n15:00 卓球、来た人が遊ぶ。\n19:00 力試しの再戦。\n21:30 電飾をひとつずつ消していく。\n今日の景品：石膏のハリネズミ。"
+ },
+ "city.xf.prog.pr.fri": {
+  "ru": "ПРИЗЫ ПЯТНИЦЫ.\nКольцеброс: леденец, а за пять из пяти нам придётся придумывать.\nТир: открытка.\nЛотерея: открытка, иногда с маяком.\nФотограф: пока не приехал.",
+  "en": "FRIDAY'S PRIZES.\nRing toss: a lollipop, and for five out of five we'll have to invent something.\nGallery: a postcard.\nLottery: a postcard, sometimes one with the lighthouse.\nPhotographer: not here yet.",
+  "ja": "金曜日の景品。\n輪投げ：飴。五回全部入れた人には、何か考えます。\n射的：絵はがき。\nくじ引き：絵はがき。灯台の絵のこともあります。\n写真家：まだ来ていません。"
+ },
+ "city.xf.prog.pr.sat": {
+  "ru": "ПРИЗЫ СУББОТЫ.\nСиломер: значок, а за 60 очков значок с ленточкой.\nКольцеброс: леденец и право потрогать маяк.\nНаперстки у лотереи: леденец и жестяная чайка.\nТир: открытка.",
+  "en": "SATURDAY'S PRIZES.\nStrongman: a badge, and for 60 points a badge with a ribbon.\nRing toss: a lollipop and the right to touch the lighthouse.\nThe cups by the lottery: a lollipop and the tin gull.\nGallery: a postcard.",
+  "ja": "土曜日の景品。\n力試し：バッジ。60点ならリボン付きバッジ。\n輪投げ：飴と、灯台にさわる権利。\nくじ引きそばのカップ当て：飴とブリキのカモメ。\n射的：絵はがき。"
+ },
+ "city.xf.prog.pr.sun": {
+  "ru": "ПРИЗЫ ВОСКРЕСЕНЬЯ.\nНастольный теннис: губная гармошка тому, кто обыграет Каска.\nНаперстки: чайка на ключике.\nКольцеброс: ёж.\nВсем, кто дошёл до вечера: леденец.",
+  "en": "SUNDAY'S PRIZES.\nTable tennis: a harmonica for whoever beats Kask.\nThe cups: the gull with a key.\nRing toss: the hedgehog.\nFor everyone who lasts until the evening: a lollipop.",
+  "ja": "日曜日の景品。\n卓球：カスクに勝った人にハーモニカ。\nカップ当て：ぜんまい付きのカモメ。\n輪投げ：ハリネズミ。\n夜まで残った人みんなに飴。"
+ },
+ "city.xf.prog.rules": {
+  "ru": "ПРАВИЛА.\n1. По силомеру бьют один раз за раз, по уткам стреляют вдоль, не вбок.\n2. Лампочки не трогать, даже хорошие.\n3. Потерянное нести к весам в корзину «Найдено».\n4. Рубильник гирлянд на столбах у обоих краёв навеса: включил сам, выключи за собой.",
+  "en": "RULES.\n1. Hit the strongman once at a time; shoot the ducks lengthways, not sideways.\n2. Do not touch the bulbs, even the good ones.\n3. Lost things go to the scales, into the Lost and Found basket.\n4. The festoon switch is on the posts at both ends of the canopy: you switch it on, you switch it off.",
+  "ja": "決まり。\n1. 力試しは一度に一回、アヒルは横ではなく縦に撃つこと。\n2. 電球にはさわらない。いい電球でも。\n3. 落とし物は体重計のそばの「拾いもの」かごへ。\n4. 電飾のスイッチは屋根の両端の柱にあります。つけた人が消すこと。"
+ },
+ "city.xf.prog.late": {
+  "ru": "Красным карандашом: «В воскресенье вечером итоги недели: журнал силомера, корзина „Найдено“ и полка призов у кольцеброса. Приходите смотреть, кто что выиграл».",
+  "en": "In red pencil: \"Sunday evening, the week's results: the strongman's ledger, the Lost and Found basket and the prize stand by the ring toss. Come and see who won what.\"",
+  "ja": "赤鉛筆で：「日曜の夜に一週間の結果発表。力試しの記録帳、拾いものかご、輪投げそばの景品棚。誰が何を当てたか見に来てください」"
+ },
+ "city.xf.progl.1": {
+  "ru": "Рамка с программой ярмарки висит под навесом. Внизу карандашом: «Меняется каждый день».",
+  "en": "The fair's programme hangs in a frame under the canopy. In pencil at the bottom: \"Changes every day.\"",
+  "ja": "縁日のプログラムが屋根の下の額に入っている。下に鉛筆で「毎日変わります」。"
+ },
+ "city.xf.progl.rain": {
+  "ru": "Дождь стучит по навесу сверху, программа висит внизу. Дождь в ней не значится, но никто не отменяет.",
+  "en": "Rain drums on the canopy overhead, the programme hangs below. Rain is not in it, but nothing is cancelled.",
+  "ja": "雨が屋根をたたき、プログラムはその下に掛かっている。雨は載っていないけれど、中止にはならない。"
+ },
+ "city.xf.text.led.title": {
+  "ru": "Журнал силомера",
+  "en": "The strongman's ledger",
+  "ja": "力試しの記録帳"
+ },
+ "city.xf.led.1": {
+  "ru": "ЖУРНАЛ СИЛОМЕРА.\nЗаписывать: фамилию, очки и как звякнул колокол.\nРекорд ярмарки: 71. Береснев Н., судомеханик.\nПока колокол молчит, но готов.",
+  "en": "THE STRONGMAN'S LEDGER.\nWrite down: the surname, the points and how the bell rang.\nFair record: 71. Beresnev N., ship's mechanic.\nThe bell is silent for now, but ready.",
+  "ja": "力試しの記録帳。\n書くこと：名字、点数、鐘の鳴り方。\n場内記録：71。ベレスネフ・N、船の機関士。\n鐘はいまは黙っているが、準備はできている。"
+ },
+ "city.xf.led.2": {
+  "ru": "Пустые строки напротив фамилии Береснева: «на рейсе». Зато остальные расписались: 38 — школьник, звякнул тихо; 46 — почтальон, звякнул по форме; 52 — без фамилии, приписано «мне бы отдышаться».",
+  "en": "Empty lines next to Beresnev's name: \"at sea\". The others have signed, though: 38, a schoolboy, a quiet ring; 46, a postman, rang by the book; 52, no surname, with a note: \"I need to catch my breath.\"",
+  "ja": "ベレスネフの名前の横は空白、「航海中」。ほかの人はちゃんと署名している。38点、小学生、鐘は小さく。46点、郵便配達の人、規則どおりに。52点、名字なし、「ちょっと息をつかせて」。"
+ },
+ "city.xf.led.3": {
+  "ru": "74 — Береснев Н. Вернулся раньше срока, бил с дороги, с чемоданом в левой руке. Рядом детским мелком кружок, который никто не стёр.",
+  "en": "74, Beresnev N. Came back early, struck straight off the road with a suitcase in his left hand. Beside it a ring in a child's chalk that nobody has rubbed out.",
+  "ja": "74点、ベレスネフ・N。予定より早く帰り、左手にトランクを持ったまま打った。横に子どものチョークの丸印、誰も消していない。"
+ },
+ "city.xf.led.4": {
+  "ru": "77 — Мельникова Л. Три удара: 63, 69, 77. Береснев приписал снизу: «Поздравляю. Реванш в воскресенье, молоток чтобы был честный».",
+  "en": "77, Melnikova L. Three strikes: 63, 69, 77. Beresnev has added underneath: \"Congratulations. Rematch on Sunday, and let the mallet be honest.\"",
+  "ja": "77点、メリニコワ・L。三回打って63、69、77。下にベレスネフの書き込み：「おめでとう。日曜に再戦、木槌はまっとうなものを」"
+ },
+ "city.xf.led.5": {
+  "ru": "Воскресный реванш. Береснев: 76, 79, 80. Мельникова: 75, 78. Руки пожаты до удара, а не после. Колокол было слышно у маяка, сторож подтвердил письменно.",
+  "en": "The Sunday rematch. Beresnev: 76, 79, 80. Melnikova: 75, 78. Hands shaken before the strike, not after. The bell was heard at the lighthouse, the keeper confirmed in writing.",
+  "ja": "日曜の再戦。ベレスネフ：76、79、80。メリニコワ：75、78。握手は打つ前に、打ったあとではなく。鐘は灯台まで聞こえ、灯台守が書面で確認した。"
+ },
+ "city.xf.led.6": {
+  "ru": "Последняя строка: «Третье место свободно». Ниже карандашом: «Школьникам скидка», а ещё ниже красным и без подписи: «А ты?»",
+  "en": "The last line: \"Third place is free.\" Below it in pencil: \"Discount for schoolchildren\", and lower still in red, unsigned: \"And you?\"",
+  "ja": "最後の行：「三位は空いています」。その下に鉛筆で「学生割引」、さらに下に赤字で署名なし：「きみは？」"
+ },
+ "city.xf.ledl.1": {
+  "ru": "Журнал силомера лежит на планшете, зажатый прищепкой. Ветер пытается его читать, прищепка не пускает.",
+  "en": "The ledger lies on a clipboard under a clothes-peg. The wind tries to read it, the peg won't let it.",
+  "ja": "記録帳は洗濯ばさみで板に留めてある。風が読もうとするが、洗濯ばさみが許さない。"
+ },
+ "city.xf.ledl.2": {
+  "ru": "Пока я листал журнал, где-то у колокола кто-то ударил, и страницы подпрыгнули все разом.",
+  "en": "While I leafed through the ledger somebody struck at the bell and all the pages jumped at once.",
+  "ja": "記録帳をめくっていたら、誰かが鐘のほうで打って、ページが一斉に跳ねた。"
+ },
+ "city.xf.text.alb.title": {
+  "ru": "Альбом путешественника",
+  "en": "The traveller's album",
+  "ja": "旅の写真家のアルバム"
+ },
+ "city.xf.alb.1": {
+  "ru": "Альбом в клеёнчатой обложке с наклейкой «Путешественник». На первом листе: «Снимаю тех, кто пришёл по делу, и тех, кто пришёл просто так. Вторых получается больше».",
+  "en": "An album in an oilcloth cover with a sticker: \"Traveller\". On the first page: \"I photograph those who came on business and those who came for no reason. The second kind come out better.\"",
+  "ja": "ビニールの表紙に「旅人」のシール。最初のページ：「用事で来た人も、何となく来た人も撮ります。後者のほうがよく写ります」"
+ },
+ "city.xf.alb.2": {
+  "ru": "Карточка на втором листе: маяк на закате, вверх ногами. Подпись: «Так видно, что он стоит крепко».",
+  "en": "A print on the second page: the lighthouse at sunset, upside down. Caption: \"This way you can see how firmly it stands.\"",
+  "ja": "二枚目の写真：夕焼けの灯台、さかさま。キャプション：「こうするとしっかり立っているのがわかります」"
+ },
+ "city.xf.alb.3": {
+  "ru": "Приклеен новый снимок: сандалик на лавке, жёлтый, с обломанной пряжкой. «Ищет пару. Просьба смотреть под лавки, не над ними».",
+  "en": "A new print is pasted in: a sandal on a bench, yellow, with a broken buckle. \"Looking for its pair. Please look under the benches, not over them.\"",
+  "ja": "新しい写真が貼ってある。ベンチの上の黄色いサンダル、バックルが欠けている。「片方を探しています。ベンチの上ではなく下を見てください」"
+ },
+ "city.xf.alb.4": {
+  "ru": "Следующий снимок: корзина «Найдено» у весов, в ней пара жёлтых сандалий. Внизу: «Конец истории. Снято без актёров».",
+  "en": "Next print: the Lost and Found basket by the scales, with a pair of yellow sandals in it. Below: \"End of story. Filmed without actors.\"",
+  "ja": "次の写真：体重計のそばの「拾いもの」かご、中には黄色いサンダルが一足。下に：「物語はここまで。役者なしで撮影」"
+ },
+ "city.xf.alb.5": {
+  "ru": "Снимок у силомера: двое пожимают друг другу руки до удара. «Береснев и Мельникова. Колокол не в кадре, но слышен».",
+  "en": "A print by the strongman: two people shaking hands before the strike. \"Beresnev and Melnikova. The bell is out of the frame, but you can hear it.\"",
+  "ja": "力試しのそばの写真：打つ前に握手する二人。「ベレスネフとメリニコワ。鐘は写っていませんが聞こえます」"
+ },
+ "city.xf.alb.6": {
+  "ru": "На последнем листе пустая рамка. Подпись: «Третье место свободно. Школьникам скидка». Рядом приклеен кармашек для карточки того, кто придёт.",
+  "en": "On the last page an empty frame. Caption: \"Third place is free. Discount for schoolchildren.\" Beside it a little pocket for the print of whoever comes next.",
+  "ja": "最後のページには空の額。キャプション：「三位は空いています。学生割引」。横に、次に来る人の写真を入れる小さなポケットが貼ってある。"
+ },
+ "city.xf.albl.1": {
+  "ru": "Альбом лежит на столике, придавленный камнем с набережной. Камень гладкий и очень гордый.",
+  "en": "The album lies on the little table under a stone from the embankment. The stone is smooth and very proud.",
+  "ja": "アルバムは小さな机の上、堤防の石を重しにして置いてある。石はつるつるで、とても誇らしげだ。"
+ },
+ "city.xf.albl.2": {
+  "ru": "Столик фотографа пока без самого фотографа: тот ушёл проявлять карточки или разговаривать с чайкой.",
+  "en": "The photographer's table is without the photographer for now: he has gone to develop prints or to talk to a gull.",
+  "ja": "写真家の机にはいま写真家がいない。現像に行ったか、カモメと話しているのだろう。"
+ },
+ "city.xf.weights.1": {
+  "ru": "Три гири: 16, 24 и 32 килограмма. Шестнадцать поднялась как пёрышко, двадцать четыре как обещание. Тридцать две осталась на месте и вежливо кивнула ручкой.",
+  "en": "Three kettlebells: 16, 24 and 32 kilos. The sixteen rose like a feather, the twenty-four like a promise. The thirty-two stayed where it was and nodded politely with its handle.",
+  "ja": "ケトルベルは16、24、32キロの三つ。16キロは羽のように、24キロは約束のように持ち上がった。32キロは動かず、取っ手で礼儀正しくうなずいた。"
+ },
+ "city.xf.weights.am": {
+  "ru": "Утром гири холодные, как рыбы из ледника. Поднять с первого раза — подвиг, со второго — привычка.",
+  "en": "In the morning the kettlebells are cold as fish from the ice-house. Lifting one at the first go is a feat, at the second a habit.",
+  "ja": "朝のケトルベルは氷室から出した魚のように冷たい。一度で持ち上げれば快挙、二度目なら習慣だ。"
+ },
+ "city.xf.weights.pm": {
+  "ru": "К вечеру гири нагрелись от ладоней. Средняя кажется легче, чем она есть, и это тоже часть обмана.",
+  "en": "By evening the kettlebells have warmed from all the palms. The middle one feels lighter than it is, and that is part of the trick too.",
+  "ja": "夕方には手のぬくもりでケトルベルが温まっている。真ん中のは本当より軽く感じる。それも仕掛けのうちだ。"
+ },
+ "city.xf.weights.we": {
+  "ru": "В выходной рядом двое ждут очереди на гири и делают вид, что разглядывают флажки. Поднял двадцать четыре, красиво.",
+  "en": "At the weekend two people wait beside me for the kettlebells, pretending to study the bunting. I lifted the twenty-four, and it looked good.",
+  "ja": "週末は隣で二人が順番を待ちながら、旗飾りを見るふりをしている。僕は24キロを持ち上げた。なかなか絵になった。"
+ },
+ "city.xf.weights.rain": {
+  "ru": "Под навесом сухо, гиря не скользит. Поднял двадцать четыре дважды. Это почти рекорд, только записать некуда.",
+  "en": "It is dry under the canopy, the kettlebell does not slip. I lifted the twenty-four twice. Nearly a record, but there is nowhere to write it down.",
+  "ja": "屋根の下は乾いていて、ケトルベルは滑らない。24キロを二回持ち上げた。ほとんど記録だが、書く場所がない。"
+ },
+ "city.xf.height.1": {
+  "ru": "Прислонился затылком к столбу, опустил ползунок на макушку. Ровно на метке, которую школьники называют «взрослой».",
+  "en": "I leaned the back of my head on the post and lowered the slider onto my crown. Exactly at the mark the schoolchildren call \"grown-up\".",
+  "ja": "後頭部を柱につけ、スライダーを頭のてっぺんまで下ろした。ちょうど子どもたちが「大人」と呼ぶ印のところだ。"
+ },
+ "city.xf.height.2": {
+  "ru": "Ползунок упёрся в волосы. Издалека кричат: «Не подпрыгивать, это не аттракцион!»",
+  "en": "The slider rested on my hair. Someone shouts from afar: \"No jumping, this is not a ride!\"",
+  "ja": "スライダーが髪に当たった。遠くから声がする。「跳ねないで、乗り物じゃありませんよ」"
+ },
+ "city.xf.height.3": {
+  "ru": "К вечеру, говорят, мы все на сантиметр ниже. Столб тут ни при чём, это усталость.",
+  "en": "By evening, they say, we are all a centimetre shorter. The post has nothing to do with it, that is tiredness.",
+  "ja": "夕方にはみんな一センチ縮むという。柱のせいではなく、疲れのせいだ。"
+ },
+ "city.xf.radio.am": {
+  "ru": "Из радио бодро: «Ноги на ширину плеч! Раз, и два, и…» Тирщик за прилавком делает приседание, не вынимая рук из карманов.",
+  "en": "The radio, briskly: \"Feet shoulder-width apart! And one, and two, and...\" Behind the counter the gallery keeper does a squat without taking his hands out of his pockets.",
+  "ja": "ラジオが元気よく言う。「足は肩幅に！ イチ、ニ、イチ…」 カウンターの向こうで射的の人が、ポケットに手を入れたまましゃがんだ。"
+ },
+ "city.xf.radio.day": {
+  "ru": "Новости: «На набережной тихо, на ярмарке шумно, погода без претензий». Тирщик делает вид, что слушает не нарочно.",
+  "en": "The news: \"All quiet on the embankment, noisy at the fair, the weather makes no demands.\" The gallery keeper pretends he isn't listening on purpose.",
+  "ja": "ニュース：「堤防は静か、縁日は賑やか、天気は文句なし」。射的の人はわざと聞いているのではないふりをしている。"
+ },
+ "city.xf.radio.eve": {
+  "ru": "Вальс. Утки на цепочке, кажется, идут в такт, а колокольчик в углу звякает на сильную долю.",
+  "en": "A waltz. The ducks on their chain seem to move in time, and the little bell in the corner rings on the strong beat.",
+  "ja": "ワルツ。鎖につるされたアヒルが拍子に合わせて動くように見え、隅の小さな鐘が強拍で鳴る。"
+ },
+ "city.xf.radio.night": {
+  "ru": "Тихое шипение и далёкая музыка. Перед уходом тирщик выключает радио, чтобы утки спали.",
+  "en": "A quiet hiss and distant music. Before leaving, the keeper turns the radio off so the ducks can sleep.",
+  "ja": "静かなノイズと遠い音楽。帰る前に射的の人はラジオを消す。アヒルが眠れるように。"
+ },
+ "city.xf.radio.rain": {
+  "ru": "Дождь по навесу и вальс из радио. Лучше сочетания не придумаешь.",
+  "en": "Rain on the canopy and a waltz from the radio. You could not invent a better pair.",
+  "ja": "屋根を打つ雨とラジオのワルツ。これ以上の組み合わせはない。"
+ },
+ "city.xf.lotn.1": {
+  "ru": "На столбе таблица из двенадцати цветных квадратов. Выигрышный тот, который продавщица красит мелком. Пока не покрасила.",
+  "en": "On the post, a board of twelve coloured squares. The winning one is whichever the seller marks with chalk. She hasn't yet.",
+  "ja": "柱に十二色の四角が並んだ表。当たりは、売り子がチョークで印をつけたもの。まだつけていない。"
+ },
+ "city.xf.lotn.fri": {
+  "ru": "Пятница: красный квадрат с точкой. «Красный в пятницу — к открытке», сказала продавщица.",
+  "en": "Friday: a red square with a dot. \"Red on a Friday means a postcard,\" said the seller.",
+  "ja": "金曜日：点のついた赤い四角。「金曜の赤は絵はがきの印」と売り子が言った。"
+ },
+ "city.xf.lotn.sat": {
+  "ru": "Суббота: синий квадрат. Рядом приписка: «Если выпал синий, подмигните барабану».",
+  "en": "Saturday: a blue square. A note beside it: \"If you draw blue, wink at the drum.\"",
+  "ja": "土曜日：青い四角。横に書き込み：「青が出たらドラムにウインクを」"
+ },
+ "city.xf.lotn.sun": {
+  "ru": "Воскресенье: жёлтый. В воскресенье выигрывает цвет, который ближе к солнцу.",
+  "en": "Sunday: yellow. On Sunday the colour closest to the sun wins.",
+  "ja": "日曜日：黄色。日曜は太陽にいちばん近い色が当たる。"
+ },
+ "city.xf.lotn.fest": {
+  "ru": "Праздник: все двенадцать квадратов закрашены золотой краской. «Сегодня выигрывают все, но по очереди», — написано внизу.",
+  "en": "A holiday: all twelve squares are painted gold. Written below: \"Today everybody wins, but in turn.\"",
+  "ja": "祝日：十二の四角すべてが金色に塗られている。下に「今日は全員が当たります。ただし順番に」"
+ },
+ "city.xf.galp.1": {
+  "ru": "Тир: пять выстрелов, пять рублей. Попал в бубенчик — открытка. Попал в утку Клавдию — не знаем, никто не попадал.",
+  "en": "Gallery: five shots, five roubles. Hit the little bell and get a postcard. Hit Claudia the duck: we don't know, nobody ever has.",
+  "ja": "射的：五発で五ルーブル。小さな鈴に当てれば絵はがき。アヒルのクラウディアに当てたら？ 誰も当てたことがないので不明。"
+ },
+ "city.xf.galp.sat": {
+  "ru": "Суббота: пять выстрелов — пять рублей, школьникам три. Ружьё косит влево: так заведено.",
+  "en": "Saturday: five shots, five roubles, three for schoolchildren. The rifle pulls left: that is how it is done.",
+  "ja": "土曜日：五発で五ルーブル、学生は三ルーブル。銃は左にそれる。そういう決まりだ。"
+ },
+ "city.xf.galp.sun": {
+  "ru": "Воскресенье: кто собьёт три утки подряд, получает глоток воды и аплодисменты тирщика.",
+  "en": "Sunday: whoever knocks down three ducks in a row gets a sip of water and the keeper's applause.",
+  "ja": "日曜日：アヒルを三羽続けて倒した人には、水を一口と射的の人の拍手。"
+ },
+ "city.xf.stand.1": {
+  "ru": "Ступенчатая полка призов: внизу утка и ёж, посередине маяк и гармошка, наверху жестяная чайка. Подписано: «Не трогать, выигрывать».",
+  "en": "A tiered prize stand: the duck and hedgehog below, the lighthouse and harmonica in the middle, a tin gull on top. Labelled: \"Do not touch, win.\"",
+  "ja": "段になった景品棚。下にアヒルとハリネズミ、真ん中に灯台とハーモニカ、上にブリキのカモメ。札には「さわらず、当てること」"
+ },
+ "city.xf.stand.duck": {
+  "ru": "Заводная утка на нижней полке смотрит так, будто знает, что это я её выиграл. Я тоже знаю.",
+  "en": "The clockwork duck on the bottom tier looks as if it knows I am the one who won it. I know too.",
+  "ja": "下の段のぜんまいアヒルは、僕が当てたのを知っているという顔をしている。僕も知っている。"
+ },
+ "city.xf.stand.lighthouse": {
+  "ru": "Жестяной маяк на средней полке: под лампочкой от сигнального фонаря. Я его выиграл у силомера, и он мне это помнит.",
+  "en": "The tin lighthouse on the middle tier, with a bulb from a signal lamp. I won it at the strongman, and it remembers.",
+  "ja": "真ん中の段のブリキの灯台、信号灯の電球入り。力試しで当てたもので、灯台もそれを覚えている。"
+ },
+ "city.xf.stand.hedgehog": {
+  "ru": "Гипсовый ёж с иголками из спичек. Я выиграл его в тире, и у него теперь удивлённые брови, как у всех призов.",
+  "en": "The plaster hedgehog with matchstick spines. I won it at the gallery, and it now has surprised eyebrows, like every prize.",
+  "ja": "マッチ棒のトゲがついた石膏のハリネズミ。射的で当てた。景品はみんなそうだが、びっくりした眉をしている。"
+ },
+ "city.xf.stand.harmonica": {
+  "ru": "Губная гармошка в рамке: обыграл Каска в настольный теннис. Одна нота не работает, но это нота, которой я не умею.",
+  "en": "A harmonica in a frame: I beat Kask at table tennis. One note doesn't work, but it's a note I can't play anyway.",
+  "ja": "額に入ったハーモニカ。卓球でカスクに勝った。出ない音がひとつあるが、僕には吹けない音だ。"
+ },
+ "city.xf.stand.gull": {
+  "ru": "Жестяная чайка с ключиком: выиграл у Рашида в наперстки. Она делает три шага и задумывается.",
+  "en": "The tin gull with a key: won from Rashid at the cups. She takes three steps and ponders.",
+  "ja": "ぜんまい付きのブリキのカモメ。ラシードにカップ当てで勝った。三歩歩いて考え込む。"
+ },
+ "city.xf.stand.postcard": {
+  "ru": "К полке прикреплена открытка с маяком из лотереи. Продавщица говорит, она счастливая, пока не выцвела.",
+  "en": "A postcard with the lighthouse from the lottery is pinned to the stand. The seller says it is lucky until it fades.",
+  "ja": "くじ引きの灯台の絵はがきが棚に留めてある。色あせるまでは幸運のお守りだと売り子は言う。"
+ },
+ "city.xf.stand.all": {
+  "ru": "Полка полна: на каждом месте бирка «Выиграно». Продавец кивает: «Вы собрали всё. Полка вам кланяется, вежливо, одним верхним уголком».",
+  "en": "The stand is full: every place carries a tag \"Won\". The seller nods: \"You've got the lot. The stand bows to you, politely, with one top corner.\"",
+  "ja": "棚は満杯、どの場所にも「当選済み」の札。売り子がうなずく。「全部集めましたね。棚が上の隅っこで丁寧にお辞儀しています」"
+ },
+ "city.xf.coll.prizes.title": {
+  "ru": "Полка призов ярмарки",
+  "en": "The fair's prize stand",
+  "ja": "縁日の景品棚"
+ },
+ "city.xf.pp.title": {
+  "ru": "Теннис под навесом",
+  "en": "Tennis under the canopy",
+  "ja": "屋根の下の卓球"
+ },
+ "city.xf.pp.after.1": {
+  "ru": "Стол стоит под навесом, шарик хрупкий, ракетки рыжие от тысячи ладоней.",
+  "en": "The table stands under the canopy, the ball is fragile, the bats are ginger from a thousand palms.",
+  "ja": "卓球台は屋根の下。球は割れやすく、ラケットは無数の手で赤茶けている。"
+ },
+ "city.xf.pp.after.2": {
+  "ru": "Шарик ускакал под лавку. Достаю, как достают сандалики: стоя на коленях и с достоинством.",
+  "en": "The ball bounced off under a bench. I fetch it the way you fetch sandals: kneeling, with dignity.",
+  "ja": "球はベンチの下へ跳んでいった。サンダルを拾うときのように、膝をついて堂々と拾う。"
+ },
+ "city.xf.pp.after.rain": {
+  "ru": "Дождь по навесу, шарик по столу. Звук получается одинаковый, поэтому не сразу понятно, кто выиграл.",
+  "en": "Rain on the canopy, the ball on the table. The sounds are alike, so it is not at once clear who has won.",
+  "ja": "屋根に雨、台に球。音がそっくりで、誰が勝ったのかすぐにはわからない。"
+ },
+ "city.xf.dom.1": {
+  "ru": "Домино на ярмарочном столике: костяшки гладкие, как морская галька, и тоже любят лежать рядами.",
+  "en": "Dominoes on the fair's little table: the tiles are smooth as sea pebbles and also like lying in rows.",
+  "ja": "縁日の小さな机のドミノ。牌は海の小石のようにすべすべで、やはり列になって並ぶのが好きだ。"
+ },
+ "city.xf.dom.pm": {
+  "ru": "Вечером под гирляндой костяшки блестят. Сыграли быстро, ужин ждёт.",
+  "en": "In the evening the tiles gleam under the lights. A quick game, supper is waiting.",
+  "ja": "夕方、電飾の下で牌が光る。手早く打った。夕食が待っている。"
+ },
+ "city.xf.dom.rain": {
+  "ru": "Дождь стучит по навесу в такт костяшкам. Выигрывает тот, кто не сбился со счёта.",
+  "en": "Rain taps the canopy in time with the tiles. Whoever doesn't lose count wins.",
+  "ja": "雨が牌のリズムで屋根をたたく。数を数え間違えなかった人の勝ちだ。"
+ },
+ "city.xf.shell.title": {
+  "ru": "Три стаканчика",
+  "en": "Three cups",
+  "ja": "三つのカップ"
+ },
+ "city.xf.shell.move.1": {
+  "ru": "Левый стаканчик",
+  "en": "The left cup",
+  "ja": "左のカップ"
+ },
+ "city.xf.shell.move.2": {
+  "ru": "Средний стаканчик",
+  "en": "The middle cup",
+  "ja": "真ん中のカップ"
+ },
+ "city.xf.shell.move.3": {
+  "ru": "Правый стаканчик",
+  "en": "The right cup",
+  "ja": "右のカップ"
+ },
+ "city.xf.shell.tell.1": {
+  "ru": "{0} слегка косится влево, будто там что-то интересное.",
+  "en": "{0} glances a little to the left as if something interesting were there.",
+  "ja": "{0}は左のほうをちらっと見る。何か面白いものがあるかのように。"
+ },
+ "city.xf.shell.tell.2": {
+  "ru": "{0} поправляет средний стаканчик пальцем и тут же убирает руку.",
+  "en": "{0} straightens the middle cup with a finger and at once takes the hand away.",
+  "ja": "{0}は真ん中のカップを指で直し、すぐ手を引っこめる。"
+ },
+ "city.xf.shell.tell.3": {
+  "ru": "{0} слишком спокойно смотрит на правый стаканчик.",
+  "en": "{0} looks at the right cup far too calmly.",
+  "ja": "{0}は右のカップをあまりに落ち着いて見ている。"
+ },
+ "city.xf.shell.win.1": {
+  "ru": "Горошина под моим стаканчиком. Рашид признаёт: «Чисто. Только никому не говорите, что у меня есть система».",
+  "en": "The pea is under my cup. Rashid admits: \"Clean. Just don't tell anyone I have a system.\"",
+  "ja": "豆は僕のカップの下にあった。ラシードが認める。「見事。僕に作戦があるってことは誰にも言わないで」"
+ },
+ "city.xf.shell.win.2": {
+  "ru": "Угадал с третьей попытки. Рашид достаёт из кармана леденец: «Это не приз, это утешение для обоих».",
+  "en": "Guessed on the third try. Rashid takes a lollipop from his pocket: \"This isn't a prize, it's consolation for us both.\"",
+  "ja": "三回目で当てた。ラシードがポケットから飴を出す。「景品じゃなくて、二人分のなぐさめだよ」"
+ },
+ "city.xf.shell.lose.1": {
+  "ru": "Не угадал. Горошина лежала под тем, на который я вообще не смотрел. Рашид сочувственно качает головой.",
+  "en": "Missed. The pea was under the one I never even looked at. Rashid shakes his head in sympathy.",
+  "ja": "外れた。豆は僕が見向きもしなかったカップの下にあった。ラシードが同情して首を振る。"
+ },
+ "city.xf.shell.lose.2": {
+  "ru": "Показалось, что понял, а оказалось, что нет. Рашид переставляет стаканчики для следующего: «Не расстраивайтесь, здесь все проигрывают с улыбкой».",
+  "en": "I thought I had it, but I hadn't. Rashid rearranges the cups for the next player: \"Don't be upset, everyone here loses smiling.\"",
+  "ja": "わかったつもりが、わかっていなかった。ラシードは次の人のためにカップを並べ直す。「気を落とさないで。ここでは誰もが笑って負けるから」"
+ },
+ "city.xf.shell.draw.1": {
+  "ru": "Ничья: горошину не нашёл никто, она сидит у Рашида в рукаве и ухмыляется.",
+  "en": "A draw: nobody found the pea, it sits in Rashid's sleeve and grins.",
+  "ja": "引き分け。豆は誰にも見つからず、ラシードの袖の中でにやにやしている。"
+ },
+ "city.xf.shell.after.1": {
+  "ru": "Три стаканчика стоят ровно, горошины под ними никакой. Играют без меня, а я смотрю.",
+  "en": "Three cups stand in a row, no pea under any of them. They play without me and I watch.",
+  "ja": "三つのカップがまっすぐ並んでいて、どれにも豆はない。僕抜きで遊んでいるので、見ている。"
+ },
+ "city.xf.shell.after.2": {
+  "ru": "Рашид вертит стаканчик на пальце: «На сегодня хватит. Завтра горошина свежая, выспавшаяся».",
+  "en": "Rashid spins a cup on his finger: \"That's enough for today. Tomorrow the pea will be fresh and well rested.\"",
+  "ja": "ラシードはカップを指で回す。「今日はおしまい。明日の豆は新鮮で、よく眠っているよ」"
+ },
+ "city.xf.player.rashid.hello": {
+  "ru": "Три стаканчика, одна горошина, ноль гарантий. Ваш ход.",
+  "en": "Three cups, one pea, no guarantees. Your move.",
+  "ja": "カップが三つ、豆が一つ、保証はゼロ。さあ、どうぞ。"
+ },
+ "city.xf.player.rashid.win": {
+  "ru": "Вот это глаз! Горошина, считайте, ваша.",
+  "en": "What an eye! Consider the pea yours.",
+  "ja": "いい目をしているな！ 豆は君のものだ。"
+ },
+ "city.xf.player.rashid.lose": {
+  "ru": "Такой у меня фокус. Приходите завтра, фокус тоже придёт.",
+  "en": "That's my trick. Come back tomorrow, the trick will be here too.",
+  "ja": "これが僕の手品さ。明日もおいで、手品もまた来る。"
+ },
+ "city.xf.win.ring": {
+  "ru": "Кольцо село на горлышко. Продавец достаёт с нижней полки леденец и заводную утку показывает издали: «Пока смотреть, не брать».",
+  "en": "The ring settled on the bottle. The seller takes a lollipop from the lower shelf and shows the clockwork duck from a distance: \"Look for now, don't take.\"",
+  "ja": "輪がびんの口にすっぽり収まった。売り子が下の棚から飴を取り、ぜんまいのアヒルを遠くから見せる。「今は見るだけ、持っていかないで」"
+ },
+ "city.xf.win.strong": {
+  "ru": "Звон! Береснев мог бы гордиться, а Мельникова, пожалуй, кивнула бы. Продавец записывает меня в журнал красным.",
+  "en": "Clang! Beresnev would be proud and Melnikova would probably nod. The seller writes me in the ledger in red.",
+  "ja": "カーン！ ベレスネフなら誇らしく思い、メリニコワならうなずくだろう。売り子が赤で僕を記録帳に書く。"
+ },
+ "city.xf.win.gallery": {
+  "ru": "Сбита третья утка подряд. Тирщик ставит на полку ёжика: «Этот с иголками из спичек, его нельзя трогать мокрым».",
+  "en": "The third duck in a row is down. The keeper puts the hedgehog on the shelf: \"This one has matchstick spines, don't touch it wet.\"",
+  "ja": "三羽目のアヒルが続けて倒れた。射的の人がハリネズミを棚に置く。「マッチ棒のトゲだから、濡れた手でさわらないで」"
+ },
+ "city.xf.car.1": {
+  "ru": "Лошадка Ромашка пошла по кругу, а вслед за ней пошли облака. Круг, ещё круг: у нас с лошадкой одинаковая скорость и одинаковый восторг.",
+  "en": "Daisy the horse set off round the circle and the clouds set off after her. A round, another round: the horse and I have the same speed and the same delight.",
+  "ja": "木馬のヒナギクが円を回りはじめ、そのあとを雲が追っていく。一周、また一周。僕と木馬は同じ速さで、同じようにうれしい。"
+ },
+ "city.xf.car.pm": {
+  "ru": "Вечером ободок крыши светится, лошадка плывёт в лучах, гирлянды на навесе качаются в такт. Играет вальс.",
+  "en": "In the evening the rim of the roof glows, the horse glides in the beams, the festoons on the canopy sway in time. A waltz plays.",
+  "ja": "夕方、屋根のふちが光り、木馬は光の中をすべっていく。屋根の下の電飾が拍子にあわせて揺れる。ワルツが流れている。"
+ },
+ "city.xf.car.we": {
+  "ru": "В выходной на соседней лошадке сидит малыш, который держится за гриву обеими руками, а за меня глазами. Едем вместе.",
+  "en": "At the weekend a little one rides the next horse, holding the mane with both hands and me with his eyes. We ride together.",
+  "ja": "週末は隣の木馬に小さな子が乗っている。両手でたてがみに、目で僕にしがみついている。いっしょに回る。"
+ },
+ "city.xf.car.rain": {
+  "ru": "Дождь по навесу, а под крышей карусели сухо. Катаемся в уединении, как в маленьком театре.",
+  "en": "Rain on the canopy and dry under the roundabout's roof. We ride in privacy, like in a little theatre.",
+  "ja": "雨が屋根を打つが、メリーゴーラウンドの屋根の下は乾いている。小さな劇場のように、ひっそりと回る。"
+ },
+ "city.xf.car.fest": {
+  "ru": "В праздник вожатый даёт два звонка вместо одного: «Один за вас, один за всех».",
+  "en": "On a holiday the keeper rings twice instead of once: \"One for you, one for everybody.\"",
+  "ja": "祝日には係が一度でなく二度鐘を鳴らす。「一回はきみに、一回はみんなに」"
+ },
+ "city.xf.keep.str.h1": {
+  "ru": "Молоток тяжёлый, рука лёгкая — вот и вся наука. Бить будете?",
+  "en": "The mallet is heavy, the hand is light: that's the whole science. Will you strike?",
+  "ja": "木槌は重く、手は軽い。それがすべての秘訣です。打ちますか？"
+ },
+ "city.xf.keep.str.h2": {
+  "ru": "К вечеру молоток нагрелся от ладоней и бьёт легче. Подходите.",
+  "en": "By evening the mallet has warmed from the palms and strikes easier. Step up.",
+  "ja": "夕方には木槌が手のぬくもりで温まって、打ちやすくなります。どうぞ。"
+ },
+ "city.xf.keep.str.t1": {
+  "ru": "Про рекорд на табличке",
+  "en": "About the record on the plaque",
+  "ja": "銘板の記録のこと"
+ },
+ "city.xf.keep.str.t1.1": {
+  "ru": "Береснев судомеханик, уходит на рейсы, а возвращается всегда к ярмарке. Рекорд хранит, как талон на обед.",
+  "en": "Beresnev is a ship's mechanic, goes off on voyages and always comes back to the fair. He guards the record like a dinner voucher.",
+  "ja": "ベレスネフは船の機関士で、航海に出てもいつも縁日に戻ってくる。記録は食券のように大事にしている。"
+ },
+ "city.xf.keep.str.t1.2": {
+  "ru": "Мельникова бьёт без разгона, одним плечом. Береснев обиделся и пошёл тренироваться на якорной цепи.",
+  "en": "Melnikova strikes without a run-up, with one shoulder. Beresnev took offence and went to train on an anchor chain.",
+  "ja": "メリニコワは助走なしで、肩ひとつで打つ。ベレスネフはむっとして、錨の鎖で特訓しに行った。"
+ },
+ "city.xf.keep.str.t2": {
+  "ru": "Почему молоток такой тяжёлый",
+  "en": "Why the mallet is so heavy",
+  "ja": "なぜ木槌はこんなに重いのか"
+ },
+ "city.xf.keep.str.t2.1": {
+  "ru": "Дуб, а внутри свинцовая пробка. Раньше был лёгкий, но тогда били все подряд, и колокол сломался.",
+  "en": "Oak, with a lead plug inside. It used to be light, but then everybody struck it and the bell broke.",
+  "ja": "オーク材で、中に鉛の栓が入っています。昔は軽かったのですが、みんなが打って鐘が壊れました。"
+ },
+ "city.xf.keep.str.t2.2": {
+  "ru": "Балансировал сам, ручка с тех пор светлее. Видно, что я старался.",
+  "en": "I balanced it myself, the handle has been lighter since. You can see I tried.",
+  "ja": "自分でバランスを取り直しました。それから柄が明るい色に。頑張ったのがわかるでしょう。"
+ },
+ "city.xf.keep.str.t3": {
+  "ru": "Про колокол",
+  "en": "About the bell",
+  "ja": "鐘のこと"
+ },
+ "city.xf.keep.str.t3.1": {
+  "ru": "Колокол с рыбацкой шхуны. Его слышно у маяка, если ветер с берега.",
+  "en": "The bell is from a fishing schooner. It can be heard at the lighthouse if the wind is off the shore.",
+  "ja": "鐘は漁船のものです。陸からの風なら灯台まで聞こえます。"
+ },
+ "city.xf.keep.str.t3.2": {
+  "ru": "Слышал, как вы били. Звук был честный: без «почти» и без «ой».",
+  "en": "I heard you strike. An honest sound: no \"almost\" and no \"oops\".",
+  "ja": "さっき打つのが聞こえました。正直な音でした。「惜しい」も「あっ」もなし。"
+ },
+ "city.xf.keep.gal.h1": {
+  "ru": "Пять выстрелов, пять рублей. Утки у меня старые, а глаз зоркий.",
+  "en": "Five shots, five roubles. My ducks are old, my eye is sharp.",
+  "ja": "五発で五ルーブル。アヒルは古いですが、目は鋭いですよ。"
+ },
+ "city.xf.keep.gal.h2": {
+  "ru": "К вечеру утки ленивее: идут медленно, будто тоже устали.",
+  "en": "By evening the ducks are lazier: they go slowly, as if tired too.",
+  "ja": "夕方にはアヒルがのんびりします。疲れたみたいにゆっくり進みます。"
+ },
+ "city.xf.keep.gal.t1": {
+  "ru": "Про уток",
+  "en": "About the ducks",
+  "ja": "アヒルのこと"
+ },
+ "city.xf.keep.gal.t1.1": {
+  "ru": "Семь уток, все с именами. Левую зовут Клавдия: она не падает, у неё характер.",
+  "en": "Seven ducks, all named. The left one is Claudia: she doesn't fall, she has character.",
+  "ja": "アヒルは七羽、みんな名前があります。左のはクラウディア。倒れません、性格があるので。"
+ },
+ "city.xf.keep.gal.t1.2": {
+  "ru": "Собьёте Клавдию — получите открытку, а я получу урок. Пока не сбивали, но она начинает нервничать.",
+  "en": "Knock down Claudia and you get a postcard and I get a lesson. Nobody has yet, but she's getting nervous.",
+  "ja": "クラウディアを倒したら絵はがきをどうぞ、僕は勉強になる。まだ誰も倒していませんが、彼女も緊張してきています。"
+ },
+ "city.xf.keep.gal.t2": {
+  "ru": "Что за музыка из радио",
+  "en": "What that radio is playing",
+  "ja": "ラジオの音楽は何か"
+ },
+ "city.xf.keep.gal.t2.1": {
+  "ru": "Ловит одну станцию, зато стабильно: утром гимнастика, днём новости, вечером вальс.",
+  "en": "It catches one station, but steadily: gymnastics in the morning, news by day, a waltz in the evening.",
+  "ja": "一つの局しか入りませんが安定しています。朝は体操、昼はニュース、夜はワルツ。"
+ },
+ "city.xf.keep.gal.t2.2": {
+  "ru": "На ночь выключаю, чтобы утки спали. Они без музыки засыпают быстрее, чем я.",
+  "en": "I turn it off at night so the ducks sleep. Without music they fall asleep faster than I do.",
+  "ja": "夜は消します、アヒルが眠れるように。音楽がないと僕より早く寝ます。"
+ },
+ "city.xf.keep.gal.t3": {
+  "ru": "Что за пульки",
+  "en": "What those pellets are",
+  "ja": "弾は何でできているか"
+ },
+ "city.xf.keep.gal.t3.1": {
+  "ru": "Пробковые. Их собирают дети после закрытия, а я делаю вид, что не вижу. Это тоже часть тира.",
+  "en": "Cork. The children collect them after closing and I pretend not to see. That is part of the gallery too.",
+  "ja": "コルクです。閉店後に子どもたちが拾い集めますが、僕は見ないふり。それも射的の一部です。"
+ },
+ "city.xf.keep.gal.t3.2": {
+  "ru": "Свинцовых нет, не волнуйтесь. Даже гипсовый ёж ещё ни разу не пострадал.",
+  "en": "No lead ones, don't worry. Not even the plaster hedgehog has ever been hurt.",
+  "ja": "鉛の弾はありません、ご安心を。石膏のハリネズミだってまだ一度も傷ついていません。"
+ },
+ "city.xf.keep.ring.h1": {
+  "ru": "Кольцо на горлышко, горлышко на счастье. Три броска, три рубля.",
+  "en": "A ring on a bottle neck, a bottle neck for luck. Three throws, three roubles.",
+  "ja": "輪はびんの口に、びんの口は幸運に。三回投げて三ルーブルです。"
+ },
+ "city.xf.keep.ring.h2": {
+  "ru": "Вечером кольца катятся лучше: отполированы ладонями.",
+  "en": "In the evening the rings roll better: polished by palms.",
+  "ja": "夕方は輪がよく転がります。手で磨かれていますから。"
+ },
+ "city.xf.keep.ring.t1": {
+  "ru": "Про призы на стойке",
+  "en": "About the prizes on the stand",
+  "ja": "棚の景品のこと"
+ },
+ "city.xf.keep.ring.t1.1": {
+  "ru": "Утка заводная, маяк жестяной, ёж гипсовый. Всё, что стоит на полке, можно выиграть. Что не на полке — нельзя.",
+  "en": "A clockwork duck, a tin lighthouse, a plaster hedgehog. Everything on the shelf can be won. What isn't on the shelf can't.",
+  "ja": "ぜんまいのアヒル、ブリキの灯台、石膏のハリネズミ。棚にあるものは当てられます。棚にないものは無理です。"
+ },
+ "city.xf.keep.ring.t1.2": {
+  "ru": "Медведя забрал мальчик в синей шапке, глаз досылаем по почте. Обещал писать.",
+  "en": "The bear went to a boy in a blue cap, the eye will follow by post. He promised to write.",
+  "ja": "クマは青い帽子の男の子が持っていきました。目は郵送します。手紙を書くと約束してくれました。"
+ },
+ "city.xf.keep.ring.t2": {
+  "ru": "Про кольца",
+  "en": "About the rings",
+  "ja": "輪のこと"
+ },
+ "city.xf.keep.ring.t2.1": {
+  "ru": "Кольца деревянные, красил сам. Красное летит дальше, жёлтое точнее, зелёное просто красивое.",
+  "en": "The rings are wooden, I painted them myself. The red flies farther, the yellow is more exact, the green is just pretty.",
+  "ja": "輪は木製で、自分で塗りました。赤はよく飛び、黄色は正確で、緑はただきれいです。"
+ },
+ "city.xf.keep.ring.t2.2": {
+  "ru": "Одно кольцо улетело на крышу киоска, доставали шваброй. Теперь рядом вешаю шляпу, чтобы счастье не терялось.",
+  "en": "One ring flew onto a kiosk roof and was fetched with a mop. Now I hang a hat nearby so the luck isn't lost.",
+  "ja": "輪が一つキオスクの屋根に飛んでいき、モップで取りました。今は近くに帽子を掛けて、運が逃げないようにしています。"
+ },
+ "city.xf.keep.ring.t3": {
+  "ru": "Про мальчика в синей шапке",
+  "en": "About the boy in the blue cap",
+  "ja": "青い帽子の男の子のこと"
+ },
+ "city.xf.keep.ring.t3.1": {
+  "ru": "Приходил два дня подряд, на третий выиграл. Говорит, медведь ему подмигнул. Я промолчал: у медведя один глаз.",
+  "en": "He came two days running and on the third he won. He says the bear winked at him. I kept quiet: the bear has one eye.",
+  "ja": "二日続けて来て、三日目に当てました。クマがウインクしたと言うんです。僕は黙っていました。クマの目は一つだけですから。"
+ },
+ "city.xf.keep.ring.t3.2": {
+  "ru": "Открытка от него уже пришла: нарисованный медведь с двумя глазами. Один зелёным, другой карандашом.",
+  "en": "His postcard has already come: a drawn bear with two eyes. One in green, the other in pencil.",
+  "ja": "もう彼から絵はがきが届きました。目が二つあるクマの絵。片方は緑、もう片方は鉛筆です。"
+ },
+ "city.xf.keep.lot.h1": {
+  "ru": "Билетик за десять рублей, выигрыш всегда: открытка или открытка. Крутите.",
+  "en": "A ticket for ten roubles, always a win: a postcard or a postcard. Turn it.",
+  "ja": "くじは十ルーブル、必ず当たり。絵はがきか、絵はがきか。回してください。"
+ },
+ "city.xf.keep.lot.h2": {
+  "ru": "К вечеру барабан скрипит нежно, как скрипка в оркестровой яме.",
+  "en": "By evening the drum creaks tenderly, like a violin in the pit.",
+  "ja": "夕方にはドラムがオーケストラピットのバイオリンのように優しくきしみます。"
+ },
+ "city.xf.keep.lot.t1": {
+  "ru": "Про таблицу номеров",
+  "en": "About the numbers board",
+  "ja": "番号表のこと"
+ },
+ "city.xf.keep.lot.t1.1": {
+  "ru": "Таблица на столбе меняется каждый день: цвет квадрата, который я закрасила, и есть счастливый цвет дня.",
+  "en": "The board on the post changes every day: the colour of the square I've chalked in is the day's lucky colour.",
+  "ja": "柱の表は毎日変わります。私が塗った四角の色が、その日の幸運の色です。"
+ },
+ "city.xf.keep.lot.t1.2": {
+  "ru": "Если выпал цвет дня, получите открытку с маяком. Если нет — просто открытку. Все довольны.",
+  "en": "If you draw the day's colour you get the postcard with the lighthouse. If not, an ordinary postcard. Everyone is happy.",
+  "ja": "その日の色が出たら灯台の絵はがき、出なければ普通の絵はがき。みんな満足です。"
+ },
+ "city.xf.keep.lot.t2": {
+  "ru": "Откуда открытки",
+  "en": "Where the postcards come from",
+  "ja": "絵はがきはどこから来るのか"
+ },
+ "city.xf.keep.lot.t2.1": {
+  "ru": "С набережной, с маяка, с рынка. Фотограф-путешественник присылает новые, старые разошлись по всему городу.",
+  "en": "From the embankment, the lighthouse, the market. The travelling photographer sends new ones, the old ones have spread all over town.",
+  "ja": "堤防、灯台、市場の絵はがきです。旅の写真家が新しいのを送ってくれて、古いのは町じゅうに散らばりました。"
+ },
+ "city.xf.keep.lot.t2.2": {
+  "ru": "Вы у меня уже тянули. Открытку с маяком держите на виду: она счастливая, пока не выцвела.",
+  "en": "You've drawn from me already. Keep the lighthouse postcard in view: it is lucky until it fades.",
+  "ja": "もう引いてくれましたね。灯台の絵はがきは見えるところに。色あせるまでは幸運です。"
+ },
+ "city.xf.keep.lot.t3": {
+  "ru": "Про верёвку с открытками",
+  "en": "About the line of postcards",
+  "ja": "絵はがきのひもについて"
+ },
+ "city.xf.keep.lot.t3.1": {
+  "ru": "Это выигранные и забытые. Хозяин приходит, снимает свою, остальные висят и ждут.",
+  "en": "Those are won and forgotten. The owner comes, takes down his own, and the rest hang and wait.",
+  "ja": "当てて忘れられたものです。持ち主が来て自分のを外し、残りは掛かったまま待っています。"
+ },
+ "city.xf.keep.lot.t3.2": {
+  "ru": "Одна висит с пятницы. Я её уже выучила наизусть, а хозяина всё нет.",
+  "en": "One has hung since Friday. I know it by heart by now, and still no owner.",
+  "ja": "一枚は金曜から掛かっています。もう暗記しましたが、持ち主は来ません。"
+ },
+ "city.xf.keep.car.h1": {
+  "ru": "Билет у вожатого, вожатый у рычага. Садитесь, лошадки не кусаются.",
+  "en": "The ticket from the keeper, the keeper at the lever. Climb on, the horses don't bite.",
+  "ja": "切符は係から、係はレバーのそばに。どうぞ乗って、木馬は噛みません。"
+ },
+ "city.xf.keep.car.h2": {
+  "ru": "Вечером обод крыши светится. Это единственные лампочки, которым разрешено кружиться.",
+  "en": "In the evening the roof's rim glows. They are the only bulbs allowed to go round.",
+  "ja": "夕方には屋根のふちが光ります。くるくる回ることを許された、唯一の電球です。"
+ },
+ "city.xf.keep.car.t1": {
+  "ru": "Про лошадок",
+  "en": "About the horses",
+  "ja": "木馬のこと"
+ },
+ "city.xf.keep.car.t1.1": {
+  "ru": "Шесть лошадок: Ромашка, Грозный, Тюльпан, Вьюн, Гусар и Тишка. Тишка самый тихий, но быстрее всех.",
+  "en": "Six horses: Daisy, Thunder, Tulip, Wisp, Hussar and Quiet. Quiet is the quietest but the fastest.",
+  "ja": "木馬は六頭。ヒナギク、イカズチ、チューリップ、ツムジ、驃騎兵、そしてシズカ。シズカは一番静かで一番速い。"
+ },
+ "city.xf.keep.car.t1.2": {
+  "ru": "Гусара красили трижды: дети просят то синего, то в яблоках. Сейчас он в яблоках, но грустит по синему.",
+  "en": "Hussar has been repainted three times: the children ask for blue, then dappled. Now he is dappled but misses blue.",
+  "ja": "驃騎兵は三回塗り直しました。子どもたちが青がいいと言ったり、まだらがいいと言ったり。今はまだらですが、青を恋しがっています。"
+ },
+ "city.xf.keep.car.t2": {
+  "ru": "Как катает",
+  "en": "How the ride goes",
+  "ja": "乗り方"
+ },
+ "city.xf.keep.car.t2.1": {
+  "ru": "Круг за пять минут. Звонок — начало, звонок — конец, между ними музыка.",
+  "en": "A round takes five minutes. A bell to begin, a bell to end, music between.",
+  "ja": "一周は五分。鐘で始まり、鐘で終わり、間に音楽です。"
+ },
+ "city.xf.keep.car.t2.2": {
+  "ru": "Если на втором круге скучно, значит, вы выросли. Это не страшно, просто возвращайтесь по выходным.",
+  "en": "If the second round is boring, you have grown up. It isn't terrible, just come back at weekends.",
+  "ja": "二周目が退屈なら、大きくなったということ。怖くはありません、週末にまたどうぞ。"
+ },
+ "city.xf.keep.car.t3": {
+  "ru": "Про гирлянды",
+  "en": "About the lights",
+  "ja": "電飾のこと"
+ },
+ "city.xf.keep.car.t3.1": {
+  "ru": "Рубильник гирлянд на столбе у каждого края навеса. Я включаю в сумерки, если никто не успел.",
+  "en": "The festoon switch is on a post at each end of the canopy. I switch it on at dusk if nobody has.",
+  "ja": "電飾のスイッチは屋根の両端の柱にあります。誰もつけなければ、夕暮れに僕がつけます。"
+ },
+ "city.xf.keep.car.t3.2": {
+  "ru": "Кто включил, тому спасибо. Кто выключил вовремя — тому спасибо вдвойне.",
+  "en": "Thanks to whoever switched them on. Double thanks to whoever switched them off in time.",
+  "ja": "つけた人にありがとう。時間どおりに消した人には二倍のありがとう。"
+ },
+ "city.xf.closed.any.1": {
+  "ru": "Ярмарка закрыта. Навес стоит над пустой дорожкой, как зонтик над забытой лавкой.",
+  "en": "The fair is closed. The canopy stands over an empty walk like an umbrella over a forgotten bench.",
+  "ja": "縁日は閉まっている。屋根は人気のない道の上に、忘れられたベンチにかざした傘のように立っている。"
+ },
+ "city.xf.closed.any.2": {
+  "ru": "Тихо. Гирлянды чуть покачиваются: ветер им не запрещали.",
+  "en": "Quiet. The festoons sway a little: nobody forbade the wind.",
+  "ja": "静かだ。電飾がかすかに揺れる。風は禁じられていないから。"
+ },
+ "city.xf.closed.any.3": {
+  "ru": "На столбе табличка: «Ярмарка работает в пятницу, субботу и воскресенье, с 11 до 22».",
+  "en": "A sign on the post: \"The fair is open Friday, Saturday and Sunday, 11 a.m. to 10 p.m.\"",
+  "ja": "柱に札。「縁日は金・土・日、11時から22時まで」"
+ },
+ "city.xf.closed.counter.1": {
+  "ru": "Прилавок закрыт ставнями, на ставне мелом: «Вернёмся в пятницу. Не скучайте».",
+  "en": "The counter is shuttered, with chalk on the shutter: \"Back on Friday. Don't be bored.\"",
+  "ja": "カウンターは雨戸が閉まっていて、チョークで「金曜に戻ります。退屈しないでね」"
+ },
+ "city.xf.closed.counter.2": {
+  "ru": "За закрытым прилавком пусто и чисто. Только на полке вчерашняя монетка: её оставили на счастье.",
+  "en": "Behind the shut counter it is empty and clean. Only yesterday's coin on the shelf: left there for luck.",
+  "ja": "閉まったカウンターの奥は空っぽで片づいている。棚に昨日の硬貨だけ、お守りに置いてある。"
+ },
+ "city.xf.closed.play.1": {
+  "ru": "Игра закрыта, всё накрыто клеёнкой. Под клеёнкой, кажется, кто-то спит, а может, просто шарик.",
+  "en": "The game is closed and covered with oilcloth. Under the oilcloth something seems to be sleeping, or maybe it's just a ball.",
+  "ja": "遊びは終わりで、ビニールがかけてある。下で何かが眠っているみたいだが、ただの球かもしれない。"
+ },
+ "city.xf.closed.play.2": {
+  "ru": "Столик накрыт, фишки убраны в коробку. Коробка подписана: «Не тряси, они не любят».",
+  "en": "The table is covered, the pieces put away in a box. The box is marked: \"Don't shake, they don't like it.\"",
+  "ja": "机は覆われ、駒は箱の中。箱には「振らないで、嫌がります」"
+ },
+ "city.xf.closed.sport.1": {
+  "ru": "Силомер закрыт: молоток увезли домой, шайба сидит на дне и ждёт пятницы.",
+  "en": "The strongman is shut: the mallet has gone home, the puck sits at the bottom waiting for Friday.",
+  "ja": "力試しは休み。木槌は家に持ち帰られ、円盤は底で金曜を待っている。"
+ },
+ "city.xf.closed.sport.2": {
+  "ru": "Гири убраны под лавку, на них записка: «Руками не трогать, они ещё спят».",
+  "en": "The kettlebells are tucked under the bench with a note: \"Hands off, they are still asleep.\"",
+  "ja": "ケトルベルはベンチの下にしまわれ、札がある。「さわらないで、まだ眠っています」"
+ },
+ "city.xf.closed.machine.1": {
+  "ru": "Автомат выключен. Стекло тёмное, и в нём отражаюсь только я и навес.",
+  "en": "The machine is switched off. The glass is dark and shows only me and the canopy.",
+  "ja": "機械は止まっている。ガラスは暗く、僕と屋根しか映っていない。"
+ },
+ "city.xf.closed.machine.2": {
+  "ru": "Выключено. На задней стенке кто-то нарисовал мелом стрелку и подписал: «Рубильник у входа, но сейчас не время».",
+  "en": "Switched off. On the back someone has chalked an arrow: \"Switch at the entrance, but not now.\"",
+  "ja": "電源が切れている。裏側にチョークで矢印と「スイッチは入口、でも今はまだ」"
+ },
+ "city.xf.closed.board.1": {
+  "ru": "Доска в темноте: буквы разобрать нельзя, можно только догадаться, что там написано про завтра.",
+  "en": "The board in the dark: the letters can't be made out, you can only guess it says something about tomorrow.",
+  "ja": "暗い中の掲示。文字は読めず、明日のことが書いてあるのだろうと察するだけ。"
+ },
+ "city.xf.closed.board.2": {
+  "ru": "Объявления сейчас не прочитать: ветер переворачивает их, а прищепки спят. Утром вернусь.",
+  "en": "The notices can't be read now: the wind turns them over and the pegs are asleep. I'll be back in the morning.",
+  "ja": "いまは掲示が読めない。風にめくれて、洗濯ばさみは眠っている。朝にまた来よう。"
+ },
+ "city.xf.closed.shelf.1": {
+  "ru": "Полка закрыта клеёнкой. Из-под неё выглядывает уголок открытки, но вытащить его нельзя.",
+  "en": "The stand is covered with oilcloth. A corner of a postcard peeks out, but it can't be pulled.",
+  "ja": "棚はビニールで覆われている。絵はがきの角がのぞいているが、引き出せない。"
+ },
+ "city.xf.closed.take.1": {
+  "ru": "Свободных газет на ночь не оставляют: ветер их читает быстрее людей.",
+  "en": "They leave no free papers out at night: the wind reads them faster than people.",
+  "ja": "夜は無料の新聞は置かない。風は人より速く読んでしまうから。"
+ },
+ "quest.fair_prize_run.title": {
+  "ru": "Утка с ярмарки",
+  "en": "The duck from the fair",
+  "ja": "縁日のアヒル"
+ },
+ "quest.fair_prize_run.desc": {
+  "ru": "На ступенчатой полке у кольцеброса стоит заводная утка, и на неё смотрят все. Хочется выиграть её по-честному: с программой, билетом и броском.",
+  "en": "On the tiered stand by the ring toss stands a clockwork duck and everybody looks at it. I want to win her fairly: with the programme, a ticket and a throw.",
+  "ja": "輪投げのそばの段になった棚にぜんまいのアヒルが立っていて、みんなが見ている。きちんと当てたい。プログラムを読んで、くじを引いて、輪を投げて。"
+ },
+ "quest.fair_prize_run.board.log": {
+  "ru": "Сначала узнаю, что разыгрывают сегодня: программа висит на доске с афишами.",
+  "en": "First I'll find out what is being drawn today: the programme hangs on the board with the posters.",
+  "ja": "まず今日何を景品にしているか調べよう。プログラムはポスターの掲示板にある。"
+ },
+ "quest.fair_prize_run.board.obj": {
+  "ru": "Прочитать программу ярмарки на доске с афишами",
+  "en": "Read the fair's programme on the poster board",
+  "ja": "ポスターの掲示板で縁日のプログラムを読む"
+ },
+ "quest.fair_prize_run.ticket.log": {
+  "ru": "Лотерея самый честный способ разогреться: билет, барабан, открытка.",
+  "en": "The lottery is the fairest way to warm up: a ticket, the drum, a postcard.",
+  "ja": "くじ引きはウォーミングアップに一番公平だ。切符、ドラム、絵はがき。"
+ },
+ "quest.fair_prize_run.lot.obj": {
+  "ru": "Вытянуть билет в лотерее",
+  "en": "Draw a ticket in the lottery",
+  "ja": "くじ引きで切符を引く"
+ },
+ "quest.fair_prize_run.ring.log": {
+  "ru": "Кольцеброс: три броска. Нужно попасть так, чтобы продавец вздохнул.",
+  "en": "Ring toss: three throws. I need to land them so that the seller sighs.",
+  "ja": "輪投げは三回。売り子がため息をつくくらい決めたい。"
+ },
+ "quest.fair_prize_run.toss.obj": {
+  "ru": "Выиграть в кольцеброс",
+  "en": "Win at ring toss",
+  "ja": "輪投げで勝つ"
+ },
+ "quest.fair_prize_run.shelf.log": {
+  "ru": "Осталось подойти к ступенчатой полке и посмотреть на утку вблизи.",
+  "en": "All that's left is to go to the tiered stand and look at the duck up close.",
+  "ja": "あとは段の棚に行って、アヒルを近くで見るだけだ。"
+ },
+ "quest.fair_prize_run.look.obj": {
+  "ru": "Подойти к полке призов у кольцеброса",
+  "en": "Go to the prize stand by the ring toss",
+  "ja": "輪投げのそばの景品棚に行く"
+ },
+ "quest.fair_prize_run.done": {
+  "ru": "Утка завелась и пошла по прилавку, переваливаясь. Продавец сказал: «Видите? Она вас запомнила».",
+  "en": "The duck wound up and waddled along the counter. The seller said: \"See? She has remembered you.\"",
+  "ja": "アヒルはぜんまいが巻かれ、よたよたとカウンターを歩いた。売り子が言った。「ほら、あなたを覚えましたよ」"
+ },
+ "city.game.vs.fair_shells": {
+  "ru": "три стаканчика",
+  "en": "three cups",
+  "ja": "三つのカップ"
+ }
+}

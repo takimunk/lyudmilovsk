@@ -1,0 +1,1028 @@
+{
+ "_doc": "Bridge house (P-BRIDGEHOUSE, stacked_beam_tower), round-2 depth pass: the lobby lived in (post, house board with a running story over game days 0-8+, pram, bicycle, hats, plants, switch, the desk's clerk and guard with three topics each), the gallery as the place people come up for (telescopes by direction, binoculars, the big window by hour, benches that face the view, a winter garden, a tea corner, a wind gauge, a visitors' book that grows by game day, a map leaflet, chess with the regular Hanna Nasser), the lift stops lift_g / lobby_lift, lift_s4, lift_gallery and Rohan Hargreaves's open flat 4-03 (diary, letters, wind log); quest home_hargreaves.",
+ "city.bh.p.mail": {
+  "ru": "E — заглянуть в ящики",
+  "en": "E — look over the letter boxes",
+  "ja": "E：郵便受けを見る"
+ },
+ "city.bh.p.house": {
+  "ru": "E — прочесть объявления жильцов",
+  "en": "E — read the residents' notices",
+  "ja": "E：住人のお知らせを読む"
+ },
+ "city.bh.p.pram": {
+  "ru": "E — заглянуть в коляску",
+  "en": "E — look into the pram",
+  "ja": "E：乳母車をのぞく"
+ },
+ "city.bh.p.bike": {
+  "ru": "E — оглядеть велосипед",
+  "en": "E — look the bicycle over",
+  "ja": "E：自転車を見る"
+ },
+ "city.bh.p.hats": {
+  "ru": "E — оглядеть вешалку",
+  "en": "E — look over the coat stand",
+  "ja": "E：コート掛けを見る"
+ },
+ "city.bh.p.plants": {
+  "ru": "E — полить цветы",
+  "en": "E — water the plants",
+  "ja": "E：花に水をやる"
+ },
+ "city.bh.p.scope_sea": {
+  "ru": "E — взглянуть на море",
+  "en": "E — look at the sea",
+  "ja": "E：海をのぞく"
+ },
+ "city.bh.p.scope_town": {
+  "ru": "E — взглянуть на город",
+  "en": "E — look at the town",
+  "ja": "E：町をのぞく"
+ },
+ "city.bh.p.glasses": {
+  "ru": "E — взять бинокль",
+  "en": "E — take the binoculars",
+  "ja": "E：双眼鏡を取る"
+ },
+ "city.bh.p.window": {
+  "ru": "E — выглянуть в большое окно",
+  "en": "E — look out of the big window",
+  "ja": "E：大きな窓から外を見る"
+ },
+ "city.bh.p.guestbook": {
+  "ru": "E — открыть книгу отзывов",
+  "en": "E — open the visitors' book",
+  "ja": "E：寄せ書き帳を開く"
+ },
+ "city.bh.p.gauge": {
+  "ru": "E — прочесть указатель ветра",
+  "en": "E — read the wind gauge",
+  "ja": "E：風力計を読む"
+ },
+ "city.bh.p.garden": {
+  "ru": "E — осмотреть зимний сад",
+  "en": "E — look over the winter garden",
+  "ja": "E：冬の庭を見る"
+ },
+ "city.bh.p.tea": {
+  "ru": "E — налить чаю из самовара",
+  "en": "E — pour tea from the samovar",
+  "ja": "E：サモワールでお茶を注ぐ"
+ },
+ "city.bh.p.map": {
+  "ru": "E — прочесть, что видно из окон",
+  "en": "E — read what one sees from the windows",
+  "ja": "E：窓から何が見えるか読む"
+ },
+ "city.bh.p.sit_s": {
+  "ru": "E — сесть лицом к югу",
+  "en": "E — sit facing south",
+  "ja": "E：南向きに座る"
+ },
+ "city.bh.p.sit_n": {
+  "ru": "E — сесть лицом к северу",
+  "en": "E — sit facing north",
+  "ja": "E：北向きに座る"
+ },
+ "city.bh.p.diary": {
+  "ru": "E — открыть тетрадь на столе",
+  "en": "E — open the notebook on the desk",
+  "ja": "E：机のノートを開く"
+ },
+ "city.bh.p.log": {
+  "ru": "E — открыть журнал ветра",
+  "en": "E — open the wind log",
+  "ja": "E：風の記録帳を開く"
+ },
+ "city.bh.p.letters": {
+  "ru": "E — взять письма из конверта",
+  "en": "E — take the letters from the envelope",
+  "ja": "E：封筒の手紙を取り出す"
+ },
+ "city.bh.p.roads": {
+  "ru": "E — разглядеть карту на стене",
+  "en": "E — study the map on the wall",
+  "ja": "E：壁の地図を眺める"
+ },
+ "city.bh.p.photos": {
+  "ru": "E — рассмотреть фотографии",
+  "en": "E — look at the photographs",
+  "ja": "E：写真を見る"
+ },
+ "city.bh.p.globe": {
+  "ru": "E — крутнуть глобус",
+  "en": "E — spin the globe",
+  "ja": "E：地球儀を回す"
+ },
+ "city.bh.p.books": {
+  "ru": "E — перебрать книги",
+  "en": "E — go through the books",
+  "ja": "E：本を眺める"
+ },
+ "city.bh.p.kettle": {
+  "ru": "E — поставить чайник",
+  "en": "E — put the kettle on",
+  "ja": "E：やかんを火にかける"
+ },
+ "city.bh.p.radio": {
+  "ru": "E — включить приёмник",
+  "en": "E — switch the wireless on",
+  "ja": "E：ラジオをつける"
+ },
+ "city.bh.p.bed": {
+  "ru": "E — глянуть на кровать",
+  "en": "E — glance at the bed",
+  "ja": "E：ベッドを見る"
+ },
+ "city.bh.p.door": {
+  "ru": "E — постучать в открытую дверь",
+  "en": "E — knock on the open door",
+  "ja": "E：開いたドアをノックする"
+ },
+ "city.bh.p.chair": {
+  "ru": "E — присесть к окну",
+  "en": "E — sit down by the window",
+  "ja": "E：窓辺に腰かける"
+ },
+ "city.bh.mail.1": {
+  "ru": "На ящиках фамилии от руки и на машинке: Абеновы, Соколовы, Йылмаз, Сато, Зайцев. Из щели Харгривза торчит сложенная газета: он забирает её только к обеду.",
+  "en": "The boxes carry names in pen and in typescript: Abenov, Sokolov, Yilmaz, Sato, Zaitsev. A folded paper sticks out of Hargreaves's slot; he only collects it after lunch.",
+  "ja": "郵便受けには手書きとタイプの名前が並ぶ。アベノフ、ソコロフ、ユルマズ、佐藤、ザイツェフ。ハーグリーヴスの郵便受けからは折った新聞が突き出ている。取りに来るのは昼過ぎだ。"
+ },
+ "city.bh.mail.2": {
+  "ru": "На подоконнике у ящиков лежит письмо с грузинской маркой: «Р. Харгривзу, 4-03». Кто-то положил его повыше, чтобы не затоптали.",
+  "en": "On the sill by the boxes lies a letter with a Georgian stamp: \"R. Hargreaves, 4-03\". Somebody put it up high so it wouldn't be trodden on.",
+  "ja": "郵便受けのそばの窓台に、ジョージアの切手の手紙が置いてある。「R・ハーグリーヴス様、4-03」。踏まれないよう、誰かが高いところに載せたのだ。"
+ },
+ "city.bh.mail.3": {
+  "ru": "В ящике Ганны Насер торчит реклама пекарни. Приклеена бумажка: «Не кладите, пожалуйста. Хлеб я покупаю сама».",
+  "en": "Hanna Nasser's box bulges with a bakery flyer. A note is stuck on it: \"Please don't. I buy my own bread.\"",
+  "ja": "ハンナ・ナセルの郵便受けにはパン屋のチラシが突っ込まれ、紙が貼ってある。「入れないでください。パンは自分で買います」。"
+ },
+ "city.bh.mail.4": {
+  "ru": "Квитанции за свет стопкой на ящиках. Ящик Фемке Кавана подписан от руки: «Писательница. Письма — вежливо, счета — ещё вежливее».",
+  "en": "Electricity bills lie in a pile on top of the boxes. Femke Kavanagh's box is labelled by hand: \"Writer. Letters politely, bills even more politely.\"",
+  "ja": "電気代の請求書が郵便受けの上に積んである。フェムケ・カヴァナーの郵便受けには手書き。「作家。手紙は丁寧に、請求書はもっと丁寧に」。"
+ },
+ "city.bh.mail.5": {
+  "ru": "Яэль Озтюрк подписала свой ящик крупно, фломастером: она плохо видит. Под ним мелом на плитке: «Осторожно, мокро» — это уже кто-то из соседей.",
+  "en": "Yael Öztürk labelled her box in big felt pen: her eyes are poor. Chalked on the tile under it, in someone else's hand: \"Careful, wet.\"",
+  "ja": "ヤエル・オズテュルクは目が悪く、フェルトペンで大きく名前を書いている。その下のタイルには、別の誰かのチョーク文字。「濡れています、注意」。"
+ },
+ "city.bh.mail.6": {
+  "ru": "Ключ на ниточке приклеен под ящиком Сато: запасной, для тех, кто потеряет свой. Сато уверяет, что так надёжнее, чем под ковриком.",
+  "en": "A key on a string is taped under Sato's box: a spare, for anyone who loses theirs. Sato claims it is safer than under the doormat.",
+  "ja": "佐藤の郵便受けの下に、紐のついた鍵がテープで貼ってある。なくした人のための予備だ。佐藤いわく、玄関マットの下より安全らしい。"
+ },
+ "city.bh.house.1": {
+  "ru": "Дом-мост. Жильцам. Лифт ходит круглые сутки, после девяти просим не хлопать дверями. И не оставлять коляски у лифта: они уезжают на этаж вместе с кнопками. — Правление",
+  "en": "Bridge House. To residents. The lift runs round the clock; after nine please don't slam the doors. And don't leave prams by the lift: they ride up with the buttons. — The Board",
+  "ja": "橋の家　住人のみなさまへ。エレベーターは終日動きますが、九時以降はドアを強く閉めないでください。乳母車もエレベーターの前に置かないで。ボタンと一緒に上へ行ってしまいます。　管理組合"
+ },
+ "city.bh.house.2": {
+  "ru": "Зимний сад на галерее поливаем по очереди. На этой неделе — Санне Соколова (3-06). Спасибо ей: у пальмы вид получше, чем у нас с вами.",
+  "en": "We water the winter garden on the gallery in turns. This week it's Sanne Sokolova (3-06). Thank you, Sanne: the palm looks better than the rest of us.",
+  "ja": "ギャラリーの冬の庭は順番に水やりします。今週はサンネ・ソコロワ（3-06）。ヤシの木は私たちよりずっと元気そうです。ありがとう。"
+ },
+ "city.bh.house.3": {
+  "ru": "Р. Харгривз (4-03) просит: кто поднимается на галерею, взгляните на указатель ветра у северного окна и вспомните цифру. Сам он третий день не спускается: колено.",
+  "en": "R. Hargreaves (4-03) asks: whoever goes up to the gallery, please look at the wind gauge by the north window and remember the number. He hasn't come down for three days himself: his knee.",
+  "ja": "R・ハーグリーヴス（4-03）より。ギャラリーに上がる方は、北の窓の風力計を見て数字を覚えてきてください。膝が悪く、本人は三日前から下りられません。"
+ },
+ "city.bh.house.4": {
+  "ru": "Дверь 4-03 днём не заперта. Если зайдёте к Харгривзу, у него чай и письма из Тбилиси: он рад, когда читают вслух. Не стучите громко.",
+  "en": "The door of 4-03 stays unlocked by day. If you look in on Hargreaves, there's tea and letters from Tbilisi: he likes to hear them read aloud. Don't knock loudly.",
+  "ja": "4-03のドアは昼間は鍵がかかっていません。ハーグリーヴスさんを訪ねれば、お茶とトビリシからの手紙があります。読み聞かせると喜びます。大きな音でノックしないで。"
+ },
+ "city.bh.house.5": {
+  "ru": "В книге отзывов на галерее заполнена почти половина. Кто писал про чайку с красной лентой на лапе, отзовитесь: Тхао Абенова (6-01) хочет знать, чья это птица.",
+  "en": "The gallery's visitors' book is nearly half full. Whoever wrote about the gull with a red ribbon on its leg, please answer: Thao Abenova (6-01) wants to know whose bird it is.",
+  "ja": "ギャラリーの寄せ書き帳は半分近く埋まりました。足に赤いリボンのカモメのことを書いた方、お知らせください。タオ・アベノワ（6-01）が、誰の鳥か知りたがっています。"
+ },
+ "city.bh.house.6": {
+  "ru": "Шахматный вечер на галерее в субботу. Ганна Насер (2-02) обещает играть до первой проигранной партии. Просьба не поддаваться.",
+  "en": "Chess evening on the gallery on Saturday. Hanna Nasser (2-02) promises to play until her first lost game. Please don't let her win.",
+  "ja": "土曜の夜、ギャラリーでチェスの会。ハンナ・ナセル（2-02）は一敗するまで指すと約束しています。手加減は無用です。"
+ },
+ "city.bh.house.7": {
+  "ru": "Харгривз снова наверху: вышел сам, с палкой, сел на южную скамью и записал «З 5». Журнал ветра теперь лежит на столике у лифта, вписывайте цифры, кто видел. Спасибо всем.",
+  "en": "Hargreaves is back upstairs: he came out himself, with a stick, sat on the south bench and wrote \"W 5\". The wind log now lies on the little table by the lift: write in the numbers you saw. Thank you all.",
+  "ja": "ハーグリーヴスさんがまた上に来ました。杖をついて自分で出てきて、南のベンチに座り、「西5」と書きました。風の記録帳はエレベーター脇の小机にあります。見た数字を書き込んでください。ありがとう。"
+ },
+ "city.bh.house.8": {
+  "ru": "Найдено на карнизе наружной стороны окна: красная лента. Хозяйка птицы — не ясна. Лента у консьержа, спросите.",
+  "en": "Found on the outer ledge of a gallery window: a red ribbon. The bird's owner is unknown. The ribbon is with the porter; ask.",
+  "ja": "ギャラリーの窓の外の出っ張りで見つかった物。赤いリボン。鳥の持ち主は不明。リボンは管理人が預かっています。"
+ },
+ "city.bh.pram.1": {
+  "ru": "Коляска Абеновых с натянутым дождевиком. В кармашке маленькая жестяная ложка и записка «Ушли на мол, вернёмся к четырём».",
+  "en": "The Abenovs' pram with its rain cover pulled tight. In the pocket: a small tin spoon and a note, \"Gone to the pier, back by four.\"",
+  "ja": "アベノフ家の乳母車は雨よけがぴんと張られている。ポケットには小さなブリキのスプーンと書き置き。「桟橋へ。四時に戻ります」。"
+ },
+ "city.bh.pram.2": {
+  "ru": "Коляска пуста, но в ней аккуратно сложен плед. Ручка тёплая: её только что оставили.",
+  "en": "The pram is empty, but a blanket lies folded in it. The handle is warm: somebody has only just left it.",
+  "ja": "乳母車は空だが、毛布がきちんとたたまれている。取っ手が温かい。置かれたばかりだ。"
+ },
+ "city.bh.pram.3": {
+  "ru": "Под коляской стоят две пары резиновых сапог, большая и маленькая, носками к стене. Всё как у людей, которые ждут дождь.",
+  "en": "Two pairs of rubber boots stand under the pram, a big pair and a small one, toes to the wall. Like people who expect rain.",
+  "ja": "乳母車の下に長靴が二足、大きいのと小さいの、つま先を壁に向けて並んでいる。雨を待つ人たちの流儀だ。"
+ },
+ "city.bh.bike.1": {
+  "ru": "Велосипед прислонён к стене у почтовых ящиков. На раме приклеена бирка: «Не трогать. Колесо с секретом». Колесо как колесо.",
+  "en": "A bicycle leans against the wall by the letter boxes. A tag on the frame says: \"Don't touch. The wheel has a secret.\" It looks like a wheel.",
+  "ja": "自転車が郵便受けのそばの壁に立てかけてある。フレームの札には「触らないで。この車輪には秘密あり」。見た目はただの車輪だ。"
+ },
+ "city.bh.bike.2": {
+  "ru": "К багажнику привязана авоська с пустыми стеклянными банками. Хозяин, видимо, собрался в магазин, да передумал.",
+  "en": "A string bag of empty glass jars is tied to the carrier. The owner meant to go shopping, then changed his mind.",
+  "ja": "荷台に空き瓶を入れた網袋が結ばれている。持ち主は買い物に出かけるつもりで、気が変わったらしい。"
+ },
+ "city.bh.bike.3": {
+  "ru": "На звонке сидит высохший листик клёна. Велосипед давно не ездил, но каждую неделю его протирают тряпкой.",
+  "en": "A dried maple leaf sits on the bell. The bicycle hasn't gone out for a long time, but someone wipes it with a cloth every week.",
+  "ja": "ベルに乾いたカエデの葉がのっている。自転車はもう長く走っていないが、毎週誰かが布で拭いている。"
+ },
+ "city.bh.hats.1": {
+  "ru": "На вешалке чей-то плащ, чья-то детская шапка с помпоном и шерстяной шарф с вышитым номером квартиры: 4-03.",
+  "en": "On the stand: somebody's raincoat, somebody's child's bobble hat and a wool scarf with a flat number sewn in: 4-03.",
+  "ja": "コート掛けには誰かのレインコート、子供のポンポン帽、そして部屋番号4-03が縫い取られたウールのマフラー。"
+ },
+ "city.bh.hats.2": {
+  "ru": "Из кармана пальто торчит программка с отмеченным красным карандашом шахматным ходом. Кто-то разбирал партию на ходу.",
+  "en": "A theatre programme sticks out of a coat pocket with a chess move marked in red pencil. Somebody has been going over a game on the way.",
+  "ja": "コートのポケットから、赤鉛筆でチェスの一手が書き込まれたプログラムがのぞいている。歩きながら対局を振り返った人がいるようだ。"
+ },
+ "city.bh.plants.1": {
+  "ru": "Земля у фикуса сухая. Ты наливаешь воды из кружки, которая стоит тут же для этого. Лист наклоняется к тебе, как будто кивает.",
+  "en": "The earth by the ficus is dry. You pour some water from the mug that stands here for the purpose. A leaf bends toward you as if nodding.",
+  "ja": "フィカスの土は乾いている。そばにある水用のカップから水をやると、葉がうなずくようにこちらへ傾いた。"
+ },
+ "city.bh.plants.2": {
+  "ru": "Пальма в кадке у входа ловит сквозняк при каждом открытии двери и держится молодцом. Ты вытираешь с листа пыль.",
+  "en": "The palm in the tub by the door catches a draught every time the door opens and holds up well. You wipe the dust off a frond.",
+  "ja": "入口の鉢のヤシは、ドアが開くたびにすきま風を受けながら元気だ。葉のほこりを拭いてやる。"
+ },
+ "city.bh.plants.3": {
+  "ru": "В поддоне стоит вода после чьего-то полива. Табличка: «Поливала Ганна. Не заливайте». Ты решаешь не мешать.",
+  "en": "There's water in the saucer from someone's watering. A card: \"Hanna watered. Don't flood.\" You decide not to interfere.",
+  "ja": "受け皿に誰かが水をやった跡がある。札には「ハンナが水やり済み。やりすぎ禁止」。手を出さないことにした。"
+ },
+ "city.bh.plants.rain": {
+  "ru": "Дождь снаружи, а у входа влажно, как в оранжерее. Растения будто довольны: им всё равно, чем их поливают.",
+  "en": "Rain outside, and by the entrance it's as damp as a hothouse. The plants seem content: it's all one to them what waters them.",
+  "ja": "外は雨で、入口は温室のように湿っている。植物は満足そうだ。何で水をもらっても構わないらしい。"
+ },
+ "city.bh.plants.mon": {
+  "ru": "В понедельник по плану поливает консьерж. Листья уже тугие и блестят, будто отполированы.",
+  "en": "On Mondays the porter waters, by the rota. The leaves are taut and shiny, as if polished.",
+  "ja": "月曜は当番表どおり管理人が水やりをする日だ。葉はぴんと張って、磨いたように光っている。"
+ },
+ "city.bh.sea.1": {
+  "ru": "Море до самого края. На светлой воде чёрточки рыбацких лодок; белая ниточка у горизонта — сухогруз, идёт вдоль берега и никуда не торопится.",
+  "en": "Sea to the very edge. Dashes of fishing boats on the pale water; a white thread at the horizon is a freighter, going along the coast in no hurry.",
+  "ja": "見渡すかぎりの海。淡い水面に漁船の小さな線。水平線の白い糸は貨物船で、急ぐ様子もなく沿岸を進んでいる。"
+ },
+ "city.bh.sea.2": {
+  "ru": "В трубе виден маяк на конце мола: решётчатая башня, над ней узкий золотой фонарь. У подножия крошечные люди с удочками.",
+  "en": "In the eyepiece: the lighthouse at the pier head, a lattice tower with a narrow golden lantern. Tiny people with rods at its foot.",
+  "ja": "望遠鏡には桟橋の先の灯台。格子の塔の上に細い金色のランタン。足もとには釣り竿を持った小さな人たち。"
+ },
+ "city.bh.sea.3": {
+  "ru": "На пляже под террасами цветные пятна: полотенца. Спасатели на вышках стоят, как две спички, и поворачиваются вместе.",
+  "en": "Coloured patches on the beach under the terraces: towels. The lifeguards on their towers stand like two matches and turn together.",
+  "ja": "段丘の下の浜に色とりどりの点。タオルだ。監視塔の救助員は二本のマッチのように並び、一緒に向きを変える。"
+ },
+ "city.bh.sea.fog": {
+  "ru": "Туман съел всё, кроме света на маяке: просто золотое пятно. Гудок доходит сюда на секунду позже огня.",
+  "en": "The fog has eaten everything but the lighthouse's light: just a golden smudge. The horn reaches here a second after the flash.",
+  "ja": "霧がすべてを飲み込み、灯台の明かりだけが金色のにじみになっている。霧笛は光より一秒遅れて届く。"
+ },
+ "city.bh.sea.rain": {
+  "ru": "Дождь идёт стеной от моря. Набережная серая, зонты ползут по молу, как жуки.",
+  "en": "Rain comes in from the sea in a wall. The embankment is grey, umbrellas crawl along the pier like beetles.",
+  "ja": "雨が海から壁のように寄せてくる。遊歩道は灰色で、傘が甲虫のように桟橋を這っていく。"
+ },
+ "city.bh.sea.snow": {
+  "ru": "Снег. Море свинцовое, мол присыпан белым, маяк стоит, как перо в чернильнице.",
+  "en": "Snow. The sea is leaden, the pier dusted white, the lighthouse stands like a pen in an inkwell.",
+  "ja": "雪。海は鉛色、桟橋はうっすら白く、灯台はインク壺のペンのように立っている。"
+ },
+ "city.bh.sea.n1": {
+  "ru": "Ночью луч маяка раз в несколько секунд проходит по воде и по стеклу галереи. Считаешь: один, два, три… и снова.",
+  "en": "At night the lighthouse beam crosses the water and the gallery glass every few seconds. You count: one, two, three... and again.",
+  "ja": "夜、灯台の光が数秒おきに水面とギャラリーのガラスをなでる。一、二、三、とまた数える。"
+ },
+ "city.bh.sea.n2": {
+  "ru": "Огни набережной вытянуты в линейку. Дальше чёрная гладь, и где-то на её краю лежат несколько звёзд.",
+  "en": "The embankment lights are laid out in a ruler's line. Beyond them black water, and at its edge a few stars.",
+  "ja": "遊歩道の灯りは定規で引いたように並ぶ。その先は黒い水面で、縁には星がいくつか。"
+ },
+ "city.bh.town.1": {
+  "ru": "Террасы спускаются ступенями к воде, у каждой своя крыша и свой цвет бетона. Вот длинная змейка дома на второй, вот волнистая башня на третьей.",
+  "en": "The terraces step down to the water, each with its own roof and shade of concrete. There the long snake of a block on the second, there the wavy tower on the third.",
+  "ja": "段丘は水際へ階段状に下りて、それぞれ屋根とコンクリートの色が違う。二段目には長い蛇のような棟、三段目には波打つ塔。"
+ },
+ "city.bh.town.2": {
+  "ru": "Канатная дорога: кабина скользит по тросу, на станции «Зенит» блестит тарелка. Два каната расходятся, как усы.",
+  "en": "The cable car: a cabin slides along the rope, the saucer of Zenith station glints. Two ropes part like whiskers.",
+  "ja": "ロープウェイ。ゴンドラがロープを滑り、「ゼニト」駅の円盤が光る。二本のロープがひげのように分かれていく。"
+ },
+ "city.bh.town.3": {
+  "ru": "Во дворах нижнего города бельё и дети, на площади у фонтана точка света: вода играет с солнцем.",
+  "en": "In the courtyards of the lower town washing and children; on the square, at the fountain, a point of light: water playing with the sun.",
+  "ja": "下の町の中庭には洗濯物と子供たち。広場の噴水には光の点。水が太陽と遊んでいる。"
+ },
+ "city.bh.town.rain": {
+  "ru": "Кабины идут в дождь с зажжёнными огнями, как фонарики на нитке.",
+  "en": "In the rain the cabins run with their lights on, like lanterns on a string.",
+  "ja": "雨の中、ゴンドラは灯りをつけて進む。糸につるした提灯のようだ。"
+ },
+ "city.bh.town.n1": {
+  "ru": "Вышки канатки светятся красным на макушках. Кабина с жёлтым окошком ползёт вверх, к нам, и теряется за краем.",
+  "en": "The cable-car pylons glow red at their tops. A cabin with a yellow window crawls up toward us and is lost behind the edge.",
+  "ja": "ロープウェイの支柱の先端が赤く光る。黄色い窓のゴンドラがこちらへ上がってきて、縁の向こうに消える。"
+ },
+ "city.bh.town.n2": {
+  "ru": "Окна террас горят по-разному: где-то синий телевизор, где-то жёлтая лампа. Угадываешь дома по цвету света.",
+  "en": "The terrace windows burn differently: here a blue television, there a yellow lamp. You guess the houses by the colour of the light.",
+  "ja": "段丘の窓はそれぞれ違う色で灯る。青いテレビ、黄色いランプ。灯りの色で家を当てたくなる。"
+ },
+ "city.bh.forest.1": {
+  "ru": "На северном конце — склон: сосны и ели стеной, над ними гребень. Между стволами белеет чья-то тропа.",
+  "en": "At the northern end, the slope: pines and spruce in a wall, a ridge above. Between the trunks someone's path shows white.",
+  "ja": "北の端は斜面。松とトウヒが壁のように並び、その上に稜線。幹の間に誰かの小道が白く見える。"
+ },
+ "city.bh.forest.2": {
+  "ru": "Бинокль выхватывает ястреба над лесом: стоит в воздухе, не машет, как будто его там подвесили.",
+  "en": "The binoculars pick out a hawk over the forest: it stands in the air without a wingbeat, as if hung there.",
+  "ja": "双眼鏡が森の上のタカをとらえる。羽ばたかず、宙に吊られたように止まっている。"
+ },
+ "city.bh.forest.3": {
+  "ru": "Выше леса крошечная верхняя станция канатки: как спичечный коробок на ветке.",
+  "en": "Above the forest the tiny upper station of the cable car: a matchbox on a branch.",
+  "ja": "森の上にはロープウェイの小さな上駅。枝にのせたマッチ箱のようだ。"
+ },
+ "city.bh.forest.fog": {
+  "ru": "Лес пропал: в бинокле серая вата и своё дыхание.",
+  "en": "The forest is gone: grey wool in the binoculars, and your own breath.",
+  "ja": "森は消えた。双眼鏡の中は灰色の綿と、自分の息だけ。"
+ },
+ "city.bh.forest.n": {
+  "ru": "Лес — сплошная чернота. Над ним мигает красный огонёк на вышке, и больше ничего.",
+  "en": "The forest is solid black. A red light blinks on a pylon above it, and nothing else.",
+  "ja": "森は真っ暗。その上の支柱で赤い灯が点滅しているほかは、何も見えない。"
+ },
+ "city.bh.win.m": {
+  "ru": "Утро: солнце сзади, и всё море впереди залито светом. Лодки идут к берегу, как будто их подтягивают на нитке.",
+  "en": "Morning: the sun is behind you and the whole sea ahead is flooded with light. The boats head for shore as if pulled on a thread.",
+  "ja": "朝。太陽は背中側で、前方の海は光であふれている。ボートは糸で引かれるように岸へ向かう。"
+ },
+ "city.bh.win.d": {
+  "ru": "Полдень: море чешуйчатое от блеска, мол как ниточка, набережная плоская, как на открытке.",
+  "en": "Noon: the sea is scaly with glare, the pier a thread, the embankment flat as a postcard.",
+  "ja": "正午。海はまぶしく鱗のようで、桟橋は糸、遊歩道は絵はがきのように平たい。"
+ },
+ "city.bh.win.e": {
+  "ru": "К вечеру свет идёт вдоль воды, и каждая терраса бросает тень на следующую.",
+  "en": "Toward evening the light runs along the water and each terrace casts its shadow on the next.",
+  "ja": "夕方、光は水面に沿って走り、段丘がそれぞれ次の段に影を落とす。"
+ },
+ "city.bh.win.sun": {
+  "ru": "Закат встаёт ровно по оси города: от маяка по набережной, по площади, по лестницам — к этому окну. На галерее все молчат.",
+  "en": "The sunset stands exactly on the town's axis: from the lighthouse along the embankment, the square, the stairs, to this window. Everyone on the gallery is silent.",
+  "ja": "夕日は町の軸にぴたりと重なる。灯台から遊歩道、広場、階段をたどってこの窓へ。ギャラリーの誰もが黙る。"
+ },
+ "city.bh.win.n": {
+  "ru": "Ночью стекло возвращает тебя самого. За отражением линия огней и маячный луч, и они приходят по очереди.",
+  "en": "At night the glass gives you back to yourself. Behind the reflection a line of lights and the beam, arriving in turn.",
+  "ja": "夜のガラスは自分の姿を返す。その向こうに灯りの列と灯台の光が、交互にやって来る。"
+ },
+ "city.bh.sit.s1": {
+  "ru": "Из южных окон видна кромка террасы: капсульные башни на склоне, их окна горят в разные часы, как зёрнышки, которые кто-то пересыпает.",
+  "en": "The south windows show the terrace's edge: the capsule towers on the slope, their windows lit at different hours like grains being poured from hand to hand.",
+  "ja": "南の窓には段丘の端が見える。斜面のカプセル塔は、窓の灯りが時間ごとにちがい、手から手へ移される穀粒のようだ。"
+ },
+ "city.bh.sit.s2": {
+  "ru": "Скамья тёплая: стекло греет её с утра. Читаешь чужие записи в книге на подоконнике и не замечаешь, как проходит час.",
+  "en": "The bench is warm: the glass has heated it since morning. You read other people's entries in the book on the sill and the hour goes.",
+  "ja": "ベンチは温かい。朝からガラスが温めている。窓台の本の他人の書き込みを読んでいるうちに、一時間が過ぎる。"
+ },
+ "city.bh.sit.sn": {
+  "ru": "Южные окна ночью чёрные, в них только твоё отражение и далёкие жёлтые точки капсул.",
+  "en": "The south windows are black at night: only your reflection and the far yellow dots of the capsules.",
+  "ja": "夜の南の窓は黒く、自分の姿と、遠くのカプセルの黄色い点だけが映る。"
+ },
+ "city.bh.sit.n1": {
+  "ru": "Северные окна смотрят вдоль террасы: круглая крыша санатория и ребристые своды зала, как раковина рядом с блюдцем.",
+  "en": "The north windows look along the terrace: the round roof of the sanatorium and the ribbed vaults of the hall, a shell beside a saucer.",
+  "ja": "北の窓からは段丘沿いに、サナトリウムの丸い屋根と、ホールのリブの入った丸屋根が見える。皿のそばの貝殻のようだ。"
+ },
+ "city.bh.sit.n2": {
+  "ru": "Здесь тянет чуть прохладнее: ветер с севера находит щель в раме. Зато на скамье всегда пусто, а вид — на целую ладонь шире.",
+  "en": "It is slightly cooler here: the north wind finds a gap in the frame. But the bench is always empty, and the view a hand's breadth wider.",
+  "ja": "ここは少し涼しい。北風が窓枠のすき間を見つける。でもベンチはいつも空いていて、景色は手のひら一枚ぶん広い。"
+ },
+ "city.bh.sit.nn": {
+  "ru": "На севере ночью ни огня: только круглая крыша санатория светится по краю, как блюдце на свечке.",
+  "en": "In the north at night there isn't a light: only the sanatorium's round roof glows along its rim, like a saucer over a candle.",
+  "ja": "夜の北には灯りがなく、サナトリウムの丸屋根だけが縁に光る。ろうそくの上の皿のように。"
+ },
+ "city.bh.garden.1": {
+  "ru": "Зимний сад — длинный ящик с землёй у окна: пальма, монстера, кактус в баночке. Лимон, говорят, посадил Харгривз. Плодов не было ни разу.",
+  "en": "The winter garden is a long box of soil by the window: a palm, a monstera, a cactus in a jar. The lemon, they say, was planted by Hargreaves. It has never fruited.",
+  "ja": "冬の庭は窓辺の細長い土の箱。ヤシ、モンステラ、瓶に入ったサボテン。レモンはハーグリーヴスが植えたという。実がなったことは一度もない。"
+ },
+ "city.bh.garden.2": {
+  "ru": "На листьях пальмы капли: только что полили. В горшке бумажка: «Полив — Соколова, 3-06. Просьба листья не рвать».",
+  "en": "Drops on the palm leaves: freshly watered. A slip in the pot: \"Watering: Sokolova, 3-06. Please don't pick the leaves.\"",
+  "ja": "ヤシの葉に水滴。水やりしたばかりだ。鉢の紙。「水やり担当：ソコロワ、3-06。葉をちぎらないでください」。"
+ },
+ "city.bh.garden.winter": {
+  "ru": "За стеклом снег, а здесь пахнет землёй и тёплым бетоном: батарея под ящиком работает на сад, а не на людей.",
+  "en": "Snow behind the glass and here it smells of earth and warm concrete: the radiator under the box works for the garden, not for people.",
+  "ja": "ガラスの向こうは雪、ここは土と温かいコンクリートの匂い。箱の下の暖房は、人ではなく庭のために働いている。"
+ },
+ "city.bh.garden.rain": {
+  "ru": "Дождь стучит по стеклу, а в саду сухо. Земля пахнет ржавым железом и листвой.",
+  "en": "Rain taps on the glass and the garden is dry. The earth smells of rust and leaves.",
+  "ja": "雨がガラスを叩き、庭は乾いている。土は錆びた鉄と葉の匂いがする。"
+ },
+ "city.bh.garden.warm": {
+  "ru": "Солнце нагрело стекло, листья пальмы потяжелели. Пахнет, как в оранжерее, и немного как в бане.",
+  "en": "The sun has heated the glass, the palm's leaves hang heavier. It smells like a hothouse and a little like a bathhouse.",
+  "ja": "日差しでガラスが温まり、ヤシの葉が重たげだ。温室の匂い、少し銭湯の匂い。"
+ },
+ "city.bh.garden.night": {
+  "ru": "Ночью сад тёмный. Только лист монстеры ловит блики набережных огней, как маленькое зеркало.",
+  "en": "At night the garden is dark. Only a monstera leaf catches the embankment's lights like a small mirror.",
+  "ja": "夜の庭は暗い。モンステラの葉だけが、遊歩道の灯りを小さな鏡のように拾う。"
+ },
+ "city.bh.tea.1": {
+  "ru": "Самовар тёплый: его греет кто-то из жильцов по утрам. Рядом блюдце с кусочками сахара и записка «Чашки — на подоконнике, возвращайте».",
+  "en": "The samovar is warm: a resident heats it each morning. Beside it a saucer of sugar lumps and a note, \"Cups on the sill, please return them.\"",
+  "ja": "サモワールは温かい。毎朝、住人の誰かが沸かしている。そばに角砂糖の小皿と書き置き。「カップは窓台に。返してください」。"
+ },
+ "city.bh.tea.2": {
+  "ru": "Ты наливаешь чай в чужую чашку с отбитой ручкой. Чай крепкий, как у людей, которые ждут гостей и не умеют по-другому.",
+  "en": "You pour tea into somebody's cup with a chipped handle. The tea is strong, the way it is with people who expect guests and know no other way.",
+  "ja": "取っ手の欠けた誰かのカップにお茶を注ぐ。客を待ち、ほかの淹れ方を知らない人たちのお茶のように濃い。"
+ },
+ "city.bh.tea.3": {
+  "ru": "Под самоваром крохотная лужица. Её вытирают каждое утро — и каждый день она появляется снова. Дом-мост это знает и терпит.",
+  "en": "A tiny puddle under the samovar. It is wiped up every morning and comes back every day. Bridge House knows and puts up with it.",
+  "ja": "サモワールの下に小さな水たまり。毎朝拭かれ、毎日また現れる。橋の家はそれを知っていて、我慢している。"
+ },
+ "city.bh.tea.n": {
+  "ru": "Самовар остыл: в этот час пьют чай дома. Остался только запах прошедшего утра и пустая чашка.",
+  "en": "The samovar has cooled: at this hour people take tea at home. Only the smell of the morning is left, and an empty cup.",
+  "ja": "サモワールは冷めている。この時間のお茶は家で飲むものだ。朝の匂いと空のカップだけが残っている。"
+ },
+ "city.bh.gchess.1": {
+  "ru": "Шахматы на галерее: партии идут медленно, потому что игроки то и дело смотрят в окно. Ладья забыта на краю клетки, пока по воде идёт баржа.",
+  "en": "Chess on the gallery: games go slowly because the players keep glancing out of the window. A rook sits forgotten on a square's edge while a barge crosses the water.",
+  "ja": "ギャラリーのチェス。指し手はゆっくりだ。みんな窓の外ばかり見ている。艀が水の上を渡る間、ルークはマスの縁に置き忘れられている。"
+ },
+ "city.bh.gchess.2": {
+  "ru": "На доске остановленная позиция: чёрные ждут, а белых нет. Под доской записка: «Доиграем в субботу. Не трогать! — Г. Н.»",
+  "en": "On the board a game stopped halfway: Black waits, White has gone. A note under the board: \"We finish on Saturday. Don't touch! — H. N.\"",
+  "ja": "盤上には途中で止まった一局。黒は待っているが、白はいない。盤の下の書き置き。「土曜に続きを。触らないで！　H・N」。"
+ },
+ "city.bh.lchess.1": {
+  "ru": "Шахматный столик в вестибюле: доска, два стула, вокруг вечно кто-то стоит и подсказывает. Сегодня подсказчиков нет.",
+  "en": "The chess table in the lobby: a board, two chairs, and always somebody standing by to advise. Today no one is advising.",
+  "ja": "ロビーのチェス台。盤と椅子が二脚、いつもそばで誰かが助言している。今日は助言者がいない。"
+ },
+ "city.bh.lchess.2": {
+  "ru": "Фигуры расставлены, как в начале. Коня кто-то подвинул на клетку вперёд: приглашение сыграть.",
+  "en": "The pieces stand as at the start. Somebody has moved a knight a square forward: an invitation to play.",
+  "ja": "駒は初期配置。誰かがナイトを一マス進めてある。対局の誘いだ。"
+ },
+ "city.player.nasser.hello": {
+  "ru": "Ганна Насер ставит чашку и кивает на доску: «Садись, играй. Я не кусаюсь. Только заранее не радуйся».",
+  "en": "Hanna Nasser puts her cup down and nods at the board: \"Sit, play. I don't bite. Just don't celebrate in advance.\"",
+  "ja": "ハンナ・ナセルはカップを置き、盤に向かってうなずく。「座って、指しましょう。噛みつきはしません。ただ先に喜ばないで」。"
+ },
+ "city.player.nasser.win": {
+  "ru": "Ганна Насер улыбается: «Хорошо. Но у тебя в конце не хватило терпения. Терпение в шахматах — это всё».",
+  "en": "Hanna Nasser smiles: \"Good. But you ran out of patience at the end. In chess patience is everything.\"",
+  "ja": "ハンナ・ナセルは微笑む。「よかったわ。でも最後に辛抱が足りなかった。チェスは辛抱がすべてよ」。"
+ },
+ "city.player.nasser.lose": {
+  "ru": "Ганна Насер разводит руками: «Сдаюсь. У тебя был ход, которого я не видела. Давай ещё раз завтра, я высплюсь».",
+  "en": "Hanna Nasser spreads her hands: \"I resign. You had a move I didn't see. Again tomorrow, after a good night's sleep.\"",
+  "ja": "ハンナ・ナセルは両手を広げる。「負けました。私に見えない一手があったのね。明日もう一度。ひと晩ぐっすり寝てくるわ」。"
+ },
+ "city.bh.gauge.1": {
+  "ru": "Стрелка дрожит у цифры 4: ветер с моря, ровный. Рядом карандашом приписано мелким почерком: «норма».",
+  "en": "The needle trembles by the 4: a steady wind off the sea. Beside it in pencil, in small handwriting: \"normal\".",
+  "ja": "針は4のあたりで震えている。海からの安定した風だ。横に小さな字で鉛筆の書き込み。「平常」。"
+ },
+ "city.bh.gauge.2": {
+  "ru": "Указатель показывает 6 и чуть пританцовывает. Ты повторяешь цифру про себя, чтобы не забыть: Харгривз просил.",
+  "en": "The gauge reads 6 and dances a little. You repeat the number to yourself so as not to forget it: Hargreaves asked.",
+  "ja": "風力計は6を指し、少し踊っている。ハーグリーヴスに頼まれたので、忘れないよう数字を心の中で繰り返す。"
+ },
+ "city.bh.gauge.3": {
+  "ru": "Стрелка почти лежит на нуле. Штиль: на галерее слышно, как остывает самовар.",
+  "en": "The needle all but lies on zero. A calm: on the gallery you can hear the samovar cooling.",
+  "ja": "針はほとんどゼロに寝ている。凪だ。ギャラリーではサモワールの冷めていく音が聞こえる。"
+ },
+ "city.bh.gauge.rain": {
+  "ru": "В дождь стрелка прыгает между 5 и 9: порывы бьют в стекло, как горсти гороха.",
+  "en": "In the rain the needle jumps between 5 and 9: the gusts hit the glass like handfuls of peas.",
+  "ja": "雨の日、針は5と9の間を跳ねる。突風がエンドウ豆をまくようにガラスを打つ。"
+ },
+ "city.bh.gauge.snow": {
+  "ru": "Метель: стрелка у десяти, стекло гудит. Такие цифры Харгривз записывает красным карандашом.",
+  "en": "Snowstorm: the needle is by ten and the glass hums. Hargreaves writes such numbers in red pencil.",
+  "ja": "吹雪。針は10の近くで、ガラスがうなっている。こんな数字をハーグリーヴスは赤鉛筆で書く。"
+ },
+ "city.bh.gauge.fog": {
+  "ru": "В тумане стрелка почти не двигается, будто и ветер завяз в вате.",
+  "en": "In fog the needle hardly moves, as if the wind too had got stuck in the wool.",
+  "ja": "霧の中で針はほとんど動かない。風も綿にはまったようだ。"
+ },
+ "city.bh.chair.1": {
+  "ru": "Кресло развёрнуто к окну так, словно хозяин не читает, а несёт вахту. На подлокотнике вмятина от локтя. Отсюда видно южный край террасы и ни одного лишнего здания.",
+  "en": "The armchair is turned to the window as if its owner isn't reading but keeping watch. A dent from an elbow on the arm. From here you see the terrace's south edge and not one needless building.",
+  "ja": "肘掛け椅子は、読書ではなく見張りをするように窓へ向けてある。肘掛けには肘のへこみ。ここからは段丘の南の端が見え、余計な建物はひとつもない。"
+ },
+ "city.bh.chair.n": {
+  "ru": "Ночью из кресла видны огни капсул и твоё отражение рядом с лампой. Хозяин, наверное, разговаривает с ним, когда никого нет.",
+  "en": "At night from the chair you see the capsules' lights and your reflection beside the lamp. The owner probably talks to it when no one is here.",
+  "ja": "夜、椅子からはカプセル塔の灯りと、ランプのそばの自分の姿が見える。持ち主は誰もいないときに、その姿と話すのだろう。"
+ },
+ "city.bh.roads.1": {
+  "ru": "На карте города красным карандашом проведена линия: серпантин, который поднимается между террасами без единой лестницы. Поперёк красный крест и надпись: «не дали».",
+  "en": "On the town map a line in red pencil: a hairpin road that climbs between the terraces without a single stair. A red cross through it and the words: \"not allowed\".",
+  "ja": "町の地図に赤鉛筆の線が引かれている。階段を一つも使わず、段丘の間を登るつづら折りの道。上から赤い×印と「許可されず」の文字。"
+ },
+ "city.bh.roads.2": {
+  "ru": "Рядом по краю карты приписаны уклоны: 6, 7, 5,5, 8. Тут же поправка: «если снять лишний ярус — ровно 6». Хозяин всё ещё торгуется с картой.",
+  "en": "Slopes are pencilled along the map's edge: 6, 7, 5.5, 8. A correction beside it: \"if one drops the extra tier, exactly 6\". The owner is still haggling with the map.",
+  "ja": "地図の端には勾配が書き込まれている。6、7、5.5、8。その横に訂正。「余分な段を外せばちょうど6」。持ち主はまだ地図と値段交渉をしている。"
+ },
+ "city.bh.roads.3": {
+  "ru": "Точка на карте у верхней террасы обведена дважды. Подпись: «Здесь я бы поставил скамейку. Просто так, чтобы человек остановился».",
+  "en": "A point on the map by the upper terrace is ringed twice. A caption: \"Here I would put a bench. Just so a person stops.\"",
+  "ja": "地図の上段の一点が二重に丸で囲まれている。添え書き。「ここにベンチを置きたかった。人が立ち止まるように、ただそれだけ」。"
+ },
+ "city.bh.photos.1": {
+  "ru": "Чёрно-белая фотография: люди в касках на склоне, у ног рулетка и теодолит на треноге. Третий слева — молодой Харгривз, худой, в кепке набок.",
+  "en": "A black-and-white photograph: people in hard hats on a slope, a tape measure at their feet and a theodolite on a tripod. Third from the left is young Hargreaves, thin, cap on one side.",
+  "ja": "白黒写真。斜面でヘルメットの人々、足もとに巻尺、三脚の測量器。左から三人目が若いハーグリーヴス。痩せていて、帽子を斜めにかぶっている。"
+ },
+ "city.bh.photos.2": {
+  "ru": "Снимок моста через горную речку: арка, на арке ничего, кроме неба. На обороте: «Дорогу пустили через год. Мост стоит до сих пор».",
+  "en": "A snapshot of a bridge over a mountain stream: an arch with nothing on it but sky. On the back: \"The road opened a year later. The bridge still stands.\"",
+  "ja": "山の川にかかる橋の写真。アーチにはただ空があるだけ。裏には「道は一年後に開通した。橋は今も立っている」。"
+ },
+ "city.bh.photos.3": {
+  "ru": "Групповая фотография на этой самой галерее в день открытия: все в пальто, все смотрят не в объектив, а в окно. Один человек плачет.",
+  "en": "A group photograph on this very gallery on opening day: everyone in a coat, everyone looking not at the lens but out of the window. One of them is crying.",
+  "ja": "まさにこのギャラリーで撮った開館日の集合写真。全員がコートを着て、カメラではなく窓の外を見ている。ひとりは泣いている。"
+ },
+ "city.bh.globe.1": {
+  "ru": "Глобус крутится со скрипом и останавливается на палец правее Чёрного моря. Тут булавка и красная нитка к кружочку: Тбилиси.",
+  "en": "The globe spins with a creak and stops a finger's breadth east of the Black Sea. A pin and a red thread to a small circle: Tbilisi.",
+  "ja": "地球儀はきしみながら回り、黒海の少し東で止まる。ピンと赤い糸、小さな丸。トビリシだ。"
+ },
+ "city.bh.globe.2": {
+  "ru": "В Балтике на глобусе булавки нет: хозяин сказал бы, что и без булавки знает, где он.",
+  "en": "There is no pin in the Baltic on the globe: the owner would say he knows where he is without one.",
+  "ja": "地球儀のバルト海にはピンがない。持ち主なら、ピンなしでも自分がどこにいるか知っている、と言うだろう。"
+ },
+ "city.bh.books.1": {
+  "ru": "«Справочник дорожного мастера», «Откосы и уклоны», «Мосты малых пролётов». На корешках пометки карандашом: «читано», «читано дважды», «не верить таблице 7».",
+  "en": "\"The Road Foreman's Handbook\", \"Slopes and Gradients\", \"Small-Span Bridges\". Pencil marks on the spines: \"read\", \"read twice\", \"don't trust table 7\".",
+  "ja": "『道路工事長の手引き』『のり面と勾配』『小スパン橋』。背には鉛筆の書き込み。「読了」「二度読んだ」「表7を信じるな」。"
+ },
+ "city.bh.books.2": {
+  "ru": "Между книгами по дорожному делу втиснут томик стихов: «Ветер над равниной». Закладка — старый билет на канатку.",
+  "en": "Between the road manuals a slim book of poems is squeezed in: \"Wind over the Plain\". The bookmark is an old cable-car ticket.",
+  "ja": "道路の本の間に詩集が一冊差し込まれている。『平原を渡る風』。しおりは古いロープウェイの切符だ。"
+ },
+ "city.bh.books.3": {
+  "ru": "Одна книга стоит корешком внутрь. Ты разворачиваешь: чистая тетрадь для записей, на форзаце «Для тех, кто придёт после».",
+  "en": "One book stands with its spine turned in. You turn it round: a blank notebook, on the flyleaf \"For those who come after\".",
+  "ja": "一冊だけ背を内側に向けて立っている。回してみると白紙のノートで、見返しには「あとから来る人へ」。"
+ },
+ "city.bh.tea.k1": {
+  "ru": "Ты ставишь чайник на огонь. Рядом жестяная банка с запиской: «Гостям — берите. Заварка одна, зато настоящая». Ты берёшь пакетик.",
+  "en": "You put the kettle on. Beside it a tin with a note: \"For guests, help yourself. Only one kind, but the real thing.\" You take a bag.",
+  "ja": "やかんを火にかける。そばのブリキ缶に書き置き。「お客様はどうぞ。種類はひとつだけど本物です」。ティーバッグをひとつもらう。"
+ },
+ "city.bh.tea.k2": {
+  "ru": "На плите ещё тёплый чайник. Хозяин где-то рядом: чашка на подоконнике, парок над ней, но вынесена в ту сторону, где окно открыто.",
+  "en": "The kettle on the stove is still warm. The owner must be near: a cup on the sill, a little steam over it, set on the side where the window is open.",
+  "ja": "コンロのやかんはまだ温かい。持ち主は近くにいるらしい。窓台のカップから湯気が立ち、窓の開いている側に置かれている。"
+ },
+ "city.bh.radio.1": {
+  "ru": "Приёмник тихо говорит прогноз для побережья: ветер западный, умеренный, к вечеру порывистый. Диктор читает так, словно сам его слышит.",
+  "en": "The wireless murmurs the coastal forecast: wind westerly, moderate, gusty by evening. The announcer reads as if he can hear it himself.",
+  "ja": "ラジオが小声で沿岸の天気予報を読んでいる。風は西、中程度、夕方には突風。アナウンサーは自分で風を聞いているような読み方だ。"
+ },
+ "city.bh.radio.2": {
+  "ru": "Играет скрипка, и по ней ясно, что к приёмнику давно не прикасались. Ты убавляешь громкость, как будто в комнате спят.",
+  "en": "A violin is playing, and you can tell nobody has touched the dial for a long time. You turn the volume down as if someone were asleep in the room.",
+  "ja": "バイオリンが流れている。ダイヤルは長く触られていないらしい。誰かが眠っているかのように音量を下げる。"
+ },
+ "city.bh.radio.n": {
+  "ru": "Ночью приёмник ловит только морскую станцию: цифры давления и глубокий голос, который называет мысы и банки, как молитву.",
+  "en": "At night the wireless catches only the marine station: pressure figures and a deep voice naming capes and banks like a prayer.",
+  "ja": "夜のラジオは海上放送だけを拾う。気圧の数字と、岬や浅瀬の名を祈りのように唱える低い声。"
+ },
+ "city.bh.radio.rain": {
+  "ru": "Сводка предупреждает: дождь, ветер до девяти. Рядом на тетрадном листке карандашом записано то же самое, только короче: «9».",
+  "en": "The bulletin warns: rain, wind up to nine. On a sheet beside it in pencil the same thing, shorter: \"9\".",
+  "ja": "予報は雨、風速九まで、と警告している。横の紙には鉛筆で同じことがもっと短く書かれている。「9」。"
+ },
+ "city.bh.bed.1": {
+  "ru": "Кровать застелена так туго, что хоть звони в неё: подушка в наволочке с крохотной заплатой, поверх одеяла сложенный халат. На чужое одеяло не садятся.",
+  "en": "The bed is made so tight you could ring it: a pillow with a tiny patch on the case, a dressing gown folded on the blanket. One doesn't sit on someone else's blanket.",
+  "ja": "ベッドは叩けば鳴りそうなほどきっちり整えられている。枕カバーには小さなつぎ、毛布の上にはたたんだガウン。人の毛布には座らないものだ。"
+ },
+ "city.bh.bed.2": {
+  "ru": "У изголовья таблетки по дням недели, будильник на семь и радио. Всё стоит так, что можно найти в темноте.",
+  "en": "At the head: pills for the days of the week, an alarm clock for seven, a wireless. Everything stands where it can be found in the dark.",
+  "ja": "枕もとには曜日別の薬、七時の目覚まし時計、ラジオ。暗闇でも手が届くように並んでいる。"
+ },
+ "city.bh.bed.3": {
+  "ru": "Под кроватью аккуратные тапочки носками к двери: хозяин привык, что вставать надо в сторону дела.",
+  "en": "Neat slippers under the bed, toes to the door: the owner is used to getting up facing the day's business.",
+  "ja": "ベッドの下にはスリッパがつま先をドアに向けて並んでいる。持ち主は仕事のほうを向いて起きる人だ。"
+ },
+ "city.bh.door.1": {
+  "ru": "Дверь распахнута и придержана за ручку стулом. Из комнаты тянет чаем, бумагой и немного керосином. Ты стучишь по косяку негромко, как просили.",
+  "en": "The door is flung open and held by a chair. The room smells of tea, paper and a little paraffin. You tap the frame, not loudly, as asked.",
+  "ja": "ドアは開け放たれ、椅子で押さえてある。部屋からはお茶と紙と少しの灯油の匂い。頼まれたとおり、枠を軽く叩く。"
+ },
+ "city.bh.door.2": {
+  "ru": "На косяке чернилами аккуратно выведено: «Гостям рады с девяти до девяти. Лифт — справа. Ноги вытирайте, я протирал».",
+  "en": "On the frame in neat ink: \"Guests welcome from nine to nine. The lift is on the right. Wipe your feet, I've just mopped.\"",
+  "ja": "ドア枠にきれいなインクで。「お客様は九時から九時まで歓迎。エレベーターは右。足を拭いてください、床を拭いたばかりです」。"
+ },
+ "city.lift.bridgehouse.ground": {
+  "ru": "Холл",
+  "en": "Lobby",
+  "ja": "ロビー"
+ },
+ "city.lift.bridgehouse.s4": {
+  "ru": "4-й этаж, коридор",
+  "en": "Floor 4, the corridor",
+  "ja": "四階の廊下"
+ },
+ "city.lift.bridgehouse.gallery": {
+  "ru": "Галерея",
+  "en": "The gallery",
+  "ja": "ギャラリー"
+ },
+ "city.bh.clerk.hi.1": {
+  "ru": "Дежурная по дому поднимает глаза от журнала: «Здравствуйте. Почту смотрите сами, а за лифт мы отвечаем».",
+  "en": "The duty clerk looks up from the ledger: \"Good day. The post you sort yourself; the lift is our responsibility.\"",
+  "ja": "当番の事務員が帳簿から顔を上げる。「こんにちは。郵便は自分でどうぞ。エレベーターはこちらの責任です」。"
+ },
+ "city.bh.clerk.hi.2": {
+  "ru": "«Вы на галерею? Это правильно. Туда всегда успеешь, а закат — нет».",
+  "en": "\"Going up to the gallery? Quite right. You can always get there later, but the sunset won't wait.\"",
+  "ja": "「ギャラリーへ？ それがいい。ギャラリーはいつでも行けるけど、夕日は待ってくれませんから」。"
+ },
+ "city.bh.clerk.hi.3": {
+  "ru": "Под стеклом на столе вырезка из старой газеты: «Дом-мост принят комиссией». Дежурная пододвигает её чуть ближе, как будто так положено.",
+  "en": "Under the glass on the desk a clipping from an old paper: \"Bridge House accepted by the commission\". The clerk nudges it a little closer, as if that is how it should be.",
+  "ja": "机のガラスの下に古い新聞の切り抜き。「橋の家、検収委員会を通過」。事務員はそれを少し近くへ寄せる。そうするものだ、という顔で。"
+ },
+ "city.bh.clerk.lift": {
+  "ru": "Лифт и галерея",
+  "en": "The lift and the gallery",
+  "ja": "エレベーターとギャラリー"
+ },
+ "city.bh.clerk.lift.1": {
+  "ru": "«Лифт ходит круглые сутки. Галерея открыта всегда, но с девяти там гасят каждый второй светильник. Выключатель у лифта, если хотите света».",
+  "en": "\"The lift runs round the clock. The gallery is always open, but after nine every second lamp goes out. The switch is by the lift if you want light.\"",
+  "ja": "「エレベーターは終日動きます。ギャラリーはいつも開いていますが、九時以降は照明を一つおきに消します。明るくしたければスイッチはエレベーターのそばです」。"
+ },
+ "city.bh.clerk.lift.2": {
+  "ru": "«Две кабины, но ходит чаще одна: вторая нужна, когда с коляской или с мебелью. На четвёртом этаже тоже остановка, там живёт Харгривз».",
+  "en": "\"Two cars, but one runs more often: the second is for prams or furniture. There's a stop on the fourth floor too, where Hargreaves lives.\"",
+  "ja": "「箱は二つですが、動くのは主に一つ。もう一つは乳母車や家具のときです。四階にも停まります。ハーグリーヴスさんが住んでいるので」。"
+ },
+ "city.bh.clerk.lift.3": {
+  "ru": "«Если кабина застряла, не кричите. Нажмите красную кнопку и считайте. Меня зовут на втором счёте».",
+  "en": "\"If the car sticks, don't shout. Press the red button and count. They call me at the second count.\"",
+  "ja": "「エレベーターが止まっても叫ばないで。赤いボタンを押して数えてください。二つ数えるうちに私に連絡が来ます」。"
+ },
+ "city.bh.clerk.who": {
+  "ru": "Кто в доме живёт",
+  "en": "Who lives in the house",
+  "ja": "誰が住んでいるか"
+ },
+ "city.bh.clerk.who.1": {
+  "ru": "«Дом большой, но все друг друга знают. Харгривз с четвёртого — наш старожил, а Ганна Насер со второго шахматистка. Играет тихо и без жалости».",
+  "en": "\"The house is big but everybody knows everybody. Hargreaves on the fourth is our old-timer, and Hanna Nasser on the second is our chess player. She plays quietly and without mercy.\"",
+  "ja": "「大きな家ですが、みんな顔見知りです。四階のハーグリーヴスさんは古株、二階のハンナ・ナセルさんはチェスの名手。静かに、容赦なく指します」。"
+ },
+ "city.bh.clerk.who.2": {
+  "ru": "«На шестом Абеновы. Девочка у них, Тхао, раз в неделю приносит мне нарисованный план дома. На плане лифт с глазами».",
+  "en": "\"The Abenovs are on the sixth. Their girl Thao brings me a drawn plan of the house once a week. In the plan the lift has eyes.\"",
+  "ja": "「六階はアベノフ家です。娘のタオが週に一度、家の見取り図を描いて持ってきます。図の中ではエレベーターに目がついています」。"
+ },
+ "city.bh.clerk.who.3": {
+  "ru": "«Санне Соколова с третьего поливает цветы на галерее и делает вид, что не она. Спасибо ей, но я не скажу, что вы знаете».",
+  "en": "\"Sanne Sokolova on the third waters the gallery plants and pretends it isn't her. I thank her, but I won't tell her you know.\"",
+  "ja": "「三階のサンネ・ソコロワさんがギャラリーの花に水をやっています。本人は知らん顔ですけど。感謝していますが、知っているとは言いませんよ」。"
+ },
+ "city.bh.clerk.book": {
+  "ru": "Книга отзывов",
+  "en": "The visitors' book",
+  "ja": "寄せ書き帳"
+ },
+ "city.bh.clerk.book.1": {
+  "ru": "«Книга на галерее лежит на пюпитре. Туда пишут все: и жильцы, и экскурсанты. Я не читаю, но слышу, как смеются».",
+  "en": "\"The book lies on a lectern on the gallery. Everyone writes in it, residents and visitors alike. I don't read it, but I hear them laugh.\"",
+  "ja": "「寄せ書き帳はギャラリーの書見台にあります。住人も見学の方も書きます。読みはしませんが、笑い声は聞こえます」。"
+ },
+ "city.bh.clerk.book.2": {
+  "ru": "«Пишите конкретно: что видели, во сколько, с какой скамьи. Такие записи потом читают лучше, чем стихи».",
+  "en": "\"Write specifics: what you saw, at what time, from which bench. Those entries get read better afterwards than poems.\"",
+  "ja": "「具体的に書いてください。何を、何時に、どのベンチから見たか。そういう記録のほうが、あとで詩よりよく読まれます」。"
+ },
+ "city.bh.clerk.book.3": {
+  "ru": "«На неделе какая-то птица оставила на карнизе красную ленту, а в книге три записи о чайке. Я бы и ленту записала».",
+  "en": "\"This week some bird left a red ribbon on the ledge, and the book has three entries about a gull. I'd have entered the ribbon too.\"",
+  "ja": "「今週、どこかの鳥が出っ張りに赤いリボンを残しました。帳面にはカモメの記録が三つ。リボンも記録しておきたいくらいです」。"
+ },
+ "city.bh.guard.hi.1": {
+  "ru": "Ночной вахтёр сидит под лампой с чашкой: «Тихо сегодня. Ветер уснул, лифт ещё не ложился».",
+  "en": "The night guard sits under the lamp with a cup: \"Quiet tonight. The wind has gone to sleep; the lift hasn't lain down yet.\"",
+  "ja": "夜警がランプの下でカップを手に座っている。「今夜は静かだ。風は寝た。エレベーターはまだ寝てない」。"
+ },
+ "city.bh.guard.hi.2": {
+  "ru": "«Ходите, смотрите. Ночью на галерее лучше, чем днём: меньше людей и больше звёзд».",
+  "en": "\"Go on up and look. The gallery is better at night than by day: fewer people and more stars.\"",
+  "ja": "「上がって見てきなさい。ギャラリーは昼より夜がいい。人が少なくて、星が多い」。"
+ },
+ "city.bh.guard.hi.3": {
+  "ru": "Вахтёр сверяет часы с настенными. «Сейчас {time}. Нагонять не надо: лифт придёт сам».",
+  "en": "The guard checks his watch against the wall clock. \"It's {time} now. No need to rush: the lift will come on its own.\"",
+  "ja": "夜警は腕時計を壁の時計と見比べる。「いまは{time}。急がなくていい。エレベーターは勝手に来る」。"
+ },
+ "city.bh.guard.night": {
+  "ru": "Ночью на галерее",
+  "en": "The gallery at night",
+  "ja": "夜のギャラリー"
+ },
+ "city.bh.guard.night.1": {
+  "ru": "«После девяти там тихо. Бинокль не уносите, он привинчен. А вот по стеклу не стучите: от этого звезды не ближе».",
+  "en": "\"After nine it's quiet up there. Don't take the binoculars, they're screwed down. And don't knock on the glass: it doesn't bring the stars closer.\"",
+  "ja": "「九時以降は静かです。双眼鏡は持ち出さないで、ねじ止めしてあります。それからガラスは叩かないで。叩いても星は近くなりません」。"
+ },
+ "city.bh.guard.night.2": {
+  "ru": "«Ясными ночами видно, как луч маяка ложится на стекло. Считайте секунды между лучами: он ходит ровно, как часы».",
+  "en": "\"On clear nights you can see the lighthouse beam fall on the glass. Count the seconds between flashes: it runs evenly, like a clock.\"",
+  "ja": "「晴れた夜は灯台の光がガラスにのるのが見えます。光と光の間の秒数を数えてごらん。時計のように正確です」。"
+ },
+ "city.bh.guard.night.3": {
+  "ru": "«Зимой лампы на галерее горят слабее: экономим. Зато от маяка свет есть всегда».",
+  "en": "\"In winter the gallery lamps burn lower: we economise. But from the lighthouse there is always light.\"",
+  "ja": "「冬はギャラリーの照明を落とします。節約です。でも灯台からは、いつも光が来ます」。"
+ },
+ "city.bh.guard.chess": {
+  "ru": "Шахматы",
+  "en": "Chess",
+  "ja": "チェス"
+ },
+ "city.bh.guard.chess.1": {
+  "ru": "«Ганна Насер играет до полуночи, если есть кому. Выигрывает чаще, чем проигрывает. Не обижайтесь: она так живёт».",
+  "en": "\"Hanna Nasser plays until midnight if there's someone to play. She wins more often than she loses. Don't take offence: that's how she lives.\"",
+  "ja": "「ハンナ・ナセルさんは相手がいれば真夜中まで指します。勝つほうが多い。気を悪くしないで。そういう生き方の人です」。"
+ },
+ "city.bh.guard.chess.2": {
+  "ru": "«В вестибюле тоже стоит доска. Днём там спорят, ночью — доигрывают. Я иногда подставляю фигуры, а то уходят».",
+  "en": "\"There's a board in the lobby too. By day they argue there, by night they finish the games. I sometimes put the pieces back; they wander off.\"",
+  "ja": "「ロビーにも盤があります。昼は議論、夜は続きを指す。私は時々駒を戻しておきます。放っておくとなくなるので」。"
+ },
+ "city.bh.guard.chess.3": {
+  "ru": "«Если победите Ганну, она вам что-то подарит. Что — не скажу, но чай подаёт особый».",
+  "en": "\"If you beat Hanna, she'll give you something. What, I won't say, but she serves a special tea.\"",
+  "ja": "「ハンナさんに勝てば何かもらえますよ。何かは言いませんが、特別なお茶を出してくれます」。"
+ },
+ "city.bh.guard.hargreaves": {
+  "ru": "Харгривз с четвёртого",
+  "en": "Hargreaves on the fourth floor",
+  "ja": "四階のハーグリーヴスさん"
+ },
+ "city.bh.guard.hargreaves.1": {
+  "ru": "«Он тридцать лет считал уклоны для министерства дорог. Говорит, этот дом — самый честный уклон, какой он видел: ни одного наклона».",
+  "en": "\"He spent thirty years calculating gradients for the Ministry of Highways. He says this house is the most honest gradient he ever saw: not a single slope.\"",
+  "ja": "「道路省で三十年、勾配を計算していた方です。この家は、これまで見た中でいちばん正直な勾配だ、傾きがひとつもない、とおっしゃる」。"
+ },
+ "city.bh.guard.hargreaves.2": {
+  "ru": "«Колено у него болит с осени. Но каждый день он записывает ветер: утро, полдень, вечер. Если вы поднимаетесь, запишите за него».",
+  "en": "\"His knee has hurt since autumn. But every day he records the wind: morning, noon, evening. If you go up, write it down for him.\"",
+  "ja": "「膝は秋から痛むそうです。それでも毎日、朝、昼、夕と風を記録しています。上がるなら、代わりに書いてあげてください」。"
+ },
+ "city.bh.guard.hargreaves.3": {
+  "ru": "«Он не просит, он делает вид, что не просит. Заходите к нему, чайник у него всегда горячий».",
+  "en": "\"He doesn't ask; he pretends not to be asking. Look in on him; his kettle is always hot.\"",
+  "ja": "「頼みはしません、頼んでいない顔をします。訪ねてあげてください。やかんはいつも熱いですよ」。"
+ },
+ "city.bh.tx.guest.title": {
+  "ru": "Книга отзывов галереи",
+  "en": "The gallery's visitors' book",
+  "ja": "ギャラリーの寄せ書き帳"
+ },
+ "city.bh.tx.guest.1": {
+  "ru": "Книга отзывов галереи Дома-моста. Открыта в день пуска лифта. Почерки разные: у кого красивый, у кого скачущий.\n«Ветер сильный, зато видно всё. — группа из Сухуми»\n«Днём и ночью маяк — два разных чуда. — Л.»",
+  "en": "The Bridge House gallery's visitors' book. Opened on the day the lift started. The handwriting varies: some lovely, some jumping.\n\"Strong wind, but you can see everything. — a group from Sukhumi\"\n\"The lighthouse by day and by night are two different wonders. — L.\"",
+  "ja": "橋の家ギャラリーの寄せ書き帳。エレベーターが動いた日に開かれた。筆跡はまちまちで、きれいなものも、跳ねたものもある。\n「風は強いが、すべてが見える。　スフミの団体」\n「昼の灯台と夜の灯台、二つの別の奇跡。　L.」"
+ },
+ "city.bh.tx.guest.2": {
+  "ru": "«Приходим с мужем каждую субботу. Он считает суда, я — чаек. Вчера насчитали 14 и 31. — Ганна Насер, 2-02»\n«Шахматы здесь лучшие в городе. Проиграл три партии подряд, но вид за стеклом искупает. — А.»",
+  "en": "\"My husband and I come every Saturday. He counts ships, I count gulls. Yesterday: 14 and 31. — Hanna Nasser, 2-02\"\n\"The best chess in town here. Lost three games in a row, but the view behind the glass makes up for it. — A.\"",
+  "ja": "「毎週土曜に主人と来ます。主人は船を数え、私はカモメを数えます。昨日は十四と三十一。　ハンナ・ナセル、2-02」\n「町でいちばんのチェスです。三連敗しましたが、ガラスの向こうの景色が埋め合わせてくれます。　A.」"
+ },
+ "city.bh.tx.guest.3": {
+  "ru": "«Спасибо тому, кто принёс пледы на скамьи. И тому, кто вернул самовар. — Правление»\n«Бинокль в северном конце показывает ястреба. Настоящего. — школьник из 5-го «Б»»",
+  "en": "\"Thank you to whoever brought the rugs for the benches. And to whoever returned the samovar. — The Board\"\n\"The binoculars at the north end show a hawk. A real one. — a pupil from 5B\"",
+  "ja": "「ベンチに毛布を持ってきてくれた方、ありがとう。サモワールを返してくれた方も。　管理組合」\n「北の端の双眼鏡でタカが見えた。本物の。　5年B組の生徒」"
+ },
+ "city.bh.tx.guest.4": {
+  "ru": "«Чайка с красной лентой на лапе сидела на наружном карнизе три дня. Кто хозяин? — Тхао А., 6-01, 11 лет»\n«Харгривз просит не стучать по стеклу указателя ветра: прибор ведёт записи без поломок уже много лет. — Р. Х.»",
+  "en": "\"A gull with a red ribbon on its leg sat on the outer ledge for three days. Whose is it? — Thao A., 6-01, aged 11\"\n\"Hargreaves asks that nobody tap the wind gauge's glass: the instrument has kept its records unbroken for years. — R. H.\"",
+  "ja": "「足に赤いリボンのカモメが、外の出っ張りに三日いました。誰の鳥ですか。　タオ・A、6-01、十一歳」\n「ハーグリーヴスからのお願い。風力計のガラスを叩かないでください。この計器は何年も壊れずに記録を続けています。　R・H」"
+ },
+ "city.bh.tx.guest.5": {
+  "ru": "«Та чайка улетела на север. Ленту Тхао достала удочкой, весь дом аплодировал. — Н. А.»\n«Рохан Харгривз опять не пришёл. Записи ветра ведёт Тхао: цифры детским почерком, но правильные. — соседка»",
+  "en": "\"The gull flew north. Thao fished the ribbon out with a rod and the whole house applauded. — N. A.\"\n\"Rohan Hargreaves hasn't come up again. Thao keeps the wind records: numbers in a child's hand, but correct. — a neighbour\"",
+  "ja": "「あのカモメは北へ飛んでいきました。タオが釣り竿でリボンを取り、家じゅうが拍手しました。　N・A」\n「ロハン・ハーグリーヴスさんは今日も来ていません。風の記録はタオがつけています。子供の字だけど数字は正確。　隣人」"
+ },
+ "city.bh.tx.guest.6": {
+  "ru": "«Новичкам: приходите в ясный вечер, к закату. Сядьте на южную скамью и ждите, пока на мол ляжет красная дорожка. — Ш. С.»\n«Читаю записи и вижу: у книги растёт толщина, как у дерева. Скоро будет сто страниц. — Р. Харгривз»",
+  "en": "\"For newcomers: come on a clear evening, at sunset. Sit on the south bench and wait until a red path lies on the pier. — Sh. S.\"\n\"Reading the entries I see the book thickening like a tree. It will soon be a hundred pages. — R. Hargreaves\"",
+  "ja": "「初めての方へ。晴れた夕方、日没のころに来てください。南のベンチに座り、桟橋に赤い道が伸びるのを待って。　Sh・S」\n「記録を読むと、この本は木のように厚くなっていく。もうすぐ百ページだ。　R・ハーグリーヴス」"
+ },
+ "city.bh.tx.wind.title": {
+  "ru": "Журнал ветра",
+  "en": "The wind log",
+  "ja": "風の記録帳"
+ },
+ "city.bh.tx.wind.1": {
+  "ru": "Журнал ветра, галерея Дома-моста. Ведёт Р. Харгривз: утро, полдень, вечер. З — с моря, В — с суши, цифра — балл по указателю.",
+  "en": "Wind log, Bridge House gallery. Kept by R. Hargreaves: morning, noon, evening. W is off the sea, E off the land, the figure is the gauge's reading.",
+  "ja": "橋の家ギャラリー、風の記録帳。記録者はR・ハーグリーヴス。朝、昼、夕。Wは海から、Eは陸から、数字は風力計の目盛り。"
+ },
+ "city.bh.tx.wind.2": {
+  "ru": "Записи: З 4 · З 5 · ЮЗ 7 · ЮЗ 9 (порывы) · С 3 · З 4. Почерк мелкий, ровный, чернила синие. На полях: «К вечеру стихнет. Не стихло».",
+  "en": "Entries: W 4 · W 5 · SW 7 · SW 9 (gusts) · N 3 · W 4. Small even handwriting, blue ink. In the margin: \"Will drop by evening. Did not.\"",
+  "ja": "記録。W4・W5・SW7・SW9（突風）・N3・W4。小さくそろった字、青インク。余白に「夕方には弱まる。弱まらなかった」。"
+ },
+ "city.bh.tx.wind.3": {
+  "ru": "Дальше почерк стал крупнее и пляшет: «З 6. Колено. Вечером вместо меня смотрит Тхао». Страница в одном месте промокла и высохла волной.",
+  "en": "Further on the hand grows larger and wobbles: \"W 6. The knee. This evening Thao looks in my place.\" One spot of the page got wet and dried in a wave.",
+  "ja": "このあと字は大きくなり、揺れている。「W6。膝。夕方は私の代わりにタオが見る」。ページの一か所は濡れて、波のように乾いている。"
+ },
+ "city.bh.tx.wind.4": {
+  "ru": "Новая рука, детская, круглая: «Показание 7, стрелка у цифры дрожит. Записала Тхао А.» Через строку другая запись: «Показание 5, стрелка спокойная. Тхао».",
+  "en": "A new hand, a child's, round: \"Reading 7, the needle trembles by the figure. Written by Thao A.\" A line below: \"Reading 5, the needle calm. Thao.\"",
+  "ja": "新しい筆跡。子供の丸い字。「風力7、針は数字のそばで震える。記録　タオ・A」。一行おいて「風力5、針は静か。タオ」。"
+ },
+ "city.bh.tx.wind.5": {
+  "ru": "Две руки чередуются: ровная и детская. Внизу страницы приписка рукой Харгривза: «Спасибо за стрелку. Теперь у дома два наблюдателя. Р. Х.»",
+  "en": "Two hands alternate: an even one and a child's. At the foot of the page a note in Hargreaves's hand: \"Thanks for the needle. The house has two observers now. R. H.\"",
+  "ja": "二つの筆跡が交互に続く。整った字と子供の字。ページの下にハーグリーヴスの筆で。「針をありがとう。この家には観測者が二人になった。R・H」。"
+ },
+ "city.bh.tx.wind.6": {
+  "ru": "Последняя запись ещё не высохла: «З 5. Записано гостем с галереи». Под ней пустая строка и карандаш, привязанный ниткой, — на случай, если придёт ещё кто-то.",
+  "en": "The last entry is still not dry: \"W 5. Entered by a visitor from the gallery.\" Below it an empty line and a pencil tied on a thread, in case somebody else comes.",
+  "ja": "最後の記録はまだ乾いていない。「W5。ギャラリーの客が記入」。その下は空の行と、糸で結んだ鉛筆。次に誰か来たときのために。"
+ },
+ "city.bh.tx.diary.title": {
+  "ru": "Дневник Рохана Харгривза",
+  "en": "Rohan Hargreaves's diary",
+  "ja": "ロハン・ハーグリーヴスの日記"
+ },
+ "city.bh.tx.diary.1": {
+  "ru": "Тетрадь в клеёнчатой обложке. Карандашом на обложке: «Дорога, которую не построили». Внутри ровные строчки, как проведённые по линейке.",
+  "en": "A notebook in an oilcloth cover. In pencil on the front: \"The road that was never built\". Inside, level lines as if drawn with a ruler.",
+  "ja": "ビニールクロス装のノート。表紙に鉛筆で「造られなかった道」。中の行は定規で引いたように整っている。"
+ },
+ "city.bh.tx.diary.2": {
+  "ru": "«Тридцать один год я считал уклоны. Я знаю, как дорога ложится на склон, и знаю, как склон отвечает дороге. Этот дом стоит на склоне и ничего не просит. За это я его люблю».",
+  "en": "\"For thirty-one years I calculated gradients. I know how a road lies on a slope and how the slope answers the road. This house stands on a slope and asks for nothing. That is why I love it.\"",
+  "ja": "「三十一年、私は勾配を計算した。道が斜面にどう載るか、斜面が道にどう答えるかを知っている。この家は斜面に立ち、何も求めない。だから私はこの家が好きだ」。"
+ },
+ "city.bh.tx.diary.3": {
+  "ru": "«Из окна видно мол и луч маяка. Раньше я думал: маяк — про корабли. Теперь думаю: про тех, кто смотрит. Ветер записываю не для науки, а чтобы знать, что день был».",
+  "en": "\"From the window I see the pier and the beam. I used to think a lighthouse was about ships. Now I think it is about those who watch. I write the wind down not for science but to know that the day happened.\"",
+  "ja": "「窓から桟橋と灯台の光が見える。昔は、灯台は船のためのものだと思っていた。今は、見つめる者のためだと思う。風を記すのは学問のためでなく、その日があったと知るためだ」。"
+ },
+ "city.bh.tx.diary.4": {
+  "ru": "«Колено подвело. На галерею не поднялся. Попросил соседскую девочку, Тхао, взглянуть на указатель. Она повторяет цифры вслух, как считалку. Цифры верные».",
+  "en": "\"The knee failed me. I did not go up to the gallery. I asked the neighbour's girl, Thao, to look at the gauge. She repeats the numbers aloud like a counting rhyme. The numbers are right.\"",
+  "ja": "「膝がだめになった。ギャラリーには上がれなかった。隣の子、タオに風力計を見てもらった。彼女は数字を数え歌のように声に出す。数字は正しい」。"
+ },
+ "city.bh.tx.diary.5": {
+  "ru": "«Если кто-то прочтёт это — вот просьба. Не жалеть меня. Заходить, пить чай, рассказывать, что видно из окон. И вписывать стрелку в журнал: он на столе. Я проверю почерк».",
+  "en": "\"If somebody reads this, here is a request. Don't pity me. Come in, drink tea, tell me what is visible from the windows. And enter the needle in the log: it is on the desk. I shall check the handwriting.\"",
+  "ja": "「もし誰かがこれを読んだら、お願いがある。私を哀れまないでほしい。訪ねて、お茶を飲んで、窓から何が見えるか話してほしい。そして風力計の針を記録帳に書いてほしい。机の上にある。筆跡は私が確かめる」。"
+ },
+ "city.bh.tx.diary.6": {
+  "ru": "«Сегодня вышел сам. Лифт, скамья у южного окна, чайка без ленты. Всё на месте. Записал З 5. Пишу здесь, чтобы не забыть: надо поблагодарить Тхао».",
+  "en": "\"I went out myself today. The lift, the bench by the south window, a gull without a ribbon. Everything in its place. Wrote W 5. I write here so as not to forget: I must thank Thao.\"",
+  "ja": "「今日は自分で出た。エレベーター、南の窓のベンチ、リボンのないカモメ。すべてあるべきところに。W5と記した。忘れないようにここに書く。タオに礼を言わねばならない」。"
+ },
+ "city.bh.tx.letters.title": {
+  "ru": "Письма из Тбилиси",
+  "en": "Letters from Tbilisi",
+  "ja": "トビリシからの手紙"
+ },
+ "city.bh.tx.letters.1": {
+  "ru": "Конверт с грузинской маркой, внутри три письма. Первое: «Дорогой Рохан! У нас тоже есть дом-мост: министерство дорог сидит в нём, как рука в рукаве. Но галереи у нас нет, и лифт останавливается этажом ниже мечты. Ты счастливчик. Леван».",
+  "en": "An envelope with a Georgian stamp, three letters inside. The first: \"Dear Rohan! We have a bridge house too: the Ministry of Highways sits in it like a hand in a sleeve. But we have no gallery and the lift stops one floor below the dream. You are a lucky man. Levan.\"",
+  "ja": "ジョージアの切手の封筒に手紙が三通。最初の一通。「親愛なるロハン。こちらにも橋の家があって、道路省が袖の中の手のように入っています。でもギャラリーはなく、エレベーターは夢の一階下で止まります。君は幸運な男だ。レヴァン」"
+ },
+ "city.bh.tx.letters.2": {
+  "ru": "«Ты спрашиваешь, как моя спина. Отвечаю: бетон терпит, и я терплю. Привези мне морской гальки с вашего пляжа. Положу на подоконник и буду смотреть, как она сохнет. Что-то в этом есть».",
+  "en": "\"You ask how my back is. I answer: concrete endures and so do I. Bring me some sea pebbles from your beach. I'll put them on the sill and watch them dry. There is something in it.\"",
+  "ja": "「腰の具合を訊くのですね。コンクリートが耐えるように、私も耐えています。そちらの浜の小石を持ってきてください。窓台に置いて、乾くのを眺めます。そこには何かがあります」"
+ },
+ "city.bh.tx.letters.3": {
+  "ru": "«Помнишь дорогу, которую нам не дали построить: серпантин по склону? Я нашёл чертёж в архиве. Его не выбросили: лежит в папке «Для вдохновения». Смеюсь второй день. Приезжай осенью, посмотрим вместе».",
+  "en": "\"Do you remember the road they would not let us build, the hairpin on the slope? I found the drawing in the archive. They did not throw it out: it lies in a folder marked 'For inspiration'. I've been laughing for two days. Come in autumn and we'll look at it together.\"",
+  "ja": "「覚えているか、造らせてもらえなかったあの道、斜面のつづら折りを。資料室で図面を見つけた。捨てられておらず、『着想のために』というフォルダに入っていた。もう二日笑っている。秋に来てくれ、一緒に見よう」"
+ },
+ "city.bh.tx.view.title": {
+  "ru": "Что видно с галереи",
+  "en": "What one sees from the gallery",
+  "ja": "ギャラリーから見えるもの"
+ },
+ "city.bh.tx.view.1": {
+  "ru": "Южный торец, большое окно: море, мол с маяком, набережная, площадь с фонтаном. Это ось города: от окна до воды по прямой. Летом закат встаёт ровно на неё.",
+  "en": "The south end, the big window: the sea, the pier with its lighthouse, the embankment, the square with the fountain. That is the town's axis, a straight line from this window to the water. In summer the sunset stands exactly on it.",
+  "ja": "南の端の大きな窓。海、灯台のある桟橋、遊歩道、噴水の広場。これが町の軸で、この窓から水際まで一直線に伸びる。夏の夕日はぴたりとそこに沈む。"
+ },
+ "city.bh.tx.view.2": {
+  "ru": "Длинные окна смотрят вдоль террасы. С южной стороны видны башни-капсулы на склоне, с северной — круглая крыша санатория и ребристые своды зала. Скамьи обращены к ним, а не друг к другу.",
+  "en": "The long windows look along the terrace. From the south side you see the capsule towers on the slope, from the north the sanatorium's round roof and the hall's ribbed vaults. The benches face them, not each other.",
+  "ja": "長い窓は段丘に沿って見渡す。南側には斜面のカプセル塔、北側にはサナトリウムの丸屋根とホールのリブの入った丸屋根。ベンチは互いにではなく、そちらを向いている。"
+ },
+ "city.bh.tx.view.3": {
+  "ru": "Северный торец: склон, сосновый лес, верхняя станция канатной дороги. Бинокль на стойке; в ясный день виден ястреб над гребнем. Телескопы у южной стены: море и город с канатной дорогой.",
+  "en": "The north end: the slope, the pine forest, the upper cable-car station. Binoculars on a stand; on a clear day a hawk is visible over the ridge. Telescopes at the south wall: the sea, and the town with its cable car.",
+  "ja": "北の端。斜面、松林、ロープウェイの上駅。スタンドの双眼鏡で、晴れた日には稜線の上のタカが見える。南の壁には望遠鏡があり、海とロープウェイのある町が見える。"
+ },
+ "city.coll.bridge_sights.title": {
+  "ru": "Что видно с галереи",
+  "en": "Sights from the gallery",
+  "ja": "ギャラリーからの眺め"
+ },
+ "quest.home_hargreaves.title": {
+  "ru": "Ветер для Харгривза",
+  "en": "Wind for Hargreaves",
+  "ja": "ハーグリーヴスさんの風"
+ },
+ "quest.home_hargreaves.desc": {
+  "ru": "На доске в холле Дома-моста висит просьба из 4-03: Рохан Харгривз, бывший дорожный инженер, не спускается третий день из-за колена, а ветер на галерее записывать надо. Лифт идёт на четвёртый этаж и на галерею; дверь у него открыта.",
+  "en": "On the board in the Bridge House lobby hangs a request from 4-03: Rohan Hargreaves, a retired road engineer, hasn't come down for three days because of his knee, and the wind on the gallery must be recorded. The lift goes to the fourth floor and to the gallery; his door stands open.",
+  "ja": "橋の家のロビーの掲示板に4-03号室からのお願いが貼ってある。元道路技師のロハン・ハーグリーヴスは膝のせいで三日下りてこないが、ギャラリーの風は記録しなくてはならない。エレベーターは四階とギャラリーに行く。彼のドアは開いている。"
+ },
+ "quest.home_hargreaves.done": {
+  "ru": "Харгривз долго читал мою цифру, кивнул и сказал: «Почерк у вас приличный. Пятёрка — это ровно то, что я думал». Налил чаю и придвинул банку: «Гостям — берите».",
+  "en": "Hargreaves read my figure for a long time, nodded and said: \"Decent handwriting. A five is exactly what I thought.\" He poured tea and pushed the tin across: \"Help yourself.\"",
+  "ja": "ハーグリーヴスさんは僕の書いた数字を長く見つめ、うなずいた。「いい字だ。5、まさに私が思ったとおりだ」。お茶を注ぎ、缶を押してよこす。「どうぞ、お持ちなさい」。"
+ },
+ "quest.home_hargreaves.diary.log": {
+  "ru": "Его дневник лежит на чертёжном столе у окна. Там про дорогу, которую не построили, и про то, о чём он просит гостей.",
+  "en": "His diary lies on the drafting table by the window. It is about the road that was never built and what he asks of his guests.",
+  "ja": "彼の日記は窓辺の製図台にある。造られなかった道と、客に頼んでいることが書かれている。"
+ },
+ "quest.home_hargreaves.diary.obj": {
+  "ru": "Прочесть дневник в квартире 4-03",
+  "en": "Read the diary in flat 4-03",
+  "ja": "4-03号室で日記を読む"
+ },
+ "quest.home_hargreaves.wind.log": {
+  "ru": "Надо подняться на галерею и посмотреть на указатель ветра у северного окна. Цифру запомнить.",
+  "en": "I need to go up to the gallery and look at the wind gauge by the north window. Remember the figure.",
+  "ja": "ギャラリーに上がって、北の窓の風力計を見よう。数字を覚えておこう。"
+ },
+ "quest.home_hargreaves.wind.obj": {
+  "ru": "Прочесть указатель ветра на галерее",
+  "en": "Read the wind gauge on the gallery",
+  "ja": "ギャラリーの風力計を読む"
+ },
+ "quest.home_hargreaves.log.log": {
+  "ru": "Журнал ветра лежит на столе у Харгривза. Цифру нужно вписать, пока она в памяти.",
+  "en": "The wind log lies on Hargreaves's desk. The figure must be entered while it is fresh.",
+  "ja": "風の記録帳はハーグリーヴスさんの机にある。数字は覚えているうちに書き込もう。"
+ },
+ "quest.home_hargreaves.log.obj": {
+  "ru": "Вписать показание в журнал ветра",
+  "en": "Enter the reading in the wind log",
+  "ja": "風の記録帳に数値を書き込む"
+ }
+}

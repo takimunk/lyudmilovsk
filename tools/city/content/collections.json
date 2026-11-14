@@ -1,0 +1,17 @@
+{
+ "_doc": "Collections and the closed state (docs/city_interiors.md \"Collections\", \"Closed\"). collections: {\"<set>\": {\"title\": key, \"pieces\": [...]}} (pieces left out: every piece something in town gives); an act, a line or a rule gives a stamp with \"collect\": \"<set>/<piece>\" (a line \"<set>/*\": the line key's last part; a rule \"{plot}\": the thing's plot). closed_by: {\"<plot id | building type | plot kind>\": {\"<thing kind> | *\": \"<act id or line key>\"}}: what a thing says while its plot is shut (a rule's or an act's own \"closed\" wins).",
+ "collections": {
+  "shelves": {"title": "city.coll.shelves.title"},
+  "films": {"title": "city.coll.films.title"},
+  "records": {"title": "city.coll.records.title"},
+  "kiosks": {"title": "city.coll.kiosks.title"}
+ },
+ "closed_by": {
+  "saucer_pavilion": {"seat": "city.closed.cafe.chairs", "counter": "city.closed.cafe.bar", "machine": "city.closed.cafe.machine"},
+  "workers_club": {"seat": "city.closed.club.seats", "screen": "city.closed.club.screen", "counter": "city.closed.club.counter"},
+  "cog_club": {"seat": "city.closed.cog.seats", "play": "city.closed.cog.games"},
+  "capsule_library": {"shelf": "city.closed.library.shelf", "counter": "city.closed.library.desk"},
+  "shell_market": {"counter": "city.closed.market.stall"},
+  "department_store": {"counter": "city.closed.store.counter"}
+ }
+}

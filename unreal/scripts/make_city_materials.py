@@ -5,6 +5,15 @@
                3 boards, 4 masonry courses, 5 gravel, 6 rubber; y = slab size m) drawn over UV0 (metres on the surface);
                lamp glass glows from UV2.x x the Glow parameter (the lamps' MID, 0 by day, 1 at night)
 
+  M_City_Atlas the interiors' picture atlas (blender/city/interior_kit.py, slot CT_Atlas): textures/city/atlas_D.jpg
+               as T_City_Atlas_D (sRGB), untinted and untiled, under /Game/City/Materials; import_city.py makes it too
+
+  M_City_WindowIn  a town window seen from its room (blender/city, slot CT_WindowIn: the second card of B.window, facing
+               in): unlit, masked (round windows), emissive only. By day a bright sky pane (paler toward the horizon a
+               third of the way up, a hint of sea blue under it), dark blue at night, after the sun's height from
+               SkyAtmosphereLightDirection(0) (ALyudSky's sun): global, no parameter set per frame or per building.
+               import_city.py makes it too.
+
 ALyudPublicSpaces sets Glow. Run headless:
   UnrealEditor-Cmd <uproject> -run=pythonscript -script=unreal/scripts/make_city_materials.py -unattended
 """
@@ -139,11 +148,92 @@ def prop():
     return g.finish()
 
 
+REPO = os.path.normpath(os.path.join(HERE, "..", ".."))
+ATLAS = os.path.join(REPO, "textures", "city", "atlas_D.jpg")
+
+
+def atlas(dest=DEST + "/Materials"):
+    """M_City_Atlas: the picture atlas on UV0 as it is, no tint, no tiling, no flip. Orientation: the kit writes
+    Blender UVs with v up from the image's bottom row (v = 1 - y / 4096); the glTF export stores 1 - v, and Unreal
+    samples from the top row, so the cells land upright with no flip here. Cells have 6 px of edge padding: the
+    default mips are fine at room distances (a little bleed from the neighbouring cell past ~20 m)."""
+    import academ_materials as AM
+    tex = AM.import_image(ATLAS, dest, "T_City_Atlas_D")
+    tex.set_editor_property("srgb", True)
+    tex.set_editor_property("compression_settings", unreal.TextureCompressionSettings.TC_DEFAULT)
+    tex.set_editor_property("lod_group", unreal.TextureGroup.TEXTUREGROUP_WORLD)
+    S.eal.save_loaded_asset(tex, False)
+    return AM.build_picture(dest + "/M_City_Atlas", tex)
+
+
+# out: emissive (linear). UV = UV0 (0..1 over the pane, 2..3 round; glTF stored 1 - v, so the pane's top is UV.y 0),
+# L = the direction toward the sun. The stops are build_city.WINDOW_IN_DAY / WINDOW_IN_NIGHT (keep in step).
+WINDOW_IN = r"""
+float2 p = float2(frac(UV.x), saturate(1.0 - UV.y));
+float y = p.y;
+float d = Daylight >= 0.0 ? saturate(Daylight) : smoothstep(SunLo, SunHi, L.z);
+float3 day = y < 0.30 ? lerp(float3(0.50, 0.66, 0.78), float3(0.93, 0.96, 0.98), y / 0.30)
+           : (y < 0.42 ? lerp(float3(0.93, 0.96, 0.98), float3(1.0, 1.0, 0.98), (y - 0.30) / 0.12)
+                       : lerp(float3(1.0, 1.0, 0.98), float3(0.58, 0.76, 0.98), (y - 0.42) / 0.58));
+float3 night = y < 0.35 ? lerp(float3(0.008, 0.012, 0.03), float3(0.03, 0.045, 0.10), y / 0.35)
+                        : lerp(float3(0.03, 0.045, 0.10), float3(0.012, 0.02, 0.055), (y - 0.35) / 0.65);
+// a low sun warms the horizon band a little
+float dusk = saturate(d * (1.0 - d) * 4.0) * saturate(1.0 - abs(y - 0.36) * 2.0);
+day *= lerp(float3(1.0, 1.0, 1.0), float3(1.0, 0.70, 0.48), dusk);
+float e = min(min(p.x, 1.0 - p.x), min(p.y, 1.0 - p.y));
+float frame = lerp(0.12, 1.0, smoothstep(Frame * 0.6, Frame, e));
+return lerp(night * NightIntensity, day * DayIntensity, d) * frame;
+"""
+
+WINDOW_IN_MASK = r"""
+float2 p = frac(UV);
+return UV.x > 1.5 ? (distance(p, float2(0.5, 0.5)) < 0.5 ? 1.0 : 0.0) : 1.0;
+"""
+
+
+class _InPlace(S.Graph):
+    """S.Graph's helpers on a material emptied in place (academ_materials.master): meshes and instances that
+    already point at it stay valid on a re-run."""
+
+    def __init__(self, m):  # noqa: D401  (no super(): it would delete and recreate the asset)
+        self.m = m
+        self.y = 0
+
+
+def window_in(dest=DEST + "/Materials"):
+    """M_City_WindowIn (see the module doc). Emissive levels are parameters: DayIntensity (default 80: a pane well over
+    a lamp-lit wall, so it reads blown out against it) and NightIntensity; Daylight >= 0 overrides the sun (tests).
+    The emission lights nothing: ALyudCityBuilding keeps its Windows component out of Lumen and the distance fields."""
+    import academ_materials as AM
+    if not S.eal.does_directory_exist(dest):
+        S.eal.make_directory(dest)
+    g = _InPlace(AM.master(dest + "/M_City_WindowIn"))
+    uv0 = g.node(X.MaterialExpressionTextureCoordinate, coordinate_index=0)
+    sun = g.node(X.MaterialExpressionSkyAtmosphereLightDirection, light_index=0)
+    col = g.custom(WINDOW_IN, [("UV", uv0), ("L", sun), ("DayIntensity", g.param("DayIntensity", 80.0)),
+                               ("NightIntensity", g.param("NightIntensity", 4.0)), ("Daylight", g.param("Daylight", -1.0)),
+                               ("SunLo", g.param("SunLo", -0.05)), ("SunHi", g.param("SunHi", 0.10)),
+                               ("Frame", g.param("Frame", 0.018))], out=F3, desc="WindowIn")
+    mask = g.custom(WINDOW_IN_MASK, [("UV", uv0)], out=F1, desc="RoundCut")
+    g.out(col, MP.MP_EMISSIVE_COLOR)
+    g.out(mask, MP.MP_OPACITY_MASK)
+    m = g.m
+    m.set_editor_property("shading_model", unreal.MaterialShadingModel.MSM_UNLIT)
+    m.set_editor_property("blend_mode", unreal.BlendMode.BLEND_MASKED)
+    m.set_editor_property("opacity_mask_clip_value", 0.5)
+    m.set_editor_property("two_sided", False)
+    AM.set_usage(m)
+    return g.finish()
+
+
 def build():
     if not S.eal.does_directory_exist(DEST):
         S.eal.make_directory(DEST)
     prop()
+    atlas()
+    window_in()
     unreal.log_warning("CITY MATERIALS done")
 
 
-build()
+if __name__ == "__main__":
+    build()

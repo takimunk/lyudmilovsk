@@ -1,0 +1,963 @@
+{
+ "_doc": "Saucer cafe, second pass (x_p_cafe.json): jukebox records by number, telescope by hour, espresso routine, cake of the weekday, window ledge by hour, guest book (daily, by game day), Kesha's perch and treat, record crate, regulars' chess, quest words cafe_kesha and cafe_guest. Russian is the source.",
+ "city.cafe.chess.prompt": {
+  "ru": "E — присесть к шахматистам",
+  "en": "E — sit down with the chess players",
+  "ja": "E：チェスの人たちの席につく"
+ },
+ "city.cafe.espresso.prompt": {
+  "ru": "E — посмотреть, как варят кофе",
+  "en": "E — watch the coffee being made",
+  "ja": "E：コーヒーを淹れるのを眺める"
+ },
+ "city.cafe.guestbook.prompt": {
+  "ru": "E — полистать книгу гостей",
+  "en": "E — leaf through the guest book",
+  "ja": "E：ゲストブックをめくる"
+ },
+ "city.cafe.pen.prompt": {
+  "ru": "E — оставить запись",
+  "en": "E — write an entry",
+  "ja": "E：一言書きこむ"
+ },
+ "city.cafe.kesha.prompt": {
+  "ru": "E — поговорить с Кешей",
+  "en": "E — talk to Kesha",
+  "ja": "E：ケーシャに話しかける"
+ },
+ "city.cafe.feed.prompt": {
+  "ru": "E — угостить Кешу семечками",
+  "en": "E — treat Kesha to sunflower seeds",
+  "ja": "E：ケーシャにひまわりの種をやる"
+ },
+ "city.cafe.juke.a1": {
+  "ru": "Кнопка «А-1»: вальс на пластинке, стёртой до серебра. Автомат вздыхает, скрипит, а потом выдаёт вальс так, будто всегда только это и умел.",
+  "en": "Button A-1: a waltz on a record worn to silver. The machine sighs, creaks, then gives out the waltz as if it had never done anything else.",
+  "ja": "ボタンA-1。銀色にすり減ったレコードのワルツ。ジュークボックスはため息をつき、きしんでから、ずっとこれしか知らなかったような顔でワルツを流す。"
+ },
+ "city.cafe.juke.a4": {
+  "ru": "«А-4», марш. Бариста, не поднимая головы, делает чуть тише: у окна кто-то читает газету, и ему мешает барабан.",
+  "en": "A-4, a march. Without looking up, the barista turns it down a notch: someone by the window is reading the paper and the drum is in his way.",
+  "ja": "A-4、行進曲。バリスタは顔も上げずに少し音を絞る。窓際で新聞を読んでいる人に、太鼓がじゃまなのだ。"
+ },
+ "city.cafe.juke.b1": {
+  "ru": "«Б-1»: песня про море на чужом языке. Пожилая пара за столиком замолкает на второй строчке и дослушивает до конца, держась за чашки.",
+  "en": "B-1: a song about the sea in a foreign language. An elderly couple at a table falls silent on the second line and listens to the end, holding on to their cups.",
+  "ja": "B-1。外国語の海の歌。テーブルの老夫婦は二行目で口をつぐみ、カップを握ったまま最後まで聴き入る。"
+ },
+ "city.cafe.juke.b5": {
+  "ru": "«Б-5»: твист. Стулья у ближнего столика вдруг начинают притопывать сами, а под ними ещё и ботинки.",
+  "en": "B-5: a twist. The chairs at the nearest table suddenly start tapping along by themselves, and there are shoes underneath them too.",
+  "ja": "B-5。ツイスト。いちばん近いテーブルの椅子が急に自分で足踏みを始める。その下には靴もある。"
+ },
+ "city.cafe.juke.c2": {
+  "ru": "«В-2»: вместо музыки голос диктора про погоду на побережье. Видимо, кто-то перепутал конверт. Дослушал до конца: завтра без осадков.",
+  "en": "C-2: instead of music, an announcer's voice reading the coastal weather. Someone must have mixed up the sleeve. I listened to the end: no rain tomorrow.",
+  "ja": "C-2。音楽のかわりに、沿岸の天気予報を読むアナウンサーの声。誰かがジャケットを取り違えたらしい。最後まで聞いた。明日は降らない。"
+ },
+ "city.cafe.juke.c6": {
+  "ru": "«В-6». Рядом от руки: «НЕ НАЖИМАТЬ». Нажал. Заиграла флейта, очень тихо, будто издалека. Теперь понятно, почему никто не нажимает.",
+  "en": "C-6. Next to it, by hand: \"DO NOT PRESS\". I pressed. A flute began, very quietly, as if from far away. Now I see why nobody presses it.",
+  "ja": "C-6。横に手書きで「押さないこと」。押してみた。とても小さな、遠くから聞こえるようなフルートが鳴り出す。誰も押さない理由がわかった。"
+ },
+ "city.cafe.juke.d3": {
+  "ru": "Третья кнопка слева, «Д-3»: мелодия, которую я искал, звучит целиком, без помех, до последней ноты. Бариста кивает: «Её просят чаще всех. Говорят, кто-то записывал её с эфира».",
+  "en": "The third button from the left, D-3: the tune I was looking for plays whole, with no static, to the last note. The barista nods: \"It's the most requested. They say someone taped it off the air.\"",
+  "ja": "左から三番目のボタン、D-3。探していた曲が、雑音なしで最後の一音まで流れる。バリスタがうなずく。「いちばんリクエストが多いんだ。誰かが放送から録音したらしいよ」"
+ },
+ "city.cafe.juke.g1": {
+  "ru": "Утром автомат негромкий: «Г-1», тихий вальсок под шипение кофемашины. Бариста кивает ему в такт и сама не замечает.",
+  "en": "In the morning the jukebox is quiet: G-1, a soft little waltz under the hiss of the coffee machine. The barista nods along without noticing.",
+  "ja": "朝のジュークボックスは控えめだ。G-1、コーヒーマシンのシューという音の下で小さなワルツ。バリスタは気づかないままリズムにうなずいている。"
+ },
+ "city.cafe.juke.g3": {
+  "ru": "Вечером автомат играет громче: «Г-3», фокстрот, и у лестницы кто-то уже притопывает, делая вид, что завязывает шнурок.",
+  "en": "In the evening the jukebox is louder: G-3, a foxtrot, and someone by the stairs is already tapping a foot, pretending to tie a shoelace.",
+  "ja": "夕方のジュークボックスは音が大きい。G-3、フォックストロット。階段のそばでもう誰かが、靴ひもを結ぶふりをして足でリズムを取っている。"
+ },
+ "city.cafe.tel.m1": {
+  "ru": "Утром труба показывает рыбачьи лодки: они возвращаются, и за каждой тянется белая нитка чаек. Одна чайка сидит на носу и никуда не торопится.",
+  "en": "In the morning the telescope shows the fishing boats coming home, each with a white thread of gulls behind it. One gull sits on a bow and is in no hurry at all.",
+  "ja": "朝の望遠鏡には帰ってくる漁船が見える。どの船も後ろにかもめの白い糸を引いている。一羽だけ船首にすわって、少しも急がない。"
+ },
+ "city.cafe.tel.m2": {
+  "ru": "На набережной поливают плитку из шланга. В трубе она блестит, как только что вымытая тарелка.",
+  "en": "Down on the promenade someone is hosing the paving. Through the telescope it shines like a freshly washed plate.",
+  "ja": "遊歩道の敷石にホースで水がまかれている。望遠鏡の中では洗いたてのお皿のように光る。"
+ },
+ "city.cafe.tel.d1": {
+  "ru": "Днём город в трубе как макет: канатная дорога ползёт от станции к станции, а крошечный велосипедист на набережной всё не доезжает до угла, пока я смотрю.",
+  "en": "By day the town in the lens is a scale model: the cable car crawls from station to station, and a tiny cyclist on the promenade never reaches the corner while I watch.",
+  "ja": "昼の町は望遠鏡の中で模型のようだ。ロープウェイが駅から駅へ這い、遊歩道の小さな自転車は、見ている間ずっと角にたどり着かない。"
+ },
+ "city.cafe.tel.d2": {
+  "ru": "Нашёл в трубе крышу санатория. На ней что-то сохнет: бельё или флаги, отсюда не разобрать. Может, и то и другое.",
+  "en": "I found the sanatorium roof in the lens. Something is drying on it: washing or flags, I can't tell from here. Maybe both.",
+  "ja": "望遠鏡で療養所の屋根を見つけた。何か干してある。洗濯物か旗か、ここからはわからない。両方かもしれない。"
+ },
+ "city.cafe.tel.s1": {
+  "ru": "К вечеру солнце ложится на воду, как желток на блюдце, и вода вокруг розовеет. Монетка кончилась раньше, чем закат.",
+  "en": "Toward evening the sun settles on the water like a yolk on a saucer, and the water around it turns pink. The coin ran out before the sunset did.",
+  "ja": "夕方、太陽は受け皿の黄身のように水の上に降り、まわりの水がばら色に染まる。夕焼けより先に、コインのほうが尽きた。"
+ },
+ "city.cafe.tel.s2": {
+  "ru": "На маяке уже зажгли огонь, а небо ещё светлое. В трубе луч похож на нитку, которую только что продели в иголку.",
+  "en": "The lighthouse lamp is lit while the sky is still bright. In the lens the beam looks like a thread just pulled through a needle.",
+  "ja": "空はまだ明るいのに、灯台にはもう火がともった。望遠鏡の中の光は、針に通したばかりの糸のようだ。"
+ },
+ "city.cafe.tel.n1": {
+  "ru": "Ночью луч маяка проходит в трубе медленно, как стрелка. Считаю: четыре секунды до следующего прохода.",
+  "en": "At night the lighthouse beam crosses the lens slowly, like a clock hand. I count: four seconds until the next sweep.",
+  "ja": "夜、灯台の光は時計の針のようにゆっくり望遠鏡を横切る。数えてみる。次に来るまで四秒。"
+ },
+ "city.cafe.tel.n2": {
+  "ru": "Окна на склоне горят по-разному: тёплые, голубые от телевизора и одно мигающее. Кто-то сигналит? Скорее всего, лампочка.",
+  "en": "The windows on the hillside burn in different ways: warm ones, blue ones from a TV, and one that blinks. Is somebody signalling? Most likely a bad bulb.",
+  "ja": "斜面の窓はそれぞれ違う色で灯っている。暖かい色、テレビの青、それに一つだけ点滅するもの。誰かが合図を送っている？　たぶん電球だ。"
+ },
+ "city.cafe.tel.n3": {
+  "ru": "Луны нет, зато в тёмном стекле окуляра на секунду отражается вся «Тарелка» изнутри: лампы, столики и я сам с глазом у трубы.",
+  "en": "No moon, but for a second the dark eyepiece reflects the whole Saucer from inside: the lamps, the tables, and me with my eye to the tube.",
+  "ja": "月はない。そのかわり、暗い接眼レンズに一瞬、「ソーサー」の内側がそっくり映る。ランプも、テーブルも、筒に目を当てた自分も。"
+ },
+ "city.cafe.esp.m1": {
+  "ru": "К восьми всё готово: стойка протёрта, машина прогрета, стулья стоят ножками вниз. Теперь бариста молча смотрит на манометр, как на барометр перед дальней дорогой.",
+  "en": "By eight everything is ready: the bar wiped, the machine warm, the chairs down on their legs. Now the barista silently watches the pressure gauge like a barometer before a long journey.",
+  "ja": "八時までに支度は整う。カウンターは拭かれ、マシンは温まり、椅子は脚を下ろしている。バリスタは長旅の前の気圧計のように、黙って圧力計を見つめる。"
+ },
+ "city.cafe.esp.m2": {
+  "ru": "Первую чашку утра варят не для гостей. Её ставят на край стойки, на блюдце, и она остывает, пока в зал не войдёт первый посетитель. Говорят, кафе сначала угощает само себя.",
+  "en": "The first cup of the morning is not for the guests. It is set on the edge of the bar on its saucer and left to cool until the first visitor comes in. They say the café treats itself first.",
+  "ja": "朝いちばんの一杯はお客のためではない。カウンターの端に受け皿ごと置かれ、最初の客が入ってくるまで冷めていく。カフェがまず自分自身をもてなすのだという。"
+ },
+ "city.cafe.esp.m3": {
+  "ru": "Кофе утрамбовывают одним коротким нажатием, ровно. Щелчок рычага, шипение, и в зале пахнет так, что стулья, кажется, придвигаются ближе.",
+  "en": "The grounds are tamped with one short, level press. A click of the lever, a hiss, and the hall smells so good the chairs seem to shuffle closer.",
+  "ja": "粉は一度、短く平らに押し固められる。レバーのカチリ、シューッという音。ホールにいい香りが広がって、椅子まで近寄ってくるようだ。"
+ },
+ "city.cafe.esp.d1": {
+  "ru": "В обед машина не умолкает: пар, щелчок, пар, щелчок. Чашки уезжают на подносе, а возвращаются пустыми, с ложечками в блюдцах.",
+  "en": "At lunchtime the machine never stops: steam, click, steam, click. The cups leave on a tray and come back empty, with spoons in the saucers.",
+  "ja": "昼どきのマシンは休む間もない。蒸気、カチリ、蒸気、カチリ。カップはお盆に乗って出ていき、空になってスプーンを受け皿に残して戻ってくる。"
+ },
+ "city.cafe.esp.d2": {
+  "ru": "Из носика медленно ползёт тёмная нитка. Если смотреть на неё дольше минуты, захочется и стакан воды, и вторую чашку.",
+  "en": "A dark thread creeps slowly from the spout. Watch it for over a minute and you want a glass of water and a second cup.",
+  "ja": "注ぎ口から黒い糸がゆっくり伸びる。一分以上見つめていると、水を一杯と、二杯目のコーヒーがほしくなる。"
+ },
+ "city.cafe.esp.e1": {
+  "ru": "К вечеру кофе варят реже, а пар идёт дольше. Пока течёт струйка, бариста смотрит в окно: сейчас там самое интересное.",
+  "en": "By evening the coffee is made less often and the steam lasts longer. While the stream runs, the barista looks out of the window: that is where the best part is now.",
+  "ja": "夕方になるとコーヒーを淹れる回数は減り、蒸気は長く続く。細い流れが落ちる間、バリスタは窓の外を見る。今はそこがいちばんおもしろい。"
+ },
+ "city.cafe.esp.e2": {
+  "ru": "На панели машины приклеен листок: «Манометр не стучать. Он нервный». Стрелка дрожит так, будто всё слышала.",
+  "en": "A note is taped to the machine's panel: \"Don't tap the gauge. It's nervous.\" The needle trembles as if it has heard everything.",
+  "ja": "マシンのパネルに紙が貼ってある。「圧力計を叩かないこと。神経質です」。針は、すべて聞いていたかのように震えている。"
+ },
+ "city.cafe.esp.n": {
+  "ru": "Машина остывает и тихо тикает. Утром её снова будут будить.",
+  "en": "The machine cools, ticking softly. In the morning it will be woken again.",
+  "ja": "マシンは冷めながら、小さくカチカチと鳴っている。朝になればまた起こされる。"
+ },
+ "city.cafe.cake.mon": {
+  "ru": "Понедельник: в витрине «Картошка» и два эклера. Эклеры, судя по ценнику, надеются дожить до вторника.",
+  "en": "Monday: the case holds a chocolate \"Potato\" and two eclairs. The eclairs, judging by the price tag, hope to last until Tuesday.",
+  "ja": "月曜日。ショーケースには「ポテト」というチョコ菓子とエクレアが二つ。値札を見るかぎり、エクレアは火曜日まで生き延びたがっている。"
+ },
+ "city.cafe.cake.tue": {
+  "ru": "Вторник: «Наполеон». Слои такие тонкие, что кажется, их кто-то пересчитывал пинцетом.",
+  "en": "Tuesday: Napoleon cake. The layers are so thin it looks as if someone counted them with tweezers.",
+  "ja": "火曜日。「ナポレオン」。層がとても薄くて、誰かがピンセットで数えたように見える。"
+ },
+ "city.cafe.cake.wed": {
+  "ru": "Среда: корзиночки с кремом и ягодой. На каждой ягода лежит ровно посередине, как печать.",
+  "en": "Wednesday: little cream baskets with a berry. Each berry sits exactly in the middle, like a seal.",
+  "ja": "水曜日。クリームとベリーのバスケット型タルト。ベリーはどれもちょうど真ん中に、判子のようにのっている。"
+ },
+ "city.cafe.cake.thu": {
+  "ru": "Четверг: слойки с яблоком. На ценнике приписано от руки: «Последняя, не стесняйтесь».",
+  "en": "Thursday: apple puffs. A hand-written line on the price tag: \"The last one, don't be shy.\"",
+  "ja": "木曜日。りんごのパイ。値札に手書きで「最後の一つ、遠慮なく」。"
+ },
+ "city.cafe.cake.fri": {
+  "ru": "Пятница: «Муравейник», коричневая горка с орехами. Малыш у витрины уже выбрал и теперь ждёт, пока выберет мама.",
+  "en": "Friday: the \"Anthill\", a brown mound with nuts. A small boy at the case has already chosen and is waiting for his mother to.",
+  "ja": "金曜日。「アリ塚」、ナッツをのせた茶色の山。ショーケースの前の男の子はもう決めていて、お母さんが決めるのを待っている。"
+ },
+ "city.cafe.cake.sat": {
+  "ru": "Суббота: торт «Тарелка», круглый, с глазурью и маленькой вафлей-спиралью сверху, как лестница. Берут целиком, к чаю.",
+  "en": "Saturday: the \"Saucer\" cake, round, glazed, with a small spiral wafer on top like the stair. People take it whole, for tea.",
+  "ja": "土曜日。ケーキ「ソーサー」。丸くて、つやがけがしてあり、上に階段のような小さならせん状ウエハースがのっている。お茶用にまるごと買われていく。"
+ },
+ "city.cafe.cake.sun": {
+  "ru": "Воскресенье: пирожные для всех на подносе с красной каймой. Табличка: «Берите по одному. В исключительных случаях по два».",
+  "en": "Sunday: pastries for everyone on a tray with a red rim. A card: \"One each, please. In exceptional cases, two.\"",
+  "ja": "日曜日。赤いふちのお盆に、みんなのためのお菓子。札には「お一人様一つまで。特別な場合は二つまで」。"
+ },
+ "city.cafe.ledge.m1": {
+  "ru": "Подоконник у стекла ещё прохладный, свет серый и мягкий. Внизу просыпается набережная: сначала поливальная машина, потом первый велосипед.",
+  "en": "The ledge by the glass is still cool, the light grey and soft. Below, the promenade wakes: first the street-washing truck, then the first bicycle.",
+  "ja": "ガラスのそばの窓台はまだひんやりして、光は灰色でやわらかい。下では遊歩道が目を覚ます。まず散水車、それから最初の自転車。"
+ },
+ "city.cafe.ledge.m2": {
+  "ru": "Кто-то оставил на подоконнике стакан с водой и веточку. Веточка уже пустила белый корешок.",
+  "en": "Somebody has left a glass of water with a twig in it on the ledge. The twig has already put out a white root.",
+  "ja": "誰かが窓台に水のコップと小枝を置いていった。小枝はもう白い根を出している。"
+ },
+ "city.cafe.ledge.d1": {
+  "ru": "Днём стекло нагрето, как плита, а ложки на блюдцах пускают зайчиков прямо на потолок. Сидеть здесь жарко и очень весело.",
+  "en": "By day the glass is warm as a stove, and the spoons on their saucers throw sunbeams on the ceiling. It is hot and very cheerful to sit here.",
+  "ja": "昼のガラスはストーブのように温かく、受け皿のスプーンが天井に光の斑点を投げる。ここに座ると暑くて、とても愉快だ。"
+ },
+ "city.cafe.ledge.d2": {
+  "ru": "На бумажной салфетке карандашом: «У окна лучше всего в семь вечера. Приходите». Подписи нет.",
+  "en": "On a paper napkin, in pencil: \"The window is best at seven in the evening. Do come.\" No signature.",
+  "ja": "紙ナプキンに鉛筆書き。「窓際は夜の七時がいちばんいい。ぜひ来てください」。署名はない。"
+ },
+ "city.cafe.ledge.s1": {
+  "ru": "Вот оно. К семи стекло становится медным, потом розовым, и каждая чашка отбрасывает длинную тень до самой лестницы. За соседними столиками все разом замолкают.",
+  "en": "There it is. By seven the glass turns copper, then pink, and every cup throws a long shadow all the way to the stairs. At the nearby tables everyone falls quiet at once.",
+  "ja": "来た。七時になるとガラスは銅色に、それからばら色になり、どのカップも階段まで届く長い影を落とす。近くのテーブルのみんなが、一度に静かになる。"
+ },
+ "city.cafe.ledge.s2": {
+  "ru": "На ладони лежит солнечный круг, ещё тёплый. Через минуту он сползёт на пол и пойдёт к лестнице, а я посижу рядом ещё немного.",
+  "en": "A disc of sun lies in my palm, still warm. In a minute it will slide to the floor and go toward the stairs, and I'll sit beside it a little longer.",
+  "ja": "手のひらに、まだ温かい太陽の円がのっている。一分もすれば床へ滑り落ちて階段のほうへ行くだろう。僕はもう少しその隣にいよう。"
+ },
+ "city.cafe.ledge.s3": {
+  "ru": "Лампа на подоконнике включена, но пока не нужна: света хватает. Бариста приглушила машину, чтобы не мешать. Вслух никто не говорит, но это называется «минута заката».",
+  "en": "The ledge lamp is on but not needed yet: there is light enough. The barista has quietened the machine so as not to disturb it. Nobody says it aloud, but this is called \"the minute of sunset\".",
+  "ja": "窓台のランプはついているが、まだ要らない。光は十分だ。バリスタはじゃましないようマシンを静かにしている。誰も口にしないけれど、これは「夕焼けの一分」と呼ばれている。"
+ },
+ "city.cafe.ledge.n1": {
+  "ru": "Ночью подоконник — самое тихое место в «Тарелке». В стекле отражаются лампы, и кажется, что снаружи висит ещё один зал, пустой и перевёрнутый.",
+  "en": "At night the ledge is the quietest place in the Saucer. The lamps reflect in the glass, and it seems another hall hangs outside, empty and upside down.",
+  "ja": "夜の窓台は「ソーサー」でいちばん静かな場所だ。ガラスにランプが映り、外にもう一つ、空っぽで逆さまのホールが浮かんでいるように見える。"
+ },
+ "city.cafe.ledge.n2": {
+  "ru": "Внизу огни набережной, выше звёзды, а между ними чёрная полоса моря. По ней ползёт один далёкий кораблик, и мне хочется помахать ему стаканом.",
+  "en": "Below, the promenade lights; above, the stars; between them a black strip of sea. One far-off boat crawls along it, and I feel like waving my glass at it.",
+  "ja": "下には遊歩道の明かり、上には星、その間に黒い海の帯。遠い小舟が一艘そこを這っていて、コップを振って合図したくなる。"
+ },
+ "city.cafe.book.0": {
+  "ru": "Первая страница, чернила выцвели: «Открыто. Кофе пахнет, лестница вьётся, а мы будто сидим внутри блюдца. Спасибо архитектору. — Первые гости».",
+  "en": "The first page, the ink faded: \"Open at last. The coffee smells, the stair spirals, and we seem to be sitting inside a saucer. Thanks to the architect. — The first guests.\"",
+  "ja": "最初のページ、インクは色あせている。「ついに開店。コーヒーが香り、階段がうずを巻き、私たちはお皿の中に座っているみたい。建築家に感謝。——最初のお客より」"
+ },
+ "city.cafe.book.1": {
+  "ru": "«Были с дочкой. Она потребовала мороженое три раза, и три раза нам было не жалко». Рядом нарисован рожок с тремя шариками.",
+  "en": "\"Came with my daughter. She demanded ice cream three times, and three times we didn't mind.\" Next to it, a cone with three scoops.",
+  "ja": "「娘と来ました。アイスを三回ねだられ、三回とも惜しくありませんでした」。横に三つ玉のコーンの絵。"
+ },
+ "city.cafe.book.2": {
+  "ru": "Зелёными чернилами, быстро: «Попугай сказал мне „Осторожно, двери закрываются“, и я отступил на шаг. Дверей тут нет. Спасибо, Кеша!»",
+  "en": "In green ink, in a hurry: \"The parrot told me 'Mind the doors, please' and I stepped back. There are no doors here. Thank you, Kesha!\"",
+  "ja": "緑のインクで急いで書いてある。「インコに『ドアが閉まります、ご注意ください』と言われて一歩さがりました。ここにドアはありません。ありがとう、ケーシャ！」"
+ },
+ "city.cafe.book.3": {
+  "ru": "«Сыграл с Профессором в шахматы. Проиграл за семь ходов. Он сказал: „Ничего, зато вы вовремя сдались“. Хорошая школа».",
+  "en": "\"Played chess with the Professor. Lost in seven moves. He said: 'Never mind, you resigned in good time.' A good school.\"",
+  "ja": "「教授とチェスを指しました。七手で負けました。教授いわく『気にしなさんな、いい頃合いで投了した』。いい学校です」"
+ },
+ "city.cafe.book.4": {
+  "ru": "Другой ручкой: «Дежурный по маяку. Заходил с вахты. Подтверждаю: из вашего окна виден мой луч. Отсюда он красивее, чем с моей стороны».",
+  "en": "In a different pen: \"Lighthouse keeper on duty. Dropped in off my watch. I confirm: my beam can be seen from your window. It looks better from here than from my side.\"",
+  "ja": "別のペンで。「灯台の当直です。見張りの合間に寄りました。お宅の窓から私の光が見えることを確認。こちらから見るほうが、私の側よりきれいです」"
+ },
+ "city.cafe.book.5": {
+  "ru": "Два почерка рядом, разные ручки: «Пришли оба. Сидели у окна до закрытия. Один рассказывал про помехи, другой про то, как давно не слышал голос без шума. Расплатились поровну. Помех не было. — И. и Г.»",
+  "en": "Two hands side by side, two pens: \"We both came. Sat by the window until closing. One told about the static, the other about how long it had been since he'd heard a voice without noise. Paid half and half. No static. — I. and G.\"",
+  "ja": "二つの筆跡が並ぶ、ペンも別々。「二人とも来ました。閉店まで窓際に座っていました。一人は雑音の話を、もう一人は雑音のない声を聞くのが久しぶりだという話をしました。割り勘。雑音はありませんでした。——I.とG.」"
+ },
+ "city.cafe.book.6": {
+  "ru": "В уголке страницы кто-то нарисовал тарелку с глазами и подписал: «Это мы». Ниже рукой бариста: «Оставляю как есть».",
+  "en": "In a corner of the page someone has drawn a saucer with eyes and written: \"This is us.\" Below, in the barista's hand: \"Leaving it as it is.\"",
+  "ja": "ページの隅に、誰かが目のついたお皿を描いて「これが私たち」と書いている。その下にバリスタの字で「このままにしておきます」。"
+ },
+ "city.cafe.book.7": {
+  "ru": "Свежая запись заведующей: «Страницы кончаются, скоро заведём новую книгу. Ручка рядом с книгой, а если нет мыслей, нарисуйте тарелку. Мы любим тарелки».",
+  "en": "A fresh entry by the manager: \"The pages are running out, we'll start a new book soon. The pen is next to the book, and if you've no thoughts, draw a saucer. We love saucers.\"",
+  "ja": "店長の新しい書きこみ。「ページがもうすぐ尽きるので、新しい本を用意します。ペンは本のそばにあります。言葉が浮かばなければ、お皿を描いてください。私たちはお皿が好きです」"
+ },
+ "city.cafe.pen.1": {
+  "ru": "Написал: «Был. Хорошо думается, пока под ногами лестница». Подумал и поставил дату.",
+  "en": "I wrote: \"Was here. It's good for thinking, with a staircase underfoot.\" Thought a moment and added the date.",
+  "ja": "「来ました。足の下に階段があると、よく考えごとができます」と書いた。少し考えて日付も添えた。"
+ },
+ "city.cafe.pen.2": {
+  "ru": "Не знал, что написать, и нарисовал тарелку. Получилась скорее шляпа. Подписал: «Тарелка (вид снизу)».",
+  "en": "I didn't know what to write, so I drew a saucer. It came out more like a hat. I captioned it: \"Saucer (view from below).\"",
+  "ja": "何を書けばいいかわからず、お皿を描いた。どちらかというと帽子になった。「ソーサー（下から見たところ）」と添えた。"
+ },
+ "city.cafe.pen.3": {
+  "ru": "Приписал в углу: «Кеша, привет!» с восклицательным знаком. Подумал и поставил второй.",
+  "en": "I added in a corner: \"Hi, Kesha!\" with an exclamation mark. Thought and added a second.",
+  "ja": "隅に「ケーシャ、こんにちは！」と書き足した。少し考えて、感嘆符をもう一つ。"
+ },
+ "city.cafe.pen.4": {
+  "ru": "Под чужой записью приписал: «Согласен». С чем, понял только когда закрывал книгу, но стирать не стал.",
+  "en": "Under someone else's entry I wrote: \"Agreed.\" What with, I only worked out as I closed the book, but I didn't rub it out.",
+  "ja": "誰かの書きこみの下に「同感です」と書いた。何に同感なのかは本を閉じるときにやっとわかったが、消さないでおいた。"
+ },
+ "city.cafe.kesha.0": {
+  "ru": "Кеша сидит на жёрдочке у края стойки и смотрит одним глазом так, будто проверяет билет. Потом объявляет: «Следующая — „Тарелка“». Мы уже на ней, но спорить не стал.",
+  "en": "Kesha sits on his perch at the end of the bar and looks with one eye as if checking a ticket. Then he announces: \"Next stop, the Saucer.\" We're already on it, but I didn't argue.",
+  "ja": "ケーシャはカウンターの端の止まり木にいて、切符を確かめるように片目でこちらを見る。それから告げる。「次は、ソーサー」。もう着いているけれど、言い返さなかった。"
+ },
+ "city.cafe.kesha.1": {
+  "ru": "Сегодня Кеша молчит и только покачивает головой в такт автомату. Бариста шепчет: «У него отпуск после гастролей».",
+  "en": "Today Kesha is silent and only bobs his head to the jukebox. The barista whispers: \"He's on leave after the tour.\"",
+  "ja": "今日のケーシャは黙って、ジュークボックスに合わせて首を振るだけ。バリスタがささやく。「ツアーのあとで休暇中なんだ」"
+ },
+ "city.cafe.kesha.2": {
+  "ru": "«Осторожно, двери закрываются!» — объявляет Кеша, когда кто-то идёт к лестнице. Дверей в зале нет, но все слегка пригибаются.",
+  "en": "\"Mind the doors, please!\" Kesha announces when someone heads for the stairs. There are no doors in the hall, but everyone ducks a little.",
+  "ja": "階段に向かう人がいると、ケーシャは告げる。「ドアが閉まります、ご注意ください！」　ホールにドアはないのに、みんな少し身をかがめる。"
+ },
+ "city.cafe.kesha.3": {
+  "ru": "Кеша выучил новое слово и говорит его только тогда, когда никто не просит. Слово — «Горизонт». Кажется, ему просто нравится, как оно звучит.",
+  "en": "Kesha has learned a new word and says it only when nobody asks. The word is \"Horizon\". I think he just likes the sound of it.",
+  "ja": "ケーシャは新しい言葉を覚えて、誰も頼んでいないときにだけ言う。「地平線」。たぶん響きが気に入っているだけだ。"
+ },
+ "city.cafe.kesha.4": {
+  "ru": "Кеша долго смотрит на меня, потом очень отчётливо говорит: «Билетик». Я показываю пустые ладони. Кеша разочарованно отворачивается.",
+  "en": "Kesha studies me for a long time, then says very clearly: \"Ticket.\" I show him my empty palms. Kesha turns away, disappointed.",
+  "ja": "ケーシャは長いことこちらを見て、はっきりと言う。「切符」。空っぽの手のひらを見せると、がっかりしたように顔をそむけた。"
+ },
+ "city.cafe.kesha.5": {
+  "ru": "Рядом с жёрдочкой блюдце, на нём маркером: «Для Кеши. Семечки. Но сначала скажите „Конечная“». Кеша ждёт, не моргая.",
+  "en": "Beside the perch is a saucer, marked in felt pen: \"For Kesha. Sunflower seeds. But first say 'Terminus'.\" Kesha waits without blinking.",
+  "ja": "止まり木のそばに受け皿があり、マジックで「ケーシャ用。ひまわりの種。ただし先に『終点です』と言うこと」。ケーシャは瞬きもせず待っている。"
+ },
+ "city.cafe.kesha.6": {
+  "ru": "Кеша привык ко мне: больше не отворачивается, а чуть наклоняет голову. Бариста говорит, так он делает для тех, кто принесёт семечки.",
+  "en": "Kesha has got used to me: he no longer turns away but tilts his head a little. The barista says he does that for people who bring seeds.",
+  "ja": "ケーシャはもう僕に慣れた。顔をそむけず、少し首をかしげる。バリスタによれば、種を持ってきた人にだけそうするのだという。"
+ },
+ "city.cafe.feed.1": {
+  "ru": "Высыпал семечки в блюдце и сказал «Конечная». Кеша дождался, пока я договорю, расколол одну, подумал и объявил: «Просьба освободить вагоны». Бариста засмеялась и достала из витрины пирожное: «Нашедшему — за счёт кафе. Ты же его, считай, нашёл снова».",
+  "en": "I poured the seeds into the saucer and said \"Terminus\". Kesha waited until I had finished, cracked one, thought, and announced: \"Please vacate the cars.\" The barista laughed and took a pastry from the case: \"Finder gets one on the house. You've found him again, more or less.\"",
+  "ja": "種を受け皿にあけて「終点です」と言った。ケーシャは僕が言い終わるのを待ち、一粒割って考えてから告げた。「車内からお降りください」。バリスタは笑ってショーケースからお菓子を取り出す。「見つけた人にはサービス。君はもう一度見つけたようなものだしね」"
+ },
+ "city.cafe.feed.2": {
+  "ru": "Кеша клюнул семечко и сказал: «Спасибо за поездку». Раньше он так не говорил. Бариста поставила передо мной пирожное на блюдечке.",
+  "en": "Kesha pecked a seed and said: \"Thank you for the ride.\" He never used to say that. The barista set a pastry on a saucer in front of me.",
+  "ja": "ケーシャは種をついばんで言った。「ご乗車ありがとうございました」。前はそんなこと言わなかったのに。バリスタが僕の前にお菓子をのせた受け皿を置いた。"
+ },
+ "city.cafe.feed.3": {
+  "ru": "Кеша съел одно семечко, а остальные спрятал под жёрдочку «до следующей остановки». Пирожное за счёт кафе уже лежит на стойке.",
+  "en": "Kesha ate one seed and hid the rest under his perch \"until the next stop\". The pastry on the house is already waiting on the bar.",
+  "ja": "ケーシャは種を一粒食べて、残りは「次の停車駅まで」止まり木の下に隠した。サービスのお菓子はもうカウンターに置かれている。"
+ },
+ "city.cafe.crate.1": {
+  "ru": "Ящик с конвертами: пластинки стоят на ребре, как книги в библиотеке. На корешках карандашом номера кнопок. Номера давно не совпадают с кнопками.",
+  "en": "A crate of sleeves: the records stand on edge like books in a library. On the spines, in pencil, the button numbers. The numbers stopped matching the buttons long ago.",
+  "ja": "ジャケットの木箱。レコードは図書館の本のように縦に並ぶ。背に鉛筆でボタン番号。番号とボタンはとうの昔に合わなくなっている。"
+ },
+ "city.cafe.crate.2": {
+  "ru": "Конверт с надписью «Забыли в апреле». Внутри открытка с морем и пластинка с тем же морем, только слышным.",
+  "en": "A sleeve marked \"Left behind in April\". Inside, a postcard of the sea and a record of the same sea, only audible.",
+  "ja": "「四月の忘れ物」と書かれたジャケット。中には海の絵はがきと、同じ海を聴けるレコードが入っている。"
+ },
+ "city.cafe.crate.3": {
+  "ru": "Одна пластинка подписана «Д-3 (по просьбам, не уносить)». Кто-то дважды обвёл «не уносить». Значит, уносили.",
+  "en": "One record is labelled \"D-3 (by request, do not take away)\". Someone has underlined \"do not take away\" twice. So it has been taken away.",
+  "ja": "一枚のレコードに「D-3（リクエスト多数、持ち出し禁止）」。誰かが「持ち出し禁止」に二重線を引いている。つまり持ち出されたことがある。"
+ },
+ "city.cafe.crate.4": {
+  "ru": "В глубине потрёпанный конверт: «Лучшему слушателю „Тарелки“. Спасибо, что не перебивал. — Оркестр санатория».",
+  "en": "Deep in the crate, a shabby sleeve: \"To the Saucer's best listener. Thank you for never interrupting. — The Sanatorium Orchestra.\"",
+  "ja": "箱の奥に古びたジャケット。「ソーサー最高の聴き手へ。口をはさまないでくれてありがとう。——療養所楽団」"
+ },
+ "city.cafe.crate.5": {
+  "ru": "С краю приклеен листок: «Автомат берёт монету. Пуговицы не брать: Кеша проверял». Рядом отпечаток клюва.",
+  "en": "A note is stuck on the side: \"The machine takes coins. Not buttons: Kesha tested it.\" Next to it, a beak print.",
+  "ja": "端に紙が貼ってある。「ジュークボックスはコイン専用。ボタンは不可。ケーシャ検証済み」。横にくちばしの跡。"
+ },
+ "city.cafe.chess.1": {
+  "ru": "Сел за доску вместо Капитана: он сказал, что ему «надо к маяку по делам», хотя, кажется, просто надоело проигрывать. Профессор двигает пешки так, будто извиняется. Через двадцать ходов извиняться стал я.",
+  "en": "I took the Captain's place at the board: he said he had \"business at the lighthouse\", though he was probably just tired of losing. The Professor moves his pawns as if apologising. Twenty moves later I was the one apologising.",
+  "ja": "船長の代わりに盤の前に座った。船長は「灯台に用がある」と言ったが、たぶん負け続けるのに飽きたのだ。教授は謝るようにポーンを動かす。二十手後には、謝っているのは僕のほうだった。"
+ },
+ "city.cafe.chess.2": {
+  "ru": "После уроков доску занимают двое школьников. Играют быстро, шумно, шёпотом на каждом ходу. Меня пустили на третью партию как новичка «с поля».",
+  "en": "After school the board belongs to two schoolboys. They play fast and loud, whispering at every move. They let me into the third game as a newcomer from outside.",
+  "ja": "放課後の盤は男の子二人のものだ。速く、にぎやかに、一手ごとにささやきながら指す。三局目に「よそから来た新人」として入れてもらった。"
+ },
+ "city.cafe.chess.3": {
+  "ru": "В выходные шахматы переезжают на ближний столик: здесь играют на кофе. Проигравший заказывает. Я проиграл, но Капитан заказал сам: «Новичкам первый кофе бесплатно».",
+  "en": "At weekends the chess moves to the nearest table: here they play for coffee. The loser orders. I lost, but the Captain ordered himself: \"A newcomer's first coffee is on us.\"",
+  "ja": "週末のチェスは近くのテーブルに移る。ここではコーヒーを賭けて指す。負けた人が注文する。僕は負けたが、船長が自分で注文した。「新人の最初の一杯はおごりだ」"
+ },
+ "city.cafe.chess.4": {
+  "ru": "Профессор ставит мне мат на девятом ходу, молча, не снимая шляпы. Потом так же молча расставляет фигуры назад и показывает, где я мог выиграть. Оказывается, на шестом.",
+  "en": "The Professor mates me on the ninth move, silently, without taking off his hat. Then, just as silently, he sets the pieces back and shows where I could have won. It turns out, on the sixth.",
+  "ja": "教授は帽子を脱がず、黙って九手目で僕を詰ませた。それから同じように黙って駒を戻し、どこで勝てたかを示す。六手目だったそうだ。"
+ },
+ "city.cafe.chess.5": {
+  "ru": "Капитан играет только чёрными и только одним дебютом. Он зовёт его «защитой маяка». Что это значит, не объясняет, а выигрывает так, что обидеться не получается.",
+  "en": "The Captain plays only black and only one opening. He calls it the \"Lighthouse Defence\". He doesn't explain what it means, and wins in such a way that you can't take offence.",
+  "ja": "船長は黒番しか持たず、定跡も一つだけ。それを「灯台の守り」と呼ぶ。意味は説明しないし、腹も立たないような勝ち方をする。"
+ },
+ "city.cafe.chess.6": {
+  "ru": "Партию прервал попугай, объявив «Конечная». Закончили вничью: все посмотрели на Кешу и забыли, чья очередь.",
+  "en": "The game was interrupted by the parrot announcing \"Terminus\". We finished in a draw: everyone looked at Kesha and forgot whose move it was.",
+  "ja": "対局は、インコの「終点です」で中断した。結果は引き分け。みんなケーシャを見て、誰の手番かを忘れてしまった。"
+ },
+ "city.cafe.cook.prompt": {
+  "ru": "E — спросить повара про блюдо дня",
+  "en": "E — ask the cook about the dish of the day",
+  "ja": "E：料理人に今日のおすすめを聞く"
+ },
+ "city.cafe.cook.mon": {
+  "ru": "Повар, не оборачиваясь: «Понедельник, суп-лапша. Бабушкин рецепт, бабушку не спрашивайте».",
+  "en": "The cook, without turning round: \"Monday, noodle soup. My grandmother's recipe; don't ask my grandmother.\"",
+  "ja": "料理人は振り向かずに言う。「月曜は麺のスープ。祖母のレシピだ。祖母には聞かないでくれ」"
+ },
+ "city.cafe.cook.tue": {
+  "ru": "«Вторник: котлеты с пюре. Пюре делаю сам, масла не жалею, диетологов прошу не смотреть».",
+  "en": "\"Tuesday: cutlets and mash. I make the mash myself and don't spare the butter; dieticians are asked not to look.\"",
+  "ja": "「火曜はカツレツとマッシュ。マッシュは自分で作るし、バターは惜しまない。栄養士は見ないでくれ」"
+ },
+ "city.cafe.cook.wed": {
+  "ru": "«Среда: рыба с картошкой. Рыбу принесли утром с причала, ещё спорила».",
+  "en": "\"Wednesday: fish and potatoes. The fish came from the pier this morning, still arguing.\"",
+  "ja": "「水曜は魚とじゃがいも。魚は朝、桟橋から届いた。まだ文句を言っていたよ」"
+ },
+ "city.cafe.cook.thu": {
+  "ru": "«Четверг: голубцы. Сегодня, пожалуй, лучшие в районе. Завтра будут просто хорошие».",
+  "en": "\"Thursday: stuffed cabbage. Probably the best in the district today. Tomorrow merely good.\"",
+  "ja": "「木曜はロールキャベツ。今日はたぶん界隈でいちばんの出来。明日はただの上出来だ」"
+ },
+ "city.cafe.cook.fri": {
+  "ru": "«Пятница: сырники. К ним сметана, но кто помнит про сметану, тот и берёт».",
+  "en": "\"Friday: syrniki. Sour cream comes with them, but only whoever remembers to ask gets it.\"",
+  "ja": "「金曜はシルニキ。サワークリームも付くが、覚えていて頼んだ人だけだ」"
+ },
+ "city.cafe.cook.sat": {
+  "ru": "«Суббота: плов на всех. Кто пришёл раньше, тому со дна, там самое вкусное».",
+  "en": "\"Saturday: pilaf for everyone. Whoever comes first gets the bottom of the pot, the best part.\"",
+  "ja": "「土曜はみんなのプロフ。早く来た人が鍋の底の分をもらう。いちばんおいしいところだ」"
+ },
+ "city.cafe.cook.sun": {
+  "ru": "«В воскресенье я не готовлю. Я только разогреваю то, что оставил в субботу, и называю это домашней кухней».",
+  "en": "\"On Sundays I don't cook. I only warm up what I left from Saturday and call it home cooking.\"",
+  "ja": "「日曜は料理しない。土曜の残りを温めて、家庭料理と呼んでいるだけだ」"
+ },
+ "quest.cafe_kesha.title": {
+  "ru": "Конечная",
+  "en": "Terminus",
+  "ja": "終点です"
+ },
+ "quest.cafe_kesha.desc": {
+  "ru": "На листке у меню написано, что попугай Кеша вернулся сам. Он любит семечки и слово «Конечная». Надо проверить.",
+  "en": "A sheet under the menu says Kesha the parrot has come back on his own. He likes sunflower seeds and the word \"Terminus\". Worth checking.",
+  "ja": "メニューの下の紙に、インコのケーシャが自分で帰ってきたと書いてある。ひまわりの種と「終点です」という言葉が好きらしい。確かめてみよう。"
+ },
+ "quest.cafe_kesha.seeds.log": {
+  "ru": "Нужны семечки. Говорят, их продают на рынке.",
+  "en": "I need sunflower seeds. They say you can buy them at the market.",
+  "ja": "ひまわりの種が要る。市場で売っているらしい。"
+ },
+ "quest.cafe_kesha.seeds.obj": {
+  "ru": "Достать семечки",
+  "en": "Get some sunflower seeds",
+  "ja": "ひまわりの種を手に入れる"
+ },
+ "quest.cafe_kesha.perch.log": {
+  "ru": "Семечки в кармане. Пойду к жёрдочке на краю стойки в «Тарелке» и посмотрю на Кешу.",
+  "en": "Seeds in my pocket. I'll go to the perch at the end of the bar in the Saucer and take a look at Kesha.",
+  "ja": "種はポケットの中。「ソーサー」のカウンターの端の止まり木へ行って、ケーシャを見てみよう。"
+ },
+ "quest.cafe_kesha.perch.obj": {
+  "ru": "Поговорить с Кешей на жёрдочке у стойки",
+  "en": "Talk to Kesha on his perch by the bar",
+  "ja": "カウンターの止まり木のケーシャに話しかける"
+ },
+ "quest.cafe_kesha.feed.log": {
+  "ru": "Кеша смотрит на меня одним глазом. На блюдце сказано: сначала «Конечная», потом семечки.",
+  "en": "Kesha is watching me with one eye. The saucer says: first \"Terminus\", then the seeds.",
+  "ja": "ケーシャは片目でこちらを見ている。受け皿には「先に『終点です』、それから種」とある。"
+ },
+ "quest.cafe_kesha.feed.obj": {
+  "ru": "Угостить Кешу семечками",
+  "en": "Treat Kesha to the seeds",
+  "ja": "ケーシャに種をやる"
+ },
+ "quest.cafe_kesha.done": {
+  "ru": "Пирожное за счёт кафе. Кеша объявил последнюю станцию вслух, а потом мне показалось, что он добавил «до встречи».",
+  "en": "A pastry on the house. Kesha announced the last stop aloud, and then I thought he added \"See you soon\".",
+  "ja": "お菓子はカフェのおごり。ケーシャは最後の駅をはっきり告げ、そのあと「またね」と付け足したように聞こえた。"
+ },
+ "quest.cafe_guest.title": {
+  "ru": "Страница в книге гостей",
+  "en": "A page in the guest book",
+  "ja": "ゲストブックの一ページ"
+ },
+ "quest.cafe_guest.desc": {
+  "ru": "Пока листал книгу гостей у лестницы в «Тарелке», понял: страницы скоро кончаются, а моей записи там нет.",
+  "en": "Leafing through the guest book by the stairs in the Saucer, I realised the pages are running out and my entry is not there.",
+  "ja": "「ソーサー」の階段のそばでゲストブックをめくっていて気づいた。ページはもうすぐ尽きるのに、僕の書きこみはまだない。"
+ },
+ "quest.cafe_guest.sign.log": {
+  "ru": "Ручка рядом. Если нет мыслей, можно нарисовать тарелку.",
+  "en": "The pen is right there. If I have no thoughts, I can draw a saucer.",
+  "ja": "ペンはすぐそこにある。言葉が浮かばなければ、お皿を描けばいい。"
+ },
+ "quest.cafe_guest.sign.obj": {
+  "ru": "Оставить запись в книге гостей",
+  "en": "Write an entry in the guest book",
+  "ja": "ゲストブックに一言書く"
+ },
+ "quest.cafe_guest.done": {
+  "ru": "Записал. Бариста, проходя мимо, заглянула через плечо и кивнула: «Теперь вы тоже наши».",
+  "en": "Done. The barista, passing, glanced over my shoulder and nodded: \"Now you're one of ours.\"",
+  "ja": "書いた。通りがかったバリスタが肩ごしにのぞいてうなずいた。「これであなたも私たちの仲間ね」"
+ },
+ "city.xtx.tarelka_guest_book.title": {
+  "ru": "Книга отзывов кафе «Тарелка»",
+  "en": "The Guest Book of the Saucer Café",
+  "ja": "カフェ「ソーサー」のゲストブック"
+ },
+ "city.xtx.tarelka_guest_book.p2_1": {
+  "ru": "Понедельник, 8:10. «Пришла раньше всех, чтобы выпить кофе до начала недели. Неделя уже началась, но кофе подали всё равно, спасибо. В витрине «Картошка» и два эклера. Взяла «Картошку» и пообещала себе не думать о контрольных. Не получилось, но «Картошка» вкусная. — Учительница из школы на второй террасе».",
+  "en": "Monday, 8:10. \"I came before anyone else to have a coffee before the week began. The week had already begun, but they served the coffee anyway, thank you. In the case: the Potato cake and two éclairs. I took the Potato and promised myself not to think about the tests. I failed, but the Potato is delicious. — A teacher from the school on the second terrace.\"",
+  "ja": "月曜、八時十分。「だれよりも早く来て、一週間が始まる前にコーヒーを飲みました。一週間はもう始まっていましたが、コーヒーは出してもらえました。ありがとう。ショーケースには『ポテト』というケーキとエクレアが二つ。『ポテト』を選び、テストのことは考えないと自分に約束しました。守れませんでしたが、『ポテト』はおいしかった。——二段目のテラスにある学校の先生」"
+ },
+ "city.xtx.tarelka_guest_book.p2_2": {
+  "ru": "Вторник. «Взял «Наполеон». Слои такие тонкие, что я пересчитал и сбился на сороковом. Официантка сказала, что их шестьдесят четыре, и не соврала: проверено вилкой. С судоверфи, обед пятнадцать минут, но тут опоздал на двадцать. Начальник поймёт: я принесу ему кусочек. — Слесарь, пятый разряд».",
+  "en": "Tuesday. \"I had the Napoleon. The layers are so thin that I counted and lost count at forty. The waitress said there are sixty-four and she didn't lie: checked with a fork. From the shipyard, lunch is fifteen minutes, but I'm twenty late. The boss will understand: I'm bringing him a slice. — Fitter, fifth grade.\"",
+  "ja": "火曜。「ナポレオンを食べた。層が薄くて、数えたら四十で数えまちがえた。店員は六十四だと言い、嘘ではなかった。フォークで確かめた。造船所から、昼休みは十五分だが、二十分遅れている。親方にはひと切れ持っていくから、わかってくれるだろう。——五級の機械工」"
+ },
+ "city.xtx.tarelka_guest_book.p2_3": {
+  "ru": "Среда. «Корзиночки с ягодой, и на каждой ягода лежит ровно посередине. Мой сын (шесть лет) сказал, что так выглядят настоящие печати, и съел печать. Потом попросил ещё одну: на всякий случай, чтобы документы были в порядке. Вторую мы разделили. Спасибо за архитектуру и за ягоду. — Папа и сын».",
+  "en": "Wednesday. \"Little baskets with a berry, and on each the berry sits exactly in the middle. My son (six) said that is what real seals look like, and ate the seal. Then he asked for another, just in case, to keep the papers in order. We shared the second. Thank you for the architecture and for the berry. — Dad and son.\"",
+  "ja": "水曜。「ベリーののったタルト。どれもベリーがちょうど真ん中にのっている。うちの息子（六歳）は、本物の判子はこういうものだと言って、判子を食べた。それから念のため、書類が揃うようにもう一つ頼んだ。二つ目は半分こにした。建築とベリーに感謝。——父と息子」"
+ },
+ "city.xtx.tarelka_guest_book.p2_4": {
+  "ru": "Четверг. «Слойка с яблоком, а на ценнике приписано от руки «последняя, не стесняйтесь». Я постеснялся. Минуту. Потом взял. Яблоко внутри тёплое, как будто его только что вынули из чьей-то ладони. Заметил, что в зале сегодня тихо: все слушают маяк в окне. — Дежурный по маяку, после смены».",
+  "en": "Thursday. \"An apple puff pastry, and on the price tag, added by hand: 'last one, don't be shy'. I was shy. For a minute. Then I took it. The apple inside is warm, as if just taken out of someone's palm. I noticed the hall is quiet today: everyone is listening to the lighthouse in the window. — The lighthouse duty man, after his shift.\"",
+  "ja": "木曜。「りんごのパイ。値札に手書きで『最後の一つ、遠慮なく』。遠慮した。一分間だけ。それから取った。中のりんごは、だれかの手のひらから取り出したばかりのように温かい。今日はホールが静かだ。みんな窓の中の灯台に耳を傾けている。——灯台の当直、勤務明けに」"
+ },
+ "city.xtx.tarelka_guest_book.p2_5": {
+  "ru": "Пятница. «Муравейник: коричневая горка с орехами, и ни одного муравья. Я проверила: в нашем возрасте проверяешь. Подруга взяла себе такой же, потому что «одной тебе не доверю». Просидели два часа и ни разу не говорили о делах. Домой шли медленно, с коробочкой. Оставляю запись, чтобы потом проверить, правда ли так было. — Две подруги».",
+  "en": "Friday. \"Anthill: a brown mound with nuts and not a single ant. I checked: at our age you check. My friend took the same, because 'I can't trust you with it alone'. We sat for two hours and not once talked about business. We walked home slowly, with a little box. I leave this entry so that I can later check whether it really was so. — Two friends.\"",
+  "ja": "金曜。「アリ塚。くるみののった茶色の山、アリは一匹もいない。確かめた。この年になると確かめる。友人も同じものを選んだ。『あなた一人には任せられない』からだそうだ。二時間座って、一度も仕事の話をしなかった。小さな箱を持って、ゆっくり歩いて帰った。あとで本当にそうだったか確かめるために、この記入を残す。——二人の友人」"
+ },
+ "city.xtx.tarelka_guest_book.p2_6": {
+  "ru": "Суббота. «Взяли торт «Тарелка» целиком, к чаю: круглый, с глазурью и вафлёй сверху, как лестница. Разрезали вшестером, и каждому досталось ровно столько, чтобы захотеть ещё. Бабушка сказала, что это называется «культура потребления». Попугай объявил следующую остановку, и мы все засмеялись. — Шесть человек, три поколения».",
+  "en": "Saturday. \"We took the whole Saucer cake for tea: round, glazed, with a wafer on top like a staircase. Six of us cut it, and each got exactly enough to want more. Grandmother said this is called 'culture of consumption'. The parrot announced the next stop and we all laughed. — Six people, three generations.\"",
+  "ja": "土曜。「ケーキ『ソーサー』を、お茶用にまるごと買った。丸くて、つやがけがあり、上に階段のようなウエハースがのっている。六人で切り分けて、一人ひとり、もっと食べたくなるちょうどの量が当たった。祖母は、これを『消費の文化』というのだと言った。インコが次の停車駅を告げ、みんなで笑った。——六人、三世代」"
+ },
+ "city.xtx.tarelka_guest_book.p2_7": {
+  "ru": "Воскресенье. «Пирожные на подносе с красной каймой, и табличка: «Берите по одному. В исключительных случаях по два». Я решил, что мой случай исключительный. Потом посмотрел на очередь за мной и понял, что у всех случай исключительный. Взял одно. Оно оказалось такое, что исключительным стал я. — Читатель этой книги».",
+  "en": "Sunday. \"Pastries on a tray with a red rim, and a sign: 'Take one each. In exceptional cases, two.' I decided my case was exceptional. Then I looked at the queue behind me and understood that everybody's case is exceptional. I took one. It turned out to be the kind that made me exceptional. — A reader of this book.\"",
+  "ja": "日曜。「赤い縁の盆にのったお菓子と、札。『お一人一つ。特別な場合は二つ』。自分の場合は特別だと思った。それから、うしろの行列を見て、みんなが特別なのだとわかった。一つにした。それは、自分のほうが特別になるようなお菓子だった。——この本の読者」"
+ },
+ "city.xtx.tarelka_guest_book.p4_1": {
+  "ru": "Утренняя запись, рукой бариста. «Если вы читаете это утром, вы из тех, кто видит, как зажигается свет на маяке. Не на закате, а на рассвете, когда фонарь всё ещё горит, но уже стесняется. Я стою у окна с первой чашкой и думаю, что вот так бы и все дни: чтобы кто-то тихо гас, когда всходит другое. Приходите завтра, повторим».",
+  "en": "A morning entry, in the barista's hand. \"If you are reading this in the morning, you are one of those who see the light go on at the lighthouse. Not at sunset but at dawn, when the lamp is still burning but already shy. I stand at the window with my first cup and think that all days should be like this: someone quietly going out as another light rises. Come tomorrow, we'll do it again.\"",
+  "ja": "朝の記入、バリスタの筆跡。「これを朝に読んでいるなら、あなたは灯台の光がつくところを見る人です。日没ではなく夜明けに、灯りがまだ点いていながら、もう恥ずかしそうにしているとき。私は最初の一杯を持って窓辺に立ち、毎日がこうならいい、と思います。別の光がのぼるとき、だれかが静かに消えていくように。また明日来てください。くり返しましょう」"
+ },
+ "city.xtx.tarelka_guest_book.p4_2": {
+  "ru": "Вечерняя запись, чужим почерком, торопливо. «Здесь хорошо молчать. Заходишь с улицы, садишься у окна, и город внизу медленно зажигает огни по одному, а ты никому ничего не должен. Я пришёл написать про работу, а написал вот это. Книга взяла. Спасибо. Работу допишу дома». Рядом приписано круглым почерком: «Мы знаем. Приходите ещё».",
+  "en": "An evening entry, in a stranger's hand, written in haste. \"It is good to be silent here. You come in from the street, sit by the window, and the town below slowly lights its lamps one by one, and you owe no one anything. I came to write about work and wrote this instead. The book took it. Thank you. I'll finish the work at home.\" Beside it, in a round hand: \"We know. Come again.\"",
+  "ja": "夕方の記入、見知らぬ人の筆跡で、急いで書かれている。「ここは黙っているのにいい場所です。通りから入って窓辺に座ると、下の町がゆっくりと灯りを一つずつともし、あなたはだれにも何も負っていません。仕事のことを書こうと思って来たのに、これを書いてしまいました。本が受け取ってくれました。ありがとう。仕事は家で仕上げます」。その横に丸い字で。「わかっています。また来てくださいね」"
+ },
+ "city.xtx.tarelka_menu.title": {
+  "ru": "Меню кафе «Тарелка» (карта с загнутым уголком)",
+  "en": "Menu of the Saucer Café (a card with a bent corner)",
+  "ja": "カフェ「ソーサー」のメニュー（角の折れたカード）"
+ },
+ "city.xtx.tarelka_menu.1": {
+  "ru": "НАПИТКИ И ПРОЧЕЕ. Кофе — 30. Чай — 15. Тархун — 18. Вода — 20. Мороженое — 30. Пирожок — 18. Печенье — 20. Внизу мелом: «Кофе подаём с блюдцем, потому что мы «Тарелка» и обязаны. Если вы просите «обычный», бариста уже знает какой. Если вы у нас впервые, спросите «обычный» и посмотрите, что будет. Обычно получается хорошо».",
+  "en": "DRINKS AND THE REST. Coffee 30. Tea 15. Tarragon soda 18. Water 20. Ice cream 30. Pie 18. Biscuits 20. At the bottom in chalk: \"We serve coffee with a saucer, because we are the Saucer and must. If you ask for 'the usual', the barista already knows which. If you are here for the first time, ask for 'the usual' and see what happens. Usually it turns out well.\"",
+  "ja": "飲みものそのほか。コーヒー30。お茶15。タラゴン・ソーダ18。水20。アイスクリーム30。ピロシキ18。クッキー20。いちばん下にチョークで。「コーヒーは受け皿つきでお出しします。うちは『ソーサー』だから、そうせねばなりません。『いつもの』と頼めば、バリスタはどれかもうわかっています。はじめての方は『いつもの』と頼んで、どうなるか見てください。たいていうまくいきます」"
+ },
+ "city.xtx.tarelka_menu.p2_1": {
+  "ru": "БЛЮДО ДНЯ. Понедельник: суп-лапша. Рецепт бабушкин, бабушку не спрашивать. Лапша тонкая, бульон прозрачный, сверху укроп, который повар кладёт, не глядя, и потому всегда ровно столько. К лапше полагается ломоть хлеба. Хлеб у нас с нижней террасы, там пекут с четырёх утра, и на корочке бывает мука, как иней.",
+  "en": "DISH OF THE DAY. Monday: noodle soup. Grandmother's recipe; don't ask grandmother. The noodles are thin, the broth clear, and on top dill that the cook adds without looking, and therefore always exactly enough. Noodles come with a slice of bread. Our bread is from the lower terrace, where they bake from four in the morning, and the crust sometimes has flour on it like frost.",
+  "ja": "本日の一品。月曜、麺のスープ。祖母のレシピなので、祖母には聞かないこと。麺は細く、だしは澄み、上にはディル。料理人が見ずにのせるので、いつもちょうどいい量になる。麺には一切れのパンがつく。パンは下のテラスから来るもので、朝四時から焼いている。皮に、霜のように粉がついていることがある。"
+ },
+ "city.xtx.tarelka_menu.p2_2": {
+  "ru": "БЛЮДО ДНЯ. Вторник: котлеты с пюре. Пюре повар делает сам, масла не жалеет, диетологов просит не смотреть. Котлеты румяные, сочные, подаются горячими: если остыли, значит, вы заговорились, и это комплимент компании. К ним огурец, солёный по-домашнему, с чесноком и смородиновым листом, и не спрашивайте, откуда лист. Откуда надо.",
+  "en": "DISH OF THE DAY. Tuesday: cutlets with mashed potato. The cook makes the mash himself, doesn't spare the butter, and asks dieticians not to look. The cutlets are golden and juicy, served hot: if they have gone cold, you got to talking, which is a compliment to the company. With them a home-pickled cucumber with garlic and a blackcurrant leaf; don't ask where the leaf comes from. From where it should.",
+  "ja": "本日の一品。火曜、カツレツとマッシュポテト。マッシュは料理人が自分で作り、バターを惜しまず、栄養士には見ないでほしいと頼んでいる。カツレツはきつね色で、肉汁たっぷり、熱々で出る。冷めていたら、おしゃべりに夢中になったということで、それは同席者への賛辞だ。添えるのは家庭風の漬けきゅうり。ニンニクとカシスの葉入り。葉がどこから来たのかは聞かないで。来るべきところからだ。"
+ },
+ "city.xtx.tarelka_menu.p2_3": {
+  "ru": "БЛЮДО ДНЯ. Среда: рыба с картошкой. Рыбу принесли утром с причала, и она ещё спорила. Её жарят целиком или кусками, как скажет повар в зависимости от рыбы и настроения. Картошка отварная, с маслом, зеленью и честным словом. Лимон подаётся на блюдце, но выжимать его необязательно: многие просто смотрят на лимон и успокаиваются.",
+  "en": "DISH OF THE DAY. Wednesday: fish with potatoes. The fish was brought from the pier in the morning and was still arguing. It is fried whole or in pieces, as the cook decides by the fish and his mood. The potatoes are boiled, with butter, herbs and a word of honour. The lemon comes on a saucer but squeezing it is optional: many simply look at the lemon and calm down.",
+  "ja": "本日の一品。水曜、魚とじゃがいも。魚は朝、桟橋から運ばれてきて、まだ言い争っていた。丸ごとか切り身で揚げるかは、魚と気分を見て料理人が決める。じゃがいもはゆでて、バターとハーブと誓いの言葉を添えて。レモンは受け皿で出るが、搾るかどうかは自由。レモンを見るだけで落ち着く人も多い。"
+ },
+ "city.xtx.tarelka_menu.p2_4": {
+  "ru": "БЛЮДО ДНЯ. Четверг: голубцы. Сегодня, пожалуй, лучшие в районе, завтра будут просто хорошие: повар в этом честен. Лист капусты нежный, фарш с рисом, соус томатный и чуть сладкий. Подаются со сметаной, а сметана у нас такая, что хочется добавить ложку к чаю. Не добавляйте: чай обидится.",
+  "en": "DISH OF THE DAY. Thursday: stuffed cabbage. Today probably the best in the district, tomorrow merely good: the cook is honest about it. The cabbage leaf is tender, the filling meat and rice, the sauce tomato and slightly sweet. Served with sour cream, and our sour cream is the kind that makes you want to add a spoon to your tea. Don't: the tea will be offended.",
+  "ja": "本日の一品。木曜、ロールキャベツ。今日はたぶん界隈でいちばんの出来。明日はただの上出来。料理人はそこに正直だ。キャベツの葉はやわらかく、中身は肉と米、ソースはトマトでほんのり甘い。サワークリームを添えて出す。うちのサワークリームは、お茶に一さじ入れたくなるほどだが、入れないで。お茶が気を悪くする。"
+ },
+ "city.xtx.tarelka_menu.p2_5": {
+  "ru": "БЛЮДО ДНЯ. Пятница: сырники. Со сметаной, но кто помнит про сметану, тот и берёт. Золотистые, мягкие внутри, с ванильным запахом, который идёт по залу раньше официантки. Подаются по три на тарелку, и хорошо бы остановиться на трёх: четвёртый тоже будет, но ради него придётся сесть подольше. Что, впрочем, и есть главный смысл кафе.",
+  "en": "DISH OF THE DAY. Friday: syrniki, curd fritters. With sour cream, but he who remembers the sour cream is the one who takes it. Golden, soft inside, with a vanilla smell that travels through the hall before the waitress does. Served three to a plate, and it would be good to stop at three: a fourth will also appear, but for it you will have to sit longer. Which is, after all, the main point of a café.",
+  "ja": "本日の一品。金曜、シルニキ（カッテージチーズのパンケーキ）。サワークリームつきだが、サワークリームを覚えている人だけがもらう。きつね色で、中はやわらかく、バニラの香りがホールを、店員より先に歩いていく。一皿に三つ。三つで止めるのがよいが、四つ目もやって来て、そのためにはもっと長く座ることになる。それこそがカフェの、いちばんの意味でもある。"
+ },
+ "city.xtx.tarelka_menu.p2_6": {
+  "ru": "БЛЮДО ДНЯ. Суббота: плов на всех. Кто пришёл раньше, тому со дна: там самое вкусное, корочка, с чесночной головкой в середине. Подаётся большой общей горкой, и разделить её надо честно. Это, видимо, лучший способ узнать человека: по тому, кому он пододвинул тарелку. Повар утверждает, что у него это работает как проверка. Проверенные приходят снова.",
+  "en": "DISH OF THE DAY. Saturday: plov for everyone. Whoever came earlier gets the bit from the bottom: that is the tastiest, the crust, with a head of garlic in the middle. It is served as one big shared mound, and it must be divided fairly. That is probably the best way to get to know a person: by whom he pushes the plate toward. The cook claims it works for him as a test. Those who pass come again.",
+  "ja": "本日の一品。土曜、みんなのためのプロフ。先に来た人には底の部分。いちばんおいしい、おこげの部分で、真ん中にはニンニクが一玉入っている。大きな共有の山で出されるので、公平に分けなければならない。それは人を知るいちばんいい方法かもしれない。だれのほうへ皿を押しやるかで。料理人は、これが自分には試験の役目を果たすと言う。合格した人は、また来る。"
+ },
+ "city.xtx.tarelka_menu.p2_7": {
+  "ru": "БЛЮДО ДНЯ. Воскресенье: повар не готовит. Он только разогревает то, что осталось от субботы, и называет это домашней кухней. Что именно осталось, зависит от того, как шла суббота. Если шла хорошо, останется мало. Если шла отлично, не останется совсем, и тогда он делает яичницу, и она тоже домашняя. Воскресенье в «Тарелке» — это день, когда всё дозволено, кроме спешки.",
+  "en": "DISH OF THE DAY. Sunday: the cook does not cook. He only warms up what is left from Saturday and calls it home cooking. What exactly is left depends on how Saturday went. If it went well, little is left. If splendidly, nothing at all, and then he makes fried eggs, which are also homemade. Sunday at the Saucer is the day when everything is allowed except hurrying.",
+  "ja": "本日の一品。日曜、料理人は料理をしない。土曜の残りを温めて、家庭料理と呼んでいるだけだ。何が残っているかは、土曜がどうだったかによる。よかったなら少し残る。すばらしかったなら何も残らず、そのときは目玉焼きを作り、それも家庭料理だ。「ソーサー」の日曜は、急ぐこと以外は何をしてもいい日だ。"
+ },
+ "city.xtx.tarelka_menu.4": {
+  "ru": "Внизу, мелким шрифтом. «Просьба к гостям: попугая не кормить ничем, кроме семечек, и только если сказали «Конечная». Телескоп у окна один, поэтому по очереди и без споров. Автомат берёт монету, пуговицы не берёт. Блюдечки возвращайте на стойку, они помнят, откуда они. Если что-то не понравилось, скажите нам, а не двери. Дверь у нас вращающаяся и принимает всё на свой счёт».",
+  "en": "Below, in small print. \"A request to guests: don't feed the parrot anything but sunflower seeds, and only if you said 'Terminus'. There is one telescope by the window, so take turns, without arguments. The jukebox takes a coin, not a button. Return saucers to the bar; they remember where they came from. If something displeased you, tell us, not the door. Our door is a revolving one and takes everything personally.\"",
+  "ja": "いちばん下に、小さな字で。「お客さまへのお願い。インコには、ひまわりの種以外は与えず、『終点です』と言った人にだけ。窓辺の望遠鏡は一つなので、順番に、言い争わずに。ジュークボックスは硬貨を受けつけ、ボタンは受けつけません。受け皿はカウンターへ戻してください。自分がどこから来たか覚えていますから。気に入らないことがあれば、ドアではなく私たちに。うちのドアは回転ドアで、何でも自分のことだと受け取ります」"
+ },
+ "city.xtx.kesha_phrasebook.title": {
+  "ru": "Разговорник Кеши (тетрадь бариста, обложка в семечках)",
+  "en": "Kesha's Phrase Book (the barista's notebook, the cover dusted with seeds)",
+  "ja": "ケーシャの語録（バリスタのノート、表紙は種まみれ）"
+ },
+ "city.xtx.kesha_phrasebook.1": {
+  "ru": "С чего началось. Кеша пришёл к нам вместе с первой кофемашиной, в коробке из-под неё: хозяин сказал, что коробка просторная, и птица тоже. Первые три недели он молчал и смотрел одним глазом. На четвёртую сказал: «Следующая — «Тарелка»». Мы вздрогнули. Теперь записываю всё, что он говорит, потому что в этом городе так: если что-то повторилось дважды, надо завести тетрадь.",
+  "en": "How it began. Kesha came to us with the first coffee machine, in its box: the owner said the box was roomy, and so was the bird. For the first three weeks he was silent and watched with one eye. On the fourth he said, \"Next stop, the Saucer.\" We jumped. Now I write down everything he says, because in this town that is the rule: if something happens twice, you start a notebook.",
+  "ja": "はじまり。ケーシャは最初のコーヒーマシンと一緒に、その箱に入ってうちに来た。店主は、箱は広いし、鳥もそうだ、と言った。最初の三週間、ケーシャは黙って片目で見ていた。四週目に言った。「次は、ソーサー」。私たちはぎくりとした。いまは、彼が言うことを全部書きとめている。この町ではそういうものだから。何かが二度くり返されたら、ノートを作る。"
+ },
+ "city.xtx.kesha_phrasebook.2": {
+  "ru": "Словарь. «Следующая — «Тарелка»» — по утрам, когда вы только вошли. «Осторожно, двери закрываются!» — когда кто-то идёт к лестнице: дверей нет, но все пригибаются. «Билетик» — тому, кто стоит у стойки с пустыми руками. «Горизонт» — никому, просто так, в тишине. «Конечная» — это не от него, это от нас: скажите, и он ответит: «Просьба освободить вагоны». Или «Спасибо за поездку», если настроение хорошее.",
+  "en": "Vocabulary. \"Next stop, the Saucer\": in the morning, when you have just come in. \"Mind the doors, please!\": when someone heads for the stairs; there are no doors but everyone ducks. \"Ticket\": to whoever stands at the bar with empty hands. \"Horizon\": to nobody, just so, in the silence. \"Terminus\" is not from him but from us: say it, and he will answer, \"Please vacate the cars.\" Or \"Thank you for the ride\", if he is in a good mood.",
+  "ja": "語彙。「次は、ソーサー」は、朝、入ってきたばかりの人に。「ドアが閉まります、ご注意ください！」は、階段に向かう人に。ドアはないのに、みんな身をかがめる。「切符」は、空の手でカウンターに立っている人に。「地平線」は、だれにでもなく、ただ静けさの中で。「終点です」は彼からではなく私たちから。そう言えば、彼は「車内からお降りください」と答える。気分がよければ「ご乗車ありがとうございました」と。"
+ },
+ "city.xtx.kesha_phrasebook.p3_1": {
+  "ru": "Наблюдения, утро. По утрам Кеша слушает кофемашину и молчит: ему, видимо, нравится, как она кашляет. Если в это время сказать ему «доброе утро», он отвернётся, но через минуту повернётся обратно. Я считаю, это у него такой «здравствуйте». К восьми часам он оживает, к десяти уже командует очередью.",
+  "en": "Observations, morning. In the mornings Kesha listens to the coffee machine and says nothing: he evidently likes the way it coughs. If at that time you say \"good morning\" to him, he turns away, but after a minute turns back. I consider that his way of saying \"hello\". By eight he comes to life, by ten he is already ordering the queue about.",
+  "ja": "観察、朝。朝のケーシャはコーヒーマシンに耳を傾けて黙っている。マシンの咳が気に入っているらしい。そのときに「おはよう」と言うと、彼は顔をそむけるが、一分後にまた向き直る。それが彼の「こんにちは」だと思う。八時には元気になり、十時にはもう行列に指図している。"
+ },
+ "city.xtx.kesha_phrasebook.p3_2": {
+  "ru": "Наблюдения, вечер. К вечеру Кеша мягчеет. Если народу мало, он сидит на жёрдочке, наклонив голову, и слушает автомат. Любит «Д-3»; когда включают, качает головой в такт. Если кто-то засиживается у окна, Кеша говорит «Горизонт», и человек вздрагивает, будто о нём вспомнили. Так оно, наверное, и есть.",
+  "en": "Observations, evening. Toward evening Kesha softens. If there are few people, he sits on his perch with his head tilted, listening to the jukebox. He likes \"D-3\"; when it is played he sways his head in time. If someone lingers by the window, Kesha says \"Horizon\", and the person starts as if remembered. Perhaps that is just what it is.",
+  "ja": "観察、夕方。夕方になると、ケーシャはやわらかくなる。人が少ないときは、止まり木で首をかしげ、ジュークボックスに聞き入る。「D-3」が好きで、かかると拍子に合わせて首を振る。窓辺に長居する人がいると、ケーシャは「地平線」と言い、その人は、思い出されたようにびくっとする。たぶん、実際そうなのだろう。"
+ },
+ "city.xtx.kesha_phrasebook.4": {
+  "ru": "Правила кормления. Только семечки, и только после слова «Конечная». Хлеб нельзя, сахар нельзя, чужую булку нельзя, даже если смотрит как проситель. Спрятанные под жёрдочкой семечки не трогать, это «до следующей остановки». Кто накормил по правилам, получает от нас пирожное, за счёт кафе. Кеша об этом знает и делает вид, что нет, но как ни придёшь, он уже смотрит на дверь. Ждёт.",
+  "en": "Feeding rules. Only sunflower seeds, and only after the word \"Terminus\". No bread, no sugar, no one else's bun, even if he looks like a beggar. Don't touch the seeds hidden under the perch: those are \"till the next stop\". Whoever feeds him by the rules gets a pastry from us, on the house. Kesha knows it and pretends not to, but whenever you come in, he is already looking at the door. Waiting.",
+  "ja": "えさやりの決まり。ひまわりの種だけ、そして「終点です」と言ったあとだけ。パンもだめ、砂糖もだめ、人のパンもだめ。物乞いのような顔をしていても。止まり木の下に隠した種には触らないこと。それは「次の停車駅まで」の分だ。決まりどおりにあげた人には、店からお菓子を出す。ケーシャはそれを知っていて、知らないふりをするが、いつ来ても、もう戸口を見ている。待っている。"
+ },
+ "city.ask.cafe.espresso": {
+  "ru": "Как вы варите эспрессо?",
+  "en": "How do you make your espresso?",
+  "ja": "エスプレッソはどうやって淹れてるの？"
+ },
+ "city.ask.cafe.espresso.1": {
+  "ru": "— Двадцать пять секунд, ни секундой больше: дальше это уже не эспрессо, а разговор. Смотри на машину, она сама подсказывает.",
+  "en": "\"Twenty-five seconds, not one more: after that it isn't espresso, it's a conversation. Watch the machine, it tells you itself.\"",
+  "ja": "「二十五秒、一秒も多くしない。それ以上は、もうエスプレッソじゃなくておしゃべりになるの。マシンを見てて、ちゃんと教えてくれるから」"
+ },
+ "city.ask.cafe.espresso.2": {
+  "ru": "— С утра первый для Кеши. Не пить, а поставить рядом: пока он слушает, как кашляет машина, он добрый.",
+  "en": "\"The first of the morning is for Kesha. Not to drink, just to set beside him: while he listens to the machine cough, he's kind.\"",
+  "ja": "「朝いちばんのは、ケーシャのぶん。飲ませるんじゃなくて、そばに置くの。マシンが咳きこむのを聞いてるあいだは、機嫌がいいから」"
+ },
+ "city.ask.cafe.espresso.3": {
+  "ru": "— К вечеру просят «послабее». Послабее значит подольше держать чашку.",
+  "en": "\"Towards evening people ask for it weaker. Weaker means holding the cup longer.\"",
+  "ja": "「夕方には『うすめで』って頼まれるの。うすめっていうのは、カップを長く持っていたいってことね」"
+ },
+ "city.ask.cafe.guestbook": {
+  "ru": "Что пишут в книге гостей?",
+  "en": "What do people write in the guest book?",
+  "ja": "ゲストブックには何が書かれてるの？"
+ },
+ "city.ask.cafe.guestbook.1": {
+  "ru": "— Всё. Про мороженое, про маяк, про попугая. Я читаю её каждое утро: так знаю, кто был вчера. Страницы кончаются, но ручка рядом, а если нет мыслей, нарисуй тарелку.",
+  "en": "\"Everything. About ice cream, the lighthouse, the parrot. I read it every morning: that's how I know who came yesterday. The pages are running out, but the pen is right there, and if you've no thoughts, draw a saucer.\"",
+  "ja": "「なんでも。アイスのこと、灯台のこと、インコのこと。毎朝読んでるの。昨日誰が来たかわかるから。ページはもう残り少ないけど、ペンはそこにあるわ。思いつかなければ、お皿を描いて」"
+ },
+ "city.ask.cafe.guestbook.2": {
+  "ru": "— Вчера заходил дежурный по маяку, подтвердил: из нашего окна виден его луч. Отсюда он красивее, чем с его стороны.",
+  "en": "\"The lighthouse keeper on duty looked in yesterday and confirmed: his beam can be seen from our window. It looks better from here than from his side.\"",
+  "ja": "「昨日、灯台の当直の人が寄って、うちの窓から光が見えると確かめていったわ。あっちから見るより、ここから見るほうがきれいなんですって」"
+ },
+ "city.ask.cafe.guestbook.3": {
+  "ru": "— Это твоя запись? Я оставила как есть: так со всеми. Теперь ты наш.",
+  "en": "\"Is that your entry? I left it as it was: I do that with everyone. Now you're one of us.\"",
+  "ja": "「これ、あなたの書き込み？　そのまま残してあるわ。みんなそうしてるの。これであなたもうちの仲間ね」"
+ },
+ "city.ask.cafe.chess": {
+  "ru": "Кто играет в шахматы у окна?",
+  "en": "Who plays chess by the window?",
+  "ja": "窓ぎわでチェスをしてるのは誰？"
+ },
+ "city.ask.cafe.chess.1": {
+  "ru": "— Профессор и Капитан. Профессор молчит и выигрывает, Капитан играет только чёрными, «защитой маяка». После школы подсаживаются школьники.",
+  "en": "\"The Professor and the Captain. The Professor says nothing and wins; the Captain plays only black, the 'lighthouse defence'. After school the schoolchildren join in.\"",
+  "ja": "「教授と船長よ。教授は黙って勝つし、船長は黒しか持たなくて、『灯台の守り』って呼ぶ手だけ指すの。放課後は生徒たちも加わるわ」"
+ },
+ "city.ask.cafe.chess.2": {
+  "ru": "— В выходные играют на кофе: проигравший заказывает. Капитан платит чаще всех, и ему это нравится.",
+  "en": "\"At weekends they play for coffee: the loser orders. The Captain pays most often, and he likes it.\"",
+  "ja": "「週末はコーヒーを賭けるの。負けたほうが注文するのよ。船長がいちばん多く払ってるけど、本人は気に入ってるみたい」"
+ },
+ "city.ask.cafe.chess.3": {
+  "ru": "— До меня дошло, что ты у кого-то выиграл. Профессор сказал, что запомнил. Он запоминает только тех, кого собирается обыграть.",
+  "en": "\"Word reached me that you beat somebody. The Professor says he's noted it. He only notes those he means to beat.\"",
+  "ja": "「あなた、誰かに勝ったそうね。教授は覚えておくって。教授が覚えるのは、これから負かすつもりの相手だけなの」"
+ },
+ "city.ask.cafe.chess.4": {
+  "ru": "— В «Шестерне» тоже есть лесенка и даже тетрадь партий, но там чай ставят проигравшие, а у нас кофе. Выбирай, чем рисковать.",
+  "en": "\"The Cog has a ladder and even a notebook of games, but there the losers stand tea and here it's coffee. Choose what to risk.\"",
+  "ja": "「『歯車』にも階段表や棋譜帳があるけど、あっちは負けた人がお茶を、うちはコーヒーをおごるの。何を賭けるか、選んで」"
+ },
+ "city.ask.cafe.ice.flavours": {
+  "ru": "Какое тут мороженое?",
+  "en": "What ice cream do you have?",
+  "ja": "どんなアイスがあるの？"
+ },
+ "city.ask.cafe.ice.flavours.1": {
+  "ru": "— Пломбир, крем-брюле и один шарик «на усмотрение». Шарик на усмотрение выбирает тот, кто стоит с ложкой, сегодня я.",
+  "en": "\"Plombir, crème brûlée and one scoop 'at discretion'. Whoever holds the scoop decides, and today that's me.\"",
+  "ja": "「プロンビール、クレームブリュレ、それから『おまかせ』の一さじ。おまかせは、スプーンを持ってる人が決めるの。今日はわたしよ」"
+ },
+ "city.ask.cafe.ice.flavours.2": {
+  "ru": "— В жару шарики тают быстрее, чем люди выбирают. Привыкла: беру два заранее.",
+  "en": "\"In the heat the scoops melt faster than people choose. I've learnt: I take two in advance.\"",
+  "ja": "「暑いと、お客さんが選ぶより先にアイスが溶けるの。慣れたわ。最初から二つ取っておくのよ」"
+ },
+ "city.ask.cafe.ice.flavours.3": {
+  "ru": "— В субботу на витрине торт «Тарелка»: мороженое ему не конкурент, но стоять рядом умеет.",
+  "en": "\"On Saturday the Saucer cake sits in the case: ice cream is no rival, but it knows how to stand beside it.\"",
+  "ja": "「土曜日はショーケースに『ソーサー』ケーキが並ぶの。アイスはライバルじゃないけど、そばに立つのは上手よ」"
+ },
+ "city.ask.cafe.ice.gallery": {
+  "ru": "Куда с мороженым, на галерею?",
+  "en": "Shall I take my ice cream up to the gallery?",
+  "ja": "アイスを持って回廊に行こうかな？"
+ },
+ "city.ask.cafe.ice.gallery.1": {
+  "ru": "— К телескопу: монету бросишь, и пять минут неба. Держи мороженое подальше от объектива: чайки смотрят зорче.",
+  "en": "\"To the telescope: drop a coin and you get five minutes of sky. Keep the ice cream away from the lens: gulls have sharper eyes.\"",
+  "ja": "「望遠鏡のところへどうぞ。コインを入れると五分間の空よ。アイスはレンズから離してね。カモメのほうが目がいいんだから」"
+ },
+ "city.ask.cafe.ice.gallery.2": {
+  "ru": "— Вечером с галереи видно, как по террасам зажигаются огни: сначала нижняя, потом вверх, как стежки.",
+  "en": "\"In the evening from the gallery you can see the lights come on up the terraces: the lowest first, then upwards, like stitches.\"",
+  "ja": "「夕方の回廊からは、テラスに灯りがついていくのが見えるわ。いちばん下から上へ、縫い目みたいにね」"
+ },
+ "city.ask.cafe.ice.gallery.3": {
+  "ru": "— Венеру видел? Смотритель маяка клянётся, что она подмигивает только своим. Проверь: подмигнула, значит, ты свой.",
+  "en": "\"Seen Venus? The lighthouse keeper swears she winks only at her own. Check: if she winked, you're one of us.\"",
+  "ja": "「金星は見た？　灯台守は、金星は仲間にしかウィンクしないって言い張るの。確かめてみて、ウィンクされたら、あなたも仲間よ」"
+ },
+ "city.ask.cafe.ck.pilaf": {
+  "ru": "Что за корочка в плове?",
+  "en": "What's the crust in the pilaf?",
+  "ja": "プロフの焦げは何？"
+ },
+ "city.ask.cafe.ck.pilaf.1": {
+  "ru": "— Это дно. Корочка не делается, она получается, если не мешать и не смотреть. Я не смотрю: стою спиной.",
+  "en": "\"That's the bottom. The crust isn't made, it happens if you don't stir and don't look. I don't look: I stand with my back to it.\"",
+  "ja": "「底だ。焦げは作るものじゃなく、かき混ぜず、見なければできる。俺は見ない。背中を向けて立ってる」"
+ },
+ "city.ask.cafe.ck.pilaf.2": {
+  "ru": "— Сегодня плов на всех. Пришёл до двух, получишь со дна. С поварами не спорят: у них в ложке закон.",
+  "en": "\"Today it's pilaf for all. Come before two and you get the bottom. You don't argue with cooks: they carry the law in the ladle.\"",
+  "ja": "「今日はみんなにプロフだ。二時前に来れば、底のところをやる。料理人とは言い合うな。おたまの中に決まりがあるんだ」"
+ },
+ "city.ask.cafe.ck.sour": {
+  "ru": "Почему ко всему сметана?",
+  "en": "Why is everything served with sour cream?",
+  "ja": "なんでもサワークリームがつくのはどうして？"
+ },
+ "city.ask.cafe.ck.sour.1": {
+  "ru": "— Сметана как совесть: все знают, что она есть, а спрашивают, когда блюдо уже остыло. Я ставлю баночку на край окошка. Берите без вопросов.",
+  "en": "\"Sour cream is like conscience: everyone knows it exists and asks for it once the dish has gone cold. I put a pot on the edge of the hatch. Help yourself.\"",
+  "ja": "「サワークリームは良心みたいなものだ。あるのはみんな知ってるが、料理が冷めてから探す。窓口の端に小瓶を置いておく。遠慮なく取れ」"
+ },
+ "city.ask.cafe.ck.sour.2": {
+  "ru": "— Только сегодня сметаны нет, а без неё сырники не сырники. Будешь у универмага, возьми мне кефир: из него я сделаю то, что нужно. Кефир мой запасной план.",
+  "en": "\"Only today there's none, and without it syrniki aren't syrniki. If you pass the department store, get me a kefir: I can make what's needed from it. Kefir is my plan B.\"",
+  "ja": "「ただ今日はサワークリームがない。なしじゃシルニキはシルニキじゃない。百貨店のそばを通ったら、ケフィアを買ってきてくれ。それで間に合わせる。ケフィアが俺の予備の策だ」"
+ },
+ "city.ask.cafe.ck.sour.3": {
+  "ru": "— Пятница, сырники. Сметану я поставил на край. Кто возьмёт, тот остаётся доедать.",
+  "en": "\"Friday, syrniki. I've put the sour cream on the edge. Whoever takes it stays to finish.\"",
+  "ja": "「金曜、シルニキだ。サワークリームは端に置いた。取ったやつは、最後まで食べていけ」"
+ },
+ "city.ask.cafe.ck.kefir": {
+  "ru": "Я принёс кефир",
+  "en": "I've brought the kefir",
+  "ja": "ケフィアを持ってきたよ"
+ },
+ "city.ask.cafe.ck.kefir.1": {
+  "ru": "— Поставь на подоконник, я не оборачиваюсь. Тёплый кефир даёт пышные оладьи, холодный упрямые. Этот в самый раз. Держи пирожок: горячий, значит честный.",
+  "en": "\"Put it on the sill, I'm not turning round. Warm kefir makes fluffy pancakes, cold makes stubborn ones. This one's just right. Here's a pie: hot, so honest.\"",
+  "ja": "「窓台に置いてくれ、俺は振り向かない。ぬるいケフィアはふっくらしたパンケーキに、冷たいのは頑固なのになる。これはちょうどいい。ほら、ピロシキだ。熱いから、正直なやつだ」"
+ },
+ "city.ask.cafe.ck.kesha": {
+  "ru": "Кеша ест вашу еду?",
+  "en": "Does Kesha eat your food?",
+  "ja": "ケーシャはあなたの料理を食べるの？"
+ },
+ "city.ask.cafe.ck.kesha.1": {
+  "ru": "— Кеша ест только семечки. Но тащит со стола, пока я не смотрю. Я смотрю, пока он тащит: так мы поддерживаем отношения.",
+  "en": "\"Kesha eats only sunflower seeds. But he pinches from the table when I'm not looking. I look while he pinches: that's how we keep up relations.\"",
+  "ja": "「ケーシャが食べるのはひまわりの種だけだ。でも俺が見てないとテーブルから盗む。盗んでるあいだは俺が見る。そうやって付き合いを保ってる」"
+ },
+ "city.ask.cafe.ck.kesha.2": {
+  "ru": "— После тебя он полдня говорил «Спасибо за поездку». Пока варил, трижды обернулся: думал, это про суп.",
+  "en": "\"After you he spent half the day saying 'Thank you for the ride'. While I cooked I turned round three times, thinking it was about the soup.\"",
+  "ja": "「あんたのあと、半日『ご乗車ありがとうございました』って言ってた。煮てるあいだに三回振り向いたよ、スープのことかと思って」"
+ },
+ "city.ask.cafe.ck.after": {
+  "ru": "Куда сходить после обеда?",
+  "en": "Where should I go after lunch?",
+  "ja": "お昼のあとはどこへ行けばいい？"
+ },
+ "city.ask.cafe.ck.after.1": {
+  "ru": "— После обеда в «Рассвет» на дневной, в три: пока идёт кино, суп успевает забыться. Или в библиотеку: там тихо и ставят штампы.",
+  "en": "\"After lunch to the Rassvet for the matinee at three: while the film runs, the soup has time to be forgotten. Or to the library: it's quiet and they stamp things.\"",
+  "ja": "「昼のあとは『ラスヴェート』の三時の上映へ。映画を観てるうちに、スープのことは忘れる。でなきゃ図書館だ。静かだし、スタンプも押してくれる」"
+ },
+ "city.ask.cafe.ck.after.2": {
+  "ru": "— Ты уже был в «Рассвете»? Тогда в «Шестерню»: по субботам вечером финал лиги по бильярду. Чем больше народу, тем тише играют.",
+  "en": "\"Been to the Rassvet already? Then the Cog: on Saturday evening it's the billiards league final. The more people, the quieter they play.\"",
+  "ja": "「『ラスヴェート』はもう行った？　なら『歯車』だ。土曜の夜はビリヤードリーグの決勝がある。人が多いほど、静かに打つんだ」"
+ },
+ "quest.cafe_kefir.title": {
+  "ru": "Кефир для повара",
+  "en": "Kefir for the cook",
+  "ja": "料理人のためのケフィア"
+ },
+ "quest.cafe_kefir.desc": {
+  "ru": "У повара «Тарелки» сегодня нет сметаны, и он делает вид, что это не беда. Запасной план у него кефир, а ходить за ним некому.",
+  "en": "The cook at the Saucer has no sour cream today and pretends it doesn't matter. His plan B is kefir, and there's nobody to fetch it.",
+  "ja": "『ソーサー』の料理人は今日サワークリームを切らしているのに、平気なふりをしている。予備の策はケフィアで、取りに行ける人がいない。"
+ },
+ "quest.cafe_kefir.buy.log": {
+  "ru": "Кефир продаётся в универмаге, в продуктовом отделе. Куплю бутылку и вернусь к окошку кухни.",
+  "en": "Kefir is sold at the department store, in the grocery section. I'll buy a bottle and come back to the kitchen hatch.",
+  "ja": "ケフィアは百貨店の食料品売り場にある。一本買って、厨房の窓口に戻ってこよう。"
+ },
+ "quest.cafe_kefir.kefir.obj": {
+  "ru": "Купить кефир",
+  "en": "Buy kefir",
+  "ja": "ケフィアを買う"
+ },
+ "quest.cafe_kefir.bring.log": {
+  "ru": "Бутылка в кармане. Подойду к кухонному окошку и скажу повару, что принёс.",
+  "en": "The bottle is in my pocket. I'll go to the kitchen hatch and tell the cook I've brought it.",
+  "ja": "ボトルはポケットの中。厨房の窓口に行って、持ってきたと料理人に伝えよう。"
+ },
+ "quest.cafe_kefir.bring.obj": {
+  "ru": "Отдать кефир повару",
+  "en": "Hand the kefir to the cook",
+  "ja": "ケフィアを料理人に渡す"
+ },
+ "quest.cafe_kefir.done": {
+  "ru": "Повар не обернулся, но пирожок оказался горячим. Значит, всё сделано правильно.",
+  "en": "The cook didn't turn round, but the pie was hot. So everything was done right.",
+  "ja": "料理人は振り向かなかったけれど、ピロシキは熱々だった。つまり、やり方は正しかったってことだ。"
+ },
+ "city.cafe.feed.4": {
+  "ru": "Утро, Кеша ещё сонный. Взял одно семечко, подержал в клюве и сказал шёпотом: «Осторожно, двери закрываются». Бариста поставила передо мной пирожное.",
+  "en": "Morning, and Kesha is still sleepy. He took one seed, held it in his beak and whispered, \"Mind the doors.\" The barista put a pastry in front of me.",
+  "ja": "朝で、ケーシャはまだ眠そうだ。種をひとつくわえて、小声で「ドアが閉まります」と言った。バリスタが僕の前にケーキを置いてくれた。"
+ },
+ "city.cafe.feed.5": {
+  "ru": "За окном дождь, и Кеша нахохлился. Семечки ел молча, только в конце буркнул: «Зонты не забываем». Пирожное мне выдали с салфеткой.",
+  "en": "Rain outside, and Kesha has fluffed himself up. He ate the seeds in silence and only at the end muttered, \"Don't forget your umbrellas.\" My pastry came with a napkin.",
+  "ja": "外は雨で、ケーシャは羽をふくらませている。黙って種を食べ、最後にぼそっと「傘をお忘れなく」。ケーキは紙ナプキンつきで出てきた。"
+ },
+ "city.cafe.feed.6": {
+  "ru": "Сегодня праздник, и на жёрдочке у Кеши бумажный флажок. Он склевал семечки и прокричал: «С праздником, граждане пассажиры!» Весь зал ответил.",
+  "en": "It's a holiday, and Kesha has a paper flag on his perch. He cracked the seeds and shouted, \"Happy holiday, dear passengers!\" The whole room answered.",
+  "ja": "今日は祝日で、ケーシャの止まり木には紙の旗が立っている。種を食べ終えると「乗客の皆さん、おめでとう！」と叫んだ。店じゅうが返事をした。"
+ },
+ "city.cafe.feed.7": {
+  "ru": "В первый раз Кеша долго разглядывал меня одним глазом, потом другим. Решил, видно, что я свой, и взял семечко прямо с ладони.",
+  "en": "The first time, Kesha studied me with one eye, then the other. He must have decided I was all right, and took a seed straight from my palm.",
+  "ja": "初めてのとき、ケーシャは片目で、それからもう片方の目で、僕をじっと見た。仲間だと決めたらしく、手のひらから直接種を取った。"
+ },
+ "city.cafe.pen.5": {
+  "ru": "С утра книга открыта на чистой странице. Я написал первым: «Доброе утро, „Тарелка“». Почерк вышел сонный, но честный.",
+  "en": "In the morning the book lies open at a clean page. I wrote first: \"Good morning, Tarelka.\" The handwriting came out sleepy, but honest.",
+  "ja": "朝、ノートは白いページで開いていた。いちばん乗りで「おはよう、ターレルカ」と書いた。字は眠そうだけど、正直だ。"
+ },
+ "city.cafe.pen.6": {
+  "ru": "Ручка оставляет кляксы: у всех мокрые рукава. Я написал: «Дождь. Кофе. Жить можно» — и промокнул салфеткой.",
+  "en": "The pen leaves blots: everyone's sleeves are wet. I wrote, \"Rain. Coffee. Life goes on,\" and blotted it with a napkin.",
+  "ja": "ペンがにじむ。みんな袖が濡れているからだ。「雨。コーヒー。生きていける」と書いて、ナプキンで押さえた。"
+ },
+ "city.cafe.pen.7": {
+  "ru": "Страница вся в снежинках, вырезанных из салфеток и вклеенных между пожеланиями. Я написал своё в самом уголке, чтобы не задеть ни одной.",
+  "en": "The page is covered with snowflakes cut from napkins and glued between the wishes. I wrote mine in the very corner so as not to touch any of them.",
+  "ja": "ページは紙ナプキンを切った雪の結晶でいっぱいで、願いごとの間に貼ってある。僕はどれにも触れないように、すみっこに書いた。"
+ },
+ "city.cafe.pen.8": {
+  "ru": "Листаю назад и нахожу свою первую запись. Под ней кто-то приписал: «И я тоже». Не знаю кто, но стало теплее.",
+  "en": "I leaf back and find my first entry. Under it somebody has added: \"Me too.\" I don't know who, but it feels warmer.",
+  "ja": "ページをさかのぼると、僕の最初の書きこみがあった。その下に誰かが「わたしも」と書き足している。誰かはわからないけど、あたたかくなった。"
+ },
+ "city.cafe.crate.6": {
+  "ru": "Вечером ящик пустеет наполовину: пластинки разошлись по столикам, и конверты стоят без них, как пальто без хозяев.",
+  "en": "In the evening the crate is half empty: the records have gone round the tables, and the sleeves stand without them like coats without owners.",
+  "ja": "夕方になると箱は半分空になる。レコードはテーブルへ散り、ジャケットだけが持ち主のいないコートのように並んでいる。"
+ },
+ "city.cafe.crate.7": {
+  "ru": "В выходные сверху кладут танцевальные: на конвертах пары в повороте и крупно — «Вечер отдыха».",
+  "en": "At weekends the dance records go on top: couples mid-turn on the sleeves and, in big letters, \"An Evening Out\".",
+  "ja": "週末は、ダンスのレコードがいちばん上に置かれる。ジャケットには回るカップルと、大きく「憩いの夕べ」の文字。"
+ },
+ "city.cafe.crate.8": {
+  "ru": "В дождь кто-то всегда ставит наверх пластинку со звуками прибоя. Говорят, чтобы море не обижалось, что на него не смотрят.",
+  "en": "When it rains somebody always puts the record of the surf on top. So the sea won't feel left out, they say.",
+  "ja": "雨の日は、誰かがかならず波の音のレコードをいちばん上に置く。見てもらえない海がすねないように、だそうだ。"
+ },
+ "city.cafe.mags.1": {
+  "ru": "Утром журналы ещё лежат ровной стопкой. Сверху свежий номер с горным озером на обложке, страницы липнут друг к другу.",
+  "en": "In the morning the magazines still lie in a neat pile. On top, the new issue with a mountain lake on the cover; the pages stick together.",
+  "ja": "朝、雑誌はまだきちんと積まれている。いちばん上は山の湖が表紙の最新号で、ページどうしがくっついている。"
+ },
+ "city.cafe.mags.2": {
+  "ru": "К обеду журналы растрёпаны, а на развороте про пароходы кольцо от чашки. Как печать порта.",
+  "en": "By lunchtime the magazines are dog-eared, and there's a cup ring on the spread about steamers. Like a harbour stamp.",
+  "ja": "昼過ぎには雑誌はよれよれで、汽船の見開きにはカップの輪のあとがついている。港のスタンプみたいだ。"
+ },
+ "city.cafe.mags.3": {
+  "ru": "В холодный день все берут один и тот же журнал, про юг: пальмы, белые теплоходы. Его передают от столика к столику.",
+  "en": "On a cold day everybody takes the same magazine, the one about the south: palms, white liners. It goes from table to table.",
+  "ja": "寒い日は、みんな同じ雑誌を手に取る。南の特集で、ヤシの木と白い客船。テーブルからテーブルへ回っていく。"
+ },
+ "city.cafe.mags.4": {
+  "ru": "По понедельникам привозят новые номера. Старые бариста перевязывает бечёвкой и уносит, но один всегда остаётся: кто-то его не дочитал.",
+  "en": "New issues come on Mondays. The barista ties up the old ones with string and takes them away, but one always stays: somebody hasn't finished it.",
+  "ja": "月曜日には新しい号が届く。バリスタは古い号をひもで束ねて運んでいくが、一冊だけはいつも残る。誰かが読みかけなのだ。"
+ },
+ "city.cafe.painting.1": {
+  "ru": "Над диваном море маслом: серая вода, белая полоса прибоя и маленький красный буёк. Буёк художник, похоже, добавил в последний момент, для храбрости.",
+  "en": "Over the sofa, the sea in oils: grey water, a white line of surf and a small red buoy. The painter seems to have added the buoy at the last moment, for courage.",
+  "ja": "ソファの上に海の油絵。灰色の水、白い波の線、小さな赤いブイ。画家はブイを最後に、勇気づけに描き足したらしい。"
+ },
+ "city.cafe.painting.2": {
+  "ru": "Утреннее солнце ложится прямо на раму, и нарисованная вода становится светлее настоящей за окном.",
+  "en": "The morning sun falls right on the frame, and the painted water turns brighter than the real water outside.",
+  "ja": "朝日が額縁にまっすぐ当たり、描かれた水は窓の外の本物より明るくなる。"
+ },
+ "city.cafe.painting.3": {
+  "ru": "К вечеру картина темнеет раньше окна. Остаются только полоса прибоя и буёк, как будто его зажгли.",
+  "en": "Towards evening the painting darkens before the window does. Only the line of surf is left, and the buoy, as if someone had lit it.",
+  "ja": "夕方、絵は窓より先に暗くなる。残るのは波の線と、灯をともしたようなブイだけ。"
+ },
+ "city.cafe.painting.4": {
+  "ru": "В туман из окна моря не видно, и все смотрят на это. Бариста говорит, что в такие дни картина работает за двоих.",
+  "en": "In fog you can't see the sea from the window, so everyone looks at this one. The barista says on days like these the painting does the work of two.",
+  "ja": "霧で窓から海が見えない日は、みんなこの絵を見る。こういう日は絵が二人分働く、とバリスタは言う。"
+ },
+ "city.cafe.painting.5": {
+  "ru": "Внизу на раме бумажка: «Подарок от отдыхающих, лето». Год кто-то стёр пальцем, наверное, нечаянно.",
+  "en": "On the bottom of the frame, a slip of paper: \"A gift from the holidaymakers, summer.\" Somebody has rubbed out the year with a finger, probably by accident.",
+  "ja": "額縁の下に紙きれ。「保養客より、夏」。年は誰かが指でこすって消してしまった。たぶん、うっかり。"
+ }
+}

@@ -14,6 +14,10 @@ Meshes (geom.Mesh, metre UVs, one material slot per face, citymats.MATERIALS nam
     B.detail     small things with no collision (mullions, railings, louvres, signs)
 Windows are NOT modelled into B.m as glass: B.window() puts a recessed card (material CT_Window, one shader that
 is dark reflective glass by day and a lit room with a curtain at night) into its own mesh, with its light slot.
+Seen from a room, a window is a second card just behind it facing in (material CT_WindowIn: a bright daylight pane by
+day, dark blue at night, after the sun's height; no light comes through, lamps stay B.lamp's job). Which windows get
+one: B.inside_windows ("all", the default; "public": public/shop/stair windows only; None; or a set of window ids),
+or per call B.window(..., inside=True/False). Behind a closed inner wall the room-side card is simply never seen.
 
 Lights (the town-life thread's contract): each window has a slot (0..4095) and an id "<flat>/w<n>"; a flat id is
 "<storey>-<n>" (local; the plot id is prefixed in the game: "T2-05/3-02/w1"). ULyudWindowLights lights a slot by
@@ -37,6 +41,7 @@ except Exception:  # noqa: BLE001
 
 LIGHT_TEX = 64                 # the light texture is LIGHT_TEX x LIGHT_TEX texels: 4096 slots a building
 WINDOW_INSET = 0.10            # the card sits this far behind the wall face at least (in its reveal)
+INSIDE_GAP = 0.012             # the room-side card (CT_WindowIn) sits this far behind the outer card, facing in
 DOOR_W, DOOR_H = max(1.10, MIN_DOOR_CLEAR_WIDTH_M), max(2.20, MIN_DOOR_CLEAR_HEIGHT_M)   # hole of a street door
 STEP_RISE, STEP_GOING = 0.16, 0.30        # comfortable stairs: the hero climbs 0.45 m steps, NPCs need gentle ones
 
@@ -57,17 +62,21 @@ class Building:
         self.entrances = []                # {id, pos, yaw, width, height, kind, leaves, to}
         self.spots = []                    # {id, kind, pos, yaw}: benches, counters, stalls... for the life sim
         self.lamps = []                    # {pos, lumens, colour, kind, radius}: real lights inside enterable rooms
+        self.things = []                   # {id, kind, pos, yaw, props}: what the hero can use inside (docs/city_interiors.md)
         self.footprint = []                # outline [(x, y)] on the ground, CCW
         self.height = 0.0
         self.notes = []
+        self.inside_windows = "all"        # which windows get a room-side card: "all" | "public" | None | {ids}
         self._wn = {}
 
     # ---------------------------------------------------------------- windows and flats
-    def window(self, corners, flat=None, kind=None, inset=WINDOW_INSET, cols=1, rows=1, frame=0.05, shape="rect"):
+    def window(self, corners, flat=None, kind=None, inset=WINDOW_INSET, cols=1, rows=1, frame=0.05, shape="rect",
+               inside=None):
         """A window card on the quad `corners` (4 points CCW seen from OUTSIDE, in the wall's face plane:
         bottom-left, bottom-right, top-right, top-left). The card is pushed `inset` along the inward normal.
         cols x rows: mullion grid drawn as thin frame bars into B.detail (0 = none). shape "round": the card is the
-        circle's bounding square and the shader cuts the circle (UV0 runs 2..3 instead of 0..1). Returns its id."""
+        circle's bounding square and the shader cuts the circle (UV0 runs 2..3 instead of 0..1). inside: also the
+        room-side card (None: after B.inside_windows). Returns its id."""
         kind = kind or ("flat" if flat else "stair")
         p0, p1, p2, p3 = corners
         n = geom.norm(geom.cross(geom.sub(p1, p0), geom.sub(p3, p0)))         # outward
@@ -80,6 +89,13 @@ class Building:
         o = 2.0 if shape == "round" else 0.0
         self.win.face("CT_Window", ins, [(o, 0), (o + 1, 0), (o + 1, 1), (o, 1)])
         self.win_slot.append(slot)
+        if self._wants_inside(inside, kind, wid):
+            # the same quad INSIDE_GAP further in, wound the other way (faces the room); u runs left to right as seen
+            # from the room, v up; the same light texel (UV1) and the same round flag
+            g = inset + INSIDE_GAP
+            q0, q1, q2, q3 = [(p[0] - n[0] * g, p[1] - n[1] * g, p[2] - n[2] * g) for p in corners]
+            self.win.face("CT_WindowIn", [q1, q0, q3, q2], [(o, 0), (o + 1, 0), (o + 1, 1), (o, 1)])
+            self.win_slot.append(slot)
         c = tuple(sum(p[i] for p in corners) / 4 for i in range(3))
         w = math.dist(p0, p1)
         h = math.dist(p0, p3)
@@ -91,6 +107,18 @@ class Building:
         if frame and (cols > 1 or rows > 1 or frame):
             self._mullions(ins, n, cols, rows, frame)
         return wid
+
+    def _wants_inside(self, inside, kind, wid):
+        if inside is not None:
+            return bool(inside)
+        pol = self.inside_windows
+        if pol == "all":
+            return True
+        if pol == "public":
+            return kind in ("public", "shop", "stair")
+        if not pol:
+            return False
+        return wid in pol
 
     def _mullions(self, q, n, cols, rows, t):
         """Thin frame bars (into B.detail) around and across the card, standing 3 cm proud of it."""
@@ -167,6 +195,26 @@ class Building:
         (0 = -y, toward the street; 90 = +x), the same convention as entrances."""
         self.spots.append({"id": sid, "kind": kind, "pos": [round(v, 3) for v in pos], "yaw": yaw})
 
+    THING_KINDS = ("seat", "bed", "shelf", "board", "counter", "machine", "play", "sport", "craft", "screen", "take", "door")
+
+    def thing(self, tid, kind, pos, yaw=0.0, **props):
+        """Something the hero can use with E (docs/city_interiors.md): pos = the middle of the object (the point the
+        hero looks at), yaw = degrees of the way the object FACES (0 = -y, toward the street; 90 = +x). props: free
+        fields of the kind (height, topic, role, service, what, item, to). Ids are unique in the building and stable."""
+        if kind not in self.THING_KINDS:
+            raise ValueError("thing kind %r (one of %s)" % (kind, ", ".join(self.THING_KINDS)))
+        if any(t["id"] == tid for t in self.things):
+            raise ValueError("thing id %r used twice in %s" % (tid, self.type))
+        self.things.append({"id": tid, "kind": kind, "pos": [round(v, 3) for v in pos], "yaw": round(yaw, 1),
+                            "props": props})
+
+    def _things_out(self):
+        """The things as exported: a kit clock's own thing (kit_clock_<n>) gives way to a thing the module declared at
+        the same clock (closer than 0.35 m)."""
+        own = [t for t in self.things if not t["id"].startswith("kit_clock_")]
+        return [t for t in self.things if not t["id"].startswith("kit_clock_")
+                or all(math.dist(t["pos"], o["pos"]) >= 0.35 for o in own)]
+
     def lamp(self, pos, lumens=900.0, colour="#FFD9A8", kind="public", radius=7.0, fixture=True):
         """A real light inside an enterable room (Unreal: a point light, no shadow, drawn within ~40 m). pos = the
         light's centre (put it ~0.3 m under the ceiling). kind "public": on in the building's open hours (all day
@@ -225,7 +273,7 @@ class Building:
             "type": self.type, "info": info, "frame": "x along the street front, y into the plot, z up; origin "
             "on the front line, mid-frontage, z 0 = ground at the main entrance",
             "footprint": [[round(x, 3), round(y, 3)] for x, y in self.footprint], "height": round(self.height, 2),
-            "entrances": self.entrances, "spots": self.spots, "lamps": self.lamps,
+            "entrances": self.entrances, "spots": self.spots, "lamps": self.lamps, "things": self._things_out(),
             "flats": sorted(self.flats.values(), key=lambda f: f["flat"]),
             "windows": self.windows, "light_tex": LIGHT_TEX, "notes": self.notes,
             "tris": {"shell": self.m.tri_count(), "detail": self.detail.tri_count(), "windows": self.win.tri_count()},

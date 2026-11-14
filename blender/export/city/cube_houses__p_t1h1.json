@@ -129,27 +129,117 @@
  ],
  "spots": [
   {
+   "id": "cu_hall",
+   "kind": "stand",
+   "pos": [
+    -7.968,
+    8.156,
+    0.0
+   ],
+   "yaw": 176.31973623984467
+  },
+  {
+   "id": "cu_sofa",
+   "kind": "seat",
+   "pos": [
+    -8.962,
+    6.717,
+    8.1
+   ],
+   "yaw": 86.31973623984466
+  },
+  {
+   "id": "cu_window",
+   "kind": "view",
+   "pos": [
+    -8.116,
+    5.861,
+    8.1
+   ],
+   "yaw": -3.6802637601553405
+  },
+  {
+   "id": "cu_kitchen",
+   "kind": "work",
+   "pos": [
+    -7.432,
+    7.921,
+    8.1
+   ],
+   "yaw": 86.31973623984466
+  },
+  {
+   "id": "cu_table",
+   "kind": "seat",
+   "pos": [
+    -8.029,
+    7.208,
+    8.1
+   ],
+   "yaw": 176.31973623984467
+  },
+  {
+   "id": "cu_tip_beanbag_spot",
+   "kind": "seat",
+   "pos": [
+    -8.109,
+    5.961,
+    10.4
+   ],
+   "yaw": -3.6802637601553405
+  },
+  {
+   "id": "cu_tip_plants",
+   "kind": "work",
+   "pos": [
+    -8.829,
+    8.011,
+    10.4
+   ],
+   "yaw": 266.31973623984464
+  },
+  {
    "id": "deck_bench_1",
    "kind": "bench",
    "pos": [
-    -3.833,
-    10.123,
-    3.47
+    -4.359,
+    10.362,
+    3.0
    ],
-   "yaw": 176.31973623984467
+   "yaw": 358.15986811992235
+  },
+  {
+   "id": "deck_chess_seat",
+   "kind": "seat",
+   "pos": [
+    3.944,
+    9.258,
+    3.0
+   ],
+   "yaw": 1.8401318800776703
   },
   {
    "id": "deck_bench_3",
    "kind": "bench",
    "pos": [
-    11.833,
-    10.638,
-    3.47
+    11.326,
+    10.818,
+    3.0
    ],
-   "yaw": 183.68026376015533
+   "yaw": 4.595603155898619
   },
   {
-   "id": "sbench_c1_2",
+   "id": "deck_bench_s2",
+   "kind": "bench",
+   "pos": [
+    5.74,
+    4.763,
+    3.0
+   ],
+   "yaw": 181.84013188007768
+  },
+  {
+   "id": "sbench_c1_11",
    "kind": "bench",
    "pos": [
     -12.544,
@@ -159,7 +249,7 @@
    "yaw": 0
   },
   {
-   "id": "sbench_c2_3",
+   "id": "sbench_c2_12",
    "kind": "bench",
    "pos": [
     -11.696,
@@ -169,7 +259,7 @@
    "yaw": 0
   },
   {
-   "id": "sbench_c3_4",
+   "id": "sbench_c3_13",
    "kind": "bench",
    "pos": [
     -6.8,
@@ -179,7 +269,7 @@
    "yaw": 0
   },
   {
-   "id": "sbench_c5_5",
+   "id": "sbench_c5_14",
    "kind": "bench",
    "pos": [
     12.544,
@@ -190,6 +280,50 @@
   }
  ],
  "lamps": [
+  {
+   "pos": [
+    -7.971,
+    8.106,
+    2.35
+   ],
+   "lumens": 240,
+   "colour": "#FFD9A8",
+   "kind": "public",
+   "radius": 3.6
+  },
+  {
+   "pos": [
+    -8.064,
+    6.659,
+    10.05
+   ],
+   "lumens": 420,
+   "colour": "#FFD9A8",
+   "kind": "public",
+   "radius": 6.5
+  },
+  {
+   "pos": [
+    -7.743,
+    8.543,
+    10.05
+   ],
+   "lumens": 360,
+   "colour": "#FFE0B0",
+   "kind": "public",
+   "radius": 5.5
+  },
+  {
+   "pos": [
+    -8.0,
+    7.657,
+    12.7
+   ],
+   "lumens": 380,
+   "colour": "#FFE4B8",
+   "kind": "public",
+   "radius": 6.0
+  },
   {
    "pos": [
     -19.744,
@@ -222,6 +356,779 @@
    "colour": "#FFD9A8",
    "kind": "lobby",
    "radius": 10
+  }
+ ],
+ "things": [
+  {
+   "id": "niche_board_c1",
+   "kind": "board",
+   "pos": [
+    -16.012,
+    8.3,
+    1.5
+   ],
+   "yaw": -5.5,
+   "props": {
+    "topic": "lost"
+   }
+  },
+  {
+   "id": "niche_board_c2",
+   "kind": "board",
+   "pos": [
+    -7.521,
+    7.005,
+    1.5
+   ],
+   "yaw": 266.3,
+   "props": {
+    "topic": "lost"
+   }
+  },
+  {
+   "id": "lift_g",
+   "kind": "door",
+   "pos": [
+    -7.92,
+    8.895,
+    1.1
+   ],
+   "yaw": -3.7,
+   "props": {
+    "to": "lift"
+   }
+  },
+  {
+   "id": "cu_hall_switch",
+   "kind": "machine",
+   "pos": [
+    -8.853,
+    7.642,
+    1.3
+   ],
+   "yaw": 176.3,
+   "props": {
+    "what": "switch",
+    "switch": "room"
+   }
+  },
+  {
+   "id": "cu_hall_clock",
+   "kind": "board",
+   "pos": [
+    -8.767,
+    8.969,
+    2.15
+   ],
+   "yaw": -3.7,
+   "props": {
+    "topic": "clock"
+   }
+  },
+  {
+   "id": "cu_hall_note",
+   "kind": "board",
+   "pos": [
+    -7.021,
+    8.857,
+    1.5
+   ],
+   "yaw": -3.7,
+   "props": {
+    "topic": "note"
+   }
+  },
+  {
+   "id": "cu_hall_shoes",
+   "kind": "board",
+   "pos": [
+    -8.926,
+    8.068,
+    0.6
+   ],
+   "yaw": 86.3,
+   "props": {
+    "topic": "shoes"
+   }
+  },
+  {
+   "id": "cu_hall_hooks",
+   "kind": "board",
+   "pos": [
+    -8.751,
+    8.758,
+    1.3
+   ],
+   "yaw": -3.7,
+   "props": {
+    "topic": "hooks"
+   }
+  },
+  {
+   "id": "cu_hall_bench",
+   "kind": "seat",
+   "pos": [
+    -7.049,
+    7.947,
+    0.45
+   ],
+   "yaw": 266.3,
+   "props": {
+    "height": 0.45
+   }
+  },
+  {
+   "id": "cu_hall_mirror",
+   "kind": "board",
+   "pos": [
+    -6.86,
+    7.935,
+    1.5
+   ],
+   "yaw": 266.3,
+   "props": {
+    "topic": "mirror"
+   }
+  },
+  {
+   "id": "cu_hall_plant",
+   "kind": "board",
+   "pos": [
+    -7.05,
+    8.718,
+    0.6
+   ],
+   "yaw": -3.7,
+   "props": {
+    "topic": "hall_plant"
+   }
+  },
+  {
+   "id": "lift_living",
+   "kind": "door",
+   "pos": [
+    -7.908,
+    9.094,
+    9.2
+   ],
+   "yaw": -3.7,
+   "props": {
+    "to": "lift"
+   }
+  },
+  {
+   "id": "cu_liv_window_seat",
+   "kind": "seat",
+   "pos": [
+    -7.689,
+    5.483,
+    8.62
+   ],
+   "yaw": -3.7,
+   "props": {
+    "height": 0.52
+   }
+  },
+  {
+   "id": "cu_liv_view_front",
+   "kind": "board",
+   "pos": [
+    -8.151,
+    5.312,
+    9.6
+   ],
+   "yaw": 176.3,
+   "props": {
+    "topic": "view"
+   }
+  },
+  {
+   "id": "cu_liv_view_back",
+   "kind": "board",
+   "pos": [
+    -7.101,
+    9.954,
+    9.6
+   ],
+   "yaw": -3.7,
+   "props": {
+    "topic": "view"
+   }
+  },
+  {
+   "id": "cu_liv_sofa_a",
+   "kind": "seat",
+   "pos": [
+    -9.487,
+    6.35,
+    8.64
+   ],
+   "yaw": 86.3,
+   "props": {
+    "height": 0.54
+   }
+  },
+  {
+   "id": "cu_liv_sofa_b",
+   "kind": "seat",
+   "pos": [
+    -9.436,
+    7.148,
+    8.64
+   ],
+   "yaw": 86.3,
+   "props": {
+    "height": 0.54
+   }
+  },
+  {
+   "id": "cu_liv_shelf",
+   "kind": "shelf",
+   "pos": [
+    -6.773,
+    6.476,
+    8.65
+   ],
+   "yaw": 266.3,
+   "props": {
+    "topic": "local"
+   }
+  },
+  {
+   "id": "cu_liv_radio",
+   "kind": "machine",
+   "pos": [
+    -6.244,
+    6.141,
+    9.2
+   ],
+   "yaw": 266.3,
+   "props": {
+    "what": "radio"
+   }
+  },
+  {
+   "id": "cu_liv_photos",
+   "kind": "board",
+   "pos": [
+    -6.364,
+    6.6,
+    9.15
+   ],
+   "yaw": 266.3,
+   "props": {
+    "topic": "photos"
+   }
+  },
+  {
+   "id": "cu_liv_stove",
+   "kind": "machine",
+   "pos": [
+    -6.802,
+    7.58,
+    9.05
+   ],
+   "yaw": 266.3,
+   "props": {
+    "what": "stove"
+   }
+  },
+  {
+   "id": "cu_liv_sink",
+   "kind": "machine",
+   "pos": [
+    -6.764,
+    8.179,
+    9.05
+   ],
+   "yaw": 266.3,
+   "props": {
+    "what": "sink"
+   }
+  },
+  {
+   "id": "cu_liv_fridge",
+   "kind": "board",
+   "pos": [
+    -8.73,
+    9.708,
+    9.4
+   ],
+   "yaw": 86.3,
+   "props": {
+    "topic": "fridge"
+   }
+  },
+  {
+   "id": "cu_liv_play",
+   "kind": "machine",
+   "pos": [
+    -9.019,
+    8.174,
+    9.2
+   ],
+   "yaw": 86.3,
+   "props": {
+    "what": "arcade"
+   }
+  },
+  {
+   "id": "cu_liv_games",
+   "kind": "shelf",
+   "pos": [
+    -9.224,
+    8.888,
+    8.7
+   ],
+   "yaw": 86.3,
+   "props": {
+    "topic": "games"
+   }
+  },
+  {
+   "id": "cu_liv_table",
+   "kind": "play",
+   "pos": [
+    -8.067,
+    6.609,
+    8.57
+   ],
+   "yaw": 86.3,
+   "props": {
+    "what": "dominoes"
+   }
+  },
+  {
+   "id": "cu_liv_switch",
+   "kind": "machine",
+   "pos": [
+    -7.155,
+    9.427,
+    9.4
+   ],
+   "yaw": 86.3,
+   "props": {
+    "what": "switch",
+    "switch": "room"
+   }
+  },
+  {
+   "id": "lift_tip",
+   "kind": "door",
+   "pos": [
+    -7.908,
+    9.094,
+    11.5
+   ],
+   "yaw": -3.7,
+   "props": {
+    "to": "lift"
+   }
+  },
+  {
+   "id": "cu_tip_clock",
+   "kind": "board",
+   "pos": [
+    -7.906,
+    9.114,
+    12.92
+   ],
+   "yaw": -3.7,
+   "props": {
+    "topic": "clock"
+   }
+  },
+  {
+   "id": "cu_tip_switch",
+   "kind": "machine",
+   "pos": [
+    -8.612,
+    9.52,
+    11.7
+   ],
+   "yaw": 266.3,
+   "props": {
+    "what": "switch",
+    "switch": "room"
+   }
+  },
+  {
+   "id": "cu_tip_bed",
+   "kind": "bed",
+   "pos": [
+    -6.519,
+    8.865,
+    10.9
+   ],
+   "yaw": -3.7,
+   "props": {
+    "rest": "private",
+    "height": 0.5
+   }
+  },
+  {
+   "id": "cu_tip_sky",
+   "kind": "board",
+   "pos": [
+    -6.323,
+    7.549,
+    11.65
+   ],
+   "yaw": 266.3,
+   "props": {
+    "topic": "view"
+   }
+  },
+  {
+   "id": "cu_tip_sky_l",
+   "kind": "board",
+   "pos": [
+    -9.677,
+    7.765,
+    11.65
+   ],
+   "yaw": 86.3,
+   "props": {
+    "topic": "view"
+   }
+  },
+  {
+   "id": "cu_tip_view_floor",
+   "kind": "board",
+   "pos": [
+    -8.151,
+    5.312,
+    10.8
+   ],
+   "yaw": 176.3,
+   "props": {
+    "topic": "view"
+   }
+  },
+  {
+   "id": "cu_tip_trays",
+   "kind": "board",
+   "pos": [
+    -9.658,
+    6.812,
+    11.05
+   ],
+   "yaw": 86.3,
+   "props": {
+    "topic": "seedlings"
+   }
+  },
+  {
+   "id": "cu_tip_garden",
+   "kind": "shelf",
+   "pos": [
+    -9.489,
+    8.655,
+    11.05
+   ],
+   "yaw": 86.3,
+   "props": {
+    "topic": "garden"
+   }
+  },
+  {
+   "id": "cu_tip_can",
+   "kind": "machine",
+   "pos": [
+    -9.494,
+    7.803,
+    11.0
+   ],
+   "yaw": 86.3,
+   "props": {
+    "what": "watering"
+   }
+  },
+  {
+   "id": "cu_tip_seeds",
+   "kind": "take",
+   "pos": [
+    -9.365,
+    8.246,
+    11.0
+   ],
+   "yaw": 86.3,
+   "props": {
+    "item": "seeds"
+   }
+  },
+  {
+   "id": "cu_tip_beanbag",
+   "kind": "seat",
+   "pos": [
+    -8.109,
+    5.961,
+    10.8
+   ],
+   "yaw": -3.7,
+   "props": {
+    "height": 0.4
+   }
+  },
+  {
+   "id": "cu_tip_cushion_l",
+   "kind": "seat",
+   "pos": [
+    -8.977,
+    5.716,
+    10.47
+   ],
+   "yaw": -3.7,
+   "props": {
+    "height": 0.07
+   }
+  },
+  {
+   "id": "cu_tip_cushion_r",
+   "kind": "seat",
+   "pos": [
+    -7.28,
+    5.607,
+    10.47
+   ],
+   "yaw": -3.7,
+   "props": {
+    "height": 0.07
+   }
+  },
+  {
+   "id": "cu_tip_shelf",
+   "kind": "shelf",
+   "pos": [
+    -6.493,
+    6.157,
+    11.1
+   ],
+   "yaw": 266.3,
+   "props": {
+    "topic": "sun"
+   }
+  },
+  {
+   "id": "niche_board_c3",
+   "kind": "board",
+   "pos": [
+    0.0,
+    7.27,
+    1.5
+   ],
+   "yaw": 0.0,
+   "props": {
+    "topic": "lost"
+   }
+  },
+  {
+   "id": "niche_board_c4",
+   "kind": "board",
+   "pos": [
+    8.008,
+    7.528,
+    1.5
+   ],
+   "yaw": 3.7,
+   "props": {
+    "topic": "lost"
+   }
+  },
+  {
+   "id": "niche_board_c5",
+   "kind": "board",
+   "pos": [
+    16.012,
+    8.3,
+    1.5
+   ],
+   "yaw": 5.5,
+   "props": {
+    "topic": "lost"
+   }
+  },
+  {
+   "id": "deck_bench_1_seat",
+   "kind": "seat",
+   "pos": [
+    -4.359,
+    10.362,
+    3.45
+   ],
+   "yaw": 358.2,
+   "props": {
+    "height": 0.45
+   }
+  },
+  {
+   "id": "deck_chess",
+   "kind": "play",
+   "pos": [
+    3.925,
+    9.877,
+    3.75
+   ],
+   "yaw": 1.8,
+   "props": {
+    "what": "chess"
+   }
+  },
+  {
+   "id": "deck_bench_3_seat",
+   "kind": "seat",
+   "pos": [
+    11.326,
+    10.818,
+    3.45
+   ],
+   "yaw": 4.6,
+   "props": {
+    "height": 0.45
+   }
+  },
+  {
+   "id": "pillar_board_1",
+   "kind": "board",
+   "pos": [
+    -15.859,
+    9.892,
+    4.5
+   ],
+   "yaw": 174.5,
+   "props": {
+    "topic": "club"
+   }
+  },
+  {
+   "id": "pillar_board_2",
+   "kind": "board",
+   "pos": [
+    -7.906,
+    9.124,
+    4.5
+   ],
+   "yaw": 176.3,
+   "props": {
+    "topic": "timetable"
+   }
+  },
+  {
+   "id": "pillar_board_3",
+   "kind": "board",
+   "pos": [
+    0.0,
+    8.87,
+    4.5
+   ],
+   "yaw": 180.0,
+   "props": {
+    "topic": "club"
+   }
+  },
+  {
+   "id": "pillar_board_4",
+   "kind": "board",
+   "pos": [
+    7.906,
+    9.124,
+    4.5
+   ],
+   "yaw": 183.7,
+   "props": {
+    "topic": "timetable"
+   }
+  },
+  {
+   "id": "pillar_board_5",
+   "kind": "board",
+   "pos": [
+    15.859,
+    9.892,
+    4.5
+   ],
+   "yaw": 185.5,
+   "props": {
+    "topic": "club"
+   }
+  },
+  {
+   "id": "deck_postbox",
+   "kind": "board",
+   "pos": [
+    -14.413,
+    5.478,
+    4.0
+   ],
+   "yaw": 175.4,
+   "props": {
+    "topic": "post"
+   }
+  },
+  {
+   "id": "deck_board",
+   "kind": "board",
+   "pos": [
+    -5.276,
+    5.168,
+    4.45
+   ],
+   "yaw": 88.2,
+   "props": {
+    "topic": "deck_board"
+   }
+  },
+  {
+   "id": "deck_bench_s2_seat",
+   "kind": "seat",
+   "pos": [
+    5.74,
+    4.763,
+    3.45
+   ],
+   "yaw": 181.8,
+   "props": {
+    "height": 0.45
+   }
+  },
+  {
+   "id": "deck_view",
+   "kind": "board",
+   "pos": [
+    5.301,
+    4.389,
+    4.3
+   ],
+   "yaw": 181.8,
+   "props": {
+    "topic": "view"
+   }
+  },
+  {
+   "id": "deck_planter",
+   "kind": "board",
+   "pos": [
+    11.036,
+    5.056,
+    3.7
+   ],
+   "yaw": 184.6,
+   "props": {
+    "topic": "deck_planter"
+   }
+  },
+  {
+   "id": "deck_telescope",
+   "kind": "machine",
+   "pos": [
+    13.87,
+    5.511,
+    4.2
+   ],
+   "yaw": 5.5,
+   "props": {
+    "what": "telescope"
+   }
   }
  ],
  "flats": [
@@ -1068,8 +1975,8 @@
   "5 cube houses on hexagonal pillars, deck at z 3.0, max height 13.8 m"
  ],
  "tris": {
-  "shell": 1321,
-  "detail": 3024,
-  "windows": 70
+  "shell": 1591,
+  "detail": 12713,
+  "windows": 140
  }
 }
