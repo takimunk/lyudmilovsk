@@ -668,5 +668,435 @@
   "ru": "Голуби ели с руки, чай был с мятой, а море внизу сделалось розовым. Витя пообещал показать мне Юпитер: четыре точки, тренога на мелу.",
   "en": "The pigeons ate from my hand, the tea had mint in it and the sea below turned pink. Vitya promised to show me Jupiter: four dots, the tripod on chalk.",
   "ja": "鳩は手から食べ、お茶にはミントが入り、下の海はばら色になった。ヴィーチャは木星を見せてくれると約束した。点が四つ、チョークの印の上の三脚。"
+ },
+ "city.rcb.shelf.prompt": {
+  "ru": "E — рассмотреть полку",
+  "en": "E — look over the shelf",
+  "ja": "E：棚を眺める"
+ },
+ "city.rcb.shelf.dairy.1": {
+  "ru": "Молочная полка: бутылки с алюминиевой крышечкой, молоко ещё холодное с молокозавода. На этикетках «МОЛОКО», «КЕФИР», «СГУЩЁНКА». Кефир привезут к обеду, пока его место занимают пустые лотки.",
+  "en": "The dairy shelf: bottles with aluminium caps, the milk still cold from the dairy. The labels read MILK, KEFIR, CONDENSED MILK. The kefir comes at noon; for now empty trays hold its place.",
+  "ja": "乳製品の棚。アルミのふたの瓶、牛乳は工場から届いたばかりでまだ冷たい。ラベルには「牛乳」「ケフィア」「練乳」。ケフィアは昼に届くので、それまでは空のトレーが場所を取っている。"
+ },
+ "city.rcb.shelf.dairy.2": {
+  "ru": "Днём на полке кефир, сгущёнка и две бутылки топлёного. Нина Павловна ставит свежее назад: «Берите передние, они старше, но честнее».",
+  "en": "In the afternoon the shelf holds kefir, condensed milk and two bottles of baked milk. Nina Pavlovna puts the fresh ones at the back: \"Take the front ones, they are older but more honest.\"",
+  "ja": "昼の棚にはケフィアと練乳、焼きミルクが二本。ニーナ・パヴロヴナは新しいものを奥に置く。「手前のをどうぞ。古いけれど正直です」。"
+ },
+ "city.rcb.shelf.dairy.3": {
+  "ru": "К вечеру молочная полка пустеет: остались сгущёнка и записка «Завтра с шести утра». Лампа над ней светит мягко, как над аквариумом.",
+  "en": "By evening the dairy shelf is nearly bare: only condensed milk and a note, \"Tomorrow from six in the morning.\" The lamp above it glows softly, as over an aquarium.",
+  "ja": "夕方には乳製品の棚はほぼ空で、練乳と「明日は朝六時から」というメモだけが残る。上のランプは水槽の上のように柔らかく光っている。"
+ },
+ "city.rcb.shelf.bakery.1": {
+  "ru": "Бакалейная полка: мука, сахар, крупа в бумажных пачках, печенье в жестяной банке. На этикетках «МУКА», «САХАР», «КРУПА», «ПЕЧЕНЬЕ». Мука белая, как на плакате, и пахнет утром.",
+  "en": "The dry-goods shelf: flour, sugar and groats in paper packs, biscuits in a tin. The labels read FLOUR, SUGAR, GROATS, BISCUITS. The flour is white as on a poster and smells of morning.",
+  "ja": "乾物の棚。小麦粉、砂糖、穀物が紙の袋に、ビスケットは缶に入っている。ラベルは「小麦粉」「砂糖」「穀物」「ビスケット」。粉はポスターのように白く、朝のにおいがする。"
+ },
+ "city.rcb.shelf.bakery.2": {
+  "ru": "Днём берут сахар и печенье. Куски сахара лежат горкой в синей бумаге, и каждый, кто проходит мимо, думает, что пора ставить самовар.",
+  "en": "In the afternoon people take sugar and biscuits. The lumps of sugar lie in a heap in blue paper, and everyone passing thinks it is time to put the samovar on.",
+  "ja": "昼は砂糖とビスケットがよく売れる。角砂糖は青い紙の上に山になっていて、前を通る人はみな、そろそろサモワールを沸かそうと思う。"
+ },
+ "city.rcb.shelf.bakery.3": {
+  "ru": "Вечером остаются конфеты в вазе и пачка манки. Нина Павловна говорит, что манка — это терпение, и продаёт её по одной.",
+  "en": "In the evening there are sweets in a vase and one pack of semolina. Nina Pavlovna says semolina is patience and sells it one pack at a time.",
+  "ja": "夕方に残るのは、花瓶のなかの飴とセモリナの袋がひとつ。ニーナ・パヴロヴナはセモリナは忍耐だと言い、ひと袋ずつ売る。"
+ },
+ "city.rcb.shelf.hardware.1": {
+  "ru": "Хозяйственная полка: спички, мыло, порошок, клей, краска в банках. На этикетках «СПИЧКИ», «МЫЛО», «ПОРОШОК», «КЛЕЙ». Всё пахнет мылом и чуть-чуть керосином.",
+  "en": "The household shelf: matches, soap, washing powder, glue, tins of paint. The labels read MATCHES, SOAP, POWDER, GLUE. Everything smells of soap and a little of paraffin.",
+  "ja": "日用品の棚。マッチ、石けん、洗剤、糊、缶入りのペンキ。ラベルは「マッチ」「石けん」「洗剤」「糊」。何もかも石けんと、ほんの少し灯油のにおいがする。"
+ },
+ "city.rcb.shelf.hardware.2": {
+  "ru": "Спички лежат ближе к кассе, чтобы дети не дотянулись. Мыло завёрнуто в серую бумагу и подписано карандашом: «хозяйственное», «детское», «на подарок».",
+  "en": "The matches lie closer to the till so the children cannot reach them. The soap is wrapped in grey paper and marked in pencil: \"household\", \"children's\", \"for a gift\".",
+  "ja": "マッチは子どもの手が届かないよう、レジの近くに置いてある。石けんは灰色の紙に包まれ、鉛筆で「家事用」「子ども用」「贈り物用」と書かれている。"
+ },
+ "city.rcb.shelf.hardware.3": {
+  "ru": "К вечеру на полке остаются клей и банка краски «Небесная». Нина Павловна уверяет, что краска именно того цвета, как небо над домом в ноябре.",
+  "en": "By evening only glue and a tin of the paint \"Sky\" remain. Nina Pavlovna swears the paint is exactly the colour of the sky above the house in November.",
+  "ja": "夕方には糊と、「空色」というペンキの缶が残る。ニーナ・パヴロヴナは、十一月の家の上の空とまったく同じ色だと言い張る。"
+ },
+ "city.rcb.shelf.drinks.1": {
+  "ru": "Полка напитков: лимонад, квас, кофе в банке, чай в пачках. На этикетках «ЛИМОНАД», «КВАС», «ЧАЙ», «КОФЕ». Лимонад холодный: стоит в углу, куда не достаёт солнце.",
+  "en": "The drinks shelf: lemonade, kvass, coffee in a tin, tea in packs. The labels read LEMONADE, KVASS, TEA, COFFEE. The lemonade is cold: it stands in the corner where the sun does not reach.",
+  "ja": "飲み物の棚。レモネード、クワス、缶入りコーヒー、箱入りの紅茶。ラベルは「レモネード」「クワス」「紅茶」「コーヒー」。レモネードは日の当たらない隅にあるので冷たい。"
+ },
+ "city.rcb.shelf.drinks.2": {
+  "ru": "Днём у полки очередь за квасом: бутылки позванивают в авоськах. Кофе в банке стоит нетронутый, его берут только по праздникам.",
+  "en": "In the afternoon there is a queue for kvass at the shelf: bottles clink in string bags. The tin of coffee stands untouched; it is bought only on holidays.",
+  "ja": "昼の棚の前にはクワスを買う行列ができ、網袋の中で瓶が鳴る。缶入りコーヒーは手つかずで、祝日にしか買われない。"
+ },
+ "city.rcb.shelf.drinks.3": {
+  "ru": "Вечером остаётся чай. Пачки выстроены так ровно, что хочется налить, сесть и никуда не торопиться. Нина Павловна советует мяту с крыши.",
+  "en": "In the evening tea is what remains. The packs are lined up so neatly that one wants to brew a cup, sit down and not hurry. Nina Pavlovna recommends mint from the roof.",
+  "ja": "夕方に残るのは紅茶。箱がきれいに並び、お茶をいれて座り、急がずにいたくなる。ニーナ・パヴロヴナは屋上のミントをすすめる。"
+ },
+ "city.rcb.ledger.prompt": {
+  "ru": "E — открыть тетрадь «в долг»",
+  "en": "E — open the credit notebook",
+  "ja": "E：ツケ帳を開く"
+ },
+ "city.rcb.text.ledger.title": {
+  "ru": "Тетрадь «в долг»",
+  "en": "The credit notebook",
+  "ja": "ツケ帳"
+ },
+ "city.rcb.ledger.1": {
+  "ru": "Тетрадь в клетчатой клеёнке. На первой странице правило: «Даю тем, кто вернёт, и тем, кто не вернёт, потому что у них такое лицо. Н. П.»",
+  "en": "A notebook in checked oilcloth. On the first page a rule: \"I give credit to those who will pay back and to those who won't, because of the look on their faces. N. P.\"",
+  "ja": "チェック柄の油布の帳面。最初のページに決まりごと。「返す人にも、返さない人にも貸します。そういう顔をしているから。Н.П.」"
+ },
+ "city.rcb.ledger.2": {
+  "ru": "«Витя, кв. 3-07: семечки, пакетик, 10 р. Вернёт, когда голуби подрастут». Рядом другим почерком: «Голуби не растут. Они только толстеют. Витя».",
+  "en": "\"Vitya, flat 3-07: sunflower seeds, one packet, 10 r. Will pay when the pigeons grow up.\" Beside it in another hand: \"Pigeons don't grow up. They only get fatter. Vitya.\"",
+  "ja": "「ヴィーチャ、3-07号室。ひまわりの種を一袋、十ルーブル。鳩が大きくなったら返す」。横に別の筆跡で。「鳩は大きくならない。太るだけ。ヴィーチャ」。"
+ },
+ "city.rcb.ledger.3": {
+  "ru": "«З. И., кв. 2-04: соль, спички. Вернёт помидорами, когда покраснеют». Приписано: «5 помидоров». Строка пока не зачёркнута, но на крыше уже что-то розовеет.",
+  "en": "\"Z. I., flat 2-04: salt, matches. Will pay with tomatoes when they turn red.\" Added: \"5 tomatoes.\" The line is not crossed out yet, but something is already turning pink on the roof.",
+  "ja": "「З.И.、2-04号室。塩、マッチ。トマトが赤くなったらトマトで返す」。書き添え。「トマト五個」。まだ線は引かれていないが、屋上ではもう何かがほんのり色づいている。"
+ },
+ "city.rcb.ledger.4": {
+  "ru": "«Витя: красные нитки, катушка, для штопки. Носок подождёт, штопка нет». Нина Павловна записала это в долг сразу и без вопросов: штопка, по её мнению, дело срочное.",
+  "en": "\"Vitya: red thread, one reel, for darning. The sock can wait, the darning cannot.\" Nina Pavlovna wrote it down on credit at once and without questions: darning, in her opinion, is urgent.",
+  "ja": "「ヴィーチャ。赤い糸を一巻き、繕い用。靴下は待てるが、繕いは待てない」。ニーナ・パヴロヴナは何も聞かずにすぐツケにした。繕いは急ぎの仕事だというのが彼女の考えだ。"
+ },
+ "city.rcb.ledger.5": {
+  "ru": "«Тамара Львовна, кв. 1-03: хлеб, вернула на следующий день с процентами: пирожок». Графа «проценты» зачёркнута, сверху: «с пирожком не считаем».",
+  "en": "\"Tamara Lvovna, flat 1-03: bread, returned the next day with interest: a pie.\" The column \"interest\" is crossed out, and above it: \"we don't count it with a pie.\"",
+  "ja": "「タマーラ・リヴォヴナ、1-03号室。パン。翌日に利子つきで返済、ピロシキ一個」。「利子」の欄は線で消され、上に「ピロシキがあれば計算しない」。"
+ },
+ "city.rcb.ledger.6": {
+  "ru": "Подведён итог: «Помидорами — один (З. И.), пирожком — один (Т. Л.), штопкой — один (Витя), остальные честно деньгами». Внизу: «Сальдо: добрый вечер».",
+  "en": "A total is drawn: \"Paid in tomatoes: one (Z. I.), in a pie: one (T. L.), in darning: one (Vitya), the rest honestly in money.\" At the bottom: \"Balance: good evening.\"",
+  "ja": "合計が出ている。「トマトで返済、一人（З.И.）。ピロシキで一人（Т.Л.）。繕いで一人（ヴィーチャ）。残りは正直にお金で」。いちばん下に「残高。こんばんは」。"
+ },
+ "city.rcb.ledger.7": {
+  "ru": "Последняя страница, новая запись пока пустая: «В долг до субботы: ______________. Н. П. запишет, если лицо хорошее». На полях карандашом: «Лицо проверяется на пороге».",
+  "en": "The last page, the new entry still empty: \"On credit until Saturday: ______________. N. P. will write it down if the face is good.\" In pencil in the margin: \"The face is checked on the doorstep.\"",
+  "ja": "最後のページ、新しい記入欄はまだ空白。「土曜までのツケ。______________。顔がよければН.П.が書きます」。余白に鉛筆で。「顔は敷居のところで確認します」。"
+ },
+ "city.rcb.serial.prompt": {
+  "ru": "E — читать журнал на скамье",
+  "en": "E — read a magazine on the bench",
+  "ja": "E：ベンチで雑誌を読む"
+ },
+ "city.rcb.text.serial.title": {
+  "ru": "«Огонёк»: роман с продолжением",
+  "en": "Ogonyok: the serial novel",
+  "ja": "『オゴニョク』連載小説"
+ },
+ "city.rcb.serial.1": {
+  "ru": "«Огонёк», страница с продолжением. Роман «Маяк на косе», глава первая. Дочь смотрителя Анна каждый вечер считает лучи: три коротких, один длинный. Отец говорит, что так маяк разговаривает с кораблями. Анна думает, что маяк разговаривает с ней.",
+  "en": "Ogonyok, the page with the serial. The novel \"The Lighthouse on the Spit\", chapter one. The keeper's daughter Anna counts the beams every evening: three short, one long. Her father says that is how the lighthouse talks to ships. Anna thinks the lighthouse is talking to her.",
+  "ja": "『オゴニョク』の連載ページ。小説『砂嘴の灯台』、第一章。灯台守の娘アンナは毎晩光の数を数える。短く三つ、長く一つ。父は、灯台はそうして船と話しているのだと言う。アンナは、灯台は自分と話していると思っている。"
+ },
+ "city.rcb.serial.2": {
+  "ru": "Глава вторая. В порт приходит парусник без флага. Анна видит с галереи, как на нём горит один зелёный огонь, а на носу кто-то машет рукой. Отец хмурится и достаёт подзорную трубу.",
+  "en": "Chapter two. A sailing boat with no flag comes into the port. From the gallery Anna sees a single green light burning on it, and somebody waving from the bow. Her father frowns and takes out the spyglass.",
+  "ja": "第二章。旗のない帆船が港に入ってくる。アンナは回廊から、船に緑の灯がひとつだけともり、船首で誰かが手を振るのを見る。父は眉をひそめて望遠鏡を取り出す。"
+ },
+ "city.rcb.serial.3": {
+  "ru": "Глава третья. У берега лодка, на дне ящик с цифрами вместо имён: 3–1–3–1. Это не груз, а шифр. Анна понимает: три коротких, один длинный. Кто-то отвечает маяку.",
+  "en": "Chapter three. A boat at the shore, and on its bottom a crate with numbers instead of names: 3-1-3-1. It is not cargo but a code. Anna understands: three short, one long. Somebody is answering the lighthouse.",
+  "ja": "第三章。岸辺に小舟があり、底には名前の代わりに数字の書かれた木箱。3-1-3-1。荷物ではなく暗号だ。アンナは気づく。短く三つ、長く一つ。誰かが灯台に答えている。"
+ },
+ "city.rcb.serial.4": {
+  "ru": "Глава четвёртая. Ночью Анна поднимается к лампе и дважды повторяет сигнал. С моря отвечает фонарь: тот же ритм. Отец спит. Анна решает ничего ему не говорить, пока не узнает, кто это.",
+  "en": "Chapter four. At night Anna climbs to the lamp and repeats the signal twice. A lantern answers from the sea: the same rhythm. Her father is asleep. Anna decides to tell him nothing until she knows who it is.",
+  "ja": "第四章。夜、アンナは灯室に上がり、合図を二度繰り返す。海から提灯が同じリズムで答える。父は眠っている。誰なのかわかるまで、父には何も言わないとアンナは決める。"
+ },
+ "city.rcb.serial.5": {
+  "ru": "Глава пятая. На рассвете у причала старик с чемоданом и корзиной яблок. Он говорит: «Тридцать лет я мигал вам с парусника. Наконец-то ответили». Анна смеётся, отец плачет, яблоки раскатываются по доскам.",
+  "en": "Chapter five. At dawn on the quay stands an old man with a suitcase and a basket of apples. He says: \"For thirty years I have been blinking at you from the boat. At last you answered.\" Anna laughs, her father weeps, the apples roll over the planks.",
+  "ja": "第五章。夜明けの波止場に、トランクとリンゴの籠を持った老人が立っている。「三十年、船からあなたたちに合図を送り続けた。ようやく返事が来た」。アンナは笑い、父は泣き、リンゴが板の上を転がる。"
+ },
+ "city.rcb.serial.6": {
+  "ru": "Глава шестая и последняя: страница оборвана, внизу «Продолжение в следующем номере». Кто-то карандашом: «Не будет. Мы проверяли». Другим почерком под этим: «Будет. Я сам допишу».",
+  "en": "Chapter six and last: the page is torn off, and at the bottom \"To be continued in the next issue.\" In pencil, somebody: \"It won't be. We checked.\" In another hand underneath: \"It will. I will finish it myself.\"",
+  "ja": "第六章、最終章。ページは破り取られ、下に「続きは次号」。誰かが鉛筆で。「次号はない。確かめた」。その下に別の筆跡で。「ある。自分で書き上げる」。"
+ },
+ "city.rcb.dryer.prompt": {
+  "ru": "E — прочесть объявление о сушилке",
+  "en": "E — read the notice about the dryer",
+  "ja": "E：乾燥機のお知らせを読む"
+ },
+ "city.rcb.dryer.1": {
+  "ru": "Лист в клетку с кнопками по углам: «Сушилка сломалась. Мастер обещал в среду. Бельё сушим на крыше, верёвки у голубятни свободны. Прищепки в корзине у верёвки. Совет дома».",
+  "en": "A checked sheet pinned at the corners: \"The dryer is broken. The repairman promised Wednesday. We dry the washing on the roof, the lines by the dovecote are free. Pegs in the basket by the line. House council.\"",
+  "ja": "四隅を画びょうでとめた方眼紙。「乾燥機が故障しました。修理の人は水曜に来ると約束。洗濯物は屋上で干します。鳩小屋のそばのロープは空いています。洗濯ばさみはロープのそばの籠に。住民会」。"
+ },
+ "city.rcb.dryer.2": {
+  "ru": "Приписка: «Мастер приходил. Постучал по сушилке молотком, сказал „ага“ и ушёл за деталью. Деталь едет из другого города. Сушим на крыше».",
+  "en": "A note added: \"The repairman came. Tapped the dryer with a hammer, said 'aha' and went off for a part. The part is coming from another city. We dry on the roof.\"",
+  "ja": "書き添え。「修理の人が来ました。ハンマーで乾燥機をたたき、『なるほど』と言って部品を取りに行きました。部品は別の町から来ます。屋上で干しましょう」。"
+ },
+ "city.rcb.dryer.3": {
+  "ru": "Ещё приписка: «Простыни на крыше без прищепок не оставлять: ветер с моря берёт всё, что плохо прихвачено. Вчера улетела одна белая. Нашлась у голубятни. Витя».",
+  "en": "Another note: \"Don't leave sheets on the roof without pegs: the sea wind takes whatever is badly fastened. Yesterday a white one flew off. It was found by the dovecote. Vitya.\"",
+  "ja": "さらに書き添え。「屋上のシーツは洗濯ばさみなしで放置しないこと。海風はしっかり留めていないものを何でも持っていきます。昨日、白いのが一枚飛びました。鳩小屋のそばで見つかりました。ヴィーチャ」。"
+ },
+ "city.rcb.dryer.4": {
+  "ru": "Мастер вернулся с деталью, но не с той: «Ага, это для другой модели». Завтра «наверняка». Ниже расписание сушки на крыше по этажам: первый этаж вторник и пятница, второй среда и суббота.",
+  "en": "The repairman came back with a part, but the wrong one: \"Aha, this is for another model.\" Tomorrow \"for sure\". Below is the drying schedule for the roof by floors: first floor Tuesday and Friday, second floor Wednesday and Saturday.",
+  "ja": "修理の人は部品を持って戻ったが、違うものだった。「なるほど、これは別の機種用だ」。明日は「必ず」。その下に屋上の乾燥予定表。一階は火曜と金曜、二階は水曜と土曜。"
+ },
+ "city.rcb.dryer.5": {
+  "ru": "«Сушилка работает! Включать на треть мощности, а то она свистит, как чайник». И ниже: «Но простыни на крыше пахнут морем, так что многие остались верны верёвке».",
+  "en": "\"The dryer works! Turn it on at a third of its power or it whistles like a kettle.\" And below: \"But sheets on the roof smell of the sea, so many have stayed faithful to the line.\"",
+  "ja": "「乾燥機が直りました！ 出力は三分の一で使うこと、やかんのように鳴きます」。その下に。「でも屋上のシーツは海のにおいがするので、ロープに忠実なままの人も多いです」。"
+ },
+ "city.rcb.soap.prompt": {
+  "ru": "E — посмотреть полку с порошком",
+  "en": "E — look at the powder shelf",
+  "ja": "E：洗剤の棚を見る"
+ },
+ "city.rcb.soap.1": {
+  "ru": "Низкая полка у машин: порошок, мыло, пачка соды. На этикетках «ПОРОШОК» и «МЫЛО». Рядом жестянка из-под монпансье с надписью «2 руб., бросать сюда»: расчёт по совести.",
+  "en": "A low shelf by the machines: washing powder, soap, a packet of soda. The labels read POWDER and SOAP. Beside it a tin that once held fruit drops, marked \"2 r., drop it here\": payment on trust.",
+  "ja": "洗濯機のそばの低い棚。洗剤、石けん、重曹の袋。ラベルは「洗剤」と「石けん」。横にドロップの空き缶があり、「2ルーブル、ここに入れて」と書いてある。代金は信用払いだ。"
+ },
+ "city.rcb.soap.2": {
+  "ru": "Ночью порошок на полке пахнет острее, чем днём. Жестянка почти полна монет: за день дом честно рассчитался.",
+  "en": "At night the powder on the shelf smells sharper than by day. The tin is nearly full of coins: during the day the house paid up honestly.",
+  "ja": "夜は棚の洗剤が昼よりきついにおいがする。缶はほぼ硬貨でいっぱいだ。この家は昼のあいだに正直に支払いを済ませた。"
+ },
+ "city.rcb.deck.prompt": {
+  "ru": "E — присесть в шезлонг",
+  "en": "E — sit in the deck chair",
+  "ja": "E：デッキチェアに座る"
+ },
+ "city.rcb.deck.1": {
+  "ru": "Утренний шезлонг: море гладкое, на горизонте тянется серая полоса, то ли дождь, то ли край света. Холст ещё прохладный, внизу кто-то несёт кофе.",
+  "en": "The morning deck chair: the sea is smooth, a grey band lies on the horizon, rain or the edge of the world. The canvas is still cool, and somebody below is carrying coffee.",
+  "ja": "朝のデッキチェア。海は凪いで、水平線に灰色の帯がのびている。雨か、世界の端か。布はまだ冷たく、下では誰かがコーヒーを運んでいく。"
+ },
+ "city.rcb.deck.2": {
+  "ru": "Днём с шезлонга видно всё побережье: пирс, маяк, белую точку катера. Солнце греет щёку, ветер приносит запах сосен и тёплой смолы.",
+  "en": "By day the deck chair shows the whole coast: the pier, the lighthouse, the white dot of a motor boat. The sun warms the cheek, the wind brings the smell of pines and warm resin.",
+  "ja": "昼のデッキチェアからは海岸が一望できる。桟橋、灯台、白い点のようなモーターボート。日が頬をあたため、風が松と温かい樹脂のにおいを運んでくる。"
+ },
+ "city.rcb.deck.3": {
+  "ru": "Вечером шезлонги поворачивают к закату. Небо над морем розовеет по краям, как бумага у лампы, а внизу один за другим зажигаются окна.",
+  "en": "In the evening the deck chairs are turned toward the sunset. The sky over the sea turns pink at the edges like paper by a lamp, and below the windows light up one after another.",
+  "ja": "夕方にはデッキチェアが夕焼けのほうへ向けられる。海の上の空はランプのそばの紙のように縁からばら色になり、下では窓が次々と灯る。"
+ },
+ "city.rcb.deck.4": {
+  "ru": "Ночью с шезлонга море чёрное, а над ним лента огней: маяк считает лучи, три коротких и один длинный. Звёзды близко, и никто не торопит.",
+  "en": "At night from the deck chair the sea is black and above it runs a string of lights: the lighthouse counts its beams, three short and one long. The stars are close and nobody hurries you.",
+  "ja": "夜のデッキチェアから見る海は黒く、その上に灯りの帯が走る。灯台が光を数える。短く三つ、長く一つ。星は近く、誰も急かさない。"
+ },
+ "city.rcb.deck.rain": {
+  "ru": "Дождь стучит по брезенту навеса. Сухо только под перголой. Море серое, а чайки сидят на трубе, нахохлившись.",
+  "en": "Rain drums on the awning canvas. It is dry only under the pergola. The sea is grey and the gulls sit on the chimney, hunched.",
+  "ja": "雨が日除けの布を打つ。乾いているのはパーゴラの下だけ。海は灰色で、カモメは煙突の上で羽をふくらませている。"
+ },
+ "city.rcb.deck.fog": {
+  "ru": "Туман: моря нет, есть белая стена и далёкий голос ревуна. Шезлонг плывёт, как лодка в молоке.",
+  "en": "Fog: no sea, only a white wall and the faraway voice of a foghorn. The deck chair drifts like a boat in milk.",
+  "ja": "霧。海は見えず、白い壁と遠い霧笛の声があるだけ。デッキチェアは牛乳の中の小舟のように漂う。"
+ },
+ "city.rcb.deck.snow": {
+  "ru": "Снег ложится на перила и на холст, но кто-то оставил на шезлонге плед. Спасибо, неизвестный жилец.",
+  "en": "Snow settles on the rail and the canvas, but somebody has left a blanket on the chair. Thank you, unknown resident.",
+  "ja": "雪が手すりと布に積もるが、誰かがデッキチェアに毛布を置いていってくれた。ありがとう、名も知らぬ住人。"
+ },
+ "city.rcb.deck.clear": {
+  "ru": "Ясно: видно далеко, до самой кромки воды. На горизонте белый парус, как точка в конце строки.",
+  "en": "Clear: one sees far, to the very edge of the water. A white sail on the horizon, like a full stop at the end of a line.",
+  "ja": "快晴。水際までずっと遠くが見える。水平線に白い帆がひとつ、一行の終わりの句点のように浮かぶ。"
+ },
+ "city.rcb.viewn.prompt": {
+  "ru": "E — посмотреть на город",
+  "en": "E — look at the town",
+  "ja": "E：町を眺める"
+ },
+ "city.rcb.viewn.day": {
+  "ru": "На север, к городу: крыши, антенны, жёлтые стены башни, а над холмом ползёт вверх кабинка канатной дороги. Звонка отсюда не слышно, но видно, как на улицах становится людно.",
+  "en": "To the north, toward the town: roofs, aerials, the yellow walls of a tower, and over the hill a cable-car cabin creeping upward. One cannot hear the school bell from here, but one can see the streets fill with people.",
+  "ja": "北の町のほうを見る。屋根、アンテナ、塔の黄色い壁、そして丘の上をゴンドラがゆっくり登っていく。ここからはチャイムは聞こえないが、通りに人が増えていくのが見える。"
+ },
+ "city.rcb.viewn.night": {
+  "ru": "Ночью город лежит ниже крыши россыпью окон. Цепочка огней канатной дороги ползёт вверх по холму, и каждая кабинка похожа на светлячка на нитке.",
+  "en": "At night the town lies below the roof in a scatter of windows. The string of lights of the cable car creeps up the hill, and each cabin is like a firefly on a thread.",
+  "ja": "夜、町は屋根の下に窓の灯りを散らして横たわる。ゴンドラの灯りの列が丘を登り、ひとつひとつの客室は糸につながれたホタルのようだ。"
+ },
+ "city.rcb.viewn.rain": {
+  "ru": "Дождь размывает город: окна светятся пятнами, кабинки канатной дороги идут сквозь пелену, как рыбки в аквариуме.",
+  "en": "Rain blurs the town: the windows glow in patches, the cable-car cabins move through the veil like fish in an aquarium.",
+  "ja": "雨が町をにじませる。窓は滲んだ光の染みになり、ゴンドラの客室は水槽の魚のようにもやの中を進んでいく。"
+ },
+ "city.rcb.viewn.fog": {
+  "ru": "В тумане города нет, остался только гул: где-то лязгает канатная дорога, и кабинки не показываются.",
+  "en": "In the fog the town is gone and only a hum is left: somewhere the cable car clanks, and the cabins do not show themselves.",
+  "ja": "霧の中に町はなく、うなりだけが残る。どこかでゴンドラががたんと鳴るが、客室は姿を見せない。"
+ },
+ "city.rcb.wpost.prompt": {
+  "ru": "E — осмотреть метеостолб",
+  "en": "E — inspect the weather post",
+  "ja": "E：気象観測柱を調べる"
+ },
+ "city.rcb.wpost.day": {
+  "ru": "Столб с жестяным флюгером, дождемером из консервной банки и градусником на дощечке. Мелом: «Наблюдения В. П.: ветер западный, облака кучевые, голуби довольны». На гвозде тетрадь, почерк мелкий, как швейная нитка.",
+  "en": "A post with a tin vane, a rain gauge made of a tin can and a thermometer on a board. In chalk: \"Observations by V. P.: wind westerly, cumulus clouds, pigeons content.\" A notebook hangs on a nail, the handwriting fine as sewing thread.",
+  "ja": "ブリキの風見、缶で作った雨量計、板に付けた温度計のある柱。チョークで「В.П.の観測。風は西、積雲、鳩は満足」。釘にノートが掛かり、字は縫い糸のように細い。"
+ },
+ "city.rcb.wpost.night": {
+  "ru": "Ночью флюгер скрипит, как далёкая дверь. Цифры на градуснике видны, если поднести кружку с горячим чаем. В. П. записал: «Ночью ветер шепчет, но не повторяет».",
+  "en": "At night the vane creaks like a faraway door. The figures on the thermometer can be seen if you bring a mug of hot tea close. V. P. noted: \"At night the wind whispers but does not repeat itself.\"",
+  "ja": "夜、風見は遠いドアのようにきしむ。熱いお茶のマグカップを近づけると、温度計の数字が見える。В.П.の記録。「夜の風はささやくが、繰り返さない」。"
+ },
+ "city.rcb.wpost.rain": {
+  "ru": "Дождемер наполовину полон, мелом приписано: «Двенадцать миллиметров. Для баночки — героически».",
+  "en": "The rain gauge is half full, and in chalk is added: \"Twelve millimetres. For a little tin, heroic.\"",
+  "ja": "雨量計は半分ほど満ちていて、チョークで書き添えがある。「十二ミリ。小さな缶にしては英雄的」。"
+ },
+ "city.rcb.wpost.cold": {
+  "ru": "Градусник ниже нуля, мелом: «Телескоп голыми руками не трогать, пальцы прилипнут. Проверено на себе».",
+  "en": "The thermometer is below zero, in chalk: \"Do not touch the telescope with bare hands, your fingers will stick. Tested on myself.\"",
+  "ja": "温度計は氷点下。チョークで。「望遠鏡は素手でさわらないこと、指がくっつきます。自分で確かめました」。"
+ },
+ "city.rcb.wpost.warm": {
+  "ru": "Градусник у красной метки: «Жара. Юпитер подождёт до вечера, а в тени у кадок на три градуса прохладнее».",
+  "en": "The thermometer is at the red mark: \"Heat. Jupiter can wait until evening, and in the shade by the tubs it is three degrees cooler.\"",
+  "ja": "温度計は赤い印のところ。「暑い。木星は夕方まで待てます。プランターの日陰は三度涼しい」。"
+ },
+ "city.rcb.wpost.fog": {
+  "ru": "Флюгер замер, ветра нет. Мелом: «Видимость: до флюгера. Дальше предположения».",
+  "en": "The vane is still, there is no wind. In chalk: \"Visibility: as far as the vane. Beyond that, guesswork.\"",
+  "ja": "風見は止まり、風はない。チョークで。「視界は風見まで。その先は憶測」。"
+ },
+ "city.rcb.seed.prompt": {
+  "ru": "E — посмотреть рассаду",
+  "en": "E — look at the seedlings",
+  "ja": "E：苗を見る"
+ },
+ "city.rcb.seed.1": {
+  "ru": "Ящики с рассадой: помидоры, укроп, мята и три росточка, на табличке которых написано «неопознанное, не трогать». З. И. поливает из лейки с носиком, как у чайника.",
+  "en": "Trays of seedlings: tomatoes, dill, mint and three sprouts whose label reads \"unidentified, do not touch\". Z. I. waters them from a can with a spout like a teapot's.",
+  "ja": "苗の箱。トマト、ディル、ミント、そして札に「正体不明、さわるな」と書かれた芽が三つ。З.И.は急須のような注ぎ口のじょうろで水をやる。"
+ },
+ "city.rcb.seed.2": {
+  "ru": "Рассада подросла: помидоры тянутся к свету, мята пахнет через бумагу. Росточки без имени вымахали выше табличек и смотрят на всех свысока.",
+  "en": "The seedlings have grown: tomatoes stretch toward the light, the mint smells through the paper. The nameless sprouts have outgrown their labels and look down on everyone.",
+  "ja": "苗が育った。トマトは光のほうへ伸び、ミントは紙ごしににおう。名前のない芽は札より高くなり、みんなを見下ろしている。"
+ },
+ "city.rcb.seed.3": {
+  "ru": "На табличке свежая приписка: «Неопознанное оказалось подсолнухом. Подсолнух извинился. З. И.» Под ним Витя нарисовал голубя с семечком в клюве.",
+  "en": "A fresh note on the label: \"The unidentified one turned out to be a sunflower. The sunflower apologised. Z. I.\" Below it Vitya has drawn a pigeon with a seed in its beak.",
+  "ja": "札に新しい書き込み。「正体不明はひまわりでした。ひまわりは謝りました。З.И.」。その下にヴィーチャが、種をくわえた鳩を描いている。"
+ },
+ "city.rcb.pegs.prompt": {
+  "ru": "E — развесить бельё",
+  "en": "E — hang out the washing",
+  "ja": "E：洗濯物を干す"
+ },
+ "city.rcb.pegs.1": {
+  "ru": "Утром ветер с моря держит простыню, как парус. Я прищепил её двумя прищепками за угол и ещё одной посередине, как показывали: сохнет не хуже, чем в сушилке.",
+  "en": "In the morning the sea wind holds a sheet like a sail. I pegged it by the corners with two pegs and a third in the middle, as I was shown: it dries no worse than in the dryer.",
+  "ja": "朝は海風がシーツを帆のようにふくらませる。教わったとおり、角を二つの洗濯ばさみで、真ん中をもうひとつで留めた。乾燥機に負けないくらいよく乾きそうだ。"
+ },
+ "city.rcb.pegs.2": {
+  "ru": "Днём бельё сохнет быстро: на ощупь простыня уже хрустит, как свежий хлеб. Прищепки горячие, их приходится переставлять с места на место.",
+  "en": "By day the washing dries quickly: the sheet already crackles to the touch like fresh bread. The pegs are hot and have to be moved from place to place.",
+  "ja": "昼は洗濯物がすぐ乾く。シーツは触るともう焼きたてのパンのようにぱりっとする。洗濯ばさみは熱く、あちこち持ち替えながら使う。"
+ },
+ "city.rcb.pegs.3": {
+  "ru": "Вечером бельё вешают быстро, чтобы успело до росы. Простыня хлопает, как знамя, и пахнет порошком, мятой и морем сразу.",
+  "en": "In the evening the washing is hung quickly so that it dries before the dew. The sheet flaps like a banner and smells of powder, mint and the sea all at once.",
+  "ja": "夕方は露が降りる前に素早く干す。シーツは旗のようにはためき、洗剤とミントと海のにおいが一度にする。"
+ },
+ "city.rcb.chk.prompt": {
+  "ru": "E — сесть за шашки",
+  "en": "E — sit down to draughts",
+  "ja": "E：チェッカーの席に着く"
+ },
+ "city.rcb.chk.1": {
+  "ru": "В красном уголке по утрам тихо. Шашки расставлены, на доске след вчерашней партии. Я сделал первый ход, и стул напротив скрипнул, будто кто-то сел.",
+  "en": "The red corner is quiet in the mornings. The draughts are set out, with the trace of yesterday's game on the board. I made the first move, and the chair opposite creaked as if somebody had sat down.",
+  "ja": "赤のコーナーは朝は静かだ。チェッカーの駒が並び、盤には昨日の対局のあとが残っている。僕が最初の一手を指すと、向かいの椅子が、誰かが座ったようにきしんだ。"
+ },
+ "city.rcb.chk.2": {
+  "ru": "Днём за столом красного уголка играют, пока сохнет бельё. Над доской нависают три головы, и каждая знает ход лучше игрока.",
+  "en": "In the afternoon they play at the red corner's table while the washing dries. Three heads hang over the board, each knowing the move better than the player.",
+  "ja": "昼は洗濯物が乾くあいだ、赤のコーナーの卓で対局が行われる。盤の上には三つの頭がのぞき込み、どれも指し手より手をよく知っている。"
+ },
+ "city.rcb.chk.3": {
+  "ru": "Вечером в красном уголке горит одна лампа, и шашки отбрасывают длинные тени. Каждый ход слышно по всему дому, как шаги в коридоре.",
+  "en": "In the evening a single lamp burns in the red corner and the men cast long shadows. Every move can be heard across the house, like footsteps in a corridor.",
+  "ja": "夜の赤のコーナーにはランプがひとつだけともり、駒は長い影を落とす。一手ごとの音が、廊下の足音のように家じゅうに響く。"
+ },
+ "city.rcb.closed.dark": {
+  "ru": "Внутри темно и тихо: на ночь заперто. Через стекло виден только блик на оконной раме. Утром откроют.",
+  "en": "It is dark and quiet inside: locked for the night. Through the glass one sees only a glint on the window frame. They open in the morning.",
+  "ja": "中は暗く静かで、夜のあいだは鍵がかかっている。ガラスごしに見えるのは、窓枠の照り返しだけ。朝になれば開く。"
+ },
+ "city.rcb.closed.machine": {
+  "ru": "Стоит тихо, до утра не работает: на ручке бирка «Не тревожить, дом спит».",
+  "en": "Standing quiet, not working until morning: on the handle a tag, \"Do not disturb, the house is asleep.\"",
+  "ja": "静かに止まっていて、朝まで動かない。取っ手には「起こさないで、家は眠っています」という札が下がっている。"
+ },
+ "city.rcb.closed.counter": {
+  "ru": "Дверь на засове, на стекле табличка: «Открыто с 9 до 20, кроме воскресенья. Хлеб — с утра». Внутри темно, и только счёты поблёскивают.",
+  "en": "The door is bolted, with a sign on the glass: \"Open 9 to 20, except Sundays. Bread from the morning.\" It is dark inside and only the abacus glints.",
+  "ja": "ドアにはかんぬきがかかり、ガラスに札。「九時から二十時まで営業、日曜休み。パンは朝から」。中は暗く、そろばんだけがきらりと光る。"
+ },
+ "quest.rcb_sheet.title": {
+  "ru": "Простыня на ветру",
+  "en": "A sheet in the wind",
+  "ja": "風の中のシーツ"
+ },
+ "quest.rcb_sheet.desc": {
+  "ru": "В прачечной сломалась сушилка, и весь дом сушит бельё на крыше. Одна чистая простыня ждёт, чтобы её постирали, повесили и сложили.",
+  "en": "The laundry's dryer has broken and the whole house is drying its washing on the roof. One clean sheet is waiting to be washed, hung and folded.",
+  "ja": "洗濯室の乾燥機が壊れて、家じゅうが屋上で洗濯物を干している。きれいなシーツが一枚、洗われて、干されて、たたまれるのを待っている。"
+ },
+ "quest.rcb_sheet.note.log": {
+  "ru": "Сначала узнаю, что с сушилкой: объявление висит у полки с порошком.",
+  "en": "First I'll find out what is wrong with the dryer: the notice hangs by the powder shelf.",
+  "ja": "まず乾燥機がどうなったのか確かめよう。お知らせは洗剤の棚のそばに貼ってある。"
+ },
+ "quest.rcb_sheet.read_dryer.obj": {
+  "ru": "Прочесть объявление о сушилке в прачечной",
+  "en": "Read the notice about the dryer in the laundry",
+  "ja": "洗濯室で乾燥機のお知らせを読む"
+ },
+ "quest.rcb_sheet.wash.log": {
+  "ru": "Простыню надо сперва постирать: машины у задней стены.",
+  "en": "The sheet must be washed first: the machines are by the back wall.",
+  "ja": "シーツはまず洗わなければ。洗濯機は奥の壁際にある。"
+ },
+ "quest.rcb_sheet.start_wash.obj": {
+  "ru": "Запустить стирку",
+  "en": "Start a wash",
+  "ja": "洗濯機を回す"
+ },
+ "quest.rcb_sheet.pegs.log": {
+  "ru": "На крыше у верёвки стоит корзина с прищепками. Ветер с моря не любит плохо прихваченное.",
+  "en": "On the roof by the line stands a basket of pegs. The sea wind does not like what is badly fastened.",
+  "ja": "屋上のロープのそばに洗濯ばさみの籠がある。海風はしっかり留めていないものが嫌いだ。"
+ },
+ "quest.rcb_sheet.hang_sheet.obj": {
+  "ru": "Развесить бельё на крыше",
+  "en": "Hang out the washing on the roof",
+  "ja": "屋上で洗濯物を干す"
+ },
+ "quest.rcb_sheet.fold.log": {
+  "ru": "Высохшее бельё пахнет морем. Складывать его надо внизу, на столе в прачечной.",
+  "en": "Dry washing smells of the sea. It must be folded downstairs, on the table in the laundry.",
+  "ja": "乾いた洗濯物は海のにおいがする。たたむのは下の、洗濯室のテーブルで。"
+ },
+ "quest.rcb_sheet.fold_sheet.obj": {
+  "ru": "Сложить бельё на столе в прачечной",
+  "en": "Fold the washing on the laundry table",
+  "ja": "洗濯室のテーブルで洗濯物をたたむ"
+ },
+ "quest.rcb_sheet.done": {
+  "ru": "Простыня легла в стопку ровно, как в магазине. Нина Павловна, зайдя за мылом, заметила: «Ну вот, а говорили, без сушилки нельзя». И дала мне печенья.",
+  "en": "The sheet lay in the pile as straight as in a shop. Nina Pavlovna, who had come in for soap, remarked: \"There, and they said you can't manage without the dryer.\" And she gave me some biscuits.",
+  "ja": "シーツは店のようにきちんと山に収まった。石けんを買いに来たニーナ・パヴロヴナが言った。「ほらね、乾燥機なしじゃ無理だなんて言っていたのに」。そしてビスケットをくれた。"
  }
 }
