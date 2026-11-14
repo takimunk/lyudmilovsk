@@ -39,6 +39,9 @@ quest.owner_supper.bring = owner.supper_thanks.1 | owner.supper_thanks.2 | hero.
 quest.owner_supper.buy,bring_empty.again = owner.supper_where.1
 quest.owner_supper.buy,bring_empty.again = owner.supper_slow_time.1
 quest.owner_supper.done = owner.supper_after.1
+quest.owner_supper.buy.if.night = owner.supper_night_hurry.1
+quest.owner_supper.buy.if.have:drink_baikal+no:cheese_braid = owner.supper_soda_first.1
+quest.owner_supper.buy.if.have:cheese_braid+no:drink_baikal = owner.supper_braid_first.1
 
 [Clerk]
 first = clerk.first.1 | hero.clerk_first.2 | clerk.first.3 | hero.clerk_first.4 | clerk.first.5
@@ -193,6 +196,8 @@ quest.overdue_journal.return = girl_b.overdue_back.1 | hero.overdue_back.2 | gir
 quest.overdue_journal.visit.again = girl_b.lev_bench_hint.1
 quest.overdue_journal.visit.again = girl_b.ficus_instead.1
 quest.overdue_journal.done = girl_b.fresh_issue_twice.1 | girl_b.fresh_issue_twice.2
+quest.overdue_journal.visit.if.night = girl_b.overdue_dark_bench.1
+quest.overdue_journal.buy.if.cloudy = girl_b.overdue_cloudy_quiet.1
 
 [Nao]
 first = nao.first.1 | hero.nao_first.2 | nao.first.3 | nao.first.4
@@ -220,6 +225,7 @@ sun.low = zotov_lev.sun_low.1
 sun.night = zotov_lev.sun_night.1
 quest.overdue_journal.visit = zotov_lev.overdue_admit.1 | zotov_lev.overdue_admit.2 | hero.overdue_admit.3 | zotov_lev.overdue_admit.4 | zotov_lev.overdue_admit.5
 quest.overdue_journal.done = zotov_lev.load_bearing_reading.1 | zotov_lev.load_bearing_reading.2
+quest.overdue_journal.done.if.have:magazine_travel = zotov_lev.shores_too_thin.1
 
 [Zotova_galina]
 first = zotova_galina.first.1
@@ -286,6 +292,7 @@ quest.hot_corn.carry_empty = korneev_ivan.corn_nocob.1
 quest.hot_corn.tell = korneev_ivan.corn_eaten.1
 quest.hot_corn.carry.if.done:evening_paper = korneev_ivan.corn_paper_boy.1 | korneev_ivan.corn_paper_boy.2
 quest.hot_corn.done = korneev_ivan.cart_visit_secret.1 | korneev_ivan.cart_visit_secret.2
+quest.hot_corn.tell.if.done:first_catch = korneev_ivan.corn_angler_news.1 | korneev_ivan.corn_angler_news.2
 
 [Korneeva_nina]
 first = korneeva_nina.first.1
@@ -357,6 +364,9 @@ quest.first_catch.catch.again = lange_pyotr.catch_wait_nets.1
 quest.first_catch.catch.again = lange_pyotr.braid_three_days.1 | lange_pyotr.braid_three_days.2
 quest.first_catch.done = lange_pyotr.angler_spoon_dawn.1 | lange_pyotr.angler_spoon_dawn.2
 quest.first_catch.done.if.low = lange_pyotr.angler_dusk_now.1
+quest.fisherman_cheese.ask.if.have:cheese_braid = lange_pyotr.cheese_smoked_pocket.1 | lange_pyotr.cheese_smoked_pocket.2
+quest.fisherman_cheese.buy.if.low = lange_pyotr.cheese_low_sun.1
+quest.fisherman_cheese.buy.if.cloudy = lange_pyotr.cheese_clouds.1
 
 [Kimura_dasha]
 first = kimura_dasha.first.1
@@ -389,6 +399,9 @@ quest.lab_lunch.tell = li_vika.lunch_tell.1 | hero.lunch_tell.2 | li_vika.lunch_
 quest.lab_lunch.eat.again = li_vika.lunch_where.1
 quest.lab_lunch.eat.again = li_vika.lunch_borscht_debate.1
 quest.lab_lunch.done = li_vika.saturday_plan.1 | li_vika.saturday_plan.2
+quest.lab_lunch.eat.if.night = li_vika.lunch_after_dark.1
+quest.lab_lunch.eat.if.have:fish_herring = li_vika.lunch_raw_herring.1
+quest.lab_lunch.done.if.done:hot_corn = li_vika.lunch_corn_courier.1
 
 [Valiev_rustam]
 first = valiev_rustam.first.1
@@ -484,3 +497,5 @@ quest.hot_corn.buy = guseva_valentina.corn_till.1
 quest.hot_corn.carry = guseva_valentina.corn_hurry.1
 quest.hot_corn.tell = guseva_valentina.corn_report.1 | hero.corn_report.2 | guseva_valentina.corn_report.3 | guseva_valentina.corn_report.4
 quest.hot_corn.done = guseva_valentina.wheel_oiled.1 | guseva_valentina.wheel_oiled.2
+quest.hot_corn.carry.if.low = guseva_valentina.corn_low_sun.1
+quest.hot_corn.ask.if.done:evening_paper = guseva_valentina.corn_paper_known.1 | guseva_valentina.corn_paper_known.2

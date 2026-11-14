@@ -794,7 +794,8 @@ FString ULyudQuestDirector::Report() const
 					const FVector Eyes = HeroPawn->GetPawnViewLocation();
 					const bool bSight = !TalkDirector.IsValid() || TalkDirector->InSight(Eyes, Feet + FVector(0.0, 0.0, 150.0), Info.Actor) || TalkDirector->InSight(Eyes, Feet + FVector(0.0, 0.0, 110.0), Info.Actor);
 					Why = FString::Printf(TEXT(" (%.1f m, %s, %s, %s)"), FVector::Dist(HeroPawn->GetActorLocation(), Info.Actor->GetActorLocation()) * 0.01f,
-						Info.Actor->IsHidden() ? TEXT("unseen") : TEXT("seen"), R.bAtOnce || ArmedRemarks.Contains(R.Id) ? TEXT("armed") : TEXT("not armed"), bSight ? TEXT("in sight") : TEXT("behind something"));
+						Info.Actor->IsHidden() || Info.Pose == EPersonPose::Sleep || Info.Pose == EPersonPose::Hidden ? TEXT("unseen") : TEXT("seen"),
+						R.bAtOnce || ArmedRemarks.Contains(R.Id) ? TEXT("armed") : TEXT("not armed"), !TalkDirector.IsValid() ? TEXT("sight unknown") : bSight ? TEXT("in sight") : TEXT("behind something"));
 				}
 				else
 				{

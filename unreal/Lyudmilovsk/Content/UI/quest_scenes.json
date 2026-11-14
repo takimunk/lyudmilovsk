@@ -1723,6 +1723,216 @@
    ],
    "note": "Misha on academ_bench_5 17-18:30. Agrees with Tanya's rowan_again ('if one came, the others may find the way').",
    "diary": "journal.heard.misha_bigger_feeder"
+  },
+  {
+   "id": "nina_petya_smiles",
+   "person": "korneeva_nina",
+   "quest": "fisherman_cheese",
+   "stages": [
+    "done"
+   ],
+   "within_m": 7,
+   "lines": [
+    "korneeva_nina.petya_smiles.1"
+   ],
+   "note": "Nina on academ_bench_0 14-16:30 (yard_evening); Ivan, her husband (household korneev), is Lange's friend in people.json and already has his own done remark about the braid (ivan_cheese_for_petya): she heard it from him.",
+   "diary": "journal.heard.nina_petya_smiles"
+  },
+  {
+   "id": "misha_soup_appeal",
+   "person": "belov_misha",
+   "quest": "lab_lunch",
+   "stages": [
+    "done"
+   ],
+   "within_m": 6,
+   "lines": [
+    "belov_misha.soup_appeal.1"
+   ],
+   "note": "Misha works in the Laboratory with Vika and Kei (friends in people.json), then sits on academ_bench_5 17-18:30; he is the one who called the soup the worst (Vika's lunch_ask.2) and Vika's verdict says he simply dislikes dill (lunch_tell.3).",
+   "diary": "journal.heard.misha_soup_appeal"
+  },
+  {
+   "id": "yamada_supper_papers",
+   "person": "clerk",
+   "quest": "owner_supper",
+   "stages": [
+    "bring"
+   ],
+   "within_m": 5,
+   "lines": [
+    "clerk.supper_papers.1"
+   ],
+   "note": "Yamada (clerk) works at station 9 in the club 10-19 on weekdays and is the owner's friend in people.json; on bring the hero carries the braid and the Baikal through the hall to the booth. Within 5 m only: whether his seat is passed on the way to the booth is not certain, the remark simply waits otherwise.",
+   "diary": "journal.heard.yamada_supper_papers"
+  },
+  {
+   "id": "nika_olya_debt_closed",
+   "person": "streamer",
+   "quest": "overdue_journal",
+   "stages": [
+    "done"
+   ],
+   "within_m": 6,
+   "lines": [
+    "streamer.olya_debt_closed.1"
+   ],
+   "note": "Nika plays in the club (station 1 near the entrance, no duties, up till 2); Olya is her friend in people.json and sits at station 8 in the club in the evenings.",
+   "diary": "journal.heard.nika_olya_debt_closed"
+  },
+  {
+   "id": "lange_ivan_fibbed",
+   "person": "lange_pyotr",
+   "quest": "hot_corn",
+   "stages": [
+    "done"
+   ],
+   "within_m": 7,
+   "lines": [
+    "lange_pyotr.ivan_fibbed.1"
+   ],
+   "note": "Lange mends nets on S-BENCH-P12 on the promenade 12:30-17 every day; Ivan is his friend in people.json and fishes off the beach. Matches Ivan's own cart_visit_secret and Valentina's wheel_oiled (both say he went and fibbed about the bite).",
+   "diary": "journal.heard.lange_ivan_fibbed"
+  },
+  {
+   "id": "valentina_lunar_dumplings",
+   "person": "guseva_valentina",
+   "quest": "fest_lunar_new_year",
+   "stages": [
+    "done"
+   ],
+   "within_m": 6,
+   "lines": [
+    "guseva_valentina.lunar_dumplings.1"
+   ],
+   "note": "Valentina at her corn stall 11-18 every day (work_corn), so on any day after the festival; lunar_new_year's fair sells rs_pelmeni (festivals.json foods). She does not claim to have been at the fair.",
+   "diary": "journal.heard.valentina_lunar_dumplings"
+  },
+  {
+   "id": "tanya_holi_pink_hands",
+   "person": "orlova_tanya",
+   "quest": "fest_holi",
+   "stages": [
+    "done"
+   ],
+   "within_m": 5,
+   "lines": [
+    "orlova_tanya.holi_pink_hands.1"
+   ],
+   "note": "Tanya at the grocery counter 9-19 Monday to Saturday; Holi's colours are in the park 11-14 (festivals.json). She only saw the customers afterwards, she does not claim to have been there.",
+   "diary": "journal.heard.tanya_holi_pink_hands"
+  },
+  {
+   "id": "lange_lantern_in_net",
+   "person": "lange_pyotr",
+   "quest": "fest_toro_nagashi",
+   "stages": [
+    "done"
+   ],
+   "within_m": 7,
+   "lines": [
+    "lange_pyotr.lantern_in_net.1"
+   ],
+   "note": "The water lanterns ride the tide out to sea from the beach 19:30-22 (docs/festivals.md, ALyudSkyLanterns water mode); Lange is at sea 4:30-11 Tuesday to Sunday and tells it at his net bench S-BENCH-P12 (12:30-17). He was in bed at 21, so he does not claim to have watched.",
+   "diary": "journal.heard.lange_lantern_in_net"
+  },
+  {
+   "id": "owner_moon_quiet_hall",
+   "person": "owner",
+   "quest": "fest_mid_autumn",
+   "stages": [
+    "done"
+   ],
+   "within_m": 4,
+   "lines": [
+    "owner.moon_quiet_hall.1"
+   ],
+   "note": "The owner never leaves his booth 12-02; the moon watching is on the promenade 20:30-23:30, inside his hours. Said when the hero next comes in; he speaks only of his own hall.",
+   "diary": "journal.heard.owner_moon_quiet_hall"
+  },
+  {
+   "id": "lange_dawn_every_day",
+   "person": "lange_pyotr",
+   "quest": "fest_midsummer",
+   "stages": [
+    "done"
+   ],
+   "within_m": 7,
+   "lines": [
+    "lange_pyotr.dawn_every_day.1"
+   ],
+   "note": "Lange wakes at 4 and is at sea 4:30-11 Tuesday to Sunday; told at his net bench S-BENCH-P12 (12:30-17) after the festival. Hearsay only, he does not claim to have been at the bonfire. The sun stays plain.",
+   "diary": "journal.heard.lange_dawn_every_day"
+  },
+  {
+   "id": "nina_blini_thin",
+   "person": "korneeva_nina",
+   "quest": "fest_maslenitsa",
+   "stages": [
+    "done"
+   ],
+   "within_m": 7,
+   "lines": [
+    "korneeva_nina.blini_thin.1"
+   ],
+   "note": "Nina on academ_bench_0 14-16:30 or about the yard; she speaks of her own kitchen and of Ivan (household korneev, his chess problem from evening_paper), not of having been at the pancake fair.",
+   "diary": "journal.heard.nina_blini_thin"
+  },
+  {
+   "id": "nao_pigeons_remember",
+   "person": "nao",
+   "quest": "birds",
+   "stages": [
+    "done"
+   ],
+   "within_m": 6,
+   "lines": [
+    "nao.pigeons_remember.1"
+   ],
+   "note": "Nao keeps the club's door and forecourt 10-21 every day, where the hero fed the pigeons (birds/feed at club_door); said on a later pass by the door.",
+   "diary": "journal.heard.nao_pigeons_remember"
+  },
+  {
+   "id": "sonya_pigeons_easy",
+   "person": "kid_girl",
+   "quest": "birds",
+   "stages": [
+    "done"
+   ],
+   "within_m": 5,
+   "lines": [
+    "kid_girl.pigeons_easy.1"
+   ],
+   "note": "Sonya at station 7 in the club after school (till 21); the hero comes back in past her after feeding by the door. Echoes her own sparrow quest without retelling its instructions.",
+   "diary": "journal.heard.sonya_pigeons_easy"
+  },
+  {
+   "id": "tyoma_soda_advice",
+   "person": "kid_boy",
+   "quest": "soda",
+   "stages": [
+    "drink"
+   ],
+   "within_m": 5,
+   "lines": [
+    "kid_boy.soda_advice.1"
+   ],
+   "note": "Tyoma at station 6 in the club after school (a new game, Tuesday 16:00, finds him there); the drinks machine is in the hall. Nika's soda_bets remark names Baikal and Buratino; the remark waits until the hero has been out of reach, so not at the first step.",
+   "diary": "journal.heard.tyoma_soda_advice"
+  },
+  {
+   "id": "owner_machine_honest",
+   "person": "owner",
+   "quest": "soda",
+   "stages": [
+    "done"
+   ],
+   "within_m": 4,
+   "lines": [
+    "owner.machine_honest.1"
+   ],
+   "note": "The owner in his booth 12-02 by the club's entrance; said the next time the hero passes within 4 m after drinking from the hall's machine.",
+   "diary": "journal.heard.owner_machine_honest"
   }
  ]
 }
