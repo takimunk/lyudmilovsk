@@ -733,7 +733,7 @@ def _toyfab(S):
     dc = S.f(kit.display_case, 6.9, 3.4, 0, w=1.3, d=0.6, goods="toys", seed=7)
     B.thing("toys_case", "board", (dc["pos"][0], dc["pos"][1], 1.0), S.yw(6.9), topic="catalogue")
     tf = S.f(kit.table_football, 8.3, 1.4, 90)
-    B.thing("toys_table_football", "play", (tf["pos"][0], tf["pos"][1], 0.9), S.yw(8.3) + 90, what="table_football")
+    B.thing("toys_table_football", "play", (tf["pos"][0], tf["pos"][1], 0.9), S.yw(8.3), what="table_football")  # QA: faces a long side (was the table end, 0.1 m from the wall)
     S.right(kit.poster, 1.2, name="kids_0", w=0.55, zc=1.7)
     S.right(kit.poster, 2.4, name="kids_2", w=0.55, zc=1.7)
     S.spot_w("shop_f_browse1", "stand", "l", 6.4)

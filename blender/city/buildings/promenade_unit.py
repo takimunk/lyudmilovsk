@@ -680,7 +680,7 @@ def photo(B):
     kit.picture(B, 1.4, YB, 0.0, 0.0, name="painting_portrait", w=0.7, zc=1.75, frame="CT_Brass")
     kit.picture(B, 2.4, YB, 0.0, 0.0, name="painting_sea_calm", w=0.6, zc=1.75)
     kit.plant(B, 0.2, 5.95, 0.0, 0.0, h=1.2, kind="monstera")
-    kit.hat_stand(B, 4.4, 2.3, 0.0, 0.0)
+    kit.hat_stand(B, 4.4, 1.55, 0.0, 0.0)
     # QA: the middle and the left wall were bare
     kit.wall_clock(B, -0.6, YB, 0.0, 0.0, zc=2.3, face="clock_2")
     kit.picture(B, XL, 1.4, 0.0, 90.0, name="painting_dunes", w=0.7, zc=1.7, frame="CT_Brass")
@@ -947,7 +947,7 @@ def photo_more(B):
     B.thing("photo_darkroom", "craft", (1.9, 5.7, 1.0), 0.0, what="darkroom")
     _stand_spot(B, "darkroom", 1.9, 5.0, 180.0)
     B.thing("photo_camera", "machine", (-3.0, 2.3, 1.5), 180.0, what="camera")
-    B.thing("photo_props", "board", (4.4, 2.3, 1.3), 0.0, topic="store")
+    B.thing("photo_props", "board", (4.4, 1.55, 1.3), 0.0, topic="store")
     kit.filing_cabinet(B, XL, 4.3, 0.0, 90.0)
     B.thing("photo_negatives", "shelf", (XL + 0.25, 4.3, 1.0), 90.0, topic="local")
     _stand_spot(B, "negatives", -4.1, 4.3, 90.0)
