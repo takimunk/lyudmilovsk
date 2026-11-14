@@ -1482,12 +1482,12 @@
  "city.mk.ice.1": {
   "ru": "Понедельник, мелом на доске: «Салака, бычки. Камбалы нет, лодки пришли поздно».",
   "en": "Monday, in chalk on the board: \"Baltic herring, gobies. No flounder, the boats came in late.\"",
-  "ja": "月曜日、黒板にチョークで。「ニシン、ハゼ。カレイなし、船の帰りが遅かった」"
+  "ja": "月曜日、黒板にチョークで。「バルトニシン、ハゼ。カレイなし、船の帰りが遅かった」"
  },
  "city.mk.ice.2": {
   "ru": "Вторник и среда: «Камбала и салака с ночного улова. Треска по пятницам, не спрашивайте».",
   "en": "Tuesday and Wednesday: \"Flounder and herring from the night catch. Cod on Fridays, don't ask.\"",
-  "ja": "火曜と水曜。「夜の漁のカレイとニシン。タラは金曜日、聞かないで」"
+  "ja": "火曜と水曜。「夜の漁のカレイとバルトニシン。タラは金曜日、聞かないで」"
  },
  "city.mk.ice.3": {
   "ru": "Четверг: «Корюшка! Пока не кончилась. Пахнет огурцом, значит свежая».",
@@ -1731,12 +1731,12 @@
  },
  "city.coll.market_rows.title": {
   "ru": "Ряды рынка",
-  "en": "Rows of the Market",
+  "en": "Rows of the market",
   "ja": "市場の通り"
  },
  "quest.rows_walk.title": {
   "ru": "Обход рядов",
-  "en": "Walking the Rows",
+  "en": "Walking the rows",
   "ja": "市場の列を歩く"
  },
  "quest.rows_walk.desc": {

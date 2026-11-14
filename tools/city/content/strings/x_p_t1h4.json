@@ -87,7 +87,7 @@
  },
  "city.t1h4.view1.snow": {
   "ru": "Снег ложится на перила и сразу тает у фонаря. Улица внизу тихая, как будто её накрыли ватой.",
-  "en": "Snow settles on the rail and melts at once by the lantern. The street below is quiet, as if wrapped in cotton wool.",
+  "en": "Snow settles on the rail and melts at once by the lamp. The street below is quiet, as if wrapped in cotton wool.",
   "ja": "雪が手すりに積もり、街灯のそばでたちまち溶ける。下の通りは綿でくるんだように静かだ。"
  },
  "city.t1h4.view1.fog": {
@@ -143,7 +143,7 @@
  "city.t1h4.plant.2": {
   "ru": "Земля влажная: кто-то поливает из чайника, проходя с чаем в руках. Лист слегка отогнут, как ладошка.",
   "en": "The soil is damp: somebody waters it from a kettle while passing with tea in hand. One leaf is bent back like a little palm.",
-  "ja": "土は湿っている。お茶を持ったまま通りすがりに、やかんで水をやる人がいるらしい。葉が小さな手のみたいに反っている。"
+  "ja": "土は湿っている。お茶を持ったまま通りすがりに、やかんで水をやる人がいるらしい。葉が小さな手のひらみたいに反っている。"
  },
  "city.t1h4.plant.3": {
   "ru": "На краю ящика сидит воробей и смотрит на меня боком, как на подозрительного. Улетел, не дождавшись крошек.",
@@ -227,7 +227,7 @@
  },
  "city.t1h4.news.base": {
   "ru": "Доска дома. «Мост — для людей, скамейки — для всех, фонарь зажигается у столба». Остальное на других листках.",
-  "en": "The house board. \"The bridge is for people, the benches for everyone, the lantern is lit at its post.\" The rest is on other slips.",
+  "en": "The house board. \"The bridge is for people, the benches for everyone, the lamp is switched on at its post.\" The rest is on other slips.",
   "ja": "建物の掲示板。「橋は人のため、ベンチはみんなのため、街灯は支柱のスイッチで」。ほかは別の紙に。"
  },
  "city.t1h4.news.1": {
@@ -252,7 +252,7 @@
  },
  "city.t1h4.news.sat": {
   "ru": "Сегодня суббота: на мосту слушаем эфир. Внизу уже ставят скамейку поближе к фонарю.",
-  "en": "It is Saturday: we listen to the air on the bridge. They are already moving a bench closer to the lantern.",
+  "en": "It is Saturday: we listen to the air on the bridge. They are already moving a bench closer to the lamp.",
   "ja": "今日は土曜日。橋で電波を聴く会がある。もうベンチを街灯のそばに寄せている。"
  },
  "city.t1h4.mail.1": {
@@ -313,7 +313,7 @@
  "city.t1h4.log.4": {
   "ru": "«Пометка красным: мелодия с 14 мая найдена. Кафе „Тарелка“, автомат, третья кнопка. Мальчик, который пришёл с катушкой, спас мне полгода. Записать в журнал: ему положен чай без очереди».",
   "en": "\"Marked in red: the tune from 14 May is found. The Saucer café, the jukebox, third button. The boy who came with the reel saved me half a year. Put in the log: he gets tea without a queue.\"",
-  "ja": "「赤で記す。5月14日の曲が見つかった。カフェ『ソーサー』、ジュークボックス、三番目のボタン。リールを持って来た少年のおかげで半年が節約できた。記録:彼にはお茶を順番なしで」。"
+  "ja": "「赤で記す。5月14日の曲が見つかった。カフェ『ソーサー』、ジュークボックス、三番目のボタン。リールを持って来た少年のおかげで半年が節約できた。記録：彼にはお茶を順番なしで」。"
  },
  "city.t1h4.log.5": {
   "ru": "Последняя запись, свежим карандашом: «Завтра ставлю антенну на второй мост. Если ключ будет стучать ровно — значит, всё в порядке. Позывной тот же: UA-Людмиловск-11. 73».",
@@ -353,12 +353,12 @@
  "city.t1h4.morse.title": {
   "ru": "Азбука Морзе: ключ",
   "en": "Morse: the key",
-  "ja": "モールス:電鍵"
+  "ja": "モールス：電鍵"
  },
  "city.t1h4.morse.keys": {
   "ru": "E — отстучать, когда маркер в светлой середине",
-  "en": "E: tap when the marker is in the bright middle",
-  "ja": "E:マーカーが明るい中央にあるときに叩く"
+  "en": "E — tap when the marker is in the bright middle",
+  "ja": "E：マーカーが明るい中央にあるときに叩く"
  },
  "city.t1h4.morse.win.1": {
   "ru": "Ровно, как метроном. В наушниках кто-то коротко ответил: «73». Это значит «всего доброго».",
@@ -391,7 +391,7 @@
   "ja": "電鍵はまだ誰かの手のぬくもりが残っている。レバーがはね、接点がバッタのように細く鳴る。"
  },
  "city.t1h4.morse.after.2": {
-  "ru": "Рядом на бумажке расшифровка: «·–· ·– –·· ·· ·· — РАДИО». Хороший первый урок.",
+  "ru": "Рядом на бумажке расшифровка: «·–· ·– –·· ·· ––– — РАДИО». Хороший первый урок.",
   "en": "A slip beside it with a decoding: \"·–· ·– –·· ·· ––– RADIO.\" A good first lesson.",
   "ja": "横の紙切れに解読が書いてある。「·–· ·– –·· ·· –––(ラジオ)」。いい最初の授業だ。"
  },
@@ -442,8 +442,8 @@
  },
  "city.t1h4.phones.e": {
   "ru": "В вечерних наушниках музыка, тихо и тепло. Кажется, это та самая труба с набережной, только очень далеко.",
-  "en": "In the evening headphones there is music, quiet and warm. It seems to be that same trumpet from the embankment, only very far away.",
-  "ja": "夕方のヘッドホンから音楽が小さく温かく聞こえる。あの河岸のトランペットに似ている、ずっと遠くで。"
+  "en": "In the evening headphones there is music, quiet and warm. It seems to be that same trumpet from the promenade, only very far away.",
+  "ja": "夕方のヘッドホンから音楽が小さく温かく聞こえる。海岸通りのあのトランペットに似ている、ずっと遠くで。"
  },
  "city.t1h4.phones.n": {
   "ru": "Ночью в наушниках ровный гул и редкие писки, как у далёкого маяка. Хочется надеть и не снимать.",
@@ -498,12 +498,12 @@
  "quest.home_okafor_cq.key.obj": {
   "ru": "Отстучать ключом ровно: попасть в светлую середину",
   "en": "Tap the key evenly: hit the bright middle",
-  "ja": "電鍵を規則正しく叩く:明るい中央に合わせる"
+  "ja": "電鍵を規則正しく叩く：明るい中央に合わせる"
  },
  "quest.home_okafor_cq.card.log": {
   "ru": "Ответили! Станция подтвердила приём. Осталось найти на стене карточки: наверное, одна из них уже про меня.",
   "en": "They answered! A station confirmed reception. Now to find the cards on the wall: surely one is already about me.",
-  "ja": "返事が来た!局が受信を確認した。あとは壁のカードを見よう。きっと一枚はもう僕のことだ。"
+  "ja": "返事が来た！局が受信を確認した。あとは壁のカードを見よう。きっと一枚はもう僕のことだ。"
  },
  "quest.home_okafor_cq.card.obj": {
   "ru": "Посмотреть открытки QSL на стене у Гуннара",
