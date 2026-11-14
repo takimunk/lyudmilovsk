@@ -16,6 +16,7 @@ remarks (quest_scenes.json): QUESTDEPTH lines, the dialogue's "NpcDialogue: line
      after save and load; the waxwing's call heard by Sorokin adds its entry once, a second call none
   t) fisherman_cheese on ask with a braid in the pocket: Lange's cheese_smoked_pocket.1-2, the quest moves on
   u) soda on drink, the hero by Tyoma's station: remark tyoma_soda_advice
+  v) a great tit beside Vika in the yard: one line.li_vika.* reaction
   q) two remarks in range at once (the Clerk, Sonya): the second begins after the first has finished
   j) a great tit beside Dasha at 17:30 (Aya on the same bench): exactly one person answers
   k) waxwing on return: a call by Valentina's cart and one by Sorokin both get his waxwing_seen lines and finish the quest
@@ -225,6 +226,11 @@ at("QUESTDEPTH mark u_tyoma")
 at("BugItGo -107 -1082 100 0 0 0", None, 10.0)
 at("Quest.Scenes", "u_scenes", 0.5)
 at("Quest.Dump entries", "u_done")
+# v) round ten's listeners: a great tit beside Vika in the Academgorodok's yard: one line.li_vika.* reaction
+at("Quest.Reset", None, 1.0)
+go("li_vika", 4, [18.25, 18.5, 18.1])
+at("QUESTDEPTH mark v_vika")
+at("Quest.BirdCall GreatTit li_vika", None, 6.0)
 # j) one listener answers: Dasha and Aya on the square's bench at 17:30, a great tit calls beside Dasha
 at("Quest.Reset", None, 1.0)
 at("lyud.Birds.Time 17.5", None, 2.5)

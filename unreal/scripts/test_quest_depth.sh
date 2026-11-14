@@ -30,6 +30,6 @@ grep -o "QUESTDEPTH shot [0-9]* [a-z_0-9]*" "$LOG" | while read -r _ _ I NAME; d
 done
 ls "$OUT"
 # the director's count, then the static checks
-grep -q "QuestDirector: 1 pickups, 19 listeners, 57 remarks" "$LOG" && echo "DEPTH director counts ok" || echo "DEPTH director counts WRONG: $(grep -m1 'QuestDirector: [0-9]* pickups' "$LOG")"
+grep -q "QuestDirector: 1 pickups, 27 listeners, 72 remarks" "$LOG" && echo "DEPTH director counts ok" || echo "DEPTH director counts WRONG: $(grep -m1 'QuestDirector: [0-9]* pickups' "$LOG")"
 python3 "$ROOT/tools/check_quest_talk.py" | tail -3
 python3 "$ROOT/tools/check_devdata.py" | tail -3
