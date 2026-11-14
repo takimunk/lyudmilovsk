@@ -1866,7 +1866,9 @@ namespace LyudPeople
 			const FPlace& Pl = Places[Pi];
 			// somebody they know already there (a friend on the bench, at the cafe's table): they'd rather sit with them
 			float Company = 0.f;
-			if (bCompany && !P.FriendIds.empty() && Pi != P.Home && !Pl.bIndoor)
+			const FSlot* FriendAt = nullptr;
+			// (out of doors, and at a cafe's or a restaurant's tables)
+			if (bCompany && !P.FriendIds.empty() && Pi != P.Home && (!Pl.bIndoor || Pl.Kind == "cafe" || Pl.Kind == "restaurant"))
 			{
 				for (const int S : Pl.Slots)
 				{
@@ -1875,6 +1877,7 @@ namespace LyudPeople
 						if (U != P.Id && std::find(P.FriendIds.begin(), P.FriendIds.end(), U) != P.FriendIds.end())
 						{
 							Company = 70.f * (0.4f + P.Social);
+							FriendAt = &Slots[S];
 						}
 					}
 				}
@@ -1887,6 +1890,11 @@ namespace LyudPeople
 				}
 				const FSlot& Sl = Slots[S];
 				float Score = (Sl.Approach - From).Len2D() - Company;
+				if (FriendAt)
+				{
+					// and of that place's seats, one by the friend (up to 15 m of walking's worth)
+					Score += std::min(15.f, (Sl.Approach - FriendAt->Approach).Len2D());
+				}
 				if (bOuting && Pi == MeetAt)
 				{
 					// where the household goes, where the friend waits: by them if they are there

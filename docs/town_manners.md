@@ -102,7 +102,8 @@ more) and one of them has a word (`on = thunder`).
   stretches of the promenade everybody has a few (about one in eight, by a hash of person and place: the same every
   game) they go out of their way for. So the same old man is on the same bench every morning, and a cafe has its
   regulars. Not at home, at work, at a holiday's gathering or in the club (its stations are people's own already).
-- **Company** (`PickSlot`): a bench, a table or a spot out of doors where somebody they know already is draws them
+- **Company** (`PickSlot`): a bench or a spot out of doors, or a cafe's or a restaurant's table, where somebody they know
+  already is draws them, to the seat next to the friend's
   (worth up to ~100 m of walking for the sociable), so friends end up on the same bench.
 - **A ritual** (`FManners::ApplyLikes` sets `FPerson::RitualAct/RitualHour/RitualMore`): one thing each grown-up does at
   their own hour every day, by who they are: a feeder's crumbs for the birds between half past eight and half past
