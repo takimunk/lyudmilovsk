@@ -968,7 +968,7 @@ def _depth4(B):
         K.picture(B, xx, 15.76, 0.0, 180.0, name="paper_drawing", w=0.34, zc=1.5, seed=20 + k)
     B.thing("canteen_drawings", "board", (25.85, 15.9, 1.5), 180.0, topic="drawings")
     B.spot("canteen_drawings_stand", "stand", (25.85, 17.0, 0.0), 0.0)
-    K.menu_board(B, 29.4, 39.94, 0.0, 0.0, name="price_0", w=0.5, zc=1.9)
+    K.menu_board(B, 29.4, 39.94, 0.0, 0.0, name="price_1", w=0.5, zc=1.9)
     B.thing("canteen_dishes", "board", (29.4, 39.85, 1.9), 0.0, topic="dishes")
     B.spot("canteen_dishes_stand", "stand", (29.2, 38.6, 0.0), 180.0)
 
