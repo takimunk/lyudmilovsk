@@ -1030,11 +1030,12 @@ def _carp_tank(B, x, y):
         for w in (-0.22, 0.22):
             lbox(d, "CT_Steel", fr, u - 0.025, u + 0.025, w - 0.025, w + 0.025, 0.0, 0.6, faces="xXyYz")
     lbox(d, "CT_Steel", fr, -0.48, 0.48, -0.28, 0.28, 0.58, 0.62, faces="xXyYZz")          # the tray
-    lbox(d, "CT_Glass", fr, -0.46, 0.46, -0.26, 0.26, 0.62, 0.9, faces="xXyY")            # the glass walls
+    lbox(d, "CT_Glass", fr, -0.46, 0.46, -0.26, 0.26, 0.62, 0.76, faces="xXyY")            # low glass walls: the carp show over the rim
+    lbox(d, "CT_PlasterBlue", fr, -0.44, 0.44, -0.24, 0.24, 0.66, 0.71, faces="xXyYZ")   # the water
     lbox(d, "CT_TileWhite", fr, -0.44, 0.44, -0.24, 0.24, 0.62, 0.66, faces="xXyYZ")     # a pale tank floor
-    for k, (u, w, a, mat) in enumerate(((-0.2, 0.05, 20.0, "CT_Wood"), (0.08, -0.08, 160.0, "CT_WoodLight"),
-                                        (0.16, 0.12, 70.0, "CT_Wood"))):
-        _fish(d, mat, fr, u, w, 0.74 + 0.05 * k, a, length=0.26, r=0.045)
+    for k, (u, w, a, mat) in enumerate(((-0.2, 0.05, 20.0, "CT_Brass"), (0.08, -0.08, 160.0, "CT_Steel"),
+                                        (0.16, 0.12, 70.0, "CT_Brass"))):
+        _fish(d, mat, fr, u, w, 0.68 + 0.012 * k, a, length=0.26, r=0.045)
     lbox(d, "CT_WoodLight", fr, 0.2, 0.56, 0.3, 0.46, 0.05, 0.09, faces="xXyYZ")            # a lid board leaning by the stand
     lbox(d, "CT_WoodLight", fr, 0.3, 0.46, 0.3, 0.46, 0.05, 0.62, faces="xXyYZ")
     fu.rod(d, "CT_Steel", fr.p(-0.6, 0.38, 0.0), fr.p(-0.56, 0.3, 1.0), 0.012)           # a dip net on a pole
@@ -1096,8 +1097,12 @@ def _hook_rack(B, x, y):
         fu.rod(d, "CT_Steel", fr.p(0.0, w, 1.9), fr.p(0.05, w, 1.7), 0.012)
     for k, (w, mat) in enumerate(((-0.55, "CT_PlasterRed"), (-0.11, "CT_SteelRed"), (0.33, "CT_PlasterRed"))):
         px, py, _ = fr.p(0.05, w)
-        _tube(d, mat, (px, py, 1.66), (px, py, 1.34), 0.055, 8)
-        blob(d, mat, px, py, 1.42, 0.12, 8)
+        # a ham: a pale fat cap at the hook, a fat meaty thigh tapering to a thin shank, a bare bone end
+        for z0, z1, rr, mm in ((1.62, 1.66, 0.045, "CT_Paper"), (1.52, 1.62, 0.07, "CT_TileWhite"), (1.40, 1.52, 0.085, mat),
+                               (1.28, 1.40, 0.068, mat), (1.18, 1.28, 0.045, mat), (1.10, 1.18, 0.028, "CT_SteelRed")):
+            cyl(d, mm, px, py, z0, z1, rr, 8, top=(z1 > 1.6), bottom=True)
+        cyl(d, "CT_Paper", px, py, 1.03, 1.10, 0.014, 6, top=True)
+        blob(d, "CT_Paper", px, py, 1.03, 0.026, 5)
         lbox(d, "CT_WoodLight", fr, 0.0, 0.1, w - 0.015, w + 0.015, 1.7, 1.72, faces="xXyYZ")
     lbox(d, "CT_Paper", fr, 0.05, 0.065, 0.58, 0.68, 1.2, 1.3, faces="xXyYZ")          # a tag on the post
 
