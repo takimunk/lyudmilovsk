@@ -186,6 +186,8 @@ private:
 	float MaxReach = 0.f;
 	bool bStarted = false;
 	bool bHidden = false;
+	/** Every cell the layout needs round Centre is traced and laid: Tick's layout pass has nothing to do until Centre moves, a band is cleared or the layout is reset. */
+	bool bLayoutDone = false;
 	/** The litter field's window: centre and the day it was computed for. */
 	FVector2D LitterCentre = FVector2D(1e12, 1e12);
 	float LitterDay = -1000.f;
@@ -203,6 +205,8 @@ private:
 	UPROPERTY(Transient) TArray<TObjectPtr<UHierarchicalInstancedStaticMeshComponent>> Comps;
 	UPROPERTY(Transient) TArray<TObjectPtr<UObject>> KeepAlive;
 	UPROPERTY(Transient) TArray<TObjectPtr<UMaterialInstanceDynamic>> WeatherMIDs;
+	/** The bark of the wood lying about: colour and normal for pine, spruce, birch (6), painted once and shared by every debris kind of that wood. */
+	UPROPERTY(Transient) TArray<TObjectPtr<UTexture2D>> DebrisBark;
 	UPROPERTY(Transient) TObjectPtr<UMaterialInterface> PlantMaterial;
 	UPROPERTY(Transient) TObjectPtr<UMaterialInterface> GrassMaterial;
 	UPROPERTY(Transient) TObjectPtr<UMaterialInterface> DebrisMaterial;

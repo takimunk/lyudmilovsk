@@ -292,7 +292,7 @@ void ALyudSnowNear::RefreshGround()
 	}
 	// the cells kept over a recentre are read again a few a frame (a door, a thing built since): never the whole
 	// window in one frame
-	const double Z = GetActorLocation().Z;
+	const double Z = TraceZ;
 	const double Until = FPlatformTime::Seconds() + 0.0003;
 	bool bChanged = false;
 	for (int32 K = 0; K < 24 && RefreshLeft > 0; K++)
@@ -374,7 +374,7 @@ void ALyudSnowNear::Recentre(const FVector2D& C)
 	const FVector2D OldOrigin = GroundOrigin;
 	GroundOrigin = FVector2D(C.X - (GroundN - 1) * 0.5 * GroundCm, C.Y - (GroundN - 1) * 0.5 * GroundCm);
 	GroundOrigin = LandOrigin + FVector2D(FMath::RoundToDouble((GroundOrigin.X - LandOrigin.X) / GroundCm), FMath::RoundToDouble((GroundOrigin.Y - LandOrigin.Y) / GroundCm)) * GroundCm;
-	const double Z = GetActorLocation().Z;
+	const double Z = TraceZ;
 	// the window slides over the ground: the cells it keeps are not traced again here (2 m walked = 2 strips of 48, not
 	// all 2304 multi-traces in one frame); RefreshGround reads them again over the next frames
 	const double ShiftX = FMath::RoundToDouble((GroundOrigin.X - OldOrigin.X) / GroundCm), ShiftY = FMath::RoundToDouble((GroundOrigin.Y - OldOrigin.Y) / GroundCm);
@@ -658,6 +658,11 @@ void ALyudSnowNear::Drive(ULyudWinterSubsystem& Winter, const FVector& Camera, f
 		BuildMesh();
 	}
 	const FVector2D C(FMath::GridSnap(Camera.X, 200.0), FMath::GridSnap(Camera.Y, 200.0));
+	// the ground traces run 80 m up and down from the ground here as the snow cover knows it, not from where the
+	// camera happened to be when the first snow fell (a bird high up, a hill 100 m over the town: every trace missed the
+	// landscape from then on and no print was ever drawn)
+	float SurfaceZ = 0.f;
+	TraceZ = Winter.GetSnowSurfaceAt(FVector(C.X, C.Y, 0.0), SurfaceZ) ? double(SurfaceZ) : Camera.Z;
 	if (FVector2D::Distance(C, Centre) > 1.0)
 	{
 		Recentre(C);

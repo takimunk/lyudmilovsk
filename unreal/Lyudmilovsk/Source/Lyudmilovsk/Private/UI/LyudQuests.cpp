@@ -187,6 +187,27 @@ namespace
 		}
 		return Want == Got;
 	}
+
+	/**
+	 * Does the stage the quest is on, or one before it, wait for this same event? Then the event is no step done early, even
+	 * if a later stage waits for it too (go to a place, do something, come back to the place: the first arrival is the first
+	 * stage's, and walking through the place again half-way is not the return). Skipping ahead on it would finish the whole
+	 * quest and pay it out on its first step.
+	 */
+	bool WaitedForBefore(const FLyudQuestDef& Def, int32 Stage, FName Event, const FString& Target)
+	{
+		for (int32 Earlier = 0; Earlier <= Stage && Earlier < Def.Stages.Num(); ++Earlier)
+		{
+			for (const FLyudQuestObjective& O : Def.Stages[Earlier].Objectives)
+			{
+				if (O.Event != TEXT("have") && EventMatches(O.Event, Event) && TargetMatches(O.Target, Target))
+				{
+					return true;
+				}
+			}
+		}
+		return false;
+	}
 }
 
 const TArray<FLyudQuestDef>& ULyudQuests::Defs()
@@ -376,6 +397,12 @@ bool ULyudQuests::Start(FName Quest)
 	// P is not used below: Settle may add progress records (a finished stage's reward begins other quests)
 	Settle(Quest);
 	OnChanged.Broadcast();
+	// started from outside an event (a new game, a dialogue, the dev panel) with its first stage already met: P is not used
+	// from here on
+	if (!bHandling && Queue.Num() > 0)
+	{
+		HandleEvent(TEXT("settle"), FString(), 0);
+	}
 	return true;
 }
 
@@ -436,6 +463,18 @@ void ULyudQuests::BeginStage(FLyudQuestProgress& P, const FLyudQuestDef& Def)
 			P.Counts[I] = O.Need;
 		}
 	}
+	// Everything this stage asks for is there already (the items in the pocket, the hero in the place): stages only finish
+	// while an event is handled, so without one of its own the stage stood "done but open" until some unrelated event came.
+	// "settle" is no game event and no objective waits for it; whoever runs the queue next finishes the stage.
+	bool bAllMet = S.Objectives.Num() > 0;
+	for (int32 I = 0; I < S.Objectives.Num(); ++I)
+	{
+		bAllMet &= P.Counts[I] >= S.Objectives[I].Need;
+	}
+	if (bAllMet)
+	{
+		Queue.Emplace(FName(TEXT("settle")), FString(), 0);
+	}
 }
 
 void ULyudQuests::FinishStage(FLyudQuestProgress& P, const FLyudQuestDef& Def)
@@ -444,6 +483,11 @@ void ULyudQuests::FinishStage(FLyudQuestProgress& P, const FLyudQuestDef& Def)
 	{
 		return;
 	}
+	// Called from outside an event (Quest.Advance, a stage set by hand): the rewards below report "get" events, and handling
+	// them right here could finish this same stage a second time or start a quest (Progress grows and P is left pointing
+	// at freed memory). They wait in the queue instead, as they do when a stage finishes inside HandleEvent.
+	const bool bOutsideEvent = !bHandling;
+	bHandling = true;
 	// a stage out of range (an old save, quests.json edited) finishes the nearest real one, so callers still move on
 	P.Stage = FMath::Clamp(P.Stage, 0, Def.Stages.Num() - 1);
 	const FLyudQuestStage& S = Def.Stages[P.Stage];
@@ -474,8 +518,8 @@ void ULyudQuests::FinishStage(FLyudQuestProgress& P, const FLyudQuestDef& Def)
 		OnNews.Broadcast(ELyudQuestNews::Done, Quest);
 		if (Tracked == Quest)
 		{
+			// the next one is chosen after the quests this stage starts: a main quest begun here is the one to show
 			Tracked = NAME_None;
-			Tracked = ShownQuest();
 		}
 	}
 	// P may move if StartQuests adds progress records: copy the list first
@@ -483,6 +527,19 @@ void ULyudQuests::FinishStage(FLyudQuestProgress& P, const FLyudQuestDef& Def)
 	for (const FName& Q : Starts)
 	{
 		Start(Q);
+	}
+	if (Tracked.IsNone())
+	{
+		Tracked = ShownQuest();
+	}
+	if (bOutsideEvent)
+	{
+		// P is not used from here on. "settle" is no game event and no objective waits for it: it only makes the queue run.
+		bHandling = false;
+		if (Queue.Num() > 0)
+		{
+			HandleEvent(TEXT("settle"), FString(), 0);
+		}
 	}
 }
 
@@ -549,7 +606,7 @@ void ULyudQuests::HandleEvent(FName Event, const FString& Target, int32 N)
 				{
 					return O.Event != TEXT("have") && EventMatches(O.Event, E.Get<0>()) && TargetMatches(O.Target, E.Get<1>());
 				});
-				if (bWanted)
+				if (bWanted && !WaitedForBefore(*Def, Progress[QI].Stage, E.Get<0>(), E.Get<1>()))
 				{
 					UE_LOG(LogTemp, Log, TEXT("LyudQuests: %s skips ahead to stage %d on %s %s"), *Def->Id.ToString(), Later, *E.Get<0>().ToString(), *E.Get<1>());
 					while (Progress[QI].State == ELyudQuestState::Active && Progress[QI].Stage < Later)

@@ -181,9 +181,10 @@ TSharedRef<SWidget> SLyudGameMenu::MakeMain()
 			MakeButton(LyudText::Get(TEXT("ui.menu.continue")), [this]
 			{
 				const TArray<FLyudSlotInfo> Slots = Saves() ? Saves()->GetSlots() : TArray<FLyudSlotInfo>();
-				if (Slots.Num() > 0)
+				// the newest slot's file may be gone or unreadable (the list comes from the index): say so, as the slot list does
+				if (Slots.Num() > 0 && !Saves()->LoadSlot(Slots[0].Slot))
 				{
-					Saves()->LoadSlot(Slots[0].Slot);
+					SetStatus(LyudText::Get(TEXT("ui.menu.load_failed"), { FStringFormatArg(Slots[0].Title) }).ToString());
 				}
 			},
 			TAttribute<EVisibility>::CreateLambda([this] { return bHasSaves ? EVisibility::Visible : EVisibility::Collapsed; }))

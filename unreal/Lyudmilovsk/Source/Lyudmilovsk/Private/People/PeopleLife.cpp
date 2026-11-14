@@ -2333,6 +2333,9 @@ bool ANpcBody::Setup(const FString& InMesh, const FString& InComputerClip)
 {
 	MeshName = InMesh;
 	ComputerClip = InComputerClip;
+	// worked out once (Drive asked for them every frame at a computer: string searches, and a string made for the office one)
+	ComputerStyle = ULyudBodyAnimInstance::StyleOfClip(ComputerClip);
+	WorkStyle = ULyudBodyAnimInstance::StyleOfClip(ComputerClip.IsEmpty() ? FString(TEXT("Excel")) : ComputerClip);
 	const FString Path = PeopleModelPath(InMesh);
 	USkeletalMesh* Asset = LoadObject<USkeletalMesh>(nullptr, *Path);
 	if (!Asset)
@@ -2596,7 +2599,7 @@ void ANpcBody::Drive(const FVector& Location, float Yaw, EPersonPose Pose, int32
 	case EPersonPose::Computer:
 		if (ULyudBodyAnimInstance* Anim = Cast<ULyudBodyAnimInstance>(Mesh->GetAnimInstance()))
 		{
-			Anim->SetComputer(ULyudBodyAnimInstance::StyleOfClip(ComputerClip));
+			Anim->SetComputer(ComputerStyle);
 			Playing = TEXT("Computer");
 			break;
 		}
@@ -2619,7 +2622,7 @@ void ANpcBody::Drive(const FVector& Location, float Yaw, EPersonPose Pose, int32
 	case EPersonPose::Work:
 		if (ULyudBodyAnimInstance* Anim = Cast<ULyudBodyAnimInstance>(Mesh->GetAnimInstance()))
 		{
-			Anim->SetComputer(ULyudBodyAnimInstance::StyleOfClip(ComputerClip.IsEmpty() ? FString(TEXT("Excel")) : ComputerClip));
+			Anim->SetComputer(WorkStyle);
 			Playing = TEXT("Computer");
 			break;
 		}

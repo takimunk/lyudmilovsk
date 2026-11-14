@@ -1,5 +1,6 @@
 #include "Restaurant/LyudRestaurant.h"
 
+#include "NpcDialogue.h"
 #include "LyudRestaurantStaff.h"
 #include "SLyudRestMenu.h"
 
@@ -1917,7 +1918,7 @@ void ALyudRestaurant::TickHero(float DeltaTime)
 		// standing inside by a free chair of a free table: E sits down
 		const int32 Seat = bInside && !H->IsSeated() && !bEating ? SeatNearHero(95.f) : -1;
 		SetPrompt(Seat >= 0 ? TEXT("ui.rest.sit_prompt") : FString());
-		if (Seat >= 0 && PC->WasInputKeyJustPressed(EKeys::E))
+		if (Seat >= 0 && ANpcTalkDirector::UsePressed(PC, true))
 		{
 			SitHero(Seat);
 		}
@@ -1984,7 +1985,7 @@ void ALyudRestaurant::TickHero(float DeltaTime)
 	{
 		SetPrompt(TEXT("ui.rest.stand_prompt"));
 	}
-	if (PC->WasInputKeyJustPressed(EKeys::E))
+	if (ANpcTalkDirector::UsePressed(PC, true))
 	{
 		StandHero();
 	}

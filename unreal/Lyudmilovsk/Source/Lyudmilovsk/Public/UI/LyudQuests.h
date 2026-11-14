@@ -229,6 +229,16 @@ public:
 	FChanged OnChanged;
 
 private:
+	/**
+	 * How stages move (for whoever writes a quest):
+	 *  - a stage finishes while an event is handled; one that begins already met ("have" items in the pocket, "reach" of the
+	 *    place the hero stands in) queues a "settle" event for itself, which no objective waits for;
+	 *  - an event a later stage waits for skips the stages before it, unless the stage the quest is on or an earlier one
+	 *    waits for that same event (then it is a repeat, not a step done early). The skipped stages still give their rewards;
+	 *  - so an event with no target that fires often in play ("bird", any "reach" on the hero's usual way) in a late stage
+	 *    can carry a quest there from its first stage: give such objectives a target, or put them early;
+	 *  - FinishStage may be called from outside an event: what its rewards report waits in the queue until it is through.
+	 */
 	void BeginStage(FLyudQuestProgress& P, const FLyudQuestDef& Def);
 	void FinishStage(FLyudQuestProgress& P, const FLyudQuestDef& Def);
 	/** Finishes the stages a quest stands on that are met already by what the hero has or where he is (as counted by BeginStage). */

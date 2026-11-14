@@ -1257,7 +1257,10 @@ void ULyudFestivalSubsystem::TickHero(float DeltaTime)
 	if (!Hero || Active.Num() == 0)
 	{
 		Prompt(0);
-		HeroLanternsTonight = 0;
+		if (Active.Num() == 0)
+		{
+			HeroLanternsTonight = 0;       // (not while the player is a bird for a while: the night's three stay counted)
+		}
 		Watched.Reset();
 		return;
 	}
@@ -1332,7 +1335,8 @@ void ULyudFestivalSubsystem::TickHero(float DeltaTime)
 		TalkDirector = It ? *It : nullptr;
 	}
 	const bool bTalk = TalkDirector.IsValid() && TalkDirector->IsEngaged();
-	const bool bFree = !(UI && UI->IsOpen()) && Inv && !bTalk;
+	// seated, E is the seat's (getting up): the same press must not buy a lantern too
+	const bool bFree = !(UI && UI->IsOpen()) && Inv && !bTalk && !Hero->IsSeated();
 	const bool bWaterLantern = Lanterns && Lanterns->IsOnWater();
 	const int32 Price = bWaterLantern ? 20 : 30;
 	int32 Kind = (Lanterns && bLanternHere && HeroLanternsTonight < 3 && bFree && Lanterns->HasFree()) ? (bWaterLantern ? 2 : 1) : 0;

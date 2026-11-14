@@ -786,8 +786,9 @@ void ULyudTownTalkSubsystem::Scan()
 		return FVector::DotProduct((At + FVector(0.0, 0.0, 150.0) - Cam).GetSafeNormal(), Look) > MinDot;
 	};
 
-	// a greeting from somebody the player walks past (once a day each; not everybody greets a boy they don't know)
-	if (Clock >= NextGreetAt)
+	// a greeting from somebody the player walks past (once a day each; not everybody greets a boy they don't know);
+	// the boy himself only: as a bird the player is no one to say hello to, and the day's greeting is kept for him
+	if (Clock >= NextGreetAt && Hero->IsA<AHeroCharacter>())
 	{
 		for (const int Id : Near)
 		{

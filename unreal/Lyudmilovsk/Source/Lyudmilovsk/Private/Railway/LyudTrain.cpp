@@ -1,5 +1,6 @@
 #include "Railway/LyudTrain.h"
 
+#include "NpcDialogue.h"
 #include "Birds/BirdActor.h"
 #include "Components/AudioComponent.h"
 #include "Components/BoxComponent.h"
@@ -378,7 +379,27 @@ void ALyudTrain::Place(const FLyudTrainInfo& InInfo, float DeltaSeconds)
 {
 	const FLyudTrainInfo Prev = Info;
 	Info = InInfo;
-	const bool bAboard = Rider.IsValid();
+	bool bAboard = Rider.IsValid();
+	if (!bAboard && !Info.bVisible)
+	{
+		// hidden (the tunnel, the haze) with nobody known aboard: somebody put straight into a car (a game saved on the
+		// ride and loaded, a teleport) is aboard too. Unnoticed, the cars stayed hidden without their floors and the
+		// player fell through the line.
+		if (ACharacter* Body = Cast<ACharacter>(UGameplayStatics::GetPlayerPawn(this, 0)))
+		{
+			const FVector BodyAt = Body->GetActorLocation();
+			for (int32 K = 0; K < Cars.Num() && !bAboard; K++)
+			{
+				const double Along = Info.S + (double(Cars.Num() - 1) * 0.5 - K) * (CarLength + CarGap);
+				const FVector InCar = CarFrame(Along).InverseTransformPosition(BodyAt);
+				bAboard = FMath::Abs(InCar.X) < CarLength * 50.0 && FMath::Abs(InCar.Y) < 135.0 && InCar.Z > 100.0 && InCar.Z < 400.0;
+			}
+			if (bAboard)
+			{
+				Rider = Body;
+			}
+		}
+	}
 	const bool bShow = Info.bVisible || bAboard;
 	const bool bJustShown = bShow && !bWasVisible;
 	if (bShow != bWasVisible)
@@ -457,11 +478,21 @@ void ALyudTrain::CarryPlayer(const TArray<FTransform>& Old)
 	// with the car, so the car doesn't run out from under them; never both, or the rider slides along at the train's
 	// speed (as the first version did: it moved the player and the base moved them again).
 	ACharacter* Char = Cast<ACharacter>(UGameplayStatics::GetPlayerPawn(this, 0));
+	// the player is another pawn (flies as a bird): the body they left aboard rides on. Nobody plays it, so it has no
+	// movement of its own and no base carries it: it is moved with its car by hand below. (Before, the train kept the
+	// last rider for good in this case, never hid again, and the body hung over the sea where the car had been.)
+	bool bAway = false;
 	if (!Char)
 	{
+		Char = Cast<ACharacter>(Rider.Get());
+		bAway = Char != nullptr;
+	}
+	if (!Char)
+	{
+		Rider.Reset();
 		return;
 	}
-	if (TickOrderFor != Char)
+	if (!bAway && TickOrderFor != Char)
 	{
 		if (UCharacterMovementComponent* Move = Char->GetCharacterMovement())
 		{
@@ -494,7 +525,7 @@ void ALyudTrain::CarryPlayer(const TArray<FTransform>& Old)
 		return;
 	}
 	const UPrimitiveComponent* Base = Char->GetMovementBase();
-	if (Base && Base->GetOwner() == this)
+	if (!bAway && Base && Base->GetOwner() == this)
 	{
 		return;
 	}
@@ -838,7 +869,7 @@ int32 ALyudTrain::SeatInView() const
 	// any free seat of the car the player stands in, within reach (1.4 m) and where they look
 	const AHeroCharacter* Hero = Cast<AHeroCharacter>(UGameplayStatics::GetPlayerPawn(this, 0));
 	const APlayerCameraManager* Cam = UGameplayStatics::GetPlayerCameraManager(this, 0);
-	if (!Hero || !Cam || Hero->IsSeated() || !Rider.IsValid())
+	if (!Hero || !Cam || Hero->IsSeated() || Hero->IsOnBike() || !Rider.IsValid())
 	{
 		return -1;
 	}
@@ -879,7 +910,8 @@ int32 ALyudTrain::SeatInView() const
 bool ALyudTrain::SitPlayer(int32 Seat)
 {
 	AHeroCharacter* Hero = Cast<AHeroCharacter>(UGameplayStatics::GetPlayerPawn(this, 0));
-	if (!Hero || !Seats.IsValidIndex(Seat) || !CarRoots.IsValidIndex(Seats[Seat].Car))
+	// not from a bike's saddle: the seat would keep the collision the bike took off (none) and hand it back on standing up
+	if (!Hero || Hero->IsOnBike() || !Seats.IsValidIndex(Seat) || !CarRoots.IsValidIndex(Seats[Seat].Car))
 	{
 		return false;
 	}
@@ -890,6 +922,11 @@ bool ALyudTrain::SitPlayer(int32 Seat)
 
 void ALyudTrain::OnUse()
 {
+	// a press that moves a talk on does not also sit him down or stand him up
+	if (!ANpcTalkDirector::UsePressed(GetWorld() ? GetWorld()->GetFirstPlayerController() : nullptr, true))
+	{
+		return;
+	}
 	AHeroCharacter* Hero = Cast<AHeroCharacter>(UGameplayStatics::GetPlayerPawn(this, 0));
 	if (!Hero)
 	{
@@ -914,7 +951,8 @@ void ALyudTrain::OnUse()
 void ALyudTrain::UpdateSeatPrompt(float DeltaSeconds)
 {
 	const AHeroCharacter* Hero = Cast<AHeroCharacter>(UGameplayStatics::GetPlayerPawn(this, 0));
-	if (PlayerSeat >= 0 && (!Hero || !Hero->IsSeated()))
+	// no hero: the player flies as a bird, the body they left sits on (E gets it up again when they are back)
+	if (PlayerSeat >= 0 && Hero && !Hero->IsSeated())
 	{
 		PlayerSeat = -1;          // got up by a step or Space
 	}
@@ -924,7 +962,7 @@ void ALyudTrain::UpdateSeatPrompt(float DeltaSeconds)
 		return;
 	}
 	PromptTimer = 0.15f;
-	const bool bSeated = PlayerSeat >= 0;
+	const bool bSeated = PlayerSeat >= 0 && Hero;
 	const bool bCan = !bSeated && SeatInView() >= 0;
 	if (bSeated || bCan || bPromptShown)
 	{

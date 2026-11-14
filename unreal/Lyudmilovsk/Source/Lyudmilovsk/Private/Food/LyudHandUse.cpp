@@ -12,7 +12,9 @@
 #include "LyudGameMenu.h"
 #include "LyudInventory.h"
 #include "LyudText.h"
+#include "Sea/LyudSwim.h"
 #include "UI/LyudGameScreen.h"
+#include "World/LyudLadder.h"
 
 namespace
 {
@@ -97,6 +99,7 @@ bool ULyudHandUse::Hold(FLyudHandThing InThing)
 	}
 	Thing = MoveTemp(InThing);
 	bHas = true;
+	HandHero = Hero;
 	Phase = EPhase::Carry;
 	AtLips = 0.f;
 	PhaseTime = PressTime = SteadyTime = HoldTime = 0.f;
@@ -150,18 +153,24 @@ void ULyudHandUse::Drop(bool bUsedUp)
 	Thing = FLyudHandThing();
 	bHas = false;
 	Phase = EPhase::Carry;
+	// a scripted press was for this thing (the smoking's steps hold the button for the pack, the cigarette, the lighter): it does
+	// not stay down for whatever comes into the hand next
+	bForced = bClickQueued = bClickDown = false;
 	SetPrompted(false);
 	if (AActor* A = Was.Actor.Get())
 	{
 		A->Destroy();
 	}
-	if (AHeroCharacter* Hero = Cast<AHeroCharacter>(UGameplayStatics::GetPlayerPawn(this, 0)))
+	// the hero that took it, not the player's pawn of this moment (a bird, when the player has just become one: the hand's
+	// hold would stay on the hero for good, the arm up, and nothing else could take the hand)
+	if (AHeroCharacter* Hero = HandHero.Get())
 	{
-		if (UHeroReachComponent* Reach = Hero->FindComponentByClass<UHeroReachComponent>())
+		if (UHeroReachComponent* Reach = Hero->FindReach())
 		{
 			Reach->ClearOverrideHold();
 		}
 	}
+	HandHero.Reset();
 	UE_LOG(LogTemp, Display, TEXT("HANDUSE %s %s left %.2f"), bUsedUp ? TEXT("usedup") : TEXT("putaway"), *Was.Item.ToString(), Was.Left);
 	if (bUsedUp)
 	{
@@ -306,7 +315,12 @@ void ULyudHandUse::Tick(float DeltaTime)
 	// another move of the hand (buying at a machine, a pick-up) or a screen up: hidden and waiting
 	const ULyudInventoryUI* UI = ULyudInventoryUI::Get(World);
 	const ULyudGameMenuSubsystem* Menu = World->GetSubsystem<ULyudGameMenuSubsystem>();
-	const bool bBusy = Reach->IsBusy() || (UI && UI->IsOpen()) || (Menu && Menu->IsOpen()) || Hero->IsHidden();
+	// ... and the hand taken by something else: the bars of a bicycle, a ladder's rungs, the strokes in the water (the arm's own
+	// poses win there, the thing would ride on the bar or the rung and be "eaten" from it)
+	const ULyudLadderClimber* Climber = Hero->FindComponentByClass<ULyudLadderClimber>();
+	const ULyudSwimComponent* Swim = Hero->FindComponentByClass<ULyudSwimComponent>();
+	const bool bHandTaken = Hero->IsOnBike() || (Climber && Climber->IsOnLadder()) || (Swim && Swim->IsSwimming());
+	const bool bBusy = Reach->IsBusy() || (UI && UI->IsOpen()) || (Menu && Menu->IsOpen()) || Hero->IsHidden() || bHandTaken;
 	if (bBusy)
 	{
 		if (bAttached)

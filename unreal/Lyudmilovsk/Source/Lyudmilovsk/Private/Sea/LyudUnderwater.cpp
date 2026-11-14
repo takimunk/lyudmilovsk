@@ -323,6 +323,9 @@ void ULyudUnderwaterSubsystem::Release()
 	Life.Reset();
 	for (TArray<FTransform>& X : Xf) X.Empty();
 	for (TArray<float>& D : Data) D.Empty();
+	FishShown.Reset();
+	FishSpareTime.Reset();
+	FishAdd.Empty();
 }
 
 void ULyudUnderwaterSubsystem::UpdateDrive(ALyudSea* Sea, float Dt)
@@ -576,6 +579,8 @@ void ULyudUnderwaterSubsystem::Tick(float DeltaTime)
 	{
 		Sim->Clear();
 	}
+	// where spare fish instances wait: under the eye, far below any bed
+	FishPark = FVector(Eye.X, Eye.Y, Level - 9.0e5f);
 	DrawFish(DeltaTime);
 
 	if (CVarSeaLifeDebug.GetValueOnGameThread() != 0 && (DebugTimer -= DeltaTime) <= 0.f)
@@ -592,6 +597,8 @@ void ULyudUnderwaterSubsystem::DrawFish(float Dt)
 	const int32 NS = LyudFish::NumSpecies();
 	Xf.SetNum(NS);
 	Data.SetNum(NS);
+	FishShown.SetNumZeroed(NS);
+	FishSpareTime.SetNumZeroed(NS);
 	for (int32 S = 0; S < NS; S++)
 	{
 		Xf[S].Reset();
@@ -615,18 +622,38 @@ void ULyudUnderwaterSubsystem::DrawFish(float Dt)
 		const float Fix = LyudFish::Species(S).Length / MeshLen;
 		if (!FMath::IsNearlyEqual(Fix, 1.f))
 			for (FTransform& T : Xf[S]) T.SetScale3D(T.GetScale3D() * Fix);
-		if (C->GetInstanceCount() != Xf[S].Num())
+		// A school coming or going, a fish hiding or eaten changes the number nearly every second in busy water: the
+		// instances are never rebuilt for that. The component keeps spare ones parked far under the bed (out of sight and
+		// past the cull distance; the fish materials only bend the body in its own frame, so a parked one draws nothing),
+		// grows by a quarter when it runs out and is only cut back after staying mostly spare for a while.
+		const int32 Want = Xf[S].Num();
+		int32 Have = C->GetInstanceCount();
+		FishSpareTime[S] = Have > Want * 2 + 32 ? FishSpareTime[S] + Dt : 0.f;
+		if (FishSpareTime[S] > 20.f)
 		{
-			// the number changed (a school came or went): rebuild this species' instances (rare)
 			C->ClearInstances();
-			if (Xf[S].Num()) C->AddInstances(Xf[S], false, true, false);
+			Have = 0;
+			FishShown[S] = 0;
+			FishSpareTime[S] = 0.f;
 		}
-		else if (Xf[S].Num())
+		const FTransform Parked(FishPark);
+		if (Want > Have)
 		{
-			// the usual frame: move the instances in place (never mark the render state dirty: the perf checklist)
-			C->BatchUpdateInstancesTransforms(0, Xf[S], true, false);
+			FishAdd.Init(Parked, Want + FMath::Max(4, Want / 4) - Have);
+			C->AddInstances(FishAdd, false, true, false);
+			Have += FishAdd.Num();
 		}
-		if (Xf[S].Num()) C->SetCustomData(0, Xf[S].Num() - 1, Data[S], false);
+		// those shown last frame and not now go to the park (the others already are there)
+		const int32 Written = FMath::Min(FMath::Max(Want, FishShown[S]), Have);
+		FishShown[S] = Want;
+		if (Written > 0)
+		{
+			for (int32 K = Want; K < Written; K++) Xf[S].Add(Parked);
+			Data[S].SetNumZeroed(Written * 3);
+			// move the instances in place (never mark the render state dirty: the perf checklist)
+			C->BatchUpdateInstancesTransforms(0, Xf[S], true, false);
+			C->SetCustomData(0, Written - 1, Data[S], false);
+		}
 	}
 }
 

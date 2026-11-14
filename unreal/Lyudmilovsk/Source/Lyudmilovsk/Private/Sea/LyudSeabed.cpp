@@ -201,7 +201,7 @@ void ULyudSeabedComponent::EnsureComponents()
 
 void ULyudSeabedComponent::UpdatePlants(bool bForce)
 {
-	const float Day = DayNow(GetWorld());
+	const float Day = DayNow(GetWorld(), &SkyRef);
 	for (int32 K = 0; K < NumKinds; K++)
 	{
 		const FPlantSpecies* S = Looks[K].Species ? PlantSpeciesLibrary::Find(FName(Looks[K].Species)) : nullptr;
@@ -299,7 +299,7 @@ void ULyudSeabedComponent::Rebuild(const FVector& Eye)
 	auto Present = [&](int32 K)
 	{
 		const FPlantSpecies* S = Looks[K].Species ? PlantSpeciesLibrary::Find(FName(Looks[K].Species)) : nullptr;
-		return S ? PlantHerbs::State(*S, 1u, 5.f, DayNow(GetWorld())).Present : 1.f;
+		return S ? PlantHerbs::State(*S, 1u, 5.f, DayNow(GetWorld(), &SkyRef)).Present : 1.f;
 	};
 	const float CladoNow = Present(Cladophora), LettuceNow = Present(SeaLettuce), EelNow = Present(Eelgrass);
 	for (int32 Y = TY - Reach; Y <= TY + Reach; Y++)

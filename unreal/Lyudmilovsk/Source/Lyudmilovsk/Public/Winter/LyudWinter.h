@@ -229,6 +229,8 @@ private:
 	UPROPERTY(Transient) TObjectPtr<UMaterialParameterCollection> NearCollection;
 	FVector2D LandOrigin = FVector2D::ZeroVector;
 	bool bHaveLandOrigin = false;
+	/** The height the ground traces are centred on: the ground under the window's centre (Drive sets it every frame). */
+	double TraceZ = 0.0;
 	TArray<uint8> Trail;
 	TArray<float> Ground;
 	/** Per landscape vertex round the camera: how far the ground's own snow is sunk there (under the prints within 60 cm),

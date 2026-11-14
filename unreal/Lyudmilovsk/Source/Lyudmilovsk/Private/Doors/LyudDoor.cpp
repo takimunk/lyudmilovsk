@@ -1,5 +1,6 @@
 #include "Doors/LyudDoor.h"
 
+#include "NpcDialogue.h"
 #include "CharacterStandard.h"
 #include "Components/CapsuleComponent.h"
 #include "Components/InstancedStaticMeshComponent.h"
@@ -817,7 +818,7 @@ void ULyudDoorSubsystem::Tick(float DeltaTime)
 	{
 		// polled, never consumed: E belongs to several things at once; not while a trade or game screen is up
 		const ULyudInventoryUI* UI = ULyudInventoryUI::Get(this);
-		if (PC->WasInputKeyJustPressed(EKeys::E) && !(UI && UI->IsOpen()))
+		if (ANpcTalkDirector::UsePressed(PC) && !(UI && UI->IsOpen()))
 		{
 			PlayerInteract();
 		}

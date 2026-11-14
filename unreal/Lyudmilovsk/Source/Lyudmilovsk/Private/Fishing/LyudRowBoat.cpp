@@ -1,5 +1,6 @@
 #include "Fishing/LyudRowBoat.h"
 
+#include "NpcDialogue.h"
 #include "Components/CapsuleComponent.h"
 #include "Components/StaticMeshComponent.h"
 #include "Engine/StaticMesh.h"
@@ -568,7 +569,13 @@ void ALyudRowBoat::Tick(float DeltaTime)
 		if (AHeroCharacter* R = Rower.Get())
 		{
 			R->RemoveTickPrerequisiteActor(this);
-			if (NearMooring())
+			if (NearMooring() && FVector::Dist2D(R->GetActorLocation(), GetActorLocation()) > 300.f)
+			{
+				// stood up and taken somewhere else in the same frame (the dev teleport): he stays there, not pulled back
+				// to the pier; the boat is tied up all the same
+				Home();
+			}
+			else if (NearMooring())
 			{
 				// up the pier's steps onto the deck (found by a trace down), the boat tied up again
 				const FVector2D L = Landing;
@@ -628,7 +635,7 @@ void ALyudRowBoat::Tick(float DeltaTime)
 	SetActorLocationAndRotation(FVector(Pos, Z), FRotator(Pitch, Yaw, -Roll));
 	// E close by gets in (read, not consumed: the key stays everyone's)
 	APlayerController* PC = Hero ? Cast<APlayerController>(Hero->GetController()) : nullptr;
-	if (!bAboard && PC && !PC->IsMoveInputIgnored() && PC->WasInputKeyJustPressed(EKeys::E))
+	if (!bAboard && PC && !PC->IsMoveInputIgnored() && ANpcTalkDirector::UsePressed(PC))
 	{
 		Board(Hero);
 	}

@@ -26,6 +26,7 @@
 #include "Engine/World.h"
 #include "LandscapeHeightfieldCollisionComponent.h"
 #include "PhysicsEngine/BodySetup.h"
+#include "GameFramework/Character.h"
 #include "GameFramework/Pawn.h"
 #include "GameFramework/PlayerController.h"
 #include "Plants/ProceduralPlant.h"
@@ -1849,7 +1850,9 @@ void ALyudStationLift::Tick(float DeltaTime)
 		return;
 	}
 	const APlayerController* PC = GetWorld()->GetFirstPlayerController();
-	const APawn* Pawn = PC ? PC->GetPawn() : nullptr;
+	// somebody on their feet only: a bird flying through the tower neither rides the cab nor calls it away from where
+	// the player's own body stands
+	const APawn* Pawn = PC ? Cast<ACharacter>(PC->GetPawn()) : nullptr;
 	const FVector Local = Pawn ? GetActorTransform().InverseTransformPosition(Pawn->GetActorLocation()) : FVector(1e6f);
 	const float HalfIn = ShaftHalf - 15.f;
 	const bool bIn = FMath::Abs(Local.X) < HalfIn && FMath::Abs(Local.Y) < HalfIn && Local.Z > Z - 20.f && Local.Z < Z + 260.f;

@@ -8,6 +8,7 @@
 namespace LyudTransport { class FNetwork; }
 class ALyudCableway;
 class ALyudCabin;
+class ACharacter;
 class SLyudTransitScreen;
 
 /** A station as the maps and boards show it. */
@@ -158,6 +159,11 @@ private:
 	 *  a platform end or a wheel housing the cabin's body sweeps over would otherwise push them out through it). */
 	bool bRiderIgnoresWay = false;
 	void RiderIgnoresWay(bool bIgnore);
+	/** The player's own body (the hero), remembered for while the player is another pawn (a bird). */
+	TWeakObjectPtr<ACharacter> RiderBody;
+	/** The body the cabins look for and carry: the player's pawn when it is a character; else the body they left to fly
+	 *  as a bird (bAway: nobody plays it now, it has no movement of its own), null if there is none. */
+	ACharacter* PlayerBody(bool& bAway);
 	int32 SeatedCabin = -1, SeatedK = -1;
 	int32 FreeSeatNear(int32 Cabin, const FVector& P) const;
 	void KeepSeated();

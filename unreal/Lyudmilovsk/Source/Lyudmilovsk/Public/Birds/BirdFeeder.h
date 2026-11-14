@@ -56,6 +56,8 @@ private:
 	UPROPERTY() TObjectPtr<UInstancedStaticMeshComponent> Heap;
 	FName Shown;
 	int32 ShownGrains = -1;
+	/** The handfuls ShowFeed was last asked to show (it is asked every frame). */
+	float ShownHandfuls = -1.f;
 	/** The heap's material, made once and recoloured when the feed changes (not a new one per grain eaten). */
 	UPROPERTY(Transient) TObjectPtr<UMaterialInstanceDynamic> HeapMat;
 	FName HeapFeed;

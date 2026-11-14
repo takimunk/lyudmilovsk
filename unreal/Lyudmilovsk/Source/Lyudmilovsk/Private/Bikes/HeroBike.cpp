@@ -1,5 +1,6 @@
 #include "Bikes/HeroBike.h"
 
+#include "NpcDialogue.h"
 #include "Bikes/LyudBikeSubsystem.h"
 #include "CollisionQueryParams.h"
 #include "Components/CapsuleComponent.h"
@@ -14,7 +15,9 @@
 #include "HeroReachComponent.h"
 #include "LyudInventory.h"
 #include "LyudText.h"
+#include "Railway/LyudTrain.h"
 #include "Sea/LyudSea.h"
+#include "Transport/LyudCableway.h"
 
 namespace
 {
@@ -37,6 +40,13 @@ namespace
 	constexpr float MountCrank = -40.f;
 	/** Where the hero stands to get on or off, from the bike's ground point (its left side). */
 	const FVector StandOff(-6.f, -40.f, 0.f);
+
+	/** A floor that goes away with whoever stands on it: a cable-car cabin, a station's lift, a train's car. The bike
+	 *  keeps its own place in the world (it isn't carried), so it is not ridden there: walked in by the bars only. */
+	bool IsCarryingFloor(const AActor* Under)
+	{
+		return Under && (Under->IsA<ALyudCabin>() || Under->IsA<ALyudStationLift>() || Under->IsA<ALyudTrain>());
+	}
 }
 
 UHeroBikeComponent::UHeroBikeComponent()
@@ -125,6 +135,11 @@ bool UHeroBikeComponent::Mount(ALyudBike* Which)
 		Which = Bike.IsValid() ? Bike.Get() : BikeInView();
 	}
 	if (!H || !Which || (Which->IsTaken() && Which->GetHolder() != H) || H->IsSeated())
+	{
+		return false;
+	}
+	// not in a cabin, a lift or a train: it would leave from under the bike with the hero held on the saddle in the air
+	if (OnCarryingFloor(Act == ELyudBikeAct::Lead ? Ground : Which->GetActorLocation(), Which))
 	{
 		return false;
 	}
@@ -218,6 +233,45 @@ void UHeroBikeComponent::LetGo()
 	}
 }
 
+bool UHeroBikeComponent::DropNow()
+{
+	if (Act == ELyudBikeAct::None)
+	{
+		return false;
+	}
+	Release(true);
+	// nothing of the ride is left over for the next frames: no braking to a stop, no held input, and the eye doesn't
+	// glide from where the bike was to wherever the hero is put next (SmoothEye starts again from the new eye)
+	bWantOff = false;
+	Speed = 0.f;
+	Steer = 0.f;
+	Pitch = 0.f;
+	AutoUntil = 0.f;
+	bMoveInput = false;
+	MoveInput = FVector2D::ZeroVector;
+	bEyeValid = false;
+	EyeEase = 1.f;
+	return true;
+}
+
+bool UHeroBikeComponent::DropBike(AActor* OfHero)
+{
+	UHeroBikeComponent* C = Get(OfHero);
+	return C && C->DropNow();
+}
+
+bool UHeroBikeComponent::OnCarryingFloor(const FVector& At, const ALyudBike* Which) const
+{
+	FHitResult Hit;
+	FCollisionQueryParams Q(SCENE_QUERY_STAT(BikeFloor), false, GetOwner());
+	if (Which)
+	{
+		Q.AddIgnoredActor(Which);
+	}
+	return GetWorld()->LineTraceSingleByChannel(Hit, At + FVector(0.f, 0.f, 70.f), At - FVector(0.f, 0.f, 260.f), ECC_Visibility, Q)
+		&& IsCarryingFloor(Hit.GetActor());
+}
+
 void UHeroBikeComponent::UpdateKeys()
 {
 	AHeroCharacter* H = Hero();
@@ -230,7 +284,7 @@ void UHeroBikeComponent::UpdateKeys()
 	const bool bFree = !PC->IsMoveInputIgnored() && !(UI && UI->IsOpen());
 	const UHeroReachComponent* Reach = UHeroReachComponent::Get(H);
 	const bool bBusy = (Reach && Reach->IsBusy()) || H->IsSeated() || H->IsHidden();
-	const bool bE = bFree && PC->WasInputKeyJustPressed(EKeys::E);
+	const bool bE = bFree && ANpcTalkDirector::UsePressed(PC, true);
 	const bool bR = bFree && PC->WasInputKeyJustPressed(EKeys::R);
 	FText Prompt;
 	switch (Act)
@@ -379,6 +433,11 @@ bool UHeroBikeComponent::GroundAt(const FVector& At, float& OutZ, bool& bOutLoos
 		Q.AddIgnoredActor(Bike.Get());
 	}
 	if (!GetWorld()->LineTraceSingleByChannel(Hit, At + FVector(0.f, 0.f, 70.f), At - FVector(0.f, 0.f, 260.f), ECC_Visibility, Q))
+	{
+		return false;
+	}
+	// a cabin's, a lift's or a car's floor is no ground for the wheels (Ride stops before it, as before a wall)
+	if (IsCarryingFloor(Hit.GetActor()))
 	{
 		return false;
 	}

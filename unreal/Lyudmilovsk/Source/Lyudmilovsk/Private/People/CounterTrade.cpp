@@ -1,5 +1,6 @@
 #include "People/CounterTrade.h"
 
+#include "HeroCharacter.h"
 #include "Dom/JsonObject.h"
 #include "Engine/World.h"
 #include "Fishing/LyudFishing.h"
@@ -204,7 +205,8 @@ void ULyudCounterTradeSubsystem::Tick(float)
 	const APawn* Pawn = UGameplayStatics::GetPlayerPawn(World, 0);
 	const APlayerController* PC = Pawn ? Cast<APlayerController>(Pawn->GetController()) : nullptr;
 	ULyudInventoryUI* UI = ULyudInventoryUI::Get(World);
-	if (!PC || !UI || UI->IsOpen() || Pawn->IsHidden())
+	// (the boy himself: a bird the player has become buys and sells nothing)
+	if (!PC || !UI || UI->IsOpen() || Pawn->IsHidden() || !Pawn->IsA<AHeroCharacter>())
 	{
 		SetPrompted(-1);
 		return;

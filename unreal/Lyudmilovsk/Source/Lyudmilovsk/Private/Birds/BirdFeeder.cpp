@@ -1,6 +1,7 @@
 #include "Birds/BirdFeeder.h"
 #include "UI/LyudQuests.h"
 
+#include "NpcDialogue.h"
 #include "BirdSim.h"
 #include "Birds/BirdLife.h"
 #include "Camera/CameraActor.h"
@@ -303,6 +304,13 @@ void ABirdFeeder::BeginPlay()
 
 void ABirdFeeder::ShowFeed(FName Feed, float Handfuls)
 {
+	// asked every frame for every feeder: the same feed and handfuls as the last time is the same heap (and no feed
+	// name made into a string to size its grains)
+	if (Feed == Shown && Handfuls == ShownHandfuls)
+	{
+		return;
+	}
+	ShownHandfuls = Handfuls;
 	// a heap that grows with the handfuls: 40 grains a handful (bigger lumps fewer), the newest on top
 	const FVector Size = GrainSize(Feed);
 	const float PerHandful = FMath::Clamp(40.f / FMath::Max(Size.X * Size.Y, 0.3f), 2.f, 60.f);
@@ -568,7 +576,7 @@ void UBirdFeederSubsystem::UpdatePrompt(APlayerController* PC)
 	// set every frame all the same: another prompt (a door, the vending machine) may have taken the line meanwhile
 	UI->SetPrompt(this, PromptText);
 	bPrompt = true;
-	if (PC->WasInputKeyJustPressed(EKeys::E))
+	if (ANpcTalkDirector::UsePressed(PC))
 	{
 		if (bFeed)
 		{

@@ -434,6 +434,9 @@ public:
 private:
 	UPROPERTY(Transient) TMap<FName, TObjectPtr<class UAnimSequence>> Clips;
 	FString ComputerClip;
+	/** The computer loops' style for ComputerClip (ULyudBodyAnimInstance::StyleOfClip), at a computer and at work (Setup). */
+	FName ComputerStyle = TEXT("Gamer");
+	FName WorkStyle = TEXT("Office");
 	FName Playing;
 	bool bOnBike = false;
 	float Facing = 0.f;

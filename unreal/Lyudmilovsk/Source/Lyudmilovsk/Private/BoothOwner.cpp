@@ -7,6 +7,7 @@
 #include "Kismet/GameplayStatics.h"
 #include "InputCoreTypes.h"
 #include "GameFramework/PlayerController.h"
+#include "HeroCharacter.h"
 #include "LyudInventory.h"
 #include "LyudText.h"
 #include "People/LyudBodyAnim.h"
@@ -179,7 +180,8 @@ void ABoothOwner::TickTrade()
 	// he trades when he stands at the window and the player at it looks at him
 	const FVector Eye = Pawn->GetPawnViewLocation();
 	const FVector ToOwner = (Pos + FVector(0.f, 0.f, 150.f) - Eye).GetSafeNormal();
-	const bool bReady = State == EState::AtWindow && PlayerAtWindow() && !UI->IsOpen() && !Pawn->IsHidden()
+	// (the boy himself: a bird the player has become, perched at the window, buys nothing)
+	const bool bReady = State == EState::AtWindow && PlayerAtWindow() && !UI->IsOpen() && !Pawn->IsHidden() && Pawn->IsA<AHeroCharacter>()
 		&& FVector::DotProduct(PC->GetControlRotation().Vector(), ToOwner) > 0.5f;
 	if (!bReady)
 	{

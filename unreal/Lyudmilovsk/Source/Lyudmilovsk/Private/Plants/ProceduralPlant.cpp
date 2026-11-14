@@ -1,4 +1,5 @@
 #include "Plants/ProceduralPlant.h"
+#include "NpcDialogue.h"
 #include "Winter/LyudWinter.h"
 
 #include "Camera/PlayerCameraManager.h"
@@ -34,6 +35,11 @@ namespace
 	 *  species (each plant's own UPROPERTY keeps it alive; the entry goes stale with the last of them and is painted again). */
 	TMap<FName, TWeakObjectPtr<UTexture2D>> GHerbLeafTextures;
 	TMap<FName, TWeakObjectPtr<UTexture2D>> GHerbFlowerAtlases;
+	/** The veins of a plain-leaved herb's blade (a species with no leaf texture of its own): shared the same way; the plant's
+	 *  leaf material keeps it alive. */
+	TMap<FName, TWeakObjectPtr<UTexture2D>> GHerbLeafDetails;
+	/** The fruit skin's noise and dots are the same for every tree: painted once, kept alive by each plant's own UPROPERTY. */
+	TWeakObjectPtr<UTexture2D> GFruitDetail;
 
 	/** Scene 01's outside sun lights channel 1 only; channel 0 keeps the default lights too. */
 	void OutdoorLighting(UPrimitiveComponent* C)
@@ -62,6 +68,15 @@ namespace
 			ISM->AddInstances(T, false, false, false);
 		}
 	}
+
+	/** Camera distances where a lone plant's far bake drops to its LOD 1, 2 and 3, m. */
+	const FVector FarBakeLods(15.0, 55.0, 150.0);
+	/**
+	 * A plant whose bake only shows from at least this far (cm) is baked without LOD 0. LOD 0 shows nearer than 15 m, or
+	 * while the tree fills 0.9 of the view; through the hero's strongest zoom (x0.3 of a 90 degree view: 4.2 times nearer)
+	 * and for the widest crown (a 21 m sphere) that is under 100 m.
+	 */
+	constexpr float FarOnlyBakeDistance = 10000.f;
 
 	int32 NumTriangles(const UStaticMesh* Mesh)
 	{
@@ -290,6 +305,16 @@ bool AProceduralPlant::WantsSummary() const
 	return FVector::Dist(PC->PlayerCameraManager->GetCameraLocation(), GetActorLocation()) > SummaryDistance;
 }
 
+int32 AProceduralPlant::FarBakeFirstLod() const
+{
+	// its bake is drawn only beyond SummaryDistance: the nearest LOD (every branch and leaf cluster: most of the mesh, tens
+	// of MB for a grown tree, held once per lone tree for the whole game) never shows and is not made. A tree drawn baked
+	// at any distance (forced, a species that prefers its bake, a preview's ShowAt) has all four, as in the editor.
+	const UWorld* World = GetWorld();
+	const bool bFarOnly = World && World->IsGameWorld() && !bForceSummary && !bFullBake && !GetSpecies().bPreferBake && SummaryDistance >= FarOnlyBakeDistance;
+	return bFarOnly ? 1 : 0;
+}
+
 void AProceduralPlant::EnsureMeshes()
 {
 	if (!CrownMaterial)
@@ -323,6 +348,7 @@ void AProceduralPlant::EnsureMeshes()
 		Skeleton.Build(S, (uint32)Seed);
 		UTexture2D* Albedo = nullptr;
 		UTexture2D* Normal = nullptr;
+		UTexture2D* Detail = SharedLeafDetail;
 		if (SharedBarkAlbedo && SharedBarkNormal)
 		{
 			Albedo = SharedBarkAlbedo;
@@ -330,17 +356,39 @@ void AProceduralPlant::EnsureMeshes()
 		}
 		else
 		{
-			PlantMeshes::BuildBarkTextures(this, S, (uint32)Seed, Albedo, Normal);
+			// a lone plant takes its species' textures from the world's bake cache, as a forest's live tree is handed them
+			// and as its own far bake is drawn: every plant painted its own bark tile and leaf detail before (two 256 x 512
+			// textures a tree, a birch's 512 x 1024, tens of ms each to paint)
+			UTexture2D *CacheAlbedo = nullptr, *CacheNormal = nullptr, *CacheDetail = nullptr;
+			UTreeBakeCache* Cache = GetWorld() ? GetWorld()->GetSubsystem<UTreeBakeCache>() : nullptr;
+			if (Cache && Cache->EnsureSpeciesTextures(S, CacheAlbedo, CacheNormal, CacheDetail))
+			{
+				Albedo = CacheAlbedo;
+				Normal = CacheNormal;
+				if (!Detail)
+				{
+					Detail = CacheDetail;
+				}
+			}
+			else
+			{
+				PlantMeshes::BuildBarkTextures(this, S, (uint32)Seed, Albedo, Normal);
+			}
 		}
 		BarkAlbedo = Albedo;
 		BarkNormal = Normal;
-		LeafDetail = SharedLeafDetail ? SharedLeafDetail.Get() : PlantMeshes::BuildLeafDetail(this, S.Leaf);
+		LeafDetail = Detail ? Detail : PlantMeshes::BuildLeafDetail(this, S.Leaf);
 		LeafMesh = PlantMeshes::BuildLeafCluster(this, S);
 		SummaryCrown->SetStaticMesh(S.bConicalCrown && CrownCone ? CrownCone.Get() : CrownEllipsoid.Get());
 		SingleLeafMesh = PlantMeshes::BuildSingleLeaf(this, S);
 		if (!FruitDetail)
 		{
-			FruitDetail = PlantMeshes::BuildFruitDetail(this);
+			FruitDetail = GFruitDetail.Get();
+			if (!FruitDetail)
+			{
+				FruitDetail = PlantMeshes::BuildFruitDetail(this);
+				GFruitDetail = FruitDetail.Get();
+			}
 		}
 		if (S.FruitSize > 0.f)
 		{
@@ -463,7 +511,18 @@ void AProceduralPlant::ApplyHerb(float Age, float Day)
 			M->SetScalarParameterValue(TEXT("Flutter"), S.bIndoor || S.Herb.Form == EPlantHerbForm::Column ? 0.f : 0.25f);
 			HerbMaterials.Add(M);
 		}
-		HerbMaterials[PlantHerbs::Leaves]->SetTextureParameterValue(TEXT("LeafDetail"), HerbLeafTexture ? HerbLeafTexture.Get() : PlantMeshes::BuildLeafDetail(this, S.Leaf));
+		UTexture2D* LeafVeins = HerbLeafTexture.Get();
+		if (!LeafVeins)
+		{
+			// plain leaves: the blade's veins, one texture per species (every bed plant painted its own before)
+			LeafVeins = GHerbLeafDetails.FindRef(S.Name).Get();
+			if (!LeafVeins)
+			{
+				LeafVeins = PlantMeshes::BuildLeafDetail(this, S.Leaf);
+				GHerbLeafDetails.Add(S.Name, LeafVeins);
+			}
+		}
+		HerbMaterials[PlantHerbs::Leaves]->SetTextureParameterValue(TEXT("LeafDetail"), LeafVeins);
 		HerbMaterials[PlantHerbs::Stems]->SetVectorParameterValue(TEXT("Color"), S.Herb.StemColour);
 		if (HerbFlowerAtlas)
 		{
@@ -557,11 +616,12 @@ void AProceduralPlant::Apply(float Age, float Day, bool bSummary, bool bWood)
 		if (UTreeBakeCache* Cache = GetWorld() ? GetWorld()->GetSubsystem<UTreeBakeCache>() : nullptr)
 		{
 			const float BakeAge = FMath::Max(1.f, FMath::RoundToFloat(Age));
-			Far = Cache->Request(Species, (uint32)Seed, BakeAge, Day, 5.f, FVector(15.0, 55.0, 150.0));
+			const int32 FirstLod = FarBakeFirstLod();
+			Far = Cache->Request(Species, (uint32)Seed, BakeAge, Day, 5.f, FarBakeLods, FirstLod);
 			if (!Far && !GetWorld()->IsGameWorld())
 			{
 				Cache->BakeAllNow();
-				Far = Cache->Request(Species, (uint32)Seed, BakeAge, Day, 5.f, FVector(15.0, 55.0, 150.0));
+				Far = Cache->Request(Species, (uint32)Seed, BakeAge, Day, 5.f, FarBakeLods, FirstLod);
 			}
 		}
 		if (!Far || !Far->Mesh)
@@ -1058,6 +1118,11 @@ AFallenFruit* AProceduralPlant::AimedFruit() const
 
 void AProceduralPlant::OnInteract()
 {
+	// the press is a talk's (or a bird's peck): not a hand for the fruit
+	if (!ANpcTalkDirector::UsePressed(GetWorld() ? GetWorld()->GetFirstPlayerController() : nullptr))
+	{
+		return;
+	}
 	const FName Item = GetSpecies().FruitItem;
 	AFallenFruit* Fruit = Item.IsNone() ? nullptr : AimedFruit();
 	UHeroReachComponent* Reach = UHeroReachComponent::GetForPlayer(this);
@@ -1108,7 +1173,10 @@ void AProceduralPlant::OnGameLoaded_Implementation()
 
 void AProceduralPlant::ShowAt(float Age, float DayOfYear, bool bSummary)
 {
+	// a preview may show the bake from close by: with every LOD
+	bFullBake = true;
 	Apply(Age, DayOfYear, bSummary);
+	bFullBake = false;
 	UpdateTickRate();
 }
 
@@ -1250,9 +1318,18 @@ void AProceduralPlant::Tick(float DeltaSeconds)
 		// far, but its bake is not ready yet: stay as it is rather than re-shape in full every time; and when a newer bake
 		// (the season has moved on: blossom, leaves) is ready, take it over at once instead of at the next re-shape
 		UTreeBakeCache* Cache = GetWorld()->GetSubsystem<UTreeBakeCache>();
-		const FTreeBaked* Far = Cache ? Cache->Request(Species, (uint32)Seed, FMath::Max(1.f, FMath::RoundToFloat(Age)), Day, 5.f, FVector(15.0, 55.0, 150.0)) : nullptr;
-		bNewBake = bShownSummary && Far && Far->Mesh && Far->Version != FarVersion;
-		if (!bShownSummary) bSummary = Far && Far->Mesh;
+		const FTreeBaked* Far = Cache ? Cache->Request(Species, (uint32)Seed, FMath::Max(1.f, FMath::RoundToFloat(Age)), Day, 5.f, FarBakeLods, FarBakeFirstLod()) : nullptr;
+		const bool bBakeReady = Far && Far->Mesh;
+		if (bShownSummary && !bBakeReady)
+		{
+			// drawn as its bake, and the kind asked for now is not made yet (its age has rounded to the next year: a new kind,
+			// queued by the call above): it keeps the bake it shows. Before, the next re-shape built the whole tree in full
+			// detail, far away, to show until the new bake came: every far tree of the world at the same moment of the calendar.
+			return;
+		}
+		// (a new kind's version can equal the old kind's: the mesh tells them apart)
+		bNewBake = bShownSummary && (Far->Version != FarVersion || FarTree->GetStaticMesh() != Far->Mesh);
+		if (!bShownSummary) bSummary = bBakeReady;
 	}
 	// a tree grows a few mm a day: re-shape only when the change is visible; the wood less often
 	// far with no bake yet (a time-lapse asks for a new one at every year): keep the shape it has, unseen at this distance

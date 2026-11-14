@@ -1,6 +1,7 @@
 #include "NpcDialogue.h"
 #include "UI/LyudQuests.h"
 
+#include "Birds/BirdPawn.h"
 #include "BoothOwner.h"
 #include "Camera/PlayerCameraManager.h"
 #include "Components/BoxComponent.h"
@@ -631,9 +632,11 @@ FVector ANpcTalkDirector::HeadOf(const FNpc& Npc) const
 	{
 		return FVector::ZeroVector;
 	}
-	if (Mesh->GetBoneIndex(TEXT("head")) != INDEX_NONE)
+	// asked several times per person every frame: the name is looked up in the name table once, not on every call
+	static const FName HeadBone(TEXT("head"));
+	if (Mesh->GetBoneIndex(HeadBone) != INDEX_NONE)
 	{
-		return Mesh->GetBoneLocation(TEXT("head")) + FVector(0, 0, 26.f);
+		return Mesh->GetBoneLocation(HeadBone) + FVector(0, 0, 26.f);
 	}
 	return Mesh->Bounds.Origin + FVector(0, 0, Mesh->Bounds.BoxExtent.Z + 8.f);
 }
@@ -687,7 +690,8 @@ bool ANpcTalkDirector::CanTalkTo(const FNpc& Npc, const FVector& CamLoc, const F
 bool ANpcTalkDirector::PlayerBusy() const
 {
 	const APawn* Pawn = UGameplayStatics::GetPlayerPawn(this, 0);
-	if (!Pawn || Pawn->IsHidden())   // hidden while the sit-down cutscene and ATON OS have him
+	// hidden while the sit-down cutscene and ATON OS have him; a bird does not talk to people
+	if (!Pawn || Pawn->IsHidden() || Pawn->IsA(ABirdPawn::StaticClass()))
 	{
 		return true;
 	}
@@ -815,6 +819,9 @@ void ANpcTalkDirector::Interact()
 {
 	if (TalkingIndex != INDEX_NONE)
 	{
+		// this press is the talk's, also when it ends it (IsEngaged)
+		bTookPress = true;
+		TookPressAt = GFrameCounter;
 		if (++LineIndex >= Lines.Num())
 		{
 			Close();
@@ -846,6 +853,28 @@ void ANpcTalkDirector::Interact()
 			ShowLine();
 		}
 	}
+}
+
+bool ANpcTalkDirector::UsePressed(const APlayerController* PC, bool bOverTarget)
+{
+	if (!PC || !PC->WasInputKeyJustPressed(EKeys::E))
+	{
+		return false;
+	}
+	// as a bird E is the peck: nothing made for the hero's hand answers it
+	if (const APawn* Pawn = PC->GetPawn(); Pawn && Pawn->IsA(ABirdPawn::StaticClass()))
+	{
+		return false;
+	}
+	// only on the frame of a press: the level has one director
+	for (TActorIterator<ANpcTalkDirector> It(PC->GetWorld()); It; ++It)
+	{
+		if (bOverTarget ? It->IsTalking() : It->IsEngaged())
+		{
+			return false;
+		}
+	}
+	return true;
 }
 
 void ANpcTalkDirector::UpdateLineText()

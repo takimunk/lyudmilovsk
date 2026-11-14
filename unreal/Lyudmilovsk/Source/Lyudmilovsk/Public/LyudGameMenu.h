@@ -47,4 +47,6 @@ private:
 	TSharedPtr<FLyudMenuInput> Input;
 	bool bOpen = false;
 	bool bWasPaused = false;
+	/** The mouse cursor was showing when the menu opened: a screen with the mouse was up, and gets it back on Close. */
+	bool bCursorBefore = false;
 };

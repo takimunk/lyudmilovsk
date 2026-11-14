@@ -5,17 +5,21 @@
 #include "TreeBakeCache.generated.h"
 
 class UMaterialInstanceDynamic;
+class UMaterialInterface;
 class UStaticMesh;
 class UTexture2D;
+struct FPlantSpecies;
 
-/** One baked tree kind: species, seed, age (to a tenth of a year). */
+/** One baked tree kind: species, seed, age (to a tenth of a year), and which of its four LODs the mesh has. */
 struct FTreeBakeKey
 {
 	FName Species;
 	uint32 Seed = 0;
 	int32 AgeTenths = 0;
-	bool operator==(const FTreeBakeKey& O) const { return Species == O.Species && Seed == O.Seed && AgeTenths == O.AgeTenths; }
-	friend uint32 GetTypeHash(const FTreeBakeKey& K) { return HashCombineFast(HashCombineFast(GetTypeHash(K.Species), K.Seed), (uint32)K.AgeTenths); }
+	/** 0: all four LODs; 1..3: the mesh starts at that LOD (a tree only drawn from far away). */
+	int32 FirstLod = 0;
+	bool operator==(const FTreeBakeKey& O) const { return Species == O.Species && Seed == O.Seed && AgeTenths == O.AgeTenths && FirstLod == O.FirstLod; }
+	friend uint32 GetTypeHash(const FTreeBakeKey& K) { return HashCombineFast(HashCombineFast(HashCombineFast(GetTypeHash(K.Species), K.Seed), (uint32)K.AgeTenths), (uint32)K.FirstLod); }
 };
 
 /** What a forest draws a kind with. */
@@ -27,6 +31,7 @@ struct FTreeBaked
 	float Day = -1000.f;
 	/** Counts up every time the mesh is replaced by a newer bake; a user of it compares. */
 	int32 Version = 0;
+	/** By LOD of the four (0 for a LOD the mesh was made without). */
 	int32 Triangles[4] = {};
 };
 
@@ -49,10 +54,17 @@ public:
 	 * The bake of a kind for a day: null while it is still being made (it is queued by this call), else
 	 * the newest one. Asks for a new bake, keeping the old one, when it is more than RebakeDays away from Day.
 	 * LodDistances (m) are taken from the first request of a kind.
+	 * FirstLod above 0 asks for a mesh without its nearest LODs (a kind of its own): for a tree that is drawn baked only
+	 * from beyond the distance where those would show; the rest switch at the same distances.
 	 */
-	const FTreeBaked* Request(FName Species, uint32 Seed, float Age, float Day, float RebakeDays, const FVector& LodDistances);
+	const FTreeBaked* Request(FName Species, uint32 Seed, float Age, float Day, float RebakeDays, const FVector& LodDistances, int32 FirstLod = 0);
 	/** The textures made for a species (null until one of its kinds has been finished). */
 	bool GetSpeciesTextures(FName Species, UTexture2D*& Albedo, UTexture2D*& Normal, UTexture2D*& LeafDetail) const;
+	/**
+	 * The same textures, painted now when no kind of the species has been baked yet: a lone plant draws its bark and leaves
+	 * with them instead of painting its own (a bark tile is two 256 x 512 textures, a birch's two 512 x 1024).
+	 */
+	bool EnsureSpeciesTextures(const FPlantSpecies& Species, UTexture2D*& Albedo, UTexture2D*& Normal, UTexture2D*& LeafDetail);
 	/** Everything queued is made at once, on this thread (editor, tests). */
 	void BakeAllNow();
 	int32 NumBaked() const { return Baked.Num(); }
@@ -75,6 +87,7 @@ private:
 	{
 		TObjectPtr<UTexture2D> Albedo, Normal, Detail, Card, Bloom;
 	};
+	FSpeciesAssets& AssetsFor(const FPlantSpecies& S);
 	void Finish(FJob& Job);
 	void Launch(const TSharedPtr<FJob>& Job);
 

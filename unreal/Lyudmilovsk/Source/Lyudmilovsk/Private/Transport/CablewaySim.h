@@ -125,6 +125,7 @@ namespace LyudTransport
 		std::vector<int> Riders;    // on board (rider indices)
 		int Reserved = 0;           // riders it is on its way to pick up
 		double DwellUntil = 0.0;
+		float PlayerWait = 0.f;     // seconds this stop's doors were held past the dwell for a player who called it here
 		double IdleSince = 0.0;
 		bool bToDepot = false;
 		bool bHold = false;         // somebody in the doorway (the game sets it): the doors stay open
@@ -246,9 +247,21 @@ namespace LyudTransport
 		void StepMotion(float Dt, const V3& Wind);
 		/** How far the moving rope is off its resting shape at S of line L, metres (map frame). */
 		V3 RopeOffset(int Line, float S) const;
+		/** The same for point LoopI of the line's loop (RopeOffset(Line, Lines[Line].LoopS[LoopI])), without the search
+		 *  through the spans: the point's span and its place on it are found once at Load. */
+		V3 RopeOffsetAt(int Line, int LoopI) const;
+		/** The span (an index into SpanMotion) point LoopI of the line's loop hangs in; -1: none (it doesn't move). */
+		int RopeSpanAt(int Line, int LoopI) const;
 		std::string Report() const;
 
 	private:
+		struct FRopePoint
+		{
+			int Span = -1;
+			float SinU = 0.f, Sin2U = 0.f;      // the span's first two modes at the point
+			float Nx = 0.f, Ny = 0.f;           // the rope's level normal there (the way the wind's sway goes)
+		};
+		std::vector<std::vector<FRopePoint>> RopePoints;    // per line, per loop point
 		void Dispatch();
 		/** Nobody else of the line moving within the headway of S (cabins in the depot and on sidings don't count). */
 		bool Clear(int Cabin, float S) const;

@@ -875,10 +875,23 @@ void AForestFloor::BuildKind(FKind& K)
 			const TCHAR* Sp = K.Wood == EWood::Birch ? TEXT("SilverBirch") : K.Wood == EWood::Spruce ? TEXT("NorwaySpruce") : TEXT("ScotsPine");
 			if (const FPlantSpecies* S = PlantSpeciesLibrary::Find(Sp))
 			{
-				UTexture2D *Albedo = nullptr, *Normal = nullptr;
-				PlantMeshes::BuildBarkTextures(this, *S, 7, Albedo, Normal);
-				KeepAlive.Add(Albedo);
-				KeepAlive.Add(Normal);
+				// one bark per wood (pine, spruce, birch), shared by the sticks, branches, logs, stumps, roots and curls of it:
+				// each of those 14 kinds painted its own copy of the same two textures before (tens of ms and 1.5 to 6 MB each)
+				const int32 WoodIndex = FMath::Clamp((int32)K.Wood, 0, 2);
+				if (DebrisBark.Num() != 6)
+				{
+					DebrisBark.Reset();
+					DebrisBark.SetNum(6);
+				}
+				if (!DebrisBark[WoodIndex * 2] || !DebrisBark[WoodIndex * 2 + 1])
+				{
+					UTexture2D *NewAlbedo = nullptr, *NewNormal = nullptr;
+					PlantMeshes::BuildBarkTextures(this, *S, 7, NewAlbedo, NewNormal);
+					DebrisBark[WoodIndex * 2] = NewAlbedo;
+					DebrisBark[WoodIndex * 2 + 1] = NewNormal;
+				}
+				UTexture2D* Albedo = DebrisBark[WoodIndex * 2];
+				UTexture2D* Normal = DebrisBark[WoodIndex * 2 + 1];
 				M->SetTextureParameterValue(TEXT("BarkAlbedo"), Albedo);
 				M->SetTextureParameterValue(TEXT("BarkNormal"), Normal);
 				// a tile of the bark texture spans TileWidth x TileHeight m (the UVs are in metres)
@@ -1337,7 +1350,8 @@ void AForestFloor::CommitKind(int32 Index)
 				if (FVector::DistSquared2D(At, Centre) > Reach2) continue;
 				// buried: the snow lies deeper than it stands (a log or a stone a little sooner: its last sliver over the
 				// snow would read as a white plank, where a real one is a rounded hump of snow)
-				if (bSnow && SnowDepthAt(At) > It.Top * (K.Type == EKindType::Debris ? 0.7f : 0.9f)) continue;
+				// (bSnow says the winter is there and ready: asked directly, not looked up again for every piece)
+				if (bSnow && Winter->GetSnowDepthAt(At) > It.Top * (K.Type == EKindType::Debris ? 0.7f : 0.9f)) continue;
 				Xfs.Add(FTransform(It.Xf));
 				Custom.Add(It.Custom0);
 				Custom.Add(It.Custom1);
@@ -1387,6 +1401,7 @@ void AForestFloor::RebuildAround(FVector Location)
 	UpdateLitterField(Location, CurrentDay(), true);
 	LaidDay = CurrentDay();
 	bStarted = true;
+	bLayoutDone = false;
 }
 
 FString AForestFloor::AuditMap(const FString& OutFile, FVector Location, float Radius)
@@ -1649,6 +1664,7 @@ void AForestFloor::ResetLayout()
 	LitterCentre = FVector2D(1e12, 1e12);
 	LitterRow = -1;
 	bStarted = false;
+	bLayoutDone = false;
 }
 
 void AForestFloor::Tick(float DeltaSeconds)
@@ -1706,6 +1722,7 @@ void AForestFloor::Tick(float DeltaSeconds)
 				for (int32 K = 0; K < P.Value.ByKind.Num() && K < Kinds.Num(); K++) if (Kinds[K]->Band == 0) P.Value.ByKind[K].Reset();
 				P.Value.Bands &= ~1;
 			}
+			bLayoutDone = false;
 			for (int32 I = 0; I < Kinds.Num(); I++) if (Kinds[I]->Band == 0) DirtyKinds.AddUnique(I);
 		}
 		const ULyudWinterSubsystem* Winter = ULyudWinterSubsystem::Get(this);
@@ -1725,6 +1742,7 @@ void AForestFloor::Tick(float DeltaSeconds)
 			return;
 		}
 		Centre = Camera;
+		bLayoutDone = false;
 		for (int32 I = 0; I < Kinds.Num(); I++)
 		{
 			// a kind is re-sent once the camera is a step on; relayouts come every Relayout metres and the commit can lag a few
@@ -1743,9 +1761,11 @@ void AForestFloor::Tick(float DeltaSeconds)
 		}
 	}
 	// lay out the cells the new layout needs, nearest band first, within the frame's trace budget
+	// (once a whole pass has found every cell traced and laid, no more passes until the layout changes: the pass looked up
+	// each of the ~800 cells round the camera in the cell map every frame, standing still too)
 	int32 Budget = TracesPerTick;
 	bool bPending = false;
-	for (int32 B = 0; B < 3 && Budget > 0; B++)
+	for (int32 B = 0; B < 3 && Budget > 0 && !bLayoutDone; B++)
 	{
 		const float R = BandReach[B] + Margin;
 		const int32 N = FMath::CeilToInt(R / CellSize);
@@ -1772,6 +1792,10 @@ void AForestFloor::Tick(float DeltaSeconds)
 			}
 		}
 		if (Budget <= 0) bPending = true;
+	}
+	if (!bPending)
+	{
+		bLayoutDone = true;
 	}
 	// then put them on screen, a kind or two a frame
 	if (!bPending)

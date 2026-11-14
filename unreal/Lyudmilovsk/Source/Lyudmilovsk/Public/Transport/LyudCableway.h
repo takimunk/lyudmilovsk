@@ -153,6 +153,10 @@ private:
 	/** Per line: the rope, one rod per loop segment, movable. */
 	UPROPERTY(Transient) TArray<TObjectPtr<UInstancedStaticMeshComponent>> RopeIsm;
 	TArray<TArray<bool>> RopeMoved;
+	/** Per span of the network (FNetwork::SpanMotion): its motion (two modes up and down, one sideways, metres) when its
+	 * rope was last placed, and whether it has moved since (this frame). */
+	TArray<FVector> RopeSpanPushed;
+	TArray<bool> RopeSpanMoved;
 	FTransform ClubBoardAt;
 
 public:

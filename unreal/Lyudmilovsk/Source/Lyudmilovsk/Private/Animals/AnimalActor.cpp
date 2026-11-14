@@ -266,6 +266,22 @@ void AAnimalActor::BeginPlay()
 
 bool AAnimalActor::SetBreed(FName InBreed, int32 InCoat)
 {
+	if (InBreed == Breed && Clips.Num() > 0 && Body->GetSkeletalMeshAsset())
+	{
+		// the same breed in another coat (a spare body taken for another animal): the mesh, the clips, the collar and
+		// the eyeballs are the breed's and stay; only the coat's materials change (and the painted eyes' material
+		// instances, which are made of them). The clip starts afresh, as it always did here.
+		Coat = InCoat;
+		const bool bPaintedEyes = BodyMIDs.Num() > 0;
+		ApplyCoat();
+		if (bPaintedEyes)
+		{
+			UpdateEyes();
+		}
+		PlayingClip = NAME_None;
+		UpdateClip(0.f);
+		return true;
+	}
 	const FString R = Root(InBreed);
 	USkeletalMesh* Mesh = LoadObject<USkeletalMesh>(nullptr, *FString::Printf(TEXT("%s/SK_%s.SK_%s"), *R, *InBreed.ToString(), *InBreed.ToString()));
 	if (!Mesh)

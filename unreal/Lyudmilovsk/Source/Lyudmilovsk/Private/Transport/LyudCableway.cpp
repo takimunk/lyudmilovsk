@@ -374,6 +374,19 @@ void ALyudCableway::BuildRopes(const LyudTransport::FNetwork& Net, int32 L)
 
 void ALyudCableway::UpdateRopes(const LyudTransport::FNetwork& Net, const FVector& Viewer)
 {
+	// which spans have moved since their rope was last put in place: half a millimetre of any of a span's three modes
+	// (far under a pixel). A rope hanging still (calm air, no cabin on the span) is then not pushed again every frame.
+	const int32 NumSpans = SimNum(Net.SpanMotion);
+	if (RopeSpanPushed.Num() != NumSpans)
+	{
+		RopeSpanPushed.Init(FVector(1e9), NumSpans);
+		RopeSpanMoved.Init(true, NumSpans);
+	}
+	for (int32 K = 0; K < NumSpans; K++)
+	{
+		const LyudTransport::FSpanMotion& M = Net.SpanMotion[K];
+		RopeSpanMoved[K] = !FVector(M.Qv[0], M.Qv[1], M.Qh).Equals(RopeSpanPushed[K], 0.0005);
+	}
 	for (int32 L = 0; L < RopeIsm.Num() && L < SimNum(Net.Lines); L++)
 	{
 		UInstancedStaticMeshComponent* C = RopeIsm[L];
@@ -387,11 +400,17 @@ void ALyudCableway::UpdateRopes(const LyudTransport::FNetwork& Net, const FVecto
 			LyudTransport::V3 P = Ln.Loop[I];
 			if (bMove)
 			{
-				P = P + Net.RopeOffset(L, Ln.LoopS[I]);
+				// the point's span and its place on it were found at Load (the same answer as RopeOffset(L, LoopS[I]))
+				P = P + Net.RopeOffsetAt(L, I);
 			}
 			return W(P.X, P.Y, P.Z);
 		};
-		// a segment's end is the next one's start: it is evaluated once (RopeOffset searches the spans) when both use it alike
+		auto Still = [&](int32 I)
+		{
+			const int32 K = Net.RopeSpanAt(L, I);
+			return !RopeSpanMoved.IsValidIndex(K) || !RopeSpanMoved[K];
+		};
+		// a segment's end is the next one's start: it is evaluated once when both use it alike
 		int32 EndI = -1;
 		bool bEndMoved = false;
 		FVector End = FVector::ZeroVector;
@@ -404,12 +423,25 @@ void ALyudCableway::UpdateRopes(const LyudTransport::FNetwork& Net, const FVecto
 			{
 				continue;
 			}
+			// already where its spans have it now (it was placed moved, and neither end's span has moved since)
+			if (bNear && RopeMoved[L][I] && Still(I) && Still(I + 1))
+			{
+				continue;
+			}
 			const FVector Start = EndI == I && bEndMoved == bNear ? End : Point(I, bNear);
 			End = Point(I + 1, bNear);
 			EndI = I + 1;
 			bEndMoved = bNear;
 			C->UpdateInstanceTransform(I, RodTransform(Start, End, 4.5f), true, false, true);
 			RopeMoved[L][I] = bNear;
+		}
+	}
+	for (int32 K = 0; K < NumSpans; K++)
+	{
+		if (RopeSpanMoved[K])
+		{
+			const LyudTransport::FSpanMotion& M = Net.SpanMotion[K];
+			RopeSpanPushed[K] = FVector(M.Qv[0], M.Qv[1], M.Qh);
 		}
 	}
 }

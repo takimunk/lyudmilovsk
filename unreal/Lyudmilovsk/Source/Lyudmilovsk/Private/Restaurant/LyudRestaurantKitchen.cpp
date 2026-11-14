@@ -183,7 +183,8 @@ void ALyudRestaurant::TickKitchen(float DeltaTime)
 		ReleaseCook();
 		return;
 	}
-	const FString Mesh = StaffCookMesh.IsEmpty() ? CookStandinMesh : StaffCookMesh;
+	// by reference: every frame while the camera is near (both are members)
+	const FString& Mesh = StaffCookMesh.IsEmpty() ? CookStandinMesh : StaffCookMesh;
 	if (Person != CookPerson || (CookBody && CookMesh != Mesh))
 	{
 		ReleaseCook();

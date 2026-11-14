@@ -12,6 +12,8 @@
 #include "GameFramework/PlayerController.h"
 #include "HAL/IConsoleManager.h"
 #include "HeroCharacter.h"
+#include "LyudGameMenu.h"
+#include "LyudInventory.h"
 #include "LyudSave.h"
 #include "Misc/App.h"
 #include "HAL/PlatformTime.h"
@@ -899,15 +901,20 @@ void UBirdFlightSubsystem::OnBeforeSave(ULyudSaveGame* Save)
 {
 	ABirdPawn* B = Bird.Get();
 	bSavedAsBird = B != nullptr && B->GetMode() != EBirdMode::Leaving;
-	if (bSavedAsBird)
+	if (B)
 	{
-		// the save's player is the hero where he stands; the bird is its own record
+		// the save's player is the hero where he stands; the bird is its own record. Also during the camera's flight
+		// back to him: the pawn is still the bird then, and the save had taken the bird's place for the hero's (loaded,
+		// he stood in the air where the bird had been)
 		if (const APawn* H = Hero.Get())
 		{
 			Save->bHasPlayer = true;
 			Save->PlayerTransform = H->GetActorTransform();
 		}
 		Save->ControlRotation = HeroControl;
+	}
+	if (bSavedAsBird)
+	{
 		SavedSpecies = B->GetSpecies();
 		bSavedStanding = B->GetMode() == EBirdMode::Ground;
 		SavedLocation = B->FeetLocation();
@@ -1110,7 +1117,14 @@ void UBirdFlightSubsystem::TickHero(float Dt)
 		HintShowT = 8.f;
 		return;
 	}
-	const bool bR = PC->IsInputKeyDown(EKeys::R);
+	// not from a screen, a hero held still (a reach, a book), the computer's chair (he is hidden there) or a bicycle
+	// (R is the bicycle's own key): the bird came to the hand, and the player was it, in the middle of any of them
+	const AHeroCharacter* HeroBody = Cast<AHeroCharacter>(Hero.Get());
+	const ULyudInventoryUI* Screen = ULyudInventoryUI::Get(this);
+	const ULyudGameMenuSubsystem* GameMenu = GetWorld()->GetSubsystem<ULyudGameMenuSubsystem>();
+	const bool bHandFree = !(Screen && Screen->IsOpen()) && !(GameMenu && GameMenu->IsOpen()) && !PC->IsMoveInputIgnored()
+		&& !Hero->IsHidden() && !(HeroBody && HeroBody->IsOnBike());
+	const bool bR = bHandFree && PC->IsInputKeyDown(EKeys::R);
 	RecallHeld = bR ? RecallHeld + Dt : 0.f;
 	if (HintShowT > 0.f || bR)
 	{
@@ -1284,7 +1298,6 @@ void UBirdFlightSubsystem::TickEncounter(float Dt)
 		if (Row && !Row->Calls.IsEmpty())
 		{
 			// cached in BirdLife: not a LoadObject per call
-			UBirdLifeSubsystem* Life = GetWorld() ? GetWorld()->GetSubsystem<UBirdLifeSubsystem>() : nullptr;
 			if (USoundBase* Snd = Life ? Life->CallSound(Meet.Species, Row->Calls[0]) : nullptr)
 			{
 				UGameplayStatics::PlaySoundAtLocation(this, Snd, Where);

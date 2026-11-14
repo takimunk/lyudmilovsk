@@ -108,6 +108,8 @@ FString ULyudSaveSubsystem::SaveToSlot(const FString& Title, const FString& InSl
 	{
 		return FString();
 	}
+	// The whole save runs here, on the game thread, in one frame: the log line at the end says how long each part took.
+	const double SaveBegan = FPlatformTime::Seconds();
 	ULyudSlotIndex* Index = LoadIndex();
 	FString Slot = InSlot;
 	if (Slot.IsEmpty())
@@ -134,14 +136,17 @@ FString ULyudSaveSubsystem::SaveToSlot(const FString& Title, const FString& InSl
 			Save->PlayerTransform = Pawn->GetActorTransform();
 		}
 	}
+	int32 ActorsSeen = 0;
 	for (TActorIterator<AActor> It(World); It; ++It)
 	{
+		++ActorsSeen;
 		if (It->Implements<ULyudSaveable>() && !LyudIsTransientSaveable(*It))
 		{
 			ILyudSaveable::Execute_OnGameSaving(*It);
 			ULyudSaveGame::Store(*It, Save->Actors.FindOrAdd(It->GetFName()));
 		}
 	}
+	const double ActorsDone = FPlatformTime::Seconds();
 	// before the objects are written: listeners copy their live state into SaveGame fields here
 	OnBeforeSave.Broadcast(Save);
 	for (const TPair<FName, TWeakObjectPtr<UObject>>& Pair : SaveObjects)
@@ -156,11 +161,16 @@ FString ULyudSaveSubsystem::SaveToSlot(const FString& Title, const FString& InSl
 		}
 	}
 
+	const double ObjectsDone = FPlatformTime::Seconds();
 	if (!UGameplayStatics::SaveGameToSlot(Save, Slot, 0))
 	{
 		UE_LOG(LogTemp, Warning, TEXT("Save: could not write slot %s"), *Slot);
 		return FString();
 	}
+	const double FileDone = FPlatformTime::Seconds();
+	UE_LOG(LogTemp, Display, TEXT("Save: \"%s\" to %s took %.1f ms on the game thread (%d actors walked, %d kept: %.1f ms; %d objects and listeners: %.1f ms; file: %.1f ms)"),
+		*Title, *Slot, (FileDone - SaveBegan) * 1000.0, ActorsSeen, Save->Actors.Num(), (ActorsDone - SaveBegan) * 1000.0,
+		SaveObjects.Num(), (ObjectsDone - ActorsDone) * 1000.0, (FileDone - ObjectsDone) * 1000.0);
 	FLyudSlotInfo* Info = Index->Slots.FindByPredicate([&](const FLyudSlotInfo& S) { return S.Slot == Slot; });
 	if (!Info)
 	{
