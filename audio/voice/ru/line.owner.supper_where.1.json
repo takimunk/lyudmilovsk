@@ -1,0 +1,20 @@
+{
+ "key": "line.owner.supper_where.1",
+ "lang": "ru",
+ "text": "Косичка у Аслана в палатке у двери, до восьми и не по понедельникам. «Байкал» в автомате, тут, в зале.",
+ "speaker": "owner",
+ "voice": "Daniel",
+ "voice_id": "onwK4e9ZLuTAKqWW03F9",
+ "voice_design": null,
+ "direction": "[calm, tired, slow, a little ironic]",
+ "model": "fal-ai/elevenlabs/tts/eleven-v3",
+ "request": {
+  "stability": 0.5,
+  "apply_text_normalization": "auto",
+  "text": "[calm, tired, slow, a little ironic] Косичка у Аслана в палатке у двери, до восьми и не по понедельникам. «Байкал» в автомате, тут, в зале.",
+  "voice": "Daniel",
+  "language_code": "ru"
+ },
+ "fal_request_id": "01a1d6e9-1726-7e10-9b4d-4861c697e153",
+ "hash": "36bc6ce61c0a"
+}

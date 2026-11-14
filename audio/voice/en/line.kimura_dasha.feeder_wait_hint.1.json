@@ -1,0 +1,20 @@
+{
+ "key": "line.kimura_dasha.feeder_wait_hint.1",
+ "lang": "en",
+ "text": "Any feeder will do. Ask Tanya for the suet cake, the one for great tits: they can't resist it, and pigeons won't even look at it.",
+ "speaker": "kimura_dasha",
+ "voice": "Charlotte",
+ "voice_id": "XB0fDUnXU5powFXDhCwa",
+ "voice_design": null,
+ "direction": "[a tired physics student, wry, self-ironic]",
+ "model": "fal-ai/elevenlabs/tts/eleven-v3",
+ "request": {
+  "stability": 0.5,
+  "apply_text_normalization": "auto",
+  "text": "[a tired physics student, wry, self-ironic] Any feeder will do. Ask Tanya for the suet cake, the one for great tits: they can't resist it, and pigeons won't even look at it.",
+  "voice": "Charlotte",
+  "language_code": "en"
+ },
+ "fal_request_id": "01a1d6e5-40fa-74f2-95b2-7209285f35d2",
+ "hash": "93027996c776"
+}

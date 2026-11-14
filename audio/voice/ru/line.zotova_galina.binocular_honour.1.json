@@ -1,0 +1,20 @@
+{
+ "key": "line.zotova_galina.binocular_honour.1",
+ "lang": "ru",
+ "text": "Сорокин дал Льву посмотреть в свой бинокль. Сам предложил. Лев говорит, это большая честь, а я говорю, это эйфория.",
+ "speaker": "zotova_galina",
+ "voice": "Alice",
+ "voice_id": "Xb7hH8MSUJpSbSDYk0k2",
+ "voice_design": null,
+ "direction": "[warm, chatty, fondly exasperated with her husband]",
+ "model": "fal-ai/elevenlabs/tts/eleven-v3",
+ "request": {
+  "stability": 0.5,
+  "apply_text_normalization": "auto",
+  "text": "[warm, chatty, fondly exasperated with her husband] Сорокин дал Льву посмотреть в свой бинокль. Сам предложил. Лев говорит, это большая честь, а я говорю, это эйфория.",
+  "voice": "Alice",
+  "language_code": "ru"
+ },
+ "fal_request_id": "01a1d75f-8424-7503-b796-41aae90e17d5",
+ "hash": "456a7c695631"
+}

@@ -1,0 +1,20 @@
+{
+ "key": "line.belov_misha.again3.1",
+ "lang": "en",
+ "text": "I'm fixing Rustam's kettle. An engineer, and kettles beat him. He says they're not his scale.",
+ "speaker": "belov_misha",
+ "voice": "Liam",
+ "voice_id": "TX3LPaxmHKxFdv7VOQHJ",
+ "voice_design": null,
+ "direction": "[easygoing, amused, a young technician, a little self-ironic]",
+ "model": "fal-ai/elevenlabs/tts/eleven-v3",
+ "request": {
+  "stability": 0.5,
+  "apply_text_normalization": "auto",
+  "text": "[easygoing, amused, a young technician, a little self-ironic] I'm fixing Rustam's kettle. An engineer, and kettles beat him. He says they're not his scale.",
+  "voice": "Liam",
+  "language_code": "en"
+ },
+ "fal_request_id": "01a1d73f-ecd0-7262-b918-b73909ceb12e",
+ "hash": "dfe0d516f177"
+}

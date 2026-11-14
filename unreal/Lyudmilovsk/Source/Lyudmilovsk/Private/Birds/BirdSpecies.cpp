@@ -114,6 +114,20 @@ namespace
 				S.StragglersFrom = MonthDay((*Late)->GetStringField(TEXT("from")));
 				S.StragglersUntil = MonthDay((*Late)->GetStringField(TEXT("until")));
 			}
+			const TSharedPtr<FJsonObject>* Range;
+			if (O->TryGetObjectField(TEXT("range"), Range))
+			{
+				S.RangeAt = FVector2D((*Range)->GetNumberField(TEXT("x")), (*Range)->GetNumberField(TEXT("y")));
+				S.RangeR = (*Range)->GetNumberField(TEXT("r"));
+				(*Range)->TryGetNumberField(TEXT("population"), S.RangePopulation);
+				(*Range)->TryGetNumberField(TEXT("homeRange"), S.RangeHomeM);
+				const TArray<TSharedPtr<FJsonValue>>* RangeFlock;
+				if ((*Range)->TryGetArrayField(TEXT("flock"), RangeFlock) && RangeFlock->Num() == 2)
+				{
+					S.RangeFlockMin = (int32)(*RangeFlock)[0]->AsNumber();
+					S.RangeFlockMax = (int32)(*RangeFlock)[1]->AsNumber();
+				}
+			}
 			FString Dimorphism;
 			S.bFemalePlumage = O->TryGetStringField(TEXT("dimorphism"), Dimorphism) && Dimorphism == TEXT("plumage");
 			O->TryGetNumberField(TEXT("femaleScale"), S.FemaleScale);

@@ -1,0 +1,8 @@
+{
+ "comment": "Developer mode teleports of the waxwing quest (docs/quests.md). Map metres as Content/UI/map.json. Sorokin himself moves about: Quest.GoToPerson sorokin_oleg.",
+ "teleports": [
+  {"id": "orni_library", "group": "ornithologist", "name": "dev.tp.orni_library", "x": -244.0, "y": 612.0, "yaw": 79},
+  {"id": "orni_gastronom", "group": "ornithologist", "name": "dev.tp.orni_gastronom", "x": -211.0, "y": 653.4, "yaw": 79},
+  {"id": "orni_grove", "group": "ornithologist", "name": "dev.tp.orni_grove", "place": "rowan_grove", "yaw": 90}
+ ]
+}

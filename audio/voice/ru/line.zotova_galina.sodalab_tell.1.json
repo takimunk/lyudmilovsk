@@ -1,0 +1,20 @@
+{
+ "key": "line.zotova_galina.sodalab_tell.1",
+ "lang": "ru",
+ "text": "Все четыре? Тогда веду протокол. Слушаю.",
+ "speaker": "zotova_galina",
+ "voice": "Alice",
+ "voice_id": "Xb7hH8MSUJpSbSDYk0k2",
+ "voice_design": null,
+ "direction": "[warm, chatty, fondly exasperated with her husband]",
+ "model": "fal-ai/elevenlabs/tts/eleven-v3",
+ "request": {
+  "stability": 0.5,
+  "apply_text_normalization": "auto",
+  "text": "[warm, chatty, fondly exasperated with her husband] Все четыре? Тогда веду протокол. Слушаю.",
+  "voice": "Alice",
+  "language_code": "ru"
+ },
+ "fal_request_id": "01a1d675-23cf-7a41-9289-d35b1a10bd27",
+ "hash": "ae8fd5c97889"
+}

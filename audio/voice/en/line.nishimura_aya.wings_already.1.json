@@ -1,0 +1,20 @@
+{
+ "key": "line.nishimura_aya.wings_already.1",
+ "lang": "en",
+ "text": "Stay on the page. All right, go, I have the wings already.",
+ "speaker": "nishimura_aya",
+ "voice": "Matilda",
+ "voice_id": "XrExE9yKIg1WjnnlVkGX",
+ "voice_design": null,
+ "direction": "[calm, soft, contemplative, a painter talking about the light]",
+ "model": "fal-ai/elevenlabs/tts/eleven-v3",
+ "request": {
+  "stability": 0.5,
+  "apply_text_normalization": "auto",
+  "text": "[calm, soft, contemplative, a painter talking about the light] Stay on the page. All right, go, I have the wings already.",
+  "voice": "Matilda",
+  "language_code": "en"
+ },
+ "fal_request_id": "01a1d6e8-6f55-7260-91fb-46848bf3be0d",
+ "hash": "16c0317fba97"
+}

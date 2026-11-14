@@ -1,0 +1,20 @@
+{
+ "key": "line.streamer.bird_more_viewers.1",
+ "lang": "ru",
+ "text": "Птица в кадре, и чат сразу проснулся. Останься, с тобой у меня больше зрителей.",
+ "speaker": "streamer",
+ "voice": "Jessica",
+ "voice_id": "cgSgspJ2msm6clMCkdW9",
+ "voice_design": null,
+ "direction": "[bright, fast, half talking to her chat]",
+ "model": "fal-ai/elevenlabs/tts/eleven-v3",
+ "request": {
+  "stability": 0.5,
+  "apply_text_normalization": "auto",
+  "text": "[bright, fast, half talking to her chat] Птица в кадре, и чат сразу проснулся. Останься, с тобой у меня больше зрителей.",
+  "voice": "Jessica",
+  "language_code": "ru"
+ },
+ "fal_request_id": "01a1d73d-f5b0-7e31-a91d-3c240d78128c",
+ "hash": "58c18ee6add6"
+}

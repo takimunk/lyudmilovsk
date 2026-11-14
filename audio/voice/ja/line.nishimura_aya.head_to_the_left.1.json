@@ -1,0 +1,20 @@
+{
+ "key": "line.nishimura_aya.head_to_the_left.1",
+ "lang": "ja",
+ "text": "そのまま。いいえ、頭をもう少し左に。そう、ありがとう。",
+ "speaker": "nishimura_aya",
+ "voice": "Matilda",
+ "voice_id": "XrExE9yKIg1WjnnlVkGX",
+ "voice_design": null,
+ "direction": "[calm, soft, contemplative, a painter talking about the light]",
+ "model": "fal-ai/elevenlabs/tts/eleven-v3",
+ "request": {
+  "stability": 0.5,
+  "apply_text_normalization": "auto",
+  "text": "[calm, soft, contemplative, a painter talking about the light] そのまま。いいえ、頭をもう少し左に。そう、ありがとう。",
+  "voice": "Matilda",
+  "language_code": "ja"
+ },
+ "fal_request_id": "01a1d6e8-7232-7f53-827b-89b6e2f266c0",
+ "hash": "11bd27a33ba8"
+}

@@ -1,0 +1,20 @@
+{
+ "key": "line.lange_pyotr.cheese_clouds.1",
+ "lang": "ja",
+ "text": "曇りだ。曇りの日は魚が大胆になる。なのに俺はチーズなしだ。三つ編み、クラブのそばだ。",
+ "speaker": "lange_pyotr",
+ "voice": "Brian",
+ "voice_id": "nPczCjzI2devNBz1zQrb",
+ "voice_design": null,
+ "direction": "[gruff, unhurried, a weathered fisherman of few words]",
+ "model": "fal-ai/elevenlabs/tts/eleven-v3",
+ "request": {
+  "stability": 0.5,
+  "apply_text_normalization": "auto",
+  "text": "[gruff, unhurried, a weathered fisherman of few words] 曇りだ。曇りの日は魚が大胆になる。なのに俺はチーズなしだ。三つ編み、クラブのそばだ。",
+  "voice": "Brian",
+  "language_code": "ja"
+ },
+ "fal_request_id": "01a1d7aa-728e-78f2-8ab6-fe8e01417d6c",
+ "hash": "44f6c5c0b6cb"
+}

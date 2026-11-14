@@ -1,0 +1,20 @@
+{
+ "key": "line.lange_pyotr.cheese_wait_gull.1",
+ "lang": "ja",
+ "text": "今朝、網にカモメがとまって、俺があんたを見るような目で俺を見ていた。チーズ、クラブのそばだ。",
+ "speaker": "lange_pyotr",
+ "voice": "Brian",
+ "voice_id": "nPczCjzI2devNBz1zQrb",
+ "voice_design": null,
+ "direction": "[gruff, unhurried, a weathered fisherman of few words]",
+ "model": "fal-ai/elevenlabs/tts/eleven-v3",
+ "request": {
+  "stability": 0.5,
+  "apply_text_normalization": "auto",
+  "text": "[gruff, unhurried, a weathered fisherman of few words] 今朝、網にカモメがとまって、俺があんたを見るような目で俺を見ていた。チーズ、クラブのそばだ。",
+  "voice": "Brian",
+  "language_code": "ja"
+ },
+ "fal_request_id": "01a1d6d6-1c15-7dc1-9b0b-80acf45bec60",
+ "hash": "25a6b7d2c3e6"
+}

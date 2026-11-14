@@ -1,0 +1,20 @@
+{
+ "key": "line.valiev_rustam.signal_ask.5",
+ "lang": "en",
+ "text": "I will be at the window. Come and tell me afterwards, and we will compare notes.",
+ "speaker": "valiev_rustam",
+ "voice": "Roger",
+ "voice_id": "CwhRBWXzGAHq8TQ4Fs17",
+ "voice_design": null,
+ "direction": "[confident, dry, matter-of-fact engineer]",
+ "model": "fal-ai/elevenlabs/tts/eleven-v3",
+ "request": {
+  "stability": 0.5,
+  "apply_text_normalization": "auto",
+  "text": "[confident, dry, matter-of-fact engineer] I will be at the window. Come and tell me afterwards, and we will compare notes.",
+  "voice": "Roger",
+  "language_code": "en"
+ },
+ "fal_request_id": "01a1d674-76eb-7040-a312-da52a5f98494",
+ "hash": "1a12cd42e478"
+}

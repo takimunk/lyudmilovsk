@@ -1,0 +1,20 @@
+{
+ "key": "line.li_vika.last_flask_clean.1",
+ "lang": "ru",
+ "text": "Посиди со мной. Я сегодня отмыла последнюю колбу, а рассказать некому.",
+ "speaker": "li_vika",
+ "voice": "Laura",
+ "voice_id": "FGY2WhTYpPnrIDTdsKH5",
+ "voice_design": null,
+ "direction": "[playful, quick, a lab assistant joking about her work]",
+ "model": "fal-ai/elevenlabs/tts/eleven-v3",
+ "request": {
+  "stability": 0.5,
+  "apply_text_normalization": "auto",
+  "text": "[playful, quick, a lab assistant joking about her work] Посиди со мной. Я сегодня отмыла последнюю колбу, а рассказать некому.",
+  "voice": "Laura",
+  "language_code": "ru"
+ },
+ "fal_request_id": "01a1d7b7-31b9-7231-83e2-5d4204d74e29",
+ "hash": "ac14badcaa98"
+}

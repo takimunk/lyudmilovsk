@@ -1,0 +1,20 @@
+{
+ "key": "line.owner.again5.1",
+ "lang": "en",
+ "text": "Yamada sometimes brings me a printout of his mountain. I don't understand it. But I keep it in the booth.",
+ "speaker": "owner",
+ "voice": "Daniel",
+ "voice_id": "onwK4e9ZLuTAKqWW03F9",
+ "voice_design": null,
+ "direction": "[calm, tired, slow, a little ironic]",
+ "model": "fal-ai/elevenlabs/tts/eleven-v3",
+ "request": {
+  "stability": 0.5,
+  "apply_text_normalization": "auto",
+  "text": "[calm, tired, slow, a little ironic] Yamada sometimes brings me a printout of his mountain. I don't understand it. But I keep it in the booth.",
+  "voice": "Daniel",
+  "language_code": "en"
+ },
+ "fal_request_id": "01a1d786-8599-7d22-b4df-61054c1272a2",
+ "hash": "00ec8bb221b8"
+}

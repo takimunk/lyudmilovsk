@@ -1,0 +1,20 @@
+{
+ "key": "line.sato_mila.sun_day.1",
+ "lang": "en",
+ "text": "It's sunny today, and the clinic is quiet. Even the queue isn't in a hurry, everyone's sitting by the window.",
+ "speaker": "sato_mila",
+ "voice": "Lily",
+ "voice_id": "pFZP5JQG7iQjIQuC4Bku",
+ "voice_design": null,
+ "direction": "[brisk, caring, a doctor's matter-of-fact warmth]",
+ "model": "fal-ai/elevenlabs/tts/eleven-v3",
+ "request": {
+  "stability": 0.5,
+  "apply_text_normalization": "auto",
+  "text": "[brisk, caring, a doctor's matter-of-fact warmth] It's sunny today, and the clinic is quiet. Even the queue isn't in a hurry, everyone's sitting by the window.",
+  "voice": "Lily",
+  "language_code": "en"
+ },
+ "fal_request_id": "01a1d747-d966-7381-8219-34ad134887ae",
+ "hash": "6411b71c7c92"
+}

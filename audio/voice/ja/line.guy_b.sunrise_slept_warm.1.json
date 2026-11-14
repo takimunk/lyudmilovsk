@@ -1,0 +1,20 @@
+{
+ "key": "line.guy_b.sunrise_slept_warm.1",
+ "lang": "ja",
+ "text": "浜で日の出を見たのか？俺は寝過ごした。でも起きたらあったかくてさ、俺もそこにいたみたいだった。",
+ "speaker": "guy_b",
+ "voice": "Chris",
+ "voice_id": "iP95p4xoKVk53GoZ742B",
+ "voice_design": null,
+ "direction": "[relaxed, lazy, friendly]",
+ "model": "fal-ai/elevenlabs/tts/eleven-v3",
+ "request": {
+  "stability": 0.5,
+  "apply_text_normalization": "auto",
+  "text": "[relaxed, lazy, friendly] 浜で日の出を見たのか？俺は寝過ごした。でも起きたらあったかくてさ、俺もそこにいたみたいだった。",
+  "voice": "Chris",
+  "language_code": "ja"
+ },
+ "fal_request_id": "01a1d739-e472-74b2-827b-dabb9559db13",
+ "hash": "45a9ac7a090c"
+}

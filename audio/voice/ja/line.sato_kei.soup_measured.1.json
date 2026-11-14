@@ -1,0 +1,20 @@
+{
+ "key": "line.sato_kei.soup_measured.1",
+ "lang": "ja",
+ "text": "ヴィーカから聞いたよ、第三者の鑑定は僕の勝ちだって。やっぱりね。ウハーも光と同じで、ミーシャの言うことじゃなく、自分で測らないと。",
+ "speaker": "sato_kei",
+ "voice": "Eric",
+ "voice_id": "cjVigY5qzO86Huf0OWal",
+ "voice_design": null,
+ "direction": "[quiet, precise, softly puzzled, a scientist thinking aloud]",
+ "model": "fal-ai/elevenlabs/tts/eleven-v3",
+ "request": {
+  "stability": 0.5,
+  "apply_text_normalization": "auto",
+  "text": "[quiet, precise, softly puzzled, a scientist thinking aloud] ヴィーカから聞いたよ、第三者の鑑定は僕の勝ちだって。やっぱりね。ウハーも光と同じで、ミーシャの言うことじゃなく、自分で測らないと。",
+  "voice": "Eric",
+  "language_code": "ja"
+ },
+ "fal_request_id": "01a1d6e9-55a6-7760-8cb8-9be2de6d880f",
+ "hash": "9b6753d6dff0"
+}

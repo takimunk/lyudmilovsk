@@ -1,0 +1,20 @@
+{
+ "key": "line.nishimura_aya.gull_sits_now.1",
+ "lang": "en",
+ "text": "A gull, and it sits. On the island not one would land, and here, where I have only a pencil, it sits.",
+ "speaker": "nishimura_aya",
+ "voice": "Matilda",
+ "voice_id": "XrExE9yKIg1WjnnlVkGX",
+ "voice_design": null,
+ "direction": "[calm, soft, contemplative, a painter talking about the light]",
+ "model": "fal-ai/elevenlabs/tts/eleven-v3",
+ "request": {
+  "stability": 0.5,
+  "apply_text_normalization": "auto",
+  "text": "[calm, soft, contemplative, a painter talking about the light] A gull, and it sits. On the island not one would land, and here, where I have only a pencil, it sits.",
+  "voice": "Matilda",
+  "language_code": "en"
+ },
+ "fal_request_id": "01a1d6e7-f74a-74d3-a522-a343a8fdbff4",
+ "hash": "04f440459a82"
+}

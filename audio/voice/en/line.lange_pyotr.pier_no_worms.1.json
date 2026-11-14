@@ -1,0 +1,20 @@
+{
+ "key": "line.lange_pyotr.pier_no_worms.1",
+ "lang": "en",
+ "text": "No worms. Maggots would do, but I'd take worms: Tanya at the grocery, fifteen for ten.",
+ "speaker": "lange_pyotr",
+ "voice": "Brian",
+ "voice_id": "nPczCjzI2devNBz1zQrb",
+ "voice_design": null,
+ "direction": "[gruff, unhurried, a weathered fisherman of few words]",
+ "model": "fal-ai/elevenlabs/tts/eleven-v3",
+ "request": {
+  "stability": 0.5,
+  "apply_text_normalization": "auto",
+  "text": "[gruff, unhurried, a weathered fisherman of few words] No worms. Maggots would do, but I'd take worms: Tanya at the grocery, fifteen for ten.",
+  "voice": "Brian",
+  "language_code": "en"
+ },
+ "fal_request_id": "01a1d6dc-4b89-7a32-8a85-42b9b02cf1cb",
+ "hash": "830073576b8c"
+}

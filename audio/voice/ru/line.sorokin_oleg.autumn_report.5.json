@@ -1,0 +1,20 @@
+{
+ "key": "line.sorokin_oleg.autumn_report.5",
+ "lang": "ru",
+ "text": "Возьмите щеглиную смесь и синичкин пряник. Щеглы тоже хотят в журнал, а вы теперь знаете, как их туда записывают.",
+ "speaker": "sorokin_oleg",
+ "voice": "River",
+ "voice_id": "SAz9YHcvj6GT2YYXdXww",
+ "voice_design": null,
+ "direction": "[a retired scholar, calm, dry humour, slower, gentle]",
+ "model": "fal-ai/elevenlabs/tts/eleven-v3",
+ "request": {
+  "stability": 0.5,
+  "apply_text_normalization": "auto",
+  "text": "[a retired scholar, calm, dry humour, slower, gentle] Возьмите щеглиную смесь и синичкин пряник. Щеглы тоже хотят в журнал, а вы теперь знаете, как их туда записывают.",
+  "voice": "River",
+  "language_code": "ru"
+ },
+ "fal_request_id": "01a1d673-3f1c-7091-9f92-e6d128fe29a2",
+ "hash": "a272bda5eda6"
+}

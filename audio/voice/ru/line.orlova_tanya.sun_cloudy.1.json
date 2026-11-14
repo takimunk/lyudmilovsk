@@ -1,0 +1,20 @@
+{
+ "key": "line.orlova_tanya.sun_cloudy.1",
+ "lang": "ru",
+ "text": "Пасмурно. В такие дни все покупают больше, чем надо. Видно, чем-то пустоту заполняют.",
+ "speaker": "orlova_tanya",
+ "voice": "Aria",
+ "voice_id": "9BWtsMINqrJLrRacOk9x",
+ "voice_design": null,
+ "direction": "[a kiosk shop assistant, brisk, deadpan, a bit sassy]",
+ "model": "fal-ai/elevenlabs/tts/eleven-v3",
+ "request": {
+  "stability": 0.5,
+  "apply_text_normalization": "auto",
+  "text": "[a kiosk shop assistant, brisk, deadpan, a bit sassy] Пасмурно. В такие дни все покупают больше, чем надо. Видно, чем-то пустоту заполняют.",
+  "voice": "Aria",
+  "language_code": "ru"
+ },
+ "fal_request_id": "01a1d746-9da4-74e0-8a54-564ab0b22bcd",
+ "hash": "1cac8eece6d8"
+}

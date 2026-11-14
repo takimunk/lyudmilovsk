@@ -1,0 +1,20 @@
+{
+ "key": "line.korneev_ivan.again4.1",
+ "lang": "ja",
+ "text": "今の研究所は何でもコンピューターだ。昔いちばんの道具はやすりだった。それと頭だな。",
+ "speaker": "korneev_ivan",
+ "voice": "Bill",
+ "voice_id": "pqHfZKP75CvOlQylNhV4",
+ "voice_design": null,
+ "direction": "[an old man, slow, a little gravelly, contented, a quiet joke at the end]",
+ "model": "fal-ai/elevenlabs/tts/eleven-v3",
+ "request": {
+  "stability": 0.5,
+  "apply_text_normalization": "auto",
+  "text": "[an old man, slow, a little gravelly, contented, a quiet joke at the end] 今の研究所は何でもコンピューターだ。昔いちばんの道具はやすりだった。それと頭だな。",
+  "voice": "Bill",
+  "language_code": "ja"
+ },
+ "fal_request_id": "01a1d744-5d53-7621-b7e4-8a72792ebbcd",
+ "hash": "578c4474ec1b"
+}

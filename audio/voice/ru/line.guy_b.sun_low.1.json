@@ -1,0 +1,20 @@
+{
+ "key": "line.guy_b.sun_low.1",
+ "lang": "ru",
+ "text": "По утрам на складе луч входит прямо в ворота и ложится на весь пол. Мы все останавливаемся. Никто не договаривался.",
+ "speaker": "guy_b",
+ "voice": "Chris",
+ "voice_id": "iP95p4xoKVk53GoZ742B",
+ "voice_design": null,
+ "direction": "[relaxed, lazy, friendly]",
+ "model": "fal-ai/elevenlabs/tts/eleven-v3",
+ "request": {
+  "stability": 0.5,
+  "apply_text_normalization": "auto",
+  "text": "[relaxed, lazy, friendly] По утрам на складе луч входит прямо в ворота и ложится на весь пол. Мы все останавливаемся. Никто не договаривался.",
+  "voice": "Chris",
+  "language_code": "ru"
+ },
+ "fal_request_id": "01a1d7a9-bce2-7ce2-bfd1-4da5884f2688",
+ "hash": "265b02d394e7"
+}

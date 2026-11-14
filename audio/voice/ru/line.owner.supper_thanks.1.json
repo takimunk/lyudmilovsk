@@ -1,0 +1,20 @@
+{
+ "key": "line.owner.supper_thanks.1",
+ "lang": "ru",
+ "text": "Косичка. Дымом пахнет, как надо.",
+ "speaker": "owner",
+ "voice": "Daniel",
+ "voice_id": "onwK4e9ZLuTAKqWW03F9",
+ "voice_design": null,
+ "direction": "[calm, tired, slow, a little ironic]",
+ "model": "fal-ai/elevenlabs/tts/eleven-v3",
+ "request": {
+  "stability": 0.5,
+  "apply_text_normalization": "auto",
+  "text": "[calm, tired, slow, a little ironic] Косичка. Дымом пахнет, как надо.",
+  "voice": "Daniel",
+  "language_code": "ru"
+ },
+ "fal_request_id": "01a1d671-c255-7600-8dfe-6c97a03ae5d7",
+ "hash": "8b4488ea91bd"
+}

@@ -1,0 +1,20 @@
+{
+ "key": "line.kimura_dasha.feeder_table_rows.2",
+ "lang": "ru",
+ "text": "Вика говорит, это уже не спор, а одержимость. Говорит она это над раковиной.",
+ "speaker": "kimura_dasha",
+ "voice": "Charlotte",
+ "voice_id": "XB0fDUnXU5powFXDhCwa",
+ "voice_design": null,
+ "direction": "[a tired physics student, wry, self-ironic]",
+ "model": "fal-ai/elevenlabs/tts/eleven-v3",
+ "request": {
+  "stability": 0.5,
+  "apply_text_normalization": "auto",
+  "text": "[a tired physics student, wry, self-ironic] Вика говорит, это уже не спор, а одержимость. Говорит она это над раковиной.",
+  "voice": "Charlotte",
+  "language_code": "ru"
+ },
+ "fal_request_id": "01a1d6e5-2576-7da0-9fe1-2d4d2a1aaa9e",
+ "hash": "55fc623be61d"
+}

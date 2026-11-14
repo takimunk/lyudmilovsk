@@ -1,0 +1,20 @@
+{
+ "key": "line.khuazhev_aslan.again3.2",
+ "lang": "ru",
+ "text": "Скучаю, дорогой. Потому и торгую сыром: каждая головка пахнет нашим двором.",
+ "speaker": "khuazhev_aslan",
+ "voice": "Brian",
+ "voice_id": "nPczCjzI2devNBz1zQrb",
+ "voice_design": null,
+ "direction": "[hearty, generous, a cheese seller from the Caucasus, proud of his family's cheese]",
+ "model": "fal-ai/elevenlabs/tts/eleven-v3",
+ "request": {
+  "stability": 0.5,
+  "apply_text_normalization": "auto",
+  "text": "[hearty, generous, a cheese seller from the Caucasus, proud of his family's cheese] Скучаю, дорогой. Потому и торгую сыром: каждая головка пахнет нашим двором.",
+  "voice": "Brian",
+  "language_code": "ru"
+ },
+ "fal_request_id": "01a1d742-cbaf-7482-ac22-121eb9e0d880",
+ "hash": "5d338c5e027a"
+}

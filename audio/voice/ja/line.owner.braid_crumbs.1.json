@@ -1,0 +1,20 @@
+{
+ "key": "line.owner.braid_crumbs.1",
+ "lang": "ja",
+ "text": "三つ編みのくずが目当てか？持っていけ。わしは食べるのが遅い、おまえのぶんもある。",
+ "speaker": "owner",
+ "voice": "Daniel",
+ "voice_id": "onwK4e9ZLuTAKqWW03F9",
+ "voice_design": null,
+ "direction": "[calm, tired, slow, a little ironic]",
+ "model": "fal-ai/elevenlabs/tts/eleven-v3",
+ "request": {
+  "stability": 0.5,
+  "apply_text_normalization": "auto",
+  "text": "[calm, tired, slow, a little ironic] 三つ編みのくずが目当てか？持っていけ。わしは食べるのが遅い、おまえのぶんもある。",
+  "voice": "Daniel",
+  "language_code": "ja"
+ },
+ "fal_request_id": "01a1d73c-f1ff-78f1-ac52-fb4d3e76257b",
+ "hash": "a11ff1edf660"
+}

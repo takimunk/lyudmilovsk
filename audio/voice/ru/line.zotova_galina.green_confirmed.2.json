@@ -1,0 +1,20 @@
+{
+ "key": "line.zotova_galina.green_confirmed.2",
+ "lang": "ru",
+ "text": "Льва я тоже проверила. Результаты засекречены по его просьбе.",
+ "speaker": "zotova_galina",
+ "voice": "Alice",
+ "voice_id": "Xb7hH8MSUJpSbSDYk0k2",
+ "voice_design": null,
+ "direction": "[warm, chatty, fondly exasperated with her husband]",
+ "model": "fal-ai/elevenlabs/tts/eleven-v3",
+ "request": {
+  "stability": 0.5,
+  "apply_text_normalization": "auto",
+  "text": "[warm, chatty, fondly exasperated with her husband] Льва я тоже проверила. Результаты засекречены по его просьбе.",
+  "voice": "Alice",
+  "language_code": "ru"
+ },
+ "fal_request_id": "01a1d6eb-c3e5-7291-8984-ad19b86f5f38",
+ "hash": "beff73ca3ca9"
+}

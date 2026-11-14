@@ -1,0 +1,20 @@
+{
+ "key": "line.korneev_ivan.corn_handover.2",
+ "lang": "en",
+ "text": "I fitted the wheel on that cart of hers. It still squeaks. She says that's it saying hello.",
+ "speaker": "korneev_ivan",
+ "voice": "Bill",
+ "voice_id": "pqHfZKP75CvOlQylNhV4",
+ "voice_design": null,
+ "direction": "[an old man, slow, a little gravelly, contented, a quiet joke at the end]",
+ "model": "fal-ai/elevenlabs/tts/eleven-v3",
+ "request": {
+  "stability": 0.5,
+  "apply_text_normalization": "auto",
+  "text": "[an old man, slow, a little gravelly, contented, a quiet joke at the end] I fitted the wheel on that cart of hers. It still squeaks. She says that's it saying hello.",
+  "voice": "Bill",
+  "language_code": "en"
+ },
+ "fal_request_id": "01a1d670-3bc2-71a1-9b1f-a51a8edb7600",
+ "hash": "4648b7d04997"
+}

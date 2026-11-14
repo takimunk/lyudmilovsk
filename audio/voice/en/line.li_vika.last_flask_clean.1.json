@@ -1,0 +1,20 @@
+{
+ "key": "line.li_vika.last_flask_clean.1",
+ "lang": "en",
+ "text": "Sit with me. I washed the last flask today, and there's nobody to tell.",
+ "speaker": "li_vika",
+ "voice": "Laura",
+ "voice_id": "FGY2WhTYpPnrIDTdsKH5",
+ "voice_design": null,
+ "direction": "[playful, quick, a lab assistant joking about her work]",
+ "model": "fal-ai/elevenlabs/tts/eleven-v3",
+ "request": {
+  "stability": 0.5,
+  "apply_text_normalization": "auto",
+  "text": "[playful, quick, a lab assistant joking about her work] Sit with me. I washed the last flask today, and there's nobody to tell.",
+  "voice": "Laura",
+  "language_code": "en"
+ },
+ "fal_request_id": "01a1d7b7-3a4c-7e22-b091-3d6c81dabe5b",
+ "hash": "09694fc3fe56"
+}

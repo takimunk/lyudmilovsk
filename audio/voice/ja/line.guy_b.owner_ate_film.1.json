@@ -1,0 +1,20 @@
+{
+ "key": "line.guy_b.owner_ate_film.1",
+ "lang": "ja",
+ "text": "オーナーがブースの窓のとこでチーズ食ってるの見たよ。映画みたいに見ちゃった。換気扇まで静かに鳴ってた。",
+ "speaker": "guy_b",
+ "voice": "Chris",
+ "voice_id": "iP95p4xoKVk53GoZ742B",
+ "voice_design": null,
+ "direction": "[relaxed, lazy, friendly]",
+ "model": "fal-ai/elevenlabs/tts/eleven-v3",
+ "request": {
+  "stability": 0.5,
+  "apply_text_normalization": "auto",
+  "text": "[relaxed, lazy, friendly] オーナーがブースの窓のとこでチーズ食ってるの見たよ。映画みたいに見ちゃった。換気扇まで静かに鳴ってた。",
+  "voice": "Chris",
+  "language_code": "ja"
+ },
+ "fal_request_id": "01a1d6e3-64de-72b3-9938-c7cd1d63dd6c",
+ "hash": "c48d6937d7e5"
+}

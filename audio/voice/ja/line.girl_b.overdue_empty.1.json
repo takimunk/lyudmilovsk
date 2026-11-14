@@ -1,0 +1,20 @@
+{
+ "key": "line.girl_b.overdue_empty.1",
+ "lang": "ja",
+ "text": "あれ、雑誌は？いいの、待つから。半年待ったんだもの、もう少しくらい待てる。",
+ "speaker": "girl_b",
+ "voice": "Sarah",
+ "voice_id": "EXAVITQu4vr4xnSDxMaL",
+ "voice_design": null,
+ "direction": "[curious, slightly uneasy, conspiratorial]",
+ "model": "fal-ai/elevenlabs/tts/eleven-v3",
+ "request": {
+  "stability": 0.5,
+  "apply_text_normalization": "auto",
+  "text": "[curious, slightly uneasy, conspiratorial] あれ、雑誌は？いいの、待つから。半年待ったんだもの、もう少しくらい待てる。",
+  "voice": "Sarah",
+  "language_code": "ja"
+ },
+ "fal_request_id": "01a1d66c-4819-7c50-93f4-c964945a04ac",
+ "hash": "232c8f4510cd"
+}

@@ -1,0 +1,20 @@
+{
+ "key": "line.girl_b.overdue_back.1",
+ "lang": "en",
+ "text": "A fresh issue? And no cup rings on the cover. But where is the old one?",
+ "speaker": "girl_b",
+ "voice": "Sarah",
+ "voice_id": "EXAVITQu4vr4xnSDxMaL",
+ "voice_design": null,
+ "direction": "[curious, slightly uneasy, conspiratorial]",
+ "model": "fal-ai/elevenlabs/tts/eleven-v3",
+ "request": {
+  "stability": 0.5,
+  "apply_text_normalization": "auto",
+  "text": "[curious, slightly uneasy, conspiratorial] A fresh issue? And no cup rings on the cover. But where is the old one?",
+  "voice": "Sarah",
+  "language_code": "en"
+ },
+ "fal_request_id": "01a1d66b-eca2-7611-b816-085f575fd0c1",
+ "hash": "43e4209d8a93"
+}

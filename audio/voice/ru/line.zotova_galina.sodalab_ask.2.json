@@ -1,0 +1,20 @@
+{
+ "key": "line.zotova_galina.sodalab_ask.2",
+ "lang": "ru",
+ "text": "Рабочая гипотеза: сироп во всех один, различается только краситель.",
+ "speaker": "zotova_galina",
+ "voice": "Alice",
+ "voice_id": "Xb7hH8MSUJpSbSDYk0k2",
+ "voice_design": null,
+ "direction": "[warm, chatty, fondly exasperated with her husband]",
+ "model": "fal-ai/elevenlabs/tts/eleven-v3",
+ "request": {
+  "stability": 0.5,
+  "apply_text_normalization": "auto",
+  "text": "[warm, chatty, fondly exasperated with her husband] Рабочая гипотеза: сироп во всех один, различается только краситель.",
+  "voice": "Alice",
+  "language_code": "ru"
+ },
+ "fal_request_id": "01a1d674-e268-7282-9686-6ebafba3da30",
+ "hash": "ea6a5c180df3"
+}

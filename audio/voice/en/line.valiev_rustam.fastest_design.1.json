@@ -1,0 +1,20 @@
+{
+ "key": "line.valiev_rustam.fastest_design.1",
+ "lang": "en",
+ "text": "A peregrine. The fastest design in town, and it's sitting next to me.",
+ "speaker": "valiev_rustam",
+ "voice": "Roger",
+ "voice_id": "CwhRBWXzGAHq8TQ4Fs17",
+ "voice_design": null,
+ "direction": "[confident, dry, matter-of-fact engineer]",
+ "model": "fal-ai/elevenlabs/tts/eleven-v3",
+ "request": {
+  "stability": 0.5,
+  "apply_text_normalization": "auto",
+  "text": "[confident, dry, matter-of-fact engineer] A peregrine. The fastest design in town, and it's sitting next to me.",
+  "voice": "Roger",
+  "language_code": "en"
+ },
+ "fal_request_id": "01a1d6ea-3035-79b1-855f-564c73ce396a",
+ "hash": "279f6feb6f55"
+}

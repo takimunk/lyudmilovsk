@@ -1,0 +1,20 @@
+{
+ "key": "line.owner.supper_soda_first.1",
+ "lang": "ru",
+ "text": "«Байкал» вижу. Теперь косичку, у Аслана в палатке у двери.",
+ "speaker": "owner",
+ "voice": "Daniel",
+ "voice_id": "onwK4e9ZLuTAKqWW03F9",
+ "voice_design": null,
+ "direction": "[calm, tired, slow, a little ironic]",
+ "model": "fal-ai/elevenlabs/tts/eleven-v3",
+ "request": {
+  "stability": 0.5,
+  "apply_text_normalization": "auto",
+  "text": "[calm, tired, slow, a little ironic] «Байкал» вижу. Теперь косичку, у Аслана в палатке у двери.",
+  "voice": "Daniel",
+  "language_code": "ru"
+ },
+ "fal_request_id": "01a1d7ab-bc65-71d1-8dd5-067a1f901b2f",
+ "hash": "9b72fdc9c4bc"
+}

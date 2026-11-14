@@ -1,0 +1,20 @@
+{
+ "key": "line.sorokin_oleg.waxwing_after.3",
+ "lang": "ja",
+ "text": "四十年こちらから追いかけて、今度は向こうから来た。これは運じゃない、君。礼儀というものだ。",
+ "speaker": "sorokin_oleg",
+ "voice": "River",
+ "voice_id": "SAz9YHcvj6GT2YYXdXww",
+ "voice_design": null,
+ "direction": "[a retired scholar, calm, dry humour, slower, gentle]",
+ "model": "fal-ai/elevenlabs/tts/eleven-v3",
+ "request": {
+  "stability": 0.5,
+  "apply_text_normalization": "auto",
+  "text": "[a retired scholar, calm, dry humour, slower, gentle] 四十年こちらから追いかけて、今度は向こうから来た。これは運じゃない、君。礼儀というものだ。",
+  "voice": "River",
+  "language_code": "ja"
+ },
+ "fal_request_id": "01a1d58d-828d-7ad1-9ced-29bf6cdbd667",
+ "hash": "18d01c583a13"
+}

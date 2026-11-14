@@ -1,0 +1,20 @@
+{
+ "key": "line.zotova_galina.sodalab_tell.1",
+ "lang": "ja",
+ "text": "四本ともですか。では記録を取ります。どうぞ。",
+ "speaker": "zotova_galina",
+ "voice": "Alice",
+ "voice_id": "Xb7hH8MSUJpSbSDYk0k2",
+ "voice_design": null,
+ "direction": "[warm, chatty, fondly exasperated with her husband]",
+ "model": "fal-ai/elevenlabs/tts/eleven-v3",
+ "request": {
+  "stability": 0.5,
+  "apply_text_normalization": "auto",
+  "text": "[warm, chatty, fondly exasperated with her husband] 四本ともですか。では記録を取ります。どうぞ。",
+  "voice": "Alice",
+  "language_code": "ja"
+ },
+ "fal_request_id": "01a1d678-6958-75c3-8b9a-a963d31c5052",
+ "hash": "43ecf89b75c0"
+}

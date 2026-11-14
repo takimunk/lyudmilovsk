@@ -1,0 +1,20 @@
+{
+ "key": "line.korneev_ivan.corn_nocob.1",
+ "lang": "en",
+ "text": "Corn from Valya, you say? And your hands are empty. I understand: a long road, a good cob.",
+ "speaker": "korneev_ivan",
+ "voice": "Bill",
+ "voice_id": "pqHfZKP75CvOlQylNhV4",
+ "voice_design": null,
+ "direction": "[an old man, slow, a little gravelly, contented, a quiet joke at the end]",
+ "model": "fal-ai/elevenlabs/tts/eleven-v3",
+ "request": {
+  "stability": 0.5,
+  "apply_text_normalization": "auto",
+  "text": "[an old man, slow, a little gravelly, contented, a quiet joke at the end] Corn from Valya, you say? And your hands are empty. I understand: a long road, a good cob.",
+  "voice": "Bill",
+  "language_code": "en"
+ },
+ "fal_request_id": "01a1d670-6fcf-7133-9f2a-b5779c5a5e4a",
+ "hash": "0bb01656d541"
+}

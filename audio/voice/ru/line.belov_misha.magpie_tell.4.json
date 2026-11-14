@@ -1,0 +1,20 @@
+{
+ "key": "line.belov_misha.magpie_tell.4",
+ "lang": "ru",
+ "text": "Я его утром нашёл. Прилип к магниту на верстаке, прямо у меня под носом.",
+ "speaker": "belov_misha",
+ "voice": "Liam",
+ "voice_id": "TX3LPaxmHKxFdv7VOQHJ",
+ "voice_design": null,
+ "direction": "[easygoing, amused, a young technician, a little self-ironic]",
+ "model": "fal-ai/elevenlabs/tts/eleven-v3",
+ "request": {
+  "stability": 0.5,
+  "apply_text_normalization": "auto",
+  "text": "[easygoing, amused, a young technician, a little self-ironic] Я его утром нашёл. Прилип к магниту на верстаке, прямо у меня под носом.",
+  "voice": "Liam",
+  "language_code": "ru"
+ },
+ "fal_request_id": "01a1d65d-7d1f-7081-9885-c0a471f1d111",
+ "hash": "1f93b8f074f5"
+}

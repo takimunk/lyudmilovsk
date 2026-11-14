@@ -1,0 +1,20 @@
+{
+ "key": "line.belov_misha.magpie_crow_friend.1",
+ "lang": "ru",
+ "text": "Говорят, тебе вороны уже подарки носят. Значит, у тебя с ними связи.",
+ "speaker": "belov_misha",
+ "voice": "Liam",
+ "voice_id": "TX3LPaxmHKxFdv7VOQHJ",
+ "voice_design": null,
+ "direction": "[easygoing, amused, a young technician, a little self-ironic]",
+ "model": "fal-ai/elevenlabs/tts/eleven-v3",
+ "request": {
+  "stability": 0.5,
+  "apply_text_normalization": "auto",
+  "text": "[easygoing, amused, a young technician, a little self-ironic] Говорят, тебе вороны уже подарки носят. Значит, у тебя с ними связи.",
+  "voice": "Liam",
+  "language_code": "ru"
+ },
+ "fal_request_id": "01a1d6d3-4058-73d1-a2e3-e2088bc68097",
+ "hash": "7c8f8e973b25"
+}

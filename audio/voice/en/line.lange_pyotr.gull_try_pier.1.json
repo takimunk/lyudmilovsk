@@ -1,0 +1,20 @@
+{
+ "key": "line.lange_pyotr.gull_try_pier.1",
+ "lang": "en",
+ "text": "A gull. No fish here. Try the pier, there's a lad with a rod. Maybe he'll get lucky.",
+ "speaker": "lange_pyotr",
+ "voice": "Brian",
+ "voice_id": "nPczCjzI2devNBz1zQrb",
+ "voice_design": null,
+ "direction": "[gruff, unhurried, a weathered fisherman of few words]",
+ "model": "fal-ai/elevenlabs/tts/eleven-v3",
+ "request": {
+  "stability": 0.5,
+  "apply_text_normalization": "auto",
+  "text": "[gruff, unhurried, a weathered fisherman of few words] A gull. No fish here. Try the pier, there's a lad with a rod. Maybe he'll get lucky.",
+  "voice": "Brian",
+  "language_code": "en"
+ },
+ "fal_request_id": "01a1d6e7-4ad9-70a2-8a01-cc605054ad52",
+ "hash": "bc560711f85b"
+}

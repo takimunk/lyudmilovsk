@@ -1,0 +1,20 @@
+{
+ "key": "line.guy_b.sunrise_slept_warm.1",
+ "lang": "ru",
+ "text": "Ты встречал рассвет на берегу? А я проспал. Проснулся тёплый, как будто тоже там был.",
+ "speaker": "guy_b",
+ "voice": "Chris",
+ "voice_id": "iP95p4xoKVk53GoZ742B",
+ "voice_design": null,
+ "direction": "[relaxed, lazy, friendly]",
+ "model": "fal-ai/elevenlabs/tts/eleven-v3",
+ "request": {
+  "stability": 0.5,
+  "apply_text_normalization": "auto",
+  "text": "[relaxed, lazy, friendly] Ты встречал рассвет на берегу? А я проспал. Проснулся тёплый, как будто тоже там был.",
+  "voice": "Chris",
+  "language_code": "ru"
+ },
+ "fal_request_id": "01a1d739-b67f-7c63-9f4d-da487c7e2c6d",
+ "hash": "28f1c8d49cc6"
+}

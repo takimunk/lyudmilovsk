@@ -1,0 +1,20 @@
+{
+ "key": "line.valiev_rustam.again2.1",
+ "lang": "en",
+ "text": "I replaced the bulb on our stairs. Nobody asked, but it was flickering at a frequency I did not like.",
+ "speaker": "valiev_rustam",
+ "voice": "Roger",
+ "voice_id": "CwhRBWXzGAHq8TQ4Fs17",
+ "voice_design": null,
+ "direction": "[confident, dry, matter-of-fact engineer]",
+ "model": "fal-ai/elevenlabs/tts/eleven-v3",
+ "request": {
+  "stability": 0.5,
+  "apply_text_normalization": "auto",
+  "text": "[confident, dry, matter-of-fact engineer] I replaced the bulb on our stairs. Nobody asked, but it was flickering at a frequency I did not like.",
+  "voice": "Roger",
+  "language_code": "en"
+ },
+ "fal_request_id": "01a1d749-b6ec-7ec2-9b00-18fcaa9383fa",
+ "hash": "1985688bc509"
+}

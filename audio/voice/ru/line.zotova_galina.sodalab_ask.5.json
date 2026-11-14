@@ -1,0 +1,20 @@
+{
+ "key": "line.zotova_galina.sodalab_ask.5",
+ "lang": "ru",
+ "text": "Расходы лаборатория возместит. То есть я.",
+ "speaker": "zotova_galina",
+ "voice": "Alice",
+ "voice_id": "Xb7hH8MSUJpSbSDYk0k2",
+ "voice_design": null,
+ "direction": "[warm, chatty, fondly exasperated with her husband]",
+ "model": "fal-ai/elevenlabs/tts/eleven-v3",
+ "request": {
+  "stability": 0.5,
+  "apply_text_normalization": "auto",
+  "text": "[warm, chatty, fondly exasperated with her husband] Расходы лаборатория возместит. То есть я.",
+  "voice": "Alice",
+  "language_code": "ru"
+ },
+ "fal_request_id": "01a1d675-122f-76f3-99c2-0a2aac2d3cf2",
+ "hash": "b67332964a59"
+}

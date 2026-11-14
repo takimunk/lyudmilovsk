@@ -1,0 +1,20 @@
+{
+ "key": "line.owner.door_sea_at_night.1",
+ "lang": "en",
+ "text": "At night you can hear the sea outside. The door's right past the booth, unlocked. Follow the sound.",
+ "speaker": "owner",
+ "voice": "Daniel",
+ "voice_id": "onwK4e9ZLuTAKqWW03F9",
+ "voice_design": null,
+ "direction": "[calm, tired, slow, a little ironic]",
+ "model": "fal-ai/elevenlabs/tts/eleven-v3",
+ "request": {
+  "stability": 0.5,
+  "apply_text_normalization": "auto",
+  "text": "[calm, tired, slow, a little ironic] At night you can hear the sea outside. The door's right past the booth, unlocked. Follow the sound.",
+  "voice": "Daniel",
+  "language_code": "en"
+ },
+ "fal_request_id": "01a1d73d-22e8-7701-b9b1-7a4592b63726",
+ "hash": "184a7104dad9"
+}

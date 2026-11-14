@@ -1,0 +1,20 @@
+{
+ "key": "line.korneev_ivan.cheese_for_petya.1",
+ "lang": "en",
+ "text": "Petya says you went up the hill to get him cheese. Nobody's brought him anything in twenty years.",
+ "speaker": "korneev_ivan",
+ "voice": "Bill",
+ "voice_id": "pqHfZKP75CvOlQylNhV4",
+ "voice_design": null,
+ "direction": "[an old man, slow, a little gravelly, contented, a quiet joke at the end]",
+ "model": "fal-ai/elevenlabs/tts/eleven-v3",
+ "request": {
+  "stability": 0.5,
+  "apply_text_normalization": "auto",
+  "text": "[an old man, slow, a little gravelly, contented, a quiet joke at the end] Petya says you went up the hill to get him cheese. Nobody's brought him anything in twenty years.",
+  "voice": "Bill",
+  "language_code": "en"
+ },
+ "fal_request_id": "01a1d6e5-b65c-7020-9144-2cc3b37a7d93",
+ "hash": "d7d158325e10"
+}

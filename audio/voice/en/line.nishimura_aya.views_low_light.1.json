@@ -1,0 +1,20 @@
+{
+ "key": "line.nishimura_aya.views_low_light.1",
+ "lang": "en",
+ "text": "See this light? Low sun, long shadows. The promenade, the starlings, the rowan wood: look now, while it lasts.",
+ "speaker": "nishimura_aya",
+ "voice": "Matilda",
+ "voice_id": "XrExE9yKIg1WjnnlVkGX",
+ "voice_design": null,
+ "direction": "[calm, soft, contemplative, a painter talking about the light]",
+ "model": "fal-ai/elevenlabs/tts/eleven-v3",
+ "request": {
+  "stability": 0.5,
+  "apply_text_normalization": "auto",
+  "text": "[calm, soft, contemplative, a painter talking about the light] See this light? Low sun, long shadows. The promenade, the starlings, the rowan wood: look now, while it lasts.",
+  "voice": "Matilda",
+  "language_code": "en"
+ },
+ "fal_request_id": "01a1d6dc-9ecf-7d02-a0e8-861a0dcfb904",
+ "hash": "0c977ef2a46e"
+}

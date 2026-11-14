@@ -1,0 +1,20 @@
+{
+ "key": "line.belov_misha.magpie_tell.4",
+ "lang": "ja",
+ "text": "今朝見つけた。作業台の磁石にくっついてたんだ。目と鼻の先に。",
+ "speaker": "belov_misha",
+ "voice": "Liam",
+ "voice_id": "TX3LPaxmHKxFdv7VOQHJ",
+ "voice_design": null,
+ "direction": "[easygoing, amused, a young technician, a little self-ironic]",
+ "model": "fal-ai/elevenlabs/tts/eleven-v3",
+ "request": {
+  "stability": 0.5,
+  "apply_text_normalization": "auto",
+  "text": "[easygoing, amused, a young technician, a little self-ironic] 今朝見つけた。作業台の磁石にくっついてたんだ。目と鼻の先に。",
+  "voice": "Liam",
+  "language_code": "ja"
+ },
+ "fal_request_id": "01a1d667-28cc-7200-8eb1-80b5490e8e08",
+ "hash": "5cacfb5249da"
+}

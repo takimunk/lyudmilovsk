@@ -1,0 +1,20 @@
+{
+ "key": "line.owner.back_to_the_light.1",
+ "lang": "en",
+ "text": "A bird in the corridor. Fly back out, to the light. In here there are only lamps.",
+ "speaker": "owner",
+ "voice": "Daniel",
+ "voice_id": "onwK4e9ZLuTAKqWW03F9",
+ "voice_design": null,
+ "direction": "[calm, tired, slow, a little ironic]",
+ "model": "fal-ai/elevenlabs/tts/eleven-v3",
+ "request": {
+  "stability": 0.5,
+  "apply_text_normalization": "auto",
+  "text": "[calm, tired, slow, a little ironic] A bird in the corridor. Fly back out, to the light. In here there are only lamps.",
+  "voice": "Daniel",
+  "language_code": "en"
+ },
+ "fal_request_id": "01a1d73c-a23d-7180-a6df-0c384054dce1",
+ "hash": "a9cd310cd15b"
+}

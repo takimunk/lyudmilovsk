@@ -1,0 +1,20 @@
+{
+ "key": "line.zotov_lev.sun_night.1",
+ "lang": "en",
+ "text": "At night I finish what I had no time to read by day. Under a lamp everything is clearer, but somehow colder.",
+ "speaker": "zotov_lev",
+ "voice": "George",
+ "voice_id": "JBFqnCBsd6RMkjVDRZzb",
+ "voice_design": null,
+ "direction": "[dry, thoughtful, unhurried, a physicist's quiet irony]",
+ "model": "fal-ai/elevenlabs/tts/eleven-v3",
+ "request": {
+  "stability": 0.5,
+  "apply_text_normalization": "auto",
+  "text": "[dry, thoughtful, unhurried, a physicist's quiet irony] At night I finish what I had no time to read by day. Under a lamp everything is clearer, but somehow colder.",
+  "voice": "George",
+  "language_code": "en"
+ },
+ "fal_request_id": "01a1d74a-8abf-7f80-984c-155a4f6a17d9",
+ "hash": "23de1800190f"
+}

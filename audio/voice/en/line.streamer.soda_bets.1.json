@@ -1,0 +1,20 @@
+{
+ "key": "line.streamer.soda_bets.1",
+ "lang": "en",
+ "text": "Chat, he's heading for the machine. Place your bets: Baikal or Buratino?",
+ "speaker": "streamer",
+ "voice": "Jessica",
+ "voice_id": "cgSgspJ2msm6clMCkdW9",
+ "voice_design": null,
+ "direction": "[bright, fast, half talking to her chat]",
+ "model": "fal-ai/elevenlabs/tts/eleven-v3",
+ "request": {
+  "stability": 0.5,
+  "apply_text_normalization": "auto",
+  "text": "[bright, fast, half talking to her chat] Chat, he's heading for the machine. Place your bets: Baikal or Buratino?",
+  "voice": "Jessica",
+  "language_code": "en"
+ },
+ "fal_request_id": "01a1d73e-29df-7c20-becf-24a64eee5910",
+ "hash": "1c62f53c5243"
+}

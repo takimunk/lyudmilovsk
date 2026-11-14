@@ -1,0 +1,20 @@
+{
+ "key": "line.owner.supper_ask.4",
+ "lang": "en",
+ "text": "Aslan's tent is by the door. Get me a cheese braid from him. And a Baikal from the machine.",
+ "speaker": "owner",
+ "voice": "Daniel",
+ "voice_id": "onwK4e9ZLuTAKqWW03F9",
+ "voice_design": null,
+ "direction": "[calm, tired, slow, a little ironic]",
+ "model": "fal-ai/elevenlabs/tts/eleven-v3",
+ "request": {
+  "stability": 0.5,
+  "apply_text_normalization": "auto",
+  "text": "[calm, tired, slow, a little ironic] Aslan's tent is by the door. Get me a cheese braid from him. And a Baikal from the machine.",
+  "voice": "Daniel",
+  "language_code": "en"
+ },
+ "fal_request_id": "01a1d672-38c5-7f02-af43-f64964641d10",
+ "hash": "0a247efa10d8"
+}

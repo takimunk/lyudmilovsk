@@ -1,0 +1,20 @@
+{
+ "key": "line.valiev_rustam.signal_lamp_ready.2",
+ "lang": "ru",
+ "text": "Я буду у окна. Даже стекло протёр, впервые с весны.",
+ "speaker": "valiev_rustam",
+ "voice": "Roger",
+ "voice_id": "CwhRBWXzGAHq8TQ4Fs17",
+ "voice_design": null,
+ "direction": "[confident, dry, matter-of-fact engineer]",
+ "model": "fal-ai/elevenlabs/tts/eleven-v3",
+ "request": {
+  "stability": 0.5,
+  "apply_text_normalization": "auto",
+  "text": "[confident, dry, matter-of-fact engineer] Я буду у окна. Даже стекло протёр, впервые с весны.",
+  "voice": "Roger",
+  "language_code": "ru"
+ },
+ "fal_request_id": "01a1d6d9-7c2f-7b10-a957-d412ef1fa870",
+ "hash": "e0f335997581"
+}

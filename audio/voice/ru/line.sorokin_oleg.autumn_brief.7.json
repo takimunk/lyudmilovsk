@@ -1,0 +1,20 @@
+{
+ "key": "line.sorokin_oleg.autumn_brief.7",
+ "lang": "ru",
+ "text": "И одну большую синицу покормите с ладони. Мне нужен её галстук, а его видно только вблизи.",
+ "speaker": "sorokin_oleg",
+ "voice": "River",
+ "voice_id": "SAz9YHcvj6GT2YYXdXww",
+ "voice_design": null,
+ "direction": "[a retired scholar, calm, dry humour, slower, gentle]",
+ "model": "fal-ai/elevenlabs/tts/eleven-v3",
+ "request": {
+  "stability": 0.5,
+  "apply_text_normalization": "auto",
+  "text": "[a retired scholar, calm, dry humour, slower, gentle] И одну большую синицу покормите с ладони. Мне нужен её галстук, а его видно только вблизи.",
+  "voice": "River",
+  "language_code": "ru"
+ },
+ "fal_request_id": "01a1d672-b372-7213-9f46-21eb30247a81",
+ "hash": "07aeb6c45b65"
+}

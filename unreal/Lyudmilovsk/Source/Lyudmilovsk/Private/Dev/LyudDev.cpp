@@ -757,6 +757,11 @@ namespace LyudDev
 					CompleteObjective(World, Quest, O);
 				}
 			}
+			// jumped to with everything already in the pocket (a have objective met as the stage began): nothing was left to report
+			if (const FLyudQuestProgress* Met = Q->FindProgress(Quest); Met && Met->Stage == Before && Q->State(Quest) == ELyudQuestState::Active)
+			{
+				Q->DevSettle(Quest);
+			}
 			const FLyudQuestProgress* After = Q->FindProgress(Quest);
 			if (Q->State(Quest) == ELyudQuestState::Active && After && After->Stage == Before)
 			{

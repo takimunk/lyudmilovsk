@@ -1,0 +1,20 @@
+{
+ "key": "line.zotova_galina.again4.1",
+ "lang": "ja",
+ "text": "ニーナ・コルネーエワさんにキャベツの塩漬けを教わりました。あれも化学なんですね。心がこもっているだけで。",
+ "speaker": "zotova_galina",
+ "voice": "Alice",
+ "voice_id": "Xb7hH8MSUJpSbSDYk0k2",
+ "voice_design": null,
+ "direction": "[warm, chatty, fondly exasperated with her husband]",
+ "model": "fal-ai/elevenlabs/tts/eleven-v3",
+ "request": {
+  "stability": 0.5,
+  "apply_text_normalization": "auto",
+  "text": "[warm, chatty, fondly exasperated with her husband] ニーナ・コルネーエワさんにキャベツの塩漬けを教わりました。あれも化学なんですね。心がこもっているだけで。",
+  "voice": "Alice",
+  "language_code": "ja"
+ },
+ "fal_request_id": "01a1d74b-12cc-7fe1-b3aa-27a22624d798",
+ "hash": "695a29ed1e26"
+}

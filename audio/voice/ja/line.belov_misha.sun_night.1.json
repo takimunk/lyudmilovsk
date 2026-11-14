@@ -1,0 +1,20 @@
+{
+ "key": "line.belov_misha.sun_night.1",
+ "lang": "ja",
+ "text": "夜ははんだ付けに時間がかかるのに、出来は悪い。手も朝を待ってるらしい。",
+ "speaker": "belov_misha",
+ "voice": "Liam",
+ "voice_id": "TX3LPaxmHKxFdv7VOQHJ",
+ "voice_design": null,
+ "direction": "[easygoing, amused, a young technician, a little self-ironic]",
+ "model": "fal-ai/elevenlabs/tts/eleven-v3",
+ "request": {
+  "stability": 0.5,
+  "apply_text_normalization": "auto",
+  "text": "[easygoing, amused, a young technician, a little self-ironic] 夜ははんだ付けに時間がかかるのに、出来は悪い。手も朝を待ってるらしい。",
+  "voice": "Liam",
+  "language_code": "ja"
+ },
+ "fal_request_id": "01a1d740-4574-7b52-840e-3219547cf416",
+ "hash": "d66c2dd3eca3"
+}

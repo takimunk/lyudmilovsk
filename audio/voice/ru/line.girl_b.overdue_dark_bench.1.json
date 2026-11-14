@@ -1,0 +1,20 @@
+{
+ "key": "line.girl_b.overdue_dark_bench.1",
+ "lang": "ru",
+ "text": "Уже темно. Лев сидит во дворе на скамейке до семи, если не замёрз. Не успеешь, спроси завтра.",
+ "speaker": "girl_b",
+ "voice": "Sarah",
+ "voice_id": "EXAVITQu4vr4xnSDxMaL",
+ "voice_design": null,
+ "direction": "[curious, slightly uneasy, conspiratorial]",
+ "model": "fal-ai/elevenlabs/tts/eleven-v3",
+ "request": {
+  "stability": 0.5,
+  "apply_text_normalization": "auto",
+  "text": "[curious, slightly uneasy, conspiratorial] Уже темно. Лев сидит во дворе на скамейке до семи, если не замёрз. Не успеешь, спроси завтра.",
+  "voice": "Sarah",
+  "language_code": "ru"
+ },
+ "fal_request_id": "01a1d7a9-59de-7361-92cb-61b881bae910",
+ "hash": "7002d78c82f7"
+}

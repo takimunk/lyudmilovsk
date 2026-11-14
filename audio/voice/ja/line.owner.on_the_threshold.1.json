@@ -1,0 +1,20 @@
+{
+ "key": "line.owner.on_the_threshold.1",
+ "lang": "ja",
+ "text": "敷居に座っとるのか。いい場所だ。外でも中でもない。",
+ "speaker": "owner",
+ "voice": "Daniel",
+ "voice_id": "onwK4e9ZLuTAKqWW03F9",
+ "voice_design": null,
+ "direction": "[calm, tired, slow, a little ironic]",
+ "model": "fal-ai/elevenlabs/tts/eleven-v3",
+ "request": {
+  "stability": 0.5,
+  "apply_text_normalization": "auto",
+  "text": "[calm, tired, slow, a little ironic] 敷居に座っとるのか。いい場所だ。外でも中でもない。",
+  "voice": "Daniel",
+  "language_code": "ja"
+ },
+ "fal_request_id": "01a1d73d-ca11-71d2-88ea-4632f9153131",
+ "hash": "8c67f77bb001"
+}

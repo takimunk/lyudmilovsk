@@ -1,0 +1,20 @@
+{
+ "key": "line.orlova_tanya.sparrow_after_closing.1",
+ "lang": "en",
+ "text": "Sparrow, crumbs after closing. No time now.",
+ "speaker": "orlova_tanya",
+ "voice": "Aria",
+ "voice_id": "9BWtsMINqrJLrRacOk9x",
+ "voice_design": null,
+ "direction": "[a kiosk shop assistant, brisk, deadpan, a bit sassy]",
+ "model": "fal-ai/elevenlabs/tts/eleven-v3",
+ "request": {
+  "stability": 0.5,
+  "apply_text_normalization": "auto",
+  "text": "[a kiosk shop assistant, brisk, deadpan, a bit sassy] Sparrow, crumbs after closing. No time now.",
+  "voice": "Aria",
+  "language_code": "en"
+ },
+ "fal_request_id": "01a1d7e0-597b-79b0-bad5-76c68c581542",
+ "hash": "e640a04e0eaf"
+}

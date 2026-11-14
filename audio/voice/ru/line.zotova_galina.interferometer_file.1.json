@@ -1,0 +1,20 @@
+{
+ "key": "line.zotova_galina.interferometer_file.1",
+ "lang": "ru",
+ "text": "Вы за новым журналом для Оли? Лев рассказал. Ножку интерферометра, между прочим, можно было подпилить.",
+ "speaker": "zotova_galina",
+ "voice": "Alice",
+ "voice_id": "Xb7hH8MSUJpSbSDYk0k2",
+ "voice_design": null,
+ "direction": "[warm, chatty, fondly exasperated with her husband]",
+ "model": "fal-ai/elevenlabs/tts/eleven-v3",
+ "request": {
+  "stability": 0.5,
+  "apply_text_normalization": "auto",
+  "text": "[warm, chatty, fondly exasperated with her husband] Вы за новым журналом для Оли? Лев рассказал. Ножку интерферометра, между прочим, можно было подпилить.",
+  "voice": "Alice",
+  "language_code": "ru"
+ },
+ "fal_request_id": "01a1d6d9-d215-7aa0-be5a-8d898916fb7a",
+ "hash": "08be80cb03b2"
+}

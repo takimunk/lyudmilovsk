@@ -41,6 +41,10 @@ for point in ["beach_under_club", "valley_meadow", "P-SQUARE", "S-FOUNTAIN", "cl
 PLAN += [(t, "Dev.Quest awakening forget"), (t + 0.5, "Dev.Quest awakening owner"), (t + 1.0, "Quest.Dump"),
          (t + 1.5, "Dev.Quest awakening play"), (t + 2.0, "Quest.Dump")]
 t += 3.0
+# the side quests (docs/quests.md): each must play to its end too
+for q in ["waxwing", "waxwing_after", "evening_paper", "crow_gift", "fisherman_cheese", "window_feeder"]:
+    PLAN += [(t, "Dev.Quest %s forget" % q), (t + 0.5, "Dev.Quest %s play" % q)]
+    t += 3.0
 PLAN += [(t, "Dev.Do pocket.money"), (t + 0.5, "Dev.Do pocket.all"), (t + 1.0, "Inventory.Open"), (t + 2.5, shot("pocket_all")),
          (t + 3.0, "Inventory.Open 0")]
 t += 4.0

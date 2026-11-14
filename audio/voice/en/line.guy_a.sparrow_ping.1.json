@@ -1,0 +1,20 @@
+{
+ "key": "line.guy_a.sparrow_ping.1",
+ "lang": "en",
+ "text": "Sparrow, what are you yelling about? Ping jumping on you too?",
+ "speaker": "guy_a",
+ "voice": "Will",
+ "voice_id": "bIHbv24MWmeRgasZH58o",
+ "voice_design": null,
+ "direction": "[a young gamer in a hurry, mid-match]",
+ "model": "fal-ai/elevenlabs/tts/eleven-v3",
+ "request": {
+  "stability": 0.5,
+  "apply_text_normalization": "auto",
+  "text": "[a young gamer in a hurry, mid-match] Sparrow, what are you yelling about? Ping jumping on you too?",
+  "voice": "Will",
+  "language_code": "en"
+ },
+ "fal_request_id": "01a1d7b6-9d0a-7373-8e1e-2352fbea80b6",
+ "hash": "61e2bb923506"
+}

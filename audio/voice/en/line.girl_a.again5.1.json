@@ -1,0 +1,20 @@
+{
+ "key": "line.girl_a.again5.1",
+ "lang": "en",
+ "text": "Sonya told me she likes waiting. I don't know whether to praise her for it or worry.",
+ "speaker": "girl_a",
+ "voice": "Matilda",
+ "voice_id": "XrExE9yKIg1WjnnlVkGX",
+ "voice_design": null,
+ "direction": "[whispering, concentrated]",
+ "model": "fal-ai/elevenlabs/tts/eleven-v3",
+ "request": {
+  "stability": 0.5,
+  "apply_text_normalization": "auto",
+  "text": "[whispering, concentrated] Sonya told me she likes waiting. I don't know whether to praise her for it or worry.",
+  "voice": "Matilda",
+  "language_code": "en"
+ },
+ "fal_request_id": "01a1d781-4a9d-7221-a08c-bf38585a30cb",
+ "hash": "c179f374680f"
+}

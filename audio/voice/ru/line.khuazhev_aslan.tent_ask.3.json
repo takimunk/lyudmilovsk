@@ -1,0 +1,20 @@
+{
+ "key": "line.khuazhev_aslan.tent_ask.3",
+ "lang": "ru",
+ "text": "Сам я от прилавка ни на шаг. Попробуй за меня три вещи: кукурузу у Валентины, пирожок из автомата на станции и блины в закусочной внизу.",
+ "speaker": "khuazhev_aslan",
+ "voice": "Brian",
+ "voice_id": "nPczCjzI2devNBz1zQrb",
+ "voice_design": null,
+ "direction": "[hearty, generous, a cheese seller from the Caucasus, proud of his family's cheese]",
+ "model": "fal-ai/elevenlabs/tts/eleven-v3",
+ "request": {
+  "stability": 0.5,
+  "apply_text_normalization": "auto",
+  "text": "[hearty, generous, a cheese seller from the Caucasus, proud of his family's cheese] Сам я от прилавка ни на шаг. Попробуй за меня три вещи: кукурузу у Валентины, пирожок из автомата на станции и блины в закусочной внизу.",
+  "voice": "Brian",
+  "language_code": "ru"
+ },
+ "fal_request_id": "01a1d66f-2b47-79e1-87c2-a86911e3c2db",
+ "hash": "018253543e72"
+}

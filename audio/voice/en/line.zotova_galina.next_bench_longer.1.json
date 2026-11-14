@@ -1,0 +1,20 @@
+{
+ "key": "line.zotova_galina.next_bench_longer.1",
+ "lang": "en",
+ "text": "It is not me you want, it is the next bench, Sorokin's. He has been waiting for you longer than I have worked at the Laboratory.",
+ "speaker": "zotova_galina",
+ "voice": "Alice",
+ "voice_id": "Xb7hH8MSUJpSbSDYk0k2",
+ "voice_design": null,
+ "direction": "[warm, chatty, fondly exasperated with her husband]",
+ "model": "fal-ai/elevenlabs/tts/eleven-v3",
+ "request": {
+  "stability": 0.5,
+  "apply_text_normalization": "auto",
+  "text": "[warm, chatty, fondly exasperated with her husband] It is not me you want, it is the next bench, Sorokin's. He has been waiting for you longer than I have worked at the Laboratory.",
+  "voice": "Alice",
+  "language_code": "en"
+ },
+ "fal_request_id": "01a1d75f-b702-70a1-bf23-84ed52363bf4",
+ "hash": "f239cc31a7e8"
+}

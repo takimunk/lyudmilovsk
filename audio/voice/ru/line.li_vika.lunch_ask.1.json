@@ -1,0 +1,20 @@
+{
+ "key": "line.li_vika.lunch_ask.1",
+ "lang": "ru",
+ "text": "Ты сегодня обедал? Счастливый. Я вот нет. Третий год подряд.",
+ "speaker": "li_vika",
+ "voice": "Laura",
+ "voice_id": "FGY2WhTYpPnrIDTdsKH5",
+ "voice_design": null,
+ "direction": "[playful, quick, a lab assistant joking about her work]",
+ "model": "fal-ai/elevenlabs/tts/eleven-v3",
+ "request": {
+  "stability": 0.5,
+  "apply_text_normalization": "auto",
+  "text": "[playful, quick, a lab assistant joking about her work] Ты сегодня обедал? Счастливый. Я вот нет. Третий год подряд.",
+  "voice": "Laura",
+  "language_code": "ru"
+ },
+ "fal_request_id": "01a1d670-a738-7632-b6a0-a4647b5cbe83",
+ "hash": "9672434713db"
+}

@@ -1,0 +1,20 @@
+{
+ "key": "line.sato_kei.data_for_yuki.1",
+ "lang": "ru",
+ "text": "Посиди спокойно. Юки вечером спросит, кто прилетал, и ей нужны точные данные.",
+ "speaker": "sato_kei",
+ "voice": "Eric",
+ "voice_id": "cjVigY5qzO86Huf0OWal",
+ "voice_design": null,
+ "direction": "[quiet, precise, softly puzzled, a scientist thinking aloud]",
+ "model": "fal-ai/elevenlabs/tts/eleven-v3",
+ "request": {
+  "stability": 0.5,
+  "apply_text_normalization": "auto",
+  "text": "[quiet, precise, softly puzzled, a scientist thinking aloud] Посиди спокойно. Юки вечером спросит, кто прилетал, и ей нужны точные данные.",
+  "voice": "Eric",
+  "language_code": "ru"
+ },
+ "fal_request_id": "01a1d7b8-0975-7132-8b90-8c9cc6eb4d80",
+ "hash": "20a60e8140b7"
+}

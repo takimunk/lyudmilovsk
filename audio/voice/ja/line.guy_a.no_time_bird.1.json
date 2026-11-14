@@ -1,0 +1,20 @@
+{
+ "key": "line.guy_a.no_time_bird.1",
+ "lang": "ja",
+ "text": "鳥か。悪い、時間ない。あと五分で試合だ。",
+ "speaker": "guy_a",
+ "voice": "Will",
+ "voice_id": "bIHbv24MWmeRgasZH58o",
+ "voice_design": null,
+ "direction": "[a young gamer in a hurry, mid-match]",
+ "model": "fal-ai/elevenlabs/tts/eleven-v3",
+ "request": {
+  "stability": 0.5,
+  "apply_text_normalization": "auto",
+  "text": "[a young gamer in a hurry, mid-match] 鳥か。悪い、時間ない。あと五分で試合だ。",
+  "voice": "Will",
+  "language_code": "ja"
+ },
+ "fal_request_id": "01a1d7b6-88e3-7340-899f-83cbff324ca7",
+ "hash": "0fb05e752372"
+}

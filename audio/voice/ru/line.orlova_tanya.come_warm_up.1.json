@@ -1,0 +1,20 @@
+{
+ "key": "line.orlova_tanya.come_warm_up.1",
+ "lang": "ru",
+ "text": "Замёрз? Заходи потом в магазин, у меня все греются.",
+ "speaker": "orlova_tanya",
+ "voice": "Aria",
+ "voice_id": "9BWtsMINqrJLrRacOk9x",
+ "voice_design": null,
+ "direction": "[a kiosk shop assistant, brisk, deadpan, a bit sassy]",
+ "model": "fal-ai/elevenlabs/tts/eleven-v3",
+ "request": {
+  "stability": 0.5,
+  "apply_text_normalization": "auto",
+  "text": "[a kiosk shop assistant, brisk, deadpan, a bit sassy] Замёрз? Заходи потом в магазин, у меня все греются.",
+  "voice": "Aria",
+  "language_code": "ru"
+ },
+ "fal_request_id": "01a1d7df-b711-7360-b39b-be9b88441130",
+ "hash": "65843c4e3479"
+}

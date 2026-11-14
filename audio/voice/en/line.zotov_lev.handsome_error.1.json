@@ -1,0 +1,20 @@
+{
+ "key": "line.zotov_lev.handsome_error.1",
+ "lang": "en",
+ "text": "Nothing like you is on record in our yard. If you are an observational error, you are a very handsome one.",
+ "speaker": "zotov_lev",
+ "voice": "George",
+ "voice_id": "JBFqnCBsd6RMkjVDRZzb",
+ "voice_design": null,
+ "direction": "[dry, thoughtful, unhurried, a physicist's quiet irony]",
+ "model": "fal-ai/elevenlabs/tts/eleven-v3",
+ "request": {
+  "stability": 0.5,
+  "apply_text_normalization": "auto",
+  "text": "[dry, thoughtful, unhurried, a physicist's quiet irony] Nothing like you is on record in our yard. If you are an observational error, you are a very handsome one.",
+  "voice": "George",
+  "language_code": "en"
+ },
+ "fal_request_id": "01a1d75f-6642-7011-b780-86201296d564",
+ "hash": "3a5e1a1cf865"
+}

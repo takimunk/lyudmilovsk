@@ -1,0 +1,20 @@
+{
+ "key": "line.girl_b.lev_bench_hint.1",
+ "lang": "en",
+ "text": "In the evenings Lev sits on a bench in the yard, from half past five till seven. Weekends too.",
+ "speaker": "girl_b",
+ "voice": "Sarah",
+ "voice_id": "EXAVITQu4vr4xnSDxMaL",
+ "voice_design": null,
+ "direction": "[curious, slightly uneasy, conspiratorial]",
+ "model": "fal-ai/elevenlabs/tts/eleven-v3",
+ "request": {
+  "stability": 0.5,
+  "apply_text_normalization": "auto",
+  "text": "[curious, slightly uneasy, conspiratorial] In the evenings Lev sits on a bench in the yard, from half past five till seven. Weekends too.",
+  "voice": "Sarah",
+  "language_code": "en"
+ },
+ "fal_request_id": "01a1d6e2-9d99-7273-a916-529dbe0e2449",
+ "hash": "83e6f7f57c87"
+}

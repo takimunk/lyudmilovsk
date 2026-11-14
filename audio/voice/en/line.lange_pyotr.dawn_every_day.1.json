@@ -1,0 +1,20 @@
+{
+ "key": "line.lange_pyotr.dawn_every_day.1",
+ "lang": "en",
+ "text": "They say the whole town met the sunrise on the shore. I meet it nearly every day, in the boat. Fewer people.",
+ "speaker": "lange_pyotr",
+ "voice": "Brian",
+ "voice_id": "nPczCjzI2devNBz1zQrb",
+ "voice_design": null,
+ "direction": "[gruff, unhurried, a weathered fisherman of few words]",
+ "model": "fal-ai/elevenlabs/tts/eleven-v3",
+ "request": {
+  "stability": 0.5,
+  "apply_text_normalization": "auto",
+  "text": "[gruff, unhurried, a weathered fisherman of few words] They say the whole town met the sunrise on the shore. I meet it nearly every day, in the boat. Fewer people.",
+  "voice": "Brian",
+  "language_code": "en"
+ },
+ "fal_request_id": "01a1d7aa-a90b-7140-b2a5-c34571c7fa17",
+ "hash": "7c30cef02d2c"
+}

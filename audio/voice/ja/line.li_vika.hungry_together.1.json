@@ -1,0 +1,20 @@
+{
+ "key": "line.li_vika.hungry_together.1",
+ "lang": "ja",
+ "text": "あなたもお昼まだ？座って、一緒におなかをすかせてよう。専門家がウハーを食べ終わるまで。",
+ "speaker": "li_vika",
+ "voice": "Laura",
+ "voice_id": "FGY2WhTYpPnrIDTdsKH5",
+ "voice_design": null,
+ "direction": "[playful, quick, a lab assistant joking about her work]",
+ "model": "fal-ai/elevenlabs/tts/eleven-v3",
+ "request": {
+  "stability": 0.5,
+  "apply_text_normalization": "auto",
+  "text": "[playful, quick, a lab assistant joking about her work] あなたもお昼まだ？座って、一緒におなかをすかせてよう。専門家がウハーを食べ終わるまで。",
+  "voice": "Laura",
+  "language_code": "ja"
+ },
+ "fal_request_id": "01a1d7b7-4250-74a3-b3ce-f24bb0ed317e",
+ "hash": "8c145763da8b"
+}

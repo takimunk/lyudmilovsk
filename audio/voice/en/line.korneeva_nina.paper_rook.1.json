@@ -1,0 +1,29 @@
+{
+ "key": "line.korneeva_nina.paper_rook.1",
+ "lang": "en",
+ "text": "Vanya solved his problem before supper. Now he walks about proud, looking for someone to show it to.",
+ "speaker": "korneeva_nina",
+ "voice": "Wise_Woman",
+ "voice_id": "Wise_Woman",
+ "voice_design": null,
+ "direction": "",
+ "model": "fal-ai/minimax/speech-2.6-hd",
+ "request": {
+  "prompt": "Vanya solved his problem before supper. Now he walks about proud, looking for someone to show it to.",
+  "voice_setting": {
+   "speed": 0.95,
+   "pitch": 0,
+   "vol": 1,
+   "voice_id": "Wise_Woman"
+  },
+  "language_boost": "English",
+  "audio_setting": {
+   "sample_rate": 24000,
+   "format": "mp3",
+   "channel": 1
+  },
+  "output_format": "url"
+ },
+ "fal_request_id": "01a1d6e6-4c97-7e53-8b32-6554bd188d5a",
+ "hash": "f9abda63f85b"
+}

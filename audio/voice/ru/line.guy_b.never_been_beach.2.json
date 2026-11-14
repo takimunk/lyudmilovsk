@@ -1,0 +1,20 @@
+{
+ "key": "line.guy_b.never_been_beach.2",
+ "lang": "ru",
+ "text": "Ничего. Зато я знаю, какая кабина скрипит.",
+ "speaker": "guy_b",
+ "voice": "Chris",
+ "voice_id": "iP95p4xoKVk53GoZ742B",
+ "voice_design": null,
+ "direction": "[relaxed, lazy, friendly]",
+ "model": "fal-ai/elevenlabs/tts/eleven-v3",
+ "request": {
+  "stability": 0.5,
+  "apply_text_normalization": "auto",
+  "text": "[relaxed, lazy, friendly] Ничего. Зато я знаю, какая кабина скрипит.",
+  "voice": "Chris",
+  "language_code": "ru"
+ },
+ "fal_request_id": "01a1d739-1343-7bf2-9436-c176eb795d43",
+ "hash": "60b2513a3130"
+}

@@ -1,0 +1,20 @@
+{
+ "key": "line.kimura_dasha.sun_low.1",
+ "lang": "ru",
+ "text": "На закате я считаю секунды, пока оно уходит за горизонт. Зачем, не знаю. Просто не хочу пропустить.",
+ "speaker": "kimura_dasha",
+ "voice": "Charlotte",
+ "voice_id": "XB0fDUnXU5powFXDhCwa",
+ "voice_design": null,
+ "direction": "[a tired physics student, wry, self-ironic]",
+ "model": "fal-ai/elevenlabs/tts/eleven-v3",
+ "request": {
+  "stability": 0.5,
+  "apply_text_normalization": "auto",
+  "text": "[a tired physics student, wry, self-ironic] На закате я считаю секунды, пока оно уходит за горизонт. Зачем, не знаю. Просто не хочу пропустить.",
+  "voice": "Charlotte",
+  "language_code": "ru"
+ },
+ "fal_request_id": "01a1d743-7e94-7ad2-bd70-845279d50389",
+ "hash": "fcd532bb1062"
+}

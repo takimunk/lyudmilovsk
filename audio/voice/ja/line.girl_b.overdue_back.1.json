@@ -1,0 +1,20 @@
+{
+ "key": "line.girl_b.overdue_back.1",
+ "lang": "ja",
+ "text": "新しい号？表紙にカップの跡もない。それで、古いほうは？",
+ "speaker": "girl_b",
+ "voice": "Sarah",
+ "voice_id": "EXAVITQu4vr4xnSDxMaL",
+ "voice_design": null,
+ "direction": "[curious, slightly uneasy, conspiratorial]",
+ "model": "fal-ai/elevenlabs/tts/eleven-v3",
+ "request": {
+  "stability": 0.5,
+  "apply_text_normalization": "auto",
+  "text": "[curious, slightly uneasy, conspiratorial] 新しい号？表紙にカップの跡もない。それで、古いほうは？",
+  "voice": "Sarah",
+  "language_code": "ja"
+ },
+ "fal_request_id": "01a1d66c-0267-7c60-8705-8a4b104e7889",
+ "hash": "3aae1f1a1d46"
+}

@@ -1,0 +1,20 @@
+{
+ "key": "line.lange_pyotr.weather_without_you.1",
+ "lang": "ru",
+ "text": "Кричи, кричи. Погоду я и без тебя знаю.",
+ "speaker": "lange_pyotr",
+ "voice": "Brian",
+ "voice_id": "nPczCjzI2devNBz1zQrb",
+ "voice_design": null,
+ "direction": "[gruff, unhurried, a weathered fisherman of few words]",
+ "model": "fal-ai/elevenlabs/tts/eleven-v3",
+ "request": {
+  "stability": 0.5,
+  "apply_text_normalization": "auto",
+  "text": "[gruff, unhurried, a weathered fisherman of few words] Кричи, кричи. Погоду я и без тебя знаю.",
+  "voice": "Brian",
+  "language_code": "ru"
+ },
+ "fal_request_id": "01a1d6e7-c89c-7e92-a58e-1edd2d144944",
+ "hash": "34fe347570f9"
+}

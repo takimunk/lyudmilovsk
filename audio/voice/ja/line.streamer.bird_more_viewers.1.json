@@ -1,0 +1,20 @@
+{
+ "key": "line.streamer.bird_more_viewers.1",
+ "lang": "ja",
+ "text": "鳥が映ったら、チャットが急に起きた。いて。あなたがいると視聴者が増えるの。",
+ "speaker": "streamer",
+ "voice": "Jessica",
+ "voice_id": "cgSgspJ2msm6clMCkdW9",
+ "voice_design": null,
+ "direction": "[bright, fast, half talking to her chat]",
+ "model": "fal-ai/elevenlabs/tts/eleven-v3",
+ "request": {
+  "stability": 0.5,
+  "apply_text_normalization": "auto",
+  "text": "[bright, fast, half talking to her chat] 鳥が映ったら、チャットが急に起きた。いて。あなたがいると視聴者が増えるの。",
+  "voice": "Jessica",
+  "language_code": "ja"
+ },
+ "fal_request_id": "01a1d73e-32ce-7f81-8915-34ca46223a6f",
+ "hash": "013640e77b7b"
+}

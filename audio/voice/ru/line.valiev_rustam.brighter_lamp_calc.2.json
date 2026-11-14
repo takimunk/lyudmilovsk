@@ -1,0 +1,20 @@
+{
+ "key": "line.valiev_rustam.brighter_lamp_calc.2",
+ "lang": "ru",
+ "text": "А окно я теперь не зашториваю. Привык по вечерам смотреть на край плато.",
+ "speaker": "valiev_rustam",
+ "voice": "Roger",
+ "voice_id": "CwhRBWXzGAHq8TQ4Fs17",
+ "voice_design": null,
+ "direction": "[confident, dry, matter-of-fact engineer]",
+ "model": "fal-ai/elevenlabs/tts/eleven-v3",
+ "request": {
+  "stability": 0.5,
+  "apply_text_normalization": "auto",
+  "text": "[confident, dry, matter-of-fact engineer] А окно я теперь не зашториваю. Привык по вечерам смотреть на край плато.",
+  "voice": "Roger",
+  "language_code": "ru"
+ },
+ "fal_request_id": "01a1d6ea-620e-7a01-8003-5ab2a968f456",
+ "hash": "1badb4bb70aa"
+}

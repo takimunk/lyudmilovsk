@@ -1,0 +1,20 @@
+{
+ "key": "line.khuazhev_aslan.taste_corn_courier.1",
+ "lang": "en",
+ "text": "You're the one who carried Valentina's cob to Ivan? She told me, praised you half the day.",
+ "speaker": "khuazhev_aslan",
+ "voice": "Brian",
+ "voice_id": "nPczCjzI2devNBz1zQrb",
+ "voice_design": null,
+ "direction": "[hearty, generous, a cheese seller from the Caucasus, proud of his family's cheese]",
+ "model": "fal-ai/elevenlabs/tts/eleven-v3",
+ "request": {
+  "stability": 0.5,
+  "apply_text_normalization": "auto",
+  "text": "[hearty, generous, a cheese seller from the Caucasus, proud of his family's cheese] You're the one who carried Valentina's cob to Ivan? She told me, praised you half the day.",
+  "voice": "Brian",
+  "language_code": "en"
+ },
+ "fal_request_id": "01a1d6d4-9429-71d2-a98a-24323b469182",
+ "hash": "b29849455193"
+}

@@ -1,0 +1,20 @@
+{
+ "key": "line.belov_misha.unknown_marking.1",
+ "lang": "ja",
+ "text": "翼に赤い印、尾に黄色い印。知らない表示だな。ソローキンさんに見せてこい。おまえみたいな回路図が読める人だ。",
+ "speaker": "belov_misha",
+ "voice": "Liam",
+ "voice_id": "TX3LPaxmHKxFdv7VOQHJ",
+ "voice_design": null,
+ "direction": "[easygoing, amused, a young technician, a little self-ironic]",
+ "model": "fal-ai/elevenlabs/tts/eleven-v3",
+ "request": {
+  "stability": 0.5,
+  "apply_text_normalization": "auto",
+  "text": "[easygoing, amused, a young technician, a little self-ironic] 翼に赤い印、尾に黄色い印。知らない表示だな。ソローキンさんに見せてこい。おまえみたいな回路図が読める人だ。",
+  "voice": "Liam",
+  "language_code": "ja"
+ },
+ "fal_request_id": "01a1d75d-4555-7471-a104-3d33ae758dbd",
+ "hash": "1a5a6f9f699b"
+}

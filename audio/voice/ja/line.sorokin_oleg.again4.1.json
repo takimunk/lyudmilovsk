@@ -1,0 +1,20 @@
+{
+ "key": "line.sorokin_oleg.again4.1",
+ "lang": "ja",
+ "text": "今朝、ホシムクドリの群れが家々の上を通った。三百羽ほど。数えていて途中でわからなくなったが、少しも後悔はない。",
+ "speaker": "sorokin_oleg",
+ "voice": "River",
+ "voice_id": "SAz9YHcvj6GT2YYXdXww",
+ "voice_design": null,
+ "direction": "[a retired scholar, calm, dry humour, slower, gentle]",
+ "model": "fal-ai/elevenlabs/tts/eleven-v3",
+ "request": {
+  "stability": 0.5,
+  "apply_text_normalization": "auto",
+  "text": "[a retired scholar, calm, dry humour, slower, gentle] 今朝、ホシムクドリの群れが家々の上を通った。三百羽ほど。数えていて途中でわからなくなったが、少しも後悔はない。",
+  "voice": "River",
+  "language_code": "ja"
+ },
+ "fal_request_id": "01a1d749-91b8-7b90-8f7d-31bcf0e6fd42",
+ "hash": "fc63a835a1c4"
+}

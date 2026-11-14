@@ -1,0 +1,20 @@
+{
+ "key": "line.khuazhev_aslan.sun_night.1",
+ "lang": "en",
+ "text": "Dark now, but the tent is still holding the day's warmth. I sit in it as if in a felt cloak.",
+ "speaker": "khuazhev_aslan",
+ "voice": "Brian",
+ "voice_id": "nPczCjzI2devNBz1zQrb",
+ "voice_design": null,
+ "direction": "[hearty, generous, a cheese seller from the Caucasus, proud of his family's cheese]",
+ "model": "fal-ai/elevenlabs/tts/eleven-v3",
+ "request": {
+  "stability": 0.5,
+  "apply_text_normalization": "auto",
+  "text": "[hearty, generous, a cheese seller from the Caucasus, proud of his family's cheese] Dark now, but the tent is still holding the day's warmth. I sit in it as if in a felt cloak.",
+  "voice": "Brian",
+  "language_code": "en"
+ },
+ "fal_request_id": "01a1d743-76e2-7340-8fd0-0b73a628df02",
+ "hash": "14304db573e7"
+}

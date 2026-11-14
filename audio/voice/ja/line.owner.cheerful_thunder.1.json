@@ -1,0 +1,20 @@
+{
+ "key": "line.owner.cheerful_thunder.1",
+ "lang": "ja",
+ "text": "花火があったか？聞こえたぞ。山の下だと遠い雷みたいに聞こえる。ただし陽気な雷だ。",
+ "speaker": "owner",
+ "voice": "Daniel",
+ "voice_id": "onwK4e9ZLuTAKqWW03F9",
+ "voice_design": null,
+ "direction": "[calm, tired, slow, a little ironic]",
+ "model": "fal-ai/elevenlabs/tts/eleven-v3",
+ "request": {
+  "stability": 0.5,
+  "apply_text_normalization": "auto",
+  "text": "[calm, tired, slow, a little ironic] 花火があったか？聞こえたぞ。山の下だと遠い雷みたいに聞こえる。ただし陽気な雷だ。",
+  "voice": "Daniel",
+  "language_code": "ja"
+ },
+ "fal_request_id": "01a1d73d-090a-7de2-bd2b-5539b1e965eb",
+ "hash": "20713d820ccf"
+}

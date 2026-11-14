@@ -1,0 +1,20 @@
+{
+ "key": "line.li_vika.pigeon_counts_twice.1",
+ "lang": "ru",
+ "text": "Считаешь Дашиных птиц? Голубь тоже птица. Запиши его, пожалуйста, два раза.",
+ "speaker": "li_vika",
+ "voice": "Laura",
+ "voice_id": "FGY2WhTYpPnrIDTdsKH5",
+ "voice_design": null,
+ "direction": "[playful, quick, a lab assistant joking about her work]",
+ "model": "fal-ai/elevenlabs/tts/eleven-v3",
+ "request": {
+  "stability": 0.5,
+  "apply_text_normalization": "auto",
+  "text": "[playful, quick, a lab assistant joking about her work] Считаешь Дашиных птиц? Голубь тоже птица. Запиши его, пожалуйста, два раза.",
+  "voice": "Laura",
+  "language_code": "ru"
+ },
+ "fal_request_id": "01a1d6d6-958f-7563-9bf5-30daf2d67c2f",
+ "hash": "07183e9c4e29"
+}

@@ -1,0 +1,20 @@
+{
+ "key": "line.sorokin_oleg.bird_visit.1",
+ "lang": "ru",
+ "text": "Здравствуй, здравствуй. Не свиристель, но тоже хорошо.",
+ "speaker": "sorokin_oleg",
+ "voice": "River",
+ "voice_id": "SAz9YHcvj6GT2YYXdXww",
+ "voice_design": null,
+ "direction": "[a retired scholar, calm, dry humour, slower, gentle]",
+ "model": "fal-ai/elevenlabs/tts/eleven-v3",
+ "request": {
+  "stability": 0.5,
+  "apply_text_normalization": "auto",
+  "text": "[a retired scholar, calm, dry humour, slower, gentle] Здравствуй, здравствуй. Не свиристель, но тоже хорошо.",
+  "voice": "River",
+  "language_code": "ru"
+ },
+ "fal_request_id": "01a1d586-9cc0-7a63-9c22-b5d2373a85f8",
+ "hash": "1a35d141bf1c"
+}

@@ -18,8 +18,18 @@
  *   wear <item id>             something was put on or put in the hand
  *   bird                       the hero became a bird (any pawn that is not the hero)
  *   walk                       the hero took his first steps (2.5 m from where the level put him)
+ *   feeder_fill <feed id>      a handful of feed went into one of the hero's feeders (UBirdFeederSubsystem::Fill; N = handfuls)
+ *   feeder_fill_at <feed id>@<place id>   the same, once for every place (map.json) the hero stands in as he pours it
+ *   feeder_visit <Species>     a bird of that species came down onto one of the hero's feeders (ULyudQuestDirector)
+ *   bird_tamed <Species>       a bird ate from the palm (ULyudBirdBook), bird_seen <Species> the first sight of one
+ *   bird_call <Species>.<Npc>  the hero, as a bird of that species, sat down near somebody who listens for birds and called
+ *                              (F; quest_scenes.json "listeners", ULyudQuestDirector)
  * An objective's event may list alternatives ("leave_computer|walk"). An event a later stage waits for finishes the stages before
- * it (a teleport, a load, steps done out of order never leave a quest stuck on an old step).
+ * it (a teleport, a load, steps done out of order never leave a quest stuck on an old step); a talk never does (a quest may
+ * send the hero back to the one who gave it).
+ * Two objectives are not events of their own: "have <item>" counts the pocket, and "bring <item>@<Npc>" is met by a talk with
+ * that person while the pocket holds Need of the item, which they then take (ULyudQuests::TalkStage tells the dialogue
+ * "<stage>_empty" while the pocket hasn't got it).
  * A Target ending in '*' matches by prefix (drink_* is any soda). The words are keys (localization skill):
  *   quest.<id>.title, quest.<id>.desc, quest.<id>.<stage>.log (the journal entry when the stage begins),
  *   quest.<id>.<objective>.obj (the line in the journal and on the HUD), quest.<id>.done (the entry when the quest ends).
@@ -53,6 +63,8 @@ struct FLyudQuestStage
 	TArray<TPair<FName, int32>> GiveItems;
 	int32 GiveRubles = 0;
 	TArray<FName> StartQuests;
+	/** "no_skip": events of later stages never jump over this one. */
+	bool bNoSkip = false;
 };
 
 struct FLyudQuestDef
@@ -159,10 +171,33 @@ public:
 	void AddNote(const FString& Key, const TArray<FString>& Args = TArray<FString>()) { AddEntry(Key, NAME_None, Args); OnChanged.Broadcast(); }
 	/** Finishes the current stage of a quest at once (dev command Quest.Advance). */
 	void Advance(FName Quest);
+	/**
+	 * Dev and tests (docs/quests.md): puts a quest on a stage at once. Stage is the stage's id or its index; "done" finishes
+	 * the quest as playing its last stage would. A quest that has not begun is begun. The stages jumped over give no rewards
+	 * and write no journal entries. False if there is no such quest or stage. Console: Quest.SetStage <quest> <stage>.
+	 */
+	bool SetStage(FName Quest, const FString& Stage);
+	/** The id of the stage a quest is on; "done" once it is finished; none before it began. */
+	FName StageId(FName Quest) const;
+	/**
+	 * What a talk with Npc finds a quest on (the dialogue's quest.<quest>.<stage> lines, npc_dialogue.txt): as StageId, but
+	 * a quest that this very talk begins (start_on talk <Npc>) counts as on its first stage. Ask before reporting the talk.
+	 */
+	FName TalkStage(FName Quest, const FString& Npc) const;
+	/** Is the hero inside a place's radius now (map.json)? */
+	bool IsInside(FName Place) const { return Inside.Contains(Place); }
+	TArray<FName> InsidePlaces() const { return Inside.Array(); }
+
+	/** Things that happened once and are kept with the save (a quest's book taken off a desk: "pickup.<id>"). */
+	UPROPERTY(SaveGame) TArray<FName> Flags;
+	bool HasFlag(FName Flag) const { return Flags.Contains(Flag); }
+	void SetFlag(FName Flag) { Flags.AddUnique(Flag); }
 	/** Developer mode (LyudDev::JumpToStage): Quest active at stage index Stage, the stages before it counted as done (no rewards). */
 	void DevJump(FName Quest, int32 Stage);
 	/** Developer mode: the quest as if never begun (its journal lines stay). */
 	void DevForget(FName Quest);
+	/** Developer mode (LyudDev::PlayThrough): a stage jumped to with everything already in the pocket moves on, as it would in play. */
+	void DevSettle(FName Quest) { Settle(Quest); OnChanged.Broadcast(); }
 
 	/** The hero is at P (world cm): finds places and reports reach events. Called by the game screen every few frames. */
 	void UpdatePosition(const UObject* WorldContext, const FVector& P);
@@ -196,6 +231,8 @@ public:
 private:
 	void BeginStage(FLyudQuestProgress& P, const FLyudQuestDef& Def);
 	void FinishStage(FLyudQuestProgress& P, const FLyudQuestDef& Def);
+	/** Finishes the stages a quest stands on that are met already by what the hero has or where he is (as counted by BeginStage). */
+	void Settle(FName Quest);
 	void AddEntry(const FString& Key, FName Quest, const TArray<FString>& Args = TArray<FString>());
 	FDateTime Today() const;
 	FLyudQuestProgress& ProgressOf(FName Quest);

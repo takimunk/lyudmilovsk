@@ -1,0 +1,29 @@
+{
+ "key": "line.guseva_valentina.corn_errand.1",
+ "lang": "ja",
+ "text": "あんた、どうせ行ったり来たりしてるんだろ。ニーナの旦那のワーニャ・コルネーエフに、一本届けておくれ。",
+ "speaker": "guseva_valentina",
+ "voice": "Abbess",
+ "voice_id": "Abbess",
+ "voice_design": null,
+ "direction": "",
+ "model": "fal-ai/minimax/speech-2.6-hd",
+ "request": {
+  "prompt": "あんた、どうせ行ったり来たりしてるんだろ。ニーナの旦那のワーニャ・コルネーエフに、一本届けておくれ。",
+  "voice_setting": {
+   "speed": 1,
+   "pitch": 0,
+   "vol": 1,
+   "voice_id": "Abbess"
+  },
+  "language_boost": "Japanese",
+  "audio_setting": {
+   "sample_rate": 24000,
+   "format": "mp3",
+   "channel": 1
+  },
+  "output_format": "url"
+ },
+ "fal_request_id": "01a1d66c-aa70-74c0-8172-04b02caf9e2c",
+ "hash": "6e3df2324e9e"
+}

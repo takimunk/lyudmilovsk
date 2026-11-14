@@ -1,0 +1,20 @@
+{
+ "key": "line.clerk.again6.1",
+ "lang": "en",
+ "text": "I've started an autumn sheet. It needs twenty shades of yellow. Every morning on my way here I pick up one.",
+ "speaker": "clerk",
+ "voice": "Callum",
+ "voice_id": "N2lVS1w4EtoT3dr4eOWO",
+ "voice_design": null,
+ "direction": "[polite, quiet, precise, absorbed in his work]",
+ "model": "fal-ai/elevenlabs/tts/eleven-v3",
+ "request": {
+  "stability": 0.5,
+  "apply_text_normalization": "auto",
+  "text": "[polite, quiet, precise, absorbed in his work] I've started an autumn sheet. It needs twenty shades of yellow. Every morning on my way here I pick up one.",
+  "voice": "Callum",
+  "language_code": "en"
+ },
+ "fal_request_id": "01a1d780-f137-7d50-87cc-f4bbad07fb40",
+ "hash": "a38590c4bb18"
+}

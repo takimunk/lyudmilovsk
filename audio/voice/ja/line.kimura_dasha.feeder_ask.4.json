@@ -1,0 +1,20 @@
+{
+ "key": "line.kimura_dasha.feeder_ask.4",
+ "lang": "ja",
+ "text": "実験ね！この中庭でやっと科学的なことが起きる。やって。報告は口頭でいいから。",
+ "speaker": "kimura_dasha",
+ "voice": "Charlotte",
+ "voice_id": "XB0fDUnXU5powFXDhCwa",
+ "voice_design": null,
+ "direction": "[a tired physics student, wry, self-ironic]",
+ "model": "fal-ai/elevenlabs/tts/eleven-v3",
+ "request": {
+  "stability": 0.5,
+  "apply_text_normalization": "auto",
+  "text": "[a tired physics student, wry, self-ironic] 実験ね！この中庭でやっと科学的なことが起きる。やって。報告は口頭でいいから。",
+  "voice": "Charlotte",
+  "language_code": "ja"
+ },
+ "fal_request_id": "01a1d670-c1e6-7b53-9a2c-a0928037c25d",
+ "hash": "cd0b85ec98ac"
+}

@@ -1,0 +1,20 @@
+{
+ "key": "line.girl_b.pigeon_no_card.1",
+ "lang": "en",
+ "text": "Pigeon, no library card, no library. Though you'd probably bring everything back on time.",
+ "speaker": "girl_b",
+ "voice": "Sarah",
+ "voice_id": "EXAVITQu4vr4xnSDxMaL",
+ "voice_design": null,
+ "direction": "[curious, slightly uneasy, conspiratorial]",
+ "model": "fal-ai/elevenlabs/tts/eleven-v3",
+ "request": {
+  "stability": 0.5,
+  "apply_text_normalization": "auto",
+  "text": "[curious, slightly uneasy, conspiratorial] Pigeon, no library card, no library. Though you'd probably bring everything back on time.",
+  "voice": "Sarah",
+  "language_code": "en"
+ },
+ "fal_request_id": "01a1d7b6-370b-70b2-abf3-69bd0ddf817e",
+ "hash": "a43352ecef86"
+}

@@ -1,0 +1,20 @@
+{
+ "key": "line.girl_b.ficus_instead.1",
+ "lang": "ja",
+ "text": "また自分で行こうとしたの。ドアまで行って、ゴムの木に水をやらなきゃって思い出しちゃった。",
+ "speaker": "girl_b",
+ "voice": "Sarah",
+ "voice_id": "EXAVITQu4vr4xnSDxMaL",
+ "voice_design": null,
+ "direction": "[curious, slightly uneasy, conspiratorial]",
+ "model": "fal-ai/elevenlabs/tts/eleven-v3",
+ "request": {
+  "stability": 0.5,
+  "apply_text_normalization": "auto",
+  "text": "[curious, slightly uneasy, conspiratorial] また自分で行こうとしたの。ドアまで行って、ゴムの木に水をやらなきゃって思い出しちゃった。",
+  "voice": "Sarah",
+  "language_code": "ja"
+ },
+ "fal_request_id": "01a1d6e2-89f0-7ea1-a087-08955ee4b722",
+ "hash": "1f62421c21a2"
+}

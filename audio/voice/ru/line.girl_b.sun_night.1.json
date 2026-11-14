@@ -1,0 +1,20 @@
+{
+ "key": "line.girl_b.sun_night.1",
+ "lang": "ru",
+ "text": "Ночью на форуме пишут меньше. Будто все ждут, когда снова станет светло, и берегут слова.",
+ "speaker": "girl_b",
+ "voice": "Sarah",
+ "voice_id": "EXAVITQu4vr4xnSDxMaL",
+ "voice_design": null,
+ "direction": "[curious, slightly uneasy, conspiratorial]",
+ "model": "fal-ai/elevenlabs/tts/eleven-v3",
+ "request": {
+  "stability": 0.5,
+  "apply_text_normalization": "auto",
+  "text": "[curious, slightly uneasy, conspiratorial] Ночью на форуме пишут меньше. Будто все ждут, когда снова станет светло, и берегут слова.",
+  "voice": "Sarah",
+  "language_code": "ru"
+ },
+ "fal_request_id": "01a1d782-3c61-7e01-b9ce-ff39f8e0efc0",
+ "hash": "0e0d1ec7dd56"
+}

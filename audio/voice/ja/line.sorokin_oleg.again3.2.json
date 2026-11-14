@@ -1,0 +1,20 @@
+{
+ "key": "line.sorokin_oleg.again3.2",
+ "lang": "ja",
+ "text": "朝八時からね。ベンチ、魔法瓶、双眼鏡。シジュウカラは、とうに私をベンチの一部だと思っているらしい。",
+ "speaker": "sorokin_oleg",
+ "voice": "River",
+ "voice_id": "SAz9YHcvj6GT2YYXdXww",
+ "voice_design": null,
+ "direction": "[a retired scholar, calm, dry humour, slower, gentle]",
+ "model": "fal-ai/elevenlabs/tts/eleven-v3",
+ "request": {
+  "stability": 0.5,
+  "apply_text_normalization": "auto",
+  "text": "[a retired scholar, calm, dry humour, slower, gentle] 朝八時からね。ベンチ、魔法瓶、双眼鏡。シジュウカラは、とうに私をベンチの一部だと思っているらしい。",
+  "voice": "River",
+  "language_code": "ja"
+ },
+ "fal_request_id": "01a1d749-76e9-7a42-a534-9a035a629490",
+ "hash": "0d828de182da"
+}

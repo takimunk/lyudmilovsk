@@ -1,0 +1,20 @@
+{
+ "key": "line.guy_a.sun_cloudy.1",
+ "lang": "en",
+ "text": "Someone said it's overcast today. I always get kicked on days like that. Not science, experience.",
+ "speaker": "guy_a",
+ "voice": "Will",
+ "voice_id": "bIHbv24MWmeRgasZH58o",
+ "voice_design": null,
+ "direction": "[a young gamer in a hurry, mid-match]",
+ "model": "fal-ai/elevenlabs/tts/eleven-v3",
+ "request": {
+  "stability": 0.5,
+  "apply_text_normalization": "auto",
+  "text": "[a young gamer in a hurry, mid-match] Someone said it's overcast today. I always get kicked on days like that. Not science, experience.",
+  "voice": "Will",
+  "language_code": "en"
+ },
+ "fal_request_id": "01a1d782-a6c5-7432-a946-782469a0e6f6",
+ "hash": "5ca76c030955"
+}

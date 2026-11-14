@@ -1,0 +1,20 @@
+{
+ "key": "line.zotova_galina.sodalab_ask.4",
+ "lang": "en",
+ "text": "I am biased, I have read the ingredients. Drink all four, one at a time, and report.",
+ "speaker": "zotova_galina",
+ "voice": "Alice",
+ "voice_id": "Xb7hH8MSUJpSbSDYk0k2",
+ "voice_design": null,
+ "direction": "[warm, chatty, fondly exasperated with her husband]",
+ "model": "fal-ai/elevenlabs/tts/eleven-v3",
+ "request": {
+  "stability": 0.5,
+  "apply_text_normalization": "auto",
+  "text": "[warm, chatty, fondly exasperated with her husband] I am biased, I have read the ingredients. Drink all four, one at a time, and report.",
+  "voice": "Alice",
+  "language_code": "en"
+ },
+ "fal_request_id": "01a1d675-b153-7573-afb2-532dcaf23c7f",
+ "hash": "9b4f49de787d"
+}

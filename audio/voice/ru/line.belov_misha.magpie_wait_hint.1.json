@@ -1,0 +1,20 @@
+{
+ "key": "line.belov_misha.magpie_wait_hint.1",
+ "lang": "ru",
+ "text": "Сороки по садам, вороны на пляже, галки по крышам, и все что-то прячут. Подбирай, что валяется, и копай, где закопали.",
+ "speaker": "belov_misha",
+ "voice": "Liam",
+ "voice_id": "TX3LPaxmHKxFdv7VOQHJ",
+ "voice_design": null,
+ "direction": "[easygoing, amused, a young technician, a little self-ironic]",
+ "model": "fal-ai/elevenlabs/tts/eleven-v3",
+ "request": {
+  "stability": 0.5,
+  "apply_text_normalization": "auto",
+  "text": "[easygoing, amused, a young technician, a little self-ironic] Сороки по садам, вороны на пляже, галки по крышам, и все что-то прячут. Подбирай, что валяется, и копай, где закопали.",
+  "voice": "Liam",
+  "language_code": "ru"
+ },
+ "fal_request_id": "01a1d6d3-6be6-7213-afe1-cf22688e226d",
+ "hash": "39d1c6a591fe"
+}

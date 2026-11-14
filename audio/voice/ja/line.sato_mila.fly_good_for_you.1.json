@@ -1,0 +1,20 @@
+{
+ "key": "line.sato_mila.fly_good_for_you.1",
+ "lang": "ja",
+ "text": "飛びなさい、飛びなさい。新鮮な空気とお日さま、これ以上の処方はないわ。",
+ "speaker": "sato_mila",
+ "voice": "Lily",
+ "voice_id": "pFZP5JQG7iQjIQuC4Bku",
+ "voice_design": null,
+ "direction": "[brisk, caring, a doctor's matter-of-fact warmth]",
+ "model": "fal-ai/elevenlabs/tts/eleven-v3",
+ "request": {
+  "stability": 0.5,
+  "apply_text_normalization": "auto",
+  "text": "[brisk, caring, a doctor's matter-of-fact warmth] 飛びなさい、飛びなさい。新鮮な空気とお日さま、これ以上の処方はないわ。",
+  "voice": "Lily",
+  "language_code": "ja"
+ },
+ "fal_request_id": "01a1d7b8-eca5-7f53-bd90-63a568bb6e57",
+ "hash": "cf650a631768"
+}

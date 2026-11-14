@@ -1,0 +1,20 @@
+{
+ "key": "line.valiev_rustam.sun_night.1",
+ "lang": "en",
+ "text": "It is dark. The window has turned into a mirror, and there is only me in it. In the day there was more world in it.",
+ "speaker": "valiev_rustam",
+ "voice": "Roger",
+ "voice_id": "CwhRBWXzGAHq8TQ4Fs17",
+ "voice_design": null,
+ "direction": "[confident, dry, matter-of-fact engineer]",
+ "model": "fal-ai/elevenlabs/tts/eleven-v3",
+ "request": {
+  "stability": 0.5,
+  "apply_text_normalization": "auto",
+  "text": "[confident, dry, matter-of-fact engineer] It is dark. The window has turned into a mirror, and there is only me in it. In the day there was more world in it.",
+  "voice": "Roger",
+  "language_code": "en"
+ },
+ "fal_request_id": "01a1d74a-1489-70e2-a6be-35a1486b7d22",
+ "hash": "c21ce882a718"
+}

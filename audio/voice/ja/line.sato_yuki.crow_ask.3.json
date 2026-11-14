@@ -1,0 +1,29 @@
+{
+ "key": "line.sato_yuki.crow_ask.3",
+ "lang": "ja",
+ "text": "パパが言ってた、カラスはかしこいって。えさをあげると、おくりものを持ってくるんだって。ボタンも持ってきてくれるかも。",
+ "speaker": "sato_yuki",
+ "voice": "Lovely_Girl",
+ "voice_id": "Lovely_Girl",
+ "voice_design": null,
+ "direction": "",
+ "model": "fal-ai/minimax/speech-2.6-hd",
+ "request": {
+  "prompt": "パパが言ってた、カラスはかしこいって。えさをあげると、おくりものを持ってくるんだって。ボタンも持ってきてくれるかも。",
+  "voice_setting": {
+   "speed": 1,
+   "pitch": 0,
+   "vol": 1,
+   "voice_id": "Lovely_Girl"
+  },
+  "language_boost": "Japanese",
+  "audio_setting": {
+   "sample_rate": 24000,
+   "format": "mp3",
+   "channel": 1
+  },
+  "output_format": "url"
+ },
+ "fal_request_id": "01a1d593-276c-7863-8186-426178dff107",
+ "hash": "d342c02bd608"
+}

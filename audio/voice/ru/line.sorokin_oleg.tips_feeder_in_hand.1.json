@@ -1,0 +1,20 @@
+{
+ "key": "line.sorokin_oleg.tips_feeder_in_hand.1",
+ "lang": "ru",
+ "text": "Кормушка у вас уже есть, это полдела. Проверьте, при вас ли справочник от Оли и рябина от Тани, и тогда на север, за холмы.",
+ "speaker": "sorokin_oleg",
+ "voice": "River",
+ "voice_id": "SAz9YHcvj6GT2YYXdXww",
+ "voice_design": null,
+ "direction": "[a retired scholar, calm, dry humour, slower, gentle]",
+ "model": "fal-ai/elevenlabs/tts/eleven-v3",
+ "request": {
+  "stability": 0.5,
+  "apply_text_normalization": "auto",
+  "text": "[a retired scholar, calm, dry humour, slower, gentle] Кормушка у вас уже есть, это полдела. Проверьте, при вас ли справочник от Оли и рябина от Тани, и тогда на север, за холмы.",
+  "voice": "River",
+  "language_code": "ru"
+ },
+ "fal_request_id": "01a1d6d8-f9ed-7ce0-a0bd-7698718fc44f",
+ "hash": "68e802d16808"
+}

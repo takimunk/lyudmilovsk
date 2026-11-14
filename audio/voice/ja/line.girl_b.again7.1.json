@@ -1,0 +1,20 @@
+{
+ "key": "line.girl_b.again7.1",
+ "lang": "ja",
+ "text": "ヴェーラに、掲示板のスペクトラムのプログラムを全部印刷してって頼まれるの。印刷してる。でも、彼女の雑誌と同じのは一つもない。",
+ "speaker": "girl_b",
+ "voice": "Sarah",
+ "voice_id": "EXAVITQu4vr4xnSDxMaL",
+ "voice_design": null,
+ "direction": "[curious, slightly uneasy, conspiratorial]",
+ "model": "fal-ai/elevenlabs/tts/eleven-v3",
+ "request": {
+  "stability": 0.5,
+  "apply_text_normalization": "auto",
+  "text": "[curious, slightly uneasy, conspiratorial] ヴェーラに、掲示板のスペクトラムのプログラムを全部印刷してって頼まれるの。印刷してる。でも、彼女の雑誌と同じのは一つもない。",
+  "voice": "Sarah",
+  "language_code": "ja"
+ },
+ "fal_request_id": "01a1d782-1c6e-7580-8697-7d4e2077bc07",
+ "hash": "9bf064a1ffc4"
+}

@@ -1,0 +1,20 @@
+{
+ "key": "line.khuazhev_aslan.tent_ask.3",
+ "lang": "en",
+ "text": "I cannot take a step from this counter. Try three things for me: Valentina's corn, a pie from the machine at the station, and the pancakes at the diner down below.",
+ "speaker": "khuazhev_aslan",
+ "voice": "Brian",
+ "voice_id": "nPczCjzI2devNBz1zQrb",
+ "voice_design": null,
+ "direction": "[hearty, generous, a cheese seller from the Caucasus, proud of his family's cheese]",
+ "model": "fal-ai/elevenlabs/tts/eleven-v3",
+ "request": {
+  "stability": 0.5,
+  "apply_text_normalization": "auto",
+  "text": "[hearty, generous, a cheese seller from the Caucasus, proud of his family's cheese] I cannot take a step from this counter. Try three things for me: Valentina's corn, a pie from the machine at the station, and the pancakes at the diner down below.",
+  "voice": "Brian",
+  "language_code": "en"
+ },
+ "fal_request_id": "01a1d66f-193e-7c41-852d-8e9ddfaa8b94",
+ "hash": "76549c205636"
+}

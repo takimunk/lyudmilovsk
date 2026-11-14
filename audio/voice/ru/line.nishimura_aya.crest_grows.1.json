@@ -1,0 +1,20 @@
+{
+ "key": "line.nishimura_aya.crest_grows.1",
+ "lang": "ru",
+ "text": "Сорокин попросил нарисовать ему свиристеля по памяти. Не по моей, по его. Второй лист, и с каждым рассказом хохолок всё выше.",
+ "speaker": "nishimura_aya",
+ "voice": "Matilda",
+ "voice_id": "XrExE9yKIg1WjnnlVkGX",
+ "voice_design": null,
+ "direction": "[calm, soft, contemplative, a painter talking about the light]",
+ "model": "fal-ai/elevenlabs/tts/eleven-v3",
+ "request": {
+  "stability": 0.5,
+  "apply_text_normalization": "auto",
+  "text": "[calm, soft, contemplative, a painter talking about the light] Сорокин попросил нарисовать ему свиристеля по памяти. Не по моей, по его. Второй лист, и с каждым рассказом хохолок всё выше.",
+  "voice": "Matilda",
+  "language_code": "ru"
+ },
+ "fal_request_id": "01a1d75e-db3a-74c1-bd8b-2604d3ce4b80",
+ "hash": "67bdf9186086"
+}

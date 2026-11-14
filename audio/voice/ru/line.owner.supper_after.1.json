@@ -1,0 +1,20 @@
+{
+ "key": "line.owner.supper_after.1",
+ "lang": "ru",
+ "text": "Чай опять кончился. А сыр ещё остался. Хороший вечер.",
+ "speaker": "owner",
+ "voice": "Daniel",
+ "voice_id": "onwK4e9ZLuTAKqWW03F9",
+ "voice_design": null,
+ "direction": "[calm, tired, slow, a little ironic]",
+ "model": "fal-ai/elevenlabs/tts/eleven-v3",
+ "request": {
+  "stability": 0.5,
+  "apply_text_normalization": "auto",
+  "text": "[calm, tired, slow, a little ironic] Чай опять кончился. А сыр ещё остался. Хороший вечер.",
+  "voice": "Daniel",
+  "language_code": "ru"
+ },
+ "fal_request_id": "01a1d671-5f41-71b0-838c-21d5da077bee",
+ "hash": "7d32d2b72448"
+}

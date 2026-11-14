@@ -1,0 +1,20 @@
+{
+ "key": "line.belov_misha.again4.1",
+ "lang": "ru",
+ "text": "По выходным езжу с термосом на обзорную площадку. Сидишь, смотришь, и голова сама остывает.",
+ "speaker": "belov_misha",
+ "voice": "Liam",
+ "voice_id": "TX3LPaxmHKxFdv7VOQHJ",
+ "voice_design": null,
+ "direction": "[easygoing, amused, a young technician, a little self-ironic]",
+ "model": "fal-ai/elevenlabs/tts/eleven-v3",
+ "request": {
+  "stability": 0.5,
+  "apply_text_normalization": "auto",
+  "text": "[easygoing, amused, a young technician, a little self-ironic] По выходным езжу с термосом на обзорную площадку. Сидишь, смотришь, и голова сама остывает.",
+  "voice": "Liam",
+  "language_code": "ru"
+ },
+ "fal_request_id": "01a1d740-0d51-7bf1-b326-e8018c1e6d85",
+ "hash": "7bc0097237b9"
+}

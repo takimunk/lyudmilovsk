@@ -1,0 +1,20 @@
+{
+ "key": "line.clerk.town_in_grey.2",
+ "lang": "en",
+ "text": "I'm painting it in cells. Seven colours so far, and all of them grey.",
+ "speaker": "clerk",
+ "voice": "Callum",
+ "voice_id": "N2lVS1w4EtoT3dr4eOWO",
+ "voice_design": null,
+ "direction": "[polite, quiet, precise, absorbed in his work]",
+ "model": "fal-ai/elevenlabs/tts/eleven-v3",
+ "request": {
+  "stability": 0.5,
+  "apply_text_normalization": "auto",
+  "text": "[polite, quiet, precise, absorbed in his work] I'm painting it in cells. Seven colours so far, and all of them grey.",
+  "voice": "Callum",
+  "language_code": "en"
+ },
+ "fal_request_id": "01a1d737-b647-7432-a74b-7cef2edeaccd",
+ "hash": "920eb02f0152"
+}

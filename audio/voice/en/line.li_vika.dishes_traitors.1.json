@@ -1,0 +1,20 @@
+{
+ "key": "line.li_vika.dishes_traitors.1",
+ "lang": "en",
+ "text": "I'm on dishes. The week has only begun. And the pigeons still won't come to your feeder. Traitors.",
+ "speaker": "li_vika",
+ "voice": "Laura",
+ "voice_id": "FGY2WhTYpPnrIDTdsKH5",
+ "voice_design": null,
+ "direction": "[playful, quick, a lab assistant joking about her work]",
+ "model": "fal-ai/elevenlabs/tts/eleven-v3",
+ "request": {
+  "stability": 0.5,
+  "apply_text_normalization": "auto",
+  "text": "[playful, quick, a lab assistant joking about her work] I'm on dishes. The week has only begun. And the pigeons still won't come to your feeder. Traitors.",
+  "voice": "Laura",
+  "language_code": "en"
+ },
+ "fal_request_id": "01a1d755-4c25-7c71-bcce-bb85aef1e703",
+ "hash": "0a686de6829f"
+}

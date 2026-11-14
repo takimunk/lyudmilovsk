@@ -1,0 +1,20 @@
+{
+ "key": "line.belov_misha.magpie_crow_friend.2",
+ "lang": "ja",
+ "text": "それを使ってくれ。見つけ物は三つでいい。落とした物、埋めた物、持ってきてくれた物。",
+ "speaker": "belov_misha",
+ "voice": "Liam",
+ "voice_id": "TX3LPaxmHKxFdv7VOQHJ",
+ "voice_design": null,
+ "direction": "[easygoing, amused, a young technician, a little self-ironic]",
+ "model": "fal-ai/elevenlabs/tts/eleven-v3",
+ "request": {
+  "stability": 0.5,
+  "apply_text_normalization": "auto",
+  "text": "[easygoing, amused, a young technician, a little self-ironic] それを使ってくれ。見つけ物は三つでいい。落とした物、埋めた物、持ってきてくれた物。",
+  "voice": "Liam",
+  "language_code": "ja"
+ },
+ "fal_request_id": "01a1d6d3-5660-7971-83ff-cb36822d00cc",
+ "hash": "add05bd62a01"
+}

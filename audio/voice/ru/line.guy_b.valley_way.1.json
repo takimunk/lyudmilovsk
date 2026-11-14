@@ -1,0 +1,20 @@
+{
+ "key": "line.guy_b.valley_way.1",
+ "lang": "ru",
+ "text": "Гулять собрался? Правильно. Я вниз каждый день езжу, на работу.",
+ "speaker": "guy_b",
+ "voice": "Chris",
+ "voice_id": "iP95p4xoKVk53GoZ742B",
+ "voice_design": null,
+ "direction": "[relaxed, lazy, friendly]",
+ "model": "fal-ai/elevenlabs/tts/eleven-v3",
+ "request": {
+  "stability": 0.5,
+  "apply_text_normalization": "auto",
+  "text": "[relaxed, lazy, friendly] Гулять собрался? Правильно. Я вниз каждый день езжу, на работу.",
+  "voice": "Chris",
+  "language_code": "ru"
+ },
+ "fal_request_id": "01a1d739-f3a9-7af0-83a6-fecee0a6cab6",
+ "hash": "de3026a30618"
+}

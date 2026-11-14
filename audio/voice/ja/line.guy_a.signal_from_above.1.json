@@ -1,0 +1,20 @@
+{
+ "key": "line.guy_a.signal_from_above.1",
+ "lang": "ja",
+ "text": "上のほうが電波入るんだろうな。どこか見つけたら教えてくれ。",
+ "speaker": "guy_a",
+ "voice": "Will",
+ "voice_id": "bIHbv24MWmeRgasZH58o",
+ "voice_design": null,
+ "direction": "[a young gamer in a hurry, mid-match]",
+ "model": "fal-ai/elevenlabs/tts/eleven-v3",
+ "request": {
+  "stability": 0.5,
+  "apply_text_normalization": "auto",
+  "text": "[a young gamer in a hurry, mid-match] 上のほうが電波入るんだろうな。どこか見つけたら教えてくれ。",
+  "voice": "Will",
+  "language_code": "ja"
+ },
+ "fal_request_id": "01a1d7b6-abf7-7440-ac1c-1bf7446be305",
+ "hash": "22127244c658"
+}

@@ -644,10 +644,12 @@ namespace LyudBirds
 			std::vector<int> Candidates;
 			std::vector<float> Weights;
 			float Total = 0.f;
+			// a ranged species (FSpecies::bRanged) settles only on the sites of its corner of the map
+			const V3 RangeC(S.RangeX, S.RangeY, 0.f);
 			for (int I = 0; I < (int)Sites.size(); I++)
 			{
 				const float W = S.Forage[(int)Sites[I].Kind] + 0.5f * S.Perch[(int)Sites[I].Kind];
-				if (W > 0.f)
+				if (W > 0.f && (!S.bRanged || (Sites[I].Center() - RangeC).Len2D() <= S.RangeR))
 				{
 					Candidates.push_back(I);
 					Weights.push_back(W);

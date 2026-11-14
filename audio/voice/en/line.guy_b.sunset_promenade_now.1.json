@@ -1,0 +1,20 @@
+{
+ "key": "line.guy_b.sunset_promenade_now.1",
+ "lang": "en",
+ "text": "It's sunset now, go to the promenade. Cable car down, then from the station toward the sea.",
+ "speaker": "guy_b",
+ "voice": "Chris",
+ "voice_id": "iP95p4xoKVk53GoZ742B",
+ "voice_design": null,
+ "direction": "[relaxed, lazy, friendly]",
+ "model": "fal-ai/elevenlabs/tts/eleven-v3",
+ "request": {
+  "stability": 0.5,
+  "apply_text_normalization": "auto",
+  "text": "[relaxed, lazy, friendly] It's sunset now, go to the promenade. Cable car down, then from the station toward the sea.",
+  "voice": "Chris",
+  "language_code": "en"
+ },
+ "fal_request_id": "01a1d739-c873-7152-a418-5644e012c722",
+ "hash": "567cab0c73b2"
+}

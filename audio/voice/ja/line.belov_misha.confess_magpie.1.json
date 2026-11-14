@@ -1,0 +1,20 @@
+{
+ "key": "line.belov_misha.confess_magpie.1",
+ "lang": "ja",
+ "text": "さあカササギ、白状しろ。鍵はどこだ？いいさ、黙ってろ。こっちには捜査官がいるんだ。",
+ "speaker": "belov_misha",
+ "voice": "Liam",
+ "voice_id": "TX3LPaxmHKxFdv7VOQHJ",
+ "voice_design": null,
+ "direction": "[easygoing, amused, a young technician, a little self-ironic]",
+ "model": "fal-ai/elevenlabs/tts/eleven-v3",
+ "request": {
+  "stability": 0.5,
+  "apply_text_normalization": "auto",
+  "text": "[easygoing, amused, a young technician, a little self-ironic] さあカササギ、白状しろ。鍵はどこだ？いいさ、黙ってろ。こっちには捜査官がいるんだ。",
+  "voice": "Liam",
+  "language_code": "ja"
+ },
+ "fal_request_id": "01a1d6e1-9fe1-7170-8e3b-a1c65ebb2c20",
+ "hash": "166fa6117b04"
+}

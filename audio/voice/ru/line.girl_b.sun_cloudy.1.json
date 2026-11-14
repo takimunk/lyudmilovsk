@@ -1,0 +1,20 @@
+{
+ "key": "line.girl_b.sun_cloudy.1",
+ "lang": "ru",
+ "text": "Пасмурно. В такие дни на форуме сразу три новые темы про солнце. И ни в одной нет ответов.",
+ "speaker": "girl_b",
+ "voice": "Sarah",
+ "voice_id": "EXAVITQu4vr4xnSDxMaL",
+ "voice_design": null,
+ "direction": "[curious, slightly uneasy, conspiratorial]",
+ "model": "fal-ai/elevenlabs/tts/eleven-v3",
+ "request": {
+  "stability": 0.5,
+  "apply_text_normalization": "auto",
+  "text": "[curious, slightly uneasy, conspiratorial] Пасмурно. В такие дни на форуме сразу три новые темы про солнце. И ни в одной нет ответов.",
+  "voice": "Sarah",
+  "language_code": "ru"
+ },
+ "fal_request_id": "01a1d782-1260-7290-96e2-a417990a85bc",
+ "hash": "d3eb06c50c28"
+}

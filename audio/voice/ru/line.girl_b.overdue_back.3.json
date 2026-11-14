@@ -1,0 +1,20 @@
+{
+ "key": "line.girl_b.overdue_back.3",
+ "lang": "ru",
+ "text": "Запишу в формуляр: «выдан бессрочно, на нужды науки». Такой графы нет, но я нарисую.",
+ "speaker": "girl_b",
+ "voice": "Sarah",
+ "voice_id": "EXAVITQu4vr4xnSDxMaL",
+ "voice_design": null,
+ "direction": "[curious, slightly uneasy, conspiratorial]",
+ "model": "fal-ai/elevenlabs/tts/eleven-v3",
+ "request": {
+  "stability": 0.5,
+  "apply_text_normalization": "auto",
+  "text": "[curious, slightly uneasy, conspiratorial] Запишу в формуляр: «выдан бессрочно, на нужды науки». Такой графы нет, но я нарисую.",
+  "voice": "Sarah",
+  "language_code": "ru"
+ },
+ "fal_request_id": "01a1d66b-fff0-7133-8b6e-91512c45ef13",
+ "hash": "d964f1588ef1"
+}

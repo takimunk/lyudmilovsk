@@ -1,0 +1,20 @@
+{
+ "key": "line.lange_pyotr.catch_wait_hint.1",
+ "lang": "en",
+ "text": "End of the pier, by the piles. Let the float go right under, then strike: sooner is too soon, later is too late.",
+ "speaker": "lange_pyotr",
+ "voice": "Brian",
+ "voice_id": "nPczCjzI2devNBz1zQrb",
+ "voice_design": null,
+ "direction": "[gruff, unhurried, a weathered fisherman of few words]",
+ "model": "fal-ai/elevenlabs/tts/eleven-v3",
+ "request": {
+  "stability": 0.5,
+  "apply_text_normalization": "auto",
+  "text": "[gruff, unhurried, a weathered fisherman of few words] End of the pier, by the piles. Let the float go right under, then strike: sooner is too soon, later is too late.",
+  "voice": "Brian",
+  "language_code": "en"
+ },
+ "fal_request_id": "01a1d6db-a332-7d60-979e-b30a705fe96b",
+ "hash": "482534abc046"
+}

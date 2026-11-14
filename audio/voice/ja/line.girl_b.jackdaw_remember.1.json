@@ -1,0 +1,20 @@
+{
+ "key": "line.girl_b.jackdaw_remember.1",
+ "lang": "ja",
+ "text": "ニシコクマルガラスね。掲示板に、顔を覚える鳥だって書いてあった。私の顔も覚えておいて。念のため。",
+ "speaker": "girl_b",
+ "voice": "Sarah",
+ "voice_id": "EXAVITQu4vr4xnSDxMaL",
+ "voice_design": null,
+ "direction": "[curious, slightly uneasy, conspiratorial]",
+ "model": "fal-ai/elevenlabs/tts/eleven-v3",
+ "request": {
+  "stability": 0.5,
+  "apply_text_normalization": "auto",
+  "text": "[curious, slightly uneasy, conspiratorial] ニシコクマルガラスね。掲示板に、顔を覚える鳥だって書いてあった。私の顔も覚えておいて。念のため。",
+  "voice": "Sarah",
+  "language_code": "ja"
+ },
+ "fal_request_id": "01a1d7b6-267e-7fa3-9a81-c9884b3be642",
+ "hash": "659506d37a88"
+}

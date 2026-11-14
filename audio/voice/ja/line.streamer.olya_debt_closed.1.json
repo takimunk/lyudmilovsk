@@ -1,0 +1,20 @@
+{
+ "key": "line.streamer.olya_debt_closed.1",
+ "lang": "ja",
+ "text": "チャット、ニュースだよ。オーリャが未返却を片づけた。半年ぶら下がってたやつ。もう全部聞いたよ、細かいところまで。",
+ "speaker": "streamer",
+ "voice": "Jessica",
+ "voice_id": "cgSgspJ2msm6clMCkdW9",
+ "voice_design": null,
+ "direction": "[bright, fast, half talking to her chat]",
+ "model": "fal-ai/elevenlabs/tts/eleven-v3",
+ "request": {
+  "stability": 0.5,
+  "apply_text_normalization": "auto",
+  "text": "[bright, fast, half talking to her chat] チャット、ニュースだよ。オーリャが未返却を片づけた。半年ぶら下がってたやつ。もう全部聞いたよ、細かいところまで。",
+  "voice": "Jessica",
+  "language_code": "ja"
+ },
+ "fal_request_id": "01a1d7ab-f074-7782-ab54-9252691f3932",
+ "hash": "dc2567840c67"
+}

@@ -1,0 +1,20 @@
+{
+ "key": "line.khuazhev_aslan.tent_report.3",
+ "lang": "en",
+ "text": "Valentina does not spare the salt, I respect that. Pancakes with sour cream: so they love their dairy here. But a pie out of an iron box, ah.",
+ "speaker": "khuazhev_aslan",
+ "voice": "Brian",
+ "voice_id": "nPczCjzI2devNBz1zQrb",
+ "voice_design": null,
+ "direction": "[hearty, generous, a cheese seller from the Caucasus, proud of his family's cheese]",
+ "model": "fal-ai/elevenlabs/tts/eleven-v3",
+ "request": {
+  "stability": 0.5,
+  "apply_text_normalization": "auto",
+  "text": "[hearty, generous, a cheese seller from the Caucasus, proud of his family's cheese] Valentina does not spare the salt, I respect that. Pancakes with sour cream: so they love their dairy here. But a pie out of an iron box, ah.",
+  "voice": "Brian",
+  "language_code": "en"
+ },
+ "fal_request_id": "01a1d66f-6cf8-7700-8d78-80ce33db1f34",
+ "hash": "a95e640e867e"
+}

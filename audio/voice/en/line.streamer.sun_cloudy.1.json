@@ -1,0 +1,20 @@
+{
+ "key": "line.streamer.sun_cloudy.1",
+ "lang": "en",
+ "text": "Chat says it's overcast. I could tell already: my skin feels cold, though it's warm in here.",
+ "speaker": "streamer",
+ "voice": "Jessica",
+ "voice_id": "cgSgspJ2msm6clMCkdW9",
+ "voice_design": null,
+ "direction": "[bright, fast, half talking to her chat]",
+ "model": "fal-ai/elevenlabs/tts/eleven-v3",
+ "request": {
+  "stability": 0.5,
+  "apply_text_normalization": "auto",
+  "text": "[bright, fast, half talking to her chat] Chat says it's overcast. I could tell already: my skin feels cold, though it's warm in here.",
+  "voice": "Jessica",
+  "language_code": "en"
+ },
+ "fal_request_id": "01a1d786-fc06-7141-b758-795a6b95aeee",
+ "hash": "8cea7f193e04"
+}

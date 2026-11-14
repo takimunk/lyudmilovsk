@@ -1,0 +1,29 @@
+{
+ "key": "line.sato_yuki.crow_ask.4",
+ "lang": "en",
+ "text": "Only I'm scared of them. They look at me as if they knew everything about me. You feed them.",
+ "speaker": "sato_yuki",
+ "voice": "Lovely_Girl",
+ "voice_id": "Lovely_Girl",
+ "voice_design": null,
+ "direction": "",
+ "model": "fal-ai/minimax/speech-2.6-hd",
+ "request": {
+  "prompt": "Only I'm scared of them. They look at me as if they knew everything about me. You feed them.",
+  "voice_setting": {
+   "speed": 1,
+   "pitch": 0,
+   "vol": 1,
+   "voice_id": "Lovely_Girl"
+  },
+  "language_boost": "English",
+  "audio_setting": {
+   "sample_rate": 24000,
+   "format": "mp3",
+   "channel": 1
+  },
+  "output_format": "url"
+ },
+ "fal_request_id": "01a1d591-ef75-7520-a510-285898505ba3",
+ "hash": "800f20c4ac99"
+}

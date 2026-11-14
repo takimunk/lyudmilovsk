@@ -1,0 +1,20 @@
+{
+ "key": "line.streamer.sun_night.1",
+ "lang": "en",
+ "text": "Night's when I get the most viewers. As if the sun went away and everyone came here instead.",
+ "speaker": "streamer",
+ "voice": "Jessica",
+ "voice_id": "cgSgspJ2msm6clMCkdW9",
+ "voice_design": null,
+ "direction": "[bright, fast, half talking to her chat]",
+ "model": "fal-ai/elevenlabs/tts/eleven-v3",
+ "request": {
+  "stability": 0.5,
+  "apply_text_normalization": "auto",
+  "text": "[bright, fast, half talking to her chat] Night's when I get the most viewers. As if the sun went away and everyone came here instead.",
+  "voice": "Jessica",
+  "language_code": "en"
+ },
+ "fal_request_id": "01a1d787-3043-7fc0-a1ac-507ba810dc73",
+ "hash": "c911190ea634"
+}

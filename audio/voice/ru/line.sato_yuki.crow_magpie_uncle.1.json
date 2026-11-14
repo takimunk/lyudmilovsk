@@ -1,0 +1,29 @@
+{
+ "key": "line.sato_yuki.crow_magpie_uncle.1",
+ "lang": "ru",
+ "text": "Дядя Миша говорит, ты ему сорочьи находки собирал. Ты, наверное, со всеми птицами знаком.",
+ "speaker": "sato_yuki",
+ "voice": "Lovely_Girl",
+ "voice_id": "Lovely_Girl",
+ "voice_design": null,
+ "direction": "",
+ "model": "fal-ai/minimax/speech-2.6-hd",
+ "request": {
+  "prompt": "Дядя Миша говорит, ты ему сорочьи находки собирал. Ты, наверное, со всеми птицами знаком.",
+  "voice_setting": {
+   "speed": 1,
+   "pitch": 0,
+   "vol": 1,
+   "voice_id": "Lovely_Girl"
+  },
+  "language_boost": "Russian",
+  "audio_setting": {
+   "sample_rate": 24000,
+   "format": "mp3",
+   "channel": 1
+  },
+  "output_format": "url"
+ },
+ "fal_request_id": "01a1d6e9-5efe-7f83-ae71-e61ffab15b97",
+ "hash": "ba071e50f8bc"
+}

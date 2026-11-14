@@ -1,0 +1,20 @@
+{
+ "key": "line.zotov_lev.again4.1",
+ "lang": "ru",
+ "text": "Осенью я читаю дома, с лампой и пледом. Галина говорит, что я похож на экспонат.",
+ "speaker": "zotov_lev",
+ "voice": "George",
+ "voice_id": "JBFqnCBsd6RMkjVDRZzb",
+ "voice_design": null,
+ "direction": "[dry, thoughtful, unhurried, a physicist's quiet irony]",
+ "model": "fal-ai/elevenlabs/tts/eleven-v3",
+ "request": {
+  "stability": 0.5,
+  "apply_text_normalization": "auto",
+  "text": "[dry, thoughtful, unhurried, a physicist's quiet irony] Осенью я читаю дома, с лампой и пледом. Галина говорит, что я похож на экспонат.",
+  "voice": "George",
+  "language_code": "ru"
+ },
+ "fal_request_id": "01a1d74a-56df-7953-90b6-3d5a5aa9ca5a",
+ "hash": "48c60af33c77"
+}

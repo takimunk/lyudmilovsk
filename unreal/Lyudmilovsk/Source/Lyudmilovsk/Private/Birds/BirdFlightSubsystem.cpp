@@ -1165,6 +1165,10 @@ bool UBirdFlightSubsystem::RecallBird()
 
 void UBirdFlightSubsystem::HandleCall()
 {
+	if (const ABirdPawn* Caller = Bird.Get())
+	{
+		OnPlayerCall.Broadcast(Caller->GetSpecies(), Caller->FeetLocation(), Caller->GetMode() == EBirdMode::Air);
+	}
 #if LYUD_HAS_BIRDLIFE
 	ABirdPawn* B = Bird.Get();
 	UBirdLifeSubsystem* Life = GetWorld()->GetSubsystem<UBirdLifeSubsystem>();

@@ -1,0 +1,20 @@
+{
+ "key": "line.girl_b.waxwing_guide.1",
+ "lang": "en",
+ "text": "The bird guide? Sorokin sent you, didn't he? There it is, on my desk.",
+ "speaker": "girl_b",
+ "voice": "Sarah",
+ "voice_id": "EXAVITQu4vr4xnSDxMaL",
+ "voice_design": null,
+ "direction": "[curious, slightly uneasy, conspiratorial]",
+ "model": "fal-ai/elevenlabs/tts/eleven-v3",
+ "request": {
+  "stability": 0.5,
+  "apply_text_normalization": "auto",
+  "text": "[curious, slightly uneasy, conspiratorial] The bird guide? Sorokin sent you, didn't he? There it is, on my desk.",
+  "voice": "Sarah",
+  "language_code": "en"
+ },
+ "fal_request_id": "01a1d589-a093-7480-86cd-8736c92ddbd7",
+ "hash": "9fa09bd49bf5"
+}

@@ -1,0 +1,29 @@
+{
+ "key": "line.sato_yuki.sun_day.1",
+ "lang": "ja",
+ "text": "おひさまの下で目をつぶっても、ぜんぶ赤いの。おひさまって、目をつぶっても見えるんだね。",
+ "speaker": "sato_yuki",
+ "voice": "Lovely_Girl",
+ "voice_id": "Lovely_Girl",
+ "voice_design": null,
+ "direction": "",
+ "model": "fal-ai/minimax/speech-2.6-hd",
+ "request": {
+  "prompt": "おひさまの下で目をつぶっても、ぜんぶ赤いの。おひさまって、目をつぶっても見えるんだね。",
+  "voice_setting": {
+   "speed": 1,
+   "pitch": 0,
+   "vol": 1,
+   "voice_id": "Lovely_Girl"
+  },
+  "language_boost": "Japanese",
+  "audio_setting": {
+   "sample_rate": 24000,
+   "format": "mp3",
+   "channel": 1
+  },
+  "output_format": "url"
+ },
+ "fal_request_id": "01a1d749-314c-7f13-a277-dbe542bea702",
+ "hash": "8d7fe71a1907"
+}

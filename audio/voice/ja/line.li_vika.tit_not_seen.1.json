@@ -1,0 +1,20 @@
+{
+ "key": "line.li_vika.tit_not_seen.1",
+ "lang": "ja",
+ "text": "シジュウカラか。ダーシャなら記録するね。私は見なかったことにする。",
+ "speaker": "li_vika",
+ "voice": "Laura",
+ "voice_id": "FGY2WhTYpPnrIDTdsKH5",
+ "voice_design": null,
+ "direction": "[playful, quick, a lab assistant joking about her work]",
+ "model": "fal-ai/elevenlabs/tts/eleven-v3",
+ "request": {
+  "stability": 0.5,
+  "apply_text_normalization": "auto",
+  "text": "[playful, quick, a lab assistant joking about her work] シジュウカラか。ダーシャなら記録するね。私は見なかったことにする。",
+  "voice": "Laura",
+  "language_code": "ja"
+ },
+ "fal_request_id": "01a1d7b7-8476-7fd3-8d9a-9b0be5a28d16",
+ "hash": "0780f8131180"
+}

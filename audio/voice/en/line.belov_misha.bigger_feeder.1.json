@@ -1,0 +1,20 @@
+{
+ "key": "line.belov_misha.bigger_feeder.1",
+ "lang": "en",
+ "text": "Sorokin ordered a bigger feeder from me, in case the others turn up. There's nothing to solder in it, but I said yes.",
+ "speaker": "belov_misha",
+ "voice": "Liam",
+ "voice_id": "TX3LPaxmHKxFdv7VOQHJ",
+ "voice_design": null,
+ "direction": "[easygoing, amused, a young technician, a little self-ironic]",
+ "model": "fal-ai/elevenlabs/tts/eleven-v3",
+ "request": {
+  "stability": 0.5,
+  "apply_text_normalization": "auto",
+  "text": "[easygoing, amused, a young technician, a little self-ironic] Sorokin ordered a bigger feeder from me, in case the others turn up. There's nothing to solder in it, but I said yes.",
+  "voice": "Liam",
+  "language_code": "en"
+ },
+ "fal_request_id": "01a1d75d-2b05-7743-84b7-9427f3a90ec2",
+ "hash": "34ad8a2976d2"
+}

@@ -1,0 +1,20 @@
+{
+ "key": "line.belov_misha.again2.1",
+ "lang": "ru",
+ "text": "Купил в городе паяльную станцию. Теперь паяю дома, и соседи думают, что я варю что-то странное.",
+ "speaker": "belov_misha",
+ "voice": "Liam",
+ "voice_id": "TX3LPaxmHKxFdv7VOQHJ",
+ "voice_design": null,
+ "direction": "[easygoing, amused, a young technician, a little self-ironic]",
+ "model": "fal-ai/elevenlabs/tts/eleven-v3",
+ "request": {
+  "stability": 0.5,
+  "apply_text_normalization": "auto",
+  "text": "[easygoing, amused, a young technician, a little self-ironic] Купил в городе паяльную станцию. Теперь паяю дома, и соседи думают, что я варю что-то странное.",
+  "voice": "Liam",
+  "language_code": "ru"
+ },
+ "fal_request_id": "01a1d73f-d225-74b1-8e9d-f07cf9c9a1a2",
+ "hash": "63d2d55a3207"
+}

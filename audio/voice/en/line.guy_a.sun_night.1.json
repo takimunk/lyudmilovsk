@@ -1,0 +1,20 @@
+{
+ "key": "line.guy_a.sun_night.1",
+ "lang": "en",
+ "text": "At night the ping's twelve. Everyone's asleep, even the sun. Just me in the lobby.",
+ "speaker": "guy_a",
+ "voice": "Will",
+ "voice_id": "bIHbv24MWmeRgasZH58o",
+ "voice_design": null,
+ "direction": "[a young gamer in a hurry, mid-match]",
+ "model": "fal-ai/elevenlabs/tts/eleven-v3",
+ "request": {
+  "stability": 0.5,
+  "apply_text_normalization": "auto",
+  "text": "[a young gamer in a hurry, mid-match] At night the ping's twelve. Everyone's asleep, even the sun. Just me in the lobby.",
+  "voice": "Will",
+  "language_code": "en"
+ },
+ "fal_request_id": "01a1d782-ee5e-7300-b70b-36d031f41cf6",
+ "hash": "1358242fabe5"
+}

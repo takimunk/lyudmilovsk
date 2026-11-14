@@ -1,0 +1,20 @@
+{
+ "key": "line.guy_b.robin_clean_e.1",
+ "lang": "ru",
+ "text": "Зарянка. Поёшь точнее, чем вентиляция. Почти чистое ми.",
+ "speaker": "guy_b",
+ "voice": "Chris",
+ "voice_id": "iP95p4xoKVk53GoZ742B",
+ "voice_design": null,
+ "direction": "[relaxed, lazy, friendly]",
+ "model": "fal-ai/elevenlabs/tts/eleven-v3",
+ "request": {
+  "stability": 0.5,
+  "apply_text_normalization": "auto",
+  "text": "[relaxed, lazy, friendly] Зарянка. Поёшь точнее, чем вентиляция. Почти чистое ми.",
+  "voice": "Chris",
+  "language_code": "ru"
+ },
+ "fal_request_id": "01a1d739-9f85-70b2-93d5-21490088ce5a",
+ "hash": "7d13fc4f1a77"
+}

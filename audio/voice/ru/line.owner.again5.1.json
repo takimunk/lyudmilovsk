@@ -1,0 +1,20 @@
+{
+ "key": "line.owner.again5.1",
+ "lang": "ru",
+ "text": "Ямада иногда приносит мне распечатку своей горы. Я её не понимаю. Но храню в будке.",
+ "speaker": "owner",
+ "voice": "Daniel",
+ "voice_id": "onwK4e9ZLuTAKqWW03F9",
+ "voice_design": null,
+ "direction": "[calm, tired, slow, a little ironic]",
+ "model": "fal-ai/elevenlabs/tts/eleven-v3",
+ "request": {
+  "stability": 0.5,
+  "apply_text_normalization": "auto",
+  "text": "[calm, tired, slow, a little ironic] Ямада иногда приносит мне распечатку своей горы. Я её не понимаю. Но храню в будке.",
+  "voice": "Daniel",
+  "language_code": "ru"
+ },
+ "fal_request_id": "01a1d785-df0f-7332-a652-822e70ea9091",
+ "hash": "9b6daeab50da"
+}

@@ -1,0 +1,20 @@
+{
+ "key": "line.streamer.magpie_one_mic.1",
+ "lang": "ru",
+ "text": "Сорока. Чат пишет, что ты утащишь мой микрофон. Не надо, он у меня один.",
+ "speaker": "streamer",
+ "voice": "Jessica",
+ "voice_id": "cgSgspJ2msm6clMCkdW9",
+ "voice_design": null,
+ "direction": "[bright, fast, half talking to her chat]",
+ "model": "fal-ai/elevenlabs/tts/eleven-v3",
+ "request": {
+  "stability": 0.5,
+  "apply_text_normalization": "auto",
+  "text": "[bright, fast, half talking to her chat] Сорока. Чат пишет, что ты утащишь мой микрофон. Не надо, он у меня один.",
+  "voice": "Jessica",
+  "language_code": "ru"
+ },
+ "fal_request_id": "01a1d73e-2d3c-7870-a26c-b45b5403b6ba",
+ "hash": "faf15d72a838"
+}

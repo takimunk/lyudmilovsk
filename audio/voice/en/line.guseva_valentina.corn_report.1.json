@@ -1,0 +1,29 @@
+{
+ "key": "line.guseva_valentina.corn_report.1",
+ "lang": "en",
+ "text": "Well, how's Vanya? Did he eat it? What did he say?",
+ "speaker": "guseva_valentina",
+ "voice": "Abbess",
+ "voice_id": "Abbess",
+ "voice_design": null,
+ "direction": "",
+ "model": "fal-ai/minimax/speech-2.6-hd",
+ "request": {
+  "prompt": "Well, how's Vanya? Did he eat it? What did he say?",
+  "voice_setting": {
+   "speed": 1,
+   "pitch": 0,
+   "vol": 1,
+   "voice_id": "Abbess"
+  },
+  "language_boost": "English",
+  "audio_setting": {
+   "sample_rate": 24000,
+   "format": "mp3",
+   "channel": 1
+  },
+  "output_format": "url"
+ },
+ "fal_request_id": "01a1d66c-f8a1-7b00-8f12-0927b835cc11",
+ "hash": "84c3699bde49"
+}

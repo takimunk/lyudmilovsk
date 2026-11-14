@@ -1,0 +1,20 @@
+{
+ "key": "line.nishimura_aya.views_wait_gull.1",
+ "lang": "ja",
+ "text": "今日は島で一日じゅう一羽のカモメを描いていたの。最後までとまらなかった。三か所、ゆっくりね。",
+ "speaker": "nishimura_aya",
+ "voice": "Matilda",
+ "voice_id": "XrExE9yKIg1WjnnlVkGX",
+ "voice_design": null,
+ "direction": "[calm, soft, contemplative, a painter talking about the light]",
+ "model": "fal-ai/elevenlabs/tts/eleven-v3",
+ "request": {
+  "stability": 0.5,
+  "apply_text_normalization": "auto",
+  "text": "[calm, soft, contemplative, a painter talking about the light] 今日は島で一日じゅう一羽のカモメを描いていたの。最後までとまらなかった。三か所、ゆっくりね。",
+  "voice": "Matilda",
+  "language_code": "ja"
+ },
+ "fal_request_id": "01a1d6d7-1ee7-79e2-b62f-01643b799ceb",
+ "hash": "1084ce630af1"
+}

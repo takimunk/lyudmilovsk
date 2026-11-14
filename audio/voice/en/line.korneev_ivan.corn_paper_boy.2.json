@@ -1,0 +1,20 @@
+{
+ "key": "line.korneev_ivan.corn_paper_boy.2",
+ "lang": "en",
+ "text": "And now a cob from Valya, still hot. Tell her the salt's just right, and I'll drop by once the fish stop biting.",
+ "speaker": "korneev_ivan",
+ "voice": "Bill",
+ "voice_id": "pqHfZKP75CvOlQylNhV4",
+ "voice_design": null,
+ "direction": "[an old man, slow, a little gravelly, contented, a quiet joke at the end]",
+ "model": "fal-ai/elevenlabs/tts/eleven-v3",
+ "request": {
+  "stability": 0.5,
+  "apply_text_normalization": "auto",
+  "text": "[an old man, slow, a little gravelly, contented, a quiet joke at the end] And now a cob from Valya, still hot. Tell her the salt's just right, and I'll drop by once the fish stop biting.",
+  "voice": "Bill",
+  "language_code": "en"
+ },
+ "fal_request_id": "01a1d6db-1180-70a0-acb2-37b249916966",
+ "hash": "6f5ec34a3ff9"
+}

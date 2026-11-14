@@ -1,0 +1,20 @@
+{
+ "key": "line.nishimura_aya.views_tell.1",
+ "lang": "ru",
+ "text": "По лицу вижу, что ходил. Рассказывай. Только не словами из путеводителя.",
+ "speaker": "nishimura_aya",
+ "voice": "Matilda",
+ "voice_id": "XrExE9yKIg1WjnnlVkGX",
+ "voice_design": null,
+ "direction": "[calm, soft, contemplative, a painter talking about the light]",
+ "model": "fal-ai/elevenlabs/tts/eleven-v3",
+ "request": {
+  "stability": 0.5,
+  "apply_text_normalization": "auto",
+  "text": "[calm, soft, contemplative, a painter talking about the light] По лицу вижу, что ходил. Рассказывай. Только не словами из путеводителя.",
+  "voice": "Matilda",
+  "language_code": "ru"
+ },
+ "fal_request_id": "01a1d661-7d83-7e83-936c-bf78ea69e790",
+ "hash": "2a577a92032e"
+}

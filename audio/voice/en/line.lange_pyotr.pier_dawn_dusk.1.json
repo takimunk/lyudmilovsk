@@ -1,0 +1,20 @@
+{
+ "key": "line.lange_pyotr.pier_dawn_dusk.1",
+ "lang": "en",
+ "text": "Now's the very time: at first light and last light the fish get bolder.",
+ "speaker": "lange_pyotr",
+ "voice": "Brian",
+ "voice_id": "nPczCjzI2devNBz1zQrb",
+ "voice_design": null,
+ "direction": "[gruff, unhurried, a weathered fisherman of few words]",
+ "model": "fal-ai/elevenlabs/tts/eleven-v3",
+ "request": {
+  "stability": 0.5,
+  "apply_text_normalization": "auto",
+  "text": "[gruff, unhurried, a weathered fisherman of few words] Now's the very time: at first light and last light the fish get bolder.",
+  "voice": "Brian",
+  "language_code": "en"
+ },
+ "fal_request_id": "01a1d755-370c-7a23-b988-abbd91557b39",
+ "hash": "1474f156fd5c"
+}

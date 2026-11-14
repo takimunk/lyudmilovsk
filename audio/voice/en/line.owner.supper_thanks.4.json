@@ -1,0 +1,20 @@
+{
+ "key": "line.owner.supper_thanks.4",
+ "lang": "en",
+ "text": "Here. It isn't payment, it's your change. And the feed is for the birds, it's their supper time too.",
+ "speaker": "owner",
+ "voice": "Daniel",
+ "voice_id": "onwK4e9ZLuTAKqWW03F9",
+ "voice_design": null,
+ "direction": "[calm, tired, slow, a little ironic]",
+ "model": "fal-ai/elevenlabs/tts/eleven-v3",
+ "request": {
+  "stability": 0.5,
+  "apply_text_normalization": "auto",
+  "text": "[calm, tired, slow, a little ironic] Here. It isn't payment, it's your change. And the feed is for the birds, it's their supper time too.",
+  "voice": "Daniel",
+  "language_code": "en"
+ },
+ "fal_request_id": "01a1d672-8c7a-78d2-b8db-68e6d3faff47",
+ "hash": "9ef0949398b2"
+}

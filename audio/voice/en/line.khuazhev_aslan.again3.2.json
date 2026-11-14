@@ -1,0 +1,20 @@
+{
+ "key": "line.khuazhev_aslan.again3.2",
+ "lang": "en",
+ "text": "I do, my friend. That is why I sell cheese: every round smells of our yard back home.",
+ "speaker": "khuazhev_aslan",
+ "voice": "Brian",
+ "voice_id": "nPczCjzI2devNBz1zQrb",
+ "voice_design": null,
+ "direction": "[hearty, generous, a cheese seller from the Caucasus, proud of his family's cheese]",
+ "model": "fal-ai/elevenlabs/tts/eleven-v3",
+ "request": {
+  "stability": 0.5,
+  "apply_text_normalization": "auto",
+  "text": "[hearty, generous, a cheese seller from the Caucasus, proud of his family's cheese] I do, my friend. That is why I sell cheese: every round smells of our yard back home.",
+  "voice": "Brian",
+  "language_code": "en"
+ },
+ "fal_request_id": "01a1d743-1bd5-74d2-a4c0-e9ed4dcc4b2f",
+ "hash": "584edaf5f1b7"
+}

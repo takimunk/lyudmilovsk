@@ -1,0 +1,20 @@
+{
+ "key": "line.zotova_galina.sodalab_tell.3",
+ "lang": "ja",
+ "text": "「緑」は味ではありませんが、記録には残します。仮説は否定されました。シロップは四種類です。",
+ "speaker": "zotova_galina",
+ "voice": "Alice",
+ "voice_id": "Xb7hH8MSUJpSbSDYk0k2",
+ "voice_design": null,
+ "direction": "[warm, chatty, fondly exasperated with her husband]",
+ "model": "fal-ai/elevenlabs/tts/eleven-v3",
+ "request": {
+  "stability": 0.5,
+  "apply_text_normalization": "auto",
+  "text": "[warm, chatty, fondly exasperated with her husband] 「緑」は味ではありませんが、記録には残します。仮説は否定されました。シロップは四種類です。",
+  "voice": "Alice",
+  "language_code": "ja"
+ },
+ "fal_request_id": "01a1d678-7ea4-7992-9fed-193e0f679fc2",
+ "hash": "a7ecce395544"
+}

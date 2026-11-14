@@ -1,0 +1,20 @@
+{
+ "key": "line.kimura_dasha.no_column_yet.1",
+ "lang": "ru",
+ "text": "Хохолок, красные капли на крыльях. В моей таблице для тебя нет графы. Сиди, я заведу новую.",
+ "speaker": "kimura_dasha",
+ "voice": "Charlotte",
+ "voice_id": "XB0fDUnXU5powFXDhCwa",
+ "voice_design": null,
+ "direction": "[a tired physics student, wry, self-ironic]",
+ "model": "fal-ai/elevenlabs/tts/eleven-v3",
+ "request": {
+  "stability": 0.5,
+  "apply_text_normalization": "auto",
+  "text": "[a tired physics student, wry, self-ironic] Хохолок, красные капли на крыльях. В моей таблице для тебя нет графы. Сиди, я заведу новую.",
+  "voice": "Charlotte",
+  "language_code": "ru"
+ },
+ "fal_request_id": "01a1d75d-fe43-7380-91ea-0019e1d7a79f",
+ "hash": "5ca181336aef"
+}

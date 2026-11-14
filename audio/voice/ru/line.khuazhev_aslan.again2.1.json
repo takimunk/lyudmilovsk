@@ -1,0 +1,20 @@
+{
+ "key": "line.khuazhev_aslan.again2.1",
+ "lang": "ru",
+ "text": "Мама звонила. Спрашивает, не похудел ли я. Сказал, нет. Сыр рядом, как тут похудеешь?",
+ "speaker": "khuazhev_aslan",
+ "voice": "Brian",
+ "voice_id": "nPczCjzI2devNBz1zQrb",
+ "voice_design": null,
+ "direction": "[hearty, generous, a cheese seller from the Caucasus, proud of his family's cheese]",
+ "model": "fal-ai/elevenlabs/tts/eleven-v3",
+ "request": {
+  "stability": 0.5,
+  "apply_text_normalization": "auto",
+  "text": "[hearty, generous, a cheese seller from the Caucasus, proud of his family's cheese] Мама звонила. Спрашивает, не похудел ли я. Сказал, нет. Сыр рядом, как тут похудеешь?",
+  "voice": "Brian",
+  "language_code": "ru"
+ },
+ "fal_request_id": "01a1d742-b34a-7990-bad1-c813d240737e",
+ "hash": "aa8fb4083c16"
+}

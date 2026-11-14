@@ -1,0 +1,20 @@
+{
+ "key": "line.owner.door_never_locked.1",
+ "lang": "en",
+ "text": "The door's right past the booth. Heavy, but not locked. Nobody here ever locks it.",
+ "speaker": "owner",
+ "voice": "Daniel",
+ "voice_id": "onwK4e9ZLuTAKqWW03F9",
+ "voice_design": null,
+ "direction": "[calm, tired, slow, a little ironic]",
+ "model": "fal-ai/elevenlabs/tts/eleven-v3",
+ "request": {
+  "stability": 0.5,
+  "apply_text_normalization": "auto",
+  "text": "[calm, tired, slow, a little ironic] The door's right past the booth. Heavy, but not locked. Nobody here ever locks it.",
+  "voice": "Daniel",
+  "language_code": "en"
+ },
+ "fal_request_id": "01a1d73d-0b38-7900-955e-cdad0c224405",
+ "hash": "eac3cb27878f"
+}

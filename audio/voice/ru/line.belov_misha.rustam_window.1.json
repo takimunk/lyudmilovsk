@@ -1,0 +1,20 @@
+{
+ "key": "line.belov_misha.rustam_window.1",
+ "lang": "ru",
+ "text": "Рустам весь вечер косится на край плато, говорит, ждёт сигнала. Ты, случайно, не сигнал?",
+ "speaker": "belov_misha",
+ "voice": "Liam",
+ "voice_id": "TX3LPaxmHKxFdv7VOQHJ",
+ "voice_design": null,
+ "direction": "[easygoing, amused, a young technician, a little self-ironic]",
+ "model": "fal-ai/elevenlabs/tts/eleven-v3",
+ "request": {
+  "stability": 0.5,
+  "apply_text_normalization": "auto",
+  "text": "[easygoing, amused, a young technician, a little self-ironic] Рустам весь вечер косится на край плато, говорит, ждёт сигнала. Ты, случайно, не сигнал?",
+  "voice": "Liam",
+  "language_code": "ru"
+ },
+ "fal_request_id": "01a1d754-6fc4-75a1-9ad2-abefaee8ecbd",
+ "hash": "cad03204d099"
+}

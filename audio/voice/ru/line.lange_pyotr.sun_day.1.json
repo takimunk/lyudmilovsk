@@ -1,0 +1,20 @@
+{
+ "key": "line.lange_pyotr.sun_day.1",
+ "lang": "ru",
+ "text": "Днём солнце в воду до самого дна бьёт. Рыба уходит глубже, а я сижу и руки грею.",
+ "speaker": "lange_pyotr",
+ "voice": "Brian",
+ "voice_id": "nPczCjzI2devNBz1zQrb",
+ "voice_design": null,
+ "direction": "[gruff, unhurried, a weathered fisherman of few words]",
+ "model": "fal-ai/elevenlabs/tts/eleven-v3",
+ "request": {
+  "stability": 0.5,
+  "apply_text_normalization": "auto",
+  "text": "[gruff, unhurried, a weathered fisherman of few words] Днём солнце в воду до самого дна бьёт. Рыба уходит глубже, а я сижу и руки грею.",
+  "voice": "Brian",
+  "language_code": "ru"
+ },
+ "fal_request_id": "01a1d745-401a-74c3-a76f-0435e6e38d66",
+ "hash": "8efb7c80baea"
+}

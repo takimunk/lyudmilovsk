@@ -1,0 +1,20 @@
+{
+ "key": "line.owner.supper_where.1",
+ "lang": "ja",
+ "text": "三つ編みは入口のアスランのテントだ。八時まで、月曜は休み。「バイカル」はこのホールの自販機にある。",
+ "speaker": "owner",
+ "voice": "Daniel",
+ "voice_id": "onwK4e9ZLuTAKqWW03F9",
+ "voice_design": null,
+ "direction": "[calm, tired, slow, a little ironic]",
+ "model": "fal-ai/elevenlabs/tts/eleven-v3",
+ "request": {
+  "stability": 0.5,
+  "apply_text_normalization": "auto",
+  "text": "[calm, tired, slow, a little ironic] 三つ編みは入口のアスランのテントだ。八時まで、月曜は休み。「バイカル」はこのホールの自販機にある。",
+  "voice": "Daniel",
+  "language_code": "ja"
+ },
+ "fal_request_id": "01a1d6e9-3184-7f31-ae59-ffc99c1e2948",
+ "hash": "9d72cf681eae"
+}

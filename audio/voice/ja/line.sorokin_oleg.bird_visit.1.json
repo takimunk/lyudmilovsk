@@ -1,0 +1,20 @@
+{
+ "key": "line.sorokin_oleg.bird_visit.1",
+ "lang": "ja",
+ "text": "やあ、やあ。キレンジャクではないが、それもまたいい。",
+ "speaker": "sorokin_oleg",
+ "voice": "River",
+ "voice_id": "SAz9YHcvj6GT2YYXdXww",
+ "voice_design": null,
+ "direction": "[a retired scholar, calm, dry humour, slower, gentle]",
+ "model": "fal-ai/elevenlabs/tts/eleven-v3",
+ "request": {
+  "stability": 0.5,
+  "apply_text_normalization": "auto",
+  "text": "[a retired scholar, calm, dry humour, slower, gentle] やあ、やあ。キレンジャクではないが、それもまたいい。",
+  "voice": "River",
+  "language_code": "ja"
+ },
+ "fal_request_id": "01a1d58d-52cf-7941-a818-31e4a1fcc611",
+ "hash": "be2da9365ddd"
+}

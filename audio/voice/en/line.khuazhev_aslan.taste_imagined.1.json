@@ -1,0 +1,20 @@
+{
+ "key": "line.khuazhev_aslan.taste_imagined.1",
+ "lang": "en",
+ "text": "Three times today I've pictured those pancakes. Eat them soon, before I make them up myself.",
+ "speaker": "khuazhev_aslan",
+ "voice": "Brian",
+ "voice_id": "nPczCjzI2devNBz1zQrb",
+ "voice_design": null,
+ "direction": "[hearty, generous, a cheese seller from the Caucasus, proud of his family's cheese]",
+ "model": "fal-ai/elevenlabs/tts/eleven-v3",
+ "request": {
+  "stability": 0.5,
+  "apply_text_normalization": "auto",
+  "text": "[hearty, generous, a cheese seller from the Caucasus, proud of his family's cheese] Three times today I've pictured those pancakes. Eat them soon, before I make them up myself.",
+  "voice": "Brian",
+  "language_code": "en"
+ },
+ "fal_request_id": "01a1d6e4-1710-7f93-ba06-d4c0b0a67e0c",
+ "hash": "67298c0cdbde"
+}

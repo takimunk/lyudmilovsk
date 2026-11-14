@@ -1,0 +1,20 @@
+{
+ "key": "line.valiev_rustam.signal_ask.4",
+ "lang": "ja",
+ "text": "ヘッドランプが要る。クラブの小川さんのところにある。暗くなったら山上駅まで出て、そこでつけてくれ。",
+ "speaker": "valiev_rustam",
+ "voice": "Roger",
+ "voice_id": "CwhRBWXzGAHq8TQ4Fs17",
+ "voice_design": null,
+ "direction": "[confident, dry, matter-of-fact engineer]",
+ "model": "fal-ai/elevenlabs/tts/eleven-v3",
+ "request": {
+  "stability": 0.5,
+  "apply_text_normalization": "auto",
+  "text": "[confident, dry, matter-of-fact engineer] ヘッドランプが要る。クラブの小川さんのところにある。暗くなったら山上駅まで出て、そこでつけてくれ。",
+  "voice": "Roger",
+  "language_code": "ja"
+ },
+ "fal_request_id": "01a1d676-c2f8-74f1-a7ee-66b6f4813d60",
+ "hash": "bd9e5a4c388f"
+}

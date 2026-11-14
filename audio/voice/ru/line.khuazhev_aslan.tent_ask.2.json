@@ -1,0 +1,20 @@
+{
+ "key": "line.khuazhev_aslan.tent_ask.2",
+ "lang": "ru",
+ "text": "Зимой поеду домой за товаром. Хочу знать, что этот город ест, когда не ест мой сыр.",
+ "speaker": "khuazhev_aslan",
+ "voice": "Brian",
+ "voice_id": "nPczCjzI2devNBz1zQrb",
+ "voice_design": null,
+ "direction": "[hearty, generous, a cheese seller from the Caucasus, proud of his family's cheese]",
+ "model": "fal-ai/elevenlabs/tts/eleven-v3",
+ "request": {
+  "stability": 0.5,
+  "apply_text_normalization": "auto",
+  "text": "[hearty, generous, a cheese seller from the Caucasus, proud of his family's cheese] Зимой поеду домой за товаром. Хочу знать, что этот город ест, когда не ест мой сыр.",
+  "voice": "Brian",
+  "language_code": "ru"
+ },
+ "fal_request_id": "01a1d66f-1331-7b30-9dfb-f0f571c74b89",
+ "hash": "dc662861d252"
+}

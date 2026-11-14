@@ -1,0 +1,20 @@
+{
+ "key": "line.khuazhev_aslan.tent_ask.1",
+ "lang": "ru",
+ "text": "Гость у палатки, уже праздник. Подойди, дорогой, у меня к тебе дело важнее торговли.",
+ "speaker": "khuazhev_aslan",
+ "voice": "Brian",
+ "voice_id": "nPczCjzI2devNBz1zQrb",
+ "voice_design": null,
+ "direction": "[hearty, generous, a cheese seller from the Caucasus, proud of his family's cheese]",
+ "model": "fal-ai/elevenlabs/tts/eleven-v3",
+ "request": {
+  "stability": 0.5,
+  "apply_text_normalization": "auto",
+  "text": "[hearty, generous, a cheese seller from the Caucasus, proud of his family's cheese] Гость у палатки, уже праздник. Подойди, дорогой, у меня к тебе дело важнее торговли.",
+  "voice": "Brian",
+  "language_code": "ru"
+ },
+ "fal_request_id": "01a1d66e-fa55-7312-8270-bb20065a39df",
+ "hash": "7bd1e2665bd0"
+}

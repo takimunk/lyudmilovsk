@@ -1,0 +1,20 @@
+{
+ "key": "line.orlova_tanya.rowan_again.1",
+ "lang": "ja",
+ "text": "ソローキンさん、また干しナナカマドを買っていったわ。一羽来たんだから、ほかのもきっと道を見つけるって。",
+ "speaker": "orlova_tanya",
+ "voice": "Aria",
+ "voice_id": "9BWtsMINqrJLrRacOk9x",
+ "voice_design": null,
+ "direction": "[a kiosk shop assistant, brisk, deadpan, a bit sassy]",
+ "model": "fal-ai/elevenlabs/tts/eleven-v3",
+ "request": {
+  "stability": 0.5,
+  "apply_text_normalization": "auto",
+  "text": "[a kiosk shop assistant, brisk, deadpan, a bit sassy] ソローキンさん、また干しナナカマドを買っていったわ。一羽来たんだから、ほかのもきっと道を見つけるって。",
+  "voice": "Aria",
+  "language_code": "ja"
+ },
+ "fal_request_id": "01a1d6e8-efdc-7780-aa47-a8c5e030e00f",
+ "hash": "86aba2be98ee"
+}

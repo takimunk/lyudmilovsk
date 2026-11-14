@@ -1,0 +1,20 @@
+{
+ "key": "line.guy_a.again6.1",
+ "lang": "ja",
+ "text": "山田さんがアバターを作ってくれてる。四十かける四十セル。それまで俺は灰色の四角で、みんなに「師匠待ち」って言ってる。",
+ "speaker": "guy_a",
+ "voice": "Will",
+ "voice_id": "bIHbv24MWmeRgasZH58o",
+ "voice_design": null,
+ "direction": "[a young gamer in a hurry, mid-match]",
+ "model": "fal-ai/elevenlabs/tts/eleven-v3",
+ "request": {
+  "stability": 0.5,
+  "apply_text_normalization": "auto",
+  "text": "[a young gamer in a hurry, mid-match] 山田さんがアバターを作ってくれてる。四十かける四十セル。それまで俺は灰色の四角で、みんなに「師匠待ち」って言ってる。",
+  "voice": "Will",
+  "language_code": "ja"
+ },
+ "fal_request_id": "01a1d782-90a9-7ea1-a168-57265ddefd9f",
+ "hash": "f953b7db10c5"
+}

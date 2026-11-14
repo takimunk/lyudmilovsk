@@ -1,0 +1,29 @@
+{
+ "key": "line.korneeva_nina.vanya_in_paper.1",
+ "lang": "en",
+ "text": "Sit with me. Vanya's got his nose in the paper, there's no talking to him now.",
+ "speaker": "korneeva_nina",
+ "voice": "Wise_Woman",
+ "voice_id": "Wise_Woman",
+ "voice_design": null,
+ "direction": "",
+ "model": "fal-ai/minimax/speech-2.6-hd",
+ "request": {
+  "prompt": "Sit with me. Vanya's got his nose in the paper, there's no talking to him now.",
+  "voice_setting": {
+   "speed": 0.95,
+   "pitch": 0,
+   "vol": 1,
+   "voice_id": "Wise_Woman"
+  },
+  "language_boost": "English",
+  "audio_setting": {
+   "sample_rate": 24000,
+   "format": "mp3",
+   "channel": 1
+  },
+  "output_format": "url"
+ },
+ "fal_request_id": "01a1d6e6-9f08-7470-97f7-0cfad4afaba6",
+ "hash": "b4d1d395923f"
+}

@@ -1,0 +1,20 @@
+{
+ "key": "line.belov_misha.magpie_tell.4",
+ "lang": "en",
+ "text": "I found it this morning. Stuck to a magnet on my workbench, right under my nose.",
+ "speaker": "belov_misha",
+ "voice": "Liam",
+ "voice_id": "TX3LPaxmHKxFdv7VOQHJ",
+ "voice_design": null,
+ "direction": "[easygoing, amused, a young technician, a little self-ironic]",
+ "model": "fal-ai/elevenlabs/tts/eleven-v3",
+ "request": {
+  "stability": 0.5,
+  "apply_text_normalization": "auto",
+  "text": "[easygoing, amused, a young technician, a little self-ironic] I found it this morning. Stuck to a magnet on my workbench, right under my nose.",
+  "voice": "Liam",
+  "language_code": "en"
+ },
+ "fal_request_id": "01a1d662-6e17-7df2-99cc-49cebcabb4b1",
+ "hash": "b4c451abd387"
+}

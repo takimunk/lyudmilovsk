@@ -1,0 +1,20 @@
+{
+ "key": "line.owner.lamp_batteries.1",
+ "lang": "en",
+ "text": "A lamp? This light you may touch. It runs on batteries, not on its own.",
+ "speaker": "owner",
+ "voice": "Daniel",
+ "voice_id": "onwK4e9ZLuTAKqWW03F9",
+ "voice_design": null,
+ "direction": "[calm, tired, slow, a little ironic]",
+ "model": "fal-ai/elevenlabs/tts/eleven-v3",
+ "request": {
+  "stability": 0.5,
+  "apply_text_normalization": "auto",
+  "text": "[calm, tired, slow, a little ironic] A lamp? This light you may touch. It runs on batteries, not on its own.",
+  "voice": "Daniel",
+  "language_code": "en"
+ },
+ "fal_request_id": "01a1d6e8-925f-7be0-a79e-b0eb838d4b3f",
+ "hash": "5909ac4744f8"
+}

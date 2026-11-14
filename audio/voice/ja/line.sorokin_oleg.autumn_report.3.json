@@ -1,0 +1,20 @@
+{
+ "key": "line.sorokin_oleg.autumn_report.3",
+ "lang": "ja",
+ "text": "ふむ。飛来六回、手のひらにシジュウカラ一羽。一度の観察、助手一人にしては上出来だ。",
+ "speaker": "sorokin_oleg",
+ "voice": "River",
+ "voice_id": "SAz9YHcvj6GT2YYXdXww",
+ "voice_design": null,
+ "direction": "[a retired scholar, calm, dry humour, slower, gentle]",
+ "model": "fal-ai/elevenlabs/tts/eleven-v3",
+ "request": {
+  "stability": 0.5,
+  "apply_text_normalization": "auto",
+  "text": "[a retired scholar, calm, dry humour, slower, gentle] ふむ。飛来六回、手のひらにシジュウカラ一羽。一度の観察、助手一人にしては上出来だ。",
+  "voice": "River",
+  "language_code": "ja"
+ },
+ "fal_request_id": "01a1d675-d0df-7613-8420-2de47b948bfe",
+ "hash": "2f2895d887e3"
+}

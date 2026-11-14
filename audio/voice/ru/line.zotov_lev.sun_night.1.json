@@ -1,0 +1,20 @@
+{
+ "key": "line.zotov_lev.sun_night.1",
+ "lang": "ru",
+ "text": "Ночью я дочитываю то, что не успел днём. При лампе всё понятнее, но как-то холоднее.",
+ "speaker": "zotov_lev",
+ "voice": "George",
+ "voice_id": "JBFqnCBsd6RMkjVDRZzb",
+ "voice_design": null,
+ "direction": "[dry, thoughtful, unhurried, a physicist's quiet irony]",
+ "model": "fal-ai/elevenlabs/tts/eleven-v3",
+ "request": {
+  "stability": 0.5,
+  "apply_text_normalization": "auto",
+  "text": "[dry, thoughtful, unhurried, a physicist's quiet irony] Ночью я дочитываю то, что не успел днём. При лампе всё понятнее, но как-то холоднее.",
+  "voice": "George",
+  "language_code": "ru"
+ },
+ "fal_request_id": "01a1d74a-80e7-7e62-9f3a-6f461ef6b45c",
+ "hash": "e0cb82a4c697"
+}

@@ -1,0 +1,20 @@
+{
+ "key": "line.girl_a.close_but_beach.1",
+ "lang": "en",
+ "text": "The cable car runs from the alley to the lower station. Everything's close from there, except the beach: that's under our own cliff.",
+ "speaker": "girl_a",
+ "voice": "Matilda",
+ "voice_id": "XrExE9yKIg1WjnnlVkGX",
+ "voice_design": null,
+ "direction": "[whispering, concentrated]",
+ "model": "fal-ai/elevenlabs/tts/eleven-v3",
+ "request": {
+  "stability": 0.5,
+  "apply_text_normalization": "auto",
+  "text": "[whispering, concentrated] The cable car runs from the alley to the lower station. Everything's close from there, except the beach: that's under our own cliff.",
+  "voice": "Matilda",
+  "language_code": "en"
+ },
+ "fal_request_id": "01a1d737-dbad-7b91-b8fe-71b73b2048a2",
+ "hash": "e1cbdc3fed8a"
+}

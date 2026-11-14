@@ -1,0 +1,20 @@
+{
+ "key": "line.clerk.bullfinch_mixed_red.1",
+ "lang": "ja",
+ "text": "ウソですね。胸の赤は標準パレットにない色です。自分で作ります。",
+ "speaker": "clerk",
+ "voice": "Callum",
+ "voice_id": "N2lVS1w4EtoT3dr4eOWO",
+ "voice_design": null,
+ "direction": "[polite, quiet, precise, absorbed in his work]",
+ "model": "fal-ai/elevenlabs/tts/eleven-v3",
+ "request": {
+  "stability": 0.5,
+  "apply_text_normalization": "auto",
+  "text": "[polite, quiet, precise, absorbed in his work] ウソですね。胸の赤は標準パレットにない色です。自分で作ります。",
+  "voice": "Callum",
+  "language_code": "ja"
+ },
+ "fal_request_id": "01a1d737-310e-7da2-b82b-9762ccf88e7d",
+ "hash": "984c112795c3"
+}

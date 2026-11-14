@@ -1,0 +1,20 @@
+{
+ "key": "line.khuazhev_aslan.wedding_guest.1",
+ "lang": "ja",
+ "text": "これはまた、たいした客だ。冠羽に、翼には赤いボタン。婚礼にでも行くような装いだな。うちの山でも、おまえみたいなのは見たことがない。",
+ "speaker": "khuazhev_aslan",
+ "voice": "Brian",
+ "voice_id": "nPczCjzI2devNBz1zQrb",
+ "voice_design": null,
+ "direction": "[hearty, generous, a cheese seller from the Caucasus, proud of his family's cheese]",
+ "model": "fal-ai/elevenlabs/tts/eleven-v3",
+ "request": {
+  "stability": 0.5,
+  "apply_text_normalization": "auto",
+  "text": "[hearty, generous, a cheese seller from the Caucasus, proud of his family's cheese] これはまた、たいした客だ。冠羽に、翼には赤いボタン。婚礼にでも行くような装いだな。うちの山でも、おまえみたいなのは見たことがない。",
+  "voice": "Brian",
+  "language_code": "ja"
+ },
+ "fal_request_id": "01a1d75d-cd7c-7320-8a3f-a32b8d89aa02",
+ "hash": "4cbee357f654"
+}

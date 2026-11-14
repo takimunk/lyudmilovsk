@@ -1,0 +1,20 @@
+{
+ "key": "line.guy_a.again5.1",
+ "lang": "ru",
+ "text": "Тимур с утра на складе, я на парах. А видимся всё равно тут, хотя живём в одной квартире.",
+ "speaker": "guy_a",
+ "voice": "Will",
+ "voice_id": "bIHbv24MWmeRgasZH58o",
+ "voice_design": null,
+ "direction": "[a young gamer in a hurry, mid-match]",
+ "model": "fal-ai/elevenlabs/tts/eleven-v3",
+ "request": {
+  "stability": 0.5,
+  "apply_text_normalization": "auto",
+  "text": "[a young gamer in a hurry, mid-match] Тимур с утра на складе, я на парах. А видимся всё равно тут, хотя живём в одной квартире.",
+  "voice": "Will",
+  "language_code": "ru"
+ },
+ "fal_request_id": "01a1d782-5311-7b10-b7f0-5255663c3159",
+ "hash": "84d2b032634d"
+}

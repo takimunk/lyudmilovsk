@@ -1,0 +1,20 @@
+{
+ "key": "line.zotov_lev.shores_too_thin.1",
+ "lang": "ja",
+ "text": "『海岸』を持っているのか。いい雑誌だ。ただ薄いね、干渉計の下には使えない。",
+ "speaker": "zotov_lev",
+ "voice": "George",
+ "voice_id": "JBFqnCBsd6RMkjVDRZzb",
+ "voice_design": null,
+ "direction": "[dry, thoughtful, unhurried, a physicist's quiet irony]",
+ "model": "fal-ai/elevenlabs/tts/eleven-v3",
+ "request": {
+  "stability": 0.5,
+  "apply_text_normalization": "auto",
+  "text": "[dry, thoughtful, unhurried, a physicist's quiet irony] 『海岸』を持っているのか。いい雑誌だ。ただ薄いね、干渉計の下には使えない。",
+  "voice": "George",
+  "language_code": "ja"
+ },
+ "fal_request_id": "01a1d7ac-0ccf-7382-98a1-7aedd312241a",
+ "hash": "398c7b5e54b5"
+}

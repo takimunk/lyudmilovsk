@@ -1,0 +1,20 @@
+{
+ "key": "line.owner.lamp_batteries.1",
+ "lang": "ja",
+ "text": "ランプか。この明かりなら触ってもいい。電池で灯るんだ、自分で灯るわけじゃない。",
+ "speaker": "owner",
+ "voice": "Daniel",
+ "voice_id": "onwK4e9ZLuTAKqWW03F9",
+ "voice_design": null,
+ "direction": "[calm, tired, slow, a little ironic]",
+ "model": "fal-ai/elevenlabs/tts/eleven-v3",
+ "request": {
+  "stability": 0.5,
+  "apply_text_normalization": "auto",
+  "text": "[calm, tired, slow, a little ironic] ランプか。この明かりなら触ってもいい。電池で灯るんだ、自分で灯るわけじゃない。",
+  "voice": "Daniel",
+  "language_code": "ja"
+ },
+ "fal_request_id": "01a1d6e9-05f5-75f3-bc6e-842047db2a1f",
+ "hash": "c1dcce2d493a"
+}

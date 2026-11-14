@@ -1,0 +1,20 @@
+{
+ "key": "line.sorokin_oleg.sun_cloudy.1",
+ "lang": "ru",
+ "text": "Пасмурно. В такие дни птицы поют тише, и я сам не знаю, чего жду.",
+ "speaker": "sorokin_oleg",
+ "voice": "River",
+ "voice_id": "SAz9YHcvj6GT2YYXdXww",
+ "voice_design": null,
+ "direction": "[a retired scholar, calm, dry humour, slower, gentle]",
+ "model": "fal-ai/elevenlabs/tts/eleven-v3",
+ "request": {
+  "stability": 0.5,
+  "apply_text_normalization": "auto",
+  "text": "[a retired scholar, calm, dry humour, slower, gentle] Пасмурно. В такие дни птицы поют тише, и я сам не знаю, чего жду.",
+  "voice": "River",
+  "language_code": "ru"
+ },
+ "fal_request_id": "01a1d749-7c75-7791-9096-4c7d8b05b3a1",
+ "hash": "7b4965b765a9"
+}

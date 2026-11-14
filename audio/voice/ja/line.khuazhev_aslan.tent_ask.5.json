@@ -1,0 +1,20 @@
+{
+ "key": "line.khuazhev_aslan.tent_ask.5",
+ "lang": "ja",
+ "text": "ただし最後まで食べるんだ。友の食卓でそうするようにな。ひと口かじって逃げる者には何もわからない。",
+ "speaker": "khuazhev_aslan",
+ "voice": "Brian",
+ "voice_id": "nPczCjzI2devNBz1zQrb",
+ "voice_design": null,
+ "direction": "[hearty, generous, a cheese seller from the Caucasus, proud of his family's cheese]",
+ "model": "fal-ai/elevenlabs/tts/eleven-v3",
+ "request": {
+  "stability": 0.5,
+  "apply_text_normalization": "auto",
+  "text": "[hearty, generous, a cheese seller from the Caucasus, proud of his family's cheese] ただし最後まで食べるんだ。友の食卓でそうするようにな。ひと口かじって逃げる者には何もわからない。",
+  "voice": "Brian",
+  "language_code": "ja"
+ },
+ "fal_request_id": "01a1d670-02e9-74b1-8177-6c5490e79c6b",
+ "hash": "341d052dbe6b"
+}

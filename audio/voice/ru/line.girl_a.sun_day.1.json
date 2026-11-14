@@ -1,0 +1,20 @@
+{
+ "key": "line.girl_a.sun_day.1",
+ "lang": "ru",
+ "text": "В лаборатории я сижу у окна. Солнце ползёт по столу, и по нему я знаю время точнее, чем по часам.",
+ "speaker": "girl_a",
+ "voice": "Matilda",
+ "voice_id": "XrExE9yKIg1WjnnlVkGX",
+ "voice_design": null,
+ "direction": "[whispering, concentrated]",
+ "model": "fal-ai/elevenlabs/tts/eleven-v3",
+ "request": {
+  "stability": 0.5,
+  "apply_text_normalization": "auto",
+  "text": "[whispering, concentrated] В лаборатории я сижу у окна. Солнце ползёт по столу, и по нему я знаю время точнее, чем по часам.",
+  "voice": "Matilda",
+  "language_code": "ru"
+ },
+ "fal_request_id": "01a1d781-8fc7-72e3-a95d-65aae1a0b51a",
+ "hash": "53bbe6e963fd"
+}

@@ -1,0 +1,20 @@
+{
+ "key": "line.guy_a.sun_night.1",
+ "lang": "ja",
+ "text": "夜はピング十二。みんな寝てる、太陽まで。ロビーにいるのは俺だけ。",
+ "speaker": "guy_a",
+ "voice": "Will",
+ "voice_id": "bIHbv24MWmeRgasZH58o",
+ "voice_design": null,
+ "direction": "[a young gamer in a hurry, mid-match]",
+ "model": "fal-ai/elevenlabs/tts/eleven-v3",
+ "request": {
+  "stability": 0.5,
+  "apply_text_normalization": "auto",
+  "text": "[a young gamer in a hurry, mid-match] 夜はピング十二。みんな寝てる、太陽まで。ロビーにいるのは俺だけ。",
+  "voice": "Will",
+  "language_code": "ja"
+ },
+ "fal_request_id": "01a1d783-1ecc-7222-8f7a-db287f718bab",
+ "hash": "06b767eac9cd"
+}

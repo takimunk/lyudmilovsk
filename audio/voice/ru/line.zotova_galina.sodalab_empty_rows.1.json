@@ -1,0 +1,20 @@
+{
+ "key": "line.zotova_galina.sodalab_empty_rows.1",
+ "lang": "ru",
+ "text": "Протокол я уже завела. Четыре строки, и все пока пустые.",
+ "speaker": "zotova_galina",
+ "voice": "Alice",
+ "voice_id": "Xb7hH8MSUJpSbSDYk0k2",
+ "voice_design": null,
+ "direction": "[warm, chatty, fondly exasperated with her husband]",
+ "model": "fal-ai/elevenlabs/tts/eleven-v3",
+ "request": {
+  "stability": 0.5,
+  "apply_text_normalization": "auto",
+  "text": "[warm, chatty, fondly exasperated with her husband] Протокол я уже завела. Четыре строки, и все пока пустые.",
+  "voice": "Alice",
+  "language_code": "ru"
+ },
+ "fal_request_id": "01a1d6eb-f695-7a32-911a-3d35e6d711b4",
+ "hash": "02f8d4022f20"
+}

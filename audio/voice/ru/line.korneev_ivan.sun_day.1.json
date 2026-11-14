@@ -1,0 +1,20 @@
+{
+ "key": "line.korneev_ivan.sun_day.1",
+ "lang": "ru",
+ "text": "Посиди. Солнце в спину, ветра нет. Больше человеку и не надо.",
+ "speaker": "korneev_ivan",
+ "voice": "Bill",
+ "voice_id": "pqHfZKP75CvOlQylNhV4",
+ "voice_design": null,
+ "direction": "[an old man, slow, a little gravelly, contented, a quiet joke at the end]",
+ "model": "fal-ai/elevenlabs/tts/eleven-v3",
+ "request": {
+  "stability": 0.5,
+  "apply_text_normalization": "auto",
+  "text": "[an old man, slow, a little gravelly, contented, a quiet joke at the end] Посиди. Солнце в спину, ветра нет. Больше человеку и не надо.",
+  "voice": "Bill",
+  "language_code": "ru"
+ },
+ "fal_request_id": "01a1d744-1879-7d11-924c-87f51fc7e405",
+ "hash": "43430d6d9fd9"
+}

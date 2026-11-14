@@ -1,0 +1,20 @@
+{
+ "key": "line.sorokin_oleg.waxwing_wait_snow.1",
+ "lang": "en",
+ "text": "When one lands on the feeder, crouch and hold out your palm with rowan. I once sat half a day like that in the snow, the best half day of my life.",
+ "speaker": "sorokin_oleg",
+ "voice": "River",
+ "voice_id": "SAz9YHcvj6GT2YYXdXww",
+ "voice_design": null,
+ "direction": "[a retired scholar, calm, dry humour, slower, gentle]",
+ "model": "fal-ai/elevenlabs/tts/eleven-v3",
+ "request": {
+  "stability": 0.5,
+  "apply_text_normalization": "auto",
+  "text": "[a retired scholar, calm, dry humour, slower, gentle] When one lands on the feeder, crouch and hold out your palm with rowan. I once sat half a day like that in the snow, the best half day of my life.",
+  "voice": "River",
+  "language_code": "en"
+ },
+ "fal_request_id": "01a1d6df-a465-7362-8816-02ca70089238",
+ "hash": "bc6d61ae75c7"
+}

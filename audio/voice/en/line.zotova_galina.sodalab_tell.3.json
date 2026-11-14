@@ -1,0 +1,20 @@
+{
+ "key": "line.zotova_galina.sodalab_tell.3",
+ "lang": "en",
+ "text": "\"Green\" is not a flavour, but it goes in the minutes. Hypothesis disproved: four syrups.",
+ "speaker": "zotova_galina",
+ "voice": "Alice",
+ "voice_id": "Xb7hH8MSUJpSbSDYk0k2",
+ "voice_design": null,
+ "direction": "[warm, chatty, fondly exasperated with her husband]",
+ "model": "fal-ai/elevenlabs/tts/eleven-v3",
+ "request": {
+  "stability": 0.5,
+  "apply_text_normalization": "auto",
+  "text": "[warm, chatty, fondly exasperated with her husband] \"Green\" is not a flavour, but it goes in the minutes. Hypothesis disproved: four syrups.",
+  "voice": "Alice",
+  "language_code": "en"
+ },
+ "fal_request_id": "01a1d676-01d4-7e72-b8f8-4e332810cbc1",
+ "hash": "e68971e06df2"
+}

@@ -1,0 +1,20 @@
+{
+ "key": "line.lange_pyotr.braid_three_days.1",
+ "lang": "ru",
+ "text": "Косичку растянул на три дня. По кусочку, после моря.",
+ "speaker": "lange_pyotr",
+ "voice": "Brian",
+ "voice_id": "nPczCjzI2devNBz1zQrb",
+ "voice_design": null,
+ "direction": "[gruff, unhurried, a weathered fisherman of few words]",
+ "model": "fal-ai/elevenlabs/tts/eleven-v3",
+ "request": {
+  "stability": 0.5,
+  "apply_text_normalization": "auto",
+  "text": "[gruff, unhurried, a weathered fisherman of few words] Косичку растянул на три дня. По кусочку, после моря.",
+  "voice": "Brian",
+  "language_code": "ru"
+ },
+ "fal_request_id": "01a1d6e7-5677-75a3-b7c3-848dd8d2ec52",
+ "hash": "ff082e2f1511"
+}

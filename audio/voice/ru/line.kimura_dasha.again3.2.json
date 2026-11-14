@@ -1,0 +1,20 @@
+{
+ "key": "line.kimura_dasha.again3.2",
+ "lang": "ru",
+ "text": "Камни, чайки и тишина. Я читаю там конспекты вслух, и никто не делает замечаний.",
+ "speaker": "kimura_dasha",
+ "voice": "Charlotte",
+ "voice_id": "XB0fDUnXU5powFXDhCwa",
+ "voice_design": null,
+ "direction": "[a tired physics student, wry, self-ironic]",
+ "model": "fal-ai/elevenlabs/tts/eleven-v3",
+ "request": {
+  "stability": 0.5,
+  "apply_text_normalization": "auto",
+  "text": "[a tired physics student, wry, self-ironic] Камни, чайки и тишина. Я читаю там конспекты вслух, и никто не делает замечаний.",
+  "voice": "Charlotte",
+  "language_code": "ru"
+ },
+ "fal_request_id": "01a1d743-4c16-72f1-9892-e944127ed86a",
+ "hash": "4b273f81d2cf"
+}

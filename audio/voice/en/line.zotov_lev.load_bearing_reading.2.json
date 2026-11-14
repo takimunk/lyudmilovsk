@@ -1,0 +1,20 @@
+{
+ "key": "line.zotov_lev.load_bearing_reading.2",
+ "lang": "en",
+ "text": "I did write to them about the error on page fourteen. A letter, to the editors.",
+ "speaker": "zotov_lev",
+ "voice": "George",
+ "voice_id": "JBFqnCBsd6RMkjVDRZzb",
+ "voice_design": null,
+ "direction": "[dry, thoughtful, unhurried, a physicist's quiet irony]",
+ "model": "fal-ai/elevenlabs/tts/eleven-v3",
+ "request": {
+  "stability": 0.5,
+  "apply_text_normalization": "auto",
+  "text": "[dry, thoughtful, unhurried, a physicist's quiet irony] I did write to them about the error on page fourteen. A letter, to the editors.",
+  "voice": "George",
+  "language_code": "en"
+ },
+ "fal_request_id": "01a1d6ea-c335-7d40-b5e3-e2372f9e5bec",
+ "hash": "b2ffe62829b2"
+}

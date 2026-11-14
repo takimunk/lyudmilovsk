@@ -1,0 +1,20 @@
+{
+ "key": "line.lange_pyotr.braid_three_days.2",
+ "lang": "ru",
+ "text": "Теперь знаю, кого просить. Но не часто, а то избалуюсь.",
+ "speaker": "lange_pyotr",
+ "voice": "Brian",
+ "voice_id": "nPczCjzI2devNBz1zQrb",
+ "voice_design": null,
+ "direction": "[gruff, unhurried, a weathered fisherman of few words]",
+ "model": "fal-ai/elevenlabs/tts/eleven-v3",
+ "request": {
+  "stability": 0.5,
+  "apply_text_normalization": "auto",
+  "text": "[gruff, unhurried, a weathered fisherman of few words] Теперь знаю, кого просить. Но не часто, а то избалуюсь.",
+  "voice": "Brian",
+  "language_code": "ru"
+ },
+ "fal_request_id": "01a1d6e7-6adb-7a92-bc1b-4927c319e1c2",
+ "hash": "b251ac992474"
+}

@@ -1,0 +1,20 @@
+{
+ "key": "line.khuazhev_aslan.feathered_guest.1",
+ "lang": "ja",
+ "text": "座れ、座れ。俺のテントじゃ客は追い払わない。羽のある客でもな。",
+ "speaker": "khuazhev_aslan",
+ "voice": "Brian",
+ "voice_id": "nPczCjzI2devNBz1zQrb",
+ "voice_design": null,
+ "direction": "[hearty, generous, a cheese seller from the Caucasus, proud of his family's cheese]",
+ "model": "fal-ai/elevenlabs/tts/eleven-v3",
+ "request": {
+  "stability": 0.5,
+  "apply_text_normalization": "auto",
+  "text": "[hearty, generous, a cheese seller from the Caucasus, proud of his family's cheese] 座れ、座れ。俺のテントじゃ客は追い払わない。羽のある客でもな。",
+  "voice": "Brian",
+  "language_code": "ja"
+ },
+ "fal_request_id": "01a1d6e3-ba0f-7832-9ad2-694dc23c2b2b",
+ "hash": "0b11bb19e6bd"
+}

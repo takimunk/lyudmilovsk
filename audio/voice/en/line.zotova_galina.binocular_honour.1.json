@@ -1,0 +1,20 @@
+{
+ "key": "line.zotova_galina.binocular_honour.1",
+ "lang": "en",
+ "text": "Sorokin let Lev look through his binoculars. Offered them himself. Lev says it's a great honour, and I say it's euphoria.",
+ "speaker": "zotova_galina",
+ "voice": "Alice",
+ "voice_id": "Xb7hH8MSUJpSbSDYk0k2",
+ "voice_design": null,
+ "direction": "[warm, chatty, fondly exasperated with her husband]",
+ "model": "fal-ai/elevenlabs/tts/eleven-v3",
+ "request": {
+  "stability": 0.5,
+  "apply_text_normalization": "auto",
+  "text": "[warm, chatty, fondly exasperated with her husband] Sorokin let Lev look through his binoculars. Offered them himself. Lev says it's a great honour, and I say it's euphoria.",
+  "voice": "Alice",
+  "language_code": "en"
+ },
+ "fal_request_id": "01a1d75f-9bab-79e0-9618-00709a206ed2",
+ "hash": "c44c2f9b267e"
+}

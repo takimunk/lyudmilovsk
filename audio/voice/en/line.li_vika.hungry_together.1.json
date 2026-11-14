@@ -1,0 +1,20 @@
+{
+ "key": "line.li_vika.hungry_together.1",
+ "lang": "en",
+ "text": "No lunch for you either? Sit down, we'll go hungry together while the expert finishes the fish soup.",
+ "speaker": "li_vika",
+ "voice": "Laura",
+ "voice_id": "FGY2WhTYpPnrIDTdsKH5",
+ "voice_design": null,
+ "direction": "[playful, quick, a lab assistant joking about her work]",
+ "model": "fal-ai/elevenlabs/tts/eleven-v3",
+ "request": {
+  "stability": 0.5,
+  "apply_text_normalization": "auto",
+  "text": "[playful, quick, a lab assistant joking about her work] No lunch for you either? Sit down, we'll go hungry together while the expert finishes the fish soup.",
+  "voice": "Laura",
+  "language_code": "en"
+ },
+ "fal_request_id": "01a1d7b7-2412-7743-85ec-4d82d95957f5",
+ "hash": "2f811263a34c"
+}

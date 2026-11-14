@@ -1,0 +1,20 @@
+{
+ "key": "line.guy_b.sun_night.1",
+ "lang": "ru",
+ "text": "Ночью вентиляция гудит тише. Или это я так слышу, потому что знаю, что солнца нет.",
+ "speaker": "guy_b",
+ "voice": "Chris",
+ "voice_id": "iP95p4xoKVk53GoZ742B",
+ "voice_design": null,
+ "direction": "[relaxed, lazy, friendly]",
+ "model": "fal-ai/elevenlabs/tts/eleven-v3",
+ "request": {
+  "stability": 0.5,
+  "apply_text_normalization": "auto",
+  "text": "[relaxed, lazy, friendly] Ночью вентиляция гудит тише. Или это я так слышу, потому что знаю, что солнца нет.",
+  "voice": "Chris",
+  "language_code": "ru"
+ },
+ "fal_request_id": "01a1d783-5102-73d1-8f21-a8f38b96b433",
+ "hash": "9fc8aaf65ba5"
+}

@@ -1,0 +1,20 @@
+{
+ "key": "line.sato_kei.magpie_white_black.1",
+ "lang": "ru",
+ "text": "Сорока. Белое и чёрное рядом, самый трудный контраст. Приборы от тебя устают.",
+ "speaker": "sato_kei",
+ "voice": "Eric",
+ "voice_id": "cjVigY5qzO86Huf0OWal",
+ "voice_design": null,
+ "direction": "[quiet, precise, softly puzzled, a scientist thinking aloud]",
+ "model": "fal-ai/elevenlabs/tts/eleven-v3",
+ "request": {
+  "stability": 0.5,
+  "apply_text_normalization": "auto",
+  "text": "[quiet, precise, softly puzzled, a scientist thinking aloud] Сорока. Белое и чёрное рядом, самый трудный контраст. Приборы от тебя устают.",
+  "voice": "Eric",
+  "language_code": "ru"
+ },
+ "fal_request_id": "01a1d7b8-39d6-7ba2-b5ad-f5d76638128a",
+ "hash": "1c37ef3dc40a"
+}

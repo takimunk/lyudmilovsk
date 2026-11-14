@@ -1,0 +1,20 @@
+{
+ "key": "line.owner.again7.1",
+ "lang": "ja",
+ "text": "ティムールがまた椅子で寝とる。起こすな。あいつは七時半から倉庫だ。",
+ "speaker": "owner",
+ "voice": "Daniel",
+ "voice_id": "onwK4e9ZLuTAKqWW03F9",
+ "voice_design": null,
+ "direction": "[calm, tired, slow, a little ironic]",
+ "model": "fal-ai/elevenlabs/tts/eleven-v3",
+ "request": {
+  "stability": 0.5,
+  "apply_text_normalization": "auto",
+  "text": "[calm, tired, slow, a little ironic] ティムールがまた椅子で寝とる。起こすな。あいつは七時半から倉庫だ。",
+  "voice": "Daniel",
+  "language_code": "ja"
+ },
+ "fal_request_id": "01a1d786-5973-7892-8179-e2c5a5c004ca",
+ "hash": "222572bfad21"
+}

@@ -1,0 +1,20 @@
+{
+ "key": "line.clerk.supper_papers.1",
+ "lang": "ru",
+ "text": "Вы несёте ему ужин? Я ему ношу только бумаги. Ужин, наверное, приятнее.",
+ "speaker": "clerk",
+ "voice": "Callum",
+ "voice_id": "N2lVS1w4EtoT3dr4eOWO",
+ "voice_design": null,
+ "direction": "[polite, quiet, precise, absorbed in his work]",
+ "model": "fal-ai/elevenlabs/tts/eleven-v3",
+ "request": {
+  "stability": 0.5,
+  "apply_text_normalization": "auto",
+  "text": "[polite, quiet, precise, absorbed in his work] Вы несёте ему ужин? Я ему ношу только бумаги. Ужин, наверное, приятнее.",
+  "voice": "Callum",
+  "language_code": "ru"
+ },
+ "fal_request_id": "01a1d7a9-113c-7c72-a715-59a5d389dd80",
+ "hash": "8a7de0e19e52"
+}

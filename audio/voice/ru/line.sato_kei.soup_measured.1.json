@@ -1,0 +1,20 @@
+{
+ "key": "line.sato_kei.soup_measured.1",
+ "lang": "ru",
+ "text": "Вика сказала, независимый эксперт за меня. Я так и думал: уху, как и свет, надо мерить самому, а не по Мише.",
+ "speaker": "sato_kei",
+ "voice": "Eric",
+ "voice_id": "cjVigY5qzO86Huf0OWal",
+ "voice_design": null,
+ "direction": "[quiet, precise, softly puzzled, a scientist thinking aloud]",
+ "model": "fal-ai/elevenlabs/tts/eleven-v3",
+ "request": {
+  "stability": 0.5,
+  "apply_text_normalization": "auto",
+  "text": "[quiet, precise, softly puzzled, a scientist thinking aloud] Вика сказала, независимый эксперт за меня. Я так и думал: уху, как и свет, надо мерить самому, а не по Мише.",
+  "voice": "Eric",
+  "language_code": "ru"
+ },
+ "fal_request_id": "01a1d6e9-2ebf-7ea1-92c7-6d66f5fb9b7a",
+ "hash": "ce6c75e06f94"
+}

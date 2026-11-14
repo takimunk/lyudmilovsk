@@ -1,0 +1,20 @@
+{
+ "key": "line.valiev_rustam.signal_tell.6",
+ "lang": "ru",
+ "text": "Фонарик оставь себе, а расходы на оборудование я возмещу. И леденцы возьми, это вместо премии.",
+ "speaker": "valiev_rustam",
+ "voice": "Roger",
+ "voice_id": "CwhRBWXzGAHq8TQ4Fs17",
+ "voice_design": null,
+ "direction": "[confident, dry, matter-of-fact engineer]",
+ "model": "fal-ai/elevenlabs/tts/eleven-v3",
+ "request": {
+  "stability": 0.5,
+  "apply_text_normalization": "auto",
+  "text": "[confident, dry, matter-of-fact engineer] Фонарик оставь себе, а расходы на оборудование я возмещу. И леденцы возьми, это вместо премии.",
+  "voice": "Roger",
+  "language_code": "ru"
+ },
+ "fal_request_id": "01a1d674-2fb5-75a2-bb25-55c0f17e4137",
+ "hash": "aadf6e25aa2a"
+}

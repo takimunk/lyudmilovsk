@@ -1275,6 +1275,8 @@ void ULyudFishing::Caught()
 	if (ULyudInventory* Inv = ULyudInventory::Get(this))
 	{
 		Inv->Add(FishItem(F.Species));
+		// a fish landed on the rod (quests: "fish_caught <fish item>"; "get" is also sent for a fish that is bought or given)
+		ULyudQuests::Notify(this, TEXT("fish_caught"), FishItem(F.Species).ToString());
 	}
 	if (State)
 	{

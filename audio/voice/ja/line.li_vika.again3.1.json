@@ -1,0 +1,20 @@
+{
+ "key": "line.li_vika.again3.1",
+ "lang": "ja",
+ "text": "いちばん好きなのは、全部洗い終わって、まだだれも汚してない一分間。",
+ "speaker": "li_vika",
+ "voice": "Laura",
+ "voice_id": "FGY2WhTYpPnrIDTdsKH5",
+ "voice_design": null,
+ "direction": "[playful, quick, a lab assistant joking about her work]",
+ "model": "fal-ai/elevenlabs/tts/eleven-v3",
+ "request": {
+  "stability": 0.5,
+  "apply_text_normalization": "auto",
+  "text": "[playful, quick, a lab assistant joking about her work] いちばん好きなのは、全部洗い終わって、まだだれも汚してない一分間。",
+  "voice": "Laura",
+  "language_code": "ja"
+ },
+ "fal_request_id": "01a1d746-19b8-7362-bc4f-cc5d1af9d1eb",
+ "hash": "8b9fc97e4a43"
+}

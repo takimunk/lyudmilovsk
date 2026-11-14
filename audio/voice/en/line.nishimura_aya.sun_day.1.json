@@ -1,0 +1,20 @@
+{
+ "key": "line.nishimura_aya.sun_day.1",
+ "lang": "en",
+ "text": "By day on the island the sun stands behind my shoulder. I don't paint it. It watches me paint.",
+ "speaker": "nishimura_aya",
+ "voice": "Matilda",
+ "voice_id": "XrExE9yKIg1WjnnlVkGX",
+ "voice_design": null,
+ "direction": "[calm, soft, contemplative, a painter talking about the light]",
+ "model": "fal-ai/elevenlabs/tts/eleven-v3",
+ "request": {
+  "stability": 0.5,
+  "apply_text_normalization": "auto",
+  "text": "[calm, soft, contemplative, a painter talking about the light] By day on the island the sun stands behind my shoulder. I don't paint it. It watches me paint.",
+  "voice": "Matilda",
+  "language_code": "en"
+ },
+ "fal_request_id": "01a1d746-6f7a-7211-9d70-a37c5b8c3ac7",
+ "hash": "259cf597a74b"
+}

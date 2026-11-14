@@ -1,0 +1,20 @@
+{
+ "key": "line.khuazhev_aslan.tent_ask.2",
+ "lang": "ja",
+ "text": "冬になったら仕入れに故郷へ帰る。この町が俺のチーズを食べていない時に何を食べているのか、知っておきたい。",
+ "speaker": "khuazhev_aslan",
+ "voice": "Brian",
+ "voice_id": "nPczCjzI2devNBz1zQrb",
+ "voice_design": null,
+ "direction": "[hearty, generous, a cheese seller from the Caucasus, proud of his family's cheese]",
+ "model": "fal-ai/elevenlabs/tts/eleven-v3",
+ "request": {
+  "stability": 0.5,
+  "apply_text_normalization": "auto",
+  "text": "[hearty, generous, a cheese seller from the Caucasus, proud of his family's cheese] 冬になったら仕入れに故郷へ帰る。この町が俺のチーズを食べていない時に何を食べているのか、知っておきたい。",
+  "voice": "Brian",
+  "language_code": "ja"
+ },
+ "fal_request_id": "01a1d66f-c4f2-7383-a3f4-18b38753c558",
+ "hash": "9b85898563ce"
+}

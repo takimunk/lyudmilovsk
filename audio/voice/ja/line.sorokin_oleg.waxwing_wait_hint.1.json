@@ -1,0 +1,20 @@
+{
+ "key": "line.sorokin_oleg.waxwing_wait_hint.1",
+ "lang": "ja",
+ "text": "ナナカマドは森の中で餌台に入れて、そばを離れないこと。キレンジャクはまず近くに誰がいるかを見て、それからごちそうを見る。",
+ "speaker": "sorokin_oleg",
+ "voice": "River",
+ "voice_id": "SAz9YHcvj6GT2YYXdXww",
+ "voice_design": null,
+ "direction": "[a retired scholar, calm, dry humour, slower, gentle]",
+ "model": "fal-ai/elevenlabs/tts/eleven-v3",
+ "request": {
+  "stability": 0.5,
+  "apply_text_normalization": "auto",
+  "text": "[a retired scholar, calm, dry humour, slower, gentle] ナナカマドは森の中で餌台に入れて、そばを離れないこと。キレンジャクはまず近くに誰がいるかを見て、それからごちそうを見る。",
+  "voice": "River",
+  "language_code": "ja"
+ },
+ "fal_request_id": "01a1d6d9-38e7-7352-8a1e-885f64d445aa",
+ "hash": "87b587fe0527"
+}

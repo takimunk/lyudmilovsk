@@ -1,0 +1,20 @@
+{
+ "key": "line.li_vika.lunch_ask.3",
+ "lang": "ja",
+ "text": "第三者の鑑定がほしいの。行って、一皿食べて、正直に教えて。",
+ "speaker": "li_vika",
+ "voice": "Laura",
+ "voice_id": "FGY2WhTYpPnrIDTdsKH5",
+ "voice_design": null,
+ "direction": "[playful, quick, a lab assistant joking about her work]",
+ "model": "fal-ai/elevenlabs/tts/eleven-v3",
+ "request": {
+  "stability": 0.5,
+  "apply_text_normalization": "auto",
+  "text": "[playful, quick, a lab assistant joking about her work] 第三者の鑑定がほしいの。行って、一皿食べて、正直に教えて。",
+  "voice": "Laura",
+  "language_code": "ja"
+ },
+ "fal_request_id": "01a1d673-1c63-7931-a7ee-a74af5b3c9bf",
+ "hash": "407723bd25b2"
+}

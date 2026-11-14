@@ -1,0 +1,20 @@
+{
+ "key": "line.owner.door_sea_at_night.1",
+ "lang": "ja",
+ "text": "夜は外で海の音がする。ドアはブースのすぐ先、鍵はかかっとらん。音のほうへ行け。",
+ "speaker": "owner",
+ "voice": "Daniel",
+ "voice_id": "onwK4e9ZLuTAKqWW03F9",
+ "voice_design": null,
+ "direction": "[calm, tired, slow, a little ironic]",
+ "model": "fal-ai/elevenlabs/tts/eleven-v3",
+ "request": {
+  "stability": 0.5,
+  "apply_text_normalization": "auto",
+  "text": "[calm, tired, slow, a little ironic] 夜は外で海の音がする。ドアはブースのすぐ先、鍵はかかっとらん。音のほうへ行け。",
+  "voice": "Daniel",
+  "language_code": "ja"
+ },
+ "fal_request_id": "01a1d73d-680b-7141-83fb-fbe7e37bd78d",
+ "hash": "c88fc3d386d1"
+}

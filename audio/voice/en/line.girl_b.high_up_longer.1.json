@@ -1,0 +1,20 @@
+{
+ "key": "line.girl_b.high_up_longer.1",
+ "lang": "en",
+ "text": "You're so high up. I suppose you can see everything a little longer from there.",
+ "speaker": "girl_b",
+ "voice": "Sarah",
+ "voice_id": "EXAVITQu4vr4xnSDxMaL",
+ "voice_design": null,
+ "direction": "[curious, slightly uneasy, conspiratorial]",
+ "model": "fal-ai/elevenlabs/tts/eleven-v3",
+ "request": {
+  "stability": 0.5,
+  "apply_text_normalization": "auto",
+  "text": "[curious, slightly uneasy, conspiratorial] You're so high up. I suppose you can see everything a little longer from there.",
+  "voice": "Sarah",
+  "language_code": "en"
+ },
+ "fal_request_id": "01a1d7b5-fc62-7f10-87d9-6083491c1220",
+ "hash": "3ecbc048915b"
+}

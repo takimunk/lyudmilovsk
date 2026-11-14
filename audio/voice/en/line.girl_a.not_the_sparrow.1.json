@@ -1,0 +1,20 @@
+{
+ "key": "line.girl_a.not_the_sparrow.1",
+ "lang": "en",
+ "text": "A sparrow. If you're not Sonya's one, better not tell her. She'll recognise you anyway.",
+ "speaker": "girl_a",
+ "voice": "Matilda",
+ "voice_id": "XrExE9yKIg1WjnnlVkGX",
+ "voice_design": null,
+ "direction": "[whispering, concentrated]",
+ "model": "fal-ai/elevenlabs/tts/eleven-v3",
+ "request": {
+  "stability": 0.5,
+  "apply_text_normalization": "auto",
+  "text": "[whispering, concentrated] A sparrow. If you're not Sonya's one, better not tell her. She'll recognise you anyway.",
+  "voice": "Matilda",
+  "language_code": "en"
+ },
+ "fal_request_id": "01a1d7b5-bfc1-7fe1-bd44-aef696321ab4",
+ "hash": "4e0337667a14"
+}

@@ -1,0 +1,20 @@
+{
+ "key": "line.valiev_rustam.data_sheet.1",
+ "lang": "ru",
+ "text": "Хохолок, жёлтая кромка на хвосте. Такой модели я не знаю. Покажись Сорокину, у него на тебя наверняка есть техпаспорт.",
+ "speaker": "valiev_rustam",
+ "voice": "Roger",
+ "voice_id": "CwhRBWXzGAHq8TQ4Fs17",
+ "voice_design": null,
+ "direction": "[confident, dry, matter-of-fact engineer]",
+ "model": "fal-ai/elevenlabs/tts/eleven-v3",
+ "request": {
+  "stability": 0.5,
+  "apply_text_normalization": "auto",
+  "text": "[confident, dry, matter-of-fact engineer] Хохолок, жёлтая кромка на хвосте. Такой модели я не знаю. Покажись Сорокину, у него на тебя наверняка есть техпаспорт.",
+  "voice": "Roger",
+  "language_code": "ru"
+ },
+ "fal_request_id": "01a1d75f-3968-7ff3-9a0b-b30a7aeec7c6",
+ "hash": "603a764afdf5"
+}

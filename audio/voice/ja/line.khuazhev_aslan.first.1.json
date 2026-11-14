@@ -1,0 +1,20 @@
+{
+ "key": "line.khuazhev_aslan.first.1",
+ "lang": "ja",
+ "text": "チーズは母と姉妹が作って、俺がアディゲから運んでくるんだ。三つ編みを食べてみな。燻製で、煙の香りがする。",
+ "speaker": "khuazhev_aslan",
+ "voice": "Brian",
+ "voice_id": "nPczCjzI2devNBz1zQrb",
+ "voice_design": null,
+ "direction": "[hearty, generous, a cheese seller from the Caucasus, proud of his family's cheese]",
+ "model": "fal-ai/elevenlabs/tts/eleven-v3",
+ "request": {
+  "stability": 0.5,
+  "apply_text_normalization": "auto",
+  "text": "[hearty, generous, a cheese seller from the Caucasus, proud of his family's cheese] チーズは母と姉妹が作って、俺がアディゲから運んでくるんだ。三つ編みを食べてみな。燻製で、煙の香りがする。",
+  "voice": "Brian",
+  "language_code": "ja"
+ },
+ "fal_request_id": "01a1d5fc-f536-7f50-a3b2-3056f2e82d93",
+ "hash": "19e77c923af0"
+}

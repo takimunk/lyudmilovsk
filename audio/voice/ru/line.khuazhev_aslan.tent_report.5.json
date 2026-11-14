@@ -1,0 +1,20 @@
+{
+ "key": "line.khuazhev_aslan.tent_report.5",
+ "lang": "ru",
+ "text": "Так выпьем же... нет, съедим. За того, кто ест честно и рассказывает правду. Держи головку, и за обед возьми, гость за чужое дело не платит.",
+ "speaker": "khuazhev_aslan",
+ "voice": "Brian",
+ "voice_id": "nPczCjzI2devNBz1zQrb",
+ "voice_design": null,
+ "direction": "[hearty, generous, a cheese seller from the Caucasus, proud of his family's cheese]",
+ "model": "fal-ai/elevenlabs/tts/eleven-v3",
+ "request": {
+  "stability": 0.5,
+  "apply_text_normalization": "auto",
+  "text": "[hearty, generous, a cheese seller from the Caucasus, proud of his family's cheese] Так выпьем же... нет, съедим. За того, кто ест честно и рассказывает правду. Держи головку, и за обед возьми, гость за чужое дело не платит.",
+  "voice": "Brian",
+  "language_code": "ru"
+ },
+ "fal_request_id": "01a1d66f-d35f-7f93-9dc5-c24c6d05baf7",
+ "hash": "d4458dd05242"
+}

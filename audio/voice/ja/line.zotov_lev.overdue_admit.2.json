@@ -1,0 +1,20 @@
+{
+ "key": "line.zotov_lev.overdue_admit.2",
+ "lang": "ja",
+ "text": "そのうち干渉計の脚がぐらつき始めた。あの雑誌が、ちょうどいい厚さだったんだ。",
+ "speaker": "zotov_lev",
+ "voice": "George",
+ "voice_id": "JBFqnCBsd6RMkjVDRZzb",
+ "voice_design": null,
+ "direction": "[dry, thoughtful, unhurried, a physicist's quiet irony]",
+ "model": "fal-ai/elevenlabs/tts/eleven-v3",
+ "request": {
+  "stability": 0.5,
+  "apply_text_normalization": "auto",
+  "text": "[dry, thoughtful, unhurried, a physicist's quiet irony] そのうち干渉計の脚がぐらつき始めた。あの雑誌が、ちょうどいい厚さだったんだ。",
+  "voice": "George",
+  "language_code": "ja"
+ },
+ "fal_request_id": "01a1d677-a415-7062-870e-b20b39460f89",
+ "hash": "82df7cc7a175"
+}

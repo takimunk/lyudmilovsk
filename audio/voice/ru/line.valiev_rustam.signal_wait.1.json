@@ -1,0 +1,20 @@
+{
+ "key": "line.valiev_rustam.signal_wait.1",
+ "lang": "ru",
+ "text": "Огонька пока не было, я смотрю. Фонарик у Огавы, место у верхней станции, время после темноты.",
+ "speaker": "valiev_rustam",
+ "voice": "Roger",
+ "voice_id": "CwhRBWXzGAHq8TQ4Fs17",
+ "voice_design": null,
+ "direction": "[confident, dry, matter-of-fact engineer]",
+ "model": "fal-ai/elevenlabs/tts/eleven-v3",
+ "request": {
+  "stability": 0.5,
+  "apply_text_normalization": "auto",
+  "text": "[confident, dry, matter-of-fact engineer] Огонька пока не было, я смотрю. Фонарик у Огавы, место у верхней станции, время после темноты.",
+  "voice": "Roger",
+  "language_code": "ru"
+ },
+ "fal_request_id": "01a1d674-4acb-7760-874e-fdc3613cf469",
+ "hash": "7d8467243daf"
+}

@@ -138,6 +138,10 @@ namespace LyudBirds
 		float WinterForage[NumHabitats] = {};  // feeding tastes Nov-Feb (when bWinterForage)
 		bool bWinterForage = false;
 		float WinterFlock = 1.f;         // flocks this much bigger Nov-Feb
+		// a rare species kept to one corner of the map (species.json "range"; the game fills it, docs/quests.md): every
+		// group's home lies within RangeR of (RangeX, RangeY), metres in the sim's frame
+		bool bRanged = false;
+		float RangeX = 0.f, RangeY = 0.f, RangeR = 0.f;
 	};
 
 	const std::vector<FSpecies>& SpeciesTable();

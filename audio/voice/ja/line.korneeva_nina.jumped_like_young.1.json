@@ -1,0 +1,29 @@
+{
+ "key": "line.korneeva_nina.jumped_like_young.1",
+ "lang": "ja",
+ "text": "ワーリャが言うにはね、ソローキンさん、若者みたいにベンチから飛び上がったんですって。あの膝でよ。あいにく私はターニャのお店にいたの。",
+ "speaker": "korneeva_nina",
+ "voice": "Wise_Woman",
+ "voice_id": "Wise_Woman",
+ "voice_design": null,
+ "direction": "",
+ "model": "fal-ai/minimax/speech-2.6-hd",
+ "request": {
+  "prompt": "ワーリャが言うにはね、ソローキンさん、若者みたいにベンチから飛び上がったんですって。あの膝でよ。あいにく私はターニャのお店にいたの。",
+  "voice_setting": {
+   "speed": 0.95,
+   "pitch": 0,
+   "vol": 1,
+   "voice_id": "Wise_Woman"
+  },
+  "language_boost": "Japanese",
+  "audio_setting": {
+   "sample_rate": 24000,
+   "format": "mp3",
+   "channel": 1
+  },
+  "output_format": "url"
+ },
+ "fal_request_id": "01a1d75e-7901-7021-a11d-943096812439",
+ "hash": "dc4fbe4c46c5"
+}

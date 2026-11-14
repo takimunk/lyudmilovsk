@@ -1,0 +1,20 @@
+{
+ "key": "line.sorokin_oleg.waxwing_meet.9",
+ "lang": "ru",
+ "text": "Час ходу на север, через весь город и дальше. Без рябины и кормушки свиристель к вам не подойдёт. Он птица осторожная.",
+ "speaker": "sorokin_oleg",
+ "voice": "River",
+ "voice_id": "SAz9YHcvj6GT2YYXdXww",
+ "voice_design": null,
+ "direction": "[a retired scholar, calm, dry humour, slower, gentle]",
+ "model": "fal-ai/elevenlabs/tts/eleven-v3",
+ "request": {
+  "stability": 0.5,
+  "apply_text_normalization": "auto",
+  "text": "[a retired scholar, calm, dry humour, slower, gentle] Час ходу на север, через весь город и дальше. Без рябины и кормушки свиристель к вам не подойдёт. Он птица осторожная.",
+  "voice": "River",
+  "language_code": "ru"
+ },
+ "fal_request_id": "01a1d588-a521-7eb3-932a-4b8f22688e7f",
+ "hash": "5c3ff99067e5"
+}

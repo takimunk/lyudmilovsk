@@ -1,0 +1,20 @@
+{
+ "key": "line.streamer.magpie_one_mic.1",
+ "lang": "ja",
+ "text": "カササギだ。チャットが、マイクを持ってかれるって。やめてね、一本しかないの。",
+ "speaker": "streamer",
+ "voice": "Jessica",
+ "voice_id": "cgSgspJ2msm6clMCkdW9",
+ "voice_design": null,
+ "direction": "[bright, fast, half talking to her chat]",
+ "model": "fal-ai/elevenlabs/tts/eleven-v3",
+ "request": {
+  "stability": 0.5,
+  "apply_text_normalization": "auto",
+  "text": "[bright, fast, half talking to her chat] カササギだ。チャットが、マイクを持ってかれるって。やめてね、一本しかないの。",
+  "voice": "Jessica",
+  "language_code": "ja"
+ },
+ "fal_request_id": "01a1d73e-646c-7fb1-854e-06d158fc680d",
+ "hash": "d1a7bad7ee6f"
+}

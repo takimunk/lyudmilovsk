@@ -1,0 +1,20 @@
+{
+ "key": "line.guy_b.sunrise_slept_warm.1",
+ "lang": "en",
+ "text": "You saw the sunrise on the shore? I slept through it. Woke up warm, as if I'd been there too.",
+ "speaker": "guy_b",
+ "voice": "Chris",
+ "voice_id": "iP95p4xoKVk53GoZ742B",
+ "voice_design": null,
+ "direction": "[relaxed, lazy, friendly]",
+ "model": "fal-ai/elevenlabs/tts/eleven-v3",
+ "request": {
+  "stability": 0.5,
+  "apply_text_normalization": "auto",
+  "text": "[relaxed, lazy, friendly] You saw the sunrise on the shore? I slept through it. Woke up warm, as if I'd been there too.",
+  "voice": "Chris",
+  "language_code": "en"
+ },
+ "fal_request_id": "01a1d739-b2a8-7ec0-b40c-23623ab4c505",
+ "hash": "fc0be2e723b4"
+}

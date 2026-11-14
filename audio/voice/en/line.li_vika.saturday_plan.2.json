@@ -1,0 +1,20 @@
+{
+ "key": "line.li_vika.saturday_plan.2",
+ "lang": "en",
+ "text": "Misha took offence, but he's promised to try it without dill. That's a result too.",
+ "speaker": "li_vika",
+ "voice": "Laura",
+ "voice_id": "FGY2WhTYpPnrIDTdsKH5",
+ "voice_design": null,
+ "direction": "[playful, quick, a lab assistant joking about her work]",
+ "model": "fal-ai/elevenlabs/tts/eleven-v3",
+ "request": {
+  "stability": 0.5,
+  "apply_text_normalization": "auto",
+  "text": "[playful, quick, a lab assistant joking about her work] Misha took offence, but he's promised to try it without dill. That's a result too.",
+  "voice": "Laura",
+  "language_code": "en"
+ },
+ "fal_request_id": "01a1d6e7-d274-76d1-b95f-359830489197",
+ "hash": "162f76d6eb61"
+}

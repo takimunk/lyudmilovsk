@@ -1,0 +1,20 @@
+{
+ "key": "line.sorokin_oleg.autumn_report.2",
+ "lang": "en",
+ "text": "Not a word about the tie. Write it in yourself, in this column here: I like to read data, not listen to it.",
+ "speaker": "sorokin_oleg",
+ "voice": "River",
+ "voice_id": "SAz9YHcvj6GT2YYXdXww",
+ "voice_design": null,
+ "direction": "[a retired scholar, calm, dry humour, slower, gentle]",
+ "model": "fal-ai/elevenlabs/tts/eleven-v3",
+ "request": {
+  "stability": 0.5,
+  "apply_text_normalization": "auto",
+  "text": "[a retired scholar, calm, dry humour, slower, gentle] Not a word about the tie. Write it in yourself, in this column here: I like to read data, not listen to it.",
+  "voice": "River",
+  "language_code": "en"
+ },
+ "fal_request_id": "01a1d673-6704-7f71-bf11-581dc291438f",
+ "hash": "057ddd9d39d2"
+}

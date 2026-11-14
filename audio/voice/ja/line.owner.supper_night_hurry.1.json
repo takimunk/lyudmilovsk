@@ -1,0 +1,20 @@
+{
+ "key": "line.owner.supper_night_hurry.1",
+ "lang": "ja",
+ "text": "日が沈んだな、わかる。入口のアスランは八時までだ。だが自販機の「バイカル」は眠らん。",
+ "speaker": "owner",
+ "voice": "Daniel",
+ "voice_id": "onwK4e9ZLuTAKqWW03F9",
+ "voice_design": null,
+ "direction": "[calm, tired, slow, a little ironic]",
+ "model": "fal-ai/elevenlabs/tts/eleven-v3",
+ "request": {
+  "stability": 0.5,
+  "apply_text_normalization": "auto",
+  "text": "[calm, tired, slow, a little ironic] 日が沈んだな、わかる。入口のアスランは八時までだ。だが自販機の「バイカル」は眠らん。",
+  "voice": "Daniel",
+  "language_code": "ja"
+ },
+ "fal_request_id": "01a1d7ab-c7ef-7cf2-9f12-d20c983192cd",
+ "hash": "a6bc276847c9"
+}

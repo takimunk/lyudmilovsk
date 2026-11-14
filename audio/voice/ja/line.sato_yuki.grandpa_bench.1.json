@@ -1,0 +1,29 @@
+{
+ "key": "line.sato_yuki.grandpa_bench.1",
+ "lang": "ja",
+ "text": "鳥さん、ソローキンおじいちゃんのところに行って。ほら、となりのベンチ。ずっとあなたみたいな鳥をさがしてるの。",
+ "speaker": "sato_yuki",
+ "voice": "Lovely_Girl",
+ "voice_id": "Lovely_Girl",
+ "voice_design": null,
+ "direction": "",
+ "model": "fal-ai/minimax/speech-2.6-hd",
+ "request": {
+  "prompt": "鳥さん、ソローキンおじいちゃんのところに行って。ほら、となりのベンチ。ずっとあなたみたいな鳥をさがしてるの。",
+  "voice_setting": {
+   "speed": 1,
+   "pitch": 0,
+   "vol": 1,
+   "voice_id": "Lovely_Girl"
+  },
+  "language_boost": "Japanese",
+  "audio_setting": {
+   "sample_rate": 24000,
+   "format": "mp3",
+   "channel": 1
+  },
+  "output_format": "url"
+ },
+ "fal_request_id": "01a1d75f-0367-7411-97da-97bab6995407",
+ "hash": "f605df39a33e"
+}

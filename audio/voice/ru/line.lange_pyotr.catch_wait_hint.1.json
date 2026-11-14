@@ -1,0 +1,20 @@
+{
+ "key": "line.lange_pyotr.catch_wait_hint.1",
+ "lang": "ru",
+ "text": "Конец пирса, у свай. Дай поплавку уйти под воду целиком, тогда подсекай: раньше рано, позже поздно.",
+ "speaker": "lange_pyotr",
+ "voice": "Brian",
+ "voice_id": "nPczCjzI2devNBz1zQrb",
+ "voice_design": null,
+ "direction": "[gruff, unhurried, a weathered fisherman of few words]",
+ "model": "fal-ai/elevenlabs/tts/eleven-v3",
+ "request": {
+  "stability": 0.5,
+  "apply_text_normalization": "auto",
+  "text": "[gruff, unhurried, a weathered fisherman of few words] Конец пирса, у свай. Дай поплавку уйти под воду целиком, тогда подсекай: раньше рано, позже поздно.",
+  "voice": "Brian",
+  "language_code": "ru"
+ },
+ "fal_request_id": "01a1d6d5-d2b0-7660-8a42-a1adf8ce285c",
+ "hash": "7ea74560fdad"
+}

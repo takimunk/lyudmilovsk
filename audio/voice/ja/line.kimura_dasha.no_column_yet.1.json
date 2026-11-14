@@ -1,0 +1,20 @@
+{
+ "key": "line.kimura_dasha.no_column_yet.1",
+ "lang": "ja",
+ "text": "冠羽に、翼の赤い点。私の表にはあなたの欄がないよ。じっとしてて、新しい欄を作るから。",
+ "speaker": "kimura_dasha",
+ "voice": "Charlotte",
+ "voice_id": "XB0fDUnXU5powFXDhCwa",
+ "voice_design": null,
+ "direction": "[a tired physics student, wry, self-ironic]",
+ "model": "fal-ai/elevenlabs/tts/eleven-v3",
+ "request": {
+  "stability": 0.5,
+  "apply_text_normalization": "auto",
+  "text": "[a tired physics student, wry, self-ironic] 冠羽に、翼の赤い点。私の表にはあなたの欄がないよ。じっとしてて、新しい欄を作るから。",
+  "voice": "Charlotte",
+  "language_code": "ja"
+ },
+ "fal_request_id": "01a1d75d-f9c4-7202-824c-8a04a61adea5",
+ "hash": "f8c5298d448b"
+}

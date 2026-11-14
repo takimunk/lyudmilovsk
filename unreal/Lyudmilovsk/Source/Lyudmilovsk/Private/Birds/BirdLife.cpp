@@ -1,4 +1,5 @@
 #include "Birds/BirdLife.h"
+#include "UI/LyudQuests.h"
 #include "World/LyudPrefetch.h"
 
 #include "BirdSim.h"
@@ -277,6 +278,28 @@ void UBirdLifeSubsystem::FillSpeciesFromTable()
 				auto Doy = [&Now](int32 MonthDay) { return (float)FDateTime(Now.GetYear(), MonthDay / 100, MonthDay % 100).GetDayOfYear(); };
 				Sp.LeaveFrom = Doy(R->StragglersFrom);
 				Sp.LeaveUntil = Doy(R->StragglersUntil);
+			}
+			// a rare species kept to one corner of the map (species.json "range", map metres)
+			if (R->RangeR > 0.f)
+			{
+				const V3 At = FromUE(ULyudQuests::Frame().ToWorld(R->RangeAt));
+				Sp.bRanged = true;
+				Sp.RangeX = At.X;
+				Sp.RangeY = At.Y;
+				Sp.RangeR = R->RangeR;
+				if (R->RangePopulation > 0)
+				{
+					Sp.Population = R->RangePopulation;
+				}
+				if (R->RangeFlockMin > 0 && R->RangeFlockMax >= R->RangeFlockMin)
+				{
+					Sp.FlockMin = R->RangeFlockMin;
+					Sp.FlockMax = R->RangeFlockMax;
+				}
+				if (R->RangeHomeM > 0.f)
+				{
+					Sp.HomeRange = R->RangeHomeM;
+				}
 			}
 		}
 		else

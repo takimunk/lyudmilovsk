@@ -1,0 +1,20 @@
+{
+ "key": "line.valiev_rustam.brighter_lamp_calc.1",
+ "lang": "ru",
+ "text": "Я пересчитал. С фонариком поярче точку было бы видно даже в морось. Но это уже другой опыт.",
+ "speaker": "valiev_rustam",
+ "voice": "Roger",
+ "voice_id": "CwhRBWXzGAHq8TQ4Fs17",
+ "voice_design": null,
+ "direction": "[confident, dry, matter-of-fact engineer]",
+ "model": "fal-ai/elevenlabs/tts/eleven-v3",
+ "request": {
+  "stability": 0.5,
+  "apply_text_normalization": "auto",
+  "text": "[confident, dry, matter-of-fact engineer] Я пересчитал. С фонариком поярче точку было бы видно даже в морось. Но это уже другой опыт.",
+  "voice": "Roger",
+  "language_code": "ru"
+ },
+ "fal_request_id": "01a1d6ea-48d8-7120-a83a-2fb7beea7a09",
+ "hash": "73a34570719c"
+}

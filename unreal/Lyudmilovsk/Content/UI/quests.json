@@ -1,5 +1,5 @@
 {
- "comment": "The quests (docs/ui.md). Words: quest.<id>.title|desc, quest.<id>.<stage>.log, quest.<id>.<objective>.obj, quest.<id>.done in strings_<lang>.json. Events: talk <npc>, leave_computer, reach <place in map.json>, get|have|use|wear <item>, bird. A target ending in * matches by prefix.",
+ "comment": "The quests (docs/quests.md: how to write one; docs/ui.md). Words: quest.<id>.title|desc, quest.<id>.<stage>.log, quest.<id>.<objective>.obj, quest.<id>.done in strings_<lang>.json. Events: talk <npc>, leave_computer, reach <place in map.json>, get|have|use|wear <item>, bird, feeder_fill <feed>, feeder_fill_at <feed>@<place>, feeder_visit <Species>, bird_tamed <Species>, bird_call <Species>.<Npc>, corvid_*; bring <item>@<Npc> is met by a talk with that person with the item in the pocket (they take it). A target ending in * matches by prefix. A stage's \"dev\" block is the developer mode's (where a jump to the stage lands: tp, give, time, exec) and is ignored by the game.",
  "quests": [
   {
    "id": "awakening",
@@ -10,7 +10,7 @@
     {"id": "owner", "objectives": [{"id": "talk_owner", "event": "talk", "target": "owner", "place": "club"}]},
     {"id": "outside", "objectives": [{"id": "go_out", "event": "reach", "target": "club_door"}]},
     {"id": "cable", "objectives": [{"id": "reach_cable", "event": "reach", "target": "cable_upper"}],
-     "reward": {"start": ["explore"]}}
+     "reward": {"start": ["explore", "waxwing", "owner_supper"]}}
    ]
   },
   {
@@ -42,6 +42,86 @@
      "reward": {"rubles": 50}}
    ]
   },
+  {
+   "id": "waxwing",
+   "kind": "side",
+   "start_on": {"event": "talk", "target": "Sorokin_oleg"},
+   "stages": [
+    {"id": "find", "objectives": [{"id": "talk_sorokin", "event": "talk", "target": "Sorokin_oleg", "place": "academ"}],
+     "dev": {"time": "17:30", "exec": ["Quest.GoToPerson sorokin_oleg"]}},
+    {"id": "prepare", "objectives": [
+     {"id": "get_guide", "event": "have", "target": "bird_guide", "place": "academ"},
+     {"id": "get_rowan", "event": "have", "target": "feed_rowan", "place": "academ"},
+     {"id": "get_feeder", "event": "have", "target": "feeder", "place": "academ"}
+    ],
+     "reward": {"start": ["overdue_journal"]},
+     "dev": {"tp": "orni_library", "time": "11:00"}},
+    {"id": "journey", "objectives": [{"id": "reach_grove", "event": "reach", "target": "rowan_grove"}],
+     "dev": {"tp": "orni_gastronom", "time": "11:00", "give": {"bird_guide": 1, "feed_rowan": 5, "feeder": 1}}},
+    {"id": "lure", "objectives": [{"id": "fill_feeder", "event": "feeder_fill_at", "target": "feed_rowan@rowan_grove", "place": "rowan_grove"}],
+     "dev": {"tp": "orni_grove", "time": "08:00", "give": {"bird_guide": 1, "feed_rowan": 5, "feeder": 1}}},
+    {"id": "wait", "objectives": [{"id": "see_waxwing", "event": "feeder_visit", "target": "Waxwing", "place": "rowan_grove"}],
+     "dev": {"tp": "orni_grove", "time": "08:00", "give": {"bird_guide": 1, "feed_rowan": 5, "feeder": 1}, "exec": ["lyud.Feeder.Place", "lyud.Feeder.Fill feed_rowan 4"]}},
+    {"id": "tame", "objectives": [{"id": "tame_waxwing", "event": "bird_tamed", "target": "Waxwing", "place": "rowan_grove"}],
+     "dev": {"tp": "orni_grove", "time": "10:00", "give": {"bird_guide": 1, "feed_rowan": 5, "feeder": 1}, "exec": ["lyud.Feeder.Place", "lyud.Feeder.Fill feed_rowan 4", "lyud.Feeder.Age 3"]}},
+    {"id": "return", "objectives": [{"id": "call_sorokin", "event": "bird_call", "target": "Waxwing.Sorokin_oleg", "place": "academ"}],
+     "dev": {"time": "10:00", "exec": ["Quest.GoToPerson sorokin_oleg 25", "Bird.Become Waxwing"]},
+     "reward": {"start": ["waxwing_after"]}}
+   ]
+  },
+  {
+   "id": "waxwing_after",
+   "kind": "side",
+   "stages": [
+    {"id": "visit", "objectives": [{"id": "hear_sorokin", "event": "talk", "target": "Sorokin_oleg", "place": "academ"}],
+     "dev": {"time": "17:30", "exec": ["Quest.GoToPerson sorokin_oleg"]},
+     "reward": {"items": {"feed_mealworm": 5, "feed_peanuts": 5}, "start": ["autumn_count"]}}
+   ]
+  },
+  {
+   "id": "evening_paper",
+   "kind": "side",
+   "start_on": {"event": "talk", "target": "Korneeva_nina"},
+   "stages": [
+    {"id": "ask", "objectives": [{"id": "hear_nina", "event": "talk", "target": "Korneeva_nina", "place": "academ"}],
+     "dev": {"time": "15:00", "exec": ["Quest.GoToPerson korneeva_nina"]}},
+    {"id": "buy", "objectives": [{"id": "get_paper", "event": "have", "target": "daily_paper"}],
+     "dev": {"time": "15:00", "exec": ["Quest.GoToPerson t_nakamura_emre"]}},
+    {"id": "bring", "objectives": [{"id": "give_paper", "event": "bring", "target": "daily_paper@Korneeva_nina", "place": "academ"}],
+     "dev": {"time": "15:00", "give": {"daily_paper": 1}, "exec": ["Quest.GoToPerson korneeva_nina"]},
+     "reward": {"rubles": 10, "items": {"pie": 2}}}
+   ]
+  },
+  {
+   "id": "crow_gift",
+   "kind": "side",
+   "start_on": {"event": "talk", "target": "Sato_yuki"},
+   "stages": [
+    {"id": "ask", "objectives": [{"id": "hear_yuki", "event": "talk", "target": "Sato_yuki", "place": "academ"}],
+     "dev": {"time": "15:00", "exec": ["Quest.GoToPerson sato_yuki"]}},
+    {"id": "feed", "objectives": [{"id": "throw_feed", "event": "corvid_feed_thrown", "need": 3}],
+     "dev": {"tp": "orni_gastronom", "time": "11:00", "give": {"feed_peanuts": 5}}},
+    {"id": "gift", "objectives": [{"id": "take_gift", "event": "corvid_gift_taken"}],
+     "dev": {"tp": "orni_gastronom", "time": "11:00", "give": {"feed_peanuts": 5}}},
+    {"id": "tell", "objectives": [{"id": "tell_yuki", "event": "talk", "target": "Sato_yuki", "place": "academ"}],
+     "dev": {"time": "15:00", "exec": ["Quest.GoToPerson sato_yuki"]},
+     "reward": {"items": {"candy": 3}}}
+   ]
+  },
+  {"id": "fisherman_cheese", "kind": "side", "start_on": {"event": "talk", "target": "Lange_pyotr"}, "stages": [{"id": "ask", "objectives": [{"id": "hear_lange", "event": "talk", "target": "Lange_pyotr"}], "dev": {"time": "12:00", "exec": ["Quest.GoToPerson lange_pyotr"]}}, {"id": "buy", "objectives": [{"id": "get_cheese", "event": "have", "target": "cheese_braid", "place": "club_door"}], "dev": {"tp": "club_door", "time": "12:00"}}, {"id": "bring", "objectives": [{"id": "give_cheese", "event": "bring", "target": "cheese_braid@Lange_pyotr"}], "dev": {"time": "12:00", "give": {"cheese_braid": 1}, "exec": ["Quest.GoToPerson lange_pyotr"]}, "reward": {"items": {"bait_worm": 5, "fish_herring": 1}, "start": ["first_catch"]}}]},
+  {"id": "window_feeder", "kind": "side", "start_on": {"event": "talk", "target": "Kimura_dasha"}, "stages": [{"id": "ask", "objectives": [{"id": "hear_dasha", "event": "talk", "target": "Kimura_dasha", "place": "academ"}], "dev": {"time": "17:00", "exec": ["Quest.GoToPerson kimura_dasha"]}}, {"id": "fill", "objectives": [{"id": "fill_feeder", "event": "feeder_fill", "target": "*", "place": "academ"}], "dev": {"tp": "orni_library", "time": "10:00", "give": {"feeder": 1, "feed_grain": 5}}}, {"id": "watch", "objectives": [{"id": "count_birds", "event": "feeder_visit", "target": "*", "need": 5, "place": "academ"}], "dev": {"tp": "orni_library", "time": "10:00", "give": {"feeder": 1, "feed_grain": 5}}}, {"id": "tell", "objectives": [{"id": "tell_dasha", "event": "talk", "target": "Kimura_dasha", "place": "academ"}], "dev": {"time": "17:00", "exec": ["Quest.GoToPerson kimura_dasha"]}, "reward": {"items": {"cookies": 2, "coffee": 1}}}]},
+  {"id": "magpie_key", "kind": "side", "start_on": {"event": "talk", "target": "Belov_misha"}, "stages": [{"id": "ask", "objectives": [{"id": "hear_misha", "event": "talk", "target": "Belov_misha", "place": "academ"}], "dev": {"time": "17:30", "exec": ["Quest.GoToPerson belov_misha"]}}, {"id": "search", "objectives": [{"id": "gather_finds", "event": "corvid_find|corvid_store_dug|corvid_gift_taken", "target": "*", "need": 3}], "dev": {"tp": "orni_gastronom", "time": "11:00", "exec": ["lyud.Corvids.Spawn BottleCap 2", "lyud.Corvids.Spawn Coin 1"]}}, {"id": "tell", "objectives": [{"id": "tell_misha", "event": "talk", "target": "Belov_misha", "place": "academ"}], "dev": {"time": "17:30", "give": {"find_bottlecap": 2, "find_coin": 1}, "exec": ["Quest.GoToPerson belov_misha"]}, "reward": {"rubles": 15, "items": {"chocolate": 1}}}]},
+  {"id": "painter_views", "kind": "side", "start_on": {"event": "talk", "target": "Nishimura_aya"}, "stages": [{"id": "ask", "objectives": [{"id": "hear_aya", "event": "talk", "target": "Nishimura_aya", "place": "academ"}], "dev": {"time": "07:30", "exec": ["Quest.GoToPerson nishimura_aya"]}}, {"id": "look", "objectives": [{"id": "see_promenade", "event": "reach", "target": "promenade", "place": "promenade"}, {"id": "see_starlings", "event": "reach", "target": "starlings", "place": "starlings"}, {"id": "see_grove", "event": "reach", "target": "rowan_grove", "place": "rowan_grove"}], "dev": {"tp": "starlings_dusk", "time": "16:30"}}, {"id": "tell", "objectives": [{"id": "tell_aya", "event": "talk", "target": "Nishimura_aya", "place": "academ"}], "dev": {"time": "07:30", "exec": ["Quest.GoToPerson nishimura_aya"]}, "reward": {"rubles": 15, "items": {"postcard": 1}}}]},
+  {"id": "first_catch", "kind": "side", "stages": [{"id": "rod", "objectives": [{"id": "get_rod", "event": "have", "target": "fishing_rod", "place": "academ"}], "dev": {"tp": "orni_gastronom", "time": "12:00"}}, {"id": "learn", "objectives": [{"id": "hear_spot", "event": "talk", "target": "Lange_pyotr"}], "dev": {"time": "12:00", "give": {"fishing_rod": 1, "bait_worm": 10}, "exec": ["Quest.GoToPerson lange_pyotr"]}}, {"id": "catch", "objectives": [{"id": "catch_fish", "event": "fish_caught", "target": "*", "place": "promenade"}], "dev": {"tp": "promenade", "time": "18:00", "give": {"fishing_rod": 1, "bait_worm": 10}}}, {"id": "tell", "objectives": [{"id": "tell_lange", "event": "talk", "target": "Lange_pyotr"}], "dev": {"time": "12:00", "give": {"fishing_rod": 1, "fish_flounder": 1}, "exec": ["Quest.GoToPerson lange_pyotr"]}, "reward": {"items": {"lure_spoon": 1, "bait_worm": 10}}}]},
+  {"id": "sparrow_hello", "kind": "side", "start_on": {"event": "talk", "target": "Kid_girl"}, "stages": [{"id": "ask", "objectives": [{"id": "hear_sonya", "event": "talk", "target": "Kid_girl", "place": "club"}], "dev": {"time": "15:00", "exec": ["Quest.GoToPerson kid_girl"]}}, {"id": "tame", "objectives": [{"id": "tame_sparrow", "event": "bird_tamed", "target": "HouseSparrow", "place": "club_door"}], "dev": {"time": "11:00", "give": {"bird_feed": 5}, "exec": ["Quest.GoToPerson nao 4", "lyud.Birds.SpawnNear HouseSparrow"]}}, {"id": "call", "objectives": [{"id": "call_sonya", "event": "bird_call", "target": "HouseSparrow.Kid_girl", "place": "club_door"}], "dev": {"time": "15:00", "exec": ["Quest.GoToPerson kid_girl 5", "Bird.Become HouseSparrow"]}}, {"id": "tell", "objectives": [{"id": "tell_sonya", "event": "talk", "target": "Kid_girl", "place": "club"}], "dev": {"time": "15:00", "exec": ["Quest.GoToPerson kid_girl"]}, "reward": {"items": {"chocolate": 1}}}]},
+  {"id": "soda_science", "kind": "side", "start_on": {"event": "talk", "target": "Zotova_galina"}, "stages": [{"id": "ask", "objectives": [{"id": "hear_galina", "event": "talk", "target": "Zotova_galina", "place": "academ"}], "dev": {"time": "18:00", "exec": ["Quest.GoToPerson zotova_galina"]}}, {"id": "taste", "objectives": [{"id": "try_baikal", "event": "eat", "target": "drink_baikal", "place": "club"}, {"id": "try_dyushes", "event": "eat", "target": "drink_dyushes", "place": "club"}, {"id": "try_buratino", "event": "eat", "target": "drink_buratino", "place": "club"}, {"id": "try_tarkhun", "event": "eat", "target": "drink_tarkhun", "place": "club"}], "dev": {"tp": "club", "time": "18:00", "give": {"drink_baikal": 1, "drink_dyushes": 1, "drink_buratino": 1, "drink_tarkhun": 1}}}, {"id": "tell", "objectives": [{"id": "tell_galina", "event": "talk", "target": "Zotova_galina", "place": "academ"}], "dev": {"time": "18:00", "exec": ["Quest.GoToPerson zotova_galina"]}, "reward": {"rubles": 100, "items": {"kefir": 1}}}]},
+  {"id": "hot_corn", "kind": "side", "start_on": {"event": "talk", "target": "Guseva_valentina"}, "stages": [{"id": "ask", "objectives": [{"id": "hear_valentina", "event": "talk", "target": "Guseva_valentina", "place": "academ"}], "dev": {"time": "12:00", "exec": ["Quest.GoToPerson guseva_valentina"]}}, {"id": "buy", "objectives": [{"id": "get_cob", "event": "have", "target": "corn_cob", "place": "academ"}], "dev": {"time": "12:00", "exec": ["Quest.GoToPerson guseva_valentina"]}}, {"id": "carry", "objectives": [{"id": "give_cob", "event": "bring", "target": "corn_cob@Korneev_ivan"}], "dev": {"time": "12:00", "give": {"corn_cob": 1}, "exec": ["Quest.GoToPerson korneev_ivan"]}}, {"id": "tell", "objectives": [{"id": "tell_valentina", "event": "talk", "target": "Guseva_valentina", "place": "academ"}], "dev": {"time": "12:00", "exec": ["Quest.GoToPerson guseva_valentina"]}, "reward": {"rubles": 20, "items": {"corn_cob": 1}}}]},
+  {"id": "lab_lunch", "kind": "side", "start_on": {"event": "talk", "target": "Li_vika"}, "stages": [{"id": "ask", "objectives": [{"id": "hear_vika", "event": "talk", "target": "Li_vika", "place": "academ"}], "dev": {"time": "18:30", "exec": ["Quest.GoToPerson li_vika"]}}, {"id": "eat", "objectives": [{"id": "eat_soup", "event": "eat", "target": "diner_soup", "place": "cable_lower"}], "dev": {"tp": "cable_lower", "time": "18:30", "exec": ["lyud.Diner.Serve diner_soup"]}}, {"id": "tell", "objectives": [{"id": "tell_vika", "event": "talk", "target": "Li_vika", "place": "academ"}], "dev": {"time": "18:30", "exec": ["Quest.GoToPerson li_vika"]}, "reward": {"rubles": 50, "items": {"chocolate": 1}}}]},
+  {"id": "night_signal", "kind": "side", "start_on": {"event": "talk", "target": "Valiev_rustam"}, "stages": [{"id": "ask", "objectives": [{"id": "hear_rustam", "event": "talk", "target": "Valiev_rustam", "place": "academ"}], "dev": {"time": "18:30", "exec": ["Quest.GoToPerson valiev_rustam"]}}, {"id": "signal", "objectives": [{"id": "get_lamp", "event": "have", "target": "head_lamp", "place": "club"}, {"id": "wear_lamp", "event": "wear", "target": "head_lamp"}, {"id": "reach_station", "event": "reach", "target": "cable_upper", "place": "cable_upper"}], "dev": {"tp": "alley", "time": "22:00", "give": {"head_lamp": 1}}}, {"id": "tell", "objectives": [{"id": "tell_rustam", "event": "talk", "target": "Valiev_rustam", "place": "academ"}], "dev": {"time": "21:30", "give": {"head_lamp": 1}, "exec": ["Quest.GoToPerson valiev_rustam"]}, "reward": {"rubles": 40, "items": {"candy": 1}}}]},
+  {"id": "tent_neighbours", "kind": "side", "start_on": {"event": "talk", "target": "Khuazhev_aslan"}, "stages": [{"id": "ask", "objectives": [{"id": "hear_aslan", "event": "talk", "target": "Khuazhev_aslan", "place": "club_door"}], "dev": {"tp": "club_door", "time": "12:00", "exec": ["Quest.GoToPerson khuazhev_aslan"]}}, {"id": "taste", "objectives": [{"id": "eat_corn", "event": "eat", "target": "corn_cob", "place": "academ"}, {"id": "eat_pie", "event": "eat", "target": "pie", "place": "cable_upper"}, {"id": "eat_pancakes", "event": "eat", "target": "diner_pancakes", "place": "cable_lower"}], "dev": {"tp": "cable_lower", "time": "12:00", "give": {"corn_cob": 1, "pie": 1}, "exec": ["lyud.Diner.Serve diner_pancakes"]}}, {"id": "tell", "objectives": [{"id": "tell_aslan", "event": "talk", "target": "Khuazhev_aslan", "place": "club_door"}], "dev": {"tp": "club_door", "time": "12:00", "exec": ["Quest.GoToPerson khuazhev_aslan"]}, "reward": {"rubles": 70, "items": {"cheese_round_small": 1}}}]},
+  {"id": "owner_supper", "kind": "side", "stages": [{"id": "back", "objectives": [{"id": "return_club", "event": "reach", "target": "club_door", "place": "club_door"}], "dev": {"tp": "cable_upper", "time": "16:00"}}, {"id": "ask", "objectives": [{"id": "hear_owner", "event": "talk", "target": "Owner", "place": "club"}], "dev": {"time": "16:00", "exec": ["Quest.GoToPerson owner"]}}, {"id": "buy", "objectives": [{"id": "get_cheese", "event": "have", "target": "cheese_braid", "place": "club_door"}, {"id": "get_soda", "event": "have", "target": "drink_baikal", "place": "club"}], "dev": {"tp": "club_door", "time": "16:00"}}, {"id": "bring", "objectives": [{"id": "give_cheese", "event": "bring", "target": "cheese_braid@Owner", "place": "club"}, {"id": "give_soda", "event": "bring", "target": "drink_baikal@Owner", "place": "club"}], "dev": {"time": "16:00", "give": {"cheese_braid": 1, "drink_baikal": 1}, "exec": ["Quest.GoToPerson owner"]}, "reward": {"rubles": 60, "items": {"bird_feed": 5}}}]},
+  {"id": "overdue_journal", "kind": "side", "stages": [{"id": "ask", "objectives": [{"id": "hear_olya", "event": "talk", "target": "Girl_b", "place": "academ"}], "dev": {"time": "11:00", "exec": ["Quest.GoToPerson girl_b"]}}, {"id": "visit", "objectives": [{"id": "ask_lev", "event": "talk", "target": "Zotov_lev", "place": "academ"}], "reward": {"rubles": 40}, "dev": {"time": "18:00", "exec": ["Quest.GoToPerson zotov_lev"]}}, {"id": "buy", "objectives": [{"id": "get_issue", "event": "have", "target": "magazine_science", "place": "academ"}], "dev": {"tp": "academ", "time": "12:00"}}, {"id": "return", "objectives": [{"id": "give_issue", "event": "bring", "target": "magazine_science@Girl_b", "place": "academ"}], "reward": {"rubles": 0, "items": {"magazine_travel": 1, "chocolate": 1}}, "dev": {"time": "11:00", "give": {"magazine_science": 1}, "exec": ["Quest.GoToPerson girl_b"]}}]},
+  {"id": "autumn_count", "kind": "side", "stages": [{"id": "kit", "objectives": [{"id": "get_feeder", "event": "have", "target": "feeder", "place": "academ"}], "dev": {"tp": "orni_gastronom", "time": "10:00", "give": {"feeder": 1, "feed_peanuts": 5, "feed_mealworm": 5}}}, {"id": "brief", "objectives": [{"id": "hear_sorokin", "event": "talk", "target": "Sorokin_oleg", "place": "academ"}], "dev": {"time": "10:00", "give": {"feeder": 1, "feed_peanuts": 5, "feed_mealworm": 5}, "exec": ["Quest.GoToPerson sorokin_oleg"]}}, {"id": "post", "no_skip": true, "objectives": [{"id": "fill_peanuts", "event": "feeder_fill_at", "target": "feed_peanuts@academ", "place": "academ"}], "dev": {"tp": "orni_library", "time": "10:00", "give": {"feeder": 1, "feed_peanuts": 5, "feed_mealworm": 5}}}, {"id": "tally", "objectives": [{"id": "count_visits", "event": "feeder_visit", "target": "*", "need": 6, "place": "academ"}, {"id": "tame_tit", "event": "bird_tamed", "target": "GreatTit", "place": "academ"}], "dev": {"tp": "orni_library", "time": "10:00", "give": {"feed_peanuts": 5, "feed_mealworm": 5}, "exec": ["lyud.Feeder.Place", "lyud.Feeder.Fill feed_peanuts 4", "lyud.Feeder.Age 3", "lyud.Birds.SpawnNear GreatTit"]}}, {"id": "report", "objectives": [{"id": "tell_sorokin", "event": "talk", "target": "Sorokin_oleg", "place": "academ"}], "dev": {"time": "16:00", "exec": ["Quest.GoToPerson sorokin_oleg"]}, "reward": {"items": {"feed_niger": 5, "feed_suet": 5}}}]},
   {"id": "fest_sea_festival", "kind": "side", "start_on": {"event": "festival", "target": "sea_festival"}, "stages": [{"id": "go", "objectives": [{"id": "fair", "event": "festival_visit", "target": "sea_festival.fair"}, {"id": "fireworks", "event": "festival_watch", "target": "sea_festival.fireworks"}]}]},
   {"id": "fest_lantern_night", "kind": "side", "start_on": {"event": "festival", "target": "lantern_night"}, "stages": [{"id": "go", "objectives": [{"id": "lantern", "event": "festival_lantern", "target": "sky_lantern"}]}]},
   {"id": "fest_maslenitsa", "kind": "side", "start_on": {"event": "festival", "target": "maslenitsa"}, "stages": [{"id": "go", "objectives": [{"id": "fair", "event": "festival_visit", "target": "maslenitsa.fair"}, {"id": "effigy", "event": "festival_watch", "target": "maslenitsa.bonfire"}]}]},

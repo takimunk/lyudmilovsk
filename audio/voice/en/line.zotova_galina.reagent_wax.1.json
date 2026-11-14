@@ -1,0 +1,20 @@
+{
+ "key": "line.zotova_galina.reagent_wax.1",
+ "lang": "en",
+ "text": "That red on the wings is exactly the sealing wax on old reagent bottles. You are not from here, that much is clear without a guide.",
+ "speaker": "zotova_galina",
+ "voice": "Alice",
+ "voice_id": "Xb7hH8MSUJpSbSDYk0k2",
+ "voice_design": null,
+ "direction": "[warm, chatty, fondly exasperated with her husband]",
+ "model": "fal-ai/elevenlabs/tts/eleven-v3",
+ "request": {
+  "stability": 0.5,
+  "apply_text_normalization": "auto",
+  "text": "[warm, chatty, fondly exasperated with her husband] That red on the wings is exactly the sealing wax on old reagent bottles. You are not from here, that much is clear without a guide.",
+  "voice": "Alice",
+  "language_code": "en"
+ },
+ "fal_request_id": "01a1d75f-ce4c-7183-9dac-ab07f8dd19e8",
+ "hash": "ea5d0a75ac07"
+}

@@ -1,0 +1,20 @@
+{
+ "key": "line.zotova_galina.no_bread_crossword.1",
+ "lang": "ja",
+ "text": "こんにちは。あいにくパンは持っていません。クロスワードだけです。",
+ "speaker": "zotova_galina",
+ "voice": "Alice",
+ "voice_id": "Xb7hH8MSUJpSbSDYk0k2",
+ "voice_design": null,
+ "direction": "[warm, chatty, fondly exasperated with her husband]",
+ "model": "fal-ai/elevenlabs/tts/eleven-v3",
+ "request": {
+  "stability": 0.5,
+  "apply_text_normalization": "auto",
+  "text": "[warm, chatty, fondly exasperated with her husband] こんにちは。あいにくパンは持っていません。クロスワードだけです。",
+  "voice": "Alice",
+  "language_code": "ja"
+ },
+ "fal_request_id": "01a1d6ec-25ad-7da1-ba68-3d9253b5ec12",
+ "hash": "6c4a06707a08"
+}

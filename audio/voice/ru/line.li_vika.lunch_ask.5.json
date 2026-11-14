@@ -1,0 +1,20 @@
+{
+ "key": "line.li_vika.lunch_ask.5",
+ "lang": "ru",
+ "text": "Только до дна. По двум ложкам выводов не делают.",
+ "speaker": "li_vika",
+ "voice": "Laura",
+ "voice_id": "FGY2WhTYpPnrIDTdsKH5",
+ "voice_design": null,
+ "direction": "[playful, quick, a lab assistant joking about her work]",
+ "model": "fal-ai/elevenlabs/tts/eleven-v3",
+ "request": {
+  "stability": 0.5,
+  "apply_text_normalization": "auto",
+  "text": "[playful, quick, a lab assistant joking about her work] Только до дна. По двум ложкам выводов не делают.",
+  "voice": "Laura",
+  "language_code": "ru"
+ },
+ "fal_request_id": "01a1d670-ed43-7002-8abf-ee496fb70406",
+ "hash": "5209d7a33b44"
+}

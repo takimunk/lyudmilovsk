@@ -1,0 +1,20 @@
+{
+ "key": "line.li_vika.lunch_tell.1",
+ "lang": "ja",
+ "text": "顔でわかる、食べてきたね。それで？最高、それとも最悪？",
+ "speaker": "li_vika",
+ "voice": "Laura",
+ "voice_id": "FGY2WhTYpPnrIDTdsKH5",
+ "voice_design": null,
+ "direction": "[playful, quick, a lab assistant joking about her work]",
+ "model": "fal-ai/elevenlabs/tts/eleven-v3",
+ "request": {
+  "stability": 0.5,
+  "apply_text_normalization": "auto",
+  "text": "[playful, quick, a lab assistant joking about her work] 顔でわかる、食べてきたね。それで？最高、それとも最悪？",
+  "voice": "Laura",
+  "language_code": "ja"
+ },
+ "fal_request_id": "01a1d673-4a4f-7253-b364-8b5cd3b37050",
+ "hash": "70340a609e8c"
+}

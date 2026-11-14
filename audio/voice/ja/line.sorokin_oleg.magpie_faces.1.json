@@ -1,0 +1,20 @@
+{
+ "key": "line.sorokin_oleg.magpie_faces.1",
+ "lang": "ja",
+ "text": "ミーシャ・ベロフがカササギに謝ったそうだね。それでいい。カササギは人間より長く顔を覚えている。",
+ "speaker": "sorokin_oleg",
+ "voice": "River",
+ "voice_id": "SAz9YHcvj6GT2YYXdXww",
+ "voice_design": null,
+ "direction": "[a retired scholar, calm, dry humour, slower, gentle]",
+ "model": "fal-ai/elevenlabs/tts/eleven-v3",
+ "request": {
+  "stability": 0.5,
+  "apply_text_normalization": "auto",
+  "text": "[a retired scholar, calm, dry humour, slower, gentle] ミーシャ・ベロフがカササギに謝ったそうだね。それでいい。カササギは人間より長く顔を覚えている。",
+  "voice": "River",
+  "language_code": "ja"
+ },
+ "fal_request_id": "01a1d6ea-3731-7a80-85db-1856dcc31318",
+ "hash": "cbca1faba20a"
+}

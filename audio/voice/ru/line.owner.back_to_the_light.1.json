@@ -1,0 +1,20 @@
+{
+ "key": "line.owner.back_to_the_light.1",
+ "lang": "ru",
+ "text": "Птица в коридоре. Лети обратно, на свет. Здесь только лампы.",
+ "speaker": "owner",
+ "voice": "Daniel",
+ "voice_id": "onwK4e9ZLuTAKqWW03F9",
+ "voice_design": null,
+ "direction": "[calm, tired, slow, a little ironic]",
+ "model": "fal-ai/elevenlabs/tts/eleven-v3",
+ "request": {
+  "stability": 0.5,
+  "apply_text_normalization": "auto",
+  "text": "[calm, tired, slow, a little ironic] Птица в коридоре. Лети обратно, на свет. Здесь только лампы.",
+  "voice": "Daniel",
+  "language_code": "ru"
+ },
+ "fal_request_id": "01a1d73c-c43b-72b0-ac5e-eef192b6f1df",
+ "hash": "09c70e2c39f1"
+}

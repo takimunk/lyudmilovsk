@@ -1,0 +1,29 @@
+{
+ "key": "line.sato_yuki.jam_drops.1",
+ "lang": "ru",
+ "text": "Ты кто? У тебя чубчик, хвост жёлтый, а на крыльях красные капельки, как варенье.",
+ "speaker": "sato_yuki",
+ "voice": "Lovely_Girl",
+ "voice_id": "Lovely_Girl",
+ "voice_design": null,
+ "direction": "",
+ "model": "fal-ai/minimax/speech-2.6-hd",
+ "request": {
+  "prompt": "Ты кто? У тебя чубчик, хвост жёлтый, а на крыльях красные капельки, как варенье.",
+  "voice_setting": {
+   "speed": 1,
+   "pitch": 0,
+   "vol": 1,
+   "voice_id": "Lovely_Girl"
+  },
+  "language_boost": "Russian",
+  "audio_setting": {
+   "sample_rate": 24000,
+   "format": "mp3",
+   "channel": 1
+  },
+  "output_format": "url"
+ },
+ "fal_request_id": "01a1d75f-11a9-7920-ae84-77631bfe4c46",
+ "hash": "6b65030ac705"
+}

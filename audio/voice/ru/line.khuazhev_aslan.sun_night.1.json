@@ -1,0 +1,20 @@
+{
+ "key": "line.khuazhev_aslan.sun_night.1",
+ "lang": "ru",
+ "text": "Стемнело, а палатка ещё держит дневное тепло. Сижу в нём, как в бурке.",
+ "speaker": "khuazhev_aslan",
+ "voice": "Brian",
+ "voice_id": "nPczCjzI2devNBz1zQrb",
+ "voice_design": null,
+ "direction": "[hearty, generous, a cheese seller from the Caucasus, proud of his family's cheese]",
+ "model": "fal-ai/elevenlabs/tts/eleven-v3",
+ "request": {
+  "stability": 0.5,
+  "apply_text_normalization": "auto",
+  "text": "[hearty, generous, a cheese seller from the Caucasus, proud of his family's cheese] Стемнело, а палатка ещё держит дневное тепло. Сижу в нём, как в бурке.",
+  "voice": "Brian",
+  "language_code": "ru"
+ },
+ "fal_request_id": "01a1d743-1d7b-7691-bd16-82a587f97269",
+ "hash": "d95356bdb106"
+}

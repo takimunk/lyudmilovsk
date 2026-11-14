@@ -1,0 +1,20 @@
+{
+ "key": "line.clerk.town_in_grey.2",
+ "lang": "ru",
+ "text": "Я рисую его клетками. Пока вышло семь цветов, и все серые.",
+ "speaker": "clerk",
+ "voice": "Callum",
+ "voice_id": "N2lVS1w4EtoT3dr4eOWO",
+ "voice_design": null,
+ "direction": "[polite, quiet, precise, absorbed in his work]",
+ "model": "fal-ai/elevenlabs/tts/eleven-v3",
+ "request": {
+  "stability": 0.5,
+  "apply_text_normalization": "auto",
+  "text": "[polite, quiet, precise, absorbed in his work] Я рисую его клетками. Пока вышло семь цветов, и все серые.",
+  "voice": "Callum",
+  "language_code": "ru"
+ },
+ "fal_request_id": "01a1d737-b20d-7972-99ad-7f638cc58e3b",
+ "hash": "808be453ade3"
+}

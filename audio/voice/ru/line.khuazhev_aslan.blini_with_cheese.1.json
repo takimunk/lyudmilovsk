@@ -1,0 +1,20 @@
+{
+ "key": "line.khuazhev_aslan.blini_with_cheese.1",
+ "lang": "ru",
+ "text": "На Масленицу весь город ест блины. Попробуй хоть один с сыром: сыр тоже молоко, только терпеливое.",
+ "speaker": "khuazhev_aslan",
+ "voice": "Brian",
+ "voice_id": "nPczCjzI2devNBz1zQrb",
+ "voice_design": null,
+ "direction": "[hearty, generous, a cheese seller from the Caucasus, proud of his family's cheese]",
+ "model": "fal-ai/elevenlabs/tts/eleven-v3",
+ "request": {
+  "stability": 0.5,
+  "apply_text_normalization": "auto",
+  "text": "[hearty, generous, a cheese seller from the Caucasus, proud of his family's cheese] На Масленицу весь город ест блины. Попробуй хоть один с сыром: сыр тоже молоко, только терпеливое.",
+  "voice": "Brian",
+  "language_code": "ru"
+ },
+ "fal_request_id": "01a1d73a-5d4e-7761-aec6-dd142ef61302",
+ "hash": "470081cdc539"
+}

@@ -1,0 +1,20 @@
+{
+ "key": "line.zotov_lev.sun_night.1",
+ "lang": "ja",
+ "text": "夜は、昼に読みきれなかったものを読む。ランプの下だとよくわかるが、どこか冷たい。",
+ "speaker": "zotov_lev",
+ "voice": "George",
+ "voice_id": "JBFqnCBsd6RMkjVDRZzb",
+ "voice_design": null,
+ "direction": "[dry, thoughtful, unhurried, a physicist's quiet irony]",
+ "model": "fal-ai/elevenlabs/tts/eleven-v3",
+ "request": {
+  "stability": 0.5,
+  "apply_text_normalization": "auto",
+  "text": "[dry, thoughtful, unhurried, a physicist's quiet irony] 夜は、昼に読みきれなかったものを読む。ランプの下だとよくわかるが、どこか冷たい。",
+  "voice": "George",
+  "language_code": "ja"
+ },
+ "fal_request_id": "01a1d74a-c2d8-7ca0-89e2-36d8732bc04f",
+ "hash": "4dae5b89d556"
+}

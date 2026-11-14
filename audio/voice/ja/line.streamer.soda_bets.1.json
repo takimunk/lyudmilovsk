@@ -1,0 +1,20 @@
+{
+ "key": "line.streamer.soda_bets.1",
+ "lang": "ja",
+ "text": "みんな、彼が自販機に向かってる。賭けて。「バイカル」か「ブラチーノ」か。",
+ "speaker": "streamer",
+ "voice": "Jessica",
+ "voice_id": "cgSgspJ2msm6clMCkdW9",
+ "voice_design": null,
+ "direction": "[bright, fast, half talking to her chat]",
+ "model": "fal-ai/elevenlabs/tts/eleven-v3",
+ "request": {
+  "stability": 0.5,
+  "apply_text_normalization": "auto",
+  "text": "[bright, fast, half talking to her chat] みんな、彼が自販機に向かってる。賭けて。「バイカル」か「ブラチーノ」か。",
+  "voice": "Jessica",
+  "language_code": "ja"
+ },
+ "fal_request_id": "01a1d73e-98dc-7971-85b1-a82e8df56820",
+ "hash": "0b053f14a1d3"
+}

@@ -1,0 +1,20 @@
+{
+ "key": "line.valiev_rustam.signal_tell.3",
+ "lang": "ru",
+ "text": "Я видел над обрывом одну точку. Либо это ты, либо на станции что-то блеснуло. По одному наблюдению честно не различить.",
+ "speaker": "valiev_rustam",
+ "voice": "Roger",
+ "voice_id": "CwhRBWXzGAHq8TQ4Fs17",
+ "voice_design": null,
+ "direction": "[confident, dry, matter-of-fact engineer]",
+ "model": "fal-ai/elevenlabs/tts/eleven-v3",
+ "request": {
+  "stability": 0.5,
+  "apply_text_normalization": "auto",
+  "text": "[confident, dry, matter-of-fact engineer] Я видел над обрывом одну точку. Либо это ты, либо на станции что-то блеснуло. По одному наблюдению честно не различить.",
+  "voice": "Roger",
+  "language_code": "ru"
+ },
+ "fal_request_id": "01a1d673-fa2f-73a3-ad16-f1316846c2d5",
+ "hash": "f72e28e603e7"
+}

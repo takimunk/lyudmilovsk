@@ -1,0 +1,20 @@
+{
+ "key": "line.li_vika.lunch_tell.3",
+ "lang": "en",
+ "text": "A lot of dill. That settles it: Kei is right, and Misha simply dislikes dill. Noted.",
+ "speaker": "li_vika",
+ "voice": "Laura",
+ "voice_id": "FGY2WhTYpPnrIDTdsKH5",
+ "voice_design": null,
+ "direction": "[playful, quick, a lab assistant joking about her work]",
+ "model": "fal-ai/elevenlabs/tts/eleven-v3",
+ "request": {
+  "stability": 0.5,
+  "apply_text_normalization": "auto",
+  "text": "[playful, quick, a lab assistant joking about her work] A lot of dill. That settles it: Kei is right, and Misha simply dislikes dill. Noted.",
+  "voice": "Laura",
+  "language_code": "en"
+ },
+ "fal_request_id": "01a1d671-7213-7cc0-9af5-3f184032b229",
+ "hash": "50c3c76e837d"
+}

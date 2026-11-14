@@ -1,0 +1,20 @@
+{
+ "key": "line.nishimura_aya.views_ask.4",
+ "lang": "ru",
+ "text": "Утренний поезд не ждёт, а свет тем более. Сходи за меня. Красок не надо, просто посмотри и запомни.",
+ "speaker": "nishimura_aya",
+ "voice": "Matilda",
+ "voice_id": "XrExE9yKIg1WjnnlVkGX",
+ "voice_design": null,
+ "direction": "[calm, soft, contemplative, a painter talking about the light]",
+ "model": "fal-ai/elevenlabs/tts/eleven-v3",
+ "request": {
+  "stability": 0.5,
+  "apply_text_normalization": "auto",
+  "text": "[calm, soft, contemplative, a painter talking about the light] Утренний поезд не ждёт, а свет тем более. Сходи за меня. Красок не надо, просто посмотри и запомни.",
+  "voice": "Matilda",
+  "language_code": "ru"
+ },
+ "fal_request_id": "01a1d661-62a4-74b3-afd9-35cd285bf9ae",
+ "hash": "c64693b85319"
+}

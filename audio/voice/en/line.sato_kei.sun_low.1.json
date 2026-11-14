@@ -1,0 +1,20 @@
+{
+ "key": "line.sato_kei.sun_low.1",
+ "lang": "en",
+ "text": "I don't measure sunsets. I tried once, and it felt awkward, as if I were peeking.",
+ "speaker": "sato_kei",
+ "voice": "Eric",
+ "voice_id": "cjVigY5qzO86Huf0OWal",
+ "voice_design": null,
+ "direction": "[quiet, precise, softly puzzled, a scientist thinking aloud]",
+ "model": "fal-ai/elevenlabs/tts/eleven-v3",
+ "request": {
+  "stability": 0.5,
+  "apply_text_normalization": "auto",
+  "text": "[quiet, precise, softly puzzled, a scientist thinking aloud] I don't measure sunsets. I tried once, and it felt awkward, as if I were peeking.",
+  "voice": "Eric",
+  "language_code": "en"
+ },
+ "fal_request_id": "01a1d747-57fa-7ec1-910f-5972ea535f1d",
+ "hash": "f362fc3b95a1"
+}

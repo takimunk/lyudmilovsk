@@ -1,0 +1,20 @@
+{
+ "key": "line.orlova_tanya.sparrow_after_closing.1",
+ "lang": "ru",
+ "text": "Воробей, крошки будут после закрытия. Сейчас некогда.",
+ "speaker": "orlova_tanya",
+ "voice": "Aria",
+ "voice_id": "9BWtsMINqrJLrRacOk9x",
+ "voice_design": null,
+ "direction": "[a kiosk shop assistant, brisk, deadpan, a bit sassy]",
+ "model": "fal-ai/elevenlabs/tts/eleven-v3",
+ "request": {
+  "stability": 0.5,
+  "apply_text_normalization": "auto",
+  "text": "[a kiosk shop assistant, brisk, deadpan, a bit sassy] Воробей, крошки будут после закрытия. Сейчас некогда.",
+  "voice": "Aria",
+  "language_code": "ru"
+ },
+ "fal_request_id": "01a1d7df-e113-76c0-b72a-61c5f631cc96",
+ "hash": "733d08747687"
+}

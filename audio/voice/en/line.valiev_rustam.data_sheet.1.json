@@ -1,0 +1,20 @@
+{
+ "key": "line.valiev_rustam.data_sheet.1",
+ "lang": "en",
+ "text": "A crest, a yellow edge on the tail. I don't know this model. Show yourself to Sorokin, he's bound to have your data sheet.",
+ "speaker": "valiev_rustam",
+ "voice": "Roger",
+ "voice_id": "CwhRBWXzGAHq8TQ4Fs17",
+ "voice_design": null,
+ "direction": "[confident, dry, matter-of-fact engineer]",
+ "model": "fal-ai/elevenlabs/tts/eleven-v3",
+ "request": {
+  "stability": 0.5,
+  "apply_text_normalization": "auto",
+  "text": "[confident, dry, matter-of-fact engineer] A crest, a yellow edge on the tail. I don't know this model. Show yourself to Sorokin, he's bound to have your data sheet.",
+  "voice": "Roger",
+  "language_code": "en"
+ },
+ "fal_request_id": "01a1d75f-49d5-7362-93a4-646a2ff8f1cd",
+ "hash": "aaa0e19a921c"
+}

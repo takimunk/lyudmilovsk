@@ -1,0 +1,20 @@
+{
+ "key": "line.orlova_tanya.again3.1",
+ "lang": "ja",
+ "text": "今日は二十人くらい来たわ。買ったのは五人、あとはあったまりに来ただけ。",
+ "speaker": "orlova_tanya",
+ "voice": "Aria",
+ "voice_id": "9BWtsMINqrJLrRacOk9x",
+ "voice_design": null,
+ "direction": "[a kiosk shop assistant, brisk, deadpan, a bit sassy]",
+ "model": "fal-ai/elevenlabs/tts/eleven-v3",
+ "request": {
+  "stability": 0.5,
+  "apply_text_normalization": "auto",
+  "text": "[a kiosk shop assistant, brisk, deadpan, a bit sassy] 今日は二十人くらい来たわ。買ったのは五人、あとはあったまりに来ただけ。",
+  "voice": "Aria",
+  "language_code": "ja"
+ },
+ "fal_request_id": "01a1d747-20d0-7ad1-abbc-c749d08a1f82",
+ "hash": "c3bc7a72eedb"
+}

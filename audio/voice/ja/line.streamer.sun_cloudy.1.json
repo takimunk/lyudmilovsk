@@ -1,0 +1,20 @@
+{
+ "key": "line.streamer.sun_cloudy.1",
+ "lang": "ja",
+ "text": "チャットが曇ってるって。わたしもわかってた。ここはあったかいのに、肌が寒いの。",
+ "speaker": "streamer",
+ "voice": "Jessica",
+ "voice_id": "cgSgspJ2msm6clMCkdW9",
+ "voice_design": null,
+ "direction": "[bright, fast, half talking to her chat]",
+ "model": "fal-ai/elevenlabs/tts/eleven-v3",
+ "request": {
+  "stability": 0.5,
+  "apply_text_normalization": "auto",
+  "text": "[bright, fast, half talking to her chat] チャットが曇ってるって。わたしもわかってた。ここはあったかいのに、肌が寒いの。",
+  "voice": "Jessica",
+  "language_code": "ja"
+ },
+ "fal_request_id": "01a1d786-aa64-76a3-b54f-6af4e177540b",
+ "hash": "d830ab8f9168"
+}

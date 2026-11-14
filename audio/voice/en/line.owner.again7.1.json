@@ -1,0 +1,20 @@
+{
+ "key": "line.owner.again7.1",
+ "lang": "en",
+ "text": "Timur's fallen asleep in his chair again. Don't wake him. He's due at the warehouse by half past seven.",
+ "speaker": "owner",
+ "voice": "Daniel",
+ "voice_id": "onwK4e9ZLuTAKqWW03F9",
+ "voice_design": null,
+ "direction": "[calm, tired, slow, a little ironic]",
+ "model": "fal-ai/elevenlabs/tts/eleven-v3",
+ "request": {
+  "stability": 0.5,
+  "apply_text_normalization": "auto",
+  "text": "[calm, tired, slow, a little ironic] Timur's fallen asleep in his chair again. Don't wake him. He's due at the warehouse by half past seven.",
+  "voice": "Daniel",
+  "language_code": "en"
+ },
+ "fal_request_id": "01a1d786-acdd-7f73-a14a-611eb19a6b9f",
+ "hash": "08e5a0223583"
+}

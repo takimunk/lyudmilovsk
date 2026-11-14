@@ -1,0 +1,20 @@
+{
+ "key": "line.li_vika.sun_night.1",
+ "lang": "ja",
+ "text": "もう研究所から帰るころには真っ暗。十月は毎日少しずつ、私からお日さまを盗んでいく。",
+ "speaker": "li_vika",
+ "voice": "Laura",
+ "voice_id": "FGY2WhTYpPnrIDTdsKH5",
+ "voice_design": null,
+ "direction": "[playful, quick, a lab assistant joking about her work]",
+ "model": "fal-ai/elevenlabs/tts/eleven-v3",
+ "request": {
+  "stability": 0.5,
+  "apply_text_normalization": "auto",
+  "text": "[playful, quick, a lab assistant joking about her work] もう研究所から帰るころには真っ暗。十月は毎日少しずつ、私からお日さまを盗んでいく。",
+  "voice": "Laura",
+  "language_code": "ja"
+ },
+ "fal_request_id": "01a1d746-6145-7c43-8dcf-e7767f7d3737",
+ "hash": "536aa259f563"
+}

@@ -1,0 +1,20 @@
+{
+ "key": "line.girl_b.high_up_longer.1",
+ "lang": "ja",
+ "text": "ずいぶん高いのね。そこからだと、なんでも少しだけ長く見ていられるんでしょうね。",
+ "speaker": "girl_b",
+ "voice": "Sarah",
+ "voice_id": "EXAVITQu4vr4xnSDxMaL",
+ "voice_design": null,
+ "direction": "[curious, slightly uneasy, conspiratorial]",
+ "model": "fal-ai/elevenlabs/tts/eleven-v3",
+ "request": {
+  "stability": 0.5,
+  "apply_text_normalization": "auto",
+  "text": "[curious, slightly uneasy, conspiratorial] ずいぶん高いのね。そこからだと、なんでも少しだけ長く見ていられるんでしょうね。",
+  "voice": "Sarah",
+  "language_code": "ja"
+ },
+ "fal_request_id": "01a1d7b6-0e0d-7c92-83d6-51b8b4368e32",
+ "hash": "949cbec5db25"
+}

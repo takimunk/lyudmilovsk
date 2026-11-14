@@ -1,0 +1,20 @@
+{
+ "key": "line.korneev_ivan.again4.1",
+ "lang": "ru",
+ "text": "В Лаборатории теперь всё на компьютерах. А раньше главный прибор был напильник. И голова.",
+ "speaker": "korneev_ivan",
+ "voice": "Bill",
+ "voice_id": "pqHfZKP75CvOlQylNhV4",
+ "voice_design": null,
+ "direction": "[an old man, slow, a little gravelly, contented, a quiet joke at the end]",
+ "model": "fal-ai/elevenlabs/tts/eleven-v3",
+ "request": {
+  "stability": 0.5,
+  "apply_text_normalization": "auto",
+  "text": "[an old man, slow, a little gravelly, contented, a quiet joke at the end] В Лаборатории теперь всё на компьютерах. А раньше главный прибор был напильник. И голова.",
+  "voice": "Bill",
+  "language_code": "ru"
+ },
+ "fal_request_id": "01a1d743-f5ac-70c0-88b0-623380dee439",
+ "hash": "9c43b64e3ffe"
+}

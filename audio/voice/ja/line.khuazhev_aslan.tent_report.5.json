@@ -1,0 +1,20 @@
+{
+ "key": "line.khuazhev_aslan.tent_report.5",
+ "lang": "ja",
+ "text": "では乾杯しよう……いや、食べよう。正直に食べて、ありのままを話す者に。この一玉を持っていけ。食事代もだ。客に人の用事の金を払わせるわけにはいかない。",
+ "speaker": "khuazhev_aslan",
+ "voice": "Brian",
+ "voice_id": "nPczCjzI2devNBz1zQrb",
+ "voice_design": null,
+ "direction": "[hearty, generous, a cheese seller from the Caucasus, proud of his family's cheese]",
+ "model": "fal-ai/elevenlabs/tts/eleven-v3",
+ "request": {
+  "stability": 0.5,
+  "apply_text_normalization": "auto",
+  "text": "[hearty, generous, a cheese seller from the Caucasus, proud of his family's cheese] では乾杯しよう……いや、食べよう。正直に食べて、ありのままを話す者に。この一玉を持っていけ。食事代もだ。客に人の用事の金を払わせるわけにはいかない。",
+  "voice": "Brian",
+  "language_code": "ja"
+ },
+ "fal_request_id": "01a1d670-6c10-7ce1-b66f-5a582064dde5",
+ "hash": "5dc501d86aae"
+}

@@ -1,0 +1,20 @@
+{
+ "key": "line.lange_pyotr.angler_dusk_now.1",
+ "lang": "en",
+ "text": "The light's low and you're talking to me. At this hour an angler is on the pier, not at a bench.",
+ "speaker": "lange_pyotr",
+ "voice": "Brian",
+ "voice_id": "nPczCjzI2devNBz1zQrb",
+ "voice_design": null,
+ "direction": "[gruff, unhurried, a weathered fisherman of few words]",
+ "model": "fal-ai/elevenlabs/tts/eleven-v3",
+ "request": {
+  "stability": 0.5,
+  "apply_text_normalization": "auto",
+  "text": "[gruff, unhurried, a weathered fisherman of few words] The light's low and you're talking to me. At this hour an angler is on the pier, not at a bench.",
+  "voice": "Brian",
+  "language_code": "en"
+ },
+ "fal_request_id": "01a1d6e6-c262-77a0-8fe8-eec7e2924ac3",
+ "hash": "a3aadfc19697"
+}

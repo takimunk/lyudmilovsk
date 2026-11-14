@@ -1,0 +1,20 @@
+{
+ "key": "line.girl_b.overdue_dark_bench.1",
+ "lang": "ja",
+ "text": "もう暗いね。レフさんは七時まで中庭のベンチにいるよ、凍えてなければ。間に合わなかったら、また明日。",
+ "speaker": "girl_b",
+ "voice": "Sarah",
+ "voice_id": "EXAVITQu4vr4xnSDxMaL",
+ "voice_design": null,
+ "direction": "[curious, slightly uneasy, conspiratorial]",
+ "model": "fal-ai/elevenlabs/tts/eleven-v3",
+ "request": {
+  "stability": 0.5,
+  "apply_text_normalization": "auto",
+  "text": "[curious, slightly uneasy, conspiratorial] もう暗いね。レフさんは七時まで中庭のベンチにいるよ、凍えてなければ。間に合わなかったら、また明日。",
+  "voice": "Sarah",
+  "language_code": "ja"
+ },
+ "fal_request_id": "01a1d7a9-6c2b-77d0-b2a2-795f094a52f4",
+ "hash": "b1b6d41fc8b2"
+}

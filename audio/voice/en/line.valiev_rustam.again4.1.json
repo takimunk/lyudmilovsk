@@ -1,0 +1,20 @@
+{
+ "key": "line.valiev_rustam.again4.1",
+ "lang": "en",
+ "text": "Zotov has offered me a game of correspondence chess. Through the wall: our offices are next door.",
+ "speaker": "valiev_rustam",
+ "voice": "Roger",
+ "voice_id": "CwhRBWXzGAHq8TQ4Fs17",
+ "voice_design": null,
+ "direction": "[confident, dry, matter-of-fact engineer]",
+ "model": "fal-ai/elevenlabs/tts/eleven-v3",
+ "request": {
+  "stability": 0.5,
+  "apply_text_normalization": "auto",
+  "text": "[confident, dry, matter-of-fact engineer] Zotov has offered me a game of correspondence chess. Through the wall: our offices are next door.",
+  "voice": "Roger",
+  "language_code": "en"
+ },
+ "fal_request_id": "01a1d749-e8bb-7a41-b374-6fdc416a979c",
+ "hash": "14fe14f0c4e2"
+}

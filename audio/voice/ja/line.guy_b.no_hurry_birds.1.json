@@ -1,0 +1,20 @@
+{
+ "key": "line.guy_b.no_hurry_birds.1",
+ "lang": "ja",
+ "text": "いいって、いなよ。ここじゃ誰も急がない。鳥でもな。",
+ "speaker": "guy_b",
+ "voice": "Chris",
+ "voice_id": "iP95p4xoKVk53GoZ742B",
+ "voice_design": null,
+ "direction": "[relaxed, lazy, friendly]",
+ "model": "fal-ai/elevenlabs/tts/eleven-v3",
+ "request": {
+  "stability": 0.5,
+  "apply_text_normalization": "auto",
+  "text": "[relaxed, lazy, friendly] いいって、いなよ。ここじゃ誰も急がない。鳥でもな。",
+  "voice": "Chris",
+  "language_code": "ja"
+ },
+ "fal_request_id": "01a1d739-56e8-7d11-ad21-46ce38514c63",
+ "hash": "1422164b03f8"
+}

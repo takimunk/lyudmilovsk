@@ -1,0 +1,20 @@
+{
+ "key": "line.sato_mila.cormorant_dry_off.1",
+ "lang": "ja",
+ "text": "カワウね。羽を乾かしてるの？えらいわ。海から上がったらすぐ乾かす。医者として言ってるのよ。",
+ "speaker": "sato_mila",
+ "voice": "Lily",
+ "voice_id": "pFZP5JQG7iQjIQuC4Bku",
+ "voice_design": null,
+ "direction": "[brisk, caring, a doctor's matter-of-fact warmth]",
+ "model": "fal-ai/elevenlabs/tts/eleven-v3",
+ "request": {
+  "stability": 0.5,
+  "apply_text_normalization": "auto",
+  "text": "[brisk, caring, a doctor's matter-of-fact warmth] カワウね。羽を乾かしてるの？えらいわ。海から上がったらすぐ乾かす。医者として言ってるのよ。",
+  "voice": "Lily",
+  "language_code": "ja"
+ },
+ "fal_request_id": "01a1d7b8-bc4c-7db3-8a4f-efe96e92a972",
+ "hash": "bdb70aba053a"
+}

@@ -1,0 +1,20 @@
+{
+ "key": "line.zotova_galina.copper_sulphate.1",
+ "lang": "ru",
+ "text": "Лазоревка. Цвет медного купороса, без примесей.",
+ "speaker": "zotova_galina",
+ "voice": "Alice",
+ "voice_id": "Xb7hH8MSUJpSbSDYk0k2",
+ "voice_design": null,
+ "direction": "[warm, chatty, fondly exasperated with her husband]",
+ "model": "fal-ai/elevenlabs/tts/eleven-v3",
+ "request": {
+  "stability": 0.5,
+  "apply_text_normalization": "auto",
+  "text": "[warm, chatty, fondly exasperated with her husband] Лазоревка. Цвет медного купороса, без примесей.",
+  "voice": "Alice",
+  "language_code": "ru"
+ },
+ "fal_request_id": "01a1d6eb-89b8-7951-b00a-619aaa327938",
+ "hash": "661ae810b6c4"
+}

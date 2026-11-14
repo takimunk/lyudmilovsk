@@ -1,0 +1,20 @@
+{
+ "key": "line.guy_a.better_signal_outside.1",
+ "lang": "ja",
+ "text": "外か？電波がましな場所があったら教えてくれ。",
+ "speaker": "guy_a",
+ "voice": "Will",
+ "voice_id": "bIHbv24MWmeRgasZH58o",
+ "voice_design": null,
+ "direction": "[a young gamer in a hurry, mid-match]",
+ "model": "fal-ai/elevenlabs/tts/eleven-v3",
+ "request": {
+  "stability": 0.5,
+  "apply_text_normalization": "auto",
+  "text": "[a young gamer in a hurry, mid-match] 外か？電波がましな場所があったら教えてくれ。",
+  "voice": "Will",
+  "language_code": "ja"
+ },
+ "fal_request_id": "01a1d738-e71b-7c81-8233-a6c55a89fe45",
+ "hash": "55a38d2d30b3"
+}

@@ -1,0 +1,20 @@
+{
+ "key": "line.guy_b.again5.1",
+ "lang": "ru",
+ "text": "Сегодня на складе разгружали тыквы. Целую фуру. Теперь я знаю, сколько весит осень.",
+ "speaker": "guy_b",
+ "voice": "Chris",
+ "voice_id": "iP95p4xoKVk53GoZ742B",
+ "voice_design": null,
+ "direction": "[relaxed, lazy, friendly]",
+ "model": "fal-ai/elevenlabs/tts/eleven-v3",
+ "request": {
+  "stability": 0.5,
+  "apply_text_normalization": "auto",
+  "text": "[relaxed, lazy, friendly] Сегодня на складе разгружали тыквы. Целую фуру. Теперь я знаю, сколько весит осень.",
+  "voice": "Chris",
+  "language_code": "ru"
+ },
+ "fal_request_id": "01a1d782-f966-7bb2-855a-a6008d25bfd2",
+ "hash": "75007d8c7455"
+}

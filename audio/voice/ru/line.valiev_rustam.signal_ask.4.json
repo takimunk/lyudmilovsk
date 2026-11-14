@@ -1,0 +1,20 @@
+{
+ "key": "line.valiev_rustam.signal_ask.4",
+ "lang": "ru",
+ "text": "Нужен налобный фонарик, у Огавы в клубе такие есть. Как стемнеет, выйди к верхней станции и надень его там.",
+ "speaker": "valiev_rustam",
+ "voice": "Roger",
+ "voice_id": "CwhRBWXzGAHq8TQ4Fs17",
+ "voice_design": null,
+ "direction": "[confident, dry, matter-of-fact engineer]",
+ "model": "fal-ai/elevenlabs/tts/eleven-v3",
+ "request": {
+  "stability": 0.5,
+  "apply_text_normalization": "auto",
+  "text": "[confident, dry, matter-of-fact engineer] Нужен налобный фонарик, у Огавы в клубе такие есть. Как стемнеет, выйди к верхней станции и надень его там.",
+  "voice": "Roger",
+  "language_code": "ru"
+ },
+ "fal_request_id": "01a1d673-ba95-7ee0-8c45-97f054549b91",
+ "hash": "14dae4e425fa"
+}

@@ -1,0 +1,20 @@
+{
+ "key": "line.girl_a.yellow_tip_asked.1",
+ "lang": "ja",
+ "text": "ソーニャが、キレンジャクの尾の先はほんとに黄色いの、絵の具につけたみたいにって聞くの。見た人に聞きなさいって言っておいた。",
+ "speaker": "girl_a",
+ "voice": "Matilda",
+ "voice_id": "XrExE9yKIg1WjnnlVkGX",
+ "voice_design": null,
+ "direction": "[whispering, concentrated]",
+ "model": "fal-ai/elevenlabs/tts/eleven-v3",
+ "request": {
+  "stability": 0.5,
+  "apply_text_normalization": "auto",
+  "text": "[whispering, concentrated] ソーニャが、キレンジャクの尾の先はほんとに黄色いの、絵の具につけたみたいにって聞くの。見た人に聞きなさいって言っておいた。",
+  "voice": "Matilda",
+  "language_code": "ja"
+ },
+ "fal_request_id": "01a1d738-b64a-7ed1-b46b-d0eca31b7ee6",
+ "hash": "96da8789b50b"
+}

@@ -1,0 +1,20 @@
+{
+ "key": "line.clerk.again6.1",
+ "lang": "ja",
+ "text": "秋のシートを始めました。黄色が二十色いります。毎朝ここへ来る途中で、一色ずつ拾っています。",
+ "speaker": "clerk",
+ "voice": "Callum",
+ "voice_id": "N2lVS1w4EtoT3dr4eOWO",
+ "voice_design": null,
+ "direction": "[polite, quiet, precise, absorbed in his work]",
+ "model": "fal-ai/elevenlabs/tts/eleven-v3",
+ "request": {
+  "stability": 0.5,
+  "apply_text_normalization": "auto",
+  "text": "[polite, quiet, precise, absorbed in his work] 秋のシートを始めました。黄色が二十色いります。毎朝ここへ来る途中で、一色ずつ拾っています。",
+  "voice": "Callum",
+  "language_code": "ja"
+ },
+ "fal_request_id": "01a1d780-f136-7440-be1a-6194ce11a781",
+ "hash": "55313941fb2d"
+}

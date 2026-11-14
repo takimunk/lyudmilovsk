@@ -1,0 +1,20 @@
+{
+ "key": "line.belov_misha.key_under_shirt.1",
+ "lang": "ja",
+ "text": "カササギか。鍵はひもでシャツの下だ。そんな目で見なくていいぞ。",
+ "speaker": "belov_misha",
+ "voice": "Liam",
+ "voice_id": "TX3LPaxmHKxFdv7VOQHJ",
+ "voice_design": null,
+ "direction": "[easygoing, amused, a young technician, a little self-ironic]",
+ "model": "fal-ai/elevenlabs/tts/eleven-v3",
+ "request": {
+  "stability": 0.5,
+  "apply_text_normalization": "auto",
+  "text": "[easygoing, amused, a young technician, a little self-ironic] カササギか。鍵はひもでシャツの下だ。そんな目で見なくていいぞ。",
+  "voice": "Liam",
+  "language_code": "ja"
+ },
+ "fal_request_id": "01a1d6e1-e896-7a31-9267-4dc6ea12b3c0",
+ "hash": "ecbc3b1eaa0a"
+}

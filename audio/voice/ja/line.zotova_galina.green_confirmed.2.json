@@ -1,0 +1,20 @@
+{
+ "key": "line.zotova_galina.green_confirmed.2",
+ "lang": "ja",
+ "text": "レフも検証しました。結果は本人の希望で非公開です。",
+ "speaker": "zotova_galina",
+ "voice": "Alice",
+ "voice_id": "Xb7hH8MSUJpSbSDYk0k2",
+ "voice_design": null,
+ "direction": "[warm, chatty, fondly exasperated with her husband]",
+ "model": "fal-ai/elevenlabs/tts/eleven-v3",
+ "request": {
+  "stability": 0.5,
+  "apply_text_normalization": "auto",
+  "text": "[warm, chatty, fondly exasperated with her husband] レフも検証しました。結果は本人の希望で非公開です。",
+  "voice": "Alice",
+  "language_code": "ja"
+ },
+ "fal_request_id": "01a1d6eb-fe19-7a71-bc6d-ba40325cb94d",
+ "hash": "3dcfe6ddeb26"
+}

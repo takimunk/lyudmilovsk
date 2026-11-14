@@ -1,0 +1,20 @@
+{
+ "key": "line.sato_kei.sun_night.1",
+ "lang": "ru",
+ "text": "Ночью приборы отдыхают. А я всё равно смотрю на запад, туда, где оно ушло.",
+ "speaker": "sato_kei",
+ "voice": "Eric",
+ "voice_id": "cjVigY5qzO86Huf0OWal",
+ "voice_design": null,
+ "direction": "[quiet, precise, softly puzzled, a scientist thinking aloud]",
+ "model": "fal-ai/elevenlabs/tts/eleven-v3",
+ "request": {
+  "stability": 0.5,
+  "apply_text_normalization": "auto",
+  "text": "[quiet, precise, softly puzzled, a scientist thinking aloud] Ночью приборы отдыхают. А я всё равно смотрю на запад, туда, где оно ушло.",
+  "voice": "Eric",
+  "language_code": "ru"
+ },
+ "fal_request_id": "01a1d747-5250-7cd3-a614-05e084897bce",
+ "hash": "8cadbbce9aad"
+}

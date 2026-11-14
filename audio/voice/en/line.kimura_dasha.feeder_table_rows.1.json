@@ -1,0 +1,20 @@
+{
+ "key": "line.kimura_dasha.feeder_table_rows.1",
+ "lang": "en",
+ "text": "I keep a table myself now, in the mornings: great tits, sparrows, and one magpie that only looked.",
+ "speaker": "kimura_dasha",
+ "voice": "Charlotte",
+ "voice_id": "XB0fDUnXU5powFXDhCwa",
+ "voice_design": null,
+ "direction": "[a tired physics student, wry, self-ironic]",
+ "model": "fal-ai/elevenlabs/tts/eleven-v3",
+ "request": {
+  "stability": 0.5,
+  "apply_text_normalization": "auto",
+  "text": "[a tired physics student, wry, self-ironic] I keep a table myself now, in the mornings: great tits, sparrows, and one magpie that only looked.",
+  "voice": "Charlotte",
+  "language_code": "en"
+ },
+ "fal_request_id": "01a1d754-a18c-78e3-a1ea-8e2225b5e2e9",
+ "hash": "57d3549f5594"
+}

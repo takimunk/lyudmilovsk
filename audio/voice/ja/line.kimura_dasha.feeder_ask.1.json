@@ -1,0 +1,20 @@
+{
+ "key": "line.kimura_dasha.feeder_ask.1",
+ "lang": "ja",
+ "text": "待って。双眼鏡を持って歩いてる人でしょ？判定してほしいの。",
+ "speaker": "kimura_dasha",
+ "voice": "Charlotte",
+ "voice_id": "XB0fDUnXU5powFXDhCwa",
+ "voice_design": null,
+ "direction": "[a tired physics student, wry, self-ironic]",
+ "model": "fal-ai/elevenlabs/tts/eleven-v3",
+ "request": {
+  "stability": 0.5,
+  "apply_text_normalization": "auto",
+  "text": "[a tired physics student, wry, self-ironic] 待って。双眼鏡を持って歩いてる人でしょ？判定してほしいの。",
+  "voice": "Charlotte",
+  "language_code": "ja"
+ },
+ "fal_request_id": "01a1d670-ae28-7761-b287-68fbd42caa61",
+ "hash": "db460cf3d611"
+}

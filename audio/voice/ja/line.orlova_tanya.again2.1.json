@@ -1,0 +1,20 @@
+{
+ "key": "line.orlova_tanya.again2.1",
+ "lang": "ja",
+ "text": "パンは九時までに届くの。十時にはニーナさんがその日の出来を知ってて、中庭じゅうがニーナさんから知るのよ。",
+ "speaker": "orlova_tanya",
+ "voice": "Aria",
+ "voice_id": "9BWtsMINqrJLrRacOk9x",
+ "voice_design": null,
+ "direction": "[a kiosk shop assistant, brisk, deadpan, a bit sassy]",
+ "model": "fal-ai/elevenlabs/tts/eleven-v3",
+ "request": {
+  "stability": 0.5,
+  "apply_text_normalization": "auto",
+  "text": "[a kiosk shop assistant, brisk, deadpan, a bit sassy] パンは九時までに届くの。十時にはニーナさんがその日の出来を知ってて、中庭じゅうがニーナさんから知るのよ。",
+  "voice": "Aria",
+  "language_code": "ja"
+ },
+ "fal_request_id": "01a1d747-0617-7b31-938a-d4fa82d4eb4a",
+ "hash": "2c319274c79a"
+}

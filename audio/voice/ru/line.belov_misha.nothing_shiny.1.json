@@ -1,0 +1,20 @@
+{
+ "key": "line.belov_misha.nothing_shiny.1",
+ "lang": "ru",
+ "text": "Привет. Ничего блестящего у меня нет, честно. Сам проверял.",
+ "speaker": "belov_misha",
+ "voice": "Liam",
+ "voice_id": "TX3LPaxmHKxFdv7VOQHJ",
+ "voice_design": null,
+ "direction": "[easygoing, amused, a young technician, a little self-ironic]",
+ "model": "fal-ai/elevenlabs/tts/eleven-v3",
+ "request": {
+  "stability": 0.5,
+  "apply_text_normalization": "auto",
+  "text": "[easygoing, amused, a young technician, a little self-ironic] Привет. Ничего блестящего у меня нет, честно. Сам проверял.",
+  "voice": "Liam",
+  "language_code": "ru"
+ },
+ "fal_request_id": "01a1d6e2-239c-7280-b575-5b3cc39dbc12",
+ "hash": "9dc527f2ba61"
+}

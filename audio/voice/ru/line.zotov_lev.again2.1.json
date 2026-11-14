@@ -1,0 +1,20 @@
+{
+ "key": "line.zotov_lev.again2.1",
+ "lang": "ru",
+ "text": "Иван Корнеев когда-то чинил наш первый лазер. Пассатижами и одним словом. Слово я повторять не буду.",
+ "speaker": "zotov_lev",
+ "voice": "George",
+ "voice_id": "JBFqnCBsd6RMkjVDRZzb",
+ "voice_design": null,
+ "direction": "[dry, thoughtful, unhurried, a physicist's quiet irony]",
+ "model": "fal-ai/elevenlabs/tts/eleven-v3",
+ "request": {
+  "stability": 0.5,
+  "apply_text_normalization": "auto",
+  "text": "[dry, thoughtful, unhurried, a physicist's quiet irony] Иван Корнеев когда-то чинил наш первый лазер. Пассатижами и одним словом. Слово я повторять не буду.",
+  "voice": "George",
+  "language_code": "ru"
+ },
+ "fal_request_id": "01a1d74a-2b7c-7e42-962b-6c197260b8d4",
+ "hash": "5aa25a6fc0f9"
+}

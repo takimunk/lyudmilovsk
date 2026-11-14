@@ -1,0 +1,20 @@
+{
+ "key": "line.lange_pyotr.cheese_smoked_pocket.1",
+ "lang": "ja",
+ "text": "二十年、魚だ。だが、あんたから燻製の匂いがする。三つ編みか？",
+ "speaker": "lange_pyotr",
+ "voice": "Brian",
+ "voice_id": "nPczCjzI2devNBz1zQrb",
+ "voice_design": null,
+ "direction": "[gruff, unhurried, a weathered fisherman of few words]",
+ "model": "fal-ai/elevenlabs/tts/eleven-v3",
+ "request": {
+  "stability": 0.5,
+  "apply_text_normalization": "auto",
+  "text": "[gruff, unhurried, a weathered fisherman of few words] 二十年、魚だ。だが、あんたから燻製の匂いがする。三つ編みか？",
+  "voice": "Brian",
+  "language_code": "ja"
+ },
+ "fal_request_id": "01a1d7aa-9eb2-7f42-887b-b67760d63e5f",
+ "hash": "cf6324175e19"
+}

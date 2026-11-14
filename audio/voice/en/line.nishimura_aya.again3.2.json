@@ -1,0 +1,20 @@
+{
+ "key": "line.nishimura_aya.again3.2",
+ "lang": "en",
+ "text": "Look. Just don't say it's a good likeness. A camera does likenesses.",
+ "speaker": "nishimura_aya",
+ "voice": "Matilda",
+ "voice_id": "XrExE9yKIg1WjnnlVkGX",
+ "voice_design": null,
+ "direction": "[calm, soft, contemplative, a painter talking about the light]",
+ "model": "fal-ai/elevenlabs/tts/eleven-v3",
+ "request": {
+  "stability": 0.5,
+  "apply_text_normalization": "auto",
+  "text": "[calm, soft, contemplative, a painter talking about the light] Look. Just don't say it's a good likeness. A camera does likenesses.",
+  "voice": "Matilda",
+  "language_code": "en"
+ },
+ "fal_request_id": "01a1d746-4529-7851-bc57-de1e6694be05",
+ "hash": "ef3b7fc656aa"
+}

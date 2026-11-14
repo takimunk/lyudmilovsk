@@ -1,0 +1,20 @@
+{
+ "key": "line.zotov_lev.again4.1",
+ "lang": "en",
+ "text": "In autumn I read at home, with a lamp and a blanket. Galina says I look like a museum exhibit.",
+ "speaker": "zotov_lev",
+ "voice": "George",
+ "voice_id": "JBFqnCBsd6RMkjVDRZzb",
+ "voice_design": null,
+ "direction": "[dry, thoughtful, unhurried, a physicist's quiet irony]",
+ "model": "fal-ai/elevenlabs/tts/eleven-v3",
+ "request": {
+  "stability": 0.5,
+  "apply_text_normalization": "auto",
+  "text": "[dry, thoughtful, unhurried, a physicist's quiet irony] In autumn I read at home, with a lamp and a blanket. Galina says I look like a museum exhibit.",
+  "voice": "George",
+  "language_code": "en"
+ },
+ "fal_request_id": "01a1d74a-5c86-7233-ace8-af101a7888b7",
+ "hash": "601dfe740c59"
+}

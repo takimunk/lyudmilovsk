@@ -1,0 +1,20 @@
+{
+ "key": "line.orlova_tanya.sun_day.1",
+ "lang": "ru",
+ "text": "Солнце на прилавок легло, прямо на хлеб. Вот этот и берите, он тёплый не от печки.",
+ "speaker": "orlova_tanya",
+ "voice": "Aria",
+ "voice_id": "9BWtsMINqrJLrRacOk9x",
+ "voice_design": null,
+ "direction": "[a kiosk shop assistant, brisk, deadpan, a bit sassy]",
+ "model": "fal-ai/elevenlabs/tts/eleven-v3",
+ "request": {
+  "stability": 0.5,
+  "apply_text_normalization": "auto",
+  "text": "[a kiosk shop assistant, brisk, deadpan, a bit sassy] Солнце на прилавок легло, прямо на хлеб. Вот этот и берите, он тёплый не от печки.",
+  "voice": "Aria",
+  "language_code": "ru"
+ },
+ "fal_request_id": "01a1d746-b10e-76a0-ac04-a13121b8aa86",
+ "hash": "cca0ea8016a9"
+}

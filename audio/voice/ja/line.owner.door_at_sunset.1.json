@@ -1,0 +1,20 @@
+{
+ "key": "line.owner.door_at_sunset.1",
+ "lang": "ja",
+ "text": "行け。日はもう低い、わかるんだ。ドアはブースのすぐ先だ。",
+ "speaker": "owner",
+ "voice": "Daniel",
+ "voice_id": "onwK4e9ZLuTAKqWW03F9",
+ "voice_design": null,
+ "direction": "[calm, tired, slow, a little ironic]",
+ "model": "fal-ai/elevenlabs/tts/eleven-v3",
+ "request": {
+  "stability": 0.5,
+  "apply_text_normalization": "auto",
+  "text": "[calm, tired, slow, a little ironic] 行け。日はもう低い、わかるんだ。ドアはブースのすぐ先だ。",
+  "voice": "Daniel",
+  "language_code": "ja"
+ },
+ "fal_request_id": "01a1d755-6de6-7c52-815a-3b862ad539f7",
+ "hash": "7017bd67bd49"
+}

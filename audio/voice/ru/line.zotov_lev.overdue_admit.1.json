@@ -1,0 +1,20 @@
+{
+ "key": "line.zotov_lev.overdue_admit.1",
+ "lang": "ru",
+ "text": "«Космос и мы»? Брал, не отрицаю. Читал с карандашом: на четырнадцатой странице у них ошибка в формуле.",
+ "speaker": "zotov_lev",
+ "voice": "George",
+ "voice_id": "JBFqnCBsd6RMkjVDRZzb",
+ "voice_design": null,
+ "direction": "[dry, thoughtful, unhurried, a physicist's quiet irony]",
+ "model": "fal-ai/elevenlabs/tts/eleven-v3",
+ "request": {
+  "stability": 0.5,
+  "apply_text_normalization": "auto",
+  "text": "[dry, thoughtful, unhurried, a physicist's quiet irony] «Космос и мы»? Брал, не отрицаю. Читал с карандашом: на четырнадцатой странице у них ошибка в формуле.",
+  "voice": "George",
+  "language_code": "ru"
+ },
+ "fal_request_id": "01a1d674-6412-7a62-b95e-a84ac59fcffc",
+ "hash": "9ca37e437cd8"
+}

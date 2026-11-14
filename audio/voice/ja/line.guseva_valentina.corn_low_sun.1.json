@@ -1,0 +1,29 @@
+{
+ "key": "line.guseva_valentina.corn_low_sun.1",
+ "lang": "ja",
+ "text": "もう日が低いよ。ワーニャは五時半にベンチを立っちまうから、熱いうちに持ってお行き。",
+ "speaker": "guseva_valentina",
+ "voice": "Abbess",
+ "voice_id": "Abbess",
+ "voice_design": null,
+ "direction": "",
+ "model": "fal-ai/minimax/speech-2.6-hd",
+ "request": {
+  "prompt": "もう日が低いよ。ワーニャは五時半にベンチを立っちまうから、熱いうちに持ってお行き。",
+  "voice_setting": {
+   "speed": 1,
+   "pitch": 0,
+   "vol": 1,
+   "voice_id": "Abbess"
+  },
+  "language_boost": "Japanese",
+  "audio_setting": {
+   "sample_rate": 24000,
+   "format": "mp3",
+   "channel": 1
+  },
+  "output_format": "url"
+ },
+ "fal_request_id": "01a1d7a9-8799-7dd2-91c4-e6b35d7ae56a",
+ "hash": "c77c3e2c7aa9"
+}

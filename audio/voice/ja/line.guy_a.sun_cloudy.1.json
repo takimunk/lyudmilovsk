@@ -1,0 +1,20 @@
+{
+ "key": "line.guy_a.sun_cloudy.1",
+ "lang": "ja",
+ "text": "今日は曇りって誰かが言ってた。そういう日はいつも落とされるんだ。科学じゃない、経験だ。",
+ "speaker": "guy_a",
+ "voice": "Will",
+ "voice_id": "bIHbv24MWmeRgasZH58o",
+ "voice_design": null,
+ "direction": "[a young gamer in a hurry, mid-match]",
+ "model": "fal-ai/elevenlabs/tts/eleven-v3",
+ "request": {
+  "stability": 0.5,
+  "apply_text_normalization": "auto",
+  "text": "[a young gamer in a hurry, mid-match] 今日は曇りって誰かが言ってた。そういう日はいつも落とされるんだ。科学じゃない、経験だ。",
+  "voice": "Will",
+  "language_code": "ja"
+ },
+ "fal_request_id": "01a1d782-d9d0-7720-9e03-c8f032a3bf60",
+ "hash": "6911b5b1c6b0"
+}

@@ -1,0 +1,20 @@
+{
+ "key": "line.sorokin_oleg.waxwing_wait.1",
+ "lang": "ru",
+ "text": "Кормушку ставьте на открытом месте, но рядом с деревьями. Насыпали, отошли, присели. И ждите. Птица проверяет человека временем.",
+ "speaker": "sorokin_oleg",
+ "voice": "River",
+ "voice_id": "SAz9YHcvj6GT2YYXdXww",
+ "voice_design": null,
+ "direction": "[a retired scholar, calm, dry humour, slower, gentle]",
+ "model": "fal-ai/elevenlabs/tts/eleven-v3",
+ "request": {
+  "stability": 0.5,
+  "apply_text_normalization": "auto",
+  "text": "[a retired scholar, calm, dry humour, slower, gentle] Кормушку ставьте на открытом месте, но рядом с деревьями. Насыпали, отошли, присели. И ждите. Птица проверяет человека временем.",
+  "voice": "River",
+  "language_code": "ru"
+ },
+ "fal_request_id": "01a1d589-81b8-79b3-bc07-20570c87921d",
+ "hash": "3bf8ce2e286c"
+}

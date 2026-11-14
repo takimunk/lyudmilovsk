@@ -1,0 +1,20 @@
+{
+ "key": "line.owner.supper_wait.1",
+ "lang": "ja",
+ "text": "急がんでいい。二時まではここにいる。",
+ "speaker": "owner",
+ "voice": "Daniel",
+ "voice_id": "onwK4e9ZLuTAKqWW03F9",
+ "voice_design": null,
+ "direction": "[calm, tired, slow, a little ironic]",
+ "model": "fal-ai/elevenlabs/tts/eleven-v3",
+ "request": {
+  "stability": 0.5,
+  "apply_text_normalization": "auto",
+  "text": "[calm, tired, slow, a little ironic] 急がんでいい。二時まではここにいる。",
+  "voice": "Daniel",
+  "language_code": "ja"
+ },
+ "fal_request_id": "01a1d674-a883-76b2-8a8f-207f96ed0cd3",
+ "hash": "12516deaaa30"
+}

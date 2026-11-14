@@ -1,0 +1,20 @@
+{
+ "key": "line.guy_b.alarm_to_the_end.1",
+ "lang": "ru",
+ "text": "Кто тут звенит? Птица с хохолком, в клубе. Трель как у будильника, который хочется дослушать.",
+ "speaker": "guy_b",
+ "voice": "Chris",
+ "voice_id": "iP95p4xoKVk53GoZ742B",
+ "voice_design": null,
+ "direction": "[relaxed, lazy, friendly]",
+ "model": "fal-ai/elevenlabs/tts/eleven-v3",
+ "request": {
+  "stability": 0.5,
+  "apply_text_normalization": "auto",
+  "text": "[relaxed, lazy, friendly] Кто тут звенит? Птица с хохолком, в клубе. Трель как у будильника, который хочется дослушать.",
+  "voice": "Chris",
+  "language_code": "ru"
+ },
+ "fal_request_id": "01a1d75d-b901-7693-83fa-8027c3663d1c",
+ "hash": "f0cd49fea31d"
+}

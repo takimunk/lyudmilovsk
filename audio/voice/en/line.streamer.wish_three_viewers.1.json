@@ -1,0 +1,20 @@
+{
+ "key": "line.streamer.wish_three_viewers.1",
+ "lang": "en",
+ "text": "Chat wants shooting stars. If you see one fall, wish me at least three viewers.",
+ "speaker": "streamer",
+ "voice": "Jessica",
+ "voice_id": "cgSgspJ2msm6clMCkdW9",
+ "voice_design": null,
+ "direction": "[bright, fast, half talking to her chat]",
+ "model": "fal-ai/elevenlabs/tts/eleven-v3",
+ "request": {
+  "stability": 0.5,
+  "apply_text_normalization": "auto",
+  "text": "[bright, fast, half talking to her chat] Chat wants shooting stars. If you see one fall, wish me at least three viewers.",
+  "voice": "Jessica",
+  "language_code": "en"
+ },
+ "fal_request_id": "01a1d73e-98da-7633-98c3-18ae72c328b4",
+ "hash": "6a8e947962b5"
+}

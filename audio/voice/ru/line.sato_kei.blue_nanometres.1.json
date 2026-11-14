@@ -1,0 +1,20 @@
+{
+ "key": "line.sato_kei.blue_nanometres.1",
+ "lang": "ru",
+ "text": "Лазоревка. Синее на голове у тебя около четырёхсот семидесяти нанометров. Не двигайся, я на глаз.",
+ "speaker": "sato_kei",
+ "voice": "Eric",
+ "voice_id": "cjVigY5qzO86Huf0OWal",
+ "voice_design": null,
+ "direction": "[quiet, precise, softly puzzled, a scientist thinking aloud]",
+ "model": "fal-ai/elevenlabs/tts/eleven-v3",
+ "request": {
+  "stability": 0.5,
+  "apply_text_normalization": "auto",
+  "text": "[quiet, precise, softly puzzled, a scientist thinking aloud] Лазоревка. Синее на голове у тебя около четырёхсот семидесяти нанометров. Не двигайся, я на глаз.",
+  "voice": "Eric",
+  "language_code": "ru"
+ },
+ "fal_request_id": "01a1d7b7-f041-7340-8dbb-b64a6808628f",
+ "hash": "154dea5929f0"
+}

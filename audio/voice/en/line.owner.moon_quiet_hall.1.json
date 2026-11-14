@@ -1,0 +1,20 @@
+{
+ "key": "line.owner.moon_quiet_hall.1",
+ "lang": "en",
+ "text": "Did you watch the moon? I can't see it from here. But on evenings like that the hall goes quiet: everyone's on the promenade.",
+ "speaker": "owner",
+ "voice": "Daniel",
+ "voice_id": "onwK4e9ZLuTAKqWW03F9",
+ "voice_design": null,
+ "direction": "[calm, tired, slow, a little ironic]",
+ "model": "fal-ai/elevenlabs/tts/eleven-v3",
+ "request": {
+  "stability": 0.5,
+  "apply_text_normalization": "auto",
+  "text": "[calm, tired, slow, a little ironic] Did you watch the moon? I can't see it from here. But on evenings like that the hall goes quiet: everyone's on the promenade.",
+  "voice": "Daniel",
+  "language_code": "en"
+ },
+ "fal_request_id": "01a1d7ab-7c58-7980-b92a-b28e21e4d655",
+ "hash": "014fb363ccbd"
+}

@@ -27,6 +27,7 @@ ROOT = os.path.abspath(os.path.join(os.path.dirname(__file__), ".."))
 VOICE = os.path.join(ROOT, "localization", "voice.json")
 STRINGS = os.path.join(ROOT, "unreal", "Lyudmilovsk", "Content", "Localization", "strings_%s.json")
 OUT = os.path.join(ROOT, "audio", "voice", "%s")
+VOICED_SUBS = ("quests",)
 
 
 def speaker_of(key):
@@ -175,6 +176,14 @@ def main():
     for l in langs:
         with open(STRINGS % l, encoding="utf-8") as f:
             tables[l] = json.load(f)
+        # hand-written tables kept apart from the big one (the quests' words: Content/Localization/quests); the generated
+        # ones (town, barks) are not voiced
+        for sub in VOICED_SUBS:
+            p = os.path.join(os.path.dirname(STRINGS), sub, "strings_%s.json" % l)
+            if os.path.isfile(p):
+                with open(p, encoding="utf-8") as f:
+                    for k, v in json.load(f).items():
+                        tables[l].setdefault(k, v)
     keys = sorted({k for t in tables.values() for k in t if k.startswith("line.")})
     voiced = [k for k in keys if not skipped(man, k)]
     if a.cost:

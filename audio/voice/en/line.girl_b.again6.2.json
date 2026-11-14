@@ -1,0 +1,20 @@
+{
+ "key": "line.girl_b.again6.2",
+ "lang": "en",
+ "text": "After the library. Nika keeps the seat next to her for me, but I still sit in mine. Number eight.",
+ "speaker": "girl_b",
+ "voice": "Sarah",
+ "voice_id": "EXAVITQu4vr4xnSDxMaL",
+ "voice_design": null,
+ "direction": "[curious, slightly uneasy, conspiratorial]",
+ "model": "fal-ai/elevenlabs/tts/eleven-v3",
+ "request": {
+  "stability": 0.5,
+  "apply_text_normalization": "auto",
+  "text": "[curious, slightly uneasy, conspiratorial] After the library. Nika keeps the seat next to her for me, but I still sit in mine. Number eight.",
+  "voice": "Sarah",
+  "language_code": "en"
+ },
+ "fal_request_id": "01a1d781-f644-7ae0-9442-7d5177eac204",
+ "hash": "21698b218aef"
+}

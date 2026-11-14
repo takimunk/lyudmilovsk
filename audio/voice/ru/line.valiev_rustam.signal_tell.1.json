@@ -1,0 +1,20 @@
+{
+ "key": "line.valiev_rustam.signal_tell.1",
+ "lang": "ru",
+ "text": "Ну, докладывай. Был наверху?",
+ "speaker": "valiev_rustam",
+ "voice": "Roger",
+ "voice_id": "CwhRBWXzGAHq8TQ4Fs17",
+ "voice_design": null,
+ "direction": "[confident, dry, matter-of-fact engineer]",
+ "model": "fal-ai/elevenlabs/tts/eleven-v3",
+ "request": {
+  "stability": 0.5,
+  "apply_text_normalization": "auto",
+  "text": "[confident, dry, matter-of-fact engineer] Ну, докладывай. Был наверху?",
+  "voice": "Roger",
+  "language_code": "ru"
+ },
+ "fal_request_id": "01a1d673-e744-76c2-a00f-2e582b9e4506",
+ "hash": "c9e632c94df1"
+}

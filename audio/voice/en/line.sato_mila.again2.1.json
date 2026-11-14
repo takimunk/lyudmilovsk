@@ -1,0 +1,20 @@
+{
+ "key": "line.sato_mila.again2.1",
+ "lang": "en",
+ "text": "At the clinic today everyone had the same thing: October, a runny nose, not enough sleep. The prescription's the same too: tea and bed.",
+ "speaker": "sato_mila",
+ "voice": "Lily",
+ "voice_id": "pFZP5JQG7iQjIQuC4Bku",
+ "voice_design": null,
+ "direction": "[brisk, caring, a doctor's matter-of-fact warmth]",
+ "model": "fal-ai/elevenlabs/tts/eleven-v3",
+ "request": {
+  "stability": 0.5,
+  "apply_text_normalization": "auto",
+  "text": "[brisk, caring, a doctor's matter-of-fact warmth] At the clinic today everyone had the same thing: October, a runny nose, not enough sleep. The prescription's the same too: tea and bed.",
+  "voice": "Lily",
+  "language_code": "en"
+ },
+ "fal_request_id": "01a1d747-88b2-7122-9959-f5aa6a7ce54c",
+ "hash": "6f6ac27b2e2a"
+}

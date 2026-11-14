@@ -1,0 +1,20 @@
+{
+ "key": "line.kimura_dasha.feeder_two_counts.1",
+ "lang": "ja",
+ "text": "ソローキンさんが、あなたが飛来を六回数えたって。私のところで五回、あの人のところで六回。うちの中庭にも学派ができたね。",
+ "speaker": "kimura_dasha",
+ "voice": "Charlotte",
+ "voice_id": "XB0fDUnXU5powFXDhCwa",
+ "voice_design": null,
+ "direction": "[a tired physics student, wry, self-ironic]",
+ "model": "fal-ai/elevenlabs/tts/eleven-v3",
+ "request": {
+  "stability": 0.5,
+  "apply_text_normalization": "auto",
+  "text": "[a tired physics student, wry, self-ironic] ソローキンさんが、あなたが飛来を六回数えたって。私のところで五回、あの人のところで六回。うちの中庭にも学派ができたね。",
+  "voice": "Charlotte",
+  "language_code": "ja"
+ },
+ "fal_request_id": "01a1d6e5-5636-7a73-bdb2-6e0eab9c64cd",
+ "hash": "52eea0e35f35"
+}

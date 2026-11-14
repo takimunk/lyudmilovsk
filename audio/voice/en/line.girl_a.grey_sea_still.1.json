@@ -1,0 +1,20 @@
+{
+ "key": "line.girl_a.grey_sea_still.1",
+ "lang": "en",
+ "text": "It's overcast, the sea will be grey today. Go to the promenade anyway, from the Academgorodok toward the sea.",
+ "speaker": "girl_a",
+ "voice": "Matilda",
+ "voice_id": "XrExE9yKIg1WjnnlVkGX",
+ "voice_design": null,
+ "direction": "[whispering, concentrated]",
+ "model": "fal-ai/elevenlabs/tts/eleven-v3",
+ "request": {
+  "stability": 0.5,
+  "apply_text_normalization": "auto",
+  "text": "[whispering, concentrated] It's overcast, the sea will be grey today. Go to the promenade anyway, from the Academgorodok toward the sea.",
+  "voice": "Matilda",
+  "language_code": "en"
+ },
+ "fal_request_id": "01a1d737-f4af-7580-b2ad-ac356a0d8f42",
+ "hash": "3fe7f50afd61"
+}

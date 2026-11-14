@@ -1,0 +1,20 @@
+{
+ "key": "line.sorokin_oleg.bluetit_at_dawn.2",
+ "lang": "en",
+ "text": "Autumn is long. Come by whenever your legs are free.",
+ "speaker": "sorokin_oleg",
+ "voice": "River",
+ "voice_id": "SAz9YHcvj6GT2YYXdXww",
+ "voice_design": null,
+ "direction": "[a retired scholar, calm, dry humour, slower, gentle]",
+ "model": "fal-ai/elevenlabs/tts/eleven-v3",
+ "request": {
+  "stability": 0.5,
+  "apply_text_normalization": "auto",
+  "text": "[a retired scholar, calm, dry humour, slower, gentle] Autumn is long. Come by whenever your legs are free.",
+  "voice": "River",
+  "language_code": "en"
+ },
+ "fal_request_id": "01a1d6e9-b0c7-7720-ab94-3cd609e9cef3",
+ "hash": "96d4e8adbea1"
+}

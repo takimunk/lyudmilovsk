@@ -1,0 +1,20 @@
+{
+ "key": "line.sorokin_oleg.autumn_brief.3",
+ "lang": "en",
+ "text": "It is called the autumn count. I hold it whenever there is someone to do the walking.",
+ "speaker": "sorokin_oleg",
+ "voice": "River",
+ "voice_id": "SAz9YHcvj6GT2YYXdXww",
+ "voice_design": null,
+ "direction": "[a retired scholar, calm, dry humour, slower, gentle]",
+ "model": "fal-ai/elevenlabs/tts/eleven-v3",
+ "request": {
+  "stability": 0.5,
+  "apply_text_normalization": "auto",
+  "text": "[a retired scholar, calm, dry humour, slower, gentle] It is called the autumn count. I hold it whenever there is someone to do the walking.",
+  "voice": "River",
+  "language_code": "en"
+ },
+ "fal_request_id": "01a1d672-dcd1-7131-a733-10f1015d34e2",
+ "hash": "b9dc01d6f808"
+}

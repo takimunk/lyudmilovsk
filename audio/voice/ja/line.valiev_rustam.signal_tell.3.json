@@ -1,0 +1,20 @@
+{
+ "key": "line.valiev_rustam.signal_tell.3",
+ "lang": "ja",
+ "text": "崖の上に光の点をひとつ見た。君か、駅で何かが光っただけか。観測が一回きりでは、正直なところ区別がつかない。",
+ "speaker": "valiev_rustam",
+ "voice": "Roger",
+ "voice_id": "CwhRBWXzGAHq8TQ4Fs17",
+ "voice_design": null,
+ "direction": "[confident, dry, matter-of-fact engineer]",
+ "model": "fal-ai/elevenlabs/tts/eleven-v3",
+ "request": {
+  "stability": 0.5,
+  "apply_text_normalization": "auto",
+  "text": "[confident, dry, matter-of-fact engineer] 崖の上に光の点をひとつ見た。君か、駅で何かが光っただけか。観測が一回きりでは、正直なところ区別がつかない。",
+  "voice": "Roger",
+  "language_code": "ja"
+ },
+ "fal_request_id": "01a1d677-09c1-7d12-9ad9-9bdff0053314",
+ "hash": "e16b55678477"
+}

@@ -1,0 +1,20 @@
+{
+ "key": "line.girl_b.sun_low.1",
+ "lang": "en",
+ "text": "The forum has a thread: where people saw the sun right down by the ground. Someone posts every day. I read all of it.",
+ "speaker": "girl_b",
+ "voice": "Sarah",
+ "voice_id": "EXAVITQu4vr4xnSDxMaL",
+ "voice_design": null,
+ "direction": "[curious, slightly uneasy, conspiratorial]",
+ "model": "fal-ai/elevenlabs/tts/eleven-v3",
+ "request": {
+  "stability": 0.5,
+  "apply_text_normalization": "auto",
+  "text": "[curious, slightly uneasy, conspiratorial] The forum has a thread: where people saw the sun right down by the ground. Someone posts every day. I read all of it.",
+  "voice": "Sarah",
+  "language_code": "en"
+ },
+ "fal_request_id": "01a1d782-39b3-78e3-a355-22f411252c5c",
+ "hash": "b6c291a67f07"
+}

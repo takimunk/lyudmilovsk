@@ -1,0 +1,29 @@
+{
+ "key": "line.korneeva_nina.paper_postman.1",
+ "lang": "ru",
+ "text": "Ване газету, Ване початок. Ты у нас теперь почтальон, только с доставкой горячего.",
+ "speaker": "korneeva_nina",
+ "voice": "Wise_Woman",
+ "voice_id": "Wise_Woman",
+ "voice_design": null,
+ "direction": "",
+ "model": "fal-ai/minimax/speech-2.6-hd",
+ "request": {
+  "prompt": "Ване газету, Ване початок. Ты у нас теперь почтальон, только с доставкой горячего.",
+  "voice_setting": {
+   "speed": 0.95,
+   "pitch": 0,
+   "vol": 1,
+   "voice_id": "Wise_Woman"
+  },
+  "language_boost": "Russian",
+  "audio_setting": {
+   "sample_rate": 24000,
+   "format": "mp3",
+   "channel": 1
+  },
+  "output_format": "url"
+ },
+ "fal_request_id": "01a1d6e6-26ff-7393-b7b6-74a0daad98ff",
+ "hash": "f6b89bef2f28"
+}

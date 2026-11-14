@@ -1,0 +1,20 @@
+{
+ "key": "line.zotov_lev.students_shout.1",
+ "lang": "ja",
+ "text": "上から叫ぶのか。学生もよくやるが、同じく効果はない。",
+ "speaker": "zotov_lev",
+ "voice": "George",
+ "voice_id": "JBFqnCBsd6RMkjVDRZzb",
+ "voice_design": null,
+ "direction": "[dry, thoughtful, unhurried, a physicist's quiet irony]",
+ "model": "fal-ai/elevenlabs/tts/eleven-v3",
+ "request": {
+  "stability": 0.5,
+  "apply_text_normalization": "auto",
+  "text": "[dry, thoughtful, unhurried, a physicist's quiet irony] 上から叫ぶのか。学生もよくやるが、同じく効果はない。",
+  "voice": "George",
+  "language_code": "ja"
+ },
+ "fal_request_id": "01a1d6eb-ac0f-73f2-9069-d8d7927f9ff6",
+ "hash": "92bd7c74cab3"
+}

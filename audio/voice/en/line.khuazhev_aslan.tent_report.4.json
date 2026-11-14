@@ -1,0 +1,20 @@
+{
+ "key": "line.khuazhev_aslan.tent_report.4",
+ "lang": "en",
+ "text": "It is decided. I bring more of the smoked, and a soft cheese for the pancakes. With the box I will not compete: I pity it enough already.",
+ "speaker": "khuazhev_aslan",
+ "voice": "Brian",
+ "voice_id": "nPczCjzI2devNBz1zQrb",
+ "voice_design": null,
+ "direction": "[hearty, generous, a cheese seller from the Caucasus, proud of his family's cheese]",
+ "model": "fal-ai/elevenlabs/tts/eleven-v3",
+ "request": {
+  "stability": 0.5,
+  "apply_text_normalization": "auto",
+  "text": "[hearty, generous, a cheese seller from the Caucasus, proud of his family's cheese] It is decided. I bring more of the smoked, and a soft cheese for the pancakes. With the box I will not compete: I pity it enough already.",
+  "voice": "Brian",
+  "language_code": "en"
+ },
+ "fal_request_id": "01a1d66f-8bb4-7f80-8266-6479fca5d62f",
+ "hash": "a3e290fb9c18"
+}

@@ -1,0 +1,20 @@
+{
+ "key": "line.girl_b.again6.2",
+ "lang": "ja",
+ "text": "図書館のあとでね。ニカが隣の席を取っておいてくれるけど、結局自分の席に座っちゃう。八番。",
+ "speaker": "girl_b",
+ "voice": "Sarah",
+ "voice_id": "EXAVITQu4vr4xnSDxMaL",
+ "voice_design": null,
+ "direction": "[curious, slightly uneasy, conspiratorial]",
+ "model": "fal-ai/elevenlabs/tts/eleven-v3",
+ "request": {
+  "stability": 0.5,
+  "apply_text_normalization": "auto",
+  "text": "[curious, slightly uneasy, conspiratorial] 図書館のあとでね。ニカが隣の席を取っておいてくれるけど、結局自分の席に座っちゃう。八番。",
+  "voice": "Sarah",
+  "language_code": "ja"
+ },
+ "fal_request_id": "01a1d782-072f-7b93-b7e4-541d8d86fe8f",
+ "hash": "61a55c4a1739"
+}

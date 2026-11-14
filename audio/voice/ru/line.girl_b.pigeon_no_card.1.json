@@ -1,0 +1,20 @@
+{
+ "key": "line.girl_b.pigeon_no_card.1",
+ "lang": "ru",
+ "text": "Голубь, в библиотеку без читательского нельзя. Хотя ты бы, наверно, всё вернул в срок.",
+ "speaker": "girl_b",
+ "voice": "Sarah",
+ "voice_id": "EXAVITQu4vr4xnSDxMaL",
+ "voice_design": null,
+ "direction": "[curious, slightly uneasy, conspiratorial]",
+ "model": "fal-ai/elevenlabs/tts/eleven-v3",
+ "request": {
+  "stability": 0.5,
+  "apply_text_normalization": "auto",
+  "text": "[curious, slightly uneasy, conspiratorial] Голубь, в библиотеку без читательского нельзя. Хотя ты бы, наверно, всё вернул в срок.",
+  "voice": "Sarah",
+  "language_code": "ru"
+ },
+ "fal_request_id": "01a1d7b6-418f-7e63-9a3a-9b5bd7e02f7f",
+ "hash": "aae86dd79f0f"
+}

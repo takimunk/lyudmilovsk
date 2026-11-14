@@ -1,0 +1,33 @@
+{
+ "key": "line.kid_boy.kuzya_hello_me.1",
+ "lang": "ja",
+ "text": "おまえがクージャ？ソーニャにはあいさつしたんだろ。おれにはできないの？",
+ "speaker": "kid_boy",
+ "voice": "ttv-voice-2026102201382326-dnI61vJ1",
+ "voice_id": "ttv-voice-2026102201382326-dnI61vJ1",
+ "voice_design": {
+  "endpoint": "fal-ai/minimax/voice-design",
+  "prompt": "Small boy, primary school kid: a very high, bright, light child's voice, like a young child actor in a cartoon dub but natural, bored and a little cheeky",
+  "preview_text": "Ну, норм так. С утра. Или со вчера."
+ },
+ "direction": "",
+ "model": "fal-ai/minimax/speech-2.6-hd",
+ "request": {
+  "prompt": "おまえがクージャ？ソーニャにはあいさつしたんだろ。おれにはできないの？",
+  "voice_setting": {
+   "speed": 1,
+   "pitch": 0,
+   "vol": 1,
+   "voice_id": "ttv-voice-2026102201382326-dnI61vJ1"
+  },
+  "language_boost": "Japanese",
+  "audio_setting": {
+   "sample_rate": 24000,
+   "format": "mp3",
+   "channel": 1
+  },
+  "output_format": "url"
+ },
+ "fal_request_id": "01a1d7b7-0869-7ae3-bc64-1ed4482489e8",
+ "hash": "23d2cedf818d"
+}

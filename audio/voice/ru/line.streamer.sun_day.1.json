@@ -1,0 +1,20 @@
+{
+ "key": "line.streamer.sun_day.1",
+ "lang": "ru",
+ "text": "Днём чат тихий. Все, наверное, на солнце. Я бы тоже пошла, честно. Потом.",
+ "speaker": "streamer",
+ "voice": "Jessica",
+ "voice_id": "cgSgspJ2msm6clMCkdW9",
+ "voice_design": null,
+ "direction": "[bright, fast, half talking to her chat]",
+ "model": "fal-ai/elevenlabs/tts/eleven-v3",
+ "request": {
+  "stability": 0.5,
+  "apply_text_normalization": "auto",
+  "text": "[bright, fast, half talking to her chat] Днём чат тихий. Все, наверное, на солнце. Я бы тоже пошла, честно. Потом.",
+  "voice": "Jessica",
+  "language_code": "ru"
+ },
+ "fal_request_id": "01a1d786-9df5-7eb3-8090-ee8995bc929c",
+ "hash": "91659b5d5069"
+}

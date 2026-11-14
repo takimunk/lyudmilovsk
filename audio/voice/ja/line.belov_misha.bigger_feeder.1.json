@@ -1,0 +1,20 @@
+{
+ "key": "line.belov_misha.bigger_feeder.1",
+ "lang": "ja",
+ "text": "ソローキンさんに、もっと大きい餌台を頼まれた。残りの連中が来たときのためだってさ。はんだ付けするところなんてないけど、引き受けたよ。",
+ "speaker": "belov_misha",
+ "voice": "Liam",
+ "voice_id": "TX3LPaxmHKxFdv7VOQHJ",
+ "voice_design": null,
+ "direction": "[easygoing, amused, a young technician, a little self-ironic]",
+ "model": "fal-ai/elevenlabs/tts/eleven-v3",
+ "request": {
+  "stability": 0.5,
+  "apply_text_normalization": "auto",
+  "text": "[easygoing, amused, a young technician, a little self-ironic] ソローキンさんに、もっと大きい餌台を頼まれた。残りの連中が来たときのためだってさ。はんだ付けするところなんてないけど、引き受けたよ。",
+  "voice": "Liam",
+  "language_code": "ja"
+ },
+ "fal_request_id": "01a1d75d-2b05-7873-8da6-84f2a55bfe96",
+ "hash": "8bfa17181d25"
+}

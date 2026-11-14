@@ -1,0 +1,20 @@
+{
+ "key": "line.kimura_dasha.tit_row_monday.1",
+ "lang": "ja",
+ "text": "シジュウカラだ！ほら、座って。あなた、月曜からずっと私の表に載ってるんだから。",
+ "speaker": "kimura_dasha",
+ "voice": "Charlotte",
+ "voice_id": "XB0fDUnXU5powFXDhCwa",
+ "voice_design": null,
+ "direction": "[a tired physics student, wry, self-ironic]",
+ "model": "fal-ai/elevenlabs/tts/eleven-v3",
+ "request": {
+  "stability": 0.5,
+  "apply_text_normalization": "auto",
+  "text": "[a tired physics student, wry, self-ironic] シジュウカラだ！ほら、座って。あなた、月曜からずっと私の表に載ってるんだから。",
+  "voice": "Charlotte",
+  "language_code": "ja"
+ },
+ "fal_request_id": "01a1d6e5-9802-73c1-b7f4-a28dffe3b9a8",
+ "hash": "6be98ab7236e"
+}

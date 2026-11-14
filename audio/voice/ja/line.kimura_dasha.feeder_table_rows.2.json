@@ -1,0 +1,20 @@
+{
+ "key": "line.kimura_dasha.feeder_table_rows.2",
+ "lang": "ja",
+ "text": "ヴィーカは、もう賭けじゃなくて執念だって言う。流しの前でね。",
+ "speaker": "kimura_dasha",
+ "voice": "Charlotte",
+ "voice_id": "XB0fDUnXU5powFXDhCwa",
+ "voice_design": null,
+ "direction": "[a tired physics student, wry, self-ironic]",
+ "model": "fal-ai/elevenlabs/tts/eleven-v3",
+ "request": {
+  "stability": 0.5,
+  "apply_text_normalization": "auto",
+  "text": "[a tired physics student, wry, self-ironic] ヴィーカは、もう賭けじゃなくて執念だって言う。流しの前でね。",
+  "voice": "Charlotte",
+  "language_code": "ja"
+ },
+ "fal_request_id": "01a1d6e5-411b-7d61-9eb2-069003fa632e",
+ "hash": "06db0455ea2e"
+}

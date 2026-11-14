@@ -1,0 +1,20 @@
+{
+ "key": "line.sato_kei.again3.2",
+ "lang": "en",
+ "text": "October's. It's different every hour, and instruments like things to stay put.",
+ "speaker": "sato_kei",
+ "voice": "Eric",
+ "voice_id": "cjVigY5qzO86Huf0OWal",
+ "voice_design": null,
+ "direction": "[quiet, precise, softly puzzled, a scientist thinking aloud]",
+ "model": "fal-ai/elevenlabs/tts/eleven-v3",
+ "request": {
+  "stability": 0.5,
+  "apply_text_normalization": "auto",
+  "text": "[quiet, precise, softly puzzled, a scientist thinking aloud] October's. It's different every hour, and instruments like things to stay put.",
+  "voice": "Eric",
+  "language_code": "en"
+ },
+ "fal_request_id": "01a1d747-2973-78c2-a570-131bf324a0b9",
+ "hash": "81e44944f14e"
+}

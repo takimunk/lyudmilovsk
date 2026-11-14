@@ -1,0 +1,20 @@
+{
+ "key": "line.girl_b.jackdaw_remember.1",
+ "lang": "en",
+ "text": "A jackdaw. They say on the forum that jackdaws remember faces. Remember mine, will you? Just in case.",
+ "speaker": "girl_b",
+ "voice": "Sarah",
+ "voice_id": "EXAVITQu4vr4xnSDxMaL",
+ "voice_design": null,
+ "direction": "[curious, slightly uneasy, conspiratorial]",
+ "model": "fal-ai/elevenlabs/tts/eleven-v3",
+ "request": {
+  "stability": 0.5,
+  "apply_text_normalization": "auto",
+  "text": "[curious, slightly uneasy, conspiratorial] A jackdaw. They say on the forum that jackdaws remember faces. Remember mine, will you? Just in case.",
+  "voice": "Sarah",
+  "language_code": "en"
+ },
+ "fal_request_id": "01a1d7b6-0d1a-7342-b637-6ce408b82a46",
+ "hash": "1c3bbed527b2"
+}

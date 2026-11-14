@@ -1,0 +1,20 @@
+{
+ "key": "line.girl_a.again7.2",
+ "lang": "en",
+ "text": "I don't know. The magazine ended at line four hundred and twelve, but the program didn't.",
+ "speaker": "girl_a",
+ "voice": "Matilda",
+ "voice_id": "XrExE9yKIg1WjnnlVkGX",
+ "voice_design": null,
+ "direction": "[whispering, concentrated]",
+ "model": "fal-ai/elevenlabs/tts/eleven-v3",
+ "request": {
+  "stability": 0.5,
+  "apply_text_normalization": "auto",
+  "text": "[whispering, concentrated] I don't know. The magazine ended at line four hundred and twelve, but the program didn't.",
+  "voice": "Matilda",
+  "language_code": "en"
+ },
+ "fal_request_id": "01a1d781-77fd-7a73-9825-0bc4981e9450",
+ "hash": "9f7752bef31b"
+}

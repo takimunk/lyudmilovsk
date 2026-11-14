@@ -1,0 +1,20 @@
+{
+ "key": "line.sorokin_oleg.again2.1",
+ "lang": "ru",
+ "text": "Ласточки улетели ещё в сентябре. Каждый год записываю дату и каждый год немного обижаюсь.",
+ "speaker": "sorokin_oleg",
+ "voice": "River",
+ "voice_id": "SAz9YHcvj6GT2YYXdXww",
+ "voice_design": null,
+ "direction": "[a retired scholar, calm, dry humour, slower, gentle]",
+ "model": "fal-ai/elevenlabs/tts/eleven-v3",
+ "request": {
+  "stability": 0.5,
+  "apply_text_normalization": "auto",
+  "text": "[a retired scholar, calm, dry humour, slower, gentle] Ласточки улетели ещё в сентябре. Каждый год записываю дату и каждый год немного обижаюсь.",
+  "voice": "River",
+  "language_code": "ru"
+ },
+ "fal_request_id": "01a1d749-34c9-7302-8164-a80e77c2537e",
+ "hash": "bf0a71005cb7"
+}

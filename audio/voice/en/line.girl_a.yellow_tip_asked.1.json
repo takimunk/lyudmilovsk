@@ -1,0 +1,20 @@
+{
+ "key": "line.girl_a.yellow_tip_asked.1",
+ "lang": "en",
+ "text": "Sonya wants to know if a waxwing's tail really has a yellow tip, as if it was dipped in paint. I told her to ask the one who saw it.",
+ "speaker": "girl_a",
+ "voice": "Matilda",
+ "voice_id": "XrExE9yKIg1WjnnlVkGX",
+ "voice_design": null,
+ "direction": "[whispering, concentrated]",
+ "model": "fal-ai/elevenlabs/tts/eleven-v3",
+ "request": {
+  "stability": 0.5,
+  "apply_text_normalization": "auto",
+  "text": "[whispering, concentrated] Sonya wants to know if a waxwing's tail really has a yellow tip, as if it was dipped in paint. I told her to ask the one who saw it.",
+  "voice": "Matilda",
+  "language_code": "en"
+ },
+ "fal_request_id": "01a1d738-92d4-7b22-879a-bce94a8dd606",
+ "hash": "f249f4106236"
+}

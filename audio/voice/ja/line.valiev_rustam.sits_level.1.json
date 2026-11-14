@@ -1,0 +1,20 @@
+{
+ "key": "line.valiev_rustam.sits_level.1",
+ "lang": "ja",
+ "text": "水平にとまっているな。水準器いらずだ。いい鳥だ。",
+ "speaker": "valiev_rustam",
+ "voice": "Roger",
+ "voice_id": "CwhRBWXzGAHq8TQ4Fs17",
+ "voice_design": null,
+ "direction": "[confident, dry, matter-of-fact engineer]",
+ "model": "fal-ai/elevenlabs/tts/eleven-v3",
+ "request": {
+  "stability": 0.5,
+  "apply_text_normalization": "auto",
+  "text": "[confident, dry, matter-of-fact engineer] 水平にとまっているな。水準器いらずだ。いい鳥だ。",
+  "voice": "Roger",
+  "language_code": "ja"
+ },
+ "fal_request_id": "01a1d6ea-f611-7421-a813-c888dfb67d88",
+ "hash": "b956158769b4"
+}

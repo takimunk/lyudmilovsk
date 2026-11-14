@@ -1,0 +1,20 @@
+{
+ "key": "line.kimura_dasha.feeder_ask.4",
+ "lang": "ru",
+ "text": "Эксперимент! Наконец-то во дворе что-то научное. Ставь. Я даже отчёт приму в устной форме.",
+ "speaker": "kimura_dasha",
+ "voice": "Charlotte",
+ "voice_id": "XB0fDUnXU5powFXDhCwa",
+ "voice_design": null,
+ "direction": "[a tired physics student, wry, self-ironic]",
+ "model": "fal-ai/elevenlabs/tts/eleven-v3",
+ "request": {
+  "stability": 0.5,
+  "apply_text_normalization": "auto",
+  "text": "[a tired physics student, wry, self-ironic] Эксперимент! Наконец-то во дворе что-то научное. Ставь. Я даже отчёт приму в устной форме.",
+  "voice": "Charlotte",
+  "language_code": "ru"
+ },
+ "fal_request_id": "01a1d5f9-71c8-7041-8345-28711b765b0c",
+ "hash": "d1161aab8c58"
+}

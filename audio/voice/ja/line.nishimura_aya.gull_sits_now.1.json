@@ -1,0 +1,20 @@
+{
+ "key": "line.nishimura_aya.gull_sits_now.1",
+ "lang": "ja",
+ "text": "セグロカモメが、じっとしてる。島では一羽もとまってくれなかったのに、鉛筆しかないここでは、とまるのね。",
+ "speaker": "nishimura_aya",
+ "voice": "Matilda",
+ "voice_id": "XrExE9yKIg1WjnnlVkGX",
+ "voice_design": null,
+ "direction": "[calm, soft, contemplative, a painter talking about the light]",
+ "model": "fal-ai/elevenlabs/tts/eleven-v3",
+ "request": {
+  "stability": 0.5,
+  "apply_text_normalization": "auto",
+  "text": "[calm, soft, contemplative, a painter talking about the light] セグロカモメが、じっとしてる。島では一羽もとまってくれなかったのに、鉛筆しかないここでは、とまるのね。",
+  "voice": "Matilda",
+  "language_code": "ja"
+ },
+ "fal_request_id": "01a1d6e8-5c71-7121-bd6d-990e0a9abaaf",
+ "hash": "b23095d536a2"
+}

@@ -1,0 +1,20 @@
+{
+ "key": "line.guy_b.sun_night.1",
+ "lang": "ja",
+ "text": "夜は換気扇の音が小さくなる。それとも、太陽が出てないって知ってるから、そう聞こえるだけかな。",
+ "speaker": "guy_b",
+ "voice": "Chris",
+ "voice_id": "iP95p4xoKVk53GoZ742B",
+ "voice_design": null,
+ "direction": "[relaxed, lazy, friendly]",
+ "model": "fal-ai/elevenlabs/tts/eleven-v3",
+ "request": {
+  "stability": 0.5,
+  "apply_text_normalization": "auto",
+  "text": "[relaxed, lazy, friendly] 夜は換気扇の音が小さくなる。それとも、太陽が出てないって知ってるから、そう聞こえるだけかな。",
+  "voice": "Chris",
+  "language_code": "ja"
+ },
+ "fal_request_id": "01a1d783-855f-7321-9869-de2e90e78112",
+ "hash": "a1fdea222b21"
+}

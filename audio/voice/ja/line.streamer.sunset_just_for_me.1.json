@@ -1,0 +1,20 @@
+{
+ "key": "line.streamer.sunset_just_for_me.1",
+ "lang": "ja",
+ "text": "外にいたんでしょ、いま夕焼けだよね。どんなだったか教えて。チャット用じゃなくて、わたし用に。",
+ "speaker": "streamer",
+ "voice": "Jessica",
+ "voice_id": "cgSgspJ2msm6clMCkdW9",
+ "voice_design": null,
+ "direction": "[bright, fast, half talking to her chat]",
+ "model": "fal-ai/elevenlabs/tts/eleven-v3",
+ "request": {
+  "stability": 0.5,
+  "apply_text_normalization": "auto",
+  "text": "[bright, fast, half talking to her chat] 外にいたんでしょ、いま夕焼けだよね。どんなだったか教えて。チャット用じゃなくて、わたし用に。",
+  "voice": "Jessica",
+  "language_code": "ja"
+ },
+ "fal_request_id": "01a1d73e-b11f-7301-b8d9-632085c23322",
+ "hash": "183900ff59f8"
+}

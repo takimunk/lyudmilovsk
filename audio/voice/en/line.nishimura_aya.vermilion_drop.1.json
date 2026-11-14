@@ -1,0 +1,20 @@
+{
+ "key": "line.nishimura_aya.vermilion_drop.1",
+ "lang": "en",
+ "text": "A bullfinch. Like a drop of vermilion. Stay there, I only need the breast.",
+ "speaker": "nishimura_aya",
+ "voice": "Matilda",
+ "voice_id": "XrExE9yKIg1WjnnlVkGX",
+ "voice_design": null,
+ "direction": "[calm, soft, contemplative, a painter talking about the light]",
+ "model": "fal-ai/elevenlabs/tts/eleven-v3",
+ "request": {
+  "stability": 0.5,
+  "apply_text_normalization": "auto",
+  "text": "[calm, soft, contemplative, a painter talking about the light] A bullfinch. Like a drop of vermilion. Stay there, I only need the breast.",
+  "voice": "Matilda",
+  "language_code": "en"
+ },
+ "fal_request_id": "01a1d6e8-5a2f-72a0-ad45-adf57f61bab2",
+ "hash": "8438ba56267b"
+}

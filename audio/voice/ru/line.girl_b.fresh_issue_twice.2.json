@@ -1,0 +1,20 @@
+{
+ "key": "line.girl_b.fresh_issue_twice.2",
+ "lang": "ru",
+ "text": "Лев теперь здоровается первым. А я теперь помню, зачем подошла.",
+ "speaker": "girl_b",
+ "voice": "Sarah",
+ "voice_id": "EXAVITQu4vr4xnSDxMaL",
+ "voice_design": null,
+ "direction": "[curious, slightly uneasy, conspiratorial]",
+ "model": "fal-ai/elevenlabs/tts/eleven-v3",
+ "request": {
+  "stability": 0.5,
+  "apply_text_normalization": "auto",
+  "text": "[curious, slightly uneasy, conspiratorial] Лев теперь здоровается первым. А я теперь помню, зачем подошла.",
+  "voice": "Sarah",
+  "language_code": "ru"
+ },
+ "fal_request_id": "01a1d6e2-b408-7c10-b934-d3ffb194b3d9",
+ "hash": "6402b5f61ed2"
+}

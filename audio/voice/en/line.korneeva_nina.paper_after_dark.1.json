@@ -1,0 +1,29 @@
+{
+ "key": "line.korneeva_nina.paper_after_dark.1",
+ "lang": "en",
+ "text": "The sun's going down and Vanya still has no chess problem. The evening paper is in the machine at the cable car station, and at weekends at the news stall on the fair square too. I'm not rushing you, I'm reminding you.",
+ "speaker": "korneeva_nina",
+ "voice": "Wise_Woman",
+ "voice_id": "Wise_Woman",
+ "voice_design": null,
+ "direction": "",
+ "model": "fal-ai/minimax/speech-2.6-hd",
+ "request": {
+  "prompt": "The sun's going down and Vanya still has no chess problem. The evening paper is in the machine at the cable car station, and at weekends at the news stall on the fair square too. I'm not rushing you, I'm reminding you.",
+  "voice_setting": {
+   "speed": 0.95,
+   "pitch": 0,
+   "vol": 1,
+   "voice_id": "Wise_Woman"
+  },
+  "language_boost": "English",
+  "audio_setting": {
+   "sample_rate": 24000,
+   "format": "mp3",
+   "channel": 1
+  },
+  "output_format": "url"
+ },
+ "fal_request_id": "01a1d754-daf3-7340-8b4b-7c7da10e5d94",
+ "hash": "edb5895229dc"
+}

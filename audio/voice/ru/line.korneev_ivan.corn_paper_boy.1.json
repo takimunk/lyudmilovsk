@@ -1,0 +1,20 @@
+{
+ "key": "line.korneev_ivan.corn_paper_boy.1",
+ "lang": "ru",
+ "text": "А, газетчик. Задачу я в тот вечер решил, мат в три хода. Нина до сих пор говорит, что ты её от меня спас.",
+ "speaker": "korneev_ivan",
+ "voice": "Bill",
+ "voice_id": "pqHfZKP75CvOlQylNhV4",
+ "voice_design": null,
+ "direction": "[an old man, slow, a little gravelly, contented, a quiet joke at the end]",
+ "model": "fal-ai/elevenlabs/tts/eleven-v3",
+ "request": {
+  "stability": 0.5,
+  "apply_text_normalization": "auto",
+  "text": "[an old man, slow, a little gravelly, contented, a quiet joke at the end] А, газетчик. Задачу я в тот вечер решил, мат в три хода. Нина до сих пор говорит, что ты её от меня спас.",
+  "voice": "Bill",
+  "language_code": "ru"
+ },
+ "fal_request_id": "01a1d6d5-451b-75c2-ab2d-ff401daa3360",
+ "hash": "d7155f52b3a9"
+}

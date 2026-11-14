@@ -1,0 +1,20 @@
+{
+ "key": "line.korneev_ivan.good_company.1",
+ "lang": "ja",
+ "text": "座れ、座れ。パンくずはないが、話し相手ならいるぞ。",
+ "speaker": "korneev_ivan",
+ "voice": "Bill",
+ "voice_id": "pqHfZKP75CvOlQylNhV4",
+ "voice_design": null,
+ "direction": "[an old man, slow, a little gravelly, contented, a quiet joke at the end]",
+ "model": "fal-ai/elevenlabs/tts/eleven-v3",
+ "request": {
+  "stability": 0.5,
+  "apply_text_normalization": "auto",
+  "text": "[an old man, slow, a little gravelly, contented, a quiet joke at the end] 座れ、座れ。パンくずはないが、話し相手ならいるぞ。",
+  "voice": "Bill",
+  "language_code": "ja"
+ },
+ "fal_request_id": "01a1d6e6-125d-7ae1-a333-17c64b4cacbe",
+ "hash": "064fea04ec80"
+}

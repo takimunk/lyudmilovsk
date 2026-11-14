@@ -1,0 +1,20 @@
+{
+ "key": "line.owner.machine_honest.1",
+ "lang": "ru",
+ "text": "Попил? Автомат у нас старый, но честный: что нажал, то и выпало. Не то что люди.",
+ "speaker": "owner",
+ "voice": "Daniel",
+ "voice_id": "onwK4e9ZLuTAKqWW03F9",
+ "voice_design": null,
+ "direction": "[calm, tired, slow, a little ironic]",
+ "model": "fal-ai/elevenlabs/tts/eleven-v3",
+ "request": {
+  "stability": 0.5,
+  "apply_text_normalization": "auto",
+  "text": "[calm, tired, slow, a little ironic] Попил? Автомат у нас старый, но честный: что нажал, то и выпало. Не то что люди.",
+  "voice": "Daniel",
+  "language_code": "ru"
+ },
+ "fal_request_id": "01a1d7ab-656f-72e0-b039-12702713420d",
+ "hash": "e4def8a565a1"
+}

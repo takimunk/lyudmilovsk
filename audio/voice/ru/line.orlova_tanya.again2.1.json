@@ -1,0 +1,20 @@
+{
+ "key": "line.orlova_tanya.again2.1",
+ "lang": "ru",
+ "text": "Хлеб привозят к девяти. К десяти Нина уже знает, какой он сегодня, а от Нины весь двор.",
+ "speaker": "orlova_tanya",
+ "voice": "Aria",
+ "voice_id": "9BWtsMINqrJLrRacOk9x",
+ "voice_design": null,
+ "direction": "[a kiosk shop assistant, brisk, deadpan, a bit sassy]",
+ "model": "fal-ai/elevenlabs/tts/eleven-v3",
+ "request": {
+  "stability": 0.5,
+  "apply_text_normalization": "auto",
+  "text": "[a kiosk shop assistant, brisk, deadpan, a bit sassy] Хлеб привозят к девяти. К десяти Нина уже знает, какой он сегодня, а от Нины весь двор.",
+  "voice": "Aria",
+  "language_code": "ru"
+ },
+ "fal_request_id": "01a1d746-5ef8-7632-920a-270e0051d809",
+ "hash": "297361fc9c9f"
+}

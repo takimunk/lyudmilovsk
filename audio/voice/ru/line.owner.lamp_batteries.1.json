@@ -1,0 +1,20 @@
+{
+ "key": "line.owner.lamp_batteries.1",
+ "lang": "ru",
+ "text": "Фонарик? Этот свет можно трогать. Он на батарейках, а не сам по себе.",
+ "speaker": "owner",
+ "voice": "Daniel",
+ "voice_id": "onwK4e9ZLuTAKqWW03F9",
+ "voice_design": null,
+ "direction": "[calm, tired, slow, a little ironic]",
+ "model": "fal-ai/elevenlabs/tts/eleven-v3",
+ "request": {
+  "stability": 0.5,
+  "apply_text_normalization": "auto",
+  "text": "[calm, tired, slow, a little ironic] Фонарик? Этот свет можно трогать. Он на батарейках, а не сам по себе.",
+  "voice": "Daniel",
+  "language_code": "ru"
+ },
+ "fal_request_id": "01a1d6e8-ee80-7fe3-9093-6a269c069f89",
+ "hash": "664f470543a6"
+}

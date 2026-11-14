@@ -18,6 +18,27 @@ struct FNpcLine
 	FString Key;
 };
 
+/** What a character says while a quest is on one of its stages (npc_dialogue.txt quest.<quest>.<stage>[,<stage>...]). */
+struct FNpcQuestTalk
+{
+	FName Quest;
+	/** Stage ids of quests.json; "done" = after the quest is finished. */
+	TArray<FName> Stages;
+	/**
+	 * "quest.<quest>.<stages>.if.<cond>[+<cond>]": said instead of the plain talk of these stages while every condition holds:
+	 * night, low, day, cloudy (the sun), have:<item>, no:<item>, done:<quest>, on:<quest>, flag:<flag>. Empty: the plain talk.
+	 */
+	TArray<FString> When;
+	/**
+	 * "aside.<quest>.<stages>..." instead of "quest.": a bystander's word about a quest that is not theirs. It waits until
+	 * their first conversation has been held, and is said through once (the lines, then each .again), then steps aside.
+	 */
+	bool bAside = false;
+	/** The first talk on these stages, and the later ones in turn, round and round (none: the first again). */
+	TArray<FNpcLine> Lines;
+	TArray<TArray<FNpcLine>> Again;
+};
+
 /** How one character's conversations go, read from Content/Dialogue/npc_dialogue.txt; the words are in the string tables. */
 struct FNpcLines
 {
@@ -30,6 +51,8 @@ struct FNpcLines
 	TArray<TArray<FNpcLine>> Again;
 	/** Now and then a later conversation is about the sun instead, picked by what it is doing now (day, low, night, cloudy). */
 	TMap<FName, TArray<FNpcLine>> Sun;
+	/** Quest talks, in the file's order: the first whose quest is on one of its stages is said instead of everything above. */
+	TArray<FNpcQuestTalk> QuestTalks;
 };
 
 /**
@@ -108,6 +131,12 @@ public:
 
 	/** Is E his now: somebody in front of him to talk to, or a talk going on (others who use E step aside). */
 	bool IsEngaged() const { return TargetIndex != INDEX_NONE || TalkingIndex != INDEX_NONE; }
+	/** A conversation is being held now. */
+	bool IsTalking() const { return TalkingIndex != INDEX_NONE; }
+	/** Whom the conversation is with (null: nobody). */
+	const AActor* TalkingTo() const { return People.IsValidIndex(TalkingIndex) ? People[TalkingIndex].Actor.Get() : nullptr; }
+	/** Nothing solid between From and To (looks through glass; Npc and the player's pawn do not count). */
+	bool InSight(const FVector& From, const FVector& To, const AActor* Npc) const;
 
 	/** Npc.Where: logs where everyone is (debugging). */
 	void LogPeople() const;
@@ -138,7 +167,6 @@ private:
 	void StopVoice();
 	FVector HeadOf(const FNpc& Npc) const;
 	bool CanTalkTo(const FNpc& Npc, const FVector& CamLoc, const FVector& CamDir) const;
-	bool InSight(const FVector& From, const FVector& To, const AActor* Npc) const;
 	bool PlayerBusy() const;
 	/** The hero's seats (PlayerBusy asks each whether the player stands at it), gathered again every 2 s, not every frame. */
 	mutable TArray<TWeakObjectPtr<class AHeroSeat>> Seats;

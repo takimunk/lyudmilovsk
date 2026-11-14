@@ -1,0 +1,20 @@
+{
+ "key": "line.guy_a.sun_day.1",
+ "lang": "ja",
+ "text": "昼でもモニターに反射はない。窓がないからな。でも、ときどき目を細めちゃう。癖なんだろうな。",
+ "speaker": "guy_a",
+ "voice": "Will",
+ "voice_id": "bIHbv24MWmeRgasZH58o",
+ "voice_design": null,
+ "direction": "[a young gamer in a hurry, mid-match]",
+ "model": "fal-ai/elevenlabs/tts/eleven-v3",
+ "request": {
+  "stability": 0.5,
+  "apply_text_normalization": "auto",
+  "text": "[a young gamer in a hurry, mid-match] 昼でもモニターに反射はない。窓がないからな。でも、ときどき目を細めちゃう。癖なんだろうな。",
+  "voice": "Will",
+  "language_code": "ja"
+ },
+ "fal_request_id": "01a1d782-f062-7650-bbcf-4406a554b2fe",
+ "hash": "e73f1a548176"
+}

@@ -1,0 +1,29 @@
+{
+ "key": "line.guseva_valentina.corn_report.4",
+ "lang": "ru",
+ "text": "Держи свои пятнадцать и пять сверху, за ноги. И початок бери, этот уже тебе.",
+ "speaker": "guseva_valentina",
+ "voice": "Abbess",
+ "voice_id": "Abbess",
+ "voice_design": null,
+ "direction": "",
+ "model": "fal-ai/minimax/speech-2.6-hd",
+ "request": {
+  "prompt": "Держи свои пятнадцать и пять сверху, за ноги. И початок бери, этот уже тебе.",
+  "voice_setting": {
+   "speed": 1,
+   "pitch": 0,
+   "vol": 1,
+   "voice_id": "Abbess"
+  },
+  "language_boost": "Russian",
+  "audio_setting": {
+   "sample_rate": 24000,
+   "format": "mp3",
+   "channel": 1
+  },
+  "output_format": "url"
+ },
+ "fal_request_id": "01a1d66d-2646-7100-ba64-2a88adc334ca",
+ "hash": "c551dfb9e647"
+}
