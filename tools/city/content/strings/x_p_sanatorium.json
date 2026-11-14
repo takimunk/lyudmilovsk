@@ -1249,5 +1249,115 @@
   "ru": "По выходным садовник отдыхает, и лейку никто не ждёт. Кактусы мимо, остальным по полстакана, как в графике.",
   "en": "On weekends the gardener rests and nobody waits for the can. Skip the cacti, half a glass for the rest, as on the rota.",
   "ja": "週末は庭師が休みで、じょうろを待つ人もいない。サボテンは飛ばして、あとは当番表どおり半カップずつ。"
+ },
+ "city.san.mugs.morning": {
+  "ru": "На стеллаже парами висят фаянсовые поильники с носиками, каждый со своей цветной полоской. К восьми часам половина уже пустует: отдыхающие пьют по часам.",
+  "en": "Faience spout-mugs hang on the rack in pairs, each with its own colour band. By eight half of them are gone: the guests drink by the clock.",
+  "ja": "棚には注ぎ口つきの陶器のカップが、色の帯をそれぞれ巻いて並んでいる。八時までに半分は空になる。滞在客は時刻どおりに飲むからだ。"
+ },
+ "city.san.mugs.day": {
+  "ru": "Все кружки на местах. На ручках бирки с фамилиями, чернила выцвели. Одна без бирки. Я решаю, что она ничья и, значит, на всякий случай моя.",
+  "en": "All the mugs are in place. Tags with surnames hang on the handles, the ink faded. One has no tag. I decide it is nobody's, and therefore, just in case, mine.",
+  "ja": "カップはすべて元の場所にある。取っ手に名字の札が下がり、インクは色あせている。一つだけ札がない。誰のでもないから、念のため僕のだということにした。"
+ },
+ "city.san.mugs.evening": {
+  "ru": "Вечером кружки висят чисто вымытые, носиками в одну сторону. Санитарка проверяет их линейкой, я точно видел.",
+  "en": "In the evening the mugs hang washed clean, spouts all one way. The orderly checks them with a ruler, I saw it myself.",
+  "ja": "夕方、カップはきれいに洗われ、注ぎ口を同じ向きにそろえて掛かっている。看護助手が定規で確かめているのを、僕はたしかに見た。"
+ },
+ "city.san.mugs.sun": {
+  "ru": "По воскресеньям утренние кружки сдвигают на край: приходят гости из города, им нужны чистые. Приезжие берут любую, и никто не ругается.",
+  "en": "On Sundays the morning mugs are pushed to the edge: guests come from town and need clean ones. Visitors take any, and nobody scolds.",
+  "ja": "日曜日には朝のカップが端に寄せられる。町から客が来て、きれいなものが要るからだ。客はどれを取っても叱られない。"
+ },
+ "city.san.mugs.rain": {
+  "ru": "В дождь кружки блестят от влаги, а в источнике пахнет сильнее обычного. Говорят, это значит, что вода хорошая.",
+  "en": "In rain the mugs shine with damp and the spring smells stronger than usual. They say that means the water is good.",
+  "ja": "雨の日はカップが湿気で光り、泉の匂いがいつもより強い。水の調子がいい証拠だと言われている。"
+ },
+ "city.san.mugs.fest": {
+  "ru": "В праздник на самую большую кружку повесили ленточку: из неё пьёт тот, кто первым пришёл. Сегодня это, кажется, ещё никто.",
+  "en": "On the holiday a ribbon hangs on the biggest mug: whoever comes first drinks from it. Today, it seems, nobody has yet.",
+  "ja": "祝日には一番大きなカップにリボンがかかる。一番に来た人がそれで飲む。今日はまだ誰も飲んでいないようだ。"
+ },
+ "city.san.analysis.look": {
+  "ru": "Под стеклом в рамке машинописный листок: «Анализ воды». Печать врача и подпись, а внизу кто-то выписал карандашом цифры.",
+  "en": "Under glass in a frame, a typed sheet: 'Water analysis'. A doctor's seal and signature, and below somebody pencilled out some figures.",
+  "ja": "額縁のガラスの下にタイプされた紙。「水質分析」。医師の印と署名、その下に誰かが鉛筆で数字を書き写している。"
+ },
+ "city.san.text.analysis.title": {
+  "ru": "Анализ минеральной воды",
+  "en": "Mineral water analysis",
+  "ja": "鉱泉水の分析表"
+ },
+ "city.san.an.1": {
+  "ru": "«Анализ воды источника «Корона». Минерализация 4,2 г на литр. Хлориды, гидрокарбонаты, натрий, немного магния. Запах слабый, сероводородный. Температура 11 градусов. Вкус: солоноватый».",
+  "en": "'Analysis of the Korona spring water. Mineralisation 4.2 g per litre. Chlorides, bicarbonates, sodium, a little magnesium. Faint smell of hydrogen sulphide. Temperature 11 degrees. Taste: briny.'",
+  "ja": "「泉『コロナ』の水質分析。ミネラル含有量1リットルあたり4.2グラム。塩化物、炭酸水素塩、ナトリウム、少量のマグネシウム。かすかな硫化水素の匂い。水温11度。味は塩気がある」。"
+ },
+ "city.san.an.2": {
+  "ru": "«Показания: желудок, печень, обмен веществ. Пить тёплой, малыми глотками, за полчаса до еды, не залпом. Ходить во время питья по залу. Детям до двенадцати лет — с разрешения врача».",
+  "en": "'Indications: stomach, liver, metabolism. Drink warm, in small sips, half an hour before meals, never in one gulp. Walk about the room while drinking. Children under twelve with the doctor's leave.'",
+  "ja": "「適応症:胃、肝臓、代謝。温めて、小さく少しずつ、食事の三十分前に、一気に飲まないこと。飲みながら室内を歩くこと。十二歳未満は医師の許可を得て」。"
+ },
+ "city.san.an.3": {
+  "ru": "Внизу карандашом, другим почерком: «Вкус у воды дрянной, зато после неё два дня хочется жить. Проверено на себе. Л. П., палата 4-12». И приписка: «Лейка в зимнем саду, цветам тоже нужно».",
+  "en": "At the bottom in pencil, in another hand: 'The water tastes foul, but for two days after it you want to live. Tested on myself. L. P., room 4-12.' And a postscript: 'The can is in the winter garden, the flowers need it too.'",
+  "ja": "一番下に別の筆跡で鉛筆書き。「水の味はひどいが、飲んだあと二日は生きたくなる。自分で確かめた。L.P.、4-12号室」。さらに追伸。「じょうろは温室にある。花にも必要だから」。"
+ },
+ "quest.sanatorium_springs.title": {
+  "ru": "Вода и цветы",
+  "en": "Water and flowers",
+  "ja": "水と花"
+ },
+ "quest.sanatorium_springs.desc": {
+  "ru": "В бювете висит анализ воды, а в конце приписка про лейку. Любопытно, куда она ведёт.",
+  "en": "A water analysis hangs in the pump room, and at the end a note about a can. I wonder where it leads.",
+  "ja": "飲泉所に水質分析表が掛かっていて、最後にじょうろについての追伸がある。どこへ続くのか気になる。"
+ },
+ "quest.sanatorium_springs.sheet.log": {
+  "ru": "В бювете под стеклом висит какой-то листок. Прочитаю его до конца, даже приписку.",
+  "en": "A sheet hangs under glass in the pump room. I will read it to the end, even the postscript.",
+  "ja": "飲泉所のガラスの下に紙が掛かっている。追伸まで最後まで読んでみよう。"
+ },
+ "quest.sanatorium_springs.sheet.obj": {
+  "ru": "Прочитать анализ воды в бювете",
+  "en": "Read the water analysis in the pump room",
+  "ja": "飲泉所で水質分析表を読む"
+ },
+ "quest.sanatorium_springs.mugs.log": {
+  "ru": "Вода пьётся из своих кружек. Посмотрю на стеллаж: вдруг одна из них с биркой, которую я узнаю.",
+  "en": "The water is drunk from personal mugs. I will look at the rack, maybe one has a tag I will recognise.",
+  "ja": "水はそれぞれ自分のカップで飲む。棚を見てみよう。知っている名前の札があるかもしれない。"
+ },
+ "quest.sanatorium_springs.mugs.obj": {
+  "ru": "Осмотреть стеллаж с кружками",
+  "en": "Look at the mug rack",
+  "ja": "カップの棚を見る"
+ },
+ "quest.sanatorium_springs.drink.log": {
+  "ru": "Пить без дела неловко. Выпью воды у источника маленькими глотками, как написано.",
+  "en": "It feels awkward to stand about. I will drink the spring water in small sips, as written.",
+  "ja": "手持ち無沙汰では気まずい。書いてあるとおり、泉の水を小さく少しずつ飲もう。"
+ },
+ "quest.sanatorium_springs.drink.obj": {
+  "ru": "Выпить воды у источника",
+  "en": "Drink the spring water",
+  "ja": "泉の水を飲む"
+ },
+ "quest.sanatorium_springs.water.log": {
+  "ru": "Теперь лейка: в зимнем саду, у пальмы по имени Галина Петровна. Цветам тоже нужно.",
+  "en": "Now the can: in the winter garden, by the palm called Galina Petrovna. The flowers need it too.",
+  "ja": "次はじょうろ。温室の、ガリーナ・ペトローヴナという名のヤシのそばにある。花にも必要だから。"
+ },
+ "quest.sanatorium_springs.water.obj": {
+  "ru": "Полить цветы в зимнем саду",
+  "en": "Water the plants in the winter garden",
+  "ja": "温室の花に水をやる"
+ },
+ "quest.sanatorium_springs.done": {
+  "ru": "Пальма стала зеленее, или мне так показалось. Кенар запел, и я решил, что это благодарность. Проверю потом, спросив у садовника.",
+  "en": "The palm looks greener, or so it seemed to me. The canary sang, and I decided it was thanks. I will check later by asking the gardener.",
+  "ja": "ヤシが前より青々として見えた。気のせいかもしれない。カナリアが歌い、僕はお礼だと思うことにした。あとで庭師に聞いて確かめよう。"
  }
 }

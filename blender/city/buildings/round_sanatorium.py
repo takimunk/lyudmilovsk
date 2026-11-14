@@ -858,13 +858,13 @@ def _mug_rack(B, x, y, yaw):
     """[wall] A pine rack with two shelves of the regulars' porcelain spout-mugs, each with its own colour band."""
     p = interior_kit._P(B, x, y, 0.0, yaw, "mug_rack")
     p.kind = "wall"
-    p.box("CT_WoodLight", -0.4, 0.4, -0.02, 0.0, 1.0, 1.55)
+    p.box("CT_WoodLight", -0.3, 0.3, -0.02, 0.0, 1.0, 1.55)
     for zz in (1.0, 1.28):
-        p.box("CT_Wood", -0.4, 0.4, -0.2, 0.0, zz, zz + 0.025)
+        p.box("CT_Wood", -0.3, 0.3, -0.2, 0.0, zz, zz + 0.025)
     bands = ("CT_PlasterRed", "CT_PlasterBlue", "CT_PlasterGreen", "CT_PlasterYellow", "CT_PlasterPink")
     for row, zz in enumerate((1.025, 1.305)):
-        for k in range(5):
-            u = -0.32 + 0.16 * k
+        for k in range(3):
+            u = -0.18 + 0.18 * k
             m = (k + row * 2) % 5
             p.cyl("CT_TileWhite", u, -0.1, zz, zz + 0.09, 0.04, 6)
             p.cyl(bands[m], u, -0.1, zz + 0.03, zz + 0.05, 0.042, 6, top=False)
@@ -891,11 +891,11 @@ def _depth3(B, q):
     B.thing("garden_can", "machine", (wx, wy, 0.2), _yout(g), what="watering")
     # ---------------------------------------------------------------- pump room: the mug rack, the analysis sheet
     t0 = _tan(th_p0)
-    mx, my = pol(15.1, th_p0)
+    mx, my = pol(17.1, th_p0)
     _mug_rack(B, mx + t0[0] * 0.075, my + t0[1] * 0.075, _ytan(th_p0))
     B.thing("pump_mugs", "shelf", (mx + t0[0] * 0.075, my + t0[1] * 0.075, 1.2), _ytan(th_p0), topic="mugs")
     t1 = _tan(P[6])
-    ex, ey = pol(13.7, P[6])
+    ex, ey = pol(15.4, P[6])
     kit.poster(B, ex - t1[0] * 0.075, ey - t1[1] * 0.075, yaw=P[6], name="paper_typed", w=0.34, zc=1.55)
     B.thing("pump_analysis", "board", (ex - t1[0] * 0.075, ey - t1[1] * 0.075, 1.55), P[6], topic="analysis")
 

@@ -831,6 +831,60 @@
      "d": "sat,sun"
     }
    ]
+  },
+  "sanatorium_mugs": {
+   "like": "look_misc",
+   "minutes": 3,
+   "sound": "cup_clink",
+   "lines": [
+    {
+     "k": "city.san.mugs.morning",
+     "h": [
+      6,
+      10
+     ]
+    },
+    {
+     "k": "city.san.mugs.day",
+     "h": [
+      10,
+      19
+     ]
+    },
+    {
+     "k": "city.san.mugs.evening",
+     "h": [
+      19,
+      6
+     ]
+    },
+    {
+     "k": "city.san.mugs.sun",
+     "d": "sun"
+    },
+    {
+     "k": "city.san.mugs.rain",
+     "weather": "rain"
+    },
+    {
+     "k": "city.san.mugs.fest",
+     "festival": "any"
+    }
+   ]
+  },
+  "sanatorium_analysis": {
+   "like": "look_misc",
+   "minutes": 3,
+   "sound": "paper_rustle",
+   "lines": [
+    "city.san.analysis.look"
+   ],
+   "read": {
+    "texts": [
+     "san_analysis"
+    ],
+    "rotate": "use"
+   }
   }
  },
  "rules": {
@@ -941,6 +995,12 @@
   },
   "round_sanatorium/garden_can": {
    "act": "sanatorium_watering"
+  },
+  "round_sanatorium/pump_mugs": {
+   "act": "sanatorium_mugs"
+  },
+  "round_sanatorium/pump_analysis": {
+   "act": "sanatorium_analysis"
   }
  },
  "quests": [
@@ -1104,6 +1164,59 @@
       "items": {
        "tea": 1
       }
+     }
+    }
+   ]
+  },
+  {
+   "id": "sanatorium_springs",
+   "kind": "side",
+   "start_on": {
+    "event": "visit",
+    "target": "P-SANATORIUM"
+   },
+   "stages": [
+    {
+     "id": "sheet",
+     "objectives": [
+      {
+       "id": "sheet",
+       "event": "do",
+       "target": "sanatorium_analysis"
+      }
+     ]
+    },
+    {
+     "id": "mugs",
+     "objectives": [
+      {
+       "id": "mugs",
+       "event": "do",
+       "target": "sanatorium_mugs"
+      }
+     ]
+    },
+    {
+     "id": "drink",
+     "objectives": [
+      {
+       "id": "drink",
+       "event": "do",
+       "target": "pump_room"
+      }
+     ]
+    },
+    {
+     "id": "water",
+     "objectives": [
+      {
+       "id": "water",
+       "event": "do",
+       "target": "sanatorium_watering"
+      }
+     ],
+     "reward": {
+      "rubles": 30
      }
     }
    ]
@@ -1374,6 +1487,19 @@
       "san_cure",
       6
      ]
+    }
+   ]
+  },
+  "san_analysis": {
+   "title": "city.san.text.analysis.title",
+   "kind": "notice",
+   "minutes": 2,
+   "pages": [
+    "city.san.an.1",
+    "city.san.an.2",
+    {
+     "k": "city.san.an.3",
+     "after": 1
     }
    ]
   }
