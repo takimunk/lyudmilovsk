@@ -594,7 +594,7 @@
  "line.town.chat_kids3.2": "もちろん。見てるもん。",
  "line.town.chat_kids3.3": "じゃあ手をふろう。",
  "line.town.north_ranger_greet.1": "よう。記帳ノートは小屋の前だ。",
- "line.town.north_ranger_greet.2": "道を歩け。砂利の州には入るな。",
+ "line.town.north_ranger_greet.2": "道から外れるな。砂利の州には入るな。",
  "line.town.north_ranger_greet.3": "来たか。まあ見ていけ。触っていいのは雪だけだ。",
  "line.town.north_ranger_bridges.1": "板はある。今のところは。",
  "line.town.north_ranger_bridges.2": "洪水のたびに板を戻す。習慣だ。",
@@ -604,7 +604,7 @@
  "line.town.north_ranger_bank.3": "川の音はいつも同じだ。三十年。落ち着く。",
  "line.town.north_ranger_brow.1": "ここから浅瀬が全部見える。誰もいない。よし。",
  "line.town.north_ranger_brow.2": "海から川沿いに霧が上がってくる。朝には小屋まで来る。",
- "line.town.north_camper_greet.1": "こんにちは。川を渡ってきた？橋は無事？",
+ "line.town.north_camper_greet.1": "こんにちは。川を渡ってきた？丸木橋は無事？",
  "line.town.north_camper_greet.2": "あ、お客さん。ここまで来る人は少ないよ。",
  "line.town.north_okada_greet.1": "こんにちは。今日はお湯がいいですよ。",
  "line.town.north_soak.1": "二十分。それ以上はだめ。",
@@ -615,6 +615,6 @@
  "line.town.north_soak_talk1.2": "十五分くらい。あと五分で出よう。",
  "line.town.north_soak_talk1.3": "どうせマトヴェイ・イリイチが数えてる。",
  "line.town.north_overlook.1": "川は編んだ髪みたい。流れが寄っては離れる。",
- "line.town.north_overlook.2": "あそこに丸太橋。ここからだとマッチ棒みたい。",
+ "line.town.north_overlook.2": "あそこに丸木橋。ここからだとマッチ棒みたい。",
  "line.town.north_overlook.3": "州を何かが歩いてる。熊みたい。まあいい、遠いし。"
 }

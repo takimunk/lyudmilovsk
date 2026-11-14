@@ -9,7 +9,7 @@
 to = hero
 job = ranger
 say town.north_ranger_greet.1 | Здравствуй. Журнал на крыльце. | Hello. The logbook's on the porch. | よう。記帳ノートは小屋の前だ。
-say town.north_ranger_greet.2 | По тропе иди. По косам не ходи. | Keep to the trail. Stay off the gravel bars. | 道を歩け。砂利の州には入るな。
+say town.north_ranger_greet.2 | По тропе иди. По косам не ходи. | Keep to the trail. Stay off the gravel bars. | 道から外れるな。砂利の州には入るな。
 say town.north_ranger_greet.3 | Пришёл? Ну, смотри. Трогать — только снег. | Made it? Well, look around. Touch nothing but the snow. | 来たか。まあ見ていけ。触っていいのは雪だけだ。
 
 [north_ranger_bridges]
@@ -39,7 +39,7 @@ say town.north_ranger_brow.2 | Туман с моря по реке пошёл. 
 to = hero
 job = geology_student photographer
 at = north_campfire north_camp_table north_spring north_spring_pool north_walk north_field north_view north_river_view north_patrol north_gate
-say town.north_camper_greet.1 | Привет. Через реку шли? Мостки целы? | Hi. Came over the river? Are the footbridges still there? | こんにちは。川を渡ってきた？橋は無事？
+say town.north_camper_greet.1 | Привет. Через реку шли? Мостки целы? | Hi. Came over the river? Are the footbridges still there? | こんにちは。川を渡ってきた？丸木橋は無事？
 say town.north_camper_greet.2 | О, гости. Сюда нечасто доходят. | Oh, a visitor. Not many make it up here. | あ、お客さん。ここまで来る人は少ないよ。
 
 [north_okada_greet]
@@ -69,5 +69,5 @@ talk
 doing = river_view
 weight = 2
 say town.north_overlook.1 | Река как заплетённая коса. Протоки сходятся и расходятся. | The river's like a braid. The channels meet and part. | 川は編んだ髪みたい。流れが寄っては離れる。
-say town.north_overlook.2 | Вон мостки. Отсюда как спички. | There are the footbridges. Like matches from up here. | あそこに丸太橋。ここからだとマッチ棒みたい。
+say town.north_overlook.2 | Вон мостки. Отсюда как спички. | There are the footbridges. Like matches from up here. | あそこに丸木橋。ここからだとマッチ棒みたい。
 say town.north_overlook.3 | На косе кто-то ходит. Медведь, кажется. Ну и ладно, он далеко. | Something's walking on the bar. A bear, I think. Fine, it's far off. | 州を何かが歩いてる。熊みたい。まあいい、遠いし。
