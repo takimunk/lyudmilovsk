@@ -1,0 +1,20 @@
+{
+ "key": "line.girl_a.sun_cloudy.1",
+ "lang": "ja",
+ "text": "曇りなんだって。こういう日は打ち間違いが多いの。ばかみたいだけど、ちゃんと記録してる。",
+ "speaker": "girl_a",
+ "voice": "Matilda",
+ "voice_id": "XrExE9yKIg1WjnnlVkGX",
+ "voice_design": null,
+ "direction": "[whispering, concentrated]",
+ "model": "fal-ai/elevenlabs/tts/eleven-v3",
+ "request": {
+  "stability": 0.5,
+  "apply_text_normalization": "auto",
+  "text": "[whispering, concentrated] 曇りなんだって。こういう日は打ち間違いが多いの。ばかみたいだけど、ちゃんと記録してる。",
+  "voice": "Matilda",
+  "language_code": "ja"
+ },
+ "fal_request_id": "01a1d781-9275-7400-a888-aed10c587c65",
+ "hash": "3ea325f3f3ee"
+}

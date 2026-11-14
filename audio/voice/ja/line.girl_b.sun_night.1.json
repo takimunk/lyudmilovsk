@@ -1,0 +1,20 @@
+{
+ "key": "line.girl_b.sun_night.1",
+ "lang": "ja",
+ "text": "夜は掲示板の書き込みが減るの。みんな明るくなるのを待って、言葉をとっておいてるみたい。",
+ "speaker": "girl_b",
+ "voice": "Sarah",
+ "voice_id": "EXAVITQu4vr4xnSDxMaL",
+ "voice_design": null,
+ "direction": "[curious, slightly uneasy, conspiratorial]",
+ "model": "fal-ai/elevenlabs/tts/eleven-v3",
+ "request": {
+  "stability": 0.5,
+  "apply_text_normalization": "auto",
+  "text": "[curious, slightly uneasy, conspiratorial] 夜は掲示板の書き込みが減るの。みんな明るくなるのを待って、言葉をとっておいてるみたい。",
+  "voice": "Sarah",
+  "language_code": "ja"
+ },
+ "fal_request_id": "01a1d782-665d-7173-836e-911f7316dec0",
+ "hash": "5ed135af054f"
+}

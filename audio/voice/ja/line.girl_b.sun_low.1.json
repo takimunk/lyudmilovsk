@@ -1,0 +1,20 @@
+{
+ "key": "line.girl_b.sun_low.1",
+ "lang": "ja",
+ "text": "掲示板にスレッドがあるの。地面すれすれの太陽をどこで見たか。毎日誰かが書き込んでる。全部読んでる。",
+ "speaker": "girl_b",
+ "voice": "Sarah",
+ "voice_id": "EXAVITQu4vr4xnSDxMaL",
+ "voice_design": null,
+ "direction": "[curious, slightly uneasy, conspiratorial]",
+ "model": "fal-ai/elevenlabs/tts/eleven-v3",
+ "request": {
+  "stability": 0.5,
+  "apply_text_normalization": "auto",
+  "text": "[curious, slightly uneasy, conspiratorial] 掲示板にスレッドがあるの。地面すれすれの太陽をどこで見たか。毎日誰かが書き込んでる。全部読んでる。",
+  "voice": "Sarah",
+  "language_code": "ja"
+ },
+ "fal_request_id": "01a1d782-4d04-7f72-ab6a-17f901b2a38b",
+ "hash": "c049806f22cb"
+}

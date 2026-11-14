@@ -1,0 +1,20 @@
+{
+ "key": "line.girl_b.sun_cloudy.1",
+ "lang": "en",
+ "text": "Overcast. On days like this three new threads about the sun go up on the forum at once. And not one of them gets a reply.",
+ "speaker": "girl_b",
+ "voice": "Sarah",
+ "voice_id": "EXAVITQu4vr4xnSDxMaL",
+ "voice_design": null,
+ "direction": "[curious, slightly uneasy, conspiratorial]",
+ "model": "fal-ai/elevenlabs/tts/eleven-v3",
+ "request": {
+  "stability": 0.5,
+  "apply_text_normalization": "auto",
+  "text": "[curious, slightly uneasy, conspiratorial] Overcast. On days like this three new threads about the sun go up on the forum at once. And not one of them gets a reply.",
+  "voice": "Sarah",
+  "language_code": "en"
+ },
+ "fal_request_id": "01a1d782-24e6-7d61-be5c-550a597933f8",
+ "hash": "bc7f04ac79f3"
+}

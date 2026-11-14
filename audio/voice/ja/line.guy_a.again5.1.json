@@ -1,0 +1,20 @@
+{
+ "key": "line.guy_a.again5.1",
+ "lang": "ja",
+ "text": "ティムールは朝から倉庫、俺は講義。同じ部屋に住んでるのに、顔を合わせるのは結局ここなんだ。",
+ "speaker": "guy_a",
+ "voice": "Will",
+ "voice_id": "bIHbv24MWmeRgasZH58o",
+ "voice_design": null,
+ "direction": "[a young gamer in a hurry, mid-match]",
+ "model": "fal-ai/elevenlabs/tts/eleven-v3",
+ "request": {
+  "stability": 0.5,
+  "apply_text_normalization": "auto",
+  "text": "[a young gamer in a hurry, mid-match] ティムールは朝から倉庫、俺は講義。同じ部屋に住んでるのに、顔を合わせるのは結局ここなんだ。",
+  "voice": "Will",
+  "language_code": "ja"
+ },
+ "fal_request_id": "01a1d782-79f5-71d3-b398-2dee29a26b73",
+ "hash": "6bf61505b284"
+}

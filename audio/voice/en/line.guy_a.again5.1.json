@@ -1,0 +1,20 @@
+{
+ "key": "line.guy_a.again5.1",
+ "lang": "en",
+ "text": "Timur's at the warehouse from the morning, I'm at lectures. And we still only see each other here, though we share a flat.",
+ "speaker": "guy_a",
+ "voice": "Will",
+ "voice_id": "bIHbv24MWmeRgasZH58o",
+ "voice_design": null,
+ "direction": "[a young gamer in a hurry, mid-match]",
+ "model": "fal-ai/elevenlabs/tts/eleven-v3",
+ "request": {
+  "stability": 0.5,
+  "apply_text_normalization": "auto",
+  "text": "[a young gamer in a hurry, mid-match] Timur's at the warehouse from the morning, I'm at lectures. And we still only see each other here, though we share a flat.",
+  "voice": "Will",
+  "language_code": "en"
+ },
+ "fal_request_id": "01a1d782-65b8-7a72-ad68-abda61d1f716",
+ "hash": "9d10bf97b2a5"
+}

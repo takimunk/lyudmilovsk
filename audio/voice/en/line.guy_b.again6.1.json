@@ -1,0 +1,20 @@
+{
+ "key": "line.guy_b.again6.1",
+ "lang": "en",
+ "text": "The owner sometimes keeps tea for me in the booth. He says it's run out, then he finds some. Just for me, I reckon.",
+ "speaker": "guy_b",
+ "voice": "Chris",
+ "voice_id": "iP95p4xoKVk53GoZ742B",
+ "voice_design": null,
+ "direction": "[relaxed, lazy, friendly]",
+ "model": "fal-ai/elevenlabs/tts/eleven-v3",
+ "request": {
+  "stability": 0.5,
+  "apply_text_normalization": "auto",
+  "text": "[relaxed, lazy, friendly] The owner sometimes keeps tea for me in the booth. He says it's run out, then he finds some. Just for me, I reckon.",
+  "voice": "Chris",
+  "language_code": "en"
+ },
+ "fal_request_id": "01a1d783-10a6-7520-858f-0964f784ce8b",
+ "hash": "0281a1fdeeef"
+}

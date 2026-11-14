@@ -1,0 +1,20 @@
+{
+ "key": "line.girl_b.sun_night.1",
+ "lang": "en",
+ "text": "At night fewer people post on the forum. As if everyone's waiting for it to be light again and saving their words.",
+ "speaker": "girl_b",
+ "voice": "Sarah",
+ "voice_id": "EXAVITQu4vr4xnSDxMaL",
+ "voice_design": null,
+ "direction": "[curious, slightly uneasy, conspiratorial]",
+ "model": "fal-ai/elevenlabs/tts/eleven-v3",
+ "request": {
+  "stability": 0.5,
+  "apply_text_normalization": "auto",
+  "text": "[curious, slightly uneasy, conspiratorial] At night fewer people post on the forum. As if everyone's waiting for it to be light again and saving their words.",
+  "voice": "Sarah",
+  "language_code": "en"
+ },
+ "fal_request_id": "01a1d782-5112-73d0-9793-0ff93ea8f2f4",
+ "hash": "22330d6df752"
+}

@@ -1,0 +1,20 @@
+{
+ "key": "line.guy_a.sun_night.1",
+ "lang": "ru",
+ "text": "Ночью пинг двенадцать. Все спят, даже солнце. Один я в лобби.",
+ "speaker": "guy_a",
+ "voice": "Will",
+ "voice_id": "bIHbv24MWmeRgasZH58o",
+ "voice_design": null,
+ "direction": "[a young gamer in a hurry, mid-match]",
+ "model": "fal-ai/elevenlabs/tts/eleven-v3",
+ "request": {
+  "stability": 0.5,
+  "apply_text_normalization": "auto",
+  "text": "[a young gamer in a hurry, mid-match] Ночью пинг двенадцать. Все спят, даже солнце. Один я в лобби.",
+  "voice": "Will",
+  "language_code": "ru"
+ },
+ "fal_request_id": "01a1d782-c73a-7801-90c6-6b520f6c0084",
+ "hash": "9ff9e93c19f9"
+}

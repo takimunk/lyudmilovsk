@@ -1,0 +1,20 @@
+{
+ "key": "line.streamer.again5.1",
+ "lang": "ru",
+ "text": "Стас заходит ко мне в чат и пишет «гг» на каждый мой проигрыш. Мой единственный постоянный зритель.",
+ "speaker": "streamer",
+ "voice": "Jessica",
+ "voice_id": "cgSgspJ2msm6clMCkdW9",
+ "voice_design": null,
+ "direction": "[bright, fast, half talking to her chat]",
+ "model": "fal-ai/elevenlabs/tts/eleven-v3",
+ "request": {
+  "stability": 0.5,
+  "apply_text_normalization": "auto",
+  "text": "[bright, fast, half talking to her chat] Стас заходит ко мне в чат и пишет «гг» на каждый мой проигрыш. Мой единственный постоянный зритель.",
+  "voice": "Jessica",
+  "language_code": "ru"
+ },
+ "fal_request_id": "01a1d786-5378-71a2-b9a6-cd3cf610be1c",
+ "hash": "c0acc9c28b03"
+}

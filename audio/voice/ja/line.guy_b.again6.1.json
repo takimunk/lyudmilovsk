@@ -1,0 +1,20 @@
+{
+ "key": "line.guy_b.again6.1",
+ "lang": "ja",
+ "text": "オーナーがときどき、ブースにお茶を取っといてくれるんだ。切れたって言うくせに、あとで出てくる。俺のためだと思う。",
+ "speaker": "guy_b",
+ "voice": "Chris",
+ "voice_id": "iP95p4xoKVk53GoZ742B",
+ "voice_design": null,
+ "direction": "[relaxed, lazy, friendly]",
+ "model": "fal-ai/elevenlabs/tts/eleven-v3",
+ "request": {
+  "stability": 0.5,
+  "apply_text_normalization": "auto",
+  "text": "[relaxed, lazy, friendly] オーナーがときどき、ブースにお茶を取っといてくれるんだ。切れたって言うくせに、あとで出てくる。俺のためだと思う。",
+  "voice": "Chris",
+  "language_code": "ja"
+ },
+ "fal_request_id": "01a1d783-47cc-78d1-b3b9-386fccc83af2",
+ "hash": "34f2680c31f9"
+}

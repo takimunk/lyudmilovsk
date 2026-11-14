@@ -1,0 +1,20 @@
+{
+ "key": "line.girl_b.sun_cloudy.1",
+ "lang": "ja",
+ "text": "曇りだね。こういう日は掲示板に太陽のスレッドが三つも立つの。どれにも返信はないけど。",
+ "speaker": "girl_b",
+ "voice": "Sarah",
+ "voice_id": "EXAVITQu4vr4xnSDxMaL",
+ "voice_design": null,
+ "direction": "[curious, slightly uneasy, conspiratorial]",
+ "model": "fal-ai/elevenlabs/tts/eleven-v3",
+ "request": {
+  "stability": 0.5,
+  "apply_text_normalization": "auto",
+  "text": "[curious, slightly uneasy, conspiratorial] 曇りだね。こういう日は掲示板に太陽のスレッドが三つも立つの。どれにも返信はないけど。",
+  "voice": "Sarah",
+  "language_code": "ja"
+ },
+ "fal_request_id": "01a1d782-3a45-7e32-9834-e0a45fcaa8a1",
+ "hash": "d4ab16fd352d"
+}

@@ -1,0 +1,20 @@
+{
+ "key": "line.streamer.again6.2",
+ "lang": "ru",
+ "text": "С обеда и пока чат не уснёт. Чат засыпает позже меня.",
+ "speaker": "streamer",
+ "voice": "Jessica",
+ "voice_id": "cgSgspJ2msm6clMCkdW9",
+ "voice_design": null,
+ "direction": "[bright, fast, half talking to her chat]",
+ "model": "fal-ai/elevenlabs/tts/eleven-v3",
+ "request": {
+  "stability": 0.5,
+  "apply_text_normalization": "auto",
+  "text": "[bright, fast, half talking to her chat] С обеда и пока чат не уснёт. Чат засыпает позже меня.",
+  "voice": "Jessica",
+  "language_code": "ru"
+ },
+ "fal_request_id": "01a1d786-6734-7eb1-9877-9cf85b691f14",
+ "hash": "a1f9aaab5528"
+}

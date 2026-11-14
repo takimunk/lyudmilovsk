@@ -1,0 +1,20 @@
+{
+ "key": "line.streamer.again5.1",
+ "lang": "ja",
+ "text": "スタスがチャットに来て、わたしが負けるたびに「gg」って書くの。唯一の常連視聴者。",
+ "speaker": "streamer",
+ "voice": "Jessica",
+ "voice_id": "cgSgspJ2msm6clMCkdW9",
+ "voice_design": null,
+ "direction": "[bright, fast, half talking to her chat]",
+ "model": "fal-ai/elevenlabs/tts/eleven-v3",
+ "request": {
+  "stability": 0.5,
+  "apply_text_normalization": "auto",
+  "text": "[bright, fast, half talking to her chat] スタスがチャットに来て、わたしが負けるたびに「gg」って書くの。唯一の常連視聴者。",
+  "voice": "Jessica",
+  "language_code": "ja"
+ },
+ "fal_request_id": "01a1d786-6d8c-7391-86be-cf9e2410e673",
+ "hash": "30fc49729f6c"
+}

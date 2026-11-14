@@ -1,0 +1,20 @@
+{
+ "key": "line.guy_a.sun_low.1",
+ "lang": "en",
+ "text": "They say everything's orange outside right now. My second monitor's night mode is the same colour. Practically the same thing.",
+ "speaker": "guy_a",
+ "voice": "Will",
+ "voice_id": "bIHbv24MWmeRgasZH58o",
+ "voice_design": null,
+ "direction": "[a young gamer in a hurry, mid-match]",
+ "model": "fal-ai/elevenlabs/tts/eleven-v3",
+ "request": {
+  "stability": 0.5,
+  "apply_text_normalization": "auto",
+  "text": "[a young gamer in a hurry, mid-match] They say everything's orange outside right now. My second monitor's night mode is the same colour. Practically the same thing.",
+  "voice": "Will",
+  "language_code": "en"
+ },
+ "fal_request_id": "01a1d782-d612-72b3-b4a3-a5e86795fdbd",
+ "hash": "63c566756f95"
+}

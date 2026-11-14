@@ -1,0 +1,20 @@
+{
+ "key": "line.owner.again5.1",
+ "lang": "ja",
+ "text": "山田がときどき、自分の山を印刷して持ってくる。わしにはわからん。だが、ブースに取っておく。",
+ "speaker": "owner",
+ "voice": "Daniel",
+ "voice_id": "onwK4e9ZLuTAKqWW03F9",
+ "voice_design": null,
+ "direction": "[calm, tired, slow, a little ironic]",
+ "model": "fal-ai/elevenlabs/tts/eleven-v3",
+ "request": {
+  "stability": 0.5,
+  "apply_text_normalization": "auto",
+  "text": "[calm, tired, slow, a little ironic] 山田がときどき、自分の山を印刷して持ってくる。わしにはわからん。だが、ブースに取っておく。",
+  "voice": "Daniel",
+  "language_code": "ja"
+ },
+ "fal_request_id": "01a1d786-276e-7640-b61a-be124a46dfd0",
+ "hash": "c71dc637fb97"
+}

@@ -1,0 +1,20 @@
+{
+ "key": "line.girl_a.again7.2",
+ "lang": "ja",
+ "text": "わからない。雑誌は四百十二行目で終わったのに、プログラムは終わってないの。",
+ "speaker": "girl_a",
+ "voice": "Matilda",
+ "voice_id": "XrExE9yKIg1WjnnlVkGX",
+ "voice_design": null,
+ "direction": "[whispering, concentrated]",
+ "model": "fal-ai/elevenlabs/tts/eleven-v3",
+ "request": {
+  "stability": 0.5,
+  "apply_text_normalization": "auto",
+  "text": "[whispering, concentrated] わからない。雑誌は四百十二行目で終わったのに、プログラムは終わってないの。",
+  "voice": "Matilda",
+  "language_code": "ja"
+ },
+ "fal_request_id": "01a1d781-7ddc-78b0-a426-bae738b76acf",
+ "hash": "a930527c8197"
+}

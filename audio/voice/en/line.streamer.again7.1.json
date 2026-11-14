@@ -1,0 +1,20 @@
+{
+ "key": "line.streamer.again7.1",
+ "lang": "en",
+ "text": "Chat wants to see autumn. I turned the camera on the garland. They said it'll do.",
+ "speaker": "streamer",
+ "voice": "Jessica",
+ "voice_id": "cgSgspJ2msm6clMCkdW9",
+ "voice_design": null,
+ "direction": "[bright, fast, half talking to her chat]",
+ "model": "fal-ai/elevenlabs/tts/eleven-v3",
+ "request": {
+  "stability": 0.5,
+  "apply_text_normalization": "auto",
+  "text": "[bright, fast, half talking to her chat] Chat wants to see autumn. I turned the camera on the garland. They said it'll do.",
+  "voice": "Jessica",
+  "language_code": "en"
+ },
+ "fal_request_id": "01a1d786-e6b1-74d0-9ad3-5cc001142ef2",
+ "hash": "cebe2410a275"
+}

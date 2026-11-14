@@ -1,0 +1,20 @@
+{
+ "key": "line.girl_b.again5.1",
+ "lang": "ja",
+ "text": "水曜の図書館は誰もいないの。最後に返ってきた本を読むの。そうすると、アカデムゴロドクのみんなが何を考えてるかわかる。",
+ "speaker": "girl_b",
+ "voice": "Sarah",
+ "voice_id": "EXAVITQu4vr4xnSDxMaL",
+ "voice_design": null,
+ "direction": "[curious, slightly uneasy, conspiratorial]",
+ "model": "fal-ai/elevenlabs/tts/eleven-v3",
+ "request": {
+  "stability": 0.5,
+  "apply_text_normalization": "auto",
+  "text": "[curious, slightly uneasy, conspiratorial] 水曜の図書館は誰もいないの。最後に返ってきた本を読むの。そうすると、アカデムゴロドクのみんなが何を考えてるかわかる。",
+  "voice": "Sarah",
+  "language_code": "ja"
+ },
+ "fal_request_id": "01a1d781-ef8d-7833-a562-120f2b32e429",
+ "hash": "3cc0252933d8"
+}

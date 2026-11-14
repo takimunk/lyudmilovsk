@@ -1,0 +1,20 @@
+{
+ "key": "line.guy_b.again7.2",
+ "lang": "en",
+ "text": "Flatmate. And friend. He pays for the electricity, I pay for the internet. He uses more of the internet.",
+ "speaker": "guy_b",
+ "voice": "Chris",
+ "voice_id": "iP95p4xoKVk53GoZ742B",
+ "voice_design": null,
+ "direction": "[relaxed, lazy, friendly]",
+ "model": "fal-ai/elevenlabs/tts/eleven-v3",
+ "request": {
+  "stability": 0.5,
+  "apply_text_normalization": "auto",
+  "text": "[relaxed, lazy, friendly] Flatmate. And friend. He pays for the electricity, I pay for the internet. He uses more of the internet.",
+  "voice": "Chris",
+  "language_code": "en"
+ },
+ "fal_request_id": "01a1d783-4e01-74f1-b695-a1b56a68f7ff",
+ "hash": "3b714aa4042c"
+}

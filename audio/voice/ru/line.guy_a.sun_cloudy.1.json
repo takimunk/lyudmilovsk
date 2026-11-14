@@ -1,0 +1,20 @@
+{
+ "key": "line.guy_a.sun_cloudy.1",
+ "lang": "ru",
+ "text": "Кто-то сказал, сегодня пасмурно. У меня в такие дни вечно кикает. Это не наука, это опыт.",
+ "speaker": "guy_a",
+ "voice": "Will",
+ "voice_id": "bIHbv24MWmeRgasZH58o",
+ "voice_design": null,
+ "direction": "[a young gamer in a hurry, mid-match]",
+ "model": "fal-ai/elevenlabs/tts/eleven-v3",
+ "request": {
+  "stability": 0.5,
+  "apply_text_normalization": "auto",
+  "text": "[a young gamer in a hurry, mid-match] Кто-то сказал, сегодня пасмурно. У меня в такие дни вечно кикает. Это не наука, это опыт.",
+  "voice": "Will",
+  "language_code": "ru"
+ },
+ "fal_request_id": "01a1d782-8973-7742-ac32-9b7e23d073f2",
+ "hash": "eaa38963b69a"
+}

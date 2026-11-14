@@ -1,0 +1,20 @@
+{
+ "key": "line.girl_a.again5.1",
+ "lang": "ja",
+ "text": "ソーニャが、待つのが好きだって。ほめるべきか、心配するべきか、わからない。",
+ "speaker": "girl_a",
+ "voice": "Matilda",
+ "voice_id": "XrExE9yKIg1WjnnlVkGX",
+ "voice_design": null,
+ "direction": "[whispering, concentrated]",
+ "model": "fal-ai/elevenlabs/tts/eleven-v3",
+ "request": {
+  "stability": 0.5,
+  "apply_text_normalization": "auto",
+  "text": "[whispering, concentrated] ソーニャが、待つのが好きだって。ほめるべきか、心配するべきか、わからない。",
+  "voice": "Matilda",
+  "language_code": "ja"
+ },
+ "fal_request_id": "01a1d781-516e-72a2-a292-9990db5d1d63",
+ "hash": "3abfea272f43"
+}

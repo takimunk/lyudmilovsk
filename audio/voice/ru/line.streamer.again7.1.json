@@ -1,0 +1,20 @@
+{
+ "key": "line.streamer.again7.1",
+ "lang": "ru",
+ "text": "Чат просит показать осень. Я повернула камеру на гирлянду. Сказали, сойдёт.",
+ "speaker": "streamer",
+ "voice": "Jessica",
+ "voice_id": "cgSgspJ2msm6clMCkdW9",
+ "voice_design": null,
+ "direction": "[bright, fast, half talking to her chat]",
+ "model": "fal-ai/elevenlabs/tts/eleven-v3",
+ "request": {
+  "stability": 0.5,
+  "apply_text_normalization": "auto",
+  "text": "[bright, fast, half talking to her chat] Чат просит показать осень. Я повернула камеру на гирлянду. Сказали, сойдёт.",
+  "voice": "Jessica",
+  "language_code": "ru"
+ },
+ "fal_request_id": "01a1d786-78cf-7482-a165-c31a7f811c0d",
+ "hash": "a969596b1acb"
+}

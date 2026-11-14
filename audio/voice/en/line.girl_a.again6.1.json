@@ -1,0 +1,20 @@
+{
+ "key": "line.girl_a.again6.1",
+ "lang": "en",
+ "text": "At work I'm with instruments all day, and in the evening I come here to the Spectrum. Olya says I rest from machines with a machine.",
+ "speaker": "girl_a",
+ "voice": "Matilda",
+ "voice_id": "XrExE9yKIg1WjnnlVkGX",
+ "voice_design": null,
+ "direction": "[whispering, concentrated]",
+ "model": "fal-ai/elevenlabs/tts/eleven-v3",
+ "request": {
+  "stability": 0.5,
+  "apply_text_normalization": "auto",
+  "text": "[whispering, concentrated] At work I'm with instruments all day, and in the evening I come here to the Spectrum. Olya says I rest from machines with a machine.",
+  "voice": "Matilda",
+  "language_code": "en"
+ },
+ "fal_request_id": "01a1d781-61a0-7741-a6ac-7fb229aa30fb",
+ "hash": "7edb2ba3b287"
+}

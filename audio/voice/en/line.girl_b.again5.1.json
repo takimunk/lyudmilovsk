@@ -1,0 +1,20 @@
+{
+ "key": "line.girl_b.again5.1",
+ "lang": "en",
+ "text": "Wednesdays the library's empty. I read whatever was returned last. That's how I know what the whole Academgorodok is thinking about.",
+ "speaker": "girl_b",
+ "voice": "Sarah",
+ "voice_id": "EXAVITQu4vr4xnSDxMaL",
+ "voice_design": null,
+ "direction": "[curious, slightly uneasy, conspiratorial]",
+ "model": "fal-ai/elevenlabs/tts/eleven-v3",
+ "request": {
+  "stability": 0.5,
+  "apply_text_normalization": "auto",
+  "text": "[curious, slightly uneasy, conspiratorial] Wednesdays the library's empty. I read whatever was returned last. That's how I know what the whole Academgorodok is thinking about.",
+  "voice": "Sarah",
+  "language_code": "en"
+ },
+ "fal_request_id": "01a1d781-e208-7493-8bcf-43ae2048662d",
+ "hash": "aaa3f29046ed"
+}
