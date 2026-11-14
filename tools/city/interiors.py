@@ -49,6 +49,8 @@ KINDS = ("seat", "bed", "shelf", "board", "counter", "machine", "play", "sport",
 KIND_LOOK = {"seat": (0.45, False), "bed": (0.5, False), "shelf": (1.3, True), "board": (1.5, True), "counter": (1.0, True),
              "machine": (1.1, True), "play": (0.8, True), "sport": (1.0, True), "craft": (0.9, True), "screen": (1.6, True),
              "take": (0.8, True), "door": (1.2, True)}
+# the kinds whose floor estimate (thing_floor) is trusted to mark an upper storey for its teleport (not wall-mounted things)
+STOREY_KINDS = {"seat", "bed", "counter", "shelf", "craft", "play"}
 # spots that become things by themselves while a building declares none (the rest only when a content rule gives them a kind)
 SPOT_KIND = {"seat": "seat", "bench": "seat", "counter": "counter", "table": "seat", "view": "board"}
 # staff who sell over a counter, best first (a derived counter gets the plot's first of them)
@@ -1601,6 +1603,10 @@ def build_teleports(plan, things, strings, gen_strings):
         storeys = collections.OrderedDict()
         floors = spot_floors(pl)
         for t in sorted(by_plot.get(pl["id"], []), key=lambda t: (t["ue"][2], t["id"])):
+            # only things that stand on a floor prove a storey: a clock, a scoreboard or a hoop high on a gym's wall made
+            # a "floor 2" in mid-air (city.p_school.2), and its teleport fell to the ground floor facing the wall
+            if t["kind"] not in STOREY_KINDS:
+                continue
             floor = thing_floor(t, floors)
             if floor - ground > 250:
                 storeys.setdefault(int(round((floor - ground) / 100.0)), (t, floor))
@@ -1611,9 +1617,8 @@ def build_teleports(plan, things, strings, gen_strings):
             merged.append((h, t, floor))
         for i, (h, t, floor) in enumerate(merged):
             n = i + 2
-            p = step([t["ue"][0] / 100.0, t["ue"][1] / 100.0, floor / 100.0], t["yaw"], 1.2 if t["kind"] != "seat" else 0.0)
-            if t["kind"] == "seat":
-                p = step(p, t["yaw"], 0.9)
+            # 1.2 m in front of the thing, 0.8 m in front of a seat (2.1 m off a gallery's bench was over the pier's void)
+            p = step([t["ue"][0] / 100.0, t["ue"][1] / 100.0, floor / 100.0], t["yaw"], 1.2 if t["kind"] != "seat" else 0.8)
             sid = "%s.%d" % (tid, n)
             tps.append({"id": sid, "group": "interiors", "name": "dev.tp." + sid, "x": round(p[0], 2), "y": round(p[1] - pf, 2),
                         "z": round(floor, 1), "yaw": round(((t["yaw"] + 180.0) % 360.0) - (360.0 if (t["yaw"] + 180.0) % 360.0 > 180 else 0), 1)})
