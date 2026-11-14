@@ -1075,12 +1075,13 @@ def _gallows(B, x, y):
 
 
 def _cuts_chart(B, x, y):
-    """The cuts chart of the meat row: a notice board on two posts with butcher's labels pinned in a row (the labels of the stall cards)."""
+    """The cuts chart of the meat row: a notice board on two posts with a drawn chart and a typed sheet pinned on it."""
     kit.notice_stand(B, x, y, 0.0, 90.0, w=1.1, h=0.8, front="notice_1", back="notice_2", seed=11)
     fr = Fr(x, y, 90.0)
-    for k, cell in enumerate((8, 38, 27, 57)):
-        px, py, _ = fr.p(-0.45 + 0.3 * k, 0.17)
-        kit.poster(B, px, py, 0.0, 90.0, name="label_%02d" % cell, w=0.24, h=0.17, zc=1.5 - 0.02 * (k % 2))
+    # a hand-drawn chart and a typed price sheet (the atlas has no meat labels: salt and pepper cards read wrong here)
+    for k, (cell, w) in enumerate((("paper_drawing", 0.42), ("paper_typed", 0.26))):
+        px, py, _ = fr.p(-0.25 + 0.45 * k, 0.17)
+        kit.poster(B, px, py, 0.0, 90.0, name=cell, w=w, zc=1.5)
 
 
 def _hook_rack(B, x, y):
