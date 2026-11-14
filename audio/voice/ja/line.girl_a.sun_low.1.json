@@ -1,7 +1,7 @@
 {
  "key": "line.girl_a.sun_low.1",
  "lang": "ja",
- "text": "この時間、研究所の窓から日ざしがまともに目に入るの。ブラインドは半分だけ下ろす。全部は、もったいなくて。",
+ "text": "冬は仕事の終わりごろ、研究所の窓から日ざしがまともに目に入るの。ブラインドは半分だけ下ろす。全部は、もったいなくて。",
  "speaker": "girl_a",
  "voice": "Matilda",
  "voice_id": "XrExE9yKIg1WjnnlVkGX",
@@ -11,10 +11,10 @@
  "request": {
   "stability": 0.5,
   "apply_text_normalization": "auto",
-  "text": "[whispering, concentrated] この時間、研究所の窓から日ざしがまともに目に入るの。ブラインドは半分だけ下ろす。全部は、もったいなくて。",
+  "text": "[whispering, concentrated] 冬は仕事の終わりごろ、研究所の窓から日ざしがまともに目に入るの。ブラインドは半分だけ下ろす。全部は、もったいなくて。",
   "voice": "Matilda",
   "language_code": "ja"
  },
- "fal_request_id": "01a1d781-bffe-7c13-a86d-563fbf868cbc",
- "hash": "ae03afe7ae21"
+ "fal_request_id": "01a1d7a9-3715-7b20-ab19-b30ddaba4f79",
+ "hash": "b0461ec65b70"
 }

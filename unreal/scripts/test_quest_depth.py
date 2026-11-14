@@ -92,12 +92,11 @@ at("Quest.SetStage awakening owner", None, 1.0)
 # Guy_b sits at a club computer (head about 65, -152, 148 cm): stand behind him in the aisle, eyes on his head
 at("BugItGo -60 -152 100 -5 0 0", None, 3.0)
 at("Npc.Where")
+# the club's regulars hear birds too: a pigeon beside Guy_b, before any talk (a talk in progress cuts the director's speech)
+at("Quest.BirdCall FeralPigeon guy_b", None, 6.0)
 at("QUESTDEPTH mark l_guy_b")
 for _ in range(10):
     at("Npc.Talk", None, 1.2)
-at("Npc.Talk", None, 1.5)                          # close the talk: a talk in progress cuts the director's speech
-# the club's regulars hear birds too: a pigeon beside Guy_b
-at("Quest.BirdCall FeralPigeon guy_b", None, 5.0)
 # m) explore on walk: valley_way, four_places_two_by_cable, never_got_swift, then everyday
 at("Quest.Reset", None, 1.0)
 at("Quest.Start explore", None, 1.0)
