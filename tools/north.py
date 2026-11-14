@@ -684,6 +684,16 @@ BRIDGES = [(11.0, 0), (16.0, 1), (26.0, 2)]     # log footbridges: the longest w
 
 
 def things():
+    """Everything loose on the map: the footbridges, the river's and trail's dressing, the sea stacks, and a log to sit
+    on where the ranger sits by the river (river_spots bank)."""
+    out = _bridges() + _dressing() + _sea_stacks()
+    for k, b in enumerate(river_spots().get("bank", [])):
+        out.append({"id": "river_log_%d" % (k + 1), "kind": "log_bench", "x": b["x"], "y": b["y"],
+                    "yaw": round(b["yaw"] % 360.0, 1), "variant": 0})
+    return out
+
+
+def _bridges():
     """Loose things the importer stands on the map (north.json things): {id, kind, x, y, yaw, variant, z (the mesh
     origin's map height, when it must not follow the ground)}. The log footbridges over the river's channels: the
     origin is the deck's middle at walking height."""
@@ -692,7 +702,7 @@ def things():
         variant = next((v for reach, v in BRIDGES if span <= reach), BRIDGES[-1][1])
         out.append({"id": "river_bridge_%d" % (n + 1), "kind": "log_bridge", "x": round(x, 2), "y": round(y, 2),
                     "yaw": round(yaw, 1), "variant": variant, "z": round(z, 2), "span": round(span, 1)})
-    return out + _dressing() + _sea_stacks()
+    return out
 
 
 def _trail_marks(step=170.0):
@@ -1145,7 +1155,7 @@ def river_spots():
         return {"x": round(p[0], 2), "y": round(p[1], 2), "yaw": look_at(p, at) if at else round(yaw, 1)}
 
     north_end = _crossing()[1]
-    bridges = sorted(things(), key=lambda b: -b["y"])                 # north first
+    bridges = sorted(_bridges(), key=lambda b: -b["y"])                 # north first
     out = {}
     # the round: the gate, down the track's line every ~90 m, the crossing's north end, each bridge's north end (the
     # northernmost and the main channel's, the longest span), a pause at each; back the same way
