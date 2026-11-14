@@ -43,7 +43,7 @@ def talk(n, gap=1.1):
 
 
 # 1. every quest by its real events
-at("Dev.QA quests", None, 40.0)
+at("Dev.QA quests", None, 240.0)      # every quest of quests.json, played through by its events
 # 2. chains
 at("Quest.Reset", None, 1.0)
 at("Quest.Start waxwing")
