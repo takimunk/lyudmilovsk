@@ -6,6 +6,7 @@
 #include <cstdlib>
 #include <cstring>
 #include <string>
+#include <thread>
 #include <vector>
 
 using namespace LyudTopi;
@@ -202,6 +203,89 @@ static void Shade(const FModel& M, const char* File, double XW, double XE, doubl
 	std::printf("wrote %s (%d x %d)\n", File, W, H);
 }
 
+// An eye-level picture without the engine: the heightfield ray-marched from a standing eye, a sun with cast shadows,
+// haze. It shows the dunes' silhouettes and how light models them, which the map cannot (no materials, no sprites).
+static void View(const FModel& M, const char* File, double EX, double EY, double TX, double TY, double SunAz, double SunEl, double EyeH)
+{
+	const int W = 1280, H = 540;
+	const double Pi = 3.14159265358979;
+	const double EZ = M.Height(EX, EY) + EyeH;
+	double FX = TX - EX, FY = TY - EY;
+	const double FL = std::sqrt(FX * FX + FY * FY);
+	FX /= FL; FY /= FL;
+	const double RX = FY, RY = -FX;                       // right of forward (X is west: the frame is left-handed seen from above)
+	const double Az = SunAz * Pi / 180.0, El = SunEl * Pi / 180.0;   // azimuth from north (+Y) toward east (-X)
+	const double SX = -std::sin(Az) * std::cos(El), SY = std::cos(Az) * std::cos(El), SZ = std::sin(El);
+	const double TanH = 1.0;                              // 90 degrees across
+	std::vector<uint8_t> Px(size_t(W) * H * 3);
+	const int Threads = int(std::fmax(1.0, double(std::thread::hardware_concurrency())));
+	std::vector<std::thread> Pool;
+	for (int Th = 0; Th < Threads; ++Th) Pool.emplace_back([&, Th]()
+	{
+	for (int J = Th; J < H; J += Threads)
+	{
+		for (int I = 0; I < W; ++I)
+		{
+			const double U = (2.0 * (I + 0.5) / W - 1.0) * TanH, V = (1.0 - 2.0 * (J + 0.5) / H) * TanH * H / W - 0.04;
+			double DX = FX + RX * U, DY = FY + RY * U, DZ = V;
+			const double DL = std::sqrt(DX * DX + DY * DY + DZ * DZ);
+			DX /= DL; DY /= DL; DZ /= DL;
+			double T = 0.3, Hit = -1.0;
+			while (T < 9000.0)
+			{
+				const double X = EX + DX * T, Y = EY + DY * T, Z = EZ + DZ * T;
+				const double G = M.Height(X, Y, T * 0.0015);
+				if (Z <= G) { Hit = T; break; }
+				T += std::fmax(0.05, std::fmin((Z - G) * 0.6, T * 0.02 + 0.5));
+				if (DZ > 0.0 && Z > 140.0) { break; }
+			}
+			const double Up = std::fmax(0.0, DZ);
+			double R = 150 + 60 * (1 - Up), Gc = 178 + 40 * (1 - Up), B = 214 + 20 * (1 - Up);   // sky
+			if (Hit > 0.0)
+			{
+				const double X = EX + DX * Hit, Y = EY + DY * Hit;
+				const double E = std::fmax(0.08, Hit * 0.002);
+				const double HX = (M.Height(X + E, Y, E) - M.Height(X - E, Y, E)) / (2 * E);
+				const double HY = (M.Height(X, Y + E, E) - M.Height(X, Y - E, E)) / (2 * E);
+				const double NL = std::sqrt(HX * HX + HY * HY + 1.0);
+				double Lit = std::fmax(0.0, (-HX * SX - HY * SY + SZ) / NL);
+				if (Lit > 0.0)
+				{
+					double ST = 0.5;
+					const double Z0 = M.Height(X, Y, E) + 0.05;
+					while (ST < 400.0)
+					{
+						const double G = M.Height(X + SX * ST, Y + SY * ST, ST * 0.02);
+						const double Z = Z0 + SZ * ST;
+						if (Z < G) { Lit = 0.0; break; }
+						ST += std::fmax(0.3, (Z - G) * 0.7);
+					}
+				}
+				FSample S;
+				M.Sample(X, Y, E, S);
+				double CR = 232, CG = 222, CB = 196;                 // pale Baltic sand
+				if (S.Region < 0.5) { CR = 96; CG = 118; CB = 78; }
+				const double Gr = 0.6 * S.Grass;
+				CR = CR * (1 - Gr) + 128 * Gr; CG = CG * (1 - Gr) + 142 * Gr; CB = CB * (1 - Gr) + 92 * Gr;
+				if (M.RiverDepth(X, Y) > 0.0) { CR = 90; CG = 235; CB = 215; Lit = 1.0; }
+				const double Amb = 0.38;
+				R = CR * (Amb * 0.92 + Lit * 0.80); Gc = CG * (Amb * 0.97 + Lit * 0.78); B = CB * (Amb * 1.12 + Lit * 0.72);
+				const double Fog = 1.0 - std::exp(-Hit / 2600.0);
+				R += (205 - R) * Fog; Gc += (214 - Gc) * Fog; B += (226 - B) * Fog;
+			}
+			uint8_t* P = &Px[(size_t(J) * W + I) * 3];
+			P[0] = uint8_t(std::fmin(255.0, R)); P[1] = uint8_t(std::fmin(255.0, Gc)); P[2] = uint8_t(std::fmin(255.0, B));
+		}
+	}
+	});
+	for (std::thread& T : Pool) T.join();
+	FILE* F = std::fopen(File, "wb");
+	std::fprintf(F, "P6\n%d %d\n255\n", W, H);
+	std::fwrite(Px.data(), 1, Px.size(), F);
+	std::fclose(F);
+	std::printf("wrote %s (%d x %d), eye z %.1f\n", File, W, H, EZ);
+}
+
 int main(int Argc, char** Argv)
 {
 	FModel M;
@@ -243,6 +327,13 @@ int main(int Argc, char** Argv)
 		}
 		return 0;
 	}
-	std::printf("usage: run.sh test|map|profile|section\n");
+	if (Cmd == "view" && Argc > 6)
+	{
+		// run.sh view out.ppm x y tx ty [sun azimuth, degrees from north toward east] [sun elevation] [eye height]
+		View(M, Argv[2], std::atof(Argv[3]), std::atof(Argv[4]), std::atof(Argv[5]), std::atof(Argv[6]),
+			Argc > 7 ? std::atof(Argv[7]) : 230.0, Argc > 8 ? std::atof(Argv[8]) : 28.0, Argc > 9 ? std::atof(Argv[9]) : 1.7);
+		return 0;
+	}
+	std::printf("usage: run.sh test|map|profile|section|view\n");
 	return 1;
 }

@@ -27,7 +27,9 @@ LY -775, Topi toward -LY): `FModel::ToLocal` / `FromLocal`, map X = LY - 400, ma
 
 - `Private/Topi/TopiModel.{h,cpp}`: the land in plain C++ (no Unreal types). `Height` / `Sample`: the great dune over
   the map's edge, dunes of five sizes under one wind (240 m, 78 m and 19 m near; 1.1 km and 5 km "mega" dunes deep
-  inside, which is what the horizon is made of), the river's plain and channel, marram density. `Path`,
+  inside, which is what the horizon is made of; a 165 m family askew to the big one; 6.5 m knee-high sand waves),
+  marram hummocks (teardrop mounds of caught sand, up to 1.35 m, where the grass is thick, with the grass on them and bare
+  lanes between: never on slip faces or the path), the river's plain and channel, marram density. `Path`,
   `RiverPoint`, `RiverDirection`, `RiverFlow`, `RiverDepth`, `Near`. `Pressure(x, y, night)` and `WayOut`: what the place does to
   the hero. Thread-safe, any x and y.
 - `tools/topi.py` writes `Content/Topi/topi_edge.tbl`: the map's own ground (`world_map.height`) in the strip where
@@ -35,7 +37,9 @@ LY -775, Topi toward -LY): `FModel::ToLocal` / `FromLocal`, map X = LY - 400, ma
   (`python3 tools/topi.py --check` fails when the committed table is stale).
 - `tools/topi/run.sh test | map | profile | section`: checks (the sand covers the map's edge, no steps, slopes, the
   path is walkable and ends in water deep enough, the pressure rules) and pictures (`Saved/Topi/topi_near.png`, 1 m per
-  pixel with the path in red; `topi_far.png`).
+  pixel with the path in red; `topi_far.png`). `run.sh view out.ppm x y tx ty [sun azimuth] [sun elevation] [eye height]`
+  draws the model from a standing eye looking at (tx, ty), ray-marched with a sun and cast shadows (~40 s): the way to
+  judge silhouettes and near relief without the engine.
 - `ALyudTopi` (`Public/Topi/LyudTopi.h`): spawned at play by `ULyudTopiSubsystem` in any world with `ALyudSky`
   (nothing is placed in the level). The ground is a quadtree of chunks round the camera: 128 m chunks of 2 m cells
   underfoot, each level twice as coarse, out to 40 km. Chunks are built on worker threads (`lyud.Topi.Workers`),

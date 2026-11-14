@@ -68,6 +68,40 @@ namespace LyudTopi
 			return A * P;
 		}
 
+		/** Marram hummocks: mounds of sand caught by the tussocks (X, Y: Topi's local metres), at most one to a ~9 m cell, each its own size.
+		 *  0..1: 0 between them, 1 on a mound's top. */
+		double Hummocks(double X, double Y, uint32_t Seed)
+		{
+			constexpr double Size = 9.0;
+			const double GX = X / Size, GY = Y / Size;
+			const int64_t I0 = int64_t(std::floor(GX)), J0 = int64_t(std::floor(GY));
+			double Best = 0.0;
+			for (int64_t J = J0 - 1; J <= J0 + 1; ++J)
+			{
+				for (int64_t I = I0 - 1; I <= I0 + 1; ++I)
+				{
+					const double CX = (double(I) + 0.15 + 0.7 * Hash01(I, J, Seed)) * Size;
+					const double CY = (double(J) + 0.15 + 0.7 * Hash01(I, J, Seed + 1)) * Size;
+					double Big = Hash01(I, J, Seed + 2);
+					if (Big < 0.3)
+					{
+						continue;                       // bare lanes: not every tussock has caught its mound
+					}
+					Big = (Big - 0.3) / 0.7;
+					const double Radius = 2.2 + 3.6 * Big * Big;
+					// each mound trails a tail of sand down the wind (toward -Y here): a teardrop, not a dome
+					const double DY = Y - CY;
+					const double Along = DY < 0.0 ? DY / 2.1 : DY / 0.9;
+					const double Q = ((X - CX) * (X - CX) + Along * Along) / (Radius * Radius);
+					if (Q < 1.0)
+					{
+						Best = std::max(Best, (0.3 + 0.7 * Big) * (1.0 - Q) * (1.0 - Q));
+					}
+				}
+			}
+			return Best;
+		}
+
 		/** A dune family's mean height (what is left of it where it is too small to draw). */
 		double DuneMean(double Amp) { return Amp * 0.775 * 0.5; }
 
@@ -506,7 +540,33 @@ namespace LyudTopi
 		// a second, lower family lying askew to the first: it breaks the long parallel ridges into knots, saddles and bowls
 		Layer(165.0, 8.0, 0.80, 51, Env * (0.4 + 0.6 * BigWind) * (1.6 - Knots), nullptr, 0.62);
 		Layer(78.0, 7.5, 0.80, 31, Env * (0.35 + 0.65 * BigWind) * Corridor, &MedWind, 0.16);
-		Layer(19.0, 0.9, 0.78, 41, Env * (0.3 + 0.7 * BigWind * MedWind) * Corridor, nullptr, -0.33);
+		Layer(19.0, 1.3, 0.78, 41, Env * (0.3 + 0.7 * BigWind * MedWind) * Corridor, nullptr, -0.33);
+		// the smallest: knee-high sand waves on the backs of the others, what the eye has to hold on to at its feet
+		Layer(6.5, 0.34, 0.74, 45, Env * BigWind * MedWind * Corridor, nullptr, 0.27);
+
+		// marram: thick round the edge; further in it holds the dunes' long backs and crests in tussocky patches
+		// (none on the slip faces), thinning out past the river; none on the river's plain
+		const double Edgeward = 1.0 - Smooth((In - 120.0) / 420.0);
+		const double Patch = Smooth((Noise(L.X / 95.0, L.Y / 80.0, 92) - 0.42) / 0.2);
+		const double Inner = 0.55 * Patch * BigWind * (1.0 - Smooth((In - 1300.0) / 900.0));
+		double Grass = K * std::max(Edgeward, Inner) * (1.0 - Plain) * (0.35 + 0.65 * Noise(L.X / 37.0, L.Y / 37.0, 91));
+		// where the marram stands the sand it catches grows into hummocks, and the grass sits on them: mounds with
+		// bare sand lanes between, the look of a Baltic fore dune
+		const double Tussocky = Smooth((Grass - 0.12) / 0.3) * Corridor * Smooth((PathD - 3.0) / 6.0) * BigWind * MedWind;
+		if (Tussocky > 0.0)
+		{
+			if (Cell > 0.0 && 9.0 < 3.0 * Cell)
+			{
+				Dunes += Tussocky * 1.35 * 0.12;
+			}
+			else
+			{
+				const double Mound = Hummocks(L.X, L.Y, 95);
+				Dunes += Tussocky * 1.35 * Mound;
+				Grass *= Lerp(1.0, 0.4 + 1.1 * Smooth(Mound / 0.5), Tussocky);
+			}
+		}
+		Out.Grass = std::min(1.0, Grass);
 
 		double Z = Base + Great * (1.0 - Plain) + Dunes;
 
@@ -526,12 +586,5 @@ namespace LyudTopi
 			Z = Lerp(Map - 5.0, Z, Smooth(K / 0.7));
 		}
 		Out.Z = Z;
-
-		// marram: thick round the edge; further in it holds the dunes' long backs and crests in tussocky patches
-		// (none on the slip faces), thinning out past the river; none on the river's plain
-		const double Edgeward = 1.0 - Smooth((In - 120.0) / 420.0);
-		const double Patch = Smooth((Noise(L.X / 95.0, L.Y / 80.0, 92) - 0.42) / 0.2);
-		const double Inner = 0.55 * Patch * BigWind * (1.0 - Smooth((In - 1300.0) / 900.0));
-		Out.Grass = K * std::max(Edgeward, Inner) * (1.0 - Plain) * (0.35 + 0.65 * Noise(L.X / 37.0, L.Y / 37.0, 91));
 	}
 }
