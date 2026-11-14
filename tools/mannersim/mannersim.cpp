@@ -376,7 +376,7 @@ static void Outings(bool bPrint)
 	W.Resettle();
 	std::map<std::string, int> Size, Best, Now;
 	std::map<std::string, int> ByAct, Half, Lead;
-	long WayMinutes = 0, WayNear = 0, HomeMinutes = 0, HomeNear = 0, KidHome = 0, KidHomeWith = 0;
+	long WayMinutes = 0, WayNear = 0, HomeMinutes = 0, HomeNear = 0, KidHome = 0, KidHomeWith = 0, KidOut = 0, KidOutWith = 0;
 	long WalkPairs = 0, WalkNear = 0, PlayMinutes = 0, MindedMinutes = 0, MindAlone = 0, MindMinutes = 0;
 	for (const FPerson& P : W.People)
 	{
@@ -469,6 +469,22 @@ static void Outings(bool bPrint)
 			}
 			WayMinutes++;
 			WayNear += bBeside ? 1 : 0;
+		}
+		// a child on the way out to play, and those with a grown-up of theirs walking beside
+		for (const FPerson& P : W.People)
+		{
+			if (P.Age >= 12 || P.State != EState::Going || P.Home < 0 || P.bIndoors || (P.Activity != W.PlayActs[0] && P.Activity != W.PlayActs[1]))
+			{
+				continue;
+			}
+			bool bBeside = false;
+			for (const int R : W.Places[(size_t)P.Home].Residents)
+			{
+				const FPerson& Q = W.People[(size_t)R];
+				bBeside |= Q.Age >= 18 && Q.Household == P.Household && Q.State == EState::Going && Q.Activity == W.MindAct && (Q.Pos - P.Pos).Len2D() < 12.f;
+			}
+			KidOut++;
+			KidOutWith += bBeside ? 1 : 0;
 		}
 		// a child on the way home from play, and those with a grown-up of theirs walking beside
 		for (const FPerson& P : W.People)
@@ -563,6 +579,7 @@ static void Outings(bool bPrint)
 		WayNear, WayMinutes);
 	CHECK(HomeMinutes > 300 && HomeNear * 5 > HomeMinutes, "a household goes home from its outing together (%ld of %ld person-minutes on the way home with one of theirs within 10 m)",
 		HomeNear, HomeMinutes);
+	CHECK(KidOut > 100 && KidOutWith * 10 > KidOut, "a grown-up goes out with the child who goes out to play (%ld of %ld child-minutes on the way there)", KidOutWith, KidOut);
 	CHECK(KidHome > 100 && KidHomeWith * 10 > KidHome * 3, "the grown-up who stood by walks the child home from play (%ld of %ld child-minutes on the way home)", KidHomeWith, KidHome);
 }
 

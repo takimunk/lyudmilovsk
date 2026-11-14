@@ -1904,7 +1904,10 @@ namespace LyudPeople
 				if (MindKid >= 0)
 				{
 					// by the child (a spot of the same place, else the nearest to them)
-					Score = (Sl.Approach - People[(size_t)MindKid].Pos).Len2D() - (Pi == MindPlace ? 200.f : 0.f);
+					// (a child still on the way out: by where they are going)
+					const FPerson& Kid = People[(size_t)MindKid];
+					const V3& KidAt = Kid.State == EState::Going && Kid.Slot >= 0 ? Slots[(size_t)Kid.Slot].Approach : Kid.Pos;
+					Score = (Sl.Approach - KidAt).Len2D() - (Pi == MindPlace ? 200.f : 0.f);
 				}
 				if (Pl.Island != Island)
 				{
@@ -1986,7 +1989,8 @@ namespace LyudPeople
 				continue;
 			}
 			// (not from the other end of town: the child would be home again before they got there)
-			if (Kid < 0 && Q.Age < 12 && Q.State == EState::Doing && Q.Place >= 0 && !Places[Q.Place].bIndoor && Q.Island == P.Island
+			// (at play, or on the way out to it)
+			if (Kid < 0 && Q.Age < 12 && (Q.State == EState::Doing || Q.State == EState::Going) && Q.Place >= 0 && !Places[Q.Place].bIndoor && Q.Island == P.Island
 				&& (Q.Activity == PlayActs[0] || Q.Activity == PlayActs[1]) && (Q.Pos - P.Pos).Len2D() < 450.f)
 			{
 				Kid = R;
@@ -2419,6 +2423,18 @@ namespace LyudPeople
 				}
 			}
 		}
+		if ((Act == PlayActs[0] || Act == PlayActs[1]) && P.Age < 12 && P.Home >= 0 && MindAct >= 0 && Act != FromAct)
+		{
+			// a child goes out to play: the grown-ups of theirs who are by look up (Interrupt: one of them goes along)
+			for (const int R : Places[(size_t)P.Home].Residents)
+			{
+				FPerson& Q = People[(size_t)R];
+				if (R != P.Id && Q.Household == P.Household && Q.Age >= 18 && Q.State == EState::Doing && (Q.Pos - P.Pos).Len2D() < 30.f)
+				{
+					Q.Recheck = std::min(Q.Recheck, 1.f + 4.f * Rand(P.Rng));
+				}
+			}
+		}
 		if (FromAct >= 0 && FromAct == P.DateAct && Weekday == P.DateDay && P.DateWith >= 0 && P.DateWith < (int)People.size() && Act != FromAct)
 		{
 			// the date is over when one of the two gets up: the other doesn't sit on alone, and goes a few seconds after
@@ -2541,7 +2557,9 @@ namespace LyudPeople
 			return ChildToMind(P) < 0;
 		}
 		// their child went out to play and nobody of theirs is by: they leave what they chose for it
-		if (MindAct >= 0 && Cur.bFree && Duty < 0 && !Cur.bGather && Time - P.StateStart > 120.0 && ChildToMind(P) >= 0)
+		// (at once when the child is only setting out: they go out together)
+		const int KidOut = MindAct >= 0 && Cur.bFree && Duty < 0 && !Cur.bGather ? ChildToMind(P) : -1;
+		if (KidOut >= 0 && (Time - P.StateStart > 120.0 || People[(size_t)KidOut].State == EState::Going))
 		{
 			int SlotThere = -1, SlotHere = -1;
 			if (Score(P, Activities[(size_t)MindAct], SlotThere) > Score(P, Cur, SlotHere))
@@ -2798,7 +2816,8 @@ namespace LyudPeople
 		// on the way to the household's outing, and on the way home, those of a household keep together: whoever is in
 		// front dawdles, whoever fell behind steps out, and side by side they go at the slowest's walk
 		const bool bOuting = P.OutingAct >= 0 && P.Activity == P.OutingAct && Weekday == P.OutingDay;
-		if (P.State != EState::Going || P.bIndoors || P.Home < 0 || P.Place < 0 || P.Household.empty() || (!bOuting && P.Place != P.Home))
+		const bool bPlay = P.Activity >= 0 && (P.Activity == MindAct || (P.Age < 12 && (P.Activity == PlayActs[0] || P.Activity == PlayActs[1])));
+		if (P.State != EState::Going || P.bIndoors || P.Home < 0 || P.Place < 0 || P.Household.empty() || (!bOuting && !bPlay && P.Place != P.Home))
 		{
 			return 1.f;
 		}
@@ -2809,7 +2828,10 @@ namespace LyudPeople
 		for (const int R : Places[(size_t)P.Home].Residents)
 		{
 			const FPerson& Q = People[(size_t)R];
-			if (R == P.Id || Q.Household != P.Household || Q.Place != P.Place || Q.State != EState::Going || Q.bIndoors || Q.Bike >= 0)
+			// (the same place; the child going out to play and the grown-up going to stand by: near enough the same)
+			const bool bSameWay = Q.Place == P.Place
+				|| (bPlay && Q.Activity >= 0 && (Q.Activity == MindAct || Q.Activity == PlayActs[0] || Q.Activity == PlayActs[1]));
+			if (R == P.Id || Q.Household != P.Household || !bSameWay || Q.State != EState::Going || Q.bIndoors || Q.Bike >= 0)
 			{
 				continue;
 			}
