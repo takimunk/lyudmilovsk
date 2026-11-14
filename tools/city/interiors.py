@@ -1719,7 +1719,7 @@ def quest_dev(quests, things, acts, shops, plan, strings, gen_strings):
         for n, st in enumerate(q["stages"], 1):
             dev = {}
             give, earn, hours, days = {}, 0, None, None
-            first = None
+            first = first_have = None
             for o in st["objectives"]:
                 ev, tgt = o["event"].split("|")[0], o.get("target", "")
                 if ev in ("have", "use") and not tgt.endswith("*") and (ev == "use" or n > 1):
@@ -1730,7 +1730,11 @@ def quest_dev(quests, things, acts, shops, plan, strings, gen_strings):
                 if not by:
                     continue
                 t = by[0]
-                first = first or t
+                # an action step wins over a `have`: the stage is played at the hand-over, not at the shop
+                if ev in ("have", "get"):
+                    first_have = first_have or t
+                else:
+                    first = first or t
                 a = acts[t["act"]]
                 earn += a["price"] * int(o.get("need", 1))
                 if ev in ("have", "get"):
@@ -1740,6 +1744,7 @@ def quest_dev(quests, things, acts, shops, plan, strings, gen_strings):
                 if not a["any_hour"] and t["hours"] != [0, 24]:
                     hours = hours or t["hours"]
                     days = days or t["days"]
+            first = first or first_have
             if first:
                 kind = first["kind"]
                 floor = thing_floor(first, floors_of.get(first["plot"], []))
