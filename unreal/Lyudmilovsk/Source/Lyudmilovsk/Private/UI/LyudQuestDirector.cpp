@@ -481,8 +481,9 @@ void ULyudQuestDirector::TickRemarks(const APawn* Pawn)
 		TActorIterator<ANpcTalkDirector> It(GetWorld());
 		TalkDirector = It ? *It : nullptr;
 	}
-	// never during a talk, and one voice at a time
-	if ((TalkDirector.IsValid() && TalkDirector->IsEngaged()) || Speeches.Num() > 0)
+	// never during a talk, and one voice at a time (IsTalking, not IsEngaged: the one a remark is from is usually the one in
+	// front of the hero, his talk target, and must still speak)
+	if ((TalkDirector.IsValid() && TalkDirector->IsTalking()) || Speeches.Num() > 0)
 	{
 		return;
 	}
@@ -501,7 +502,17 @@ void ULyudQuestDirector::TickRemarks(const APawn* Pawn)
 		}
 		const int32 Id = People->FindPerson(R.Person);
 		FPersonInfo Info;
-		if (Id < 0 || !People->GetPerson(Id, Info) || !IsValid(Info.Actor) || Info.Actor->IsHidden() || Info.Pose == EPersonPose::Sleep || Info.Pose == EPersonPose::Hidden)
+		if (Id < 0 || !People->GetPerson(Id, Info))
+		{
+			continue;
+		}
+		// not drawn (far off: bodies are drawn only near the camera): the hero is out of their reach, so the remark arms
+		if (!IsValid(Info.Actor) || Info.Actor->IsHidden())
+		{
+			ArmedRemarks.Add(R.Id);
+			continue;
+		}
+		if (Info.Pose == EPersonPose::Sleep || Info.Pose == EPersonPose::Hidden)
 		{
 			continue;
 		}
