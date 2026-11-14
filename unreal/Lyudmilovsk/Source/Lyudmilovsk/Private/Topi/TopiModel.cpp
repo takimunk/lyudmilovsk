@@ -102,6 +102,48 @@ namespace LyudTopi
 			return Best;
 		}
 
+		/** Blowouts: bowls the wind has scooped out of the marram dunes where the turf broke, each with a rim of thrown
+		 *  sand on its downwind side (-Y here). At most one to a ~75 m cell. Returns metres (negative in the bowl);
+		 *  Bare: 1 inside the bowl, where nothing grows. X, Y: Topi's local metres. */
+		double Blowouts(double X, double Y, uint32_t Seed, double& Bare)
+		{
+			constexpr double Size = 75.0;
+			const int64_t I0 = int64_t(std::floor(X / Size)), J0 = int64_t(std::floor(Y / Size));
+			double Sum = 0.0;
+			Bare = 0.0;
+			for (int64_t J = J0 - 1; J <= J0 + 1; ++J)
+			{
+				for (int64_t I = I0 - 1; I <= I0 + 1; ++I)
+				{
+					const double Big = Hash01(I, J, Seed + 2);
+					if (Big < 0.5)
+					{
+						continue;
+					}
+					const double CX = (double(I) + 0.2 + 0.6 * Hash01(I, J, Seed)) * Size;
+					const double CY = (double(J) + 0.2 + 0.6 * Hash01(I, J, Seed + 1)) * Size;
+					const double Radius = 8.0 + 9.0 * (Big - 0.5) / 0.5;
+					const double Deep = 0.17 * Radius;
+					// longer down the wind than across it
+					const double DX = (X - CX) / Radius, DY = (Y - CY) / (1.5 * Radius);
+					const double Q = DX * DX + DY * DY;
+					if (Q < 1.0)
+					{
+						Sum -= Deep * (1.0 - Q) * (1.0 - Q);
+						Bare = std::max(Bare, Smooth((1.0 - Q) / 0.35));
+					}
+					// the rim: a crescent of thrown sand round the downwind end
+					const double RY = (Y - (CY - 1.5 * Radius)) / (0.55 * Radius), RX = (X - CX) / (1.1 * Radius);
+					const double RQ = RX * RX + RY * RY;
+					if (RQ < 1.0)
+					{
+						Sum += 0.4 * Deep * (1.0 - RQ) * (1.0 - RQ);
+					}
+				}
+			}
+			return Sum;
+		}
+
 		/** Star dunes: lone mountains of sand standing over the ranges of the deep, one to some 1.3 km cells, each its own
 		 *  height (X, Y: Topi's local metres). What the skyline is cut from. Metres. */
 		double StarDunes(double X, double Y, uint32_t Seed)
@@ -593,6 +635,7 @@ namespace LyudTopi
 		double Grass = K * std::max(Edgeward, Inner) * (1.0 - Plain) * (0.35 + 0.65 * Noise(L.X / 37.0, L.Y / 37.0, 91));
 		// where the marram stands the sand it catches grows into hummocks, and the grass sits on them: mounds with
 		// bare sand lanes between, the look of a Baltic fore dune
+		const double Turf = Grass;
 		const double Clump = Smooth((Noise(L.X / 64.0 + 9.0, L.Y / 52.0, 96) - 0.38) / 0.22);     // in colonies, with open sand between
 		const double Tussocky = Smooth((Grass - 0.12) / 0.3) * (0.12 + 0.88 * Clump) * Corridor * Smooth((PathD - 3.0) / 6.0) * BigWind * MedWind;
 		if (Tussocky > 0.0)
@@ -607,6 +650,15 @@ namespace LyudTopi
 				Dunes += Tussocky * 1.35 * Mound;
 				Grass *= Lerp(1.0, 0.4 + 1.1 * Smooth(Mound / 0.5), Tussocky);
 			}
+		}
+		// and where the turf has broken the wind has scooped blowouts: bare bowls among the mounds
+		const double Scoured = Smooth((Turf - 0.1) / 0.25) * Corridor * Smooth((PathD - 22.0) / 30.0) * BigWind * MedWind
+			* (Cell > 4.5 ? 0.0 : 1.0);
+		if (Scoured > 0.0)
+		{
+			double Bare = 0.0;
+			Dunes += Scoured * Blowouts(L.X, L.Y, 97, Bare);
+			Grass *= 1.0 - Scoured * Bare;
 		}
 		Out.Grass = std::min(1.0, Grass);
 
