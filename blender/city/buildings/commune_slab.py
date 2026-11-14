@@ -573,7 +573,7 @@ def _depth2(B, H):
     H.p(kit.sandwich_board, -26.8, 3.3, 0.0, name="board_3")
     H.thing("hall_today", "board", -26.8, 3.3, 0.7, 0.0, topic="rules")
     # ---- gym: the pull-up record on a small blackboard on the east wall
-    H.p(kit.blackboard, -22.4, 3.75, 270.0, w=0.7, h=0.55, zb=1.25)
+    H.p(kit.blackboard, -22.4, 3.75, 270.0, w=0.7, h=0.55, zb=1.25, writing="chart_calendar")
     H.thing("hall_pullup_board", "board", -22.55, 3.75, 1.5, 270.0, topic="timetable")
     # ---- the honour board: the framed poster by the east window
     H.thing("hall_honour_board", "board", -23.9, 1.5, 1.8, 180.0, topic="rules")

@@ -646,7 +646,7 @@ def keeper_extras(B):
     _weather_board(B, wx, wy, z0, _yin(-90.0 + 22.5 * 5), 1.95)
     B.thing("keeper_weather", "board", (wx, wy, z0 + 1.95), _yin(-90.0 + 22.5 * 5), topic="weather")
     wx, wy = _wallpt(6, 0.0)
-    kit.blackboard(B, wx, wy, z0, _yin(-90.0 + 22.5 * 6), w=1.0, h=0.62, zb=1.45, writing="board_2")
+    kit.blackboard(B, wx, wy, z0, _yin(-90.0 + 22.5 * 6), w=1.0, h=0.62, zb=1.45, writing="board_0")
     B.thing("keeper_tides", "board", (wx, wy, z0 + 1.75), _yin(-90.0 + 22.5 * 6), topic="tides")
     # signal flags over the crates (2), ship in a bottle on a shelf over the boots (3)
     wx, wy = _wallpt(2, 0.0)
