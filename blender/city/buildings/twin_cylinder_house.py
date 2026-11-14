@@ -547,7 +547,7 @@ def _interior(B, outline_cut):
     # drafting table and the art shelf
     dtp = free_s(235, 3.9, 235 + 180)
     dt = f(kit.drafting_table, dtp[0], dtp[1], Yphi(235 + 180))
-    x, y, yw = wall_s(250)
+    x, y, yw = wall_s(266)
     sh2 = f(kit.bookshelf, x, y, yw, w=1.0, h=1.9, levels=5, topic="art", seed=SEED + 3)
     x, y, yw = wall_s(214)
     ex = f(kit.notice_board, x, y, yw, w=1.0, zc=1.6, seed=SEED + 30)

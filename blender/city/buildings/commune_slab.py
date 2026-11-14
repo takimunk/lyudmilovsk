@@ -443,10 +443,10 @@ def _furnish_hall(B, mirror=False):
     H.spot("reading_2", "seat", -31.4, 2.8, 270.0)
     H.p(kit.floor_lamp, -30.9, 1.85, light=True)
     # ---- house committee: notice board and wall newspaper by the door, a bench to read them
-    H.p(kit.notice_board, -25.2, 1.4, 180.0, w=1.5, zc=1.8, seed=6)
+    H.p(kit.notice_board, -22.4, 3.1, 270.0, w=1.1, zc=1.8, seed=6)
     H.p(kit.poster, -23.9, 1.4, 180.0, name="poster_cons_3", w=0.55, zc=1.8)
     H.p(kit.bench, -25.2, 2.15, 0.0, w=1.6, kind="park")
-    H.thing("house_committee_board", "board", -25.2, 1.5, 1.8, 180.0, topic="rules")
+    H.thing("house_committee_board", "board", -22.55, 3.1, 1.8, 270.0, topic="rules")
     H.thing("house_committee_bench", "seat", -25.2, 2.15, 0.45, 0.0, height=0.45)
     H.p(kit.poster, -30.55, 1.4, 180.0, name="poster_health", w=0.5, zc=1.8)
     H.thing("house_committee_wallpaper", "board", -30.55, 1.5, 1.8, 180.0, topic="health")
@@ -585,3 +585,7 @@ def _depth2(B, H):
         H.p(_jar, -25.9, 2.1, 0.0, z=0.69)
     # ---- a second clock by the door
     H.p(kit.wall_clock, -26.85, 1.4, 180.0, zc=2.3, r=0.2)
+
+
+from _wallhang import hung  # noqa: E402  (QA r9: nothing hangs over the glass)
+build = hung(build)

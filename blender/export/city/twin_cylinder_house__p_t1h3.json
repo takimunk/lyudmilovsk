@@ -640,11 +640,11 @@
    "id": "studio_art_shelf",
    "kind": "shelf",
    "pos": [
-    -1.127,
-    7.747,
+    0.169,
+    8.231,
     1.3
    ],
-   "yaw": 192.5,
+   "yaw": 208.5,
    "props": {
     "topic": "art"
    }
@@ -4614,7 +4614,7 @@
  ],
  "tris": {
   "shell": 5056,
-  "detail": 18543,
+  "detail": 18567,
   "windows": 696
  }
 }

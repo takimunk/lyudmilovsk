@@ -724,11 +724,11 @@
    "id": "house_committee_board",
    "kind": "board",
    "pos": [
-    25.2,
-    1.5,
+    22.55,
+    3.1,
     1.8
    ],
-   "yaw": 180.0,
+   "yaw": 90.0,
    "props": {
     "topic": "rules"
    }
@@ -750,7 +750,7 @@
    "id": "house_committee_wallpaper",
    "kind": "board",
    "pos": [
-    30.55,
+    30.25,
     1.5,
     1.8
    ],
@@ -841,7 +841,7 @@
    "id": "hall_wallnews",
    "kind": "board",
    "pos": [
-    26.55,
+    26.75,
     1.5,
     1.75
    ],
@@ -1116,7 +1116,7 @@
    "id": "kit_clock_2",
    "kind": "board",
    "pos": [
-    26.85,
+    27.05,
     1.45,
     2.3
    ],
@@ -3534,7 +3534,7 @@
  ],
  "tris": {
   "shell": 2662,
-  "detail": 16404,
+  "detail": 16428,
   "windows": 408
  }
 }

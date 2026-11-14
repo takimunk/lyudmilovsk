@@ -515,10 +515,9 @@ def fair_board(B, s, t, tid, topic, posters=False):
     fx, fy = fr.p(0, face * 0.04)
     bx, by = fr.p(0, -face * 0.04)
     if posters:
-        for u, nm, w_ in ((-0.55, "cinema", 0.62), (0.15, "poster_sun", 0.6), (0.78, "travel", 0.5)):
+        for u, nm, w_ in ((-0.55, "cinema", 0.62), (0.08, "chart_timetable_cable", 0.55), (0.65, "travel", 0.45)):
             px, py = fr.p(u, face * 0.04)
             kit.poster(B, px, py, 0.0, yaw, name=nm, w=w_, zc=1.62, seed=int(u * 10))
-        kit.sign_plate(B, fx, fy, 0.0, yaw, name="sign_cinema", w=1.0, zc=2.2)
         kit.notice_board(B, bx, by, 0.0, yaw + 180, w=1.7, zc=1.65, seed=5)
     else:
         kit.notice_board(B, fx, fy, 0.0, yaw, w=1.7, zc=1.65, seed=3)
@@ -1402,7 +1401,7 @@ def build(B):
     fair_board(B, 100.0, 0.5, "fair_programme", "cinema", posters=True)
     # benches
     k = 0
-    for ss, t in [(12, -0.35), (30, 0.4), (38, -0.4), (56, 0.35), (60, -0.35), (79, -0.4), (84, 0.4), (100, 0.35), (116, -0.4), (8, 0.45)]:
+    for ss, t in [(12, -0.35), (30, 0.4), (38, -0.4), (56, 0.35), (60, -0.35), (79, -0.4), (84, 0.4), (103.6, 0.35), (116, -0.4), (8, 0.45)]:
         if ss < LENGTH - 3 and not any(abs(ss - ks) < 4.0 and ksd * t > 0 for ks, ksd in kiosks):
             k += 1
             bench(B, ss, t, k)

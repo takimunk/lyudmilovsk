@@ -348,21 +348,21 @@
    "id": "physio_bars",
    "kind": "stand",
    "pos": [
-    -13.0,
-    11.45,
+    -8.7,
+    14.3,
     0.0
    ],
-   "yaw": 270.0
+   "yaw": 180.0
   },
   {
    "id": "physio_ball",
    "kind": "stand",
    "pos": [
-    -11.3,
-    11.45,
+    -9.7,
+    13.6,
     0.0
    ],
-   "yaw": 270.0
+   "yaw": 180.0
   },
   {
    "id": "vaccine_stool",
@@ -1756,11 +1756,11 @@
    "id": "physio_bars",
    "kind": "sport",
    "pos": [
-    -13.55,
-    11.45,
+    -8.7,
+    15.55,
     1.2
    ],
-   "yaw": 90.0,
+   "yaw": 0.0,
    "props": {
     "what": "physio_bars"
    }
@@ -1769,8 +1769,8 @@
    "id": "physio_ball",
    "kind": "machine",
    "pos": [
-    -12.0,
-    11.45,
+    -9.7,
+    14.3,
     0.25
    ],
    "yaw": 90.0,
@@ -2696,8 +2696,8 @@
  "light_tex": 64,
  "notes": [],
  "tris": {
-  "shell": 2036,
-  "detail": 20438,
+  "shell": 2024,
+  "detail": 20332,
   "windows": 136
  }
 }

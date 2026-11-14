@@ -229,7 +229,7 @@ def _lobby(B, lob, cores):
     f(kit.plant, -2.5, 2.7, 0.0, kind="fern", pot="CT_PlasterYellow", h=0.8, seed=3)
     f(kit.hat_stand, -1.2, 2.75, 0.0)
     _bike(B, -6.9, 4.1, 90.0)
-    _pram(B, -6.6, 4.9, 0.0)
+    _pram(B, -6.8, 4.75, 0.0)
     # west core face (y = 5.6, room toward -y): lost-and-found board, clock, picture
     nb1 = f(kit.notice_board, -5.6, 5.6, 0.0, w=1.0, zc=1.55, seed=11)
     f(kit.wall_clock, -5.6, 5.6, 0.0, zc=2.5, face="clock_1")
@@ -606,7 +606,7 @@ def _lobby_more(B, lob, cores):
     B.thing("lobby_mail_w", "board", (-3.8, 5.55, 1.45), 0.0, topic="mail")
     B.thing("lobby_mail_e", "board", (3.8, 5.55, 1.45), 0.0, topic="mail")
     B.thing("lobby_bike", "board", (-6.9, 4.1, 0.7), 270.0, topic="bike")
-    B.thing("lobby_pram", "board", (-6.6, 4.9, 0.7), 90.0, topic="pram")
+    B.thing("lobby_pram", "board", (-6.8, 4.75, 0.7), 90.0, topic="pram")
     B.thing("lobby_ficus", "board", (-6.2, 3.3, 0.9), 0.0, topic="plant")
     B.thing("lobby_fern", "board", (-2.5, 2.7, 0.6), 0.0, topic="plant")
     B.thing("lobby_monstera", "board", (3.4, 3.0, 0.8), 0.0, topic="plant")

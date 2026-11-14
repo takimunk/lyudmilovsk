@@ -124,7 +124,7 @@ def _hall(B):
     B.thing("reception", "counter", (-5.0, 11.5, 1.1), 0.0, role="nurse", service="reception", shop="pharmacy")
     kit.chair(B, -5.8, 12.75, 0.0, 0.0, kind="school", mat="CT_PlasterGreen")
     # behind the desk: filing cabinets between the back windows, a notice board and a clock
-    for k, x in enumerate((-9.35, -8.8)):
+    for k, x in enumerate((-9.65,)):
         kit.filing_cabinet(B, x, 15.7, 0.0, 0.0, mat=("CT_PlasterGreen", "CT_PlasterBlue")[k])
     kit.wall_clock(B, -5.0, 15.7, 0.0, 0.0, zc=2.35, face="clock_2")
     kit.poster(B, -5.0, 15.7, 0.0, 0.0, name="poster_health", w=0.6, zc=1.55)
@@ -630,14 +630,14 @@ def _depth2(B, cx):
     B.thing("porter_table", "machine", (1.0, 4.9, 0.85), 0.0, what="porter")
     B.spot("porter_chair", "seat", (1.0, 5.5, 0.0), 0.0)
     # ---- the physio corner on the west wall: Swedish ladder, mat, a medicine ball, a low bench
-    kit.wall_bars(B, -13.7, 11.45, 0.0, 90.0, w=0.9, h=2.4)
-    kit.mats(B, -12.65, 11.45, 0.0, 0.0, w=1.7, d=1.1, n=1, mat="CT_PlasterBlue")
-    _ball(d, -12.0, 11.45, 0.08, 0.13, "CT_PlasterRed")
-    kit.sign_plate(B, -13.7, 10.4, 0.0, 90.0, name="sign_quiet", w=0.5, zc=2.45)
-    B.thing("physio_bars", "sport", (-13.55, 11.45, 1.2), 90.0, what="physio_bars")
-    B.thing("physio_ball", "machine", (-12.0, 11.45, 0.25), 90.0, what="physio_ball")
-    B.spot("physio_bars", "stand", (-13.0, 11.45, 0.0), 270.0)
-    B.spot("physio_ball", "stand", (-11.3, 11.45, 0.0), 270.0)
+    kit.wall_bars(B, -8.7, 15.7, 0.0, 0.0, w=0.8, h=2.4)
+    kit.mats(B, -8.7, 14.6, 0.0, 0.0, w=1.2, d=1.1, n=1, mat="CT_PlasterBlue")
+    _ball(d, -9.7, 14.3, 0.08, 0.13, "CT_PlasterRed")
+    kit.sign_plate(B, -7.9, 15.7, 0.0, 0.0, name="sign_quiet", w=0.5, zc=2.45)
+    B.thing("physio_bars", "sport", (-8.7, 15.55, 1.2), 0.0, what="physio_bars")
+    B.thing("physio_ball", "machine", (-9.7, 14.3, 0.25), 90.0, what="physio_ball")
+    B.spot("physio_bars", "stand", (-8.7, 14.3, 0.0), 180.0)
+    B.spot("physio_ball", "stand", (-9.7, 13.6, 0.0), 180.0)
     # ---- the nurse's vaccination corner by the corridor gap: a stool, the tray table, the vaccine fridge, the schedule
     kit.table(B, 1.4, 11.55, 0.0, 0.0, w=0.9, d=0.5, h=0.8, kind="steel", mat="CT_SteelWhite", solid=False)
     box(d, "CT_Steel", 1.0, 1.3, 11.4, 11.7, 0.8, 0.815, faces="xXyYZ")
