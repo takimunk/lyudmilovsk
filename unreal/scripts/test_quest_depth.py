@@ -106,7 +106,7 @@ for _ in range(12):
 at("Quest.Reset", None, 1.0)
 at("Quest.SetStage awakening owner", None, 1.0)
 # the Owner talks through his window: stand in its call zone (40, 390) facing him (head about 163, 640)
-at("BugItGo 40 390 100 0 64 0", None, 4.0)
+at("BugItGo 40 390 100 0 64 0", None, 10.0)
 at("Npc.Where")
 at("QUESTDEPTH mark n_owner")
 for _ in range(6):
@@ -189,19 +189,24 @@ at("Quest.Dump", "r_after_13h")
 go("guseva_valentina", 4, [15, 15.5, 16])
 at("QUESTDEPTH mark r_call_15h")
 at("Quest.BirdCall Waxwing guseva_valentina", None, 10.0)
-at("Quest.Dump", "r_after_15h")
+at("Quest.Dump entries", "r_after_15h")
 at("Quest.SetStage waxwing return", None, 1.0)
 at("Quest.Dump", "s_before_second_call")
 at("Quest.BirdCall Waxwing sorokin_oleg", None, 10.0)
-at("Quest.Dump", "s_after_second_call")
-# q) two remarks in range at once (awakening on owner: the Clerk's at once, Sonya's once the hero came from afar): one voice
-#    at a time, the second after the first has finished
+at("Quest.Dump entries", "s_after_second_call")
+# q) two remarks in range at once (awakening on owner: the Clerk's at once, Sonya's at once): one voice at a time; where Sonya's
+#    waits, Quest.Scenes says why; a line trace from the camera to her head names what is in between
 at("Quest.Reset", None, 1.0)
 at("BugItGo -193 1500 150 0 90 0", None, 2.0)
 at("Quest.SetStage awakening owner", None, 2.0)
-at("QUESTDEPTH mark q_two_remarks")
-at("BugItGo -60 -1390 100 0 0 0", None, 14.0)
-at("Quest.Scenes", "q_after", 0.5)
+at("QUESTDEPTH mark q_walkway_station7")
+at("BugItGo -107 -1235 100 0 0 0", None, 10.0)
+at("Quest.Scenes", "q_walkway", 0.5)
+at("TRACE 52.8 -1235.1 118.9", None, 1.0)
+at("QUESTDEPTH mark q_hero_seat")
+at("BugItGo -17.5 -1585 100 0 90 0", None, 8.0)
+at("Quest.Scenes", "q_seat", 0.5)
+at("TRACE 52.8 -1235.1 118.9", None, 1.0)
 # j) one listener answers: Dasha and Aya on the square's bench at 17:30, a great tit calls beside Dasha
 at("Quest.Reset", None, 1.0)
 at("lyud.Birds.Time 17.5", None, 2.5)
@@ -232,20 +237,38 @@ at("QUESTDEPTH mark e_remark")
 at("Quest.GoToPerson orlova_tanya 3", None, 3.0)
 at("Quest.GoToPerson orlova_tanya 3", None, 3.0)      # the second time her body is drawn
 at("Quest.Scenes", "e_after_first", 0.5)
-at("Quest.Dump", "s_after_remark")
+at("Quest.Dump entries", "s_after_remark")
 at("shot showui", "tanya_remark", 1.0)
 at("Dev.Tp academ", None, 4.0)
 at("Quest.GoToPerson orlova_tanya 3", None, 3.0)
 at("Quest.GoToPerson orlova_tanya 3", None, 4.0)
 at("Quest.Scenes", "e_after_second", 0.5)
-at("Quest.Dump", "s_after_second_approach")
+at("Quest.Dump entries", "s_after_second_approach")
 at("lyud.Save questdepth", None, 3.0)
 at("lyud.Load 0", None, 15.0)
 at("lyud.Birds.Time 12", None, 2.5)
 at("Quest.GoToPerson orlova_tanya 3", None, 3.0)
 at("Quest.GoToPerson orlova_tanya 3", None, 4.0)
 at("Quest.Scenes", "e_after_load", 0.5)
-at("Quest.Dump", "e_done", 1.0)
+at("Quest.Dump entries", "e_done", 1.0)
+
+
+def trace(w, to):
+    """the camera to a point (cm): what blocks the view, as the remarks' sight test would see it"""
+    pc = unreal.GameplayStatics.get_player_controller(w, 0)
+    cam = pc.player_camera_manager.get_camera_location()
+    end = unreal.Vector(*to)
+    hit = unreal.SystemLibrary.line_trace_single(w, cam, end, unreal.TraceTypeQuery.TRACE_TYPE_QUERY1, False, [pc.get_controlled_pawn()],
+                                                 unreal.DrawDebugTrace.NONE, True)
+    try:
+        t = hit.to_tuple() if hit is not None else ()
+    except Exception:
+        t = ()
+    actor = next((v for v in t if isinstance(v, unreal.Actor)), None)
+    comp = next((v for v in t if isinstance(v, unreal.ActorComponent)), None)
+    blocked = bool(t) and bool(t[0]) and actor is not None
+    unreal.log_warning("QUESTDEPTH trace from %s to %s: %s" % (cam, end, ("hit %s / %s" % (actor.get_name(), comp.get_name() if comp else None))
+                                                              if blocked else "clear"))
 
 
 def world():
@@ -268,6 +291,9 @@ def tick(dt):
         state["step"] += 1
         unreal.log_warning("QUESTDEPTH %s %s" % (cmd, label or ""))
         if cmd.startswith("QUESTDEPTH"):
+            continue
+        if cmd.startswith("TRACE "):
+            trace(w, [float(v) for v in cmd.split()[1:4]])
             continue
         if cmd.startswith("FIND "):
             _, person, m, hours = cmd.split()
