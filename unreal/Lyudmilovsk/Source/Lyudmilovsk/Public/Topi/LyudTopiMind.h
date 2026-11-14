@@ -68,6 +68,7 @@ private:
 	void UpdateLook(float DeltaTime);
 	void UpdateSound(float DeltaTime, AHeroCharacter& Hero, const FVector2D& Map, bool bNight);
 	void UpdateSubtitle(float DeltaTime);
+	void UpdateThoughts(float DeltaTime, AHeroCharacter& Hero, const FVector2D& Map, bool bNight);
 
 	void BeginTurn(AHeroCharacter& Hero, APlayerController& PC);
 	void EndTurn();
@@ -137,6 +138,10 @@ private:
 	float TopiLevel = 0.f;
 	float UralLevel = 0.f;
 	float LoopRetry = 0.f;
+
+	// what he says to himself on the way (LyudTopiMind.cpp TopiThoughts): when each was last said, world seconds
+	double ThoughtAt[4] = { -1.0e9, -1.0e9, -1.0e9, -1.0e9 };
+	float ThoughtQuiet = 0.f;
 
 	// the subtitle
 	FString SubtitleKey;

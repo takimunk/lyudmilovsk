@@ -355,6 +355,10 @@ void ULyudTopiMind::TickComponent(float DeltaTime, ELevelTick TickType, FActorCo
 		}
 		UpdateRiver(DeltaTime, *Hero, bNight);
 	}
+	if (!bTurning && !bDissolving && bNear)
+	{
+		UpdateThoughts(DeltaTime, *Hero, Map, bNight);
+	}
 	// the wake may have taken him to the club: the rest only while he is still by the sand
 	if (bDissolving || bTurning || bNear)
 	{
@@ -986,6 +990,64 @@ void ULyudTopiMind::UpdateSound(float DeltaTime, AHeroCharacter& Hero, const FVe
 }
 
 // ------------------------------------------------------------------ his lines
+
+// Things he says to himself as the place opens before him (no input, subtitle and voice like the other lines). Each at
+// most once in twenty minutes, never over another line, and never while the place is turning him back.
+void ULyudTopiMind::UpdateThoughts(float DeltaTime, AHeroCharacter& Hero, const FVector2D& Map, bool bNight)
+{
+	static const TCHAR* const TopiThoughts[4] =
+	{
+		TEXT("line.hero.topi.see.1"),       // by day, the first dunes behind him
+		TEXT("line.hero.topi.glow.1"),      // at night on the path: light beyond the dunes
+		TEXT("line.hero.topi.river.1"),     // at night: the river in sight
+		TEXT("line.hero.topi.towels.1"),    // at night on the bank: the towels
+	};
+	ThoughtQuiet = FMath::Max(0.f, ThoughtQuiet - DeltaTime);
+	if (!SubtitleKey.IsEmpty())
+	{
+		ThoughtQuiet = 3.f;                 // a breath between two lines
+		return;
+	}
+	if (ThoughtQuiet > 0.f || bWoken)
+	{
+		return;
+	}
+	double Along = 0.0;
+	const double PathD = LyudTopi::FModel::PathDistance(Map.X, Map.Y, &Along);
+	const double In = LyudTopi::FModel::Depth(Map.X, Map.Y);
+	const double Off = FMath::Abs(LyudTopi::FModel::RiverOffset(Map.X, Map.Y));
+	int32 Which = INDEX_NONE;
+	if (!bNight)
+	{
+		if (In > 25.0 && Pressure > 0.15f && Pressure < 0.6f)
+		{
+			Which = 0;
+		}
+	}
+	else if (PathD < 20.0 && Off < LyudTopi::RiverHalfWidth + 12.0 && Off > LyudTopi::RiverHalfWidth)
+	{
+		Which = 3;
+	}
+	else if (PathD < 60.0 && Off < 110.0 && Off > LyudTopi::RiverHalfWidth + 20.0)
+	{
+		Which = 2;
+	}
+	else if (PathD < 25.0 && Along > 80.0 && Along < 300.0)
+	{
+		Which = 1;
+	}
+	if (Which == INDEX_NONE)
+	{
+		return;
+	}
+	const double Now = GetWorld() ? GetWorld()->GetTimeSeconds() : 0.0;
+	if (Now - ThoughtAt[Which] < 1200.0)
+	{
+		return;
+	}
+	ThoughtAt[Which] = Now;
+	Say(TopiThoughts[Which], Hero);
+}
 
 void ULyudTopiMind::Say(const FString& Key, const AHeroCharacter& Hero)
 {

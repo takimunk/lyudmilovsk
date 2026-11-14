@@ -65,6 +65,9 @@ LY -775, Topi toward -LY): `FModel::ToLocal` / `FromLocal`, map X = LY - 400, ma
 - **Night** (`ALyudTopi::Night()`, from the sun's altitude: the river comes up between -1.5 and -7 degrees): no
   pressure within ~26 m of the path, full 70 m off it; calm by the river within ~230 m of the path's end; no way past
   the river. Motes of light blown from the river mark the path, and stakes with rags stand along it.
+- He talks to himself as the place opens (`ULyudTopiMind::UpdateThoughts`, no input, each at most once in 20 minutes):
+  by day among the first dunes `line.hero.topi.see.1`; at night on the path `glow.1`, in sight of the river `river.1`, by the
+  towels `towels.1`. Subtitles work now; the voices wait for generation together with `turn.1..4` and `wake.1`.
 - At full pressure the hero turns round and walks out for a few seconds (`line.hero.topi.turn.1..4`), event
   `topi_turned_back`.
 - In the river (night only; the channel is dry sand by day) the stream pushes him south; in to the chest he dives:
