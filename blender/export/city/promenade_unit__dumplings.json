@@ -123,6 +123,26 @@
     0.0
    ],
    "yaw": 180.0
+  },
+  {
+   "id": "staff_cook_2",
+   "kind": "work",
+   "pos": [
+    3.85,
+    5.8,
+    0.0
+   ],
+   "yaw": 0.0
+  },
+  {
+   "id": "rolling",
+   "kind": "stand",
+   "pos": [
+    3.85,
+    4.4,
+    0.0
+   ],
+   "yaw": 180.0
   }
  ],
  "lamps": [
@@ -219,6 +239,59 @@
     "service": "chat",
     "role": "cook"
    }
+  },
+  {
+   "id": "dumpling_stamp",
+   "kind": "machine",
+   "pos": [
+    2.35,
+    4.2,
+    1.11
+   ],
+   "yaw": 0.0,
+   "props": {
+    "what": "stamp"
+   }
+  },
+  {
+   "id": "dumpling_switch",
+   "kind": "machine",
+   "pos": [
+    4.4,
+    0.46,
+    1.3
+   ],
+   "yaw": 180.0,
+   "props": {
+    "what": "switch",
+    "switch": "room"
+   }
+  },
+  {
+   "id": "dumpling_clock",
+   "kind": "machine",
+   "pos": [
+    3.4,
+    6.36,
+    2.3
+   ],
+   "yaw": 0.0,
+   "props": {
+    "what": "clock"
+   }
+  },
+  {
+   "id": "dumpling_rolling",
+   "kind": "craft",
+   "pos": [
+    3.85,
+    5.1,
+    0.95
+   ],
+   "yaw": 0.0,
+   "props": {
+    "what": "dough_board"
+   }
   }
  ],
  "flats": [],
@@ -228,8 +301,8 @@
   "promenade unit room, variant dumplings: placed at each W1 unit whose plan variant is dumplings"
  ],
  "tris": {
-  "shell": 238,
-  "detail": 5193,
+  "shell": 250,
+  "detail": 5523,
   "windows": 0
  }
 }
