@@ -1,0 +1,583 @@
+{
+ "_doc": "Cobogo house (P-T1H2) second pass: the garden under the pilotis, the stair views, Holm's flat things. Russian is the source.",
+ "city.t1h2.p.notice": {
+  "ru": "E — прочесть объявления",
+  "en": "E — read the notices",
+  "ja": "E：掲示を読む"
+ },
+ "city.t1h2.p.post": {
+  "ru": "E — заглянуть в почтовые ящики",
+  "en": "E — check the post boxes",
+  "ja": "E：郵便受けをのぞく"
+ },
+ "city.t1h2.p.tap": {
+  "ru": "E — набрать воды",
+  "en": "E — fill a cup",
+  "ja": "E：水をくむ"
+ },
+ "city.t1h2.p.tag": {
+  "ru": "E — прочесть бирку",
+  "en": "E — read the tag",
+  "ja": "E：札を読む"
+ },
+ "city.t1h2.p.charts": {
+  "ru": "E — склониться над картой",
+  "en": "E — lean over the chart",
+  "ja": "E：海図をのぞきこむ"
+ },
+ "city.t1h2.p.rough": {
+  "ru": "E — прочесть черновик журнала",
+  "en": "E — read the rough log",
+  "ja": "E：日誌の下書きを読む"
+ },
+ "city.t1h2.p.sextant": {
+  "ru": "E — взять секстан",
+  "en": "E — pick up the sextant",
+  "ja": "E：六分儀を手に取る"
+ },
+ "city.t1h2.p.compass": {
+  "ru": "E — открыть компас",
+  "en": "E — open the compass",
+  "ja": "E：コンパスを開ける"
+ },
+ "city.t1h2.p.cards": {
+  "ru": "E — перебрать открытки",
+  "en": "E — go through the postcards",
+  "ja": "E：葉書をめくる"
+ },
+ "city.t1h2.p.baro": {
+  "ru": "E — постучать по барометру",
+  "en": "E — tap the barometer",
+  "ja": "E：気圧計を軽くたたく"
+ },
+ "city.t1h2.p.kettle": {
+  "ru": "E — налить чаю",
+  "en": "E — pour some tea",
+  "ja": "E：お茶をいれる"
+ },
+ "city.t1h2.p.radio": {
+  "ru": "E — повернуть ручку",
+  "en": "E — turn the knob",
+  "ja": "E：つまみを回す"
+ },
+ "city.t1h2.p.light": {
+  "ru": "E — посмотреть на свет",
+  "en": "E — look at the light",
+  "ja": "E：光を眺める"
+ },
+ "city.t1h2.notice.1": {
+  "ru": "«Жильцы! Лампы под сваями включает и гасит выключатель у стены, у дорожки. Уходите последним — выключите, пожалуйста».",
+  "en": "\"Residents! The lamps under the pilotis are switched at the wall by the path. If you leave last, please turn them off.\"",
+  "ja": "「住民のみなさんへ。ピロティの照明は、小道わきの壁のスイッチで点けたり消したりします。最後に帰る人は消してください」"
+ },
+ "city.t1h2.notice.2": {
+  "ru": "«Велосипед у крайнего столба — ничей. Если он ваш — заберите. Если не ваш — не трогайте: он не потерялся, он ждёт. — Правление».",
+  "en": "\"The bicycle by the end pillar belongs to nobody in particular. If it is yours, take it. If it is not, leave it: it isn't lost, it's waiting. — The residents' board.\"",
+  "ja": "「端の柱のそばの自転車は持ち主不明です。ご自分のものなら持ち帰ってください。違うなら触らないで。迷子ではなく、待っているだけです。――自治会」"
+ },
+ "city.t1h2.notice.3": {
+  "ru": "«Ящик 0-01 рекламой не набивать. Хозяин проверяет его сам, утром и вечером. — Консьержка».",
+  "en": "\"Please don't stuff box 0-01 with flyers. The owner checks it himself, morning and evening. — The concierge.\"",
+  "ja": "「0-01の郵便受けにチラシを入れないでください。持ち主が朝と夕方に自分で見ています。――管理人」"
+ },
+ "city.t1h2.notice.4": {
+  "ru": "«В субботу под сваями — домино. Играет Ларс и все, кто придёт. Стол у дорожки, фишки уже на нём».",
+  "en": "\"Saturday: dominoes under the pilotis. Lars plays, and anyone who comes. The table is by the path, the tiles are already on it.\"",
+  "ja": "「土曜はピロティでドミノ。ラースと、来た人みんなで。テーブルは小道のそば、牌はもう置いてあります」"
+ },
+ "city.t1h2.notice.5": {
+  "ru": "«Кран на зиму не перекрываем, пока не скажет дворник. Ведро под краном — общее».",
+  "en": "\"We are not shutting off the tap for winter until the caretaker says so. The bucket under it is everyone's.\"",
+  "ja": "「冬の水止めは、用務員が言うまでしません。蛇口の下のバケツはみんなのものです」"
+ },
+ "city.t1h2.notice.6": {
+  "ru": "«У кого осталась рассада папоротника — несите к крайнему горшку. Горшок делится, но только с теми, кто подписал бирку».",
+  "en": "\"Anyone with spare fern cuttings: bring them to the end planter. It shares, but only with those who sign the tag.\"",
+  "ja": "「シダの株が余っている人は、端の鉢へ。鉢は分けてくれますが、札に名前を書いた人にだけです」"
+ },
+ "city.t1h2.notice.7": {
+  "ru": "«Под почтовыми ящиками то и дело находят открытки с маяком: без адреса, без подписи. Если ваша — заберите. Если месяц ничья — не выбрасывайте: в доме есть человек, который их ждёт».",
+  "en": "\"Postcards with a lighthouse keep turning up under the post boxes: no address, no signature. If it is yours, take it. If it has been nobody's for a month, don't throw it away: someone in this house is waiting for cards.\"",
+  "ja": "「郵便受けの下に、灯台の絵葉書がときどき落ちています。宛名も署名もありません。ご自分のものならお持ちください。ひと月たっても誰のものでもなければ、捨てないでください。この建物には、便りを待っている人がいます」"
+ },
+ "city.t1h2.notice.8": {
+  "ru": "«Спасибо всем, кто писал Виктору Сергеевичу в эти недели. Он говорит, что ящик больше не пустой и что шахматы пошли. Просил передать. — Консьержка».",
+  "en": "\"Thanks to everyone who wrote to Viktor Sergeyevich these weeks. He says the box is no longer empty and the chess is moving again. He asked me to pass it on. — The concierge.\"",
+  "ja": "「ここ数週間、ヴィクトル・セルゲーエヴィチに便りをくれたみなさん、ありがとう。郵便受けはもう空ではなく、チェスも動き出したそうです。伝えてほしいと頼まれました。――管理人」"
+ },
+ "city.t1h2.notice.fest": {
+  "ru": "«Праздник: двор подметён, лампы под сваями горят дольше обычного. Заходите, места хватит всем».",
+  "en": "\"Holiday: the yard is swept and the lamps under the pilotis burn later than usual. Come in, there's room for everyone.\"",
+  "ja": "「お祭りの日です。中庭は掃き清め、ピロティの照明もいつもより遅くまで点いています。どうぞ、みんなの席があります」"
+ },
+ "city.t1h2.notice.rain": {
+  "ru": "«В дождь под сваями сухо. Скамьи за собой вытирайте».",
+  "en": "\"It's dry under the pilotis when it rains. Wipe the benches after you.\"",
+  "ja": "「雨の日もピロティの下は乾いています。ベンチは使ったら拭いてください」"
+ },
+ "city.t1h2.post.1": {
+  "ru": "В ящиках шуршит: квитанции, газета, чьё-то письмо с заграничной маркой. Ящик «0-01 В. Холм» вычищен до блеска и пуст. Под ящиками на полу лежит открытка с маяком, без подписи. Я сунул её в карман: может, ей есть куда идти.",
+  "en": "The boxes rustle: bills, a newspaper, somebody's letter with a foreign stamp. Box \"0-01 V. Holm\" is polished clean and empty. On the floor under the boxes lies a postcard with a lighthouse, unsigned. I put it in my pocket: maybe it has somewhere to go.",
+  "ja": "郵便受けがかさかさ鳴る。請求書、新聞、外国の切手の手紙。「0-01 V・ホルム」の箱は磨かれていて、空っぽだ。箱の下の床に、署名のない灯台の絵葉書が落ちていた。ポケットに入れた。どこか行き先があるのかもしれない。"
+ },
+ "city.t1h2.post.2": {
+  "ru": "Утренняя почта ещё не разобрана: газеты стопкой на полу. Открытка с маяком торчит из них углом наружу. Подписи нет. Взял.",
+  "en": "The morning post isn't sorted yet: newspapers in a pile on the floor. A lighthouse postcard sticks out of them by one corner. No signature. I took it.",
+  "ja": "朝の郵便はまだ仕分けられていない。床に新聞が積まれ、その間から灯台の絵葉書が角をのぞかせている。署名はない。拾った。"
+ },
+ "city.t1h2.post.3": {
+  "ru": "Днём ящики пусты, как столовая после обеда. Открытка с маяком лежит у стены, там, где её не заметил почтальон. Подобрал.",
+  "en": "In the afternoon the boxes are as empty as a canteen after lunch. A lighthouse postcard lies by the wall, where the postman missed it. I picked it up.",
+  "ja": "昼の郵便受けは、昼食後の食堂みたいに空っぽだ。灯台の絵葉書が壁ぎわに落ちている。配達の人は気づかなかったらしい。拾った。"
+ },
+ "city.t1h2.post.n": {
+  "ru": "Под сваями ночью ящики поблёскивают. Открытка с маяком светлеет под нижним рядом. Положил её за пазуху, чтобы не помялась.",
+  "en": "At night the boxes glint under the pilotis. A lighthouse postcard shows pale under the bottom row. I tucked it inside my jacket so it wouldn't crease.",
+  "ja": "夜のピロティで郵便受けが鈍く光っている。いちばん下の段の下に、灯台の絵葉書が白く見えた。折れないように上着の内側にしまった。"
+ },
+ "city.t1h2.tap.1": {
+  "ru": "Налил воды из латунного крана. Холодная — до ломоты в зубах. Виктор Сергеевич зовёт её «балтийской», хотя труба идёт из подвала.",
+  "en": "I filled a cup from the brass tap. Cold enough to ache in the teeth. Viktor Sergeyevich calls it \"Baltic\", though the pipe comes up from the cellar.",
+  "ja": "真鍮の蛇口から水をくんだ。歯にしみるほど冷たい。ヴィクトルさんは「バルト海の水」と呼ぶけれど、管は地下室から来ている。"
+ },
+ "city.t1h2.tap.2": {
+  "ru": "Ведро под краном общее, в нём плавает чей-то кленовый лист. Вылил, налил свежей, лист вернул на место: может, это чья-то закладка.",
+  "en": "The bucket under the tap is shared; somebody's maple leaf floats in it. I tipped it out, filled it fresh and put the leaf back: it may be somebody's bookmark.",
+  "ja": "蛇口の下のバケツは共用で、誰かのカエデの葉が浮いている。水を替えて、葉は元に戻した。誰かのしおりかもしれない。"
+ },
+ "city.t1h2.tap.n": {
+  "ru": "Ночью кран капает ровно, как судовые часы. Я закрутил его покрепче, и стало слышно, как наверху кто-то ходит босиком.",
+  "en": "At night the tap drips evenly, like a ship's clock. I tightened it, and then I could hear somebody walking barefoot upstairs.",
+  "ja": "夜の蛇口は船の時計みたいに規則正しくしずくを落とす。固く締めると、上の階で誰かが裸足で歩く音が聞こえた。"
+ },
+ "city.t1h2.tap.cold": {
+  "ru": "На кране иней, вода тянется как стекло. Пил осторожно, маленькими глотками.",
+  "en": "There's frost on the tap and the water runs like glass. I drank in small careful sips.",
+  "ja": "蛇口には霜がおり、水はガラスみたいに伸びて落ちる。小さく、そっと飲んだ。"
+ },
+ "city.t1h2.tap.rain": {
+  "ru": "Дождь стучит по бетону над головой, кран отвечает каплей. Под сваями сухо и немного как в трюме.",
+  "en": "Rain taps on the concrete overhead and the tap answers with a drop. It's dry under the pilotis, and a little like a ship's hold.",
+  "ja": "頭の上のコンクリートを雨がたたき、蛇口がしずくで答える。ピロティの下は乾いていて、どこか船倉みたいだ。"
+ },
+ "city.t1h2.bike.1": {
+  "ru": "Голубой городской велосипед у крайнего столба. Шины спущены, цепь смазана: чей бы он ни был, о нём заботятся.",
+  "en": "A blue town bicycle by the end pillar. The tyres are flat, the chain is oiled: whoever it belongs to, someone looks after it.",
+  "ja": "端の柱のそばに青い街乗り自転車。タイヤはしぼんでいるのに、チェーンには油がさしてある。誰のものでも、誰かが世話をしている。"
+ },
+ "city.t1h2.bike.2": {
+  "ru": "На руле бирка: «Не угнан — ждёт». Почерк угловатый, штурманский.",
+  "en": "A tag on the handlebar: \"Not stolen: waiting.\" The handwriting is angular, a navigator's.",
+  "ja": "ハンドルに札。「盗まれたのではない。待っている」。角ばった、航海士の字だ。"
+ },
+ "city.t1h2.bike.rain": {
+  "ru": "Под сваями он сухой, только звонок запотел.",
+  "en": "It's dry under the pilotis; only the bell has misted over.",
+  "ja": "ピロティの下では乾いている。ベルだけが曇っている。"
+ },
+ "city.t1h2.bike.n": {
+  "ru": "В темноте велосипед стоит, как конь на привале. Звонок я трогать не стал.",
+  "en": "In the dark the bicycle stands like a horse resting on a march. I left the bell alone.",
+  "ja": "暗がりで自転車は、行軍の休憩中の馬みたいに立っている。ベルには触れなかった。"
+ },
+ "city.t1h2.pot1.1": {
+  "ru": "Бирка: «Папоротник. Поливать по средам. Не жалеть». Земля влажная: среда была недавно.",
+  "en": "Tag: \"Fern. Water on Wednesdays. Don't be stingy.\" The soil is damp: Wednesday wasn't long ago.",
+  "ja": "札に「シダ。水やりは水曜日。ケチらないこと」。土は湿っている。水曜日はついこの間だった。"
+ },
+ "city.t1h2.pot1.2": {
+  "ru": "Под листом пакетик с семенами и записка: «Берите. Если вырастет — верните один».",
+  "en": "Under a frond, a packet of seeds and a note: \"Take them. If they grow, bring one back.\"",
+  "ja": "葉の下に種の小袋とメモ。「持っていって。育ったら一株返してください」"
+ },
+ "city.t1h2.pot1.rain": {
+  "ru": "Дождь сюда не достаёт, но папоротник всё равно тянется к краю: он чует, что снаружи мокро.",
+  "en": "The rain doesn't reach in, but the fern leans to the edge all the same: it can tell it's wet outside.",
+  "ja": "雨は届かないのに、シダは縁のほうへ身を傾けている。外が濡れているのがわかるのだ。"
+ },
+ "city.t1h2.pot2.1": {
+  "ru": "Бирка: «Фикус. Родом из холла, переселён из-за сквозняка. Обиделся, но держится».",
+  "en": "Tag: \"Ficus. Native of the lobby, moved because of the draught. Offended, but holding on.\"",
+  "ja": "札に「フィカス。出身はロビー、すきま風のため引っ越し。ふてくされているが、がんばっている」"
+ },
+ "city.t1h2.pot2.2": {
+  "ru": "Один лист пожелтел, и на нём карандашом: «Не трогать, он ещё думает».",
+  "en": "One leaf has turned yellow, and on it in pencil: \"Don't touch, it's still thinking.\"",
+  "ja": "黄色くなった葉が一枚あり、鉛筆で「触らないで、まだ考えています」と書いてある。"
+ },
+ "city.t1h2.pot2.cold": {
+  "ru": "Фикусу холодно, листья поджались. Кто-то накрыл горшок старой штурманской курткой.",
+  "en": "The ficus is cold and its leaves have curled. Somebody has covered the pot with an old navigator's jacket.",
+  "ja": "フィカスは寒そうで、葉が丸まっている。誰かが古い航海士の上着を鉢にかけてやっている。"
+ },
+ "city.t1h2.pot3.1": {
+  "ru": "Бирка: «Папоротник № 2. Младший. Ещё не знает, что он папоротник».",
+  "en": "Tag: \"Fern No. 2. The younger one. Doesn't know yet that it's a fern.\"",
+  "ja": "札に「シダ2号。弟分。自分がシダだとまだ知らない」"
+ },
+ "city.t1h2.pot3.2": {
+  "ru": "Рядом с горшком мелом на бетоне отмечен рост, каждая отметка с датой. За осень вырос на ладонь.",
+  "en": "Beside the pot, chalk marks on the concrete record its height, each with a date. Since autumn it has grown a hand's width.",
+  "ja": "鉢のそばのコンクリートに、背丈の印がチョークで日付つきで残っている。秋のあいだに手のひらひとつぶん伸びた。"
+ },
+ "city.t1h2.tree.1": {
+  "ru": "Бирка на деревце: «Рябина. Посажена, когда достроили лестницу. Выше свай не пойдёт: договорились».",
+  "en": "Tag on the sapling: \"Rowan. Planted when the stair was finished. Won't grow above the pilotis: we agreed.\"",
+  "ja": "若木の札に「ナナカマド。階段が完成した年に植えた。ピロティより高くはならない。そう約束した」"
+ },
+ "city.t1h2.tree.2": {
+  "ru": "Ветки тянутся к просвету, где двор открыт на север. Дерево знает, откуда свет.",
+  "en": "The branches reach for the gap where the yard opens to the north. The tree knows where the light comes from.",
+  "ja": "枝は、北に中庭が開けたすきまのほうへ伸びている。木は光がどこから来るか知っている。"
+ },
+ "city.t1h2.tree.n": {
+  "ru": "Ночью деревце едва различимо: тёмное пятно в тёмном пятне. Но бирка белеет, как маленький флаг.",
+  "en": "At night the sapling is barely there: a dark patch in a dark patch. But the tag shows white, like a small flag.",
+  "ja": "夜の若木はほとんど見えない。暗がりの中の暗い影。ただ札だけが小さな旗のように白い。"
+ },
+ "city.t1h2.games.1": {
+  "ru": "Домино разложено, партия прервана на середине. С одной стороны стола дорожка из «пустых», с другой кто-то в ней запутался.",
+  "en": "Dominoes laid out, the game stopped halfway. On one side of the table a run of blanks; on the other, somebody has got tangled in it.",
+  "ja": "ドミノが並べられたまま、対局は途中で止まっている。テーブルの片側には空白牌の列、反対側では誰かがそこにはまりこんでいる。"
+ },
+ "city.t1h2.games.2": {
+  "ru": "Ларс ведёт счёт карандашом на уголке стола, стирает и пишет снова. Говорит: «Честный счёт — тот, который можно стереть».",
+  "en": "Lars keeps the score in pencil on a corner of the table, rubs it out and writes it again. He says: \"An honest score is one you can rub out.\"",
+  "ja": "ラースはテーブルの角に鉛筆で点数をつけ、消してはまた書く。「正直な点数っていうのは、消せる点数のことさ」と言う。"
+ },
+ "city.t1h2.stool.1": {
+  "ru": "Табурет трёхногий, чуть качается. Если сесть правильно, перестаёт.",
+  "en": "A three-legged stool with a slight wobble. If you sit properly it stops.",
+  "ja": "三本脚のスツールで、少しぐらつく。ちゃんと座ればおさまる。"
+ },
+ "city.t1h2.stool.2": {
+  "ru": "Отсюда виден весь стол и дорожка за ним: кто идёт к лестнице, кто к ящикам.",
+  "en": "From here you see the whole table and the path beyond it: who goes to the stair, who to the boxes.",
+  "ja": "ここからはテーブル全体と、その向こうの小道が見える。階段へ行く人、郵便受けへ行く人。"
+ },
+ "city.t1h2.stool.n": {
+  "ru": "Ночью фишки белеют на столе, как зубы. Играть не хочется, хочется сидеть и слушать лампу.",
+  "en": "At night the tiles show white on the table like teeth. I don't feel like playing, only like sitting and listening to the lamp.",
+  "ja": "夜の牌は歯みたいに白い。勝負をする気にはならず、ただ座ってランプの音を聞いていたい。"
+ },
+ "city.t1h2.bench.1": {
+  "ru": "Скамья под сваями: сверху бетон, снизу трава, сбоку дорожка. Отсюда видно, кто входит в дом, и нетрудно сделать вид, что не смотришь.",
+  "en": "A bench under the pilotis: concrete above, grass below, the path beside. From here you see who comes into the house, and it is easy to pretend you aren't looking.",
+  "ja": "ピロティの下のベンチ。上はコンクリート、下は草、横は小道。家に入る人がここから見えて、見ていないふりをするのはたやすい。"
+ },
+ "city.t1h2.bench.2": {
+  "ru": "Колонны держат дом над нами, а мы сидим и не волнуемся. Это, наверное, и называется архитектурой.",
+  "en": "The columns hold the house above us and we sit and don't worry. That is probably what architecture means.",
+  "ja": "柱が家を頭の上で支え、僕たちは心配せずに座っている。たぶんこれが建築というものだ。"
+ },
+ "city.t1h2.bench.n": {
+  "ru": "Ночью под сваями шумит только лампа. Если сидеть тихо, слышно, как наверху кто-то ставит чайник.",
+  "en": "At night the only sound under the pilotis is the lamp. If you sit quietly you can hear somebody upstairs putting a kettle on.",
+  "ja": "夜のピロティで鳴るのはランプだけ。静かに座っていると、上の階で誰かがやかんを火にかける音が聞こえる。"
+ },
+ "city.t1h2.bench.rain": {
+  "ru": "Дождь идёт по ту сторону колонн, а скамья сухая. Лучшее укрытие в квартале.",
+  "en": "The rain falls on the far side of the columns and the bench is dry. The best shelter in the block.",
+  "ja": "雨は柱の向こう側で降り、ベンチは乾いている。この界隈でいちばんの雨宿り。"
+ },
+ "city.t1h2.v1.1": {
+  "ru": "С галереи второго этажа виден двор целиком: три скамьи, пять деревьев и тропа, вытоптанная теми, кто срезает путь.",
+  "en": "From the first-floor gallery you see the whole yard: three benches, five trees and a path worn by people who cut corners.",
+  "ja": "二階の廊下から中庭が一望できる。ベンチが三つ、木が五本、近道をする人たちが踏み固めた小道。"
+ },
+ "city.t1h2.v1.2": {
+  "ru": "Сверху лестница похожа на раковину: ступени идут по кругу и всё не кончаются. Я досчитал до двадцати и сбился.",
+  "en": "From above the stair looks like a shell: the steps go round and round and never end. I counted to twenty and lost count.",
+  "ja": "上から見ると階段は巻き貝みたいだ。段はぐるぐる続いて終わらない。二十まで数えて、わからなくなった。"
+ },
+ "city.t1h2.v1.n": {
+  "ru": "Двор ночью — тёмный прямоугольник. Свет кухонных окон ложится на траву жёлтыми полосами, будто кто-то расстелил дорожки.",
+  "en": "The yard at night is a dark rectangle. The light of the kitchen windows lies on the grass in yellow strips, as if somebody had laid out runners.",
+  "ja": "夜の中庭は暗い長方形だ。台所の窓の明かりが、誰かが敷いたラグみたいに黄色い帯になって芝にのびている。"
+ },
+ "city.t1h2.v1.fog": {
+  "ru": "В тумане двора нет: есть перила, мои руки и далёкий лай.",
+  "en": "There's no yard in the fog: only the rail, my hands and a dog barking far off.",
+  "ja": "霧の中に中庭はない。あるのは手すりと自分の手と、遠くの犬の声だけ。"
+ },
+ "city.t1h2.v1.rain": {
+  "ru": "Дождь стекает с галереи по трубам, и весь дом тихонько звенит.",
+  "en": "Rain runs off the gallery through the pipes and the whole house rings softly.",
+  "ja": "雨が廊下から排水管を伝って落ち、家じゅうがかすかに鳴っている。"
+ },
+ "city.t1h2.v3.1": {
+  "ru": "С верхней галереи за деревьями видны крыши соседних домов и полоска цвета железа, которая вполне может быть морем.",
+  "en": "From the top gallery, past the trees, you see the neighbouring roofs and an iron-grey strip that may well be the sea.",
+  "ja": "最上階の廊下からは、木々の向こうに隣の屋根と、鉄色の細い帯が見える。海かもしれない。"
+ },
+ "city.t1h2.v3.2": {
+  "ru": "Красная крышка лестничной башни отсюда как шляпка гриба. Спираль вокруг — его ножка, только полая и с окнами.",
+  "en": "From here the red cap of the stair tower is a mushroom's. The spiral round it is the stalk, only hollow and with windows.",
+  "ja": "ここから見ると階段塔の赤い屋根はキノコの傘だ。まわりのらせんは柄にあたるけれど、中は空洞で、窓がある。"
+ },
+ "city.t1h2.v3.n": {
+  "ru": "Ночью сверху видно, как город включает окна одно за другим, будто кто-то проверяет вахтенный журнал.",
+  "en": "At night from up here you watch the town switch its windows on one by one, as if somebody were checking a watch log.",
+  "ja": "夜、ここからは町が窓を一つずつ点けていくのが見える。誰かが当直日誌を点検しているみたいに。"
+ },
+ "city.t1h2.v3.fog": {
+  "ru": "Туман лежит ниже галереи. Дом стоит над ним, как судно над мелью.",
+  "en": "The fog lies below the gallery. The house stands above it like a ship over a shoal.",
+  "ja": "霧は廊下より下にたまっている。家は浅瀬の上の船みたいに、その上に立っている。"
+ },
+ "city.t1h2.v3.rain": {
+  "ru": "Сверху дождь виден: серые нити тянутся к крышам и делают их ближе.",
+  "en": "From up here you can see the rain: grey threads reaching down to the roofs and drawing them closer.",
+  "ja": "上からは雨の筋が見える。灰色の糸が屋根へのび、屋根を近くに引き寄せている。"
+ },
+ "city.t1h2.charts.1": {
+  "ru": "На столе карта прибрежных вод, вся в карандашных линиях: курс, ещё курс, поправка на дрейф. Линии кончаются у Людмиловска, дальше чистая бумага.",
+  "en": "On the table, a chart of the coastal waters covered in pencil lines: a course, another course, a correction for drift. The lines end at Lyudmilovsk; beyond is clean paper.",
+  "ja": "机の上に沿岸の海図。鉛筆の線でいっぱいだ。針路、また針路、流されぶんの修正。線はリュドミロフスクで終わり、その先は白紙。"
+ },
+ "city.t1h2.charts.2": {
+  "ru": "Латунный измеритель воткнут в карту, как флажок: ножки раздвинуты ровно на одну морскую милю. Измерять, видимо, больше нечего.",
+  "en": "Brass dividers stand in the chart like a little flag, the legs opened exactly one nautical mile. There seems to be nothing left to measure.",
+  "ja": "真鍮のディバイダーが旗のように海図に刺さっている。足はちょうど一海里に開いたまま。もう測るものはないらしい。"
+ },
+ "city.t1h2.charts.3": {
+  "ru": "На полях столбиком цифры: 6:12, 6:13, 6:15. Восходы, один за другим, и каждый на минуту позже предыдущего.",
+  "en": "In the margin, a column of figures: 6:12, 6:13, 6:15. Sunrises, one after another, each a minute later than the last.",
+  "ja": "余白に数字が縦に並ぶ。6:12、6:13、6:15。日の出が一日ずつ、一分ずつ遅くなっていく。"
+ },
+ "city.t1h2.charts.n": {
+  "ru": "Ночью карта как живая: тень лампы ходит по бумаге, и береговая линия дышит.",
+  "en": "At night the chart seems alive: the lamp's shadow moves over the paper and the coastline breathes.",
+  "ja": "夜の海図は生きているみたいだ。ランプの影が紙の上を動いて、海岸線が息をする。"
+ },
+ "city.t1h2.tx.rough.title": {
+  "ru": "Черновик журнала",
+  "en": "The rough log",
+  "ja": "日誌の下書き"
+ },
+ "city.t1h2.tx.rough.1": {
+  "ru": "Черновик вахтенного журнала «Берег». Сначала карандашом, потом чернилами в чистовую тетрадь. Что не стоит чернил, остаётся здесь.",
+  "en": "The rough copy of the watch log \"Ashore\". First in pencil, then in ink into the fair book. What isn't worth ink stays here.",
+  "ja": "当直日誌「陸上」の下書き。まず鉛筆で書き、それからインクで清書帳へ。インクに値しないことは、ここに残る。"
+ },
+ "city.t1h2.tx.rough.2": {
+  "ru": "Ветер З, 3 м/с. Давление 1009, падает. Облачно. Восход 6:12 — видел. Чайник вскипел вовремя. Со вторника ни одной открытки.",
+  "en": "Wind W, 3 m/s. Pressure 1009, falling. Overcast. Sunrise 6:12: seen. Kettle boiled on time. Not one postcard since Tuesday.",
+  "ja": "風西、3メートル。気圧1009、下降。曇り。日の出6時12分、確認。やかんは時間どおりに沸いた。火曜から葉書は一枚もなし。"
+ },
+ "city.t1h2.tx.rough.3": {
+  "ru": "Ветер З, 4 м/с. Приёмник молчит. Спускался в холл к общему: диктор обещает ясно, консьержка дождь. Оба, как всегда, правы.",
+  "en": "Wind W, 4 m/s. The receiver's silent. Went down to the hall set: the announcer promises clear, the concierge rain. Both right, as usual.",
+  "ja": "風西、4メートル。受信機は黙ったまま。ホールの共用ラジオまで降りた。アナウンサーは晴れ、管理人は雨と言う。いつものようにどちらも正しい。"
+ },
+ "city.t1h2.tx.rough.4": {
+  "ru": "Заходил молодой человек, листал мои лоции. Спросил, зачем писать, если и так видно. Ответил: «Видно тебе. А записано — всем».",
+  "en": "A young fellow came by and leafed through my pilot books. He asked why write it down if you can see it anyway. I said: \"You can see it. Written down, everyone can.\"",
+  "ja": "若い子が来て、僕の水路誌をめくっていた。見ればわかるのに、なぜ書くのかと聞く。答えた。「見えるのは君だけだ。書いておけば、みんなに見える」"
+ },
+ "city.t1h2.tx.rough.5": {
+  "ru": "Давление растёт. Ветер СЗ, 5 м/с. Решил: если до пятницы не придёт ход, пойду ферзём наугад. Нет. Ходить нечем. Пусть придёт открытка.",
+  "en": "Pressure rising. Wind NW, 5 m/s. Decided: if no move arrives by Friday I'll play the queen blind. No. Nothing to play with. Let the card come.",
+  "ja": "気圧上昇。風北西、5メートル。決めた。金曜までに指し手が届かなければ、クイーンを目隠しで動かす。いや、動かす駒がない。葉書が来るのを待とう。"
+ },
+ "city.t1h2.tx.rough.6": {
+  "ru": "На столе под лампой лежала открытка с маяком: тот самый мыс, где мы с К. стояли на рейде в семьдесят шестом. Подписи нет, но почерк его. Записал: «Ф:e6+ принято». Ящик больше не пустой.",
+  "en": "Under the lamp on the table lay a postcard with a lighthouse: that very cape where K. and I lay at anchor in seventy-six. No signature, but his hand. I wrote down: \"Q takes e6, check: received.\" The box isn't empty any more.",
+  "ja": "机の電灯の下に灯台の絵葉書があった。七十六年にKと投錨した、あの岬だ。署名はないが、あいつの字だ。書き留めた。「クイーンe6を取る、王手：受領」。郵便受けはもう空ではない。"
+ },
+ "city.t1h2.tx.rough.7": {
+  "ru": "Давление 1021. Ясно. Восход 6:31 — видел, стоя на крыльце, и не один: рядом кто-то молодой, в куртке не по погоде. Записываю: «Экипаж: плюс один».",
+  "en": "Pressure 1021. Clear. Sunrise 6:31: seen, standing on the steps, and not alone: a young person beside me, in a jacket too thin for the weather. I note it down: \"Crew: plus one.\"",
+  "ja": "気圧1021。快晴。日の出6時31分、玄関の段に立って確認。ひとりではなかった。季節に合わない薄い上着の若い子が横にいた。記入する。「乗組員、プラス一名」"
+ },
+ "city.t1h2.sextant.m": {
+  "ru": "Секстан в футляре, латунь холодная. Если поймать утреннее солнце зеркальцем, на потолке появляется зайчик. Он дрожит, как стрелка, которая ищет север.",
+  "en": "The sextant lies in its case, the brass cold. Catch the morning sun in the little mirror and a spot of light appears on the ceiling. It trembles like a needle looking for north.",
+  "ja": "六分儀はケースの中、真鍮は冷たい。小さな鏡で朝日をつかまえると、天井に光の点が出る。北を探す針みたいに震えている。"
+ },
+ "city.t1h2.sextant.d": {
+  "ru": "В полдень солнце прямо над головой, для секстана это лишний градус. На футляре карандашом: «Широта 55°. Проверять в полдень, даже на берегу».",
+  "en": "At noon the sun is straight overhead, which for a sextant is one degree too many. On the case, in pencil: \"Latitude 55°. Check at noon, even ashore.\"",
+  "ja": "正午、太陽は真上。六分儀にとっては余分な一度だ。ケースに鉛筆で「緯度55度。正午には測ること、陸でも」。"
+ },
+ "city.t1h2.sextant.e": {
+  "ru": "К вечеру зеркальце ловит жёлтое, как желток. Я навёл зайчик на стену, и получилась маленькая заря.",
+  "en": "Towards evening the little mirror catches a yellow like egg yolk. I aimed the spot at the wall and made a small dawn.",
+  "ja": "夕方になると小さな鏡は卵黄みたいな黄色をつかまえる。光を壁に向けると、小さな朝焼けができた。"
+ },
+ "city.t1h2.sextant.n": {
+  "ru": "Ночью секстан спит в футляре. На крышке нацарапано: «Полярная не светит, но не врёт».",
+  "en": "At night the sextant sleeps in its case. Scratched on the lid: \"The Pole Star doesn't shine for you, but it doesn't lie.\"",
+  "ja": "夜、六分儀はケースで眠っている。ふたに引っかき傷で「北極星は光ってはくれないが、嘘はつかない」。"
+ },
+ "city.t1h2.compass.1": {
+  "ru": "Карманный компас с крышкой. Стрелка дрожит и успокаивается, глядя на шкаф с лоциями. «Север там», подумал я. Потом подумал, что шкафы тоже иногда притягивают стрелку.",
+  "en": "A pocket compass with a lid. The needle trembles and settles, pointing at the cabinet of pilot books. \"North is that way,\" I thought. Then I thought that cabinets can pull a needle too.",
+  "ja": "ふた付きの懐中コンパス。針は震えて、水路誌の棚のほうを向いて止まった。「北はあっちか」と思い、それから、棚も針を引っぱることがあるなと思った。"
+ },
+ "city.t1h2.compass.2": {
+  "ru": "Под крышкой гравировка: «Курсом на дом. 1958». Стёкла нет — оно, видимо, давно в шторме.",
+  "en": "Engraved under the lid: \"Course for home. 1958.\" The glass is missing, probably long since lost in a storm.",
+  "ja": "ふたの裏に彫り文字。「帰港。1958」。ガラスはない。きっとずっと前の嵐で失われたのだろう。"
+ },
+ "city.t1h2.cards.title": {
+  "ru": "Открытки от К.",
+  "en": "Postcards from K.",
+  "ja": "Kからの絵葉書"
+ },
+ "city.t1h2.cards.1": {
+  "ru": "Роттердам, 1974: «Витя, e4. В порту дождь, пиво тёмное, ты бы не одобрил. — К.».",
+  "en": "Rotterdam, 1974: \"Vitya, e4. Rain in the port, dark beer, you wouldn't approve. — K.\"",
+  "ja": "ロッテルダム、1974年。「ヴィーチャ、e4。港は雨、ビールは黒、きみは賛成しないだろう。――K」"
+ },
+ "city.t1h2.cards.2": {
+  "ru": "Генуя, 1985: «e5. Маяк здесь шире нашего и вдвое ленивее. Передай Нине привет, если она меня ещё терпит. — К.».",
+  "en": "Genoa, 1985: \"e5. The lighthouse here is broader than ours and twice as lazy. Give Nina my regards, if she still puts up with me. — K.\"",
+  "ja": "ジェノヴァ、1985年。「e5。ここの灯台はうちのより太くて、倍はのんびりしている。ニーナによろしく、まだ僕に我慢してくれているなら。――K」"
+ },
+ "city.t1h2.cards.3": {
+  "ru": "Лиссабон, 1998: «Конь f3. Дочь вышла замуж, на свадьбе играл в шахматы с тестем. Проиграл. Он штурман. — К.».",
+  "en": "Lisbon, 1998: \"Knight f3. My daughter married; at the wedding I played chess with her father-in-law. Lost. He's a navigator. — K.\"",
+  "ja": "リスボン、1998年。「ナイトf3。娘が結婚した。披露宴で新しい親父さんとチェスを指して、負けた。航海士だった。――K」"
+ },
+ "city.t1h2.cards.4": {
+  "ru": "Последняя: «Ферзь f5. Твой ход, старый пират. Пиши. — К.». Штемпель двухмесячной давности. Ответа в стопке нет.",
+  "en": "The last: \"Queen f5. Your move, old pirate. Write. — K.\" The postmark is two months old. There is no reply in the stack.",
+  "ja": "最後の一枚。「クイーンf5。きみの番だ、老海賊。書けよ。――K」。消印は二か月前。束の中に返事はない。"
+ },
+ "city.t1h2.cards.5": {
+  "ru": "Сверху лежит ещё одна, без подписи: маяк, на обороте «Ф:e6+» и три слова: «Адрес потерял. Нашёл». Я положил её лицом вверх, чтобы он увидел сразу.",
+  "en": "On top lies one more, unsigned: a lighthouse, and on the back \"Q takes e6, check\" and three words: \"Lost address. Found.\" I laid it face up so he'd see it at once.",
+  "ja": "いちばん上にもう一枚。署名のない灯台の絵。裏に「Q:e6+」と、三つの言葉。「住所をなくした。見つけた」。すぐ目に入るように、絵を上にして置いた。"
+ },
+ "city.t1h2.baro.1": {
+  "ru": "Стрелка стоит на «Переменно» и стоит так, будто это окончательное решение.",
+  "en": "The needle rests at \"Change\" as if that were its final decision.",
+  "ja": "針は「変わりやすい」を指し、それが最終決定であるかのように動かない。"
+ },
+ "city.t1h2.baro.rain": {
+  "ru": "Стрелка ушла к «Дождю». Я постучал по стеклу, она не передумала. Барометру в этом доме верят больше, чем радио.",
+  "en": "The needle has gone over to \"Rain\". I tapped the glass and it didn't change its mind. In this house they trust the barometer more than the radio.",
+  "ja": "針は「雨」のほうへ傾いた。ガラスをたたいても考えを変えない。この家では、ラジオより気圧計が信じられている。"
+ },
+ "city.t1h2.baro.clear": {
+  "ru": "Стрелка пошла к «Ясно» и замерла. Под ней бумажка «Как и я»: слово «как» зачёркнуто и сверху написано «почти».",
+  "en": "The needle has crept towards \"Fair\" and stopped. Under it the slip says \"Like me\": the word \"like\" is crossed out and \"nearly\" written above it.",
+  "ja": "針は「晴れ」へ寄って止まった。下の紙切れは「僕と同じ」だが、「同じ」に線が引かれ、上に「ほぼ」と書き足してある。"
+ },
+ "city.t1h2.baro.fog": {
+  "ru": "На стекле влага, стрелка на «Сыро». Приятно, что прибор тоже видит нашу погоду.",
+  "en": "Damp on the glass, the needle at \"Humid\". It's good that the instrument sees our weather too.",
+  "ja": "ガラスに湿り気。針は「湿潤」。この道具も僕たちの天気を見ているのが、なんだかうれしい。"
+ },
+ "city.t1h2.baro.snow": {
+  "ru": "Стрелка ушла на «Бурю»: такую отметку на барометре ставят всему, что холоднее октября.",
+  "en": "The needle has swung to \"Storm\": the mark a barometer gives to anything colder than October.",
+  "ja": "針は「嵐」まで振れた。気圧計は十月より寒いものにはみんなこの印をつける。"
+ },
+ "city.t1h2.baro.cold": {
+  "ru": "Стрелка опускается медленно, как человек в холодную воду.",
+  "en": "The needle goes down slowly, like a person into cold water.",
+  "ja": "針は冷たい水に入る人みたいに、ゆっくり下がっていく。"
+ },
+ "city.t1h2.kettle.d": {
+  "ru": "Чайник эмалированный, носик в сколах, ещё тёплый. На кружке записка: «Кому надо — наливайте. В. С.». Налил себе чаю по-штурмански: крепкого, до тёмной меди.",
+  "en": "An enamel kettle, the spout chipped, still warm. A note on the mug: \"Whoever needs it, pour. V. S.\" I poured myself some navigator's tea: strong, dark as old copper.",
+  "ja": "ほうろうのやかん、注ぎ口は欠けていて、まだ温かい。マグにメモ。「欲しい人は注いでいい。V・S」。航海士流のお茶をいれた。濃くて、古い銅みたいに暗い色。"
+ },
+ "city.t1h2.kettle.n": {
+  "ru": "Ночью чайник холодный, но под крышкой заварка ждёт: он заваривает с вечера, чтобы утром не терять времени. Холодный чай бывает вкусным, когда разрешили.",
+  "en": "At night the kettle is cold, but there's tea waiting under the lid: he brews it in the evening so as not to lose time in the morning. Cold tea can be good when you've been told you may.",
+  "ja": "夜のやかんは冷たいが、ふたの下で茶葉が待っている。朝に時間を無駄にしないよう、夕方のうちにいれておくのだ。許されて飲む冷めたお茶は、案外おいしい。"
+ },
+ "city.t1h2.radio.1": {
+  "ru": "Деревянный приёмник на полке, зелёный глазок не горит. Повернул ручку: тишина и лёгкое потрескивание, как будто он что-то вспоминает.",
+  "en": "A wooden receiver on the shelf, the green eye unlit. I turned the knob: silence and a faint crackle, as if it were remembering something.",
+  "ja": "棚に木製の受信機。緑の目は消えている。つまみを回すと、静けさと小さなぱちぱちという音。何かを思い出しているみたいだ。"
+ },
+ "city.t1h2.radio.2": {
+  "ru": "После холла я повернул ручку и здесь: тишина. Но на шкале карандашом свежие деления: Холм отмечает, где ловило раньше.",
+  "en": "After the hall I turned the knob here too: silence. But there are fresh pencil marks on the dial: Holm is marking where it used to pick things up.",
+  "ja": "ホールのあと、ここでもつまみを回した。静かなままだ。でも目盛りに鉛筆の新しい印がある。ホルムは、前に入った場所を記しているのだ。"
+ },
+ "city.t1h2.radio.3": {
+  "ru": "Журнал записан, приёмник молчит. Видимо, ему больше нечего сообщать: прогноз теперь пишет кто-то другой.",
+  "en": "The log is written up, the receiver silent. It seems to have nothing left to report: somebody else writes the forecast now.",
+  "ja": "日誌は書かれ、受信機は黙っている。もう伝えることがないのだろう。予報は今、別の誰かが書いている。"
+ },
+ "city.t1h2.shadow.m": {
+  "ru": "Утром низкое солнце бьёт в решётку на улице, и по полу бегут длинные ромбы. Кладка кобого отпечаталась на досках, как печать на письме.",
+  "en": "In the morning the low sun strikes the screen out on the street and long diamonds run across the floor. The cobogo pattern is stamped on the boards like a seal on a letter.",
+  "ja": "朝、低い太陽が通りのブロックの壁に当たり、床に長い菱形が走る。コボゴの模様が、手紙の封蝋みたいに床板に押されている。"
+ },
+ "city.t1h2.shadow.d": {
+  "ru": "В полдень ромбы собираются кучкой у ножек столика и дрожат от каждого прохожего. Я поставил ногу в светлый, и она стала решётчатой.",
+  "en": "At noon the diamonds gather by the legs of the little table and tremble at every passer-by. I put my foot in a bright one and it turned lattice-like.",
+  "ja": "正午、菱形は小さなテーブルの脚のまわりに集まり、通る人ごとに震える。明るい菱形に足を入れると、足まで格子模様になった。"
+ },
+ "city.t1h2.shadow.e": {
+  "ru": "К вечеру ромбы вытягиваются и плывут по ковру, как стая рыб. Один заплыл в чашку и остался.",
+  "en": "Towards evening the diamonds stretch out and drift over the rug like a shoal of fish. One swam into the cup and stayed.",
+  "ja": "夕方、菱形は伸びて、魚の群れみたいに敷物の上を流れる。一つがカップに入りこんで、そのまま居ついた。"
+ },
+ "city.t1h2.shadow.n": {
+  "ru": "Ночью решётка светится снаружи уличным фонарём, и ромбы лежат на потолке неподвижно, как звёзды в планетарии.",
+  "en": "At night the screen glows outside with the streetlamp and the diamonds lie on the ceiling quite still, like stars in a planetarium.",
+  "ja": "夜、通りの壁は街灯に照らされ、菱形は天井にじっと貼りついている。プラネタリウムの星みたいに。"
+ },
+ "city.coll.t1h2_garden.title": {
+  "ru": "Двор под сваями",
+  "en": "The yard under the pilotis",
+  "ja": "ピロティの中庭"
+ },
+ "city.coll.t1h2_holm.title": {
+  "ru": "Вещи штурмана",
+  "en": "The navigator's things",
+  "ja": "航海士の持ち物"
+ },
+ "quest.t1h2_card.title": {
+  "ru": "Открытка с маяком",
+  "en": "The lighthouse postcard",
+  "ja": "灯台の絵葉書"
+ },
+ "quest.t1h2_card.desc": {
+  "ru": "На доске под сваями объявления про ящики и открытки без подписи. Виктор Сергеевич со вторника не получал писем. Может, они просто лежат не там.",
+  "en": "On the board under the pilotis there are notices about the post boxes and unsigned postcards. Viktor Sergeyevich hasn't had a letter since Tuesday. Maybe they are just lying in the wrong place.",
+  "ja": "ピロティの掲示板に、郵便受けと署名のない絵葉書の知らせがある。ヴィクトルさんは火曜から一通も便りを受け取っていない。置き場所が違うだけかもしれない。"
+ },
+ "quest.t1h2_card.board.log": {
+  "ru": "Хозяин дома просит жильцов не терять открытки. Прочту, что пишут.",
+  "en": "The house asks residents not to lose postcards. I'll read what the board says.",
+  "ja": "この家では、葉書をなくさないよう呼びかけている。掲示に何と書いてあるか読んでみよう。"
+ },
+ "quest.t1h2_card.notice.obj": {
+  "ru": "Прочесть объявления на доске под сваями",
+  "en": "Read the notices on the board under the pilotis",
+  "ja": "ピロティの掲示板の知らせを読む"
+ },
+ "quest.t1h2_card.post.log": {
+  "ru": "Под ящиками находят открытки с маяком. Загляну: вдруг одна из них — та самая.",
+  "en": "Lighthouse postcards turn up under the post boxes. I'll look: maybe one of them is the one.",
+  "ja": "郵便受けの下に灯台の絵葉書が落ちているらしい。見てみよう。そのうちの一枚が、あの葉書かもしれない。"
+ },
+ "quest.t1h2_card.box.obj": {
+  "ru": "Заглянуть в почтовые ящики под сваями",
+  "en": "Look in the post boxes under the pilotis",
+  "ja": "ピロティの郵便受けをのぞく"
+ },
+ "quest.t1h2_card.cards.log": {
+  "ru": "У меня в кармане открытка с маяком. Холм хранит все открытки К. на полке над диваном. Положу её к остальным.",
+  "en": "I have a lighthouse postcard in my pocket. Holm keeps all K.'s postcards on the shelf above the sofa. I'll put it with the others.",
+  "ja": "ポケットに灯台の絵葉書がある。ホルムはKの葉書を全部、ソファの上の棚にとってある。ほかの葉書の上に置いてこよう。"
+ },
+ "quest.t1h2_card.stack.obj": {
+  "ru": "Положить открытку к остальным на полке у Холма",
+  "en": "Put the postcard with the others on Holm's shelf",
+  "ja": "ホルムの棚の葉書の束にこの絵葉書を重ねる"
+ },
+ "quest.t1h2_card.done": {
+  "ru": "Вечером консьержка сказала, что Виктор Сергеевич спустился к ящику, постоял и вернулся с таким лицом, будто получил прогноз на всю неделю. Ушла, оставила на столике чай: «Это тебе. От него».",
+  "en": "In the evening the concierge told me that Viktor Sergeyevich came down to the box, stood there, and went back up looking as if he'd been given the forecast for the whole week. She went off and left a tea on the little table: \"That's for you. From him.\"",
+  "ja": "夕方、管理人が教えてくれた。ヴィクトルさんは郵便受けまで降りて、しばらく立ち、まるで一週間分の予報をもらったような顔で戻っていったという。管理人は小さなテーブルにお茶を置いていった。「これはあなたに。あの人から」"
+ }
+}
