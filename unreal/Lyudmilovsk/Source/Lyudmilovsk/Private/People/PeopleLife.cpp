@@ -2573,11 +2573,16 @@ void ANpcBody::Drive(const FVector& Location, float Yaw, EPersonPose Pose, int32
 	// where they are shown: on their life's point through a spring (a jump of more than a few steps is a jump)
 	FVector Shown = Location;
 	float GaitSpeed = Speed;
+	// the seat clips stand 30 cm in front of the seat's point (SitDown's first frame, StandUp's last; life_anims.py), which
+	// is where the life has them arrive and leave from (a slot's approach): what is followed and turned about is that
+	// point, so somebody who walks up turns round where they stand and sits back, with no step of the whole body
+	const float SeatLead = bSmooth && bSeat ? 30.f * S : 0.f;
+	const FVector Target = Location + FRotator(0.f, Yaw, 0.f).Vector() * SeatLead;
 	if (bSmooth)
 	{
-		if (bSnap || !bPlaced || !bShownValid || bBed || DeltaTime <= 0.f || FVector::DistSquared(ShownPos, Location) > 300.0 * 300.0)
+		if (bSnap || !bPlaced || !bShownValid || bBed || DeltaTime <= 0.f || FVector::DistSquared(ShownPos, Target) > 300.0 * 300.0)
 		{
-			ShownPos = Location;
+			ShownPos = Target;
 			ShownVel = FVector::ZeroVector;
 			ShownZVel = 0.f;
 		}
@@ -2586,9 +2591,9 @@ void ANpcBody::Drive(const FVector& Location, float Yaw, EPersonPose Pose, int32
 			// on their feet a fifth of a second behind (a corner rounds off over ~half a metre, a start takes two steps);
 			// into a seat quicker; the height by itself, quicker still (a kerb, a stair's step)
 			FVector2D Flat(ShownPos.X, ShownPos.Y), FlatVel(ShownVel.X, ShownVel.Y);
-			Flat = LyudMotion::Damp(Flat, FVector2D(Location.X, Location.Y), FlatVel, bFeet ? 0.2f : 0.12f, DeltaTime);
+			Flat = LyudMotion::Damp(Flat, FVector2D(Target.X, Target.Y), FlatVel, bFeet ? 0.2f : 0.12f, DeltaTime);
 			float Z = (float)ShownPos.Z;
-			Z = LyudMotion::Damp(Z, (float)Location.Z, ShownZVel, 0.09f, DeltaTime);
+			Z = LyudMotion::Damp(Z, (float)Target.Z, ShownZVel, 0.09f, DeltaTime);
 			ShownPos = FVector(Flat.X, Flat.Y, Z);
 			ShownVel = FVector(FlatVel.X, FlatVel.Y, ShownZVel);
 		}
@@ -2598,8 +2603,10 @@ void ANpcBody::Drive(const FVector& Location, float Yaw, EPersonPose Pose, int32
 		RecentSpeed = FMath::Max(Speed, RecentSpeed - 300.f * DeltaTime);
 		GaitSpeed = bFeet ? FMath::Min((float)ShownVel.Size2D(), RecentSpeed * 1.3f) : 0.f;
 	}
-	// turn smoothly, except into a seat or a bed (the clip starts from the slot's facing)
-	if (bSnap || Transit != 0 || !bPlaced)
+	// turn smoothly, except into a bed (the clip starts from the slot's facing); into a seat they turn round on the spot
+	// as the clip begins (it stands for its first third)
+	const bool bSeatTurn = bSmooth && (Transit == 1 || Transit == 2);
+	if (bSnap || (Transit != 0 && !bSeatTurn) || !bPlaced)
 	{
 		Facing = Yaw;
 		FacingVel = 0.f;
@@ -2609,7 +2616,7 @@ void ANpcBody::Drive(const FVector& Location, float Yaw, EPersonPose Pose, int32
 		// walking, they face the way they really go (round the corner with the path); the turn has a beginning and an end
 		const bool bGoing = bFeet && Pose == EPersonPose::Walk && GaitSpeed > 35.f * S;
 		const float Want = bGoing ? FMath::RadiansToDegrees(FMath::Atan2((float)ShownVel.Y, (float)ShownVel.X)) : Yaw;
-		Facing = FRotator::NormalizeAxis(LyudMotion::DampAngle(Facing, Want, FacingVel, bGoing ? 0.14f : 0.22f, DeltaTime));
+		Facing = FRotator::NormalizeAxis(LyudMotion::DampAngle(Facing, Want, FacingVel, bGoing ? 0.14f : (bSeatTurn ? 0.16f : 0.22f), DeltaTime));
 	}
 	else
 	{
@@ -2635,7 +2642,7 @@ void ANpcBody::Drive(const FVector& Location, float Yaw, EPersonPose Pose, int32
 	else
 	{
 		// seated clips: the origin under the seat's centre (top 47 cm), facing local +Y; a smaller body sits higher
-		FVector At = Shown;
+		FVector At = Shown - FRotator(0.f, Facing, 0.f).Vector() * SeatLead;
 		if (bSeat)
 		{
 			At.Z += (SeatHeight > 0.f ? SeatHeight : 47.f) - 47.f * S;

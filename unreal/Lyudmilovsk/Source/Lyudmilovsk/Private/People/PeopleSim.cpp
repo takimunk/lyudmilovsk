@@ -46,6 +46,17 @@ namespace LyudPeople
 
 		bool Same(const V3& A, const V3& B) { return (A - B).Len() < 0.02f; }
 
+		/** A bench out of doors with no approach of its own: they come up to stand before it (the seat clips' standing
+		 *  point, 30 cm in front: blender/humans/life_anims.py), never onto the seat's own point through the bench. */
+		void SeatApproach(const FPlace& Pl, FSlot& Sl, bool bGiven)
+		{
+			if (!bGiven && !Pl.bIndoor && Sl.Height > 0.f && (Pl.Kind == "bench" || Pl.Kind == "fountain"))
+			{
+				const float A = Sl.Yaw / 57.29578f;
+				Sl.Approach = Sl.Pos + V3(std::cos(A) * 0.3f, std::sin(A) * 0.3f, 0.f);
+			}
+		}
+
 		float YawTo(const V3& From, const V3& To)
 		{
 			return std::atan2(To.Y - From.Y, To.X - From.X) * 57.29578f;
@@ -379,6 +390,7 @@ namespace LyudPeople
 			Sl.Yaw = S["yaw"].F();
 			Sl.Approach = S.Find("approach") ? Vec(S["approach"]) : Sl.Pos;
 			Sl.Height = S["height"].F();
+			SeatApproach(Pl, Sl, S.Find("approach") ? true : false);
 			Sl.Capacity = std::max(1, S["capacity"].I(1));
 			Sl.Tag = S["tag"].S();
 			if (Pl.bIndoor)
@@ -1179,6 +1191,7 @@ namespace LyudPeople
 				Sl.Yaw = S.Find("yaw") ? S["yaw"].F() : Pl.Yaw;
 				Sl.Approach = S.Find("approach") && !Pl.bShell ? Vec(S["approach"]) : Sl.Pos;
 				Sl.Height = S["height"].F();
+				SeatApproach(Pl, Sl, Pl.bShell || (S.Find("approach") ? true : false));
 				Sl.Capacity = std::max(1, S["capacity"].I(1));
 				Sl.Tag = S["tag"].S();
 				if (!Prefix.empty())

@@ -220,6 +220,11 @@ a point along a polyline at a speed that changes in steps; the body is not set o
 - **Place**: a critically damped spring (0.2 s on foot, 0.12 s into a seat, 0.09 s for the height). A path's corner
   rounds off, setting off and stopping take a moment, a kerb is a short ramp. A jump of more than 3 m, a body shown
   anew and anything that carries the person (a cabin, a train) is a jump, not a glide.
+- **Seats**: the seat clips stand 30 cm in front of the seat's point (SitDown's first frame, StandUp's last). A bench
+  or the fountain's rim with no approach of its own gets that point as its approach (`SeatApproach`, PeopleSim.cpp), so
+  nobody walks onto the seat through the bench; the body follows and turns about that point (`SeatLead`, `ANpcBody::Drive`):
+  they walk up, turn round where they stand as the clip begins, and sit back. Out of doors the ground under a sitter is
+  traced beside the seat, not onto it.
 - **Facing**: walking, the way the body really goes; the turn is a spring too (no constant-rate swing).
 - **Gait**: by the ground the body really covers (the spring's speed), never by the life's speed alone: where the
   life stands a moment in a walking pose they stand, and the last half-step of an arrival is walked. Speed = step
