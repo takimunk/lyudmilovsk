@@ -40,7 +40,7 @@ using LyudAnimals::EFriend;
 using LyudAnimals::EKind;
 using LyudAnimals::FAnimal;
 
-static TAutoConsoleVariable<int32> CVarFriends(TEXT("lyud.Friends"), 1,
+static TAutoConsoleVariable<int32> CVarFriends(TEXT("lyud.Pets"), 1,
 	TEXT("0: the player cannot befriend the cats and dogs (no hand, no treats, no walks)."));
 
 // --- the diary's record ---------------------------------------------------------------------------------
@@ -1202,7 +1202,7 @@ namespace
 		UAnimalFriendSubsystem* Friends = UAnimalFriendSubsystem::Get(World);
 		if (!Friends || Args.Num() < 1)
 		{
-			UE_LOG(LogTemp, Warning, TEXT("lyud.Friends.Do hand|stroke|feed|walk|home [id]"));
+			UE_LOG(LogTemp, Warning, TEXT("lyud.Pets.Do hand|stroke|feed|walk|home [id]"));
 			return;
 		}
 		const int32 Id = Args.Num() > 1 ? FCString::Atoi(*Args[1]) : -1;
@@ -1255,24 +1255,24 @@ namespace
 	}
 }
 
-static FAutoConsoleCommandWithWorldAndArgs GFriendsDo(TEXT("lyud.Friends.Do"), TEXT("lyud.Friends.Do hand|stroke|feed|walk|home [id]: what E and F do with an animal (default: the target, else the nearest); crouch|stand: the hero's C."),
+static FAutoConsoleCommandWithWorldAndArgs GFriendsDo(TEXT("lyud.Pets.Do"), TEXT("lyud.Pets.Do hand|stroke|feed|walk|home [id]: what E and F do with an animal (default: the target, else the nearest); crouch|stand: the hero's C."),
 	FConsoleCommandWithWorldAndArgsDelegate::CreateStatic(&FriendsDo));
-static FAutoConsoleCommandWithWorldAndArgs GFriendsBefriend(TEXT("lyud.Friends.Befriend"), TEXT("lyud.Friends.Befriend [id|maru]: makes an animal a friend at once (default: the nearest)."),
+static FAutoConsoleCommandWithWorldAndArgs GFriendsBefriend(TEXT("lyud.Pets.Befriend"), TEXT("lyud.Pets.Befriend [id|maru]: makes an animal a friend at once (default: the nearest)."),
 	FConsoleCommandWithWorldAndArgsDelegate::CreateStatic(&FriendsBefriend));
-static FAutoConsoleCommandWithWorldAndArgs GFriendsName(TEXT("lyud.Friends.Name"), TEXT("lyud.Friends.Name <id> [name]: names a friend (without a name: opens the box to type it)."),
+static FAutoConsoleCommandWithWorldAndArgs GFriendsName(TEXT("lyud.Pets.Name"), TEXT("lyud.Pets.Name <id> [name]: names a friend (without a name: opens the box to type it)."),
 	FConsoleCommandWithWorldAndArgsDelegate::CreateStatic(&FriendsName));
-static FAutoConsoleCommandWithWorldAndArgs GFriendsReport(TEXT("lyud.Friends.Report"), TEXT("lyud.Friends.Report: the friends' book and what the hand is doing."),
+static FAutoConsoleCommandWithWorldAndArgs GFriendsReport(TEXT("lyud.Pets.Report"), TEXT("lyud.Pets.Report: the friends' book and what the hand is doing."),
 	FConsoleCommandWithWorldAndArgsDelegate::CreateStatic(&FriendsReport));
 
-static LyudDev::FAutoAction GDevFriendMaru(TEXT("friends.maru"), TEXT("friends"), TEXT("dev.action.friends.maru"), [](UWorld* W)
+static LyudDev::FAutoAction GDevFriendMaru(TEXT("pets.maru"), TEXT("pets"), TEXT("dev.action.pets.maru"), [](UWorld* W)
 {
 	FriendsBefriend({ TEXT("maru") }, W);
 });
-static LyudDev::FAutoAction GDevFriendNear(TEXT("friends.near"), TEXT("friends"), TEXT("dev.action.friends.near"), [](UWorld* W)
+static LyudDev::FAutoAction GDevFriendNear(TEXT("pets.near"), TEXT("pets"), TEXT("dev.action.pets.near"), [](UWorld* W)
 {
 	FriendsBefriend({}, W);
 });
-static LyudDev::FAutoAction GDevFriendTreats(TEXT("friends.treats"), TEXT("friends"), TEXT("dev.action.friends.treats"), [](UWorld* W)
+static LyudDev::FAutoAction GDevFriendTreats(TEXT("pets.treats"), TEXT("pets"), TEXT("dev.action.pets.treats"), [](UWorld* W)
 {
 	if (ULyudInventory* Inv = ULyudInventory::Get(W))
 	{
@@ -1281,7 +1281,7 @@ static LyudDev::FAutoAction GDevFriendTreats(TEXT("friends.treats"), TEXT("frien
 		Inv->Add(TEXT("chocolate"), 1);
 	}
 });
-static LyudDev::FAutoAction GDevFriendWalk(TEXT("friends.walk"), TEXT("friends"), TEXT("dev.action.friends.walk"), [](UWorld* W)
+static LyudDev::FAutoAction GDevFriendWalk(TEXT("pets.walk"), TEXT("pets"), TEXT("dev.action.pets.walk"), [](UWorld* W)
 {
 	UAnimalLifeSubsystem* Life = UAnimalLifeSubsystem::Get(W);
 	if (Life && Life->GetSim())
@@ -1302,7 +1302,7 @@ static LyudDev::FAutoAction GDevFriendWalk(TEXT("friends.walk"), TEXT("friends")
 	const UAnimalLifeSubsystem* Life = UAnimalLifeSubsystem::Get(W);
 	return Life && Life->Walker() >= 0;
 });
-static LyudDev::FAutoTeleport GDevTpMaru(TEXT("friends_maru"), TEXT("friends"), TEXT("dev.tp.friends_maru"), [](UWorld* W, FTransform& At)
+static LyudDev::FAutoTeleport GDevTpMaru(TEXT("pets_maru"), TEXT("pets"), TEXT("dev.tp.pets_maru"), [](UWorld* W, FTransform& At)
 {
 	const UAnimalLifeSubsystem* Life = UAnimalLifeSubsystem::Get(W);
 	const int32 Maru = Life && Life->GetSim() ? FindMaru(*Life->GetSim()) : -1;

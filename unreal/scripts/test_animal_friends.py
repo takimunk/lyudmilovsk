@@ -120,7 +120,7 @@ if PART == "stroke":
         p.set_actor_location(unreal.Vector(0.0, 0.0, 120.0), False, True)
         unreal.GameplayStatics.get_player_controller(w, 0).set_control_rotation(unreal.Rotator(roll=0, pitch=0, yaw=0))
         cmd(w, "lyud.Animals.SpawnNear Cat 1 170 25 2")
-        cmd(w, "Dev.Do friends.treats")
+        cmd(w, "Dev.Do pets.treats")
     step(lambda w: log("spawned: " + life(w).report()), 3.0)
 
     @step
@@ -129,32 +129,32 @@ if PART == "stroke":
         st["cat"] = ids[0] if ids else 0
         tell(w, "the cat", st["cat"])
         # (trust comes from calm company in the game; here at once, the bond stays its own)
-        cmd(w, "lyud.Friends.Befriend %d" % st["cat"])
-        cmd(w, "lyud.Friends.Do crouch")
+        cmd(w, "lyud.Pets.Befriend %d" % st["cat"])
+        cmd(w, "lyud.Pets.Do crouch")
         a = info(w, st["cat"])
         face(w, unreal.Vector(a.location.x, a.location.y, a.location.z + 15.0))
-    step(lambda w: (tell(w, "crouched", st["cat"]), cmd(w, "lyud.Friends.Do hand %d" % st["cat"])), 2.5)
+    step(lambda w: (tell(w, "crouched", st["cat"]), cmd(w, "lyud.Pets.Do hand %d" % st["cat"])), 2.5)
     for k in range(6):
         step(lambda w, k=k: (tell(w, "hand out t%d" % k, st["cat"]), face(w, info(w, st["cat"]).location)), 1.0)
     step(lambda w: shot(w, "cat_hand_own_view"), 1.0)
-    step(lambda w: (cmd(w, "lyud.Friends.Do stroke %d" % st["cat"]), tell(w, "stroke asked", st["cat"])), 0.2)
+    step(lambda w: (cmd(w, "lyud.Pets.Do stroke %d" % st["cat"]), tell(w, "stroke asked", st["cat"])), 0.2)
     step(lambda w: (tell(w, "stroked t1", st["cat"]), shot(w, "cat_stroke_own_view")), 1.2)
     step(lambda w: beside(w, st["cat"]), 0.6)
     step(lambda w: (tell(w, "stroked t2", st["cat"]), shot(w, "cat_stroke_side")), 0.5)
     step(lambda w: shot(w, "cat_stroke_side_2"), 0.6)
-    step(lambda w: (cmd(w, "lyud.Friends.Do stroke %d" % st["cat"]), beside(w, st["cat"], right=-150.0, back=20.0, up=55.0)), 2.5)
+    step(lambda w: (cmd(w, "lyud.Pets.Do stroke %d" % st["cat"]), beside(w, st["cat"], right=-150.0, back=20.0, up=55.0)), 2.5)
     step(lambda w: (tell(w, "stroked again", st["cat"]), shot(w, "cat_stroke_other_side")), 1.5)
-    step(lambda w: (cmd(w, "lyud.Friends.Do feed %d" % st["cat"]), tell(w, "treat held out", st["cat"])), 4.0)
+    step(lambda w: (cmd(w, "lyud.Pets.Do feed %d" % st["cat"]), tell(w, "treat held out", st["cat"])), 4.0)
     for k in range(4):
         step(lambda w, k=k: tell(w, "treat t%d" % k, st["cat"]), 1.0)
     step(lambda w: (beside(w, st["cat"]), None), 0.2)
     step(lambda w: shot(w, "cat_treat_side"), 0.6)
-    step(lambda w: (own_view(w), cmd(w, "lyud.Friends.Report")), 2.0)
+    step(lambda w: (own_view(w), cmd(w, "lyud.Pets.Report")), 2.0)
 
     # Maru: stroked, called along, at heel
     @step
     def s_maru(w):
-        cmd(w, "lyud.Friends.Do stand")
+        cmd(w, "lyud.Pets.Do stand")
         p = pawn_of(w)
         p.set_actor_location(unreal.Vector(3000.0, 0.0, 120.0), False, True)
         cmd(w, "lyud.Animals.SpawnNear Maru 0 3200 40 2")
@@ -165,19 +165,19 @@ if PART == "stroke":
         ids = list(life(w).find_animals_near(unreal.Vector(3200.0, 40.0, 0.0), 1500.0))
         st["maru"] = ids[0] if ids else 0
         tell(w, "maru", st["maru"])
-        cmd(w, "lyud.Friends.Do crouch")
+        cmd(w, "lyud.Pets.Do crouch")
         face(w, info(w, st["maru"]).location)
-        cmd(w, "lyud.Friends.Do hand %d" % st["maru"])
+        cmd(w, "lyud.Pets.Do hand %d" % st["maru"])
     for k in range(6):
         step(lambda w, k=k: (tell(w, "maru hand t%d" % k, st["maru"]), face(w, info(w, st["maru"]).location)), 1.0)
     for k in range(5):
-        step(lambda w, k=k: (cmd(w, "lyud.Friends.Do stroke %d" % st["maru"]), tell(w, "maru stroke %d" % k, st["maru"])), 1.0)
+        step(lambda w, k=k: (cmd(w, "lyud.Pets.Do stroke %d" % st["maru"]), tell(w, "maru stroke %d" % k, st["maru"])), 1.0)
         if k == 1:
             step(lambda w: beside(w, st["maru"], right=210.0, back=60.0, up=85.0), 0.8)
             step(lambda w: shot(w, "maru_stroke_side"), 0.6)
         step(lambda w: None, 3.2)
-    step(lambda w: (own_view(w), cmd(w, "lyud.Friends.Do stand"), tell(w, "maru after strokes", st["maru"])), 1.5)
-    step(lambda w: (cmd(w, "lyud.Friends.Do walk %d" % st["maru"]), tell(w, "walk asked", st["maru"])), 1.0)
+    step(lambda w: (own_view(w), cmd(w, "lyud.Pets.Do stand"), tell(w, "maru after strokes", st["maru"])), 1.5)
+    step(lambda w: (cmd(w, "lyud.Pets.Do walk %d" % st["maru"]), tell(w, "walk asked", st["maru"])), 1.0)
     for k in range(8):
         def _walk(w, k=k):
             p = pawn_of(w)
@@ -187,7 +187,7 @@ if PART == "stroke":
         step(_walk, 1.0)
     step(lambda w: beside(w, st["maru"], right=260.0, back=-120.0, up=90.0), 1.5)
     step(lambda w: (tell(w, "at heel, he stands", st["maru"]), shot(w, "maru_at_heel_side")), 1.0)
-    step(lambda w: (own_view(w), cmd(w, "lyud.Friends.Report")), 1.0)
+    step(lambda w: (own_view(w), cmd(w, "lyud.Pets.Report")), 1.0)
 
 if PART == "door":
     def named(w):
@@ -200,16 +200,16 @@ if PART == "door":
     @step
     def s_club(w):
         cmd(w, "lyud.Birds.Time 13 0")
-        cmd(w, "Dev.Tp friends_club_door")
+        cmd(w, "Dev.Tp pets_club_door")
     step(lambda w: log("club: " + life(w).report()), 10.0)
 
     @step
     def s_find(w):
         st["maru"] = named(w)
         tell(w, "maru at the club", st["maru"])
-        cmd(w, "lyud.Friends.Befriend maru")
+        cmd(w, "lyud.Pets.Befriend maru")
         face(w, info(w, st["maru"]).location)
-    step(lambda w: (cmd(w, "lyud.Friends.Do walk %d" % st["maru"]), tell(w, "walk asked", st["maru"])), 2.0)
+    step(lambda w: (cmd(w, "lyud.Pets.Do walk %d" % st["maru"]), tell(w, "walk asked", st["maru"])), 2.0)
     for k in range(4):
         step(lambda w, k=k: tell(w, "outside t%d" % k, st["maru"]), 1.5)
     step(lambda w: beside(w, st["maru"], right=260.0, back=-100.0, up=95.0), 0.5)
@@ -239,7 +239,7 @@ if PART == "door":
     @step
     def s_out(w):
         own_view(w)
-        cmd(w, "Dev.Tp friends_club_door")
+        cmd(w, "Dev.Tp pets_club_door")
     for k in range(4):
         step(lambda w, k=k: tell(w, "he is out again t%d" % k, st["maru"]), 1.5)
     step(lambda w: beside(w, st["maru"], right=260.0, back=-100.0, up=95.0), 0.5)
@@ -262,7 +262,7 @@ if PART == "door":
         cats = [i for i in list(l.find_animals_near(p, 2500.0)) if info(w, i).kind == unreal.AnimalKind.CAT]
         log("cats within 25 m of the seat: %d" % len(cats))
         for i in cats[:3]:
-            cmd(w, "lyud.Friends.Befriend %d" % i)
+            cmd(w, "lyud.Pets.Befriend %d" % i)
         st["cats"] = cats[:3]
     for k in range(12):
         def _lap(w, k=k):
@@ -277,11 +277,11 @@ if PART == "door":
         if i >= 0:
             own_view(w)
             face(w, info(w, i).location)
-            cmd(w, "lyud.Friends.Do stroke %d" % i)
+            cmd(w, "lyud.Pets.Do stroke %d" % i)
     step(lambda w: shot(w, "lap_cat_own_view"), 1.2)
     step(lambda w: (beside(w, life(w).lap_cat() if life(w).lap_cat() >= 0 else st["maru"], right=230.0, back=0.0, up=110.0), None), 0.5)
     step(lambda w: shot(w, "seat_side"), 0.8)
-    step(lambda w: (own_view(w), cmd(w, "lyud.Friends.Report")), 1.0)
+    step(lambda w: (own_view(w), cmd(w, "lyud.Pets.Report")), 1.0)
 
 
 @step

@@ -1,6 +1,0 @@
-{
- "comment": "Developer mode teleports of the animal friends (docs/animals.md \"Friends\"). Map metres as Content/UI/map.json. Maru herself moves about: the code point friends_maru (AnimalFriends.cpp) lands two metres in front of her.",
- "teleports": [
-  {"id": "friends_club_door", "group": "friends", "name": "dev.tp.friends_club_door", "x": -1.9, "y": 11.0, "yaw": -90}
- ]
-}
