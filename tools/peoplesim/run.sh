@@ -3,6 +3,7 @@
 #   tools/peoplesim/run.sh test                  behaviour checks (a small made-up town, then the real map if built)
 #   tools/peoplesim/run.sh town                  the town (town_places.json, townsfolk.json: docs/town_life.md): a day and a night
 #   tools/peoplesim/run.sh week                  the town over a simulated week: invariants (docs/town_life.md, Tests)
+#   tools/peoplesim/run.sh winter                winter play on the town (also part of test): the rink, the ice hole, the banya
 #   tools/peoplesim/run.sh day [start_hour hours] -> Saved/PeopleSim/day.csv + acts.txt (python3 tools/peoplesim/render_people.py)
 #   tools/peoplesim/run.sh trace <key> [start_hour hours]
 #   tools/peoplesim/run.sh summary [start_hour hours [weekday]]   a day of the Academgorodok's residents, one line each

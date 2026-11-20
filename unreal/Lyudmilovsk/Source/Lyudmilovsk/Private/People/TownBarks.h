@@ -70,7 +70,7 @@ namespace LyudBarks
 		bool bFemale = false;
 		std::vector<std::string> Doing;     // the activity's id, and "work" (on a duty at its place) or "free"
 		std::vector<std::string> At;        // where: outdoors or indoors; there: the place's kind, its id, its building's id
-		std::string Pose;                   // stand, walk, talk, look, sit, computer, eat, read, work, shovel
+		std::string Pose;                   // stand, walk, talk, look, sit, computer, eat, read, work, shovel, skate, walrus
 		std::string Gather;                 // the holiday gathering's mode they are at (mingle, watch, sit, fair), "" none
 		std::string Chrono;                 // lark, owl, night, usual
 		std::string Met;                    // new (never greeted him), seen (a few days), known (five days and more); the caller sets it
