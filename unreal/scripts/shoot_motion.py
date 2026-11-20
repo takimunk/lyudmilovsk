@@ -380,7 +380,7 @@ def sp_street(ctx):
             ctx["others"] = [b[0] for b in people(w) if b[0] != ctx.get("subj")][:4]
         subj_lines(w, "street", i, [ctx.get("subj")] + ctx.get("others", []))
 
-    return [("do", setup), ("wait", 240, None), ("wait", 1, choose), ("wait", 15, None), ("rec", NF, each, "street")]
+    return [("do", setup), ("wait", 150, None), ("wait", 1, choose), ("wait", 15, None), ("rec", NF, each, "street")]
 
 
 COVERS = [c for c in os.environ.get("MOTION_COVERS", "0.85,1.0,1.15").split(",") if c]
@@ -453,7 +453,7 @@ def sp_child(ctx):
         log("child %s has no body near" % key)
         return None
 
-    return [("wait", 1, find), ("wait", 150, None)] + follow_spot(ctx, "child", get, 60)
+    return [("wait", 1, find), ("wait", 120, None)] + follow_spot(ctx, "child", get, 45)
 
 
 @spot("manners")
@@ -478,7 +478,7 @@ def sp_manners(ctx):
     def each(w, i):
         subj_lines(w, "manners", i, [ctx.get("subj")] + ctx.get("others", []))
 
-    return [("do", setup), ("wait", 180, None), ("wait", 1, choose), ("wait", 15, None), ("rec", NF, each, "manners")]
+    return [("do", setup), ("wait", 120, None), ("wait", 1, choose), ("wait", 15, None), ("rec", NF, each, "manners")]
 
 
 @spot("sit")
@@ -608,7 +608,7 @@ def sp_far(ctx):
     q = [("wait", 1, choose)]
     for d in (1000.0, 2500.0, 5000.0):
         name = "far%d" % int(d / 100)
-        q += [("wait", 10, cam(d)), ("rec", 60, each(d, name), name)]
+        q += [("wait", 10, cam(d)), ("rec", 45, each(d, name), name)]
     return q
 
 
@@ -837,7 +837,7 @@ def sp_landing(ctx):
 
 
 def build_queue():
-    q = [("do", s_start), ("wait", 900, None)]   # 30 s of game time: streaming, shaders, the town's bodies
+    q = [("do", s_start), ("wait", int(os.environ.get("MOTION_WARM", "900")), None)]   # 30 s of game time: streaming, shaders, bodies
     for name in SPOTS:
         if name not in SPOT:
             log("unknown spot %s" % name)
