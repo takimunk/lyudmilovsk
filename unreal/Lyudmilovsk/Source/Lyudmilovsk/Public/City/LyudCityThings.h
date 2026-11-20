@@ -113,6 +113,10 @@ public:
 
 	static ULyudCityThings* Get(const UObject* WorldContext);
 
+	/** An act with "open" was used: another system shows its screen (Screen "books": ULyudBookScreen, the library's classics). */
+	DECLARE_MULTICAST_DELEGATE_TwoParams(FOpenScreen, FName /*Screen*/, int32 /*Thing*/);
+	FOpenScreen OnOpen;
+
 	virtual void OnWorldBeginPlay(UWorld& InWorld) override;
 	virtual void Deinitialize() override;
 	virtual void Tick(float DeltaTime) override;
@@ -215,6 +219,8 @@ public:
 	/** Has one of our modes the keys (a page, a show, a game, a text, the talk's chooser, a lift, lying, the sleep chooser)? The
 	 *  NPC talk should step aside meanwhile (docs/city_interiors.md "Open points for other threads"); seated alone is not one. */
 	bool HasModeUp() const;
+	/** A thing is in view with its prompt up (others who use E, the park's benches, step aside). */
+	bool HasThingInView() const { return Picked >= 0; }
 
 	// --- room tones
 
@@ -275,6 +281,8 @@ private:
 	void Greet(int32 Thing);
 	void DrawLabels() const;
 	FVector ThingLocation(int32 Thing) const;
+	/** "+N roubles" for a small job's pay (city.job.paid). */
+	void AnnouncePay(int32 Rubles);
 	/** A note on the HUD for every stamp got for the first time ("Films at «Рассвет»: 3 of 12"). */
 	void AnnounceStamps(const TArray<FString>& Stamps);
 	void FillRef(int32 Thing, FCityThingRef& Out) const;
@@ -487,6 +495,8 @@ private:
 	int32 BookText = -1;
 	int32 BookThing = -1;
 	TArray<FString> BookPages;
+	/** The pages of a text the game sets itself (ULyudTownPaper), one per BookPages entry; empty for an ordinary text. */
+	TArray<FText> BookGenPages;
 	int32 BookPage = 0;
 	FVector BookFrom = FVector::ZeroVector;
 	uint64 BookFrame = 0;

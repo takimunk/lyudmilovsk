@@ -1,0 +1,354 @@
+{
+ "_doc": "The notice boards' texts (docs/town_paper.md \"Notices\"): written by tools/paper/paper.py, never edit by hand. The board acts read them (acts.json: read notices_<board>): a holiday page; dated notices, each page holding notices whose dates never overlap; last the board's own lines, one a day.",
+ "texts": {
+  "notices_lost": {
+   "title": "city.notices.lost.title",
+   "kind": "notice",
+   "minutes": 1,
+   "pages": [
+    [
+     {
+      "k": "city.fest.lost.1",
+      "festival": "any"
+     }
+    ],
+    [
+     {
+      "k": "city.note.lost.cat_lost",
+      "date": [
+       "02-02",
+       "02-09"
+      ]
+     },
+     {
+      "k": "city.note.lost.cat_found",
+      "date": [
+       "02-10",
+       "02-16"
+      ]
+     },
+     {
+      "k": "city.note.lost.keys",
+      "date": [
+       "04-10",
+       "04-20"
+      ]
+     },
+     {
+      "k": "city.note.lost.flat_swap",
+      "date": [
+       "05-05",
+       "05-25"
+      ]
+     },
+     {
+      "k": "city.note.lost.bike",
+      "date": [
+       "06-15",
+       "06-25"
+      ]
+     },
+     {
+      "k": "city.note.lost.umbrella_swap",
+      "date": [
+       "09-20",
+       "10-05"
+      ]
+     },
+     {
+      "k": "city.note.lost.mitten",
+      "date": [
+       "12-01",
+       "12-20"
+      ]
+     },
+     {
+      "k": "city.note.lost.firewood",
+      "date": [
+       "10-15",
+       "11-05"
+      ]
+     },
+     {
+      "k": "city.note.lost.tree_pickup",
+      "date": [
+       "01-05",
+       "01-20"
+      ]
+     },
+     {
+      "k": "city.note.lost.glove",
+      "date": [
+       "03-05",
+       "03-20"
+      ]
+     },
+     {
+      "k": "city.note.lost.sunglasses",
+      "date": [
+       "07-05",
+       "07-25"
+      ]
+     },
+     {
+      "k": "city.note.lost.bucket",
+      "date": [
+       "08-01",
+       "08-25"
+      ]
+     }
+    ],
+    [
+     {
+      "k": "city.note.lost.start_parrot",
+      "after": 0,
+      "before": 4
+     }
+    ],
+    [
+     "city.look.lost.1",
+     "city.look.lost.2",
+     "city.look.lost.3",
+     "city.look.lost.4",
+     "city.look.lost.5"
+    ]
+   ]
+  },
+  "notices_club": {
+   "title": "city.notices.club.title",
+   "kind": "notice",
+   "minutes": 1,
+   "pages": [
+    [
+     {
+      "k": "city.fest.club.1",
+      "festival": "any"
+     }
+    ],
+    [
+     {
+      "k": "city.note.club.choir",
+      "date": [
+       "01-10",
+       "12-20"
+      ]
+     }
+    ],
+    [
+     {
+      "k": "city.note.club.chess",
+      "date": [
+       "03-01",
+       "03-15"
+      ]
+     },
+     {
+      "k": "city.note.club.kites",
+      "date": [
+       "05-20",
+       "06-05"
+      ]
+     },
+     {
+      "k": "city.note.club.dance",
+      "date": [
+       "07-01",
+       "07-31"
+      ]
+     },
+     {
+      "k": "city.note.club.astro",
+      "date": [
+       "08-01",
+       "08-14"
+      ]
+     },
+     {
+      "k": "city.note.club.repair",
+      "date": [
+       "09-05",
+       "10-10"
+      ]
+     },
+     {
+      "k": "city.note.club.newyear_play",
+      "date": [
+       "12-01",
+       "12-28"
+      ]
+     },
+     {
+      "k": "city.note.club.start_welcome",
+      "after": 0,
+      "before": 6
+     }
+    ],
+    [
+     "city.look.club.1",
+     "city.look.club.2",
+     "city.look.club.3",
+     "city.look.club.4",
+     "city.look.club.5"
+    ]
+   ]
+  },
+  "notices_health": {
+   "title": "city.notices.health.title",
+   "kind": "notice",
+   "minutes": 1,
+   "pages": [
+    [
+     {
+      "k": "city.fest.health.1",
+      "festival": "any"
+     }
+    ],
+    [
+     {
+      "k": "city.note.health.flu",
+      "date": [
+       "10-20",
+       "12-15"
+      ]
+     },
+     {
+      "k": "city.note.health.sun",
+      "date": [
+       "06-01",
+       "08-20"
+      ]
+     },
+     {
+      "k": "city.note.health.ice",
+      "date": [
+       "01-05",
+       "03-05"
+      ]
+     },
+     {
+      "k": "city.note.health.donor",
+      "date": [
+       "04-01",
+       "04-14"
+      ]
+     },
+     {
+      "k": "city.note.health.checkups",
+      "date": [
+       "08-22",
+       "10-15"
+      ]
+     }
+    ],
+    [
+     {
+      "k": "city.note.health.ticks",
+      "date": [
+       "04-25",
+       "06-10"
+      ]
+     }
+    ],
+    [
+     "city.look.health.1",
+     "city.look.health.2",
+     "city.look.health.3",
+     "city.look.health.4",
+     "city.look.health.5"
+    ]
+   ]
+  },
+  "notices_school": {
+   "title": "city.notices.school.title",
+   "kind": "notice",
+   "minutes": 1,
+   "pages": [
+    [
+     {
+      "k": "city.fest.wallpaper.1",
+      "festival": "any"
+     }
+    ],
+    [
+     {
+      "k": "city.note.school.olympiad",
+      "date": [
+       "02-15",
+       "03-01"
+      ]
+     },
+     {
+      "k": "city.note.school.birdhouse",
+      "date": [
+       "03-10",
+       "04-05"
+      ]
+     },
+     {
+      "k": "city.note.school.exams",
+      "date": [
+       "05-15",
+       "06-15"
+      ]
+     },
+     {
+      "k": "city.note.school.september",
+      "date": [
+       "08-25",
+       "09-10"
+      ]
+     },
+     {
+      "k": "city.note.school.leaves",
+      "date": [
+       "10-01",
+       "10-25"
+      ]
+     },
+     {
+      "k": "city.note.school.summer_camp",
+      "date": [
+       "06-16",
+       "07-10"
+      ]
+     },
+     {
+      "k": "city.note.school.summer_reading",
+      "date": [
+       "07-11",
+       "08-24"
+      ]
+     },
+     {
+      "k": "city.note.school.chess_club",
+      "date": [
+       "10-26",
+       "11-30"
+      ]
+     },
+     {
+      "k": "city.note.school.matinee",
+      "date": [
+       "12-01",
+       "12-28"
+      ]
+     },
+     {
+      "k": "city.note.school.ski_day",
+      "date": [
+       "01-10",
+       "02-14"
+      ]
+     }
+    ],
+    [
+     "city.look.wallpaper.1",
+     "city.look.wallpaper.2",
+     "city.look.wallpaper.3",
+     "city.look.wallpaper.4",
+     "city.look.wallpaper.5"
+    ]
+   ]
+  }
+ }
+}

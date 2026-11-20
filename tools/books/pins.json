@@ -1,0 +1,396 @@
+{
+ "_note": "Texts picked by hand where the automatic search misses or picks a poor edition (a different English title, a play inside a collection, a work in volumes). Every creator still died by 1955; an anonymous translation carries its year in 'translator'. Checked against pg_catalog.csv on 2026-11-20.",
+ "hamlet": {
+  "en": {
+   "gutenberg": [
+    1524
+   ]
+  }
+ },
+ "oedipus": {
+  "en": {
+   "gutenberg": [
+    31
+   ]
+  }
+ },
+ "oresteia": {
+  "en": {
+   "gutenberg": [
+    8604
+   ]
+  }
+ },
+ "herodotus": {
+  "en": {
+   "gutenberg": [
+    2707,
+    2456
+   ]
+  }
+ },
+ "apology": {
+  "en": {
+   "gutenberg": [
+    1656
+   ]
+  }
+ },
+ "symposium": {
+  "en": {
+   "gutenberg": [
+    1600
+   ]
+  }
+ },
+ "poetics": {
+  "en": {
+   "gutenberg": [
+    1974
+   ]
+  }
+ },
+ "metamorphoses": {
+  "en": {
+   "gutenberg": [
+    21765,
+    26073
+   ]
+  }
+ },
+ "kalevala": {
+  "en": {
+   "gutenberg": [
+    5186
+   ]
+  }
+ },
+ "tao_te_ching": {
+  "en": {
+   "gutenberg": [
+    216
+   ]
+  }
+ },
+ "bhagavad_gita": {
+  "en": {
+   "gutenberg": [
+    2388
+   ]
+  }
+ },
+ "shakuntala": {
+  "en": {
+   "gutenberg": [
+    12169
+   ]
+  }
+ },
+ "kwaidan": {
+  "en": {
+   "gutenberg": [
+    1210
+   ]
+  }
+ },
+ "bushido": {
+  "en": {
+   "gutenberg": [
+    12096
+   ]
+  }
+ },
+ "book_of_tea": {
+  "en": {
+   "gutenberg": [
+    769
+   ]
+  }
+ },
+ "onegin": {
+  "en": {
+   "gutenberg": [
+    23997
+   ]
+  }
+ },
+ "captains_daughter": {
+  "en": {
+   "gutenberg": [
+    13511
+   ]
+  }
+ },
+ "inspector": {
+  "en": {
+   "gutenberg": [
+    3735
+   ]
+  }
+ },
+ "demons": {
+  "en": {
+   "gutenberg": [
+    8117
+   ]
+  }
+ },
+ "underground": {
+  "en": {
+   "gutenberg": [
+    600
+   ]
+  }
+ },
+ "cherry_orchard": {
+  "en": {
+   "gutenberg": [
+    7986
+   ]
+  }
+ },
+ "nest_gentry": {
+  "en": {
+   "gutenberg": [
+    5721
+   ]
+  }
+ },
+ "mother_gorky": {
+  "en": {
+   "gutenberg": [
+    3783
+   ]
+  }
+ },
+ "chekhov_stories": {
+  "en": {
+   "gutenberg": [
+    13415
+   ]
+  }
+ },
+ "sonnets": {
+  "en": {
+   "gutenberg": [
+    1041
+   ]
+  }
+ },
+ "tom_jones": {
+  "en": {
+   "gutenberg": [
+    6593
+   ]
+  }
+ },
+ "tristram": {
+  "en": {
+   "gutenberg": [
+    1079
+   ]
+  }
+ },
+ "jekyll_hyde": {
+  "en": {
+   "gutenberg": [
+    43
+   ]
+  }
+ },
+ "walden": {
+  "en": {
+   "gutenberg": [
+    205
+   ]
+  }
+ },
+ "raven": {
+  "en": {
+   "gutenberg": [
+    1065
+   ]
+  }
+ },
+ "poe_tales": {
+  "en": {
+   "gutenberg": [
+    2147,
+    2148
+   ]
+  }
+ },
+ "wealth_nations": {
+  "en": {
+   "gutenberg": [
+    3300
+   ]
+  }
+ },
+ "montaigne": {
+  "en": {
+   "gutenberg": [
+    3581,
+    3582,
+    3583
+   ],
+   "translator": "Charles Cotton (translator, d. 1687)"
+  }
+ },
+ "pere_goriot": {
+  "en": {
+   "gutenberg": [
+    1237
+   ]
+  }
+ },
+ "eugenie_grandet": {
+  "en": {
+   "gutenberg": [
+    1715
+   ]
+  }
+ },
+ "notre_dame": {
+  "en": {
+   "gutenberg": [
+    2610
+   ]
+  }
+ },
+ "twenty_thousand": {
+  "en": {
+   "gutenberg": [
+    164
+   ],
+   "translator": "Lewis Page Mercier (translator, d. 1875)"
+  }
+ },
+ "earth_moon": {
+  "en": {
+   "gutenberg": [
+    83
+   ],
+   "translator": "Lewis Page Mercier and Eleanor E. King (translators, 1873)"
+  }
+ },
+ "center_earth": {
+  "en": {
+   "gutenberg": [
+    18857
+   ],
+   "translator": "anonymous translation (Griffith and Farran, 1871)"
+  }
+ },
+ "captain_grant": {
+  "en": {
+   "gutenberg": [
+    2083
+   ],
+   "translator": "anonymous translation (1873)"
+  }
+ },
+ "bel_ami": {
+  "en": {
+   "gutenberg": [
+    3733
+   ],
+   "translator": "anonymous translation (1903)"
+  }
+ },
+ "a_life": {
+  "en": {
+   "gutenberg": [
+    7114
+   ],
+   "translator": "anonymous translation (1903)"
+  }
+ },
+ "phantom_opera": {
+  "en": {
+   "gutenberg": [
+    175
+   ],
+   "translator": "Alexander Teixeira de Mattos (translator, d. 1921)"
+  }
+ },
+ "zarathustra": {
+  "en": {
+   "gutenberg": [
+    1998
+   ]
+  }
+ },
+ "heart_amicis": {
+  "en": {
+   "gutenberg": [
+    28961
+   ]
+  }
+ },
+ "gitanjali": {
+  "en": {
+   "gutenberg": [
+    7164
+   ]
+  }
+ },
+ "dangerous_liaisons": {
+  "en": {
+   "gutenberg": [
+    69891,
+    69913
+   ]
+  }
+ },
+ "max_moritz": {
+  "en": {
+   "gutenberg": [
+    28847
+   ]
+  }
+ },
+ "heine": {
+  "en": {
+   "gutenberg": [
+    31726
+   ]
+  }
+ },
+ "petrarch": {
+  "en": {
+   "gutenberg": [
+    17650
+   ]
+  }
+ },
+ "lazarillo": {
+  "en": {
+   "gutenberg": [
+    437
+   ]
+  }
+ },
+ "dickinson": {
+  "en": {
+   "gutenberg": [
+    12242
+   ]
+  }
+ },
+ "burns": {
+  "en": {
+   "gutenberg": [
+    1279
+   ]
+  }
+ },
+ "la_fontaine": {
+  "en": {
+   "gutenberg": [
+    7241
+   ],
+   "translator": "Elizur Wright (translator, d. 1885)"
+  }
+ }
+}

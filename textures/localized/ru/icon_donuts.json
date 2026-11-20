@@ -1,0 +1,10 @@
+{
+ "id": "icon_donuts",
+ "lang": "ru",
+ "model": "higgsfield gpt_image_2_5 (2k, medium)",
+ "aspect": "1:1",
+ "prompt": "Three round ring doughnuts heavily dusted with powdered sugar, spilling out of a plain brown paper cone.",
+ "source": "design/city_goods/icons_city_1.png (sidecar design/city_goods/icons_city_1.json), cell 5 (row 2, middle), cut into 3x3 equal cells, resized to 512x512",
+ "sha256": "3884c9a447fe4dba682f44d1e7e939769da4508ab266f2b18738690b6d0ce7c9",
+ "strings": {}
+}

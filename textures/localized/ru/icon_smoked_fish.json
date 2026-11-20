@@ -1,0 +1,10 @@
+{
+ "id": "icon_smoked_fish",
+ "lang": "ru",
+ "model": "higgsfield gpt_image_2_5 (2k, medium)",
+ "aspect": "1:1",
+ "prompt": "A whole golden-brown hot-smoked mackerel lying on a sheet of oily brown wrapping paper.",
+ "source": "design/city_goods/icons_city_3.png (sidecar design/city_goods/icons_city_3.json), cell 1 (row 1, left), cut into 3x3 equal cells, resized to 512x512",
+ "sha256": "b618df04111305ce9077e6d0fc7789e7cc72a7f98fdfa8ffaf409295739df4a9",
+ "strings": {}
+}

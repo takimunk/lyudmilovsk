@@ -2,6 +2,7 @@
 
 #include "CityThingsModel.h"
 #include "City/SLyudCityBook.h"
+#include "City/LyudTownPaper.h"
 #include "City/SLyudCityGame.h"
 #include "City/SLyudCityPage.h"
 #include "Audio/LyudSoundscape.h"
@@ -28,6 +29,7 @@
 #include "HeroCharacter.h"
 #include "InputCoreTypes.h"
 #include "Kismet/GameplayStatics.h"
+#include "Letters/LyudLetters.h"
 #include "LyudGameMenu.h"
 #include "LyudInventory.h"
 #include "LyudSave.h"
@@ -1088,6 +1090,11 @@ void ULyudCityThings::Run(int32 Thing, bool bFromConsole, bool bFromSeat)
 			Inv->Add(Item, G.second);
 		}
 	}
+	if (O.Pay > 0 && Inv)
+	{
+		Inv->Earn(O.Pay);
+		AnnouncePay(O.Pay);
+	}
 	const FVector At = ThingLocation(Thing);
 	if (!O.Sound.empty())
 	{
@@ -1141,7 +1148,7 @@ void ULyudCityThings::Run(int32 Thing, bool bFromConsole, bool bFromSeat)
 	}
 	// a counter with topics and its staff on shift: the chooser instead of the shop or the page (the act's line on top, "Buy..."
 	// first when it sells); not for games, shows, reading, sitting or lying, or a stretch of time behind a fade
-	if (!TalkOffer.empty() && O.Game < 0 && O.Screen.empty() && O.Text < 0 && O.Pose != "sit" && O.Pose != "lie" && !(O.Minutes > 0 && O.bFade))
+	if (!TalkOffer.empty() && O.Game < 0 && O.Screen.empty() && O.Open.empty() && O.Text < 0 && O.Pose != "sit" && O.Pose != "lie" && !(O.Minutes > 0 && O.bFade))
 	{
 		TArray<int32> Topics;
 		Topics.Reserve((int32)TalkOffer.size());
@@ -1175,6 +1182,12 @@ void ULyudCityThings::Run(int32 Thing, bool bFromConsole, bool bFromSeat)
 	if (!O.Shop.empty())
 	{
 		OpenShopOf(LyudCityThingsImpl::Str(O.Shop), LyudCityThingsImpl::Str(O.Title));
+		return;
+	}
+	if (!O.Open.empty())
+	{
+		// another system's screen (the library's classics: ULyudBookScreen listens); the act's line stays unsaid
+		OnOpen.Broadcast(FName(*LyudCityThingsImpl::Str(O.Open)), Thing);
 		return;
 	}
 	const FText Title = O.Title.empty() ? FText::GetEmpty() : LyudText::Get(LyudCityThingsImpl::Str(O.Title));
@@ -1426,6 +1439,14 @@ void ULyudCityThings::Tick(float DeltaTime)
 		DropDeadHolds();
 		bOutside = !Hero || !Model->InBounds(LyudCityThingsImpl::Vec(Hero->GetActorLocation()), LyudCityThingsImpl::TownMargin);
 		Picked = bOutside ? -1 : PickInView(Hero, PC);
+		// a postbox on the prompt line or the post's chooser up has the E (docs/letters.md): one E, one thing
+		if (const ULyudLetters* Letters = ULyudLetters::Get(World))
+		{
+			if (Letters->IsOffering() || Letters->HasModeUp())
+			{
+				Picked = -1;
+			}
+		}
 		if (!bOutside)
 		{
 			TrackPlot(Hero);
@@ -1568,6 +1589,15 @@ void ULyudCityThings::Tick(float DeltaTime)
 }
 
 // --- collections
+
+void ULyudCityThings::AnnouncePay(int32 Rubles)
+{
+	UE_LOG(LogLyudCity, Display, TEXT("CityThings: earned %d roubles"), Rubles);
+	if (ULyudGameScreen* Screen = ULyudGameScreen::Get(this))
+	{
+		Screen->Toast(LyudText::Get(TEXT("city.job.paid"), { FStringFormatArg(Rubles) }));
+	}
+}
 
 void ULyudCityThings::AnnounceStamps(const TArray<FString>& Stamps)
 {
@@ -2056,6 +2086,11 @@ void ULyudCityThings::FinishGame()
 			{
 				Inv->Add(Item, P.second);
 			}
+		}
+		if (End.Pay > 0)
+		{
+			Inv->Earn(End.Pay);
+			AnnouncePay(End.Pay);
 		}
 	}
 	if (!End.NewStamps.empty())
@@ -2664,6 +2699,20 @@ void ULyudCityThings::OpenBook(int32 Text, int32 Thing, bool bSeated)
 	{
 		BookPages.Add(LyudCityThingsImpl::Str(Key));
 	}
+	// a text the game sets itself (the town paper, its archive: docs/town_paper.md) shows those pages; its own are the fallback
+	BookGenPages.Reset();
+	if (!T->Gen.empty())
+	{
+		if (ULyudTownPaper* Paper = ULyudTownPaper::Get(World))
+		{
+			TArray<FText> Gen;
+			if (Paper->Pages(LyudCityThingsImpl::Str(T->Gen), Gen) && Gen.Num() > 0)
+			{
+				BookGenPages = MoveTemp(Gen);
+				BookPages.Init(FString(), BookGenPages.Num());
+			}
+		}
+	}
 	APlayerController* PC = UGameplayStatics::GetPlayerController(World, 0);
 	AHeroCharacter* Hero = PC ? Cast<AHeroCharacter>(PC->GetPawn()) : nullptr;
 	BookText = Text;
@@ -2722,7 +2771,15 @@ void ULyudCityThings::ShowBookPage()
 	}
 	BookPage = FMath::Clamp(BookPage, 0, Num - 1);
 	const bool bLast = BookPage >= Num - 1;
-	Book->SetPage(LyudText::Get(LyudCityThingsImpl::Str(T->Title)), LineText(BookPages[BookPage]),
+	const bool bGen = BookGenPages.Num() == Num;
+	if (bGen && bLast)
+	{
+		if (ULyudTownPaper* Paper = ULyudTownPaper::Get(this))
+		{
+			Paper->FinishedReading(LyudCityThingsImpl::Str(T->Gen));
+		}
+	}
+	Book->SetPage(LyudText::Get(LyudCityThingsImpl::Str(T->Title)), bGen ? BookGenPages[BookPage] : LineText(BookPages[BookPage]),
 		LyudText::Get(TEXT("city.book.page"), { FStringFormatArg(BookPage + 1), FStringFormatArg(Num) }),
 		LyudText::Get(bLast ? TEXT("city.book.keys_last") : TEXT("city.book.keys")));
 }
@@ -2799,6 +2856,7 @@ void ULyudCityThings::CloseBook()
 	BookText = -1;
 	BookThing = -1;
 	BookPages.Reset();
+	BookGenPages.Reset();
 	bBookSeated = false;
 	if (Book.IsValid())
 	{

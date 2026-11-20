@@ -1,0 +1,10 @@
+{
+ "id": "icon_notebook",
+ "lang": "ru",
+ "model": "higgsfield gpt_image_2_5 (2k, medium)",
+ "aspect": "1:1",
+ "prompt": "A thick school exercise notebook with a plain dark green textured oilcloth cover, slightly open showing squared pages.",
+ "source": "design/city_goods/icons_city_4.png (sidecar design/city_goods/icons_city_4.json), cell 3 (row 1, right), cut into 3x3 equal cells, resized to 512x512",
+ "sha256": "e319f834294fd195c4b3d5562d1559319955e193afa86630cd985763df413371",
+ "strings": {}
+}

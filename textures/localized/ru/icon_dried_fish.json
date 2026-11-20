@@ -1,0 +1,10 @@
+{
+ "id": "icon_dried_fish",
+ "lang": "ru",
+ "model": "higgsfield gpt_image_2_5 (2k, medium)",
+ "aspect": "1:1",
+ "prompt": "A whole flat salted dried roach fish, silvery-grey and stiff, with a string loop through its eye.",
+ "source": "design/city_goods/icons_city_3.png (sidecar design/city_goods/icons_city_3.json), cell 2 (row 1, middle), cut into 3x3 equal cells, resized to 512x512",
+ "sha256": "44397ba36237c4822db29a6ab6b362d9ac5daa154da442bf7beab7b40a39105d",
+ "strings": {}
+}

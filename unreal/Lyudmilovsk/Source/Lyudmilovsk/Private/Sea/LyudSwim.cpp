@@ -12,6 +12,7 @@
 #include "HAL/IConsoleManager.h"
 #include "HeroCharacter.h"
 #include "InputCoreTypes.h"
+#include "LyudInventory.h"
 #include "LyudSave.h"
 #include "LyudText.h"
 #include "Sea/LyudSea.h"
@@ -570,7 +571,14 @@ void ULyudSwimComponent::UpdateAir(ACharacter& C, float DeltaTime)
 	}
 	if (bUnder)
 	{
-		const float Seconds = CVarSwimBreath.GetValueOnGameThread() > 0.f ? CVarSwimBreath.GetValueOnGameThread() : BreathSeconds;
+		float Seconds = CVarSwimBreath.GetValueOnGameThread() > 0.f ? CVarSwimBreath.GetValueOnGameThread() : BreathSeconds;
+		// the sanatorium's diploma for a full course of cure (docs/city_interiors.md "Stays"): a quarter more air while carried
+		static const FName DiplomaId(TEXT("san_diploma"));
+		const ULyudInventory* Pocket = ULyudInventory::Get(this);
+		if (Pocket && Pocket->Count(DiplomaId) > 0)
+		{
+			Seconds *= 1.25f;
+		}
 		// swimming hard burns it faster
 		const float Effort = MoveInputAge < 0.2f ? 1.f + 0.25f * FMath::Clamp(MoveInput.Size(), 0.f, 1.f) : 1.f;
 		Air = FMath::Max(0.f, Air - DeltaTime * Effort / FMath::Max(Seconds, 1.f));

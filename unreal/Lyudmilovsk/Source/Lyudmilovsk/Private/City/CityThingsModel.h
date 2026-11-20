@@ -158,8 +158,8 @@ namespace LyudCity
 	 * {"k": key, "h": [from, to), "d": "mon-fri", "date": ["12-20", "01-10"] (or one "MM-DD"), "after": days since the game
 	 * began, "before": days since the game began it stops, "once": true (shown once at a thing), "every": [n, r] (days since the
 	 * game began % n == r), "festival": "any" | "none" | id | [ids], "weather": word |
-	 * [words] (any of them), "have": "set/piece", "count": ["set", n] (at least n stamps of the set), "collect": "set/piece"
-	 * (not a condition: the stamp the hero gets when the line is shown)}. Every condition given must hold.
+	 * [words] (any of them; a "!word" must not be so now), "have": "set/piece", "count": ["set", n] (at least n stamps of the set), "collect": "set/piece"
+	 * (not a condition: the stamp the hero gets when the line is shown), "pay": roubles (not a condition: a job's pay)}. Every condition given must hold.
 	 */
 	struct FLine
 	{
@@ -177,6 +177,8 @@ namespace LyudCity
 		std::vector<std::string> FestivalIds;
 		/** Any of these EWeatherBit words (0: no weather condition). */
 		uint8_t Weather = 0;
+		/** None of these ("weather": ["dry", "!fog"]: a "!word" must not be so now; unknown weather has none of them). */
+		uint8_t WeatherNot = 0;
 		/** "set/piece" the hero must have (empty: none). */
 		std::string Have;
 		/** At least CountMin stamps of CountSet (CountMin 0: no condition). */
@@ -184,12 +186,17 @@ namespace LyudCity
 		int CountMin = 0;
 		/** The stamp shown lines give ("set/piece", empty: none). */
 		std::string Collect;
+		/** "pay": the roubles the hero earns when a run shows this line (a small job's shift: the act's own line or a game's
+		 *  result line; never a page turned with "next", a topic or a text). 0: none. */
+		int Pay = 0;
 		/** "read": the id of a text (FReadText) the hero must have read to the end (empty: no condition). */
 		std::string ReadText;
 		/** "did": an act's target (what the quests hear as "do") the hero has done at least once; "!target": not yet (empty: no condition). */
 		std::string Did;
 		/** "heard": the id of a staff talk topic (FTopic) the hero has asked about; "!id": not yet (empty: no condition). */
 		std::string Heard;
+		/** "stay": the id of a stay (a sanatorium's voucher: FStayDef) the hero is on today; "!id": not on it (empty: no condition). */
+		std::string Stay;
 
 		bool IsFestive() const { return Festival == EFestivalCond::Any || Festival == EFestivalCond::Ids; }
 
@@ -205,10 +212,22 @@ namespace LyudCity
 
 		/** Do the conditions hold? Stamps: the collections (null: none collected, so "have" and "count" fail); ReadMap: the
 		 *  texts read to the end (text id -> plot; null: none read, so "read" fails); DoneSet: the targets done ("did"; null:
-		 *  nothing done); HeardSet: the topics asked about ("heard"; null: none). */
+		 *  nothing done); HeardSet: the topics asked about ("heard"; null: none); StayMap: the stays, id -> the first day (since the
+		 *  game began) they no longer hold ("stay"; null: on none). */
 		bool Holds(const FWhen& W, const FStamps* Stamps = nullptr, const std::map<std::string, std::string>* ReadMap = nullptr,
-			const std::set<std::string>* DoneSet = nullptr, const std::set<std::string>* HeardSet = nullptr) const
+			const std::set<std::string>* DoneSet = nullptr, const std::set<std::string>* HeardSet = nullptr,
+			const std::map<std::string, long long>* StayMap = nullptr) const
 		{
+			if (!Stay.empty())
+			{
+				const bool bNot = Stay[0] == '!';
+				const auto It = StayMap ? StayMap->find(bNot ? Stay.substr(1) : Stay) : std::map<std::string, long long>::const_iterator();
+				const bool bOn = StayMap && It != StayMap->end() && It->second > W.Since;
+				if (bOn == bNot)
+				{
+					return false;
+				}
+			}
 			if (!ReadText.empty() && (!ReadMap || ReadMap->count(ReadText) == 0))
 			{
 				return false;
@@ -262,6 +281,10 @@ namespace LyudCity
 				return false;
 			}
 			if (Weather != 0 && (W.Weather & Weather) == 0)
+			{
+				return false;
+			}
+			if ((W.Weather & WeatherNot) != 0)
 			{
 				return false;
 			}
@@ -322,6 +345,8 @@ namespace LyudCity
 		int Daily = 0;
 		std::string Shop;
 		std::string Screen;
+		/** "open": another system's screen opens instead of the page (ULyudCityThings::OnOpen: "books", the library's classics). */
+		std::string Open;
 		bool bFade = false;
 		/** Usable whatever the plot's hours (seats, beds, doors: if the hero is in, he may sit down). */
 		bool bAnyHour = false;
@@ -337,6 +362,28 @@ namespace LyudCity
 		bool bSleep = false;
 		/** "topics": what the staff here can be asked about (indices into FModel::Topics), besides the act itself. */
 		std::vector<int> Topics;
+		/** "stay": {"id", "days"}: running it puts the hero on that stay for so many days (a voucher bought at reception; on one
+		 *  already: the days are added to it). Empty / 0: none. */
+		std::string StayId;
+		int StayDays = 0;
+		/** "needs_stay": only for those on that stay; without it the thing does NoStayAct instead (words only, like a closed act:
+		 *  "no_stay", an act id; -1: refused as closed). */
+		std::string NeedsStay;
+		int NoStayAct = -1;
+	};
+
+	/**
+	 * A stay ("stays" of interiors.json; docs/city_interiors.md "Stays"): a sanatorium's voucher. While the hero is on it, its plot
+	 * keeps a curfew: in the curfew hours every thing there whose act is not a lying one or in Allow does CurfewAct instead (the
+	 * duty nurse's words: off to bed).
+	 */
+	struct FStayDef
+	{
+		std::string Id;
+		std::string Plot;
+		float CurfewFrom = -1.f, CurfewTo = -1.f;
+		int CurfewAct = -1;
+		std::set<std::string> Allow;
 	};
 
 	/**
@@ -399,6 +446,8 @@ namespace LyudCity
 		std::string Kind = "book";
 		int Minutes = 2;
 		std::string Collect;
+		/** "gen": the game sets the pages itself (town_paper, paper_archive: ULyudTownPaper); Pages are shown only when it cannot. */
+		std::string Gen;
 		std::vector<std::vector<FLine>> Pages;
 	};
 
@@ -546,6 +595,9 @@ namespace LyudCity
 		/** The stamp a win gives ("chess_wins/{opponent}": the regular beaten). */
 		std::string Collect;
 		std::vector<std::pair<std::string, int>> Prize;
+		/** "pay": roubles per point (aim) or hit (rally) the hero scored, whatever the result: a small job paid by the piece,
+		 *  on top of the result line's own "pay". */
+		int PayPoint = 0;
 		/** Games a day (0: no limit); after them the act runs as a plain act (its own lines). */
 		int Daily = 0;
 		std::string SoundHit, SoundMiss, SoundEnd;
@@ -621,6 +673,8 @@ namespace LyudCity
 		std::vector<std::string> NewStamps;
 		std::vector<std::pair<std::string, int>> Prize;
 		std::string Target;
+		/** Roubles earned (a job's result line and the pay per point): ULyudInventory::Earn. */
+		int Pay = 0;
 	};
 
 	/** "{time}" in a line: the game's clock ("16:40"), for the wall clocks. */
@@ -763,6 +817,8 @@ namespace LyudCity
 		int NumLines = 0;
 		int Minutes = 0;
 		int Price = 0;
+		/** Roubles earned: the "pay" of the line shown (a small job; never on a closed thing's words). */
+		int Pay = 0;
 		bool bFade = false;
 		std::vector<std::pair<std::string, int>> Give;
 		std::string Event;
@@ -771,6 +827,7 @@ namespace LyudCity
 		std::string Sound;
 		std::string Shop;
 		std::string Screen;
+		std::string Open;
 		/** The first use of anything in this plot today: report "visit" with the plot id. */
 		bool bFirstVisitToday = false;
 		/** The plot is closed and the thing did its closed act (no visit, no stamp). */
@@ -986,6 +1043,8 @@ namespace LyudCity
 		/** The staff talk's topics ("topics" of interiors.json) and the room tones ("tones"), in the file's order. */
 		std::vector<FTopic> Topics;
 		std::vector<FTone> Tones;
+		/** The stays ("stays" of interiors.json). */
+		std::vector<FStayDef> Stays;
 		/** The most topics a chooser offers at once. */
 		static constexpr int MaxTopics = 8;
 		/** The most lines an answer has. */
@@ -1010,6 +1069,7 @@ namespace LyudCity
 			Tones.clear();
 			ToneIndex.clear();
 			PlotTone.clear();
+			Stays.clear();
 			ActIndex.clear();
 			ThingIndex.clear();
 			Grid.clear();
@@ -1071,6 +1131,37 @@ namespace LyudCity
 				}
 				ActIndex[A.Id] = (int)Acts.size();
 				Acts.push_back(std::move(A));
+			}
+			for (const auto& Field : Root["acts"].Fields)
+			{
+				const auto Self = ActIndex.find(Field.first);
+				const auto NoStay = ActIndex.find(Field.second["no_stay"].S());
+				if (Self != ActIndex.end() && NoStay != ActIndex.end() && NoStay->second != Self->second)
+				{
+					Acts[(size_t)Self->second].NoStayAct = NoStay->second;
+				}
+			}
+			for (const auto& Field : Root["stays"].Fields)
+			{
+				FStayDef D;
+				D.Id = Field.first;
+				D.Plot = Field.second["plot"].S();
+				const LyudJson::FValue& Curfew = Field.second["curfew"];
+				const auto CurfewAct = ActIndex.find(Field.second["act"].S());
+				if (Curfew.Type == LyudJson::FValue::Array && Curfew.Size() >= 2 && CurfewAct != ActIndex.end())
+				{
+					D.CurfewFrom = Curfew[0].F(23.f);
+					D.CurfewTo = Curfew[1].F(6.f);
+					D.CurfewAct = CurfewAct->second;
+				}
+				for (const LyudJson::FValue& Id : Field.second["allow"].Items)
+				{
+					D.Allow.insert(Id.S());
+				}
+				if (!D.Id.empty() && FindStayDef(D.Id) == nullptr)
+				{
+					Stays.push_back(std::move(D));
+				}
 			}
 			for (const auto& Field : Root["regulars"].Fields)
 			{
@@ -1327,8 +1418,83 @@ namespace LyudCity
 				return -1;
 			}
 			const FThing& T = Things[Thing];
-			return T.ClosedAct >= 0 && IsShut(Thing, When, bOpenAll) ? T.ClosedAct : T.Act;
+			if (T.ClosedAct >= 0 && IsShut(Thing, When, bOpenAll))
+			{
+				return T.ClosedAct;
+			}
+			if (T.Act < 0 || T.Act >= (int)Acts.size())
+			{
+				return T.Act;
+			}
+			// a stay's acts without the stay, and the stay's curfew (a voucher's holder off to bed): words only
+			const FAct& A = Acts[(size_t)T.Act];
+			if (!A.NeedsStay.empty() && A.NoStayAct >= 0 && !OnStay(A.NeedsStay, When.Since))
+			{
+				return A.NoStayAct;
+			}
+			if (!bOpenAll && !Stays.empty() && A.Pose != "lie" && A.StayDays == 0)
+			{
+				for (const FStayDef& D : Stays)
+				{
+					if (D.CurfewAct >= 0 && D.Plot == T.Plot && InHours(When.Hour, D.CurfewFrom, D.CurfewTo) && D.Allow.count(A.Id) == 0
+						&& OnStay(D.Id, When.Since))
+					{
+						return D.CurfewAct;
+					}
+				}
+			}
+			return T.Act;
 		}
+
+		/** Does Thing's act Index only show words (its closed act, or a stay's no_stay / curfew act made from a line key: target
+		 *  "closed")? A no_stay act that is a real act (a voucher sold to those without one) runs in full. */
+		bool IsWordsOnly(int Thing, int Index) const
+		{
+			const FThing& T = Things[(size_t)Thing];
+			return Index != T.Act && (Index == T.ClosedAct || Index < 0 || Index >= (int)Acts.size() || Acts[(size_t)Index].Target == "closed");
+		}
+
+		// --- stays (docs/city_interiors.md "Stays"): a sanatorium's voucher for some days
+
+		const FStayDef* FindStayDef(const std::string& Id) const
+		{
+			for (const FStayDef& D : Stays)
+			{
+				if (D.Id == Id)
+				{
+					return &D;
+				}
+			}
+			return nullptr;
+		}
+		/** Is the hero on that stay on this day (days since the game began)? */
+		bool OnStay(const std::string& Id, long long Since) const
+		{
+			const auto It = StayUntil.find(Id);
+			return It != StayUntil.end() && It->second > Since;
+		}
+		/** The days of the stay left from this one on, today included (0: not on it). */
+		int StayDaysLeft(const std::string& Id, long long Since) const
+		{
+			const auto It = StayUntil.find(Id);
+			return It == StayUntil.end() || It->second <= Since ? 0 : (int)std::min<long long>(It->second - Since, 1000);
+		}
+		/** Puts the hero on a stay for Days from Since on (added to the days left of one he is on); Days <= 0 ends it. */
+		void StartStay(const std::string& Id, int Days, long long Since)
+		{
+			if (Id.empty())
+			{
+				return;
+			}
+			if (Days <= 0)
+			{
+				StayUntil.erase(Id);
+				return;
+			}
+			long long& Until = StayUntil[Id];
+			Until = std::max(Until, Since) + Days;
+		}
+		const std::map<std::string, long long>& GetStays() const { return StayUntil; }
 		const FAct* ActNow(int Thing, const FWhen& When, bool bOpenAll) const
 		{
 			const int I = ActIndexNow(Thing, When, bOpenAll);
@@ -1345,11 +1511,15 @@ namespace LyudCity
 			}
 			const FAct* A = &Acts[(size_t)Index];
 			const FThing& T = Things[Thing];
-			if (Index != T.Act)
+			if (IsWordsOnly(Thing, Index))
 			{
-				return EVerdict::Ok;     // the closed act: only words, whenever
+				return EVerdict::Ok;     // the closed act (or a stay's words): only words, whenever
 			}
 			if (!A->bAnyHour && IsShut(Thing, When, Ask.bOpenAll))
+			{
+				return EVerdict::Closed;
+			}
+			if (!A->NeedsStay.empty() && !OnStay(A->NeedsStay, When.Since))
 			{
 				return EVerdict::Closed;
 			}
@@ -1393,7 +1563,7 @@ namespace LyudCity
 			O.Plot = T.Plot;
 			O.NeedMoney = A->Price;
 			O.NeedItem = A->NeedsItem;
-			O.bClosed = Index != T.Act;
+			O.bClosed = IsWordsOnly(Thing, Index);
 			if (O.Verdict != EVerdict::Ok)
 			{
 				return O;
@@ -1425,7 +1595,7 @@ namespace LyudCity
 			O.NumLines = A->bDaily ? (Holding > 0 ? 1 : 0) : Holding;
 			if (Holding > 0)
 			{
-				O.Line = TakeLine(Thing, *A, When, &O.NewStamps);
+				O.Line = TakeLine(Thing, *A, When, &O.NewStamps, IsWordsOnly(Thing, Index) ? nullptr : &O.Pay);
 			}
 			if (!O.bClosed)
 			{
@@ -1449,11 +1619,16 @@ namespace LyudCity
 			if (!O.bClosed)
 			{
 				Done.insert(O.Target);     // what the hero did ("did" lines: the staff know he saw the film)
+				if (A->StayDays > 0)
+				{
+					StartStay(A->StayId, A->StayDays, When.Since);
+				}
 			}
 			O.Pose = A->Pose;
 			O.Sound = A->Sound;
 			O.Shop = A->Shop;
 			O.Screen = A->Screen;
+			O.Open = O.bClosed ? std::string() : A->Open;
 			return O;
 		}
 
@@ -1485,7 +1660,11 @@ namespace LyudCity
 		std::string PageIdOf(int Thing, int Act) const
 		{
 			const FThing& T = Things[(size_t)Thing];
-			return Act >= 0 && Act == T.ClosedAct ? T.Id + "#closed" : T.Id;
+			if (Act < 0 || Act == T.Act)
+			{
+				return T.Id;
+			}
+			return Act == T.ClosedAct || Act >= (int)Acts.size() ? T.Id + "#closed" : T.Id + "#" + Acts[(size_t)Act].Id;
 		}
 		/** May this line be shown at this page now: its conditions hold and, a "once" line, it was not shown there yet. */
 		bool Usable(const std::string& PageId, const FLine& L, const FWhen& When) const
@@ -1495,7 +1674,7 @@ namespace LyudCity
 		/** Do a line's conditions hold now, the hero's stamps, texts read, deeds done and topics heard included? */
 		bool HoldsNow(const FLine& L, const FWhen& When) const
 		{
-			return L.Holds(When, &Stamps, &ReadAt, &Done, &Heard);
+			return L.Holds(When, &Stamps, &ReadAt, &Done, &Heard, &StayUntil);
 		}
 
 		// --- the staff talk (docs/city_interiors.md "Staff talk"): topics a counter's staff can be asked about besides the act
@@ -2581,8 +2760,9 @@ namespace LyudCity
 			const std::string Page = Things[(size_t)G.Thing].Id + "#" + GameResultName(G.Result);
 			if (CountUsable(Page, Lines, When) > 0)
 			{
-				E.Line = TakeLineAt(Page, Lines, When, &E.NewStamps);
+				E.Line = TakeLineAt(Page, Lines, When, &E.NewStamps, &E.Pay);
 			}
+			E.Pay += D->PayPoint * std::max(0, G.Score);
 			const FRegular* R = RegularOf(G);
 			if (R)
 			{
@@ -2663,12 +2843,14 @@ namespace LyudCity
 			ReadAt.clear();
 			Heard.clear();
 			Done.clear();
+			StayUntil.clear();
 			CountDay = 0;
 		}
 
 		/** The state as a flat map for the save: "day", "t:<act>", "u:<act>", "l:<thing>", "d:<thing>", "v:<plot>",
 		 *  "c:<set>/<piece>" (a stamp), "o:<page>|<line>" (a once line shown), "b:<text>" (the page it was left on), "r:<text>"
-		 *  (read to the end; the value is the plot), "h:<topic>" (a staff talk topic heard), "w:<target>" (done: "did" lines). */
+		 *  (read to the end; the value is the plot), "h:<topic>" (a staff talk topic heard), "w:<target>" (done: "did" lines),
+		 *  "s:<stay>" (on a stay until that day since the game began, exclusive). */
 		void SaveState(std::map<std::string, std::string>& Out) const
 		{
 			Out.clear();
@@ -2723,6 +2905,10 @@ namespace LyudCity
 			{
 				Out["w:" + T] = "1";
 			}
+			for (const auto& P : StayUntil)
+			{
+				Out["s:" + P.first] = std::to_string(P.second);
+			}
 		}
 		void LoadState(const std::map<std::string, std::string>& In)
 		{
@@ -2749,6 +2935,7 @@ namespace LyudCity
 					case 'r': ReadAt[Name] = P.second; break;
 					case 'h': Heard.insert(Name); break;
 					case 'w': Done.insert(Name); break;
+					case 's': StayUntil[Name] = V; break;
 					case 'c':
 					{
 						// kept even when the data no longer declares it (a piece may come back with the content)
@@ -2803,6 +2990,8 @@ namespace LyudCity
 		/** Load only: things whose "floors" wait for every thing to be read. */
 		std::vector<std::pair<int, const LyudJson::FValue*>> LiftPending;
 		std::set<std::string> Done;
+		/** The stays the hero is on: id -> the first day (since the game began) it no longer holds. */
+		std::map<std::string, long long> StayUntil;
 		std::unordered_map<std::string, int> TopicIndex;
 		std::unordered_map<std::string, int> ToneIndex;
 		/** plot id -> index into Tones. */
@@ -2885,6 +3074,7 @@ namespace LyudCity
 			T.Kind = V["kind"].S("book");
 			T.Minutes = std::max(0, std::min(30, V["minutes"].I(2)));
 			T.Collect = V["collect"].S();
+			T.Gen = V["gen"].S();
 			auto One = [](const LyudJson::FValue& E, std::vector<FLine>& Into)
 			{
 				FLine Line;
@@ -2946,13 +3136,13 @@ namespace LyudCity
 		 *  and goes on to the next one on the next day it is read (on a holiday its festival notice takes the day and the run
 		 *  goes on after it, nothing skipped). The closed act keeps a page of its own. A line's stamp is given. Call only when
 		 *  CountHolding > 0. */
-		std::string TakeLine(int Thing, const FAct& A, const FWhen& When, std::vector<std::string>* NewStamps)
+		std::string TakeLine(int Thing, const FAct& A, const FWhen& When, std::vector<std::string>* NewStamps, int* Pay = nullptr)
 		{
-			return TakeLineAt(PageIdOf(Thing, (int)(&A - Acts.data())), A, When, NewStamps);
+			return TakeLineAt(PageIdOf(Thing, (int)(&A - Acts.data())), A, When, NewStamps, Pay);
 		}
 
 		/** TakeLine on the page Id (a game's result lines keep "<thing>#win" and so on). */
-		std::string TakeLineAt(const std::string& Id, const FAct& A, const FWhen& When, std::vector<std::string>* NewStamps)
+		std::string TakeLineAt(const std::string& Id, const FAct& A, const FWhen& When, std::vector<std::string>* NewStamps, int* Pay = nullptr)
 		{
 			const int N = (int)A.Lines.size();
 			const int Cur = LineIndex(Id);
@@ -2968,6 +3158,10 @@ namespace LyudCity
 					{
 						Read = When.Day + 1;     // the run goes on tomorrow after the line shown last
 					}
+				}
+				else if (Read == When.Day + 1 && Cur >= 0 && Cur < N && A.Lines[(size_t)Cur].bOnce && HoldsNow(A.Lines[(size_t)Cur], When))
+				{
+					Pos = Cur;     // today's "once" line stays today's: a story told a part a day is not skipped by reading it twice
 				}
 				else
 				{
@@ -2990,6 +3184,10 @@ namespace LyudCity
 				OnceShown.insert(Id + "|" + A.Lines[(size_t)Pos].Key);
 			}
 			GiveStamp(A.Lines[(size_t)Pos].Collect, NewStamps);
+			if (Pay)
+			{
+				*Pay += A.Lines[(size_t)Pos].Pay;
+			}
 			if (IsLineStamp(A.Collect))
 			{
 				// "films/{line}": the line shown is the piece (a film of the programme, a record of the jukebox)
@@ -3195,6 +3393,7 @@ namespace LyudCity
 				}
 			}
 			D.Daily = std::max(0, V["daily"].I(0));
+			D.PayPoint = std::min(100, std::max(0, V["pay"].I(0)));
 			const LyudJson::FValue& Sounds = V["sounds"];
 			D.SoundHit = Sounds["hit"].S();
 			D.SoundMiss = Sounds["miss"].S();
@@ -3352,15 +3551,26 @@ namespace LyudCity
 				}
 			}
 			const LyudJson::FValue& Wx = L["weather"];
+			auto AddWeather = [&Line](const std::string& Word)
+			{
+				if (!Word.empty() && Word[0] == '!')
+				{
+					Line.WeatherNot = (uint8_t)(Line.WeatherNot | WeatherBit(Word.substr(1)));
+				}
+				else
+				{
+					Line.Weather = (uint8_t)(Line.Weather | WeatherBit(Word));
+				}
+			};
 			if (Wx.Type == LyudJson::FValue::String)
 			{
-				Line.Weather = WeatherBit(Wx.Str);
+				AddWeather(Wx.Str);
 			}
 			for (const LyudJson::FValue& Word : Wx.Items)
 			{
-				Line.Weather = (uint8_t)(Line.Weather | WeatherBit(Word.S()));
+				AddWeather(Word.S());
 			}
-			if (Wx.Type != LyudJson::FValue::Null && Line.Weather == 0)
+			if (Wx.Type != LyudJson::FValue::Null && Line.Weather == 0 && Line.WeatherNot == 0)
 			{
 				Line.Days = 0;     // only unknown words: never shown (not "no condition": a line for the snow must not show in July)
 			}
@@ -3372,9 +3582,11 @@ namespace LyudCity
 				Line.CountMin = Count[1].I(0);
 			}
 			Line.Collect = L["collect"].S();
+			Line.Pay = std::min(500, std::max(0, L["pay"].I(0)));
 			Line.ReadText = L["read"].S();
 			Line.Did = L["did"].S();
 			Line.Heard = L["heard"].S();
+			Line.Stay = L["stay"].S();
 		}
 
 		/** A topic of "topics": {"k": title key, "lines": [line], <line conditions: when it is offered>, "once": true (offered until
@@ -3535,10 +3747,15 @@ namespace LyudCity
 			A.Daily = V["daily"].I(0);
 			A.Shop = V["shop"].S();
 			A.Screen = V["screen"].S();
+			A.Open = V["open"].S();
 			A.bFade = V["fade"].Type == LyudJson::FValue::Bool ? V["fade"].B : V["fade"].I(0) != 0;
 			A.bAnyHour = V["any_hour"].Type == LyudJson::FValue::Bool ? V["any_hour"].B : (A.Pose == "sit" || A.Pose == "lie");
 			A.Collect = V["collect"].S();
 			A.bSleep = V["sleep"].Type == LyudJson::FValue::Bool ? V["sleep"].B : V["sleep"].I(0) != 0;
+			const LyudJson::FValue& StayField = V["stay"];
+			A.StayId = StayField["id"].S();
+			A.StayDays = A.StayId.empty() ? 0 : std::min(60, std::max(0, StayField["days"].I(0)));
+			A.NeedsStay = V["needs_stay"].S();
 			return A;
 		}
 

@@ -1,0 +1,10 @@
+{
+ "id": "icon_library_book",
+ "lang": "ru",
+ "service": "higgsfield",
+ "grid": "design/books/icon_grid.png",
+ "cell": [
+  0,
+  0
+ ]
+}

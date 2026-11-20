@@ -1,0 +1,10 @@
+{
+ "id": "icon_hematogen",
+ "lang": "ru",
+ "model": "higgsfield gpt_image_2_5 (2k, medium)",
+ "aspect": "1:1",
+ "prompt": "A small rectangular dark brown chewy bar divided into squares, half unwrapped from a plain cream paper wrapper.",
+ "source": "design/city_goods/icons_city_3.png (sidecar design/city_goods/icons_city_3.json), cell 3 (row 1, right), cut into 3x3 equal cells, resized to 512x512",
+ "sha256": "7e65286ca58e5e959e370abfefbe3b3229bd638fe89564407b3e0d8df8403a1e",
+ "strings": {}
+}

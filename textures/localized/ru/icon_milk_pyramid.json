@@ -1,0 +1,10 @@
+{
+ "id": "icon_milk_pyramid",
+ "lang": "ru",
+ "model": "higgsfield gpt_image_2_5 (2k, medium)",
+ "aspect": "1:1",
+ "prompt": "A tetrahedron-shaped paper milk carton, white with a plain blue diamond pattern, no lettering.",
+ "source": "design/city_goods/icons_city_2.png (sidecar design/city_goods/icons_city_2.json), cell 7 (row 3, left), cut into 3x3 equal cells, resized to 512x512",
+ "sha256": "94ca2a01363a5adda3808f78f5611f4035e7faddd8790895de35a6143038bcf8",
+ "strings": {}
+}

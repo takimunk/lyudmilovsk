@@ -1,0 +1,10 @@
+{
+ "id": "icon_kvass",
+ "lang": "ru",
+ "model": "higgsfield gpt_image_2_5 (2k, medium)",
+ "aspect": "1:1",
+ "prompt": "A heavy dimpled glass beer mug full of dark amber kvass with a thin head of foam.",
+ "source": "design/city_goods/icons_city_2.png (sidecar design/city_goods/icons_city_2.json), cell 5 (row 2, middle), cut into 3x3 equal cells, resized to 512x512",
+ "sha256": "748bc838bdd6b4182aa2b43ad73d274b42d834d2866bf1c32d0fe7d27819a9c4",
+ "strings": {}
+}

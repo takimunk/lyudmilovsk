@@ -1,0 +1,10 @@
+{
+ "id": "icon_bubliki",
+ "lang": "ru",
+ "model": "higgsfield gpt_image_2_5 (2k, medium)",
+ "aspect": "1:1",
+ "prompt": "Five glossy golden bagel rings sprinkled with poppy seeds, threaded on a loop of rough twine.",
+ "source": "design/city_goods/icons_city_1.png (sidecar design/city_goods/icons_city_1.json), cell 2 (row 1, middle), cut into 3x3 equal cells, resized to 512x512",
+ "sha256": "fe2054db18c6a48902b1d5def7200157f1e5f88202b093089dbb84f371af807c",
+ "strings": {}
+}

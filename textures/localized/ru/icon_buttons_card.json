@@ -1,0 +1,10 @@
+{
+ "id": "icon_buttons_card",
+ "lang": "ru",
+ "model": "higgsfield gpt_image_2_5 (2k, medium)",
+ "aspect": "1:1",
+ "prompt": "Six round mother-of-pearl buttons sewn in two rows onto a plain grey cardboard card.",
+ "source": "design/city_goods/icons_city_3.png (sidecar design/city_goods/icons_city_3.json), cell 8 (row 3, middle), cut into 3x3 equal cells, resized to 512x512",
+ "sha256": "52784fe45ccba576be266b441b0431eeb26658ffda27afdb843ff1d91d65a94a",
+ "strings": {}
+}
