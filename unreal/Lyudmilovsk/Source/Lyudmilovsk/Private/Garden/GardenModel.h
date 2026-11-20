@@ -189,6 +189,21 @@ namespace LyudGarden
 	 */
 	float NeighbourGrowth(const std::string& Crop, float DayOfYear);
 
+	/**
+	 * The harvest fair's judges (docs/festivals.md "The new toys"): what place the harvest the hero brings to the market's
+	 * scales on the fair's day takes. Best: the best quality among what he brought (1..3), Kinds: how many different crops,
+	 * Count: how many things in all. 1..3, or 0: thanked and no more. No luck in it: a well-kept bed wins.
+	 */
+	inline int FairPlace(int Best, int Kinds, int Count)
+	{
+		if (Best <= 0 || Kinds <= 0 || Count <= 0)
+		{
+			return 0;
+		}
+		const int Score = (Best > 3 ? 3 : Best) * 2 + (Kinds > 3 ? 3 : Kinds) + (Count >= 10 ? 1 : 0);   // 3..10
+		return Score >= 9 ? 1 : (Score >= 7 ? 2 : (Score >= 5 ? 3 : 0));
+	}
+
 	/** Season of the year for the advice: 0 spring (Mar-May), 1 summer, 2 autumn, 3 winter. */
 	int Season(float DayOfYear);
 }
