@@ -666,7 +666,8 @@ species("SandMartin", dict(AERIAL, body_len=0.88, arm=0.75, hand=1.15, prim=1.0,
 # ---------------------------------------------------------------- Raptors
 RAPTOR = dict(body_w=1.05, head=1.05, flat_crown=0.8, beak_len=0.78, beak_depth=1.35, beak_width=1.05, beak_taper=0.6, beak_curve=0.0026,
               beak_hook=1.2, prim_profile=ROUNDED, tail=1.3, tail_shape="square", tarsus=1.3, leg_thick=1.15, toes=1.35, claw=1.8,
-              perch_pitch=40, perch_neck=-6, perch_tail=-22, eye=1.2, call_gape=30)
+              perch_pitch=40, perch_neck=-6, perch_tail=-22, eye=1.2, call_gape=30,
+              fly_trail=1.0)   # long legs and big feet do not fit the songbird tuck: in flight they lie back under the tail coverts
 species("Sparrowhawk", dict(RAPTOR, arm=0.95, hand=0.85, feather_shapes={"primary": {"emarg": 0.35}}, fingers=0.8, tail=1.5, tarsus=1.6,
                             leg_thick=0.85), dict(
     styles={
