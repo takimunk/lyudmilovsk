@@ -226,6 +226,18 @@
    "prompt": "A folded newspaper with grey columns and one photo, no readable words.",
    "source": "design/lobby/icons_grid.json: one 4x4 Higgsfield grid, cut by tools/lobby_icons.py (the game-assets rule)"
   },
+  "icon_rail_ticket": {
+   "kind": "icon",
+   "style": "icon",
+   "aspect": "1:1",
+   "prompt": "A small pale green Edmondson card railway ticket, thick cardboard with rounded corners and a faint printed wave pattern, no lettering."
+  },
+  "icon_rail_ticket_punched": {
+   "kind": "icon",
+   "style": "icon",
+   "aspect": "1:1",
+   "prompt": "A small pale green Edmondson card railway ticket with a neat punched hole in its middle and a clipped corner, slightly worn, no lettering."
+  },
   "icon_ticket_stub": {
    "kind": "icon",
    "style": "icon",
@@ -1128,6 +1140,20 @@
    "prompt": "A small varnished wooden box with its lid covered in tiny glued seashells and a starfish, the lid slightly open showing a little mirror.",
    "source": "localization/icon_grids_city.json: icons_city_4, cell 9 (row 3, right), one 3x3 Higgsfield grid (the game-assets rule)"
   },
+  "icon_camera": {
+   "kind": "icon",
+   "style": "icon",
+   "aspect": "1:1",
+   "prompt": "A compact Soviet 35 mm rangefinder camera of the 1960s: a black leatherette body with a satin chrome top plate, a small lens with a knurled focusing ring, two little rangefinder windows above it, sitting half out of its worn brown leather case with the strap coiled beside, without readable lettering.",
+   "source": "design/photo/icons_photo_1.json: icons_photo_1, cell 1 (row 1, left), one 2x2 Higgsfield grid (the game-assets rule)"
+  },
+  "icon_photo_film": {
+   "kind": "icon",
+   "style": "icon",
+   "aspect": "1:1",
+   "prompt": "A small faded blue-and-white cardboard box of 35 mm black-and-white photographic film standing upright, and beside it a black metal film cassette with a short tongue of dark film sticking out, without readable lettering.",
+   "source": "design/photo/icons_photo_1.json: icons_photo_1, cell 2 (row 1, right), one 2x2 Higgsfield grid (the game-assets rule)"
+  },
   "icon_record_dawn_1": {
    "kind": "icon",
    "style": "icon",
@@ -1253,6 +1279,111 @@
    "aspect": "1:1",
    "prompt": "A square long-playing record sleeve with the record sliding out; The sleeve shows a bird's-eye view of pines, the beach and our cable car.",
    "source": "tools/music/icon_grids.json: icons_records_2, cell 9 (row 3, right), one 3x3 Higgsfield grid (the game-assets rule)"
+  },
+  "icon_spade": {
+   "kind": "icon",
+   "style": "icon",
+   "aspect": "1:1",
+   "prompt": "a well-used Soviet digging spade with a pointed steel blade dusted with dark soil and a pale wooden handle worn smooth, lying diagonally",
+   "source": "localization/icon_grids_garden.json: icons_garden_1, cell 1 (row 1, left), one 3x3 Higgsfield grid (the game-assets rule)"
+  },
+  "icon_watering_can": {
+   "kind": "icon",
+   "style": "icon",
+   "aspect": "1:1",
+   "prompt": "a green-painted tin watering can with a long spout ending in a round perforated rose, a few scuffs on the paint",
+   "source": "localization/icon_grids_garden.json: icons_garden_1, cell 2 (row 1, middle), one 3x3 Higgsfield grid (the game-assets rule)"
+  },
+  "icon_garden_compost": {
+   "kind": "icon",
+   "style": "icon",
+   "aspect": "1:1",
+   "prompt": "a small tied sack of coarse brown paper, its top folded open to show dark crumbly compost",
+   "source": "localization/icon_grids_garden.json: icons_garden_1, cell 3 (row 1, right), one 3x3 Higgsfield grid (the game-assets rule)"
+  },
+  "icon_seeds_radish": {
+   "kind": "icon",
+   "style": "icon",
+   "aspect": "1:1",
+   "prompt": "a plain paper seed packet with a printed picture of red round radishes with green tops and white tips, no letters",
+   "source": "localization/icon_grids_garden.json: icons_garden_1, cell 4 (row 2, left), one 3x3 Higgsfield grid (the game-assets rule)"
+  },
+  "icon_seeds_dill": {
+   "kind": "icon",
+   "style": "icon",
+   "aspect": "1:1",
+   "prompt": "a plain paper seed packet with a printed picture of feathery green dill and yellow umbrella flowers, no letters",
+   "source": "localization/icon_grids_garden.json: icons_garden_1, cell 5 (row 2, middle), one 3x3 Higgsfield grid (the game-assets rule)"
+  },
+  "icon_seeds_sunflower": {
+   "kind": "icon",
+   "style": "icon",
+   "aspect": "1:1",
+   "prompt": "a plain paper seed packet with a printed picture of a big yellow sunflower head, a few striped seeds spilled beside it, no letters",
+   "source": "localization/icon_grids_garden.json: icons_garden_1, cell 6 (row 2, right), one 3x3 Higgsfield grid (the game-assets rule)"
+  },
+  "icon_seed_potatoes": {
+   "kind": "icon",
+   "style": "icon",
+   "aspect": "1:1",
+   "prompt": "a string net bag of small yellow-brown seed potatoes with short pale sprouts",
+   "source": "localization/icon_grids_garden.json: icons_garden_1, cell 7 (row 3, left), one 3x3 Higgsfield grid (the game-assets rule)"
+  },
+  "icon_seedling_tomato": {
+   "kind": "icon",
+   "style": "icon",
+   "aspect": "1:1",
+   "prompt": "a young tomato seedling with fuzzy serrated leaves in a plain brown paper cup of dark soil",
+   "source": "localization/icon_grids_garden.json: icons_garden_1, cell 8 (row 3, middle), one 3x3 Higgsfield grid (the game-assets rule)"
+  },
+  "icon_seedling_strawberry": {
+   "kind": "icon",
+   "style": "icon",
+   "aspect": "1:1",
+   "prompt": "a small strawberry plant with three-lobed leaves and a trailing runner in a plain brown paper cup of soil",
+   "source": "localization/icon_grids_garden.json: icons_garden_1, cell 9 (row 3, right), one 3x3 Higgsfield grid (the game-assets rule)"
+  },
+  "icon_radish": {
+   "kind": "icon",
+   "style": "icon",
+   "aspect": "1:1",
+   "prompt": "a tied bunch of five glossy red radishes with green leafy tops and thin white tails",
+   "source": "localization/icon_grids_garden.json: icons_garden_2, cell 1 (row 1, left), one 3x2 Higgsfield grid (the game-assets rule)"
+  },
+  "icon_dill": {
+   "kind": "icon",
+   "style": "icon",
+   "aspect": "1:1",
+   "prompt": "a fresh bunch of feathery green dill tied with a thin strip of twine",
+   "source": "localization/icon_grids_garden.json: icons_garden_2, cell 2 (row 1, middle), one 3x2 Higgsfield grid (the game-assets rule)"
+  },
+  "icon_potatoes": {
+   "kind": "icon",
+   "style": "icon",
+   "aspect": "1:1",
+   "prompt": "a small heap of six new potatoes with thin papery skins and a little dark earth still on them",
+   "source": "localization/icon_grids_garden.json: icons_garden_2, cell 3 (row 1, right), one 3x2 Higgsfield grid (the game-assets rule)"
+  },
+  "icon_tomatoes": {
+   "kind": "icon",
+   "style": "icon",
+   "aspect": "1:1",
+   "prompt": "four ripe red ribbed garden tomatoes with green star-shaped stalks, one with a drop of dew",
+   "source": "localization/icon_grids_garden.json: icons_garden_2, cell 4 (row 2, left), one 3x2 Higgsfield grid (the game-assets rule)"
+  },
+  "icon_strawberries": {
+   "kind": "icon",
+   "style": "icon",
+   "aspect": "1:1",
+   "prompt": "a handful of ripe red garden strawberries with green caps in a small birch-bark basket",
+   "source": "localization/icon_grids_garden.json: icons_garden_2, cell 5 (row 2, middle), one 3x2 Higgsfield grid (the game-assets rule)"
+  },
+  "icon_jam_strawberry": {
+   "kind": "icon",
+   "style": "icon",
+   "aspect": "1:1",
+   "prompt": "a glass jar of dark red strawberry jam with whole berries visible, a square of white gauze tied over the lid with string, a blank paper label",
+   "source": "localization/icon_grids_garden.json: icons_garden_2, cell 6 (row 2, right), one 3x2 Higgsfield grid (the game-assets rule)"
   }
  }
 }

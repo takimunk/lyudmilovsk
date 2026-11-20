@@ -607,6 +607,12 @@ def day_hours(rnd, ctype, age):
     return rnd.uniform(6.4, 8.4), rnd.uniform(22.4, 24.4) % 24.0, rnd.uniform(0.4, 1.0)
 
 
+# posts kept every night of the week by their one holder (the lighthouse is lit every evening: the keeper's log is a small
+# job the "Help wanted" boards offer from six every evening, tools/togethersim found it without a keeper on Mondays and
+# Tuesdays); the night keeper after midnight was already on every day as the extra piece
+NO_DAYS_OFF = {"lighthouse_keeper"}
+
+
 def shifts(role, count, hours, days):
     """A job's posts as one person's shifts each: long hours split into an early and a late shift (a day round the clock
     into three), and staff of a seven-day place take two days off each, in turns."""
@@ -620,7 +626,7 @@ def shifts(role, count, hours, days):
         a = (h0 + span * k / pieces) % 24
         b = (h0 + span * (k + 1) / pieces) % 24
         d = list(week)
-        if len(week) >= 6:
+        if len(week) >= 6 and role not in NO_DAYS_OFF:
             off = {(i * 2) % 7, (i * 2 + 1) % 7}
             d = [x for x in week if x not in off] or week
         out.append({"role": role, "hours": [round(a, 2), round(b, 2)], "days": d})

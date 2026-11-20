@@ -109,6 +109,7 @@
   {"id": "city.q.home_aoki.1", "group": "interiors", "name": "dev.tp.city.q.home_aoki.1", "x": -513.67, "y": 999.01, "z": -1272.0, "yaw": 174.3},
   {"id": "city.q.home_aoki.2", "group": "interiors", "name": "dev.tp.city.q.home_aoki.2", "x": -515.22, "y": 1001.08, "z": -1257.0, "yaw": -5.7},
   {"id": "city.q.home_aoki.3", "group": "interiors", "name": "dev.tp.city.q.home_aoki.3", "x": -70.11, "y": 1068.17, "z": -3620.0, "yaw": 174.5},
+  {"id": "city.q.city_portrait.1", "group": "interiors", "name": "dev.tp.city.q.city_portrait.1", "x": 76.7, "y": 630.87, "z": -3950.0, "yaw": 177.3},
   {"id": "city.q.commune_cloud.1", "group": "interiors", "name": "dev.tp.city.q.commune_cloud.1", "x": -490.92, "y": 543.58, "z": -2900.0, "yaw": -92.2},
   {"id": "city.q.commune_cloud.2", "group": "interiors", "name": "dev.tp.city.q.commune_cloud.2", "x": -491.12, "y": 543.54, "z": -2900.0, "yaw": 177.8},
   {"id": "city.q.commune_cloud.3", "group": "interiors", "name": "dev.tp.city.q.commune_cloud.3", "x": -492.31, "y": 543.84, "z": -2820.0, "yaw": -92.2},

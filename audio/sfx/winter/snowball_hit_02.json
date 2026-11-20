@@ -1,0 +1,20 @@
+{
+ "name": "snowball_hit_02",
+ "asset": "/Game/Audio/Winter/S_snowball_hit_02",
+ "pool": "snowball_hit",
+ "file": "audio/sfx/winter/snowball_hit_02.wav",
+ "generator": "tools/winter_play/sounds.py",
+ "seed": 2201,
+ "rng": "numpy.random.default_rng (PCG64), numpy 2.5.3",
+ "loop": false,
+ "sample_rate": 48000,
+ "bit_depth": 16,
+ "channels": 1,
+ "seconds": 0.4,
+ "peak_dbfs": -4.0,
+ "rms_dbfs": -20.94,
+ "params": {
+  "seconds": 0.4
+ },
+ "license": "Procedural, made by the project; CC BY 4.0."
+}

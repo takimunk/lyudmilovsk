@@ -16,6 +16,7 @@
 #include "HeroCharacter.h"
 #include "InputCoreTypes.h"
 #include "Kismet/GameplayStatics.h"
+#include "Garden/LyudGarden.h"
 #include "Letters/LyudLetters.h"
 #include "LyudGameMenu.h"
 #include "LyudGoodsItem.h"
@@ -289,6 +290,11 @@ void ULyudFriends::OnGreeted(int32 PersonId)
 	{
 		const FString Key = KeyOf(PersonId);
 		Grew(Key, Model->Greeted(Std(Key), Today()));
+		// a friend hands him a seed packet now and then if he keeps a bed (docs/allotment.md)
+		if (ULyudGarden* Garden = ULyudGarden::Get(this))
+		{
+			Garden->OnFriendGreeted(PersonId, Model->Level(Std(Key)));
+		}
 	}
 }
 
@@ -686,6 +692,7 @@ void ULyudFriends::TickTeaChair(AHeroCharacter* Hero)
 	if (Seat.IsEmpty())
 	{
 		TeaNotNowShown.Reset();
+		TeaClosedSeat.Reset();
 		return;
 	}
 	float Hour = 12.f;
@@ -695,6 +702,10 @@ void ULyudFriends::TickTeaChair(AHeroCharacter* Hero)
 		if (Str(H.Chair) != Seat)
 		{
 			continue;
+		}
+		if (TeaClosedSeat == Seat)
+		{
+			return;     // the tea at this table just ended (or was left): not again until he gets up
 		}
 		if (Model->TeaNow(H.Key(), Day, Hour))
 		{
@@ -722,6 +733,7 @@ void ULyudFriends::TickTeaChair(AHeroCharacter* Hero)
 void ULyudFriends::OpenTea(const LyudFriends::FHost& Host)
 {
 	TeaHost = Str(Host.Id);
+	TeaClosedSeat = Str(Host.Chair);
 	TeaAsked.Init(false, FMath::Max(1, Host.Topics));
 	TeaShown = -1;
 	TeaLine = LyudText::Get(TEXT("friends.tea.") + TeaHost + TEXT(".welcome"));
@@ -912,9 +924,11 @@ void ULyudFriends::TickOffer(AHeroCharacter* Hero, APlayerController* PC)
 		const ULyudLetters* Letters = ULyudLetters::Get(World);
 		const bool bCalm = UI && UI->CanOpen(true) && !Hero->IsOnBike() && !Hero->IsLeadingBike() && !(City && City->HasModeUp())
 			&& !(Letters && (Letters->IsOffering() || Letters->HasModeUp()));
+		const ULyudGarden* Garden = ULyudGarden::Get(World);
+		const bool bGardenBusy = Garden && Garden->IsPrompting();
 		const ULyudTownTalkSubsystem* Talk = ULyudTownTalkSubsystem::Get(World);
 		AActor* Actor = nullptr;
-		const int32 Id = bCalm && Talk ? Talk->NearestSpeaker(Actor) : -1;
+		const int32 Id = bCalm && !bGardenBusy && Talk ? Talk->NearestSpeaker(Actor) : -1;
 		if (Id >= 0 && Actor)
 		{
 			const FVector Eye = Hero->GetPawnViewLocation();

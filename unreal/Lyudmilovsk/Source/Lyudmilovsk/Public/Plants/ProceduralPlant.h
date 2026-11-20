@@ -104,6 +104,35 @@ public:
 	/** One line of what is drawn now: size, leaves, litter, fruit. */
 	UFUNCTION(BlueprintCallable, Category = "Plant") FString DescribeState() const;
 
+	/**
+	 * A garden's crop (ULyudGarden, docs/allotment.md): pins what the plant shows to Growth01, 0 just sprouted .. 1 full
+	 * grown and ripe, on DayOfYear (1..366; below 0: the calendar's day at the call, then held). While pinned there is no
+	 * demo growth (bDemoGrowth is switched off) and no aging or season from the calendar: a herb is shown alive, in full
+	 * leaf, as big as its growth, flowering and fruiting by the growth alone (PlantHerbs::GrownState: flowers and Berry fruit
+	 * from 0.4, all out by 0.9); a tree is shown at the age Growth01 x 3 / GrowthRate (near its full height at 1). The plant
+	 * is re-shaped only here, and only when the values differ from those shown (the mesh only when the visible state has
+	 * moved, ~2.5% steps of growth); its Tick then does nothing for a herb. Call it rarely (when the growth moved by a
+	 * couple of percent). Best before FinishSpawning (SpawnActorDeferred), so BeginPlay builds the pinned look straight
+	 * away; called after BeginPlay it re-shapes at once. For a garden crop also set Pot = None, bSnapToGround and
+	 * bAllowPick = false. DevAge / DevDay (developer mode) still win over it.
+	 */
+	UFUNCTION(BlueprintCallable, Category = "Plant") void SetGrowth(float Growth01, float DayOfYear);
+	/** Back to the calendar (and the age from AgeAtStart). */
+	UFUNCTION(BlueprintCallable, Category = "Plant") void ClearGrowth();
+	UFUNCTION(BlueprintPure, Category = "Plant") bool IsGrowthPinned() const { return PinnedGrowth >= 0.f; }
+	UFUNCTION(BlueprintPure, Category = "Plant") float GetPinnedGrowth() const { return PinnedGrowth; }
+	/**
+	 * A herb dead on its feet (a garden crop not watered, killed by frost): leaves and stems browned, a third of the
+	 * leaves gone, no flowers or fruit. One mesh rebuild when it changes; nothing per frame. Trees ignore it.
+	 */
+	UFUNCTION(BlueprintCallable, Category = "Plant") void SetWithered(bool bInWithered);
+	UFUNCTION(BlueprintPure, Category = "Plant") bool IsWithered() const { return bWithered; }
+	/**
+	 * The player may pick up its fallen fruit with E (a tree with a FruitItem). False for a plant whose owner handles E
+	 * itself (a garden crop): no key bound, no prompt. Set it before BeginPlay.
+	 */
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Plant") bool bAllowPick = true;
+
 	virtual void OnGameLoaded_Implementation() override;
 
 	virtual void OnConstruction(const FTransform& Transform) override;
@@ -193,6 +222,10 @@ private:
 	UPROPERTY(Transient) TObjectPtr<UMaterialInstanceDynamic> SoilMaterial;
 	uint32 HerbKey = 0;
 	float HerbBuildMs = 0.f;
+	/** SetGrowth: the growth and day shown (below 0: not pinned); SetWithered. */
+	float PinnedGrowth = -1.f;
+	float PinnedDay = -1.f;
+	bool bWithered = false;
 	EPlantPot BuiltPot = EPlantPot::Auto;
 	float BuiltPotSize = -1.f;
 

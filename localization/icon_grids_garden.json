@@ -1,0 +1,60 @@
+{
+ "_doc": "Grid plan for the allotment's icons (docs/allotment.md, tools/garden/data.py ITEMS): two pictures instead of 15 (the game-assets skill: always a grid). Cell order row by row, left to right. After a run: save the picture at `output`, write its sidecar next to it (service, tool, every argument, job id, output URL, credits), cut it into equal cells (tools/garden/icons.py: 3x3 and 3x2) into textures/localized/ru/icon_<id>.jpg with sidecars, look at every cell, then unreal/scripts/import_hall_assets.py (only these icons) and tools/ui_diary_icons.py <id> for the diary sketches. Each cell's own words are icon_<id>.prompt in localization/assets.json. Both grids were generated on 2026-11-20 (job_id, output_url below); the cloud's proxy can't reach the CDN, so `python3 tools/garden/icons.py` on the Mac downloads, writes the sidecars and cuts.",
+ "grids": [
+  {
+   "id": "icons_garden_1",
+   "what": "garden tools, seeds and seedlings",
+   "service": "higgsfield MCP",
+   "tool": "generate_image",
+   "model": "gpt_image_2_5",
+   "aspect_ratio": "1:1",
+   "resolution": "2k",
+   "quality": "medium",
+   "cols": 3,
+   "rows": 3,
+   "output": "design/garden/icons_garden_1.png",
+   "prompt": "Nine inventory icons for a moody adventure game, arranged as a 3 by 3 grid of equal square cells on one picture: in every cell one object centred and filling most of the cell, softly lit from the upper left, painterly realistic style, plain dark warm-grey cloth background with a faint vignette, the same background and the same scale in every cell (every object drawn at the same icon size, as large as the cell allows with a margin), no borders, frames or lines between the cells, nothing crossing a cell edge, exactly one object or one small group per cell, no text, letters, numbers or logos anywhere, not even on the objects. Everyday goods of a 1970s-80s Soviet seaside town, no real brands. Row 1, left: a well-used Soviet digging spade with a pointed steel blade dusted with dark soil and a pale wooden handle worn smooth, lying diagonally. Row 1, middle: a green-painted tin watering can with a long spout ending in a round perforated rose, a few scuffs on the paint. Row 1, right: a small tied sack of coarse brown paper, its top folded open to show dark crumbly compost. Row 2, left: a plain paper seed packet with a printed picture of red round radishes with green tops and white tips, no letters. Row 2, middle: a plain paper seed packet with a printed picture of feathery green dill and yellow umbrella flowers, no letters. Row 2, right: a plain paper seed packet with a printed picture of a big yellow sunflower head, a few striped seeds spilled beside it, no letters. Row 3, left: a string net bag of small yellow-brown seed potatoes with short pale sprouts. Row 3, middle: a young tomato seedling with fuzzy serrated leaves in a plain brown paper cup of dark soil. Row 3, right: a small strawberry plant with three-lobed leaves and a trailing runner in a plain brown paper cup of soil.",
+   "ids": [
+    "spade",
+    "watering_can",
+    "garden_compost",
+    "seeds_radish",
+    "seeds_dill",
+    "seeds_sunflower",
+    "seed_potatoes",
+    "seedling_tomato",
+    "seedling_strawberry"
+   ],
+   "job_id": "266b7c39-0d56-4090-8365-e70438d07487",
+   "output_url": "https://d8j0ntlcm91z4.cloudfront.net/user_36I3ndR5QeKPyjKAdSKVfbd04n2/hf_20261120_224146_266b7c39-0d56-4090-8365-e70438d07487.png",
+   "generated": "2026-11-20",
+   "credits": 1
+  },
+  {
+   "id": "icons_garden_2",
+   "what": "the harvest and the jam",
+   "service": "higgsfield MCP",
+   "tool": "generate_image",
+   "model": "gpt_image_2_5",
+   "aspect_ratio": "3:2",
+   "resolution": "2k",
+   "quality": "medium",
+   "cols": 3,
+   "rows": 2,
+   "output": "design/garden/icons_garden_2.png",
+   "prompt": "Six inventory icons for a moody adventure game, arranged as a 3 by 2 grid (three columns, two rows) of equal square cells on one picture: in every cell one object centred and filling most of the cell, softly lit from the upper left, painterly realistic style, plain dark warm-grey cloth background with a faint vignette, the same background and the same scale in every cell (every object drawn at the same icon size, as large as the cell allows with a margin), no borders, frames or lines between the cells, nothing crossing a cell edge, exactly one object or one small group per cell, no text, letters, numbers or logos anywhere, not even on the objects. Everyday goods of a 1970s-80s Soviet seaside town, no real brands. Row 1, left: a tied bunch of five glossy red radishes with green leafy tops and thin white tails. Row 1, middle: a fresh bunch of feathery green dill tied with a thin strip of twine. Row 1, right: a small heap of six new potatoes with thin papery skins and a little dark earth still on them. Row 2, left: four ripe red ribbed garden tomatoes with green star-shaped stalks, one with a drop of dew. Row 2, middle: a handful of ripe red garden strawberries with green caps in a small birch-bark basket. Row 2, right: a glass jar of dark red strawberry jam with whole berries visible, a square of white gauze tied over the lid with string, a blank paper label.",
+   "ids": [
+    "radish",
+    "dill",
+    "potatoes",
+    "tomatoes",
+    "strawberries",
+    "jam_strawberry"
+   ],
+   "job_id": "fcca3f3f-36ed-4368-8fb3-6921868227ee",
+   "output_url": "https://d8j0ntlcm91z4.cloudfront.net/user_36I3ndR5QeKPyjKAdSKVfbd04n2/hf_20261120_224149_fcca3f3f-36ed-4368-8fb3-6921868227ee.png",
+   "generated": "2026-11-20",
+   "credits": 1
+  }
+ ]
+}

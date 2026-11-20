@@ -67,7 +67,11 @@ struct FBirdWingPose
 	float SpreadL = 1.f, SpreadR = 1.f;   // 0 folded on the back .. 1 spread (the bind pose)
 	float StrokeL = 0.f, StrokeR = 0.f;   // phase 0..1, 0..0.5 the downstroke (0 = top)
 	float StrokeAmp = 0.f;                // 0 gliding .. 1 a full beat
+	/** TailFan: 1 fanned right out .. 0 as the bind pose .. below 0 closed tighter (a dive). */
 	float Flare = 0.f, TailFan = 0.f, LegsDown = 0.f;
+	/** 0..1, in the air: a part-folded wing is held out to the side in the wing's own plane (swept back, a falcon's "M"),
+	 *  not hung down the flank on the way to the standing bird's fold. */
+	float Level = 0.f;
 	/** First person: the wings swept forward (degrees) and drooped (radians), added at the shoulder. */
 	float SweepDeg = 0.f, DroopRad = 0.f;
 };

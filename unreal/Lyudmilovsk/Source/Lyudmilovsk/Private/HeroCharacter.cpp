@@ -437,7 +437,8 @@ void AHeroCharacter::TurnBody(float DeltaSeconds)
 void AHeroCharacter::FeedAnimation(float DeltaSeconds)
 {
 	const FVector Vel = GetVelocity();
-	const float Speed = Vel.Size2D();
+	// AnimSpeedScale: SetAnimSpeedScale (ULyudWinterPlay: on skates the strides are slower than the glide)
+	const float Speed = Vel.Size2D() * AnimSpeedScale;
 	FHeroBodyState S;
 	S.Speed = Speed;
 	const FVector Local = GetActorRotation().UnrotateVector(Vel);

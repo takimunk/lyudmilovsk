@@ -34,7 +34,9 @@ EVENTS = {"rest_sit", "rest_carry", "rest_serve", "rest_bill", "rest_bye",
           "friend_wave", "friend_bench", "friend_card", "friend_gift", "friend_outing",
           # the hero plays a piano or his guitar (docs/instruments.md)
           "hero_plays", "hero_played", "hero_sing_twinkle", "hero_sing_happy_birthday", "hero_sing_korobeiniki",
-          "hero_sing_jingle_bells", "hero_sing_sakura"}
+          "hero_sing_jingle_bells", "hero_sing_sakura",
+          # the hero walks with a dog that is his friend (docs/animals.md "Friends")
+          "dog_walk"}
 
 sets = []          # [{name, conds: [(k, v)], say: [keys], talk: [[keys]], file}]
 strings = collections.OrderedDict()   # key -> (ru, en, ja)
@@ -130,7 +132,7 @@ VALID = {
     "sex": {"female", "male"}, "sex2": {"female", "male"},
     "doing": acts | {"work", "free", "outing", "date"}, "doing2": acts | {"work", "free", "outing", "date"},
     "at": kinds | ids | {"outdoors", "indoors"},
-    "pose": {"stand", "walk", "talk", "look", "sit", "computer", "eat", "read", "work", "shovel"},
+    "pose": {"stand", "walk", "talk", "look", "sit", "computer", "eat", "read", "work", "shovel", "skate", "walrus"},
     "manner": {r.get("manner", r["id"]) for r in json.load(open(os.path.join(D, "PeopleData", "manners.json"), encoding="utf-8"))["manners"]},
     "met": {"new", "seen", "known"},
     "bond": {"friendly", "friend", "close"},

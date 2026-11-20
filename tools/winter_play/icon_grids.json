@@ -1,0 +1,29 @@
+{
+ "_doc": "Icons of the winter play's six items (docs/winter_play.md): one 3x2 Higgsfield grid, cells row by row, ids[0] row 1 left. Cut by tools/winter_play/icons.py into textures/localized/ru/icon_<id>.jpg; the sidecar next to the picture keeps the job id and URL. Generated 2026-11-20; the cloud cannot reach the CDN: on the Mac run `python3 tools/winter_play/icons.py icons_winter <job_id> <output_url>`, look at every cell, then import (the game-items skill).",
+ "grids": [
+  {
+   "id": "icons_winter",
+   "service": "higgsfield MCP",
+   "tool": "generate_image",
+   "model": "gpt_image_2_6",
+   "aspect_ratio": "3:2",
+   "resolution": "2k",
+   "quality": "medium",
+   "cols": 3,
+   "rows": 2,
+   "output": "design/winter_play/icons_winter.png",
+   "ids": [
+    "skates",
+    "banya_hat",
+    "banya_towel",
+    "birch_venik",
+    "carrot",
+    "coal"
+   ],
+   "prompt": "Six inventory icons for a moody adventure game, arranged as a grid of 3 columns by 2 rows of equal square cells on one picture: in every cell one object of a 1970s-80s Soviet seaside town in winter, centred and filling most of the cell, softly lit from the upper left, painterly realistic style, plain dark warm-grey cloth background with a faint vignette, the same background and the same scale in every cell, no borders, frames or lines between the cells, nothing crossing a cell edge, exactly one object per cell, no text, letters, numbers or logos anywhere. Row 1, left: a pair of brown leather leisure ice skates with steel blades and long laces, tied together by the laces. Row 1, middle: a felt banya hat, a cone-shaped grey-white wool felt cap with a turned-up brim. Row 1, right: a folded white waffle cotton towel with a thin red stripe at the edge. Row 2, left: a birch venik, a tied bundle of leafy birch twigs with green leaves, bound at the handle with twine. Row 2, middle: one fresh orange carrot with a short green top. Row 2, right: two lumps of black glossy coal.",
+   "job_id": "e3508e4b-4d20-4f8d-b5f0-8c83e7a0918f",
+   "output_url": "https://d8j0ntlcm91z4.cloudfront.net/user_36I3ndR5QeKPyjKAdSKVfbd04n2/hf_20261120_223314_e3508e4b-4d20-4f8d-b5f0-8c83e7a0918f.png",
+   "generated": "2026-11-20, credits"
+  }
+ ]
+}

@@ -244,6 +244,8 @@ ALyudLabTerminal::ALyudLabTerminal()
 {
 	Profile = AtonApps::ProfileLab;
 	bUseSeat = false;
+	// AAtonComputer's tick only watches a chair's cutscene; a terminal has none
+	PrimaryActorTick.bStartWithTickEnabled = false;
 	ScreenWidth = LyudAtonLabDetail::ScreenWidthCm;
 	Brightness = 4.f;
 
