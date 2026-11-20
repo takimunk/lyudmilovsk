@@ -391,9 +391,34 @@
  "notes": [
   "promenade unit room, variant barber: placed at each W1 unit whose plan variant is barber"
  ],
+ "dress": [
+  {
+   "id": "unit_rain",
+   "when": {
+    "weather": [
+     "rain",
+     "wet"
+    ]
+   },
+   "tris": 291,
+   "bounds": [
+    [
+     0.715,
+     0.73,
+     0.02
+    ],
+    [
+     3.8,
+     1.664,
+     0.89
+    ]
+   ]
+  }
+ ],
  "tris": {
   "shell": 190,
   "detail": 3527,
-  "windows": 0
+  "windows": 0,
+  "dress": 291
  }
 }
