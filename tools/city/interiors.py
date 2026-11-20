@@ -1611,7 +1611,7 @@ def given_topic(given, tp):
             given[c.partition("/")[0]].add(c.partition("/")[2])
 
 
-CUP_FIELDS = ("title", "venue", "game", "plot", "days", "start", "step", "collect")
+CUP_FIELDS = ("title", "venue", "game", "plot", "days", "start", "step", "collect", "fest_title", "fest_collect")
 DOW = ("mon", "tue", "wed", "thu", "fri", "sat", "sun")
 
 
@@ -1663,6 +1663,15 @@ def build_tournaments(src, strings, regs, things, acts, texts, plot_ids):
             STAMPS_USED.append((where, c["collect"]))
         out[cid] = {"title": c.get("title", ""), "venue": c.get("venue", ""), "game": game, "plot": plot, "weekday": wd,
                     "start": float(start), "step": float(step), "collect": c.get("collect", "")}
+        # a holiday's cup (docs/festivals.md "The new toys"): the board's heading and the champion's second stamp on a holiday
+        if c.get("fest_title"):
+            if not has_string(c["fest_title"], strings):
+                err("%s: fest_title string %s is missing" % (where, c["fest_title"]))
+            out[cid]["fest_title"] = c["fest_title"]
+        if c.get("fest_collect"):
+            check_line_conds(where, {"collect": c["fest_collect"]})
+            STAMPS_USED.append((where, c["fest_collect"]))
+            out[cid]["fest_collect"] = c["fest_collect"]
     for tx, t in texts.items():
         g = t.get("gen", "")
         if g.startswith("cup:") and g[4:] not in out:
@@ -1729,8 +1738,9 @@ def build_collections(src, things, acts, strings, regs=None, texts=None, cups=No
             elif c:
                 given[c.partition("/")[0]].add(c.partition("/")[2])
     for c in (cups or {}).values():
-        if c.get("collect"):
-            given[c["collect"].partition("/")[0]].add(c["collect"].partition("/")[2])
+        for st in (c.get("collect"), c.get("fest_collect")):
+            if st:
+                given[st.partition("/")[0]].add(st.partition("/")[2])
     out = collections.OrderedDict()
     for sid in sorted(src):
         if sid.startswith("_"):

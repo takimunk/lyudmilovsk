@@ -2091,7 +2091,8 @@ void ULyudCityThings::BeginGame(int32 Thing, int32 Minutes, bool bSeated)
 	GameTitle = R ? LyudText::Get(TEXT("city.game.title_vs"), { FStringFormatArg(Title.ToString()), FStringFormatArg(GameOpponent.ToString()) }) : Title;
 	if (const LyudCity::FCupDef* Cup = Cups && R && CupMatchCup >= 0 ? Cups->Def(CupMatchCup) : nullptr)
 	{
-		GameTitle = LyudText::Get(TEXT("city.cup.game_title"), { FStringFormatArg(LyudText::Get(LyudCityThingsImpl::Str(Cup->Title)).ToString()),
+		const LyudCity::FWhen CupNow = LyudCityThingsImpl::When(World);
+		GameTitle = LyudText::Get(TEXT("city.cup.game_title"), { FStringFormatArg(LyudText::Get(LyudCityThingsImpl::Str(Cups->TitleOn(CupMatchCup, CupMatchDay, &CupNow))).ToString()),
 			FStringFormatArg(LyudText::Get(FString::Printf(TEXT("city.cup.rname.%d"), CupMatchRound)).ToString()), FStringFormatArg(GameOpponent.ToString()) });
 		UE_LOG(LogLyudCity, Display, TEXT("CityThings: tournament %s, round %d, against %s"), *LyudCityThingsImpl::Str(Cup->Id), CupMatchRound, *GameOpponent.ToString());
 	}
@@ -2274,17 +2275,19 @@ void ULyudCityThings::FinishGame()
 	FString CupNote;
 	if (Cups && CupMatchCup >= 0)
 	{
-		const LyudCity::FCupResult CR = Cups->Record(*Model, CupMatchCup, CupMatchDay, CupMatchRound, End.Result);
+		// (a holiday today, and the match is today's: the holiday's cup, docs/festivals.md "The new toys")
+		const LyudCity::FWhen CupNow = LyudCityThingsImpl::When(World);
+		const LyudCity::FCupResult CR = Cups->Record(*Model, CupMatchCup, CupMatchDay, CupMatchRound, End.Result, CupNow.bFestival && CupMatchDay == CupNow.Since);
 		End.NewStamps.insert(End.NewStamps.end(), CR.NewStamps.begin(), CR.NewStamps.end());
 		const LyudCity::FCupDef* Cup = Cups->Def(CupMatchCup);
-		const FString CupTitle = Cup ? LyudText::Get(LyudCityThingsImpl::Str(Cup->Title)).ToString() : FString();
+		const FString CupTitle = Cup ? LyudText::Get(LyudCityThingsImpl::Str(Cups->TitleOn(CupMatchCup, CupMatchDay))).ToString() : FString();
 		switch (CR.Note)
 		{
 		case LyudCity::ECupNote::Replay: CupNote = LyudText::Get(TEXT("city.cup.note.replay")).ToString(); break;
 		case LyudCity::ECupNote::Next: CupNote = LyudText::Get(TEXT("city.cup.note.next"), { FStringFormatArg(UTF8_TO_TCHAR(LyudCity::FCups::Hm(CR.NextHour).c_str())) }).ToString(); break;
 		case LyudCity::ECupNote::Out: CupNote = LyudText::Get(TEXT("city.cup.note.out")).ToString(); break;
 		case LyudCity::ECupNote::Champion:
-			CupNote = LyudText::Get(TEXT("city.cup.note.champion"), { FStringFormatArg(CupTitle) }).ToString();
+			CupNote = LyudText::Get(CR.bFestival ? TEXT("city.cup.note.champion_fest") : TEXT("city.cup.note.champion"), { FStringFormatArg(CupTitle) }).ToString();
 			if (Cup)
 			{
 				ULyudQuests::Notify(this, TEXT("cup_won"), LyudCityThingsImpl::Str(Cup->Id));    // the town talks of it (docs/town_rumours.md)

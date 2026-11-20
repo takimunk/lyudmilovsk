@@ -9,6 +9,7 @@
 #include "Engine/Engine.h"
 #include "Engine/GameViewportClient.h"
 #include "Engine/World.h"
+#include "Festival/LyudFestival.h"
 #include "HAL/IConsoleManager.h"
 #include "Kismet/GameplayStatics.h"
 #include "LyudInventory.h"
@@ -310,6 +311,16 @@ void ULyudMusic::RefreshFacts(bool bForce)
 			break;
 		}
 		Prev = L;
+	}
+	// a holiday today: the station's holiday broadcast (docs/festivals.md "The new toys")
+	F.Festival.clear();
+	if (const ULyudFestivalSubsystem* Fest = ULyudFestivalSubsystem::Get(this))
+	{
+		const FName FestId = Fest->IsFestivalToday() ? Fest->ActiveFestival() : NAME_None;
+		if (!FestId.IsNone())
+		{
+			F.Festival = "festival." + LyudMusicImpl::Std(FestId.ToString()) + ".name";
+		}
 	}
 	F.PaperHeadline.clear();
 #if LYUD_MUSIC_HAS_PAPER

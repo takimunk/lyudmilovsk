@@ -52,9 +52,9 @@ def needed_keys(crops, items):
     k |= {"garden.sow.title", "garden.sow.keys", "garden.sow.none"}
     k |= {"garden.toast." + t for t in ("rented", "no_money", "dug", "sown", "watered", "weeded", "picked", "cleared", "covered",
                                         "uncovered", "filled", "dead", "spoilt", "jam_given", "jam_ready", "contest_entered",
-                                        "contest_already", "sold", "friend_seeds", "compost")}
+                                        "contest_already", "sold", "friend_seeds", "compost", "fair_prize", "fair_thanks")}
     k |= {"garden.quality.%d" % q for q in (1, 2, 3)}
-    k |= {"garden.diary." + d for d in ("rented", "first_harvest", "jam", "contest")}
+    k |= {"garden.diary." + d for d in ("rented", "first_harvest", "jam", "contest", "fair")}
     k |= {"garden.board.title", "garden.board.text", "garden.name"}
     k |= {"garden.letter.contest.%s" % p for p in ("1", "2", "3", "none")} | {"garden.letter.from"}
     k |= {"dev.group.garden", "dev.action.garden.kit", "dev.action.garden.grow_day", "dev.action.garden.report", "dev.tp.garden_bed"}
@@ -175,6 +175,7 @@ def build():
         "items": items,
         "sell": D.SELL,
         "jam": D.JAM,
+        "fair": D.FAIR,
         "site": {"plot": D.SITE["plot"], "ue": centre, "yaw": round(deg, 2), "size": list(D.SITE["size"]),
                  "gate": world(D.SITE["gate"])},
         "bed_size": list(D.BED_SIZE),

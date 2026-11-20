@@ -505,6 +505,12 @@ T("friends.outing.invite.coffee",
   "やあ！\n\n{0}、家族みんなでカフェに行きます。大人はコーヒー、子どもはココア、みんなにケーキ。{1}に待ち合わせ。いっしょに座って、鳥たちの近況を聞かせてよ。\n\n{2}")
 T("friends.outing.diary", "Выходные с семьёй друга. Кто позвал: {0}.", "A weekend with a friend's family. Who asked me: {0}.",
   "友だちの家族と週末をすごした。誘ってくれた人：{0}。")
+# --- a holiday together (docs/festivals.md "The new toys"; {0}: the friend, {1}: the holiday) ---------------------------
+T("friends.festival.toast", "{0} машет тебе из толпы: {1} встречаете вместе.", "{0} waves to you from the crowd: you keep {1} together.",
+  "{0}が人ごみの中から手をふっている。{1}をいっしょに過ごす。")
+T("friends.festival.diary", "{1}. В толпе меня нашёл друг: {0}. Дальше ходили вместе, и праздник стал вдвое короче и вдвое лучше.",
+  "{1}. A friend found me in the crowd: {0}. We went round together after that, and the holiday became twice as short and twice as good.",
+  "{1}。人ごみの中で友だちが見つけてくれた：{0}。それからはいっしょに回った。祝日は半分の短さになり、二倍よくなった。")
 T("friends.outing.toast", "{0} машет тебе: вся семья в сборе.", "{0} waves to you: the whole family's here.", "{0}が手をふっている。家族がそろった。")
 
 # --- the diary page "People" (pencil notes about each friend) --------------------------------------------------------

@@ -281,6 +281,35 @@
  "festival": [
   "melies_moon"
  ],
+ "festivals": {
+  "children_day": [
+   "cohl_fantasmagorie",
+   "lumiere_sprinkler",
+   "lumiere_baby"
+  ],
+  "christmas": [
+   "cohl_fantasmagorie",
+   "melies_moon"
+  ],
+  "city_day": [
+   "lumiere_factory",
+   "lumiere_train",
+   "lumiere_sprinkler"
+  ],
+  "halloween": [
+   "melies_rubber_head",
+   "chomon_hotel"
+  ],
+  "new_year": [
+   "cohl_fantasmagorie",
+   "melies_rubber_head",
+   "melies_moon"
+  ],
+  "sea_festival": [
+   "melies_moon",
+   "chomon_hotel"
+  ]
+ },
  "cinemas": {
   "rassvet": {
    "plot": "P-CLUB2",
