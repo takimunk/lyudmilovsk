@@ -1134,6 +1134,8 @@
  "item.badge.desc": "An enamel pin shaped like a red cabin. A collector's item.",
  "item.amber_charm.name": "Amber pendant",
  "item.amber_charm.desc": "A drop of Baltic amber on a thin chain. Warm if you hold it.",
+ "item.san_diploma.name": "Korona Sanatorium diploma",
+ "item.san_diploma.desc": "A stiff sheet with an embossed crown: \"Course of cure completed. Practically healthy.\" The doctor's signature and seal. After the course you can hold your breath longer underwater.",
  "ui.vending.pick": "[1–{1}: choose, now {0}]",
  "transport.prompt.cabin_open": "E: open the door of cabin {0}",
  "transport.prompt.cabin_shut": "E: shut the door of cabin {0}",

@@ -108,6 +108,9 @@ namespace
 		Good(TEXT("postcard"), K::Misc, L::Flat, FVector(0.2f, 10.f, 15.f), FLinearColor(0.8f, 0.78f, 0.7f), 4, 3.f);
 		Good(TEXT("badge"), K::Misc, L::Flat, FVector(0.5f, 3.f, 3.5f), FLinearColor(0.8f, 0.6f, 0.15f), 12, 2.f);
 		Good(TEXT("amber_charm"), K::Misc, L::Flat, FVector(1.2f, 3.5f, 4.5f), FLinearColor(0.9f, 0.5f, 0.05f), 90, 2.f);
+		// the sanatorium's diploma for a full course of cure (docs/city_interiors.md "Stays"): a stiff sheet; carried, it lengthens
+		// the hero's breath underwater (ULyudSwimComponent's air)
+		Good(TEXT("san_diploma"), K::Misc, L::Flat, FVector(0.3f, 21.f, 15.f), FLinearColor(0.92f, 0.86f, 0.7f), 0, 3.f);
 		// the ornithological guide from the Academgorodok library's desk (docs/bird_guide.md): a cloth-bound book with a map of the live birds
 		Good(TEXT("bird_guide"), K::Misc, L::Flat, FVector(2.2f, 14.f, 21.f), FLinearColor(0.18f, 0.32f, 0.22f), 60, 4.f);
 		// the angler's book from the Gastronom (docs/fishing.md): every fish one can catch, and the hero's own catches and records in it

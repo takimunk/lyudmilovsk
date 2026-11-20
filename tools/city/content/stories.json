@@ -150,7 +150,7 @@
  "rules": {
   "shelf:topic=poetry_sale": {"act": "read_poetry_sale"},
   "promenade_unit/photo_desk": {"act": "photo_desk"},
-  "P-SANATORIUM/couch_b": {"act": "sanatorium_night", "props": {"rest": "night"}},
+  "P-SANATORIUM/couch_b": {"act": "san_night_guest", "props": {"rest": "night"}},
 
   "P-KIOSK1/price_board": {"act": "look_kiosk1_prices"},
   "P-KIOSK2/counter": {"props": {"service": "icecream", "shop": "kiosk_icecream"}},

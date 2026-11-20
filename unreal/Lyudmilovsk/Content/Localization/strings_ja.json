@@ -1134,6 +1134,8 @@
  "item.badge.desc": "赤いゴンドラの形のエナメルバッジ。コレクター向け。",
  "item.amber_charm.name": "琥珀のペンダント",
  "item.amber_charm.desc": "細い鎖につけたバルト海の琥珀のしずく。握ると温かい。",
+ "item.san_diploma.name": "療養所コロナの修了証",
+ "item.san_diploma.desc": "王冠が型押しされた厚紙。「療養コース修了。ほぼ健康」。先生のサインと判。療養のあとは水の中でも息が長く続く。",
  "ui.vending.pick": "[1〜{1}：選択、現在{0}]",
  "transport.prompt.cabin_open": "E：キャビン「{0}」のドアを開ける",
  "transport.prompt.cabin_shut": "E：キャビン「{0}」のドアを閉める",
