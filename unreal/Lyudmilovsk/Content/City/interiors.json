@@ -4536,6 +4536,7 @@
   "cube_homes": {"title": "city.coll.cube_homes.title", "pieces": ["a_fridge", "a_sky", "a_postcards", "a_diary", "b_fridge", "b_sky", "b_chest", "b_ledger", "b_nights", "b_mette"]},
   "cups": {"title": "city.coll.cups.title", "pieces": ["tt_cup", "cog_chess", "san_dominoes"]},
   "fair_prizes": {"title": "city.xf.coll.prizes.title", "pieces": ["duck", "lighthouse", "hedgehog", "harmonica", "gull", "postcard"]},
+  "fest_cups": {"title": "city.coll.fest_cups.title", "pieces": ["tt_cup", "cog_chess", "san_dominoes"]},
   "films": {"title": "city.coll.films.title", "pieces": ["city.rassvet.film.fri_d", "city.rassvet.film.fri_e", "city.rassvet.film.mon_d", "city.rassvet.film.mon_e", "city.rassvet.film.sat_d", "city.rassvet.film.sat_e", "city.rassvet.film.sun_d", "city.rassvet.film.sun_e", "city.rassvet.film.thu_d", "city.rassvet.film.thu_e", "city.rassvet.film.tue_d", "city.rassvet.film.tue_e", "city.rassvet.film.wed_d", "city.rassvet.film.wed_e", "city.rassvet.reelfilm_1", "city.rassvet.reelfilm_2"]},
   "hall_evenings": {"title": "city.xh.coll.hall_evenings.title", "pieces": ["choir", "dance", "lecture", "theatre", "premiere"]},
   "kiosk_pass": {"title": "city.xk.coll.pass.title", "pieces": ["news", "ice", "tobacco", "flowers", "cable", "repair"]},
