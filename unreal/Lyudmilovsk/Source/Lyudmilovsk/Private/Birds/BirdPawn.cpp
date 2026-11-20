@@ -55,6 +55,7 @@ namespace
 	TAutoConsoleVariable<int32> CVarBodyDebug(TEXT("lyud.Bird.BodyDebug"), 0, TEXT("Log the first-person body's place against the camera."));
 	TAutoConsoleVariable<float> CVarBodySweep(TEXT("lyud.Bird.BodySweep"), 60.f, TEXT("First-person species body: degrees the wings are drawn swept forward (ABirdActor::ViewSweepDeg)."));
 	TAutoConsoleVariable<float> CVarFov(TEXT("lyud.Bird.Fov"), 100.f, TEXT("The player bird's field of view at rest, degrees."));
+	TAutoConsoleVariable<float> CVarSpeedFov(TEXT("lyud.Bird.SpeedFov"), 12.f, TEXT("Degrees the view widens by from cruise speed to the species' fastest dive."));
 	TAutoConsoleVariable<float> CVarTurnFov(TEXT("lyud.Bird.TurnFov"), 20.f, TEXT("Degrees the view widens by (eased) with the head turned fully sideways or down."));
 	TAutoConsoleVariable<float> CVarNeckUp(TEXT("lyud.Bird.NeckUp"), 1.5f, TEXT("First person, looking straight down: the head raised by this many body radii."));
 	TAutoConsoleVariable<float> CVarNeckBack(TEXT("lyud.Bird.NeckBack"), 0.45f, TEXT("First person, looking straight down: the head drawn back by this share of the torso's length."));
@@ -567,7 +568,10 @@ void ABirdPawn::StepAir(const FBirdControls& InC, float Dt)
 	// Space: the species' own easy rhythm (a share of full power, it holds the cruise); the player's own clicks
 	// beat flat out (the sprint, and the climb), and tire the bird much faster; a take-off: a moment of steady beats
 	const bool bOwnClick = In.ClickL || In.ClickR;
-	if (C.Space)
+	// (looking well down at speed is a dive: the rhythm stops and the wings fold, as a bird's do; a click still beats)
+	const FRotator Gaze = Controller ? Controller->GetControlRotation() : BodyRot;
+	const bool bDiving = BirdFlight::DiveIntent(FMath::DegreesToRadians(FRotator::NormalizeAxis(Gaze.Pitch))) > 0.5 && BirdFlight::Speed(*Flight) > P.Cruise;
+	if (C.Space && !bDiving)
 	{
 		double AutoTuck = 0.0;
 		if (BirdFlight::AutoFlap(P, Dt, AutoClock, AutoTuck))
@@ -597,6 +601,8 @@ void ABirdPawn::StepAir(const FBirdControls& InC, float Dt)
 	}
 	In.TuckL = TuckL;
 	In.TuckR = TuckR;
+	// the bird trims its own wings to the gaze and the speed (BirdFlight::WingTrim), except on the first beats of a take-off
+	In.Reflex = TakeoffAssist > 0.f ? 0.0 : 1.0;
 	Flare = FMath::FInterpTo(Flare, C.Shift ? 1.f : 0.f, Dt, 6.f);
 	In.Flare = Flare;
 	In.Roll = C.Roll;
@@ -606,7 +612,7 @@ void ABirdPawn::StepAir(const FBirdControls& InC, float Dt)
 	}
 
 	// the gaze is the course to follow; a flare near somewhere to stand steers onto it
-	const FRotator Aim = Controller ? Controller->GetControlRotation() : BodyRot;
+	const FRotator Aim = Gaze;
 	In.AimYaw = FMath::DegreesToRadians(Aim.Yaw);
 	In.AimPitch = FMath::DegreesToRadians(FRotator::NormalizeAxis(Aim.Pitch));
 	// Q held: the landing magnet. The nearest perch ahead (a twig in a crown, a treetop, a roof) pulls the bird in;
@@ -666,6 +672,8 @@ void ABirdPawn::StepAir(const FBirdControls& InC, float Dt)
 		}
 		In.Flare = Flare;
 		In.TuckL = In.TuckR = 0.f;
+		// (reeled in on spread wings, however steeply down the perch is)
+		In.Reflex = 0.0;
 		if ((V < VWant * 0.9f || (To.Z > 60.f && V < P.Cruise)) && TakeoffAssist <= 0.f)
 		{
 			AssistClock -= Dt;
@@ -1146,7 +1154,7 @@ FMinimalViewInfo ABirdPawn::BirdView() const
 	V.Location = Head->GetComponentLocation();
 	V.Rotation = Head->GetComponentRotation();
 	const float Speed = Mode == EBirdMode::Air ? BirdFlight::Speed(*Flight) : 0.f;
-	V.FOV = CVarFov.GetValueOnGameThread() + 8.f * FMath::Clamp((float)((Speed - Params->Cruise) / FMath::Max(1.0, Params->MaxSpeed - Params->Cruise)), 0.f, 1.f)
+	V.FOV = CVarFov.GetValueOnGameThread() + CVarSpeedFov.GetValueOnGameThread() * FMath::Clamp((float)((Speed - Params->Cruise) / FMath::Max(1.0, Params->MaxSpeed - Params->Cruise)), 0.f, 1.f)
 		+ CVarTurnFov.GetValueOnGameThread() * LookWiden;
 	V.PerspectiveNearClipPlane = NearClip;
 	if (bFirstPersonBody && OutsideBody && bInsideView)
@@ -1334,7 +1342,8 @@ void ABirdPawn::UpdateOutsideBody(float Dt)
 		// the wings, tail and legs exactly as the flight has them
 		const bool bBeat = S.BurstL > 0 || S.BurstR > 0 || S.PhaseL > 0 || S.PhaseR > 0;
 		const float Fold01 = Mode == EBirdMode::Air ? 0.f : Fold;
-		A->SetWingPose((float)S.SpreadL * (1.f - Fold01), (float)S.SpreadR * (1.f - Fold01), (float)S.PhaseL, (float)S.PhaseR, bBeat ? 1.f : 0.f, Flare,
+		// (the strokes as deep as the effort: the easy rhythm's are shallower than a sprint's or a take-off's)
+		A->SetWingPose((float)S.SpreadL * (1.f - Fold01), (float)S.SpreadR * (1.f - Fold01), (float)S.PhaseL, (float)S.PhaseR, bBeat ? FMath::Clamp((float)S.Amp, 0.4f, 1.f) : 0.f, Flare,
 			FMath::Clamp(FMath::Max(Flare, FMath::Abs((float)S.Bank) * 0.5f), 0.f, 1.f) * (1.f - Fold01), LegsDown);
 	}
 }
@@ -1513,9 +1522,9 @@ void ABirdPawn::PlayCall()
 FString ABirdPawn::DebugLine() const
 {
 	const TCHAR* ModeName = Mode == EBirdMode::Air ? TEXT("air") : Mode == EBirdMode::Ground ? TEXT("ground") : Mode == EBirdMode::Swimming ? TEXT("swimming") : Mode == EBirdMode::Arriving ? TEXT("arriving") : TEXT("leaving");
-	return FString::Printf(TEXT("%s %s  energy %.2f  air %.1f m/s  ground %.1f m/s  climb %+.1f  updraft %+.2f  wind %.1f  load %.1fg  wings %.2f/%.2f  flare %.2f  head %s %s %s"),
+	return FString::Printf(TEXT("%s %s  energy %.2f  air %.1f m/s  ground %.1f m/s  climb %+.1f  updraft %+.2f  wind %.1f  load %.1fg  wings %.2f/%.2f (trim %.2f)  beat x%.2f  flare %.2f  head %s %s %s"),
 		*Species.ToString(), ModeName, (float)Flight->Energy, GetAirspeed(), GetVelocityCm().Size() / 100.f, GetVelocityCm().Z / 100.f, LastUpdraft, LastAir.Size(),
-		Flight->Load, Flight->SpreadL, Flight->SpreadR, Flare, Tracker->IsTracking() ? TEXT("tracked") : TEXT("mouse"), *Tracker->State(), *Head->GetComponentRotation().ToCompactString());
+		Flight->Load, Flight->SpreadL, Flight->SpreadR, Flight->Trim, FMath::Max(Flight->RateL, Flight->RateR), Flare, Tracker->IsTracking() ? TEXT("tracked") : TEXT("mouse"), *Tracker->State(), *Head->GetComponentRotation().ToCompactString());
 }
 
 void ABirdPawn::DevTeleport(const FVector& At)

@@ -21,7 +21,9 @@ never shake it.
 |---|---|
 | Click LMB and RMB together | One wingbeat at full power: down on press, up on release. Clicking rhythmically is flapping; clicking as fast as the species' wingbeat rate allows is its sprint (and its steepest climb), and tires it several times faster than Space |
 | Click one button | One beat of that wing only: a hard roll and turn away from it (rowing with one oar) |
-| Hold both | Wings pulled in to the body: you fall and gain speed (a dive, or the "bound" of a finch between bursts) |
+| Look down | A dive: from about 12 degrees below the horizon the bird folds its wings by itself, as far as its kind does, and falls faster and faster; the steeper the look, the tighter the fold |
+| Look up out of a dive | The wings open as far as the air lets them, the path bends up within the g the species' wings take, and the speed zooms back into height; slowing, they spread right out and you glide |
+| Hold both | Wings pulled right in to the body by hand, whatever the species: you fall and gain speed (the "bound" of a finch between bursts) |
 | Hold one | That wing pulled in: a hard roll and a tight turn toward it |
 | Nothing pressed | Wings spread: you glide |
 | Mouse | The head: look, and the body steers after the look |
@@ -199,7 +201,58 @@ Wild birds (`BirdSim.cpp`, docs/bird_life.md "Wind") use the same sprint and win
 
 `unreal/scripts/test_bird_flight.sh` checks each species' sprint, climb, a headwind just under and just over its sprint,
 and the gusts (a blue tit against an eagle), besides the glide, cruise, take-off, dive, stall, turns, ridge lift, flare
-and stamina.
+and stamina; and, for round 5, the dive by the gaze alone, the pull-out, the zoom, the span at speed, the wingbeat rates
+and a peregrine's stoop against a swan's.
+
+## Wings that trim themselves (round 5)
+
+Nobody tells a falcon to fold its wings: the bird does it, and so does the player's. The span of the wings is a thing
+the bird sets by itself every moment (`BirdFlight::WingTrim`, the state `FState::Trim`), and the drag and the lift are
+computed from that span, so a dive, a pull-out and a soaring glide are not modes or animations: they are what the look
+and the speed do to the wings.
+
+- **The look down folds them.** From about 12 degrees below the horizon to 50, the wings come in as far as the species
+  folds them (`BirdBio` column `tuck`): a peregrine to a teardrop (10 % of its span), a pigeon and the small birds to a
+  quarter, a gull to an M (37 %), a swan hardly at all (82 %). Holding Space in a dive stops the rhythm: a diving bird
+  does not flap.
+- **Speed presses them back.** In a fast glide the span comes in steadily above the best glide speed (Pennycuick 1968,
+  Tucker & Parrott 1970): about 70 % at twice the best glide speed. Fully spread wings also have a speed limit
+  (`FParams::SpreadLimit`, well past the sprint, half the dive speed for a stooper); `FParams::MaxSpeed`, the biology's
+  dive speed, is the same limit for the wings folded in. A peregrine that holds its wings out stops at 49 m/s, folded it
+  reaches 86.
+- **The look up spreads them.** With the gaze above the path (pulling out, or holding a height the speed no longer
+  carries) the wings open as wide as the air allows, and never less than the pull needs. The pull is limited by the g the
+  species' wings take (`pull`: a peregrine 8 g, a swift 6, a swan 2.2), so a swan needs 35 m and more than two seconds to
+  level out of its fastest descent and a blue tit 7 m and two thirds of a second.
+- **Drag by span.** The parasite drag falls with the wings in, the induced drag rises on the shorter span, so a
+  half-folded bird pulling hard pays for it, but most of a dive's speed comes back as height: the test's peregrine turns
+  64 m/s into 139 m.
+- **Rolling.** How fast the body rolls into a turn follows the species' agility (`FParams::BankRate`): a swallow snaps
+  over, a swan leans in.
+- **Wingbeat rate and depth.** The species' easy rhythm (Space) beats at the species table's rate with shallower
+  strokes; clicking flat out beats up to 30 % faster and deeper, and a take-off's first beats faster still
+  (`BirdFlight::BeatRate`, `FState::Amp`): a pigeon 7 Hz travelling, 8.2 flat out, 9.2 off the ground; a blue tit 27, 29
+  and 33; a white-tailed eagle 2.0, 2.1 and 2.3.
+
+| | folds to | dive m/s | pull-out g |
+|---|---|---|---|
+| peregrine | 10 % | 90 | 8 |
+| golden eagle | 15 % | 67 | 5 |
+| common swift | 19 % | 45 | 6 |
+| feral pigeon | 24 % | 40 | 4.5 |
+| house sparrow | 19 % | 23 | 4 |
+| herring gull | 37 % | 35 | 3 |
+| white-tailed eagle | 46 % | 35 | 3 |
+| grey heron | 73 % | 25 | 2.4 |
+| mute swan | 82 % | 30 | 2.2 |
+
+The landing magnet (Q) and the first beats of a take-off fly with the wings out (`FInput::Reflex` 0). Whoever draws the
+bird gets the same numbers as before (`FState::SpreadL/R`, the phases) through `ABirdActor::SetWingPose`, plus the depth
+of the stroke; a new wing rig only has to pose the wings for a spread of 0 (folded) to 1 (the bind pose).
+
+`Bird.Script stoop:<Id>` (`unreal/scripts/record_bird_flight.sh stoop:Peregrine`) starts 420 m over the sea, looks down,
+level and up, and logs `BIRD stoop <phase> ...` with the height, the airspeed, the wings and the g twice a second.
+`lyud.Bird.SpeedFov` is how far the view widens from cruise speed to the fastest dive (12 degrees).
 
 ## Becoming the bird and back
 
