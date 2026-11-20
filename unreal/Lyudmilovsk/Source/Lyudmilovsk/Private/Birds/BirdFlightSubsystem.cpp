@@ -983,7 +983,7 @@ void UBirdFlightSubsystem::OnAfterLoad(ULyudSaveGame* Save)
 
 namespace
 {
-	FAutoConsoleCommandWithWorldAndArgs CmdBecome(TEXT("Bird.Become"), TEXT("Bird.Become [Species] [air]: become a bird on the hero's hand (or in the air ahead), without befriending."),
+	FAutoConsoleCommandWithWorldAndArgs CmdBecome(TEXT("Bird.Become"), TEXT("Bird.Become [Species] [air|high]: become a bird on the hero's hand (or in the air ahead, or 400 m up: room to dive), without befriending."),
 		FConsoleCommandWithWorldAndArgsDelegate::CreateLambda([](const TArray<FString>& Args, UWorld* World)
 		{
 			UBirdFlightSubsystem* S = UBirdFlightSubsystem::Get(World);
@@ -994,7 +994,11 @@ namespace
 			const FRotator Yaw(0.f, PC->GetControlRotation().Yaw, 0.f);
 			const AHeroCharacter* H = Cast<AHeroCharacter>(PC->GetPawn());
 			const FVector Eye = H ? H->EyeLocation() : PC->GetPawn()->GetPawnViewLocation();
-			if (bAir)
+			if (Args.IsValidIndex(1) && Args[1] == TEXT("high"))
+			{
+				S->BecomeSpecies(PC, Species, Eye + Yaw.Vector() * 150.f + FVector(0, 0, 40000.f), Yaw.Yaw, Yaw.Vector() * 1200.f, false);
+			}
+			else if (bAir)
 			{
 				S->BecomeSpecies(PC, Species, Eye + Yaw.Vector() * 150.f, Yaw.Yaw, Yaw.Vector() * 900.f, false);
 			}
