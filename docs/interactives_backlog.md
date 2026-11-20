@@ -146,7 +146,7 @@ repeated front page two days running), citysim, the reading page shows it.
 
 ## 7. Kites on windy days
 
-`[ ]` **Brief (Opus 5.5):** Sell kites at the toy shops (P-WAVE toys, the department store's toy house, the fair's toy
+`[~] kites 2026-11-20` **Brief (Opus 5.5):** Sell kites at the toy shops (P-WAVE toys, the department store's toy house, the fair's toy
 kiosk) and let the hero fly one on the beach and the cliff top. The kite is a small code-built mesh (a diamond and a box
 kite, our own colours) on a string (a sagging line of a few segments), lifted by the game's real wind (`docs/sea_and_wind.md`,
 gusts): too little wind and it falls, too much and it spins and must be reeled in; the mouse pulls and lets out the line,

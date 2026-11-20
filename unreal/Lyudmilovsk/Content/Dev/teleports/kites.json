@@ -1,0 +1,13 @@
+{
+ "teleports": [
+  {
+   "id": "kite_beach",
+   "group": "kite",
+   "name": "dev.tp.kite_beach",
+   "x": 122.0,
+   "y": 40.0,
+   "yaw": 90,
+   "time": "15:00"
+  }
+ ]
+}

@@ -1,4 +1,5 @@
 #include "UI/LyudGameScreen.h"
+#include "Kite/LyudKite.h"
 
 #include "Dev/LyudDev.h"
 
@@ -652,7 +653,7 @@ void ULyudGameScreen::UpdateWear(float DeltaTime)
 
 	// the binoculars: held to the eyes while the right mouse button is down
 	// (not while a cigarette is in the hand: its right button puts it out, ULyudSmoking)
-	const bool bLook = bFree && Inv->IsWorn(TEXT("binoculars")) && ((PC->IsInputKeyDown(EKeys::RightMouseButton) && !ULyudSmoking::HasHand(this) && !ULyudFishing::HasHand(this)) || CVarBinoculars.GetValueOnGameThread() != 0);
+	const bool bLook = bFree && Inv->IsWorn(TEXT("binoculars")) && ((PC->IsInputKeyDown(EKeys::RightMouseButton) && !ULyudSmoking::HasHand(this) && !ULyudFishing::HasHand(this) && !ULyudKites::HasHand(this)) || CVarBinoculars.GetValueOnGameThread() != 0);
 	const float Before = Binoculars;
 	Binoculars = FMath::FInterpConstantTo(Binoculars, bLook ? 1.f : 0.f, DeltaTime, 3.5f);
 	if (Binoculars > 0.f)

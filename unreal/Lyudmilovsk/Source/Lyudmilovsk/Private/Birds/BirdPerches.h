@@ -32,6 +32,10 @@ public:
 	/** The best perch within MaxDist (cm) of From, roughly the way Dir looks; false if there is none. */
 	bool Find(UWorld* World, const FVector& From, const FVector& Dir, float MaxDist, const AActor* Ignore, FPerch& Out);
 
+	/** Is P (cm) inside a tree's crown (its ellipsoid shrunk by Fill: the dense middle of the leaves)? A kite flown into it
+	 *  is caught (ULyudKites). Built on first use from the same trees as the perches. */
+	bool InCrown(UWorld* World, const FVector& P, float Fill = 0.75f);
+
 	/** The branches (cm) of every tree within Radius of At, for tests: Fn(A, B, RadiusA, RadiusB). */
 	void ForEachBranch(UWorld* World, const FVector& At, float Radius, TFunctionRef<void(const FVector&, const FVector&, float, float)> Fn);
 
