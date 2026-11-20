@@ -23,5 +23,9 @@
  "dev.tp.spring_ravine": "湧き水の谷",
  "dev.tp.cliff_stair": "海への階段",
  "dev.tp.cliff_lookout": "崖の上",
- "dev.tp.mayak_station": "マヤーク駅"
+ "dev.tp.mayak_station": "マヤーク駅",
+ "ui.south.sit": "E：座る",
+ "ui.south.stand": "E：立つ",
+ "ui.south.view": "E：望遠鏡をのぞく",
+ "ui.south.view_stop": "E：望遠鏡から離れる"
 }

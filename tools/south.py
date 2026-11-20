@@ -694,11 +694,39 @@ def _boardwalk():
 
 def _axis_yaw(heading):
     """The yaw of a thing whose long axis is its mesh's local X (a bridge, a boardwalk piece), for that axis to run
-    along `heading` (degrees from map +X toward +Y). The kit's rule: yaw 0 lays local X along map Y."""
-    return (heading - 90.0) % 360.0
+    point along `heading` (degrees from map +X toward +Y, which is Unreal's yaw). A thing's yaw is where its front
+    (Blender -Y) looks and its local +X is a quarter turn before that, so the front is on the heading's +90 side
+    (a boardwalk bay, a rail on the other side; an end ramp falls toward the heading)."""
+    return (heading + 90.0) % 360.0
 
 
-BESIDE = {"trail_sign": 1.9, "info_board": 2.3, "picnic_table": 2.6}     # kind: metres from a trail's middle
+# the finger-posts: variant -> ((x, y), [(place word, distance word, (x, y) its plank points at)]); the words are
+# tools/south_signs.py's keys south.sign.trail.<word> and south.sign.trail.dist.<word>. Every post stands with its front
+# at SIGN_YAW; sign_planks() gives each plank's turn on the post for blender/south/props_land.py.
+SIGN_YAW = 90.0
+SIGNS = {
+    0: ((ALLEY_END[0] - 3.2, ALLEY_END[1] + 1.0), [("town", "0_5km", (-56.0, 139.0)), ("lookout", "60m", BELVEDERE),
+                                                   ("sea", "110m", (74.0, STAIR_Y))]),
+    1: ((FOOT[0] + 3.0, FOOT[1] - 1.0), [("aton", "0_3km", (-151.0, 255.0)), ("town", "0_2km", (-207.0, 342.0)),
+                                         ("spring", "0_4km", (-256.0, 275.0))]),
+    2: ((107.0, 244.0), [("promenade", "0_2km", (112.0, 440.0)), ("hide", "0_2km", (52.0, 247.0)),
+                         ("station_beach", "0_3km", (150.0, -60.0))]),
+    3: ((14.5, 13.5), [("cliff", "0_25km", (62.0, -150.0)), ("aton", "110m", (-14.0, 119.0))]),
+}
+
+
+def sign_planks():
+    """{variant: [(place word, distance word, yaw_deg)]}: yaw_deg is the plank's turn on its post in the mesh's frame
+    (counter-clockwise seen from above, 0 = the post's front): the front's yaw minus the bearing to the place."""
+    out = {}
+    for v, ((x, y), rows) in SIGNS.items():
+        px, py = _beside(x, y, BESIDE["trail_sign"])
+        out[v] = [(name, dist, round((SIGN_YAW - math.degrees(math.atan2(ty - py, tx - px)) + 180.0) % 360.0 - 180.0, 0))
+                  for name, dist, (tx, ty) in rows]
+    return out
+
+
+BESIDE = {"trail_sign": 1.9, "info_board": 2.3, "picnic_table": 2.6, "town_stele": 5.2}     # kind: metres from a trail's middle
 
 
 def _beside(x, y, r):
@@ -736,9 +764,9 @@ def things():
     put("viewer", BELVEDERE[0] + 4.6, BELVEDERE[1] + 1.2, 80.0)
     put("brow_bench", BELVEDERE[0] - 8.5, BELVEDERE[1] - 1.0, 100.0, kit="north")
     # the junction at the alley's end
-    put("trail_sign", ALLEY_END[0] - 3.2, ALLEY_END[1] + 1.0, 90.0, 0)
+    put("trail_sign", *SIGNS[0][0], SIGN_YAW, 0)
     put("info_board", ALLEY_END[0] + 4.0, ALLEY_END[1] - 3.0, 250.0, 0)
-    put("trail_sign", 14.5, 13.5, 90.0, 3)
+    put("trail_sign", *SIGNS[3][0], SIGN_YAW, 3)
     # the stair down the cliff: its front (the way down) to the sea
     (tx, ty), (fx, fy) = stair_line()
     put("cliff_stair", tx, ty, 0.0, z=W.height(tx, ty))
@@ -750,11 +778,12 @@ def things():
         h = math.radians(_dir(T["town"], k) + 90.0)
         put("trail_marker", x + 1.7 * math.cos(h), y + 1.7 * math.sin(h), rnd.uniform(0.0, 360.0), kit="north")
     # the foot: the junction's post, the footbridge, the stele
-    put("trail_sign", FOOT[0] + 3.0, FOOT[1] - 1.0, 100.0, 1)
+    put("trail_sign", *SIGNS[1][0], SIGN_YAW, 1)
     bx, by, bk = bridge()
     town = T["town"]
     kb = min(range(len(town)), key=lambda i: math.hypot(town[i][0] - bx, town[i][1] - by))
-    put("plank_bridge", bx, by, _axis_yaw(_dir(town, kb)), 0, z=W.valley(bx, by) + 0.22)
+    # the 9 m one: the cut is 6 m from bank to bank; its deck a hand over the meadow, the ramps' toes in the turf
+    put("plank_bridge", bx, by, _axis_yaw(_dir(town, kb)), 1, z=W.valley(bx, by) + 0.12)
     put("town_stele", STELE[0], STELE[1], 250.0)
     # the hide and the boardwalk through the reeds to the beach
     put("bird_hide", HIDE_AT[0], HIDE_AT[1], 0.0)
@@ -771,7 +800,7 @@ def things():
     put("net_rack", mx - W.BEACH_W - 13.0, 219.0, 80.0, 1)
     put("rowboat", mx - W.BEACH_W - 4.0, 236.0, 70.0, kit="north")
     put("rowboat", mx - W.BEACH_W - 2.0, 229.0, 95.0, kit="north")
-    put("trail_sign", mx - W.BEACH_W - 1.0, 244.0, 0.0, 2)
+    put("trail_sign", *SIGNS[2][0], SIGN_YAW, 2)
     c = _course()
     for k in range(len(c["pts"])):
         if c["kind"][k] == "bank" and W.inland(*c["pts"][k]) < W.BEACH_W * 0.8 and k % 2 == 0:

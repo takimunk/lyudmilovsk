@@ -234,7 +234,7 @@
    "kind": "trail_sign",
    "x": -183.92,
    "y": 306.58,
-   "yaw": 100.0,
+   "yaw": 90.0,
    "variant": 1,
    "set": "south"
   },
@@ -243,16 +243,16 @@
    "kind": "plank_bridge",
    "x": -208.15,
    "y": 322.69,
-   "yaw": 27.4,
-   "variant": 0,
+   "yaw": 207.4,
+   "variant": 1,
    "set": "south",
-   "z": -36.13
+   "z": -36.23
   },
   {
    "id": "town_stele_1",
    "kind": "town_stele",
-   "x": -207.0,
-   "y": 356.0,
+   "x": -204.53,
+   "y": 357.58,
    "yaw": 250.0,
    "variant": 0,
    "set": "south"
@@ -280,7 +280,7 @@
    "kind": "boardwalk",
    "x": -37.14,
    "y": 270.06,
-   "yaw": 251.8,
+   "yaw": 71.8,
    "variant": 0,
    "set": "south"
   },
@@ -289,7 +289,7 @@
    "kind": "boardwalk",
    "x": -31.37,
    "y": 268.14,
-   "yaw": 251.5,
+   "yaw": 71.5,
    "variant": 1,
    "set": "south"
   },
@@ -298,7 +298,7 @@
    "kind": "boardwalk",
    "x": -25.46,
    "y": 266.21,
-   "yaw": 252.3,
+   "yaw": 72.3,
    "variant": 0,
    "set": "south"
   },
@@ -307,7 +307,7 @@
    "kind": "boardwalk",
    "x": -19.54,
    "y": 264.41,
-   "yaw": 253.9,
+   "yaw": 73.9,
    "variant": 2,
    "set": "south"
   },
@@ -316,7 +316,7 @@
    "kind": "boardwalk",
    "x": -13.68,
    "y": 262.85,
-   "yaw": 256.5,
+   "yaw": 76.5,
    "variant": 0,
    "set": "south"
   },
@@ -325,7 +325,7 @@
    "kind": "boardwalk",
    "x": -7.67,
    "y": 261.7,
-   "yaw": 261.6,
+   "yaw": 81.6,
    "variant": 1,
    "set": "south"
   },
@@ -334,7 +334,7 @@
    "kind": "boardwalk",
    "x": -1.58,
    "y": 261.05,
-   "yaw": 266.3,
+   "yaw": 86.3,
    "variant": 0,
    "set": "south"
   },
@@ -343,7 +343,7 @@
    "kind": "boardwalk",
    "x": 4.48,
    "y": 260.74,
-   "yaw": 267.9,
+   "yaw": 87.9,
    "variant": 0,
    "set": "south"
   },
@@ -352,7 +352,7 @@
    "kind": "boardwalk",
    "x": 10.56,
    "y": 260.46,
-   "yaw": 266.7,
+   "yaw": 86.7,
    "variant": 2,
    "set": "south"
   },
@@ -361,7 +361,7 @@
    "kind": "boardwalk",
    "x": 16.58,
    "y": 259.9,
-   "yaw": 262.7,
+   "yaw": 82.7,
    "variant": 0,
    "set": "south"
   },
@@ -370,7 +370,7 @@
    "kind": "boardwalk",
    "x": 22.58,
    "y": 258.74,
-   "yaw": 255.6,
+   "yaw": 75.6,
    "variant": 1,
    "set": "south"
   },
@@ -379,7 +379,7 @@
    "kind": "boardwalk",
    "x": 28.44,
    "y": 256.89,
-   "yaw": 249.2,
+   "yaw": 69.2,
    "variant": 0,
    "set": "south"
   },
@@ -388,7 +388,7 @@
    "kind": "boardwalk",
    "x": 34.09,
    "y": 254.55,
-   "yaw": 245.8,
+   "yaw": 65.8,
    "variant": 0,
    "set": "south"
   },
@@ -397,7 +397,7 @@
    "kind": "boardwalk",
    "x": 39.68,
    "y": 252.0,
-   "yaw": 245.1,
+   "yaw": 65.1,
    "variant": 0,
    "set": "south"
   },
@@ -406,7 +406,7 @@
    "kind": "boardwalk",
    "x": 45.31,
    "y": 249.51,
-   "yaw": 247.1,
+   "yaw": 67.1,
    "variant": 0,
    "set": "south"
   },
@@ -415,7 +415,7 @@
    "kind": "boardwalk",
    "x": 51.13,
    "y": 247.36,
-   "yaw": 252.4,
+   "yaw": 72.4,
    "variant": 0,
    "set": "south"
   },
@@ -424,7 +424,7 @@
    "kind": "boardwalk",
    "x": 57.06,
    "y": 245.76,
-   "yaw": 257.4,
+   "yaw": 77.4,
    "variant": 0,
    "set": "south"
   },
@@ -433,7 +433,7 @@
    "kind": "boardwalk",
    "x": 63.03,
    "y": 244.57,
-   "yaw": 260.0,
+   "yaw": 80.0,
    "variant": 1,
    "set": "south"
   },
@@ -442,7 +442,7 @@
    "kind": "boardwalk",
    "x": 69.15,
    "y": 243.58,
-   "yaw": 261.6,
+   "yaw": 81.6,
    "variant": 0,
    "set": "south"
   },
@@ -451,7 +451,7 @@
    "kind": "boardwalk",
    "x": 75.23,
    "y": 242.7,
-   "yaw": 262.1,
+   "yaw": 82.1,
    "variant": 2,
    "set": "south"
   },
@@ -460,7 +460,7 @@
    "kind": "boardwalk",
    "x": -41.41,
    "y": 271.47,
-   "yaw": 71.8,
+   "yaw": 251.8,
    "variant": 3,
    "set": "south"
   },
@@ -469,7 +469,7 @@
    "kind": "boardwalk",
    "x": 79.71,
    "y": 242.08,
-   "yaw": 262.1,
+   "yaw": 82.1,
    "variant": 3,
    "set": "south"
   },
@@ -521,9 +521,9 @@
   {
    "id": "trail_sign_4",
    "kind": "trail_sign",
-   "x": 107.29,
+   "x": 107.0,
    "y": 244.0,
-   "yaw": 0.0,
+   "yaw": 90.0,
    "variant": 2,
    "set": "south"
   },
@@ -865,7 +865,7 @@
    "kind": "wattle_fence",
    "x": -314.02,
    "y": 243.79,
-   "yaw": 102.2,
+   "yaw": 282.2,
    "variant": 0,
    "set": "south"
   },
@@ -874,7 +874,7 @@
    "kind": "wattle_fence",
    "x": -320.77,
    "y": 241.95,
-   "yaw": 109.0,
+   "yaw": 289.0,
    "variant": 0,
    "set": "south"
   },
@@ -883,7 +883,7 @@
    "kind": "wattle_fence",
    "x": -327.57,
    "y": 239.02,
-   "yaw": 117.5,
+   "yaw": 297.5,
    "variant": 1,
    "set": "south"
   },
@@ -892,7 +892,7 @@
    "kind": "wattle_fence",
    "x": -337.62,
    "y": 232.27,
-   "yaw": 128.0,
+   "yaw": 308.0,
    "variant": 0,
    "set": "south"
   },
@@ -901,7 +901,7 @@
    "kind": "wattle_fence",
    "x": -342.64,
    "y": 228.15,
-   "yaw": 130.4,
+   "yaw": 310.4,
    "variant": 0,
    "set": "south"
   },
@@ -910,7 +910,7 @@
    "kind": "wattle_fence",
    "x": -347.65,
    "y": 223.76,
-   "yaw": 131.7,
+   "yaw": 311.7,
    "variant": 1,
    "set": "south"
   },
@@ -919,7 +919,7 @@
    "kind": "wattle_fence",
    "x": -352.64,
    "y": 219.29,
-   "yaw": 131.9,
+   "yaw": 311.9,
    "variant": 0,
    "set": "south"
   },
@@ -928,7 +928,7 @@
    "kind": "wattle_fence",
    "x": -362.38,
    "y": 210.81,
-   "yaw": 129.3,
+   "yaw": 309.3,
    "variant": 0,
    "set": "south"
   },
@@ -937,7 +937,7 @@
    "kind": "wattle_fence",
    "x": -367.04,
    "y": 207.18,
-   "yaw": 126.1,
+   "yaw": 306.1,
    "variant": 1,
    "set": "south"
   },
@@ -946,7 +946,7 @@
    "kind": "wattle_fence",
    "x": -371.47,
    "y": 204.2,
-   "yaw": 121.1,
+   "yaw": 301.1,
    "variant": 0,
    "set": "south"
   },
@@ -955,7 +955,7 @@
    "kind": "wattle_fence",
    "x": -376.59,
    "y": 201.61,
-   "yaw": 112.4,
+   "yaw": 292.4,
    "variant": 0,
    "set": "south"
   },

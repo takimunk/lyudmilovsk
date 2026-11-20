@@ -19,6 +19,7 @@ Headless (unreal/scripts/import_south.sh runs them all):
 import contextlib
 import glob
 import json
+import math
 import os
 import sys
 import traceback
@@ -133,7 +134,7 @@ def place(face_y=None):
             removed += 1
     with open(SOUTH_JSON) as f:
         data = json.load(f)
-    placed, missing = 0, {}
+    placed, missing, spots = 0, {}, 0
     saved_face = N._CACHE.get("face_y")
     N._CACHE["face_y"] = face_y
     try:
@@ -153,6 +154,7 @@ def place(face_y=None):
                     if kind in ("trail_sign", "info_board", "town_stele"):
                         a.tags = list(a.tags) + [unreal.Name("Text:south")]
                     placed += 1
+                    spots += _spots(a, it, N.row_for(kind, variant))
     finally:
         if saved_face is None:
             N._CACHE.pop("face_y", None)
@@ -160,7 +162,40 @@ def place(face_y=None):
             N._CACHE["face_y"] = saved_face
     if missing:
         log("no mesh yet, skipped: %s" % ", ".join("%s x%d" % kv for kv in sorted(missing.items())))
-    log("placed %d things (removed %d old actors)" % (placed, removed))
+    log("placed %d things, %d spots to sit or look (removed %d old actors)" % (placed, spots, removed))
+
+
+SEAT_CM = 45.0           # the bench pose's cushion over its floor (AHeroCharacter::SitOn)
+SEAT_FRONT_CM = 10.0     # the seat's frame is under the cushion's front edge
+
+
+def _spots(actor, it, row):
+    """ALyudSouthSpot actors for a placed thing: one per seat of its manifest row ("seats": [x, y, z, yaw] in the mesh's
+    Blender frame, z the cushion's top, yaw counter-clockwise from the front) and one where a viewer's looker stands
+    ("stand_at"). The mesh's Blender (x, y, z) m is the actor's local (x, -y, z) * 100; a sitter whose Blender yaw is s
+    faces the thing's front yaw minus s."""
+    cls = unreal.load_class(None, "/Script/Lyudmilovsk.LyudSouthSpot")
+    if cls is None:
+        return 0
+    eas = unreal.get_editor_subsystem(unreal.EditorActorSubsystem)
+    tf = actor.get_actor_transform()
+    front = float(it.get("yaw", 0.0))
+    rows = [("seat", s[0], s[1], s[2] - SEAT_CM / 100.0, front - s[3], SEAT_FRONT_CM) for s in row.get("seats") or []]
+    st = row.get("stand_at")
+    if st:
+        rows.append(("view", st[0], st[1], st[2], front, 0.0))
+    for n, (kind, bx, by, bz, yaw, ahead) in enumerate(rows):
+        at = unreal.MathLibrary.transform_location(tf, unreal.Vector(bx * 100.0, -by * 100.0, bz * 100.0))
+        r = math.radians(yaw)
+        at = unreal.Vector(at.x + math.cos(r) * ahead, at.y + math.sin(r) * ahead, at.z)
+        a = eas.spawn_actor_from_class(cls, at, unreal.Rotator(roll=0.0, pitch=0.0, yaw=yaw))
+        a.set_editor_property("kind", unreal.Name(kind))
+        a.set_editor_property("seat_height", SEAT_CM)
+        a.set_editor_property("reach", 110.0 if kind == "seat" else 90.0)
+        a.set_actor_label("South_%s_%s_%d" % (_cap(kind), it["id"], n + 1))
+        a.set_folder_path(FOLDER + "/Spots")
+        a.tags = list(a.tags) + [unreal.Name(TAG)]
+    return len(rows)
 
 
 def _cap(s):

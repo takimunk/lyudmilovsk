@@ -23,5 +23,9 @@
  "dev.tp.spring_ravine": "Родниковая балка",
  "dev.tp.cliff_stair": "Лестница к морю",
  "dev.tp.cliff_lookout": "Обрыв",
- "dev.tp.mayak_station": "Станция «Маяк»"
+ "dev.tp.mayak_station": "Станция «Маяк»",
+ "ui.south.sit": "E — сесть",
+ "ui.south.stand": "E — встать",
+ "ui.south.view": "E — посмотреть в трубу",
+ "ui.south.view_stop": "E — отойти от трубы"
 }

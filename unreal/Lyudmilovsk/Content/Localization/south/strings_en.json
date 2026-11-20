@@ -23,5 +23,9 @@
  "dev.tp.spring_ravine": "Spring Ravine",
  "dev.tp.cliff_stair": "The Stair to the Sea",
  "dev.tp.cliff_lookout": "The Cliff Edge",
- "dev.tp.mayak_station": "Mayak Station"
+ "dev.tp.mayak_station": "Mayak Station",
+ "ui.south.sit": "E — sit down",
+ "ui.south.stand": "E — get up",
+ "ui.south.view": "E — look through the viewer",
+ "ui.south.view_stop": "E — step away from the viewer"
 }
