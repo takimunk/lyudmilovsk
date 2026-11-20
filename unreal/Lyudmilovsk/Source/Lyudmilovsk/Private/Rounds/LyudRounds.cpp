@@ -475,7 +475,7 @@ void ULyudRounds::TickDoors()
 	if (R.Kind == LyudRounds::EKind::Paper)
 	{
 		// the papers: the left button throws (not with a rod, a kite or a cigarette in hand, nor as a bird)
-		const bool bHandsFree = !ULyudFishing::HasHand(this) && !ULyudKite::HasHand(this) && !ULyudSmoking::HasHand(this);
+		const bool bHandsFree = !ULyudFishing::HasHand(this) && !ULyudKiteFlying::HasHand(this) && !ULyudSmoking::HasHand(this);
 		const ULyudInventory* Inv = ULyudInventory::Get(this);
 		const bool bEmptyHand = !Inv || Inv->EquippedItem().IsNone();
 		if (R.Papers > 0 && bHandsFree && bEmptyHand && !PC->IsLookInputIgnored() && PC->WasInputKeyJustPressed(EKeys::LeftMouseButton))
