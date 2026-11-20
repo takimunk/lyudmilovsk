@@ -766,7 +766,11 @@ def sp_animal(ctx):
 
 
 def birds(w):
-    return [a for a in unreal.GameplayStatics.get_all_actors_of_class(w, unreal.BirdActor) if mesh_of(a) and mesh_of(a).is_visible()]
+    lst = list(unreal.GameplayStatics.get_all_actors_of_class(w, unreal.BirdActor))
+    vis = [a for a in lst if not a.is_hidden() and mesh_of(a) and mesh_of(a).is_visible()]
+    if len(vis) < len(lst):
+        log("bird actors %d, drawn %d" % (len(lst), len(vis)))
+    return vis or lst
 
 
 def bird_census(w, label):
@@ -791,8 +795,10 @@ def sp_birdgnd(ctx):
         # on the ground, not on a wire or roof: near the terrain under it (birds walk/hop on the ground)
         a = pick_actor(cand, c, lambda a: ename(a.get_state()) in ("HOP", "WALK", "PECK", "EAT"))
         if not a:
-            cmd(w, "lyud.Birds.SpawnNear Pigeon %.0f %.0f %.0f" % (c.x + 300.0, c.y, c.z - 200.0))
-            log("birdgnd: none on the ground, spawned a pigeon")
+            if not st.get("spawned_bird"):
+                st["spawned_bird"] = 1
+                cmd(w, "lyud.Birds.SpawnNear FeralPigeon")   # 3 m in front of the camera pawn, on the ground
+                log("birdgnd: none on the ground, spawned a feral pigeon")
         ctx["subj"] = a
         if a:
             l = a.get_actor_location()
