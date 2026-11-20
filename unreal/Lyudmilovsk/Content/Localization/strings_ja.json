@@ -2029,5 +2029,16 @@
  "item.rubber_ball.name": "ゴムボール",
  "item.rubber_ball.desc": "青い線の入った赤いボール。思ったより高くはずむ。壁に当てると特に。",
  "item.shell_box.name": "貝殻の小箱",
- "item.shell_box.desc": "貝殻をびっしり貼った小さな箱。中には小さな鏡と、ニスの匂い。"
+ "item.shell_box.desc": "貝殻をびっしり貼った小さな箱。中には小さな鏡と、ニスの匂い。",
+ "ui.shop.title_station_buffet": "{0}駅のビュッフェ",
+ "transport.hall.attendant_prompt": "E：駅員にたずねる",
+ "line.transport.barista.hello.1": "いらっしゃいませ！コーヒー、紅茶、ピロシキ、全部できたてですよ。",
+ "line.transport.barista.hello.2": "キャビンが来るまでにお茶を一杯どうぞ。",
+ "line.transport.barista.hello.3": "キャベツのピロシキ、焼きたてです。",
+ "line.transport.attendant.hello.1": "こんにちは。キャビンは呼び出し制です。ボタンはホームの横にあります。",
+ "line.transport.attendant.hello.2": "端に近づかないでください。",
+ "line.transport.attendant.hello.3": "何かあればお声がけください。",
+ "line.transport.attendant.help.1": "こちらが路線図です。光っているところが現在地です。",
+ "line.transport.attendant.help.2": "別の路線へのお乗り換えは天頂駅です。",
+ "line.transport.attendant.help.3": "海へは琥珀海岸駅で降りて、そこから歩いてください。"
 }

@@ -94,6 +94,18 @@ ROWS = [
     ("line.transport.arrive_mayak.1", "Маяк. Просим освободить кабину.", "Lighthouse. Please leave the cabin.", "灯台です。キャビンからお降りください。"),
     ("line.transport.arrive_amber.1", "Янтарный берег.", "Amber Shore.", "琥珀海岸です。"),
     ("line.transport.arrive_horizon.1", "Горизонт. Просим освободить кабину.", "Horizon. Please leave the cabin.", "地平線です。キャビンからお降りください。"),
+    # halls v3 (docs/transport.md "Halls v3"): the buffet, the attendant, their greetings
+    ("ui.shop.title_station_buffet", "Буфет станции «{0}»", "Station buffet, {0}", "{0}駅のビュッフェ"),
+    ("transport.hall.attendant_prompt", "E — спросить дежурную по станции", "E: ask the station attendant", "E：駅員にたずねる"),
+    ("line.transport.barista.hello.1", "Здравствуйте! Кофе, чай, пирожки — всё свежее.", "Hello! Coffee, tea, pies, all fresh.", "いらっしゃいませ！コーヒー、紅茶、ピロシキ、全部できたてですよ。"),
+    ("line.transport.barista.hello.2", "Заходите, пока кабина едет, — успеете выпить чаю.", "Come in, you've time for a tea before the cabin comes.", "キャビンが来るまでにお茶を一杯どうぞ。"),
+    ("line.transport.barista.hello.3", "Пирожки с капустой только из печи.", "Cabbage pies, straight from the oven.", "キャベツのピロシキ、焼きたてです。"),
+    ("line.transport.attendant.hello.1", "Добрый день. Кабины ходят по вызову, кнопка у перрона.", "Good day. Cabins come when called: the button is by the platform.", "こんにちは。キャビンは呼び出し制です。ボタンはホームの横にあります。"),
+    ("line.transport.attendant.hello.2", "Не стойте у края, пожалуйста.", "Please keep back from the edge.", "端に近づかないでください。"),
+    ("line.transport.attendant.hello.3", "Если что-то нужно — спрашивайте.", "If you need anything, just ask.", "何かあればお声がけください。"),
+    ("line.transport.attendant.help.1", "Вот схема линий. Мы здесь, где огонёк.", "Here's the route map. We're where the light is.", "こちらが路線図です。光っているところが現在地です。"),
+    ("line.transport.attendant.help.2", "Пересадка на другую линию — на Зените.", "Change for the other line at Zenith.", "別の路線へのお乗り換えは天頂駅です。"),
+    ("line.transport.attendant.help.3", "К морю — до Янтарного берега, оттуда пешком.", "For the sea, ride to Amber Shore and walk from there.", "海へは琥珀海岸駅で降りて、そこから歩いてください。"),
 ]
 
 

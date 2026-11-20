@@ -9,6 +9,7 @@
 //     the clock, a bench, a plant; the hi3d vestibule placed at the connector on a podium.
 // The pylons' shafts are lathes here too (the hi3d shaft streaked and tore when stretched).
 #include "Transport/LyudCableway.h"
+#include "Transport/LyudStationHall.h"
 
 #include "CablewaySim.h"
 #include "LyudMeshKit.h"
@@ -1008,6 +1009,8 @@ void ALyudCableway::PlaceVestibule(const LyudTransport::FNetwork& Net, int32 S)
 	FLyudBuiltStation& B = Built[S];
 	const FTransform& C = B.Connector;
 	FLyudMeshKit K;
+	// halls v3 (LyudStationHall.cpp): the dressed hall brings its own lamps, buffet, desk and seats instead of the old ones
+	const bool bHallV3 = ALyudStationHall::HasDressing(Style);
 	if (Mesh && V.IsValid() && V->HasField(TEXT("track_gap")))
 	{
 		UStaticMeshComponent* M = Single(Mesh, C, true);
@@ -1047,7 +1050,7 @@ void ALyudCableway::PlaceVestibule(const LyudTransport::FNetwork& Net, int32 S)
 			}
 			const int32 Nx = FMath::Clamp(FMath::RoundToInt((B1.X - B0.X) / 300.f), 1, 4), Ny = FMath::Clamp(FMath::RoundToInt((B1.Y - B0.Y) / 300.f), 1, 4);
 			const float LightZ = FMath::Clamp(RoomH - 60.f, 250.f, 450.f);
-			for (int32 Ix = 0; Ix < Nx; Ix++)
+			for (int32 Ix = 0; Ix < (bHallV3 ? 0 : Nx); Ix++)
 			{
 				for (int32 Iy = 0; Iy < Ny; Iy++)
 				{
@@ -1172,7 +1175,7 @@ void ALyudCableway::PlaceVestibule(const LyudTransport::FNetwork& Net, int32 S)
 				return true;
 			};
 			FTransform T;
-			if (Spot(TEXT("kiosk"), T))
+			if (!bHallV3 && Spot(TEXT("kiosk"), T))
 			{
 				// an ivory counter, glass over it, the glowing label (the spot faces the room: +X toward the visitor)
 				K.BoxIn(TEXT("tx_enamel"), T, FVector(-40.f, 0.f, 55.f), FVector(110.f, 170.f, 110.f), true, TEXT("tx_amber"));
@@ -1181,7 +1184,7 @@ void ALyudCableway::PlaceVestibule(const LyudTransport::FNetwork& Net, int32 S)
 				Widget(S, SNew(SLyudLabel).Key(TEXT("transport.vestibule.kiosk")), FTransform(FRotator::ZeroRotator, FVector(20.f, 0.f, 255.f)) * T * C,
 					FVector2D(600.f, 140.f), 0.25f, true);
 			}
-			if (Spot(TEXT("bench"), T))
+			if (!bHallV3 && Spot(TEXT("bench"), T))
 			{
 				K.BoxIn(TEXT("tx_amber"), T, FVector(0.f, 0.f, 44.f), FVector(46.f, 180.f, 6.f), true);
 				K.BoxIn(TEXT("tx_amber"), T, FVector(-24.f, 0.f, 75.f), FVector(5.f, 180.f, 40.f), false);

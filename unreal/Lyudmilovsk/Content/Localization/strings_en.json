@@ -2029,5 +2029,16 @@
  "item.rubber_ball.name": "Rubber ball",
  "item.rubber_ball.desc": "A red ball with a blue stripe. It bounces higher than you expect, especially off a wall.",
  "item.shell_box.name": "Seashell box",
- "item.shell_box.desc": "A little box covered in seashells. Inside, a small mirror and the smell of varnish."
+ "item.shell_box.desc": "A little box covered in seashells. Inside, a small mirror and the smell of varnish.",
+ "ui.shop.title_station_buffet": "Station buffet, {0}",
+ "transport.hall.attendant_prompt": "E: ask the station attendant",
+ "line.transport.barista.hello.1": "Hello! Coffee, tea, pies, all fresh.",
+ "line.transport.barista.hello.2": "Come in, you've time for a tea before the cabin comes.",
+ "line.transport.barista.hello.3": "Cabbage pies, straight from the oven.",
+ "line.transport.attendant.hello.1": "Good day. Cabins come when called: the button is by the platform.",
+ "line.transport.attendant.hello.2": "Please keep back from the edge.",
+ "line.transport.attendant.hello.3": "If you need anything, just ask.",
+ "line.transport.attendant.help.1": "Here's the route map. We're where the light is.",
+ "line.transport.attendant.help.2": "Change for the other line at Zenith.",
+ "line.transport.attendant.help.3": "For the sea, ride to Amber Shore and walk from there."
 }

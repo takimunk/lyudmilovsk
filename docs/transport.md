@@ -311,6 +311,36 @@ machine:
   by `tools/lobby_strings.py`): water, coffee, tea, chips, chocolate, biscuits, ice cream, pie, seeds, candy, two magazines, a paper,
   a postcard, a badge, an amber pendant. New item: see the `game-items` skill; to sell it add it to a stock in `lobby.json`.
 
+## Halls v3: a real station hall (2026-11-20)
+
+Dima: "inside the stations it is crude, dark and empty; there is a cafe and nobody to buy from". Each hall is a ring 1.5..2.8 m
+wide round the tower's core (the lift and the stair come up through the railed opening in its middle), so v3 dresses that
+ring like a real station hall with the town's interior kit (`blender/city/interior_kit.py`, CT_* materials, the picture atlas):
+
+- `blender/transport/halls.py` (pip's bpy in the cloud, or Blender): per vestibule style, from `vestibules.json` and, when the
+  vestibule GLBs are at hand (`HALL_VEST=<dir>`; the vestibules.py export), rays at the room's wall (solid / window / door).
+  The exit side stays a clear concourse; the attendant's desk at the old kiosk spot; on the other three sides of the core a
+  **buffet** (counter with a samovar, cups, a till, shelves and the menu behind, the BUFFET sign hung over, two lamps; at
+  Aton the existing coffee bar is the buffet), a **waiting corner** (rows of seats along the wall and one with its back to
+  the railing, a rug, a clock, planters) and a **cafe corner** (round tables with chairs, newspapers, a magazine rack, a
+  stand-up table by the railing); a wooden wainscot with a brass rail along every solid stretch of wall, posters and mosaic
+  panels between the windows, a stone border round the stairwell, a dark band along the wall, a wooden cove with a glowing
+  underside round the opening (low halls), pendants over every corner and round the stairwell. The vending machine, the
+  signature piece and the route diagram keep their places and are kept clear.
+- Writes `blender/export/city/tr_hall__<style>.glb` (built per checkout, not committed: import like a town building,
+  `TYPES=tr_hall__wing,... STEPS=import unreal/scripts/import_city.sh` -> `/Game/City/Buildings/tr_hall__<style>/`), the
+  committed `Content/Transport/halls.json` (lamps, planters, staff, seats, stands, counter, models) and previews
+  `renders/transport/halls/<style>_<n>.jpg` with the vestibule.
+- Game: `ALyudStationHall` (`LyudStationHall.cpp`), spawned by `FurnishVestibule` when the hall's dressing is imported (else
+  the old furniture stays): the dressing and its hidden collision cores, the lamps (lumens, shadowless, on only within 45 m),
+  live plants in the planters, and people only within 35 m: the barista and the station attendant 6:00..24:00, passengers by
+  the hour (rush hours up to 9, at night 0..1) seated (some reading, eating at the tables) or standing at the railing, the
+  windows, the diagram, the counter; one now and then leaves and another comes, never in sight. Bodies are townsfolk who are
+  "away" (never met in town), each with its pool model as fallback. T at the barista: the buffet (`lobby.json` stock
+  `buffet`, title `ui.shop.title_station_buffet`); E at the attendant: the route diagram; both greet once a visit
+  (`line.transport.barista|attendant.*`). The old kiosk box, bench box and the grid of room lights are off in a v3 hall.
+- Console: `Transport.Hall [station]`, `lyud.Transport.HallPeople 0|1`.
+
 ## Assets
 
 - Windows: `optimize.py` reads each model's base colour under every face: dark, dull texels (and the lantern's amber) become a
