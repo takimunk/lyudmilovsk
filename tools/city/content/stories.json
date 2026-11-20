@@ -39,7 +39,7 @@
   "_home_listen": {"prompt": "city.home.listen.prompt", "minutes": 15, "pose": "sit", "sound": "morse_beep", "any_hour": true},
 
   "holm_painting": {"like": "_home_look", "lines": "city.home.holm.painting"},
-  "holm_chess": {"like": "_home_look", "lines": "city.home.holm.chess", "sound": "chess_piece"},
+  "holm_chess": {"like": "chess", "lines": "city.home.holm.chess", "any_hour": true},
   "holm_log": {"like": "_home_read", "lines": "city.home.holm.log"},
   "holm_aquarium": {"prompt": "city.do.aquarium.prompt", "minutes": 5, "sound": "aquarium_bubbles", "any_hour": true, "lines": "city.home.holm.aquarium"},
   "holm_record": {"like": "_home_record", "lines": "city.home.holm.record"},
@@ -115,7 +115,7 @@
   "santos_desk": {"prompt": "city.home.notebooks.prompt", "minutes": 10, "pose": "sit", "sound": "pencil_scratch", "any_hour": true, "lines": "city.home.santos.desk"},
   "santos_wardrobe": {"like": "_home_look", "lines": "city.home.santos.wardrobe"},
   "santos_birds": {"like": "_home_look", "lines": "city.home.santos.birds"},
-  "santos_chess": {"like": "_home_look", "lines": "city.home.santos.chess", "sound": "chess_piece"},
+  "santos_chess": {"like": "chess", "lines": "city.home.santos.chess", "any_hour": true},
   "santos_map": {"like": "_home_look", "lines": "city.home.santos.map"},
   "santos_sewing": {"prompt": "city.home.sewing.prompt", "minutes": 3, "any_hour": true, "lines": "city.home.santos.sewing"},
   "santos_science": {"like": "_home_read", "lines": "city.home.santos.science"},

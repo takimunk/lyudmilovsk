@@ -48,6 +48,20 @@ spots), `blender/export/city/<type>[__<plot>].json` (the buildings' flats, beds,
 - **Bodies**: for now the townsfolk borrow the current human models from a pool (many people of one look); a generator
   will give them their own. The story's people keep their unique bodies (one model, one person).
 
+## Pinned guests: the sanatorium
+
+The sanatorium «Корона»'s four guests of the table stories (docs/city_interiors.md "Stays") are townsfolk the generator
+doesn't make: `python3 tools/town/sanatorium_guests.py` adds them to its output (idempotent; run it after every
+regeneration, `--check` says whether the files are up to date). Pyotr Gromov (78) and Sonya Mironova (16) at the window
+table, Boris Tamm (81) and Nikolai Sazonov (80) at the chess table; each has a room on the sanatorium's first floor
+(`P-SANATORIUM/1-01..04`), goes to bed by the curfew and gets up early. Three duties a day (`eat_sanatorium_breakfast|lunch|supper`, one activity a meal since the life finds a duty by its activity; pose eat:
+breakfast 8:30, lunch 13:30, supper 18:30, 45 minutes) at the walked place `P-SANATORIUM-DINING`: in by the sanatorium's
+door, one slot a guest at his or her own chair (the city things `dining_table_1`, `dining_1_c`, `dining_table_2`,
+`dining_2_c`: the acts `san_seat_<name>`). The rest of the day they are free like anybody (benches, the sea air, the club's
+chess for the two old friends). A slot with `"thing"` holds that city thing while somebody sits or sits down there
+(`UPeopleLifeSubsystem::UpdateThingHolds`, once a second, `ULyudCityThings::ClaimThing` / `ReleaseThing`): the hero gets
+"taken" instead of sitting on a guest. `tools/peoplesim/run.sh town` checks them at lunch on Wednesday.
+
 ## How it works
 
 - **Places**: the restaurant (its `seats.json` has an entrance) is walked: diners and staff go in by its front door to

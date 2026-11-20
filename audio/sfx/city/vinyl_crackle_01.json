@@ -1,0 +1,21 @@
+{
+ "name": "vinyl_crackle_01",
+ "asset": "/Game/Audio/City/S_vinyl_crackle_01",
+ "pool": "vinyl_crackle",
+ "file": "audio/sfx/city/vinyl_crackle_01.wav",
+ "generator": "tools/music/sounds.py",
+ "seed": 2071,
+ "rng": "numpy.random.default_rng (PCG64), numpy 2.5.3",
+ "loop": false,
+ "sample_rate": 48000,
+ "bit_depth": 16,
+ "channels": 1,
+ "seconds": 3.0,
+ "peak_dbfs": -6.0,
+ "rms_dbfs": -38.3,
+ "params": {
+  "seconds": 3.0,
+  "turn_s": 1.8
+ },
+ "license": "Procedural, made by the project; CC BY 4.0."
+}

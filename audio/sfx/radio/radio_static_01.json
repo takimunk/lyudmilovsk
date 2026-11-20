@@ -1,0 +1,22 @@
+{
+ "name": "radio_static_01",
+ "asset": "/Game/Audio/Radio/S_radio_static_01",
+ "pool": "radio_static",
+ "file": "audio/sfx/radio/radio_static_01.wav",
+ "generator": "tools/music/sounds.py",
+ "seed": 1063,
+ "rng": "numpy.random.default_rng (PCG64), numpy 2.5.3",
+ "loop": true,
+ "sample_rate": 48000,
+ "bit_depth": 16,
+ "channels": 1,
+ "seconds": 8.0,
+ "peak_dbfs": -9.0,
+ "rms_dbfs": -35.26,
+ "params": {
+  "seconds": 8,
+  "band_hz": 1800,
+  "crackles": 40
+ },
+ "license": "Procedural, made by the project; CC BY 4.0."
+}

@@ -609,7 +609,7 @@ class _WsText(html.parser.HTMLParser):
     """The reading text of a rendered Wikisource page: paragraphs, verse, headings; links to its own subpages."""
 
     SKIP_CLASSES = ("ws-noexport", "noprint", "navbox", "reference", "references", "mw-editsection", "ws-header",
-                    "header_", "headertemplate", "mw-references-wrap", "metadata", "noexport", "toc", "sister")
+                    "header_", "headertemplate", "linenum", "mw-file", "thumb", "mw-references-wrap", "metadata", "noexport", "toc", "sister")
 
     def __init__(self, root: str):
         super().__init__(convert_charrefs=True)
@@ -621,11 +621,13 @@ class _WsText(html.parser.HTMLParser):
         self.stack: list[tuple[str, bool]] = []
         self.mode = None  # "p", "h", "poem", "pre"
         self.htag = ""
+        self.after_br = False
 
     def _skipping(self, tag, attrs) -> bool:
         a = dict(attrs)
         cls = a.get("class", "") or ""
-        if tag in ("table", "style", "script", "sup") or a.get("id") in ("toc", "headertemplate"):
+        # tables are read: verse and whole texts sit in layout tables (Мцыри); navigation tables carry skip classes
+        if tag in ("style", "script", "sup") or a.get("id") in ("toc", "headertemplate", "title_line"):
             return True
         return any(c in cls for c in self.SKIP_CLASSES)
 
@@ -633,6 +635,7 @@ class _WsText(html.parser.HTMLParser):
         if tag in self.VOID:
             if tag == "br" and not self.skip and self.mode:
                 self.buf.append("\n")
+                self.after_br = True  # the source's own newline after <br /> is not a second line break
             return
         sk = self._skipping(tag, attrs)
         self.stack.append((tag, sk))
@@ -704,6 +707,10 @@ class _WsText(html.parser.HTMLParser):
     def handle_data(self, data):
         if self.skip or not self.mode:
             return
+        if self.after_br and data.startswith("\n"):
+            data = data[1:]
+        if data:
+            self.after_br = False
         self.buf.append(data if self.mode in ("poem", "pre") else data.replace("\n", " "))
 
 
@@ -731,15 +738,23 @@ def ws_text(page: str, depth: int = 0, seen: set | None = None, budget: list | N
             got = ws_text(pick, depth, seen, budget)
             if sum(len(x) for x in got) > 2000:
                 return got
-        return []
+        # no edition has the text: it may be on this page's own chapter subpages (Анна Каренина links /ДО too)
+        links = [l for l in links if l not in eds]
     out = list(p.out)
-    kids = [l for l in links if l.count("/") == page.count("/") + 1]
+    under = [l for l in links if l.startswith(page + "/") and l not in seen]
+    # direct children, and deeper pages whose parent is not linked ("Часть I/Глава I" with no "Часть I" page)
+    kids = [l for l in under if l.count("/") == page.count("/") + 1
+            or l.rsplit("/", 1)[0] not in under and l.count("/") <= page.count("/") + 3]
     if kids and depth < 3:
         # a contents page: its own words are the contents list's (dropped: lists are not read) and a preface at most
         if sum(len(x) for x in out) < 3000:
             out = [x for x in out if not x.startswith("# ")]
+        last_parent = page
         for k in kids:
-            name = k.rsplit("/", 1)[1]
+            parent, name = k.rsplit("/", 1)
+            if parent != last_parent and parent != page:
+                out.append("# " + parent[len(page) + 1:].replace("/", ". "))  # "Часть II" before its chapters
+            last_parent = parent
             sub = ws_text(k, depth + 1, seen, budget)
             if sub:
                 if not (sub[0].startswith("# ")):
@@ -832,6 +847,7 @@ def fetch_one(wid: str, lang: str, t: dict) -> tuple[str | None, str]:
     if t["source"] == "wikisource":
         paras = [ru_heading(p) for p in ws_text(t["wikisource"])]
         paras = [p for p in paras if p and not (p.startswith("# ") and not re.search(r"\w", p[2:]))]  # "# ————"
+        paras = [p for p in paras if p.count(" · ") < 3]  # a chapter navigation bar ("Главы: I · II · III ...")
         return ("\n\n".join(paras) if paras else None), "wikisource"
     return None, "?"
 

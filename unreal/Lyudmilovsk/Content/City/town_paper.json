@@ -55,6 +55,7 @@
   "front.weather_heat": 2,
   "front.weather_frost": 2,
   "front.weather_fog": 2,
+  "front.cup": 3,
   "fest.bird_day": 2,
   "fest.christmas": 2,
   "fest.fisherman_day": 2,
@@ -1736,6 +1737,11 @@
    "born": 1991
   },
   {
+   "who": "t_gromov_pyotr",
+   "md": "11-16",
+   "born": 1947
+  },
+  {
    "who": "t_haddad_arkady",
    "md": "12-07",
    "born": 1997
@@ -2881,6 +2887,11 @@
    "born": 1995
   },
   {
+   "who": "t_mironova_sonya",
+   "md": "01-03",
+   "born": 2010
+  },
+  {
    "who": "t_mizrahi_alesya",
    "md": "12-28",
    "born": 1993
@@ -3981,6 +3992,11 @@
    "born": 2003
   },
   {
+   "who": "t_sazonov_nikolai",
+   "md": "01-30",
+   "born": 1946
+  },
+  {
    "who": "t_schneider_astrid",
    "md": "02-11",
    "born": 1992
@@ -4224,6 +4240,11 @@
    "who": "t_takahashi_ursula",
    "md": "12-14",
    "born": 1950
+  },
+  {
+   "who": "t_tamm_boris",
+   "md": "02-01",
+   "born": 1945
   },
   {
    "who": "t_tamm_daisuke",

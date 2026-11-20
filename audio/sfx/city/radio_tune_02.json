@@ -1,0 +1,22 @@
+{
+ "name": "radio_tune_02",
+ "asset": "/Game/Audio/City/S_radio_tune_02",
+ "pool": "radio_tune",
+ "file": "audio/sfx/city/radio_tune_02.wav",
+ "generator": "tools/music/sounds.py",
+ "seed": 2082,
+ "rng": "numpy.random.default_rng (PCG64), numpy 2.5.3",
+ "loop": false,
+ "sample_rate": 48000,
+ "bit_depth": 16,
+ "channels": 1,
+ "seconds": 2.6,
+ "peak_dbfs": -6.0,
+ "rms_dbfs": -15.5,
+ "params": {
+  "seconds": 2.6,
+  "whistles": 3,
+  "settles_at_s": 1.7
+ },
+ "license": "Procedural, made by the project; CC BY 4.0."
+}

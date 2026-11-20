@@ -353,6 +353,49 @@ roster, the games room's rules). The bosses' counters (and the flag) have a talk
 has done that job). The quest `job_book` begins at a board and wants each job once (50 roubles). citysim `JobChecks` plays
 every job on the real data: pay by weather and result, once a day, the closed words unpaid, the book filled.
 
+### Tournaments
+
+Three weekly knock-out cups of eight (`tools/city/content/x_tournaments.json`, words `strings/x_tournaments.json`; the rules in
+`Private/City/CityCupsModel.h`, plain C++ on top of the model; `interiors.py` writes them to `Content/City/tournaments.json`):
+
+| cup | game | where | when | bracket board |
+|---|---|---|---|---|
+| `cog_chess` | chess | P-CLUB3 (both chess tables) | Saturday, rounds 13:00, 14:30, 16:00 | `league_board` (was `cog_league`) |
+| `san_dominoes` | dominoes | P-SANATORIUM lounge | Wednesday, 15:00, 16:00, 17:00 | `pump_schedule` |
+| `tt_cup` | table tennis | P-T3SPORT (both tables) | Sunday, 11:00, 12:00, 13:00 | `cabin_results` (was `t3_results`) |
+
+```
+"tournaments": {"<id>": {"title": key, "venue": key, "game": "<vs>", "plot": "P-…", "days": "sat", "start": 13, "step": 1.5,
+                         "collect": "cups/<id>"}}
+a text {"gen": "cup:<id>", "kind": "notice", "pages": [fallback]} read on some thing of the town (the bracket board)
+```
+
+* **The field**: every regular who plays the game (the clubs' ten, the x_ files' own, and 15 guests in x_tournaments.json:
+  real residents free at those hours, each with a style, a skill and three lines; they also sit down at their venue's
+  tables any day). Eight are drawn by a hash of the cup and the day and seated by it, so a day's bracket is the same
+  whenever it is asked; matches between regulars go by skill and a die of the day (the stronger win about two times in
+  three). `--check`: at least eight players, a table of the game on the plot open through the three rounds that weekday, a
+  board reading the `cup:<id>` text.
+* **The hero**: reading the board to its last page writes his name on the sheet (`city.cup.toast.signed`) for today if the
+  first round has not begun, else for next week. Signed up, in his round's hours at a table of the plot with the game, the
+  game's opponent is the bracket's (`FCups::MatchAt`; the title says the cup and the round) and the day's limit of games
+  does not count (`FAsk::bFreeGame`). A win: the next round's hour under the result line; a draw is played again; a loss
+  or not sitting down by the end of the round (a no-show) puts him out. The final won gives the stamp `cups/<id>`
+  (collection `cups`, «Кубки клубов»): the cup stands in the board's cup case.
+* **The board** (`FCups::Pages`): the tournament (weekday and venue, the rounds' hours, the game's rule, the sheet: "your name
+  is on the list"), today's bracket from its start or the last one (the hero as «новичок (вы)», "(to be decided)" for the
+  winners to come, no-shows), the cup case (the last six champions, the hero's cups).
+* **The paper** (`ULyudCityThings::GetCupNews`): the morning after, the champion and runner-up and how far the hero got; his
+  cup is a front story; the day's tournament is announced on the bills page.
+* **Saved** with the model's map: `k:s:<cup>@<day>` signed up, `k:r:<cup>@<day>` his results (`W`/`L`), so brackets of past
+  days are worked out again from them.
+* Console `lyud.City.Cups [sign]` (the boards to the log; `sign`: on every sheet), developer mode `interiors.cups_sign`.
+* citysim (`tools/citysim/cupchecks.h`): 52 weeks of each cup (sane, stable, played out, the stronger win more, many
+  champions), the hero's whole way to the cup (a draw replayed, the opponents of the next rounds, the stamp, the news), a
+  no-show, a loss, the save, every word of a month of boards.
+* Not done: the regulars are not seen at the tables (the life sim does not seat them on game things yet), no cup item (the
+  stamp and the case's line stand for it).
+
 ### Wall clocks and light switches
 
 * A clock: any thing with `what=clock` or `what=wall_clock`, or a `board` with `topic=clock`: the act `look_clock`, lines
@@ -769,6 +812,12 @@ the list (their ids play nothing from an act).
   remains: with one of our modes up and somebody stepping in front, E starts the NPC's talk over our page (ours waits).
 * Perf ([perf checklist](../README.md)): no per-frame allocation, no actors or components per thing, nothing past the town box,
   the file parsed off the game thread.
+
+### Hook for other systems
+
+`ULyudCityThings::ActHook` (one listener): asked after an act ran (not refused, not a shut plot's words) with the thing, the
+act id, the line key and the point; it may replace the page's line (one page then). `GetThingsByAct`, `ActOfThing`, `GiveStamp`
+go with it. Used by the records and the radio (`docs/music.md`): jukeboxes, record players, radios and «Волна»'s request box.
 
 ### API for townsfolk
 

@@ -971,7 +971,7 @@
    "act": "cog_tt"
   },
   "cog_club/league_board": {
-   "act": "cog_league"
+   "act": "cup_board_cog"
   },
   "cog_club/cue_rack": {
    "act": "cog_cues"

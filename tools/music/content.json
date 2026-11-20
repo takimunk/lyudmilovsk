@@ -1,0 +1,540 @@
+{
+ "_doc": "Records, the jukebox and the town radio «Волна Людмиловска» (docs/music.md). Source of Content/City/music.json (tools/music/music.py). Every word lives in tools/music/strings.json (ru source, en, ja). Tracks are the game's music cues (/Game/Audio/Music/MU_<cue>, audio/music/<cue>.json). Times are game time (UGameCalendar, 1 game second = 1 real second, so the station runs in step with the audio).",
+ "tracks": {
+  "dawn_1": {
+   "seconds": 110,
+   "pools": [
+    "morning",
+    "sea"
+   ]
+  },
+  "dawn_2": {
+   "seconds": 110,
+   "pools": [
+    "morning",
+    "piano"
+   ]
+  },
+  "day_1": {
+   "seconds": 120,
+   "pools": [
+    "day"
+   ]
+  },
+  "day_2": {
+   "seconds": 120,
+   "pools": [
+    "day",
+    "piano"
+   ]
+  },
+  "day_3": {
+   "seconds": 120,
+   "pools": [
+    "day",
+    "sea"
+   ]
+  },
+  "dusk_1": {
+   "seconds": 120,
+   "pools": [
+    "evening"
+   ]
+  },
+  "dusk_2": {
+   "seconds": 120,
+   "pools": [
+    "evening"
+   ]
+  },
+  "night_1": {
+   "seconds": 120,
+   "pools": [
+    "night"
+   ]
+  },
+  "night_2": {
+   "seconds": 120,
+   "pools": [
+    "night"
+   ]
+  },
+  "rain_1": {
+   "seconds": 110,
+   "pools": [
+    "rain",
+    "piano"
+   ]
+  },
+  "rain_2": {
+   "seconds": 110,
+   "pools": [
+    "rain"
+   ]
+  },
+  "storm_1": {
+   "seconds": 100,
+   "pools": [
+    "storm"
+   ]
+  },
+  "snow_1": {
+   "seconds": 110,
+   "pools": [
+    "snow",
+    "night"
+   ]
+  },
+  "sea_1": {
+   "seconds": 120,
+   "pools": [
+    "sea",
+    "morning"
+   ]
+  },
+  "club_1": {
+   "seconds": 120,
+   "pools": [
+    "electronic"
+   ]
+  },
+  "club_2": {
+   "seconds": 120,
+   "pools": [
+    "electronic"
+   ]
+  },
+  "club_3": {
+   "seconds": 110,
+   "pools": [
+    "electronic",
+    "night"
+   ]
+  },
+  "flight_1": {
+   "seconds": 100,
+   "pools": [
+    "day",
+    "bright"
+   ]
+  },
+  "flight_2": {
+   "seconds": 100,
+   "pools": [
+    "bright"
+   ]
+  },
+  "europa_1": {
+   "seconds": 120,
+   "pools": [
+    "night_late"
+   ]
+  },
+  "ural_1": {
+   "seconds": 140,
+   "pools": [
+    "night_late"
+   ]
+  },
+  "topi_1": {
+   "seconds": 150,
+   "pools": []
+  }
+ },
+ "records": [
+  {
+   "id": "record_dawn_1",
+   "cue": "dawn_1",
+   "price": 45,
+   "tint": [
+    0.85,
+    0.62,
+    0.42
+   ]
+  },
+  {
+   "id": "record_dawn_2",
+   "cue": "dawn_2",
+   "price": 45,
+   "tint": [
+    0.78,
+    0.8,
+    0.86
+   ]
+  },
+  {
+   "id": "record_day_1",
+   "cue": "day_1",
+   "price": 40,
+   "tint": [
+    0.95,
+    0.82,
+    0.35
+   ]
+  },
+  {
+   "id": "record_day_2",
+   "cue": "day_2",
+   "price": 40,
+   "tint": [
+    0.55,
+    0.6,
+    0.66
+   ]
+  },
+  {
+   "id": "record_day_3",
+   "cue": "day_3",
+   "price": 40,
+   "tint": [
+    0.45,
+    0.68,
+    0.8
+   ]
+  },
+  {
+   "id": "record_dusk_1",
+   "cue": "dusk_1",
+   "price": 45,
+   "tint": [
+    0.85,
+    0.45,
+    0.22
+   ]
+  },
+  {
+   "id": "record_dusk_2",
+   "cue": "dusk_2",
+   "price": 45,
+   "tint": [
+    0.62,
+    0.32,
+    0.4
+   ]
+  },
+  {
+   "id": "record_night_1",
+   "cue": "night_1",
+   "price": 45,
+   "tint": [
+    0.12,
+    0.16,
+    0.32
+   ]
+  },
+  {
+   "id": "record_night_2",
+   "cue": "night_2",
+   "price": 45,
+   "tint": [
+    0.3,
+    0.25,
+    0.45
+   ]
+  },
+  {
+   "id": "record_rain_1",
+   "cue": "rain_1",
+   "price": 50,
+   "tint": [
+    0.4,
+    0.46,
+    0.5
+   ]
+  },
+  {
+   "id": "record_rain_2",
+   "cue": "rain_2",
+   "price": 50,
+   "tint": [
+    0.32,
+    0.42,
+    0.4
+   ]
+  },
+  {
+   "id": "record_storm_1",
+   "cue": "storm_1",
+   "price": 55,
+   "tint": [
+    0.2,
+    0.22,
+    0.26
+   ]
+  },
+  {
+   "id": "record_snow_1",
+   "cue": "snow_1",
+   "price": 50,
+   "tint": [
+    0.88,
+    0.92,
+    0.96
+   ]
+  },
+  {
+   "id": "record_sea_1",
+   "cue": "sea_1",
+   "price": 45,
+   "tint": [
+    0.18,
+    0.4,
+    0.55
+   ]
+  },
+  {
+   "id": "record_club_1",
+   "cue": "club_1",
+   "price": 60,
+   "tint": [
+    0.25,
+    0.15,
+    0.35
+   ]
+  },
+  {
+   "id": "record_club_2",
+   "cue": "club_2",
+   "price": 60,
+   "tint": [
+    0.1,
+    0.45,
+    0.42
+   ]
+  },
+  {
+   "id": "record_club_3",
+   "cue": "club_3",
+   "price": 60,
+   "tint": [
+    0.15,
+    0.2,
+    0.25
+   ]
+  },
+  {
+   "id": "record_flight_1",
+   "cue": "flight_1",
+   "price": 55,
+   "tint": [
+    0.55,
+    0.78,
+    0.92
+   ]
+  }
+ ],
+ "shops": {
+  "records_wave": {
+   "title": "city.shop.records_wave.title",
+   "role": "seller",
+   "records": "*"
+  },
+  "store_books": {
+   "add": [
+    "record_day_1",
+    "record_sea_1",
+    "record_dawn_2",
+    "record_dusk_1",
+    "record_snow_1",
+    "record_night_1"
+   ]
+  }
+ },
+ "players": {
+  "_doc": "Which city things are what: glob patterns over act ids (a staff variant '@...' is cut off first). 'append' keeps the act's own line and adds the music's words under it.",
+  "jukebox": [
+   "jukebox",
+   "tarelka_jukebox"
+  ],
+  "player": [
+   "record_player",
+   "records_booth",
+   "ps_player",
+   "library_player"
+  ],
+  "radio": [
+   "radio",
+   "radio_town",
+   "*_radio",
+   "*_radios",
+   "radio_point",
+   "clinic_radio_point",
+   "ps_radio",
+   "library_radio",
+   "fx_radio",
+   "couch_radio",
+   "sp_b_radio",
+   "un_t_radio",
+   "t3_ag_radio",
+   "t1h2_radio",
+   "rcb_radio"
+  ],
+  "not_radio": [
+   "*radio_set*",
+   "okafor_radio",
+   "okafor_radio_books",
+   "rassvet_radio_bench",
+   "rd_*",
+   "radio_short",
+   "singh_radio"
+  ],
+  "request": [
+   "look_records_hits"
+  ],
+  "replace": [
+   "jukebox",
+   "record_player",
+   "radio"
+  ],
+  "auto_on": [
+   "pu_bakery_radio",
+   "pu_barber_radio",
+   "pu_beer_radio",
+   "pu_workshop_radios",
+   "ps_radio",
+   "fx_radio",
+   "lg1_radio",
+   "lg2_radio",
+   "keeper_radio",
+   "clinic_radio_point",
+   "couch_radio",
+   "xk6_radios"
+  ]
+ },
+ "station": {
+  "name": "music.radio.name",
+  "range_m": 7.0,
+  "talk_bed_volume": 0.35,
+  "caption_seconds": 6.5,
+  "off_air": [
+   "01:02",
+   "06:00"
+  ],
+  "schedule": [
+   {
+    "at": "06:00",
+    "kind": "sign_on",
+    "minutes": 4
+   },
+   {
+    "at": "06:04",
+    "kind": "music",
+    "pool": "morning",
+    "show": "music.radio.show.morning"
+   },
+   {
+    "at": "07:00",
+    "kind": "news",
+    "minutes": 8
+   },
+   {
+    "at": "07:08",
+    "kind": "music",
+    "pool": "day",
+    "show": "music.radio.show.day"
+   },
+   {
+    "at": "09:00",
+    "kind": "weather",
+    "minutes": 5
+   },
+   {
+    "at": "09:05",
+    "kind": "music",
+    "pool": "day",
+    "show": "music.radio.show.work"
+   },
+   {
+    "at": "10:00",
+    "kind": "music",
+    "pool": "records",
+    "show": "music.radio.show.sunday",
+    "days": "sun"
+   },
+   {
+    "at": "12:00",
+    "kind": "news",
+    "minutes": 8
+   },
+   {
+    "at": "12:08",
+    "kind": "music",
+    "pool": "records",
+    "show": "music.radio.show.chart"
+   },
+   {
+    "at": "15:00",
+    "kind": "weather",
+    "minutes": 5
+   },
+   {
+    "at": "15:05",
+    "kind": "music",
+    "pool": "electronic",
+    "show": "music.radio.show.electronic"
+   },
+   {
+    "at": "16:00",
+    "kind": "music",
+    "pool": "day",
+    "show": "music.radio.show.afternoon"
+   },
+   {
+    "at": "18:00",
+    "kind": "news",
+    "minutes": 6
+   },
+   {
+    "at": "18:06",
+    "kind": "weather",
+    "minutes": 4
+   },
+   {
+    "at": "18:10",
+    "kind": "music",
+    "pool": "evening",
+    "show": "music.radio.show.evening"
+   },
+   {
+    "at": "20:00",
+    "kind": "requests",
+    "pool": "records",
+    "show": "music.radio.show.requests"
+   },
+   {
+    "at": "21:00",
+    "kind": "music",
+    "pool": "night",
+    "show": "music.radio.show.night"
+   },
+   {
+    "at": "23:00",
+    "kind": "shipping",
+    "minutes": 6
+   },
+   {
+    "at": "23:06",
+    "kind": "music",
+    "pool": "night_late",
+    "show": "music.radio.show.late"
+   },
+   {
+    "at": "01:00",
+    "kind": "sign_off",
+    "minutes": 2
+   }
+  ],
+  "weather_pools": {
+   "rain": "rain",
+   "snow": "snow",
+   "storm": "storm"
+  },
+  "news_per_bulletin": 3,
+  "requests_per_hour": 4,
+  "shipping_areas": 6,
+  "auto_on_hours": [
+   7,
+   22
+  ]
+ }
+}

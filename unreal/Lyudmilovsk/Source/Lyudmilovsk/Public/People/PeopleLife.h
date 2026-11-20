@@ -330,6 +330,12 @@ private:
 	int32 SunDay = -1;
 	float SaveTimer = 0.f;
 	float DialogueTimer = 0.f;
+	/** The slots that hold a city thing (a slot's "thing": a sanatorium guest's chair), listed at Start, and whether this life
+	 *  holds it now: whoever sits there takes the chair from the hero (ULyudCityThings::ClaimThing), checked once a second. */
+	struct FThingHold { int32 Slot = -1; FString Thing; bool bHeld = false; };
+	TArray<FThingHold> ThingHolds;
+	float ThingHoldTimer = 0.f;
+	void UpdateThingHolds(bool bReleaseAll);
 	/** The railway's timetable clock minus the life's (both seconds; the railway's counts whole days of the calendar). */
 	double RailOffset = 0.0;
 	bool bRailSynced = false;
