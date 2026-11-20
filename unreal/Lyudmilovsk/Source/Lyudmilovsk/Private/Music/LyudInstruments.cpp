@@ -7,6 +7,7 @@
 #include "City/LyudCityThings.h"
 #include "Components/AudioComponent.h"
 #include "Dev/LyudDev.h"
+#include "Engine/Engine.h"
 #include "Engine/GameViewportClient.h"
 #include "Engine/World.h"
 #include "EngineUtils.h"
@@ -63,7 +64,12 @@ namespace LyudInstrImpl
 		return K;
 	}
 
-	const FKey Digits[] = { EKeys::One, EKeys::Two, EKeys::Three, EKeys::Four, EKeys::Five, EKeys::Six, EKeys::Seven, EKeys::Eight, EKeys::Nine };
+	/** 1..9 (built on first use: InputCore's EKeys are statics of another module, unordered against ours in a packaged build). */
+	const FKey& Digit(int32 I)
+	{
+		static const FKey D[] = { EKeys::One, EKeys::Two, EKeys::Three, EKeys::Four, EKeys::Five, EKeys::Six, EKeys::Seven, EKeys::Eight, EKeys::Nine };
+		return D[FMath::Clamp(I, 0, 8)];
+	}
 
 	FString Str(const std::string& S) { return FString(UTF8_TO_TCHAR(S.c_str())); }
 
@@ -530,9 +536,9 @@ void ULyudInstruments::Keys()
 			Cursor = (Cursor + 1) % List.Num();
 		}
 		int32 Pick = INDEX_NONE;
-		for (int32 I = 0; I < (int32)UE_ARRAY_COUNT(LyudInstrImpl::Digits) && I < List.Num(); ++I)
+		for (int32 I = 0; I < 9 && I < List.Num(); ++I)
 		{
-			if (Pressed(LyudInstrImpl::Digits[I]))
+			if (Pressed(LyudInstrImpl::Digit(I)))
 			{
 				Pick = I;
 			}
@@ -600,7 +606,7 @@ void ULyudInstruments::Keys()
 		// 1-8: the chords a boy by a fire knows, strummed down from the low string
 		for (int32 I = 0; I < 8; ++I)
 		{
-			if (Pressed(LyudInstrImpl::Digits[I]))
+			if (Pressed(LyudInstrImpl::Digit(I)))
 			{
 				const std::vector<int> Notes = LyudTunes::ChordNotes(LyudTunes::FreeChord(I));
 				int32 Delay = 0;
@@ -846,7 +852,6 @@ void ULyudInstruments::TickPeople(float DeltaTime)
 	const FVector At = Pawn->GetActorLocation();
 	const double Reach = bByFire ? 1100.0 : 1000.0;
 	int32 Noticer = INDEX_NONE;
-	int32 Listeners = 0;
 	const int32 N = Life->NumPeople();
 	for (int32 Id = 0; Id < N; ++Id)
 	{
@@ -860,10 +865,9 @@ void ULyudInstruments::TickPeople(float DeltaTime)
 			continue;
 		}
 		// the ones standing sway a little to it (the warm more readily); somebody may say a word about it
-		if (Pose == EPersonPose::Stand && FMath::FRand() < 0.25f + 0.5f * Life->GetTrait(Id, TEXT("warmth"))
-			&& Life->ReactManner(Id, TEXT("sway"), 2.2f))
+		if (Pose == EPersonPose::Stand && FMath::FRand() < 0.25f + 0.5f * Life->GetTrait(Id, TEXT("warmth")))
 		{
-			++Listeners;
+			Life->ReactManner(Id, TEXT("sway"), 2.2f);
 		}
 		if (Noticer == INDEX_NONE || FMath::FRand() < 0.3f)
 		{
