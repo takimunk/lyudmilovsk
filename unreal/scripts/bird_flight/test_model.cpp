@@ -98,7 +98,7 @@ int main()
 			FState S; S.Vel = V3(0.6, 0, 1.8);
 			double Next = 0, MinZ = 0;
 			const double Time = bWeak ? 3.5 : 3.0;
-			Run(P, S, Time, [&](double T, FInput& In) { if (T >= Next) { In.ClickL = In.ClickR = true; Next += P.ClickTime(); } In.AimPitch = bWeak ? 0.2 : 0.45; });
+			Run(P, S, Time, [&](double T, FInput& In) { if (T >= Next) { In.ClickL = In.ClickR = true; Next += FastClick(P); } In.AimPitch = bWeak ? 0.2 : 0.45; });
 			MinZ = S.Pos.Z;
 			Check(MinZ > 1.5 && BirdFlight::Speed(S) > P.Stall, F("take-off: %.1f m up, %.1f m/s after %.1f s (stall %.1f)", S.Pos.Z, BirdFlight::Speed(S), Time, P.Stall));
 		}
@@ -107,7 +107,7 @@ int main()
 			FState S; S.Vel = V3(0.6, 0, 1.8);
 			double Next = 0;
 			const double Time = bWeak ? 3.5 : 2.5;
-			Run(P, S, Time, [&](double T, FInput& In) { if (T >= Next) { In.ClickL = In.ClickR = true; Next += P.ClickTime(); } In.AimPitch = bWeak ? 0.1 : 0.2; });
+			Run(P, S, Time, [&](double T, FInput& In) { if (T >= Next) { In.ClickL = In.ClickR = true; Next += FastClick(P); } In.AimPitch = bWeak ? 0.1 : 0.2; });
 			Check(S.Pos.Z > 0.5 && BirdFlight::Speed(S) > P.Stall, F("take-off, level gaze: %.1f m up, %.1f m/s after %.1f s", S.Pos.Z, BirdFlight::Speed(S), Time));
 		}
 		// 4. wings in, gaze down: speeds up to a fast dive but not past the dive limit
@@ -184,7 +184,7 @@ int main()
 				FState S = Flying(P, P.Sprint);
 				FAir Air; Air.Wind = V3(-P.Sprint * K, 0, 0);
 				double Next = 0;
-				Run(P, S, 6, [&](double T, FInput& In) { if (T >= Next) { In.ClickL = In.ClickR = true; Next += P.ClickTime(); } In.AimPitch = std::min(0.3, std::max(-0.3, (100 - S.Pos.Z) * 0.05)); }, Air);
+				Run(P, S, 6, [&](double T, FInput& In) { if (T >= Next) { In.ClickL = In.ClickR = true; Next += FastClick(P); } In.AimPitch = std::min(0.3, std::max(-0.3, (100 - S.Pos.Z) * 0.05)); }, Air);
 				const bool Ok = K < 1 ? S.Pos.X > 5 : S.Pos.X < 0;
 				Check(Ok, F("headwind %.1f m/s: %+.0f m over the ground in 6 s flat out", P.Sprint * K, S.Pos.X));
 			}

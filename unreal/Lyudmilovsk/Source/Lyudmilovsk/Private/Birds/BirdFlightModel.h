@@ -1,7 +1,8 @@
 // The player bird's flight, in plain C++ (no Unreal types) so it is built and tested outside the
 // engine too (unreal/scripts/test_bird_flight.sh). docs/bird_flight.md has the idea; in short: a point
 // mass with an airspeed vector that chases the gaze, a glide polar for drag, lift limited by speed,
-// and wingbeats as bursts of thrust and lift. Metres, seconds, radians. Axes as Unreal's: X forward at
+// wings that change their span by themselves (folded in for a dive, flexed back in a fast glide, spread
+// wide to pull up and to soar), and wingbeats as bursts of thrust and lift. Metres, seconds, radians. Axes as Unreal's: X forward at
 // yaw 0, Y right (positive yaw turns right), Z up.
 #pragma once
 
@@ -64,7 +65,21 @@ namespace BirdFlight
 		double GapScale = 1.0;
 		/** Climb rate (m/s) past which the beats only hold the bird up; fitted so the steady climb is Climb. */
 		double ClimbCap = 2.5;
+		/** 0..1 how far the species folds its wings by itself when the gaze goes down (BirdBio): a peregrine
+		 *  closes to a teardrop and falls like a stone, a swan keeps its wings out and only sinks faster. */
+		double DiveTuck = 0.75;
+		/** m/s: the fastest the air lets the wings stay fully spread; past it they are pressed back (and a bird
+		 *  that holds them out anyway is braked hard). MaxSpeed is the same limit for the wings folded in. */
+		double SpreadLimit = 20.0;
+		/** How fast the body rolls into a turn, 1/s (a swallow snaps over, a swan leans in slowly). */
+		double BankRate = 8.0;
 		double Gravity = 9.81;
+		/** The fastest the bird can go with its wings this far spread (0.1 folded in .. 1 spread), m/s. */
+		double SpeedLimit(double Spread) const
+		{
+			const double T = std::min(1.0, std::max(0.0, (Spread - 0.1) / 0.9));
+			return MaxSpeed + (SpreadLimit - MaxSpeed) * T;
+		}
 	};
 
 	/** Flight parameters from the species table's numbers. */
@@ -82,6 +97,9 @@ namespace BirdFlight
 		/** 0..1 how hard a click started this step beats: 1 the player's own clicks (full power),
 		 *  P.CruisePower the species' rhythm on Space. */
 		double Power = 1;
+		/** 0..1 how much the bird trims its own wings (FParams::DiveTuck, the flex at speed, the spread to pull
+		 *  up): 1 in free flight, 0 where something else flies it in (the landing magnet, a take-off). */
+		double Reflex = 1;
 	};
 
 	/** The air at the bird: wind (horizontal, m/s) and rising air (m/s up). */
@@ -123,6 +141,15 @@ namespace BirdFlight
 		double Burst = 0;
 		/** The beats' power over the last second, W/kg (what the flight muscles' limit is held against). */
 		double PowerUse = 0;
+		/** 0.1 in .. 1 spread: how far the bird itself holds its wings out between beats (the gaze down folds
+		 *  them, speed presses them back, a pull-up and slow flight spread them), smoothed. */
+		double Trim = 1;
+		/** How fast each wing's current burst beats, x the species' wingbeat rate (a take-off and a full-power
+		 *  click beat faster than the easy rhythm). */
+		double RateL = 1, RateR = 1;
+		/** 0 gliding .. 1 the deepest stroke: how far the wings swing (the easy rhythm's strokes are shallower
+		 *  than a sprint's or a take-off's), smoothed; for the animation. */
+		double Amp = 0;
 	};
 
 	void Step(const FParams& P, const FInput& In, const FAir& Air, FState& S, double Dt);
@@ -131,6 +158,17 @@ namespace BirdFlight
 	double TopSpeed(const FParams& P, double Power = 1.0);
 	/** Steady climb rate at full power, the best of a few climb angles, m/s up. */
 	double ClimbRate(const FParams& P);
+
+	/** How fast a burst started at this power beats, x the species' wingbeat rate: 1 at the easy rhythm's power,
+	 *  faster flat out, and faster still on the take-off's first beats (Launch 0..1). */
+	double BeatRate(const FParams& P, double Power, double Launch = 0.0);
+	/** Seconds between clicks when clicking as fast as the wings go at full power. */
+	inline double FastClick(const FParams& P) { return P.ClickTime() / BeatRate(P, 1.0); }
+	/** 0..1 how much the gaze this far below the horizon (rad) asks for a dive. */
+	double DiveIntent(double AimPitch);
+	/** How far the bird would hold its wings out by itself (0.1 .. 1) at airspeed V on a path at Gamma with the
+	 *  gaze at AimPitch, pulling LoadG g: FState::Trim eases toward it. */
+	double WingTrim(const FParams& P, double V, double Gamma, double AimPitch, double LoadG, double Flare);
 
 	/** Airspeed. */
 	inline double Speed(const FState& S) { return S.Vel.Size(); }
