@@ -23,7 +23,8 @@ sys.path.insert(0, HERE)
 import world_map as W  # noqa: E402
 
 PX = 1.25          # metres per pixel
-MIX_CODE = {"old": 1, "dune": 2, "wet": 3, "stonebirch": 4, "dwarfpine": 5, "alder": 6, "shrub": 7, "rhodo": 8}
+MIX_CODE = {"old": 1, "dune": 2, "wet": 3, "stonebirch": 4, "dwarfpine": 5, "alder": 6, "shrub": 7, "rhodo": 8, "gallery": 9,
+            "riverbar": 10}
 CONTOUR = 5.0      # metres between contour lines
 LAYOUT = os.path.join(ROOT, "blender", "export", "scene01_layout.json")
 
@@ -115,7 +116,8 @@ def paint(out_jpg):
     forest = {"old": (160, 190, 132), "dune": (186, 204, 150), "wet": (170, 198, 150), "town": (196, 210, 160),
               # the North: park woodland and the shrub belt (tools/north.py FOREST_MIX)
               "stonebirch": (176, 198, 146), "dwarfpine": (150, 178, 128), "alder": (164, 196, 140),
-              "shrub": (190, 206, 158), "rhodo": (204, 210, 160)}
+              "shrub": (190, 206, 158), "rhodo": (204, 210, 160),
+              "gallery": (170, 198, 150), "riverbar": (190, 206, 158)}
     img = Image.new("RGB", (w, h))
     pix = img.load()
     cover_img = Image.new("L", (w, h), 0)
@@ -157,6 +159,8 @@ def paint(out_jpg):
                         if rnd.random() < 0.0006:
                             trees.append((i, j, mix))
                         break
+                    if y < 400.0 and mix == "wet" and W.forest_cover(x, y) < 0.3:
+                        continue                 # the brook's alders: only where tools/south.py's cover draws them
                     cover[i, j] = 255
                     mixes[i, j] = MIX_CODE[mix]
                     break
@@ -226,6 +230,15 @@ def paint(out_jpg):
     for x, y, *_ in W.alley_trees():
         a, b = px(x, y)
         d.ellipse((a - 2.5, b - 2.5, a + 2.5, b + 2.5), fill=(84, 120, 70))
+    # the Aton coast (tools/south.py): the trails dotted, the brook, the stair down the cliff
+    S = W._south()
+    for trail in S.trails().values():
+        tp = [px(x, y) for x, y in trail]
+        for k in range(0, len(tp) - 1, 2):
+            d.line((tp[k], tp[k + 1]), fill=(120, 96, 70), width=2)
+    d.line([px(x, y) for x, y in S._course()["pts"]], fill=(96, 140, 170), width=2)
+    (sx0, sy0), (sx1, _) = S.stair_line()
+    d.line((px(sx0, sy0), px(sx1, sy0)), fill=(110, 84, 60), width=3)
     # the cable car
     cc = W.cable_car()
     ends = [px(*W.STATION_UP), px(*W.STATION_DOWN)]
@@ -301,6 +314,8 @@ def places(out_json):
         # where Topi's sand begins, on the map's east edge behind the town (docs/topi.md); the river Ural lies off the map
         ("topi", -1225.0, 905.0, 70.0, "nature", True),
     ]
+    # the Aton coast between the club and the town (tools/south.py, docs/south.md)
+    P += [(p["id"], p["x"], p["y"], p["r"], p["kind"], False) for p in W._south().places()]
     data = {
         "comment": "Written by tools/ui_map.py from tools/world_map.py: do not edit by hand. Metres in the map frame (docs/world_map.md).",
         "frame": {"x_min": W.X_MIN, "x_max": W.X_MAX, "y_min": W.Y_MIN, "y_max": W.SHEET_Y_MAX, "portal_face_y": portal_face_y,

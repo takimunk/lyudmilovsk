@@ -106,6 +106,10 @@ def build(face_y, textures_dir=None, plants=True, report=False):
             unreal.load_class(None, "/Script/Lyudmilovsk.LyudFumarole") is not None:
         import import_north
         import_north.place_safe(face_y)
+    # the Aton coast (docs/south.md): the things along the trails between the club and the town
+    if os.path.exists(os.path.join(REPO, "unreal", "Lyudmilovsk", "Content", "South", "south.json")):
+        import import_south
+        import_south.place_safe(face_y)
 
     if plants:
         plant_cls = unreal.load_class(None, "/Script/Lyudmilovsk.ProceduralPlant")

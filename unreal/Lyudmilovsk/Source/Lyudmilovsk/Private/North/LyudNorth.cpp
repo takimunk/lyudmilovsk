@@ -179,6 +179,7 @@ void ULyudNorthSubsystem::OnWorldBeginPlay(UWorld& InWorld)
 	bWakeAll = CVarNorthWakeAll.GetValueOnGameThread() != 0;
 	SpawnPlumes();
 	SpawnRiver();
+	SpawnBrook();
 	UpdateAir();
 	// the steam pool's material, card and instances now, where a few ms cost nothing, not at the first vent in play
 	if (Things.Num() > 0 || Fumaroles.Num() > 0)
@@ -197,6 +198,7 @@ void ULyudNorthSubsystem::Deinitialize()
 	SteamFx = nullptr;
 	Plumes.Reset();
 	River = nullptr;
+	Brook = nullptr;
 	Super::Deinitialize();
 }
 
@@ -367,6 +369,54 @@ void ULyudNorthSubsystem::SpawnRiver()
 		NewRiver->Setup(RiverWater);
 		NewRiver->SetActorHiddenInGame(!bShown);
 		River = NewRiver;
+	}
+}
+
+void ULyudNorthSubsystem::SpawnBrook()
+{
+	// the brook of the Aton coast (docs/south.md): south.json "brook": {"water": [[x, y, z, half], ...]} in map metres,
+	// downstream, the same samples as the river's; this subsystem wakes and sleeps it with the North's things
+	UWorld* World = GetWorld();
+	if (!World)
+	{
+		return;
+	}
+	FString Text;
+	TSharedPtr<FJsonObject> Root;
+	const FString Path = FPaths::ProjectContentDir() / TEXT("South/south.json");
+	if (!FFileHelper::LoadFileToString(Text, *Path) || !FJsonSerializer::Deserialize(TJsonReaderFactory<>::Create(Text), Root) || !Root.IsValid())
+	{
+		return;
+	}
+	TArray<FVector4> BrookWater;
+	const TSharedPtr<FJsonObject>* BrookObj = nullptr;
+	const TArray<TSharedPtr<FJsonValue>>* WaterArr = nullptr;
+	if (Root->TryGetObjectField(TEXT("brook"), BrookObj) && BrookObj && BrookObj->IsValid() && (*BrookObj)->TryGetArrayField(TEXT("water"), WaterArr))
+	{
+		for (const TSharedPtr<FJsonValue>& V : *WaterArr)
+		{
+			const TArray<TSharedPtr<FJsonValue>>* Sample = nullptr;
+			if (V.IsValid() && V->TryGetArray(Sample) && Sample->Num() >= 4)
+			{
+				const FVector At = NorthMapToWorld((*Sample)[0]->AsNumber(), (*Sample)[1]->AsNumber(), (*Sample)[2]->AsNumber());
+				BrookWater.Add(FVector4(At, 100.0 * (*Sample)[3]->AsNumber()));
+			}
+		}
+	}
+	if (BrookWater.Num() < 2)
+	{
+		return;
+	}
+	FActorSpawnParameters Params;
+	Params.SpawnCollisionHandlingOverride = ESpawnActorCollisionHandlingMethod::AlwaysSpawn;
+	const FVector First(BrookWater[0]);
+	if (ALyudNorthRiver* NewBrook = World->SpawnActor<ALyudNorthRiver>(First, FRotator::ZeroRotator, Params))
+	{
+		NewBrook->Setup(BrookWater);
+		NewBrook->SetActorHiddenInGame(!bShown);
+		NewBrook->Tags.Add(TEXT("South"));
+		Brook = NewBrook;
+		UE_LOG(LogTemp, Display, TEXT("SOUTH brook: %d samples, %.0f m"), BrookWater.Num(), NewBrook->LengthM());
 	}
 }
 

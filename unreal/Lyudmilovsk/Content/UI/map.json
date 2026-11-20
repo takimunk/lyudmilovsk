@@ -144,6 +144,102 @@
    "r": 70.0,
    "kind": "nature",
    "known": true
+  },
+  {
+   "id": "aton_belvedere",
+   "x": 27.0,
+   "y": 173.0,
+   "r": 9.0,
+   "kind": "building",
+   "known": false
+  },
+  {
+   "id": "aton_descent",
+   "x": -139.0,
+   "y": 222.0,
+   "r": 16.0,
+   "kind": "nature",
+   "known": false
+  },
+  {
+   "id": "brook_bridge",
+   "x": -206.6,
+   "y": 315.7,
+   "r": 9.0,
+   "kind": "nature",
+   "known": false
+  },
+  {
+   "id": "south_stele",
+   "x": -211.0,
+   "y": 348.0,
+   "r": 12.0,
+   "kind": "building",
+   "known": false
+  },
+  {
+   "id": "bird_hide",
+   "x": -52.0,
+   "y": 277.0,
+   "r": 9.0,
+   "kind": "building",
+   "known": false
+  },
+  {
+   "id": "brook_mouth",
+   "x": 118.4,
+   "y": 247.0,
+   "r": 16.0,
+   "kind": "nature",
+   "known": false
+  },
+  {
+   "id": "old_orchard",
+   "x": -372.0,
+   "y": 196.0,
+   "r": 38.0,
+   "kind": "nature",
+   "known": false
+  },
+  {
+   "id": "south_spring",
+   "x": -536.0,
+   "y": 130.0,
+   "r": 9.0,
+   "kind": "nature",
+   "known": false
+  },
+  {
+   "id": "spring_ravine",
+   "x": -584.0,
+   "y": 104.0,
+   "r": 18.0,
+   "kind": "nature",
+   "known": false
+  },
+  {
+   "id": "cliff_stair",
+   "x": 71.9,
+   "y": 38.0,
+   "r": 7.0,
+   "kind": "building",
+   "known": false
+  },
+  {
+   "id": "cliff_lookout",
+   "x": 83.8,
+   "y": -236.0,
+   "r": 9.0,
+   "kind": "nature",
+   "known": false
+  },
+  {
+   "id": "mayak_station",
+   "x": 88.0,
+   "y": -384.0,
+   "r": 18.0,
+   "kind": "transport",
+   "known": false
   }
  ]
 }
