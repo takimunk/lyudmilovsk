@@ -1,0 +1,316 @@
+{
+ "about": "Written by tools/films/films.py from tools/films/catalog.py (docs/cinema.md); never edit by hand. The films themselves are fetched by tools/films/fetch_films.py into Content/Films/<id>.mp4 (not in git).",
+ "films": [
+  {
+   "id": "lumiere_train",
+   "year": 1896,
+   "title": "film.lumiere_train.title",
+   "maker": "film.lumiere_train.maker",
+   "seconds": [
+    35,
+    120
+   ],
+   "lector": [
+    [
+     0.08,
+     "film.lumiere_train.l1"
+    ],
+    [
+     0.3,
+     "film.lumiere_train.l2"
+    ],
+    [
+     0.62,
+     "film.lumiere_train.l3"
+    ]
+   ],
+   "laughs": [
+    0.34
+   ]
+  },
+  {
+   "id": "lumiere_factory",
+   "year": 1895,
+   "title": "film.lumiere_factory.title",
+   "maker": "film.lumiere_factory.maker",
+   "seconds": [
+    30,
+    120
+   ],
+   "lector": [
+    [
+     0.1,
+     "film.lumiere_factory.l1"
+    ],
+    [
+     0.55,
+     "film.lumiere_factory.l2"
+    ]
+   ],
+   "laughs": [
+    0.78
+   ]
+  },
+  {
+   "id": "lumiere_sprinkler",
+   "year": 1895,
+   "title": "film.lumiere_sprinkler.title",
+   "maker": "film.lumiere_sprinkler.maker",
+   "seconds": [
+    30,
+    120
+   ],
+   "lector": [
+    [
+     0.08,
+     "film.lumiere_sprinkler.l1"
+    ],
+    [
+     0.4,
+     "film.lumiere_sprinkler.l2"
+    ],
+    [
+     0.7,
+     "film.lumiere_sprinkler.l3"
+    ]
+   ],
+   "laughs": [
+    0.5,
+    0.74
+   ]
+  },
+  {
+   "id": "lumiere_baby",
+   "year": 1895,
+   "title": "film.lumiere_baby.title",
+   "maker": "film.lumiere_baby.maker",
+   "seconds": [
+    30,
+    120
+   ],
+   "lector": [
+    [
+     0.1,
+     "film.lumiere_baby.l1"
+    ],
+    [
+     0.6,
+     "film.lumiere_baby.l2"
+    ]
+   ],
+   "laughs": [
+    0.45
+   ]
+  },
+  {
+   "id": "cohl_fantasmagorie",
+   "year": 1908,
+   "title": "film.cohl_fantasmagorie.title",
+   "maker": "film.cohl_fantasmagorie.maker",
+   "seconds": [
+    55,
+    150
+   ],
+   "lector": [
+    [
+     0.06,
+     "film.cohl_fantasmagorie.l1"
+    ],
+    [
+     0.45,
+     "film.cohl_fantasmagorie.l2"
+    ]
+   ],
+   "laughs": [
+    0.3,
+    0.82
+   ]
+  },
+  {
+   "id": "melies_rubber_head",
+   "year": 1901,
+   "title": "film.melies_rubber_head.title",
+   "maker": "film.melies_rubber_head.maker",
+   "seconds": [
+    90,
+    300
+   ],
+   "lector": [
+    [
+     0.08,
+     "film.melies_rubber_head.l1"
+    ],
+    [
+     0.42,
+     "film.melies_rubber_head.l2"
+    ],
+    [
+     0.8,
+     "film.melies_rubber_head.l3"
+    ]
+   ],
+   "laughs": [
+    0.48,
+    0.86
+   ]
+  },
+  {
+   "id": "melies_moon",
+   "year": 1902,
+   "title": "film.melies_moon.title",
+   "maker": "film.melies_moon.maker",
+   "seconds": [
+    480,
+    1100
+   ],
+   "lector": [
+    [
+     0.04,
+     "film.melies_moon.l1"
+    ],
+    [
+     0.2,
+     "film.melies_moon.l2"
+    ],
+    [
+     0.32,
+     "film.melies_moon.l3"
+    ],
+    [
+     0.5,
+     "film.melies_moon.l4"
+    ],
+    [
+     0.8,
+     "film.melies_moon.l5"
+    ]
+   ],
+   "laughs": [
+    0.33,
+    0.62,
+    0.84
+   ]
+  },
+  {
+   "id": "chomon_hotel",
+   "year": 1908,
+   "title": "film.chomon_hotel.title",
+   "maker": "film.chomon_hotel.maker",
+   "seconds": [
+    240,
+    720
+   ],
+   "lector": [
+    [
+     0.06,
+     "film.chomon_hotel.l1"
+    ],
+    [
+     0.4,
+     "film.chomon_hotel.l2"
+    ],
+    [
+     0.78,
+     "film.chomon_hotel.l3"
+    ]
+   ],
+   "laughs": [
+    0.45,
+    0.82
+   ]
+  },
+  {
+   "id": "porter_robbery",
+   "year": 1903,
+   "title": "film.porter_robbery.title",
+   "maker": "film.porter_robbery.maker",
+   "seconds": [
+    480,
+    900
+   ],
+   "lector": [
+    [
+     0.05,
+     "film.porter_robbery.l1"
+    ],
+    [
+     0.35,
+     "film.porter_robbery.l2"
+    ],
+    [
+     0.7,
+     "film.porter_robbery.l3"
+    ],
+    [
+     0.96,
+     "film.porter_robbery.l4"
+    ]
+   ],
+   "laughs": [
+    0.36
+   ]
+  }
+ ],
+ "programme": [
+  [
+   "lumiere_factory",
+   "lumiere_train"
+  ],
+  [
+   "lumiere_sprinkler",
+   "lumiere_baby"
+  ],
+  [
+   "cohl_fantasmagorie",
+   "melies_rubber_head"
+  ],
+  [
+   "chomon_hotel"
+  ],
+  [
+   "lumiere_train",
+   "lumiere_sprinkler"
+  ],
+  [
+   "melies_moon"
+  ],
+  [
+   "porter_robbery"
+  ]
+ ],
+ "festival": [
+  "melies_moon"
+ ],
+ "cinemas": {
+  "rassvet": {
+   "plot": "P-CLUB2",
+   "acts": [
+    "cinema_week",
+    "cinema"
+   ],
+   "screen": {
+    "ue": [
+     -7384.4,
+     106738.6,
+     -3070.0
+    ],
+    "yaw": 174.5,
+    "w": 733.0,
+    "h": 550.0
+   },
+   "booth": [
+    -9078.3,
+    106901.7,
+    -2860.0
+   ],
+   "hall": {
+    "ue": [
+     -8212.3,
+     106818.3,
+     -3320.0
+    ],
+    "radius": 1600.0
+   }
+  }
+ }
+}

@@ -1,0 +1,22 @@
+{
+ "_doc": "The lab network's mail on the Academgorodok terminals (backlog item 16): guest letters anyone reads, staff letters after the duty shift's log-in; a letter with \"after\" shows once that letter was read. Words: ui.aton.lab.mail.<id>.from|to|date|subject|body in tools/aton/strings/mail.json. Lore: hints, never the answer (docs/story/inbox.md 2026-11-20).",
+ "letters": [
+  {"id": "welcome", "box": "guest"},
+  {"id": "canteen", "box": "guest"},
+  {"id": "chess", "box": "guest"},
+  {"id": "password", "box": "guest"},
+  {"id": "flux1", "box": "staff"},
+  {"id": "flux2", "box": "staff", "after": "flux1"},
+  {"id": "flux3", "box": "staff", "after": "flux2"},
+  {"id": "sky1", "box": "staff"},
+  {"id": "sky2", "box": "staff", "after": "sky1"},
+  {"id": "census", "box": "staff"},
+  {"id": "train1", "box": "staff"},
+  {"id": "train2", "box": "staff", "after": "train1"},
+  {"id": "count1", "box": "staff"},
+  {"id": "count2", "box": "staff", "after": "count1"},
+  {"id": "count3", "box": "staff", "after": "count2"},
+  {"id": "director", "box": "staff", "after": "count3"},
+  {"id": "sun", "box": "staff", "after": "director"}
+ ]
+}

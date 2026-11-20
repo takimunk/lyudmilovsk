@@ -4,7 +4,7 @@
   "tarelka_jukebox": {
    "like": "jukebox",
    "target": "jukebox",
-   "collect": "records/{line}",
+   "collect": "",
    "minutes": 3,
    "lines": [
     "city.cafe.juke.a1",

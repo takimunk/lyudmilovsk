@@ -33,13 +33,17 @@ Four pages, keys and arguments only (so a save shows it in the language of the m
    sea's temperature (with "good for a swim" from 18 °C), the northern lights if likely tonight, tomorrow's high and low waters
    (`LyudTide::At` every 6 minutes at the sky's longitude), the fish biting best (`ULyudEcosystem::GetAbundance`, 15 % over the
    usual; only for today's issue).
-4. **Holidays and cinema**: up to three festivals of the next two weeks with their dates (`festivals.json` through
+   Yesterday's club tournaments come first on this page: the champion and the runner-up, or "a young entrant" won, and how
+   far the hero got (docs/city_interiors.md "Tournaments"; the hero's own cup is a front story, `paper.front.cup.*`, among
+   his big deeds).
+4. **Holidays and cinema**: today's club tournament (its start and venue: sign up at the bracket), up to three festivals of the next two weeks with their dates (`festivals.json` through
    `LyudFest::FCalendar`, weekly and trigger ones left out), the Rassvet's poster of the weekday (`city.rassvet.poster.<day>`, the
    festival one on a holiday), three small ads of the season.
 
 The hero's deeds are read from what the game already keeps with dates: `ULyudBirdBook` (`Friends[].Tamed`, `Seen[].When`; rare
 species in `town_paper.json` `rare_birds`), `ULyudFishingState::Journal` (a record when it equals the species' biggest and the
-hero has caught three or more of it) and `ULyudQuests::Entries` (`quest.<id>.done`). No other system reports to the paper.
+hero has caught three or more of it), `ULyudQuests::Entries` (`quest.<id>.done`) and the tournaments
+(`ULyudCityThings::GetCupNews`, worked out again from the hero's saved results). No other system reports to the paper.
 
 ## Code and data
 

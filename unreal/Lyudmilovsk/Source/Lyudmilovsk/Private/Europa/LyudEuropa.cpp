@@ -1087,7 +1087,7 @@ void ALyudEuropaSite::UpdateLook()
 	}
 	if (StarMID)
 	{
-		StarMID->SetVectorParameterValue(TEXT("SunDir"), FLinearColor(float(S.X), float(S.Y), float(S.Z), FMath::DegreesToRadians(It->SunAngularDiameterDeg * 0.5f)));
+		StarMID->SetVectorParameterValue(TEXT("SunDir"), FLinearColor(float(S.X), float(S.Y), float(S.Z), FMath::DegreesToRadians(It->SunSizeNowDeg() * 0.5f)));
 		StarMID->SetVectorParameterValue(TEXT("Look"), FLinearColor(StarGain * FMath::Pow(2.f, -0.5f * NightEV), StarTwinkle, 0.f, 0.f));
 	}
 	// the planet's light on the ice: its lit share as seen from here (a full planet when the star is behind us)
@@ -1096,7 +1096,7 @@ void ALyudEuropaSite::UpdateLook()
 	{
 		const FVector P = LastSky.Planet;
 		const float PlanetCos = FMath::Cos(FMath::DegreesToRadians(PlanetDiameterDeg * 0.5f));
-		const float SunCos = FMath::Cos(FMath::DegreesToRadians(It->SunAngularDiameterDeg * 0.5f));
+		const float SunCos = FMath::Cos(FMath::DegreesToRadians(It->SunSizeNowDeg() * 0.5f));
 		SheenMID->SetVectorParameterValue(TEXT("PlanetDir"), FLinearColor(float(P.X), float(P.Y), float(P.Z), PlanetCos));
 		SheenMID->SetVectorParameterValue(TEXT("PlanetLight"), Light * (1.8f * Dim * Lit));
 		SheenMID->SetVectorParameterValue(TEXT("SunDir"), FLinearColor(float(S.X), float(S.Y), float(S.Z), SunCos));

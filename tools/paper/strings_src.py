@@ -193,6 +193,34 @@ S = [
     ("paper.brief.catch", "С пирса: {0}, {1} г. Рыбак просил фамилию не называть.",
      "From the pier: {0}, {1} g. The angler asked us not to print his name.",
      "桟橋から：{0}、{1}グラム。釣り人は名前を出さないでほしいとのこと。"),
+    # --- the clubs' tournaments (ULyudCityThings::GetCupNews). Front: {0} the tournament, {1} the finalist the hero beat
+    ("paper.front.cup.1",
+     "Кубок у новичка! {0} выиграл школьник. Соперник в финале — {1} — пожал ему руку и попросил записать партию для разбора.",
+     "The cup goes to a newcomer! {0} was won by a schoolboy. His opponent in the final, {1}, shook his hand and asked for the game to be written down for study.",
+     "カップは新人の手に！{0}を制したのは少年。決勝の相手{1}は握手して、試合の記録を残してほしいと頼んだ。"),
+    ("paper.front.cup.2",
+     "Сенсация в клубе: {0} достался юному участнику. Завсегдатаи не помнят, когда кубок последний раз уходил так рано. Финалист: {1}.",
+     "A sensation at the club: {0} went to a young entrant. The regulars can't remember the cup going so young. The finalist: {1}.",
+     "クラブに衝撃：{0}は若い参加者のものに。常連たちも、こんなに若い優勝者は覚えがないという。決勝の相手：{1}。"),
+    ("paper.front.cup.3",
+     "Новое имя на кубке. {0}: победитель — школьник, в финале уступил опытный соперник ({1}). Кубок стоит на полке рядом со старыми.",
+     "A new name on the cup. {0}: the winner is a schoolboy; the experienced finalist ({1}) gave way. The cup stands on the shelf beside the old ones.",
+     "カップに新しい名前。{0}の優勝は少年、経験豊富な相手（{1}）が決勝で敗れた。カップは古いカップと並んで棚にある。"),
+    # town page: {0} the tournament, {1} the champion, {2} the runner-up
+    ("paper.cup.won", "{0}: победитель — {1}, второе место — {2}.", "{0}: won by {1}, runner-up {2}.", "{0}：優勝は{1}、準優勝は{2}。"),
+    ("paper.cup.hero_won", "{0}: победил юный участник, школьник. Редакция поздравляет.", "{0}: won by a young entrant, a schoolboy. Congratulations from the editors.",
+     "{0}：優勝は若い参加者の少年。編集部よりおめでとう。"),
+    ("paper.cup.hero_out.0", "Юный участник турнира выбыл в первом круге, но обещал вернуться через неделю.",
+     "The tournament's young entrant went out in the first round but promised to be back next week.", "大会の若い参加者は一回戦で敗退したが、来週また来ると約束した。"),
+    ("paper.cup.hero_out.1", "Юный участник дошёл до полуфинала. Редакция следит за его успехами.",
+     "The young entrant reached the semi-finals. The editors are following his progress.", "若い参加者は準決勝まで進んだ。編集部はその活躍に注目している。"),
+    ("paper.cup.hero_out.2", "Юный участник дошёл до финала и уступил только в последней партии.",
+     "The young entrant reached the final and lost only the last game.", "若い参加者は決勝まで進み、最後の一戦で惜しくも敗れた。"),
+    ("paper.cup.newcomer", "юный участник", "a young entrant", "若い参加者"),
+    ("paper.cup.nobody", "соперник", "an opponent", "相手"),
+    # bills: {0} the tournament, {1} the first round's time, {2} the venue
+    ("paper.cup.today", "Сегодня: {0}, начало в {1}. Место: {2}. Записаться можно у сетки турнира до начала.",
+     "Today: {0}, starting at {1}. Venue: {2}. Sign up at the bracket board before the start.", "本日：{0}{1}開始。会場：{2}。参加申込は開始前にトーナメント表で。"),
     ("paper.brief.win", "В клубе новость: школьник обыграл завсегдатая. Завсегдатай требует реванша.",
      "News from the club: a schoolboy beat one of the regulars. The regular demands a rematch.",
      "クラブの話題：少年が常連に勝った。常連は再戦を要求している。"),
@@ -254,6 +282,9 @@ S = [
     ("paper.soon.none", "В ближайшие две недели праздников нет. Зато по выходным — ярмарка.", "No holidays in the next two weeks. But there's the fair at weekends.", "この二週間、祝日はなし。ただし週末は市場広場で市が立ちます。"),
     # {0} the Rassvet's poster for the day
     ("paper.cinema", "Кино в «Рассвете». {0}", "Cinema at the Rassvet. {0}", "『ラスヴェート』の映画。{0}"),
+    # {0} the day's old films (film.programme.<day>, tools/films/films.py)
+    ("paper.newsreel", "Перед каждым сеансом — старое кино: {0}. Пояснения киномеханика.",
+     "Before every session, old films: {0}, with the projectionist's comments.", "毎回の上映前に古い映画：{0}。映写技師の解説つき。"),
 
     # --- the archive ({0} issues kept, {1} read)
     ("paper.archive.head", "Подшивка «Людмиловской правды». Номеров в подшивке: {0}. Прочитано вами: {1}.",

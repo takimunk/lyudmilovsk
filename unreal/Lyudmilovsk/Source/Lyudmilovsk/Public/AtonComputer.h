@@ -56,6 +56,17 @@ public:
 	UPROPERTY(EditAnywhere, Category = "ATON OS")
 	FString ChosenURL = TEXT("https://chosen.stickies.fun/");
 
+	/** Which machine this is: "club" (the hero's computer, the default) or "lab" (a terminal of the lab network: other programs). */
+	UPROPERTY(EditAnywhere, Category = "ATON OS")
+	FName Profile = TEXT("club");
+
+	/** False: no chair and no cutscene belong to this machine (a lab terminal: whoever owns it calls Activate). */
+	UPROPERTY(EditAnywhere, Category = "ATON OS")
+	bool bUseSeat = true;
+
+	/** Builds the desktop again for Profile (the open windows are lost). */
+	void SetProfile(FName NewProfile);
+
 	/** The seat whose cutscene hands the player over to the OS; found in the level when empty. */
 	UPROPERTY(EditAnywhere, Category = "ATON OS")
 	TObjectPtr<AHeroSeat> Seat;
@@ -94,11 +105,13 @@ protected:
 	UPROPERTY(VisibleAnywhere, Category = "ATON OS")
 	TObjectPtr<UAtonScreenComponent> Screen;
 
+	void ApplyScreenSize();
+
 private:
 	UFUNCTION()
 	void OnSitFinished();
 
-	void ApplyScreenSize();
+	void MakeDesktop();
 
 	TSharedPtr<SAtonDesktop> Desktop;
 	TWeakObjectPtr<ULevelSequencePlayer> WatchedPlayer;

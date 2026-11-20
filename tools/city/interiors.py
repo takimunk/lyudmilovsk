@@ -38,6 +38,7 @@ AUDIO_CONTENT = os.path.join(CONTENT, "Audio")
 AUDIO_FILES = os.path.join(ROOT, "audio", "sfx")
 OUT_THINGS = os.path.join(CONTENT, "City", "interiors.json")
 OUT_TELEPORTS = os.path.join(CONTENT, "Dev", "teleports", "interiors.json")
+OUT_CUPS = os.path.join(CONTENT, "City", "tournaments.json")
 OUT_STRINGS = os.path.join(CONTENT, "Localization", "city")
 QUESTS = os.path.join(CONTENT, "UI", "quests.json")
 MAP = os.path.join(CONTENT, "UI", "map.json")
@@ -78,7 +79,7 @@ LINE_CONDS = ("h", "d", "date", "after", "before", "once", "every", "festival", 
 WEATHER = ("rain", "snow", "fog", "cold", "warm", "clear", "wet", "dry")
 # the content sections a content file may have
 SECTIONS = ("acts", "shops", "rules", "defaults", "defaults_by_plot_kind", "quests", "collections", "closed_by", "regulars",
-            "texts", "topics", "topic_sets", "tones", "tone_by", "sound_alias", "stays")
+            "texts", "topics", "topic_sets", "tones", "tone_by", "sound_alias", "stays", "tournaments")
 # the staff talk (docs/city_interiors.md "Staff talk"): a topic's fields besides its line conditions (when it is offered)
 TOPIC_FIELDS = ("id", "k", "lines", "once", "gives")
 MAX_TOPICS = 8
@@ -286,7 +287,7 @@ def load_strings():
 
 
 CONTENT_EXTRA = {"collections": {}, "closed_by": {}, "quests": [], "regulars": {}, "texts": {}, "topics": {}, "topic_sets": {},
-                 "tones": {}, "tone_by": {}, "sound_alias": {}, "stays": {}}
+                 "tones": {}, "tone_by": {}, "sound_alias": {}, "stays": {}, "tournaments": {}}
 
 
 def content_files():
@@ -327,7 +328,8 @@ def load_content():
                               ("regulars", CONTENT_EXTRA["regulars"]), ("texts", CONTENT_EXTRA["texts"]),
                               ("topics", CONTENT_EXTRA["topics"]), ("topic_sets", CONTENT_EXTRA["topic_sets"]),
                               ("tones", CONTENT_EXTRA["tones"]), ("tone_by", CONTENT_EXTRA["tone_by"]),
-                              ("sound_alias", CONTENT_EXTRA["sound_alias"]), ("stays", CONTENT_EXTRA["stays"])):
+                              ("sound_alias", CONTENT_EXTRA["sound_alias"]), ("stays", CONTENT_EXTRA["stays"]),
+                              ("tournaments", CONTENT_EXTRA["tournaments"])):
             for k, v in (data.get(section) or {}).items():
                 if k.startswith("_doc"):
                     continue
@@ -884,8 +886,8 @@ def build_texts(src, strings):
             err("%s: no page always shows (every page has conditions): the view could open on nothing" % where)
         rec = {"title": title, "kind": kind, "minutes": minutes, "pages": pages}
         if t.get("gen"):
-            if t["gen"] not in TEXT_GENS:
-                err("%s: gen must be one of %s" % (where, ", ".join(TEXT_GENS)))
+            if t["gen"] not in TEXT_GENS and not t["gen"].startswith("cup:"):
+                err("%s: gen must be one of %s or cup:<tournament>" % (where, ", ".join(TEXT_GENS)))
             else:
                 rec["gen"] = t["gen"]
         if t.get("collect"):
@@ -1596,7 +1598,78 @@ def given_topic(given, tp):
             given[c.partition("/")[0]].add(c.partition("/")[2])
 
 
-def build_collections(src, things, acts, strings, regs=None, texts=None):
+CUP_FIELDS = ("title", "venue", "game", "plot", "days", "start", "step", "collect")
+DOW = ("mon", "tue", "wed", "thu", "fri", "sat", "sun")
+
+
+def build_tournaments(src, strings, regs, things, acts, texts, plot_ids):
+    """The clubs' weekly tournaments (docs/city_interiors.md "Tournaments", Private/City/CityCupsModel.h): {"<id>": {"title":
+    key, "venue": key, "game": vs, "plot": P-, "days": "sat", "start": hour, "step": hours a round, "collect": "cups/<id>"}}.
+    Eight are drawn from every regular who plays the game, so at least eight must; the plot must have a table with its game,
+    open through the three rounds on that day; a text with "gen": "cup:<id>" must be read on some thing of the town."""
+    out = collections.OrderedDict()
+    read_texts = {tx for t in things for tx in (acts[t["act"]].get("read") or {}).get("texts", [])}
+    gens = {texts[tx].get("gen") for tx in read_texts if tx in texts}
+    for cid in sorted(src):
+        if cid.startswith("_"):
+            continue
+        c = src[cid]
+        where = "tournament " + cid
+        for k in c:
+            if k not in CUP_FIELDS:
+                err("%s: unknown field %s" % (where, k))
+        for k in ("title", "venue"):
+            if not has_string(c.get(k, ""), strings):
+                err("%s: %s string %s is missing" % (where, k, c.get(k)))
+        game, plot = c.get("game", ""), c.get("plot", "")
+        if plot not in plot_ids:
+            err("%s: plot %s is not in the plan" % (where, plot))
+        players = [rid for rid, r in regs.items() if game in r["plays"]]
+        if len(players) < 8:
+            err("%s: %d regulars play %s, a bracket needs 8" % (where, len(players), game))
+        if c.get("days") not in DOW:
+            err("%s: days is one weekday (%s)" % (where, ", ".join(DOW)))
+        wd = DOW.index(c["days"]) if c.get("days") in DOW else 5
+        start, step = c.get("start", 13), c.get("step", 1.5)
+        if not (isinstance(start, (int, float)) and isinstance(step, (int, float)) and 0 <= start and 0.25 <= step <= 4 and start + 3 * step <= 24):
+            err("%s: start 0..24 and step 0.25..4 hours, the final over by midnight" % where)
+        tables = [t for t in things if t["plot"] == plot and (acts[t["act"]].get("game") or {}).get("vs") == game]
+        if not tables:
+            err("%s: no table of %s on %s" % (where, game, plot))
+        for t in tables:
+            h = t.get("hours") or [0, 24]
+            days = t.get("days", "mon-sun")
+            if not (h[0] <= start and start + 3 * step <= (h[1] if h[1] > h[0] else h[1] + 24)):
+                err("%s: %s is shut during the rounds (%s, rounds %s..%s)" % (where, t["id"], h, start, start + 3 * step))
+            if not day_in(days, wd):
+                err("%s: %s is shut on %s (%s)" % (where, t["id"], c.get("days"), days))
+        if "cup:" + cid not in gens:
+            err("%s: no thing of the town reads a text with \"gen\": \"cup:%s\" (the bracket board)" % (where, cid))
+        if c.get("collect"):
+            check_line_conds(where, {"collect": c["collect"]})
+            STAMPS_USED.append((where, c["collect"]))
+        out[cid] = {"title": c.get("title", ""), "venue": c.get("venue", ""), "game": game, "plot": plot, "weekday": wd,
+                    "start": float(start), "step": float(step), "collect": c.get("collect", "")}
+    for tx, t in texts.items():
+        g = t.get("gen", "")
+        if g.startswith("cup:") and g[4:] not in out:
+            err("text %s: gen %s: no such tournament" % (tx, g))
+    return out
+
+
+def day_in(days, wd):
+    """Is weekday wd (mon 0) in a things's "days" ("mon-sun", "sat,sun", "fri")?"""
+    for part in str(days).split(","):
+        a, _, b = part.strip().partition("-")
+        if a not in DOW:
+            return True
+        ia, ib = DOW.index(a), DOW.index(b) if b in DOW else DOW.index(a)
+        if (ia <= wd <= ib) if ia <= ib else (wd >= ia or wd <= ib):
+            return True
+    return False
+
+
+def build_collections(src, things, acts, strings, regs=None, texts=None, cups=None):
     """The collections (docs/city_interiors.md "Collections"): {"<set>": {"title": key, "pieces": [...]}}. Pieces omitted: every
     piece something in town gives. Every stamp named anywhere must be of a declared set (and a declared piece), and every
     declared piece must be given by some thing in town (or the set could never be complete)."""
@@ -1640,6 +1713,9 @@ def build_collections(src, things, acts, strings, regs=None, texts=None):
                 given[c.partition("/")[0]].update(line_key(l) for l in a["lines"])
             elif c:
                 given[c.partition("/")[0]].add(c.partition("/")[2])
+    for c in (cups or {}).values():
+        if c.get("collect"):
+            given[c["collect"].partition("/")[0]].add(c["collect"].partition("/")[2])
     out = collections.OrderedDict()
     for sid in sorted(src):
         if sid.startswith("_"):
@@ -1651,13 +1727,16 @@ def build_collections(src, things, acts, strings, regs=None, texts=None):
         if title not in strings and title not in MAIN:
             err("collection %s: title string %s is missing" % (sid, title))
         for k in c:
-            if k not in ("title", "pieces"):
+            if k not in ("title", "pieces", "by"):
                 err("collection %s: unknown field %s" % (sid, k))
+        if c.get("by") and not c.get("pieces"):
+            err("collection %s: given by %s: list its pieces" % (sid, c["by"]))
         pieces = [str(p) for p in c["pieces"]] if c.get("pieces") else sorted(given.get(sid, ()), key=lambda p: (len(p), p))
         if len(set(pieces)) != len(pieces):
             err("collection %s: a piece twice" % sid)
         for p in pieces:
-            if p not in given.get(sid, ()):
+            # "by": the engine gives its pieces (the kites': ULyudKiteFlying stamps a flight), not a thing in town
+            if p not in given.get(sid, ()) and not c.get("by"):
                 err("collection %s: nothing in town gives piece %s" % (sid, p))
         if not pieces:
             err("collection %s: no pieces (nothing in town gives one)" % sid)
@@ -2024,7 +2103,8 @@ def main():
         g = a.get("game")
         if g and g["vs"] and not opponents_at(regs, g["vs"], ""):
             err("act %s: game vs %s: no regular plays it" % (aid, g["vs"]))
-    colls = build_collections(CONTENT_EXTRA["collections"], things, acts, strings, regs, texts)
+    cups = build_tournaments(CONTENT_EXTRA["tournaments"], strings, regs, things, acts, texts, all_plots)
+    colls = build_collections(CONTENT_EXTRA["collections"], things, acts, strings, regs, texts, cups)
     tones, plot_tones, missing_tone_sounds = build_tones(places(plan), reg)
     targets = {a["target"] for a in acts.values()} | set(acts)
     for where, v in DID_USED:
@@ -2131,6 +2211,9 @@ def main():
     if stays:
         data["stays"] = stays
     write(OUT_THINGS, dump_things(data))
+    write(OUT_CUPS, json.dumps(collections.OrderedDict([
+        ("about", "Written by tools/city/interiors.py from tools/city/content (\"tournaments\"): the clubs' weekly tournaments (Private/City/CityCupsModel.h)."),
+        ("tournaments", cups)]), ensure_ascii=False, indent=1) + "\n")
     tp = collections.OrderedDict([("about", "Written by tools/city/interiors.py: x/y map metres (docs/world_map.md), z world cm (the floor, feet), yaw Unreal degrees."),
                                   ("teleports", teleports)])
     write(OUT_TELEPORTS, dump_things(tp))

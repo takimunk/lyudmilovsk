@@ -284,6 +284,14 @@ public:
 	/** The coming days, one line per 3 hours. */
 	UFUNCTION(BlueprintCallable, Category = "Weather") FString Forecast(float Days = 3.f) const;
 
+	/**
+	 * A day held fair (the town's Big Sun day, ULyudFestivalSubsystem): Amount 0 the weather's own .. 1 the cloud thinned to
+	 * a few fair-weather tufts, no rain, fog or thunder. Eased by the caller over hours; the console's forced values and
+	 * presets still win. Forecasts (GetStateAt) don't know of it.
+	 */
+	UFUNCTION(BlueprintCallable, Category = "Weather") void SetFairSky(float Amount);
+	UFUNCTION(BlueprintPure, Category = "Weather") float GetFairSky() const { return FairSky; }
+
 	/** Forces a preset (see the console list); "" or "off" clears. */
 	UFUNCTION(BlueprintCallable, Category = "Weather") bool SetPreset(const FString& Name);
 
@@ -313,6 +321,9 @@ private:
 	mutable bool bWasBlending = false;
 	mutable double CachedHours = -1e9;
 	mutable uint32 CachedForceHash = 0;
+	/** SetFairSky's amount, and the one the cached state was made with. */
+	float FairSky = 0.f;
+	mutable float CachedFairSky = 0.f;
 	mutable uint32 ClimateHash = 0;
 	float NextStrike = 0.f;
 	int32 LastOvercast = -1;

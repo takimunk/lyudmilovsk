@@ -1740,6 +1740,8 @@ static void JobChecks(const std::string& Path)
 	CHECK(Earned > 150 && Earned < 600, "a week of odd jobs earns %d roubles", Earned);
 }
 
+#include "cupchecks.h"
+
 int main(int Argc, char** Argv)
 {
 	FixtureChecks();
@@ -1755,6 +1757,7 @@ int main(int Argc, char** Argv)
 	RealChecks(Argc > 1 ? Argv[1] : "unreal/Lyudmilovsk/Content/City/interiors.json");
 	CourseChecks(Argc > 1 ? Argv[1] : "unreal/Lyudmilovsk/Content/City/interiors.json");
 	JobChecks(Argc > 1 ? Argv[1] : "unreal/Lyudmilovsk/Content/City/interiors.json");
+	CupChecks(Argc > 1 ? Argv[1] : "unreal/Lyudmilovsk/Content/City/interiors.json");
 	std::printf("%d passed, %d failed\n", Passed, Failures);
 	return Failures ? 1 : 0;
 }

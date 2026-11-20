@@ -40557,6 +40557,358 @@
     "coffee": 0.43
    },
    "body": "Town/R_hernandez_caio"
+  },
+  {
+   "key": "t_gromov_pyotr",
+   "town": 1,
+   "mesh": "Korneev_ivan",
+   "age": 78,
+   "female": 0,
+   "household": "t_p-sanatorium_1-01",
+   "home": "P-SANATORIUM/1-01",
+   "chronotype": "lark",
+   "wake": 6.5,
+   "bed": 22.25,
+   "spread": 0.25,
+   "duties": [
+    {
+     "activity": "eat_sanatorium_breakfast",
+     "place": "P-SANATORIUM-DINING",
+     "role": "guest_gromov_pyotr",
+     "hours": [
+      8.5,
+      9.25
+     ],
+     "days": [
+      0,
+      1,
+      2,
+      3,
+      4,
+      5,
+      6
+     ]
+    },
+    {
+     "activity": "eat_sanatorium_lunch",
+     "place": "P-SANATORIUM-DINING",
+     "role": "guest_gromov_pyotr",
+     "hours": [
+      13.5,
+      14.25
+     ],
+     "days": [
+      0,
+      1,
+      2,
+      3,
+      4,
+      5,
+      6
+     ]
+    },
+    {
+     "activity": "eat_sanatorium_supper",
+     "place": "P-SANATORIUM-DINING",
+     "role": "guest_gromov_pyotr",
+     "hours": [
+      18.5,
+      19.25
+     ],
+     "days": [
+      0,
+      1,
+      2,
+      3,
+      4,
+      5,
+      6
+     ]
+    }
+   ],
+   "friends": [
+    "t_mironova_sonya"
+   ],
+   "temper": {
+    "social": 0.55,
+    "active": 0.4,
+    "studious": 0.7,
+    "gamer": 0.3,
+    "nature": 0.6,
+    "sun": 0.5
+   },
+   "walk_speed": 0.95,
+   "occupation": "guest",
+   "likes": {
+    "sit_bench": 0.9,
+    "sea_air": 1.0,
+    "watch_sunrise": 0.8,
+    "read_library": 0.5
+   }
+  },
+  {
+   "key": "t_mironova_sonya",
+   "town": 1,
+   "mesh": "Frolova_masha",
+   "age": 16,
+   "female": 1,
+   "household": "t_p-sanatorium_1-02",
+   "home": "P-SANATORIUM/1-02",
+   "chronotype": "lark",
+   "wake": 7.5,
+   "bed": 22.75,
+   "spread": 0.25,
+   "duties": [
+    {
+     "activity": "eat_sanatorium_breakfast",
+     "place": "P-SANATORIUM-DINING",
+     "role": "guest_mironova_sonya",
+     "hours": [
+      8.5,
+      9.25
+     ],
+     "days": [
+      0,
+      1,
+      2,
+      3,
+      4,
+      5,
+      6
+     ]
+    },
+    {
+     "activity": "eat_sanatorium_lunch",
+     "place": "P-SANATORIUM-DINING",
+     "role": "guest_mironova_sonya",
+     "hours": [
+      13.5,
+      14.25
+     ],
+     "days": [
+      0,
+      1,
+      2,
+      3,
+      4,
+      5,
+      6
+     ]
+    },
+    {
+     "activity": "eat_sanatorium_supper",
+     "place": "P-SANATORIUM-DINING",
+     "role": "guest_mironova_sonya",
+     "hours": [
+      18.5,
+      19.25
+     ],
+     "days": [
+      0,
+      1,
+      2,
+      3,
+      4,
+      5,
+      6
+     ]
+    }
+   ],
+   "friends": [
+    "t_gromov_pyotr"
+   ],
+   "temper": {
+    "social": 0.45,
+    "active": 0.6,
+    "studious": 0.8,
+    "gamer": 0.2,
+    "nature": 0.5,
+    "sun": 0.6
+   },
+   "walk_speed": 1.3,
+   "occupation": "guest",
+   "likes": {
+    "stroll": 0.9,
+    "read_library": 1.0,
+    "coffee": 0.5,
+    "swim_look": 0.6
+   }
+  },
+  {
+   "key": "t_tamm_boris",
+   "town": 1,
+   "mesh": "Sorokin_oleg",
+   "age": 81,
+   "female": 0,
+   "household": "t_p-sanatorium_1-03",
+   "home": "P-SANATORIUM/1-03",
+   "chronotype": "lark",
+   "wake": 6.75,
+   "bed": 22.5,
+   "spread": 0.25,
+   "duties": [
+    {
+     "activity": "eat_sanatorium_breakfast",
+     "place": "P-SANATORIUM-DINING",
+     "role": "guest_tamm_boris",
+     "hours": [
+      8.5,
+      9.25
+     ],
+     "days": [
+      0,
+      1,
+      2,
+      3,
+      4,
+      5,
+      6
+     ]
+    },
+    {
+     "activity": "eat_sanatorium_lunch",
+     "place": "P-SANATORIUM-DINING",
+     "role": "guest_tamm_boris",
+     "hours": [
+      13.5,
+      14.25
+     ],
+     "days": [
+      0,
+      1,
+      2,
+      3,
+      4,
+      5,
+      6
+     ]
+    },
+    {
+     "activity": "eat_sanatorium_supper",
+     "place": "P-SANATORIUM-DINING",
+     "role": "guest_tamm_boris",
+     "hours": [
+      18.5,
+      19.25
+     ],
+     "days": [
+      0,
+      1,
+      2,
+      3,
+      4,
+      5,
+      6
+     ]
+    }
+   ],
+   "friends": [
+    "t_sazonov_nikolai"
+   ],
+   "temper": {
+    "social": 0.7,
+    "active": 0.3,
+    "studious": 0.5,
+    "gamer": 0.9,
+    "nature": 0.5,
+    "sun": 0.4
+   },
+   "walk_speed": 0.9,
+   "occupation": "guest",
+   "likes": {
+    "play_club": 1.0,
+    "sit_bench": 0.8,
+    "fish_shore": 0.7,
+    "chat": 0.6
+   }
+  },
+  {
+   "key": "t_sazonov_nikolai",
+   "town": 1,
+   "mesh": "Zotov_lev",
+   "age": 80,
+   "female": 0,
+   "household": "t_p-sanatorium_1-04",
+   "home": "P-SANATORIUM/1-04",
+   "chronotype": "lark",
+   "wake": 7.0,
+   "bed": 22.5,
+   "spread": 0.25,
+   "duties": [
+    {
+     "activity": "eat_sanatorium_breakfast",
+     "place": "P-SANATORIUM-DINING",
+     "role": "guest_sazonov_nikolai",
+     "hours": [
+      8.5,
+      9.25
+     ],
+     "days": [
+      0,
+      1,
+      2,
+      3,
+      4,
+      5,
+      6
+     ]
+    },
+    {
+     "activity": "eat_sanatorium_lunch",
+     "place": "P-SANATORIUM-DINING",
+     "role": "guest_sazonov_nikolai",
+     "hours": [
+      13.5,
+      14.25
+     ],
+     "days": [
+      0,
+      1,
+      2,
+      3,
+      4,
+      5,
+      6
+     ]
+    },
+    {
+     "activity": "eat_sanatorium_supper",
+     "place": "P-SANATORIUM-DINING",
+     "role": "guest_sazonov_nikolai",
+     "hours": [
+      18.5,
+      19.25
+     ],
+     "days": [
+      0,
+      1,
+      2,
+      3,
+      4,
+      5,
+      6
+     ]
+    }
+   ],
+   "friends": [
+    "t_tamm_boris"
+   ],
+   "temper": {
+    "social": 0.6,
+    "active": 0.35,
+    "studious": 0.9,
+    "gamer": 0.85,
+    "nature": 0.4,
+    "sun": 0.4
+   },
+   "walk_speed": 0.9,
+   "occupation": "guest",
+   "likes": {
+    "play_club": 1.0,
+    "read_library": 0.8,
+    "sit_bench": 0.6,
+    "chat": 0.5
+   }
   }
  ]
 }

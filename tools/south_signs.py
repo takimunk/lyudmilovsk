@@ -27,7 +27,7 @@ from PIL import Image, ImageDraw, ImageFont
 
 HERE = os.path.dirname(os.path.abspath(__file__))
 REPO = os.path.normpath(os.path.join(HERE, ".."))
-LOC = os.path.join(REPO, "unreal", "Lyudmilovsk", "Content", "Localization", "strings_%s.json")
+LOC = os.path.join(REPO, "unreal", "Lyudmilovsk", "Content", "Localization", "south", "strings_%s.json")   # the South's own tables
 OUT = os.path.join(REPO, "textures", "localized", "%s")
 HEAD = os.path.join(REPO, "fonts", "DelaGothicOne-Regular.ttf")
 BODY = os.path.join(REPO, "fonts", "MPLUS1p-Bold.ttf")

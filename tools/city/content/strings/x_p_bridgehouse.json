@@ -175,6 +175,11 @@
   "en": "A key on a string is taped under Sato's box: a spare, for anyone who loses theirs. Sato claims it is safer than under the doormat.",
   "ja": "佐藤の郵便受けの下に、紐のついた鍵がテープで貼ってある。なくした人のための予備だ。佐藤いわく、玄関マットの下より安全らしい。"
  },
+ "city.bh.mail.7": {
+  "ru": "В пустой ячейке без фамилии лежит одна бумажка, сложенная вчетверо. На ней аккуратно, по линейке: «ЛАБ-2. Дежурная смена: 0314. Не терять!!» Потеряли.",
+  "en": "In an empty box with no name lies a single slip, folded in four. On it, neatly, along a ruler: \"LAB-2. Duty shift: 0314. Do not lose!!\" They lost it.",
+  "ja": "名前のない空の郵便受けに、四つ折りの紙切れが一枚だけ入っている。定規で引いたような丁寧な字で「ラボ2。当直班：0314。なくさないこと！！」。なくしたのだ。"
+ },
  "city.bh.house.1": {
   "ru": "Дом-мост. Жильцам. Лифт ходит круглые сутки, после девяти просим не хлопать дверями. И не оставлять коляски у лифта: они уезжают на этаж вместе с кнопками. — Правление",
   "en": "Bridge House. To residents. The lift runs round the clock; after nine please don't slam the doors. And don't leave prams by the lift: they ride up with the buttons. — The Board",

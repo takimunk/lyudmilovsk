@@ -43,6 +43,8 @@ MARKET = {"apple": [8, 9, 10, 11], "kefir": None, "bread_loaf": None, "pie": Non
           "coffee": None, "cookies": None, "seeds": None, "feed_peanuts": [10, 11, 12, 1, 2, 3], "candy": None,
           "drink_baikal": [5, 6, 7, 8], "drink_tarkhun": [5, 6, 7, 8], "chocolate": None, "water": [6, 7, 8]}
 CINEMA = ["city.rassvet.poster.%s" % d for d in ("mon", "tue", "wed", "thu", "fri", "sat", "sun", "fest")]
+# the newsreel of real old films before every session (tools/films/films.py writes these strings, docs/cinema.md)
+NEWSREEL = ["film.programme.%s" % d for d in ("mon", "tue", "wed", "thu", "fri", "sat", "sun", "fest")]
 BOARDS = {   # board -> (title ru/en/ja, the board's undated lines, its festival lines)
     "lost": (("Доска объявлений", "Notice board", "掲示板"), ["city.look.lost.%d" % i for i in range(1, 6)], ["city.fest.lost.1"]),
     "club": (("Клубная доска", "Club notice board", "クラブの掲示板"), ["city.look.club.%d" % i for i in range(1, 6)], ["city.fest.club.1"]),
@@ -232,6 +234,7 @@ def main():
     data["rare_birds"] = RARE_BIRDS
     data["fest_blurbs"] = sorted(src.FEST)
     data["cinema"] = CINEMA
+    data["newsreel"] = NEWSREEL
     data["variants"] = variants(tables)
     data["fronts"] = pool("paper.story", src.FRONTS)
     data["town"] = pool("paper.town", src.TOWN)

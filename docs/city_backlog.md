@@ -135,9 +135,9 @@ rental, souvenirs, a dumpling house, a cheburek house, a beer bar). Each is now 
   win/lose/draw lines, stamps, prizes, a daily limit, `Notify("win")`; on chess, billiards, darts, table tennis, table
   football, the fair's gallery, ring toss and strongman, the arcade, the hoop, and new checkers, dominoes, badminton acts
   (`what=`). Ten regulars of the clubs (real residents) play against the hero, each with a style, a skill and words. Not
-  built on the Mac yet. Still open: the x_ chess tables that don't `like` chess (`tarelka_chess`, `sanatorium_chess`), no
-  thing says `what=checkers|dominoes|badminton` yet, the regulars are not seen sitting at the table (the life sim's side), a
-  ladder or a weekly tournament
+  built on the Mac yet. Since 2026-11-20 every chess table likes chess (the last two, the flats' `holm_chess` and
+  `santos_chess`, too), the checkers/dominoes/badminton things say `what=`, and three weekly tournaments run
+  (docs/city_interiors.md "Tournaments"). Still open: the regulars are not seen sitting at the table (the life sim's side)
 
 - [~] Townsfolk use the things (2026-11-13): `FindFreeThing`, `ClaimThing`/`ReleaseThing`, `GetThingsOfPlot` on
   `ULyudCityThings` (docs "API for townsfolk"); the hero is refused a held seat. The people's life side is the npc-manners

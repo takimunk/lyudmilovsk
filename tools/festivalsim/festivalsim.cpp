@@ -369,10 +369,10 @@ static void Deep(FCalendar& C)
 					const float From = Day * 24.f + P.From, To = Day * 24.f + P.To;
 					if (From < Fe.DecorFrom || To > DecorEnd) Outside += " " + Fe.Id + "." + P.Id;
 					// the people's life gets (From mod 24, To mod 24): it must mean the same hours
-					const float GF = std::fmod(P.From, 24.f), GT = std::fmod(P.To, 24.f);
+					const float GF = std::fmod(P.From + 48.f, 24.f), GT = std::fmod(P.To + 48.f, 24.f);     // (an eve phase starts before 0)
 					for (float H = 0.025f; H < 48.f; H += 0.05f)
 					{
-						const bool bPhase = (H >= P.From && H < P.To) || (H + 24.f >= P.From && H + 24.f < P.To) || (H - 24.f >= P.From && H - 24.f < P.To && P.From >= 24.f);
+						const bool bPhase = (H >= P.From && H < P.To) || (H + 24.f >= P.From && H + 24.f < P.To) || (H - 24.f >= P.From && H - 24.f < P.To && P.From < 0.f) || (H - 24.f >= P.From && H - 24.f < P.To && P.From >= 24.f);
 						if (H < 24.f && bPhase != PeopleInHours(GF, GT, H))
 						{
 							Gather += " " + Fe.Id + "." + P.Id + "@" + std::to_string(H);
@@ -636,6 +636,34 @@ static int Test(FCalendar& C)
 	{
 		auto A = C.At({ 2026, 6, 24 }, 4.f);
 		CHECK(!A.empty() && A[0].Festival == Mid && C.Festivals[Mid].Phases[A[0].Phase].Id == "sunrise", "04:00 on 24 June: the sunrise");
+	}
+	// the Big Sun's day: the second Saturday of June, its eve the evening before, its sky eased in over days
+	{
+		const int Sun = C.Find("sun_day");
+		CHECK(Sun >= 0 && C.StartsOn(Sun, { 2027, 6, 12 }) && C.StartsOn(Sun, { 2028, 6, 10 }) && !C.StartsOn(Sun, { 2027, 6, 5 }), "the Big Sun's day is 2027-06-12, 2028-06-10");
+		auto Eve = C.At({ 2027, 6, 11 }, 19.5f);
+		bool bEve = false;
+		for (const FActive& X : Eve) bEve |= X.Festival == Sun && X.Phase >= 0 && C.Festivals[Sun].Phases[X.Phase].Id == "eve" && X.Rel < 0.f;
+		CHECK(bEve, "19:30 the evening before: its eve, the town looks at the sun going down");
+		auto Noon = C.At({ 2027, 6, 12 }, 13.f);
+		CHECK(!Noon.empty() && Noon[0].Festival == Sun && C.Festivals[Sun].Phases[Noon[0].Phase].Id == "zenith", "13:00 on its day: the zenith on the square");
+		const FSky AtNoon = C.SkyAt({ 2027, 6, 12 }, 13.f), DayBefore = C.SkyAt({ 2027, 6, 11 }, 13.f), TwoBefore = C.SkyAt({ 2027, 6, 10 }, 13.f);
+		const FSky Far = C.SkyAt({ 2027, 6, 8 }, 13.f), After = C.SkyAt({ 2027, 6, 13 }, 13.f), Winter = C.SkyAt({ 2027, 1, 15 }, 13.f);
+		CHECK(std::fabs(AtNoon.SunApproach - C.Festivals[Sun].SunApproach) < 1e-4f && AtNoon.Clear > 0.999f && AtNoon.Festival == Sun,
+			"its noon: the star at its nearest (+%.2f), the sky held fair", AtNoon.SunApproach);
+		CHECK(DayBefore.SunApproach > TwoBefore.SunApproach && TwoBefore.SunApproach > 0.f && DayBefore.SunApproach < AtNoon.SunApproach,
+			"the star swells over the days before (+%.2f two days before, +%.2f the day before)", TwoBefore.SunApproach, DayBefore.SunApproach);
+		CHECK(Far.SunApproach == 0.f && Far.Clear == 0.f && Winter.SunApproach == 0.f && Winter.Festival < 0, "four days before and in winter the sky is its own");
+		CHECK(std::fabs(After.SunApproach - DayBefore.SunApproach) < 1e-3f && TwoBefore.Clear == 0.f && DayBefore.Clear > 0.f && DayBefore.Clear < 0.2f,
+			"it goes as it came; the fair weather comes in only through the last day (%.2f the noon before)", DayBefore.Clear);
+		float Prev = 0.f, Jump = 0.f;
+		for (int Step = 0; Step < 24 * 8 * 4; Step++)
+		{
+			const FSky S = C.SkyAt(AddDays({ 2027, 6, 8 }, Step / 96), (Step % 96) * 0.25f);
+			Jump = std::max(Jump, std::fabs(S.SunApproach - Prev));
+			Prev = S.SunApproach;
+		}
+		CHECK(Jump < 0.02f, "the star never jumps: at most %.3f in a quarter of an hour, over midnights too", Jump);
 	}
 	// the world's festivals by the moon
 	{

@@ -27,6 +27,8 @@ struct FAtonAppInfo
 	FLinearColor Tile;
 	FVector2D WindowSize;
 	bool bOnDesktop = true;
+	/** The machines that have it: AtonApps::Club (the hero's computer), AtonApps::Lab (the Academgorodok terminals), or both. */
+	int32 Profiles = 1;
 };
 
 namespace AtonApps
@@ -40,6 +42,20 @@ namespace AtonApps
 	const FName Trash("trash");
 	const FName Chosen("chosen");
 	const FName About("about");
+	// the lab network's programs (AtonLabApps.cpp, docs/aton_lab.md)
+	const FName Session("session");
+	const FName LabMail("labmail");
+	const FName Adventure("adventure");
+	const FName Chess("chess");
+	const FName Weather("weather");
+	const FName Scope("scope");
+
+	/** The machine's profile names and their bits in FAtonAppInfo::Profiles. */
+	const FName ProfileClub("club");
+	const FName ProfileLab("lab");
+	constexpr int32 Club = 1;
+	constexpr int32 Lab = 2;
+	inline int32 ProfileBit(FName Profile) { return Profile == ProfileLab ? Lab : Club; }
 
 	/**
 	 * Where the Chosen game is loaded from: a local build first (tools/chosen_local.sh serves it), the

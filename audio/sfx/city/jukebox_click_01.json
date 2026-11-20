@@ -1,0 +1,21 @@
+{
+ "name": "jukebox_click_01",
+ "asset": "/Game/Audio/City/S_jukebox_click_01",
+ "pool": "jukebox_click",
+ "file": "audio/sfx/city/jukebox_click_01.wav",
+ "generator": "tools/music/sounds.py",
+ "seed": 2091,
+ "rng": "numpy.random.default_rng (PCG64), numpy 2.5.3",
+ "loop": false,
+ "sample_rate": 48000,
+ "bit_depth": 16,
+ "channels": 1,
+ "seconds": 2.4,
+ "peak_dbfs": -4.0,
+ "rms_dbfs": -23.32,
+ "params": {
+  "seconds": 2.4,
+  "coin_clinks": 2
+ },
+ "license": "Procedural, made by the project; CC BY 4.0."
+}
