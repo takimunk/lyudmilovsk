@@ -1,6 +1,7 @@
 #include "Winter/LyudWinterPlay.h"
 
 #include "WinterPlayModel.h"
+#include "WinterPlayState.h"
 
 #include "Audio/LyudSoundscape.h"
 #include "Camera/PlayerCameraManager.h"
@@ -52,23 +53,6 @@ DEFINE_LOG_CATEGORY_STATIC(LogLyudWinterPlay, Log, All);
 
 using namespace LyudWinterPlay;
 
-/** The model's objects (Private/Winter/WinterPlayModel.h). */
-struct FWinterPlayState
-{
-	FParams P;
-	FIceState IceState;
-	FIce Ice;
-	FSkater Skater;
-	FRoom Room;
-	FBody Body;
-	FFight Fight;
-	FSaved Save;
-	std::vector<FBall> Balls;
-	std::vector<FCrack> Cracks;
-	FRng Rng = FRng(4242u);
-	bool bWasSwimming = false;
-	double LastFactsHours = -1.0;
-};
 
 namespace LyudWinterPlayImpl
 {
