@@ -18,6 +18,8 @@
 # manner =    what their hands are doing now (manners.json: smoke, phone_call, umbrella, feed_birds, yawn, ...)
 # temper =    who they are in manner (their persona's strong sides): warm, reserved, nervy, calm, curious, tidy, careless
 # met =       how well the speaker knows the player: new (never greeted him), seen (on 1-4 days), known (5 and more)
+# bond =      how close a friend of his the speaker is (docs/friends.md): friendly, friend, close; lines of a set with
+#             bond = friend or close may hold {0}: the nickname the friend gave him
 # gather =    at a holiday's gathering of this mode now: mingle, watch, sit, fair
 # chrono =    lark, owl, night, usual                 need =  hunger, tired, social, fun, nature, mind, sun (over 0.75)
 # hours =     5-9 (from-to; over midnight 22-4; several ranges: 6-9 17-20)    months = 10-4    weekday = mon ... sun
@@ -1851,3 +1853,371 @@ weather = warm
 age = teen adult elder
 weight = 3
 say = town.evening_front_warm.1..2
+
+# Friends among the townsfolk (backlog item 12; the words of the feature: tools/friends/content.py).
+# bond = friendly | friend | close: how close the speaker is to the hero (absent: anyone). {0} is the nickname the
+# friend gave him (friends.nick.*), only in sets with bond = friend close. Greetings (to = hero), a wave from afar
+# (on = friend_wave), the friend's day told on a bench (on = friend_bench), at their family's weekend outing
+# (on = friend_outing), his postcard came (on = friend_card), his present remembered (on = friend_gift).
+# Russian: the speaker's own words never agree in gender (no past tense about themselves); the hero is a boy.
+# --- greetings ---
+# --- a friend waves first, from across the street ---
+# --- on a bench together: the friend's day ---
+# --- the hero joins their family's weekend outing ---
+# --- his postcard came ---
+# --- his present remembered ---
+
+[friend_greet_friendly]
+to = hero
+bond = friendly
+age = adult elder
+weight = 2
+say = town.friend_greet_friendly.1..4
+
+[friend_greet_friendly_young]
+to = hero
+bond = friendly
+age = kid teen
+weight = 2
+say = town.friend_greet_friendly_young.1..3
+
+[friend_greet_friendly_rain]
+to = hero
+bond = friendly
+weather = rain
+weight = 2
+say = town.friend_greet_friendly_rain.1
+
+[friend_greet_friend]
+to = hero
+bond = friend
+age = adult elder
+weight = 3
+say = town.friend_greet_friend.1..5
+
+[friend_greet_friend_kid]
+to = hero
+bond = friend
+age = kid
+weight = 3
+say = town.friend_greet_friend_kid.1..3
+
+[friend_greet_friend_teen]
+to = hero
+bond = friend
+age = teen
+weight = 3
+say = town.friend_greet_friend_teen.1..3
+
+[friend_greet_close]
+to = hero
+bond = close
+age = adult elder
+weight = 4
+say = town.friend_greet_close.1..4
+
+[friend_greet_close_kid]
+to = hero
+bond = close
+age = kid
+weight = 4
+say = town.friend_greet_close_kid.1..2
+
+[friend_greet_close_teen]
+to = hero
+bond = close
+age = teen
+weight = 4
+say = town.friend_greet_close_teen.1..2
+
+[friend_greet_morning]
+to = hero
+bond = friend close
+age = adult elder
+hours = 6-10
+weight = 4
+say = town.friend_greet_morning.1..2
+
+[friend_greet_evening]
+to = hero
+bond = friend close
+hours = 18-23
+weight = 4
+say = town.friend_greet_evening.1..2
+
+[friend_greet_rain]
+to = hero
+bond = friend close
+weather = rain
+weight = 4
+say = town.friend_greet_rain.1..2
+
+[friend_wave]
+on = friend_wave
+bond = friend close
+age = teen adult elder
+say = town.friend_wave.1..4
+
+[friend_wave_kid]
+on = friend_wave
+bond = friend close
+age = kid
+say = town.friend_wave_kid.1..3
+
+[friend_wave_morning]
+on = friend_wave
+bond = friend close
+age = adult elder
+hours = 6-10
+say = town.friend_wave_morning.1
+
+[friend_bench_pensioner]
+on = friend_bench
+bond = friend close
+job = pensioner
+weight = 2
+say = town.friend_bench_pensioner.1..5
+say = town.friend_bench_pensioner.7
+say = town.friend_bench_pensioner.6
+say = town.friend_bench_pensioner.8
+
+[friend_bench_elder_warm]
+on = friend_bench
+bond = friend close
+age = elder
+weather = warm clear
+say = town.friend_bench_elder_warm.1..2
+
+[friend_bench_elder_cold]
+on = friend_bench
+bond = friend close
+age = elder
+weather = cold snow
+say = town.friend_bench_elder_cold.1..2
+
+[friend_bench_elder_rain]
+on = friend_bench
+bond = friend close
+age = elder
+weather = rain
+say = town.friend_bench_elder_rain.1
+
+[friend_bench_pupil]
+on = friend_bench
+bond = friend close
+job = pupil
+weight = 2
+say = town.friend_bench_pupil.1..6
+
+[friend_bench_kid]
+on = friend_bench
+bond = friend close
+age = kid
+say = town.friend_bench_kid.1..2
+
+[friend_bench_kid_rain]
+on = friend_bench
+bond = friend close
+age = kid
+weather = rain
+say = town.friend_bench_kid_rain.1
+
+[friend_bench_teen]
+on = friend_bench
+bond = friend close
+age = teen
+say = town.friend_bench_teen.1..2
+
+[friend_bench_student]
+on = friend_bench
+bond = friend close
+job = student
+say = town.friend_bench_student.1..3
+
+[friend_bench_fisherman]
+on = friend_bench
+bond = friend close
+job = fisherman
+weight = 2
+say = town.friend_bench_fisherman.1
+say = town.friend_bench_fisherman.5
+say = town.friend_bench_fisherman.2..4
+
+[friend_bench_fisherman_rain]
+on = friend_bench
+bond = friend close
+job = fisherman
+weather = rain fog
+say = town.friend_bench_fisherman_rain.1
+
+[friend_bench_fisherman_cold]
+on = friend_bench
+bond = friend close
+job = fisherman
+weather = cold
+say = town.friend_bench_fisherman_cold.1
+
+[friend_bench_seller]
+on = friend_bench
+bond = friend close
+job = seller vendor fishmonger
+say = town.friend_bench_seller.1
+say = town.friend_bench_seller.3
+say = town.friend_bench_seller.2
+
+[friend_bench_programmer]
+on = friend_bench
+bond = friend close
+job = programmer
+say = town.friend_bench_programmer.1..2
+
+[friend_bench_artist]
+on = friend_bench
+bond = friend close
+job = artist photographer
+say = town.friend_bench_artist.1..3
+
+[friend_bench_musician]
+on = friend_bench
+bond = friend close
+job = musician choir_leader
+say = town.friend_bench_musician.1..2
+
+[friend_bench_writer]
+on = friend_bench
+bond = friend close
+job = writer
+say = town.friend_bench_writer.1..3
+
+[friend_bench_cook]
+on = friend_bench
+bond = friend close
+job = cook baker
+say = town.friend_bench_cook.1..3
+
+[friend_bench_teacher]
+on = friend_bench
+bond = friend close
+job = teacher
+say = town.friend_bench_teacher.1..2
+
+[friend_bench_doctor]
+on = friend_bench
+bond = friend close
+job = doctor nurse
+say = town.friend_bench_doctor.1..2
+
+[friend_bench_lifeguard]
+on = friend_bench
+bond = friend close
+job = lifeguard
+say = town.friend_bench_lifeguard.1..2
+
+[friend_bench_keeper]
+on = friend_bench
+bond = friend close
+job = lighthouse_keeper
+say = town.friend_bench_keeper.1..2
+
+[friend_bench_away]
+on = friend_bench
+bond = friend close
+job = away
+weekday = sat sun
+say = town.friend_bench_away.1
+
+[friend_bench_adult]
+on = friend_bench
+bond = friend close
+age = adult
+say = town.friend_bench_adult.1..2
+
+[friend_bench_rain]
+on = friend_bench
+bond = friend close
+weather = rain
+say = town.friend_bench_rain.1..2
+
+[friend_bench_cold]
+on = friend_bench
+bond = friend close
+weather = cold
+say = town.friend_bench_cold.1
+
+[friend_bench_warm]
+on = friend_bench
+bond = friend close
+weather = warm
+say = town.friend_bench_warm.1
+
+[friend_bench_clear]
+on = friend_bench
+bond = friend close
+weather = clear
+say = town.friend_bench_clear.1
+
+[friend_bench_festival]
+on = friend_bench
+bond = friend close
+festival = any
+weight = 2
+say = town.friend_bench_festival.1..2
+
+[friend_bench_morning]
+on = friend_bench
+bond = friend close
+hours = 6-10
+say = town.friend_bench_morning.1..2
+
+[friend_bench_evening]
+on = friend_bench
+bond = friend close
+hours = 18-23
+say = town.friend_bench_evening.1..2
+
+[friend_outing]
+on = friend_outing
+bond = friend close
+age = teen adult elder
+say = town.friend_outing.1..5
+
+[friend_outing_parent]
+on = friend_outing
+bond = friend close
+age = adult
+say = town.friend_outing_parent.1
+
+[friend_outing_kid]
+on = friend_outing
+bond = friend close
+age = kid
+say = town.friend_outing_kid.1..2
+
+[friend_card]
+on = friend_card
+bond = friendly friend close
+age = teen adult elder
+say = town.friend_card.1..3
+
+[friend_card_named]
+on = friend_card
+bond = friend close
+age = teen adult elder
+weight = 2
+say = town.friend_card_named.1..2
+
+[friend_card_kid]
+on = friend_card
+bond = friendly friend close
+age = kid
+say = town.friend_card_kid.1
+
+[friend_gift]
+on = friend_gift
+bond = friendly friend close
+say = town.friend_gift.1..2
+
+[friend_gift_named]
+on = friend_gift
+bond = friend close
+say = town.friend_gift_named.1..2

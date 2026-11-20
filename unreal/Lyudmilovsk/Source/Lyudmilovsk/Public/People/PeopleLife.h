@@ -123,6 +123,10 @@ public:
 	UFUNCTION(BlueprintCallable, Category = "People")
 	bool Order(int32 Id, const FString& Activity, const FString& PlaceId = TEXT(""));
 
+	/** A friend comes to sit beside the player (docs/friends.md): the free seat nearest Where (world cm) within MaxCm that a
+	 *  sitting activity of theirs fits, for Minutes of game time; false if there is none. */
+	bool SitBeside(int32 Id, const FVector& Where, float MaxCm = 250.f, float Minutes = 15.f);
+
 	/** Moves a household into a flat (its id, e.g. Novikova1-2-17); false if it is not free. Kept with the save. */
 	UFUNCTION(BlueprintCallable, Category = "People")
 	bool SetHome(const FString& Household, const FString& FlatId);

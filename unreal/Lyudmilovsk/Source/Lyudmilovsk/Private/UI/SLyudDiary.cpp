@@ -247,8 +247,17 @@ void SLyudDiarySpread::Construct(const FArguments& InArgs)
 		R = QuestsRight();
 		break;
 	case ESection::Diary:
-		L = DiaryPage(Spread.Part * 2);
-		R = DiaryPage(Spread.Part * 2 + 1);
+		if (Spread.Part >= State->DiarySpreads)
+		{
+			// after the entries: the people he knows
+			L = PeoplePage((Spread.Part - State->DiarySpreads) * 2);
+			R = PeoplePage((Spread.Part - State->DiarySpreads) * 2 + 1);
+		}
+		else
+		{
+			L = DiaryPage(Spread.Part * 2);
+			R = DiaryPage(Spread.Part * 2 + 1);
+		}
 		break;
 	case ESection::Birds:
 		L = BirdsPage(Spread.Part * 2);
@@ -860,6 +869,52 @@ TSharedRef<SWidget> SLyudDiarySpread::BirdsPage(int32 PageIndex)
 	return Box;
 }
 
+// ------------------------------------------------------------------ people: what he knows of each friend (docs/friends.md)
+
+namespace
+{
+	constexpr int32 PeoplePerPage = 4;
+}
+
+TSharedRef<SWidget> SLyudDiarySpread::PeoplePage(int32 PageIndex)
+{
+	TSharedRef<SVerticalBox> Box = SNew(SVerticalBox);
+	if (PageIndex == 0)
+	{
+		Box->AddSlot().AutoHeight()[Title(LyudText::Get(TEXT("friends.diary.title")))];
+		if (State->People.Num() == 0)
+		{
+			Box->AddSlot().AutoHeight().Padding(0, 20, 0, 0)[Key(TEXT("friends.diary.empty"), 30.f, PencilFaint, false, true)];
+			return Box;
+		}
+	}
+	if (!State->PeoplePages.IsValidIndex(PageIndex))
+	{
+		return Box;
+	}
+	for (const int32 I : State->PeoplePages[PageIndex])
+	{
+		if (!State->People.IsValidIndex(I))
+		{
+			continue;
+		}
+		const ULyudFriends::FDiaryFriend& F = State->People[I];
+		TSharedRef<SVerticalBox> Card = SNew(SVerticalBox);
+		Card->AddSlot().AutoHeight()
+		[
+			SNew(SHorizontalBox)
+			+ SHorizontalBox::Slot().AutoWidth()[Marked(Words(F.Name, 34.f, Ink, true), EMark::Underline, InkSoft, SeedOf(F.Name.ToString()))]
+			+ SHorizontalBox::Slot().FillWidth(1.f).HAlign(HAlign_Right).VAlign(VAlign_Bottom)[Words(F.Level, 24.f, Pencil)]
+		];
+		for (const FText& Fact : F.Facts)
+		{
+			Card->AddSlot().AutoHeight().Padding(10, 1, 0, 0)[Words(Fact, 24.f, Ink, false, true)];
+		}
+		Box->AddSlot().AutoHeight().Padding(0, 8, 0, 14)[Card];
+	}
+	return Box;
+}
+
 TSharedRef<SWidget> SLyudDiarySpread::BirdCard(FName Species)
 {
 	const ULyudBirdBook* Book = ULyudBirdBook::Get(Owner.Get());
@@ -1414,18 +1469,42 @@ void SLyudDiaryScreen::PaginateBirds()
 	}
 }
 
+void SLyudDiaryScreen::PaginatePeople()
+{
+	// four friends a page; the first page has the title where one would be
+	State->People.Reset();
+	State->PeoplePages.Reset();
+	if (const ULyudFriends* Friends = ULyudFriends::Get(Owner.Get()))
+	{
+		Friends->DiaryFriends(State->People);
+	}
+	State->PeoplePages.AddDefaulted();
+	for (int32 I = 0; I < State->People.Num(); ++I)
+	{
+		const int32 Room = State->PeoplePages.Num() == 1 ? PeoplePerPage - 1 : PeoplePerPage;
+		if (State->PeoplePages.Last().Num() >= Room)
+		{
+			State->PeoplePages.AddDefaulted();
+		}
+		State->PeoplePages.Last().Add(I);
+	}
+}
+
 void SLyudDiaryScreen::Rebuild()
 {
 	Language = LyudText::Language();
 	Paginate();
 	PaginateBirds();
 	const int32 DiarySpreads = FMath::Max(1, (State->DiaryPages.Num() + 1) / 2);
+	PaginatePeople();
+	State->DiarySpreads = DiarySpreads;
+	const int32 PeopleSpreads = FMath::Max(1, (State->PeoplePages.Num() + 1) / 2);
 	const int32 BirdSpreads = FMath::Max(1, (State->BirdPages.Num() + 1) / 2);
 	const FLyudDiarySpread Was = Spreads.IsValidIndex(Current) ? Spreads[Current] : FLyudDiarySpread();
 	Spreads.Reset();
 	Spreads.Add({ ESection::Things, 0 });
 	Spreads.Add({ ESection::Quests, 0 });
-	for (int32 P = 0; P < DiarySpreads; ++P)
+	for (int32 P = 0; P < DiarySpreads + PeopleSpreads; ++P)
 	{
 		Spreads.Add({ ESection::Diary, P });
 	}
@@ -1474,7 +1553,8 @@ int32 SLyudDiaryScreen::SpreadFor(ELyudScreenTab Tab) const
 	int32 Found = 0;
 	for (int32 I = 0; I < Spreads.Num(); ++I)
 	{
-		if (Spreads[I].Section == S)
+		// the diary's newest entries (its last spread before the «Люди» pages that follow them)
+		if (Spreads[I].Section == S && !(S == ESection::Diary && Spreads[I].Part >= State->DiarySpreads))
 		{
 			Found = I;
 			if (S != ESection::Diary)

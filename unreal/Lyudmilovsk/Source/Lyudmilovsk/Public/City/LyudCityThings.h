@@ -198,6 +198,8 @@ public:
 	/** Lying on a bed: sleeps until Hour (0..23) at once (the chooser's E); false when not lying on a bed of ours. */
 	bool SleepUntil(int32 Hour);
 	bool IsSittingOnThing() const { return SeatedOn >= 0; }
+	/** The thing the hero sits on now (its id), "" none (docs/friends.md: the tea at a host's table). */
+	FString SeatedThingId() const;
 	bool IsLyingOnThing() const { return LyingOn >= 0; }
 	bool IsChoosingSleep() const { return SleepHour >= 0; }
 

@@ -4040,6 +4040,41 @@ namespace LyudPeople
 		return Start(P, A, Best, (Act.MinMinutes + Act.MaxMinutes) * 0.5f, false, "ordered");
 	}
 
+	bool FWorld::OrderBeside(int Person, const V3& Pos, float MaxDist, double Minutes)
+	{
+		if (Person < 0 || Person >= (int)People.size())
+		{
+			return false;
+		}
+		FPerson& P = People[Person];
+		int BestSlot = -1, BestAct = -1;
+		float BestD = MaxDist;
+		for (int S = 0; S < (int)Slots.size(); S++)
+		{
+			const FSlot& Sl = Slots[S];
+			if (Sl.Height <= 0.f || !Sl.Free(Person))
+			{
+				continue;
+			}
+			const float D = (Sl.Pos - Pos).Len();
+			if (D >= BestD || D < 0.35f)
+			{
+				continue;
+			}
+			for (int A = 0; A < (int)Activities.size(); A++)
+			{
+				if (Activities[A].Id != "sleep" && SlotFits(P, Activities[A], S))
+				{
+					BestSlot = S;
+					BestAct = A;
+					BestD = D;
+					break;
+				}
+			}
+		}
+		return BestSlot >= 0 && Start(P, BestAct, BestSlot, Minutes, false, "sits with the player");
+	}
+
 	float BikeActSeconds(EBikeAct A)
 	{
 		switch (A)
