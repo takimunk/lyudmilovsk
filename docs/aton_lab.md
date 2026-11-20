@@ -4,9 +4,9 @@ Backlog item 16 (docs/interactives_backlog.md). The hero's computer in the club 
 laboratory has terminals of the same OS on its own network, with the lab's programs. One terminal stands in the
 scientists' library (Novikova 1, ground floor), at the hall end of the last stack, beside the globe.
 
-State on 2026-11-20: written in the cloud. The plain C++ models and all data pass `tools/atonsim/run.sh`; the engine
-side (`AtonLab.cpp`, `AtonOS/AtonLabApps.cpp`, the changes to `AtonComputer` and `SAtonDesktop`) has **not been compiled
-or seen in Unreal yet**. First Mac run: build, `Dev.QA teleports aton`, then the list under "First run on the Mac".
+State on 2026-11-20: written in the cloud. The plain C++ models and all data pass `tools/atonsim/run.sh`, and the
+engine side builds on the Mac (LyudmilovskEditor Mac Development). It has **not been run in Unreal yet**: no terminal
+has been seen in the level. First run: `Dev.QA teleports aton`, then the list under "First run on the Mac".
 
 ## What the player gets
 
@@ -91,10 +91,11 @@ build. No benchmark against main has been run yet (no engine in the cloud).
 
 ## First run on the Mac
 
-1. Build (tools/wait_ubt_queue.sh); expect small compile fixes, the code has only been read, not compiled.
+1. Build (tools/wait_ubt_queue.sh): green on 2026-11-20.
 2. `Dev.QA teleports aton`; look at the desk: it should stand between the last stack and the globe, its back to the
    back aisle, clear of both. Move it in tools/aton/terminals.py if it reads badly.
-3. E at the terminal, the six programs, «Отойти». Mouse on the world screen from the terminal's own camera is the part
+3. E at the terminal, the six programs, «Отойти». E is polled, so check that the hero's own E does nothing else in
+   that frame. Mouse on the world screen from the terminal's own camera is the part
    most likely to need a fix.
 4. The same programs from the club chair (action "club computer: LAB-2 network").
 5. Bench against main (benchmarks alone), shots for the backlog.
