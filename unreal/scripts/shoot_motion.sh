@@ -4,6 +4,7 @@
 #   unreal/scripts/shoot_motion.sh [tag]                       all spots (tag default "base")
 #   SPOTS=follow,animal unreal/scripts/shoot_motion.sh fix      some spots
 #   MOTION_CMDS="lyud.Some.Fix 0" unreal/scripts/shoot_motion.sh off     console commands first (A/B in one binary)
+#   DPCVARS="lyud.Anim.Smooth=0,lyud.Anim.Probe=12" (start-up cvars)
 #   MOTION_FRAMES=90 (per recording), TIMEOUT=2400 (s), WAIT_UE=<path to wait_ue_queue.sh>, EXTRA=<more UE args>
 UE="${UE_ROOT:-/Users/Shared/Epic Games/UE_5.8}"
 ROOT="$(cd "$(dirname "$0")/../.." && pwd)"
@@ -20,7 +21,7 @@ sh "${WAIT_UE:-$ROOT/tools/wait_ue_queue.sh}" "${WAIT_S:-14400}"
 export MOTION_TAG="$TAG"
 nice -n 19 taskpolicy -b "$UE/Engine/Binaries/Mac/UnrealEditor.app/Contents/MacOS/UnrealEditor" "$PROJ" /Game/Scene01/Lvl_Scene01 \
     -game -RenderOffscreen -windowed -ResX=960 -ResY=540 -unattended -nosplash -nosound -benchmark -fps=30 \
-    -dpcvars=lyud.MainMenuOnStart=0 $EXTRA \
+    -dpcvars=lyud.MainMenuOnStart=0${DPCVARS:+,$DPCVARS} $EXTRA \
     -abslog="$LOG" "-ExecCmds=py $ROOT/unreal/scripts/shoot_motion.py" > "$LOG.stdout" 2>&1 &
 PID=$!
 echo "$PID" > "$OUT/ue.pid"

@@ -33,7 +33,7 @@ import world_map as W  # noqa: E402
 
 TAG = os.environ.get("MOTION_TAG", "base")
 NF = int(os.environ.get("MOTION_FRAMES", "90"))
-ALL = ["street", "follow", "manners", "sit", "bench", "animal", "birdgnd", "gull", "landing"]
+ALL = ["street", "follow", "far", "manners", "sit", "bench", "bench2", "bench3", "child", "animal", "birdgnd", "gull", "landing"]
 SPOTS = [s for s in os.environ.get("SPOTS", ",".join(ALL)).split(",") if s]
 WHEN = unreal.DateTime(2026, 10, 21, 12, 30, 0, 0)   # a Wednesday, noon
 RES = os.environ.get("MOTION_RES", "960x540")
@@ -383,26 +383,77 @@ def sp_street(ctx):
     return [("do", setup), ("wait", 240, None), ("wait", 1, choose), ("wait", 15, None), ("rec", NF, each, "street")]
 
 
-@spot("follow")
-def sp_follow(ctx):
+COVERS = [c for c in os.environ.get("MOTION_COVERS", "0.85,1.0,1.15").split(",") if c]
+
+
+def follow_spot(ctx, label, poses_pick, nseg):
+    """One walker followed from the side at 3.5 m; a recording per lyud.Anim.GaitCover value (same walker)."""
     def choose(w, i):
-        b = pick_person(w, ("WALK",)) or pick_person(w, ("WALK",), maxd=15000.0)
+        b = poses_pick(w)
         ctx["subj"] = b[0] if b else None
         if b:
             st["used"].add(b[2])
-            log("follow subject %s" % b[2])
+            r = b[3]
+            log("%s subject %s age %s" % (label, b[2], getattr(r, "age", "?") if r else "?"))
+        else:
+            log("%s: nobody" % label)
 
     def cam(w, i):
         a = ctx.get("subj")
         if a:
-            eye, tgt = side_eye(a, 350.0, 110.0, front=60.0, key="follow")
+            eye, tgt = side_eye(a, 350.0, 110.0, front=60.0, key=label)
             look(w, eye, (tgt[0], tgt[1], tgt[2] + 60.0))
 
-    def each(w, i):
-        cam(w, i)
-        subj_lines(w, "follow", i, [ctx.get("subj")])
+    def each(name):
+        def f(w, i):
+            cam(w, i)
+            subj_lines(w, name, i, [ctx.get("subj")])
+        return f
 
-    return [("wait", 1, choose), ("wait", 20, cam), ("rec", int(NF * 4 / 3), each, "follow")]
+    q = [("wait", 1, choose), ("wait", 20, cam)]
+    for c in COVERS:
+        name = "%s_c%03d" % (label, int(round(float(c) * 100)))
+        q += [("do", (lambda c: lambda w: (cmd(w, "lyud.Anim.GaitCover %s" % c), log("GaitCover %s" % c)))(c)),
+              ("wait", 10, cam), ("rec", nseg, each(name), name)]
+    q.append(("do", lambda w: cmd(w, "lyud.Anim.GaitCover 1.0")))
+    return q
+
+
+@spot("follow")
+def sp_follow(ctx):
+    return follow_spot(ctx, "follow", lambda w: pick_person(w, ("WALK",)) or pick_person(w, ("WALK",), maxd=15000.0), NF)
+
+
+def pick_child(w):
+    rs = [r for r in records(w) if ename(r.pose) == "WALK" and 0 < r.age < 14]
+    log("walking children: %d %s" % (len(rs), ", ".join("%s(%d)" % (r.key, r.age) for r in rs[:8])))
+    if not rs:
+        return None
+    c = near_cam(w)
+    rs.sort(key=lambda r: math.hypot(r.location.x - c.x, r.location.y - c.y))
+    r = rs[0]
+    t = r.location
+    look(w, (t.x - 600.0, t.y, t.z + 300.0), (t.x, t.y, t.z + 80.0))
+    st["child"] = r.key
+    return None
+
+
+@spot("child")
+def sp_child(ctx):
+    def find(w, i):
+        pick_child(w)
+
+    def get(w):
+        key = st.get("child")
+        if not key:
+            return None
+        for b in people(w):
+            if b[2] == key:
+                return b
+        log("child %s has no body near" % key)
+        return None
+
+    return [("wait", 1, find), ("wait", 150, None)] + follow_spot(ctx, "child", get, 60)
 
 
 @spot("manners")
@@ -457,17 +508,16 @@ def sp_sit(ctx):
     return [("wait", 1, choose), ("wait", 150, None), ("wait", 1, choose2), ("wait", 15, None), ("rec", NF, each, "sit")]
 
 
-@spot("bench")
-def sp_bench(ctx):
+def bench_spot(ctx, label, centre_i):
     def choose(w, i):
-        c = CENTRES[3]
+        c = CENTRES[centre_i]
         b = pick_person(w, ("WALK", "STAND", "LOOK"), centre=V(*c), maxd=8000.0) or pick_person(w, ("WALK", "STAND", "LOOK"))
         ctx["subj"] = b[0] if b else None
         if b:
             ctx["key"] = b[2]
             st["used"].add(b[2])
             cmd(w, "lyud.People.Order %s sit_bench" % b[2])
-            log("bench subject %s ordered to sit_bench (pose %s)" % (b[2], b[1]))
+            log("%s subject %s ordered to sit_bench (pose %s)" % (label, b[2], b[1]))
 
     def ring(w, i):
         a = ctx.get("subj")
@@ -475,23 +525,91 @@ def sp_bench(ctx):
             return 0
         r = rec_of(w, ctx["key"])
         try:
-            eye, tgt = side_eye(a, 330.0, 120.0, front=80.0, key="bench")
+            eye, tgt = side_eye(a, 330.0, 120.0, front=80.0, key=label)
             look(w, eye, (tgt[0], tgt[1], tgt[2] + 60.0))
         except Exception:  # noqa: BLE001
             pass
-        subj_lines(w, "bench", i, [a])
+        subj_lines(w, label, i, [a])
         pose = ename(r.pose) if r else "?"
         if i % 30 == 0:
-            log("bench f%d %s pose %s state %s place %s act %s" % (i, ctx["key"], pose, r.state if r else "?",
-                                                               r.place if r else "?", r.activity if r else "?"))
+            log("%s f%d %s pose %s state %s place %s act %s" % (label, i, ctx["key"], pose, r.state if r else "?",
+                                                              r.place if r else "?", r.activity if r else "?"))
         if pose == "SIT" and "after" not in ctx:
             ctx["after"] = i
-            log("bench sat down at f%d" % i)
+            log("%s sat down at f%d" % (label, i))
+        if "after" in ctx and (i - ctx["after"]) in (0, 30, 74) and r:
+            l = a.get_actor_location()
+            m = mesh_of(a)
+            ml = m.get_world_location() if m else l
+            # the slot (sim) against where the body ended, and what is under / round it
+            hits = []
+            for dx, dy in ((0, 0), (40, 0), (-40, 0), (0, 40), (0, -40)):
+                hr = unreal.SystemLibrary.line_trace_single(w, V(r.location.x + dx, r.location.y + dy, r.location.z + 200.0),
+                    V(r.location.x + dx, r.location.y + dy, r.location.z - 200.0), unreal.TraceTypeQuery.TRACE_TYPE_QUERY1,
+                    False, [a], unreal.DrawDebugTrace.NONE, True)
+                try:
+                    if isinstance(hr, tuple):
+                        hr = hr[-1]
+                    t = hr.to_tuple()
+                    hits.append("%+d,%+d:z%.0f %s" % (dx, dy, t[4].z, t[9].get_name() if t[9] else "-"))
+                except Exception as e:  # noqa: BLE001
+                    hits.append("err %s" % e)
+            log("%s seat check +%d: place %s slot %s yaw %.1f | actor %s yaw %.1f | mesh %s myaw %.1f | traces %s" % (
+                label, i - ctx["after"], r.place, r.location, r.yaw, l, a.get_actor_rotation().yaw, ml,
+                m.get_world_rotation().yaw if m else 0.0, "; ".join(hits)))
         if "after" in ctx:
             return max(0, 75 - (i - ctx["after"]))
         return None
 
-    return [("wait", 1, choose), ("ring", 1500, ring, "bench")]
+    return [("wait", 1, choose), ("ring", 1500, ring, label)]
+
+
+@spot("bench")
+def sp_bench(ctx):
+    return bench_spot(ctx, "bench", 3)
+
+
+@spot("bench2")
+def sp_bench2(ctx):
+    return bench_spot(ctx, "bench2", 0)
+
+
+@spot("bench3")
+def sp_bench3(ctx):
+    return bench_spot(ctx, "bench3", 2)
+
+
+@spot("far")
+def sp_far(ctx):
+    """One walker (on screen) seen side-on from 10, 25 and 50 m: is its pose updated every frame?"""
+    def choose(w, i):
+        b = pick_person(w, ("WALK",)) or pick_person(w, ("WALK",), maxd=15000.0)
+        ctx["subj"] = b[0] if b else None
+        if b:
+            st["used"].add(b[2])
+            log("far subject %s" % b[2])
+
+    def cam(d):
+        def f(w, i):
+            a = ctx.get("subj")
+            if a:
+                eye, tgt = side_eye(a, d, 160.0, key="far")
+                look(w, eye, (tgt[0], tgt[1], tgt[2] + 90.0))
+        return f
+
+    def each(d, name):
+        g = cam(d)
+
+        def f(w, i):
+            g(w, i)
+            subj_lines(w, name, i, [ctx.get("subj")])
+        return f
+
+    q = [("wait", 1, choose)]
+    for d in (1000.0, 2500.0, 5000.0):
+        name = "far%d" % int(d / 100)
+        q += [("wait", 10, cam(d)), ("rec", 60, each(d, name), name)]
+    return q
 
 
 # --- animals
