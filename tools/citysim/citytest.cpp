@@ -1655,10 +1655,10 @@ static void JobChecks(const std::string& Path)
 	CHECK(M.Run(Papers, Day(17, 8.5f, Dry), Ask).bClosed, "not on Mondays (Yerlan's day off)");
 	const int KioskTalk = M.FindTopic("job.kiosk");
 	CHECK(KioskTalk >= 0 && M.HasTopics(Kiosk), "the kiosk's seller can be asked about the job");
-	// the Saturday market: crates 6-10, the scales 7-13
+	// the Saturday market: crates 7-10 (no seller before seven), the scales 7-13
 	CHECK(M.Run(Scales, Day(14, 9.f, Dry), Ask).bClosed && M.Run(Boxes, Day(14, 7.f, Dry), Ask).Pay == 0, "on a Friday the scales and the crates wait for Saturday");
-	const FOutcome Bx = M.Run(Boxes, Day(15, 6.5f, Dry), Ask);
-	CHECK(Bx.Pay == 20 && !Bx.bClosed && M.HasStamp("work_book/market"), "Saturday at half past six: the crates pay 20 (%s)", Bx.Line.c_str());
+	const FOutcome Bx = M.Run(Boxes, Day(15, 7.5f, Dry), Ask);
+	CHECK(Bx.Pay == 20 && !Bx.bClosed && M.HasStamp("work_book/market"), "Saturday at half past seven: the crates pay 20 (%s)", Bx.Line.c_str());
 	Earned += Bx.Pay;
 	const FOutcome Sc = M.Run(Scales, Day(15, 8.f, Dry), Ask);
 	FGameState G;

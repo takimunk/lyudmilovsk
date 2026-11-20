@@ -23,6 +23,7 @@
 #include "Engine/World.h"
 #include "EngineUtils.h"
 #include "Festival/LyudFestival.h"
+#include "../Festival/FestivalCalendar.h"
 #include "Food/LyudHandUse.h"
 #include "GameFramework/CharacterMovementComponent.h"
 #include "GameFramework/PlayerController.h"
@@ -4134,6 +4135,25 @@ void ULyudCityThings::LoadCups()
 		UE_LOG(LogLyudCity, Warning, TEXT("CityThings: City/tournaments.json unreadable: %s"), *LyudCityThingsImpl::Str(Error));
 		return;
 	}
+	// no cup on a public holiday (Big Sun Day and the festivals' days off): asked of the festivals for a day since the start
+	Cups->IsHoliday = [WeakThis = TWeakObjectPtr<ULyudCityThings>(this)](long long Day) -> bool
+	{
+		const ULyudCityThings* Self = WeakThis.Get();
+		const UWorld* World = Self ? Self->GetWorld() : nullptr;
+		const ULyudFestivalSubsystem* Fest = World ? ULyudFestivalSubsystem::Get(World) : nullptr;
+		const LyudFest::FCalendar* Cal = Fest ? Fest->GetCalendar() : nullptr;
+		if (!Cal)
+		{
+			return false;
+		}
+		const UGameCalendar* GameCal = World->GetSubsystem<UGameCalendar>();
+		const FDateTime Date = (GameCal ? GameCal->StartDate : FDateTime(2026, 10, 20)).GetDate() + FTimespan::FromDays((double)Day);
+		LyudFest::FDate D;
+		D.Y = Date.GetYear();
+		D.M = Date.GetMonth();
+		D.D = Date.GetDay();
+		return Cal->IsDayOff(D);
+	};
 	const bool bAll = Cups->Bind(*Model);
 	UE_LOG(LogLyudCity, Display, TEXT("CityThings: %d club tournaments%s"), (int32)Cups->Defs.size(), bAll ? TEXT("") : TEXT(" (some with fewer than eight players: not held)"));
 }
@@ -4151,7 +4171,7 @@ void ULyudCityThings::GetCupNews(int32 Since, TArray<FLyudCupNews>& Out) const
 	for (int32 Cup = 0; Cup < (int32)Cups->Defs.size(); ++Cup)
 	{
 		const LyudCity::FCupDef& D = Cups->Defs[(size_t)Cup];
-		if (!Cups->IsUsable(Cup) || LyudCity::FCups::WeekdayOf(Since, Now) != D.Weekday)
+		if (!Cups->IsUsable(Cup) || LyudCity::FCups::WeekdayOf(Since, Now) != D.Weekday || Cups->IsOff(Since))
 		{
 			continue;
 		}
