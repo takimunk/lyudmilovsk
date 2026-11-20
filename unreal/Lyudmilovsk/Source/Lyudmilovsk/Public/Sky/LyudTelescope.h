@@ -138,6 +138,9 @@ private:
 	float SayLeft = 0.f;
 	float DebugClock = 0.f;
 	float SavedStars = -1.f;
+	/** The level's camera f-number and ISO (its manual exposure), so the eyepiece's f-number leaves the brightness alone. */
+	float BaseFstop = 4.f;
+	float BaseIso = 100.f;
 	/** The look held on a sight (LyudScope::FWatch). */
 	int32 WatchSight = -1;
 	double WatchHeld = 0.0;

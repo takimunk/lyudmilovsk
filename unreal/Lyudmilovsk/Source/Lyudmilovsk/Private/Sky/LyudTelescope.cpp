@@ -11,6 +11,8 @@
 #include "Engine/GameInstance.h"
 #include "Engine/GameViewportClient.h"
 #include "Engine/LocalPlayer.h"
+#include "Engine/PostProcessVolume.h"
+#include "Materials/MaterialInstanceDynamic.h"
 #include "Engine/Texture2D.h"
 #include "Engine/World.h"
 #include "EngineUtils.h"
@@ -186,7 +188,8 @@ namespace LyudScopeImpl
 				const float DiskPx = P.DiskTan * Scale;
 				FLinearColor Tint = P.Color;
 				Tint.A = P.Alpha;
-				if (DiskPx < 5.f)
+				// judged by the whole picture (Saturn's ring is 2.45 of its disk: at x60 the ring shows though the ball is ~4 px)
+				if (DiskPx * P.PictureOverDisk < 6.f)
 				{
 					// too small to be a disk: a bright point with a little glare
 					FLinearColor Glare = Tint;
@@ -578,6 +581,30 @@ bool ULyudTelescope::Begin(const FVector& At, float FacingYaw, const FString& Ki
 		AimAz = Sky->SunAzimuth();     // the sun telescope is left on the sun
 	}
 
+	// the level's camera (what the exposure was set up with): the highest unbound volume that sets it, else the defaults
+	{
+		BaseFstop = 4.f;
+		BaseIso = 100.f;
+		float FstopPrio = -1e30f, IsoPrio = -1e30f;
+		for (TActorIterator<APostProcessVolume> It(World); It; ++It)
+		{
+			if (!It->bUnbound || !It->bEnabled)
+			{
+				continue;
+			}
+			if (It->Settings.bOverride_DepthOfFieldFstop && It->Priority > FstopPrio)
+			{
+				FstopPrio = It->Priority;
+				BaseFstop = It->Settings.DepthOfFieldFstop;
+			}
+			if (It->Settings.bOverride_CameraISO && It->Priority > IsoPrio)
+			{
+				IsoPrio = It->Priority;
+				BaseIso = It->Settings.CameraISO;
+			}
+		}
+	}
+
 	FActorSpawnParameters Spawn;
 	Spawn.SpawnCollisionHandlingOverride = ESpawnActorCollisionHandlingMethod::AlwaysSpawn;
 	Spawn.ObjectFlags |= RF_Transient;
@@ -610,6 +637,11 @@ bool ULyudTelescope::Begin(const FVector& At, float FacingYaw, const FString& Ki
 		// the dome's star texture would be blobs at this power: the field stars are drawn by the eyepiece instead
 		SavedStars = Sky->StarBrightness;
 		Sky->StarBrightness = 0.f;
+		// the member only seeds the material instance when it is made: the dome reads the parameter
+		if (UMaterialInstanceDynamic* Mid = Sky->GetSkyMID())
+		{
+			Mid->SetScalarParameterValue(TEXT("StarBrightness"), 0.f);
+		}
 	}
 
 	View = MakeShared<FLyudEyepieceView>();
@@ -692,6 +724,10 @@ void ULyudTelescope::End()
 	if (Sky.IsValid() && SavedStars >= 0.f)
 	{
 		Sky->StarBrightness = SavedStars;
+		if (UMaterialInstanceDynamic* Mid = Sky->GetSkyMID())
+		{
+			Mid->SetScalarParameterValue(TEXT("StarBrightness"), SavedStars);
+		}
 	}
 	SavedStars = -1.f;
 	if (Widget.IsValid())
@@ -832,6 +868,10 @@ void ULyudTelescope::UpdateCamera(float DeltaTime)
 	Post.DepthOfFieldSensorWidth = SensorMm;
 	Post.DepthOfFieldFstop = FMath::Clamp(FocalMm / static_cast<float>(LyudScope::ApertureM * 1000.0), 1.f, 32.f);
 	Post.DepthOfFieldMinFstop = 1.f;
+	// the level's exposure is manual with the physical camera on: the f-number above would change the brightness too
+	// (f/1 at x3 is +4 EV, the night sky turns to day). The ISO takes it back: N^2 / ISO stays the level's.
+	Post.bOverride_CameraISO = bDof;
+	Post.CameraISO = BaseIso * FMath::Square(Post.DepthOfFieldFstop / FMath::Max(BaseFstop, 0.5f));
 	// past infinity nothing is sharp: the same blur as focusing that near
 	Post.DepthOfFieldFocalDistance = static_cast<float>(100.0 / FMath::Max(FMath::Abs(Dioptre), 1e-6));
 }
