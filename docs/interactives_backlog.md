@@ -249,7 +249,8 @@ synth frequencies), Mac recording of a tune, bench.
 
 ## 16. AtonOS computers in Academgorodok
 
-`[ ]` **Brief (Fable 5.2):** The game has its own desktop OS (`Private/AtonOS/`: `SAtonDesktop`, `AtonApps`, the
+`[~]` *(branch `aton-lab`, docs/aton_lab.md: six lab programs, one terminal in the scientists' library, the password slip in the
+Bridge House; the offline suite tools/atonsim passes and it builds on the Mac; the first run in the level and the shots are still owed)* **Brief (Fable 5.2):** The game has its own desktop OS (`Private/AtonOS/`: `SAtonDesktop`, `AtonApps`, the
 computer in the club, `AtonComputer.cpp`). Put working terminals in Academgorodok (the consoles hall in
 `docs/academgorodok/`, `academ_photo_consoles.jpg`) and give them apps that fit the lab: a mail client with the lab's old
 correspondence (lore toward the ending, `docs/story/`: hints, never the answer), a text adventure the scientists wrote for

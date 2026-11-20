@@ -2,7 +2,9 @@
 
 #include "AtonApps.h"
 #include "AtonStyle.h"
+#include "Engine/World.h"
 #include "Framework/Application/SlateApplication.h"
+#include "Plants/GameCalendar.h"
 #include "Widgets/Images/SImage.h"
 #include "Widgets/Input/SButton.h"
 #include "Widgets/Layout/SBorder.h"
@@ -120,6 +122,8 @@ FReply SAtonWindow::OnMouseButtonUp(const FGeometry& MyGeometry, const FPointerE
 void SAtonDesktop::Construct(const FArguments& InArgs)
 {
 	ScreenSize = InArgs._ScreenSize;
+	ProfileName = InArgs._Profile.IsNone() ? AtonApps::ProfileClub : InArgs._Profile;
+	World = InArgs._World;
 	OnLeave = InArgs._OnLeave;
 	CanLeaveAttr = InArgs._CanLeave;
 	BootTime = FPlatformTime::Seconds();
@@ -160,8 +164,8 @@ void SAtonDesktop::Construct(const FArguments& InArgs)
 		]
 	];
 
-	// The machine wakes up into the terminal, as on the screen before you sat down.
-	OpenApp(AtonApps::Terminal);
+	// The hero's machine wakes up into the terminal, as on the screen before you sat down; a lab terminal into its session window.
+	OpenApp(ProfileName == AtonApps::ProfileLab ? AtonApps::Session : AtonApps::Terminal);
 }
 
 TSharedRef<SWidget> SAtonDesktop::MakeMenuBar()
@@ -182,7 +186,9 @@ TSharedRef<SWidget> SAtonDesktop::MakeMenuBar()
 					.VAlign(VAlign_Center)
 					.OnClicked_Lambda([this] { bMenuOpen = !bMenuOpen; return FReply::Handled(); })
 					[
-						SNew(STextBlock).Text(LyudText::Get(TEXT("ui.aton.os"))).Font(AtonStyle::Font(14, true)).ColorAndOpacity(AtonStyle::Ink)
+						SNew(STextBlock)
+						.Text(LyudText::Get(ProfileName == AtonApps::ProfileLab ? TEXT("ui.aton.lab.os") : TEXT("ui.aton.os")))
+						.Font(AtonStyle::Font(14, true)).ColorAndOpacity(AtonStyle::Ink)
 					]
 				]
 				+ SHorizontalBox::Slot().FillWidth(1).VAlign(VAlign_Center).Padding(14, 0)
@@ -195,6 +201,19 @@ TSharedRef<SWidget> SAtonDesktop::MakeMenuBar()
 						const FAtonAppInfo* Info = AtonApps::Find(FrontApp());
 						return Info ? Info->Title() : FText::GetEmpty();
 					})
+				]
+				+ SHorizontalBox::Slot().AutoWidth().VAlign(VAlign_Fill).Padding(0, 0, 14, 0)
+				[
+					// a terminal has no chair to get up from by a cutscene: the way out is always in sight
+					SNew(SButton)
+					.Visibility(ProfileName == AtonApps::ProfileLab ? EVisibility::Visible : EVisibility::Collapsed)
+					.ButtonStyle(&AtonStyle::Ghost())
+					.ContentPadding(FMargin(12, 0))
+					.VAlign(VAlign_Center)
+					.OnClicked_Lambda([this] { Leave(); return FReply::Handled(); })
+					[
+						SNew(STextBlock).Text(LyudText::Get(TEXT("ui.aton.lab.leave"))).Font(AtonStyle::Font(14)).ColorAndOpacity(AtonStyle::Ink)
+					]
 				]
 				+ SHorizontalBox::Slot().AutoWidth().VAlign(VAlign_Center)
 				[
@@ -209,13 +228,22 @@ TSharedRef<SWidget> SAtonDesktop::MakeMenuBar()
 
 TSharedRef<SWidget> SAtonDesktop::MakeIcons()
 {
-	TSharedRef<SVerticalBox> Box = SNew(SVerticalBox);
+	// columns of eight icons, left to right
+	TSharedRef<SHorizontalBox> Columns = SNew(SHorizontalBox);
+	TSharedPtr<SVerticalBox> Box;
+	int32 InColumn = 0;
 	for (const FAtonAppInfo& App : AtonApps::List())
 	{
-		if (!App.bOnDesktop)
+		if (!App.bOnDesktop || !(App.Profiles & AtonApps::ProfileBit(ProfileName)))
 		{
 			continue;
 		}
+		if (!Box.IsValid() || InColumn == 8)
+		{
+			Columns->AddSlot().AutoWidth().Padding(0, 0, 4, 0)[SAssignNew(Box, SVerticalBox)];
+			InColumn = 0;
+		}
+		InColumn++;
 		const FName Id = App.Id;
 		Box->AddSlot().AutoHeight().Padding(0, 0, 0, 2)
 		[
@@ -255,7 +283,7 @@ TSharedRef<SWidget> SAtonDesktop::MakeIcons()
 			]
 		];
 	}
-	return Box;
+	return Columns;
 }
 
 TSharedRef<SWidget> SAtonDesktop::MakeSystemMenu()
@@ -272,6 +300,7 @@ TSharedRef<SWidget> SAtonDesktop::MakeSystemMenu()
 			];
 	};
 
+	const bool bLab = ProfileName == AtonApps::ProfileLab;
 	return SNew(SBorder)
 		.Visibility_Lambda([this] { return bMenuOpen ? EVisibility::Visible : EVisibility::Collapsed; })
 		.BorderImage(AtonStyle::Flat())
@@ -281,9 +310,10 @@ TSharedRef<SWidget> SAtonDesktop::MakeSystemMenu()
 			SNew(SBorder).BorderImage(AtonStyle::Flat()).BorderBackgroundColor(AtonStyle::Bar).Padding(FMargin(0, 4))
 			[
 				SNew(SVerticalBox)
-				+ SVerticalBox::Slot().AutoHeight()[Item(TEXT("ui.aton.app.about"), [this] { OpenApp(AtonApps::About); })]
-				+ SVerticalBox::Slot().AutoHeight()[Item(TEXT("ui.aton.app.computer"), [this] { OpenApp(AtonApps::Computer); })]
-				+ SVerticalBox::Slot().AutoHeight()[Item(TEXT("ui.aton.app.terminal"), [this] { OpenApp(AtonApps::Terminal); })]
+				+ SVerticalBox::Slot().AutoHeight()[Item(TEXT("ui.aton.app.about"), [this] { OpenApp(AtonApps::About); }, bLab ? EVisibility::Collapsed : EVisibility::Visible)]
+				+ SVerticalBox::Slot().AutoHeight()[Item(TEXT("ui.aton.app.computer"), [this] { OpenApp(AtonApps::Computer); }, bLab ? EVisibility::Collapsed : EVisibility::Visible)]
+				+ SVerticalBox::Slot().AutoHeight()[Item(TEXT("ui.aton.app.terminal"), [this] { OpenApp(AtonApps::Terminal); }, bLab ? EVisibility::Collapsed : EVisibility::Visible)]
+				+ SVerticalBox::Slot().AutoHeight()[Item(TEXT("ui.aton.app.session"), [this] { OpenApp(AtonApps::Session); }, bLab ? EVisibility::Visible : EVisibility::Collapsed)]
 				+ SVerticalBox::Slot().AutoHeight()
 				[
 					Item(TEXT("ui.aton.menu.leave"), [this] { Leave(); },
@@ -334,7 +364,7 @@ void SAtonDesktop::BringToFront(FName AppId)
 void SAtonDesktop::OpenApp(FName AppId, const FString& Arg)
 {
 	const FAtonAppInfo* Info = AtonApps::Find(AppId);
-	if (!Info || !Canvas.IsValid())
+	if (!Info || !Canvas.IsValid() || !(Info->Profiles & AtonApps::ProfileBit(ProfileName)))
 	{
 		return;
 	}
@@ -420,6 +450,12 @@ void SAtonDesktop::Leave()
 
 FString SAtonDesktop::Clock() const
 {
+	if (ProfileName == AtonApps::ProfileLab)
+	{
+		// the lab's machines keep the town's time
+		const FDateTime Now = UGameCalendar::NowIn(World.Get());
+		return FString::Printf(TEXT("%02d:%02d"), Now.GetHour(), Now.GetMinute());
+	}
 	// It was 03:14 when the hero woke up; the clock runs from there.
 	const int32 Minutes = (3 * 60 + 14 + FMath::FloorToInt((FPlatformTime::Seconds() - BootTime) / 60.0)) % (24 * 60);
 	return FString::Printf(TEXT("%02d:%02d"), Minutes / 60, Minutes % 60);

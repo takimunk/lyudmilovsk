@@ -1,5 +1,6 @@
 #include "AtonApps.h"
 
+#include "AtonLabApps.h"
 #include "AtonStyle.h"
 #include "SAtonDesktop.h"
 #include "Algo/AllOf.h"
@@ -900,6 +901,9 @@ private:
 				{ AtonApps::Computer, TEXT("app.computer"), { TEXT("files"), TEXT("computer") } },
 				{ AtonApps::Trash, TEXT("app.trash"), { TEXT("trash") } },
 				{ AtonApps::Chosen, TEXT("app.chosen"), { TEXT("chosen"), TEXT("game") } },
+				{ AtonApps::Adventure, TEXT("app.adventure"), { TEXT("watch"), TEXT("adventure") } },
+				{ AtonApps::Chess, TEXT("app.chess"), { TEXT("chess") } },
+				{ AtonApps::Weather, TEXT("app.weather"), { TEXT("weather"), TEXT("meteo") } },
 			};
 			const FString Want = Rest.ToLower();
 			const FProgramName* Found = Algo::FindByPredicate(Names, [&Want](const FProgramName& P) { return Means(Want, P.Name, P.English); });
@@ -1382,7 +1386,13 @@ const TArray<FAtonAppInfo>& AtonApps::List()
 		{ Browser, TEXT("ui.aton.app.browser"), TEXT("www"), AtonStyle::C(0xBF, 0xD9, 0xEE), FVector2D(720, 520) },
 		{ Terminal, TEXT("ui.aton.app.terminal"), TEXT(">_"), AtonStyle::C(0xB9, 0xE8, 0xC4), FVector2D(680, 440) },
 		{ Mail, TEXT("ui.aton.app.mail"), TEXT("@"), AtonStyle::C(0xF3, 0xD3, 0xB5), FVector2D(640, 420) },
-		{ Calculator, TEXT("ui.aton.app.calculator"), TEXT("±"), AtonStyle::C(0xD9, 0xD2, 0xF0), FVector2D(280, 380) },
+		{ Calculator, TEXT("ui.aton.app.calculator"), TEXT("±"), AtonStyle::C(0xD9, 0xD2, 0xF0), FVector2D(280, 380), true, Club | Lab },
+		{ Session, TEXT("ui.aton.app.session"), TEXT("ID"), AtonStyle::C(0xC9, 0xD6, 0xC0), FVector2D(440, 340), true, Lab },
+		{ LabMail, TEXT("ui.aton.app.labmail"), TEXT("@"), AtonStyle::C(0xF3, 0xD3, 0xB5), FVector2D(720, 480), true, Lab },
+		{ Adventure, TEXT("ui.aton.app.adventure"), TEXT("?!"), AtonStyle::C(0x9F, 0xB4, 0xD6), FVector2D(700, 500), true, Club | Lab },
+		{ Chess, TEXT("ui.aton.app.chess"), TEXT("Kg"), AtonStyle::C(0xE6, 0xDC, 0xC2), FVector2D(680, 470), true, Club | Lab },
+		{ Weather, TEXT("ui.aton.app.weather"), TEXT("hPa"), AtonStyle::C(0xBF, 0xE3, 0xE8), FVector2D(560, 500), true, Club | Lab },
+		{ Scope, TEXT("ui.aton.app.scope"), TEXT("(o)"), AtonStyle::C(0x8C, 0x93, 0xC4), FVector2D(640, 480), true, Lab },
 		{ Chosen, TEXT("ui.aton.app.chosen"), TEXT("CH"), AtonStyle::C(0xE3, 0xB2, 0x61), FVector2D(896, 560) },
 		{ Trash, TEXT("ui.aton.app.trash"), TEXT("×"), AtonStyle::C(0xC3, 0xCA, 0xCC), FVector2D(440, 320) },
 		{ About, TEXT("ui.aton.app.about"), TEXT("i"), AtonStyle::Bar, FVector2D(360, 290), false },
@@ -1397,6 +1407,10 @@ const FAtonAppInfo* AtonApps::Find(FName Id)
 
 TSharedRef<SAtonProgram> AtonApps::Make(FName Id, IAtonShell& Shell)
 {
+	if (const TSharedPtr<SAtonProgram> LabProgram = AtonLabUI::MakeProgram(Id, Shell))
+	{
+		return LabProgram.ToSharedRef();
+	}
 	if (Id == Notes) return SNew(SAtonNotes);
 	if (Id == Browser) return SNew(SAtonBrowser);
 	if (Id == Terminal) return SNew(SAtonTerminal, &Shell);
