@@ -204,6 +204,31 @@ def pick_person(w, poses, centre=None, maxd=6000.0):
     return best[1] if best else None
 
 
+def snap(w, i=0):
+    """Remember where every drawn body is (moving_walker then picks one that really moved since)."""
+    st["snap"] = {a.get_name(): a.get_actor_location() for a, _, _, _ in people(w)}
+
+
+def moving_walker(w, maxd=6000.0):
+    """The nearest drawn body that moved over 25 cm since snap() (a 'WALK' record can stand stuck)."""
+    c = near_cam(w)
+    best = None
+    for b in people(w):
+        a = b[0]
+        p0 = st.get("snap", {}).get(a.get_name())
+        if p0 is None or b[2] in st["used"]:
+            continue
+        l = a.get_actor_location()
+        if math.hypot(l.x - p0.x, l.y - p0.y) < 25.0:
+            continue
+        d = math.hypot(l.x - c.x, l.y - c.y)
+        if d < maxd and (best is None or d < best[0]):
+            best = (d, b)
+    if not best:
+        log("no body moved since the snap")
+    return best[1] if best else None
+
+
 def facing(a):
     """Unit XY vector the body faces / walks (velocity if moving, else mesh +Y, else actor forward)."""
     v = a.get_velocity()
@@ -232,6 +257,19 @@ def sun_dir(w):
                 best = inten
                 n = math.hypot(f.x, f.y) or 1.0
                 st["sun"] = (f.x / n, f.y / n)
+        if st["sun"] is None:
+            for comp in unreal.ObjectIterator(unreal.DirectionalLightComponent):
+                try:
+                    if comp.get_world() != w:
+                        continue
+                    inten = comp.get_editor_property("intensity")
+                except Exception:  # noqa: BLE001
+                    continue
+                if inten > best:
+                    best = inten
+                    f = comp.get_forward_vector()
+                    n = math.hypot(f.x, f.y) or 1.0
+                    st["sun"] = (f.x / n, f.y / n)
         log("sun travels %s" % (st["sun"],))
     return st["sun"]
 
@@ -385,9 +423,7 @@ def sp_street(ctx):
     def choose(w, i):
         if i == 0:
             census(w, "street")
-            b = pick_person(w, ("WALK",))
-            if not b:
-                b = pick_person(w, ("WALK",), maxd=15000.0)
+            b = moving_walker(w) or moving_walker(w, 15000.0) or pick_person(w, ("WALK",))
             ctx["subj"] = b[0] if b else None
             if b:
                 st["used"].add(b[2])
@@ -403,7 +439,8 @@ def sp_street(ctx):
             ctx["others"] = [b[0] for b in people(w) if b[0] != ctx.get("subj")][:4]
         subj_lines(w, "street", i, [ctx.get("subj")] + ctx.get("others", []))
 
-    return [("do", setup), ("wait", 150, None), ("wait", 1, choose), ("wait", 15, None), ("rec", NF, each, "street")]
+    return [("do", setup), ("wait", 135, None), ("wait", 1, snap), ("wait", 15, None), ("wait", 1, choose), ("wait", 15, None),
+            ("rec", NF, each, "street")]
 
 
 COVERS = [c for c in os.environ.get("MOTION_COVERS", "0.85,1.0,1.15").split(",") if c]
@@ -444,7 +481,8 @@ def follow_spot(ctx, label, poses_pick, nseg):
 
 @spot("follow")
 def sp_follow(ctx):
-    return follow_spot(ctx, "follow", lambda w: pick_person(w, ("WALK",)) or pick_person(w, ("WALK",), maxd=15000.0), NF)
+    return [("wait", 1, snap), ("wait", 15, None)] + follow_spot(ctx, "follow", lambda w: moving_walker(w) or moving_walker(w, 15000.0)
+                                                                 or pick_person(w, ("WALK",)), NF)
 
 
 def pick_child(w):
@@ -606,7 +644,7 @@ def sp_bench3(ctx):
 def sp_far(ctx):
     """One walker (on screen) seen side-on from 10, 25 and 50 m: is its pose updated every frame?"""
     def choose(w, i):
-        b = pick_person(w, ("WALK",)) or pick_person(w, ("WALK",), maxd=15000.0)
+        b = moving_walker(w) or moving_walker(w, 15000.0) or pick_person(w, ("WALK",))
         ctx["subj"] = b[0] if b else None
         if b:
             st["used"].add(b[2])
@@ -628,7 +666,7 @@ def sp_far(ctx):
             subj_lines(w, name, i, [ctx.get("subj")])
         return f
 
-    q = [("wait", 1, choose)]
+    q = [("wait", 1, snap), ("wait", 15, None), ("wait", 1, choose)]
     for d in (1000.0, 2500.0, 5000.0):
         name = "far%d" % int(d / 100)
         q += [("wait", 10, cam(d)), ("rec", 45, each(d, name), name)]
