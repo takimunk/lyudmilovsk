@@ -369,10 +369,14 @@ Three weekly knock-out cups of eight (`tools/city/content/x_tournaments.json`, w
 
 ```
 "tournaments": {"<id>": {"title": key, "venue": key, "game": "<vs>", "plot": "P-…", "days": "sat", "start": 13, "step": 1.5,
-                         "collect": "cups/<id>"}}
+                         "collect": "cups/<id>", "fest_title": key, "fest_collect": "fest_cups/<id>"}}
 a text {"gen": "cup:<id>", "kind": "notice", "pages": [fallback]} read on some thing of the town (the bracket board)
 ```
 
+* **A holiday's cup** (docs/festivals.md "The new toys"): when the tournament's weekday falls on a holiday
+  (`FWhen::bFestival`), the board is headed with `fest_title` and says so (`city.cup.fest`), the bracket keeps the label
+  afterwards (`city.cup.fest_bracket`; remembered under `k:f:<cup>@<day>` once a match of that day is recorded), and the
+  champion takes a second stamp, `fest_collect` (the collection `fest_cups`), beside the weekly cup.
 * **The field**: every regular who plays the game (the clubs' ten, the x_ files' own, and 15 guests in x_tournaments.json:
   real residents free at those hours, each with a style, a skill and three lines; they also sit down at their venue's
   tables any day). Eight are drawn by a hash of the cup and the day and seated by it, so a day's bracket is the same
