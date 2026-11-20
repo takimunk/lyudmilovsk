@@ -108,7 +108,7 @@ public:
 	bool TakesE() const { return EAction != EKeyAction::None && EAction != EKeyAction::CrouchHint; }
 
 	/** What E and F do, by name (console, tests, developer mode): hand, stroke, feed, walk, home. Id -1: the target, else the
-	 *  nearest animal. False if it could not. */
+	 *  nearest animal. False if it could not. Also crouch and stand (the hero's C, for headless checks). */
 	UFUNCTION(BlueprintCallable, Category = "Animals|Friends") bool Do(FName What, int32 Id = -1);
 	/** Opens the little box to type a friend's name in (the diary's "name it"). */
 	UFUNCTION(BlueprintCallable, Category = "Animals|Friends") void BeginNaming(int32 Id);

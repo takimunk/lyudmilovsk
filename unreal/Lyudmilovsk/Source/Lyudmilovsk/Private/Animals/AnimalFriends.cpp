@@ -1044,6 +1044,16 @@ bool UAnimalFriendSubsystem::Do(FName What, int32 Id)
 	{
 		return false;
 	}
+	if (What == TEXT("crouch") || What == TEXT("stand"))
+	{
+		// (headless checks: C is a key)
+		AHeroCharacter* Hero = Cast<AHeroCharacter>(UGameplayStatics::GetPlayerPawn(this, 0));
+		if (Hero)
+		{
+			Hero->SetCrouchToggled(What == TEXT("crouch"));
+		}
+		return Hero != nullptr;
+	}
 	if (Id < 0)
 	{
 		Id = Target >= 0 ? Target : Nearest(800.f);
@@ -1245,7 +1255,7 @@ namespace
 	}
 }
 
-static FAutoConsoleCommandWithWorldAndArgs GFriendsDo(TEXT("lyud.Friends.Do"), TEXT("lyud.Friends.Do hand|stroke|feed|walk|home [id]: what E and F do with an animal (default: the target, else the nearest)."),
+static FAutoConsoleCommandWithWorldAndArgs GFriendsDo(TEXT("lyud.Friends.Do"), TEXT("lyud.Friends.Do hand|stroke|feed|walk|home [id]: what E and F do with an animal (default: the target, else the nearest); crouch|stand: the hero's C."),
 	FConsoleCommandWithWorldAndArgsDelegate::CreateStatic(&FriendsDo));
 static FAutoConsoleCommandWithWorldAndArgs GFriendsBefriend(TEXT("lyud.Friends.Befriend"), TEXT("lyud.Friends.Befriend [id|maru]: makes an animal a friend at once (default: the nearest)."),
 	FConsoleCommandWithWorldAndArgsDelegate::CreateStatic(&FriendsBefriend));
