@@ -1,0 +1,10 @@
+{
+ "type": "tr_hall__wing",
+ "lint": [
+  "shell: 36 tris, 0 faces stretched UV, 0 degenerate",
+  "detail: 3614 tris, 0 faces stretched UV, 0 degenerate",
+  "windows: 0 tris, 0 faces stretched UV, 0 degenerate",
+  "windows 0 (flat 0), flats 0, entrances 0"
+ ],
+ "tris": 3614
+}
