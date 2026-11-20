@@ -321,7 +321,7 @@ def go_busy(w, poses=("WALK",)):
 # ------------------------------------------------------------------ per-frame log
 
 
-BONES_H = ["foot_l", "foot_r", "ball_l", "ball_r", "hand_r", "head"]
+BONES_H = ["foot_l", "foot_r", "ball_l", "ball_r", "pelvis", "hand_r", "head"]
 
 
 def track(a, label):
