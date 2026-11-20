@@ -20,3 +20,8 @@ for ID in $IDS; do
 	"${WAIT:-$ROOT/tools/wait_ue_queue.sh}" 7200
 	HI3D_STEP=mesh HI3D_ID=$ID "$CMD" "$PROJ" -run=pythonscript -script="$HERE/import_hi3d_props.py" $QUIET -stdout | grep -E "HI3DPROPS|Error" | grep -v LogInit || true
 done
+# LODs and collision need a full editor (offscreen, no window): see finish() in import_hi3d_props.py
+"${WAIT:-$ROOT/tools/wait_ue_queue.sh}" 7200
+HI3D_STEP=finish "$UE/Engine/Binaries/Mac/UnrealEditor.app/Contents/MacOS/UnrealEditor" "$PROJ" /Engine/Maps/Entry -RenderOffscreen $QUIET \
+	-abslog="$ROOT/unreal/Lyudmilovsk/Saved/Logs/import_hi3d_finish.log" "-ExecCmds=py $HERE/import_hi3d_props.py" > /dev/null 2>&1 || true
+grep -E "HI3DPROPS|Error" "$ROOT/unreal/Lyudmilovsk/Saved/Logs/import_hi3d_finish.log" | grep -v LogInit || true

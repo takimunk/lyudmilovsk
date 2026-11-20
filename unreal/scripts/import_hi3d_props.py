@@ -158,23 +158,6 @@ def mesh(pid):
         if mi:
             for slot in range(len(a.get_editor_property("static_materials"))):
                 a.set_material(slot, mi)
-        sme = unreal.get_editor_subsystem(unreal.StaticMeshEditorSubsystem)
-        opts = unreal.StaticMeshReductionOptions()
-        opts.set_editor_property("auto_compute_lod_screen_size", False)
-        lods = []
-        for pct, screen in ((1.0, 1.0), (0.5, 0.35), (0.25, 0.12)):
-            r = unreal.StaticMeshReductionSettings()
-            r.set_editor_property("percent_triangles", pct)
-            r.set_editor_property("screen_size", screen)
-            lods.append(r)
-        opts.set_editor_property("reduction_settings", lods)
-        sme.set_lods_with_notification(a, opts, False)
-        body = a.get_editor_property("body_setup")
-        if body:
-            body.set_editor_property("agg_geom", unreal.KAggregateGeom())
-            body.set_editor_property("collision_trace_flag", unreal.CollisionTraceFlag.CTF_USE_SIMPLE_AS_COMPLEX)
-        if SPEC[pid].get("collide"):
-            sme.add_simple_collisions_with_notification(a, unreal.ScriptingCollisionShapeType.NDOP26, False)
         eal.save_loaded_asset(a)
         done = True
     eal.delete_directory(tmp)
@@ -185,10 +168,46 @@ def mesh(pid):
     log("%s: %s" % (pid, target if done else "NO MESH"))
 
 
+def finish():
+    """LODs and simple collision for every imported SM_Hi3d_*. Runs in a full editor (import_hi3d_props.sh starts one
+    offscreen with -ExecCmds): in a -run=pythonscript commandlet the StaticMeshEditorSubsystem is None and the old
+    EditorStaticMeshLibrary refuses outside the editor (set_lods returned -1, no collision was added)."""
+    sme = unreal.get_editor_subsystem(unreal.StaticMeshEditorSubsystem)
+    if sme is None:
+        log("finish: no StaticMeshEditorSubsystem (not a full editor)")
+        return
+    opts = unreal.StaticMeshReductionOptions()
+    opts.set_editor_property("auto_compute_lod_screen_size", False)
+    lods = []
+    for pct, screen in ((1.0, 1.0), (0.5, 0.35), (0.25, 0.12)):
+        r = unreal.StaticMeshReductionSettings()
+        r.set_editor_property("percent_triangles", pct)
+        r.set_editor_property("screen_size", screen)
+        lods.append(r)
+    opts.set_editor_property("reduction_settings", lods)
+    for pid in sorted(SPEC):
+        a = eal.load_asset("%s/SM_Hi3d_%s" % (DEST, pid))
+        if not a:
+            continue
+        n = sme.set_lods_with_notification(a, opts, False)
+        body = a.get_editor_property("body_setup")
+        if body:
+            body.set_editor_property("agg_geom", unreal.KAggregateGeom())
+            body.set_editor_property("collision_trace_flag", unreal.CollisionTraceFlag.CTF_USE_SIMPLE_AS_COMPLEX)
+        c = -1
+        if SPEC[pid].get("collide"):
+            c = sme.add_simple_collisions_with_notification(a, unreal.ScriptCollisionShapeType.NDOP26, False)
+        eal.save_loaded_asset(a)
+        log("finish %s: %d LODs, collision %s" % (pid, n, ("26-DOP #%d" % c) if SPEC[pid].get("collide") else "none"))
+
+
 STEP = os.environ.get("HI3D_STEP", "materials")
 if STEP == "materials":
     materials()
 elif STEP == "list":
     print("HI3DPROPS READY " + " ".join(ready()))
+elif STEP == "finish":
+    finish()
+    unreal.SystemLibrary.quit_editor()
 else:
     mesh(os.environ["HI3D_ID"])
