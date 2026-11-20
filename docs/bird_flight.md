@@ -245,15 +245,12 @@ and the speed do to the wings.
 | white-tailed eagle | 46 % | 35 | 3 |
 | grey heron | 73 % | 25 | 2.4 |
 | mute swan | 82 % | 30 | 2.2 |
-
-
-**The rhythm works harder when it has to.** Space is the species' easy rhythm, and level at cruise it beats at the
-share of power that holds the cruise. Slow (below about 0.6 to 0.95 of cruise: a take-off, the first seconds after
-a landing was called off) or with the gaze up (from 2 to 14 degrees), the same rhythm goes up to full power
-(`BirdFlight::RhythmPower`), and since the wingbeat rate follows the power, the wings visibly beat faster. It costs
-stamina as full-power beats do. A take-off's first 0.6 s are flat-out beats at the flat-out rate. Check 18 of the
-model test flies the take-off the way the pawn does.
-
+- **The rhythm works harder when it has to.** Space is the species' easy rhythm, and level at cruise it beats at the
+  share of power that holds the cruise. Slow (below about 0.6 to 0.95 of cruise: a take-off, the first seconds after
+  a landing was called off) or with the gaze up (from 2 to 14 degrees), the same rhythm goes up to full power
+  (`BirdFlight::RhythmPower`), and since the wingbeat rate follows the power, the wings visibly beat faster. It costs
+  stamina as full-power beats do. A take-off's first 0.6 s are flat-out beats at the flat-out rate. Check 18 of the
+  model test flies the take-off the way the pawn does.
 - **How it is drawn.** A part-folded wing in the air is not half way to the standing bird's fold (that hangs it down the
   flank): `ABirdActor::SetWingLevel` rolls the arm back out to the side, so the fold is a sweep back in the wing's own
   plane, a falcon's "M"; right in, it closes against the body. The tail closes tighter than its bind pose in a dive
