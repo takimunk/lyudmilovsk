@@ -1,0 +1,27 @@
+{
+ "service": "higgsfield MCP",
+ "tool": "generate_image_batch",
+ "model": "gpt_image_2_5",
+ "arguments": {
+  "aspect_ratio": "1:1",
+  "resolution": "2k",
+  "quality": "medium",
+  "prompt": "Nine inventory icons for a moody adventure game, arranged as a 3 by 3 grid of equal square cells on one picture: in every cell one object centred and filling most of the cell, softly lit from the upper left, painterly realistic style, plain dark warm-grey cloth background with a faint vignette, the same background and the same scale in every cell (every object drawn at the same icon size, as large as the cell allows with a margin), no borders, frames or lines between the cells, nothing crossing a cell edge, exactly one object or one small group per cell, no text, letters, numbers or logos anywhere, not even on the objects. Everyday goods of a 1970s-80s Soviet seaside town, no real brands. Row 1, left: a brick-shaped loaf of dark Soviet rye bread with a shiny brown crust and a few caraway seeds, on a scrap of plain wrapping paper. Row 1, middle: five glossy golden bagel rings sprinkled with poppy seeds, threaded on a loop of rough twine. Row 1, right: a round golden sweet bun with a well of white baked curd cheese in its centre, on a square of greaseproof paper. Row 2, left: a small round shortcrust pastry basket filled with piped pale cream shaped like two tiny mushrooms and a drop of red jam, on a little white saucer. Row 2, middle: three round ring doughnuts heavily dusted with powdered sugar, spilling out of a plain brown paper cone. Row 2, right: a large half-moon fried pasty with a crimped edge and a blistered golden crust, on a square of greaseproof paper. Row 3, left: a dozen small boiled pelmeni dumplings on a plain white paper plate with a spoonful of sour cream on top and a small aluminium fork. Row 3, middle: an open sandwich: a slice of white bread with a square slice of yellow cheese on top, on a small white saucer. Row 3, right: two round domed Russian gingerbread cakes covered in a thin crackled white sugar glaze."
+ },
+ "job_id": "bc3b210e-a299-4951-a369-547e36b07d01",
+ "output_url": "https://d8j0ntlcm91z4.cloudfront.net/user_36I3ndR5QeKPyjKAdSKVfbd04n2/hf_20261120_193415_bc3b210e-a299-4951-a369-547e36b07d01.png",
+ "credits": 1,
+ "date": "2026-11-20",
+ "cells_row_major": [
+  "bread_rye",
+  "bubliki",
+  "vatrushka",
+  "pastry",
+  "donuts",
+  "cheburek",
+  "pelmeni_portion",
+  "sandwich",
+  "gingerbread"
+ ],
+ "sha256": "(fill on download)"
+}

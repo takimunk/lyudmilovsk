@@ -1,0 +1,27 @@
+{
+ "service": "higgsfield MCP",
+ "tool": "generate_image_batch",
+ "model": "gpt_image_2_5",
+ "arguments": {
+  "aspect_ratio": "1:1",
+  "resolution": "2k",
+  "quality": "medium",
+  "prompt": "Nine inventory icons for a moody adventure game, arranged as a 3 by 3 grid of equal square cells on one picture: in every cell one object centred and filling most of the cell, softly lit from the upper left, painterly realistic style, plain dark warm-grey cloth background with a faint vignette, the same background and the same scale in every cell (every object drawn at the same icon size, as large as the cell allows with a margin), no borders, frames or lines between the cells, nothing crossing a cell edge, exactly one object or one small group per cell, no text, letters, numbers or logos anywhere, not even on the objects. Everyday goods of a 1970s-80s Soviet seaside town, no real brands. Row 1, left: a translucent amber hard-candy lollipop moulded in the shape of a cockerel, on a thin wooden stick. Row 1, middle: a big fluffy cloud of pink candy floss on a thin wooden stick. Row 1, right: a chocolate-coated vanilla ice cream bar on a wooden stick, half unwrapped from a plain silver foil wrapper, one bite taken showing white ice cream. Row 2, left: a tall plain glass of white milkshake with thick foam up to the brim and a striped paper straw. Row 2, middle: a heavy dimpled glass beer mug full of dark amber kvass with a thin head of foam. Row 2, right: a faceted Soviet glass tumbler full of thick red tomato juice with a small spoon leaning in it. Row 3, left: a tetrahedron-shaped paper milk carton, white with a plain blue diamond pattern, no lettering. Row 3, middle: a squat tin can of condensed milk with a plain white and pale blue paper label without any lettering, two small holes punched in the lid. Row 3, right: a plain paper cone full of dark red sweet cherries on stalks, a few spilled in front."
+ },
+ "job_id": "55daf5b9-cee2-40d8-b90a-491bbce81bdb",
+ "output_url": "https://d8j0ntlcm91z4.cloudfront.net/user_36I3ndR5QeKPyjKAdSKVfbd04n2/hf_20261120_193417_55daf5b9-cee2-40d8-b90a-491bbce81bdb.png",
+ "credits": 1,
+ "date": "2026-11-20",
+ "cells_row_major": [
+  "lollipop",
+  "candy_floss",
+  "eskimo",
+  "milkshake",
+  "kvass",
+  "tomato_juice",
+  "milk_pyramid",
+  "condensed_milk",
+  "cherries"
+ ],
+ "sha256": "(fill on download)"
+}
