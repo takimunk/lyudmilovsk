@@ -4,7 +4,7 @@ given a fresh non-overlapping UV layout and baked from the high model: base colo
 the budget's texture size. Writes
 
   blender/props_hi3d/game/<id>.glb                     the low mesh, one material "M_<id>", UV0 = the bake layout
-  blender/props_hi3d/game/T_Hi3d_<id>_{C,N,R}.png      base colour (sRGB), normal (OpenGL), roughness (grey)
+  blender/props_hi3d/game/T_Hi3d_<id>_{C,N,R}.png      base colour (sRGB), normal (OpenGL), R: roughness + metal mask in G
   blender/props_hi3d/game/<id>.json                    size, triangles, origin, footprint radius (placement reads it)
   blender/props_hi3d/raw/<id>/preview.png              4 views of the result + the UV layout over the colour (check it)
 
@@ -132,6 +132,11 @@ def decimate(o, n):
     m.decimate_type = "COLLAPSE"
     m.ratio = n / t
     m.use_collapse_triangulate = True
+    if o.vertex_groups.get("keep"):
+        # a built plinth stays exact (its 3-5 cm steps would collapse, the low top would sink under the cage and bake
+        # black): the decimate leaves the "keep" group alone
+        m.vertex_group = "keep"
+        m.invert_vertex_group = True
     select([o])
     bpy.ops.object.modifier_apply(modifier=m.name)
     return tris(o)
@@ -139,18 +144,58 @@ def decimate(o, n):
 
 def flatten_metal(o):
     """For the colour bake: metals and glass would bake black/empty in the diffuse pass, so the high model's shaders
-    lose metallic and transmission (the game puts metallic back from props.json)."""
+    lose metallic and transmission. What fed Metallic is returned, so metal_mask() can bake it afterwards (stone plinths
+    and columns stay dielectric in the game; props.json "metallic" scales the mask)."""
+    srcs = []
     for mat in o.data.materials:
         if not mat or not mat.use_nodes:
             continue
         for nd in mat.node_tree.nodes:
             if nd.type != "BSDF_PRINCIPLED":
                 continue
+            ins = nd.inputs["Metallic"]
+            srcs.append((mat, nd, ins.links[0].from_socket if ins.links else None, float(ins.default_value)))
             for name, val in (("Metallic", 0.0), ("Transmission Weight", 0.0), ("Transmission", 0.0), ("Alpha", 1.0)):
                 if name in nd.inputs:
                     for l in list(nd.inputs[name].links):
                         mat.node_tree.links.remove(l)
                     nd.inputs[name].default_value = val
+    return srcs
+
+
+def metal_mask(high, low, srcs, img_r, size):
+    """Bakes the high model's metallic (as emission) and packs it into the roughness map's green channel:
+    T_Hi3d_<id>_R = R roughness, G metal mask (the game: Metallic = G * props.json metallic)."""
+    import numpy as np
+    for mat, nd, src, val in srcs:
+        nt = mat.node_tree
+        em = nd.inputs.get("Emission Color") or nd.inputs.get("Emission")
+        for l in list(em.links):
+            nt.links.remove(l)
+        if src is not None:
+            nt.links.new(src, em)
+        else:
+            em.default_value = (val, val, val, 1.0)
+        if "Emission Strength" in nd.inputs:
+            nd.inputs["Emission Strength"].default_value = 1.0
+    m = new_image("metal_mask", size, (0, 0, 0, 1), True)
+    mat = low.data.materials[0]
+    tn = mat.node_tree.nodes.new("ShaderNodeTexImage")
+    tn.image = m
+    for n in mat.node_tree.nodes:
+        n.select = False
+    tn.select = True
+    mat.node_tree.nodes.active = tn
+    select([high, low], active=low)
+    bpy.ops.object.bake(type="EMIT")
+    a = np.array(img_r.pixels[:], dtype=np.float32).reshape(-1, 4)
+    mm = np.array(m.pixels[:], dtype=np.float32).reshape(-1, 4)
+    a[:, 1] = np.clip(mm[:, 0], 0.0, 1.0)
+    img_r.pixels[:] = a.ravel()
+    mat.node_tree.nodes.remove(tn)
+    bpy.data.images.remove(m)
+    log("baked M into R.g: mean metal %.2f, metal > 0.5 on %.0f%% of texels" % (float(a[:, 1].mean()),
+        100.0 * float((a[:, 1] > 0.5).mean())))
 
 
 def new_image(name, size, colour, non_color):
@@ -223,11 +268,17 @@ def wire(mat, nodes, metallic):
     nt = mat.node_tree
     bsdf = next(n for n in nt.nodes if n.type == "BSDF_PRINCIPLED")
     nt.links.new(nodes["C"].outputs["Color"], bsdf.inputs["Base Color"])
-    nt.links.new(nodes["R"].outputs["Color"], bsdf.inputs["Roughness"])
+    sep = nt.nodes.new("ShaderNodeSeparateColor")
+    nt.links.new(nodes["R"].outputs["Color"], sep.inputs["Color"])
+    nt.links.new(sep.outputs["Red"], bsdf.inputs["Roughness"])
+    mul = nt.nodes.new("ShaderNodeMath")
+    mul.operation = "MULTIPLY"
+    mul.inputs[1].default_value = metallic
+    nt.links.new(sep.outputs["Green"], mul.inputs[0])
+    nt.links.new(mul.outputs["Value"], bsdf.inputs["Metallic"])
     nm = nt.nodes.new("ShaderNodeNormalMap")
     nt.links.new(nodes["N"].outputs["Color"], nm.inputs["Color"])
     nt.links.new(nm.outputs["Normal"], bsdf.inputs["Normal"])
-    bsdf.inputs["Metallic"].default_value = metallic
 
 
 def preview(low, pid, imgs, s):
@@ -307,24 +358,45 @@ def add_plinth(o, pl):
     like the rest."""
     sx, sy, sz = pl["size"]
     o.data.transform(Matrix.Translation((0, 0, sz)))
+    # one closed stepped solid (base slab, block, cap): square rings lofted bottom to top. Three overlapping boxes left
+    # coplanar inner faces that baked black (the slab's top ring, the block's top under the cap).
     bm = bmesh.new()
-    for (w, d, z0, z1) in ((sx, sy, 0.0, sz - 0.06), (sx + 0.06, sy + 0.06, sz - 0.06, sz), (sx + 0.1, sy + 0.1, 0.0, 0.12)):
-        geom = bmesh.ops.create_cube(bm, size=1.0)["verts"]
-        for v in geom:
-            v.co.x *= w
-            v.co.y *= d
-            v.co.z = z0 if v.co.z < 0 else z1
+    rings = ((0.05, 0.0), (0.05, 0.12), (0.0, 0.12), (0.0, sz - 0.06), (0.03, sz - 0.06), (0.03, sz))
+    loops = []
+    for grow, z in rings:
+        hx, hy = sx / 2 + grow, sy / 2 + grow
+        loops.append([bm.verts.new((x, y, z)) for x, y in ((-hx, -hy), (hx, -hy), (hx, hy), (-hx, hy))])
+    bm.faces.new(list(reversed(loops[0])))
+    for a, b in zip(loops, loops[1:]):
+        for i in range(4):
+            bm.faces.new((a[i], a[(i + 1) % 4], b[(i + 1) % 4], b[i]))
+    bm.faces.new(loops[-1])
+    bmesh.ops.recalc_face_normals(bm, faces=bm.faces)
     me = bpy.data.meshes.new("plinth")
     bm.to_mesh(me)
     bm.free()
     mat = bpy.data.materials.new("plinth_stone")
     mat.use_nodes = True
     b = next(n for n in mat.node_tree.nodes if n.type == "BSDF_PRINCIPLED")
-    b.inputs["Base Color"].default_value = list(pl["colour"]) + [1.0]
+    # granite: fine speckle around the colour (the bake carries it; a flat colour read as plastic)
+    nt = mat.node_tree
+    nz = nt.nodes.new("ShaderNodeTexNoise")
+    nz.inputs["Scale"].default_value = 140.0
+    nz.inputs["Detail"].default_value = 6.0
+    ramp = nt.nodes.new("ShaderNodeValToRGB")
+    c = pl["colour"]
+    ramp.color_ramp.elements[0].position = 0.35
+    ramp.color_ramp.elements[0].color = [x * 0.45 for x in c] + [1.0]
+    ramp.color_ramp.elements[1].position = 0.65
+    ramp.color_ramp.elements[1].color = [min(1.0, x * 1.5 + 0.03) for x in c] + [1.0]
+    nt.links.new(nz.outputs["Fac"], ramp.inputs["Fac"])
+    nt.links.new(ramp.outputs["Color"], b.inputs["Base Color"])
     b.inputs["Roughness"].default_value = pl.get("roughness", 0.3)
     me.materials.append(mat)
     p = bpy.data.objects.new("plinth", me)
     bpy.context.scene.collection.objects.link(p)
+    p.vertex_groups.new(name="keep").add(list(range(len(me.vertices))), 1.0, "REPLACE")
+    o.vertex_groups.new(name="keep")
     select([o, p], active=o)
     bpy.ops.object.join()
     log("plinth %.2f x %.2f x %.2f m added" % (sx, sy, sz))
@@ -340,7 +412,7 @@ def run(pid, s, front_yaw):
     clean(high, size)
     t0 = tris(high)
     decimate(high, HIGH_MAX)
-    flatten_metal(high)
+    srcs = flatten_metal(high)
     # low: a copy decimated to the budget, smooth shaded, a fresh UV layout (hi3d's own islands don't survive the
     # collapse cleanly: seams smear, so everything is re-baked onto the new layout)
     low = high.copy()
@@ -361,7 +433,9 @@ def run(pid, s, front_yaw):
         log("decimate stalled at %d tris: voxel remesh %.1f mm -> %d" % (n, 1000 * vs, tris(low)))
         n = decimate(low, s["tris"])
     select([low])
-    bpy.ops.object.shade_smooth()
+    # smooth, but hard edges (plinth corners, column steps) stay split: a fully smooth box bakes and shades its
+    # faces dark and bent (the girl's plinth top came out black)
+    bpy.ops.object.shade_smooth_by_angle(angle=math.radians(40))
     me = low.data
     while me.uv_layers:
         me.uv_layers.remove(me.uv_layers[0])
@@ -375,6 +449,7 @@ def run(pid, s, front_yaw):
     bpy.ops.object.mode_set(mode="OBJECT")
     mat, imgs, nodes = bake_target(low, pid, s["tex"])
     bake(high, low, mat, imgs, nodes, size)
+    metal_mask(high, low, srcs, imgs["R"], s["tex"])
     os.makedirs(OUT, exist_ok=True)
     for k, img in imgs.items():
         img.filepath_raw = os.path.join(OUT, "T_Hi3d_%s_%s.png" % (pid, k))

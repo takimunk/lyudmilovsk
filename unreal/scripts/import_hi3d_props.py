@@ -1,6 +1,6 @@
 """The hi3d town props into the project (docs/city/hi3d_props.md): blender/props_hi3d/game/<id>.glb and
 T_Hi3d_<id>_{C,N,R}.png (blender/props_hi3d/optimize.py) -> /Game/City/Hi3D/SM_Hi3d_<id> with MI_Hi3d_<id> of
-M_Hi3dProp (base colour, normal, roughness textures; scalar Metallic from props.json). Headless, one step per process
+M_Hi3dProp (base colour, normal, roughness+metal-mask textures; scalar Metallic from props.json scales the mask). Headless, one step per process
 (Interchange imports one scene per process; unreal/scripts/import_hi3d_props.sh runs them in turn):
 
   HI3D_STEP=materials UnrealEditor-Cmd <uproject> -run=pythonscript -script=unreal/scripts/import_hi3d_props.py
@@ -63,7 +63,8 @@ def import_textures(pid):
             a.set_editor_property("srgb", False)
             a.set_editor_property("flip_green_channel", True)     # OpenGL normals from Blender
         elif k == "R":
-            a.set_editor_property("compression_settings", unreal.TextureCompressionSettings.TC_GRAYSCALE)
+            # R = roughness, G = metal mask (optimize.py): both channels kept
+            a.set_editor_property("compression_settings", unreal.TextureCompressionSettings.TC_MASKS)
             a.set_editor_property("srgb", False)
         eal.save_loaded_asset(a)
 
@@ -73,12 +74,12 @@ def node(m, cls, x, y):
 
 
 def master():
-    """M_Hi3dProp: opaque; base colour, normal, roughness maps; Metallic scalar."""
+    """M_Hi3dProp: opaque; base colour, normal maps; R map = roughness (R) + metal mask (G); Metallic scalar scales the mask."""
     m = get_or_create("M_Hi3dProp", DEST, unreal.Material, unreal.MaterialFactoryNew())
     mel.delete_all_material_expressions(m)
     m.set_editor_property("used_with_instanced_static_meshes", True)
     samplers = {"C": unreal.MaterialSamplerType.SAMPLERTYPE_COLOR, "N": unreal.MaterialSamplerType.SAMPLERTYPE_NORMAL,
-                "R": unreal.MaterialSamplerType.SAMPLERTYPE_LINEAR_GRAYSCALE}
+                "R": unreal.MaterialSamplerType.SAMPLERTYPE_MASKS}
     p = {}
     for i, k in enumerate(("C", "N", "R")):
         t = node(m, unreal.MaterialExpressionTextureSampleParameter2D, -700, -200 + 300 * i)
@@ -91,7 +92,10 @@ def master():
     mel.connect_material_property(p["C"], "RGB", unreal.MaterialProperty.MP_BASE_COLOR)
     mel.connect_material_property(p["N"], "RGB", unreal.MaterialProperty.MP_NORMAL)
     mel.connect_material_property(p["R"], "R", unreal.MaterialProperty.MP_ROUGHNESS)
-    mel.connect_material_property(met, "", unreal.MaterialProperty.MP_METALLIC)
+    mul = node(m, unreal.MaterialExpressionMultiply, -200, 450)      # Metallic = metal mask (R map's G) * scalar
+    mel.connect_material_expressions(p["R"], "G", mul, "A")
+    mel.connect_material_expressions(met, "", mul, "B")
+    mel.connect_material_property(mul, "", unreal.MaterialProperty.MP_METALLIC)
     # the defaults must be set before the material compiles its samplers (a sampler without a texture fails)
     first = ready()[0] if ready() else None
     for k in ("C", "N", "R"):
