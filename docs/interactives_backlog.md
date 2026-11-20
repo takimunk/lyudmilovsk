@@ -203,7 +203,7 @@ offline tests of delivery by calendar days and the pen-friend chain, lines ru/en
 
 ## 12. Friends among the residents
 
-`[ ]` **Brief (Fable 5.2):** The townsfolk already come to know the hero (`NoteMet`, `met = new|seen|known`, town-manners).
+`[x] friends 2026-11-20 (branch friends, docs/friends.md; awaits a Mac build and shots)` **Brief (Fable 5.2):** The townsfolk already come to know the hero (`NoteMet`, `met = new|seen|known`, town-manners).
 Add a friendship level per named resident (saved): it grows with talk topics heard, quests done for them, gifts (an item
 they like by persona: flowers, a fish, a jar of jam, a record), postcards (item 11); a friend waves first, calls the hero by
 name, sits with him on a bench and talks about their day (lines by `doing`, weather, festival), invites him to tea at their

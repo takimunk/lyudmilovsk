@@ -1,0 +1,693 @@
+{
+ "_doc": "Written by tools/friends/build_friends.py from tools/friends/content.py: do not edit by hand. Friends among the residents: docs/friends.md.",
+ "rules": {
+  "levels": [
+   0,
+   10,
+   30,
+   70,
+   130
+  ],
+  "greet": 2,
+  "heard": 1,
+  "heard_cap": 3,
+  "visit": 4,
+  "quest": 20,
+  "gift_loved": 12,
+  "gift_liked": 6,
+  "gift_plain": 2,
+  "card": 8,
+  "bench": 6,
+  "tea": 12,
+  "outing": 12,
+  "tea_level": 2,
+  "tea_every": 7,
+  "tea_ahead": 2,
+  "outing_level": 4,
+  "outing_every": 21,
+  "bench_level": 3,
+  "wave_level": 2,
+  "nick_level": 3
+ },
+ "nicknames": [
+  {
+   "id": "observer",
+   "hint": "curious"
+  },
+  {
+   "id": "cabin_boy",
+   "hint": "sea"
+  },
+  {
+   "id": "bird_boy",
+   "hint": "birds"
+  },
+  {
+   "id": "neighbour",
+   "hint": "any"
+  },
+  {
+   "id": "young_man",
+   "hint": "elder"
+  },
+  {
+   "id": "professor",
+   "hint": "birds"
+  },
+  {
+   "id": "naturalist",
+   "hint": "tidy"
+  },
+  {
+   "id": "sunshine",
+   "hint": "warm"
+  },
+  {
+   "id": "dear_boy",
+   "hint": "elder"
+  },
+  {
+   "id": "captain",
+   "hint": "kid"
+  },
+  {
+   "id": "binoculars",
+   "hint": "kid"
+  },
+  {
+   "id": "sailor",
+   "hint": "sea"
+  },
+  {
+   "id": "pal",
+   "hint": "warm"
+  },
+  {
+   "id": "scout",
+   "hint": "curious"
+  },
+  {
+   "id": "starling",
+   "hint": "birds"
+  },
+  {
+   "id": "aton",
+   "hint": "any"
+  },
+  {
+   "id": "colleague",
+   "hint": "tidy"
+  }
+ ],
+ "gifts": [
+  {
+   "item": "chocolate",
+   "hints": [
+    "kid",
+    "teen",
+    "sweet",
+    "warm"
+   ]
+  },
+  {
+   "item": "candy",
+   "hints": [
+    "kid",
+    "sweet"
+   ]
+  },
+  {
+   "item": "cookies",
+   "hints": [
+    "kid",
+    "elder",
+    "sweet"
+   ]
+  },
+  {
+   "item": "gingerbread",
+   "hints": [
+    "elder",
+    "sweet"
+   ]
+  },
+  {
+   "item": "pie",
+   "hints": [
+    "elder",
+    "adult",
+    "warm"
+   ]
+  },
+  {
+   "item": "bubliki",
+   "hints": [
+    "elder",
+    "adult"
+   ]
+  },
+  {
+   "item": "vatrushka",
+   "hints": [
+    "elder",
+    "kid",
+    "sweet"
+   ]
+  },
+  {
+   "item": "pastry",
+   "hints": [
+    "adult",
+    "sweet"
+   ]
+  },
+  {
+   "item": "donuts",
+   "hints": [
+    "kid",
+    "teen",
+    "sweet"
+   ]
+  },
+  {
+   "item": "cherries",
+   "hints": [
+    "kid",
+    "adult",
+    "artist"
+   ]
+  },
+  {
+   "item": "condensed_milk",
+   "hints": [
+    "kid",
+    "teen",
+    "sweet"
+   ]
+  },
+  {
+   "item": "hematogen",
+   "hints": [
+    "kid"
+   ]
+  },
+  {
+   "item": "lollipop",
+   "hints": [
+    "kid"
+   ]
+  },
+  {
+   "item": "candy_floss",
+   "hints": [
+    "kid"
+   ]
+  },
+  {
+   "item": "ice_cream",
+   "hints": [
+    "kid",
+    "teen"
+   ]
+  },
+  {
+   "item": "eskimo",
+   "hints": [
+    "kid",
+    "teen"
+   ]
+  },
+  {
+   "item": "coffee",
+   "hints": [
+    "adult",
+    "artist",
+    "reader"
+   ]
+  },
+  {
+   "item": "tea",
+   "hints": [
+    "elder",
+    "warm",
+    "reader"
+   ]
+  },
+  {
+   "item": "kvass",
+   "hints": [
+    "adult",
+    "sea"
+   ]
+  },
+  {
+   "item": "smoked_fish",
+   "hints": [
+    "fisherman",
+    "sea",
+    "adult"
+   ]
+  },
+  {
+   "item": "dried_fish",
+   "hints": [
+    "fisherman",
+    "sea"
+   ]
+  },
+  {
+   "item": "daily_paper",
+   "hints": [
+    "reader",
+    "elder"
+   ]
+  },
+  {
+   "item": "magazine_science",
+   "hints": [
+    "curious",
+    "reader",
+    "teen"
+   ]
+  },
+  {
+   "item": "magazine_travel",
+   "hints": [
+    "sea",
+    "curious",
+    "reader"
+   ]
+  },
+  {
+   "item": "postcard_set",
+   "hints": [
+    "artist",
+    "photographer",
+    "warm"
+   ]
+  },
+  {
+   "item": "stamp_packet",
+   "hints": [
+    "curious",
+    "elder",
+    "tidy"
+   ]
+  },
+  {
+   "item": "notebook",
+   "hints": [
+    "artist",
+    "tidy",
+    "curious"
+   ]
+  },
+  {
+   "item": "adventure_book",
+   "hints": [
+    "kid",
+    "teen",
+    "reader"
+   ]
+  },
+  {
+   "item": "wool_ball",
+   "hints": [
+    "knitter"
+   ]
+  },
+  {
+   "item": "thread_spool",
+   "hints": [
+    "knitter",
+    "tidy"
+   ]
+  },
+  {
+   "item": "buttons_card",
+   "hints": [
+    "knitter",
+    "tidy"
+   ]
+  },
+  {
+   "item": "handkerchief",
+   "hints": [
+    "elder",
+    "tidy"
+   ]
+  },
+  {
+   "item": "feed_grain",
+   "hints": [
+    "feeder"
+   ]
+  },
+  {
+   "item": "feed_peanuts",
+   "hints": [
+    "feeder",
+    "kid"
+   ]
+  },
+  {
+   "item": "feed_rowan",
+   "hints": [
+    "feeder"
+   ]
+  },
+  {
+   "item": "bread_loaf",
+   "hints": [
+    "feeder",
+    "elder"
+   ]
+  },
+  {
+   "item": "toy_duck",
+   "hints": [
+    "kid"
+   ]
+  },
+  {
+   "item": "spinning_top",
+   "hints": [
+    "kid"
+   ]
+  },
+  {
+   "item": "toy_car",
+   "hints": [
+    "kid"
+   ]
+  },
+  {
+   "item": "rubber_ball",
+   "hints": [
+    "kid"
+   ]
+  },
+  {
+   "item": "shell_box",
+   "hints": [
+    "artist",
+    "kid",
+    "sea"
+   ]
+  },
+  {
+   "item": "amber_charm",
+   "hints": [
+    "warm",
+    "artist",
+    "photographer"
+   ]
+  },
+  {
+   "item": "seeds",
+   "hints": [
+    "elder",
+    "feeder",
+    "tidy"
+   ]
+  }
+ ],
+ "hosts": [
+  {
+   "id": "holm",
+   "name": "friends.host.holm.name",
+   "person": "",
+   "plot": "P-T1H2",
+   "quest": "home_holm",
+   "correspondent": "h_holm",
+   "hour": 17,
+   "topics": 3,
+   "chair": "P-T1H2/flat_armchair",
+   "chair_ue": [
+    -6851.6,
+    46846.9,
+    -3575.0
+   ],
+   "chair_yaw": 88.0,
+   "chair_height": 0.45,
+   "host_chair": "",
+   "table": ""
+  },
+  {
+   "id": "okada",
+   "name": "friends.host.okada.name",
+   "person": "",
+   "plot": "P-T4H1",
+   "quest": "home_okada",
+   "correspondent": "h_okada",
+   "hour": 17,
+   "topics": 3,
+   "chair": "P-T4H1/flat_armchair",
+   "chair_ue": [
+    -77872.3,
+    58703.1,
+    -1115.0
+   ],
+   "chair_yaw": -13.8,
+   "chair_height": 0.45,
+   "host_chair": "",
+   "table": ""
+  },
+  {
+   "id": "singh",
+   "name": "friends.host.singh.name",
+   "person": "",
+   "plot": "P-CAPSULE",
+   "quest": "home_singh",
+   "correspondent": "h_singh",
+   "hour": 18,
+   "topics": 3,
+   "chair": "P-CAPSULE/capsule_desk_chair",
+   "chair_ue": [
+    -54140.3,
+    118191.1,
+    -1455.0
+   ],
+   "chair_yaw": -5.8,
+   "chair_height": 0.45,
+   "host_chair": "",
+   "table": ""
+  },
+  {
+   "id": "kravets",
+   "name": "friends.host.kravets.name",
+   "person": "",
+   "plot": "P-T5H1",
+   "quest": "home_kravets",
+   "correspondent": "h_kravets",
+   "hour": 18,
+   "topics": 3,
+   "chair": "P-T5H1/capsule_desk_chair",
+   "chair_ue": [
+    -92775.1,
+    56227.7,
+    -755.0
+   ],
+   "chair_yaw": -2.4,
+   "chair_height": 0.45,
+   "host_chair": "",
+   "table": ""
+  },
+  {
+   "id": "okafor",
+   "name": "friends.host.okafor.name",
+   "person": "",
+   "plot": "P-T1H4",
+   "quest": "home_okafor",
+   "correspondent": "h_okafor",
+   "hour": 17,
+   "topics": 3,
+   "chair": "P-T1H4/studio_guest_chair",
+   "chair_ue": [
+    2832.8,
+    70085.2,
+    -2888.0
+   ],
+   "chair_yaw": -3.0,
+   "chair_height": 0.45,
+   "host_chair": "",
+   "table": ""
+  },
+  {
+   "id": "tadesse",
+   "name": "friends.host.tadesse.name",
+   "person": "t_tadesse_valentina",
+   "plot": "P-T1H3",
+   "quest": "home_tadesse",
+   "correspondent": "h_tadesse",
+   "hour": 16,
+   "topics": 3,
+   "chair": "P-T1H3/studio_kitchen_chair",
+   "chair_ue": [
+    2037.3,
+    56998.9,
+    -3575.0
+   ],
+   "chair_yaw": -179.9,
+   "chair_height": 0.45,
+   "host_chair": "P-T1H3/studio_stool",
+   "host_chair_ue": [
+    2298.1,
+    57144.3,
+    -3570.0
+   ],
+   "host_chair_yaw": -2.4,
+   "host_chair_height": 0.5,
+   "table": ""
+  },
+  {
+   "id": "okonkwo",
+   "name": "friends.host.okonkwo.name",
+   "person": "t_okonkwo_yasmin",
+   "plot": "P-T3H1",
+   "quest": "home_okonkwo",
+   "correspondent": "",
+   "hour": 18,
+   "topics": 3,
+   "chair": "P-T3H1/studio_kitchen_chair",
+   "chair_ue": [
+    -35936.2,
+    131064.0,
+    -2155.0
+   ],
+   "chair_yaw": 175.4,
+   "chair_height": 0.45,
+   "host_chair": "P-T3H1/studio_stool",
+   "host_chair_ue": [
+    -35664.3,
+    131187.5,
+    -2150.0
+   ],
+   "host_chair_yaw": -7.1,
+   "host_chair_height": 0.5,
+   "table": ""
+  },
+  {
+   "id": "santos",
+   "name": "friends.host.santos.name",
+   "person": "",
+   "plot": "P-T1H5",
+   "quest": "home_santos",
+   "correspondent": "",
+   "hour": 18,
+   "topics": 3,
+   "chair": "P-T1H5/home_dining_chair",
+   "chair_ue": [
+    -738.7,
+    139214.5,
+    -3575.0
+   ],
+   "chair_yaw": -98.4,
+   "chair_height": 0.45,
+   "host_chair": "P-T1H5/home_dining_chair_head",
+   "host_chair_ue": [
+    -818.9,
+    139150.5,
+    -3575.0
+   ],
+   "host_chair_yaw": -8.4,
+   "host_chair_height": 0.45,
+   "table": ""
+  },
+  {
+   "id": "girma",
+   "name": "friends.host.girma.name",
+   "person": "",
+   "plot": "P-RISER1",
+   "quest": "home_girma",
+   "correspondent": "",
+   "hour": 17,
+   "topics": 3,
+   "chair": "P-RISER1/home_dining_chair",
+   "chair_ue": [
+    -15895.4,
+    109407.0,
+    -2642.0
+   ],
+   "chair_yaw": 174.5,
+   "chair_height": 0.45,
+   "host_chair": "",
+   "table": ""
+  },
+  {
+   "id": "aoki",
+   "name": "friends.host.aoki.name",
+   "person": "",
+   "plot": "P-RISER2",
+   "quest": "home_aoki",
+   "correspondent": "",
+   "hour": 17,
+   "topics": 3,
+   "chair": "P-RISER2/home_dining_chair",
+   "chair_ue": [
+    -51771.9,
+    100410.1,
+    -1222.0
+   ],
+   "chair_yaw": 174.3,
+   "chair_height": 0.45,
+   "host_chair": "",
+   "table": ""
+  }
+ ],
+ "outing_acts": [
+  "sea_air",
+  "stroll",
+  "fair_visit",
+  "feed_birds",
+  "eat_out",
+  "coffee"
+ ],
+ "jobs": {
+  "artist": "friends.job.artist",
+  "away": "friends.job.away",
+  "baker": "friends.job.baker",
+  "barber": "friends.job.barber",
+  "barista": "friends.job.barista",
+  "bartender": "friends.job.bartender",
+  "bookseller": "friends.job.bookseller",
+  "butcher": "friends.job.butcher",
+  "caretaker": "friends.job.caretaker",
+  "carousel_operator": "friends.job.carousel_operator",
+  "cashier": "friends.job.cashier",
+  "choir_leader": "friends.job.choir_leader",
+  "cleaner": "friends.job.cleaner",
+  "clerk": "friends.job.clerk",
+  "coach": "friends.job.coach",
+  "cook": "friends.job.cook",
+  "dance_teacher": "friends.job.dance_teacher",
+  "director": "friends.job.director",
+  "doctor": "friends.job.doctor",
+  "fisherman": "friends.job.fisherman",
+  "fishmonger": "friends.job.fishmonger",
+  "guard": "friends.job.guard",
+  "homemaker": "friends.job.homemaker",
+  "janitor": "friends.job.janitor",
+  "librarian": "friends.job.librarian",
+  "lifeguard": "friends.job.lifeguard",
+  "lighthouse_keeper": "friends.job.lighthouse_keeper",
+  "manager": "friends.job.manager",
+  "musician": "friends.job.musician",
+  "nurse": "friends.job.nurse",
+  "pensioner": "friends.job.pensioner",
+  "photographer": "friends.job.photographer",
+  "programmer": "friends.job.programmer",
+  "projectionist": "friends.job.projectionist",
+  "pupil": "friends.job.pupil",
+  "receptionist": "friends.job.receptionist",
+  "renter": "friends.job.renter",
+  "repairman": "friends.job.repairman",
+  "seller": "friends.job.seller",
+  "student": "friends.job.student",
+  "teacher": "friends.job.teacher",
+  "unemployed": "friends.job.unemployed",
+  "vendor": "friends.job.vendor",
+  "waiter": "friends.job.waiter",
+  "writer": "friends.job.writer"
+ }
+}

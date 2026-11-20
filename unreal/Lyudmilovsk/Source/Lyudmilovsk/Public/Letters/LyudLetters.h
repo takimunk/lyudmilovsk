@@ -90,6 +90,13 @@ public:
 	void OpenMailAnywhere();
 	/** Sends a card at once (no chooser, no item needed): picture empty = the first. False: unknown addressee or picture. */
 	bool DevPost(const FString& To, const FString& Picture);
+	/** A letter from somebody of the town (docs/friends.md: a friend's invitation) to the club's mailbox, the next post day:
+	 *  Body a string key with Args ({0}.., "@key" shown in the current language), From a name key or a townsperson's key. Once
+	 *  per Id; false if it was posted already or the post isn't running. */
+	bool PostTownLetter(const FString& Id, const FString& From, const FString& Body, const TArray<FString>& Args);
+	/** A home's postal address in the current language (a person's flat id: P-T1H2/3-02, W3-D072, ...), empty if unknown. */
+	FText HomeAddress(const FString& Home) const;
+
 	/** Where to stand to use the club's mailbox / the postbox nearest the hero (false: not placed yet). */
 	bool MailboxStand(FTransform& Out) const;
 	bool NearestPostboxStand(const FVector& From, FTransform& Out) const;

@@ -4,6 +4,7 @@
 #include "PeopleSim.h"
 #include "PeopleManners.h"
 #include "People/PeopleLife.h"
+#include "People/LyudFriends.h"
 #include "HeroCharacter.h"
 #include "LyudText.h"
 #include "Plants/GameCalendar.h"
@@ -430,6 +431,9 @@ namespace TownTalkLocal
 		// and how well they know the player by now
 		const int32 Met = Life ? Life->GetMet(Id) : 0;
 		W.Met = Met >= 5 ? "known" : (Met >= 1 ? "seen" : "new");
+		// and how close a friend of his they are (docs/friends.md: the sets' bond = ...)
+		const ULyudFriends* Friends = Life ? ULyudFriends::Get(Life) : nullptr;
+		W.Bond = Friends ? Friends->BondWord(Id) : "";
 		// and who they are in manner (the sets' temper = ...)
 		W.Temper.clear();
 		if (const LyudPeople::FPersona* Persona = Mn ? Mn->PersonaOf(Id) : nullptr)
@@ -679,10 +683,17 @@ bool ULyudTownTalkSubsystem::Show(AActor* Actor, int32 Person, const FString& Ke
 		return false;
 	}
 	const FString Full = TEXT("line.") + Key;
-	const FString Text = LyudText::Get(Full).ToString();
+	FString Text = LyudText::Get(Full).ToString();
 	if (Text.IsEmpty() || Text == Full)
 	{
 		return false;   // no words for it in any language
+	}
+	// a friend's line calls him by the nickname they gave him (docs/friends.md); somebody who gave him none says "neighbour"
+	if (Text.Contains(TEXT("{0}")))
+	{
+		const ULyudFriends* Friends = ULyudFriends::Get(this);
+		const FString Nick = Friends && Person >= 0 ? Friends->NickOf(Person) : FString();
+		Text = LyudText::Get(Full, { FStringFormatArg(Nick.IsEmpty() ? LyudText::Get(TEXT("friends.nick.neighbour")).ToString() : Nick) }).ToString();
 	}
 	// the speaker's own place on screen if they have one up, else a free one
 	int32 Slot = INDEX_NONE;
@@ -794,7 +805,11 @@ void ULyudTownTalkSubsystem::Scan()
 		{
 			const LyudPeople::FPerson& P = S->People[(size_t)Id];
 			const FVector At = TownTalkLocal::PersonAt(P);
-			if (GreetedDay[Id] == Today || FVector::Dist2D(At, HeroAt) > 350.0 || FMath::Abs(At.Z - HeroAt.Z) > 250.0 || Busy(Id) || !InView(At, 0.f))
+			// a friend of his greets him from further off, and always (docs/friends.md)
+			const ULyudFriends* Friends = ULyudFriends::Get(this);
+			const char* Bond = Friends ? Friends->BondWord(Id) : "";
+			const bool bFriend = Bond && *Bond;
+			if (GreetedDay[Id] == Today || FVector::Dist2D(At, HeroAt) > (bFriend ? 550.0 : 350.0) || FMath::Abs(At.Z - HeroAt.Z) > 250.0 || Busy(Id) || !InView(At, 0.f))
 			{
 				continue;
 			}
@@ -804,7 +819,7 @@ void ULyudTownTalkSubsystem::Scan()
 			const float Warmth = Life->GetTrait(Id, TEXT("warmth"));
 			// (and whoever has come to know him greets him more readily)
 			const int32 Met = Life->GetMet(Id);
-			if (FMath::FRand() > 0.3f + 0.7f * Warmth + (Met >= 5 ? 0.3f : (Met >= 1 ? 0.1f : 0.f)))
+			if (!bFriend && FMath::FRand() > 0.3f + 0.7f * Warmth + (Met >= 5 ? 0.3f : (Met >= 1 ? 0.1f : 0.f)))
 			{
 				if (FMath::FRand() < Warmth)
 				{
@@ -825,9 +840,13 @@ void ULyudTownTalkSubsystem::Scan()
 			if (Key && Show(Actor, Id, TownTalkLocal::ToFString(*Key)))
 			{
 				// with a wave from the warm, a nod from the rest (if their hands are free)
-				const bool bWave = Warmth > 0.62f || Met >= 5;
+				const bool bWave = Warmth > 0.62f || Met >= 5 || bFriend;
 				Life->ReactManner(Id, bWave ? TEXT("wave") : TEXT("nod"), bWave ? 2.4f : 1.6f);
 				Life->NoteMet(Id);
+				if (ULyudFriends* F = ULyudFriends::Get(this))
+				{
+					F->OnGreeted(Id);
+				}
 				CountSaid(SetIx);
 				NextGreetAt = Clock + 4.f;
 				break;
@@ -869,6 +888,14 @@ void ULyudTownTalkSubsystem::Scan()
 		if (Key && Show(Actor, Id, TownTalkLocal::ToFString(*Key)))
 		{
 			CountSaid(SetIx);
+			// a line of theirs he heard close by: they come to know him a little (docs/friends.md)
+			if (FVector::Dist(At, HeroAt) < 600.0)
+			{
+				if (ULyudFriends* F = ULyudFriends::Get(this))
+				{
+					F->OnHeard(Id);
+				}
+			}
 			NextBarkAt = Clock + Every * FMath::FRandRange(0.75f, 1.3f);
 			return;
 		}

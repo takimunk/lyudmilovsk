@@ -1750,6 +1750,11 @@ bool UPeopleLifeSubsystem::Order(int32 Id, const FString& Activity, const FStrin
 	return Sim && Sim->Order(Id, TCHAR_TO_UTF8(*Activity), TCHAR_TO_UTF8(*PlaceId));
 }
 
+bool UPeopleLifeSubsystem::SitBeside(int32 Id, const FVector& Where, float MaxCm, float Minutes)
+{
+	return Sim && Sim->OrderBeside(Id, PeopleFromUE(Where), MaxCm * 0.01f, Minutes);
+}
+
 bool UPeopleLifeSubsystem::SetHome(const FString& Household, const FString& FlatId)
 {
 	if (!Sim || !Sim->SetHome(TCHAR_TO_UTF8(*Household), TCHAR_TO_UTF8(*FlatId)))

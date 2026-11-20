@@ -30,6 +30,7 @@
 #include "InputCoreTypes.h"
 #include "Kismet/GameplayStatics.h"
 #include "Letters/LyudLetters.h"
+#include "People/LyudFriends.h"
 #include "LyudGameMenu.h"
 #include "LyudInventory.h"
 #include "LyudSave.h"
@@ -234,6 +235,11 @@ ULyudCityThings* ULyudCityThings::Get(const UObject* WorldContext)
 int32 ULyudCityThings::NumThings() const
 {
 	return Model ? (int32)Model->Things.size() : 0;
+}
+
+FString ULyudCityThings::SeatedThingId() const
+{
+	return SeatedOn >= 0 && SeatedOn < NumThings() ? FString(UTF8_TO_TCHAR(Model->Things[(size_t)SeatedOn].Id.c_str())) : FString();
 }
 
 void ULyudCityThings::OnWorldBeginPlay(UWorld& InWorld)
@@ -1443,6 +1449,14 @@ void ULyudCityThings::Tick(float DeltaTime)
 		if (const ULyudLetters* Letters = ULyudLetters::Get(World))
 		{
 			if (Letters->IsOffering() || Letters->HasModeUp())
+			{
+				Picked = -1;
+			}
+		}
+		// and so has a friend offered a gift (docs/friends.md)
+		if (const ULyudFriends* Friends = ULyudFriends::Get(World))
+		{
+			if (Friends->IsOffering() || Friends->HasModeUp())
 			{
 				Picked = -1;
 			}

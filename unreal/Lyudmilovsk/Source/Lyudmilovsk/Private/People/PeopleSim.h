@@ -489,6 +489,10 @@ namespace LyudPeople
 		std::string Scores(int Id) const;
 		/** Forces an activity now (tests, console): goes there and does it. */
 		bool Order(int Person, const std::string& Activity, const std::string& PlaceId = std::string());
+		/** A friend comes to sit beside the player (docs/friends.md): the free seat nearest Pos (metres) within MaxDist that
+		 *  some sitting activity of theirs fits, for Minutes; false if there is none. The seat the player is on is left out
+		 *  (nearer than 0.35 m to Pos). */
+		bool OrderBeside(int Person, const V3& Pos, float MaxDist, double Minutes);
 
 		/** Bicycles (docs/bikes.md): a household's bike lives in its entrance (a place on the stair's way in, Home) and
 		 *  goes where its rider leaves it. People ride it for an outdoor way of MinBikeWay or more on the valley's ground
