@@ -435,6 +435,8 @@ namespace LyudCity
 		std::string Kind = "book";
 		int Minutes = 2;
 		std::string Collect;
+		/** "gen": the game sets the pages itself (town_paper, paper_archive: ULyudTownPaper); Pages are shown only when it cannot. */
+		std::string Gen;
 		std::vector<std::vector<FLine>> Pages;
 	};
 
@@ -3051,6 +3053,7 @@ namespace LyudCity
 			T.Kind = V["kind"].S("book");
 			T.Minutes = std::max(0, std::min(30, V["minutes"].I(2)));
 			T.Collect = V["collect"].S();
+			T.Gen = V["gen"].S();
 			auto One = [](const LyudJson::FValue& E, std::vector<FLine>& Into)
 			{
 				FLine Line;

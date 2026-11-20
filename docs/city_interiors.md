@@ -387,7 +387,8 @@ last page the first time reads it: the text's `collect` stamp, the HUD's `city.b
 
 ```
 "texts": {"<id>": {"title": "<key>", "kind": "book|notice|ledger|newspaper", "minutes": 0..30 (2),
-                   "collect": "<set>/<piece>", "pages": ["<key>", {"k": "<key>", <line conditions>}, [<alternatives>], ...]}}
+                   "collect": "<set>/<piece>", "gen": "town_paper|paper_archive" (optional),
+                   "pages": ["<key>", {"k": "<key>", <line conditions>}, [<alternatives>], ...]}}
 "acts":  {"<act>": {..., "read": {"texts": ["<id>", ...], "rotate": "use|daily"}}}
 "acts":  {"sleep_night": {..., "pose": "lie", "sleep": true}}
 line condition: {"k": "<key>", "read": "<text id>"}
@@ -438,6 +439,11 @@ their things. The doctor's topics `sand.course` and `sand.discharge` (offered wi
 `sand.curfew`; the quest `sanatorium_course` ends with the discharge and the item `san_diploma`, which, carried, gives a
 quarter more air underwater (`ULyudSwimComponent`). citysim plays the whole course on the real data (`CourseChecks`).
 The guests are told, not yet seated as townsfolk: the people's life does not route residents to the dining room's chairs.
+
+A text with `gen` is set by the game each day (`ULyudTownPaper`, docs/town_paper.md): the daily paper `paper_today`
+(`town_paper`) and the library rack's archive `paper_archive`; its own pages show only when the paper's data is missing. The
+notice boards (`look_lost`, `look_club`, `look_health`, `look_wallpaper` and the acts like them without lines of their own)
+read `notices_<board>` (`tools/city/content/x_notices.json`, written by `tools/paper/paper.py`): dated notices by the calendar.
 
 ### Lifts and storey links
 

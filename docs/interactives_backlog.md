@@ -133,7 +133,7 @@ through the eyepiece, bench of the view (a scene capture only while looking).
 
 ## 6. The town paper and notices by date
 
-`[ ]` **Brief (Opus 5.5):** The daily paper and the notice boards exist as texts (`reading.json`, `SLyudCityBook`), but
+`[~] town-paper 2026-11-20` (docs/town_paper.md) **Brief (Opus 5.5):** The daily paper and the notice boards exist as texts (`reading.json`, `SLyudCityBook`), but
 the notices cycle without dates (backlog P4 "still open"). Make the town write about itself: a newspaper «Людмиловская
 правда» each morning at the kiosks (and on the café tables), whose pages are assembled from the game's own news: the
 weather forecast (the weather system's next day), the tide table, festivals soon (`ULyudFestivalSubsystem::Upcoming`),

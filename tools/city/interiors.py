@@ -84,7 +84,9 @@ MAX_TOPICS = 8
 TONE_FIELDS = ("loop", "volume", "shots", "every", "shot_volume", "closed", "about")
 # the reading view (docs/city_interiors.md "The reading page"): what a text is, how long a page takes, the kinds a reading act is for
 TEXT_KINDS = ("book", "notice", "ledger", "newspaper")
-TEXT_FIELDS = ("title", "kind", "minutes", "pages", "collect")
+TEXT_FIELDS = ("title", "kind", "minutes", "pages", "collect", "gen")
+# texts the game sets itself each day (docs/town_paper.md): their pages are only shown while the game cannot set them
+TEXT_GENS = ("town_paper", "paper_archive")
 READ_THING_KINDS = ("shelf", "board", "seat", "take")
 ROTATE = ("use", "daily")
 # a seat's or bed's surface over its own floor (m): a bigger "height" was measured from the building's base
@@ -867,6 +869,11 @@ def build_texts(src, strings):
         if not any(all(isinstance(e, str) for e in p) for p in pages):
             err("%s: no page always shows (every page has conditions): the view could open on nothing" % where)
         rec = {"title": title, "kind": kind, "minutes": minutes, "pages": pages}
+        if t.get("gen"):
+            if t["gen"] not in TEXT_GENS:
+                err("%s: gen must be one of %s" % (where, ", ".join(TEXT_GENS)))
+            else:
+                rec["gen"] = t["gen"]
         if t.get("collect"):
             check_line_conds(where, {"collect": t["collect"]})
             STAMPS_USED.append((where, t["collect"]))

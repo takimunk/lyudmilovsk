@@ -1,0 +1,208 @@
+{
+ "_doc": "Words of the boards' dated notices; written by tools/paper/paper.py from tools/paper/strings_src.py NOTICES. Never edit by hand.",
+ "city.notices.lost.title": {
+  "ru": "Доска объявлений",
+  "en": "Notice board",
+  "ja": "掲示板"
+ },
+ "city.note.lost.cat_lost": {
+  "ru": "Пропал кот Рыжик: рыжий, наглый, откликается на шуршание пакета. Видевших просят позвонить в квартиру 12 на Новикова.",
+  "en": "Lost: Ryzhik the cat. Ginger, cheeky, answers to a rustling bag. If seen, please knock at flat 12 on Novikova Street.",
+  "ja": "猫のルィジクがいなくなりました。茶色で図々しく、レジ袋の音に反応します。見かけた方はノヴィコワ通り12号室まで。"
+ },
+ "city.note.lost.cat_found": {
+  "ru": "Рыжик нашёлся! Сидел на крыше пекарни и ждал, когда о нём напишут в газете. Спасибо всем, кто искал.",
+  "en": "Ryzhik is found! He was sitting on the bakery roof waiting to get into the paper. Thank you to everyone who looked.",
+  "ja": "ルィジクが見つかりました！パン屋の屋根で新聞に載るのを待っていました。探してくださった皆さん、ありがとう。"
+ },
+ "city.note.lost.keys": {
+  "ru": "Найдена связка ключей с брелоком-маяком у пирса. Хозяина ждут на спасательной станции.",
+  "en": "Found by the pier: a bunch of keys with a lighthouse keyring. The owner is awaited at the lifeguard station.",
+  "ja": "桟橋のそばで灯台のキーホルダー付きの鍵束を拾いました。持ち主は救助所までどうぞ。"
+ },
+ "city.note.lost.flat_swap": {
+  "ru": "Меняю квартиру: две комнаты на Террасах, окна на восток, на одну комнату на набережной, окна на закат. Солнце люблю вечером.",
+  "en": "Flat swap: two rooms on the Terraces facing east, for one room on the promenade facing the sunset. I like my sun in the evening.",
+  "ja": "部屋の交換希望：テラスの東向き2部屋を、遊歩道の夕日向き1部屋と。太陽は夕方に限ります。"
+ },
+ "city.note.lost.bike": {
+  "ru": "Кто взял синий велосипед у библиотеки — верните, пожалуйста, звонок. Велосипед оставьте себе, раз так понравился.",
+  "en": "Whoever took the blue bicycle from outside the library: please return the bell. Keep the bike, if you like it that much.",
+  "ja": "図書館の前の青い自転車を持っていった方、せめてベルを返してください。そんなに気に入ったなら自転車はどうぞ。"
+ },
+ "city.note.lost.umbrella_swap": {
+  "ru": "Обменяю чёрный зонт на чёрный зонт: вчера в «Тарелке» мы взяли не свои. Мой — со сломанной спицей.",
+  "en": "Will swap a black umbrella for a black umbrella: yesterday at the Saucer café we took each other's. Mine has a broken rib.",
+  "ja": "黒い傘を黒い傘と交換したい。昨日「ソーサー」で取り違えました。私のは骨が一本折れています。"
+ },
+ "city.note.lost.mitten": {
+  "ru": "Найдена варежка, левая, вязаная, с оленем. Висит на заборе у школы и очень ждёт.",
+  "en": "Found: a mitten, left, knitted, with a reindeer. It's hanging on the school fence, waiting.",
+  "ja": "手袋を拾いました。左手、手編み、トナカイ柄。学校の柵にかけてあります。持ち主を待っています。"
+ },
+ "city.note.lost.firewood": {
+  "ru": "Продаю сухие дрова для бани. Берёза, колотые, с запахом лета.",
+  "en": "Dry firewood for the banya for sale. Birch, split, smelling of summer.",
+  "ja": "サウナ用の乾いた薪を売ります。白樺、割ってあり、夏の香りつき。"
+ },
+ "city.note.lost.start_parrot": {
+  "ru": "Объявление: попугай Кеша выучил новое слово. Какое — не говорит. Просьба при встрече не подсказывать.",
+  "en": "Notice: Kesha the parrot has learnt a new word. He won't say which. Please don't prompt him if you meet.",
+  "ja": "お知らせ：オウムのケーシャが新しい言葉を覚えました。どの言葉かは言いません。会っても教えないでください。"
+ },
+ "city.note.lost.tree_pickup": {
+  "ru": "Ёлки после праздников складывайте у пекарни: в субботу их увезут в лесничество на подстилку для зверей.",
+  "en": "Put your trees out by the bakery after the holidays: on Saturday they'll go to the forestry as bedding for the animals.",
+  "ja": "祝日のあとのツリーはパン屋の前へ。土曜日に営林署へ運ばれ、動物の寝床になります。"
+ },
+ "city.note.lost.glove": {
+  "ru": "Найдена перчатка с надписью «Не теряй». Не помогло. Висит на доске, ждёт.",
+  "en": "Found: a glove with “Don't lose me” written on it. It didn't help. It's pinned to the board, waiting.",
+  "ja": "「なくさないで」と書かれた手袋を拾いました。効果はなかったようです。掲示板で待っています。"
+ },
+ "city.note.lost.sunglasses": {
+  "ru": "На пляже у спасательной вышки найдены солнечные очки в красной оправе. Очки видели много солнца и хотят домой.",
+  "en": "Found on the beach by the lifeguard tower: sunglasses with red frames. They've seen a lot of sun and want to go home.",
+  "ja": "浜の救助塔のそばで赤いふちのサングラスを拾いました。たくさん太陽を見たので、家に帰りたがっています。"
+ },
+ "city.note.lost.bucket": {
+  "ru": "Потерялось синее ведёрко с совочком. Хозяйке четыре года, она очень переживает и строит замки руками.",
+  "en": "Lost: a blue bucket and spade. The owner is four, very upset, and building castles with her hands.",
+  "ja": "青いバケツとスコップをなくしました。持ち主は四歳。とても心配して、手で砂の城を作っています。"
+ },
+ "city.notices.club.title": {
+  "ru": "Клубная доска",
+  "en": "Club notice board",
+  "ja": "クラブの掲示板"
+ },
+ "city.note.club.choir": {
+  "ru": "Хор «Прибой»: репетиции по четвергам в семь. Приходите петь, а если стесняетесь — слушать.",
+  "en": "The Surf choir: rehearsals on Thursdays at seven. Come and sing, or if you're shy, come and listen.",
+  "ja": "合唱団「寄せ波」：練習は毎週木曜7時。歌いに来てください。恥ずかしければ聴くだけでも。"
+ },
+ "city.note.club.chess": {
+  "ru": "Весенний шахматный турнир! Запись у дежурного до 15 марта. Часы свои, нервы тоже.",
+  "en": "Spring chess tournament! Sign up with the duty officer by 15 March. Bring your own clock, and your own nerves.",
+  "ja": "春のチェス大会！3月15日まで当番に申し込みを。時計は各自で、神経も各自で。"
+ },
+ "city.note.club.kites": {
+  "ru": "Кружок воздушных змеев: собираемся в субботу на пляже. Нужны бумага, рейки и ветер — ветер обещали.",
+  "en": "Kite circle: we meet on the beach on Saturday. Bring paper, sticks and wind; the wind has been promised.",
+  "ja": "凧クラブ：土曜に浜で集合。紙と竹ひごと風を持参のこと。風は約束済み。"
+ },
+ "city.note.club.dance": {
+  "ru": "Танцы на набережной по пятницам в девять. Оркестр живой, пол деревянный, туфли — какие есть.",
+  "en": "Dancing on the promenade on Fridays at nine. Live band, wooden floor, whatever shoes you've got.",
+  "ja": "金曜9時、遊歩道でダンス。生演奏、木の床、靴はお手持ちのもので。"
+ },
+ "city.note.club.astro": {
+  "ru": "Астрономический кружок: наблюдаем Персеиды. Берите плед и термос, телескопы наши.",
+  "en": "Astronomy club: we're watching the Perseids. Bring a blanket and a flask; the telescopes are ours.",
+  "ja": "天文クラブ：ペルセウス座流星群を観測します。毛布と水筒を持参で。望遠鏡はこちらで用意。"
+ },
+ "city.note.club.repair": {
+  "ru": "Кружок починки при «Шестерёнке»: по субботам чиним приёмники, утюги и настроение.",
+  "en": "The Cog's repair circle: on Saturdays we fix radios, irons and moods.",
+  "ja": "「歯車」の修理サークル：土曜日にラジオ、アイロン、そして気分を直します。"
+ },
+ "city.note.club.newyear_play": {
+  "ru": "Драмкружок ставит новогоднюю сказку. Нужен Дед Мороз с собственной бородой.",
+  "en": "The drama circle is staging a New Year fairy tale. Wanted: a Grandfather Frost with his own beard.",
+  "ja": "演劇サークルが新年のおとぎ話を上演します。自前のひげのあるジェド・マロースを募集。"
+ },
+ "city.note.club.start_welcome": {
+  "ru": "Клуб приветствует новых жильцов побережья! Заходите на чай по вечерам: самовар горячий, разговоры тоже.",
+  "en": "The club welcomes the coast's new residents! Drop in for tea in the evenings: the samovar is hot, and so is the talk.",
+  "ja": "クラブは海岸の新しい住人を歓迎します！夕方にお茶をどうぞ。サモワールは熱く、おしゃべりも熱い。"
+ },
+ "city.notices.health.title": {
+  "ru": "Доска здоровья",
+  "en": "Health board",
+  "ja": "健康の掲示板"
+ },
+ "city.note.health.flu": {
+  "ru": "Поликлиника: прививки от гриппа по вторникам и пятницам. Конфета после укола — по-прежнему.",
+  "en": "Clinic: flu jabs on Tuesdays and Fridays. A sweet after the jab, as always.",
+  "ja": "診療所：インフルエンザの予防接種は火曜と金曜。注射のあとのあめ玉は今まで通り。"
+ },
+ "city.note.health.sun": {
+  "ru": "Берегите голову: в жару — панама, в полдень — тень, на пляже — вода. Медсестра на пляже с одиннадцати до пяти.",
+  "en": "Mind your head: a sun hat in the heat, shade at noon, water on the beach. The beach nurse is there from eleven to five.",
+  "ja": "頭を守ろう：暑い日は帽子、正午は日陰、浜では水分を。浜の看護師は11時から5時まで。"
+ },
+ "city.note.health.ticks": {
+  "ru": "Внимание: в лесу клещи. После прогулки осмотритесь; если что — к нам, вытащим быстро и без паники.",
+  "en": "Attention: ticks in the woods. Check yourself after a walk; if you find one, come to us. We'll take it out quickly and calmly.",
+  "ja": "注意：森にダニがいます。散歩のあとは体を確かめて。見つけたらこちらへ。すばやく、落ち着いて取ります。"
+ },
+ "city.note.health.ice": {
+  "ru": "Гололёд! Ходите медленно, руки из карманов. Травмпункт работает круглосуточно, но лучше к нам не надо.",
+  "en": "Black ice! Walk slowly, hands out of pockets. The casualty room is open round the clock, but better not to need it.",
+  "ja": "路面凍結！ゆっくり歩き、手はポケットから出して。救急は24時間開いていますが、来ないで済むのがいちばん。"
+ },
+ "city.note.health.donor": {
+  "ru": "День донора в поликлинике. Чай, печенье и благодарность города в подарок.",
+  "en": "Blood donor day at the clinic. Tea, biscuits and the town's gratitude as a thank-you.",
+  "ja": "診療所で献血の日。お茶とビスケットと、町の感謝をお礼に。"
+ },
+ "city.note.health.checkups": {
+  "ru": "Школьный медосмотр: с первого сентября по классам. Приносите карточку и хорошее настроение, рост измерим бесплатно.",
+  "en": "School check-ups from the first of September, class by class. Bring your card and a good mood; we'll measure your height free.",
+  "ja": "学校の健康診断：九月一日からクラスごとに。カードとご機嫌を持参で。身長は無料で測ります。"
+ },
+ "city.notices.school.title": {
+  "ru": "Стенгазета",
+  "en": "Wall newspaper",
+  "ja": "壁新聞"
+ },
+ "city.note.school.olympiad": {
+  "ru": "Школьная олимпиада по астрономии: вопросы на стенде, ответы — в ящик у учительской до 1 марта.",
+  "en": "School astronomy olympiad: the questions are on the board, answers in the box by the staff room by 1 March.",
+  "ja": "学校の天文学オリンピック：問題は掲示板に、答えは3月1日までに職員室横の箱へ。"
+ },
+ "city.note.school.birdhouse": {
+  "ru": "Мастерим скворечники! После уроков в мастерской. Доски есть, гвозди есть, скворцы на подходе.",
+  "en": "Making nest boxes! After lessons in the workshop. We have boards, we have nails, and the starlings are on their way.",
+  "ja": "巣箱を作ろう！放課後に工作室で。板あり、くぎあり、ムクドリはもうすぐ到着。"
+ },
+ "city.note.school.exams": {
+  "ru": "Экзамены! Просьба на переменах не шуметь у кабинета 12: там думают.",
+  "en": "Exams! Please keep quiet near room 12 at break: people are thinking in there.",
+  "ja": "試験中！休み時間は12教室の前で騒がないでください。中で考えています。"
+ },
+ "city.note.school.september": {
+  "ru": "Первое сентября: линейка в девять, у флагштока. Первоклассникам — шары, учителям — цветы, родителям — платки.",
+  "en": "First of September: assembly at nine by the flagpole. Balloons for the first-graders, flowers for the teachers, handkerchiefs for the parents.",
+  "ja": "九月一日：9時に旗竿の前で始業式。一年生には風船、先生には花、親にはハンカチを。"
+ },
+ "city.note.school.leaves": {
+  "ru": "Конкурс гербариев «Осень на побережье». Листья приносить сухими, жуков — живыми и отпускать.",
+  "en": "Herbarium contest, “Autumn on the coast”. Bring the leaves dry; bring the beetles alive, and let them go.",
+  "ja": "押し葉コンテスト「海岸の秋」。葉は乾かして、虫は生きたまま持ってきて、あとで放すこと。"
+ },
+ "city.note.school.summer_camp": {
+  "ru": "Летний лагерь при школе: походы, костёр и рыбалка с учителем физкультуры. Запись у завуча.",
+  "en": "Summer camp at the school: hikes, a campfire and fishing with the PE teacher. Sign up with the deputy head.",
+  "ja": "学校の夏のキャンプ：ハイキング、キャンプファイヤー、体育の先生と釣り。教頭先生に申し込みを。"
+ },
+ "city.note.school.summer_reading": {
+  "ru": "Летнее чтение: прочитай три книги из списка и получи значок библиотеки. Список — в читальном зале.",
+  "en": "Summer reading: read three books from the list and get a library badge. The list is in the reading room.",
+  "ja": "夏の読書：リストの本を三冊読むと図書館のバッジがもらえます。リストは閲覧室に。"
+ },
+ "city.note.school.chess_club": {
+  "ru": "Шахматный кружок по средам после уроков. Доски наши, ходы ваши.",
+  "en": "Chess club on Wednesdays after lessons. Our boards, your moves.",
+  "ja": "チェス部は毎週水曜の放課後。盤はこちら、手はあなた。"
+ },
+ "city.note.school.matinee": {
+  "ru": "Новогодний утренник в актовом зале. Костюм снежинки можно сшить на уроке труда.",
+  "en": "New Year party in the assembly hall. A snowflake costume can be sewn in craft class.",
+  "ja": "講堂で新年の会。雪の結晶の衣装は工作の時間に縫えます。"
+ },
+ "city.note.school.ski_day": {
+  "ru": "День лыжника: если выпадет снег — гонка вокруг пруда. Если не выпадет — чай и надежда.",
+  "en": "Ski day: if the snow comes, a race round the pond. If not, tea and hope.",
+  "ja": "スキーの日：雪が降れば池のまわりでレース。降らなければ、お茶と希望。"
+ }
+}

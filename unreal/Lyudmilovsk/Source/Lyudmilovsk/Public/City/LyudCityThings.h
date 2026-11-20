@@ -487,6 +487,8 @@ private:
 	int32 BookText = -1;
 	int32 BookThing = -1;
 	TArray<FString> BookPages;
+	/** The pages of a text the game sets itself (ULyudTownPaper), one per BookPages entry; empty for an ordinary text. */
+	TArray<FText> BookGenPages;
 	int32 BookPage = 0;
 	FVector BookFrom = FVector::ZeroVector;
 	uint64 BookFrame = 0;

@@ -717,7 +717,7 @@
    "act": "library_pod_piano"
   },
   "P-LIBRARY/periodicals_rack_a": {
-   "act": "library_press_local"
+   "act": "library_paper_archive"
   },
   "P-LIBRARY/periodicals_rack_b": {
    "act": "library_press_sun"
