@@ -60,7 +60,7 @@ void AAtonComputer::BeginPlay()
 	Super::BeginPlay();
 	ApplyScreenSize();
 
-	if (!Seat)
+	if (!Seat && bUseSeat)
 	{
 		Seat = TActorIterator<AHeroSeat>(GetWorld()) ? *TActorIterator<AHeroSeat>(GetWorld()) : nullptr;
 	}
@@ -68,23 +68,51 @@ void AAtonComputer::BeginPlay()
 	AtonApps::ChosenLocalURL = ChosenLocalURL;
 	AtonApps::ChosenURL = ChosenURL;
 
+	MakeDesktop();
+	// nobody at the keyboard: repaint the 1024x768 screen (clock, open apps) twice a second, not every frame
+	Screen->SetRedrawTime(IdleRedrawTime);
+}
+
+void AAtonComputer::MakeDesktop()
+{
 	TWeakObjectPtr<AAtonComputer> Self(this);
 	SAssignNew(Desktop, SAtonDesktop)
 		.ScreenSize(FVector2D(Resolution))
-		.CanLeave_Lambda([Self] { return Self.IsValid() && Self->OnLeave.IsBound(); })
+		.Profile(Profile)
+		.World(GetWorld())
+		.CanLeave_Lambda([Self] { return Self.IsValid() && (Self->OnLeave.IsBound() || !Self->bUseSeat); })
 		.OnLeave_Lambda([Self]
 		{
 			if (AAtonComputer* Me = Self.Get())
 			{
 				APlayerController* PC = Me->ActivePC.Get();
 				Me->Deactivate();
-				ULyudQuests::Notify(Me, TEXT("leave_computer"));
+				if (Me->bUseSeat)
+				{
+					ULyudQuests::Notify(Me, TEXT("leave_computer"));
+				}
 				Me->OnLeave.Broadcast(PC);
 			}
 		});
 	Screen->SetSlateWidget(Desktop);
-	// nobody at the keyboard: repaint the 1024x768 screen (clock, open apps) twice a second, not every frame
-	Screen->SetRedrawTime(IdleRedrawTime);
+}
+
+void AAtonComputer::SetProfile(FName NewProfile)
+{
+	if (NewProfile == Profile)
+	{
+		return;
+	}
+	Profile = NewProfile;
+	if (Desktop.IsValid())
+	{
+		APlayerController* PC = bActive ? ActivePC.Get() : nullptr;
+		MakeDesktop();
+		if (PC)
+		{
+			Activate(PC);
+		}
+	}
 }
 
 void AAtonComputer::EndPlay(const EEndPlayReason::Type Reason)
@@ -101,7 +129,7 @@ void AAtonComputer::EndPlay(const EEndPlayReason::Type Reason)
 void AAtonComputer::Tick(float DeltaSeconds)
 {
 	Super::Tick(DeltaSeconds);
-	if (bActive || WatchedPlayer.IsValid() || !Seat)
+	if (bActive || WatchedPlayer.IsValid() || !Seat || !bUseSeat)
 	{
 		return;
 	}
@@ -176,9 +204,13 @@ void AAtonComputer::Deactivate()
 void UAtonOSSubsystem::OnWorldBeginPlay(UWorld& World)
 {
 	Super::OnWorldBeginPlay(World);
-	if (TActorIterator<AAtonComputer>(&World))
+	// a computer of the level that belongs to a chair (the lab's terminals are not the hero's computer)
+	for (TActorIterator<AAtonComputer> It(&World); It; ++It)
 	{
-		return;
+		if (It->bUseSeat)
+		{
+			return;
+		}
 	}
 	TActorIterator<AHeroSeat> SeatIt(&World);
 	if (!SeatIt)

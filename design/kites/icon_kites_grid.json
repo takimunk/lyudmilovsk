@@ -1,0 +1,17 @@
+{
+ "service": "higgsfield MCP",
+ "tool": "generate_image",
+ "model": "gpt_image_2_5",
+ "arguments": {
+  "aspect_ratio": "1:1",
+  "resolution": "2k",
+  "quality": "medium",
+  "use_unlim": false,
+  "prompt": "Four inventory icons for a moody adventure game, arranged as a 2 by 2 grid of equal square cells on one picture: in every cell one object centred and filling most of the cell, softly lit from the upper left, painterly realistic style, plain dark warm-grey cloth background with a faint vignette, the same background and the same scale in every cell, no borders, frames or lines between the cells, nothing crossing a cell edge, no text, letters, numbers or logos anywhere. Top row, both cells: a 1970s homemade-style diamond kite of red and yellow cloth halves on thin wooden cross spars, a tail of small blue ribbon bows, a small wooden line reel with white string tied to it lying beside it; the two cells show slightly different angles. Bottom row, both cells: a box kite of two blue cloth cells on four thin wooden slats with cross braces, a small wooden line reel with white string beside it; the two cells show slightly different angles."
+ },
+ "job_id": "4a25f4d0-e2c8-4e31-b0cd-bdb25ccff00e",
+ "output_url": "https://d8j0ntlcm91z4.cloudfront.net/user_36I3ndR5QeKPyjKAdSKVfbd04n2/hf_20261120_222011_4a25f4d0-e2c8-4e31-b0cd-bdb25ccff00e.png",
+ "date": "2026-11-20",
+ "why_2x2": "two new items (kite_diamond, kite_box): two variants of each in one 2x2 grid, the better cell of each row becomes its icon",
+ "todo": "the cloud session could not download the output (the egress proxy refuses the CDN): on the Mac download it here as icon_kites_grid.png (add sha256), look at the cells, cut the better top-row cell to textures/localized/ru/icon_kite_diamond.jpg and the better bottom-row cell to icon_kite_box.jpg (512x512, 2x2 equal cells) with sidecars, import with unreal/scripts/import_hall_assets.py, then python3 tools/ui_diary_icons.py kite_diamond kite_box and unreal/scripts/import_diary_assets.py"
+}

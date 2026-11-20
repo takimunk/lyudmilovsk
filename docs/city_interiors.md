@@ -329,6 +329,9 @@ who plays it), by the seed. A win `Notify("win", <act target>)` for the quests b
 
 ### Small jobs
 
+The bicycle rounds (the morning papers from kiosk 1, the post round for the old postman) are run by the engine, not by an
+act: `docs/rounds.md`. The boards carry their sheet (`city.text.jobs.rounds`), and `x_rounds.json` holds their stamp set and quest.
+
 Short paid shifts (`tools/city/content/x_jobs.json`, strings `strings/x_jobs.json`): the hero earns roubles by the result of a
 real loop of acts, at most once a day (or so many entries a day), with a resident of the town as the boss on shift (the act's
 `needs_staff`). No job block in the model: a job is an ordinary act whose lines carry `pay`, or a game with `pay` a point and

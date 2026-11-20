@@ -1,0 +1,662 @@
+{
+ "dev.action.aton.lab_login": {
+  "en": "LAB-2: log in as the duty shift",
+  "ja": "ラボ2：当直班でログイン",
+  "ru": "ЛАБ-2: войти дежурной сменой"
+ },
+ "dev.action.aton.lab_profile": {
+  "en": "Club computer: LAB-2 network / normal",
+  "ja": "クラブのPC：ラボ2網／通常",
+  "ru": "Клубный компьютер: сеть ЛАБ-2 / обычный"
+ },
+ "dev.action.aton.lab_reset": {
+  "en": "LAB-2: reset everything",
+  "ja": "ラボ2：すべてリセット",
+  "ru": "ЛАБ-2: сбросить всё"
+ },
+ "dev.group.aton": {
+  "en": "ATON OS",
+  "ja": "アトンOS",
+  "ru": "АТОН ОС"
+ },
+ "dev.tp.aton_terminal": {
+  "en": "LAB-2 terminal in the library",
+  "ja": "図書館のラボ2端末",
+  "ru": "Терминал ЛАБ-2 в библиотеке"
+ },
+ "ui.aton.advui.again": {
+  "en": "Take the watch again",
+  "ja": "もう一度当直に就く",
+  "ru": "Заступить на вахту снова"
+ },
+ "ui.aton.advui.broken": {
+  "en": "The game tape cannot be read.",
+  "ja": "ゲームのテープが読めません。",
+  "ru": "Лента с игрой не читается."
+ },
+ "ui.aton.advui.ending": {
+  "en": "Ending: {0}",
+  "ja": "結末：{0}",
+  "ru": "Концовка: {0}"
+ },
+ "ui.aton.advui.found": {
+  "en": "Endings found: {0} of {1}",
+  "ja": "見つけた結末：{1}のうち{0}",
+  "ru": "Найдено концовок: {0} из {1}"
+ },
+ "ui.aton.advui.hint": {
+  "en": "Pick a line with the mouse.",
+  "ja": "行をマウスで選んでください。",
+  "ru": "Выберите строку мышью."
+ },
+ "ui.aton.advui.intro": {
+  "en": "NIGHT WATCH. A game by the staff of Laboratory No. 2.",
+  "ja": "夜の当直。第二研究所の職員によるゲーム。",
+  "ru": "НОЧНАЯ ВАХТА. Игра сотрудников Лаборатории № 2."
+ },
+ "ui.aton.advui.resumed": {
+  "en": "(The watch goes on. Move {0}.)",
+  "ja": "（当直は続く。{0}手目。）",
+  "ru": "(Вахта продолжается. Ход {0}.)"
+ },
+ "ui.aton.app.adventure": {
+  "en": "Night Watch",
+  "ja": "夜の当直",
+  "ru": "Ночная вахта"
+ },
+ "ui.aton.app.chess": {
+  "en": "Chess",
+  "ja": "チェス",
+  "ru": "Шахматы"
+ },
+ "ui.aton.app.labmail": {
+  "en": "LAB-2 mail",
+  "ja": "ラボ2メール",
+  "ru": "Почта ЛАБ-2"
+ },
+ "ui.aton.app.scope": {
+  "en": "Telescope",
+  "ja": "望遠鏡",
+  "ru": "Телескоп"
+ },
+ "ui.aton.app.session": {
+  "en": "Session",
+  "ja": "セッション",
+  "ru": "Сеанс"
+ },
+ "ui.aton.app.weather": {
+  "en": "Weather station",
+  "ja": "気象台",
+  "ru": "Метеостанция"
+ },
+ "ui.aton.chess.draw": {
+  "en": "A draw.",
+  "ja": "引き分けです。",
+  "ru": "Ничья."
+ },
+ "ui.aton.chess.level": {
+  "en": "Level",
+  "ja": "レベル",
+  "ru": "Уровень"
+ },
+ "ui.aton.chess.lost": {
+  "en": "Checkmate. The machine won.",
+  "ja": "チェックメイト。機械の勝ちです。",
+  "ru": "Мат. Машина победила."
+ },
+ "ui.aton.chess.new": {
+  "en": "New game",
+  "ja": "新しい対局",
+  "ru": "Новая партия"
+ },
+ "ui.aton.chess.resumed": {
+  "en": "The game goes on, move {0}.",
+  "ja": "対局は続きます。{0}手目。",
+  "ru": "Партия продолжается, ход {0}."
+ },
+ "ui.aton.chess.score": {
+  "en": "Level {0}: won {1}, drawn {2}, lost {3}",
+  "ja": "レベル{0}：{1}勝 {2}分 {3}敗",
+  "ru": "Уровень {0}: побед {1}, ничьих {2}, поражений {3}"
+ },
+ "ui.aton.chess.stalemate": {
+  "en": "Stalemate. A draw.",
+  "ja": "ステイルメイト。引き分けです。",
+  "ru": "Пат. Ничья."
+ },
+ "ui.aton.chess.thinking": {
+  "en": "The machine is thinking…",
+  "ja": "機械が考えています…",
+  "ru": "Машина думает…"
+ },
+ "ui.aton.chess.undo": {
+  "en": "Take back",
+  "ja": "待った",
+  "ru": "Взять ход назад"
+ },
+ "ui.aton.chess.won": {
+  "en": "Checkmate. You won.",
+  "ja": "チェックメイト。あなたの勝ちです。",
+  "ru": "Мат. Вы победили."
+ },
+ "ui.aton.chess.your_move": {
+  "en": "Your move. You play white.",
+  "ja": "あなたの番です。あなたは白です。",
+  "ru": "Ваш ход. Вы играете белыми."
+ },
+ "ui.aton.chess.your_move_check": {
+  "en": "Check. Your move.",
+  "ja": "チェック。あなたの番です。",
+  "ru": "Шах. Ваш ход."
+ },
+ "ui.aton.lab.leave": {
+  "en": "Step away",
+  "ja": "離れる",
+  "ru": "Отойти"
+ },
+ "ui.aton.lab.mail.box_guest": {
+  "en": "Common mail",
+  "ja": "共用メール",
+  "ru": "Общая почта"
+ },
+ "ui.aton.lab.mail.box_staff": {
+  "en": "Duty shift",
+  "ja": "当直班",
+  "ru": "Дежурная смена"
+ },
+ "ui.aton.lab.mail.locked": {
+  "en": "The shift password is required.",
+  "ja": "当直班のパスワードが必要です。",
+  "ru": "Нужен пароль смены."
+ },
+ "ui.aton.lab.mail.to_line": {
+  "en": "To: {0}",
+  "ja": "宛先：{0}",
+  "ru": "Кому: {0}"
+ },
+ "ui.aton.lab.os": {
+  "en": "ATON OS · LAB-2",
+  "ja": "アトンOS・ラボ2",
+  "ru": "АТОН ОС · ЛАБ-2"
+ },
+ "ui.aton.lab.prompt": {
+  "en": "E — use the terminal",
+  "ja": "E：端末を使う",
+  "ru": "E — сесть за терминал"
+ },
+ "ui.aton.lab.session.login": {
+  "en": "Log in",
+  "ja": "ログイン",
+  "ru": "Войти"
+ },
+ "ui.aton.lab.session.logout": {
+  "en": "Log out of the shift",
+  "ja": "当直班からログアウト",
+  "ru": "Выйти из смены"
+ },
+ "ui.aton.lab.session.net": {
+  "en": "Academgorodok network. Node: Library.",
+  "ja": "アカデムゴロドク網。ノード「図書館」。",
+  "ru": "Сеть Академгородка. Узел «Библиотека»."
+ },
+ "ui.aton.lab.session.open_guest": {
+  "en": "A guest has the weather station, the games and the common mail. The rest opens with the duty shift's password.",
+  "ja": "ゲストは気象台、ゲーム、共用メールを使えます。ほかは当直班のパスワードで開きます。",
+  "ru": "Гостю открыты метеостанция, игры и общая почта. Остальное открывается паролем дежурной смены."
+ },
+ "ui.aton.lab.session.open_staff": {
+  "en": "The shift's mail and the telescope queue are open.",
+  "ja": "当直班のメールと望遠鏡の予約が使えます。",
+  "ru": "Открыты почта смены и очередь на телескоп."
+ },
+ "ui.aton.lab.session.password": {
+  "en": "Shift password (four digits)",
+  "ja": "当直班のパスワード（数字4桁）",
+  "ru": "Пароль смены (четыре цифры)"
+ },
+ "ui.aton.lab.session.title": {
+  "en": "Laboratory No. 2",
+  "ja": "第二研究所",
+  "ru": "Лаборатория № 2"
+ },
+ "ui.aton.lab.session.to_mail": {
+  "en": "Open the mail",
+  "ja": "メールを開く",
+  "ru": "Открыть почту"
+ },
+ "ui.aton.lab.session.user_guest": {
+  "en": "You are logged in as a guest.",
+  "ja": "ゲストとしてログイン中です。",
+  "ru": "Вы вошли как гость."
+ },
+ "ui.aton.lab.session.user_staff": {
+  "en": "You are logged in as the duty shift.",
+  "ja": "当直班としてログイン中です。",
+  "ru": "Вы вошли как дежурная смена."
+ },
+ "ui.aton.lab.session.wrong": {
+  "en": "Wrong password.",
+  "ja": "パスワードが違います。",
+  "ru": "Пароль не подошёл."
+ },
+ "ui.aton.lab.session.wrong_hint": {
+  "en": "Wrong password. If you have forgotten it, look in the common mail: you are not the first.",
+  "ja": "パスワードが違います。忘れた方は共用メールをご覧ください。あなたが最初ではありません。",
+  "ru": "Пароль не подошёл. Если вы его забыли, посмотрите общую почту: вы не первый."
+ },
+ "ui.aton.scope.book": {
+  "en": "Book",
+  "ja": "予約する",
+  "ru": "Записаться"
+ },
+ "ui.aton.scope.cloudy.1": {
+  "en": "Cloud. The dome stayed shut.",
+  "ja": "曇り。ドームは開かなかった。",
+  "ru": "Облака. Купол не открывался."
+ },
+ "ui.aton.scope.cloudy.2": {
+  "en": "The sky was closed. The machine waited until dawn and went to sleep.",
+  "ja": "空は閉ざされていた。自動装置は夜明けまで待って眠った。",
+  "ru": "Небо закрыто. Автомат подождал до рассвета и уснул."
+ },
+ "ui.aton.scope.free": {
+  "en": "free",
+  "ja": "空き",
+  "ru": "свободно"
+ },
+ "ui.aton.scope.journal": {
+  "en": "Journal of your observations",
+  "ja": "あなたの観測日誌",
+  "ru": "Журнал ваших наблюдений"
+ },
+ "ui.aton.scope.journal_empty": {
+  "en": "Empty so far.",
+  "ja": "まだ何もありません。",
+  "ru": "Пока пусто."
+ },
+ "ui.aton.scope.locked": {
+  "en": "The telescope queue is kept by the duty shift. The shift password is required.",
+  "ja": "望遠鏡の予約は当直班が管理しています。当直班のパスワードが必要です。",
+  "ru": "Очередь на телескоп ведёт дежурная смена. Нужен пароль смены."
+ },
+ "ui.aton.scope.night": {
+  "en": "Night into {0}",
+  "ja": "{0}の朝までの夜",
+  "ru": "Ночь на {0}"
+ },
+ "ui.aton.scope.result.double": {
+  "en": "The double star. Split cleanly: a gold one and a blue one. Their separation matches the catalogue to the last digit.",
+  "ja": "二重星。はっきり分離できた。金色と青。離角はカタログと最後の桁まで一致した。",
+  "ru": "Двойная звезда. Разделена уверенно: золотая и голубая. Расстояние между ними совпало с каталогом до последнего знака."
+ },
+ "ui.aton.scope.result.evening_star": {
+  "en": "The evening star. A thin crescent, very bright. The machine cut the exposure three times.",
+  "ja": "宵の明星。細い三日月形で、とても明るい。自動装置が露出を三度下げた。",
+  "ru": "Вечерняя звезда. Узкий серп, очень яркий. Автомат трижды уменьшал выдержку."
+ },
+ "ui.aton.scope.result.field14": {
+  "en": "Field No. 14. As many stars in the frame as last time. And the time before. Not one more, not one fewer.",
+  "ja": "第14視野。写った星の数は前回と同じ。その前とも同じ。一つも多くなく、一つも少なくない。",
+  "ru": "Поле № 14. Звёзд в кадре столько же, сколько в прошлый раз. И в позапрошлый. Ни одной больше, ни одной меньше."
+ },
+ "ui.aton.scope.result.giant": {
+  "en": "The giant planet. The belts are visible, four moons counted. One of them carries a mark in the catalogue, with no explanation.",
+  "ja": "巨大惑星。縞が見え、衛星は四つ数えられた。そのうち一つにはカタログで印が付いているが、説明はない。",
+  "ru": "Планета-гигант. Полосы видны, спутников насчитано четыре. Один из них отмечен в каталоге значком, без пояснения."
+ },
+ "ui.aton.scope.result.moon": {
+  "en": "The Moon. The terminator is sharp, the crater shadows are long. Everything is in its place, and that is calming.",
+  "ja": "月。明暗の境はくっきりして、クレーターの影が長い。すべてがあるべき場所にあって、それで落ち着く。",
+  "ru": "Луна. Терминатор резкий, тени в кратерах длинные. Всё на своих местах, и от этого спокойно."
+ },
+ "ui.aton.scope.result.rings": {
+  "en": "The ringed planet. The rings are wide open. The machine added: \"beautiful\", though that word is not in its dictionary.",
+  "ja": "環のある惑星。環は大きく開いている。自動装置は「美しい」と書き添えた。その語は辞書にないはずなのに。",
+  "ru": "Планета с кольцами. Кольца раскрыты широко. Автомат приписал: «красиво», хотя такого слова в его словаре нет."
+ },
+ "ui.aton.scope.rules": {
+  "en": "Four slots a night. One slot may be yours. The observation runs by itself; the record appears in the journal if the sky was clear.",
+  "ja": "一晩に四枠。あなたの枠は一つまで。観測は自動で行われ、空が晴れていれば記録が日誌に載ります。",
+  "ru": "Четыре окна за ночь. За вами может быть одно окно. Наблюдение идёт само; запись появится в журнале, если небо было чистым."
+ },
+ "ui.aton.scope.staff.1": {
+  "en": "N. Oyamada",
+  "ja": "N・小山田",
+  "ru": "Н. Оямада"
+ },
+ "ui.aton.scope.staff.2": {
+  "en": "L. Abebe",
+  "ja": "L・アベベ",
+  "ru": "Л. Абебе"
+ },
+ "ui.aton.scope.staff.3": {
+  "en": "T. Ilves",
+  "ja": "T・イルヴェス",
+  "ru": "Т. Ильвес"
+ },
+ "ui.aton.scope.staff.4": {
+  "en": "M. Kerimova",
+  "ja": "M・ケリモワ",
+  "ru": "М. Керимова"
+ },
+ "ui.aton.scope.staff.5": {
+  "en": "R. Halvorsen",
+  "ja": "R・ハルヴォルセン",
+  "ru": "Р. Халворсен"
+ },
+ "ui.aton.scope.target.double": {
+  "en": "The double star",
+  "ja": "二重星",
+  "ru": "Двойная звезда"
+ },
+ "ui.aton.scope.target.evening_star": {
+  "en": "The evening star",
+  "ja": "宵の明星",
+  "ru": "Вечерняя звезда"
+ },
+ "ui.aton.scope.target.field14": {
+  "en": "Field No. 14",
+  "ja": "第14視野",
+  "ru": "Поле № 14"
+ },
+ "ui.aton.scope.target.giant": {
+  "en": "The giant planet",
+  "ja": "巨大惑星",
+  "ru": "Планета-гигант"
+ },
+ "ui.aton.scope.target.moon": {
+  "en": "The Moon",
+  "ja": "月",
+  "ru": "Луна"
+ },
+ "ui.aton.scope.target.rings": {
+  "en": "The ringed planet",
+  "ja": "環のある惑星",
+  "ru": "Планета с кольцами"
+ },
+ "ui.aton.scope.title": {
+  "en": "Telescope queue",
+  "ja": "望遠鏡の予約",
+  "ru": "Очередь на телескоп"
+ },
+ "ui.aton.scope.unbook": {
+  "en": "Cancel booking",
+  "ja": "取り消す",
+  "ru": "Отказаться"
+ },
+ "ui.aton.scope.unused": {
+  "en": "passed unused",
+  "ja": "使われずに過ぎた",
+  "ru": "прошло пустым"
+ },
+ "ui.aton.scope.yours": {
+  "en": "yours",
+  "ja": "あなたの枠",
+  "ru": "за вами"
+ },
+ "ui.aton.term.app.adventure": {
+  "en": "watch,night watch",
+  "ja": "当直,夜の当直",
+  "ru": "вахта,вахту,ночная вахта"
+ },
+ "ui.aton.term.app.chess": {
+  "en": "chess",
+  "ja": "チェス",
+  "ru": "шахматы"
+ },
+ "ui.aton.term.app.weather": {
+  "en": "weather,meteo",
+  "ja": "天気,気象台",
+  "ru": "погода,погоду,метеостанция"
+ },
+ "ui.aton.wx.at": {
+  "en": "Readings for {0}, {1}",
+  "ja": "{0}、{1}の観測値",
+  "ru": "Показания на {0}, {1}"
+ },
+ "ui.aton.wx.cloud": {
+  "en": "Cloud cover",
+  "ja": "雲量",
+  "ru": "Облачность"
+ },
+ "ui.aton.wx.cm": {
+  "en": "{0} cm",
+  "ja": "{0}cm",
+  "ru": "{0} см"
+ },
+ "ui.aton.wx.deg": {
+  "en": "{0} °C",
+  "ja": "{0}℃",
+  "ru": "{0} °C"
+ },
+ "ui.aton.wx.dew": {
+  "en": "Dew point",
+  "ja": "露点",
+  "ru": "Точка росы"
+ },
+ "ui.aton.wx.dir.0": {
+  "en": "north",
+  "ja": "北",
+  "ru": "северный"
+ },
+ "ui.aton.wx.dir.1": {
+  "en": "north-east",
+  "ja": "北東",
+  "ru": "северо-восточный"
+ },
+ "ui.aton.wx.dir.2": {
+  "en": "east",
+  "ja": "東",
+  "ru": "восточный"
+ },
+ "ui.aton.wx.dir.3": {
+  "en": "south-east",
+  "ja": "南東",
+  "ru": "юго-восточный"
+ },
+ "ui.aton.wx.dir.4": {
+  "en": "south",
+  "ja": "南",
+  "ru": "южный"
+ },
+ "ui.aton.wx.dir.5": {
+  "en": "south-west",
+  "ja": "南西",
+  "ru": "юго-западный"
+ },
+ "ui.aton.wx.dir.6": {
+  "en": "west",
+  "ja": "西",
+  "ru": "западный"
+ },
+ "ui.aton.wx.dir.7": {
+  "en": "north-west",
+  "ja": "北西",
+  "ru": "северо-западный"
+ },
+ "ui.aton.wx.falling": {
+  "en": "falling",
+  "ja": "下降",
+  "ru": "падает"
+ },
+ "ui.aton.wx.flux": {
+  "en": "Solar flux",
+  "ja": "日射量",
+  "ru": "Поток от Солнца"
+ },
+ "ui.aton.wx.footer": {
+  "en": "Readings are given as they are. The laboratory is not responsible for the weather.",
+  "ja": "観測値はそのままお伝えします。天気について研究室は責任を負いません。",
+  "ru": "Показания идут как есть. За погоду лаборатория не отвечает."
+ },
+ "ui.aton.wx.forecast": {
+  "en": "Forecast",
+  "ja": "予報",
+  "ru": "Прогноз"
+ },
+ "ui.aton.wx.forecast_line": {
+  "en": "{0} °C, precipitation: {1}, cloud {2} of 8",
+  "ja": "{0}℃、降水：{1}、雲量8分の{2}",
+  "ru": "{0} °C, осадки: {1}, облака {2} из 8"
+ },
+ "ui.aton.wx.hpa": {
+  "en": "{0} hPa, {1}",
+  "ja": "{0}hPa、{1}",
+  "ru": "{0} гПа, {1}"
+ },
+ "ui.aton.wx.humidity": {
+  "en": "Humidity",
+  "ja": "湿度",
+  "ru": "Влажность"
+ },
+ "ui.aton.wx.km": {
+  "en": "{0} km",
+  "ja": "{0}km",
+  "ru": "{0} км"
+ },
+ "ui.aton.wx.kp": {
+  "en": "Geomagnetic index Kp",
+  "ja": "地磁気指数Kp",
+  "ru": "Геомагнитный индекс Kp"
+ },
+ "ui.aton.wx.m": {
+  "en": "{0} m",
+  "ja": "{0}m",
+  "ru": "{0} м"
+ },
+ "ui.aton.wx.offline": {
+  "en": "The mast does not answer.",
+  "ja": "マストが応答しません。",
+  "ru": "Мачта не отвечает."
+ },
+ "ui.aton.wx.oktas": {
+  "en": "{0} of 8",
+  "ja": "8分の{0}",
+  "ru": "{0} из 8"
+ },
+ "ui.aton.wx.precip": {
+  "en": "Precipitation",
+  "ja": "降水",
+  "ru": "Осадки"
+ },
+ "ui.aton.wx.precip.0": {
+  "en": "none",
+  "ja": "なし",
+  "ru": "нет"
+ },
+ "ui.aton.wx.precip.1": {
+  "en": "drizzle",
+  "ja": "霧雨",
+  "ru": "морось"
+ },
+ "ui.aton.wx.precip.10": {
+  "en": "freezing drizzle",
+  "ja": "着氷性の霧雨",
+  "ru": "ледяная морось"
+ },
+ "ui.aton.wx.precip.11": {
+  "en": "freezing rain",
+  "ja": "着氷性の雨",
+  "ru": "ледяной дождь"
+ },
+ "ui.aton.wx.precip.2": {
+  "en": "rain",
+  "ja": "雨",
+  "ru": "дождь"
+ },
+ "ui.aton.wx.precip.3": {
+  "en": "showers",
+  "ja": "にわか雨",
+  "ru": "ливень"
+ },
+ "ui.aton.wx.precip.4": {
+  "en": "thunderstorm",
+  "ja": "雷雨",
+  "ru": "гроза"
+ },
+ "ui.aton.wx.precip.5": {
+  "en": "hail",
+  "ja": "雹",
+  "ru": "град"
+ },
+ "ui.aton.wx.precip.6": {
+  "en": "graupel",
+  "ja": "霰",
+  "ru": "снежная крупа"
+ },
+ "ui.aton.wx.precip.7": {
+  "en": "sleet",
+  "ja": "みぞれ",
+  "ru": "мокрый снег"
+ },
+ "ui.aton.wx.precip.8": {
+  "en": "snow",
+  "ja": "雪",
+  "ru": "снег"
+ },
+ "ui.aton.wx.precip.9": {
+  "en": "snow showers",
+  "ja": "にわか雪",
+  "ru": "снежные заряды"
+ },
+ "ui.aton.wx.precip_rate": {
+  "en": "{0}, {1} mm/h",
+  "ja": "{0}、{1}mm/h",
+  "ru": "{0}, {1} мм/ч"
+ },
+ "ui.aton.wx.pressure": {
+  "en": "Pressure",
+  "ja": "気圧",
+  "ru": "Давление"
+ },
+ "ui.aton.wx.rising": {
+  "en": "rising",
+  "ja": "上昇",
+  "ru": "растёт"
+ },
+ "ui.aton.wx.sea": {
+  "en": "Sea temperature",
+  "ja": "海水温",
+  "ru": "Вода в море"
+ },
+ "ui.aton.wx.snow": {
+  "en": "Snow depth",
+  "ja": "積雪",
+  "ru": "Снег"
+ },
+ "ui.aton.wx.steady": {
+  "en": "steady",
+  "ja": "安定",
+  "ru": "ровно"
+ },
+ "ui.aton.wx.temp": {
+  "en": "Air temperature",
+  "ja": "気温",
+  "ru": "Температура воздуха"
+ },
+ "ui.aton.wx.title": {
+  "en": "LAB-2 weather station. The mast on the roof.",
+  "ja": "ラボ2気象台。屋上のマスト。",
+  "ru": "Метеостанция ЛАБ-2. Мачта на крыше."
+ },
+ "ui.aton.wx.visibility": {
+  "en": "Visibility",
+  "ja": "視程",
+  "ru": "Видимость"
+ },
+ "ui.aton.wx.wind": {
+  "en": "Wind",
+  "ja": "風",
+  "ru": "Ветер"
+ },
+ "ui.aton.wx.wind_value": {
+  "en": "{0}, {1} m/s, force {2}",
+  "ja": "{0}、{1}m/s、風力{2}",
+  "ru": "{0}, {1} м/с, {2} б."
+ },
+ "ui.aton.wx.wm2": {
+  "en": "{0} W/m²",
+  "ja": "{0}W/m²",
+  "ru": "{0} Вт/м²"
+ }
+}

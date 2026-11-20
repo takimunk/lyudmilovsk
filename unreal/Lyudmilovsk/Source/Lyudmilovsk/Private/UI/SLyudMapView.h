@@ -2,6 +2,7 @@
 
 #include "CoreMinimal.h"
 #include "Widgets/SLeafWidget.h"
+#include "Rounds/LyudRounds.h"
 
 class ULyudGameScreen;
 struct FSlateBrush;
@@ -56,6 +57,8 @@ private:
 	bool ShowsBirds() const;
 
 	TWeakObjectPtr<ULyudGameScreen> Owner;
+	/** The bicycle round's doors, filled each paint (kept to spare the allocation). */
+	mutable TArray<FLyudRoundMark> RoundMarks;
 	TSharedPtr<FSlateBrush> MapBrush;
 	FVector2D Center = FVector2D::ZeroVector;
 	float Zoom = 1.f;

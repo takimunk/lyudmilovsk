@@ -38,6 +38,16 @@
   "city.rassvet.poster.sun",
   "city.rassvet.poster.fest"
  ],
+ "newsreel": [
+  "film.programme.mon",
+  "film.programme.tue",
+  "film.programme.wed",
+  "film.programme.thu",
+  "film.programme.fri",
+  "film.programme.sat",
+  "film.programme.sun",
+  "film.programme.fest"
+ ],
  "variants": {
   "front.fest_today": 3,
   "front.fest_more": 2,
@@ -264,7 +274,55 @@
   },
   "paper.town.22",
   "paper.town.23",
-  "paper.town.24"
+  "paper.town.24",
+  "paper.town.25",
+  "paper.town.26",
+  "paper.town.27",
+  "paper.town.28",
+  "paper.town.29",
+  "paper.town.30",
+  {
+   "k": "paper.town.31",
+   "months": [
+    9,
+    10,
+    11,
+    3,
+    4
+   ]
+  },
+  {
+   "k": "paper.town.32",
+   "months": [
+    9,
+    10,
+    4,
+    5
+   ]
+  },
+  "paper.town.33",
+  "paper.town.34",
+  "paper.town.35",
+  {
+   "k": "paper.town.36",
+   "months": [
+    5,
+    6,
+    7,
+    8,
+    9
+   ]
+  },
+  "paper.town.37",
+  "paper.town.38",
+  {
+   "k": "paper.town.39",
+   "months": [
+    5,
+    6
+   ]
+  },
+  "paper.town.40"
  ],
  "ads": [
   "paper.ad.1",

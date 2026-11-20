@@ -4,6 +4,7 @@
 #include "Widgets/SCompoundWidget.h"
 #include "Widgets/Layout/SConstraintCanvas.h"
 
+class UWorld;
 class SAtonWindow;
 class SAtonProgram;
 
@@ -20,6 +21,10 @@ public:
 	virtual bool CanLeave() const = 0;
 	/** The in-game clock, "03:14" at boot. */
 	virtual FString Clock() const = 0;
+	/** "club" (the hero's computer) or "lab" (a terminal of the lab network). */
+	virtual FName Profile() const = 0;
+	/** The world the machine stands in (the weather, the calendar, the save); null outside a game. */
+	virtual UWorld* ShellWorld() const = 0;
 };
 
 /** A program window: title bar to drag it by, a close button and the program inside. */
@@ -63,6 +68,9 @@ class SAtonDesktop : public SCompoundWidget, public IAtonShell
 public:
 	SLATE_BEGIN_ARGS(SAtonDesktop) {}
 		SLATE_ARGUMENT(FVector2D, ScreenSize)
+		/** AtonApps::ProfileClub (the default) or ProfileLab: which programs the machine has and how it boots. */
+		SLATE_ARGUMENT(FName, Profile)
+		SLATE_ARGUMENT(TWeakObjectPtr<UWorld>, World)
 		/** Whether getting up is possible; the menu shows "Встать из-за компьютера" then. */
 		SLATE_ATTRIBUTE(bool, CanLeave)
 		SLATE_EVENT(FSimpleDelegate, OnLeave)
@@ -82,6 +90,8 @@ public:
 	virtual void Leave() override;
 	virtual bool CanLeave() const override { return CanLeaveAttr.Get(false); }
 	virtual FString Clock() const override;
+	virtual FName Profile() const override { return ProfileName; }
+	virtual UWorld* ShellWorld() const override { return World.Get(); }
 
 	virtual void Tick(const FGeometry& AllottedGeometry, const double InCurrentTime, const float InDeltaTime) override;
 	virtual FReply OnKeyDown(const FGeometry& MyGeometry, const FKeyEvent& InKeyEvent) override;
@@ -105,6 +115,8 @@ private:
 	TSharedRef<SWidget> MakeSystemMenu();
 
 	FVector2D ScreenSize;
+	FName ProfileName;
+	TWeakObjectPtr<UWorld> World;
 	FSimpleDelegate OnLeave;
 	TAttribute<bool> CanLeaveAttr;
 	TSharedPtr<SConstraintCanvas> Canvas;

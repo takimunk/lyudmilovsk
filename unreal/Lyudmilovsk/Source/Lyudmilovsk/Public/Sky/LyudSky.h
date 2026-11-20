@@ -215,6 +215,15 @@ public:
 
 	/** The local date and hour the sky shows now. */
 	UFUNCTION(BlueprintCallable, Category = "Sky") FDateTime ShownTime() const;
+	/** The star's apparent size now, degrees across: SunAngularDiameterDeg, wider while it stands nearer (SetSunApproach). */
+	UFUNCTION(BlueprintPure, Category = "Sky") float SunSizeNowDeg() const { return SunAngularDiameterDeg * SunApproachScale; }
+	/**
+	 * The star nearer than usual (the town's Big Sun day, ULyudFestivalSubsystem): its disk DiskScale times as wide (1 = as
+	 * ever; the sunlight's source angle, the glare and the halos follow), its light LightScale times as strong. Eased by the
+	 * caller; lyud.Sky.SunApproach overrides the disk's scale when > 0.
+	 */
+	UFUNCTION(BlueprintCallable, Category = "Sky") void SetSunApproach(float DiskScale, float LightScale = 1.f);
+	UFUNCTION(BlueprintPure, Category = "Sky") float GetSunApproach() const { return SunApproachScale; }
 	/** Europa's apparent size now, degrees across (MoonSizeDeg or lyud.Sky.MoonSizeDeg). */
 	UFUNCTION(BlueprintPure, Category = "Sky") float MoonSizeNowDeg() const;
 	UFUNCTION(BlueprintCallable, Category = "Sky") float SunAltitude() const { return SunPos.AltitudeDeg; }
@@ -311,6 +320,8 @@ private:
 	float CloudBaseDensity = -1.f;
 	bool bCloudMIDSet = false;
 	float OvercastSunScale = 1.f;
+	/** SetSunApproach: the disk's and the light's scales now, and the source angle last given to the light. */
+	float SunApproachScale = 1.f, SunApproachLight = 1.f, AppliedSunAngle = -1.f;
 	bool bCloudErrorsLogged = false;
 	double NextCloudLog = 0.0;
 	bool bCloudShadersForced = false;

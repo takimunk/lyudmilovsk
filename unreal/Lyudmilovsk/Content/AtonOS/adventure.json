@@ -1,0 +1,284 @@
+{
+ "_doc": "«Ночная вахта», the text adventure of the lab's ATON machines. Format: Source/Lyudmilovsk/Private/AtonOS/Lab/LabAdventure.h; words: tools/aton/strings/adventure.json; checks: tools/atonsim/adventure_test.cpp. Flags: has_pencil read_old took_match has_match knows_hand has_wheel valve pumped shut tore lit heard tea_ready opened tea_done saw_edge.",
+ "title": "ui.aton.adv.title",
+ "start": "start",
+ "best": "dawn",
+ "nodes": {
+  "start": {
+   "text": ["ui.aton.adv.start.1", "ui.aton.adv.start.2", "ui.aton.adv.start.3"],
+   "choices": [
+    {"text": "ui.aton.adv.start.c1", "go": "watch"}
+   ]
+  },
+  "watch": {
+   "text": ["ui.aton.adv.watch.1", {"k": "ui.aton.adv.watch.2", "if": "!has_wheel"}, {"k": "ui.aton.adv.watch.3", "if": "!lit"}, {"k": "ui.aton.adv.watch.4", "if": "lit"}, {"k": "ui.aton.adv.watch.5", "if": "lit&!opened"}],
+   "choices": [
+    {"text": "ui.aton.adv.watch.c1", "go": "log"},
+    {"text": "ui.aton.adv.watch.c2", "go": "radio"},
+    {"text": "ui.aton.adv.watch.c3", "go": "kettle"},
+    {"text": "ui.aton.adv.watch.c4", "go": "drawer"},
+    {"text": "ui.aton.adv.watch.c5", "if": "!has_wheel", "say": ["ui.aton.adv.watch.s1"], "set": ["has_wheel"]},
+    {"text": "ui.aton.adv.watch.c6", "go": "stairs"},
+    {"text": "ui.aton.adv.watch.c7", "go": "cellar"},
+    {"text": "ui.aton.adv.watch.c8", "go": "door"},
+    {"text": "ui.aton.adv.watch.c9", "if": "!lit", "go": "sleep"},
+    {"text": "ui.aton.adv.watch.c10", "if": "lit", "say": ["ui.aton.adv.watch.s2"], "go": "predawn"}
+   ]
+  },
+  "drawer": {
+   "text": [{"k": "ui.aton.adv.drawer.1", "if": "!has_pencil"}, {"k": "ui.aton.adv.drawer.2", "if": "has_pencil"}],
+   "choices": [
+    {"text": "ui.aton.adv.drawer.c1", "if": "!has_pencil", "say": ["ui.aton.adv.drawer.s1"], "set": ["has_pencil"]},
+    {"text": "ui.aton.adv.drawer.c2", "say": ["ui.aton.adv.drawer.s2"]},
+    {"text": "ui.aton.adv.drawer.c3", "say": ["ui.aton.adv.drawer.s3"]},
+    {"text": "ui.aton.adv.drawer.c4", "go": "watch"}
+   ]
+  },
+  "log": {
+   "text": [{"k": "ui.aton.adv.log.1", "if": "!took_match"}, {"k": "ui.aton.adv.log.2", "if": "took_match"}, {"k": "ui.aton.adv.log.3", "if": "tore"}],
+   "choices": [
+    {"text": "ui.aton.adv.log.c1", "go": "log_old"},
+    {"text": "ui.aton.adv.log.c2", "if": "!took_match", "go": "log_mark"},
+    {"text": "ui.aton.adv.log.c3", "if": "has_pencil&read_old&!knows_hand", "go": "log_write"},
+    {"text": "ui.aton.adv.log.c4", "if": "!has_pencil&!knows_hand", "say": ["ui.aton.adv.log.s1"]},
+    {"text": "ui.aton.adv.log.c5", "if": "has_pencil&!read_old&!knows_hand", "say": ["ui.aton.adv.log.s2"]},
+    {"text": "ui.aton.adv.log.c6", "if": "knows_hand", "say": ["ui.aton.adv.log.s3"]},
+    {"text": "ui.aton.adv.log.c7", "if": "took_match&!has_match&!lit&!tore", "say": ["ui.aton.adv.log.s4"], "set": ["tore"]},
+    {"text": "ui.aton.adv.log.c8", "go": "watch"}
+   ]
+  },
+  "log_old": {
+   "text": ["ui.aton.adv.log_old.1", "ui.aton.adv.log_old.2"],
+   "set": ["read_old"],
+   "choices": [
+    {"text": "ui.aton.adv.log_old.c1", "say": ["ui.aton.adv.log_old.s1", "ui.aton.adv.log_old.s2"]},
+    {"text": "ui.aton.adv.log_old.c2", "go": "log"}
+   ]
+  },
+  "log_mark": {
+   "text": ["ui.aton.adv.log_mark.1", "ui.aton.adv.log_mark.2"],
+   "choices": [
+    {"text": "ui.aton.adv.log_mark.c1", "say": ["ui.aton.adv.log_mark.s1"], "set": ["took_match", "has_match"], "go": "log"},
+    {"text": "ui.aton.adv.log_mark.c2", "go": "log"}
+   ]
+  },
+  "log_write": {
+   "text": ["ui.aton.adv.log_write.1", "ui.aton.adv.log_write.2"],
+   "set": ["knows_hand"],
+   "choices": [
+    {"text": "ui.aton.adv.log_write.c1", "say": ["ui.aton.adv.log_write.s1"]},
+    {"text": "ui.aton.adv.log_write.c2", "go": "watch"}
+   ]
+  },
+  "radio": {
+   "text": ["ui.aton.adv.radio.1"],
+   "choices": [
+    {"text": "ui.aton.adv.radio.c1", "say": ["ui.aton.adv.radio.s1"]},
+    {"text": "ui.aton.adv.radio.c2", "say": ["ui.aton.adv.radio.s2"]},
+    {"text": "ui.aton.adv.radio.c3", "if": "lit&!heard", "go": "radio_listen"},
+    {"text": "ui.aton.adv.radio.c4", "if": "!lit", "say": ["ui.aton.adv.radio.s3"]},
+    {"text": "ui.aton.adv.radio.c5", "if": "heard", "say": ["ui.aton.adv.radio.s4"]},
+    {"text": "ui.aton.adv.radio.c6", "go": "watch"}
+   ]
+  },
+  "radio_listen": {
+   "text": ["ui.aton.adv.radio_listen.1", "ui.aton.adv.radio_listen.2"],
+   "set": ["heard"],
+   "choices": [
+    {"text": "ui.aton.adv.radio_listen.c1", "say": ["ui.aton.adv.radio_listen.s1"], "go": "watch"},
+    {"text": "ui.aton.adv.radio_listen.c2", "say": ["ui.aton.adv.radio_listen.s2"], "go": "watch"}
+   ]
+  },
+  "kettle": {
+   "text": [{"k": "ui.aton.adv.kettle.1", "if": "!tea_ready"}, {"k": "ui.aton.adv.kettle.2", "if": "tea_ready"}],
+   "choices": [
+    {"text": "ui.aton.adv.kettle.c1", "if": "!tea_ready", "say": ["ui.aton.adv.kettle.s1"], "set": ["tea_ready"]},
+    {"text": "ui.aton.adv.kettle.c2", "if": "tea_ready", "say": ["ui.aton.adv.kettle.s2"]},
+    {"text": "ui.aton.adv.kettle.c3", "if": "tore&!lit", "say": ["ui.aton.adv.kettle.s3"], "go": "relight"},
+    {"text": "ui.aton.adv.kettle.c4", "go": "watch"}
+   ]
+  },
+  "cellar": {
+   "text": ["ui.aton.adv.cellar.1", {"k": "ui.aton.adv.cellar.2", "if": "!valve"}, {"k": "ui.aton.adv.cellar.3", "if": "valve"}, {"k": "ui.aton.adv.cellar.4", "if": "pumped"}],
+   "choices": [
+    {"text": "ui.aton.adv.cellar.c1", "say": ["ui.aton.adv.cellar.s1"]},
+    {"text": "ui.aton.adv.cellar.c2", "if": "has_wheel&!valve", "say": ["ui.aton.adv.cellar.s2"], "set": ["valve"]},
+    {"text": "ui.aton.adv.cellar.c3", "if": "!has_wheel&!valve", "say": ["ui.aton.adv.cellar.s3"]},
+    {"text": "ui.aton.adv.cellar.c4", "if": "valve&!pumped", "go": "pump"},
+    {"text": "ui.aton.adv.cellar.c5", "if": "!valve", "say": ["ui.aton.adv.cellar.s4"]},
+    {"text": "ui.aton.adv.cellar.c6", "go": "tank"},
+    {"text": "ui.aton.adv.cellar.c7", "go": "watch"}
+   ]
+  },
+  "pump": {
+   "text": ["ui.aton.adv.pump.1", "ui.aton.adv.pump.2"],
+   "choices": [
+    {"text": "ui.aton.adv.pump.c1", "say": ["ui.aton.adv.pump.s1"], "set": ["pumped"], "go": "cellar"},
+    {"text": "ui.aton.adv.pump.c2", "say": ["ui.aton.adv.pump.s2"], "set": ["pumped"], "go": "cellar"}
+   ]
+  },
+  "tank": {
+   "text": ["ui.aton.adv.tank.1", "ui.aton.adv.tank.2"],
+   "choices": [
+    {"text": "ui.aton.adv.tank.c1", "say": ["ui.aton.adv.tank.s1"]},
+    {"text": "ui.aton.adv.tank.c2", "go": "cellar"}
+   ]
+  },
+  "stairs": {
+   "text": ["ui.aton.adv.stairs.1"],
+   "choices": [
+    {"text": "ui.aton.adv.stairs.c1", "go": "gallery"},
+    {"text": "ui.aton.adv.stairs.c2", "say": ["ui.aton.adv.stairs.s1"]},
+    {"text": "ui.aton.adv.stairs.c3", "go": "window"},
+    {"text": "ui.aton.adv.stairs.c4", "go": "watch"}
+   ]
+  },
+  "window": {
+   "text": ["ui.aton.adv.window.1", {"k": "ui.aton.adv.window.2", "if": "!lit"}, {"k": "ui.aton.adv.window.3", "if": "lit"}],
+   "choices": [
+    {"text": "ui.aton.adv.window.c1", "say": ["ui.aton.adv.window.s1"]},
+    {"text": "ui.aton.adv.window.c2", "go": "stairs"}
+   ]
+  },
+  "gallery": {
+   "text": ["ui.aton.adv.gallery.1", {"k": "ui.aton.adv.gallery.2", "if": "!lit"}, {"k": "ui.aton.adv.gallery.3", "if": "lit"}, {"k": "ui.aton.adv.gallery.4", "if": "!shut"}],
+   "choices": [
+    {"text": "ui.aton.adv.gallery.c1", "say": ["ui.aton.adv.gallery.s1"]},
+    {"text": "ui.aton.adv.gallery.c2", "if": "!shut", "say": ["ui.aton.adv.gallery.s2"], "set": ["shut"]},
+    {"text": "ui.aton.adv.gallery.c3", "if": "!pumped&!lit", "say": ["ui.aton.adv.gallery.s3"]},
+    {"text": "ui.aton.adv.gallery.c4", "if": "has_match&pumped&!lit&shut", "say": ["ui.aton.adv.gallery.s4"], "go": "relight"},
+    {"text": "ui.aton.adv.gallery.c5", "if": "has_match&pumped&!lit&!shut", "say": ["ui.aton.adv.gallery.s5", "ui.aton.adv.gallery.s6"], "set": ["-has_match"]},
+    {"text": "ui.aton.adv.gallery.c6", "if": "!took_match&!lit", "say": ["ui.aton.adv.gallery.s7"]},
+    {"text": "ui.aton.adv.gallery.c7", "if": "took_match&!has_match&!lit", "say": ["ui.aton.adv.gallery.s8"]},
+    {"text": "ui.aton.adv.gallery.c8", "if": "lit", "go": "lens"},
+    {"text": "ui.aton.adv.gallery.c9", "go": "balcony"},
+    {"text": "ui.aton.adv.gallery.c10", "go": "watch"}
+   ]
+  },
+  "relight": {
+   "text": ["ui.aton.adv.relight.1", "ui.aton.adv.relight.2"],
+   "set": ["lit", "-has_match"],
+   "choices": [
+    {"text": "ui.aton.adv.relight.c1", "go": "balcony"},
+    {"text": "ui.aton.adv.relight.c2", "go": "gallery"},
+    {"text": "ui.aton.adv.relight.c3", "go": "watch"}
+   ]
+  },
+  "lens": {
+   "text": ["ui.aton.adv.lens.1"],
+   "choices": [
+    {"text": "ui.aton.adv.lens.c1", "say": ["ui.aton.adv.lens.s1"]},
+    {"text": "ui.aton.adv.lens.c2", "go": "gallery"}
+   ]
+  },
+  "balcony": {
+   "text": ["ui.aton.adv.balcony.1", {"k": "ui.aton.adv.balcony.2", "if": "!lit"}, {"k": "ui.aton.adv.balcony.3", "if": "lit"}],
+   "choices": [
+    {"text": "ui.aton.adv.balcony.c1", "if": "lit", "go": "edge"},
+    {"text": "ui.aton.adv.balcony.c2", "if": "lit", "go": "train"},
+    {"text": "ui.aton.adv.balcony.c3", "if": "!lit", "say": ["ui.aton.adv.balcony.s1"]},
+    {"text": "ui.aton.adv.balcony.c4", "go": "gallery"}
+   ]
+  },
+  "edge": {
+   "text": ["ui.aton.adv.edge.1", "ui.aton.adv.edge.2"],
+   "set": ["saw_edge"],
+   "choices": [
+    {"text": "ui.aton.adv.edge.c1", "say": ["ui.aton.adv.edge.s1"]},
+    {"text": "ui.aton.adv.edge.c2", "go": "balcony"}
+   ]
+  },
+  "train": {
+   "text": ["ui.aton.adv.train.1", "ui.aton.adv.train.2"],
+   "choices": [
+    {"text": "ui.aton.adv.train.c1", "say": ["ui.aton.adv.train.s1"], "go": "balcony"},
+    {"text": "ui.aton.adv.train.c2", "say": ["ui.aton.adv.train.s2"], "go": "balcony"}
+   ]
+  },
+  "door": {
+   "text": ["ui.aton.adv.door.1", {"k": "ui.aton.adv.door.2", "if": "!lit"}, {"k": "ui.aton.adv.door.3", "if": "lit&!opened"}, {"k": "ui.aton.adv.door.4", "if": "opened&!tea_done"}],
+   "choices": [
+    {"text": "ui.aton.adv.door.c1", "if": "lit&!opened", "say": ["ui.aton.adv.door.s1"], "set": ["opened"], "go": "visitor"},
+    {"text": "ui.aton.adv.door.c2", "if": "opened&!tea_done", "go": "visitor"},
+    {"text": "ui.aton.adv.door.c3", "if": "!lit", "go": "shore_dark"},
+    {"text": "ui.aton.adv.door.c4", "if": "tea_done", "go": "shore_night"},
+    {"text": "ui.aton.adv.door.c5", "go": "watch"}
+   ]
+  },
+  "visitor": {
+   "text": ["ui.aton.adv.visitor.1"],
+   "choices": [
+    {"text": "ui.aton.adv.visitor.c1", "say": ["ui.aton.adv.visitor.s1"]},
+    {"text": "ui.aton.adv.visitor.c2", "say": ["ui.aton.adv.visitor.s2"]},
+    {"text": "ui.aton.adv.visitor.c3", "if": "tea_ready", "go": "tea"},
+    {"text": "ui.aton.adv.visitor.c4", "if": "!tea_ready", "say": ["ui.aton.adv.visitor.s3"]},
+    {"text": "ui.aton.adv.visitor.c5", "go": "watch"}
+   ]
+  },
+  "tea": {
+   "text": ["ui.aton.adv.tea.1", "ui.aton.adv.tea.2"],
+   "choices": [
+    {"text": "ui.aton.adv.tea.c1", "say": ["ui.aton.adv.tea.s1", "ui.aton.adv.tea.s2"], "set": ["tea_done"], "go": "watch"},
+    {"text": "ui.aton.adv.tea.c2", "say": ["ui.aton.adv.tea.s3", "ui.aton.adv.tea.s4"], "set": ["tea_done"], "go": "watch"}
+   ]
+  },
+  "shore_dark": {
+   "text": ["ui.aton.adv.shore_dark.1", "ui.aton.adv.shore_dark.2"],
+   "choices": [
+    {"text": "ui.aton.adv.shore_dark.c1", "go": "dark_walk"},
+    {"text": "ui.aton.adv.shore_dark.c2", "go": "watch"}
+   ]
+  },
+  "dark_walk": {
+   "text": ["ui.aton.adv.dark_walk.1"],
+   "choices": [
+    {"text": "ui.aton.adv.dark_walk.c1", "say": ["ui.aton.adv.dark_walk.s1", "ui.aton.adv.dark_walk.s2"], "end": "dark"},
+    {"text": "ui.aton.adv.dark_walk.c2", "say": ["ui.aton.adv.dark_walk.s3"], "go": "watch"}
+   ]
+  },
+  "shore_night": {
+   "text": ["ui.aton.adv.shore_night.1"],
+   "choices": [
+    {"text": "ui.aton.adv.shore_night.c1", "say": ["ui.aton.adv.shore_night.s1"]},
+    {"text": "ui.aton.adv.shore_night.c2", "say": ["ui.aton.adv.shore_night.s2"]},
+    {"text": "ui.aton.adv.shore_night.c3", "say": ["ui.aton.adv.shore_night.s3"]},
+    {"text": "ui.aton.adv.shore_night.c4", "go": "watch"}
+   ]
+  },
+  "sleep": {
+   "text": ["ui.aton.adv.sleep.1"],
+   "choices": [
+    {"text": "ui.aton.adv.sleep.c1", "say": ["ui.aton.adv.sleep.s1", "ui.aton.adv.sleep.s2"], "end": "dark"},
+    {"text": "ui.aton.adv.sleep.c2", "say": ["ui.aton.adv.sleep.s3"], "go": "watch"}
+   ]
+  },
+  "predawn": {
+   "text": ["ui.aton.adv.predawn.1", "ui.aton.adv.predawn.2", {"k": "ui.aton.adv.predawn.3", "if": "!knows_hand|!heard|!saw_edge|!tea_done"}, {"k": "ui.aton.adv.predawn.4", "if": "knows_hand&heard&saw_edge&tea_done"}],
+   "choices": [
+    {"text": "ui.aton.adv.predawn.c1", "go": "signoff"},
+    {"text": "ui.aton.adv.predawn.c2", "if": "knows_hand&heard&saw_edge&tea_done", "go": "lastlamp"}
+   ]
+  },
+  "signoff": {
+   "text": ["ui.aton.adv.signoff.1", {"k": "ui.aton.adv.signoff.2", "if": "tore"}],
+   "choices": [
+    {"text": "ui.aton.adv.signoff.c1", "say": ["ui.aton.adv.signoff.s1"]},
+    {"text": "ui.aton.adv.signoff.c2", "say": ["ui.aton.adv.signoff.s2", "ui.aton.adv.signoff.s3", "ui.aton.adv.signoff.s4"], "end": "keeper"}
+   ]
+  },
+  "lastlamp": {
+   "text": ["ui.aton.adv.lastlamp.1", "ui.aton.adv.lastlamp.2", "ui.aton.adv.lastlamp.3"],
+   "choices": [
+    {"text": "ui.aton.adv.lastlamp.c1", "go": "dawn_out"},
+    {"text": "ui.aton.adv.lastlamp.c2", "say": ["ui.aton.adv.lastlamp.s1"], "go": "signoff"}
+   ]
+  },
+  "dawn_out": {
+   "text": ["ui.aton.adv.dawn_out.1", "ui.aton.adv.dawn_out.2"],
+   "choices": [
+    {"text": "ui.aton.adv.dawn_out.c1", "say": ["ui.aton.adv.dawn_out.s1"]},
+    {"text": "ui.aton.adv.dawn_out.c2", "say": ["ui.aton.adv.dawn_out.s2", "ui.aton.adv.dawn_out.s3", "ui.aton.adv.dawn_out.s4"], "end": "dawn"}
+   ]
+  }
+ }
+}

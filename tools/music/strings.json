@@ -22,7 +22,7 @@
  "music.trk.day_1.title": {
   "ru": "Бриз на набережной",
   "en": "Breeze on the Promenade",
-  "ja": "海岸通りのそよ風"
+  "ja": "遊歩道のそよ風"
  },
  "music.trk.day_1.artist": {
   "ru": "Ансамбль «Дюна»",
@@ -252,7 +252,7 @@
  "item.record_day_1.name": {
   "ru": "Пластинка «Бриз на набережной»",
   "en": "Record: Breeze on the Promenade",
-  "ja": "レコード『海岸通りのそよ風』"
+  "ja": "レコード『遊歩道のそよ風』"
  },
  "item.record_day_1.desc": {
   "ru": "Ансамбль «Дюна», фирма «Прибой». На жёлтом конверте зонтики на третьей террасе пляжа, сверху.",
@@ -262,7 +262,7 @@
  "music.rec.day_1.note": {
   "ru": "Гитара и колокольчики, лёгкие, как полдень на набережной. Хочется купить мороженое, хотя оно у меня уже есть.",
   "en": "Guitar and glockenspiel, light as noon on the promenade. It makes me want to buy an ice cream, though I already have one.",
-  "ja": "ギターとグロッケン、昼の海岸通りみたいに軽い。もう持っているのに、アイスが買いたくなる。"
+  "ja": "ギターとグロッケン、昼の遊歩道みたいに軽い。もう持っているのに、アイスが買いたくなる。"
  },
  "item.record_day_2.name": {
   "ru": "Пластинка «Тихий октябрь»",
@@ -317,7 +317,7 @@
  "item.record_dusk_2.desc": {
   "ru": "Инструментальный ансамбль «Альбатрос», фирма «Прибой». Конверт сливового цвета, на нём последние окна санатория «Корона» гаснут одно за другим.",
   "en": "The Albatross Instrumental Ensemble, on the Priboi label. The plum-coloured sleeve shows the last windows of the Korona sanatorium going dark one by one.",
-  "ja": "器楽アンサンブル「アホウドリ」、プリボイ盤。すもも色のジャケット。サナトリウム「コロナ」の最後の窓がひとつずつ消えていく。"
+  "ja": "器楽アンサンブル「アホウドリ」、プリボイ盤。すもも色のジャケット。療養所「コロナ」の最後の窓がひとつずつ消えていく。"
  },
  "music.rec.dusk_2.note": {
   "ru": "Синтезатор поёт без слов, как кларнет, который стесняется. Под него кажется, что за окном ещё светло, хотя уже нет.",
@@ -517,7 +517,7 @@
  "music.radio.name": {
   "ru": "«Волна Людмиловска»",
   "en": "Lyudmilovsk Wave",
-  "ja": "リュドミロフスクの波"
+  "ja": "「リュドミロフスクの波」"
  },
  "music.radio.on": {
   "ru": "Включил радио. {0}: {1}",
@@ -567,27 +567,27 @@
  "music.radio.now.off_air": {
   "ru": "Эфир молчит до шести утра, только шорох.",
   "en": "Nothing on the air till six in the morning, just a rustle.",
-  "ja": "朝六時まで放送はない。さあさあという音だけ。"
+  "ja": "朝六時まで放送はない。ザーッという雑音だけ。"
  },
  "music.radio.show.morning": {
   "ru": "«Утренняя волна»",
   "en": "Morning Wave",
-  "ja": "朝の波"
+  "ja": "「朝の波」"
  },
  "music.radio.show.day": {
   "ru": "«Доброе утро, Людмиловск!»",
   "en": "Good Morning, Lyudmilovsk!",
-  "ja": "おはよう、リュドミロフスク"
+  "ja": "「おはよう、リュドミロフスク！」"
  },
  "music.radio.show.work": {
   "ru": "«Музыка за работой»",
   "en": "Music While You Work",
-  "ja": "仕事のおともに"
+  "ja": "「仕事のおともに」"
  },
  "music.radio.show.sunday": {
   "ru": "«Воскресная пластинка»",
   "en": "Sunday Record",
-  "ja": "日曜のレコード"
+  "ja": "「日曜のレコード」"
  },
  "music.radio.show.chart": {
   "ru": "Хит-парад «Волны»",
@@ -597,32 +597,32 @@
  "music.radio.show.electronic": {
   "ru": "«Час электроники»",
   "en": "The Electronics Hour",
-  "ja": "エレクトロニクスの時間"
+  "ja": "「エレクトロニクスの時間」"
  },
  "music.radio.show.afternoon": {
   "ru": "«После уроков»",
   "en": "After School",
-  "ja": "放課後"
+  "ja": "「放課後」"
  },
  "music.radio.show.evening": {
   "ru": "«Вечер у моря»",
   "en": "Evening by the Sea",
-  "ja": "海辺の夕べ"
+  "ja": "「海辺の夕べ」"
  },
  "music.radio.show.requests": {
   "ru": "«Концерт по заявкам»",
   "en": "Request Concert",
-  "ja": "リクエスト・コンサート"
+  "ja": "「リクエスト・コンサート」"
  },
  "music.radio.show.night": {
   "ru": "«Ночная волна»",
   "en": "Night Wave",
-  "ja": "夜の波"
+  "ja": "「夜の波」"
  },
  "music.radio.show.late": {
   "ru": "«После полуночи»",
   "en": "After Midnight",
-  "ja": "真夜中すぎ"
+  "ja": "「真夜中すぎ」"
  },
  "music.radio.cap.track": {
   "ru": "{0}: «{1}», {2}.",
@@ -666,7 +666,7 @@
  },
  "music.radio.news.outro": {
   "ru": "Это были последние известия. Оставайтесь на нашей волне.",
-  "en": "That was the news. Stay on our wave.",
+  "en": "That was the news. Stay tuned to the Wave.",
   "ja": "ニュースでした。チャンネルはそのままで。"
  },
  "music.radio.news.paper": {
@@ -677,7 +677,7 @@
  "music.radio.news.1": {
   "ru": "Канатная дорога закрыта на профилактику с часу до трёх. Вагончики моют, тросы смазывают, кондукторы пьют чай.",
   "en": "The cable car closes for maintenance from one to three. Cabins are washed, cables greased, conductors drink tea.",
-  "ja": "ロープウェイは一時から三時まで点検運休。ゴンドラを洗い、ケーブルに油をさし、係員はお茶を飲みます。"
+  "ja": "ロープウェイは一時から三時まで点検運休。ゴンドラを洗い、ケーブルに油をさし、車掌さんたちはお茶を飲みます。"
  },
  "music.radio.news.2": {
   "ru": "Хор ветеранов Дома культуры разучивает новую программу и приглашает басов. Особенно приглашает басов.",
@@ -702,12 +702,12 @@
  "music.radio.news.6": {
   "ru": "Минеральный источник санатория «Корона» снова открыт для всех. Стакан берите свой, кружки санатория не выносить.",
   "en": "The Korona sanatorium's mineral spring is open to everyone again. Bring your own glass; the sanatorium's mugs stay where they are.",
-  "ja": "サナトリウム「コロナ」の鉱泉がまた一般開放されました。コップは持参で。サナトリウムのカップは持ち出さないでください。"
+  "ja": "療養所「コロナ」の鉱泉がまた一般開放されました。コップは持参で。療養所のカップは持ち出さないでください。"
  },
  "music.radio.news.7": {
   "ru": "Скворцы облюбовали крышу универмага. Покупателей просят не стоять под карнизом с непокрытой головой.",
   "en": "Starlings have taken over the department store roof. Shoppers are asked not to stand under the eaves bareheaded.",
-  "ja": "ムクドリが百貨店の屋根を気に入りました。軒下では帽子をかぶってお待ちください。"
+  "ja": "ムクドリが百貨店の屋根を気に入りました。買い物客のみなさんは、帽子なしで軒下に立たないようお願いします。"
  },
  "music.radio.news.8": {
   "ru": "Пара лебедей у старой пристани вывела птенцов. Хлеб им лучше крошить мелко, а не бросать батоном.",
@@ -727,16 +727,16 @@
  "music.radio.news.11": {
   "ru": "Кинотеатр «Рассвет» объявляет неделю приключенческого фильма. Билеты на последний сеанс уже почти кончились, и на первый тоже.",
   "en": "The Rassvet cinema announces an adventure film week. Tickets for the last show are almost gone, and for the first one too.",
-  "ja": "映画館「ラスヴェト」で冒険映画週間。最終回の切符はほぼ売り切れ、初回もです。"
+  "ja": "映画館「ラスヴェート」で冒険映画週間。最終回の切符はほぼ売り切れ、初回もです。"
  },
  "music.radio.news.12": {
   "ru": "Хлебозавод выпустил новый батон «Приморский» с тмином. В очереди у булочной на улице Новикова его уже называют «тот самый».",
-  "en": "The bakery has launched a new caraway loaf, the Primorsky. In the queue on Novikov Street they already call it \"the one\".",
-  "ja": "製パン工場がキャラウェイ入りの新しいパン「沿海」を出しました。ノヴィコフ通りのパン屋の行列では、もう「例のやつ」と呼ばれています。"
+  "en": "The bakery has launched a new caraway loaf, the Primorsky. In the queue on Novikova Street they already call it \"the one\".",
+  "ja": "製パン工場がキャラウェイ入りの新しいパン「沿海」を出しました。ノヴィコワ通りのパン屋の行列では、もう「例のやつ」と呼ばれています。"
  },
  "music.radio.news.13": {
   "ru": "Ученица восьмого класса второй школы заняла первое место на олимпиаде по астрономии. Она открыла, что с крыши школы видно больше звёзд, чем говорил учитель.",
-  "en": "An eighth-grader from School No. 2 has won first place at the astronomy olympiad. She found that more stars can be seen from the school roof than the teacher said.",
+  "en": "An eighth-form pupil from School No. 2 has taken first place at the astronomy olympiad. She found that more stars can be seen from the school roof than the teacher said.",
   "ja": "第二学校の八年生が天文オリンピックで一位に。学校の屋上からは先生が言ったより多くの星が見えることを発見しました。"
  },
  "music.radio.news.14": {
@@ -772,7 +772,7 @@
  "music.radio.news.20": {
   "ru": "Городской духовой оркестр сыграет на набережной у фонтана. Репетицию было слышно на рынке, так что многие придут подготовленными.",
   "en": "The town brass band will play on the promenade by the fountain. The rehearsal could be heard at the market, so many will come prepared.",
-  "ja": "市の吹奏楽団が噴水のそばの海岸通りで演奏します。練習が市場まで聞こえたので、みなさん予習ずみでしょう。"
+  "ja": "市の吹奏楽団が噴水のそばの遊歩道で演奏します。練習が市場まで聞こえたので、みなさん予習ずみでしょう。"
  },
  "music.radio.news.21": {
   "ru": "Почта напоминает: на конверте пишите индекс. Письмо «на деревню бабушке» дошло, но с трудом.",
@@ -807,7 +807,7 @@
  "music.radio.news.27": {
   "ru": "Санаторий «Корона» приглашает горожан на вечер танцев в зимнем саду. Отдыхающие обещают не наступать на ноги.",
   "en": "The Korona sanatorium invites townsfolk to a dance evening in the winter garden. Guests promise not to step on toes.",
-  "ja": "サナトリウム「コロナ」が温室でのダンスの夕べに市民を招待します。保養客は足を踏まないと約束しています。"
+  "ja": "療養所「コロナ」が温室でのダンスの夕べに市民を招待します。保養客は足を踏まないと約束しています。"
  },
  "music.radio.news.28": {
   "ru": "На третьей террасе пляжа покрасили скамейки. Табличку «Окрашено» уже унесли, а краска ещё нет.",
@@ -847,7 +847,7 @@
  "music.radio.news.35": {
   "ru": "Часы на башне «Волны» снова идут точно. Кто опаздывал, теперь опаздывает по правильному времени.",
   "en": "The clock on the Wave Tower is keeping good time again. Anyone who was late is now late by the correct time.",
-  "ja": "「ヴォルナ」塔の時計がまた正確に動き出しました。遅刻する人も、これからは正しい時刻で遅刻できます。"
+  "ja": "ウェーブ・タワーの時計がまた正確に動き出しました。遅刻する人も、これからは正しい時刻で遅刻できます。"
  },
  "music.radio.news.36": {
   "ru": "Городской сад высадил у кинотеатра новые розы. Влюблённых просят рвать их глазами.",
@@ -867,7 +867,7 @@
  "music.radio.news.winter.3": {
   "ru": "Лебеди зимуют у тёплого стока санатория. Просим не кормить их пирожками с капустой.",
   "en": "The swans are wintering by the sanatorium's warm outflow. Please don't feed them cabbage pies.",
-  "ja": "白鳥はサナトリウムの温かい排水口のそばで冬を越しています。キャベツのピロシキはあげないでください。"
+  "ja": "白鳥は療養所の温かい排水口のそばで冬を越しています。キャベツのピロシキはあげないでください。"
  },
  "music.radio.news.spring.1": {
   "ru": "Вернулись скворцы. Скворечники у школы заняты, свободные места только на крыше универмага.",
@@ -892,7 +892,7 @@
  "music.radio.news.summer.2": {
   "ru": "Летний кинотеатр у набережной начал сезон. Комаров просят приходить к последнему сеансу.",
   "en": "The open-air cinema on the promenade has opened its season. Mosquitoes are asked to come to the last show only.",
-  "ja": "海岸通りの野外映画館が今シーズンを開きました。蚊は最終回だけにお越しください。"
+  "ja": "遊歩道の野外映画館が今シーズンを開きました。蚊は最終回だけにお越しください。"
  },
  "music.radio.news.summer.3": {
   "ru": "Очередь за квасом у рынка сегодня была длиннее, чем за билетами в кино. Бочку обещают привезти вторую.",
@@ -902,7 +902,7 @@
  "music.radio.news.autumn.1": {
   "ru": "Санаторий «Корона» закрыл летний сезон и открыл осенний. Разница, говорят, только в пледах.",
   "en": "The Korona sanatorium has closed its summer season and opened its autumn one. The difference, they say, is only the blankets.",
-  "ja": "サナトリウム「コロナ」は夏のシーズンを終え、秋のシーズンを始めました。違いはひざ掛けだけだそうです。"
+  "ja": "療養所「コロナ」は夏のシーズンを終え、秋のシーズンを始めました。違いはひざ掛けだけだそうです。"
  },
  "music.radio.news.autumn.2": {
   "ru": "Школьники собрали две тонны макулатуры. В ней нашли учебник, который искали всем классом.",
@@ -942,7 +942,7 @@
  "music.radio.weather.advice.rain": {
   "ru": "Не забудьте зонт, а на канатной дороге не забудьте его в вагончике.",
   "en": "Don't forget your umbrella, and don't forget it in the cable car either.",
-  "ja": "傘をお忘れなく。ロープウェイに置き忘れるのもお忘れなく。"
+  "ja": "傘をお忘れなく。ただし、ロープウェイに置き忘れないように。"
  },
  "music.radio.weather.advice.snow": {
   "ru": "Посыпайте ступеньки песком и ходите по террасам осторожно, как пингвины.",
@@ -1107,7 +1107,7 @@
  "music.sea.0": {
   "ru": "слабое",
   "en": "slight",
-  "ja": "弱い"
+  "ja": "穏やか"
  },
  "music.sea.1": {
   "ru": "умеренное",
@@ -1151,8 +1151,8 @@
  },
  "music.radio.req.1": {
   "ru": "Нина Петровна с улицы Новикова просит поставить «{0}» для внука, который служит на флоте.",
-  "en": "Nina Petrovna of Novikov Street asks for \"{0}\" for her grandson, who is serving in the navy.",
-  "ja": "ノヴィコフ通りのニーナ・ペトローヴナさんから。海軍にいる孫のために『{0}』を。"
+  "en": "Nina Petrovna of Novikova Street asks for \"{0}\" for her grandson, who is serving in the navy.",
+  "ja": "ノヴィコワ通りのニーナ・ペトローヴナさんから。海軍にいる孫のために『{0}』を。"
  },
  "music.radio.req.2": {
   "ru": "Смотритель маяка просит «{0}» для чаек, которые слушают его радио вместе с ним.",
@@ -1172,7 +1172,7 @@
  "music.radio.req.5": {
   "ru": "Супруги Корниловы из санатория «Корона» просят «{0}» в честь сорока лет вместе. Познакомились они здесь же, на третьей террасе.",
   "en": "Mr and Mrs Kornilov at the Korona sanatorium ask for \"{0}\" for forty years together. They met right here, on the third terrace.",
-  "ja": "サナトリウム「コロナ」のコルニロフ夫妻から。結婚四十年を記念して『{0}』を。出会ったのはここ、三段目のテラスだそうです。"
+  "ja": "療養所「コロナ」のコルニロフ夫妻から。結婚四十年を記念して『{0}』を。出会ったのはここ、三段目のテラスだそうです。"
  },
  "music.radio.req.6": {
   "ru": "Бригада рыболовецкой артели «Заря» просит «{0}» для своих жён, которые ждут их на берегу. И для повара, который ждёт рыбу.",
@@ -1257,7 +1257,7 @@
  "music.radio.req.to.5": {
   "ru": "просто для всех, кто не спит",
   "en": "just for everyone who's still awake",
-  "ja": "眠れないみんなに"
+  "ja": "まだ起きているみんなに"
  },
  "music.radio.req.to.6": {
   "ru": "для смотрителя маяка, чтобы ему было не скучно",
@@ -1332,7 +1332,7 @@
  "city.jb.day_1": {
   "ru": "«Бриз на набережной», гитара и колокольчики. Двое отдыхающих начали притоптывать в сандалиях, каждый в свой такт.",
   "en": "Breeze on the Promenade, guitar and glockenspiel. Two holidaymakers started tapping their sandals, each to his own beat.",
-  "ja": "『海岸通りのそよ風』、ギターとグロッケン。保養客ふたりがサンダルで拍子をとりはじめた。それぞれ違う拍子で。"
+  "ja": "『遊歩道のそよ風』、ギターとグロッケン。保養客ふたりがサンダルで拍子をとりはじめた。それぞれ違う拍子で。"
  },
  "city.jb.day_2": {
   "ru": "Поставил «Тихий октябрь». Все в зале одновременно посмотрели в окно, хотя там ничего не было.",
@@ -1416,7 +1416,7 @@
  },
  "city.shop.records_wave.title": {
   "ru": "Пластинки «Волна»",
-  "en": "«Volna» Records",
+  "en": "Volna Records",
   "ja": "レコード店「ヴォルナ」"
  }
 }

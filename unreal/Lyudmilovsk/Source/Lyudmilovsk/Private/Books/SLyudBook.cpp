@@ -59,8 +59,9 @@ namespace LyudBookDraw
 	TSharedPtr<const FWidths, ESPMode::ThreadSafe> MeasureFont(const FSlateFontInfo& Font)
 	{
 		// one table per face and size for the whole run (the reader opens many books at a few sizes)
-		static TMap<FString, TSharedPtr<const FWidths, ESPMode::ThreadSafe>> Cache;
-		const FString Key = FString::Printf(TEXT("%s/%d"), *Font.TypefaceFontName.ToString(), (int32)Font.Size);
+		// (keyed without a string: this is asked for every page drawn, every frame)
+		static TMap<TPair<FName, int32>, TSharedPtr<const FWidths, ESPMode::ThreadSafe>> Cache;
+		const TPair<FName, int32> Key(Font.TypefaceFontName, (int32)Font.Size);
 		if (const TSharedPtr<const FWidths, ESPMode::ThreadSafe>* Hit = Cache.Find(Key))
 		{
 			return *Hit;
@@ -306,6 +307,7 @@ void SLyudBookReader::Tick(const FGeometry& AllottedGeometry, const double InCur
 		}
 		bLayingOut = false;
 		Layout = LayoutTask.GetResult();
+		FolioFor = -2;  // the running heads and folios come from the new layout
 		ComputeSpread();
 		const int32 Per = PagesPerSpread();
 		PageIndex = (Layout->PageOf(WantOffset) / Per) * Per;

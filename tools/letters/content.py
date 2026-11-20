@@ -24,10 +24,10 @@ T("letters.postbox.prompt", "E — почтовый ящик", "E — postbox", 
 T("letters.mailbox.prompt", "E — почтовый ящик клуба", "E — the club's mailbox", "E：クラブの郵便受け")
 T("letters.mailbox.prompt_new", "E — забрать письма ({0})", "E — take the letters ({0})", "E：手紙を取る（{0}）")
 T("letters.postbox.title", "Почтовый ящик", "Postbox", "郵便ポスト")
-T("letters.mailbox.title", "Почтовый ящик клуба «Атон»", "The Aton club's mailbox", "クラブ「アトン」の郵便受け")
+T("letters.mailbox.title", "Почтовый ящик клуба «Атон»", "The ATON club's mailbox", "クラブ「アトン」の郵便受け")
 T("letters.postbox.collect", "Выемка писем в 17:00, кроме воскресенья.", "Collection at 17:00, except Sundays.",
   "取集は17時。日曜日を除く。")
-T("letters.menu.card", "Написать открытку (в кармане: {0})", "Write a postcard ({0} in the pocket)", "はがきを書く（手持ち：{0}）")
+T("letters.menu.card", "Написать открытку (в кармане: {0})", "Write a postcard ({0} in my pocket)", "はがきを書く（手持ち：{0}）")
 T("letters.menu.pen", "Ответить Тоне на Белый Мыс", "Answer Tonya at White Cape", "白岬のトーニャに返事を書く")
 T("letters.menu.reread", "Перечитать письма ({0})", "Read the letters again ({0})", "手紙を読み返す（{0}）")
 T("letters.menu.leave", "Отойти", "Step away", "離れる")
@@ -72,15 +72,15 @@ T("letters.addr.flat", "{0}, д. {1}, кв. {2}", "{1} {0}, flat {2}", "{0}{1}�
 T("letters.addr.house", "{0}, д. {1}", "{1} {0}", "{0}{1}番")
 T("letters.addr.academ", "Академгородок", "Academgorodok", "アカデムゴロドク")
 T("letters.addr.academ_flat", "Академгородок, кв. {0}", "Academgorodok, flat {0}", "アカデムゴロドク　{0}号室")
-for tid, ru, en, ja in [("T0", "Набережная", "Embankment", "海岸通り"), ("T1", "Нижний город", "Lower Town", "下町"),
-                        ("T2", "Вторая терраса", "Second Terrace", "第二段丘"), ("T3", "Третья терраса", "Third Terrace", "第三段丘"),
-                        ("T4", "Четвёртая терраса", "Fourth Terrace", "第四段丘"), ("T5", "Верхняя терраса", "Upper Terrace", "上段丘"),
+for tid, ru, en, ja in [("T0", "Набережная", "Promenade", "遊歩道"), ("T1", "Нижний город", "Lower Town", "下町"),
+                        ("T2", "Вторая терраса", "Second Terrace", "第二テラス"), ("T3", "Третья терраса", "Third Terrace", "第三テラス"),
+                        ("T4", "Четвёртая терраса", "Fourth Terrace", "第四テラス"), ("T5", "Верхняя терраса", "Upper Terrace", "上テラス"),
                         ("B", "Пляж", "Beach", "浜辺"),
-                        ("W1", "Набережная, у стены", "Embankment Wall", "海岸通り・壁の家"),
+                        ("W1", "Набережная, у стены", "Promenade Wall", "遊歩道・壁の家"),
                         ("W2", "Нижний город, у стены", "Lower Town Wall", "下町・壁の家"),
-                        ("W3", "Вторая терраса, у стены", "Second Terrace Wall", "第二段丘・壁の家"),
-                        ("W4", "Третья терраса, у стены", "Third Terrace Wall", "第三段丘・壁の家"),
-                        ("W5", "Четвёртая терраса, у стены", "Fourth Terrace Wall", "第四段丘・壁の家")]:
+                        ("W3", "Вторая терраса, у стены", "Second Terrace Wall", "第二テラス・壁の家"),
+                        ("W4", "Третья терраса, у стены", "Third Terrace Wall", "第三テラス・壁の家"),
+                        ("W5", "Четвёртая терраса, у стены", "Fourth Terrace Wall", "第四テラス・壁の家")]:
     T("letters.street.%s" % tid, ru, en, ja)
 T("letters.diary.card", "Отправил открытку «{0}». Кому: {1}. «{2} {3}»", "Sent the postcard \"{0}\". To: {1}. \"{2} {3}\"",
   "はがき「{0}」を出した。宛先：{1}。「{2}{3}」")
@@ -96,7 +96,7 @@ T("letters.pen.place", "Белый Мыс", "White Cape", "白岬")
 T("dev.group.letters", "Почта", "Post", "郵便")
 T("dev.action.letters.deliver", "Почта: доставить всё сейчас", "Post: deliver everything now", "郵便：今すぐ全部配達")
 T("dev.action.letters.pen_next", "Почта: следующее письмо Тони", "Post: Tonya's next letter", "郵便：トーニャの次の手紙")
-T("dev.action.letters.cards", "Почта: 5 открыток в карман", "Post: 5 postcards to the pocket", "郵便：はがき5枚を手持ちに")
+T("dev.action.letters.cards", "Почта: 5 открыток в карман", "Post: 5 postcards into the pocket", "郵便：はがき5枚を手持ちに")
 T("dev.action.letters.know_all", "Почта: знаком со всеми", "Post: know everybody", "郵便：全員と知り合い")
 T("dev.tp.letters_club_mailbox", "Почтовый ящик клуба", "The club's mailbox", "クラブの郵便受け")
 T("dev.tp.letters_postbox_kiosk1", "Почтовый ящик у киоска 1", "Postbox by kiosk 1", "売店1のポスト")
@@ -107,11 +107,11 @@ PICTURES = [
     ("lighthouse", "Маяк на пирсе", "The lighthouse on the pier", "桟橋の灯台"),
     ("cablecar", "Канатная дорога над обрывом", "The cable car over the cliff", "崖の上のロープウェイ"),
     ("fountain", "Солнечный фонтан", "The Sun Fountain", "太陽の噴水"),
-    ("promenade", "Набережная на закате", "The promenade at sunset", "夕暮れの海岸通り"),
+    ("promenade", "Набережная на закате", "The promenade at sunset", "夕暮れの遊歩道"),
     ("starlings", "Скворцы над морем", "Starlings over the sea", "海の上のムクドリ"),
-    ("terraces", "Террасы Людмиловска", "The terraces of Lyudmilovsk", "リュドミロフスクの段丘"),
-    ("sanatorium", "Санаторий «Корона»", "The Korona sanatorium", "サナトリウム「コロナ」"),
-    ("aton", "Клуб «Атон» на утёсе", "The Aton club on the cliff", "崖の上のクラブ「アトン」"),
+    ("terraces", "Террасы Людмиловска", "The terraces of Lyudmilovsk", "リュドミロフスクのテラス"),
+    ("sanatorium", "Санаторий «Корона»", "The Korona sanatorium", "療養所「コロナ」"),
+    ("aton", "Клуб «Атон» на утёсе", "The ATON club on the cliff", "崖の上のクラブ「アトン」"),
 ]
 for pid, ru, en, ja in PICTURES:
     T("letters.pic.%s" % pid, ru, en, ja)
@@ -132,7 +132,7 @@ OPENINGS = [
 WISHES = [
     ("weather", "Пусть у вас всегда будет ясная погода.", "May you always have clear weather.", "いつも晴れますように。"),
     ("day", "Хорошего вам дня!", "Have a good day!", "よい一日を！"),
-    ("see", "До встречи на набережной!", "See you on the promenade!", "海岸通りで会いましょう！"),
+    ("see", "До встречи на набережной!", "See you on the promenade!", "遊歩道で会いましょう！"),
     ("care", "Берегите себя.", "Take care of yourself.", "お体に気をつけて。"),
     ("sun", "Пусть солнце светит вам в окно.", "May the sun shine in at your window.", "窓にお日さまが差しますように。"),
     ("tea", "Тёплого вам чая и долгих вечеров.", "Warm tea to you, and long evenings.", "あたたかいお茶と、長い夜を。"),
@@ -170,7 +170,7 @@ REPLIES = {
           "はがき届いた。最初は広告かと思ったけど、読んだ。ありがとう。「{0}」は棚のガラスの中に飾った。"),
         T("letters.reply.teen.3",
           "Привет. Открытка «{0}» дошла за один день, а мне казалось, почта ходит только к бабушкам. Встретимся у фонтана — расскажешь, откуда ты такой взялся.",
-          "Hi. The postcard \"{0}\" came in a day, and I thought the post only went to grannies. See you by the fountain: tell me where you came from.",
+          "Hi. The postcard \"{0}\" came in a day, and I thought the post only went to grannies. See you by the fountain: you can tell me where you sprang from.",
           "やあ。「{0}」のはがき、一日で届いたよ。郵便っておばあちゃんにしか来ないと思ってた。噴水で会ったら、どこから来たのか教えて。"),
     ],
     "adult": [
@@ -181,7 +181,7 @@ REPLIES = {
         T("letters.reply.adult.2",
           "Дорогой сосед! Открыток мне не присылали, кажется, с институтских времён. «{0}» — прекрасный выбор. Заходите в гости, если будете на нашей террасе.",
           "Dear neighbour! I don't think I've had a postcard since my student days. \"{0}\" is a lovely choice. Do drop in if you're on our terrace.",
-          "ご近所さんへ。はがきをもらうのは学生のころ以来かもしれません。「{0}」、すてきな選び方です。うちの段丘に来たら寄ってくださいね。"),
+          "ご近所さんへ。はがきをもらうのは学生のころ以来かもしれません。「{0}」とは、すてきなはがきを選びましたね。うちのテラスに来たら寄ってくださいね。"),
         T("letters.reply.adult.3",
           "Ваша открытка «{0}» пришла, и полдня у меня было отличное настроение. На работе спросили, что случилось. Ответ простой: почта. Спасибо!",
           "Got your postcard \"{0}\" and went about pleased half the day. At work they asked what had happened. I said: the post. Thank you!",
@@ -214,7 +214,7 @@ THANKS_LINES = [
     T("line.letters.thanks.4", "Спасибо за весточку. Давно мне никто не писал.", "Thanks for the word. Nobody's written to me for ages.",
       "便りをありがとう。ずいぶん久しぶりに手紙をもらった。"),
     T("line.letters.thanks.5", "Твоя открытка дошла! Я теперь тоже хочу кому-нибудь написать.",
-      "Your postcard came! Now I want to write to somebody too.", "君のはがき、届いたよ！今度は僕も誰かに書きたくなった。"),
+      "Your postcard came! Now I want to write to somebody too.", "君のはがき、届いたよ！今度はこっちも誰かに書きたくなった。"),
     T("line.letters.thanks.6", "Спасибо тебе за открытку, золотой.", "Thank you for the postcard, my dear.", "はがきをありがとうね、いい子だね。"),
 ]
 
@@ -267,11 +267,11 @@ CORRESPONDENTS = [
              T("letters.home.singh.1",
                "Приём!\n\nОткрытка «{0}» получена, слышимость отличная. У радиолюбителей принято отвечать на связь карточкой, так что вот моя: «Капсульная башня, Людмиловск. Сигнал пять-девять. Оператор Ильмар». Повесьте её у себя. Теперь вы в моём журнале связей, под номером тысяча четыреста два.\n\nИльмар, комендант",
                "Come in!\n\nThe postcard \"{0}\" received, reception excellent. Radio hams answer a contact with a card, so here's mine: \"Capsule Tower, Lyudmilovsk. Signal five-nine. Operator Ilmar.\" Pin it up. You're in my contact log now, number one thousand four hundred and two.\n\nIlmar, the warden",
-               "こちら応答！\n\nはがき「{0}」受信、感度良好。アマチュア無線家は交信のお礼にカードを送るのが決まりなので、これが私のカードです。「カプセルタワー、リュドミロフスク。信号５・９。オペレーター：イルマル」。どこかに貼っておいてください。君は私の交信ログの千四百二番になりました。\n\n管理人イルマル"),
+               "こちら応答！\n\nはがき「{0}」受信、感度良好。アマチュア無線家は交信のお礼にカードを送るのが決まりなので、これが私のカードです。「カプセルタワー、リュドミロフスク。信号5・9。オペレーター：イルマル」。どこかに貼っておいてください。君は私の交信ログの千四百二番になりました。\n\n管理人イルマル"),
              T("letters.home.singh.2",
                "Приём!\n\nВторая открытка, «{0}». Докладываю: в субботу в «Тарелке» был Гуннар. Двадцать лет мы говорили по радио через одну улицу и ни разу не виделись. Оказалось, он выше меня на голову и тоже пьёт чай без сахара. Это ваша работа. Конец связи, но не совсем.\n\nИльмар",
-               "Come in!\n\nA second postcard, \"{0}\". I report: on Saturday Gunnar was at the Tarelka. Twenty years we talked by radio across one street and never once met. Turns out he's a head taller than me and also drinks his tea without sugar. That's your doing. Over and out, but not quite.\n\nIlmar",
-               "こちら応答！\n\n二枚目のはがき「{0}」。報告します。土曜日、「タレルカ」にグンナルが来ました。通り一本をはさんで二十年無線で話していたのに、一度も会ったことがなかった。彼は私より頭ひとつ背が高く、やはり紅茶に砂糖を入れない人でした。君のおかげです。交信終了。でも、まだ終わりではありません。\n\nイルマル"),
+               "Come in!\n\nA second postcard, \"{0}\". I report: on Saturday Gunnar was at the Saucer. Twenty years we talked by radio across one street and never once met. Turns out he's a head taller than me and also drinks his tea without sugar. That's your doing. Over and out, but not quite.\n\nIlmar",
+               "こちら応答！\n\n二枚目のはがき「{0}」。報告します。土曜日、「ソーサー」にグンナルが来ました。通り一本をはさんで二十年無線で話していたのに、一度も会ったことがなかった。彼は私より頭ひとつ背が高く、やはり紅茶に砂糖を入れない人でした。君のおかげです。交信終了。でも、まだ終わりではありません。\n\nイルマル"),
          ],
          invite=T("letters.home.singh.invite",
                   "Приём!\n\nПриглашаю на ночное дежурство в эфире. В полночь проходимость лучше всего: бывает слышно корабли за Скагерраком и рыбаков с Лофотенов. Приходите в капсульную башню после одиннадцати. Наушники у меня есть вторые.\n\nИльмар",
@@ -305,34 +305,34 @@ CORRESPONDENTS = [
              T("letters.home.okafor.1",
                "Привет, помощник!\n\nОткрытку «{0}» поставил на полку «Для солнца», это моя лучшая полка. Ту музыку с катушки я нашёл: это был старый вальс, и играл его, оказывается, оркестр нашего же санатория. Полгода искал по всему миру то, что звучало за углом.\n\nГуннар, UA-Людмиловск-11",
                "Hello, helper!\n\nI've stood the postcard \"{0}\" on the \"For sun\" shelf, my best shelf. I found the music from the reel: an old waltz, played, it turns out, by our own sanatorium's band. Half a year I searched the whole world for what was playing round the corner.\n\nGunnar, UA-Lyudmilovsk-11",
-               "やあ、助手くん！\n\nはがき「{0}」は「太陽のための」棚に立てた。いちばんいい棚だ。リールの音楽、見つけたよ。古いワルツで、演奏していたのはなんと、うちの町のサナトリウムの楽団だった。半年も世界じゅう探して、角を曲がったところで鳴っていたものだったんだ。\n\nグンナル　UA-リュドミロフスク-11"),
+               "やあ、助手くん！\n\nはがき「{0}」は「太陽のための」棚に立てた。いちばんいい棚だ。リールの音楽、見つけたよ。古いワルツで、演奏していたのはなんと、うちの町の療養所の楽団だった。半年も世界じゅう探して、角を曲がったところで鳴っていたものだったんだ。\n\nグンナル　UA-リュドミロフスク-11"),
              T("letters.home.okafor.2",
                "Помощник!\n\nОткрытка «{0}» — уже вторая, значит, ты у меня постоянный корреспондент. С Ильмаром мы теперь ходим в «Тарелку» по субботам. Сидим за одним столом и молчим, как в эфире между сеансами. Хорошо молчим.\n\nГуннар",
-               "Helper,\n\nThe postcard \"{0}\" is the second, so you're a regular correspondent of mine. Ilmar and I go to the Tarelka on Saturdays now. We sit at one table and say nothing, like on the air between sessions. A good sort of nothing.\n\nGunnar",
-               "助手くん\n\n「{0}」で二枚目。これで君は常連の通信相手だ。イルマルとは土曜日に「タレルカ」へ行くようになった。同じテーブルにすわって、交信と交信のあいまみたいに黙っている。いい沈黙だよ。\n\nグンナル"),
+               "Helper,\n\nThe postcard \"{0}\" is the second, so you're a regular correspondent of mine. Ilmar and I go to the Saucer on Saturdays now. We sit at one table and say nothing, like on the air between sessions. A good sort of nothing.\n\nGunnar",
+               "助手くん\n\n「{0}」で二枚目。これで君は常連の通信相手だ。イルマルとは土曜日に「ソーサー」へ行くようになった。同じテーブルにすわって、交信と交信のあいまみたいに黙っている。いい沈黙だよ。\n\nグンナル"),
          ],
          invite=T("letters.home.okafor.invite",
                   "Помощник!\n\nВ субботу в «Тарелке» в шесть. Ильмар, я и, если придёшь, ты. Принеси свою лучшую новость, мы с Ильмаром свои уже рассказали друг другу по радио.\n\nГуннар",
-                  "Helper,\n\nSaturday at the Tarelka at six. Ilmar, me and, if you come, you. Bring your best news: Ilmar and I have already told each other ours over the radio.\n\nGunnar",
-                  "助手くん\n\n土曜日の六時、「タレルカ」で。イルマルと僕と、来てくれるなら君。とっておきの話を持ってきてくれ。僕たちのは、もう無線で話しちゃったから。\n\nグンナル"),
+                  "Helper,\n\nSaturday at the Saucer at six. Ilmar, me and, if you come, you. Bring your best news: Ilmar and I have already told each other ours over the radio.\n\nGunnar",
+                  "助手くん\n\n土曜日の六時、「ソーサー」で。イルマルと僕と、来てくれるなら君。とっておきの話を持ってきてくれ。僕たちのは、もう無線で話しちゃったから。\n\nグンナル"),
          shelf_note=T("letters.shelf.okafor", "На полке «Для солнца» среди пластинок стоит моя открытка.",
                       "My postcard stands among the records on the \"For sun\" shelf.", "「太陽のための」棚のレコードのあいだに、僕のはがきが立っている。")),
     dict(id="h_tadesse", home="P-T1H3", shelf="P-T1H3/studio_art_shelf", person="t_tadesse_valentina",
-         name=T("letters.who.tadesse", "Валентина Тадессе", "Valentina Tadesse", "ヴァレンチナ・タデッセ"),
+         name=T("letters.who.tadesse", "Валентина Тадессе", "Valentina Tadesse", "ワレンチナ・タデッセ"),
          replies=[
              T("letters.home.tadesse.1",
                "Дорогой мальчик!\n\nСпасибо за «{0}». Хэмиш сказал, что на ней не хватает рыбы, и я дорисовала: теперь в углу плывёт маленькая камбала. Не обижайтесь, это у меня профессиональное. Открытка стоит в мастерской, рыбы в аквариуме на неё смотрят.\n\nВ. Тадессе",
                "Dear boy,\n\nThank you for \"{0}\". Hamish said it lacked a fish, so I drew one in: now a little flounder swims in the corner. Don't be offended: it's professional with me. The card stands in the studio, and the fish in the tank look at it.\n\nV. Tadesse",
-               "やさしい坊やへ\n\n「{0}」をありがとう。ハミッシュが「魚が足りない」と言うので描き足しました。今は隅で小さなカレイが泳いでいます。気を悪くしないでね、職業病なの。はがきはアトリエに飾ってあって、水槽の魚たちが眺めています。\n\nV・タデッセ"),
+               "やさしい坊やへ\n\n「{0}」をありがとう。ヘイミッシュが「魚が足りない」と言うので描き足しました。今は隅で小さなカレイが泳いでいます。気を悪くしないでね、職業病なの。はがきはアトリエに飾ってあって、水槽の魚たちが眺めています。\n\nV・タデッセ"),
              T("letters.home.tadesse.2",
                "Дорогой мой корреспондент!\n\nВторая открытка, «{0}». А у нас новость: Хэмиш поймал треску, первую за весь сезон, и не дал мне её написать, съел. Говорит, натюрморт должен быть в желудке. Пятьдесят лет вместе, а спорим, как на первом свидании.\n\nВаля",
                "My dear correspondent,\n\nA second postcard, \"{0}\". And we have news: Hamish caught a cod, the first all season, and wouldn't let me paint it: he ate it. He says a still life belongs in the stomach. Fifty years together, and we argue like on our first date.\n\nValya",
-               "親愛なる文通相手へ\n\n二枚目のはがき「{0}」。こちらにも知らせがあります。ハミッシュが今季はじめてのタラを釣ったのに、私に描かせないで食べてしまいました。静物画は胃袋に入れるものだ、ですって。五十年いっしょにいて、まだ初デートのときみたいにけんかしています。\n\nワーリャ"),
+               "親愛なる文通相手へ\n\n二枚目のはがき「{0}」。こちらにも知らせがあります。ヘイミッシュが今季はじめてのタラを釣ったのに、私に描かせないで食べてしまいました。静物画は胃袋に入れるものだ、ですって。五十年いっしょにいて、まだ初デートのときみたいにけんかしています。\n\nワーリャ"),
          ],
          invite=T("letters.home.tadesse.invite",
                   "Дорогой мальчик!\n\nЗаходите в мастерскую посмотреть, как я пишу воду. Это лучше видно, чем рассказать. Хэмиш обещает уху, если клюнет, и бутерброды, если нет. Звонить не надо, заходите. Рыб не кормить.\n\nВ. Тадессе",
                   "Dear boy,\n\nCome to the studio and see how I paint water. It's better seen than told. Hamish promises fish soup if they bite and sandwiches if they don't. No need to ring: come in. Don't feed the fish.\n\nV. Tadesse",
-                  "やさしい坊やへ\n\n水の描き方を見にアトリエへいらっしゃい。話すより見るほうが早いから。ハミッシュは、釣れたら魚のスープ、釣れなかったらサンドイッチを約束しています。呼び鈴は鳴らさずに、どうぞお入りなさい。魚にえさはあげないでね。\n\nV・タデッセ"),
+                  "やさしい坊やへ\n\n水の描き方を見にアトリエへいらっしゃい。話すより見るほうが早いから。ヘイミッシュは、釣れたら魚のスープ、釣れなかったらサンドイッチを約束しています。呼び鈴は鳴らさずに、どうぞお入りなさい。魚にえさはあげないでね。\n\nV・タデッセ"),
          shelf_note=T("letters.shelf.tadesse", "На полке с альбомами стоит моя открытка. В углу на ней кто-то дорисовал камбалу.",
                       "My postcard stands on the shelf of albums. Somebody has drawn a flounder into its corner.",
                       "画集の棚に僕のはがきが立っている。隅に誰かがカレイを描き足してある。")),
@@ -424,7 +424,7 @@ INVITE_FESTIVALS = {
     "sea_festival": T("letters.invite.sea_festival",
         "Уважаемый житель!\n\nВ субботу праздник: {0}. На набережной будут гонки на вёслах, уха в больших котлах и концерт на пирсе. Смотрители маяка зажгут огонь раньше обычного, в честь всех, кто в море.\n\nГорсовет Людмиловска",
         "Dear resident,\n\nOn Saturday it's the holiday: {0}. On the promenade there'll be rowing races, fish soup in big cauldrons and a concert on the pier. The lighthouse keepers will light the lamp earlier than usual, in honour of all those at sea.\n\nLyudmilovsk Town Council",
-        "市民のみなさまへ\n\n土曜日はお祭りです：{0}。海岸通りではボートレース、大鍋のウハー、桟橋でのコンサートがあります。灯台守は海にいるすべての人のために、いつもより早く灯をともします。\n\nリュドミロフスク市役所"),
+        "市民のみなさまへ\n\n土曜日はお祭りです：{0}。遊歩道ではボートレース、大鍋のウハー、桟橋でのコンサートがあります。灯台守は海にいるすべての人のために、いつもより早く灯をともします。\n\nリュドミロフスク市役所"),
     "lantern_night": T("letters.invite.lantern_night",
         "Уважаемый житель!\n\nСкоро праздник: {0}. Вечером на пляже будем запускать небесные фонарики. Напишите на своём желание и отпустите его над морем. Фонарики и спички выдаём бесплатно у костра.\n\nГорсовет Людмиловска",
         "Dear resident,\n\nThe holiday is coming: {0}. In the evening we'll be sending up sky lanterns on the beach. Write a wish on yours and let it go over the sea. Lanterns and matches are free by the bonfire.\n\nLyudmilovsk Town Council",
@@ -440,11 +440,11 @@ INVITE_FESTIVALS = {
     "new_year": T("letters.invite.new_year",
         "Уважаемый житель!\n\nГорсовет поздравляет вас с наступающим праздником: {0}. В полночь на площади будет салют, а до полуночи — ёлка, музыка и Дед Мороз, который обещал не опаздывать. С новым счастьем!\n\nГорсовет Людмиловска",
         "Dear resident,\n\nThe Town Council wishes you joy of the coming holiday: {0}. At midnight there'll be fireworks on the square, and before midnight a tree, music and Grandfather Frost, who has promised not to be late. A happy new year!\n\nLyudmilovsk Town Council",
-        "市民のみなさまへ\n\n市役所より、まもなくのお祭りのお祝いを申し上げます：{0}。真夜中には広場で花火、その前にはツリーと音楽と、遅刻しないと約束したマロース爺さんが待っています。新年おめでとうございます！\n\nリュドミロフスク市役所"),
+        "市民のみなさまへ\n\n市役所より、まもなくのお祭りのお祝いを申し上げます：{0}。真夜中には広場で花火、その前にはツリーと音楽と、遅刻しないと約束したジェド・マロースが待っています。新年おめでとうございます！\n\nリュドミロフスク市役所"),
     "halloween": T("letters.invite.halloween",
         "Уважаемый житель!\n\nСкоро праздник: {0}. Дети пойдут по домам за конфетами: держите угощение у двери. На набережной вечером будут тыквы с фонариками и страшные истории у костра. Не очень страшные.\n\nГорсовет Людмиловска",
         "Dear resident,\n\nThe holiday is coming: {0}. The children will go from door to door for sweets: keep treats by the door. In the evening on the promenade there'll be lantern pumpkins and scary stories by the bonfire. Not too scary.\n\nLyudmilovsk Town Council",
-        "市民のみなさまへ\n\nもうすぐお祭りです：{0}。子どもたちがお菓子をもらいに家々をまわります。戸口にお菓子をご用意ください。夕方の海岸通りには、ちょうちんのかぼちゃと、たき火を囲んでのこわい話があります。それほどこわくはありません。\n\nリュドミロフスク市役所"),
+        "市民のみなさまへ\n\nもうすぐお祭りです：{0}。子どもたちがお菓子をもらいに家々をまわります。戸口にお菓子をご用意ください。夕方の遊歩道には、ちょうちんのかぼちゃと、たき火を囲んでのこわい話があります。それほどこわくはありません。\n\nリュドミロフスク市役所"),
 }
 
 # --- the pen friend: Tonya Lotsmanova, 14, the lighthouse keeper's daughter at White Cape far north ---------------------
@@ -455,8 +455,8 @@ PEN = [
     dict(ask="bird",
          body=T("letters.pen.1.body",
             "Здравствуй, незнакомый наблюдатель!\n\nМеня зовут Тоня, мне четырнадцать, я живу на маяке {0}, мой папа здесь смотритель. В бюллетене Общества друзей птиц напечатали список юных наблюдателей, и от Людмиловска там был только один адрес: клуб «Атон». Я решила, что это ты.\n\nУ нас уже почти нет дня: солнце показывается над морем ненадолго, как будто проверить, всё ли на месте. Гаги собираются в стаи и уходят на юг, может быть, к вам. Я их считаю каждое утро с галереи маяка. Вчера насчитала триста двенадцать.\n\nНапиши мне, пожалуйста, какие птицы живут у вас. Я никогда не была на тёплом море и не знаю, кто там летает.\n\nТоня Лоцманова, маяк {0}",
-            "Hello, unknown observer!\n\nMy name is Tonya, I'm fourteen, I live at the lighthouse on {0}, and my father is the keeper here. The Friends of Birds bulletin printed a list of young observers, and from Lyudmilovsk there was only one address: the Aton club. I decided it was you.\n\nWe have hardly any day left now: the sun shows over the sea for a little while, as if to check that everything's still there. The eiders are gathering in flocks and leaving for the south, maybe for yours. I count them every morning from the lighthouse gallery. Yesterday I counted three hundred and twelve.\n\nPlease write and tell me which birds live where you are. I've never been to a warm sea and don't know who flies there.\n\nTonya Lotsmanova, {0} lighthouse",
-            "はじめまして、知らない観察者さん！\n\n私はトーニャ、十四歳です。{0}の灯台に住んでいて、父がここの灯台守です。「鳥の友の会」の会報に若い観察者の名簿がのっていて、リュドミロフスクからはひとつだけ、クラブ「アトン」の住所がありました。それがあなただと決めました。\n\nこちらはもうほとんど昼がありません。お日さまは、みんなちゃんといるか確かめるみたいに、ちょっとだけ海の上に顔を出します。ケワタガモが群れになって南へ渡っていきます。もしかしたら、そちらへ。毎朝、灯台の回廊から数えています。きのうは三百十二羽でした。\n\nそちらにはどんな鳥がいるのか、教えてください。あたたかい海には行ったことがないので、どんな鳥が飛んでいるのか知らないの。\n\n{0}灯台　トーニャ・ロツマノワ"),
+            "Hello, unknown observer!\n\nMy name is Tonya, I'm fourteen, I live at the lighthouse on {0}, and my father is the keeper here. The Friends of Birds bulletin printed a list of young observers, and from Lyudmilovsk there was only one address: the ATON club. I decided it was you.\n\nWe have hardly any day left now: the sun shows over the sea for a little while, as if to check that everything's still there. The eiders are gathering in flocks and leaving for the south, maybe for yours. I count them every morning from the lighthouse gallery. Yesterday I counted three hundred and twelve.\n\nPlease write and tell me which birds live where you are. I've never been to a warm sea and don't know who flies there.\n\nTonya Lotsmanova, {0} lighthouse",
+            "はじめまして、知らない観察者さん！\n\n私はトーニャ、十四歳。{0}の灯台に住んでて、お父さんがここの灯台守なの。「鳥の友の会」の会報に若い観察者の名簿がのってて、リュドミロフスクからはひとつだけ、クラブ「アトン」の住所があった。それがあなただって決めたの。\n\nこっちはもう、ほとんど昼がないよ。お日さまは、みんなちゃんといるか確かめるみたいに、ちょっとだけ海の上に顔を出すの。ケワタガモが群れになって南へ渡っていく。もしかしたら、そっちへ。毎朝、灯台の回廊から数えてるんだ。きのうは三百十二羽だった。\n\nそっちにはどんな鳥がいるのか、教えてくれる？あたたかい海には行ったことがないから、どんな鳥が飛んでるのか知らないの。\n\n{0}灯台　トーニャ・ロツマノワ"),
          diary=T("letters.pen.1.diary", "Мне написала девочка с маяка на Белом Мысе, Тоня. Она считает гаг и спрашивает, какие птицы у нас.",
                  "A girl from the lighthouse at White Cape wrote to me: Tonya. She counts eiders and asks which birds we have.",
                  "白岬の灯台の女の子、トーニャから手紙が来た。ケワタガモを数えていて、こっちにどんな鳥がいるか知りたいそうだ。")),
@@ -464,7 +464,7 @@ PEN = [
          body=T("letters.pen.2.body",
             "Здравствуй!\n\nТвоё письмо пришло! Его везли поездом, потом машиной, потом на катере с почтой и хлебом. Папа сказал, что за такую дорогу письмо заслуживает чая, и мы читали его за чаем, вслух, два раза.\n\nУ нас началась полярная ночь. Это не так страшно, как звучит: днём бывает синее время, когда всё светится само, и снег, и море. А вчера было северное сияние, зелёное, с розовым краем, оно двигалось, как занавеска от сквозняка. Лампа маяка рядом с ним выглядела совсем маленькой.\n\nРасскажи, где ты любишь гулять. У нас гулять можно только от маяка до метеостанции и обратно, два километра, я знаю там каждый камень.\n\nТоня",
             "Hello!\n\nYour letter came! It went by train, then by car, then on the launch with the post and the bread. Dad said a letter that's come so far deserves tea, and we read it over tea, aloud, twice.\n\nThe polar night has begun here. It isn't as frightening as it sounds: in the daytime there's a blue time when everything glows by itself, the snow and the sea. And yesterday there were northern lights, green with a pink edge, moving like a curtain in a draught. The lighthouse lamp looked quite small beside them.\n\nTell me where you like to walk. Here you can only walk from the lighthouse to the weather station and back, two kilometres, and I know every stone.\n\nTonya",
-            "こんにちは！\n\nあなたの手紙が届きました！汽車で、それから車で、それから郵便とパンを運ぶ船で。こんなに遠くから来た手紙にはお茶がふさわしいと父が言って、お茶を飲みながら声に出して二回読みました。\n\nこちらは極夜が始まりました。聞こえるほどこわくはありません。昼には、雪も海も自分で光っているような青い時間があります。きのうはオーロラが出ました。緑色で、ふちがピンク色で、すきま風に揺れるカーテンみたいに動いていました。そのそばでは、灯台の灯がとても小さく見えました。\n\nあなたはどこを散歩するのが好き？こちらで歩けるのは灯台から気象観測所までの往復二キロだけで、石の一つ一つまで知っています。\n\nトーニャ"),
+            "こんにちは！\n\nあなたの手紙、届いたよ！汽車で、それから車で、それから郵便とパンを運ぶ船で来たの。こんなに遠くから来た手紙にはお茶がふさわしいってお父さんが言って、お茶を飲みながら声に出して二回読んだ。\n\nこっちは極夜が始まったよ。聞こえるほどこわくはないの。昼には、雪も海も自分で光ってるみたいな青い時間があるんだ。きのうはオーロラが出た。緑色で、ふちがピンクで、すきま風に揺れるカーテンみたいに動いてた。そのそばだと、灯台の灯がすごく小さく見えたよ。\n\nあなたはどこを散歩するのが好き？こっちで歩けるのは灯台から気象観測所までの往復二キロだけで、石の一つ一つまで知ってるの。\n\nトーニャ"),
          diary=T("letters.pen.2.diary", "Тоня пишет, что у них полярная ночь и было северное сияние. Спрашивает, где я гуляю.",
                  "Tonya writes that the polar night has begun there and they had northern lights. She asks where I walk.",
                  "トーニャの手紙：向こうは極夜が始まって、オーロラが出たそうだ。僕がどこを散歩するのか知りたがっている。")),
@@ -472,7 +472,7 @@ PEN = [
          body=T("letters.pen.3.body",
             "Здравствуй!\n\nТри дня был шторм. Волны перелетали через мол, и маяк гудел, как бутылка, если в неё дуть. Папа не спал две ночи, а я носила ему чай наверх, сто двенадцать ступенек. После шторма на берег прилетели пуночки — маленькие, белые с коричневым, как будто снег научился летать.\n\nКогда встанет лёд, папа поведёт меня рыбачить в лунку. Он говорит, у них тут ловится навага, а если повезёт, то треска. Я ещё ни разу ничего не поймала, только варежку уронила в лунку.\n\nА ты рыбачишь? Что у вас ловится? Напиши, какую рыбу ты поймал сам.\n\nТоня",
             "Hello!\n\nThere was a storm for three days. The waves flew over the breakwater, and the lighthouse hummed like a bottle when you blow into it. Dad didn't sleep for two nights, and I carried tea up to him, a hundred and twelve steps. After the storm the snow buntings came to the shore: little, white and brown, as if the snow had learned to fly.\n\nWhen the ice sets, Dad will take me fishing through a hole. He says you catch navaga here and, if you're lucky, cod. I've never caught anything yet, only dropped a mitten down the hole.\n\nDo you fish? What's caught where you are? Write and tell me which fish you caught yourself.\n\nTonya",
-            "こんにちは！\n\n三日間、嵐でした。波が防波堤を越えて飛んできて、灯台はびんに息を吹きこんだときみたいに鳴っていました。父は二晩眠らなくて、私は百十二段の階段を上ってお茶を運びました。嵐のあと、浜にユキホオジロが来ました。白と茶色の小さな鳥で、雪が飛び方を覚えたみたいです。\n\n氷がはったら、父が氷に穴をあけて釣りに連れていってくれます。ここではコマイが釣れて、運がよければタラも釣れるそうです。私はまだ一匹も釣ったことがなくて、穴に手袋を落としただけ。\n\nあなたは釣りをする？そちらでは何が釣れるの？自分で釣った魚のこと、教えて。\n\nトーニャ"),
+            "こんにちは！\n\n三日間、嵐だった。波が防波堤を越えて飛んできて、灯台はびんに息を吹きこんだときみたいに鳴ってたの。お父さんは二晩眠らなくて、私は百十二段の階段を上ってお茶を運んだ。嵐のあと、浜にユキホオジロが来たよ。白と茶色の小さな鳥で、雪が飛び方を覚えたみたい。\n\n氷がはったら、お父さんが氷に穴をあけて釣りに連れていってくれるんだ。ここではコマイが釣れて、運がよければタラも釣れるんだって。私はまだ一匹も釣ったことがなくて、穴に手袋を落としただけ。\n\nあなたは釣りをする？そっちでは何が釣れるの？自分で釣った魚のこと、教えて。\n\nトーニャ"),
          diary=T("letters.pen.3.diary", "У Тони три дня был шторм, после него прилетели пуночки. Она спрашивает, какую рыбу я поймал.",
                  "Tonya had a three-day storm, and snow buntings came after it. She asks what fish I've caught.",
                  "トーニャのところは三日間嵐で、そのあとユキホオジロが来たそうだ。僕が何を釣ったか聞いている。")),
@@ -480,7 +480,7 @@ PEN = [
          body=T("letters.pen.4.body",
             "Здравствуй!\n\nУ меня есть друг. Его зовут Капитан, он ворон. Он живёт на крыше метеостанции и каждое утро прилетает к маяку проверить, не осталось ли чего от завтрака. Сначала он брал хлеб, только если я отходила на десять шагов. Потом на пять. Вчера он взял сухарь прямо с варежки и посмотрел на меня так, будто это он меня приручил, а не я его.\n\nПапа говорит, что вороны помнят лица много лет. Значит, Капитан будет помнить меня, даже когда я вырасту и уеду учиться.\n\nА у тебя есть друг среди птиц? Кто-нибудь берёт у тебя еду с руки?\n\nТоня",
             "Hello!\n\nI have a friend. His name is Captain, and he's a raven. He lives on the roof of the weather station and every morning flies over to the lighthouse to check whether anything's left from breakfast. At first he only took bread if I stepped ten paces away. Then five. Yesterday he took a rusk straight off my mitten and looked at me as if he had tamed me, not I him.\n\nDad says ravens remember faces for many years. So Captain will remember me even when I grow up and go away to study.\n\nDo you have a friend among the birds? Does anybody take food from your hand?\n\nTonya",
-            "こんにちは！\n\n私には友だちがいます。名前はキャプテン、ワタリガラスです。気象観測所の屋根に住んでいて、毎朝、朝ごはんの残りがないか灯台まで確かめに来ます。はじめは私が十歩離れないとパンを取りませんでした。それが五歩になって、きのうは手袋の上から直接乾パンを取って、私が手なずけたんじゃなくて自分が私を手なずけたんだ、という顔で私を見ました。\n\nカラスは人の顔を何年も覚えているそうです。だからキャプテンは、私が大きくなって勉強しに町へ出ても、私を覚えているはず。\n\nあなたには鳥の友だちがいる？手から食べてくれる鳥はいる？\n\nトーニャ"),
+            "こんにちは！\n\n私には友だちがいるの。名前はキャプテン、ワタリガラスだよ。気象観測所の屋根に住んでて、毎朝、朝ごはんの残りがないか灯台まで確かめに来るの。はじめは私が十歩離れないとパンを取らなかった。それが五歩になって、きのうは手袋の上から直接乾パンを取って、私が手なずけたんじゃなくて自分が私を手なずけたんだ、って顔で私を見たの。\n\nカラスは人の顔を何年も覚えてるんだって、お父さんが言ってた。だからキャプテンは、私が大きくなって勉強しに町へ出ても、私のことを覚えてるはず。\n\nあなたには鳥の友だちがいる？手から食べてくれる鳥はいる？\n\nトーニャ"),
          diary=T("letters.pen.4.diary", "Тоня подружилась с вороном Капитаном: он берёт сухарь с её варежки. Спрашивает, есть ли у меня друг среди птиц.",
                  "Tonya has made friends with a raven called Captain: he takes a rusk from her mitten. She asks if I have a friend among the birds.",
                  "トーニャはワタリガラスのキャプテンと仲よくなった。手袋から乾パンを取るそうだ。僕に鳥の友だちがいるか聞いている。")),
@@ -488,7 +488,7 @@ PEN = [
          body=T("letters.pen.5.body",
             "Здравствуй!\n\nСлучилось чудо: к маяку прилетела белая чайка. Совсем белая, как фарфоровая, с чёрными лапками. Папа сказал, что их осталось очень мало и что за тридцать лет на маяке он видел такую четыре раза. Она посидела на перилах галереи минуты три, посмотрела на лампу и улетела в темноту. Я даже не успела позвать папу второй раз.\n\nТеперь я выхожу на галерею каждый час, хотя знаю, что она не вернётся. Так, наверное, и становятся орнитологами: один раз увидишь и потом ждёшь всю жизнь.\n\nА кого ты видел нового? Мне кажется, у вас каждый день кто-то новый.\n\nТоня",
             "Hello!\n\nA miracle happened: an ivory gull came to the lighthouse. Completely white, like porcelain, with black feet. Dad said there are very few of them left, and in thirty years at the lighthouse he's seen one four times. She sat on the gallery rail for about three minutes, looked at the lamp and flew off into the dark. I didn't even have time to call Dad a second time.\n\nNow I go out on the gallery every hour, though I know she won't come back. Maybe that's how people become ornithologists: you see something once and then wait all your life.\n\nWho have you seen that's new? It seems to me you have someone new every day.\n\nTonya",
-            "こんにちは！\n\n奇跡が起きました。灯台にゾウゲカモメが来たの。陶器みたいに真っ白で、足だけ黒いカモメです。父の話では、もうとても数が少なくて、灯台で暮らした三十年で見たのは四回だけだそうです。回廊の手すりに三分くらいとまって、灯りを見てから暗やみへ飛んでいきました。父を二回目に呼ぶ間もありませんでした。\n\n戻ってこないとわかっているのに、今は一時間ごとに回廊へ出ています。鳥類学者って、きっとこうしてなるんですね。一度見たら、あとは一生待つの。\n\nあなたは新しく誰を見た？そちらでは毎日新しい鳥がいる気がします。\n\nトーニャ"),
+            "こんにちは！\n\n奇跡が起きたの。灯台にゾウゲカモメが来たんだよ。陶器みたいに真っ白で、足だけ黒いカモメ。お父さんの話だと、もうすごく数が少なくて、灯台で暮らした三十年で見たのは四回だけなんだって。回廊の手すりに三分くらいとまって、灯りを見てから暗やみへ飛んでいった。お父さんを二回目に呼ぶ間もなかった。\n\n戻ってこないってわかってるのに、今は一時間ごとに回廊へ出てるの。鳥類学者って、きっとこうしてなるんだね。一度見たら、あとは一生待つの。\n\nあなたは新しく誰を見た？そっちでは毎日新しい鳥がいる気がする。\n\nトーニャ"),
          diary=T("letters.pen.5.diary", "К Тониному маяку прилетела белая чайка, папа видел такую всего четыре раза. Тоня спрашивает, кого нового видел я.",
                  "An ivory gull came to Tonya's lighthouse: her father has seen one only four times. Tonya asks who I've seen that's new.",
                  "トーニャの灯台にゾウゲカモメが来た。お父さんでも四回しか見たことがないそうだ。僕が新しく誰を見たか聞いている。")),
@@ -496,7 +496,7 @@ PEN = [
          body=T("letters.pen.6.body",
             "Здравствуй!\n\nЯ рисую карту нашего мыса. Настоящую, с масштабом и розой ветров, как у папы на стене. Я отметила маяк, метеостанцию, Тюлений камень, ручей, который летом поёт, а зимой молчит, и место, где Капитан прячет свои сокровища: там у него крышка от банки, ложка и синяя пуговица.\n\nКогда карта будет готова, я пошлю тебе копию. А ты пришли мне своё место, самое хорошее, я нарисую его на полях, со стрелкой: «Людмиловск, туда». Тогда на моей карте будет два края света, наш и твой.\n\nТоня",
             "Hello!\n\nI'm drawing a map of our cape. A real one, with a scale and a wind rose, like the one on Dad's wall. I've marked the lighthouse, the weather station, Seal Rock, the stream that sings in summer and is silent in winter, and the place where Captain hides his treasures: he has a jar lid there, a spoon and a blue button.\n\nWhen the map's ready I'll send you a copy. And you send me your place, the best one, and I'll draw it in the margin with an arrow: \"Lyudmilovsk, that way\". Then my map will have two ends of the earth, ours and yours.\n\nTonya",
-            "こんにちは！\n\n岬の地図をかいています。父の部屋の壁にあるような、縮尺と風配図のついた本物の地図です。灯台、気象観測所、アザラシ岩、夏は歌って冬は黙る小川、それからキャプテンが宝物をかくしている場所をかきこみました。びんのふたと、スプーンと、青いボタンがあるの。\n\nできあがったら写しを送ります。あなたも、いちばんいい場所を教えて。余白に矢印つきでかきます。「リュドミロフスクはあっち」って。そうしたら私の地図には、地の果てが二つになる。私たちのと、あなたのと。\n\nトーニャ"),
+            "こんにちは！\n\n岬の地図をかいてるの。お父さんの部屋の壁にあるみたいな、縮尺と風配図のついた本物の地図だよ。灯台、気象観測所、アザラシ岩、夏は歌って冬は黙る小川、それからキャプテンが宝物をかくしてる場所をかきこんだ。びんのふたと、スプーンと、青いボタンがあるの。\n\nできあがったら写しを送るね。あなたも、いちばんいい場所を教えて。余白に矢印つきでかくから。「リュドミロフスクはあっち」って。そうしたら私の地図には、地の果てが二つになる。私たちのと、あなたのと。\n\nトーニャ"),
          diary=T("letters.pen.6.diary", "Тоня рисует карту своего мыса и хочет нарисовать на полях моё самое хорошее место.",
                  "Tonya is drawing a map of her cape and wants to draw my best place in the margin.",
                  "トーニャは岬の地図をかいていて、僕のいちばんいい場所を余白にかきたいそうだ。")),
@@ -504,7 +504,7 @@ PEN = [
          body=T("letters.pen.7.body",
             "Здравствуй!\n\nКарта готова, копию посылаю. Твоё место я нарисовала на полях, там, где у карты кончается север и начинается всё остальное.\n\nУ нас самая тёмная неделя в году. В школу я хожу по радио: учительница читает урок с Большой земли, а мы, четверо ребят с разных станций, отвечаем по очереди. Слышно плохо, зато весело. Папа говорит, что скоро повернёт к свету, и что он это чувствует коленями раньше, чем видит.\n\nЯ веду список птиц за зиму. Пока у меня девять видов. Пришли мне ещё одного, твоего, я впишу его отдельной строчкой: «видел мой друг на юге».\n\nТоня",
             "Hello!\n\nThe map is ready, and I'm sending you a copy. I drew your place in the margin, where the map's north ends and everything else begins.\n\nIt's the darkest week of the year here. I go to school by radio: the teacher reads the lesson from the mainland, and we, four children from different stations, answer in turn. It's hard to hear, but fun. Dad says it'll soon turn towards the light, and that he feels it in his knees before he sees it.\n\nI'm keeping a list of the winter's birds. So far I have nine species. Send me one more, yours, and I'll write it in on a line of its own: \"seen by my friend in the south\".\n\nTonya",
-            "こんにちは！\n\n地図ができたので、写しを送ります。あなたの場所は、地図の北が終わって、ほかの全部が始まる余白にかきました。\n\nこちらは一年でいちばん暗い週です。学校には無線で通っています。先生が本土から授業を読んで、別々の観測所にいる四人の子どもが順番に答えるの。聞こえにくいけど、楽しいです。父は、もうすぐ光のほうへ向かう、目で見るより先にひざでわかる、と言っています。\n\n冬の鳥のリストをつけています。今のところ九種類。もう一種類、あなたの鳥を送って。別の行に書きます。「南の友だちが見た」って。\n\nトーニャ"),
+            "こんにちは！\n\n地図ができたから、写しを送るね。あなたの場所は、地図の北が終わって、ほかの全部が始まる余白にかいたよ。\n\nこっちは一年でいちばん暗い週。学校には無線で通ってるの。先生が本土から授業を読んで、別々の観測所にいる四人の子どもが順番に答えるんだ。聞こえにくいけど、楽しいよ。お父さんは、もうすぐ光のほうへ向かう、目で見るより先にひざでわかる、って言ってる。\n\n冬の鳥のリストをつけてるの。今のところ九種類。もう一種類、あなたの鳥を送って。別の行に書くから。「南の友だちが見た」って。\n\nトーニャ"),
          diary=T("letters.pen.7.diary", "Тоня прислала копию своей карты: моё место на полях. Она ведёт список зимних птиц и просит ещё одну, мою.",
                  "Tonya sent a copy of her map, with my place in the margin. She's keeping a list of winter birds and asks for one more, mine.",
                  "トーニャが地図の写しを送ってくれた。余白に僕の場所がある。冬の鳥のリストに、僕の鳥をもう一種類加えたいそうだ。")),
@@ -512,7 +512,7 @@ PEN = [
          body=T("letters.pen.8.body",
             "Здравствуй, мой друг на юге!\n\nТвоя птица вписана в список десятой, отдельной строчкой, как обещала.\n\nПапа говорит, что солнце вернётся совсем скоро. В тот день, когда оно выглянет из-за моря, я поднимусь на самый верх маяка, к лампе, и помашу в твою сторону. Я посмотрела по карте: это прямо над Тюленьим камнем и дальше, далеко, через всю страну. Если в тот день у вас солнце будет светить в окно, знай, что это я машу.\n\nВесной гаги вернутся. Посчитай их у себя, когда они полетят на север, а я посчитаю их здесь, когда они прилетят. Так мы узнаем, сколько их долетело. Пиши мне. Всегда пиши.\n\nТвоя Тоня, маяк {0}\n\nP.S. В конверте перо Капитана. Он разрешил.",
             "Hello, my friend in the south!\n\nYour bird is written into the list as the tenth, on a line of its own, as I promised.\n\nDad says the sun will come back very soon. On the day it looks out from beyond the sea, I'll climb to the very top of the lighthouse, to the lamp, and wave your way. I looked on the map: it's right over Seal Rock and on, far away, across the whole country. If the sun shines in at your window that day, know that it's me waving.\n\nIn spring the eiders will come back. Count them where you are when they fly north, and I'll count them here when they arrive. That way we'll know how many made it. Write to me. Always write.\n\nYour Tonya, {0} lighthouse\n\nP.S. There's a feather of Captain's in the envelope. He said I could.",
-            "南にいる友だちへ\n\nあなたの鳥は、約束どおり十番目に、別の行に書きこみました。\n\nもうすぐお日さまが戻ってくると父が言っています。海の向こうからお日さまが顔を出す日、私は灯台のいちばん上、灯りのところまで上って、あなたのほうへ手をふります。地図で調べたら、アザラシ岩の真上の、そのずっと先、国をまるごと越えたところでした。その日、あなたの窓にお日さまが差したら、それは私が手をふっているのだと思ってね。\n\n春にはケワタガモが帰ってきます。北へ飛んでいくときにそちらで数えてください。こちらに着いたら私が数えます。そうすれば、何羽たどりついたかわかる。手紙をください。ずっと書いてね。\n\n{0}灯台　あなたのトーニャ\n\n追伸　封筒にキャプテンの羽が入っています。本人の許可はとりました。"),
+            "南にいる友だちへ\n\nあなたの鳥は、約束どおり十番目に、別の行に書きこんだよ。\n\nもうすぐお日さまが戻ってくるって、お父さんが言ってる。海の向こうからお日さまが顔を出す日、私は灯台のいちばん上、灯りのところまで上って、あなたのほうへ手をふるね。地図で調べたら、アザラシ岩の真上の、そのずっと先、国をまるごと越えたところだった。その日、あなたの窓にお日さまが差したら、それは私が手をふってるんだと思ってね。\n\n春にはケワタガモが帰ってくる。北へ飛んでいくときにそっちで数えて。こっちに着いたら私が数えるから。そうすれば、何羽たどりついたかわかるでしょ。手紙ちょうだいね。ずっと書いてね。\n\n{0}灯台　あなたのトーニャ\n\n追伸　封筒にキャプテンの羽を入れたよ。本人の許可はとったから。"),
          diary=T("letters.pen.8.diary", "Тоня пишет: когда к ним вернётся солнце, она поднимется к лампе маяка и помашет в мою сторону. В конверте перо её ворона.",
                  "Tonya writes: when the sun comes back to them, she'll climb up to the lighthouse lamp and wave my way. Her raven's feather is in the envelope.",
                  "トーニャの手紙：お日さまが戻ったら灯台の灯りまで上って、僕のほうへ手をふるそうだ。封筒にはカラスの羽が入っていた。")),
@@ -521,36 +521,36 @@ PEN = [
 PEN_NUDGE = T("letters.pen.nudge",
     "Здравствуй!\n\nТы получил моё письмо? Почта у нас ходит, когда хочет: катер ждёт погоды, погода ждёт ветра. Если не получил, я напишу ещё раз. Если получил, просто напиши хоть два слова, я буду знать, что ты есть.\n\nТоня",
     "Hello!\n\nDid you get my letter? Our post comes when it likes: the launch waits for the weather, the weather waits for the wind. If you didn't get it, I'll write again. If you did, just write two words, and I'll know you're there.\n\nTonya",
-    "こんにちは！\n\n私の手紙、届いた？こちらの郵便は気まぐれです。船は天気を待って、天気は風を待っているの。届いていなかったら、もう一度書きます。届いていたら、ひとことでいいから書いて。あなたがいるってわかるように。\n\nトーニャ")
+    "こんにちは！\n\n私の手紙、届いた？こっちの郵便は気まぐれなの。船は天気を待って、天気は風を待ってる。届いてなかったら、もう一度書くね。届いてたら、ひとことでいいから書いて。あなたがいるってわかるように。\n\nトーニャ")
 
 PEN_ACKS = {
     "bird": [
         T("letters.pen.ack.bird.1", "Ты пишешь, что видел: {0}! Я нашла эту птицу в папином определителе и обвела карандашом. У нас таких нет, теперь буду знать, что они есть у тебя.",
           "You write that you saw this: {0}! I found it in Dad's field guide and circled it in pencil. We don't have them here; now I'll know they're there with you.",
-          "あなたが見たのは：{0}！父の図鑑で見つけて、鉛筆で丸をつけました。こちらにはいない鳥だから、あなたのところにいるって覚えておくね。"),
+          "あなたが見たのは：{0}！お父さんの図鑑で見つけて、鉛筆で丸をつけたよ。こちらにはいない鳥だから、あなたのところにいるって覚えておくね。"),
         T("letters.pen.ack.bird.2", "Про птицу, которую ты видел ({0}), я рассказала Капитану. Он сделал вид, что ему всё равно, но слушал.",
           "I told Captain about the bird you saw ({0}). He pretended not to care, but he listened.",
-          "あなたが見た鳥（{0}）のこと、キャプテンに話しました。興味ないふりをしていたけど、ちゃんと聞いていました。"),
+          "あなたが見た鳥（{0}）のこと、キャプテンに話したよ。興味ないふりしてたけど、ちゃんと聞いてた。"),
     ],
     "fish": [
         T("letters.pen.ack.fish.1", "Твоя рыба, {0}, — настоящий улов! Папа сказал, что ты молодец и что первую рыбу надо записывать в журнал. Я записала твою в свой.",
           "Your fish, {0}, is a real catch! Dad said well done and that a first fish must go in the log. I wrote yours in mine.",
-          "あなたの魚、{0}、本物の獲物ね！父が「よくやった、最初の魚は日誌に書くものだ」って。私の日誌に、あなたのを書いておきました。"),
+          "あなたの魚、{0}、本物の獲物だね！お父さんが「よくやった、最初の魚は日誌に書くものだ」って。私の日誌に、あなたのを書いておいたよ。"),
         T("letters.pen.ack.fish.2", "Ты поймал рыбу: {0}. А я пока поймала только варежку. Но лёд уже почти встал, так что жди новостей.",
           "You caught a fish: {0}. And I've only caught a mitten so far. But the ice has nearly set, so wait for news.",
-          "あなたは魚を釣った：{0}。私はまだ手袋しか釣れていません。でも、もうすぐ氷がはるから、知らせを待っていてね。"),
+          "あなたは魚を釣ったんだね：{0}。私はまだ手袋しか釣れてない。でも、もうすぐ氷がはるから、知らせを待っていてね。"),
     ],
     "place": [
         T("letters.pen.ack.place.1", "Я представила твоё место: {0}. Закрыла глаза и представила, как там пахнет морем, только тёплым. Получилось почти.",
           "I imagined your place: {0}. I shut my eyes and imagined the smell of the sea there, only warm. I almost managed it.",
-          "あなたの場所を思いうかべました：{0}。目をつぶって、そこの海のにおいを想像したの。あたたかい海のにおい。もう少しでわかりそうでした。"),
+          "あなたの場所を思いうかべたよ：{0}。目をつぶって、そこの海のにおいを想像したの。あたたかい海のにおい。もう少しでわかりそうだった。"),
         T("letters.pen.ack.place.2", "Твоё место ({0}) теперь есть и на моей карте, на полях, со стрелкой.",
-          "Your place ({0}) is on my map now too, in the margin, with an arrow.", "あなたの場所（{0}）は、もう私の地図の余白にも、矢印つきでのっています。"),
+          "Your place ({0}) is on my map now too, in the margin, with an arrow.", "あなたの場所（{0}）は、もう私の地図の余白にも、矢印つきでのってるよ。"),
     ],
     "friend": [
         T("letters.pen.ack.friend.1", "Значит, у тебя тоже есть друг с крыльями: {0}! Капитан, когда я ему прочитала, каркнул два раза. Я думаю, это значит «уважаю».",
           "So you have a winged friend too: {0}! When I read it to Captain, he cawed twice. I think that means \"respect\".",
-          "あなたにも翼のある友だちがいるのね：{0}！キャプテンに読んで聞かせたら、二回鳴きました。「尊敬する」って意味だと思う。"),
+          "あなたにも翼のある友だちがいるのね：{0}！キャプテンに読んで聞かせたら、二回鳴いたの。「尊敬する」って意味だと思う。"),
         T("letters.pen.ack.friend.2", "Твой друг, {0}, ест у тебя с ладони. Значит, у нас с тобой одинаковые руки: им доверяют.",
           "Your friend, {0}, eats from your palm. So you and I have the same kind of hands: they're trusted.",
           "あなたの友だち、{0}は、手のひらから食べるのね。私たちは同じ手を持っているんだね。信頼される手を。"),

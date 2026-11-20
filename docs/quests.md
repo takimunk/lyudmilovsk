@@ -60,6 +60,7 @@ rest (the speakers are in `localization/voice.json`); `tools/check_localization.
 | `fish_caught <fish item>` | a fish landed on the rod | `ULyudFishing` |
 | `bird` | became a bird | the game screen |
 | `bird_seen`, `bird_tamed <Species>` | first sight; a bird ate from the palm | `ULyudBirdBook` |
+| `animal_sniffed`, `animal_stroked`, `animal_fed`, `animal_friend`, `animal_walk`, `animal_home`, `animal_lap`, `animal_named <Maru\|Cat\|Dog>`; `animal_walk_reach <place>` | a cat or a dog sniffed the hero's hand, was stroked, ate from his palm, became a friend, came along, went home, lay on his lap, was named; he came to a map place with the dog at heel | `UAnimalFriendSubsystem` |
 | `feeder_fill <feed>`, `feeder_fill_at <feed>@<place>` | a handful went into a feeder (and in which places the hero stood) | `UBirdFeederSubsystem::Fill` |
 | `feeder_visit <Species>` | a bird came down onto a feeder while the hero was within 60 m | `ULyudQuestDirector` |
 | `bird_call <Species>.<Npc>` | the hero, as that bird, sat within reach of a listener and called (F) | `ULyudQuestDirector` |

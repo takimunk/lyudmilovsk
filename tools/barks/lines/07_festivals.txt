@@ -362,3 +362,177 @@ talk
 - town.fest_talk1.1 | На салют пойдёшь? | Are you going to the fireworks? | 花火見に行く？
 - town.fest_talk1.2 | Конечно. | Of course. | もちろん。
 - town.fest_talk1.3 | И я. Встретимся у пирса. | Me too. See you at the pier. | わたしも。桟橋で会おう。
+
+## ---------------------------------------------------------------------------------------------------------------
+## The Big Sun's day (sun_day: the star comes near; docs/festivals.md, docs/story/motifs.md "Солнце"). Nobody says why
+## they love it: they just can't not look.
+## ---------------------------------------------------------------------------------------------------------------
+
+[bigsun_greet]
+to = hero
+festival = sun_day
+age = teen adult
+weight = 6
+say town.bigsun_greet.1 | С большим солнцем! | Happy Big Sun! | 大きな太陽、おめでとう！
+say town.bigsun_greet.2 | С большим солнцем! В полдень будь на площади. | Happy Big Sun! Be on the square at noon. | 大きな太陽おめでとう！正午は広場においでよ。
+
+[bigsun_greet_elder]
+to = hero
+festival = sun_day
+age = elder
+weight = 6
+say town.bigsun_greet_elder.1 | С большим солнцем, сынок. Вот и ещё одно встретили. | Happy Big Sun, son. Here we are, another one. | 大きな太陽おめでとう、坊や。また一つ迎えられたねえ。
+
+[bigsun_greet_kid]
+to = hero
+festival = sun_day
+age = kid
+weight = 6
+say town.bigsun_greet_kid.1 | Оно сегодня вот такое! Ты видел? | It's THIS big today! Did you see? | 今日はこーんなに大きいんだよ！見た？
+say town.bigsun_greet_kid.2 | Мне сказали прямо на него не смотреть. А я чуть-чуть. | They told me not to look straight at it. I'm only looking a little. | まっすぐ見ちゃだめって言われた。でも、ちょっとだけ。
+
+[bigsun]
+at = outdoors
+festival = sun_day
+weight = 3
+say town.bigsun.1 | Весь год его ждёшь, а оно на один день. | You wait all year, and it comes for one day. | 一年じゅう待って、たった一日だけ。
+say town.bigsun.2 | Сегодня от него некуда деться. И не хочется. | There's no getting away from it today. And I don't want to. | 今日はどこにいても太陽から逃げられない。逃げたくもないけど。
+say town.bigsun.3 | Флажки через всю улицу, до самого моря. | Pennants across the whole street, all the way down to the sea. | 通りいっぱいの旗が、海までずっと続いてる。
+say town.bigsun.4 | Вымпелы так и рвутся с верёвок. | The pennants are straining at their strings. | 旗が紐からちぎれそうなくらい、はためいてる。
+say town.bigsun.5 | В этот день даже тень тёплая. | Even the shade is warm today. | 今日は日陰まであったかい。
+say town.bigsun.6 | Никто не знает, почему оно подходит. Подходит — и хорошо. | Nobody knows why it comes close. It comes, and that's good enough. | どうして近づいてくるのか、誰も知らない。来てくれる、それでいい。
+
+[bigsun_eve]
+at = outdoors
+festival = sun_day
+phase = eve
+weight = 6
+say town.bigsun_eve.1 | Гляди, уже больше, чем вчера. | Look, it's bigger than yesterday already. | 見て、もう昨日より大きい。
+say town.bigsun_eve.2 | Завтра будет совсем близко. Каждый год не могу уснуть накануне. | Tomorrow it'll be right up close. Every year I can't sleep the night before. | 明日はすぐそこまで来る。毎年、前の晩は眠れないんだ。
+say town.bigsun_eve.3 | Гирлянды развесили. Теперь бы утро поскорей. | The bunting's up. Now if only morning would hurry. | 飾りつけは済んだ。あとは早く朝になってくれれば。
+
+[bigsun_zenith]
+at = outdoors
+festival = sun_day
+phase = zenith
+weight = 7
+say town.bigsun_zenith.1 | Вот оно. Над самым городом. | There it is. Right over the town. | ほら。町の真上だ。
+say town.bigsun_zenith.2 | Тише. Постоим. | Hush. Let's just stand a while. | しっ。しばらく、こうしていよう。
+say town.bigsun_zenith.3 | Чувствуешь? Как будто руку на плечо положили. | Feel that? Like a hand laid on your shoulder. | 感じる？誰かが肩に手を置いてくれたみたい。
+say town.bigsun_zenith.4 | Каждый год думаю, что привыкну. Не привыкаю. | Every year I think I'll get used to it. I don't. | 毎年、もう慣れるだろうと思う。でも慣れない。
+say town.bigsun_zenith.5 | Не знаю, зачем мы смотрим. Просто не смотреть нельзя. | I don't know why we look. You just can't not look. | どうして見るのか分からない。ただ、見ずにはいられないんだ。
+
+[bigsun_zenith_kid]
+at = outdoors
+festival = sun_day
+phase = zenith
+age = kid
+weight = 8
+say town.bigsun_zenith_kid.1 | А оно нас видит? | Can it see us? | 太陽って、こっちが見えてるの？
+say town.bigsun_zenith_kid.2 | А завтра оно опять уйдёт далеко? | Will it go far away again tomorrow? | 明日になったら、また遠くへ行っちゃうの？
+
+[bigsun_zenith_hero]
+to = hero
+festival = sun_day
+phase = zenith
+age = adult elder
+weight = 8
+say town.bigsun_zenith_hero.1 | Ты в первый раз? Тогда встань рядом. Одному на него смотреть не надо. | Your first time? Then stand by me. It's not something to look at alone. | 初めて？じゃあ隣においで。ひとりで見るものじゃないから。
+
+[bigsun_sea]
+at = outdoors
+festival = sun_day
+phase = seaside stroll
+weight = 5
+say town.bigsun_sea.1 | Вода сегодня как чай. Идём купаться! | The water's like tea today. Let's go swimming! | 今日の海はお茶みたいにあったかい。泳ぎに行こう！
+say town.bigsun_sea.2 | Змеи, змеи! Вон тот красный выше всех. | Kites, kites! That red one's higher than all the rest. | 凧だ、凧！あの赤いのがいちばん高い。
+say town.bigsun_sea.3 | Весь город на пляже. Дома остались одни кошки. | The whole town's on the beach. Only the cats stayed home. | 町じゅうが浜辺に来てる。家に残ってるのは猫だけ。
+say town.bigsun_sea.4 | Обгоришь — не жалуйся. Сегодня можно. | If you get burnt, don't complain. Today it's allowed. | 日焼けしても文句は言わないこと。今日はいいんだ。
+
+[bigsun_sunset]
+at = outdoors
+festival = sun_day
+phase = sunset
+weight = 7
+say town.bigsun_sunset.1 | Уходит. До следующего года. | It's going. Until next year. | 行ってしまう。また来年。
+say town.bigsun_sunset.2 | Смотри, какое огромное. Полморя заняло. | Look how huge it is. It takes up half the sea. | 見て、あんなに大きい。海の半分を埋めてる。
+say town.bigsun_sunset.3 | Не уходи пока. Досмотрим. | Don't go yet. Let's watch it to the end. | まだ帰らないで。最後まで見よう。
+say town.bigsun_sunset.4 | Всегда немного грустно. Хотя оно ведь никуда не девается. | It's always a bit sad. Though it doesn't really go anywhere. | いつも少しさびしい。どこかへ消えるわけじゃないのにね。
+
+[bigsun_talk]
+festival = sun_day
+doing = gather_mingle chat
+weight = 6
+talk
+- town.bigsun_talk1.1 | Больше, чем в прошлом году? | Bigger than last year? | 去年より大きい？
+- town.bigsun_talk1.2 | Ты каждый год спрашиваешь. | You ask that every year. | 毎年それ聞くよね。
+- town.bigsun_talk1.3 | И каждый год кажется, что больше. | And every year it looks bigger. | 毎年、大きくなった気がするんだ。
+talk
+- town.bigsun_talk2.1 | Почему оно подходит? | Why does it come close? | どうして近づいてくるんだろう？
+- town.bigsun_talk2.2 | Посмотреть на нас, наверное. | To have a look at us, I suppose. | こっちを見に来るんじゃないかな。
+- town.bigsun_talk2.3 | А мы на него. | And we look at it. | で、こっちも見てる。
+- town.bigsun_talk2.4 | Значит, всё честно. | Fair enough, then. | じゃあ、おあいこだ。
+
+## ---------------------------------------------------------------------------------------------------------------
+## Poplar fluff (ULyudPoplarFluffSubsystem: June, dry days), the other new town days
+## ---------------------------------------------------------------------------------------------------------------
+
+[poplar_fluff]
+at = outdoors
+months = 6
+weather = !rain
+hours = 8-21
+weight = 2
+say town.poplar_fluff.1 | Опять пух летит. Значит, лето. | The fluff's flying again. So it's summer. | また綿毛が飛んでる。夏だなあ。
+say town.poplar_fluff.2 | Апчхи! Тополя... | Achoo! Poplars... | はくしょん！ポプラめ…
+say town.poplar_fluff.3 | Пух как снег, только тёплый. | Fluff like snow, only warm. | 綿毛って雪みたい。あったかい雪。
+say town.poplar_fluff.4 | Весь двор белый. Мети не мети. | The whole yard's white. Sweep it or don't, it's the same. | 庭じゅう真っ白。掃いても掃いてもきりがない。
+
+[poplar_fluff_kid]
+at = outdoors
+months = 6
+weather = !rain
+hours = 8-21
+age = kid
+weight = 3
+say town.poplar_fluff_kid.1 | Смотри, пушинка! Лови! | Look, a bit of fluff! Catch it! | 見て、綿毛！つかまえて！
+
+[city_day]
+festival = city_day
+weight = 3
+say town.city_day.1 | С днём города! Люблю его, когда он нарядный. | Happy Town Day! I love the place when it's dressed up. | 町の日おめでとう！おめかしした町、好きだな。
+say town.city_day.2 | Ещё год городу. А кажется, он всегда тут стоял. | Another year for the town. Though it feels like it's always stood here. | 町がまた一つ年を取った。ずっと昔からここにある気がするのに。
+
+[city_day_parade]
+at = outdoors
+festival = city_day
+phase = parade
+weight = 5
+say town.city_day_parade.1 | Шествие идёт! Вставай к нам. | The parade's coming! Fall in with us. | パレードが来た！一緒に歩こうよ。
+
+[kite_day]
+at = outdoors
+festival = kite_day
+weight = 4
+say town.kite_day.1 | Ветер что надо. Змей сам из рук рвётся. | The wind's just right. The kite's pulling out of my hands. | いい風だ。凧が手から飛び出しそう。
+say town.kite_day.2 | Чей выше, тот и молодец. | Whoever's flies highest wins. | いちばん高くあげた人の勝ち。
+
+[cat_day]
+festival = cat_day
+weight = 4
+say town.cat_day.1 | Сегодня кошкам можно всё. Впрочем, как всегда. | Today the cats may do anything. Same as always, really. | 今日は猫は何をしてもいい日。まあ、いつものことだけど。
+say town.cat_day.2 | К трём все кошки будут на пирсе. Откуда они знают? | By three every cat will be on the pier. How do they know? | 三時には猫がみんな桟橋に集まる。どうして分かるんだろう？
+
+[book_day]
+festival = book_day
+weight = 4
+say town.book_day.1 | Сегодня читают прямо на траве. Возьми что-нибудь и ты. | Today people read right on the grass. Pick something up yourself. | 今日はみんな芝生の上で読書。君も何か読んだら？
+say town.book_day.2 | Тсс. Я на самом интересном месте. | Shh. I'm at the best part. | しーっ。今いちばんいいところなんだ。
+
+[amber_morning]
+at = outdoors
+festival = amber_morning
+weight = 5
+say town.amber_morning.1 | Море ночью постаралось. Гляди под ноги. | The sea was busy last night. Watch your feet. | ゆうべは海ががんばったね。足もとをよく見て。
+say town.amber_morning.2 | Покажи на солнце: настоящий светится. | Hold it up to the sun: the real ones glow. | 太陽にかざしてごらん。本物は光るから。
+say town.amber_morning.3 | После шторма всегда так: весь берег в водорослях и в янтаре. | It's always like this after a storm: the whole shore in seaweed and amber. | 嵐のあとはいつもこう。浜じゅう海藻と琥珀だらけ。
