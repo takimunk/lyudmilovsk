@@ -239,11 +239,10 @@ void ULyudTownPaper::BuildFacts(int32 Since, LyudPaper::FFacts& Out) const
 
 	// --- tomorrow's tides: the turns of the water, every 6 minutes from midnight
 	double Lon = 20.40, Utc = 2.0;
-	for (TActorIterator<ALyudSky> It(World); It; ++It)
+	if (TActorIterator<ALyudSky> It(World); It)
 	{
 		Lon = It->LongitudeDeg;
 		Utc = It->UtcOffsetHours;
-		break;
 	}
 	{
 		constexpr int32 Step = 6;
