@@ -375,7 +375,7 @@ synthetic events, Mac shot of the page.
 
 ## 24. Festival days use the new toys
 
-`[~] festival-toys 2026-11-20` **Brief (Opus 5.5):** Festivals (`Content/PeopleData/festivals.json`, `docs/festivals.md`) know nothing of tonight's
+`[~] festival-toys 2026-11-20` (branch `festival-toys`; what was built: `docs/festivals.md` "The new toys"; never compiled or seen in the engine) **Brief (Opus 5.5):** Festivals (`Content/PeopleData/festivals.json`, `docs/festivals.md`) know nothing of tonight's
 features. Tie them: the cinema shows a festival programme (the sea festival, New Year cartoons), the radio plays a festival
 broadcast, the tournament of the week becomes a festival cup on its day, kites fly on Children's Day and the blossom
 picnic, the beach games become contests on Fisherman's Day (stone skipping championship), the sanatorium has a dance
