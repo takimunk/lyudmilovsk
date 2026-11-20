@@ -5,10 +5,11 @@
 #                                     weathers (mild, a shower, frost, a warm day), what people notice, the cost
 #   tools/mannersim/run.sh day        the mild day hour by hour: how many do what
 #   tools/mannersim/run.sh who [key]  personas: everybody's (a summary) or one person's
+#   tools/mannersim/run.sh friends    the friends among the residents (docs/friends.md)
 set -e
 ROOT="$(cd "$(dirname "$0")/../.." && pwd)"
 SRC="$ROOT/unreal/Lyudmilovsk/Source/Lyudmilovsk/Private"
 mkdir -p "$ROOT/Saved/MannerSim"
 clang++ -std=c++17 -O2 -Wall -Wshadow -Wunreachable-code-loop-increment -Wno-unused-function -o "$ROOT/Saved/MannerSim/mannersim" \
-	"$ROOT/tools/mannersim/mannersim.cpp" "$SRC/People/PeopleManners.cpp" "$SRC/People/PeopleSim.cpp" "$SRC/Animals/AnimalSim.cpp" "$SRC/Railway/RailRun.cpp"
+	"$ROOT/tools/mannersim/mannersim.cpp" "$SRC/People/PeopleManners.cpp" "$SRC/People/Friends.cpp" "$SRC/People/PeopleSim.cpp" "$SRC/Animals/AnimalSim.cpp" "$SRC/Railway/RailRun.cpp"
 cd "$ROOT" && exec "$ROOT/Saved/MannerSim/mannersim" "$@"

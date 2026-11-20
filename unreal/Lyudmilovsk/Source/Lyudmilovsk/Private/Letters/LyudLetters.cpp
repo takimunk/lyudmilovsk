@@ -31,6 +31,7 @@
 #include "Misc/FileHelper.h"
 #include "Misc/Paths.h"
 #include "NpcDialogue.h"
+#include "People/LyudFriends.h"
 #include "People/PeopleLife.h"
 #include "People/TownTalk.h"
 #include "Plants/GameCalendar.h"
@@ -393,6 +394,11 @@ void ULyudLetters::StepPost()
 	for (const std::string& To : E.Delivered)
 	{
 		UE_LOG(LogLyudLetters, Display, TEXT("Letters: a card was carried to %s"), *LyudLettersImpl::Str(To));
+		// the friendship grows (docs/friends.md: a card of his on their shelf)
+		if (ULyudFriends* Friends = ULyudFriends::Get(this))
+		{
+			Friends->OnCardDelivered(LyudLettersImpl::Str(To));
+		}
 	}
 	if (!E.Arrived.empty())
 	{
@@ -790,6 +796,37 @@ FText ULyudLetters::Fill(const FString& Key, const TArray<FString>& Args) const
 FText ULyudLetters::FromName(const FString& From) const
 {
 	return LyudText::Get(LyudLettersImpl::FromKey(LyudLettersImpl::Std(From)));
+}
+
+bool ULyudLetters::PostTownLetter(const FString& Id, const FString& From, const FString& Body, const TArray<FString>& Args)
+{
+	if (!bLoaded || !Model)
+	{
+		return false;
+	}
+	std::vector<std::string> A;
+	for (const FString& S : Args)
+	{
+		A.push_back(LyudLettersImpl::Std(S));
+	}
+	return Model->AddLetter(Now(), LyudLettersImpl::Std(Id), LyudLettersImpl::Std(From), "town", LyudLettersImpl::Std(Body), A);
+}
+
+FText ULyudLetters::HomeAddress(const FString& Home) const
+{
+	if (!Model || Home.IsEmpty())
+	{
+		return FText::GetEmpty();
+	}
+	const std::vector<std::string> Parts = Model->AddressOf(LyudLettersImpl::Std(Home));
+	if (Parts.size() < 2)
+	{
+		return FText::GetEmpty();
+	}
+	const FString Street = LyudText::Get(TEXT("letters.street.") + LyudLettersImpl::Str(Parts[0])).ToString();
+	return Parts.size() >= 3
+		? LyudText::Get(TEXT("letters.addr.flat"), { FStringFormatArg(Street), FStringFormatArg(LyudLettersImpl::Str(Parts[1])), FStringFormatArg(LyudLettersImpl::Str(Parts[2])) })
+		: LyudText::Get(TEXT("letters.addr.house"), { FStringFormatArg(Street), FStringFormatArg(LyudLettersImpl::Str(Parts[1])) });
 }
 
 FText ULyudLetters::AddressOf(const FString& AddresseeId, int32 PersonId) const

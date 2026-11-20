@@ -1,0 +1,13 @@
+{
+ "teleports": [
+  {
+   "id": "aton_terminal",
+   "group": "aton",
+   "name": "dev.tp.aton_terminal",
+   "x": -253.33,
+   "y": 624.91,
+   "z": -3546.0,
+   "yaw": 79.0
+  }
+ ]
+}

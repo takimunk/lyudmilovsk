@@ -736,6 +736,13 @@
    "prompt": "A 16 mm film projector running, steady mechanical whirr and sprocket flutter, small dark hall, close, no film sound"
   },
   {
+   "id": "cinema_laugh",
+   "group": "city",
+   "variants": 4,
+   "duration": 3.0,
+   "prompt": "A small cinema audience of about forty people laughing together warmly at a silent comedy, a burst of chuckles and a few louder laughs fading out, dark hall with soft reverb, no music, no speech"
+  },
+  {
    "id": "radio_tune",
    "group": "city",
    "variants": 3,

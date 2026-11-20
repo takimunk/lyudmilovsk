@@ -133,6 +133,8 @@ namespace
 		Good(TEXT("record_storm_1"), K::Misc, L::Flat, FVector(0.4f, 31.f, 31.f), FLinearColor(0.20f, 0.22f, 0.26f), 55, 4.f);
 		Good(TEXT("record_snow_1"), K::Misc, L::Flat, FVector(0.4f, 31.f, 31.f), FLinearColor(0.88f, 0.92f, 0.96f), 50, 4.f);
 		Good(TEXT("record_sea_1"), K::Misc, L::Flat, FVector(0.4f, 31.f, 31.f), FLinearColor(0.18f, 0.40f, 0.55f), 45, 4.f);
+		// the Rassvet's ticket stub: torn at the door of every session, kept (docs/cinema.md)
+		Good(TEXT("ticket_stub"), K::Misc, L::Flat, FVector(0.1f, 3.5f, 6.f), FLinearColor(0.86f, 0.56f, 0.6f), 0, 2.f);
 		Good(TEXT("record_club_1"), K::Misc, L::Flat, FVector(0.4f, 31.f, 31.f), FLinearColor(0.25f, 0.15f, 0.35f), 60, 4.f);
 		Good(TEXT("record_club_2"), K::Misc, L::Flat, FVector(0.4f, 31.f, 31.f), FLinearColor(0.10f, 0.45f, 0.42f), 60, 4.f);
 		Good(TEXT("record_club_3"), K::Misc, L::Flat, FVector(0.4f, 31.f, 31.f), FLinearColor(0.15f, 0.20f, 0.25f), 60, 4.f);
@@ -293,6 +295,23 @@ namespace
 		Rod.Price = 90;
 		Rod.Radius = 1.3f;
 		D.Add(Rod);
+		// kites (docs/kites.md): taken in the hand they come out on the reel (ULyudKiteFlying); the toy shops sell them, rolled up
+		FLyudItemDef KiteD;
+		KiteD.Id = TEXT("kite_diamond");
+		KiteD.Slot = ELyudEquipSlot::Hand;
+		KiteD.Look = ELyudItemLook::Pack;
+		KiteD.Size = FVector(4.f, 4.f, 60.f);
+		KiteD.Tint = FLinearColor(0.85f, 0.18f, 0.12f);
+		KiteD.Price = 150;
+		KiteD.Radius = 2.f;
+		D.Add(KiteD);
+		FLyudItemDef KiteB = KiteD;
+		KiteB.Id = TEXT("kite_box");
+		KiteB.Size = FVector(6.f, 6.f, 70.f);
+		KiteB.Tint = FLinearColor(0.12f, 0.35f, 0.75f);
+		KiteB.Price = 280;
+		KiteB.Radius = 3.f;
+		D.Add(KiteB);
 		// the shop's better rods: a carbon spinning rod with a braided line, a thick sea bottom rod with a 100 g lead
 		FLyudItemDef Spin = Rod;
 		Spin.Id = TEXT("rod_spinning");

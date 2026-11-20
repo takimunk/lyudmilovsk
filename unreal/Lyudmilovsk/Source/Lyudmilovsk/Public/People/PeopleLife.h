@@ -114,6 +114,8 @@ public:
 
 	/** An activity's index (activities.json id), -1 if none: for GetActivityState. */
 	int32 FindActivity(const FString& Id) const;
+	/** The body drawn for Id now (null: not drawn, hidden, or the level's own actor), for things they hold (a child's kite). */
+	AActor* GetShownBody(int32 Id) const;
 
 	/** A cheap read for per-frame checks (no strings built, unlike GetPerson): the person's activity index (-1 none), whether
 	 *  they are at it ("doing"), their pose and where they are (cm). False if there is no such person. */
@@ -122,6 +124,10 @@ public:
 	/** Sends someone to do something now (activities.json id), at a place (its id) or wherever suits them. */
 	UFUNCTION(BlueprintCallable, Category = "People")
 	bool Order(int32 Id, const FString& Activity, const FString& PlaceId = TEXT(""));
+
+	/** A friend comes to sit beside the player (docs/friends.md): the free seat nearest Where (world cm) within MaxCm that a
+	 *  sitting activity of theirs fits, for Minutes of game time; false if there is none. */
+	bool SitBeside(int32 Id, const FVector& Where, float MaxCm = 250.f, float Minutes = 15.f);
 
 	/** Moves a household into a flat (its id, e.g. Novikova1-2-17); false if it is not free. Kept with the save. */
 	UFUNCTION(BlueprintCallable, Category = "People")

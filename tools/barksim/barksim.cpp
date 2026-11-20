@@ -279,11 +279,13 @@ static int Run(bool bDay, const std::string& Lang)
 			{
 				const FSet& S = Book.Sets[I];
 				// (a set that asks for a manner: as if their hands were doing it; what the player is noticed by: anybody may)
-				const bool bNotice = S.Kind == EKind::Event && S.On.compare(0, 5, "hero_") == 0;
+				// (and the friends' moments: anybody may be a friend of his, docs/friends.md)
+				const bool bNotice = S.Kind == EKind::Event && (S.On.compare(0, 5, "hero_") == 0 || S.On.compare(0, 7, "friend_") == 0);
 				if (!FitA[I] && S.Kind != EKind::Talk && (S.Kind != EKind::Event || bNotice) && HoursFit(S, H))
 				{
 					Who.Manner = S.A.Manner.Yes.empty() ? std::string() : S.A.Manner.Yes[0];
 					Who.Met = S.A.Met.Yes.empty() ? std::string("new") : S.A.Met.Yes[0];
+					Who.Bond = S.A.Bond.Yes.empty() ? std::string() : S.A.Bond.Yes[0];
 					Who.Temper = S.A.Temper.Yes;
 					if (Book.MatchWho(S.A, Who))
 					{
@@ -291,6 +293,7 @@ static int Run(bool bDay, const std::string& Lang)
 					}
 					Who.Manner.clear();
 					Who.Met = "new";
+					Who.Bond.clear();
 					Who.Temper.clear();
 				}
 			}

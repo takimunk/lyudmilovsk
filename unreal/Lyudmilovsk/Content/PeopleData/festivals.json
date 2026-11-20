@@ -1,5 +1,5 @@
 {
-  "_doc": "The town's holidays (docs/festivals.md). Every festival here is a proposal, not canon. when.rule: date (month, day), new_moon / full_moon (the first such moon from month/day within window days, its date in tz hours from UTC; offset shifts it), nth_weekday (month, nth 1..5 or -1 last, weekday 0 Monday), easter_orthodox / easter_western (offset days from Easter Sunday), weekly (weekdays, months), trigger (the game fires it: first_snow); offset shifts any rule's day. days: how long it lasts. holiday: offices and schools close (holiday_days: which of its days, default all). decor: from/to hours (from 00:00 of the first day; negative = the day before; to counted from the last day, may pass 24), kinds (bunting, flags, lanterns, stage, stalls, tree, wreaths, candles, birdhouses), venues (default: the program's). program: phases with hours [from, to) from 00:00 of their day (may pass 24), day (0 first, -1 every day), venue (a spot kind or id of the city plan: square, fair, beach, pier, promenade, park, bonfire, sunrise_point; the people gather over every place of that kind), mode (how people take part: mingle, watch, sit, fair), pull (0..2, how strongly it draws people), face (what watchers look at: stage, sea, bonfire, tree, sky, sunrise), show (what the game puts on: music, stage_lights, fireworks, sky_lanterns, bonfire, meteors). priority: who has a venue when two festivals want it at once. menu: the restaurant dishes of its day (menu.json ids); foods: what the fair stalls sell; late: people stay up till this hour of its first day (may pass 24); origin: where in the world it comes from (festival.origin.<origin>). New decor kinds: red_lanterns, balloons, pumpkins, marigolds, wish_tree. New shows: drums, firecrackers, color_powder, water_lanterns, bells. face moon: the moon.",
+  "_doc": "The town's holidays (docs/festivals.md). sky: what the day does to the sky ({sun: the star's disk is 1 + sun times as wide at the day's noon, clear: 0..1 the weather held fair, lead: days it eases in and out over}). Every festival here is a proposal, not canon. when.rule: date (month, day), new_moon / full_moon (the first such moon from month/day within window days, its date in tz hours from UTC; offset shifts it), nth_weekday (month, nth 1..5 or -1 last, weekday 0 Monday), easter_orthodox / easter_western (offset days from Easter Sunday), weekly (weekdays, months), trigger (the game fires it: first_snow); offset shifts any rule's day. days: how long it lasts. holiday: offices and schools close (holiday_days: which of its days, default all). decor: from/to hours (from 00:00 of the first day; negative = the day before; to counted from the last day, may pass 24), kinds (bunting, flags, lanterns, stage, stalls, tree, wreaths, candles, birdhouses, sun_discs; street_bunting: pennant strings across every lane of the town, ALyudStreetBunting), venues (default: the program's). program: phases with hours [from, to) from 00:00 of their day (may pass 24), day (0 first, -1 every day), venue (a spot kind or id of the city plan: square, fair, beach, pier, promenade, park, bonfire, sunrise_point; the people gather over every place of that kind), mode (how people take part: mingle, watch, sit, fair), pull (0..2, how strongly it draws people), face (what watchers look at: stage, sea, bonfire, tree, sky, sunrise, moon, sun: the star where it stands now), show (what the game puts on: music, stage_lights, fireworks, sky_lanterns, bonfire, meteors, kites). priority: who has a venue when two festivals want it at once. menu: the restaurant dishes of its day (menu.json ids); foods: what the fair stalls sell; late: people stay up till this hour of its first day (may pass 24); origin: where in the world it comes from (festival.origin.<origin>). New decor kinds: red_lanterns, balloons, pumpkins, marigolds, wish_tree. New shows: drums, firecrackers, color_powder, water_lanterns, bells. face moon: the moon.",
   "festivals": [
     {
       "id": "weekend_market",
@@ -295,6 +295,90 @@
         {"id": "fair", "day": -1, "hours": [12, 20], "venue": "fair", "mode": "fair", "pull": 0.7, "show": ["music"]}
       ],
       "priority": 2
+    },
+    {
+      "id": "sun_day",
+      "when": {"rule": "nth_weekday", "month": 6, "nth": 2, "weekday": 5},
+      "holiday": 1,
+      "origin": "town",
+      "late": 24.5,
+      "menu": ["rs_plombir", "rs_mors", "rs_shashlik"],
+      "sky": {"sun": 0.7, "clear": 1, "lead": 3},
+      "decor": {"from": -6, "to": 25, "kinds": ["street_bunting", "bunting", "flags", "sun_discs", "stalls", "stage"], "venues": ["square", "fair", "promenade", "beach"]},
+      "program": [
+        {"id": "eve", "hours": [-5.5, -2.2], "venue": "promenade", "mode": "watch", "face": "sun", "pull": 0.8},
+        {"id": "fair", "hours": [9.5, 12], "venue": "fair", "mode": "fair", "pull": 0.9, "show": ["music"]},
+        {"id": "zenith", "hours": [12, 14.5], "venue": "square", "mode": "watch", "face": "sun", "pull": 1.8, "show": ["bells"]},
+        {"id": "seaside", "hours": [14.5, 20], "venue": "beach", "mode": "mingle", "pull": 1.7, "show": ["kites"]},
+        {"id": "stroll", "hours": [14.5, 20], "venue": "promenade", "mode": "mingle", "pull": 1.2, "show": ["music"]},
+        {"id": "sunset", "hours": [20, 21.8], "venue": "promenade", "mode": "watch", "face": "sun", "pull": 1.8},
+        {"id": "dance", "hours": [21.8, 24.5], "venue": "square", "mode": "mingle", "pull": 1.0, "show": ["music", "stage_lights"]}
+      ],
+      "priority": 6
+    },
+    {
+      "id": "city_day",
+      "when": {"rule": "nth_weekday", "month": 8, "nth": 1, "weekday": 5},
+      "holiday": 1,
+      "origin": "town",
+      "late": 25,
+      "menu": ["rs_olivier", "rs_fest_kulebyaka", "rs_medovik"],
+      "sky": {"clear": 0.6, "lead": 1},
+      "decor": {"from": -6, "to": 26, "kinds": ["street_bunting", "bunting", "flags", "lanterns", "stage", "stalls", "balloons"], "venues": ["square", "fair", "promenade", "park"]},
+      "program": [
+        {"id": "fair", "hours": [10, 16], "venue": "fair", "mode": "fair", "pull": 1.0, "show": ["music"]},
+        {"id": "games", "hours": [11, 16], "venue": "park", "mode": "mingle", "pull": 0.7},
+        {"id": "parade", "hours": [16, 17.5], "venue": "promenade", "mode": "mingle", "pull": 1.3, "show": ["drums"]},
+        {"id": "concert", "hours": [17.5, 21.6], "venue": "square", "mode": "watch", "face": "stage", "pull": 1.3, "show": ["music", "stage_lights"]},
+        {"id": "fireworks", "hours": [21.6, 22.1], "venue": "pier", "mode": "watch", "face": "sea", "pull": 1.8, "show": ["fireworks"]},
+        {"id": "dance", "hours": [22.1, 25], "venue": "square", "mode": "mingle", "pull": 0.9, "show": ["music", "stage_lights"]}
+      ],
+      "priority": 5
+    },
+    {
+      "id": "kite_day",
+      "when": {"rule": "nth_weekday", "month": 9, "nth": 3, "weekday": 6},
+      "origin": "town",
+      "menu": ["rs_syrniki", "rs_tea"],
+      "decor": {"from": 9, "to": 19, "kinds": ["flags", "bunting"], "venues": ["beach"]},
+      "program": [
+        {"id": "kites", "hours": [11, 17], "venue": "beach", "mode": "watch", "face": "sky", "pull": 1.1, "show": ["kites"]}
+      ],
+      "priority": 3
+    },
+    {
+      "id": "cat_day",
+      "when": {"rule": "date", "month": 3, "day": 1},
+      "origin": "ru",
+      "menu": ["rs_syrniki", "rs_baltic_fish"],
+      "decor": {"from": 9, "to": 18, "kinds": ["bunting", "balloons"], "venues": ["park"]},
+      "program": [
+        {"id": "cats", "hours": [11, 15], "venue": "park", "mode": "mingle", "pull": 0.7, "show": ["music"]},
+        {"id": "catch", "hours": [15, 17], "venue": "pier", "mode": "mingle", "pull": 0.5}
+      ],
+      "priority": 2
+    },
+    {
+      "id": "book_day",
+      "when": {"rule": "date", "month": 4, "day": 23},
+      "origin": "intl",
+      "menu": ["rs_tea", "rs_medovik"],
+      "decor": {"from": 10, "to": 20, "kinds": ["bunting", "stalls"], "venues": ["park"]},
+      "program": [
+        {"id": "reading", "hours": [12, 18], "venue": "park", "mode": "sit", "pull": 0.8},
+        {"id": "aloud", "hours": [18, 19.5], "venue": "square", "mode": "watch", "face": "stage", "pull": 0.7}
+      ],
+      "priority": 2
+    },
+    {
+      "id": "amber_morning",
+      "when": {"rule": "trigger", "trigger": "after_storm", "offset": 0},
+      "origin": "baltic",
+      "decor": {"from": 5, "to": 13, "kinds": []},
+      "program": [
+        {"id": "amber", "hours": [6.5, 12], "venue": "beach", "mode": "mingle", "pull": 1.0}
+      ],
+      "priority": 1
     }
   ]
 }

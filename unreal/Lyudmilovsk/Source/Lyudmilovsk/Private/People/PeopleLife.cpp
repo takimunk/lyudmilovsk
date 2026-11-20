@@ -39,6 +39,7 @@
 #include "AssetRegistry/IAssetRegistry.h"
 #include "Plants/GameCalendar.h"
 #include "City/LyudCityThings.h"
+#include "Weather/LyudWind.h"
 #include "Sky/Ephemeris.h"
 #include "Sky/LyudRareSky.h"
 #include "Fishing/LyudFishing.h"
@@ -649,6 +650,9 @@ bool UPeopleLifeSubsystem::UpdateClock(bool bFirst)
 	// and choose what to do by the weather (a bench in the drizzle, the beach in the frost: PeopleSim's Score)
 	S.Rain = Weather ? Weather->GetSky().Rain : 0.f;
 	S.TempC = Weather ? Weather->GetSky().TempC : 12.f;
+	// and the wind (a kite on the beach wants a breeze: activities.json "wind")
+	const ULyudWindSubsystem* WindSys = ULyudWindSubsystem::Get(GetWorld());
+	S.Wind = WindSys ? WindSys->GetMeanSpeed() : 5.f;
 	if (!bFirst && bClockSeen && FMath::Abs(Seconds - LastSeconds) > 900.0)
 	{
 		UE_LOG(LogTemp, Display, TEXT("PeopleLife: the clock jumped %.2f h; people resettled"), (Seconds - LastSeconds) / 3600.0);
@@ -1745,6 +1749,16 @@ int32 UPeopleLifeSubsystem::FindActivity(const FString& Id) const
 	return -1;
 }
 
+AActor* UPeopleLifeSubsystem::GetShownBody(int32 Id) const
+{
+	if (!Bodies.IsValidIndex(Id))
+	{
+		return nullptr;
+	}
+	AActor* Body = Bodies[Id];
+	return Body && !Body->IsHidden() ? Body : nullptr;
+}
+
 bool UPeopleLifeSubsystem::GetActivityState(int32 Id, int32& Activity, bool& bDoing, EPersonPose& Pose, FVector& Location) const
 {
 	if (!Sim || Id < 0 || Id >= (int32)Sim->People.size())
@@ -1807,6 +1821,11 @@ bool UPeopleLifeSubsystem::GetPerson(int32 Id, FPersonInfo& Out) const
 bool UPeopleLifeSubsystem::Order(int32 Id, const FString& Activity, const FString& PlaceId)
 {
 	return Sim && Sim->Order(Id, TCHAR_TO_UTF8(*Activity), TCHAR_TO_UTF8(*PlaceId));
+}
+
+bool UPeopleLifeSubsystem::SitBeside(int32 Id, const FVector& Where, float MaxCm, float Minutes)
+{
+	return Sim && Sim->OrderBeside(Id, PeopleFromUE(Where), MaxCm * 0.01f, Minutes);
 }
 
 bool UPeopleLifeSubsystem::SetHome(const FString& Household, const FString& FlatId)

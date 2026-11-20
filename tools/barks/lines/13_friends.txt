@@ -1,0 +1,445 @@
+## ---------------------------------------------------------------------------------------------------------------
+## Friends among the townsfolk (backlog item 12; the words of the feature: tools/friends/content.py).
+## bond = friendly | friend | close: how close the speaker is to the hero (absent: anyone). {0} is the nickname the
+## friend gave him (friends.nick.*), only in sets with bond = friend close. Greetings (to = hero), a wave from afar
+## (on = friend_wave), the friend's day told on a bench (on = friend_bench), at their family's weekend outing
+## (on = friend_outing), his postcard came (on = friend_card), his present remembered (on = friend_gift).
+## Russian: the speaker's own words never agree in gender (no past tense about themselves); the hero is a boy.
+## ---------------------------------------------------------------------------------------------------------------
+
+## --- greetings ---
+
+[friend_greet_friendly]
+to = hero
+bond = friendly
+age = adult elder
+weight = 2
+say town.friend_greet_friendly.1 | А, это ты! Как приятно тебя видеть. | Ah, it's you! How nice to see you. | ああ、君か！会えてうれしいよ。
+say town.friend_greet_friendly.2 | Здравствуй, здравствуй! Как там твои птицы? | Hello, hello! How are your birds getting on? | やあやあ！鳥たちは元気？
+say town.friend_greet_friendly.3 | Привет! Заходи как-нибудь, поболтаем. | Hi! Drop by some time, we'll have a chat. | やあ！そのうち寄ってよ、おしゃべりしよう。
+say town.friend_greet_friendly.4 | Вот и ты. Без тебя улица какая-то пустая. | There you are. The street feels empty without you. | 来た来た。君がいないと通りがさびしいんだ。
+
+[friend_greet_friendly_young]
+to = hero
+bond = friendly
+age = kid teen
+weight = 2
+say town.friend_greet_friendly_young.1 | Привет! Ты сегодня в клуб? | Hi! Going to the club today? | やあ！今日はクラブ？
+say town.friend_greet_friendly_young.2 | О, привет! Покажешь потом бинокль? | Oh, hi! Will you show me your binoculars later? | あ、こんにちは！あとで双眼鏡見せてくれる？
+say town.friend_greet_friendly_young.3 | Привет-привет! Чаек сегодня видел? | Hi there! Seen any gulls today? | やっほー！今日カモメ見た？
+
+[friend_greet_friendly_rain]
+to = hero
+bond = friendly
+weather = rain
+weight = 2
+say town.friend_greet_friendly_rain.1 | Привет! Ну и погодка, да? Держись. | Hi! What weather, eh? Hang in there. | やあ！ひどい天気だね。がんばって。
+
+[friend_greet_friend]
+to = hero
+bond = friend
+age = adult elder
+weight = 3
+say town.friend_greet_friend.1 | Привет, {0}! Как жизнь? | Hi, {0}! How's life? | やあ、{0}！調子はどう？
+say town.friend_greet_friend.2 | {0}! А я как раз думаю: что-то давно не виделись. | {0}! I was just thinking we hadn't seen each other for a while. | {0}！しばらく会ってないなって、ちょうど思ってたところ。
+say town.friend_greet_friend.3 | Здравствуй, {0}. Хорошо, что встретились. | Hello, {0}. Good to run into you. | こんにちは、{0}。会えてよかった。
+say town.friend_greet_friend.4 | О, {0}! День сразу стал лучше. | Oh, {0}! The day's just got better. | おお、{0}！一気にいい日になった。
+say town.friend_greet_friend.5 | Как дела, {0}? Не замёрз? | How are things, {0}? Not cold? | 元気、{0}？寒くない？
+
+[friend_greet_friend_kid]
+to = hero
+bond = friend
+age = kid
+weight = 3
+say town.friend_greet_friend_kid.1 | Привет, {0}! Пойдём потом на пирс? | Hi, {0}! Shall we go to the pier later? | やあ、{0}！あとで桟橋行こうよ！
+say town.friend_greet_friend_kid.2 | {0}! {0}! Смотри, у меня зуб выпал! | {0}! {0}! Look, my tooth came out! | {0}！{0}！見て、歯がぬけた！
+say town.friend_greet_friend_kid.3 | Привет, {0}! А я знаю, где гнездо! | Hi, {0}! I know where there's a nest! | {0}、こんにちは！巣のある場所、知ってるよ！
+
+[friend_greet_friend_teen]
+to = hero
+bond = friend
+age = teen
+weight = 3
+say town.friend_greet_friend_teen.1 | Здорово, {0}. Как оно? | Hey, {0}. How's it going? | よう、{0}。どう？
+say town.friend_greet_friend_teen.2 | О, {0}! Увидимся вечером на набережной? | Oh, {0}! See you on the promenade tonight? | お、{0}！夜、遊歩道で会う？
+say town.friend_greet_friend_teen.3 | Привет, {0}. Есть что-нибудь интересное в бинокль? | Hi, {0}. Anything interesting through the binoculars? | やあ、{0}。双眼鏡で何かおもしろいもの見えた？
+
+[friend_greet_close]
+to = hero
+bond = close
+age = adult elder
+weight = 4
+say town.friend_greet_close.1 | {0}, родной! Иди сюда, дай на тебя посмотреть. | {0}, my dear! Come here, let me look at you. | {0}、よく来たね！こっちへおいで、顔を見せて。
+say town.friend_greet_close.2 | А вот и {0}. Для тебя у меня всегда найдётся минутка. | And here's {0}. There's always a minute for you. | 来たね、{0}。君のためなら、いつだって時間はあるよ。
+say town.friend_greet_close.3 | {0}! Ты поел сегодня? По глазам вижу, что нет. | {0}! Have you eaten today? I can see from your eyes you haven't. | {0}！今日ちゃんと食べた？目を見ればわかる、食べてないね。
+say town.friend_greet_close.4 | Привет, {0}. Как хорошо, что ты есть в этом городе. | Hi, {0}. How good it is that you're in this town. | やあ、{0}。君がこの町にいてくれて、ほんとによかった。
+
+[friend_greet_close_kid]
+to = hero
+bond = close
+age = kid
+weight = 4
+say town.friend_greet_close_kid.1 | {0}! Тебя видно с того конца улицы! | {0}! I could spot you from the other end of the street! | {0}！通りの向こうからでもすぐわかったよ！
+say town.friend_greet_close_kid.2 | Привет, {0}! Ты мой самый лучший друг, знаешь? | Hi, {0}! You're my very best friend, you know that? | やあ、{0}！君がいちばんの友だちなんだよ、知ってた？
+
+[friend_greet_close_teen]
+to = hero
+bond = close
+age = teen
+weight = 4
+say town.friend_greet_close_teen.1 | {0}, привет. Хорошо, что ты здесь, а то скукота. | {0}, hi. Good thing you're here, it's been so boring. | {0}、やあ。来てくれてよかった、退屈しててさ。
+say town.friend_greet_close_teen.2 | О, {0}! Тебя-то мне и надо. Пошли, покажу кое-что. | Oh, {0}! You're just who I need. Come on, I'll show you something. | お、{0}！ちょうど会いたかった。来いよ、見せたいものがあるんだ。
+
+[friend_greet_morning]
+to = hero
+bond = friend close
+age = adult elder
+hours = 6-10
+weight = 4
+say town.friend_greet_morning.1 | Доброе утро, {0}! Рано ты сегодня. | Good morning, {0}! You're up early today. | おはよう、{0}！今日は早いね。
+say town.friend_greet_morning.2 | С добрым утром, {0}. Уже кого-нибудь видел в бинокль? | Good morning, {0}. Spotted anyone through the binoculars yet? | おはよう、{0}。もう双眼鏡で何か見つけた？
+
+[friend_greet_evening]
+to = hero
+bond = friend close
+hours = 18-23
+weight = 4
+say town.friend_greet_evening.1 | Добрый вечер, {0}. Не засиживайся допоздна. | Good evening, {0}. Don't stay out too late. | こんばんは、{0}。あんまり遅くならないようにね。
+say town.friend_greet_evening.2 | Вечер, {0}! Видел, какой был закат? | Evening, {0}! Did you see that sunset? | こんばんは、{0}！さっきの夕焼け見た？
+
+[friend_greet_rain]
+to = hero
+bond = friend close
+weather = rain
+weight = 4
+say town.friend_greet_rain.1 | {0}, ты же насквозь мокрый! Беги скорей под крышу. | {0}, you're soaked through! Hurry and get under a roof. | {0}、びしょぬれじゃない！早く屋根の下へ。
+say town.friend_greet_rain.2 | Привет, {0}. Дождь, а ты всё равно гуляешь. Уважаю. | Hi, {0}. Raining, and you're out walking anyway. Respect. | やあ、{0}。雨なのに散歩か。感心するよ。
+
+## --- a friend waves first, from across the street ---
+
+[friend_wave]
+on = friend_wave
+bond = friend close
+age = teen adult elder
+say town.friend_wave.1 | Эй, {0}! Привет! | Hey, {0}! Hello! | おーい、{0}！こんにちは！
+say town.friend_wave.2 | {0}! Сюда, сюда! | {0}! Over here! | {0}！こっちこっち！
+say town.friend_wave.3 | Э-эй, {0}! Доброго дня! | Hey there, {0}! Have a good day! | おーい、{0}！いい一日を！
+say town.friend_wave.4 | {0}, привет! Заходи, если будешь рядом! | {0}, hi! Drop in if you're passing! | {0}、やあ！近くに来たら寄ってって！
+
+[friend_wave_kid]
+on = friend_wave
+bond = friend close
+age = kid
+say town.friend_wave_kid.1 | {0}! {0}! Привет-привет-привет! | {0}! {0}! Hi, hi, hi! | {0}！{0}！やっほー！
+say town.friend_wave_kid.2 | Смотрите, это же {0}! Привет! | Look, it's {0}! Hi! | 見て、{0}だ！こんにちは！
+say town.friend_wave_kid.3 | {0}, подожди! Я тебе что-то покажу! | {0}, wait! I want to show you something! | {0}、待って！見せたいものがあるんだ！
+
+[friend_wave_morning]
+on = friend_wave
+bond = friend close
+age = adult elder
+hours = 6-10
+say town.friend_wave_morning.1 | Доброе утро, {0}! Хорошего дня! | Morning, {0}! Have a good one! | おはよう、{0}！いってらっしゃい！
+
+## --- on a bench together: the friend's day ---
+
+[friend_bench_pensioner]
+on = friend_bench
+bond = friend close
+job = pensioner
+weight = 2
+say town.friend_bench_pensioner.1 | С утра на рынке. Творог подорожал, зато продавщица подарила яблоко. День в плюсе. | Market this morning. Cheese has gone up, but the stallholder gave me an apple. A good day. | 朝は市場へ。チーズは値上がり、でもリンゴをもらえた。今日は黒字。
+say town.friend_bench_pensioner.2 | Внуки звонили, обещают приехать летом. Каждый год обещают. Так и живём. | The grandchildren rang: they'll come in summer. They say so every year. That's life. | 孫から電話。夏に来るって。毎年そう言うんだけどね。
+say town.friend_bench_pensioner.3 | Весь день старые фотографии. Нашлась одна, где наш двор ещё молодой. | Old photographs all day. Found one where our courtyard's still young. | 一日じゅう古い写真の整理。若いころの中庭のが出てきた。
+say town.friend_bench_pensioner.4 | Сижу вот, считаю корабли. Сегодня уже четыре. Раньше было больше, но и четыре — хорошо. | Here I sit, counting ships. Four so far today. There used to be more, but four's good too. | こうして船を数えてるんだ。今日はもう四隻。昔はもっと多かったけど、四隻でも上等さ。
+say town.friend_bench_pensioner.5 | Утром давление, к обеду отпустило. Вот и славно. | Blood pressure this morning, gone by lunch. All's well. | 朝は血圧が高かったけど、昼には落ち着いた。よかった。
+say town.friend_bench_pensioner.7 | На почте очередь, зато поговорить успели со всеми. | A queue at the post office, but we got to chat with everyone. | 郵便局は行列。おかげでみんなとおしゃべりできた。
+say town.friend_bench_pensioner.6 | Соседка принесла пирожков. Теперь моя очередь что-нибудь испечь. | The neighbour brought pies. Now it's my turn to bake something. | お隣さんがピロシキをくれた。今度はこっちが焼く番だ。
+say town.friend_bench_pensioner.8 | Третий час думаю над рецептом. С пирогами спешить нельзя. | Three hours I've been pondering a recipe. You can't rush a pie. | もう三時間もレシピを考えてる。パイは急いじゃだめ。
+
+[friend_bench_elder_warm]
+on = friend_bench
+bond = friend close
+age = elder
+weather = warm clear
+say town.friend_bench_elder_warm.1 | Тепло-то как. В такие дни кости не ноют, а память добрее. Посиди, погрейся со мной. | So warm. On days like this the bones don't ache and memory's kinder. Sit and warm up with me. | あったかいねえ。こんな日は骨も痛まないし、思い出もやさしくなる。いっしょに日なたぼっこしよう。
+say town.friend_bench_elder_warm.2 | Сегодня солнце, а значит, весь день на улице. Дома только чайник скучает. | Sunshine today, which means the whole day outdoors. Only the kettle at home is bored. | 今日は晴れ。だから一日じゅう外。家ではやかんだけが退屈してる。
+
+[friend_bench_elder_cold]
+on = friend_bench
+bond = friend close
+age = elder
+weather = cold snow
+say town.friend_bench_elder_cold.1 | Холодно, а дома не сидится. Шарф двойной, носки шерстяные — и к морю. | It's cold, but there's no staying in. Double scarf, woollen socks, and off to the sea. | 寒いけど、家にじっとしていられなくてね。マフラーを二重に、毛糸の靴下をはいて、海へ。
+say town.friend_bench_elder_cold.2 | Утром на окне узоры, как в детстве. Полчаса смотрю — лучше газеты. | Frost patterns on the window this morning, like when I was small. Better than the papers. | 今朝は窓に霜の模様。子どものころみたい。新聞よりいい。
+
+[friend_bench_elder_rain]
+on = friend_bench
+bond = friend close
+age = elder
+weather = rain
+say town.friend_bench_elder_rain.1 | Дождь с утра, весь день книжка и чай. Под дождь хорошо читается, а ещё лучше дремлется. | Rain since morning, a book and tea all day. Reading goes well in the rain, and dozing even better. | 朝から雨で、一日じゅう本とお茶。雨の日は読書がはかどる。うたた寝はもっとはかどる。
+
+[friend_bench_pupil]
+on = friend_bench
+bond = friend close
+job = pupil
+weight = 2
+say town.friend_bench_pupil.1 | Сегодня контрольная по математике. Кажется, на четвёрку. Ну, или на тройку с плюсом. | Maths test today. I think it's a B. Or a C-plus. | 今日、算数のテストだった。たぶん「４」かな。それか「３プラス」。
+say town.friend_bench_pupil.2 | На перемене нашли ежа во дворе. Не трогали, только смотрели всем классом. | Found a hedgehog at break. Nobody touched it: the whole class just watched. | 休み時間にハリネズミを見つけた。クラスみんなで見てただけ。
+say town.friend_bench_pupil.3 | Нам задали сочинение «Мой друг». Можно я про тебя напишу? Только про птиц, без всего остального. | We've been set an essay, "My Friend". Can I write about you? Just the birds, nothing else. | 作文の宿題が「友だち」なんだ。君のこと書いてもいい？鳥の話だけにするから。
+say town.friend_bench_pupil.4 | Сегодня дежурство по классу. Цветы поливать — самое приятное. | Class duty today. Watering the flowers is the best bit. | 今日は日直。花の水やりがいちばん楽しい。
+say town.friend_bench_pupil.5 | Мама говорит, после уроков сразу домой. Но скамейка ведь почти по дороге, правда? | Mum says straight home after lessons. But the bench is nearly on the way, isn't it? | お母さんは、学校が終わったらまっすぐ帰りなさいって。でもベンチって、ほとんど帰り道だよね？
+say town.friend_bench_pupil.6 | На физкультуре прыгали в длину. Почти до песочницы! Ну, почти-почти. | Long jump in PE. Nearly to the sandpit! Well, nearly nearly. | 体育で幅とびをした。もうちょっとで砂場まで！まあ、もうちょっとのちょっと。
+
+[friend_bench_kid]
+on = friend_bench
+bond = friend close
+age = kid
+say town.friend_bench_kid.1 | Сегодня строим крепость из песка. Ну, строили. Пока волна не пришла. | Today we're building a sand fortress. Well, we were. Till the wave came. | 今日は砂でお城をつくってたんだ。まあ、波が来るまではね。
+say town.friend_bench_kid.2 | У меня есть секрет. Под третьей ступенькой живёт жук. Только никому! | I've got a secret. A beetle lives under the third step. Don't tell anyone! | ひみつがあるんだ。三段目の階段の下に虫が住んでるの。だれにも言わないでね！
+
+[friend_bench_kid_rain]
+on = friend_bench
+bond = friend close
+age = kid
+weather = rain
+say town.friend_bench_kid_rain.1 | Сегодня все лужи мои. Мама будет ругаться за ботинки, но оно того стоит. | Every puddle is mine today. Mum will tell me off about the shoes, but it's worth it. | 今日は水たまりがぜんぶ自分のもの。靴のことでお母さんに怒られるけど、それだけの価値はある。
+
+[friend_bench_teen]
+on = friend_bench
+bond = friend close
+age = teen
+say town.friend_bench_teen.1 | Весь день с друзьями на пирсе. Ничего не делали, и это было лучше всего. | All day with friends on the pier. We did nothing, and that was the best part. | 一日、友だちと桟橋にいた。何もしないのが最高だった。
+say town.friend_bench_teen.2 | Дома опять про уроки. Почти готовы, честно. Тут хотя бы море вопросов не задаёт. | Homework talk at home again. It's nearly done, honestly. At least the sea doesn't ask questions. | 家でまた宿題の話。ほぼ終わってるって、ほんとに。ここなら海は何も聞いてこない。
+
+[friend_bench_student]
+on = friend_bench
+bond = friend close
+job = student
+say town.friend_bench_student.1 | Полдня в библиотеке. Голова гудит, как чайник. Посижу, отдохну от формул. | Half the day in the library. My head's humming like a kettle. A rest from formulas. | 半日図書館。頭がやかんみたい。数式から休憩させて。
+say town.friend_bench_student.2 | Экзамен через неделю, а я смотрю на чаек. Это тоже подготовка, просто к другому предмету. | Exam in a week, and here I am watching gulls. That's revision too, just for a different subject. | 一週間後に試験なのに、カモメを見てる。これも勉強だよ、科目がちがうだけで。
+say town.friend_bench_student.3 | Стипендию дали! Сегодня ужин из трёх блюд: суп, второе и ещё раз суп. | The grant came through! Three-course dinner tonight: soup, a main, and soup again. | 奨学金が出た！今夜は三品のごちそう。スープ、メイン、それからまたスープ。
+
+[friend_bench_fisherman]
+on = friend_bench
+bond = friend close
+job = fisherman
+weight = 2
+say town.friend_bench_fisherman.1 | С четырёх утра на воде. Треска капризничала, а камбала пошла. | On the water since four. The cod were fussy, but the flounder came. | 朝四時から海の上。タラはだめ、カレイは上がった。
+say town.friend_bench_fisherman.5 | Руки до сих пор пахнут морем. И хорошо. | My hands still smell of the sea. Good. | 手がまだ海のにおいがする。それでいい。
+say town.friend_bench_fisherman.2 | Сети чинить — полдня, ловить — полчаса. Такая у нас математика. | Half a day mending nets, half an hour fishing. That's our arithmetic. | 網直しに半日、漁は三十分。それがこっちの計算さ。
+say town.friend_bench_fisherman.3 | У буя тюлень всплыл, смотрел на лодку, будто улов проверял. | A seal came up by the buoy and eyed the boat, as if checking the catch. | ブイのそばでアザラシが舟をのぞいていた。検査みたいに。
+say town.friend_bench_fisherman.4 | Чайки сегодня злые, весь улов пересчитали. Половину пришлось отдать за проезд. | The gulls were fierce today, counted the whole catch. Had to give them half as a toll. | 今日のカモメは気が荒くてね、獲物を全部数えていった。半分は通行料に取られたよ。
+
+[friend_bench_fisherman_rain]
+on = friend_bench
+bond = friend close
+job = fisherman
+weather = rain fog
+say town.friend_bench_fisherman_rain.1 | В такую погоду не выходим. Руки сами вяжут узлы, даже без верёвки. | We don't go out in this. My hands tie knots by themselves, even with no rope. | こんな日は出ない。縄がなくても手が結び目をつくる。
+
+[friend_bench_fisherman_cold]
+on = friend_bench
+bond = friend close
+job = fisherman
+weather = cold
+say town.friend_bench_fisherman_cold.1 | Утром у причала лёд по краю. Сегодня отдыхаем: море тоже имеет право на выходной. | Ice along the edge of the jetty this morning. Today we rest: the sea's entitled to a day off too. | 今朝は桟橋のふちに氷が張ってた。今日は休み。海にだって休む権利はある。
+
+[friend_bench_seller]
+on = friend_bench
+bond = friend close
+job = seller vendor fishmonger
+say town.friend_bench_seller.1 | С семи за прилавком. Яблоки разобрали к обеду, а капуста скучает. | Behind the counter since seven. The apples sold by lunch; the cabbages are moping. | 七時から店番。リンゴは売り切れ、キャベツはしょんぼり。
+say town.friend_bench_seller.3 | Завтра выложу капусту вперёд. Пусть покажет себя. | Tomorrow the cabbages go out front. Let them show off. | 明日はキャベツを前に並べよう。見せ場をつくってやる。
+say town.friend_bench_seller.2 | Сегодня покупатель торговался за каждую копейку, а потом оставил сдачу «на чай». Люди — загадка. | Today a customer haggled over every kopeck and then left the change as a tip. People are a mystery. | 今日のお客さん、一円まで値切ったくせに、おつりはチップにって置いていった。人ってなぞだね。
+
+[friend_bench_programmer]
+on = friend_bench
+bond = friend close
+job = programmer
+say town.friend_bench_programmer.1 | Весь день искать одну ошибку. Нашлась: запятая не там стояла. | All day hunting one bug. Found it: a comma in the wrong place. | 一日じゅうバグ探し。犯人はずれたコンマだった。
+say town.friend_bench_programmer.2 | Восемь часов в экран, теперь восемь минут в горизонт. Глазам нужно что-то без пикселей. | Eight hours at a screen, now eight minutes at the horizon. Eyes need something without pixels. | 八時間画面を見て、今度は八分水平線を見る。目にはピクセルのないものが必要なんだ。
+
+[friend_bench_artist]
+on = friend_bench
+bond = friend close
+job = artist photographer
+say town.friend_bench_artist.1 | Свет сегодня капризный: то серый, то жемчужный. Три наброска — и всё не то. | The light's fickle today: grey, then pearl. Three sketches, none of them right. | 今日の光は気まぐれ。スケッチ三枚、どれも違う。
+say town.friend_bench_artist.2 | Краска кончилась на самом интересном месте. Такого синего, как море, нет. | The paint ran out at the best moment. And no blue like today's sea. | いいところで絵の具切れ。今日の海の青もない。
+say town.friend_bench_artist.3 | Придётся смешивать синий заново. Море ждать не станет. | I'll have to mix the blue again. The sea won't wait. | 青を混ぜ直さないと。海は待ってくれない。
+
+[friend_bench_musician]
+on = friend_bench
+bond = friend close
+job = musician choir_leader
+say town.friend_bench_musician.1 | С утра репетиция, пальцы гудят. Восемь тактов, а как гора. | Rehearsal all morning; my fingers are buzzing. Eight bars, like a mountain. | 朝からリハーサル。八小節が山みたいだ。
+say town.friend_bench_musician.2 | Вечером играем на набережной. Приходи, у нас и про птиц есть. | We play on the promenade tonight. Come: we've got one about birds. | 今夜、遊歩道で演奏する。鳥の歌もあるから来てよ。
+
+[friend_bench_writer]
+on = friend_bench
+bond = friend close
+job = writer
+say town.friend_bench_writer.1 | Сегодня написана одна страница. Хорошая. Вчерашние пять пришлось выбросить, так что день отличный. | One page written today. A good one. Yesterday's five had to go, so it's a fine day. | 今日は一ページ書けた。いいページだ。昨日の五ページは捨てたから、上出来の一日だよ。
+say town.friend_bench_writer.2 | Подслушивать разговоры на набережной — лучшая работа писателя. | Overhearing talk on the promenade is a writer's best work. | 遊歩道で人の話を聞くのが、物書きの一番の仕事。
+say town.friend_bench_writer.3 | Старушка сказала: «Море никуда не торопится». Это будет первая фраза. | An old lady said: "The sea's in no hurry." That'll be my opening line. | 「海は急がない」とおばあさん。書き出しにしよう。
+
+[friend_bench_cook]
+on = friend_bench
+bond = friend close
+job = cook baker
+say town.friend_bench_cook.1 | С шести у плиты. Уха удалась: рыбак взял две добавки. Лучше любой похвалы. | At the stove since six. The fish soup worked: a fisherman had seconds twice. | 六時からかまどの前。魚のスープ、二回もおかわりされた。
+say town.friend_bench_cook.2 | Новый пирог с брусникой: половина подгорела, половина — шедевр. | A new lingonberry pie: half burnt, half a masterpiece. | 新作のコケモモパイ。半分焦げて、半分は傑作。
+say town.friend_bench_cook.3 | Шедевр, конечно, съели гости. Так всегда. | The guests ate the masterpiece, of course. They always do. | 傑作はもちろんお客さんが食べた。いつもそう。
+
+[friend_bench_teacher]
+on = friend_bench
+bond = friend close
+job = teacher
+say town.friend_bench_teacher.1 | Шесть уроков и тридцать тетрадей на вечер. Работа не кончается. | Six lessons, and thirty exercise books for tonight. The work never ends. | 授業が六つ、今夜はノート三十冊。仕事は終わらない。
+say town.friend_bench_teacher.2 | Сегодня мальчишка спросил, почему море солёное. Полкласса слушало до звонка. | A boy asked today why the sea is salty. Half the class listened till the bell. | 今日、海はなぜしょっぱいのと聞かれた。みんな聞き入ってた。
+
+[friend_bench_doctor]
+on = friend_bench
+bond = friend close
+job = doctor nurse
+say town.friend_bench_doctor.1 | Приём до трёх и ещё два вызова. Все живы, кто-то даже улыбается. | Surgery till three, then two house calls. All well, some even smiling. | 三時まで診察、往診が二件。みんな元気、笑顔の人も。
+say town.friend_bench_doctor.2 | Полгорода с насморком. Чай с мёдом и шапка — это и тебе рецепт. | Half the town has a cold. Honey tea and a hat: your prescription too. | 町の半分が鼻かぜ。はちみつ茶と帽子、君にも処方だよ。
+
+[friend_bench_lifeguard]
+on = friend_bench
+bond = friend close
+job = lifeguard
+say town.friend_bench_lifeguard.1 | На пляже тихо: двое детей, собака и тысяча чаек. | Quiet on the beach: two children, one dog and a thousand gulls. | 浜は静か。子ども二人、犬一匹、カモメ千羽。
+say town.friend_bench_lifeguard.2 | Самое опасное за день — у кого-то улетела панама. | The most dangerous thing all day: somebody's sun hat blew away. | 今日いちばんの事件は、帽子が飛ばされたこと。
+
+[friend_bench_keeper]
+on = friend_bench
+bond = friend close
+job = lighthouse_keeper
+say town.friend_bench_keeper.1 | Всю ночь на маяке, а днём не спится. Так всегда после вахты. | All night at the lighthouse, and by day no sleep. Always so after a watch. | 一晩じゅう灯台にいて、昼は眠れない。いつものこと。
+say town.friend_bench_keeper.2 | Утром мимо шёл сухогруз, мы помигали друг другу. Вежливые люди. | A freighter passed this morning and we blinked our lights. Polite people. | 朝、貨物船と灯りで合図しあった。礼儀正しい人たちだ。
+
+[friend_bench_away]
+on = friend_bench
+bond = friend close
+job = away
+weekday = sat sun
+say town.friend_bench_away.1 | Домой после рабочей недели — лучшее, что есть. Поезд, канатка, море. | Home after a working week is the best thing there is. Train, cable car, sea. | 一週間の仕事から帰るのが一番。汽車、ロープウェイ、海。
+
+[friend_bench_adult]
+on = friend_bench
+bond = friend close
+age = adult
+say town.friend_bench_adult.1 | Сегодня обычный день, и это хорошо. Работа, обед, теперь вот скамейка и ты. Больше ничего и не надо. | An ordinary day today, and that's good. Work, lunch, and now the bench and you. Nothing else needed. | 今日はふつうの一日。それがいい。仕事して、お昼を食べて、いまはベンチと君。ほかに何もいらないよ。
+say town.friend_bench_adult.2 | С утра столько дел, что всё перепуталось. Посижу, и всё встанет на места. | So much to do since morning it's all tangled. A sit-down will sort it out. | 朝から用事だらけでこんがらがった。座れば落ち着く。
+
+[friend_bench_rain]
+on = friend_bench
+bond = friend close
+weather = rain
+say town.friend_bench_rain.1 | Под дождём город тише. Слушать, как стучит по подоконнику, — тоже занятие. | The town's quieter in the rain. Listening to it on the sill is something to do. | 雨の日は町が静か。窓をたたく音を聞くのもいい。
+say town.friend_bench_rain.2 | Зонт сегодня вывернуло дважды. На третий раз уже не сопротивляюсь: пусть мочит. | The umbrella blew inside out twice today. The third time I'm not even resisting: let it soak me. | 今日は傘が二回も裏返った。三回目はもう抵抗しない。濡れるなら濡れろ、だ。
+
+[friend_bench_cold]
+on = friend_bench
+bond = friend close
+weather = cold
+say town.friend_bench_cold.1 | Мороз кусачий, зато виден маяк на том берегу. Ради этого можно померзнуть. | The frost bites, but you can see the far lighthouse. Worth a little freezing. | 寒さは刺すけど、向こう岸の灯台が見える。それならいい。
+
+[friend_bench_warm]
+on = friend_bench
+bond = friend close
+weather = warm
+say town.friend_bench_warm.1 | Жара! Весь день мечта о мороженом, а дело дошло только до кваса. Тоже неплохо. | Heat! All day dreaming of ice cream, and it only got as far as kvass. Not bad either. | 暑い！一日じゅうアイスのことばかり考えて、結局クワスどまり。それも悪くない。
+
+[friend_bench_clear]
+on = friend_bench
+bond = friend close
+weather = clear
+say town.friend_bench_clear.1 | Небо сегодня без единого облачка. На такое небо можно смотреть, как в окно, долго-долго. | Not a single cloud today. You can look at a sky like this as if through a window, for ages and ages. | 今日は雲ひとつない。こんな空は、窓からながめるみたいに、いつまでも見ていられる。
+
+[friend_bench_festival]
+on = friend_bench
+bond = friend close
+festival = any
+weight = 2
+say town.friend_bench_festival.1 | Праздник! Весь город во флажках. Праздник вдвоём вдвое больше. | A holiday! Bunting all over town. A holiday for two is twice as big. | お祭りだ！町じゅう旗だらけ。ふたりなら二倍楽しい。
+say town.friend_bench_festival.2 | Все на площади, а нам и тут хорошо, правда? Музыку и отсюда слышно. | Everyone's on the square, but we're fine here. You can hear the music anyway. | みんな広場だけど、ここもいいよね。音楽も聞こえる。
+
+[friend_bench_morning]
+on = friend_bench
+bond = friend close
+hours = 6-10
+say town.friend_bench_morning.1 | Утро только началось, а уже чайки, молочник и первое солнце. | The morning's barely begun, and already gulls, the milkman and the first sun. | 朝はまだなのに、カモメと牛乳屋さんと最初のお日さま。
+say town.friend_bench_morning.2 | Хорошо, что ты тоже ранняя птица. Вдвоём утро длиннее. | Good that you're an early bird too. A morning's longer for two. | 君も早起きでよかった。ふたりだと朝が長い。
+
+[friend_bench_evening]
+on = friend_bench
+bond = friend close
+hours = 18-23
+say town.friend_bench_evening.1 | День позади, и хороший. Теперь только посидеть, посмотреть, как зажигаются фонари. | The day's behind us, and a good one. Now just to sit and watch the lamps come on. | 一日が終わった。いい一日だった。あとは座って、街灯がともるのをながめるだけ。
+say town.friend_bench_evening.2 | Вечером всегда кажется, что завтра будет лучше. И знаешь, обычно так и бывает. | In the evening it always seems tomorrow will be better. And you know, it usually is. | 夕方になると、明日はもっといい日になる気がする。それがね、たいていそのとおりになるんだ。
+
+## --- the hero joins their family's weekend outing ---
+
+[friend_outing]
+on = friend_outing
+bond = friend close
+age = teen adult elder
+say town.friend_outing.1 | Ура, ты пришёл! Теперь все в сборе. | Hooray, you came! Now everyone's here. | やった、来てくれた！これで全員そろった。
+say town.friend_outing.2 | {0}, садись с нами. Мы тебе место заняли. | {0}, sit with us. We've saved you a place. | {0}、いっしょに座って。席をとっておいたよ。
+say town.friend_outing.3 | Знакомься, это наша семья. Семья, это {0}. Ну всё, теперь вы знакомы. | Meet the family. Family, this is {0}. There, now you all know each other. | 紹介するね、うちの家族。みんな、こちらが{0}。はい、これで知り合いだ。
+say town.friend_outing.4 | Как хорошо, что ты с нами, {0}. Выходные без друзей — не выходные. | So good to have you with us, {0}. A weekend without friends isn't a weekend. | 来てくれてうれしいよ、{0}。友だちのいない週末なんて、週末じゃない。
+say town.friend_outing.5 | Сегодня ты почти член семьи, {0}. Только посуду мыть не заставим. | Today you're nearly one of the family, {0}. Only we won't make you do the dishes. | 今日の君は、ほとんど家族の一員だよ、{0}。皿洗いだけはさせないけどね。
+
+[friend_outing_parent]
+on = friend_outing
+bond = friend close
+age = adult
+say town.friend_outing_parent.1 | Дети всю неделю спрашивали, придёшь ли ты. Пришёл! Теперь они от тебя не отстанут. | The children have been asking all week whether you'd come. You did! Now they won't leave you alone. | 子どもたちが一週間ずっと、君が来るか聞いてたんだ。来た！もう離してもらえないよ。
+
+[friend_outing_kid]
+on = friend_outing
+bond = friend close
+age = kid
+say town.friend_outing_kid.1 | {0} пришёл! Мама, смотри, {0} пришёл! | {0}'s here! Mum, look, {0}'s here! | {0}が来た！ママ、見て、{0}が来たよ！
+say town.friend_outing_kid.2 | Ты будешь со мной играть? Ну пожалуйста! | Will you play with me? Please! | いっしょに遊んでくれる？おねがい！
+
+## --- his postcard came ---
+
+[friend_card]
+on = friend_card
+bond = friendly friend close
+age = teen adult elder
+say town.friend_card.1 | Твоя открытка стоит у меня на полке! Каждое утро на неё смотрю. | Your postcard's standing on my shelf! I look at it every morning. | 君のはがき、棚に飾ってあるよ！毎朝ながめてるんだ。
+say town.friend_card.2 | Спасибо за открытку! Даже почтальон удивился: мне давно никто не писал. | Thanks for the postcard! Even the postman was surprised: nobody's written to me in ages. | はがきをありがとう！配達の人までびっくりしてた。ずっと誰からも手紙が来なかったからね。
+say town.friend_card.3 | Открытка пришла! Теперь её вся семья по очереди читает. | The postcard came! The whole family's reading it in turns now. | はがき届いたよ！家族みんなで順番に読んでるところ。
+
+[friend_card_named]
+on = friend_card
+bond = friend close
+age = teen adult elder
+weight = 2
+say town.friend_card_named.1 | {0}, твоя открытка дошла! Теперь она висит на холодильнике, на самом почётном месте. | {0}, your postcard arrived! It's on the fridge now, in the place of honour. | {0}、はがき届いたよ！冷蔵庫のいちばんいい場所に貼ってある。
+say town.friend_card_named.2 | {0}! Открытку получили. Почерк у тебя, конечно... но слова хорошие. | {0}! Got your postcard. Your handwriting, well... but the words are good. | {0}！はがき受け取ったよ。字はまあ…でも言葉がいいね。
+
+[friend_card_kid]
+on = friend_card
+bond = friendly friend close
+age = kid
+say town.friend_card_kid.1 | Мне пришла открытка! Настоящая, с маркой! Это от тебя, я знаю! | I got a postcard! A real one, with a stamp! It's from you, I know it! | はがきが来たんだ！本物の、切手つき！君からでしょ、わかってるんだから！
+
+## --- his present remembered ---
+
+[friend_gift]
+on = friend_gift
+bond = friendly friend close
+say town.friend_gift.1 | Помнишь, что ты мне подарил? До сих пор вспоминаю — и улыбаюсь. | Remember what you gave me? I still think of it and smile. | くれたもの、覚えてる？いまでも思い出すと笑顔になるよ。
+say town.friend_gift.2 | Спасибо ещё раз за тот подарок. Такие мелочи и делают день. | Thanks again for that present. It's little things like that that make a day. | この前の贈り物、あらためてありがとう。ああいう小さなことが一日をつくるんだ。
+
+[friend_gift_named]
+on = friend_gift
+bond = friend close
+say town.friend_gift_named.1 | {0}, твой подарок у меня до сих пор на виду. Ну, что от него осталось. | {0}, your present is still on show at mine. Well, what's left of it. | {0}、贈り物はまだ飾ってるよ。残った分だけね。
+say town.friend_gift_named.2 | {0}, ты меня тогда так обрадовал! Теперь моя очередь что-нибудь придумать. | {0}, you made me so happy that time! Now it's my turn to think of something. | {0}、あのときはほんとにうれしかった！今度はこっちが何か考える番だね。

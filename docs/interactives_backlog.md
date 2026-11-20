@@ -146,7 +146,7 @@ repeated front page two days running), citysim, the reading page shows it.
 
 ## 7. Kites on windy days
 
-`[ ]` **Brief (Opus 5.5):** Sell kites at the toy shops (P-WAVE toys, the department store's toy house, the fair's toy
+`[~] kites 2026-11-20` **Brief (Opus 5.5):** Sell kites at the toy shops (P-WAVE toys, the department store's toy house, the fair's toy
 kiosk) and let the hero fly one on the beach and the cliff top. The kite is a small code-built mesh (a diamond and a box
 kite, our own colours) on a string (a sagging line of a few segments), lifted by the game's real wind (`docs/sea_and_wind.md`,
 gusts): too little wind and it falls, too much and it spins and must be reeled in; the mouse pulls and lets out the line,
@@ -203,7 +203,7 @@ offline tests of delivery by calendar days and the pen-friend chain, lines ru/en
 
 ## 12. Friends among the residents
 
-`[ ]` **Brief (Fable 5.2):** The townsfolk already come to know the hero (`NoteMet`, `met = new|seen|known`, town-manners).
+`[x] friends 2026-11-20 (branch friends, docs/friends.md; awaits a Mac build and shots)` **Brief (Fable 5.2):** The townsfolk already come to know the hero (`NoteMet`, `met = new|seen|known`, town-manners).
 Add a friendship level per named resident (saved): it grows with talk topics heard, quests done for them, gifts (an item
 they like by persona: flowers, a fish, a jar of jam, a record), postcards (item 11); a friend waves first, calls the hero by
 name, sits with him on a bench and talks about their day (lines by `doing`, weather, festival), invites him to tea at their
@@ -214,7 +214,11 @@ calm: no romance, no meters on screen, only lines and gestures that change. Done
 
 ## 13. The cinema shows real films
 
-`[ ]` **Brief (Opus 5.5):** The house of culture «Рассвет» has film sessions by the clock, but the film is only lines.
+`[~] cinema 2026-11-20` (docs/cinema.md: nine public-domain shorts of 1895–1908 as the newsreel before every Rassvet session,
+lecturer's subtitles ru/en/ja, dark hall, beam, laughs, ticket stub, the paper prints the programme; cinemasim. Open: the
+films fetched and the materials, sounds and stub icon made on the Mac, Mac shots; the club's summer screen.)
+
+**Brief (Opus 5.5):** The house of culture «Рассвет» has film sessions by the clock, but the film is only lines.
 Show real public-domain films on its screen (and the club's summer screen on festival nights): silent shorts and early
 animation whose copyright has ended worldwide (check each title's status; keep a `SOURCES.md` with licences), encoded small
 (a media texture on the screen material, a projector beam with dust, the hall lights dim, the audience laughs at the right
@@ -249,7 +253,8 @@ synth frequencies), Mac recording of a tune, bench.
 
 ## 16. AtonOS computers in Academgorodok
 
-`[ ]` **Brief (Fable 5.2):** The game has its own desktop OS (`Private/AtonOS/`: `SAtonDesktop`, `AtonApps`, the
+`[~]` *(branch `aton-lab`, docs/aton_lab.md: six lab programs, one terminal in the scientists' library, the password slip in the
+Bridge House; the offline suite tools/atonsim passes and it builds on the Mac; the first run in the level and the shots are still owed)* **Brief (Fable 5.2):** The game has its own desktop OS (`Private/AtonOS/`: `SAtonDesktop`, `AtonApps`, the
 computer in the club, `AtonComputer.cpp`). Put working terminals in Academgorodok (the consoles hall in
 `docs/academgorodok/`, `academ_photo_consoles.jpg`) and give them apps that fit the lab: a mail client with the lab's old
 correspondence (lore toward the ending, `docs/story/`: hints, never the answer), a text adventure the scientists wrote for
