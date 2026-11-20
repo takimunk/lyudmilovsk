@@ -1,0 +1,22 @@
+## ---------------------------------------------------------------------------------------------------------------
+## The hero's animal friends (docs/animals.md "Friends"): what the townsfolk say when he walks past with a dog at his
+## heel. Event (on = ...): dog_walk (UAnimalFriendSubsystem: a friend dog at heel, a resident within a few metres).
+## ---------------------------------------------------------------------------------------------------------------
+
+[notice_dog_walk]
+on = dog_walk
+age = adult elder
+say town.notice_dog_walk.1 | Твоя собака? | Is that your dog? | 君の犬かい？
+say town.notice_dog_walk.2 | Ишь, как рядом идёт. Без поводка, а слушается. | Look how she keeps to your side. No lead, and still she minds you. | ほう、ぴったり横を歩いてる。リードもないのに、言うことを聞くんだね。
+say town.notice_dog_walk.3 | Это же клубная! Надо же, с тобой пошла. | That's the one from the club! Well, well, she went with you. | クラブの犬じゃないか！へえ、君について来たんだ。
+say town.notice_dog_walk.4 | Хорошая собака. Сразу видно, кто кого выгуливает. | A good dog. You can tell at once who is walking whom. | いい犬だ。どっちが散歩させてるのか、すぐわかるよ。
+say town.notice_dog_walk.5 | Гуляете? Правильно, погода как раз для прогулки. | Out for a walk, you two? Quite right, it's the weather for it. | お散歩？いいね、ちょうど散歩日和だ。
+say town.notice_dog_walk.6 | Смотри, чтобы за чайками не убежала. | Mind she doesn't run off after the gulls. | カモメを追いかけて行かないように気をつけて。
+
+[notice_dog_walk_kid]
+on = dog_walk
+age = kid teen
+say town.notice_dog_walk_kid.1 | Твоя собака? А можно погладить? | Is that your dog? Can I stroke her? | 君の犬？なでてもいい？
+say town.notice_dog_walk_kid.2 | Ого, она сама за тобой идёт! Как ты её научил? | Whoa, she follows you all by herself! How did you teach her? | わあ、自分でついてくる！どうやって教えたの？
+say town.notice_dog_walk_kid.3 | А как её зовут? | What's her name? | 名前はなんていうの？
+say town.notice_dog_walk_kid.4 | Я тоже хочу собаку. Мама говорит, сначала рыбок. | I want a dog too. Mum says fish first. | いいなあ、犬ほしい。ママは、まずは金魚からだって。

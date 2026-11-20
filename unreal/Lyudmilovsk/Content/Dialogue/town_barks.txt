@@ -1986,6 +1986,19 @@ age = teen adult elder
 weight = 3
 say = town.evening_front_warm.1..2
 
+# The hero's animal friends (docs/animals.md "Friends"): what the townsfolk say when he walks past with a dog at his
+# heel. Event (on = ...): dog_walk (UAnimalFriendSubsystem: a friend dog at heel, a resident within a few metres).
+
+[notice_dog_walk]
+on = dog_walk
+age = adult elder
+say = town.notice_dog_walk.1..6
+
+[notice_dog_walk_kid]
+on = dog_walk
+age = kid teen
+say = town.notice_dog_walk_kid.1..4
+
 # Friends among the townsfolk (backlog item 12; the words of the feature: tools/friends/content.py).
 # bond = friendly | friend | close: how close the speaker is to the hero (absent: anyone). {0} is the nickname the
 # friend gave him (friends.nick.*), only in sets with bond = friend close. Greetings (to = hero), a wave from afar
@@ -2376,3 +2389,51 @@ say = town.kite_watch.1..3
 doing = fly_kite
 near = hero
 say = town.kite_hero.1..2
+
+# The hero plays (docs/instruments.md): somebody near the piano or the guitar notices (on = hero_plays), a tune played to
+# its end gets a word (on = hero_played), and by a bonfire the circle sings the tune's words with him (on = hero_sing_<tune>,
+# one line at a time, a voice after a voice).
+# Words that are sung: Jane Taylor's «Twinkle» (d. 1824), the Hill sisters' «Happy Birthday» (public domain), Nekrasov's
+# «Коробейники» (d. 1878), Pierpont's «Jingle Bells» (d. 1893) and the traditional «さくら さくら» in their own language;
+# every other language is our own translation (never a published one still under copyright).
+# ---- the bonfire's songs: each line one singer's turn
+
+[notice_plays]
+on = hero_plays
+say = town.notice_plays.1..6
+
+[notice_plays_kid]
+on = hero_plays
+age = kid
+weight = 2
+say = town.notice_plays_kid.1..2
+
+[played_tune]
+on = hero_played
+say = town.played_tune.1..5
+
+[played_tune_kid]
+on = hero_played
+age = kid
+weight = 2
+say = town.played_tune_kid.1
+
+[sing_twinkle]
+on = hero_sing_twinkle
+say = town.sing_twinkle.1..3
+
+[sing_happy_birthday]
+on = hero_sing_happy_birthday
+say = town.sing_happy_birthday.1..3
+
+[sing_korobeiniki]
+on = hero_sing_korobeiniki
+say = town.sing_korobeiniki.1..4
+
+[sing_jingle_bells]
+on = hero_sing_jingle_bells
+say = town.sing_jingle_bells.1..4
+
+[sing_sakura]
+on = hero_sing_sakura
+say = town.sing_sakura.1..3

@@ -1,0 +1,678 @@
+{
+ "_doc": "Written by tools/garden/build_garden.py from tools/garden/data.py: do not edit by hand. The allotment behind the commune house: docs/allotment.md.",
+ "rules": {
+  "cover_night": 2.0,
+  "cover_sun": 10.0,
+  "open_sun": 1.5,
+  "rain_wet": 0.08,
+  "can_water": 0.55,
+  "can_fills": 6,
+  "weed_days": 4.0,
+  "weed_base": 5.0,
+  "dry_below": 0.3,
+  "frost_hurt": 0.25,
+  "spoil_days": 4.0,
+  "catch_up_days": 60.0,
+  "rent": 30
+ },
+ "cells": 6,
+ "crops": [
+  {
+   "id": "radish",
+   "species": "GardenRadish",
+   "seed": "seeds_radish",
+   "yield": "radish",
+   "yield_count": 5,
+   "days": 3.0,
+   "base": 3.0,
+   "best": 16.0,
+   "hot": 25.0,
+   "thirst": 0.35,
+   "frost_kill": -4.0,
+   "ripe_days": 2.0,
+   "again": 0.0,
+   "pickings": 1,
+   "perennial": false,
+   "seedling": false
+  },
+  {
+   "id": "dill",
+   "species": "GardenDill",
+   "seed": "seeds_dill",
+   "yield": "dill",
+   "yield_count": 2,
+   "days": 5.0,
+   "base": 4.0,
+   "best": 17.0,
+   "hot": 27.0,
+   "thirst": 0.3,
+   "frost_kill": -3.0,
+   "ripe_days": 4.0,
+   "again": 2.5,
+   "pickings": 3,
+   "perennial": false,
+   "seedling": false
+  },
+  {
+   "id": "strawberry",
+   "species": "GardenStrawberry",
+   "seed": "seedling_strawberry",
+   "yield": "strawberries",
+   "yield_count": 4,
+   "days": 8.0,
+   "base": 6.0,
+   "best": 20.0,
+   "hot": 30.0,
+   "thirst": 0.4,
+   "frost_kill": -2.0,
+   "ripe_days": 2.0,
+   "again": 3.0,
+   "pickings": 4,
+   "perennial": true,
+   "seedling": true
+  },
+  {
+   "id": "potato",
+   "species": "GardenPotato",
+   "seed": "seed_potatoes",
+   "yield": "potatoes",
+   "yield_count": 6,
+   "days": 10.0,
+   "base": 7.0,
+   "best": 18.0,
+   "hot": 28.0,
+   "thirst": 0.4,
+   "frost_kill": -1.0,
+   "ripe_days": 8.0,
+   "again": 0.0,
+   "pickings": 1,
+   "perennial": false,
+   "seedling": false
+  },
+  {
+   "id": "tomato",
+   "species": "GardenTomato",
+   "seed": "seedling_tomato",
+   "yield": "tomatoes",
+   "yield_count": 4,
+   "days": 12.0,
+   "base": 10.0,
+   "best": 24.0,
+   "hot": 32.0,
+   "thirst": 0.6,
+   "frost_kill": 0.5,
+   "ripe_days": 3.0,
+   "again": 2.0,
+   "pickings": 3,
+   "perennial": false,
+   "seedling": true
+  },
+  {
+   "id": "sunflower",
+   "species": "GardenSunflower",
+   "seed": "seeds_sunflower",
+   "yield": "seeds",
+   "yield_count": 3,
+   "days": 12.0,
+   "base": 8.0,
+   "best": 24.0,
+   "hot": 33.0,
+   "thirst": 0.45,
+   "frost_kill": -1.0,
+   "ripe_days": 6.0,
+   "again": 0.0,
+   "pickings": 1,
+   "perennial": false,
+   "seedling": false
+  }
+ ],
+ "items": [
+  {
+   "id": "spade",
+   "price": 60,
+   "sold": [
+    "hardware"
+   ],
+   "edible": false
+  },
+  {
+   "id": "watering_can",
+   "price": 45,
+   "sold": [
+    "hardware"
+   ],
+   "edible": false
+  },
+  {
+   "id": "garden_compost",
+   "price": 15,
+   "sold": [
+    "hardware"
+   ],
+   "edible": false
+  },
+  {
+   "id": "seeds_radish",
+   "price": 5,
+   "sold": [
+    "hardware",
+    "market"
+   ],
+   "edible": false
+  },
+  {
+   "id": "seeds_dill",
+   "price": 4,
+   "sold": [
+    "hardware",
+    "market"
+   ],
+   "edible": false
+  },
+  {
+   "id": "seeds_sunflower",
+   "price": 4,
+   "sold": [
+    "hardware",
+    "market"
+   ],
+   "edible": false
+  },
+  {
+   "id": "seed_potatoes",
+   "price": 12,
+   "sold": [
+    "market"
+   ],
+   "edible": false
+  },
+  {
+   "id": "seedling_tomato",
+   "price": 8,
+   "sold": [
+    "market"
+   ],
+   "edible": false
+  },
+  {
+   "id": "seedling_strawberry",
+   "price": 10,
+   "sold": [
+    "market"
+   ],
+   "edible": false
+  },
+  {
+   "id": "radish",
+   "price": 3,
+   "sold": [],
+   "edible": true
+  },
+  {
+   "id": "dill",
+   "price": 4,
+   "sold": [],
+   "edible": true
+  },
+  {
+   "id": "potatoes",
+   "price": 3,
+   "sold": [],
+   "edible": false
+  },
+  {
+   "id": "tomatoes",
+   "price": 5,
+   "sold": [],
+   "edible": true
+  },
+  {
+   "id": "strawberries",
+   "price": 6,
+   "sold": [],
+   "edible": true
+  },
+  {
+   "id": "jam_strawberry",
+   "price": 40,
+   "sold": [],
+   "edible": true
+  }
+ ],
+ "sell": {
+  "radish": [
+   2,
+   3,
+   4
+  ],
+  "dill": [
+   2,
+   4,
+   5
+  ],
+  "potatoes": [
+   2,
+   3,
+   4
+  ],
+  "tomatoes": [
+   3,
+   5,
+   7
+  ],
+  "strawberries": [
+   4,
+   6,
+   8
+  ]
+ },
+ "jam": {
+  "strawberries": 6,
+  "hours": 20,
+  "contest_weekday": 6,
+  "contest_hour": 16,
+  "prize": [
+   50,
+   30,
+   15
+  ]
+ },
+ "site": {
+  "plot": "P-T2H2",
+  "ue": [
+   -52969.5,
+   52920.5,
+   -2900.0
+  ],
+  "yaw": -2.2,
+  "size": [
+   14.0,
+   26.0
+  ],
+  "gate": [
+   -52319.9,
+   51594.6,
+   -2900.0
+  ]
+ },
+ "bed_size": [
+  1.2,
+  3.6
+ ],
+ "cell_size": [
+  0.6,
+  1.2
+ ],
+ "beds": [
+  {
+   "id": "hero",
+   "keeper": "hero",
+   "ue": [
+    -52737.0,
+    52461.3,
+    -2900.0
+   ],
+   "yaw": -2.2,
+   "cells": [
+    [
+     -52771.5,
+     52342.5,
+     -2900.0
+    ],
+    [
+     -52711.6,
+     52340.2,
+     -2900.0
+    ],
+    [
+     -52766.9,
+     52462.4,
+     -2900.0
+    ],
+    [
+     -52707.0,
+     52460.1,
+     -2900.0
+    ],
+    [
+     -52762.3,
+     52582.3,
+     -2900.0
+    ],
+    [
+     -52702.4,
+     52580.0,
+     -2900.0
+    ]
+   ],
+   "crops": []
+  },
+  {
+   "id": "maarja",
+   "keeper": "t_berntsen_maarja",
+   "ue": [
+    -52719.7,
+    52910.9,
+    -2900.0
+   ],
+   "yaw": -2.2,
+   "cells": [
+    [
+     -52754.3,
+     52792.2,
+     -2900.0
+    ],
+    [
+     -52694.3,
+     52789.9,
+     -2900.0
+    ],
+    [
+     -52749.7,
+     52912.1,
+     -2900.0
+    ],
+    [
+     -52689.7,
+     52909.8,
+     -2900.0
+    ],
+    [
+     -52745.0,
+     53032.0,
+     -2900.0
+    ],
+    [
+     -52685.1,
+     53029.7,
+     -2900.0
+    ]
+   ],
+   "crops": [
+    "strawberry",
+    "strawberry",
+    "dill",
+    "radish",
+    "tomato",
+    "tomato"
+   ]
+  },
+  {
+   "id": "sargsyan",
+   "keeper": "t_sargsyan_eleni",
+   "ue": [
+    -52702.4,
+    53360.6,
+    -2900.0
+   ],
+   "yaw": -2.2,
+   "cells": [
+    [
+     -52737.0,
+     53241.8,
+     -2900.0
+    ],
+    [
+     -52677.0,
+     53239.5,
+     -2900.0
+    ],
+    [
+     -52732.4,
+     53361.7,
+     -2900.0
+    ],
+    [
+     -52672.4,
+     53359.4,
+     -2900.0
+    ],
+    [
+     -52727.8,
+     53481.7,
+     -2900.0
+    ],
+    [
+     -52667.8,
+     53479.3,
+     -2900.0
+    ]
+   ],
+   "crops": [
+    "potato",
+    "potato",
+    "potato",
+    "potato",
+    "dill",
+    "sunflower"
+   ]
+  },
+  {
+   "id": "patel",
+   "keeper": "t_patel_sachiko",
+   "ue": [
+    -53236.6,
+    52480.4,
+    -2900.0
+   ],
+   "yaw": -2.2,
+   "cells": [
+    [
+     -53271.2,
+     52361.7,
+     -2900.0
+    ],
+    [
+     -53211.2,
+     52359.4,
+     -2900.0
+    ],
+    [
+     -53266.6,
+     52481.6,
+     -2900.0
+    ],
+    [
+     -53206.6,
+     52479.3,
+     -2900.0
+    ],
+    [
+     -53262.0,
+     52601.5,
+     -2900.0
+    ],
+    [
+     -53202.0,
+     52599.2,
+     -2900.0
+    ]
+   ],
+   "crops": [
+    "tomato",
+    "tomato",
+    "radish",
+    "dill",
+    "strawberry",
+    "strawberry"
+   ]
+  },
+  {
+   "id": "brooks",
+   "keeper": "t_brooks_chiara",
+   "ue": [
+    -53219.3,
+    52930.1,
+    -2900.0
+   ],
+   "yaw": -2.2,
+   "cells": [
+    [
+     -53253.9,
+     52811.4,
+     -2900.0
+    ],
+    [
+     -53193.9,
+     52809.1,
+     -2900.0
+    ],
+    [
+     -53249.3,
+     52931.3,
+     -2900.0
+    ],
+    [
+     -53189.3,
+     52929.0,
+     -2900.0
+    ],
+    [
+     -53244.7,
+     53051.2,
+     -2900.0
+    ],
+    [
+     -53184.7,
+     53048.9,
+     -2900.0
+    ]
+   ],
+   "crops": [
+    "sunflower",
+    "sunflower",
+    "potato",
+    "potato",
+    "radish",
+    "dill"
+   ]
+  },
+  {
+   "id": "mendoza",
+   "keeper": "t_mendoza_ingrid",
+   "ue": [
+    -53202.0,
+    53379.8,
+    -2900.0
+   ],
+   "yaw": -2.2,
+   "cells": [
+    [
+     -53236.6,
+     53261.0,
+     -2900.0
+    ],
+    [
+     -53176.7,
+     53258.7,
+     -2900.0
+    ],
+    [
+     -53232.0,
+     53380.9,
+     -2900.0
+    ],
+    [
+     -53172.1,
+     53378.6,
+     -2900.0
+    ],
+    [
+     -53227.4,
+     53500.8,
+     -2900.0
+    ],
+    [
+     -53167.5,
+     53498.5,
+     -2900.0
+    ]
+   ],
+   "crops": [
+    "strawberry",
+    "strawberry",
+    "strawberry",
+    "strawberry",
+    "tomato",
+    "dill"
+   ]
+  }
+ ],
+ "neighbour": {
+  "person": "t_berntsen_maarja",
+  "bed": "maarja",
+  "hours": [
+   7.0,
+   10.5
+  ],
+  "days": [
+   "mon",
+   "tue",
+   "wed",
+   "thu",
+   "fri",
+   "sat"
+  ],
+  "stand": [
+   -52562.1,
+   52844.8,
+   -2900.0
+  ],
+  "stand_yaw": 177.8
+ },
+ "props": [
+  {
+   "id": "board",
+   "kind": "board",
+   "ue": [
+    -52374.1,
+    51746.8,
+    -2900.0
+   ],
+   "yaw": -2.2
+  },
+  {
+   "id": "barrel",
+   "kind": "barrel",
+   "ue": [
+    -52440.6,
+    52099.6,
+    -2900.0
+   ],
+   "yaw": -2.2
+  },
+  {
+   "id": "shed",
+   "kind": "shed",
+   "ue": [
+    -53509.4,
+    51890.5,
+    -2900.0
+   ],
+   "yaw": -2.2
+  },
+  {
+   "id": "bench",
+   "kind": "bench",
+   "ue": [
+    -53025.9,
+    51972.0,
+    -2900.0
+   ],
+   "yaw": 87.8
+  }
+ ],
+ "market": {
+  "thing": "P-MARKET/control_scales",
+  "ue": [
+   -7257.0,
+   87873.1,
+   -3505.0
+  ],
+  "yaw": -4.3,
+  "hours": [
+   7,
+   18
+  ]
+ }
+}

@@ -259,9 +259,17 @@ void ABirdActor::SetWingPose(float SpreadL, float SpreadR, float StrokeL, float 
 	W.StrokeR = FMath::Frac(StrokeR);
 	W.StrokeAmp = FMath::Clamp(StrokeAmp, 0.f, 1.f);
 	W.Flare = FMath::Clamp(Flare, 0.f, 1.f);
-	W.TailFan = FMath::Clamp(TailFan, 0.f, 1.f);
+	W.TailFan = FMath::Clamp(TailFan, -1.f, 1.f);
 	W.LegsDown = FMath::Clamp(LegsDown, 0.f, 1.f);
 	WingPoseAge = 0.f;
+}
+
+void ABirdActor::SetWingLevel(float Level01)
+{
+	if (UBirdAnimInstance* A = Anim())
+	{
+		A->Wings.Level = FMath::Clamp(Level01, 0.f, 1.f);
+	}
 }
 
 void ABirdActor::SetFirstPerson(bool bOn)

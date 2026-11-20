@@ -80,14 +80,19 @@ namespace LyudAnimals
 		Perch,      // a cat up a tree, or on a wall
 		Hiss,       // a cat's standoff: back arched, side on
 		Bark,       // a dog barking (at a cat up a tree, a stranger dog, the player)
-		Follow,     // reserved: a dog walking with the player (taming comes later)
+		Follow,     // a befriended dog walking with the player (AnimalFriendSim.cpp)
+		SniffHand,  // nose at the player's hand held out to it
+		Petted,     // being stroked: leaning into the hand
+		RollOver,   // on its back, belly up, under the hand
+		Lap,        // a cat curled up on the seated player's lap
+		Swim,       // a dog paddling after the player
 		Num
 	};
 	const char* ActName(EAct A);
 	inline bool IsMoving(EAct A)
 	{
 		return A == EAct::Walk || A == EAct::Trot || A == EAct::Run || A == EAct::Sniff || A == EAct::Approach || A == EAct::Stalk
-			|| A == EAct::Chase || A == EAct::Flee || A == EAct::Play || A == EAct::Follow;
+			|| A == EAct::Chase || A == EAct::Flee || A == EAct::Play || A == EAct::Follow || A == EAct::Swim;
 	}
 
 	/** Why it is going somewhere / doing it. */
@@ -97,6 +102,20 @@ namespace LyudAnimals
 	/** Sounds and moments the game shows (calls play at the animal). */
 	enum class EEvent : uint8_t { Notice, Watch, Approach, Flee, Bark, Growl, Whine, Meow, Purr, Hiss, Pounce, ChaseStart, Climb, Greet, PlayStart,
 		BarkHappy,      // a glad bark back at the player who called it (Hail)
+		// friendship (AnimalFriendSim.cpp)
+		HandSniff,      // it came and sniffs the hand held out
+		HandRefuse,     // it will not come to the hand (not yet), or does not want that food
+		Stroked,        // a stroke begins: it leans in (a cat purrs)
+		Enough,         // a cat that has had enough stroking walks off
+		Roll,           // rolls over, belly up
+		Ate,            // took the food from the hand (the wrapper takes it out of the pocket)
+		Befriended,     // its bond crossed FriendBond: a friend from now on (once)
+		WalkStart,      // a dog sets off with the player
+		WalkEnd,        // ... was sent home, or left at the end of the day
+		WaitDoor,       // it stays outside where the player went in
+		Rejoin,         // it catches the player up (out of a door, from afar)
+		LapUp,          // a cat jumps onto the seated player's lap
+		LapDown,
 		Num };
 	const char* EventName(EEvent E);
 
@@ -141,9 +160,35 @@ namespace LyudAnimals
 		V3 Facing { 1.f, 0.f, 0.f };
 		bool bCrouched = false;
 		float ExtraThreat = 0.f;    // a shout, a dropped thing (decays)
-		bool bOffer = false;        // food held out (befriending, later)
-		V3 Palm;
+		bool bOffer = false;        // food held out on the palm (FWorld::OfferFood)
+		V3 Palm;                    // the hand held out (food, or empty for a sniff), world
+		bool bSeated = false;       // sitting on a bench
+		V3 Lap;                     // seated: the lap (where a cat lies), world
+		float SeatYaw = 0.f;        // seated: the way the sitter faces
+		bool bSwimming = false;     // in the water
+		float WaterZ = 0.f;         // swimming: the surface there
 	};
+
+	/** What a befriended (or befriending) animal is doing with the player (AnimalFriendSim.cpp). */
+	enum class EFriend : uint8_t
+	{
+		None,
+		ToHand,     // coming to the hand held out
+		AtHand,     // sniffing it
+		Stroked,
+		Rolled,     // belly up
+		ToFood,     // coming to the food on the palm
+		EatHand,    // eating it
+		Heel,       // a dog walking with the player
+		Wait,       // ... waiting outside a door, or on the shore
+		SwimAfter,  // ... in the water after them
+		BySeat,     // ... sitting by their bench
+		ToLap,      // a cat coming to the seated player
+		OnLap,
+		GoHome,     // sent home / off to bed
+		Num
+	};
+	const char* FriendName(EFriend F);
 
 	struct FAnimal
 	{
@@ -194,7 +239,7 @@ namespace LyudAnimals
 
 		// the player (befriending later): trust grows when the player is calm near it, bond is reserved for taming
 		float Trust = 0.f;          // 0..1
-		float Bond = 0.f;           // reserved
+		float Bond = 0.f;           // 0..1: grown by the hand and by food; FriendBond and over is a friend (saved)
 		bool bNoticed = false;
 		float Seen = 0.f, Unseen = 0.f;
 		float Habituation = 0.f;
@@ -215,6 +260,21 @@ namespace LyudAnimals
 		float CallTimer = 10.f;
 		float Cooldown = 0.f;       // s before it starts another play / chase / hunt
 		uint32_t Rng = 1;
+
+		// friendship (AnimalFriendSim.cpp): what it is doing with the player, on top of Act
+		EFriend Friend = EFriend::None;
+		float FriendTime = 0.f;     // s in that state
+		float Sniffed = 0.f;        // s left in which it lets itself be stroked (it sniffed the hand, it ate from it)
+		float PetFill = 0.f;        // 0..1 how much stroking it has had lately (a cat walks off when full)
+		float FoodFill = 0.f;       // 0..1 treats lately (it stops taking them)
+		float Lean = 0.f;           // 0..1 leaning into the hand (drawing)
+		float OfferLike = 0.f;      // how much it likes the food it is coming for
+		V3 WaitPos;                 // where it waits (outside the door, on the shore), where it went into the water
+		bool bSaidWait = false;
+		float Unreach = 0.f;        // s the player has been out of its reach (a walk): then it catches up out of sight
+		float Still = 0.f;          // s at heel with the player standing
+		float Repath = 0.f;
+		float PurrTimer = 0.f;
 	};
 
 	struct FPack
@@ -296,6 +356,36 @@ namespace LyudAnimals
 		void SetFamiliarity(int A, int B, float V) { AddFam(A, B, V - Fam(A, B)); }
 		/** The player speaks to it (E): a dog turns to them and barks back gladly (a cat looks and meows). False if it can't. */
 		bool Hail(int Id);
+		// --- friendship (AnimalFriendSim.cpp) ---
+		/** Bond at which an animal is the player's friend. */
+		static constexpr float FriendBond = 0.5f;
+		bool IsFriend(int Id) const { return Id >= 0 && Id < (int)Animals.size() && Animals[Id].Bond >= FriendBond; }
+		/** The player (crouched, Player.Palm set) holds an empty hand out to it: it comes and sniffs it if it trusts them
+		 *  enough (HandSniff, then it lets itself be stroked for a while), else it keeps off (HandRefuse). False: not now. */
+		bool OfferHand(int Id);
+		/** A stroke (a few seconds; call again for another): true if it lets them (it sniffed the hand, or is a friend). */
+		bool Stroke(int Id);
+		/** The stroke ends now (the hand went away). */
+		void EndStroke(int Id);
+		/** Food held out on the palm (Player.bOffer, Player.Palm), Like 0..1 for its kind: it comes and eats (Ate), or
+		 *  sniffs and turns away (HandRefuse). False: it won't come now. */
+		bool OfferFood(int Id, float Like);
+		/** A befriended dog sets off with the player; one at a time. */
+		bool StartWalk(int Id);
+		/** The walk ends: bHome sends it home (else it stays about where it is). */
+		void EndWalk(bool bHome);
+		/** The dog walking with the player, -1 none. */
+		int Walker = -1;
+		/** The cat on the player's lap, -1 none. */
+		int LapCat = -1;
+		/** Hour (local) after which a walking dog goes home to sleep, and before which it won't set off. */
+		float BedHour = 22.5f, UpHour = 6.f;
+		/** How far from the shore a dog swims after the player, m. */
+		float SwimReach = 30.f;
+		/** Tests: a walk grid of NX x NY cells of Cell m from (X0, Y0), all grass at height Z; then SetGround. */
+		void MakeGrid(int NX, int NY, float X0, float Y0, float Cell, float Z);
+		void SetGround(float X, float Y, EGround Kind, float Z);
+
 		/** A loud noise at P: animals within R start (dogs bark, cats flee). */
 		void Scare(const V3& P, float R, float Strength);
 		std::string Report() const;
@@ -369,6 +459,18 @@ namespace LyudAnimals
 		float GaitSpeed(const FAnimal& A, EAct Gait) const;
 		void PlaceAtStart(FAnimal& A);
 		int NearestRefuge(const V3& P, float MaxD, const V3& AwayFrom) const;
+		// friendship (AnimalFriendSim.cpp)
+		void FriendNeeds(FAnimal& A, float Dt);
+		bool FriendThink(FAnimal& A, float Dt);
+		bool FriendMove(FAnimal& A, float Dt);
+		void FriendStep(float Dt);
+		void FriendEnd(FAnimal& A, EAct Then, float Len);
+		void AddBond(FAnimal& A, float D);
+		bool Steer(FAnimal& A, const V3& To, float Speed, float Dt, bool bAnyGround = false);
+		bool PlayerOnGround() const;
+		V3 Route(FAnimal& A, const V3& To, float Dt, bool& bNoWay);
+		V3 PlayerLastOk;            // where the player last stood on ground the animals can walk
+		bool bPlayerOk = false;
 		float ZAt(const FAnimal& A) const;
 	};
 }

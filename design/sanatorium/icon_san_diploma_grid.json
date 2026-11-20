@@ -13,5 +13,7 @@
  "output_url": "https://d8j0ntlcm91z4.cloudfront.net/user_36I3ndR5QeKPyjKAdSKVfbd04n2/hf_20261120_203306_39e25569-0fb8-486a-aa4f-b21958627a28.png",
  "date": "2026-11-20",
  "why_not_3x3": "one new item only (san_diploma): four variants of it in a 2x2 grid, the best cell becomes the icon",
- "todo": "the cloud session could not download the output (the egress proxy refuses the CDN): on the Mac download it here as icon_san_diploma_grid.png (add sha256), look at the 4 cells, cut the best (2x2 equal cells) to textures/localized/ru/icon_san_diploma.jpg 512x512 with its sidecar, then import with import_hall_assets.py's icon settings and run tools/ui_diary_icons.py san_diploma"
+ "todo": "done 2026-11-20 on the Mac: downloaded, cell 1 cut to textures/localized/ru/icon_san_diploma.jpg, imported, sketch made",
+ "sha256": "7f965e4b4741bedffa44511655bea0bc9b3e8a76c9c295041755d7a0bb0a0053",
+ "chosen_cell": "1 (top left): square-on, whole sheet in frame, no readable text"
 }

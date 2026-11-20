@@ -1,0 +1,23 @@
+{
+ "service": "higgsfield MCP",
+ "tool": "generate_image",
+ "model": "gpt_image_2_5",
+ "quality": "medium",
+ "resolution": "2k",
+ "aspect_ratio": "1:1",
+ "date": "2026-11-20",
+ "output": "https://d8j0ntlcm91z4.cloudfront.net/user_36I3ndR5QeKPyjKAdSKVfbd04n2/hf_20261120_220908_5fc7ae24-edfe-469f-a040-7e24cf1e8087.png",
+ "job_id": "5fc7ae24-edfe-469f-a040-7e24cf1e8087",
+ "prompt": "Four inventory icons for a moody adventure game, arranged as a 2 by 2 grid of equal square cells on one picture: in every cell one object centred and filling most of the cell, softly lit from the upper left, painterly realistic style, plain dark warm-grey cloth background with a faint vignette, the same background and scale feel in every cell, no borders, frames or lines between the cells, nothing crossing a cell edge, no text, no letters, no numbers, no logos anywhere. Every cell shows an old inexpensive Soviet-era seven-string-style acoustic guitar with six strings, the whole guitar visible, lying diagonally from lower left to upper right with the headstock at the upper right. Row 1, left: honey-orange sunburst varnished top with a dark rosette and a black pickguard. Row 1, right: dark cherry-red body with a cream edge binding. Row 2, left: natural pale spruce top, a little worn near the sound hole. Row 2, right: deep brown body with a faded fabric shoulder strap tied to the headstock.",
+ "grid": 2,
+ "ids": [
+  "guitar",
+  "guitar_cherry",
+  "guitar_spruce",
+  "guitar_brown"
+ ],
+ "ship": [
+  "guitar"
+ ],
+ "note": "Four guitars in one picture so a weak cell can be swapped by changing 'ship' (rename that cell's id to guitar). The cloud could not fetch the CDN: the cell was not looked at yet; the Mac checks it when it cuts it (tools/instruments/guitar_icon.py)."
+}

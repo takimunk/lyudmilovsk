@@ -1,0 +1,10 @@
+{
+ "id": "icon_san_diploma",
+ "lang": "ru",
+ "model": "higgsfield gpt_image_2_5 (2k, medium)",
+ "aspect": "1:1",
+ "prompt": "A Soviet 1970s sanatorium certificate of completed treatment: a stiff cream card with an embossed golden crown, a printed border, a violet seal and a sprig of pine, no readable text.",
+ "source": "design/sanatorium/icon_san_diploma_grid.png (sidecar design/sanatorium/icon_san_diploma_grid.json), cell 1 of a 2x2 grid (top left), resized to 512x512",
+ "sha256": "db915ccf25b8e905bd303c39660892fa493dfaf4c39d326abae995e4892c2c3a",
+ "strings": {}
+}

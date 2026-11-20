@@ -327,7 +327,11 @@
   "records_wave": {
    "title": "city.shop.records_wave.title",
    "role": "seller",
-   "records": "*"
+   "records": "*",
+   "_extra_doc": "other goods on the counter (docs/instruments.md: the hero's guitar)",
+   "extra": [
+    {"item": "guitar", "price": 180, "count": 1}
+   ]
   },
   "store_books": {
    "add": [

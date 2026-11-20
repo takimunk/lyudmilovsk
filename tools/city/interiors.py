@@ -62,12 +62,15 @@ SELLING = ("seller", "cashier", "barista", "waiter", "bartender", "bookseller", 
 SERVICE = ("cleaner", "janitor", "guard")
 DAYS = ("mon", "tue", "wed", "thu", "fri", "sat", "sun")
 PUBLIC_KINDS_SKIP = ("residential", "square", "park", "pool")
-QUEST_EVENTS = ("do", "win", "visit", "get", "use", "have", "wear", "reach", "talk", "bird", "walk", "leave_computer", "ask", "observe")
+QUEST_EVENTS = ("do", "win", "visit", "get", "use", "have", "wear", "reach", "talk", "bird", "walk", "leave_computer", "ask",
+               "round_start", "round_done")  # the last two: the bicycle rounds (ULyudRounds, docs/rounds.md)
+# the telescopes' own quest event (ULyudTelescope, docs/telescopes.md): observe <sight> | jupiter_night
+QUEST_EVENTS += ("observe",)
 ACT_FIELDS = ("prompt", "minutes", "price", "lines", "pose", "sound", "event", "target", "give", "daily", "needs_staff",
               "needs_item", "fade", "shop", "screen", "until", "title", "any_hour", "rotate", "collect", "closed", "game", "read",
               "sleep", "topics", "to", "floors", "oneway", "stay", "needs_stay", "no_stay", "open")
 # screens of other systems an act may open instead of its page ("open"; ULyudCityThings::OnOpen): the library's classics
-OPEN_SCREENS = ("books",)
+OPEN_SCREENS = ("books", "piano")
 # a line's conditions (docs/city_interiors.md "Lines by the day and the hour"): hours [from, to), weekdays, a calendar date or
 # range ("MM-DD" or ["MM-DD", "MM-DD"], wrapping the year), days since the game began (after N), every [n, r] game days
 # festival ("any", "none", an id of PeopleData/festivals.json or a list of ids), weather (a word of WEATHER or a list: any of

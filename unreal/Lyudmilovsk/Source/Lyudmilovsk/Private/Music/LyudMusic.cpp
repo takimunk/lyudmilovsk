@@ -826,9 +826,10 @@ void ULyudMusic::Tick(float DeltaTime)
 		BindCity();
 	}
 	ULyudCityThings* City = ULyudCityThings::Get(this);
-	if (Radios.Num() == 0 && City && City->NumThings() > 0)
+	if (!bRadiosScanned && City && City->NumThings() > 0)
 	{
 		// the town's radios, once its things are read
+		bRadiosScanned = true;
 		TArray<FCityThingRef> Found;
 		City->GetThingsByAct([this](const FString& Act) { return Model->RoleOf(LyudMusicImpl::Std(Act)) == LyudMusic::ERole::Radio; }, Found);
 		for (const FCityThingRef& T : Found)

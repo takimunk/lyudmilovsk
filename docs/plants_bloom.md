@@ -52,3 +52,32 @@ The North's herbs flower through `FPlantHerb` like the rest: fireweed 192..242 (
 (white), cotton grass 175..228 (white heads); the river valley's Kamchatka meadowsweet 192..228 (cream plumes),
 cow parsnip 180..218 (white umbels); river sedge draws none. Check: the bloom level lists the North's shrubs (`make_plant_bloom_level.py`,
 `shoot_plant_bloom.py`); `make_plant_north_level.py` / `shoot_plant_north.py` show all eleven by age and season.
+
+## Garden crops
+
+The allotment's six crops (`PlantSpeciesGarden.cpp`, `PlantHerbs::GardenSpecies()`, docs/allotment.md) are herbs of the
+procedural plant system like the rest, one `AProceduralPlant` to a bed cell (0.6 x 1.2 m):
+
+| Species | Form | Look when grown |
+|---|---|---|
+| GardenRadish | Rosette, annual, `Berry` | low rosette (~0.12 m) of rough lyre-shaped leaves; one red ball on a 4 cm stalk: the root's shoulder showing at the soil |
+| GardenDill | Bush, annual, `Disc` | 2 thin blue-green stems 0.65-0.9 m, thread-fine leaves (7 leaflet pairs), flat yellow-green umbels |
+| GardenStrawberry | Rosette, perennial, `Berry` | ~0.15 m rosette of three-lobed leaves on long stalks; red berries, 4 in 10 still white flowers |
+| GardenPotato | Bush, annual, `Five` | bushy 0.5-0.6 m clump, dark compound leaves, white and lilac flowers |
+| GardenTomato | Bush, annual, `Berry` | 0.8-1.15 m leggy stems, compound leaves, round red fruit ~5 cm, 3 in 10 still yellow flowers |
+| GardenSunflower | Bush, annual, `Daisy` | one thick stem 1.4-2 m, big heart-shaped leaves, a nodding 0.28 m head (yellow rays, broad brown disc) |
+
+`EPlantFlowerForm::Berry` (appended to the enum) is a smooth low-poly ball (34 vertices, 64 triangles) `FlowerSize`
+across, hanging under each flower's place, coloured by `FlowerColours`; `Petals` (0..10) is how many of every ten places
+carry a small five-pointed flower in `CentreColour` instead. A `Daisy` over 15 cm (the sunflower) gets a seed disc of 60%
+of the head and nods to the side. A grown crop is 1-11k triangles (potato the most, then tomato and dill).
+
+**SetGrowth.** The garden pins each plant: `AProceduralPlant::SetGrowth(float Growth01, float DayOfYear)`, Growth01 0
+just sprouted .. 1 full grown and ripe. A pinned herb takes `PlantHerbs::GrownState`: alive and in leaf whatever the
+calendar, the size of its growth (a sprout is the young plant scaled down to 35%), flowers and fruit from 0.4, all out by
+0.9; no demo growth, no aging. It is re-shaped only by the call, the mesh only when the visible state moved (~2.5% of
+growth), and its Tick does nothing (it ticks every 5 s). `ClearGrowth()` hands it back to the calendar;
+`SetWithered(bool)` browns it through, drops a third of its leaves and all flowers and fruit (one rebuild); `bAllowPick
+= false` keeps E and the pick prompt for the garden. A garden crop: `Pot = None`, `bSnapToGround`, `bAllowPick = false`,
+ideally `SetGrowth` before `FinishSpawning`. Placed on their own the crops live by the calendar: the annuals from their
+sowing day (115-140) to the frost (275-290), flowering in their weeks.

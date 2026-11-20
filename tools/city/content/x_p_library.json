@@ -330,6 +330,7 @@
    ]
   },
   "library_pod_piano": {
+   "open": "piano",
    "prompt": "city.do.piano.prompt",
    "minutes": 15,
    "pose": "sit",

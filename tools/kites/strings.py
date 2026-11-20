@@ -27,7 +27,7 @@ WORDS = collections.OrderedDict([
                          "LMB — pull in · RMB — let the line out · wheel — a metre at a time · Q — wind it in",
                          "左クリック：たぐる・右クリック：糸を出す・ホイール：1メートルずつ・Q：巻き取る")),
     ("ui.kite.toss", ("Подбросил — ловит ветер!", "Up it goes, it's catching the wind!", "放した、風をつかんだ！")),
-    ("ui.kite.toss_calm", ("Ветра почти нет… попробую.", "Hardly any wind… let's try.", "風がほとんどない…やってみよう。")),
+    ("ui.kite.toss_calm", ("Ветра почти нет… попробую.", "Hardly any wind… I'll give it a go.", "風がほとんどない…やってみよう。")),
     ("ui.kite.flying", ("Летит! Леска звенит в руке.", "It's flying! The line hums in my hand.", "飛んでる！糸が手の中で鳴ってる。")),
     ("ui.kite.fell", ("Упал. Подмотаю и попробую ещё.", "It came down. I'll wind in and try again.", "落ちちゃった。巻き取ってもう一回。")),
     ("ui.kite.fell_calm", ("Ветер стих — змей сел на землю.", "The wind dropped and the kite came down.", "風がやんで、凧が地面に下りた。")),
@@ -39,7 +39,7 @@ WORDS = collections.OrderedDict([
     ("ui.kite.sea", ("Упал в море. Всё, не вытащить.", "It fell in the sea. That's it, I can't get it back.", "海に落ちた。もう取り戻せない。")),
     ("dev.group.kite", ("Воздушные змеи", "Kites", "凧")),
     ("dev.action.kite.give", ("Выдать змеев (ромб и коробку)", "Give kites (diamond and box)", "凧をもらう（ひし形と箱）")),
-    ("dev.action.kite.test", ("Десять змеев по ветру (бенч)", "Ten kites downwind (bench)", "風下に凧を10個（ベンチ）")),
+    ("dev.action.kite.test", ("Десять змеев по ветру (бенч)", "Ten kites downwind (benchmark)", "風下に凧を10個（ベンチマーク）")),
     ("dev.tp.kite_beach", ("Пляж для змеев", "Kite beach", "凧揚げの浜")),
 ])
 

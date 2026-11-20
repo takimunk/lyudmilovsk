@@ -1091,7 +1091,7 @@ void ULyudLetters::ShowMode()
 	}
 	const FText Choose = LyudText::Get(TEXT("letters.keys.choose"));
 	TArray<FText> E;
-	const auto Phrases = [this](const std::vector<std::string>& Ids)
+	const auto Phrases = [](const std::vector<std::string>& Ids)
 	{
 		TArray<FText> Out;
 		for (const std::string& Id : Ids)
