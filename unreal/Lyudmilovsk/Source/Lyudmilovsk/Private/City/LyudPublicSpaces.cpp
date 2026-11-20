@@ -32,6 +32,8 @@ static TAutoConsoleVariable<int32> CVarCitySummer(TEXT("lyud.City.Summer"), -1,
 	TEXT("Beach umbrellas and loungers: -1 out from June to August, 0 never, 1 always."));
 static TAutoConsoleVariable<int32> CVarCityShow(TEXT("lyud.City.Show"), 1,
 	TEXT("1 the public spaces drawn, 0 all hidden (props, paving, their trees and flowers, the lamps' lights): for A/B frame times in one process."));
+static TAutoConsoleVariable<int32> CVarCityHi3d(TEXT("lyud.City.Hi3d"), 1,
+	TEXT("1 the hi3d town props drawn (statues, sundial, chandeliers...), 0 hidden: for A/B frame times in one process."));
 static TAutoConsoleVariable<int32> CVarCityRides(TEXT("lyud.City.Rides"), -1,
 	TEXT("The fair's carousel and Ferris wheel: -1 by the fair's hours, 0 standing, 1 running."));
 static TAutoConsoleVariable<int32> CVarCityIce(TEXT("lyud.City.Ice"), -1,
@@ -289,6 +291,7 @@ bool ALyudPublicSpaces::Build(const TSharedPtr<FJsonObject>& Doc)
 				C->SetCastShadow(M->GetBoolField(TEXT("cast_shadow")));
 				C->bAffectDistanceFieldLighting = !bIndoor;
 				Sets.Add(KV.Key, C);
+				Hi3dSets.Add(C);
 			}
 			for (const TSharedPtr<FJsonValue>& V : *Items)
 			{
@@ -799,6 +802,12 @@ void ALyudPublicSpaces::Tick(float DeltaSeconds)
 			LastPoolCam = FVector(1e9);
 			UpdateSeason(true);
 		}
+	}
+	const bool bHi3d = CVarCityHi3d.GetValueOnGameThread() != 0;
+	if (bHi3d != bHi3dShown)
+	{
+		bHi3dShown = bHi3d;
+		for (UInstancedStaticMeshComponent* C : Hi3dSets) if (C) C->SetVisibility(bHi3d);
 	}
 	SpawnPendingPlants();
 	if (!bShown) return;
