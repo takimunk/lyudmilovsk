@@ -274,7 +274,7 @@ bool ALyudPublicSpaces::Build(const TSharedPtr<FJsonObject>& Doc)
 			&& H->TryGetObjectField(TEXT("meshes"), MeshesObj) && H->TryGetArrayField(TEXT("items"), Items))
 		{
 			TMap<FString, UInstancedStaticMeshComponent*> Sets;
-			for (const auto& KV : (*MeshesObj)->Values)
+			for (const TPair<FString, TSharedPtr<FJsonValue>>& KV : (*MeshesObj)->Values)
 			{
 				const TSharedPtr<FJsonObject> M = KV.Value->AsObject();
 				UStaticMesh* Mesh = LoadObject<UStaticMesh>(nullptr, *M->GetStringField(TEXT("mesh")), nullptr, LOAD_NoWarn | LOAD_Quiet);
