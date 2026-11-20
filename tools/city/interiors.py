@@ -1727,13 +1727,16 @@ def build_collections(src, things, acts, strings, regs=None, texts=None, cups=No
         if title not in strings and title not in MAIN:
             err("collection %s: title string %s is missing" % (sid, title))
         for k in c:
-            if k not in ("title", "pieces"):
+            if k not in ("title", "pieces", "by"):
                 err("collection %s: unknown field %s" % (sid, k))
+        if c.get("by") and not c.get("pieces"):
+            err("collection %s: given by %s: list its pieces" % (sid, c["by"]))
         pieces = [str(p) for p in c["pieces"]] if c.get("pieces") else sorted(given.get(sid, ()), key=lambda p: (len(p), p))
         if len(set(pieces)) != len(pieces):
             err("collection %s: a piece twice" % sid)
         for p in pieces:
-            if p not in given.get(sid, ()):
+            # "by": the engine gives its pieces (the kites': ULyudKites stamps a flight), not a thing in town
+            if p not in given.get(sid, ()) and not c.get("by"):
                 err("collection %s: nothing in town gives piece %s" % (sid, p))
         if not pieces:
             err("collection %s: no pieces (nothing in town gives one)" % sid)
