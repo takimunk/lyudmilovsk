@@ -60,7 +60,7 @@ cloud (the offline suites: `tools/citysim`, `tools/peoplesim`, `tools/mannersim`
 
 ## 1. Friends among the animals
 
-`[ ]` **Brief (Fable 5.2):** Make Maru and the town's cats and dogs befriendable, using what `docs/animals.md` "Taming,
+`[~] animal-friends 2026-11-20` (branch `animal-friends`; what was built: `docs/animals.md` "Friends") **Brief (Fable 5.2):** Make Maru and the town's cats and dogs befriendable, using what `docs/animals.md` "Taming,
 later" already prepared: `FAnimal::Bond` and `Name` (saved), the act and goal `Follow`, `SetAnimalName`, trust from calm
 company, `FPlayer::bOffer`. Add: crouch + E to let an animal sniff the hand, then stroke it (the hero's hand on its
 head/back by an IK goal, like the residents' gestures in `Private/People/BodyGestures.cpp`; the animal leans in, tail

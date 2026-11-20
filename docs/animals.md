@@ -2,8 +2,8 @@
 
 The town's cats and dogs: about 44 cats round the houses (a third of them round the Academgorodok) and 19 dogs (four
 packs with their dens, yard dogs, the dog by the club's door). They have needs, a day, homes and ranges, they meet each
-other and the birds, and they mind the player. Taming a dog (walking with the hero, giving it a name) is not built yet;
-the hooks for it are listed at the end.
+other and the birds, and they mind the player. The hero can make friends with them: a hand to sniff, stroking, treats,
+a dog that walks along, a cat on the lap ("Friends" below).
 
 ## Files
 
@@ -172,12 +172,79 @@ Build and import: `Blender -b --python blender/animals/build_animal.py -- Maru -
 (it imports the collar when `export/Maru/Maru_Collar.glb` is there). Checks: `tools/animalsim/run.sh test` (she
 lives by the club's door, turns and barks once when called), `ANIMTEST_PART=maru unreal/scripts/test_animals.sh`.
 
-## Taming, later
+## Friends
 
-What is there for it: `FAnimal::Bond` and `Name` (saved with the trust in `UAnimalLifeSubsystem::Saved`), the act
-`Follow` and goal `Follow` (walk gait, a slow pace: nothing sets them yet), `SetAnimalName`, trust growing with calm
-company, `FPlayer::bOffer` (food held out, as for the birds). The club's dog on the spur is the obvious first friend
-(friendliness 0.92, home by the door).
+The hero can befriend any of them (the brief: `docs/interactives_backlog.md` item 1). The animals' side is in the pure
+simulation, `Private/Animals/AnimalFriendSim.cpp` (`FWorld::OfferHand`, `Stroke`, `OfferFood`, `StartWalk`, `EndWalk`;
+`FAnimal::Friend` is what a befriended or befriending animal is doing with the player, `EFriend`). The hero's side is
+`UAnimalFriendSubsystem` (`Public/Animals/AnimalFriends.h`): keys, his hand, the treats, the name, quests, the diary.
+
+**The hand.** Crouched (C) within 2.6 m, E holds a hand out low. An animal that trusts him enough comes and puts its
+nose to the palm (`SniffHand`, event `HandSniff`); a cat needs trust `0.34 - 0.26 * Friendly`, a dog
+`0.16 - 0.17 * Friendly` (Maru comes at once), half that for food; a friend always comes. One that does not come watches
+the hand (`HandRefuse`) and trusts a little more for the patience, so calm company and a second try work. A shout or a
+rush at one that is not yet a friend ends it and costs trust.
+
+**Stroking.** E again once it has sniffed (it remembers for 45 s; a friend needs no sniff): one stroke is 3.4 s
+(`Petted`, `Stroked`). The hero's hand lies on its head and slides back along the neck (`UHeroReachComponent::
+SetOverrideHold`, the palm put on the head bone every frame); the animal leans into the hand (`FAnimal::Lean`, a roll
+of the body in `AAnimalLifeRenderer::Drive`), a dog's tail goes (`Excite`), a cat purrs every 5 s. The bond grows while
+the hand is on it (cat 0.022/s, dog 0.03/s, more for a friendly one). A cat that trusts the hand may roll over, a dog
+that is a good friend too (`RollOver`, `Roll`; a stroke then is a belly rub). A cat has had enough after three strokes
+(`Enough`: it walks a few steps off and washes, and will not be stroked for a couple of minutes); a dog never has.
+
+**Treats.** F holds out the best thing in the pocket for that animal's kind, on the open palm (the item itself lies on
+it), from up to 6 m, crouched or not. The table is `TreatTable` in `AnimalFriends.cpp`: fish for cats (smoked and dried
+fish, the diner's and the restaurant's fish, every `fish_<species>` caught on the rod; milk and cheese less), meat for
+dogs (sandwich, cheburek, pelmeni, steak, shashlik, burger; cheese and pies less; bread a little). It comes, sniffs,
+eats it off the palm (`Eat`, `Ate`: the item leaves the pocket then) or leaves what its kind does not eat (`HandRefuse`:
+a dog does not eat chocolate). A treat grows the bond by up to 0.19 (less on a full stomach). F stays the birds' key
+while bird feed is in the hand.
+
+**A friend** is an animal with `Bond >= 0.5` (`FWorld::FriendBond`, `UAnimalLifeSubsystem::IsFriend`; event
+`Befriended`, once). Stroking alone takes Maru four or five strokes, a cat two or three meetings; a liked treat is
+worth several strokes. The bond, the trust and the name are saved with the animal (`UAnimalLifeSubsystem::Saved`); the
+diary's record (when, where, how, counts) is `ULyudAnimalFriends` (saved as "AnimalFriends").
+
+**A friend dog walks along.** E (standing) calls it: it walks at his left heel at his pace (`Follow`, gait by his
+speed, up to a run), sits when he stands and lies down on a long stop, and catches up from afar: it rejoins behind him
+out of sight when he is suddenly far away (a cable car, a train) or was out of reach for 5 s. One dog at a time. At a
+door it may not go through (the walk grid's blocked cells: every building) it sits down at the last walkable spot he
+stood on, lies down after a while (`WaitDoor`), and is up at his heel when he comes out. In the water it paddles
+beside him with its back at the surface (`Swim`) up to 30 m from where it went in, then swims back and waits on the
+shore, whining once. When he sits on a bench it sits beside it. At half past ten in the evening it goes home by itself
+and will not set off again before six. E on it again sends it home (`WalkEnd`).
+
+**A friend cat never follows.** It comes when he sits on a bench within its range (30 m at most), jumps onto his lap
+and sleeps there, purring (`Lap`, `LapUp`); F strokes it there; it hops down when he gets up. One cat at a time.
+
+**The name.** Maru keeps hers. A nameless friend gets one in the diary: its card's "give a name" link shuts the diary
+and opens a small box to type it in (`BeginNaming`, at most 18 letters); the name tag over its head shows it from then
+on.
+
+**The diary.** The friends' pages come after the birds' in the Birds section (K): a card each with the portrait
+(`/Game/UI/Diary/Friends/T_Friend_<Breed>`, optional: the card is words alone without it), the name, what it is, the
+day and place they became friends and how (stroked, or a treat), and the strokes, treats and walks so far.
+
+**Quests and people.** The subsystem sends `animal_sniffed`, `animal_stroked`, `animal_fed`, `animal_friend`,
+`animal_walk`, `animal_home`, `animal_lap`, `animal_named` with the target `Maru`, `Cat` or `Dog`, and
+`animal_walk_reach <place>` for every map place the hero comes to with the dog at heel. The quest "Maru's walk"
+(`maru_walk`) begins when Maru sniffs his hand: stroke her, make friends, call her along to the upper cable car
+station, send her home. A resident near the hero and the dog says something about her ("Твоя собака?": town talk event
+`dog_walk`, `tools/barks/lines/13_animal_friends.txt`), at most once in a couple of minutes.
+
+**Clips.** The animations thread owns the animals' clips. The friendship acts use what there is (`SniffHand`: Sniff,
+`Petted`: Sit, `RollOver`: Rest turned onto its side by the renderer, `Lap`: Sleep, `Swim`: the walk and trot gaits)
+and take a clip of their own name as soon as one exists (`AAnimalActor::ClipFor` looks for SniffHand, Petted, RollOver).
+
+**Console and developer mode.** `lyud.Friends.Do hand|stroke|feed|walk|home [id]`, `lyud.Friends.Befriend [id|maru]`,
+`lyud.Friends.Name <id> [name]`, `lyud.Friends.Report`, `lyud.Friends 0` (the player's side off). F7, group "Friends":
+Maru a friend at once, the nearest animal a friend at once, treats in the pocket, Maru's walk on and off; teleports to
+Maru and to the club's door.
+
+**Cost.** Nothing is built or allocated per frame: the target is picked by a pass over the 63 animals, the prompt line
+is rebuilt only when it changes, the pocket is looked through once a second while an animal is looked at. A step of the
+simulation with a friend at heel costs the same as without (0.002 ms per animal in `tools/animalsim`).
 
 ## Checks
 
@@ -185,7 +252,12 @@ company, `FPlayer::bOffer` (food held out, as for the birds). The club's dog on 
   tree hisses and the dog stops (they never touch); a cat stalks, crouches and pounces at a sparrow; a runner frightens
   a cat; a friendly dog comes up to a player standing still and begs; a trusting cat rubs a crouching player's legs;
   two pack dogs play (a bow, roles swapping); the real map: animals on walkable ground, a third of the cats at the
-  Academgorodok, paths across the town.
+  Academgorodok, paths across the town. Friends (`ANIM_ONLY=friends` runs these alone): a cat comes to the hand, is
+  stroked, has enough, and a fish makes it a friend; a shy cat keeps off, a dog leaves a sweet and eats a sausage, a
+  shout ends it; Maru is stroked into a friend, walks at heel at the hero's pace, sits and lies down when he stops,
+  keeps up with a run, rejoins from 300 m; she waits outside a door and lies down there, goes home at half past ten;
+  she swims after him and turns back at 30 m; she sits by his bench and a befriended cat sleeps on his lap; on the
+  real map she walks 119 m along the spur at heel and goes back to the club's door.
 - `tools/animalsim/run.sh day && python3 tools/animalsim/render_animals.py`: `Saved/AnimalSim/animals_day_map.png`
   and `animals_day_acts.txt` (what they do, hour by hour); `run.sh trace <id> <hour> <hours>` follows one animal.
 - `tools/birdsim/run.sh test`: birds flush from a running dog well before a walking cat, a stalking cat gets closest.
