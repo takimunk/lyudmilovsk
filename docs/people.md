@@ -212,6 +212,33 @@ It runs the simulation on the game calendar (its time scale), in steps of at mos
   door is in the build, so doors open in front of them and shut behind them.
 - **Save:** `Homes` (household -> flat) and everybody's needs; after a load everybody is where they'd be at that hour.
 
+### Motion
+
+How a drawn body moves (2026-11-20; `LyudMotion.h`, `ANpcBody::Drive`, `LyudBodyAnim.cpp`). The life (PeopleSim) moves
+a point along a polyline at a speed that changes in steps; the body is not set onto that point but follows it:
+
+- **Place**: a critically damped spring (0.2 s on foot, 0.12 s into a seat, 0.09 s for the height). A path's corner
+  rounds off, setting off and stopping take a moment, a kerb is a short ramp. A jump of more than 3 m, a body shown
+  anew and anything that carries the person (a cabin, a train) is a jump, not a glide.
+- **Facing**: walking, the way the body really goes; the turn is a spring too (no constant-rate swing).
+- **Gait**: by the ground the body really covers (the spring's speed), never by the life's speed alone: where the
+  life stands a moment in a walking pose they stand, and the last half-step of an arrival is walked. Speed = step
+  length x step rate: the two are raised in equal parts (`SetStride`: the feet's reach fore and aft of the hips scaled
+  by leg IK, 0.4..1.3 of the clip's), so nobody walks in fast-forward (a child's 1.35 m/s used to be the walk clip at
+  double speed).
+- **Clips**: a new clip starts at once and carries, fading (smootherstep), the difference to the pose that was on
+  screen (`FLyudBodyAnimProxy::Offset`). A blend cut short by the next clip cannot pop. Standing variants melt into
+  each other in 0.7 s, gaits in 0.3 s, a stop in 0.4 s.
+- **Feet**: the IK moves the legs with the hips (they were left behind: the body sank onto its own legs on uneven
+  ground) and the hips may rise onto ground higher than the body's point (no crouch on a terrace's edge).
+- **Townsfolk** animate every frame to ~20 m, every second frame to ~45 m (the engine's default dropped to every
+  third from ~8 m).
+
+`lyud.Anim.Smooth 0` puts everything back as it was (people, animals, birds) for a comparison; set it at launch
+(`-dpcvars=lyud.Anim.Smooth=0`), the townsfolk's update rates are read when a body is made. `lyud.Anim.Probe N` logs
+the N nearest bodies every frame; `python3 tools/anim_probe.py <log>` gives body, turn, hips and hand jerk and the
+foot slide.
+
 ### One person, one body
 
 Every named person is seen once, wherever the camera is. `UPeopleLifeSubsystem::ResolveModels` (at start) is the one
