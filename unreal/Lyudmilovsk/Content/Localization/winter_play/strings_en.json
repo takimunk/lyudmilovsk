@@ -1,0 +1,19 @@
+{
+ "item.banya_hat.desc": "A felt cap: the head keeps cool in the steam room.",
+ "item.banya_hat.name": "Banya hat",
+ "item.banya_towel.desc": "A terry towel. A rub-down after the ice hole and you're warm at once.",
+ "item.banya_towel.name": "Towel",
+ "item.birch_venik.desc": "A bunch of birch twigs steeped in hot water. Good for one banya day.",
+ "item.birch_venik.name": "Birch venik",
+ "item.carrot.desc": "A carrot. You can eat it, or give a snowman a nose.",
+ "item.carrot.name": "Carrot",
+ "item.coal.desc": "Two bits of coal from the banya stove. Just right for a snowman's eyes.",
+ "item.coal.name": "Bits of coal",
+ "item.skates.desc": "«Snegurochka» leisure skates on leather boots. Put them on and go to the pond.",
+ "item.skates.name": "Skates",
+ "winter.radio.new_year": "Happy New Year, Lyudmilovsk! The walruses wait for everyone brave by the pier until one o'clock.",
+ "winter.radio.rink_open": "The rink on the seaside park's pond is open: the ice is {0} centimetres. Skates at the department store's sports counter.",
+ "winter.radio.rink_slush": "A thaw: there is water over the ice at the park rink, and the rink is closed.",
+ "winter.radio.rink_thin": "The ice on the park pond is still thin, {0} centimetres. Please keep off it.",
+ "winter.radio.walrus": "The walruses' club invites you: tomorrow at nine, a swim in the ice hole by the pier. The banya by the pier is heated from two."
+}

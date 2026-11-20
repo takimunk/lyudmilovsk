@@ -1,0 +1,20 @@
+{
+ "_doc": "Every word of winter play (docs/winter_play.md), Russian first, then English and Japanese (.claude/skills/localization/SKILL.md).",
+ "item.skates.name": {"ru": "Коньки", "en": "Skates", "ja": "スケート靴"},
+ "item.skates.desc": {"ru": "Прогулочные коньки «Снегурочка» на кожаных ботинках. Надеть — и на пруд.", "en": "«Snegurochka» leisure skates on leather boots. Put them on and go to the pond.", "ja": "革のブーツに付いた散歩用スケート「スネグーロチカ」。履いて池へ。"},
+ "item.banya_hat.name": {"ru": "Банная шапка", "en": "Banya hat", "ja": "サウナ帽"},
+ "item.banya_hat.desc": {"ru": "Войлочный колпак: в парилке голова не перегревается.", "en": "A felt cap: the head keeps cool in the steam room.", "ja": "フェルトの帽子。蒸し風呂で頭がのぼせない。"},
+ "item.banya_towel.name": {"ru": "Полотенце", "en": "Towel", "ja": "タオル"},
+ "item.banya_towel.desc": {"ru": "Махровое полотенце. После проруби растереться — и сразу теплее.", "en": "A terry towel. A rub-down after the ice hole and you're warm at once.", "ja": "テリー織りのタオル。氷の穴のあとにこすれば、すぐ温まる。"},
+ "item.birch_venik.name": {"ru": "Берёзовый веник", "en": "Birch venik", "ja": "白樺のヴェニク"},
+ "item.birch_venik.desc": {"ru": "Связка берёзовых веток, запаренная в кипятке. Хватает на один банный день.", "en": "A bunch of birch twigs steeped in hot water. Good for one banya day.", "ja": "熱湯で蒸らした白樺の枝の束。サウナ一日分。"},
+ "item.carrot.name": {"ru": "Морковка", "en": "Carrot", "ja": "にんじん"},
+ "item.carrot.desc": {"ru": "Морковка. Можно съесть, а можно сделать снеговику нос.", "en": "A carrot. You can eat it, or give a snowman a nose.", "ja": "にんじん。食べてもいいし、雪だるまの鼻にしてもいい。"},
+ "item.coal.name": {"ru": "Угольки", "en": "Bits of coal", "ja": "炭のかけら"},
+ "item.coal.desc": {"ru": "Пара угольков из банной печки. Для глаз снеговика в самый раз.", "en": "Two bits of coal from the banya stove. Just right for a snowman's eyes.", "ja": "サウナのストーブから取った炭のかけら二つ。雪だるまの目にちょうどいい。"},
+ "winter.radio.rink_open": {"ru": "Каток на пруду в приморском парке открыт: лёд {0} сантиметров. Коньки — в спортивном отделе универмага.", "en": "The rink on the seaside park's pond is open: the ice is {0} centimetres. Skates at the department store's sports counter.", "ja": "海辺の公園の池のスケート場が開いています。氷の厚さは{0}センチ。スケート靴はデパートのスポーツ売り場で。"},
+ "winter.radio.rink_thin": {"ru": "На пруду в парке лёд пока тонкий, {0} сантиметров. Выходить на лёд не рекомендуется.", "en": "The ice on the park pond is still thin, {0} centimetres. Please keep off it.", "ja": "公園の池の氷はまだ薄く、{0}センチです。氷の上に出ないでください。"},
+ "winter.radio.rink_slush": {"ru": "Оттепель: на катке в парке вода поверх льда, каток закрыт.", "en": "A thaw: there is water over the ice at the park rink, and the rink is closed.", "ja": "雪解け。公園のスケート場は氷の上に水が出ていて、閉鎖中です。"},
+ "winter.radio.walrus": {"ru": "Клуб моржей приглашает: завтра в девять утра — заплыв в проруби у пирса. Баня у пирса топится с двух часов.", "en": "The walruses' club invites you: tomorrow at nine, a swim in the ice hole by the pier. The banya by the pier is heated from two.", "ja": "寒中水泳クラブからのお知らせ。明日の朝九時、桟橋そばの氷の穴で泳ぎます。桟橋のサウナは二時から焚いています。"},
+ "winter.radio.new_year": {"ru": "С Новым годом, Людмиловск! Моржи ждут всех смелых у пирса до часу дня.", "en": "Happy New Year, Lyudmilovsk! The walruses wait for everyone brave by the pier until one o'clock.", "ja": "新年おめでとう、リュドミロフスク！寒中水泳の仲間が、午後一時まで桟橋で勇気ある人を待っています。"}
+}

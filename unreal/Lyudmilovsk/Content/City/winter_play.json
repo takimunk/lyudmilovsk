@@ -1,0 +1,447 @@
+{
+ "_doc": "Built by tools/winter_play/winter_play.py from tools/winter_play/content.json (docs/winter_play.md); do not edit by hand. Unreal metres (x = map X, y = map Y + face_y, z), yaw Unreal degrees (0 = +x = the sea). Heights are guesses from tools/terrain.py: the game traces the ground and the pier's deck.",
+ "version": 1,
+ "rink": {
+  "at": [
+   -68.83,
+   1267.9,
+   -35.98
+  ],
+  "r": [
+   14.0,
+   22.0
+  ],
+  "yaw": 0.0,
+  "kerb": 0.35,
+  "loop": [
+   [
+    -57.83,
+    1267.9,
+    -35.98
+   ],
+   [
+    -58.205,
+    1272.818,
+    -35.98
+   ],
+   [
+    -59.304,
+    1277.4,
+    -35.98
+   ],
+   [
+    -61.052,
+    1281.335,
+    -35.98
+   ],
+   [
+    -63.33,
+    1284.354,
+    -35.98
+   ],
+   [
+    -65.983,
+    1286.253,
+    -35.98
+   ],
+   [
+    -68.83,
+    1286.9,
+    -35.98
+   ],
+   [
+    -71.677,
+    1286.253,
+    -35.98
+   ],
+   [
+    -74.33,
+    1284.354,
+    -35.98
+   ],
+   [
+    -76.608,
+    1281.335,
+    -35.98
+   ],
+   [
+    -78.356,
+    1277.4,
+    -35.98
+   ],
+   [
+    -79.455,
+    1272.818,
+    -35.98
+   ],
+   [
+    -79.83,
+    1267.9,
+    -35.98
+   ],
+   [
+    -79.455,
+    1262.982,
+    -35.98
+   ],
+   [
+    -78.356,
+    1258.4,
+    -35.98
+   ],
+   [
+    -76.608,
+    1254.465,
+    -35.98
+   ],
+   [
+    -74.33,
+    1251.446,
+    -35.98
+   ],
+   [
+    -71.677,
+    1249.547,
+    -35.98
+   ],
+   [
+    -68.83,
+    1248.9,
+    -35.98
+   ],
+   [
+    -65.983,
+    1249.547,
+    -35.98
+   ],
+   [
+    -63.33,
+    1251.446,
+    -35.98
+   ],
+   [
+    -61.052,
+    1254.465,
+    -35.98
+   ],
+   [
+    -59.304,
+    1258.4,
+    -35.98
+   ],
+   [
+    -58.205,
+    1262.982,
+    -35.98
+   ],
+   [
+    -57.83,
+    1267.9,
+    -35.98
+   ]
+  ]
+ },
+ "banya": {
+  "at": [
+   146.484,
+   932.4,
+   -41.752
+  ],
+  "yaw": 0.0,
+  "size": [
+   4.6,
+   3.6,
+   2.3
+  ],
+  "door": [
+   2.3,
+   -0.7,
+   0.0
+  ],
+  "steam_room": {
+   "c": [
+    -1.1,
+    0.0,
+    1.1
+   ],
+   "half": [
+    1.1,
+    1.7,
+    1.1
+   ],
+   "shelf": [
+    -1.75,
+    0.0,
+    0.9
+   ],
+   "stove": [
+    -0.5,
+    1.2,
+    0.0
+   ]
+  },
+  "dressing_room": {
+   "c": [
+    1.25,
+    0.0,
+    1.1
+   ],
+   "half": [
+    1.0,
+    1.7,
+    1.1
+   ]
+  }
+ },
+ "ice_hole": {
+  "at": [
+   299.022,
+   921.1,
+   -43.0
+  ],
+  "r": 1.3,
+  "bed_z": -44.97,
+  "shallow_guess": true,
+  "ladder": {
+   "at": [
+    298.842,
+    918.95,
+    -44.972
+   ],
+   "yaw": 85.21,
+   "deck_z": -41.5
+  },
+  "deck_stand": [
+   298.737,
+   917.7,
+   -41.5
+  ]
+ },
+ "ice": {
+  "_doc": "The pond's ice: frozen on the calendar from 'from' to 'to' (as ALyudPublicSpaces draws it; lyud.City.Ice forces it), thickness by Stefan's law from the weather's freezing degree-days past an offset, eaten by a thaw. The rink is open from open_cm; under thick_cm the cracks are many and wide.",
+  "from": [
+   12,
+   15
+  ],
+  "to": [
+   3,
+   15
+  ],
+  "fdd_offset": 12.0,
+  "stefan_cm": 2.4,
+  "first_cm": 4.0,
+  "max_cm": 42.0,
+  "open_cm": 10.0,
+  "thick_cm": 20.0,
+  "thaw_melt": 0.35,
+  "thaw_temp_c": 1.5,
+  "slush_hours": 30.0,
+  "cracks_thin": 9,
+  "cracks_thick": 3,
+  "crack_len_m": [
+   5.0,
+   15.0
+  ],
+  "crack_width_m": 0.5
+ },
+ "skating": {
+  "_doc": "The hero on skates (m, s): a push every stroke while a move key is held, a long glide, turns limited by the edge's grip, S into a hockey stop. A crack crossed fast or a turn past the grip may throw him. Without skates the ice is slippery. With skates on land he totters.",
+  "stroke_s": 0.85,
+  "push": 2.6,
+  "push_shift": 1.3,
+  "max_speed": 5.6,
+  "max_speed_shift": 2.6,
+  "glide_decel": 0.07,
+  "drag": 0.014,
+  "grip": 3.8,
+  "turn_rate_deg": 140.0,
+  "brake": 3.4,
+  "stop_dot": -0.45,
+  "crack_speed": 2.3,
+  "crack_chance": 0.55,
+  "turn_fall": 1.35,
+  "fall_s": 1.5,
+  "getup_s": 1.1,
+  "fall_slide_decel": 2.6,
+  "boots_accel": 1.5,
+  "boots_decel": 1.1,
+  "boots_max": 3.0,
+  "boots_crack_speed": 3.4,
+  "boots_crack_chance": 0.25,
+  "land_scale": 0.42,
+  "kerb_put_on_m": 4.5,
+  "lace_s": 4.0
+ },
+ "banya_rules": {
+  "_doc": "When the banya is heated (days, hours; dates MM-DD override), what entering costs, the steam room (deg C) and the body's heat 0..1: it rises with the room's felt heat (the air plus the steam's bite; the felt hat takes some off), a venik's swish adds a little, out of the room it falls (fast in snow, faster in cold water). A round: heat over round_hot in the steam room, then under round_cool by snow or the sea within round_window_s.",
+  "days": [
+   2,
+   4,
+   5,
+   6
+  ],
+  "hours": [
+   14.0,
+   22.0
+  ],
+  "dates": {
+   "12-31": [
+    10.0,
+    18.0
+   ],
+   "01-01": [
+    9.0,
+    15.0
+   ]
+  },
+  "price": 20,
+  "room_c": 78.0,
+  "room_max_c": 96.0,
+  "room_cool_per_s": 0.03,
+  "ladle_c": 4.0,
+  "ladle_steam": 0.2,
+  "steam_decay_per_s": 0.012,
+  "steam_bite_c": 26.0,
+  "hat_c": 9.0,
+  "heat_from_c": 42.0,
+  "heat_per_c_s": 0.00022,
+  "venik_heat": 0.025,
+  "venik_s": 1.1,
+  "too_hot": 1.0,
+  "out_hot": 1.12,
+  "cool_air": 0.006,
+  "cool_air_frost": 0.00025,
+  "cool_snow": 0.05,
+  "cool_water": 0.085,
+  "round_hot": 0.75,
+  "round_cool": 0.3,
+  "round_window_s": 150.0,
+  "rounds_full": 3
+ },
+ "walrus": {
+  "_doc": "Cold water: the cold builds while he swims (faster the colder the sea), the banya's heat soaks it up first; past 1 he must get out, past out_cold the walruses haul him onto the deck. A swim counts from count_s. The walruses' club swims on Sunday mornings in season; everybody who dares on New Year's morning.",
+  "months": [
+   12,
+   1,
+   2,
+   3
+  ],
+  "cold_sea_c": 9.0,
+  "cold_per_s": 0.02,
+  "warm_air_per_s": 0.004,
+  "towel_mult": 3.0,
+  "count_s": 15.0,
+  "out_cold": 1.3,
+  "sunday_hours": [
+   8.5,
+   11.0
+  ],
+  "new_year": "01-01",
+  "new_year_hours": [
+   8.0,
+   13.0
+  ],
+  "club_min": 2,
+  "club_radius_m": 12.0
+ },
+ "snowball": {
+  "_doc": "G with the hand free of feed on snow that packs: scoop, then throw. Snow packs from pack_cm deep between the two temperatures (dry cold snow will not hold), better when wet.",
+  "pack_cm": 3.0,
+  "temp_c": [
+   -7.0,
+   1.8
+  ],
+  "scoop_s": 0.5,
+  "cooldown_s": 0.8,
+  "speed": 17.0,
+  "up_deg": 7.0,
+  "radius_m": 0.045,
+  "hit_m": 0.45,
+  "gravity": 9.8,
+  "life_s": 4.0
+ },
+ "snowman": {
+  "_doc": "Crouch and E on snow that packs: a ball to roll; it grows as he pushes it (its area picks up the snow it rolls over). E leaves it; E with a small enough ball at a bigger one lifts it on. Three balls are a snowman; then E puts on a carrot nose, coal eyes and twig arms if he has them. A thaw slumps them.",
+  "min_cm": 5.0,
+  "start_r": 0.12,
+  "pack": 0.55,
+  "max_r": 0.55,
+  "lift_r": 0.34,
+  "ratio": 0.9,
+  "push_m": 0.75,
+  "melt_per_h": 0.012,
+  "max_saved": 8,
+  "near_m": 1.6
+ },
+ "items": {
+  "skates": {
+   "shop": "store_sports",
+   "price": 350
+  },
+  "birch_venik": {
+   "shop": "market_fruit",
+   "price": 8
+  },
+  "banya_hat": {
+   "shop": "store_haberdashery",
+   "price": 25
+  },
+  "banya_towel": {
+   "shop": "store_haberdashery",
+   "price": 30
+  },
+  "carrot": {
+   "shop": "market_fruit",
+   "price": 3
+  },
+  "coal": {
+   "shop": "",
+   "price": 0
+  }
+ },
+ "stamps": {
+  "_doc": "The collection 'winter' (ULyudCityThings::GiveStamp): each piece and what gives it.",
+  "set": "winter",
+  "pieces": [
+   "first_glide",
+   "long_glide",
+   "fell_on_ice",
+   "steam",
+   "venik",
+   "snow_roll",
+   "ice_hole",
+   "three_rounds",
+   "walrus_club",
+   "new_year_swim",
+   "snowball_fight",
+   "snowman"
+  ]
+ },
+ "radio": {
+  "_doc": "The town radio's weather adds the rink (docs/music.md): open with the thickness, thin, slush; the walruses invite on Saturday evening's news.",
+  "open": "winter.radio.rink_open",
+  "thin": "winter.radio.rink_thin",
+  "slush": "winter.radio.rink_slush",
+  "walrus": "winter.radio.walrus",
+  "new_year": "winter.radio.new_year"
+ },
+ "fight": {
+  "_doc": "Children at play outdoors near the hero join when one is hit or a snowball lands near: they throw back every few seconds (a lead on his run, an error growing with the distance) until the time is up or he walks off.",
+  "ages": [
+   6,
+   15
+  ],
+  "join_m": 14.0,
+  "radius_m": 26.0,
+  "max_kids": 4,
+  "throw_every_s": [
+   2.2,
+   4.6
+  ],
+  "aim_error_deg": 5.0,
+  "aim_error_per_m": 0.35,
+  "speed": 13.0,
+  "duration_s": 120.0,
+  "leave_m": 40.0
+ }
+}

@@ -1,0 +1,19 @@
+{
+ "item.banya_hat.desc": "フェルトの帽子。蒸し風呂で頭がのぼせない。",
+ "item.banya_hat.name": "サウナ帽",
+ "item.banya_towel.desc": "テリー織りのタオル。氷の穴のあとにこすれば、すぐ温まる。",
+ "item.banya_towel.name": "タオル",
+ "item.birch_venik.desc": "熱湯で蒸らした白樺の枝の束。サウナ一日分。",
+ "item.birch_venik.name": "白樺のヴェニク",
+ "item.carrot.desc": "にんじん。食べてもいいし、雪だるまの鼻にしてもいい。",
+ "item.carrot.name": "にんじん",
+ "item.coal.desc": "サウナのストーブから取った炭のかけら二つ。雪だるまの目にちょうどいい。",
+ "item.coal.name": "炭のかけら",
+ "item.skates.desc": "革のブーツに付いた散歩用スケート「スネグーロチカ」。履いて池へ。",
+ "item.skates.name": "スケート靴",
+ "winter.radio.new_year": "新年おめでとう、リュドミロフスク！寒中水泳の仲間が、午後一時まで桟橋で勇気ある人を待っています。",
+ "winter.radio.rink_open": "海辺の公園の池のスケート場が開いています。氷の厚さは{0}センチ。スケート靴はデパートのスポーツ売り場で。",
+ "winter.radio.rink_slush": "雪解け。公園のスケート場は氷の上に水が出ていて、閉鎖中です。",
+ "winter.radio.rink_thin": "公園の池の氷はまだ薄く、{0}センチです。氷の上に出ないでください。",
+ "winter.radio.walrus": "寒中水泳クラブからのお知らせ。明日の朝九時、桟橋そばの氷の穴で泳ぎます。桟橋のサウナは二時から焚いています。"
+}
