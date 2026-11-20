@@ -80,10 +80,17 @@ Console: `lyud.Photo.Raise 0|1`, `lyud.Photo.Shoot`, `lyud.Photo.Develop`, `lyud
 - The studio counter is a quick exchange with toasts, not a dialogue page. The club darkroom's old lines
   (`city.cog.dark.*`) are not shown any more.
 - Exposed films are not pocket items; the frame line and the studio toasts count them.
-- No icons yet for `camera` and `photo_film` (paid generation was not allowed for them): entries are in
-  localization/assets.json, the pictures are owed.
 - The shutter uses the pool `camera_flash`, silent until the city sounds are imported.
 - The bird book writes a camera sighting with the "hand" wording.
+
+## Icons
+
+Both items' icons are cells of one 2x2 Higgsfield grid (design/photo/icons_photo_1.png with its sidecar): the camera in
+its case, the film box with a cassette. Diary sketches made by tools/ui_diary_icons.py.
+
+## State
+
+Builds on the Mac (2026-11-20, UE 5.8). Never run in the level yet.
 
 ## First run on the Mac (owed)
 
