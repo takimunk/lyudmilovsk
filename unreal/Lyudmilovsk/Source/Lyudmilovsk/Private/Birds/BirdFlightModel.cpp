@@ -34,17 +34,21 @@ namespace BirdFlight
 		}
 
 		/** The wall of air at the wings' speed limit is this many g at Press x the limit: where the wings begin to be pressed back. */
-		const double WallPower = 8.0;
-		const double Press = 0.6877;   // 0.05 g: pow(0.05, 1 / WallPower)
+		const double WallPower = 10.0;
+		const double Press = 0.7411;   // 0.05 g: pow(0.05, 1 / WallPower)
 
-		/** The widest the air lets the wings be held at this airspeed (0.1 .. 1): past Press x their limit they are pressed back. */
-		double WingCap(const FParams& P, double V)
+		const double PressHard = 0.9;  // 0.35 g: what a bird pulling out or beating its wings puts up with
+
+		/** The widest the air lets the wings be held at this airspeed: past AtPress x their limit they are pressed back,
+		 *  though never further in than the species folds them itself. */
+		double WingCap(const FParams& P, double V, double AtPress)
 		{
+			const double Kind = 1.0 - 0.9 * P.DiveTuck;
 			if (P.MaxSpeed <= P.SpreadLimit + 1e-6)
 			{
 				return 1.0;
 			}
-			return 0.1 + 0.9 * Clamp((P.MaxSpeed - V / Press) / (P.MaxSpeed - P.SpreadLimit), 0.0, 1.0);
+			return std::max(Kind, 0.1 + 0.9 * Clamp((P.MaxSpeed - V / AtPress) / (P.MaxSpeed - P.SpreadLimit), 0.0, 1.0));
 		}
 
 		/**
@@ -55,9 +59,11 @@ namespace BirdFlight
 		{
 			const double Q = P.Gravity / (2.0 * P.GlideRatio);
 			const double Vr = V / P.BestGlide;
-			const double Span = std::max(Spread, 0.45);
+			// (half-folded wings pulling hard are a short span, but swept back and stiff: the price is kept moderate,
+			// so the speed of a dive can be zoomed back into height)
+			const double Span = std::max(Spread, 0.5);
 			const double Dp = Q * Vr * Vr * (0.3 + 0.7 * Spread) * (1.0 + 14.0 * Flare);
-			const double Di = std::min(1.5 * P.Gravity, Q * Load * Load / (std::max(Vr * Vr, 0.25) * Span * Span));
+			const double Di = std::min(1.5 * P.Gravity, Q * Load * Load / (std::max(Vr * Vr, 0.25) * Span));
 			return Dp + Di + P.Gravity * std::pow(V / P.SpeedLimit(Spread), WallPower);
 		}
 
@@ -250,16 +256,17 @@ namespace BirdFlight
 	double WingTrim(const FParams& P, double V, double Gamma, double AimPitch, double LoadG, double Flare)
 	{
 		// the air: fully spread wings are pressed back past their speed limit
-		const double Cap = WingCap(P, V);
+		const double Kind = 1.0 - 0.9 * P.DiveTuck;
+		const double Cap = WingCap(P, V, Press);
 		// a fast glide: the span comes in as the speed goes up (less wing to drag through the air; Pennycuick 1968,
 		// Tucker & Parrott 1970: a pigeon's and a falcon's span shrinks steadily above the best glide speed)
-		const double Flex = Clamp(std::pow(1.15 * P.BestGlide / std::max(V, 0.1), 0.8), 0.45, 1.0);
+		const double Flex = Clamp(std::pow(1.15 * P.BestGlide / std::max(V, 0.1), 0.8), std::max(0.45, Kind), 1.0);
 		// the gaze down: the species folds as far as it does
-		const double Dive = 1.0 - 0.9 * P.DiveTuck * DiveIntent(AimPitch);
+		const double Dive = 1.0 - (1.0 - Kind) * DiveIntent(AimPitch);
 		const double Glide = std::min(Cap, std::min(Flex, Dive));
 		// the gaze above the path (pulling out, or holding a height the speed no longer carries): as wide as the air allows
 		const double Pull = Smooth(0.05, 0.35, AimPitch - Gamma);
-		double Want = Glide + (Cap - Glide) * Pull;
+		double Want = Glide + (std::max(Glide, WingCap(P, V, PressHard)) - Glide) * Pull;
 		// never less wing than the pull and the turn need (with a margin), whatever the air says
 		const double Vs = std::max(V / P.Stall, 0.05);
 		Want = std::max(Want, std::min(1.0, std::pow(std::max(LoadG, 0.0) * 1.15 / (Vs * Vs), 2.0 / 3.0)));
@@ -447,7 +454,7 @@ namespace BirdFlight
 			S.Trim += (Want - S.Trim) * std::min(1.0, (Want < S.Trim ? 4.0 : 6.0) * Dt);
 		}
 		// beating wings reach as far as the air lets them
-		const double BeatSpread = 1.0 + (WingCap(P, V) - 1.0) * Clamp(In.Reflex, 0.0, 1.0);
+		const double BeatSpread = 1.0 + (std::max(0.5, WingCap(P, V, PressHard)) - 1.0) * Clamp(In.Reflex, 0.0, 1.0);
 
 		// wings: a click starts a burst, or waits for the one under way to pass its middle
 		auto Wing = [&](bool Clicked, double& Burst, bool& Queued, double& Phase, double& Spread, double Tuck, double& Power, double& Rate)
