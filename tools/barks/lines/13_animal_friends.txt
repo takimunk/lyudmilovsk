@@ -19,4 +19,4 @@ age = kid teen
 say town.notice_dog_walk_kid.1 | Твоя собака? А можно погладить? | Is that your dog? Can I stroke her? | 君の犬？なでてもいい？
 say town.notice_dog_walk_kid.2 | Ого, она сама за тобой идёт! Как ты её научил? | Whoa, she follows you all by herself! How did you teach her? | わあ、自分でついてくる！どうやって教えたの？
 say town.notice_dog_walk_kid.3 | А как её зовут? | What's her name? | 名前はなんていうの？
-say town.notice_dog_walk_kid.4 | Я тоже хочу собаку. Мама говорит, сначала рыбок. | I want a dog too. Mum says fish first. | わたしも犬がほしい。ママは、まず魚からって言うの。
+say town.notice_dog_walk_kid.4 | Я тоже хочу собаку. Мама говорит, сначала рыбок. | I want a dog too. Mum says fish first. | いいなあ、犬ほしい。ママは、まずは金魚からだって。

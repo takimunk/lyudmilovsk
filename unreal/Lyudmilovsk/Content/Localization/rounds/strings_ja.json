@@ -1,6 +1,6 @@
 {
- "rounds.postman": "元郵便配達さん",
- "rounds.paper.start": "テラスT{0}の新聞の束：購読者{1}軒、新聞{2}部。8時までに！",
+ "rounds.postman": "年配の郵便配達さん",
+ "rounds.paper.start": "テラスT{0}の新聞の束：購読者{1}軒、新聞{2}部。八時までに！",
  "rounds.post.start": "鞄の小包：{0}個。一軒ずつ呼び鈴を。",
  "rounds.paper.done": "配達終了。玄関に{0}、近く{1}、外れ{2}。{3}ルーブル稼いだ。",
  "rounds.post.done": "郵便配達終了。手渡し{0}、不在票{2}。{3}ルーブル稼いだ。",
@@ -11,7 +11,7 @@
  "rounds.prompt.ring": "E：呼び鈴を鳴らす（{0}さんへの小包）",
  "rounds.prompt.rang": "呼び鈴が鳴った……誰か出てくるのを待つ",
  "rounds.prompt.parcels": "鞄の小包：{0}個。家は日記の地図に",
- "rounds.postman.give.1": "{0}：「四十年鞄を担いだが、膝がもう駄目でな。ほら、部屋を間違えるなよ。」",
+ "rounds.postman.give.1": "{0}：「四十年鞄を担いだが、膝がもう駄目でな。ほら、坊主、部屋を間違えるなよ。」",
  "rounds.postman.give.2": "{0}：「二度鳴らして待つんだ。すぐ出てくるとは限らん。」",
  "rounds.postman.give.3": "{0}：「留守なら郵便受けに不在票だ。郵便はなくならん。」",
  "rounds.nobody.1": "静まり返っている。不在票を郵便受けへ。",
@@ -40,6 +40,6 @@
  "dev.action.rounds.paper": "新聞配達を始める",
  "dev.action.rounds.post": "郵便配達を始める",
  "dev.action.rounds.end": "配達を終える",
- "dev.tp.rounds.kiosk": "キオスク1（新聞の束）",
- "dev.tp.rounds.postman": "元郵便配達さんの家"
+ "dev.tp.rounds.kiosk": "キオスク一号（新聞の束）",
+ "dev.tp.rounds.postman": "年配の郵便配達さんの家"
 }
