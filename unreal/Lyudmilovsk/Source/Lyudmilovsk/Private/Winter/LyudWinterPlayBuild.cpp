@@ -6,6 +6,7 @@
 #include "Winter/LyudWinterPlay.h"
 
 #include "WinterPlayModel.h"
+#include "WinterPlayState.h"
 
 #include "City/CityKit.h"
 #include "Components/PointLightComponent.h"
@@ -526,7 +527,9 @@ void ULyudWinterPlay::BuildCracks()
 			Strip(Pts[I], Pts[I + 1], W0, W1, Core, 0.002f);
 			if (Jit((uint32)(Seed++)) < 0.18f && I > 0 && I < N - 1)
 			{
-				const double Turn = (Jit((uint32)(Seed++)) < 0.5f ? 1.0 : -1.0) * (0.5 + Jit((uint32)(Seed++)) * 0.5);
+				const float JSide = Jit((uint32)(Seed++));
+				const float JAmount = Jit((uint32)(Seed++));
+				const double Turn = (JSide < 0.5f ? 1.0 : -1.0) * (0.5 + JAmount * 0.5);
 				const FVector2D Br = (Dir * FMath::Cos(Turn) + Side * FMath::Sin(Turn)).GetSafeNormal();
 				const FVector2D E = Pts[I] + Br * (0.4 + Jit((uint32)(Seed++)) * 0.8);
 				Strip(Pts[I], E, W0 * 0.6f, 0.004f, Core, 0.002f);
