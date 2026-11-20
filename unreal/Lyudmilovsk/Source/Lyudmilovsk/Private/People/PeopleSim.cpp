@@ -2313,7 +2313,19 @@ namespace LyudPeople
 		{
 			V3 Front = To.Pos + (To.Approach - To.Pos) * 3.f;
 			Front.Z = To.Approach.Z;
+			const size_t First = Out.size();
 			OutdoorWay(From, Front, Out);
+			// coming from behind the bench the way would run through it: round its end, on the side they come from
+			const V3 Prev = Out.size() >= First + 2 ? Out[Out.size() - 2].P : From;
+			const V3 Dir = (To.Approach - To.Pos) * (1.f / 0.3f);
+			const V3 Rel = Prev - To.Pos;
+			if (Rel.X * Dir.X + Rel.Y * Dir.Y < 0.3f)
+			{
+				const float Lat = -Rel.X * Dir.Y + Rel.Y * Dir.X >= 0.f ? 1.7f : -1.7f;
+				FPerson::FWay Side;
+				Side.P = To.Approach + V3(-Dir.Y * Lat, Dir.X * Lat, 0.f);
+				Out.insert(Out.end() - 1, Side);
+			}
 			FPerson::FWay Last;
 			Last.P = To.Approach;
 			Out.push_back(Last);
