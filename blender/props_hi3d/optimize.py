@@ -246,22 +246,75 @@ def bake(high, low, mat, imgs, nodes, size_m):
     b.margin = 16
     b.margin_type = "EXTEND"
     select([high, low], active=low)
-    for k, kind in (("C", "DIFFUSE"), ("N", "NORMAL"), ("R", "ROUGHNESS")):
-        for n in nodes.values():
-            n.select = False
-        nodes[k].select = True
-        mat.node_tree.nodes.active = nodes[k]
+    import numpy as np
+    near = (b.cage_extrusion, b.max_ray_distance)
+    far = (0.03 * size_m, 0.09 * size_m)
+
+    def pixels(img):
+        return np.array(img.pixels[:], dtype=np.float32).reshape(-1, 4)
+
+    def run_pass(kind):
         if kind == "DIFFUSE":
             b.use_pass_direct = False
             b.use_pass_indirect = False
             b.use_pass_color = True
-            bpy.ops.object.bake(type="DIFFUSE")
         elif kind == "NORMAL":
             b.normal_space = "TANGENT"
-            bpy.ops.object.bake(type="NORMAL")
-        else:
-            bpy.ops.object.bake(type="ROUGHNESS")
-        log("baked", k)
+        bpy.ops.object.bake(type=kind)
+
+    def make_active(tn):
+        for n in mat.node_tree.nodes:
+            n.select = False
+        tn.select = True
+        mat.node_tree.nodes.active = tn
+
+    # hit mask: where a near ray finds the high model. A deeply decimated fold (the muse's drapery and face, the bear's
+    # chest) leaves the high surface outside the near cage: those texels bake black. They are filled from a second,
+    # wider bake; everywhere else the near one is kept (a wide cage alone grabs neighbouring parts, a lyre onto a chest).
+    saved = []
+    for m in high.data.materials:
+        if not m or not m.use_nodes:
+            continue
+        for nd in m.node_tree.nodes:
+            if nd.type == "BSDF_PRINCIPLED":
+                em = nd.inputs.get("Emission Color") or nd.inputs.get("Emission")
+                st = nd.inputs.get("Emission Strength")
+                saved.append((m, nd, em, [l.from_socket for l in em.links], tuple(em.default_value),
+                              st.default_value if st else None))
+                for l in list(em.links):
+                    m.node_tree.links.remove(l)
+                em.default_value = (1.0, 1.0, 1.0, 1.0)
+                if st:
+                    st.default_value = 1.0
+    mask_img = new_image("hit_mask", imgs["C"].size[0], (0, 0, 0, 1), True)
+    mtn = mat.node_tree.nodes.new("ShaderNodeTexImage")
+    mtn.image = mask_img
+    make_active(mtn)
+    b.margin = 2
+    bpy.ops.object.bake(type="EMIT")
+    b.margin = 16
+    hit = pixels(mask_img)[:, 0] > 0.5
+    mat.node_tree.nodes.remove(mtn)
+    bpy.data.images.remove(mask_img)
+    for m, nd, em, links, dv, st in saved:
+        em.default_value = dv
+        for src in links:
+            m.node_tree.links.new(src, em)
+        if st is not None:
+            nd.inputs["Emission Strength"].default_value = st
+    # the misses inside islands (a texel the near bake missed but the far one reaches)
+    for k, kind in (("C", "DIFFUSE"), ("N", "NORMAL"), ("R", "ROUGHNESS")):
+        make_active(nodes[k])
+        b.cage_extrusion, b.max_ray_distance = near
+        run_pass(kind)
+        a = pixels(imgs[k])
+        b.cage_extrusion, b.max_ray_distance = far
+        run_pass(kind)
+        f = pixels(imgs[k])
+        f[hit] = a[hit]
+        imgs[k].pixels[:] = f.ravel()
+        b.cage_extrusion, b.max_ray_distance = near
+        log("baked", k, "(%.1f%% of texels from the wide cage)" % (100.0 * (1.0 - hit.mean())) if k == "C" else "")
 
 
 def wire(mat, nodes, metallic):
@@ -419,23 +472,35 @@ def run(pid, s, front_yaw):
     low.data = high.data.copy()
     low.name = pid
     bpy.context.scene.collection.objects.link(low)
-    n = decimate(low, s["tris"])
+    # hi3d meshes carry thousands of edges shared by 3+ faces (inner fins). Collapse stalls on them (sundial: 1.07M ->
+    # 49.9k for a 6k budget), and where it doesn't stall it still leaves folded, self-crossing patches that bake black
+    # (the muse's face and neck, marks on the bear cub and the pioneer). So the low copy is voxel-remeshed into a clean
+    # manifold shell first and collapsed from that; the bake still comes from the untouched high. A built plinth
+    # ("keep" group) would melt into the remesh: those props collapse directly unless that stalls.
+    n = decimate(low, s["tris"]) if s.get("plinth") else 10 ** 9
     if n > 1.2 * s["tris"]:
-        # hi3d meshes carry thousands of edges shared by 3+ faces (inner fins); collapse stalls on them (sundial:
-        # 1.07M -> 49.9k for a 6k budget, more passes don't help). A voxel remesh of the low copy gives a clean
-        # manifold shell that collapses to the budget; the bake still comes from the untouched high.
         low.data = high.data.copy()
         m = low.modifiers.new("remesh", "REMESH")
         m.mode = "VOXEL"
         vs = m.voxel_size = 0.003 * size
         select([low])
         bpy.ops.object.modifier_apply(modifier=m.name)
-        log("decimate stalled at %d tris: voxel remesh %.1f mm -> %d" % (n, 1000 * vs, tris(low)))
+        log("voxel remesh %.1f mm -> %d tris" % (1000 * vs, tris(low)))
         n = decimate(low, s["tris"])
     select([low])
     # smooth, but hard edges (plinth corners, column steps) stay split: a fully smooth box bakes and shades its
     # faces dark and bent (the girl's plinth top came out black)
     bpy.ops.object.shade_smooth_by_angle(angle=math.radians(40))
+    # collapse on hi3d's non-manifold shells can turn faces inside out: their bake rays then point away from the high
+    # model and the texels come out black (the muse's face and neck). Make the low's normals consistent, outwards.
+    bm = bmesh.new()
+    bm.from_mesh(low.data)
+    before = [f.normal.copy() for f in bm.faces]
+    bmesh.ops.recalc_face_normals(bm, faces=bm.faces)
+    flipped = sum(1 for f, n in zip(bm.faces, before) if f.normal.dot(n) < 0)
+    bm.to_mesh(low.data)
+    bm.free()
+    log("low normals: %d of %d faces flipped outwards" % (flipped, len(low.data.polygons)))
     me = low.data
     while me.uv_layers:
         me.uv_layers.remove(me.uv_layers[0])

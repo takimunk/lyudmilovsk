@@ -29,7 +29,7 @@
     "back",
     "left"
    ],
-   "views_note": "left dropped: the sheet front is a 3/4 view turned to the right and the left cell is a profile also facing right, so the two disagree; front+back agree",
+   "views_note": "run 1 (sheet 0) went with front+back only (its left cell disagreed with the 3/4 front); run 2 (sheet 4) uses front, back, left",
    "height": 3.3,
    "origin": "base",
    "tris": 9000,

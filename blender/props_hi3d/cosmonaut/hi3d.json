@@ -32,6 +32,15 @@
   ],
   "reference": "blender/props_hi3d/sheets.json",
   "submitted": "2026-11-20T21:32:44+00:00",
-  "outputs": []
+  "outputs": [
+   {
+    "url": "https://hitem3dstatic.zaohaowu.net/jjewelry/web/model3ds/img2model3d/20261120/ab8569c2dabf4f87ad7df15c98a4eb46/target/model/original/GLB0.glb?auth_key=605b63ef24c71b45de0dd62ca9650d58&t=1795214688",
+    "file": "blender/props_hi3d/raw/cosmonaut/model.glb",
+    "bytes": 49082072,
+    "sha256": "deb17c76507196c1dd704714fd535c601541a615c1d7a1aea09480e74b3a21e1"
+   }
+  ],
+  "model_page_url": "https://www.hi3d.ai/3d-model/20267085bfa54194935c928d5f34b54e",
+  "fetched": "2026-11-20T21:52:41+00:00"
  }
 ]
