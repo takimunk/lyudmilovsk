@@ -61,7 +61,10 @@ import world_map as W  # noqa: E402
 OUT = os.path.join(ROOT, "unreal", "Lyudmilovsk", "Content", "PeopleData", "people_places.json")
 GRID = os.path.join(ROOT, "unreal", "Lyudmilovsk", "Content", "AnimalsData", "animal_world.bin")
 PLOTS = os.path.join(ROOT, "Saved", "PeopleMap")
+# the main checkout's layout on the owner's Mac; elsewhere (CI, Linux) this checkout's own copy
 MAIN_SCENE = "/Users/diipushk/projects/lyudmilovsk/blender/export/scene01_layout.json"
+if not os.path.exists(MAIN_SCENE):
+    MAIN_SCENE = os.path.join(ROOT, "blender", "export", "scene01_layout.json")
 FACE_Y = 790.0
 
 R_WALL = 0.28          # walker radius against walls (m)

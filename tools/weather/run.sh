@@ -8,6 +8,6 @@ set -e
 ROOT="$(cd "$(dirname "$0")/../.." && pwd)"
 SRC="$ROOT/unreal/Lyudmilovsk/Source/Lyudmilovsk/Private/Weather"
 mkdir -p "$ROOT/Saved/Weather"
-clang++ -std=c++17 -O2 -Wall -Wno-unused-function -I"$SRC" -o "$ROOT/Saved/Weather/weathertest" "$ROOT/tools/weather/weathertest.cpp" \
+clang++ -std=c++17 -O2 $EXTRA_CXXFLAGS -Wall -Wno-unused-function -I"$SRC" -o "$ROOT/Saved/Weather/weathertest" "$ROOT/tools/weather/weathertest.cpp" \
 	"$SRC/WeatherModel.cpp" "$SRC/WindModel.cpp" "$SRC/RainModel.cpp"
 cd "$ROOT" && exec "$ROOT/Saved/Weather/weathertest" "$@"
