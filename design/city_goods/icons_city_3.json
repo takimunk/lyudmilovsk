@@ -1,0 +1,27 @@
+{
+ "service": "higgsfield MCP",
+ "tool": "generate_image_batch",
+ "model": "gpt_image_2_5",
+ "arguments": {
+  "aspect_ratio": "1:1",
+  "resolution": "2k",
+  "quality": "medium",
+  "prompt": "Nine inventory icons for a moody adventure game, arranged as a 3 by 3 grid of equal square cells on one picture: in every cell one object centred and filling most of the cell, softly lit from the upper left, painterly realistic style, plain dark warm-grey cloth background with a faint vignette, the same background and the same scale in every cell (every object drawn at the same icon size, as large as the cell allows with a margin), no borders, frames or lines between the cells, nothing crossing a cell edge, exactly one object or one small group per cell, no text, letters, numbers or logos anywhere, not even on the objects. Everyday goods of a 1970s-80s Soviet seaside town, no real brands. Row 1, left: a whole golden-brown hot-smoked mackerel lying on a sheet of oily brown wrapping paper. Row 1, middle: a whole flat salted dried roach fish, silvery-grey and stiff, with a string loop through its eye. Row 1, right: a small rectangular dark brown chewy bar divided into squares, half unwrapped from a plain cream paper wrapper. Row 2, left: a short paper-wrapped roll of round yellow vitamin tablets, opened at one end with three tablets spilled out. Row 2, middle: an oval bar of pink soap partly unwrapped from plain white paper. Row 2, right: a round ball of soft blue woollen yarn with a loose end trailing, two wooden knitting needles stuck through it. Row 3, left: a small wooden spool wound with bright red cotton thread. Row 3, middle: six round mother-of-pearl buttons sewn in two rows onto a plain grey cardboard card. Row 3, right: a neatly folded cotton handkerchief with a pale blue and white check pattern."
+ },
+ "job_id": "9a147924-2961-4cbf-9dac-0bea423154da",
+ "output_url": "https://d8j0ntlcm91z4.cloudfront.net/user_36I3ndR5QeKPyjKAdSKVfbd04n2/hf_20261120_193416_9a147924-2961-4cbf-9dac-0bea423154da.png",
+ "credits": 1,
+ "date": "2026-11-20",
+ "cells_row_major": [
+  "smoked_fish",
+  "dried_fish",
+  "hematogen",
+  "ascorbic",
+  "soap",
+  "wool_ball",
+  "thread_spool",
+  "buttons_card",
+  "handkerchief"
+ ],
+ "sha256": "(fill on download)"
+}

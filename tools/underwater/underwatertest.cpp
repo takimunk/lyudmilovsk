@@ -176,10 +176,10 @@ int main()
 		LyudEco::FModel Web;
 		FSim Eco;
 		for (int S = 0; S < NumSpecies(); ++S)
-			for (int P = 0; P < NumSpecies(); ++P)
+			for (int Q = 0; Q < NumSpecies(); ++Q)
 			{
-				const int J = LyudEco::Find(Species(S).Id), I = LyudEco::Find(Species(P).Id);
-				if (I >= 0 && J >= 0) Eco.SetDiet(S, P, Web.DietShare(J, I));
+				const int J = LyudEco::Find(Species(S).Id), I = LyudEco::Find(Species(Q).Id);
+				if (I >= 0 && J >= 0) Eco.SetDiet(S, Q, Web.DietShare(J, I));
 			}
 		std::vector<int> Pairs(NumSpecies() * NumSpecies(), 0);
 		int Wrong = 0, Meals = 0, Misses = 0;
@@ -429,8 +429,8 @@ int main()
 		LyudEco::FModel Web;
 		FSim Busy;
 		for (int S = 0; S < NumSpecies(); ++S)
-			for (int P = 0; P < NumSpecies(); ++P)
-				Busy.SetDiet(S, P, Web.DietShare(LyudEco::Find(Species(S).Id), LyudEco::Find(Species(P).Id)));
+			for (int Q = 0; Q < NumSpecies(); ++Q)
+				Busy.SetDiet(S, Q, Web.DietShare(LyudEco::Find(Species(S).Id), LyudEco::Find(Species(Q).Id)));
 		Busy.Density = 2.f;
 		const FV Eye(120.f, 0.f, -2.5f);
 		for (int T = 0; T < 900; ++T) Busy.Step(1.f / 30.f, Env, Eye, Clock);

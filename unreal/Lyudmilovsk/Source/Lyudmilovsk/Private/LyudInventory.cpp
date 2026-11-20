@@ -155,6 +155,44 @@ namespace
 		Cigs.Radius = 2.2f;
 		D.Add(Cigs);
 		Good(TEXT("lighter"), K::Misc, L::Pack, FVector(1.1f, 2.4f, 7.3f), FLinearColor(0.95f, 0.45f, 0.05f), 10, 1.3f);
+		// the town's everyday goods (docs/city_new_goods.md): sold in the shops of tools/city/content (bakeries, the market, cafes,
+		// the pharmacy, haberdashery, toys, books, souvenirs); edible ones eaten by bites like the kiosk food (Content/Food/food.json)
+		Good(TEXT("bread_rye"), K::Food, L::Pack, FVector(9.f, 11.f, 20.f), FLinearColor(0.3f, 0.2f, 0.12f), 10, 5.5f);
+		Good(TEXT("bubliki"), K::Food, L::Pack, FVector(4.f, 16.f, 22.f), FLinearColor(0.8f, 0.55f, 0.25f), 15, 6.f);
+		Good(TEXT("vatrushka"), K::Food, L::Pack, FVector(4.f, 10.f, 10.f), FLinearColor(0.88f, 0.66f, 0.35f), 10, 5.f);
+		Good(TEXT("pastry"), K::Food, L::Pack, FVector(5.f, 7.f, 7.f), FLinearColor(0.95f, 0.85f, 0.7f), 22, 3.5f);
+		Good(TEXT("donuts"), K::Food, L::Pack, FVector(5.f, 10.f, 16.f), FLinearColor(0.85f, 0.65f, 0.4f), 15, 5.f);
+		Good(TEXT("cheburek"), K::Food, L::Pack, FVector(3.f, 12.f, 20.f), FLinearColor(0.82f, 0.6f, 0.3f), 20, 6.f);
+		Good(TEXT("pelmeni_portion"), K::Food, L::Pack, FVector(4.f, 16.f, 16.f), FLinearColor(0.95f, 0.9f, 0.8f), 30, 8.f);
+		Good(TEXT("sandwich"), K::Food, L::Pack, FVector(3.f, 9.f, 12.f), FLinearColor(0.95f, 0.8f, 0.45f), 12, 4.f);
+		Good(TEXT("gingerbread"), K::Food, L::Pack, FVector(2.5f, 8.f, 10.f), FLinearColor(0.72f, 0.48f, 0.25f), 8, 4.f);
+		Good(TEXT("lollipop"), K::Food, L::Flat, FVector(0.6f, 6.f, 14.f), FLinearColor(0.9f, 0.45f, 0.1f), 5, 2.f);
+		Good(TEXT("candy_floss"), K::Food, L::Cone, FVector(14.f, 14.f, 32.f), FLinearColor(0.98f, 0.75f, 0.85f), 10, 7.f);
+		Good(TEXT("eskimo"), K::Food, L::Pack, FVector(2.5f, 5.f, 14.f), FLinearColor(0.75f, 0.75f, 0.8f), 22, 2.5f);
+		Good(TEXT("milkshake"), K::Drink, L::Glass, FVector(7.f, 7.f, 14.f), FLinearColor(0.98f, 0.94f, 0.88f), 20, 3.6f);
+		Good(TEXT("kvass"), K::Drink, L::Glass, FVector(8.f, 8.f, 12.f), FLinearColor(0.45f, 0.25f, 0.08f), 6, 4.f);
+		Good(TEXT("tomato_juice"), K::Drink, L::Glass, FVector(6.f, 6.f, 9.f), FLinearColor(0.75f, 0.15f, 0.08f), 10, 3.f);
+		Good(TEXT("milk_pyramid"), K::Drink, L::Pack, FVector(9.f, 9.f, 11.f), FLinearColor(0.95f, 0.95f, 0.97f), 16, 4.5f);
+		Good(TEXT("condensed_milk"), K::Food, L::Pack, FVector(7.5f, 7.5f, 8.f), FLinearColor(0.85f, 0.9f, 0.95f), 35, 4.f);
+		Good(TEXT("cherries"), K::Food, L::Pack, FVector(6.f, 10.f, 14.f), FLinearColor(0.45f, 0.05f, 0.1f), 25, 5.f);
+		Good(TEXT("smoked_fish"), K::Food, L::Pack, FVector(3.f, 8.f, 28.f), FLinearColor(0.75f, 0.5f, 0.2f), 45, 4.f);
+		Good(TEXT("dried_fish"), K::Food, L::Flat, FVector(1.5f, 8.f, 22.f), FLinearColor(0.7f, 0.6f, 0.4f), 20, 3.f);
+		Good(TEXT("hematogen"), K::Food, L::Flat, FVector(1.f, 4.f, 9.f), FLinearColor(0.45f, 0.22f, 0.12f), 9, 2.5f);
+		Good(TEXT("ascorbic"), K::Food, L::Pack, FVector(1.8f, 2.f, 7.5f), FLinearColor(0.98f, 0.85f, 0.2f), 5, 1.5f);
+		Good(TEXT("soap"), K::Misc, L::Pack, FVector(2.5f, 5.5f, 9.f), FLinearColor(0.95f, 0.7f, 0.75f), 8, 3.f);
+		Good(TEXT("wool_ball"), K::Misc, L::Pack, FVector(8.f, 8.f, 8.f), FLinearColor(0.2f, 0.35f, 0.7f), 18, 4.f);
+		Good(TEXT("thread_spool"), K::Misc, L::Pack, FVector(3.f, 3.f, 4.5f), FLinearColor(0.75f, 0.1f, 0.1f), 4, 1.5f);
+		Good(TEXT("buttons_card"), K::Misc, L::Flat, FVector(0.5f, 6.f, 9.f), FLinearColor(0.9f, 0.88f, 0.8f), 6, 3.f);
+		Good(TEXT("handkerchief"), K::Misc, L::Flat, FVector(0.5f, 10.f, 10.f), FLinearColor(0.6f, 0.7f, 0.85f), 7, 4.f);
+		Good(TEXT("postcard_set"), K::Misc, L::Flat, FVector(1.f, 10.5f, 15.f), FLinearColor(0.3f, 0.5f, 0.65f), 30, 3.f);
+		Good(TEXT("stamp_packet"), K::Misc, L::Flat, FVector(0.3f, 7.f, 10.f), FLinearColor(0.85f, 0.82f, 0.75f), 10, 3.f);
+		Good(TEXT("notebook"), K::Misc, L::Flat, FVector(0.6f, 17.f, 21.f), FLinearColor(0.25f, 0.45f, 0.3f), 14, 4.f);
+		Good(TEXT("adventure_book"), K::Misc, L::Flat, FVector(2.f, 12.f, 18.f), FLinearColor(0.6f, 0.25f, 0.15f), 45, 4.f);
+		Good(TEXT("toy_duck"), K::Misc, L::Pack, FVector(5.f, 6.f, 7.f), FLinearColor(0.95f, 0.8f, 0.15f), 40, 4.f);
+		Good(TEXT("spinning_top"), K::Misc, L::Pack, FVector(12.f, 12.f, 14.f), FLinearColor(0.85f, 0.2f, 0.2f), 35, 6.f);
+		Good(TEXT("toy_car"), K::Misc, L::Pack, FVector(3.f, 4.f, 9.f), FLinearColor(0.35f, 0.6f, 0.85f), 50, 3.f);
+		Good(TEXT("rubber_ball"), K::Misc, L::Pack, FVector(16.f, 16.f, 16.f), FLinearColor(0.85f, 0.15f, 0.1f), 45, 8.f);
+		Good(TEXT("shell_box"), K::Misc, L::Pack, FVector(6.f, 8.f, 10.f), FLinearColor(0.9f, 0.85f, 0.75f), 60, 5.f);
 		// the diner by the lower station (docs/diner.md): ordered over its counter and served on a plate or in a cup there (ALyudDiner,
 		// Content/Food/food.json "plated"), eaten with a fork or a spoon or drunk at the counter; the burger in the hand. The looks here are
 		// only fallbacks (a burger left in the pocket)

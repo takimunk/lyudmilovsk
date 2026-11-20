@@ -27,6 +27,8 @@ public:
 	void Close();
 	/** The pause menu's Settings page (headless checks: lyud.Menu settings). */
 	void OpenSettings();
+	/** Settings' Graphics page, Back goes to Settings (headless checks: lyud.Menu graphics). */
+	void OpenGraphics();
 	bool IsOpen() const { return bOpen; }
 
 	/** A key reached the game before anything else; true if the menu took it. */

@@ -1508,6 +1508,16 @@
      "count": 10
     },
     {
+     "item": "toy_car",
+     "price": 50,
+     "count": 2
+    },
+    {
+     "item": "toy_duck",
+     "price": 40,
+     "count": 2
+    },
+    {
      "item": "postcard",
      "price": 4,
      "count": 8

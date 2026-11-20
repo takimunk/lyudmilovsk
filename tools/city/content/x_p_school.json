@@ -10,9 +10,19 @@
      "count": 12
     },
     {
+     "item": "milk_pyramid",
+     "price": 14,
+     "count": 10
+    },
+    {
      "item": "pie",
      "price": 14,
      "count": 8
+    },
+    {
+     "item": "vatrushka",
+     "price": 8,
+     "count": 10
     },
     {
      "item": "bread_loaf",

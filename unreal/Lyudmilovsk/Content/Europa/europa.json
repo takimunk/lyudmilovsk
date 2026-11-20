@@ -7,11 +7,11 @@
  "hatch_cm": [
   57300.0,
   10790.0,
-  -5193.2
+  -5362.3
  ],
- "bed_m": -52.28,
- "depth_high_water_m": 9.28,
- "depth_spring_low_m": 4.78,
+ "bed_m": -53.97,
+ "depth_high_water_m": 10.97,
+ "depth_spring_low_m": 6.47,
  "terrain_holes": [
   [
    572,
