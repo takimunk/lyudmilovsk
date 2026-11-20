@@ -43,7 +43,7 @@ at = outdoors
 festival = any
 age = teen adult elder
 weight = 2
-say town.fest_toys_cup.1 | В клубе сегодня праздничный кубок. Говорят, с лентой. | It's the holiday cup at the club today. With a ribbon, they say. | 今日はクラブで祝日カップだって。リボンつきらしいよ。
+say town.fest_toys_cup.1 | Турнир в праздник играют как праздничный кубок. Говорят, с лентой. | A tournament on a holiday is played as the holiday cup. With a ribbon, they say. | 祝日の大会は祝日カップになるんだって。リボンつきらしいよ。
 say town.fest_toys_cup.2 | В праздник все играют лучше. Или всем так кажется. | Everyone plays better on a holiday. Or everyone thinks so. | 祝日はみんな腕が上がる。それとも、そう思うだけかな。
 
 [fest_toys_cinema]
