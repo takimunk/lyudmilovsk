@@ -210,7 +210,7 @@ def snap(w, i=0):
 
 
 def moving_walker(w, maxd=6000.0):
-    """The nearest drawn body that moved over 25 cm since snap() (a 'WALK' record can stand stuck)."""
+    """The nearest drawn body that moved over 30 cm since snap() 15 frames ago (>60 cm/s; a 'WALK' record can stand stuck)."""
     c = near_cam(w)
     best = None
     for b in people(w):
@@ -219,7 +219,7 @@ def moving_walker(w, maxd=6000.0):
         if p0 is None or b[2] in st["used"]:
             continue
         l = a.get_actor_location()
-        if math.hypot(l.x - p0.x, l.y - p0.y) < 25.0:
+        if math.hypot(l.x - p0.x, l.y - p0.y) < st.get("snap_min", 30.0):
             continue
         d = math.hypot(l.x - c.x, l.y - c.y)
         if d < maxd and (best is None or d < best[0]):
@@ -321,7 +321,7 @@ def go_busy(w, poses=("WALK",)):
 # ------------------------------------------------------------------ per-frame log
 
 
-BONES_H = ["foot_l", "foot_r", "hand_r", "head"]
+BONES_H = ["foot_l", "foot_r", "ball_l", "ball_r", "hand_r", "head"]
 
 
 def track(a, label):
@@ -470,11 +470,33 @@ def follow_spot(ctx, label, poses_pick, nseg):
             subj_lines(w, name, i, [ctx.get("subj")])
         return f
 
+    def recheck(w, i):
+        # the walker must still be walking: else (stopped, arrived, gone) pick another that moves
+        a = ctx.get("subj")
+        if i == 0:
+            ctx["p0"] = a.get_actor_location() if a else None
+            snap(w)
+        if i == 14:
+            moved = False
+            try:
+                l = a.get_actor_location()
+                moved = math.hypot(l.x - ctx["p0"].x, l.y - ctx["p0"].y) > 30.0
+            except Exception:  # noqa: BLE001
+                pass
+            if not moved:
+                b = moving_walker(w) or moving_walker(w, 15000.0)
+                if b:
+                    ctx["subj"] = b[0]
+                    st["used"].add(b[2])
+                    st.get("sides", {}).pop(label, None)
+                    log("%s: walker stopped, now %s" % (label, b[2]))
+        cam(w, i)
+
     q = [("wait", 1, choose), ("wait", 20, cam)]
     for c in COVERS:
         name = "%s_c%03d" % (label, int(round(float(c) * 100)))
         q += [("do", (lambda c: lambda w: (cmd(w, "lyud.Anim.GaitCover %s" % c), log("GaitCover %s" % c)))(c)),
-              ("wait", 10, cam), ("rec", nseg, each(name), name)]
+              ("wait", 15, recheck), ("wait", 10, cam), ("rec", nseg, each(name), name)]
     q.append(("do", lambda w: cmd(w, "lyud.Anim.GaitCover 1.0")))
     return q
 

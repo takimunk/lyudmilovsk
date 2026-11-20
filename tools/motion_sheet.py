@@ -167,6 +167,32 @@ def stats(rows):
         if slide:
             out.append("%s planted %d frames: slide mean %.2f max %.2f cm/frame (lift %.0f cm)" % (
                 foot, len(slide), sum(slide) / len(slide), max(slide), max(H) - zmin))
+    # the ball of the foot (the ankle rolls ~12 cm forward heel to toe even on a perfect walk): planted = within 1.5 cm
+    # of its lowest height over the actor's point during the walking frames, and lower than the other ball
+    if "ball_l" in rows[0][1] and mean > 0.5:
+        idx = [i for i in range(1, len(rows)) if "ball_l" in rows[i][1] and "ball_r" in rows[i][1] and steps[i - 1] > 0.4 * mean]
+        if len(idx) >= 20:
+            BL = {i: vec(rows[i][1]["ball_l"]) for i in idx}
+            BR = {i: vec(rows[i][1]["ball_r"]) for i in idx}
+            hl = {i: BL[i][2] - A[i][2] for i in idx}
+            hr = {i: BR[i][2] - A[i][2] for i in idx}
+            spd, plants = [], {"l": [], "r": []}
+            for side, B, h, ho in (("l", BL, hl, hr), ("r", BR, hr, hl)):
+                hmin = min(h.values())
+                prev = None
+                for i in idx:
+                    planted = h[i] < hmin + 1.5 and h[i] < ho[i]
+                    if planted and prev is not None and prev[0] == i - 1:
+                        spd.append(math.hypot(B[i][0] - prev[1][0], B[i][1] - prev[1][1]) * 30.0)
+                    if planted and (prev is None or prev[0] != i - 1):
+                        plants[side].append(B[i])
+                    prev = (i, B[i]) if planted else None
+            strides = [math.hypot(p[k][0] - p[k - 1][0], p[k][1] - p[k - 1][1]) for p in plants.values() for k in range(1, len(p))]
+            if spd:
+                spd.sort()
+                out.append("BALL slide mean %.1f p95 %.1f cm/s (%d planted frame pairs) body %.0f cm/s stride %s cm" % (
+                    sum(spd) / len(spd), spd[min(len(spd) - 1, int(len(spd) * 0.95))], len(spd), mean * 30,
+                    ("%.0f (n%d)" % (sum(strides) / len(strides), len(strides))) if strides else "?"))
     return "; ".join(out)
 
 
