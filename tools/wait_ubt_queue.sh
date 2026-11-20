@@ -14,6 +14,8 @@
 #   tools/wait_ubt_queue.sh --prio <ticket> <n>    reorder: lower priority numbers start first (default 100)
 #   UBT_QUEUE_MAX=<s> (default 14400) gives up waiting after that long (exit 1); UBT_QUEUE_DIR overrides the queue folder
 #   UBT_QUEUE_SLOTS=<n> (default 3) builds at once, those past 2 only with UBT_QUEUE_SLOT3_GB (8) GB free
+#   echo 1 > /tmp/lyud_ubt_slots                   caps every waiter of this copy at that many builds (rm to lift)
+#   swap over UBT_QUEUE_SWAP_GB (20) GB used        only 1 build at once until it drops
 #   UBT_QUEUE_BG=1                                 background QoS always
 #   touch /tmp/lyud_dima_playing                   Dima is playing: new builds start in background QoS (rm when done);
 #                                                  tools/wait_ue_queue.sh holds new offscreen runs meanwhile
@@ -55,6 +57,10 @@ ordered() {
 }
 
 # free + inactive + speculative memory, whole GB (vm_stat)
+swap_used_gb() {
+    sysctl -n vm.swapusage 2>/dev/null | awk '{for (i = 1; i <= NF; i++) if ($i == "used") {v = $(i + 2); u = substr(v, length(v)); v += 0; if (u == "M") v /= 1024; printf "%d", v; exit}}'
+}
+
 mem_free_gb() {
     vm_stat 2>/dev/null | awk '/page size of/ {ps = $8} /^Pages (free|inactive|speculative):/ {gsub("[.]", "", $NF); n += $NF}
         END {printf "%d", n * (ps ? ps : 16384) / 1073741824}'
@@ -135,6 +141,8 @@ while :; do
     K=$SLOTS
     [ "$K" -gt 2 ] && [ "$(mem_free_gb)" -lt "$SLOT3_GB" ] && K=2
     game_running && K=1
+    [ -s /tmp/lyud_ubt_slots ] && CAP=$(head -c 3 /tmp/lyud_ubt_slots | tr -cd 0-9) && [ -n "$CAP" ] && [ "$K" -gt "$CAP" ] && K=$CAP
+    SW=$(swap_used_gb); [ -n "$SW" ] && [ "$SW" -ge "${UBT_QUEUE_SWAP_GB:-20}" ] && K=1
     [ "$K" -lt 1 ] && K=1
     # the builds already running take their slots (older copies of this script start by ticket number alone); the
     # free ones go to the waiters in priority order
