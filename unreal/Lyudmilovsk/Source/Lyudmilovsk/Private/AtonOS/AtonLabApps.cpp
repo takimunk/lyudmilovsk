@@ -1083,10 +1083,9 @@ namespace AtonLabUI
 			}
 			// the pyranometer on the mast: the sun's height through today's cloud
 			float SunAltitude = -90.f;
-			for (TActorIterator<ALyudSky> It(World); It; ++It)
+			if (TActorIterator<ALyudSky> It(World); It)
 			{
 				SunAltitude = It->SunAltitude();
-				break;
 			}
 			Row(TEXT("ui.aton.wx.flux"), L(TEXT("ui.aton.wx.wm2"), { FStringFormatArg(FMath::RoundToInt(AtonLab::SolarFlux(SunAltitude, W.CloudCover))) }));
 			Row(TEXT("ui.aton.wx.kp"), FString::Printf(TEXT("%.1f"), W.Kp));
