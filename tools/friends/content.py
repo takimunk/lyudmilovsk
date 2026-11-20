@@ -144,6 +144,12 @@ GIFTS = [
     ("shell_box", ["artist", "kid", "sea"]),
     ("amber_charm", ["warm", "artist", "photographer"]),
     ("seeds", ["elder", "feeder", "tidy"]),
+    # from the hero's own bed (docs/allotment.md)
+    ("radish", ["elder", "adult"]),
+    ("dill", ["elder", "warm"]),
+    ("tomatoes", ["adult", "warm"]),
+    ("strawberries", ["kid", "sweet", "teen"]),
+    ("jam_strawberry", ["elder", "sweet", "warm", "reader"]),
 ]
 
 # --- tea at home: the ten open-home owners (their homes: tools/city/content/strings/homes.json) ----------------------

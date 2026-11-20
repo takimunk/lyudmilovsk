@@ -225,6 +225,23 @@ namespace
 		Good(TEXT("toy_car"), K::Misc, L::Pack, FVector(3.f, 4.f, 9.f), FLinearColor(0.35f, 0.6f, 0.85f), 50, 3.f);
 		Good(TEXT("rubber_ball"), K::Misc, L::Pack, FVector(16.f, 16.f, 16.f), FLinearColor(0.85f, 0.15f, 0.1f), 45, 8.f);
 		Good(TEXT("shell_box"), K::Misc, L::Pack, FVector(6.f, 8.f, 10.f), FLinearColor(0.9f, 0.85f, 0.75f), 60, 5.f);
+		// the allotment behind the commune house (docs/allotment.md, tools/garden/data.py ITEMS): the tools, seeds and seedlings
+		// from the hardware shop and the market, and what the bed gives (the sunflower's harvest is the shops' own «seeds»)
+		Good(TEXT("spade"), K::Misc, L::Flat, FVector(3.f, 18.f, 40.f), FLinearColor(0.45f, 0.42f, 0.38f), 60, 4.f);
+		Good(TEXT("watering_can"), K::Misc, L::Pack, FVector(14.f, 28.f, 26.f), FLinearColor(0.35f, 0.55f, 0.45f), 45, 8.f);
+		Good(TEXT("garden_compost"), K::Misc, L::Pack, FVector(10.f, 20.f, 26.f), FLinearColor(0.35f, 0.25f, 0.16f), 15, 7.f);
+		Good(TEXT("seeds_radish"), K::Misc, L::Flat, FVector(0.4f, 7.f, 10.f), FLinearColor(0.85f, 0.35f, 0.45f), 5, 3.f);
+		Good(TEXT("seeds_dill"), K::Misc, L::Flat, FVector(0.4f, 7.f, 10.f), FLinearColor(0.45f, 0.65f, 0.3f), 4, 3.f);
+		Good(TEXT("seeds_sunflower"), K::Misc, L::Flat, FVector(0.4f, 7.f, 10.f), FLinearColor(0.95f, 0.75f, 0.15f), 4, 3.f);
+		Good(TEXT("seed_potatoes"), K::Misc, L::Pack, FVector(10.f, 16.f, 22.f), FLinearColor(0.7f, 0.58f, 0.4f), 12, 7.f);
+		Good(TEXT("seedling_tomato"), K::Misc, L::Cup, FVector(7.f, 7.f, 12.f), FLinearColor(0.3f, 0.55f, 0.25f), 8, 3.5f);
+		Good(TEXT("seedling_strawberry"), K::Misc, L::Cup, FVector(7.f, 7.f, 12.f), FLinearColor(0.3f, 0.55f, 0.25f), 10, 3.5f);
+		Good(TEXT("radish"), K::Food, L::Pack, FVector(5.f, 8.f, 12.f), FLinearColor(0.85f, 0.2f, 0.3f), 3, 4.f);
+		Good(TEXT("dill"), K::Food, L::Flat, FVector(2.f, 8.f, 20.f), FLinearColor(0.4f, 0.6f, 0.25f), 4, 3.f);
+		Good(TEXT("potatoes"), K::Misc, L::Pack, FVector(8.f, 12.f, 18.f), FLinearColor(0.75f, 0.62f, 0.42f), 3, 6.f);
+		Good(TEXT("tomatoes"), K::Food, L::Pack, FVector(7.f, 10.f, 14.f), FLinearColor(0.85f, 0.2f, 0.12f), 5, 5.f);
+		Good(TEXT("strawberries"), K::Food, L::Cup, FVector(8.f, 8.f, 12.f), FLinearColor(0.85f, 0.12f, 0.18f), 6, 4.f);
+		Good(TEXT("jam_strawberry"), K::Food, L::Glass, FVector(8.f, 8.f, 12.f), FLinearColor(0.6f, 0.05f, 0.1f), 40, 4.f);
 		// the diner by the lower station (docs/diner.md): ordered over its counter and served on a plate or in a cup there (ALyudDiner,
 		// Content/Food/food.json "plated"), eaten with a fork or a spoon or drunk at the counter; the burger in the hand. The looks here are
 		// only fallbacks (a burger left in the pocket)

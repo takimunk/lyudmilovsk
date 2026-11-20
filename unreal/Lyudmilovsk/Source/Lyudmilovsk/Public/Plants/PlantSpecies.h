@@ -206,6 +206,12 @@ enum class EPlantFlowerForm : uint8
 	Plume,
 	/** A flat umbel as one scalloped disc of florets, FlowerSize across, turned to the sky (cow parsnip, angelica). */
 	Disc,
+	/**
+	 * Round fruit (tomato, strawberry; a radish's red root shoulder at the foot of its rosette): a smooth low-poly ball
+	 * FlowerSize across hanging under each flower's place, coloured by FlowerColours. Petals here is how many of every
+	 * ten places carry a small five-pointed flower in the CentreColour instead (still to set fruit); 0 = fruit only.
+	 */
+	Berry,
 };
 
 UENUM(BlueprintType)
