@@ -33,7 +33,7 @@ public:
 	bool Find(UWorld* World, const FVector& From, const FVector& Dir, float MaxDist, const AActor* Ignore, FPerch& Out);
 
 	/** Is P (cm) inside a tree's crown (its ellipsoid shrunk by Fill: the dense middle of the leaves)? A kite flown into it
-	 *  is caught (ULyudKites). Built on first use from the same trees as the perches. */
+	 *  is caught (ULyudKiteFlying). Built on first use from the same trees as the perches. */
 	bool InCrown(UWorld* World, const FVector& P, float Fill = 0.75f);
 
 	/** The branches (cm) of every tree within Radius of At, for tests: Fn(A, B, RadiusA, RadiusB). */

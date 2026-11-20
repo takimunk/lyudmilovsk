@@ -1735,7 +1735,7 @@ def build_collections(src, things, acts, strings, regs=None, texts=None, cups=No
         if len(set(pieces)) != len(pieces):
             err("collection %s: a piece twice" % sid)
         for p in pieces:
-            # "by": the engine gives its pieces (the kites': ULyudKites stamps a flight), not a thing in town
+            # "by": the engine gives its pieces (the kites': ULyudKiteFlying stamps a flight), not a thing in town
             if p not in given.get(sid, ()) and not c.get("by"):
                 err("collection %s: nothing in town gives piece %s" % (sid, p))
         if not pieces:

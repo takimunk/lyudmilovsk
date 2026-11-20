@@ -473,34 +473,34 @@ void ALyudKite::TurnReel(float Metres)
 	Reel->SetRelativeRotation(ReelInPalm().GetRotation() * FQuat(FVector::UpVector, FMath::DegreesToRadians(ReelAngle)));
 }
 
-// ------------------------------------------------------------------ ULyudKites
+// ------------------------------------------------------------------ ULyudKiteFlying
 
-ULyudKites::ULyudKites() = default;
-ULyudKites::~ULyudKites() = default;
+ULyudKiteFlying::ULyudKiteFlying() = default;
+ULyudKiteFlying::~ULyudKiteFlying() = default;
 
-ULyudKites* ULyudKites::Get(const UObject* WorldContext)
+ULyudKiteFlying* ULyudKiteFlying::Get(const UObject* WorldContext)
 {
 	const UWorld* World = GEngine ? GEngine->GetWorldFromContextObject(WorldContext, EGetWorldErrorMode::ReturnNull) : nullptr;
-	return World ? World->GetSubsystem<ULyudKites>() : nullptr;
+	return World ? World->GetSubsystem<ULyudKiteFlying>() : nullptr;
 }
 
-bool ULyudKites::IsKite(FName Item)
+bool ULyudKiteFlying::IsKite(FName Item)
 {
 	return Item == KiteDiamondId || Item == KiteBoxId;
 }
 
-bool ULyudKites::HasHand(const UObject* WorldContext)
+bool ULyudKiteFlying::HasHand(const UObject* WorldContext)
 {
-	const ULyudKites* K = Get(WorldContext);
+	const ULyudKiteFlying* K = Get(WorldContext);
 	return K && K->IsOut();
 }
 
-void ULyudKites::OnWorldBeginPlay(UWorld& InWorld)
+void ULyudKiteFlying::OnWorldBeginPlay(UWorld& InWorld)
 {
 	Super::OnWorldBeginPlay(InWorld);
 }
 
-void ULyudKites::Deinitialize()
+void ULyudKiteFlying::Deinitialize()
 {
 	for (ALyudKite* K : Made)
 	{
@@ -516,7 +516,7 @@ void ULyudKites::Deinitialize()
 	Super::Deinitialize();
 }
 
-ALyudKite* ULyudKites::MakeActor(int32 Shape, int32 Colours, bool bReel)
+ALyudKite* ULyudKiteFlying::MakeActor(int32 Shape, int32 Colours, bool bReel)
 {
 	UWorld* World = GetWorld();
 	if (!World)
@@ -549,7 +549,7 @@ ALyudKite* ULyudKites::MakeActor(int32 Shape, int32 Colours, bool bReel)
 	return K;
 }
 
-void ULyudKites::Park(ALyudKite* Kite)
+void ULyudKiteFlying::Park(ALyudKite* Kite)
 {
 	if (!IsValid(Kite))
 	{
@@ -569,7 +569,7 @@ void ULyudKites::Park(ALyudKite* Kite)
 	Pool.Add(Kite);
 }
 
-float ULyudKites::SoundGain() const
+float ULyudKiteFlying::SoundGain() const
 {
 	float Gain = 0.6f;
 	if (const ULyudSoundscapeSubsystem* Scape = ULyudSoundscapeSubsystem::Get(this))
@@ -579,7 +579,7 @@ float ULyudKites::SoundGain() const
 	return Gain;
 }
 
-void ULyudKites::Fly(FFlight& F, float Reel, float DeltaTime, const AActor* Ignore)
+void ULyudKiteFlying::Fly(FFlight& F, float Reel, float DeltaTime, const AActor* Ignore)
 {
 	UWorld* World = GetWorld();
 	LyudKite::FKite& K = *F.Sim;
@@ -681,7 +681,7 @@ void ULyudKites::Fly(FFlight& F, float Reel, float DeltaTime, const AActor* Igno
 	Actor->Show(After, ToDir(Fwd), ToDir(Nrm), Points, Wind, DeltaTime);
 }
 
-void ULyudKites::Tick(float DeltaTime)
+void ULyudKiteFlying::Tick(float DeltaTime)
 {
 	if (CVarKites.GetValueOnGameThread() == 0 || DeltaTime <= 0.f)
 	{
@@ -693,7 +693,7 @@ void ULyudKites::Tick(float DeltaTime)
 	TickTests(DeltaTime);
 }
 
-void ULyudKites::Say(const TCHAR* Key, float Seconds)
+void ULyudKiteFlying::Say(const TCHAR* Key, float Seconds)
 {
 	if (ULyudInventoryUI* UI = ULyudInventoryUI::Get(GetWorld()))
 	{
@@ -702,7 +702,7 @@ void ULyudKites::Say(const TCHAR* Key, float Seconds)
 	SayLeft = Seconds;
 }
 
-void ULyudKites::Stamp(const TCHAR* Piece)
+void ULyudKiteFlying::Stamp(const TCHAR* Piece)
 {
 	if (ULyudCityThings* City = ULyudCityThings::Get(this))
 	{
@@ -710,7 +710,7 @@ void ULyudKites::Stamp(const TCHAR* Piece)
 	}
 }
 
-void ULyudKites::TakeOut(FName Item)
+void ULyudKiteFlying::TakeOut(FName Item)
 {
 	ALyudKite* K = MakeActor(Item == KiteBoxId ? 1 : 0, Item == KiteBoxId ? 1 : 0, true);
 	if (!K)
@@ -737,7 +737,7 @@ void ULyudKites::TakeOut(FName Item)
 	Say(TEXT("ui.kite.keys_wound"), 4.f);
 }
 
-void ULyudKites::PutAway()
+void ULyudKiteFlying::PutAway()
 {
 	if (AHeroCharacter* H = HeldBy.Get())
 	{
@@ -757,7 +757,7 @@ void ULyudKites::PutAway()
 	}
 }
 
-void ULyudKites::Lose(const TCHAR* Why)
+void ULyudKiteFlying::Lose(const TCHAR* Why)
 {
 	ULyudInventory* Inv = ULyudInventory::Get(GetWorld());
 	const FName Item = HeroItem;
@@ -787,7 +787,7 @@ void ULyudKites::Lose(const TCHAR* Why)
 	Say(Why, 4.f);
 }
 
-void ULyudKites::TickHero(float DeltaTime)
+void ULyudKiteFlying::TickHero(float DeltaTime)
 {
 	UWorld* World = GetWorld();
 	AHeroCharacter* H = Cast<AHeroCharacter>(UGameplayStatics::GetPlayerPawn(World, 0));
@@ -1022,7 +1022,7 @@ void ULyudKites::TickHero(float DeltaTime)
 	}
 }
 
-FString ULyudKites::DebugState() const
+FString ULyudKiteFlying::DebugState() const
 {
 	if (!Hero.Sim)
 	{
@@ -1034,7 +1034,7 @@ FString ULyudKites::DebugState() const
 		LyudKite::Elevation(K, ToM(Hero.Hand)), K.Air, K.Lift, K.Tension, LyudKite::Hum(K), Town.Num(), Tests.Num());
 }
 
-void ULyudKites::TickTown(float DeltaTime)
+void ULyudKiteFlying::TickTown(float DeltaTime)
 {
 	UPeopleLifeSubsystem* People = UPeopleLifeSubsystem::Get(this);
 	const APlayerController* PC = UGameplayStatics::GetPlayerController(this, 0);
@@ -1152,7 +1152,7 @@ void ULyudKites::TickTown(float DeltaTime)
 	}
 }
 
-void ULyudKites::SpawnTestKites(int32 N)
+void ULyudKiteFlying::SpawnTestKites(int32 N)
 {
 	for (FFlight& F : Tests)
 	{
@@ -1200,7 +1200,7 @@ void ULyudKites::SpawnTestKites(int32 N)
 	}
 }
 
-void ULyudKites::TickTests(float DeltaTime)
+void ULyudKiteFlying::TickTests(float DeltaTime)
 {
 	const APlayerController* PC = UGameplayStatics::GetPlayerController(this, 0);
 	const FVector Cam = PC && PC->PlayerCameraManager ? PC->PlayerCameraManager->GetCameraLocation() : FVector::ZeroVector;
@@ -1253,7 +1253,7 @@ namespace
 	FAutoConsoleCommandWithWorldAndArgs GKiteTest(TEXT("lyud.Kite.Test"), TEXT("lyud.Kite.Test N: N kites flown in a row 25 m downwind of the camera (0 clears; the bench uses 10)"),
 		FConsoleCommandWithWorldAndArgsDelegate::CreateLambda([](const TArray<FString>& Args, UWorld* W)
 		{
-			if (ULyudKites* K = ULyudKites::Get(W)) K->SpawnTestKites(Args.Num() > 0 ? FCString::Atoi(*Args[0]) : 10);
+			if (ULyudKiteFlying* K = ULyudKiteFlying::Get(W)) K->SpawnTestKites(Args.Num() > 0 ? FCString::Atoi(*Args[0]) : 10);
 		}));
 	FAutoConsoleCommandWithWorldAndArgs GKiteGive(TEXT("lyud.Kite.Give"), TEXT("lyud.Kite.Give [diamond|box]: a kite in the pocket and in the hand"),
 		FConsoleCommandWithWorldAndArgsDelegate::CreateLambda([](const TArray<FString>& Args, UWorld* W)
@@ -1267,18 +1267,18 @@ namespace
 	FAutoConsoleCommandWithWorldAndArgs GKiteReel(TEXT("lyud.Kite.Reel"), TEXT("lyud.Kite.Reel -1|0|1|off: pull, hold, let out (as the mouse buttons would); off gives the mouse back"),
 		FConsoleCommandWithWorldAndArgsDelegate::CreateLambda([](const TArray<FString>& Args, UWorld* W)
 		{
-			ULyudKites* K = ULyudKites::Get(W);
+			ULyudKiteFlying* K = ULyudKiteFlying::Get(W);
 			if (!K || Args.Num() == 0) return;
 			if (Args[0] == TEXT("off")) K->ReleaseReel();
 			else K->ForceReel(FCString::Atoi(*Args[0]));
 		}));
 	FAutoConsoleCommandWithWorld GKiteLaunch(TEXT("lyud.Kite.Launch"), TEXT("lyud.Kite.Launch: toss the kite in the hand up"),
-		FConsoleCommandWithWorldDelegate::CreateLambda([](UWorld* W) { if (ULyudKites* K = ULyudKites::Get(W)) K->ForceLaunch(); }));
+		FConsoleCommandWithWorldDelegate::CreateLambda([](UWorld* W) { if (ULyudKiteFlying* K = ULyudKiteFlying::Get(W)) K->ForceLaunch(); }));
 	FAutoConsoleCommandWithWorld GKiteState(TEXT("lyud.Kite.State"), TEXT("lyud.Kite.State: the hero's kite in the log (KITE ...)"),
-		FConsoleCommandWithWorldDelegate::CreateLambda([](UWorld* W) { if (ULyudKites* K = ULyudKites::Get(W)) UE_LOG(LogTemp, Display, TEXT("%s"), *K->DebugState()); }));
+		FConsoleCommandWithWorldDelegate::CreateLambda([](UWorld* W) { if (ULyudKiteFlying* K = ULyudKiteFlying::Get(W)) UE_LOG(LogTemp, Display, TEXT("%s"), *K->DebugState()); }));
 
 	LyudDev::FAutoAction GDevKiteGive(TEXT("kite.give"), TEXT("kite"), TEXT("dev.action.kite.give"),
 		[](UWorld* W) { if (ULyudInventory* Inv = ULyudInventory::Get(W)) { Inv->Add(KiteDiamondId); Inv->Add(KiteBoxId); Inv->Equip(KiteDiamondId); } });
 	LyudDev::FAutoAction GDevKiteTest(TEXT("kite.test"), TEXT("kite"), TEXT("dev.action.kite.test"),
-		[](UWorld* W) { if (ULyudKites* K = ULyudKites::Get(W)) K->SpawnTestKites(10); });
+		[](UWorld* W) { if (ULyudKiteFlying* K = ULyudKiteFlying::Get(W)) K->SpawnTestKites(10); });
 }

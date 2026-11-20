@@ -5,7 +5,7 @@
   "films": {"title": "city.coll.films.title"},
   "records": {"title": "city.coll.records.title"},
   "kiosks": {"title": "city.coll.kiosks.title"},
-  "kites": {"title": "city.coll.kites.title", "pieces": ["first_flight", "high", "box", "storm"], "by": "ULyudKites (Private/Kite/LyudKite.cpp): flown, not found in town"}
+  "kites": {"title": "city.coll.kites.title", "pieces": ["first_flight", "high", "box", "storm"], "by": "ULyudKiteFlying (Private/Kite/LyudKite.cpp): flown, not found in town"}
  },
  "closed_by": {
   "saucer_pavilion": {"seat": "city.closed.cafe.chairs", "counter": "city.closed.cafe.bar", "machine": "city.closed.cafe.machine"},

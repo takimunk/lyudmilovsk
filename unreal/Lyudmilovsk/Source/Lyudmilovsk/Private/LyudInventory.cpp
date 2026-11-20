@@ -295,7 +295,7 @@ namespace
 		Rod.Price = 90;
 		Rod.Radius = 1.3f;
 		D.Add(Rod);
-		// kites (docs/kites.md): taken in the hand they come out on the reel (ULyudKites); the toy shops sell them, rolled up
+		// kites (docs/kites.md): taken in the hand they come out on the reel (ULyudKiteFlying); the toy shops sell them, rolled up
 		FLyudItemDef KiteD;
 		KiteD.Id = TEXT("kite_diamond");
 		KiteD.Slot = ELyudEquipSlot::Hand;

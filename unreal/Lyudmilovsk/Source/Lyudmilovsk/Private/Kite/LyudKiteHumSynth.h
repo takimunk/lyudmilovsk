@@ -7,7 +7,7 @@
 #include <atomic>
 #include "LyudKiteHumSynth.generated.h"
 
-/** The kite line's hum (LyudKiteHum::FVoice) in mono, spatialised at the reel; ULyudKites sets how taut and how fast the air. */
+/** The kite line's hum (LyudKiteHum::FVoice) in mono, spatialised at the reel; ULyudKiteFlying sets how taut and how fast the air. */
 UCLASS()
 class ULyudKiteHumSynth : public USynthComponent
 {

@@ -79,15 +79,15 @@ private:
  * near the camera gets one on a line from their hand, worked by LyudKite::AutoReel.
  */
 UCLASS()
-class LYUDMILOVSK_API ULyudKites : public UTickableWorldSubsystem
+class LYUDMILOVSK_API ULyudKiteFlying : public UTickableWorldSubsystem
 {
 	GENERATED_BODY()
 
 public:
-	ULyudKites();
-	virtual ~ULyudKites() override;
+	ULyudKiteFlying();
+	virtual ~ULyudKiteFlying() override;
 
-	static ULyudKites* Get(const UObject* WorldContext);
+	static ULyudKiteFlying* Get(const UObject* WorldContext);
 	static bool IsKite(FName Item);
 	/** A kite is out in the hand: the mouse buttons, the wheel and Q are the kite's. */
 	static bool HasHand(const UObject* WorldContext);
@@ -104,7 +104,7 @@ public:
 	virtual void OnWorldBeginPlay(UWorld& InWorld) override;
 	virtual void Deinitialize() override;
 	virtual void Tick(float DeltaTime) override;
-	virtual TStatId GetStatId() const override { RETURN_QUICK_DECLARE_CYCLE_STAT(ULyudKites, STATGROUP_Tickables); }
+	virtual TStatId GetStatId() const override { RETURN_QUICK_DECLARE_CYCLE_STAT(ULyudKiteFlying, STATGROUP_Tickables); }
 
 protected:
 	virtual bool DoesSupportWorldType(const EWorldType::Type WorldType) const override

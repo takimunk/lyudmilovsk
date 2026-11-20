@@ -43,7 +43,7 @@ What the test shows (`tools/kitesim/run.sh`, 10 m wind over land with gusts):
 
 ## The hero's kite
 
-`ULyudKites` (`Public/Kite/LyudKite.h`, `Private/Kite/LyudKite.cpp`) follows the fishing rod's pattern. A kite item taken
+`ULyudKiteFlying` (`Public/Kite/LyudKite.h`, `Private/Kite/LyudKite.cpp`) follows the fishing rod's pattern. A kite item taken
 in the hand (Tab, "take in the hand") comes out on its reel: the hand holds it up in front, and it rides on the hand bone.
 
 | Key | While wound | While up |
