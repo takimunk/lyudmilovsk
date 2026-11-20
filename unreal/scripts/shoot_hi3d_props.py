@@ -44,9 +44,9 @@ def shots():
         yaw = math.radians(it["yaw"])
         fx, fy = math.cos(yaw), math.sin(yaw)
         if prop == "chandelier":
-            # under it, a few metres off, eye height over the hall floor (the top hangs at the ceiling)
-            floor = z - float(os.environ.get("HI3D_HALL_H", "8.5"))
-            cam = (x + 5.0 * fx, y + 5.0 * fy, floor + 1.7)
+            # 3.5 m under its top, a few metres off: in the hall it hangs in (an upper storey's hall too; from the ground
+            # floor's eye height a store's chandeliers were behind the slab)
+            cam = (x + 5.0 * fx, y + 5.0 * fy, z - 3.5)
             tgt = (x, y, z - 0.6 * h)
         else:
             d = max(3.2, 1.5 * h + r)

@@ -53,7 +53,8 @@ PLACES = [
     {"id": "drink_promenade", "prop": "drink_fountain", "anchor": "spot:S-KERB-27", "at": [-8.0, 4.0], "yaw": 180.0, "search": 5},
     {"id": "bust_library", "prop": "astronomer_bust", "anchor": "plot:P-LIBRARY", "out": 7.0, "along": 6.0, "ground": True, "search": 3},
     {"id": "pioneer_school", "prop": "pioneer", "anchor": "plot:P-SCHOOL", "out": 8.0, "along": -8.0, "ground": True, "search": 3},
-    {"id": "cosmonaut_club", "prop": "cosmonaut", "anchor": "plot:P-CLUB2", "out": 9.0, "along": 0.0, "ground": True, "search": 3},
+    # off the main door's axis (along 0 stood him square in the way out of the club)
+    {"id": "cosmonaut_club", "prop": "cosmonaut", "anchor": "plot:P-CLUB2", "out": 9.0, "along": 7.0, "ground": True, "search": 3},
     {"id": "anchor_pier", "prop": "anchor", "anchor": "spot:S-PIER-HEAD", "at": [-194.0, 12.0], "yaw": 0.0, "search": 5},
     {"id": "bear_cub_playground", "prop": "bear_cub", "anchor": "spot:S-PLAYGROUND", "at": [-6.0, 9.0], "yaw": 0.0, "search": 6},
     {"id": "deer_park", "prop": "deer", "anchor": "spot:S-PARK", "at": [10.0, -22.0], "yaw": 90.0, "ground": True, "search": 8},
@@ -68,7 +69,9 @@ PLACES = [
 # searched (0.25 m steps) for a point clear of the building's spots and things on that floor and inside its footprint;
 # `on` = stands on a counter/table top at that z (no search)
 INDOOR_FLOOR = [
-    {"prop": "muse", "building": "workers_club", "at": [12.0, 8.0, 0.0], "yaw": 0.0, "search": 3.0},
+    # against the foyer's back wall between the cinema posters and the hall's east door (at [12, 8] she stood on the
+    # dance floor's edge, 4 m in front of that door)
+    {"prop": "muse", "building": "workers_club", "at": [10.3, 11.2, 0.0], "yaw": 0.0, "search": 1.0},
     {"prop": "grandfather_clock", "building": "capsule_library", "at": [-12.3, 20.0, 0.0], "yaw": 90.0, "search": 2.0},
     {"prop": "ship_model", "building": "capsule_library", "at": [11.8, 21.0, 0.0], "yaw": 270.0, "search": 2.5},
     {"prop": "samovar", "building": "workers_club", "at": [1.3, 10.4, 1.05], "yaw": 0.0, "on": True},
