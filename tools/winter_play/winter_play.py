@@ -30,7 +30,11 @@ PUBLIC = os.path.join(CONTENT, "City", "public_spaces.json")
 OUT_DATA = os.path.join(CONTENT, "City", "winter_play.json")
 OUT_SPOTS = os.path.join(CONTENT, "PeopleData", "winter_spots.json")
 OUT_STRINGS = os.path.join(CONTENT, "Localization", "winter_play", "strings_%s.json")
+ENGINE_DIR = os.path.join(ROOT, "unreal", "Lyudmilovsk", "Source", "Lyudmilovsk", "Private", "Winter")
 INVENTORY_CPP = os.path.join(ROOT, "unreal", "Lyudmilovsk", "Source", "Lyudmilovsk", "Private", "LyudInventory.cpp")
+OUT_TELEPORTS = os.path.join(CONTENT, "Dev", "teleports", "winter.json")
+CITY_X = os.path.join(TOOLS, "city", "content", "x_winter.json")
+CITY_X_STRINGS = os.path.join(TOOLS, "city", "content", "strings", "x_winter.json")
 LANGS = ("ru", "en", "ja")
 
 sys.path.insert(0, TOOLS)
@@ -157,28 +161,40 @@ def build(content, public):
     if shallow:
         hs = ih["search_s"][1]
     deck_z = W.SEA_Z + ih["deck_over_datum_m"]
-    bed = F.ground(hs, hole_y)
     edge_y = ih["pier_y"] + ih["pier_half_width_m"]
-    out["ice_hole"] = {"at": F.ue(hs, hole_y, W.SEA_Z), "r": ih["radius_m"], "bed_z": round(bed, 2),
+    # the hole is one tile of the sea ice's solid grid (ALyudSeaIce: 3 m tiles on the world grid, Unreal metres): its
+    # middle snapped to the grid, clear of the deck's edge; the ladder on the deck's side face in front of it
+    tile = ih["tile_m"]
+    hx, _ = F.map(hs, hole_y)
+    hx = round(hx / tile) * tile
+    deck_edge_ue = F.map(hs, edge_y)[1] + F.face_y
+    hy = math.ceil((deck_edge_ue + tile * 0.5 + 0.25) / tile) * tile
+    bed = float(T.ground_z(hx, hy - F.face_y))
+    out["ice_hole"] = {"at": r3((hx, hy, W.SEA_Z)), "r": ih["radius_m"], "tile": tile, "bed_z": round(bed, 2),
                        "shallow_guess": shallow,
-                       "ladder": {"at": F.ue(hs, edge_y + 0.05, bed), "yaw": F.yaw_of(hs, edge_y, hs, edge_y + 1.0),
-                                  "deck_z": round(deck_z, 2)},
-                       "deck_stand": F.ue(hs, edge_y - 1.2, deck_z)}
+                       # the ladder stands in the hole at its pier side (a climber's body must hang in open water, not
+                       # in the ice), hooked over the deck's edge; the climb steps off back onto the deck (top_back_m)
+                       "ladder": {"at": r3((hx, hy - tile * 0.5 + 0.08, bed)), "yaw": 90.0, "deck_z": round(deck_z, 2),
+                                  "top_back_m": round(hy - tile * 0.5 + 0.08 - (deck_edge_ue - 0.55), 2),
+                                  "deck_edge_y": round(deck_edge_ue, 3)},
+                       "deck_stand": r3((hx, deck_edge_ue - 1.2, deck_z))}
+
+    def yaw_to(ax, ay, bx, by):
+        return round(math.degrees(math.atan2(by - ay, bx - ax)), 2)
     hslots = []
     for k in range(ih["swimmers"]):
-        a = 2 * math.pi * k / ih["swimmers"]
-        ps, py = hs + math.cos(a) * ih["radius_m"] * 0.45, hole_y + math.sin(a) * ih["radius_m"] * 0.45
-        hslots.append({"pos": F.ue(ps, py, W.SEA_Z), "yaw": F.yaw_of(ps, py, hs, hole_y), "height": 0.0, "kind": "walrus"})
+        a = 2 * math.pi * (k + 0.5) / ih["swimmers"]
+        px, py = hx + math.cos(a) * tile * 0.28, hy + math.sin(a) * tile * 0.28
+        hslots.append({"pos": r3((px, py, W.SEA_Z)), "yaw": yaw_to(px, py, hx, hy), "height": 0.0, "kind": "walrus"})
     for k in range(ih["watchers"]):
-        ps = hs + (k - (ih["watchers"] - 1) / 2.0) * 1.1
-        hslots.append({"pos": F.ue(ps, edge_y - 1.0, deck_z), "yaw": F.yaw_of(ps, edge_y - 1.0, ps, hole_y), "height": 0.0,
-                       "kind": "stand"})
-    spots.append({"id": "S-ICEHOLE", "kind": "ice_hole", "pos": F.ue(hs, edge_y - 1.0, deck_z),
-                  "yaw": F.yaw_of(hs, edge_y - 1.0, hs, hole_y), "seats": len(hslots), "slots": hslots, "season": "winter",
+        px = hx + (k - (ih["watchers"] - 1) / 2.0) * 1.1
+        hslots.append({"pos": r3((px, deck_edge_ue - 1.0, deck_z)), "yaw": 90.0, "height": 0.0, "kind": "stand"})
+    spots.append({"id": "S-ICEHOLE", "kind": "ice_hole", "pos": r3((hx, deck_edge_ue - 1.0, deck_z)), "yaw": 90.0,
+                  "seats": len(hslots), "slots": hslots, "season": "winter",
                   "name_ru": "Прорубь у пирса", "name_en": "The ice hole by the pier"})
 
     # --- the rest of the model's numbers, passed through
-    for k in ("ice", "skating", "banya_rules", "walrus", "snowball", "snowman", "items", "stamps", "prices", "radio", "fight"):
+    for k in ("ice", "skating", "banya_rules", "walrus", "snowball", "snowman", "items", "stamps", "prices", "radio", "fight", "banya_shop"):
         if k in content:
             out[k] = content[k]
     return out, spots
@@ -217,6 +233,24 @@ def check_strings(content, strings):
                 err("%s: string %s missing" % (where, v))
     walk(content, "content")
 
+    # the engine's own keys: every LyudText key the winter play's C++ names, and SayOne(prefix, n)'s numbered lines
+    src = ""
+    for name in ("LyudWinterPlay.cpp", "LyudWinterPlayBuild.cpp"):
+        path = os.path.join(ENGINE_DIR, name)
+        if os.path.exists(path):
+            with open(path, encoding="utf-8") as f:
+                src += f.read()
+    for key in set(re.findall(r'TEXT\("((?:winter|dev\.action\.winter)\.[a-z0-9_.]+)"\)', src)):
+        if key.count(".") < 2 or key.startswith("winter.radio"):
+            continue          # a dev action's id ("winter.kit"), not a string
+        numbered = re.search(r'SayOne\(TEXT\("%s"\),\s*(\d+)\)' % re.escape(key), src)
+        if numbered:
+            for i in range(1, int(numbered.group(1)) + 1):
+                if "%s.%d" % (key, i) not in strings:
+                    err("engine: string %s.%d missing" % (key, i))
+        elif key not in strings:
+            err("engine: string %s missing" % key)
+
 
 def main():
     check = "--check" in sys.argv
@@ -232,6 +266,12 @@ def main():
         for suffix in ("name", "desc"):
             if "item.%s.%s" % (it, suffix) not in strings:
                 err("item %s: string item.%s.%s missing" % (it, it, suffix))
+    # the shops that sell them (tools/city/content/counters.json, a hand-kept table: the goods are added there)
+    counters = load(os.path.join(TOOLS, "city", "content", "counters.json")).get("shops", {})
+    for it, spec in content.get("items", {}).items():
+        shop = spec.get("shop")
+        if shop and not any(g.get("item") == it for g in counters.get(shop, {}).get("goods", [])):
+            err("item %s: shop %s does not sell it (tools/city/content/counters.json)" % (it, shop))
     if data.get("ice_hole", {}).get("shallow_guess"):
         print("winter_play: note: no point along the pier is deep enough by tools/terrain.py's ground (the macro shape "
               "without Saved/World/terrain_out.bin?); the ice hole is put near the head; the game checks the real depth")
@@ -239,8 +279,38 @@ def main():
             OUT_SPOTS: dump({"_doc": "Built by tools/winter_play/winter_play.py (docs/winter_play.md): the people's winter "
                                      "places, the same format as town_plan.json's spots. Do not edit by hand.",
                              "spots": spots})}
+    # developer mode's points (.claude/skills/dev-mode): map metres (y = Unreal y - face_y), dropped onto the ground
+    fy = public["face_y"]
+    rk, bn, ih = data["rink"], data["banya"], data["ice_hole"]
+    by = math.radians(bn["yaw"])
+    door = (bn["at"][0] + math.cos(by) * (bn["door"][0] + 2.6), bn["at"][1] + math.sin(by) * (bn["door"][0] + 2.6))
+    tps = [{"id": "winter.rink", "group": "winter", "name": "dev.tp.winter.rink",
+            "x": round(rk["at"][0], 2), "y": round(rk["at"][1] - rk["r"][1] - 2.5 - fy, 2), "yaw": 90.0},
+           {"id": "winter.banya", "group": "winter", "name": "dev.tp.winter.banya",
+            "x": round(door[0], 2), "y": round(door[1] - fy, 2), "yaw": round(bn["yaw"] + 180.0, 1)},
+           {"id": "winter.ice_hole", "group": "winter", "name": "dev.tp.winter.ice_hole",
+            "x": round(ih["deck_stand"][0], 2), "y": round(ih["deck_stand"][1] - fy, 2), "yaw": 90.0}]
+    outs[OUT_TELEPORTS] = dump({"about": "Written by tools/winter_play/winter_play.py: x/y map metres (docs/world_map.md), "
+                                         "yaw Unreal degrees; outdoors, dropped onto the ground.", "teleports": tps})
+    for t in tps:
+        if t["name"] not in strings:
+            err("teleport %s: string %s missing" % (t["id"], t["name"]))
+    # the city's side (tools/city/interiors.py reads these; run it after): the collection "winter", given by the engine
+    st = content["stamps"]
+    title = "city.coll.%s.title" % st["set"]
+    outs[CITY_X] = dump({"_doc": "Generated by tools/winter_play/winter_play.py (docs/winter_play.md): the winter play's stamps, "
+                                 "given by the engine (ULyudWinterPlay). Do not edit; run tools/city/interiors.py after.",
+                         "collections": {st["set"]: {"title": title, "pieces": st["pieces"],
+                                                     "code": ["unreal/Lyudmilovsk/Source/Lyudmilovsk/Private/Winter/LyudWinterPlay.cpp"]}}})
+    city_strings = {"_doc": "Generated by tools/winter_play/winter_play.py from its strings.json. Do not edit."}
+    for k in sorted(strings):
+        if k == title or k.startswith("city.coll.%s." % st["set"]):
+            city_strings[k] = strings[k]
+    if title not in strings:
+        err("string %s (the collection's title) missing" % title)
+    outs[CITY_X_STRINGS] = dump(city_strings)
     for lang in LANGS:
-        outs[OUT_STRINGS % lang] = dump({k: v[lang] for k, v in sorted(strings.items()) if not k.startswith("_")})
+        outs[OUT_STRINGS % lang] = dump({k: v[lang] for k, v in sorted(strings.items()) if not k.startswith("_") and not k.startswith("city.")})
     if errors:
         for e in errors:
             print("ERROR:", e)

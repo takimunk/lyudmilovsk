@@ -195,24 +195,27 @@
  },
  "ice_hole": {
   "at": [
-   299.022,
-   921.1,
+   300.0,
+   921.0,
    -43.0
   ],
   "r": 1.3,
-  "bed_z": -44.97,
+  "tile": 3.0,
+  "bed_z": -44.96,
   "shallow_guess": true,
   "ladder": {
    "at": [
-    298.842,
-    918.95,
-    -44.972
+    300.0,
+    919.58,
+    -44.963
    ],
-   "yaw": 85.21,
-   "deck_z": -41.5
+   "yaw": 90.0,
+   "deck_z": -41.5,
+   "top_back_m": 1.23,
+   "deck_edge_y": 918.9
   },
   "deck_stand": [
-   298.737,
+   300.0,
    917.7,
    -41.5
   ]
@@ -304,7 +307,7 @@
   "steam_bite_c": 26.0,
   "hat_c": 9.0,
   "heat_from_c": 42.0,
-  "heat_per_c_s": 0.00022,
+  "heat_per_c_s": 0.00012,
   "venik_heat": 0.025,
   "venik_s": 1.1,
   "too_hot": 1.0,
@@ -443,5 +446,22 @@
   "speed": 13.0,
   "duration_s": 120.0,
   "leave_m": 40.0
- }
+ },
+ "banya_shop": [
+  [
+   "birch_venik",
+   10,
+   6
+  ],
+  [
+   "banya_hat",
+   30,
+   2
+  ],
+  [
+   "banya_towel",
+   35,
+   3
+  ]
+ ]
 }

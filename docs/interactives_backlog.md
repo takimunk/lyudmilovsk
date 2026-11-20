@@ -268,7 +268,7 @@ Coordinate with item 4 (same job board). Done: questsim route test, Mac ride-thr
 
 ## 18. Winter play
 
-`[ ]` **Brief (Opus 5.5):** Winter exists (`docs/winter.md`: snow, footprints, sea ice, the first-snow festival) and the park
+`[~] winter-play 2026-11-20 (branch winter-play, docs/winter_play.md; awaits a Mac build, icons and shots)` **Brief (Opus 5.5):** Winter exists (`docs/winter.md`: snow, footprints, sea ice, the first-snow festival) and the park
 pond freezes (`docs/city/public_spaces.md` open: "skaters on the ice"). Add: skates at the sport shop, skating on the pond
 (a glide gait with momentum, falls on cracks), residents skating in the evenings and on first snow; a banya at the
 sanatorium or by the beach (heat, the birch venik, then the snow or the sea: the walrus swim at the ice hole on New Year's

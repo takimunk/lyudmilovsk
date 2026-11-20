@@ -327,6 +327,11 @@ void ULyudSoundscapeSubsystem::LoadSounds()
 		{ TEXT("Topi"), TEXT("topi_heart") }, { TEXT("Topi"), TEXT("ural_hum") },
 		// the town radio «Волна Людмиловска» (ULyudMusic, tools/music/sounds.py): the call sign, the time pips, the hiss off air
 		{ TEXT("Radio"), TEXT("radio_chime") }, { TEXT("Radio"), TEXT("radio_pips") }, { TEXT("Radio"), TEXT("radio_static") },
+		// winter play (ULyudWinterPlay, tools/winter_play/sounds.py): skates on the pond's ice, the banya, snowballs
+		{ TEXT("Winter"), TEXT("skate_stroke") }, { TEXT("Winter"), TEXT("skate_stop") }, { TEXT("Winter"), TEXT("ice_crack") },
+		{ TEXT("Winter"), TEXT("ice_fall") }, { TEXT("Winter"), TEXT("banya_ladle") }, { TEXT("Winter"), TEXT("venik_swish") },
+		{ TEXT("Winter"), TEXT("banya_door") }, { TEXT("Winter"), TEXT("snow_scoop") }, { TEXT("Winter"), TEXT("snowball_throw") },
+		{ TEXT("Winter"), TEXT("snowball_hit") }, { TEXT("Winter"), TEXT("snow_pat") },
 	};
 	for (const auto& G : Groups)
 	{
