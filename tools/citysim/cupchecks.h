@@ -299,4 +299,24 @@ static void CupChecks(const std::string& Path)
 		"Saturday night's board: the bracket with the hero as champion, his name on next week's sheet");
 	const std::vector<FCupPage> First0 = C2.Pages(M2, Chess, Day(0, 12.f));
 	CHECK(First0.size() == 2 && First0[1].size() == 2 && First0[1][1].Key == "city.cup.case.empty", "the first day: no bracket yet, the cup case empty");
+
+	// a public holiday on a cup's day (the game asks its festivals: Big Sun Day is a Saturday): no cup that week
+	FModel M3;
+	FCups C3;
+	M3.Load(Text, Error);
+	C3.Load(CupText, Error);
+	C3.Bind(M3);
+	const long long Hol = First(5, 40);
+	C3.IsHoliday = [Hol](long long D) { return D == Hol; };
+	long long SignedFor = -1;
+	const bool bSigned3 = C3.SignUp(Chess, Day(Hol - 2, 12.f), &SignedFor);
+	const int T3 = Table(M3, C3.Defs[(size_t)Chess].Plot, "chess");
+	std::vector<FCupNews> HolNews;
+	C3.News(M3, Hol, Day(Hol + 1, 8.f), HolNews);
+	const std::vector<FCupPage> HolPages = C3.Pages(M3, Chess, Day(Hol, 10.f));
+	bool bHolLine = false;
+	for (const FCupLine& L : HolPages.empty() ? FCupPage() : HolPages[0]) bHolLine = bHolLine || L.Key == "city.cup.holiday";
+	CHECK(bSigned3 && SignedFor == Hol + 7 && C3.NextDay(Chess, Day(Hol, 10.f)) == Hol + 7 && C3.MatchAt(M3, T3, Day(Hol, 13.2f)) < 0 && HolNews.empty()
+		&& C3.ShownDay(Chess, Day(Hol, 15.f)) == Hol - 7 && bHolLine && Keys.count("city.cup.holiday"),
+		"a holiday on the cup's Saturday: the sheet is for the week after, no match, no news, the board says why");
 }

@@ -1,0 +1,20 @@
+{
+ "name": "ice_crack_02",
+ "asset": "/Game/Audio/Winter/S_ice_crack_02",
+ "pool": "ice_crack",
+ "file": "audio/sfx/winter/ice_crack_02.wav",
+ "generator": "tools/winter_play/sounds.py",
+ "seed": 2131,
+ "rng": "numpy.random.default_rng (PCG64), numpy 2.5.3",
+ "loop": false,
+ "sample_rate": 48000,
+ "bit_depth": 16,
+ "channels": 1,
+ "seconds": 0.7,
+ "peak_dbfs": -5.0,
+ "rms_dbfs": -26.91,
+ "params": {
+  "seconds": 0.7
+ },
+ "license": "Procedural, made by the project; CC BY 4.0."
+}

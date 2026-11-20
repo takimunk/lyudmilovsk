@@ -1,0 +1,22 @@
+{
+ "name": "skate_glide_01",
+ "asset": "/Game/Audio/Winter/S_skate_glide_01",
+ "pool": "skate_glide",
+ "file": "audio/sfx/winter/skate_glide_01.wav",
+ "generator": "tools/winter_play/sounds.py",
+ "seed": 2110,
+ "rng": "numpy.random.default_rng (PCG64), numpy 2.5.3",
+ "loop": true,
+ "sample_rate": 48000,
+ "bit_depth": 16,
+ "channels": 1,
+ "seconds": 6.0,
+ "peak_dbfs": -9.0,
+ "rms_dbfs": -24.42,
+ "params": {
+  "seconds": 6.0,
+  "centre_hz": 4200,
+  "ring_hz": 1650
+ },
+ "license": "Procedural, made by the project; CC BY 4.0."
+}

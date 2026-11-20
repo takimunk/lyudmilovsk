@@ -179,6 +179,24 @@ namespace LyudCity
 		const FCupDef* Def(int Cup) const { return Cup >= 0 && Cup < (int)Defs.size() ? &Defs[(size_t)Cup] : nullptr; }
 		bool IsUsable(int Cup) const { const FCupDef* D = Def(Cup); return D && (int)D->Pool.size() >= FBracket::Seats; }
 
+		/** Is a day (since the game began) a public holiday? The game asks its festivals (ULyudFestivalSubsystem: a festival's
+		 *  day off, Big Sun Day); unset: none. On such a day no cup is played: the town is at the festival, the regulars too
+		 *  (tools/togethersim found the Saturday chess cup's players watching the zenith on the square). */
+		std::function<bool(long long /*Day*/)> IsHoliday;
+		bool IsOff(long long Day) const { return Day >= 0 && IsHoliday && IsHoliday(Day); }
+		/** The weekday's tournament day of this week (today, or the coming one) when it falls on a holiday; -1 when not. */
+		long long SkippedDay(int Cup, const FWhen& Now) const
+		{
+			const FCupDef* D = Def(Cup);
+			if (!D)
+			{
+				return -1;
+			}
+			const int Ahead = ((D->Weekday - Now.Weekday) % 7 + 7) % 7;
+			const long long Day = Now.Since + Ahead;
+			return IsOff(Day) ? Day : -1;
+		}
+
 		/** The weekday of a day (since the game began), from today's. */
 		static int WeekdayOf(long long Day, const FWhen& Now)
 		{
@@ -197,7 +215,12 @@ namespace LyudCity
 				return -1;
 			}
 			const int Ahead = ((D->Weekday - Now.Weekday) % 7 + 7) % 7;
-			return Now.Since + (Ahead == 0 && Now.Hour >= D->Start ? 7 : Ahead);
+			long long Day = Now.Since + (Ahead == 0 && Now.Hour >= D->Start ? 7 : Ahead);
+			for (int Guard = 0; Guard < 8 && IsOff(Day); ++Guard)
+			{
+				Day += 7;     // a holiday: no cup that week, the sheet is for the next one
+			}
+			return Day;
 		}
 		/** The tournament day whose bracket the board shows: today's from its start, else the last one (-1: none yet). */
 		long long ShownDay(int Cup, const FWhen& Now) const
@@ -208,7 +231,11 @@ namespace LyudCity
 				return -1;
 			}
 			const int Back = ((Now.Weekday - D->Weekday) % 7 + 7) % 7;
-			const long long Day = Now.Since - (Back == 0 && Now.Hour < D->Start ? 7 : Back);
+			long long Day = Now.Since - (Back == 0 && Now.Hour < D->Start ? 7 : Back);
+			for (int Guard = 0; Guard < 8 && IsOff(Day); ++Guard)
+			{
+				Day -= 7;     // a holiday was played by nobody: the last cup before it
+			}
 			return Day >= 0 ? Day : -1;
 		}
 		bool IsSigned(int Cup, long long Day) const { return Def(Cup) && Signed.count(Key(Cup, Day)) > 0; }
@@ -325,7 +352,7 @@ namespace LyudCity
 			for (int Cup = 0; Cup < (int)Defs.size(); ++Cup)
 			{
 				const FCupDef& D = Defs[(size_t)Cup];
-				if (D.Plot != Plot || D.Game != G->Vs || D.Weekday != Now.Weekday || !IsSigned(Cup, Now.Since))
+				if (D.Plot != Plot || D.Game != G->Vs || D.Weekday != Now.Weekday || !IsSigned(Cup, Now.Since) || IsOff(Now.Since))
 				{
 					continue;
 				}
@@ -397,7 +424,7 @@ namespace LyudCity
 		{
 			for (int Cup = 0; Cup < (int)Defs.size(); ++Cup)
 			{
-				if (!IsUsable(Cup) || WeekdayOf(Day, Now) != Defs[(size_t)Cup].Weekday || Day < 0)
+				if (!IsUsable(Cup) || WeekdayOf(Day, Now) != Defs[(size_t)Cup].Weekday || Day < 0 || IsOff(Day))
 				{
 					continue;
 				}
@@ -466,6 +493,11 @@ namespace LyudCity
 				P.push_back({ "city.cup.when", { "@city.cup.dow." + std::to_string(D->Weekday), Hm(D->Start), "@" + D->Venue } });
 				P.push_back({ "city.cup.rules", { Hm(D->Start), Hm(D->Start + D->Step), Hm(D->Start + 2.f * D->Step) } });
 				P.push_back({ "city.cup.rules." + D->Game, {} });
+				const long long Skipped = SkippedDay(Cup, Now);
+				if (Skipped >= 0)
+				{
+					P.push_back({ "city.cup.holiday", { Date(Skipped) } });
+				}
 				P.push_back({ IsSigned(Cup, Next) ? "city.cup.signed" : "city.cup.sheet", { Date(Next), Hm(D->Start) } });
 				Out.push_back(std::move(P));
 			}

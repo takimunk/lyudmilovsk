@@ -767,6 +767,10 @@ void ULyudKiteFlying::Lose(const TCHAR* Why)
 		ALyudKite* K = HeroKite.Get();
 		K->DetachFromActor(FDetachmentTransformRules::KeepWorldTransform);
 		K->SetHum(0.f, 0.f, 0.f);
+		if (UStaticMeshComponent* R = K->GetReel())
+		{
+			R->SetVisibility(false);    // the reel went with the hero: not left hanging where his hand was
+		}
 		FFlight Left;
 		Left.Sim = Hero.Sim;
 		Left.Actor = K;

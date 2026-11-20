@@ -29,7 +29,7 @@ def T(key, ru, en, ja):
 T("item.spade.name", "Лопата", "Spade", "スコップ")
 T("item.spade.desc", "Штыковая лопата с отполированным ладонями черенком. Земля за забором коммуны мягкая, копать одно удовольствие.",
   "A digging spade, its handle worn smooth by hands. The soil behind the commune house is soft: digging is a pleasure.",
-  "柄が手でつるつるになった剣先スコップ。コミューンの裏の土はやわらかくて、耕すのが楽しい。")
+  "柄が手でつるつるになった剣先スコップ。コミューン住宅の裏の土はやわらかくて、耕すのが楽しい。")
 T("item.watering_can.name", "Лейка", "Watering can", "じょうろ")
 T("item.watering_can.desc", "Жестяная лейка с дырчатым носиком. Набирается у дождевой бочки, а поёт, как маленький дождь.",
   "A tin watering can with a rose on the spout. You fill it at the rain barrel, and it sounds like a little shower.",
@@ -101,7 +101,7 @@ T("garden.crop.sunflower", "Подсолнух", "Sunflower", "ヒマワリ")
 T("garden.stage.0", "посеяно, пока ничего не видно", "sown, nothing showing yet", "まいたばかり、まだ何も見えない")
 T("garden.stage.1", "проклюнулись всходы", "the first shoots are up", "芽が出てきた")
 T("garden.stage.2", "молодые кустики", "young plants", "若い苗")
-T("garden.stage.3", "подросло, вот-вот зацветёт", "grown, flowering or nearly", "大きく育って、花が咲きそう")
+T("garden.stage.3", "подросло, вот-вот зацветёт", "grown, about to flower", "大きく育って、花が咲きそう")
 T("garden.stage.4", "поспело", "ripe", "実った")
 T("garden.stage.spoilt", "перестояло", "gone over", "とりごろを過ぎた")
 T("garden.stage.dead", "погибло", "lost", "枯れてしまった")
@@ -125,7 +125,7 @@ T("garden.prompt.dig", "E — вскопать", "E — dig", "E：耕す")
 T("garden.prompt.sow", "E — посеять", "E — sow", "E：種をまく")
 T("garden.prompt.water", "E — полить", "E — water", "E：水をやる")
 T("garden.prompt.weed", "E — прополоть", "E — weed", "E：草をとる")
-T("garden.prompt.pick", "E — собрать: {0}", "E — pick: {0}", "E：収穫する：{0}")
+T("garden.prompt.pick", "E — собрать: {0}", "E — pick: {0}", "E：{0}を収穫する")
 T("garden.prompt.clear", "E — выдернуть засохшее", "E — pull out the dead plants", "E：枯れた株をぬく")
 T("garden.prompt.cover", "E — опустить плёнку", "E — pull the film down", "E：ビニールをかける")
 T("garden.prompt.uncover", "E — скатать плёнку", "E — roll the film up", "E：ビニールを巻き上げる")
@@ -141,14 +141,14 @@ T("garden.prompt.no_can", "Нужна лейка. Продаётся в «Хоз
 T("garden.prompt.can_empty", "Лейка пустая. Набери воды у бочки.", "The can is empty. Fill it at the barrel.",
   "じょうろが空だ。たるで水をくもう。")
 T("garden.prompt.barrel_ice", "Вода в бочке замёрзла.", "The water in the barrel has frozen over.", "たるの水がこおっている。")
-T("garden.prompt.board", "E — прочитать объявление домкома", "E — read the committee's notice", "E：委員会のお知らせを読む")
+T("garden.prompt.board", "E — прочитать объявление домкома", "E — read the committee's notice", "E：住宅委員会のお知らせを読む")
 T("garden.prompt.jam_ask", "E — попросить сварить варенье: {0}", "E — ask for jam from your strawberries: {0}",
   "E：イチゴでジャムを頼む：{0}")
 T("garden.prompt.contest", "E — сдать банку на конкурс варенья", "E — hand the jar in for the jam contest", "E：ジャムをコンテストに出す")
-T("garden.prompt.sell", "E — сдать урожай на весы ({0} шт.) за {1} руб.", "E — hand in the harvest ({0} things) for {1} roubles",
-  "E：収穫を計りに出す（{0}点）{1}ルーブル")
+T("garden.prompt.sell", "E — сдать урожай на весы ({0} шт.) за {1} руб.", "E — hand in the harvest ({0} items) for {1} roubles",
+  "E：収穫（{0}点）を検量はかりに出す：{1}ルーブル")
 T("garden.prompt.scales_closed", "Весы закрыты. Откроются в {0}:00.", "The scales are closed. They open at {0}:00.",
-  "計りは閉まっている。{0}時に開く。")
+  "検量はかりは閉まっている。{0}時に開く。")
 T("garden.prompt.jam_wait", "Варенье ещё варится.", "The jam is still cooking.", "ジャムはまだ煮ているところ。")
 T("garden.prompt.look", "{0}", "{0}", "{0}")
 
@@ -194,9 +194,9 @@ T("garden.quality.3", "отличный", "excellent", "極上")
 
 T("garden.diary.rented", "Взял грядку за домом-коммуной. Теперь у меня есть свой клочок земли.",
   "I rented a bed behind the commune house. Now I have a patch of earth of my own.",
-  "コミューンの裏に畑を借りた。僕だけの小さな土地ができた。")
-T("garden.diary.first_harvest", "Первый урожай: {0}. Сам вырастил, сам и съем.", "My first harvest: {0}. I grew it myself.",
-  "はじめての収穫：{0}。僕が自分で育てた。")
+  "コミューン住宅の裏に畑を借りた。僕だけの小さな土地ができた。")
+T("garden.diary.first_harvest", "Первый урожай: {0}. Сам вырастил, сам и съем.", "My first harvest: {0}. I grew it myself, and I'll eat it myself.",
+  "はじめての収穫：{0}。自分で育てて、自分で食べる。")
 T("garden.diary.jam", "Соседка сварила варенье из моей клубники. Банка ещё тёплая.",
   "My neighbour cooked jam from my strawberries. The jar is still warm.",
   "となりのおばあさんが僕のイチゴでジャムを煮てくれた。びんがまだあたたかい。")
@@ -205,7 +205,7 @@ T("garden.diary.contest", "Конкурс варенья: {0}. Пахло клу
 
 # --- the committee's notice, the place ----------------------------------------------------------------------------------
 
-T("garden.name", "Огороды дома-коммуны", "The commune house allotments", "コミューンの家庭菜園")
+T("garden.name", "Огороды дома-коммуны", "The commune house allotments", "コミューン住宅の家庭菜園")
 T("garden.board.title", "Домовый комитет. Объявление", "House committee. Notice", "住宅委員会のお知らせ")
 T("garden.board.text",
   "Сдаётся свободная грядка на сезон. Плата: {0} руб. Поливать только из бочки с дождевой водой. Собак на огороды не водить. "
@@ -225,21 +225,21 @@ T("garden.letter.contest.1",
   "Congratulations! Your strawberry jam has taken first place. The keeper of the scales says it's just thick enough, the honey "
   "seller says it's nearly as good as honey, and our young juror ate three spoonfuls and asked for a fourth. Prize: {0} roubles, "
   "to be collected at the scales.",
-  "おめでとうございます！あなたのイチゴジャムが一位になりました。計り番は「ちょうどいい濃さ」、はちみつ売りは「はちみつに負けない」、"
-  "子どもの審査員は三さじ食べて四さじ目をねだりました。賞金{0}ルーブルは計りのところで受け取ってください。")
+  "おめでとうございます！あなたのイチゴジャムが一位になりました。はかり番は「ちょうどいい濃さ」、はちみつ売りは「はちみつに負けない」、"
+  "子どもの審査員は三さじ食べて四さじ目をねだりました。賞金{0}ルーブルははかりのところで受け取ってください。")
 T("garden.letter.contest.2",
   "Поздравляем! Ваше варенье — второе. Ягоды целые, сироп прозрачный; юный член жюри сказал, что первое было «чуть-чуть слаще», "
   "но вашу банку облизал дочиста. Премия: {0} руб., получить у весов.",
   "Congratulations! Your jam came second. Whole berries, clear syrup; our young juror said the winner was \"a tiny bit sweeter\", "
   "but licked your jar clean. Prize: {0} roubles, to be collected at the scales.",
   "おめでとうございます！あなたのジャムは二位です。実はまるごと、シロップはすきとおっていました。子どもの審査員は「一位がちょっとだけ甘い」"
-  "と言いつつ、あなたのびんをきれいになめました。賞金{0}ルーブルは計りのところで。")
+  "と言いつつ、あなたのびんをきれいになめました。賞金{0}ルーブルははかりのところで。")
 T("garden.letter.contest.3",
   "Поздравляем! Ваше варенье — третье. Продавщица мёда хвалила аромат, смотрительница весов — честный вес банки. Премия: {0} руб., "
   "получить у весов.",
   "Congratulations! Your jam came third. The honey seller praised its scent, the keeper of the scales the honest weight of the jar. "
   "Prize: {0} roubles, to be collected at the scales.",
-  "おめでとうございます！あなたのジャムは三位です。はちみつ売りは香りを、計り番はびんの正直な重さをほめていました。賞金{0}ルーブルは計りのところで。")
+  "おめでとうございます！あなたのジャムは三位です。はちみつ売りは香りを、はかり番はびんの正直な重さをほめていました。賞金{0}ルーブルははかりのところで。")
 T("garden.letter.contest.none",
   "Спасибо за ваше варенье! В этот раз до призов не хватило совсем немного, но банку съели до донышка всем жюри. "
   "Приносите в следующий раз: клубника, говорят, на будущий год будет ещё лучше.",
@@ -291,7 +291,7 @@ T("garden.season.0.2", "Картошку сажают, когда зацветё
   "じゃがいもはウワミズザクラが咲いたら。母の口ぐせよ。")
 T("garden.season.0.3", "У моря весна поздняя. Зато лето потом доброе.", "Spring comes late by the sea. But then summer is kind.",
   "海辺の春はおそいの。そのかわり夏はやさしい。")
-T("garden.season.1.1", "Летом поливай вечером, когда солнце ушло. Утром роса сама справится.", "In summer water in the evening. In the morning the dew does the work.",
+T("garden.season.1.1", "Летом поливай вечером, когда солнце ушло. Утром роса сама справится.", "In summer water in the evening, once the sun's gone. In the morning the dew does the work.",
   "夏の水やりは夕方に。朝は露がやってくれる。")
 T("garden.season.1.2", "Клубника любит, когда её собирают. Чем чаще, тем щедрее.", "Strawberries like being picked. The more often, the more they give.",
   "イチゴはつんでもらうのが好き。つむほど実をつけるの。")
@@ -307,30 +307,30 @@ T("garden.season.3.1", "Зимой земля спит. И нам можно.", 
 T("garden.season.3.2", "Снег на грядке — лучшее одеяло. Не разгребай.", "Snow on the bed is the best blanket. Leave it.",
   "畑の雪はいちばんの毛布よ。どけないで。")
 T("garden.season.3.3", "Зимой я читаю каталоги семян. Как романы, только с хорошим концом.", "In winter I read seed catalogues. Like novels, only with happy endings.",
-  "冬は種のカタログを読むの。小説みたい、結末はいつもいいけど。")
+  "冬は種のカタログを読むの。小説みたいなものよ、結末はいつもハッピーだけど。")
 T("garden.frost.1", "Ночью будет заморозок. Опусти плёнку, а то утром плакать.", "Frost tonight. Pull the film down, or there'll be tears in the morning.",
   "今夜は霜がおりる。ビニールをかけないと、朝泣くよ。")
 T("garden.frost.2", "Небо чистое, звёзды яркие — к морозу. Укрой грядку.", "Clear sky, bright stars: that means frost. Cover your bed.",
   "空が晴れて星がきれい。霜になるわ。畑をおおって。")
-T("garden.hello.1", "Доброе утро, сосед! Я тут с пяти, а ты только проснулся.", "Morning, neighbour! I've been here since five, and you've only just woken.",
-  "おはよう、おとなりさん！私は五時からいるのよ。")
+T("garden.hello.1", "Доброе утро, сосед! Я тут с пяти, а ты только проснулся.", "Morning, neighbour! I've been here since five, and you've only just woken up.",
+  "おはよう、おとなりさん！私は五時からいるのに、君はいま起きたのね。")
 T("garden.hello.2", "А, молодой огородник пришёл. Ну, здравствуй.", "Ah, the young gardener's here. Good morning.",
   "あら、若い畑仲間が来た。おはよう。")
 T("garden.hello.3", "Утро какое, а? Самое время для грядок.", "What a morning, eh? Just the time for the beds.",
   "いい朝ね。畑にはちょうどいい時間。")
-T("garden.jam.ask.1", "Давай свою клубнику. Вечером сварю, утром заберёшь.", "Give me your strawberries. I'll cook it tonight, you'll have it by morning.",
+T("garden.jam.ask.1", "Давай свою клубнику. Вечером сварю, утром заберёшь.", "Give me your strawberries. I'll make the jam tonight, you'll have it by morning.",
   "イチゴをちょうだい。今夜煮て、朝にはできてるわ。")
 T("garden.jam.ask.2", "Хорошая ягода. Сварю по маминому рецепту, без спешки.", "Good berries. I'll cook them my mother's way, no hurry.",
   "いいイチゴね。母のやり方で、ゆっくり煮るわ。")
 T("garden.jam.ready.1", "Твоё варенье на скамейке. Пенку я сняла и съела, извини.", "Your jam's on the bench. I skimmed the foam and ate it, sorry.",
-  "ジャムはベンチの上よ。あくは私が食べちゃった、ごめんね。")
+  "ジャムはベンチの上よ。泡はすくって私が食べちゃった、ごめんね。")
 T("garden.jam.ready.2", "Варенье готово. Неси на конкурс, не стыдно.", "The jam's ready. Take it to the contest, it's nothing to be shy of.",
   "ジャムができたよ。コンテストに出しても恥ずかしくない。")
 T("garden.praise.1", "Вот это урожай! Я в твои годы так не умела.", "Now that's a harvest! I couldn't do that at your age.",
   "いい収穫ね！君の年のころ、私はこうはいかなかった。")
 T("garden.praise.2", "Хорошо растёт у тебя. Значит, рука лёгкая.", "Things grow well for you. You've got a light hand.",
-  "よく育ってるね。君は手がいいのよ。")
-T("garden.gift.1", "Слышно, ты грядку взял? Вот, держи семян, у меня лишние.", "I hear you've got a bed? Here, have some seeds, I've spares.",
+  "よく育ってるね。君には育てる才能があるのよ。")
+T("garden.gift.1", "Слышно, ты грядку взял? Вот, держи семян, у меня лишние.", "I hear you've got a bed? Here, have some seeds, I've got spares.",
   "畑を始めたんだって？種をどうぞ、余ってるから。")
 T("garden.gift.2", "Это тебе на грядку. Пусть хорошо взойдёт.", "These are for your bed. May they come up well.",
   "畑にどうぞ。よく芽が出ますように。")
@@ -356,7 +356,7 @@ ICONS = {
 }
 
 # --- added with the engine side: compost, the contest's place in the diary, developer mode ------------------------------
-T("garden.prompt.compost", "E — закопать компост", "E — dig the compost in", "E：たい肥をすき込む")
+T("garden.prompt.compost", "E — закопать компост", "E — dig the compost in", "E：たい肥をすきこむ")
 T("garden.place.1", "первое место", "first place", "一位")
 T("garden.place.2", "второе место", "second place", "二位")
 T("garden.place.3", "третье место", "third place", "三位")
@@ -364,7 +364,7 @@ T("garden.place.none", "без места, зато с благодарност�
 T("dev.action.garden.kit", "Огород: грядка, лопата, лейка, семена", "Garden: the bed, a spade, a can, seeds", "畑：区画、スコップ、じょうろ、種")
 T("dev.action.garden.grow_day", "Огород: прошли сутки", "Garden: a day goes by", "畑：一日たつ")
 T("dev.action.garden.report", "Огород: отчёт в лог", "Garden: report to the log", "畑：ログに報告")
-T("dev.tp.garden_bed", "Огород дома-коммуны", "The commune house allotment", "コミューンハウスの畑")
+T("dev.tp.garden_bed", "Огород дома-коммуны", "The commune house allotment", "コミューン住宅の畑")
 # the crops' names in the plant system (PlantSpeciesLibrary::DisplayName: plant.<species lower case>.name)
 T("plant.gardenradish.name", "Редис", "Radish", "ラディッシュ")
 T("plant.gardendill.name", "Укроп", "Dill", "ディル")

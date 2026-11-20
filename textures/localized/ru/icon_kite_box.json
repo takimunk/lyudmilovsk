@@ -1,0 +1,10 @@
+{
+ "id": "icon_kite_box",
+ "lang": "ru",
+ "model": "higgsfield gpt_image_2_5",
+ "aspect": "1:1",
+ "prompt": "A box kite of two blue cloth cells on four thin wooden slats with cross braces, a small wooden line reel with white string beside it.",
+ "source": "design/kites/icon_kites_grid.png (sidecar design/kites/icon_kites_grid.json), cell 3 (bottom left) of a 2x2 grid, resized to 512x512",
+ "sha256": "e5b936e18065c50d3ab9f04ea34a22860f55f3190da739b72e7410394f604acb",
+ "strings": {}
+}

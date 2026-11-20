@@ -23,7 +23,7 @@
  "city.text.jobs.head": {
   "ru": "ПОДРАБОТКА. Для школьников и всех желающих. Работа короткая, оплата в тот же день, по результату. Отметка в трудовую книжку. Что требуется сегодня — на следующем листе.",
   "en": "ODD JOBS. For schoolchildren and anyone willing. Short work, paid the same day, by results. A mark in your work record book. What's needed today is on the next sheet.",
-  "ja": "アルバイト。学生さんも、どなたでも。短い仕事、当日払い、出来高制。労働手帳に印を押します。今日の募集は次の紙に。"
+  "ja": "アルバイト。学校の生徒さんも、どなたでも。短い仕事、当日払い、出来高制。労働手帳に印を押します。今日の募集は次の紙に。"
  },
  "city.text.jobs.title": {
   "ru": "Требуется помощь",
@@ -32,23 +32,23 @@
  },
  "city.text.jobs.p1.montue": {
   "ru": "Требуется помощь, оплата в тот же день, по результату.\n\nМаяк на пирсе: ночная вахта, с шести вечера до семи утра. Записывать в журнал каждый час ветер, море и суда. Спросить смотрителя у входа.\n\nКафе «Тарелка»: помочь за стойкой с мороженым и чашками, весь день, пока работает бариста.\n\nКиоск у остановки и кинотеатр «Рассвет» в понедельник и вторник обходятся сами.",
-  "en": "Help wanted, paid the same day, by results.\n\nThe lighthouse on the pier: the night watch, six in the evening to seven in the morning. Write the wind, the sea and the ships in the log every hour. Ask the keeper at the door.\n\nThe café «Tarelka»: help at the counter with the ice cream and the cups, all day, while a barista is on.\n\nThe kiosk at the bus stop and the «Rassvet» cinema manage on their own on Mondays and Tuesdays.",
-  "ja": "手伝い募集。報酬は当日、出来高払い。\n\n桟橋の灯台：夜の当直、夕方六時から朝七時まで。毎時、風と海と船を日誌に記す。入口の灯台守に声をかけること。\n\nカフェ〈ターレルカ〉：アイスクリームとカップの手伝い。バリスタがいる間は一日中。\n\nバス停のキオスクと映画館〈ラスヴェト〉は、月曜と火曜は人手が足りている。"
+  "en": "Help wanted, paid the same day, by results.\n\nThe lighthouse on the pier: the night watch, six in the evening to seven in the morning. Write the wind, the sea and the ships in the log every hour. Ask the keeper at the door.\n\nThe Saucer café: help at the counter with the ice cream and the cups, all day, while a barista is on.\n\nThe kiosk at the bus stop and the Rassvet cinema manage on their own on Mondays and Tuesdays.",
+  "ja": "手伝い募集。報酬は当日、出来高払い。\n\n桟橋の灯台：夜の当直、夕方六時から朝七時まで。毎時、風と海と船を日誌に記す。入口の灯台守に声をかけること。\n\nカフェ「ソーサー」：アイスクリームとカップの手伝い。バリスタがいる間は一日中。\n\nバス停のキオスクと映画館「ラスヴェート」は、月曜と火曜は人手が足りている。"
  },
  "city.text.jobs.p1.wedfri": {
-  "ru": "Требуется помощь, оплата в тот же день, по результату.\n\nКиоск у остановки: утренние газеты, с восьми до десяти. Разобрать пачки, разложить по полкам. Спросить Ерлана Ромеро.\n\nКафе «Тарелка»: помочь за стойкой с мороженым и чашками, весь день.\n\nКинотеатр «Рассвет»: встать на контроль перед вечерним сеансом, с пяти до восьми. Спросить Кавеха Бергстрёма в кассе.\n\nМаяк на пирсе: ночная вахта с шести вечера, журнал каждый час.",
-  "en": "Help wanted, paid the same day, by results.\n\nThe kiosk at the bus stop: the morning papers, eight to ten. Undo the bundles, fill the racks. Ask Yerlan Romero.\n\nThe café «Tarelka»: help at the counter with the ice cream and the cups, all day.\n\nThe «Rassvet» cinema: stand at the door and check tickets before the evening show, five to eight. Ask Kaveh Bergström at the box office.\n\nThe lighthouse on the pier: the night watch from six in the evening, the log every hour.",
-  "ja": "手伝い募集。報酬は当日、出来高払い。\n\nバス停のキオスク：朝刊、八時から十時。束をほどいて棚に並べる。イェルラン・ロメロに声をかけること。\n\nカフェ〈ターレルカ〉：アイスクリームとカップの手伝い、一日中。\n\n映画館〈ラスヴェト〉：夜の上映前に入口で切符のもぎり、五時から八時。切符売り場のカヴェー・ベリストレムに声をかけること。\n\n桟橋の灯台：夕方六時から夜の当直、毎時日誌。"
+  "ru": "Требуется помощь, оплата в тот же день, по результату.\n\nКиоск у остановки: утренние газеты, с восьми до десяти. Разобрать пачки, разложить по полкам. Спросить Ерлана Ромеро.\n\nКафе «Тарелка»: помочь за стойкой с мороженым и чашками, весь день, пока работает бариста.\n\nКинотеатр «Рассвет»: встать на контроль перед вечерним сеансом, с пяти до восьми. Спросить Кавеха Бергстрёма в кассе.\n\nМаяк на пирсе: ночная вахта с шести вечера, журнал каждый час.",
+  "en": "Help wanted, paid the same day, by results.\n\nThe kiosk at the bus stop: the morning papers, eight to ten. Undo the bundles, fill the racks. Ask Yerlan Romero.\n\nThe Saucer café: help at the counter with the ice cream and the cups, all day, while a barista is on.\n\nThe Rassvet cinema: stand at the door and check tickets before the evening show, five to eight. Ask Kaveh Bergström at the box office.\n\nThe lighthouse on the pier: the night watch from six in the evening, the log every hour.",
+  "ja": "手伝い募集。報酬は当日、出来高払い。\n\nバス停のキオスク：朝刊、八時から十時。束をほどいて棚に並べる。イェルラン・ロメロに声をかけること。\n\nカフェ「ソーサー」：アイスクリームとカップの手伝い。バリスタがいる間は一日中。\n\n映画館「ラスヴェート」：夜の上映前に入口で切符のもぎり、五時から八時。切符売り場のカヴェー・ベリストレムに声をかけること。\n\n桟橋の灯台：夕方六時から夜の当直、毎時日誌。"
  },
  "city.text.jobs.p1.sat": {
-  "ru": "Требуется помощь, оплата в тот же день, по результату.\n\nСУББОТА, РЫНОК! С шести до десяти носить ящики из фургона к рядам. С семи до часу взвешивать покупателям на больших весах. Спросить Парису Петросян, фруктовый ряд.\n\nКиоск у остановки: утренние газеты, с восьми до десяти.\n\nКафе «Тарелка»: мороженое и чашки, весь день.\n\nКинотеатр «Рассвет»: контроль перед вечерним сеансом, с пяти до восьми.\n\nМаяк: ночная вахта с шести вечера.",
-  "en": "Help wanted, paid the same day, by results.\n\nSATURDAY, THE MARKET! Six to ten: carry the crates from the van to the rows. Seven to one: weigh for the customers on the big scales. Ask Parisa Petrosyan, the fruit row.\n\nThe kiosk at the bus stop: the morning papers, eight to ten.\n\nThe café «Tarelka»: ice cream and cups, all day.\n\nThe «Rassvet» cinema: the door before the evening show, five to eight.\n\nThe lighthouse: the night watch from six in the evening.",
-  "ja": "手伝い募集。報酬は当日、出来高払い。\n\n土曜日、市場！六時から十時まで、トラックから売り場へ木箱運び。七時から一時まで、大きな秤で客の品を量る。果物売り場のパリサ・ペトロシャンに声をかけること。\n\nバス停のキオスク：朝刊、八時から十時。\n\nカフェ〈ターレルカ〉：アイスとカップ、一日中。\n\n映画館〈ラスヴェト〉：夜の上映前のもぎり、五時から八時。\n\n灯台：夕方六時から夜の当直。"
+  "ru": "Требуется помощь, оплата в тот же день, по результату.\n\nСУББОТА, РЫНОК! С семи до десяти носить ящики из фургона к рядам. С семи до часу взвешивать покупателям на больших весах. Спросить Парису Петросян, фруктовый ряд.\n\nКиоск у остановки: утренние газеты, с восьми до десяти.\n\nКафе «Тарелка»: мороженое и чашки, весь день.\n\nКинотеатр «Рассвет»: контроль перед вечерним сеансом, с пяти до восьми.\n\nМаяк: ночная вахта с шести вечера.",
+  "en": "Help wanted, paid the same day, by results.\n\nSATURDAY, THE MARKET! Seven to ten: carry the crates from the van to the rows. Seven to one: weigh for the customers on the big scales. Ask Parisa Petrosyan, the fruit row.\n\nThe kiosk at the bus stop: the morning papers, eight to ten.\n\nThe Saucer café: ice cream and cups, all day.\n\nThe Rassvet cinema: the door before the evening show, five to eight.\n\nThe lighthouse: the night watch from six in the evening.",
+  "ja": "手伝い募集。報酬は当日、出来高払い。\n\n土曜日、市場！七時から十時まで、トラックから売り場へ木箱運び。七時から一時まで、大きな秤で客の品を量る。果物売り場のパリサ・ペトロシャンに声をかけること。\n\nバス停のキオスク：朝刊、八時から十時。\n\nカフェ「ソーサー」：アイスとカップ、一日中。\n\n映画館「ラスヴェート」：夜の上映前のもぎり、五時から八時。\n\n灯台：夕方六時から夜の当直。"
  },
  "city.text.jobs.p1.sun": {
   "ru": "Требуется помощь, оплата в тот же день, по результату.\n\nКиоск у остановки: утренние газеты, с восьми до десяти. Воскресный номер толстый, руки нужны.\n\nКафе «Тарелка»: мороженое и чашки, весь день. В воскресенье очередь до двери.\n\nКинотеатр «Рассвет»: контроль перед вечерним сеансом, с пяти до восьми.\n\nМаяк: ночная вахта с шести вечера.\n\nРынок: только по субботам, ящики и весы.",
-  "en": "Help wanted, paid the same day, by results.\n\nThe kiosk at the bus stop: the morning papers, eight to ten. The Sunday edition is fat, hands needed.\n\nThe café «Tarelka»: ice cream and cups, all day. On Sundays the queue reaches the door.\n\nThe «Rassvet» cinema: the door before the evening show, five to eight.\n\nThe lighthouse: the night watch from six in the evening.\n\nThe market: Saturdays only, crates and scales.",
-  "ja": "手伝い募集。報酬は当日、出来高払い。\n\nバス停のキオスク：朝刊、八時から十時。日曜版は分厚いので人手がいる。\n\nカフェ〈ターレルカ〉：アイスとカップ、一日中。日曜は列が扉まで伸びる。\n\n映画館〈ラスヴェト〉：夜の上映前のもぎり、五時から八時。\n\n灯台：夕方六時から夜の当直。\n\n市場：土曜日だけ、木箱と秤。"
+  "en": "Help wanted, paid the same day, by results.\n\nThe kiosk at the bus stop: the morning papers, eight to ten. The Sunday edition is fat, hands needed.\n\nThe Saucer café: ice cream and cups, all day. On Sundays the queue reaches the door.\n\nThe Rassvet cinema: the door before the evening show, five to eight.\n\nThe lighthouse: the night watch from six in the evening.\n\nThe market: Saturdays only, crates and scales.",
+  "ja": "手伝い募集。報酬は当日、出来高払い。\n\nバス停のキオスク：朝刊、八時から十時。日曜版は分厚いので人手がいる。\n\nカフェ「ソーサー」：アイスとカップ、一日中。日曜は列が扉まで伸びる。\n\n映画館「ラスヴェート」：夜の上映前のもぎり、五時から八時。\n\n灯台：夕方六時から夜の当直。\n\n市場：土曜日だけ、木箱と秤。"
  },
  "city.text.jobs.p2.montue": {
   "ru": "Спасательная вышка № 1: в понедельник и вторник смена без помощника. Купаться у флага, за буйки не заплывать.",
@@ -67,8 +67,8 @@
  },
  "city.job.k1.1": {
   "ru": "Ерлан Ромеро разрезал бечёвку ножом и подвинул мне пачку: «Областная налево, «Маяк» направо, кроссворды отдельно». Через сорок минут полки были полные, а пальцы чёрные от краски. Он отсчитал монеты: «Двадцать пять. Руки вымой, а то газета на тебе напечатается».",
-  "en": "Yerlan Romero cut the string with a knife and pushed a bundle at me: \"The regional to the left, «Mayak» to the right, crosswords on their own.\" Forty minutes later the racks were full and my fingers black with ink. He counted out the coins: \"Twenty-five. Wash your hands, or the paper will print itself on you.\"",
-  "ja": "イェルラン・ロメロがナイフで紐を切り、束を僕のほうへ押しやった。「州の新聞は左、〈マヤーク〉は右、クロスワードは別」。四十分後、棚はいっぱいになり、指はインクで真っ黒だった。彼は硬貨を数えた。「二十五。手を洗えよ、新聞がお前に刷られちまう」"
+  "en": "Yerlan Romero cut the string with a knife and pushed a bundle at me: \"The regional to the left, 'Mayak' to the right, crosswords on their own.\" Forty minutes later the racks were full and my fingers black with ink. He counted out the coins: \"Twenty-five. Wash your hands, or the paper will print itself on you.\"",
+  "ja": "イェルラン・ロメロがナイフで紐を切り、束を僕のほうへ押しやった。「州の新聞は左、『マヤーク』は右、クロスワードは別」。四十分後、棚はいっぱいになり、指はインクで真っ黒だった。彼は硬貨を数えた。「二十五。手を洗えよ、新聞がお前に刷られちまう」"
  },
  "city.job.k1.2": {
   "ru": "Сегодня в пачке оказались две лишние газеты за прошлый четверг. Ерлан посмотрел на них, как на старых знакомых, и положил под прилавок: «Кто-нибудь да спросит. Всегда спрашивают». Я разложил свежие, он заплатил и дал мне одну, ещё тёплую от типографии.",
@@ -91,9 +91,9 @@
   "ja": "霧雨だが、大したことはない。イェルランは昨日の新聞で絵はがきの棚を覆い、僕は今日の新聞を並べた。「昨日のも何かの役に立つ」と言って、彼は二十五ルーブルを数えてくれた。"
  },
  "city.job.mk.closed.1": {
-  "ru": "У больших весов табличка: «Помощь по субботам. Ящики с шести, весы с семи. П. Петросян».",
-  "en": "A sign by the big scales: \"Help on Saturdays. Crates from six, scales from seven. P. Petrosyan.\"",
-  "ja": "大きな秤のそばに札がある。「手伝いは土曜日。木箱は六時から、秤は七時から。P・ペトロシャン」"
+  "ru": "У больших весов табличка: «Помощь по субботам. Ящики и весы с семи. П. Петросян».",
+  "en": "A sign by the big scales: \"Help on Saturdays. Crates and scales from seven. P. Petrosyan.\"",
+  "ja": "大きな秤のそばに札がある。「手伝いは土曜日。木箱も秤も七時から。P・ペトロシャン」"
  },
  "city.job.mk.closed.2": {
   "ru": "Весы накрыты мешковиной. Под ней гирьки стоят по росту, как ученики на линейке, и ждут субботы.",
@@ -106,9 +106,9 @@
   "ja": "E：トラックから木箱を運ぶ"
  },
  "city.job.mk.box.1": {
-  "ru": "Фургон пришёл в шесть. Париса Петросян показала, куда что: яблоки к ней, капусту в конец ряда, яйца «как ребёнка». Я носил полчаса, пока не заболели руки. Яйца дошли все. Она заплатила двадцать и сунула в карман яблоко.",
-  "en": "The van came at six. Parisa Petrosyan showed me where things went: apples to her, cabbage to the end of the row, eggs \"like a baby\". I carried for half an hour until my arms ached. Every egg arrived. She paid me twenty and slipped an apple into my pocket.",
-  "ja": "トラックは六時に来た。パリサ・ペトロシャンが置き場所を教えてくれた。りんごは彼女のところ、キャベツは列の端、卵は「赤ん坊みたいに」。腕が痛くなるまで三十分運んだ。卵は一つも割れなかった。彼女は二十ルーブルくれて、ポケットにりんごを一つ滑り込ませた。"
+  "ru": "Фургон пришёл в семь, к открытию. Париса Петросян показала, куда что: яблоки к ней, капусту в конец ряда, яйца «как ребёнка». Я носил полчаса, пока не заболели руки. Яйца дошли все. Она заплатила двадцать и сунула в карман яблоко.",
+  "en": "The van came at seven, as the rows opened. Parisa Petrosyan showed me where things went: apples to her, cabbage to the end of the row, eggs \"like a baby\". I carried for half an hour until my arms ached. Every egg arrived. She paid me twenty and slipped an apple into my pocket.",
+  "ja": "トラックは開店の七時に来た。パリサ・ペトロシャンが置き場所を教えてくれた。りんごは彼女のところ、キャベツは列の端、卵は「赤ん坊みたいに」。腕が痛くなるまで三十分運んだ。卵は一つも割れなかった。彼女は二十ルーブルくれて、ポケットにりんごを一つ滑り込ませた。"
  },
  "city.job.mk.box.2": {
   "ru": "Ящики сегодня тяжёлые: картошка нового урожая. Водитель фургона считал их вслух, я тоже, и у нас вышло по-разному. Пересчитала Париса, и вышло третье число. Сошлись на её. Двадцать рублей, и «приходи на весы, раз считать умеешь».",
@@ -147,8 +147,8 @@
  },
  "city.job.mk.weigh.lose": {
   "ru": "Стрелка гуляла, я то недовешивал, то перевешивал. Париса дважды поправляла меня взглядом, а потом встала рядом. Заплатила немного: «За ящики и за честность. Весы — дело привычки».",
-  "en": "The needle wandered; I weighed short, then over. Parisa corrected me twice with a look, then came and stood beside me. She paid a little: \"For the effort and the honesty. Scales are a matter of habit.\"",
-  "ja": "針がふらついて、足りなかったり多すぎたりした。パリサは二度目つきで直してくれて、そのあと隣に立った。少しだけ払ってくれた。「頑張ったのと正直さの分。秤は慣れだよ」"
+  "en": "The needle wandered; I weighed short, then over. Parisa corrected me twice with a look, then came and stood beside me. She paid a little: \"For the crates and the honesty. Scales are a matter of habit.\"",
+  "ja": "針がふらついて、足りなかったり多すぎたりした。パリサは二度目つきで直してくれて、そのあと隣に立った。少しだけ払ってくれた。「木箱の分と、正直さの分。秤は慣れだよ」"
  },
  "city.job.mk.weigh.draw": {
   "ru": "Половину покупателей взвесил точно, половину «примерно». Примерно никто не жаловался: на рынке к этому привыкли. Париса заплатила половину обещанного и половину яблока сверху.",
@@ -357,7 +357,7 @@
  },
  "city.job.kino.draw": {
   "ru": "Половину билетов надорвал ровно, половину пополам. Кавех сказал, что пополам — это тоже контроль, только строгий. Заплатил и оставил мне место в последнем ряду, если захочу остаться.",
-  "en": "Half the tickets I tore neatly, half in two. Kaveh said in two is also checking, only strict. He paid me and kept me a seat in the back row in case I wanted to stay.",
+  "en": "Half the tickets I tore neatly, half in two. Kaveh said tearing them in two is checking too, just strict. He paid me and kept me a seat in the back row in case I wanted to stay.",
   "ja": "半分はきれいにもぎり、半分は真っ二つにした。カヴェーは、真っ二つも検札のうち、ただ厳しいだけだと言った。報酬をくれて、残りたければと最後列に席を取っておいてくれた。"
  },
  "city.job.kino.after": {
@@ -371,9 +371,9 @@
   "ja": "土曜日の仕事のこと"
  },
  "city.ask.job.market.1": {
-  "ru": "— По субботам у нас рук не хватает. С шести ящики из фургона, с семи весы. Подходи к Парисе Петросян, фруктовый ряд. Платим сразу, по тому, как сделано.",
-  "en": "\"On Saturdays we're short of hands. Crates from the van from six, the scales from seven. Go to Parisa Petrosyan, the fruit row. We pay at once, by how it's done.\"",
-  "ja": "「土曜日は人手が足りないんだ。六時からトラックの木箱、七時から秤。果物売り場のパリサ・ペトロシャンのところへ行きな。やった分だけ、その場で払うよ」"
+  "ru": "— По субботам у нас рук не хватает. С семи ящики из фургона и весы. Подходи к Парисе Петросян, фруктовый ряд. Платим сразу, по тому, как сделано.",
+  "en": "\"On Saturdays we're short of hands. Crates from the van and the scales, both from seven. Go to Parisa Petrosyan, the fruit row. We pay at once, by how it's done.\"",
+  "ja": "「土曜日は人手が足りないんだ。七時からトラックの木箱と秤。果物売り場のパリサ・ペトロシャンのところへ行きな。やった分だけ、その場で払うよ」"
  },
  "city.ask.job.market.2": {
   "ru": "— Слышал, ты уже взвешивал у Парисы. Она хвалит. А она никого не хвалит, кроме своих яблок.",
@@ -402,13 +402,13 @@
  },
  "city.ask.job.cafe.1": {
   "ru": "— Можно. Витрина с мороженым у окна. Шарик должен быть круглый, а не «какой вышел». Платим с каждого шарика, а за хорошую смену сверху. После наплыва чашки.",
-  "en": "\"You can. The ice cream case is by the window. A scoop should be round, not \"however it came out\". We pay for every scoop, and extra for a good shift. After the rush, the cups.\"",
-  "ja": "「いいよ。アイスのケースは窓ぎわだ。ひとすくいは丸く、「なんとなく」じゃだめ。一つごとに払うし、いい当番ならおまけもつける。混雑が過ぎたらカップ洗い」"
+  "en": "\"You can. The ice cream case is by the window. A scoop should be round, not 'however it came out'. We pay for every scoop, and extra for a good shift. After the rush, the cups.\"",
+  "ja": "「いいよ。アイスのケースは窓ぎわだ。ひとすくいは丸く、『なんとなく』じゃだめ。一つごとに払うし、いい当番ならおまけもつける。混雑が過ぎたらカップ洗い」"
  },
  "city.ask.job.cafe.2": {
   "ru": "— О, наш мороженщик. Дети спрашивают, будет ли сегодня «тот, у которого луна».",
-  "en": "\"Oh, our ice cream man. The children ask whether \"the one who does the moon\" is on today.\"",
-  "ja": "「おっ、うちのアイス係だ。子どもたちが、今日は「月の人」いるのって聞いてくるよ」"
+  "en": "\"Oh, our ice cream man. The children ask whether 'the one who does the moon' is on today.\"",
+  "ja": "「おっ、うちのアイス係だ。子どもたちが、今日は『月の人』いるのって聞いてくるよ」"
  },
  "city.ask.job.kino": {
   "ru": "Можно постоять на контроле?",
@@ -492,13 +492,13 @@
  },
  "quest.job_book.icecream.obj": {
   "ru": "Помочь с мороженым в «Тарелке»",
-  "en": "Help with the ice cream at «Tarelka»",
-  "ja": "〈ターレルカ〉でアイスの手伝いをする"
+  "en": "Help with the ice cream at the Saucer",
+  "ja": "「ソーサー」でアイスの手伝いをする"
  },
  "quest.job_book.door.obj": {
   "ru": "Постоять на контроле в «Рассвете»",
-  "en": "Take the door at «Rassvet»",
-  "ja": "〈ラスヴェト〉でもぎりをする"
+  "en": "Take the door at the Rassvet",
+  "ja": "「ラスヴェート」でもぎりをする"
  },
  "quest.job_book.done": {
   "ru": "Шесть работ, шесть отметок в трудовой книжке. Деньги разошлись быстро, а отметки остались. Оказывается, город держится на людях, которые встают раньше всех и ложатся позже всех.",
