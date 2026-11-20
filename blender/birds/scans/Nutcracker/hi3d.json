@@ -1,0 +1,41 @@
+[
+ {
+  "service": "hi3d MCP (agent.hi3d.ai) via tools/birds/hi3d_mcp.py",
+  "tool": "create_generation",
+  "kind": "model",
+  "task_id": "1a4b4bc65b014769b1253ce0cc29a928",
+  "points": 45,
+  "arguments": {
+   "file_tokens": "(uploaded views, see inputs)",
+   "version": "v3.0",
+   "model_type": "high_quality",
+   "generation_type": "model_with_texture",
+   "pbr": true,
+   "license": "private"
+  },
+  "inputs": [
+   {
+    "view": "front",
+    "file": "blender/birds/scan_raw/Nutcracker/views/front.png",
+    "sha256": "a9228ff5221114fe940989a4dd3d573defa95428b67440a5bd8a739adfcef41f"
+   },
+   {
+    "view": "back",
+    "file": "blender/birds/scan_raw/Nutcracker/views/back.png",
+    "sha256": "e5e18590a39fdae34f5e6da02106b271d3b07b46953bec9aba7875de6877b4e0"
+   },
+   {
+    "view": "left",
+    "file": "blender/birds/scan_raw/Nutcracker/views/left.png",
+    "sha256": "02675238cafd0dbc223a31f3bd57213d46f85c87d287d38d0ed60bbcc3e819c9"
+   },
+   {
+    "view": "right",
+    "file": "blender/birds/scan_raw/Nutcracker/views/right.png",
+    "sha256": "799f2c2f1c64140ea23a903d620a8a693652245db1d3aeebc78ad5d24f1c7c66"
+   }
+  ],
+  "submitted": "2026-11-20T19:59:01+00:00",
+  "outputs": []
+ }
+]

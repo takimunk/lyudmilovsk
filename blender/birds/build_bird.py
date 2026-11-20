@@ -45,7 +45,7 @@ A = ART.get(SPECIES)          # {"morph": {...}, "plumage": {...}}
 M = dict(ART.MORPH_DEFAULTS, **A["morph"])
 PLUM = A["plumage"]
 rng = random.Random(zlib.crc32(SPECIES.encode()))   # stable across runs (hash() is salted)
-OUTDIR = os.path.join(C.OUT, SPECIES)
+OUTDIR = os.environ.get("BIRD_OUTDIR") or os.path.join(C.OUT, SPECIES)
 # --hero: the body the player flies in: ~3-4x the feathers, a 4096 atlas, the same skeleton (SK_<Id>_Hero on SKEL_<Id>)
 HERO = "--hero" in FLAGS
 TAG = SPECIES + ("_Hero" if HERO else "")
@@ -456,7 +456,8 @@ def cell(kind, style, variant=0):
 
 
 def bare_cells():
-    for k, (w, h) in {"body": (256, 256), "beak": (128, 128), "legs": (128, 64), "eye": (256, 256) if HERO else (128, 128), "eyering": (32, 32)}.items():
+    bw = (2048 if HERO else 1024) if SCAN_B else 256
+    for k, (w, h) in {"body": (bw, bw), "beak": (128, 128), "legs": (128, 64), "eye": (256, 256) if HERO else (128, 128), "eyering": (32, 32)}.items():
         ATL.request(k, k, None, w, h, 0, {})
 
 
@@ -576,6 +577,8 @@ def paint_eye(w, h, B):
 
 def paint_body(w, h):
     """The skin under the feathers, coloured by tract (seen between feathers and on far LODs)."""
+    if SCAN_B:
+        return paint_body_scan(w, h)
     zs = body_zs()
     c = np.zeros((h, w, 3))
     nz = C.tile_noise(max(w, h), 91, 1.2)[:h, :w]
@@ -588,6 +591,9 @@ def paint_body(w, h):
             th = 2 * math.pi * (xi / (w - 1))
             st = PLUM["styles"][style_for(z, th, jitter=0.0)]
             c[yi, xi] = PL.L(st.get("skin", st["c"]))
+            if SCAN is not None and not st.get("bare"):
+                sn = style_for(z, th, jitter=0.0)
+                c[yi, xi] = c[yi, xi] * float(np.clip(_lum(scan_colour(z, th)) / max(_lum(scan_means().get(sn, scan_colour(z, th))), 1e-4), 0.35, 2.2))
     rng.setstate(save)
     c = c * (1 + 0.08 * nz)[..., None]
     return np.clip(c, 0, 1), np.ones((h, w)), 0.3 * nz, np.full((h, w), 0.6), np.zeros((h, w))
@@ -757,6 +763,211 @@ def surf_normal(z, th):
     if np.dot(n, surf(z, th) - V(0, cy, z)) < 0:
         n = -n
     return n
+
+
+# ---------------------------------------------------------------- scanned body (--scan or BIRD_SCAN=1)
+# The hi3d model of the species, turned into cross-sections by tools/birds/scan_prep.py (blender/birds/scans/<Id>/
+# scan.npz: radius R(u, th) and colour COL(u, th) round a centreline, u = 0 at the body end .. 1 at the beak base, in
+# units of that length). It replaces the template's superellipse body: surf() and station() return the scanned skin,
+# mapped into template space through the inverse of warp() (affine in x, y at a fixed z), so the rig, cards, legs and
+# clips keep working unchanged. The rear (where the tail plate starts) blends back to the template's taper, the head is
+# shifted and scaled so the template's beak base and eye still sit on it, and the body texture and the contour feathers
+# take the scan's colours.
+SCAN = None
+_SCAN_NPZ = os.path.join(C.ROOT, "blender", "birds", "scans", SPECIES, "scan.npz")
+if ("--scan" in FLAGS or os.environ.get("BIRD_SCAN") == "1") and os.path.exists(_SCAN_NPZ):
+    SCAN = dict(np.load(_SCAN_NPZ))
+SCAN_B = SCAN is not None and os.environ.get("BIRD_SCAN_MODE", "A").upper() == "B"
+if SCAN_B:   # the scan is the body: finer rings (the scan's shape and texture), a bigger atlas for its photo texture
+    NZ_BODY, NA_BODY = (128, 96) if HERO else (96, 64)
+    ATL = PL.Atlas(4096)
+SCAN_UH = np.linspace(SCAN["us"][0], SCAN["us"][-1], SCAN["COLH"].shape[0]) if SCAN is not None and "COLH" in SCAN else None
+_surf_proc = surf
+Z_END, Z_POLE = -0.056, 0.0825
+LT = BEAK_Z0 - Z_END          # template body length (body end .. beak base), the scan's unit
+RHO = {}
+
+
+def _srgb_to_lin(c):
+    c = np.asarray(c, float)
+    return np.where(c <= 0.04045, c / 12.92, ((c + 0.055) / 1.055) ** 2.4)
+
+
+def _scan_rc(u, th):
+    """Scan radius (units of its body length), colour at u (0 body end .. 1 beak base), th (bilinear, th periodic)."""
+    us, ths, R, COL = SCAN["us"], SCAN["ths"], SCAN["R"], SCAN["COL"]
+    nt = len(ths)
+    fu = float(np.clip(np.interp(u, us, np.arange(len(us))), 0, len(us) - 1.001))
+    i, a = int(fu), fu - int(fu)
+    ft = (th % (2 * math.pi)) / (2 * math.pi) * nt
+    j, b = int(ft) % nt, ft - int(ft)
+    j1 = (j + 1) % nt
+    r = (R[i, j] * (1 - b) + R[i, j1] * b) * (1 - a) + (R[i + 1, j] * (1 - b) + R[i + 1, j1] * b) * a
+    col = (COL[i, j] * (1 - b) + COL[i, j1] * b) * (1 - a) + (COL[i + 1, j] * (1 - b) + COL[i + 1, j1] * b) * a
+    return r, col
+
+
+def _u(z):
+    return (z - Z_END) / LT
+
+
+def _rho_table():
+    """rho(z, th): how much fuller or slimmer the scan is than the template at each spot, after one global girth
+    factor (hi3d's skin is the outside of the plumage, ours the skin under the cards). Clamped and smoothed: the scan
+    corrects the template's shape (crown, nape, breast, belly, flanks) without ever replacing it."""
+    if RHO:
+        return RHO
+    zs = np.linspace(Z_END, Z_POLE, 120)
+    ths = np.linspace(0, 2 * math.pi, 96, endpoint=False)
+    ratio = np.ones((len(zs), len(ths)))
+    for i, z in enumerate(zs):
+        cy = station(z)[3]
+        for j, th in enumerate(ths):
+            p = _surf_proc(z, th)
+            rp = math.hypot(p[0], p[1] - cy) / LT
+            rs = _scan_rc(min(max(_u(z), 0.0), 1.0), th)[0]
+            ratio[i, j] = rs / max(rp, 1e-6)
+    mid = (zs > -0.02) & (zs < 0.03)
+    g = float(np.median(ratio[mid]))
+    rho = np.clip(ratio / g, *((0.45, 2.2) if SCAN_B else (0.72, 1.38)))
+    # fade to the template at the rear (tail plate) and at the front pole (inside the bill base)
+    w = np.array([smooth(Z_END, -0.034, z) * (1 - smooth(0.0755, 0.0795, z)) for z in zs]) * float(os.environ.get("BIRD_SCAN_AMT", 1.0))
+    rho = 1 + (rho - 1) * w[:, None]
+    # smooth: 5 stations along, 5 angles round
+    k = np.hanning(7)[1:-1]
+    k /= k.sum()
+    for _ in range(1 if SCAN_B else 2):
+        rho = np.apply_along_axis(lambda r: np.convolve(np.r_[r[-2:], r, r[:2]], k, mode="valid"), 1, rho)
+        rho = np.apply_along_axis(lambda r: np.convolve(np.pad(r, 2, mode="edge"), k, mode="valid"), 0, rho)
+    RHO.update(zs=zs, ths=ths, rho=rho, g=g)
+    print("SCAN", SPECIES, "girth factor %.3f  rho range %.2f..%.2f" % (g, rho.min(), rho.max()))
+    return RHO
+
+
+def _rho(z, th):
+    t = _rho_table()
+    zs, ths, rho = t["zs"], t["ths"], t["rho"]
+    nt = len(ths)
+    fz = float(np.clip(np.interp(z, zs, np.arange(len(zs))), 0, len(zs) - 1.001))
+    i, a = int(fz), fz - int(fz)
+    ft = (th % (2 * math.pi)) / (2 * math.pi) * nt
+    j, b = int(ft) % nt, ft - int(ft)
+    j1 = (j + 1) % nt
+    return (rho[i, j] * (1 - b) + rho[i, j1] * b) * (1 - a) + (rho[i + 1, j] * (1 - b) + rho[i + 1, j1] * b) * a
+
+
+if SCAN is not None:
+    def surf(z, th):   # noqa: F811
+        p = _surf_proc(z, th)
+        cy = station(z)[3]
+        k = _rho(z, th)
+        return V(p[0] * k, cy + (p[1] - cy) * k, z)
+
+    def scan_colour(z, th):
+        """Linear RGB of the scan at a template-space body spot."""
+        c = _scan_rc(float(np.clip(_u(z), SCAN["us"][0], SCAN["us"][-1])), th)[1]
+        return _srgb_to_lin(c) if bool(SCAN.get("srgb", True)) else c
+
+
+def paint_body_scan(w, h):
+    """Variant B: the body cell is the scan's own photographic texture (COLH, u along x th), resampled onto the body
+    rings' uv layout; bare skin (a rook's face) and the far end stay the species' palette."""
+    zs = body_zs()
+    rows = np.interp(np.arange(h) / (h - 1) * NZ_BODY, range(NZ_BODY + 1), zs)
+    ths = np.arange(w) / (w - 1) * 2 * math.pi
+    col = SCAN["COLH"].astype(float) / 255.0
+    nu, nt = col.shape[:2]
+    uu = np.clip(np.interp(_u(rows), SCAN_UH, np.arange(nu)), 0, nu - 1.001)
+    tt = (ths % (2 * math.pi)) / (2 * math.pi) * nt
+    i0, a = uu.astype(int), (uu - uu.astype(int))[:, None, None]
+    j0, b = tt.astype(int) % nt, (tt - tt.astype(int))[None, :, None]
+    j1 = (j0 + 1) % nt
+    c = (col[i0][:, j0] * (1 - b) + col[i0][:, j1] * b) * (1 - a) + (col[i0 + 1][:, j0] * (1 - b) + col[i0 + 1][:, j1] * b) * a
+    c = _srgb_to_lin(c) if bool(SCAN.get("srgb", True)) else c
+    # palette (and bare) at a low resolution, upsampled: the rear fade and the bare patches
+    lw, lh = 96, 96
+    pal = np.zeros((lh, lw, 3))
+    bare = np.zeros((lh, lw))
+    save = rng.getstate()
+    for yi in range(lh):
+        z = float(np.interp(yi / (lh - 1) * NZ_BODY, range(NZ_BODY + 1), zs))
+        for xi in range(lw):
+            st = PLUM["styles"][style_for(z, 2 * math.pi * xi / (lw - 1), jitter=0.0)]
+            pal[yi, xi] = PL.L(st.get("skin", st["c"]))
+            bare[yi, xi] = 1.0 if st.get("bare") else 0.0
+    rng.setstate(save)
+    ys, xs = (np.arange(h) * lh // h), (np.arange(w) * lw // w)
+    palh, bareh = pal[ys][:, xs], bare[ys][:, xs]
+    keep = (1 - bareh) * np.array([smooth(Z_END, -0.040, z) for z in rows])[:, None]
+    c = c * keep[..., None] + palh * (1 - keep[..., None])
+    nz = C.tile_noise(max(w, h), 91, 1.2)[:h, :w]
+    lum = 0.2126 * c[..., 0] + 0.7152 * c[..., 1] + 0.0722 * c[..., 2]
+    def box(a, r):
+        for ax in (0, 1):
+            cs = np.cumsum(np.pad(a, [(r + 1, r) if k == ax else (0, 0) for k in (0, 1)], mode="wrap" if ax == 1 else "edge"), axis=ax)
+            a = (np.take(cs, range(2 * r + 1, cs.shape[ax]), axis=ax) - np.take(cs, range(0, cs.shape[ax] - 2 * r - 1), axis=ax)) / (2 * r + 1)
+        return a
+    hgt = 4.0 * (lum - box(lum, 4)) + 0.1 * nz
+    return np.clip(c, 0, 1), np.ones((h, w)), hgt, np.full((h, w), 0.6), np.zeros((h, w))
+
+
+SCAN_FRINGE = set(os.environ.get("BIRD_SCAN_FRINGE", "flank,breastside,vent,nape,neckside,rump,uppertail,trousers").split(","))
+SCAN_PAL = {}          # base style -> list of (lin colour, style name)
+SCAN_PAL_FROZEN = [False]
+
+
+SCAN_MEAN = {}
+
+
+def _lum(c):
+    return float(0.2126 * c[0] + 0.7152 * c[1] + 0.0722 * c[2])
+
+
+def scan_means():
+    """Mean scan colour of every plumage style over the body (a grid of spots; the build's rng is left untouched)."""
+    if SCAN_MEAN or SCAN is None:
+        return SCAN_MEAN
+    save = rng.getstate()
+    acc = {}
+    for z in np.linspace(-0.05, 0.077, 48):
+        for th in np.linspace(0, 2 * math.pi, 40, endpoint=False):
+            acc.setdefault(style_for(z, th, jitter=0.0), []).append(scan_colour(z, th))
+    rng.setstate(save)
+    for k, v in acc.items():
+        SCAN_MEAN[k] = np.mean(v, 0)
+    return SCAN_MEAN
+
+
+def scan_tint(base, z, th):
+    """The style's own colour, modulated by how much lighter or darker (and, a little, how differently coloured) the
+    scan is here than its mean over that style: the hand-tuned palette stays, the scan adds its local pattern."""
+    st = PLUM["styles"][base]
+    art = PL.L(st["c"])
+    col = scan_colour(z, th)
+    mean = scan_means().get(base)
+    if mean is None:
+        return art
+    k = float(np.clip(_lum(col) / max(_lum(mean), 1e-4), 0.35, 2.2))
+    kc = np.clip(col / np.maximum(mean, 1e-4), 0.35, 2.2)
+    return np.clip(art * (0.75 * k + 0.25 * kc), 0, 1)
+
+
+def scan_style(base, z, th):
+    """The contour feather's style tinted by the scan: the nearest of up to 5 tints of the base style (made on the
+    first LOD built, reused by the later ones), so body, cards and silhouette agree."""
+    if SCAN is None or PLUM["styles"].get(base, {}).get("bare"):
+        return base
+    col = scan_tint(base, z, th)
+    pal = SCAN_PAL.setdefault(base, [])
+    if pal:
+        d = [float(np.linalg.norm(np.sqrt(col) - np.sqrt(c))) for c, _ in pal]
+        i = int(np.argmin(d))
+        if d[i] < 0.05 or len(pal) >= 5 or SCAN_PAL_FROZEN[0]:
+            return pal[i][1]
+    name = f"{base}~{len(pal)}"
+    PLUM["styles"][name] = dict(PLUM["styles"][base], c=np.clip(col, 0, 1))
+    pal.append((col, name))
+    return name
 
 
 def build_body(sb, lod=0):
@@ -1483,6 +1694,10 @@ def build_contour(sb, lod=0):
             st = PLUM["styles"][stname]
             if st.get("bare"):
                 continue
+            if SCAN_B and region_at(zz, th) not in SCAN_FRINGE and not (zz < -0.030):
+                continue   # variant B: the scan's photo texture is the plumage here; cards only where they shape the outline
+            if SCAN is not None:   # the scan's colour a little behind the root, where the feather's visible tip lies
+                stname = scan_style(stname, zz - 0.35 * Lc, th)
             nn = surf_normal(zz, th)
             back = surf(zz - 0.002, th) - surf(zz + 0.002, th)
             down = V(0, -1, 0) * (0.35 if abs(math.sin(th)) < 0.6 else 0.0)
@@ -2341,6 +2556,7 @@ def main():
     solve_size()
     bare_cells()
     sb = build_mesh(None, 0)
+    SCAN_PAL_FROZEN[0] = True   # later LODs reuse the scan tints LOD0 made (the atlas is packed from LOD0's cells)
     albedo, normal, params = paint_atlas()
     # the same cells recoloured: an albedo per plumage variant (winter, female, female in winter)
     for suffix, parts in (("Winter", ["winter"]), ("Female", ["female"]), ("FemaleWinter", ["female", "winter"])):

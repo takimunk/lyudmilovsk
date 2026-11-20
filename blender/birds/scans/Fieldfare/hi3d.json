@@ -1,0 +1,41 @@
+[
+ {
+  "service": "hi3d MCP (agent.hi3d.ai) via tools/birds/hi3d_mcp.py",
+  "tool": "create_generation",
+  "kind": "model",
+  "task_id": "ba9d9111780c4f779839a468546cd94f",
+  "points": 45,
+  "arguments": {
+   "file_tokens": "(uploaded views, see inputs)",
+   "version": "v3.0",
+   "model_type": "high_quality",
+   "generation_type": "model_with_texture",
+   "pbr": true,
+   "license": "private"
+  },
+  "inputs": [
+   {
+    "view": "front",
+    "file": "blender/birds/scan_raw/Fieldfare/views/front.png",
+    "sha256": "5f3389ec286595f70da82e726e76e3156d6091c3aec22c417dc6572e9fec9f60"
+   },
+   {
+    "view": "back",
+    "file": "blender/birds/scan_raw/Fieldfare/views/back.png",
+    "sha256": "7afb7dd6aab5a4cef5ef090e47464e85e22fe055d7a95ea5141cf4b707ede1b7"
+   },
+   {
+    "view": "left",
+    "file": "blender/birds/scan_raw/Fieldfare/views/left.png",
+    "sha256": "3fb04a421cebf70cc289c4167ce36c1e64c5f0895fe3847f7909bfe8a16ffce8"
+   },
+   {
+    "view": "right",
+    "file": "blender/birds/scan_raw/Fieldfare/views/right.png",
+    "sha256": "a664fcaa7fb686a6bf224b4f81ed74c03242019fa33f906282a244b7e4b796a4"
+   }
+  ],
+  "submitted": "2026-11-20T19:58:02+00:00",
+  "outputs": []
+ }
+]

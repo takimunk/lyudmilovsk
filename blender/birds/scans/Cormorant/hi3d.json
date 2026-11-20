@@ -1,0 +1,41 @@
+[
+ {
+  "service": "hi3d MCP (agent.hi3d.ai) via tools/birds/hi3d_mcp.py",
+  "tool": "create_generation",
+  "kind": "model",
+  "task_id": "47a6715fe3ec44a0bb9ddd40b5a513d1",
+  "points": 45,
+  "arguments": {
+   "file_tokens": "(uploaded views, see inputs)",
+   "version": "v3.0",
+   "model_type": "high_quality",
+   "generation_type": "model_with_texture",
+   "pbr": true,
+   "license": "private"
+  },
+  "inputs": [
+   {
+    "view": "front",
+    "file": "blender/birds/scan_raw/Cormorant/views/front.png",
+    "sha256": "c3a9fdf401c83de7b560003c7f487856dcff062696f3bc06d2bb435c42241905"
+   },
+   {
+    "view": "back",
+    "file": "blender/birds/scan_raw/Cormorant/views/back.png",
+    "sha256": "62e67f1781d77ff62d9108e8b2d35ee20033144b097ca0fb91a54333d74f1768"
+   },
+   {
+    "view": "left",
+    "file": "blender/birds/scan_raw/Cormorant/views/left.png",
+    "sha256": "9c3895541de37d7a911ea1d0cda07d181c28a0a8ddcb67e29441c47309d8f9ad"
+   },
+   {
+    "view": "right",
+    "file": "blender/birds/scan_raw/Cormorant/views/right.png",
+    "sha256": "554e58e45499339698caf033dc003bdaabb087ad9dee2490ad5c7260b24d88f8"
+   }
+  ],
+  "submitted": "2026-11-20T19:59:51+00:00",
+  "outputs": []
+ }
+]

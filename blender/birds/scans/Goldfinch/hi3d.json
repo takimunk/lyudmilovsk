@@ -1,0 +1,41 @@
+[
+ {
+  "service": "hi3d MCP (agent.hi3d.ai) via tools/birds/hi3d_mcp.py",
+  "tool": "create_generation",
+  "kind": "model",
+  "task_id": "52a71fc8670046699a5ec81712fc37bf",
+  "points": 45,
+  "arguments": {
+   "file_tokens": "(uploaded views, see inputs)",
+   "version": "v3.0",
+   "model_type": "high_quality",
+   "generation_type": "model_with_texture",
+   "pbr": true,
+   "license": "private"
+  },
+  "inputs": [
+   {
+    "view": "front",
+    "file": "blender/birds/scan_raw/Goldfinch/views/front.png",
+    "sha256": "214cd1617bf121143d6a1ca44a033702266c80206c8f867ad7825f1f9559b164"
+   },
+   {
+    "view": "back",
+    "file": "blender/birds/scan_raw/Goldfinch/views/back.png",
+    "sha256": "7742e5534374a81009a6d533e35ca3929fce6f8b957374feb31bc3a3445d8392"
+   },
+   {
+    "view": "left",
+    "file": "blender/birds/scan_raw/Goldfinch/views/left.png",
+    "sha256": "3b764a5d2bbaba233c085ee0cffc8d38a4e8a4daecd264ea41c183db9f6ed96e"
+   },
+   {
+    "view": "right",
+    "file": "blender/birds/scan_raw/Goldfinch/views/right.png",
+    "sha256": "1ea5798bd9c9b8ff345a3e333f31001cd55cfa8ebf1361c83ed5aafcccb368ef"
+   }
+  ],
+  "submitted": "2026-11-20T20:15:36+00:00",
+  "outputs": []
+ }
+]
