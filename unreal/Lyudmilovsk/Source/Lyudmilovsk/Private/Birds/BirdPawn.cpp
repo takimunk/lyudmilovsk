@@ -568,9 +568,10 @@ void ABirdPawn::StepAir(const FBirdControls& InC, float Dt)
 	// Space: the species' own easy rhythm (a share of full power, it holds the cruise); the player's own clicks
 	// beat flat out (the sprint, and the climb), and tire the bird much faster; a take-off: a moment of steady beats
 	const bool bOwnClick = In.ClickL || In.ClickR;
-	// (looking well down at speed is a dive: the rhythm stops and the wings fold, as a bird's do; a click still beats)
+	// (looking well down at speed is a dive, and so is coming out of one still faster than wings can drive: the rhythm
+	// rests and the bird trims its wings, as a bird does; a click still beats)
 	const FRotator Gaze = Controller ? Controller->GetControlRotation() : BodyRot;
-	const bool bDiving = BirdFlight::DiveIntent(FMath::DegreesToRadians(FRotator::NormalizeAxis(Gaze.Pitch))) > 0.5 && BirdFlight::Speed(*Flight) > P.Cruise;
+	const bool bDiving = BirdFlight::Coasts(P, BirdFlight::Speed(*Flight), FMath::DegreesToRadians(FRotator::NormalizeAxis(Gaze.Pitch)));
 	if (C.Space && !bDiving)
 	{
 		double AutoTuck = 0.0;

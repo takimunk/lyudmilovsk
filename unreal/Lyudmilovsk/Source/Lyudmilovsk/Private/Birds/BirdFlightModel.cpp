@@ -253,6 +253,11 @@ namespace BirdFlight
 		return Smooth(0.2, 0.9, -AimPitch);
 	}
 
+	bool Coasts(const FParams& P, double V, double AimPitch)
+	{
+		return (DiveIntent(AimPitch) > 0.5 && V > P.Cruise) || V > P.Sprint * 1.15;
+	}
+
 	double WingTrim(const FParams& P, double V, double Gamma, double AimPitch, double LoadG, double Flare)
 	{
 		// the air: fully spread wings are pressed back past their speed limit
@@ -568,7 +573,8 @@ namespace BirdFlight
 		const double LiftK = std::pow(std::max(Spread, 0.0), 1.5) * (1.0 + 0.6 * Flare);
 		const double LMax = std::min(P.MaxLoad * G, G * (V / P.Stall) * (V / P.Stall) * LiftK);
 		// (pushing over into a dive: the wings' lift turned down, or, folded, the tail and the body tipping it over)
-		NVert = std::max(NVert, -std::max(0.5 * LMax, 0.6 * G));
+		// (never harder than 1 g down: a bird unloads its wings to go over, it does not fly on its back)
+		NVert = std::max(NVert, -Clamp(0.5 * LMax, 0.6 * G, G));
 		const double N = std::sqrt(NVert * NVert + NLat * NLat);
 		if (N > LMax && N > 0)
 		{

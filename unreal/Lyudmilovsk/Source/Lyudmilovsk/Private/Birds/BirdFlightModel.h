@@ -167,6 +167,9 @@ namespace BirdFlight
 	inline double FastClick(const FParams& P) { return P.ClickTime() / BeatRate(P, 1.0); }
 	/** 0..1 how much the gaze this far below the horizon (rad) asks for a dive. */
 	double DiveIntent(double AimPitch);
+	/** The species' rhythm (Space) rests: in a dive (the gaze well down, faster than the cruise) and when already
+	 *  going faster than beating wings could push it, a bird does not flap. */
+	bool Coasts(const FParams& P, double V, double AimPitch);
 	/** How far the bird would hold its wings out by itself (0.1 .. 1) at airspeed V on a path at Gamma with the
 	 *  gaze at AimPitch, pulling LoadG g: FState::Trim eases toward it. */
 	double WingTrim(const FParams& P, double V, double Gamma, double AimPitch, double LoadG, double Flare);
