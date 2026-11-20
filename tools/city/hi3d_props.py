@@ -28,12 +28,15 @@ SPEC = os.path.join(ROOT, "blender", "props_hi3d", "props.json")
 OUT = os.path.join(CONTENT, "City", "hi3d_props.json")
 
 DEFAULT_R = {"sundial": 0.7, "girl_dove": 1.0, "fisherman": 1.3, "drink_fountain": 0.45, "astronomer_bust": 0.6,
-             "gull_stele": 1.4, "pioneer": 0.7, "chandelier": 0.8}
+             "gull_stele": 1.4, "pioneer": 0.7, "chandelier": 0.8, "cosmonaut": 1.1, "anchor": 1.4, "bear_cub": 0.6,
+             "deer": 1.1, "muse": 0.7, "grandfather_clock": 0.4, "ship_model": 0.7, "poet_bust": 0.5, "seal": 1.0,
+             "samovar": 0.25, "park_vase": 0.5}
 # clearance radius of the layout's own props (m, round their centre); others 0.8
 PROP_R = {"stage": 9.0, "carousel": 7.0, "wheel": 9.0, "stall": 2.2, "bench_park": 1.3, "bench_promenade": 1.5,
           "lounger": 1.2, "umbrella": 1.4, "changing_booth": 1.3, "flowerbed": None, "pond": None, "sandpit": 4.0,
           "swings": 3.0, "slide": 3.0, "climber": 3.0, "seesaw": 2.5, "railing": 0.6, "railing_post": 0.4,
           "lamp": 0.6, "lamp_park": 0.5, "tree_grate": 1.0, "bin": 0.5}
+INDOOR_PROPS = {"chandelier", "muse", "grandfather_clock", "ship_model", "samovar"}
 GAP = 0.8          # free walking room kept between a prop's footprint and its neighbours
 
 # where each thing goes. at: [dx, dy] metres from the anchor (Unreal axes: +x = the sea, +y = north); yaw: the way its
@@ -50,6 +53,25 @@ PLACES = [
     {"id": "drink_promenade", "prop": "drink_fountain", "anchor": "spot:S-KERB-27", "at": [-8.0, 4.0], "yaw": 180.0, "search": 5},
     {"id": "bust_library", "prop": "astronomer_bust", "anchor": "plot:P-LIBRARY", "out": 7.0, "along": 6.0, "ground": True, "search": 3},
     {"id": "pioneer_school", "prop": "pioneer", "anchor": "plot:P-SCHOOL", "out": 8.0, "along": -8.0, "ground": True, "search": 3},
+    {"id": "cosmonaut_club", "prop": "cosmonaut", "anchor": "plot:P-CLUB2", "out": 9.0, "along": 0.0, "ground": True, "search": 3},
+    {"id": "anchor_pier", "prop": "anchor", "anchor": "spot:S-PIER-HEAD", "at": [-194.0, 12.0], "yaw": 0.0, "search": 5},
+    {"id": "bear_cub_playground", "prop": "bear_cub", "anchor": "spot:S-PLAYGROUND", "at": [-6.0, 9.0], "yaw": 0.0, "search": 6},
+    {"id": "deer_park", "prop": "deer", "anchor": "spot:S-PARK", "at": [10.0, -22.0], "yaw": 90.0, "ground": True, "search": 8},
+    {"id": "poet_bust_park", "prop": "poet_bust", "anchor": "spot:S-PARK", "at": [-14.0, -40.0], "yaw": 0.0, "ground": True, "search": 8},
+    {"id": "seal_promenade", "prop": "seal", "anchor": "spot:S-KERB-28", "at": [-4.0, 8.0], "yaw": 180.0, "search": 6},
+    {"id": "vase_square_nw", "prop": "park_vase", "anchor": "spot:S-FOUNTAIN", "at": [-22.0, 24.0], "yaw": 0.0, "search": 4},
+    {"id": "vase_square_sw", "prop": "park_vase", "anchor": "spot:S-FOUNTAIN", "at": [-22.0, -24.0], "yaw": 0.0, "search": 4},
+    {"id": "vase_square_ne", "prop": "park_vase", "anchor": "spot:S-FOUNTAIN", "at": [40.0, 24.0], "yaw": 0.0, "search": 4},
+    {"id": "vase_square_se", "prop": "park_vase", "anchor": "spot:S-FOUNTAIN", "at": [40.0, -24.0], "yaw": 0.0, "search": 4},
+]
+# standing indoors on a floor: local [x, y, floor z] + kit yaw (0 = toward the street, 90 = +x) in the building frame,
+# searched (0.25 m steps) for a point clear of the building's spots and things on that floor and inside its footprint;
+# `on` = stands on a counter/table top at that z (no search)
+INDOOR_FLOOR = [
+    {"prop": "muse", "building": "workers_club", "at": [12.0, 8.0, 0.0], "yaw": 0.0, "search": 3.0},
+    {"prop": "grandfather_clock", "building": "capsule_library", "at": [-12.3, 20.0, 0.0], "yaw": 90.0, "search": 2.0},
+    {"prop": "ship_model", "building": "capsule_library", "at": [11.8, 21.0, 0.0], "yaw": 270.0, "search": 2.5},
+    {"prop": "samovar", "building": "workers_club", "at": [1.3, 10.4, 1.05], "yaw": 0.0, "on": True},
 ]
 INDOOR = [
     # the cinema hall of the workers' club: its three middle lamps (hall ceiling 10.5 m), the hall's lamps hang inside
@@ -153,7 +175,7 @@ def place_outdoor(L, plan, P, obs, placed, errors):
         z_ref, yaw = front[2], P.get("yaw", pyaw)
     else:
         at = anchor(L, plan, P["anchor"])
-        x0, y0, z_ref, yaw = at[0] + P["at"][0], at[1] + P["at"][1], at[2], P["yaw"]
+        x0, y0, z_ref, yaw = at[0] + P["at"][0], at[1] + P["at"][1], at[2], P["yaw"]   # ground: lawn level with the spot
     boxes = L["boxes"]
     step, best = 0.5, None
     for ring in range(int(P.get("search", 4) / step) + 1):
@@ -207,6 +229,56 @@ def place_indoor(plan, I, errors):
     return out
 
 
+def inside_poly(pt, poly):
+    x, y = pt
+    c = False
+    for i in range(len(poly)):
+        (x1, y1), (x2, y2) = poly[i], poly[i - 1]
+        if (y1 > y) != (y2 > y) and x < (x2 - x1) * (y - y1) / (y2 - y1) + x1:
+            c = not c
+    return c
+
+
+def world_yaw(plot_yaw, local_yaw):
+    w = (plot_yaw - local_yaw) % 360.0
+    return round(w - 360.0 if w > 180.0 else w, 1)
+
+
+def place_floor(plan, I, errors):
+    out = []
+    r = radius(I["prop"])
+    for p in plan["plots"]:
+        if p.get("building") != I["building"]:
+            continue
+        name = "%s__%s.json" % (I["building"], p["id"].lower().replace("-", "_"))
+        path = os.path.join(EXPORTS, name) if os.path.exists(os.path.join(EXPORTS, name)) else os.path.join(EXPORTS, I["building"] + ".json")
+        exp = load(path)
+        x0, y0, z = I["at"]
+        best = (x0, y0) if I.get("on") else None
+        if not best:
+            pts = [q["pos"] for q in exp["spots"] + exp["things"] if abs(q["pos"][2] - z) < 2.0]
+            for ring in range(int(I.get("search", 2.0) / 0.25) + 1):
+                cand = [(x0, y0)] if ring == 0 else [(x0 + ring * 0.25 * math.cos(t * 2 * math.pi / (8 * ring)),
+                                                      y0 + ring * 0.25 * math.sin(t * 2 * math.pi / (8 * ring))) for t in range(8 * ring)]
+                for x, y in cand:
+                    if not inside_poly((x, y), exp["footprint"]):
+                        continue
+                    if any(math.hypot(x - q[0], y - q[1]) < r + 0.6 for q in pts):
+                        continue
+                    best = (x, y)
+                    break
+                if best:
+                    break
+        if not best:
+            errors.append("%s %s: no free floor within %s m of (%.1f, %.1f)" % (p["id"], I["prop"], I.get("search"), x0, y0))
+            continue
+        front, pyaw, _ = plot(plan, p["id"])
+        w = local_to_world(front, pyaw, [best[0], best[1], z])
+        out.append({"id": "%s_%s" % (I["prop"], p["id"]), "prop": I["prop"], "at": [round(v, 3) for v in w],
+                    "yaw": world_yaw(pyaw, I["yaw"]), "plot": p["id"], "_moved": round(math.hypot(best[0] - x0, best[1] - y0), 2)})
+    return out
+
+
 def main():
     check = "--check" in sys.argv
     L, plan, spec = load(LAYOUT), load(PLAN), load(SPEC)["props"]
@@ -218,6 +290,8 @@ def main():
             placed.append(q)
     for I in INDOOR:
         placed += place_indoor(plan, I, errors)
+    for I in INDOOR_FLOOR:
+        placed += place_floor(plan, I, errors)
     for q in placed:
         print("%-28s %-16s at %8.2f %8.2f %7.2f yaw %6.1f%s" % (q["id"], q["prop"], *q["at"], q["yaw"],
               "  moved %.1f m" % q["_moved"] if q.get("_moved") else ""))
@@ -228,8 +302,8 @@ def main():
                    "Unreal degrees (the way the prop's front looks). meshes: prop -> static mesh, cast_shadow, collide, "
                    "cull (m); items: one instance each.",
            "meshes": {p: {"mesh": "/Game/City/Hi3D/SM_Hi3d_%s.SM_Hi3d_%s" % (p, p), "collide": bool(spec[p]["collide"]),
-                          "cast_shadow": True, "cull": 250.0 if spec[p]["origin"] == "base" else 90.0,
-                          "indoor": spec[p]["origin"] == "top"} for p in used},
+                          "cast_shadow": True, "cull": 90.0 if p in INDOOR_PROPS else 250.0,
+                          "indoor": p in INDOOR_PROPS} for p in used},
            "items": [{k: v for k, v in q.items() if not k.startswith("_")} for q in placed]}
     if errors:
         sys.exit(1)

@@ -14,6 +14,17 @@ through hi3d, each model heavily simplified.
 | `astronomer_bust` (bronze on black granite, 2.6 m) | in front of the capsule library | 7k / 2048 |
 | `gull_stele` (concrete seagulls on a stele, 6.5 m) | promenade by the sea, south of the pier | 6k / 2048 |
 | `pioneer` (white plaster bugler, 2.3 m) | the school's forecourt | 7k / 2048 |
+| `cosmonaut` (bronze, helmet under the arm, 3.8 m) | the workers' club forecourt | 9k / 2048 |
+| `anchor` (iron anchor and chain on granite, 1.9 m) | promenade by the pier's root, opposite the fisherman | 5k / 2048 |
+| `bear_cub` (bronze cub with a ball, 1.1 m) | the playground | 5k / 1024 |
+| `deer` (cream painted concrete, 2.1 m) | the park lawn | 6k / 2048 |
+| `poet_bust` (bronze on grey marble, 2.2 m) | the park, south of the pond | 7k / 2048 |
+| `seal` (bronze seal on a rock, 1.1 m) | promenade by the beach | 6k / 2048 |
+| `park_vase` (cast iron, 1.3 m) | the square's four corners | 3k / 1024 |
+| `muse` (white marble muse with a lyre, 2.5 m) | workers' club foyer | 8k / 2048 |
+| `grandfather_clock` (walnut, 2.2 m) | capsule library, ground floor | 4k / 1024 |
+| `ship_model` (sailing ship in a glass case, 1.5 m) | capsule library, ground floor | 7k / 2048 |
+| `samovar` (brass, 0.75 m) | on the workers' club buffet counter | 4k / 1024 |
 
 Spec: `blender/props_hi3d/props.json` (sheet column, views sent to hi3d, real height, origin, budget, metallic,
 collision, run priority).
@@ -42,7 +53,8 @@ collision, run priority).
 5. **Place** (`python3 tools/city/hi3d_props.py`, `--check`): anchors in the public spaces layout and the city plan,
    searched for a clear paved spot (props, trees, plants, fountain basin, pond, each other, 0.8 m walking gap) ->
    `Content/City/hi3d_props.json`. Chandeliers hang round named lamps of the building exports (the tool fails if a
-   building changes and the lamp is gone). Rerun after `tools/public_spaces.py` or the city plan changes.
+   building changes and the lamp is gone). Things standing indoors (`INDOOR_FLOOR`) take a local floor point and search
+for a spot clear of the building export's spots and things inside its footprint (`on`: on a counter top, no search). Rerun after `tools/public_spaces.py` or the city plan changes.
 
 ## In the game
 
