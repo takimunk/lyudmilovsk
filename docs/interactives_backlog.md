@@ -478,6 +478,7 @@ behind glass with cheap lighting, by distance). Signboards for fish, rental, wor
 
 `[ ]` **Brief (Opus 5.5):** Staff talk has 218 answer lines with no voice (backlog P4). Voice the greetings and the top
 topics of the ten most visited counters in ru/en/ja with the pinned TTS (`localization/voice.json`, the game-assets skill,
-sidecars; teen hero rules do not apply, adults by persona). Dima pre-approved the night's work; still keep to the fal budget
-he named (about $5 for the night across all threads) and record the spend in the sidecars. Import on the Mac
+sidecars; teen hero rules do not apply, adults by persona). Dima pre-approved the night's work (2026-11-20 19:32 UTC) and allowed fal
+for the birds (about $5); keep this pass small (a few dollars), ask the coordinator for the night's fal total first, and
+record the spend in the sidecars. Import on the Mac
 (`import_voice.py`). Done: lines play at the counters, subtitles match, the voice list committed.
