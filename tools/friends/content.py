@@ -568,6 +568,7 @@ for job, ru, en, ja in [
         ("butcher", "торгует мясом", "sells meat", "肉屋さん"),
         ("choir_leader", "руководит хором", "leads a choir", "合唱の指揮者"),
         ("director", "директорствует", "a director", "所長さん"),
+        ("guest", "отдыхает в санатории", "is staying at the sanatorium", "サナトリウムで療養中"),
 ]:
     T("friends.job.%s" % job, ru, en, ja)
 
