@@ -50,7 +50,7 @@ class LYUDMILOVSK_API ALyudKites : public AActor
 public:
 	ALyudKites();
 	/** Flown from round At (the beach, cm) till EndsAt (calendar seconds); SeaDir: out to sea. */
-	void Setup(const FVector& At, const FVector& SeaDir, float Radius, double InEndsAt);
+	void Setup(const FVector& At, const FVector& InSeaDir, float Radius, double InEndsAt);
 	/** No more flying: the kites come down and the actor goes. */
 	void StopShow() { EndsAt = 0.0; }
 	virtual void Tick(float DeltaTime) override;
@@ -73,12 +73,13 @@ private:
 	UPROPERTY(Transient) TObjectPtr<UMaterialInstanceDynamic> LineMat;
 	double EndsAt = 0.0;
 	float Clock = 0.f;
+	FVector SeaDir = FVector(1.0, 0.0, 0.0);
 };
 
 /**
  * Poplar fluff (docs/festivals.md "Poplar fluff"): from the end of May to the end of June the town's poplars shed their
  * down, and on a dry day with a little wind the air is full of it: thickest by the poplars, a few tufts anywhere in town,
- * none in the rain. One mesh of tufts lives in a 64 m box round the camera and drifts with the wind's own drift in its
+ * none in the rain. One mesh of tufts lives in a 32 m box round the camera and drifts with the wind's own drift in its
  * material (M_PoplarFluff); this subsystem only works out how much there is (every half second) and keeps the box on the
  * camera. It also plants the town's own black poplars (Content/City/poplars.json, tools/town_poplars.py) through the
  * procedural plant system, as one forest of hand-placed trees.

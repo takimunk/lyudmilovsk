@@ -85,7 +85,7 @@ the sea under the kites and see the star off from the promenade as it goes down 
   `ALyudSky::SetSunApproach(1 + sun, 1 + 0.25 sun)`: the disk in the sky material, the light's source angle (softer
   shadows) and the glare all follow `SunSizeNowDeg()`, the light is up to 17 % stronger. `clear` goes to
   `ULyudWeatherSubsystem::SetFairSky`: the day's weather is thinned towards a fair sky (cloud to 0.08, no rain, fog or
-  thunder) from about a day before; forecasts don't know of it, the wind stays the weather's own (kites need it).
+  thunder) from about a day before; forecasts don't know of it, the wind stays the weather's own (on a calm day the kites still get a 3.5 m/s sea breeze on the beach).
   `lyud.Festival.Sky 0` switches both off; `lyud.Sky.SunApproach <scale>` forces the disk.
 - **The town dressed** (`ALyudStreetBunting`, `Festival/LyudFestivalTown.h`): one actor for the whole town, built once from
   `city_plan.json` the evening before: strings of pennants zigzag along every lane at the foot of W2..W5 (lamp head, a short
@@ -112,7 +112,7 @@ From the last days of May to the first of July the town's poplars shed their dow
 `Festival/LyudFestivalTown.h`). How much is in the air round the camera: the season (`SeasonAt(day of year)`: in over days
 146–156, out over 172–184) × how near the nearest poplar is (full within 40 m, a few tufts a third of a kilometre off,
 none a kilometre away; every `*Poplar` of every `AProceduralForest` and `AProceduralPlant`) × dry (none in rain, less on
-wet ground) × a little wind; none indoors. The fluff is one mesh of 2600 tufts in a 64 × 64 × 24 m box that rides on the
+wet ground) × a little wind; none indoors. The fluff is one mesh of 4200 tufts in a 32 × 32 × 16 m box that rides on the
 camera; `/Game/Festival/M_PoplarFluff` puts every tuft where it belongs (drifting with MPC_LyudWeather's WindDrift,
 sinking 9 cm/s, wandering, wrapped at the box's faces, faded near them), so nothing moves on the CPU; the subsystem only
 sets the amount twice a second. The town's own black poplars (17: behind the park avenue's maples, behind Sun Square's two

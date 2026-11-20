@@ -38,6 +38,11 @@ namespace
 {
 	const TCHAR* TownFluffPath = TEXT("/Game/Festival/M_PoplarFluff.M_PoplarFluff");
 	const TCHAR* TownPaintPath = TEXT("/Game/Transport/Materials/M_TR_Paint.M_TR_Paint");
+	// the fluff's box round the camera, cm (its side divides the 4096 m the wind's drift wraps at): 32 m keeps the tufts
+	// thick enough to read as a summer's fluff, not a stray speck now and then
+	constexpr float FluffBoxXY = 3200.f, FluffBoxZ = 1600.f;
+	// m/s: the least wind the kites get on the beach (a sea breeze, onshore when the day is calm)
+	constexpr float KiteBreeze = 3.5f;
 
 	float TownRand(uint32& S)
 	{
@@ -374,9 +379,10 @@ ALyudKites::ALyudKites()
 	RootComponent = CreateDefaultSubobject<USceneComponent>(TEXT("Root"));
 }
 
-void ALyudKites::Setup(const FVector& At, const FVector& SeaDir, float Radius, double InEndsAt)
+void ALyudKites::Setup(const FVector& At, const FVector& InSeaDir, float Radius, double InEndsAt)
 {
 	EndsAt = InEndsAt;
+	SeaDir = InSeaDir.GetSafeNormal2D(UE_SMALL_NUMBER, FVector(1.0, 0.0, 0.0));
 	ClothMat = LyudFestParts::LoadCloth();
 	UMaterialInterface* Paint = LoadObject<UMaterialInterface>(nullptr, TownPaintPath, nullptr, LOAD_NoWarn | LOAD_Quiet);
 	LineMat = UMaterialInstanceDynamic::Create(Paint ? Paint : LoadObject<UMaterialInterface>(nullptr, LyudFestParts::BasicPath), this);
@@ -507,6 +513,12 @@ void ALyudKites::Tick(float DeltaTime)
 			Air = S.Velocity;
 			Speed = S.Speed;
 			Gust = S.Gust;
+		}
+		// a fair afternoon on the beach has its sea breeze even when the day's wind is calm: the kites need it
+		if (Speed < KiteBreeze)
+		{
+			Air = Speed > 0.5f ? Air.GetSafeNormal() * KiteBreeze : -SeaDir * KiteBreeze;
+			Speed = KiteBreeze;
 		}
 		// under 2 m/s nothing stays up; the fliers pull them in when the hour is over
 		const float Want = (bFlying && Speed > 2.f) ? 1.f : 0.f;
@@ -673,8 +685,8 @@ void ULyudPoplarFluffSubsystem::MakeMesh()
 	}
 	// the tufts: their places in the box are seeds for the material; the vertices themselves stand spread over the box so
 	// the component's bounds are the box's
-	const FVector Box(6400.0, 6400.0, 2400.0);
-	const int32 Count = 2600;
+	const FVector Box(FluffBoxXY, FluffBoxXY, FluffBoxZ);
+	const int32 Count = 4200;
 	FLyudPartMesh M;
 	uint32 Rng = 20260613u;
 	for (int32 I = 0; I < Count; I++)
@@ -796,7 +808,7 @@ void ULyudPoplarFluffSubsystem::Tick(float DeltaTime)
 	{
 		Holder->SetActorLocation(Cam->GetCameraLocation());
 	}
-	TuftMat->SetVectorParameterValue(TEXT("Fluff"), FLinearColor(6400.f, 2400.f, Amount, 9.f));
+	TuftMat->SetVectorParameterValue(TEXT("Fluff"), FLinearColor(FluffBoxXY, FluffBoxZ, Amount, 9.f));
 }
 
 FString ULyudPoplarFluffSubsystem::Report() const
