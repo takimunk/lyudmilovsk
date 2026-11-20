@@ -77,7 +77,8 @@ without a slip; nothing on: cooks the first dish the pockets allow). Console: `l
 ## Not done yet
 
 - The first Mac build of the engine side, a shot of the recipes' page at the commune canteen and of a pot on the fire.
-- The four icons (one 2×2 Higgsfield grid, prompts in `localization/assets.json`), their import and diary sketches.
+- The four icons: the 2×2 Higgsfield grid is generated and pinned (`localization/icon_grids_kitchen.json`); on the Mac run
+  `python3 tools/garden/icons.py --plan localization/icon_grids_kitchen.json`, look at each cell, import, diary sketches.
 - A frying sound: `pan_sizzle` has no pool in the soundscape yet (frying is silent, the boil uses `steam_hiss`).
 - No pot or pan is shown on the stove and the hero's hands do not move: the cooking is the prompt line, the sounds and
   the result. The pot is not saved (a load mid-cooking loses what was in it).

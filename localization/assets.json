@@ -1376,28 +1376,28 @@
    "style": "icon",
    "aspect": "1:1",
    "prompt": "a white enamel bowl of clear golden fish soup with a piece of white fish, potato chunks and a sprig of dill, an aluminium spoon beside it",
-   "source": "to be cut from one 2x2 Higgsfield grid icons_kitchen (cell 1), pinned in localization/icon_grids_kitchen.json when generated (docs/kitchen.md, still to do on the Mac)"
+   "source": "localization/icon_grids_kitchen.json: icons_kitchen, cell 1 (row 1, left), one 2x2 Higgsfield grid (the game-assets rule)"
   },
   "icon_dish_fried_potatoes": {
    "kind": "icon",
    "style": "icon",
    "aspect": "1:1",
    "prompt": "a cast iron frying pan of golden fried potato slices with a crisp crust, chopped fresh dill scattered on top",
-   "source": "to be cut from one 2x2 Higgsfield grid icons_kitchen (cell 2), pinned in localization/icon_grids_kitchen.json when generated (docs/kitchen.md, still to do on the Mac)"
+   "source": "localization/icon_grids_kitchen.json: icons_kitchen, cell 2 (row 1, right), one 2x2 Higgsfield grid (the game-assets rule)"
   },
   "icon_dish_fried_fish": {
    "kind": "icon",
    "style": "icon",
    "aspect": "1:1",
    "prompt": "a white plate with one whole small fried fish with a golden crisp crust and a sprig of dill beside it",
-   "source": "to be cut from one 2x2 Higgsfield grid icons_kitchen (cell 3), pinned in localization/icon_grids_kitchen.json when generated (docs/kitchen.md, still to do on the Mac)"
+   "source": "localization/icon_grids_kitchen.json: icons_kitchen, cell 3 (row 2, left), one 2x2 Higgsfield grid (the game-assets rule)"
   },
   "icon_dish_salad": {
    "kind": "icon",
    "style": "icon",
    "aspect": "1:1",
    "prompt": "an enamel bowl of salad of red tomato wedges, sliced pink radishes and green dill, coarse salt",
-   "source": "to be cut from one 2x2 Higgsfield grid icons_kitchen (cell 4), pinned in localization/icon_grids_kitchen.json when generated (docs/kitchen.md, still to do on the Mac)"
+   "source": "localization/icon_grids_kitchen.json: icons_kitchen, cell 4 (row 2, right), one 2x2 Higgsfield grid (the game-assets rule)"
   }
  }
 }
