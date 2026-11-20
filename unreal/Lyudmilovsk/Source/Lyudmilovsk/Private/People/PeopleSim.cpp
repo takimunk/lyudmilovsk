@@ -54,6 +54,7 @@ namespace LyudPeople
 			{
 				const float A = Sl.Yaw / 57.29578f;
 				Sl.Approach = Sl.Pos + V3(std::cos(A) * 0.3f, std::sin(A) * 0.3f, 0.f);
+				Sl.bFrontApproach = true;
 			}
 		}
 
@@ -2287,6 +2288,23 @@ namespace LyudPeople
 		P.Reserved = -1;
 	}
 
+	/** The outdoor way to a slot's approach; to a bench from a step out in front of it, so that the last of the way runs
+	 *  square to the seat and nobody comes along the bench through its end. */
+	void FWorld::WayToSlot(const V3& From, const FSlot& To, std::vector<FPerson::FWay>& Out) const
+	{
+		if (To.bFrontApproach && (From - To.Approach).Len2D() > 1.5f)
+		{
+			V3 Front = To.Pos + (To.Approach - To.Pos) * 3.f;
+			Front.Z = To.Approach.Z;
+			OutdoorWay(From, Front, Out);
+			FPerson::FWay Last;
+			Last.P = To.Approach;
+			Out.push_back(Last);
+			return;
+		}
+		OutdoorWay(From, To.Approach, Out);
+	}
+
 	void FWorld::OutdoorWay(const V3& From, const V3& To, std::vector<FPerson::FWay>& Out) const
 	{
 		// off the walk grid (the sea island): straight, over its own ground
@@ -2438,7 +2456,14 @@ namespace LyudPeople
 			}
 			Cur = B.Portal;
 		}
-		OutdoorWay(Cur, Goal, Out);
+		if (ToPl.bIndoor)
+		{
+			OutdoorWay(Cur, Goal, Out);
+		}
+		else
+		{
+			WayToSlot(Cur, To, Out);
+		}
 		if (ToPl.bIndoor)
 		{
 			for (size_t I = 1; I < To.Inside.size(); I++)
@@ -3310,7 +3335,7 @@ namespace LyudPeople
 				P.Slot = Next;
 				P.Place = Slots[Next].Place;
 				P.Path.clear();
-				OutdoorWay(P.Pos, Slots[Next].Approach, P.Path);
+				WayToSlot(P.Pos, Slots[Next], P.Path);
 				P.PathI = 0;
 				P.Pose = EPose::Walk;
 				return;
@@ -3440,7 +3465,7 @@ namespace LyudPeople
 		P.Slot = S;
 		P.Place = Slots[S].Place;
 		P.Path.clear();
-		OutdoorWay(P.Pos, Slots[S].Approach, P.Path);
+		WayToSlot(P.Pos, Slots[S], P.Path);
 		P.PathI = 0;
 		P.Pose = EPose::Walk;
 	}

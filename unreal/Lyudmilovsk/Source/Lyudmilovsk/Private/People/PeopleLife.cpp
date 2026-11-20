@@ -2557,9 +2557,26 @@ void ANpcBody::PlayVaried(FName InRole, std::initializer_list<FName> Variants, f
 	Play(bOurs && Clip(Playing) ? Playing : *Variants.begin(), true, Rate);
 }
 
-void ANpcBody::Drive(const FVector& Location, float Yaw, EPersonPose Pose, int32 Transit, float Speed, float SeatHeight, float DeltaTime, bool bSnap)
+void ANpcBody::Drive(const FVector& InLocation, float Yaw, EPersonPose Pose, int32 Transit, float Speed, float SeatHeight, float DeltaTime, bool bSnap)
 {
 	const bool bSmooth = LyudMotion::Smooth();
+	FVector Location = InLocation;
+	// the seat clips stand 30 cm in front of the seat's point (SitDown's first frame, StandUp's last; life_anims.py), which
+	// is where the life has them arrive and leave from (a slot's approach)
+	const float LeadCm = 30.f * BodyScale;
+	// the life has them at the seat while the body is still finishing its last step up to it: the step is finished first
+	// (the sit-down clip then starts a moment late and is cut that much short at its seated end)
+	if (bSmooth && Transit == 1 && !bSnap && bPlaced && bShownValid && (Playing == TEXT("Walk") || Playing == TEXT("Run")))
+	{
+		const FVector Front = Location + FRotator(0.f, Yaw, 0.f).Vector() * LeadCm;
+		if (FVector::DistSquared2D(ShownPos, Front) > FMath::Square(9.f * BodyScale) && FVector::DistSquared2D(ShownPos, Front) < 150.0 * 150.0)
+		{
+			Location = Front;
+			Transit = 0;
+			Pose = EPersonPose::Walk;
+			SeatHeight = 0.f;
+		}
+	}
 	if (bOnBike)
 	{
 		DriveBike(nullptr, FLyudBikeRide(), FVector::ZeroVector, 0.f, 0.f, DeltaTime);
@@ -2573,11 +2590,23 @@ void ANpcBody::Drive(const FVector& Location, float Yaw, EPersonPose Pose, int32
 	// where they are shown: on their life's point through a spring (a jump of more than a few steps is a jump)
 	FVector Shown = Location;
 	float GaitSpeed = Speed;
-	// the seat clips stand 30 cm in front of the seat's point (SitDown's first frame, StandUp's last; life_anims.py), which
-	// is where the life has them arrive and leave from (a slot's approach): what is followed and turned about is that
-	// point, so somebody who walks up turns round where they stand and sits back, with no step of the whole body
-	const float SeatLead = bSmooth && bSeat ? 30.f * S : 0.f;
-	const FVector Target = Location + FRotator(0.f, Yaw, 0.f).Vector() * SeatLead;
+	// what is followed and turned about on a seat is the clips' standing point, so somebody who walks up turns round where
+	// they stand and sits back with no step of the whole body; the actor goes back under the seat as the clip blends in
+	// (and comes forward again as the standing one does), so the body itself stays where it is through both
+	const FVector Target = Location + FRotator(0.f, Yaw, 0.f).Vector() * (bSmooth && bSeat ? LeadCm : 0.f);
+	if (!bSmooth)
+	{
+		SeatLeadK = 0.f;
+	}
+	else if (bSnap || !bPlaced || !bShownValid || DeltaTime <= 0.f)
+	{
+		SeatLeadK = bSeat ? 1.f : 0.f;
+	}
+	else
+	{
+		SeatLeadK = FMath::Clamp(SeatLeadK + (bSeat ? DeltaTime / 0.3f : -DeltaTime / 0.5f), 0.f, 1.f);
+	}
+	const float SeatLead = LeadCm * FMath::SmootherStep(0.f, 1.f, SeatLeadK);
 	if (bSmooth)
 	{
 		if (bSnap || !bPlaced || !bShownValid || bBed || DeltaTime <= 0.f || FVector::DistSquared(ShownPos, Target) > 300.0 * 300.0)

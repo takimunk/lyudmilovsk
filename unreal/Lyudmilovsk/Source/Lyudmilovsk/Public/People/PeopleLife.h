@@ -447,6 +447,8 @@ private:
 	 *  fastest the life itself moved them lately (a small jump of the life's is glided over, not run). */
 	FVector ShownPos = FVector::ZeroVector;
 	FVector ShownVel = FVector::ZeroVector;
+	/** 0 on their feet .. 1 on a seat: how far the actor stands back from the body's point under the seat (Drive). */
+	float SeatLeadK = 0.f;
 	float ShownZVel = 0.f;
 	float FacingVel = 0.f;
 	float RecentSpeed = 0.f;
