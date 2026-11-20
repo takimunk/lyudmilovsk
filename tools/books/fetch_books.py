@@ -494,6 +494,28 @@ def ws_years(field: str) -> int | None:
     return int(m.group(1)) if m else None
 
 
+_deaths: dict[str, int | None] = {}
+
+
+def ws_death(field: str) -> int | None:
+    """The death year of a creator named in a header field: "(1836—1902)" in the field itself, else the "ум. ..." line of
+    his Автор: page (dates there come from Wikidata, so only the rendered page has them)."""
+    y = ws_years(field)
+    if y:
+        return y
+    m = re.search(r"\[\[(?:Автор:)?([^\]|]+)", field)
+    name = (m.group(1) if m else re.sub(r"\(.*?\)", "", field)).strip().lstrip("~").strip()
+    if not name or len(name) < 4 or re.fullmatch(r"[\d\s.]+", name):
+        return None
+    if name not in _deaths:
+        h = ws_render("Автор:" + name) or ""
+        t = re.sub(r"\s+", " ", html.unescape(re.sub(r"<[^>]+>", " ", h)))
+        d = re.search(r"\bум\.(.{0,60})", t)
+        y4 = re.search(r"\b(1[0-9]{3})\b", d.group(1)) if d else None
+        _deaths[name] = int(y4.group(1)) if y4 else None
+    return _deaths[name]
+
+
 def ws_follow(title: str) -> tuple[str, str] | None:
     for _ in range(3):
         raw = ws_raw(title)
@@ -546,16 +568,18 @@ def resolve_ru(w: dict) -> dict | None:
         tr_f = ws_field(raw, "ПЕРЕВОДЧИК")
         if not tr_f and ";" in page:
             tr_f = page.split(";", 1)[1].rstrip(")").strip()
+        if sur and author_f and norm(sur)[:5] not in norm(author_f):
+            continue  # another author's book of the same title (Petrarch's and Heine's "Книга песен")
         a_died = ws_years(author_f)
-        t_died = ws_years(tr_f) if tr_f else None
+        t_died = ws_death(tr_f) if tr_f else None
         if a_died and a_died > LAST_DEATH or t_died and t_died > LAST_DEATH:
             continue
         if lic and not lic.upper().startswith("PD"):
             continue
         if translated and not tr_f:
             continue  # a translation with no translator named: could be anybody's, any year
-        if translated and t_died is None and not lic.upper().startswith(("PD-RUSEMPIRE", "PD-OLD")):
-            continue
+        if translated and (t_died is None or norm(surname(tr_f)) == norm(sur) or tr_f.strip().lower() in ("нет", "")):
+            continue  # every translator's death year must be known (1955 rule); "нет" or the author himself: an original
         if not lic and not (a_died or w["year"] < 1880) and not (translated and t_died):
             continue
         # the text itself must be on Wikisource: a page of just links to other translations is no text
@@ -571,7 +595,7 @@ def resolve_ru(w: dict) -> dict | None:
     def clean(f, fallback):
         n = re.sub(r"\(.*?\)", "", f)
         m = re.search(r"\[\[([^\]|]+)(?:\|([^\]]+))?\]\]", n)
-        return (m.group(1) if m else n).strip() or fallback
+        return re.sub(r"^(\[\[)?(Автор:)?|\]\]$", "", (m.group(1) if m else n).strip()).strip(" ~") or fallback
 
     creators = [{"name": clean(author_f, w["author"]["ru"]), "died": a_died, "role": "author"}]
     if tr_f:
