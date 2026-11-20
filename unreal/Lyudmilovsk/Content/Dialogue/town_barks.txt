@@ -2437,3 +2437,59 @@ say = town.sing_jingle_bells.1..4
 [sing_sakura]
 on = hero_sing_sakura
 say = town.sing_sakura.1..3
+
+# The town at the evening's new things (docs/town_life.md, "The new activities"): the cinema's house, the
+# sanatorium's pump room and its dominoes, the paper on the benches, flat stones on the water, the allotment
+# neighbours at their beds, the post round, the piano in the hall
+
+[stones_kid]
+doing = skip_stones
+age = kid teen
+say = town.stones_kid.1..5
+
+[stones_grown]
+doing = skip_stones
+age = adult elder
+say = town.stones_grown.1..2
+
+[paper_bench]
+doing = read_paper
+say = town.paper_bench.1..5
+
+[dominoes_table]
+doing = dominoes
+say = town.dominoes.1..6
+
+[cure_pump]
+doing = san_cure
+say = town.cure.1..4
+
+[allotment_dig]
+doing = tend_allotment
+say = town.allotment_dig.1..4
+
+[allotment_water]
+doing = water_allotment
+say = town.allotment_water.1..3
+
+[allotment_hero]
+doing = tend_allotment water_allotment
+near = hero
+say = town.allotment_hero.1..2
+
+[post_round]
+doing = post_round
+say = town.post_round.1..4
+
+[post_round_hero]
+doing = post_round
+near = hero
+say = town.post_round_hero.1
+
+[cinema_house]
+doing = cinema_day cinema_evening
+say = town.cinema_house.1..4
+
+[piano_hall]
+doing = play_piano
+say = town.piano_hall.1..3

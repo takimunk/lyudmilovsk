@@ -99,6 +99,7 @@ namespace LyudPeople
 		V3 SnowTo;                  // and its far end
 		// reservation
 		int Owner = -1;             // only this person (or their household) uses it; -1 anybody
+		std::string OwnerKey;       // "owner" in town_places.json: that person's key (ReserveOwnSlots looks it up: an allotment bed's keeper)
 		std::vector<int> Users;     // who is using or going to it now
 		int K = -1;                 // Kind interned (FWorld::Index; -1 not yet: compared by name)
 		bool Free(int Person) const;
@@ -133,6 +134,8 @@ namespace LyudPeople
 		// the town's buildings (town_places.json, docs/town_life.md): a shell has no rooms to walk; whoever is in it is
 		// inside (not drawn), at its door. A flat's windows light up while somebody is home and awake after dusk.
 		bool bShell = false;
+		bool bOpen = false;         // "open": entered by its gate and walked by its paths like a room, but out of doors (an allotment's
+		                            // fenced yard): the weather counts there
 		std::string Building;       // the plot / building id (T2-05)
 		std::vector<std::string> Windows;   // window ids (T2-05/3-02/w1)
 		std::vector<std::string> Roles;     // a workplace's job roles (waiter, cook, seller, ...)
@@ -173,6 +176,7 @@ namespace LyudPeople
 		float Pace = 1.f;                   // "pace": how fast they go within it against their walk (a jog, children at play: 2)
 		bool bRainOk = false;               // "rain": "ok": chosen and kept up in the rain too (outdoors)
 		float WindMin = -1.f, WindMax = 99.f;   // "wind": [min, max] m/s: chosen only in such a wind (a kite: a breeze, not a calm or a gale)
+		float TempMin = -99.f, TempMax = 99.f;  // "temp": [min, max] C: chosen only in such weather (the allotment: not in the frost)
 		std::vector<int> PlaceIdx;          // the places of its kinds (built after loading; "home" and gatherings aside)
 		std::vector<int> SlotK, PlaceK;     // Slots and Places interned
 		bool bHome = false;                 // "home" among its places
@@ -380,6 +384,8 @@ namespace LyudPeople
 		bool LoadTownsfolk(const std::string& Text);
 		/** After loading: activities' place lists, duties' workplaces. Load and the town loaders call it. */
 		void Index();
+		/** A place under a roof: indoors and not an open yard (FPlace::bOpen). */
+		bool Roofed(int Place) const { return Places[(size_t)Place].bIndoor && !Places[(size_t)Place].bOpen; }
 		/** Somebody inside a shell (a town building): not drawn. */
 		bool InsideShell(const FPerson& P) const;
 		/** Who works at a place now (in their role, "" any), on their shift and there. */

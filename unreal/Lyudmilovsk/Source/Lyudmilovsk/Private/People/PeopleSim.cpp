@@ -216,6 +216,11 @@ namespace LyudPeople
 				A.WindMin = V["wind"][size_t(0)].F();
 				A.WindMax = V["wind"][size_t(1)].F();
 			}
+			if (V["temp"].Size() == 2)
+			{
+				A.TempMin = V["temp"][size_t(0)].F();
+				A.TempMax = V["temp"][size_t(1)].F();
+			}
 			if (A.bGather)
 			{
 				const std::string M = V["mode"].S("mingle");
@@ -1154,6 +1159,7 @@ namespace LyudPeople
 			Pl.Yaw = V["yaw"].F();
 			Pl.Portal = V.Find("door") ? Vec(V["door"]) : Vec(V["pos"]);
 			Pl.bShell = V["shell"].F() > 0.f;
+			Pl.bOpen = V["open"].F() > 0.f;
 			Pl.bIndoor = Pl.bShell;
 			// a walked interior (the restaurant): in by its door and the way inside to each slot
 			std::vector<V3> Prefix;
@@ -1187,10 +1193,19 @@ namespace LyudPeople
 				Sl.Height = S["height"].F();
 				Sl.Capacity = std::max(1, S["capacity"].I(1));
 				Sl.Tag = S["tag"].S();
-			Sl.Thing = S["thing"].S();
+				Sl.Thing = S["thing"].S();
+				Sl.OwnerKey = S["owner"].S();
 				if (!Prefix.empty())
 				{
 					Sl.Inside = Prefix;
+					// its own way on from the place's (an aisle of the cinema, a doorway further in)
+					for (const V3& Pt : Line(S["path"]))
+					{
+						if (!Same(Sl.Inside.back(), Pt))
+						{
+							Sl.Inside.push_back(Pt);
+						}
+					}
 					if (!Same(Sl.Inside.back(), Sl.Approach))
 					{
 						Sl.Inside.push_back(Sl.Approach);
@@ -1667,6 +1682,15 @@ namespace LyudPeople
 
 	void FWorld::ReserveOwnSlots()
 	{
+		for (FSlot& Sl : Slots)
+		{
+			if (!Sl.OwnerKey.empty())
+			{
+				const int Who = FindPerson(Sl.OwnerKey);
+				// a keeper who isn't in the town (any more): nobody's, and nobody else's either
+				Sl.Owner = Who >= 0 ? Who : -2;
+			}
+		}
 		for (const FPerson& P : People)
 		{
 			const size_t Colon = P.OwnSlot.find(':');
@@ -1825,7 +1849,7 @@ namespace LyudPeople
 		{
 			return false;
 		}
-		if (Sl.Owner >= 0 && Sl.Owner != P.Id && !(bBed && bFlat && Sl.Place == P.Home && Sl.Capacity > 1))
+		if (Sl.Owner != -1 && Sl.Owner != P.Id && !(bBed && bFlat && Sl.Place == P.Home && Sl.Capacity > 1))
 		{
 			return false;
 		}
@@ -2166,8 +2190,13 @@ namespace LyudPeople
 		Score -= TravelH * Opt.WalkCostPerHour;
 		// the weather: nobody chooses to be out in the rain (those who love the open air mind it less), the frost empties
 		// the benches and the lookouts, a warm day draws to the water
-		if (!Places[Sl.Place].bIndoor && !A.bAway && !A.bGather)
+		if (!Roofed(Sl.Place) && !A.bAway && !A.bGather)
 		{
+			// an activity of the season (the allotment's beds, a paper on a bench): not in the frost, not in the heat
+			if (TempC < A.TempMin || TempC > A.TempMax)
+			{
+				return -1e9f;
+			}
 			if (bRain && !A.bRainOk)
 			{
 				Score -= (0.9f + 0.8f * Rain) * (1.f - 0.35f * P.NatureLove);
@@ -2196,7 +2225,7 @@ namespace LyudPeople
 			}
 		}
 		// a fine evening: the town comes out to walk the sea front (the warmer, the more of them; nobody in the rain)
-		if (Hour >= 18.f && Hour < 21.5f && !bRain && TempC > 12.f && !A.bAway && !A.bGather && !Places[Sl.Place].bIndoor
+		if (Hour >= 18.f && Hour < 21.5f && !bRain && TempC > 12.f && !A.bAway && !A.bGather && !Roofed(Sl.Place)
 			&& (A.bWander || A.Pose == EPose::Look))
 		{
 			const std::string& K = Places[Sl.Place].Kind;
@@ -2497,7 +2526,7 @@ namespace LyudPeople
 			P.PathI = 0;
 			P.Pos = IsSeated(A.Pose) || A.Pose == EPose::Sleep || A.Pose == EPose::Work ? SpotOf(P, Slot) : Sl.Approach;
 			P.Yaw = YawAt(P, Slot, A.Pose);
-			P.bIndoors = Places[Sl.Place].bIndoor;
+			P.bIndoors = Roofed(Sl.Place);
 			P.Island = std::max(0, Places[Sl.Place].Island);
 			P.Until = Time + Minutes * 60.0;
 			P.State = A.bAway ? EState::Away : EState::Doing;
@@ -2673,7 +2702,7 @@ namespace LyudPeople
 		}
 		// caught by the rain out of doors at something they chose: they don't sit it out (each looks up at their own
 		// moment, so a square empties over a couple of minutes, not at once)
-		if (bRain && Cur.bFree && Duty < 0 && !Cur.bRainOk && !Cur.bGather && !P.bIndoors && P.Place >= 0 && !Places[P.Place].bIndoor)
+		if (bRain && Cur.bFree && Duty < 0 && !Cur.bRainOk && !Cur.bGather && !P.bIndoors && P.Place >= 0 && !Roofed(P.Place))
 		{
 			return true;
 		}
@@ -3205,7 +3234,7 @@ namespace LyudPeople
 		}
 		const FActivity& A = Activities[P.Activity];
 		const FSlot& Sl = Slots[P.Slot];
-		P.bIndoors = Places[Sl.Place].bIndoor;
+		P.bIndoors = Roofed(Sl.Place);
 		P.Until = Time + P.Minutes * 60.0;
 		P.StateStart = Time;
 		P.WanderAt = Time + (A.bPauseSet ? A.PauseMin + (A.PauseMax - A.PauseMin) * Rand(P.Rng) : 30.0 + 60.0 * Rand(P.Rng));

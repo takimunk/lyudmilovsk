@@ -41,6 +41,7 @@ namespace LyudGesture
 		Fingers,    // between the main hand's fingers, sticking out to the thumb's side (a cigarette, a brush)
 		TwoHands,   // between both hands, its length from hand to hand, its face toward the head (a paper, a camera)
 		Pointing,   // in the main hand, pointing on past the other hand (a rod)
+		Shaft,      // gripped by both hands, running from the main hand through the other and on (a spade)
 	};
 	EHold HoldOf(LyudPeople::EProp Prop);
 }

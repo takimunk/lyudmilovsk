@@ -224,7 +224,7 @@ static int Week()
 		for (int I = 0; I < (int)P.Duties.size(); I++)
 		{
 			const FDuty& D = P.Duties[I];
-			if (P.bTown && D.Place >= 0 && D.Role != "pupil")
+			if (P.bTown && D.Place >= 0 && D.Role != "pupil" && W->ActOf(D) >= 0 && W->Activities[(size_t)W->ActOf(D)].bStaff)      // a round (the post) has no counter to man
 			{
 				Staff[{ D.Place, D.Role }].push_back({ P.Id, I });
 			}

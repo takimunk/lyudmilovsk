@@ -73,4 +73,5 @@ The script sends a generic User-Agent naming no one; `FILMS_UA_CONTACT="…"` ad
 
 - The club's summer screen on festival nights (the brief's second screen): the data has a `festival` programme, but there is
   no outdoor screen thing yet; a `CINEMAS` entry with its plot, screen and acts is all it needs once one exists.
-- Townsfolk in the hall during a session (the life sim does not seat them in the Rassvet yet).
+- The townsfolk's house (docs/town_life.md, "The new activities") comes to two fixed sessions, 15:00 and 19:00, whatever the
+  programme says.

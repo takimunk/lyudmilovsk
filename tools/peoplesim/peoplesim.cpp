@@ -1049,6 +1049,9 @@ static int Town()
 	const double Monday = LyudWeather::HoursSince2000(2026, 10, 19, 0.0);
 	int KitesDark = 0, KitesOffWind = 0;
 	float KiteWindLo = 99.f, KiteWindHi = 0.f;
+	// the town's new things to do (tools/town/town_activities.py, docs/town_life.md "The new activities")
+	int CinemaNow = 0, CinemaPeak = 0, CinemaOff = 0, BedStrangers = 0, PianoNow = 0, PianoTwo = 0, StonesDark = 0, StonesGale = 0, PaperLate = 0;
+	std::set<int> PostStops, CinemaGoers;
 	for (double T = 0.0; T < 36.0 * 3600.0; T += Dt)
 	{
 		C.Seconds += Dt;
@@ -1099,6 +1102,38 @@ static int Town()
 				{
 					continue;
 				}
+				if (P.Activity >= 0 && P.State == EState::Doing)
+				{
+					const std::string& Id = W.Activities[P.Activity].Id;
+					if (Id == "cinema_day" || Id == "cinema_evening")
+					{
+						CinemaNow++;
+						CinemaGoers.insert(P.Id);
+						// a session is an hour and a half from 15:00 or 19:00 (and the walk there)
+						CinemaOff += (W.Hour > 14.5f && W.Hour < 17.4f) || (W.Hour > 18.5f && W.Hour < 21.4f) ? 0 : 1;
+					}
+					else if (Id == "tend_allotment" || Id == "water_allotment")
+					{
+						BedStrangers += P.Slot >= 0 && W.Slots[(size_t)P.Slot].Owner == P.Id ? 0 : 1;
+					}
+					else if (Id == "play_piano")
+					{
+						PianoNow++;
+					}
+					else if (Id == "skip_stones")
+					{
+						StonesDark += (W.Hour < 7.f || W.Hour > 20.f) ? 1 : 0;
+						StonesGale += W.Wind > 9.f ? 1 : 0;
+					}
+					else if (Id == "read_paper")
+					{
+						PaperLate += W.Hour > 12.6f ? 1 : 0;
+					}
+					else if (Id == "post_round" && P.Pose != EPose::Walk && P.Slot >= 0)
+					{
+						PostStops.insert(P.Slot);
+					}
+				}
 				if (P.Activity >= 0 && (P.State == EState::Doing || P.State == EState::Away))
 				{
 					Minutes[W.Activities[P.Activity].Id] += 1.0;
@@ -1113,6 +1148,12 @@ static int Town()
 				if (P.N[(int)ENeed::Hunger] > 0.95f && P.Pose != EPose::Sleep)
 				{
 					Hungry[P.Key] += 1.f;
+				}
+				if (&P == &W.People.back())
+				{
+					CinemaPeak = std::max(CinemaPeak, CinemaNow);
+					PianoTwo += PianoNow > 1 ? 1 : 0;
+					CinemaNow = PianoNow = 0;
 				}
 				const bool bWay = P.State == EState::Going || P.State == EState::Waiting || P.State == EState::Riding;
 				if (!bWay)
@@ -1177,6 +1218,20 @@ static int Town()
 	CHECK(AwakeNightType03 > 0, "... but the night owls are up (%d)", AwakeNightType03);
 	CHECK(Minutes["fly_kite"] > 0 && KitesDark == 0 && KitesOffWind == 0, "children fly kites by day in a breeze (%.0f person-minutes in %.1f-%.1f m/s; %d in the dark, %d in a calm or a gale)",
 		Minutes["fly_kite"], KiteWindLo, KiteWindHi, KitesDark, KitesOffWind);
+	if (W.FindActivity("cinema_day") >= 0)
+	{
+		CHECK(CinemaPeak >= 12 && CinemaPeak <= 150 && CinemaOff == 0, "the Rassvet's sessions have a house (%d at once at the fullest, %zu went in 36 h; %d person-minutes out of a session)",
+			CinemaPeak, CinemaGoers.size(), CinemaOff);
+		CHECK(Minutes["dominoes"] > 60 && Minutes["san_cure"] > 60, "the old play dominoes at the sanatorium and take its waters (%.0f, %.0f person-minutes)",
+			Minutes["dominoes"], Minutes["san_cure"]);
+		CHECK(Minutes["tend_allotment"] + Minutes["water_allotment"] > 60 && BedStrangers == 0, "the allotment's keepers work their own beds (%.0f + %.0f person-minutes, %d at somebody else's)",
+			Minutes["tend_allotment"], Minutes["water_allotment"], BedStrangers);
+		CHECK(Minutes["read_paper"] > 60 && PaperLate == 0, "the morning paper is read on the benches (%.0f person-minutes, %d after half past twelve)", Minutes["read_paper"], PaperLate);
+		CHECK(Minutes["skip_stones"] > 60 && StonesDark == 0 && StonesGale == 0, "stones are skipped off the beach by day on a quiet sea (%.0f person-minutes; %d in the dark, %d in a gale)",
+			Minutes["skip_stones"], StonesDark, StonesGale);
+		CHECK(Minutes["play_piano"] < 400 && PianoTwo == 0, "the piano in the hall is played now and then, by one at a time (%.0f person-minutes)", Minutes["play_piano"]);
+		CHECK(PostStops.size() >= 12, "the postman's round goes from door to door (%zu doors in 36 h, %.0f person-minutes)", PostStops.size(), Minutes["post_round"]);
+	}
 	CHECK(Minutes["watch_sunrise"] > 0, "early risers watch the sunrise (%.0f person-minutes)", Minutes["watch_sunrise"]);
 	CHECK(Minutes["night_walk"] > 0, "somebody walks at night (%.0f person-minutes)", Minutes["night_walk"]);
 	CHECK(Minutes["sit_bench"] > 300, "people sit on the benches (%.0f person-minutes)", Minutes["sit_bench"]);
