@@ -504,7 +504,7 @@
   "P-MARKET/market_scales_2": {
    "act": "job_mk_boxes",
    "hours": [
-    6,
+    7,
     10
    ],
    "days": "sat"

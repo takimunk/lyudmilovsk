@@ -1,0 +1,24 @@
+{
+ "service": "higgsfield MCP",
+ "tool": "generate_image",
+ "model": "gpt_image_2_5",
+ "arguments": {
+  "aspect_ratio": "3:2",
+  "resolution": "2k",
+  "quality": "medium",
+  "prompt": "Six inventory icons for a moody adventure game, arranged as a 3 by 2 grid (three columns, two rows) of equal square cells on one picture: in every cell one object centred and filling most of the cell, softly lit from the upper left, painterly realistic style, plain dark warm-grey cloth background with a faint vignette, the same background and the same scale in every cell (every object drawn at the same icon size, as large as the cell allows with a margin), no borders, frames or lines between the cells, nothing crossing a cell edge, exactly one object or one small group per cell, no text, letters, numbers or logos anywhere, not even on the objects. Everyday goods of a 1970s-80s Soviet seaside town, no real brands. Row 1, left: a tied bunch of five glossy red radishes with green leafy tops and thin white tails. Row 1, middle: a fresh bunch of feathery green dill tied with a thin strip of twine. Row 1, right: a small heap of six new potatoes with thin papery skins and a little dark earth still on them. Row 2, left: four ripe red ribbed garden tomatoes with green star-shaped stalks, one with a drop of dew. Row 2, middle: a handful of ripe red garden strawberries with green caps in a small birch-bark basket. Row 2, right: a glass jar of dark red strawberry jam with whole berries visible, a square of white gauze tied over the lid with string, a blank paper label."
+ },
+ "job_id": "fcca3f3f-36ed-4368-8fb3-6921868227ee",
+ "output_url": "https://d8j0ntlcm91z4.cloudfront.net/user_36I3ndR5QeKPyjKAdSKVfbd04n2/hf_20261120_224149_fcca3f3f-36ed-4368-8fb3-6921868227ee.png",
+ "credits": 1,
+ "generated": "2026-11-20",
+ "cells_row_major": [
+  "radish",
+  "dill",
+  "potatoes",
+  "tomatoes",
+  "strawberries",
+  "jam_strawberry"
+ ],
+ "sha256": "952e9ee6d618e0cd0d49bd0837efb512b1da9ea6784e9091eb457b56461336e4"
+}

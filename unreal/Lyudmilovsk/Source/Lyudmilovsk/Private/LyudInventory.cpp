@@ -147,6 +147,11 @@ namespace
 		Good(TEXT("record_club_2"), K::Misc, L::Flat, FVector(0.4f, 31.f, 31.f), FLinearColor(0.10f, 0.45f, 0.42f), 60, 4.f);
 		Good(TEXT("record_club_3"), K::Misc, L::Flat, FVector(0.4f, 31.f, 31.f), FLinearColor(0.15f, 0.20f, 0.25f), 60, 4.f);
 		Good(TEXT("record_flight_1"), K::Misc, L::Flat, FVector(0.4f, 31.f, 31.f), FLinearColor(0.55f, 0.78f, 0.92f), 55, 4.f);
+		// winter play (docs/winter_play.md): the banya's birch venik and towel, a carrot and coal for a snowman's face
+		Good(TEXT("birch_venik"), K::Misc, L::Pack, FVector(8.f, 20.f, 52.f), FLinearColor(0.40f, 0.52f, 0.24f), 8, 9.f);
+		Good(TEXT("banya_towel"), K::Misc, L::Pack, FVector(5.f, 22.f, 30.f), FLinearColor(0.93f, 0.90f, 0.84f), 30, 8.f);
+		Good(TEXT("carrot"), K::Misc, L::Pack, FVector(3.f, 3.f, 16.f), FLinearColor(0.95f, 0.48f, 0.10f), 3, 2.f);
+		Good(TEXT("coal"), K::Misc, L::Pack, FVector(3.f, 3.f, 3.f), FLinearColor(0.05f, 0.05f, 0.05f), 0, 2.f);
 		// the Academgorodok's grocery (docs/bird_taming.md "Feeds and the feeder"): feeds for the rarer birds (each unit a handful,
 		// held in the hand like the vending machine's seeds; what each bird thinks of them is Content/BirdsData/feeds.json),
 		// the feeder to put them in, and bread and kefir for the hero
@@ -228,6 +233,10 @@ namespace
 		Good(TEXT("toy_car"), K::Misc, L::Pack, FVector(3.f, 4.f, 9.f), FLinearColor(0.35f, 0.6f, 0.85f), 50, 3.f);
 		Good(TEXT("rubber_ball"), K::Misc, L::Pack, FVector(16.f, 16.f, 16.f), FLinearColor(0.85f, 0.15f, 0.1f), 45, 8.f);
 		Good(TEXT("shell_box"), K::Misc, L::Pack, FVector(6.f, 8.f, 10.f), FLinearColor(0.9f, 0.85f, 0.75f), 60, 5.f);
+		// the photo studio's goods (docs/interactives_backlog.md "A film camera and the photo album", Private/Photo/LyudPhoto.cpp): the
+		// rangefinder «Чайка-3» in its case and a cassette of 36 black-and-white frames (an exposed film is no item: the album keeps it)
+		Good(TEXT("camera"), K::Misc, L::Pack, FVector(7.f, 13.5f, 8.5f), FLinearColor(0.08f, 0.07f, 0.07f), 240, 5.f);
+		Good(TEXT("photo_film"), K::Misc, L::Pack, FVector(3.4f, 3.4f, 5.2f), FLinearColor(0.16f, 0.3f, 0.42f), 18, 2.f);
 		// the allotment behind the commune house (docs/allotment.md, tools/garden/data.py ITEMS): the tools, seeds and seedlings
 		// from the hardware shop and the market, and what the bed gives (the sunflower's harvest is the shops' own «seeds»)
 		Good(TEXT("spade"), K::Misc, L::Flat, FVector(3.f, 18.f, 40.f), FLinearColor(0.45f, 0.42f, 0.38f), 60, 4.f);
@@ -309,6 +318,9 @@ namespace
 		Wear(TEXT("hoodie"), ELyudEquipSlot::Body);
 		Wear(TEXT("cargo_trousers"), ELyudEquipSlot::Legs);
 		Wear(TEXT("sneakers"), ELyudEquipSlot::Feet);
+		// winter play (docs/winter_play.md): skates on the feet (the pond's ice glides under them), the banya's felt hat
+		Wear(TEXT("skates"), ELyudEquipSlot::Feet);
+		Wear(TEXT("banya_hat"), ELyudEquipSlot::Head);
 		// fishing (docs/fishing.md): the rods (taken in the hand), their baits (a bait taken in the hand goes on the rig; each unit is
 		// one on the hook), the spoon (cast and wound in, lost only with the line), and every fish one can catch (fish_<species>)
 		FLyudItemDef Rod;
