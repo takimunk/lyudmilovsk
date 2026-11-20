@@ -358,11 +358,33 @@ def stair_line():
     return (top - 2.0, STAIR_Y), (W.shore_x(STAIR_Y) - W.BEACH_W + 1.0, STAIR_Y)
 
 
+SWELL = 1.5                                   # metres: the valley meadow's low swells (it was one tilted plane)
+
+
+def swell(x, y, z):
+    """Metres the valley's meadow rises here: long low swells (90 and 37 m) on what was a single tilted plane, so the
+    contours wander and the spring trail goes over and round something. None by the brook (its banks keep their
+    height), on the reedbed's wet flat, under the town's first terrace and at the box's edges."""
+    if z > -30.0 or y > 345.0 or x > -20.0:
+        return 0.0
+    x0, x1, y0, y1 = BOX
+    k = _smooth((-30.0 - z) / 3.0) * _smooth((345.0 - y) / 30.0) * _smooth((-20.0 - x) / 50.0)
+    k *= _smooth((x - x0) / 50.0) * _smooth((y - y0) / 50.0)
+    b = brook_at(x, y)
+    if b is not None:
+        k *= _smooth((b[0] - 5.0) / 38.0)
+    if k <= 0.0:
+        return 0.0
+    n = 0.68 * _noise(x, y, 90.0, 11) + 0.32 * _noise(x, y, 37.0, 12)
+    return SWELL * k * _smooth((n - 0.25) / 0.6)
+
+
 def shape(x, y, z):
     """world_map.plateau_south's hook: the land with the shoulder on it and the brook cut into it."""
     x0, x1, y0, y1 = BOX
     if not (x0 < x < x1 and y0 < y < y1):
         return z
+    z += swell(x, y, z)
     h = shoulder(x, y)
     if h is not None:
         z = _smax(z, h, 1.6)
@@ -447,8 +469,8 @@ def _trails():
     t["town"] = [p if p is not None else (b[0], b[1]) for p in TRAILS["town"]]
     t["sea"] = [p if p is not None else (tx - 1.0, ty) for p in TRAILS["sea"]]
     t["hide"] = [FOOT, (-150.0, 291.0), (-100.0, 289.0), (-66.0, 278.0), (HIDE_AT[0] - 5.0, HIDE_AT[1] + 4.0)]
-    t["spring"] = [FOOT, (-226.0, 288.0), (-262.0, 266.0), (-312.0, 236.0), (ORCHARD[0], ORCHARD[1] + 4.0), (-446.0, 170.0),
-                   (-512.0, 142.0), (SPRING[0] + 5.0, SPRING[1] - 3.0)]
+    t["spring"] = [FOOT, (-226.0, 288.0), (-256.0, 275.0), (-284.0, 247.0), (-326.0, 236.0), (ORCHARD[0], ORCHARD[1] + 4.0),
+                   (-412.0, 191.0), (-444.0, 165.0), (-482.0, 158.0), (-512.0, 142.0), (SPRING[0] + 5.0, SPRING[1] - 3.0)]
     return t
 
 
@@ -676,6 +698,22 @@ def _axis_yaw(heading):
     return (heading - 90.0) % 360.0
 
 
+BESIDE = {"trail_sign": 1.9, "info_board": 2.3, "picnic_table": 2.6}     # kind: metres from a trail's middle
+
+
+def _beside(x, y, r):
+    """(x, y) pushed straight away from the nearest trail point until it is r from every trail's middle."""
+    pts = [p for t in trails().values() for p in t]
+    for _ in range(6):
+        px, py = min(pts, key=lambda p: (p[0] - x) ** 2 + (p[1] - y) ** 2)
+        d = math.hypot(x - px, y - py)
+        if d >= r:
+            break
+        ux, uy = ((x - px) / d, (y - py) / d) if d > 0.05 else (1.0, 0.0)
+        x, y = px + ux * (r + 0.05), py + uy * (r + 0.05)
+    return x, y
+
+
 def things():
     """Everything loose: {id, kind, x, y, yaw (Unreal degrees of the front), variant, set ("south": blender/south's
     meshes, "north": the North's kit), z (only where the thing must not follow the ground)}."""
@@ -684,6 +722,8 @@ def things():
 
     def put(kind, x, y, yaw=0.0, variant=0, kit="south", z=None, name=None):
         n = sum(1 for o in out if o["kind"] == kind) + 1
+        if kind in BESIDE:                                 # posts and tables stand beside a trail, never on it
+            x, y = _beside(x, y, BESIDE[kind])
         o = {"id": name or "%s_%d" % (kind, n), "kind": kind, "x": round(x, 2), "y": round(y, 2),
              "yaw": round(yaw % 360.0, 1), "variant": variant, "set": kit}
         if z is not None:
