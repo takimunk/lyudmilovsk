@@ -117,6 +117,7 @@
   {"id": "city.q.commune_charter.1", "group": "interiors", "name": "dev.tp.city.q.commune_charter.1", "x": -489.01, "y": 544.96, "z": -2900.0, "yaw": 177.8},
   {"id": "city.q.commune_charter.2", "group": "interiors", "name": "dev.tp.city.q.commune_charter.2", "x": -493.21, "y": 543.72, "z": -2900.0, "yaw": 177.8},
   {"id": "city.q.commune_charter.3", "group": "interiors", "name": "dev.tp.city.q.commune_charter.3", "x": -497.05, "y": 550.67, "z": -2900.0, "yaw": 177.8},
+  {"id": "city.q.job_book.1", "group": "interiors", "name": "dev.tp.city.q.job_book.1", "x": 92.39, "y": 470.63, "z": -3950.0, "yaw": -92.1},
   {"id": "city.q.home_hargreaves.1", "group": "interiors", "name": "dev.tp.city.q.home_hargreaves.1", "x": -735.37, "y": 948.05, "z": 920.0, "yaw": 84.8},
   {"id": "city.q.home_hargreaves.2", "group": "interiors", "name": "dev.tp.city.q.home_hargreaves.2", "x": -738.46, "y": 946.93, "z": 2440.0, "yaw": 174.8},
   {"id": "city.q.home_hargreaves.3", "group": "interiors", "name": "dev.tp.city.q.home_hargreaves.3", "x": -736.21, "y": 948.18, "z": 920.0, "yaw": 84.8},

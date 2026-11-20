@@ -72,7 +72,7 @@ ACT_FIELDS = ("prompt", "minutes", "price", "lines", "pose", "sound", "event", "
 # them), have ("set/piece"), count (["set", n]), read (a text read to its end), did (an act's target the hero has done), heard
 # (a staff talk topic asked about)
 LINE_CONDS = ("h", "d", "date", "after", "before", "once", "every", "festival", "weather", "have", "count", "collect", "read", "did",
-              "heard", "stay")
+              "heard", "pay", "stay")
 WEATHER = ("rain", "snow", "fog", "cold", "warm", "clear", "wet", "dry")
 # the content sections a content file may have
 SECTIONS = ("acts", "shops", "rules", "defaults", "defaults_by_plot_kind", "quests", "collections", "closed_by", "regulars",
@@ -487,8 +487,8 @@ def check_line_conds(where, cond):
                     err("%s: festival %s is not in PeopleData/festivals.json" % (where, x))
         elif k == "weather":
             ws = v if isinstance(v, list) else [v]
-            if not ws or not all(w in WEATHER for w in ws):
-                err("%s: weather must be one of %s or a list of them" % (where, ", ".join(WEATHER)))
+            if not ws or not all(isinstance(w, str) and w.lstrip("!") in WEATHER for w in ws):
+                err("%s: weather must be one of %s (\"!word\": not so now) or a list of them" % (where, ", ".join(WEATHER)))
         elif k in ("have", "collect") and not (isinstance(v, str) and re.match(r"^[\w.-]+/[\w.*{}-]+$", v)):
             err("%s: %s must be \"set/piece\"" % (where, k))
         elif k == "count" and not (isinstance(v, list) and len(v) == 2 and isinstance(v[0], str) and isinstance(v[1], int) and v[1] > 0):
@@ -509,6 +509,8 @@ def check_line_conds(where, cond):
                 HEARD_USED.append((where, v))
             else:
                 err("%s: heard must be a topic id" % where)
+        elif k == "pay" and not (isinstance(v, int) and not isinstance(v, bool) and 1 <= v <= 500):
+            err("%s: pay must be whole roubles 1..500" % where)
         elif k == "stay":
             if isinstance(v, str) and v.lstrip("!"):
                 STAY_USED.append((where, v.lstrip("!")))
@@ -549,7 +551,7 @@ def expand_lines(spec, strings, where="lines"):
 # mini-games (docs/city_interiors.md "Mini-games"): an act's "game" plays instead of showing its lines
 GAME_TYPES = ("aim", "rally", "duel")
 GAME_FIELDS = ("type", "title", "keys", "rounds", "need", "speed", "zone", "shrink", "pace", "vs", "moves", "win", "lose", "draw",
-               "collect", "prize", "daily", "sounds")
+               "collect", "prize", "daily", "sounds", "pay")
 GAME_DEFAULTS = {"aim": {"rounds": 5, "need": 5, "speed": 0.6, "zone": 0.2},
                  "rally": {"rounds": 1, "need": 3, "speed": 0.9, "zone": 0.45},
                  "duel": {"rounds": 3, "need": 1, "speed": 0.6, "zone": 0.2}}
@@ -639,6 +641,12 @@ def build_game(where, g, strings, items):
             err("%s: game prize %s is not an item" % (where, p_[0]))
         prize.append([p_[0], p_[1]])
     out["prize"] = prize
+    pay = g.get("pay", 0)
+    if not isinstance(pay, int) or isinstance(pay, bool) or not 0 <= pay <= 100:
+        err("%s: game pay (roubles a point) must be 0..100" % where)
+        pay = 0
+    if pay:
+        out["pay"] = pay
     snd = dict(GAME_SOUNDS[t])
     for k, v in (g.get("sounds") or {}).items():
         if k not in snd or not isinstance(v, str):
@@ -1216,6 +1224,32 @@ def normalise_height(tid, kind, props):
         h = usual
     if not SEAT_HEIGHT[0] <= h <= SEAT_HEIGHT[1]:
         err("%s: height %.2f m is outside %.2f..%.1f (the seat's surface over its own floor)" % (tid, h, SEAT_HEIGHT[0], SEAT_HEIGHT[1]))
+
+
+def line_pays(lines):
+    return [l for l in lines if isinstance(l, dict) and l.get("pay")]
+
+
+def check_pay(acts, texts, topics, things):
+    """A small job's pay (docs/city_interiors.md "Small jobs"): only an act's own lines (with a daily limit, so a shift is paid
+    once a day or so many times) and a game's result lines or its pay a point (with a daily game limit); never a closed thing's
+    words, a topic or a text."""
+    closed = {t["closed"] for t in things if t.get("closed")}
+    for aid, a in acts.items():
+        paid = line_pays(a["lines"])
+        if paid and aid in closed:
+            err("act %s: a closed thing's words never pay" % aid)
+        elif paid and not a.get("daily"):
+            err("act %s: a line pays (%s) but the act has no daily limit: the hero could earn without end" % (aid, line_key(paid[0])))
+        g = a.get("game")
+        if g and (g.get("pay") or any(line_pays(g[r]) for r in ("win", "lose", "draw"))) and not g.get("daily"):
+            err("act %s: the game pays but has no daily limit" % aid)
+    for tid, t in texts.items():
+        if any(line_pays(page) for page in t.get("pages", [])):
+            err("text %s: a page never pays (only an act's lines do)" % tid)
+    for tid, tp in topics.items():
+        if line_pays(tp.get("lines", [])):
+            err("topic %s: an answer never pays (only an act's lines do)" % tid)
 
 
 def closed_act(value, acts, strings, where):
@@ -2046,6 +2080,7 @@ def main():
     print("staff talk: %d topics (%d offered somewhere), %d answer lines, on %d things; tones %d on %d plots" % (
         len(TOPICS), len(offered), len(topic_lines), n_talk, len(tones), len(plot_tones)))
     print("lifts: %d doors with storey links" % n_lifts)
+    check_pay(acts, texts, TOPICS, things)
     for tp in sorted(set(TOPICS) - offered):
         warnings.append("topic %s is offered by no thing in town" % tp)
     used_unknown = {sid: w for sid, w in unknown_sounds.items() if any(x.split("#")[0] in used for x in w)}

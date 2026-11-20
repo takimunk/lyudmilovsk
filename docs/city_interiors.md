@@ -260,10 +260,11 @@ id not in `Content/PeopleData/festivals.json`, a weather word not in the list, a
 | `once` | `true`: shown once at a thing, then skipped there (remembered in the save, `o:<thing>|<key>`; per thing: another board with the same act shows it once too) |
 | `every` | `[n, r]`: the days since the game began `% n == r` |
 | `festival` | `"any"` (a holiday today: `ULyudFestivalSubsystem::IsFestivalToday`; the weekly market does not count), `"none"` (no holiday today), a festival id (`new_year`, `lantern_night`, `sea_festival`, `weekend_market`...: one on now, `ActiveFestivals`) or a list of ids. On a `daily` act a holding festival line takes the day (the board shows the holiday notice all day; the run of notices goes on the next day where it was, nothing skipped); on a `use` act it joins the turn |
-| `weather` | `rain`, `snow`, `fog`, `cold` (< 2 C), `warm` (> 22 C), `clear`, `wet` (wet ground), `dry` (nothing falling), or a list: any of them. From `ULyudWeatherSubsystem::GetSky()` with the townsfolk's talk thresholds (`LyudCity::WeatherBits`) |
+| `weather` | `rain`, `snow`, `fog`, `cold` (< 2 C), `warm` (> 22 C), `clear`, `wet` (wet ground), `dry` (nothing falling), or a list: any of them; a `"!word"` must not be so now (`["dry", "!fog"]`: dry and clear of fog; unknown weather has none of the words, so a line of only `!words` holds then). From `ULyudWeatherSubsystem::GetSky()` with the townsfolk's talk thresholds (`LyudCity::WeatherBits`) |
 | `have` | `"set/piece"`: the hero has that stamp |
 | `count` | `["set", n]`: the hero has at least n stamps of the set |
 | `collect` | no condition: the stamp the hero gets when the line is shown; `"set/*"` on a `"<prefix>.*"` entry gives each line the key's last part as its piece |
+| `pay` | no condition: roubles (1..500) the hero earns when a run shows the line (a small job, below): only an act's own lines (the act needs a `daily` limit) and a game's result lines; never a closed thing's words, a page turned with "next", a topic or a text (`--check` refuses those) |
 | `read` | `"<text id>"`: the hero has read that text of the reading view to its end (`--check` fails on an unknown text) |
 | `stay` | `"<stay id>"`: the hero is on that stay today; `"!<id>"`: he is not (see "Stays"). A treatment's old lines carry `"!san"`, its course lines (with their stamps) `"san"` |
 
@@ -316,6 +317,7 @@ the day, the uses), so citysim decides every rule. Three types:
 | `collect` | the stamp a win gives; `{opponent}` is the regular's id (`chess_wins/{opponent}`: «chess opponents beaten») |
 | `prize` | items a win gives: `[["item", n]]` |
 | `daily` | games a day (0: no limit); after that the act runs as before, with its own lines |
+| `pay` | roubles a point (aim) or a hit (rally) the hero scored, whatever the result, on top of the result line's own `pay` (a small job paid by the piece; needs `daily`) |
 | `sounds` | `{"hit", "miss", "end"}` soundscape ids (defaults `rest_clink`/`mouse_clicks`, none, `rest_bell`) |
 
 **Regulars** (`games.json` `regulars`, written to `interiors.json`): `{"<id>": {"name": "npc.<resident>.name", "style",
@@ -324,6 +326,32 @@ the day, the uses), so citysim decides every rule. Three types:
 Freja, Hiroshi; lines `city.player.<id>.*`). The game picks one of those who play it on that plot or anywhere (else anyone
 who plays it), by the seed. A win `Notify("win", <act target>)` for the quests besides the usual `do`. Result page:
 `<thing>#<result>` keeps its own place in the lines. Words: `strings/games.json`.
+
+### Small jobs
+
+Short paid shifts (`tools/city/content/x_jobs.json`, strings `strings/x_jobs.json`): the hero earns roubles by the result of a
+real loop of acts, at most once a day (or so many entries a day), with a resident of the town as the boss on shift (the act's
+`needs_staff`). No job block in the model: a job is an ordinary act whose lines carry `pay`, or a game with `pay` a point and
+paid result lines (`FOutcome::Pay`, `FGameEnd::Pay`; the game calls `ULyudInventory::Earn` and shows `city.job.paid`). A job
+thing gets its hours and days from its rule, and its old act becomes its `closed` words, so outside the job it says what it
+always said, unpaid. Every job's lines give the piece of the stamp set `work_book` («Трудовая книжка»).
+
+| job | thing | when | boss (role) | how it pays |
+|---|---|---|---|---|
+| the morning papers | `P-KIOSK1/price_board` | wed-sun 8-10 | Yerlan Romero (seller) | 25, rain 35, cold 30 |
+| the crates | `P-MARKET/market_scales_2` | sat 6-10 | Parisa Petrosyan (seller) | 20, rain 25 |
+| the scales | `P-MARKET/market_scales` | sat 7-13 | the same | aim: 3 a point + win 20 / draw 10 / lose 5 |
+| the flag | `P-LIFEGUARD1/flag_halyard` | wed-sun 10-19 | Eitan Kowalski (lifeguard) | 10; the line is the right flag: fog red, rain or cold yellow, calm green, drizzle yellow |
+| the watch | `P-LIFEGUARD1/whistle` | wed-sun 10-19 | the same | rally: 3 a whistle in time + 25 / 15 / 8 |
+| the night log | `P-PIER/keeper_clockwork` | 18-7, six entries a day | Aram Oliveira, after midnight Arkady Kobayashi (lighthouse_keeper) | the lamp 15, an hour's entry 10, dawn 15 |
+| the ice cream | `P-CAFE/cake_vitrine` | open hours | the barista | aim: 2 a scoop + 20 / 12 / 6; after it the case shows its menu text |
+| the door | `P-CLUB2/ticket_stubs` | wed-sun 17-20 | Kaveh Bergström (clerk) | rally: 2 a ticket + 20 / 12 / 6 |
+
+The boards "Требуется помощь" (`job_board` on the house committees' duty boards, `job_board_youth` on the games room's rules
+board in P-UNITE) read a notice text: a heading page, today's jobs by weekday, the beach, and the board's old page (the duty
+roster, the games room's rules). The bosses' counters (and the flag) have a talk topic `job.*` (its second answer once the hero
+has done that job). The quest `job_book` begins at a board and wants each job once (50 roubles). citysim `JobChecks` plays
+every job on the real data: pay by weather and result, once a day, the closed words unpaid, the book filled.
 
 ### Wall clocks and light switches
 

@@ -105,7 +105,7 @@ course.
 
 ## 4. Small jobs
 
-`[ ]` **Brief (Opus 5.5):** Let the hero earn money with short shift jobs that use rooms and systems that exist. Each
+`[~]` small-jobs 2026-11-20 (branch ready, waiting for merge; docs/city_interiors.md "Small jobs") **Brief (Opus 5.5):** Let the hero earn money with short shift jobs that use rooms and systems that exist. Each
 job is a short loop of real actions with a pay by result, at most once a day: (a) the market: help at a stall on Saturday
 (fetch boxes from the van, weigh goods on the scales for customers: `CounterTrade.cpp` customer pairs), (b) the lifeguard
 tower: a shift of watching the water with binoculars and setting the flags by the wind and waves (`ALyudSea`, weather),

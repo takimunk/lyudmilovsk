@@ -158,8 +158,8 @@ namespace LyudCity
 	 * {"k": key, "h": [from, to), "d": "mon-fri", "date": ["12-20", "01-10"] (or one "MM-DD"), "after": days since the game
 	 * began, "before": days since the game began it stops, "once": true (shown once at a thing), "every": [n, r] (days since the
 	 * game began % n == r), "festival": "any" | "none" | id | [ids], "weather": word |
-	 * [words] (any of them), "have": "set/piece", "count": ["set", n] (at least n stamps of the set), "collect": "set/piece"
-	 * (not a condition: the stamp the hero gets when the line is shown)}. Every condition given must hold.
+	 * [words] (any of them; a "!word" must not be so now), "have": "set/piece", "count": ["set", n] (at least n stamps of the set), "collect": "set/piece"
+	 * (not a condition: the stamp the hero gets when the line is shown), "pay": roubles (not a condition: a job's pay)}. Every condition given must hold.
 	 */
 	struct FLine
 	{
@@ -177,6 +177,8 @@ namespace LyudCity
 		std::vector<std::string> FestivalIds;
 		/** Any of these EWeatherBit words (0: no weather condition). */
 		uint8_t Weather = 0;
+		/** None of these ("weather": ["dry", "!fog"]: a "!word" must not be so now; unknown weather has none of them). */
+		uint8_t WeatherNot = 0;
 		/** "set/piece" the hero must have (empty: none). */
 		std::string Have;
 		/** At least CountMin stamps of CountSet (CountMin 0: no condition). */
@@ -184,6 +186,9 @@ namespace LyudCity
 		int CountMin = 0;
 		/** The stamp shown lines give ("set/piece", empty: none). */
 		std::string Collect;
+		/** "pay": the roubles the hero earns when a run shows this line (a small job's shift: the act's own line or a game's
+		 *  result line; never a page turned with "next", a topic or a text). 0: none. */
+		int Pay = 0;
 		/** "read": the id of a text (FReadText) the hero must have read to the end (empty: no condition). */
 		std::string ReadText;
 		/** "did": an act's target (what the quests hear as "do") the hero has done at least once; "!target": not yet (empty: no condition). */
@@ -276,6 +281,10 @@ namespace LyudCity
 				return false;
 			}
 			if (Weather != 0 && (W.Weather & Weather) == 0)
+			{
+				return false;
+			}
+			if ((W.Weather & WeatherNot) != 0)
 			{
 				return false;
 			}
@@ -582,6 +591,9 @@ namespace LyudCity
 		/** The stamp a win gives ("chess_wins/{opponent}": the regular beaten). */
 		std::string Collect;
 		std::vector<std::pair<std::string, int>> Prize;
+		/** "pay": roubles per point (aim) or hit (rally) the hero scored, whatever the result: a small job paid by the piece,
+		 *  on top of the result line's own "pay". */
+		int PayPoint = 0;
 		/** Games a day (0: no limit); after them the act runs as a plain act (its own lines). */
 		int Daily = 0;
 		std::string SoundHit, SoundMiss, SoundEnd;
@@ -657,6 +669,8 @@ namespace LyudCity
 		std::vector<std::string> NewStamps;
 		std::vector<std::pair<std::string, int>> Prize;
 		std::string Target;
+		/** Roubles earned (a job's result line and the pay per point): ULyudInventory::Earn. */
+		int Pay = 0;
 	};
 
 	/** "{time}" in a line: the game's clock ("16:40"), for the wall clocks. */
@@ -799,6 +813,8 @@ namespace LyudCity
 		int NumLines = 0;
 		int Minutes = 0;
 		int Price = 0;
+		/** Roubles earned: the "pay" of the line shown (a small job; never on a closed thing's words). */
+		int Pay = 0;
 		bool bFade = false;
 		std::vector<std::pair<std::string, int>> Give;
 		std::string Event;
@@ -1574,7 +1590,7 @@ namespace LyudCity
 			O.NumLines = A->bDaily ? (Holding > 0 ? 1 : 0) : Holding;
 			if (Holding > 0)
 			{
-				O.Line = TakeLine(Thing, *A, When, &O.NewStamps);
+				O.Line = TakeLine(Thing, *A, When, &O.NewStamps, IsWordsOnly(Thing, Index) ? nullptr : &O.Pay);
 			}
 			if (!O.bClosed)
 			{
@@ -2738,8 +2754,9 @@ namespace LyudCity
 			const std::string Page = Things[(size_t)G.Thing].Id + "#" + GameResultName(G.Result);
 			if (CountUsable(Page, Lines, When) > 0)
 			{
-				E.Line = TakeLineAt(Page, Lines, When, &E.NewStamps);
+				E.Line = TakeLineAt(Page, Lines, When, &E.NewStamps, &E.Pay);
 			}
+			E.Pay += D->PayPoint * std::max(0, G.Score);
 			const FRegular* R = RegularOf(G);
 			if (R)
 			{
@@ -3112,13 +3129,13 @@ namespace LyudCity
 		 *  and goes on to the next one on the next day it is read (on a holiday its festival notice takes the day and the run
 		 *  goes on after it, nothing skipped). The closed act keeps a page of its own. A line's stamp is given. Call only when
 		 *  CountHolding > 0. */
-		std::string TakeLine(int Thing, const FAct& A, const FWhen& When, std::vector<std::string>* NewStamps)
+		std::string TakeLine(int Thing, const FAct& A, const FWhen& When, std::vector<std::string>* NewStamps, int* Pay = nullptr)
 		{
-			return TakeLineAt(PageIdOf(Thing, (int)(&A - Acts.data())), A, When, NewStamps);
+			return TakeLineAt(PageIdOf(Thing, (int)(&A - Acts.data())), A, When, NewStamps, Pay);
 		}
 
 		/** TakeLine on the page Id (a game's result lines keep "<thing>#win" and so on). */
-		std::string TakeLineAt(const std::string& Id, const FAct& A, const FWhen& When, std::vector<std::string>* NewStamps)
+		std::string TakeLineAt(const std::string& Id, const FAct& A, const FWhen& When, std::vector<std::string>* NewStamps, int* Pay = nullptr)
 		{
 			const int N = (int)A.Lines.size();
 			const int Cur = LineIndex(Id);
@@ -3160,6 +3177,10 @@ namespace LyudCity
 				OnceShown.insert(Id + "|" + A.Lines[(size_t)Pos].Key);
 			}
 			GiveStamp(A.Lines[(size_t)Pos].Collect, NewStamps);
+			if (Pay)
+			{
+				*Pay += A.Lines[(size_t)Pos].Pay;
+			}
 			if (IsLineStamp(A.Collect))
 			{
 				// "films/{line}": the line shown is the piece (a film of the programme, a record of the jukebox)
@@ -3365,6 +3386,7 @@ namespace LyudCity
 				}
 			}
 			D.Daily = std::max(0, V["daily"].I(0));
+			D.PayPoint = std::min(100, std::max(0, V["pay"].I(0)));
 			const LyudJson::FValue& Sounds = V["sounds"];
 			D.SoundHit = Sounds["hit"].S();
 			D.SoundMiss = Sounds["miss"].S();
@@ -3522,15 +3544,26 @@ namespace LyudCity
 				}
 			}
 			const LyudJson::FValue& Wx = L["weather"];
+			auto AddWeather = [&Line](const std::string& Word)
+			{
+				if (!Word.empty() && Word[0] == '!')
+				{
+					Line.WeatherNot = (uint8_t)(Line.WeatherNot | WeatherBit(Word.substr(1)));
+				}
+				else
+				{
+					Line.Weather = (uint8_t)(Line.Weather | WeatherBit(Word));
+				}
+			};
 			if (Wx.Type == LyudJson::FValue::String)
 			{
-				Line.Weather = WeatherBit(Wx.Str);
+				AddWeather(Wx.Str);
 			}
 			for (const LyudJson::FValue& Word : Wx.Items)
 			{
-				Line.Weather = (uint8_t)(Line.Weather | WeatherBit(Word.S()));
+				AddWeather(Word.S());
 			}
-			if (Wx.Type != LyudJson::FValue::Null && Line.Weather == 0)
+			if (Wx.Type != LyudJson::FValue::Null && Line.Weather == 0 && Line.WeatherNot == 0)
 			{
 				Line.Days = 0;     // only unknown words: never shown (not "no condition": a line for the snow must not show in July)
 			}
@@ -3542,6 +3575,7 @@ namespace LyudCity
 				Line.CountMin = Count[1].I(0);
 			}
 			Line.Collect = L["collect"].S();
+			Line.Pay = std::min(500, std::max(0, L["pay"].I(0)));
 			Line.ReadText = L["read"].S();
 			Line.Did = L["did"].S();
 			Line.Heard = L["heard"].S();

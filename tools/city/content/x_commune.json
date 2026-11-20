@@ -770,7 +770,7 @@
    "act": "cm_complaints"
   },
   "commune_slab/hall_duty_board": {
-   "act": "cm_duty"
+   "act": "job_board"
   },
   "commune_slab/hall_wallnews": {
    "act": "cm_wallnews"
