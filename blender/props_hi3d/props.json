@@ -284,6 +284,7 @@
     "left"
    ],
    "height": 1.5,
+   "hold": "not in the game yet: hi3d made the glass case's panes solid with the view through them baked in (an opaque black/grey box hiding the ship); cutting the panes out opens the case and the voxel remesh melts it. Needs a glass-less reference (ship on its stand) or a hand-built case",
    "origin": "base",
    "tris": 7000,
    "tex": 2048,
