@@ -1,0 +1,37 @@
+[
+ {
+  "service": "hi3d MCP (agent.hi3d.ai) via tools/birds/hi3d_mcp.py",
+  "tool": "create_generation",
+  "kind": "model",
+  "task_id": "54578d5497f84e99bea6c83ec35c1d8b",
+  "points": 45.0,
+  "arguments": {
+   "version": "v3.0",
+   "model_type": "high_quality",
+   "generation_type": "model_with_texture",
+   "pbr": true,
+   "license": "private",
+   "file_tokens": "(uploaded views, see inputs)"
+  },
+  "inputs": [
+   {
+    "view": "front",
+    "file": "blender/props_hi3d/raw/pioneer/views/front.png",
+    "sha256": "693e9ef0f02a854dd38540baf964814d0fa8e1173fefaefc232da22f9d92b2c9"
+   },
+   {
+    "view": "back",
+    "file": "blender/props_hi3d/raw/pioneer/views/back.png",
+    "sha256": "2be4b1768aac453503352d0b2a53e326529d809e7a93c78b213bbee6fd770981"
+   },
+   {
+    "view": "left",
+    "file": "blender/props_hi3d/raw/pioneer/views/left.png",
+    "sha256": "0280659e0d11aa96388009e6949de54c36ea5416b5415815aa6950be34d6eb35"
+   }
+  ],
+  "reference": "blender/props_hi3d/sheets.json",
+  "submitted": "2026-11-20T20:47:27+00:00",
+  "outputs": []
+ }
+]

@@ -1,0 +1,32 @@
+[
+ {
+  "service": "hi3d MCP (agent.hi3d.ai) via tools/birds/hi3d_mcp.py",
+  "tool": "create_generation",
+  "kind": "model",
+  "task_id": "095d1d71b13b4d278a6a59505f18f7f4",
+  "points": 45.0,
+  "arguments": {
+   "version": "v3.0",
+   "model_type": "high_quality",
+   "generation_type": "model_with_texture",
+   "pbr": true,
+   "license": "private",
+   "file_tokens": "(uploaded views, see inputs)"
+  },
+  "inputs": [
+   {
+    "view": "front",
+    "file": "blender/props_hi3d/raw/girl_dove/views/front.png",
+    "sha256": "23a84d0fe83304d89d842d98bdda4ad3acef385f263257315ac2a1f802d0ea08"
+   },
+   {
+    "view": "back",
+    "file": "blender/props_hi3d/raw/girl_dove/views/back.png",
+    "sha256": "86d85b62517ad1d8801b06241841a9dd5302a29c1658a6fb85caae8a34a31300"
+   }
+  ],
+  "reference": "blender/props_hi3d/sheets.json",
+  "submitted": "2026-11-20T20:41:06+00:00",
+  "outputs": []
+ }
+]
