@@ -494,7 +494,18 @@ def cut_body(P, T, TL, uv, cf, cu, ua, tf, tu, us, ths, R, lm, L, up_ref, badw):
     bmesh.ops.delete(bm, geom=[f for f in bm.faces if f.index not in bs], context="FACES")
     bmesh.ops.delete(bm, geom=[v for v in bm.verts if not v.link_faces], context="VERTS")
     holes = bmesh.ops.holes_fill(bm, edges=bm.edges[:], sides=0)
-    bmesh.ops.triangulate(bm, faces=holes["faces"])
+    tri = bmesh.ops.triangulate(bm, faces=holes["faces"])
+    # the fill faces have no uvs of their own: each corner takes the uv its vertex has in the scan's own faces
+    ul = bm.loops.layers.uv.active
+    newf = set(tri["faces"]) | set(holes["faces"])
+    for f in newf:
+        if not f.is_valid:
+            continue
+        for lp in f.loops:
+            for o in lp.vert.link_loops:
+                if o.face not in newf:
+                    lp[ul].uv = o[ul].uv
+                    break
     bm.to_mesh(me)
     bm.free()
     me.update()
@@ -548,7 +559,7 @@ def wing_planform(P, T, TL, uv, cut, uvv, nc, lm, L, res=(1024, 512)):
     pose) and from below, as images over span xi (0 root .. 1 tip) and chord eta (span units, + toward the tail), by
     splatting the dense scan's vertices with a depth test. Also the leading and trailing edge per span column, so
     build_bird.py can map each template feather onto the photographed wing whatever their shapes."""
-    sel = cut & (P[:, 2] > 0.02 * L) & (nc > -0.05 * L) & (uvv > -0.15) & (uvv < 1.0)
+    sel = cut & (P[:, 2] > 0.02 * L) & (nc > 0.0) & (uvv > 0.05) & (uvv < 0.95)
     Q = P[sel]
     if len(Q) < 2000:
         raise RuntimeError("too few wing vertices")
@@ -609,7 +620,7 @@ def wing_planform(P, T, TL, uv, cut, uvv, nc, lm, L, res=(1024, 512)):
     m = out["dorsal_mask"] | out["ventral_mask"]
     lead = np.full(nx, np.nan)
     trail = np.full(nx, np.nan)
-    for x in range(nx):
+    for x in range(int(0.12 * nx), nx):   # (the root columns hold scraps of body and thigh: edges from the wing proper)
         yy = np.nonzero(m[:, x])[0]
         if len(yy) > 3:
             lead[x], trail[x] = yy.min(), yy.max()

@@ -1010,6 +1010,9 @@ if SCAN_S:
     # proportions taken whole from the scan: bill and tail lengths (template units -> the scan's body length)
     M["beak_len"] = float(np.clip(float(SCAN["beak_len"]) * LT / (0.027 * _APU), 0.4, 3.0))
     M["tail"] = float(np.clip(float(SCAN["tail_len"]) * LT / 0.064, 0.3, 3.5))
+    # broader flight feathers: neighbours overlap so the spread wing reads as one surface (no comb between tips)
+    M["prim_width"] *= float(os.environ.get("BIRD_SCAN_PW", 1.3))
+    M["sec_width"] *= float(os.environ.get("BIRD_SCAN_SW", 1.35))
     print("SCAN", SPECIES, "rig from scan: beak_len %.2f tail %.2f" % (M["beak_len"], M["tail"]))
     _BODY = dict(np.load(os.path.join(C.ROOT, "blender", "birds", "scan_raw", SPECIES, "body.npz")))
 
@@ -1143,6 +1146,7 @@ def wing_photo_cell(key, w, h, c, a):
     fr = np.clip((eta - lt) / np.maximum(tr - lt, 1e-6), 0, 1)
     img = WPH["ventral_f" if under else "dorsal_f"]
     ny, nx = img.shape[:2]
+    xi = np.maximum(xi, 0.13)   # the photo's root columns are body scraps: the inner wing takes the wing's own base
     xs = np.linspace(0, 1, nx)
     ls, ts = np.interp(xi, xs, WPH["lead"]), np.interp(xi, xs, WPH["trail"])
     es = ls + fr * (ts - ls)
