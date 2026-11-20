@@ -180,7 +180,7 @@ over a game season, Mac shots of three stages, bench (no per-frame plant rebuild
 
 ## 10. Records, the jukebox and the town radio
 
-`[ ]` **Brief (Opus 5.5):** Make music something the hero chooses. Records to buy at the records shops (P-WAVE records,
+`[~] records-radio 2026-11-20` **Brief (Opus 5.5):** Make music something the hero chooses. Records to buy at the records shops (P-WAVE records,
 the department store's records department; today talk only because there are no items): give records real items with
 icons, each holding one track of the game's music (`/Game/Audio/Music`, `audio/sounds.json`). Play them on the café's
 jukebox (`jukebox` act + the jukebox records collection), on a record player in the hero's room (if item 19 is done) or the

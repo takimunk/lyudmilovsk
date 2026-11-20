@@ -325,6 +325,8 @@ void ULyudSoundscapeSubsystem::LoadSounds()
 		{ TEXT("North"), TEXT("north_campfire") },
 		// Topi (ULyudTopiMind: the heartbeat as the place presses on him, the river Ural's hum at night)
 		{ TEXT("Topi"), TEXT("topi_heart") }, { TEXT("Topi"), TEXT("ural_hum") },
+		// the town radio «Волна Людмиловска» (ULyudMusic, tools/music/sounds.py): the call sign, the time pips, the hiss off air
+		{ TEXT("Radio"), TEXT("radio_chime") }, { TEXT("Radio"), TEXT("radio_pips") }, { TEXT("Radio"), TEXT("radio_static") },
 	};
 	for (const auto& G : Groups)
 	{
