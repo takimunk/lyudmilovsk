@@ -2,6 +2,7 @@
 
 #include "CityThingsModel.h"
 #include "City/SLyudCityBook.h"
+#include "City/LyudTownPaper.h"
 #include "City/SLyudCityGame.h"
 #include "City/SLyudCityPage.h"
 #include "Audio/LyudSoundscape.h"
@@ -2664,6 +2665,20 @@ void ULyudCityThings::OpenBook(int32 Text, int32 Thing, bool bSeated)
 	{
 		BookPages.Add(LyudCityThingsImpl::Str(Key));
 	}
+	// a text the game sets itself (the town paper, its archive: docs/town_paper.md) shows those pages; its own are the fallback
+	BookGenPages.Reset();
+	if (!T->Gen.empty())
+	{
+		if (ULyudTownPaper* Paper = ULyudTownPaper::Get(World))
+		{
+			TArray<FText> Gen;
+			if (Paper->Pages(LyudCityThingsImpl::Str(T->Gen), Gen) && Gen.Num() > 0)
+			{
+				BookGenPages = MoveTemp(Gen);
+				BookPages.Init(FString(), BookGenPages.Num());
+			}
+		}
+	}
 	APlayerController* PC = UGameplayStatics::GetPlayerController(World, 0);
 	AHeroCharacter* Hero = PC ? Cast<AHeroCharacter>(PC->GetPawn()) : nullptr;
 	BookText = Text;
@@ -2722,7 +2737,15 @@ void ULyudCityThings::ShowBookPage()
 	}
 	BookPage = FMath::Clamp(BookPage, 0, Num - 1);
 	const bool bLast = BookPage >= Num - 1;
-	Book->SetPage(LyudText::Get(LyudCityThingsImpl::Str(T->Title)), LineText(BookPages[BookPage]),
+	const bool bGen = BookGenPages.Num() == Num;
+	if (bGen && bLast)
+	{
+		if (ULyudTownPaper* Paper = ULyudTownPaper::Get(this))
+		{
+			Paper->FinishedReading(LyudCityThingsImpl::Str(T->Gen));
+		}
+	}
+	Book->SetPage(LyudText::Get(LyudCityThingsImpl::Str(T->Title)), bGen ? BookGenPages[BookPage] : LineText(BookPages[BookPage]),
 		LyudText::Get(TEXT("city.book.page"), { FStringFormatArg(BookPage + 1), FStringFormatArg(Num) }),
 		LyudText::Get(bLast ? TEXT("city.book.keys_last") : TEXT("city.book.keys")));
 }
@@ -2799,6 +2822,7 @@ void ULyudCityThings::CloseBook()
 	BookText = -1;
 	BookThing = -1;
 	BookPages.Reset();
+	BookGenPages.Reset();
 	bBookSeated = false;
 	if (Book.IsValid())
 	{

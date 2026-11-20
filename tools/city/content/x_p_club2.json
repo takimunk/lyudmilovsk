@@ -173,7 +173,7 @@
    "rotate": "daily",
    "target": "look_cinema"
   },
-  "look_hall_notice": {
+  "look_hall_notice": {"read": null, 
    "like": "look_club",
    "lines": [
     "city.look.club.*",
@@ -206,7 +206,7 @@
    "rotate": "daily",
    "target": "look_club"
   },
-  "look_rassvet": {
+  "look_rassvet": {"read": null, 
    "like": "look_club",
    "lines": [
     {
@@ -535,7 +535,7 @@
     }
    ]
   },
-  "look_lost_club": {
+  "look_lost_club": {"read": null, 
    "like": "look_lost",
    "lines": [
     "city.rassvet.lost.1",

@@ -88,7 +88,7 @@
     }
    ]
   },
-  "t3_club_board": {
+  "t3_club_board": {"read": null, 
    "like": "look_club",
    "minutes": 4,
    "target": "look_club",
