@@ -1045,6 +1045,13 @@
    "prompt": "A thick school exercise notebook with a plain dark green textured oilcloth cover, slightly open showing squared pages.",
    "source": "localization/icon_grids_city.json: icons_city_4, cell 3 (row 1, right), one 3x3 Higgsfield grid (the game-assets rule)"
   },
+  "icon_san_diploma": {
+   "kind": "icon",
+   "style": "icon",
+   "aspect": "1:1",
+   "prompt": "A Soviet 1970s sanatorium certificate of completed treatment: a stiff cream card with an embossed golden crown, a printed border, a violet seal and a sprig of pine, no readable text.",
+   "source": "design/sanatorium/icon_san_diploma_grid.json: one 2x2 Higgsfield grid of variants (the game-assets rule), the best cell cut"
+  },
   "icon_adventure_book": {
    "kind": "icon",
    "style": "icon",

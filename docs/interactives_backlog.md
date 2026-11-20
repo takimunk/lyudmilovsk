@@ -89,7 +89,7 @@ five views from a list). Residents react when photographed close (pose, wave or 
 
 ## 3. A course of cure at the sanatorium
 
-`[~] sanatorium-cure 2026-11-20` **Brief (Opus 5.5):** Turn the sanatorium «Корона» (P-SANATORIUM, `tools/city/content/x_p_sanatorium.json`: 33
+`[~] sanatorium-cure 2026-11-20 (branch ready, waiting for merge)` **Brief (Opus 5.5):** Turn the sanatorium «Корона» (P-SANATORIUM, `tools/city/content/x_p_sanatorium.json`: 33
 acts, quests `sanatorium_regime`, `sanatorium_cure`, collection `san_cure`) into a stay with a daily regime. Buy a
 "путёвка" at reception (3 or 7 days); the regime board then gives the hero a day of times: morning exercise in the lobby
 with the instructor and the guests (follow the moves: a short rhythm mini-game of type `rally`), mineral water at the pump

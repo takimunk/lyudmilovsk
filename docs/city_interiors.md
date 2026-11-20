@@ -206,6 +206,9 @@ An act is what happens when the hero presses E at a thing:
 | `game` | a mini-game played instead of showing `lines` (see "Mini-games"); an act `like` it inherits it (`"game": null` drops it) |
 | `read` | `{"texts": ["<text id>", ...], "rotate": "use"|"daily"}`: the reading view opens one of these texts instead of the lines (in turn at each use, or one a game day); only on a `shelf`, `board`, `seat` or `take` (see "The reading page") |
 | `sleep` | `true` (with `pose: lie`): the hero chooses the hour he wakes at instead of the act's `minutes`/`until` (which give the first hour offered; see "Sitting and lying") |
+| `stay` | `{"id": "<stay>", "days": 1..60}`: running it puts the hero on that stay for so many days (added to the days left of one he is on): a sanatorium's voucher (see "Stays") |
+| `needs_stay` | a stay id: only for those on it; without it the thing does the act's `no_stay` instead |
+| `no_stay` | with `needs_stay`: an act id (a real act that runs in full: the voucher sold at the same window) or a line key / `"<prefix>.*"` (words only, made like a closed act); none: refused as closed |
 | `like` | content only: inherit every field of that act, then override |
 
 A thing record of `interiors.json` has `id`, `plot`, `kind`, `ue`, `yaw`, `props`, `act`, `hours`, `days`, and when they
@@ -262,6 +265,7 @@ id not in `Content/PeopleData/festivals.json`, a weather word not in the list, a
 | `count` | `["set", n]`: the hero has at least n stamps of the set |
 | `collect` | no condition: the stamp the hero gets when the line is shown; `"set/*"` on a `"<prefix>.*"` entry gives each line the key's last part as its piece |
 | `read` | `"<text id>"`: the hero has read that text of the reading view to its end (`--check` fails on an unknown text) |
+| `stay` | `"<stay id>"`: the hero is on that stay today; `"!<id>"`: he is not (see "Stays"). A treatment's old lines carry `"!san"`, its course lines (with their stamps) `"san"` |
 
 Content tables (`tools/city/content/*.json`, each with any of `acts`, `shops`, `rules`, `defaults`,
 `defaults_by_plot_kind`, `quests`, `collections`, `closed_by`, `texts`; any other section is an error, and so is a key defined in two
@@ -397,6 +401,43 @@ without pages, a `read` act on another kind, `sleep` without `pose: lie`. Now: s
 children's wall, the store's, clinic's, hall's and club's shelves and every daily paper; the set `reading`. Console
 `lyud.City.Read <text id>|next|prev|close|list|all|clear`; developer mode `interiors.read_nearest`,
 `interiors.read_all` (toggle: every text read / none), `interiors.read_list`.
+
+### Stays
+
+A stay is a voucher for some days at a plot that keeps a regime: the sanatorium «Корона»'s course of cure (stay `san`,
+`tools/city/content/x_p_sanatorium.json`, words in `strings/x_p_sanatorium_course.json`). Declared in a content file's
+`stays` section, written to `interiors.json` `stays`:
+
+```
+"stays": {"<id>": {"plot": "<plot id>", "curfew": [from, to), "act": "<act id> | <line key> | <prefix>.*", "allow": ["<act id>", ...]}}
+```
+
+* An act's `stay` (`{"id", "days"}`) starts it when it runs (on one already: the days are added). The model keeps the first
+  day (since the game began) it no longer holds: `s:<id>` in the save; `FModel::OnStay`, `StayDaysLeft`, `StartStay` (0 days
+  ends it), `GetStays`.
+* Lines, pages and topics ask `"stay": "<id>" | "!<id>"`. An act's `needs_stay` sends those without the stay to its `no_stay`
+  act (`FModel::ActIndexNow`): words only when it is a `_closed:` act (target `closed`), else a real act with its own price,
+  staff and limits (`IsWordsOnly`). So one thing can sell the voucher to those without one and extend it for those on it.
+* The curfew: while the hero is on the stay, in its hours every thing of its plot whose act is not lying (`pose: lie`), not
+  selling a stay and not in `allow` does the curfew act instead (words only: the duty nurse sends him to bed). Developer
+  mode's open-all lifts it.
+* A daily act's `once` line stays today's line all day (reading it twice does not skip to tomorrow's part): the dining
+  tables' stories, a part a day, end on a plain line that stays.
+
+**The course at «Корона».** The cloakroom window: a 3-day voucher (`san_voucher`, 90 ₽), on one an extension by 4 days
+(`san_extend`, 100 ₽, once a day: 7 days in all). The health-resort book `san_course` (9 stamps, only on the voucher): the
+springs «Корона-1» at 8, «Янтарная» at 13, «Маячная» at 18 (`san_pump` at the pump room, `h` windows; off the hour no stamp),
+the morning exercises (a won rally, 7-9), quartz (the doctor, weekdays), the oxygen cocktail, the health path (`san_walk`,
+the route map in the treatment room, 7-21, a fade), quiet hour lying on the couch 14-16 (`san_quiet_hour`), the evening in
+the lobby 19-23. The book is read in the treatment room's card index (`san_book`, text `san_course_book`: a page per stamp).
+The regime board shows the guest's own day; the other couch is a free night bed on the voucher, the paid night otherwise;
+curfew 23-6 (`city.san.curfew.*`; the night bell, the clocks, the radio and the switches still answer). The dining room:
+the window table (Gromov, a cosmonaut's backup's backup, and Sonya with her violin: `dining_1_b`) and the chess table
+(Tamm and Sazonov and their 1961 game: `dining_2_b`) tell their stories a part a day (nine each); the guests' own chairs have
+their things. The doctor's topics `sand.course` and `sand.discharge` (offered with all nine stamps, once), the nurse's
+`sand.curfew`; the quest `sanatorium_course` ends with the discharge and the item `san_diploma`, which, carried, gives a
+quarter more air underwater (`ULyudSwimComponent`). citysim plays the whole course on the real data (`CourseChecks`).
+The guests are told, not yet seated as townsfolk: the people's life does not route residents to the dining room's chairs.
 
 ### Lifts and storey links
 
