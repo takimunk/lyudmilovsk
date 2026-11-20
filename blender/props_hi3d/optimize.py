@@ -300,10 +300,42 @@ def preview(low, pid, imgs, s):
     log("preview", os.path.relpath(out.filepath_raw, ROOT))
 
 
+def add_plinth(o, pl):
+    """A plinth built here when hi3d left it out (girl_dove came back as the figure alone): the figure, already scaled to
+    `height` (props.json: the figure's height), is lifted onto a polished stone block size [x, y, z] m of colour `colour`
+    (linear RGB) with a small chamfer-like cap. The block is joined to the high model before the bake, so it is baked
+    like the rest."""
+    sx, sy, sz = pl["size"]
+    o.data.transform(Matrix.Translation((0, 0, sz)))
+    bm = bmesh.new()
+    for (w, d, z0, z1) in ((sx, sy, 0.0, sz - 0.06), (sx + 0.06, sy + 0.06, sz - 0.06, sz), (sx + 0.1, sy + 0.1, 0.0, 0.12)):
+        geom = bmesh.ops.create_cube(bm, size=1.0)["verts"]
+        for v in geom:
+            v.co.x *= w
+            v.co.y *= d
+            v.co.z = z0 if v.co.z < 0 else z1
+    me = bpy.data.meshes.new("plinth")
+    bm.to_mesh(me)
+    bm.free()
+    mat = bpy.data.materials.new("plinth_stone")
+    mat.use_nodes = True
+    b = next(n for n in mat.node_tree.nodes if n.type == "BSDF_PRINCIPLED")
+    b.inputs["Base Color"].default_value = list(pl["colour"]) + [1.0]
+    b.inputs["Roughness"].default_value = pl.get("roughness", 0.3)
+    me.materials.append(mat)
+    p = bpy.data.objects.new("plinth", me)
+    bpy.context.scene.collection.objects.link(p)
+    select([o, p], active=o)
+    bpy.ops.object.join()
+    log("plinth %.2f x %.2f x %.2f m added" % (sx, sy, sz))
+
+
 def run(pid, s, front_yaw):
     reset()
     high = load(pid)
     place(high, s, front_yaw)
+    if s.get("plinth"):
+        add_plinth(high, s["plinth"])
     size = max(bounds(high)[1] - bounds(high)[0])
     clean(high, size)
     t0 = tris(high)
@@ -337,7 +369,9 @@ def run(pid, s, front_yaw):
     bpy.ops.object.mode_set(mode="EDIT")
     bpy.ops.mesh.select_all(action="SELECT")
     bpy.ops.uv.smart_project(angle_limit=math.radians(60), island_margin=0.004, area_weight=0.0, scale_to_bounds=False)
-    bpy.ops.uv.pack_islands(margin=0.004, rotate=True)
+    # concave shapes, any rotation, scaled to fill the square (the default box packing left ~35 % of gull_stele's atlas empty)
+    bpy.ops.uv.pack_islands(rotate=True, rotate_method="ANY", scale=True, margin_method="FRACTION", margin=0.004,
+                            shape_method="CONCAVE")
     bpy.ops.object.mode_set(mode="OBJECT")
     mat, imgs, nodes = bake_target(low, pid, s["tex"])
     bake(high, low, mat, imgs, nodes, size)
