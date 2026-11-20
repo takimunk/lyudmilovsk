@@ -138,6 +138,32 @@ static FFacts MakeFacts(int Since, FDie& Die, const std::vector<std::string>& Qu
 	if (Die.U() < 0.10f) F.Deeds.push_back({ Die.U() < 0.3f ? "record" : "catch", Fish[Die.I(6)], 200 + Die.I(4000) });
 	if (Die.U() < 0.05f && !Quests.empty()) F.Deeds.push_back({ "quest", Quests[(size_t)Die.I((int)Quests.size())], 0 });
 	if (Die.U() < 0.3f) F.BiteFish = Fish[Die.I(6)];
+	// the clubs' tournaments (tournaments.json: Saturday chess, Wednesday dominoes, Sunday table tennis): today's to come,
+	// yesterday's over, with a champion from the regulars or the hero, the hero in it now and then
+	static const char* Cups[3][3] = { { "city.cup.cog_chess.title", "city.cup.venue.cog", "5" }, { "city.cup.san_dominoes.title", "city.cup.venue.san", "2" },
+		{ "city.cup.tt_cup.title", "city.cup.venue.t3", "6" } };
+	static const char* Names[] = { "npc.t_gonzalez_giuseppe.name", "npc.t_saar_noam.name", "npc.t_tran_anahit.name", "npc.t_okonkwo_ursula.name", "npc.t_kask_kenji.name" };
+	const int Wd = LyudFest::Weekday(F.Date);
+	for (const auto& C : Cups)
+	{
+		const int CupWd = C[2][0] - '0';
+		FCup Cup;
+		Cup.Title = C[0];
+		Cup.Venue = C[1];
+		Cup.StartMinute = 13 * 60;
+		if (CupWd == Wd)
+		{
+			F.CupsToday.push_back(Cup);
+		}
+		if ((CupWd + 1) % 7 == Wd)
+		{
+			Cup.bOver = true;
+			Cup.HeroReached = Die.U() < 0.5f ? -1 : Die.I(4);
+			Cup.Winner = Cup.HeroReached == 3 ? std::string() : Names[Die.I(5)];
+			Cup.RunnerUp = Cup.HeroReached == 2 ? std::string() : Names[Die.I(5)];
+			F.CupsYesterday.push_back(Cup);
+		}
+	}
 	return F;
 }
 
@@ -269,6 +295,22 @@ int main(int Argc, char** Argv)
 	CHECK(FrontKinds["story"] >= 200, "ordinary days get the season's stories (%d days)", FrontKinds["story"]);
 	CHECK(FrontKinds["paper.front.tamed_swan"] > 0 && FrontKinds["paper.front.record"] > 0, "the hero's swan and records make the front (%d, %d)",
 		FrontKinds["paper.front.tamed_swan"], FrontKinds["paper.front.record"]);
+	// the tournaments: the hero's cup on the front, the others' results and today's on the inside pages
+	int CupWon = 0, CupToday = 0, HeroWins = 0;
+	for (const FIssue& I : All)
+	{
+		for (const FPage& P : I.Pages)
+		{
+			for (const FLine& L : P)
+			{
+				CupWon += L.Key == "paper.cup.won" ? 1 : 0;
+				CupToday += L.Key == "paper.cup.today" ? 1 : 0;
+				HeroWins += L.Key == "paper.cup.hero_won" ? 1 : 0;
+			}
+		}
+	}
+	CHECK(FrontKinds["paper.front.cup"] > 0 && CupWon > 100 && CupToday > 300, "tournaments: the hero's cup on %d fronts (+%d inside), %d results, %d of today's",
+		FrontKinds["paper.front.cup"], HeroWins, CupWon, CupToday);
 	// every string the paper owns is used by some day (dead text is a sign of a broken rule)
 	int Unused = 0;
 	std::string FirstUnused;

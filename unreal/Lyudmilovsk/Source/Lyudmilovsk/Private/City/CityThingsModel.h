@@ -768,6 +768,8 @@ namespace LyudCity
 		bool bOpenAll = false;
 		std::function<int(const std::string& /*Item*/)> ItemCount;
 		std::function<bool(const std::string& /*Plot*/, const std::string& /*Role*/)> StaffOnShift;
+		/** A tournament match (FCups::MatchAt): the game is played whatever today's count of games is. */
+		bool bFreeGame = false;
 	};
 
 	enum class EVerdict : uint8_t
@@ -1580,7 +1582,7 @@ namespace LyudCity
 			O.Title = A->Title;
 			// a mini-game instead of the lines, while today's games last (then the act runs plainly: its lines tell of a game)
 			const FGameDef* Def = !O.bClosed && A->Game >= 0 && A->Game < (int)Games.size() ? &Games[(size_t)A->Game] : nullptr;
-			if (Def && (Def->Daily <= 0 || TodayCount(GameCountKey(A->Id), When.Day) < Def->Daily))
+			if (Def && (Ask.bFreeGame || Def->Daily <= 0 || TodayCount(GameCountKey(A->Id), When.Day) < Def->Daily))
 			{
 				Today[GameCountKey(A->Id)] += 1;
 				O.Game = A->Game;
