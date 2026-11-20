@@ -280,7 +280,7 @@ static int Run(bool bDay, const std::string& Lang)
 				const FSet& S = Book.Sets[I];
 				// (a set that asks for a manner: as if their hands were doing it; what the player is noticed by: anybody may)
 				// (and the friends' moments: anybody may be a friend of his, docs/friends.md)
-				const bool bNotice = S.Kind == EKind::Event && (S.On.compare(0, 5, "hero_") == 0 || S.On.compare(0, 7, "friend_") == 0);
+				const bool bNotice = S.Kind == EKind::Event && (S.On.compare(0, 5, "hero_") == 0 || S.On.compare(0, 7, "friend_") == 0 || S.On == "dog_walk");
 				if (!FitA[I] && S.Kind != EKind::Talk && (S.Kind != EKind::Event || bNotice) && HoursFit(S, H))
 				{
 					Who.Manner = S.A.Manner.Yes.empty() ? std::string() : S.A.Manner.Yes[0];

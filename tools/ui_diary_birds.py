@@ -11,6 +11,11 @@ unreal/scripts/import_diary_assets.py imports them as /Game/UI/Diary/Birds/T_Bir
 
 A new species (the big birds): add a sheet to sheets.json, generate it with Higgsfield (nano_banana_2_1, the same style
 text), put its run in, rerun this.
+
+    python3 tools/ui_diary_birds.py --friends [--check]
+
+does the same for the portraits of the hero's animal friends (docs/animals.md "Friends"): design/friends_diary/sheets.json ->
+textures/ui/friends/friend_<Breed>.png -> /Game/UI/Diary/Friends/T_Friend_<Breed>.
 """
 import hashlib
 import json
@@ -23,9 +28,12 @@ from PIL import Image
 from scipy import ndimage
 
 ROOT = os.path.abspath(os.path.join(os.path.dirname(__file__), ".."))
-SPEC = os.path.join(ROOT, "design", "birds_diary", "sheets.json")
-GEN = os.path.join(ROOT, "design", "birds_diary", "gen")
-OUT = os.path.join(ROOT, "textures", "ui", "birds")
+FRIENDS = "--friends" in sys.argv
+SET = "friends" if FRIENDS else "birds"
+PREFIX = "friend_" if FRIENDS else "bird_"
+SPEC = os.path.join(ROOT, "design", SET + "_diary", "sheets.json")
+GEN = os.path.join(ROOT, "design", SET + "_diary", "gen")
+OUT = os.path.join(ROOT, "textures", "ui", SET)
 SIZE = 512
 COLS, ROWS = 3, 2
 
@@ -139,7 +147,7 @@ def cut(path, sheet):
         out = np.asarray(rgba).copy()
         out[..., 3] = (out[..., 3].astype(np.float64) * np.asarray(keep) / 255.0).round().astype(np.uint8)
         out[out[..., 3] == 0] = 0
-        dst = os.path.join(OUT, "bird_%s.png" % name)
+        dst = os.path.join(OUT, "%s%s.png" % (PREFIX, name))
         Image.fromarray(out).save(dst, optimize=True)
         done.append((name, dst, (bw, bh)))
         print("  %-16s box %4dx%-4d -> %s" % (name, bw, bh, os.path.relpath(dst, ROOT)))
