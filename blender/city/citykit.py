@@ -236,7 +236,9 @@ class Building:
     def lamp(self, pos, lumens=900.0, colour="#FFD9A8", kind="public", radius=7.0, fixture=True):
         """A real light inside an enterable room (Unreal: a point light, no shadow, drawn within ~40 m). pos = the
         light's centre (put it ~0.3 m under the ceiling). kind "public": on in the building's open hours (all day
-        long: interiors need it), "stair"/"lobby": dusk to dawn. fixture: a small opal globe/pendant into B.detail
+        long: interiors need it), "stair"/"lobby": dusk to dawn, "closed": the one lamp left burning in a shut public room
+        (on from dusk to dawn while the building is closed; its public windows then glow faintly; see docs/city_night.md
+        and night_kit.night_lamp). fixture: a small opal globe/pendant into B.detail
         (material CT_Opal, which glows)."""
         self.lamps.append({"pos": [round(v, 3) for v in pos], "lumens": lumens, "colour": colour, "kind": kind,
                            "radius": radius})
