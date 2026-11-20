@@ -245,6 +245,7 @@ and the speed do to the wings.
 | white-tailed eagle | 46 % | 35 | 3 |
 | grey heron | 73 % | 25 | 2.4 |
 | mute swan | 82 % | 30 | 2.2 |
+
 - **The rhythm works harder when it has to.** Space is the species' easy rhythm, and level at cruise it beats at the
   share of power that holds the cruise. Slow (below about 0.6 to 0.95 of cruise: a take-off, the first seconds after
   a landing was called off) or with the gaze up (from 2 to 14 degrees), the same rhythm goes up to full power
