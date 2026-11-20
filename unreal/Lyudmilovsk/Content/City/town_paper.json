@@ -38,6 +38,16 @@
   "city.rassvet.poster.sun",
   "city.rassvet.poster.fest"
  ],
+ "newsreel": [
+  "film.programme.mon",
+  "film.programme.tue",
+  "film.programme.wed",
+  "film.programme.thu",
+  "film.programme.fri",
+  "film.programme.sat",
+  "film.programme.sun",
+  "film.programme.fest"
+ ],
  "variants": {
   "front.fest_today": 3,
   "front.fest_more": 2,

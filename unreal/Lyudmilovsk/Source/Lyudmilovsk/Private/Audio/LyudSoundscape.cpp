@@ -296,6 +296,8 @@ void ULyudSoundscapeSubsystem::LoadSounds()
 		{ TEXT("City"), TEXT("washer_hum") }, { TEXT("City"), TEXT("water_sip") }, { TEXT("City"), TEXT("weights_clank") },
 		{ TEXT("City"), TEXT("wheel_hum") }, { TEXT("City"), TEXT("whistle_short") }, { TEXT("City"), TEXT("wind_soft") },
 		{ TEXT("City"), TEXT("wood_creak") },
+		// the Rassvet's newsreel (ULyudCinema): the hall laughing at a silent comedy
+		{ TEXT("City"), TEXT("cinema_laugh") },
 		// the diary (ULyudGameScreen: taken out, opened, a page turned, shut)
 		{ TEXT("Diary"), TEXT("diary_take") }, { TEXT("Diary"), TEXT("diary_open") }, { TEXT("Diary"), TEXT("diary_close") },
 		{ TEXT("Diary"), TEXT("diary_page") }, { TEXT("Diary"), TEXT("diary_pages") },

@@ -6,6 +6,7 @@
 #include "City/LyudTownPaper.h"
 #include "City/SLyudCityGame.h"
 #include "City/SLyudCityPage.h"
+#include "City/LyudCinema.h"
 #include "Audio/LyudSoundscape.h"
 #include "Camera/CameraActor.h"
 #include "Camera/CameraComponent.h"
@@ -965,6 +966,25 @@ void ULyudCityThings::NextShowPart()
 	JumpMinutes(Share, false);
 }
 
+void ULyudCityThings::ReleaseHeldShow(bool bGoOn)
+{
+	if (!bShowHeld)
+	{
+		return;
+	}
+	bShowHeld = false;
+	const int32 Thing = HeldThing;
+	HeldThing = -1;
+	AHeroCharacter* Hero = Cast<AHeroCharacter>(UGameplayStatics::GetPlayerPawn(GetWorld(), 0));
+	// the feature only for one still in his seat (a seated session) or still in the hall
+	if (bGoOn && Thing >= 0 && Thing < NumThings() && (!bHeldSeated || (Hero && Hero->IsSeated())))
+	{
+		StartShow(Thing, HeldTitle, HeldLine, HeldMinutes, bHeldSeated);
+	}
+	HeldTitle = FText::GetEmpty();
+	HeldLine = FText::GetEmpty();
+}
+
 void ULyudCityThings::EndShow()
 {
 	if (ShowAt < 0 && ShowParts.Num() == 0)
@@ -1210,7 +1230,16 @@ void ULyudCityThings::Run(int32 Thing, bool bFromConsole, bool bFromSeat)
 	}
 	if (!O.Open.empty())
 	{
-		// another system's screen (the library's classics: ULyudBookScreen listens); the act's line stays unsaid
+		// another system's screen (the library's classics: ULyudBookScreen listens; a piano: ULyudInstruments); the act's line
+		// stays unsaid. An act that sits (a piano's stool) seats the hero first when he is at the thing.
+		if (Hero && O.Pose == "sit" && !Hero->IsSeated() && FVector::Dist(Hero->GetActorLocation(), At) < 400.f)
+		{
+			const int OpenSeat = Model->SeatFor(Thing, SeatedOn);
+			if (OpenSeat >= 0)
+			{
+				Sit(OpenSeat, Hero, false);
+			}
+		}
 		OnOpen.Broadcast(FName(*LyudCityThingsImpl::Str(O.Open)), Thing);
 		return;
 	}
@@ -1226,7 +1255,22 @@ void ULyudCityThings::Run(int32 Thing, bool bFromConsole, bool bFromSeat)
 			bSeated = Sit(Thing, Hero, false);
 		}
 		ClosePage();
-		StartShow(Thing, Title, O.Line.empty() ? FText::GetEmpty() : LineText(LyudCityThingsImpl::Str(O.Line)), O.Minutes, bSeated);
+		const FText ShowLine = O.Line.empty() ? FText::GetEmpty() : LineText(LyudCityThingsImpl::Str(O.Line));
+		// a cinema's session: the day's real films first (docs/cinema.md); the session's show waits for them
+		const LyudCity::FAct* SessionAct = Model->ActOf(Thing);
+		ULyudCinema* Cinema = ULyudCinema::Get(this);
+		if (SessionAct && Cinema && Cinema->Begin(LyudCityThingsImpl::Name(T.Plot), LyudCityThingsImpl::Name(SessionAct->Id), bSeated))
+		{
+			bShowHeld = true;
+			HeldThing = Thing;
+			HeldTitle = Title;
+			HeldLine = ShowLine;
+			HeldMinutes = O.Minutes;
+			bHeldSeated = bSeated;
+			SetPrompted(-1);
+			return;
+		}
+		StartShow(Thing, Title, ShowLine, O.Minutes, bSeated);
 		return;
 	}
 	if (O.Text >= 0)
@@ -1283,7 +1327,7 @@ void ULyudCityThings::Run(int32 Thing, bool bFromConsole, bool bFromSeat)
 	// a system that adds to this act (the music: a record goes on, a radio is switched) may say its own words instead
 	FText Line = O.Line.empty() ? FText::GetEmpty() : LineText(LyudCityThingsImpl::Str(O.Line));
 	bool bHooked = false;
-	if (!O.bClosed && O.Act >= 0 && ActHook.IsBound())
+	if (!O.bClosed && O.Act >= 0 && (ActHook.IsBound() || MoreActHooks.Num() > 0))
 	{
 		FCityActInfo Info;
 		Info.Thing = LyudCityThingsImpl::Str(T.Id);
@@ -1292,7 +1336,14 @@ void ULyudCityThings::Run(int32 Thing, bool bFromConsole, bool bFromSeat)
 		Info.Plot = LyudCityThingsImpl::Str(T.Plot);
 		Info.At = At;
 		Info.bFromConsole = bFromConsole;
-		bHooked = ActHook.Execute(Info, Line);
+		bHooked = ActHook.IsBound() && ActHook.Execute(Info, Line);
+		for (int32 H = 0; !bHooked && H < MoreActHooks.Num(); ++H)
+		{
+			if (MoreActHooks[H].IsBound())
+			{
+				bHooked = MoreActHooks[H].Execute(Info, Line);
+			}
+		}
 	}
 	if (!Line.IsEmpty())
 	{
@@ -1557,6 +1608,12 @@ void ULyudCityThings::Tick(float DeltaTime)
 	{
 		SetPrompted(-1);
 		TickShow(Hero, PC, bTalk);
+		return;
+	}
+	if (bShowHeld)
+	{
+		// the cinema's newsreel has the hall and the keys (ULyudCinema): nothing is offered meanwhile
+		SetPrompted(-1);
 		return;
 	}
 	if (bOutside && !Page)

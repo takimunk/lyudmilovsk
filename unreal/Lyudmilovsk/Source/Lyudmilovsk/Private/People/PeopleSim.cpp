@@ -211,6 +211,11 @@ namespace LyudPeople
 			A.bStaff = V["staff"].F() > 0.f;
 			A.Pace = V["pace"].F(1.f);
 			A.bRainOk = V["rain"].S() == "ok";
+			if (V["wind"].Size() == 2)
+			{
+				A.WindMin = V["wind"][size_t(0)].F();
+				A.WindMax = V["wind"][size_t(1)].F();
+			}
 			if (A.bGather)
 			{
 				const std::string M = V["mode"].S("mingle");
@@ -2170,6 +2175,16 @@ namespace LyudPeople
 			if (TempC < 2.f && (IsSeated(A.Pose) || A.Pose == EPose::Look))
 			{
 				Score -= std::min(0.8f, (2.f - TempC) * 0.06f);
+			}
+			// an activity of the wind (a kite): out of its range nobody thinks of it, in the middle of it it calls
+			if (A.WindMin >= 0.f || A.WindMax < 99.f)
+			{
+				if (Wind < A.WindMin || Wind > A.WindMax)
+				{
+					return -1e9f;
+				}
+				const float Mid = 0.5f * (A.WindMin + A.WindMax), Half = std::max(0.5f, 0.5f * (A.WindMax - A.WindMin));
+				Score += 0.35f * (1.f - std::fabs(Wind - Mid) / Half);
 			}
 			if (TempC > 20.f && bSunUp && !bRain)
 			{

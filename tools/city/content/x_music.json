@@ -176,6 +176,11 @@
      "item": "record_flight_1",
      "price": 55,
      "count": 1
+    },
+    {
+     "item": "guitar",
+     "price": 180,
+     "count": 1
     }
    ]
   }

@@ -86,3 +86,5 @@ renders/city/interior/
 
 # library classics: texts fetched by tools/books/fetch_books.py fetch (open licences, kept out of git and LFS)
 unreal/Lyudmilovsk/Content/Books/
+# the Rassvet's films: fetched by tools/films/fetch_films.py (public domain, from Wikimedia Commons), never in git or LFS
+unreal/Lyudmilovsk/Content/Films/

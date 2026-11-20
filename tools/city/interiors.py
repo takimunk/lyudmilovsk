@@ -67,7 +67,7 @@ ACT_FIELDS = ("prompt", "minutes", "price", "lines", "pose", "sound", "event", "
               "needs_item", "fade", "shop", "screen", "until", "title", "any_hour", "rotate", "collect", "closed", "game", "read",
               "sleep", "topics", "to", "floors", "oneway", "stay", "needs_stay", "no_stay", "open")
 # screens of other systems an act may open instead of its page ("open"; ULyudCityThings::OnOpen): the library's classics
-OPEN_SCREENS = ("books", "home")
+OPEN_SCREENS = ("books", "home", "piano")
 # a line's conditions (docs/city_interiors.md "Lines by the day and the hour"): hours [from, to), weekdays, a calendar date or
 # range ("MM-DD" or ["MM-DD", "MM-DD"], wrapping the year), days since the game began (after N), every [n, r] game days
 # festival ("any", "none", an id of PeopleData/festivals.json or a list of ids), weather (a word of WEATHER or a list: any of
@@ -1742,13 +1742,16 @@ def build_collections(src, things, acts, strings, regs=None, texts=None, cups=No
         if title not in strings and title not in MAIN:
             err("collection %s: title string %s is missing" % (sid, title))
         for k in c:
-            if k not in ("title", "pieces"):
+            if k not in ("title", "pieces", "by"):
                 err("collection %s: unknown field %s" % (sid, k))
+        if c.get("by") and not c.get("pieces"):
+            err("collection %s: given by %s: list its pieces" % (sid, c["by"]))
         pieces = [str(p) for p in c["pieces"]] if c.get("pieces") else sorted(given.get(sid, ()), key=lambda p: (len(p), p))
         if len(set(pieces)) != len(pieces):
             err("collection %s: a piece twice" % sid)
         for p in pieces:
-            if p not in given.get(sid, ()):
+            # "by": the engine gives its pieces (the kites': ULyudKiteFlying stamps a flight), not a thing in town
+            if p not in given.get(sid, ()) and not c.get("by"):
                 err("collection %s: nothing in town gives piece %s" % (sid, p))
         if not pieces:
             err("collection %s: no pieces (nothing in town gives one)" % sid)
