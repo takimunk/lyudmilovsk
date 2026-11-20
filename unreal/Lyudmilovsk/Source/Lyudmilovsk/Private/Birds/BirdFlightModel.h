@@ -6,6 +6,7 @@
 // yaw 0, Y right (positive yaw turns right), Z up.
 #pragma once
 
+#include <algorithm>
 #include <cmath>
 #include <cstdint>
 
