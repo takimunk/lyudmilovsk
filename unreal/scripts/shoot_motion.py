@@ -321,7 +321,7 @@ def go_busy(w, poses=("WALK",)):
 # ------------------------------------------------------------------ per-frame log
 
 
-BONES_H = ["foot_l", "foot_r", "ball_l", "ball_r", "hand_r", "head"]
+BONES_H = ["foot_l", "foot_r", "ball_l", "ball_r", "pelvis", "hand_r", "head"]
 
 
 def track(a, label):
@@ -499,6 +499,38 @@ def follow_spot(ctx, label, poses_pick, nseg):
               ("wait", 15, recheck), ("wait", 10, cam), ("rec", nseg, each(name), name)]
     q.append(("do", lambda w: cmd(w, "lyud.Anim.GaitCover 1.0")))
     return q
+
+
+@spot("gait")
+def sp_gait(ctx):
+    """A walker made to walk (lyud.People.Order <key> stroll, or sit_bench far off), followed through the GaitCover
+    segments: the townsfolk 'walking' at noon often stand stuck, so take one the sim sends on a long way."""
+    def setup(w):
+        c = CENTRES[int(os.environ.get("GAIT_CENTRE", "0"))]
+        look(w, (c[0] - 700.0, c[1], c[2] + 300.0), (c[0], c[1], c[2] + 100.0))
+
+    def order(w, i):
+        b = pick_person(w, ("STAND", "LOOK", "WALK", "TALK")) or pick_person(w, ("STAND", "LOOK", "WALK", "TALK"), maxd=1e7)
+        if not b:
+            log("gait: nobody near")
+            return
+        ctx["key"] = b[2]
+        st["used"].add(b[2])
+        act = os.environ.get("GAIT_ACT", "stroll")
+        cmd(w, "lyud.People.Order %s %s" % (b[2], act))
+        ctx["subj"] = b[0]
+        log("gait subject %s ordered to %s (pose %s)" % (b[2], act, b[1]))
+
+    def get(w):
+        a = ctx.get("subj")
+        if not a:
+            return None
+        for b in people(w):
+            if b[0] == a:
+                return b
+        return None
+
+    return [("do", setup), ("wait", 120, None), ("wait", 1, order), ("wait", 90, None)] + follow_spot(ctx, "gait", get, NF)
 
 
 @spot("follow")
@@ -766,7 +798,11 @@ def sp_animal(ctx):
 
 
 def birds(w):
-    return [a for a in unreal.GameplayStatics.get_all_actors_of_class(w, unreal.BirdActor) if mesh_of(a) and mesh_of(a).is_visible()]
+    lst = list(unreal.GameplayStatics.get_all_actors_of_class(w, unreal.BirdActor))
+    vis = [a for a in lst if not a.is_hidden() and mesh_of(a) and mesh_of(a).is_visible()]
+    if len(vis) < len(lst):
+        log("bird actors %d, drawn %d" % (len(lst), len(vis)))
+    return vis or lst
 
 
 def bird_census(w, label):
@@ -791,8 +827,10 @@ def sp_birdgnd(ctx):
         # on the ground, not on a wire or roof: near the terrain under it (birds walk/hop on the ground)
         a = pick_actor(cand, c, lambda a: ename(a.get_state()) in ("HOP", "WALK", "PECK", "EAT"))
         if not a:
-            cmd(w, "lyud.Birds.SpawnNear Pigeon %.0f %.0f %.0f" % (c.x + 300.0, c.y, c.z - 200.0))
-            log("birdgnd: none on the ground, spawned a pigeon")
+            if not st.get("spawned_bird"):
+                st["spawned_bird"] = 1
+                cmd(w, "lyud.Birds.SpawnNear FeralPigeon")   # 3 m in front of the camera pawn, on the ground
+                log("birdgnd: none on the ground, spawned a feral pigeon")
         ctx["subj"] = a
         if a:
             l = a.get_actor_location()

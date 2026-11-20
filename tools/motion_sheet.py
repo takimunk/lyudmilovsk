@@ -179,20 +179,37 @@ def stats(rows):
             spd, plants = [], {"l": [], "r": []}
             for side, B, h, ho in (("l", BL, hl, hr), ("r", BR, hr, hl)):
                 hmin = min(h.values())
-                prev = None
+                # runs of consecutive planted frames; a run counts from 3 frames, without its first and last frame
+                runs, cur = [], []
                 for i in idx:
-                    planted = h[i] < hmin + 1.5 and h[i] < ho[i]
-                    if planted and prev is not None and prev[0] == i - 1:
-                        spd.append(math.hypot(B[i][0] - prev[1][0], B[i][1] - prev[1][1]) * 30.0)
-                    if planted and (prev is None or prev[0] != i - 1):
-                        plants[side].append(B[i])
-                    prev = (i, B[i]) if planted else None
+                    if h[i] < hmin + 1.5 and h[i] < ho[i] and (not cur or cur[-1] == i - 1):
+                        cur.append(i)
+                    else:
+                        if len(cur) >= 3:
+                            runs.append(cur)
+                        cur = [i] if (h[i] < hmin + 1.5 and h[i] < ho[i]) else []
+                if len(cur) >= 3:
+                    runs.append(cur)
+                for run in runs:
+                    plants[side].append(B[run[len(run) // 2]])
+                    inner = run[1:-1]
+                    for k in range(1, len(inner)):
+                        spd.append(math.hypot(B[inner[k]][0] - B[inner[k - 1]][0], B[inner[k]][1] - B[inner[k - 1]][1]) * 30.0)
             strides = [math.hypot(p[k][0] - p[k - 1][0], p[k][1] - p[k - 1][1]) for p in plants.values() for k in range(1, len(p))]
             if spd:
                 spd.sort()
                 out.append("BALL slide mean %.1f p95 %.1f cm/s (%d planted frame pairs) body %.0f cm/s stride %s cm" % (
                     sum(spd) / len(spd), spd[min(len(spd) - 1, int(len(spd) * 0.95))], len(spd), mean * 30,
                     ("%.0f (n%d)" % (sum(strides) / len(strides), len(strides))) if strides else "?"))
+    if "pelvis" in rows[0][1]:
+        PV = [vec(f["pelvis"]) for _, f in rows if "pelvis" in f]
+        ps = [math.hypot(PV[i][0] - PV[i - 1][0], PV[i][1] - PV[i - 1][1]) for i in range(1, len(PV))]
+        pz = [abs(PV[i][2] - PV[i - 1][2]) for i in range(1, len(PV))]
+        if ps:
+            k = max(range(len(ps)), key=lambda i: ps[i])
+            pm = sum(ps) / len(ps)
+            out.append("PELVIS step max %.1f cm/frame at f%d (mean %.2f), accel max %.1f cm/frame2, z step max %.1f" % (
+                ps[k], rows[k + 1][0], pm, max(abs(ps[i] - ps[i - 1]) for i in range(1, len(ps))) if len(ps) > 1 else 0.0, max(pz)))
     return "; ".join(out)
 
 
