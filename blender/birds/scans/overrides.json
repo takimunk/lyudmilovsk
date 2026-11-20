@@ -1,10 +1,10 @@
 {
- "_doc": "Per-species scan overrides. scan_prep: lateral/flip/beak_base/body_end/pitch_deg/tail_cut/cut_margin/root_margin/tris0. build_bird: wing_paint = photo (every wing card from the scan's wing photo) or art (default: flight feathers keep species_art.py's painted pattern, coverts from the photo).",
+ "_doc": "Per-species scan overrides. scan_prep: lateral/flip/beak_base/body_end/pitch_deg/tail_cut/cut_margin/root_margin/tris0. build_bird: wing_paint = photo (every wing card from the scan's wing photo) or art (default: flight feathers keep species_art.py's painted pattern, coverts from the photo). art_all: every wing card painted (no photo), for two-tone wings where the photo matched to the back goes wrong.",
  "Rook": {
   "wing_paint": "photo"
  },
  "HoodedCrow": {
-  "wing_paint": "art"
+  "wing_paint": "art_all"
  },
  "CarrionCrow": {
   "wing_paint": "art"
@@ -60,5 +60,23 @@
  },
  "BlueTit": {
   "keep_old": "folded wing/scapular cards stick out of the scan body. Old model kept for now."
+ },
+ "GreatTit": {
+  "wing_paint": "art_all"
+ },
+ "Jay": {
+  "wing_paint": "art_all"
+ },
+ "BlackBrowedAlbatross": {
+  "wing_paint": "art_all"
+ },
+ "Goldfinch": {
+  "wing_paint": "art_all"
+ },
+ "Chaffinch": {
+  "wing_paint": "art_all"
+ },
+ "WhiteWagtail": {
+  "wing_paint": "art_all"
  }
 }

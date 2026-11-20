@@ -1091,6 +1091,26 @@ if SCAN_S and os.path.exists(os.path.join(C.ROOT, "blender", "birds", "scan_raw"
             _img[g] = acc[g] / cnt[g][:, None]
             _m |= g
         WPH[_side + "_f"] = _srgb_to_lin(_img)
+    # colour-match the wing photo to the body beside the wing root (the scan's wings come out paler and greyer than
+    # its body): per channel mean and spread of the wing's own pixels -> those of the back (dorsal) / the flank and
+    # belly (ventral), 85 % of the way
+    if "COLH" in SCAN:
+        _body = _srgb_to_lin(SCAN["COLH"].astype(float) / 255.0)
+        _uh = np.linspace(SCAN["us"][0], SCAN["us"][-1], _body.shape[0])
+        _th = np.linspace(0, 2 * math.pi, _body.shape[1], endpoint=False)
+        _rows = (_uh > 0.40) & (_uh < 0.80)
+        for _side, (a0, a1) in (("dorsal", (math.radians(55), math.radians(125))), ("ventral", (math.radians(215), math.radians(325)))):
+            ref = _body[_rows][:, (_th > a0) & (_th < a1)].reshape(-1, 3)
+            m = WPH[_side + "_mask"]
+            img = WPH[_side + "_f"]
+            src = img[m]
+            if len(src) < 100 or len(ref) < 100:
+                continue
+            ms, ss = src.mean(0), src.std(0) + 1e-4
+            mr, sr = ref.mean(0), ref.std(0) + 1e-4
+            k = float(os.environ.get("BIRD_WING_MATCH", 0.85))
+            WPH[_side + "_f"] = np.clip(img + k * (((img - ms) / ss * sr + mr) - img), 0, 1)
+            print("SCAN", SPECIES, "wing photo", _side, "matched: mean", np.round(ms, 3), "->", np.round(mr, 3))
 WING_BONES = ("p", "s", "humerus.L", "forearm.L", "hand.L")
 _OVR_PATH = os.path.join(C.ROOT, "blender", "birds", "scans", "overrides.json")
 SCAN_OVR = json.load(open(_OVR_PATH)).get(SPECIES, {}) if os.path.exists(_OVR_PATH) else {}
@@ -1146,7 +1166,7 @@ def wing_photo_key(key, weights, root, d, side, Lc, Wc, flip):
     if not bone or not (bone.startswith(WING_BONES)) or not bone.endswith(".L"):
         return key
     kind = key.split(":")[0]
-    if WING_PAINT == "art" and kind in ("primary", "secondary", "tertial"):
+    if WING_PAINT == "art_all" or (WING_PAINT == "art" and kind in ("primary", "secondary", "tertial")):
         return key
     n = WCOUNT.get((kind, bone), 0)
     WCOUNT[(kind, bone)] = n + 1
@@ -1207,6 +1227,12 @@ def wing_photo_cell(key, w, h, c, a):
     px = np.clip((xi * (nx - 1)).astype(int), 0, nx - 1)
     py = np.clip(((es - WPH["e0"]) / (WPH["e1"] - WPH["e0"]) * (ny - 1)).astype(int), 0, ny - 1)
     photo = img[py, px]
+    # calm: a card's photo pulled toward its own median (coverts most: a folded stack of busy cells reads as shards)
+    kind = key.split(":")[0]
+    if (a > 0.5).any():
+        med = np.median(photo[a > 0.5], 0)
+        keep = 0.7 if kind in ("primary", "secondary", "tertial") else 0.35
+        photo = med + (photo - med) * keep
     # keep the painted feather's own light detail (rachis, vane edges) over the photo's colour
     lum = 0.2126 * c[..., 0] + 0.7152 * c[..., 1] + 0.0722 * c[..., 2]
     ref = float(np.median(lum[a > 0.5])) if (a > 0.5).any() else float(lum.mean())

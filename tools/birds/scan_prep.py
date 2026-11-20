@@ -576,17 +576,33 @@ def cut_body(P, T, TL, uv, cf, cu, ua, tf, tu, us, ths, R, lm, L, up_ref, badw):
     bmesh.ops.delete(bm, geom=[v for v in bm.verts if not v.link_faces], context="VERTS")
     holes = bmesh.ops.holes_fill(bm, edges=bm.edges[:], sides=0)
     tri = bmesh.ops.triangulate(bm, faces=holes["faces"])
-    # the fill faces have no uvs of their own: each corner takes the uv its vertex has in the scan's own faces
+    # the fill faces have no uvs of their own. Mixing the uvs of distant boundary vertices in one triangle spans
+    # unrelated texture islands (flat grey panels on dark birds): every fill triangle takes ONE texel instead, the
+    # uv its own nearest boundary corner has in the scan's faces, so it wears the plumage right beside the hole.
+    # Then the fill is subdivided and relaxed so it bulges like the body instead of lying flat.
     ul = bm.loops.layers.uv.active
-    newf = set(tri["faces"]) | set(holes["faces"])
+    newf = [f for f in (set(tri["faces"]) | set(holes["faces"])) if f.is_valid]
+    newset = set(newf)
     for f in newf:
-        if not f.is_valid:
-            continue
+        uvc = None
         for lp in f.loops:
             for o in lp.vert.link_loops:
-                if o.face not in newf:
-                    lp[ul].uv = o[ul].uv
+                if o.face not in newset:
+                    uvc = o[ul].uv.copy()
                     break
+            if uvc is not None:
+                break
+        if uvc is not None:
+            for lp in f.loops:
+                lp[ul].uv = uvc
+    if newf:
+        edges = list({e for f in newf for e in f.edges if all(g in newset for g in e.link_faces)})
+        if edges:
+            sub = bmesh.ops.subdivide_edges(bm, edges=edges, cuts=2, use_grid_fill=True)
+            inner = [v for v in sub.get("geom_inner", []) if isinstance(v, bmesh.types.BMVert)]
+            for _ in range(6):
+                bmesh.ops.smooth_vert(bm, verts=inner, factor=0.6, use_axis_x=True, use_axis_y=True, use_axis_z=True)
+        bmesh.ops.triangulate(bm, faces=[f for f in bm.faces if len(f.verts) > 3])
     bm.to_mesh(me)
     bm.free()
     me.update()
