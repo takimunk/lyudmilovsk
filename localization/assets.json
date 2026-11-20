@@ -1144,13 +1144,15 @@
    "kind": "icon",
    "style": "icon",
    "aspect": "1:1",
-   "prompt": "A compact Soviet 35 mm rangefinder camera of the 1960s: a black leatherette body with a satin chrome top plate, a small lens with a knurled focusing ring, two little rangefinder windows above it, sitting half out of its worn brown leather case with the strap coiled beside, without readable lettering."
+   "prompt": "A compact Soviet 35 mm rangefinder camera of the 1960s: a black leatherette body with a satin chrome top plate, a small lens with a knurled focusing ring, two little rangefinder windows above it, sitting half out of its worn brown leather case with the strap coiled beside, without readable lettering.",
+   "source": "design/photo/icons_photo_1.json: icons_photo_1, cell 1 (row 1, left), one 2x2 Higgsfield grid (the game-assets rule)"
   },
   "icon_photo_film": {
    "kind": "icon",
    "style": "icon",
    "aspect": "1:1",
-   "prompt": "A small faded blue-and-white cardboard box of 35 mm black-and-white photographic film standing upright, and beside it a black metal film cassette with a short tongue of dark film sticking out, without readable lettering."
+   "prompt": "A small faded blue-and-white cardboard box of 35 mm black-and-white photographic film standing upright, and beside it a black metal film cassette with a short tongue of dark film sticking out, without readable lettering.",
+   "source": "design/photo/icons_photo_1.json: icons_photo_1, cell 2 (row 1, right), one 2x2 Higgsfield grid (the game-assets rule)"
   },
   "icon_record_dawn_1": {
    "kind": "icon",
