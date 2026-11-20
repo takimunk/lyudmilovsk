@@ -682,6 +682,52 @@ namespace LyudLetters
 		return {};
 	}
 
+	void FModel::DevDeliverAll(const FTime& Now)
+	{
+		for (FCard& C : Cards)
+		{
+			if (!C.bDelivered)
+			{
+				C.Deliver = std::min(C.Deliver, Now.Day - 1);
+			}
+		}
+		for (FLetter& L : Letters)
+		{
+			if (!L.bArrived)
+			{
+				L.Arrive = std::min(L.Arrive, Now.Day - 1);
+			}
+		}
+	}
+
+	void FModel::DevPenNext(const FTime& Now)
+	{
+		if (PenSent == 0)
+		{
+			FirstDay = std::min(FirstDay < 0 ? Now.Day : FirstDay, Now.Day - Data.Post.PenStartLate - 1);
+			return;
+		}
+		if (PenAnswerArrive < 0)
+		{
+			// her letter is unread or waiting: read it and answer for him
+			const std::string Id = "pen:" + std::to_string(PenSent);
+			for (FLetter& L : Letters)
+			{
+				if (L.Id == Id && !L.bRead)
+				{
+					L.bArrived = true;
+					L.bRead = true;
+					L.ReadDay = Now.Day;
+				}
+			}
+			if (!PostPenAnswer(Now, FAnswer{ "none", "" }))
+			{
+				return;
+			}
+		}
+		PenAnswerArrive = Now.Day - 1;
+	}
+
 	void FModel::Reset()
 	{
 		FirstDay = -1;

@@ -60,6 +60,8 @@
  "letters.diary.card": "Sent the postcard \"{0}\". To: {1}. \"{2} {3}\"",
  "letters.diary.answer": "Wrote to Tonya at White Cape: \"{0}\"",
  "letters.diary.letter": "A letter. From: {0}.",
+ "letters.know": "Now I know the address: {0}",
+ "letters.hint.answer": "I can answer Tonya at any postbox",
  "letters.from.council": "Lyudmilovsk Town Council",
  "letters.pen.who": "Tonya Lotsmanova",
  "letters.pen.place": "White Cape",

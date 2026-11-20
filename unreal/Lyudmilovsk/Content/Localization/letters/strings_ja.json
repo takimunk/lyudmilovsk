@@ -60,6 +60,8 @@
  "letters.diary.card": "はがき「{0}」を出した。宛先：{1}。「{2}{3}」",
  "letters.diary.answer": "白岬のトーニャに書いた。「{0}」",
  "letters.diary.letter": "手紙。{0}より。",
+ "letters.know": "住所がわかった：{0}",
+ "letters.hint.answer": "トーニャへの返事はどのポストからでも出せる",
  "letters.from.council": "リュドミロフスク市役所",
  "letters.pen.who": "トーニャ・ロツマノワ",
  "letters.pen.place": "白岬",

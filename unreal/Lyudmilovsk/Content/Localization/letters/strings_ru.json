@@ -60,6 +60,8 @@
  "letters.diary.card": "Отправил открытку «{0}». Кому: {1}. «{2} {3}»",
  "letters.diary.answer": "Написал Тоне на Белый Мыс: «{0}»",
  "letters.diary.letter": "Письмо. От: {0}.",
+ "letters.know": "Теперь я знаю адрес: {0}",
+ "letters.hint.answer": "Ответить Тоне можно у любого почтового ящика",
  "letters.from.council": "Горсовет Людмиловска",
  "letters.pen.who": "Тоня Лоцманова",
  "letters.pen.place": "Белый Мыс",

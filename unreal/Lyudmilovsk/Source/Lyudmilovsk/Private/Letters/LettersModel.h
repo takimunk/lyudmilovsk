@@ -219,6 +219,11 @@ namespace LyudLetters
 		/** The address parts of a home id: terrace, house, flat (empty when unknown). */
 		std::vector<std::string> AddressOf(const std::string& Home) const;
 
+		/** Developer mode: every card and letter on its way is due now (the next Step carries them). */
+		void DevDeliverAll(const FTime& Now);
+		/** Developer mode: her next letter is written now (answering for the hero with "nothing special" if needed). */
+		void DevPenNext(const FTime& Now);
+
 		void Reset();
 		void Save(std::map<std::string, std::string>& Out) const;
 		void LoadState(const std::map<std::string, std::string>& In);

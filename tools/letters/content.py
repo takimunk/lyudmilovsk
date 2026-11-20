@@ -86,6 +86,8 @@ T("letters.diary.card", "Отправил открытку «{0}». Кому: {1
   "はがき「{0}」を出した。宛先：{1}。「{2}{3}」")
 T("letters.diary.answer", "Написал Тоне на Белый Мыс: «{0}»", "Wrote to Tonya at White Cape: \"{0}\"", "白岬のトーニャに書いた。「{0}」")
 T("letters.diary.letter", "Письмо. От: {0}.", "A letter. From: {0}.", "手紙。{0}より。")
+T("letters.know", "Теперь я знаю адрес: {0}", "Now I know the address: {0}", "住所がわかった：{0}")
+T("letters.hint.answer", "Ответить Тоне можно у любого почтового ящика", "I can answer Tonya at any postbox", "トーニャへの返事はどのポストからでも出せる")
 T("letters.from.council", "Горсовет Людмиловска", "Lyudmilovsk Town Council", "リュドミロフスク市役所")
 T("letters.pen.who", "Тоня Лоцманова", "Tonya Lotsmanova", "トーニャ・ロツマノワ")
 T("letters.pen.place", "Белый Мыс", "White Cape", "白岬")
