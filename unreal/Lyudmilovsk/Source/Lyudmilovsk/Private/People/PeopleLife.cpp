@@ -1126,13 +1126,35 @@ void UPeopleLifeSubsystem::Present(float DeltaTime)
 			}
 			FGroundCache& G = GroundCache[P.Id];
 			G.Age += DeltaTime;
-			if (!G.At.Equals(Loc, 0.5f) || G.Age > 0.25f)
+			// on a seat or a bed the trace from above finds the seat itself (they were then lifted the seat's height
+			// again: sitting in the air over a bench): the ground is looked for a step in front of it and a step behind,
+			// the lower of the two
+			const bool bOnSeat = LyudMotion::Smooth() && Sl && P.State != LP::EState::Going && P.Pose != LP::EPose::Stand && P.Pose != LP::EPose::Walk
+				&& P.Pose != LP::EPose::Talk && P.Pose != LP::EPose::Look;
+			if (!G.At.Equals(Loc, 0.5f) || G.Age > (bOnSeat ? 3.f : 0.25f))
 			{
 				FHitResult Hit;
 				FCollisionQueryParams Q(SCENE_QUERY_STAT(PeopleGround), false);
 				Q.AddIgnoredActor(Body);
-				G.bHit = World->LineTraceSingleByChannel(Hit, Loc + FVector(0, 0, 120), Loc - FVector(0, 0, 250), ECC_Visibility, Q);
-				G.Z = G.bHit ? (float)Hit.ImpactPoint.Z : 0.f;
+				if (bOnSeat)
+				{
+					const FVector Ahead = FRotator(0.f, P.Yaw, 0.f).Vector() * 75.f;
+					G.bHit = false;
+					for (const FVector& From : { Loc + Ahead, Loc - Ahead })
+					{
+						if (World->LineTraceSingleByChannel(Hit, From + FVector(0, 0, 120), From - FVector(0, 0, 250), ECC_Visibility, Q)
+							&& (!G.bHit || Hit.ImpactPoint.Z < G.Z))
+						{
+							G.bHit = true;
+							G.Z = (float)Hit.ImpactPoint.Z;
+						}
+					}
+				}
+				else
+				{
+					G.bHit = World->LineTraceSingleByChannel(Hit, Loc + FVector(0, 0, 120), Loc - FVector(0, 0, 250), ECC_Visibility, Q);
+					G.Z = G.bHit ? (float)Hit.ImpactPoint.Z : 0.f;
+				}
 				G.At = Loc;
 				G.Age = 0.f;
 			}
@@ -2696,7 +2718,9 @@ void ANpcBody::Drive(const FVector& Location, float Yaw, EPersonPose Pose, int32
 			// the speed is the steps' length times their rate: quicker, a person does both in about equal parts (never
 			// the clip merely played fast: a child's 1.35 m/s was the grown-up's walk at double speed); slower, the steps
 			// shorten more than they slow, down to the shuffle of setting off and of stopping
-			const float Ratio = GaitSpeed / (bRun ? 260.f * S : (bShared ? 93.f * S : 75.f));
+			static const IConsoleVariable* Cover = IConsoleManager::Get().RegisterConsoleVariable(TEXT("lyud.Anim.GaitCover"), 1.f,
+				TEXT("Scales the ground the walk and run clips are taken to cover at rate 1 (93 and 260 cm/s for a grown-up): tuning against foot slide."));
+			const float Ratio = GaitSpeed / (Cover->GetFloat() * (bRun ? 260.f * S : (bShared ? 93.f * S : 75.f)));
 			float Rate = FMath::Clamp(FMath::Sqrt(FMath::Max(Ratio, 0.f)), bRun ? 0.85f : 0.8f, bRun ? 1.25f : 1.3f);
 			const float Stride = FMath::Clamp(Ratio / Rate, 0.4f, 1.3f);
 			Rate = FMath::Clamp(Ratio / Stride, 0.3f, 2.2f);
