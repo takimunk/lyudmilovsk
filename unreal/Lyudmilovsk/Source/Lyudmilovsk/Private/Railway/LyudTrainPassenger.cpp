@@ -464,7 +464,7 @@ void ULyudTrainPassenger::TickConductor(AHeroCharacter* Hero, float DeltaTime)
 			WalkD = WalkTo;
 			Walk = EWalk::Asking;
 			PhaseUntil = Now + LyudPassengerImpl::AskSeconds;
-			Say(Key(C.Name), Key(C.Ask), (float)LyudPassengerImpl::AskSeconds + 0.3f);
+			Say(LyudPassengerImpl::Key(C.Name), LyudPassengerImpl::Key(C.Ask), (float)LyudPassengerImpl::AskSeconds + 0.3f);
 			if (Body)
 			{
 				Body->Chatter(2.f);
@@ -508,8 +508,8 @@ void ULyudTrainPassenger::TickConductor(AHeroCharacter* Hero, float DeltaTime)
 		}
 		bCheckedThisRide = true;
 		const FText Line = Res.Verdict == LyudTicket::EVerdict::Fine ? LyudText::Get(LyudPassengerImpl::Str(Res.Line), { FStringFormatArg(Res.Fine) })
-			: Key(Res.Line);
-		Say(Key(C.Name), Line, (float)LyudPassengerImpl::AnswerSeconds);
+			: LyudPassengerImpl::Key(Res.Line);
+		Say(LyudPassengerImpl::Key(C.Name), Line, (float)LyudPassengerImpl::AnswerSeconds);
 		if (Body)
 		{
 			Body->Chatter(3.f);
