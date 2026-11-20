@@ -146,7 +146,7 @@ repeated front page two days running), citysim, the reading page shows it.
 
 ## 7. Kites on windy days
 
-`[ ]` **Brief (Opus 5.5):** Sell kites at the toy shops (P-WAVE toys, the department store's toy house, the fair's toy
+`[~] kites 2026-11-20` **Brief (Opus 5.5):** Sell kites at the toy shops (P-WAVE toys, the department store's toy house, the fair's toy
 kiosk) and let the hero fly one on the beach and the cliff top. The kite is a small code-built mesh (a diamond and a box
 kite, our own colours) on a string (a sagging line of a few segments), lifted by the game's real wind (`docs/sea_and_wind.md`,
 gusts): too little wind and it falls, too much and it spins and must be reeled in; the mouse pulls and lets out the line,
@@ -214,7 +214,11 @@ calm: no romance, no meters on screen, only lines and gestures that change. Done
 
 ## 13. The cinema shows real films
 
-`[ ]` **Brief (Opus 5.5):** The house of culture «Рассвет» has film sessions by the clock, but the film is only lines.
+`[~] cinema 2026-11-20` (docs/cinema.md: nine public-domain shorts of 1895–1908 as the newsreel before every Rassvet session,
+lecturer's subtitles ru/en/ja, dark hall, beam, laughs, ticket stub, the paper prints the programme; cinemasim. Open: the
+films fetched and the materials, sounds and stub icon made on the Mac, Mac shots; the club's summer screen.)
+
+**Brief (Opus 5.5):** The house of culture «Рассвет» has film sessions by the clock, but the film is only lines.
 Show real public-domain films on its screen (and the club's summer screen on festival nights): silent shorts and early
 animation whose copyright has ended worldwide (check each title's status; keep a `SOURCES.md` with licences), encoded small
 (a media texture on the screen material, a projector beam with dust, the hall lights dim, the audience laughs at the right
@@ -239,7 +243,7 @@ of two regulars at a chess table.
 
 ## 15. A playable piano and guitar
 
-`[ ]` **Brief (Opus 5.5):** The pianos (the hall «Своды», the school's music room, the sanatorium lobby) are a line today.
+`[x]` (branch instruments, docs/instruments.md; Mac compile, recording and bench by the merge thread) **Brief (Opus 5.5):** The pianos (the hall «Своды», the school's music room, the sanatorium lobby) are a line today.
 Let the hero play: a keyboard view (a row of keys mapped to the keyboard, one octave and a half, sustain on Shift),
 sampled or synthesised notes (procedural like `tools/festival_sounds.py`, seeded, no paid audio), and "known tunes" he learns
 from sheet music found in the town (the music room, the library) that then play by pressing E in rhythm (an easy rhythm

@@ -114,6 +114,8 @@ public:
 
 	/** An activity's index (activities.json id), -1 if none: for GetActivityState. */
 	int32 FindActivity(const FString& Id) const;
+	/** The body drawn for Id now (null: not drawn, hidden, or the level's own actor), for things they hold (a child's kite). */
+	AActor* GetShownBody(int32 Id) const;
 
 	/** A cheap read for per-frame checks (no strings built, unlike GetPerson): the person's activity index (-1 none), whether
 	 *  they are at it ("doing"), their pose and where they are (cm). False if there is no such person. */

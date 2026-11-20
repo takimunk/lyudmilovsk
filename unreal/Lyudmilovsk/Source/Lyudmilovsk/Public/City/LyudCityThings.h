@@ -157,6 +157,13 @@ public:
 	bool RunNearest();
 	/** Developer mode: today's limits start over. */
 	void ResetDailyLimits();
+	/**
+	 * The cinema's newsreel (ULyudCinema, docs/cinema.md) ran before a session and held its show: bGoOn, the films ran out and the
+	 * session's own show starts now; else he left and it is dropped.
+	 */
+	void ReleaseHeldShow(bool bGoOn);
+	bool IsShowHeld() const { return bShowHeld; }
+
 	/** Debug labels of the things within 15 m (lyud.City.Things.Show). */
 	void SetShowLabels(bool bShow) { bShowLabels = bShow; }
 	bool AreLabelsShown() const { return bShowLabels; }
@@ -281,6 +288,9 @@ public:
 	 *  page shows (true + Line set; an empty Line shows no page). One listener (ULyudMusic), bound with a weak object. */
 	DECLARE_DELEGATE_RetVal_TwoParams(bool, FActHook, const FCityActInfo& /*Info*/, FText& /*Line*/);
 	FActHook ActHook;
+	/** More listeners asked after ActHook (when it didn't take the act): the instruments' sheet music (docs/instruments.md). */
+	void AddActHook(FActHook Hook) { MoreActHooks.Add(MoveTemp(Hook)); }
+	void RemoveActHooks(const void* Object) { MoreActHooks.RemoveAll([Object](const FActHook& H) { return H.IsBoundToObject(Object); }); }
 	/** Every thing whose act Match accepts (the act id with its "@role"), appended to Out. A pass over all things: call once. */
 	void GetThingsByAct(TFunctionRef<bool(const FString& Act)> Match, TArray<FCityThingRef>& Out) const;
 	/** The act id of a thing ("<plot>/<thing id>"); empty when unknown. */
@@ -297,6 +307,8 @@ protected:
 
 	/** The model's state as a flat map ("CityThings"): counts, pages, uses, plots visited. */
 	UPROPERTY(SaveGame) TMap<FString, FString> Saved;
+
+	TArray<FActHook> MoreActHooks;
 
 private:
 	void StartLoad();
@@ -499,6 +511,13 @@ private:
 	int32 ShowThing = -1;
 	FText ShowTitle;
 	bool bShowSeated = false;
+	// a session's show waiting for the cinema's newsreel (ReleaseHeldShow)
+	bool bShowHeld = false;
+	int32 HeldThing = -1;
+	FText HeldTitle;
+	FText HeldLine;
+	int32 HeldMinutes = 0;
+	bool bHeldSeated = false;
 
 	bool bShowLabels = false;
 	float LabelClock = 0.f;
