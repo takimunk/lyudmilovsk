@@ -686,6 +686,7 @@ void ULyudFriends::TickTeaChair(AHeroCharacter* Hero)
 	if (Seat.IsEmpty())
 	{
 		TeaNotNowShown.Reset();
+		TeaClosedSeat.Reset();
 		return;
 	}
 	float Hour = 12.f;
@@ -695,6 +696,10 @@ void ULyudFriends::TickTeaChair(AHeroCharacter* Hero)
 		if (Str(H.Chair) != Seat)
 		{
 			continue;
+		}
+		if (TeaClosedSeat == Seat)
+		{
+			return;     // the tea at this table just ended (or was left): not again until he gets up
 		}
 		if (Model->TeaNow(H.Key(), Day, Hour))
 		{
@@ -722,6 +727,7 @@ void ULyudFriends::TickTeaChair(AHeroCharacter* Hero)
 void ULyudFriends::OpenTea(const LyudFriends::FHost& Host)
 {
 	TeaHost = Str(Host.Id);
+	TeaClosedSeat = Str(Host.Chair);
 	TeaAsked.Init(false, FMath::Max(1, Host.Topics));
 	TeaShown = -1;
 	TeaLine = LyudText::Get(TEXT("friends.tea.") + TeaHost + TEXT(".welcome"));
