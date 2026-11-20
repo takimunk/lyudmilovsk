@@ -2117,6 +2117,23 @@
     "gives": {
      "collect": "staff/souvenir"
     }
+   },
+   {
+    "id": "souvenir.shore",
+    "k": "city.ask.souvenir.shore",
+    "lines": [
+     "city.ask.souvenir.shore.1",
+     "city.ask.souvenir.shore.2"
+    ]
+   },
+   {
+    "id": "souvenir.shore_bring",
+    "k": "city.ask.souvenir.shore_bring",
+    "have": "beach/amber3",
+    "lines": [
+     "city.ask.souvenir.shore_bring.1",
+     "city.ask.souvenir.shore_bring.2"
+    ]
    }
   ],
   "rentals": [

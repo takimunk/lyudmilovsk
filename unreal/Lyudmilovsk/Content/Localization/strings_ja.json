@@ -2070,5 +2070,9 @@
  "dev.action.books.read": "本を借りて読む",
  "dev.action.books.bench": "最寄りのベンチに座る",
  "dev.action.books.reset": "全部返却・しおりを消す",
- "dev.tp.books.park_bench": "公園のベンチ"
+ "dev.tp.books.park_bench": "公園のベンチ",
+ "item.seashell.name": "貝殻",
+ "item.seashell.desc": "浜で拾った貝殻。鼻に近づけると海のにおいがする。離すと何もしない。",
+ "item.amber_piece.name": "琥珀のかけら",
+ "item.amber_piece.desc": "嵐が打ち上げた原石の琥珀。外は曇っていて、光にかざすと蜂蜜色。"
 }

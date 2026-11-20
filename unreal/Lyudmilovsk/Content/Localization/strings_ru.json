@@ -2070,5 +2070,9 @@
  "dev.action.books.read": "Взять книгу и читать",
  "dev.action.books.bench": "Сесть на ближайшую скамейку",
  "dev.action.books.reset": "Вернуть все книги, стереть закладки",
- "dev.tp.books.park_bench": "Скамейка в парке"
+ "dev.tp.books.park_bench": "Скамейка в парке",
+ "item.seashell.name": "Ракушка",
+ "item.seashell.desc": "Ракушка с берега. Пахнет морем, если поднести к носу, и ничем, если нет.",
+ "item.amber_piece.name": "Кусочек янтаря",
+ "item.amber_piece.desc": "Необработанный янтарь, вынесенный штормом. Мутный снаружи, медовый на просвет."
 }

@@ -1,0 +1,413 @@
+{
+ "_doc": "The beach at play (docs/beach.md, ULyudBeach): the prompts on the sand, the stones and the throw, the sandcastle, the swim to the buoy, the finds of the waterline (beach.*), the diary's lines (journal.beach.*), the collection \"beach\", the souvenir seller's talk about the shore (city.ask.souvenir.shore*) and the quest \"The amber shore\" (quest.amber_shore.*). The two items' words (item.seashell, item.amber_piece) are in the main tables.",
+ "beach.prompt.find": {
+  "ru": "E — подобрать: {0}",
+  "en": "E: pick up the {0}",
+  "ja": "E：拾う（{0}）"
+ },
+ "beach.prompt.post": {
+  "ru": "Табличка: «Заплыв до буйка и обратно. Блинчики: рекорд пляжа 11, Гриша, 1998». E — на старт",
+  "en": "The sign: \"Swim to the buoy and back. Skipping stones: beach record 11, Grisha, 1998.\" E: on your marks",
+  "ja": "札：「ブイまで泳いで往復。水切り：浜の記録11回、グリーシャ、1998年」 E：位置について"
+ },
+ "beach.prompt.castle": {
+  "ru": "Держать E — строить замок дальше",
+  "en": "Hold E: go on building the castle",
+  "ja": "E長押し：城づくりを続ける"
+ },
+ "beach.prompt.sand": {
+  "ru": "E — поискать плоский камень · держать E — строить замок из песка",
+  "en": "E: look for a flat stone · hold E: build a sandcastle",
+  "ja": "E：平たい石を探す · E長押し：砂の城をつくる"
+ },
+ "beach.prompt.sand_throw": {
+  "ru": "E — искать камень · держать E — строить замок · держать G и отпустить — бросить (камней: {0})",
+  "en": "E: look for a stone · hold E: build a castle · hold G and let go: throw (stones: {0})",
+  "ja": "E：石を探す · E長押し：城をつくる · Gを押して離す：投げる（石：{0}）"
+ },
+ "beach.prompt.throw": {
+  "ru": "Держать G и отпустить — бросить камень (камней: {0})",
+  "en": "Hold G and let go: throw a stone (stones: {0})",
+  "ja": "Gを押して離す：石を投げる（石：{0}）"
+ },
+ "beach.find.shell_cockle": {
+  "ru": "сердцевидка",
+  "en": "cockle shell",
+  "ja": "ザルガイの貝殻"
+ },
+ "beach.find.shell_mussel": {
+  "ru": "створка мидии",
+  "en": "mussel shell",
+  "ja": "ムール貝の殻"
+ },
+ "beach.find.shell_tellin": {
+  "ru": "розовая теллина",
+  "en": "pink tellin",
+  "ja": "桜色のニッコウガイ"
+ },
+ "beach.find.shell_whelk": {
+  "ru": "раковина трубача",
+  "en": "whelk shell",
+  "ja": "エゾバイの巻貝"
+ },
+ "beach.find.amber": {
+  "ru": "янтарь",
+  "en": "amber",
+  "ja": "琥珀"
+ },
+ "beach.find.amber_fly": {
+  "ru": "янтарь с мушкой",
+  "en": "amber with a fly in it",
+  "ja": "虫入りの琥珀"
+ },
+ "beach.search.full": {
+  "ru": "Карманы полны: пять камней. Больше не унесу.",
+  "en": "Pockets full: five stones. I can carry no more.",
+  "ja": "ポケットはいっぱい。石は五つまで。"
+ },
+ "beach.search.empty": {
+  "ru": "Здесь я уже всё перебрал. Попробую в другом месте.",
+  "en": "I have been through everything here. I will try another spot.",
+  "ja": "ここはもう全部見た。別の場所を探そう。"
+ },
+ "beach.search.flat": {
+  "ru": "Плоский. В карман. Камней: {0}.",
+  "en": "A flat one. Into the pocket. Stones: {0}.",
+  "ja": "平たい石。ポケットへ。石：{0}。"
+ },
+ "beach.search.great": {
+  "ru": "Вот это блин! Гладкий, ровный, как монета. В карман. Камней: {0}.",
+  "en": "Now that is a skimmer! Smooth and even as a coin. Into the pocket. Stones: {0}.",
+  "ja": "これはいい！硬貨みたいに平らでなめらか。ポケットへ。石：{0}。"
+ },
+ "beach.search.round.1": {
+  "ru": "Круглый, как картошка. Не годится.",
+  "en": "Round as a potato. No good.",
+  "ja": "じゃがいもみたいに丸い。だめだ。"
+ },
+ "beach.search.round.2": {
+  "ru": "Красивый, с белой полоской. Но толстый. Положил обратно.",
+  "en": "A pretty one with a white stripe. But fat. I put it back.",
+  "ja": "白い筋のきれいな石。でも厚い。戻した。"
+ },
+ "beach.search.round.3": {
+  "ru": "Обычная галька. Таких тут миллион.",
+  "en": "Plain shingle. There are a million like it.",
+  "ja": "ただの小石。こんなのは百万個ある。"
+ },
+ "beach.search.round.4": {
+  "ru": "Почти плоский, но с горбом. Утонет на первом же прыжке.",
+  "en": "Nearly flat, but humped. It would sink at the first hop.",
+  "ja": "ほぼ平らだけど、こぶがある。一回目で沈む。"
+ },
+ "beach.throw.none": {
+  "ru": "Бульк.",
+  "en": "Plop.",
+  "ja": "ぽちゃん。"
+ },
+ "beach.throw.few": {
+  "ru": "{0}. Так себе.",
+  "en": "{0}. So-so.",
+  "ja": "{0}回。いまいち。"
+ },
+ "beach.throw.good": {
+  "ru": "{0} блинчиков!",
+  "en": "{0} skips!",
+  "ja": "{0}回はねた！"
+ },
+ "beach.throw.best": {
+  "ru": "{0}! Мой рекорд. На табличке у спасателей — {1}.",
+  "en": "{0}! My best. The lifeguards' sign says {1}.",
+  "ja": "{0}回！自己最高。監視員の札は{1}回。"
+ },
+ "beach.throw.record": {
+  "ru": "{0}! Больше, чем у Гриши на табличке. Надо бы приписать мелом.",
+  "en": "{0}! More than Grisha's on the sign. Somebody should chalk it up.",
+  "ja": "{0}回！札のグリーシャより多い。チョークで書き足さなくちゃ。"
+ },
+ "beach.castle.stage.1": {
+  "ru": "Куча мокрого песка. Начало положено.",
+  "en": "A heap of wet sand. A start.",
+  "ja": "濡れた砂の山。まずはここから。"
+ },
+ "beach.castle.stage.2": {
+  "ru": "Главная башня стоит.",
+  "en": "The keep is up.",
+  "ja": "本丸ができた。"
+ },
+ "beach.castle.stage.3": {
+  "ru": "Четыре башни по углам. Одна кривая, но она сторожевая.",
+  "en": "Four towers at the corners. One leans, but it is the watchtower.",
+  "ja": "四隅に塔が四つ。一つ傾いているけど、あれは見張り塔だ。"
+ },
+ "beach.castle.stage.4": {
+  "ru": "Стены. Теперь это замок.",
+  "en": "Walls. Now it is a castle.",
+  "ja": "城壁。これで城になった。"
+ },
+ "beach.castle.stage.5": {
+  "ru": "Ров вокруг. Первую волну он остановит.",
+  "en": "A moat all round. It will stop the first wave.",
+  "ja": "ぐるりと堀。最初の波は止められる。"
+ },
+ "beach.castle.stage.6": {
+  "ru": "Флаг из щепки и красного фантика. Готово.",
+  "en": "A flag made of a splinter and a red sweet wrapper. Done.",
+  "ja": "木切れと赤いあめの包み紙で旗。完成。"
+ },
+ "beach.castle.again": {
+  "ru": "Старый замок пусть стоит сам. Начну новый здесь.",
+  "en": "The old castle can stand by itself. I will start a new one here.",
+  "ja": "前の城はそのままに。ここに新しいのをつくろう。"
+ },
+ "beach.castle.tide": {
+  "ru": "Прилив дойдёт сюда часа через {0}.",
+  "en": "The tide will reach it in about {0} h.",
+  "ja": "潮がここまで来るのは{0}時間後くらい。"
+ },
+ "beach.castle.safe": {
+  "ru": "Сюда прилив сегодня не достанет. Достанет дождь.",
+  "en": "The tide will not reach this far today. The rain will.",
+  "ja": "今日の潮はここまで来ない。雨は来る。"
+ },
+ "beach.castle.washed": {
+  "ru": "Вода дошла. От замка осталась гладкая горка.",
+  "en": "The water came. A smooth mound is all that is left of the castle.",
+  "ja": "水が来た。城はなめらかな小山になった。"
+ },
+ "beach.race.ready": {
+  "ru": "Свисток. До буйка {0} м и обратно. Время спасателей — {1} с. Часы пойдут, когда поплыву.",
+  "en": "The whistle. {0} m to the buoy and back. The lifeguards' time is {1} s. The clock starts when I swim.",
+  "ja": "笛。ブイまで{0}メートル、往復。監視員の記録は{1}秒。泳ぎはじめたら時計が動く。"
+ },
+ "beach.race.go": {
+  "ru": "Поплыл!",
+  "en": "Off!",
+  "ja": "スタート！"
+ },
+ "beach.race.turn": {
+  "ru": "Буёк! Теперь обратно.",
+  "en": "The buoy! Now back.",
+  "ja": "ブイ！さあ戻ろう。"
+ },
+ "beach.race.gave_up": {
+  "ru": "Заплыв не засчитан.",
+  "en": "No race this time.",
+  "ja": "今回は記録なし。"
+ },
+ "beach.race.no_water": {
+  "ru": "Вода ушла: буёк лежит на песке. Приду с приливом.",
+  "en": "The water has gone: the buoy lies on the sand. I will come back with the tide.",
+  "ja": "潮が引いて、ブイは砂の上。満ちてきたらまた来よう。"
+ },
+ "beach.race.done.0": {
+  "ru": "{0} с. Зато доплыл.",
+  "en": "{0} s. But I made it.",
+  "ja": "{0}秒。でも泳ぎきった。"
+ },
+ "beach.race.done.1": {
+  "ru": "{0} с. Бронза, если бы тут давали медали.",
+  "en": "{0} s. Bronze, if they gave medals here.",
+  "ja": "{0}秒。メダルがあるなら銅。"
+ },
+ "beach.race.done.2": {
+  "ru": "{0} с. Серебро, если бы тут давали медали.",
+  "en": "{0} s. Silver, if they gave medals here.",
+  "ja": "{0}秒。メダルがあるなら銀。"
+ },
+ "beach.race.done.3": {
+  "ru": "{0} с. Золото! До спасателей совсем чуть-чуть.",
+  "en": "{0} s. Gold! Only a touch behind the lifeguards.",
+  "ja": "{0}秒。金！監視員まであと少し。"
+ },
+ "beach.race.beat_guard": {
+  "ru": "{0} с! Быстрее спасателей. С вышки кто-то хлопает.",
+  "en": "{0} s! Faster than the lifeguards. Somebody is clapping up on the tower.",
+  "ja": "{0}秒！監視員より速い。塔の上で誰かが拍手している。"
+ },
+ "beach.picked.shell_cockle": {
+  "ru": "Сердцевидка: ребристая, как стиральная доска.",
+  "en": "A cockle: ribbed like a washboard.",
+  "ja": "ザルガイ：洗濯板みたいにぎざぎざ。"
+ },
+ "beach.picked.shell_mussel": {
+  "ru": "Створка мидии. Внутри перламутр, синий с серым.",
+  "en": "A mussel shell. Mother-of-pearl inside, blue and grey.",
+  "ja": "ムール貝の殻。内側は青と灰色の真珠色。"
+ },
+ "beach.picked.shell_tellin": {
+  "ru": "Теллина. Тонкая и розовая, как ноготь.",
+  "en": "A tellin. Thin and pink as a fingernail.",
+  "ja": "ニッコウガイ。爪みたいに薄くて桜色。"
+ },
+ "beach.picked.shell_whelk": {
+  "ru": "Трубач! Целый, с завитком. Приложил к уху: шумит.",
+  "en": "A whelk! Whole, with its spire. I held it to my ear: it roars.",
+  "ja": "エゾバイ！欠けていない巻貝。耳に当てると、ごうごう鳴る。"
+ },
+ "beach.picked.amber": {
+  "ru": "Янтарь. Лёгкий и тёплый, не как камень.",
+  "en": "Amber. Light and warm, not like a stone.",
+  "ja": "琥珀。軽くて温かい。石とは違う。"
+ },
+ "beach.picked.amber_fly": {
+  "ru": "В янтаре кто-то есть. Мушка. Ей, наверное, сорок миллионов лет.",
+  "en": "There is somebody in the amber. A little fly. It must be forty million years old.",
+  "ja": "琥珀の中に誰かいる。小さなハエ。たぶん四千万年前の。"
+ },
+ "journal.beach.skips": {
+  "ru": "Пускал блинчики на пляже. Лучший бросок: {0}.",
+  "en": "Skipped stones on the beach. Best throw: {0}.",
+  "ja": "浜で水切りをした。いちばんよかったのは{0}回。"
+ },
+ "journal.beach.record": {
+  "ru": "{0} блинчиков. Это больше, чем рекорд на табличке у спасателей. Никто не видел, кроме чайки.",
+  "en": "{0} skips. That beats the record on the lifeguards' sign. Nobody saw it but a gull.",
+  "ja": "水切り{0}回。監視員の札の記録を超えた。見ていたのはカモメだけ。"
+ },
+ "journal.beach.castle": {
+  "ru": "Построил замок из песка: башни, стены, ров, флаг. Прилив всё равно заберёт. Так даже лучше.",
+  "en": "Built a sandcastle: towers, walls, a moat, a flag. The tide will take it anyway. Better that way.",
+  "ja": "砂の城をつくった。塔、城壁、堀、旗。どうせ潮がさらっていく。それでいい。"
+ },
+ "journal.beach.castle_washed": {
+  "ru": "Мой замок смыло приливом. Осталась гладкая горка и щепка от флага.",
+  "en": "The tide washed my castle away. A smooth mound and the flag's splinter are left.",
+  "ja": "ぼくの城は潮に流された。なめらかな小山と、旗の木切れだけが残った。"
+ },
+ "journal.beach.swim": {
+  "ru": "Заплыв до буйка и обратно: {0} с. Лучшее время.",
+  "en": "The swim to the buoy and back: {0} s. My best time.",
+  "ja": "ブイまで往復：{0}秒。自己最高。"
+ },
+ "journal.beach.find.shell_cockle": {
+  "ru": "Нашёл на берегу сердцевидку. Самая обычная ракушка, а всё равно положил в карман.",
+  "en": "Found a cockle on the shore. The plainest of shells, and I pocketed it all the same.",
+  "ja": "浜でザルガイを見つけた。ごく普通の貝殻なのに、やっぱりポケットに入れた。"
+ },
+ "journal.beach.find.shell_mussel": {
+  "ru": "Нашёл створку мидии. Снаружи чёрная, внутри как небо перед дождём.",
+  "en": "Found a mussel shell. Black outside, inside like the sky before rain.",
+  "ja": "ムール貝の殻を見つけた。外は黒、内側は雨の前の空の色。"
+ },
+ "journal.beach.find.shell_tellin": {
+  "ru": "Нашёл теллину: розовую и такую тонкую, что страшно сжать пальцы.",
+  "en": "Found a tellin: pink and so thin I was afraid to close my fingers.",
+  "ja": "ニッコウガイを見つけた。桜色で、指を閉じるのがこわいほど薄い。"
+ },
+ "journal.beach.find.shell_whelk": {
+  "ru": "Нашёл раковину трубача. В ней шумит море, хотя море и так рядом.",
+  "en": "Found a whelk shell. The sea roars in it, though the sea is right here anyway.",
+  "ja": "エゾバイの貝殻を見つけた。すぐそこに海があるのに、中でも海が鳴っている。"
+ },
+ "journal.beach.find.amber": {
+  "ru": "После шторма нашёл на берегу янтарь. Он лежал в полосе водорослей, там, куда достала последняя волна.",
+  "en": "After the storm I found amber on the shore. It lay in the line of weed, as far up as the last wave reached.",
+  "ja": "嵐のあと、浜で琥珀を見つけた。最後の波が届いた海藻の線の中にあった。"
+ },
+ "journal.beach.find.amber_fly": {
+  "ru": "Нашёл янтарь с мушкой внутри. Она смотрела на то же море, только очень давно.",
+  "en": "Found amber with a little fly inside. It looked at this same sea, only very long ago.",
+  "ja": "虫入りの琥珀を見つけた。この虫も同じ海を見ていた。ずっとずっと昔に。"
+ },
+ "dev.action.beach.stones": {
+  "ru": "Пляж: три плоских камня в карман",
+  "en": "Beach: three flat stones into the pocket",
+  "ja": "浜：平たい石を三つポケットへ"
+ },
+ "dev.action.beach.castle": {
+  "ru": "Пляж: готовый замок перед героем",
+  "en": "Beach: a finished castle in front of the hero",
+  "ja": "浜：主人公の前に完成した城"
+ },
+ "dev.action.beach.storm": {
+  "ru": "Пляж: берег как после шторма (янтарь)",
+  "en": "Beach: the shore as after a storm (amber)",
+  "ja": "浜：嵐のあとの波打ち際（琥珀）"
+ },
+ "dev.action.beach.race": {
+  "ru": "Пляж: свисток на заплыв до ближайшего буйка",
+  "en": "Beach: the whistle for the swim to the nearest buoy",
+  "ja": "浜：近くのブイまでの競泳の笛"
+ },
+ "city.coll.beach.title": {
+  "ru": "Пляжные дела",
+  "en": "Things done on the beach",
+  "ja": "浜でやったこと"
+ },
+ "city.ask.souvenir.shore": {
+  "ru": "А янтарь у вас откуда?",
+  "en": "Where does your amber come from?",
+  "ja": "この琥珀はどこから？"
+ },
+ "city.ask.souvenir.shore.1": {
+  "ru": "— С берега, откуда же ещё. После шторма иди вдоль воды в отлив и смотри в полосу водорослей: он лёгкий, его выносит дальше всех. В тихую погоду и не ищи, одни ракушки.",
+  "en": "\"From the shore, where else. After a storm walk the waterline at low water and look in the line of weed: it is light, it is carried farthest up. In calm weather do not bother, shells is all you will get.\"",
+  "ja": "「浜からよ、ほかにどこがあるの。嵐のあと、引き潮の波打ち際を歩いて、海藻の線を見るの。軽いから、いちばん上まで運ばれる。なぎの日は探してもむだ、貝殻ばかり」"
+ },
+ "city.ask.souvenir.shore.2": {
+  "ru": "— Найдёшь три куска, приноси показать. Я по янтарю вижу, какой был шторм и откуда шёл. Это моя газета.",
+  "en": "\"Find three pieces and bring them to show me. I can read the storm in the amber, how hard and from where. It is my newspaper.\"",
+  "ja": "「三つ見つけたら見せにおいで。琥珀を見れば、どんな嵐だったか、どこから来たかがわかる。わたしの新聞みたいなものよ」"
+ },
+ "city.ask.souvenir.shore_bring": {
+  "ru": "Я нашёл три куска янтаря. Посмотрите?",
+  "en": "I found three pieces of amber. Will you look?",
+  "ja": "琥珀を三つ見つけました。見てくれますか？"
+ },
+ "city.ask.souvenir.shore_bring.1": {
+  "ru": "— Ну-ка. Этот светлый, молочный: с глубины. Этот медовый, обкатанный: давно гуляет. Шторм был северо-западный, я так и думала.",
+  "en": "\"Let us see. This one is pale, milky: from the deep. This one is honey, rolled smooth: it has wandered a long time. The storm was a north-wester, as I thought.\"",
+  "ja": "「どれどれ。これは白っぽい乳色、深いところから。これは蜂蜜色で角がとれてる、長く旅したのね。嵐は北西から。思ったとおり」"
+ },
+ "city.ask.souvenir.shore_bring.2": {
+  "ru": "— Свои оставь себе: первый янтарь не продают. А это тебе от меня, уже с цепочкой. И шестьдесят рублей за свежую газету.",
+  "en": "\"Keep your own: nobody sells their first amber. And this is from me, already on its chain. And sixty roubles for a fresh newspaper.\"",
+  "ja": "「自分のは取っておきなさい。最初の琥珀は売るものじゃないの。これはわたしから、もう鎖がついてる。それと、新しい新聞のお代に六十ルーブル」"
+ },
+ "quest.amber_shore.title": {
+  "ru": "Янтарный берег",
+  "en": "The amber shore",
+  "ja": "琥珀の浜"
+ },
+ "quest.amber_shore.desc": {
+  "ru": "Продавщица сувениров говорит, что янтарь не привозят: его выносит море. Нужно только знать, когда и где смотреть.",
+  "en": "The souvenir seller says amber is not brought in: the sea carries it out. One only has to know when and where to look.",
+  "ja": "土産物屋のおばさんが言うには、琥珀は仕入れるものじゃない。海が運んでくる。いつ、どこを見るかを知っていればいい。"
+ },
+ "quest.amber_shore.shells.log": {
+  "ru": "Для начала научусь смотреть под ноги. Вдоль воды, по мокрому песку, лежат ракушки: их видно, только если идти медленно.",
+  "en": "To begin with I will learn to look at my feet. Along the water, on the wet sand, lie shells: you see them only if you walk slowly.",
+  "ja": "まずは足もとを見る練習。波打ち際の濡れた砂に貝殻がある。ゆっくり歩かないと見えない。"
+ },
+ "quest.amber_shore.shells.obj": {
+  "ru": "Подобрать три ракушки у воды",
+  "en": "Pick up three shells by the water",
+  "ja": "波打ち際で貝殻を三つ拾う"
+ },
+ "quest.amber_shore.amber.log": {
+  "ru": "Янтарь бывает только после шторма. Подожду сильного ветра, а наутро в отлив пройду вдоль воды и буду смотреть в полосу водорослей, выше ракушек.",
+  "en": "Amber comes only after a storm. I will wait for a strong wind, and next morning at low water walk the shore looking in the line of weed, above the shells.",
+  "ja": "琥珀が出るのは嵐のあとだけ。強い風を待って、次の朝の引き潮に波打ち際を歩き、貝殻より上の海藻の線を見る。"
+ },
+ "quest.amber_shore.amber.obj": {
+  "ru": "Найти три куска янтаря после шторма",
+  "en": "Find three pieces of amber after a storm",
+  "ja": "嵐のあとに琥珀を三つ見つける"
+ },
+ "quest.amber_shore.bring.log": {
+  "ru": "Три куска янтаря в кармане. Покажу их продавщице сувениров на набережной.",
+  "en": "Three pieces of amber in my pocket. I will show them to the souvenir seller on the promenade.",
+  "ja": "ポケットに琥珀が三つ。海岸通りの土産物屋のおばさんに見せよう。"
+ },
+ "quest.amber_shore.tell.obj": {
+  "ru": "Показать янтарь продавщице сувениров",
+  "en": "Show the amber to the souvenir seller",
+  "ja": "土産物屋のおばさんに琥珀を見せる"
+ },
+ "quest.amber_shore.done": {
+  "ru": "Теперь у меня три своих куска янтаря и подвеска. Продавщица сказала: в следующий шторм приходи раньше чаек. Я не понял, шутит она или нет.",
+  "en": "Now I have three pieces of amber of my own and a pendant. The seller said: next storm, come before the gulls do. I could not tell whether she was joking.",
+  "ja": "自分の琥珀が三つと、ペンダントがひとつ。おばさんは言った。次の嵐のあとはカモメより早くおいで、と。冗談かどうか、わからなかった。"
+ }
+}

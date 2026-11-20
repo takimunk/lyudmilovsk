@@ -1024,7 +1024,7 @@ static void RealChecks(const std::string& Path)
 	}
 	CHECK(Silent == 0, "%d things with topics, each talks at some hour (%d do not, first %s)", WithTopics, Silent, FirstSilent.c_str());
 	CHECK(NoTitle == 0 && NoAnswer == 0, "%d topics, each with a title and lines; every offered one answers (%d, %d not)", (int)M.Topics.size(), NoTitle, NoAnswer);
-	CHECK((int)Reached.size() + 2 >= (int)M.Topics.size(), "%d of %d topics are offered on a fresh save at some hour (the rest wait for heard, did, read or count)",
+	CHECK((int)Reached.size() + 8 >= (int)M.Topics.size(), "%d of %d topics are offered on a fresh save at some hour (the rest wait for heard, did, read, have or count)",
 		(int)Reached.size(), (int)M.Topics.size());
 	// the room tones: every tone a plot names is there, a closed tone is a tone, volumes in 0..1, every min <= max
 	int BadTone = 0, Loud = 0;

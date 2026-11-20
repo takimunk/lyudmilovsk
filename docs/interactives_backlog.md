@@ -157,7 +157,7 @@ string humming in the wind. Done: an offline test of the lift model, Mac shots a
 
 ## 8. The beach at play
 
-`[ ]` **Brief (Opus 5.5):** Small things to do on the beach and pier, each a minute long, using the sea and tides: (a)
+`[~] «Сделать телескопы с настоящим небом» 2026-11-20 (branch `beach`, docs/beach.md)` **Brief (Opus 5.5):** Small things to do on the beach and pier, each a minute long, using the sea and tides: (a)
 skipping stones: pick a flat stone on the shingle (some are flat, most not), throw with a timed release, count the skips
 on the real water surface (`ALyudSea` height), the town record on the lifeguard board; (b) sandcastles: build at the
 damp sand line by holding E (a few growing stages of a code-built castle, a moat, a flag from the kiosk), the tide

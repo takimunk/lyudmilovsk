@@ -1,0 +1,77 @@
+{
+ "_doc": "The beach at play (docs/beach.md). The collection \"beach\": its stamps come from ULyudBeach (hence \"given\"). The quest \"The amber shore\": events beach shell | amber from ULyudBeach; the souvenir seller's topics souvenir.shore and souvenir.shore_bring are in talk.json (buy_souvenirs). Words: strings/beach.json.",
+ "collections": {
+  "beach": {
+   "title": "city.coll.beach.title",
+   "given": 1,
+   "pieces": [
+    "skip3",
+    "skip5",
+    "skip8",
+    "skip_record",
+    "castle",
+    "castle_flag",
+    "castle_washed",
+    "swim",
+    "swim_gold",
+    "shell_cockle",
+    "shell_mussel",
+    "shell_tellin",
+    "shell_whelk",
+    "amber",
+    "amber_fly",
+    "amber3"
+   ]
+  }
+ },
+ "quests": [
+  {
+   "id": "amber_shore",
+   "kind": "side",
+   "start_on": {
+    "event": "ask",
+    "target": "souvenir.shore"
+   },
+   "stages": [
+    {
+     "id": "shells",
+     "objectives": [
+      {
+       "id": "shells",
+       "event": "beach",
+       "target": "shell",
+       "need": 3
+      }
+     ]
+    },
+    {
+     "id": "amber",
+     "objectives": [
+      {
+       "id": "amber",
+       "event": "beach",
+       "target": "amber",
+       "need": 3
+      }
+     ]
+    },
+    {
+     "id": "bring",
+     "objectives": [
+      {
+       "id": "tell",
+       "event": "ask",
+       "target": "souvenir.shore_bring"
+      }
+     ],
+     "reward": {
+      "rubles": 60,
+      "items": {
+       "amber_charm": 1
+      }
+     }
+    }
+   ]
+  }
+ ]
+}
