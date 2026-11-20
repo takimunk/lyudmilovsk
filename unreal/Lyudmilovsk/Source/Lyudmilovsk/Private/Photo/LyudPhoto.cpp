@@ -467,7 +467,7 @@ void ULyudPhoto::EnsureOverlay()
 				const float Focus = Self->FocusDistance();
 				const FText Ring = Focus > 1.e6f
 					? LyudText::Get(TEXT("ui.photo.focus.inf"))
-					: LyudText::Get(TEXT("ui.photo.focus.m"), { FStringFormatArg(FString::Printf(Focus < 10.f ? TEXT("%.1f") : TEXT("%.0f"), Focus)) });
+					: LyudText::Get(TEXT("ui.photo.focus.m"), { FStringFormatArg(Focus < 10.f ? FString::Printf(TEXT("%.1f"), Focus) : FString::Printf(TEXT("%.0f"), Focus)) });
 				if (!Self->HasFilm())
 				{
 					return LyudText::Get(TEXT("ui.photo.finder.no_film"), { FStringFormatArg(Ring.ToString()) });
