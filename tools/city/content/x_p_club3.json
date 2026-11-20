@@ -436,6 +436,7 @@
   "cog_darkroom": {
    "like": "darkroom",
    "target": "darkroom",
+   "open": "photo_darkroom",
    "prompt": "city.cog.dark.prompt",
    "lines": [
     {

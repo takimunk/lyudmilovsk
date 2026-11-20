@@ -107,6 +107,8 @@ def drawings(rgb, cw, ch):
         size = np.count_nonzero(blots[sl] == i)
         if size < (reach * 4) ** 2:
             continue  # a speck of dust
+        if sl[0].stop - sl[0].start > ch * 1.3 or sl[1].stop - sl[1].start > cw * 1.3:
+            continue  # grid lines drawn across the sheet (one blot as wide as the page), not a drawing
         cy, cx = ndimage.center_of_mass(blots[sl] == i)
         cy, cx = cy + sl[0].start, cx + sl[1].start
         owner[i] = min(int(cy // ch), ROWS - 1) * COLS + min(int(cx // cw), COLS - 1)

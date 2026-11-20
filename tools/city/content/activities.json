@@ -40,7 +40,7 @@
   "potters_wheel": {"prompt": "city.do.potters_wheel.prompt", "lines": "city.do.potters_wheel", "minutes": 40, "pose": "sit", "sound": "wheel_hum"},
   "workbench": {"prompt": "city.do.workbench.prompt", "lines": "city.do.workbench", "minutes": 30, "sound": "plane_wood"},
   "sewing_machine": {"prompt": "city.do.sewing_machine.prompt", "lines": "city.do.sewing_machine", "minutes": 30, "pose": "sit", "sound": "sewing_rattle"},
-  "darkroom": {"prompt": "city.do.darkroom.prompt", "lines": "city.do.darkroom", "minutes": 30},
+  "darkroom": {"prompt": "city.do.darkroom.prompt", "lines": "city.do.darkroom", "minutes": 30, "open": "photo_darkroom"},
   "school_desk": {"prompt": "city.do.school_desk.prompt", "lines": "city.do.school_desk", "minutes": 45, "pose": "sit", "fade": true, "needs_staff": "teacher", "sound": "school_bell"},
   "blackboard": {"prompt": "city.do.blackboard.prompt", "lines": "city.do.blackboard", "minutes": 5, "sound": "chalk"},
 
