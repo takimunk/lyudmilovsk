@@ -226,6 +226,12 @@
    "prompt": "A folded newspaper with grey columns and one photo, no readable words.",
    "source": "design/lobby/icons_grid.json: one 4x4 Higgsfield grid, cut by tools/lobby_icons.py (the game-assets rule)"
   },
+  "icon_ticket_stub": {
+   "kind": "icon",
+   "style": "icon",
+   "aspect": "1:1",
+   "prompt": "A small torn pink paper cinema ticket stub with a perforated torn edge and a faded violet stamp, no lettering."
+  },
   "icon_postcard": {
    "kind": "icon",
    "style": "icon",
@@ -1051,6 +1057,20 @@
    "aspect": "1:1",
    "prompt": "A thick school exercise notebook with a plain dark green textured oilcloth cover, slightly open showing squared pages.",
    "source": "localization/icon_grids_city.json: icons_city_4, cell 3 (row 1, right), one 3x3 Higgsfield grid (the game-assets rule)"
+  },
+  "icon_kite_diamond": {
+   "kind": "icon",
+   "style": "icon",
+   "aspect": "1:1",
+   "prompt": "A homemade-style diamond kite of red and yellow cloth halves on thin wooden cross spars, a tail of small blue ribbon bows, a small wooden line reel with white string beside it.",
+   "source": "design/kites/icon_kites_grid.json: one 2x2 Higgsfield grid (the game-assets rule), the better top-row cell cut"
+  },
+  "icon_kite_box": {
+   "kind": "icon",
+   "style": "icon",
+   "aspect": "1:1",
+   "prompt": "A box kite of two blue cloth cells on four thin wooden slats with cross braces, a small wooden line reel with white string beside it.",
+   "source": "design/kites/icon_kites_grid.json: one 2x2 Higgsfield grid (the game-assets rule), the better bottom-row cell cut"
   },
   "icon_san_diploma": {
    "kind": "icon",

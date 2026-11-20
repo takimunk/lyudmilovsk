@@ -111,6 +111,10 @@ public:
 	/** A trigger festival happens (first_snow: the day after). */
 	UFUNCTION(BlueprintCallable, Category = "Festival") void Fire(FName Trigger);
 	UFUNCTION(BlueprintCallable, Category = "Festival") FString Report() const;
+	/** How much nearer the star stands now for a festival (festivals.json "sky": 0 its own size .. 0.7 on the Big Sun's noon). */
+	UFUNCTION(BlueprintPure, Category = "Festival") float SunApproach() const { return SkySun; }
+	/** How far the weather is held fair for a festival now, 0..1. */
+	UFUNCTION(BlueprintPure, Category = "Festival") float FairSky() const { return SkyClear; }
 
 	/** A festival's phase started / ended. */
 	UPROPERTY(BlueprintAssignable, Category = "Festival") FLyudFestivalEvent OnPhaseStart;
@@ -166,6 +170,15 @@ private:
 	void Update();
 	void LoadFired();
 	void CheckFirstSnow(const FDateTime& Now);
+	/** Fires after_storm on the morning after a gale (amber on the beach), at most once in ten days. */
+	void CheckAfterStorm(const FDateTime& Now);
+	int32 LastStormLook = -1;
+	/** The festivals' sky now (LyudFest::FCalendar::SkyAt), given to the sky and the weather every update. */
+	float SkySun = 0.f, SkyClear = 0.f;
+	/** The town's pennant strings (decor kind "street_bunting"), up while a festival that asks for them is. */
+	UPROPERTY(Transient) TObjectPtr<AActor> StreetBunting;
+	/** When (calendar seconds) the watchers of a moving thing (the sun, the moon) were last turned to it, by festival.phase. */
+	TMap<FName, double> FaceSentAt;
 	/** The face point of a phase (cm), ZeroVector if none. */
 	FVector FacePoint(const FLyudVenue& V, const FString& Face, const FDateTime& Now) const;
 	void StartShow(FName Key, const FString& Show, const FLyudVenue& V, double EndsAt);
@@ -174,7 +187,8 @@ private:
 	void StartSound(FName Key, const TCHAR* Asset, const FVector& At, float Volume, float Size);
 	/** Those sounds by asset name, looked for once (null: not imported). */
 	UPROPERTY(Transient) TMap<FName, TObjectPtr<USoundBase>> LoopSounds;
-	void Announce(const FString& Day, const FString& Id);
+	/** The day's note (festival.<id>.today), once a day; Note "eve": the evening before's (festival.<id>.eve). */
+	void Announce(const FString& Day, const FString& Id, const TCHAR* Note = TEXT("today"));
 	/** The hero at the festival: prompts (light a sky lantern), what he watched and where he went (quest events). */
 	void TickHero(float DeltaTime);
 	/** Seconds the hero has spent watching each show now running (festival.phase.show). */

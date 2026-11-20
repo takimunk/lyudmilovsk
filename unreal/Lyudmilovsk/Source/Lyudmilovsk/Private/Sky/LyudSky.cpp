@@ -57,6 +57,7 @@ static TAutoConsoleVariable<int32> CVarDomeFog(TEXT("lyud.Sky.DomeFog"), 1, TEXT
 static TAutoConsoleVariable<float> CVarSunHaze(TEXT("lyud.Sky.SunHaze"), -1.f, TEXT("Overrides ALyudSky::SunHazeDimming when >= 0 (tuning: the share of the haze's dimming the star keeps)."));
 static TAutoConsoleVariable<float> CVarSunVeil(TEXT("lyud.Sky.SunVeil"), -1.f, TEXT("Overrides ALyudSky::SunVeilClear when >= 0 (tuning: the haze's glow taken off over the star)."));
 static TAutoConsoleVariable<float> CVarSunsetDiskTint(TEXT("lyud.Sunset.DiskTint"), 1.f, TEXT("How much of the day's sunset colour the photosphere takes (ULyudSunset's DiskTint; 0 = the air's colour alone)."));
+static TAutoConsoleVariable<float> CVarSunApproach(TEXT("lyud.Sky.SunApproach"), 0.f, TEXT("The star's disk this many times as wide as usual when > 0 (overrides ALyudSky::SetSunApproach; the Big Sun day is 1.7)."));
 static TAutoConsoleVariable<float> CVarNightLight(TEXT("lyud.Sky.NightLight"), 1.f, TEXT("Multiplies the moonlight and the night sky's glow (tuning)."));
 
 namespace
@@ -307,8 +308,24 @@ void ALyudSky::Tick(float DeltaSeconds)
 	}
 }
 
+void ALyudSky::SetSunApproach(float DiskScale, float LightScale)
+{
+	SunApproachScale = FMath::Clamp(DiskScale, 0.25f, 4.f);
+	SunApproachLight = FMath::Clamp(LightScale, 0.25f, 3.f);
+}
+
 void ALyudSky::UpdateSky()
 {
+	// the star nearer (the Big Sun day) or the console's own size: the light's source angle follows, only when it changes
+	if (const float Pin = CVarSunApproach.GetValueOnGameThread(); Pin > 0.f)
+	{
+		SunApproachScale = FMath::Clamp(Pin, 0.25f, 4.f);
+	}
+	if (const float Angle = SunSizeNowDeg(); !FMath::IsNearlyEqual(Angle, AppliedSunAngle, 0.02f))
+	{
+		AppliedSunAngle = Angle;
+		SunLight->SetLightSourceAngle(Angle);
+	}
 	const FDateTime Utc = ShownTime() - FTimespan::FromHours(UtcOffsetHours);
 	SunPos = LyudEphemeris::Sun(Utc, LatitudeDeg, LongitudeDeg);
 	MoonPos = LyudEphemeris::Moon(Utc, LatitudeDeg, LongitudeDeg, &MoonPhaseEphemeris);
@@ -349,8 +366,8 @@ void ALyudSky::UpdateSky()
 	// activity's everyday flares (ULyudSunActivity)
 	const float Flare = FMath::Max(FlareBoost, ActivityFlare * ActivityFlareLight / 0.25f);
 	// with no air the light goes as the disk sinks behind the horizon, and no cloud dims it or sunset tints it
-	const float SunUp = bSpaceView ? SmoothStep01(-0.5f * SunAngularDiameterDeg, 0.5f * SunAngularDiameterDeg, SunAlt) : SmoothStep01(-12.f, -4.f, SunAlt);
-	SunLight->SetIntensity(SunIlluminance * SunUp * (1.f + LowSunLightGain * Low) * (1.f + 0.25f * Flare) * (bSpaceView ? 1.f : OvercastSunScale));
+	const float SunUp = bSpaceView ? SmoothStep01(-0.5f * SunSizeNowDeg(), 0.5f * SunSizeNowDeg(), SunAlt) : SmoothStep01(-12.f, -4.f, SunAlt);
+	SunLight->SetIntensity(SunIlluminance * SunApproachLight * SunUp * (1.f + LowSunLightGain * Low) * (1.f + 0.25f * Flare) * (bSpaceView ? 1.f : OvercastSunScale));
 	SunLight->SetLightColor(FMath::Lerp(SunColor, FLinearColor(1.f, 0.97f, 0.95f), 0.35f * Flare) * (bSpaceView ? FLinearColor::White : Sunset.LightTint));
 	// the clouds get only LowSunCloudLight of that extra light, and the sky and the haze over the land (the aerial
 	// perspective) none: lit by the boosted light they paled to the disk's brightness, the clouds drawn over it and the
@@ -697,7 +714,7 @@ void ALyudSky::UpdateSkyMaterial()
 	{
 		SkyMID->SetVectorParameterValue(TEXT("SunGlare"), FLinearColor(GlareDiskGain, 0.f, 0.f, 0.f));
 	}
-	SkyMID->SetVectorParameterValue(TEXT("SunDisk"), FLinearColor(FMath::DegreesToRadians(SunAngularDiameterDeg * 0.5f), SunLum * (bSkyHasGlare ? 1.f : GlareDiskGain), DaySeed, Spin));
+	SkyMID->SetVectorParameterValue(TEXT("SunDisk"), FLinearColor(FMath::DegreesToRadians(SunSizeNowDeg() * 0.5f), SunLum * (bSkyHasGlare ? 1.f : GlareDiskGain), DaySeed, Spin));
 	// the day's sunset colours the photosphere itself: deep red through a hazy evening, golden in clean air
 	const float TintK = FMath::Clamp(CVarSunsetDiskTint.GetValueOnGameThread(), 0.f, 2.f);
 	SkyMID->SetVectorParameterValue(TEXT("SunDiskTint"), SunsetDay && !bSpaceView ? FMath::Lerp(FLinearColor::White, SunsetDay->GetLook().DiskTint, TintK) : FLinearColor::White);

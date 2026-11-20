@@ -293,6 +293,27 @@ namespace LyudLetters
 		Letters.push_back(std::move(L));
 	}
 
+	bool FModel::AddLetter(const FTime& Now, const std::string& Id, const std::string& From, const std::string& Kind, const std::string& Body,
+		const std::vector<std::string>& Args)
+	{
+		for (const FLetter& Old : Letters)
+		{
+			if (Old.Id == Id)
+			{
+				return false;
+			}
+		}
+		FLetter L;
+		L.Id = Id;
+		L.From = From;
+		L.Kind = Kind;
+		L.Body = Body;
+		L.Args = Args;
+		L.Arrive = NextArrival(Now);
+		Letters.push_back(std::move(L));
+		return true;
+	}
+
 	bool FModel::PostCard(const FTime& Now, const std::string& To, const std::string& Picture, const std::string& Opening, const std::string& Wish,
 		const std::string& Group)
 	{

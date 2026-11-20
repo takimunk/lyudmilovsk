@@ -3,7 +3,9 @@
 //   tools/mannersim/run.sh            checks
 //   tools/mannersim/run.sh day        the mild day hour by hour
 //   tools/mannersim/run.sh who [key]  personas
+//   tools/mannersim/run.sh friends    the friends among the residents only (docs/friends.md)
 #include "../../unreal/Lyudmilovsk/Source/Lyudmilovsk/Private/People/PeopleManners.h"
+#include "../../unreal/Lyudmilovsk/Source/Lyudmilovsk/Private/People/Friends.h"
 
 #include <chrono>
 #include <cmath>
@@ -875,9 +877,288 @@ static void Noticing()
 	CHECK(M.StateOf(Who)->Cur != EManner::Wave, "... and runs out by itself");
 }
 
+
+// ------------------------------------------------------------------ friends among the residents (docs/friends.md)
+
+static LyudFriends::FWho FriendWho(const FWorld& W, const FManners& M, const FPerson& P)
+{
+	LyudFriends::FWho Who;
+	Who.Key = P.Key;
+	Who.Age = P.Age;
+	Who.Job = P.Occupation;
+	if (const FPersona* Pe = M.PersonaOf(P.Id))
+	{
+		for (int B = 0; B < 16; B++)
+		{
+			if (Pe->Has(1u << B) && HabitName(1u << B))
+			{
+				Who.Habits.push_back(HabitName(1u << B));
+			}
+		}
+		Who.Warmth = Pe->Warmth;
+		Who.Curiosity = Pe->Curiosity;
+		Who.Tidy = Pe->Tidy;
+	}
+	(void)W;
+	return Who;
+}
+
+static void Friends()
+{
+	std::printf("friends among the residents:\n");
+	FWorld W;
+	FManners M;
+	if (!LoadAll(W, M))
+	{
+		Failures++;
+		return;
+	}
+	LyudFriends::FModel F;
+	std::string Err;
+	const bool bLoaded = F.Data.Load(ReadFile(std::string(DataDir) + "/friends.json"), Err);
+	CHECK(bLoaded && F.Data.Hosts.size() == 10, "friends.json reads clean: %zu hosts, %zu gifts, %zu nicknames %s", F.Data.Hosts.size(), F.Data.Gifts.size(),
+		F.Data.Nicknames.size(), Err.c_str());
+	if (!bLoaded)
+	{
+		return;
+	}
+	int Chairs = 0, HostPeople = 0, HostPeopleOk = 0;
+	for (const LyudFriends::FHost& H : F.Data.Hosts)
+	{
+		Chairs += (H.ChairAt[0] != 0.f || H.ChairAt[1] != 0.f) ? 1 : 0;
+		if (!H.Person.empty())
+		{
+			HostPeople++;
+			HostPeopleOk += W.FindPerson(H.Person) >= 0 ? 1 : 0;
+		}
+	}
+	CHECK(Chairs == 10, "every host has a chair for the hero at their table (%d of 10)", Chairs);
+	CHECK(HostPeople >= 2 && HostPeopleOk == HostPeople, "the hosts the town's life has are in it (%d of %d)", HostPeopleOk, HostPeople);
+
+	// something in the shops for everybody: each townsperson loves at least one of the gifts, kids the toys, nobody old a toy
+	int Town = 0, WithLove = 0, KidToys = 0, Kids = 0, OldToys = 0;
+	std::set<std::string> Nicks;
+	for (const FPerson& P : W.People)
+	{
+		if (!P.bTown || P.Occupation == "away")
+		{
+			continue;
+		}
+		Town++;
+		const LyudFriends::FWho Who = FriendWho(W, M, P);
+		bool bAny = false;
+		for (const LyudFriends::FGift& G : F.Data.Gifts)
+		{
+			bAny = bAny || F.Likes(G.Item, Who) == LyudFriends::EGift::Loved;
+		}
+		WithLove += bAny ? 1 : 0;
+		if (P.Age < 12)
+		{
+			Kids++;
+			KidToys += F.Likes("toy_duck", Who) == LyudFriends::EGift::Loved || F.Likes("spinning_top", Who) == LyudFriends::EGift::Loved ? 1 : 0;
+		}
+		else if (P.Age >= 60)
+		{
+			OldToys += F.Likes("toy_duck", Who) == LyudFriends::EGift::Loved ? 1 : 0;
+		}
+		Nicks.insert(F.PickNick(Who));
+	}
+	CHECK(WithLove * 100 >= Town * 97, "nearly everybody loves one of the gifts (%d of %d)", WithLove, Town);
+	CHECK(Kids > 0 && KidToys == Kids && OldToys == 0, "children love a toy (%d of %d), the old don't (%d)", KidToys, Kids, OldToys);
+	CHECK(Nicks.size() >= 8 && !Nicks.count(""), "the town calls the hero by many nicknames (%zu different)", Nicks.size());
+
+	// how it grows: a hello a day alone doesn't make a friend in a month; hellos, a few gifts and cards do in two weeks
+	const FPerson* Gran = nullptr;
+	for (const FPerson& P : W.People)
+	{
+		if (P.bTown && P.Age >= 65 && P.Occupation == "pensioner" && W.Places[(size_t)std::max(0, P.Home)].Kind == "flat")
+		{
+			Gran = &P;
+			break;
+		}
+	}
+	CHECK(Gran != nullptr, "a pensioner to befriend: %s", Gran ? Gran->Key.c_str() : "none");
+	if (!Gran)
+	{
+		return;
+	}
+	const LyudFriends::FWho GranWho = FriendWho(W, M, *Gran);
+	std::string Loved;
+	for (const LyudFriends::FGift& G : F.Data.Gifts)
+	{
+		if (Loved.empty() && F.Likes(G.Item, GranWho) == LyudFriends::EGift::Loved)
+		{
+			Loved = G.Item;
+		}
+	}
+	const int Day0 = 20750;
+	for (int D = 0; D < 30; D++)
+	{
+		F.Greeted("t_hello_only", Day0 + D);
+		F.Greeted("t_hello_only", Day0 + D);     // twice a day counts once
+	}
+	CHECK(F.Level("t_hello_only") == 2, "a hello a day for a month makes them friendly, not a friend (level %d, %d points)", F.Level("t_hello_only"),
+		F.Find("t_hello_only")->Points);
+	int CloseOn = -1, FriendOn = -1;
+	for (int D = 0; D < 30 && CloseOn < 0; D++)
+	{
+		F.Greeted(Gran->Key, Day0 + D);
+		F.Heard(Gran->Key, Day0 + D);
+		F.Heard(Gran->Key, Day0 + D);
+		if (D % 3 == 1)
+		{
+			F.Give(Gran->Key, Loved, GranWho, Day0 + D);
+		}
+		if (D % 6 == 4)
+		{
+			F.Card(Gran->Key, Day0 + D);
+		}
+		if (F.Level(Gran->Key) >= 3 && FriendOn < 0)
+		{
+			FriendOn = D;
+			F.EnsureNick(Gran->Key, GranWho);
+		}
+		CloseOn = F.Level(Gran->Key) >= 4 ? D : -1;
+	}
+	CHECK(FriendOn >= 6 && FriendOn <= 12 && CloseOn > FriendOn && CloseOn <= 20, "hellos, chats, a gift they love every few days and a card a week: a friend in %d days, close in %d",
+		FriendOn, CloseOn);
+	const LyudFriends::FBond* GB = F.Find(Gran->Key);
+	CHECK(GB && !GB->Nick.empty() && GB->Nick == F.PickNick(GranWho) && GB->Loves.count(Loved), "the friend gave him a nickname (%s) and he knows what they love (%s)",
+		GB ? GB->Nick.c_str() : "", Loved.c_str());
+	CHECK(F.Give(Gran->Key, "toy_duck", GranWho, Day0 + 40) != LyudFriends::EGift::Again && F.Give(Gran->Key, Loved, GranWho, Day0 + 40) == LyudFriends::EGift::Again,
+		"one gift a day counts; the second is \"not every day!\"");
+	CHECK(std::string(F.BondWord(Gran->Key)) == "close" && std::string(F.BondWord("t_nobody")).empty(), "town talk's bond = close for them, nothing for a stranger");
+
+	// tea with a host: visits, the home quest and a card make them friendly; the invitation comes in the morning for the day after next
+	const LyudFriends::FHost& Holm = *F.Data.HostById("holm");
+	const std::string HK = Holm.Key();
+	const std::map<std::string, LyudFriends::FOutingInfo> NoOutings;
+	int D = Day0;
+	F.Visited(HK, D);
+	F.QuestDone(HK, Holm.Quest, D);
+	F.QuestDone(HK, Holm.Quest, D);     // once
+	CHECK(F.Step(D, 9.f, 0, NoOutings).empty(), "no invitation before they are friendly (level %d)", F.Level(HK));
+	F.Card(HK, D + 1);
+	F.Visited(HK, D + 1);
+	std::vector<LyudFriends::FInvite> Inv = F.Step(D + 2, 7.f, 2, NoOutings);
+	CHECK(Inv.empty(), "nobody writes before 8 in the morning");
+	Inv = F.Step(D + 2, 9.5f, 2, NoOutings);
+	CHECK(Inv.size() == 1 && Inv[0].Kind == "tea" && Inv[0].Day == D + 4 && Inv[0].Hour == Holm.Hour && Inv[0].Body == "friends.tea.holm.invite",
+		"a friendly host invites him to tea (%zu invitation: %s on day +%d at %d)", Inv.size(), Inv.empty() ? "" : Inv[0].Body.c_str(),
+		Inv.empty() ? 0 : Inv[0].Day - D, Inv.empty() ? 0 : Inv[0].Hour);
+	CHECK(F.Step(D + 3, 9.5f, 3, NoOutings).empty(), "one invitation at a time");
+	CHECK(!F.TeaNow(HK, D + 3, (float)Holm.Hour) && !F.TeaNow(HK, D + 4, (float)Holm.Hour - 1.f) && F.TeaNow(HK, D + 4, (float)Holm.Hour + 0.2f)
+		&& !F.TeaNow(HK, D + 4, (float)Holm.Hour + 3.f), "the tea is on that day from half an hour before the hour to two and a half after");
+	const int Before = F.Find(HK)->Points;
+	F.Tea(HK, D + 4);
+	CHECK(F.Find(HK)->Points == Before + F.Data.R.Tea && F.Find(HK)->Teas == 1 && !F.TeaNow(HK, D + 4, (float)Holm.Hour + 0.5f), "a tea counts and uses the invitation up");
+	CHECK(F.Step(D + 8, 9.5f, 0, NoOutings).empty() && F.Step(D + 11, 9.5f, 3, NoOutings).size() == 1, "the next invitation a week after the tea");
+	// missed: forgotten after its day, and the next one a week later
+	const int Missed = F.Find(HK)->TeaDay;
+	F.Step(Missed + 1, 9.f, 0, NoOutings);
+	CHECK(F.Find(HK)->TeaDay < 0 && F.Step(Missed + 3, 9.5f, 0, NoOutings).empty() && F.Step(Missed + 8, 9.5f, 0, NoOutings).size() == 1,
+		"a missed tea is forgotten; another invitation a week later");
+
+	// a close friend's family outing (the people's life gives them one: FPerson::Outing*)
+	const FPerson* Fam = nullptr;
+	for (const FPerson& P : W.People)
+	{
+		if (P.bTown && P.OutingAct >= 0 && P.Age >= 18 && P.OutingPlace >= 0)
+		{
+			const std::string& A = W.Activities[(size_t)P.OutingAct].Id;
+			if (std::find(F.Data.OutingActs.begin(), F.Data.OutingActs.end(), A) != F.Data.OutingActs.end())
+			{
+				Fam = &P;
+				break;
+			}
+		}
+	}
+	CHECK(Fam != nullptr, "a family with a weekend outing: %s", Fam ? Fam->Key.c_str() : "none");
+	if (Fam)
+	{
+		std::map<std::string, LyudFriends::FOutingInfo> Outings;
+		Outings[Fam->Key] = { W.Activities[(size_t)Fam->OutingAct].Id, Fam->OutingDay, Fam->OutingHour };
+		const int Wed = Day0 + 30 - ((Day0 + 30 + 3) % 7 + 7) % 7 + 2;      // a Wednesday (day 0 = 1970-01-01, a Thursday)
+		F.Greeted(Fam->Key, Wed - 1);
+		CHECK(F.Step(Wed, 9.f, 2, Outings).empty(), "a family doesn't invite a boy they hardly know");
+		F.DevBefriend(Fam->Key, Wed);
+		Inv = F.Step(Wed, 9.f, 2, Outings);
+		const int OutDay = Wed + (Fam->OutingDay - 2);
+		CHECK(Inv.size() == 1 && Inv[0].Kind == "outing" && Inv[0].Day == OutDay && Inv[0].Hour == (int)Fam->OutingHour,
+			"a close friend's family invites him on Wednesday to their %s on %s at %d:%02d", Outings[Fam->Key].Act.c_str(),
+			Fam->OutingDay == 5 ? "Saturday" : "Sunday", Inv.empty() ? 0 : Inv[0].Hour, Inv.empty() ? 0 : Inv[0].Minute);
+		CHECK(F.OutingNow(Fam->Key, OutDay, Fam->OutingHour + 0.2f, Outings[Fam->Key]) && !F.OutingNow(Fam->Key, OutDay - 1, Fam->OutingHour, Outings[Fam->Key]),
+			"the outing is on that day at their hour");
+		CHECK(F.Outing(Fam->Key, OutDay) == F.Data.R.Outing && F.Outing(Fam->Key, OutDay) == 0, "joining it counts, once");
+		auto OutingsOnly = [](const std::vector<LyudFriends::FInvite>& V)
+		{
+			int N = 0;
+			for (const LyudFriends::FInvite& I : V)
+			{
+				N += I.Kind == "outing" ? 1 : 0;
+			}
+			return N;
+		};
+		CHECK(OutingsOnly(F.Step(Wed + 7, 9.f, 2, Outings)) == 0 && OutingsOnly(F.Step(Wed + 21, 9.f, 2, Outings)) == 1, "the next outing invitation three weeks later");
+	}
+
+	// the save
+	std::map<std::string, std::string> Saved, Again;
+	F.Save(Saved);
+	LyudFriends::FModel G;
+	G.Data = F.Data;
+	G.LoadState(Saved);
+	G.Save(Again);
+	CHECK(Saved == Again && G.Level(Gran->Key) == F.Level(Gran->Key) && G.Find(Gran->Key)->Nick == GB->Nick, "save and load give the same friends (%zu bonds)", G.Bonds.size());
+
+	// a friend comes to sit with him: a seat of a bench next to the one he is on
+	int Bench = -1, Next = -1;
+	for (int S = 0; S < (int)W.Slots.size() && Next < 0; S++)
+	{
+		if (W.Places[(size_t)W.Slots[(size_t)S].Place].Kind != "bench" || W.Slots[(size_t)S].Height <= 0.f)
+		{
+			continue;
+		}
+		for (int T = 0; T < (int)W.Slots.size(); T++)
+		{
+			if (T != S && W.Slots[(size_t)T].Place == W.Slots[(size_t)S].Place && (W.Slots[(size_t)T].Pos - W.Slots[(size_t)S].Pos).Len() < 2.f)
+			{
+				Bench = S;
+				Next = T;
+				break;
+			}
+		}
+	}
+	CHECK(Next >= 0, "a bench with two seats side by side");
+	if (Next >= 0)
+	{
+		int Ok = 0, Tried = 0;
+		for (FPerson& P : W.People)
+		{
+			if (!P.bTown || P.Age < 18 || P.Occupation == "away" || Tried >= 5)
+			{
+				continue;
+			}
+			Tried++;
+			if (W.OrderBeside(P.Id, W.Slots[(size_t)Bench].Pos, 2.5f, 15.0))
+			{
+				Ok += P.Reserved >= 0 && P.Reserved != Bench && (W.Slots[(size_t)P.Reserved].Pos - W.Slots[(size_t)Bench].Pos).Len() < 2.5f ? 1 : 0;
+				break;
+			}
+		}
+		CHECK(Ok == 1, "a friend sent to sit beside him takes the next seat, not his (%d)", Ok);
+	}
+}
+
 int main(int Argc, char** Argv)
 {
 	const std::string Mode = Argc > 1 ? Argv[1] : "test";
+	if (Mode == "friends")
+	{
+		Friends();
+		std::printf(Failures ? "%d FAILED\n" : "all ok\n", Failures);
+		return Failures ? 1 : 0;
+	}
 	if (Mode == "who")
 	{
 		FWorld W;
@@ -1013,6 +1294,7 @@ int main(int Argc, char** Argv)
 	CHECK(Mild.Glances > 100, "people glance at each other in passing (%d)", Mild.Glances);
 	const double Ns = Mild.UpdateNs / std::max(1L, Mild.Updates);
 	CHECK(Ns < 400.0, "an update of one person costs %.0f ns (48 drawn: %.4f ms a frame)", Ns, Ns * 48.0 / 1e6);
+	Friends();
 	std::printf(Failures ? "%d FAILED\n" : "all ok\n", Failures);
 	return Failures ? 1 : 0;
 }

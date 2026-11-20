@@ -1,0 +1,15 @@
+{
+ "about": "Written by tools/aton/terminals.py: Unreal metres, the desk's front edge on the floor; yaw turns +X to the person.",
+ "face_y_cm": 790.0,
+ "terminals": [
+  {
+   "id": "library",
+   "at": [
+    -253.085,
+    634.09,
+    -35.46
+   ],
+   "yaw": -101.0
+  }
+ ]
+}

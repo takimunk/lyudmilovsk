@@ -282,6 +282,9 @@ S = [
     ("paper.soon.none", "В ближайшие две недели праздников нет. Зато по выходным — ярмарка.", "No holidays in the next two weeks. But there's the fair at weekends.", "この二週間、祝日はなし。ただし週末は市場広場で市が立ちます。"),
     # {0} the Rassvet's poster for the day
     ("paper.cinema", "Кино в «Рассвете». {0}", "Cinema at the Rassvet. {0}", "『ラスヴェート』の映画。{0}"),
+    # {0} the day's old films (film.programme.<day>, tools/films/films.py)
+    ("paper.newsreel", "Перед каждым сеансом — старое кино: {0}. Пояснения киномеханика.",
+     "Before every session, old films: {0}, with the projectionist's comments.", "毎回の上映前に古い映画：{0}。映写技師の解説つき。"),
 
     # --- the archive ({0} issues kept, {1} read)
     ("paper.archive.head", "Подшивка «Людмиловской правды». Номеров в подшивке: {0}. Прочитано вами: {1}.",
