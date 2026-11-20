@@ -4,13 +4,18 @@
 #include "CollisionQueryParams.h"
 #include "Dom/JsonObject.h"
 #include "Engine/Engine.h"
+#include "Components/StaticMeshComponent.h"
 #include "Engine/HitResult.h"
+#include "Engine/StaticMeshActor.h"
+#include "Engine/Texture2D.h"
 #include "Engine/World.h"
 #include "EngineUtils.h"
 #include "GameFramework/Character.h"
 #include "GameFramework/Pawn.h"
 #include "GameFramework/PlayerController.h"
 #include "HAL/IConsoleManager.h"
+#include "LyudText.h"
+#include "Materials/MaterialInstanceDynamic.h"
 #include "Misc/FileHelper.h"
 #include "Misc/Paths.h"
 #include "North/LyudCampfire.h"
@@ -180,6 +185,7 @@ void ULyudNorthSubsystem::OnWorldBeginPlay(UWorld& InWorld)
 	SpawnPlumes();
 	SpawnRiver();
 	SpawnBrook();
+	LocalizeSouthBoards();
 	UpdateAir();
 	// the steam pool's material, card and instances now, where a few ms cost nothing, not at the first vent in play
 	if (Things.Num() > 0 || Fumaroles.Num() > 0)
@@ -418,6 +424,47 @@ void ULyudNorthSubsystem::SpawnBrook()
 		Brook = NewBrook;
 		UE_LOG(LogTemp, Display, TEXT("SOUTH brook: %d samples, %.0f m"), BrookWater.Num(), NewBrook->LengthM());
 	}
+}
+
+void ULyudNorthSubsystem::LocalizeSouthBoards()
+{
+	// the Aton coast's boards, finger-posts and stele (actors tagged Text:south, unreal/scripts/import_south.py): their
+	// text slots M_South_Text_<id> show the Russian texture; in another language the slot gets
+	// /Game/South/Localized/<lang>/T_South_Text_<id> (once, when the level starts)
+	UWorld* World = GetWorld();
+	if (!World || LyudText::Language() == TEXT("ru"))
+	{
+		return;
+	}
+	static const FName TextTag(TEXT("Text:south"));
+	static const FString Prefix(TEXT("M_South_Text_"));
+	int32 Slots = 0;
+	for (TActorIterator<AStaticMeshActor> It(World); It; ++It)
+	{
+		UStaticMeshComponent* Comp = It->ActorHasTag(TextTag) ? It->GetStaticMeshComponent() : nullptr;
+		if (!Comp)
+		{
+			continue;
+		}
+		const TArray<FName> Names = Comp->GetMaterialSlotNames();
+		for (int32 I = 0; I < Names.Num(); ++I)
+		{
+			const FString Slot = Names[I].ToString();
+			if (!Slot.StartsWith(Prefix))
+			{
+				continue;
+			}
+			if (UTexture2D* Tex = LyudText::LoadTexture(TEXT("South"), TEXT("T_South_Text_") + Slot.RightChop(Prefix.Len())))
+			{
+				if (UMaterialInstanceDynamic* Mid = Comp->CreateDynamicMaterialInstance(I))
+				{
+					Mid->SetTextureParameterValue(TEXT("Image"), Tex);
+					++Slots;
+				}
+			}
+		}
+	}
+	UE_LOG(LogTemp, Display, TEXT("SOUTH boards: %d text slots in %s"), Slots, *LyudText::Language());
 }
 
 void ULyudNorthSubsystem::Register(ALyudNorthThing* Thing)

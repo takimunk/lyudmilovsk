@@ -94,7 +94,8 @@ def borrowed(names):
 
 
 def make_materials():
-    """M_South_Text_<id> from the Russian textures (the game swaps the language)."""
+    """M_South_Text_<id> from the Russian textures; the English and Japanese ones beside them for the game's swap
+    (ULyudNorthSubsystem::LocalizeSouthBoards)."""
     import academ_materials as A
     n = 0
     for path in sorted(glob.glob(os.path.join(REPO, "textures", "localized", "ru", "south_*.png"))):
@@ -104,6 +105,12 @@ def make_materials():
             eal.save_loaded_asset(tex, False)
             A.build_picture("%s/M_South_Text_%s" % (MATS, tid), tex)
             n += 1
+            # the other languages for the game's swap (LyudText::LoadTexture("South", "T_South_Text_<id>"))
+            for lang in ("en", "ja"):
+                other = os.path.join(REPO, "textures", "localized", lang, os.path.basename(path))
+                if os.path.exists(other):
+                    t2 = A.import_image(other, "%s/Localized/%s" % (DEST, lang), "T_South_Text_" + tid, sub="")
+                    eal.save_loaded_asset(t2, False)
         except Exception:   # noqa: BLE001
             log("text material %s failed:\n%s" % (tid, traceback.format_exc()))
     if eal.does_directory_exist(DEST):

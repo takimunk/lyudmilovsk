@@ -174,6 +174,7 @@ private:
 	void SpawnPlumes();
 	void SpawnRiver();
 	void SpawnBrook();
+	void LocalizeSouthBoards();
 	bool PlayerLocation(FVector& Out) const;
 
 	TArray<FLyudFumaroleInfo> Fumaroles;

@@ -90,6 +90,17 @@ along every trail and reed and sedge along the brook's lower reach (`south.grass
 - The brook's water: `south.json` `brook.water` = `[[x, y, z, half], ...]` downstream, the same samples as the North's
   river. `ULyudNorthSubsystem::SpawnBrook` spawns a second `ALyudNorthRiver` for it (`GetBrook()`), woken and put to
   sleep with the North's things.
+- **Seats and the viewer**: `import_south.py place` puts an `ALyudSouthSpot` (Public/South/LyudSouthSpot.h) at every seat
+  of a placed thing's manifest row (`seats`: the benches, the rotunda, the hide, the boardwalk's bay, the stair's landings,
+  the picnic table, the shed's bench) and where a viewer's looker stands (`stand_at`). `[E]` sits the hero down
+  (`AHeroCharacter::SitOn`), at the coin viewer it holds the binoculars' view up (`ULyudGameScreen::HoldViewer`), worn or
+  not, so birds can be told from the lookout. Polled through `ANpcTalkDirector::UsePressed`, never consumed; the spots
+  sleep with the North's things. Console: `lyud.South.Sit 1|0`. Prompts `ui.south.*`.
+- **Words in the game's language**: actors tagged `Text:south` get `/Game/South/Localized/<lang>/T_South_Text_<id>` in
+  their `M_South_Text_<id>` slots when the level starts (`ULyudNorthSubsystem::LocalizeSouthBoards`; Russian is the
+  material's own texture). A change of language shows after the level is loaded again.
+- Finger-posts: `south.SIGNS` says where each post stands and what each plank points at; `south.sign_planks()` turns
+  that into the planks' angles for `tools/south_signs.py` `PLANKS` (words) and `props_land.py` (geometry).
 - Places are plain map places (`ULyudQuests`): `reach` events and the "new place" note work as for the others.
 
 ## After a change here
