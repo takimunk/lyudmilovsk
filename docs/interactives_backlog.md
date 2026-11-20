@@ -89,7 +89,7 @@ five views from a list). Residents react when photographed close (pose, wave or 
 
 ## 3. A course of cure at the sanatorium
 
-`[ ]` **Brief (Opus 5.5):** Turn the sanatorium «Корона» (P-SANATORIUM, `tools/city/content/x_p_sanatorium.json`: 33
+`[~] sanatorium-cure 2026-11-20 (branch ready, waiting for merge)` **Brief (Opus 5.5):** Turn the sanatorium «Корона» (P-SANATORIUM, `tools/city/content/x_p_sanatorium.json`: 33
 acts, quests `sanatorium_regime`, `sanatorium_cure`, collection `san_cure`) into a stay with a daily regime. Buy a
 "путёвка" at reception (3 or 7 days); the regime board then gives the hero a day of times: morning exercise in the lobby
 with the instructor and the guests (follow the moves: a short rhythm mini-game of type `rally`), mineral water at the pump
@@ -105,7 +105,7 @@ course.
 
 ## 4. Small jobs
 
-`[ ]` **Brief (Opus 5.5):** Let the hero earn money with short shift jobs that use rooms and systems that exist. Each
+`[~]` small-jobs 2026-11-20 (branch ready, waiting for merge; docs/city_interiors.md "Small jobs") **Brief (Opus 5.5):** Let the hero earn money with short shift jobs that use rooms and systems that exist. Each
 job is a short loop of real actions with a pay by result, at most once a day: (a) the market: help at a stall on Saturday
 (fetch boxes from the van, weigh goods on the scales for customers: `CounterTrade.cpp` customer pairs), (b) the lifeguard
 tower: a shift of watching the water with binoculars and setting the flags by the wind and waves (`ALyudSea`, weather),
@@ -133,7 +133,7 @@ through the eyepiece, bench of the view (a scene capture only while looking).
 
 ## 6. The town paper and notices by date
 
-`[ ]` **Brief (Opus 5.5):** The daily paper and the notice boards exist as texts (`reading.json`, `SLyudCityBook`), but
+`[~] town-paper 2026-11-20` (docs/town_paper.md) **Brief (Opus 5.5):** The daily paper and the notice boards exist as texts (`reading.json`, `SLyudCityBook`), but
 the notices cycle without dates (backlog P4 "still open"). Make the town write about itself: a newspaper «Людмиловская
 правда» each morning at the kiosks (and on the café tables), whose pages are assembled from the game's own news: the
 weather forecast (the weather system's next day), the tide table, festivals soon (`ULyudFestivalSubsystem::Upcoming`),
@@ -180,7 +180,7 @@ over a game season, Mac shots of three stages, bench (no per-frame plant rebuild
 
 ## 10. Records, the jukebox and the town radio
 
-`[ ]` **Brief (Opus 5.5):** Make music something the hero chooses. Records to buy at the records shops (P-WAVE records,
+`[~] records-radio 2026-11-20` **Brief (Opus 5.5):** Make music something the hero chooses. Records to buy at the records shops (P-WAVE records,
 the department store's records department; today talk only because there are no items): give records real items with
 icons, each holding one track of the game's music (`/Game/Audio/Music`, `audio/sounds.json`). Play them on the café's
 jukebox (`jukebox` act + the jukebox records collection), on a record player in the hero's room (if item 19 is done) or the
@@ -192,7 +192,7 @@ Done: an offline schedule test, the jukebox and radio play in game, a stamp set 
 
 ## 11. Letters, postcards and pen friends
 
-`[ ]` **Brief (Opus 5.5):** Postcards are sold at the kiosk; let the hero send them. Write a postcard (choose the picture,
+`[x] letters 2026-11-20 (branch letters, docs/letters.md; awaits a Mac build)` **Brief (Opus 5.5):** Postcards are sold at the kiosk; let the hero send them. Write a postcard (choose the picture,
 pick two phrases from a list of warm sentences, the address of a resident from the town data), drop it in a postbox
 (postboxes on the street spots); the resident gets it the next day (the bond grows, they mention it in a bark, the
 postcard stands on their shelf in the open home). Letters come to the hero too: a mailbox in the club (the hero's address),
@@ -203,7 +203,7 @@ offline tests of delivery by calendar days and the pen-friend chain, lines ru/en
 
 ## 12. Friends among the residents
 
-`[ ]` **Brief (Fable 5.2):** The townsfolk already come to know the hero (`NoteMet`, `met = new|seen|known`, town-manners).
+`[x] friends 2026-11-20 (branch friends, docs/friends.md; awaits a Mac build and shots)` **Brief (Fable 5.2):** The townsfolk already come to know the hero (`NoteMet`, `met = new|seen|known`, town-manners).
 Add a friendship level per named resident (saved): it grows with talk topics heard, quests done for them, gifts (an item
 they like by persona: flowers, a fish, a jar of jam, a record), postcards (item 11); a friend waves first, calls the hero by
 name, sits with him on a bench and talks about their day (lines by `doing`, weather, festival), invites him to tea at their
@@ -225,7 +225,10 @@ hall during a session.
 
 ## 14. Club tournaments
 
-`[ ]` **Brief (Opus 5.5):** The mini-games exist (chess, checkers, dominoes, billiards, table tennis, darts: `games.json`,
+`[~] tournaments 2026-11-20` (docs/city_interiors.md "Tournaments": three weekly cups, brackets, sign-up, the hero's matches,
+the cup, the paper's results; citysim. Open: the regulars seen sitting at the tables, life-sim side, and the Mac shots.)
+
+**Brief (Opus 5.5):** The mini-games exist (chess, checkers, dominoes, billiards, table tennis, darts: `games.json`,
 ten regulars with styles) but the regulars are not seen at the tables and there is no ladder (backlog P4). Do: the
 regulars sit at their tables at their hours (life-sim spots on the game things, `FindFreeThing`/`ClaimThing`), play each
 other (pieces move, a clock ticks, a short cheer), and the hero can watch or challenge; a weekly tournament per club

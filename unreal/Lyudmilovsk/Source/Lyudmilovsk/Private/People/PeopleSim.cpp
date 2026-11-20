@@ -381,6 +381,7 @@ namespace LyudPeople
 			Sl.Height = S["height"].F();
 			Sl.Capacity = std::max(1, S["capacity"].I(1));
 			Sl.Tag = S["tag"].S();
+			Sl.Thing = S["thing"].S();
 			if (Pl.bIndoor)
 			{
 				Sl.Inside = Prefix;
@@ -1181,6 +1182,7 @@ namespace LyudPeople
 				Sl.Height = S["height"].F();
 				Sl.Capacity = std::max(1, S["capacity"].I(1));
 				Sl.Tag = S["tag"].S();
+			Sl.Thing = S["thing"].S();
 				if (!Prefix.empty())
 				{
 					Sl.Inside = Prefix;
@@ -4036,6 +4038,41 @@ namespace LyudPeople
 		}
 		const FActivity& Act = Activities[A];
 		return Start(P, A, Best, (Act.MinMinutes + Act.MaxMinutes) * 0.5f, false, "ordered");
+	}
+
+	bool FWorld::OrderBeside(int Person, const V3& Pos, float MaxDist, double Minutes)
+	{
+		if (Person < 0 || Person >= (int)People.size())
+		{
+			return false;
+		}
+		FPerson& P = People[Person];
+		int BestSlot = -1, BestAct = -1;
+		float BestD = MaxDist;
+		for (int S = 0; S < (int)Slots.size(); S++)
+		{
+			const FSlot& Sl = Slots[S];
+			if (Sl.Height <= 0.f || !Sl.Free(Person))
+			{
+				continue;
+			}
+			const float D = (Sl.Pos - Pos).Len();
+			if (D >= BestD || D < 0.35f)
+			{
+				continue;
+			}
+			for (int A = 0; A < (int)Activities.size(); A++)
+			{
+				if (Activities[A].Id != "sleep" && SlotFits(P, Activities[A], S))
+				{
+					BestSlot = S;
+					BestAct = A;
+					BestD = D;
+					break;
+				}
+			}
+		}
+		return BestSlot >= 0 && Start(P, BestAct, BestSlot, Minutes, false, "sits with the player");
 	}
 
 	float BikeActSeconds(EBikeAct A)

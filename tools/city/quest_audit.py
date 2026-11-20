@@ -98,6 +98,9 @@ def main():
     by_target = collections.defaultdict(list)
     for t in live:
         by_target[acts[t["act"]]["target"]].append(t)
+        ns = acts[t["act"]].get("no_stay")
+        if ns in acts and acts[ns]["target"] not in ("closed", acts[t["act"]]["target"]):
+            by_target[acts[ns]["target"]].append(t)  # a voucher sold to those without one (docs/city_interiors.md "Stays")
     plots_with_things = {t["plot"] for t in things}
 
     # ---- item sources (open, staffed things; game prizes; quest rewards)
@@ -138,7 +141,7 @@ def main():
     topic_at = collections.defaultdict(list)
     for t in live:
         a = acts[t["act"]]
-        for tp in (t.get("topics") or a.get("topics") or []):
+        for tp in list(a.get("topics") or []) + list(t.get("topics") or []):  # the game offers both (FModel::TopicsNow)
             topic_at[tp].append(t)
     heard_ok = {}
 
@@ -234,10 +237,13 @@ def main():
                     add_stamp(g["collect"].replace("{opponent}", r), {}, ws, t["id"])
             else:
                 add_stamp(g["collect"], {}, ws, t["id"])
+        for ln in g.get("win") or []:
+            if isinstance(ln, dict) and ln.get("collect"):
+                add_stamp(ln["collect"], ln, ws, t["id"])  # a win's line may give a stamp (the sanatorium course's exercises)
         for tx in (a.get("read") or {}).get("texts", []):
             if tx in read_ok and texts[tx].get("collect"):
                 add_stamp(texts[tx]["collect"], {}, ws, "text " + tx)
-        for tp in (t.get("topics") or a.get("topics") or []):
+        for tp in list(a.get("topics") or []) + list(t.get("topics") or []):  # the game offers both (FModel::TopicsNow)
             if topics.get(tp, {}).get("collect"):
                 add_stamp(topics[tp]["collect"], topics[tp], ws, "topic " + tp)
     pieces_given = {s for s, *_ in stamp_sources}

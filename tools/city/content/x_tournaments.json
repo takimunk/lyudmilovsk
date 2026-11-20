@@ -1,0 +1,324 @@
+{
+ "_doc": "The clubs' weekly tournaments (docs/city_interiors.md \"Tournaments\", Private/City/CityCupsModel.h): the bracket boards, the guest regulars who fill the brackets (real residents free at those hours), the cups collection. Words: strings/x_tournaments.json.",
+ "tournaments": {
+  "cog_chess": {
+   "title": "city.cup.cog_chess.title",
+   "venue": "city.cup.venue.cog",
+   "game": "chess",
+   "plot": "P-CLUB3",
+   "days": "sat",
+   "start": 13,
+   "step": 1.5,
+   "collect": "cups/cog_chess"
+  },
+  "san_dominoes": {
+   "title": "city.cup.san_dominoes.title",
+   "venue": "city.cup.venue.san",
+   "game": "dominoes",
+   "plot": "P-SANATORIUM",
+   "days": "wed",
+   "start": 15,
+   "step": 1,
+   "collect": "cups/san_dominoes"
+  },
+  "tt_cup": {
+   "title": "city.cup.tt_cup.title",
+   "venue": "city.cup.venue.t3",
+   "game": "table_tennis",
+   "plot": "P-T3SPORT",
+   "days": "sun",
+   "start": 11,
+   "step": 1,
+   "collect": "cups/tt_cup"
+  }
+ },
+ "regulars": {
+  "karagiannis": {
+   "name": "npc.t_karagiannis_arkady.name",
+   "style": "careful",
+   "skill": 0.65,
+   "plays": [
+    "chess"
+   ],
+   "plots": [
+    "P-CLUB3"
+   ],
+   "hello": "city.player.karagiannis.hello",
+   "win": "city.player.karagiannis.win",
+   "lose": "city.player.karagiannis.lose"
+  },
+  "romano": {
+   "name": "npc.t_romano_minh.name",
+   "style": "tricky",
+   "skill": 0.75,
+   "plays": [
+    "chess"
+   ],
+   "plots": [
+    "P-CLUB3"
+   ],
+   "hello": "city.player.romano.hello",
+   "win": "city.player.romano.win",
+   "lose": "city.player.romano.lose"
+  },
+  "papadopoulos": {
+   "name": "npc.t_papadopoulos_sanne.name",
+   "style": "steady",
+   "skill": 0.55,
+   "plays": [
+    "chess"
+   ],
+   "plots": [
+    "P-CLUB3"
+   ],
+   "hello": "city.player.papadopoulos.hello",
+   "win": "city.player.papadopoulos.win",
+   "lose": "city.player.papadopoulos.lose"
+  },
+  "castillo_aram": {
+   "name": "npc.t_castillo_aram.name",
+   "style": "bold",
+   "skill": 0.5,
+   "plays": [
+    "chess"
+   ],
+   "plots": [
+    "P-CLUB3"
+   ],
+   "hello": "city.player.castillo_aram.hello",
+   "win": "city.player.castillo_aram.win",
+   "lose": "city.player.castillo_aram.lose"
+  },
+  "sato_ingrid": {
+   "name": "npc.t_sato_ingrid.name",
+   "style": "steady",
+   "skill": 0.5,
+   "plays": [
+    "dominoes"
+   ],
+   "plots": [
+    "P-SANATORIUM"
+   ],
+   "hello": "city.player.sato_ingrid.hello",
+   "win": "city.player.sato_ingrid.win",
+   "lose": "city.player.sato_ingrid.lose"
+  },
+  "nielsen_soren": {
+   "name": "npc.t_nielsen_soren.name",
+   "style": "bold",
+   "skill": 0.45,
+   "plays": [
+    "dominoes"
+   ],
+   "plots": [
+    "P-SANATORIUM"
+   ],
+   "hello": "city.player.nielsen_soren.hello",
+   "win": "city.player.nielsen_soren.win",
+   "lose": "city.player.nielsen_soren.lose"
+  },
+  "le_duc": {
+   "name": "npc.t_le_duc.name",
+   "style": "tricky",
+   "skill": 0.55,
+   "plays": [
+    "dominoes"
+   ],
+   "plots": [
+    "P-SANATORIUM"
+   ],
+   "hello": "city.player.le_duc.hello",
+   "win": "city.player.le_duc.win",
+   "lose": "city.player.le_duc.lose"
+  },
+  "kovacs_nino": {
+   "name": "npc.t_kovacs_nino.name",
+   "style": "steady",
+   "skill": 0.4,
+   "plays": [
+    "dominoes"
+   ],
+   "plots": [
+    "P-SANATORIUM"
+   ],
+   "hello": "city.player.kovacs_nino.hello",
+   "win": "city.player.kovacs_nino.win",
+   "lose": "city.player.kovacs_nino.lose"
+  },
+  "mcmartin_yannis": {
+   "name": "npc.t_mcmartin_yannis.name",
+   "style": "bold",
+   "skill": 0.55,
+   "plays": [
+    "table_tennis"
+   ],
+   "plots": [
+    "P-T3SPORT"
+   ],
+   "hello": "city.player.mcmartin_yannis.hello",
+   "win": "city.player.mcmartin_yannis.win",
+   "lose": "city.player.mcmartin_yannis.lose"
+  },
+  "lefebvre_gennady": {
+   "name": "npc.t_lefebvre_gennady.name",
+   "style": "bold",
+   "skill": 0.7,
+   "plays": [
+    "table_tennis"
+   ],
+   "plots": [
+    "P-T3SPORT"
+   ],
+   "hello": "city.player.lefebvre_gennady.hello",
+   "win": "city.player.lefebvre_gennady.win",
+   "lose": "city.player.lefebvre_gennady.lose"
+  },
+  "toth_fernanda": {
+   "name": "npc.t_toth_fernanda.name",
+   "style": "steady",
+   "skill": 0.55,
+   "plays": [
+    "table_tennis"
+   ],
+   "plots": [
+    "P-T3SPORT"
+   ],
+   "hello": "city.player.toth_fernanda.hello",
+   "win": "city.player.toth_fernanda.win",
+   "lose": "city.player.toth_fernanda.lose"
+  },
+  "castillo_imogen": {
+   "name": "npc.t_castillo_imogen.name",
+   "style": "tricky",
+   "skill": 0.45,
+   "plays": [
+    "table_tennis"
+   ],
+   "plots": [
+    "P-T3SPORT"
+   ],
+   "hello": "city.player.castillo_imogen.hello",
+   "win": "city.player.castillo_imogen.win",
+   "lose": "city.player.castillo_imogen.lose"
+  },
+  "ferreira_ines": {
+   "name": "npc.t_ferreira_ines.name",
+   "style": "careful",
+   "skill": 0.5,
+   "plays": [
+    "table_tennis"
+   ],
+   "plots": [
+    "P-T3SPORT"
+   ],
+   "hello": "city.player.ferreira_ines.hello",
+   "win": "city.player.ferreira_ines.win",
+   "lose": "city.player.ferreira_ines.lose"
+  },
+  "tamm_egle": {
+   "name": "npc.t_tamm_egle.name",
+   "style": "tricky",
+   "skill": 0.65,
+   "plays": [
+    "table_tennis"
+   ],
+   "plots": [
+    "P-T3SPORT"
+   ],
+   "hello": "city.player.tamm_egle.hello",
+   "win": "city.player.tamm_egle.win",
+   "lose": "city.player.tamm_egle.lose"
+  },
+  "beridze_ales": {
+   "name": "npc.t_beridze_ales.name",
+   "style": "bold",
+   "skill": 0.5,
+   "plays": [
+    "table_tennis"
+   ],
+   "plots": [
+    "P-T3SPORT"
+   ],
+   "hello": "city.player.beridze_ales.hello",
+   "win": "city.player.beridze_ales.win",
+   "lose": "city.player.beridze_ales.lose"
+  }
+ },
+ "acts": {
+  "cup_board_cog": {
+   "like": "look_misc",
+   "target": "cup_board",
+   "prompt": "city.cup.prompt",
+   "minutes": 2,
+   "read": {
+    "texts": [
+     "cup_cog_chess"
+    ]
+   },
+   "sound": "page_turn"
+  },
+  "cup_board_san": {
+   "like": "look_misc",
+   "target": "cup_board",
+   "prompt": "city.cup.prompt",
+   "minutes": 2,
+   "read": {
+    "texts": [
+     "cup_san_dominoes"
+    ]
+   },
+   "sound": "page_turn"
+  },
+  "cup_board_tt": {
+   "like": "look_misc",
+   "target": "cup_board",
+   "prompt": "city.cup.prompt",
+   "minutes": 2,
+   "read": {
+    "texts": [
+     "cup_tt_cup"
+    ]
+   },
+   "sound": "page_turn"
+  }
+ },
+ "texts": {
+  "cup_cog_chess": {
+   "title": "city.cup.cog_chess.title",
+   "kind": "notice",
+   "minutes": 2,
+   "gen": "cup:cog_chess",
+   "pages": [
+    "city.text.cup.fallback"
+   ]
+  },
+  "cup_san_dominoes": {
+   "title": "city.cup.san_dominoes.title",
+   "kind": "notice",
+   "minutes": 2,
+   "gen": "cup:san_dominoes",
+   "pages": [
+    "city.text.cup.fallback"
+   ]
+  },
+  "cup_tt_cup": {
+   "title": "city.cup.tt_cup.title",
+   "kind": "notice",
+   "minutes": 2,
+   "gen": "cup:tt_cup",
+   "pages": [
+    "city.text.cup.fallback"
+   ]
+  }
+ },
+ "rules": {
+  "P-SANATORIUM/pump_schedule": {
+   "act": "cup_board_san"
+  }
+ },
+ "collections": {
+  "cups": {
+   "title": "city.coll.cups.title"
+  }
+ }
+}

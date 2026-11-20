@@ -1,5 +1,5 @@
 {
- "_doc": "P-SANATORIUM, second pass (depth): the regime board by the hour, the weekly menu, the oxygen bar, the holidaymakers' chess corner, the library trolley, plant labels, the quartz lamp, the night radio of the paid couch, the courtyard window, the pump-room clock, evenings in the lobby, and the guest book that tells the story of two holidaymakers over several days. Words: strings/x_p_sanatorium.json. Third pass: the guest corner at the paid couch, switches and clocks per room, checkers (pump room) and dominoes (lobby) with the town's regulars, a rally morning exercise on the parquet at 7-9, the leaflet rack, the forgotten letter, the treatment card with the collection san_cure (six stamps: water, oxygen, quartz, check-up, exercise, quiet hour), the doctor's desk and the duty bell with staff talk, the winter-garden window, weather, festival, quiet-hour and closed lines, the ledger guest book and the quest sanatorium_cure.",
+ "_doc": "P-SANATORIUM, second pass (depth): the regime board by the hour, the weekly menu, the oxygen bar, the holidaymakers' chess corner, the library trolley, plant labels, the quartz lamp, the night radio of the paid couch, the courtyard window, the pump-room clock, evenings in the lobby, and the guest book that tells the story of two holidaymakers over several days. Words: strings/x_p_sanatorium.json. Third pass: the guest corner at the paid couch, switches and clocks per room, checkers (pump room) and dominoes (lobby) with the town's regulars, a rally morning exercise on the parquet at 7-9, the leaflet rack, the forgotten letter, the treatment card with the collection san_cure (six stamps: water, oxygen, quartz, check-up, exercise, quiet hour), the doctor's desk and the duty bell with staff talk, the winter-garden window, weather, festival, quiet-hour and closed lines, the ledger guest book and the quest sanatorium_cure. Fourth pass (the course of cure, docs/city_interiors.md \"Stays\"): the stay san (a voucher for 3 days at the cloakroom window, extended there by 4; a curfew from 23 with the duty nurse's words), the health-resort book san_course (9 stamps: three springs at 8, 13 and 18, exercises, quartz, oxygen, the health path on the treatment room's map, quiet hour lying on the couch, the evening in the lobby) read in the card index, the guest's own regime, the night bed by voucher, the two dining tables with their guests' stories (Gromov and Sonya by the window, Tamm and Sazonov by the chess corner), the doctor's course and discharge topics and the quest sanatorium_course (the diploma). Words: strings/x_p_sanatorium_course.json.",
  "acts": {
   "look_regime": {
    "like": "look_misc",
@@ -10,46 +10,106 @@
      "h": [
       6,
       9
-     ]
+     ],
+     "stay": "!san"
     },
     {
      "k": "city.san.regime.2",
      "h": [
       9,
       13
-     ]
+     ],
+     "stay": "!san"
     },
     {
      "k": "city.san.regime.3",
      "h": [
       13,
       15
-     ]
+     ],
+     "stay": "!san"
     },
     {
      "k": "city.san.regime.4",
      "h": [
       15,
       19
-     ]
+     ],
+     "stay": "!san"
     },
     {
      "k": "city.san.regime.5",
      "h": [
       19,
       22
-     ]
+     ],
+     "stay": "!san"
     },
     {
      "k": "city.san.regime.6",
      "h": [
       22,
       6
-     ]
+     ],
+     "stay": "!san"
     },
     {
      "k": "city.san.regime.fest",
-     "festival": "any"
+     "festival": "any",
+     "stay": "!san"
+    },
+    {
+     "k": "city.san.regime.my.1",
+     "h": [
+      6,
+      9
+     ],
+     "stay": "san"
+    },
+    {
+     "k": "city.san.regime.my.2",
+     "h": [
+      9,
+      13
+     ],
+     "stay": "san"
+    },
+    {
+     "k": "city.san.regime.my.3",
+     "h": [
+      13,
+      15
+     ],
+     "stay": "san"
+    },
+    {
+     "k": "city.san.regime.my.4",
+     "h": [
+      15,
+      19
+     ],
+     "stay": "san"
+    },
+    {
+     "k": "city.san.regime.my.5",
+     "h": [
+      19,
+      22
+     ],
+     "stay": "san"
+    },
+    {
+     "k": "city.san.regime.my.6",
+     "h": [
+      22,
+      6
+     ],
+     "stay": "san"
+    },
+    {
+     "k": "city.san.regime.my.fest",
+     "festival": "any",
+     "stay": "san"
     }
    ]
   },
@@ -122,25 +182,39 @@
      "h": [
       6,
       14
-     ]
+     ],
+     "stay": "!san"
     },
     {
      "k": "city.san.oxygen.2",
      "h": [
       14,
       6
-     ]
+     ],
+     "stay": "!san"
     },
     {
      "k": "city.san.oxygen.quiet",
      "h": [
       14,
       16
-     ]
+     ],
+     "stay": "!san"
     },
     {
      "k": "city.san.oxygen.rain",
-     "weather": "rain"
+     "weather": "rain",
+     "stay": "!san"
+    },
+    {
+     "k": "city.san.oxygen.course.1",
+     "stay": "san",
+     "collect": "san_course/oxygen"
+    },
+    {
+     "k": "city.san.oxygen.course.2",
+     "stay": "san",
+     "collect": "san_course/oxygen"
     }
    ],
    "collect": "san_cure/oxygen",
@@ -233,13 +307,27 @@
    "pose": "sit",
    "needs_staff": "doctor",
    "lines": [
-    "city.san.quartz.*",
+    {
+     "k": "city.san.quartz.*",
+     "stay": "!san"
+    },
     {
      "k": "city.san.quartz.quiet",
      "h": [
       14,
       16
-     ]
+     ],
+     "stay": "!san"
+    },
+    {
+     "k": "city.san.quartz.course.1",
+     "stay": "san",
+     "collect": "san_course/quartz"
+    },
+    {
+     "k": "city.san.quartz.course.2",
+     "stay": "san",
+     "collect": "san_course/quartz"
     }
    ],
    "collect": "san_cure/quartz",
@@ -320,14 +408,16 @@
      "h": [
       6,
       18
-     ]
+     ],
+     "stay": "!san"
     },
     {
      "k": "city.san.evening.early",
      "h": [
       18,
       20
-     ]
+     ],
+     "stay": "!san"
     },
     {
      "k": "city.san.evening.wed",
@@ -335,7 +425,8 @@
      "h": [
       18,
       20
-     ]
+     ],
+     "stay": "!san"
     },
     {
      "k": "city.san.evening.fri",
@@ -343,7 +434,8 @@
      "h": [
       19,
       22
-     ]
+     ],
+     "stay": "!san"
     },
     {
      "k": "city.san.evening.sat1",
@@ -351,7 +443,8 @@
      "h": [
       19,
       23
-     ]
+     ],
+     "stay": "!san"
     },
     {
      "k": "city.san.evening.sat2",
@@ -359,22 +452,74 @@
      "h": [
       19,
       23
-     ]
+     ],
+     "stay": "!san"
     },
     {
      "k": "city.san.evening.late",
      "h": [
       20,
       6
-     ]
+     ],
+     "stay": "!san"
     },
     {
      "k": "city.san.evening.rain",
-     "weather": "rain"
+     "weather": "rain",
+     "stay": "!san"
     },
     {
      "k": "city.san.evening.fest",
-     "festival": "any"
+     "festival": "any",
+     "stay": "!san"
+    },
+    {
+     "k": "city.san.evening.course.wed",
+     "h": [
+      19,
+      23
+     ],
+     "d": "wed",
+     "stay": "san",
+     "collect": "san_course/dance"
+    },
+    {
+     "k": "city.san.evening.course.fri",
+     "h": [
+      19,
+      23
+     ],
+     "d": "fri",
+     "stay": "san",
+     "collect": "san_course/dance"
+    },
+    {
+     "k": "city.san.evening.course.sat",
+     "h": [
+      19,
+      23
+     ],
+     "d": "sat",
+     "stay": "san",
+     "collect": "san_course/dance"
+    },
+    {
+     "k": "city.san.evening.course.other",
+     "h": [
+      19,
+      23
+     ],
+     "d": "mon,tue,thu,sun",
+     "stay": "san",
+     "collect": "san_course/dance"
+    },
+    {
+     "k": "city.san.evening.course.notyet",
+     "h": [
+      23,
+      19
+     ],
+     "stay": "san"
     }
    ]
   },
@@ -556,7 +701,22 @@
     "zone": 0.6,
     "shrink": 0.9,
     "pace": 1.03,
-    "win": "city.san.ex.win",
+    "win": [
+     {
+      "k": "city.san.ex.win.*",
+      "stay": "!san"
+     },
+     {
+      "k": "city.san.ex.course.1",
+      "stay": "san",
+      "collect": "san_course/exercise"
+     },
+     {
+      "k": "city.san.ex.course.2",
+      "stay": "san",
+      "collect": "san_course/exercise"
+     }
+    ],
     "lose": "city.san.ex.lose",
     "draw": "city.san.ex.draw",
     "collect": "san_cure/exercise",
@@ -885,6 +1045,311 @@
     ],
     "rotate": "use"
    }
+  },
+  "san_voucher": {
+   "prompt": "city.san.voucher.prompt",
+   "minutes": 10,
+   "price": 90,
+   "pose": "stand",
+   "sound": "stamp_thump",
+   "needs_staff": "receptionist",
+   "lines": "city.san.voucher",
+   "stay": {
+    "id": "san",
+    "days": 3
+   }
+  },
+  "san_extend": {
+   "prompt": "city.san.extend.prompt",
+   "minutes": 5,
+   "price": 100,
+   "pose": "stand",
+   "sound": "stamp_thump",
+   "needs_staff": "receptionist",
+   "daily": 1,
+   "lines": "city.san.extend",
+   "stay": {
+    "id": "san",
+    "days": 4
+   },
+   "needs_stay": "san",
+   "no_stay": "san_voucher"
+  },
+  "san_pump": {
+   "like": "pump_room",
+   "target": "pump_room",
+   "daily": 6,
+   "lines": [
+    {
+     "k": "city.do.pump_room.*",
+     "stay": "!san"
+    },
+    {
+     "k": "city.san.water.8",
+     "h": [
+      7.5,
+      9.5
+     ],
+     "stay": "san",
+     "collect": "san_course/water_8"
+    },
+    {
+     "k": "city.san.water.13",
+     "h": [
+      12.5,
+      14
+     ],
+     "stay": "san",
+     "collect": "san_course/water_13"
+    },
+    {
+     "k": "city.san.water.18",
+     "h": [
+      17.5,
+      19
+     ],
+     "stay": "san",
+     "collect": "san_course/water_18"
+    },
+    {
+     "k": "city.san.water.early",
+     "h": [
+      19,
+      7.5
+     ],
+     "stay": "san"
+    },
+    {
+     "k": "city.san.water.late1",
+     "h": [
+      9.5,
+      12.5
+     ],
+     "stay": "san"
+    },
+    {
+     "k": "city.san.water.late2",
+     "h": [
+      14,
+      17.5
+     ],
+     "stay": "san"
+    }
+   ]
+  },
+  "san_walk": {
+   "prompt": "city.san.walk.prompt",
+   "minutes": 45,
+   "fade": true,
+   "pose": "stand",
+   "sound": "wind_soft",
+   "closed": "city.san.walk.closed",
+   "lines": [
+    {
+     "k": "city.san.walk.1",
+     "stay": "san",
+     "collect": "san_course/walk"
+    },
+    {
+     "k": "city.san.walk.2",
+     "stay": "san",
+     "collect": "san_course/walk"
+    },
+    {
+     "k": "city.san.walk.rain",
+     "stay": "san",
+     "weather": "rain",
+     "collect": "san_course/walk"
+    },
+    {
+     "k": "city.san.walk.guest",
+     "stay": "!san"
+    }
+   ]
+  },
+  "san_quiet_hour": {
+   "prompt": "city.san.quietbed.prompt",
+   "minutes": 60,
+   "fade": true,
+   "pose": "lie",
+   "sound": "sheets_rustle",
+   "any_hour": true,
+   "lines": [
+    {
+     "k": "city.san.quietbed.1",
+     "h": [
+      14,
+      16
+     ],
+     "stay": "san",
+     "collect": "san_course/quiet"
+    },
+    {
+     "k": "city.san.quietbed.2",
+     "h": [
+      14,
+      16
+     ],
+     "stay": "san",
+     "collect": "san_course/quiet"
+    },
+    {
+     "k": "city.san.quietbed.off",
+     "h": [
+      16,
+      14
+     ],
+     "stay": "san"
+    },
+    {
+     "k": "city.bed.nap.*",
+     "stay": "!san"
+    }
+   ]
+  },
+  "san_night_guest": {
+   "like": "sleep_night",
+   "prompt": "city.san.night.prompt",
+   "lines": "city.san.night",
+   "needs_stay": "san",
+   "no_stay": "sanatorium_night"
+  },
+  "san_book": {
+   "like": "look_misc",
+   "prompt": "city.san.book.prompt2",
+   "minutes": 2,
+   "sound": "page_turn",
+   "lines": [
+    "city.san.cbook.look"
+   ],
+   "read": {
+    "texts": [
+     "san_course_book"
+    ],
+    "rotate": "use"
+   }
+  },
+  "san_table_window": {
+   "prompt": "city.san.table.prompt",
+   "minutes": 30,
+   "pose": "sit",
+   "sound": "cup_clink",
+   "any_hour": true,
+   "rotate": "daily",
+   "lines": [
+    {
+     "k": "city.san.tg.1",
+     "once": true
+    },
+    {
+     "k": "city.san.tg.2",
+     "once": true
+    },
+    {
+     "k": "city.san.tg.3",
+     "once": true
+    },
+    {
+     "k": "city.san.tg.4",
+     "once": true
+    },
+    {
+     "k": "city.san.tg.5",
+     "once": true
+    },
+    {
+     "k": "city.san.tg.6",
+     "once": true
+    },
+    {
+     "k": "city.san.tg.7",
+     "once": true
+    },
+    {
+     "k": "city.san.tg.8",
+     "once": true
+    },
+    {
+     "k": "city.san.tg.9",
+     "once": true
+    },
+    "city.san.tg.after"
+   ]
+  },
+  "san_table_chess": {
+   "prompt": "city.san.table.prompt",
+   "minutes": 30,
+   "pose": "sit",
+   "sound": "cup_clink",
+   "any_hour": true,
+   "rotate": "daily",
+   "lines": [
+    {
+     "k": "city.san.tf.1",
+     "once": true
+    },
+    {
+     "k": "city.san.tf.2",
+     "once": true
+    },
+    {
+     "k": "city.san.tf.3",
+     "once": true
+    },
+    {
+     "k": "city.san.tf.4",
+     "once": true
+    },
+    {
+     "k": "city.san.tf.5",
+     "once": true
+    },
+    {
+     "k": "city.san.tf.6",
+     "once": true
+    },
+    {
+     "k": "city.san.tf.7",
+     "once": true
+    },
+    {
+     "k": "city.san.tf.8",
+     "once": true
+    },
+    {
+     "k": "city.san.tf.9",
+     "once": true
+    },
+    "city.san.tf.after"
+   ]
+  },
+  "san_seat_gromov": {
+   "prompt": "city.san.seat.prompt",
+   "minutes": 2,
+   "pose": "sit",
+   "any_hour": true,
+   "lines": "city.san.sg"
+  },
+  "san_seat_sonya": {
+   "prompt": "city.san.seat.prompt",
+   "minutes": 2,
+   "pose": "sit",
+   "any_hour": true,
+   "lines": "city.san.ss"
+  },
+  "san_seat_tamm": {
+   "prompt": "city.san.seat.prompt",
+   "minutes": 2,
+   "pose": "sit",
+   "any_hour": true,
+   "lines": "city.san.st"
+  },
+  "san_seat_sazonov": {
+   "prompt": "city.san.seat.prompt",
+   "minutes": 2,
+   "pose": "sit",
+   "any_hour": true,
+   "lines": "city.san.sz"
   }
  },
  "rules": {
@@ -981,6 +1446,7 @@
    "act": "sanatorium_clock_treat"
   },
   "round_sanatorium/pump_room": {
+   "act": "san_pump",
    "collect": "san_cure/mineral"
   },
   "round_sanatorium/treat_checkup": {
@@ -1001,6 +1467,40 @@
   },
   "round_sanatorium/pump_analysis": {
    "act": "sanatorium_analysis"
+  },
+  "round_sanatorium/cloakroom": {
+   "act": "san_extend"
+  },
+  "round_sanatorium/treat_chart": {
+   "act": "san_walk",
+   "hours": [
+    7,
+    21
+   ]
+  },
+  "round_sanatorium/couch_a": {
+   "act": "san_quiet_hour"
+  },
+  "round_sanatorium/treat_cabinet": {
+   "act": "san_book"
+  },
+  "round_sanatorium/dining_1_b": {
+   "act": "san_table_window"
+  },
+  "round_sanatorium/dining_2_b": {
+   "act": "san_table_chess"
+  },
+  "round_sanatorium/dining_table_1": {
+   "act": "san_seat_gromov"
+  },
+  "round_sanatorium/dining_1_c": {
+   "act": "san_seat_sonya"
+  },
+  "round_sanatorium/dining_table_2": {
+   "act": "san_seat_tamm"
+  },
+  "round_sanatorium/dining_2_c": {
+   "act": "san_seat_sazonov"
   }
  },
  "quests": [
@@ -1220,6 +1720,102 @@
      }
     }
    ]
+  },
+  {
+   "id": "sanatorium_course",
+   "kind": "side",
+   "start_on": {
+    "event": "visit",
+    "target": "P-SANATORIUM"
+   },
+   "stages": [
+    {
+     "id": "voucher",
+     "objectives": [
+      {
+       "id": "voucher",
+       "event": "do",
+       "target": "san_voucher"
+      }
+     ]
+    },
+    {
+     "id": "book",
+     "objectives": [
+      {
+       "id": "book",
+       "event": "do",
+       "target": "san_book"
+      }
+     ]
+    },
+    {
+     "id": "morning",
+     "objectives": [
+      {
+       "id": "exercise",
+       "event": "do",
+       "target": "sanatorium_exercise"
+      }
+     ]
+    },
+    {
+     "id": "water",
+     "objectives": [
+      {
+       "id": "pump",
+       "event": "do",
+       "target": "pump_room"
+      }
+     ]
+    },
+    {
+     "id": "walk",
+     "objectives": [
+      {
+       "id": "path",
+       "event": "do",
+       "target": "san_walk"
+      }
+     ]
+    },
+    {
+     "id": "quiet",
+     "objectives": [
+      {
+       "id": "lie",
+       "event": "do",
+       "target": "san_quiet_hour"
+      }
+     ]
+    },
+    {
+     "id": "evening",
+     "objectives": [
+      {
+       "id": "dance",
+       "event": "do",
+       "target": "sanatorium_evening"
+      }
+     ]
+    },
+    {
+     "id": "discharge",
+     "objectives": [
+      {
+       "id": "signed",
+       "event": "ask",
+       "target": "sand.discharge"
+      }
+     ],
+     "reward": {
+      "rubles": 50,
+      "items": {
+       "san_diploma": 1
+      }
+     }
+    }
+   ]
   }
  ],
  "topics": {
@@ -1283,6 +1879,45 @@
     "lines": [
      "city.ask.sand.games.1"
     ]
+   },
+   {
+    "id": "sand.course",
+    "k": "city.ask.sand.course",
+    "lines": [
+     "city.ask.sand.course.1",
+     {
+      "k": "city.ask.sand.course.2",
+      "stay": "san",
+      "count": [
+       "san_course",
+       1
+      ]
+     },
+     {
+      "k": "city.ask.sand.course.3",
+      "stay": "san",
+      "count": [
+       "san_course",
+       5
+      ]
+     },
+     {
+      "k": "city.ask.sand.course.4",
+      "stay": "!san"
+     }
+    ]
+   },
+   {
+    "id": "sand.discharge",
+    "k": "city.ask.sand.discharge",
+    "count": [
+     "san_course",
+     9
+    ],
+    "once": true,
+    "lines": [
+     "city.ask.sand.discharge.1"
+    ]
    }
   ],
   "sanatorium_duty": [
@@ -1332,6 +1967,21 @@
       ]
      }
     ]
+   },
+   {
+    "id": "sand.curfew",
+    "k": "city.ask.sand.curfew",
+    "lines": [
+     "city.ask.sand.curfew.1",
+     {
+      "k": "city.ask.sand.curfew.2",
+      "h": [
+       23,
+       6
+      ],
+      "stay": "san"
+     }
+    ]
    }
   ]
  },
@@ -1345,6 +1995,20 @@
     "checkup",
     "exercise",
     "quiet"
+   ]
+  },
+  "san_course": {
+   "title": "city.san.coll.course.title",
+   "pieces": [
+    "water_8",
+    "water_13",
+    "water_18",
+    "exercise",
+    "quartz",
+    "oxygen",
+    "walk",
+    "quiet",
+    "dance"
    ]
   }
  },
@@ -1501,6 +2165,86 @@
      "k": "city.san.an.3",
      "after": 1
     }
+   ]
+  },
+  "san_course_book": {
+   "title": "city.san.text.cbook.title",
+   "kind": "ledger",
+   "minutes": 1,
+   "pages": [
+    [
+     {
+      "k": "city.san.cbook.p1.on",
+      "stay": "san"
+     },
+     {
+      "k": "city.san.cbook.p1.off",
+      "stay": "!san"
+     }
+    ],
+    "city.san.cbook.p2",
+    {
+     "k": "city.san.cbook.water_8",
+     "have": "san_course/water_8"
+    },
+    {
+     "k": "city.san.cbook.water_13",
+     "have": "san_course/water_13"
+    },
+    {
+     "k": "city.san.cbook.water_18",
+     "have": "san_course/water_18"
+    },
+    {
+     "k": "city.san.cbook.exercise",
+     "have": "san_course/exercise"
+    },
+    {
+     "k": "city.san.cbook.quartz",
+     "have": "san_course/quartz"
+    },
+    {
+     "k": "city.san.cbook.oxygen",
+     "have": "san_course/oxygen"
+    },
+    {
+     "k": "city.san.cbook.walk",
+     "have": "san_course/walk"
+    },
+    {
+     "k": "city.san.cbook.quiet",
+     "have": "san_course/quiet"
+    },
+    {
+     "k": "city.san.cbook.dance",
+     "have": "san_course/dance"
+    },
+    {
+     "k": "city.san.cbook.done",
+     "count": [
+      "san_course",
+      9
+     ]
+    }
+   ]
+  }
+ },
+ "stays": {
+  "san": {
+   "plot": "P-SANATORIUM",
+   "curfew": [
+    23,
+    6
+   ],
+   "act": "city.san.curfew.*",
+   "allow": [
+    "sanatorium_duty",
+    "couch_radio",
+    "light_switch",
+    "sanatorium_clock_lobby",
+    "sanatorium_clock_dining",
+    "sanatorium_clock_garden",
+    "sanatorium_clock_treat"
    ]
   }
  }

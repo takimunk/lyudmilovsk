@@ -1794,5 +1794,13 @@
  "npc.t_hernandez_lyudmila.name": "Людмила Эрнандес",
  "npc.t_hernandez_lyudmila.role": "ищет работу",
  "npc.t_hernandez_caio.name": "Кайо Эрнандес",
- "npc.t_hernandez_caio.role": "школьник"
+ "npc.t_hernandez_caio.role": "школьник",
+ "npc.t_gromov_pyotr.name": "Пётр Громов",
+ "npc.t_gromov_pyotr.role": "отдыхающий в санатории",
+ "npc.t_mironova_sonya.name": "Соня Миронова",
+ "npc.t_mironova_sonya.role": "отдыхающая в санатории",
+ "npc.t_tamm_boris.name": "Борис Тамм",
+ "npc.t_tamm_boris.role": "отдыхающий в санатории",
+ "npc.t_sazonov_nikolai.name": "Николай Сазонов",
+ "npc.t_sazonov_nikolai.role": "отдыхающий в санатории"
 }

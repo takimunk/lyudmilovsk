@@ -92,6 +92,7 @@ namespace LyudPeople
 		float Height = 0.f;         // seat or mattress top over the floor, m
 		int Capacity = 1;
 		std::string Tag;            // club seats: the station index; flats: the room kind
+		std::string Thing;          // a city thing whoever is at the slot holds (UPeopleLifeSubsystem::UpdateThingHolds): a sanatorium guest's chair
 		std::vector<V3> Spots;      // a double bed: where each sleeper lies
 		std::vector<V3> Inside;     // the way from the place's door (Portal) to Approach; empty outdoors
 		int SnowJob = -1;           // a snow place's slot: the stretch of path it stands for (its near end is Pos), -1 none
@@ -489,6 +490,10 @@ namespace LyudPeople
 		std::string Scores(int Id) const;
 		/** Forces an activity now (tests, console): goes there and does it. */
 		bool Order(int Person, const std::string& Activity, const std::string& PlaceId = std::string());
+		/** A friend comes to sit beside the player (docs/friends.md): the free seat nearest Pos (metres) within MaxDist that
+		 *  some sitting activity of theirs fits, for Minutes; false if there is none. The seat the player is on is left out
+		 *  (nearer than 0.35 m to Pos). */
+		bool OrderBeside(int Person, const V3& Pos, float MaxDist, double Minutes);
 
 		/** Bicycles (docs/bikes.md): a household's bike lives in its entrance (a place on the stair's way in, Home) and
 		 *  goes where its rider leaves it. People ride it for an outdoor way of MinBikeWay or more on the valley's ground

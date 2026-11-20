@@ -1,0 +1,16 @@
+{
+ "service": "higgsfield MCP",
+ "tool": "generate_image",
+ "model": "gpt_image_2_5",
+ "quality": "medium",
+ "resolution": "2k",
+ "aspect_ratio": "1:1",
+ "date": "2026-11-20",
+ "output": "https://d8j0ntlcm91z4.cloudfront.net/user_36I3ndR5QeKPyjKAdSKVfbd04n2/hf_20261120_201516_d1fc44e2-ff45-4884-aa32-91da766b4497.png",
+ "job_id": "d1fc44e2-ff45-4884-aa32-91da766b4497",
+ "prompt": "Four inventory icons for a moody adventure game, arranged as a 2 by 2 grid of equal square cells on one picture: in every cell one object centred and filling most of the cell, softly lit from the upper left, painterly realistic style, plain dark warm-grey cloth background with a faint vignette, the same background and scale feel in every cell, no borders, frames or lines between the cells, nothing crossing a cell edge, no text, no letters, no numbers anywhere. Every cell shows an old town-library book, closed, lying slightly turned, cloth-bound hardcover with worn corners and a small pale paper library label on the spine with no writing on it. Row 1, left: deep burgundy cloth cover with a faded gold embossed border. Row 1, right: dark bottle-green cloth cover with a simple blind-stamped ornament. Row 2, left: navy blue cloth cover with a cream bookmark ribbon hanging out. Row 2, right: brown cloth cover with a thin library card tucked between the pages.",
+ "grid": 2,
+ "ids": ["library_book", "library_book_green", "library_book_navy", "library_book_brown"],
+ "ship": ["library_book"],
+ "note": "Four covers for one item (Dima approved one paid icon generation, 2026-11-20); the burgundy one matches the item's colour in LyudInventory.cpp. Cut by tools/books/book_icon.py (run on the Mac: the cloud can't reach Higgsfield's CDN)."
+}

@@ -5,7 +5,7 @@
   "okonkwo_barber": {"like": "sit", "target": "okonkwo_barber"}
  },
  "rules": {
-  "P-CLUB2/ticket_counter": {"act": "aoki_fitting"},
+  "P-CLUB2/ticket_counter": {"act": "aoki_fitting", "topics": ["@job_t_kino"]},
   "W1-U21/barber_waiting": {"act": "okonkwo_barber"}
  }
 }
