@@ -61,5 +61,11 @@
  "film.programme.fri": "“The Arrival of a Train at La Ciotat” and “The Sprinkler Sprinkled” (1895–1896)",
  "film.programme.sat": "“A Trip to the Moon” (1902)",
  "film.programme.sun": "“The Great Train Robbery” (1903)",
- "film.programme.fest": "“A Trip to the Moon” (1902)"
+ "film.programme.fest": "“A Trip to the Moon” (1902)",
+ "film.programme.fest.children_day": "“Fantasmagorie” and “The Sprinkler Sprinkled” and “Baby's Meal” (1895–1908)",
+ "film.programme.fest.christmas": "“Fantasmagorie” and “A Trip to the Moon” (1902–1908)",
+ "film.programme.fest.city_day": "“Workers Leaving the Lumière Factory in Lyon” and “The Arrival of a Train at La Ciotat” and “The Sprinkler Sprinkled” (1895–1896)",
+ "film.programme.fest.halloween": "“The Man with the Rubber Head” and “The Electric Hotel” (1901–1908)",
+ "film.programme.fest.new_year": "“Fantasmagorie” and “The Man with the Rubber Head” and “A Trip to the Moon” (1901–1908)",
+ "film.programme.fest.sea_festival": "“A Trip to the Moon” and “The Electric Hotel” (1902–1908)"
 }

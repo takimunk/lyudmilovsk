@@ -152,6 +152,7 @@ namespace LyudPaper
 		std::vector<std::pair<std::string, int>> Variants;
 		std::vector<std::string> CinemaKeys;      // by weekday Mon..Sun, then the festival one
 		std::vector<std::string> NewsreelKeys;    // the old films before the sessions, the same way (docs/cinema.md); may be absent
+		std::vector<std::string> NewsreelFest;    // festivals with a newsreel of their own (film.programme.fest.<id>)
 		LyudFest::FCalendar Calendar;
 		bool bCalendar = false;
 
@@ -169,6 +170,7 @@ namespace LyudPaper
 			for (const LyudJson::FValue& V : Root["fest_blurbs"].Items) FestBlurbs.push_back(V.S());
 			for (const LyudJson::FValue& V : Root["cinema"].Items) CinemaKeys.push_back(V.S());
 			for (const LyudJson::FValue& V : Root["newsreel"].Items) NewsreelKeys.push_back(V.S());
+			for (const LyudJson::FValue& V : Root["newsreel_fest"].Items) NewsreelFest.push_back(V.S());
 			for (const LyudJson::FValue& V : Root["birthdays"].Items)
 			{
 				FBirthday B;
@@ -810,7 +812,16 @@ namespace LyudPaper
 			Page.push_back({ "paper.cinema", { "@" + (bFest && CinemaKeys.size() > 7 ? CinemaKeys[7] : CinemaKeys[(size_t)Wd]) } });
 			if (NewsreelKeys.size() >= 7)
 			{
-				Page.push_back({ "paper.newsreel", { "@" + (bFest && NewsreelKeys.size() > 7 ? NewsreelKeys[7] : NewsreelKeys[(size_t)Wd]) } });
+				// (a holiday with a programme of its own at the Rassvet: the paper prints that one)
+				std::string Own;
+				for (const auto& Fe : F.Festivals)
+				{
+					if (Own.empty() && Fe.second <= 0 && std::find(NewsreelFest.begin(), NewsreelFest.end(), Fe.first) != NewsreelFest.end())
+					{
+						Own = "film.programme.fest." + Fe.first;
+					}
+				}
+				Page.push_back({ "paper.newsreel", { "@" + (!Own.empty() ? Own : (bFest && NewsreelKeys.size() > 7 ? NewsreelKeys[7] : NewsreelKeys[(size_t)Wd])) } });
 			}
 			// three small ads of the season, turning by day
 			std::vector<const FPoolEntry*> Season;
