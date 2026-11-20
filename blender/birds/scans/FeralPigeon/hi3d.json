@@ -36,6 +36,15 @@
    }
   ],
   "submitted": "2026-11-20T19:40:35+00:00",
-  "outputs": []
+  "outputs": [
+   {
+    "url": "https://hitem3dstatic.zaohaowu.net/jjewelry/web/model3ds/img2model3d/20261120/f09a5b63e4244c77b09658537d532edd/target/model/original/GLB0.glb?auth_key=18870c2d83cdd1c9c2b758ef5d5ca053&t=1795208038",
+    "file": "blender/birds/scan_raw/FeralPigeon/model.glb",
+    "bytes": 48644716,
+    "sha256": "7e5cae8ecb294dfea42eb19d785d52a3c92539275229267e63886d3fa2d775f4"
+   }
+  ],
+  "model_page_url": "https://www.hi3d.ai/3d-model/36999fcf1b76406a96335f9f2c06a813",
+  "fetched": "2026-11-20T20:42:08+00:00"
  }
 ]

@@ -36,6 +36,15 @@
    }
   ],
   "submitted": "2026-11-20T19:44:15+00:00",
-  "outputs": []
+  "outputs": [
+   {
+    "url": "https://hitem3dstatic.zaohaowu.net/jjewelry/web/model3ds/img2model3d/20261120/af4966e4d543425794198897a548e49f/target/model/original/GLB0.glb?auth_key=bc9cbd51321f3de16f29dd4da46e4b8e&t=1795208238",
+    "file": "blender/birds/scan_raw/Bullfinch/model.glb",
+    "bytes": 49213676,
+    "sha256": "ff36f018219bdec985a9b818d1af3005f292d7f66cba5dd8de53c02178e1541b"
+   }
+  ],
+  "model_page_url": "https://www.hi3d.ai/3d-model/6a23bdae760e47589663c3c8de702e9f",
+  "fetched": "2026-11-20T20:38:59+00:00"
  }
 ]

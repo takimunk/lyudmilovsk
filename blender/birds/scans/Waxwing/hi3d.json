@@ -36,6 +36,15 @@
    }
   ],
   "submitted": "2026-11-20T19:58:21+00:00",
-  "outputs": []
+  "outputs": [
+   {
+    "url": "https://hitem3dstatic.zaohaowu.net/jjewelry/web/model3ds/img2model3d/20261120/a83d3cd4d2ee4ca8b44ab936f0d30ad4/target/model/original/GLB0.glb?auth_key=6970ed416e08865866a863c86169004d&t=1795209090",
+    "file": "blender/birds/scan_raw/Waxwing/model.glb",
+    "bytes": 49108468,
+    "sha256": "8fa4b4467a326c58126ff11120a0849c5e0f981d5d23c97549b2ae02c9018e4d"
+   }
+  ],
+  "model_page_url": "https://www.hi3d.ai/3d-model/9eb33588cf16411d85c886f582acfa57",
+  "fetched": "2026-11-20T20:48:13+00:00"
  }
 ]

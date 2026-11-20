@@ -213,7 +213,9 @@ def landmarks(fs, top, bot):
 
 
 def main():
+    global PX
     V, T, TL, uv, px, srgb = load()
+    PX = px
     P, (F, U, S, c) = orient(V)
     # level the body: the model stands nose-up; rotate about S so the body's centreline (body end .. 55 % toward the
     # beak base) is horizontal, then slice again (stations must cut the body square, not obliquely)
@@ -326,6 +328,33 @@ def main():
             for j in np.nonzero(badh)[0]:
                 dj = np.abs(((good - j + NTH // 2) % NTH) - NTH // 2)
                 COLH[i, j] = COLH[i, good[np.argmin(dj)]]
+    # wider mask: low-res outlier cells (wing roots, thighs) grown by a cell along and two round, mapped to the texture
+    badw = bad.copy()
+    for _ in range(2):
+        badw = badw | np.roll(badw, 1, 1) | np.roll(badw, -1, 1)
+    badw = badw | np.roll(badw, 1, 0) | np.roll(badw, -1, 0)
+    for i in range(NUH):
+        i0 = int(round(np.interp(ush[i], us, np.arange(NU))))
+        row = badw[i0][(np.arange(NTH) * NT // NTH)]
+        if row.any() and (~row).any():
+            good = np.nonzero(~row)[0]
+            for j in np.nonzero(row)[0]:
+                dj = np.abs(((good - j + NTH // 2) % NTH) - NTH // 2)
+                COLH[i, j] = COLH[i, good[np.argmin(dj)]]
+    # birds are symmetric: average each side with its mirror (th -> pi - th), which also halves one-sided defects
+    mj = (NTH // 2 - np.arange(NTH)) % NTH
+    COLH = 0.5 * (COLH + COLH[:, mj])
+    # the centreline, normalised (u = arc parameter, f/up relative to the body end / the mid-body centre), for the rig
+    cf = np.linspace(lm["body_end"] - 0.1 * L, lm["beak_base"] + 0.06 * L, 400)
+    cu = smooth1(np.interp(cf, fs, mid), 6)
+    arc = np.r_[0, np.cumsum(np.hypot(np.diff(cf), np.diff(cu)))]
+    a0, a1 = float(np.interp(lm["body_end"], cf, arc)), float(np.interp(lm["beak_base"], cf, arc))
+    up_ref = float(np.interp(lm["body_end"] + 0.45 * L, fs, mid))
+    tf, tu = np.gradient(cf), np.gradient(cu)
+    tn = np.hypot(tf, tu)
+    tf, tu = tf / tn, tu / tn
+    CL = dict(cl_u=(arc - a0) / (a1 - a0), cl_f=(cf - lm["body_end"]) / L, cl_up=(cu - up_ref) / L, cl_tf=tf, cl_tu=tu,
+              arc_per_u=(a1 - a0) / L)
     out = dict(us=us, ths=ths, R=R / L, CEN=(CEN - np.interp(lm["body_end"] + 0.45 * L, fs, mid)) / L, COL=COL.astype(np.float32), COLH=(np.clip(COLH, 0, 1) * 255).astype(np.uint8), RH=RH.astype(np.float32),
                BAD=bad, srgb=srgb,
                beak_len=(lm["tip"] - lm["beak_base"]) / L, head_depth=lm["head_depth"] / L, body_depth=lm["body_depth"] / L,
@@ -334,11 +363,263 @@ def main():
                sect_bot=(bot_s - np.interp(lm["body_end"] + 0.45 * L, fs, mid)) / L)
     d = os.path.join(ROOT, "blender", "birds", "scans", SID)
     os.makedirs(d, exist_ok=True)
-    np.savez_compressed(os.path.join(d, "scan.npz"), **out)
+    np.savez_compressed(os.path.join(d, "scan.npz"), **out, **CL)
     json.dump({k2: float(v) for k2, v in lm.items()} | {"L": float(L), "outlier_share": float(bad.mean()),
                "forward": F.tolist(), "srgb": bool(srgb)}, open(os.path.join(d, "scan_meta.json"), "w"), indent=1)
     print("SCAN saved", os.path.join(d, "scan.npz"), "outliers %.1f%%" % (100 * bad.mean()))
     debug_png(out, os.path.join(ROOT, "blender", "birds", "scan_raw", SID, "scan_debug.png"))
+    if "--no-body" not in argv:
+        cut_body(P, T, TL, uv, cf, cu, (arc - a0) / (a1 - a0), tf, tu, us, ths, R, lm, L, up_ref, badw)
+
+
+
+def save_mesh_npz(P, T, TL, uv, kf, lm, L, up_ref, name, tgt):
+    F = T[kf]
+    me = bpy.data.meshes.new(name)
+    me.vertices.add(len(P))
+    me.vertices.foreach_set("co", P.astype(np.float32).ravel())
+    me.loops.add(len(F) * 3)
+    me.loops.foreach_set("vertex_index", F.ravel().astype(np.int32))
+    me.polygons.add(len(F))
+    me.polygons.foreach_set("loop_start", np.arange(0, len(F) * 3, 3, dtype=np.int32))
+    me.polygons.foreach_set("loop_total", np.full(len(F), 3, dtype=np.int32))
+    ul = me.uv_layers.new(name="UVMap")
+    ul.data.foreach_set("uv", uv[TL[kf]].reshape(-1).astype(np.float32))
+    me.update()
+    ob = bpy.data.objects.new(name, me)
+    bpy.context.scene.collection.objects.link(ob)
+    mdf = ob.modifiers.new("dec", "DECIMATE")
+    mdf.ratio = min(1.0, tgt / max(len(F), 1))
+    dg = bpy.context.evaluated_depsgraph_get()
+    m2 = ob.evaluated_get(dg).to_mesh()
+    m2.calc_loop_triangles()
+    co = np.zeros(len(m2.vertices) * 3)
+    m2.vertices.foreach_get("co", co)
+    co = co.reshape(-1, 3)
+    tri = np.zeros(len(m2.loop_triangles) * 3, int)
+    m2.loop_triangles.foreach_get("vertices", tri)
+    tl = np.zeros(len(m2.loop_triangles) * 3, int)
+    m2.loop_triangles.foreach_get("loops", tl)
+    luv = np.zeros(len(m2.loops) * 2)
+    m2.uv_layers.active.data.foreach_get("uv", luv)
+    luv = luv.reshape(-1, 2)
+    vn = np.stack([(co[:, 0] - lm["body_end"]) / L, (co[:, 1] - up_ref) / L, co[:, 2] / L], 1)
+    np.savez_compressed(os.path.join(ROOT, "blender", "birds", "scan_raw", SID, name), v=vn.astype(np.float32),
+                        f=tri.reshape(-1, 3).astype(np.int32), uv=luv[tl].reshape(-1, 3, 2).astype(np.float32))
+    ob.evaluated_get(dg).to_mesh_clear()
+    bpy.data.objects.remove(ob)
+    bpy.data.meshes.remove(me)
+    print("SCAN saved", name, len(tri) // 3, "tris")
+
+
+def cut_body(P, T, TL, uv, cf, cu, ua, tf, tu, us, ths, R, lm, L, up_ref, badw):
+    """The scan's body for build_bird.py --scan S: wings (outside the cleaned radius at the wing roots), legs (below
+    it) and the tail plate (behind the body end) cut off, holes filled, decimated to the LOD budgets.
+    Out: blender/birds/scan_raw/<Id>/body.npz (per LOD: verts in body-length units, f/up/s relative to the body end
+    and the mid-body centre; faces; loop uvs) and body_tex.png (the base colour, 2048)."""
+    n = len(P)
+    uvv = np.zeros(n)
+    nc = np.zeros(n)
+    for a in range(0, n, 40000):
+        q = P[a:a + 40000, :2]
+        d2 = (q[:, None, 0] - cf[None]) ** 2 + (q[:, None, 1] - cu[None]) ** 2
+        k = np.argmin(d2, 1)
+        uvv[a:a + 40000] = ua[k]
+        nc[a:a + 40000] = (q[:, 0] - cf[k]) * (-tu[k]) + (q[:, 1] - cu[k]) * tf[k]
+    th = np.arctan2(nc, P[:, 2]) % (2 * math.pi)
+    r = np.hypot(nc, P[:, 2])
+    nt = len(ths)
+    fu = np.clip(np.interp(np.clip(uvv, us[0], us[-1]), us, np.arange(len(us))), 0, len(us) - 1.001)
+    i0, au = fu.astype(int), fu - fu.astype(int)
+    ft = th / (2 * math.pi) * nt
+    j0, bt = ft.astype(int) % nt, ft - ft.astype(int)
+    j1 = (j0 + 1) % nt
+    rfit = (R[i0, j0] * (1 - bt) + R[i0, j1] * bt) * (1 - au) + (R[i0 + 1, j0] * (1 - bt) + R[i0 + 1, j1] * bt) * au
+    # where the wing roots and thighs were (the outlier cells, grown): cut at the cleaned radius itself
+    rb = badw[np.clip(np.rint(fu).astype(int), 0, len(us) - 1), np.rint(ft).astype(int) % nt]
+    margin = np.where(rb, OVR.get("root_margin", 0.985), OVR.get("cut_margin", 1.04))
+    keep = (uvv >= OVR.get("tail_cut", -0.02)) & ((uvv > 1.0) | (r <= rfit * margin))
+    # the whole scan, wings and all, decimated (raw-scan previews for the comparison sheets)
+    if "--no-full" not in argv:
+        save_mesh_npz(P, T, TL, uv, np.ones(len(T), bool), lm, L, up_ref, "full.npz", 300000)
+    kf = keep[T].all(1)
+    F = T[kf]
+    print("SCAN body cut: kept %.1f%% of triangles" % (100 * kf.mean()))
+    me = bpy.data.meshes.new("scanbody")
+    me.vertices.add(n)
+    me.vertices.foreach_set("co", P.astype(np.float32).ravel())
+    me.loops.add(len(F) * 3)
+    me.loops.foreach_set("vertex_index", F.ravel().astype(np.int32))
+    me.polygons.add(len(F))
+    me.polygons.foreach_set("loop_start", np.arange(0, len(F) * 3, 3, dtype=np.int32))
+    me.polygons.foreach_set("loop_total", np.full(len(F), 3, dtype=np.int32))
+    ul = me.uv_layers.new(name="UVMap")
+    ul.data.foreach_set("uv", uv[TL[kf]].reshape(-1).astype(np.float32))
+    me.update()
+    me.validate()
+    ob = bpy.data.objects.new("scanbody", me)
+    bpy.context.scene.collection.objects.link(ob)
+    for o in list(bpy.context.scene.objects):
+        o.select_set(False)
+    bpy.context.view_layer.objects.active = ob
+    ob.select_set(True)
+    bpy.ops.object.mode_set(mode="EDIT")
+    bpy.ops.mesh.select_all(action="SELECT")
+    bpy.ops.mesh.delete_loose()
+    bpy.ops.mesh.select_all(action="SELECT")
+    bpy.ops.mesh.remove_doubles(threshold=L * 0.0005)
+    # keep the biggest connected piece only (stray wing/leg crumbs), then close the cuts
+    bpy.ops.mesh.select_all(action="DESELECT")
+    bpy.ops.object.mode_set(mode="OBJECT")
+    import bmesh
+    bm = bmesh.new()
+    bm.from_mesh(me)
+    seen, best = set(), None
+    for f0 in bm.faces:
+        if f0.index in seen:
+            continue
+        stack, comp = [f0], []
+        seen.add(f0.index)
+        while stack:
+            f = stack.pop()
+            comp.append(f)
+            for e in f.edges:
+                for g in e.link_faces:
+                    if g.index not in seen:
+                        seen.add(g.index)
+                        stack.append(g)
+        if best is None or len(comp) > len(best):
+            best = comp
+    bs = set(f.index for f in best)
+    bmesh.ops.delete(bm, geom=[f for f in bm.faces if f.index not in bs], context="FACES")
+    bmesh.ops.delete(bm, geom=[v for v in bm.verts if not v.link_faces], context="VERTS")
+    holes = bmesh.ops.holes_fill(bm, edges=bm.edges[:], sides=0)
+    bmesh.ops.triangulate(bm, faces=holes["faces"])
+    bm.to_mesh(me)
+    bm.free()
+    me.update()
+    print("SCAN body after cleanup: tris", len(me.polygons))
+    out = {}
+    full = ob
+    for lod, tgt in ((0, OVR.get("tris0", 20000)), (1, 8000), (2, 3000), (3, 1200)):
+        o2 = full.copy()
+        o2.data = full.data.copy()
+        bpy.context.scene.collection.objects.link(o2)
+        mdf = o2.modifiers.new("dec", "DECIMATE")
+        mdf.ratio = min(1.0, tgt / max(len(full.data.polygons), 1))
+        mdf.use_collapse_triangulate = True
+        dg = bpy.context.evaluated_depsgraph_get()
+        m2 = o2.evaluated_get(dg).to_mesh()
+        m2.calc_loop_triangles()
+        nv = len(m2.vertices)
+        co = np.zeros(nv * 3)
+        m2.vertices.foreach_get("co", co)
+        co = co.reshape(-1, 3)
+        tri = np.zeros(len(m2.loop_triangles) * 3, int)
+        m2.loop_triangles.foreach_get("vertices", tri)
+        tl = np.zeros(len(m2.loop_triangles) * 3, int)
+        m2.loop_triangles.foreach_get("loops", tl)
+        luv = np.zeros(len(m2.loops) * 2)
+        m2.uv_layers.active.data.foreach_get("uv", luv)
+        luv = luv.reshape(-1, 2)
+        vn = np.stack([(co[:, 0] - lm["body_end"]) / L, (co[:, 1] - up_ref) / L, co[:, 2] / L], 1)
+        out[f"v{lod}"] = vn.astype(np.float32)
+        out[f"f{lod}"] = tri.reshape(-1, 3).astype(np.int32)
+        out[f"uv{lod}"] = luv[tl].reshape(-1, 3, 2).astype(np.float32)
+        print("SCAN body LOD%d tris %d" % (lod, len(tri) // 3))
+    np.savez_compressed(os.path.join(ROOT, "blender", "birds", "scan_raw", SID, "body.npz"), **out)
+    try:
+        wing_planform(P, T, TL, uv, ~keep, uvv, nc, lm, L)
+    except Exception as e:   # a species without a clean raised wing keeps its painted wings
+        print("SCAN wing planform FAILED", e)
+    img = max((i for i in bpy.data.images if i.size[0] > 0), key=lambda i: i.size[0])
+    img.scale(2048, 2048)
+    img.filepath_raw = os.path.join(ROOT, "blender", "birds", "scan_raw", SID, "body_tex.png")
+    img.file_format = "PNG"
+    img.save()
+    print("SCAN body texture", img.filepath_raw)
+
+
+PX = None
+
+
+def wing_planform(P, T, TL, uv, cut, uvv, nc, lm, L, res=(1024, 512)):
+    """The raised left wing (cut off the body) seen square-on from above (dorsal: the side facing the tail in the V
+    pose) and from below, as images over span xi (0 root .. 1 tip) and chord eta (span units, + toward the tail), by
+    splatting the dense scan's vertices with a depth test. Also the leading and trailing edge per span column, so
+    build_bird.py can map each template feather onto the photographed wing whatever their shapes."""
+    sel = cut & (P[:, 2] > 0.02 * L) & (nc > -0.05 * L) & (uvv > -0.15) & (uvv < 1.0)
+    Q = P[sel]
+    if len(Q) < 2000:
+        raise RuntimeError("too few wing vertices")
+    # vertex normals (area-weighted face normals): each side's image takes only vertices facing its camera
+    fn = np.cross(P[T[:, 1]] - P[T[:, 0]], P[T[:, 2]] - P[T[:, 0]])
+    vn = np.zeros_like(P)
+    for k in range(3):
+        np.add.at(vn, T[:, k], fn)
+    vn = vn[sel] / np.maximum(np.linalg.norm(vn[sel], axis=1), 1e-12)[:, None]
+    vuv = np.zeros((len(P), 2))
+    vuv[T.ravel()] = uv[TL.ravel()]
+    H, W = PX.shape[:2]
+    col = PX[np.clip((vuv[sel, 1] % 1.0 * H).astype(int), 0, H - 1), np.clip((vuv[sel, 0] % 1.0 * W).astype(int), 0, W - 1)]
+    c0 = Q.mean(0)
+    _, _, vt = np.linalg.svd(Q - c0, full_matrices=False)
+    ax_span, ax_chord, nrm_ = vt[0], vt[1], vt[2]
+    # root: the wing points nearest the body's mid-plane; span points from there to the tip
+    root = Q[np.argsort(Q[:, 2])[: max(50, len(Q) // 40)]].mean(0)
+    if np.dot(Q[np.argmax(Q[:, 2])] - root, ax_span) < 0:
+        ax_span = -ax_span
+    if ax_chord[0] > 0:          # chord + toward the tail (f decreasing)
+        ax_chord = -ax_chord
+    if np.dot(nrm_, np.cross(ax_span, ax_chord)) < 0:
+        nrm_ = -nrm_
+    dorsal = nrm_ if nrm_[0] < 0 else -nrm_      # the dorsal side faces the tail in the V pose
+    rel = Q - root
+    xs, ys, dep = rel @ ax_span, rel @ ax_chord, rel @ dorsal
+    span = float(np.quantile(xs, 0.995))
+    xi, eta = xs / span, ys / span
+    e0, e1 = float(np.quantile(eta, 0.002)), float(np.quantile(eta, 0.998))
+    nx, ny = res
+    ix = np.clip((xi * (nx - 1)).astype(int), 0, nx - 1)
+    iy = np.clip(((eta - e0) / (e1 - e0) * (ny - 1)).astype(int), 0, ny - 1)
+    ok0 = (xi >= 0) & (xi <= 1.0)
+    facing = vn @ dorsal
+    out = {}
+    for name, sgn in (("dorsal", 1.0), ("ventral", -1.0)):
+        img = np.zeros((ny, nx, 3), np.float32)
+        msk = np.zeros((ny, nx), bool)
+        ok = ok0 & (sgn * facing > 0.15)
+        o = np.argsort(sgn * dep[ok])          # far first, near last: the nearest wins
+        img[iy[ok][o], ix[ok][o]] = col[ok][o]
+        msk[iy[ok][o], ix[ok][o]] = True
+        for _ in range(3):                     # close splat holes
+            grow = ~msk & (np.roll(msk, 1, 0) | np.roll(msk, -1, 0) | np.roll(msk, 1, 1) | np.roll(msk, -1, 1))
+            if not grow.any():
+                break
+            acc = np.zeros_like(img)
+            cnt = np.zeros((ny, nx))
+            for dy, dx in ((1, 0), (-1, 0), (0, 1), (0, -1)):
+                m2 = np.roll(msk, (dy, dx), (0, 1))
+                acc += np.roll(img, (dy, dx), (0, 1)) * m2[..., None]
+                cnt += m2
+            img[grow] = acc[grow] / np.maximum(cnt[grow], 1)[:, None]
+            msk |= grow
+        out[name] = (np.clip(img, 0, 1) * 255).astype(np.uint8)
+        out[name + "_mask"] = msk
+    m = out["dorsal_mask"] | out["ventral_mask"]
+    lead = np.full(nx, np.nan)
+    trail = np.full(nx, np.nan)
+    for x in range(nx):
+        yy = np.nonzero(m[:, x])[0]
+        if len(yy) > 3:
+            lead[x], trail[x] = yy.min(), yy.max()
+    good = ~np.isnan(lead)
+    xg = np.arange(nx)
+    lead = np.interp(xg, xg[good], lead[good]) / (ny - 1) * (e1 - e0) + e0
+    trail = np.interp(xg, xg[good], trail[good]) / (ny - 1) * (e1 - e0) + e0
+    np.savez_compressed(os.path.join(ROOT, "blender", "birds", "scan_raw", SID, "wing.npz"), **out, lead=lead, trail=trail,
+                        e0=e0, e1=e1, span_L=span / L)
+    print("SCAN wing planform: span %.2f L, chord %.2f..%.2f, %d verts" % (span / L, e0, e1, len(Q)))
 
 
 def debug_png(o, path):

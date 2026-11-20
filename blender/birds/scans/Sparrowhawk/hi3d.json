@@ -36,6 +36,15 @@
    }
   ],
   "submitted": "2026-11-20T19:59:19+00:00",
-  "outputs": []
+  "outputs": [
+   {
+    "url": "https://hitem3dstatic.zaohaowu.net/jjewelry/web/model3ds/img2model3d/20261120/2b63729855e6469c9453765ba77698aa/target/model/original/GLB0.glb?auth_key=4a0841ce341bfde77a9c5c4d50059afc&t=1795209155",
+    "file": "blender/birds/scan_raw/Sparrowhawk/model.glb",
+    "bytes": 49562720,
+    "sha256": "04615d6ed285e9ec2f19aa8217b916fb703613ed2b698c9bd2330baa55cf2215"
+   }
+  ],
+  "model_page_url": "https://www.hi3d.ai/3d-model/24996cbf5e1742fca71b5f018457442f",
+  "fetched": "2026-11-20T20:47:42+00:00"
  }
 ]

@@ -36,6 +36,15 @@
    }
   ],
   "submitted": "2026-11-20T19:57:03+00:00",
-  "outputs": []
+  "outputs": [
+   {
+    "url": "https://hitem3dstatic.zaohaowu.net/jjewelry/web/model3ds/img2model3d/20261120/e66f77a3327441c6986627b2d4bddbd5/target/model/original/GLB0.glb?auth_key=fcae3e916f0ed3eaafbde9bb34e0f886&t=1795208965",
+    "file": "blender/birds/scan_raw/CommonSwift/model.glb",
+    "bytes": 48992448,
+    "sha256": "1a8258d7b75de25c60b45640b1df36f154928ab4be0f4a93ba4a4345db4ea59f"
+   }
+  ],
+  "model_page_url": "https://www.hi3d.ai/3d-model/086c9a187dc54b52bc2ca4b39c8957b0",
+  "fetched": "2026-11-20T20:41:00+00:00"
  }
 ]
