@@ -1,0 +1,401 @@
+# The library's classics: one work per line, fields separated by |
+# id | original language | year | author en | title en | author ru | title ru | author ja | title ja
+# Only works whose author died in 1955 or earlier. Which languages a work is shown in depends on what fetch_books.py finds
+# (an open text in that language with every creator dead by 1955); the names here are what the shelves show in each UI language.
+# --- Antiquity and the Middle Ages
+iliad|grc|-750|Homer|The Iliad|Гомер|Илиада|ホメロス|イリアス
+odyssey|grc|-725|Homer|The Odyssey|Гомер|Одиссея|ホメロス|オデュッセイア
+aesop|grc|-560|Aesop|Aesop's Fables|Эзоп|Басни|イソップ|イソップ寓話
+oedipus|grc|-429|Sophocles|Oedipus the King|Софокл|Царь Эдип|ソポクレス|オイディプス王
+antigone|grc|-441|Sophocles|Antigone|Софокл|Антигона|ソポクレス|アンティゴネー
+medea|grc|-431|Euripides|Medea|Еврипид|Медея|エウリピデス|メディア
+oresteia|grc|-458|Aeschylus|The Oresteia|Эсхил|Орестея|アイスキュロス|オレステイア
+clouds_ar|grc|-423|Aristophanes|The Clouds|Аристофан|Облака|アリストパネス|雲
+herodotus|grc|-430|Herodotus|The Histories|Геродот|История|ヘロドトス|歴史
+republic|grc|-375|Plato|The Republic|Платон|Государство|プラトン|国家
+apology|grc|-399|Plato|The Apology of Socrates|Платон|Апология Сократа|プラトン|ソクラテスの弁明
+symposium|grc|-385|Plato|The Symposium|Платон|Пир|プラトン|饗宴
+ethics|grc|-340|Aristotle|Nicomachean Ethics|Аристотель|Никомахова этика|アリストテレス|ニコマコス倫理学
+poetics|grc|-335|Aristotle|Poetics|Аристотель|Поэтика|アリストテレス|詩学
+aeneid|la|-19|Virgil|The Aeneid|Вергилий|Энеида|ウェルギリウス|アエネーイス
+metamorphoses|la|8|Ovid|Metamorphoses|Овидий|Метаморфозы|オウィディウス|変身物語
+meditations|grc|180|Marcus Aurelius|Meditations|Марк Аврелий|Размышления|マルクス・アウレリウス|自省録
+seneca_letters|la|65|Seneca|Moral Letters to Lucilius|Сенека|Нравственные письма к Луцилию|セネカ|倫理書簡集
+lucretius|la|-55|Lucretius|On the Nature of Things|Лукреций|О природе вещей|ルクレティウス|物の本質について
+confessions_aug|la|400|Augustine|Confessions|Августин|Исповедь|アウグスティヌス|告白
+gilgamesh|akk|-1200|Anonymous|The Epic of Gilgamesh|Народный эпос|Эпос о Гильгамеше|作者不詳|ギルガメシュ叙事詩
+beowulf|ang|1000|Anonymous|Beowulf|Народный эпос|Беовульф|作者不詳|ベーオウルフ
+arabian_nights|ar|1000|Anonymous|The Arabian Nights|Народные сказки|Тысяча и одна ночь|作者不詳|千夜一夜物語
+rubaiyat|fa|1120|Omar Khayyam|The Rubaiyat|Омар Хайям|Рубаи|オマル・ハイヤーム|ルバイヤート
+shahnameh|fa|1010|Ferdowsi|The Shahnameh|Фирдоуси|Шахнаме|フェルドウスィー|シャー・ナーメ
+roland|fro|1100|Anonymous|The Song of Roland|Народный эпос|Песнь о Роланде|作者不詳|ローランの歌
+nibelungen|gmh|1200|Anonymous|The Nibelungenlied|Народный эпос|Песнь о нибелунгах|作者不詳|ニーベルンゲンの歌
+igor|orv|1185|Anonymous|The Tale of Igor's Campaign|Неизвестный автор|Слово о полку Игореве|作者不詳|イーゴリ遠征物語
+kalevala|fi|1835|Elias Lönnrot|The Kalevala|Элиас Лённрот|Калевала|エリアス・リョンロート|カレワラ
+edda|non|1270|Anonymous|The Poetic Edda|Народный эпос|Старшая Эдда|作者不詳|エッダ
+divine_comedy|it|1320|Dante Alighieri|The Divine Comedy|Данте Алигьери|Божественная комедия|ダンテ・アリギエーリ|神曲
+vita_nuova|it|1294|Dante Alighieri|La Vita Nuova|Данте Алигьери|Новая жизнь|ダンテ・アリギエーリ|新生
+decameron|it|1353|Giovanni Boccaccio|The Decameron|Джованни Боккаччо|Декамерон|ボッカッチョ|デカメロン
+canterbury|enm|1400|Geoffrey Chaucer|The Canterbury Tales|Джеффри Чосер|Кентерберийские рассказы|チョーサー|カンタベリー物語
+gawain|enm|1390|Anonymous|Sir Gawain and the Green Knight|Неизвестный автор|Сэр Гавейн и Зелёный рыцарь|作者不詳|ガウェイン卿と緑の騎士
+morte_darthur|enm|1485|Thomas Malory|Le Morte d'Arthur|Томас Мэлори|Смерть Артура|トマス・マロリー|アーサー王の死
+analects|zh|-479|Confucius|The Analects|Конфуций|Беседы и суждения|孔子|論語
+tao_te_ching|zh|-400|Laozi|Tao Te Ching|Лао-цзы|Дао дэ цзин|老子|老子
+art_of_war|zh|-500|Sun Tzu|The Art of War|Сунь-цзы|Искусство войны|孫子|孫子
+zhuangzi|zh|-300|Zhuangzi|Zhuangzi|Чжуан-цзы|Чжуан-цзы|荘子|荘子
+shiji|zh|-91|Sima Qian|Records of the Grand Historian|Сыма Цянь|Исторические записки|司馬遷|史記
+journey_west|zh|1592|Wu Cheng'en|Journey to the West|У Чэнъэнь|Путешествие на Запад|呉承恩|西遊記
+three_kingdoms|zh|1360|Luo Guanzhong|Romance of the Three Kingdoms|Ло Гуаньчжун|Троецарствие|羅貫中|三国志演義
+liaozhai|zh|1740|Pu Songling|Strange Tales from a Chinese Studio|Пу Сунлин|Рассказы Ляо Чжая о чудесах|蒲松齢|聊斎志異
+gitanjali|bn|1910|Rabindranath Tagore|Gitanjali|Рабиндранат Тагор|Гитанджали|タゴール|ギーターンジャリ
+panchatantra|sa|-300|Anonymous|The Panchatantra|Народные сказки|Панчатантра|作者不詳|パンチャタントラ
+bhagavad_gita|sa|-200|Anonymous|The Bhagavad Gita|Неизвестный автор|Бхагавадгита|作者不詳|バガヴァッド・ギーター
+shakuntala|sa|400|Kalidasa|Shakuntala|Калидаса|Шакунтала|カーリダーサ|シャクンタラー
+# --- Japan
+genji|ja|1008|Murasaki Shikibu|The Tale of Genji|Мурасаки Сикибу|Повесть о Гэндзи|紫式部|源氏物語
+pillow_book|ja|1002|Sei Shonagon|The Pillow Book|Сэй-Сёнагон|Записки у изголовья|清少納言|枕草子
+hojoki|ja|1212|Kamo no Chomei|An Account of My Hut|Камо-но Тёмэй|Записки из кельи|鴨長明|方丈記
+tsurezuregusa|ja|1330|Yoshida Kenko|Essays in Idleness|Кэнко-хоси|Записки от скуки|吉田兼好|徒然草
+heike|ja|1300|Anonymous|The Tale of the Heike|Неизвестный автор|Повесть о доме Тайра|作者不詳|平家物語
+taketori|ja|900|Anonymous|The Tale of the Bamboo Cutter|Неизвестный автор|Повесть о старике Такэтори|作者不詳|竹取物語
+narrow_road|ja|1694|Matsuo Basho|The Narrow Road to the Deep North|Мацуо Басё|По тропинкам Севера|松尾芭蕉|おくのほそ道
+kokoro|ja|1914|Natsume Soseki|Kokoro|Нацумэ Сосэки|Сердце|夏目漱石|こころ
+botchan|ja|1906|Natsume Soseki|Botchan|Нацумэ Сосэки|Мальчуган|夏目漱石|坊っちゃん
+i_am_a_cat|ja|1905|Natsume Soseki|I Am a Cat|Нацумэ Сосэки|Ваш покорный слуга кот|夏目漱石|吾輩は猫である
+sanshiro|ja|1908|Natsume Soseki|Sanshiro|Нацумэ Сосэки|Сансиро|夏目漱石|三四郎
+ten_nights|ja|1908|Natsume Soseki|Ten Nights of Dreams|Нацумэ Сосэки|Десять снов|夏目漱石|夢十夜
+kusamakura|ja|1906|Natsume Soseki|Kusamakura|Нацумэ Сосэки|Изголовье из трав|夏目漱石|草枕
+rashomon|ja|1915|Ryunosuke Akutagawa|Rashomon|Рюноскэ Акутагава|Ворота Расёмон|芥川龍之介|羅生門
+in_a_grove|ja|1922|Ryunosuke Akutagawa|In a Grove|Рюноскэ Акутагава|В чаще|芥川龍之介|藪の中
+spider_thread|ja|1918|Ryunosuke Akutagawa|The Spider's Thread|Рюноскэ Акутагава|Паутинка|芥川龍之介|蜘蛛の糸
+nose|ja|1916|Ryunosuke Akutagawa|The Nose|Рюноскэ Акутагава|Нос|芥川龍之介|鼻
+kappa|ja|1927|Ryunosuke Akutagawa|Kappa|Рюноскэ Акутагава|В стране водяных|芥川龍之介|河童
+hell_screen|ja|1918|Ryunosuke Akutagawa|Hell Screen|Рюноскэ Акутагава|Муки ада|芥川龍之介|地獄変
+toshishun|ja|1920|Ryunosuke Akutagawa|Tu Zichun|Рюноскэ Акутагава|Ду Цзычунь|芥川龍之介|杜子春
+no_longer_human|ja|1948|Osamu Dazai|No Longer Human|Осаму Дадзай|Исповедь «неполноценного» человека|太宰治|人間失格
+run_melos|ja|1940|Osamu Dazai|Run, Melos!|Осаму Дадзай|Беги, Мелос!|太宰治|走れメロス
+setting_sun|ja|1947|Osamu Dazai|The Setting Sun|Осаму Дадзай|Заходящее солнце|太宰治|斜陽
+night_train|ja|1934|Kenji Miyazawa|Night on the Galactic Railroad|Кэндзи Миядзава|Ночь на галактической железной дороге|宮沢賢治|銀河鉄道の夜
+restaurant_orders|ja|1924|Kenji Miyazawa|The Restaurant of Many Orders|Кэндзи Миядзава|Ресторан, где много заказов|宮沢賢治|注文の多い料理店
+gauche|ja|1934|Kenji Miyazawa|Gauche the Cellist|Кэндзи Миядзава|Виолончелист Госю|宮沢賢治|セロ弾きのゴーシュ
+ame_ni_makezu|ja|1931|Kenji Miyazawa|Be Not Defeated by the Rain|Кэндзи Миядзава|Не уступая дождю|宮沢賢治|雨ニモマケズ
+matasaburo|ja|1934|Kenji Miyazawa|Matasaburo of the Wind|Кэндзи Миядзава|Матасабуро, сын ветра|宮沢賢治|風の又三郎
+dancing_girl|ja|1890|Mori Ogai|The Dancing Girl|Мори Огай|Танцовщица|森鴎外|舞姫
+takasebune|ja|1916|Mori Ogai|The Boat on the River Takase|Мори Огай|Лодка на реке Такасэ|森鴎外|高瀬舟
+sansho|ja|1915|Mori Ogai|Sansho the Steward|Мори Огай|Сансё-даю|森鴎外|山椒大夫
+wild_geese|ja|1913|Mori Ogai|The Wild Geese|Мори Огай|Дикий гусь|森鴎外|雁
+takekurabe|ja|1896|Higuchi Ichiyo|Growing Up|Хигути Итиё|Сверстники|樋口一葉|たけくらべ
+sangetsuki|ja|1942|Atsushi Nakajima|The Moon over the Mountain|Ацуси Накадзима|Луна над горами|中島敦|山月記
+lemon|ja|1925|Motojiro Kajii|Lemon|Мотодзиро Кадзии|Лимон|梶井基次郎|檸檬
+human_chair|ja|1925|Edogawa Ranpo|The Human Chair|Эдогава Рампо|Человек-кресло|江戸川乱歩|人間椅子
+hakai|ja|1906|Shimazaki Toson|The Broken Commandment|Симадзаки Тосон|Нарушенный завет|島崎藤村|破戒
+musashino|ja|1898|Kunikida Doppo|Musashino|Куникида Доппо|Равнина Мусаси|国木田独歩|武蔵野
+ukigumo|ja|1887|Futabatei Shimei|Drifting Clouds|Фтабатэй Симэй|Плывущее облако|二葉亭四迷|浮雲
+koya_hijiri|ja|1900|Izumi Kyoka|The Holy Man of Mount Koya|Идзуми Кёка|Святой с горы Коя|泉鏡花|高野聖
+five_storied|ja|1892|Koda Rohan|The Five-Storied Pagoda|Кода Рохан|Пятиярусная пагода|幸田露伴|五重塔
+kwaidan|ja|1904|Lafcadio Hearn|Kwaidan|Лафкадио Хирн|Квайдан|小泉八雲|怪談
+midaregami|ja|1901|Yosano Akiko|Tangled Hair|Ёсано Акико|Спутанные волосы|与謝野晶子|みだれ髪
+howling_moon|ja|1917|Hagiwara Sakutaro|Howling at the Moon|Хагивара Сакутаро|Вой на луну|萩原朔太郎|月に吠える
+ichiaku|ja|1910|Ishikawa Takuboku|A Handful of Sand|Исикава Такубоку|Горсть песка|石川啄木|一握の砂
+gongitsune|ja|1932|Niimi Nankichi|Gon, the Little Fox|Нанкити Ниими|Лисёнок Гон|新美南吉|ごんぎつね
+tono|ja|1910|Kunio Yanagita|The Legends of Tono|Кунио Янагита|Легенды Тоно|柳田国男|遠野物語
+bushido|ja|1900|Inazo Nitobe|Bushido: The Soul of Japan|Инадзо Нитобэ|Бусидо: душа Японии|新渡戸稲造|武士道
+book_of_tea|ja|1906|Kakuzo Okakura|The Book of Tea|Какудзо Окакура|Книга о чае|岡倉覚三|茶の本
+# --- Russia
+onegin|ru|1833|Alexander Pushkin|Eugene Onegin|Александр Пушкин|Евгений Онегин|プーシキン|エヴゲーニイ・オネーギン
+captains_daughter|ru|1836|Alexander Pushkin|The Captain's Daughter|Александр Пушкин|Капитанская дочка|プーシキン|大尉の娘
+queen_of_spades|ru|1834|Alexander Pushkin|The Queen of Spades|Александр Пушкин|Пиковая дама|プーシキン|スペードの女王
+belkin|ru|1831|Alexander Pushkin|The Tales of Belkin|Александр Пушкин|Повести Белкина|プーシキン|ベールキン物語
+bronze_horseman|ru|1833|Alexander Pushkin|The Bronze Horseman|Александр Пушкин|Медный всадник|プーシキン|青銅の騎士
+pushkin_tales|ru|1834|Alexander Pushkin|Fairy Tales in Verse|Александр Пушкин|Сказки|プーシキン|プーシキン童話集
+boris_godunov|ru|1825|Alexander Pushkin|Boris Godunov|Александр Пушкин|Борис Годунов|プーシキン|ボリス・ゴドゥノフ
+hero_of_our_time|ru|1840|Mikhail Lermontov|A Hero of Our Time|Михаил Лермонтов|Герой нашего времени|レールモントフ|現代の英雄
+mtsyri|ru|1839|Mikhail Lermontov|Mtsyri|Михаил Лермонтов|Мцыри|レールモントフ|ムツイリ
+demon|ru|1839|Mikhail Lermontov|The Demon|Михаил Лермонтов|Демон|レールモントフ|悪魔
+dead_souls|ru|1842|Nikolai Gogol|Dead Souls|Николай Гоголь|Мёртвые души|ゴーゴリ|死せる魂
+overcoat|ru|1842|Nikolai Gogol|The Overcoat|Николай Гоголь|Шинель|ゴーゴリ|外套
+nose_gogol|ru|1836|Nikolai Gogol|The Nose|Николай Гоголь|Нос|ゴーゴリ|鼻
+inspector|ru|1836|Nikolai Gogol|The Government Inspector|Николай Гоголь|Ревизор|ゴーゴリ|検察官
+dikanka|ru|1831|Nikolai Gogol|Evenings on a Farm near Dikanka|Николай Гоголь|Вечера на хуторе близ Диканьки|ゴーゴリ|ディカーニカ近郷夜話
+taras_bulba|ru|1835|Nikolai Gogol|Taras Bulba|Николай Гоголь|Тарас Бульба|ゴーゴリ|隊長ブーリバ
+viy|ru|1835|Nikolai Gogol|Viy|Николай Гоголь|Вий|ゴーゴリ|ヴィイ
+woe_from_wit|ru|1825|Alexander Griboyedov|Woe from Wit|Александр Грибоедов|Горе от ума|グリボエードフ|知恵の悲しみ
+krylov|ru|1843|Ivan Krylov|Fables|Иван Крылов|Басни|クルイロフ|クルイロフ寓話集
+crime_punishment|ru|1866|Fyodor Dostoevsky|Crime and Punishment|Фёдор Достоевский|Преступление и наказание|ドストエフスキー|罪と罰
+karamazov|ru|1880|Fyodor Dostoevsky|The Brothers Karamazov|Фёдор Достоевский|Братья Карамазовы|ドストエフスキー|カラマーゾフの兄弟
+idiot|ru|1869|Fyodor Dostoevsky|The Idiot|Фёдор Достоевский|Идиот|ドストエフスキー|白痴
+demons|ru|1872|Fyodor Dostoevsky|Demons|Фёдор Достоевский|Бесы|ドストエフスキー|悪霊
+white_nights|ru|1848|Fyodor Dostoevsky|White Nights|Фёдор Достоевский|Белые ночи|ドストエフスキー|白夜
+underground|ru|1864|Fyodor Dostoevsky|Notes from Underground|Фёдор Достоевский|Записки из подполья|ドストエフスキー|地下室の手記
+poor_folk|ru|1846|Fyodor Dostoevsky|Poor Folk|Фёдор Достоевский|Бедные люди|ドストエフスキー|貧しき人びと
+gambler|ru|1866|Fyodor Dostoevsky|The Gambler|Фёдор Достоевский|Игрок|ドストエフスキー|賭博者
+war_peace|ru|1869|Leo Tolstoy|War and Peace|Лев Толстой|Война и мир|トルストイ|戦争と平和
+anna_karenina|ru|1877|Leo Tolstoy|Anna Karenina|Лев Толстой|Анна Каренина|トルストイ|アンナ・カレーニナ
+ivan_ilyich|ru|1886|Leo Tolstoy|The Death of Ivan Ilyich|Лев Толстой|Смерть Ивана Ильича|トルストイ|イワン・イリイチの死
+childhood|ru|1852|Leo Tolstoy|Childhood|Лев Толстой|Детство|トルストイ|幼年時代
+hadji_murat|ru|1912|Leo Tolstoy|Hadji Murat|Лев Толстой|Хаджи-Мурат|トルストイ|ハジ・ムラート
+resurrection|ru|1899|Leo Tolstoy|Resurrection|Лев Толстой|Воскресение|トルストイ|復活
+kreutzer|ru|1889|Leo Tolstoy|The Kreutzer Sonata|Лев Толстой|Крейцерова соната|トルストイ|クロイツェル・ソナタ
+cossacks|ru|1863|Leo Tolstoy|The Cossacks|Лев Толстой|Казаки|トルストイ|コサック
+ivan_fool|ru|1886|Leo Tolstoy|Ivan the Fool|Лев Толстой|Сказка об Иване-дураке|トルストイ|イワンのばか
+sevastopol|ru|1855|Leo Tolstoy|Sevastopol Sketches|Лев Толстой|Севастопольские рассказы|トルストイ|セヴァストーポリ物語
+fathers_sons|ru|1862|Ivan Turgenev|Fathers and Sons|Иван Тургенев|Отцы и дети|ツルゲーネフ|父と子
+sportsman|ru|1852|Ivan Turgenev|A Sportsman's Sketches|Иван Тургенев|Записки охотника|ツルゲーネフ|猟人日記
+first_love|ru|1860|Ivan Turgenev|First Love|Иван Тургенев|Первая любовь|ツルゲーネフ|初恋
+mumu|ru|1854|Ivan Turgenev|Mumu|Иван Тургенев|Муму|ツルゲーネフ|ムムー
+nest_gentry|ru|1859|Ivan Turgenev|A Nest of the Gentry|Иван Тургенев|Дворянское гнездо|ツルゲーネフ|貴族の巣
+rudin|ru|1856|Ivan Turgenev|Rudin|Иван Тургенев|Рудин|ツルゲーネフ|ルージン
+asya|ru|1858|Ivan Turgenev|Asya|Иван Тургенев|Ася|ツルゲーネフ|アーシャ
+oblomov|ru|1859|Ivan Goncharov|Oblomov|Иван Гончаров|Обломов|ゴンチャロフ|オブローモフ
+frigate_pallada|ru|1858|Ivan Goncharov|The Frigate Pallada|Иван Гончаров|Фрегат «Паллада»|ゴンチャロフ|フリゲート艦パルラダ号
+thunderstorm|ru|1859|Alexander Ostrovsky|The Storm|Александр Островский|Гроза|オストロフスキー|雷雨
+golovlyov|ru|1880|Mikhail Saltykov-Shchedrin|The Golovlyov Family|Михаил Салтыков-Щедрин|Господа Головлёвы|サルティコフ＝シチェドリン|ゴロヴリョフ家の人々
+who_lives_well|ru|1877|Nikolai Nekrasov|Who Is Happy in Russia?|Николай Некрасов|Кому на Руси жить хорошо|ネクラーソフ|ロシアは誰に住みよいか
+enchanted_wanderer|ru|1873|Nikolai Leskov|The Enchanted Wanderer|Николай Лесков|Очарованный странник|レスコフ|魅せられた旅人
+lefty|ru|1881|Nikolai Leskov|The Tale of Cross-eyed Lefty|Николай Лесков|Левша|レスコフ|左利き
+lady_macbeth|ru|1865|Nikolai Leskov|Lady Macbeth of Mtsensk|Николай Лесков|Леди Макбет Мценского уезда|レスコフ|ムツェンスク郡のマクベス夫人
+seagull|ru|1896|Anton Chekhov|The Seagull|Антон Чехов|Чайка|チェーホフ|かもめ
+cherry_orchard|ru|1904|Anton Chekhov|The Cherry Orchard|Антон Чехов|Вишнёвый сад|チェーホフ|桜の園
+three_sisters|ru|1901|Anton Chekhov|Three Sisters|Антон Чехов|Три сестры|チェーホフ|三人姉妹
+uncle_vanya|ru|1898|Anton Chekhov|Uncle Vanya|Антон Чехов|Дядя Ваня|チェーホフ|ワーニャ伯父さん
+lady_dog|ru|1899|Anton Chekhov|The Lady with the Dog|Антон Чехов|Дама с собачкой|チェーホフ|犬を連れた奥さん
+ward6|ru|1892|Anton Chekhov|Ward No. 6|Антон Чехов|Палата № 6|チェーホフ|六号室
+steppe|ru|1888|Anton Chekhov|The Steppe|Антон Чехов|Степь|チェーホフ|曠野
+kashtanka|ru|1887|Anton Chekhov|Kashtanka|Антон Чехов|Каштанка|チェーホフ|カシタンカ
+sakhalin|ru|1895|Anton Chekhov|Sakhalin Island|Антон Чехов|Остров Сахалин|チェーホフ|サハリン島
+darling|ru|1899|Anton Chekhov|The Darling|Антон Чехов|Душечка|チェーホフ|可愛い女
+chekhov_stories|ru|1886|Anton Chekhov|Short Stories|Антон Чехов|Рассказы|チェーホフ|チェーホフ短篇集
+garnet_bracelet|ru|1911|Alexander Kuprin|The Garnet Bracelet|Александр Куприн|Гранатовый браслет|クプリーン|ざくろ石の腕輪
+olesya|ru|1898|Alexander Kuprin|Olesya|Александр Куприн|Олеся|クプリーン|オレーシャ
+dark_avenues|ru|1943|Ivan Bunin|Dark Avenues|Иван Бунин|Тёмные аллеи|ブーニン|暗い並木道
+antonov_apples|ru|1900|Ivan Bunin|Antonov Apples|Иван Бунин|Антоновские яблоки|ブーニン|アントーノフカ
+mother_gorky|ru|1906|Maxim Gorky|Mother|Максим Горький|Мать|ゴーリキー|母
+lower_depths|ru|1902|Maxim Gorky|The Lower Depths|Максим Горький|На дне|ゴーリキー|どん底
+old_izergil|ru|1895|Maxim Gorky|Old Izergil|Максим Горький|Старуха Изергиль|ゴーリキー|イゼルギリ婆さん
+twelve|ru|1918|Alexander Blok|The Twelve|Александр Блок|Двенадцать|ブローク|十二
+petersburg_bely|ru|1913|Andrei Bely|Petersburg|Андрей Белый|Петербург|アンドレイ・ベールイ|ペテルブルグ
+heart_dog|ru|1925|Mikhail Bulgakov|Heart of a Dog|Михаил Булгаков|Собачье сердце|ブルガーコフ|犬の心臓
+master_margarita|ru|1940|Mikhail Bulgakov|The Master and Margarita|Михаил Булгаков|Мастер и Маргарита|ブルガーコフ|巨匠とマルガリータ
+white_guard|ru|1925|Mikhail Bulgakov|The White Guard|Михаил Булгаков|Белая гвардия|ブルガーコフ|白衛軍
+twelve_chairs|ru|1928|Ilf and Petrov|The Twelve Chairs|Ильф и Петров|Двенадцать стульев|イリフとペトロフ|十二の椅子
+we_zamyatin|ru|1920|Yevgeny Zamyatin|We|Евгений Замятин|Мы|ザミャーチン|われら
+scarlet_sails|ru|1923|Alexander Grin|Scarlet Sails|Александр Грин|Алые паруса|アレクサンドル・グリーン|紅い帆
+running_waves|ru|1928|Alexander Grin|She Who Runs on the Waves|Александр Грин|Бегущая по волнам|アレクサンドル・グリーン|波の上を駆ける女
+yesenin|ru|1925|Sergei Yesenin|Poems|Сергей Есенин|Стихотворения|エセーニン|エセーニン詩集
+mayakovsky|ru|1925|Vladimir Mayakovsky|Poems|Владимир Маяковский|Стихотворения|マヤコフスキー|マヤコフスキー詩集
+aelita|ru|1923|Aleksey Tolstoy|Aelita|Алексей Толстой|Аэлита|アレクセイ・トルストイ|アエリータ
+garin|ru|1927|Aleksey Tolstoy|The Garin Death Ray|Алексей Толстой|Гиперболоид инженера Гарина|アレクセイ・トルストイ|技師ガーリンの双曲線体
+amphibian|ru|1928|Alexander Belyaev|The Amphibian Man|Александр Беляев|Человек-амфибия|ベリャーエフ|両棲人間
+dowell|ru|1925|Alexander Belyaev|Professor Dowell's Head|Александр Беляев|Голова профессора Доуэля|ベリャーエフ|ドウエル教授の首
+red_star|ru|1908|Alexander Bogdanov|Red Star|Александр Богданов|Красная звезда|ボグダーノフ|赤い星
+what_to_do|ru|1863|Nikolay Chernyshevsky|What Is to Be Done?|Николай Чернышевский|Что делать?|チェルヌイシェフスキー|何をなすべきか
+radishchev|ru|1790|Alexander Radishchev|A Journey from St Petersburg to Moscow|Александр Радищев|Путешествие из Петербурга в Москву|ラジーシチェフ|ペテルブルクからモスクワへの旅
+poor_liza|ru|1792|Nikolay Karamzin|Poor Liza|Николай Карамзин|Бедная Лиза|カラムジン|哀れなリーザ
+korolenko|ru|1886|Vladimir Korolenko|The Blind Musician|Владимир Короленко|Слепой музыкант|コロレンコ|盲音楽家
+garshin_flower|ru|1883|Vsevolod Garshin|The Red Flower|Всеволод Гаршин|Красный цветок|ガルシン|赤い花
+tsiolkovsky|ru|1920|Konstantin Tsiolkovsky|Beyond the Planet Earth|Константин Циолковский|Вне Земли|ツィオルコフスキー|地球の外で
+# --- England, Ireland, Scotland
+hamlet|en|1601|William Shakespeare|Hamlet|Уильям Шекспир|Гамлет|シェイクスピア|ハムレット
+macbeth|en|1606|William Shakespeare|Macbeth|Уильям Шекспир|Макбет|シェイクスピア|マクベス
+romeo_juliet|en|1597|William Shakespeare|Romeo and Juliet|Уильям Шекспир|Ромео и Джульетта|シェイクスピア|ロミオとジュリエット
+king_lear|en|1606|William Shakespeare|King Lear|Уильям Шекспир|Король Лир|シェイクスピア|リア王
+othello|en|1604|William Shakespeare|Othello|Уильям Шекспир|Отелло|シェイクスピア|オセロー
+tempest|en|1611|William Shakespeare|The Tempest|Уильям Шекспир|Буря|シェイクスピア|テンペスト
+midsummer|en|1596|William Shakespeare|A Midsummer Night's Dream|Уильям Шекспир|Сон в летнюю ночь|シェイクスピア|夏の夜の夢
+merchant_venice|en|1598|William Shakespeare|The Merchant of Venice|Уильям Шекспир|Венецианский купец|シェイクスピア|ヴェニスの商人
+sonnets|en|1609|William Shakespeare|Sonnets|Уильям Шекспир|Сонеты|シェイクスピア|ソネット集
+twelfth_night|en|1602|William Shakespeare|Twelfth Night|Уильям Шекспир|Двенадцатая ночь|シェイクスピア|十二夜
+paradise_lost|en|1667|John Milton|Paradise Lost|Джон Мильтон|Потерянный рай|ミルトン|失楽園
+pilgrims_progress|en|1678|John Bunyan|The Pilgrim's Progress|Джон Беньян|Путешествие пилигрима|バニヤン|天路歴程
+robinson|en|1719|Daniel Defoe|Robinson Crusoe|Даниель Дефо|Робинзон Крузо|デフォー|ロビンソン・クルーソー
+gulliver|en|1726|Jonathan Swift|Gulliver's Travels|Джонатан Свифт|Путешествия Гулливера|スウィフト|ガリヴァー旅行記
+tom_jones|en|1749|Henry Fielding|Tom Jones|Генри Филдинг|История Тома Джонса, найдёныша|フィールディング|トム・ジョーンズ
+tristram|en|1759|Laurence Sterne|Tristram Shandy|Лоренс Стерн|Жизнь и мнения Тристрама Шенди|スターン|トリストラム・シャンディ
+pride_prejudice|en|1813|Jane Austen|Pride and Prejudice|Джейн Остин|Гордость и предубеждение|オースティン|高慢と偏見
+emma|en|1815|Jane Austen|Emma|Джейн Остин|Эмма|オースティン|エマ
+sense_sensibility|en|1811|Jane Austen|Sense and Sensibility|Джейн Остин|Чувство и чувствительность|オースティン|分別と多感
+persuasion|en|1817|Jane Austen|Persuasion|Джейн Остин|Доводы рассудка|オースティン|説得
+frankenstein|en|1818|Mary Shelley|Frankenstein|Мэри Шелли|Франкенштейн|メアリー・シェリー|フランケンシュタイン
+ivanhoe|en|1819|Walter Scott|Ivanhoe|Вальтер Скотт|Айвенго|スコット|アイヴァンホー
+jane_eyre|en|1847|Charlotte Brontë|Jane Eyre|Шарлотта Бронте|Джейн Эйр|シャーロット・ブロンテ|ジェーン・エア
+wuthering|en|1847|Emily Brontë|Wuthering Heights|Эмили Бронте|Грозовой перевал|エミリー・ブロンテ|嵐が丘
+oliver_twist|en|1838|Charles Dickens|Oliver Twist|Чарльз Диккенс|Приключения Оливера Твиста|ディケンズ|オリヴァー・ツイスト
+great_expectations|en|1861|Charles Dickens|Great Expectations|Чарльз Диккенс|Большие надежды|ディケンズ|大いなる遺産
+christmas_carol|en|1843|Charles Dickens|A Christmas Carol|Чарльз Диккенс|Рождественская песнь в прозе|ディケンズ|クリスマス・キャロル
+two_cities|en|1859|Charles Dickens|A Tale of Two Cities|Чарльз Диккенс|Повесть о двух городах|ディケンズ|二都物語
+david_copperfield|en|1850|Charles Dickens|David Copperfield|Чарльз Диккенс|Дэвид Копперфилд|ディケンズ|デイヴィッド・コパフィールド
+pickwick|en|1837|Charles Dickens|The Pickwick Papers|Чарльз Диккенс|Посмертные записки Пиквикского клуба|ディケンズ|ピクウィック・クラブ
+vanity_fair|en|1848|William Makepeace Thackeray|Vanity Fair|Уильям Теккерей|Ярмарка тщеславия|サッカレー|虚栄の市
+middlemarch|en|1872|George Eliot|Middlemarch|Джордж Элиот|Мидлмарч|ジョージ・エリオット|ミドルマーチ
+alice|en|1865|Lewis Carroll|Alice's Adventures in Wonderland|Льюис Кэрролл|Алиса в Стране чудес|ルイス・キャロル|不思議の国のアリス
+looking_glass|en|1871|Lewis Carroll|Through the Looking-Glass|Льюис Кэрролл|Алиса в Зазеркалье|ルイス・キャロル|鏡の国のアリス
+treasure_island|en|1883|Robert Louis Stevenson|Treasure Island|Роберт Льюис Стивенсон|Остров сокровищ|スティーヴンソン|宝島
+jekyll_hyde|en|1886|Robert Louis Stevenson|Strange Case of Dr Jekyll and Mr Hyde|Роберт Льюис Стивенсон|Странная история доктора Джекила и мистера Хайда|スティーヴンソン|ジキル博士とハイド氏
+sherlock|en|1892|Arthur Conan Doyle|The Adventures of Sherlock Holmes|Артур Конан Дойл|Приключения Шерлока Холмса|コナン・ドイル|シャーロック・ホームズの冒険
+baskervilles|en|1902|Arthur Conan Doyle|The Hound of the Baskervilles|Артур Конан Дойл|Собака Баскервилей|コナン・ドイル|バスカヴィル家の犬
+study_scarlet|en|1887|Arthur Conan Doyle|A Study in Scarlet|Артур Конан Дойл|Этюд в багровых тонах|コナン・ドイル|緋色の研究
+lost_world|en|1912|Arthur Conan Doyle|The Lost World|Артур Конан Дойл|Затерянный мир|コナン・ドイル|失われた世界
+dorian_gray|en|1890|Oscar Wilde|The Picture of Dorian Gray|Оскар Уайльд|Портрет Дориана Грея|オスカー・ワイルド|ドリアン・グレイの肖像
+earnest|en|1895|Oscar Wilde|The Importance of Being Earnest|Оскар Уайльд|Как важно быть серьёзным|オスカー・ワイルド|真面目が肝心
+happy_prince|en|1888|Oscar Wilde|The Happy Prince and Other Tales|Оскар Уайльд|Счастливый принц|オスカー・ワイルド|幸福な王子
+dracula|en|1897|Bram Stoker|Dracula|Брэм Стокер|Дракула|ブラム・ストーカー|吸血鬼ドラキュラ
+time_machine|en|1895|H. G. Wells|The Time Machine|Герберт Уэллс|Машина времени|H・G・ウェルズ|タイム・マシン
+war_worlds|en|1898|H. G. Wells|The War of the Worlds|Герберт Уэллс|Война миров|H・G・ウェルズ|宇宙戦争
+invisible_man|en|1897|H. G. Wells|The Invisible Man|Герберт Уэллс|Человек-невидимка|H・G・ウェルズ|透明人間
+moreau|en|1896|H. G. Wells|The Island of Doctor Moreau|Герберт Уэллс|Остров доктора Моро|H・G・ウェルズ|モロー博士の島
+jungle_book|en|1894|Rudyard Kipling|The Jungle Book|Редьярд Киплинг|Книга джунглей|キプリング|ジャングル・ブック
+kim|en|1901|Rudyard Kipling|Kim|Редьярд Киплинг|Ким|キプリング|少年キム
+just_so|en|1902|Rudyard Kipling|Just So Stories|Редьярд Киплинг|Сказки просто так|キプリング|なぜなぜ物語
+heart_darkness|en|1899|Joseph Conrad|Heart of Darkness|Джозеф Конрад|Сердце тьмы|コンラッド|闇の奥
+lord_jim|en|1900|Joseph Conrad|Lord Jim|Джозеф Конрад|Лорд Джим|コンラッド|ロード・ジム
+tess|en|1891|Thomas Hardy|Tess of the d'Urbervilles|Томас Гарди|Тэсс из рода д’Эрбервиллей|トマス・ハーディ|テス
+peter_pan|en|1911|J. M. Barrie|Peter Pan|Джеймс Барри|Питер Пэн|ジェームス・バリー|ピーター・パン
+wind_willows|en|1908|Kenneth Grahame|The Wind in the Willows|Кеннет Грэм|Ветер в ивах|ケネス・グレアム|たのしい川べ
+secret_garden|en|1911|Frances Hodgson Burnett|The Secret Garden|Фрэнсис Бёрнетт|Таинственный сад|バーネット|秘密の花園
+little_princess|en|1905|Frances Hodgson Burnett|A Little Princess|Фрэнсис Бёрнетт|Маленькая принцесса|バーネット|小公女
+peter_rabbit|en|1902|Beatrix Potter|The Tale of Peter Rabbit|Беатрис Поттер|Сказка о кролике Питере|ビアトリクス・ポター|ピーターラビットのおはなし
+ulysses|en|1922|James Joyce|Ulysses|Джеймс Джойс|Улисс|ジェイムズ・ジョイス|ユリシーズ
+dubliners|en|1914|James Joyce|Dubliners|Джеймс Джойс|Дублинцы|ジェイムズ・ジョイス|ダブリン市民
+portrait_artist|en|1916|James Joyce|A Portrait of the Artist as a Young Man|Джеймс Джойс|Портрет художника в юности|ジェイムズ・ジョイス|若い芸術家の肖像
+mrs_dalloway|en|1925|Virginia Woolf|Mrs Dalloway|Вирджиния Вулф|Миссис Дэллоуэй|ヴァージニア・ウルフ|ダロウェイ夫人
+lighthouse|en|1927|Virginia Woolf|To the Lighthouse|Вирджиния Вулф|На маяк|ヴァージニア・ウルフ|灯台へ
+sons_lovers|en|1913|D. H. Lawrence|Sons and Lovers|Дэвид Герберт Лоуренс|Сыновья и любовники|D・H・ロレンス|息子と恋人
+room_view|en|1908|E. M. Forster|A Room with a View|Эдвард Морган Форстер|Комната с видом|E・M・フォースター|眺めのいい部屋
+three_men_boat|en|1889|Jerome K. Jerome|Three Men in a Boat|Джером К. Джером|Трое в лодке, не считая собаки|ジェローム・K・ジェローム|ボートの三人男
+blake_songs|en|1794|William Blake|Songs of Innocence and of Experience|Уильям Блейк|Песни невинности и опыта|ウィリアム・ブレイク|無垢と経験の歌
+keats|en|1820|John Keats|Poems|Джон Китс|Стихотворения|ジョン・キーツ|キーツ詩集
+byron_harold|en|1818|Lord Byron|Childe Harold's Pilgrimage|Джордж Гордон Байрон|Паломничество Чайльд-Гарольда|バイロン|チャイルド・ハロルドの巡礼
+burns|en|1786|Robert Burns|Poems|Роберт Бёрнс|Стихотворения|ロバート・バーンズ|バーンズ詩集
+yeats|en|1928|W. B. Yeats|Poems|Уильям Батлер Йейтс|Стихотворения|イェイツ|イェイツ詩集
+origin_species|en|1859|Charles Darwin|On the Origin of Species|Чарльз Дарвин|Происхождение видов|ダーウィン|種の起原
+beagle|en|1839|Charles Darwin|The Voyage of the Beagle|Чарльз Дарвин|Путешествие натуралиста вокруг света на корабле «Бигль»|ダーウィン|ビーグル号航海記
+wealth_nations|en|1776|Adam Smith|The Wealth of Nations|Адам Смит|Богатство народов|アダム・スミス|国富論
+leviathan|en|1651|Thomas Hobbes|Leviathan|Томас Гоббс|Левиафан|ホッブズ|リヴァイアサン
+utopia|la|1516|Thomas More|Utopia|Томас Мор|Утопия|トマス・モア|ユートピア
+on_liberty|en|1859|John Stuart Mill|On Liberty|Джон Стюарт Милль|О свободе|J・S・ミル|自由論
+faraday_candle|en|1861|Michael Faraday|The Chemical History of a Candle|Майкл Фарадей|История свечи|ファラデー|ロウソクの科学
+# --- The Americas
+moby_dick|en|1851|Herman Melville|Moby-Dick|Герман Мелвилл|Моби Дик, или Белый кит|メルヴィル|白鯨
+bartleby|en|1853|Herman Melville|Bartleby, the Scrivener|Герман Мелвилл|Писец Бартлби|メルヴィル|書記バートルビー
+scarlet_letter|en|1850|Nathaniel Hawthorne|The Scarlet Letter|Натаниэль Готорн|Алая буква|ホーソーン|緋文字
+poe_tales|en|1845|Edgar Allan Poe|Tales|Эдгар Аллан По|Рассказы|エドガー・アラン・ポー|ポー短篇集
+raven|en|1845|Edgar Allan Poe|The Raven and Other Poems|Эдгар Аллан По|Ворон|エドガー・アラン・ポー|大鴉
+walden|en|1854|Henry David Thoreau|Walden|Генри Дэвид Торо|Уолден, или Жизнь в лесу|ソロー|森の生活
+leaves_grass|en|1855|Walt Whitman|Leaves of Grass|Уолт Уитмен|Листья травы|ホイットマン|草の葉
+dickinson|en|1890|Emily Dickinson|Poems|Эмили Дикинсон|Стихотворения|エミリー・ディキンソン|ディキンソン詩集
+tom_sawyer|en|1876|Mark Twain|The Adventures of Tom Sawyer|Марк Твен|Приключения Тома Сойера|マーク・トウェイン|トム・ソーヤーの冒険
+huck_finn|en|1884|Mark Twain|Adventures of Huckleberry Finn|Марк Твен|Приключения Гекльберри Финна|マーク・トウェイン|ハックルベリー・フィンの冒険
+prince_pauper|en|1881|Mark Twain|The Prince and the Pauper|Марк Твен|Принц и нищий|マーク・トウェイン|王子と乞食
+little_women|en|1868|Louisa May Alcott|Little Women|Луиза Мэй Олкотт|Маленькие женщины|オルコット|若草物語
+uncle_tom|en|1852|Harriet Beecher Stowe|Uncle Tom's Cabin|Гарриет Бичер-Стоу|Хижина дяди Тома|ストウ|アンクル・トムの小屋
+sleepy_hollow|en|1820|Washington Irving|The Legend of Sleepy Hollow|Вашингтон Ирвинг|Легенда о Сонной Лощине|ワシントン・アーヴィング|スリーピー・ホローの伝説
+call_wild|en|1903|Jack London|The Call of the Wild|Джек Лондон|Зов предков|ジャック・ロンドン|野性の呼び声
+white_fang|en|1906|Jack London|White Fang|Джек Лондон|Белый Клык|ジャック・ロンドン|白い牙
+martin_eden|en|1909|Jack London|Martin Eden|Джек Лондон|Мартин Иден|ジャック・ロンドン|マーティン・イーデン
+o_henry|en|1906|O. Henry|The Four Million|О. Генри|Четыре миллиона|O・ヘンリー|四百万
+oz|en|1900|L. Frank Baum|The Wonderful Wizard of Oz|Лаймен Фрэнк Баум|Удивительный волшебник из страны Оз|ライマン・フランク・ボーム|オズの魔法使い
+anne_green|en|1908|L. M. Montgomery|Anne of Green Gables|Люси Мод Монтгомери|Энн из Зелёных Мезонинов|モンゴメリ|赤毛のアン
+daddy_long_legs|en|1912|Jean Webster|Daddy-Long-Legs|Джин Уэбстер|Длинноногий дядюшка|ジーン・ウェブスター|あしながおじさん
+gatsby|en|1925|F. Scott Fitzgerald|The Great Gatsby|Фрэнсис Скотт Фицджеральд|Великий Гэтсби|フィッツジェラルド|グレート・ギャツビー
+awakening|en|1899|Kate Chopin|The Awakening|Кейт Шопен|Пробуждение|ケイト・ショパン|目覚め
+age_innocence|en|1920|Edith Wharton|The Age of Innocence|Эдит Уортон|Эпоха невинности|イーディス・ウォートン|エイジ・オブ・イノセンス
+red_badge|en|1895|Stephen Crane|The Red Badge of Courage|Стивен Крейн|Алый знак доблести|スティーヴン・クレイン|赤い武功章
+lovecraft|en|1928|H. P. Lovecraft|The Call of Cthulhu|Говард Лавкрафт|Зов Ктулху|ラヴクラフト|クトゥルフの呼び声
+princess_mars|en|1912|Edgar Rice Burroughs|A Princess of Mars|Эдгар Райс Берроуз|Принцесса Марса|エドガー・ライス・バローズ|火星のプリンセス
+franklin|en|1791|Benjamin Franklin|The Autobiography|Бенджамин Франклин|Автобиография|フランクリン|フランクリン自伝
+don_quixote|es|1605|Miguel de Cervantes|Don Quixote|Мигель де Сервантес|Дон Кихот|セルバンテス|ドン・キホーテ
+lazarillo|es|1554|Anonymous|Lazarillo de Tormes|Неизвестный автор|Жизнь Ласарильо с Тормеса|作者不詳|ラサリーリョ・デ・トルメスの生涯
+life_dream|es|1635|Pedro Calderón de la Barca|Life Is a Dream|Педро Кальдерон|Жизнь есть сон|カルデロン|人生は夢
+dom_casmurro|pt|1899|Machado de Assis|Dom Casmurro|Машаду де Ассис|Дон Касмурро|マシャード・デ・アシス|ドン・カズムーロ
+# --- France, Belgium
+gargantua|fr|1532|François Rabelais|Gargantua and Pantagruel|Франсуа Рабле|Гаргантюа и Пантагрюэль|ラブレー|ガルガンチュワとパンタグリュエル
+montaigne|fr|1580|Michel de Montaigne|Essays|Мишель Монтень|Опыты|モンテーニュ|エセー
+tartuffe|fr|1664|Molière|Tartuffe|Мольер|Тартюф|モリエール|タルチュフ
+misanthrope|fr|1666|Molière|The Misanthrope|Мольер|Мизантроп|モリエール|人間嫌い
+pensees|fr|1670|Blaise Pascal|Pensées|Блез Паскаль|Мысли|パスカル|パンセ
+la_fontaine|fr|1668|Jean de La Fontaine|Fables|Жан де Лафонтен|Басни|ラ・フォンテーヌ|寓話
+perrault|fr|1697|Charles Perrault|Fairy Tales|Шарль Перро|Сказки матушки Гусыни|ペロー|ペロー童話集
+candide|fr|1759|Voltaire|Candide|Вольтер|Кандид, или Оптимизм|ヴォルテール|カンディード
+discourse_method|fr|1637|René Descartes|Discourse on the Method|Рене Декарт|Рассуждение о методе|デカルト|方法序説
+social_contract|fr|1762|Jean-Jacques Rousseau|The Social Contract|Жан-Жак Руссо|Об общественном договоре|ルソー|社会契約論
+confessions_rousseau|fr|1782|Jean-Jacques Rousseau|Confessions|Жан-Жак Руссо|Исповедь|ルソー|告白
+dangerous_liaisons|fr|1782|Pierre Choderlos de Laclos|Dangerous Liaisons|Шодерло де Лакло|Опасные связи|ラクロ|危険な関係
+red_black|fr|1830|Stendhal|The Red and the Black|Стендаль|Красное и чёрное|スタンダール|赤と黒
+pere_goriot|fr|1835|Honoré de Balzac|Père Goriot|Оноре де Бальзак|Отец Горио|バルザック|ゴリオ爺さん
+eugenie_grandet|fr|1833|Honoré de Balzac|Eugénie Grandet|Оноре де Бальзак|Евгения Гранде|バルザック|ウジェニー・グランデ
+les_miserables|fr|1862|Victor Hugo|Les Misérables|Виктор Гюго|Отверженные|ヴィクトル・ユゴー|レ・ミゼラブル
+notre_dame|fr|1831|Victor Hugo|The Hunchback of Notre-Dame|Виктор Гюго|Собор Парижской Богоматери|ヴィクトル・ユゴー|ノートル＝ダム・ド・パリ
+three_musketeers|fr|1844|Alexandre Dumas|The Three Musketeers|Александр Дюма|Три мушкетёра|アレクサンドル・デュマ|三銃士
+monte_cristo|fr|1844|Alexandre Dumas|The Count of Monte Cristo|Александр Дюма|Граф Монте-Кристо|アレクサンドル・デュマ|モンテ・クリスト伯
+bovary|fr|1857|Gustave Flaubert|Madame Bovary|Гюстав Флобер|Госпожа Бовари|フローベール|ボヴァリー夫人
+fleurs_mal|fr|1857|Charles Baudelaire|The Flowers of Evil|Шарль Бодлер|Цветы зла|ボードレール|悪の華
+twenty_thousand|fr|1870|Jules Verne|Twenty Thousand Leagues Under the Seas|Жюль Верн|Двадцать тысяч льё под водой|ジュール・ヴェルヌ|海底二万里
+eighty_days|fr|1873|Jules Verne|Around the World in Eighty Days|Жюль Верн|Вокруг света за восемьдесят дней|ジュール・ヴェルヌ|八十日間世界一周
+mysterious_island|fr|1875|Jules Verne|The Mysterious Island|Жюль Верн|Таинственный остров|ジュール・ヴェルヌ|神秘の島
+earth_moon|fr|1865|Jules Verne|From the Earth to the Moon|Жюль Верн|С Земли на Луну|ジュール・ヴェルヌ|月世界旅行
+center_earth|fr|1864|Jules Verne|Journey to the Center of the Earth|Жюль Верн|Путешествие к центру Земли|ジュール・ヴェルヌ|地底旅行
+captain_grant|fr|1868|Jules Verne|In Search of the Castaways|Жюль Верн|Дети капитана Гранта|ジュール・ヴェルヌ|グラント船長の子供たち
+germinal|fr|1885|Émile Zola|Germinal|Эмиль Золя|Жерминаль|エミール・ゾラ|ジェルミナール
+maupassant|fr|1880|Guy de Maupassant|Short Stories|Ги де Мопассан|Новеллы|モーパッサン|モーパッサン短篇集
+bel_ami|fr|1885|Guy de Maupassant|Bel-Ami|Ги де Мопассан|Милый друг|モーパッサン|ベラミ
+a_life|fr|1883|Guy de Maupassant|A Woman's Life|Ги де Мопассан|Жизнь|モーパッサン|女の一生
+swann|fr|1913|Marcel Proust|Swann's Way|Марсель Пруст|По направлению к Свану|プルースト|スワン家のほうへ
+cyrano|fr|1897|Edmond Rostand|Cyrano de Bergerac|Эдмон Ростан|Сирано де Бержерак|ロスタン|シラノ・ド・ベルジュラック
+rimbaud|fr|1873|Arthur Rimbaud|A Season in Hell|Артюр Рембо|Одно лето в аду|ランボー|地獄の季節
+verlaine|fr|1874|Paul Verlaine|Poems|Поль Верлен|Стихотворения|ヴェルレーヌ|ヴェルレーヌ詩集
+sans_famille|fr|1878|Hector Malot|Nobody's Boy|Гектор Мало|Без семьи|エクトール・マロ|家なき子
+lupin|fr|1907|Maurice Leblanc|Arsène Lupin, Gentleman Burglar|Морис Леблан|Арсен Люпен, джентльмен-грабитель|モーリス・ルブラン|怪盗紳士ルパン
+phantom_opera|fr|1910|Gaston Leroux|The Phantom of the Opera|Гастон Леру|Призрак Оперы|ガストン・ルルー|オペラ座の怪人
+blue_bird|fr|1908|Maurice Maeterlinck|The Blue Bird|Морис Метерлинк|Синяя птица|メーテルリンク|青い鳥
+jean_christophe|fr|1912|Romain Rolland|Jean-Christophe|Ромен Роллан|Жан-Кристоф|ロマン・ロラン|ジャン・クリストフ
+carrots|fr|1894|Jules Renard|Poil de Carotte|Жюль Ренар|Рыжик|ジュール・ルナール|にんじん
+# --- Germany, Austria, Switzerland
+faust|de|1808|Johann Wolfgang von Goethe|Faust|Иоганн Вольфганг Гёте|Фауст|ゲーテ|ファウスト
+werther|de|1774|Johann Wolfgang von Goethe|The Sorrows of Young Werther|Иоганн Вольфганг Гёте|Страдания юного Вертера|ゲーテ|若きウェルテルの悩み
+schiller_robbers|de|1781|Friedrich Schiller|The Robbers|Фридрих Шиллер|Разбойники|シラー|群盗
+wilhelm_tell|de|1804|Friedrich Schiller|William Tell|Фридрих Шиллер|Вильгельм Телль|シラー|ヴィルヘルム・テル
+grimm|de|1812|Brothers Grimm|Grimms' Fairy Tales|Братья Гримм|Сказки|グリム兄弟|グリム童話集
+hoffmann_nutcracker|de|1816|E. T. A. Hoffmann|The Nutcracker and the Mouse King|Эрнст Теодор Амадей Гофман|Щелкунчик и Мышиный король|E・T・A・ホフマン|くるみ割り人形とねずみの王様
+sandman|de|1816|E. T. A. Hoffmann|The Sandman|Эрнст Теодор Амадей Гофман|Песочный человек|E・T・A・ホフマン|砂男
+heine|de|1827|Heinrich Heine|Book of Songs|Генрих Гейне|Книга песен|ハイネ|歌の本
+munchausen|de|1785|Rudolf Erich Raspe|The Surprising Adventures of Baron Munchausen|Рудольф Эрих Распе|Приключения барона Мюнхгаузена|ラスペ|ほらふき男爵の冒険
+zarathustra|de|1885|Friedrich Nietzsche|Thus Spoke Zarathustra|Фридрих Ницше|Так говорил Заратустра|ニーチェ|ツァラトゥストラはこう言った
+kant_peace|de|1795|Immanuel Kant|Perpetual Peace|Иммануил Кант|К вечному миру|カント|永遠平和のために
+communist_manifesto|de|1848|Karl Marx and Friedrich Engels|The Communist Manifesto|Карл Маркс и Фридрих Энгельс|Манифест Коммунистической партии|マルクス、エンゲルス|共産党宣言
+metamorphosis|de|1915|Franz Kafka|The Metamorphosis|Франц Кафка|Превращение|カフカ|変身
+trial|de|1925|Franz Kafka|The Trial|Франц Кафка|Процесс|カフカ|審判
+castle|de|1926|Franz Kafka|The Castle|Франц Кафка|Замок|カフカ|城
+buddenbrooks|de|1901|Thomas Mann|Buddenbrooks|Томас Манн|Будденброки|トーマス・マン|ブッデンブローク家の人びと
+death_venice|de|1912|Thomas Mann|Death in Venice|Томас Манн|Смерть в Венеции|トーマス・マン|ヴェニスに死す
+tonio_kroger|de|1903|Thomas Mann|Tonio Kröger|Томас Манн|Тонио Крёгер|トーマス・マン|トニオ・クレーガー
+siddhartha|de|1922|Hermann Hesse|Siddhartha|Герман Гессе|Сиддхартха|ヘッセ|シッダールタ
+rilke|de|1903|Rainer Maria Rilke|Letters to a Young Poet|Райнер Мария Рильке|Письма к молодому поэту|リルケ|若き詩人への手紙
+malte|de|1910|Rainer Maria Rilke|The Notebooks of Malte Laurids Brigge|Райнер Мария Рильке|Записки Мальте Лауридса Бригге|リルケ|マルテの手記
+heidi|de|1881|Johanna Spyri|Heidi|Иоганна Спири|Хайди|ヨハンナ・シュピリ|ハイジ
+zweig_chess|de|1942|Stefan Zweig|Chess Story|Стефан Цвейг|Шахматная новелла|シュテファン・ツヴァイク|チェスの話
+schnitzler|de|1926|Arthur Schnitzler|Dream Story|Артур Шницлер|Новелла о снах|シュニッツラー|夢小説
+max_moritz|de|1865|Wilhelm Busch|Max and Moritz|Вильгельм Буш|Макс и Мориц|ヴィルヘルム・ブッシュ|マックスとモーリッツ
+immensee|de|1849|Theodor Storm|Immensee|Теодор Шторм|Иммензее|シュトルム|みずうみ
+# --- Elsewhere in Europe
+andersen|da|1835|Hans Christian Andersen|Fairy Tales|Ганс Христиан Андерсен|Сказки|アンデルセン|アンデルセン童話集
+ibsen_doll|no|1879|Henrik Ibsen|A Doll's House|Генрик Ибсен|Кукольный дом|イプセン|人形の家
+peer_gynt|no|1867|Henrik Ibsen|Peer Gynt|Генрик Ибсен|Пер Гюнт|イプセン|ペール・ギュント
+hunger|no|1890|Knut Hamsun|Hunger|Кнут Гамсун|Голод|ハムスン|飢え
+nils|sv|1906|Selma Lagerlöf|The Wonderful Adventures of Nils|Сельма Лагерлёф|Чудесное путешествие Нильса с дикими гусями|ラーゲルレーヴ|ニルスのふしぎな旅
+strindberg|sv|1888|August Strindberg|Miss Julie|Август Стриндберг|Фрёкен Жюли|ストリンドベリ|令嬢ジュリー
+kierkegaard|da|1843|Søren Kierkegaard|Fear and Trembling|Сёрен Кьеркегор|Страх и трепет|キルケゴール|おそれとおののき
+pinocchio|it|1883|Carlo Collodi|The Adventures of Pinocchio|Карло Коллоди|Приключения Пиноккио|コッローディ|ピノッキオの冒険
+heart_amicis|it|1886|Edmondo De Amicis|Heart|Эдмондо Де Амичис|Сердце|デ・アミーチス|クオレ
+prince_mach|it|1532|Niccolò Machiavelli|The Prince|Никколо Макиавелли|Государь|マキャヴェッリ|君主論
+petrarch|it|1374|Petrarch|Canzoniere|Франческо Петрарка|Книга песен|ペトラルカ|カンツォニエーレ
+betrothed|it|1827|Alessandro Manzoni|The Betrothed|Алессандро Мандзони|Обручённые|マンゾーニ|いいなづけ
+pirandello|it|1921|Luigi Pirandello|Six Characters in Search of an Author|Луиджи Пиранделло|Шесть персонажей в поисках автора|ピランデッロ|作者を探す六人の登場人物
+quo_vadis|pl|1896|Henryk Sienkiewicz|Quo Vadis|Генрик Сенкевич|Камо грядеши|シェンキェヴィチ|クオ・ワディス
+svejk|cs|1923|Jaroslav Hašek|The Good Soldier Švejk|Ярослав Гашек|Похождения бравого солдата Швейка|ハシェク|兵士シュヴェイクの冒険
+rur|cs|1920|Karel Čapek|R.U.R.|Карел Чапек|R.U.R.|カレル・チャペック|ロボット
+newts|cs|1936|Karel Čapek|War with the Newts|Карел Чапек|Война с саламандрами|カレル・チャペック|山椒魚戦争
+little_prince|fr|1943|Antoine de Saint-Exupéry|The Little Prince|Антуан де Сент-Экзюпери|Маленький принц|サン＝テグジュペリ|星の王子さま
+night_flight|fr|1931|Antoine de Saint-Exupéry|Night Flight|Антуан де Сент-Экзюпери|Ночной полёт|サン＝テグジュペリ|夜間飛行
+lu_xun|zh|1921|Lu Xun|The True Story of Ah Q|Лу Синь|Подлинная история А-кью|魯迅|阿Q正伝
+madman_diary|zh|1918|Lu Xun|A Madman's Diary|Лу Синь|Записки сумасшедшего|魯迅|狂人日記
+prophet|en|1923|Kahlil Gibran|The Prophet|Джебран Халиль Джебран|Пророк|カリール・ジブラーン|預言者

@@ -1141,7 +1141,7 @@ void ULyudCityThings::Run(int32 Thing, bool bFromConsole, bool bFromSeat)
 	}
 	// a counter with topics and its staff on shift: the chooser instead of the shop or the page (the act's line on top, "Buy..."
 	// first when it sells); not for games, shows, reading, sitting or lying, or a stretch of time behind a fade
-	if (!TalkOffer.empty() && O.Game < 0 && O.Screen.empty() && O.Text < 0 && O.Pose != "sit" && O.Pose != "lie" && !(O.Minutes > 0 && O.bFade))
+	if (!TalkOffer.empty() && O.Game < 0 && O.Screen.empty() && O.Open.empty() && O.Text < 0 && O.Pose != "sit" && O.Pose != "lie" && !(O.Minutes > 0 && O.bFade))
 	{
 		TArray<int32> Topics;
 		Topics.Reserve((int32)TalkOffer.size());
@@ -1175,6 +1175,12 @@ void ULyudCityThings::Run(int32 Thing, bool bFromConsole, bool bFromSeat)
 	if (!O.Shop.empty())
 	{
 		OpenShopOf(LyudCityThingsImpl::Str(O.Shop), LyudCityThingsImpl::Str(O.Title));
+		return;
+	}
+	if (!O.Open.empty())
+	{
+		// another system's screen (the library's classics: ULyudBookScreen listens); the act's line stays unsaid
+		OnOpen.Broadcast(FName(*LyudCityThingsImpl::Str(O.Open)), Thing);
 		return;
 	}
 	const FText Title = O.Title.empty() ? FText::GetEmpty() : LyudText::Get(LyudCityThingsImpl::Str(O.Title));

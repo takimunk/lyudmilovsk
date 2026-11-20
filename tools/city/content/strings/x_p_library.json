@@ -1159,5 +1159,10 @@
   "ru": "Туман. В трубе белое молоко, и только иногда из него выплывает чья-то крыша и тонет обратно.",
   "en": "Fog. The eyepiece is full of white milk, and only now and then a roof floats up out of it and sinks again.",
   "ja": "霧。望遠鏡の中は白い牛乳のようで、ときどき誰かの屋根が浮かんでは、また沈んでいく。"
+ },
+ "city.xpl.classics.prompt": {
+  "ru": "E — абонемент: классика",
+  "en": "E — lending desk: the classics",
+  "ja": "E：貸出カウンター（古典文学）"
  }
 }
