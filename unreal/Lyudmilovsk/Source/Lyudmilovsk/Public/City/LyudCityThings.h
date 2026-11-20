@@ -19,7 +19,18 @@ class SLyudCityGame;
 class SLyudCityPage;
 class USceneComponent;
 struct FLyudCityLoad;
-namespace LyudCity { class FModel; struct FGameState; struct FPageTurn; }
+namespace LyudCity { class FModel; class FCups; struct FGameState; struct FPageTurn; }
+
+/** A club tournament as the town paper prints it (ULyudCityThings::GetCupNews): its name, venue and first round (keys, minutes
+ *  from midnight) and, once it is over, the champion and the runner-up (name keys; empty: the hero) and how far the hero got
+ *  (-1 not in it, 0..2 out in that round, 3 champion). Plain data, not for Blueprints. */
+struct FLyudCupNews
+{
+	FString Title, Venue, Winner, RunnerUp;
+	int32 StartMinute = 0;
+	int32 HeroReached = -1;
+	bool bOver = false;
+};
 
 /** A thing of the town's buildings as the townsfolk see it (ULyudCityThings::FindFreeThing, GetThingsOfPlot). */
 USTRUCT(BlueprintType)
@@ -240,6 +251,18 @@ public:
 	/** The things of a plot of Kind (None: all), appended to Out. A table built at load: no pass over the town. */
 	void GetThingsOfPlot(const FString& PlotId, FName Kind, TArray<FCityThingRef>& Out) const;
 
+	// --- the clubs' weekly tournaments (docs/city_interiors.md "Tournaments", Private/City/CityCupsModel.h)
+
+	/** The tournaments played on a day (since the game began): over ones with their results, else today's to come. */
+	void GetCupNews(int32 Since, TArray<FLyudCupNews>& Out) const;
+	/** The bracket boards' pages ("gen": "cup:<id>") in the current language; false when there is no such cup. */
+	bool CupPages(const FString& Gen, TArray<FText>& Out) const;
+	/** The hero read a bracket board to its end: his name on the sheet (a note when it is new). */
+	void CupSheetRead(const FString& Gen);
+	/** Developer mode and the console: the hero signs up for every tournament's next day; each bracket to the log. */
+	void CupSignAll();
+	FString CupReport() const;
+
 protected:
 	virtual bool DoesSupportWorldType(const EWorldType::Type WorldType) const override
 	{
@@ -377,6 +400,13 @@ private:
 	FString PlotName(const FString& Plot) const;
 
 	TPimplPtr<LyudCity::FModel> Model;
+	/** The tournaments (City/tournaments.json, read once the model is in) and the cup match being played (Cup < 0: a casual
+	 *  game). */
+	TPimplPtr<LyudCity::FCups> Cups;
+	void LoadCups();
+	int32 CupMatchCup = -1;
+	int32 CupMatchRound = -1;
+	int64 CupMatchDay = -1;
 	/** The worker's parse while it is under way. */
 	TSharedPtr<FLyudCityLoad, ESPMode::ThreadSafe> Loading;
 

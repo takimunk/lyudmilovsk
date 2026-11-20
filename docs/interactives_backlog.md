@@ -225,7 +225,10 @@ hall during a session.
 
 ## 14. Club tournaments
 
-`[ ]` **Brief (Opus 5.5):** The mini-games exist (chess, checkers, dominoes, billiards, table tennis, darts: `games.json`,
+`[~] tournaments 2026-11-20` (docs/city_interiors.md "Tournaments": three weekly cups, brackets, sign-up, the hero's matches,
+the cup, the paper's results; citysim. Open: the regulars seen sitting at the tables, life-sim side, and the Mac shots.)
+
+**Brief (Opus 5.5):** The mini-games exist (chess, checkers, dominoes, billiards, table tennis, darts: `games.json`,
 ten regulars with styles) but the regulars are not seen at the tables and there is no ladder (backlog P4). Do: the
 regulars sit at their tables at their hours (life-sim spots on the game things, `FindFreeThing`/`ClaimThing`), play each
 other (pieces move, a clock ticks, a short cheer), and the hero can watch or challenge; a weekly tournament per club

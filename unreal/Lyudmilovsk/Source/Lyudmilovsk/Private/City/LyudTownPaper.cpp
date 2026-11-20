@@ -1,5 +1,7 @@
 #include "City/LyudTownPaper.h"
 
+#include "City/LyudCityThings.h"
+
 #include "TownPaperModel.h"
 #include "Birds/BirdBook.h"
 #include "Dev/LyudDev.h"
@@ -332,6 +334,32 @@ void ULyudTownPaper::BuildFacts(int32 Since, LyudPaper::FFacts& Out) const
 					Best = A;
 					Out.BiteFish = LyudTownPaperImpl::Std(F);
 				}
+			}
+		}
+	}
+
+	// --- the clubs' tournaments: yesterday's results, today's to come (ULyudCityThings, CityCupsModel.h)
+	if (const ULyudCityThings* Things = ULyudCityThings::Get(World))
+	{
+		for (int32 Back = 1; Back >= 0; --Back)
+		{
+			TArray<FLyudCupNews> News;
+			Things->GetCupNews(Since - Back, News);
+			for (const FLyudCupNews& N : News)
+			{
+				if (Back == 1 && !N.bOver)
+				{
+					continue;
+				}
+				LyudPaper::FCup C;
+				C.Title = LyudTownPaperImpl::Std(N.Title);
+				C.Venue = LyudTownPaperImpl::Std(N.Venue);
+				C.Winner = LyudTownPaperImpl::Std(N.Winner);
+				C.RunnerUp = LyudTownPaperImpl::Std(N.RunnerUp);
+				C.StartMinute = N.StartMinute;
+				C.HeroReached = N.HeroReached;
+				C.bOver = Back == 1;
+				(Back == 1 ? Out.CupsYesterday : Out.CupsToday).push_back(MoveTemp(C));
 			}
 		}
 	}

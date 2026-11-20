@@ -74,6 +74,17 @@ namespace LyudPaper
 		int N = 0;
 	};
 
+	/** A club tournament (ULyudCityThings::GetCupNews): its name and venue keys, the first round (minutes from midnight) and,
+	 *  once over, the champion and the runner-up (name keys; empty: the hero) and how far the hero got (-1 not in it, 0..2 out
+	 *  in that round, 3 champion). */
+	struct FCup
+	{
+		std::string Title, Venue, Winner, RunnerUp;
+		int StartMinute = 0;
+		int HeroReached = -1;
+		bool bOver = false;
+	};
+
 	/** What the game knows on the morning of a day; the rest (residents, market, pools) is the paper's data. */
 	struct FFacts
 	{
@@ -88,6 +99,9 @@ namespace LyudPaper
 		std::string PrevFront;
 		/** Festivals from the calendar: filled by FPaper::Festivals unless the caller set them. */
 		std::vector<std::pair<std::string, int>> Festivals; // (id, days ahead: 0 today, negative: started that many days ago)
+		/** The tournaments of the day before (over) and today's (to come). */
+		std::vector<FCup> CupsYesterday;
+		std::vector<FCup> CupsToday;
 	};
 
 	struct FPoolEntry
@@ -251,9 +265,10 @@ namespace LyudPaper
 			Out.Number = FirstIssue + Facts.Since;
 			Out.Date = Facts.Date;
 			std::vector<FDeed> Briefs;
-			FPage Front = FrontPage(Facts, Out, Briefs);
+			std::string CupOnFront;
+			FPage Front = FrontPage(Facts, Out, Briefs, CupOnFront);
 			Out.Pages.push_back(std::move(Front));
-			Out.Pages.push_back(TownPage(Facts, Briefs));
+			Out.Pages.push_back(TownPage(Facts, Briefs, CupOnFront));
 			Out.Pages.push_back(WeatherPage(Facts));
 			Out.Pages.push_back(BillsPage(Facts));
 			return Out;
@@ -449,7 +464,7 @@ namespace LyudPaper
 			return "";
 		}
 
-		FPage FrontPage(const FFacts& F, FIssue& Out, std::vector<FDeed>& Briefs) const
+		FPage FrontPage(const FFacts& F, FIssue& Out, std::vector<FDeed>& Briefs, std::string& CupOnFront) const
 		{
 			FPage Page;
 			Page.push_back(Masthead(Out));
@@ -479,6 +494,13 @@ namespace LyudPaper
 			if (const FDeed* D = Deed("record"))
 			{
 				DeedLines(D, "front.record", { "@fish." + Lower(D->What) + ".name", std::to_string(D->N) });
+			}
+			for (const FCup& C : F.CupsYesterday)
+			{
+				if (C.bOver && C.HeroReached == 3)
+				{
+					AddVariants(Cand, "front.cup", { "@" + C.Title, C.RunnerUp.empty() ? std::string("@paper.cup.nobody") : "@" + C.RunnerUp }, F.Since);
+				}
 			}
 			// 2. a festival today
 			std::string Today;
@@ -552,6 +574,10 @@ namespace LyudPaper
 			}
 			Page.push_back(Cand[Pick]);
 			Out.Front = Signature(Cand[Pick]);
+			if (Cand[Pick].Key.rfind("paper.front.cup.", 0) == 0 && !Cand[Pick].Args.empty())
+			{
+				CupOnFront = Cand[Pick].Args[0];
+			}
 			// the deeds that did not make the front go to the town page as briefs
 			const std::string PickedKey = Cand[Pick].Key;
 			for (const FDeed& D : F.Deeds)
@@ -576,10 +602,30 @@ namespace LyudPaper
 			return D.What;
 		}
 
-		FPage TownPage(const FFacts& F, const std::vector<FDeed>& Briefs) const
+		FPage TownPage(const FFacts& F, const std::vector<FDeed>& Briefs, const std::string& CupOnFront) const
 		{
 			FPage Page;
 			Page.push_back({ "paper.head.town", {} });
+			// yesterday's tournaments: the champion (the hero's own win is on the front), how far the hero got
+			for (const FCup& C : F.CupsYesterday)
+			{
+				if (!C.bOver || "@" + C.Title == CupOnFront)
+				{
+					continue;
+				}
+				if (C.HeroReached == 3)
+				{
+					Page.push_back({ "paper.cup.hero_won", { "@" + C.Title } });
+				}
+				else
+				{
+					Page.push_back({ "paper.cup.won", { "@" + C.Title, "@" + C.Winner, C.RunnerUp.empty() ? std::string("@paper.cup.newcomer") : "@" + C.RunnerUp } });
+					if (C.HeroReached >= 0)
+					{
+						Page.push_back({ "paper.cup.hero_out." + std::to_string(std::min(2, C.HeroReached)), {} });
+					}
+				}
+			}
 			int NBrief = 0;
 			for (const FDeed& D : Briefs)
 			{
@@ -753,6 +799,10 @@ namespace LyudPaper
 			if (NSoon == 0)
 			{
 				Page.push_back({ "paper.soon.none", {} });
+			}
+			for (const FCup& C : F.CupsToday)
+			{
+				Page.push_back({ "paper.cup.today", { "@" + C.Title, Hm(C.StartMinute), "@" + C.Venue } });
 			}
 			const int Wd = LyudFest::Weekday(F.Date);
 			Page.push_back({ "paper.cinema", { "@" + (bFest && CinemaKeys.size() > 7 ? CinemaKeys[7] : CinemaKeys[(size_t)Wd]) } });
