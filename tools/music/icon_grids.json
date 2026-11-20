@@ -1,0 +1,55 @@
+{
+ "_doc": "Icons of the 18 records (docs/music.md): two 3x3 Higgsfield grids, cells row by row, ids[0] row 1 left. Cut by tools/music/icons.py into textures/localized/ru/icon_<id>.jpg; the sidecars next to each picture keep the job id and URL. Generated 2026-11-20 (job ids and URLs below); the cloud could not download them (the CDN is not reachable from there): on the Mac run `python3 tools/music/icons.py icons_records_1 <job_id> <output_url>` and the same for _2, look at every cell, then import.",
+ "grids": [
+  {
+   "id": "icons_records_1",
+   "service": "higgsfield MCP",
+   "tool": "generate_image",
+   "model": "gpt_image_2_6",
+   "aspect_ratio": "1:1",
+   "resolution": "2k",
+   "quality": "medium",
+   "output": "design/music/icons_records_1.png",
+   "ids": [
+    "record_dawn_1",
+    "record_dawn_2",
+    "record_day_1",
+    "record_day_2",
+    "record_day_3",
+    "record_dusk_1",
+    "record_dusk_2",
+    "record_night_1",
+    "record_night_2"
+   ],
+   "prompt": "Nine inventory icons for a moody adventure game, arranged as a 3 by 3 grid of equal square cells on one picture: in every cell one square cardboard long-playing record sleeve of a 1970s-80s Soviet seaside town, seen straight on and slightly tilted, with the black vinyl record sliding a little out of its top right edge, centred and filling most of the cell, softly lit from the upper left, painterly realistic style, worn printed cardboard with soft corners, plain dark warm-grey cloth background with a faint vignette, the same background and the same scale in every cell, no borders, frames or lines between the cells, nothing crossing a cell edge, exactly one sleeve per cell, no text, letters, numbers or logos anywhere, not on the sleeves either: each sleeve is a picture only. Row 1, left: the amber sleeve shows the sea and one gull who woke before everyone else. Row 1, middle: the sleeve is pale blue, with a piano standing right on the sand. Row 1, right: the yellow sleeve shows beach umbrellas on the third terrace, seen from above. Row 2, left: the sleeve is grey like the sky over town, with one wet maple leaf on it. Row 2, middle: the sky-blue sleeve has dunes, pines and a great deal of sky. Row 2, right: On the orange sleeve a cello casts a long evening shadow. Row 3, left: the plum-coloured sleeve shows the last windows of the Korona sanatorium going dark one by one. Row 3, middle: A dark-blue sleeve with stars and the lamp at the end of the pier. Row 3, right: the violet sleeve has a moon with a tiny music box and key inside it.",
+   "job_id": "dbd2def5-3519-439c-9547-567a41f91e6b",
+   "output_url": "https://d8j0ntlcm91z4.cloudfront.net/user_36I3ndR5QeKPyjKAdSKVfbd04n2/hf_20261120_213949_dbd2def5-3519-439c-9547-567a41f91e6b.png",
+   "generated": "2026-11-20, 1 credit each"
+  },
+  {
+   "id": "icons_records_2",
+   "service": "higgsfield MCP",
+   "tool": "generate_image",
+   "model": "gpt_image_2_6",
+   "aspect_ratio": "1:1",
+   "resolution": "2k",
+   "quality": "medium",
+   "output": "design/music/icons_records_2.png",
+   "ids": [
+    "record_rain_1",
+    "record_rain_2",
+    "record_storm_1",
+    "record_snow_1",
+    "record_sea_1",
+    "record_club_1",
+    "record_club_2",
+    "record_club_3",
+    "record_flight_1"
+   ],
+   "prompt": "Nine inventory icons for a moody adventure game, arranged as a 3 by 3 grid of equal square cells on one picture: in every cell one square cardboard long-playing record sleeve of a 1970s-80s Soviet seaside town, seen straight on and slightly tilted, with the black vinyl record sliding a little out of its top right edge, centred and filling most of the cell, softly lit from the upper left, painterly realistic style, worn printed cardboard with soft corners, plain dark warm-grey cloth background with a faint vignette, the same background and the same scale in every cell, no borders, frames or lines between the cells, nothing crossing a cell edge, exactly one sleeve per cell, no text, letters, numbers or logos anywhere, not on the sleeves either: each sleeve is a picture only. Row 1, left: the grey-blue sleeve shows a rain-spotted window and a cup on the sill. Row 1, middle: the grey-green sleeve shows a wet cable car cabin and somebody's umbrella. Row 1, right: the sleeve is almost black, with the lighthouse and a wave taller than it. Row 2, left: A white sleeve with nothing on it but a cat's paw prints. Row 2, middle: the deep-blue sleeve has only the sea and a thin horizon line. Row 2, right: A dark purple sleeve with a punched tape curled into a wave. Row 3, left: the turquoise sleeve shows a computer with a little dream cloud above it. Row 3, middle: A dark grey sleeve with a green cursor blinking in the corner. Row 3, right: the sleeve shows a bird's-eye view of pines, the beach and our cable car.",
+   "job_id": "17299465-36f5-4019-b7e5-e55e4a51147c",
+   "output_url": "https://d8j0ntlcm91z4.cloudfront.net/user_36I3ndR5QeKPyjKAdSKVfbd04n2/hf_20261120_213951_17299465-36f5-4019-b7e5-e55e4a51147c.png",
+   "generated": "2026-11-20, 1 credit each"
+  }
+ ]
+}

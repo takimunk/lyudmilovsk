@@ -1,0 +1,28 @@
+{
+ "name": "radio_chime_01",
+ "asset": "/Game/Audio/Radio/S_radio_chime_01",
+ "pool": "radio_chime",
+ "file": "audio/sfx/radio/radio_chime_01.wav",
+ "generator": "tools/music/sounds.py",
+ "seed": 1061,
+ "rng": "numpy.random.default_rng (PCG64), numpy 2.5.3",
+ "loop": false,
+ "sample_rate": 48000,
+ "bit_depth": 16,
+ "channels": 1,
+ "seconds": 4.2,
+ "peak_dbfs": -3.0,
+ "rms_dbfs": -12.81,
+ "params": {
+  "notes_hz": [
+   440.0,
+   739.99,
+   587.33,
+   659.26,
+   880.0
+  ],
+  "key": "D major",
+  "through": "300-3400 Hz speaker"
+ },
+ "license": "Procedural, made by the project; CC BY 4.0."
+}

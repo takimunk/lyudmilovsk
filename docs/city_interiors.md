@@ -695,6 +695,12 @@ the list (their ids play nothing from an act).
 * Perf ([perf checklist](../README.md)): no per-frame allocation, no actors or components per thing, nothing past the town box,
   the file parsed off the game thread.
 
+### Hook for other systems
+
+`ULyudCityThings::ActHook` (one listener): asked after an act ran (not refused, not a shut plot's words) with the thing, the
+act id, the line key and the point; it may replace the page's line (one page then). `GetThingsByAct`, `ActOfThing`, `GiveStamp`
+go with it. Used by the records and the radio (`docs/music.md`): jukeboxes, record players, radios and «Волна»'s request box.
+
 ### API for townsfolk
 
 For the people's life (a townsperson who sits down in the café, reads at a library shelf, waits at a counter), on
