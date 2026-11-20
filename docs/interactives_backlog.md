@@ -316,3 +316,172 @@ Start from the top; items 1-6 are the best value. Items marked Fable 5.2 are the
 threads can run in parallel without touching each other's files: 1 with 3, 2 with 6, 4 with 5, 7 with 9; avoid running 4
 and 17 together (same job board), 10 before 19 helps 19, and 11 before 12 helps 12. Everything in `tools/city/content/`
 is shared by items 3, 4, 6, 14: they must rebase and rerun `python3 tools/city/interiors.py` before each push.
+
+---
+
+# Part 2 (2026-11-20, 23:00 UTC): deepen and tie together
+
+Written when items 1-19 and 21 of part 1 were in work or merged. Same rules as above ("Rules every brief carries":
+paste them with each brief). Part 2 does not add new systems: it polishes what exists and **ties tonight's new features to
+each other** (paper, radio, cinema, festivals, sanatorium, kites, beach, allotment, camera, friends, letters, jobs,
+instruments, tournaments, AtonOS lab). Where a brief depends on a part-1 branch that is not in main yet, branch from that
+branch (or wait for its merge) and say so in the PR.
+
+## Order (part 2)
+
+| # | Item | Value | Where it runs | Model | Size | Touches |
+|---|---|---|---|---|---|---|
+| 22 | [The town reacts to the hero's day](#22-the-town-reacts-to-the-heros-day) | very high | cloud | Fable 5.2 | L | barks, paper, friends |
+| 23 | [Hero's day log: the diary writes itself](#23-the-diary-writes-itself) | very high | cloud | Opus 5.5 | M | diary UI, quests events |
+| 24 | [Festival days use all the new toys](#24-festival-days-use-the-new-toys) | high | cloud + Mac shots | Opus 5.5 | M | festivals.json, content |
+| 25 | [Lived-in rooms: clutter that changes](#25-lived-in-rooms) | high | cloud (Blender) + Mac | Opus 5.5 | L | blender/city buildings |
+| 26 | [Residents do the new activities too](#26-residents-do-the-new-activities) | high | cloud | Fable 5.2 | L | town_life, manners |
+| 27 | [Counters with real service](#27-counters-with-real-service) | high | cloud + Mac | Opus 5.5 | M | CounterTrade, content |
+| 28 | [Rain, wind and night change what people do indoors](#28-weather-and-night-indoors) | medium-high | cloud | Opus 5.5 | M | content rules, tones |
+| 29 | [Night state geometry and the cleaner](#29-night-state-geometry-and-the-cleaner) | medium-high | cloud (Blender) + Mac | Opus 5.5 | M | city things, town_life roles |
+| 30 | [Collections pay off](#30-collections-pay-off) | medium-high | cloud | Opus 5.5 | S | collections.json, diary |
+| 31 | [Small touch details everywhere](#31-small-touch-details) | medium-high | cloud + Mac | Opus 5.5 | M | city content, things |
+| 32 | [Children's games in the yards](#32-childrens-games-in-the-yards) | medium | cloud + Mac | Fable 5.2 | M | town_life, manners |
+| 33 | [Photo quests and the photo contest](#33-photo-quests-and-the-photo-contest) | medium | cloud | Opus 5.5 | S | camera branch, paper |
+| 34 | [Allotment to kitchen: cook what you grow and catch](#34-allotment-to-kitchen) | medium | cloud + Mac | Opus 5.5 | M | food, allotment, fishing |
+| 35 | [The rental unit and the promenade windows](#35-rental-and-promenade-windows) | medium | cloud (Blender) + Mac | Opus 5.5 | M | promenade units |
+| 36 | [Voices for the staff (paid, already approved budget)](#36-voices-for-the-staff) | medium | cloud (fal) + Mac import | Opus 5.5 | M | voice.json, sidecars |
+
+**Running in parallel without touching the same files:** 22 ∥ 25 ∥ 34 ∥ 36; 23 ∥ 27 ∥ 32; 24 ∥ 29 ∥ 33; 26 alone with
+the people sim (it owns `tools/town/town_life.py` and `PeopleManners.cpp` for the night; 29 and 32 must wait or rebase on
+it, or keep their town-life change to one data entry each); 28 and 31 both edit `tools/city/content/`: run them one after
+the other, or split by building (28 public rooms, 31 houses). Everyone touching `tools/city/content/` reruns
+`python3 tools/city/interiors.py` and `--check` after rebasing; whoever touches barks reruns `tools/barks/build_barks.py`.
+
+## 22. The town reacts to the hero's day
+
+`[ ]` **Brief (Fable 5.2):** Tonight added many things the hero can do (jobs, kites, beach games, cinema, tournaments,
+letters, friends, the sanatorium course, instruments). Make the town notice. Collect the hero's notable events of the day
+(quest events `ULyudQuests::Notify` already carry most of them: wins, catches, jobs done, festival watches, birds tamed) into
+a small "talk of the town" store (saved, decays over 3-5 game days), and feed it to: barks of residents who saw it or heard
+it from a friend (`TownBarks.cpp`, `tools/barks/lines/`, a new condition `heard_of = <event>`; gossip spreads along
+friendships and households, so a far terrace hears it a day later), staff talk topics ("Говорят, ты вчера выиграл у
+Петровича"), the town paper (item 6's slots), friends' letters (item 11). Calm and rare: at most one remark per resident per
+day. Done: an offline test of spreading and decay (barksim/peoplesim), lines ru/en/ja, barks rebuilt.
+
+## 23. The diary writes itself
+
+`[ ]` **Brief (Opus 5.5):** A page "Дни" in the diary (`SLyudDiary.cpp`, `docs/diary.md`): each game day gets a short
+handwritten entry made from what really happened (the weather, the festival, the people met, birds seen, fish caught, the
+job, the film watched, the tune played, the letter received), in the hero's teenage voice, from templates with slots and
+variants (ru/en/ja, never the same sentence two days running), with small margin doodles from the existing sketch textures
+(`diary/textures/`). The camera's prints (item 2) can be glued onto a day. Done: an offline generator test over 60 days of
+synthetic events, Mac shot of the page.
+
+## 24. Festival days use the new toys
+
+`[ ]` **Brief (Opus 5.5):** Festivals (`Content/PeopleData/festivals.json`, `docs/festivals.md`) know nothing of tonight's
+features. Tie them: the cinema shows a festival programme (the sea festival, New Year cartoons), the radio plays a festival
+broadcast, the tournament of the week becomes a festival cup on its day, kites fly on Children's Day and the blossom
+picnic, the beach games become contests on Fisherman's Day (stone skipping championship), the sanatorium has a dance
+evening on holidays, the paper prints a festival issue, friends invite the hero to go together, the allotment's harvest goes
+to the harvest fair (a prize for the biggest pumpkin). Data first (the festival's program, content `festival` conditions),
+code only where a hook is missing. Done: festivalsim + citysim, `lyud.Festival.Go` walk-through shots on the Mac.
+
+## 25. Lived-in rooms
+
+`[ ]` **Brief (Opus 5.5):** Interiors are furnished but static. Add clutter that tells time passing: a cup left on the
+table after a resident's breakfast, a newspaper of today on the café table (item 6), wet umbrellas by doors on rain days,
+coats on racks in winter, a half-done jigsaw in the sanatorium lounge that grows day by day, children's drawings on the
+school wall that change weekly, flowers in a vase that wilt and get replaced (backlog P5 "seasonal dressing"). Build as a
+small set of swappable dressing pieces per room (`B.thing`-like `B.dress(...)` with a condition: weekday, weather, season,
+day count), placed in Blender export and switched in the game without rebuilding meshes (visibility of instanced pieces,
+never per-frame). Done: Blender previews of three rooms in two states, perf bench on the Mac.
+
+## 26. Residents do the new activities
+
+`[ ]` **Brief (Fable 5.2):** Make the townsfolk use tonight's features by persona and weather: kids fly kites and skip
+stones, pensioners take the sanatorium cure and play dominoes in its lounge, the regulars go to the cinema (seats fill,
+`FindFreeThing`), people read the paper on benches (the `read_bench` activity holding the new paper prop), someone plays the
+piano in the hall in the evening (item 15's synth, rarely), allotment neighbours dig and water, the postman does his round,
+friends walk with the hero sometimes. New activities in `tools/town/town_life.py` and the manners (`PeopleManners.cpp`,
+`Content/PeopleData/manners.json`), weighed like `Rain`/`TempC`. Done: peoplesim + mannersim pass (tune seed-chaotic checks),
+Mac shots of three new activities, bench (no new per-frame cost per person).
+
+## 27. Counters with real service
+
+`[ ]` **Brief (Opus 5.5):** At counters the hero buys from a menu. Make it a little scene: the staff turns to him, says the
+greeting by hour and by whether they know him (friends, item 12), the item is put on the counter and the hero takes it (the
+hand reaches, `UHeroReachComponent::Take`), change is counted, a queue forms behind him at busy hours and residents wait
+their turn (customer pairs exist: `LyudBarks::AtCounter`, `CounterTrade.cpp`). Fix P-MARKET counters never firing
+(town-manners memory: give the market visit slots from `shell_market.json` counter spots). Done: citysim, Mac shots of a
+queue at the bakery and the market.
+
+## 28. Weather and night indoors
+
+`[ ]` **Brief (Opus 5.5):** On rain days the cafés, the library, the clubs and the sanatorium lounge fill up; on stormy
+nights the lighthouse keeper's radio crackles with ship talk; on hot days the ice cream counter has a queue and the café's
+windows open. Lines exist by weather; extend to who is where (town-life weights by weather per plot kind), room tones
+(`tones`, `tone_by`: rain on the roof, the wind in the lighthouse), lamps on earlier on dark days. Done: peoplesim test of
+indoor counts by weather, citysim, a Mac walk on a rain day.
+
+## 29. Night state geometry and the cleaner
+
+`[ ]` **Brief (Opus 5.5):** Backlog P5 "night state of public rooms" has the data but no geometry: chairs on tables in
+closed cafés and clubs, a single lamp left on, a cleaner at work 7-10 with a mop and a bucket (a town-life role `cleaner`,
+a manner prop), the watchman in the department store at night with a torch. Use swappable pieces like item 25 (coordinate
+with it: same `B.dress` mechanism, one of you writes it). Done: Blender previews, Mac shots at 23:00 and 07:30, bench.
+
+## 30. Collections pay off
+
+`[ ]` **Brief (Opus 5.5):** Stamp sets exist (library shelves, films, jukebox records, kiosks, chess wins, the sanatorium
+card, tonight's new sets) but a complete set gives nothing (backlog P4). Give each set a reward that fits: a library reader's
+card with a photo, a framed film poster for the hero's room (item 19), a record of your choice, the kiosk keepers' free
+paper for a month, a chess club badge on the jacket, the sanatorium diploma. A diary page "Коллекции" with all sets, filled
+and empty slots (the page `lyud.City.Collections` exists: move it into the diary). Done: citysim test of each reward,
+quest audit clean.
+
+## 31. Small touch details
+
+`[ ]` **Brief (Opus 5.5):** A pass over houses and lobbies (P2 of `docs/city_backlog.md`) for small things that answer a
+touch: mailboxes (the hero's own one has letters: item 11), light switches and wall clocks that no building declares yet
+(`what=switch`, `look_clock` exist), a radio to turn on, a tap to run, a window to open (the room's tone changes), a cat on
+the radiator to stroke (item 1), a lift button (the lifts' `to`/`floors` exist but no building declares a link: declare
+them for the unite block, the stacked beam tower and the capsule towers). Done: reach audit and quest audit, citysim, Mac
+walk tests in two buildings with lifts.
+
+## 32. Children's games in the yards
+
+`[ ]` **Brief (Fable 5.2):** Children of the town play together after school: hopscotch on chalked squares, a skipping
+rope, hide-and-seek in the yards (one counts at a wall, others hide behind the town's own cover; the hero can join and be
+found or find), football with a ball that rolls (physics, a code-built ball), tag. A small group behaviour in the people
+sim (a game leader, roles, a play area from the city plan's yard spots), gestures by the hand-goal IK layer. Done: peoplesim
+test of a game's start, roles and end, Mac shots, bench with three groups playing.
+
+## 33. Photo quests and the photo contest
+
+`[ ]` **Brief (Opus 5.5):** On top of the camera (item 2): the photo club at «Шестерня» runs a monthly contest with a theme
+(the sea, birds, people at work, the festival) announced in the paper; the hero hands in one print, residents of the club
+judge (a score from what is in the frame: subject tags from the capture, light by sun height, sharpness), the winners' prints
+hang in the club and the paper prints the hero's photo. Three photo quests from residents (a portrait of a pensioner for his
+grandson, the old pier before it is repainted, Maru for the club's wall). Done: citysim/questsim tests with synthetic shots.
+
+## 34. Allotment to kitchen
+
+`[ ]` **Brief (Opus 5.5):** Tie the allotment (item 9), fishing and food: cook at the commune canteen's stove, the
+sanatorium kitchen or the hero's room (a hot plate) from what he grew and caught: fish soup (ukha), fried potatoes with dill,
+a salad, strawberry jam in jars (the market's jam contest). Short recipes (combine items, wait minutes, a sizzle sound), the
+dish as a food item to eat (`ULyudFoodSubsystem`) or give to friends (bond). The restaurant buys fresh vegetables. Done:
+game-items skill for each new item (icons), citysim of recipes, Mac shot of cooking.
+
+## 35. Rental and promenade windows
+
+`[ ]` **Brief (Opus 5.5):** Two open items of P3: the rental unit only talks (rent deck chairs and parasols for the beach,
+place them, lie in the sun; tie the rowing boat hire `ALyudRowBoat` and bicycles to the same counter), and the promenade
+units are opaque from outside (make the lit room readable through the glass: an interior cubemap card or the real room
+behind glass with cheap lighting, by distance). Signboards for fish, rental, workshop, souvenirs (`sign_*` cells in
+`tools/city/atlas.py`). Done: Blender previews, Mac shots from the promenade at dusk, bench along the promenade.
+
+## 36. Voices for the staff
+
+`[ ]` **Brief (Opus 5.5):** Staff talk has 218 answer lines with no voice (backlog P4). Voice the greetings and the top
+topics of the ten most visited counters in ru/en/ja with the pinned TTS (`localization/voice.json`, the game-assets skill,
+sidecars; teen hero rules do not apply, adults by persona). Dima pre-approved the night's work (2026-11-20 19:32 UTC) and allowed fal
+for the birds (about $5); keep this pass small (a few dollars), ask the coordinator for the night's fal total first, and
+record the spend in the sidecars. Import on the Mac
+(`import_voice.py`). Done: lines play at the counters, subtitles match, the voice list committed.
