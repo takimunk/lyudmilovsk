@@ -262,6 +262,46 @@ bool ALyudPublicSpaces::Build(const TSharedPtr<FJsonObject>& Doc)
 	}
 
 	Lap(TEXT("props"));
+	// the hi3d props (docs/city/hi3d_props.md): statues, sundial, drinking fountains outdoors, chandeliers in halls; imported
+	// meshes with their own materials, one instanced set per prop, placed by tools/city/hi3d_props.py
+	{
+		FString Text;
+		TSharedPtr<FJsonObject> H;
+		const FString Path = FPaths::ProjectContentDir() / TEXT("City/hi3d_props.json");
+		const TSharedPtr<FJsonObject>* MeshesObj = nullptr;
+		const TArray<TSharedPtr<FJsonValue>>* Items = nullptr;
+		if (FFileHelper::LoadFileToString(Text, *Path) && FJsonSerializer::Deserialize(TJsonReaderFactory<>::Create(Text), H) && H
+			&& H->TryGetObjectField(TEXT("meshes"), MeshesObj) && H->TryGetArrayField(TEXT("items"), Items))
+		{
+			TMap<FString, UInstancedStaticMeshComponent*> Sets;
+			for (const auto& KV : (*MeshesObj)->Values)
+			{
+				const TSharedPtr<FJsonObject> M = KV.Value->AsObject();
+				UStaticMesh* Mesh = LoadObject<UStaticMesh>(nullptr, *M->GetStringField(TEXT("mesh")), nullptr, LOAD_NoWarn | LOAD_Quiet);
+				if (!Mesh)
+				{
+					UE_LOG(LogTemp, Log, TEXT("LyudPublicSpaces: hi3d prop '%s' not imported yet (unreal/scripts/import_hi3d_props.sh)"), *KV.Key);
+					continue;
+				}
+				const bool bIndoor = M->HasField(TEXT("indoor")) && M->GetBoolField(TEXT("indoor"));
+				UInstancedStaticMeshComponent* C = MakeIsm(Mesh, TEXT("Hi3d_") + KV.Key, M->GetBoolField(TEXT("collide")), nullptr,
+					(float)M->GetNumberField(TEXT("cull")) * 100.f);
+				C->SetCastShadow(M->GetBoolField(TEXT("cast_shadow")));
+				C->bAffectDistanceFieldLighting = !bIndoor;
+				Sets.Add(KV.Key, C);
+			}
+			for (const TSharedPtr<FJsonValue>& V : *Items)
+			{
+				const TSharedPtr<FJsonObject> P = V->AsObject();
+				if (UInstancedStaticMeshComponent** C = Sets.Find(P->GetStringField(TEXT("prop"))))
+				{
+					(*C)->AddInstance(FTransform(FRotator(0.f, P->GetNumberField(TEXT("yaw")), 0.f), VecField(P, TEXT("at"))), true);
+					NumProps++;
+				}
+			}
+		}
+	}
+	Lap(TEXT("hi3d"));
 	// fountain stones built from their profiles (the water is ALyudFountain's, from the same numbers)
 	{
 		const TArray<TSharedPtr<FJsonValue>>* Fs = nullptr;
