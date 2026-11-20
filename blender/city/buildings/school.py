@@ -22,6 +22,7 @@ from citykit import box, prism, ring, DOOR_H  # noqa: F401
 import geom
 from furn_int2 import Furn
 import interior_kit as kit
+import dress_kit as dk
 
 INFO = {
     "name_ru": "Школа", "name_en": "School",
@@ -973,6 +974,74 @@ def _depth4(B):
     B.spot("canteen_dishes_stand", "stand", (29.2, 38.6, 0.0), 180.0)
 
 
+# ---------------------------------------------------------------- lived-in dressing (docs/city_dress.md)
+def _free(B, x, y, r=0.25, z=0.0):
+    """True when the circle (x, y, r) at height z touches no floor or wall piece of the kit (rugs and mats ignored)."""
+    for it in getattr(B, "kit_items", []):
+        if it["kind"] not in ("floor", "wall") or it["z1"] < z + 0.1 or it["z0"] > z + 1.0:
+            continue
+        f = it["foot"]
+        inside = False
+        for i in range(len(f)):
+            a, b = f[i], f[(i + 1) % len(f)]
+            if (a[1] > y) != (b[1] > y) and x < (b[0] - a[0]) * (y - a[1]) / (b[1] - a[1]) + a[0]:
+                inside = not inside
+            dx, dy = b[0] - a[0], b[1] - a[1]
+            t = max(0.0, min(1.0, ((x - a[0]) * dx + (y - a[1]) * dy) / (dx * dx + dy * dy or 1.0)))
+            if math.hypot(x - a[0] - t * dx, y - a[1] - t * dy) < r:
+                return False
+        if inside:
+            return False
+    return True
+
+
+def _dress(B, IY1):
+    """Children's drawings that change weekly, satchels, wet-weather things at the door, winter coats and mittens."""
+    # --- the drawings: four sets, a week each, round and round (north wall beside the board, west wall between shelf and map)
+    slots = [(-17.9, IY1, 0.0, 1.50), (-16.95, IY1, 0.0, 1.42), (-16.0, IY1, 0.0, 1.55),
+             (-10.85, IY1, 0.0, 1.45), (-9.9, IY1, 0.0, 1.55), (-8.95, IY1, 0.0, 1.42),
+             (-18.6, 10.0, 90.0, 1.45), (-7.65, 9.3, 270.0, 1.5)]
+    for k in range(4):
+        pool = ["kids_%d" % k, "paper_drawing", "kids_%d" % ((k + 1) % 4), "kids_%d" % ((k + 2) % 4), "paper_drawing",
+                "kids_%d" % ((k + 3) % 4), "paper_drawing", "kids_%d" % k]
+        with B.dress("drawings_%d" % k, phase=(28, 7 * k, 7 * k + 7)):
+            for i, (x, y, yaw, zc) in enumerate(slots):
+                kit.poster(B, x, y, 0.0, yaw, name=pool[(i + k) % 8], w=0.68, zc=zc, seed=k * 10 + i)
+    # --- satchels by the desks on school days (not in the summer holidays), two sets of rows
+    school = dict(weekdays=(0, 1, 2, 3, 4), hours=(8, 14.5), months=(9, 10, 11, 12, 1, 2, 3, 4, 5))
+    ys = (7.6, 8.9, 10.2, 11.5)
+    cxs = (-16.0, -13.1, -10.2)
+    with B.dress("bags_a", **school):
+        for r in (0, 2):
+            for c, cx in enumerate(cxs):
+                dk.school_bag(B, cx + 0.70, ys[r] - 0.45, 0.0, 70 * (r + c) % 360, seed=r * 3 + c)
+        dk.school_bag(B, -6.85, 7.3, 0.45, 90.0, seed=21)
+        dk.school_bag(B, -6.85, 11.0, 0.45, 80.0, seed=22)
+    with B.dress("bags_b", chance=0.75, **school):
+        for r in (1, 3):
+            for c, cx in enumerate(cxs):
+                dk.school_bag(B, cx + 0.70, ys[r] - 0.45, 0.0, (40 + 55 * (r + c)) % 360, seed=30 + r * 3 + c)
+    # --- rain: a wet mat, galoshes and an umbrella stand by the street door, an umbrella left open to dry
+    with B.dress("door_rain", weather=("rain", "wet")):
+        dk.doormat_wet(B, 0.0, 7.55, 0.0, 0.0)
+        dk.boots(B, -1.75, 6.6, 0.0, 8.0, kind="galoshes", seed=1)
+        dk.boots(B, 1.8, 6.6, 0.0, -10.0, kind="rubber", seed=2)
+        dk.umbrella_stand(B, 2.3, 6.65, 0.0, 0.0, n=3, seed=3)
+        if _free(B, -2.5, 8.5, 0.55):
+            dk.umbrella_open(B, -2.5, 8.5, 0.0, 40.0, seed=4)
+    # --- cold months: coats on a board of hooks in the hall (the long rails on the west wall already carry some)
+    with B.dress("hall_coats_cold", season="cold_months", weekdays=(0, 1, 2, 3, 4), hours=(7.5, 15)):
+        dk.wall_hooks(B, -7.35, 11.85, 0.0, 90.0, w=0.9, coats=0.8, season="winter", seed=3)
+    # --- winter: mittens left on the classroom radiators
+    with B.dress("mittens_radiators", season="cold_months", chance=0.7):
+        for it in getattr(B, "kit_items", []):
+            if it["name"] == "radiator" and -19 < it["foot"][0][0] < -7 and it["z0"] < 0.1:
+                cx = sum(p[0] for p in it["foot"]) / len(it["foot"])
+                cy = sum(p[1] for p in it["foot"]) / len(it["foot"])
+                if abs(cx + 13.1) < 0.1 or abs(cx + 9.4) < 0.1:
+                    dk.mitten_pair(B, cx + (0.1 if cx > -12 else -0.1), cy, it["z1"], 180.0, seed=int(-cx))
+
+
 def build(B):
     m, d = B.m, B.detail
     # ================================================================== south wing (street)
@@ -1080,6 +1149,7 @@ def build(B):
     _classroom(B, IY1)
     _staff_room(B)
     _hall_things(B)
+    _dress(B, IY1)
     _roof(m, -30, 30, SY0, SY1)
     # ================================================================== west and east wings
     for sgn in (-1, 1):

@@ -24,6 +24,7 @@ from citykit import box, prism, ring, Facade, Mesh, wall_with_holes, DOOR_W
 import geom
 from furn_int2 import Furn
 import interior_kit
+import dress_kit as dk
 
 INFO = {
     "name_ru": "Санаторий «Корона»", "name_en": "Crown Sanatorium",
@@ -102,6 +103,8 @@ def tri_orient_up(pts2, z):
     return [(x, y, z) for x, y in p]
 
 
+JIG_XY = (3.55, 10.7)                  # the jigsaw table in the lobby
+_ANCH = {}
 CEIL = Z0 - 0.01                       # underside of the hall ceiling
 PIERS = [-135.0 + 90.0 * i / 7 for i in range(8)]      # angles of the panel joints (solid piers between the windows)
 R_LO, R_HI = 12.3, 17.7                # radial span of a partition (its ends hide inside the walls)
@@ -273,6 +276,10 @@ def _furnish_hall(B, hall, t):
         bn = kit.bench(B, bx, by, yaw=_yin(thb), w=1.4, kind="park")
         B.spot(sid, "bench", bn["seats"][0][:3], _yin(thb))
         B.thing(tid, "seat", bn["seats"][0][:3], _yin(thb), height=0.45)
+    # a jigsaw table by the cloakroom (the puzzle itself is dressing: dress_when in _dress)
+    jt = kit.table(B, JIG_XY[0], JIG_XY[1], yaw=0.0, w=1.1, d=0.8)
+    _ANCH["jig_top"] = jt["top"]
+    kit.chair(B, JIG_XY[0], JIG_XY[1] + 0.8, yaw=0.0, kind="wood", mat="CT_PlasterRed")
     # east partition (lobby face, normal facing -theta): coat rack, a notice board and a health poster
     for (rr, cls) in ((16.5, "coat"),):
         cx_, cy_ = pol(rr, th_l1)
@@ -321,6 +328,7 @@ def _furnish_hall(B, hall, t):
     kit.samovar(B, bx - 0.4 * math.cos(math.radians(thb + 90)), by, bf["top"], yaw=_yin(thb))
     kit.plates(B, *_at(17.0, thb, 0.35), z=bf["top"], yaw=thb, n=4)
     B.thing("dining_buffet", "counter", (bx, by, 1.05), _yin(thb), role="receptionist", service="bar")
+    _ANCH["buffet"] = (thb, bf["top"])
     # partition between garden and dining (dining face, faces +theta): the menu and a still life
     wx, wy = _at(16.95, th_d0, 0.075)
     kit.menu_board(B, wx, wy, yaw=_ytan(th_d0), name="menu_0", w=0.62, zc=1.7)
@@ -904,6 +912,96 @@ def L_of(q, e):
     return math.dist(q[e], q[(e + 1) % len(q)])
 
 
+# ---------------------------------------------------------------- lived-in dressing (docs/city_dress.md)
+def _free(B, x, y, r=0.25, z=0.0):
+    """True when the circle (x, y, r) at height z touches no floor or wall piece of the kit (rugs and mats ignored)."""
+    for it in getattr(B, "kit_items", []):
+        if it["kind"] not in ("floor", "wall") or it["z1"] < z + 0.1 or it["z0"] > z + 1.0:
+            continue
+        f = it["foot"]
+        inside = False
+        for i in range(len(f)):
+            a, b = f[i], f[(i + 1) % len(f)]
+            if (a[1] > y) != (b[1] > y) and x < (b[0] - a[0]) * (y - a[1]) / (b[1] - a[1]) + a[0]:
+                inside = not inside
+            dx, dy = b[0] - a[0], b[1] - a[1]
+            t = max(0.0, min(1.0, ((x - a[0]) * dx + (y - a[1]) * dy) / (dx * dx + dy * dy or 1.0)))
+            if math.hypot(x - a[0] - t * dx, y - a[1] - t * dy) < r:
+                return False
+        if inside:
+            return False
+    return True
+
+
+def _items(B, name):
+    """(cx, cy, z1, long-axis angle in degrees, short-axis unit vector pointing to the middle of the hall) of the kit pieces called name."""
+    out = []
+    for it in getattr(B, "kit_items", []):
+        if it["name"] != name or it["z0"] > 0.1:
+            continue
+        f = it["foot"]
+        cx = sum(p[0] for p in f) / len(f)
+        cy = sum(p[1] for p in f) / len(f)
+        best = max(range(len(f)), key=lambda i: math.dist(f[i], f[(i + 1) % len(f)]))
+        a, b = f[best], f[(best + 1) % len(f)]
+        phi = math.degrees(math.atan2(b[1] - a[1], b[0] - a[0]))
+        th = math.atan2(cy - CY, cx - CX)
+        mx, my = pol(15.0, math.degrees(th))
+        nx, ny = -math.sin(math.radians(phi)), math.cos(math.radians(phi))
+        if nx * (mx - cx) + ny * (my - cy) < 0:
+            nx, ny = -nx, -ny
+        out.append((cx, cy, it["z1"], phi, (nx, ny)))
+    return sorted(out, key=lambda t: (round(t[0], 1), t[1]))
+
+
+def _dress(B):
+    """The jigsaw that grows over a 9-day round, flowers fresh / wilting / empty, winter boots on the radiators,
+    summer things on the benches, wet umbrellas at the door on rain days."""
+    jx, jy = JIG_XY
+    jt = _ANCH["jig_top"]
+    stages = 6
+    for k in range(stages):
+        with B.dress("jigsaw_%d" % k, phase=(9, k, k + 1)):
+            dk.jigsaw(B, jx - 0.15, jy, jt, 180.0, stage=k, stages=stages, seed=7)
+    with B.dress("jigsaw_done", phase=(9, stages, 9)):
+        dk.jigsaw(B, jx - 0.15, jy, jt, 180.0, stage=stages, stages=stages, seed=7)
+    with B.dress("book_table", hours=(9, 20), chance=0.5):
+        dk.book_face_down(B, jx + 0.37, jy, jt, 90.0, seed=5)
+    # flowers on the dining buffet: fresh, wilting, an empty vase, over a 7-day round
+    thb, bz = _ANCH["buffet"]
+    vx, vy = _at(17.0, thb, 0.72)
+    with B.dress("flowers_fresh", phase=(7, 0, 4)):
+        interior_kit.vase(B, vx, vy, bz, 0.0, mat="CT_PlasterBlue", seed=3)
+    with B.dress("flowers_wilted", phase=(7, 4, 6)):
+        dk.vase_wilted(B, vx, vy, bz, 0.0, mat="CT_PlasterBlue", seed=3)
+    with B.dress("flowers_empty", phase=(7, 6, 7)):
+        interior_kit.vase(B, vx, vy, bz, 0.0, mat="CT_PlasterBlue", flowers=False, seed=3)
+    # winter: felt boots on the floor by the radiators, mittens on top of them
+    with B.dress("radiators_winter", season="cold_months"):
+        for n, (cx, cy, z1, phi, (nx, ny)) in enumerate(_items(B, "radiator")):
+            dk.mitten_pair(B, cx, cy, z1, phi + 180.0, seed=n)
+            bx, by = cx + nx * 0.42, cy + ny * 0.42
+            if _free(B, bx, by, 0.2):
+                dk.boots(B, bx, by, 0.0, math.degrees(math.atan2(nx, -ny)), kind="felt", seed=n)
+    # summer: a towel and a straw hat on the benches by the door, sandals under them
+    with B.dress("summer_benches", season="summer"):
+        for n, (cx, cy, z1, phi, (nx, ny)) in enumerate(_items(B, "bench")):
+            if cy > 10.6 or n > 2:
+                continue
+            dk.towel_hat(B, cx, cy, 0.45, phi, seed=n)
+            bx, by = cx + nx * 0.55 + 0.35 * math.cos(math.radians(phi)), cy + ny * 0.55 + 0.35 * math.sin(math.radians(phi))
+            if _free(B, bx, by, 0.3):
+                dk.boots(B, bx, by, 0.0, math.degrees(math.atan2(nx, -ny)), kind="sandals", seed=n)
+    # rain: a mat, an umbrella stand and an open umbrella at the street door
+    with B.dress("door_rain", weather=("rain", "wet")):
+        dk.doormat_wet(B, 0.0, 9.0, 0.015, 0.0, w=1.0)
+        dk.umbrella_stand(B, 1.65, 8.85, 0.0, 0.0, n=3, seed=2)
+        for ux, uy in ((-1.7, 9.1), (-1.5, 9.5), (-1.9, 9.6), (1.7, 9.6)):
+            if _free(B, ux, uy, 0.5):
+                dk.umbrella_open(B, ux, uy, 0.0, 25.0, seed=3)
+                break
+
+
 def build(B):
     rnd = random.Random(1984)
     m = B.m
@@ -1017,6 +1115,7 @@ def build(B):
     ex, ey = pol(R_P, -90.0)
     B.entrance("main", (ex, ey, 0.0), 0.0, width=2.4, height=2.6, leaves=2, kind="street")
     _furnish_hall(B, hall, t)
+    _dress(B)
     # ------------------------------------------------------------------ struts under some balcony tips
     for k in range(0, NB, 3):
         th = bays[k]["th"] - HB + DELTA
