@@ -21,7 +21,7 @@ MORPH_DEFAULTS = dict(
     fluff=1.0, crest=0.0, fluff_layer=0.55,
     n_prim=9, n_sec=6, n_tail=6, p_outer=1.0, n_neck=1, neck_s=0.0, foot="aniso", keel=0.0, rear_taper=0.0,
     perch_pitch=22.0, perch_low=0.008, perch_neck=-14.0, perch_head=-6.0, perch_tail=-8.0, peck_depth=42.0, head_bob=0.0, tail_flick=1.0, tail_wag=False,
-    call_gape=22.0, glide_elev=6.0, glide_sweep=-4.0, glide_hand=0.0, glide_handelev=0.0, fingers=0.0, fly_neck=0.0, fly_head=0.0, fly_neck_s=None, fly_trail=0.0, bare_shin=0.0, bristles=0.0,
+    call_gape=22.0, glide_elev=6.0, glide_sweep=-4.0, glide_hand=0.0, glide_handelev=0.0, fingers=0.0, fly_neck=0.0, fly_head=0.0, fly_neck_s=None, fly_trail=0.0, fly_clench=0.0, bare_shin=0.0, bristles=0.0,
     feather_shapes={},
 )
 
@@ -667,7 +667,7 @@ species("SandMartin", dict(AERIAL, body_len=0.88, arm=0.75, hand=1.15, prim=1.0,
 RAPTOR = dict(body_w=1.05, head=1.05, flat_crown=0.8, beak_len=0.78, beak_depth=1.35, beak_width=1.05, beak_taper=0.6, beak_curve=0.0026,
               beak_hook=1.2, prim_profile=ROUNDED, tail=1.3, tail_shape="square", tarsus=1.3, leg_thick=1.15, toes=1.35, claw=1.8,
               perch_pitch=40, perch_neck=-6, perch_tail=-22, eye=1.2, call_gape=30,
-              fly_trail=1.0)   # long legs and big feet do not fit the songbird tuck: in flight they lie back under the tail coverts
+              fly_trail=1.0, fly_clench=1.0)   # long legs and big feet do not fit the songbird tuck: in flight they lie back under the tail coverts
 species("Sparrowhawk", dict(RAPTOR, arm=0.95, hand=0.85, feather_shapes={"primary": {"emarg": 0.35}}, fingers=0.8, tail=1.5, tarsus=1.6,
                             leg_thick=0.85), dict(
     styles={
