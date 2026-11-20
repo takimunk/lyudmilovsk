@@ -265,7 +265,7 @@ Academgorodok.
 
 ## 17. Bicycle rounds
 
-`[ ]` **Brief (Opus 5.5):** Bicycles exist (`docs/bikes.md`, the hero rides, residents ride). Add rounds: the morning paper
+`[~] bike-rounds 2026-11-20 (branch bike-rounds, docs/rounds.md; awaits a Mac build and ride-through shots)` **Brief (Opus 5.5):** Bicycles exist (`docs/bikes.md`, the hero rides, residents ride). Add rounds: the morning paper
 round (fetch the bundle at kiosk 1 at 6, throw papers to the doorsteps of the houses on a route of the city plan's
 addresses, timing and aim count) and the post round (parcels to named residents' flats; ring, wait, they open: lines by
 persona). Pay per round, a route map in the diary's map page, the postman resident as the boss, a stamp set by terraces.

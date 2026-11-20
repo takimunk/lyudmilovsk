@@ -1,0 +1,97 @@
+{
+ "city.rounds.coll.title": {
+  "ru": "Разнос",
+  "en": "Rounds",
+  "ja": "配達"
+ },
+ "city.rounds.coll.t1": {
+  "ru": "Терраса T1: газеты",
+  "en": "Terrace T1: papers",
+  "ja": "テラスT1：新聞"
+ },
+ "quest.rounds.title": {
+  "ru": "Велосипедный разнос",
+  "en": "The bicycle rounds",
+  "ja": "自転車の配達"
+ },
+ "quest.rounds.desc": {
+  "ru": "С шести у киоска № 1 ждёт пачка газет: забросить по газете на крыльцо каждому подписчику террасы до восьми. Со вторника по субботу старый почтальон даёт посылки — звонить в каждую квартиру.",
+  "en": "From six a bundle of papers waits at kiosk No. 1: a paper on the step of every subscriber of the day's terrace by eight. Tuesday to Saturday the old postman gives out parcels: ring at every flat.",
+  "ja": "六時からキオスク一号に新聞の束が届く。八時までにその日のテラスの購読者の玄関に一部ずつ。火曜から土曜は元郵便配達さんが小包を渡してくれる。一軒ずつ呼び鈴を。"
+ },
+ "quest.rounds.done": {
+  "ru": "Все четыре террасы получили газеты из моих рук. Почтальон говорит, у меня глаз верный.",
+  "en": "All four terraces have had their papers from my hands. The postman says I've a sure eye.",
+  "ja": "四つのテラスすべてに自分の手で新聞を届けた。郵便配達さんは、いい目をしていると言う。"
+ },
+ "quest.rounds.first.log": {
+  "ru": "Довезти первый разнос газет до последней двери.",
+  "en": "Ride the first paper round to its last door.",
+  "ja": "最初の新聞配達を最後の家まで。"
+ },
+ "quest.rounds.paper.obj": {
+  "ru": "Разнести газеты до последней двери",
+  "en": "Deliver the papers to the last door",
+  "ja": "最後の家まで新聞を配る"
+ },
+ "quest.rounds.post.log": {
+  "ru": "Старый почтальон с террасы T1 ищет помощника: со вторника по субботу, с девяти до двенадцати.",
+  "en": "The old postman of terrace T1 needs a helper: Tuesday to Saturday, nine to twelve.",
+  "ja": "テラスT1の元郵便配達さんが手伝いを探している。火曜から土曜、九時から十二時。"
+ },
+ "quest.rounds.post.obj": {
+  "ru": "Разнести посылки почтальона",
+  "en": "Deliver the postman's parcels",
+  "ja": "郵便配達さんの小包を配る"
+ },
+ "quest.rounds.terraces.log": {
+  "ru": "Хороший разнос (три газеты из четырёх на крыльцо) на каждой террасе — четыре отметки в книжке «Разнос».",
+  "en": "A good round (three papers in four on the step) on every terrace: four marks in the «Rounds» book.",
+  "ja": "どのテラスでも上手な配達（四部中三部を玄関に）を。「配達」手帳に四つの印。"
+ },
+ "quest.rounds.t1.obj": {
+  "ru": "Хороший разнос на T1",
+  "en": "A good round on T1",
+  "ja": "T1で上手な配達"
+ },
+ "quest.rounds.t2.obj": {
+  "ru": "Хороший разнос на T2",
+  "en": "A good round on T2",
+  "ja": "T2で上手な配達"
+ },
+ "quest.rounds.t3.obj": {
+  "ru": "Хороший разнос на T3",
+  "en": "A good round on T3",
+  "ja": "T3で上手な配達"
+ },
+ "quest.rounds.t4.obj": {
+  "ru": "Хороший разнос на T4",
+  "en": "A good round on T4",
+  "ja": "T4で上手な配達"
+ },
+ "city.text.jobs.rounds": {
+  "ru": "РАЗНОС. Газеты: с шести утра пачка у киоска № 1, разнести по крыльцам подписчиков своей террасы до восьми, на велосипеде быстрее. Оплата за каждую газету на крыльце. Почта: со вторника по субботу, с девяти до двенадцати, посылки по квартирам. Спросить старого почтальона, терраса T1.",
+  "en": "ROUNDS. Papers: from six in the morning the bundle is at kiosk No. 1, to be delivered to the subscribers' steps on the day's terrace by eight, quicker by bicycle. Paid for every paper on a step. Post: Tuesday to Saturday, nine to twelve, parcels to the flats. Ask the old postman, terrace T1.",
+  "ja": "配達。新聞：朝六時からキオスク一号に束あり、八時までにその日のテラスの購読者の玄関へ。自転車が速い。玄関に届いた一部ごとに支払い。郵便：火曜から土曜、九時から十二時、小包を各戸へ。テラスT1の元郵便配達さんに声をかけること。"
+ },
+ "city.rounds.coll.t2": {
+  "ru": "Терраса T2: газеты",
+  "en": "Terrace T2: papers",
+  "ja": "テラスT2：新聞"
+ },
+ "city.rounds.coll.t3": {
+  "ru": "Терраса T3: газеты",
+  "en": "Terrace T3: papers",
+  "ja": "テラスT3：新聞"
+ },
+ "city.rounds.coll.t4": {
+  "ru": "Терраса T4: газеты",
+  "en": "Terrace T4: papers",
+  "ja": "テラスT4：新聞"
+ },
+ "city.rounds.coll.post": {
+  "ru": "Почта старого почтальона",
+  "en": "The old postman's post",
+  "ja": "元郵便配達さんの郵便"
+ }
+}
