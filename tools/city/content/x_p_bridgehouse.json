@@ -3,11 +3,12 @@
  "acts": {
   "bh_mail": {
    "prompt": "city.bh.p.mail",
-   "rotate": "daily",
+   "rotate": "use",
    "minutes": 1,
    "lines": [
     "city.bh.mail.1",
     "city.bh.mail.2",
+    "city.bh.mail.7",
     "city.bh.mail.3",
     "city.bh.mail.4",
     "city.bh.mail.5",
