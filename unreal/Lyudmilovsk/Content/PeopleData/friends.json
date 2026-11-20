@@ -20,6 +20,8 @@
   "bench": 6,
   "tea": 12,
   "outing": 12,
+  "festival": 8,
+  "festival_level": 3,
   "tea_level": 2,
   "tea_every": 7,
   "tea_ahead": 2,

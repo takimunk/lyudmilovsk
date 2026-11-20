@@ -1,0 +1,76 @@
+## ---------------------------------------------------------------------------------------------------------------
+## Holidays and the town's new toys (backlog item 24, docs/festivals.md "The new toys"): a friend asks the hero to come
+## along (to = hero, bond = friend close, on a holiday; {0} is the nickname they gave him), finds him in the crowd
+## (on = friend_festival), and the town talks of the day's cup, the Rassvet's programme, the radio, the kites and the
+## harvest fair's judges. Russian: the speaker's own words never agree in gender; the hero is a boy.
+## ---------------------------------------------------------------------------------------------------------------
+
+[friend_fest_invite]
+to = hero
+bond = friend close
+festival = any
+weight = 5
+say town.friend_fest_invite.1 | {0}, ты же идёшь на праздник? Пойдём вместе, одному там скучно. | {0}, you're coming to the holiday, aren't you? Let's go together, it's dull there alone. | {0}、お祭りに行くでしょ？いっしょに行こうよ、ひとりじゃつまらない。
+say town.friend_fest_invite.2 | {0}! Встретимся на празднике? Ищи меня там, где музыка. | {0}! Shall we meet at the holiday? Look for me where the music is. | {0}！お祭りで会おうか。音楽の鳴ってるあたりを探して。
+say town.friend_fest_invite.3 | С праздником, {0}! Приходи, там сегодня весь город. Место рядом держу. | Happy holiday, {0}! Come along, the whole town is there today. I'm keeping a place beside me. | {0}、おめでとう！おいでよ、今日は町じゅうが集まってる。となりを空けておくから。
+
+[friend_fest_invite_kid]
+to = hero
+bond = friend close
+festival = any
+age = kid
+weight = 6
+say town.friend_fest_invite_kid.1 | {0}, {0}! Пойдём на праздник вместе! Я знаю, где дают шарики! | {0}, {0}! Let's go to the holiday together! I know where they give out balloons! | {0}、{0}！いっしょにお祭り行こう！風船くれるところ知ってるんだ！
+say town.friend_fest_invite_kid.2 | {0}, а ты придёшь? Без тебя я змея не запущу, он большой. | {0}, will you come? I can't launch the kite without you, it's big. | {0}、来てくれる？きみがいないと凧が上げられない、大きいんだもん。
+
+[friend_festival]
+on = friend_festival
+bond = friend close
+weight = 5
+say town.friend_festival.1 | {0}! Вот ты где. А я высматриваю тебя с самого начала. | {0}! There you are. I've been looking out for you since it began. | {0}！ここにいたんだ。始まったときからずっと探してたよ。
+say town.friend_festival.2 | Ну наконец-то, {0}. Теперь праздник настоящий. | At last, {0}. Now it's a proper holiday. | やっと来たね、{0}。これで本物のお祭りだ。
+say town.friend_festival.3 | {0}, иди сюда, отсюда лучше видно! | {0}, come over here, you can see better from here! | {0}、こっちおいで、ここのほうがよく見える！
+
+[friend_festival_kid]
+on = friend_festival
+bond = friend close
+age = kid
+weight = 6
+say town.friend_festival_kid.1 | {0}! Ты пришёл! Смотри, что у меня есть! | {0}! You came! Look what I've got! | {0}！来てくれた！見て、これ持ってるんだ！
+
+[fest_toys_cup]
+at = outdoors
+festival = any
+age = teen adult elder
+weight = 2
+say town.fest_toys_cup.1 | В клубе сегодня праздничный кубок. Говорят, с лентой. | It's the holiday cup at the club today. With a ribbon, they say. | 今日はクラブで祝日カップだって。リボンつきらしいよ。
+say town.fest_toys_cup.2 | В праздник все играют лучше. Или всем так кажется. | Everyone plays better on a holiday. Or everyone thinks so. | 祝日はみんな腕が上がる。それとも、そう思うだけかな。
+
+[fest_toys_cinema]
+at = outdoors
+festival = any
+weight = 2
+say town.fest_toys_cinema.1 | В «Рассвете» сегодня особая программа. Старое кино, праздничное. | The Rassvet has a special programme today. Old films, holiday ones. | 「ラスヴェート」は今日は特別プログラム。古い映画、お祭り向きのね。
+say town.fest_toys_cinema.2 | По радио с утра поздравляют. Диктор, кажется, тоже празднует. | They've been wishing us well on the radio since morning. The announcer seems to be celebrating too. | ラジオは朝からお祝いの言葉。アナウンサーも祝ってるみたいだね。
+
+[fest_toys_kites]
+at = outdoors
+festival = children_day blossom
+weight = 3
+say town.fest_toys_kites.1 | Смотри, змеи над парком! Вон тот, красный, выше всех. | Look, kites over the park! That red one is the highest. | 見て、公園の上に凧！あの赤いのがいちばん高い。
+say town.fest_toys_kites.2 | Ветер слабый, а змей держится. Упрямый. | Hardly any wind, and the kite stays up. Stubborn. | 風は弱いのに凧が落ちない。がんこだね。
+
+[fest_toys_harvest]
+at = outdoors
+festival = harvest_fair
+age = adult elder
+weight = 4
+say town.fest_toys_harvest.1 | Жюри в три. Несу свою картошку на весы, пусть знают. | The judges are at three. I'm taking my potatoes to the scales, let them know. | 審査は三時。うちのジャガイモをはかりに持っていくんだ、見せてやる。
+say town.fest_toys_harvest.2 | В прошлом году приз взяли помидоры с коммунального огорода. В этом посмотрим. | Last year the prize went to tomatoes from the commune's allotment. We'll see this year. | 去年はコミューンの畑のトマトが賞を取った。今年はどうかな。
+
+[fest_toys_skipping]
+at = outdoors
+festival = fisherman_day
+weight = 3
+say town.fest_toys_skipping.1 | На пляже в полдень пускают «блинчики». Рекорд прошлого года: одиннадцать. | They're skipping stones on the beach at noon. Last year's record: eleven. | 正午に浜で水切り大会。去年の記録は十一回。
+say town.fest_toys_skipping.2 | Камень надо плоский и тёплый. Холодный тонет от обиды. | The stone has to be flat and warm. A cold one sinks out of spite. | 石は平たくて温かいのがいい。冷たいのはすねて沈む。
