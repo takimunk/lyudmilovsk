@@ -1,0 +1,663 @@
+{
+ "frame": "metres, origin on the ground under the middle unless the kind's notes say otherwise, Blender -Y is the front, Z up; seats [x, y, z, yaw]: yaw = degrees of the sitter's facing, counter-clockwise seen from above, 0 = toward the object's front (-Y); size and bounds are in Blender axes (x, y, z)",
+ "front_yaw": 90.0,
+ "asset_names": "SM_South_<Kind>[_V<n>] (_V only for kinds with several variants)",
+ "atlas": "M_North_Atlas (the North's, blender/north/gen); text slots M_South_Text_<id> from textures/localized/<lang>/south_<id>.png",
+ "meshes": [
+  {
+   "kind": "town_stele",
+   "variant": 0,
+   "file": "town_stele.glb",
+   "tris": 1574,
+   "size": [
+    4.38,
+    2.25,
+    5.669
+   ],
+   "collision": "exact",
+   "seats": [],
+   "notes": "concrete stele 5.5 m high by the track: blade leaning back with a mosaic sun (r 0.64 m, rays to 1.32 m), the name bar (4.3 m wide, top 2.14 m) on two legs, a flower bed in front (y -1.55..-0.75); text slot M_South_Text_stele (texture south_stele.png, 8:1) on the bar's front face, one quad with UVs 0..1, 2 mm in front of the concrete",
+   "text_slots": [
+    {
+     "id": "stele",
+     "material": "M_South_Text_stele",
+     "texture": "south_stele",
+     "key": "south.sign.stele.name"
+    }
+   ],
+   "bounds_min": [
+    -2.19,
+    -1.55,
+    0.0
+   ],
+   "bounds_max": [
+    2.19,
+    0.7,
+    5.669
+   ],
+   "materials": [
+    "M_North_Atlas",
+    "M_South_Text_stele"
+   ],
+   "uv_lint": 0
+  },
+  {
+   "kind": "spring_trough",
+   "variant": 0,
+   "file": "spring_trough.glb",
+   "tris": 3638,
+   "size": [
+    2.011,
+    2.149,
+    1.471
+   ],
+   "collision": "exact",
+   "seats": [],
+   "notes": "wayside spring: a dry-stone head wall 1.7 x 0.55 m, 1.4 m high (front face y -0.18), an iron pipe at z 0.86, a hewn trough (1.0 x 0.66 m, rim 0.46, a lower lip in the middle of its front), a stepping stone, a tin mug on a chain, a niche with a shelf; spout = where the water leaves the pipe, basin = [x, y, water z, half width] of the water in the trough (inner box 0.82 x 0.48 m): no water in the mesh",
+   "spout": [
+    0.0,
+    -0.605,
+    0.8
+   ],
+   "basin": [
+    0.0,
+    -0.65,
+    0.4,
+    0.24
+   ],
+   "basin_box": [
+    0.82,
+    0.48
+   ],
+   "bounds_min": [
+    -1.012,
+    -1.676,
+    -0.05
+   ],
+   "bounds_max": [
+    0.999,
+    0.473,
+    1.421
+   ],
+   "materials": [
+    "M_North_Atlas"
+   ],
+   "uv_lint": 0
+  },
+  {
+   "kind": "trail_sign",
+   "variant": 0,
+   "file": "trail_sign_v0.glb",
+   "tris": 638,
+   "size": [
+    1.466,
+    1.233,
+    2.57
+   ],
+   "collision": "exact",
+   "seats": [],
+   "notes": "trail finger-post 2.4 m, 3 arrow planks (0.82 x 0.2 m, words on both faces, never mirrored); planks[].yaw_deg = where each tip points, degrees counter-clockwise from above, 0 = the post's front (-Y), 90 = +X; turn the post so the planks point at their places",
+   "planks": [
+    {
+     "id": "sign_0_1",
+     "material": "M_South_Text_sign_0_1",
+     "texture": "south_sign_0_1",
+     "yaw_deg": -67.0,
+     "z": 2.12,
+     "text_keys": [
+      "south.sign.trail.town",
+      "south.sign.trail.dist.0_5km"
+     ]
+    },
+    {
+     "id": "sign_0_2",
+     "material": "M_South_Text_sign_0_2",
+     "texture": "south_sign_0_2",
+     "yaw_deg": 44.0,
+     "z": 1.86,
+     "text_keys": [
+      "south.sign.trail.lookout",
+      "south.sign.trail.dist.60m"
+     ]
+    },
+    {
+     "id": "sign_0_3",
+     "material": "M_South_Text_sign_0_3",
+     "texture": "south_sign_0_3",
+     "yaw_deg": 132.0,
+     "z": 1.6,
+     "text_keys": [
+      "south.sign.trail.sea",
+      "south.sign.trail.dist.110m"
+     ]
+    }
+   ],
+   "bounds_min": [
+    -0.808,
+    -0.638,
+    -0.15
+   ],
+   "bounds_max": [
+    0.658,
+    0.595,
+    2.42
+   ],
+   "materials": [
+    "M_North_Atlas",
+    "M_South_Text_sign_0_1",
+    "M_South_Text_sign_0_2",
+    "M_South_Text_sign_0_3"
+   ],
+   "uv_lint": 0
+  },
+  {
+   "kind": "trail_sign",
+   "variant": 1,
+   "file": "trail_sign_v1.glb",
+   "tris": 638,
+   "size": [
+    1.29,
+    1.478,
+    2.57
+   ],
+   "collision": "exact",
+   "seats": [],
+   "notes": "trail finger-post 2.4 m, 3 arrow planks (0.82 x 0.2 m, words on both faces, never mirrored); planks[].yaw_deg = where each tip points, degrees counter-clockwise from above, 0 = the post's front (-Y), 90 = +X; turn the post so the planks point at their places",
+   "planks": [
+    {
+     "id": "sign_1_1",
+     "material": "M_South_Text_sign_1_1",
+     "texture": "south_sign_1_1",
+     "yaw_deg": 147.0,
+     "z": 2.12,
+     "text_keys": [
+      "south.sign.trail.aton",
+      "south.sign.trail.dist.0_3km"
+     ]
+    },
+    {
+     "id": "sign_1_2",
+     "material": "M_South_Text_sign_1_2",
+     "texture": "south_sign_1_2",
+     "yaw_deg": -33.0,
+     "z": 1.86,
+     "text_keys": [
+      "south.sign.trail.town",
+      "south.sign.trail.dist.0_2km"
+     ]
+    },
+    {
+     "id": "sign_1_3",
+     "material": "M_South_Text_sign_1_3",
+     "texture": "south_sign_1_3",
+     "yaw_deg": -114.0,
+     "z": 1.6,
+     "text_keys": [
+      "south.sign.trail.spring",
+      "south.sign.trail.dist.0_4km"
+     ]
+    }
+   ],
+   "bounds_min": [
+    -0.802,
+    -0.739,
+    -0.15
+   ],
+   "bounds_max": [
+    0.489,
+    0.739,
+    2.42
+   ],
+   "materials": [
+    "M_North_Atlas",
+    "M_South_Text_sign_1_1",
+    "M_South_Text_sign_1_2",
+    "M_South_Text_sign_1_3"
+   ],
+   "uv_lint": 0
+  },
+  {
+   "kind": "trail_sign",
+   "variant": 2,
+   "file": "trail_sign_v2.glb",
+   "tris": 638,
+   "size": [
+    1.155,
+    1.734,
+    2.57
+   ],
+   "collision": "exact",
+   "seats": [],
+   "notes": "trail finger-post 2.4 m, 3 arrow planks (0.82 x 0.2 m, words on both faces, never mirrored); planks[].yaw_deg = where each tip points, degrees counter-clockwise from above, 0 = the post's front (-Y), 90 = +X; turn the post so the planks point at their places",
+   "planks": [
+    {
+     "id": "sign_2_1",
+     "material": "M_South_Text_sign_2_1",
+     "texture": "south_sign_2_1",
+     "yaw_deg": 1.0,
+     "z": 2.12,
+     "text_keys": [
+      "south.sign.trail.promenade",
+      "south.sign.trail.dist.0_2km"
+     ]
+    },
+    {
+     "id": "sign_2_2",
+     "material": "M_South_Text_sign_2_2",
+     "texture": "south_sign_2_2",
+     "yaw_deg": -87.0,
+     "z": 1.86,
+     "text_keys": [
+      "south.sign.trail.hide",
+      "south.sign.trail.dist.0_2km"
+     ]
+    },
+    {
+     "id": "sign_2_3",
+     "material": "M_South_Text_sign_2_3",
+     "texture": "south_sign_2_3",
+     "yaw_deg": 172.0,
+     "z": 1.6,
+     "text_keys": [
+      "south.sign.trail.station_beach",
+      "south.sign.trail.dist.0_3km"
+     ]
+    }
+   ],
+   "bounds_min": [
+    -0.87,
+    -0.87,
+    -0.15
+   ],
+   "bounds_max": [
+    0.285,
+    0.864,
+    2.42
+   ],
+   "materials": [
+    "M_North_Atlas",
+    "M_South_Text_sign_2_1",
+    "M_South_Text_sign_2_2",
+    "M_South_Text_sign_2_3"
+   ],
+   "uv_lint": 0
+  },
+  {
+   "kind": "trail_sign",
+   "variant": 3,
+   "file": "trail_sign_v3.glb",
+   "tris": 594,
+   "size": [
+    0.608,
+    1.686,
+    2.57
+   ],
+   "collision": "exact",
+   "seats": [],
+   "notes": "trail finger-post 2.4 m, 2 arrow planks (0.82 x 0.2 m, words on both faces, never mirrored); planks[].yaw_deg = where each tip points, degrees counter-clockwise from above, 0 = the post's front (-Y), 90 = +X; turn the post so the planks point at their places",
+   "planks": [
+    {
+     "id": "sign_3_1",
+     "material": "M_South_Text_sign_3_1",
+     "texture": "south_sign_3_1",
+     "yaw_deg": 164.0,
+     "z": 2.12,
+     "text_keys": [
+      "south.sign.trail.cliff",
+      "south.sign.trail.dist.0_25km"
+     ]
+    },
+    {
+     "id": "sign_3_2",
+     "material": "M_South_Text_sign_3_2",
+     "texture": "south_sign_3_2",
+     "yaw_deg": -15.0,
+     "z": 1.86,
+     "text_keys": [
+      "south.sign.trail.aton",
+      "south.sign.trail.dist.110m"
+     ]
+    }
+   ],
+   "bounds_min": [
+    -0.308,
+    -0.845,
+    -0.15
+   ],
+   "bounds_max": [
+    0.3,
+    0.841,
+    2.42
+   ],
+   "materials": [
+    "M_North_Atlas",
+    "M_South_Text_sign_3_1",
+    "M_South_Text_sign_3_2"
+   ],
+   "uv_lint": 0
+  },
+  {
+   "kind": "info_board",
+   "variant": 0,
+   "file": "info_board_v0.glb",
+   "tris": 916,
+   "size": [
+    1.91,
+    0.839,
+    2.55
+   ],
+   "collision": "exact",
+   "seats": [],
+   "notes": "roofed timber notice board 1.6 m wide (2.45 m high); the panel (1.3 x 0.65 m, M_South_Text_board_trail, 2:1, texture south_board_trail.png) faces -Y, 5 mm in front of the back boards",
+   "text_slots": [
+    {
+     "id": "board_trail",
+     "material": "M_South_Text_board_trail",
+     "texture": "south_board_trail",
+     "keys": "south.board.trail.*"
+    }
+   ],
+   "bounds_min": [
+    -0.947,
+    -0.419,
+    -0.22
+   ],
+   "bounds_max": [
+    0.963,
+    0.419,
+    2.33
+   ],
+   "materials": [
+    "M_North_Atlas",
+    "M_South_Text_board_trail"
+   ],
+   "uv_lint": 0
+  },
+  {
+   "kind": "info_board",
+   "variant": 1,
+   "file": "info_board_v1.glb",
+   "tris": 916,
+   "size": [
+    1.891,
+    0.839,
+    2.55
+   ],
+   "collision": "exact",
+   "seats": [],
+   "notes": "roofed timber notice board 1.6 m wide (2.45 m high); the panel (1.3 x 0.65 m, M_South_Text_board_reeds, 2:1, texture south_board_reeds.png) faces -Y, 5 mm in front of the back boards",
+   "text_slots": [
+    {
+     "id": "board_reeds",
+     "material": "M_South_Text_board_reeds",
+     "texture": "south_board_reeds",
+     "keys": "south.board.reeds.*"
+    }
+   ],
+   "bounds_min": [
+    -0.939,
+    -0.419,
+    -0.22
+   ],
+   "bounds_max": [
+    0.952,
+    0.419,
+    2.33
+   ],
+   "materials": [
+    "M_North_Atlas",
+    "M_South_Text_board_reeds"
+   ],
+   "uv_lint": 0
+  },
+  {
+   "kind": "hay_stack",
+   "variant": 0,
+   "file": "hay_stack_v0.glb",
+   "tris": 664,
+   "size": [
+    3.336,
+    3.267,
+    3.004
+   ],
+   "collision": "box",
+   "seats": [],
+   "notes": "conical haystack round a pole, 2.9 m across, the pole's top at 3.0 m",
+   "body": [
+    2.9,
+    2.9,
+    3.0
+   ],
+   "bounds_min": [
+    -1.655,
+    -1.645,
+    0.0
+   ],
+   "bounds_max": [
+    1.681,
+    1.621,
+    3.004
+   ],
+   "materials": [
+    "M_North_Atlas"
+   ],
+   "uv_lint": 0
+  },
+  {
+   "kind": "hay_stack",
+   "variant": 1,
+   "file": "hay_stack_v1.glb",
+   "tris": 1460,
+   "size": [
+    3.121,
+    2.466,
+    1.733
+   ],
+   "collision": "box",
+   "seats": [],
+   "notes": "low rick 2.6 x 1.9 m, 1.75 m high, under an old blue tarp weighed down by six stones on ropes",
+   "bounds_min": [
+    -1.6,
+    -1.165,
+    0.0
+   ],
+   "bounds_max": [
+    1.521,
+    1.301,
+    1.733
+   ],
+   "materials": [
+    "M_North_Atlas"
+   ],
+   "uv_lint": 0
+  },
+  {
+   "kind": "beehive",
+   "variant": 0,
+   "file": "beehive_v0.glb",
+   "tris": 302,
+   "size": [
+    0.597,
+    0.595,
+    1.069
+   ],
+   "collision": "box",
+   "seats": [],
+   "notes": "Dadant hive on a stand, the entrance on the front (-Y): v0 a pale blue brood box and an ochre super (top 1.05 m); v1 an ochre brood box, two blue supers and a stone on the lid",
+   "entrance": [
+    0.0,
+    -0.24,
+    0.475
+   ],
+   "bounds_min": [
+    -0.295,
+    -0.32,
+    -0.02
+   ],
+   "bounds_max": [
+    0.302,
+    0.275,
+    1.049
+   ],
+   "materials": [
+    "M_North_Atlas"
+   ],
+   "uv_lint": 0
+  },
+  {
+   "kind": "beehive",
+   "variant": 1,
+   "file": "beehive_v1.glb",
+   "tris": 418,
+   "size": [
+    0.597,
+    0.598,
+    1.348
+   ],
+   "collision": "box",
+   "seats": [],
+   "notes": "Dadant hive on a stand, the entrance on the front (-Y): v0 a pale blue brood box and an ochre super (top 1.22 m); v1 an ochre brood box, two blue supers and a stone on the lid",
+   "entrance": [
+    0.0,
+    -0.24,
+    0.475
+   ],
+   "bounds_min": [
+    -0.292,
+    -0.32,
+    -0.02
+   ],
+   "bounds_max": [
+    0.305,
+    0.278,
+    1.328
+   ],
+   "materials": [
+    "M_North_Atlas"
+   ],
+   "uv_lint": 0
+  },
+  {
+   "kind": "wattle_fence",
+   "variant": 0,
+   "file": "wattle_fence_v0.glb",
+   "tris": 3024,
+   "size": [
+    4.061,
+    0.167,
+    1.479
+   ],
+   "collision": "box",
+   "seats": [],
+   "notes": "woven wattle fence 4 m along X, 1.1 m high (stakes to 1.25 m), ten stakes",
+   "axis": "x",
+   "length": 4.0,
+   "bounds_min": [
+    -2.035,
+    -0.083,
+    -0.201
+   ],
+   "bounds_max": [
+    2.026,
+    0.083,
+    1.279
+   ],
+   "materials": [
+    "M_North_Atlas"
+   ],
+   "uv_lint": 0
+  },
+  {
+   "kind": "wattle_fence",
+   "variant": 1,
+   "file": "wattle_fence_v1.glb",
+   "tris": 2680,
+   "size": [
+    4.061,
+    0.715,
+    1.487
+   ],
+   "collision": "box",
+   "seats": [],
+   "notes": "woven wattle fence 4 m along X, 1.1 m high (stakes to 1.25 m), ten stakes; a broken stretch at x 0.15..1.15 where the upper courses are gone (one stake snapped, one leaning)",
+   "axis": "x",
+   "length": 4.0,
+   "bounds_min": [
+    -2.035,
+    -0.632,
+    -0.206
+   ],
+   "bounds_max": [
+    2.026,
+    0.083,
+    1.282
+   ],
+   "materials": [
+    "M_North_Atlas"
+   ],
+   "uv_lint": 0
+  },
+  {
+   "kind": "scarecrow",
+   "variant": 0,
+   "file": "scarecrow.glb",
+   "tris": 818,
+   "size": [
+    1.564,
+    0.636,
+    2.33
+   ],
+   "collision": "none",
+   "seats": [],
+   "notes": "scarecrow 1.9 m: a pole and a crossbar (arms 1.5 m wide at 1.47 m), plaid shirt, blue trousers, straw tufts, a sack head turned up a little toward the sky, straw hat, red scarf; faces -Y",
+   "bounds_min": [
+    -0.782,
+    -0.359,
+    -0.3
+   ],
+   "bounds_max": [
+    0.782,
+    0.277,
+    2.029
+   ],
+   "materials": [
+    "M_North_Atlas"
+   ],
+   "uv_lint": 0
+  },
+  {
+   "kind": "orchard_ladder",
+   "variant": 0,
+   "file": "orchard_ladder.glb",
+   "tris": 654,
+   "size": [
+    1.166,
+    1.566,
+    2.85
+   ],
+   "collision": "none",
+   "seats": [],
+   "notes": "old tapering fruit-picking ladder leaning toward +Y (foot at y -0.62, top at y 0.5, z 2.75): stand it with its back (+Y) against an apple tree's trunk or a fork; one rung replaced by a pine lath, one cracked; a wicker basket with apples at its foot",
+   "lean_toward": "+Y",
+   "top": [
+    0.0,
+    0.55,
+    2.75
+   ],
+   "bounds_min": [
+    -0.301,
+    -1.013,
+    -0.032
+   ],
+   "bounds_max": [
+    0.865,
+    0.553,
+    2.819
+   ],
+   "materials": [
+    "M_North_Atlas"
+   ],
+   "uv_lint": 0
+  }
+ ]
+}
