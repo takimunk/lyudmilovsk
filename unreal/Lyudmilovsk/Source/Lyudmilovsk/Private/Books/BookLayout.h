@@ -132,8 +132,8 @@ namespace LyudBooks
 	inline bool IsSpace(char16_t C) { return C == u' ' || C == u'\t' || C == 0x00A0 || C == 0x3000; }
 
 	/**
-	 * Lays Text out. Headings start a new page (unless the page is still empty or holds only headings) with a blank row after
-	 * them; paragraphs are separated by nothing (prose: the first line is indented) and verse stanzas by a blank row. A
+	 * Lays Text out. Headings start a new page (unless the page is still empty or holds only headings, or the section before
+	 * was short enough to begin on this same page: then two blank rows) with a blank row after them; paragraphs are separated by nothing (prose: the first line is indented) and verse stanzas by a blank row. A
 	 * paragraph never leaves a single line alone at the foot of a page when it goes on (a widow line moves over).
 	 */
 	inline FLayout Layout(const std::u16string& Text, const FParams& P)
@@ -269,6 +269,7 @@ namespace LyudBooks
 
 		int32_t Pos = 0;
 		bool bPrevVerse = false;
+		bool bAfterHead = false;  // the blank row under a heading is already there: a stanza adds none
 		std::vector<std::pair<int32_t, int32_t>> Rows16;
 		while (Pos < N)
 		{
@@ -304,8 +305,14 @@ namespace LyudBooks
 			if (bHead)
 			{
 				const int32_t S = Pos + 2;
-				// a heading opens a page, unless the page is still empty of body text, or it would be the page's last rows
-				if (bPageHasBody)
+				// a heading opens a page, unless the page is still empty of body text, or it would be the page's last rows;
+				// short sections (a stanza of Onegin, a numbered maxim) run on: the one before it began on this page too
+				const bool bShortBefore = !L.Headings.empty() && L.Headings.back().Page == (int32_t)L.Pages.size() - 1;
+				if (bPageHasBody && bShortBefore && Row <= Rows - 6)
+				{
+					Row += 2;  // two blank rows above the heading
+				}
+				else if (bPageHasBody)
 				{
 					NewPage(Pos);
 				}
@@ -330,13 +337,16 @@ namespace LyudBooks
 					NewPage(End);
 				}
 				bPrevVerse = false;
+				bAfterHead = true;
 				Pos = End;
 				continue;
 			}
+			const bool bJustHead = bAfterHead;
+			bAfterHead = false;
 			if (bHasBreak)
 			{
 				// verse: every kept line wraps on its own (hanging indent for the rest), a blank row round the stanza
-				if (Row > 0 && !bPrevVerse)
+				if (Row > 0 && !bPrevVerse && !bJustHead)
 				{
 					++Row;
 				}

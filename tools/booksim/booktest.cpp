@@ -152,6 +152,31 @@ int main(int Argc, char** Argv)
 		CHECK(L.Lines.size() >= 5);
 	}
 	{
+		// short sections (stanzas under numbers) run on the page; a long one before a heading still opens a new page
+		std::string S;
+		for (int I = 0; I < 6; ++I)
+		{
+			S += "# " + std::to_string(I + 1) + "\n\nline one\nline two\nline three\n\n";
+		}
+		const std::u16string T = U(S.c_str());
+		const FParams P = Params(200.f, 60);
+		const FLayout L = Layout(T, P);
+		Invariants(T, L, P);
+		CHECK(L.Headings.size() == 6);
+		CHECK(L.Pages.size() == 1);
+		std::string Long = "# A\n\n";
+		for (int I = 0; I < 40; ++I)
+		{
+			Long += "A paragraph of prose that fills its line and more.\n\n";
+		}
+		Long += "# B\n\nshort\n";
+		const std::u16string T2 = U(Long.c_str());
+		const FLayout L2 = Layout(T2, P);
+		Invariants(T2, L2, P);
+		CHECK(L2.Headings.size() == 2);
+		CHECK(L2.Lines[(size_t)L2.Pages[(size_t)L2.Headings[1].Page].FirstLine].Kind == ELineKind::Heading);
+	}
+	{
 		// empty text: one empty page
 		const FLayout L = Layout(std::u16string(), Params(100.f, 10));
 		CHECK(L.Pages.size() == 1);

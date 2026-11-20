@@ -595,7 +595,8 @@ class _WsText(html.parser.HTMLParser):
         self.buf: list[str] = []
         self.skip = 0
         self.stack: list[tuple[str, bool]] = []
-        self.mode = None  # "p", "h", "poem"
+        self.mode = None  # "p", "h", "poem", "pre"
+        self.htag = ""
 
     def _skipping(self, tag, attrs) -> bool:
         a = dict(attrs)
@@ -627,8 +628,10 @@ class _WsText(html.parser.HTMLParser):
         if tag in ("p", "dd") and self.mode is None:
             self.mode = "p"
             self.buf = []
-        elif tag in ("h2", "h3", "h4", "h5") and self.mode is None:
+        elif (tag in ("h2", "h3", "h4", "h5", "center") or (tag == "div" and a.get("role") == "heading")) and self.mode is None:
+            # chapter numbers come as <h3>, <div role="heading"> or a centred "I."
             self.mode = "h"
+            self.htag = tag
             self.buf = []
         elif tag == "pre" and self.mode is None:
             self.mode = "pre"
@@ -650,7 +653,7 @@ class _WsText(html.parser.HTMLParser):
                 break
         if self.skip:
             return
-        if (self.mode == "p" and tag in ("p", "dd")) or (self.mode == "h" and tag in ("h2", "h3", "h4", "h5")) \
+        if (self.mode == "p" and tag in ("p", "dd")) or (self.mode == "h" and tag == self.htag) \
                 or (self.mode == "poem" and tag == "div") or (self.mode == "pre" and tag == "pre"):
             text = "".join(self.buf)
             if self.mode in ("poem", "pre"):
@@ -669,7 +672,8 @@ class _WsText(html.parser.HTMLParser):
                 text = re.sub(r"[ \t ]+", " ", text)
                 text = "\n".join(l.strip() for l in text.split("\n")).strip()
                 if text:
-                    self.out.append(("# " + text.replace("\n", " ")) if self.mode == "h" else text)
+                    heading = self.mode == "h" and len(text) <= 80  # a long centred block is a paragraph (an epigraph)
+                    self.out.append(("# " + text.replace("\n", " ")) if heading else text)
             self.mode = None
             self.buf = []
 
@@ -776,6 +780,15 @@ def tidy(text: str) -> str:
     return text.strip() + "\n"
 
 
+HEAD_RU = re.compile(r"^(ГЛАВА|Глава|ЧАСТЬ|Часть|КНИГА|Книга|ТОМ|Том|ДЕЙСТВИЕ|Действие|ДЕЙСТВИЕ|ЯВЛЕНИЕ|Явление|СЦЕНА|Сцена|"
+                     r"ПЕСНЬ|Песнь|ЭПИЛОГ|Эпилог|ПРОЛОГ|Пролог|ПИСЬМО|Письмо)\b[^\n]{0,60}$|^[IVXLC]+\.?$|^\d{1,3}\.?$")
+
+
+def ru_heading(p: str) -> str:
+    """A chapter line Wikisource printed as an ordinary paragraph ("ГЛАВА ПЕРВАЯ", "XII.") becomes a heading."""
+    return "# " + p if not p.startswith("# ") and "\n" not in p and HEAD_RU.match(p.strip()) else p
+
+
 def fetch_one(wid: str, lang: str, t: dict) -> tuple[str | None, str]:
     if t["source"] == "gutenberg":
         parts = []
@@ -793,7 +806,8 @@ def fetch_one(wid: str, lang: str, t: dict) -> tuple[str | None, str]:
                 parts.append(clean_aozora(raw, p["title"] if multi else None))
         return ("\n\n".join(parts) if parts else None), "aozora"
     if t["source"] == "wikisource":
-        paras = ws_text(t["wikisource"])
+        paras = [ru_heading(p) for p in ws_text(t["wikisource"])]
+        paras = [p for p in paras if p and not (p.startswith("# ") and not re.search(r"\w", p[2:]))]  # "# ————"
         return ("\n\n".join(paras) if paras else None), "wikisource"
     return None, "?"
 
