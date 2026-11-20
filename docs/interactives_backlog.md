@@ -75,7 +75,7 @@ growth and follow in `UAnimalLifeSubsystem`'s pure model, Mac shots of stroking 
 
 ## 2. A film camera and the photo album
 
-`[ ]` **Brief (Fable 5.2):** Give the hero a film camera. The photo studio on the promenade (`promenade_unit__photo`,
+`[~] film-camera 2026-11-20 (branch ready, docs/photo.md)` **Brief (Fable 5.2):** Give the hero a film camera. The photo studio on the promenade (`promenade_unit__photo`,
 `photo_desk`) sells a camera and 36-frame films; the hero raises it (a key, the view through a viewfinder frame with
 focus by distance and a slow shutter sound), each shot is a real capture of the view (a scene capture into a small
 render target, written to the save folder as a jpg, no per-frame cost when the camera is down). The film is developed

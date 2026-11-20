@@ -218,6 +218,10 @@ namespace
 		Good(TEXT("toy_car"), K::Misc, L::Pack, FVector(3.f, 4.f, 9.f), FLinearColor(0.35f, 0.6f, 0.85f), 50, 3.f);
 		Good(TEXT("rubber_ball"), K::Misc, L::Pack, FVector(16.f, 16.f, 16.f), FLinearColor(0.85f, 0.15f, 0.1f), 45, 8.f);
 		Good(TEXT("shell_box"), K::Misc, L::Pack, FVector(6.f, 8.f, 10.f), FLinearColor(0.9f, 0.85f, 0.75f), 60, 5.f);
+		// the photo studio's goods (docs/interactives_backlog.md "A film camera and the photo album", Private/Photo/LyudPhoto.cpp): the
+		// rangefinder «Чайка-3» in its case and a cassette of 36 black-and-white frames (an exposed film is no item: the album keeps it)
+		Good(TEXT("camera"), K::Misc, L::Pack, FVector(7.f, 13.5f, 8.5f), FLinearColor(0.08f, 0.07f, 0.07f), 240, 5.f);
+		Good(TEXT("photo_film"), K::Misc, L::Pack, FVector(3.4f, 3.4f, 5.2f), FLinearColor(0.16f, 0.3f, 0.42f), 18, 2.f);
 		// the diner by the lower station (docs/diner.md): ordered over its counter and served on a plate or in a cup there (ALyudDiner,
 		// Content/Food/food.json "plated"), eaten with a fork or a spoon or drunk at the counter; the burger in the hand. The looks here are
 		// only fallbacks (a burger left in the pocket)

@@ -33,7 +33,8 @@
   "bakery": {"role": "seller", "goods": [{"item": "bread_loaf", "price": 12, "count": 8}, {"item": "bread_rye", "price": 10, "count": 8}, {"item": "pie", "price": 15, "count": 10}, {"item": "vatrushka", "price": 10, "count": 8}, {"item": "bubliki", "price": 15, "count": 5}, {"item": "cookies", "price": 18, "count": 6}]},
   "book_stall": {"role": "bookseller", "goods": [{"item": "magazine_science", "price": 30, "count": 2}, {"item": "magazine_travel", "price": 30, "count": 2}, {"item": "fish_book", "price": 35, "count": 1}, {"item": "adventure_book", "price": 35, "count": 2}, {"item": "postcard_set", "price": 25, "count": 3}, {"item": "stamp_packet", "price": 8, "count": 6}, {"item": "postcard", "price": 3, "count": 8}]},
   "beer_bar": {"role": "bartender", "goods": [{"item": "drink_baikal", "price": 18, "count": 6}, {"item": "drink_tarkhun", "price": 18, "count": 6}, {"item": "kvass", "price": 6, "count": 12}, {"item": "seeds", "price": 10, "count": 6}, {"item": "dried_fish", "price": 20, "count": 6}]},
-  "pasty_bar": {"role": "seller", "goods": [{"item": "cheburek", "price": 20, "count": 12}, {"item": "pie", "price": 16, "count": 10}, {"item": "tea", "price": 12, "count": 8}, {"item": "water", "price": 20, "count": 4}]}
+  "pasty_bar": {"role": "seller", "goods": [{"item": "cheburek", "price": 20, "count": 12}, {"item": "pie", "price": 16, "count": 10}, {"item": "tea", "price": 12, "count": 8}, {"item": "water", "price": 20, "count": 4}]},
+  "photo": {"role": "photographer", "goods": [{"item": "camera", "price": 240, "count": 1}, {"item": "photo_film", "price": 18, "count": 6}]}
  },
  "acts": {
   "cashier": {"prompt": "city.act.ask.prompt", "lines": ["city.talk.cashier.*", {"k": "city.fest.cashier.1", "festival": "any"}]},

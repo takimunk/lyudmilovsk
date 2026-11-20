@@ -201,6 +201,7 @@ An act is what happens when the hero presses E at a thing:
 | `daily` | how many times a day it gives its reward (0: no limit) |
 | `shop` | opens the trade screen with this stock of `shops` when `needs_staff` is on shift |
 | `screen` | a screen show (`film`, `stage`, `tv`, `slides`): the page in the dark wide style, the line cut into subtitles shown one after another, the minutes passing with them; a sitting show on a thing that is not a seat wants the hero seated first (a seat of the plot within 25 m) and is then offered from the seat |
+| `open` | another system's screen opens instead of the act's page (`ULyudCityThings::OnOpen(screen, thing)`; one of `OPEN_SCREENS` in `interiors.py`): `books` (the library's classics, `ULyudBookScreen`), `photo_lab` (the photo studio takes films in and gives prints out), `photo_darkroom` (the hero develops his own film; `Private/Photo/LyudPhoto.cpp`). The act still takes its price, gives its items, plays its sound and reports its event; its line is taken but not shown, its `minutes` do not pass, and a counter's staff talk is not offered |
 | `collect` | a stamp every run gives (`"shelves/birds"`), or `"set/{line}"`: every line it shows is a piece of its own (the line's key: the films of «Рассвет»'s programme, a jukebox's records); an act `like` it inherits it (`"collect": ""` drops it) |
 | `closed` | what things doing this act say while their plot is shut: an act id or a line key (see "Closed") |
 | `game` | a mini-game played instead of showing `lines` (see "Mini-games"); an act `like` it inherits it (`"game": null` drops it) |
@@ -214,7 +215,8 @@ An act is what happens when the hero presses E at a thing:
 A thing record of `interiors.json` has `id`, `plot`, `kind`, `ue`, `yaw`, `props`, `act`, `hours`, `days`, and when they
 apply `auto`, `collect` (the stamp using it gives: a rule's `"collect": "kiosks/{plot}"` with the plot filled in) and `closed`
 (the act it does while its plot is shut). A `<plot|type>/<id>` rule may give `kind`, `props`, `act`, `hours`, `days`,
-`collect`, `closed`. The file's `collections` section: `{"<set>": {"title": key, "pieces": [...]}}`.
+`collect`, `closed`. The file's `collections` section: `{"<set>": {"title": key, "pieces": [...]}}` (and `"by": "code"` on a
+set whose stamps the game's code gives).
 
 ### Collections
 
@@ -224,7 +226,10 @@ acts `like` it, `"films/{line}"`), the jukebox records heard (`records`: `jukebo
 visited (`kiosks`: the rule `bus_stop_kiosk/counter`, `"kiosks/{plot}"`). Declared in a content file's `collections` section
 (`tools/city/content/collections.json`): `{"<set>": {"title": "<key>", "pieces": [...]}}`; without `pieces` the set is every
 piece something in town gives (a building's new lines grow it by themselves). `--check` fails on a stamp of an undeclared set
-or piece, a declared piece nothing gives, a missing title. The first time a stamp comes the HUD says `city.coll.got`
+or piece, a declared piece nothing gives, a missing title. A set with `"by": "code"` is given by the game's code, not by a
+thing in town (`ULyudCityThings::GiveStamp("<set>/<piece>")`): it must write its `pieces` out, and neither `--check` nor
+`quest_audit.py` asks that something in town gives them (the photo album's `photo_birds`, `photo_sky`, `photo_life` in
+`tools/city/content/photo.json`: a sharp frame of the subject on a developed film). The first time a stamp comes the HUD says `city.coll.got`
 («Фильмы «Рассвета»»: 3 из 16), at the last one `city.coll.complete`. Lines may ask for stamps (`have`, `count`). Console
 `lyud.City.Collections` (each set "n of m" to the log and on the page; `grant|clear <set|*>`); developer mode
 `interiors.collections` (the page) and `interiors.collections_all` (toggle: every set complete / cleared).

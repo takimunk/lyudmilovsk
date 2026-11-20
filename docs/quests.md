@@ -58,6 +58,7 @@ rest (the speakers are in `localization/voice.json`); `tools/check_localization.
 | `bring <item>@<Npc>` | a talk with that person while the pocket holds `need` of the item: they are taken | `ULyudQuests` (on `talk`) |
 | `eat <item>` | food or drink finished: a diner's dish to the last bite, food from the hand, a bottle (`use` is sent for anything that leaves the pocket, a dish that is ordered too) | `ULyudBiteSubsystem`, `ULyudFoodSubsystem` |
 | `fish_caught <fish item>` | a fish landed on the rod | `ULyudFishing` |
+| `photo <place>` | a film was developed (at the photo studio or by the hero in a darkroom) with a frame taken at that map place; the town's quests check the target against `map.json` (`interiors.py`, `quest_audit.py`, questsim) | the film camera (`Private/Photo/LyudPhoto.cpp`) |
 | `bird` | became a bird | the game screen |
 | `bird_seen`, `bird_tamed <Species>` | first sight; a bird ate from the palm | `ULyudBirdBook` |
 | `feeder_fill <feed>`, `feeder_fill_at <feed>@<place>` | a handful went into a feeder (and in which places the hero stood) | `UBirdFeederSubsystem::Fill` |
