@@ -2684,7 +2684,7 @@ void ANpcBody::Drive(const FVector& InLocation, float Yaw, EPersonPose Pose, int
 	{
 		SeatLeadK = FMath::Clamp(SeatLeadK + (bSeat ? DeltaTime / 0.3f : -DeltaTime / 0.5f), 0.f, 1.f);
 	}
-	const float SeatLead = LeadCm * FMath::SmootherStep(0.f, 1.f, SeatLeadK);
+	const float SeatLead = LeadCm * SeatLeadK * SeatLeadK * SeatLeadK * (SeatLeadK * (SeatLeadK * 6.f - 15.f) + 10.f);   // smootherstep (FMath has none in 5.8)
 	if (bSmooth)
 	{
 		if (bSnap || !bPlaced || !bShownValid || bBed || DeltaTime <= 0.f || FVector::DistSquared(ShownPos, Target) > 300.0 * 300.0)
