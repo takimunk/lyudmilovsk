@@ -172,6 +172,7 @@ namespace LyudPeople
 		bool bStaff = false;                // a workplace duty: at their own workplace (FDuty::Place), at a slot of their role
 		float Pace = 1.f;                   // "pace": how fast they go within it against their walk (a jog, children at play: 2)
 		bool bRainOk = false;               // "rain": "ok": chosen and kept up in the rain too (outdoors)
+		float WindMin = -1.f, WindMax = 99.f;   // "wind": [min, max] m/s: chosen only in such a wind (a kite: a breeze, not a calm or a gale)
 		std::vector<int> PlaceIdx;          // the places of its kinds (built after loading; "home" and gatherings aside)
 		std::vector<int> SlotK, PlaceK;     // Slots and Places interned
 		bool bHome = false;                 // "home" among its places
@@ -353,6 +354,7 @@ namespace LyudPeople
 		// doors is left for a roof and not chosen anew, the frost empties the benches, a warm day draws to the water
 		float Rain = 0.f;               // 0 dry .. 1 pouring
 		float TempC = 12.f;
+		float Wind = 5.f;               // the mean wind, m/s (the wrapper sets it from ULyudWindSubsystem; kites want 3..13)
 		bool bDayOff = false;           // a public holiday: duties with holiday "off" are skipped (SetDayOff)
 
 		/** A gathering (ULyudFestivalSubsystem's holidays): people free and awake are drawn to a place, or to the places

@@ -2354,6 +2354,29 @@ on = friend_gift
 bond = friend close
 say = town.friend_gift_named.1..2
 
+# Kites (docs/kites.md): the children flying kites on windy afternoons (town life's fly_kite), the grown-ups who watch
+# them on the beach, a kite flier noticing the player's own kite
+
+[kite_kid]
+doing = fly_kite
+say = town.kite_kid.1..6
+
+[kite_kid_box]
+doing = fly_kite
+age = teen
+say = town.kite_teen.1..2
+
+[kite_watch]
+at = beach
+age = adult elder
+doing = sea_air swim_look sun_watch
+say = town.kite_watch.1..3
+
+[kite_hero]
+doing = fly_kite
+near = hero
+say = town.kite_hero.1..2
+
 # The hero plays (docs/instruments.md): somebody near the piano or the guitar notices (on = hero_plays), a tune played to
 # its end gets a word (on = hero_played), and by a bonfire the circle sings the tune's words with him (on = hero_sing_<tune>,
 # one line at a time, a voice after a voice).

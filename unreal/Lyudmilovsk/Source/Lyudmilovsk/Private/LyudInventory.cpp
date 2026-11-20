@@ -297,6 +297,23 @@ namespace
 		Rod.Price = 90;
 		Rod.Radius = 1.3f;
 		D.Add(Rod);
+		// kites (docs/kites.md): taken in the hand they come out on the reel (ULyudKiteFlying); the toy shops sell them, rolled up
+		FLyudItemDef KiteD;
+		KiteD.Id = TEXT("kite_diamond");
+		KiteD.Slot = ELyudEquipSlot::Hand;
+		KiteD.Look = ELyudItemLook::Pack;
+		KiteD.Size = FVector(4.f, 4.f, 60.f);
+		KiteD.Tint = FLinearColor(0.85f, 0.18f, 0.12f);
+		KiteD.Price = 150;
+		KiteD.Radius = 2.f;
+		D.Add(KiteD);
+		FLyudItemDef KiteB = KiteD;
+		KiteB.Id = TEXT("kite_box");
+		KiteB.Size = FVector(6.f, 6.f, 70.f);
+		KiteB.Tint = FLinearColor(0.12f, 0.35f, 0.75f);
+		KiteB.Price = 280;
+		KiteB.Radius = 3.f;
+		D.Add(KiteB);
 		// the shop's better rods: a carbon spinning rod with a braided line, a thick sea bottom rod with a 100 g lead
 		FLyudItemDef Spin = Rod;
 		Spin.Id = TEXT("rod_spinning");

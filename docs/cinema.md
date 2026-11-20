@@ -55,6 +55,8 @@ reads short comments, as lecturers did in the silent era (a benshi in Japan). Th
 like the books. Each machine runs `python3 tools/films/fetch_films.py` once (needs `ffmpeg`; under 100 MB for all nine at
 640 px H.264, no sound). `films.lock.json` pins the Commons file of each film, so the next machine fetches the same copies;
 `--pick <id>="File:…"` pins another one by hand.
+The script sends a generic User-Agent naming no one; `FILMS_UA_CONTACT="…"` adds a contact of the runner's choosing
+(Wikimedia asks automated clients for one; it is never set by default).
 
 ## Engine notes
 
