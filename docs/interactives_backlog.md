@@ -300,7 +300,10 @@ the bench.
 
 ## 21. The train as a passenger
 
-`[ ]` **Brief (Opus 5.5):** The sea railway's open list has "a ticket or token at the kiosk" (`docs/railway.md`,
+`[~] train-passenger 2026-11-20` (docs/railway.md "Riding as a passenger": ticket boxes on the halts, three conductors who
+walk the car and punch or fine, announcements; tools/railsim/tickets.sh. Open: Mac compile and shots, the two ticket icons.)
+
+**Brief (Opus 5.5):** The sea railway's open list has "a ticket or token at the kiosk" (`docs/railway.md`,
 `docs/transport.md`). Add a ticket at the halt kiosk, a conductor who walks the carriage and punches it (lines by persona;
 no ticket: a fine or a stern word), the window seat (sit, look out at the sea and gulls, `SitOn` with a look cone), the
 announcements of the halts. Small and self-contained. Done: questsim test, Mac shots on the train.
