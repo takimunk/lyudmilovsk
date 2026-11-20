@@ -151,6 +151,7 @@ namespace LyudPaper
 		/** How many variants (1..n) each template kind has: "front.fest_today" -> 3 means paper.front.fest_today.1..3. */
 		std::vector<std::pair<std::string, int>> Variants;
 		std::vector<std::string> CinemaKeys;      // by weekday Mon..Sun, then the festival one
+		std::vector<std::string> NewsreelKeys;    // the old films before the sessions, the same way (docs/cinema.md); may be absent
 		LyudFest::FCalendar Calendar;
 		bool bCalendar = false;
 
@@ -167,6 +168,7 @@ namespace LyudPaper
 			for (const LyudJson::FValue& V : Root["rare_birds"].Items) RareBirds.push_back(V.S());
 			for (const LyudJson::FValue& V : Root["fest_blurbs"].Items) FestBlurbs.push_back(V.S());
 			for (const LyudJson::FValue& V : Root["cinema"].Items) CinemaKeys.push_back(V.S());
+			for (const LyudJson::FValue& V : Root["newsreel"].Items) NewsreelKeys.push_back(V.S());
 			for (const LyudJson::FValue& V : Root["birthdays"].Items)
 			{
 				FBirthday B;
@@ -806,6 +808,10 @@ namespace LyudPaper
 			}
 			const int Wd = LyudFest::Weekday(F.Date);
 			Page.push_back({ "paper.cinema", { "@" + (bFest && CinemaKeys.size() > 7 ? CinemaKeys[7] : CinemaKeys[(size_t)Wd]) } });
+			if (NewsreelKeys.size() >= 7)
+			{
+				Page.push_back({ "paper.newsreel", { "@" + (bFest && NewsreelKeys.size() > 7 ? NewsreelKeys[7] : NewsreelKeys[(size_t)Wd]) } });
+			}
 			// three small ads of the season, turning by day
 			std::vector<const FPoolEntry*> Season;
 			for (const FPoolEntry& P : Ads)

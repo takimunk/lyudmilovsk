@@ -157,6 +157,13 @@ public:
 	bool RunNearest();
 	/** Developer mode: today's limits start over. */
 	void ResetDailyLimits();
+	/**
+	 * The cinema's newsreel (ULyudCinema, docs/cinema.md) ran before a session and held its show: bGoOn, the films ran out and the
+	 * session's own show starts now; else he left and it is dropped.
+	 */
+	void ReleaseHeldShow(bool bGoOn);
+	bool IsShowHeld() const { return bShowHeld; }
+
 	/** Debug labels of the things within 15 m (lyud.City.Things.Show). */
 	void SetShowLabels(bool bShow) { bShowLabels = bShow; }
 	bool AreLabelsShown() const { return bShowLabels; }
@@ -499,6 +506,13 @@ private:
 	int32 ShowThing = -1;
 	FText ShowTitle;
 	bool bShowSeated = false;
+	// a session's show waiting for the cinema's newsreel (ReleaseHeldShow)
+	bool bShowHeld = false;
+	int32 HeldThing = -1;
+	FText HeldTitle;
+	FText HeldLine;
+	int32 HeldMinutes = 0;
+	bool bHeldSeated = false;
 
 	bool bShowLabels = false;
 	float LabelClock = 0.f;

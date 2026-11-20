@@ -226,6 +226,12 @@
    "prompt": "A folded newspaper with grey columns and one photo, no readable words.",
    "source": "design/lobby/icons_grid.json: one 4x4 Higgsfield grid, cut by tools/lobby_icons.py (the game-assets rule)"
   },
+  "icon_ticket_stub": {
+   "kind": "icon",
+   "style": "icon",
+   "aspect": "1:1",
+   "prompt": "A small torn pink paper cinema ticket stub with a perforated torn edge and a faded violet stamp, no lettering."
+  },
   "icon_postcard": {
    "kind": "icon",
    "style": "icon",
