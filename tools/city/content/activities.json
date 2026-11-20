@@ -44,7 +44,7 @@
   "school_desk": {"prompt": "city.do.school_desk.prompt", "lines": "city.do.school_desk", "minutes": 45, "pose": "sit", "fade": true, "needs_staff": "teacher", "sound": "school_bell"},
   "blackboard": {"prompt": "city.do.blackboard.prompt", "lines": "city.do.blackboard", "minutes": 5, "sound": "chalk"},
 
-  "cinema": {"prompt": "city.do.cinema.prompt", "lines": "city.do.cinema", "collect": "films/{line}", "minutes": 90, "price": 30, "pose": "sit", "fade": true, "needs_staff": "projectionist", "sound": "projector_whirr", "screen": "film", "title": "city.screen.film.title"},
+  "cinema": {"prompt": "city.do.cinema.prompt", "lines": "city.do.cinema", "collect": "films/{line}", "minutes": 90, "price": 30, "give": [["ticket_stub", 1]], "pose": "sit", "fade": true, "needs_staff": "projectionist", "sound": "projector_whirr", "screen": "film", "title": "city.screen.film.title"},
   "stage": {"prompt": "city.do.stage.prompt", "lines": "city.do.stage", "minutes": 30, "pose": "sit", "screen": "stage", "title": "city.screen.stage.title"},
   "choir": {"prompt": "city.do.choir.prompt", "lines": "city.do.choir", "minutes": 40, "pose": "sit", "fade": true, "needs_staff": "choir_leader", "sound": "choir_hum"},
   "microphone": {"prompt": "city.do.microphone.prompt", "lines": "city.do.microphone", "minutes": 2, "sound": "mic_feedback"},

@@ -214,7 +214,11 @@ calm: no romance, no meters on screen, only lines and gestures that change. Done
 
 ## 13. The cinema shows real films
 
-`[ ]` **Brief (Opus 5.5):** The house of culture «Рассвет» has film sessions by the clock, but the film is only lines.
+`[~] cinema 2026-11-20` (docs/cinema.md: nine public-domain shorts of 1895–1908 as the newsreel before every Rassvet session,
+lecturer's subtitles ru/en/ja, dark hall, beam, laughs, ticket stub, the paper prints the programme; cinemasim. Open: the
+films fetched and the materials, sounds and stub icon made on the Mac, Mac shots; the club's summer screen.)
+
+**Brief (Opus 5.5):** The house of culture «Рассвет» has film sessions by the clock, but the film is only lines.
 Show real public-domain films on its screen (and the club's summer screen on festival nights): silent shorts and early
 animation whose copyright has ended worldwide (check each title's status; keep a `SOURCES.md` with licences), encoded small
 (a media texture on the screen material, a projector beam with dust, the hall lights dim, the audience laughs at the right
