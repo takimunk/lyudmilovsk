@@ -1043,6 +1043,8 @@ def main():
         write(os.path.join(OUT_STRINGS, "strings_%s.json" % lang), table)
 
     write_counters(people, workplaces)
+    # the market's stalls and the queues at the counters (docs/counters.md): a post-pass on town_places.json
+    subprocess.check_call([sys.executable, os.path.join(os.path.dirname(os.path.abspath(__file__)), "counters.py")])
     # what is added to the town after it is made: the sanatorium's guests, then the new things to do (both idempotent)
     for extra_script in ("sanatorium_guests.py", "town_activities.py"):
         subprocess.run([sys.executable, os.path.join(os.path.dirname(os.path.abspath(__file__)), extra_script)], check=True)

@@ -1230,6 +1230,20 @@ namespace LyudPeople
 				Sl.Tag = S["tag"].S();
 				Sl.Thing = S["thing"].S();
 				Sl.OwnerKey = S["owner"].S();
+				if (S.Find("queue") && S.Find("q"))
+				{
+					// a counter's line: interned, its spots put in order once everything is loaded
+					const std::string QId = S["queue"].S();
+					auto It = std::find(QueueIds.begin(), QueueIds.end(), QId);
+					Sl.Queue = (int)(It - QueueIds.begin());
+					if (It == QueueIds.end())
+					{
+						QueueIds.push_back(QId);
+						Queues.emplace_back();
+					}
+					Sl.QueueN = std::max(0, S["q"].I());
+					Queues[(size_t)Sl.Queue].push_back((int)Slots.size());
+				}
 				if (!Prefix.empty())
 				{
 					Sl.Inside = Prefix;
@@ -1261,6 +1275,10 @@ namespace LyudPeople
 				Slots.push_back(Sl);
 			}
 			Places.push_back(Pl);
+		}
+		for (std::vector<int>& L : Queues)
+		{
+			std::stable_sort(L.begin(), L.end(), [this](int A, int B) { return Slots[(size_t)A].QueueN < Slots[(size_t)B].QueueN; });
 		}
 		if (!bLoading)
 		{
@@ -2087,6 +2105,11 @@ namespace LyudPeople
 					return false;
 				}
 			}
+		}
+		// a counter's queue: only the first free spot of its line (and none the hero stands on)
+		if ((Sl.Queue >= 0 || Sl.bHeld) && !QueueOpenFor(S) && std::find(Sl.Users.begin(), Sl.Users.end(), P.Id) == Sl.Users.end())
+		{
+			return false;
 		}
 		// away (work in another town, school, the lab's gate): a door to leave the world by, not a seat: no room to keep
 		return A.bAway || Sl.Free(P.Id);
@@ -4366,6 +4389,207 @@ namespace LyudPeople
 		}
 	}
 
+	// --- counters' queues (docs/counters.md) ------------------------------------------------------------------
+
+	bool FWorld::QueueOpenFor(int S) const
+	{
+		// a line fills from the front: a spot is open only when every spot before it is taken (by somebody or the hero)
+		const FSlot& Sl = Slots[(size_t)S];
+		if (Sl.bHeld)
+		{
+			return false;
+		}
+		if (Sl.Queue < 0 || Sl.QueueN <= 0)
+		{
+			return true;
+		}
+		for (const int T : Queues[(size_t)Sl.Queue])
+		{
+			const FSlot& Before = Slots[(size_t)T];
+			if (Before.QueueN >= Sl.QueueN)
+			{
+				break;
+			}
+			if (Before.Users.empty() && !Before.bHeld)
+			{
+				return false;
+			}
+		}
+		return true;
+	}
+
+	void FWorld::SetHeroAt(const V3& P, bool bOn)
+	{
+		for (const std::vector<int>& L : Queues)
+		{
+			for (const int S : L)
+			{
+				FSlot& Sl = Slots[(size_t)S];
+				Sl.bHeld = bOn && (Sl.Pos - P).Len2D() < 0.6f && std::fabs(Sl.Pos.Z - P.Z) < 1.5f;
+			}
+		}
+	}
+
+	void FWorld::QueueState(int Q, std::vector<int>& Out) const
+	{
+		Out.clear();
+		if (Q < 0 || Q >= (int)Queues.size())
+		{
+			return;
+		}
+		for (const int S : Queues[(size_t)Q])
+		{
+			const FSlot& Sl = Slots[(size_t)S];
+			int Who = Sl.bHeld ? -2 : -1;
+			for (const int U : Sl.Users)
+			{
+				if (People[(size_t)U].Slot == S)
+				{
+					Who = U;
+				}
+			}
+			Out.push_back(Who);
+		}
+	}
+
+	int FWorld::NearestQueue(const V3& P, float MaxM) const
+	{
+		int Best = -1;
+		float BestD = MaxM;
+		for (int Q = 0; Q < (int)Queues.size(); Q++)
+		{
+			const float D = (Slots[(size_t)Queues[(size_t)Q][0]].Pos - P).Len2D();
+			if (!Queues[(size_t)Q].empty() && D < BestD && std::fabs(Slots[(size_t)Queues[(size_t)Q][0]].Pos.Z - P.Z) < 3.f)
+			{
+				Best = Q;
+				BestD = D;
+			}
+		}
+		return Best;
+	}
+
+	int FWorld::SendToQueue(int Q, int Count)
+	{
+		const int Act = FindActivity("shop_town");
+		if (Q < 0 || Q >= (int)Queues.size() || Act < 0)
+		{
+			return 0;
+		}
+		const V3 Front = Slots[(size_t)Queues[(size_t)Q][0]].Pos;
+		int Sent = 0;
+		while (Sent < Count)
+		{
+			// the first open spot of the line, and the nearest grown-up out and about with nothing they must do
+			int Spot = -1;
+			for (const int S : Queues[(size_t)Q])
+			{
+				if (Spot < 0 && Slots[(size_t)S].Users.empty() && QueueOpenFor(S))
+				{
+					Spot = S;
+				}
+			}
+			int Who = -1;
+			float BestD = 250.f;
+			for (const FPerson& P : People)
+			{
+				bool bSleep = false;
+				const bool bFree = P.bTown && P.Age >= 14 && P.State == EState::Doing && P.Activity >= 0 &&
+					!Activities[(size_t)P.Activity].bStaff && Activities[(size_t)P.Activity].Id != "sleep" && P.Island == Places[(size_t)Slots[(size_t)Queues[(size_t)Q][0]].Place].Island;
+				const float D = (P.Pos - Front).Len2D();
+				if (bFree && D < BestD && DutyNow(P, bSleep) < 0 && (P.Slot < 0 || Slots[(size_t)P.Slot].Queue < 0))
+				{
+					Who = P.Id;
+					BestD = D;
+				}
+			}
+			if (Spot < 0 || Who < 0 || !Start(People[(size_t)Who], Act, Spot, 10.0, false, "counter crowd"))
+			{
+				break;
+			}
+			Sent++;
+		}
+		return Sent;
+	}
+
+	void FWorld::StepQueues()
+	{
+		// the one at the front is served for a minute or two, then goes; the ones behind wait (up to ten minutes) and step up
+		// into the spot before them as soon as it is free
+		for (const std::vector<int>& L : Queues)
+		{
+			for (size_t N = 0; N < L.size(); N++)
+			{
+				FSlot& Sl = Slots[(size_t)L[N]];
+				int Who = -1, Coming = -1;
+				for (const int U : Sl.Users)
+				{
+					const FPerson& Q = People[(size_t)U];
+					if (Q.Slot == L[N] && Q.State == EState::Doing && Q.Path.empty())
+					{
+						Who = U;
+					}
+					else if (Q.Slot == L[N] && !Q.Path.empty() && (Q.State == EState::Going || Q.State == EState::Doing))
+					{
+						Coming = U;
+					}
+				}
+				if (N > 0 && Who < 0 && Coming >= 0)
+				{
+					// on the way to a spot whose one ahead has meanwhile come free: they make for that one instead
+					FSlot& Ahead = Slots[(size_t)L[N - 1]];
+					if (Ahead.Users.empty() && !Ahead.bHeld)
+					{
+						FPerson& P = People[(size_t)Coming];
+						Reserve(P, L[N - 1]);
+						P.Slot = L[N - 1];
+						P.Path.back().P = Ahead.Approach;
+						QueueMoves++;
+					}
+					continue;
+				}
+				if (N == 0)
+				{
+					if (Who != Sl.FrontWho)
+					{
+						Sl.FrontWho = Who;
+						Sl.FrontSince = Time;
+					}
+					if (Who >= 0)
+					{
+						FPerson& P = People[(size_t)Who];
+						const double Serve = 60.0 + (double)(((uint32_t)P.Id * 2654435761u) % 90u);
+						P.Until = std::min(P.Until, Sl.FrontSince + Serve);
+					}
+					continue;
+				}
+				if (Who < 0)
+				{
+					continue;
+				}
+				FPerson& P = People[(size_t)Who];
+				FSlot& Ahead = Slots[(size_t)L[N - 1]];
+				if (Ahead.Users.empty() && !Ahead.bHeld)
+				{
+					// step up: the spot ahead is theirs, a short walk within what they are doing
+					Reserve(P, L[N - 1]);
+					P.Slot = L[N - 1];
+					P.Path.clear();
+					FPerson::FWay W;
+					W.P = Ahead.Approach;
+					W.Kind = P.bIndoors ? 1 : 0;
+					P.Path.push_back(W);
+					P.PathI = 0;
+					P.Pose = EPose::Walk;
+					QueueMoves++;
+				}
+				else if (Time - P.StateStart < 600.0)
+				{
+					P.Until = std::max(P.Until, Time + 30.0);      // still their turn to come: they wait
+				}
+			}
+		}
+	}
+
 	void FWorld::Step(float Dt)
 	{
 		if (Dt <= 0.f)
@@ -4373,6 +4597,10 @@ namespace LyudPeople
 			return;
 		}
 		Time += Dt;
+		if (!Queues.empty())
+		{
+			StepQueues();       // (a few dozen lines of a few spots: every step, so nobody stands behind a gap)
+		}
 		// everybody's day is rolled once a day at 14:00 (tonight's bedtime, tomorrow's waking)
 		if (PrevHour >= 0.f && PrevHour < 14.f && Hour >= 14.f)
 		{

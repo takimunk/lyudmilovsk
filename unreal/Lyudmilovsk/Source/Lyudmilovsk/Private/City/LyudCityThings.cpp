@@ -44,6 +44,7 @@
 #include "Misc/Paths.h"
 #include "NpcDialogue.h"
 #include "Sound/SoundBase.h"
+#include "People/CounterService.h"
 #include "People/PeopleLife.h"
 #include "People/TownTalk.h"
 #include "Plants/GameCalendar.h"
@@ -1063,6 +1064,10 @@ void ULyudCityThings::Greet(int32 Thing)
 		{
 			GreetedPlot = Plot;
 			Talk->SayEvent(Body, TEXT("counter_hello"), Person, Role);
+			if (ULyudCounterService* Counter = ULyudCounterService::Get(this))
+			{
+				Counter->NoteGreeted(Person);
+			}
 			return;
 		}
 	}

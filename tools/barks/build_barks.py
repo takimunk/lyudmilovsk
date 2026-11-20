@@ -30,6 +30,8 @@ COND_KEYS = ["to", "on", "near", "job", "age", "sex", "doing", "at", "pose", "ma
 EVENTS = {"rest_sit", "rest_carry", "rest_serve", "rest_bill", "rest_bye",
           # somebody noticed the player (PeopleManners.h ENoticeEvent, docs/town_manners.md)
           "hero_runs", "hero_close", "hero_lamp", "hero_sneaks", "hero_rides", "hero_fishes", "hero_swims", "hero_sits", "thunder", "counter_hello",
+          # the service scene and the lines at counters (docs/counters.md, ULyudCounterService)
+          "counter_give", "queue_next", "queue_join",
           # a friend of his (docs/friends.md, ULyudFriends): waves first, sits with him on a bench, his card came, his gift, their outing
           "friend_wave", "friend_bench", "friend_card", "friend_gift", "friend_outing",
           # the hero plays a piano or his guitar (docs/instruments.md)

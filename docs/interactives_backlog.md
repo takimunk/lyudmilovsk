@@ -405,7 +405,7 @@ Mac shots of three new activities, bench (no new per-frame cost per person).
 
 ## 27. Counters with real service
 
-`[ ]` **Brief (Opus 5.5):** At counters the hero buys from a menu. Make it a little scene: the staff turns to him, says the
+`[~]` counter-service 2026-11-20 (branch ready, waiting for merge; docs/counters.md; Mac compile and queue shots by the merge thread) **Brief (Opus 5.5):** At counters the hero buys from a menu. Make it a little scene: the staff turns to him, says the
 greeting by hour and by whether they know him (friends, item 12), the item is put on the counter and the hero takes it (the
 hand reaches, `UHeroReachComponent::Take`), change is counted, a queue forms behind him at busy hours and residents wait
 their turn (customer pairs exist: `LyudBarks::AtCounter`, `CounterTrade.cpp`). Fix P-MARKET counters never firing

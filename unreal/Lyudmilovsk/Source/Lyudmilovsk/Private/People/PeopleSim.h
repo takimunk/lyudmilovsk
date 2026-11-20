@@ -101,6 +101,13 @@ namespace LyudPeople
 		 *  to (front: the kerb, the deck) to the slot (back), walked as a line in 3D; out the same way back (LoadSpots). */
 		std::vector<V3> Reach;
 		int SnowJob = -1;           // a snow place's slot: the stretch of path it stands for (its near end is Pos), -1 none
+		// a counter's queue (tools/town/counters.py, docs/counters.md): which line (FWorld::Queues) and the place in it, 0 the
+		// one being served; bHeld: the hero stands there (FWorld::SetHeroAt), so it counts as taken
+		int Queue = -1;
+		int QueueN = -1;
+		bool bHeld = false;
+		int FrontWho = -1;          // q0: who is being served, since when (sim seconds)
+		double FrontSince = 0.0;
 		V3 SnowTo;                  // and its far end
 		// reservation
 		int Owner = -1;             // only this person (or their household) uses it; -1 anybody
@@ -527,6 +534,19 @@ namespace LyudPeople
 		/** A new game: everybody where the club scene has them (people.json start), the rest as Resettle. */
 		void NewGame();
 		void Step(float Dt);
+		/** The hero stands at P (Unreal metres; bOn false: nowhere near a counter): a queue spot under him counts as taken, so
+		 *  the townsfolk line up behind him (docs/counters.md). */
+		void SetHeroAt(const V3& P, bool bOn);
+		/** A counter's lines (Slots indices, front first), and how often somebody moved up in one (checks). */
+		std::vector<std::vector<int>> Queues;
+		std::vector<std::string> QueueIds;   // their ids ("W1-U02/0", "P-MARKET/3")
+		int QueueMoves = 0;
+		/** Who stands in a line now, front first (-1 a free spot, -2 the hero): checks and the engine's counter scene. */
+		void QueueState(int Queue, std::vector<int>& Out) const;
+		/** Sends up to Count of the townsfolk who are free and near to stand in a line (developer mode, shots); how many went. */
+		int SendToQueue(int Queue, int Count);
+		/** The line whose front spot is nearest P within MaxM metres (-1 none). */
+		int NearestQueue(const V3& P, float MaxM) const;
 
 		int FindPerson(const std::string& Key) const;
 		int FindPlace(const std::string& Id) const;
@@ -692,6 +712,9 @@ namespace LyudPeople
 		void Unreserve(FPerson& P);
 		void TalkPairs();
 		float PairTimer = 0.f;
+		/** The lines move: the front served for a minute or two, the rest wait and step up (docs/counters.md). */
+		void StepQueues();
+		bool QueueOpenFor(int Slot) const;
 		/** Per winter patch (FSnowJob::Job): which side its start is on (IslandOf, a path search), -2 not asked yet. A patch never moves. */
 		std::vector<int8_t> SnowJobIsland;
 		std::vector<int> SettleQueue;   // townsfolk Resettle hasn't placed yet (Opt.SettleBatch)
