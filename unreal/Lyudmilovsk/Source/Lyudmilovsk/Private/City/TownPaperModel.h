@@ -66,7 +66,10 @@ namespace LyudPaper
 
 	/** Something the hero did on the day before the issue. Kind: tamed (What: species id), rare (a rare species seen for the
 	 *  first time), seen (any other first sighting), record (What: fish species, N: grams, the biggest of its kind he ever took),
-	 *  catch (the biggest fish of the day, N grams), quest (What: quest id finished), win (What: a game won). */
+	 *  catch (the biggest fish of the day, N grams), quest (What: quest id finished), win (What: a game won), contest (the
+	 *  photo club's monthly contest was judged that day, the 26th, and the hero had a print in it: N his place 1..6, What
+	 *  the map place the print was taken at or empty; ULyudPhoto::ContestNews. Place 1 is a front story, 2 and 3 a brief,
+	 *  4..6 nothing; the theme is the month's, ContestTheme). */
 	struct FDeed
 	{
 		std::string Kind;
@@ -275,6 +278,19 @@ namespace LyudPaper
 			Out.Pages.push_back(BillsPage(Facts));
 			return Out;
 		}
+
+		/** The photo contest's theme of a calendar month (docs/photo.md: the same order as the contest's own code): its
+		 *  name is the key paper.contest.theme.<id>. */
+		static const char* ContestTheme(int Month)
+		{
+			static const char* const Themes[4] = { "sea", "birds", "work", "festival" };
+			return Themes[(((Month - 1) % 4) + 4) % 4];
+		}
+
+		/** The photo club's contest by the day of the month: prints are taken on days 1..ContestLastDay, the jury sits on
+		 *  ContestJuryDay (so the issue of the day after tells the hero's place). */
+		static constexpr int ContestLastDay = 25;
+		static constexpr int ContestJuryDay = 26;
 
 		/** The masthead line of an issue (also the archive's line for it). */
 		static FLine Masthead(const FIssue& I)
@@ -504,6 +520,22 @@ namespace LyudPaper
 					AddVariants(Cand, "front.cup", { "@" + C.Title, C.RunnerUp.empty() ? std::string("@paper.cup.nobody") : "@" + C.RunnerUp }, F.Since);
 				}
 			}
+			// the photo contest judged yesterday: the hero's print took the first place, the paper prints it
+			if (const FDeed* D = Deed("contest"))
+			{
+				if (D->N == 1)
+				{
+					const std::string Theme = std::string("@paper.contest.theme.") + ContestTheme(LyudFest::AddDays(F.Date, -1).M);
+					if (D->What.empty())
+					{
+						DeedLines(D, "front.contest_noplace", { Theme });
+					}
+					else
+					{
+						DeedLines(D, "front.contest", { Theme, "@place." + D->What + ".name" });
+					}
+				}
+			}
 			// 2. a festival today
 			std::string Today;
 			int TodayDay = 0;
@@ -586,6 +618,7 @@ namespace LyudPaper
 			{
 				const bool bOnFront = PickedKey.find(".tamed_swan.") != std::string::npos ? (D.Kind == "tamed" && D.What == "MuteSwan")
 					: PickedKey.find(".record.") != std::string::npos ? D.Kind == "record"
+					: PickedKey.rfind("paper.front.contest", 0) == 0 ? D.Kind == "contest"
 					: (PickedKey.find(".tamed.") != std::string::npos || PickedKey.find(".rare.") != std::string::npos ||
 					   PickedKey.find(".quest.") != std::string::npos || PickedKey.find(".catch.") != std::string::npos)
 						&& Cand[Pick].Args.size() >= 1 && DeedArg(D) == Cand[Pick].Args[0] && PickedKey.find("." + D.Kind + ".") != std::string::npos;
@@ -643,6 +676,12 @@ namespace LyudPaper
 				else if (D.Kind == "win")
 				{
 					Page.push_back({ "paper.brief.win", {} });
+				}
+				else if (D.Kind == "contest" && D.N >= 1 && D.N <= 3)
+				{
+					// the prize places (the first one only when a bigger story took the front); places 4..6 are no news
+					Page.push_back({ "paper.brief.contest_" + std::to_string(D.N),
+						{ std::string("@paper.contest.theme.") + ContestTheme(LyudFest::AddDays(F.Date, -1).M) } });
 				}
 				else
 				{
@@ -805,6 +844,12 @@ namespace LyudPaper
 			for (const FCup& C : F.CupsToday)
 			{
 				Page.push_back({ "paper.cup.today", { "@" + C.Title, Hm(C.StartMinute), "@" + C.Venue } });
+			}
+			// the first of the month: the photo club's contest opens with the month's theme
+			if (F.Date.D == 1)
+			{
+				Page.push_back({ "paper.contest.open", { std::string("@paper.contest.theme.") + ContestTheme(F.Date.M),
+					std::to_string(ContestLastDay), std::to_string(ContestJuryDay), "@paper.month.gen." + std::to_string(F.Date.M) } });
 			}
 			const int Wd = LyudFest::Weekday(F.Date);
 			Page.push_back({ "paper.cinema", { "@" + (bFest && CinemaKeys.size() > 7 ? CinemaKeys[7] : CinemaKeys[(size_t)Wd]) } });

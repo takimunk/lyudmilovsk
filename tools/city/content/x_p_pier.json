@@ -1228,7 +1228,8 @@
   "P-PIER/tower_desk": {
    "act": "px_desk",
    "topics": [
-    "@job_t_keeper"
+    "@job_t_keeper",
+    "@photo_pier"
    ]
   },
   "P-PIER/keeper_wheel": {

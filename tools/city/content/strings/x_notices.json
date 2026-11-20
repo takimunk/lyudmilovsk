@@ -115,6 +115,41 @@
   "en": "The club welcomes the coast's new residents! Drop in for tea in the evenings: the samovar is hot, and so is the talk.",
   "ja": "クラブは海岸の新しい住人を歓迎します！夕方にお茶をどうぞ。サモワールは熱く、おしゃべりも熱い。"
  },
+ "city.note.club.contest_sea": {
+  "ru": "Фотоконкурс «Шестерни». Тема месяца: «Море». Один отпечаток от автора, сдавать до 25-го в фотолабораторию клуба, в ящик на столе у проектора. Маяк считается морем, только если в кадре есть вода.",
+  "en": "The Cog's photo contest. Theme of the month: “The sea”. One print from each entrant, handed in by the 25th at the club's photo lab, in the box on the table by the projector. The lighthouse counts as the sea only with water in the frame.",
+  "ja": "「歯車」写真コンクール。今月のテーマは「海」。出品は一人一枚、25日までにクラブの写真室、映写機の机の箱へ。灯台は、画面に水が写っている場合に限り海とみなす。"
+ },
+ "city.note.club.contest_birds": {
+  "ru": "Фотоконкурс «Шестерни». Тема месяца: «Птицы». Один отпечаток от автора, сдавать до 25-го в фотолабораторию клуба, в ящик на столе у проектора. Голуби допускаются, чучела из кабинета биологии — нет.",
+  "en": "The Cog's photo contest. Theme of the month: “Birds”. One print from each entrant, handed in by the 25th at the club's photo lab, in the box on the table by the projector. Pigeons are admitted; stuffed birds from the biology room are not.",
+  "ja": "「歯車」写真コンクール。今月のテーマは「鳥」。出品は一人一枚、25日までにクラブの写真室、映写機の机の箱へ。ハトは可、生物室の剥製は不可。"
+ },
+ "city.note.club.contest_work": {
+  "ru": "Фотоконкурс «Шестерни». Тема месяца: «Люди за работой». Один отпечаток от автора, сдавать до 25-го в фотолабораторию клуба, в ящик на столе у проектора. Спящий сторож работой не считается, хотя жюри спорило.",
+  "en": "The Cog's photo contest. Theme of the month: “People at work”. One print from each entrant, handed in by the 25th at the club's photo lab, in the box on the table by the projector. A sleeping watchman does not count as work, though the jury argued.",
+  "ja": "「歯車」写真コンクール。今月のテーマは「働く人びと」。出品は一人一枚、25日までにクラブの写真室、映写機の机の箱へ。居眠り中の守衛は仕事に数えない。審査員のあいだでも議論はあったが。"
+ },
+ "city.note.club.contest_festival": {
+  "ru": "Фотоконкурс «Шестерни». Тема месяца: «Праздник». Один отпечаток от автора, сдавать до 25-го в фотолабораторию клуба, в ящик на столе у проектора. Праздник должен быть в кадре, а не только на душе у автора.",
+  "en": "The Cog's photo contest. Theme of the month: “The festival”. One print from each entrant, handed in by the 25th at the club's photo lab, in the box on the table by the projector. The festival must be in the frame, not only in the author's heart.",
+  "ja": "「歯車」写真コンクール。今月のテーマは「祭り」。出品は一人一枚、25日までにクラブの写真室、映写機の机の箱へ。祭りは作者の心の中だけでなく、画面の中にあること。"
+ },
+ "city.note.club.contest_soon": {
+  "ru": "Фотокружок напоминает: снимки на конкурс месяца принимают до 25-го. Ящик на столе у проектора, подпись карандашом на обороте.",
+  "en": "The photo circle reminds you: prints for the contest of the month are taken until the 25th. The box is on the table by the projector; sign in pencil on the back.",
+  "ja": "写真サークルよりお知らせ：今月のコンクールの出品は25日まで。箱は映写機の机の上、署名は裏に鉛筆で。"
+ },
+ "city.note.club.contest_jury": {
+  "ru": "Сегодня, 26-го, в фотолаборатории «Шестерни» заседает жюри конкурса. Просьба не стучать: при красном свете спорят шёпотом.",
+  "en": "Today, the 26th, the contest's jury sits in the Cog's photo lab. Please don't knock: under the red light they argue in whispers.",
+  "ja": "本日26日、「歯車」の写真室でコンクールの審査会。ノックはご遠慮ください。赤いランプの下では、議論もひそひそ声です。"
+ },
+ "city.note.club.contest_done": {
+  "ru": "Итоги фотоконкурса подведены. Три лучших снимка висят в фотолаборатории «Шестерни», на стене у лески. С первого числа — новая тема.",
+  "en": "The photo contest has been judged. The three best prints hang in the Cog's photo lab, on the wall by the drying line. A new theme from the first of the month.",
+  "ja": "写真コンクールの結果が出ました。上位三点は「歯車」の写真室、干し紐のそばの壁に。一日からは新しいテーマです。"
+ },
  "city.notices.health.title": {
   "ru": "Доска здоровья",
   "en": "Health board",
@@ -204,5 +239,15 @@
   "ru": "День лыжника: если выпадет снег — гонка вокруг пруда. Если не выпадет — чай и надежда.",
   "en": "Ski day: if the snow comes, a race round the pond. If not, tea and hope.",
   "ja": "スキーの日：雪が降れば池のまわりでレース。降らなければ、お茶と希望。"
+ },
+ "city.notices.photo.title": {
+  "ru": "Фотокружок: конкурс месяца",
+  "en": "The photo circle: contest of the month",
+  "ja": "写真サークル：今月のコンクール"
+ },
+ "city.note.photo.rules": {
+  "ru": "Конкурс фотокружка. Каждый месяц новая тема: море, птицы, люди за работой, праздник — и снова по кругу. Один отпечаток от автора, сдавать с 1-го по 25-е в ящик на столе у проектора. 26-го судят члены кружка: что в кадре, каков свет и резко ли. Три лучших снимка висят на стене у лески до следующего конкурса.",
+  "en": "The photo circle's contest. A new theme every month: the sea, birds, people at work, the festival, and round again. One print from each entrant, handed in from the 1st to the 25th, in the box on the table by the projector. On the 26th the circle's members judge: what is in the frame, how the light is, and whether it is sharp. The three best prints hang on the wall by the drying line until the next contest.",
+  "ja": "写真サークルのコンクール。テーマは毎月替わる。海、鳥、働く人びと、祭り、そしてまた最初から。出品は一人一枚、1日から25日までに映写機の机の箱へ。26日にサークルの会員が審査する。何が写っているか、光はどうか、ピントは合っているか。上位三点は次のコンクールまで、干し紐のそばの壁に掛かる。"
  }
 }

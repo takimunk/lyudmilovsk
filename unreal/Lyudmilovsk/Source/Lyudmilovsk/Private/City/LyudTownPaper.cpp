@@ -14,6 +14,7 @@
 #include "LyudText.h"
 #include "Misc/FileHelper.h"
 #include "Misc/Paths.h"
+#include "Photo/LyudPhoto.h"
 #include "Plants/GameCalendar.h"
 #include "Sea/LyudEcosystem.h"
 #include "Sea/Tide.h"
@@ -317,6 +318,17 @@ void ULyudTownPaper::BuildFacts(int32 Since, LyudPaper::FFacts& Out) const
 			{
 				Out.Deeds.push_back({ "quest", LyudTownPaperImpl::Std(E.Quest.ToString()), 0 });
 			}
+		}
+	}
+
+	// the photo club's contest (docs/photo.md): judged on the 26th; the hero's place is news in the issue of the day after
+	if (Yesterday.D == LyudPaper::FPaper::ContestJuryDay)
+	{
+		int32 ContestPlace = 0;
+		FString ContestShotPlace;
+		if (ULyudPhoto::ContestNews(World, Yesterday.Y, Yesterday.M, ContestPlace, ContestShotPlace) && ContestPlace >= 1)
+		{
+			Out.Deeds.push_back({ "contest", LyudTownPaperImpl::Std(ContestShotPlace), (int)ContestPlace });
 		}
 	}
 

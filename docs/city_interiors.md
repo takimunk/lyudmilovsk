@@ -152,7 +152,7 @@ python3 tools/city/interiors.py --check    # write nothing; fail on broken conte
 * **Auto things.** While a building declares no `things`, its `spots` become things flagged `"auto": 1`: `seat`/`bench`/
   `table` → seat, `counter` → counter (role: the plot's first selling role), `view` → board `topic=view`; a rule
   (`tools/city/content/plots.json`) may give any other spot (a `stand`, a `work` place) a kind, or `skip` one. A promenade
-  unit whose variant is not built gets one counter at its door; built ones use their room's things (see "Promenade units"). As soon as a building exports one `thing`, its spots are no longer used.
+  unit whose variant is not built gets one counter at its door; built ones use their room's things (see "Promenade units"). As soon as a building exports one `thing`, its spots are no longer used, except a spot a rule names with `"spot": "<thing id>"` and a `kind`: that makes a thing of that id at the spot's look point (not `auto`; its act and props come from the rules naming the new id). It is for a use the model has a prop for but the building's script declared no thing: `"P-CLUB3/photo_seat_2": {"spot": "contest_box", "kind": "take"}` puts the photo contest's box at the lab's table (`spot_things` in `interiors.py`).
 * `Content/Dev/teleports/interiors.json`: one teleport per public building (1.5 m inside its main street door, facing
   in; kiosks and open halls: 2 m in front, facing them) and one per upper storey that has things; x/y map metres
   (docs/world_map.md), z world cm = the floor (feet), names `dev.tp.city.<plot>[.<storey>]` in the city strings. The floor
@@ -201,7 +201,7 @@ An act is what happens when the hero presses E at a thing:
 | `daily` | how many times a day it gives its reward (0: no limit) |
 | `shop` | opens the trade screen with this stock of `shops` when `needs_staff` is on shift |
 | `screen` | a screen show (`film`, `stage`, `tv`, `slides`): the page in the dark wide style, the line cut into subtitles shown one after another, the minutes passing with them; a sitting show on a thing that is not a seat wants the hero seated first (a seat of the plot within 25 m) and is then offered from the seat |
-| `open` | another system's screen opens instead of the act's page (`ULyudCityThings::OnOpen(screen, thing)`; one of `OPEN_SCREENS` in `interiors.py`): `books` (the library's classics, `ULyudBookScreen`), `photo_lab` (the photo studio takes films in and gives prints out), `photo_darkroom` (the hero develops his own film; `Private/Photo/LyudPhoto.cpp`). The act still takes its price, gives its items, plays its sound and reports its event; its line is taken but not shown, its `minutes` do not pass, and a counter's staff talk is not offered |
+| `open` | another system's screen opens instead of the act's page (`ULyudCityThings::OnOpen(screen, thing)`; one of `OPEN_SCREENS` in `interiors.py`): `books` (the library's classics, `ULyudBookScreen`), `photo_lab` (the photo studio takes films in and gives prints out), `photo_darkroom` (the hero develops his own film), `photo_contest` (the photo club's monthly contest at its table: hand a print in, hear the result) and `photo_wall` (the wall of the contest's winners; all four `Private/Photo/LyudPhoto.cpp`, docs/photo.md). The act still takes its price, gives its items, plays its sound and reports its event; its line is taken but not shown, its `minutes` do not pass, and a counter's staff talk is not offered |
 | `collect` | a stamp every run gives (`"shelves/birds"`), or `"set/{line}"`: every line it shows is a piece of its own (the line's key: the films of «Рассвет»'s programme, a jukebox's records); an act `like` it inherits it (`"collect": ""` drops it) |
 | `closed` | what things doing this act say while their plot is shut: an act id or a line key (see "Closed") |
 | `game` | a mini-game played instead of showing `lines` (see "Mini-games"); an act `like` it inherits it (`"game": null` drops it) |
@@ -610,7 +610,9 @@ market, its bird/bait/tea stalls, fish shop, bakery, «Чайка», dumplings, 
 the photo desk, the clinic, the sanatorium, the hall bar, the fair, the sports café, «Шестерня»'s lending desk, the
 lifeguards and the keeper), 93 topics, 218 answer lines, ru/en/ja. They point at each other: the film of the day at
 «Рассвет» (one topic shared by the buffet and the cashiers), the library's stamp diary, the potter's week at the culture
-block, Kesha the parrot, the chess regulars, the morning paper. `--check` fails on an unknown act or topic, a topic without
+block, Kesha the parrot, the chess regulars, the morning paper. The four photo quests' topics are in `photo.json` (topic sets
+`photo_grandpa`, `photo_pier`, `photo_maru` on the workshop W1-U04, the lighthouse desk and the Cog's cloakroom; each has
+a second topic, "I have the print", offered once the first is heard). `--check` fails on an unknown act or topic, a topic without
 a plain line, more than 8, an unknown `did` target or `heard` topic. Console `lyud.City.Ask <thing id> [topic id] | list |
 reset` (from anywhere, whatever the hour and staff); developer mode `interiors.topics` (heard, on the page and the log),
 `interiors.topics_reset` (every topic new again), `interiors.ask_nearest`.

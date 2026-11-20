@@ -65,6 +65,16 @@ Backlog item 33, branch `photo-contest`. The photo club at «Шестерня» 
   sight line reaches the sea's level with nothing in the way).
 - **Quest events.** `do photo_contest_enter`, `do photo_contest_prize`, `do photo_contest_result`. The event `photo` now
   also carries `maru` and a resident's key for a sharp print of them, besides the map places.
+- **In the club.** The box is `P-CLUB3/contest_box` (made from the stool spot `photo_seat_2` by a `"spot"` rule in
+  tools/city/content/photo.json; a real thing in blender/city/buildings/cog_club.py is the proper follow-up), the wall
+  is `P-CLUB3/drying_line` (its old flavour lines are on no thing now), the board `P-CLUB3/photo_board` also reads the
+  dated sheet `notices_photo`. The club is open 12 to 23.
+- **The paper** (docs/town_paper.md "The photo contest") mirrors the themes and days in `TownPaperModel.h`
+  (`ContestTheme`, `ContestLastDay`, `ContestJuryDay`): keep the two in step.
+- **Three photo quests**, each ended by showing the print (`no_skip` on the photo stage): `grandpa_portrait` (Nurlan
+  Liepa at the repair workshop W1-U04 asks for a portrait of his grandfather Klaus, `photo t_liepa_klaus`), `old_pier`
+  (the lighthouse keepers, 18:00 to 07:00, `photo pier`; the map has a new place `pier`), `maru_wall` (the club's
+  cloakroom clerk, `photo maru`).
 - Rules: `Private/Photo/PhotoContestModel.h/.cpp`, checks in `tools/photosim/contest_test.cpp` (2190 checks, synthetic
   shots). Saved with the camera (key "Photo", field SavedContest).
 - Console: `lyud.Photo.Contest`, `lyud.Photo.Wall`; the same two as developer actions.

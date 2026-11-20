@@ -225,6 +225,50 @@ S = [
      "News from the club: a schoolboy beat one of the regulars. The regular demands a rematch.",
      "クラブの話題：少年が常連に勝った。常連は再戦を要求している。"),
 
+    # --- the photo club's monthly contest (docs/photo.md; ULyudPhoto::ContestNews, LyudPaper::FPaper::ContestTheme)
+    # the month's theme by (month - 1) % 4, a name that stands in quotes after "theme:"
+    ("paper.contest.theme.sea", "Море", "The sea", "海"),
+    ("paper.contest.theme.birds", "Птицы", "Birds", "鳥"),
+    ("paper.contest.theme.work", "Люди за работой", "People at work", "働く人びと"),
+    ("paper.contest.theme.festival", "Праздник", "The festival", "祭り"),
+    # bills page on the 1st: {0} theme, {1} the last day prints are taken, {2} the jury's day, {3} month (genitive)
+    ("paper.contest.open",
+     "Фотокружок клуба «Шестерня» открывает конкурс месяца. Тема: «{0}». Снимки принимают до {1} {3}, по одному отпечатку от автора. Жюри заседает {2} {3}; три лучших снимка повесят на стене кружка.",
+     "The photo circle of the Cog club opens its contest of the month. Theme: “{0}”. Prints are taken until {1} {3}, one from each entrant. The jury sits on {2} {3}; the three best prints go up on the circle's wall.",
+     "クラブ「歯車」の写真サークルが今月のコンクールを開始。テーマは「{0}」。出品は{3}{1}日まで、一人一枚。審査は{3}{2}日、上位三点はサークルの壁に掲げられる。"),
+    # front, the hero took the first place: {0} theme, {1} the place the print was taken at
+    ("paper.front.contest.1",
+     "На первой полосе — снимок школьника. Жюри фотокружка «Шестерни» отдало ему первое место в конкурсе месяца, тема — «{0}». Где снято: {1}. Редакция печатает фотографию без ретуши: она в ней не нуждается.",
+     "On the front page: a schoolboy's photograph. The jury of the Cog's photo circle gave it first place in the contest of the month, theme “{0}”. Taken at: {1}. The editors print the picture unretouched: it needs none.",
+     "一面は少年の写真。「歯車」写真サークルの審査員は、今月のコンクール（テーマ「{0}」）の一位にこの一枚を選んだ。撮影場所：{1}。編集部は修整なしで掲載する。その必要がないからだ。"),
+    ("paper.front.contest.2",
+     "Лучший снимок месяца сделал подросток с «Чайкой» на шее. Тема конкурса — «{0}», место съёмки: {1}. Жюри спорило недолго. Отпечаток висит в клубе «Шестерня», а копия — перед вами.",
+     "The best photograph of the month was taken by a boy with a Chaika round his neck. The contest's theme: “{0}”; the spot: {1}. The jury did not argue for long. The print hangs at the Cog club, and a copy is before you.",
+     "今月最高の一枚を撮ったのは、首から「チャイカ」を下げた少年だった。コンクールのテーマは「{0}」、撮影場所：{1}。審査は長くかからなかった。写真はクラブ「歯車」に掛かっており、その複製がこの紙面である。"),
+    ("paper.front.contest.3",
+     "Первое место фотоконкурса — у школьника. Тема: «{0}». Снято: {1}. Старые члены кружка говорят, что глаз у него от природы, а терпение от рыбалки. Снимок печатаем на этой полосе.",
+     "First place in the photo contest goes to a schoolboy. Theme: “{0}”. Taken at: {1}. The circle's old hands say his eye is a gift and his patience comes from fishing. We print the picture on this page.",
+     "写真コンクールの一位は少年の手に。テーマ：「{0}」。撮影場所：{1}。サークルの古株によれば、目は生まれつき、辛抱強さは釣りのおかげだという。写真はこの面に掲載する。"),
+    # the same when the print's place is not known: {0} theme
+    ("paper.front.contest_noplace.1",
+     "На первой полосе — снимок школьника: первое место в конкурсе фотокружка «Шестерни», тема месяца — «{0}». Где это снято, автор не говорит. Редакция гадает вместе с читателями.",
+     "On the front page: a schoolboy's photograph, first place in the contest of the Cog's photo circle, the month's theme being “{0}”. Where it was taken the author will not say. The editors are guessing along with the readers.",
+     "一面は少年の写真。「歯車」写真サークルのコンクールで一位、今月のテーマは「{0}」。どこで撮ったのか、作者は明かさない。編集部も読者と一緒に首をひねっている。"),
+    ("paper.front.contest_noplace.2",
+     "Лучший снимок месяца сделал подросток с «Чайкой» на шее. Тема конкурса — «{0}». Отпечаток висит в клубе «Шестерня», а копию редакция печатает здесь, без ретуши.",
+     "The best photograph of the month was taken by a boy with a Chaika round his neck. The contest's theme: “{0}”. The print hangs at the Cog club, and the editors print a copy here, unretouched.",
+     "今月最高の一枚を撮ったのは、首から「チャイカ」を下げた少年だった。コンクールのテーマは「{0}」。写真はクラブ「歯車」に掛かっており、編集部はその複製を修整なしでここに掲載する。"),
+    # town page: the prize places ({0} theme); the first one only when a bigger story took the front
+    ("paper.brief.contest_1", "Фотоконкурс «Шестерни», тема «{0}»: первое место у школьника. Его снимок висит на стене кружка.",
+     "The Cog's photo contest, theme “{0}”: first place goes to a schoolboy. His print hangs on the circle's wall.",
+     "「歯車」の写真コンクール、テーマ「{0}」：一位は少年。その写真はサークルの壁に掛かっている。"),
+    ("paper.brief.contest_2", "Фотоконкурс «Шестерни», тема «{0}»: второе место занял снимок школьника. Жюри отметило резкость.",
+     "The Cog's photo contest, theme “{0}”: second place went to a schoolboy's print. The jury noted its sharpness.",
+     "「歯車」の写真コンクール、テーマ「{0}」：二位は少年の一枚。審査員はピントの確かさを評価した。"),
+    ("paper.brief.contest_3", "Фотоконкурс «Шестерни», тема «{0}»: третье место у школьника. Для начала неплохо, считает жюри.",
+     "The Cog's photo contest, theme “{0}”: third place for a schoolboy. Not bad for a start, the jury says.",
+     "「歯車」の写真コンクール、テーマ「{0}」：三位は少年。出だしとしては悪くない、と審査員。"),
+
     # --- the town page: residents ({0} name, {1} age)
     ("paper.bday.plain", "Поздравляем! {0}: сегодня день рождения, исполняется {1}.",
      "Happy birthday to {0}, who is {1} today.",
@@ -769,3 +813,54 @@ NOTICES = [
      "Ski day: if the snow comes, a race round the pond. If not, tea and hope.",
      "スキーの日：雪が降れば池のまわりでレース。降らなければ、お茶と希望。"),
 ]
+
+# --- the photo club's monthly contest on the boards (docs/photo.md): the theme of the month from the 1st to the 19th (the
+# four themes in turn: January the sea, February birds, March people at work, April the festival, and round again), a
+# reminder from the 20th to the 25th (the last day prints are taken), the jury's day (the 26th), the results to the month's
+# end. A window may be a list of windows: the notice comes back.
+CONTEST_THEMES = ("sea", "birds", "work", "festival")   # as LyudPaper::FPaper::ContestTheme
+_MONTH_END = (31, 29, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31)
+
+
+def _monthly(first, last, months=range(1, 13)):
+    return [("%02d-%02d" % (m, first), "%02d-%02d" % (m, last or _MONTH_END[m - 1])) for m in months]
+
+
+_CONTEST_THEME_NOTICES = {
+    "sea": ("Фотоконкурс «Шестерни». Тема месяца: «Море». Один отпечаток от автора, сдавать до 25-го в фотолабораторию клуба, в ящик на столе у проектора. Маяк считается морем, только если в кадре есть вода.",
+            "The Cog's photo contest. Theme of the month: “The sea”. One print from each entrant, handed in by the 25th at the club's photo lab, in the box on the table by the projector. The lighthouse counts as the sea only with water in the frame.",
+            "「歯車」写真コンクール。今月のテーマは「海」。出品は一人一枚、25日までにクラブの写真室、映写機の机の箱へ。灯台は、画面に水が写っている場合に限り海とみなす。"),
+    "birds": ("Фотоконкурс «Шестерни». Тема месяца: «Птицы». Один отпечаток от автора, сдавать до 25-го в фотолабораторию клуба, в ящик на столе у проектора. Голуби допускаются, чучела из кабинета биологии — нет.",
+              "The Cog's photo contest. Theme of the month: “Birds”. One print from each entrant, handed in by the 25th at the club's photo lab, in the box on the table by the projector. Pigeons are admitted; stuffed birds from the biology room are not.",
+              "「歯車」写真コンクール。今月のテーマは「鳥」。出品は一人一枚、25日までにクラブの写真室、映写機の机の箱へ。ハトは可、生物室の剥製は不可。"),
+    "work": ("Фотоконкурс «Шестерни». Тема месяца: «Люди за работой». Один отпечаток от автора, сдавать до 25-го в фотолабораторию клуба, в ящик на столе у проектора. Спящий сторож работой не считается, хотя жюри спорило.",
+             "The Cog's photo contest. Theme of the month: “People at work”. One print from each entrant, handed in by the 25th at the club's photo lab, in the box on the table by the projector. A sleeping watchman does not count as work, though the jury argued.",
+             "「歯車」写真コンクール。今月のテーマは「働く人びと」。出品は一人一枚、25日までにクラブの写真室、映写機の机の箱へ。居眠り中の守衛は仕事に数えない。審査員のあいだでも議論はあったが。"),
+    "festival": ("Фотоконкурс «Шестерни». Тема месяца: «Праздник». Один отпечаток от автора, сдавать до 25-го в фотолабораторию клуба, в ящик на столе у проектора. Праздник должен быть в кадре, а не только на душе у автора.",
+                 "The Cog's photo contest. Theme of the month: “The festival”. One print from each entrant, handed in by the 25th at the club's photo lab, in the box on the table by the projector. The festival must be in the frame, not only in the author's heart.",
+                 "「歯車」写真コンクール。今月のテーマは「祭り」。出品は一人一枚、25日までにクラブの写真室、映写機の机の箱へ。祭りは作者の心の中だけでなく、画面の中にあること。"),
+}
+for _n, _theme in enumerate(CONTEST_THEMES):
+    NOTICES.append(("club", "contest_" + _theme, _monthly(1, 19, [m for m in range(1, 13) if (m - 1) % 4 == _n]), None) + _CONTEST_THEME_NOTICES[_theme])
+NOTICES += [
+    ("club", "contest_soon", _monthly(20, 25), None,
+     "Фотокружок напоминает: снимки на конкурс месяца принимают до 25-го. Ящик на столе у проектора, подпись карандашом на обороте.",
+     "The photo circle reminds you: prints for the contest of the month are taken until the 25th. The box is on the table by the projector; sign in pencil on the back.",
+     "写真サークルよりお知らせ：今月のコンクールの出品は25日まで。箱は映写機の机の上、署名は裏に鉛筆で。"),
+    ("club", "contest_jury", _monthly(26, 26), None,
+     "Сегодня, 26-го, в фотолаборатории «Шестерни» заседает жюри конкурса. Просьба не стучать: при красном свете спорят шёпотом.",
+     "Today, the 26th, the contest's jury sits in the Cog's photo lab. Please don't knock: under the red light they argue in whispers.",
+     "本日26日、「歯車」の写真室でコンクールの審査会。ノックはご遠慮ください。赤いランプの下では、議論もひそひそ声です。"),
+    ("club", "contest_done", _monthly(27, None), None,
+     "Итоги фотоконкурса подведены. Три лучших снимка висят в фотолаборатории «Шестерни», на стене у лески. С первого числа — новая тема.",
+     "The photo contest has been judged. The three best prints hang in the Cog's photo lab, on the wall by the drying line. A new theme from the first of the month.",
+     "写真コンクールの結果が出ました。上位三点は「歯車」の写真室、干し紐のそばの壁に。一日からは新しいテーマです。"),
+]
+# the photo circle's own sheet (text notices_photo, read at P-CLUB3/photo_board in turn with the lab's guide): its title and
+# its rules; the page before them is the contest notice of the day (the seven above)
+CONTEST_SHEET = (
+    ("Фотокружок: конкурс месяца", "The photo circle: contest of the month", "写真サークル：今月のコンクール"),
+    ("Конкурс фотокружка. Каждый месяц новая тема: море, птицы, люди за работой, праздник — и снова по кругу. Один отпечаток от автора, сдавать с 1-го по 25-е в ящик на столе у проектора. 26-го судят члены кружка: что в кадре, каков свет и резко ли. Три лучших снимка висят на стене у лески до следующего конкурса.",
+     "The photo circle's contest. A new theme every month: the sea, birds, people at work, the festival, and round again. One print from each entrant, handed in from the 1st to the 25th, in the box on the table by the projector. On the 26th the circle's members judge: what is in the frame, how the light is, and whether it is sharp. The three best prints hang on the wall by the drying line until the next contest.",
+     "写真サークルのコンクール。テーマは毎月替わる。海、鳥、働く人びと、祭り、そしてまた最初から。出品は一人一枚、1日から25日までに映写機の机の箱へ。26日にサークルの会員が審査する。何が写っているか、光はどうか、ピントは合っているか。上位三点は次のコンクールまで、干し紐のそばの壁に掛かる。"),
+)
