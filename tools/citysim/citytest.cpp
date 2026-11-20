@@ -994,6 +994,8 @@ static void RealChecks(const std::string& Path)
 		for (int H = 0; H < 24; ++H)
 		{
 			FWhen W = AtDate(H % 7, (float)H + 0.5f, 100, 615, 30);
+			static const std::vector<std::string> TownTalk{"cup"};
+			W.Rumours = H == 12 ? &TownTalk : nullptr; // at noon the town talks of the hero's cup (docs/town_rumours.md)
 			if (M.TalkReady(I, W, Dev, Offer) > 0)
 			{
 				bTalks = true;

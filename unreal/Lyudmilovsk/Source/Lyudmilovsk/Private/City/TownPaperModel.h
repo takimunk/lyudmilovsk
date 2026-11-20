@@ -102,6 +102,9 @@ namespace LyudPaper
 		/** The tournaments of the day before (over) and today's (to come). */
 		std::vector<FCup> CupsYesterday;
 		std::vector<FCup> CupsToday;
+		/** The talk of the town about the hero the day before (ULyudTownRumours::PaperColumn, docs/town_rumours.md): lines made
+		 *  already (a key and its arguments), printed on the town page under «Говорят в городе». */
+		std::vector<FLine> Talk;
 	};
 
 	struct FPoolEntry
@@ -649,6 +652,15 @@ namespace LyudPaper
 					continue;
 				}
 				++NBrief;
+			}
+			// the talk of the town about the hero (docs/town_rumours.md): its heading and at most two lines
+			if (!F.Talk.empty())
+			{
+				Page.push_back({ "rumour.paper.title", {} });
+				for (size_t I = 0; I < F.Talk.size() && I < 2; ++I)
+				{
+					Page.push_back(F.Talk[I]);
+				}
 			}
 			// birthdays: the round ones first, then the children's, at most two; and one anniversary
 			std::vector<std::pair<int, const FBirthday*>> Bd;

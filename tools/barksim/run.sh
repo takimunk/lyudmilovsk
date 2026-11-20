@@ -1,6 +1,7 @@
 #!/bin/sh
 # Builds and runs the townsfolk's lines on the town's people outside the engine (tools/barksim/barksim.cpp). From the repo root.
 #   tools/barksim/run.sh              checks (the file, the words in ru/en/ja, every set fits somebody, most have a line)
+#   tools/barksim/run.sh rumours      the checks, and who hears of a regular beaten, day by day (the talk of the town)
 #   tools/barksim/run.sh day [lang]   a day of the town: samples of what is said, hour by hour (ru, en, ja)
 set -e
 ROOT="$(cd "$(dirname "$0")/../.." && pwd)"
