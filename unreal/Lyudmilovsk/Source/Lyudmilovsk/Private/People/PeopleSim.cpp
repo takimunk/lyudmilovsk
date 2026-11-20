@@ -381,6 +381,7 @@ namespace LyudPeople
 			Sl.Height = S["height"].F();
 			Sl.Capacity = std::max(1, S["capacity"].I(1));
 			Sl.Tag = S["tag"].S();
+			Sl.Thing = S["thing"].S();
 			if (Pl.bIndoor)
 			{
 				Sl.Inside = Prefix;
@@ -1181,6 +1182,7 @@ namespace LyudPeople
 				Sl.Height = S["height"].F();
 				Sl.Capacity = std::max(1, S["capacity"].I(1));
 				Sl.Tag = S["tag"].S();
+			Sl.Thing = S["thing"].S();
 				if (!Prefix.empty())
 				{
 					Sl.Inside = Prefix;

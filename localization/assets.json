@@ -793,6 +793,13 @@
    "prompt": "See design/fishing/icons_grid_4.json (cell of fish_book).",
    "source": "design/fishing/icons_grid_4.json: a Higgsfield picture, cut by tools/fishing_icons.py (the game-assets rule)"
   },
+  "icon_library_book": {
+   "kind": "icon",
+   "style": "icon",
+   "aspect": "1:1",
+   "prompt": "See design/books/icon_grid.json (cell of library_book).",
+   "source": "design/books/icon_grid.json: a Higgsfield picture, cut by tools/books/book_icon.py (the game-assets rule)"
+  },
   "icon_diner_fish": {
    "kind": "icon",
    "style": "icon",
@@ -1045,6 +1052,13 @@
    "prompt": "A thick school exercise notebook with a plain dark green textured oilcloth cover, slightly open showing squared pages.",
    "source": "localization/icon_grids_city.json: icons_city_4, cell 3 (row 1, right), one 3x3 Higgsfield grid (the game-assets rule)"
   },
+  "icon_san_diploma": {
+   "kind": "icon",
+   "style": "icon",
+   "aspect": "1:1",
+   "prompt": "A Soviet 1970s sanatorium certificate of completed treatment: a stiff cream card with an embossed golden crown, a printed border, a violet seal and a sprig of pine, no readable text.",
+   "source": "design/sanatorium/icon_san_diploma_grid.json: one 2x2 Higgsfield grid of variants (the game-assets rule), the best cell cut"
+  },
   "icon_adventure_book": {
    "kind": "icon",
    "style": "icon",
@@ -1086,6 +1100,132 @@
    "aspect": "1:1",
    "prompt": "A small varnished wooden box with its lid covered in tiny glued seashells and a starfish, the lid slightly open showing a little mirror.",
    "source": "localization/icon_grids_city.json: icons_city_4, cell 9 (row 3, right), one 3x3 Higgsfield grid (the game-assets rule)"
+  },
+  "icon_record_dawn_1": {
+   "kind": "icon",
+   "style": "icon",
+   "aspect": "1:1",
+   "prompt": "A square long-playing record sleeve with the record sliding out; The amber sleeve shows the sea and one gull who woke before everyone else.",
+   "source": "tools/music/icon_grids.json: icons_records_1, cell 1 (row 1, left), one 3x3 Higgsfield grid (the game-assets rule)"
+  },
+  "icon_record_dawn_2": {
+   "kind": "icon",
+   "style": "icon",
+   "aspect": "1:1",
+   "prompt": "A square long-playing record sleeve with the record sliding out; The sleeve is pale blue, with a piano standing right on the sand.",
+   "source": "tools/music/icon_grids.json: icons_records_1, cell 2 (row 1, middle), one 3x3 Higgsfield grid (the game-assets rule)"
+  },
+  "icon_record_day_1": {
+   "kind": "icon",
+   "style": "icon",
+   "aspect": "1:1",
+   "prompt": "A square long-playing record sleeve with the record sliding out; The yellow sleeve shows beach umbrellas on the third terrace, seen from above.",
+   "source": "tools/music/icon_grids.json: icons_records_1, cell 3 (row 1, right), one 3x3 Higgsfield grid (the game-assets rule)"
+  },
+  "icon_record_day_2": {
+   "kind": "icon",
+   "style": "icon",
+   "aspect": "1:1",
+   "prompt": "A square long-playing record sleeve with the record sliding out; The sleeve is grey like the sky over town, with one wet maple leaf on it.",
+   "source": "tools/music/icon_grids.json: icons_records_1, cell 4 (row 2, left), one 3x3 Higgsfield grid (the game-assets rule)"
+  },
+  "icon_record_day_3": {
+   "kind": "icon",
+   "style": "icon",
+   "aspect": "1:1",
+   "prompt": "A square long-playing record sleeve with the record sliding out; The sky-blue sleeve has dunes, pines and a great deal of sky.",
+   "source": "tools/music/icon_grids.json: icons_records_1, cell 5 (row 2, middle), one 3x3 Higgsfield grid (the game-assets rule)"
+  },
+  "icon_record_dusk_1": {
+   "kind": "icon",
+   "style": "icon",
+   "aspect": "1:1",
+   "prompt": "A square long-playing record sleeve with the record sliding out; On the orange sleeve a cello casts a long evening shadow.",
+   "source": "tools/music/icon_grids.json: icons_records_1, cell 6 (row 2, right), one 3x3 Higgsfield grid (the game-assets rule)"
+  },
+  "icon_record_dusk_2": {
+   "kind": "icon",
+   "style": "icon",
+   "aspect": "1:1",
+   "prompt": "A square long-playing record sleeve with the record sliding out; The plum-coloured sleeve shows the last windows of the Korona sanatorium going dark one by one.",
+   "source": "tools/music/icon_grids.json: icons_records_1, cell 7 (row 3, left), one 3x3 Higgsfield grid (the game-assets rule)"
+  },
+  "icon_record_night_1": {
+   "kind": "icon",
+   "style": "icon",
+   "aspect": "1:1",
+   "prompt": "A square long-playing record sleeve with the record sliding out; A dark-blue sleeve with stars and the lamp at the end of the pier.",
+   "source": "tools/music/icon_grids.json: icons_records_1, cell 8 (row 3, middle), one 3x3 Higgsfield grid (the game-assets rule)"
+  },
+  "icon_record_night_2": {
+   "kind": "icon",
+   "style": "icon",
+   "aspect": "1:1",
+   "prompt": "A square long-playing record sleeve with the record sliding out; The violet sleeve has a moon with a tiny music box and key inside it.",
+   "source": "tools/music/icon_grids.json: icons_records_1, cell 9 (row 3, right), one 3x3 Higgsfield grid (the game-assets rule)"
+  },
+  "icon_record_rain_1": {
+   "kind": "icon",
+   "style": "icon",
+   "aspect": "1:1",
+   "prompt": "A square long-playing record sleeve with the record sliding out; The grey-blue sleeve shows a rain-spotted window and a cup on the sill.",
+   "source": "tools/music/icon_grids.json: icons_records_2, cell 1 (row 1, left), one 3x3 Higgsfield grid (the game-assets rule)"
+  },
+  "icon_record_rain_2": {
+   "kind": "icon",
+   "style": "icon",
+   "aspect": "1:1",
+   "prompt": "A square long-playing record sleeve with the record sliding out; The grey-green sleeve shows a wet cable car cabin and somebody's umbrella.",
+   "source": "tools/music/icon_grids.json: icons_records_2, cell 2 (row 1, middle), one 3x3 Higgsfield grid (the game-assets rule)"
+  },
+  "icon_record_storm_1": {
+   "kind": "icon",
+   "style": "icon",
+   "aspect": "1:1",
+   "prompt": "A square long-playing record sleeve with the record sliding out; The sleeve is almost black, with the lighthouse and a wave taller than it.",
+   "source": "tools/music/icon_grids.json: icons_records_2, cell 3 (row 1, right), one 3x3 Higgsfield grid (the game-assets rule)"
+  },
+  "icon_record_snow_1": {
+   "kind": "icon",
+   "style": "icon",
+   "aspect": "1:1",
+   "prompt": "A square long-playing record sleeve with the record sliding out; A white sleeve with nothing on it but a cat's paw prints.",
+   "source": "tools/music/icon_grids.json: icons_records_2, cell 4 (row 2, left), one 3x3 Higgsfield grid (the game-assets rule)"
+  },
+  "icon_record_sea_1": {
+   "kind": "icon",
+   "style": "icon",
+   "aspect": "1:1",
+   "prompt": "A square long-playing record sleeve with the record sliding out; The deep-blue sleeve has only the sea and a thin horizon line.",
+   "source": "tools/music/icon_grids.json: icons_records_2, cell 5 (row 2, middle), one 3x3 Higgsfield grid (the game-assets rule)"
+  },
+  "icon_record_club_1": {
+   "kind": "icon",
+   "style": "icon",
+   "aspect": "1:1",
+   "prompt": "A square long-playing record sleeve with the record sliding out; A dark purple sleeve with a punched tape curled into a wave.",
+   "source": "tools/music/icon_grids.json: icons_records_2, cell 6 (row 2, right), one 3x3 Higgsfield grid (the game-assets rule)"
+  },
+  "icon_record_club_2": {
+   "kind": "icon",
+   "style": "icon",
+   "aspect": "1:1",
+   "prompt": "A square long-playing record sleeve with the record sliding out; The turquoise sleeve shows a computer with a little dream cloud above it.",
+   "source": "tools/music/icon_grids.json: icons_records_2, cell 7 (row 3, left), one 3x3 Higgsfield grid (the game-assets rule)"
+  },
+  "icon_record_club_3": {
+   "kind": "icon",
+   "style": "icon",
+   "aspect": "1:1",
+   "prompt": "A square long-playing record sleeve with the record sliding out; A dark grey sleeve with a green cursor blinking in the corner.",
+   "source": "tools/music/icon_grids.json: icons_records_2, cell 8 (row 3, middle), one 3x3 Higgsfield grid (the game-assets rule)"
+  },
+  "icon_record_flight_1": {
+   "kind": "icon",
+   "style": "icon",
+   "aspect": "1:1",
+   "prompt": "A square long-playing record sleeve with the record sliding out; The sleeve shows a bird's-eye view of pines, the beach and our cable car.",
+   "source": "tools/music/icon_grids.json: icons_records_2, cell 9 (row 3, right), one 3x3 Higgsfield grid (the game-assets rule)"
   }
  }
 }

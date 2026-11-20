@@ -1,0 +1,799 @@
+{
+ "_doc": "Small jobs (docs/interactives_backlog.md item 4, docs/city_interiors.md \"Small jobs\"): six short paid shifts with real residents as bosses (the kiosk's morning papers, the Saturday market's crates and scales, lifeguard tower 1's flag and watch, the lighthouse's night log, «Tarelka»'s ice cream, «Rassvet»'s door), the \"Help wanted\" boards (house committees, the games room), the stamp set work_book, the bosses' talk and the quest job_book. A job thing keeps its old act as its words outside the job's hours.",
+ "acts": {
+  "job_board": {
+   "prompt": "city.job.board.prompt",
+   "lines": [
+    "city.job.board.line"
+   ],
+   "any_hour": true,
+   "read": {
+    "texts": [
+     "jobs_board_cm"
+    ]
+   },
+   "target": "job_board"
+  },
+  "job_board_youth": {
+   "prompt": "city.job.board.prompt",
+   "lines": [
+    "city.job.board.line"
+   ],
+   "any_hour": true,
+   "read": {
+    "texts": [
+     "jobs_board_youth"
+    ]
+   },
+   "target": "job_board"
+  },
+  "job_k1_papers": {
+   "prompt": "city.job.k1.prompt",
+   "minutes": 40,
+   "fade": true,
+   "needs_staff": "seller",
+   "daily": 1,
+   "closed": "look_kiosk1_prices",
+   "lines": [
+    {
+     "k": "city.job.k1.1",
+     "weather": [
+      "dry",
+      "!cold"
+     ],
+     "pay": 25,
+     "collect": "work_book/kiosk"
+    },
+    {
+     "k": "city.job.k1.2",
+     "weather": [
+      "dry",
+      "!cold"
+     ],
+     "pay": 25,
+     "collect": "work_book/kiosk"
+    },
+    {
+     "k": "city.job.k1.rain",
+     "weather": [
+      "rain",
+      "snow"
+     ],
+     "pay": 35,
+     "collect": "work_book/kiosk"
+    },
+    {
+     "k": "city.job.k1.cold",
+     "weather": [
+      "cold",
+      "!rain",
+      "!snow"
+     ],
+     "pay": 30,
+     "collect": "work_book/kiosk"
+    },
+    {
+     "k": "city.job.k1.drizzle",
+     "weather": [
+      "!dry",
+      "!rain",
+      "!snow",
+      "!cold"
+     ],
+     "pay": 25,
+     "collect": "work_book/kiosk"
+    }
+   ]
+  },
+  "job_mk_boxes": {
+   "prompt": "city.job.mk.box.prompt",
+   "minutes": 30,
+   "fade": true,
+   "needs_staff": "seller",
+   "daily": 1,
+   "closed": "city.job.mk.closed.*",
+   "lines": [
+    {
+     "k": "city.job.mk.box.1",
+     "weather": [
+      "!rain",
+      "!snow"
+     ],
+     "pay": 20,
+     "collect": "work_book/market"
+    },
+    {
+     "k": "city.job.mk.box.2",
+     "weather": [
+      "!rain",
+      "!snow"
+     ],
+     "pay": 20,
+     "collect": "work_book/market"
+    },
+    {
+     "k": "city.job.mk.box.rain",
+     "weather": [
+      "rain",
+      "snow"
+     ],
+     "pay": 25,
+     "collect": "work_book/market"
+    }
+   ]
+  },
+  "job_mk_weigh": {
+   "prompt": "city.job.mk.weigh.prompt",
+   "minutes": 20,
+   "needs_staff": "seller",
+   "sound": "scale_clunk",
+   "closed": "city.job.mk.closed.*",
+   "lines": [
+    "city.job.mk.weigh.after"
+   ],
+   "game": {
+    "type": "aim",
+    "title": "city.job.mk.weigh.title",
+    "keys": "city.job.mk.weigh.keys",
+    "rounds": 6,
+    "need": 7,
+    "speed": 0.65,
+    "zone": 0.22,
+    "daily": 1,
+    "pay": 3,
+    "win": [
+     {
+      "k": "city.job.mk.weigh.win.1",
+      "pay": 20,
+      "collect": "work_book/market"
+     },
+     {
+      "k": "city.job.mk.weigh.win.2",
+      "pay": 20,
+      "collect": "work_book/market"
+     }
+    ],
+    "lose": [
+     {
+      "k": "city.job.mk.weigh.lose",
+      "pay": 5,
+      "collect": "work_book/market"
+     }
+    ],
+    "draw": [
+     {
+      "k": "city.job.mk.weigh.draw",
+      "pay": 10,
+      "collect": "work_book/market"
+     }
+    ]
+   }
+  },
+  "job_lg_watch": {
+   "prompt": "city.job.lg.watch.prompt",
+   "minutes": 60,
+   "needs_staff": "lifeguard",
+   "closed": "lg_whistle",
+   "lines": [
+    "city.job.lg.watch.after"
+   ],
+   "game": {
+    "type": "rally",
+    "title": "city.job.lg.watch.title",
+    "keys": "city.job.lg.watch.keys",
+    "need": 6,
+    "speed": 0.6,
+    "zone": 0.5,
+    "shrink": 0.9,
+    "pace": 1.04,
+    "daily": 1,
+    "pay": 3,
+    "win": [
+     {
+      "k": "city.job.lg.watch.win.1",
+      "pay": 25,
+      "collect": "work_book/lifeguard"
+     },
+     {
+      "k": "city.job.lg.watch.win.2",
+      "pay": 25,
+      "collect": "work_book/lifeguard"
+     }
+    ],
+    "lose": [
+     {
+      "k": "city.job.lg.watch.lose",
+      "pay": 8,
+      "collect": "work_book/lifeguard"
+     }
+    ],
+    "draw": [
+     {
+      "k": "city.job.lg.watch.draw",
+      "pay": 15,
+      "collect": "work_book/lifeguard"
+     }
+    ],
+    "sounds": {
+     "hit": "wind_soft",
+     "miss": "",
+     "end": "rest_bell"
+    }
+   }
+  },
+  "job_lg_flags": {
+   "prompt": "city.job.lg.flag.prompt",
+   "minutes": 5,
+   "needs_staff": "lifeguard",
+   "sound": "wind_soft",
+   "daily": 1,
+   "closed": "lg_halyard",
+   "topics": [
+    "@job_t_lg"
+   ],
+   "lines": [
+    {
+     "k": "city.job.lg.flag.fog",
+     "weather": "fog",
+     "pay": 10,
+     "collect": "work_book/lifeguard"
+    },
+    {
+     "k": "city.job.lg.flag.rain",
+     "weather": [
+      "rain",
+      "snow",
+      "!fog"
+     ],
+     "pay": 10,
+     "collect": "work_book/lifeguard"
+    },
+    {
+     "k": "city.job.lg.flag.cold",
+     "weather": [
+      "cold",
+      "!fog",
+      "!rain",
+      "!snow"
+     ],
+     "pay": 10,
+     "collect": "work_book/lifeguard"
+    },
+    {
+     "k": "city.job.lg.flag.green",
+     "weather": [
+      "dry",
+      "!fog",
+      "!cold"
+     ],
+     "pay": 10,
+     "collect": "work_book/lifeguard"
+    },
+    {
+     "k": "city.job.lg.flag.drizzle",
+     "weather": [
+      "!dry",
+      "!rain",
+      "!snow",
+      "!fog"
+     ],
+     "pay": 10,
+     "collect": "work_book/lifeguard"
+    }
+   ]
+  },
+  "job_px_watch": {
+   "prompt": "city.job.px.prompt",
+   "minutes": 60,
+   "fade": true,
+   "needs_staff": "lighthouse_keeper",
+   "sound": "pencil_scratch",
+   "daily": 6,
+   "closed": "keeper_clockwork",
+   "lines": [
+    {
+     "k": "city.job.px.lamp",
+     "h": [
+      18,
+      19.5
+     ],
+     "pay": 15,
+     "collect": "work_book/lighthouse"
+    },
+    {
+     "k": "city.job.px.eve.1",
+     "h": [
+      19.5,
+      24
+     ],
+     "weather": [
+      "!fog",
+      "!rain",
+      "!snow"
+     ],
+     "pay": 10,
+     "collect": "work_book/lighthouse"
+    },
+    {
+     "k": "city.job.px.eve.fog",
+     "h": [
+      19.5,
+      24
+     ],
+     "weather": "fog",
+     "pay": 10,
+     "collect": "work_book/lighthouse"
+    },
+    {
+     "k": "city.job.px.eve.2",
+     "h": [
+      19.5,
+      24
+     ],
+     "weather": [
+      "!fog",
+      "!rain",
+      "!snow"
+     ],
+     "pay": 10,
+     "collect": "work_book/lighthouse"
+    },
+    {
+     "k": "city.job.px.eve.rain",
+     "h": [
+      19.5,
+      24
+     ],
+     "weather": [
+      "rain",
+      "snow",
+      "!fog"
+     ],
+     "pay": 10,
+     "collect": "work_book/lighthouse"
+    },
+    {
+     "k": "city.job.px.night.1",
+     "h": [
+      0,
+      5
+     ],
+     "weather": "!fog",
+     "pay": 10,
+     "collect": "work_book/lighthouse"
+    },
+    {
+     "k": "city.job.px.night.fog",
+     "h": [
+      0,
+      5
+     ],
+     "weather": "fog",
+     "pay": 10,
+     "collect": "work_book/lighthouse"
+    },
+    {
+     "k": "city.job.px.night.2",
+     "h": [
+      0,
+      5
+     ],
+     "weather": "!fog",
+     "pay": 10,
+     "collect": "work_book/lighthouse"
+    },
+    {
+     "k": "city.job.px.dawn",
+     "h": [
+      5,
+      18
+     ],
+     "pay": 15,
+     "collect": "work_book/lighthouse"
+    }
+   ]
+  },
+  "job_cafe_scoops": {
+   "prompt": "city.job.cafe.prompt",
+   "minutes": 30,
+   "needs_staff": "barista",
+   "sound": "scoop",
+   "lines": "city.job.cafe.after",
+   "read": {
+    "texts": [
+     "tarelka_menu"
+    ]
+   },
+   "game": {
+    "type": "aim",
+    "title": "city.job.cafe.title",
+    "keys": "city.job.cafe.keys",
+    "rounds": 6,
+    "need": 7,
+    "speed": 0.7,
+    "zone": 0.2,
+    "daily": 1,
+    "pay": 2,
+    "win": [
+     {
+      "k": "city.job.cafe.win.1",
+      "pay": 20,
+      "collect": "work_book/cafe"
+     },
+     {
+      "k": "city.job.cafe.win.2",
+      "pay": 20,
+      "collect": "work_book/cafe"
+     }
+    ],
+    "lose": [
+     {
+      "k": "city.job.cafe.lose",
+      "pay": 6,
+      "collect": "work_book/cafe"
+     }
+    ],
+    "draw": [
+     {
+      "k": "city.job.cafe.draw",
+      "pay": 12,
+      "collect": "work_book/cafe"
+     }
+    ],
+    "sounds": {
+     "hit": "scoop",
+     "miss": "",
+     "end": "rest_bell"
+    }
+   }
+  },
+  "job_cinema_tickets": {
+   "prompt": "city.job.kino.prompt",
+   "minutes": 30,
+   "needs_staff": "clerk",
+   "closed": "look_stubs",
+   "lines": [
+    "city.job.kino.after"
+   ],
+   "game": {
+    "type": "rally",
+    "title": "city.job.kino.title",
+    "keys": "city.job.kino.keys",
+    "need": 8,
+    "speed": 0.7,
+    "zone": 0.45,
+    "shrink": 0.92,
+    "pace": 1.05,
+    "daily": 1,
+    "pay": 2,
+    "win": [
+     {
+      "k": "city.job.kino.win.1",
+      "pay": 20,
+      "collect": "work_book/cinema"
+     },
+     {
+      "k": "city.job.kino.win.2",
+      "pay": 20,
+      "collect": "work_book/cinema"
+     }
+    ],
+    "lose": [
+     {
+      "k": "city.job.kino.lose",
+      "pay": 6,
+      "collect": "work_book/cinema"
+     }
+    ],
+    "draw": [
+     {
+      "k": "city.job.kino.draw",
+      "pay": 12,
+      "collect": "work_book/cinema"
+     }
+    ],
+    "sounds": {
+     "hit": "paper_tear",
+     "miss": "",
+     "end": "rest_bell"
+    }
+   }
+  }
+ },
+ "rules": {
+  "P-MARKET/market_scales_2": {
+   "act": "job_mk_boxes",
+   "hours": [
+    6,
+    10
+   ],
+   "days": "sat"
+  },
+  "P-MARKET/market_scales": {
+   "act": "job_mk_weigh",
+   "hours": [
+    7,
+    13
+   ],
+   "days": "sat"
+  },
+  "P-MARKET/market_office": {
+   "topics": [
+    "@job_t_market"
+   ]
+  },
+  "P-LIFEGUARD1/whistle": {
+   "act": "job_lg_watch",
+   "hours": [
+    10,
+    19
+   ],
+   "days": "wed-sun"
+  },
+  "P-LIFEGUARD1/flag_halyard": {
+   "act": "job_lg_flags",
+   "hours": [
+    10,
+    19
+   ],
+   "days": "wed-sun"
+  },
+  "P-KIOSK1/counter": {
+   "topics": [
+    "@job_t_kiosk"
+   ]
+  }
+ },
+ "texts": {
+  "jobs_board_cm": {
+   "title": "city.text.jobs.title",
+   "kind": "notice",
+   "minutes": 1,
+   "pages": [
+    "city.text.jobs.head",
+    [
+     {
+      "k": "city.text.jobs.p1.montue",
+      "d": "mon-tue"
+     },
+     {
+      "k": "city.text.jobs.p1.wedfri",
+      "d": "wed-fri"
+     },
+     {
+      "k": "city.text.jobs.p1.sat",
+      "d": "sat"
+     },
+     {
+      "k": "city.text.jobs.p1.sun",
+      "d": "sun"
+     }
+    ],
+    [
+     {
+      "k": "city.text.jobs.p2.montue",
+      "d": "mon-tue"
+     },
+     {
+      "k": "city.text.jobs.p2.wedsun",
+      "d": "wed-sun"
+     }
+    ],
+    [
+     {
+      "k": "city.cm.duty.mon",
+      "d": "mon"
+     },
+     {
+      "k": "city.cm.duty.tue",
+      "d": "tue"
+     },
+     {
+      "k": "city.cm.duty.wed",
+      "d": "wed"
+     },
+     {
+      "k": "city.cm.duty.thu",
+      "d": "thu"
+     },
+     {
+      "k": "city.cm.duty.fri",
+      "d": "fri"
+     },
+     {
+      "k": "city.cm.duty.sat",
+      "d": "sat"
+     },
+     {
+      "k": "city.cm.duty.sun",
+      "d": "sun"
+     }
+    ]
+   ]
+  },
+  "jobs_board_youth": {
+   "title": "city.text.jobs.title",
+   "kind": "notice",
+   "minutes": 1,
+   "pages": [
+    "city.text.jobs.head",
+    [
+     {
+      "k": "city.text.jobs.p1.montue",
+      "d": "mon-tue"
+     },
+     {
+      "k": "city.text.jobs.p1.wedfri",
+      "d": "wed-fri"
+     },
+     {
+      "k": "city.text.jobs.p1.sat",
+      "d": "sat"
+     },
+     {
+      "k": "city.text.jobs.p1.sun",
+      "d": "sun"
+     }
+    ],
+    [
+     {
+      "k": "city.text.jobs.p2.montue",
+      "d": "mon-tue"
+     },
+     {
+      "k": "city.text.jobs.p2.wedsun",
+      "d": "wed-sun"
+     }
+    ],
+    [
+     "city.un.rules.1",
+     "city.un.rules.2",
+     "city.un.rules.3"
+    ]
+   ]
+  }
+ },
+ "topic_sets": {
+  "job_t_market": [
+   {
+    "id": "job.market",
+    "k": "city.ask.job.market",
+    "lines": [
+     "city.ask.job.market.1",
+     {
+      "k": "city.ask.job.market.2",
+      "have": "work_book/market"
+     }
+    ]
+   }
+  ],
+  "job_t_keeper": [
+   {
+    "id": "job.keeper",
+    "k": "city.ask.job.keeper",
+    "lines": [
+     "city.ask.job.keeper.1",
+     {
+      "k": "city.ask.job.keeper.2",
+      "have": "work_book/lighthouse"
+     }
+    ]
+   }
+  ],
+  "job_t_cafe": [
+   {
+    "id": "job.cafe",
+    "k": "city.ask.job.cafe",
+    "lines": [
+     "city.ask.job.cafe.1",
+     {
+      "k": "city.ask.job.cafe.2",
+      "have": "work_book/cafe"
+     }
+    ]
+   }
+  ],
+  "job_t_kino": [
+   {
+    "id": "job.kino",
+    "k": "city.ask.job.kino",
+    "lines": [
+     "city.ask.job.kino.1",
+     {
+      "k": "city.ask.job.kino.2",
+      "have": "work_book/cinema"
+     }
+    ]
+   }
+  ],
+  "job_t_kiosk": [
+   {
+    "id": "job.kiosk",
+    "k": "city.ask.job.kiosk",
+    "lines": [
+     "city.ask.job.kiosk.1",
+     {
+      "k": "city.ask.job.kiosk.2",
+      "have": "work_book/kiosk"
+     }
+    ]
+   }
+  ],
+  "job_t_lg": [
+   {
+    "id": "job.lg",
+    "k": "city.ask.job.lg",
+    "lines": [
+     "city.ask.job.lg.1",
+     {
+      "k": "city.ask.job.lg.2",
+      "have": "work_book/lifeguard"
+     }
+    ]
+   }
+  ]
+ },
+ "collections": {
+  "work_book": {
+   "title": "city.job.coll.title",
+   "pieces": [
+    "kiosk",
+    "market",
+    "lifeguard",
+    "lighthouse",
+    "cafe",
+    "cinema"
+   ]
+  }
+ },
+ "quests": [
+  {
+   "id": "job_book",
+   "kind": "side",
+   "start_on": {
+    "event": "do",
+    "target": "job_board"
+   },
+   "stages": [
+    {
+     "id": "jobs",
+     "objectives": [
+      {
+       "id": "papers",
+       "event": "do",
+       "target": "job_k1_papers"
+      },
+      {
+       "id": "market",
+       "event": "do",
+       "target": "job_mk_weigh"
+      },
+      {
+       "id": "tower",
+       "event": "do",
+       "target": "job_lg_watch"
+      },
+      {
+       "id": "watch",
+       "event": "do",
+       "target": "job_px_watch"
+      },
+      {
+       "id": "icecream",
+       "event": "do",
+       "target": "job_cafe_scoops"
+      },
+      {
+       "id": "door",
+       "event": "do",
+       "target": "job_cinema_tickets"
+      }
+     ],
+     "reward": {
+      "rubles": 50
+     }
+    }
+   ]
+  }
+ ]
+}

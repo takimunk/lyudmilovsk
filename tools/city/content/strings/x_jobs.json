@@ -1,0 +1,508 @@
+{
+ "_doc": "Small jobs (tools/city/content/x_jobs.json): the boards, the six jobs' lines and games, the bosses' talk, the quest job_book. Hero's voice; ja: 僕.",
+ "city.job.paid": {
+  "ru": "+{0} ₽ за работу",
+  "en": "+{0} roubles for the work",
+  "ja": "仕事の報酬 +{0}ルーブル"
+ },
+ "city.job.coll.title": {
+  "ru": "Трудовая книжка",
+  "en": "Work record book",
+  "ja": "労働手帳"
+ },
+ "city.job.board.prompt": {
+  "ru": "E — прочитать «Требуется помощь»",
+  "en": "E — read \"Help wanted\"",
+  "ja": "E：「手伝い募集」を読む"
+ },
+ "city.job.board.line": {
+  "ru": "Листок «Требуется помощь» приколот четырьмя кнопками, и одна из них явно чужая.",
+  "en": "The \"Help wanted\" sheet is pinned with four drawing pins, one of them clearly borrowed.",
+  "ja": "「手伝い募集」の紙が画鋲四つで留めてある。そのうち一つは明らかによそから借りてきたものだ。"
+ },
+ "city.text.jobs.head": {
+  "ru": "ПОДРАБОТКА. Для школьников и всех желающих. Работа короткая, оплата в тот же день, по результату. Отметка в трудовую книжку. Что требуется сегодня — на следующем листе.",
+  "en": "ODD JOBS. For schoolchildren and anyone willing. Short work, paid the same day, by results. A mark in your work record book. What's needed today is on the next sheet.",
+  "ja": "アルバイト。学生さんも、どなたでも。短い仕事、当日払い、出来高制。労働手帳に印を押します。今日の募集は次の紙に。"
+ },
+ "city.text.jobs.title": {
+  "ru": "Требуется помощь",
+  "en": "Help wanted",
+  "ja": "手伝い募集"
+ },
+ "city.text.jobs.p1.montue": {
+  "ru": "Требуется помощь, оплата в тот же день, по результату.\n\nМаяк на пирсе: ночная вахта, с шести вечера до семи утра. Записывать в журнал каждый час ветер, море и суда. Спросить смотрителя у входа.\n\nКафе «Тарелка»: помочь за стойкой с мороженым и чашками, весь день, пока работает бариста.\n\nКиоск у остановки и кинотеатр «Рассвет» в понедельник и вторник обходятся сами.",
+  "en": "Help wanted, paid the same day, by results.\n\nThe lighthouse on the pier: the night watch, six in the evening to seven in the morning. Write the wind, the sea and the ships in the log every hour. Ask the keeper at the door.\n\nThe café «Tarelka»: help at the counter with the ice cream and the cups, all day, while a barista is on.\n\nThe kiosk at the bus stop and the «Rassvet» cinema manage on their own on Mondays and Tuesdays.",
+  "ja": "手伝い募集。報酬は当日、出来高払い。\n\n桟橋の灯台：夜の当直、夕方六時から朝七時まで。毎時、風と海と船を日誌に記す。入口の灯台守に声をかけること。\n\nカフェ〈ターレルカ〉：アイスクリームとカップの手伝い。バリスタがいる間は一日中。\n\nバス停のキオスクと映画館〈ラスヴェト〉は、月曜と火曜は人手が足りている。"
+ },
+ "city.text.jobs.p1.wedfri": {
+  "ru": "Требуется помощь, оплата в тот же день, по результату.\n\nКиоск у остановки: утренние газеты, с восьми до десяти. Разобрать пачки, разложить по полкам. Спросить Ерлана Ромеро.\n\nКафе «Тарелка»: помочь за стойкой с мороженым и чашками, весь день.\n\nКинотеатр «Рассвет»: встать на контроль перед вечерним сеансом, с пяти до восьми. Спросить Кавеха Бергстрёма в кассе.\n\nМаяк на пирсе: ночная вахта с шести вечера, журнал каждый час.",
+  "en": "Help wanted, paid the same day, by results.\n\nThe kiosk at the bus stop: the morning papers, eight to ten. Undo the bundles, fill the racks. Ask Yerlan Romero.\n\nThe café «Tarelka»: help at the counter with the ice cream and the cups, all day.\n\nThe «Rassvet» cinema: stand at the door and check tickets before the evening show, five to eight. Ask Kaveh Bergström at the box office.\n\nThe lighthouse on the pier: the night watch from six in the evening, the log every hour.",
+  "ja": "手伝い募集。報酬は当日、出来高払い。\n\nバス停のキオスク：朝刊、八時から十時。束をほどいて棚に並べる。イェルラン・ロメロに声をかけること。\n\nカフェ〈ターレルカ〉：アイスクリームとカップの手伝い、一日中。\n\n映画館〈ラスヴェト〉：夜の上映前に入口で切符のもぎり、五時から八時。切符売り場のカヴェー・ベリストレムに声をかけること。\n\n桟橋の灯台：夕方六時から夜の当直、毎時日誌。"
+ },
+ "city.text.jobs.p1.sat": {
+  "ru": "Требуется помощь, оплата в тот же день, по результату.\n\nСУББОТА, РЫНОК! С шести до десяти носить ящики из фургона к рядам. С семи до часу взвешивать покупателям на больших весах. Спросить Парису Петросян, фруктовый ряд.\n\nКиоск у остановки: утренние газеты, с восьми до десяти.\n\nКафе «Тарелка»: мороженое и чашки, весь день.\n\nКинотеатр «Рассвет»: контроль перед вечерним сеансом, с пяти до восьми.\n\nМаяк: ночная вахта с шести вечера.",
+  "en": "Help wanted, paid the same day, by results.\n\nSATURDAY, THE MARKET! Six to ten: carry the crates from the van to the rows. Seven to one: weigh for the customers on the big scales. Ask Parisa Petrosyan, the fruit row.\n\nThe kiosk at the bus stop: the morning papers, eight to ten.\n\nThe café «Tarelka»: ice cream and cups, all day.\n\nThe «Rassvet» cinema: the door before the evening show, five to eight.\n\nThe lighthouse: the night watch from six in the evening.",
+  "ja": "手伝い募集。報酬は当日、出来高払い。\n\n土曜日、市場！六時から十時まで、トラックから売り場へ木箱運び。七時から一時まで、大きな秤で客の品を量る。果物売り場のパリサ・ペトロシャンに声をかけること。\n\nバス停のキオスク：朝刊、八時から十時。\n\nカフェ〈ターレルカ〉：アイスとカップ、一日中。\n\n映画館〈ラスヴェト〉：夜の上映前のもぎり、五時から八時。\n\n灯台：夕方六時から夜の当直。"
+ },
+ "city.text.jobs.p1.sun": {
+  "ru": "Требуется помощь, оплата в тот же день, по результату.\n\nКиоск у остановки: утренние газеты, с восьми до десяти. Воскресный номер толстый, руки нужны.\n\nКафе «Тарелка»: мороженое и чашки, весь день. В воскресенье очередь до двери.\n\nКинотеатр «Рассвет»: контроль перед вечерним сеансом, с пяти до восьми.\n\nМаяк: ночная вахта с шести вечера.\n\nРынок: только по субботам, ящики и весы.",
+  "en": "Help wanted, paid the same day, by results.\n\nThe kiosk at the bus stop: the morning papers, eight to ten. The Sunday edition is fat, hands needed.\n\nThe café «Tarelka»: ice cream and cups, all day. On Sundays the queue reaches the door.\n\nThe «Rassvet» cinema: the door before the evening show, five to eight.\n\nThe lighthouse: the night watch from six in the evening.\n\nThe market: Saturdays only, crates and scales.",
+  "ja": "手伝い募集。報酬は当日、出来高払い。\n\nバス停のキオスク：朝刊、八時から十時。日曜版は分厚いので人手がいる。\n\nカフェ〈ターレルカ〉：アイスとカップ、一日中。日曜は列が扉まで伸びる。\n\n映画館〈ラスヴェト〉：夜の上映前のもぎり、五時から八時。\n\n灯台：夕方六時から夜の当直。\n\n市場：土曜日だけ、木箱と秤。"
+ },
+ "city.text.jobs.p2.montue": {
+  "ru": "Спасательная вышка № 1: в понедельник и вторник смена без помощника. Купаться у флага, за буйки не заплывать.",
+  "en": "Lifeguard tower No. 1: no helper on the shift on Mondays and Tuesdays. Swim by the flag, not past the buoys.",
+  "ja": "第一監視塔：月曜と火曜は手伝いなし。旗のそばで泳ぎ、ブイの外へは出ないこと。"
+ },
+ "city.text.jobs.p2.wedsun": {
+  "ru": "Спасательная вышка № 1: помощник на смену, с десяти до семи. Поднять флаг по погоде, следить за пловцами, свистеть тем, кто за буйками. Спросить Эйтана Ковальского. Плавать уметь обязательно.",
+  "en": "Lifeguard tower No. 1: a helper for the shift, ten to seven. Raise the flag by the weather, watch the swimmers, whistle at anyone past the buoys. Ask Eitan Kowalski. Must be able to swim.",
+  "ja": "第一監視塔：十時から七時までの当番の手伝い。天気に合わせて旗を揚げ、泳ぐ人を見張り、ブイの外に出た人に笛を吹く。エイタン・コヴァルスキに声をかけること。泳げることが条件。"
+ },
+ "city.job.k1.prompt": {
+  "ru": "E — помочь с утренними газетами",
+  "en": "E — help with the morning papers",
+  "ja": "E：朝刊の手伝いをする"
+ },
+ "city.job.k1.1": {
+  "ru": "Ерлан Ромеро разрезал бечёвку ножом и подвинул мне пачку: «Областная налево, «Маяк» направо, кроссворды отдельно». Через сорок минут полки были полные, а пальцы чёрные от краски. Он отсчитал монеты: «Двадцать пять. Руки вымой, а то газета на тебе напечатается».",
+  "en": "Yerlan Romero cut the string with a knife and pushed a bundle at me: \"The regional to the left, «Mayak» to the right, crosswords on their own.\" Forty minutes later the racks were full and my fingers black with ink. He counted out the coins: \"Twenty-five. Wash your hands, or the paper will print itself on you.\"",
+  "ja": "イェルラン・ロメロがナイフで紐を切り、束を僕のほうへ押しやった。「州の新聞は左、〈マヤーク〉は右、クロスワードは別」。四十分後、棚はいっぱいになり、指はインクで真っ黒だった。彼は硬貨を数えた。「二十五。手を洗えよ、新聞がお前に刷られちまう」"
+ },
+ "city.job.k1.2": {
+  "ru": "Сегодня в пачке оказались две лишние газеты за прошлый четверг. Ерлан посмотрел на них, как на старых знакомых, и положил под прилавок: «Кто-нибудь да спросит. Всегда спрашивают». Я разложил свежие, он заплатил и дал мне одну, ещё тёплую от типографии.",
+  "en": "Today the bundle held two spare papers from last Thursday. Yerlan looked at them like old acquaintances and put them under the counter: \"Someone will ask. Someone always does.\" I laid out the fresh ones; he paid me and gave me one, still warm from the press.",
+  "ja": "今日の束には先週木曜の新聞が二部まぎれていた。イェルランは古い知り合いを見るような目でそれを眺め、カウンターの下にしまった。「誰かが聞きに来るさ。いつも来るんだ」。僕が新しいのを並べると、彼は報酬と、印刷所の温もりがまだ残る一部をくれた。"
+ },
+ "city.job.k1.rain": {
+  "ru": "Дождь. Каждую пачку пришлось нести от машины под курткой, а потом заворачивать газеты для дальних ящиков в плёнку. «В плёнке новость дольше живёт», — сказал Ерлан и заплатил больше обычного: «За мокрую спину надбавка».",
+  "en": "Rain. I had to carry every bundle from the van under my jacket, then wrap the papers for the far boxes in film. \"News keeps longer in film,\" said Yerlan, and paid more than usual: \"A bonus for a wet back.\"",
+  "ja": "雨。束を一つずつ上着の下に抱えて車から運び、遠くの箱に入れる分はビニールで包んだ。「ビニールに包むとニュースが長持ちする」とイェルランは言い、いつもより多く払ってくれた。「濡れた背中の手当だ」"
+ },
+ "city.job.k1.cold": {
+  "ru": "Холодно, бечёвка задубела и не хотела развязываться. Ерлан налил мне чаю из термоса в крышку и сказал, что газеты на морозе пахнут сильнее. Я понюхал: правда. Разложили всё к открытию, и он заплатил с надбавкой «за уши».",
+  "en": "Cold: the string had gone stiff and wouldn't come undone. Yerlan poured me tea from his flask into the lid and said papers smell stronger in the frost. I sniffed: true. We had everything out by opening, and he paid me extra \"for the ears\".",
+  "ja": "寒くて紐がこわばり、なかなかほどけない。イェルランは魔法瓶のふたにお茶を注いでくれて、寒い日は新聞の匂いが強くなるんだと言った。嗅いでみると本当だった。開店までに全部並べ終わると、彼は「耳代」と言って少し上乗せしてくれた。"
+ },
+ "city.job.k1.drizzle": {
+  "ru": "Моросит, но не всерьёз. Ерлан накрыл стойку с открытками газетой вчерашнего дня, а я разложил сегодняшние. «Вчерашняя тоже на что-то годится», — сказал он и отсчитал мне двадцать пять.",
+  "en": "A drizzle, nothing serious. Yerlan covered the postcard stand with yesterday's paper while I laid out today's. \"Yesterday's is good for something too,\" he said, and counted me out twenty-five.",
+  "ja": "霧雨だが、大したことはない。イェルランは昨日の新聞で絵はがきの棚を覆い、僕は今日の新聞を並べた。「昨日のも何かの役に立つ」と言って、彼は二十五ルーブルを数えてくれた。"
+ },
+ "city.job.mk.closed.1": {
+  "ru": "У больших весов табличка: «Помощь по субботам. Ящики с шести, весы с семи. П. Петросян».",
+  "en": "A sign by the big scales: \"Help on Saturdays. Crates from six, scales from seven. P. Petrosyan.\"",
+  "ja": "大きな秤のそばに札がある。「手伝いは土曜日。木箱は六時から、秤は七時から。P・ペトロシャン」"
+ },
+ "city.job.mk.closed.2": {
+  "ru": "Весы накрыты мешковиной. Под ней гирьки стоят по росту, как ученики на линейке, и ждут субботы.",
+  "en": "The scales are covered with sacking. Underneath, the weights stand by height like pupils at assembly, waiting for Saturday.",
+  "ja": "秤には麻袋がかぶせてある。その下で分銅が朝礼の生徒のように背の順に並び、土曜日を待っている。"
+ },
+ "city.job.mk.box.prompt": {
+  "ru": "E — носить ящики из фургона",
+  "en": "E — carry crates from the van",
+  "ja": "E：トラックから木箱を運ぶ"
+ },
+ "city.job.mk.box.1": {
+  "ru": "Фургон пришёл в шесть. Париса Петросян показала, куда что: яблоки к ней, капусту в конец ряда, яйца «как ребёнка». Я носил полчаса, пока не заболели руки. Яйца дошли все. Она заплатила двадцать и сунула в карман яблоко.",
+  "en": "The van came at six. Parisa Petrosyan showed me where things went: apples to her, cabbage to the end of the row, eggs \"like a baby\". I carried for half an hour until my arms ached. Every egg arrived. She paid me twenty and slipped an apple into my pocket.",
+  "ja": "トラックは六時に来た。パリサ・ペトロシャンが置き場所を教えてくれた。りんごは彼女のところ、キャベツは列の端、卵は「赤ん坊みたいに」。腕が痛くなるまで三十分運んだ。卵は一つも割れなかった。彼女は二十ルーブルくれて、ポケットにりんごを一つ滑り込ませた。"
+ },
+ "city.job.mk.box.2": {
+  "ru": "Ящики сегодня тяжёлые: картошка нового урожая. Водитель фургона считал их вслух, я тоже, и у нас вышло по-разному. Пересчитала Париса, и вышло третье число. Сошлись на её. Двадцать рублей, и «приходи на весы, раз считать умеешь».",
+  "en": "The crates are heavy today: new potatoes. The van driver counted them out loud, so did I, and we got different numbers. Parisa counted again and got a third. We settled on hers. Twenty roubles, and \"come and do the scales, since you can count.\"",
+  "ja": "今日の木箱は重い。新じゃがだ。運転手が声に出して数え、僕も数えたら、数が合わなかった。パリサが数え直すと三つ目の数になった。彼女の数で決まり。二十ルーブルと「数えられるなら秤にもおいで」。"
+ },
+ "city.job.mk.box.rain": {
+  "ru": "Под дождём ящики скользкие, а картон на ягодах размокает на глазах. Носили бегом, накрывая брезентом. Париса заплатила двадцать пять: «Пять сверху за то, что ни одной клубники не уронил».",
+  "en": "In the rain the crates are slippery and the cardboard on the berries goes soft before your eyes. We ran with them under a tarpaulin. Parisa paid twenty-five: \"Five on top for not dropping a single strawberry.\"",
+  "ja": "雨で木箱は滑りやすく、いちごの段ボールは見る見るふやけていく。防水布をかけて走って運んだ。パリサは二十五ルーブルくれた。「いちごを一粒も落とさなかったから五ルーブル上乗せ」"
+ },
+ "city.job.mk.weigh.prompt": {
+  "ru": "E — взвешивать покупателям",
+  "en": "E — weigh for the customers",
+  "ja": "E：客の品を量る"
+ },
+ "city.job.mk.weigh.title": {
+  "ru": "Весы на прилавке",
+  "en": "The counter scales",
+  "ja": "売り場の秤"
+ },
+ "city.job.mk.weigh.keys": {
+  "ru": "E — остановить стрелку на нужном весе",
+  "en": "E — stop the needle at the right weight",
+  "ja": "E：針をちょうどの重さで止める"
+ },
+ "city.job.mk.weigh.win.1": {
+  "ru": "Килограмм яблок — ровно килограмм, полкило творога — ровно полкило. Очередь даже перестала заглядывать на шкалу. Париса Петросян отсчитала деньги и сказала: «Весы тебя слушаются. Это редкость».",
+  "en": "A kilo of apples, exactly a kilo; half a kilo of curd, exactly half. The queue even stopped peering at the dial. Parisa Petrosyan counted out the money and said: \"The scales listen to you. That's rare.\"",
+  "ja": "りんご一キロはぴったり一キロ、カッテージチーズ半キロはぴったり半キロ。行列の人たちは目盛りをのぞき込むのもやめた。パリサ・ペトロシャンはお金を数えて言った。「秤があんたの言うことを聞いてる。珍しいことだよ」"
+ },
+ "city.job.mk.weigh.win.2": {
+  "ru": "Одна бабушка проверила мой вес на своём безмене, который принесла из дома. Сошлось. Она сказала «молодец» так, будто выдала грамоту. Париса заплатила и подмигнула.",
+  "en": "One old lady checked my weighing on her own steelyard, brought from home. It matched. She said \"well done\" as if handing me a certificate. Parisa paid me and winked.",
+  "ja": "あるおばあさんが家から持ってきた吊り秤で僕の量りを確かめた。合っていた。彼女は表彰状でも渡すみたいに「よくできました」と言った。パリサは報酬をくれて、片目をつぶった。"
+ },
+ "city.job.mk.weigh.lose": {
+  "ru": "Стрелка гуляла, я то недовешивал, то перевешивал. Париса дважды поправляла меня взглядом, а потом встала рядом. Заплатила немного: «За ящики и за честность. Весы — дело привычки».",
+  "en": "The needle wandered; I weighed short, then over. Parisa corrected me twice with a look, then came and stood beside me. She paid a little: \"For the effort and the honesty. Scales are a matter of habit.\"",
+  "ja": "針がふらついて、足りなかったり多すぎたりした。パリサは二度目つきで直してくれて、そのあと隣に立った。少しだけ払ってくれた。「頑張ったのと正直さの分。秤は慣れだよ」"
+ },
+ "city.job.mk.weigh.draw": {
+  "ru": "Половину покупателей взвесил точно, половину «примерно». Примерно никто не жаловался: на рынке к этому привыкли. Париса заплатила половину обещанного и половину яблока сверху.",
+  "en": "Half the customers I weighed exactly, half \"roughly\". Nobody complained about roughly: the market is used to it. Parisa paid half of what she'd promised, and half an apple on top.",
+  "ja": "客の半分はぴったり、半分は「だいたい」量った。だいたいでも誰も文句は言わない。市場ではよくあることだ。パリサは約束の半分と、おまけにりんご半分をくれた。"
+ },
+ "city.job.mk.weigh.after": {
+  "ru": "На сегодня взвешено. Париса машет мне из-за прилавка: «Хватит, а то весы к тебе привыкнут, а мне потом переучивать».",
+  "en": "Enough weighing for today. Parisa waves at me from behind the counter: \"That'll do, or the scales will get used to you and I'll have to retrain them.\"",
+  "ja": "今日の量りはおしまい。パリサが売り場の向こうから手を振る。「もういいよ、秤があんたに慣れちゃったら、あとで私がしつけ直さなきゃ」"
+ },
+ "city.job.lg.watch.prompt": {
+  "ru": "E — смена на вышке: следить за пловцами",
+  "en": "E — a shift on the tower: watch the swimmers",
+  "ja": "E：監視塔の当番：泳ぐ人を見張る"
+ },
+ "city.job.lg.watch.title": {
+  "ru": "За буйками",
+  "en": "Past the buoys",
+  "ja": "ブイの向こう"
+ },
+ "city.job.lg.watch.keys": {
+  "ru": "E — свисток, когда пловец у буйка",
+  "en": "E — whistle when a swimmer reaches the buoy",
+  "ja": "E：泳ぐ人がブイに来たら笛"
+ },
+ "city.job.lg.watch.win.1": {
+  "ru": "Час я смотрел в бинокль и свистел вовремя: красная шапочка вернулась, двое на матрасе вернулись, мальчик с ластами вернулся дважды. Эйтан Ковальский забрал бинокль и сказал: «Глаза у тебя спасательские. Приходи ещё».",
+  "en": "For an hour I watched through the binoculars and whistled on time: the red cap came back, the two on the lilo came back, the boy with flippers came back twice. Eitan Kowalski took the binoculars and said: \"You've got a lifeguard's eyes. Come again.\"",
+  "ja": "一時間、双眼鏡をのぞいてちょうどいい時に笛を吹いた。赤い水泳帽が戻り、エアマットの二人が戻り、足ひれの男の子は二回戻った。エイタン・コヴァルスキは双眼鏡を受け取って言った。「監視員の目をしてるな。また来いよ」"
+ },
+ "city.job.lg.watch.win.2": {
+  "ru": "Самый упрямый пловец доплыл до буйка, услышал свисток, обернулся и помахал мне. Потом всё-таки повернул. Эйтан записал в журнал: «Помощник: замечаний нет» — и заплатил.",
+  "en": "The most stubborn swimmer reached the buoy, heard the whistle, turned and waved at me. Then he turned back after all. Eitan wrote in the log: \"Helper: no remarks\" and paid me.",
+  "ja": "一番頑固な泳ぎ手がブイまで行き、笛を聞いて振り返り、僕に手を振った。それからやっと引き返した。エイタンは日誌に「手伝い：指摘事項なし」と書いて、報酬をくれた。"
+ },
+ "city.job.lg.watch.lose": {
+  "ru": "Я засмотрелся на чайку, а пловец уже был за буйком. Свистнул Эйтан, громко и коротко. Потом сказал без злости: «Море не ждёт, пока досмотришь. Держи за смену, но завтра смотри на воду».",
+  "en": "I got caught up watching a gull, and a swimmer was already past the buoy. Eitan whistled, loud and short. Then he said, not angrily: \"The sea doesn't wait for you to finish looking. Here's for the shift, but tomorrow watch the water.\"",
+  "ja": "カモメに見とれているうちに、泳ぐ人がもうブイの外にいた。エイタンが短く強く笛を吹いた。それから怒らずに言った。「海はお前が見終わるのを待っちゃくれない。当番の分は払うが、明日は水を見てろ」"
+ },
+ "city.job.lg.watch.draw": {
+  "ru": "Половину заплывших я поймал свистком вовремя, половину позже, чем надо. Никто не утонул, но Эйтан дважды поднимался с кресла. Заплатил и сказал: «Неплохо. Свисток должен быть раньше пловца».",
+  "en": "Half the swimmers I caught with the whistle in time, half later than I should have. Nobody drowned, but Eitan got out of his chair twice. He paid me and said: \"Not bad. The whistle has to come before the swimmer.\"",
+  "ja": "泳ぎ出た人の半分は間に合って笛を吹けたが、半分は遅れた。誰も溺れなかったけれど、エイタンは二度椅子から立ち上がった。報酬をくれて言った。「悪くない。笛は泳ぐ人より先じゃなきゃな」"
+ },
+ "city.job.lg.watch.after": {
+  "ru": "Смена на сегодня сдана. Свисток висит на гвозде, а Эйтан сам смотрит в бинокль и говорит, не отрываясь: «Отдыхай, помощник».",
+  "en": "Today's shift is handed over. The whistle hangs on its nail, and Eitan watches through the binoculars himself, saying without looking away: \"Rest, helper.\"",
+  "ja": "今日の当番は交代した。笛は釘に掛かり、エイタンが自分で双眼鏡をのぞきながら、目を離さずに言う。「休め、手伝い」"
+ },
+ "city.job.lg.flag.prompt": {
+  "ru": "E — поднять флаг по погоде",
+  "en": "E — raise the flag for the weather",
+  "ja": "E：天気に合わせて旗を揚げる"
+ },
+ "city.job.lg.flag.fog": {
+  "ru": "Туман лёг на воду так, что буйков не видно. Эйтан кивнул на красный, и я поднял его. «Когда вышка не видит буй, в воду нельзя никому, даже чемпионам», — сказал он и отдал мне монеты за флаг.",
+  "en": "The fog lies so thick on the water the buoys can't be seen. Eitan nodded at the red one and I ran it up. \"When the tower can't see the buoy, nobody goes in, not even champions,\" he said, and gave me coins for the flag.",
+  "ja": "霧が水面に降りて、ブイが見えない。エイタンが赤い旗にあごをしゃくり、僕はそれを揚げた。「塔からブイが見えないときは、誰も海に入っちゃだめだ。チャンピオンでもな」と言って、旗の分の硬貨をくれた。"
+ },
+ "city.job.lg.flag.rain": {
+  "ru": "Дождь рябит воду, волна мутная. Я сам потянулся к жёлтому, и Эйтан не поправил. «Жёлтый: по колено и у берега. Молодец, что не спросил». Флаг намок и стал тяжёлым, как полотенце.",
+  "en": "Rain ripples the water, the waves are murky. I reached for the yellow myself and Eitan didn't correct me. \"Yellow: knee-deep, near the shore. Good that you didn't ask.\" The flag got soaked and heavy as a towel.",
+  "ja": "雨が水面を波立たせ、波は濁っている。僕が自分から黄色に手を伸ばすと、エイタンは直さなかった。「黄色は、膝まで、岸の近くだけ。聞かずにわかったのは上出来だ」。旗は濡れてタオルみたいに重くなった。"
+ },
+ "city.job.lg.flag.cold": {
+  "ru": "Вода холодная, ветер с моря колючий. Жёлтый: купаться коротко, у берега, и сразу в полотенце. Эйтан сказал, что в такой день на пляже только моржи и те, кто им завидует.",
+  "en": "The water is cold, the wind off the sea prickly. Yellow: a short dip near the shore and straight into a towel. Eitan said that on a day like this the beach has only the winter swimmers and those who envy them.",
+  "ja": "水は冷たく、海からの風がちくちくする。黄色：短く、岸の近くで、すぐタオルへ。エイタンは、こんな日に浜にいるのは寒中水泳の人と、それをうらやむ人だけだと言った。"
+ },
+ "city.job.lg.flag.green": {
+  "ru": "Море ровное, буйки видно до последнего. Зелёный. Фал скрипнул, флаг расправился, и на пляже сразу кто-то побежал к воде, будто ждал сигнала. Эйтан: «Видишь? Они на нас смотрят».",
+  "en": "The sea is smooth, every buoy in sight. Green. The halyard creaked, the flag spread out, and at once someone on the beach ran for the water as if waiting for the signal. Eitan: \"See? They watch us.\"",
+  "ja": "海は穏やかで、ブイが最後の一つまで見える。緑。綱がきしんで旗が広がると、すぐに浜の誰かが合図を待っていたように海へ駆けだした。エイタン「ほらな。みんな俺たちを見てるんだ」"
+ },
+ "city.job.lg.flag.drizzle": {
+  "ru": "Морось, видимость средняя. Эйтан подумал и выбрал жёлтый: «Когда сомневаешься, выбирай осторожный». Я поднял его, и он записал в журнал время и мою фамилию.",
+  "en": "A drizzle, middling visibility. Eitan thought and chose yellow: \"When in doubt, choose the careful one.\" I raised it and he wrote the time and my surname in the log.",
+  "ja": "霧雨で、見通しはまあまあ。エイタンは少し考えて黄色を選んだ。「迷ったら、用心深いほうを選べ」。僕が揚げると、彼は日誌に時刻と僕の名字を書いた。"
+ },
+ "city.job.px.prompt": {
+  "ru": "E — записать вахту в журнал",
+  "en": "E — write the watch in the log",
+  "ja": "E：当直を日誌に記す"
+ },
+ "city.job.px.lamp": {
+  "ru": "Сумерки. Арам Оливейра снял с линзы льняную штору, я завёл механизм, и огонь пошёл по кругу. В журнале моим почерком: «Огонь зажжён. Помощник при маяке». Арам расписался ниже и отсчитал монеты.",
+  "en": "Dusk. Aram Oliveira took the linen blind off the lens, I wound the clockwork, and the light began to turn. In the log, in my hand: \"Light lit. Helper at the lighthouse.\" Aram signed below and counted out coins.",
+  "ja": "夕暮れ。アラム・オリヴェイラがレンズから麻の覆いを外し、僕がぜんまいを巻くと、光が回りはじめた。日誌に僕の字で「点灯。灯台に手伝い一名」。アラムがその下に署名して、硬貨を数えてくれた。"
+ },
+ "city.job.px.eve.1": {
+  "ru": "Час вахты на галерее. Записал: «Ветер западный, три балла. Море умеренное. Прошёл сейнер, огни белый и зелёный, курс в порт». Арам проверил запись и сказал, что зелёный я записал правильно, справа.",
+  "en": "An hour of watch on the gallery. I wrote: \"Wind west, force three. Sea moderate. A seiner passed, lights white and green, heading for port.\" Aram checked it and said I'd put the green right, on the starboard side.",
+  "ja": "回廊で一時間の当直。書いた。「西の風、風力三。海はやや穏やか。漁船通過、白と緑の灯、港へ向かう」。アラムは記録を確かめ、緑を右舷に書いたのは正しいと言った。"
+ },
+ "city.job.px.eve.2": {
+  "ru": "Час прошёл тихо. «Ветер стих. Море гладкое. Судов не видно, огни Академгородка на берегу». Арам рассказал, что в такие ночи раньше слышно было, как в порту роняют цепь.",
+  "en": "A quiet hour. \"Wind dropped. Sea smooth. No ships in sight; the lights of Academgorodok on the shore.\" Aram told me that on nights like this you used to hear a chain dropped in the port.",
+  "ja": "静かな一時間。「風やむ。海はなめらか。船影なし。岸にアカデムゴロドクの明かり」。アラムは、こんな夜には昔、港で鎖を落とす音まで聞こえたものだと話してくれた。"
+ },
+ "city.job.px.eve.fog": {
+  "ru": "Туман. Огонь упирается в белое, как в стену. Записал: «Туман, видимость меньше мили. Подан звуковой сигнал». Арам дал мне ударить в колокол на галерее, три раза, и мы долго слушали, не ответит ли кто.",
+  "en": "Fog. The light butts into white as into a wall. I wrote: \"Fog, visibility under a mile. Sound signal given.\" Aram let me ring the bell on the gallery, three times, and we listened a long while in case someone answered.",
+  "ja": "霧。光が白い壁にぶつかっているようだ。書いた。「霧、視程一マイル未満。音響信号を発す」。アラムが回廊の鐘を三回鳴らさせてくれて、僕たちは誰か答えないかと長いあいだ耳を澄ませた。"
+ },
+ "city.job.px.eve.rain": {
+  "ru": "Дождь стучит по стеклу фонаря. «Осадки, ветер юго-западный, волна у пирса». Арам протёр стекло изнутри: «Огонь должен быть виден, даже если нам самим ничего не видно».",
+  "en": "Rain drums on the lantern glass. \"Precipitation, wind south-west, swell at the pier.\" Aram wiped the glass from inside: \"The light must be seen, even when we can't see anything ourselves.\"",
+  "ja": "雨が灯室のガラスを叩く。「降水あり、南西の風、桟橋に波」。アラムが内側からガラスを拭いた。「自分たちに何も見えなくても、光は見えなきゃならない」"
+ },
+ "city.job.px.night.1": {
+  "ru": "За полночь вахту принял Аркадий Кобаяси. Он молча показал мне на горизонт: там шёл пассажирский, три белых огня столбиком. Записал время и курс. Аркадий кивнул, как будто я сдал экзамен.",
+  "en": "Past midnight Arkady Kobayashi took over the watch. Silently he pointed me to the horizon: a passenger ship, three white lights in a column. I wrote down the time and the course. Arkady nodded as if I'd passed an exam.",
+  "ja": "真夜中を過ぎて、アルカージー・小林が当直を引き継いだ。彼は黙って水平線を指さした。旅客船が、白い灯を縦に三つ並べて進んでいた。時刻と針路を記した。アルカージーは、試験に受かったみたいにうなずいた。"
+ },
+ "city.job.px.night.2": {
+  "ru": "Самый тёмный час. Записал: «Ясно. Видны огни соседнего маяка». Аркадий налил чаю из чайника на печке и сказал, что тот маяк тоже сейчас пишет про нас.",
+  "en": "The darkest hour. I wrote: \"Clear. The neighbouring lighthouse's light in sight.\" Arkady poured tea from the kettle on the stove and said that lighthouse is writing about us right now too.",
+  "ja": "一番暗い時間。書いた。「晴れ。隣の灯台の光が見える」。アルカージーはストーブのやかんからお茶を注いで、あっちの灯台も今ごろ僕たちのことを書いているさ、と言った。"
+ },
+ "city.job.px.night.fog": {
+  "ru": "Ночной туман. Каждые две минуты колокол. Записал: «Туман. Сигнал подаётся». Аркадий научил меня считать удары сердца между ударами колокола, чтобы не уснуть.",
+  "en": "Night fog. The bell every two minutes. I wrote: \"Fog. Signal being given.\" Arkady taught me to count heartbeats between strokes of the bell so as not to fall asleep.",
+  "ja": "夜の霧。二分ごとに鐘。書いた。「霧。信号継続中」。アルカージーは眠らないように、鐘と鐘のあいだの心臓の鼓動を数えるやり方を教えてくれた。"
+ },
+ "city.job.px.dawn": {
+  "ru": "Светает. Последняя запись моей вахты: «Рассвет. Огонь погашен. Море спокойное». Аркадий задёрнул штору на линзе и расплатился за ночь. Глаза слипаются, а внутри странно светло.",
+  "en": "Daybreak. The last entry of my watch: \"Dawn. Light extinguished. Sea calm.\" Arkady drew the blind over the lens and paid me for the night. My eyes are closing, but inside it's strangely light.",
+  "ja": "夜が明ける。僕の当直の最後の記録。「夜明け。消灯。海は穏やか」。アルカージーはレンズに覆いを掛けて、一晩の報酬を払ってくれた。まぶたは重いのに、心の中は不思議と明るい。"
+ },
+ "city.job.cafe.prompt": {
+  "ru": "E — помочь за стойкой с мороженым",
+  "en": "E — help with the ice cream at the counter",
+  "ja": "E：カウンターでアイスの手伝いをする"
+ },
+ "city.job.cafe.title": {
+  "ru": "Шарики",
+  "en": "Scoops",
+  "ja": "ひとすくい"
+ },
+ "city.job.cafe.keys": {
+  "ru": "E — зачерпнуть, когда ложка над серединой",
+  "en": "E — scoop when the spoon is over the middle",
+  "ja": "E：スプーンが真ん中に来たらすくう"
+ },
+ "city.job.cafe.win.1": {
+  "ru": "Шарики ровные, как бильярдные, ни один не упал с вафли. Бариста посмотрел на мою очередь и на свою и сказал: «Твоя быстрее. Не говори никому». Потом я ещё мыл чашки, и это было даже приятно.",
+  "en": "Scoops round as billiard balls, not one fell off its cone. The barista looked at my queue and at his own and said: \"Yours is faster. Don't tell anyone.\" Afterwards I washed cups too, and it was almost pleasant.",
+  "ja": "ビリヤードの球みたいにまん丸なひとすくい。コーンから落ちたのは一つもない。バリスタは僕の列と自分の列を見比べて言った。「お前のほうが速い。誰にも言うなよ」。そのあとカップも洗ったけれど、それもなんだか楽しかった。"
+ },
+ "city.job.cafe.win.2": {
+  "ru": "Маленькая девочка попросила «шарик как луна», и он у меня получился как луна. Её мама заплатила, а бариста отсчитал мне долю и сказал, что за луну полагается надбавка.",
+  "en": "A little girl asked for \"a scoop like the moon\", and mine came out like the moon. Her mother paid, and the barista counted out my share and said the moon earns a bonus.",
+  "ja": "小さな女の子が「月みたいなアイス」を頼み、僕のは本当に月みたいになった。母親がお金を払い、バリスタは僕の取り分を数えて、月には特別手当が出るんだと言った。"
+ },
+ "city.job.cafe.lose": {
+  "ru": "Шарики выходили то крошечные, то с горой, один уехал с вафли прямо на прилавок. Бариста поставил меня на чашки: «Мороженое — это талант, а чашки — это характер». Чашки я вымыл все. Заплатил он немного.",
+  "en": "The scoops came out either tiny or mountainous, and one slid off its cone right onto the counter. The barista put me on the cups: \"Ice cream is talent, cups are character.\" I washed every cup. He paid a little.",
+  "ja": "ひとすくいは小さすぎたり山盛りすぎたりで、一つはコーンからカウンターへ滑り落ちた。バリスタは僕をカップ洗いに回した。「アイスは才能、カップは根性だ」。カップは全部洗った。報酬は少しだった。"
+ },
+ "city.job.cafe.draw": {
+  "ru": "Половина шариков удалась, половина была «на любителя». Любители нашлись. Бариста заплатил и показал, как держать ложку: локоть свободно, запястье твёрдо.",
+  "en": "Half the scoops worked, half were \"an acquired taste\". Takers were found. The barista paid me and showed me how to hold the spoon: elbow loose, wrist firm.",
+  "ja": "半分はうまくいき、半分は「好みが分かれる」出来だった。それでも買う人はいた。バリスタは報酬をくれて、スプーンの持ち方を教えてくれた。ひじは楽に、手首はしっかり。"
+ },
+ "city.job.cafe.after.1": {
+  "ru": "На сегодня мороженое не моё. Я перемыл оставшиеся чашки и расставил их вверх дном на полотенце. Бариста кивнул, не оборачиваясь.",
+  "en": "No more ice cream for me today. I washed the remaining cups and set them upside down on a towel. The barista nodded without turning round.",
+  "ja": "今日のアイスはもう僕の番じゃない。残りのカップを洗って、タオルの上に伏せて並べた。バリスタは振り向かずにうなずいた。"
+ },
+ "city.job.cafe.after.2": {
+  "ru": "Витрина с мороженым гудит ровно, крышки закрыты. «Завтра», — говорит бариста и протягивает мне стакан воды за счёт заведения.",
+  "en": "The ice cream case hums evenly, its lids closed. \"Tomorrow,\" says the barista, and hands me a glass of water on the house.",
+  "ja": "アイスのケースは一定の音でうなり、ふたは閉まっている。「また明日」とバリスタは言い、店のおごりで水を一杯くれた。"
+ },
+ "city.job.kino.prompt": {
+  "ru": "E — встать на контроль и рвать билеты",
+  "en": "E — stand at the door and tear the tickets",
+  "ja": "E：入口でもぎりをする"
+ },
+ "city.job.kino.title": {
+  "ru": "Контроль",
+  "en": "The door",
+  "ja": "もぎり"
+ },
+ "city.job.kino.keys": {
+  "ru": "E — надорвать билет, когда его протягивают",
+  "en": "E — tear the ticket as it's handed over",
+  "ja": "E：差し出された切符をもぐ"
+ },
+ "city.job.kino.win.1": {
+  "ru": "Билеты шли один за другим: красные, жёлтые, один даже позавчерашний, его я вежливо вернул. Ни одного корешка мимо лотка. Кавех Бергстрём пересчитал корешки, и впервые за неделю цифра сошлась с кассой.",
+  "en": "The tickets came one after another: red, yellow, one even from the day before yesterday, which I handed back politely. Not a single stub missed the tray. Kaveh Bergström counted the stubs, and for the first time that week the number matched the till.",
+  "ja": "切符が次々と来た。赤、黄色、一枚はおととい付けで、それは丁寧に返した。半券は一枚も箱の外に落ちなかった。カヴェー・ベリストレムが半券を数えると、今週初めて数がレジと合った。"
+ },
+ "city.job.kino.win.2": {
+  "ru": "Пожилая пара пришла за минуту до начала, и я успел надорвать оба билета, показать ряд и придержать занавес. Кавех сказал: «Ты как будто здесь работаешь», и это была лучшая часть оплаты.",
+  "en": "An elderly couple arrived a minute before the start, and I managed to tear both tickets, show them their row and hold the curtain. Kaveh said: \"It's as if you work here,\" and that was the best part of the pay.",
+  "ja": "年配の夫婦が始まる一分前に来たが、僕は二枚ともちぎって、列を教えて、幕まで押さえてあげられた。カヴェーが「まるでここで働いてるみたいだ」と言った。それが報酬の一番いいところだった。"
+ },
+ "city.job.kino.lose": {
+  "ru": "Билеты рвались криво, двое прошли, пока я искал корешок под ногами. Кавех встал рядом и рвал сам, а мне дал фонарик: «Показывай места. Это тоже работа». Заплатил немного.",
+  "en": "The tickets tore crooked; two people walked past while I was looking for a stub under my feet. Kaveh came and tore them himself and gave me a torch: \"Show people to their seats. That's work too.\" He paid a little.",
+  "ja": "切符は斜めに破れ、足もとの半券を探しているうちに二人が通り過ぎた。カヴェーが隣に来て自分でもぎり、僕に懐中電灯を渡した。「席を案内してくれ。それも仕事だ」。報酬は少しだった。"
+ },
+ "city.job.kino.draw": {
+  "ru": "Половину билетов надорвал ровно, половину пополам. Кавех сказал, что пополам — это тоже контроль, только строгий. Заплатил и оставил мне место в последнем ряду, если захочу остаться.",
+  "en": "Half the tickets I tore neatly, half in two. Kaveh said in two is also checking, only strict. He paid me and kept me a seat in the back row in case I wanted to stay.",
+  "ja": "半分はきれいにもぎり、半分は真っ二つにした。カヴェーは、真っ二つも検札のうち、ただ厳しいだけだと言った。報酬をくれて、残りたければと最後列に席を取っておいてくれた。"
+ },
+ "city.job.kino.after": {
+  "ru": "Сеанс уже идёт, контроль закончен. Из зала слышно, как кто-то смеётся раньше всех. Кавех считает корешки и шевелит губами.",
+  "en": "The show has started; the door is done. From the hall you can hear someone laughing before everyone else. Kaveh counts the stubs, moving his lips.",
+  "ja": "上映はもう始まって、もぎりは終わった。ホールから、誰かが一人だけ先に笑う声が聞こえる。カヴェーは唇を動かしながら半券を数えている。"
+ },
+ "city.ask.job.market": {
+  "ru": "Про работу по субботам",
+  "en": "About work on Saturdays",
+  "ja": "土曜日の仕事のこと"
+ },
+ "city.ask.job.market.1": {
+  "ru": "— По субботам у нас рук не хватает. С шести ящики из фургона, с семи весы. Подходи к Парисе Петросян, фруктовый ряд. Платим сразу, по тому, как сделано.",
+  "en": "\"On Saturdays we're short of hands. Crates from the van from six, the scales from seven. Go to Parisa Petrosyan, the fruit row. We pay at once, by how it's done.\"",
+  "ja": "「土曜日は人手が足りないんだ。六時からトラックの木箱、七時から秤。果物売り場のパリサ・ペトロシャンのところへ行きな。やった分だけ、その場で払うよ」"
+ },
+ "city.ask.job.market.2": {
+  "ru": "— Слышал, ты уже взвешивал у Парисы. Она хвалит. А она никого не хвалит, кроме своих яблок.",
+  "en": "\"I hear you've already weighed for Parisa. She speaks well of you. And she speaks well of nobody but her apples.\"",
+  "ja": "「もうパリサのところで秤をやったんだってな。褒めてたよ。あの人が褒めるのは自分のりんごだけなのに」"
+ },
+ "city.ask.job.keeper": {
+  "ru": "Про ночную вахту",
+  "en": "About the night watch",
+  "ja": "夜の当直のこと"
+ },
+ "city.ask.job.keeper.1": {
+  "ru": "— Вахта с шести вечера до семи утра. Каждый час запись: ветер, море, суда. Первым делом на закате огонь. Если хочешь помочь, поднимайся к механизму и бери журнал. Спать нельзя, но чай можно.",
+  "en": "\"The watch is from six in the evening to seven in the morning. An entry every hour: wind, sea, ships. First thing at sunset, the light. If you want to help, go up to the clockwork and take the log. No sleeping, but tea is allowed.\"",
+  "ja": "「当直は夕方六時から朝七時まで。毎時記録だ。風、海、船。日が沈んだらまず点灯。手伝いたいなら機械室へ上がって日誌を取れ。寝るのはだめだが、お茶はいい」"
+ },
+ "city.ask.job.keeper.2": {
+  "ru": "— Твои записи я читал. Почерк неровный, а вахта ровная. Это важнее.",
+  "en": "\"I've read your entries. The handwriting's uneven, but the watch is steady. That matters more.\"",
+  "ja": "「お前の記録を読んだ。字はがたがただが、当直はしっかりしてる。そっちのほうが大事だ」"
+ },
+ "city.ask.job.cafe": {
+  "ru": "Можно помочь с мороженым?",
+  "en": "Can I help with the ice cream?",
+  "ja": "アイスの手伝いをしてもいい？"
+ },
+ "city.ask.job.cafe.1": {
+  "ru": "— Можно. Витрина с мороженым у окна. Шарик должен быть круглый, а не «какой вышел». Платим с каждого шарика, а за хорошую смену сверху. После наплыва чашки.",
+  "en": "\"You can. The ice cream case is by the window. A scoop should be round, not \"however it came out\". We pay for every scoop, and extra for a good shift. After the rush, the cups.\"",
+  "ja": "「いいよ。アイスのケースは窓ぎわだ。ひとすくいは丸く、「なんとなく」じゃだめ。一つごとに払うし、いい当番ならおまけもつける。混雑が過ぎたらカップ洗い」"
+ },
+ "city.ask.job.cafe.2": {
+  "ru": "— О, наш мороженщик. Дети спрашивают, будет ли сегодня «тот, у которого луна».",
+  "en": "\"Oh, our ice cream man. The children ask whether \"the one who does the moon\" is on today.\"",
+  "ja": "「おっ、うちのアイス係だ。子どもたちが、今日は「月の人」いるのって聞いてくるよ」"
+ },
+ "city.ask.job.kino": {
+  "ru": "Можно постоять на контроле?",
+  "en": "Can I take the door?",
+  "ja": "もぎりをやってもいい？"
+ },
+ "city.ask.job.kino.1": {
+  "ru": "— С пяти до восьми, перед вечерним сеансом. Встаёшь у лотка с корешками, рвёшь ровно, по линии. Красные дневные, жёлтые вечерние. Платим с билета и за то, чтобы всё сошлось.",
+  "en": "\"Five to eight, before the evening show. You stand by the stub tray and tear neatly, along the line. Red for the day shows, yellow for the evening. We pay per ticket, and for everything adding up.\"",
+  "ja": "「五時から八時、夜の上映の前だ。半券の箱のそばに立って、線に沿ってきれいにもぐ。赤は昼の回、黄色は夜の回。切符一枚ごとと、勘定が合った分を払う」"
+ },
+ "city.ask.job.kino.2": {
+  "ru": "— С тех пор как ты стоял на контроле, корешки сходятся. Я даже не знаю, радоваться или скучать по загадке.",
+  "en": "\"Since you took the door, the stubs add up. I don't know whether to be glad or to miss the mystery.\"",
+  "ja": "「お前がもぎりに立ってから、半券の数が合うんだ。喜ぶべきか、謎がなくなって寂しがるべきか」"
+ },
+ "city.ask.job.kiosk": {
+  "ru": "Нужна помощь с газетами?",
+  "en": "Do you need help with the papers?",
+  "ja": "新聞の手伝いはいる？"
+ },
+ "city.ask.job.kiosk.1": {
+  "ru": "— Утром, с восьми до десяти, со среды по воскресенье. Пачки приходят к открытию, их надо разобрать. Вот там, у газеты под стеклом. Ерлан покажет. Платим за утро, в дождь больше.",
+  "en": "\"Mornings, eight to ten, Wednesday to Sunday. The bundles come at opening and need sorting. Over there, by the paper under glass. Yerlan will show you. We pay for the morning, more in the rain.\"",
+  "ja": "「朝の八時から十時、水曜から日曜まで。開店のころに束が届くから、仕分けがいる。あそこ、ガラスの中の新聞のところだ。イェルランが教えるよ。朝の分を払う、雨の日は多めに」"
+ },
+ "city.ask.job.kiosk.2": {
+  "ru": "— Ерлан говорит, ты кроссворды кладёшь отдельно, как он любит. Значит, сработаетесь.",
+  "en": "\"Yerlan says you put the crosswords on their own, the way he likes. So you'll get on.\"",
+  "ja": "「イェルランが言ってたよ、お前はクロスワードを彼の好きなように別にしてくれるって。うまくやれそうだね」"
+ },
+ "city.ask.job.lg": {
+  "ru": "Как понять, какой флаг?",
+  "en": "How do I know which flag?",
+  "ja": "どの旗かはどうわかる？"
+ },
+ "city.ask.job.lg.1": {
+  "ru": "— Смотри на воду, а не на небо. Буйки не видно — красный, никому. Дождь, мутная волна или холодно — жёлтый, у берега и недолго. Ровное море и буйки как на ладони — зелёный. Сомневаешься — жёлтый.",
+  "en": "\"Look at the water, not the sky. Can't see the buoys: red, nobody goes in. Rain, murky waves or cold: yellow, near the shore and not for long. A smooth sea and the buoys plain to see: green. In doubt: yellow.\"",
+  "ja": "「空じゃなくて水を見ろ。ブイが見えなければ赤、誰も入れない。雨、濁った波、寒い日は黄色、岸の近くで短く。海が穏やかでブイがはっきり見えれば緑。迷ったら黄色」"
+ },
+ "city.ask.job.lg.2": {
+  "ru": "— Ты флаг уже поднимал. Теперь ты знаешь, почему я каждое утро первым делом смотрю на буйки, а не на кофе.",
+  "en": "\"You've raised the flag already. Now you know why every morning I look at the buoys first, before the coffee.\"",
+  "ja": "「もう旗は揚げたな。これで、なんで俺が毎朝コーヒーより先にブイを見るのか、わかっただろ」"
+ },
+ "quest.job_book.title": {
+  "ru": "Трудовая книжка",
+  "en": "The work record book",
+  "ja": "労働手帳"
+ },
+ "quest.job_book.desc": {
+  "ru": "На доске «Требуется помощь» шесть работ: газеты, рынок, вышка, маяк, мороженое и контроль в кино. Попробую каждую хотя бы раз.",
+  "en": "The \"Help wanted\" board lists six jobs: the papers, the market, the tower, the lighthouse, the ice cream and the cinema door. I'll try each one at least once.",
+  "ja": "「手伝い募集」の掲示板に仕事が六つある。新聞、市場、監視塔、灯台、アイス、映画館のもぎり。どれも一度はやってみよう。"
+ },
+ "quest.job_book.jobs.log": {
+  "ru": "Записал себе все шесть работ и когда они бывают. Рынок только по субботам, маяк только ночью. Придётся жить по расписанию, как взрослый.",
+  "en": "I wrote down all six jobs and when they happen. The market only on Saturdays, the lighthouse only at night. I'll have to live by a timetable, like a grown-up.",
+  "ja": "六つの仕事と、いつあるかを書き留めた。市場は土曜だけ、灯台は夜だけ。大人みたいに時間割どおりに暮らさなきゃ。"
+ },
+ "quest.job_book.papers.obj": {
+  "ru": "Помочь с утренними газетами в киоске",
+  "en": "Help with the morning papers at the kiosk",
+  "ja": "キオスクで朝刊の手伝いをする"
+ },
+ "quest.job_book.market.obj": {
+  "ru": "Взвешивать покупателям на рынке в субботу",
+  "en": "Weigh for the customers at the Saturday market",
+  "ja": "土曜の市場で客の品を量る"
+ },
+ "quest.job_book.tower.obj": {
+  "ru": "Отстоять смену на спасательной вышке",
+  "en": "Do a shift on the lifeguard tower",
+  "ja": "監視塔で当番をする"
+ },
+ "quest.job_book.watch.obj": {
+  "ru": "Записать вахту в журнал маяка",
+  "en": "Write the watch in the lighthouse log",
+  "ja": "灯台の日誌に当直を記す"
+ },
+ "quest.job_book.icecream.obj": {
+  "ru": "Помочь с мороженым в «Тарелке»",
+  "en": "Help with the ice cream at «Tarelka»",
+  "ja": "〈ターレルカ〉でアイスの手伝いをする"
+ },
+ "quest.job_book.door.obj": {
+  "ru": "Постоять на контроле в «Рассвете»",
+  "en": "Take the door at «Rassvet»",
+  "ja": "〈ラスヴェト〉でもぎりをする"
+ },
+ "quest.job_book.done": {
+  "ru": "Шесть работ, шесть отметок в трудовой книжке. Деньги разошлись быстро, а отметки остались. Оказывается, город держится на людях, которые встают раньше всех и ложатся позже всех.",
+  "en": "Six jobs, six marks in the work record book. The money went fast; the marks stayed. It turns out the town rests on people who get up before everyone and go to bed after everyone.",
+  "ja": "六つの仕事、労働手帳に六つの印。お金はすぐになくなったけれど、印は残った。この町は、誰よりも早く起きて誰よりも遅く寝る人たちに支えられているんだとわかった。"
+ }
+}

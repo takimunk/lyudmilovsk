@@ -1794,5 +1794,13 @@
  "npc.t_hernandez_lyudmila.name": "リュドミラ・エルナンデス",
  "npc.t_hernandez_lyudmila.role": "求職中",
  "npc.t_hernandez_caio.name": "カイオ・エルナンデス",
- "npc.t_hernandez_caio.role": "生徒"
+ "npc.t_hernandez_caio.role": "生徒",
+ "npc.t_gromov_pyotr.name": "ピョートル・グロモフ",
+ "npc.t_gromov_pyotr.role": "療養所の滞在客",
+ "npc.t_mironova_sonya.name": "ソーニャ・ミロノワ",
+ "npc.t_mironova_sonya.role": "療養所の滞在客",
+ "npc.t_tamm_boris.name": "ボリス・タム",
+ "npc.t_tamm_boris.role": "療養所の滞在客",
+ "npc.t_sazonov_nikolai.name": "ニコライ・サゾーノフ",
+ "npc.t_sazonov_nikolai.role": "療養所の滞在客"
 }

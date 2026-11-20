@@ -1183,7 +1183,11 @@
    "act": "keeper_storm"
   },
   "P-PIER/keeper_clockwork": {
-   "act": "keeper_clockwork"
+   "act": "job_px_watch",
+   "hours": [
+    18,
+    7
+   ]
   },
   "P-PIER/keeper_watch": {
    "act": "keeper_watch"
@@ -1222,7 +1226,10 @@
    "act": "px_guestbook"
   },
   "P-PIER/tower_desk": {
-   "act": "px_desk"
+   "act": "px_desk",
+   "topics": [
+    "@job_t_keeper"
+   ]
   },
   "P-PIER/keeper_wheel": {
    "act": "px_wheel"

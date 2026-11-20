@@ -1,0 +1,17 @@
+{
+ "service": "higgsfield MCP",
+ "tool": "generate_image",
+ "model": "gpt_image_2_5",
+ "arguments": {
+  "aspect_ratio": "1:1",
+  "resolution": "2k",
+  "quality": "medium",
+  "use_unlim": false,
+  "prompt": "Four inventory icon variants of the same object for a moody adventure game, arranged as a 2 by 2 grid of equal square cells on one picture: in every cell one object centred and filling most of the cell, softly lit from the upper left, painterly realistic style, plain dark warm-grey cloth background with a faint vignette, the same background and the same scale in every cell, no borders, frames or lines between the cells, nothing crossing a cell edge, no text, letters, numbers or logos anywhere. The object: a Soviet 1970s sanatorium certificate of completed treatment, a stiff cream-coloured sheet of card slightly curled at one corner, with an embossed golden crown emblem at the top, a decorative printed border, faint blank lines where writing would be (no readable text), a round violet ink seal stamp at the bottom right and a small sprig of pine lying across one corner. Each cell a slightly different angle of the same sheet."
+ },
+ "job_id": "39e25569-0fb8-486a-aa4f-b21958627a28",
+ "output_url": "https://d8j0ntlcm91z4.cloudfront.net/user_36I3ndR5QeKPyjKAdSKVfbd04n2/hf_20261120_203306_39e25569-0fb8-486a-aa4f-b21958627a28.png",
+ "date": "2026-11-20",
+ "why_not_3x3": "one new item only (san_diploma): four variants of it in a 2x2 grid, the best cell becomes the icon",
+ "todo": "the cloud session could not download the output (the egress proxy refuses the CDN): on the Mac download it here as icon_san_diploma_grid.png (add sha256), look at the 4 cells, cut the best (2x2 equal cells) to textures/localized/ru/icon_san_diploma.jpg 512x512 with its sidecar, then import with import_hall_assets.py's icon settings and run tools/ui_diary_icons.py san_diploma"
+}

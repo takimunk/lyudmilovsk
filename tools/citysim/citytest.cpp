@@ -1415,6 +1415,333 @@ static void RealGameChecks(const FModel& M)
 	CHECK(NoLines == 0, "every game has a win, a lose and a draw line at every hour (%d gaps, first %s)", NoLines, First.c_str());
 }
 
+static void StayChecks()
+{
+	std::printf("stays (a sanatorium's voucher: stay lines, needs_stay, the curfew, the save)\n");
+	const std::string Text = R"({"things": [
+  {"id": "P-S/desk", "plot": "P-S", "kind": "counter", "ue": [0, 0, 100], "yaw": 0, "props": {}, "act": "voucher"},
+  {"id": "P-S/board", "plot": "P-S", "kind": "board", "ue": [400, 0, 150], "yaw": 0, "props": {}, "act": "regime"},
+  {"id": "P-S/lamp", "plot": "P-S", "kind": "machine", "ue": [800, 0, 120], "yaw": 0, "props": {}, "act": "quartz"},
+  {"id": "P-S/bed", "plot": "P-S", "kind": "bed", "ue": [1200, 0, 50], "yaw": 0, "props": {}, "act": "sleep"},
+  {"id": "P-S/bell", "plot": "P-S", "kind": "counter", "ue": [1600, 0, 100], "yaw": 0, "props": {}, "act": "bell"},
+  {"id": "P-S/window", "plot": "P-S", "kind": "counter", "ue": [2000, 0, 100], "yaw": 0, "props": {}, "act": "extend"},
+  {"id": "P-T/board", "plot": "P-T", "kind": "board", "ue": [9000, 0, 150], "yaw": 0, "props": {}, "act": "regime"}],
+ "acts": {
+  "voucher": {"prompt": "p", "price": 60, "lines": ["v.1"], "stay": {"id": "san", "days": 3}},
+  "regime": {"prompt": "p", "lines": [{"k": "r.guest", "stay": "!san"}, {"k": "r.mine", "stay": "san"}]},
+  "quartz": {"prompt": "p", "lines": [{"k": "q.1", "collect": "cure/quartz"}], "needs_stay": "san", "no_stay": "_closed:q.no"},
+  "_closed:q.no": {"prompt": "p", "lines": ["q.no"], "event": "look", "target": "closed", "any_hour": true},
+  "_closed:nurse": {"prompt": "p", "lines": ["nurse.1"], "event": "look", "target": "closed", "any_hour": true},
+  "sleep": {"prompt": "p", "minutes": 480, "until": 7, "pose": "lie", "any_hour": true, "lines": ["s.1"]},
+  "bell": {"prompt": "p", "lines": ["b.1"]},
+  "extend": {"prompt": "p", "price": 40, "daily": 1, "lines": ["e.1"], "stay": {"id": "san", "days": 4}, "needs_stay": "san", "no_stay": "voucher"}},
+ "collections": {"cure": {"title": "t", "pieces": ["quartz"]}},
+ "stays": {"san": {"plot": "P-S", "curfew": [23, 6], "act": "_closed:nurse", "allow": ["bell"]}},
+ "shops": {}})";
+	FModel M;
+	std::string Error;
+	CHECK(M.Load(Text, Error), "it loads (%s)", Error.c_str());
+	FAsk Ask;
+	Ask.Money = 100;
+	const int Desk = M.FindThing("P-S/desk"), Board = M.FindThing("P-S/board"), Lamp = M.FindThing("P-S/lamp");
+	const int Bed = M.FindThing("P-S/bed"), Bell = M.FindThing("P-S/bell"), Other = M.FindThing("P-T/board");
+	CHECK(M.Stays.size() == 1 && M.Stays[0].Plot == "P-S" && M.Stays[0].CurfewAct == M.FindAct("_closed:nurse") && M.Stays[0].Allow.count("bell"),
+		"the stay reads: plot, curfew act, allowed acts");
+	CHECK(M.Acts[M.Things[Desk].Act].StayDays == 3 && M.Acts[M.Things[Lamp].Act].NoStayAct == M.FindAct("_closed:q.no"), "stay and no_stay read");
+	// no voucher
+	CHECK(M.Run(Board, AtDate(0, 10.f, 100, 0, 5), Ask).Line == "r.guest", "without a voucher the board shows the guest's line");
+	const FOutcome NoV = M.Run(Lamp, AtDate(0, 10.f, 100, 0, 5), Ask);
+	CHECK(NoV.Verdict == EVerdict::Ok && NoV.bClosed && NoV.Line == "q.no" && NoV.NewStamps.empty(), "the lamp without a voucher: words only, no stamp");
+	CHECK(M.Run(Bell, AtDate(0, 23.5f, 100, 0, 5), Ask).Line == "b.1" && M.Run(Board, AtDate(0, 23.5f, 100, 0, 5), Ask).Line == "r.guest",
+		"no curfew without a voucher");
+	// buy one on day 5: days 5, 6, 7
+	const FOutcome Buy = M.Run(Desk, AtDate(0, 10.f, 100, 0, 5), Ask);
+	CHECK(Buy.Verdict == EVerdict::Ok && Buy.Price == 60 && M.OnStay("san", 5) && M.OnStay("san", 7) && !M.OnStay("san", 8) && M.StayDaysLeft("san", 5) == 3,
+		"a voucher for 3 days: on it days 5..7 (%d left)", M.StayDaysLeft("san", 5));
+	CHECK(M.Run(Board, AtDate(0, 10.f, 100, 0, 5), Ask).Line == "r.mine", "with it the board shows his own line");
+	const FOutcome Q = M.Run(Lamp, AtDate(0, 10.f, 100, 0, 6), Ask);
+	CHECK(Q.Verdict == EVerdict::Ok && !Q.bClosed && Q.Line == "q.1" && Q.NewStamps.size() == 1, "the lamp with it: the procedure and its stamp");
+	// the curfew
+	const FOutcome Cf = M.Run(Board, AtDate(1, 23.5f, 101, 0, 6), Ask);
+	CHECK(Cf.bClosed && Cf.Line == "nurse.1", "after 23 on a voucher: the duty nurse's words at the board");
+	CHECK(M.Run(Board, AtDate(1, 5.f, 101, 0, 6), Ask).Line == "nurse.1" && M.Run(Board, AtDate(1, 6.f, 101, 0, 6), Ask).Line == "r.mine",
+		"till 6, then the day again");
+	CHECK(!M.Run(Bed, AtDate(1, 23.5f, 101, 0, 6), Ask).bClosed && M.Run(Bell, AtDate(1, 23.5f, 101, 0, 6), Ask).Line == "b.1",
+		"the bed and the allowed bell keep their acts in the curfew");
+	CHECK(!M.Run(Other, AtDate(1, 23.5f, 101, 0, 6), Ask).bClosed, "another plot keeps no curfew");
+	FAsk All = Ask;
+	All.bOpenAll = true;
+	CHECK(!M.Run(Board, AtDate(1, 23.5f, 101, 0, 6), All).bClosed, "developer mode's open-all lifts the curfew");
+	// it ends; a second voucher adds days
+	CHECK(M.Run(Lamp, AtDate(3, 10.f, 103, 0, 8), Ask).Line == "q.no" && M.Run(Board, AtDate(3, 23.5f, 103, 0, 8), Ask).Line == "r.guest",
+		"day 8: the voucher is over, no procedures, no curfew");
+	M.StartStay("san", 3, 6);
+	CHECK(M.StayDaysLeft("san", 6) == 5 && M.OnStay("san", 10) && !M.OnStay("san", 11), "a voucher bought on one adds its days (%d left)",
+		M.StayDaysLeft("san", 6));
+	// a real act for those without the stay: the window sells the voucher, then extends it
+	FModel M3;
+	M3.Load(Text, Error);
+	const int Window = M3.FindThing("P-S/window");
+	CHECK(M3.Check(Window, AtDate(0, 10.f, 100, 0, 5), Ask) == EVerdict::Ok, "the window without a voucher: its no_stay act may run");
+	const FOutcome Sold = M3.Run(Window, AtDate(0, 10.f, 100, 0, 5), Ask);
+	CHECK(Sold.Verdict == EVerdict::Ok && !Sold.bClosed && Sold.Price == 60 && Sold.Line == "v.1" && M3.StayDaysLeft("san", 5) == 3,
+		"a real no_stay act runs in full: 60 roubles, 3 days");
+	const FOutcome Ext = M3.Run(Window, AtDate(0, 11.f, 100, 0, 5), Ask);
+	CHECK(Ext.Price == 40 && Ext.Line == "e.1" && M3.StayDaysLeft("san", 5) == 7, "on it the window extends it by 4: 7 days (%d)", M3.StayDaysLeft("san", 5));
+	FAsk Poor = Ask;
+	Poor.Money = 10;
+	FModel M4;
+	M4.Load(Text, Error);
+	CHECK(M4.Check(Window, AtDate(0, 10.f, 100, 0, 5), Poor) == EVerdict::NoMoney && M4.Run(Window, AtDate(0, 10.f, 100, 0, 5), Poor).NeedMoney == 60,
+		"the voucher's own price is asked (no money: refused, 60 needed)");
+	CHECK(M3.Check(Window, AtDate(0, 12.f, 100, 0, 5), Ask) == EVerdict::DailyDone, "the extension's own daily limit");
+	// the save
+	std::map<std::string, std::string> Saved;
+	M.SaveState(Saved);
+	FModel M2;
+	M2.Load(Text, Error);
+	M2.LoadState(Saved);
+	CHECK(Saved.count("s:san") && M2.OnStay("san", 10) && !M2.OnStay("san", 11), "the stay is saved (s:san = %s)", Saved.count("s:san") ? Saved["s:san"].c_str() : "-");
+	M2.StartStay("san", 0, 6);
+	CHECK(!M2.OnStay("san", 6) && M2.GetStays().empty(), "0 days ends it");
+}
+
+/** The sanatorium's course of cure on the real data (tools/city/content/x_p_sanatorium.json, docs/city_interiors.md "Stays"):
+ *  the voucher at the cloakroom, the nine stamps at their hours, the curfew, the extension, the discharge topic. */
+static void CourseChecks(const std::string& Path)
+{
+	std::string Text, Error;
+	if (!ReadFile(Path, Text))
+	{
+		return;
+	}
+	std::printf("the sanatorium's course of cure (real data)\n");
+	FModel M;
+	CHECK(M.Load(Text, Error), "it loads (%s)", Error.c_str());
+	const int Window = M.FindThing("P-SANATORIUM/cloakroom"), Pump = M.FindThing("P-SANATORIUM/pump_room");
+	const int Ex = M.FindThing("P-SANATORIUM/lobby_exercise"), Quartz = M.FindThing("P-SANATORIUM/treat_quartz");
+	const int Oxy = M.FindThing("P-SANATORIUM/oxygen_bar"), Walk = M.FindThing("P-SANATORIUM/treat_chart");
+	const int Couch = M.FindThing("P-SANATORIUM/couch_a"), Night = M.FindThing("P-SANATORIUM/couch_b");
+	const int Dance = M.FindThing("P-SANATORIUM/lobby_dance"), Board = M.FindThing("P-SANATORIUM/regime_board");
+	const int Book = M.FindThing("P-SANATORIUM/treat_cabinet"), Table = M.FindThing("P-SANATORIUM/dining_1_b");
+	const int Bell = M.FindThing("P-SANATORIUM/night_bell"), Desk = M.FindThing("P-SANATORIUM/treat_desk");
+	if (!(Window >= 0 && Pump >= 0 && Ex >= 0 && Quartz >= 0 && Oxy >= 0 && Walk >= 0 && Couch >= 0 && Night >= 0 && Dance >= 0 && Board >= 0
+		&& Book >= 0 && Table >= 0 && Bell >= 0 && Desk >= 0))
+	{
+		CHECK(false, "the sanatorium's things are there");
+		return;
+	}
+	CHECK(M.FindStayDef("san") && M.FindStayDef("san")->CurfewAct >= 0, "the stay san with its curfew");
+	FAsk Ask;
+	Ask.Money = 1000;
+	Ask.StaffOnShift = [](const std::string&, const std::string&) { return true; };
+	// Monday (weekday 0) is day 10 since the game began
+	auto Day = [](int Since, float Hour) { FWhen W = AtDate((int)(Since - 10) % 7, Hour, 1000 + Since, 0, Since); W.Weather = 0x40; return W; };
+	const FOutcome Paid = M.Run(Night, Day(10, 22.f), Ask);
+	CHECK(Paid.Verdict == EVerdict::Ok && Paid.Price > 0 && Paid.bSleep, "without a voucher the couch is the paid night (%d roubles)", Paid.Price);
+	M.Run(Quartz, Day(10, 10.f), Ask);
+	CHECK(M.CountStamps("san_course") == 0, "no voucher: the quartz lamp gives no course stamp");
+	const FOutcome V = M.Run(Window, Day(10, 10.f), Ask);
+	CHECK(V.Verdict == EVerdict::Ok && V.Target == "san_voucher" && V.Price == 90 && M.StayDaysLeft("san", 10) == 3,
+		"the cloakroom window sells a 3-day voucher (%s, %d roubles, %d days)", V.Target.c_str(), V.Price, M.StayDaysLeft("san", 10));
+	const FOutcome V2 = M.Run(Window, Day(10, 10.5f), Ask);
+	CHECK(V2.Target == "san_extend" && V2.Price == 100 && M.StayDaysLeft("san", 10) == 7, "on it the window extends it to a week (%d days)",
+		M.StayDaysLeft("san", 10));
+	CHECK(M.Run(Board, Day(10, 10.f), Ask).Line == "city.san.regime.my.2", "the regime board shows the guest's own day");
+	// day 11 (Tuesday): the whole course
+	std::vector<std::string> Got;
+	auto Take = [&Got](const std::vector<std::string>& Stamps) { for (const std::string& S : Stamps) { if (S.rfind("san_course/", 0) == 0) Got.push_back(S); } };
+	FOutcome E = M.Run(Ex, Day(11, 7.5f), Ask);
+	FGameState G;
+	bool bWon = false;
+	if (E.Game >= 0 && M.StartGame(Ex, Day(11, 7.5f), G) && Play(M, G, true))
+	{
+		const FGameEnd End = M.FinishGame(G, Day(11, 7.6f));
+		bWon = End.Result == EGameResult::Win;
+		Take(End.NewStamps);
+	}
+	CHECK(bWon && M.HasStamp("san_course/exercise"), "the morning exercises: a won rally stamps the book");
+	Take(M.Run(Pump, Day(11, 8.f), Ask).NewStamps);
+	Take(M.Run(Pump, Day(11, 13.f), Ask).NewStamps);
+	const FOutcome Off = M.Run(Pump, Day(11, 15.f), Ask);
+	CHECK(Off.Line == "city.san.water.late2" && Off.NewStamps.empty(), "water off the hour: no drop in the book");
+	Take(M.Run(Pump, Day(11, 18.f), Ask).NewStamps);
+	CHECK(M.HasStamp("san_course/water_8") && M.HasStamp("san_course/water_13") && M.HasStamp("san_course/water_18"), "three springs at 8, 13 and 18");
+	Take(M.Run(Quartz, Day(11, 10.f), Ask).NewStamps);
+	Take(M.Run(Oxy, Day(11, 11.f), Ask).NewStamps);
+	Take(M.Run(Walk, Day(11, 11.5f), Ask).NewStamps);
+	const FOutcome Q0 = M.Run(Couch, Day(11, 12.f), Ask);
+	CHECK(Q0.Line == "city.san.quietbed.off" && Q0.NewStamps.empty(), "lying down before quiet hour: no stamp");
+	Take(M.Run(Couch, Day(11, 14.5f), Ask).NewStamps);
+	const FOutcome D0 = M.Run(Dance, Day(11, 17.f), Ask);
+	CHECK(D0.Line == "city.san.evening.course.notyet" && D0.NewStamps.empty(), "the lobby before seven: no dance yet");
+	Take(M.Run(Dance, Day(11, 20.f), Ask).NewStamps);
+	CHECK(M.CountStamps("san_course") == 9 && Got.size() == 9, "a full book in one day: %d stamps (%d new)", M.CountStamps("san_course"), (int)Got.size());
+	// the book, the doctor
+	const FOutcome B = M.Run(Book, Day(11, 16.f), Ask);
+	CHECK(B.Text >= 0 && M.Texts[(size_t)B.Text].Id == "san_course_book", "the card index opens the health-resort book");
+	const int Discharge = M.FindTopic("sand.discharge");
+	CHECK(Discharge >= 0 && M.TopicOffered(Discharge, Day(11, 16.f)), "with nine stamps the doctor offers the discharge");
+	// the curfew
+	const FOutcome Cf = M.Run(Board, Day(11, 23.5f), Ask);
+	CHECK(Cf.bClosed && Cf.Line.rfind("city.san.curfew.", 0) == 0, "after 23 the duty nurse sends him to bed (%s)", Cf.Line.c_str());
+	CHECK(!M.Run(Bell, Day(11, 23.5f), Ask).bClosed, "the night bell still answers");
+	const FOutcome Bed = M.Run(Night, Day(11, 23.5f), Ask);
+	CHECK(Bed.Verdict == EVerdict::Ok && Bed.Price == 0 && Bed.bSleep, "on the voucher the couch's night is free and he chooses the hour");
+	// the stories at the window table: one a day, in order
+	const FOutcome T1 = M.Run(Table, Day(11, 9.f), Ask), T1b = M.Run(Table, Day(11, 13.f), Ask), T2 = M.Run(Table, Day(12, 9.f), Ask);
+	CHECK(T1.Line == "city.san.tg.1" && T1b.Line == "city.san.tg.1" && T2.Line == "city.san.tg.2", "the window table's story: a day a part (%s %s %s)",
+		T1.Line.c_str(), T1b.Line.c_str(), T2.Line.c_str());
+	std::string Last;
+	for (int D = 13; D < 22; ++D)
+	{
+		Last = M.Run(Table, Day(D, 13.f), Ask).Line;
+	}
+	CHECK(Last == "city.san.tg.after", "after the nine parts the table stays as they left it (%s)", Last.c_str());
+	// the voucher ends on day 17 (10 + 7)
+	CHECK(M.OnStay("san", 16) && !M.OnStay("san", 17) && !M.Run(Board, Day(17, 23.5f), Ask).bClosed, "a week later the voucher is over: no curfew");
+	(void)Desk;
+}
+
+// The small jobs on the real data (docs/city_interiors.md "Small jobs"): each job pays once a day by its result inside its
+// hours and days, gives its page of the work record book, and outside them the thing only says its old words, unpaid.
+static void JobChecks(const std::string& Path)
+{
+	std::string Text, Error;
+	if (!ReadFile(Path, Text))
+	{
+		return;
+	}
+	std::printf("the small jobs (real data)\n");
+	FModel M;
+	CHECK(M.Load(Text, Error), "it loads (%s)", Error.c_str());
+	const int Board = M.FindThing("P-T2H2/hall_duty_board"), Youth = M.FindThing("P-UNITE/game_rules");
+	const int Papers = M.FindThing("P-KIOSK1/price_board"), Kiosk = M.FindThing("P-KIOSK1/counter");
+	const int Boxes = M.FindThing("P-MARKET/market_scales_2"), Scales = M.FindThing("P-MARKET/market_scales");
+	const int Flags = M.FindThing("P-LIFEGUARD1/flag_halyard"), Whistle = M.FindThing("P-LIFEGUARD1/whistle");
+	const int Watch = M.FindThing("P-PIER/keeper_clockwork"), Scoops = M.FindThing("P-CAFE/cake_vitrine");
+	const int Door = M.FindThing("P-CLUB2/ticket_stubs");
+	if (!(Board >= 0 && Youth >= 0 && Papers >= 0 && Kiosk >= 0 && Boxes >= 0 && Scales >= 0 && Flags >= 0 && Whistle >= 0 && Watch >= 0
+		&& Scoops >= 0 && Door >= 0))
+	{
+		CHECK(false, "the job things are there");
+		return;
+	}
+	FAsk Ask;
+	Ask.Money = 0;     // a job needs no money
+	Ask.StaffOnShift = [](const std::string&, const std::string&) { return true; };
+	// Monday (weekday 0) is day 10 since the game began; weather bits: rain 1, snow 2, fog 4, cold 8, clear 32, wet 64, dry 128
+	auto Day = [](int Since, float Hour, int Wx) { FWhen W = AtDate((int)(Since - 10) % 7, Hour, 2000 + Since, 0, Since); W.Weather = (uint8_t)Wx; return W; };
+	const int Dry = 128 | 32, Rain = 1 | 64, Fog = 4 | 128, ColdDry = 8 | 128;
+	int Earned = 0;
+	// the boards
+	const FOutcome B = M.Run(Board, Day(10, 12.f, Dry), Ask);
+	CHECK(B.Text >= 0 && M.Texts[(size_t)B.Text].Id == "jobs_board_cm" && B.Target == "job_board", "the house committee's board opens \"Help wanted\"");
+	const FOutcome Y = M.Run(Youth, Day(10, 12.f, Dry), Ask);
+	CHECK(Y.Text >= 0 && M.Texts[(size_t)Y.Text].Id == "jobs_board_youth" && Y.Target == "job_board", "so does the games room's");
+	// the kiosk's morning papers: Wednesday to Sunday, 8 to 10
+	const FOutcome K = M.Run(Papers, Day(12, 8.5f, Dry), Ask);
+	CHECK(K.Verdict == EVerdict::Ok && !K.bClosed && K.Pay == 25 && M.HasStamp("work_book/kiosk"), "the morning papers pay 25 on a dry morning (%d, %s)", K.Pay, K.Line.c_str());
+	Earned += K.Pay;
+	CHECK(M.Run(Papers, Day(12, 9.f, Dry), Ask).Verdict == EVerdict::DailyDone, "once a day");
+	const FOutcome KR = M.Run(Papers, Day(13, 8.5f, Rain), Ask);
+	CHECK(KR.Pay == 35 && KR.Line == "city.job.k1.rain", "in the rain more (%d, %s)", KR.Pay, KR.Line.c_str());
+	const FOutcome KC = M.Run(Papers, Day(14, 8.5f, ColdDry), Ask);
+	CHECK(KC.Pay == 30 && KC.Line == "city.job.k1.cold", "in the cold a little more (%d, %s)", KC.Pay, KC.Line.c_str());
+	const FOutcome KD = M.Run(Papers, Day(15, 8.5f, 0), Ask);
+	CHECK(KD.Pay == 25 && KD.Line == "city.job.k1.drizzle", "unknown weather: the drizzle line (%s)", KD.Line.c_str());
+	const FOutcome KL = M.Run(Papers, Day(16, 12.f, Dry), Ask);
+	CHECK(KL.bClosed && KL.Pay == 0 && KL.Line.rfind("city.story.kiosk1.prices", 0) == 0, "at noon the board shows its prices again, unpaid (%s)", KL.Line.c_str());
+	CHECK(M.Run(Papers, Day(17, 8.5f, Dry), Ask).bClosed, "not on Mondays (Yerlan's day off)");
+	const int KioskTalk = M.FindTopic("job.kiosk");
+	CHECK(KioskTalk >= 0 && M.HasTopics(Kiosk), "the kiosk's seller can be asked about the job");
+	// the Saturday market: crates 6-10, the scales 7-13
+	CHECK(M.Run(Scales, Day(14, 9.f, Dry), Ask).bClosed && M.Run(Boxes, Day(14, 7.f, Dry), Ask).Pay == 0, "on a Friday the scales and the crates wait for Saturday");
+	const FOutcome Bx = M.Run(Boxes, Day(15, 6.5f, Dry), Ask);
+	CHECK(Bx.Pay == 20 && !Bx.bClosed && M.HasStamp("work_book/market"), "Saturday at half past six: the crates pay 20 (%s)", Bx.Line.c_str());
+	Earned += Bx.Pay;
+	const FOutcome Sc = M.Run(Scales, Day(15, 8.f, Dry), Ask);
+	FGameState G;
+	FGameEnd End;
+	if (Sc.Game >= 0 && M.StartGame(Scales, Day(15, 8.f, Dry), G) && Play(M, G, true))
+	{
+		End = M.FinishGame(G, Day(15, 8.2f, Dry));
+	}
+	CHECK(End.Result == EGameResult::Win && End.Pay >= 20 + 3 * 7, "weighing well: a won game pays its line and 3 a point (%d)", End.Pay);
+	Earned += End.Pay;
+	const FOutcome Sc2 = M.Run(Scales, Day(15, 9.f, Dry), Ask);
+	CHECK(Sc2.Game < 0 && Sc2.Pay == 0 && Sc2.Line == "city.job.mk.weigh.after", "a second go the same day: words, no game, no pay");
+	// lifeguard tower 1: the flag by the weather, the watch
+	const FOutcome FF = M.Run(Flags, Day(12, 11.f, Fog), Ask);
+	CHECK(FF.Line == "city.job.lg.flag.fog" && FF.Pay == 10, "fog: the red flag (%s)", FF.Line.c_str());
+	CHECK(M.Run(Flags, Day(13, 11.f, Rain), Ask).Line == "city.job.lg.flag.rain", "rain: yellow");
+	CHECK(M.Run(Flags, Day(14, 11.f, ColdDry), Ask).Line == "city.job.lg.flag.cold", "cold water: yellow, short");
+	CHECK(M.Run(Flags, Day(15, 11.f, Dry), Ask).Line == "city.job.lg.flag.green", "a calm dry day: green");
+	CHECK(M.Run(Flags, Day(16, 11.f, 64), Ask).Line == "city.job.lg.flag.drizzle", "a drizzle: the careful yellow");
+	CHECK(M.Run(Flags, Day(17, 11.f, Dry), Ask).bClosed, "Monday: no helper on the tower");
+	CHECK(M.HasTopics(Flags), "Eitan can be asked which flag");
+	const FOutcome Wt = M.Run(Whistle, Day(12, 12.f, Dry), Ask);
+	FGameState G2;
+	FGameEnd End2;
+	if (Wt.Game >= 0 && M.StartGame(Whistle, Day(12, 12.f, Dry), G2) && Play(M, G2, false))
+	{
+		End2 = M.FinishGame(G2, Day(12, 13.f, Dry));
+	}
+	CHECK(End2.Result != EGameResult::None && End2.Result != EGameResult::Win && End2.Pay >= 8 && M.HasStamp("work_book/lifeguard"),
+		"a poor watch still pays a little and stamps the book (%d)", End2.Pay);
+	Earned += End2.Pay;
+	// the lighthouse: the lamp, an entry an hour, six a day
+	int Entries = 0, Night = 0;
+	const FOutcome L0 = M.Run(Watch, Day(12, 18.5f, Dry), Ask);
+	CHECK(L0.Line == "city.job.px.lamp" && L0.Pay == 15 && M.HasStamp("work_book/lighthouse"), "at dusk he lights the lamp (%s)", L0.Line.c_str());
+	Night += L0.Pay;
+	CHECK(M.Run(Watch, Day(12, 20.5f, Fog), Ask).Line == "city.job.px.eve.fog", "a foggy hour: the bell in the log");
+	for (int H = 21; H < 24; ++H)
+	{
+		const FOutcome L = M.Run(Watch, Day(12, (float)H + 0.5f, Dry), Ask);
+		Entries += L.Pay == 10 ? 1 : 0;
+		Night += L.Pay;
+	}
+	CHECK(Entries == 3, "an entry an hour pays 10 (%d of 3)", Entries);
+	M.Run(Watch, Day(12, 23.9f, Dry), Ask);
+	CHECK(M.Run(Watch, Day(12, 23.95f, Dry), Ask).Verdict == EVerdict::DailyDone, "six entries a day at most");
+	const FOutcome L1 = M.Run(Watch, Day(13, 1.5f, Dry), Ask);
+	CHECK(L1.Line.rfind("city.job.px.night.", 0) == 0 && L1.Pay == 10, "after midnight Arkady's watch (%s)", L1.Line.c_str());
+	const FOutcome L2 = M.Run(Watch, Day(13, 6.f, Dry), Ask);
+	CHECK(L2.Line == "city.job.px.dawn" && L2.Pay == 15, "at dawn the light goes out and the night is paid (%s)", L2.Line.c_str());
+	const FOutcome L3 = M.Run(Watch, Day(13, 12.f, Dry), Ask);
+	CHECK(L3.bClosed && L3.Pay == 0 && L3.Line.rfind("city.px.clockwork.", 0) == 0, "by day the clockwork is only the clockwork (%s)", L3.Line.c_str());
+	Earned += Night;
+	// «Tarelka»: the scoops, then the cake case's menu
+	const FOutcome Ic = M.Run(Scoops, Day(12, 10.f, Dry), Ask);
+	FGameState G3;
+	FGameEnd End3;
+	if (Ic.Game >= 0 && M.StartGame(Scoops, Day(12, 10.f, Dry), G3) && Play(M, G3, true))
+	{
+		End3 = M.FinishGame(G3, Day(12, 10.3f, Dry));
+	}
+	CHECK(End3.Result == EGameResult::Win && End3.Pay >= 20 && M.HasStamp("work_book/cafe"), "round scoops pay (%d)", End3.Pay);
+	Earned += End3.Pay;
+	const FOutcome Ic2 = M.Run(Scoops, Day(12, 11.f, Dry), Ask);
+	CHECK(Ic2.Game < 0 && Ic2.Pay == 0 && Ic2.Text >= 0 && M.Texts[(size_t)Ic2.Text].Id == "tarelka_menu", "after the shift the case shows its menu again");
+	// «Rassvet»: the door before the evening show
+	CHECK(M.Run(Door, Day(11, 18.f, Dry), Ask).bClosed, "Tuesday: no door job");
+	CHECK(M.Run(Door, Day(12, 15.f, Dry), Ask).bClosed, "three o'clock: too early");
+	const FOutcome Dr = M.Run(Door, Day(12, 18.f, Dry), Ask);
+	FGameState G4;
+	FGameEnd End4;
+	if (Dr.Game >= 0 && M.StartGame(Door, Day(12, 18.f, Dry), G4) && Play(M, G4, true))
+	{
+		End4 = M.FinishGame(G4, Day(12, 18.5f, Dry));
+	}
+	CHECK(End4.Result == EGameResult::Win && End4.Pay >= 20 + 2 * 8 && M.HasStamp("work_book/cinema"), "every ticket torn: paid (%d)", End4.Pay);
+	Earned += End4.Pay;
+	CHECK(M.CountStamps("work_book") == 6, "the work record book is full: %d of 6", M.CountStamps("work_book"));
+	CHECK(Earned > 150 && Earned < 600, "a week of odd jobs earns %d roubles", Earned);
+}
+
+#include "cupchecks.h"
+
 int main(int Argc, char** Argv)
 {
 	FixtureChecks();
@@ -1426,7 +1753,11 @@ int main(int Argc, char** Argv)
 	ReadingChecks();
 	TalkChecks();
 	LiftChecks();
+	StayChecks();
 	RealChecks(Argc > 1 ? Argv[1] : "unreal/Lyudmilovsk/Content/City/interiors.json");
+	CourseChecks(Argc > 1 ? Argv[1] : "unreal/Lyudmilovsk/Content/City/interiors.json");
+	JobChecks(Argc > 1 ? Argv[1] : "unreal/Lyudmilovsk/Content/City/interiors.json");
+	CupChecks(Argc > 1 ? Argv[1] : "unreal/Lyudmilovsk/Content/City/interiors.json");
 	std::printf("%d passed, %d failed\n", Passed, Failures);
 	return Failures ? 1 : 0;
 }
