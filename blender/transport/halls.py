@@ -301,7 +301,6 @@ class Dresser:
             r_back = min(math.sqrt(max(0.0, (R - staff) ** 2 - hw ** 2)), R - staff)
         else:
             r_back = min(h.wall(a + math.atan2(hw, R)), h.wall(a - math.atan2(hw, R)), R) - staff
-        r_back = min(r_back, h.core(a) + WALK + d)      # never closer to the railing than a walk
         r_c = r_back - d / 2
         if r_c - d / 2 - h.core(a) < WALK - 0.05:
             self.out["notes"].append("buffet: too tight")
@@ -395,7 +394,9 @@ class Dresser:
                 kit.wall_clock(B, *self.wall_point(a, 0.02), 0.0, h.inward(a), zc=min(2.45, h.H - 0.5))
             lx, ly = h.at(a, (h.core(a) + R) / 2)
             self.lamp(lx, ly, 1000)
-            kit.rug(B, lx, ly, 0.0, h.inward(a), w=2.6, d=max(1.2, min(1.9, self.depth(a) - 0.4)), seed=3)
+            if all(math.dist((lx, ly), ue_xy(f["at"])) > 1.9 for f in h.keep) and \
+                    all(math.dist((lx, ly), (pl["at"][0] / 100.0, -pl["at"][1] / 100.0)) > 1.4 for pl in self.out["planters"]):
+                kit.rug(B, lx, ly, 0.0, h.inward(a), w=2.4, d=max(1.2, min(1.8, self.depth(a) - 0.5)), seed=3)
             for e in (a - 0.62, a + 0.62):
                 if self.free(e, math.atan2(0.3, R)) and self.depth(e) > 0.6 + WALK:
                     self.planter(e)
@@ -406,6 +407,7 @@ class Dresser:
         h, B = self.h, self.B
         R = h.wall(a)
         made = 0
+        placed = []
         for k in (0, -2, 2, -1, 1):
             aa = a + k * math.atan2(0.9, R)
             if not self.free(aa, math.atan2(0.75, R)):
@@ -415,6 +417,7 @@ class Dresser:
                 continue
             x, y = self.wall_point(aa, off)
             kit.table_round(B, x, y, 0.0, 0.0, r=0.32)
+            placed.append(aa)
             # two chairs either side along the wall, facing the table
             tx, ty = -math.sin(aa), math.cos(aa)
             for sgn in (-1, 1):
@@ -435,8 +438,11 @@ class Dresser:
             if made == 3:
                 break
         if made:
-            rx, ry = self.wall_point(a, 0.75)
-            kit.rug(B, rx, ry, 0.0, h.inward(a), w=3.2, d=1.4, seed=9)
+            # a rug under the tables (only as wide as they spread)
+            am = math.atan2(sum(math.sin(q) for q in placed), sum(math.cos(q) for q in placed))
+            span = max([adiff(q, am) for q in placed]) * 2 * (R - 0.62) + 1.6
+            rx, ry = self.wall_point(am, 0.7)
+            kit.rug(B, rx, ry, 0.0, h.inward(am), w=min(3.4, span), d=1.3, seed=9)
         if made and self.depth(a) > 0.7 + WALK + 0.7 and self.free_rail(a, 0.5):
             x, y = h.at(a, h.core(a) + 0.45)
             r = kit.high_table(B, x, y, 0.0, 0.0)

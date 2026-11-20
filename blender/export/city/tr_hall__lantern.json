@@ -3,9 +3,9 @@
  "lint": [
   "coplanar faces lifted: 1",
   "shell: 72 tris, 0 faces stretched UV, 0 degenerate",
-  "detail: 4186 tris, 0 faces stretched UV, 0 degenerate",
+  "detail: 4176 tris, 0 faces stretched UV, 0 degenerate",
   "windows: 0 tris, 0 faces stretched UV, 0 degenerate",
   "windows 0 (flat 0), flats 0, entrances 0"
  ],
- "tris": 4186
+ "tris": 4176
 }
