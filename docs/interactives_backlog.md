@@ -455,7 +455,7 @@ test of a game's start, roles and end, Mac shots, bench with three groups playin
 
 ## 33. Photo quests and the photo contest
 
-`[ ]` **Brief (Opus 5.5):** On top of the camera (item 2): the photo club at «Шестерня» runs a monthly contest with a theme
+`[~] photo-contest 2026-11-20` **Brief (Opus 5.5):** On top of the camera (item 2): the photo club at «Шестерня» runs a monthly contest with a theme
 (the sea, birds, people at work, the festival) announced in the paper; the hero hands in one print, residents of the club
 judge (a score from what is in the frame: subject tags from the capture, light by sun height, sharpness), the winners' prints
 hang in the club and the paper prints the hero's photo. Three photo quests from residents (a portrait of a pensioner for his

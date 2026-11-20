@@ -45,6 +45,30 @@ album; sharp frames of the right subjects earn stamps, bird sightings and the vi
   is `photo <place>`, sent for every place the album has a print of, at each development and each time the album opens,
   so views taken before the quest count once the album is opened.
 
+## The contest
+
+Backlog item 33, branch `photo-contest`. The photo club at «Шестерня» holds a contest every calendar month.
+
+- **Theme.** By the month, going round: the sea (January, May, September), birds (February, June, October), people at
+  work (March, July, November), the festival (April, August, December). The paper and the club's boards announce it.
+- **Entering.** E at the contest box in the club (`"open": "photo_contest"`) on days 1 to 25 opens the album with the
+  theme in the title; keys 1 to 4 hand in that print. One print a month.
+- **The jury** sits on the 26th and marks a print out of 100: the subject against the theme, up to 50 (from the tags the
+  shutter kept: `sea`, `bird:<Species>`, `work`, `festival:<id>`; a second fitting thing adds up to 10; off the theme
+  gets 5), the light, up to 25 (the sun's height at the shot, tag `sun:<degrees>`: best at 0 to 10 degrees, poor at night
+  unless the aurora is in the frame, a sunset adds 3), and sharpness, up to 25. Five other entrants have scores of 40 to
+  85, the same in every game for a given month.
+- **The result.** E at the box from the 26th: the place, and for places 1 to 3 a prize of 150, 80 or 40 roubles. Those
+  prints hang on the club's wall (`"open": "photo_wall"`). The paper of the 27th reports places 1 to 3
+  (`ULyudPhoto::ContestNews`).
+- **New tags** written at the shot: `sun:<degrees>`, `work` (a resident in the frame busy with an activity), `sea` (the
+  sight line reaches the sea's level with nothing in the way).
+- **Quest events.** `do photo_contest_enter`, `do photo_contest_prize`, `do photo_contest_result`. The event `photo` now
+  also carries `maru` and a resident's key for a sharp print of them, besides the map places.
+- Rules: `Private/Photo/PhotoContestModel.h/.cpp`, checks in `tools/photosim/contest_test.cpp` (2190 checks, synthetic
+  shots). Saved with the camera (key "Photo", field SavedContest).
+- Console: `lyud.Photo.Contest`, `lyud.Photo.Wall`; the same two as developer actions.
+
 ## Files
 
 - `Source/Lyudmilovsk/Private/Photo/PhotoModel.h/.cpp`: the rules in plain C++ (film, sharpness, studio clock, darkroom,
