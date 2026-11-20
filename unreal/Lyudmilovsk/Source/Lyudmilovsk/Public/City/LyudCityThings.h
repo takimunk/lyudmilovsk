@@ -113,6 +113,10 @@ public:
 
 	static ULyudCityThings* Get(const UObject* WorldContext);
 
+	/** An act with "open" was used: another system shows its screen (Screen "books": ULyudBookScreen, the library's classics). */
+	DECLARE_MULTICAST_DELEGATE_TwoParams(FOpenScreen, FName /*Screen*/, int32 /*Thing*/);
+	FOpenScreen OnOpen;
+
 	virtual void OnWorldBeginPlay(UWorld& InWorld) override;
 	virtual void Deinitialize() override;
 	virtual void Tick(float DeltaTime) override;
@@ -215,6 +219,8 @@ public:
 	/** Has one of our modes the keys (a page, a show, a game, a text, the talk's chooser, a lift, lying, the sleep chooser)? The
 	 *  NPC talk should step aside meanwhile (docs/city_interiors.md "Open points for other threads"); seated alone is not one. */
 	bool HasModeUp() const;
+	/** A thing is in view with its prompt up (others who use E, the park's benches, step aside). */
+	bool HasThingInView() const { return Picked >= 0; }
 
 	// --- room tones
 

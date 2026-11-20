@@ -64,7 +64,9 @@ PUBLIC_KINDS_SKIP = ("residential", "square", "park", "pool")
 QUEST_EVENTS = ("do", "win", "visit", "get", "use", "have", "wear", "reach", "talk", "bird", "walk", "leave_computer", "ask")
 ACT_FIELDS = ("prompt", "minutes", "price", "lines", "pose", "sound", "event", "target", "give", "daily", "needs_staff",
               "needs_item", "fade", "shop", "screen", "until", "title", "any_hour", "rotate", "collect", "closed", "game", "read",
-              "sleep", "topics", "to", "floors", "oneway", "stay", "needs_stay", "no_stay")
+              "sleep", "topics", "to", "floors", "oneway", "stay", "needs_stay", "no_stay", "open")
+# screens of other systems an act may open instead of its page ("open"; ULyudCityThings::OnOpen): the library's classics
+OPEN_SCREENS = ("books",)
 # a line's conditions (docs/city_interiors.md "Lines by the day and the hour"): hours [from, to), weekdays, a calendar date or
 # range ("MM-DD" or ["MM-DD", "MM-DD"], wrapping the year), days since the game began (after N), every [n, r] game days
 # festival ("any", "none", an id of PeopleData/festivals.json or a list of ids), weather (a word of WEATHER or a list: any of
@@ -732,6 +734,10 @@ def build_acts(acts_src, shops, strings, items):
                "until": int(a.get("until", -1))}
         if a.get("title"):
             act["title"] = a["title"]
+        if a.get("open"):
+            if a["open"] not in OPEN_SCREENS:
+                err("act %s: open must be one of %s" % (aid, ", ".join(OPEN_SCREENS)))
+            act["open"] = a["open"]
         act["rotate"] = a.get("rotate", "use")
         if act["rotate"] not in ROTATE:
             err("act %s: rotate must be one of %s" % (aid, ", ".join(ROTATE)))

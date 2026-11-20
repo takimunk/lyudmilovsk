@@ -336,6 +336,8 @@ namespace LyudCity
 		int Daily = 0;
 		std::string Shop;
 		std::string Screen;
+		/** "open": another system's screen opens instead of the page (ULyudCityThings::OnOpen: "books", the library's classics). */
+		std::string Open;
 		bool bFade = false;
 		/** Usable whatever the plot's hours (seats, beds, doors: if the hero is in, he may sit down). */
 		bool bAnyHour = false;
@@ -809,6 +811,7 @@ namespace LyudCity
 		std::string Sound;
 		std::string Shop;
 		std::string Screen;
+		std::string Open;
 		/** The first use of anything in this plot today: report "visit" with the plot id. */
 		bool bFirstVisitToday = false;
 		/** The plot is closed and the thing did its closed act (no visit, no stamp). */
@@ -1609,6 +1612,7 @@ namespace LyudCity
 			O.Sound = A->Sound;
 			O.Shop = A->Shop;
 			O.Screen = A->Screen;
+			O.Open = O.bClosed ? std::string() : A->Open;
 			return O;
 		}
 
@@ -3709,6 +3713,7 @@ namespace LyudCity
 			A.Daily = V["daily"].I(0);
 			A.Shop = V["shop"].S();
 			A.Screen = V["screen"].S();
+			A.Open = V["open"].S();
 			A.bFade = V["fade"].Type == LyudJson::FValue::Bool ? V["fade"].B : V["fade"].I(0) != 0;
 			A.bAnyHour = V["any_hour"].Type == LyudJson::FValue::Bool ? V["any_hour"].B : (A.Pose == "sit" || A.Pose == "lie");
 			A.Collect = V["collect"].S();

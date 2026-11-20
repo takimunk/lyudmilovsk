@@ -666,6 +666,12 @@
      "weather": "fog"
     }
    ]
+  },
+  "library_classics": {
+   "prompt": "city.xpl.classics.prompt",
+   "open": "books",
+   "needs_staff": "librarian",
+   "sound": "page_turn"
   }
  },
  "rules": {
@@ -869,6 +875,9 @@
   },
   "P-LIBRARY/pod_3_05_telescope": {
    "act": "library_scope"
+  },
+  "P-LIBRARY/lending_counter_2": {
+   "act": "library_classics"
   }
  },
  "closed_by": {

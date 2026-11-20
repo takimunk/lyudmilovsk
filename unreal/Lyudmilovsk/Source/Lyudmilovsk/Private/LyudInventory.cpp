@@ -115,6 +115,8 @@ namespace
 		Good(TEXT("bird_guide"), K::Misc, L::Flat, FVector(2.2f, 14.f, 21.f), FLinearColor(0.18f, 0.32f, 0.22f), 60, 4.f);
 		// the angler's book from the Gastronom (docs/fishing.md): every fish one can catch, and the hero's own catches and records in it
 		Good(TEXT("fish_book"), K::Misc, L::Flat, FVector(1.6f, 12.f, 18.f), FLinearColor(0.2f, 0.26f, 0.33f), 40, 4.f);
+		// a classic on loan from the town library (docs/books.md): one per book, ULyudBooks keeps which ones; never sold
+		Good(TEXT("library_book"), K::Misc, L::Flat, FVector(2.4f, 13.f, 20.f), FLinearColor(0.42f, 0.16f, 0.12f), 0, 4.f);
 		// the Academgorodok's grocery (docs/bird_taming.md "Feeds and the feeder"): feeds for the rarer birds (each unit a handful,
 		// held in the hand like the vending machine's seeds; what each bird thinks of them is Content/BirdsData/feeds.json),
 		// the feeder to put them in, and bread and kefir for the hero
