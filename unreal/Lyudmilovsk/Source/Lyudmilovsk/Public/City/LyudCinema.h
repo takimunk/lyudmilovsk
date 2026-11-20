@@ -2,6 +2,7 @@
 
 #include "CoreMinimal.h"
 #include "Subsystems/WorldSubsystem.h"
+#include "Templates/PimplPtr.h"
 #include "LyudCinema.generated.h"
 
 namespace LyudFilm { struct FModel; }
@@ -80,7 +81,7 @@ private:
 	FString FilmPath(int32 Film) const;
 	TArray<int32> TodaysFilms(int32 Cinema) const;
 
-	TUniquePtr<LyudFilm::FModel> Model;
+	TPimplPtr<LyudFilm::FModel> Model;
 	bool bLoaded = false;
 
 	// the run: the cinema, its films in order and where we are

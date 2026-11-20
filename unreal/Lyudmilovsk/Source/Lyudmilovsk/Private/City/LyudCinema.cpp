@@ -105,7 +105,7 @@ bool ULyudCinema::LoadModel()
 		UE_LOG(LogLyudCinema, Display, TEXT("Cinema: no %s: no newsreel"), LyudCinemaImpl::DataFile);
 		return false;
 	}
-	TUniquePtr<LyudFilm::FModel> M = MakeUnique<LyudFilm::FModel>();
+	TPimplPtr<LyudFilm::FModel> M = MakePimpl<LyudFilm::FModel>();
 	if (!M->Load(std::string(TCHAR_TO_UTF8(*Text))))
 	{
 		UE_LOG(LogLyudCinema, Warning, TEXT("Cinema: %s"), *LyudCinemaImpl::Str(M->LastError));
