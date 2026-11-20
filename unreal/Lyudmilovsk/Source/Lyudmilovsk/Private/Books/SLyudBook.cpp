@@ -272,7 +272,7 @@ void SLyudBookReader::StartLayout()
 	P.Width16 = [BodyW](char16_t C) { return BodyW->Of(C); };
 	P.HeadWidth16 = [HeadW](char16_t C) { return HeadW->Of(C); };
 	const TSharedPtr<std::u16string, ESPMode::ThreadSafe> Src = U16;
-	LayoutTask = UE::Tasks::Launch(UE_SOURCE_LOCATION, [Src, P]
+	LayoutTask = UE::Tasks::Launch(UE_SOURCE_LOCATION, [Src, P]() -> TSharedPtr<LyudBooks::FLayout, ESPMode::ThreadSafe>
 	{
 		return MakeShared<LyudBooks::FLayout, ESPMode::ThreadSafe>(LyudBooks::Layout(*Src, P));
 	});
