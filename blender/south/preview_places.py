@@ -36,10 +36,10 @@ VIEWS = opt("--views", "34,front,close").split(",")
 
 # per mesh: capsule position, close-up focus point and distance, 3/4 azimuth
 SHOTS = {
-    "belvedere": {"human": (0.6, -1.7, 0.25), "focus": (1.3, -1.9, 0.9), "dist": 3.2, "az": -0.65, "close_az": -0.35, "close_el": 0.25},
+    "belvedere": {"inside": ((0.0, -1.0, 0.9), 3.0, math.pi * 0.85, 0.3), "human": (0.6, -1.7, 0.25), "focus": (1.3, -1.9, 0.9), "dist": 3.2, "az": -0.65, "close_az": -0.35, "close_el": 0.25},
     "viewer": {"human": (0.0, 0.75, 0.03), "focus": (0.0, 0.0, 1.45), "dist": 1.2, "az": 2.4, "close_az": 2.6, "close_el": 0.3},
-    "bird_hide": {"human": (0.1, 1.75, 2.6), "focus": (0.4, 1.6, 3.4), "dist": 4.2, "az": 2.3, "close_az": 2.5, "close_el": 0.2},
-    "fisher_shed": {"human": (-2.3, -1.2, 0.0), "focus": (1.2, -1.9, 1.2), "dist": 3.6, "az": -0.7, "close_az": -0.45, "close_el": 0.15},
+    "bird_hide": {"inside": ((0.0, -0.8, 3.4), 1.9, math.pi, 0.25), "human": (0.1, 1.75, 2.6), "focus": (0.4, 1.6, 3.4), "dist": 4.2, "az": 2.3, "close_az": 2.5, "close_el": 0.2},
+    "fisher_shed": {"inside": ((2.1, 0.0, 1.0), 3.6, 1.35, 0.15), "human": (-2.3, -1.2, 0.0), "focus": (1.2, -1.9, 1.2), "dist": 3.6, "az": -0.7, "close_az": -0.45, "close_el": 0.15},
     "net_rack_v0": {"human": (0.9, -1.1, 0.0), "focus": (0.2, -0.3, 1.2), "dist": 2.4, "az": -0.5, "close_az": -0.3, "close_el": 0.15},
     "net_rack_v1": {"human": (0.9, -1.1, 0.0), "focus": (0.0, -0.3, 1.2), "dist": 2.6, "az": -0.5, "close_az": -0.2, "close_el": 0.2},
     "picnic_table": {"human": (1.4, -1.0, 0.0), "focus": (0.6, -0.4, 0.6), "dist": 1.8, "az": -0.6, "close_az": -0.5, "close_el": 0.45},
@@ -212,6 +212,9 @@ def render_views(name):
             camera(Vector((c.x, c.y, max(c.z, 0.9))), ext * 1.75 + 1.0, 0.0, 0.1)
         elif view == "back":
             camera(Vector((c.x, c.y, max(c.z, 0.9))), ext * 1.75 + 1.0, math.pi, 0.25)
+        elif view == "inside":
+            ins = sh.get("inside", ((0, 0, 1.5), 2.0, math.pi, 0.2))
+            camera(Vector(ins[0]), ins[1], ins[2], ins[3], lens=24)
         elif view == "top":
             camera(c, ext * 1.6 + 1.0, 0.3, 1.2)
         else:

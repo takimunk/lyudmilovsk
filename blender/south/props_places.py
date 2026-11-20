@@ -455,7 +455,7 @@ def octp(r, k, z):
     return floor_ring(8, r, k, z, OCT0)
 
 
-def bench_soviet(b, cx, cy, zf, L=1.6, face=-1):
+def bench_soviet(b, cx, cy, zf, L=1.3, face=-1):
     """Park bench: two cast-concrete side frames, three seat slats and two back slats (the back on the +Y side when face = -1)."""
     zs = zf + 0.45
     rnd = b.rnd
@@ -472,7 +472,7 @@ def bench_soviet(b, cx, cy, zf, L=1.6, face=-1):
         t = (z - zs + 0.06) / 0.48
         yb = cy + lerp(0.12, 0.2, t) - 0.022
         box(b, V(cx, yb, z), (L - 0.04, 0.035, 0.11), "wood", grain=0, rot=rx(-0.16))
-    return [[round(cx - 0.4, 3), round(cy - 0.02, 3), round(zs, 3), 0.0], [round(cx + 0.4, 3), round(cy - 0.02, 3), round(zs, 3), 0.0]]
+    return [[round(cx - 0.32, 3), round(cy - 0.02, 3), round(zs, 3), 0.0], [round(cx + 0.32, 3), round(cy - 0.02, 3), round(zs, 3), 0.0]]
 
 
 def belvedere(variant):
@@ -567,10 +567,10 @@ def belvedere(variant):
                 continue
             t = (j + 0.5) / nb
             p = P0.lerp(P1, lerp(0.12, 0.88, t))
-            lathe(b, prof, V(p.x, p.y, Z_CURB), seg=6, tile="white_paint")
+            lathe(b, prof, V(p.x, p.y, Z_CURB), seg=9, tile="white_paint")
     # ---- benches -----------------------------------------------------------------------------------------
     seats = []
-    for bxp in (-0.95, 0.95):
+    for bxp in (-1.05, 1.05):
         seats += bench_soviet(b, bxp, -0.45, Z_FL)
     # ---- collision -------------------------------------------------------------------------------------------
     a_pl = R_PL * math.cos(math.pi / 8)
@@ -590,16 +590,16 @@ def belvedere(variant):
             p = P0.lerp(P1, (j + 0.5) / 4)
             sd = abs((P1 - P0).x) / 4 + 0.15
             boxes.append(cbox("%s_%d" % (nm, j), (p.x, p.y, zc), (sd, sd, hc)))
-    for i, bxp in enumerate((-0.95, 0.95)):
-        boxes.append(cbox("bench_%d" % i, (bxp, -0.45, (Z_FL + Z_FL + 0.45) / 2), (1.6, 0.42, 0.45)))
-        boxes.append(cbox("bench_back_%d" % i, (bxp, -0.24, Z_FL + 0.66), (1.6, 0.1, 0.42)))
+    for i, bxp in enumerate((-1.05, 1.05)):
+        boxes.append(cbox("bench_%d" % i, (bxp, -0.45, (Z_FL + Z_FL + 0.45) / 2), (1.3, 0.42, 0.45)))
+        boxes.append(cbox("bench_back_%d" % i, (bxp, -0.24, Z_FL + 0.66), (1.3, 0.1, 0.42)))
     notes = ("late-Soviet resort rotunda on a lookout: octagonal concrete plinth (vertex radius 3.0 m, flat sides facing +-X/+-Y), walking "
              "surface z %.2f with a step all round at z %.3f (out to vertex radius %.2f; foundation to z %.1f); floor paved as a sun "
              "(a dark centre and sixteen alternating rays); eight slender round concrete columns (centres on vertex radius %.2f) carry an "
              "octagonal ring beam (z %.2f..%.2f) and an open roof of sixteen sun-ray ribs from a hub ring (oculus r 0.40, top z 3.68) that "
              "run out past the ring as short rays: the sun falls through; a balustrade (rail top z %.2f, one baluster missing) on the five "
              "front sides (-Y half and the +-X sides), the three back sides (+Y) open as the entrance; two park benches inside facing the "
-             "view (-Y), 4 seats. Collision: box (collision_boxes, axis-aligned, mesh space): the plinth and the step as stacks of bands, "
+             "view (-Y) with a 0.8 m aisle between them, 4 seats. Collision: box (collision_boxes, axis-aligned, mesh space): the plinth and the step as stacks of bands, "
              "the columns, the balustrade (the two diagonal sides as four boxes each), the benches; no collision on the roof (out of "
              "reach) and nothing in the entrance" % (Z_FL, Z_ST, R_ST, Z_FOOT, R_COL, Z_RB0, Z_RB1, Z_RAIL1))
     return b, {"seats": seats, "notes": notes,
@@ -723,10 +723,10 @@ def bird_hide(variant):
     nbd = 16
     for i in range(nbd):
         x0 = -1.38 + 2.76 * i / nbd
-        box(b, V(x0 + 2.76 / nbd / 2, 0, HF - 0.02 + rnd.uniform(-0.002, 0.002)), (2.76 / nbd - 0.008, 2.36, 0.04), "wood", grain=1)
+        box(b, V(x0 + 2.76 / nbd / 2, 0, HF - 0.02 + rnd.uniform(-0.003, 0.0)), (2.76 / nbd, 2.36, 0.04), "wood", grain=1)
     for i in range(5):
         x0 = -0.6 + 1.2 * i / 5
-        box(b, V(x0 + 0.12, (1.2 + Y_L) / 2, HF - 0.02), (0.232, Y_L - 1.2, 0.04), "wood", grain=1)
+        box(b, V(x0 + 0.12, (1.2 + Y_L) / 2, HF - 0.02 + rnd.uniform(-0.003, 0.0)), (0.24, Y_L - 1.2, 0.04), "wood", grain=1)
     # ---- walls: vertical boards with slits and the door opening ----------------------------------------------
     SL0, SL1 = HF + 1.0, HF + 1.4                          # slit band
     WB = HF - 0.22                                         # the boards come down over the floor's edge
@@ -746,8 +746,8 @@ def bird_hide(variant):
         yc = side * HY
         zt = zr(yc) + 0.12
         for i in range(nfx):
-            x0 = -(HX + 0.015) + wfx * i + 0.002
-            x1 = x0 + wfx - 0.004
+            x0 = -(HX + 0.015) + wfx * i
+            x1 = x0 + wfx
             xm = (x0 + x1) / 2
             dz = rnd.uniform(-0.02, 0.0)
             dy = rnd.uniform(-0.003, 0.003)
@@ -764,8 +764,8 @@ def bird_hide(variant):
     for side in (-1, 1):
         xc = side * HX
         for i in range(nsy):
-            y0 = -(HY - 0.015) + wsy * i + 0.002
-            y1 = y0 + wsy - 0.004
+            y0 = -(HY - 0.015) + wsy * i
+            y1 = y0 + wsy
             ym = (y0 + y1) / 2
             dz = rnd.uniform(-0.02, 0.0)
             dx = rnd.uniform(-0.003, 0.003)
@@ -1070,7 +1070,7 @@ def fisher_shed(variant):
         y1 = y0 + 3.1 / 6 - 0.008
         base = [V(x_w, y0, zl(x_w)), V(x_o + 0.05, y0, zl(x_o + 0.05)), V(x_o + 0.05, y1, zl(x_o + 0.05)), V(x_w, y1, zl(x_w))]
         top = [p + V(0, 0, 0.03) for p in base]
-        hexa(b, base + top, "wood", grain=V(1, 0, -slope_l))
+        hexa(b, base + top, "wood", grain=V(1, 0, -slope_l), end="wood")
     # arms from the wall to the posts, three oars lying on them along Y (blades at +Y)
     for zz in (0.9, 1.22):
         for y in (-1.22, 1.22):
@@ -1177,64 +1177,82 @@ def net_rack(variant):
         pole(b, V(x - 0.07, 0, ZR - 0.07), V(x + 0.07, 0, ZR - 0.07), 0.07, seg=7, tile="rope", cap0=False, cap1=False)
     # the rail resting in the crotches
     pole(b, V(-L / 2 - 0.35, 0.0, ZR), V(L / 2 + 0.35, 0.0, ZR + 0.03), 0.05, 0.04, seg=7, tile="wood", wobble=0.04)
-    # nets hung gathered over the rail: bunches of netting with gaps between, a few loose meshes across the gaps
+    # nets over the rail: gathered bundles (round, twisted) and here and there a panel spread out to show the mesh
     nets = [(-L / 2 + 0.25, L / 2 - 0.25)] if variant == 0 else [(-L / 2 + 0.2, -0.15), (0.15, L / 2 - 0.3)]
     R = 0.062                                              # wrap radius over the rail (rail r <= 0.052)
 
-    def prof(lf, lb, yf, yb):
-        """Cross-section: front hem -> up to the rail -> over it -> down to the back hem (11 points)."""
+    def over(lf, lb, yf, yb, xs_):
+        """A bundle's path: front hem -> up to the rail -> over it -> down to the back hem; x drifts a little."""
         out = []
-        for k in (0.0, 0.4, 0.75):
-            out.append((lerp(yf, -R, k) - math.sin(k * math.pi) * 0.03, lerp(ZR - lf, ZR, k)))
-        for a in (0.0, 45.0, 90.0, 135.0, 180.0):
+        for k in (0.0, 0.35, 0.75):
+            out.append(V(xs_[0] + 0.03 * math.sin(k * 5 + xs_[1]), lerp(yf, -R, k) - math.sin(k * math.pi) * 0.03, lerp(ZR - lf, ZR, k)))
+        for a in (30.0, 90.0, 150.0):
             a = math.radians(a)
-            out.append((-math.cos(a) * R, ZR + math.sin(a) * R))
-        for k in (0.75, 0.4, 0.0):
-            out.append((lerp(yb, R, k) + math.sin(k * math.pi) * 0.03, lerp(ZR - lb, ZR, k)))
+            out.append(V(xs_[0], -math.cos(a) * R, ZR + math.sin(a) * R))
+        for k in (0.75, 0.35, 0.0):
+            out.append(V(xs_[0] + 0.03 * math.sin(k * 4 + xs_[1] * 2), lerp(yb, R, k) + math.sin(k * math.pi) * 0.03, lerp(ZR - lb, ZR, k)))
         return out
     for ni, (x0, x1) in enumerate(nets):
-        ntile = ("nylon_olive", "nylon_bluegrey")[ni]
+        ntile = ("rope", "nylon_bluegrey")[ni]
+        nm = 0.3 if ntile == "rope" else 3.0
+        # where the spread panels go (on the front side), the rest is bundles
+        npan = 2 if (x1 - x0) < 3.0 else 3
+        pw = 0.55
+        slots = [x0 + (x1 - x0) * (i + 0.5) / npan for i in range(npan)]
+        panels = [(c + rnd.uniform(-0.2, 0.2) - pw / 2, c + rnd.uniform(-0.2, 0.2) + pw / 2) for c in slots]
         x = x0
-        edges = []
-        while x < x1 - 0.1:
-            w = min(rnd.uniform(0.12, 0.28), x1 - x)
-            lf = 1.3 + rnd.uniform(-0.18, 0.12) - 0.08 * ni
-            lb = 1.05 + rnd.uniform(-0.15, 0.12)
-            yf = -(R + rnd.uniform(0.06, 0.2))
-            yb = R + rnd.uniform(0.08, 0.22)
-            bulge = rnd.uniform(0.02, 0.05) * (1 if rnd.random() < 0.5 else -1)
-            pa, pb = prof(lf, lb, yf, yb), prof(lf + rnd.uniform(-0.1, 0.1), lb + rnd.uniform(-0.1, 0.1), yf + rnd.uniform(-0.04, 0.04), yb)
-            xa, xb = x, x + w
+        while x < x1:
+            if any(pa - 0.04 < x < pb + 0.04 for pa, pb in panels):
+                x += 0.05
+                continue
+            lf = 1.25 + rnd.uniform(-0.2, 0.15) - 0.08 * ni
+            lb = 1.0 + rnd.uniform(-0.15, 0.15)
+            yf, yb = -(R + rnd.uniform(0.04, 0.16)), R + rnd.uniform(0.06, 0.2)
+            pts = over(lf, lb, yf, yb, (x, rnd.uniform(0, 6)))
+            r0 = rnd.uniform(0.035, 0.055)
+            prof_r = [0.5, 1.0, 0.7, 0.5, 0.45, 0.5, 0.7, 1.0, 0.5]
+            tube(b, pts, r0, seg=5, tile=ntile, m=max(nm, 0.5), caps=True, rscale=lambda i, n, pr=prof_r: pr[i])
+            pole(b, pts[0] + V(-0.035, -0.0, 0.03), pts[0] + V(0.035, 0.0, 0.03), 0.03, seg=6, tile="plank_edge", m=0.5)   # cork float
+            pole(b, pts[-1] + V(0, 0.0, 0.05), pts[-1] + V(0, 0.0, -0.0), 0.016, seg=5, tile="metal")                     # lead weight
+            x += rnd.uniform(0.15, 0.25)
+        # spread panels: a diamond mesh of thin cords hanging on the front side, a head rope over the rail, cork floats on the hem
+        for (pa, pb) in panels:
+            h = 1.2 + rnd.uniform(-0.1, 0.1)
+            sag = rnd.uniform(0.06, 0.12)
+            mesh = 0.12
 
-            def fn(s_, t, xa=xa, xb=xb, pa=pa, pb=pb, bulge=bulge):
-                j = int(round(t * 10))
-                (ya, za), (yb_, zb) = pa[j], pb[j]
-                hang = 1.0 - min(1.0, abs(j - 5) / 2.0)        # no bulge where it lies on the rail
-                y = lerp(ya, yb_, s_) + math.sin(s_ * math.pi) * bulge * (1 - hang) * (1 if ya < 0 else -1)
-                gather = 0.55 + 0.45 * (1 - hang) * (0.6 + 0.4 * (abs(j - 5) / 5))   # gathered narrow on the rail, splayed below
-                xm = (xa + xb) / 2
-                return (xm + (lerp(xa, xb, s_) - xm) * gather + math.sin(t * 9 + xa * 5) * 0.015 * (1 - hang), y, lerp(za, zb, s_))
-            P = net_sheet(b, fn, 3, 11, thick=0.008, tile=ntile, m=3.0)
-            c0 = (P[0][0] + P[2][0]) / 2
-            pole(b, c0 + V(-0.035, -0.012, 0.0), c0 + V(0.035, -0.012, 0.0), 0.032, seg=6, tile="plank_edge", m=0.5)   # cork float
-            c1 = (P[0][-1] + P[2][-1]) / 2
-            pole(b, c1 + V(0, 0.01, 0.02), c1 + V(0, 0.01, -0.03), 0.014, seg=5, tile="metal")                          # lead weight
-            edges.append((P[0], P[2]))
-            x += w * 0.8 + rnd.uniform(0.0, 0.08)
-        # loose meshes across the gaps: a few sagging, crossing strands each
-        for (_, right), (left, _) in zip(edges[:-1], edges[1:]):
-            for ja, jb in ((1, 2), (2, 1), (8, 9), (9, 8)):
-                pa_, pb_ = right[ja], left[jb]
-                mid = (pa_ + pb_) / 2 + V(0, 0, -0.03)
-                tube(b, [pa_, mid, pb_], 0.004, seg=3, tile=ntile, caps=False)
+            def at(u, v, pa=pa, pb=pb, h=h, sag=sag):
+                """u across 0..1, v down 0..1 -> a point on the front of the rail, narrowing and flaring out a little below."""
+                xm = (pa + pb) / 2
+                x = xm + (u - 0.5) * (pb - pa) * (1 - 0.25 * v)
+                y = -R - v * 0.12 - 0.04 * math.sin(u * math.pi) * v
+                z = ZR - v * h - sag * math.sin(u * math.pi) * v
+                return V(x, y, z)
+            w = pb - pa
+            nlin = int((w + h) / mesh) + 1
+            for fam in (1, -1):
+                for i in range(-int(h / mesh) - 1, int((w + h) / mesh) + 2):
+                    # the cord u*w - fam*v*h = c (c = i * mesh + a phase), clipped exactly to the unit square
+                    c = (i + 0.5) * mesh
+                    vs_ = sorted([(0.0 - c) / (fam * h), (w - c) / (fam * h)])
+                    va_, vb_ = max(0.0, vs_[0]), min(1.0, vs_[1])
+                    if vb_ - va_ < 0.02:
+                        continue
+                    seg_pts = [at((c + fam * v * h) / w, v) for v in (va_, (va_ + vb_) / 2, vb_)]
+                    tube(b, seg_pts, 0.0045, seg=3, tile=ntile, m=1.5, caps=False)
+            tube(b, [at(i / 6, 0.0) + V(0, 0.0, 0.01) for i in range(7)], 0.012, seg=5, tile="rope", caps=True)
+            tube(b, [at(i / 6, 1.0) for i in range(7)], 0.009, seg=4, tile="rope", caps=True)
+            for i in range(1, 6, 2):
+                c = at(i / 6, 1.0)
+                pole(b, c + V(-0.035, 0, 0.0), c + V(0.035, 0, 0.0), 0.03, seg=6, tile="plank_edge", m=0.5)
     # two orange marker floats hanging from the rail ends
     for x, h in ((-L / 2 - 0.22, 0.55), (L / 2 + 0.24, 0.42)):
         zt = ZR + 0.01
         tube(b, [V(x, 0, zt + 0.05), V(x, 0, zt - h)], 0.006, seg=4, tile="rope", caps=False)
         lathe(b, [(0.0, -0.2), (0.07, -0.19), (0.1, -0.14), (0.11, -0.1), (0.1, -0.05), (0.07, -0.01), (0.0, 0.0)], V(x, 0, zt - h), seg=10, tile="bag_orange")
     notes = ("fishing nets hung to dry over a peeled-pole rail on %d X-trestles (poles dug in 0.4 m), rail at z %.2f, %.0f m long along X; "
-             "%s hung gathered over the rail in bunches of netting (gaps between, loose meshes across them; a cork float on each bunch's "
-             "front hem, a lead weight on the back), "
+             "%s hung over the rail, mostly gathered into twisted bundles (a cork float on each front end, a lead weight on the back) with "
+             "panels spread out on the front side to show the diamond mesh (thin cords, cork floats on the hem), "
              "two orange marker floats at the rail ends; no collision; no front (yaw freely)"
              % (len(xs), ZR, L, "one net" if variant == 0 else "two nets"))
     return b, {"notes": notes}
