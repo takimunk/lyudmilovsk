@@ -4,6 +4,7 @@
 #include "UI/LyudDiaryStyle.h"
 #include "UI/LyudGameScreen.h"
 #include "People/LyudFriends.h"
+#include "UI/LyudDayLog.h"
 #include "Widgets/SCompoundWidget.h"
 #include "Widgets/SLeafWidget.h"
 
@@ -37,7 +38,12 @@ struct FLyudDiaryState
 	 *  each page; the spread the people start on within the diary's section. */
 	TArray<ULyudFriends::FDiaryFriend> People;
 	TArray<TArray<int32>> PeoplePages;
+	/** The diary's «Дни» pages between its entries and «Люди» (docs/diary.md, Days): the entry the hero wrote for each day
+	 *  (ULyudDayLog::Entries) and which go on each page. */
+	TArray<ULyudDayLog::FEntry> Days;
+	TArray<TArray<int32>> DayPages;
 	int32 DiarySpreads = 1;
+	int32 DaySpreads = 1;
 };
 
 /** A hand-drawn mark over whatever it is laid over (an overlay slot): an underline, a circle, a tick... */
@@ -127,6 +133,7 @@ private:
 	TSharedRef<SWidget> DiaryPage(int32 PageIndex);
 	TSharedRef<SWidget> BirdsPage(int32 PageIndex);
 	TSharedRef<SWidget> PeoplePage(int32 PageIndex);
+	TSharedRef<SWidget> DaysPage(int32 PageIndex);
 	TSharedRef<SWidget> BirdCard(FName Species);
 	TSharedRef<SWidget> MapSpread();
 	TSharedRef<SWidget> MapNote();
@@ -223,6 +230,7 @@ private:
 	void Paginate();
 	void PaginateBirds();
 	void PaginatePeople();
+	void PaginateDays();
 	void Refresh();
 	FVector2D LocalPos() const;
 	float LocalScale() const;

@@ -1,4 +1,5 @@
 #include "UI/LyudQuests.h"
+#include "UI/LyudDayLog.h"
 
 #include "Dom/JsonObject.h"
 #include "Engine/GameInstance.h"
@@ -284,6 +285,8 @@ ULyudQuests* ULyudQuests::Get(const UObject* WorldContext)
 
 void ULyudQuests::Notify(const UObject* WorldContext, FName Event, const FString& Target, int32 N)
 {
+	// the diary that writes itself keeps what the day was made of (docs/diary.md, Days)
+	ULyudDayLog::NoteEvent(WorldContext, Event, Target, N);
 	if (ULyudQuests* Q = Get(WorldContext))
 	{
 		Q->HandleEvent(Event, Target, N);

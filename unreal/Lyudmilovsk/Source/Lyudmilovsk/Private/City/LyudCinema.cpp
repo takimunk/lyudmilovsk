@@ -12,6 +12,7 @@
 #include "LyudText.h"
 #include "Plants/GameCalendar.h"
 #include "UI/LyudGameScreen.h"
+#include "UI/LyudQuests.h"
 #include "World/LyudCityBuilding.h"
 
 #include "Components/AudioComponent.h"
@@ -429,6 +430,8 @@ void ULyudCinema::EndFilm(bool bWatched)
 	if (QueueAt >= 0 && QueueAt < Queue.Num() && bWatched)
 	{
 		const FName Id(*LyudCinemaImpl::Str(Model->Films[(size_t)Queue[QueueAt]].Id));
+		// every film watched to its end (quests, the diary's day: docs/diary.md)
+		ULyudQuests::Notify(this, TEXT("film_watched"), Id.ToString());
 		if (!SeenFilms.Contains(Id))
 		{
 			SeenFilms.Add(Id);

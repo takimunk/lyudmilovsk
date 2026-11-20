@@ -31,7 +31,7 @@ pages' material `/Game/UI/Diary/M_DiaryPage` is unlit and undoes the eye's expos
 ## The pages
 
 `SLyudDiaryScreen` (`Private/UI/SLyudDiary.*`) lays out a spread of two A4 pages (840 × 1188 units, 40 per cm) and scales it onto
-the book. Spreads in order: Things, To do, the diary's entries (as many as they take, measured), Birds, Map. The index tabs stick out of
+the book. Spreads in order: Things, To do, the diary's entries (as many as they take, measured), the days, the people, Birds, Map. The index tabs stick out of
 whichever side their section lies on; the dog-eared bottom corners and A / D turn a page, a tab or another key riffles through
 several. A turning page (`SLyudDiaryFlip`) is a strip of the two spreads' pictures bent round its spine edge in perspective, shaded
 as it faces away, with its shadow on the page under it.
@@ -41,6 +41,43 @@ the fonts, the paper, and the hand-drawn marks: underlines, circles, ticks, stri
 What can be clicked is underlined when the mouse is over it; what is chosen is circled or highlighted. Things are pencil sketches
 of their icons; done quests are struck through; the followed one has an arrow; the map is in ink with blue-pencil sea and red-pen
 marks, and a yellow sticky note says where the hero is.
+
+## Days: the diary writes itself
+
+After the entries come the «Дни» pages (before «Люди»): for every game day the hero played, the short entry he writes about it in
+the evening, in his own hand. Today's appears from 18:00 (`evening_hour`). Each entry is:
+
+- a line about the weather of the day (the first true of: thunder, aurora, rainbow, snow, rain, fog, drizzle, frost, hot, clear,
+  cloudy, mixed), from the sky sampled once a game hour (`ULyudWeatherSubsystem::GetState`);
+- up to four lines about the best of what happened (`max_topics`): every game event `ULyudQuests::Notify` reports is also passed to
+  `ULyudDayLog`, and the rules of `Content/UI/daylog.json` count it for a topic (a fish caught, a bird met or tamed, a festival,
+  a film watched to the end, a job, a win, a kite flight, a letter, the telescope, the garden, the sanatorium, people talked to,
+  a place found for the first time, what he ate...). Topics have a rank; a first time ever counts more; eating only fills a day
+  with little else;
+- a closing line now and then (a full day sighs, a day with nothing says so).
+
+A line names what it is about where it can (`{0}`: the fish, the bird, the person, the festival, the film, the place, from their
+own words keys); Russian names stay in the nominative, so named lines put them after a dash or a colon. A name with no words in a
+language falls back to the topic's plain line. Every group has at least three variants and the day's choice skips the ones used
+the day before, so no sentence repeats two days running; the same facts always give the same entry (seeded by the date, written
+in order every time, firsts counted from earlier days).
+
+In the margin, a little tilted, a doodle: the drawing of the bird met (`ULyudBirdBook::Drawing`), the pencil sketch of the fish or
+the food (`SketchBrush`), else a pencil doodle of the weather drawn in code (`SLyudDoodle`: sun, clouds, rain, snowflake, fog,
+lightning in red, a coloured rainbow, a green aurora).
+
+Words and rules: `tools/daylog/content.py` (ru / en / ja; the hero is a teenage boy) → `python3 tools/daylog/build_daylog.py`
+(`--check` for CI) → `Content/UI/daylog.json` and `Content/Localization/diary/strings_<lang>.json`. Engine-free rules
+`Private/UI/DayLog.*`; the game side `ULyudDayLog` (`Public/UI/LyudDayLog.h`, saved as "DayLog": per day a line of weather
+numbers and a line per topic, ~150 bytes). Test: `tools/daylog/run.sh` (60 made-up days: every key in three languages, names
+resolve or fall back, no sentence two days running, a save and a load give the same words, noise never counts, a place found
+once); `tools/daylog/run.sh show en 10` prints them.
+
+New events for it (quests can use them too): `film_watched <film>` (ULyudCinema), `kite_flown` (ULyudKiteFlying). A new system
+gets into the diary by a rule and a topic in `content.py`: no C++.
+
+Console: `lyud.DayLog.Report`, `lyud.DayLog.Fill [days]` (made-up past days, to look at the pages), `lyud.DayLog.Forget`.
+Developer mode: actions `days.fill`, `days.forget`. Not yet: gluing the film camera's prints onto a day (item 2's branch).
 
 ## Birds
 
