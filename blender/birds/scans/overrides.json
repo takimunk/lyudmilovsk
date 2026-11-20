@@ -1,0 +1,55 @@
+{
+ "_doc": "Per-species scan overrides. scan_prep: lateral/flip/beak_base/body_end/pitch_deg/tail_cut/cut_margin/root_margin/tris0. build_bird: wing_paint = photo (every wing card from the scan's wing photo) or art (default: flight feathers keep species_art.py's painted pattern, coverts from the photo).",
+ "Rook": {
+  "wing_paint": "photo"
+ },
+ "HoodedCrow": {
+  "wing_paint": "art"
+ },
+ "CarrionCrow": {
+  "wing_paint": "art"
+ },
+ "Raven": {
+  "wing_paint": "art"
+ },
+ "Jackdaw": {
+  "wing_paint": "photo"
+ },
+ "Blackbird": {
+  "wing_paint": "art"
+ },
+ "CommonSwift": {
+  "wing_paint": "photo"
+ },
+ "SandMartin": {
+  "wing_paint": "photo"
+ },
+ "Cormorant": {
+  "wing_paint": "photo"
+ },
+ "MuteSwan": {
+  "wing_paint": "photo",
+  "keep_old": "long S-neck: the chord centreline misses the head (needs a medial-axis centreline)"
+ },
+ "Robin": {
+  "wing_paint": "photo"
+ },
+ "HouseSparrow": {
+  "wing_paint": "photo"
+ },
+ "TreeSparrow": {
+  "wing_paint": "photo"
+ },
+ "CommonBuzzard": {
+  "wing_paint": "photo"
+ },
+ "GoldenEagle": {
+  "wing_paint": "photo"
+ },
+ "WhiteTailedEagle": {
+  "wing_paint": "photo"
+ },
+ "Starling": {
+  "wing_paint": "photo"
+ }
+}

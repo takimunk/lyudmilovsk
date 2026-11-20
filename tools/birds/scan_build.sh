@@ -9,13 +9,16 @@ B=/Applications/Blender.app/Contents/MacOS/Blender
 LOCK="${BIRD_LOCK:-}"
 PREP=1
 [ "$1" = "--no-prep" ] && { PREP=0; shift; }
+# BIRD_FAST=1: no raw-scan copy or previews, no blend previews, no lint (bulk under time pressure)
+PREPX=""; EXTRA="--raw --blend --lint"
+[ -n "$BIRD_FAST" ] && { PREPX="--no-full"; EXTRA="--head"; }
 mkdir -p blender/birds/scan_raw/logs
 for s in "$@"; do
   while [ "$(memory_pressure | tail -1 | grep -oE '[0-9]+')" -lt 12 ]; do sleep 20; done
   if [ $PREP = 1 ]; then
-    $LOCK nice -n 19 $B -b --python tools/birds/scan_prep.py -- $s > blender/birds/scan_raw/logs/prep_$s.log 2>&1
+    $LOCK nice -n 19 $B -b --python tools/birds/scan_prep.py -- $s $PREPX > blender/birds/scan_raw/logs/prep_$s.log 2>&1
   fi
-  BIRD_SCAN_CARDS=none BIRD_SCAN_MODE=S $LOCK nice -n 19 $B -b --python blender/birds/build_bird.py -- $s --scan --previews --all-views --head --raw --blend --lint \
+  BIRD_SCAN_CARDS=none BIRD_SCAN_MODE=S $LOCK nice -n 19 $B -b --python blender/birds/build_bird.py -- $s --scan --previews --all-views --head $EXTRA \
       > blender/birds/scan_raw/logs/${s}_final.log 2>&1
   mkdir -p blender/birds/scan_raw/$s
   ln -sfn "$ROOT/blender/birds/export/$s" blender/birds/scan_raw/$s/S

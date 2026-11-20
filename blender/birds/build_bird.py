@@ -249,6 +249,8 @@ def build_skeleton(wk):
         prof[-1] *= M["p_outer"]
     W["P_LEN"] = [P_LEN_T[i] * M["prim"] * wk * prof[i] for i in range(P_N)]
     W["S_LEN"] = [S_LEN_T[i] * M["sec"] * wk for i in range(S_TOTAL)]
+    if SCAN_S and WPH and os.environ.get("BIRD_WING_FIT", "1") == "1":
+        fit_wing_outline(W)
     for side, sx in (("L", 1), ("R", -1)):
         Mx = np.diag([sx, 1, 1])
         bone(f"humerus.{side}", Mx @ W["SHOULDER"], Mx @ W["ELBOW"], "body")
@@ -787,6 +789,7 @@ SCAN_B = SCAN is not None and os.environ.get("BIRD_SCAN_MODE", "A").upper() == "
 SCAN_S = SCAN is not None and os.environ.get("BIRD_SCAN_MODE", "A").upper() == "S"
 if SCAN_S:   # the scan mesh is the body (head, bill, eyes painted in its texture); its photo goes into a 2048 atlas cell
     ATL = PL.Atlas(4096)
+    ATL.max_size = 4096
 if SCAN_B:   # the scan is the body: finer rings (the scan's shape and texture), a bigger atlas for its photo texture
     NZ_BODY, NA_BODY = (128, 96) if HERO else (96, 64)
     ATL = PL.Atlas(4096)
@@ -1043,9 +1046,11 @@ if SCAN_S:
             if uu[i] > 1.02 and below[i]:   # the lower mandible opens with the jaw
                 w = {"jaw": 1.0}
             ids.append(sb.v(P[i], w))
+        zt_v = Z_END + uu * LT
         for t, uvs in zip(F, UV):
-            sb.zt = None
+            sb.zt = float(zt_v[list(t)].mean())   # (the hero's Skull slot: the head round the camera)
             sb.f(tuple(ids[j] for j in t), [ATL.uv_rect("scan", float(a), float(b)) for a, b in uvs], BARE)
+        sb.zt = None
         return len(F)
 
     def paint_scan_cell(w, h):
@@ -1087,6 +1092,53 @@ if SCAN_S and os.path.exists(os.path.join(C.ROOT, "blender", "birds", "scan_raw"
             _m |= g
         WPH[_side + "_f"] = _srgb_to_lin(_img)
 WING_BONES = ("p", "s", "humerus.L", "forearm.L", "hand.L")
+_OVR_PATH = os.path.join(C.ROOT, "blender", "birds", "scans", "overrides.json")
+SCAN_OVR = json.load(open(_OVR_PATH)).get(SPECIES, {}) if os.path.exists(_OVR_PATH) else {}
+# "photo": every wing card from the scan's photo; "art" (default): flight feathers keep their painted field-guide
+# pattern (the photo mapping smears tip patterns: gull mirrors, magpie windows, finch bars), coverts from the photo
+WING_PAINT = os.environ.get("BIRD_WING_PAINT", SCAN_OVR.get("wing_paint", "art"))
+
+
+def fit_wing_outline(W):
+    """Flight feather lengths from the photographed wing's outline: each primary and secondary runs from its root
+    to the scan's trailing edge (the chord there, scaled by span), so the spread wing has the species' real shape
+    (a gull's long pointed hand, a buzzard's broad fingered wing) and the photo lands on the right feathers."""
+    sh = W["SHOULDER"]
+    tips = [p_root(i) + p_dir(i) * W["P_LEN"][i] for i in range(P_N)]
+    reach = max(float(t[0]) for t in tips) - float(sh[0])
+    if reach <= 0:
+        return
+    arm = [sh, W["ELBOW"], W["WRIST"], W["HANDTIP"]]
+    ax = np.array([(float(a[0]) - float(sh[0])) / reach for a in arm])
+    ae = np.array([float(sh[2]) - float(a[2]) for a in arm])
+    nx = len(WPH["lead"])
+    xs = np.linspace(0, 1, nx)
+    chord = np.maximum(WPH["trail"] - WPH["lead"], 0.0) * reach   # scan chord per span fraction, template units
+    chord[xs < 0.13] = chord[np.searchsorted(xs, 0.13)]
+
+    def target(xi):   # template trailing edge (eta, + toward the tail) at span fraction xi
+        return float(np.interp(xi, ax, ae)) + float(np.interp(xi, xs, chord))
+
+    def fit(root, d, L0, last):
+        best = None
+        for t in np.linspace(0.35 * L0, 2.2 * L0, 160):
+            q = root + d * t
+            xi = (float(q[0]) - float(sh[0])) / reach
+            if xi > 1.0:
+                best = t
+                break
+            if float(sh[2]) - float(q[2]) >= target(xi):
+                best = t
+                break
+        if best is None:
+            best = L0
+        return float(np.clip(best, 0.7 * L0, (1.6 if last is not None and last != "s" else 1.35) * L0))
+    P0, S0 = list(W["P_LEN"]), list(W["S_LEN"])
+    W["P_LEN"] = [fit(p_root(i), p_dir(i), P0[i], i == P_N - 1) for i in range(P_N)]
+    W["S_LEN"] = [fit(s_root(i), s_dir(i), S0[i], "s") if i < S_N else S0[i] for i in range(S_TOTAL)]
+    if not WPT.get("_said"):
+        print("SCAN", SPECIES, "wing outline: P", " ".join(f"{a / b:.2f}" for a, b in zip(W["P_LEN"], P0)),
+              "| S", " ".join(f"{a / b:.2f}" for a, b in zip(W["S_LEN"][:S_N], S0[:S_N])))
 
 
 def wing_photo_key(key, weights, root, d, side, Lc, Wc, flip):
@@ -1094,6 +1146,8 @@ def wing_photo_key(key, weights, root, d, side, Lc, Wc, flip):
     if not bone or not (bone.startswith(WING_BONES)) or not bone.endswith(".L"):
         return key
     kind = key.split(":")[0]
+    if WING_PAINT == "art" and kind in ("primary", "secondary", "tertial"):
+        return key
     n = WCOUNT.get((kind, bone), 0)
     WCOUNT[(kind, bone)] = n + 1
     nk = f"{kind}:wph|{bone}|{n}:0"
@@ -2183,6 +2237,8 @@ SKULL_ZT = float(os.environ.get("BIRD_SKULL_ZT", 0.047))   # template z: the hea
 def skull_face(f, sb, E):
     """Hero: a Plumage face of the head round the camera (eye midpoint E, species space) goes to the Skull slot."""
     idx, mat, _, _, zt = f
+    if SCAN_S and mat == BARE and zt is not None and sb.names.get(f[3]) == "scanbody":   # the scan's head (not its bill)
+        return SKULL_ZT <= zt <= BEAK_Z0
     return mat == PLUMAGE and zt is not None and zt >= SKULL_ZT
 
 
