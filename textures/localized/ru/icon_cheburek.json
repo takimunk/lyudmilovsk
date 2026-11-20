@@ -1,0 +1,10 @@
+{
+ "id": "icon_cheburek",
+ "lang": "ru",
+ "model": "higgsfield gpt_image_2_5 (2k, medium)",
+ "aspect": "1:1",
+ "prompt": "A large half-moon fried pasty with a crimped edge and a blistered golden crust, on a square of greaseproof paper.",
+ "source": "design/city_goods/icons_city_1.png (sidecar design/city_goods/icons_city_1.json), cell 6 (row 2, right), cut into 3x3 equal cells, resized to 512x512",
+ "sha256": "fee228598fe7295ea712d79d2a6ba5c2535e1bc38e5a02ded7a324822878482c",
+ "strings": {}
+}

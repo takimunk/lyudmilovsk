@@ -203,6 +203,38 @@ TSharedPtr<UBirdFlightSubsystem::FScript> UBirdFlightSubsystem::FScript::Make(co
 			return false;
 		});
 	}
+	else if (Kind == TEXT("stoop"))
+	{
+		// high over the sea off the cliff, hands off: a glide, a look straight down (the wings fold by themselves and the
+		// bird falls as fast as its kind does), a look back to level (they open, it pulls out), a look up (the speed
+		// zooms back into height on spread wings)
+		S->Add(0.1f, [](FCtx& X) { X.Sys->PlaceHero(0.f, 30.f, 0.f); return true; });
+		S->Add(0.5f, [](FCtx&) { return false; });
+		S->Add(0.1f, [Species](FCtx& X)
+		{
+			const FVector At(26000.f, PortalFaceY + 3000.f, FBirdAir::SeaZ + 42000.f);
+			X.Sys->BecomeSpecies(X.PC, Species, At, 90.f, FVector(0, 1200.f, 0), false, nullptr, true);
+			X.PC->SetControlRotation(FRotator(-3.f, 90.f, 0.f));
+			return true;
+		});
+		auto Log = [](FCtx& X, const TCHAR* Phase)
+		{
+			if (X.Bird && FMath::Fmod(X.T, 0.5f) < X.Dt)
+			{
+				UE_LOG(LogTemp, Warning, TEXT("BIRD stoop %s t=%.1f z=%.0f m %s"), Phase, X.T, (X.Bird->GetActorLocation().Z - FBirdAir::SeaZ) / 100.f, *X.Bird->DebugLine());
+			}
+		};
+		S->Add(3.f, [Log](FCtx& X) { X.bAim = true; X.Aim = FRotator(-3.f, 90.f, 0.f); Log(X, TEXT("glide")); return false; });
+		S->Add(25.f, [Log](FCtx& X)
+		{
+			X.bAim = true; X.Aim = FRotator(-78.f, 90.f, 0.f); Log(X, TEXT("dive"));
+			// (out in time: the faster it falls, the more room the pull-out needs)
+			return !X.Bird || X.Bird->GetActorLocation().Z - FBirdAir::SeaZ < 6000.f + X.Bird->GetAirspeed() * 180.f;
+		});
+		S->Add(3.f, [Log](FCtx& X) { X.bAim = true; X.AimRate = 220.f; X.Aim = FRotator(0.f, 90.f, 0.f); Log(X, TEXT("pull-out")); return false; });
+		S->Add(7.f, [Log](FCtx& X) { X.bAim = true; X.Aim = FRotator(32.f, 90.f, 0.f); Log(X, TEXT("zoom")); return false; });
+		S->Add(4.f, [Log](FCtx& X) { X.bAim = true; X.Aim = FRotator(-4.f, 90.f, 0.f); Log(X, TEXT("glide")); return false; });
+	}
 	else if (Kind == TEXT("styles"))
 	{
 		// each flight style from behind: flapping by Space, a glide, an oar turn
@@ -951,7 +983,7 @@ void UBirdFlightSubsystem::OnAfterLoad(ULyudSaveGame* Save)
 
 namespace
 {
-	FAutoConsoleCommandWithWorldAndArgs CmdBecome(TEXT("Bird.Become"), TEXT("Bird.Become [Species] [air]: become a bird on the hero's hand (or in the air ahead), without befriending."),
+	FAutoConsoleCommandWithWorldAndArgs CmdBecome(TEXT("Bird.Become"), TEXT("Bird.Become [Species] [air|high]: become a bird on the hero's hand (or in the air ahead, or 400 m up: room to dive), without befriending."),
 		FConsoleCommandWithWorldAndArgsDelegate::CreateLambda([](const TArray<FString>& Args, UWorld* World)
 		{
 			UBirdFlightSubsystem* S = UBirdFlightSubsystem::Get(World);
@@ -962,7 +994,11 @@ namespace
 			const FRotator Yaw(0.f, PC->GetControlRotation().Yaw, 0.f);
 			const AHeroCharacter* H = Cast<AHeroCharacter>(PC->GetPawn());
 			const FVector Eye = H ? H->EyeLocation() : PC->GetPawn()->GetPawnViewLocation();
-			if (bAir)
+			if (Args.IsValidIndex(1) && Args[1] == TEXT("high"))
+			{
+				S->BecomeSpecies(PC, Species, Eye + Yaw.Vector() * 150.f + FVector(0, 0, 40000.f), Yaw.Yaw, Yaw.Vector() * 1200.f, false);
+			}
+			else if (bAir)
 			{
 				S->BecomeSpecies(PC, Species, Eye + Yaw.Vector() * 150.f, Yaw.Yaw, Yaw.Vector() * 900.f, false);
 			}
@@ -976,7 +1012,7 @@ namespace
 		{
 			if (UBirdFlightSubsystem* S = UBirdFlightSubsystem::Get(World)) S->ReturnToHero(Args.Contains(TEXT("now")));
 		}));
-	FAutoConsoleCommandWithWorldAndArgs CmdScript(TEXT("Bird.Script"), TEXT("Bird.Script <showcase|ridge|look|pose|savetest>[:Species]|styles [record=<folder>] [warm=<s>] [quit]: a scripted flight."),
+	FAutoConsoleCommandWithWorldAndArgs CmdScript(TEXT("Bird.Script"), TEXT("Bird.Script <showcase|ridge|stoop|look|pose|savetest>[:Species]|styles [record=<folder>] [warm=<s>] [quit]: a scripted flight."),
 		FConsoleCommandWithWorldAndArgsDelegate::CreateLambda([](const TArray<FString>& Args, UWorld* World)
 		{
 			UBirdFlightSubsystem* S = UBirdFlightSubsystem::Get(World);

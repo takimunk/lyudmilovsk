@@ -41,6 +41,24 @@ namespace
 	/** The fruit skin's noise and dots are the same for every tree: painted once, kept alive by each plant's own UPROPERTY. */
 	TWeakObjectPtr<UTexture2D> GFruitDetail;
 
+	/**
+	 * A herb's state: by its age and the day, or pinned to a growth (AProceduralPlant::SetGrowth, Growth >= 0); withered:
+	 * browned through, a third of the leaves gone, no flowers or fruit (a key of its own, so the mesh changes once).
+	 */
+	PlantHerbs::FState ProceduralPlantHerbState(const FPlantSpecies& S, uint32 Seed, float Age, float Day, float Growth, bool bIsWithered)
+	{
+		PlantHerbs::FState St = Growth >= 0.f ? PlantHerbs::GrownState(S, Seed, Growth, Day) : PlantHerbs::State(S, Seed, Age, Day);
+		if (bIsWithered && St.bAlive)
+		{
+			St.Wither = 1.f;
+			St.Bloom = 0.f;
+			St.Present = FMath::Min(St.Present, 0.65f);
+			St.LeafColour = S.AutumnLeafColourLate;
+			St.Key = HashCombineFast(St.Key, 0x57A1Du);
+		}
+		return St;
+	}
+
 	/** Scene 01's outside sun lights channel 1 only; channel 0 keeps the default lights too. */
 	void OutdoorLighting(UPrimitiveComponent* C)
 	{
@@ -246,6 +264,12 @@ float AProceduralPlant::GetAge() const
 	{
 		return DevAge;
 	}
+	if (PinnedGrowth >= 0.f)
+	{
+		// a garden's growth on the species' own scale: a herb's MatureYears, a tree near its full height at 1
+		const FPlantSpecies& S = GetSpecies();
+		return S.Herb.Form != EPlantHerbForm::None ? PinnedGrowth * FMath::Max(S.Herb.MatureYears, 0.05f) : PinnedGrowth * 3.f / FMath::Max(S.GrowthRate, 0.01f);
+	}
 	const UWorld* World = GetWorld();
 	if (!World || !World->IsGameWorld())
 	{
@@ -272,6 +296,10 @@ float AProceduralPlant::CurrentDay() const
 	if (DevDay >= 0.f)
 	{
 		return DevDay;
+	}
+	if (PinnedGrowth >= 0.f && PinnedDay >= 0.f)
+	{
+		return PinnedDay;
 	}
 	const UWorld* World = GetWorld();
 	if ((!World || !World->IsGameWorld()) && EditorPreviewDay >= 0.f)
@@ -549,7 +577,8 @@ void AProceduralPlant::ApplyHerb(float Age, float Day)
 	for (UInstancedStaticMeshComponent* L : LeafComponents) L->SetVisibility(false);
 	SetActorHiddenInGame(false);
 
-	const PlantHerbs::FState St = PlantHerbs::State(S, (uint32)Seed, Age, Day);
+	// pinned by a garden (SetGrowth) unless developer mode holds an age
+	const PlantHerbs::FState St = ProceduralPlantHerbState(S, (uint32)Seed, Age, Day, DevAge >= 0.f ? -1.f : PinnedGrowth, bWithered);
 	// frost browns the leaves; a patterned blade keeps its pattern under the browning
 	const FLinearColor Frost(0.12f, 0.07f, 0.03f);
 	const FLinearColor Leaf = PlantHerbs::LeafTextureCarriesColour(S) ? FLinearColor::White : St.LeafColour;
@@ -1041,6 +1070,62 @@ void AProceduralPlant::SetDevTime(float Age, float Day)
 	Refresh();
 }
 
+void AProceduralPlant::SetGrowth(float Growth01, float DayOfYear)
+{
+	const float Growth = FMath::Clamp(Growth01, 0.f, 1.f);
+	// below 0: the day it shows now, held from here on
+	float Day = DayOfYear >= 0.f ? DayOfYear : ((PinnedGrowth >= 0.f && PinnedDay >= 0.f) ? PinnedDay : CurrentDay());
+	Day = FMath::Clamp(Day, 1.f, 366.f);
+	if (Growth == PinnedGrowth && Day == PinnedDay)
+	{
+		return;
+	}
+	PinnedGrowth = Growth;
+	PinnedDay = Day;
+	bDemoGrowth = false;
+	const UWorld* World = GetWorld();
+	if (World && World->IsGameWorld() && !HasActorBegunPlay())
+	{
+		// spawned deferred: OnConstruction and BeginPlay shape it at this growth
+		return;
+	}
+	SinceUpdate = 0.f;
+	Apply(GetAge(), CurrentDay(), WantsSummary());
+	UpdateTickRate();
+}
+
+void AProceduralPlant::ClearGrowth()
+{
+	if (PinnedGrowth < 0.f)
+	{
+		return;
+	}
+	PinnedGrowth = -1.f;
+	PinnedDay = -1.f;
+	const UWorld* World = GetWorld();
+	if (World && World->IsGameWorld() && !HasActorBegunPlay())
+	{
+		return;
+	}
+	Refresh();
+}
+
+void AProceduralPlant::SetWithered(bool bInWithered)
+{
+	if (bWithered == bInWithered)
+	{
+		return;
+	}
+	bWithered = bInWithered;
+	const UWorld* World = GetWorld();
+	if (!IsHerb() || (World && World->IsGameWorld() && !HasActorBegunPlay()))
+	{
+		return;
+	}
+	Apply(GetAge(), CurrentDay(), WantsSummary());
+	UpdateTickRate();
+}
+
 void AProceduralPlant::Refresh()
 {
 	Apply(GetAge(), CurrentDay(), WantsSummary(), true);
@@ -1118,6 +1203,11 @@ AFallenFruit* AProceduralPlant::AimedFruit() const
 
 void AProceduralPlant::OnInteract()
 {
+	// its owner handles E (a garden crop)
+	if (!bAllowPick)
+	{
+		return;
+	}
 	// the press is a talk's (or a bird's peck): not a hand for the fruit
 	if (!ANpcTalkDirector::UsePressed(GetWorld() ? GetWorld()->GetFirstPlayerController() : nullptr))
 	{
@@ -1208,7 +1298,7 @@ void AProceduralPlant::BeginPlay()
 			SetActorLocation(Hit.ImpactPoint - FVector(0, 0, PotKind() != EPlantPot::None ? 0 : 3));
 		}
 	}
-	if (GetSpecies().FruitSize > 0.f)
+	if (bAllowPick && GetSpecies().FruitSize > 0.f)
 	{
 		if (APlayerController* PC = UGameplayStatics::GetPlayerController(this, 0))
 		{
@@ -1255,7 +1345,9 @@ void AProceduralPlant::UpdateTickRate()
 			}
 		}
 	}
-	const float Want = bEveryFrame ? 0.f : UpdateInterval;
+	// a herb pinned by a garden (SetGrowth) has nothing to do in its tick: seldom
+	const bool bPinnedHerb = PinnedGrowth >= 0.f && DevAge < 0.f && DevDay < 0.f && IsHerb();
+	const float Want = bPinnedHerb ? FMath::Max(UpdateInterval, 5.f) : (bEveryFrame ? 0.f : UpdateInterval);
 	if (PrimaryActorTick.TickInterval != Want)
 	{
 		PrimaryActorTick.UpdateTickIntervalAndCoolDown(Want);
@@ -1266,11 +1358,16 @@ void AProceduralPlant::Tick(float DeltaSeconds)
 {
 	Super::Tick(DeltaSeconds);
 	ON_SCOPE_EXIT { UpdateTickRate(); };
+	if (PinnedGrowth >= 0.f && DevAge < 0.f && DevDay < 0.f && IsHerb())
+	{
+		// a herb pinned by a garden (SetGrowth): nothing grows, falls or ripens by itself; SetGrowth re-shapes it
+		return;
+	}
 	TickFallingLeaves(DeltaSeconds);
 	// "[E] pick up the apple" while one lies in reach and in view
 	if (!GroundFruit.IsEmpty() || bPickPrompt)
 	{
-		const bool bAimed = !GetSpecies().FruitItem.IsNone() && AimedFruit() != nullptr;
+		const bool bAimed = bAllowPick && !GetSpecies().FruitItem.IsNone() && AimedFruit() != nullptr;
 		if (bAimed != bPickPrompt)
 		{
 			if (ULyudInventoryUI* UI = ULyudInventoryUI::Get(this))

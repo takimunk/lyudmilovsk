@@ -1,6 +1,7 @@
 #include "Festival/LyudFestival.h"
 
 #include "FestivalCalendar.h"
+#include "FestivalParts.h"
 #include "../People/PeopleSim.h"
 #include "../Transport/LyudMeshKit.h"
 #include "Camera/PlayerCameraManager.h"
@@ -9,8 +10,11 @@
 #include "Components/StaticMeshComponent.h"
 #include "Dom/JsonObject.h"
 #include "Engine/StaticMesh.h"
+#include "Dev/LyudDev.h"
+#include "Engine/CollisionProfile.h"
 #include "Engine/World.h"
 #include "EngineUtils.h"
+#include "Festival/LyudFestivalTown.h"
 #include "GameFramework/PlayerController.h"
 #include "HAL/IConsoleManager.h"
 #include "Kismet/GameplayStatics.h"
@@ -34,6 +38,7 @@
 #include "Sound/SoundBase.h"
 #include "UI/LyudGameScreen.h"
 #include "UI/LyudQuests.h"
+#include "Weather/LyudWeather.h"
 #include "Winter/LyudWinter.h"
 
 #include <type_traits>
@@ -45,6 +50,10 @@ static const TArray<TSharedPtr<FJsonObject>>& PlanSpots(const FString& File);
 static TAutoConsoleVariable<int32> CVarFestivalStub(TEXT("lyud.Festival.Stub"), 0,
 	TEXT("1: send the people to the festivals by Order (the stand-in for UPeopleLifeSubsystem::SetGathering) even when the people's life has gatherings."));
 
+static TAutoConsoleVariable<int32> CVarStreetBunting(TEXT("lyud.Festival.StreetBunting"), -1,
+	TEXT("The pennant strings across the town's lanes (ALyudStreetBunting): -1 on the festivals that ask for them, 0 never, 1 always."));
+static TAutoConsoleVariable<int32> CVarFestivalSky(TEXT("lyud.Festival.Sky"), 1,
+	TEXT("1: a festival's sky (the star nearer, the weather held fair: festivals.json \"sky\") is given to the sky and the weather; 0 not."));
 static TAutoConsoleVariable<int32> CVarFestivals(TEXT("lyud.Festivals"), 1,
 	TEXT("The town's holidays (ULyudFestivalSubsystem, Content/PeopleData/festivals.json): 1 on, 0 off."));
 
@@ -349,6 +358,11 @@ void ULyudFestivalSubsystem::Deinitialize()
 	{
 		if (IsValid(It.Value)) It.Value->Destroy();
 	}
+	if (IsValid(StreetBunting))
+	{
+		StreetBunting->Destroy();
+	}
+	StreetBunting = nullptr;
 	Decor.Empty();
 	Shows.Empty();
 	Music.Empty();
@@ -423,6 +437,43 @@ void ULyudFestivalSubsystem::CheckFirstSnow(const FDateTime& Now)
 	Fire(TEXT("first_snow"));
 }
 
+void ULyudFestivalSubsystem::CheckAfterStorm(const FDateTime& Now)
+{
+	// the morning after a gale the sea has thrown amber on the beach (the trigger "after_storm": amber_morning). Looked at
+	// once a game hour between 5 and 8: it blew 15 m/s or more at some hour of the last eighteen, and has dropped by now
+	const int32 HourKey = Now.GetDayOfYear() * 24 + Now.GetHour();
+	if (HourKey == LastStormLook || Now.GetHour() < 5 || Now.GetHour() > 8)
+	{
+		return;
+	}
+	LastStormLook = HourKey;
+	const ULyudWeatherSubsystem* Weather = ULyudWeatherSubsystem::Get(GetWorld());
+	if (!Weather || Weather->GetStateAt(Now).WindSpeed > 9.f)
+	{
+		return;
+	}
+	float Worst = 0.f;
+	for (int32 Back = 4; Back <= 18; Back += 2)
+	{
+		Worst = FMath::Max(Worst, Weather->GetStateAt(Now - FTimespan::FromHours(Back)).WindSpeed);
+	}
+	if (Worst < 15.f)
+	{
+		return;
+	}
+	// not two mornings in a row: once in ten days
+	for (const FString& S : FiredTriggers)
+	{
+		int32 Y = 0, Mo = 0, D = 0;
+		if (S.StartsWith(TEXT("after_storm|")) && ParseDateKey(S.Mid(12), Y, Mo, D) &&
+			FMath::Abs((FDateTime(Now.GetYear(), Now.GetMonth(), Now.GetDay()) - FDateTime(Y, Mo, D)).GetTotalDays()) < 10.0)
+		{
+			return;
+		}
+	}
+	Fire(TEXT("after_storm"));
+}
+
 float ULyudFestivalSubsystem::Night() const
 {
 	TActorIterator<ALyudSky> It(GetWorld());
@@ -449,8 +500,23 @@ void ULyudFestivalSubsystem::Update()
 	}
 	const FDateTime Now = UGameCalendar::NowIn(World);
 	CheckFirstSnow(Now);
+	CheckAfterStorm(Now);
 	const LyudFest::FDate Today = ToDate(Now);
 	const float Hour = (float)Now.GetTimeOfDay().GetTotalHours();
+	// the sky of a festival's day: the star stands nearer, the weather is held fair (eased in over days by the calendar)
+	{
+		const LyudFest::FSky Sky = CVarFestivalSky.GetValueOnGameThread() != 0 ? Calendar->SkyAt(Today, Hour) : LyudFest::FSky();
+		SkySun = Sky.SunApproach;
+		SkyClear = Sky.Clear;
+		if (TActorIterator<ALyudSky> SkyIt(World); SkyIt)
+		{
+			SkyIt->SetSunApproach(1.f + SkySun, 1.f + 0.25f * SkySun);
+		}
+		if (ULyudWeatherSubsystem* Weather = ULyudWeatherSubsystem::Get(World))
+		{
+			Weather->SetFairSky(SkyClear);
+		}
+	}
 	UPeopleLifeSubsystem* People = UPeopleLifeSubsystem::Get(World);
 	// what was told to a people's life that has since been stopped or started again (lyud.People 0 / 1) is gone with it:
 	// the new one is told again; while it is off nothing can be told
@@ -498,6 +564,7 @@ void ULyudFestivalSubsystem::Update()
 	TArray<FLyudFestivalNow> NewActive;
 	TArray<FName> NewDishes, NewFoods;
 	float WantStayUp = 0.f;
+	bool bWantStreet = false;
 	const double NowCal = CalSeconds(World);
 
 	for (const LyudFest::FActive& A : Calendar->At(Today, Hour))
@@ -514,6 +581,10 @@ void ULyudFestivalSubsystem::Update()
 			return true;
 		};
 		// decorations
+		for (const std::string& DecorKind : F.Decor)
+		{
+			bWantStreet |= DecorKind == "street_bunting";
+		}
 		TArray<FString> DV;
 		for (const std::string& V : F.DecorVenues) DV.AddUnique(UTF8_TO_TCHAR(V.c_str()));
 		if (DV.Num() == 0)
@@ -586,13 +657,21 @@ void ULyudFestivalSubsystem::Update()
 			if (Ve.bValid)
 			{
 				WantGather.Add(Key);
-				if (!Gatherings.Contains(Key) && People)
+				// what the watchers look at moves across the sky (the sun, the moon): they are turned after it every 20 minutes
+				const bool bMovingFace = P.Face == "sun" || P.Face == "moon";
+				const double* FaceSent = FaceSentAt.Find(Key);
+				const bool bTurn = bMovingFace && Gatherings.Contains(Key) && FaceSent && FMath::Abs(NowCal - *FaceSent) > 1200.0;
+				if ((!Gatherings.Contains(Key) || bTurn) && People)
 				{
+					if (bMovingFace)
+					{
+						FaceSentAt.Add(Key, NowCal);
+					}
 					const FVector Face = FacePoint(Ve, UTF8_TO_TCHAR(P.Face.c_str()), Now);
 					// the people's life spreads a gathering over every place of a kind (the square's 25 + 300 audience slots, the
 					// fair's 56 stalls' places); a concert's watchers stand in the square's audience
 					const FName Where = (P.Face == "stage" && V == TEXT("square") && Ve.bPlanStage) ? FName(TEXT("S-SQUARE-AUDIENCE")) : FName(*V);
-					bHasGatherings = TrySetGathering(People, 0, Key, Where, FMath::Fmod(P.From, 24.f), FMath::Fmod(P.To, 24.f), P.Pull, FString(UTF8_TO_TCHAR(P.Mode.c_str())), Face);
+					bHasGatherings = TrySetGathering(People, 0, Key, Where, FMath::Fmod(P.From + 48.f, 24.f), FMath::Fmod(P.To + 48.f, 24.f), P.Pull, FString(UTF8_TO_TCHAR(P.Mode.c_str())), Face);
 				}
 				if (People && (!bHasGatherings || CVarFestivalStub.GetValueOnGameThread() > 0))
 				{
@@ -676,6 +755,11 @@ void ULyudFestivalSubsystem::Update()
 			{
 				Announce(DateKey(Today), FId);
 			}
+			else if (A.Rel < 0.f && A.Phase >= 0 && F.Phases[A.Phase].Id == "eve")
+			{
+				// its eve has a program of its own (the Big Sun's: the town looks at the star the evening before)
+				Announce(DateKey(Today), FId, TEXT("eve"));
+			}
 		}
 	}
 	Active = NewActive;
@@ -741,12 +825,32 @@ void ULyudFestivalSubsystem::Update()
 		}
 	}
 
+	// the town's own pennant strings across the lanes (decor kind "street_bunting"): one actor for the whole town
+	const int32 StreetForce = CVarStreetBunting.GetValueOnGameThread();
+	bWantStreet = StreetForce < 0 ? bWantStreet : StreetForce > 0;
+	if (!bWantStreet && IsValid(StreetBunting))
+	{
+		StreetBunting->Destroy();
+		StreetBunting = nullptr;
+	}
+	else if (bWantStreet && !IsValid(StreetBunting) && !bBuilt)
+	{
+		FActorSpawnParameters SP;
+		SP.ObjectFlags |= RF_Transient;
+		if (ALyudStreetBunting* Street = World->SpawnActor<ALyudStreetBunting>(FVector::ZeroVector, FRotator::ZeroRotator, SP))
+		{
+			Street->Build(Hash(TEXT("street_bunting")));
+			StreetBunting = Street;
+		}
+	}
+
 	// gatherings
 	for (auto It = Gatherings.CreateIterator(); It; ++It)
 	{
 		if (!WantGather.Contains(*It))
 		{
 			if (People) TryClearGathering(People, 0, *It);
+			FaceSentAt.Remove(*It);
 			It.RemoveCurrent();
 		}
 	}
@@ -815,7 +919,14 @@ void ULyudFestivalSubsystem::Update()
 				{
 					StoppedFireworks->StopShow();
 				}
-				ShowActor->SetLifeSpan(ShowActor->IsA<ALyudSkyLanterns>() ? 1200.f : 20.f);
+				if (ALyudKites* StoppedKites = Cast<ALyudKites>(ShowActor))
+				{
+					StoppedKites->StopShow();      // pulled in, then it goes by itself
+				}
+				else
+				{
+					ShowActor->SetLifeSpan(ShowActor->IsA<ALyudSkyLanterns>() ? 1200.f : 20.f);
+				}
 			}
 			It.RemoveCurrent();
 		}
@@ -968,9 +1079,10 @@ void ULyudFestivalSubsystem::StubGather(UPeopleLifeSubsystem* People, FName Key,
 	}
 }
 
-void ULyudFestivalSubsystem::Announce(const FString& Day, const FString& Id)
+void ULyudFestivalSubsystem::Announce(const FString& Day, const FString& Id, const TCHAR* Note)
 {
-	const FString Mark = Day + TEXT("|") + Id;
+	const bool bToday = FCString::Strcmp(Note, TEXT("today")) == 0;
+	const FString Mark = Day + TEXT("|") + Id + (bToday ? FString() : FString(TEXT(".")) + Note);
 	if (Announced.Contains(Mark))
 	{
 		return;
@@ -983,7 +1095,7 @@ void ULyudFestivalSubsystem::Announce(const FString& Day, const FString& Id)
 	}
 	if (ULyudGameScreen* Screen = ULyudGameScreen::Get(GetWorld()))
 	{
-		Screen->Toast(LyudText::Get(TEXT("festival.") + Id + TEXT(".today")));
+		Screen->Toast(LyudText::Get(TEXT("festival.") + Id + TEXT(".") + Note));
 	}
 }
 
@@ -1025,6 +1137,17 @@ FVector ULyudFestivalSubsystem::FacePoint(const FLyudVenue& V, const FString& Fa
 	if (Face == TEXT("sky"))
 	{
 		return V.Center + V.SeaDir * 6000.f + FVector(0.f, 0.f, 30000.f);
+	}
+	if (Face == TEXT("sun"))
+	{
+		// where the star is now (local time UTC+2); once it is down, where it went: out over the sea
+		const FSkyPosition Sun = LyudEphemeris::Sun(Now - FTimespan::FromHours(2), 54.96, 20.40);
+		if (Sun.AltitudeDeg > 1.0)
+		{
+			const double A = FMath::DegreesToRadians(Sun.AzimuthDeg), Alt = FMath::DegreesToRadians(FMath::Max(Sun.AltitudeDeg, 3.0));
+			return V.Center + FVector(-FMath::Sin(A) * FMath::Cos(Alt), FMath::Cos(A) * FMath::Cos(Alt), FMath::Sin(Alt)) * 50000.f;
+		}
+		return V.Center + V.SeaDir * 20000.f + FVector(0.f, 0.f, 3000.f);
 	}
 	if (Face == TEXT("moon"))
 	{
@@ -1172,6 +1295,15 @@ void ULyudFestivalSubsystem::StartShow(FName Key, const FString& Show, const FLy
 			Made = F;
 		}
 	}
+	else if (Show == TEXT("kites"))
+	{
+		const FVector At = Ground(V.Center);
+		if (ALyudKites* Kites = World->SpawnActor<ALyudKites>(At, FRotator::ZeroRotator, SP))
+		{
+			Kites->Setup(At, V.SeaDir, V.Radius, EndsAt);
+			Made = Kites;
+		}
+	}
 	else if (Show == TEXT("color_powder"))
 	{
 		if (ALyudColorPowder* C = World->SpawnActor<ALyudColorPowder>(V.Center, FRotator::ZeroRotator, SP))
@@ -1308,6 +1440,7 @@ void ULyudFestivalSubsystem::TickHero(float DeltaTime)
 		else if (Show->IsA<ALyudFirecrackers>()) Range = 3000.f;
 		else if (Show->IsA<ALyudColorPowder>()) Range = 2500.f;
 		else if (Show->IsA<ALyudSkyLanterns>()) Range = 15000.f;
+		else if (Show->IsA<ALyudKites>()) Range = 12000.f;
 		if (!Show->IsA<ALyudMeteors>() && FVector::Dist(At, Show->GetActorLocation()) > Range)
 		{
 			continue;
@@ -1759,6 +1892,9 @@ FString ULyudFestivalSubsystem::Report() const
 		S += FString::Printf(TEXT(" %s[%s@%s %.1fh]"), *A.Id.ToString(), *A.Phase.ToString(), *A.Venue.ToString(), A.Hours);
 	}
 	S += FString::Printf(TEXT(" decor %d, shows %d, music %d, gatherings %d"), Decor.Num(), Shows.Num(), Music.Num(), Gatherings.Num());
+	const ALyudStreetBunting* Street = Cast<ALyudStreetBunting>(StreetBunting);
+	S += FString::Printf(TEXT(", sky sun +%.2f fair %.2f, street bunting %d strings %d pennants"), SkySun, SkyClear,
+		Street ? Street->NumStrings() : 0, Street ? Street->NumPennants() : 0);
 	for (const auto& V : Venues)
 	{
 		S += FString::Printf(TEXT("\n  venue %s = %s %s"), *V.Key.ToString(), *V.Value.Source, *V.Value.Center.ToString());
@@ -1805,6 +1941,19 @@ static FAutoConsoleCommandWithWorldAndArgs GFestivalFire(TEXT("lyud.Festival.Fir
 			F->Fire(Args.Num() ? FName(*Args[0]) : FName(TEXT("first_snow")));
 		}
 	}));
+
+// developer mode (F7, Actions): the Big Sun's day at its noon, and the town's pennant strings on any day
+static LyudDev::FAutoAction GDevSunDay(TEXT("festival.sun_day"), TEXT("weather"), TEXT("dev.action.festival.sun_day"),
+	[](UWorld* World)
+	{
+		if (ULyudFestivalSubsystem* F = ULyudFestivalSubsystem::Get(World))
+		{
+			F->GoTo(TEXT("sun_day"), TEXT("zenith"));
+		}
+	});
+static LyudDev::FAutoAction GDevStreetBunting(TEXT("festival.street_bunting"), TEXT("weather"), TEXT("dev.action.festival.street_bunting"),
+	[](UWorld* World) { CVarStreetBunting->Set(CVarStreetBunting.GetValueOnGameThread() > 0 ? -1 : 1, ECVF_SetByConsole); },
+	[](UWorld* World) { return CVarStreetBunting.GetValueOnGameThread() > 0; });
 
 // ---------------------------------------------------------------------------------------------------------------------
 // decorations
@@ -2002,7 +2151,10 @@ void ALyudFestivalDecor::Build(const FLyudVenue& V, const TArray<FString>& Kinds
 	const FVector Fwd = Rot.Vector(), Left = FRotator(0.f, V.Yaw + 90.f, 0.f).Vector();
 	const bool bStage = Kinds.Contains(TEXT("stage")), bTree = Kinds.Contains(TEXT("tree"));
 	FLyudMeshKit K, Glow;       // the solid pieces (collision, shadows) and the lights (no shadows)
+	FLyudCloth Cloth;           // pennants and flags: moved by the wind in their material (M_FestivalCloth)
 	uint32 Rng = Seed;
+	// "street_bunting" is not a venue's: the whole town's strings are one actor (ALyudStreetBunting, the subsystem's)
+	const bool bStreetToo = Kinds.Contains(TEXT("street_bunting"));
 
 	// the ring of poles the strings hang from (bunting, lanterns, wreaths)
 	TArray<FVector> Tops;
@@ -2064,9 +2216,7 @@ void ALyudFestivalDecor::Build(const FLyudVenue& V, const TArray<FString>& Kinds
 				const float T0 = (I - 0.36f) / NF, T1 = (I + 0.36f) / NF;
 				const FVector P0 = Hang(A, B, Sag, T0), P1 = Hang(A, B, Sag, T1);
 				const FVector Tip = (P0 + P1) * 0.5f - FVector(0.f, 0.f, 34.f) + FVector(Rand01(Rng) - 0.5f, Rand01(Rng) - 0.5f, 0.f) * 6.f;
-				const FName M(*FString::Printf(TEXT("flag_%d"), (I + Si) % 5));
-				K.Tri(M, P0, P1, Tip);
-				K.Tri(M, P1, P0, Tip);
+				Cloth.Pennant(P0, P1, Tip, Palette[(I + Si) % UE_ARRAY_COUNT(Palette)], Rand01(Rng));
 			}
 		}
 	}
@@ -2131,16 +2281,37 @@ void ALyudFestivalDecor::Build(const FLyudVenue& V, const TArray<FString>& Kinds
 			const float H = 850.f;
 			K.Rod(TEXT("pole"), Base - FVector(0.f, 0.f, 40.f), Base + FVector(0.f, 0.f, H), 5.f, 8, true, false);
 			K.CollideBox(FTransform(Base + FVector(0.f, 0.f, H * 0.5f)), FVector(6.f, 6.f, H * 0.5f));
-			const FVector Along = FRotator(0.f, A + 90.f, 0.f).Vector();
-			const FVector T0 = Base + FVector(0.f, 0.f, H - 15.f), T1 = T0 - FVector(0.f, 0.f, 110.f);
-			const FName M(*FString::Printf(TEXT("flag_%d"), I % 5));
-			// a little wave in it: two panels at an angle
-			const FVector Mid0 = T0 + Along * 85.f + FVector(Along.Y, -Along.X, 0.f) * 12.f, Mid1 = T1 + Along * 85.f + FVector(Along.Y, -Along.X, 0.f) * 12.f;
-			const FVector E0 = T0 + Along * 170.f, E1 = T1 + Along * 170.f;
-			K.Quad(M, T1, Mid1, Mid0, T0);
-			K.Quad(M, T0, Mid0, Mid1, T1);
-			K.Quad(M, Mid1, E1, E0, Mid0);
-			K.Quad(M, Mid0, E0, E1, Mid1);
+			// the flag flies downwind from its hoist and droops in a calm (the material turns it)
+			Cloth.Flag(Base + FVector(0.f, 0.f, H - 15.f), 170.f, 110.f, Palette[I % UE_ARRAY_COUNT(Palette)], Rand01(Rng));
+		}
+	}
+	if (Kinds.Contains(TEXT("sun_discs")))
+	{
+		// the Big Sun's day: gilded suns on tall poles round the venue, each a disc with a ring of rays, turned to the south
+		// where the star stands at noon, a long gold-and-orange streamer under each
+		const int32 NSuns = bLine ? 5 : 4;
+		const FVector LookAt = FVector(0.f, -1.f, 0.f);
+		const FVector Across = FVector(1.f, 0.f, 0.f);
+		for (int32 I = 0; I < NSuns; I++)
+		{
+			const FVector Base = bLine ? GroundAt(LineFrom + LineDir * ((I + 0.5f) * R * 3.2f / NSuns) - V.SeaDir * 160.f)
+				: GroundAt(C + FRotator(0.f, V.Yaw + 45.f + I * 90.f, 0.f).Vector() * R * 0.72f);
+			const float H = 640.f;
+			K.Rod(TEXT("pole"), Base - FVector(0.f, 0.f, 30.f), Base + FVector(0.f, 0.f, H), 5.f, 8, true, false);
+			K.CollideBox(FTransform(Base + FVector(0.f, 0.f, H * 0.5f)), FVector(6.f, 6.f, H * 0.5f));
+			const FVector Mid = Base + FVector(0.f, 0.f, H + 62.f);
+			K.Rod(TEXT("gold"), Mid - LookAt * 2.5f, Mid + LookAt * 2.5f, 46.f, 20, true, false);
+			for (int32 Ray = 0; Ray < 12; Ray++)
+			{
+				const float Ang = Ray * UE_PI / 6.f;
+				const FVector Out = Across * FMath::Cos(Ang) + FVector::UpVector * FMath::Sin(Ang);
+				const FVector Side = Across * -FMath::Sin(Ang) + FVector::UpVector * FMath::Cos(Ang);
+				const float Long = Ray % 2 ? 26.f : 40.f;
+				const FVector R0 = Mid + Out * 52.f - Side * 8.f, R1 = Mid + Out * 52.f + Side * 8.f, Tip = Mid + Out * (52.f + Long);
+				K.Tri(TEXT("gold"), R0, R1, Tip);
+				K.Tri(TEXT("gold"), R1, R0, Tip);
+			}
+			Cloth.Ribbon(Base + FVector(0.f, 0.f, H - 20.f) + LookAt * 8.f, 260.f, 16.f, I % 2 ? FLinearColor(0.95f, 0.38f, 0.04f) : FLinearColor(0.95f, 0.70f, 0.05f), Rand01(Rng), 7);
 		}
 	}
 	// which way the stage is from the middle (the plan's stage, else the venue's far side)
@@ -2545,8 +2716,21 @@ void ALyudFestivalDecor::Build(const FLyudVenue& V, const TArray<FString>& Kinds
 	// the mesh kit works in world space: the actor stands at the origin
 	Make(K, TEXT("FestivalDecor"), true);
 	Make(Glow, TEXT("FestivalLights"), false);
-	UE_LOG(LogTemp, Display, TEXT("Festivals: decor %s at %s (%d + %d triangles)"), *FString::Join(Kinds, TEXT(",")), *V.Center.ToString(),
-		K.NumTriangles(), Glow.NumTriangles());
+	if (!Cloth.IsEmpty())
+	{
+		UMaterialInterface* ClothMat = LyudFestParts::LoadCloth();
+		Mats.Add(TEXT("cloth"), ClothMat);
+		UStaticMeshComponent* Comp = NewObject<UStaticMeshComponent>(this, TEXT("FestivalCloth"));
+		Comp->SetStaticMesh(Cloth.Build(this, TEXT("FestivalCloth")));
+		Comp->SetMaterial(0, ClothMat);
+		Comp->SetMobility(EComponentMobility::Static);
+		LyudFestParts::ClothComponent(Comp, 45000.f);
+		Comp->SetupAttachment(RootComponent);
+		Comp->RegisterComponent();
+		AddInstanceComponent(Comp);
+	}
+	UE_LOG(LogTemp, Display, TEXT("Festivals: decor %s at %s (%d + %d + %d cloth triangles%s)"), *FString::Join(Kinds, TEXT(",")), *V.Center.ToString(),
+		K.NumTriangles(), Glow.NumTriangles(), Cloth.NumTriangles(), bStreetToo ? TEXT(", the town's strings apart") : TEXT(""));
 }
 
 void ALyudFestivalDecor::SetLights(float Night, bool bInParty)

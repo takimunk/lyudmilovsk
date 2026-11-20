@@ -1,0 +1,10 @@
+{
+ "id": "icon_pastry",
+ "lang": "ru",
+ "model": "higgsfield gpt_image_2_5 (2k, medium)",
+ "aspect": "1:1",
+ "prompt": "A small round shortcrust pastry basket filled with piped pale cream shaped like two tiny mushrooms and a drop of red jam, on a little white saucer.",
+ "source": "design/city_goods/icons_city_1.png (sidecar design/city_goods/icons_city_1.json), cell 4 (row 2, left), cut into 3x3 equal cells, resized to 512x512",
+ "sha256": "c170ecc7928bb3502fd46925712b609ce8fbca10be49dccc537590123ba5a1e4",
+ "strings": {}
+}

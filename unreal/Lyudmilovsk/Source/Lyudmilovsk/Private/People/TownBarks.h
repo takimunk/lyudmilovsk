@@ -55,6 +55,7 @@ namespace LyudBarks
 	{
 		FValues Job, Sex, Doing, At, Pose, Gather, Chrono, Need;
 		FValues Met;                // how well they know the player: new, seen, known
+		FValues Bond;               // how close a friend of his they are: friendly, friend, close (docs/friends.md)
 		FValues Manner;             // what their hands are doing (manners.json: smoke, phone_call, umbrella, ...)
 		FValues Temper;             // who they are in manner: warm, reserved, nervy, calm, curious, tidy, careless
 		FValues AgeGroup;           // kid, teen, adult, elder
@@ -74,6 +75,7 @@ namespace LyudBarks
 		std::string Gather;                 // the holiday gathering's mode they are at (mingle, watch, sit, fair), "" none
 		std::string Chrono;                 // lark, owl, night, usual
 		std::string Met;                    // new (never greeted him), seen (a few days), known (five days and more); the caller sets it
+		std::string Bond;                   // friendly, friend, close ("" less: docs/friends.md); the caller sets it after FillWho
 		std::string Manner;                 // their manner now (PeopleManners.h), "" none or not drawn; the caller sets it after FillWho
 		std::vector<std::string> Needs;     // the needs over 0.75: hunger, tired, social, fun, nature, mind, sun
 		// their persona's strong sides (PeopleManners.h FPersona: a trait over 0.66 or under 0.34): warm / reserved, nervy /

@@ -19,7 +19,18 @@ class SLyudCityGame;
 class SLyudCityPage;
 class USceneComponent;
 struct FLyudCityLoad;
-namespace LyudCity { class FModel; struct FGameState; struct FPageTurn; }
+namespace LyudCity { class FModel; class FCups; struct FGameState; struct FPageTurn; }
+
+/** A club tournament as the town paper prints it (ULyudCityThings::GetCupNews): its name, venue and first round (keys, minutes
+ *  from midnight) and, once it is over, the champion and the runner-up (name keys; empty: the hero) and how far the hero got
+ *  (-1 not in it, 0..2 out in that round, 3 champion). Plain data, not for Blueprints. */
+struct FLyudCupNews
+{
+	FString Title, Venue, Winner, RunnerUp;
+	int32 StartMinute = 0;
+	int32 HeroReached = -1;
+	bool bOver = false;
+};
 
 /** A thing of the town's buildings as the townsfolk see it (ULyudCityThings::FindFreeThing, GetThingsOfPlot). */
 USTRUCT(BlueprintType)
@@ -40,6 +51,17 @@ struct LYUDMILOVSK_API FCityThingRef
 	UPROPERTY(BlueprintReadOnly, Category = "City") float SeatHeightCm = 0.f;
 	/** Somebody holds it now (a townsperson's claim, or the hero sits or lies on it). */
 	UPROPERTY(BlueprintReadOnly, Category = "City") bool bHeld = false;
+};
+
+/** What a city act did, for a system that adds to it (ULyudMusic: the records, the jukeboxes, the radios; docs/music.md). */
+struct FCityActInfo
+{
+	/** "<plot>/<thing id>", the act's id (a staff variant keeps its "@role"), the line key it shows (empty: none), the plot. */
+	FString Thing, Act, Line, Plot;
+	/** The thing's point, world cm. */
+	FVector At = FVector::ZeroVector;
+	/** Run from the console (from anywhere), not by the hero at the thing. */
+	bool bFromConsole = false;
 };
 
 /**
@@ -113,6 +135,10 @@ public:
 
 	static ULyudCityThings* Get(const UObject* WorldContext);
 
+	/** An act with "open" was used: another system shows its screen (Screen "books": ULyudBookScreen, the library's classics). */
+	DECLARE_MULTICAST_DELEGATE_TwoParams(FOpenScreen, FName /*Screen*/, int32 /*Thing*/);
+	FOpenScreen OnOpen;
+
 	virtual void OnWorldBeginPlay(UWorld& InWorld) override;
 	virtual void Deinitialize() override;
 	virtual void Tick(float DeltaTime) override;
@@ -131,6 +157,13 @@ public:
 	bool RunNearest();
 	/** Developer mode: today's limits start over. */
 	void ResetDailyLimits();
+	/**
+	 * The cinema's newsreel (ULyudCinema, docs/cinema.md) ran before a session and held its show: bGoOn, the films ran out and the
+	 * session's own show starts now; else he left and it is dropped.
+	 */
+	void ReleaseHeldShow(bool bGoOn);
+	bool IsShowHeld() const { return bShowHeld; }
+
 	/** Debug labels of the things within 15 m (lyud.City.Things.Show). */
 	void SetShowLabels(bool bShow) { bShowLabels = bShow; }
 	bool AreLabelsShown() const { return bShowLabels; }
@@ -172,6 +205,8 @@ public:
 	/** Lying on a bed: sleeps until Hour (0..23) at once (the chooser's E); false when not lying on a bed of ours. */
 	bool SleepUntil(int32 Hour);
 	bool IsSittingOnThing() const { return SeatedOn >= 0; }
+	/** The thing the hero sits on now (its id), "" none (docs/friends.md: the tea at a host's table). */
+	FString SeatedThingId() const;
 	bool IsLyingOnThing() const { return LyingOn >= 0; }
 	bool IsChoosingSleep() const { return SleepHour >= 0; }
 
@@ -215,6 +250,8 @@ public:
 	/** Has one of our modes the keys (a page, a show, a game, a text, the talk's chooser, a lift, lying, the sleep chooser)? The
 	 *  NPC talk should step aside meanwhile (docs/city_interiors.md "Open points for other threads"); seated alone is not one. */
 	bool HasModeUp() const;
+	/** A thing is in view with its prompt up (others who use E, the park's benches, step aside). */
+	bool HasThingInView() const { return Picked >= 0; }
 
 	// --- room tones
 
@@ -234,6 +271,34 @@ public:
 	/** The things of a plot of Kind (None: all), appended to Out. A table built at load: no pass over the town. */
 	void GetThingsOfPlot(const FString& PlotId, FName Kind, TArray<FCityThingRef>& Out) const;
 
+	// --- the clubs' weekly tournaments (docs/city_interiors.md "Tournaments", Private/City/CityCupsModel.h)
+
+	/** The tournaments played on a day (since the game began): over ones with their results, else today's to come. */
+	void GetCupNews(int32 Since, TArray<FLyudCupNews>& Out) const;
+	/** The bracket boards' pages ("gen": "cup:<id>") in the current language; false when there is no such cup. */
+	bool CupPages(const FString& Gen, TArray<FText>& Out) const;
+	/** The hero read a bracket board to its end: his name on the sheet (a note when it is new). */
+	void CupSheetRead(const FString& Gen);
+	/** Developer mode and the console: the hero signs up for every tournament's next day; each bracket to the log. */
+	void CupSignAll();
+	FString CupReport() const;
+	// --- for systems that add to the acts (docs/music.md)
+
+	/** Asked after an act ran (not for a refused act or a shut plot's words), before its page shows: may replace the line the
+	 *  page shows (true + Line set; an empty Line shows no page). One listener (ULyudMusic), bound with a weak object. */
+	DECLARE_DELEGATE_RetVal_TwoParams(bool, FActHook, const FCityActInfo& /*Info*/, FText& /*Line*/);
+	FActHook ActHook;
+	/** More listeners asked after ActHook (when it didn't take the act): the instruments' sheet music (docs/instruments.md). */
+	void AddActHook(FActHook Hook) { MoreActHooks.Add(MoveTemp(Hook)); }
+	void RemoveActHooks(const void* Object) { MoreActHooks.RemoveAll([Object](const FActHook& H) { return H.IsBoundToObject(Object); }); }
+	/** Every thing whose act Match accepts (the act id with its "@role"), appended to Out. A pass over all things: call once. */
+	void GetThingsByAct(TFunctionRef<bool(const FString& Act)> Match, TArray<FCityThingRef>& Out) const;
+	/** The act id of a thing ("<plot>/<thing id>"); empty when unknown. */
+	FString ActOfThing(const FString& Id) const;
+	/** Gives a stamp of a collection ("records/day_1") as an act's line would (the HUD note when it is new); false when it is
+	 *  not a piece of the data's collections or the hero has it. */
+	bool GiveStamp(const FString& Stamp);
+
 protected:
 	virtual bool DoesSupportWorldType(const EWorldType::Type WorldType) const override
 	{
@@ -242,6 +307,8 @@ protected:
 
 	/** The model's state as a flat map ("CityThings"): counts, pages, uses, plots visited. */
 	UPROPERTY(SaveGame) TMap<FString, FString> Saved;
+
+	TArray<FActHook> MoreActHooks;
 
 private:
 	void StartLoad();
@@ -275,6 +342,8 @@ private:
 	void Greet(int32 Thing);
 	void DrawLabels() const;
 	FVector ThingLocation(int32 Thing) const;
+	/** "+N roubles" for a small job's pay (city.job.paid). */
+	void AnnouncePay(int32 Rubles);
 	/** A note on the HUD for every stamp got for the first time ("Films at «Рассвет»: 3 of 12"). */
 	void AnnounceStamps(const TArray<FString>& Stamps);
 	void FillRef(int32 Thing, FCityThingRef& Out) const;
@@ -369,6 +438,13 @@ private:
 	FString PlotName(const FString& Plot) const;
 
 	TPimplPtr<LyudCity::FModel> Model;
+	/** The tournaments (City/tournaments.json, read once the model is in) and the cup match being played (Cup < 0: a casual
+	 *  game). */
+	TPimplPtr<LyudCity::FCups> Cups;
+	void LoadCups();
+	int32 CupMatchCup = -1;
+	int32 CupMatchRound = -1;
+	int64 CupMatchDay = -1;
 	/** The worker's parse while it is under way. */
 	TSharedPtr<FLyudCityLoad, ESPMode::ThreadSafe> Loading;
 
@@ -435,6 +511,13 @@ private:
 	int32 ShowThing = -1;
 	FText ShowTitle;
 	bool bShowSeated = false;
+	// a session's show waiting for the cinema's newsreel (ReleaseHeldShow)
+	bool bShowHeld = false;
+	int32 HeldThing = -1;
+	FText HeldTitle;
+	FText HeldLine;
+	int32 HeldMinutes = 0;
+	bool bHeldSeated = false;
 
 	bool bShowLabels = false;
 	float LabelClock = 0.f;
@@ -487,6 +570,8 @@ private:
 	int32 BookText = -1;
 	int32 BookThing = -1;
 	TArray<FString> BookPages;
+	/** The pages of a text the game sets itself (ULyudTownPaper), one per BookPages entry; empty for an ordinary text. */
+	TArray<FText> BookGenPages;
 	int32 BookPage = 0;
 	FVector BookFrom = FVector::ZeroVector;
 	uint64 BookFrame = 0;

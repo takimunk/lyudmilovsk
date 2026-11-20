@@ -77,7 +77,21 @@ namespace LyudFest
 		std::vector<std::string> Decor; // bunting, lanterns, stage, stalls, tree, flags, candles, birdhouses, wreaths
 		std::vector<std::string> DecorVenues;   // where the decorations go (spot kinds or ids); empty = the phases' venues
 		int Priority = 0;               // when two festivals want the same venue at once, the higher one has it
+		// the sky of its day ("sky": {"sun": 0.7, "clear": 1, "lead": 3, "poplar_fluff": 1}): the star comes nearer (its disk
+		// 1 + SunApproach times as wide at the day's noon), the weather is held fair, both eased in and out over SkyLead days
+		float SunApproach = 0.f;
+		float Clear = 0.f;
+		float SkyLead = 2.f;
 		std::vector<FPhase> Phases;
+	};
+
+	/** What the festivals make of the sky at a moment (FCalendar::SkyAt). */
+	struct FSky
+	{
+		float SunApproach = 0.f;        // the star's disk is 1 + this times as wide as usual
+		float Clear = 0.f;              // 0 the weather's own .. 1 held fair
+		int Festival = -1;              // whose sky it is (the strongest), -1 none
+		float DaysTo = 0.f;             // days to its noon (negative: past it)
 	};
 
 	/** A festival that is on (its decorations are up) at a moment. */
@@ -110,6 +124,10 @@ namespace LyudFest
 		bool Next(int F, const FDate& From, FDate& Out) const;
 		/** Every festival that starts in [From, From + Days), in date order: (date, festival). */
 		std::vector<std::pair<FDate, int>> Upcoming(const FDate& From, int Days) const;
+
+		/** The sky the festivals ask for at Date, Hour: a smooth bump round the noon (13:00) of each sky festival's day,
+		 *  nothing farther than its lead away. */
+		FSky SkyAt(const FDate& Date, float Hour) const;
 
 		/** A trigger festival happens from Date (the game calls it: the first snow of the winter). */
 		void Fire(const std::string& Trigger, const FDate& Date);

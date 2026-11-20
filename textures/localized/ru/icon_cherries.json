@@ -1,0 +1,10 @@
+{
+ "id": "icon_cherries",
+ "lang": "ru",
+ "model": "higgsfield gpt_image_2_5 (2k, medium)",
+ "aspect": "1:1",
+ "prompt": "A plain paper cone full of dark red sweet cherries on stalks, a few spilled in front.",
+ "source": "design/city_goods/icons_city_2.png (sidecar design/city_goods/icons_city_2.json), cell 9 (row 3, right), cut into 3x3 equal cells, resized to 512x512",
+ "sha256": "45b76fa12f08be8664601243aa455c1a6d3bbc135be6d1f351cdbdd3c85e7da4",
+ "strings": {}
+}

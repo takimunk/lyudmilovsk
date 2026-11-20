@@ -1,0 +1,10 @@
+{
+ "id": "icon_shell_box",
+ "lang": "ru",
+ "model": "higgsfield gpt_image_2_5 (2k, medium)",
+ "aspect": "1:1",
+ "prompt": "A small varnished wooden box with its lid covered in tiny glued seashells and a starfish, the lid slightly open showing a little mirror.",
+ "source": "design/city_goods/icons_city_4.png (sidecar design/city_goods/icons_city_4.json), cell 9 (row 3, right), cut into 3x3 equal cells, resized to 512x512",
+ "sha256": "73d9eed7a2a80549a8ea110643cae99b989e0920d3aa2e083c271dda98d3959f",
+ "strings": {}
+}

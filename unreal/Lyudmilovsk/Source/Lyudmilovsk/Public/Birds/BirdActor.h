@@ -94,6 +94,9 @@ public:
 	 *  1 a full beat; Flare, TailFan, LegsDown 0..1. */
 	UFUNCTION(BlueprintCallable, Category = "Bird")
 	void SetWingPose(float SpreadL, float SpreadR, float StrokeL, float StrokeR, float StrokeAmp, float Flare, float TailFan, float LegsDown);
+	/** With SetWingPose, in the air (0..1): a part-folded wing stays out to the side, swept back in its own plane, and
+	 *  does not swing down the flank toward the standing fold. TailFan below 0 (to -1) closes the tail tighter than the bind pose. */
+	void SetWingLevel(float Level01);
 
 	/** Seen from its own eye: hides the skull feathers (the material slot "Skull") and keeps the bill and the eyes' rims,
 	 *  holds LOD0, keeps the bounds wide enough with the camera inside, and sweeps the wings forward by ViewSweepDeg and

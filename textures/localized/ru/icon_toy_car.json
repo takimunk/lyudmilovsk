@@ -1,0 +1,10 @@
+{
+ "id": "icon_toy_car",
+ "lang": "ru",
+ "model": "higgsfield gpt_image_2_5 (2k, medium)",
+ "aspect": "1:1",
+ "prompt": "A small die-cast metal toy van painted light blue, with rubber wheels and one door open, no markings.",
+ "source": "design/city_goods/icons_city_4.png (sidecar design/city_goods/icons_city_4.json), cell 7 (row 3, left), cut into 3x3 equal cells, resized to 512x512",
+ "sha256": "6d75cc645c4b5f666f20f95ec23633e5a8ea4ecf5c66fbb576dd531b0a925e2f",
+ "strings": {}
+}

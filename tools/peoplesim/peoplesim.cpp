@@ -4,6 +4,7 @@
 //   tools/peoplesim/run.sh day [start_hour hours]
 //   tools/peoplesim/run.sh trace <key> [start_hour hours]
 //   tools/peoplesim/run.sh summary [start_hour hours [weekday]]
+#include "WindModel.h"
 #include "../../unreal/Lyudmilovsk/Source/Lyudmilovsk/Private/People/PeopleSim.h"
 #include "../../unreal/Lyudmilovsk/Source/Lyudmilovsk/Private/Railway/RailRun.h"
 
@@ -1009,6 +1010,27 @@ static int Town()
 	std::map<std::string, float> Hungry;
 	int Lit21 = -1, Lit03 = -1, Lit12 = -1, Occupied = 0, Asleep03 = 0, Awake03 = 0, AwakeNightType03 = 0;
 	int Waiters12 = -1, Sellers10 = -1, Pupils10 = -1, PupilsOff = -1, AtSquare = -1, Overbooked = 0;
+	// the sanatorium's four guests (tools/town/sanatorium_guests.py): at their own chairs at lunch, not there before it
+	int GuestsAtLunch = -1, GuestsAt11 = -1, Guests = 0;
+	const int Dining = W.FindPlace("P-SANATORIUM-DINING");
+	auto GuestsSeated = [&W, Dining]()
+	{
+		int N = 0;
+		for (const FPerson& P : W.People)
+		{
+			if (Dining < 0 || P.Place != Dining || P.Slot < 0)
+			{
+				continue;
+			}
+			const FSlot& Sl = W.Slots[(size_t)P.Slot];
+			N += P.State == EState::Doing && P.Pose == EPose::Eat && Sl.Tag == "guest_" + P.Key.substr(2) && !Sl.Thing.empty() ? 1 : 0;
+		}
+		return N;
+	};
+	for (const FPerson& P : W.People)
+	{
+		Guests += P.Key == "t_gromov_pyotr" || P.Key == "t_mironova_sonya" || P.Key == "t_tamm_boris" || P.Key == "t_sazonov_nikolai" ? 1 : 0;
+	}
 	double Longest = 0.0;
 	std::string LongestWho;
 	std::map<int, double> Since;
@@ -1021,10 +1043,20 @@ static int Town()
 	long Steps = 0;
 	const float Dt = 1.f;
 	bool bGather = false, bDayOff = false;
+	// the calendar's wind, as ULyudWindSubsystem has it (seed 921 from Monday 19 October 2026): kites want a breeze
+	LyudWeather::FWindParams WindP;
+	WindP.Seed = 921;
+	const double Monday = LyudWeather::HoursSince2000(2026, 10, 19, 0.0);
+	int KitesDark = 0, KitesOffWind = 0;
+	float KiteWindLo = 99.f, KiteWindHi = 0.f;
 	for (double T = 0.0; T < 36.0 * 3600.0; T += Dt)
 	{
 		C.Seconds += Dt;
 		C.Set(W);
+		if (std::fmod(C.Seconds, 300.0) < Dt)
+		{
+			W.Wind = LyudWeather::Regime(Monday + C.Seconds / 3600.0, WindP).Speed;
+		}
 		const float H = W.Hour;
 		const int Day = W.Weekday;
 		// a holiday on the square Wednesday 18-22 (as ULyudFestivalSubsystem would set it)
@@ -1070,6 +1102,13 @@ static int Town()
 				if (P.Activity >= 0 && (P.State == EState::Doing || P.State == EState::Away))
 				{
 					Minutes[W.Activities[P.Activity].Id] += 1.0;
+					if (W.Activities[P.Activity].Id == "fly_kite" && P.State == EState::Doing)
+					{
+						KitesDark += (W.Hour < 7.f || W.Hour > 20.f) ? 1 : 0;
+						KitesOffWind += (W.Wind < 2.f || W.Wind > 15.f) ? 1 : 0;
+						KiteWindLo = std::min(KiteWindLo, W.Wind);
+						KiteWindHi = std::max(KiteWindHi, W.Wind);
+					}
 				}
 				if (P.N[(int)ENeed::Hunger] > 0.95f && P.Pose != EPose::Sleep)
 				{
@@ -1100,6 +1139,8 @@ static int Town()
 		if (Day == 2 && Sec == 21 * 3600) Lit21 = LitNow();
 		if (Day == 2 && Sec == 12 * 3600) Lit12 = LitNow();
 		if (Day == 2 && Sec == 12 * 3600) { W.StaffOnShift("restaurant", "waiter", Staff); Waiters12 = (int)Staff.size(); }
+		if (Day == 2 && Sec == 11 * 3600) GuestsAt11 = GuestsSeated();
+		if (Day == 2 && Sec == 13 * 3600 + 55 * 60) GuestsAtLunch = GuestsSeated();
 		if (Day == 2 && Sec == 10 * 3600) { W.StaffOnShift("P-MARKET", "seller", Staff); Sellers10 = (int)Staff.size(); W.StaffOnShift("P-SCHOOL", "pupil", Staff); Pupils10 = (int)Staff.size(); }
 		if (Day == 3 && Sec == 10 * 3600) { W.StaffOnShift("P-SCHOOL", "pupil", Staff); PupilsOff = (int)Staff.size(); }
 		if (Day == 2 && Sec == 20 * 3600)
@@ -1134,12 +1175,16 @@ static int Town()
 	std::printf("\n");
 	CHECK(Asleep03 > Town * 0.8, "Thursday 03:00: most asleep in their own beds (%d asleep, %d up)", Asleep03, Awake03);
 	CHECK(AwakeNightType03 > 0, "... but the night owls are up (%d)", AwakeNightType03);
+	CHECK(Minutes["fly_kite"] > 0 && KitesDark == 0 && KitesOffWind == 0, "children fly kites by day in a breeze (%.0f person-minutes in %.1f-%.1f m/s; %d in the dark, %d in a calm or a gale)",
+		Minutes["fly_kite"], KiteWindLo, KiteWindHi, KitesDark, KitesOffWind);
 	CHECK(Minutes["watch_sunrise"] > 0, "early risers watch the sunrise (%.0f person-minutes)", Minutes["watch_sunrise"]);
 	CHECK(Minutes["night_walk"] > 0, "somebody walks at night (%.0f person-minutes)", Minutes["night_walk"]);
 	CHECK(Minutes["sit_bench"] > 300, "people sit on the benches (%.0f person-minutes)", Minutes["sit_bench"]);
 	CHECK(Minutes["work_town"] > 3000 && Minutes["work_office"] > 1000, "the town's shops, cafés and offices are staffed (%.0f / %.0f person-minutes)", Minutes["work_town"], Minutes["work_office"]);
 	CHECK(Minutes["eat_out"] + Minutes["coffee"] > 200, "people eat out and have coffee (%.0f + %.0f)", Minutes["eat_out"], Minutes["coffee"]);
 	CHECK(Waiters12 > 0, "Wednesday 12:00: waiters on shift at the restaurant (%d)", Waiters12);
+	CHECK(Dining >= 0 && Guests == 4, "the sanatorium's dining room and its four guests are in the town (%d)", Guests);
+	CHECK(GuestsAtLunch == Guests && GuestsAt11 == 0, "Wednesday 13:55 the guests eat at their own chairs (%d of %d), at 11:00 none (%d)", GuestsAtLunch, Guests, GuestsAt11);
 	CHECK(Sellers10 > 0, "Wednesday 10:00: sellers at the market (%d)", Sellers10);
 	CHECK(Pupils10 > 10, "Wednesday 10:00: pupils at school (%d)", Pupils10);
 	CHECK(PupilsOff == 0, "Thursday (a day off) 10:00: nobody at school (%d)", PupilsOff);

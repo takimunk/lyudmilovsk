@@ -1,0 +1,10 @@
+{
+ "id": "icon_tomato_juice",
+ "lang": "ru",
+ "model": "higgsfield gpt_image_2_5 (2k, medium)",
+ "aspect": "1:1",
+ "prompt": "A faceted Soviet glass tumbler full of thick red tomato juice with a small spoon leaning in it.",
+ "source": "design/city_goods/icons_city_2.png (sidecar design/city_goods/icons_city_2.json), cell 6 (row 2, right), cut into 3x3 equal cells, resized to 512x512",
+ "sha256": "7a491c9994f2ff244d0ab48f1f4eb6174cdedf0a2ea88b1b97efa46d25ebb02e",
+ "strings": {}
+}

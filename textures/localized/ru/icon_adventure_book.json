@@ -1,0 +1,10 @@
+{
+ "id": "icon_adventure_book",
+ "lang": "ru",
+ "model": "higgsfield gpt_image_2_5 (2k, medium)",
+ "aspect": "1:1",
+ "prompt": "A worn cloth-bound book with a faded red cover showing an embossed sailing ship, no title, pages dog-eared.",
+ "source": "design/city_goods/icons_city_4.png (sidecar design/city_goods/icons_city_4.json), cell 4 (row 2, left), cut into 3x3 equal cells, resized to 512x512",
+ "sha256": "4e0355f8ae715918051800ccc8b9db67750ffe7d54b2b4048d71f8a6949fea81",
+ "strings": {}
+}

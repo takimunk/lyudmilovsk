@@ -73,7 +73,7 @@ check(modes <= gather_modes, "every phase's mode has a gathering activity in act
 bad = []
 for f, p in phases:
     h = p.get("hours", [10, 11])
-    if not (len(h) == 2 and 0 <= h[0] < h[1] and h[1] - h[0] < 24 and h[0] < 48):
+    if not (len(h) == 2 and -12 <= h[0] < h[1] and h[1] - h[0] < 24 and h[0] < 48):
         bad.append("%s.%s %s" % (f["id"], p["id"], h))
 check(not bad, "every phase lasts under a day and starts by the next night (the people's life gets hours mod 24)", bad)
 bad = ["%s.%s" % (f["id"], p["id"]) for f in fests for p in f.get("program", []) if p.get("day", 0) >= f.get("days", 1)]
@@ -88,7 +88,7 @@ for f in fests:
 check(not bad, "phase ids are unique within a festival (the gatherings, shows and quest targets are keyed by them)", bad)
 
 # ---- the shows, decor kinds and faces the game knows
-SHOW_ACTORS = {"fireworks", "sky_lanterns", "meteors", "bonfire", "water_lanterns", "firecrackers", "color_powder"}
+SHOW_ACTORS = {"fireworks", "sky_lanterns", "meteors", "bonfire", "water_lanterns", "firecrackers", "color_powder", "kites"}
 SOUNDS = {"music", "drums", "bells"}
 shows = {s for f, p in phases for s in p.get("show", [])}
 start_show = re.search(r"void ULyudFestivalSubsystem::StartShow\(.*?\n}\n", code, re.S).group(0)

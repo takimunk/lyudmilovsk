@@ -1,0 +1,10 @@
+{
+ "id": "icon_eskimo",
+ "lang": "ru",
+ "model": "higgsfield gpt_image_2_5 (2k, medium)",
+ "aspect": "1:1",
+ "prompt": "A chocolate-coated vanilla ice cream bar on a wooden stick, half unwrapped from a plain silver foil wrapper, one bite taken showing white ice cream.",
+ "source": "design/city_goods/icons_city_2.png (sidecar design/city_goods/icons_city_2.json), cell 3 (row 1, right), cut into 3x3 equal cells, resized to 512x512",
+ "sha256": "565631a9becc50c8292fa66c5e4e07e7eeb7c72c7dc9e579c2eb5911cd0ddec4",
+ "strings": {}
+}

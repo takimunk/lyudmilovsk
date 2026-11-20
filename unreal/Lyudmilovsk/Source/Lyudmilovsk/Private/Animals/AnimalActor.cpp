@@ -172,7 +172,7 @@ namespace
 		{
 		case EAnimalActivity::Walk: case EAnimalActivity::Trot: case EAnimalActivity::Run: case EAnimalActivity::Sniff:
 		case EAnimalActivity::Approach: case EAnimalActivity::Stalk: case EAnimalActivity::Chase: case EAnimalActivity::Flee:
-		case EAnimalActivity::Play: case EAnimalActivity::Follow: case EAnimalActivity::Rub:
+		case EAnimalActivity::Play: case EAnimalActivity::Follow: case EAnimalActivity::Rub: case EAnimalActivity::Swim:
 			return true;
 		default:
 			return false;
@@ -575,6 +575,11 @@ FName AAnimalActor::ClipFor(EAnimalActivity A) const
 	case EAnimalActivity::Bark: return bCat ? TEXT("Watch") : TEXT("Bark");
 	case EAnimalActivity::Climb: return bCat ? TEXT("Climb") : TEXT("Idle");
 	case EAnimalActivity::Perch: return bCat ? TEXT("Perch") : TEXT("Rest");
+	// with a friend (the stroke's lean and the roll onto the side are the renderer's; own clips can take these names later)
+	case EAnimalActivity::SniffHand: return Clip(TEXT("SniffHand")) ? TEXT("SniffHand") : TEXT("Sniff");
+	case EAnimalActivity::Petted: return Clip(TEXT("Petted")) ? TEXT("Petted") : TEXT("Sit");
+	case EAnimalActivity::RollOver: return Clip(TEXT("RollOver")) ? TEXT("RollOver") : TEXT("Rest");
+	case EAnimalActivity::Lap: return TEXT("Sleep");
 	default: return TEXT("Idle");
 	}
 }

@@ -39,6 +39,8 @@
 #include "LyudText.h"
 #include "AssetRegistry/IAssetRegistry.h"
 #include "Plants/GameCalendar.h"
+#include "City/LyudCityThings.h"
+#include "Weather/LyudWind.h"
 #include "Sky/Ephemeris.h"
 #include "Sky/LyudRareSky.h"
 #include "Fishing/LyudFishing.h"
@@ -230,6 +232,17 @@ bool UPeopleLifeSubsystem::Start()
 		Storms->OnLightning.AddUniqueDynamic(this, &UPeopleLifeSubsystem::OnThunder);
 	}
 	TownAllowed.Init(false, (int32)Sim->People.size());
+	ThingHolds.Reset();
+	for (int32 I = 0; I < (int32)Sim->Slots.size(); I++)
+	{
+		if (!Sim->Slots[(size_t)I].Thing.empty())
+		{
+			FThingHold& H = ThingHolds.AddDefaulted_GetRef();
+			H.Slot = I;
+			H.Thing = UTF8_TO_TCHAR(Sim->Slots[(size_t)I].Thing.c_str());
+		}
+	}
+	ThingHoldTimer = 0.f;
 	bLightSinksBound = false;
 	LightSinks.Reset();
 	LightTimer = 0.f;
@@ -334,6 +347,8 @@ void UPeopleLifeSubsystem::Stop()
 			Sim->DropSweep(P);
 		}
 	}
+	UpdateThingHolds(true);
+	ThingHolds.Reset();
 	Sim.Reset();
 	bStarted = false;
 }
@@ -636,6 +651,9 @@ bool UPeopleLifeSubsystem::UpdateClock(bool bFirst)
 	// and choose what to do by the weather (a bench in the drizzle, the beach in the frost: PeopleSim's Score)
 	S.Rain = Weather ? Weather->GetSky().Rain : 0.f;
 	S.TempC = Weather ? Weather->GetSky().TempC : 12.f;
+	// and the wind (a kite on the beach wants a breeze: activities.json "wind")
+	const ULyudWindSubsystem* WindSys = ULyudWindSubsystem::Get(GetWorld());
+	S.Wind = WindSys ? WindSys->GetMeanSpeed() : 5.f;
 	if (!bFirst && bClockSeen && FMath::Abs(Seconds - LastSeconds) > 900.0)
 	{
 		UE_LOG(LogTemp, Display, TEXT("PeopleLife: the clock jumped %.2f h; people resettled"), (Seconds - LastSeconds) / 3600.0);
@@ -1373,6 +1391,51 @@ void UPeopleLifeSubsystem::Tick(float DeltaTime)
 		SaveTimer = 5.f;
 		SyncMemory(true);
 	}
+	ThingHoldTimer -= DeltaTime;
+	if (ThingHoldTimer <= 0.f)
+	{
+		ThingHoldTimer = 1.f;
+		UpdateThingHolds(false);
+	}
+}
+
+void UPeopleLifeSubsystem::UpdateThingHolds(bool bReleaseAll)
+{
+	if (ThingHolds.Num() == 0 || !Sim)
+	{
+		return;
+	}
+	ULyudCityThings* Things = ULyudCityThings::Get(this);
+	if (!Things)
+	{
+		return;
+	}
+	const LP::FWorld& S = *Sim;
+	for (FThingHold& H : ThingHolds)
+	{
+		bool bAt = false;
+		if (!bReleaseAll && H.Slot >= 0 && H.Slot < (int32)S.Slots.size())
+		{
+			// somebody sitting down at it or sitting there (not on the way, not getting up)
+			for (const int U : S.Slots[(size_t)H.Slot].Users)
+			{
+				const LP::FPerson& P = S.People[(size_t)U];
+				bAt |= P.Slot == H.Slot && (P.State == LP::EState::Settling || P.State == LP::EState::Doing);
+			}
+		}
+		if (bAt != H.bHeld)
+		{
+			if (bAt)
+			{
+				H.bHeld = Things->ClaimThing(H.Thing, this);     // false while the hero sits there: tried again next time
+			}
+			else
+			{
+				Things->ReleaseThing(H.Thing, this);
+				H.bHeld = false;
+			}
+		}
+	}
 }
 
 // --- the town ------------------------------------------------------------------------------------------
@@ -1742,6 +1805,16 @@ int32 UPeopleLifeSubsystem::FindActivity(const FString& Id) const
 	return -1;
 }
 
+AActor* UPeopleLifeSubsystem::GetShownBody(int32 Id) const
+{
+	if (!Bodies.IsValidIndex(Id))
+	{
+		return nullptr;
+	}
+	AActor* Body = Bodies[Id];
+	return Body && !Body->IsHidden() ? Body : nullptr;
+}
+
 bool UPeopleLifeSubsystem::GetActivityState(int32 Id, int32& Activity, bool& bDoing, EPersonPose& Pose, FVector& Location) const
 {
 	if (!Sim || Id < 0 || Id >= (int32)Sim->People.size())
@@ -1804,6 +1877,11 @@ bool UPeopleLifeSubsystem::GetPerson(int32 Id, FPersonInfo& Out) const
 bool UPeopleLifeSubsystem::Order(int32 Id, const FString& Activity, const FString& PlaceId)
 {
 	return Sim && Sim->Order(Id, TCHAR_TO_UTF8(*Activity), TCHAR_TO_UTF8(*PlaceId));
+}
+
+bool UPeopleLifeSubsystem::SitBeside(int32 Id, const FVector& Where, float MaxCm, float Minutes)
+{
+	return Sim && Sim->OrderBeside(Id, PeopleFromUE(Where), MaxCm * 0.01f, Minutes);
 }
 
 bool UPeopleLifeSubsystem::SetHome(const FString& Household, const FString& FlatId)

@@ -1,0 +1,10 @@
+{
+ "id": "icon_wool_ball",
+ "lang": "ru",
+ "model": "higgsfield gpt_image_2_5 (2k, medium)",
+ "aspect": "1:1",
+ "prompt": "A round ball of soft blue woollen yarn with a loose end trailing, two wooden knitting needles stuck through it.",
+ "source": "design/city_goods/icons_city_3.png (sidecar design/city_goods/icons_city_3.json), cell 6 (row 2, right), cut into 3x3 equal cells, resized to 512x512",
+ "sha256": "ac61417100bb9b8133af415afe757c6c152501735a25dab8cd1ab7bd69ee552c",
+ "strings": {}
+}

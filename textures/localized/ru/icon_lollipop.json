@@ -1,0 +1,10 @@
+{
+ "id": "icon_lollipop",
+ "lang": "ru",
+ "model": "higgsfield gpt_image_2_5 (2k, medium)",
+ "aspect": "1:1",
+ "prompt": "A translucent amber hard-candy lollipop moulded in the shape of a cockerel, on a thin wooden stick.",
+ "source": "design/city_goods/icons_city_2.png (sidecar design/city_goods/icons_city_2.json), cell 1 (row 1, left), cut into 3x3 equal cells, resized to 512x512",
+ "sha256": "c319489f7b6acce985193d385e21d6ce5c06b442db24c62d1c02b6f5659103f8",
+ "strings": {}
+}

@@ -223,6 +223,11 @@ namespace LyudPeople
 			A.bStaff = V["staff"].F() > 0.f;
 			A.Pace = V["pace"].F(1.f);
 			A.bRainOk = V["rain"].S() == "ok";
+			if (V["wind"].Size() == 2)
+			{
+				A.WindMin = V["wind"][size_t(0)].F();
+				A.WindMax = V["wind"][size_t(1)].F();
+			}
 			if (A.bGather)
 			{
 				const std::string M = V["mode"].S("mingle");
@@ -394,6 +399,7 @@ namespace LyudPeople
 			SeatApproach(Pl, Sl, S.Find("approach") ? true : false);
 			Sl.Capacity = std::max(1, S["capacity"].I(1));
 			Sl.Tag = S["tag"].S();
+			Sl.Thing = S["thing"].S();
 			if (Pl.bIndoor)
 			{
 				Sl.Inside = Prefix;
@@ -1195,6 +1201,7 @@ namespace LyudPeople
 				SeatApproach(Pl, Sl, Pl.bShell || (S.Find("approach") ? true : false));
 				Sl.Capacity = std::max(1, S["capacity"].I(1));
 				Sl.Tag = S["tag"].S();
+			Sl.Thing = S["thing"].S();
 				if (!Prefix.empty())
 				{
 					Sl.Inside = Prefix;
@@ -2182,6 +2189,16 @@ namespace LyudPeople
 			if (TempC < 2.f && (IsSeated(A.Pose) || A.Pose == EPose::Look))
 			{
 				Score -= std::min(0.8f, (2.f - TempC) * 0.06f);
+			}
+			// an activity of the wind (a kite): out of its range nobody thinks of it, in the middle of it it calls
+			if (A.WindMin >= 0.f || A.WindMax < 99.f)
+			{
+				if (Wind < A.WindMin || Wind > A.WindMax)
+				{
+					return -1e9f;
+				}
+				const float Mid = 0.5f * (A.WindMin + A.WindMax), Half = std::max(0.5f, 0.5f * (A.WindMax - A.WindMin));
+				Score += 0.35f * (1.f - std::fabs(Wind - Mid) / Half);
 			}
 			if (TempC > 20.f && bSunUp && !bRain)
 			{
@@ -4074,6 +4091,41 @@ namespace LyudPeople
 		}
 		const FActivity& Act = Activities[A];
 		return Start(P, A, Best, (Act.MinMinutes + Act.MaxMinutes) * 0.5f, false, "ordered");
+	}
+
+	bool FWorld::OrderBeside(int Person, const V3& Pos, float MaxDist, double Minutes)
+	{
+		if (Person < 0 || Person >= (int)People.size())
+		{
+			return false;
+		}
+		FPerson& P = People[Person];
+		int BestSlot = -1, BestAct = -1;
+		float BestD = MaxDist;
+		for (int S = 0; S < (int)Slots.size(); S++)
+		{
+			const FSlot& Sl = Slots[S];
+			if (Sl.Height <= 0.f || !Sl.Free(Person))
+			{
+				continue;
+			}
+			const float D = (Sl.Pos - Pos).Len();
+			if (D >= BestD || D < 0.35f)
+			{
+				continue;
+			}
+			for (int A = 0; A < (int)Activities.size(); A++)
+			{
+				if (Activities[A].Id != "sleep" && SlotFits(P, Activities[A], S))
+				{
+					BestSlot = S;
+					BestAct = A;
+					BestD = D;
+					break;
+				}
+			}
+		}
+		return BestSlot >= 0 && Start(P, BestAct, BestSlot, Minutes, false, "sits with the player");
 	}
 
 	float BikeActSeconds(EBikeAct A)

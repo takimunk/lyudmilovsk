@@ -7,12 +7,14 @@
                     "pages": ["city.text.library_rules.1", "city.text.library_rules.2", "city.text.library_rules.3", "city.text.library_rules.4"]},
   "cog_minutes": {"title": "city.text.cog_minutes.title", "kind": "ledger", "minutes": 2, "collect": "reading/cog_minutes",
                   "pages": ["city.text.cog_minutes.1", "city.text.cog_minutes.2", "city.text.cog_minutes.3", "city.text.cog_minutes.4", "city.text.cog_minutes.5"]},
-  "paper_today": {"title": "city.text.paper_today.title", "kind": "newspaper", "minutes": 2, "collect": "reading/paper_today",
+  "paper_today": {"title": "city.text.paper_today.title", "kind": "newspaper", "minutes": 2, "collect": "reading/paper_today", "gen": "town_paper",
                   "pages": ["city.text.paper_today.1",
                             ["city.text.paper_today.p2_1", "city.text.paper_today.p2_2", "city.text.paper_today.p2_3", "city.text.paper_today.p2_4"],
                             "city.text.paper_today.3"]},
   "kids_hedgehog": {"title": "city.text.kids_hedgehog.title", "kind": "book", "minutes": 2, "collect": "reading/kids_hedgehog",
                     "pages": ["city.text.kids_hedgehog.1", "city.text.kids_hedgehog.2", "city.text.kids_hedgehog.3", "city.text.kids_hedgehog.4"]},
+  "paper_archive": {"title": "city.text.paper_archive.title", "kind": "newspaper", "minutes": 2, "collect": "reading/paper_archive", "gen": "paper_archive",
+                    "pages": ["city.text.paper_archive.1"]},
   "cookbook_soup": {"title": "city.text.cookbook_soup.title", "kind": "book", "minutes": 3, "collect": "reading/cookbook_soup",
                     "pages": ["city.text.cookbook_soup.1", "city.text.cookbook_soup.2", "city.text.cookbook_soup.3"]}
  },
@@ -21,6 +23,7 @@
   "read_kids_tale": {"like": "read_kids", "target": "read_kids", "read": {"texts": ["kids_hedgehog"]}},
   "read_cooking_soup": {"like": "read_cooking", "target": "read_cooking", "read": {"texts": ["cookbook_soup"]}},
   "read_cog_minutes": {"like": "read_local", "target": "read_local", "read": {"texts": ["cog_minutes"]}, "sound": "page_turn"},
+  "library_paper_archive": {"like": "library_press_local", "prompt": "city.act.paper_archive.prompt", "target": "library_press_local", "read": {"texts": ["paper_archive"]}},
   "library_rules_card": {"like": "look_catalogue", "prompt": "city.act.read.prompt", "target": "look_catalogue", "read": {"texts": ["library_rules"]}}
  },
  "rules": {

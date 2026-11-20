@@ -206,6 +206,9 @@ An act is what happens when the hero presses E at a thing:
 | `game` | a mini-game played instead of showing `lines` (see "Mini-games"); an act `like` it inherits it (`"game": null` drops it) |
 | `read` | `{"texts": ["<text id>", ...], "rotate": "use"|"daily"}`: the reading view opens one of these texts instead of the lines (in turn at each use, or one a game day); only on a `shelf`, `board`, `seat` or `take` (see "The reading page") |
 | `sleep` | `true` (with `pose: lie`): the hero chooses the hour he wakes at instead of the act's `minutes`/`until` (which give the first hour offered; see "Sitting and lying") |
+| `stay` | `{"id": "<stay>", "days": 1..60}`: running it puts the hero on that stay for so many days (added to the days left of one he is on): a sanatorium's voucher (see "Stays") |
+| `needs_stay` | a stay id: only for those on it; without it the thing does the act's `no_stay` instead |
+| `no_stay` | with `needs_stay`: an act id (a real act that runs in full: the voucher sold at the same window) or a line key / `"<prefix>.*"` (words only, made like a closed act); none: refused as closed |
 | `like` | content only: inherit every field of that act, then override |
 
 A thing record of `interiors.json` has `id`, `plot`, `kind`, `ue`, `yaw`, `props`, `act`, `hours`, `days`, and when they
@@ -257,11 +260,13 @@ id not in `Content/PeopleData/festivals.json`, a weather word not in the list, a
 | `once` | `true`: shown once at a thing, then skipped there (remembered in the save, `o:<thing>|<key>`; per thing: another board with the same act shows it once too) |
 | `every` | `[n, r]`: the days since the game began `% n == r` |
 | `festival` | `"any"` (a holiday today: `ULyudFestivalSubsystem::IsFestivalToday`; the weekly market does not count), `"none"` (no holiday today), a festival id (`new_year`, `lantern_night`, `sea_festival`, `weekend_market`...: one on now, `ActiveFestivals`) or a list of ids. On a `daily` act a holding festival line takes the day (the board shows the holiday notice all day; the run of notices goes on the next day where it was, nothing skipped); on a `use` act it joins the turn |
-| `weather` | `rain`, `snow`, `fog`, `cold` (< 2 C), `warm` (> 22 C), `clear`, `wet` (wet ground), `dry` (nothing falling), or a list: any of them. From `ULyudWeatherSubsystem::GetSky()` with the townsfolk's talk thresholds (`LyudCity::WeatherBits`) |
+| `weather` | `rain`, `snow`, `fog`, `cold` (< 2 C), `warm` (> 22 C), `clear`, `wet` (wet ground), `dry` (nothing falling), or a list: any of them; a `"!word"` must not be so now (`["dry", "!fog"]`: dry and clear of fog; unknown weather has none of the words, so a line of only `!words` holds then). From `ULyudWeatherSubsystem::GetSky()` with the townsfolk's talk thresholds (`LyudCity::WeatherBits`) |
 | `have` | `"set/piece"`: the hero has that stamp |
 | `count` | `["set", n]`: the hero has at least n stamps of the set |
 | `collect` | no condition: the stamp the hero gets when the line is shown; `"set/*"` on a `"<prefix>.*"` entry gives each line the key's last part as its piece |
+| `pay` | no condition: roubles (1..500) the hero earns when a run shows the line (a small job, below): only an act's own lines (the act needs a `daily` limit) and a game's result lines; never a closed thing's words, a page turned with "next", a topic or a text (`--check` refuses those) |
 | `read` | `"<text id>"`: the hero has read that text of the reading view to its end (`--check` fails on an unknown text) |
+| `stay` | `"<stay id>"`: the hero is on that stay today; `"!<id>"`: he is not (see "Stays"). A treatment's old lines carry `"!san"`, its course lines (with their stamps) `"san"` |
 
 Content tables (`tools/city/content/*.json`, each with any of `acts`, `shops`, `rules`, `defaults`,
 `defaults_by_plot_kind`, `quests`, `collections`, `closed_by`, `texts`; any other section is an error, and so is a key defined in two
@@ -312,6 +317,7 @@ the day, the uses), so citysim decides every rule. Three types:
 | `collect` | the stamp a win gives; `{opponent}` is the regular's id (`chess_wins/{opponent}`: «chess opponents beaten») |
 | `prize` | items a win gives: `[["item", n]]` |
 | `daily` | games a day (0: no limit); after that the act runs as before, with its own lines |
+| `pay` | roubles a point (aim) or a hit (rally) the hero scored, whatever the result, on top of the result line's own `pay` (a small job paid by the piece; needs `daily`) |
 | `sounds` | `{"hit", "miss", "end"}` soundscape ids (defaults `rest_clink`/`mouse_clicks`, none, `rest_bell`) |
 
 **Regulars** (`games.json` `regulars`, written to `interiors.json`): `{"<id>": {"name": "npc.<resident>.name", "style",
@@ -320,6 +326,78 @@ the day, the uses), so citysim decides every rule. Three types:
 Freja, Hiroshi; lines `city.player.<id>.*`). The game picks one of those who play it on that plot or anywhere (else anyone
 who plays it), by the seed. A win `Notify("win", <act target>)` for the quests besides the usual `do`. Result page:
 `<thing>#<result>` keeps its own place in the lines. Words: `strings/games.json`.
+
+### Small jobs
+
+The bicycle rounds (the morning papers from kiosk 1, the post round for the old postman) are run by the engine, not by an
+act: `docs/rounds.md`. The boards carry their sheet (`city.text.jobs.rounds`), and `x_rounds.json` holds their stamp set and quest.
+
+Short paid shifts (`tools/city/content/x_jobs.json`, strings `strings/x_jobs.json`): the hero earns roubles by the result of a
+real loop of acts, at most once a day (or so many entries a day), with a resident of the town as the boss on shift (the act's
+`needs_staff`). No job block in the model: a job is an ordinary act whose lines carry `pay`, or a game with `pay` a point and
+paid result lines (`FOutcome::Pay`, `FGameEnd::Pay`; the game calls `ULyudInventory::Earn` and shows `city.job.paid`). A job
+thing gets its hours and days from its rule, and its old act becomes its `closed` words, so outside the job it says what it
+always said, unpaid. Every job's lines give the piece of the stamp set `work_book` («Трудовая книжка»).
+
+| job | thing | when | boss (role) | how it pays |
+|---|---|---|---|---|
+| the morning papers | `P-KIOSK1/price_board` | wed-sun 8-10 | Yerlan Romero (seller) | 25, rain 35, cold 30 |
+| the crates | `P-MARKET/market_scales_2` | sat 6-10 | Parisa Petrosyan (seller) | 20, rain 25 |
+| the scales | `P-MARKET/market_scales` | sat 7-13 | the same | aim: 3 a point + win 20 / draw 10 / lose 5 |
+| the flag | `P-LIFEGUARD1/flag_halyard` | wed-sun 10-19 | Eitan Kowalski (lifeguard) | 10; the line is the right flag: fog red, rain or cold yellow, calm green, drizzle yellow |
+| the watch | `P-LIFEGUARD1/whistle` | wed-sun 10-19 | the same | rally: 3 a whistle in time + 25 / 15 / 8 |
+| the night log | `P-PIER/keeper_clockwork` | 18-7, six entries a day | Aram Oliveira, after midnight Arkady Kobayashi (lighthouse_keeper) | the lamp 15, an hour's entry 10, dawn 15 |
+| the ice cream | `P-CAFE/cake_vitrine` | open hours | the barista | aim: 2 a scoop + 20 / 12 / 6; after it the case shows its menu text |
+| the door | `P-CLUB2/ticket_stubs` | wed-sun 17-20 | Kaveh Bergström (clerk) | rally: 2 a ticket + 20 / 12 / 6 |
+
+The boards "Требуется помощь" (`job_board` on the house committees' duty boards, `job_board_youth` on the games room's rules
+board in P-UNITE) read a notice text: a heading page, today's jobs by weekday, the beach, and the board's old page (the duty
+roster, the games room's rules). The bosses' counters (and the flag) have a talk topic `job.*` (its second answer once the hero
+has done that job). The quest `job_book` begins at a board and wants each job once (50 roubles). citysim `JobChecks` plays
+every job on the real data: pay by weather and result, once a day, the closed words unpaid, the book filled.
+
+### Tournaments
+
+Three weekly knock-out cups of eight (`tools/city/content/x_tournaments.json`, words `strings/x_tournaments.json`; the rules in
+`Private/City/CityCupsModel.h`, plain C++ on top of the model; `interiors.py` writes them to `Content/City/tournaments.json`):
+
+| cup | game | where | when | bracket board |
+|---|---|---|---|---|
+| `cog_chess` | chess | P-CLUB3 (both chess tables) | Saturday, rounds 13:00, 14:30, 16:00 | `league_board` (was `cog_league`) |
+| `san_dominoes` | dominoes | P-SANATORIUM lounge | Wednesday, 15:00, 16:00, 17:00 | `pump_schedule` |
+| `tt_cup` | table tennis | P-T3SPORT (both tables) | Sunday, 11:00, 12:00, 13:00 | `cabin_results` (was `t3_results`) |
+
+```
+"tournaments": {"<id>": {"title": key, "venue": key, "game": "<vs>", "plot": "P-…", "days": "sat", "start": 13, "step": 1.5,
+                         "collect": "cups/<id>"}}
+a text {"gen": "cup:<id>", "kind": "notice", "pages": [fallback]} read on some thing of the town (the bracket board)
+```
+
+* **The field**: every regular who plays the game (the clubs' ten, the x_ files' own, and 15 guests in x_tournaments.json:
+  real residents free at those hours, each with a style, a skill and three lines; they also sit down at their venue's
+  tables any day). Eight are drawn by a hash of the cup and the day and seated by it, so a day's bracket is the same
+  whenever it is asked; matches between regulars go by skill and a die of the day (the stronger win about two times in
+  three). `--check`: at least eight players, a table of the game on the plot open through the three rounds that weekday, a
+  board reading the `cup:<id>` text.
+* **The hero**: reading the board to its last page writes his name on the sheet (`city.cup.toast.signed`) for today if the
+  first round has not begun, else for next week. Signed up, in his round's hours at a table of the plot with the game, the
+  game's opponent is the bracket's (`FCups::MatchAt`; the title says the cup and the round) and the day's limit of games
+  does not count (`FAsk::bFreeGame`). A win: the next round's hour under the result line; a draw is played again; a loss
+  or not sitting down by the end of the round (a no-show) puts him out. The final won gives the stamp `cups/<id>`
+  (collection `cups`, «Кубки клубов»): the cup stands in the board's cup case.
+* **The board** (`FCups::Pages`): the tournament (weekday and venue, the rounds' hours, the game's rule, the sheet: "your name
+  is on the list"), today's bracket from its start or the last one (the hero as «новичок (вы)», "(to be decided)" for the
+  winners to come, no-shows), the cup case (the last six champions, the hero's cups).
+* **The paper** (`ULyudCityThings::GetCupNews`): the morning after, the champion and runner-up and how far the hero got; his
+  cup is a front story; the day's tournament is announced on the bills page.
+* **Saved** with the model's map: `k:s:<cup>@<day>` signed up, `k:r:<cup>@<day>` his results (`W`/`L`), so brackets of past
+  days are worked out again from them.
+* Console `lyud.City.Cups [sign]` (the boards to the log; `sign`: on every sheet), developer mode `interiors.cups_sign`.
+* citysim (`tools/citysim/cupchecks.h`): 52 weeks of each cup (sane, stable, played out, the stronger win more, many
+  champions), the hero's whole way to the cup (a draw replayed, the opponents of the next rounds, the stamp, the news), a
+  no-show, a loss, the save, every word of a month of boards.
+* Not done: the regulars are not seen at the tables (the life sim does not seat them on game things yet), no cup item (the
+  stamp and the case's line stand for it).
 
 ### Wall clocks and light switches
 
@@ -383,7 +461,8 @@ last page the first time reads it: the text's `collect` stamp, the HUD's `city.b
 
 ```
 "texts": {"<id>": {"title": "<key>", "kind": "book|notice|ledger|newspaper", "minutes": 0..30 (2),
-                   "collect": "<set>/<piece>", "pages": ["<key>", {"k": "<key>", <line conditions>}, [<alternatives>], ...]}}
+                   "collect": "<set>/<piece>", "gen": "town_paper|paper_archive" (optional),
+                   "pages": ["<key>", {"k": "<key>", <line conditions>}, [<alternatives>], ...]}}
 "acts":  {"<act>": {..., "read": {"texts": ["<id>", ...], "rotate": "use|daily"}}}
 "acts":  {"sleep_night": {..., "pose": "lie", "sleep": true}}
 line condition: {"k": "<key>", "read": "<text id>"}
@@ -397,6 +476,48 @@ without pages, a `read` act on another kind, `sleep` without `pose: lie`. Now: s
 children's wall, the store's, clinic's, hall's and club's shelves and every daily paper; the set `reading`. Console
 `lyud.City.Read <text id>|next|prev|close|list|all|clear`; developer mode `interiors.read_nearest`,
 `interiors.read_all` (toggle: every text read / none), `interiors.read_list`.
+
+### Stays
+
+A stay is a voucher for some days at a plot that keeps a regime: the sanatorium «Корона»'s course of cure (stay `san`,
+`tools/city/content/x_p_sanatorium.json`, words in `strings/x_p_sanatorium_course.json`). Declared in a content file's
+`stays` section, written to `interiors.json` `stays`:
+
+```
+"stays": {"<id>": {"plot": "<plot id>", "curfew": [from, to), "act": "<act id> | <line key> | <prefix>.*", "allow": ["<act id>", ...]}}
+```
+
+* An act's `stay` (`{"id", "days"}`) starts it when it runs (on one already: the days are added). The model keeps the first
+  day (since the game began) it no longer holds: `s:<id>` in the save; `FModel::OnStay`, `StayDaysLeft`, `StartStay` (0 days
+  ends it), `GetStays`.
+* Lines, pages and topics ask `"stay": "<id>" | "!<id>"`. An act's `needs_stay` sends those without the stay to its `no_stay`
+  act (`FModel::ActIndexNow`): words only when it is a `_closed:` act (target `closed`), else a real act with its own price,
+  staff and limits (`IsWordsOnly`). So one thing can sell the voucher to those without one and extend it for those on it.
+* The curfew: while the hero is on the stay, in its hours every thing of its plot whose act is not lying (`pose: lie`), not
+  selling a stay and not in `allow` does the curfew act instead (words only: the duty nurse sends him to bed). Developer
+  mode's open-all lifts it.
+* A daily act's `once` line stays today's line all day (reading it twice does not skip to tomorrow's part): the dining
+  tables' stories, a part a day, end on a plain line that stays.
+
+**The course at «Корона».** The cloakroom window: a 3-day voucher (`san_voucher`, 90 ₽), on one an extension by 4 days
+(`san_extend`, 100 ₽, once a day: 7 days in all). The health-resort book `san_course` (9 stamps, only on the voucher): the
+springs «Корона-1» at 8, «Янтарная» at 13, «Маячная» at 18 (`san_pump` at the pump room, `h` windows; off the hour no stamp),
+the morning exercises (a won rally, 7-9), quartz (the doctor, weekdays), the oxygen cocktail, the health path (`san_walk`,
+the route map in the treatment room, 7-21, a fade), quiet hour lying on the couch 14-16 (`san_quiet_hour`), the evening in
+the lobby 19-23. The book is read in the treatment room's card index (`san_book`, text `san_course_book`: a page per stamp).
+The regime board shows the guest's own day; the other couch is a free night bed on the voucher, the paid night otherwise;
+curfew 23-6 (`city.san.curfew.*`; the night bell, the clocks, the radio and the switches still answer). The dining room:
+the window table (Gromov, a cosmonaut's backup's backup, and Sonya with her violin: `dining_1_b`) and the chess table
+(Tamm and Sazonov and their 1961 game: `dining_2_b`) tell their stories a part a day (nine each); the guests' own chairs have
+their things. The doctor's topics `sand.course` and `sand.discharge` (offered with all nine stamps, once), the nurse's
+`sand.curfew`; the quest `sanatorium_course` ends with the discharge and the item `san_diploma`, which, carried, gives a
+quarter more air underwater (`ULyudSwimComponent`). citysim plays the whole course on the real data (`CourseChecks`).
+The guests are told, not yet seated as townsfolk: the people's life does not route residents to the dining room's chairs.
+
+A text with `gen` is set by the game each day (`ULyudTownPaper`, docs/town_paper.md): the daily paper `paper_today`
+(`town_paper`) and the library rack's archive `paper_archive`; its own pages show only when the paper's data is missing. The
+notice boards (`look_lost`, `look_club`, `look_health`, `look_wallpaper` and the acts like them without lines of their own)
+read `notices_<board>` (`tools/city/content/x_notices.json`, written by `tools/paper/paper.py`): dated notices by the calendar.
 
 ### Lifts and storey links
 
@@ -694,6 +815,12 @@ the list (their ids play nothing from an act).
   remains: with one of our modes up and somebody stepping in front, E starts the NPC's talk over our page (ours waits).
 * Perf ([perf checklist](../README.md)): no per-frame allocation, no actors or components per thing, nothing past the town box,
   the file parsed off the game thread.
+
+### Hook for other systems
+
+`ULyudCityThings::ActHook` (one listener): asked after an act ran (not refused, not a shut plot's words) with the thing, the
+act id, the line key and the point; it may replace the page's line (one page then). `GetThingsByAct`, `ActOfThing`, `GiveStamp`
+go with it. Used by the records and the radio (`docs/music.md`): jukeboxes, record players, radios and «Волна»'s request box.
 
 ### API for townsfolk
 

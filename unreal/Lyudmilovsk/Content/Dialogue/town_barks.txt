@@ -18,6 +18,8 @@
 # manner =    what their hands are doing now (manners.json: smoke, phone_call, umbrella, feed_birds, yawn, ...)
 # temper =    who they are in manner (their persona's strong sides): warm, reserved, nervy, calm, curious, tidy, careless
 # met =       how well the speaker knows the player: new (never greeted him), seen (on 1-4 days), known (5 and more)
+# bond =      how close a friend of his the speaker is (docs/friends.md): friendly, friend, close; lines of a set with
+#             bond = friend or close may hold {0}: the nickname the friend gave him
 # gather =    at a holiday's gathering of this mode now: mingle, watch, sit, fair
 # chrono =    lark, owl, night, usual                 need =  hunger, tired, social, fun, nature, mind, sun (over 0.75)
 # hours =     5-9 (from-to; over midnight 22-4; several ranges: 6-9 17-20)    months = 10-4    weekday = mon ... sun
@@ -914,6 +916,9 @@ weight = 3
 talk = town.guest_talk4.1 | town.guest_talk4.2 | town.guest_talk4.3 | town.guest_talk4.4
 
 # Festival days (Content/PeopleData/festivals.json, ULyudFestivalSubsystem::ActiveFestival / ActivePhase)
+# The Big Sun's day (sun_day: the star comes near; docs/festivals.md, docs/story/motifs.md "Солнце"). Nobody says why
+# they love it: they just can't not look.
+# Poplar fluff (ULyudPoplarFluffSubsystem: June, dry days), the other new town days
 
 [fest_greet]
 to = hero
@@ -1214,6 +1219,135 @@ doing = gather_mingle chat
 hours = 12-21
 weight = 5
 talk = town.fest_talk1.1 | town.fest_talk1.2 | town.fest_talk1.3
+
+[bigsun_greet]
+to = hero
+festival = sun_day
+age = teen adult
+weight = 6
+say = town.bigsun_greet.1..2
+
+[bigsun_greet_elder]
+to = hero
+festival = sun_day
+age = elder
+weight = 6
+say = town.bigsun_greet_elder.1
+
+[bigsun_greet_kid]
+to = hero
+festival = sun_day
+age = kid
+weight = 6
+say = town.bigsun_greet_kid.1..2
+
+[bigsun]
+at = outdoors
+festival = sun_day
+weight = 3
+say = town.bigsun.1..6
+
+[bigsun_eve]
+at = outdoors
+festival = sun_day
+phase = eve
+weight = 6
+say = town.bigsun_eve.1..3
+
+[bigsun_zenith]
+at = outdoors
+festival = sun_day
+phase = zenith
+weight = 7
+say = town.bigsun_zenith.1..5
+
+[bigsun_zenith_kid]
+at = outdoors
+festival = sun_day
+phase = zenith
+age = kid
+weight = 8
+say = town.bigsun_zenith_kid.1..2
+
+[bigsun_zenith_hero]
+to = hero
+festival = sun_day
+phase = zenith
+age = adult elder
+weight = 8
+say = town.bigsun_zenith_hero.1
+
+[bigsun_sea]
+at = outdoors
+festival = sun_day
+phase = seaside stroll
+weight = 5
+say = town.bigsun_sea.1..4
+
+[bigsun_sunset]
+at = outdoors
+festival = sun_day
+phase = sunset
+weight = 7
+say = town.bigsun_sunset.1..4
+
+[bigsun_talk]
+festival = sun_day
+doing = gather_mingle chat
+weight = 6
+talk = town.bigsun_talk1.1 | town.bigsun_talk1.2 | town.bigsun_talk1.3
+talk = town.bigsun_talk2.1 | town.bigsun_talk2.2 | town.bigsun_talk2.3 | town.bigsun_talk2.4
+
+[poplar_fluff]
+at = outdoors
+months = 6
+weather = !rain
+hours = 8-21
+weight = 2
+say = town.poplar_fluff.1..4
+
+[poplar_fluff_kid]
+at = outdoors
+months = 6
+weather = !rain
+hours = 8-21
+age = kid
+weight = 3
+say = town.poplar_fluff_kid.1
+
+[city_day]
+festival = city_day
+weight = 3
+say = town.city_day.1..2
+
+[city_day_parade]
+at = outdoors
+festival = city_day
+phase = parade
+weight = 5
+say = town.city_day_parade.1
+
+[kite_day]
+at = outdoors
+festival = kite_day
+weight = 4
+say = town.kite_day.1..2
+
+[cat_day]
+festival = cat_day
+weight = 4
+say = town.cat_day.1..2
+
+[book_day]
+festival = book_day
+weight = 4
+say = town.book_day.1..2
+
+[amber_morning]
+at = outdoors
+festival = amber_morning
+weight = 5
+say = town.amber_morning.1..3
 
 # Small talk: two townsfolk talking (chat, gathering in groups) or sitting side by side
 
@@ -1851,3 +1985,455 @@ weather = warm
 age = teen adult elder
 weight = 3
 say = town.evening_front_warm.1..2
+
+# The hero's animal friends (docs/animals.md "Friends"): what the townsfolk say when he walks past with a dog at his
+# heel. Event (on = ...): dog_walk (UAnimalFriendSubsystem: a friend dog at heel, a resident within a few metres).
+
+[notice_dog_walk]
+on = dog_walk
+age = adult elder
+say = town.notice_dog_walk.1..6
+
+[notice_dog_walk_kid]
+on = dog_walk
+age = kid teen
+say = town.notice_dog_walk_kid.1..4
+
+# Friends among the townsfolk (backlog item 12; the words of the feature: tools/friends/content.py).
+# bond = friendly | friend | close: how close the speaker is to the hero (absent: anyone). {0} is the nickname the
+# friend gave him (friends.nick.*), only in sets with bond = friend close. Greetings (to = hero), a wave from afar
+# (on = friend_wave), the friend's day told on a bench (on = friend_bench), at their family's weekend outing
+# (on = friend_outing), his postcard came (on = friend_card), his present remembered (on = friend_gift).
+# Russian: the speaker's own words never agree in gender (no past tense about themselves); the hero is a boy.
+# --- greetings ---
+# --- a friend waves first, from across the street ---
+# --- on a bench together: the friend's day ---
+# --- the hero joins their family's weekend outing ---
+# --- his postcard came ---
+# --- his present remembered ---
+
+[friend_greet_friendly]
+to = hero
+bond = friendly
+age = adult elder
+weight = 2
+say = town.friend_greet_friendly.1..4
+
+[friend_greet_friendly_young]
+to = hero
+bond = friendly
+age = kid teen
+weight = 2
+say = town.friend_greet_friendly_young.1..3
+
+[friend_greet_friendly_rain]
+to = hero
+bond = friendly
+weather = rain
+weight = 2
+say = town.friend_greet_friendly_rain.1
+
+[friend_greet_friend]
+to = hero
+bond = friend
+age = adult elder
+weight = 3
+say = town.friend_greet_friend.1..5
+
+[friend_greet_friend_kid]
+to = hero
+bond = friend
+age = kid
+weight = 3
+say = town.friend_greet_friend_kid.1..3
+
+[friend_greet_friend_teen]
+to = hero
+bond = friend
+age = teen
+weight = 3
+say = town.friend_greet_friend_teen.1..3
+
+[friend_greet_close]
+to = hero
+bond = close
+age = adult elder
+weight = 4
+say = town.friend_greet_close.1..4
+
+[friend_greet_close_kid]
+to = hero
+bond = close
+age = kid
+weight = 4
+say = town.friend_greet_close_kid.1..2
+
+[friend_greet_close_teen]
+to = hero
+bond = close
+age = teen
+weight = 4
+say = town.friend_greet_close_teen.1..2
+
+[friend_greet_morning]
+to = hero
+bond = friend close
+age = adult elder
+hours = 6-10
+weight = 4
+say = town.friend_greet_morning.1..2
+
+[friend_greet_evening]
+to = hero
+bond = friend close
+hours = 18-23
+weight = 4
+say = town.friend_greet_evening.1..2
+
+[friend_greet_rain]
+to = hero
+bond = friend close
+weather = rain
+weight = 4
+say = town.friend_greet_rain.1..2
+
+[friend_wave]
+on = friend_wave
+bond = friend close
+age = teen adult elder
+say = town.friend_wave.1..4
+
+[friend_wave_kid]
+on = friend_wave
+bond = friend close
+age = kid
+say = town.friend_wave_kid.1..3
+
+[friend_wave_morning]
+on = friend_wave
+bond = friend close
+age = adult elder
+hours = 6-10
+say = town.friend_wave_morning.1
+
+[friend_bench_pensioner]
+on = friend_bench
+bond = friend close
+job = pensioner
+weight = 2
+say = town.friend_bench_pensioner.1..5
+say = town.friend_bench_pensioner.7
+say = town.friend_bench_pensioner.6
+say = town.friend_bench_pensioner.8
+
+[friend_bench_elder_warm]
+on = friend_bench
+bond = friend close
+age = elder
+weather = warm clear
+say = town.friend_bench_elder_warm.1..2
+
+[friend_bench_elder_cold]
+on = friend_bench
+bond = friend close
+age = elder
+weather = cold snow
+say = town.friend_bench_elder_cold.1..2
+
+[friend_bench_elder_rain]
+on = friend_bench
+bond = friend close
+age = elder
+weather = rain
+say = town.friend_bench_elder_rain.1
+
+[friend_bench_pupil]
+on = friend_bench
+bond = friend close
+job = pupil
+weight = 2
+say = town.friend_bench_pupil.1..6
+
+[friend_bench_kid]
+on = friend_bench
+bond = friend close
+age = kid
+say = town.friend_bench_kid.1..2
+
+[friend_bench_kid_rain]
+on = friend_bench
+bond = friend close
+age = kid
+weather = rain
+say = town.friend_bench_kid_rain.1
+
+[friend_bench_teen]
+on = friend_bench
+bond = friend close
+age = teen
+say = town.friend_bench_teen.1..2
+
+[friend_bench_student]
+on = friend_bench
+bond = friend close
+job = student
+say = town.friend_bench_student.1..3
+
+[friend_bench_fisherman]
+on = friend_bench
+bond = friend close
+job = fisherman
+weight = 2
+say = town.friend_bench_fisherman.1
+say = town.friend_bench_fisherman.5
+say = town.friend_bench_fisherman.2..4
+
+[friend_bench_fisherman_rain]
+on = friend_bench
+bond = friend close
+job = fisherman
+weather = rain fog
+say = town.friend_bench_fisherman_rain.1
+
+[friend_bench_fisherman_cold]
+on = friend_bench
+bond = friend close
+job = fisherman
+weather = cold
+say = town.friend_bench_fisherman_cold.1
+
+[friend_bench_seller]
+on = friend_bench
+bond = friend close
+job = seller vendor fishmonger
+say = town.friend_bench_seller.1
+say = town.friend_bench_seller.3
+say = town.friend_bench_seller.2
+
+[friend_bench_programmer]
+on = friend_bench
+bond = friend close
+job = programmer
+say = town.friend_bench_programmer.1..2
+
+[friend_bench_artist]
+on = friend_bench
+bond = friend close
+job = artist photographer
+say = town.friend_bench_artist.1..3
+
+[friend_bench_musician]
+on = friend_bench
+bond = friend close
+job = musician choir_leader
+say = town.friend_bench_musician.1..2
+
+[friend_bench_writer]
+on = friend_bench
+bond = friend close
+job = writer
+say = town.friend_bench_writer.1..3
+
+[friend_bench_cook]
+on = friend_bench
+bond = friend close
+job = cook baker
+say = town.friend_bench_cook.1..3
+
+[friend_bench_teacher]
+on = friend_bench
+bond = friend close
+job = teacher
+say = town.friend_bench_teacher.1..2
+
+[friend_bench_doctor]
+on = friend_bench
+bond = friend close
+job = doctor nurse
+say = town.friend_bench_doctor.1..2
+
+[friend_bench_lifeguard]
+on = friend_bench
+bond = friend close
+job = lifeguard
+say = town.friend_bench_lifeguard.1..2
+
+[friend_bench_keeper]
+on = friend_bench
+bond = friend close
+job = lighthouse_keeper
+say = town.friend_bench_keeper.1..2
+
+[friend_bench_away]
+on = friend_bench
+bond = friend close
+job = away
+weekday = sat sun
+say = town.friend_bench_away.1
+
+[friend_bench_adult]
+on = friend_bench
+bond = friend close
+age = adult
+say = town.friend_bench_adult.1..2
+
+[friend_bench_rain]
+on = friend_bench
+bond = friend close
+weather = rain
+say = town.friend_bench_rain.1..2
+
+[friend_bench_cold]
+on = friend_bench
+bond = friend close
+weather = cold
+say = town.friend_bench_cold.1
+
+[friend_bench_warm]
+on = friend_bench
+bond = friend close
+weather = warm
+say = town.friend_bench_warm.1
+
+[friend_bench_clear]
+on = friend_bench
+bond = friend close
+weather = clear
+say = town.friend_bench_clear.1
+
+[friend_bench_festival]
+on = friend_bench
+bond = friend close
+festival = any
+weight = 2
+say = town.friend_bench_festival.1..2
+
+[friend_bench_morning]
+on = friend_bench
+bond = friend close
+hours = 6-10
+say = town.friend_bench_morning.1..2
+
+[friend_bench_evening]
+on = friend_bench
+bond = friend close
+hours = 18-23
+say = town.friend_bench_evening.1..2
+
+[friend_outing]
+on = friend_outing
+bond = friend close
+age = teen adult elder
+say = town.friend_outing.1..5
+
+[friend_outing_parent]
+on = friend_outing
+bond = friend close
+age = adult
+say = town.friend_outing_parent.1
+
+[friend_outing_kid]
+on = friend_outing
+bond = friend close
+age = kid
+say = town.friend_outing_kid.1..2
+
+[friend_card]
+on = friend_card
+bond = friendly friend close
+age = teen adult elder
+say = town.friend_card.1..3
+
+[friend_card_named]
+on = friend_card
+bond = friend close
+age = teen adult elder
+weight = 2
+say = town.friend_card_named.1..2
+
+[friend_card_kid]
+on = friend_card
+bond = friendly friend close
+age = kid
+say = town.friend_card_kid.1
+
+[friend_gift]
+on = friend_gift
+bond = friendly friend close
+say = town.friend_gift.1..2
+
+[friend_gift_named]
+on = friend_gift
+bond = friend close
+say = town.friend_gift_named.1..2
+
+# Kites (docs/kites.md): the children flying kites on windy afternoons (town life's fly_kite), the grown-ups who watch
+# them on the beach, a kite flier noticing the player's own kite
+
+[kite_kid]
+doing = fly_kite
+say = town.kite_kid.1..6
+
+[kite_kid_box]
+doing = fly_kite
+age = teen
+say = town.kite_teen.1..2
+
+[kite_watch]
+at = beach
+age = adult elder
+doing = sea_air swim_look sun_watch
+say = town.kite_watch.1..3
+
+[kite_hero]
+doing = fly_kite
+near = hero
+say = town.kite_hero.1..2
+
+# The hero plays (docs/instruments.md): somebody near the piano or the guitar notices (on = hero_plays), a tune played to
+# its end gets a word (on = hero_played), and by a bonfire the circle sings the tune's words with him (on = hero_sing_<tune>,
+# one line at a time, a voice after a voice).
+# Words that are sung: Jane Taylor's «Twinkle» (d. 1824), the Hill sisters' «Happy Birthday» (public domain), Nekrasov's
+# «Коробейники» (d. 1878), Pierpont's «Jingle Bells» (d. 1893) and the traditional «さくら さくら» in their own language;
+# every other language is our own translation (never a published one still under copyright).
+# ---- the bonfire's songs: each line one singer's turn
+
+[notice_plays]
+on = hero_plays
+say = town.notice_plays.1..6
+
+[notice_plays_kid]
+on = hero_plays
+age = kid
+weight = 2
+say = town.notice_plays_kid.1..2
+
+[played_tune]
+on = hero_played
+say = town.played_tune.1..5
+
+[played_tune_kid]
+on = hero_played
+age = kid
+weight = 2
+say = town.played_tune_kid.1
+
+[sing_twinkle]
+on = hero_sing_twinkle
+say = town.sing_twinkle.1..3
+
+[sing_happy_birthday]
+on = hero_sing_happy_birthday
+say = town.sing_happy_birthday.1..3
+
+[sing_korobeiniki]
+on = hero_sing_korobeiniki
+say = town.sing_korobeiniki.1..4
+
+[sing_jingle_bells]
+on = hero_sing_jingle_bells
+say = town.sing_jingle_bells.1..4
+
+[sing_sakura]
+on = hero_sing_sakura
+say = town.sing_sakura.1..3
