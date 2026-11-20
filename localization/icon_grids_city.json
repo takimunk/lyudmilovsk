@@ -1,0 +1,97 @@
+{
+ "_doc": "Grid plan for the icons of the town's new goods (docs/city_new_goods.md): 4 pictures of 3x3 equal cells instead of 36 (the game-assets skill: always a grid). Not generated yet. Cell order is row by row, left to right: ids[0] is row 1 left, ids[8] row 3 right. After a run: save the picture at `output`, write its sidecar next to it (service, tool, every argument, job id, output URL, credits), cut it into 9 equal cells (the same cutting as tools/characters/cut_grid.py, 3 columns x 3 rows) into textures/localized/ru/icon_<id>.jpg, look at every cell, then unreal/scripts/import_hall_assets.py. Each cell's own words are icon_<id>.prompt in localization/assets.json.",
+ "grids": [
+  {
+   "id": "icons_city_1",
+   "what": "bakery and street food",
+   "service": "higgsfield MCP",
+   "tool": "generate_image",
+   "model": "gpt_image_2_5",
+   "aspect_ratio": "1:1",
+   "resolution": "2k",
+   "quality": "medium",
+   "output": "design/city_goods/icons_city_1.png",
+   "prompt": "Nine inventory icons for a moody adventure game, arranged as a 3 by 3 grid of equal square cells on one picture: in every cell one object centred and filling most of the cell, softly lit from the upper left, painterly realistic style, plain dark warm-grey cloth background with a faint vignette, the same background and the same scale in every cell (every object drawn at the same icon size, as large as the cell allows with a margin), no borders, frames or lines between the cells, nothing crossing a cell edge, exactly one object or one small group per cell, no text, letters, numbers or logos anywhere, not even on the objects. Everyday goods of a 1970s-80s Soviet seaside town, no real brands. Row 1, left: a brick-shaped loaf of dark Soviet rye bread with a shiny brown crust and a few caraway seeds, on a scrap of plain wrapping paper. Row 1, middle: five glossy golden bagel rings sprinkled with poppy seeds, threaded on a loop of rough twine. Row 1, right: a round golden sweet bun with a well of white baked curd cheese in its centre, on a square of greaseproof paper. Row 2, left: a small round shortcrust pastry basket filled with piped pale cream shaped like two tiny mushrooms and a drop of red jam, on a little white saucer. Row 2, middle: three round ring doughnuts heavily dusted with powdered sugar, spilling out of a plain brown paper cone. Row 2, right: a large half-moon fried pasty with a crimped edge and a blistered golden crust, on a square of greaseproof paper. Row 3, left: a dozen small boiled pelmeni dumplings on a plain white paper plate with a spoonful of sour cream on top and a small aluminium fork. Row 3, middle: an open sandwich: a slice of white bread with a square slice of yellow cheese on top, on a small white saucer. Row 3, right: two round domed Russian gingerbread cakes covered in a thin crackled white sugar glaze.",
+   "ids": [
+    "bread_rye",
+    "bubliki",
+    "vatrushka",
+    "pastry",
+    "donuts",
+    "cheburek",
+    "pelmeni_portion",
+    "sandwich",
+    "gingerbread"
+   ]
+  },
+  {
+   "id": "icons_city_2",
+   "what": "sweets, drinks and grocery",
+   "service": "higgsfield MCP",
+   "tool": "generate_image",
+   "model": "gpt_image_2_5",
+   "aspect_ratio": "1:1",
+   "resolution": "2k",
+   "quality": "medium",
+   "output": "design/city_goods/icons_city_2.png",
+   "prompt": "Nine inventory icons for a moody adventure game, arranged as a 3 by 3 grid of equal square cells on one picture: in every cell one object centred and filling most of the cell, softly lit from the upper left, painterly realistic style, plain dark warm-grey cloth background with a faint vignette, the same background and the same scale in every cell (every object drawn at the same icon size, as large as the cell allows with a margin), no borders, frames or lines between the cells, nothing crossing a cell edge, exactly one object or one small group per cell, no text, letters, numbers or logos anywhere, not even on the objects. Everyday goods of a 1970s-80s Soviet seaside town, no real brands. Row 1, left: a translucent amber hard-candy lollipop moulded in the shape of a cockerel, on a thin wooden stick. Row 1, middle: a big fluffy cloud of pink candy floss on a thin wooden stick. Row 1, right: a chocolate-coated vanilla ice cream bar on a wooden stick, half unwrapped from a plain silver foil wrapper, one bite taken showing white ice cream. Row 2, left: a tall plain glass of white milkshake with thick foam up to the brim and a striped paper straw. Row 2, middle: a heavy dimpled glass beer mug full of dark amber kvass with a thin head of foam. Row 2, right: a faceted Soviet glass tumbler full of thick red tomato juice with a small spoon leaning in it. Row 3, left: a tetrahedron-shaped paper milk carton, white with a plain blue diamond pattern, no lettering. Row 3, middle: a squat tin can of condensed milk with a plain white and pale blue paper label without any lettering, two small holes punched in the lid. Row 3, right: a plain paper cone full of dark red sweet cherries on stalks, a few spilled in front.",
+   "ids": [
+    "lollipop",
+    "candy_floss",
+    "eskimo",
+    "milkshake",
+    "kvass",
+    "tomato_juice",
+    "milk_pyramid",
+    "condensed_milk",
+    "cherries"
+   ]
+  },
+  {
+   "id": "icons_city_3",
+   "what": "fish, pharmacy and haberdashery",
+   "service": "higgsfield MCP",
+   "tool": "generate_image",
+   "model": "gpt_image_2_5",
+   "aspect_ratio": "1:1",
+   "resolution": "2k",
+   "quality": "medium",
+   "output": "design/city_goods/icons_city_3.png",
+   "prompt": "Nine inventory icons for a moody adventure game, arranged as a 3 by 3 grid of equal square cells on one picture: in every cell one object centred and filling most of the cell, softly lit from the upper left, painterly realistic style, plain dark warm-grey cloth background with a faint vignette, the same background and the same scale in every cell (every object drawn at the same icon size, as large as the cell allows with a margin), no borders, frames or lines between the cells, nothing crossing a cell edge, exactly one object or one small group per cell, no text, letters, numbers or logos anywhere, not even on the objects. Everyday goods of a 1970s-80s Soviet seaside town, no real brands. Row 1, left: a whole golden-brown hot-smoked mackerel lying on a sheet of oily brown wrapping paper. Row 1, middle: a whole flat salted dried roach fish, silvery-grey and stiff, with a string loop through its eye. Row 1, right: a small rectangular dark brown chewy bar divided into squares, half unwrapped from a plain cream paper wrapper. Row 2, left: a short paper-wrapped roll of round yellow vitamin tablets, opened at one end with three tablets spilled out. Row 2, middle: an oval bar of pink soap partly unwrapped from plain white paper. Row 2, right: a round ball of soft blue woollen yarn with a loose end trailing, two wooden knitting needles stuck through it. Row 3, left: a small wooden spool wound with bright red cotton thread. Row 3, middle: six round mother-of-pearl buttons sewn in two rows onto a plain grey cardboard card. Row 3, right: a neatly folded cotton handkerchief with a pale blue and white check pattern.",
+   "ids": [
+    "smoked_fish",
+    "dried_fish",
+    "hematogen",
+    "ascorbic",
+    "soap",
+    "wool_ball",
+    "thread_spool",
+    "buttons_card",
+    "handkerchief"
+   ]
+  },
+  {
+   "id": "icons_city_4",
+   "what": "paper goods, toys and souvenirs",
+   "service": "higgsfield MCP",
+   "tool": "generate_image",
+   "model": "gpt_image_2_5",
+   "aspect_ratio": "1:1",
+   "resolution": "2k",
+   "quality": "medium",
+   "output": "design/city_goods/icons_city_4.png",
+   "prompt": "Nine inventory icons for a moody adventure game, arranged as a 3 by 3 grid of equal square cells on one picture: in every cell one object centred and filling most of the cell, softly lit from the upper left, painterly realistic style, plain dark warm-grey cloth background with a faint vignette, the same background and the same scale in every cell (every object drawn at the same icon size, as large as the cell allows with a margin), no borders, frames or lines between the cells, nothing crossing a cell edge, exactly one object or one small group per cell, no text, letters, numbers or logos anywhere, not even on the objects. Everyday goods of a 1970s-80s Soviet seaside town, no real brands. Row 1, left: a paper folder of picture postcards fanned open: a seaside promenade, a cable car over a hill, a white lighthouse, a market, without any lettering. Row 1, middle: a small clear glassine envelope holding a handful of colourful postage stamps with pictures of ships, birds and a rocket, without readable lettering. Row 1, right: a thick school exercise notebook with a plain dark green textured oilcloth cover, slightly open showing squared pages. Row 2, left: a worn cloth-bound book with a faded red cover showing an embossed sailing ship, no title, pages dog-eared. Row 2, middle: a small yellow lithographed tin wind-up duck with an orange beak and a metal winding key in its side. Row 2, right: a tin humming spinning top with red, yellow and blue stripes and a spiral metal plunger on top. Row 3, left: a small die-cast metal toy van painted light blue, with rubber wheels and one door open, no markings. Row 3, middle: a shiny red rubber ball with a single blue stripe around it. Row 3, right: a small varnished wooden box with its lid covered in tiny glued seashells and a starfish, the lid slightly open showing a little mirror.",
+   "ids": [
+    "postcard_set",
+    "stamp_packet",
+    "notebook",
+    "adventure_book",
+    "toy_duck",
+    "spinning_top",
+    "toy_car",
+    "rubber_ball",
+    "shell_box"
+   ]
+  }
+ ]
+}

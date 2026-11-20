@@ -7,5 +7,5 @@ set -e
 ROOT="$(cd "$(dirname "$0")/../.." && pwd)"
 SRC="$ROOT/unreal/Lyudmilovsk/Source/Lyudmilovsk/Private/Winter"
 mkdir -p "$ROOT/Saved/Winter"
-clang++ -std=c++17 -O2 -Wall -pthread -I"$SRC" -o "$ROOT/Saved/Winter/wintertest" "$ROOT/tools/winter/wintertest.cpp" "$SRC/SnowModel.cpp"
+clang++ -std=c++17 -O2 $EXTRA_CXXFLAGS -Wall -pthread -I"$SRC" -o "$ROOT/Saved/Winter/wintertest" "$ROOT/tools/winter/wintertest.cpp" "$SRC/SnowModel.cpp"
 cd "$ROOT" && exec "$ROOT/Saved/Winter/wintertest" "$@"

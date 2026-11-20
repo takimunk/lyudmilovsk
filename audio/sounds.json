@@ -509,6 +509,413 @@
    "duration": 16.0,
    "loop": true,
    "prompt": "A wide smooth river of light flowing fast and silently: a soft airy shimmering hum with countless tiny glassy sparkles and a gentle rushing whoosh, calm and magical, seamless loop, no water splashes, no music"
+  },
+  {
+   "id": "air_rifle",
+   "group": "city",
+   "variants": 3,
+   "duration": 1.5,
+   "prompt": "A single shot from a spring air rifle at a fairground shooting gallery, sharp dry pneumatic crack, a tin target pings, indoors, close"
+  },
+  {
+   "id": "ball_bounce",
+   "group": "city",
+   "variants": 3,
+   "duration": 2.0,
+   "prompt": "A basketball bouncing twice on a wooden gym floor in a large empty sports hall, slight room echo, no voices"
+  },
+  {
+   "id": "bicycle_bell",
+   "group": "city",
+   "variants": 2,
+   "duration": 1.5,
+   "prompt": "An old steel bicycle bell rung once, bright double ring, close, dry, no other sounds"
+  },
+  {
+   "id": "bike_whirr",
+   "group": "city",
+   "variants": 2,
+   "duration": 4.0,
+   "prompt": "An old exercise bike pedalled steadily, flywheel whirring and a soft chain rattle, indoors, close, no voices"
+  },
+  {
+   "id": "billiard_click",
+   "group": "city",
+   "variants": 3,
+   "duration": 2.0,
+   "prompt": "A billiard cue strikes a ball, heavy ivory-like balls click together and roll on cloth, quiet club room, close"
+  },
+  {
+   "id": "birds_morning",
+   "group": "city",
+   "variants": 2,
+   "duration": 6.0,
+   "prompt": "A few small garden birds singing outside an open window in the early morning, calm, light, no traffic, no music"
+  },
+  {
+   "id": "brush_strokes",
+   "group": "city",
+   "variants": 2,
+   "duration": 3.0,
+   "prompt": "A bristle paintbrush making slow strokes on stretched canvas, soft scratchy swishes, quiet studio, very close"
+  },
+  {
+   "id": "camera_flash",
+   "group": "city",
+   "variants": 2,
+   "duration": 2.0,
+   "prompt": "An old film camera shutter clicks with a flash bulb pop and a short capacitor whine afterwards, photo studio, close"
+  },
+  {
+   "id": "chalk",
+   "group": "city",
+   "variants": 3,
+   "duration": 2.5,
+   "prompt": "Chalk writing a few strokes on a school blackboard, dry taps and scrapes, empty classroom, close"
+  },
+  {
+   "id": "chess_piece",
+   "group": "city",
+   "variants": 3,
+   "duration": 1.5,
+   "prompt": "A wooden chess piece put down firmly on a wooden chessboard, one soft knock with a felt base, quiet room, very close"
+  },
+  {
+   "id": "choir_hum",
+   "group": "city",
+   "variants": 2,
+   "duration": 6.0,
+   "prompt": "A small amateur choir humming one soft warm chord behind a closed door, rehearsal room, distant, gentle, no words"
+  },
+  {
+   "id": "clock_tick",
+   "group": "city",
+   "variants": 1,
+   "duration": 8.0,
+   "loop": true,
+   "prompt": "A wall clock ticking steadily in a quiet room, soft mechanical tick tock once per second, seamless loop, no other sounds"
+  },
+  {
+   "id": "dart_thud",
+   "group": "city",
+   "variants": 3,
+   "duration": 1.5,
+   "prompt": "A dart thrown into a cork dartboard, one short dull thud, club room, close, no voices"
+  },
+  {
+   "id": "drawer_slide",
+   "group": "city",
+   "variants": 3,
+   "duration": 2.0,
+   "prompt": "A wooden card-catalogue drawer pulled open and pushed shut, wood sliding on wood, quiet library, close"
+  },
+  {
+   "id": "dryer_hum",
+   "group": "city",
+   "variants": 1,
+   "duration": 5.0,
+   "prompt": "A hooded salon hair dryer humming steadily, warm airy drone, small room, close, no voices"
+  },
+  {
+   "id": "fire_crackle",
+   "group": "city",
+   "variants": 2,
+   "duration": 5.0,
+   "prompt": "A small wood fire in a stove crackling gently, soft pops, cosy quiet room, close, no wind"
+  },
+  {
+   "id": "foosball_rattle",
+   "group": "city",
+   "variants": 3,
+   "duration": 2.5,
+   "prompt": "Table football: rods spun and slammed, the plastic ball rattles and knocks against wood, club room, close, no voices"
+  },
+  {
+   "id": "footsteps_run",
+   "group": "city",
+   "variants": 2,
+   "duration": 3.0,
+   "prompt": "A teenager running a few quick steps in sneakers on a wooden gym floor, light squeaks, empty hall"
+  },
+  {
+   "id": "hanger_clink",
+   "group": "city",
+   "variants": 3,
+   "duration": 2.0,
+   "prompt": "Metal clothes hangers sliding and clinking along a steel rail in a cloakroom, close, no voices"
+  },
+  {
+   "id": "jukebox_click",
+   "group": "city",
+   "variants": 2,
+   "duration": 2.5,
+   "prompt": "A 1960s jukebox mechanism: a button clunk, a relay click and a record arm moving with a soft motor whirr, cafe, close, no music"
+  },
+  {
+   "id": "kettle_whistle",
+   "group": "city",
+   "variants": 2,
+   "duration": 4.0,
+   "prompt": "A kettle on a stove coming to the boil and starting a rising whistle, small kitchen, close"
+  },
+  {
+   "id": "mat_thud",
+   "group": "city",
+   "variants": 3,
+   "duration": 1.5,
+   "prompt": "A body landing on a thick gym mat, one soft heavy thud with a puff of air, sports hall"
+  },
+  {
+   "id": "mic_feedback",
+   "group": "city",
+   "variants": 2,
+   "duration": 2.5,
+   "prompt": "A stage microphone tapped twice, then a short soft squeal of feedback in an empty hall, not harsh"
+  },
+  {
+   "id": "morse_beep",
+   "group": "city",
+   "variants": 3,
+   "duration": 3.0,
+   "prompt": "A short burst of Morse code tones from an amateur radio set, clean 700 Hz beeps, dots and dashes, small room"
+  },
+  {
+   "id": "music_box",
+   "group": "city",
+   "variants": 2,
+   "duration": 5.0,
+   "prompt": "A small wind-up music box playing a short simple gentle lullaby phrase, bright metal comb tones, close, slightly slowing"
+  },
+  {
+   "id": "paper_tear",
+   "group": "city",
+   "variants": 3,
+   "duration": 1.5,
+   "prompt": "A paper ticket torn off a perforated roll, one short crisp tear, close, dry"
+  },
+  {
+   "id": "pencil_scratch",
+   "group": "city",
+   "variants": 3,
+   "duration": 3.0,
+   "prompt": "A pencil writing a few words on paper on a wooden desk, soft scratching, quiet room, very close"
+  },
+  {
+   "id": "phone_dial",
+   "group": "city",
+   "variants": 2,
+   "duration": 3.5,
+   "prompt": "An old rotary telephone: the dial turned and released twice, whirring back with clicks, close, no voice"
+  },
+  {
+   "id": "piano_chord",
+   "group": "city",
+   "variants": 3,
+   "duration": 3.5,
+   "prompt": "A slightly out-of-tune upright piano, one warm major chord played softly and left to ring, rehearsal room"
+  },
+  {
+   "id": "pingpong_ball",
+   "group": "city",
+   "variants": 3,
+   "duration": 2.5,
+   "prompt": "Table tennis: a short rally of four hits, celluloid ball on bats and table, club room, no voices"
+  },
+  {
+   "id": "plane_wood",
+   "group": "city",
+   "variants": 3,
+   "duration": 2.5,
+   "prompt": "A hand plane pushed along a pine board, one long shaving curling off, woodwork room, close"
+  },
+  {
+   "id": "projector_whirr",
+   "group": "city",
+   "variants": 1,
+   "duration": 5.0,
+   "prompt": "A 16 mm film projector running, steady mechanical whirr and sprocket flutter, small dark hall, close, no film sound"
+  },
+  {
+   "id": "radio_tune",
+   "group": "city",
+   "variants": 3,
+   "duration": 4.0,
+   "prompt": "An old valve radio being tuned across the dial: static, whistles and brief blurred fragments of stations with no clear words or music"
+  },
+  {
+   "id": "ring_clink",
+   "group": "city",
+   "variants": 3,
+   "duration": 1.5,
+   "prompt": "A rope ring landing over a wooden peg in a ring toss game, soft clink and wobble, fairground stall, close"
+  },
+  {
+   "id": "sack_rustle",
+   "group": "city",
+   "variants": 3,
+   "duration": 2.5,
+   "prompt": "A hand digging into a burlap sack of dry grain or seeds, rustling and pouring, market stall, close"
+  },
+  {
+   "id": "scale_clunk",
+   "group": "city",
+   "variants": 3,
+   "duration": 2.0,
+   "prompt": "Old balance shop scales: a cast-iron weight set on the pan, a clunk and the beam rocking with small metal ticks, close"
+  },
+  {
+   "id": "school_bell",
+   "group": "city",
+   "variants": 2,
+   "duration": 3.5,
+   "prompt": "An electric school bell ringing in a corridor for two seconds, loud metallic trill with hall echo, then silence"
+  },
+  {
+   "id": "scissors",
+   "group": "city",
+   "variants": 3,
+   "duration": 2.0,
+   "prompt": "Barber's scissors snipping hair, four quick crisp snips, quiet salon, very close"
+  },
+  {
+   "id": "sewing_rattle",
+   "group": "city",
+   "variants": 3,
+   "duration": 3.5,
+   "prompt": "A treadle sewing machine running a short seam, rhythmic mechanical rattle speeding up and stopping, close"
+  },
+  {
+   "id": "sheets_rustle",
+   "group": "city",
+   "variants": 3,
+   "duration": 2.5,
+   "prompt": "Someone lying down on a bed, cotton sheets and a blanket rustling, a soft creak of bed springs, quiet bedroom, close"
+  },
+  {
+   "id": "slide_click",
+   "group": "city",
+   "variants": 3,
+   "duration": 2.0,
+   "prompt": "A slide projector advancing one slide: a mechanical ka-chunk and the fan humming softly, dark room, close"
+  },
+  {
+   "id": "stage_curtain",
+   "group": "city",
+   "variants": 2,
+   "duration": 3.5,
+   "prompt": "A heavy velvet stage curtain drawn open on a rope, fabric swishing and pulley rings sliding, empty theatre"
+  },
+  {
+   "id": "stamp_thump",
+   "group": "city",
+   "variants": 3,
+   "duration": 1.5,
+   "prompt": "A rubber stamp pressed on an ink pad and thumped onto paper on a wooden desk, two quick thuds, office, close"
+  },
+  {
+   "id": "steam_hiss",
+   "group": "city",
+   "variants": 2,
+   "duration": 3.0,
+   "prompt": "A short hiss of steam from a sauna stove when water is ladled on hot stones, small wooden room, close"
+  },
+  {
+   "id": "tap_water",
+   "group": "city",
+   "variants": 2,
+   "duration": 3.5,
+   "prompt": "A tap turned on, water running into an enamel sink for two seconds, then turned off with a squeak, close"
+  },
+  {
+   "id": "tape_hiss",
+   "group": "city",
+   "variants": 2,
+   "duration": 4.0,
+   "prompt": "A reel-to-reel tape recorder: play button clunk, then soft tape hiss and reels turning, quiet room, close, no music"
+  },
+  {
+   "id": "ticket_punch",
+   "group": "city",
+   "variants": 3,
+   "duration": 1.5,
+   "prompt": "A conductor's ticket punch clicking through a paper ticket, one firm metallic crunch, close"
+  },
+  {
+   "id": "train_clack",
+   "group": "city",
+   "variants": 2,
+   "duration": 5.0,
+   "prompt": "A toy electric model train running round a track, small wheels clacking over rail joints, quiet room, close"
+  },
+  {
+   "id": "tv_hiss",
+   "group": "city",
+   "variants": 2,
+   "duration": 4.0,
+   "prompt": "An old tube television switched on: a click, a rising high whine and soft static hiss, living room, close, no speech"
+  },
+  {
+   "id": "vinyl_crackle",
+   "group": "city",
+   "variants": 2,
+   "duration": 5.0,
+   "prompt": "A record player needle dropping onto a vinyl record, a soft thump and warm crackle of the lead-in groove, no music"
+  },
+  {
+   "id": "waltz",
+   "group": "city",
+   "variants": 2,
+   "duration": 8.0,
+   "prompt": "A few bars of a gentle old waltz played on an accordion in a dance hall, heard from across the room, warm, slightly distant"
+  },
+  {
+   "id": "washer_hum",
+   "group": "city",
+   "variants": 1,
+   "duration": 5.0,
+   "prompt": "An old top-loading washing machine running, steady motor hum and water sloshing, laundry room, close"
+  },
+  {
+   "id": "water_sip",
+   "group": "city",
+   "variants": 3,
+   "duration": 2.0,
+   "prompt": "Someone drinking mineral water from a glass, two sips and a small breath out, quiet room, very close"
+  },
+  {
+   "id": "weights_clank",
+   "group": "city",
+   "variants": 3,
+   "duration": 2.0,
+   "prompt": "A barbell with iron plates set down on a rack, heavy metal clank and rattle, gym, close, no voices"
+  },
+  {
+   "id": "wheel_hum",
+   "group": "city",
+   "variants": 1,
+   "duration": 5.0,
+   "prompt": "A potter's wheel spinning steadily, low motor hum and wet clay turning under hands, studio, close"
+  },
+  {
+   "id": "whistle_short",
+   "group": "city",
+   "variants": 2,
+   "duration": 1.5,
+   "prompt": "A referee's pea whistle blown once, one short sharp blast in a sports hall"
+  },
+  {
+   "id": "wind_soft",
+   "group": "city",
+   "variants": 2,
+   "duration": 6.0,
+   "prompt": "Soft sea wind heard through a slightly open window, gentle gusts and a faint whistle in the frame, calm, no rain"
+  },
+  {
+   "id": "wood_creak",
+   "group": "city",
+   "variants": 3,
+   "duration": 2.5,
+   "prompt": "Old wooden floorboards creaking under two slow steps, quiet house, close"
   }
  ],
  "music": [

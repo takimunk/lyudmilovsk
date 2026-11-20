@@ -6,5 +6,5 @@ set -e
 ROOT="$(cd "$(dirname "$0")/../.." && pwd)"
 SRC="$ROOT/unreal/Lyudmilovsk/Source/Lyudmilovsk/Private/Animals"
 mkdir -p "$ROOT/Saved/AnimalSim"
-clang++ -std=c++17 -O2 -Wall -Wno-unused-function -o "$ROOT/Saved/AnimalSim/animalsim" "$ROOT/tools/animalsim/animalsim.cpp" "$SRC/AnimalSim.cpp"
+clang++ -std=c++17 -O2 $EXTRA_CXXFLAGS -Wall -Wno-unused-function -o "$ROOT/Saved/AnimalSim/animalsim" "$ROOT/tools/animalsim/animalsim.cpp" "$SRC/AnimalSim.cpp"
 cd "$ROOT" && exec "$ROOT/Saved/AnimalSim/animalsim" "$@"

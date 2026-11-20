@@ -1,0 +1,27 @@
+{
+ "service": "higgsfield MCP",
+ "tool": "generate_image_batch",
+ "model": "gpt_image_2_5",
+ "arguments": {
+  "aspect_ratio": "1:1",
+  "resolution": "2k",
+  "quality": "medium",
+  "prompt": "Nine inventory icons for a moody adventure game, arranged as a 3 by 3 grid of equal square cells on one picture: in every cell one object centred and filling most of the cell, softly lit from the upper left, painterly realistic style, plain dark warm-grey cloth background with a faint vignette, the same background and the same scale in every cell (every object drawn at the same icon size, as large as the cell allows with a margin), no borders, frames or lines between the cells, nothing crossing a cell edge, exactly one object or one small group per cell, no text, letters, numbers or logos anywhere, not even on the objects. Everyday goods of a 1970s-80s Soviet seaside town, no real brands. Row 1, left: a paper folder of picture postcards fanned open: a seaside promenade, a cable car over a hill, a white lighthouse, a market, without any lettering. Row 1, middle: a small clear glassine envelope holding a handful of colourful postage stamps with pictures of ships, birds and a rocket, without readable lettering. Row 1, right: a thick school exercise notebook with a plain dark green textured oilcloth cover, slightly open showing squared pages. Row 2, left: a worn cloth-bound book with a faded red cover showing an embossed sailing ship, no title, pages dog-eared. Row 2, middle: a small yellow lithographed tin wind-up duck with an orange beak and a metal winding key in its side. Row 2, right: a tin humming spinning top with red, yellow and blue stripes and a spiral metal plunger on top. Row 3, left: a small die-cast metal toy van painted light blue, with rubber wheels and one door open, no markings. Row 3, middle: a shiny red rubber ball with a single blue stripe around it. Row 3, right: a small varnished wooden box with its lid covered in tiny glued seashells and a starfish, the lid slightly open showing a little mirror."
+ },
+ "job_id": "a169f96f-d1ce-43f8-a24d-744f6fce5a1a",
+ "output_url": "https://d8j0ntlcm91z4.cloudfront.net/user_36I3ndR5QeKPyjKAdSKVfbd04n2/hf_20261120_193416_a169f96f-d1ce-43f8-a24d-744f6fce5a1a.png",
+ "credits": 1,
+ "date": "2026-11-20",
+ "cells_row_major": [
+  "postcard_set",
+  "stamp_packet",
+  "notebook",
+  "adventure_book",
+  "toy_duck",
+  "spinning_top",
+  "toy_car",
+  "rubber_ball",
+  "shell_box"
+ ],
+ "sha256": "(fill on download)"
+}
