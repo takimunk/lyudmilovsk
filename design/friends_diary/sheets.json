@@ -1,0 +1,30 @@
+{
+ "_doc": "Diary portraits of the hero's animal friends (docs/animals.md \"Friends\", docs/diary.md). One Higgsfield nano_banana_2_1 picture, 3 columns x 2 rows, cut by tools/ui_diary_birds.py --friends into textures/ui/friends/friend_<Breed>.png (the breed names of the animal life: Cat, Laika, Shepherd, Mutt, Maru; Kitten is a spare). Cells are listed left to right, top row first. The prompt sent is style + ' The six animals are: ' + describe + '.'; run holds what came back.",
+ "model": "nano_banana_2_1",
+ "resolution": "4k",
+ "aspect_ratio": "3:2",
+ "thinking_level": "high",
+ "style": "A sheet of six animal sketches from a teenager's nature diary, arranged in an invisible grid of 3 columns and 2 rows of equal cells. Each animal is drawn in soft graphite pencil with confident hatching, then lightly washed with transparent watercolour in its true natural colours, the way a careful young naturalist sketches a pet from life, with affection. Accurate anatomy and proportions. Every animal is seen in three-quarter view from the side, facing right, sitting calmly on a little pencil-drawn patch of ground and looking toward the viewer, the whole animal visible from ear tips to tail tip and paws, centred in its cell and filling about 70 percent of the cell height, with generous empty margins so nothing touches or crosses a cell edge. All animals drawn at the same size on the page regardless of their real size. Pure flat white paper background, no paper texture, no cast shadows on the paper, no text, no labels, no numbers, no signatures, no borders, no grid lines, no frames.",
+ "sheets": [
+  {
+   "id": "cats_dogs",
+   "seed": 26112001,
+   "cells": [
+    "Cat",
+    "Laika",
+    "Shepherd",
+    "Mutt",
+    "Maru",
+    "Kitten"
+   ],
+   "describe": "top row: a grey tabby street cat with green eyes and dark stripes; a West Siberian laika dog, grey and white with pricked ears and a tail curled over its back; a black and tan German shepherd dog with pricked ears; bottom row: a shaggy medium-sized brown mongrel yard dog with one ear folded; a slim cream-coloured laika mix dog with folded ear tips, hazel eyes and a plume tail curled over her back, wearing a thin dark red and black braided cord collar with a small round metal tag; a small ginger kitten",
+   "run": {
+    "service": "higgsfield (MCP generate_image)",
+    "job_id": "ac8a3159-e324-4890-95e8-9e18efbe3a54",
+    "date": "2026-11-20",
+    "credits": 3,
+    "output_url": "https://d8j0ntlcm91z4.cloudfront.net/user_36I3ndR5QeKPyjKAdSKVfbd04n2/hf_20261120_205536_ac8a3159-e324-4890-95e8-9e18efbe3a54.png"
+   }
+  }
+ ]
+}

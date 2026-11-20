@@ -38,6 +38,8 @@ struct FLyudDiaryState
 	TArray<ULyudFriends::FDiaryFriend> People;
 	TArray<TArray<int32>> PeoplePages;
 	int32 DiarySpreads = 1;
+	/** The friends' pages after the birds' (the cats and dogs, ULyudAnimalFriends order): animal ids on each. */
+	TArray<TArray<int32>> FriendPages;
 };
 
 /** A hand-drawn mark over whatever it is laid over (an overlay slot): an underline, a circle, a tick... */
@@ -128,6 +130,8 @@ private:
 	TSharedRef<SWidget> BirdsPage(int32 PageIndex);
 	TSharedRef<SWidget> PeoplePage(int32 PageIndex);
 	TSharedRef<SWidget> BirdCard(FName Species);
+	TSharedRef<SWidget> FriendsPage(int32 PageIndex);
+	TSharedRef<SWidget> FriendCard(int32 AnimalId);
 	TSharedRef<SWidget> MapSpread();
 	TSharedRef<SWidget> MapNote();
 	void Changed() { OnChanged.ExecuteIfBound(); }
@@ -223,6 +227,7 @@ private:
 	void Paginate();
 	void PaginateBirds();
 	void PaginatePeople();
+	void PaginateFriends();
 	void Refresh();
 	FVector2D LocalPos() const;
 	float LocalScale() const;

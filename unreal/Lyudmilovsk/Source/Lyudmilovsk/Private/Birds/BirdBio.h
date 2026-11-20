@@ -7,7 +7,9 @@
 // and hides from a 7 m/s wind; a herring gull hangs in a 20 m/s gale; a white-tailed eagle can barely climb by
 // flapping (0.9 m/s) and lives on rising air. Sources: Alerstam et al. 2007 (cruising airspeeds of 138 species),
 // Bruderer & Boldt 2001 (radar airspeeds), Pennycuick 2008 "Modelling the flying bird" (power curves, climb, glide
-// ratios), Henningsson et al. 2010 (swift sprints), Tucker 1998 (falcon and eagle stoops), field guides.
+// ratios), Henningsson et al. 2010 (swift sprints), Tucker 1998 (falcon and eagle stoops), field guides. How it dives:
+// how far it folds its wings by itself when it looks down (a falcon's teardrop against a swan's stiff spread wings) and how
+// many g its wings take pulling out (Tucker & Parrott 1970, Tucker 1998; Ponitz et al. 2014 for the peregrine's stoop shapes).
 #pragma once
 
 namespace BirdBio
@@ -25,6 +27,8 @@ namespace BirdBio
 		double ClimbMs;     // the steepest climb by flapping, m/s up (the strength of the flight muscles)
 		double WindLimitMs; // mean wind (10 m) above which it stays in shelter and flies only short hops, low
 		double GlideRatio;  // metres forward per metre down at the best glide; 0: the flight style's
+		double Tuck;        // 0..1 how far it folds its wings by itself when it dives: a peregrine to a teardrop (1), a swan hardly (0.2)
+		double PullG;       // g, the hardest pull-out its wings take; 0: the flight style's
 	};
 
 	/** The bio of a species id; an unknown id gets a middling bird. */

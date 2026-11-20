@@ -22,10 +22,10 @@ Levels start at 10 (acquainted), 30 (friendly), 70 (a friend), 130 (a close frie
 somebody friendly, not a friend; hellos, a chat now and then, a gift they love every few days and a card a week make a friend
 in about a week and a close friend in two (tools/mannersim checks both).
 
-**Gifts** are pocket items the town already sells (43, `tools/friends/content.py` `GIFTS`): who loves each is matched against
+**Gifts** are pocket items the town already sells (48, `tools/friends/content.py` `GIFTS`): who loves each is matched against
 the resident's persona (habits: reader, feeder, knitter, sweet, photographer...), age group and job group (sea, artist). A toy
 is loved by a child and only "liked" by anybody else. Every townsperson loves at least one of them; once he has found out what
-somebody loves, the diary says so. Flowers, jam and records aren't items yet: they go into `GIFTS` once they exist.
+somebody loves, the diary says so. Flowers and records aren't items yet: they go into `GIFTS` once they exist. The allotment's harvest and jam are gifts too (docs/allotment.md).
 
 ## What changes
 

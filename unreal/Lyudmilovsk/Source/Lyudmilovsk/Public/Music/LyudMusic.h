@@ -131,6 +131,7 @@ private:
 
 	// the radios of the town (from the city's things once they are read) and the one playing now
 	TArray<FRadio> Radios;
+	bool bRadiosScanned = false;    // looked once (a town without radios isn't searched four times a second)
 	FString RadioThing;
 	int32 RadioTrack = -1;
 	double RadioStart = -1.0;
