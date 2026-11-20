@@ -342,7 +342,7 @@ always said, unpaid. Every job's lines give the piece of the stamp set `work_boo
 | job | thing | when | boss (role) | how it pays |
 |---|---|---|---|---|
 | the morning papers | `P-KIOSK1/price_board` | wed-sun 8-10 | Yerlan Romero (seller) | 25, rain 35, cold 30 |
-| the crates | `P-MARKET/market_scales_2` | sat 6-10 | Parisa Petrosyan (seller) | 20, rain 25 |
+| the crates | `P-MARKET/market_scales_2` | sat 7-10 (the sellers come at seven) | Parisa Petrosyan (seller) | 20, rain 25 |
 | the scales | `P-MARKET/market_scales` | sat 7-13 | the same | aim: 3 a point + win 20 / draw 10 / lose 5 |
 | the flag | `P-LIFEGUARD1/flag_halyard` | wed-sun 10-19 | Eitan Kowalski (lifeguard) | 10; the line is the right flag: fog red, rain or cold yellow, calm green, drizzle yellow |
 | the watch | `P-LIFEGUARD1/whistle` | wed-sun 10-19 | the same | rally: 3 a whistle in time + 25 / 15 / 8 |
@@ -388,6 +388,10 @@ a text {"gen": "cup:<id>", "kind": "notice", "pages": [fallback]} read on some t
 * **The board** (`FCups::Pages`): the tournament (weekday and venue, the rounds' hours, the game's rule, the sheet: "your name
   is on the list"), today's bracket from its start or the last one (the hero as «новичок (вы)», "(to be decided)" for the
   winners to come, no-shows), the cup case (the last six champions, the hero's cups).
+* **Holidays**: no cup is played on a public holiday (a festival's day off: Big Sun Day falls on the chess cup's Saturday).
+  The game hands `FCups::IsHoliday` the festivals' calendar; the sheet then signs up for the week after, the board's first
+  page says why (`city.cup.holiday`), there is no match, no news, and the board shows the last cup before it.
+  tools/togethersim found the regulars watching the zenith on the square while their bracket played.
 * **The paper** (`ULyudCityThings::GetCupNews`): the morning after, the champion and runner-up and how far the hero got; his
   cup is a front story; the day's tournament is announced on the bills page.
 * **Saved** with the model's map: `k:s:<cup>@<day>` signed up, `k:r:<cup>@<day>` his results (`W`/`L`), so brackets of past
