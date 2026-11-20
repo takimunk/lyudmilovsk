@@ -1,0 +1,42 @@
+[
+ {
+  "service": "hi3d MCP (agent.hi3d.ai) via tools/birds/hi3d_mcp.py",
+  "tool": "create_generation",
+  "kind": "model",
+  "task_id": "0baf5e18782b44b89f5fd2b688c94238",
+  "points": 45.0,
+  "arguments": {
+   "version": "v3.0",
+   "model_type": "high_quality",
+   "generation_type": "model_with_texture",
+   "pbr": true,
+   "license": "private",
+   "file_tokens": "(uploaded views, see inputs)"
+  },
+  "inputs": [
+   {
+    "view": "front",
+    "file": "blender/props_hi3d/raw/grandfather_clock/views/front.png",
+    "sha256": "97c4aad6e94fd7114c22c5500744179c2ac0cabf20e32904a83063f3fb22ae0e"
+   },
+   {
+    "view": "back",
+    "file": "blender/props_hi3d/raw/grandfather_clock/views/back.png",
+    "sha256": "ea371e068b6edf907c3c357f19a9a00582a0fd7e24cd9c31fc4c5ec0ca05572b"
+   },
+   {
+    "view": "left",
+    "file": "blender/props_hi3d/raw/grandfather_clock/views/left.png",
+    "sha256": "8f232296c408af05a5413f957cb59cc1dfae5c1ab17fe0071fc8fe97bb24aef7"
+   },
+   {
+    "view": "right",
+    "file": "blender/props_hi3d/raw/grandfather_clock/views/right.png",
+    "sha256": "63fbd2039b9aa90dcc5bd3294af26e55ca06766bf8e974211d70f58d60238e1c"
+   }
+  ],
+  "reference": "blender/props_hi3d/sheets.json",
+  "submitted": "2026-11-20T21:38:28+00:00",
+  "outputs": []
+ }
+]

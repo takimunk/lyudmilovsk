@@ -37,5 +37,40 @@
   ],
   "model_page_url": "https://www.hi3d.ai/3d-model/095d1d71b13b4d278a6a59505f18f7f4",
   "fetched": "2026-11-20T20:49:36+00:00"
+ },
+ {
+  "service": "hi3d MCP (agent.hi3d.ai) via tools/birds/hi3d_mcp.py",
+  "tool": "create_generation",
+  "kind": "model",
+  "task_id": "cc839d10b57243bcb7200a460f0b5695",
+  "points": 45.0,
+  "arguments": {
+   "version": "v3.0",
+   "model_type": "high_quality",
+   "generation_type": "model_with_texture",
+   "pbr": true,
+   "license": "private",
+   "file_tokens": "(uploaded views, see inputs)"
+  },
+  "inputs": [
+   {
+    "view": "front",
+    "file": "blender/props_hi3d/raw/girl_dove/views/front.png",
+    "sha256": "767c934c711fb28850e1a76051dd88cac84269d4edadc6cd664c60ac5436d137"
+   },
+   {
+    "view": "back",
+    "file": "blender/props_hi3d/raw/girl_dove/views/back.png",
+    "sha256": "c0f48110967444917a62e3a0772691ff2541ed3b14139eee98eaaebe1f7333c8"
+   },
+   {
+    "view": "left",
+    "file": "blender/props_hi3d/raw/girl_dove/views/left.png",
+    "sha256": "8d0cfaa1d2e1a63523e7a56db7ed7da0e8a5bc682249e9c3f84416dc6e713173"
+   }
+  ],
+  "reference": "blender/props_hi3d/sheets.json",
+  "submitted": "2026-11-20T21:30:52+00:00",
+  "outputs": []
  }
 ]
