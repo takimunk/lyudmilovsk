@@ -413,7 +413,7 @@ bool ULyudSunGlare::Look(float DeltaTime)
 	const FVector Sun = S->SunDirection();
 	const float Fwd = (float)FVector::DotProduct(Sun, F);
 	GazeDeg = FMath::RadiansToDegrees(FMath::Acos(FMath::Clamp(Fwd, -1.f, 1.f)));
-	const float RadDeg = S->SunAngularDiameterDeg * 0.5f;
+	const float RadDeg = S->SunSizeNowDeg() * 0.5f;
 	const float TanH = FMath::Tan(FMath::DegreesToRadians(FMath::Clamp(Cam->GetFOVAngle(), 5.f, 170.f) * 0.5f));
 	const float TanV = TanH / Aspect;
 	float Edge = 1.f;

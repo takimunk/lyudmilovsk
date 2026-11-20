@@ -914,6 +914,9 @@ weight = 3
 talk = town.guest_talk4.1 | town.guest_talk4.2 | town.guest_talk4.3 | town.guest_talk4.4
 
 # Festival days (Content/PeopleData/festivals.json, ULyudFestivalSubsystem::ActiveFestival / ActivePhase)
+# The Big Sun's day (sun_day: the star comes near; docs/festivals.md, docs/story/motifs.md "Солнце"). Nobody says why
+# they love it: they just can't not look.
+# Poplar fluff (ULyudPoplarFluffSubsystem: June, dry days), the other new town days
 
 [fest_greet]
 to = hero
@@ -1214,6 +1217,135 @@ doing = gather_mingle chat
 hours = 12-21
 weight = 5
 talk = town.fest_talk1.1 | town.fest_talk1.2 | town.fest_talk1.3
+
+[bigsun_greet]
+to = hero
+festival = sun_day
+age = teen adult
+weight = 6
+say = town.bigsun_greet.1..2
+
+[bigsun_greet_elder]
+to = hero
+festival = sun_day
+age = elder
+weight = 6
+say = town.bigsun_greet_elder.1
+
+[bigsun_greet_kid]
+to = hero
+festival = sun_day
+age = kid
+weight = 6
+say = town.bigsun_greet_kid.1..2
+
+[bigsun]
+at = outdoors
+festival = sun_day
+weight = 3
+say = town.bigsun.1..6
+
+[bigsun_eve]
+at = outdoors
+festival = sun_day
+phase = eve
+weight = 6
+say = town.bigsun_eve.1..3
+
+[bigsun_zenith]
+at = outdoors
+festival = sun_day
+phase = zenith
+weight = 7
+say = town.bigsun_zenith.1..5
+
+[bigsun_zenith_kid]
+at = outdoors
+festival = sun_day
+phase = zenith
+age = kid
+weight = 8
+say = town.bigsun_zenith_kid.1..2
+
+[bigsun_zenith_hero]
+to = hero
+festival = sun_day
+phase = zenith
+age = adult elder
+weight = 8
+say = town.bigsun_zenith_hero.1
+
+[bigsun_sea]
+at = outdoors
+festival = sun_day
+phase = seaside stroll
+weight = 5
+say = town.bigsun_sea.1..4
+
+[bigsun_sunset]
+at = outdoors
+festival = sun_day
+phase = sunset
+weight = 7
+say = town.bigsun_sunset.1..4
+
+[bigsun_talk]
+festival = sun_day
+doing = gather_mingle chat
+weight = 6
+talk = town.bigsun_talk1.1 | town.bigsun_talk1.2 | town.bigsun_talk1.3
+talk = town.bigsun_talk2.1 | town.bigsun_talk2.2 | town.bigsun_talk2.3 | town.bigsun_talk2.4
+
+[poplar_fluff]
+at = outdoors
+months = 6
+weather = !rain
+hours = 8-21
+weight = 2
+say = town.poplar_fluff.1..4
+
+[poplar_fluff_kid]
+at = outdoors
+months = 6
+weather = !rain
+hours = 8-21
+age = kid
+weight = 3
+say = town.poplar_fluff_kid.1
+
+[city_day]
+festival = city_day
+weight = 3
+say = town.city_day.1..2
+
+[city_day_parade]
+at = outdoors
+festival = city_day
+phase = parade
+weight = 5
+say = town.city_day_parade.1
+
+[kite_day]
+at = outdoors
+festival = kite_day
+weight = 4
+say = town.kite_day.1..2
+
+[cat_day]
+festival = cat_day
+weight = 4
+say = town.cat_day.1..2
+
+[book_day]
+festival = book_day
+weight = 4
+say = town.book_day.1..2
+
+[amber_morning]
+at = outdoors
+festival = amber_morning
+weight = 5
+say = town.amber_morning.1..3
 
 # Small talk: two townsfolk talking (chat, gathering in groups) or sitting side by side
 
