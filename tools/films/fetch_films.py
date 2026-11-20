@@ -17,8 +17,9 @@ For each film it
      NonUFS: DefaultGame.ini "Films"; the films are a download like the library's books, never in git or LFS);
   4. writes films.lock.json (the file page, licence, author, length, sha256 of the result) and regenerates SOURCES.md.
 
-The rule for what may be fetched is in catalog.py's header. Network: one request at a time, a plain User-Agent naming the
-project (Wikimedia asks automated clients for one), no personal details.
+The rule for what may be fetched is in catalog.py's header. Network: one request at a time, a generic User-Agent naming
+no person and no project. Wikimedia asks automated clients for a contact: whoever runs it may add one of their choosing with
+FILMS_UA_CONTACT="<url or address>" (left out by default; nothing about the project or its owner is sent unless set).
 """
 import argparse
 import hashlib
@@ -42,7 +43,8 @@ OUT_DIR = os.path.join(REPO, "unreal", "Lyudmilovsk", "Content", "Films")
 LOCK = os.path.join(HERE, "films.lock.json")
 SOURCES = os.path.join(HERE, "SOURCES.md")
 API = "https://commons.wikimedia.org/w/api.php"
-UA = "LyudmilovskFilmFetcher/1.0 (open-source game; https://github.com/takimunk/lyudmilovsk)"
+UA = "FilmFetcher/1.0 (python-urllib; public-domain film archive script)" + (
+    " contact: " + os.environ["FILMS_UA_CONTACT"].strip() if os.environ.get("FILMS_UA_CONTACT", "").strip() else "")
 MAX_W = 640
 CRF = 28
 
