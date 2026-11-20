@@ -67,7 +67,7 @@ ACT_FIELDS = ("prompt", "minutes", "price", "lines", "pose", "sound", "event", "
               "needs_item", "fade", "shop", "screen", "until", "title", "any_hour", "rotate", "collect", "closed", "game", "read",
               "sleep", "topics", "to", "floors", "oneway", "stay", "needs_stay", "no_stay", "open")
 # screens of other systems an act may open instead of its page ("open"; ULyudCityThings::OnOpen): the library's classics
-OPEN_SCREENS = ("books",)
+OPEN_SCREENS = ("books", "piano")
 # the beach's own quest event (ULyudBeach, docs/beach.md): beach shell | amber | skip3 | skip5 | skip_record | castle | swim ...
 QUEST_EVENTS += ("beach",)
 # a line's conditions (docs/city_interiors.md "Lines by the day and the hour"): hours [from, to), weekdays, a calendar date or

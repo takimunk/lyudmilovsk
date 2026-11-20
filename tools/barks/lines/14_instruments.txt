@@ -1,0 +1,72 @@
+## ---------------------------------------------------------------------------------------------------------------
+## The hero plays (docs/instruments.md): somebody near the piano or the guitar notices (on = hero_plays), a tune played to
+## its end gets a word (on = hero_played), and by a bonfire the circle sings the tune's words with him (on = hero_sing_<tune>,
+## one line at a time, a voice after a voice).
+## Words that are sung: Jane Taylor's «Twinkle» (d. 1824), the Hill sisters' «Happy Birthday» (public domain), Nekrasov's
+## «Коробейники» (d. 1878), Pierpont's «Jingle Bells» (d. 1893) and the traditional «さくら さくら» in their own language;
+## every other language is our own translation (never a published one still under copyright).
+## ---------------------------------------------------------------------------------------------------------------
+
+[notice_plays]
+on = hero_plays
+say town.notice_plays.1 | О, кто-то играет. Давно тут музыки не было. | Oh, somebody's playing. It's been a while since there was music round here. | お、誰か弾いてる。このあたりで音楽なんて久しぶりだ。
+say town.notice_plays.2 | Не останавливайся, хорошо же идёт. | Don't stop, it's going well. | やめないで、いい感じだよ。
+say town.notice_plays.3 | Это ты сам подобрал? На слух? | Did you pick that out yourself? By ear? | それ、自分で耳コピしたの？
+say town.notice_plays.4 | Я в твои годы тоже в музыкалку ходил. Бросил. Зря. | I went to music school at your age too. Gave it up. Shouldn't have. | 君くらいの頃、音楽教室に通ってた。やめちゃったけど。もったいなかったな。
+say town.notice_plays.5 | Тише, тише, дайте послушать. | Shh, shh, let me listen. | しーっ、聴かせて。
+say town.notice_plays.6 | Чуть расстроен инструмент, но тут простительно — морской воздух. | The instrument's a bit out of tune, but you can forgive it here: the sea air. | 楽器が少し狂ってるけど、ここじゃ仕方ない。潮風のせいだ。
+
+[notice_plays_kid]
+on = hero_plays
+age = kid
+weight = 2
+say town.notice_plays_kid.1 | А «Собачий вальс» умеешь? Я умею! Двумя пальцами. | Can you do the Dog Waltz? I can! With two fingers. | 「犬のワルツ」弾ける？ぼく弾けるよ！指二本で。
+say town.notice_plays_kid.2 | Можно я тоже нажму? Одну клавишу! | Can I press one too? Just one key! | ぼくも押していい？ひとつだけ！
+
+[played_tune]
+on = hero_played
+say town.played_tune.1 | Браво! Ещё что-нибудь сыграешь? | Bravo! Will you play something else? | ブラボー！もう一曲弾いてくれる？
+say town.played_tune.2 | Вот это да. Я даже заслушался. | Well I never. I got quite carried away. | すごいね。思わず聴き入っちゃった。
+say town.played_tune.3 | Красиво. Прямо как по радио. | Lovely. Just like on the radio. | きれいだ。ラジオみたい。
+say town.played_tune.4 | Молодец. Музыку в руках носить — не мешки таскать. | Well done. Carrying music in your hands is lighter than carrying sacks. | えらいね。音楽を手に持って歩くのは、袋を担ぐより軽いもんだ。
+say town.played_tune.5 | Спасибо. Прямо день стал лучше. | Thank you. The day's got better, honestly. | ありがとう。今日がいい日になった。
+
+[played_tune_kid]
+on = hero_played
+age = kid
+weight = 2
+say town.played_tune_kid.1 | Научишь меня? Ну пожалуйста! | Will you teach me? Please! | 教えてくれる？お願い！
+
+## ---- the bonfire's songs: each line one singer's turn
+
+[sing_twinkle]
+on = hero_sing_twinkle
+say town.sing_twinkle.1 | Ты мерцай, звезда ночная, — кто же ты, не знаю я… | Twinkle, twinkle, little star, how I wonder what you are! | きらきら光る、小さな星よ、きみはいったい何だろう
+say town.sing_twinkle.2 | Высоко над миром ты, будто камушек в ночи… | Up above the world so high, like a diamond in the sky. | 世界の上の高いところで、空の宝石みたいに
+say town.sing_twinkle.3 | Ты мерцай, звезда ночная, — кто же ты, не знаю я. | Twinkle, twinkle, little star, how I wonder what you are! | きらきら光る、小さな星よ、きみはいったい何だろう
+
+[sing_happy_birthday]
+on = hero_sing_happy_birthday
+say town.sing_happy_birthday.1 | С днём рождения тебя! | Happy birthday to you! | お誕生日おめでとう！
+say town.sing_happy_birthday.2 | С днём рождения тебя! С днём рождения, дорогой! | Happy birthday to you! Happy birthday, dear friend! | お誕生日おめでとう！おめでとう、大切なきみ！
+say town.sing_happy_birthday.3 | А у кого день рождения-то? Да неважно — поём! | Whose birthday is it, anyway? Never mind, we're singing! | ところで誰の誕生日？まあいいや、歌おう！
+
+[sing_korobeiniki]
+on = hero_sing_korobeiniki
+say town.sing_korobeiniki.1 | Ой, полным-полна коробушка, есть и ситцы и парча… | Oh, my peddler's box is brimming, cotton prints and gold brocade… | ああ、行商の箱はいっぱいだ、更紗もあれば錦もある
+say town.sing_korobeiniki.2 | Пожалей, моя зазнобушка, молодецкого плеча! | Have a heart, my dearest darling, for a young man's weary shoulder! | いとしい人よ、若者の肩をいたわっておくれ！
+say town.sing_korobeiniki.3 | Выди, выди в рожь высокую! Там до ночки погожу… | Come out, come out to the tall rye! There I'll wait until the night… | 出ておいで、背の高いライ麦畑へ！夜まで待っているから
+say town.sing_korobeiniki.4 | А завижу черноокую — все товары разложу! | And when I see my dark-eyed girl, I'll spread out all my wares! | 黒い瞳のあの娘が見えたら、品物をみんな広げよう！
+
+[sing_jingle_bells]
+on = hero_sing_jingle_bells
+say town.sing_jingle_bells.1 | Мчимся мы сквозь снег в санях, кони рвутся вскачь… | Dashing through the snow in a one-horse open sleigh… | 雪の中を駆けてゆく、一頭立てのそりに乗って
+say town.sing_jingle_bells.2 | Бубенцы, бубенцы, звонко так звенят! | Jingle bells, jingle bells, jingle all the way! | 鈴が鳴る、鈴が鳴る、どこまでも鳴りひびく！
+say town.sing_jingle_bells.3 | Как же весело в санях с горки мчать подряд! | Oh what fun it is to ride in a one-horse open sleigh! | 一頭立てのそりで走るのは、なんて楽しいんだろう！
+say town.sing_jingle_bells.4 | Летом — про сани и снег. Ну и пусть, зато от души! | Sleighs and snow in summer. Who cares, it's from the heart! | 夏にそりと雪の歌。いいじゃないか、心からだもの！
+
+[sing_sakura]
+on = hero_sing_sakura
+say town.sing_sakura.1 | Сакура, сакура — в весеннем небе мартовском… | Sakura, sakura, across the springtime sky… | さくら さくら やよいの空は
+say town.sing_sakura.2 | Сколько видит глаз — то ли дымка, то ли облака… | As far as eyes can see, is it haze or is it cloud… | 見わたす限り かすみか雲か
+say town.sing_sakura.3 | Аромат плывёт — пойдём, пойдём, посмотрим на них! | Their fragrance drifts to us. Come, come, let us go and see! | 匂いぞ出ずる いざや いざや 見にゆかん

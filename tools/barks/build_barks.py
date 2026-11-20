@@ -31,7 +31,10 @@ EVENTS = {"rest_sit", "rest_carry", "rest_serve", "rest_bill", "rest_bye",
           # somebody noticed the player (PeopleManners.h ENoticeEvent, docs/town_manners.md)
           "hero_runs", "hero_close", "hero_lamp", "hero_sneaks", "hero_rides", "hero_fishes", "hero_swims", "hero_sits", "thunder", "counter_hello",
           # a friend of his (docs/friends.md, ULyudFriends): waves first, sits with him on a bench, his card came, his gift, their outing
-          "friend_wave", "friend_bench", "friend_card", "friend_gift", "friend_outing"}
+          "friend_wave", "friend_bench", "friend_card", "friend_gift", "friend_outing",
+          # the hero plays a piano or his guitar (docs/instruments.md)
+          "hero_plays", "hero_played", "hero_sing_twinkle", "hero_sing_happy_birthday", "hero_sing_korobeiniki",
+          "hero_sing_jingle_bells", "hero_sing_sakura"}
 
 sets = []          # [{name, conds: [(k, v)], say: [keys], talk: [[keys]], file}]
 strings = collections.OrderedDict()   # key -> (ru, en, ja)

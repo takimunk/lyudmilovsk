@@ -11,6 +11,7 @@
 #include "Fishing/LyudFishBook.h"
 #include "LyudInventory.h"
 #include "LyudText.h"
+#include "Music/LyudInstruments.h"
 #include "Plants/GameCalendar.h"
 #include "Rendering/DrawElements.h"
 #include "Rendering/SlateRenderer.h"
@@ -456,6 +457,19 @@ TSharedRef<SWidget> SLyudDiarySpread::ThingsLeft()
 			if (ULyudGameScreen* Screen = ULyudGameScreen::Get(World))
 			{
 				Screen->CloseThen([WeakWorld] { if (ULyudBookScreen* Books = ULyudBookScreen::Get(WeakWorld.Get())) { Books->OpenReader(FString()); } });
+			}
+		});
+	}
+	else if (Id == ULyudInstruments::GuitarItem)
+	{
+		// his guitar: played where he stands, best by a bonfire (docs/instruments.md)
+		AddAction(TEXT("ui.use.play"), [WeakUI]
+		{
+			UWorld* World = WeakUI.IsValid() ? WeakUI->GetWorld() : nullptr;
+			TWeakObjectPtr<UWorld> WeakWorld = World;
+			if (ULyudGameScreen* Screen = ULyudGameScreen::Get(World))
+			{
+				Screen->CloseThen([WeakWorld] { if (ULyudInstruments* Instr = ULyudInstruments::Get(WeakWorld.Get())) { Instr->Open(true); } });
 			}
 		});
 	}
