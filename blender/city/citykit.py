@@ -382,6 +382,16 @@ def dress_hash01(plot, did, day):
     return (h & 0xFFFFFF) / float(1 << 24)
 
 
+def dress_in_hours(h, o, c):
+    """LyudCity::InHours: is h in [o, c) on a 24 h clock (c below o runs past midnight; a full day or o == c is always)."""
+    if c - o >= 24 or (o <= 0 and c >= 24):
+        return True
+    o, c = math.fmod(o + 48.0, 24.0), math.fmod(c + 48.0, 24.0)
+    if o == c:
+        return True
+    return (o <= h < c) if o < c else (h >= o or h < c)
+
+
 def dress_visible(when, plot, did, now):
     """Is a set with condition `when` shown? now: {"since": days since the game began, "day": absolute day number,
     "hour", "weekday", "month", "weather": set of WEATHER_WORDS, "festivals": set of ids, "festival_today": bool,
@@ -395,16 +405,8 @@ def dress_visible(when, plot, did, now):
         return False
     if "weekdays" in when and now["weekday"] not in when["weekdays"]:
         return False
-    if "hours" in when:
-        a, b = when["hours"]
-        h = now["hour"]
-        if b - a >= 24 or (a == 0 and b == 24):
-            pass
-        elif a <= b:
-            if not (a <= h < b):
-                return False
-        elif not (h >= a or h < b):
-            return False
+    if "hours" in when and not dress_in_hours(now["hour"], when["hours"][0], when["hours"][1]):
+        return False
     if "festival" in when:
         f = when["festival"]
         today = now.get("festival_today", False)
