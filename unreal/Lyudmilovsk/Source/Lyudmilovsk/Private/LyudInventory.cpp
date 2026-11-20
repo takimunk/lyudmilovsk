@@ -135,6 +135,9 @@ namespace
 		Good(TEXT("record_storm_1"), K::Misc, L::Flat, FVector(0.4f, 31.f, 31.f), FLinearColor(0.20f, 0.22f, 0.26f), 55, 4.f);
 		Good(TEXT("record_snow_1"), K::Misc, L::Flat, FVector(0.4f, 31.f, 31.f), FLinearColor(0.88f, 0.92f, 0.96f), 50, 4.f);
 		Good(TEXT("record_sea_1"), K::Misc, L::Flat, FVector(0.4f, 31.f, 31.f), FLinearColor(0.18f, 0.40f, 0.55f), 45, 4.f);
+		// the sea railway's card ticket (the halts' ticket boxes) and the same punched by the conductor, a keepsake (docs/railway.md)
+		Good(TEXT("rail_ticket"), K::Misc, L::Flat, FVector(0.1f, 3.f, 5.7f), FLinearColor(0.78f, 0.86f, 0.62f), 5, 2.f);
+		Good(TEXT("rail_ticket_punched"), K::Misc, L::Flat, FVector(0.1f, 3.f, 5.7f), FLinearColor(0.72f, 0.8f, 0.58f), 0, 2.f);
 		// the Rassvet's ticket stub: torn at the door of every session, kept (docs/cinema.md)
 		Good(TEXT("ticket_stub"), K::Misc, L::Flat, FVector(0.1f, 3.5f, 6.f), FLinearColor(0.86f, 0.56f, 0.6f), 0, 2.f);
 		Good(TEXT("record_club_1"), K::Misc, L::Flat, FVector(0.4f, 31.f, 31.f), FLinearColor(0.25f, 0.15f, 0.35f), 60, 4.f);
