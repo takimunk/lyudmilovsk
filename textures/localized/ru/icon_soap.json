@@ -1,0 +1,10 @@
+{
+ "id": "icon_soap",
+ "lang": "ru",
+ "model": "higgsfield gpt_image_2_5 (2k, medium)",
+ "aspect": "1:1",
+ "prompt": "An oval bar of pink soap partly unwrapped from plain white paper.",
+ "source": "design/city_goods/icons_city_3.png (sidecar design/city_goods/icons_city_3.json), cell 5 (row 2, middle), cut into 3x3 equal cells, resized to 512x512",
+ "sha256": "defe862264a7b7ce3963f02d099b0d2b9e3057d400230bb80d6dc919711c4dd2",
+ "strings": {}
+}

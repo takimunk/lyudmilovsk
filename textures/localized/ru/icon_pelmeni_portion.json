@@ -1,0 +1,10 @@
+{
+ "id": "icon_pelmeni_portion",
+ "lang": "ru",
+ "model": "higgsfield gpt_image_2_5 (2k, medium)",
+ "aspect": "1:1",
+ "prompt": "A dozen small boiled pelmeni dumplings on a plain white paper plate with a spoonful of sour cream on top and a small aluminium fork.",
+ "source": "design/city_goods/icons_city_1.png (sidecar design/city_goods/icons_city_1.json), cell 7 (row 3, left), cut into 3x3 equal cells, resized to 512x512",
+ "sha256": "6f129d22ff1c3850d86d2442be911be5da5946a32a866f76e71192ffcbe3eb2f",
+ "strings": {}
+}

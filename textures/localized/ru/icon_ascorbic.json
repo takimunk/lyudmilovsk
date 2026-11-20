@@ -1,0 +1,10 @@
+{
+ "id": "icon_ascorbic",
+ "lang": "ru",
+ "model": "higgsfield gpt_image_2_5 (2k, medium)",
+ "aspect": "1:1",
+ "prompt": "A short paper-wrapped roll of round yellow vitamin tablets, opened at one end with three tablets spilled out.",
+ "source": "design/city_goods/icons_city_3.png (sidecar design/city_goods/icons_city_3.json), cell 4 (row 2, left), cut into 3x3 equal cells, resized to 512x512",
+ "sha256": "9ee37a4925d97faee7f9cec3133cd3aaeda91d78140a8eb76aa97459351eee6a",
+ "strings": {}
+}

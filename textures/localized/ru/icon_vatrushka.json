@@ -1,0 +1,10 @@
+{
+ "id": "icon_vatrushka",
+ "lang": "ru",
+ "model": "higgsfield gpt_image_2_5 (2k, medium)",
+ "aspect": "1:1",
+ "prompt": "A round golden sweet bun with a well of white baked curd cheese in its centre, on a square of greaseproof paper.",
+ "source": "design/city_goods/icons_city_1.png (sidecar design/city_goods/icons_city_1.json), cell 3 (row 1, right), cut into 3x3 equal cells, resized to 512x512",
+ "sha256": "f611893cf0c8ad553ba1bc6c400b069dda508ca64825606c2b064b2156971303",
+ "strings": {}
+}

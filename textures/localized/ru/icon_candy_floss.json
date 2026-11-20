@@ -1,0 +1,10 @@
+{
+ "id": "icon_candy_floss",
+ "lang": "ru",
+ "model": "higgsfield gpt_image_2_5 (2k, medium)",
+ "aspect": "1:1",
+ "prompt": "A big fluffy cloud of pink candy floss on a thin wooden stick.",
+ "source": "design/city_goods/icons_city_2.png (sidecar design/city_goods/icons_city_2.json), cell 2 (row 1, middle), cut into 3x3 equal cells, resized to 512x512",
+ "sha256": "9a8b03bf2f161ca24277fc90b7206d2cde92c0c4c29074f35266e9d34361ea40",
+ "strings": {}
+}

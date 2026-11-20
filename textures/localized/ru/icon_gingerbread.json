@@ -1,0 +1,10 @@
+{
+ "id": "icon_gingerbread",
+ "lang": "ru",
+ "model": "higgsfield gpt_image_2_5 (2k, medium)",
+ "aspect": "1:1",
+ "prompt": "Two round domed Russian gingerbread cakes covered in a thin crackled white sugar glaze.",
+ "source": "design/city_goods/icons_city_1.png (sidecar design/city_goods/icons_city_1.json), cell 9 (row 3, right), cut into 3x3 equal cells, resized to 512x512",
+ "sha256": "b7119abf6822e5e56d148e75905e7fbe6a73eba1a4deea473825d58242d241f5",
+ "strings": {}
+}

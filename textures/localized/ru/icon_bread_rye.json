@@ -1,0 +1,10 @@
+{
+ "id": "icon_bread_rye",
+ "lang": "ru",
+ "model": "higgsfield gpt_image_2_5 (2k, medium)",
+ "aspect": "1:1",
+ "prompt": "A brick-shaped loaf of dark Soviet rye bread with a shiny brown crust and a few caraway seeds, on a scrap of plain wrapping paper.",
+ "source": "design/city_goods/icons_city_1.png (sidecar design/city_goods/icons_city_1.json), cell 1 (row 1, left), cut into 3x3 equal cells, resized to 512x512",
+ "sha256": "45d2b088974f6cfb406814f11f0d8297bdbb3a07ef46aa006722eaa22da245aa",
+ "strings": {}
+}
