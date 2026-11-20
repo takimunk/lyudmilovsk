@@ -34,7 +34,9 @@ EVENTS = {"rest_sit", "rest_carry", "rest_serve", "rest_bill", "rest_bye",
           "friend_wave", "friend_bench", "friend_card", "friend_gift", "friend_outing",
           # the hero plays a piano or his guitar (docs/instruments.md)
           "hero_plays", "hero_played", "hero_sing_twinkle", "hero_sing_happy_birthday", "hero_sing_korobeiniki",
-          "hero_sing_jingle_bells", "hero_sing_sakura"}
+          "hero_sing_jingle_bells", "hero_sing_sakura",
+          # the hero walks with a dog that is his friend (docs/animals.md "Friends")
+          "dog_walk"}
 
 sets = []          # [{name, conds: [(k, v)], say: [keys], talk: [[keys]], file}]
 strings = collections.OrderedDict()   # key -> (ru, en, ja)

@@ -1986,6 +1986,19 @@ age = teen adult elder
 weight = 3
 say = town.evening_front_warm.1..2
 
+# The hero's animal friends (docs/animals.md "Friends"): what the townsfolk say when he walks past with a dog at his
+# heel. Event (on = ...): dog_walk (UAnimalFriendSubsystem: a friend dog at heel, a resident within a few metres).
+
+[notice_dog_walk]
+on = dog_walk
+age = adult elder
+say = town.notice_dog_walk.1..6
+
+[notice_dog_walk_kid]
+on = dog_walk
+age = kid teen
+say = town.notice_dog_walk_kid.1..4
+
 # Friends among the townsfolk (backlog item 12; the words of the feature: tools/friends/content.py).
 # bond = friendly | friend | close: how close the speaker is to the hero (absent: anyone). {0} is the nickname the
 # friend gave him (friends.nick.*), only in sets with bond = friend close. Greetings (to = hero), a wave from afar

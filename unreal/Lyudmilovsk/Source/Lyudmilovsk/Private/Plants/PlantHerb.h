@@ -45,11 +45,20 @@ namespace PlantHerbs
 		float Wither = 0.f;
 		/** The leaves' colour (season), when the texture does not carry it. */
 		FLinearColor LeafColour = FLinearColor::Green;
+		/** The whole plant scaled about its foot, 1 = as built (a garden's sprout: GrownState only). */
+		float Scale = 1.f;
 		/** Changes whenever the mesh would. */
 		uint32 Key = 0;
 	};
 
 	FState State(const FPlantSpecies& S, uint32 Seed, float Age, float Day);
+
+	/**
+	 * The plant at a growth given from outside instead of its age and the calendar (a garden bed, AProceduralPlant::SetGrowth):
+	 * Growth01 0 just sprouted .. 1 full grown and ripe. Always alive and in full leaf; its flowers (and Berry fruit) come with
+	 * the growth, from 0.4 and all out at 0.9, whatever the day. Day is only read by a seaweed (EPlantHerbForm::Alga).
+	 */
+	FState GrownState(const FPlantSpecies& S, uint32 Seed, float Growth01, float Day);
 
 	/** The plant at that state; OutHeight / OutRadius: its size, m. */
 	void Build(const FPlantSpecies& S, uint32 Seed, const FState& St, FHerbGeometry& Out, float& OutHeight, float& OutRadius);
@@ -81,6 +90,8 @@ namespace PlantHerbs
 	TArray<FPlantSpecies> SeaSpecies();
 	/** The North's shrubs (forest bakes) and herbs (AProceduralGrass herb patches): PlantSpeciesNorth.cpp, docs/north.md. */
 	TArray<FPlantSpecies> NorthSpecies();
+	/** The allotment's crops (PlantSpeciesGarden.cpp, docs/allotment.md): radish, dill, strawberry, potato, tomato, sunflower. */
+	TArray<FPlantSpecies> GardenSpecies();
 }
 
 /** The seaweeds' and sea grass's build (EPlantHerbForm::Alga, PlantAlga.cpp): Leaves the fronds, Stems the holdfast and

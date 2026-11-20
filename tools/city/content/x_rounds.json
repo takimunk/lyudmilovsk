@@ -1,0 +1,15 @@
+{
+ "_doc": "The bicycle rounds (docs/rounds.md, backlog item 17): the paper round from kiosk 1 and the post round from the old postman's door are run by the engine (ULyudRounds, Private/Rounds/LyudRounds.cpp), not by a thing in town; here only their stamp set and side quest. The job boards' sheet about them is in x_jobs.json.",
+ "collections": {
+  "rounds": {"title": "city.rounds.coll.title", "pieces": ["t1", "t2", "t3", "t4", "post"],
+             "by": "ULyudRounds (Private/Rounds/LyudRounds.cpp): a paper round with three in four papers well placed earns its terrace, a post round done to the end earns post"}
+ },
+ "quests": [
+  {"id": "rounds", "kind": "side", "start_on": {"event": "round_start", "target": "paper"}, "stages": [
+   {"id": "first", "objectives": [{"id": "paper", "event": "round_done", "target": "paper"}], "reward": {"rubles": 10}},
+   {"id": "post", "objectives": [{"id": "post", "event": "round_done", "target": "post"}], "reward": {"rubles": 15}},
+   {"id": "terraces", "objectives": [{"id": "t1", "event": "round_done", "target": "t1"}, {"id": "t2", "event": "round_done", "target": "t2"},
+    {"id": "t3", "event": "round_done", "target": "t3"}, {"id": "t4", "event": "round_done", "target": "t4"}], "reward": {"rubles": 60, "items": {"postcard": 1}}}
+  ]}
+ ]
+}
