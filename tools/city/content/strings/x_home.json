@@ -1,0 +1,293 @@
+{
+ "_doc": "The hero's own room in the club (tools/city/content/x_home.json, docs/hero_room.md). The hero's voice, first person, past tense like every act line; ja: 僕. The choosers' words (home.*) are in tools/home/strings.json.",
+ "city.plot.p_home.name": {
+  "ru": "Своя комната в клубе",
+  "en": "My room at the club",
+  "ja": "クラブの自分の部屋"
+ },
+ "city.myroom.sleep.prompt": {
+  "ru": "E — лечь спать",
+  "en": "E — go to bed",
+  "ja": "E：寝る"
+ },
+ "city.myroom.bed.1": {
+  "ru": "Своя подушка пахнет иначе, чем гостиничная. За стеной гудели компьютеры, и под этот гул я уснул сразу.",
+  "en": "My own pillow smells different from a hotel one. The computers hummed behind the wall, and I fell asleep to it at once.",
+  "ja": "自分の枕は宿のとは匂いが違う。壁の向こうでコンピューターがうなっていて、その音で僕はすぐ眠った。"
+ },
+ "city.myroom.bed.2": {
+  "ru": "Мне снилось, что комната плывёт по морю, как каюта, а в иллюминаторе стоит солнце и не заходит.",
+  "en": "I dreamt the room was sailing the sea like a cabin, with the sun standing in the porthole and never setting.",
+  "ja": "部屋が船室みたいに海を進んでいる夢を見た。丸窓には太陽があって、いつまでも沈まなかった。"
+ },
+ "city.myroom.bed.3": {
+  "ru": "Проснулся сам, без будильника. Полежал ещё минуту, разглядывая, что стоит у меня на полках.",
+  "en": "I woke by myself, no alarm. I lay a minute longer, looking over what stands on my shelves.",
+  "ja": "目覚ましなしで自然に目が覚めた。もう一分だけ横になって、棚に並んだものを眺めていた。"
+ },
+ "city.myroom.bed.4": {
+  "ru": "Под утро в коридоре прошаркал хозяин, щёлкнул чайником. Значит, скоро шесть.",
+  "en": "Towards morning the owner shuffled down the corridor and clicked the kettle on. So it would soon be six.",
+  "ja": "明け方、廊下をオーナーが足を引きずって歩き、やかんのスイッチを入れた。もうすぐ六時だ。"
+ },
+ "city.myroom.place.prompt": {
+  "ru": "E — поставить или убрать вещь",
+  "en": "E — put a thing here or take it back",
+  "ja": "E：物を置く／片づける"
+ },
+ "city.myroom.pot.prompt": {
+  "ru": "E — цветочный горшок",
+  "en": "E — the flower pot",
+  "ja": "E：植木鉢"
+ },
+ "city.myroom.switch.prompt": {
+  "ru": "E — выключатель",
+  "en": "E — the light switch",
+  "ja": "E：電気のスイッチ"
+ },
+ "city.myroom.basket.prompt": {
+  "ru": "E — корзинка Мару",
+  "en": "E — Maru's basket",
+  "ja": "E：マルのかご"
+ },
+ "city.myroom.basket.day.1": {
+  "ru": "Корзинка Мару. Днём она тут не лежит, но одеяло примято и ещё тёплое.",
+  "en": "Maru's basket. She doesn't lie here in the daytime, but the blanket is pressed down and still warm.",
+  "ja": "マルのかご。昼間はここにいないけれど、毛布はへこんでいて、まだ温かい。"
+ },
+ "city.myroom.basket.day.2": {
+  "ru": "В корзинке лежит погрызенный теннисный мячик. Трогать не стал: это её.",
+  "en": "There is a chewed tennis ball in the basket. I left it alone: it is hers.",
+  "ja": "かごの中にかじられたテニスボールがある。触らなかった。あれはマルのものだ。"
+ },
+ "city.myroom.basket.day.3": {
+  "ru": "Красное одеяло в корзинке всё в шерсти. Вытряхну как-нибудь потом.",
+  "en": "The red blanket in the basket is covered in hair. I will shake it out some other time.",
+  "ja": "かごの赤い毛布は毛だらけだ。そのうち払っておこう。"
+ },
+ "city.myroom.basket.night.1": {
+  "ru": "Поправил одеяло в корзинке Мару. Ночью она приходит сюда, когда в коридоре гасят свет.",
+  "en": "I straightened the blanket in Maru's basket. At night she comes here, once the corridor lights go out.",
+  "ja": "マルのかごの毛布を直した。夜、廊下の明かりが消えると、マルはここへ来る。"
+ },
+ "city.myroom.basket.night.2": {
+  "ru": "Корзинка стоит у самой двери: Мару любит слышать, кто ходит по холлу.",
+  "en": "The basket stands right by the door: Maru likes to hear who is walking in the hall.",
+  "ja": "かごはドアのすぐそばにある。マルはホールを誰が歩いているか聞いているのが好きだ。"
+ },
+ "city.myroom.map.prompt": {
+  "ru": "E — посмотреть на карту",
+  "en": "E — look at the map",
+  "ja": "E：地図を見る"
+ },
+ "city.myroom.map.1": {
+  "ru": "Карта побережья. Клуб на ней не отмечен, и я поставил карандашом точку там, где сплю.",
+  "en": "A map of the coast. The club is not marked on it, so I put a pencil dot where I sleep.",
+  "ja": "海岸の地図。クラブは載っていないので、自分が寝ている場所に鉛筆で点を打った。"
+ },
+ "city.myroom.map.2": {
+  "ru": "Провёл пальцем от клуба до маяка. На карте это ладонь, а ногами полдня.",
+  "en": "I ran my finger from the club to the lighthouse. On the map it is a hand's width, on foot half a day.",
+  "ja": "クラブから灯台まで指でなぞった。地図では手のひら一つ分、歩けば半日だ。"
+ },
+ "city.myroom.map.3": {
+  "ru": "Остров на карте нарисован пунктиром, как будто картограф сам не был уверен, что он есть.",
+  "en": "The island is drawn with a dotted line, as if the mapmaker was not sure himself that it is there.",
+  "ja": "島は点線で描かれている。地図を作った人も、本当にあるのか自信がなかったみたいだ。"
+ },
+ "city.myroom.ui.choose": {
+  "ru": "◀ {0} ▶   {1} из {2}\nA, D — выбрать · E — да · S — отмена",
+  "en": "◀ {0} ▶   {1} of {2}\nA, D — choose · E — yes · S — cancel",
+  "ja": "◀ {0} ▶   {1}／{2}\nA・D：選ぶ　E：決定　S：やめる"
+ },
+ "city.myroom.ui.put": {
+  "ru": "Поставить: {0}",
+  "en": "Put here: {0}",
+  "ja": "置く：{0}"
+ },
+ "city.myroom.ui.take": {
+  "ru": "Убрать в карман: {0}",
+  "en": "Back to the pocket: {0}",
+  "ja": "しまう：{0}"
+ },
+ "city.myroom.ui.take_trophy": {
+  "ru": "Убрать с полки: {0}",
+  "en": "Take off the shelf: {0}",
+  "ja": "棚から下ろす：{0}"
+ },
+ "city.myroom.ui.nothing.card": {
+  "ru": "На доску пока нечего приколоть. Подойдут открытки и снимки.",
+  "en": "Nothing to pin up yet. Postcards and prints will do.",
+  "ja": "まだボードに貼るものがない。絵はがきや写真が合う。"
+ },
+ "city.myroom.ui.nothing.frame": {
+  "ru": "На гвоздь пока нечего повесить. Подойдёт диплом, пластинка или газета.",
+  "en": "Nothing to hang on the nail yet. A diploma, a record or a newspaper will do.",
+  "ja": "まだ釘に掛けるものがない。賞状やレコード、新聞が合う。"
+ },
+ "city.myroom.ui.nothing.shelf": {
+  "ru": "На полку пока нечего поставить.",
+  "en": "Nothing to put on the shelf yet.",
+  "ja": "まだ棚に置くものがない。"
+ },
+ "city.myroom.ui.placed": {
+  "ru": "{0}: теперь тут.",
+  "en": "{0}: it lives here now.",
+  "ja": "{0}：ここに置いた。"
+ },
+ "city.myroom.ui.taken": {
+  "ru": "{0}: убрал в карман.",
+  "en": "{0}: back in my pocket.",
+  "ja": "{0}：ポケットに戻した。"
+ },
+ "city.myroom.ui.taken_trophy": {
+  "ru": "{0}: убрал с полки.",
+  "en": "{0}: off the shelf.",
+  "ja": "{0}：棚から下ろした。"
+ },
+ "city.myroom.light.on": {
+  "ru": "Свет включён",
+  "en": "The light is on",
+  "ja": "明かりをつけた"
+ },
+ "city.myroom.light.off": {
+  "ru": "Свет выключен",
+  "en": "The light is off",
+  "ja": "明かりを消した"
+ },
+ "city.myroom.trophy.cup.cog_chess": {
+  "ru": "Кубок шахматного турнира «Шестерёнки»",
+  "en": "The Cog chess cup",
+  "ja": "「歯車」チェス大会のカップ"
+ },
+ "city.myroom.trophy.cup.san_dominoes": {
+  "ru": "Кубок санатория по домино",
+  "en": "The sanatorium dominoes cup",
+  "ja": "サナトリウムのドミノ杯"
+ },
+ "city.myroom.trophy.cup.tt_cup": {
+  "ru": "Кубок по настольному теннису",
+  "en": "The table tennis cup",
+  "ja": "卓球大会のカップ"
+ },
+ "city.myroom.trophy.bird_book": {
+  "ru": "Дневник птиц",
+  "en": "The bird diary",
+  "ja": "鳥の日記"
+ },
+ "city.myroom.pot.plant": {
+  "ru": "Посадить: {0}",
+  "en": "Plant: {0}",
+  "ja": "植える：{0}"
+ },
+ "city.myroom.pot.water": {
+  "ru": "Полить",
+  "en": "Water it",
+  "ja": "水をやる"
+ },
+ "city.myroom.pot.look": {
+  "ru": "Посмотреть, как растёт",
+  "en": "See how it is growing",
+  "ja": "育ち具合を見る"
+ },
+ "city.myroom.pot.uproot": {
+  "ru": "Освободить горшок",
+  "en": "Empty the pot",
+  "ja": "鉢を空ける"
+ },
+ "city.myroom.pot.planted": {
+  "ru": "{0}: отросток в горшке. Поливать раз в день.",
+  "en": "{0}: a cutting in the pot. Water once a day.",
+  "ja": "{0}：挿し木を鉢に植えた。水やりは一日一回。"
+ },
+ "city.myroom.pot.watered": {
+  "ru": "Полил. Земля потемнела и запахла лесом.",
+  "en": "Watered. The soil went dark and smelt of the woods.",
+  "ja": "水をやった。土が黒くなって、森の匂いがした。"
+ },
+ "city.myroom.pot.watered_already": {
+  "ru": "Сегодня уже поливал. Зальёшь, и корни сгниют.",
+  "en": "Already watered today. Too much and the roots will rot.",
+  "ja": "今日はもう水をやった。やりすぎると根が腐る。"
+ },
+ "city.myroom.pot.uprooted": {
+  "ru": "Горшок пуст. Землю оставил: пригодится.",
+  "en": "The pot is empty. I kept the soil: it will come in handy.",
+  "ja": "鉢を空にした。土は残しておいた。また使える。"
+ },
+ "city.myroom.pot.stage.0": {
+  "ru": "{0}: отросток. Пока просто торчит из земли и думает. День {1}.",
+  "en": "{0}: a cutting. For now it just sticks out of the soil and thinks. Day {1}.",
+  "ja": "{0}：まだ挿し木。土から突き出て、考えごとをしている。{1}日目。"
+ },
+ "city.myroom.pot.stage.1": {
+  "ru": "{0}: прижился, пошли новые листья. День {1}.",
+  "en": "{0}: it has taken root, new leaves are coming. Day {1}.",
+  "ja": "{0}：根づいて、新しい葉が出てきた。{1}日目。"
+ },
+ "city.myroom.pot.stage.2": {
+  "ru": "{0}: вырос так, что горшок уже не кажется большим. День {1}.",
+  "en": "{0}: grown so much the pot no longer looks big. Day {1}.",
+  "ja": "{0}：鉢がもう大きく見えないくらい育った。{1}日目。"
+ },
+ "city.myroom.pot.stage.3": {
+  "ru": "{0}: взрослое растение. В комнате от него пахнет летом. День {1}.",
+  "en": "{0}: a grown plant. The room smells of summer because of it. Day {1}.",
+  "ja": "{0}：立派に育った。部屋が夏の匂いになった。{1}日目。"
+ },
+ "city.myroom.plant.Geranium": {
+  "ru": "Герань",
+  "en": "Geranium",
+  "ja": "ゼラニウム"
+ },
+ "city.myroom.plant.SpiderPlant": {
+  "ru": "Хлорофитум",
+  "en": "Spider plant",
+  "ja": "オリヅルラン"
+ },
+ "city.myroom.plant.Aloe": {
+  "ru": "Алоэ",
+  "en": "Aloe",
+  "ja": "アロエ"
+ },
+ "city.myroom.plant.Cactus": {
+  "ru": "Кактус",
+  "en": "Cactus",
+  "ja": "サボテン"
+ },
+ "city.myroom.plant.Begonia": {
+  "ru": "Бегония",
+  "en": "Begonia",
+  "ja": "ベゴニア"
+ },
+ "city.myroom.plant.Avocado": {
+  "ru": "Авокадо из косточки",
+  "en": "Avocado from a stone",
+  "ja": "種から育てるアボカド"
+ },
+ "dev.group.home": {
+  "ru": "Своя комната",
+  "en": "My room",
+  "ja": "自分の部屋"
+ },
+ "dev.action.home.fill": {
+  "ru": "Расставить по комнате вещи (выдаёт и ставит)",
+  "en": "Furnish the room (gives things and places them)",
+  "ja": "部屋に物を並べる（配って置く）"
+ },
+ "dev.action.home.clear": {
+  "ru": "Убрать всё с полок и стен",
+  "en": "Clear the shelves and walls",
+  "ja": "棚と壁を片づける"
+ },
+ "dev.action.home.plant_grow": {
+  "ru": "Растение: +10 дней",
+  "en": "The plant: +10 days",
+  "ja": "植物：10日進める"
+ },
+ "dev.action.home.light": {
+  "ru": "Свет в комнате",
+  "en": "The room's light",
+  "ja": "部屋の明かり"
+ }
+}

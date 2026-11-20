@@ -1858,6 +1858,16 @@ FString ULyudCityThings::ActOfThing(const FString& Id) const
 	return A >= 0 && A < (int)Model->Acts.size() ? LyudCityThingsImpl::Str(Model->Acts[(size_t)A].Id) : FString();
 }
 
+FString ULyudCityThings::ThingId(int32 Thing) const
+{
+	return Model && Thing >= 0 && Thing < NumThings() ? LyudCityThingsImpl::Str(Model->Things[(size_t)Thing].Id) : FString();
+}
+
+bool ULyudCityThings::HasStamp(const FString& Stamp) const
+{
+	return Model && Model->HasStamp(std::string(TCHAR_TO_UTF8(*Stamp)));
+}
+
 bool ULyudCityThings::GiveStamp(const FString& Stamp)
 {
 	if (!Model || !Model->GiveStamp(std::string(TCHAR_TO_UTF8(*Stamp))))

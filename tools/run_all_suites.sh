@@ -153,6 +153,7 @@ suite railsim.table               - bash tools/railsim/run.sh table
 if wanted peoplesim; then
 	[ -f "$RAIL" ] || python3 tools/railway.py > /dev/null 2>&1
 fi
+suite homesim.test                - bash tools/homesim/run.sh
 suite lettersim.test              - bash tools/lettersim/run.sh
 suite lettersim.story             - bash tools/lettersim/run.sh story ru
 suite mannersim.friends           - bash tools/mannersim/run.sh friends

@@ -1,0 +1,40 @@
+{
+ "about": "Written by tools/home/home.py from blender/export/city/hero_room.json and tools/city/extra_places.json: do not edit by hand (docs/hero_room.md).",
+ "plot": "P-HOME",
+ "origin": [-300.0, 100.0, 0.0],
+ "yaw": 0.0,
+ "meshes": ["/Game/City/Buildings/hero_room/SM_hero_room", "/Game/City/Buildings/hero_room/SM_hero_room_Detail"],
+ "box": {"min": [-690.0, -10.0, -20.0], "max": [-300.0, 480.0, 280.0]},
+ "wall": {"x": [-350.0, -300.0], "y": [0.0, 750.0], "z1": 360.0, "paint_z": 150.0, "mesh_prefix": "Hall_Wall_L", "door_y": [40.0, 160.0], "door_z": 220.0},
+ "lamps": [
+  {"ue": [-646.0, 330.0, 88.0], "lumens": 180, "colour": "#FFD9A8", "radius": 300.0},
+  {"ue": [-505.0, 230.0, 210.0], "lumens": 850, "colour": "#FFD9A8", "radius": 650.0}
+ ],
+ "slots": [
+  {"id": "pin_1", "type": "card", "ue": [-665.5, 175.0, 183.0], "yaw": 0.0},
+  {"id": "pin_2", "type": "card", "ue": [-665.5, 130.0, 183.0], "yaw": 0.0},
+  {"id": "pin_3", "type": "card", "ue": [-665.5, 85.0, 183.0], "yaw": 0.0},
+  {"id": "pin_4", "type": "card", "ue": [-665.5, 175.0, 141.0], "yaw": 0.0},
+  {"id": "pin_5", "type": "card", "ue": [-665.5, 130.0, 141.0], "yaw": 0.0},
+  {"id": "pin_6", "type": "card", "ue": [-665.5, 85.0, 141.0], "yaw": 0.0},
+  {"id": "top_1", "type": "shelf", "ue": [-659.0, 296.0, 142.0], "yaw": 0.0},
+  {"id": "top_2", "type": "shelf", "ue": [-659.0, 248.0, 142.0], "yaw": 0.0},
+  {"id": "shelf_1", "type": "shelf", "ue": [-371.0, 322.5, 42.0], "yaw": 180.0},
+  {"id": "shelf_2", "type": "shelf", "ue": [-371.0, 387.5, 42.0], "yaw": 180.0},
+  {"id": "shelf_3", "type": "shelf", "ue": [-371.0, 322.5, 84.0], "yaw": 180.0},
+  {"id": "shelf_4", "type": "shelf", "ue": [-371.0, 387.5, 84.0], "yaw": 180.0},
+  {"id": "shelf_5", "type": "shelf", "ue": [-371.0, 322.5, 126.0], "yaw": 180.0},
+  {"id": "shelf_6", "type": "shelf", "ue": [-371.0, 387.5, 126.0], "yaw": 180.0},
+  {"id": "frame_1", "type": "frame", "ue": [-509.0, 458.0, 160.0], "yaw": -90.0},
+  {"id": "frame_2", "type": "frame", "ue": [-599.0, 458.0, 160.0], "yaw": -90.0},
+  {"id": "frame_3", "type": "frame", "ue": [-575.0, 12.0, 160.0], "yaw": 90.0},
+  {"id": "pot", "type": "pot", "ue": [-636.0, 44.0, 29.5], "yaw": 0.0}
+ ],
+ "trophies": [
+  {"id": "cup:cog_chess", "stamp": "cups/cog_chess", "name": "city.myroom.trophy.cup.cog_chess", "shape": "cup", "tint": 0},
+  {"id": "cup:san_dominoes", "stamp": "cups/san_dominoes", "name": "city.myroom.trophy.cup.san_dominoes", "shape": "cup", "tint": 1},
+  {"id": "cup:tt_cup", "stamp": "cups/tt_cup", "name": "city.myroom.trophy.cup.tt_cup", "shape": "cup", "tint": 2},
+  {"id": "book:birds", "stamp": "", "name": "city.myroom.trophy.bird_book", "shape": "book", "tint": 0}
+ ],
+ "plants": ["Geranium", "SpiderPlant", "Aloe", "Cactus", "Begonia", "Avocado"]
+}
