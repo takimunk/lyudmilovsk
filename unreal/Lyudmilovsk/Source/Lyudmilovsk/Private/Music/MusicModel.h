@@ -177,6 +177,9 @@ namespace LyudMusic
 		std::string TideTime;       // "HH:MM" of the next high (rising) or low (falling) water
 		std::string PaperHeadline;  // literal text, empty without the paper
 		int Season = 0;             // 0 winter, 1 spring, 2 summer, 3 autumn
+		int Rink = 0;               // the park rink (ULyudWinterPlay::RinkReport): 0 none, 1 open, 2 thin, 3 slush
+		float RinkCm = 0.f;         // its ice, cm
+		int Walrus = 0;             // the walruses' call: 1 tomorrow's Sunday swim (Saturday's broadcasts), 2 New Year's Day
 	};
 
 	/** One segment laid out: what plays when, what is said when. */
@@ -711,6 +714,23 @@ namespace LyudMusic
 				T.Key = F.bTideRising ? "music.radio.tide.rising" : "music.radio.tide.falling";
 				T.Args = { Lit(F.TideTime) };
 				Out.push_back(T);
+			}
+			// winter: the rink and the walruses (docs/winter_play.md "The radio")
+			if (F.Rink >= 1 && F.Rink <= 3)
+			{
+				FCaption R;
+				R.Key = F.Rink == 1 ? "winter.radio.rink_open" : (F.Rink == 2 ? "winter.radio.rink_thin" : "winter.radio.rink_slush");
+				if (F.Rink != 3)
+				{
+					R.Args = { Lit(Num(F.RinkCm)) };
+				}
+				Out.push_back(R);
+			}
+			if (F.Walrus == 1 || F.Walrus == 2)
+			{
+				FCaption W;
+				W.Key = F.Walrus == 1 ? "winter.radio.walrus" : "winter.radio.new_year";
+				Out.push_back(W);
 			}
 			FCaption A;
 			if (F.Thunder > 0.3f) { A.Key = "music.radio.weather.advice.storm"; }

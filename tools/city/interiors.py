@@ -63,14 +63,15 @@ SERVICE = ("cleaner", "janitor", "guard")
 DAYS = ("mon", "tue", "wed", "thu", "fri", "sat", "sun")
 PUBLIC_KINDS_SKIP = ("residential", "square", "park", "pool")
 QUEST_EVENTS = ("do", "win", "visit", "get", "use", "have", "wear", "reach", "talk", "bird", "walk", "leave_computer", "ask",
-               "round_start", "round_done")  # the last two: the bicycle rounds (ULyudRounds, docs/rounds.md)
+               "round_start", "round_done", "photo")  # round_*: the bicycle rounds (ULyudRounds, docs/rounds.md); photo: the film camera
 # the telescopes' own quest event (ULyudTelescope, docs/telescopes.md): observe <sight> | jupiter_night
 QUEST_EVENTS += ("observe",)
 ACT_FIELDS = ("prompt", "minutes", "price", "lines", "pose", "sound", "event", "target", "give", "daily", "needs_staff",
               "needs_item", "fade", "shop", "screen", "until", "title", "any_hour", "rotate", "collect", "closed", "game", "read",
               "sleep", "topics", "to", "floors", "oneway", "stay", "needs_stay", "no_stay", "open")
-# screens of other systems an act may open instead of its page ("open"; ULyudCityThings::OnOpen): the library's classics
-OPEN_SCREENS = ("books", "piano")
+# screens of other systems an act may open instead of its page ("open"; ULyudCityThings::OnOpen): the library's classics, the
+# photo studio's counter service and the darkroom where the hero develops his own film (Private/Photo/LyudPhoto.cpp)
+OPEN_SCREENS = ("books", "piano", "photo_lab", "photo_darkroom")
 # a line's conditions (docs/city_interiors.md "Lines by the day and the hour"): hours [from, to), weekdays, a calendar date or
 # range ("MM-DD" or ["MM-DD", "MM-DD"], wrapping the year), days since the game began (after N), every [n, r] game days
 # festival ("any", "none", an id of PeopleData/festivals.json or a list of ids), weather (a word of WEATHER or a list: any of
@@ -1675,7 +1676,9 @@ def day_in(days, wd):
 def build_collections(src, things, acts, strings, regs=None, texts=None, cups=None):
     """The collections (docs/city_interiors.md "Collections"): {"<set>": {"title": key, "pieces": [...]}}. Pieces omitted: every
     piece something in town gives. Every stamp named anywhere must be of a declared set (and a declared piece), and every
-    declared piece must be given by some thing in town (or the set could never be complete)."""
+    declared piece must be given by some thing in town (or the set could never be complete); a set with "by": "code" names
+    its pieces itself and the game's code gives them (ULyudCityThings::GiveStamp: the photo album's sets), so nothing in town
+    has to."""
     given = collections.defaultdict(set)
     seen_acts = set()
     for t in things:
@@ -1730,20 +1733,39 @@ def build_collections(src, things, acts, strings, regs=None, texts=None, cups=No
         if title not in strings and title not in MAIN:
             err("collection %s: title string %s is missing" % (sid, title))
         for k in c:
-            if k not in ("title", "pieces", "by"):
+            if k not in ("title", "pieces", "by", "code"):
                 err("collection %s: unknown field %s" % (sid, k))
         if c.get("by") and not c.get("pieces"):
             err("collection %s: given by %s: list its pieces" % (sid, c["by"]))
         pieces = [str(p) for p in c["pieces"]] if c.get("pieces") else sorted(given.get(sid, ()), key=lambda p: (len(p), p))
         if len(set(pieces)) != len(pieces):
             err("collection %s: a piece twice" % sid)
+        # "code": [source files]: the engine gives these pieces itself (ULyudCityThings::GiveStamp); each piece must be
+        # named in one of the files (as "<piece>" or "<set>/<piece>")
+        code_text = None
+        if c.get("code"):
+            code_text = ""
+            for rel in c["code"]:
+                path = os.path.join(ROOT, rel)
+                if not os.path.exists(path):
+                    err("collection %s: code file %s is missing" % (sid, rel))
+                    continue
+                with open(path, encoding="utf-8") as f:
+                    code_text += f.read()
+            if not c.get("pieces"):
+                err("collection %s: a collection given by code lists its pieces" % sid)
         for p in pieces:
+            if code_text is not None:
+                if '"%s"' % p not in code_text and '"%s/%s"' % (sid, p) not in code_text:
+                    err("collection %s: piece %s is not named in its code files" % (sid, p))
             # "by": the engine gives its pieces (the kites': ULyudKiteFlying stamps a flight), not a thing in town
-            if p not in given.get(sid, ()) and not c.get("by"):
+            elif p not in given.get(sid, ()) and not c.get("by"):
                 err("collection %s: nothing in town gives piece %s" % (sid, p))
         if not pieces:
             err("collection %s: no pieces (nothing in town gives one)" % sid)
         out[sid] = {"title": title, "pieces": pieces}
+        if c.get("by"):
+            out[sid]["by"] = str(c["by"])
     for where, st in STAMPS_USED:
         sid, _, piece = st.partition("/")
         if sid not in out:
@@ -1890,6 +1912,8 @@ def check_quests(quests, acts, strings, items, plot_ids, map_places, existing_id
                     err("quest %s: %s %s: unknown item" % (qid, ev, tgt))
                 if ev == "reach" and tgt not in map_places:
                     err("quest %s: reach %s: not a map place" % (qid, tgt))
+                if ev == "photo" and tgt not in map_places:
+                    err("quest %s: photo %s: not a map place (a developed frame is of a place of map.json)" % (qid, tgt))
                 if ev == "ask" and tgt not in TOPICS:
                     err("quest %s: ask %s: no such topic" % (qid, tgt))
     for k in keys:

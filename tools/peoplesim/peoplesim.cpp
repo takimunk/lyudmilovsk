@@ -1,6 +1,7 @@
 // The people's life outside the engine: behaviour checks and a day on the real map (CSV for render_people.py).
 //   tools/peoplesim/run.sh test
 //   tools/peoplesim/run.sh town | week          the town: a day and a night | a week of invariants (town_week.h)
+//   tools/peoplesim/run.sh winter               winter play on the town (winter_people.h; also part of test)
 //   tools/peoplesim/run.sh day [start_hour hours]
 //   tools/peoplesim/run.sh trace <key> [start_hour hours]
 //   tools/peoplesim/run.sh summary [start_hour hours [weekday]]
@@ -924,6 +925,8 @@ static void Bikes(FWorld& W)
 	CHECK(Riders == 0, "no bike reserved by someone who isn't on the way to it (%d)", Riders);
 }
 
+static int Winter();     // winter_people.h
+
 static int Test()
 {
 	std::printf("a made-up town:\n");
@@ -970,6 +973,11 @@ static int Test()
 		NorthLife(W);
 		const double S = std::chrono::duration<double>(std::chrono::high_resolution_clock::now() - T0).count();
 		std::printf("  the real map's checks took %.2f s\n", S);
+	}
+	if (Real)
+	{
+		std::printf("winter play (the town: the rink, the ice hole, the banya; docs/people.md):\n");
+		Winter();
 	}
 	std::printf(Failures ? "%d FAILED\n" : "all ok\n", Failures);
 	return Failures ? 1 : 0;
@@ -1395,6 +1403,7 @@ static int Day(int Argc, char** Argv, const char* TraceKey, bool bSummary = fals
 }
 
 #include "town_week.h"
+#include "winter_people.h"
 
 int main(int Argc, char** Argv)
 {
@@ -1410,6 +1419,12 @@ int main(int Argc, char** Argv)
 	if (Mode == "week")
 	{
 		return Week();
+	}
+	if (Mode == "winter")
+	{
+		const int R = Winter();
+		std::printf(Failures ? "%d FAILED\n" : "all ok\n", Failures);
+		return R;
 	}
 	if (Mode == "day")
 	{

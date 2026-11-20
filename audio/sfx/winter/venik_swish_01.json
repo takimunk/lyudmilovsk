@@ -1,0 +1,21 @@
+{
+ "name": "venik_swish_01",
+ "asset": "/Game/Audio/Winter/S_venik_swish_01",
+ "pool": "venik_swish",
+ "file": "audio/sfx/winter/venik_swish_01.wav",
+ "generator": "tools/winter_play/sounds.py",
+ "seed": 2160,
+ "rng": "numpy.random.default_rng (PCG64), numpy 2.5.3",
+ "loop": false,
+ "sample_rate": 48000,
+ "bit_depth": 16,
+ "channels": 1,
+ "seconds": 0.75,
+ "peak_dbfs": -5.0,
+ "rms_dbfs": -23.22,
+ "params": {
+  "seconds": 0.75,
+  "pat_s": 0.38
+ },
+ "license": "Procedural, made by the project; CC BY 4.0."
+}

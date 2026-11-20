@@ -1,0 +1,29 @@
+{
+ "about": "Written by tools/winter_play/winter_play.py: x/y map metres (docs/world_map.md), yaw Unreal degrees; outdoors, dropped onto the ground.",
+ "teleports": [
+  {
+   "id": "winter.rink",
+   "group": "winter",
+   "name": "dev.tp.winter.rink",
+   "x": -68.83,
+   "y": 1235.5,
+   "yaw": 90.0
+  },
+  {
+   "id": "winter.banya",
+   "group": "winter",
+   "name": "dev.tp.winter.banya",
+   "x": 151.38,
+   "y": 924.5,
+   "yaw": 180.0
+  },
+  {
+   "id": "winter.ice_hole",
+   "group": "winter",
+   "name": "dev.tp.winter.ice_hole",
+   "x": 300.0,
+   "y": 909.8,
+   "yaw": 90.0
+  }
+ ]
+}

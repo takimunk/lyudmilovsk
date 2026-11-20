@@ -23,6 +23,7 @@
 #include "UI/LyudQuests.h"
 #include "UI/LyudUIStyle.h"
 #include "Weather/LyudWeather.h"
+#include "Winter/LyudWinterPlay.h"
 #include "Widgets/Layout/SBox.h"
 #include "Widgets/SCompoundWidget.h"
 #include "Widgets/SOverlay.h"
@@ -273,6 +274,23 @@ void ULyudMusic::RefreshFacts(bool bForce)
 	const FDateTime Now = UGameCalendar::NowIn(World);
 	const int32 Month = Now.GetMonth();
 	F.Season = (Month == 12 || Month <= 2) ? 0 : (Month <= 5 ? 1 : (Month <= 8 ? 2 : 3));
+	// winter: the rink's state, the walruses' Sunday swim on Saturday's broadcasts, New Year's Day (docs/winter_play.md)
+	F.Rink = 0;
+	F.RinkCm = 0.f;
+	F.Walrus = 0;
+	if (const ULyudWinterPlay* Play = ULyudWinterPlay::Get(this))
+	{
+		F.Rink = Play->RinkReport(F.RinkCm);
+		F.RinkCm = FMath::RoundToFloat(F.RinkCm);
+		if (Month == 1 && Now.GetDay() == 1)
+		{
+			F.Walrus = 2;
+		}
+		else if ((Month == 12 || Month <= 3) && Now.GetDayOfWeek() == EDayOfWeek::Saturday && Now.GetHour() >= 12)
+		{
+			F.Walrus = 1;
+		}
+	}
 	// the tide (local time is UTC+2, like the people's sun times): rising or falling now, and when it turns
 	const double Longitude = 20.40;
 	const FDateTime Utc = Now - FTimespan::FromHours(2.0);

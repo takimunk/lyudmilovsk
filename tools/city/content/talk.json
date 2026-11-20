@@ -2251,6 +2251,29 @@
     "gives": {
      "collect": "staff/photo"
     }
+   },
+   {
+    "id": "photo.city",
+    "k": "city.ask.photo.city",
+    "lines": [
+     "city.ask.photo.city.1",
+     "city.ask.photo.city.2",
+     "city.ask.photo.city.3"
+    ],
+    "gives": {
+     "collect": "staff/photo"
+    }
+   },
+   {
+    "id": "photo.city.done",
+    "k": "city.ask.photo.city.done",
+    "lines": [
+     "city.ask.photo.city.done.1"
+    ],
+    "heard": "photo.city",
+    "gives": {
+     "collect": "staff/photo"
+    }
    }
   ],
   "clinic_registry_x": [
