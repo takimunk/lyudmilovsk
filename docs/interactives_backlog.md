@@ -366,7 +366,7 @@ day. Done: an offline test of spreading and decay (barksim/peoplesim), lines ru/
 
 ## 23. The diary writes itself
 
-`[ ]` **Brief (Opus 5.5):** A page "Дни" in the diary (`SLyudDiary.cpp`, `docs/diary.md`): each game day gets a short
+`[~] diary-days 2026-11-20` **Brief (Opus 5.5):** A page "Дни" in the diary (`SLyudDiary.cpp`, `docs/diary.md`): each game day gets a short
 handwritten entry made from what really happened (the weather, the festival, the people met, birds seen, fish caught, the
 job, the film watched, the tune played, the letter received), in the hero's teenage voice, from templates with slots and
 variants (ru/en/ja, never the same sentence two days running), with small margin doodles from the existing sketch textures
