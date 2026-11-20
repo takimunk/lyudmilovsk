@@ -1344,8 +1344,12 @@ void ABirdPawn::UpdateOutsideBody(float Dt)
 		const bool bBeat = S.BurstL > 0 || S.BurstR > 0 || S.PhaseL > 0 || S.PhaseR > 0;
 		const float Fold01 = Mode == EBirdMode::Air ? 0.f : Fold;
 		// (the strokes as deep as the effort: the easy rhythm's are shallower than a sprint's or a take-off's)
+		// (the tail fans to brake and to turn; in a dive, the wings in, it closes tight)
+		const float Fan = FMath::Clamp(FMath::Max(Flare, FMath::Abs((float)S.Bank) * 0.5f), 0.f, 1.f) * (1.f - Fold01);
+		const float Shut = Mode == EBirdMode::Air ? 0.4f * FMath::Clamp(1.f - 0.5f * (float)(S.SpreadL + S.SpreadR), 0.f, 1.f) : 0.f;
 		A->SetWingPose((float)S.SpreadL * (1.f - Fold01), (float)S.SpreadR * (1.f - Fold01), (float)S.PhaseL, (float)S.PhaseR, bBeat ? FMath::Clamp((float)S.Amp, 0.4f, 1.f) : 0.f, Flare,
-			FMath::Clamp(FMath::Max(Flare, FMath::Abs((float)S.Bank) * 0.5f), 0.f, 1.f) * (1.f - Fold01), LegsDown);
+			Fan > 0.05f ? Fan : -Shut, LegsDown);
+		A->SetWingLevel(Mode == EBirdMode::Air ? 1.f - Fold : 0.f);
 	}
 }
 

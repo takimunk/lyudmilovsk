@@ -246,6 +246,11 @@ and the speed do to the wings.
 | grey heron | 73 % | 25 | 2.4 |
 | mute swan | 82 % | 30 | 2.2 |
 
+- **How it is drawn.** A part-folded wing in the air is not half way to the standing bird's fold (that hangs it down the
+  flank): `ABirdActor::SetWingLevel` rolls the arm back out to the side, so the fold is a sweep back in the wing's own
+  plane, a falcon's "M"; right in, it closes against the body. The tail closes tighter than its bind pose in a dive
+  (`TailFan` below 0), and the body no longer rolls about on a breath of side wind while it falls unloaded.
+
 The landing magnet (Q) and the first beats of a take-off fly with the wings out (`FInput::Reflex` 0). Whoever draws the
 bird gets the same numbers as before (`FState::SpreadL/R`, the phases) through `ABirdActor::SetWingPose`, plus the depth
 of the stroke; a new wing rig only has to pose the wings for a spread of 0 (folded) to 1 (the bind pose).

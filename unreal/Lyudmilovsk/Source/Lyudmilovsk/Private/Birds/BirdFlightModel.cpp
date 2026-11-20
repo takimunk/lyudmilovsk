@@ -581,7 +581,8 @@ namespace BirdFlight
 			NVert *= LMax / N;
 			NLat *= LMax / N;
 		}
-		const double BankTarget = std::atan2(NLat, std::max(NVert, 0.2 * G)) + (S.SpreadR - S.SpreadL) * -0.5 + In.Roll * 0.25;
+		// (a folded bird falling has no lift to lean on: a breath of sideways air must not roll it over)
+		const double BankTarget = std::atan2(NLat, std::max(NVert, (0.2 + 0.8 * Clamp(1.0 - Spread, 0.0, 1.0)) * G)) + (S.SpreadR - S.SpreadL) * -0.5 + In.Roll * 0.25;
 		S.Bank += (Clamp(BankTarget, -1.4, 1.4) - S.Bank) * std::min(1.0, P.BankRate * Dt);
 		S.Load = std::sqrt(NVert * NVert + NLat * NLat) / G;
 		V3 Acc = UpN * NVert + Right * NLat + Thrust + V3(0, 0, BeatLift);
