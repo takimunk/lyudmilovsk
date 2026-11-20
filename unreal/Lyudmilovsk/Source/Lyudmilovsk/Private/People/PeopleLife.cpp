@@ -2723,7 +2723,7 @@ void ANpcBody::Drive(const FVector& InLocation, float Yaw, EPersonPose Pose, int
 		// walking, they face the way they really go (round the corner with the path); the turn has a beginning and an end
 		const bool bGoing = bFeet && Pose == EPersonPose::Walk && GaitSpeed > 35.f * S;
 		const float Want = bGoing ? FMath::RadiansToDegrees(FMath::Atan2((float)ShownVel.Y, (float)ShownVel.X)) : Yaw;
-		Facing = FRotator::NormalizeAxis(LyudMotion::DampAngle(Facing, Want, FacingVel, bGoing ? 0.14f : (bSeatTurn ? 0.16f : 0.22f), DeltaTime));
+		Facing = FRotator::NormalizeAxis(LyudMotion::DampAngle(Facing, Want, FacingVel, bGoing ? 0.14f : (bSeatTurn ? 0.3f : 0.22f), DeltaTime));
 	}
 	else
 	{
