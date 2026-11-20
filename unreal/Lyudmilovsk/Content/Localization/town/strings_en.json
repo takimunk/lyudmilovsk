@@ -1794,5 +1794,13 @@
  "npc.t_hernandez_lyudmila.name": "Lyudmila Hernández",
  "npc.t_hernandez_lyudmila.role": "between jobs",
  "npc.t_hernandez_caio.name": "Caio Hernández",
- "npc.t_hernandez_caio.role": "schoolboy"
+ "npc.t_hernandez_caio.role": "schoolboy",
+ "npc.t_gromov_pyotr.name": "Pyotr Gromov",
+ "npc.t_gromov_pyotr.role": "sanatorium guest",
+ "npc.t_mironova_sonya.name": "Sonya Mironova",
+ "npc.t_mironova_sonya.role": "sanatorium guest",
+ "npc.t_tamm_boris.name": "Boris Tamm",
+ "npc.t_tamm_boris.role": "sanatorium guest",
+ "npc.t_sazonov_nikolai.name": "Nikolai Sazonov",
+ "npc.t_sazonov_nikolai.role": "sanatorium guest"
 }
