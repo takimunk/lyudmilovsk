@@ -3532,9 +3532,197 @@
  "notes": [
   "16 skip-stop flats, corridors on floors 2 and 4; communal hall enterable at the west end"
  ],
+ "dress": [
+  {
+   "id": "hall_rain",
+   "when": {
+    "weather": [
+     "rain",
+     "wet"
+    ]
+   },
+   "tris": 1027,
+   "bounds": [
+    [
+     26.93,
+     1.4,
+     -0.001
+    ],
+    [
+     30.816,
+     4.501,
+     0.95
+    ]
+   ]
+  },
+  {
+   "id": "hall_drawings_0",
+   "when": {
+    "phase": [
+     28,
+     0,
+     7
+    ]
+   },
+   "tris": 2,
+   "bounds": [
+    [
+     34.596,
+     7.09,
+     1.49
+    ],
+    [
+     34.596,
+     7.51,
+     1.91
+    ]
+   ]
+  },
+  {
+   "id": "hall_drawings_1",
+   "when": {
+    "phase": [
+     28,
+     7,
+     14
+    ]
+   },
+   "tris": 2,
+   "bounds": [
+    [
+     34.596,
+     7.09,
+     1.448
+    ],
+    [
+     34.596,
+     7.51,
+     1.952
+    ]
+   ]
+  },
+  {
+   "id": "hall_drawings_2",
+   "when": {
+    "phase": [
+     28,
+     14,
+     21
+    ]
+   },
+   "tris": 2,
+   "bounds": [
+    [
+     34.596,
+     7.09,
+     1.49
+    ],
+    [
+     34.596,
+     7.51,
+     1.91
+    ]
+   ]
+  },
+  {
+   "id": "hall_drawings_3",
+   "when": {
+    "phase": [
+     28,
+     21,
+     28
+    ]
+   },
+   "tris": 2,
+   "bounds": [
+    [
+     34.596,
+     7.09,
+     1.448
+    ],
+    [
+     34.596,
+     7.51,
+     1.952
+    ]
+   ]
+  },
+  {
+   "id": "hall_nook_book",
+   "when": {
+    "chance": 0.5
+   },
+   "tris": 48,
+   "bounds": [
+    [
+     33.65,
+     2.67,
+     0.45
+    ],
+    [
+     33.85,
+     2.93,
+     0.485
+    ]
+   ]
+  },
+  {
+   "id": "hall_dominoes_cups",
+   "when": {
+    "hours": [
+     13.5,
+     18.0
+    ]
+   },
+   "tris": 110,
+   "bounds": [
+    [
+     23.428,
+     6.808,
+     0.72
+    ],
+    [
+     24.132,
+     6.952,
+     0.83
+    ]
+   ]
+  },
+  {
+   "id": "hall_paper",
+   "when": {
+    "weekdays": [
+     0,
+     1,
+     2,
+     3,
+     4
+    ],
+    "hours": [
+     8.0,
+     17.0
+    ],
+    "chance": 0.6
+   },
+   "tris": 10,
+   "bounds": [
+    [
+     25.029,
+     1.789,
+     0.45
+    ],
+    [
+     25.371,
+     2.211,
+     0.453
+    ]
+   ]
+  }
+ ],
  "tris": {
   "shell": 2662,
   "detail": 16428,
-  "windows": 408
+  "windows": 408,
+  "dress": 1203
  }
 }
