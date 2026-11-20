@@ -141,7 +141,7 @@ def main():
     topic_at = collections.defaultdict(list)
     for t in live:
         a = acts[t["act"]]
-        for tp in (t.get("topics") or a.get("topics") or []):
+        for tp in list(a.get("topics") or []) + list(t.get("topics") or []):  # the game offers both (FModel::TopicsNow)
             topic_at[tp].append(t)
     heard_ok = {}
 
@@ -243,7 +243,7 @@ def main():
         for tx in (a.get("read") or {}).get("texts", []):
             if tx in read_ok and texts[tx].get("collect"):
                 add_stamp(texts[tx]["collect"], {}, ws, "text " + tx)
-        for tp in (t.get("topics") or a.get("topics") or []):
+        for tp in list(a.get("topics") or []) + list(t.get("topics") or []):  # the game offers both (FModel::TopicsNow)
             if topics.get(tp, {}).get("collect"):
                 add_stamp(topics[tp]["collect"], topics[tp], ws, "topic " + tp)
     pieces_given = {s for s, *_ in stamp_sources}

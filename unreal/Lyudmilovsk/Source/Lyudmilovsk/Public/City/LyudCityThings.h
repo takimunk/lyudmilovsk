@@ -281,6 +281,8 @@ private:
 	void Greet(int32 Thing);
 	void DrawLabels() const;
 	FVector ThingLocation(int32 Thing) const;
+	/** "+N roubles" for a small job's pay (city.job.paid). */
+	void AnnouncePay(int32 Rubles);
 	/** A note on the HUD for every stamp got for the first time ("Films at «Рассвет»: 3 of 12"). */
 	void AnnounceStamps(const TArray<FString>& Stamps);
 	void FillRef(int32 Thing, FCityThingRef& Out) const;

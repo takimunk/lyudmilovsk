@@ -702,8 +702,12 @@
    "act": "listen_rehearsal"
   },
   "P-CLUB2/ticket_stubs": {
-   "act": "look_stubs",
-   "closed": "city.rassvet.closed.board"
+   "act": "job_cinema_tickets",
+   "hours": [
+    17,
+    20
+   ],
+   "days": "wed-sun"
   },
   "P-CLUB2/buffet_menu": {
    "act": "look_buffet_menu",

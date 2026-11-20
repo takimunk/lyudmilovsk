@@ -1108,7 +1108,7 @@
    "act": "un_scores"
   },
   "P-UNITE/game_rules": {
-   "act": "un_rules"
+   "act": "job_board_youth"
   },
   "P-UNITE/game_trophies": {
    "act": "un_trophies"

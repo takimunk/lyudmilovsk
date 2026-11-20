@@ -1090,6 +1090,11 @@ void ULyudCityThings::Run(int32 Thing, bool bFromConsole, bool bFromSeat)
 			Inv->Add(Item, G.second);
 		}
 	}
+	if (O.Pay > 0 && Inv)
+	{
+		Inv->Earn(O.Pay);
+		AnnouncePay(O.Pay);
+	}
 	const FVector At = ThingLocation(Thing);
 	if (!O.Sound.empty())
 	{
@@ -1585,6 +1590,15 @@ void ULyudCityThings::Tick(float DeltaTime)
 
 // --- collections
 
+void ULyudCityThings::AnnouncePay(int32 Rubles)
+{
+	UE_LOG(LogLyudCity, Display, TEXT("CityThings: earned %d roubles"), Rubles);
+	if (ULyudGameScreen* Screen = ULyudGameScreen::Get(this))
+	{
+		Screen->Toast(LyudText::Get(TEXT("city.job.paid"), { FStringFormatArg(Rubles) }));
+	}
+}
+
 void ULyudCityThings::AnnounceStamps(const TArray<FString>& Stamps)
 {
 	if (!Model)
@@ -2072,6 +2086,11 @@ void ULyudCityThings::FinishGame()
 			{
 				Inv->Add(Item, P.second);
 			}
+		}
+		if (End.Pay > 0)
+		{
+			Inv->Earn(End.Pay);
+			AnnouncePay(End.Pay);
 		}
 	}
 	if (!End.NewStamps.empty())

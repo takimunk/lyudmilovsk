@@ -152,7 +152,7 @@
   "promenade_unit/photo_desk": {"act": "photo_desk"},
   "P-SANATORIUM/couch_b": {"act": "san_night_guest", "props": {"rest": "night"}},
 
-  "P-KIOSK1/price_board": {"act": "look_kiosk1_prices"},
+  "P-KIOSK1/price_board": {"act": "job_k1_papers", "hours": [8, 10], "days": "wed-sun"},
   "P-KIOSK2/counter": {"props": {"service": "icecream", "shop": "kiosk_icecream"}},
   "P-KIOSK2/paper_rack": {"kind": "board", "props": {"topic": "freezer", "item": ""}, "act": "kiosk2_freezer"},
   "P-KIOSK2/price_board": {"act": "look_kiosk2_prices"},
