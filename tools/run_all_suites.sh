@@ -134,6 +134,7 @@ printf '%-34s %-4s %6s  %s\n' "row" "" "time" "result"
 suite animalsim.test              - bash tools/animalsim/run.sh test
 suite animalsim.day               - bash tools/animalsim/run.sh day 6 2
 suite atonsim.test                - bash tools/atonsim/run.sh test
+suite photosim.test               - bash tools/photosim/run.sh test
 suite audiosim.test               - bash tools/audiosim/run.sh test
 suite audiosim.fountain           - bash tools/audiosim/run.sh fountain
 suite audiosim.weather            - bash tools/audiosim/run.sh weather

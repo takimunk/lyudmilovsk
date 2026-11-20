@@ -230,6 +230,10 @@ namespace
 		Good(TEXT("toy_car"), K::Misc, L::Pack, FVector(3.f, 4.f, 9.f), FLinearColor(0.35f, 0.6f, 0.85f), 50, 3.f);
 		Good(TEXT("rubber_ball"), K::Misc, L::Pack, FVector(16.f, 16.f, 16.f), FLinearColor(0.85f, 0.15f, 0.1f), 45, 8.f);
 		Good(TEXT("shell_box"), K::Misc, L::Pack, FVector(6.f, 8.f, 10.f), FLinearColor(0.9f, 0.85f, 0.75f), 60, 5.f);
+		// the photo studio's goods (docs/interactives_backlog.md "A film camera and the photo album", Private/Photo/LyudPhoto.cpp): the
+		// rangefinder «Чайка-3» in its case and a cassette of 36 black-and-white frames (an exposed film is no item: the album keeps it)
+		Good(TEXT("camera"), K::Misc, L::Pack, FVector(7.f, 13.5f, 8.5f), FLinearColor(0.08f, 0.07f, 0.07f), 240, 5.f);
+		Good(TEXT("photo_film"), K::Misc, L::Pack, FVector(3.4f, 3.4f, 5.2f), FLinearColor(0.16f, 0.3f, 0.42f), 18, 2.f);
 		// the allotment behind the commune house (docs/allotment.md, tools/garden/data.py ITEMS): the tools, seeds and seedlings
 		// from the hardware shop and the market, and what the bed gives (the sunflower's harvest is the shops' own «seeds»)
 		Good(TEXT("spade"), K::Misc, L::Flat, FVector(3.f, 18.f, 40.f), FLinearColor(0.45f, 0.42f, 0.38f), 60, 4.f);
