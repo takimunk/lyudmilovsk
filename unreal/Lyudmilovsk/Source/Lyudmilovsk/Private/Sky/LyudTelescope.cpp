@@ -981,12 +981,11 @@ void ULyudTelescope::UpdateSkyView()
 		Cover = Weather->GetState().CloudCover;
 	}
 	Look.CloudCover = Cover;
-	for (TActorIterator<ALyudRareSky> It(World); It; ++It)
+	if (TActorIterator<ALyudRareSky> It(World); It)
 	{
 		const FLyudRareSkyNow Rare = It->GetNow();
 		Look.Aurora = Rare.Aurora;
 		Look.Noctilucent = Rare.Noctilucent;
-		break;
 	}
 
 	// the sun without a filter: white, a word, and the hero steps back
