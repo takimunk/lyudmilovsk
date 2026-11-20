@@ -1058,10 +1058,11 @@ void ULyudHeroRoom::DevFill()
 	}
 	DevClear();
 	// a thing for every place, of the kinds the game has: cards, things for the nails, things for the shelves
-	const TCHAR* Cards[] = { TEXT("postcard"), TEXT("postcard"), TEXT("postcard"), TEXT("san_diploma"), TEXT("postcard"), TEXT("postcard") };
-	const TCHAR* Frames[] = { TEXT("san_diploma"), TEXT("record_sea_1"), TEXT("daily_paper") };
-	const TCHAR* Shelves[] = { TEXT("record_dawn_1"), TEXT("record_night_1"), TEXT("shell_box"), TEXT("cup:cog_chess"), TEXT("book:birds"), TEXT("amber_charm"),
-		TEXT("cup:tt_cup"), TEXT("cup:san_dominoes") };
+	// (only things whose pictures exist: the cups on the wall shelf, as the room was drawn)
+	const TCHAR* Cards[] = { TEXT("postcard") };
+	const TCHAR* Frames[] = { TEXT("record_sea_1"), TEXT("record_night_1"), TEXT("daily_paper") };
+	const TCHAR* Shelves[] = { TEXT("cup:cog_chess"), TEXT("cup:tt_cup"), TEXT("shell_box"), TEXT("record_dawn_1"), TEXT("book:birds"), TEXT("amber_charm"),
+		TEXT("cup:san_dominoes"), TEXT("shell_box") };
 	int32 Card = 0, Frame = 0, Shelf = 0;
 	for (int32 I = 0; I < (int32)Model->Slots.size(); ++I)
 	{

@@ -137,7 +137,7 @@ def build(B):
     R.place(kit.bedside_table, bx + 0.78, Y1 - 0.24, 0.0, light=True)
 
     # ---- the desk under the pin board, its chair, the record player
-    dx, dy = -0.3, Y1 - 0.36
+    dx, dy = -0.48, Y1 - 0.36
     R.place(kit.table, dx, dy, 0.0, w=1.35, d=0.66, h=0.75, mat="CT_Wood")
     R.place(kit.chair, dx - 0.15, dy - 0.62, 180.0, kind="wood", seed=2)
     B.thing("desk_chair", "seat", (dx - 0.15, dy - 0.62, 0.45), 180.0, height=0.45)
