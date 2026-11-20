@@ -41,7 +41,7 @@
   "concierge": {"prompt": "city.act.ask.prompt", "lines": "city.talk.concierge"},
   "caretaker_desk": {"prompt": "city.act.ask.prompt", "lines": "city.talk.caretaker"},
   "savings_bank": {"prompt": "city.act.savings.prompt", "lines": "city.talk.savings", "needs_staff": "cashier", "sound": "stamp_thump"},
-  "record_shop": {"prompt": "city.act.ask.prompt", "lines": "city.talk.records", "needs_staff": "seller", "sound": "vinyl_crackle"},
+  "record_shop": {"prompt": "city.act.buy.prompt", "lines": "city.talk.records", "needs_staff": "seller", "sound": "vinyl_crackle", "shop": "records_wave", "title": "city.shop.records_wave.title"},
   "salon_desk": {"prompt": "city.act.ask.prompt", "lines": "city.talk.salon", "needs_staff": "barber"},
   "store_shoes": {"prompt": "city.act.ask.prompt", "lines": "city.talk.shoes", "needs_staff": "seller"},
   "sport_reception": {"prompt": "city.act.ask.prompt", "lines": "city.talk.sport_reception", "needs_staff": "cashier"},

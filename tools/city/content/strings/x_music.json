@@ -1,0 +1,102 @@
+{
+ "city.jb.dawn_1": {
+  "ru": "Автомат поставил «Зарю над бухтой». Буфетчица перестала греметь чашками и открыла окно, как будто музыка попросила.",
+  "en": "The jukebox put on Daybreak over the Bay. The barmaid stopped rattling cups and opened the window, as if the music had asked.",
+  "ja": "ジュークボックスが『入り江の夜明け』をかけた。給仕のおばさんがカップの音を止めて窓を開けた。音楽に頼まれたみたいに。"
+ },
+ "city.jb.dawn_2": {
+  "ru": "Заиграл «Утренний этюд». Мужчина за угловым столиком снял шляпу и так и сидел с ней в руках до конца.",
+  "en": "Morning Étude started playing. The man at the corner table took off his hat and sat holding it till the end.",
+  "ja": "『朝のエチュード』が鳴りだした。隅の席の男の人が帽子をとって、終わるまでずっと手に持っていた。"
+ },
+ "city.jb.day_1": {
+  "ru": "«Бриз на набережной», гитара и колокольчики. Двое отдыхающих начали притоптывать в сандалиях, каждый в свой такт.",
+  "en": "Breeze on the Promenade, guitar and glockenspiel. Two holidaymakers started tapping their sandals, each to his own beat.",
+  "ja": "『海岸通りのそよ風』、ギターとグロッケン。保養客ふたりがサンダルで拍子をとりはじめた。それぞれ違う拍子で。"
+ },
+ "city.jb.day_2": {
+  "ru": "Поставил «Тихий октябрь». Все в зале одновременно посмотрели в окно, хотя там ничего не было.",
+  "en": "I put on Quiet October. Everyone in the room looked out of the window at once, though there was nothing there.",
+  "ja": "『静かな十月』をかけた。部屋じゅうの人がいっせいに窓の外を見た。何もないのに。"
+ },
+ "city.jb.day_3": {
+  "ru": "«Небо над дюнами» поплыло по залу. Девочка за столиком доела мороженое и легла щекой на ладонь.",
+  "en": "Sky over the Dunes drifted through the room. A girl at a table finished her ice cream and rested her cheek on her hand.",
+  "ja": "『砂丘の空』が部屋に漂った。テーブルの女の子がアイスを食べ終えて、頬づえをついた。"
+ },
+ "city.jb.dusk_1": {
+  "ru": "Автомат выбрал «Золотой час». Виолончель загудела так низко, что задребезжали ложечки в стаканах.",
+  "en": "The machine chose Golden Hour. The cello hummed so low the spoons rattled in the glasses.",
+  "ja": "機械は『黄金の時間』を選んだ。チェロがとても低くうなって、グラスのスプーンがかたかた鳴った。"
+ },
+ "city.jb.dusk_2": {
+  "ru": "Заиграл «Последний свет». Пара у стойки замолчала и просто держалась за руки, пока пластинка не кончилась.",
+  "en": "The Last Light started. The couple at the counter fell silent and just held hands until the record ended.",
+  "ja": "『最後の光』が鳴りだした。カウンターのふたりは黙って、レコードが終わるまで手をつないでいた。"
+ },
+ "city.jb.night_1": {
+  "ru": "«Звёзды над молом». Кто-то выключил верхний свет, и никто не стал включать обратно.",
+  "en": "Stars over the Pier. Someone switched off the overhead light, and nobody switched it back on.",
+  "ja": "『桟橋の星』。誰かが天井の明かりを消して、誰もつけ直さなかった。"
+ },
+ "city.jb.night_2": {
+  "ru": "Автомат завёл «Лунную шкатулку». Буфетчица зевнула, потом извинилась перед автоматом.",
+  "en": "The jukebox wound up Moon Music Box. The barmaid yawned, then apologised to the jukebox.",
+  "ja": "ジュークボックスが『月のオルゴール』をかけた。給仕のおばさんがあくびをして、それからジュークボックスにあやまった。"
+ },
+ "city.jb.rain_1": {
+  "ru": "Поставил «Пьесу для дождя». Дождь за окном, кажется, подстроился под рояль.",
+  "en": "I put on A Piece for Rain. The rain outside seemed to fall in with the piano.",
+  "ja": "『雨のための小品』をかけた。外の雨がピアノに合わせて降りだしたみたいだ。"
+ },
+ "city.jb.rain_2": {
+  "ru": "«Капли на стекле». Старик у окна достал газету, но так и не развернул.",
+  "en": "Drops on the Glass. The old man by the window took out a newspaper but never unfolded it.",
+  "ja": "『窓のしずく』。窓ぎわのおじいさんが新聞を出したけど、とうとう広げなかった。"
+ },
+ "city.jb.storm_1": {
+  "ru": "Автомат грянул «Шторм с моря». Литавры ударили, и у стойки кто-то пролил компот.",
+  "en": "The jukebox thundered out Storm from the Sea. The timpani struck, and someone at the counter spilled his compote.",
+  "ja": "ジュークボックスが『海からの嵐』をとどろかせた。ティンパニが鳴って、カウンターで誰かがコンポートをこぼした。"
+ },
+ "city.jb.snow_1": {
+  "ru": "Заиграл «Первый снег». Все притихли, как будто боялись спугнуть музыкальную шкатулку.",
+  "en": "First Snow started playing. Everyone went quiet, as if afraid to startle the music box.",
+  "ja": "『初雪』が鳴りだした。みんな静かになった。オルゴールをおどかさないように。"
+ },
+ "city.jb.sea_1": {
+  "ru": "«Дыхание моря» накатило на зал, как прибой. Мне показалось, что пол чуть качнулся.",
+  "en": "The Sea Breathing rolled over the room like surf. I thought the floor swayed a little.",
+  "ja": "『海の息』が波みたいに部屋に寄せてきた。床が少し揺れた気がした。"
+ },
+ "city.jb.club_1": {
+  "ru": "Автомат поставил «Ночную смену» из Академгородка. Двое студентов узнали её с первых аккордов и переглянулись, как заговорщики.",
+  "en": "The jukebox put on Night Shift, from Academgorodok. Two students knew it from the first chords and exchanged looks like conspirators.",
+  "ja": "ジュークボックスがアカデムゴロドクの『夜勤』をかけた。学生ふたりが最初の和音で気づいて、共犯者みたいに目を合わせた。"
+ },
+ "city.jb.club_2": {
+  "ru": "«Сон вычислительной машины», пищит, как наши компьютеры в «Атоне». Буфетчица спросила, не сломался ли автомат.",
+  "en": "Dream of a Computer, beeping like our machines at the Aton club. The barmaid asked if the jukebox was broken.",
+  "ja": "『計算機の夢』。「アトン」のコンピューターみたいにぴこぴこ鳴る。給仕のおばさんが、機械がこわれたのかと聞いた。"
+ },
+ "city.jb.club_3": {
+  "ru": "Заиграло «Свечение экрана». Лампочка над автоматом мигала в такт, а может, просто совпало.",
+  "en": "Screen Glow started. The bulb over the jukebox blinked in time, or maybe it was just a coincidence.",
+  "ja": "『画面の光』が鳴りだした。ジュークボックスの上の電球が拍子に合わせて点滅した。偶然かもしれない。"
+ },
+ "city.jb.flight_1": {
+  "ru": "«Над соснами». Мальчишка за соседним столом раскинул руки и гудел, как самолёт, пока мама не посадила его на место.",
+  "en": "Over the Pines. The boy at the next table spread his arms and droned like a plane until his mother landed him back in his seat.",
+  "ja": "『松林の上を』。隣のテーブルの男の子が両手を広げて飛行機みたいにうなっていた。お母さんに席へ着陸させられるまで。"
+ },
+ "city.wave.hits.prompt2": {
+  "ru": "E — хит-парад и ящик заявок «Волны»",
+  "en": "E — the Wave hit parade and request box",
+  "ja": "E：「波」のヒットパレードとリクエストポスト"
+ },
+ "city.shop.records_wave.title": {
+  "ru": "Пластинки «Волна»",
+  "en": "«Volna» Records",
+  "ja": "レコード店「ヴォルナ」"
+ }
+}

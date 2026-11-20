@@ -1243,14 +1243,29 @@ void ULyudCityThings::Run(int32 Thing, bool bFromConsole, bool bFromSeat)
 			JumpMinutes(O.Minutes, !bLie);
 		}
 	}
-	if (!O.Line.empty())
+	// a system that adds to this act (the music: a record goes on, a radio is switched) may say its own words instead
+	FText Line = O.Line.empty() ? FText::GetEmpty() : LineText(LyudCityThingsImpl::Str(O.Line));
+	bool bHooked = false;
+	if (!O.bClosed && O.Act >= 0 && ActHook.IsBound())
+	{
+		FCityActInfo Info;
+		Info.Thing = LyudCityThingsImpl::Str(T.Id);
+		Info.Act = LyudCityThingsImpl::Str(Model->Acts[O.Act].Id);
+		Info.Line = LyudCityThingsImpl::Str(O.Line);
+		Info.Plot = LyudCityThingsImpl::Str(T.Plot);
+		Info.At = At;
+		Info.bFromConsole = bFromConsole;
+		bHooked = ActHook.Execute(Info, Line);
+	}
+	if (!Line.IsEmpty())
 	{
 		PageThing = Thing;
-		PageLeft = FMath::Max(0, O.NumLines - 1);
+		// the music's words are one page: no turning through the act's other lines under them
+		PageLeft = bHooked ? 0 : FMath::Max(0, O.NumLines - 1);
 		PageTitle = Title;
 		PageFrom = Hero ? Hero->GetActorLocation() : FVector::ZeroVector;
 		PageFrame = GFrameCounter;
-		ShowPage(PageTitle, LineText(LyudCityThingsImpl::Str(O.Line)), PageLeft > 0);
+		ShowPage(PageTitle, Line, PageLeft > 0);
 		SetPrompted(-1);
 	}
 }
@@ -1756,6 +1771,39 @@ void ULyudCityThings::GetThingsOfPlot(const FString& PlotId, FName Kind, TArray<
 			FillRef(I, Out.AddDefaulted_GetRef());
 		}
 	}
+}
+
+void ULyudCityThings::GetThingsByAct(TFunctionRef<bool(const FString& Act)> Match, TArray<FCityThingRef>& Out) const
+{
+	if (!Model)
+	{
+		return;
+	}
+	for (int32 I = 0; I < NumThings(); ++I)
+	{
+		const int A = Model->Things[(size_t)I].Act;
+		if (A >= 0 && A < (int)Model->Acts.size() && Match(LyudCityThingsImpl::Str(Model->Acts[(size_t)A].Id)))
+		{
+			FillRef(I, Out.AddDefaulted_GetRef());
+		}
+	}
+}
+
+FString ULyudCityThings::ActOfThing(const FString& Id) const
+{
+	const int32 I = Model ? Model->FindThing(std::string(TCHAR_TO_UTF8(*Id))) : -1;
+	const int A = I >= 0 ? Model->Things[(size_t)I].Act : -1;
+	return A >= 0 && A < (int)Model->Acts.size() ? LyudCityThingsImpl::Str(Model->Acts[(size_t)A].Id) : FString();
+}
+
+bool ULyudCityThings::GiveStamp(const FString& Stamp)
+{
+	if (!Model || !Model->GiveStamp(std::string(TCHAR_TO_UTF8(*Stamp))))
+	{
+		return false;
+	}
+	AnnounceStamps({ Stamp });
+	return true;
 }
 
 void ULyudCityThings::DropDeadHolds()

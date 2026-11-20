@@ -93,7 +93,7 @@
   },
   "look_records_hits": {
    "like": "look_misc",
-   "prompt": "city.wave.hits.prompt",
+   "prompt": "city.wave.hits.prompt2",
    "lines": "city.wave.hits",
    "rotate": "daily"
   },

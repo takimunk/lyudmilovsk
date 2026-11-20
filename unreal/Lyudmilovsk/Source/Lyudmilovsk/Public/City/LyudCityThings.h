@@ -42,6 +42,17 @@ struct LYUDMILOVSK_API FCityThingRef
 	UPROPERTY(BlueprintReadOnly, Category = "City") bool bHeld = false;
 };
 
+/** What a city act did, for a system that adds to it (ULyudMusic: the records, the jukeboxes, the radios; docs/music.md). */
+struct FCityActInfo
+{
+	/** "<plot>/<thing id>", the act's id (a staff variant keeps its "@role"), the line key it shows (empty: none), the plot. */
+	FString Thing, Act, Line, Plot;
+	/** The thing's point, world cm. */
+	FVector At = FVector::ZeroVector;
+	/** Run from the console (from anywhere), not by the hero at the thing. */
+	bool bFromConsole = false;
+};
+
 /**
  * Things to do inside the town's buildings (docs/city_interiors.md): sit on a chair, read at a shelf, look at a notice board,
  * buy at a counter, rest on a bed, play the piano, watch a film... Data: Content/City/interiors.json (tools/city/interiors.py),
@@ -233,6 +244,20 @@ public:
 	void ReleaseThing(const FString& Id, const UObject* Who);
 	/** The things of a plot of Kind (None: all), appended to Out. A table built at load: no pass over the town. */
 	void GetThingsOfPlot(const FString& PlotId, FName Kind, TArray<FCityThingRef>& Out) const;
+
+	// --- for systems that add to the acts (docs/music.md)
+
+	/** Asked after an act ran (not for a refused act or a shut plot's words), before its page shows: may replace the line the
+	 *  page shows (true + Line set; an empty Line shows no page). One listener (ULyudMusic), bound with a weak object. */
+	DECLARE_DELEGATE_RetVal_TwoParams(bool, FActHook, const FCityActInfo& /*Info*/, FText& /*Line*/);
+	FActHook ActHook;
+	/** Every thing whose act Match accepts (the act id with its "@role"), appended to Out. A pass over all things: call once. */
+	void GetThingsByAct(TFunctionRef<bool(const FString& Act)> Match, TArray<FCityThingRef>& Out) const;
+	/** The act id of a thing ("<plot>/<thing id>"); empty when unknown. */
+	FString ActOfThing(const FString& Id) const;
+	/** Gives a stamp of a collection ("records/day_1") as an act's line would (the HUD note when it is new); false when it is
+	 *  not a piece of the data's collections or the hero has it. */
+	bool GiveStamp(const FString& Stamp);
 
 protected:
 	virtual bool DoesSupportWorldType(const EWorldType::Type WorldType) const override

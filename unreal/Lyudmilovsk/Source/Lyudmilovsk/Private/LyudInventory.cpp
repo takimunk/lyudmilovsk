@@ -112,6 +112,26 @@ namespace
 		Good(TEXT("bird_guide"), K::Misc, L::Flat, FVector(2.2f, 14.f, 21.f), FLinearColor(0.18f, 0.32f, 0.22f), 60, 4.f);
 		// the angler's book from the Gastronom (docs/fishing.md): every fish one can catch, and the hero's own catches and records in it
 		Good(TEXT("fish_book"), K::Misc, L::Flat, FVector(1.6f, 12.f, 18.f), FLinearColor(0.2f, 0.26f, 0.33f), 40, 4.f);
+		// records (docs/music.md): a long-playing record in its sleeve, one track of the game's music each (tools/music/content.json);
+		// bought at the «Волна» records shop and the department store, played on record players (ULyudMusic)
+		Good(TEXT("record_dawn_1"), K::Misc, L::Flat, FVector(0.4f, 31.f, 31.f), FLinearColor(0.85f, 0.62f, 0.42f), 45, 4.f);
+		Good(TEXT("record_dawn_2"), K::Misc, L::Flat, FVector(0.4f, 31.f, 31.f), FLinearColor(0.78f, 0.80f, 0.86f), 45, 4.f);
+		Good(TEXT("record_day_1"), K::Misc, L::Flat, FVector(0.4f, 31.f, 31.f), FLinearColor(0.95f, 0.82f, 0.35f), 40, 4.f);
+		Good(TEXT("record_day_2"), K::Misc, L::Flat, FVector(0.4f, 31.f, 31.f), FLinearColor(0.55f, 0.60f, 0.66f), 40, 4.f);
+		Good(TEXT("record_day_3"), K::Misc, L::Flat, FVector(0.4f, 31.f, 31.f), FLinearColor(0.45f, 0.68f, 0.80f), 40, 4.f);
+		Good(TEXT("record_dusk_1"), K::Misc, L::Flat, FVector(0.4f, 31.f, 31.f), FLinearColor(0.85f, 0.45f, 0.22f), 45, 4.f);
+		Good(TEXT("record_dusk_2"), K::Misc, L::Flat, FVector(0.4f, 31.f, 31.f), FLinearColor(0.62f, 0.32f, 0.40f), 45, 4.f);
+		Good(TEXT("record_night_1"), K::Misc, L::Flat, FVector(0.4f, 31.f, 31.f), FLinearColor(0.12f, 0.16f, 0.32f), 45, 4.f);
+		Good(TEXT("record_night_2"), K::Misc, L::Flat, FVector(0.4f, 31.f, 31.f), FLinearColor(0.30f, 0.25f, 0.45f), 45, 4.f);
+		Good(TEXT("record_rain_1"), K::Misc, L::Flat, FVector(0.4f, 31.f, 31.f), FLinearColor(0.40f, 0.46f, 0.50f), 50, 4.f);
+		Good(TEXT("record_rain_2"), K::Misc, L::Flat, FVector(0.4f, 31.f, 31.f), FLinearColor(0.32f, 0.42f, 0.40f), 50, 4.f);
+		Good(TEXT("record_storm_1"), K::Misc, L::Flat, FVector(0.4f, 31.f, 31.f), FLinearColor(0.20f, 0.22f, 0.26f), 55, 4.f);
+		Good(TEXT("record_snow_1"), K::Misc, L::Flat, FVector(0.4f, 31.f, 31.f), FLinearColor(0.88f, 0.92f, 0.96f), 50, 4.f);
+		Good(TEXT("record_sea_1"), K::Misc, L::Flat, FVector(0.4f, 31.f, 31.f), FLinearColor(0.18f, 0.40f, 0.55f), 45, 4.f);
+		Good(TEXT("record_club_1"), K::Misc, L::Flat, FVector(0.4f, 31.f, 31.f), FLinearColor(0.25f, 0.15f, 0.35f), 60, 4.f);
+		Good(TEXT("record_club_2"), K::Misc, L::Flat, FVector(0.4f, 31.f, 31.f), FLinearColor(0.10f, 0.45f, 0.42f), 60, 4.f);
+		Good(TEXT("record_club_3"), K::Misc, L::Flat, FVector(0.4f, 31.f, 31.f), FLinearColor(0.15f, 0.20f, 0.25f), 60, 4.f);
+		Good(TEXT("record_flight_1"), K::Misc, L::Flat, FVector(0.4f, 31.f, 31.f), FLinearColor(0.55f, 0.78f, 0.92f), 55, 4.f);
 		// the Academgorodok's grocery (docs/bird_taming.md "Feeds and the feeder"): feeds for the rarer birds (each unit a handful,
 		// held in the hand like the vending machine's seeds; what each bird thinks of them is Content/BirdsData/feeds.json),
 		// the feeder to put them in, and bread and kefir for the hero
