@@ -510,7 +510,7 @@ def sp_gait(ctx):
         look(w, (c[0] - 700.0, c[1], c[2] + 300.0), (c[0], c[1], c[2] + 100.0))
 
     def order(w, i):
-        b = pick_person(w, ("STAND", "LOOK", "WALK", "TALK"))
+        b = pick_person(w, ("STAND", "LOOK", "WALK", "TALK")) or pick_person(w, ("STAND", "LOOK", "WALK", "TALK"), maxd=1e7)
         if not b:
             log("gait: nobody near")
             return
