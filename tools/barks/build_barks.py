@@ -125,7 +125,7 @@ VALID = {
     "sex": {"female", "male"}, "sex2": {"female", "male"},
     "doing": acts | {"work", "free", "outing", "date"}, "doing2": acts | {"work", "free", "outing", "date"},
     "at": kinds | ids | {"outdoors", "indoors"},
-    "pose": {"stand", "walk", "talk", "look", "sit", "computer", "eat", "read", "work", "shovel"},
+    "pose": {"stand", "walk", "talk", "look", "sit", "computer", "eat", "read", "work", "shovel", "skate", "walrus"},
     "manner": {r.get("manner", r["id"]) for r in json.load(open(os.path.join(D, "PeopleData", "manners.json"), encoding="utf-8"))["manners"]},
     "met": {"new", "seen", "known"},
     "gather": {"mingle", "watch", "sit", "fair"},

@@ -60,6 +60,8 @@ namespace LyudPeople
 		Sleep,      // lying in bed
 		Work,       // at their work place: the club's owner at the booth (ABoothOwner draws him), the clerk at his desk
 		Shovel,     // clearing a path of snow, pushing a scraper along it (the winter's paths)
+		Skate,      // skating round the rink's loop (Speed > 0 gliding, 0 standing on the ice: a breath, a chat)
+		Walrus,     // in the water of the ice hole to the shoulders (the walruses' swim)
 		Num
 	};
 	const char* PoseName(EPose P);
@@ -95,6 +97,9 @@ namespace LyudPeople
 		std::string Thing;          // a city thing whoever is at the slot holds (UPeopleLifeSubsystem::UpdateThingHolds): a sanatorium guest's chair
 		std::vector<V3> Spots;      // a double bed: where each sleeper lies
 		std::vector<V3> Inside;     // the way from the place's door (Portal) to Approach; empty outdoors
+		/** A slot off the walk grid (on the rink's ice, in the ice hole's water): the way onto it from a point people walk
+		 *  to (front: the kerb, the deck) to the slot (back), walked as a line in 3D; out the same way back (LoadSpots). */
+		std::vector<V3> Reach;
 		int SnowJob = -1;           // a snow place's slot: the stretch of path it stands for (its near end is Pos), -1 none
 		V3 SnowTo;                  // and its far end
 		// reservation
@@ -136,6 +141,11 @@ namespace LyudPeople
 		std::string Building;       // the plot / building id (T2-05)
 		std::vector<std::string> Windows;   // window ids (T2-05/3-02/w1)
 		std::vector<std::string> Roles;     // a workplace's job roles (waiter, cook, seller, ...)
+		/** A closed loop to go round (the rink: 3 m in from the pond's kerb), anticlockwise seen from above, the first point
+		 *  not repeated; LoopS: the distance along it to each point, LoopLen: once round (m). Empty: none. */
+		std::vector<V3> Loop;
+		std::vector<float> LoopS;
+		float LoopLen = 0.f;
 		int K = -1;                 // Kind interned
 	};
 
@@ -172,6 +182,16 @@ namespace LyudPeople
 		bool bStaff = false;                // a workplace duty: at their own workplace (FDuty::Place), at a slot of their role
 		float Pace = 1.f;                   // "pace": how fast they go within it against their walk (a jog, children at play: 2)
 		bool bRainOk = false;               // "rain": "ok": chosen and kept up in the rain too (outdoors)
+		std::string When;                   // "when": only while this condition is on (FWorld::SetCondition: rink, walrus, banya);
+		int WhenId = -1;                    // whoever is at it leaves within a minute after it goes off. Its id (ConditionId)
+		float WkFrom = -1.f, WkTo = -1.f;   // "weekend_hours": the hours it can start in on Saturday and Sunday (-1: as on weekdays)
+		float DayMore[7] = {};              // "day_more": {"5": 0.3}: liked more on these weekdays (Saturday's banya)
+		float LoopMin = 0.f, LoopMax = 0.f; // "loop": [min, max] m/s: round the place's Loop at that speed (skating), pausing at its
+		                                    // slots for wander_pause s; 0 none
+		float DipMin = 0.f, DipMax = 0.f;   // "dip": [min, max] s at a slot of the first slot kind (the water), then out to one of
+		                                    // the others (the deck) for a few minutes, and maybe in once more; 0 none
+		float Regulars = 0.f;               // "regulars": only a fixed handful do it (this share of whoever could, more of those with
+		                                    // its trait; anybody with a like for it too); 0 everybody
 		std::vector<int> PlaceIdx;          // the places of its kinds (built after loading; "home" and gatherings aside)
 		std::vector<int> SlotK, PlaceK;     // Slots and Places interned
 		bool bHome = false;                 // "home" among its places
@@ -303,6 +323,16 @@ namespace LyudPeople
 		EBikeAct BikeAct = EBikeAct::None;
 		double BikeActStart = 0.0, BikeActUntil = 0.0;
 		uint32_t Rng = 1;
+		// off the walk grid on a place's own ground (the rink's ice, the ice hole's water): the place, -1 not; the way out
+		// goes back by the nearest of its slots' Reach (Route)
+		int OffGrid = -1;
+		// round a place's loop (an activity with "loop"): how far along it they are (m; < 0 standing at their slot), how far
+		// to go before looking for a slot to stop at (or, stopping, to the slot), their glide (m/s), how far they've come
+		// since setting off, stopping at their slot now, and who of theirs they skate beside (-1 nobody)
+		float LoopAt = -1.f, LoopLeft = 0.f, LoopGo = 0.f, LoopRun = 0.f;
+		bool bLoopStop = false;
+		int SkateWith = -1;
+		int Dips = 0;               // in the water how many times on this visit (an activity with "dip")
 		int PrevActivity = -1;      // what they did before this (the manners: a bag carried from the shop), -1 nothing yet
 		double PrevActivityEnd = -1e18;     // and when they left it (sim seconds)
 		std::string Why;            // a short reason for the last choice (debug)
@@ -372,6 +402,24 @@ namespace LyudPeople
 		void ClearGathering(const std::string& Id);
 		/** The gathering on now at a place, or null. */
 		const FGathering* GatheringAt(int Place) const;
+
+		/** Conditions the game switches (UPeopleLifeSubsystem::SetCondition: rink, rink_busy, walrus, banya): an activity with
+		 *  "when" is chosen only while its condition is on, and left within a minute after it goes off. Kept over clock jumps
+		 *  (Resettle); not saved (the game sends them again every few seconds). */
+		void SetCondition(const std::string& Name, bool bOn);
+		bool IsCondition(const std::string& Name) const;
+		/** A condition's id (interned on first sight). */
+		int ConditionId(const std::string& Name);
+		bool ConditionOk(const FActivity& A) const { return A.WhenId < 0 || (A.WhenId < (int)CondOn.size() && CondOn[(size_t)A.WhenId] != 0); }
+		std::vector<std::string> CondNames;
+		std::vector<uint8_t> CondOn;
+
+		/** Extra outdoor and indoor spots in town_plan.json's "spots" format (Content/PeopleData/winter_spots.json, written by
+		 *  tools/winter_play/winter_play.py: the rink, the banya, the ice hole), loaded as town_life.py loads town_plan.json's:
+		 *  one place a spot, its slots; "indoor" makes it a shell (whoever is in is inside, not drawn, at its door); a closed
+		 *  "path" is the place's Loop and every slot is reached from the kerb outside it; slots below the spot (in the water)
+		 *  are reached from the nearest slot that isn't. Load reads it when it is there. */
+		bool LoadSpots(const std::string& Text);
 
 		/** Adds the town's places (town_places.json) and its people (townsfolk.json); after Load. */
 		bool LoadTownPlaces(const std::string& Text);
@@ -640,6 +688,17 @@ namespace LyudPeople
 		bool Settling() const { return SettleI < SettleQueue.size(); }
 	private:
 		void Wander(FPerson& P);
+		/** Round the place's loop (an activity with "loop"): a stretch of gliding, then a stop at a free slot ahead, a pause. */
+		void Skate(FPerson& P, float Dt);
+		/** An activity with "dip": in the water so long, out onto the deck, maybe in again. */
+		void Dip(FPerson& P);
+		/** Whether P is one of an activity's regulars (its "regulars"; everybody when it has none). */
+		bool IsRegular(const FPerson& P, const FActivity& A) const;
+		/** The pose at one of an activity's slots (a dip's: in the water at the first kind, standing at the others). */
+		EPose PoseAt(const FActivity& A, int Slot) const;
+		/** Along a place's loop: the distance to the nearest point of it, and the point and its heading at a distance. */
+		float LoopArc(const FPlace& Pl, const V3& At) const;
+		V3 LoopPoint(const FPlace& Pl, float S, float* OutYaw = nullptr) const;
 		/** Clearing a snow stretch: along it from its near end to its far end at the pusher's pace, then on to the next. */
 		void Sweep(FPerson& P, float Dt);
 		void OutdoorWay(const V3& From, const V3& To, std::vector<FPerson::FWay>& Out) const;
