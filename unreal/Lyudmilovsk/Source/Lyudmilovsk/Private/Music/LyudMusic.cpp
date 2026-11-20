@@ -956,7 +956,7 @@ void ULyudMusic::RequestTonight()
 	}
 	Model->Request = LyudMusic::FRequest();
 	const long long Day = Today();
-	if (Model->PostRequest(Day - 1, TEXT("P-WAVE/records_hits")))
+	if (Model->PostRequest(Day - 1, "P-WAVE/records_hits"))
 	{
 		UE_LOG(LogLyudMusic, Display, TEXT("Music: a request for tonight: %s"), *LyudMusicImpl::Str(Model->Tracks[(size_t)Model->Request.Track].Cue));
 	}
