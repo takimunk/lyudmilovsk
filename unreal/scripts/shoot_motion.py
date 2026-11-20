@@ -257,6 +257,29 @@ def side_eye(a, dist, up, ahead=0.0, front=0.0, key=None):
     return (t.x + sx * dist + fx * (ahead + front), t.y + sy * dist + fy * (ahead + front), t.z + up), (t.x + fx * ahead, t.y + fy * ahead, t.z)
 
 
+def busiest(w, poses=("WALK",), radius=3000.0):
+    """The record of somebody in `poses` with the most others in those poses within radius (a busy street)."""
+    rs = [r for r in records(w) if ename(r.pose) in poses]
+    best = None
+    for r in rs:
+        n = sum(1 for o in rs if abs(o.location.z - r.location.z) < 600.0 and
+                math.hypot(o.location.x - r.location.x, o.location.y - r.location.y) < radius)
+        if best is None or n > best[0]:
+            best = (n, r)
+    if best:
+        log("busiest %s: %s with %d near at %s (of %d)" % ("/".join(poses), best[1].key, best[0], best[1].location, len(rs)))
+        return best[1]
+    return None
+
+
+def go_busy(w, poses=("WALK",)):
+    r = busiest(w, poses)
+    if r:
+        t = r.location
+        look(w, (t.x - 900.0, t.y - 500.0, t.z + 400.0), (t.x, t.y, t.z + 100.0))
+    return r
+
+
 # ------------------------------------------------------------------ per-frame log
 
 
