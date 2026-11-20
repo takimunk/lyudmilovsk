@@ -1,0 +1,10 @@
+{
+ "id": "icon_stamp_packet",
+ "lang": "ru",
+ "model": "higgsfield gpt_image_2_5 (2k, medium)",
+ "aspect": "1:1",
+ "prompt": "A small clear glassine envelope holding a handful of colourful postage stamps with pictures of ships, birds and a rocket, without readable lettering.",
+ "source": "design/city_goods/icons_city_4.png (sidecar design/city_goods/icons_city_4.json), cell 2 (row 1, middle), cut into 3x3 equal cells, resized to 512x512",
+ "sha256": "54816728842e3a61639ed9aba00693feba4b69b1e4514067e0f7c07455602c11",
+ "strings": {}
+}

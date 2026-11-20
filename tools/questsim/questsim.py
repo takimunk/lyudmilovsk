@@ -137,6 +137,8 @@ class Tree:
         self.plots = {low(t['plot']) for t in inter.get('things', []) if t.get('plot')}
         acts = inter.get('acts', {})
         used = {t.get('act') for t in inter.get('things', [])}
+        # a used act's no_stay act runs for those without the stay (the sanatorium's voucher: docs/city_interiors.md "Stays")
+        used |= {acts[a].get('no_stay') for a in list(used) if a in acts and acts[a].get('no_stay')}
         self.act_events = {}
         for aid, a in acts.items():
             if aid in used and a.get('event'):

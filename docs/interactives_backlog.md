@@ -89,7 +89,7 @@ five views from a list). Residents react when photographed close (pose, wave or 
 
 ## 3. A course of cure at the sanatorium
 
-`[ ]` **Brief (Opus 5.5):** Turn the sanatorium «Корона» (P-SANATORIUM, `tools/city/content/x_p_sanatorium.json`: 33
+`[~] sanatorium-cure 2026-11-20 (branch ready, waiting for merge)` **Brief (Opus 5.5):** Turn the sanatorium «Корона» (P-SANATORIUM, `tools/city/content/x_p_sanatorium.json`: 33
 acts, quests `sanatorium_regime`, `sanatorium_cure`, collection `san_cure`) into a stay with a daily regime. Buy a
 "путёвка" at reception (3 or 7 days); the regime board then gives the hero a day of times: morning exercise in the lobby
 with the instructor and the guests (follow the moves: a short rhythm mini-game of type `rally`), mineral water at the pump
@@ -105,7 +105,7 @@ course.
 
 ## 4. Small jobs
 
-`[ ]` **Brief (Opus 5.5):** Let the hero earn money with short shift jobs that use rooms and systems that exist. Each
+`[~]` small-jobs 2026-11-20 (branch ready, waiting for merge; docs/city_interiors.md "Small jobs") **Brief (Opus 5.5):** Let the hero earn money with short shift jobs that use rooms and systems that exist. Each
 job is a short loop of real actions with a pay by result, at most once a day: (a) the market: help at a stall on Saturday
 (fetch boxes from the van, weigh goods on the scales for customers: `CounterTrade.cpp` customer pairs), (b) the lifeguard
 tower: a shift of watching the water with binoculars and setting the flags by the wind and waves (`ALyudSea`, weather),
@@ -133,7 +133,7 @@ through the eyepiece, bench of the view (a scene capture only while looking).
 
 ## 6. The town paper and notices by date
 
-`[ ]` **Brief (Opus 5.5):** The daily paper and the notice boards exist as texts (`reading.json`, `SLyudCityBook`), but
+`[~] town-paper 2026-11-20` (docs/town_paper.md) **Brief (Opus 5.5):** The daily paper and the notice boards exist as texts (`reading.json`, `SLyudCityBook`), but
 the notices cycle without dates (backlog P4 "still open"). Make the town write about itself: a newspaper «Людмиловская
 правда» each morning at the kiosks (and on the café tables), whose pages are assembled from the game's own news: the
 weather forecast (the weather system's next day), the tide table, festivals soon (`ULyudFestivalSubsystem::Upcoming`),
@@ -192,7 +192,7 @@ Done: an offline schedule test, the jukebox and radio play in game, a stamp set 
 
 ## 11. Letters, postcards and pen friends
 
-`[ ]` **Brief (Opus 5.5):** Postcards are sold at the kiosk; let the hero send them. Write a postcard (choose the picture,
+`[x] letters 2026-11-20 (branch letters, docs/letters.md; awaits a Mac build)` **Brief (Opus 5.5):** Postcards are sold at the kiosk; let the hero send them. Write a postcard (choose the picture,
 pick two phrases from a list of warm sentences, the address of a resident from the town data), drop it in a postbox
 (postboxes on the street spots); the resident gets it the next day (the bond grows, they mention it in a bark, the
 postcard stands on their shelf in the open home). Letters come to the hero too: a mailbox in the club (the hero's address),

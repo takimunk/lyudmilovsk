@@ -1,0 +1,10 @@
+{
+ "id": "icon_postcard_set",
+ "lang": "ru",
+ "model": "higgsfield gpt_image_2_5 (2k, medium)",
+ "aspect": "1:1",
+ "prompt": "A paper folder of picture postcards fanned open: a seaside promenade, a cable car over a hill, a white lighthouse, a market, without any lettering.",
+ "source": "design/city_goods/icons_city_4.png (sidecar design/city_goods/icons_city_4.json), cell 1 (row 1, left), cut into 3x3 equal cells, resized to 512x512",
+ "sha256": "cbd93c2a099e8107e43e64561cb46ac284148fe1b3160a03879e3d132778ca3e",
+ "strings": {}
+}

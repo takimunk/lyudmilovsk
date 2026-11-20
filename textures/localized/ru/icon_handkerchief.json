@@ -1,0 +1,10 @@
+{
+ "id": "icon_handkerchief",
+ "lang": "ru",
+ "model": "higgsfield gpt_image_2_5 (2k, medium)",
+ "aspect": "1:1",
+ "prompt": "A neatly folded cotton handkerchief with a pale blue and white check pattern.",
+ "source": "design/city_goods/icons_city_3.png (sidecar design/city_goods/icons_city_3.json), cell 9 (row 3, right), cut into 3x3 equal cells, resized to 512x512",
+ "sha256": "4bc9201a90fad8dcd18d9b2726a44fb1a4b676fca93438fa4d37bdbfc47ca9d3",
+ "strings": {}
+}

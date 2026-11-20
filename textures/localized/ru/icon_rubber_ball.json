@@ -1,0 +1,10 @@
+{
+ "id": "icon_rubber_ball",
+ "lang": "ru",
+ "model": "higgsfield gpt_image_2_5 (2k, medium)",
+ "aspect": "1:1",
+ "prompt": "A shiny red rubber ball with a single blue stripe around it.",
+ "source": "design/city_goods/icons_city_4.png (sidecar design/city_goods/icons_city_4.json), cell 8 (row 3, middle), cut into 3x3 equal cells, resized to 512x512",
+ "sha256": "8e0848c4627460c4b77230d483adbcb2a32ad67c2415a58a3d2b6c939284c6c9",
+ "strings": {}
+}

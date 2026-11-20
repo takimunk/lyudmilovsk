@@ -1,0 +1,10 @@
+{
+ "id": "icon_condensed_milk",
+ "lang": "ru",
+ "model": "higgsfield gpt_image_2_5 (2k, medium)",
+ "aspect": "1:1",
+ "prompt": "A squat tin can of condensed milk with a plain white and pale blue paper label without any lettering, two small holes punched in the lid.",
+ "source": "design/city_goods/icons_city_2.png (sidecar design/city_goods/icons_city_2.json), cell 8 (row 3, middle), cut into 3x3 equal cells, resized to 512x512",
+ "sha256": "f3df51549f4fefc411aa191fefc75f42356e6fc178a19abd5c558d8244095167",
+ "strings": {}
+}

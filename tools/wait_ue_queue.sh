@@ -4,6 +4,7 @@
 # --exclusive (or EXCLUSIVE=1) until nothing else runs, and while it runs (args -LyudBench or -ueexclusive) nobody starts.
 # Dima's own editor window doesn't count: only UnrealEditor processes started with -game or -run= do.
 #   tools/wait_ue_queue.sh [seconds] [--exclusive]
+# Memory tight (swap used >= UE_QUEUE_SWAP_PCT (60) % of its resizing total, or memory pressure warn/critical): 1 run.
 # While /tmp/lyud_dima_playing exists (Dima is playing) nothing new starts (UE_QUEUE_IGNORE_PLAYING=1 overrides).
 # A waiting exclusive run is not starved: from the moment it starts waiting, and for as long as its caller lives (the
 # script that called this one, e.g. bench.sh; or the process in $UE_QUEUE_HOLD_PID, e.g. a wrapper that runs several
@@ -43,13 +44,19 @@ count() {
         echo "$ARGS" | grep -qE " -LyudBench( |$)| -ueexclusive" && X=1
     done
 }
+mem_tight() {
+    SW=$(sysctl -n vm.swapusage 2>/dev/null | awk '{for (i = 1; i < NF; i++) {if ($i == "total") t = $(i + 2) + 0; if ($i == "used") u = $(i + 2) + 0} if (t > 0) printf "%d", 100 * u / t}')
+    MP=$(sysctl -n kern.memorystatus_vm_pressure_level 2>/dev/null)
+    { [ -n "$SW" ] && [ "$SW" -ge "${UE_QUEUE_SWAP_PCT:-60}" ]; } || { [ -n "$MP" ] && [ "$MP" -ge 2 ]; }
+}
 busy() {
     # Dima is playing (touch /tmp/lyud_dima_playing; rm when done): no new offscreen runs meanwhile
     [ -e /tmp/lyud_dima_playing ] && [ "${UE_QUEUE_IGNORE_PLAYING:-0}" != 1 ] && { N=playing; return 0; }
     count
     held && { N="$N, held for an exclusive run"; return 0; }
     [ "$X" -eq 1 ] && return 0
-    if [ "$EXCL" = 1 ]; then [ "$N" -gt 0 ]; else [ "$N" -ge "$SLOTS" ]; fi
+    K=$SLOTS; mem_tight && K=1
+    if [ "$EXCL" = 1 ]; then [ "$N" -gt 0 ]; else [ "$N" -ge "$K" ]; fi
 }
 while busy; do
     [ "$T" -ge "$MAX" ] && { [ "$EXCL" = 1 ] && rm -f "$HOLD_DIR/$HOLDER"; echo "wait_ue_queue: still busy after $T s ($N running)"; exit 1; }

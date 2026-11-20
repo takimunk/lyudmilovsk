@@ -1,0 +1,10 @@
+{
+ "id": "icon_milkshake",
+ "lang": "ru",
+ "model": "higgsfield gpt_image_2_5 (2k, medium)",
+ "aspect": "1:1",
+ "prompt": "A tall plain glass of white milkshake with thick foam up to the brim and a striped paper straw.",
+ "source": "design/city_goods/icons_city_2.png (sidecar design/city_goods/icons_city_2.json), cell 4 (row 2, left), cut into 3x3 equal cells, resized to 512x512",
+ "sha256": "7de8d72765e2a3f0b15c085c89fcc7947c448a8c730424a7a1c29e7850685f1a",
+ "strings": {}
+}

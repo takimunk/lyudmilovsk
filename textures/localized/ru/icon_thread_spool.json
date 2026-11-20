@@ -1,0 +1,10 @@
+{
+ "id": "icon_thread_spool",
+ "lang": "ru",
+ "model": "higgsfield gpt_image_2_5 (2k, medium)",
+ "aspect": "1:1",
+ "prompt": "A small wooden spool wound with bright red cotton thread.",
+ "source": "design/city_goods/icons_city_3.png (sidecar design/city_goods/icons_city_3.json), cell 7 (row 3, left), cut into 3x3 equal cells, resized to 512x512",
+ "sha256": "089a8db7bcd983a2f7fc06d2aa31f5cc3bdcc682810ed9da1d2ec0eecf91d407",
+ "strings": {}
+}

@@ -1,0 +1,10 @@
+{
+ "id": "icon_sandwich",
+ "lang": "ru",
+ "model": "higgsfield gpt_image_2_5 (2k, medium)",
+ "aspect": "1:1",
+ "prompt": "An open sandwich: a slice of white bread with a square slice of yellow cheese on top, on a small white saucer.",
+ "source": "design/city_goods/icons_city_1.png (sidecar design/city_goods/icons_city_1.json), cell 8 (row 3, middle), cut into 3x3 equal cells, resized to 512x512",
+ "sha256": "be09814ebdb3b7ca29c2ca89c68f4766cecc1b55663e83f88037d709ba253db6",
+ "strings": {}
+}

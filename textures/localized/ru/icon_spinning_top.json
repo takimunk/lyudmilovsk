@@ -1,0 +1,10 @@
+{
+ "id": "icon_spinning_top",
+ "lang": "ru",
+ "model": "higgsfield gpt_image_2_5 (2k, medium)",
+ "aspect": "1:1",
+ "prompt": "A tin humming spinning top with red, yellow and blue stripes and a spiral metal plunger on top.",
+ "source": "design/city_goods/icons_city_4.png (sidecar design/city_goods/icons_city_4.json), cell 6 (row 2, right), cut into 3x3 equal cells, resized to 512x512",
+ "sha256": "376e6b474d4de2089a1398a0f575af23a05b513de94e7ec01a46f1c93754bb2f",
+ "strings": {}
+}
