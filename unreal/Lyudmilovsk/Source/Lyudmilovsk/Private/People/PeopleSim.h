@@ -92,6 +92,7 @@ namespace LyudPeople
 		float Height = 0.f;         // seat or mattress top over the floor, m
 		int Capacity = 1;
 		std::string Tag;            // club seats: the station index; flats: the room kind
+		std::string Thing;          // a city thing whoever is at the slot holds (UPeopleLifeSubsystem::UpdateThingHolds): a sanatorium guest's chair
 		std::vector<V3> Spots;      // a double bed: where each sleeper lies
 		std::vector<V3> Inside;     // the way from the place's door (Portal) to Approach; empty outdoors
 		int SnowJob = -1;           // a snow place's slot: the stretch of path it stands for (its near end is Pos), -1 none

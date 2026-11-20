@@ -1,0 +1,23 @@
+{
+ "name": "radio_pips_01",
+ "asset": "/Game/Audio/Radio/S_radio_pips_01",
+ "pool": "radio_pips",
+ "file": "audio/sfx/radio/radio_pips_01.wav",
+ "generator": "tools/music/sounds.py",
+ "seed": 1062,
+ "rng": "numpy.random.default_rng (PCG64), numpy 2.5.3",
+ "loop": false,
+ "sample_rate": 48000,
+ "bit_depth": 16,
+ "channels": 1,
+ "seconds": 6.0,
+ "peak_dbfs": -6.0,
+ "rms_dbfs": -15.49,
+ "params": {
+  "pips": 6,
+  "hz": 1000,
+  "spacing_s": 1.0,
+  "last_s": 0.5
+ },
+ "license": "Procedural, made by the project; CC BY 4.0."
+}

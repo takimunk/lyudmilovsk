@@ -400,7 +400,7 @@
     }
    ]
   },
-  "cog_workshop_board": {
+  "cog_workshop_board": {"read": null, 
    "like": "look_club",
    "target": "look_club",
    "minutes": 4,
@@ -618,7 +618,7 @@
     }
    ]
   },
-  "cog_reading_notice": {
+  "cog_reading_notice": {"read": null, 
    "like": "look_club",
    "target": "look_club",
    "minutes": 4,
@@ -638,7 +638,7 @@
     }
    ]
   },
-  "cog_lounge_notice": {
+  "cog_lounge_notice": {"read": null, 
    "like": "look_club",
    "target": "look_club",
    "minutes": 4,
@@ -656,7 +656,7 @@
     }
    ]
   },
-  "cog_stage_notice": {
+  "cog_stage_notice": {"read": null, 
    "like": "look_club",
    "target": "look_club",
    "minutes": 4,
@@ -671,7 +671,7 @@
     }
    ]
   },
-  "cog_meeting_notice": {
+  "cog_meeting_notice": {"read": null, 
    "like": "look_club",
    "target": "look_club",
    "minutes": 4,
@@ -971,7 +971,7 @@
    "act": "cog_tt"
   },
   "cog_club/league_board": {
-   "act": "cog_league"
+   "act": "cup_board_cog"
   },
   "cog_club/cue_rack": {
    "act": "cog_cues"

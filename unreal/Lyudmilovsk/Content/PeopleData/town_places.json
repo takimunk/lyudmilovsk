@@ -29012,6 +29012,76 @@
    "shell": 1
   },
   {
+   "id": "P-SANATORIUM-DINING",
+   "kind": "sanatorium_dining",
+   "door": [
+    -708.1,
+    1255.45,
+    -8.0
+   ],
+   "yaw": -6.4,
+   "island": 0,
+   "slots": [
+    {
+     "kind": "staff",
+     "tag": "guest_gromov_pyotr",
+     "pos": [
+      -710.7,
+      1260.79,
+      -7.55
+     ],
+     "yaw": 192.3,
+     "height": 0.45,
+     "thing": "P-SANATORIUM/dining_table_1"
+    },
+    {
+     "kind": "staff",
+     "tag": "guest_mironova_sonya",
+     "pos": [
+      -711.59,
+      1261.36,
+      -7.55
+     ],
+     "yaw": 282.3,
+     "height": 0.45,
+     "thing": "P-SANATORIUM/dining_1_c"
+    },
+    {
+     "kind": "staff",
+     "tag": "guest_tamm_boris",
+     "pos": [
+      -710.38,
+      1258.49,
+      -7.55
+     ],
+     "yaw": 183.8,
+     "height": 0.45,
+     "thing": "P-SANATORIUM/dining_table_2"
+    },
+    {
+     "kind": "staff",
+     "tag": "guest_sazonov_nikolai",
+     "pos": [
+      -711.17,
+      1259.19,
+      -7.55
+     ],
+     "yaw": 273.8,
+     "height": 0.45,
+     "thing": "P-SANATORIUM/dining_2_c"
+    }
+   ],
+   "roles": [],
+   "building": "P-SANATORIUM",
+   "path": [
+    [
+     -709.7,
+     1256.05,
+     -7.55
+    ]
+   ]
+  },
+  {
    "id": "P-BRIDGEHOUSE",
    "kind": "office",
    "door": [

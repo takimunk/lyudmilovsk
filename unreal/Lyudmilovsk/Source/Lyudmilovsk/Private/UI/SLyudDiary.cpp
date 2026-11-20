@@ -7,6 +7,7 @@
 #include "BirdTame.h"
 #include "Birds/BirdBook.h"
 #include "Birds/BirdSpecies.h"
+#include "Books/LyudBooks.h"
 #include "Fishing/LyudFishBook.h"
 #include "LyudInventory.h"
 #include "LyudText.h"
@@ -433,6 +434,19 @@ TSharedRef<SWidget> SLyudDiarySpread::ThingsLeft()
 			if (ULyudGameScreen* Screen = ULyudGameScreen::Get(World))
 			{
 				Screen->CloseThen([WeakWorld] { if (ULyudBirdGuideScreen* Guide = ULyudBirdGuideScreen::Get(WeakWorld.Get())) { Guide->Open(); } });
+			}
+		});
+	}
+	else if (Id == ULyudBooks::ItemId)
+	{
+		// a library book: the one he has, or his books to choose from (docs/books.md)
+		AddAction(TEXT("ui.use.read"), [WeakUI]
+		{
+			UWorld* World = WeakUI.IsValid() ? WeakUI->GetWorld() : nullptr;
+			TWeakObjectPtr<UWorld> WeakWorld = World;
+			if (ULyudGameScreen* Screen = ULyudGameScreen::Get(World))
+			{
+				Screen->CloseThen([WeakWorld] { if (ULyudBookScreen* Books = ULyudBookScreen::Get(WeakWorld.Get())) { Books->OpenReader(FString()); } });
 			}
 		});
 	}

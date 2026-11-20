@@ -1,7 +1,9 @@
 #include "City/LyudCityThings.h"
 
 #include "CityThingsModel.h"
+#include "CityCupsModel.h"
 #include "City/SLyudCityBook.h"
+#include "City/LyudTownPaper.h"
 #include "City/SLyudCityGame.h"
 #include "City/SLyudCityPage.h"
 #include "Audio/LyudSoundscape.h"
@@ -28,6 +30,7 @@
 #include "HeroCharacter.h"
 #include "InputCoreTypes.h"
 #include "Kismet/GameplayStatics.h"
+#include "Letters/LyudLetters.h"
 #include "LyudGameMenu.h"
 #include "LyudInventory.h"
 #include "LyudSave.h"
@@ -342,6 +345,7 @@ void ULyudCityThings::AdoptLoaded()
 		return;
 	}
 	*Model = std::move(Job->Model);
+	LoadCups();
 	// items the data names that the item table doesn't know (they are skipped when given or sold)
 	int32 Unknown = 0;
 	for (const LyudCity::FAct& A : Model->Acts)
@@ -400,6 +404,10 @@ void ULyudCityThings::ApplySaved()
 		In[std::string(TCHAR_TO_UTF8(*KV.Key))] = std::string(TCHAR_TO_UTF8(*KV.Value));
 	}
 	Model->LoadState(In);
+	if (Cups)
+	{
+		Cups->LoadState(In);
+	}
 }
 
 void ULyudCityThings::StartOver()
@@ -408,6 +416,11 @@ void ULyudCityThings::StartOver()
 	{
 		Model->ResetState();
 	}
+	if (Cups)
+	{
+		Cups->Reset();
+	}
+	CupMatchCup = -1;
 	Saved.Reset();
 	GreetedPlot = NAME_None;
 	PlotThing = -1;
@@ -429,6 +442,10 @@ void ULyudCityThings::OnGameSaving_Implementation()
 	Saved.Reset();
 	std::map<std::string, std::string> Out;
 	Model->SaveState(Out);
+	if (Cups)
+	{
+		Cups->SaveState(Out);     // "k:" keys beside the model's own
+	}
 	for (const std::pair<const std::string, std::string>& KV : Out)
 	{
 		Saved.Add(LyudCityThingsImpl::Str(KV.first), LyudCityThingsImpl::Str(KV.second));
@@ -1041,7 +1058,10 @@ void ULyudCityThings::Run(int32 Thing, bool bFromConsole, bool bFromSeat)
 	{
 		Model->TalkReady(Thing, Now, LyudCityThingsImpl::Ask(this), TalkOffer);
 	}
-	const LyudCity::FOutcome O = Model->Run(Thing, Now, LyudCityThingsImpl::Ask(this));
+	LyudCity::FAsk RunAsk = LyudCityThingsImpl::Ask(this);
+	// a tournament match is played whatever today's count of games is (CityCupsModel.h)
+	RunAsk.bFreeGame = Cups && Cups->MatchAt(*Model, Thing, Now) >= 0;
+	const LyudCity::FOutcome O = Model->Run(Thing, Now, RunAsk);
 	UE_LOG(LogLyudCity, Display, TEXT("CityThings: do %s (%s, act %s) -> %s line=%s minutes=%d price=%d shop=%s event=%s/%s%s"),
 		*LyudCityThingsImpl::Str(T.Id), *LyudCityThingsImpl::Str(T.Kind), O.Act >= 0 ? *LyudCityThingsImpl::Str(Model->Acts[O.Act].Id) : TEXT("-"), UTF8_TO_TCHAR(LyudCity::VerdictName(O.Verdict)),
 		*LyudCityThingsImpl::Str(O.Line), O.Minutes, O.Price, *LyudCityThingsImpl::Str(O.Shop), *LyudCityThingsImpl::Str(O.Event), *LyudCityThingsImpl::Str(O.Target),
@@ -1088,6 +1108,11 @@ void ULyudCityThings::Run(int32 Thing, bool bFromConsole, bool bFromSeat)
 		{
 			Inv->Add(Item, G.second);
 		}
+	}
+	if (O.Pay > 0 && Inv)
+	{
+		Inv->Earn(O.Pay);
+		AnnouncePay(O.Pay);
 	}
 	const FVector At = ThingLocation(Thing);
 	if (!O.Sound.empty())
@@ -1142,7 +1167,7 @@ void ULyudCityThings::Run(int32 Thing, bool bFromConsole, bool bFromSeat)
 	}
 	// a counter with topics and its staff on shift: the chooser instead of the shop or the page (the act's line on top, "Buy..."
 	// first when it sells); not for games, shows, reading, sitting or lying, or a stretch of time behind a fade
-	if (!TalkOffer.empty() && O.Game < 0 && O.Screen.empty() && O.Text < 0 && O.Pose != "sit" && O.Pose != "lie" && !(O.Minutes > 0 && O.bFade))
+	if (!TalkOffer.empty() && O.Game < 0 && O.Screen.empty() && O.Open.empty() && O.Text < 0 && O.Pose != "sit" && O.Pose != "lie" && !(O.Minutes > 0 && O.bFade))
 	{
 		TArray<int32> Topics;
 		Topics.Reserve((int32)TalkOffer.size());
@@ -1176,6 +1201,12 @@ void ULyudCityThings::Run(int32 Thing, bool bFromConsole, bool bFromSeat)
 	if (!O.Shop.empty())
 	{
 		OpenShopOf(LyudCityThingsImpl::Str(O.Shop), LyudCityThingsImpl::Str(O.Title));
+		return;
+	}
+	if (!O.Open.empty())
+	{
+		// another system's screen (the library's classics: ULyudBookScreen listens); the act's line stays unsaid
+		OnOpen.Broadcast(FName(*LyudCityThingsImpl::Str(O.Open)), Thing);
 		return;
 	}
 	const FText Title = O.Title.empty() ? FText::GetEmpty() : LyudText::Get(LyudCityThingsImpl::Str(O.Title));
@@ -1255,14 +1286,29 @@ void ULyudCityThings::Run(int32 Thing, bool bFromConsole, bool bFromSeat)
 			JumpMinutes(O.Minutes, !bLie);
 		}
 	}
-	if (!O.Line.empty())
+	// a system that adds to this act (the music: a record goes on, a radio is switched) may say its own words instead
+	FText Line = O.Line.empty() ? FText::GetEmpty() : LineText(LyudCityThingsImpl::Str(O.Line));
+	bool bHooked = false;
+	if (!O.bClosed && O.Act >= 0 && ActHook.IsBound())
+	{
+		FCityActInfo Info;
+		Info.Thing = LyudCityThingsImpl::Str(T.Id);
+		Info.Act = LyudCityThingsImpl::Str(Model->Acts[O.Act].Id);
+		Info.Line = LyudCityThingsImpl::Str(O.Line);
+		Info.Plot = LyudCityThingsImpl::Str(T.Plot);
+		Info.At = At;
+		Info.bFromConsole = bFromConsole;
+		bHooked = ActHook.Execute(Info, Line);
+	}
+	if (!Line.IsEmpty())
 	{
 		PageThing = Thing;
-		PageLeft = FMath::Max(0, O.NumLines - 1);
+		// the music's words are one page: no turning through the act's other lines under them
+		PageLeft = bHooked ? 0 : FMath::Max(0, O.NumLines - 1);
 		PageTitle = Title;
 		PageFrom = Hero ? Hero->GetActorLocation() : FVector::ZeroVector;
 		PageFrame = GFrameCounter;
-		ShowPage(PageTitle, LineText(LyudCityThingsImpl::Str(O.Line)), PageLeft > 0);
+		ShowPage(PageTitle, Line, PageLeft > 0);
 		SetPrompted(-1);
 	}
 }
@@ -1438,6 +1484,14 @@ void ULyudCityThings::Tick(float DeltaTime)
 		DropDeadHolds();
 		bOutside = !Hero || !Model->InBounds(LyudCityThingsImpl::Vec(Hero->GetActorLocation()), LyudCityThingsImpl::TownMargin);
 		Picked = bOutside ? -1 : PickInView(Hero, PC);
+		// a postbox on the prompt line or the post's chooser up has the E (docs/letters.md): one E, one thing
+		if (const ULyudLetters* Letters = ULyudLetters::Get(World))
+		{
+			if (Letters->IsOffering() || Letters->HasModeUp())
+			{
+				Picked = -1;
+			}
+		}
 		if (!bOutside)
 		{
 			TrackPlot(Hero);
@@ -1581,14 +1635,13 @@ void ULyudCityThings::Tick(float DeltaTime)
 
 // --- collections
 
-bool ULyudCityThings::GiveStamp(const FString& Stamp)
+void ULyudCityThings::AnnouncePay(int32 Rubles)
 {
-	if (!Model || !Model->GiveStamp(std::string(TCHAR_TO_UTF8(*Stamp))))
+	UE_LOG(LogLyudCity, Display, TEXT("CityThings: earned %d roubles"), Rubles);
+	if (ULyudGameScreen* Screen = ULyudGameScreen::Get(this))
 	{
-		return false;
+		Screen->Toast(LyudText::Get(TEXT("city.job.paid"), { FStringFormatArg(Rubles) }));
 	}
-	AnnounceStamps({ Stamp });
-	return true;
 }
 
 void ULyudCityThings::AnnounceStamps(const TArray<FString>& Stamps)
@@ -1780,6 +1833,39 @@ void ULyudCityThings::GetThingsOfPlot(const FString& PlotId, FName Kind, TArray<
 	}
 }
 
+void ULyudCityThings::GetThingsByAct(TFunctionRef<bool(const FString& Act)> Match, TArray<FCityThingRef>& Out) const
+{
+	if (!Model)
+	{
+		return;
+	}
+	for (int32 I = 0; I < NumThings(); ++I)
+	{
+		const int A = Model->Things[(size_t)I].Act;
+		if (A >= 0 && A < (int)Model->Acts.size() && Match(LyudCityThingsImpl::Str(Model->Acts[(size_t)A].Id)))
+		{
+			FillRef(I, Out.AddDefaulted_GetRef());
+		}
+	}
+}
+
+FString ULyudCityThings::ActOfThing(const FString& Id) const
+{
+	const int32 I = Model ? Model->FindThing(std::string(TCHAR_TO_UTF8(*Id))) : -1;
+	const int A = I >= 0 ? Model->Things[(size_t)I].Act : -1;
+	return A >= 0 && A < (int)Model->Acts.size() ? LyudCityThingsImpl::Str(Model->Acts[(size_t)A].Id) : FString();
+}
+
+bool ULyudCityThings::GiveStamp(const FString& Stamp)
+{
+	if (!Model || !Model->GiveStamp(std::string(TCHAR_TO_UTF8(*Stamp))))
+	{
+		return false;
+	}
+	AnnounceStamps({ Stamp });
+	return true;
+}
+
 void ULyudCityThings::DropDeadHolds()
 {
 	for (TMap<int32, FHold>::TIterator It = Holds.CreateIterator(); It; ++It)
@@ -1874,10 +1960,26 @@ void ULyudCityThings::BeginGame(int32 Thing, int32 Minutes, bool bSeated)
 	{
 		Playing = MakePimpl<LyudCity::FGameState>();
 	}
-	if (!Model->StartGame(Thing, LyudCityThingsImpl::When(World, false), *Playing))
+	const LyudCity::FWhen GameWhen = LyudCityThingsImpl::When(World, false);
+	if (!Model->StartGame(Thing, GameWhen, *Playing))
 	{
 		UE_LOG(LogLyudCity, Warning, TEXT("CityThings: %s has no game"), *LyudCityThingsImpl::Str(Model->Things[(size_t)Thing].Id));
 		return;
+	}
+	// the hero's tournament match: the bracket's opponent instead of the seed's (CityCupsModel.h)
+	CupMatchCup = -1;
+	if (Cups)
+	{
+		int Cup = -1, Round = -1;
+		long long Day = -1;
+		const int Opp = Cups->MatchAt(*Model, Thing, GameWhen, &Cup, &Day, &Round);
+		if (Opp >= 0)
+		{
+			Playing->Opponent = Opp;
+			CupMatchCup = Cup;
+			CupMatchRound = Round;
+			CupMatchDay = Day;
+		}
 	}
 	EndShow();
 	ClosePage();
@@ -1893,6 +1995,12 @@ void ULyudCityThings::BeginGame(int32 Thing, int32 Minutes, bool bSeated)
 	const FText Title = LyudText::Get(LyudCityThingsImpl::Str(D->Title));
 	GameOpponent = R ? LyudText::Get(LyudCityThingsImpl::Str(R->Name)) : FText::GetEmpty();
 	GameTitle = R ? LyudText::Get(TEXT("city.game.title_vs"), { FStringFormatArg(Title.ToString()), FStringFormatArg(GameOpponent.ToString()) }) : Title;
+	if (const LyudCity::FCupDef* Cup = Cups && R && CupMatchCup >= 0 ? Cups->Def(CupMatchCup) : nullptr)
+	{
+		GameTitle = LyudText::Get(TEXT("city.cup.game_title"), { FStringFormatArg(LyudText::Get(LyudCityThingsImpl::Str(Cup->Title)).ToString()),
+			FStringFormatArg(LyudText::Get(FString::Printf(TEXT("city.cup.rname.%d"), CupMatchRound)).ToString()), FStringFormatArg(GameOpponent.ToString()) });
+		UE_LOG(LogLyudCity, Display, TEXT("CityThings: tournament %s, round %d, against %s"), *LyudCityThingsImpl::Str(Cup->Id), CupMatchRound, *GameOpponent.ToString());
+	}
 	// the panel: made once, kept in the viewport (collapsed between games)
 	UGameViewportClient* Viewport = World->GetGameViewport();
 	if (!GamePanel.IsValid())
@@ -2061,11 +2169,31 @@ void ULyudCityThings::FinishGame()
 	const LyudCity::FGameDef* D = Model->GameDef(Playing->Def);
 	const int32 Thing = Playing->Thing;
 	const int32 Score = Playing->Score, OppScore = Playing->OppScore;
-	const LyudCity::FGameEnd End = Model->FinishGame(*Playing, LyudCityThingsImpl::When(World));
+	LyudCity::FGameEnd End = Model->FinishGame(*Playing, LyudCityThingsImpl::When(World));
 	if (!D || End.Result == LyudCity::EGameResult::None)
 	{
+		CupMatchCup = -1;
 		EndGame(false);
 		return;
+	}
+	// a tournament match: its result goes to the bracket (the next round's hour, out, the cup) under the result line
+	FString CupNote;
+	if (Cups && CupMatchCup >= 0)
+	{
+		const LyudCity::FCupResult CR = Cups->Record(*Model, CupMatchCup, CupMatchDay, CupMatchRound, End.Result);
+		End.NewStamps.insert(End.NewStamps.end(), CR.NewStamps.begin(), CR.NewStamps.end());
+		const LyudCity::FCupDef* Cup = Cups->Def(CupMatchCup);
+		const FString CupTitle = Cup ? LyudText::Get(LyudCityThingsImpl::Str(Cup->Title)).ToString() : FString();
+		switch (CR.Note)
+		{
+		case LyudCity::ECupNote::Replay: CupNote = LyudText::Get(TEXT("city.cup.note.replay")).ToString(); break;
+		case LyudCity::ECupNote::Next: CupNote = LyudText::Get(TEXT("city.cup.note.next"), { FStringFormatArg(UTF8_TO_TCHAR(LyudCity::FCups::Hm(CR.NextHour).c_str())) }).ToString(); break;
+		case LyudCity::ECupNote::Out: CupNote = LyudText::Get(TEXT("city.cup.note.out")).ToString(); break;
+		case LyudCity::ECupNote::Champion: CupNote = LyudText::Get(TEXT("city.cup.note.champion"), { FStringFormatArg(CupTitle) }).ToString(); break;
+		default: break;
+		}
+		UE_LOG(LogLyudCity, Display, TEXT("CityThings: tournament %s round %d: %s"), Cup ? *LyudCityThingsImpl::Str(Cup->Id) : TEXT("?"), CupMatchRound, *CupNote);
+		CupMatchCup = -1;
 	}
 	UE_LOG(LogLyudCity, Display, TEXT("CityThings: game over on %s: %s %d:%d line=%s"), *LyudCityThingsImpl::Str(Model->Things[(size_t)Thing].Id),
 		UTF8_TO_TCHAR(LyudCity::GameResultName(End.Result)), Score, OppScore, *LyudCityThingsImpl::Str(End.Line));
@@ -2078,6 +2206,11 @@ void ULyudCityThings::FinishGame()
 			{
 				Inv->Add(Item, P.second);
 			}
+		}
+		if (End.Pay > 0)
+		{
+			Inv->Earn(End.Pay);
+			AnnouncePay(End.Pay);
 		}
 	}
 	if (!End.NewStamps.empty())
@@ -2110,6 +2243,10 @@ void ULyudCityThings::FinishGame()
 	{
 		const FString Says = LyudText::Get(TEXT("city.game.says"), { FStringFormatArg(Opp), FStringFormatArg(LyudText::Get(LyudCityThingsImpl::Str(End.Says)).ToString()) }).ToString();
 		Body = Body.IsEmpty() ? Says : Body + TEXT("\n\n") + Says;
+	}
+	if (!CupNote.IsEmpty())
+	{
+		Body = Body.IsEmpty() ? CupNote : Body + TEXT("\n\n") + CupNote;
 	}
 	const APawn* Pawn = UGameplayStatics::GetPlayerPawn(World, 0);
 	PageThing = -1;
@@ -2686,6 +2823,29 @@ void ULyudCityThings::OpenBook(int32 Text, int32 Thing, bool bSeated)
 	{
 		BookPages.Add(LyudCityThingsImpl::Str(Key));
 	}
+	// a text the game sets itself (the town paper, its archive: docs/town_paper.md) shows those pages; its own are the fallback
+	BookGenPages.Reset();
+	if (T->Gen.rfind("cup:", 0) == 0)
+	{
+		TArray<FText> Gen;
+		if (CupPages(LyudCityThingsImpl::Str(T->Gen), Gen) && Gen.Num() > 0)
+		{
+			BookGenPages = MoveTemp(Gen);
+			BookPages.Init(FString(), BookGenPages.Num());
+		}
+	}
+	else if (!T->Gen.empty())
+	{
+		if (ULyudTownPaper* Paper = ULyudTownPaper::Get(World))
+		{
+			TArray<FText> Gen;
+			if (Paper->Pages(LyudCityThingsImpl::Str(T->Gen), Gen) && Gen.Num() > 0)
+			{
+				BookGenPages = MoveTemp(Gen);
+				BookPages.Init(FString(), BookGenPages.Num());
+			}
+		}
+	}
 	APlayerController* PC = UGameplayStatics::GetPlayerController(World, 0);
 	AHeroCharacter* Hero = PC ? Cast<AHeroCharacter>(PC->GetPawn()) : nullptr;
 	BookText = Text;
@@ -2744,7 +2904,19 @@ void ULyudCityThings::ShowBookPage()
 	}
 	BookPage = FMath::Clamp(BookPage, 0, Num - 1);
 	const bool bLast = BookPage >= Num - 1;
-	Book->SetPage(LyudText::Get(LyudCityThingsImpl::Str(T->Title)), LineText(BookPages[BookPage]),
+	const bool bGen = BookGenPages.Num() == Num;
+	if (bGen && bLast && T->Gen.rfind("cup:", 0) == 0)
+	{
+		CupSheetRead(LyudCityThingsImpl::Str(T->Gen));
+	}
+	else if (bGen && bLast)
+	{
+		if (ULyudTownPaper* Paper = ULyudTownPaper::Get(this))
+		{
+			Paper->FinishedReading(LyudCityThingsImpl::Str(T->Gen));
+		}
+	}
+	Book->SetPage(LyudText::Get(LyudCityThingsImpl::Str(T->Title)), bGen ? BookGenPages[BookPage] : LineText(BookPages[BookPage]),
 		LyudText::Get(TEXT("city.book.page"), { FStringFormatArg(BookPage + 1), FStringFormatArg(Num) }),
 		LyudText::Get(bLast ? TEXT("city.book.keys_last") : TEXT("city.book.keys")));
 }
@@ -2821,6 +2993,7 @@ void ULyudCityThings::CloseBook()
 	BookText = -1;
 	BookThing = -1;
 	BookPages.Reset();
+	BookGenPages.Reset();
 	bBookSeated = false;
 	if (Book.IsValid())
 	{
@@ -3854,6 +4027,186 @@ FString ULyudCityThings::ReportTone() const
 	UE_LOG(LogLyudCity, Display, TEXT("CityThings: %s"), *Out);
 	return Out;
 }
+
+// --- the clubs' weekly tournaments (docs/city_interiors.md "Tournaments")
+
+namespace LyudCityThingsImpl
+{
+	/** A generated page's line in the current language: '@' arguments are keys themselves. */
+	FString CupLineText(const LyudCity::FCupLine& L)
+	{
+		FStringFormatOrderedArguments Args;
+		for (const std::string& A : L.Args)
+		{
+			Args.Add(FStringFormatArg(!A.empty() && A[0] == '@' ? LyudText::Get(Str(A.substr(1))).ToString() : Str(A)));
+		}
+		return LyudText::Get(Str(L.Key), Args).ToString();
+	}
+}
+
+void ULyudCityThings::LoadCups()
+{
+	if (!Cups.IsValid())
+	{
+		Cups = MakePimpl<LyudCity::FCups>();
+	}
+	// a few hundred bytes: read on the game thread once the model is in (the pools are its regulars)
+	const FString Path = FPaths::ProjectContentDir() / TEXT("City/tournaments.json");
+	TArray<uint8> Bytes;
+	std::string Error;
+	if (!FFileHelper::LoadFileToArray(Bytes, *Path, FILEREAD_Silent))
+	{
+		*Cups = LyudCity::FCups();
+		UE_LOG(LogLyudCity, Display, TEXT("CityThings: no City/tournaments.json: no club tournaments"));
+		return;
+	}
+	const std::string Text((const char*)Bytes.GetData(), (size_t)Bytes.Num());
+	if (!Cups->Load(Text, Error))
+	{
+		UE_LOG(LogLyudCity, Warning, TEXT("CityThings: City/tournaments.json unreadable: %s"), *LyudCityThingsImpl::Str(Error));
+		return;
+	}
+	const bool bAll = Cups->Bind(*Model);
+	UE_LOG(LogLyudCity, Display, TEXT("CityThings: %d club tournaments%s"), (int32)Cups->Defs.size(), bAll ? TEXT("") : TEXT(" (some with fewer than eight players: not held)"));
+}
+
+void ULyudCityThings::GetCupNews(int32 Since, TArray<FLyudCupNews>& Out) const
+{
+	const UWorld* World = GetWorld();
+	if (!World || !Model || !Cups)
+	{
+		return;
+	}
+	const LyudCity::FWhen Now = LyudCityThingsImpl::When(World, false);
+	std::vector<LyudCity::FCupNews> Over;
+	Cups->News(*Model, Since, Now, Over);
+	for (int32 Cup = 0; Cup < (int32)Cups->Defs.size(); ++Cup)
+	{
+		const LyudCity::FCupDef& D = Cups->Defs[(size_t)Cup];
+		if (!Cups->IsUsable(Cup) || LyudCity::FCups::WeekdayOf(Since, Now) != D.Weekday)
+		{
+			continue;
+		}
+		FLyudCupNews N;
+		N.Title = LyudCityThingsImpl::Str(D.Title);
+		N.Venue = LyudCityThingsImpl::Str(D.Venue);
+		N.StartMinute = FMath::RoundToInt(D.Start * 60.f);
+		for (const LyudCity::FCupNews& O : Over)
+		{
+			if (O.Cup == Cup)
+			{
+				N.bOver = true;
+				N.Winner = LyudCityThingsImpl::Str(O.Winner);
+				N.RunnerUp = LyudCityThingsImpl::Str(O.RunnerUp);
+				N.HeroReached = O.HeroReached;
+			}
+		}
+		Out.Add(MoveTemp(N));
+	}
+}
+
+bool ULyudCityThings::CupPages(const FString& Gen, TArray<FText>& Out) const
+{
+	const UWorld* World = GetWorld();
+	const int32 Cup = Cups && World && Gen.StartsWith(TEXT("cup:")) ? Cups->Find(std::string(TCHAR_TO_UTF8(*Gen.Mid(4)))) : -1;
+	if (Cup < 0 || !Model)
+	{
+		return false;
+	}
+	const std::vector<LyudCity::FCupPage> Pages = Cups->Pages(*Model, Cup, LyudCityThingsImpl::When(World, false));
+	for (const LyudCity::FCupPage& P : Pages)
+	{
+		FString Body;
+		for (const LyudCity::FCupLine& L : P)
+		{
+			// a heading line, then the lines; a round's heading opens a paragraph of its own
+			const bool bBreak = !Body.IsEmpty() && (L.Key.rfind("city.cup.round.", 0) == 0 || L.Key.rfind("city.cup.champion", 0) == 0 || L.Key == "city.cup.sheet" || L.Key == "city.cup.signed");
+			Body += (Body.IsEmpty() ? TEXT("") : (bBreak ? TEXT("\n\n") : TEXT("\n"))) + LyudCityThingsImpl::CupLineText(L);
+		}
+		Out.Add(FText::FromString(Body));
+	}
+	return Out.Num() > 0;
+}
+
+void ULyudCityThings::CupSheetRead(const FString& Gen)
+{
+	const UWorld* World = GetWorld();
+	const int32 Cup = Cups && World && Gen.StartsWith(TEXT("cup:")) ? Cups->Find(std::string(TCHAR_TO_UTF8(*Gen.Mid(4)))) : -1;
+	if (Cup < 0)
+	{
+		return;
+	}
+	const LyudCity::FWhen Now = LyudCityThingsImpl::When(World, false);
+	long long Day = -1;
+	if (Cups->SignUp(Cup, Now, &Day))
+	{
+		const FString Title = LyudText::Get(LyudCityThingsImpl::Str(Cups->Defs[(size_t)Cup].Title)).ToString();
+		const FString Date = LyudCityThingsImpl::Str(LyudCity::FCups::DateOf(Now, Day));
+		UE_LOG(LogLyudCity, Display, TEXT("CityThings: signed up for %s on day %lld (%s)"), *Gen, Day, *Date);
+		if (ULyudGameScreen* Screen = ULyudGameScreen::Get(this))
+		{
+			Screen->Toast(LyudText::Get(TEXT("city.cup.toast.signed"), { FStringFormatArg(Title), FStringFormatArg(Date) }));
+		}
+	}
+}
+
+void ULyudCityThings::CupSignAll()
+{
+	const UWorld* World = GetWorld();
+	if (!World || !Cups)
+	{
+		return;
+	}
+	for (const LyudCity::FCupDef& D : Cups->Defs)
+	{
+		CupSheetRead(TEXT("cup:") + LyudCityThingsImpl::Str(D.Id));
+	}
+}
+
+FString ULyudCityThings::CupReport() const
+{
+	const UWorld* World = GetWorld();
+	if (!World || !Model || !Cups)
+	{
+		return TEXT("no tournaments (City/tournaments.json not read yet)");
+	}
+	FString Out;
+	for (int32 Cup = 0; Cup < (int32)Cups->Defs.size(); ++Cup)
+	{
+		Out += FString::Printf(TEXT("== %s (%s at %s)\n"), *LyudCityThingsImpl::Str(Cups->Defs[(size_t)Cup].Id),
+			*LyudCityThingsImpl::Str(Cups->Defs[(size_t)Cup].Game), *LyudCityThingsImpl::Str(Cups->Defs[(size_t)Cup].Plot));
+		TArray<FText> Pages;
+		CupPages(TEXT("cup:") + LyudCityThingsImpl::Str(Cups->Defs[(size_t)Cup].Id), Pages);
+		for (const FText& P : Pages)
+		{
+			Out += P.ToString() + TEXT("\n--\n");
+		}
+	}
+	return Out;
+}
+
+static FAutoConsoleCommandWithWorldAndArgs GCityCups(TEXT("lyud.City.Cups"),
+	TEXT("The club tournaments' boards to the log; 'sign': the hero signs up for every next tournament"),
+	FConsoleCommandWithWorldAndArgsDelegate::CreateLambda([](const TArray<FString>& Args, UWorld* World)
+	{
+		if (ULyudCityThings* Things = ULyudCityThings::Get(World))
+		{
+			if (Args.Num() > 0 && Args[0] == TEXT("sign"))
+			{
+				Things->CupSignAll();
+			}
+			UE_LOG(LogLyudCity, Display, TEXT("%s"), *Things->CupReport());
+		}
+	}));
+
+static LyudDev::FAutoAction GCityDevCupSign(TEXT("interiors.cups_sign"), TEXT("interiors"), TEXT("dev.action.interiors.cups_sign"), [](UWorld* W)
+{
+	if (ULyudCityThings* Things = ULyudCityThings::Get(W))
+	{
+		Things->CupSignAll();
+		UE_LOG(LogLyudCity, Display, TEXT("%s"), *Things->CupReport());
+	}
+});
 
 static FAutoConsoleCommandWithWorldAndArgs GCityThingsList(TEXT("lyud.City.Things"),
 	TEXT("lyud.City.Things: how many things to do there are in the buildings (City/interiors.json) and the five nearest the hero"),

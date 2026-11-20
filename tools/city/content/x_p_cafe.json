@@ -4,7 +4,7 @@
   "tarelka_jukebox": {
    "like": "jukebox",
    "target": "jukebox",
-   "collect": "records/{line}",
+   "collect": "",
    "minutes": 3,
    "lines": [
     "city.cafe.juke.a1",
@@ -576,7 +576,8 @@
   },
   "P-CAFE/ice_cream": {
    "topics": [
-    "@x_cafe_ice"
+    "@x_cafe_ice",
+    "@job_t_cafe"
    ]
   },
   "P-CAFE/jukebox": {
@@ -589,7 +590,7 @@
    "act": "tarelka_espresso"
   },
   "P-CAFE/cake_vitrine": {
-   "act": "rd_tarelka_menu"
+   "act": "job_cafe_scoops"
   },
   "P-CAFE/window_ledge": {
    "act": "tarelka_ledge"

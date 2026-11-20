@@ -38,6 +38,7 @@ AUDIO_CONTENT = os.path.join(CONTENT, "Audio")
 AUDIO_FILES = os.path.join(ROOT, "audio", "sfx")
 OUT_THINGS = os.path.join(CONTENT, "City", "interiors.json")
 OUT_TELEPORTS = os.path.join(CONTENT, "Dev", "teleports", "interiors.json")
+OUT_CUPS = os.path.join(CONTENT, "City", "tournaments.json")
 OUT_STRINGS = os.path.join(CONTENT, "Localization", "city")
 QUESTS = os.path.join(CONTENT, "UI", "quests.json")
 MAP = os.path.join(CONTENT, "UI", "map.json")
@@ -64,7 +65,9 @@ PUBLIC_KINDS_SKIP = ("residential", "square", "park", "pool")
 QUEST_EVENTS = ("do", "win", "visit", "get", "use", "have", "wear", "reach", "talk", "bird", "walk", "leave_computer", "ask", "observe")
 ACT_FIELDS = ("prompt", "minutes", "price", "lines", "pose", "sound", "event", "target", "give", "daily", "needs_staff",
               "needs_item", "fade", "shop", "screen", "until", "title", "any_hour", "rotate", "collect", "closed", "game", "read",
-              "sleep", "topics", "to", "floors", "oneway")
+              "sleep", "topics", "to", "floors", "oneway", "stay", "needs_stay", "no_stay", "open")
+# screens of other systems an act may open instead of its page ("open"; ULyudCityThings::OnOpen): the library's classics
+OPEN_SCREENS = ("books",)
 # a line's conditions (docs/city_interiors.md "Lines by the day and the hour"): hours [from, to), weekdays, a calendar date or
 # range ("MM-DD" or ["MM-DD", "MM-DD"], wrapping the year), days since the game began (after N), every [n, r] game days
 # festival ("any", "none", an id of PeopleData/festivals.json or a list of ids), weather (a word of WEATHER or a list: any of
@@ -72,11 +75,11 @@ ACT_FIELDS = ("prompt", "minutes", "price", "lines", "pose", "sound", "event", "
 # them), have ("set/piece"), count (["set", n]), read (a text read to its end), did (an act's target the hero has done), heard
 # (a staff talk topic asked about)
 LINE_CONDS = ("h", "d", "date", "after", "before", "once", "every", "festival", "weather", "have", "count", "collect", "read", "did",
-              "heard")
+              "heard", "pay", "stay")
 WEATHER = ("rain", "snow", "fog", "cold", "warm", "clear", "wet", "dry")
 # the content sections a content file may have
 SECTIONS = ("acts", "shops", "rules", "defaults", "defaults_by_plot_kind", "quests", "collections", "closed_by", "regulars",
-            "texts", "topics", "topic_sets", "tones", "tone_by", "sound_alias")
+            "texts", "topics", "topic_sets", "tones", "tone_by", "sound_alias", "stays", "tournaments")
 # the staff talk (docs/city_interiors.md "Staff talk"): a topic's fields besides its line conditions (when it is offered)
 TOPIC_FIELDS = ("id", "k", "lines", "once", "gives")
 MAX_TOPICS = 8
@@ -84,7 +87,9 @@ MAX_TOPICS = 8
 TONE_FIELDS = ("loop", "volume", "shots", "every", "shot_volume", "closed", "about")
 # the reading view (docs/city_interiors.md "The reading page"): what a text is, how long a page takes, the kinds a reading act is for
 TEXT_KINDS = ("book", "notice", "ledger", "newspaper")
-TEXT_FIELDS = ("title", "kind", "minutes", "pages", "collect")
+TEXT_FIELDS = ("title", "kind", "minutes", "pages", "collect", "gen")
+# texts the game sets itself each day (docs/town_paper.md): their pages are only shown while the game cannot set them
+TEXT_GENS = ("town_paper", "paper_archive")
 READ_THING_KINDS = ("shelf", "board", "seat", "take")
 ROTATE = ("use", "daily")
 # a seat's or bed's surface over its own floor (m): a bigger "height" was measured from the building's base
@@ -109,6 +114,7 @@ RULES_USED = set()  # the id rules (<plot|type>/<id glob>) that matched a thing:
 FESTIVAL_IDS = set()  # PeopleData/festivals.json
 STAMPS_USED = []  # (where, "set/piece") every collect of the content (acts, lines, things): checked against the collections
 DID_USED = []  # (where, target) every "did" line condition: checked against the acts' targets once they are built
+STAY_USED = []  # (where, stay id) every "stay" line condition, act stay and needs_stay: checked against the stays
 HEARD_USED = []  # (where, topic id) every "heard" line condition: checked against the topics
 ACT_LIFTS = {}  # act id -> {"to"/"floors"/"oneway"} of an act's storey link (docs "Lifts and storey links"), per thing in build_things
 MAX_FLOORS = 9
@@ -281,7 +287,7 @@ def load_strings():
 
 
 CONTENT_EXTRA = {"collections": {}, "closed_by": {}, "quests": [], "regulars": {}, "texts": {}, "topics": {}, "topic_sets": {},
-                 "tones": {}, "tone_by": {}, "sound_alias": {}}
+                 "tones": {}, "tone_by": {}, "sound_alias": {}, "stays": {}, "tournaments": {}}
 
 
 def content_files():
@@ -322,7 +328,8 @@ def load_content():
                               ("regulars", CONTENT_EXTRA["regulars"]), ("texts", CONTENT_EXTRA["texts"]),
                               ("topics", CONTENT_EXTRA["topics"]), ("topic_sets", CONTENT_EXTRA["topic_sets"]),
                               ("tones", CONTENT_EXTRA["tones"]), ("tone_by", CONTENT_EXTRA["tone_by"]),
-                              ("sound_alias", CONTENT_EXTRA["sound_alias"])):
+                              ("sound_alias", CONTENT_EXTRA["sound_alias"]), ("stays", CONTENT_EXTRA["stays"]),
+                              ("tournaments", CONTENT_EXTRA["tournaments"])):
             for k, v in (data.get(section) or {}).items():
                 if k.startswith("_doc"):
                     continue
@@ -486,8 +493,8 @@ def check_line_conds(where, cond):
                     err("%s: festival %s is not in PeopleData/festivals.json" % (where, x))
         elif k == "weather":
             ws = v if isinstance(v, list) else [v]
-            if not ws or not all(w in WEATHER for w in ws):
-                err("%s: weather must be one of %s or a list of them" % (where, ", ".join(WEATHER)))
+            if not ws or not all(isinstance(w, str) and w.lstrip("!") in WEATHER for w in ws):
+                err("%s: weather must be one of %s (\"!word\": not so now) or a list of them" % (where, ", ".join(WEATHER)))
         elif k in ("have", "collect") and not (isinstance(v, str) and re.match(r"^[\w.-]+/[\w.*{}-]+$", v)):
             err("%s: %s must be \"set/piece\"" % (where, k))
         elif k == "count" and not (isinstance(v, list) and len(v) == 2 and isinstance(v[0], str) and isinstance(v[1], int) and v[1] > 0):
@@ -508,6 +515,13 @@ def check_line_conds(where, cond):
                 HEARD_USED.append((where, v))
             else:
                 err("%s: heard must be a topic id" % where)
+        elif k == "pay" and not (isinstance(v, int) and not isinstance(v, bool) and 1 <= v <= 500):
+            err("%s: pay must be whole roubles 1..500" % where)
+        elif k == "stay":
+            if isinstance(v, str) and v.lstrip("!"):
+                STAY_USED.append((where, v.lstrip("!")))
+            else:
+                err("%s: stay must be a stay id (or \"!id\": not on it)" % where)
 
 
 def expand_lines(spec, strings, where="lines"):
@@ -543,7 +557,7 @@ def expand_lines(spec, strings, where="lines"):
 # mini-games (docs/city_interiors.md "Mini-games"): an act's "game" plays instead of showing its lines
 GAME_TYPES = ("aim", "rally", "duel")
 GAME_FIELDS = ("type", "title", "keys", "rounds", "need", "speed", "zone", "shrink", "pace", "vs", "moves", "win", "lose", "draw",
-               "collect", "prize", "daily", "sounds")
+               "collect", "prize", "daily", "sounds", "pay")
 GAME_DEFAULTS = {"aim": {"rounds": 5, "need": 5, "speed": 0.6, "zone": 0.2},
                  "rally": {"rounds": 1, "need": 3, "speed": 0.9, "zone": 0.45},
                  "duel": {"rounds": 3, "need": 1, "speed": 0.6, "zone": 0.2}}
@@ -633,6 +647,12 @@ def build_game(where, g, strings, items):
             err("%s: game prize %s is not an item" % (where, p_[0]))
         prize.append([p_[0], p_[1]])
     out["prize"] = prize
+    pay = g.get("pay", 0)
+    if not isinstance(pay, int) or isinstance(pay, bool) or not 0 <= pay <= 100:
+        err("%s: game pay (roubles a point) must be 0..100" % where)
+        pay = 0
+    if pay:
+        out["pay"] = pay
     snd = dict(GAME_SOUNDS[t])
     for k, v in (g.get("sounds") or {}).items():
         if k not in snd or not isinstance(v, str):
@@ -724,6 +744,10 @@ def build_acts(acts_src, shops, strings, items):
                "until": int(a.get("until", -1))}
         if a.get("title"):
             act["title"] = a["title"]
+        if a.get("open"):
+            if a["open"] not in OPEN_SCREENS:
+                err("act %s: open must be one of %s" % (aid, ", ".join(OPEN_SCREENS)))
+            act["open"] = a["open"]
         act["rotate"] = a.get("rotate", "use")
         if act["rotate"] not in ROTATE:
             err("act %s: rotate must be one of %s" % (aid, ", ".join(ROTATE)))
@@ -755,6 +779,24 @@ def build_acts(acts_src, shops, strings, items):
                 act["read"] = {"texts": list(texts), "rotate": r.get("rotate", "use")}
         if a.get("topics"):
             act["topics"] = list(a["topics"]) if isinstance(a["topics"], list) else [a["topics"]]  # resolved by build_topics
+        if a.get("stay"):
+            st = a["stay"]
+            if not (isinstance(st, dict) and isinstance(st.get("id"), str) and st["id"] and isinstance(st.get("days"), int)
+                    and not isinstance(st.get("days"), bool) and 1 <= st["days"] <= 60 and set(st) <= {"id", "days"}):
+                err("act %s: stay must be {\"id\": stay id, \"days\": 1..60}" % aid)
+            else:
+                act["stay"] = {"id": st["id"], "days": st["days"]}
+                STAY_USED.append(("act " + aid, st["id"]))
+        if a.get("needs_stay"):
+            if not isinstance(a["needs_stay"], str):
+                err("act %s: needs_stay must be a stay id" % aid)
+            else:
+                act["needs_stay"] = a["needs_stay"]
+                STAY_USED.append(("act " + aid + " needs_stay", a["needs_stay"]))
+                if a.get("no_stay"):
+                    act["no_stay"] = a["no_stay"]  # resolved by build_stays (an act id or a line key, like closed)
+        elif a.get("no_stay"):
+            err("act %s: no_stay without needs_stay" % aid)
         lift = {k: a[k] for k in ("to", "floors", "oneway") if k in a}
         if lift:
             ACT_LIFTS[aid] = lift
@@ -843,6 +885,11 @@ def build_texts(src, strings):
         if not any(all(isinstance(e, str) for e in p) for p in pages):
             err("%s: no page always shows (every page has conditions): the view could open on nothing" % where)
         rec = {"title": title, "kind": kind, "minutes": minutes, "pages": pages}
+        if t.get("gen"):
+            if t["gen"] not in TEXT_GENS and not t["gen"].startswith("cup:"):
+                err("%s: gen must be one of %s or cup:<tournament>" % (where, ", ".join(TEXT_GENS)))
+            else:
+                rec["gen"] = t["gen"]
         if t.get("collect"):
             check_line_conds(where, {"collect": t["collect"]})
             STAMPS_USED.append((where, t["collect"]))
@@ -1194,6 +1241,32 @@ def normalise_height(tid, kind, props):
         err("%s: height %.2f m is outside %.2f..%.1f (the seat's surface over its own floor)" % (tid, h, SEAT_HEIGHT[0], SEAT_HEIGHT[1]))
 
 
+def line_pays(lines):
+    return [l for l in lines if isinstance(l, dict) and l.get("pay")]
+
+
+def check_pay(acts, texts, topics, things):
+    """A small job's pay (docs/city_interiors.md "Small jobs"): only an act's own lines (with a daily limit, so a shift is paid
+    once a day or so many times) and a game's result lines or its pay a point (with a daily game limit); never a closed thing's
+    words, a topic or a text."""
+    closed = {t["closed"] for t in things if t.get("closed")}
+    for aid, a in acts.items():
+        paid = line_pays(a["lines"])
+        if paid and aid in closed:
+            err("act %s: a closed thing's words never pay" % aid)
+        elif paid and not a.get("daily"):
+            err("act %s: a line pays (%s) but the act has no daily limit: the hero could earn without end" % (aid, line_key(paid[0])))
+        g = a.get("game")
+        if g and (g.get("pay") or any(line_pays(g[r]) for r in ("win", "lose", "draw"))) and not g.get("daily"):
+            err("act %s: the game pays but has no daily limit" % aid)
+    for tid, t in texts.items():
+        if any(line_pays(page) for page in t.get("pages", [])):
+            err("text %s: a page never pays (only an act's lines do)" % tid)
+    for tid, tp in topics.items():
+        if line_pays(tp.get("lines", [])):
+            err("topic %s: an answer never pays (only an act's lines do)" % tid)
+
+
 def closed_act(value, acts, strings, where):
     """A thing's "closed": an act id, or a line key (or "<prefix>.*"): an act of its own that only shows the words."""
     if value in acts:
@@ -1209,6 +1282,68 @@ def closed_act(value, acts, strings, where):
                      "event": "look", "target": "closed", "give": [], "daily": 0, "needs_staff": "", "needs_item": "", "fade": False,
                      "shop": "", "screen": "", "until": -1, "rotate": "use", "any_hour": True}
     return aid
+
+
+def act_targets(acts, aid):
+    """What a thing doing act aid can report as "do": its target, and its no_stay act's (a voucher sold to those without one)."""
+    a = acts[aid]
+    out = [a["target"]]
+    if a.get("no_stay") in acts and acts[a["no_stay"]]["target"] != "closed":
+        out.append(acts[a["no_stay"]]["target"])
+    return out
+
+
+def build_stays(src, acts, strings, plot_ids):
+    """The stays (docs/city_interiors.md "Stays"): {"<id>": {"plot", "curfew": [from, to), "act": act id or line key, "allow":
+    [act ids]}}; resolves every act's no_stay (an act id or a line key, made like a closed act). Checks every use of a stay."""
+    out = collections.OrderedDict()
+    for sid in sorted(src):
+        if sid.startswith("_"):
+            continue
+        d = src[sid]
+        where = "stay " + sid
+        if not isinstance(d, dict):
+            err("%s: must be an object" % where)
+            continue
+        for k in d:
+            if k not in ("plot", "curfew", "act", "allow", "title"):
+                err("%s: unknown field %s" % (where, k))
+        st = collections.OrderedDict()
+        if d.get("plot") not in plot_ids:
+            err("%s: plot %s is no plot of the plan" % (where, d.get("plot")))
+        st["plot"] = d.get("plot", "")
+        if d.get("title"):
+            if d["title"] not in strings and d["title"] not in MAIN:
+                err("%s: title %s is missing" % (where, d["title"]))
+            st["title"] = d["title"]
+        if "curfew" in d:
+            c = d["curfew"]
+            if not (isinstance(c, list) and len(c) == 2 and all(isinstance(x, (int, float)) and 0 <= x <= 24 for x in c)):
+                err("%s: curfew must be [from, to] hours" % where)
+            else:
+                aid = closed_act(d.get("act", ""), acts, strings, where) if d.get("act") else None
+                if not aid:
+                    err("%s: a curfew needs an act (an act id or a line key: the duty nurse's words)" % where)
+                else:
+                    st["curfew"] = list(c)
+                    st["act"] = aid
+        allow = d.get("allow", [])
+        if not isinstance(allow, list) or not all(isinstance(x, str) and x in acts for x in allow):
+            err("%s: allow must be a list of act ids (%s)" % (where, ", ".join(x for x in allow if isinstance(x, str) and x not in acts)))
+        else:
+            st["allow"] = sorted(set(allow))
+        out[sid] = st
+    for aid, a in list(acts.items()):
+        if a.get("no_stay"):
+            r = closed_act(a["no_stay"], acts, strings, "act " + aid + " no_stay")
+            if r:
+                a["no_stay"] = r
+            else:
+                del a["no_stay"]
+    for where, v in STAY_USED:
+        if v not in out:
+            err("%s: stay %s is not in any \"stays\" section" % (where, v))
+    return out
 
 
 def lift_spec(props, act):
@@ -1463,7 +1598,78 @@ def given_topic(given, tp):
             given[c.partition("/")[0]].add(c.partition("/")[2])
 
 
-def build_collections(src, things, acts, strings, regs=None, texts=None):
+CUP_FIELDS = ("title", "venue", "game", "plot", "days", "start", "step", "collect")
+DOW = ("mon", "tue", "wed", "thu", "fri", "sat", "sun")
+
+
+def build_tournaments(src, strings, regs, things, acts, texts, plot_ids):
+    """The clubs' weekly tournaments (docs/city_interiors.md "Tournaments", Private/City/CityCupsModel.h): {"<id>": {"title":
+    key, "venue": key, "game": vs, "plot": P-, "days": "sat", "start": hour, "step": hours a round, "collect": "cups/<id>"}}.
+    Eight are drawn from every regular who plays the game, so at least eight must; the plot must have a table with its game,
+    open through the three rounds on that day; a text with "gen": "cup:<id>" must be read on some thing of the town."""
+    out = collections.OrderedDict()
+    read_texts = {tx for t in things for tx in (acts[t["act"]].get("read") or {}).get("texts", [])}
+    gens = {texts[tx].get("gen") for tx in read_texts if tx in texts}
+    for cid in sorted(src):
+        if cid.startswith("_"):
+            continue
+        c = src[cid]
+        where = "tournament " + cid
+        for k in c:
+            if k not in CUP_FIELDS:
+                err("%s: unknown field %s" % (where, k))
+        for k in ("title", "venue"):
+            if not has_string(c.get(k, ""), strings):
+                err("%s: %s string %s is missing" % (where, k, c.get(k)))
+        game, plot = c.get("game", ""), c.get("plot", "")
+        if plot not in plot_ids:
+            err("%s: plot %s is not in the plan" % (where, plot))
+        players = [rid for rid, r in regs.items() if game in r["plays"]]
+        if len(players) < 8:
+            err("%s: %d regulars play %s, a bracket needs 8" % (where, len(players), game))
+        if c.get("days") not in DOW:
+            err("%s: days is one weekday (%s)" % (where, ", ".join(DOW)))
+        wd = DOW.index(c["days"]) if c.get("days") in DOW else 5
+        start, step = c.get("start", 13), c.get("step", 1.5)
+        if not (isinstance(start, (int, float)) and isinstance(step, (int, float)) and 0 <= start and 0.25 <= step <= 4 and start + 3 * step <= 24):
+            err("%s: start 0..24 and step 0.25..4 hours, the final over by midnight" % where)
+        tables = [t for t in things if t["plot"] == plot and (acts[t["act"]].get("game") or {}).get("vs") == game]
+        if not tables:
+            err("%s: no table of %s on %s" % (where, game, plot))
+        for t in tables:
+            h = t.get("hours") or [0, 24]
+            days = t.get("days", "mon-sun")
+            if not (h[0] <= start and start + 3 * step <= (h[1] if h[1] > h[0] else h[1] + 24)):
+                err("%s: %s is shut during the rounds (%s, rounds %s..%s)" % (where, t["id"], h, start, start + 3 * step))
+            if not day_in(days, wd):
+                err("%s: %s is shut on %s (%s)" % (where, t["id"], c.get("days"), days))
+        if "cup:" + cid not in gens:
+            err("%s: no thing of the town reads a text with \"gen\": \"cup:%s\" (the bracket board)" % (where, cid))
+        if c.get("collect"):
+            check_line_conds(where, {"collect": c["collect"]})
+            STAMPS_USED.append((where, c["collect"]))
+        out[cid] = {"title": c.get("title", ""), "venue": c.get("venue", ""), "game": game, "plot": plot, "weekday": wd,
+                    "start": float(start), "step": float(step), "collect": c.get("collect", "")}
+    for tx, t in texts.items():
+        g = t.get("gen", "")
+        if g.startswith("cup:") and g[4:] not in out:
+            err("text %s: gen %s: no such tournament" % (tx, g))
+    return out
+
+
+def day_in(days, wd):
+    """Is weekday wd (mon 0) in a things's "days" ("mon-sun", "sat,sun", "fri")?"""
+    for part in str(days).split(","):
+        a, _, b = part.strip().partition("-")
+        if a not in DOW:
+            return True
+        ia, ib = DOW.index(a), DOW.index(b) if b in DOW else DOW.index(a)
+        if (ia <= wd <= ib) if ia <= ib else (wd >= ia or wd <= ib):
+            return True
+    return False
+
+
+def build_collections(src, things, acts, strings, regs=None, texts=None, cups=None):
     """The collections (docs/city_interiors.md "Collections"): {"<set>": {"title": key, "pieces": [...]}}. Pieces omitted: every
     piece something in town gives. Every stamp named anywhere must be of a declared set (and a declared piece), and every
     declared piece must be given by some thing in town (or the set could never be complete)."""
@@ -1507,6 +1713,9 @@ def build_collections(src, things, acts, strings, regs=None, texts=None):
                 given[c.partition("/")[0]].update(line_key(l) for l in a["lines"])
             elif c:
                 given[c.partition("/")[0]].add(c.partition("/")[2])
+    for c in (cups or {}).values():
+        if c.get("collect"):
+            given[c["collect"].partition("/")[0]].add(c["collect"].partition("/")[2])
     out = collections.OrderedDict()
     for sid in sorted(src):
         if sid.startswith("_"):
@@ -1709,7 +1918,7 @@ def quest_dev(quests, things, acts, shops, plan, strings, gen_strings):
         ev, tgt = o["event"].split("|")[0], o.get("target", "")
         match = (lambda x: x.startswith(tgt[:-1])) if tgt.endswith("*") else (lambda x: x == tgt)
         if ev == "do":
-            by = [t for t in things if match(acts[t["act"]]["target"]) and staffed(t)]
+            by = [t for t in things if any(match(x) for x in act_targets(acts, t["act"])) and staffed(t)]
         elif ev == "visit":
             by = list(things_of_plot.get(tgt, []))
         elif ev in ("have", "get"):
@@ -1885,6 +2094,8 @@ def main():
         if r.get("kind") and r["kind"] not in KINDS:
             err("rule %s: unknown kind %s" % (k, r["kind"]))
     things, summary, skipped = build_things(plan, rules, defaults, by_plot_kind, acts, strings, CONTENT_EXTRA["closed_by"])
+    stays = build_stays(CONTENT_EXTRA["stays"], acts, strings,
+                        {p["id"] for p in plan["plots"]} | {u["id"] for u in plan.get("promenade_units", [])})
     n_lifts = build_lifts(things, strings)
     all_plots = {p["id"] for p in plan["plots"]} | {u["id"] for u in plan.get("promenade_units", [])}
     regs = build_regulars(CONTENT_EXTRA["regulars"], strings, all_plots)
@@ -1892,7 +2103,8 @@ def main():
         g = a.get("game")
         if g and g["vs"] and not opponents_at(regs, g["vs"], ""):
             err("act %s: game vs %s: no regular plays it" % (aid, g["vs"]))
-    colls = build_collections(CONTENT_EXTRA["collections"], things, acts, strings, regs, texts)
+    cups = build_tournaments(CONTENT_EXTRA["tournaments"], strings, regs, things, acts, texts, all_plots)
+    colls = build_collections(CONTENT_EXTRA["collections"], things, acts, strings, regs, texts, cups)
     tones, plot_tones, missing_tone_sounds = build_tones(places(plan), reg)
     targets = {a["target"] for a in acts.values()} | set(acts)
     for where, v in DID_USED:
@@ -1925,7 +2137,7 @@ def main():
             if o["event"] != "do":
                 continue
             match = (lambda x: x.startswith(tgt[:-1])) if tgt.endswith("*") else (lambda x: x == tgt)
-            by = [t for t in things if match(acts[t["act"]]["target"])]
+            by = [t for t in things if any(match(x) for x in act_targets(acts, t["act"]))]
             ok = [t for t in by if acts[t["act"]]["needs_staff"] in ("", "*") or acts[t["act"]]["needs_staff"] in staff_of.get(t["plot"], ())]
             if not by:
                 err("quest %s: no thing in town does %s" % (q["id"], tgt))
@@ -1961,6 +2173,7 @@ def main():
     print("staff talk: %d topics (%d offered somewhere), %d answer lines, on %d things; tones %d on %d plots" % (
         len(TOPICS), len(offered), len(topic_lines), n_talk, len(tones), len(plot_tones)))
     print("lifts: %d doors with storey links" % n_lifts)
+    check_pay(acts, texts, TOPICS, things)
     for tp in sorted(set(TOPICS) - offered):
         warnings.append("topic %s is offered by no thing in town" % tp)
     used_unknown = {sid: w for sid, w in unknown_sounds.items() if any(x.split("#")[0] in used for x in w)}
@@ -1995,7 +2208,12 @@ def main():
     data["topics"] = collections.OrderedDict((k, TOPICS[k]) for k in sorted(TOPICS) if k in offered)
     data["tones"] = tones
     data["plot_tones"] = plot_tones
+    if stays:
+        data["stays"] = stays
     write(OUT_THINGS, dump_things(data))
+    write(OUT_CUPS, json.dumps(collections.OrderedDict([
+        ("about", "Written by tools/city/interiors.py from tools/city/content (\"tournaments\"): the clubs' weekly tournaments (Private/City/CityCupsModel.h)."),
+        ("tournaments", cups)]), ensure_ascii=False, indent=1) + "\n")
     tp = collections.OrderedDict([("about", "Written by tools/city/interiors.py: x/y map metres (docs/world_map.md), z world cm (the floor, feet), yaw Unreal degrees."),
                                   ("teleports", teleports)])
     write(OUT_TELEPORTS, dump_things(tp))

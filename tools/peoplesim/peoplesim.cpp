@@ -1009,6 +1009,27 @@ static int Town()
 	std::map<std::string, float> Hungry;
 	int Lit21 = -1, Lit03 = -1, Lit12 = -1, Occupied = 0, Asleep03 = 0, Awake03 = 0, AwakeNightType03 = 0;
 	int Waiters12 = -1, Sellers10 = -1, Pupils10 = -1, PupilsOff = -1, AtSquare = -1, Overbooked = 0;
+	// the sanatorium's four guests (tools/town/sanatorium_guests.py): at their own chairs at lunch, not there before it
+	int GuestsAtLunch = -1, GuestsAt11 = -1, Guests = 0;
+	const int Dining = W.FindPlace("P-SANATORIUM-DINING");
+	auto GuestsSeated = [&W, Dining]()
+	{
+		int N = 0;
+		for (const FPerson& P : W.People)
+		{
+			if (Dining < 0 || P.Place != Dining || P.Slot < 0)
+			{
+				continue;
+			}
+			const FSlot& Sl = W.Slots[(size_t)P.Slot];
+			N += P.State == EState::Doing && P.Pose == EPose::Eat && Sl.Tag == "guest_" + P.Key.substr(2) && !Sl.Thing.empty() ? 1 : 0;
+		}
+		return N;
+	};
+	for (const FPerson& P : W.People)
+	{
+		Guests += P.Key == "t_gromov_pyotr" || P.Key == "t_mironova_sonya" || P.Key == "t_tamm_boris" || P.Key == "t_sazonov_nikolai" ? 1 : 0;
+	}
 	double Longest = 0.0;
 	std::string LongestWho;
 	std::map<int, double> Since;
@@ -1100,6 +1121,8 @@ static int Town()
 		if (Day == 2 && Sec == 21 * 3600) Lit21 = LitNow();
 		if (Day == 2 && Sec == 12 * 3600) Lit12 = LitNow();
 		if (Day == 2 && Sec == 12 * 3600) { W.StaffOnShift("restaurant", "waiter", Staff); Waiters12 = (int)Staff.size(); }
+		if (Day == 2 && Sec == 11 * 3600) GuestsAt11 = GuestsSeated();
+		if (Day == 2 && Sec == 13 * 3600 + 55 * 60) GuestsAtLunch = GuestsSeated();
 		if (Day == 2 && Sec == 10 * 3600) { W.StaffOnShift("P-MARKET", "seller", Staff); Sellers10 = (int)Staff.size(); W.StaffOnShift("P-SCHOOL", "pupil", Staff); Pupils10 = (int)Staff.size(); }
 		if (Day == 3 && Sec == 10 * 3600) { W.StaffOnShift("P-SCHOOL", "pupil", Staff); PupilsOff = (int)Staff.size(); }
 		if (Day == 2 && Sec == 20 * 3600)
@@ -1140,6 +1163,8 @@ static int Town()
 	CHECK(Minutes["work_town"] > 3000 && Minutes["work_office"] > 1000, "the town's shops, cafés and offices are staffed (%.0f / %.0f person-minutes)", Minutes["work_town"], Minutes["work_office"]);
 	CHECK(Minutes["eat_out"] + Minutes["coffee"] > 200, "people eat out and have coffee (%.0f + %.0f)", Minutes["eat_out"], Minutes["coffee"]);
 	CHECK(Waiters12 > 0, "Wednesday 12:00: waiters on shift at the restaurant (%d)", Waiters12);
+	CHECK(Dining >= 0 && Guests == 4, "the sanatorium's dining room and its four guests are in the town (%d)", Guests);
+	CHECK(GuestsAtLunch == Guests && GuestsAt11 == 0, "Wednesday 13:55 the guests eat at their own chairs (%d of %d), at 11:00 none (%d)", GuestsAtLunch, Guests, GuestsAt11);
 	CHECK(Sellers10 > 0, "Wednesday 10:00: sellers at the market (%d)", Sellers10);
 	CHECK(Pupils10 > 10, "Wednesday 10:00: pupils at school (%d)", Pupils10);
 	CHECK(PupilsOff == 0, "Thursday (a day off) 10:00: nobody at school (%d)", PupilsOff);
