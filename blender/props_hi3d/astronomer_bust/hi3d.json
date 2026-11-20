@@ -37,6 +37,15 @@
   ],
   "reference": "blender/props_hi3d/sheets.json",
   "submitted": "2026-11-20T20:45:22+00:00",
-  "outputs": []
+  "outputs": [
+   {
+    "url": "https://hitem3dstatic.zaohaowu.net/jjewelry/web/model3ds/img2model3d/20261120/44c4625c41034a6e90851777b9b7566f/target/model/original/GLB0.glb?auth_key=65f0765074101efd3c859952720c7451&t=1795211821",
+    "file": "blender/props_hi3d/raw/astronomer_bust/model.glb",
+    "bytes": 49964584,
+    "sha256": "e394d84a0879aea8c1036e12ff217164bfb53f8f31b75ca6d04026d6f797f8c7"
+   }
+  ],
+  "model_page_url": "https://www.hi3d.ai/3d-model/6b0d56423d4d43a49ec1ba98c5ef8b2a",
+  "fetched": "2026-11-20T20:54:58+00:00"
  }
 ]

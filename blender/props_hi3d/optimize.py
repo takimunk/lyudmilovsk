@@ -316,6 +316,18 @@ def run(pid, s, front_yaw):
     low.name = pid
     bpy.context.scene.collection.objects.link(low)
     n = decimate(low, s["tris"])
+    if n > 1.2 * s["tris"]:
+        # hi3d meshes carry thousands of edges shared by 3+ faces (inner fins); collapse stalls on them (sundial:
+        # 1.07M -> 49.9k for a 6k budget, more passes don't help). A voxel remesh of the low copy gives a clean
+        # manifold shell that collapses to the budget; the bake still comes from the untouched high.
+        low.data = high.data.copy()
+        m = low.modifiers.new("remesh", "REMESH")
+        m.mode = "VOXEL"
+        vs = m.voxel_size = 0.003 * size
+        select([low])
+        bpy.ops.object.modifier_apply(modifier=m.name)
+        log("decimate stalled at %d tris: voxel remesh %.1f mm -> %d" % (n, 1000 * vs, tris(low)))
+        n = decimate(low, s["tris"])
     select([low])
     bpy.ops.object.shade_smooth()
     me = low.data
