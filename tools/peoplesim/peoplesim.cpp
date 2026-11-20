@@ -1017,6 +1017,10 @@ static int Town()
 	std::map<std::string, int> Meals;
 	std::map<std::string, float> Hungry;
 	int Lit21 = -1, Lit03 = -1, Lit12 = -1, Occupied = 0, Asleep03 = 0, Awake03 = 0, AwakeNightType03 = 0;
+	// counters' queues (docs/counters.md): the longest line seen, minutes somebody stood behind a gap, market shoppers served,
+	// and the hero holding a front spot (nobody else takes it meanwhile)
+	int LongestLine = 0, CrowdSent = 0, GapMinutes = 0, MarketServed = 0, HeroLine = -1, HeroSpotTaken = 0, BehindHero = 0;
+	std::vector<int> Line;
 	int Waiters12 = -1, Sellers10 = -1, Pupils10 = -1, PupilsOff = -1, AtSquare = -1, Overbooked = 0;
 	// the sanatorium's four guests (tools/town/sanatorium_guests.py): at their own chairs at lunch, not there before it
 	int GuestsAtLunch = -1, GuestsAt11 = -1, Guests = 0;
@@ -1101,6 +1105,63 @@ static int Town()
 		const bool bTick = Sec % 60 == 0;
 		if (bTick)
 		{
+			// the hero steps up to the front of an empty line on Wednesday at 11:00 and stands there twenty minutes
+			if (Day == 2 && Sec == 11 * 3600)
+			{
+				for (int Q = 0; Q < (int)W.Queues.size() && HeroLine < 0; Q++)
+				{
+					W.QueueState(Q, Line);
+					const FSlot& Front = W.Slots[(size_t)W.Queues[(size_t)Q][0]];
+					if (!Line.empty() && Line[0] == -1 && Front.Users.empty() && W.Places[(size_t)Front.Place].Id.rfind("P-KIOSK", 0) == 0)
+					{
+						HeroLine = Q;
+						W.SetHeroAt(Front.Pos, true);
+						// lyud.Counter crowd: three townsfolk sent to the line behind him
+						CrowdSent = W.SendToQueue(Q, 3);
+					}
+				}
+			}
+			if (Day == 2 && Sec == 11 * 3600 + 20 * 60)
+			{
+				W.SetHeroAt(V3(), false);
+			}
+			for (int Q = 0; Q < (int)W.Queues.size(); Q++)
+			{
+				W.QueueState(Q, Line);
+				int In = 0;
+				for (size_t N = 0; N < Line.size(); N++)
+				{
+					In += Line[N] >= 0 ? 1 : 0;
+					const bool bGap = N > 0 && Line[N] >= 0 && Line[N - 1] == -1 && W.Slots[(size_t)W.Queues[(size_t)Q][N - 1]].Users.empty() &&
+						W.People[(size_t)Line[N]].State == EState::Doing && W.People[(size_t)Line[N]].Path.empty();
+					GapMinutes += bGap ? 1 : 0;
+					if (bGap && std::getenv("LYUD_QUEUE_DEBUG") && GapMinutes < 15)
+					{
+						const FPerson& G = W.People[(size_t)Line[N]];
+						std::printf("    gap %s q%d: %s state %d path %d partner %d act %s\n", W.QueueIds[(size_t)Q].c_str(), (int)N, G.Key.c_str(), (int)G.State, (int)G.Path.size(), G.Partner, G.Activity >= 0 ? W.Activities[G.Activity].Id.c_str() : "-");
+					}
+				}
+				LongestLine = std::max(LongestLine, In);
+				if (Q == HeroLine && Day == 2 && Sec > 11 * 3600 && Sec < 11 * 3600 + 20 * 60)
+				{
+					HeroSpotTaken += Line[0] >= 0 ? 1 : 0;
+					BehindHero = std::max(BehindHero, In);
+				}
+				const FSlot& Front = W.Slots[(size_t)W.Queues[(size_t)Q][0]];
+				if (Line[0] >= 0 && W.Places[(size_t)Front.Place].Id == "P-MARKET")
+				{
+					// a shopper at a stall's counter with its seller within 4 m (LyudBarks::AtCounter's distance)
+					for (const FPerson& S : W.People)
+					{
+						if (S.Place == Front.Place && S.State == EState::Doing && S.Activity >= 0 && W.Activities[S.Activity].bStaff &&
+							(S.Pos - W.People[(size_t)Line[0]].Pos).Len2D() < 4.f)
+						{
+							MarketServed++;
+							break;
+						}
+					}
+				}
+			}
 			for (const FPerson& P : W.People)
 			{
 				if (!P.bTown)
@@ -1194,6 +1255,13 @@ static int Town()
 	CHECK(Dining >= 0 && Guests == 4, "the sanatorium's dining room and its four guests are in the town (%d)", Guests);
 	CHECK(GuestsAtLunch == Guests && GuestsAt11 == 0, "Wednesday 13:55 the guests eat at their own chairs (%d of %d), at 11:00 none (%d)", GuestsAtLunch, Guests, GuestsAt11);
 	CHECK(Sellers10 > 0, "Wednesday 10:00: sellers at the market (%d)", Sellers10);
+	CHECK(!W.Queues.empty() && LongestLine >= 2 && W.QueueMoves > 0, "queues form at the counters and move up (%d lines, longest %d, %d steps up)",
+		(int)W.Queues.size(), LongestLine, W.QueueMoves);
+	CHECK(GapMinutes < 30, "a line fills from the front: few person-minutes behind an empty spot (%d)", GapMinutes);
+	CHECK(MarketServed > 30, "market shoppers stand at a stall's counter with its seller (%d person-minutes)", MarketServed);
+	CHECK(HeroLine >= 0 && HeroSpotTaken == 0, "the hero at a kiosk's window: nobody takes his spot (%d minutes; %d in the line behind him)",
+		HeroSpotTaken, BehindHero);
+	CHECK(CrowdSent == 3 && BehindHero >= 2, "a crowd sent to his line stands behind him (%d sent, %d behind)", CrowdSent, BehindHero);
 	CHECK(Pupils10 > 10, "Wednesday 10:00: pupils at school (%d)", Pupils10);
 	CHECK(PupilsOff == 0, "Thursday (a day off) 10:00: nobody at school (%d)", PupilsOff);
 	CHECK(AtSquare > 40, "a holiday on the square at 20:00 draws the town (%d there)", AtSquare);
