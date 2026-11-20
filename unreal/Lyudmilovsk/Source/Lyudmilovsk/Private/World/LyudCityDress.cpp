@@ -1,5 +1,7 @@
 #include "World/LyudCityDress.h"
 
+#include "Dev/LyudDev.h"
+
 #include "../City/CityDressModel.h"
 #include "Components/StaticMeshComponent.h"
 #include "Engine/StaticMesh.h"
@@ -25,6 +27,17 @@ namespace
 				UE_LOG(LogTemp, Display, TEXT("%s"), *D->Report());
 			}
 		}));
+
+	/** Developer mode (F7, Actions): every set shown, or none, for checks and shots; pressed again: back to the day. */
+	void ToggleDressMode(int32 Mode)
+	{
+		IConsoleVariable* V = CVarCityDress.AsVariable();
+		V->Set(V->GetInt() == Mode ? 1 : Mode, ECVF_SetByConsole);
+	}
+	LyudDev::FAutoAction GDressAll(TEXT("interiors.dress_all"), TEXT("interiors"), TEXT("dev.action.interiors.dress_all"),
+		[](UWorld*) { ToggleDressMode(2); }, [](UWorld*) { return CVarCityDress.GetValueOnGameThread() == 2; });
+	LyudDev::FAutoAction GDressHide(TEXT("interiors.dress_hide"), TEXT("interiors"), TEXT("dev.action.interiors.dress_hide"),
+		[](UWorld*) { ToggleDressMode(0); }, [](UWorld*) { return CVarCityDress.GetValueOnGameThread() == 0; });
 
 	/** Every live subsystem (for the console's mode). Game thread only. */
 	TArray<TWeakObjectPtr<ULyudCityDress>>& Live()

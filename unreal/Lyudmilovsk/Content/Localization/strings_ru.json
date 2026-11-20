@@ -1269,6 +1269,8 @@
  "dev.tp.topi_path": "Топи: ночной путь",
  "dev.tp.ural_bank": "Урал: берег ночью",
  "dev.action.topi.night": "Топи: ночь и река вкл./выкл.",
+ "dev.action.interiors.dress_all": "Интерьеры: все мелочи комнат показать / как по дню",
+ "dev.action.interiors.dress_hide": "Интерьеры: мелочи комнат спрятать / как по дню",
  "dev.action.weather.fluff": "Тополиный пух вкл./выкл.",
  "dev.action.festival.sun_day": "Праздник: День большого солнца, полдень",
  "dev.action.festival.street_bunting": "Гирлянды с вымпелами по всему городу вкл./выкл.",

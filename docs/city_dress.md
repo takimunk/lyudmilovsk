@@ -70,7 +70,9 @@ to the building's shell, no collision, out of the distance fields), then only sh
 nothing per frame. Nothing is saved: the dressing follows from the date and the weather, so a loaded game shows the same.
 
 Console: `lyud.City.Dress 1` (auto, the default), `0` (all hidden), `2` (all shown: checks and shots);
-`lyud.City.Dress.Report` (each building's sets and which are shown).
+`lyud.City.Dress.Report` (each building's sets and which are shown). Developer mode (F7, Actions, group "Town interiors"):
+`interiors.dress_all` (every set shown; again: back to the day) and `interiors.dress_hide` (none shown). To see a set's
+real moment, move the calendar and the weather from the panel's Time and World tabs.
 
 ## Checks
 
