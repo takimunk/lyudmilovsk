@@ -19,7 +19,8 @@
   "wing_paint": "art"
  },
  "CommonSwift": {
-  "wing_paint": "photo"
+  "wing_paint": "photo",
+  "keep_old": "scan body broke into debris (clinging pose). Old model kept."
  },
  "SandMartin": {
   "wing_paint": "photo"
@@ -29,7 +30,8 @@
  },
  "MuteSwan": {
   "wing_paint": "photo",
-  "keep_old": "long S-neck: the chord centreline misses the head (needs a medial-axis centreline)"
+  "centreline": "medial",
+  "keep_old": "S-neck: chord centreline loses the head; medial centreline reaches it but the template's neck pose folds the head onto the chest. Old model kept; needs a straight-neck re-scan (sheet_11 ready, no hi3d points)."
  },
  "Robin": {
   "wing_paint": "photo"
@@ -51,5 +53,12 @@
  },
  "Starling": {
   "wing_paint": "photo"
+ },
+ "GreyHeron": {
+  "centreline": "medial",
+  "keep_old": "S-neck like MuteSwan. Old model kept."
+ },
+ "BlueTit": {
+  "keep_old": "folded wing/scapular cards stick out of the scan body. Old model kept for now."
  }
 }

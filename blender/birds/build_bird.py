@@ -2238,7 +2238,7 @@ def skull_face(f, sb, E):
     """Hero: a Plumage face of the head round the camera (eye midpoint E, species space) goes to the Skull slot."""
     idx, mat, _, _, zt = f
     if SCAN_S and mat == BARE and zt is not None and sb.names.get(f[3]) == "scanbody":   # the scan's head (not its bill)
-        return SKULL_ZT <= zt <= BEAK_Z0
+        return SKULL_ZT <= zt <= BEAK_Z0 + 0.35 * 0.027 * M["beak_len"]   # the face round the bill base too (eyes)
     return mat == PLUMAGE and zt is not None and zt >= SKULL_ZT
 
 

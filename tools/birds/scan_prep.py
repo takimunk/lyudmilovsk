@@ -186,6 +186,81 @@ def smooth1(x, k):
     return np.convolve(xp, w, mode="valid")
 
 
+def medial_centreline(segs, res=520):
+    """Tail tip -> bill tip along the ridge of the side section's distance map (cheapest path where the section is
+    thickest), resampled to 400 points; body end and beak base from the thickness along it."""
+    import heapq
+    pts = segs.reshape(-1, 2)
+    f0, f1 = pts[:, 0].min(), pts[:, 0].max()
+    u0, u1 = pts[:, 1].min(), pts[:, 1].max()
+    h = (f1 - f0) / res
+    nx, ny = res + 1, int((u1 - u0) / h) + 2
+    xs, ys = f0 + np.arange(nx) * h, u0 + np.arange(ny) * h
+    mask = np.zeros((ny, nx), bool)
+    a, b = segs[:, 0], segs[:, 1]
+    lo, hi = np.minimum(a[:, 0], b[:, 0]), np.maximum(a[:, 0], b[:, 0])
+    for ix, x in enumerate(xs):
+        m = (lo <= x) & (hi > x)
+        if m.sum() < 2:
+            continue
+        t = (x - a[m, 0]) / (b[m, 0] - a[m, 0])
+        y = np.sort(a[m, 1] + t * (b[m, 1] - a[m, 1]))
+        for k in range(0, len(y) - 1, 2):
+            mask[(ys >= y[k]) & (ys <= y[k + 1]), ix] = True
+    er = mask & np.roll(mask, 1, 0) & np.roll(mask, -1, 0) & np.roll(mask, 1, 1) & np.roll(mask, -1, 1)
+    bd = np.argwhere(mask & ~er).astype(float)
+    ins = np.argwhere(mask)
+    d = np.zeros(mask.shape)
+    for c in range(0, len(ins), 4000):
+        q = ins[c:c + 4000].astype(float)
+        dd = np.sqrt(((q[:, None, :] - bd[None, :, :]) ** 2).sum(2)).min(1)
+        d[ins[c:c + 4000, 0], ins[c:c + 4000, 1]] = dd
+    # start: the tail tip (the inside pixel furthest back), end: the bill tip (furthest forward)
+    cols = np.nonzero(mask.any(0))[0]
+    sx, ex = cols[0], cols[-1]
+    sy = int(np.argmax(np.where(mask[:, sx], d[:, sx], -1)))
+    ey = int(np.argmax(np.where(mask[:, ex], d[:, ex], -1)))
+    dist = np.full(mask.shape, np.inf)
+    prev = -np.ones(mask.shape + (2,), int)
+    dist[sy, sx] = 0
+    pq = [(0.0, sy, sx)]
+    nb = [(-1, -1), (-1, 0), (-1, 1), (0, -1), (0, 1), (1, -1), (1, 0), (1, 1)]
+    while pq:
+        c0, y, x = heapq.heappop(pq)
+        if c0 > dist[y, x]:
+            continue
+        if (y, x) == (ey, ex):
+            break
+        for dy, dx in nb:
+            yy, xx = y + dy, x + dx
+            if 0 <= yy < ny and 0 <= xx < nx and mask[yy, xx]:
+                c1 = c0 + math.hypot(dy, dx) / (d[yy, xx] + 0.5) ** 2
+                if c1 < dist[yy, xx]:
+                    dist[yy, xx] = c1
+                    prev[yy, xx] = (y, x)
+                    heapq.heappush(pq, (c1, yy, xx))
+    path = []
+    y, x = ey, ex
+    while (y, x) != (sy, sx) and y >= 0:
+        path.append((y, x))
+        y, x = prev[y, x]
+    path.append((sy, sx))
+    path = np.array(path[::-1])
+    pf, pu, th = xs[path[:, 1]], ys[path[:, 0]], 2 * d[path[:, 0], path[:, 1]] * h
+    pf, pu, th = smooth1(pf, 6), smooth1(pu, 6), smooth1(th, 4)
+    arc = np.r_[0, np.cumsum(np.hypot(np.diff(pf), np.diff(pu)))]
+    A = np.linspace(0, arc[-1], 400)
+    cf, cu, tk = np.interp(A, arc, pf), np.interp(A, arc, pu), np.interp(A, arc, th)
+    head = tk[A > arc[-1] * 0.88].max()
+    i = len(A) - 1
+    while i > 0 and tk[i] < 0.62 * head:
+        i -= 1
+    j = 0
+    while j < len(A) - 1 and tk[j] < 0.45 * tk.max():
+        j += 1
+    return cf, cu, A, float(A[j]), float(A[i])
+
+
 def landmarks(fs, top, bot):
     th = top - bot
     n = len(fs)
@@ -238,6 +313,20 @@ def main():
         pitch_total += pitch
     print("SCAN levelled by %.1f deg" % math.degrees(pitch_total))
     print("SCAN landmarks", {k2: round(float(v), 4) for k2, v in lm.items()}, "L", round(float(L), 4))
+    # the centreline: middles of vertical chords (default), or for an S-necked bird (overrides "centreline": "medial")
+    # the ridge of the side section's distance map from the tail tip to the bill tip, which follows the neck's bends
+    if OVR.get("centreline") == "medial":
+        cf, cu, arc, a0, a1 = medial_centreline(section(P, T))
+        lm["body_end"], lm["beak_base"] = float(np.interp(a0, arc, cf)), float(np.interp(a1, arc, cf))
+        L = a1 - a0
+        lm["tip"], lm["tail_tip"] = lm["beak_base"] + (arc[-1] - a1), lm["body_end"] - a0
+        print("SCAN medial centreline: arc %.3f, body end at %.3f, beak base at %.3f" % (arc[-1], a0, a1))
+    else:
+        cf = np.linspace(lm["body_end"] - 0.1 * L, lm["beak_base"] + 0.06 * L, 400)
+        cu = smooth1(np.interp(cf, fs, mid), 6)
+        arc = np.r_[0, np.cumsum(np.hypot(np.diff(cf), np.diff(cu)))]
+        a0, a1 = float(np.interp(lm["body_end"], cf, arc)), float(np.interp(lm["beak_base"], cf, arc))
+    CLINE = (cf, cu, arc, a0, a1)
 
     # BVH in (f, u, s) space
     bvh = BVHTree.FromPolygons([tuple(p) for p in P], [tuple(t) for t in T])
@@ -249,12 +338,7 @@ def main():
         CEN = np.zeros(nu)
         H, W = px.shape[:2]
         # stations along the curved centreline (arc length from body end to beak base), each cut square to it
-        cf = np.linspace(lm["body_end"] - 0.1 * L, lm["beak_base"] + 0.06 * L, 400)
-        cu = smooth1(np.interp(cf, fs, mid), 6)
-        seg = np.hypot(np.diff(cf), np.diff(cu))
-        arc = np.r_[0, np.cumsum(seg)]
-        a0 = float(np.interp(lm["body_end"], cf, arc))
-        a1 = float(np.interp(lm["beak_base"], cf, arc))
+        cf, cu, arc, a0, a1 = CLINE
         for i, u in enumerate(us):
             a = a0 + u * (a1 - a0)
             f = float(np.interp(a, arc, cf))
@@ -345,11 +429,8 @@ def main():
     mj = (NTH // 2 - np.arange(NTH)) % NTH
     COLH = 0.5 * (COLH + COLH[:, mj])
     # the centreline, normalised (u = arc parameter, f/up relative to the body end / the mid-body centre), for the rig
-    cf = np.linspace(lm["body_end"] - 0.1 * L, lm["beak_base"] + 0.06 * L, 400)
-    cu = smooth1(np.interp(cf, fs, mid), 6)
-    arc = np.r_[0, np.cumsum(np.hypot(np.diff(cf), np.diff(cu)))]
-    a0, a1 = float(np.interp(lm["body_end"], cf, arc)), float(np.interp(lm["beak_base"], cf, arc))
-    up_ref = float(np.interp(lm["body_end"] + 0.45 * L, fs, mid))
+    cf, cu, arc, a0, a1 = CLINE
+    up_ref = float(np.interp(a0 + 0.45 * (a1 - a0), arc, cu))
     tf, tu = np.gradient(cf), np.gradient(cu)
     tn = np.hypot(tf, tu)
     tf, tu = tf / tn, tu / tn
