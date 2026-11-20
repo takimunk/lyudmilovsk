@@ -326,6 +326,9 @@ def target_problem(t, ev, target):
         if not p.get('r'):
             return 'reach %s: the place has radius 0, UpdatePosition (LyudQuests.cpp:602) never reports it' % target
         return None
+    if e == 'photo':
+        # a developed film's frame taken at a map place (Private/Photo/LyudPhoto.cpp)
+        return None if low(target) in t.places else 'photo %s: no such place in map.json' % target
     if e in ('get', 'have', 'use', 'wear', 'feeder_fill'):
         if '|' in target:
             return '%s %s: a target has no alternatives' % (ev, target)
@@ -514,13 +517,13 @@ def event_alt_match(want, got):
 def concrete_target(t, ev, target):
     e = low(ev)
     if target in ('', '*'):
-        pools = {'talk': t.npcs, 'reach': t.places, 'feeder_visit': t.species, 'feeder_fill': t.feeds}
+        pools = {'talk': t.npcs, 'reach': t.places, 'photo': t.places, 'feeder_visit': t.species, 'feeder_fill': t.feeds}
         pool = sorted(pools.get(e, []))
         return pool[0] if pool and target == '*' else ('x' if target == '*' else '')
     if target.endswith('*'):
         prefix = low(target[:-1])
         pools = {'get': t.items, 'have': t.items, 'use': t.items, 'wear': t.items, 'feeder_fill': t.items,
-                 'reach': t.places, 'talk': t.npcs, 'visit': t.plots}
+                 'reach': t.places, 'photo': t.places, 'talk': t.npcs, 'visit': t.plots}
         cand = sorted(x for x in pools.get(e, []) if x.startswith(prefix))
         return cand[0] if cand else prefix + 'x'
     return target

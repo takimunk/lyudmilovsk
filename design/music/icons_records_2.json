@@ -1,0 +1,26 @@
+{
+ "service": "higgsfield MCP",
+ "tool": "generate_image",
+ "model": "gpt_image_2_6",
+ "arguments": {
+  "aspect_ratio": "1:1",
+  "resolution": "2k",
+  "quality": "medium",
+  "prompt": "Nine inventory icons for a moody adventure game, arranged as a 3 by 3 grid of equal square cells on one picture: in every cell one square cardboard long-playing record sleeve of a 1970s-80s Soviet seaside town, seen straight on and slightly tilted, with the black vinyl record sliding a little out of its top right edge, centred and filling most of the cell, softly lit from the upper left, painterly realistic style, worn printed cardboard with soft corners, plain dark warm-grey cloth background with a faint vignette, the same background and the same scale in every cell, no borders, frames or lines between the cells, nothing crossing a cell edge, exactly one sleeve per cell, no text, letters, numbers or logos anywhere, not on the sleeves either: each sleeve is a picture only. Row 1, left: the grey-blue sleeve shows a rain-spotted window and a cup on the sill. Row 1, middle: the grey-green sleeve shows a wet cable car cabin and somebody's umbrella. Row 1, right: the sleeve is almost black, with the lighthouse and a wave taller than it. Row 2, left: A white sleeve with nothing on it but a cat's paw prints. Row 2, middle: the deep-blue sleeve has only the sea and a thin horizon line. Row 2, right: A dark purple sleeve with a punched tape curled into a wave. Row 3, left: the turquoise sleeve shows a computer with a little dream cloud above it. Row 3, middle: A dark grey sleeve with a green cursor blinking in the corner. Row 3, right: the sleeve shows a bird's-eye view of pines, the beach and our cable car."
+ },
+ "job_id": "17299465-36f5-4019-b7e5-e55e4a51147c",
+ "output_url": "https://d8j0ntlcm91z4.cloudfront.net/user_36I3ndR5QeKPyjKAdSKVfbd04n2/hf_20261120_213951_17299465-36f5-4019-b7e5-e55e4a51147c.png",
+ "credits": 1,
+ "cells_row_major": [
+  "record_rain_1",
+  "record_rain_2",
+  "record_storm_1",
+  "record_snow_1",
+  "record_sea_1",
+  "record_club_1",
+  "record_club_2",
+  "record_club_3",
+  "record_flight_1"
+ ],
+ "sha256": "c06a61b9ca7040b49a07847ddde84fb8ce6c75c92d7d869d6e43ca56842c6f7c"
+}

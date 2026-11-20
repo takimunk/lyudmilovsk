@@ -174,6 +174,9 @@ private:
 	bool bTeaBye = false;
 	int32 TeaPerson = -1;
 	FString TeaNotNowShown;
+	/** The chair whose tea was opened while he still sits on it: not opened again until he gets up (a tea ended without a
+	 *  topic leaves the invitation due, and an open inventory ends the tea every frame). */
+	FString TeaClosedSeat;
 	UPROPERTY(Transient) TArray<TObjectPtr<ALyudGoodsItem>> TeaThings;
 	UPROPERTY(Transient) TObjectPtr<ANpcBody> HostBody;
 };

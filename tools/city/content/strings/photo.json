@@ -1,0 +1,42 @@
+{
+ "_doc": "The film camera's words (tools/city/content/photo.json): the studio desk's trade title, the film service's prompt, the photographer's two topics and the quest city_portrait (the hero's diary voice), the album's three stamp sets. A piece's name for the album: city.coll.<set>.<piece> here for photo_sky and for fish and maru; a bird piece is the species' own bird.<key>.name, a fest_<id> piece the festival's festival.<id>.name (hand-written tables).",
+
+ "city.shop.photo.title": {"ru": "Фотоателье: аппараты и плёнка", "en": "Photo studio: cameras and film", "ja": "写真館：カメラとフィルム"},
+ "city.photo.lab.prompt": {"ru": "E — сдать или забрать плёнку", "en": "E — hand in or collect a film", "ja": "E：フィルムを預ける・受け取る"},
+
+ "city.ask.photo.city": {"ru": "А сам город вы снимали?", "en": "Have you ever photographed the town itself?", "ja": "町そのものは撮ったことある？"},
+ "city.ask.photo.city.1": {"ru": "— Тридцать лет снимаю этот город на паспорт. Три на четыре, уголок слева, не улыбаться. Весь Людмиловск посидел на моём табурете, а самого города у меня нет ни на одном кадре.", "en": "\"Thirty years I've been shooting this town for its passports. Three by four, corner on the left, no smiling. All of Lyudmilovsk has sat on my stool, and I haven't a single frame of the town itself.\"", "ja": "「三十年、この町を証明写真で撮ってきた。三センチに四センチ、角は左、笑わないで、とね。リュドミロフスクじゅうがうちの丸椅子に座ったのに、町そのものは一枚も持っていないんだ」"},
+ "city.ask.photo.city.2": {"ru": "— Сними мне его. Пять видов: клуб «Атон», верхняя станция канатки, Академгородок, набережная, пляж под обрывом. Без парада, как есть. Честный снимок всегда немного кривой.", "en": "\"Take it for me. Five views: the ATON club, the upper cable car station, Academgorodok, the promenade, the beach under the cliff. Nothing festive, just as it is. An honest picture is always a little crooked.\"", "ja": "「代わりに撮ってきてくれ。景色を五つ。クラブ『アトン』、ロープウェイの山上駅、アカデムゴロドク、遊歩道、崖下の浜。よそ行きじゃなく、ありのままで。正直な写真はいつも少し傾いているものだ」"},
+ "city.ask.photo.city.3": {"ru": "— Аппарат нужен свой: «Чайка» вон на полке, плёнка рядом. Проявишь у меня или сам, в «Шестерне». Я не тороплю. Тридцать лет собирался, подожду ещё неделю.", "en": "\"You'll need a camera of your own: the Chaika is on the shelf there, the film beside it. Develop it here or yourself, at the Cog. I'm in no hurry. I've been meaning to for thirty years, I can wait another week.\"", "ja": "「カメラは自分のが要る。『チャイカ』はそこの棚、フィルムはその隣だ。現像はうちでも、『歯車』で自分でやってもいい。急がせないよ。三十年その気でいたんだ、あと一週間くらい待てる」"},
+ "city.ask.photo.city.done": {"ru": "Я снял город", "en": "I've photographed the town", "ja": "町を撮ってきたよ"},
+ "city.ask.photo.city.done.1": {"ru": "— Клади на стойку, все пять: клуб, канатка, Академгородок, набережная, пляж. Каких ещё нет, донесёшь потом. Город никуда не денется, а я тем более.", "en": "\"Put them on the desk, all five: the club, the cable car, Academgorodok, the promenade, the beach. Any you haven't got yet, bring them later. The town isn't going anywhere, and I even less.\"", "ja": "「カウンターに並べてごらん、五枚とも。クラブ、ロープウェイ、アカデムゴロドク、遊歩道、浜。まだないのは、あとで持っておいで。町は逃げないし、わたしはなおさらだ」"},
+
+ "quest.city_portrait.title": {"ru": "Портрет города", "en": "A portrait of the town", "ja": "町の肖像"},
+ "quest.city_portrait.desc": {"ru": "Фотограф с набережной тридцать лет снимал горожан на паспорт и ни разу не снял сам город. Попросил меня: пять видов, как есть.", "en": "The photographer on the promenade has spent thirty years shooting the townsfolk for their passports and never once the town itself. He has asked me: five views, just as they are.", "ja": "遊歩道の写真屋さんは三十年、町の人の証明写真を撮ってきたのに、町そのものは一度も撮っていない。それで僕が頼まれた。景色を五つ、ありのままに。"},
+ "quest.city_portrait.camera.log": {"ru": "Сначала нужен фотоаппарат. «Чайка-3» стоит у него же на полке, и плёнка рядом. Недёшево, но город того стоит.", "en": "First I need a camera. A Chaika-3 sits on his own shelf, with the film beside it. Not cheap, but the town is worth it.", "ja": "まずはカメラだ。「チャイカ3」は写真屋さんの棚にあって、フィルムもその隣。安くはないけれど、この町にはそれだけの値打ちがある。"},
+ "quest.city_portrait.have_camera.obj": {"ru": "Обзавестись фотоаппаратом", "en": "Get a camera", "ja": "カメラを手に入れる"},
+ "quest.city_portrait.views.log": {"ru": "Пять видов: клуб «Атон», верхняя станция канатки, Академгородок, набережная, пляж под обрывом. Снимок считается, когда плёнка проявлена: в ателье к утру или своими руками в «Шестерне».", "en": "Five views: the ATON club, the upper cable car station, Academgorodok, the promenade, the beach under the cliff. A picture counts once the film is developed: at the studio by morning, or with my own hands at the Cog.", "ja": "景色は五つ。クラブ「アトン」、ロープウェイ山上駅、アカデムゴロドク、遊歩道、崖下の浜。写真はフィルムを現像してはじめて数に入る。写真館に預ければ翌朝、「歯車」なら自分の手で。"},
+ "quest.city_portrait.view_club.obj": {"ru": "Снять клуб «Атон»", "en": "Photograph the ATON club", "ja": "クラブ「アトン」を撮る"},
+ "quest.city_portrait.view_cable.obj": {"ru": "Снять верхнюю станцию канатной дороги", "en": "Photograph the upper cable car station", "ja": "ロープウェイ山上駅を撮る"},
+ "quest.city_portrait.view_academ.obj": {"ru": "Снять Академгородок", "en": "Photograph Academgorodok", "ja": "アカデムゴロドクを撮る"},
+ "quest.city_portrait.view_promenade.obj": {"ru": "Снять набережную", "en": "Photograph the promenade", "ja": "遊歩道を撮る"},
+ "quest.city_portrait.view_beach.obj": {"ru": "Снять пляж под обрывом", "en": "Photograph the beach under the cliff", "ja": "崖下の浜を撮る"},
+ "quest.city_portrait.show.log": {"ru": "Все пять видов проявлены. Понесу показывать фотографу, пока не передумал.", "en": "All five views are developed. I'll take them to the photographer before I change my mind.", "ja": "五つとも現像できた。気が変わらないうちに、写真屋さんに見せに行こう。"},
+ "quest.city_portrait.show_prints.obj": {"ru": "Показать снимки фотографу в ателье на набережной", "en": "Show the prints to the photographer at the promenade studio", "ja": "遊歩道の写真館で写真屋さんに写真を見せる"},
+ "quest.city_portrait.done": {"ru": "Фотограф долго молчал над пятью отпечатками, потом сказал: «Вот он. А я всё лица да лица». Набережную повесил над стойкой, выше образцов. Дал шестьдесят рублей и две плёнки: «Снимай дальше. Город большой».", "en": "The photographer stood silent over the five prints for a long time, then said: \"There it is. And all I ever took was faces.\" He hung the promenade above the desk, higher than the samples. He gave me sixty roubles and two films: \"Keep shooting. It's a big town.\"", "ja": "写真屋さんは五枚の写真の前で長いこと黙っていて、それから言った。「これだ。わたしは顔ばかり撮ってきた」。遊歩道の一枚は、見本より高いカウンターの上に掛けてくれた。六十ルーブルとフィルムを二本くれた。「撮りつづけなさい。大きな町だから」"},
+
+ "city.coll.photo_birds.title": {"ru": "Птицы в объективе", "en": "Birds through the lens", "ja": "レンズの中の鳥たち"},
+ "city.coll.photo_sky.title": {"ru": "Небо на плёнке: закаты и сияние", "en": "The sky on film: sunsets and the aurora", "ja": "フィルムの空：夕焼けとオーロラ"},
+ "city.coll.photo_life.title": {"ru": "Город на плёнке: праздники, улов и Мару", "en": "The town on film: festivals, a catch and Maru", "ja": "フィルムの町：祭りと釣果とマル"},
+ "city.coll.photo_sky.sunset_high": {"ru": "Ясный закат", "en": "A clear sunset", "ja": "晴れた日の夕焼け"},
+ "city.coll.photo_sky.sunset_warm_front": {"ru": "Закат перед долгим дождём", "en": "Sunset before a long rain", "ja": "長雨の前の夕焼け"},
+ "city.coll.photo_sky.sunset_warm_sector": {"ru": "Закат в тумане и мороси", "en": "Sunset in mist and drizzle", "ja": "霧と小雨の夕焼け"},
+ "city.coll.photo_sky.sunset_cold_front": {"ru": "Закат под шквалом", "en": "Sunset under a squall", "ja": "突風の夕焼け"},
+ "city.coll.photo_sky.sunset_showery": {"ru": "Закат между ливнями", "en": "Sunset between showers", "ja": "にわか雨のあいまの夕焼け"},
+ "city.coll.photo_sky.sunset_occluded": {"ru": "Серый закат", "en": "A grey sunset", "ja": "灰色の夕焼け"},
+ "city.coll.photo_sky.sunset_arctic_high": {"ru": "Морозный закат", "en": "A frosty sunset", "ja": "凍てつく日の夕焼け"},
+ "city.coll.photo_sky.sunset_thundery_low": {"ru": "Закат перед грозой", "en": "Sunset before a thunderstorm", "ja": "雷雨の前の夕焼け"},
+ "city.coll.photo_sky.aurora": {"ru": "Северное сияние", "en": "The northern lights", "ja": "オーロラ"},
+ "city.coll.photo_life.fish": {"ru": "Пойманная рыба", "en": "A fish I caught", "ja": "釣った魚"},
+ "city.coll.photo_life.maru": {"ru": "Мару", "en": "Maru", "ja": "マル"}
+}

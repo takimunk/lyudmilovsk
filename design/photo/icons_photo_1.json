@@ -1,0 +1,24 @@
+{
+ "service": "higgsfield MCP",
+ "tool": "generate_image",
+ "model": "gpt_image_2_5",
+ "arguments": {
+  "aspect_ratio": "1:1",
+  "resolution": "2k",
+  "quality": "medium",
+  "prompt": "Four inventory icons for a moody adventure game, arranged as a 2 by 2 grid of equal square cells on one picture: in every cell one object centred and filling most of the cell, softly lit from the upper left, painterly realistic style, plain dark warm-grey cloth background with a faint vignette, the same background and the same scale in every cell, no borders, frames or lines between the cells, nothing crossing a cell edge, exactly one object or one small group per cell, no text, letters, numbers or logos anywhere. Everyday goods of a 1970s-80s Soviet seaside town, no real brands. Row 1, left: the icon_camera prompt of localization/assets.json. Row 1, right: the icon_photo_film prompt. Row 2, left: the same camera from the front without a case, with a thin neck strap. Row 2, right: a single black film cassette lying on its side next to a small plain blue film box."
+ },
+ "job_id": "8b0550ea-a371-4655-8d1f-e8484b3f1b77",
+ "output_url": "https://d8j0ntlcm91z4.cloudfront.net/user_36I3ndR5QeKPyjKAdSKVfbd04n2/hf_20261120_224210_8b0550ea-a371-4655-8d1f-e8484b3f1b77.png",
+ "credits": 1,
+ "credits_note": "as for icons_city, not read back",
+ "date": "2026-11-20",
+ "prompt_note": "the cell texts are summarised as references here; the exact text is in the Higgsfield job",
+ "cells_row_major": [
+  "camera (in its case)",
+  "photo_film (box and cassette)",
+  "camera (alone, front)",
+  "photo_film (cassette lying)"
+ ],
+ "sha256": "70ca882f75082c0c54c6cbd69d994988257797f162f009f29a1e93c63fa9d1c9"
+}

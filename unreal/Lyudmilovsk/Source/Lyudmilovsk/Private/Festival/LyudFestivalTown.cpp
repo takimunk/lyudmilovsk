@@ -655,11 +655,18 @@ void ULyudPoplarFluffSubsystem::FindPoplars()
 {
 	Poplars.Reset();
 	UWorld* World = GetWorld();
+	// a species' name is looked at once, not once a tree (the forests hold some hundred thousand)
+	TMap<FName, bool> IsPoplar;
 	for (TActorIterator<AProceduralForest> It(World); It; ++It)
 	{
-		It->ForEachTree([this](FName Species, const FTransform& Xf, float Age)
+		It->ForEachTree([this, &IsPoplar](FName Species, const FTransform& Xf, float Age)
 		{
-			if (Age > 8.f && Species.ToString().Contains(TEXT("Poplar")))
+			if (Age <= 8.f)
+			{
+				return;
+			}
+			const bool* Known = IsPoplar.Find(Species);
+			if (Known ? *Known : IsPoplar.Add(Species, Species.ToString().Contains(TEXT("Poplar"))))
 			{
 				Poplars.Add(FVector2D(Xf.GetLocation()));
 			}

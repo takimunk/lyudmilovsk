@@ -1,0 +1,20 @@
+{
+ "name": "banya_door_02",
+ "asset": "/Game/Audio/Winter/S_banya_door_02",
+ "pool": "banya_door",
+ "file": "audio/sfx/winter/banya_door_02.wav",
+ "generator": "tools/winter_play/sounds.py",
+ "seed": 2171,
+ "rng": "numpy.random.default_rng (PCG64), numpy 2.5.3",
+ "loop": false,
+ "sample_rate": 48000,
+ "bit_depth": 16,
+ "channels": 1,
+ "seconds": 1.6,
+ "peak_dbfs": -5.0,
+ "rms_dbfs": -26.48,
+ "params": {
+  "seconds": 1.6
+ },
+ "license": "Procedural, made by the project; CC BY 4.0."
+}

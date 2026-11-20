@@ -11,6 +11,7 @@
 #include "UI/LyudDiaryStyle.h"
 #include "UI/LyudUIStyle.h"
 #include "Transport/LyudTransport.h"
+#include "Rounds/LyudRounds.h"
 #include "Birds/BirdSpecies.h"
 #include "UI/LyudBirdGuide.h"
 
@@ -290,6 +291,36 @@ int32 SLyudMapView::OnPaint(const FPaintArgs& Args, const FGeometry& G, const FS
 				FSlateDrawElement::MakeLines(Out, LayerId + 6, G.ToPaintGeometry(), Pts, ESlateDrawEffect::None,
 					Fade * (bMain ? FLinearColor(1.f, 0.62f, 0.12f) : FLinearColor(0.85f, 0.7f, 0.4f)), true, 2.5f);
 			}
+		}
+	}
+
+	// the bicycle round under way (docs/rounds.md): its doors in riding order, a line between them, the waiting ones circled
+	if (const ULyudRounds* Rounds = ULyudRounds::Get(Owner.Get()); Rounds && Rounds->IsActive() && !bGuide)
+	{
+		Rounds->GetMarks(RoundMarks);
+		const FLinearColor RedC = bInk ? LyudDiary::Red : FLinearColor(0.85f, 0.12f, 0.08f);
+		Pts.Reset();
+		for (const FLyudRoundMark& M : RoundMarks)
+		{
+			Pts.Add(ToScreen(F.FromWorld(M.At), Size));
+		}
+		if (Pts.Num() > 1)
+		{
+			FSlateDrawElement::MakeLines(Out, LayerId + 5, G.ToPaintGeometry(), Pts, ESlateDrawEffect::None, Fade * RedC * FLinearColor(1, 1, 1, 0.35f), true, 1.5f);
+		}
+		for (int32 I = 0; I < RoundMarks.Num(); ++I)
+		{
+			const FLyudRoundMark& M = RoundMarks[I];
+			const FVector2D S = ToScreen(F.FromWorld(M.At), Size);
+			const FLinearColor C = M.bDone ? (M.bWell ? FLinearColor(0.2f, 0.45f, 0.2f, 0.7f) : FLinearColor(0.3f, 0.3f, 0.3f, 0.5f)) : RedC;
+			if (bInk && !M.bDone)
+			{
+				const float R = 9.f;
+				LyudDiary::DrawMark(Out, LayerId + 6, G, LyudDiary::EMark::Circle, S - FVector2D(R, R * 0.8f), FVector2D(2.f * R, 1.6f * R), Fade * C, 2.4f, 977u + (uint32)I);
+				continue;
+			}
+			Circle(Pts, S, M.bDone ? 3.f : 5.f, 10);
+			FSlateDrawElement::MakeLines(Out, LayerId + 6, G.ToPaintGeometry(), Pts, ESlateDrawEffect::None, Fade * C, true, M.bDone ? 2.f : 3.f);
 		}
 	}
 

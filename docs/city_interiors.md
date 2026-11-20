@@ -201,6 +201,7 @@ An act is what happens when the hero presses E at a thing:
 | `daily` | how many times a day it gives its reward (0: no limit) |
 | `shop` | opens the trade screen with this stock of `shops` when `needs_staff` is on shift |
 | `screen` | a screen show (`film`, `stage`, `tv`, `slides`): the page in the dark wide style, the line cut into subtitles shown one after another, the minutes passing with them; a sitting show on a thing that is not a seat wants the hero seated first (a seat of the plot within 25 m) and is then offered from the seat |
+| `open` | another system's screen opens instead of the act's page (`ULyudCityThings::OnOpen(screen, thing)`; one of `OPEN_SCREENS` in `interiors.py`): `books` (the library's classics, `ULyudBookScreen`), `photo_lab` (the photo studio takes films in and gives prints out), `photo_darkroom` (the hero develops his own film; `Private/Photo/LyudPhoto.cpp`). The act still takes its price, gives its items, plays its sound and reports its event; its line is taken but not shown, its `minutes` do not pass, and a counter's staff talk is not offered |
 | `collect` | a stamp every run gives (`"shelves/birds"`), or `"set/{line}"`: every line it shows is a piece of its own (the line's key: the films of «Рассвет»'s programme, a jukebox's records); an act `like` it inherits it (`"collect": ""` drops it) |
 | `closed` | what things doing this act say while their plot is shut: an act id or a line key (see "Closed") |
 | `game` | a mini-game played instead of showing `lines` (see "Mini-games"); an act `like` it inherits it (`"game": null` drops it) |
@@ -214,7 +215,8 @@ An act is what happens when the hero presses E at a thing:
 A thing record of `interiors.json` has `id`, `plot`, `kind`, `ue`, `yaw`, `props`, `act`, `hours`, `days`, and when they
 apply `auto`, `collect` (the stamp using it gives: a rule's `"collect": "kiosks/{plot}"` with the plot filled in) and `closed`
 (the act it does while its plot is shut). A `<plot|type>/<id>` rule may give `kind`, `props`, `act`, `hours`, `days`,
-`collect`, `closed`. The file's `collections` section: `{"<set>": {"title": key, "pieces": [...]}}`.
+`collect`, `closed`. The file's `collections` section: `{"<set>": {"title": key, "pieces": [...]}}` (and `"by": "code"` on a
+set whose stamps the game's code gives).
 
 ### Collections
 
@@ -224,7 +226,10 @@ acts `like` it, `"films/{line}"`), the jukebox records heard (`records`: `jukebo
 visited (`kiosks`: the rule `bus_stop_kiosk/counter`, `"kiosks/{plot}"`). Declared in a content file's `collections` section
 (`tools/city/content/collections.json`): `{"<set>": {"title": "<key>", "pieces": [...]}}`; without `pieces` the set is every
 piece something in town gives (a building's new lines grow it by themselves). `--check` fails on a stamp of an undeclared set
-or piece, a declared piece nothing gives, a missing title. The first time a stamp comes the HUD says `city.coll.got`
+or piece, a declared piece nothing gives, a missing title. A set with `"by": "code"` is given by the game's code, not by a
+thing in town (`ULyudCityThings::GiveStamp("<set>/<piece>")`): it must write its `pieces` out, and neither `--check` nor
+`quest_audit.py` asks that something in town gives them (the photo album's `photo_birds`, `photo_sky`, `photo_life` in
+`tools/city/content/photo.json`: a sharp frame of the subject on a developed film). The first time a stamp comes the HUD says `city.coll.got`
 («Фильмы «Рассвета»»: 3 из 16), at the last one `city.coll.complete`. Lines may ask for stamps (`have`, `count`). Console
 `lyud.City.Collections` (each set "n of m" to the log and on the page; `grant|clear <set|*>`); developer mode
 `interiors.collections` (the page) and `interiors.collections_all` (toggle: every set complete / cleared).
@@ -329,6 +334,9 @@ who plays it), by the seed. A win `Notify("win", <act target>)` for the quests b
 
 ### Small jobs
 
+The bicycle rounds (the morning papers from kiosk 1, the post round for the old postman) are run by the engine, not by an
+act: `docs/rounds.md`. The boards carry their sheet (`city.text.jobs.rounds`), and `x_rounds.json` holds their stamp set and quest.
+
 Short paid shifts (`tools/city/content/x_jobs.json`, strings `strings/x_jobs.json`): the hero earns roubles by the result of a
 real loop of acts, at most once a day (or so many entries a day), with a resident of the town as the boss on shift (the act's
 `needs_staff`). No job block in the model: a job is an ordinary act whose lines carry `pay`, or a game with `pay` a point and
@@ -339,7 +347,7 @@ always said, unpaid. Every job's lines give the piece of the stamp set `work_boo
 | job | thing | when | boss (role) | how it pays |
 |---|---|---|---|---|
 | the morning papers | `P-KIOSK1/price_board` | wed-sun 8-10 | Yerlan Romero (seller) | 25, rain 35, cold 30 |
-| the crates | `P-MARKET/market_scales_2` | sat 6-10 | Parisa Petrosyan (seller) | 20, rain 25 |
+| the crates | `P-MARKET/market_scales_2` | sat 7-10 (the sellers come at seven) | Parisa Petrosyan (seller) | 20, rain 25 |
 | the scales | `P-MARKET/market_scales` | sat 7-13 | the same | aim: 3 a point + win 20 / draw 10 / lose 5 |
 | the flag | `P-LIFEGUARD1/flag_halyard` | wed-sun 10-19 | Eitan Kowalski (lifeguard) | 10; the line is the right flag: fog red, rain or cold yellow, calm green, drizzle yellow |
 | the watch | `P-LIFEGUARD1/whistle` | wed-sun 10-19 | the same | rally: 3 a whistle in time + 25 / 15 / 8 |
@@ -385,6 +393,10 @@ a text {"gen": "cup:<id>", "kind": "notice", "pages": [fallback]} read on some t
 * **The board** (`FCups::Pages`): the tournament (weekday and venue, the rounds' hours, the game's rule, the sheet: "your name
   is on the list"), today's bracket from its start or the last one (the hero as «новичок (вы)», "(to be decided)" for the
   winners to come, no-shows), the cup case (the last six champions, the hero's cups).
+* **Holidays**: no cup is played on a public holiday (a festival's day off: Big Sun Day falls on the chess cup's Saturday).
+  The game hands `FCups::IsHoliday` the festivals' calendar; the sheet then signs up for the week after, the board's first
+  page says why (`city.cup.holiday`), there is no match, no news, and the board shows the last cup before it.
+  tools/togethersim found the regulars watching the zenith on the square while their bracket played.
 * **The paper** (`ULyudCityThings::GetCupNews`): the morning after, the champion and runner-up and how far the hero got; his
   cup is a front story; the day's tournament is announced on the bills page.
 * **Saved** with the model's map: `k:s:<cup>@<day>` signed up, `k:r:<cup>@<day>` his results (`W`/`L`), so brackets of past

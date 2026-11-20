@@ -41,7 +41,7 @@ def c(ru, en, ja, cond=None, says=(), set=None, go=None, end=None):
 
 put("ui.aton.adv.title", "НОЧНАЯ ВАХТА", "NIGHT WATCH", "夜の当直")
 put("ui.aton.adv.end.dawn", "Утро", "Morning", "朝")
-put("ui.aton.adv.end.keeper", "Вахту сдал, вахту принял", "Watch handed over, watch taken", "引き継ぎ完了")
+put("ui.aton.adv.end.keeper", "Вахту сдал, вахту принял", "Watch handed over, watch taken", "当直を渡し、当直を受ける")
 put("ui.aton.adv.end.dark", "Темно", "Dark", "暗がり")
 
 ALL = "knows_hand&heard&saw_edge&tea_done"
@@ -153,8 +153,8 @@ c("Закрыть журнал", "Close the log book", "日誌を閉じる", go=
 
 node("log_old", set=["read_old"])
 t("Записи идут ночь за ночью, и каждая ночь одна: «Вахту принял. Лампа капризничала. Починил. Стучали. Открыл. Вахту сдал». Меняются только инициалы: А., Б., В., Г., Д.",
-  "The entries go night after night, and every night is the same one: \"Took the watch. The lamp was difficult. Fixed it. Someone knocked. Opened. Handed over.\" Only the initials change: A., B., C., D.",
-  "記入は夜ごとに続き、どの夜も同じひとつの夜だ。「当直を引き継いだ。ランプは気まぐれ。直した。ノックあり。開けた。引き継いだ」。変わるのは頭文字だけ。A、B、C、D。")
+  "The entries go night after night, and every night is the same one: \"Took the watch. The lamp was difficult. Fixed it. Someone knocked. Opened. Handed over.\" Only the initials change: A., B., V., G., D.",
+  "記入は夜ごとに続き、どの夜も同じひとつの夜だ。「当直を引き継いだ。ランプは気まぐれ。直した。ノックあり。開けた。引き継いだ」。変わるのは頭文字だけ。A、B、V、G、D。")
 t("Инициалы разные. Почерк один: у буквы «у» везде один и тот же хвост, загнутый, как рыболовный крючок.",
   "The initials differ. The hand is one: everywhere the letter \"t\" ends in the same curl, like a fish hook.",
   "頭文字はちがう。筆跡はひとつだ。どこでも「ぐ」の字が、釣り針のように同じ形に曲がっている。")
@@ -637,7 +637,7 @@ c("Лечь спать", "Go to bed", "寝る", end="keeper",
         say("Вечер. Ты принимаешь вахту на посту «Фонарь». Сменщика ты не застаёшь. На столе записка знакомым почерком: «Лампа капризничает…»",
             "Evening. You take over the watch at the Lantern post. You don't catch the day keeper. On the desk is a note in a familiar hand: \"The lamp is being difficult…\"",
             "夕方。きみは「灯」の番所で当直を引き継ぐ。昼の番人には会えない。机には、見おぼえのある字のメモ。「ランプは気まぐれ……」"),
-        say("КОНЕЦ. Вахту сдал. Вахту принял.", "THE END. Watch handed over. Watch taken.", "おわり。当直、引き継ぎ完了。引き継ぎ開始。")])
+        say("КОНЕЦ. Вахту сдал. Вахту принял.", "THE END. Watch handed over. Watch taken.", "おわり。当直を渡した。当直を受けとった。")])
 
 node("lastlamp")
 t("Ламповая на рассвете. За стёклами небо над морем светлеет с одного края, и ты вдруг видишь: этот свет и свет лампы — одного цвета. Не похожего. Одного.",
@@ -675,7 +675,7 @@ c("Выйти наружу", "Go outside", "外に出る", end="dawn",
             "手の中のびんは、口までいっぱいだ。ふたを取る。何も起こらない。びんの中にあったものと外にあるものは、同じひとつのものだから。顔があたたかい。きみはみんなといっしょに立ち、塔がまだあるかどうか、ふり返って確かめたりはしない。"),
         say("КОНЕЦ. Вахту сдал. Принимать некому — и не нужно.",
             "THE END. Watch handed over. There is nobody to take it, and no need.",
-            "おわり。当直を引き継いだ。受けとる者はいない。いなくていい。")])
+            "おわり。当直を渡した。受けとる者はいない。いなくていい。")])
 
 # ------------------------------------------------------------------ write
 for n in NODES.values():

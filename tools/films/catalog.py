@@ -83,7 +83,7 @@ FILMS = [
                     "Auguste Lumière and his wife feed their little daughter. The first home movie.",
                     "オーギュスト・リュミエール夫妻が娘に食事をさせています。最初のホームムービーです。")),
             (0.60, ("Посмотрите на листья за ними: ветер. Зрители тогда удивлялись листьям больше, чем людям.",
-                    "Look at the leaves behind them: the wind. Back then people marvelled at the leaves more than at the people.",
+                    "Look at the leaves behind them: the wind. Back then audiences marvelled at the leaves more than at the people.",
                     "後ろの木の葉をご覧ください。風です。当時の観客は人よりも木の葉に驚いたそうです。")),
         ],
         "laughs": [0.45],
@@ -135,7 +135,7 @@ FILMS = [
                     "学者たちの会議。バルバンフイエ教授が月への旅を提案します。")),
             (0.20, ("Снаряд строят на крыше, отливают пушку. Как у Жюля Верна — книга есть у нас в библиотеке.",
                     "They build the shell on a rooftop and cast the cannon. As in Jules Verne: the book is in our library.",
-                    "屋根の上で砲弾を作り、大砲を鋳造します。ジュール・ヴェルヌのように。本は図書館にあります。")),
+                    "屋根の上で砲弾を作り、大砲を鋳造します。ジュール・ヴェルヌの小説そのままです。その本はうちの図書館にもありますよ。")),
             (0.32, ("Прямо в глаз! Этот кадр знает весь мир.", "Right in the eye! The whole world knows this shot.", "目に命中！世界中が知っている場面です。")),
             (0.50, ("Звёзды смотрят из облаков. А на Луне живут селениты — и они не рады гостям.",
                     "Stars peer out of the clouds. And on the Moon live the Selenites, who are not glad of guests.",
@@ -156,7 +156,7 @@ FILMS = [
         "lector": [
             (0.06, ("Супруги приезжают в отель, где всё делает электричество. Чемоданы распаковываются сами.",
                     "A couple arrive at a hotel where electricity does everything. The suitcases unpack themselves.",
-                    "夫婦が、何でも電気がやってくれるホテルに着きます。かばんがひとりでに荷ほどきします。")),
+                    "夫婦が、何でも電気がやってくれるホテルに着きます。かばんがひとりでに開いて、荷物が片づいていきます。")),
             (0.40, ("Расчёска сама причёсывает, сапоги сами чистятся. Шомон снимал по кадру — сотни часов.",
                     "The comb combs by itself, the boots polish themselves. Chomón shot it frame by frame: hundreds of hours.",
                     "くしがひとりでに髪をとかし、靴がひとりでに磨かれます。チョモンは一コマずつ、何百時間もかけて撮りました。")),
@@ -177,7 +177,7 @@ FILMS = [
                     "The first western. Bandits tie up the telegraph operator at the station.",
                     "最初の西部劇です。強盗たちが駅の電信係を縛ります。")),
             (0.35, ("Схватка на крыше вагона. Тут, конечно, кукла вместо человека — присмотритесь.",
-                    "A fight on the roof of the car. That's a dummy instead of a man, of course: look closely.",
+                    "A fight on the roof of the carriage. That's a dummy instead of a man, of course: look closely.",
                     "客車の屋根の上の格闘。もちろん人の代わりに人形です。よく見てください。")),
             (0.70, ("Девушка находит связанного телеграфиста, а в салуне танцы. Погоня!",
                     "A girl finds the tied-up operator, and there's dancing in the saloon. The chase!",
@@ -217,7 +217,7 @@ CINEMAS = {
 
 S = [
     ("city.film.card", "{0}. {1}, {2}", "{0}. {1}, {2}", "{0}　{1}（{2}年）"),
-    ("city.film.newsreel", "Перед сеансом — киножурнал: {0}.", "Before the session, the newsreel: {0}.", "上映前のニュース映画：{0}。"),
+    ("city.film.newsreel", "Перед сеансом — киножурнал: {0}.", "Before the film, the newsreel: {0}.", "上映前のニュース映画：{0}。"),
     ("city.film.lector", "Киномеханик: «{0}»", "The projectionist: “{0}”", "映写技師：「{0}」"),
     ("city.film.leave", "E — встать и уйти", "E — get up and leave", "E — 席を立つ"),
     ("city.film.missing", "Плёнка киножурнала не пришла: сразу фильм.", "The newsreel's reel didn't arrive: straight to the film.",
@@ -228,6 +228,6 @@ S = [
     ("item.ticket_stub.desc", "Розовый корешок из «Рассвета», оторванный по линии. На обороте штамп: ряд и место.",
      "A pink stub from the Rassvet, torn along the line. A stamp on the back: row and seat.",
      "「ラスヴェート」のピンクの半券。ミシン目でちぎってある。裏に列と席のスタンプ。"),
-    ("dev.action.cinema.play", "Кино: киножурнал дня в «Рассвете» сейчас (без сеанса)", "Cinema: the day's newsreel at the Rassvet now (no session)",
+    ("dev.action.cinema.play", "Кино: киножурнал дня в «Рассвете» сейчас (без сеанса)", "Cinema: the day's newsreel at the Rassvet now (no film)",
      "映画：今日のニュース映画を「ラスヴェート」で今すぐ上映（本編なし）"),
 ]

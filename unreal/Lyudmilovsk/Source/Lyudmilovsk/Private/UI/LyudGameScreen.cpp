@@ -20,6 +20,7 @@
 #include "LyudText.h"
 #include "Misc/PackageName.h"
 #include "Audio/LyudSoundscape.h"
+#include "Animals/AnimalFriends.h"
 #include "Birds/BirdBook.h"
 #include "Engine/TextureRenderTarget2D.h"
 #include "Fishing/LyudFishing.h"
@@ -103,6 +104,12 @@ void ULyudGameScreen::OnWorldBeginPlay(UWorld& InWorld)
 		Birds->Reset();
 		Birds->OnChanged.AddWeakLambda(this, [this] { if (Screen && !Screen->IsTurning()) { Screen->Rebuild(); } });
 	}
+	if (ULyudAnimalFriends* AnimalFriends = ULyudAnimalFriends::Get(&InWorld))
+	{
+		// a new game like the birds' book (a load fills it back)
+		AnimalFriends->Reset();
+		AnimalFriends->OnChanged.AddWeakLambda(this, [this] { if (Screen && !Screen->IsTurning()) { Screen->Rebuild(); } });
+	}
 	if (ULyudInventory* Inv = ULyudInventory::Get(&InWorld))
 	{
 		Inv->OnAdded.AddUObject(this, &ULyudGameScreen::OnItemAdded);
@@ -154,6 +161,10 @@ void ULyudGameScreen::Deinitialize()
 		if (ULyudBirdBook* Birds = ULyudBirdBook::Get(World))
 		{
 			Birds->OnChanged.RemoveAll(this);
+		}
+		if (ULyudAnimalFriends* AnimalFriends = ULyudAnimalFriends::Get(World))
+		{
+			AnimalFriends->OnChanged.RemoveAll(this);
 		}
 		if (ULyudInventory* Inv = ULyudInventory::Get(World))
 		{
