@@ -1,5 +1,6 @@
 #include "People/PeopleLife.h"
 #include "World/LyudPrefetch.h"
+#include "LyudMotion.h"
 #include "People/LyudBodyAnim.h"
 #include "Transport/LyudTransport.h"
 #include "Bikes/LyudBike.h"
@@ -964,6 +965,13 @@ ANpcBody* UPeopleLifeSubsystem::BodyFor(int32 Id)
 			// many of them about: cheaper animation far off, out of Lumen's scene (perf checklist: moving meshes)
 			Body->Tags.Add(TEXT("Townsfolk"));
 			Body->Mesh->bEnableUpdateRateOptimizations = true;
+			if (FAnimUpdateRateParameters* Rate = LyudMotion::Smooth() ? Body->Mesh->AnimUpdateRateParams : nullptr)
+			{
+				// every frame within ~20 m, every second one to ~45 m, every third beyond, the frames between interpolated
+				// (the engine's own thresholds drop to every third from ~8 m: a street of people moving in jerks)
+				Rate->BaseVisibleDistanceFactorThesholds = { 0.05f, 0.022f };
+				Rate->MaxEvalRateForInterpolation = 4;
+			}
 			Body->Mesh->bAffectDynamicIndirectLighting = false;
 			Body->Mesh->bAffectDistanceFieldLighting = false;
 			TownBodies.Add(Body);
@@ -1070,7 +1078,8 @@ void UPeopleLifeSubsystem::Present(float DeltaTime)
 				Body->SetActorHiddenInGame(!bShowRider);
 				if (bShowRider)
 				{
-					Body->Drive(RideAt, RideYaw, bSeated ? EPersonPose::Sit : EPersonPose::Stand, 0, 0.f, bSeated ? 44.f : 0.f, DeltaTime, bWasHidden || bSeated);
+					Body->Drive(RideAt, RideYaw, bSeated ? EPersonPose::Sit : EPersonPose::Stand, 0, 0.f, bSeated ? 44.f : 0.f, DeltaTime,
+						bWasHidden || bSeated || LyudMotion::Smooth());      // (what carries them moves: no spring behind it)
 				}
 			}
 			continue;
@@ -1185,6 +1194,31 @@ void UPeopleLifeSubsystem::Present(float DeltaTime)
 		}
 	}
 	UpdateManners(DeltaTime);
+	// lyud.Anim.Probe N: every frame, the N drawn bodies nearest the camera into the log (where the body is, its facing,
+	// its feet and hips as last posed): tools/anim_probe.py makes jerk and foot-slide figures of it
+	static const IConsoleVariable* Probe = IConsoleManager::Get().RegisterConsoleVariable(TEXT("lyud.Anim.Probe"), 0,
+		TEXT("N > 0: each frame logs the N nearest drawn people's place, facing, feet and hips (ANIMPROBE lines; tools/anim_probe.py)."));
+	if (const int32 ProbeN = Probe->GetInt())
+	{
+		TArray<TPair<float, int32>, TInlineAllocator<64>> NearBodies;
+		for (int32 Id = 0; Id < Bodies.Num(); Id++)
+		{
+			if (Bodies[Id] && !Bodies[Id]->IsHidden())
+			{
+				NearBodies.Emplace((float)FVector::DistSquared(Bodies[Id]->GetActorLocation(), Cam), Id);
+			}
+		}
+		NearBodies.Sort([](const TPair<float, int32>& One, const TPair<float, int32>& Other) { return One.Key < Other.Key; });
+		for (int32 K = 0; K < NearBodies.Num() && K < ProbeN; K++)
+		{
+			const ANpcBody* B = Bodies[NearBodies[K].Value];
+			const FVector At = B->GetActorLocation(), Fl = B->Mesh->GetBoneLocation(TEXT("foot_l")), Fr = B->Mesh->GetBoneLocation(TEXT("foot_r")),
+				Pv = B->Mesh->GetBoneLocation(TEXT("pelvis")), Hd = B->Mesh->GetBoneLocation(TEXT("hand_r"));
+			UE_LOG(LogTemp, Display, TEXT("ANIMPROBE %.4f %d %.2f %.2f %.2f %.2f %.2f %.2f %.2f %.2f %.2f %.2f %.2f %.2f %.2f %.2f %.2f %.2f %d %.0f"),
+				World->GetTimeSeconds(), NearBodies[K].Value, At.X, At.Y, At.Z, B->GetActorRotation().Yaw, Fl.X, Fl.Y, Fl.Z, Fr.X, Fr.Y, Fr.Z,
+				Pv.X, Pv.Y, Pv.Z, Hd.X, Hd.Y, Hd.Z, (int32)S.People[NearBodies[K].Value].Pose, FMath::Sqrt(NearBodies[K].Key));
+		}
+	}
 	for (const TPair<FString, TObjectPtr<AActor>>& Pair : ClubActors)
 	{
 		ShowPlaced(Pair.Value, PlacedShown.Contains(Pair.Value.Get()));
@@ -2416,7 +2450,7 @@ UAnimSequence* ANpcBody::Clip(FName Name)
 	return A;
 }
 
-void ANpcBody::Play(FName Name, bool bLoop, float Rate)
+void ANpcBody::Play(FName Name, bool bLoop, float Rate, float BlendTime)
 {
 	ULyudBodyAnimInstance* Anim = Cast<ULyudBodyAnimInstance>(Mesh->GetAnimInstance());
 	if (Playing != Name)
@@ -2439,7 +2473,24 @@ void ANpcBody::Play(FName Name, bool bLoop, float Rate)
 						: GetUniqueID() * 0.6180339f;
 					Start = FMath::Frac(Phase) * A->GetPlayLength();
 				}
-				Anim->PlayClip(A, bLoop, Rate, 0.3f, Start);
+				if (BlendTime < 0.f)
+				{
+					BlendTime = 0.3f;
+					if (LyudMotion::Smooth())
+					{
+						// one way of standing or sitting into another (arms folding, a nod) takes its time; a step into a
+						// step, a step out of standing and the sitting down and getting up stay quick
+						static const FName Quick[] = { TEXT("Walk"), TEXT("Run"), TEXT("Push"), TEXT("SitDown"), TEXT("StandUp"), TEXT("LieDown"), TEXT("GetUp") };
+						bool bQuick = Was.IsNone();
+						for (const FName& Q : Quick)
+						{
+							bQuick |= Q == Name || Q == Was;
+						}
+						const bool bStop = (Was == Quick[0] || Was == Quick[1]) && Name != Quick[0] && Name != Quick[1];
+						BlendTime = bStop ? 0.4f : (bQuick ? 0.3f : 0.7f);
+					}
+				}
+				Anim->PlayClip(A, bLoop, Rate, BlendTime, Start);
 			}
 			else
 			{
@@ -2486,14 +2537,57 @@ void ANpcBody::PlayVaried(FName InRole, std::initializer_list<FName> Variants, f
 
 void ANpcBody::Drive(const FVector& Location, float Yaw, EPersonPose Pose, int32 Transit, float Speed, float SeatHeight, float DeltaTime, bool bSnap)
 {
+	const bool bSmooth = LyudMotion::Smooth();
 	if (bOnBike)
 	{
 		DriveBike(nullptr, FLyudBikeRide(), FVector::ZeroVector, 0.f, 0.f, DeltaTime);
+		bShownValid = false;                // from where the bike left them
+	}
+	const bool bBed = Pose == EPersonPose::Sleep || Transit == 3 || Transit == 4;
+	const bool bSeat = !bBed && (Transit == 1 || Transit == 2 || Pose == EPersonPose::Sit || Pose == EPersonPose::Computer
+		|| Pose == EPersonPose::Eat || Pose == EPersonPose::Read);
+	const bool bFeet = Transit == 0 && !bBed && !bSeat && Pose != EPersonPose::Hidden;
+	const float S = BodyScale;
+	// where they are shown: on their life's point through a spring (a jump of more than a few steps is a jump)
+	FVector Shown = Location;
+	float GaitSpeed = Speed;
+	if (bSmooth)
+	{
+		if (bSnap || !bPlaced || !bShownValid || bBed || DeltaTime <= 0.f || FVector::DistSquared(ShownPos, Location) > 300.0 * 300.0)
+		{
+			ShownPos = Location;
+			ShownVel = FVector::ZeroVector;
+			ShownZVel = 0.f;
+		}
+		else
+		{
+			// on their feet a fifth of a second behind (a corner rounds off over ~half a metre, a start takes two steps);
+			// into a seat quicker; the height by itself, quicker still (a kerb, a stair's step)
+			FVector2D Flat(ShownPos.X, ShownPos.Y), FlatVel(ShownVel.X, ShownVel.Y);
+			Flat = LyudMotion::Damp(Flat, FVector2D(Location.X, Location.Y), FlatVel, bFeet ? 0.2f : 0.12f, DeltaTime);
+			float Z = (float)ShownPos.Z;
+			Z = LyudMotion::Damp(Z, (float)Location.Z, ShownZVel, 0.09f, DeltaTime);
+			ShownPos = FVector(Flat.X, Flat.Y, Z);
+			ShownVel = FVector(FlatVel.X, FlatVel.Y, ShownZVel);
+		}
+		bShownValid = true;
+		Shown = ShownPos;
+		// the gait goes by the ground really covered, never faster than the life moved them lately allows for
+		RecentSpeed = FMath::Max(Speed, RecentSpeed - 300.f * DeltaTime);
+		GaitSpeed = bFeet ? FMath::Min((float)ShownVel.Size2D(), RecentSpeed * 1.3f) : 0.f;
 	}
 	// turn smoothly, except into a seat or a bed (the clip starts from the slot's facing)
 	if (bSnap || Transit != 0 || !bPlaced)
 	{
 		Facing = Yaw;
+		FacingVel = 0.f;
+	}
+	else if (bSmooth)
+	{
+		// walking, they face the way they really go (round the corner with the path); the turn has a beginning and an end
+		const bool bGoing = bFeet && Pose == EPersonPose::Walk && GaitSpeed > 35.f * S;
+		const float Want = bGoing ? FMath::RadiansToDegrees(FMath::Atan2((float)ShownVel.Y, (float)ShownVel.X)) : Yaw;
+		Facing = FRotator::NormalizeAxis(LyudMotion::DampAngle(Facing, Want, FacingVel, bGoing ? 0.14f : 0.22f, DeltaTime));
 	}
 	else
 	{
@@ -2502,10 +2596,6 @@ void ANpcBody::Drive(const FVector& Location, float Yaw, EPersonPose Pose, int32
 	}
 	bPlaced = true;
 	Clock += DeltaTime;
-	const bool bBed = Pose == EPersonPose::Sleep || Transit == 3 || Transit == 4;
-	const bool bSeat = !bBed && (Transit == 1 || Transit == 2 || Pose == EPersonPose::Sit || Pose == EPersonPose::Computer
-		|| Pose == EPersonPose::Eat || Pose == EPersonPose::Read);
-	const float S = BodyScale;
 	if (bBed)
 	{
 		// the lying clips: the actor stands beside the bed facing away from it (+Y), the mattress (top 50 cm) behind it,
@@ -2513,7 +2603,7 @@ void ANpcBody::Drive(const FVector& Location, float Yaw, EPersonPose Pose, int32
 		// Yaw the bed's head-to-foot: the actor turns so local -X runs head to foot.
 		const float MeshYaw = Yaw + 180.f;
 		const FRotator R(0.f, MeshYaw, 0.f);
-		FVector At = Location - R.RotateVector(FVector(-5.f, -55.f, 0.f) * S);
+		FVector At = Shown - R.RotateVector(FVector(-5.f, -55.f, 0.f) * S);
 		At.Z += (SeatHeight > 0.f ? SeatHeight : 50.f) - 50.f * S;
 		SetActorLocationAndRotation(At, R);
 		BedCenter = Location;
@@ -2523,7 +2613,7 @@ void ANpcBody::Drive(const FVector& Location, float Yaw, EPersonPose Pose, int32
 	else
 	{
 		// seated clips: the origin under the seat's centre (top 47 cm), facing local +Y; a smaller body sits higher
-		FVector At = Location;
+		FVector At = Shown;
 		if (bSeat)
 		{
 			At.Z += (SeatHeight > 0.f ? SeatHeight : 47.f) - 47.f * S;
@@ -2565,9 +2655,27 @@ void ANpcBody::Drive(const FVector& Location, float Yaw, EPersonPose Pose, int32
 	case 4: Play(TEXT("GetUp"), false); return;
 	default: break;
 	}
+	ULyudBodyAnimInstance* Legs = bSmooth ? Cast<ULyudBodyAnimInstance>(Mesh->GetAnimInstance()) : nullptr;
+	if (Legs)
+	{
+		Legs->SetStride(1.f);
+	}
 	if (bMannerClip)
 	{
 		return;
+	}
+	if (bSmooth && Pose != EPersonPose::Shovel)
+	{
+		// the legs go by what the body really does: walking where the life stands a moment (getting their breath, waiting
+		// for one of theirs) they stand; standing where the body still glides its last half-step in, they finish it
+		static const FName NameWalk(TEXT("Walk")), NameRun(TEXT("Run"));
+		const bool bWasGait = Playing == NameWalk || Playing == NameRun;
+		const bool bMoving = GaitSpeed > (bWasGait ? 9.f : 18.f) * S;
+		const bool bStandPose = Pose == EPersonPose::Stand || Pose == EPersonPose::Look || Pose == EPersonPose::Talk;
+		if (Pose == EPersonPose::Walk ? !bMoving : (bFeet && bStandPose && bMoving && bWasGait))
+		{
+			Pose = Pose == EPersonPose::Walk ? EPersonPose::Stand : EPersonPose::Walk;
+		}
 	}
 	switch (Pose)
 	{
@@ -2582,8 +2690,23 @@ void ANpcBody::Drive(const FVector& Location, float Yaw, EPersonPose Pose, int32
 		}
 		const bool bShared = SharedWalk == 1;
 		// a run (UAL Jog_Fwd_Loop, ~2.6 m/s at rate 1) from ~1.9 m/s, back to the walk under ~1.6 (a body's size scales both)
-		const bool bRun = Clip(TEXT("Run")) && Speed > (Playing == TEXT("Run") ? 160.f : 190.f) * S;
-		if (bRun)
+		const bool bRun = Clip(TEXT("Run")) && GaitSpeed > (Playing == TEXT("Run") ? 160.f : 190.f) * S;
+		if (bSmooth)
+		{
+			// the speed is the steps' length times their rate: quicker, a person does both in about equal parts (never
+			// the clip merely played fast: a child's 1.35 m/s was the grown-up's walk at double speed); slower, the steps
+			// shorten more than they slow, down to the shuffle of setting off and of stopping
+			const float Ratio = GaitSpeed / (bRun ? 260.f * S : (bShared ? 93.f * S : 75.f));
+			float Rate = FMath::Clamp(FMath::Sqrt(FMath::Max(Ratio, 0.f)), bRun ? 0.85f : 0.8f, bRun ? 1.25f : 1.3f);
+			const float Stride = FMath::Clamp(Ratio / Rate, 0.4f, 1.3f);
+			Rate = FMath::Clamp(Ratio / Stride, 0.3f, 2.2f);
+			Play(bRun ? TEXT("Run") : TEXT("Walk"), true, Rate);
+			if (Legs)
+			{
+				Legs->SetStride(Stride);
+			}
+		}
+		else if (bRun)
 		{
 			Play(TEXT("Run"), true, FMath::Clamp(Speed / (260.f * S), 0.6f, 1.6f));
 		}

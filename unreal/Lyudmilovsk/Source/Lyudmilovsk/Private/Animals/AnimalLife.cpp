@@ -926,6 +926,7 @@ void AAnimalLifeRenderer::Draw(const FWorld& World, const FVector& Camera)
 			else
 			{
 				Body->Size = A.Size;
+				Body->ResetPlace();
 				Body->SetActorTransform(At);
 				if (Body->Coat != A.Coat)
 				{
@@ -958,7 +959,7 @@ void AAnimalLifeRenderer::Drive(AAnimalActor* Body, const FWorld& World, int32 I
 		Pitch = FMath::Clamp(FMath::RadiansToDegrees(std::atan2(Zf - Zb, 2.f * L)) * 0.7f, -25.f, 25.f);
 		Roll = FMath::Clamp(FMath::RadiansToDegrees(std::atan2(Zl - Zr, 0.2f)) * 0.4f, -12.f, 12.f);
 	}
-	Body->SetActorLocationAndRotation(ToUE(P), FRotator(-Pitch, FMath::RadiansToDegrees(A.Yaw), Roll));
+	Body->Place(ToUE(P), FMath::RadiansToDegrees(A.Yaw), -Pitch, Roll, A.Tier >= 2);
 	Body->SetActivity((EAnimalActivity)(uint8)A.Act, A.Speed * 100.f);
 	if (A.bLook)
 	{

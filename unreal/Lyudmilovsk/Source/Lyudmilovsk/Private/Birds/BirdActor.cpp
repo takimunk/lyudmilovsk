@@ -1,4 +1,5 @@
 #include "Birds/BirdActor.h"
+#include "LyudMotion.h"
 
 #include "AnimationRuntime.h"
 #include "Animation/AnimSequence.h"
@@ -374,6 +375,35 @@ FTransform ABirdActor::GetEyeTransform() const
 	return FTransform(FRotationMatrix::MakeFromXZ(Fwd, Up).ToQuat(), (L + R) * 0.5f);
 }
 
+void ABirdActor::Place(const FVector& Location, float YawDeg, float PitchDeg, bool bAirborne)
+{
+	const float Dt = GetWorld() ? GetWorld()->GetDeltaSeconds() : 0.f;
+	if (!LyudMotion::Smooth() || !bPlaced || Dt <= 0.f || FVector::DistSquared(PlacedAt, Location) > 600.0 * 600.0)
+	{
+		bPlaced = true;
+		PlacedAt = Location;
+		ShownYaw = YawDeg;
+		ShownPitch = PitchDeg;
+		ShownRoll = YawVel = PitchVel = RollVel = 0.f;
+		SetActorLocationAndRotation(Location, FRotator(PitchDeg, YawDeg, 0.f));
+		return;
+	}
+	const float Speed = (float)FVector::Dist(PlacedAt, Location) / Dt * 0.01f;      // m/s
+	PlacedAt = Location;
+	// on the ground a bird turns in a hop: quick, but a turn, not a cut; in the air the heading eases a little more
+	ShownYaw = FRotator::NormalizeAxis(LyudMotion::DampAngle(ShownYaw, YawDeg, YawVel, bAirborne ? 0.12f : 0.07f, Dt));
+	ShownPitch = LyudMotion::Damp(ShownPitch, PitchDeg, PitchVel, 0.15f, Dt);
+	// the bank of a coordinated turn (UE: yaw grows turning right, roll is the right wing down), a big bird's less eager
+	float Bank = 0.f;
+	if (bAirborne)
+	{
+		Bank = FMath::RadiansToDegrees(FMath::Atan(FMath::Min(Speed, 30.f) * FMath::DegreesToRadians(YawVel) / 9.81f));
+		Bank = FMath::Clamp(Bank, -60.f, 60.f);
+	}
+	ShownRoll = LyudMotion::Damp(ShownRoll, Bank, RollVel, bAirborne ? 0.25f : 0.1f, Dt);
+	SetActorLocationAndRotation(Location, FRotator(ShownPitch, ShownYaw, ShownRoll));
+}
+
 void ABirdActor::TickFlight(float DeltaSeconds)
 {
 	UBirdAnimInstance* A = Anim();
@@ -422,7 +452,20 @@ void ABirdActor::TickFlight(float DeltaSeconds)
 		}
 	}
 	const bool bFold = Data.Flight == EBirdFlightStyle::Bounding;
-	const float Beat = Data.WingbeatHz * (1.f + 0.2f * Climb);
+	float Beat = Data.WingbeatHz * (1.f + 0.2f * Climb);
+	if (LyudMotion::Smooth())
+	{
+		// a beat needs four frames to be seen as a beat: a sparrow's 13 a second drawn 30 times a second is a wing
+		// jumping between two or three places at random (and seems to stand or go backward); slower beats read as flight.
+		// The wings open into a glide and shut into a bound over about half a beat, a gull's slower than a finch's
+		FrameDt += (FMath::Clamp(DeltaSeconds, 1.f / 240.f, 0.1f) - FrameDt) * 0.1f;
+		Beat = FMath::Min(Beat, 0.25f / FrameDt);
+		const float Half = FMath::Clamp(0.5f / FMath::Max(Data.WingbeatHz, 1.f), 0.06f, 0.3f);
+		A->Mix(FlapName, Flap, bFlightBurst ? 1.f : 0.f, Beat, Half);
+		A->Mix(GlideName, Glide, !bFlightBurst && !bFold ? 1.f : 0.f, 1.f, Half * 1.3f);
+		A->Mix(BoundName, Bound, !bFlightBurst && bFold ? 1.f : 0.f, 1.f, Half);
+		return;
+	}
 	A->Mix(FlapName, Flap, bFlightBurst ? 1.f : 0.f, Beat, 0.08f);
 	A->Mix(GlideName, Glide, !bFlightBurst && !bFold ? 1.f : 0.f, 1.f, 0.12f);
 	A->Mix(BoundName, Bound, !bFlightBurst && bFold ? 1.f : 0.f, 1.f, 0.06f);

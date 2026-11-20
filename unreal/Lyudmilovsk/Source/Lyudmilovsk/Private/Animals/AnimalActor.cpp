@@ -1,6 +1,7 @@
 #include "Animals/AnimalActor.h"
 
 #include "Animals/AnimalAnimInstance.h"
+#include "LyudMotion.h"
 #include "Animals/AnimalCollar.h"
 #include "Animation/AnimSequence.h"
 #include "AnimationRuntime.h"
@@ -658,6 +659,35 @@ void AAnimalActor::UpdateClip(float BlendTime)
 	{
 		A->SetRate(Want, Rate);
 	}
+}
+
+void AAnimalActor::Place(const FVector& Location, float YawDeg, float PitchDeg, float RollDeg, bool bFar)
+{
+	const float Dt = GetWorld() ? GetWorld()->GetDeltaSeconds() : 0.f;
+	if (!LyudMotion::Smooth() || !bPlaced || Dt <= 0.f || FVector::DistSquared(ShownPos, Location) > 400.0 * 400.0)
+	{
+		bPlaced = true;
+		ShownPos = Location;
+		ShownVel = FVector::ZeroVector;
+		ShownYaw = YawDeg;
+		ShownPitch = PitchDeg;
+		ShownRoll = RollDeg;
+		YawVel = PitchVel = RollVel = 0.f;
+		SetActorLocationAndRotation(Location, FRotator(PitchDeg, YawDeg, RollDeg));
+		return;
+	}
+	// near, its life steps it every frame with turns and speeds of its own easing: only the height (the ground under it
+	// read anew each step) and the lie on the slope are eased, and a touch of the place; far off all of it
+	FVector2D Flat(ShownPos.X, ShownPos.Y), FlatVel(ShownVel.X, ShownVel.Y);
+	Flat = LyudMotion::Damp(Flat, FVector2D(Location.X, Location.Y), FlatVel, bFar ? 0.3f : 0.04f, Dt);
+	float Z = (float)ShownPos.Z, ZVel = (float)ShownVel.Z;
+	Z = LyudMotion::Damp(Z, (float)Location.Z, ZVel, bFar ? 0.3f : 0.08f, Dt);
+	ShownPos = FVector(Flat.X, Flat.Y, Z);
+	ShownVel = FVector(FlatVel.X, FlatVel.Y, ZVel);
+	ShownYaw = FRotator::NormalizeAxis(LyudMotion::DampAngle(ShownYaw, YawDeg, YawVel, bFar ? 0.3f : 0.05f, Dt));
+	ShownPitch = LyudMotion::Damp(ShownPitch, PitchDeg, PitchVel, 0.22f, Dt);
+	ShownRoll = LyudMotion::Damp(ShownRoll, RollDeg, RollVel, 0.22f, Dt);
+	SetActorLocationAndRotation(ShownPos, FRotator(ShownPitch, ShownYaw, ShownRoll));
 }
 
 void AAnimalActor::SetLookTarget(FVector WorldPoint, bool bActive)
