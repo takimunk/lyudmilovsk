@@ -149,11 +149,102 @@ namespace LyudPeople
 		{
 			return false;
 		}
+		// what the weather draws people to (tools/town/weather_pull.py; none without the file)
+		const std::string PullText = ReadFile(Dir + "/weather_pull.json");
+		if (!PullText.empty() && !LoadWeatherPull(PullText))
+		{
+			return false;
+		}
 		Index();
 		return true;
 	}
 
-	bool FWorld::LoadActivities(const std::string& Text)
+	bool FWorld::LoadWeatherPull(const std::string& Text)
+	{
+		LyudJson::FValue J;
+		if (!LyudJson::Parse(Text, J, LastError))
+		{
+			LastError = "weather_pull.json: " + LastError;
+			return false;
+		}
+		Pulls.clear();
+		for (const LyudJson::FValue& V : J["pull"].Items)
+		{
+			FWeatherPull Row;
+			for (const LyudJson::FValue& K : V["kinds"].Items)
+			{
+				Row.Kinds.push_back(K.S());
+			}
+			for (const LyudJson::FValue& K : V["places"].Items)
+			{
+				Row.Ids.push_back(K.S());
+			}
+			Row.Rain = V["rain"].F(0.f);
+			Row.Cold = V["cold"].F(0.f);
+			Row.Hot = V["hot"].F(0.f);
+			Row.Storm = V["storm"].F(0.f);
+			Row.Dark = V["dark"].F(0.f);
+			Pulls.push_back(Row);
+		}
+		IndexPulls();
+		// and its own activities (waiting out the rain under a roof): after activities.json's, whose indices stay
+		if (!J["activities"].Items.empty() && !LoadActivities(Text, true))
+		{
+			return false;
+		}
+		return true;
+	}
+
+	void FWorld::IndexPulls()
+	{
+		for (FPlace& Pl : Places)
+		{
+			Pl.Pull = -1;
+			// an id names the place itself: it wins over a row of its kind
+			for (int R = 0; R < (int)Pulls.size() && Pl.Pull < 0; R++)
+			{
+				Pl.Pull = Has(Pulls[(size_t)R].Ids, Pl.Id) ? R : -1;
+			}
+			for (int R = 0; R < (int)Pulls.size() && Pl.Pull < 0; R++)
+			{
+				Pl.Pull = Has(Pulls[(size_t)R].Kinds, Pl.Kind) ? R : -1;
+			}
+		}
+	}
+
+	float FWorld::WeatherPull(int Place) const
+	{
+		const int Row = Place >= 0 && Place < (int)Places.size() ? Places[(size_t)Place].Pull : -1;
+		if (Row < 0)
+		{
+			return 0.f;
+		}
+		const FWeatherPull& W = Pulls[(size_t)Row];
+		float V = 0.f;
+		if (bRain)
+		{
+			V += W.Rain * (0.6f + 0.4f * std::min(1.f, Rain / 4.f));     // (Rain: mm/h; a steady rain 4)
+		}
+		if (TempC < 2.f)
+		{
+			V += W.Cold * std::min(1.f, (2.f - TempC) / 8.f);
+		}
+		if (TempC > 22.f && bSunUp && !bRain)
+		{
+			V += W.Hot * std::min(1.f, (TempC - 22.f) / 6.f);
+		}
+		if (Wind > 12.f)
+		{
+			V += W.Storm * std::min(1.f, (Wind - 12.f) / 8.f);
+		}
+		if (!bSunUp)
+		{
+			V += W.Dark;
+		}
+		return V;
+	}
+
+	bool FWorld::LoadActivities(const std::string& Text, bool bAppend)
 	{
 		LyudJson::FValue J;
 		if (!LyudJson::Parse(Text, J, LastError))
@@ -161,7 +252,10 @@ namespace LyudPeople
 			LastError = "activities.json: " + LastError;
 			return false;
 		}
-		Activities.clear();
+		if (!bAppend)
+		{
+			Activities.clear();
+		}
 		for (const LyudJson::FValue& V : J["activities"].Items)
 		{
 			FActivity A;
@@ -211,6 +305,7 @@ namespace LyudPeople
 			A.bStaff = V["staff"].F() > 0.f;
 			A.Pace = V["pace"].F(1.f);
 			A.bRainOk = V["rain"].S() == "ok";
+			A.bShelter = V["shelter"].F() > 0.f;
 			if (V["wind"].Size() == 2)
 			{
 				A.WindMin = V["wind"][size_t(0)].F();
@@ -1384,8 +1479,11 @@ namespace LyudPeople
 	bool FWorld::FlatLitNow(int Place) const
 	{
 		const FPlace& Pl = Places[Place];
-		// daylight indoors is enough till a little before sunset (and from a little after sunrise)
-		const bool bDark = !bSunUp || Hour > Sunset - 0.4f || Hour < Sunrise + 0.3f;
+		// daylight indoors is enough till a little before sunset (and from a little after sunrise); on a dark day (thick
+		// cloud, rain) the lamps go on up to three hours sooner and stay on longer in the morning, and in the gloomiest
+		// all day long
+		const float Lead = 3.f * std::max(0.f, Gloom - 0.45f) / 0.55f;
+		const bool bDark = !bSunUp || Hour > Sunset - 0.4f - Lead || Hour < Sunrise + 0.3f + Lead || Gloom > 0.92f;
 		if (!bDark)
 		{
 			return false;
@@ -2016,6 +2114,11 @@ namespace LyudPeople
 						}
 					}
 				}
+				// the weather's pull: a roof in the rain, the ice-cream kiosk in the heat (weather_pull.json)
+				if (Pl.Pull >= 0 && Pi != P.Home && !A.bGather && !A.bStaff)
+				{
+					Score -= WeatherPull(Pi) * Opt.PullMeters;
+				}
 				// a little variety among equal spots
 				uint32_t H = (uint32_t)(S * 2654435761u) ^ (uint32_t)(P.Id * 40503u) ^ (uint32_t)(Time / 1800.0);
 				Score += Rand(H) * 25.f;
@@ -2114,6 +2217,11 @@ namespace LyudPeople
 		{
 			return -1e9f;
 		}
+		// a shelter (waiting out the weather under a roof) only where the weather pulls now
+		if (A.bShelter && WeatherPull(Slots[(size_t)S].Place) < 0.3f)
+		{
+			return -1e9f;
+		}
 		OutSlot = S;
 		// time left before bed or the day's next duty: free time ends 20 minutes before it
 		const float Left = FreeHoursLeft(P);
@@ -2194,6 +2302,11 @@ namespace LyudPeople
 					Score += 0.15f;
 				}
 			}
+		}
+		// and what it draws them to: the cafes, the library and the clubs fill in the rain, the ice-cream kiosk in the heat
+		if (!A.bAway && !A.bGather && !bHome)
+		{
+			Score += WeatherPull(Sl.Place);
 		}
 		// a fine evening: the town comes out to walk the sea front (the warmer, the more of them; nobody in the rain)
 		if (Hour >= 18.f && Hour < 21.5f && !bRain && TempC > 12.f && !A.bAway && !A.bGather && !Places[Sl.Place].bIndoor

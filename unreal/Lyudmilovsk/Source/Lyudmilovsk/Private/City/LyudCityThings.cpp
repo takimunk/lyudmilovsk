@@ -133,6 +133,18 @@ namespace LyudCityThingsImpl
 
 	/** The game's date for the rules. bFull: also the holidays on now and the weather (an act about to run; it allocates);
 	 *  without it only the clock (the prompt, every frame: nothing allocated). */
+	/** The weather words of now (LyudCity::WeatherBits; 0 without a weather). */
+	uint8 WeatherNow(const UWorld* World)
+	{
+		const ULyudWeatherSubsystem* Wx = World ? ULyudWeatherSubsystem::Get(World) : nullptr;
+		if (!Wx)
+		{
+			return 0;
+		}
+		const FLyudSkyWeather Sky = Wx->GetSky();
+		return LyudCity::WeatherBits(Sky.Cloud, Sky.Rain, Sky.Snow, Sky.Fog, Sky.TempC, Sky.Wet);
+	}
+
 	LyudCity::FWhen When(const UWorld* World, bool bFull = true)
 	{
 		const FDateTime Now = UGameCalendar::NowIn(World);
@@ -156,11 +168,7 @@ namespace LyudCityThingsImpl
 				W.Festivals.push_back(std::string(TCHAR_TO_UTF8(*F.Id.ToString())));
 			}
 		}
-		if (const ULyudWeatherSubsystem* Wx = ULyudWeatherSubsystem::Get(World))
-		{
-			const FLyudSkyWeather Sky = Wx->GetSky();
-			W.Weather = LyudCity::WeatherBits(Sky.Cloud, Sky.Rain, Sky.Snow, Sky.Fog, Sky.TempC, Sky.Wet);
-		}
+		W.Weather = WeatherNow(World);
 		return W;
 	}
 
@@ -3973,6 +3981,11 @@ void ULyudCityThings::SetTone(int32 Tone)
 	const USoundBase* PlayingLoop = ToneAudio ? ToneAudio->Sound.Get() : nullptr;
 	UE_LOG(LogLyudCity, Verbose, TEXT("CityThings: tone %s"), T ? *LyudCityThingsImpl::Str(T->Id) : TEXT("off"));
 	ToneHeard = T ? Tone : -1;
+	// the rain on this room's windows (the soundscape's glass voice): heard inside a room that has them, silent elsewhere
+	if (ULyudSoundscapeSubsystem* Glass = ULyudSoundscapeSubsystem::Get(this))
+	{
+		Glass->SetNearWindows(T ? T->Windows : 0.f);
+	}
 	{
 		LyudCity::FRng Rng;
 		Rng.State = ToneDice;
@@ -4024,7 +4037,10 @@ void ULyudCityThings::TickTone(const AHeroCharacter* Hero, float DeltaTime)
 	if (Hero && !bOutside)
 	{
 		Near = Model->NearestThing(LyudCityThingsImpl::Vec(Hero->GetActorLocation()), LyudCityThingsImpl::ToneRadius, LyudCityThingsImpl::PlotFloor);
-		Want = Near >= 0 ? Model->ToneNow(Near, LyudCityThingsImpl::When(World, false), bOpenAllHours) : -1;
+		// (the weather too: a room may sound otherwise in the rain; docs/indoor_weather.md)
+		LyudCity::FWhen ToneWhen = LyudCityThingsImpl::When(World, false);
+		ToneWhen.Weather = Near >= 0 ? LyudCityThingsImpl::WeatherNow(World) : 0;
+		Want = Near >= 0 ? Model->ToneNow(Near, ToneWhen, bOpenAllHours) : -1;
 	}
 	if (Want != ToneHeard)
 	{

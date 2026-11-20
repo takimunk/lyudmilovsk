@@ -1395,6 +1395,7 @@ static int Day(int Argc, char** Argv, const char* TraceKey, bool bSummary = fals
 }
 
 #include "town_week.h"
+#include "indoor_weather.h"
 
 int main(int Argc, char** Argv)
 {
@@ -1410,6 +1411,10 @@ int main(int Argc, char** Argv)
 	if (Mode == "week")
 	{
 		return Week();
+	}
+	if (Mode == "weather")
+	{
+		return IndoorWeather();
 	}
 	if (Mode == "day")
 	{

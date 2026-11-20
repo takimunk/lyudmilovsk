@@ -414,7 +414,7 @@ queue at the bakery and the market.
 
 ## 28. Weather and night indoors
 
-`[ ]` **Brief (Opus 5.5):** On rain days the cafés, the library, the clubs and the sanatorium lounge fill up; on stormy
+`[x] indoor-weather 2026-11-20 (branch indoor-weather, docs/indoor_weather.md; awaits a Mac build and a rain-day walk)` **Brief (Opus 5.5):** On rain days the cafés, the library, the clubs and the sanatorium lounge fill up; on stormy
 nights the lighthouse keeper's radio crackles with ship talk; on hot days the ice cream counter has a queue and the café's
 windows open. Lines exist by weather; extend to who is where (town-life weights by weather per plot kind), room tones
 (`tones`, `tone_by`: rain on the roof, the wind in the lighthouse), lamps on earlier on dark days. Done: peoplesim test of

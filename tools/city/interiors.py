@@ -85,7 +85,7 @@ SECTIONS = ("acts", "shops", "rules", "defaults", "defaults_by_plot_kind", "ques
 TOPIC_FIELDS = ("id", "k", "lines", "once", "gives")
 MAX_TOPICS = 8
 # room tones (docs/city_interiors.md "Room tones")
-TONE_FIELDS = ("loop", "volume", "shots", "every", "shot_volume", "closed", "about")
+TONE_FIELDS = ("loop", "volume", "shots", "every", "shot_volume", "closed", "weather", "windows", "about")
 # the reading view (docs/city_interiors.md "The reading page"): what a text is, how long a page takes, the kinds a reading act is for
 TEXT_KINDS = ("book", "notice", "ledger", "newspaper")
 TEXT_FIELDS = ("title", "kind", "minutes", "pages", "collect", "gen")
@@ -1157,6 +1157,24 @@ def build_tones(plan_places, reg):
             if t["closed"] not in src:
                 err("%s: closed tone %s is not a tone" % (where, t["closed"]))
             rec["closed"] = t["closed"]
+        # the room in a weather (docs/indoor_weather.md): {"rain": tone id, ...} plays instead while open and so
+        wx = t.get("weather") or {}
+        if not isinstance(wx, dict):
+            err("%s: weather is {word: tone id}" % where)
+            wx = {}
+        for word, alt in wx.items():
+            if word not in WEATHER:
+                err("%s: weather word %s is not one of %s" % (where, word, ", ".join(WEATHER)))
+            elif alt not in src or alt == tid:
+                err("%s: weather %s: %s is not another tone" % (where, word, alt))
+        if wx:
+            rec["weather"] = collections.OrderedDict((w, wx[w]) for w in WEATHER if w in wx)
+        win = t.get("windows", 0)
+        if not isinstance(win, (int, float)) or not 0 <= win <= 1:
+            err("%s: windows is 0..1" % where)
+            win = 0
+        if win:
+            rec["windows"] = float(win)
         out[tid] = rec
     by = {k: v for k, v in CONTENT_EXTRA["tone_by"].items() if not k.startswith("_")}
     for k, v in by.items():

@@ -1034,6 +1034,35 @@ static void RealChecks(const std::string& Path)
 		Loud += (T.Volume < 0.f || T.Volume > 1.f || T.ShotVolume < 0.f || T.ShotVolume > 1.f) ? 1 : 0;
 	}
 	CHECK(!M.Tones.empty() && BadTone == 0 && Loud == 0, "%d room tones, each sound (%d bad, %d out of 0..1)", (int)M.Tones.size(), BadTone, Loud);
+	// the rooms in the rain (docs/indoor_weather.md): the keeper's radio in the lighthouse, a full cafe; dry: as ever
+	{
+		int Pier = -1, Cafe = -1, BadAlt = 0;
+		for (int I = 0; I < (int)M.Things.size(); ++I)
+		{
+			Pier = Pier < 0 && M.Things[(size_t)I].Plot == "P-PIER" ? I : Pier;
+			Cafe = Cafe < 0 && M.Things[(size_t)I].Plot == "P-CAFE" ? I : Cafe;
+		}
+		for (const FTone& T : M.Tones)
+		{
+			for (const auto& Alt : T.ByWeather)
+			{
+				BadAlt += Alt.second < 0 || Alt.second >= (int)M.Tones.size() || Alt.first == 0 ? 1 : 0;
+			}
+			BadAlt += T.Windows < 0.f || T.Windows > 1.f ? 1 : 0;
+		}
+		FWhen Wet;
+		Wet.Hour = 23.f;
+		Wet.Weather = WeatherRain | WeatherWet | WeatherCold;
+		FWhen Dry = Wet;
+		Dry.Weather = WeatherDry | WeatherClear;
+		const int Room = M.FindTone("lighthouse_room"), Storm = M.FindTone("lighthouse_storm");
+		CHECK(Pier >= 0 && M.ToneNow(Pier, Dry, true) == Room && M.ToneNow(Pier, Wet, true) == Storm && M.ToneAt(Storm)->Windows > 0.9f,
+			"the lighthouse: its room dry, the keeper's radio in the rain, the rain on every pane");
+		Wet.Hour = Dry.Hour = 13.f;
+		CHECK(Cafe >= 0 && M.ToneNow(Cafe, Dry, true) == M.FindTone("cafe_room") && M.ToneNow(Cafe, Wet, true) == M.FindTone("cafe_full"),
+			"the cafe: its room dry, full in the rain");
+		CHECK(BadAlt == 0, "every weather tone is a tone, every window share in 0..1 (%d bad)", BadAlt);
+	}
 	int Lifts = 0, NoWayBack = 0;
 	std::string FirstOneWay;
 	for (int I = 0; I < (int)M.Things.size(); ++I)

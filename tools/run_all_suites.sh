@@ -159,6 +159,7 @@ suite mannersim.friends           - bash tools/mannersim/run.sh friends
 suite gardensim.test              - bash tools/gardensim/run.sh
 suite peoplesim.test              - bash tools/peoplesim/run.sh test
 suite peoplesim.town              - bash tools/peoplesim/run.sh town
+suite peoplesim.weather           - bash tools/peoplesim/run.sh weather
 suite peoplesim.day               - bash tools/peoplesim/run.sh day 6 2
 suite peoplesim.summary           slow bash tools/peoplesim/run.sh summary
 if wanted peoplesim.test.norail && [ -f "$RAIL" ]; then
@@ -195,6 +196,7 @@ generator gen.town_life       "$CONTENT/PeopleData $CONTENT/Localization/town"  
 generator gen.barks           "$CONTENT/Dialogue/town_barks.txt $CONTENT/Localization/barks" python3 tools/barks/build_barks.py
 generator gen.letters         "$CONTENT/Letters/letters.json $CONTENT/Localization/letters" python3 tools/letters/build_letters.py
 generator gen.friends         "$CONTENT/PeopleData/friends.json $CONTENT/Localization/friends" python3 tools/friends/build_friends.py
+generator gen.weather_pull    "$CONTENT/PeopleData/weather_pull.json" python3 tools/town/weather_pull.py
 generator gen.garden          "$CONTENT/Garden/garden.json $CONTENT/Localization/garden" python3 tools/garden/build_garden.py
 generator gen.strings         "$CONTENT/Localization/strings_ru.json $CONTENT/Localization/strings_en.json $CONTENT/Localization/strings_ja.json" \
 	bash -c 'python3 tools/restaurant/strings.py && python3 tools/lobby_strings.py && python3 tools/smoking_strings.py && python3 tools/characters/nao_strings.py'

@@ -137,6 +137,17 @@ namespace LyudPeople
 		std::vector<std::string> Windows;   // window ids (T2-05/3-02/w1)
 		std::vector<std::string> Roles;     // a workplace's job roles (waiter, cook, seller, ...)
 		int K = -1;                 // Kind interned
+		int Pull = -1;              // its row of weather_pull.json (docs/indoor_weather.md), -1 none
+	};
+
+	/** One row of weather_pull.json (tools/town/weather_pull.py, docs/indoor_weather.md): how much the weather of the moment
+	 *  draws people to the places of these kinds or ids (a choice's score, as the outdoors' rain penalty is; 1 ~ a strong
+	 *  wish). The rain scales with how hard it falls, the cold below 2 C, the heat above 22 C in the dry sun, the storm
+	 *  above 12 m/s; dark: after sunset. */
+	struct FWeatherPull
+	{
+		std::vector<std::string> Kinds, Ids;
+		float Rain = 0.f, Cold = 0.f, Hot = 0.f, Storm = 0.f, Dark = 0.f;
 	};
 
 	/** One row of activities.json: what people can do and what it gives them. */
@@ -172,6 +183,7 @@ namespace LyudPeople
 		bool bStaff = false;                // a workplace duty: at their own workplace (FDuty::Place), at a slot of their role
 		float Pace = 1.f;                   // "pace": how fast they go within it against their walk (a jog, children at play: 2)
 		bool bRainOk = false;               // "rain": "ok": chosen and kept up in the rain too (outdoors)
+		bool bShelter = false;              // "shelter": 1: only where the weather pulls now (weather_pull.json: under a roof in the rain)
 		float WindMin = -1.f, WindMax = 99.f;   // "wind": [min, max] m/s: chosen only in such a wind (a kite: a breeze, not a calm or a gale)
 		std::vector<int> PlaceIdx;          // the places of its kinds (built after loading; "home" and gatherings aside)
 		std::vector<int> SlotK, PlaceK;     // Slots and Places interned
@@ -326,6 +338,7 @@ namespace LyudPeople
 		float WalkCostPerHour = 1.6f;   // how much an hour of walking puts people off a choice
 		float Jitter = 0.15f;
 		float OwnSpots = 110.f;         // m: how far out of their way people go for a spot of their own (their bench, their cafe); 0 none
+		float PullMeters = 160.f;       // m: how far out of their way a weather pull of 1 takes people (the cafe in the rain)
 	};
 
 	class FWorld
@@ -355,6 +368,7 @@ namespace LyudPeople
 		float Rain = 0.f;               // 0 dry .. 1 pouring
 		float TempC = 12.f;
 		float Wind = 5.f;               // the mean wind, m/s (the wrapper sets it from ULyudWindSubsystem; kites want 3..13)
+		float Gloom = 0.f;              // 0 a bright sky .. 1 a dark day (thick cloud, rain): lamps go on earlier (FlatLitNow)
 		bool bDayOff = false;           // a public holiday: duties with holiday "off" are skipped (SetDayOff)
 
 		/** A gathering (ULyudFestivalSubsystem's holidays): people free and awake are drawn to a place, or to the places
@@ -389,6 +403,13 @@ namespace LyudPeople
 		void UpdateLights(std::vector<int>& Changed);
 		std::vector<int8_t> FlatLit;    // per place: -1 unknown, 0 dark, 1 lit
 		bool FlatLitNow(int Place) const;
+		/** The weather's pull to a place now (weather_pull.json; 0 none): added to a choice's score, and taken off the
+		 *  metres when choosing between places (PullMeters a unit). */
+		float WeatherPull(int Place) const;
+		std::vector<FWeatherPull> Pulls;
+		/** weather_pull.json: the rows, then each place its row (the first that names its id, else its kind). */
+		bool LoadWeatherPull(const std::string& Text);
+		void IndexPulls();
 		/** Today's wake and bedtime (their usual, moved by the day's roll). */
 		float WakeOf(const FPerson& P) const
 		{
@@ -461,7 +482,8 @@ namespace LyudPeople
 		bool bLoadTown = true;
 		/** activities.json, people.json, people_places.json from Dir; the walk grid from AnimalsDir ("" = no grid). */
 		bool Load(const std::string& Dir, const std::string& AnimalsDir);
-		bool LoadActivities(const std::string& Text);
+		/** Append: add the rows to those there (weather_pull.json's own activities), else replace them. */
+		bool LoadActivities(const std::string& Text, bool bAppend = false);
 		bool LoadPeople(const std::string& Text);
 		bool LoadPlaces(const std::string& Text);
 		/** Gives every household a flat (the saved ones first: SetHome before) and everybody a bed. */

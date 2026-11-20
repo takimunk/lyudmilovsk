@@ -431,6 +431,11 @@ namespace LyudCity
 		float EveryMin = 12.f, EveryMax = 30.f;
 		float ShotVolume = 0.5f;
 		int Closed = -1;
+		/** The room in a weather ("weather": {"rain": tone id}, docs/indoor_weather.md): while open and that word holds, the
+		 *  first such tone plays instead (a full cafe in the rain, the keeper's radio in the storm). */
+		std::vector<std::pair<uint8_t, int>> ByWeather;
+		/** How much of the rain on its windows is heard inside, 0..1 (the soundscape's glass voice, SetNearWindows). */
+		float Windows = 0.f;
 	};
 
 	/**
@@ -1920,7 +1925,18 @@ namespace LyudCity
 			{
 				return -1;
 			}
-			return IsShut(Thing, When, bOpenAll) ? T->Closed : Tone;
+			if (IsShut(Thing, When, bOpenAll))
+			{
+				return T->Closed;
+			}
+			for (const auto& W : T->ByWeather)
+			{
+				if (When.Weather & W.first)
+				{
+					return W.second;
+				}
+			}
+			return Tone;
 		}
 		/** Seconds until a tone's next one-shot (EveryMin..EveryMax; -1: it has none). */
 		double NextShotIn(int Tone, FRng& Rng) const
@@ -3641,6 +3657,7 @@ namespace LyudCity
 		void ReadTones(const LyudJson::FValue& Defs, const LyudJson::FValue& ByPlot)
 		{
 			std::vector<std::string> ClosedIds;
+			std::vector<std::vector<std::pair<uint8_t, std::string>>> WeatherIds;
 			for (const auto& Field : Defs.Fields)
 			{
 				FTone T;
@@ -3660,10 +3677,21 @@ namespace LyudCity
 				T.EveryMin = std::min(600.f, std::max(2.f, Every[0].F(12.f)));
 				T.EveryMax = std::min(600.f, std::max(T.EveryMin, Every[1].F(T.EveryMin)));
 				T.ShotVolume = std::min(1.f, std::max(0.f, V["shot_volume"].F(0.5f)));
+				T.Windows = std::min(1.f, std::max(0.f, V["windows"].F(0.f)));
 				if (ToneIndex.count(T.Id) == 0)
 				{
 					ToneIndex[T.Id] = (int)Tones.size();
 					ClosedIds.push_back(V["closed"].S());
+					std::vector<std::pair<uint8_t, std::string>> ByWord;
+					for (const auto& Wx : V["weather"].Fields)
+					{
+						const uint8_t Bit = WeatherBit(Wx.first);
+						if (Bit != 0 && !Wx.second.S().empty())
+						{
+							ByWord.emplace_back(Bit, Wx.second.S());
+						}
+					}
+					WeatherIds.push_back(std::move(ByWord));
 					Tones.push_back(std::move(T));
 				}
 			}
@@ -3671,6 +3699,14 @@ namespace LyudCity
 			{
 				const int C = ClosedIds[I].empty() ? -1 : FindTone(ClosedIds[I]);
 				Tones[I].Closed = C == (int)I ? -1 : C;
+				for (const auto& Wx : WeatherIds[I])
+				{
+					const int Alt = FindTone(Wx.second);
+					if (Alt >= 0 && Alt != (int)I)
+					{
+						Tones[I].ByWeather.emplace_back(Wx.first, Alt);
+					}
+				}
 			}
 			for (const auto& Field : ByPlot.Fields)
 			{

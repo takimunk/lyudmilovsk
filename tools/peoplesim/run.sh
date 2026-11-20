@@ -2,6 +2,7 @@
 # Builds and runs the people's life outside the engine (tools/peoplesim/peoplesim.cpp). Run from the repo root.
 #   tools/peoplesim/run.sh test                  behaviour checks (a small made-up town, then the real map if built)
 #   tools/peoplesim/run.sh town                  the town (town_places.json, townsfolk.json: docs/town_life.md): a day and a night
+#   tools/peoplesim/run.sh weather               weather and night indoors: the town dry, in the rain, in the heat (docs/indoor_weather.md)
 #   tools/peoplesim/run.sh week                  the town over a simulated week: invariants (docs/town_life.md, Tests)
 #   tools/peoplesim/run.sh day [start_hour hours] -> Saved/PeopleSim/day.csv + acts.txt (python3 tools/peoplesim/render_people.py)
 #   tools/peoplesim/run.sh trace <key> [start_hour hours]
