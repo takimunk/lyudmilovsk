@@ -580,7 +580,7 @@ void ABirdPawn::StepAir(const FBirdControls& InC, float Dt)
 			In.ClickL = In.ClickR = true;
 			if (!bOwnClick)
 			{
-				In.Power = P.CruisePower;
+				In.Power = BirdFlight::RhythmPower(P, BirdFlight::Speed(*Flight), FMath::DegreesToRadians(FRotator::NormalizeAxis(Gaze.Pitch)));
 			}
 		}
 		TuckL = FMath::Max(TuckL, (float)AutoTuck);
@@ -597,7 +597,9 @@ void ABirdPawn::StepAir(const FBirdControls& InC, float Dt)
 		if (AssistClock <= 0.f)
 		{
 			In.ClickL = In.ClickR = true;
-			AssistClock += P.ClickTime();
+			// (flat out, and at the rate flat-out beats come)
+			In.Power = 1.0;
+			AssistClock += BirdFlight::FastClick(P);
 		}
 	}
 	In.TuckL = TuckL;

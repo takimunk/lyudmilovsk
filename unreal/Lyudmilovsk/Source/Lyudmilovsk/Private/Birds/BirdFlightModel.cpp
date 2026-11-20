@@ -258,6 +258,13 @@ namespace BirdFlight
 		return (DiveIntent(AimPitch) > 0.5 && V > P.Cruise) || V > P.Sprint * 1.15;
 	}
 
+	double RhythmPower(const FParams& P, double V, double AimPitch)
+	{
+		const double Slow = 1.0 - Smooth(0.6, 0.95, V / std::max(P.Cruise, 0.1));
+		const double Up = Smooth(0.03, 0.25, AimPitch);
+		return P.CruisePower + (1.0 - P.CruisePower) * std::max(Slow, Up);
+	}
+
 	double WingTrim(const FParams& P, double V, double Gamma, double AimPitch, double LoadG, double Flare)
 	{
 		// the air: fully spread wings are pressed back past their speed limit
@@ -530,8 +537,8 @@ namespace BirdFlight
 		const double Strength = 0.1 + 0.9 * E * E * (3.0 - 2.0 * E);
 		// (a faster burst gives its beats' push in less time)
 		double ThrustAcc = 0.5 * (PowL * S.RateL + PowR * S.RateR) * P.ClickThrust / Click * Launch * High * Strength;
-		// (the lift is measured clicking flat out: a burst that beats faster or slower than that gives its lift in its own time)
-		const double LiftRate = 0.5 * ((BeatL ? S.RateL : 0.0) + (BeatR ? S.RateR : 0.0)) / BeatRate(P, 1.0);
+		// (like the thrust: a faster burst gives its beats' lift in less time, so a click lifts the same however fast it beats)
+		const double LiftRate = 0.5 * ((BeatL ? S.RateL : 0.0) + (BeatR ? S.RateR : 0.0));
 		double BeatLift = LiftRate * P.ClickLift / Click * SlowLift * Strength * std::sqrt(std::max(Pow, 0.0));
 		// the beats lift no more than the course needs (and a little to climb); the rest drives the bird on
 		const double Need = std::max(0.0, V * GammaDot + G * std::cos(Gamma));
@@ -572,9 +579,9 @@ namespace BirdFlight
 		double NLat = V * std::cos(Gamma) * Omega;
 		const double LiftK = std::pow(std::max(Spread, 0.0), 1.5) * (1.0 + 0.6 * Flare);
 		const double LMax = std::min(P.MaxLoad * G, G * (V / P.Stall) * (V / P.Stall) * LiftK);
-		// (pushing over into a dive: the wings' lift turned down, or, folded, the tail and the body tipping it over)
-		// (never harder than 1 g down: a bird unloads its wings to go over, it does not fly on its back)
-		NVert = std::max(NVert, -Clamp(0.5 * LMax, 0.6 * G, G));
+		// (pushing over into a dive: half the wings' lift turned down, never harder than 1 g: a bird unloads its wings
+		// to go over, it does not fly on its back)
+		NVert = std::max(NVert, -std::min(0.5 * LMax, G));
 		const double N = std::sqrt(NVert * NVert + NLat * NLat);
 		if (N > LMax && N > 0)
 		{

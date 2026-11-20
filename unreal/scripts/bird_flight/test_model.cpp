@@ -301,6 +301,42 @@ int main()
 		Check(Falcon > 80 && Falcon > Swan * 2.7 && FalconWings < 0.15 && SwanWings > 0.75,
 			F("stoop: a peregrine %.0f m/s with its wings %.0f%% out, a mute swan %.0f m/s with %.0f%%", Falcon, FalconWings * 100, Swan, SwanWings * 100));
 	}
+	// 18. the take-off as the player flies it: a jump, 0.6 s of flat-out beats, then Space (the rhythm, which works harder
+	// while the bird is slow and looks up) with the gaze 14 deg up: it must keep climbing, not sink back onto the ground
+	{
+		auto Off = [](const char* Id, EStyle Style, double MassG, double SpanCm, double Hz, double Cruise)
+		{
+			const FParams P = MakeSpeciesParams(Id, Style, MassG, SpanCm, Hz, Cruise);
+			FState S;
+			S.Pos = V3(0, 0, 0.3);
+			S.Vel = V3(0.9, 0, 1.8);
+			double Clock = 0, Assist = 0.6, Next = 0, Z1 = 0, V1 = 0, Last = 0, Top = 0;
+			bool Sank = false;
+			Run(P, S, 3.0, [&](double T, FInput& In)
+			{
+				const double Dt = T - Last; Last = T;
+				if (Z1 == 0 && T >= 1.0) { Z1 = S.Pos.Z; V1 = BirdFlight::Speed(S); }
+				// (a bounding bird's path dips between its bursts: what counts is that it never loses real height)
+				Top = std::max(Top, S.Pos.Z);
+				if (S.Pos.Z < Top - 0.25) Sank = true;
+				In.AimPitch = std::min(0.244, -0.07 + T * 2.4);
+				double Tuck = 0;
+				if (AutoFlap(P, Dt, Clock, Tuck)) { In.ClickL = In.ClickR = true; In.Power = RhythmPower(P, BirdFlight::Speed(S), In.AimPitch); }
+				In.TuckL = In.TuckR = Tuck;
+				if (Assist > 0)
+				{
+					Assist -= Dt;
+					if (T >= Next) { In.ClickL = In.ClickR = true; In.Power = 1.0; Next += FastClick(P); }
+					In.Reflex = 0;
+				}
+			});
+			Check(!Sank && Z1 > 1.8 && V1 > P.Stall * 1.1 && S.Pos.Z > 4.0,
+				F("%s off the ground on Space: %.1f m up at %.1f m/s after 1 s, %.1f m after 3 s (stall %.1f)", Id, Z1, V1, S.Pos.Z, P.Stall));
+		};
+		Off("Starling", EStyle::Flapping, 75, 38, 12, 17);
+		Off("HouseSparrow", EStyle::Bounding, 30, 23, 15, 9);
+		Off("FeralPigeon", EStyle::Clapping, 330, 65, 7, 17);
+	}
 	std::printf(Failures ? "%d FAILED\n" : "all passed\n", Failures);
 	return Failures ? 1 : 0;
 }

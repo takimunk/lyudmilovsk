@@ -170,6 +170,9 @@ namespace BirdFlight
 	/** The species' rhythm (Space) rests: in a dive (the gaze well down, faster than the cruise) and when already
 	 *  going faster than beating wings could push it, a bird does not flap. */
 	bool Coasts(const FParams& P, double V, double AimPitch);
+	/** The power of the species' easy rhythm (Space) here: P.CruisePower level at cruise, harder when the bird is slow
+	 *  (a take-off, coming out of a landing) or looks up to climb, as a bird beats harder and faster then. */
+	double RhythmPower(const FParams& P, double V, double AimPitch);
 	/** How far the bird would hold its wings out by itself (0.1 .. 1) at airspeed V on a path at Gamma with the
 	 *  gaze at AimPitch, pulling LoadG g: FState::Trim eases toward it. */
 	double WingTrim(const FParams& P, double V, double Gamma, double AimPitch, double LoadG, double Flare);
