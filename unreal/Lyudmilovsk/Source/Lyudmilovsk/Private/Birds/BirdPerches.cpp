@@ -140,6 +140,45 @@ void FBirdPerches::ForEachBranch(UWorld* World, const FVector& At, float Radius,
 	}
 }
 
+bool FBirdPerches::InCrown(UWorld* World, const FVector& P, float Fill)
+{
+	if (!World)
+	{
+		return false;
+	}
+	if (!bBuilt)
+	{
+		BuildCrowns(World);
+	}
+	const FIntPoint C = CellOf(P);
+	for (int32 DX = -1; DX <= 1; ++DX)
+	{
+		for (int32 DY = -1; DY <= 1; ++DY)
+		{
+			const TArray<int32>* In = Grid.Find(FIntPoint(C.X + DX, C.Y + DY));
+			if (!In)
+			{
+				continue;
+			}
+			for (const int32 I : *In)
+			{
+				const FTree& T = Trees[I];
+				if (T.bPoint)
+				{
+					continue;
+				}
+				const FVector D = P - FVector(T.Centre);
+				const float RH = FMath::Max(1.f, T.Radii.X * Fill), RV = FMath::Max(1.f, T.Radii.Y * Fill);
+				if (FMath::Square(D.X / RH) + FMath::Square(D.Y / RH) + FMath::Square(D.Z / RV) < 1.f)
+				{
+					return true;
+				}
+			}
+		}
+	}
+	return false;
+}
+
 bool FBirdPerches::Find(UWorld* World, const FVector& From, const FVector& Dir, float MaxDist, const AActor* Ignore, FPerch& Out)
 {
 	if (!World)

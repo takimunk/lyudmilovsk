@@ -270,7 +270,7 @@ def main():
         if len(set(declared)) != len(declared):
             err("collection %s: a piece declared twice: %s" % (cid, [p for p, n in collections.Counter(declared).items() if n > 1]))
         for p in declared:
-            if p not in got and cdef.get("by") != "code":  # by code: the game gives the stamps itself (GiveStamp)
+            if p not in got and not cdef.get("by"):  # by code: the game gives the stamps itself (GiveStamp)
                 if p in all_given:
                     err("collection %s: piece %s: given only under conditions that never hold" % (cid, p))
                 else:

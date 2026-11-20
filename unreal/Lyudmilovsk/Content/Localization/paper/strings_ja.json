@@ -87,6 +87,7 @@
  "paper.soon.tomorrow": "明日：{0}。",
  "paper.soon.none": "この二週間、祝日はなし。ただし週末は市場広場で市が立ちます。",
  "paper.cinema": "『ラスヴェート』の映画。{0}",
+ "paper.newsreel": "毎回の上映前に古い映画：{0}。映写技師の解説つき。",
  "paper.archive.head": "『リュドミロフスク・プラウダ』の綴じ込み。保存号数：{0}。あなたが読んだ号：{1}。",
  "paper.archive.read": "✓ 読了。",
  "paper.archive.unread": "まだ読んでいない。",

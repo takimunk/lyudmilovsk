@@ -4,6 +4,7 @@
 //   tools/peoplesim/run.sh day [start_hour hours]
 //   tools/peoplesim/run.sh trace <key> [start_hour hours]
 //   tools/peoplesim/run.sh summary [start_hour hours [weekday]]
+#include "WindModel.h"
 #include "../../unreal/Lyudmilovsk/Source/Lyudmilovsk/Private/People/PeopleSim.h"
 #include "../../unreal/Lyudmilovsk/Source/Lyudmilovsk/Private/Railway/RailRun.h"
 
@@ -1042,10 +1043,20 @@ static int Town()
 	long Steps = 0;
 	const float Dt = 1.f;
 	bool bGather = false, bDayOff = false;
+	// the calendar's wind, as ULyudWindSubsystem has it (seed 921 from Monday 19 October 2026): kites want a breeze
+	LyudWeather::FWindParams WindP;
+	WindP.Seed = 921;
+	const double Monday = LyudWeather::HoursSince2000(2026, 10, 19, 0.0);
+	int KitesDark = 0, KitesOffWind = 0;
+	float KiteWindLo = 99.f, KiteWindHi = 0.f;
 	for (double T = 0.0; T < 36.0 * 3600.0; T += Dt)
 	{
 		C.Seconds += Dt;
 		C.Set(W);
+		if (std::fmod(C.Seconds, 300.0) < Dt)
+		{
+			W.Wind = LyudWeather::Regime(Monday + C.Seconds / 3600.0, WindP).Speed;
+		}
 		const float H = W.Hour;
 		const int Day = W.Weekday;
 		// a holiday on the square Wednesday 18-22 (as ULyudFestivalSubsystem would set it)
@@ -1091,6 +1102,13 @@ static int Town()
 				if (P.Activity >= 0 && (P.State == EState::Doing || P.State == EState::Away))
 				{
 					Minutes[W.Activities[P.Activity].Id] += 1.0;
+					if (W.Activities[P.Activity].Id == "fly_kite" && P.State == EState::Doing)
+					{
+						KitesDark += (W.Hour < 7.f || W.Hour > 20.f) ? 1 : 0;
+						KitesOffWind += (W.Wind < 2.f || W.Wind > 15.f) ? 1 : 0;
+						KiteWindLo = std::min(KiteWindLo, W.Wind);
+						KiteWindHi = std::max(KiteWindHi, W.Wind);
+					}
 				}
 				if (P.N[(int)ENeed::Hunger] > 0.95f && P.Pose != EPose::Sleep)
 				{
@@ -1157,6 +1175,8 @@ static int Town()
 	std::printf("\n");
 	CHECK(Asleep03 > Town * 0.8, "Thursday 03:00: most asleep in their own beds (%d asleep, %d up)", Asleep03, Awake03);
 	CHECK(AwakeNightType03 > 0, "... but the night owls are up (%d)", AwakeNightType03);
+	CHECK(Minutes["fly_kite"] > 0 && KitesDark == 0 && KitesOffWind == 0, "children fly kites by day in a breeze (%.0f person-minutes in %.1f-%.1f m/s; %d in the dark, %d in a calm or a gale)",
+		Minutes["fly_kite"], KiteWindLo, KiteWindHi, KitesDark, KitesOffWind);
 	CHECK(Minutes["watch_sunrise"] > 0, "early risers watch the sunrise (%.0f person-minutes)", Minutes["watch_sunrise"]);
 	CHECK(Minutes["night_walk"] > 0, "somebody walks at night (%.0f person-minutes)", Minutes["night_walk"]);
 	CHECK(Minutes["sit_bench"] > 300, "people sit on the benches (%.0f person-minutes)", Minutes["sit_bench"]);
